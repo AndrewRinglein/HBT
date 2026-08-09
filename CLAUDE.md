@@ -46,17 +46,17 @@ node tools/gate.mjs <id>               run the gates, change nothing
 node tools/gate.mjs <id> --land        commit, only if every gate passes
 node tools/gate.mjs <id> --abandon     give up, revert, record why
 node tools/report.mjs                  what landed, abandoned, or needs review
-npm test  ·  npm run typecheck  ·  npm run battle <n> [--map=id]  ·  npm run sweep <n>
+
+npm test   npm run typecheck   npm run battle <n> [--map=id]   npm run sweep <n>
 ```
 
 **The gate decides whether an item passed, not you.** Never write `status` into
-`.state/backlog.json` by hand — only the gate does that. Adding many mechanics in
-a row is the `batch-add` skill.
+`.state/backlog.json` by hand — only the gate does. Adding many mechanics in a row
+is the `batch-add` skill.
 
 State lives on disk (`.state/backlog.json`, `.state/ledger.md`,
-`.state/baseline.hash`), so a fresh session resumes exactly where the last one stopped.
-
----
+`.state/baseline.hash`), so a fresh session resumes exactly where the last one
+stopped.
 
 ## Where things live
 
