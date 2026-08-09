@@ -8,7 +8,8 @@
   "changesBaseline": true,
   "status": "failed",
   "failedAt": "2026-08-09 08:07",
-  "reason": "full test suite: 86 passed, 3 FAILED"
+  "reason": "full test suite: 86 passed, 3 FAILED",
+  "attempts": 2
  },
  {
   "id": "status.burn",

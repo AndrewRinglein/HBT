@@ -37,6 +37,8 @@ export type AttackDef = {
   /** Weapon reach. Melee 1; the bow is 6. Hero Reach adds to ranged only. */
   readonly reach: number
   readonly staminaCost: number
+  /** On hit, apply this status to the target. A rider, not a station. */
+  readonly applies?: { readonly statusId: string; readonly value: number }
 }
 
 export type UnitDef = {
@@ -93,6 +95,8 @@ export type Unit = {
   abilities: string[]
   /** Ability id -> the turn on which it becomes usable again. Plain object, JSON-safe. */
   cooldowns: Record<string, number>
+  /** Live statuses, kept sorted by id so iteration is never insertion order. */
+  statuses: { id: string; value: number }[]
   attributes: string[]
   // Per-activation budget.
   moveUsed: boolean
@@ -155,4 +159,5 @@ export type Ctx = {
   cfg: Config
   attacks: Readonly<Record<string, AttackDef>>
   abilities: Readonly<Record<string, AbilityDef>>
+  statuses: Readonly<Record<string, import('./status.js').StatusDef>>
 }

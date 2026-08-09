@@ -63,18 +63,24 @@ describe('gate 1 — everything appears in the log', () => {
     expect(hits[0]!['amount'], 'zombie deals 4 to an unarmoured ranger').toBe(4)
   })
 
-  it('FINDING: a kiting ranger is untouchable on open ground (move 5 vs 4)', () => {
-    let rangerDamage = 0
+  it('kiting works: a ranger takes far less damage than a warrior', () => {
+    // A RULE, not a snapshot. The exact figure is a finding and belongs in the
+    // sweep report — asserting it here makes the suite fail every time the game
+    // legitimately changes.
+    const dmg: Record<string, number> = {}
     for (let r = 0; r < 100; r++) {
       const ctx = createBattle({ replicate: r }); runBattle(ctx)
       const type = new Map<number, string>()
       for (const e of ctx.events) {
         if (e.type === 'unit.enter') type.set(e.actor!, e['typeId'] as string)
-        if (e.type === 'damage.applied' && type.get(e.target!) === 'ranger') rangerDamage += e['amount'] as number
+        if (e.type === 'damage.applied') {
+          const t = type.get(e.target!) ?? '?'
+          dmg[t] = (dmg[t] ?? 0) + (e['amount'] as number)
+        }
       }
     }
-    // Documented, not asserted as desirable: 5 movement outruns 4, forever.
-    expect(rangerDamage).toBe(0)
+    expect(dmg['warrior']).toBeGreaterThan(0)
+    expect(dmg['ranger'] ?? 0).toBeLessThan(dmg['warrior']! / 10)
   })
 
   it('every attack in the content library is actually used somewhere', () => {

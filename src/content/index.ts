@@ -6,8 +6,10 @@ import type { AbilityDef, AttackDef, UnitDef } from '../core/types.js'
 
 export const ATTACKS: Readonly<Record<string, AttackDef>> = {
   'attack.zombie.basic': {
-    id: 'attack.zombie.basic', name: 'Basic Attack', kind: 'melee',
+    id: 'attack.zombie.basic', name: 'Rotting Bite', kind: 'melee',
     damageType: 'physical', bonus: 0, stat: 'strength', reach: 1, staminaCost: 0,
+    // Poison needed a source. Declared as a baseline change in the backlog.
+    applies: { statusId: 'status.poison', value: 2 },
   },
   'attack.warrior.axe': {
     id: 'attack.warrior.axe', name: 'Axe', kind: 'melee',

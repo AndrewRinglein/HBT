@@ -8,6 +8,7 @@ import { distance } from './hex.js'
 import { roll100 } from './rng.js'
 import type { AttackDef, Ctx, Unit } from './types.js'
 import { accuracyBonusOf, reachBonusOf } from '../content/maps.js'
+import { applyStatus, outgoingPenalty } from './status.js'
 import { applyDamage, emit, markPrimaryUsed, spendStamina, unit } from './mutate.js'
 
 export const ACC = {
@@ -24,6 +25,7 @@ export const ACC = {
 export const DMG = {
   DECLARE: 100,
   SOURCE_STAT: 200,
+  SOURCE_STATUS: 250,
   TERRAIN: 300,
   POSITIONAL: 350,
   CRIT: 450,
@@ -80,7 +82,7 @@ export function resolveAccuracy(attacker: Unit, target: Unit, a: AttackDef, terr
   return { value: v, ledger }
 }
 
-export function resolveDamage(attacker: Unit, target: Unit, a: AttackDef, crit: boolean): Resolved {
+export function resolveDamage(attacker: Unit, target: Unit, a: AttackDef, crit: boolean, outPenalty = 0): Resolved {
   const ledger: LedgerRow[] = []
   let v = a.bonus
   ledger.push({ station: DMG.DECLARE, name: 'DECLARE', effectId: a.id, before: 0, after: v, delta: v })
@@ -88,6 +90,7 @@ export function resolveDamage(attacker: Unit, target: Unit, a: AttackDef, crit: 
   const statVal = a.stat === 'strength' ? attacker.strength
     : a.stat === 'magic' ? attacker.magic : attacker.precision
   v = step(ledger, DMG.SOURCE_STAT, 'SOURCE_STAT', `unit.${attacker.typeId}`, v, v + statVal)
+  if (outPenalty) v = step(ledger, DMG.SOURCE_STATUS, 'SOURCE_STATUS', 'status', v, v - outPenalty)
 
   if (crit) {
     // +50%, before all mitigation. One rounding rule: truncating integer division.
@@ -135,8 +138,8 @@ export function preview(ctx: Ctx, attackerId: number, targetId: number, attackId
   return {
     hitChance,
     accuracy: acc.value,
-    damageOnHit: resolveDamage(at, tg, a, false).value,
-    damageOnCrit: resolveDamage(at, tg, a, true).value,
+    damageOnHit: resolveDamage(at, tg, a, false, outgoingPenalty(ctx, at)).value,
+    damageOnCrit: resolveDamage(at, tg, a, true, outgoingPenalty(ctx, at)).value,
     critChance: critChanceOf(ctx, at, tg, acc.value),
   }
 }
@@ -182,7 +185,7 @@ export function performAttack(ctx: Ctx, attackerId: number, targetId: number, at
     crit = roll100(ctx.rng, 'crit', at.uid, ord) <= pv.critChance
   }
 
-  const dmg = resolveDamage(at, tg, a, crit)
+  const dmg = resolveDamage(at, tg, a, crit, outgoingPenalty(ctx, at))
 
   // Conservation: the ledger must fully explain the number (Law 1's sibling).
   const summed = dmg.ledger.reduce((s, r) => s + r.delta, 0)
@@ -201,6 +204,11 @@ export function performAttack(ctx: Ctx, attackerId: number, targetId: number, at
 
   const hpBefore = tg.hp
   applyDamage(ctx, targetId, dmg.value, a.id, { actor: attackerId, attackId, crit })
+
+  // Riders are triggers, not stations: damage resolves completely, then they fire.
+  if (a.applies && tg.lifeState === 'standing') {
+    applyStatus(ctx, targetId, a.applies.statusId, a.applies.value, a.id)
+  }
 
   return {
     hit: true, crit, accuracy: pv.accuracy, roll,

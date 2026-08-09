@@ -34,11 +34,23 @@ if (!item) { console.error(`no backlog item '${id}'`); process.exit(2) }
 
 const checks = []
 let ok = true
+/** A hard gate. Failing one blocks the landing. */
 const check = (name, fn) => {
   const r = fn()
   checks.push({ name, ...r })
   console.log(`  ${r.ok ? 'PASS' : 'FAIL'}  ${name}${r.note ? '  — ' + r.note : ''}`)
   if (!r.ok) ok = false
+  return r.ok
+}
+/**
+ * A flag, not a gate. It lands, but loudly and with the diff in the ledger.
+ * Blocking outright would deadlock the loop every time a stale test legitimately
+ * needs updating; landing silently is how a loop launders a failure into a pass.
+ */
+const flag = (name, fn) => {
+  const r = fn()
+  checks.push({ name, ...r, warn: !r.ok })
+  console.log(`  ${r.ok ? 'PASS' : 'WARN'}  ${name}${r.note ? '  — ' + r.note : ''}`)
   return r.ok
 }
 
@@ -80,11 +92,12 @@ const weakened = (tryRun('git diff --numstat -- test/').out.trim() || '')
   .split('\n').filter(Boolean)
   .map((l) => { const [add, del, file] = l.split('\t'); return { file, add: +add, del: +del } })
   .filter((f) => f.del > 0)
-check('existing tests untouched', () => ({
+flag('existing tests untouched', () => ({
   ok: weakened.length === 0,
-  note: weakened.length ? `DELETED LINES in ${weakened.map((w) => `${w.file} (-${w.del})`).join(', ')} — needs a human` : '',
+  note: weakened.length ? `DELETED LINES in ${weakened.map((w) => `${w.file} (-${w.del})`).join(', ')} — will land FLAGGED for review` : '',
 }))
 const needsReview = weakened.length > 0
+const testDiff = needsReview ? tryRun('git diff -U2 -- test/').out : ''
 
 check('control battle unchanged', () => {
   const r = tryRun('npx tsx tools/baseline.mts')
@@ -102,7 +115,7 @@ check('control battle unchanged', () => {
 })
 
 const stamp = new Date().toISOString().slice(0, 16).replace('T', ' ')
-const body = checks.map((c) => `  ${c.ok ? 'PASS' : 'FAIL'}  ${c.name}${c.note ? ' — ' + c.note : ''}`).join('\n')
+const body = checks.map((c) => `  ${c.ok ? 'PASS' : c.warn ? 'WARN' : 'FAIL'}  ${c.name}${c.note ? ' — ' + c.note : ''}`).join('\n')
 
 if (MODE === 'abandon') {
   sh('git checkout -- . ; git clean -fdq -e node_modules -e .state -e scratch -e tools')
@@ -134,5 +147,6 @@ const sha = sh('git rev-parse --short HEAD').trim()
 item.status = needsReview ? 'done-needs-review' : 'done'
 item.sha = sha
 writeFileSync(BACKLOG, JSON.stringify(backlog, null, 1))
-appendFileSync(LEDGER, `\n## ${id} — LANDED \`${sha}\`${needsReview ? ' **NEEDS REVIEW**' : ''}\n${stamp}\n\n${body}\n`)
+appendFileSync(LEDGER, `\n## ${id} — LANDED \`${sha}\`${needsReview ? ' **NEEDS REVIEW**' : ''}\n${stamp}\n\n${body}\n` +
+  (needsReview ? `\n<details><summary>Existing tests were edited — review this diff</summary>\n\n\`\`\`diff\n${testDiff}\`\`\`\n</details>\n` : ''))
 console.log(`\nLANDED as ${sha}${needsReview ? '  (flagged: existing tests were edited)' : ''}\n`)

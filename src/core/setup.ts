@@ -4,6 +4,7 @@ import type { Ctx, State, Unit, UnitDef, Config } from './types.js'
 import { DEFAULT_CONFIG } from './types.js'
 import { ATTACKS, ABILITIES, UNITS, FIRST_BATTLE } from '../content/index.js'
 import { terrainOf } from '../content/maps.js'
+import { STATUSES } from '../content/statuses.js'
 import { emit } from './mutate.js'
 
 function makeUnit(id: number, uid: number, name: string, def: UnitDef, hex: number): Unit {
@@ -20,6 +21,7 @@ function makeUnit(id: number, uid: number, name: string, def: UnitDef, hex: numb
     attacks: [...def.attacks],
     abilities: [...def.abilities],
     cooldowns: {},
+    statuses: [],
     attributes: [...def.attributes],
     moveUsed: false, primaryUsed: false, movePointsLeft: 0,
     activationOrdinal: 0, attackOrdinal: 0, deathbedOrdinal: 0,
@@ -53,7 +55,7 @@ export function createBattle(opts: BattleOptions): Ctx {
 
   const mapId = opts.mapId ?? 'open'
   const state: State = { turn: 0, phase: 'hero', mapId, terrain: terrainOf(mapId), units: [], outcome: null, seq: 0 }
-  const ctx: Ctx = { state, events: [], rng, cfg, attacks: ATTACKS, abilities: ABILITIES }
+  const ctx: Ctx = { state, events: [], rng, cfg, attacks: ATTACKS, abilities: ABILITIES, statuses: STATUSES }
 
   const def = (t: string): UnitDef => ({ ...UNITS[t]!, ...(opts.overrides?.[t] ?? {}) })
   const heroes = opts.heroes ?? FIRST_BATTLE.heroes
@@ -108,7 +110,7 @@ export function createCustomBattle(
   const rng = makeRng(rootSeedOf(99, 0, opts.replicate ?? 0), opts.strict ? { strict: true } : undefined)
   const mapId = opts.mapId ?? 'open'
   const state: State = { turn: 0, phase: 'hero', mapId, terrain: terrainOf(mapId), units: [], outcome: null, seq: 0 }
-  const ctx: Ctx = { state, events: [], rng, cfg, attacks: ATTACKS, abilities: ABILITIES }
+  const ctx: Ctx = { state, events: [], rng, cfg, attacks: ATTACKS, abilities: ABILITIES, statuses: STATUSES }
   let id = 0
   heroes.forEach((h, i) => { state.units.push(makeUnit(id, 100 + i, `H${i}`, UNITS[h.type]!, h.hex)); id++ })
   enemies.forEach((e, i) => { state.units.push(makeUnit(id, 200 + i, `E${i}`, UNITS[e.type]!, e.hex)); id++ })

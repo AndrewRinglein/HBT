@@ -97,6 +97,13 @@ describe('independent audit of logged battles', () => {
           }
 
           case 'damage.applied': {
+            // Status ticks are damage with no attack and no attacker.
+            if (e.causeId.startsWith('status.')) {
+              expect(e.actor, 'status damage has no attacker').toBeNull()
+              expect(e['amount'] as number).toBeGreaterThanOrEqual(0)
+              pending = null; pendingPower = null
+              break
+            }
             if (pendingPower) {
               const at = UNITS[type.get(pendingPower.actor)!]!
               const tg = UNITS[type.get(pendingPower.target)!]!

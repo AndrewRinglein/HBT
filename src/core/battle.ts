@@ -5,6 +5,7 @@
 import { runActivation } from '../ai/modes.js'
 import { beginActivation, beginTurn, emit, endActivation, regenStamina, setOutcome, setPhase } from './mutate.js'
 import { advanceBleedOuts, checkVictory, settle } from './settle.js'
+import { decayPools, isBlocked, tickStatuses } from './status.js'
 import type { Ctx, Phase, Side } from './types.js'
 
 function activationOrder(ctx: Ctx, side: Side): number[] {
@@ -24,6 +25,11 @@ function runPhase(ctx: Ctx, phase: Phase): void {
     const u = ctx.state.units[id]!
     if (u.lifeState !== 'standing') continue // may have fallen since the order was taken
     beginActivation(ctx, id, 'engine')
+    if (isBlocked(ctx, u)) {
+      emit(ctx, 'activation.idle', 'status', { actor: id, reason: 'cannot act' })
+      endActivation(ctx, id, 'engine')
+      continue
+    }
     runActivation(ctx, id)
     endActivation(ctx, id, 'engine')
   }
@@ -35,8 +41,13 @@ function runPhase(ctx: Ctx, phase: Phase): void {
 function endOfPhase(ctx: Ctx, side: Side): void {
   emit(ctx, 'phase.end.begin', 'engine', { side })
 
-  // 1. auras  2. corpses  3. status ticks — none in the baseline
-  // 4. durations — none
+  // 1. auras  2. corpses — none yet
+  // 3. status ticks
+  tickStatuses(ctx, side)
+  settle(ctx, 'status')
+  if (ctx.state.outcome) return
+  // 4. durations — pools decay by time as well as by use
+  decayPools(ctx, side)
   // 5. stamina regen (heroes only; enemies do not run stamina)
   for (const u of ctx.state.units) {
     if (u.side === side && u.lifeState === 'standing' && u.maxStamina > 0) {
