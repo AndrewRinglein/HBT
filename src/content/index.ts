@@ -26,6 +26,7 @@ export const ATTACKS: Readonly<Record<string, AttackDef>> = {
   'attack.mage.staff': {
     id: 'attack.mage.staff', name: 'Staff (bolt)', kind: 'ranged',
     damageType: 'magic', bonus: 0, stat: 'precision', reach: 6, staminaCost: 1,
+    applies: { statusId: 'status.burn', value: 2 },
   },
   'attack.mage.strike': {
     id: 'attack.mage.strike', name: 'Staff (strike)', kind: 'melee',
