@@ -50,15 +50,19 @@ describe('pass 2 — hills', () => {
     const ctx = createCustomBattle(
       [{ type: 'ranger', hex: hexId(5, 5) }], [{ type: 'zombie', hex: hexId(5, 8) }], { mapId: 'open' })
     const [r, z] = [ctx.state.units[0]!, ctx.state.units[1]!]
-    const flat = resolveAccuracy(r, z, ATTACKS['attack.ranger.bow']!, TERRAIN.OPEN).value
-    const hill = resolveAccuracy(r, z, ATTACKS['attack.ranger.bow']!, TERRAIN.HILLS).value
+    const flat = resolveAccuracy(ctx, r, z, ATTACKS['attack.ranger.bow']!).value
+    ctx.state.terrain[r.hex] = TERRAIN.HILLS
+    const hill = resolveAccuracy(ctx, r, z, ATTACKS['attack.ranger.bow']!).value
     expect(hill - flat).toBe(10)
   })
   it('gate 2 — hills give exactly +2 reach, ranged only', () => {
-    const r = createBattle({ replicate: 0 }).state.units.find(u => u.typeId === 'ranger')!
-    expect(reachOf(r, ATTACKS['attack.ranger.bow']!, TERRAIN.OPEN)).toBe(6)
-    expect(reachOf(r, ATTACKS['attack.ranger.bow']!, TERRAIN.HILLS)).toBe(8)
-    expect(reachOf(r, ATTACKS['attack.punch']!, TERRAIN.HILLS)).toBe(1)
+    const ctx = createCustomBattle(
+      [{ type: 'ranger', hex: hexId(5, 5) }], [{ type: 'zombie', hex: hexId(5, 8) }], { mapId: 'open' })
+    const r = ctx.state.units[0]!
+    expect(reachOf(ctx, r, ATTACKS['attack.ranger.bow']!)).toBe(6)
+    ctx.state.terrain[r.hex] = TERRAIN.HILLS
+    expect(reachOf(ctx, r, ATTACKS['attack.ranger.bow']!)).toBe(8)
+    expect(reachOf(ctx, r, ATTACKS['attack.punch']!)).toBe(1)
   })
   it('gate 2 — reachability shrinks on rough ground', () => {
     const open = createBattle({ replicate: 0, mapId: 'open' })
@@ -113,8 +117,8 @@ describe('pass 3 — the Mage', () => {
   it('gate 2 — staff bolt is Precision magic at range 6; strike is Strength physical at 1', () => {
     const ctx = createCustomBattle([{ type: 'mage', hex: hexId(5, 5) }], [{ type: 'zombie', hex: hexId(6, 5) }])
     const [m, z] = [ctx.state.units[0]!, ctx.state.units[1]!]
-    expect(resolveDamage(m, z, ATTACKS['attack.mage.staff']!, false).value).toBe(4)   // precision 4, magic vs resist 0
-    expect(resolveDamage(m, z, ATTACKS['attack.mage.strike']!, false).value).toBe(2)  // strength 2, physical vs armor 0
+    expect(resolveDamage(ctx, m, z, ATTACKS['attack.mage.staff']!, false).value).toBe(4)   // precision 4, magic vs resist 0
+    expect(resolveDamage(ctx, m, z, ATTACKS['attack.mage.strike']!, false).value).toBe(2)  // strength 2, physical vs armor 0
     expect(ATTACKS['attack.mage.staff']!.reach).toBe(6)
     expect(ATTACKS['attack.mage.strike']!.reach).toBe(1)
   })
@@ -123,8 +127,8 @@ describe('pass 3 — the Mage', () => {
     const m = ctx.state.units[0]!
     const armoured = { ...ctx.state.units[1]!, armor: 3, resist: 0 }
     const warded  = { ...ctx.state.units[1]!, armor: 0, resist: 3 }
-    expect(resolveDamage(m, armoured, ATTACKS['attack.mage.staff']!, false).value).toBe(4)
-    expect(resolveDamage(m, warded,   ATTACKS['attack.mage.staff']!, false).value).toBe(1)
+    expect(resolveDamage(ctx, m, armoured, ATTACKS['attack.mage.staff']!, false).value).toBe(4)
+    expect(resolveDamage(ctx, m, warded,   ATTACKS['attack.mage.staff']!, false).value).toBe(1)
   })
   it('gate 1 — the Mage appears, moves, attacks and is targeted in real battles', () => {
     const seen = { moved:0, staff:0, strike:0, hurt:0 }
@@ -150,8 +154,8 @@ describe('pass 4 — Arcane Bolt', () => {
   it('gate 2 — deals Magic + 6 as magic damage', () => {
     const ctx = createCustomBattle([{ type: 'mage', hex: hexId(5,5) }], [{ type: 'zombie', hex: hexId(6,5) }])
     const [m, z] = [ctx.state.units[0]!, ctx.state.units[1]!]
-    expect(resolvePowerDamage(m, z, ABILITIES['power.mage.bolt']!).value).toBe(8)
-    expect(resolvePowerDamage(m, { ...z, resist: 3 }, ABILITIES['power.mage.bolt']!).value).toBe(5)
+    expect(resolvePowerDamage(ctx, m, z, ABILITIES['power.mage.bolt']!).value).toBe(8)
+    expect(resolvePowerDamage(ctx, m, { ...z, resist: 3 }, ABILITIES['power.mage.bolt']!).value).toBe(5)
   })
   it('gate 2 — reaches exactly 10 hexes, not 11', () => {
     const at10 = createCustomBattle([{ type:'mage', hex: hexId(1,0) }], [{ type:'zombie', hex: hexId(11,0) }])

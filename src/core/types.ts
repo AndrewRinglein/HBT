@@ -48,6 +48,7 @@ export type UnitDef = {
   readonly armor: number
   readonly resist: number
   readonly accuracy: number
+  readonly dodge: number
   readonly strength: number
   readonly precision: number
   readonly magic: number
@@ -79,6 +80,7 @@ export type Unit = {
   armor: number
   resist: number
   accuracy: number
+  dodge: number
   strength: number
   precision: number
   magic: number
@@ -97,6 +99,8 @@ export type Unit = {
   cooldowns: Record<string, number>
   /** Live statuses, kept sorted by id so iteration is never insertion order. */
   statuses: { id: string; value: number }[]
+  /** Stored stat modifiers — gear, wounds, badges. Terrain is derived, not stored. */
+  mods: import('./stats.js').StatMod[]
   attributes: string[]
   // Per-activation budget.
   moveUsed: boolean

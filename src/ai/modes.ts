@@ -133,14 +133,18 @@ function rangedKite(ctx: Ctx, u: Unit): void {
   if (enemies.length === 0) return
 
   const bow = ctx.attacks[u.attacks[0]!]!
-  const baseReach = reachOf(u, bow)
   const RESERVE = 1 // keep one stamina for the shot — the shot is the point
+
+  // Reach if this unit were standing there. A shadow copy runs the real reachOf()
+  // rather than the AI re-deriving terrain itself — Law 1, and it means a new
+  // Reach modifier is visible to the AI the day it exists.
+  const reachAt = (hex: HexId) => reachOf(ctx, { ...u, hex }, bow)
 
   // What a hex is worth, in strict priority order. Lexicographic so the rules
   // stay readable: safety first, then a shot, then height, then ideal spacing.
   const scoreOf = (hex: HexId): number[] => {
     const terr = ctx.state.terrain[hex] ?? 0
-    const reachHere = baseReach + reachBonusOf(terr)
+    const reachHere = reachAt(hex)
     const nearestD = Math.min(...enemies.map((e) => distance(hex, e.hex)))
     const canShoot = enemies.some((e) => distance(hex, e.hex) <= reachHere) ? 1 : 0
     const safe = meleeThreatens(ctx, u, hex) ? 0 : 1
@@ -191,8 +195,7 @@ function rangedKite(ctx: Ctx, u: Unit): void {
     }
   }
 
-  const terrNow = ctx.state.terrain[u.hex] ?? 0
-  const reachNow = baseReach + reachBonusOf(terrNow)
+  const reachNow = reachAt(u.hex)
   const inRange = enemies.filter((e) => distance(u.hex, e.hex) <= reachNow)
   if (!attackIfPossible(ctx, u, inRange)) {
     if (!attackIfPossible(ctx, u, adjacentEnemies(ctx, u))) {

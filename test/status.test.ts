@@ -205,7 +205,7 @@ describe('the status system itself', () => {
       reducesIncomingDamage: true,
     }
     applyStatus(ctx, 0, 'status.testward', 2, 'test')
-    const d = resolveDamage(ctx.state.units[1]!, ctx.state.units[0]!,
+    const d = resolveDamage(ctx, ctx.state.units[1]!, ctx.state.units[0]!,
       ATTACKS['attack.zombie.basic']!, false, 0, 2)
     expect(d.ledger.reduce((s, r) => s + r.delta, 0)).toBe(d.value)
     expect(d.absorbed).toBe(2)

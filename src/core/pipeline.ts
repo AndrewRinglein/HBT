@@ -7,8 +7,8 @@
 import { distance } from './hex.js'
 import { roll100 } from './rng.js'
 import type { AttackDef, Ctx, Unit } from './types.js'
-import { accuracyBonusOf, reachBonusOf } from '../content/maps.js'
 import { applyStatus, incomingAbsorb, outgoingPenalty, spendAbsorb } from './status.js'
+import { effective, stat } from './stats.js'
 import { applyDamage, emit, markPrimaryUsed, spendStamina, unit } from './mutate.js'
 
 export const ACC = {
@@ -56,12 +56,12 @@ function step(ledger: LedgerRow[], station: number, name: string, effectId: stri
   return after
 }
 
-/** Effective reach: hero Reach and high ground add to ranged weapons only. */
-export function reachOf(u: Unit, a: AttackDef, terrain = 0): number {
-  return a.kind === 'ranged' ? a.reach + u.reach + reachBonusOf(terrain) : a.reach
-}
-export function reachIn(ctx: Ctx, u: Unit, a: AttackDef): number {
-  return reachOf(u, a, ctx.state.terrain[u.hex] ?? 0)
+/**
+ * Effective reach. The Reach stat carries everything that adds to it — the hero's
+ * own Reach, high ground, and later gear — so this no longer knows about terrain.
+ */
+export function reachOf(ctx: Ctx, u: Unit, a: AttackDef): number {
+  return a.kind === 'ranged' ? a.reach + stat(ctx, u, 'reach') : a.reach
 }
 
 /**
@@ -69,35 +69,39 @@ export function reachIn(ctx: Ctx, u: Unit, a: AttackDef): number {
  * Crit reads (final − 100) ÷ 4, so clamping here would silently delete crit surplus.
  * Only the roll comparison clamps.
  */
-export function resolveAccuracy(attacker: Unit, target: Unit, a: AttackDef, terrain = 0): Resolved {
+export function resolveAccuracy(ctx: Ctx, attacker: Unit, target: Unit, a: AttackDef): Resolved {
   const ledger: LedgerRow[] = []
   const d = distance(attacker.hex, target.hex)
-  let v = attacker.accuracy
-  ledger.push({ station: ACC.BASE, name: 'BASE', effectId: `unit.${attacker.typeId}`, before: 0, after: v, delta: v })
 
-  if (a.kind === 'ranged' && d > 1) {
-    v = step(ledger, ACC.RANGE, 'RANGE', a.id, v, v - (d - 1) * 5)
+  // BASE is now the resolved Accuracy stat. Terrain, gear and badges all arrive
+  // through the stat pipeline, so this station stopped knowing about any of them —
+  // and the sub-ledger keeps the provenance that the old TERRAIN station carried.
+  const acc = effective(ctx, attacker, 'accuracy')
+  let v = acc.base
+  ledger.push({ station: ACC.BASE, name: 'BASE', effectId: `unit.${attacker.typeId}`, before: 0, after: v, delta: v })
+  for (const row of acc.ledger) {
+    ledger.push({ station: ACC.BASE, name: 'BASE_MOD', effectId: row.source, before: row.from, after: row.to, delta: row.delta })
   }
-  if (a.kind === 'ranged' && d === 1) {
-    v = step(ledger, ACC.ADJACENT, 'ADJACENT', a.id, v, v - 20)
-  }
-  v = step(ledger, ACC.TERRAIN, 'TERRAIN', 'terrain.hills', v, v + accuracyBonusOf(terrain))
+  v = acc.value
+
+  if (a.kind === 'ranged' && d > 1) v = step(ledger, ACC.RANGE, 'RANGE', a.id, v, v - (d - 1) * 5)
+  if (a.kind === 'ranged' && d === 1) v = step(ledger, ACC.ADJACENT, 'ADJACENT', a.id, v, v - 20)
   // CONDITION, SITUATIONAL: nothing live yet.
-  v = step(ledger, ACC.TARGET_DODGE, 'TARGET_DODGE', `unit.${target.typeId}`, v, v - 0)
+  const dodge = effective(ctx, target, 'dodge')
+  v = step(ledger, ACC.TARGET_DODGE, 'TARGET_DODGE', `unit.${target.typeId}`, v, v - dodge.value)
   return { value: v, ledger, absorbed: 0 }
 }
 
 export function resolveDamage(
-  attacker: Unit, target: Unit, a: AttackDef, crit: boolean,
+  ctx: Ctx, attacker: Unit, target: Unit, a: AttackDef, crit: boolean,
   outPenalty = 0, absorbAvailable = 0,
 ): Resolved {
   const ledger: LedgerRow[] = []
   let v = a.bonus
   ledger.push({ station: DMG.DECLARE, name: 'DECLARE', effectId: a.id, before: 0, after: v, delta: v })
 
-  const statVal = a.stat === 'strength' ? attacker.strength
-    : a.stat === 'magic' ? attacker.magic : attacker.precision
-  v = step(ledger, DMG.SOURCE_STAT, 'SOURCE_STAT', `unit.${attacker.typeId}`, v, v + statVal)
+  const src = effective(ctx, attacker, a.stat)
+  v = step(ledger, DMG.SOURCE_STAT, 'SOURCE_STAT', `unit.${attacker.typeId}`, v, v + src.value)
   if (outPenalty) v = step(ledger, DMG.SOURCE_STATUS, 'SOURCE_STATUS', 'status', v, v - outPenalty)
 
   if (crit) {
@@ -114,8 +118,8 @@ export function resolveDamage(
   }
 
   if (a.damageType !== 'true') {
-    const mit = a.damageType === 'physical' ? target.armor : target.resist
-    v = step(ledger, DMG.MITIGATION, 'MITIGATION', `unit.${target.typeId}`, v, v - mit)
+    const mit = effective(ctx, target, a.damageType === 'physical' ? 'armor' : 'resist')
+    v = step(ledger, DMG.MITIGATION, 'MITIGATION', `unit.${target.typeId}`, v, v - mit.value)
   }
 
   if (v < 0) v = step(ledger, DMG.FLOOR, 'FLOOR', 'engine', v, 0)
@@ -141,7 +145,7 @@ export function canAttack(ctx: Ctx, attackerId: number, targetId: number, attack
   if (at.side === tg.side) return false
   if (at.primaryUsed) return false
   if (at.stamina < a.staminaCost) return false
-  return distance(at.hex, tg.hex) <= reachIn(ctx, at, a)
+  return distance(at.hex, tg.hex) <= reachOf(ctx, at, a)
 }
 
 /** Preview: the same pipeline, run without applying. Law 1 — never a second formula. */
@@ -149,13 +153,13 @@ export function preview(ctx: Ctx, attackerId: number, targetId: number, attackId
   const at = unit(ctx, attackerId)
   const tg = unit(ctx, targetId)
   const a = ctx.attacks[attackId]!
-  const acc = resolveAccuracy(at, tg, a, ctx.state.terrain[at.hex] ?? 0)
+  const acc = resolveAccuracy(ctx, at, tg, a)
   const hitChance = Math.max(0, Math.min(100, acc.value))
   return {
     hitChance,
     accuracy: acc.value,
-    damageOnHit: resolveDamage(at, tg, a, false, outgoingPenalty(ctx, at), incomingAbsorb(ctx, tg)).value,
-    damageOnCrit: resolveDamage(at, tg, a, true, outgoingPenalty(ctx, at), incomingAbsorb(ctx, tg)).value,
+    damageOnHit: resolveDamage(ctx, at, tg, a, false, outgoingPenalty(ctx, at), incomingAbsorb(ctx, tg)).value,
+    damageOnCrit: resolveDamage(ctx, at, tg, a, true, outgoingPenalty(ctx, at), incomingAbsorb(ctx, tg)).value,
     critChance: critChanceOf(ctx, at, tg, acc.value),
   }
 }
@@ -201,7 +205,7 @@ export function performAttack(ctx: Ctx, attackerId: number, targetId: number, at
     crit = roll100(ctx.rng, 'crit', at.uid, ord) <= pv.critChance
   }
 
-  const dmg = resolveDamage(at, tg, a, crit, outgoingPenalty(ctx, at), incomingAbsorb(ctx, tg))
+  const dmg = resolveDamage(ctx, at, tg, a, crit, outgoingPenalty(ctx, at), incomingAbsorb(ctx, tg))
 
   // Conservation: the ledger must fully explain the number (Law 1's sibling).
   const summed = dmg.ledger.reduce((s, r) => s + r.delta, 0)

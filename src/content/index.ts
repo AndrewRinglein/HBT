@@ -50,7 +50,7 @@ export const UNITS: Readonly<Record<string, UnitDef>> = {
   zombie: {
     typeId: 'zombie', side: 'enemy',
     maxHp: 10, armor: 0, resist: 0,
-    accuracy: 65, strength: 4, precision: 0, magic: 0,
+    accuracy: 65, dodge: 0, strength: 4, precision: 0, magic: 0,
     role: 'melee',
     movement: 4, reach: 0,
     maxStamina: 0, staminaRegen: 0,   // enemies do not run stamina
@@ -62,7 +62,7 @@ export const UNITS: Readonly<Record<string, UnitDef>> = {
   warrior: {
     typeId: 'warrior', side: 'hero',
     maxHp: 10, armor: 1, resist: 0,
-    accuracy: 80, strength: 5, precision: 3, magic: 0,
+    accuracy: 80, dodge: 0, strength: 5, precision: 3, magic: 0,
     role: 'melee',
     movement: 5, reach: 0,
     maxStamina: 5, staminaRegen: 1,
@@ -75,7 +75,7 @@ export const UNITS: Readonly<Record<string, UnitDef>> = {
   ranger: {
     typeId: 'ranger', side: 'hero',
     maxHp: 7, armor: 0, resist: 0,
-    accuracy: 90, strength: 3, precision: 4, magic: 0,
+    accuracy: 90, dodge: 0, strength: 3, precision: 4, magic: 0,
     role: 'ranged',
     movement: 5, reach: 0,
     maxStamina: 5, staminaRegen: 1,
@@ -87,7 +87,7 @@ export const UNITS: Readonly<Record<string, UnitDef>> = {
   mage: {
     typeId: 'mage', side: 'hero',
     maxHp: 6, armor: 0, resist: 1,
-    accuracy: 80, strength: 2, precision: 4, magic: 2,
+    accuracy: 80, dodge: 0, strength: 2, precision: 4, magic: 2,
     role: 'ranged',
     movement: 4, reach: 0,
     maxStamina: 5, staminaRegen: 1,

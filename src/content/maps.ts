@@ -86,3 +86,13 @@ export function accuracyBonusOf(terrain: number): number {
 export function reachBonusOf(terrain: number): number {
   return terrain === TERRAIN.HILLS ? 2 : 0
 }
+
+/** Harder to hit while standing here. */
+export function dodgeBonusOf(_terrain: number): number {
+  return 0   // forest will be +10
+}
+
+/** Flat physical mitigation while standing here. */
+export function armorBonusOf(_terrain: number): number {
+  return 0   // forest will be +1
+}

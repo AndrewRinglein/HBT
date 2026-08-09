@@ -9,6 +9,7 @@ import type { AbilityDef, Ctx, Unit } from './types.js'
 import { applyDamage, emit, markPrimaryUsed, spendStamina, unit } from './mutate.js'
 import { DMG } from './pipeline.js'
 import type { LedgerRow } from './pipeline.js'
+import { effective } from './stats.js'
 
 export function abilityDef(ctx: Ctx, id: string): AbilityDef {
   const a = ctx.abilities[id]
@@ -41,18 +42,18 @@ export function canUsePower(ctx: Ctx, userId: number, targetId: number, abilityI
 }
 
 /** Same stations as an attack, minus the ones that don't apply. Never a second formula (Law 1). */
-export function resolvePowerDamage(user: Unit, target: Unit, a: AbilityDef): { value: number; ledger: LedgerRow[] } {
+export function resolvePowerDamage(ctx: Ctx, user: Unit, target: Unit, a: AbilityDef): { value: number; ledger: LedgerRow[] } {
   const ledger: LedgerRow[] = []
   let v = a.bonus
   ledger.push({ station: DMG.DECLARE, name: 'DECLARE', effectId: a.id, before: 0, after: v, delta: v })
 
-  const statVal = a.stat === 'strength' ? user.strength : a.stat === 'magic' ? user.magic : user.precision
+  const statVal = effective(ctx, user, a.stat).value
   const before = v
   v = v + statVal
   ledger.push({ station: DMG.SOURCE_STAT, name: 'SOURCE_STAT', effectId: `unit.${user.typeId}`, before, after: v, delta: statVal })
 
   if (a.damageType !== 'true') {
-    const mit = a.damageType === 'physical' ? target.armor : target.resist
+    const mit = effective(ctx, target, a.damageType === 'physical' ? 'armor' : 'resist').value
     if (mit !== 0) {
       ledger.push({ station: DMG.MITIGATION, name: 'MITIGATION', effectId: `unit.${target.typeId}`, before: v, after: v - mit, delta: -mit })
       v -= mit
@@ -64,7 +65,7 @@ export function resolvePowerDamage(user: Unit, target: Unit, a: AbilityDef): { v
 
 export function previewPower(ctx: Ctx, userId: number, targetId: number, abilityId: string) {
   const a = abilityDef(ctx, abilityId)
-  return { damage: resolvePowerDamage(unit(ctx, userId), unit(ctx, targetId), a).value, hitChance: 100 }
+  return { damage: resolvePowerDamage(ctx, unit(ctx, userId), unit(ctx, targetId), a).value, hitChance: 100 }
 }
 
 export function usePower(ctx: Ctx, userId: number, targetId: number, abilityId: string): { damage: number } {
@@ -78,7 +79,7 @@ export function usePower(ctx: Ctx, userId: number, targetId: number, abilityId: 
   spendStamina(ctx, userId, a.staminaCost, a.id)
   markPrimaryUsed(ctx, userId)
 
-  const dmg = resolvePowerDamage(u, tg, a)
+  const dmg = resolvePowerDamage(ctx, u, tg, a)
   const summed = dmg.ledger.reduce((s, r) => s + r.delta, 0)
   if (summed !== dmg.value) throw new Error(`power ledger does not reconcile: ${summed} vs ${dmg.value}`)
   const pv = previewPower(ctx, userId, targetId, abilityId)
