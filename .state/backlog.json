@@ -16,9 +16,11 @@
   "id": "status.burn",
   "kind": "status",
   "shape": "counter",
-  "spec": "Burn: same tick as poison, and halves all healing received while held. Source: a new terrain status is out of scope here \u2014 give the Mage's staff bolt a burn 2 rider. Declares changesBaseline.",
+  "spec": "Burn: same tick as poison, and halves all healing received while held. Source: a new terrain status is out of scope here — give the Mage's staff bolt a burn 2 rider. Declares changesBaseline.",
   "expect": "burn 3 deals 3/2/1; healing while burning is halved, rounded down",
-  "changesBaseline": true
+  "changesBaseline": true,
+  "status": "done",
+  "sha": "f7e2041"
  },
  {
   "id": "status.regen",

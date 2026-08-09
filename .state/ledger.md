@@ -78,3 +78,14 @@ index a2d8b8f..2c053fe 100644
  
 ```
 </details>
+
+## status.burn — LANDED `f7e2041`
+2026-08-09 08:14
+
+  PASS  dependencies landed
+  PASS  typecheck
+  PASS  full test suite — 95 passed
+  PASS  gate 1 — the id appears in a real battle — 1704 log lines, 1704 fired, 1704 changed state
+  PASS  brought its own tests — test/status.test.ts
+  PASS  existing tests untouched
+  PASS  control battle unchanged — re-blessed — this item DECLARED it changes the control battle (3ca8bcab -> 2fb265a1)
