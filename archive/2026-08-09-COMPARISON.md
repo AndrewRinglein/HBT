@@ -1,3 +1,8 @@
+*Snapshot, 2026-08-09. Superseded where it disagrees with the live set.
+Kept for the reasoning, not the recommendations.*
+
+---
+
 # The four patterns, checked against what we built
 
 A response you got elsewhere named four industry patterns for exactly this problem:

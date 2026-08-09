@@ -100,13 +100,14 @@ Move to `archive/`, date the filename, and put one line at the top:
 > *Snapshot, 2026-08-09. Superseded where it disagrees with the live set. Kept for
 > the reasoning, not the recommendations.*
 
-Currently belongs there: `HARNESS-DESIGN.md` (recommends randomised maps, which you
-overruled), `COMPARISON.md` (research, findings already actioned), `FIRST-BATTLE.md`
-(the roster changed — a mage replaced a ranger).
+Done 2026-08-09: `HARNESS-DESIGN.md` and `COMPARISON.md` are in `archive/`, dated
+and bannered. `FIRST-BATTLE.md` was never committed to the repo — its expected-numbers
+table now lives as assertions in `test/damage.test.ts`, which is the better home for
+it, because a table in a document cannot fail.
 
 ---
 
-## When you add the eighth document
+## When you add the ninth document
 
 You probably shouldn't. Before creating one, check:
 
@@ -127,7 +128,7 @@ Until then they're a section in the architecture doc and a row in the glossary.
    last means rewriting everything.
 2. **GAME-ARCHITECTURE.md second**, using the five-line interface pattern above.
    Resist detail — the systems that need it will pull their own document out later.
-3. **Archive the three snapshots.** Ten minutes, and it halves what a new reader
-   has to triage.
+3. ~~**Archive the snapshots.**~~ Done 2026-08-09.
 4. **Find-replace "phase" → "turn"** in the wave-schedule sections of
    `GAME-DESIGN.md`. It's the one live collision, and it will cause a real bug.
+   **Still outstanding** — it's the last item on this list that hasn't been done.
