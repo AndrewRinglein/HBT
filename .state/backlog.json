@@ -1,0 +1,107 @@
+[
+ {
+  "id": "status.poison",
+  "kind": "status",
+  "shape": "counter",
+  "spec": "Poison: at End of Phase deal damage equal to its value to the holder, then reduce the value by 1. Stacking additive. Source: the zombie's Rotting Bite applies poison 2 on hit.",
+  "expect": "a unit with poison 3 takes 3 then 2 then 1 and the status is gone on turn 4",
+  "changesBaseline": true,
+  "status": "failed",
+  "failedAt": "2026-08-09 08:07",
+  "reason": "full test suite: 86 passed, 3 FAILED"
+ },
+ {
+  "id": "status.burn",
+  "kind": "status",
+  "shape": "counter",
+  "spec": "Burn: same tick as poison, and halves all healing received while held.",
+  "expect": "burn 3 deals 3/2/1; healing while burning is halved, rounded down"
+ },
+ {
+  "id": "status.regen",
+  "kind": "status",
+  "shape": "counter",
+  "spec": "Regeneration: at End of Phase heal its value, then reduce by 1. Never above max HP.",
+  "expect": "regen 3 on a damaged unit heals 3 then 2 then 1, capped at max HP"
+ },
+ {
+  "id": "status.weakness",
+  "kind": "status",
+  "shape": "counter",
+  "spec": "Weakness: lowers damage DEALT by 1 per point (not the Strength/Precision stats), reduces by 1 at End of Phase.",
+  "expect": "a warrior with weakness 2 does axe damage minus 2; the stat itself is unchanged"
+ },
+ {
+  "id": "status.stun",
+  "kind": "status",
+  "shape": "counter",
+  "spec": "Stunned: the unit cannot act at all, reduces by 1 at End of Phase.",
+  "expect": "a stunned unit produces no move and no primary, and the log says why"
+ },
+ {
+  "id": "status.protection",
+  "kind": "status",
+  "shape": "pool",
+  "spec": "Protection: reduces incoming damage at station 550 AND is reduced by the damage it absorbs. Also loses 1 at End of Phase. Additive when granted again.",
+  "expect": "protection 3 hit for 2 absorbs 2 and drops to 1; then End of Phase takes it to 0"
+ },
+ {
+  "id": "terrain.forest",
+  "kind": "terrain",
+  "shape": "modifier",
+  "spec": "Forest: costs 2 movement, grants +10 Dodge and +1 Armor to the occupant.",
+  "expect": "attacks against a unit in forest are 10 less likely to hit and land 1 less physical damage"
+ },
+ {
+  "id": "terrain.water",
+  "kind": "terrain",
+  "shape": "modifier",
+  "spec": "Water: costs 2 movement, -10 Accuracy to the occupant, and reduces burn and poison by 1 at End of Activation.",
+  "expect": "a unit standing in water shoots at -10 and sheds one point of burn per activation"
+ },
+ {
+  "id": "unit.archer",
+  "kind": "unit",
+  "shape": "data",
+  "spec": "Skeleton Archer: enemy, ranged role, 6 HP, 0 armour, 0 resist, 70 accuracy, 2 strength, 3 precision, movement 3, shortbow reach 4 precision physical.",
+  "expect": "appears, kites, shoots, dies; zombies still behave unchanged"
+ },
+ {
+  "id": "unit.brute",
+  "kind": "unit",
+  "shape": "data",
+  "spec": "Ghoul Brute: enemy, melee role, 18 HP, 2 armour, 55 accuracy, 6 strength, movement 3, one heavy attack at Strength +2.",
+  "expect": "a slow heavy enemy that survives multiple hero turns"
+ },
+ {
+  "id": "ability.warrior.rally",
+  "kind": "ability",
+  "shape": "modifier",
+  "spec": "Rally: warrior class power, grants Protection 2 to every ally within 2 hexes, 1 stamina, cooldown 4. Requires status.protection.",
+  "expect": "every ally inside the radius gains protection 2; nobody outside does",
+  "needs": [
+   "status.protection"
+  ]
+ },
+ {
+  "id": "ability.ranger.volley",
+  "kind": "ability",
+  "shape": "data",
+  "spec": "Volley: ranger class power, two separate bow hits against the same target, each rolling to hit independently. 2 stamina, cooldown 3.",
+  "expect": "two to-hit rolls and up to two damage events per use; armour applies per hit"
+ },
+ {
+  "id": "ai.mode.defender",
+  "kind": "ai",
+  "shape": "data",
+  "spec": "Defender mode: stays within 2 hexes of the nearest ally with less than half HP, attacks anything adjacent, never advances alone.",
+  "expect": "a defender never ends further than 2 from its charge while that ally lives"
+ },
+ {
+  "id": "ai.mode.support",
+  "kind": "ai",
+  "shape": "data",
+  "spec": "Support mode: holds at range, prefers using abilities on allies over attacking, retreats when threatened.",
+  "expect": "exercises the support role, which is currently declared and unused"
+ }
+]
