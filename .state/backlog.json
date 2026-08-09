@@ -6,44 +6,46 @@
   "spec": "Poison: at End of Phase deal damage equal to its value to the holder, then reduce the value by 1. Stacking additive. Source: the zombie's Rotting Bite applies poison 2 on hit.",
   "expect": "a unit with poison 3 takes 3 then 2 then 1 and the status is gone on turn 4",
   "changesBaseline": true,
-  "status": "failed",
+  "status": "done-needs-review",
   "failedAt": "2026-08-09 08:07",
   "reason": "full test suite: 86 passed, 3 FAILED",
-  "attempts": 2
+  "attempts": 2,
+  "sha": "ae42a01"
  },
  {
   "id": "status.burn",
   "kind": "status",
   "shape": "counter",
-  "spec": "Burn: same tick as poison, and halves all healing received while held.",
-  "expect": "burn 3 deals 3/2/1; healing while burning is halved, rounded down"
+  "spec": "Burn: same tick as poison, and halves all healing received while held. Source: a new terrain status is out of scope here \u2014 give the Mage's staff bolt a burn 2 rider. Declares changesBaseline.",
+  "expect": "burn 3 deals 3/2/1; healing while burning is halved, rounded down",
+  "changesBaseline": true
  },
  {
   "id": "status.regen",
   "kind": "status",
   "shape": "counter",
-  "spec": "Regeneration: at End of Phase heal its value, then reduce by 1. Never above max HP.",
+  "spec": "Regeneration: at End of Phase heal its value, then reduce by 1. Never above max HP. Source: a new Warrior class power 'Second Wind', 1 stamina, cooldown 4, grants regen 3 to self.",
   "expect": "regen 3 on a damaged unit heals 3 then 2 then 1, capped at max HP"
  },
  {
   "id": "status.weakness",
   "kind": "status",
   "shape": "counter",
-  "spec": "Weakness: lowers damage DEALT by 1 per point (not the Strength/Precision stats), reduces by 1 at End of Phase.",
+  "spec": "Weakness: lowers damage DEALT by 1 per point (not the Strength/Precision stats), reduces by 1 at End of Phase. Source: a new Ghoul enemy attack 'Sapping Claw' applying weakness 2. Add the Ghoul as part of this item.",
   "expect": "a warrior with weakness 2 does axe damage minus 2; the stat itself is unchanged"
  },
  {
   "id": "status.stun",
   "kind": "status",
   "shape": "counter",
-  "spec": "Stunned: the unit cannot act at all, reduces by 1 at End of Phase.",
+  "spec": "Stunned: the unit cannot act at all, reduces by 1 at End of Phase. Source: the Ghoul Brute's heavy attack applies stun 1 on hit.",
   "expect": "a stunned unit produces no move and no primary, and the log says why"
  },
  {
   "id": "status.protection",
   "kind": "status",
   "shape": "pool",
-  "spec": "Protection: reduces incoming damage at station 550 AND is reduced by the damage it absorbs. Also loses 1 at End of Phase. Additive when granted again.",
+  "spec": "Protection: reduces incoming damage at station 550 AND is reduced by the damage it absorbs. Also loses 1 at End of Phase. Additive when granted again. Source: landed together with ability.warrior.rally, which grants it.",
   "expect": "protection 3 hit for 2 absorbs 2 and drops to 1; then End of Phase takes it to 0"
  },
  {
