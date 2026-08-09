@@ -66,7 +66,10 @@ export function score(events: Event[]): Scoreboard {
       }
       case 'damage.applied': {
         const amt = e['amount'] as number
-        const src = type.get(e.actor as number) ?? 'unknown'
+        // Status ticks have no attacker. Attributing them to a phantom unit type
+        // called 'unknown' hid 8% of all damage behind something that reads like
+        // a bug — they get credited to their cause instead.
+        const src = type.get(e.actor as number) ?? e.causeId ?? 'unattributed'
         const tgt = type.get(e.target as number) ?? 'unknown'
         dealt[src] = (dealt[src] ?? 0) + amt
         taken[tgt] = (taken[tgt] ?? 0) + amt
