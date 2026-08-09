@@ -15,7 +15,7 @@ Eight. Keep it eight.
 | **GAME-DESIGN.md** | What *is* this game? |
 | **GAME-ARCHITECTURE.md** | What systems exist, and how do they connect? |
 | **GLOSSARY.md** | What is everything called? |
-| **PROJECTIONS.md** | How does combat work? *(entry point)* |
+| **COMBAT-FRAMEWORK.md** | How does combat work? *(entry point)* |
 | **COMBAT-SEQUENCE.md** | In what order does combat resolve? |
 | **ENGINE-CONSTITUTION.md** | What must the code always do? |
 | **SWITCHES.md** | What have we deliberately not decided? |
@@ -38,7 +38,7 @@ GAME-DESIGN.md          what the game IS          player-facing truth
     ↓
 GAME-ARCHITECTURE.md    what systems EXIST        the map — one paragraph each
     ↓
-PROJECTIONS.md          how ONE system works      the territory
+COMBAT-FRAMEWORK.md          how ONE system works      the territory
 COMBAT-SEQUENCE.md
 ```
 
@@ -54,12 +54,12 @@ what it produces, and a link.**
 
 Not how it works. Not its rules. Not its numbers.
 
-> ### Combat — *The Projections*
+> ### Combat — *Combat Framework*
 > Resolves one battle to an outcome.
 > **Consumes:** a hero roster · a map id · an encounter definition · a seed
 > **Produces:** an outcome · casualties and wound levels · XP · loot · an event log
 > **Owns:** hexes, turns, damage, statuses, AI, terrain
-> **Read:** `PROJECTIONS.md`
+> **Read:** `COMBAT-FRAMEWORK.md`
 
 Five lines. That description stays true while combat changes every day, because
 **an interface is stable even when an implementation is not.** The moment the

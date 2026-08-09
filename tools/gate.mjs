@@ -157,7 +157,7 @@ if (MODE !== 'land') {
 }
 
 sh('git add -A')
-sh(`git -c user.email=a@b -c user.name=projections commit -q -m ${JSON.stringify(`${id}: ${item.spec.slice(0, 72)}`)}`)
+sh(`git -c user.email=a@b -c user.name=combat-framework commit -q -m ${JSON.stringify(`${id}: ${item.spec.slice(0, 72)}`)}`)
 const sha = sh('git rev-parse --short HEAD').trim()
 item.status = needsReview ? 'done-needs-review' : 'done'
 item.sha = sha

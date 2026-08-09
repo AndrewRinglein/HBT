@@ -1,4 +1,4 @@
-// Statuses. Four shapes cover every one in the design doc (PROJECTIONS.md):
+// Statuses. Four shapes cover every one in the design doc (COMBAT-FRAMEWORK.md):
 //
 //   counter   ticks down and does something each tick   poison, burn, regen, stun
 //   pool      spent when something consumes it          protection, shields

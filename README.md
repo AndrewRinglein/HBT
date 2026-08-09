@@ -1,4 +1,4 @@
-# The Projections — working engine
+# Combat Framework — working engine
 
 The first battle, running. Built against `FIRST-BATTLE.md`, `COMBAT-SEQUENCE.md`
 and `ENGINE-CONSTITUTION.md`.

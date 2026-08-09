@@ -1,6 +1,6 @@
 ---
 name: batch-add
-description: Work through the backlog of mechanics in The Projections one item at a time, unattended — implement, run the blocking gate, fix or abandon, land, repeat. Use when adding many effects, statuses, units, terrain types, abilities or AI modes in a row without a human in the loop.
+description: Work through the backlog of mechanics in Combat Framework one item at a time, unattended — implement, run the blocking gate, fix or abandon, land, repeat. Use when adding many effects, statuses, units, terrain types, abilities or AI modes in a row without a human in the loop.
 ---
 
 # Batch add

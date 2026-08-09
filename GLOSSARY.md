@@ -15,7 +15,7 @@ Proper nouns. Capitalised, used as names, never paraphrased.
 
 | System | What it owns | Documented in |
 |---|---|---|
-| **The Projections** | Combat. Hexes, turns, damage, statuses, AI, terrain. Also the simulation harness — same engine. | `PROJECTIONS.md` |
+| **Combat Framework** | Combat. Hexes, turns, damage, statuses, AI, terrain. Also the simulation harness — same engine. | `COMBAT-FRAMEWORK.md` |
 | **The Crucible** | Hero generation. Randomised stats, badges, origins, art, name, history. | *(needs a doc)* |
 | **The Kingdom** | The strategic map. Hexes, claiming, regions, buildings, the five-phase strategic turn. | *(needs a doc)* |
 | **The Hand** | The commander's cards and spells. Energy, draw, card actions. | *(needs a doc)* |
@@ -83,15 +83,18 @@ power.mage.bolt
 item.longbow              badge.shaky-hands     (modifier sources)
 terrain.hills
 ai.ranged-kite
-map.ridge                 ← currently bare `ridge`. Fix this.
+map.ridge                 map.highlands
 unit.zombie
 ```
 
 The kind prefix is what makes an id greppable and what makes a log line
 self-describing. An id without one is a bug waiting to be ambiguous.
 
-**Known inconsistency:** map ids are currently bare (`ridge`, `highlands`). They
-should be `map.ridge`. Worth fixing while there are four of them.
+Map ids were bare (`ridge`, `highlands`) until 2026-08-09. The reason is worth
+remembering: `map.loaded` was emitting ``causeId: `map.${mapId}` `` — the prefix
+was being bolted on at the emit site, so the id itself never needed one. If a
+prefix is ever added by the code that logs a thing rather than by the thing, the
+id is wrong.
 
 ### Functions
 

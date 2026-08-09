@@ -1,8 +1,8 @@
-# The Projections — project instructions
+# Combat Framework — project instructions
 
 Combat engine and simulation harness for *Heroes of Blight and Tragic*.
 
-**Read `PROJECTIONS.md` first** if you don't know what this project is. `COMBAT-SEQUENCE.md` has the order of operations. `ENGINE-CONSTITUTION.md` has the laws — read it before writing engine code.
+**Read `COMBAT-FRAMEWORK.md` first** if you don't know what this project is. `COMBAT-SEQUENCE.md` has the order of operations. `ENGINE-CONSTITUTION.md` has the laws — read it before writing engine code.
 
 ---
 
