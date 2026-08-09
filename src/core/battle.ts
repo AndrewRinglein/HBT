@@ -5,7 +5,7 @@
 import { runActivation } from '../ai/modes.js'
 import { beginActivation, beginTurn, emit, endActivation, regenStamina, setOutcome, setPhase } from './mutate.js'
 import { advanceBleedOuts, checkVictory, settle } from './settle.js'
-import { decayPools, isBlocked, tickStatuses } from './status.js'
+import { isBlocked, tickStatuses } from './status.js'
 import type { Ctx, Phase, Side } from './types.js'
 
 function activationOrder(ctx: Ctx, side: Side): number[] {
@@ -46,8 +46,7 @@ function endOfPhase(ctx: Ctx, side: Side): void {
   tickStatuses(ctx, side)
   settle(ctx, 'status')
   if (ctx.state.outcome) return
-  // 4. durations — pools decay by time as well as by use
-  decayPools(ctx, side)
+  // 4. durations — folded into the single status pass above (see status.ts)
   // 5. stamina regen (heroes only; enemies do not run stamina)
   for (const u of ctx.state.units) {
     if (u.side === side && u.lifeState === 'standing' && u.maxStamina > 0) {

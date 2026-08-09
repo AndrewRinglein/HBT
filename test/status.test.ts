@@ -3,6 +3,8 @@ import { createBattle, createCustomBattle } from '../src/core/setup.js'
 import { runBattle } from '../src/core/battle.js'
 import { applyStatus, valueOf, heal, tickStatuses } from '../src/core/status.js'
 import { hexId } from '../src/core/hex.js'
+import { preview, performAttack, resolveDamage } from '../src/core/pipeline.js'
+import { ATTACKS } from '../src/content/index.js'
 
 // A hero and a zombie in opposite corners never meet, so nothing but the
 // status under test changes the board.
@@ -142,5 +144,81 @@ describe('status.burn', () => {
     }
     expect(applied).toBeGreaterThan(0)
     expect(ticked).toBeGreaterThan(0)
+  })
+})
+
+describe('the status system itself', () => {
+  const iso = () => createCustomBattle(
+    [{ type: 'warrior', hex: hexId(0, 11) }], [{ type: 'zombie', hex: hexId(11, 0) }])
+
+  it('one pass: every status acts and decays together, whatever its shape', () => {
+    const ctx = iso()
+    ctx.state.units[0]!.maxHp = 99; ctx.state.units[0]!.hp = 99
+    applyStatus(ctx, 0, 'status.poison', 2, 'test')
+    applyStatus(ctx, 0, 'status.burn', 2, 'test')
+    tickStatuses(ctx, 'hero')
+    expect(valueOf(ctx.state.units[0]!, 'status.poison')).toBe(1)
+    expect(valueOf(ctx.state.units[0]!, 'status.burn')).toBe(1)
+  })
+
+  it('resolveDamage stays PURE — a preview never spends an absorbing status', () => {
+    const ctx = iso()
+    // A pool-shaped status, registered inline so the mechanism is exercised
+    // before any content grants one.
+    ;(ctx.statuses as Record<string, unknown>)['status.testward'] = {
+      id: 'status.testward', name: 'Ward', shape: 'pool', stacking: 'add',
+      reducesIncomingDamage: true,
+    }
+    applyStatus(ctx, 0, 'status.testward', 5, 'test')
+    const before = valueOf(ctx.state.units[0]!, 'status.testward')
+    preview(ctx, 1, 0, 'attack.zombie.basic')
+    preview(ctx, 1, 0, 'attack.zombie.basic')
+    expect(valueOf(ctx.state.units[0]!, 'status.testward')).toBe(before)
+  })
+
+  it('an absorbing status reduces the hit AND is spent by exactly what it absorbed', () => {
+    const ctx = createCustomBattle(
+      [{ type: 'warrior', hex: hexId(5, 5) }], [{ type: 'zombie', hex: hexId(6, 5) }])
+    ;(ctx.statuses as Record<string, unknown>)['status.testward'] = {
+      id: 'status.testward', name: 'Ward', shape: 'pool', stacking: 'add',
+      reducesIncomingDamage: true,
+    }
+    applyStatus(ctx, 0, 'status.testward', 2, 'test')
+    const hp0 = ctx.state.units[0]!.hp
+    const pv = preview(ctx, 1, 0, 'attack.zombie.basic')
+    // zombie 4 strength, warrior 1 armour: normally 3. Ward 2 absorbs first.
+    expect(pv.damageOnHit).toBe(1)
+    performAttack(ctx, 1, 0, 'attack.zombie.basic')
+    const hit = ctx.events.filter(e => e.type === 'damage.applied').pop()
+    if (hit) {
+      expect(hit['absorbed']).toBe(2)
+      expect(hp0 - ctx.state.units[0]!.hp).toBe(1)
+      expect(valueOf(ctx.state.units[0]!, 'status.testward')).toBe(0)
+    }
+  })
+
+  it('the damage ledger still fully explains the number when a pool absorbs', () => {
+    const ctx = createCustomBattle(
+      [{ type: 'warrior', hex: hexId(5, 5) }], [{ type: 'zombie', hex: hexId(6, 5) }])
+    ;(ctx.statuses as Record<string, unknown>)['status.testward'] = {
+      id: 'status.testward', name: 'Ward', shape: 'pool', stacking: 'add',
+      reducesIncomingDamage: true,
+    }
+    applyStatus(ctx, 0, 'status.testward', 2, 'test')
+    const d = resolveDamage(ctx.state.units[1]!, ctx.state.units[0]!,
+      ATTACKS['attack.zombie.basic']!, false, 0, 2)
+    expect(d.ledger.reduce((s, r) => s + r.delta, 0)).toBe(d.value)
+    expect(d.absorbed).toBe(2)
+    expect(d.ledger.map(r => r.name)).toContain('PROTECTION')
+  })
+
+  it('decayPerPhase 0 means the status lasts until something removes it', () => {
+    const ctx = iso()
+    ;(ctx.statuses as Record<string, unknown>)['status.testmark'] = {
+      id: 'status.testmark', name: 'Mark', shape: 'flag', stacking: 'refresh', decayPerPhase: 0,
+    }
+    applyStatus(ctx, 0, 'status.testmark', 1, 'test')
+    for (let i = 0; i < 5; i++) tickStatuses(ctx, 'hero')
+    expect(valueOf(ctx.state.units[0]!, 'status.testmark')).toBe(1)
   })
 })

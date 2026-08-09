@@ -8,7 +8,7 @@ import { distance } from './hex.js'
 import { roll100 } from './rng.js'
 import type { AttackDef, Ctx, Unit } from './types.js'
 import { accuracyBonusOf, reachBonusOf } from '../content/maps.js'
-import { applyStatus, outgoingPenalty } from './status.js'
+import { applyStatus, incomingAbsorb, outgoingPenalty, spendAbsorb } from './status.js'
 import { applyDamage, emit, markPrimaryUsed, spendStamina, unit } from './mutate.js'
 
 export const ACC = {
@@ -44,7 +44,12 @@ export type LedgerRow = {
   delta: number
 }
 
-export type Resolved = { value: number; ledger: LedgerRow[] }
+export type Resolved = {
+  value: number
+  ledger: LedgerRow[]
+  /** How much absorbing statuses WOULD pay. Preview must never spend it. */
+  absorbed: number
+}
 
 function step(ledger: LedgerRow[], station: number, name: string, effectId: string, before: number, after: number): number {
   if (before !== after) ledger.push({ station, name, effectId, before, after, delta: after - before })
@@ -79,10 +84,13 @@ export function resolveAccuracy(attacker: Unit, target: Unit, a: AttackDef, terr
   v = step(ledger, ACC.TERRAIN, 'TERRAIN', 'terrain.hills', v, v + accuracyBonusOf(terrain))
   // CONDITION, SITUATIONAL: nothing live yet.
   v = step(ledger, ACC.TARGET_DODGE, 'TARGET_DODGE', `unit.${target.typeId}`, v, v - 0)
-  return { value: v, ledger }
+  return { value: v, ledger, absorbed: 0 }
 }
 
-export function resolveDamage(attacker: Unit, target: Unit, a: AttackDef, crit: boolean, outPenalty = 0): Resolved {
+export function resolveDamage(
+  attacker: Unit, target: Unit, a: AttackDef, crit: boolean,
+  outPenalty = 0, absorbAvailable = 0,
+): Resolved {
   const ledger: LedgerRow[] = []
   let v = a.bonus
   ledger.push({ station: DMG.DECLARE, name: 'DECLARE', effectId: a.id, before: 0, after: v, delta: v })
@@ -97,13 +105,21 @@ export function resolveDamage(attacker: Unit, target: Unit, a: AttackDef, crit: 
     v = step(ledger, DMG.CRIT, 'CRIT', 'crit', v, Math.trunc((v * 3) / 2))
   }
 
+  // PROTECTION (550): absorbs, and is spent by what it absorbs. Pure here —
+  // the spending happens in performAttack, so preview cannot consume anything.
+  let absorbed = 0
+  if (absorbAvailable > 0 && v > 0) {
+    absorbed = Math.min(absorbAvailable, v)
+    v = step(ledger, DMG.PROTECTION, 'PROTECTION', 'status.absorb', v, v - absorbed)
+  }
+
   if (a.damageType !== 'true') {
     const mit = a.damageType === 'physical' ? target.armor : target.resist
     v = step(ledger, DMG.MITIGATION, 'MITIGATION', `unit.${target.typeId}`, v, v - mit)
   }
 
   if (v < 0) v = step(ledger, DMG.FLOOR, 'FLOOR', 'engine', v, 0)
-  return { value: v, ledger }
+  return { value: v, ledger, absorbed }
 }
 
 export type AttackResult = {
@@ -138,8 +154,8 @@ export function preview(ctx: Ctx, attackerId: number, targetId: number, attackId
   return {
     hitChance,
     accuracy: acc.value,
-    damageOnHit: resolveDamage(at, tg, a, false, outgoingPenalty(ctx, at)).value,
-    damageOnCrit: resolveDamage(at, tg, a, true, outgoingPenalty(ctx, at)).value,
+    damageOnHit: resolveDamage(at, tg, a, false, outgoingPenalty(ctx, at), incomingAbsorb(ctx, tg)).value,
+    damageOnCrit: resolveDamage(at, tg, a, true, outgoingPenalty(ctx, at), incomingAbsorb(ctx, tg)).value,
     critChance: critChanceOf(ctx, at, tg, acc.value),
   }
 }
@@ -185,7 +201,7 @@ export function performAttack(ctx: Ctx, attackerId: number, targetId: number, at
     crit = roll100(ctx.rng, 'crit', at.uid, ord) <= pv.critChance
   }
 
-  const dmg = resolveDamage(at, tg, a, crit, outgoingPenalty(ctx, at))
+  const dmg = resolveDamage(at, tg, a, crit, outgoingPenalty(ctx, at), incomingAbsorb(ctx, tg))
 
   // Conservation: the ledger must fully explain the number (Law 1's sibling).
   const summed = dmg.ledger.reduce((s, r) => s + r.delta, 0)
@@ -202,8 +218,14 @@ export function performAttack(ctx: Ctx, attackerId: number, targetId: number, at
     ledger: dmg.ledger.map((r) => ({ station: r.name, effectId: r.effectId, delta: r.delta })),
   })
 
+  // Spend what the pipeline said would be absorbed, before the damage lands.
+  if (dmg.absorbed > 0) spendAbsorb(ctx, targetId, dmg.absorbed, a.id)
+
   const hpBefore = tg.hp
-  applyDamage(ctx, targetId, dmg.value, a.id, { actor: attackerId, attackId, crit })
+  applyDamage(ctx, targetId, dmg.value, a.id,
+    dmg.absorbed > 0
+      ? { actor: attackerId, attackId, crit, absorbed: dmg.absorbed }
+      : { actor: attackerId, attackId, crit })
 
   // Riders are triggers, not stations: damage resolves completely, then they fire.
   if (a.applies && tg.lifeState === 'standing') {

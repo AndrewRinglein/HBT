@@ -11,6 +11,20 @@
 import type { Ctx, Side, Unit } from './types.js'
 import { applyDamage, emit, unit } from './mutate.js'
 
+/**
+ * `shape` is DOCUMENTATION and a checklist — not a branch.
+ * A status is a number plus the set of hooks that read and write it; the shapes
+ * are just the common hook bundles, and naming them helps us talk about content.
+ *
+ *   counter   onPhaseEnd + decay        poison, burn, regen, stun
+ *   pool      reducesIncomingDamage     protection, shields
+ *   modifier  reducesOutgoingDamage     weakness
+ *   flag      blocksAction / a flag     stunned, dazed, stealthed
+ *
+ * A pool was, until this refactor, a counter with no onPhaseEnd running down a
+ * duplicate code path. The only thing that genuinely differs is WHICH HOOKS it
+ * touches — and a pool is the only kind read and written mid-damage-resolution.
+ */
 export type StatusShape = 'counter' | 'pool' | 'modifier' | 'flag'
 export type Stacking = 'add' | 'highest' | 'refresh'
 
@@ -19,13 +33,19 @@ export type StatusDef = {
   readonly name: string
   readonly shape: StatusShape
   readonly stacking: Stacking
-  /** Runs at End of Phase, before the value decays. Counters only. */
+
+  // ── hooks: what reads and writes this status ──────────────────────────────
+  /** End of Phase, before decay. */
   readonly onPhaseEnd?: (ctx: Ctx, unitId: number, value: number) => void
-  /** Reduces damage this unit DEALS, by its value. */
+  /** How much it loses at End of Phase. Default 1; 0 = lasts until removed. */
+  readonly decayPerPhase?: number
+  /** Read at damage station PROTECTION (550): absorbs damage and is spent by it. */
+  readonly reducesIncomingDamage?: boolean
+  /** Read at damage station SOURCE_STATUS (250): lowers damage this unit deals. */
   readonly reducesOutgoingDamage?: boolean
-  /** The unit cannot move or act. */
+  /** Read by the turn loop: the unit cannot move or act. */
   readonly blocksAction?: boolean
-  /** Healing received is halved while held. */
+  /** Read by heal(): healing received is halved. */
   readonly halvesHealing?: boolean
 }
 
@@ -106,10 +126,35 @@ export function statusDamage(ctx: Ctx, unitId: number, amount: number, causeId: 
   applyDamage(ctx, unitId, amount, causeId, { actor: null, statusId: causeId })
 }
 
+/** Total of everything on this unit that absorbs incoming damage. */
+export function incomingAbsorb(ctx: Ctx, u: Unit): number {
+  let a = 0
+  for (const s of u.statuses) if (ctx.statuses[s.id]?.reducesIncomingDamage) a += s.value
+  return a
+}
+
 /**
- * The STATUS_TICK rung of the End of Phase ladder, for one side.
- * Every counter acts, then decays. Order is unit id then status id — never
- * insertion order — so results do not depend on the order things were applied.
+ * Spend absorbing statuses for `amount`, cheapest-expiring first — here, id order,
+ * which is stable and stated rather than emergent. Returns what each one paid.
+ */
+export function spendAbsorb(ctx: Ctx, unitId: number, amount: number, causeId: string): { id: string; spent: number }[] {
+  const u = unit(ctx, unitId)
+  const out: { id: string; spent: number }[] = []
+  let left = amount
+  for (const s of [...u.statuses].sort((a, b) => (a.id < b.id ? -1 : 1))) {
+    if (left <= 0) break
+    if (!ctx.statuses[s.id]?.reducesIncomingDamage) continue
+    const spent = reduceStatus(ctx, unitId, s.id, Math.min(left, s.value), causeId)
+    if (spent > 0) { out.push({ id: s.id, spent }); left -= spent }
+  }
+  return out
+}
+
+/**
+ * The End of Phase status pass, for one side. ONE loop, not two.
+ * Every status acts if it has an onPhaseEnd, then loses `decayPerPhase` (default 1).
+ * Order is unit id then status id — never insertion order — so results never
+ * depend on the order things happened to be applied.
  */
 export function tickStatuses(ctx: Ctx, side: Side): void {
   const ids = ctx.state.units
@@ -120,23 +165,11 @@ export function tickStatuses(ctx: Ctx, side: Side): void {
     const u = unit(ctx, id)
     for (const s of [...u.statuses].sort((a, b) => (a.id < b.id ? -1 : 1))) {
       const def = ctx.statuses[s.id]
-      if (!def || def.shape !== 'counter') continue
+      if (!def) continue
       if (u.lifeState !== 'standing') break
       def.onPhaseEnd?.(ctx, id, s.value)
-      reduceStatus(ctx, id, s.id, 1, s.id)
-    }
-  }
-}
-
-/** The DURATION_DECAY rung: pools lose 1 per phase even if nothing hit them. */
-export function decayPools(ctx: Ctx, side: Side): void {
-  const ids = ctx.state.units
-    .filter((u) => u.side === side && u.lifeState === 'standing' && u.statuses.length > 0)
-    .map((u) => u.id).sort((a, b) => a - b)
-  for (const id of ids) {
-    const u = unit(ctx, id)
-    for (const s of [...u.statuses].sort((a, b) => (a.id < b.id ? -1 : 1))) {
-      if (ctx.statuses[s.id]?.shape === 'pool') reduceStatus(ctx, id, s.id, 1, s.id)
+      const decay = def.decayPerPhase ?? 1
+      if (decay > 0) reduceStatus(ctx, id, s.id, decay, s.id)
     }
   }
 }
