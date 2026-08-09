@@ -51,6 +51,9 @@ Battle  →  Turn  →  Phase  →  Activation  →  Step / Primary Action  → 
 | **Hit** | One instance of damage resolution. |
 | **Settle** | The repeat-until-nothing-changes loop after damage lands. |
 | **Station** | A numbered slot in the accuracy or damage pipeline. |
+| **Stat** | One of the twelve named numbers on a unit. Never read raw — always through `effective()`. |
+| **Base** | A stat's value on the unit before any modifier. |
+| **Modifier** | One `add` or `set` against one stat, with a source. Stored on the unit, or derived from where it stands. |
 | **Rung** | A named step in an End-of-Phase ladder. |
 | **Cup** | A named RNG stream. |
 | **Arm** | One side of a comparison in a sweep. |
@@ -77,6 +80,7 @@ Battle  →  Turn  →  Phase  →  Activation  →  Step / Primary Action  → 
 attack.warrior.axe        attack.punch          (shared: no owner)
 status.poison             status.burn
 power.mage.bolt
+item.longbow              badge.shaky-hands     (modifier sources)
 terrain.hills
 ai.ranged-kite
 map.ridge                 ← currently bare `ridge`. Fix this.
@@ -99,6 +103,7 @@ opening it.
 |---|---|---|
 | `canX()` | Boolean. Legality. **Never mutates.** | `canAttack`, `canUsePower` |
 | `xOf()` / `hasX()` | Pure reader. | `valueOf`, `reachOf`, `hasStatus` |
+| `effective()` / `stat()` | **The only way to read a stat.** Pure. `effective` returns value + base + ledger; `stat` returns just the number. | `effective(ctx, u, 'accuracy')` |
 | `resolveX()` | Computes a value and its ledger. **Pure** — this is why preview is safe. | `resolveDamage`, `resolveAccuracy` |
 | `previewX()` | A dry run of the real thing, result discarded. **Pure.** | `preview`, `previewPower` |
 | `performX()` / `useX()` | Does it. Mutates, emits events. | `performAttack`, `usePower` |
