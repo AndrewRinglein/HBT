@@ -99,19 +99,34 @@ flag('existing tests untouched', () => ({
 const needsReview = weakened.length > 0
 const testDiff = needsReview ? tryRun('git diff -U2 -- test/').out : ''
 
-check('control battle unchanged', () => {
+check('control battles unchanged', () => {
   const r = tryRun('npx tsx tools/baseline.mts')
   if (!r.ok) return { ok: false, note: 'baseline probe errored' }
-  const now = r.out.trim().split('\n').pop()
+  // One `<mapId> <hash>` line per control map. Naming WHICH maps moved is the
+  // point of the split — "all four" and "only the ones with hills" are very
+  // different findings.
+  const now = r.out.trim().split('\n').filter((l) => / [0-9a-f]{8}$/.test(l)).join('\n')
+  if (!now) return { ok: false, note: 'baseline probe produced no hashes' }
   let golden = null
   try { golden = readFileSync(GOLDEN, 'utf8').trim() } catch {}
   if (!golden) { if (MODE === 'land') writeFileSync(GOLDEN, now + '\n'); return { ok: true, note: 'blessed (first run)' } }
   if (golden === now) return { ok: true, note: '' }
+
+  const was = new Map(golden.split('\n').map((l) => l.split(' ')))
+  const is = new Map(now.split('\n').map((l) => l.split(' ')))
+  const moved = [...is.keys()].filter((k) => was.get(k) !== is.get(k))
+  const added = [...is.keys()].filter((k) => !was.has(k))
+  const gone = [...was.keys()].filter((k) => !is.has(k))
+  const detail = [
+    ...moved.map((k) => `${k} ${(was.get(k) ?? '?').slice(0, 8)}->${is.get(k).slice(0, 8)}`),
+    ...added.map((k) => `${k} NEW`), ...gone.map((k) => `${k} GONE`),
+  ].join(', ')
+
   if (item.changesBaseline) {
     if (MODE === 'land') writeFileSync(GOLDEN, now + '\n')
-    return { ok: true, note: `re-blessed — this item DECLARED it changes the control battle (${golden.slice(0, 8)} -> ${now.slice(0, 8)})` }
+    return { ok: true, note: `re-blessed — this item DECLARED it changes the control battles: ${detail}` }
   }
-  return { ok: false, note: `CHANGED ${golden.slice(0, 8)} -> ${now.slice(0, 8)}. Something leaked. If intended, set "changesBaseline": true on the backlog item.` }
+  return { ok: false, note: `CHANGED: ${detail}. Something leaked. If intended, set "changesBaseline": true on the backlog item.` }
 })
 
 const stamp = new Date().toISOString().slice(0, 16).replace('T', ' ')

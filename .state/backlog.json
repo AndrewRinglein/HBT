@@ -27,7 +27,8 @@
   "kind": "status",
   "shape": "counter",
   "spec": "Regeneration: at End of Phase heal its value, then reduce by 1. Never above max HP. Source: a new Warrior class power 'Second Wind', 1 stamina, cooldown 4, grants regen 3 to self.",
-  "expect": "regen 3 on a damaged unit heals 3 then 2 then 1, capped at max HP"
+  "expect": "regen 3 on a damaged unit heals 3 then 2 then 1, capped at max HP",
+  "attempts": 1
  },
  {
   "id": "status.weakness",

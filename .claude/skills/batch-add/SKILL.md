@@ -38,7 +38,7 @@ Do not batch several items into one gate run. One item, one commit, one ledger e
 | the id appears in a real battle | yes | Gate 1 — it is genuinely wired in and did something |
 | brought its own tests | yes | an item with no test cannot land |
 | existing tests untouched | **no — flags** | lands, but marked `done-needs-review`, with the diff in the ledger |
-| control battle unchanged | yes | unless the item sets `changesBaseline: true` |
+| control battles unchanged | yes | unless the item sets `changesBaseline: true` |
 
 The test-edit check flags rather than blocks on purpose: blocking would deadlock the loop every time a stale test legitimately needs updating, and silently allowing it is how a loop launders a failure into a pass. So it lands, loudly, and a human reads the flagged list afterwards.
 
@@ -48,7 +48,7 @@ The test-edit check flags rather than blocks on purpose: blocking would deadlock
 
 **A status needs a source.** A mechanic nothing ever applies cannot pass Gate 1, no matter how correct the code is. If the backlog row does not name a source, add one, and say so in the item's `spec` — do not quietly invent it.
 
-**Declare it if it changes the control battle.** Anything touching an existing unit, attack, or map will change the baseline hash. That is legitimate — set `"changesBaseline": true` on the row. Leaving it undeclared is what the check is for.
+**Declare it if it changes the control battles.** There is one hash per control map (`map.open`, `map.ridge`, `map.flanks`, `map.highlands`). Anything touching an existing unit, attack, or map will move at least one of them, and *which* ones moved is diagnostic — a terrain change that also moves `map.open` is a leak, because `map.open` has no terrain. That is legitimate — set `"changesBaseline": true` on the row. Leaving it undeclared is what the check is for.
 
 **Test the rule, not the number.** `expect(rangerDamage).toBe(0)` is a *finding*; it will be false the moment the game legitimately changes, and then the loop stalls on it. `expect(rangerDamage).toBeLessThan(warriorDamage / 10)` is a *rule* and survives. Findings belong in the sweep report, never in an assertion.
 
