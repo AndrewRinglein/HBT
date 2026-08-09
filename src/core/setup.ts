@@ -1,0 +1,123 @@
+import { WIDTH, hexId } from './hex.js'
+import { makeRng, rootSeedOf, sample } from './rng.js'
+import type { Ctx, State, Unit, UnitDef, Config } from './types.js'
+import { DEFAULT_CONFIG } from './types.js'
+import { ATTACKS, ABILITIES, UNITS, FIRST_BATTLE } from '../content/index.js'
+import { terrainOf } from '../content/maps.js'
+import { emit } from './mutate.js'
+
+function makeUnit(id: number, uid: number, name: string, def: UnitDef, hex: number): Unit {
+  return {
+    id, uid, name, typeId: def.typeId, side: def.side, hex,
+    hp: def.maxHp, maxHp: def.maxHp,
+    armor: def.armor, resist: def.resist,
+    accuracy: def.accuracy, strength: def.strength, precision: def.precision, magic: def.magic,
+    role: def.role,
+    movement: def.movement, reach: def.reach,
+    stamina: def.maxStamina, maxStamina: def.maxStamina, staminaRegen: def.staminaRegen,
+    lifeState: 'standing', bleedOut: 0,
+    ai: def.ai,
+    attacks: [...def.attacks],
+    abilities: [...def.abilities],
+    cooldowns: {},
+    attributes: [...def.attributes],
+    moveUsed: false, primaryUsed: false, movePointsLeft: 0,
+    activationOrdinal: 0, attackOrdinal: 0, deathbedOrdinal: 0,
+  }
+}
+
+export type BattleOptions = {
+  replicate: number
+  variantId?: number
+  cfg?: Partial<Config>
+  strict?: boolean
+  /** Force positions instead of rolling them — used by verification scenarios. */
+  heroHexes?: number[]
+  enemyHexes?: number[]
+  /** Sweep axes. */
+  enemyCount?: number
+  heroes?: readonly string[]
+  mapId?: string
+  /** Stat overrides by unit type. Does NOT change the seed, so arms stay paired. */
+  overrides?: Readonly<Record<string, Partial<UnitDef>>>
+}
+
+export function createBattle(opts: BattleOptions): Ctx {
+  const cfg: Config = {
+    ...DEFAULT_CONFIG,
+    ...opts.cfg,
+    switches: { ...DEFAULT_CONFIG.switches, ...(opts.cfg?.switches ?? {}) },
+  }
+  const rootSeed = rootSeedOf(FIRST_BATTLE.scenarioId, opts.variantId ?? 0, opts.replicate)
+  const rng = makeRng(rootSeed, opts.strict ? { strict: true } : undefined)
+
+  const mapId = opts.mapId ?? 'open'
+  const state: State = { turn: 0, phase: 'hero', mapId, terrain: terrainOf(mapId), units: [], outcome: null, seq: 0 }
+  const ctx: Ctx = { state, events: [], rng, cfg, attacks: ATTACKS, abilities: ABILITIES }
+
+  const def = (t: string): UnitDef => ({ ...UNITS[t]!, ...(opts.overrides?.[t] ?? {}) })
+  const heroes = opts.heroes ?? FIRST_BATTLE.heroes
+  const enemyCount = opts.enemyCount ?? FIRST_BATTLE.enemies.length
+  const enemies = Array.from({ length: enemyCount }, () => 'zombie')
+
+  const cols = Array.from({ length: WIDTH }, (_, i) => i)
+  const enemyCols = opts.enemyHexes ? [] : sample(rng, cols, WIDTH, 'enemy-placement')
+  const heroCols = opts.heroHexes ? [] : sample(rng, cols, heroes.length, 'hero-deployment')
+
+  let id = 0
+  const NAMES: Record<string, string[]> = {
+    warrior: ['Warrior A', 'Warrior B'], ranger: ['Ranger A', 'Ranger B'],
+    mage: ['Mage A', 'Mage B'],
+  }
+  const seen: Record<string, number> = {}
+  heroes.forEach((t, i) => {
+    const hex = opts.heroHexes?.[i] ?? hexId(heroCols[i]!, FIRST_BATTLE.heroRow)
+    seen[t] = (seen[t] ?? 0)
+    const nm = NAMES[t]?.[seen[t]!] ?? `${t} ${seen[t]! + 1}`
+    seen[t]!++
+    state.units.push(makeUnit(id, 100 + i, nm, def(t), hex))
+    id++
+  })
+  enemies.forEach((t, i) => {
+    // More enemies than columns spill onto the next row back.
+    const hex = opts.enemyHexes?.[i] ?? hexId(enemyCols[i % WIDTH]!, FIRST_BATTLE.enemyRow + Math.floor(i / WIDTH))
+    state.units.push(makeUnit(id, 200 + i, `Zombie ${i + 1}`, def(t), hex))
+    id++
+  })
+
+  for (const u of state.units) {
+    emit(ctx, 'unit.enter', `unit.${u.typeId}`, {
+      actor: u.id, uid: u.uid, name: u.name, side: u.side, typeId: u.typeId,
+      role: u.role, hex: u.hex, hp: u.hp, terrain: state.terrain[u.hex],
+    })
+  }
+  emit(ctx, 'map.loaded', `map.${mapId}`, { mapId, hills: state.terrain.filter((t) => t === 1).length })
+  return ctx
+}
+
+/** Custom rosters, for verification scenarios. */
+export function createCustomBattle(
+  heroes: { type: string; hex: number }[],
+  enemies: { type: string; hex: number }[],
+  opts: { replicate?: number; cfg?: Partial<Config>; strict?: boolean; mapId?: string } = {},
+): Ctx {
+  const cfg: Config = {
+    ...DEFAULT_CONFIG, ...opts.cfg,
+    switches: { ...DEFAULT_CONFIG.switches, ...(opts.cfg?.switches ?? {}) },
+  }
+  const rng = makeRng(rootSeedOf(99, 0, opts.replicate ?? 0), opts.strict ? { strict: true } : undefined)
+  const mapId = opts.mapId ?? 'open'
+  const state: State = { turn: 0, phase: 'hero', mapId, terrain: terrainOf(mapId), units: [], outcome: null, seq: 0 }
+  const ctx: Ctx = { state, events: [], rng, cfg, attacks: ATTACKS, abilities: ABILITIES }
+  let id = 0
+  heroes.forEach((h, i) => { state.units.push(makeUnit(id, 100 + i, `H${i}`, UNITS[h.type]!, h.hex)); id++ })
+  enemies.forEach((e, i) => { state.units.push(makeUnit(id, 200 + i, `E${i}`, UNITS[e.type]!, e.hex)); id++ })
+  for (const u of state.units) {
+    emit(ctx, 'unit.enter', `unit.${u.typeId}`, {
+      actor: u.id, uid: u.uid, name: u.name, side: u.side, typeId: u.typeId,
+      role: u.role, hex: u.hex, hp: u.hp, terrain: state.terrain[u.hex],
+    })
+  }
+  emit(ctx, 'map.loaded', `map.${mapId}`, { mapId, hills: state.terrain.filter((t) => t === 1).length })
+  return ctx
+}

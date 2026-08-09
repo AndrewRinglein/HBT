@@ -1,0 +1,18 @@
+{
+  "name": "projections",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "vitest run",
+    "typecheck": "tsc --noEmit",
+    "battle": "tsx src/cli/battle.ts",
+    "sweep": "tsx src/cli/sweep.ts"
+  },
+  "devDependencies": {
+    "@types/node": "^26.2.0",
+    "playwright-core": "^1.62.1",
+    "tsx": "^4.23.11",
+    "typescript": "^7.0.2",
+    "vitest": "^4.1.10"
+  }
+}

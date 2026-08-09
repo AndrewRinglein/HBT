@@ -1,0 +1,539 @@
+<!DOCTYPE html>
+<html lang="en" data-palette="#2a78d6,#eb6834,#1baf7a,#eda100">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>The Projections — baseline 4v4</title>
+<style>
+  :root{
+    color-scheme: light;
+    --page:#f9f9f7; --surface:#fcfcfb; --ink:#0b0b0b; --ink2:#52514e; --muted:#898781;
+    --grid:#e1e0d9; --axis:#c3c2b7;
+    --s1:#2a78d6; --s2:#eb6834; --s3:#1baf7a; --s4:#eda100;
+    --good:#0ca30c; --warn:#fab219; --crit:#d03b3b;
+    --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  }
+  @media (prefers-color-scheme: dark){ :root:where(:not([data-theme="light"])){
+    color-scheme: dark;
+    --page:#0d0d0d; --surface:#1a1a19; --ink:#fff; --ink2:#c3c2b7; --muted:#898781;
+    --grid:#2c2c2a; --axis:#383835;
+    --s1:#3987e5; --s2:#d95926; --s3:#199e70; --s4:#c98500;
+  }}
+  :root[data-theme="dark"]{
+    color-scheme: dark;
+    --page:#0d0d0d; --surface:#1a1a19; --ink:#fff; --ink2:#c3c2b7; --muted:#898781;
+    --grid:#2c2c2a; --axis:#383835;
+    --s1:#3987e5; --s2:#d95926; --s3:#199e70; --s4:#c98500;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--page);color:var(--ink);
+    font:15px/1.55 ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;}
+  header{padding:26px 28px 0;max-width:1180px;margin:0 auto}
+  h1{font-size:22px;margin:0 0 4px;letter-spacing:-.01em}
+  .sub{color:var(--ink2);font-size:13.5px;margin:0 0 18px}
+  main{max-width:1180px;margin:0 auto;padding:0 28px 60px}
+  .card{background:var(--surface);border:1px solid var(--grid);border-radius:12px;padding:20px 22px;margin-bottom:18px}
+  h2{font-size:15px;margin:0 0 3px;letter-spacing:-.005em}
+  .note{color:var(--ink2);font-size:13px;margin:0 0 16px}
+  .tabs{display:flex;gap:4px;flex-wrap:wrap;margin:0 0 18px;border-bottom:1px solid var(--grid)}
+  .tab{appearance:none;background:none;border:0;border-bottom:2px solid transparent;color:var(--ink2);
+    font:inherit;font-size:13.5px;padding:9px 13px;cursor:pointer;margin-bottom:-1px}
+  .tab:hover{color:var(--ink)}
+  .tab[aria-selected="true"]{color:var(--ink);border-bottom-color:var(--s1);font-weight:600}
+  .panel[hidden]{display:none}
+  .tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(165px,1fr));gap:12px;margin-bottom:18px}
+  .tile{background:var(--surface);border:1px solid var(--grid);border-radius:12px;padding:15px 17px}
+  .tile .k{font-size:11.5px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted)}
+  .tile .v{font-size:27px;font-weight:650;letter-spacing:-.02em;margin-top:5px;font-variant-numeric:tabular-nums}
+  .tile .d{font-size:12.5px;color:var(--ink2);margin-top:2px}
+  .legend{display:flex;gap:16px;flex-wrap:wrap;margin:0 0 12px;font-size:13px;color:var(--ink2)}
+  .legend span{display:inline-flex;align-items:center;gap:7px}
+  .sw{width:11px;height:11px;border-radius:3px;flex:none}
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+  @media(max-width:900px){.grid2{grid-template-columns:1fr}}
+  .battleGrid{display:grid;grid-template-columns:max-content minmax(0,1fr);gap:22px;align-items:start}
+  @media(max-width:1000px){.battleGrid{grid-template-columns:1fr}}
+  svg{display:block;width:100%;height:auto;overflow:visible}
+  .gl{stroke:var(--grid);stroke-width:1}
+  .ax{stroke:var(--axis);stroke-width:1}
+  .tk{fill:var(--muted);font-size:11px;font-variant-numeric:tabular-nums}
+  .dl{font-size:11.5px;font-weight:600;font-variant-numeric:tabular-nums}
+  table{border-collapse:collapse;width:100%;font-size:13px;font-variant-numeric:tabular-nums}
+  th,td{text-align:right;padding:7px 10px;border-bottom:1px solid var(--grid)}
+  th:first-child,td:first-child{text-align:left}
+  th{color:var(--muted);font-weight:600;font-size:11.5px;text-transform:uppercase;letter-spacing:.05em}
+  .mono{font-family:var(--mono);font-size:12px}
+  .toolbar{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:14px}
+  select,button.btn{background:var(--surface);color:var(--ink);border:1px solid var(--axis);
+    border-radius:8px;padding:6px 11px;font:inherit;font-size:13px;cursor:pointer}
+  button.btn[aria-pressed="true"]{border-color:var(--s1);color:var(--s1);font-weight:600}
+  .tip{position:fixed;pointer-events:none;background:var(--surface);border:1px solid var(--axis);
+    border-radius:8px;padding:8px 11px;font-size:12.5px;box-shadow:0 6px 22px rgba(0,0,0,.16);
+    opacity:0;transition:opacity .1s;z-index:20;font-variant-numeric:tabular-nums;max-width:260px}
+  .tip b{display:block;margin-bottom:4px;font-size:12px}
+  .tip i{font-style:normal;display:inline-block;width:9px;height:9px;border-radius:2px;margin-right:6px}
+  pre{font-family:var(--mono);font-size:11.5px;line-height:1.5;margin:0;white-space:pre;
+    overflow:auto;color:var(--ink2);max-height:520px}
+  pre b{color:var(--ink);font-weight:600}
+  .flag{display:inline-flex;align-items:center;gap:7px;font-size:13px;padding:9px 13px;border-radius:9px;
+    border:1px solid var(--grid);background:var(--surface);margin-bottom:16px}
+  .flag.ok{border-color:var(--good);color:var(--good)}
+  .flag.bad{border-color:var(--crit);color:var(--crit)}
+  .cap{font-size:12.5px;color:var(--ink2);margin-top:10px}
+  .kbd{font-family:var(--mono);font-size:11.5px;background:var(--page);border:1px solid var(--grid);
+    border-radius:4px;padding:1px 5px}
+</style>
+</head>
+<body>
+<header>
+  <h1>The Projections — baseline 4v4</h1>
+  <p class="sub">Four heroes against a growing horde. <span id="hdr"></span>
+    <button class="btn" id="theme" style="float:right">Dark / light</button></p>
+</header>
+<main>
+  <div class="tabs" role="tablist">
+    <button class="tab" role="tab" data-p="p1" aria-selected="true">Overview</button>
+    <button class="tab" role="tab" data-p="p2">Tipping point</button>
+    <button class="tab" role="tab" data-p="p3">The two buffs</button>
+    <button class="tab" role="tab" data-p="p4">Fatigue</button>
+    <button class="tab" role="tab" data-p="p7">Terrain</button>
+    <button class="tab" role="tab" data-p="p5">Damage</button>
+    <button class="tab" role="tab" data-p="p6">Battle log</button>
+  </div>
+
+  <section class="panel" id="p1">
+    <div id="flags"></div>
+    <div class="tiles" id="tiles"></div>
+    <div class="card">
+      <h2>Where the fight turns</h2>
+      <p class="note">Hero win rate as the horde grows. Every arm runs the same seeds, so the only
+        difference between lines is the change itself.</p>
+      <div id="lg-main" class="legend"></div>
+      <div id="ch-main"></div>
+      <p class="cap">Fifty percent is the interesting line — below four zombies nothing can be measured,
+        above twelve nothing can be saved.</p>
+    </div>
+  </section>
+
+  <section class="panel" id="p2" hidden>
+    <div class="card">
+      <h2>Win rate by horde size</h2>
+      <p class="note">The same chart with a table view, since two of the four hues sit below 3:1 contrast in light mode.</p>
+      <div class="toolbar">
+        <button class="btn" id="tblToggle" aria-pressed="false">Show table</button>
+      </div>
+      <div id="lg-tp" class="legend"></div>
+      <div id="ch-tp"></div>
+      <div id="tp-table" hidden></div>
+    </div>
+    <div class="grid2">
+      <div class="card">
+        <h2>How long a battle runs</h2>
+        <p class="note">Turns to resolution. Longer is not safer.</p>
+        <div id="lg-turns" class="legend"></div>
+        <div id="ch-turns"></div>
+      </div>
+      <div class="card">
+        <h2>Heroes lost</h2>
+        <p class="note">Downed per battle, out of four.</p>
+        <div id="lg-down" class="legend"></div>
+        <div id="ch-down"></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="panel" id="p3" hidden>
+    <div class="grid2">
+      <div class="card">
+        <h2>Warrior Strength is a cliff</h2>
+        <p class="note">Win rate at eight zombies, one point of Strength at a time.</p>
+        <div id="ch-str"></div>
+        <p class="cap">Everything happens at Strength 7, where Massive Strike reaches 10 damage and
+          one-shots a 10-health zombie. One point earlier buys nothing; one point later adds nothing.</p>
+      </div>
+      <div class="card">
+        <h2>Ranger stamina is a slope</h2>
+        <p class="note">Win rate at eight zombies, one point of maximum stamina at a time.</p>
+        <div id="ch-sta"></div>
+        <p class="cap">Smooth and diminishing. Each point buys back kiting the ranger otherwise
+          could not afford.</p>
+      </div>
+    </div>
+    <div class="card">
+      <h2>The mechanism, not the outcome</h2>
+      <p class="note">Times per battle a ranger wanted to reposition and could not pay for it.
+        This is the number the stamina buff actually moves.</p>
+      <div id="ch-kite"></div>
+    </div>
+  </section>
+
+  <section class="panel" id="p4" hidden>
+    <div class="card">
+      <h2>The fatigue arc</h2>
+      <p class="note">Average stamina a hero has when their activation begins. Heroes start at five.</p>
+      <div id="lg-fat" class="legend"></div>
+      <div id="ch-fat"></div>
+      <p class="cap">Flurry, grind, scraps — pinned near one from turn five onward, living on regeneration.</p>
+    </div>
+    <div class="card">
+      <h2>Battles that ran long</h2>
+      <p class="note">Turn count distribution at the tipping point.</p>
+      <div id="ch-hist"></div>
+    </div>
+  </section>
+
+  <section class="panel" id="p7" hidden>
+    <div class="card">
+      <h2>The same fight on four authored maps</h2>
+      <p class="note">Maps are drawn by hand and identified, never generated. Every one runs the same seeds.</p>
+      <div id="lg-map" class="legend"></div>
+      <div id="ch-map"></div>
+      <p class="cap">More broken ground favours the heroes: ranged units gain +10 Accuracy and +2 Reach on hills,
+        while the melee horde pays two movement per hex to cross it.</p>
+    </div>
+    <div class="card">
+      <h2>Each map, and what happens on it</h2>
+      <div id="mapCards"></div>
+    </div>
+  </section>
+
+  <section class="panel" id="p5" hidden>
+    <div class="card">
+      <h2>Who deals the damage</h2>
+      <p class="note">Damage per battle by unit type, baseline arm, as the horde grows.</p>
+      <div id="lg-dmg" class="legend"></div>
+      <div id="ch-dmg"></div>
+      <p class="cap">Warriors front-load and then start dying; rangers carry the long fights.</p>
+    </div>
+    <div class="card">
+      <h2>Every attack in the game</h2>
+      <p class="note">Baseline arm at eight zombies, per battle.</p>
+      <div class="toolbar">
+        <label style="font-size:13px;color:var(--ink2)">Arm
+          <select id="atkArm"></select></label>
+      </div>
+      <div id="atk-table"></div>
+    </div>
+  </section>
+
+  <section class="panel" id="p6" hidden>
+    <div class="card">
+      <h2>A single battle, start to finish</h2>
+      <p class="note">Rendered from the event log alone — the same source the future graphical replay will read.</p>
+      <div class="toolbar">
+        <label style="font-size:13px;color:var(--ink2)">Battle
+          <select id="sampleSel"></select></label>
+        <label style="font-size:13px;color:var(--ink2)">Board
+          <select id="boardSel"></select></label>
+        <span id="sampleMeta" style="font-size:13px;color:var(--ink2)"></span>
+      </div>
+      <div class="battleGrid">
+        <pre id="board"></pre>
+        <pre id="log"></pre>
+      </div>
+      <p class="cap"><span class="kbd">W</span> warrior · <span class="kbd">R</span> ranger ·
+        <span class="kbd">M</span> mage · <span class="kbd">z</span> zombie ·
+    <span class="kbd">(R)</span> downed · <span class="kbd">^</span> hills</p>
+    </div>
+  </section>
+</main>
+<div class="tip" id="tip"></div>
+
+<script id="data" type="application/json">__DATA__</script>
+<script>
+const D = JSON.parse(document.getElementById('data').textContent);
+const SER = ['--s1','--s2','--s3','--s4'];
+const cv = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+const tip = document.getElementById('tip');
+const esc = s => s.replace(/[&<>]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));
+
+function showTip(html, ev){ tip.innerHTML = html; tip.style.opacity = 1;
+  const r = tip.getBoundingClientRect();
+  tip.style.left = Math.min(ev.clientX + 14, innerWidth - r.width - 10) + 'px';
+  tip.style.top  = Math.max(10, ev.clientY - r.height - 12) + 'px'; }
+function hideTip(){ tip.style.opacity = 0 }
+
+/* ---------- line chart ---------- */
+function lineChart(el, series, xs, opts){
+  const W = 720, H = opts.h || 300, P = {t:16,r:opts.padR||62,b:34,l:46};
+  const all = series.flatMap(s => s.v.filter(v => v != null));
+  const ymax = opts.ymax ?? Math.ceil(Math.max(...all) * 1.12);
+  const ymin = opts.ymin ?? 0;
+  const X = i => P.l + (i / (xs.length - 1)) * (W - P.l - P.r);
+  const Y = v => H - P.b - ((v - ymin) / (ymax - ymin)) * (H - P.t - P.b);
+  let s = `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="${opts.title||''}">`;
+  const ticks = opts.yticks || 5;
+  for (let i = 0; i <= ticks; i++){ const v = ymin + (i/ticks)*(ymax-ymin);
+    s += `<line class="gl" x1="${P.l}" y1="${Y(v)}" x2="${W-P.r}" y2="${Y(v)}"/>
+          <text class="tk" x="${P.l-8}" y="${Y(v)+4}" text-anchor="end">${opts.yfmt?opts.yfmt(v):Math.round(v)}</text>`; }
+  if (opts.rule != null) s += `<line x1="${P.l}" y1="${Y(opts.rule)}" x2="${W-P.r}" y2="${Y(opts.rule)}"
+      stroke="${cv('--muted')}" stroke-width="1" stroke-dasharray="4 4"/>`;
+  s += `<line class="ax" x1="${P.l}" y1="${H-P.b}" x2="${W-P.r}" y2="${H-P.b}"/>`;
+  xs.forEach((x,i) => { s += `<text class="tk" x="${X(i)}" y="${H-P.b+17}" text-anchor="middle">${x}</text>` });
+  const labels = [];
+  series.forEach((ser, si) => {
+    const c = cv(SER[si % 4]);
+    const pts = ser.v.map((v,i)=>v==null?null:[X(i),Y(v)]).filter(Boolean);
+    s += `<path d="${pts.map((p,i)=>(i?'L':'M')+p[0]+' '+p[1]).join(' ')}" fill="none" stroke="${c}"
+            stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>`;
+    pts.forEach(p => { s += `<circle cx="${p[0]}" cy="${p[1]}" r="4" fill="${c}" stroke="${cv('--surface')}" stroke-width="2"/>` });
+    const last = ser.v.map((v,i)=>[v,i]).filter(a=>a[0]!=null).pop();
+    if (last && series.length > 1) labels.push({ x:X(last[1])+9, y:Y(last[0])+4, c, t:ser.label });
+  });
+  // De-collide direct labels: converging lines would otherwise stack their labels.
+  labels.sort((a,b)=>a.y-b.y);
+  const GAP = 15;
+  for (let i=1;i<labels.length;i++)
+    if (labels[i].y - labels[i-1].y < GAP) labels[i].y = labels[i-1].y + GAP;
+  const overflow = labels.length ? labels[labels.length-1].y - (H - 4) : 0;
+  if (overflow > 0) labels.forEach(l => l.y -= overflow);
+  labels.forEach(l => { s += `<text class="dl" x="${l.x}" y="${l.y}" fill="${l.c}">${l.t}</text>` });
+  xs.forEach((x,i) => {
+    s += `<rect x="${X(i)-14}" y="${P.t}" width="28" height="${H-P.t-P.b}" fill="transparent"
+            data-i="${i}" class="hz" style="cursor:crosshair"/>`;
+  });
+  s += `</svg>`;
+  el.innerHTML = s;
+  el.querySelectorAll('.hz').forEach(r => {
+    r.addEventListener('mousemove', ev => {
+      const i = +r.dataset.i;
+      showTip(`<b>${opts.xlabel||''} ${xs[i]}</b>` + series.map((ser,si)=>
+        ser.v[i]==null?'':`<div><i style="background:${cv(SER[si%4])}"></i>${ser.label} — ${opts.tfmt?opts.tfmt(ser.v[i]):ser.v[i]}</div>`).join(''), ev);
+    });
+    r.addEventListener('mouseleave', hideTip);
+  });
+}
+
+/* ---------- bar chart ---------- */
+function barChart(el, cats, vals, opts){
+  const W = 720, H = opts.h || 280, P = {t:20,r:16,b:38,l:48};
+  const ymax = opts.ymax ?? (Math.ceil(Math.max(...vals) * 1.15) || 1);
+  const bw = (W-P.l-P.r)/cats.length;
+  const Y = v => H-P.b - (v/ymax)*(H-P.t-P.b);
+  let s = `<svg viewBox="0 0 ${W} ${H}">`;
+  for (let i=0;i<=4;i++){ const v=(i/4)*ymax;
+    s += `<line class="gl" x1="${P.l}" y1="${Y(v)}" x2="${W-P.r}" y2="${Y(v)}"/>
+          <text class="tk" x="${P.l-8}" y="${Y(v)+4}" text-anchor="end">${opts.yfmt?opts.yfmt(v):Math.round(v)}</text>`; }
+  vals.forEach((v,i) => {
+    const c = opts.colorFn ? opts.colorFn(i,v) : cv('--s1');
+    const x = P.l + i*bw + 5, w = bw - 12, y = Y(v), h = H-P.b-y;
+    s += `<rect x="${x}" y="${y}" width="${w}" height="${Math.max(h,1)}" rx="4" fill="${c}" data-i="${i}"
+            class="bar" style="cursor:pointer"/>`;
+    s += `<text class="dl" x="${x+w/2}" y="${y-7}" text-anchor="middle" fill="${cv('--ink2')}">${opts.lfmt?opts.lfmt(v):v}</text>`;
+    s += `<text class="tk" x="${x+w/2}" y="${H-P.b+17}" text-anchor="middle">${cats[i]}</text>`;
+  });
+  s += `<line class="ax" x1="${P.l}" y1="${H-P.b}" x2="${W-P.r}" y2="${H-P.b}"/></svg>`;
+  el.innerHTML = s;
+  el.querySelectorAll('.bar').forEach(b => {
+    b.addEventListener('mousemove', ev => showTip(`<b>${opts.xlabel||''} ${cats[+b.dataset.i]}</b>${opts.tfmt?opts.tfmt(+b.dataset.i):vals[+b.dataset.i]}`, ev));
+    b.addEventListener('mouseleave', hideTip);
+  });
+}
+
+/* ---------- stacked bar ---------- */
+function stackChart(el, cats, keys, rows, opts){
+  const W = 720, H = opts.h || 300, P = {t:18,r:16,b:38,l:48};
+  const totals = rows.map(r => keys.reduce((a,k)=>a+(r[k]||0),0));
+  const ymax = Math.ceil(Math.max(...totals)*1.12) || 1;
+  const bw = (W-P.l-P.r)/cats.length;
+  const Y = v => H-P.b - (v/ymax)*(H-P.t-P.b);
+  let s = `<svg viewBox="0 0 ${W} ${H}">`;
+  for (let i=0;i<=4;i++){ const v=(i/4)*ymax;
+    s += `<line class="gl" x1="${P.l}" y1="${Y(v)}" x2="${W-P.r}" y2="${Y(v)}"/>
+          <text class="tk" x="${P.l-8}" y="${Y(v)+4}" text-anchor="end">${Math.round(v)}</text>`; }
+  rows.forEach((r,i) => {
+    let acc = 0;
+    keys.forEach((k,ki) => {
+      const v = r[k]||0; if (!v) return;
+      const y0 = Y(acc), y1 = Y(acc+v); acc += v;
+      s += `<rect x="${P.l+i*bw+5}" y="${y1}" width="${bw-12}" height="${Math.max(y0-y1-2,1)}" rx="3"
+              fill="${cv(SER[ki%4])}" data-i="${i}" data-k="${k}" class="seg" style="cursor:pointer"/>`;
+    });
+    s += `<text class="tk" x="${P.l+i*bw+(bw-12)/2+5}" y="${H-P.b+17}" text-anchor="middle">${cats[i]}</text>`;
+  });
+  s += `<line class="ax" x1="${P.l}" y1="${H-P.b}" x2="${W-P.r}" y2="${H-P.b}"/></svg>`;
+  el.innerHTML = s;
+  el.querySelectorAll('.seg').forEach(g => {
+    g.addEventListener('mousemove', ev => {
+      const r = rows[+g.dataset.i];
+      showTip(`<b>${opts.xlabel||''} ${cats[+g.dataset.i]}</b>` + keys.map((k,ki)=>
+        `<div><i style="background:${cv(SER[ki%4])}"></i>${k} — ${(r[k]||0).toFixed(1)}</div>`).join(''), ev);
+    });
+    g.addEventListener('mouseleave', hideTip);
+  });
+}
+
+function legend(el, labels){
+  el.innerHTML = labels.map((l,i)=>`<span><i class="sw" style="background:${cv(SER[i%4])}"></i>${l}</span>`).join('');
+}
+
+/* ---------- build ---------- */
+const Z = D.zombies, ARMS = D.arms;
+const cell = (a,z) => D.grid[a][z];
+const armSeries = f => ARMS.map(a => ({ label:a.label, v: Z.map(z => f(cell(a.id,z))) }));
+
+function findTipping(armId){
+  for (let i=0;i<Z.length-1;i++){
+    const a = cell(armId,Z[i]).win, b = cell(armId,Z[i+1]).win;
+    if (a >= 50 && b < 50) return (Z[i] + (Z[i+1]-Z[i]) * ((a-50)/(a-b))).toFixed(1);
+  }
+  return '—';
+}
+
+document.getElementById('hdr').textContent =
+  `${D.totals.battles.toLocaleString()} simulated battles · ${D.n} per cell · paired seeds across arms.`;
+
+// flags
+const invalid = ARMS.reduce((s,a)=>s+Z.reduce((t,z)=>t+cell(a.id,z).invalid,0),0);
+document.getElementById('flags').innerHTML =
+  `<div class="flag ${invalid?'bad':'ok'}">${invalid?'✕':'✓'} ${invalid} invalid runs — ` +
+  `${invalid? 'results are not trustworthy' : 'no engine faults, no rule-loop overflows'}</div>`;
+
+// tiles
+const t = [
+  ['Tipping point', findTipping('baseline'), 'zombies for a 50% win rate'],
+  ['With both buffs', findTipping('both'), 'zombies — the same fight, survivable'],
+  ['At four zombies', cell('baseline',4).win.toFixed(0)+'%', 'every arm wins — nothing measurable'],
+  ['Warrior +2 at the point', '+' + (cell('warrior',8).win-cell('baseline',8).win).toFixed(0)+'pt', 'win rate at 8 zombies'],
+  ['Ranger +5 at the point', '+' + (cell('ranger',8).win-cell('baseline',8).win).toFixed(0)+'pt', 'win rate at 8 zombies'],
+];
+document.getElementById('tiles').innerHTML = t.map(([k,v,d])=>
+  `<div class="tile"><div class="k">${k}</div><div class="v">${v}</div><div class="d">${d}</div></div>`).join('');
+
+function drawAll(){
+  const winS = armSeries(c=>c.win);
+  legend(document.getElementById('lg-main'), ARMS.map(a=>a.label));
+  lineChart(document.getElementById('ch-main'), winS, Z,
+    {ymax:100, rule:50, xlabel:'Zombies:', tfmt:v=>v.toFixed(0)+'%', yfmt:v=>Math.round(v)+'%', h:330, padR:104});
+
+  legend(document.getElementById('lg-tp'), ARMS.map(a=>a.label));
+  lineChart(document.getElementById('ch-tp'), winS, Z,
+    {ymax:100, rule:50, xlabel:'Zombies:', tfmt:v=>v.toFixed(0)+'%', yfmt:v=>Math.round(v)+'%', padR:104});
+
+  legend(document.getElementById('lg-turns'), ARMS.map(a=>a.label));
+  lineChart(document.getElementById('ch-turns'), armSeries(c=>c.turns), Z,
+    {xlabel:'Zombies:', tfmt:v=>v.toFixed(1)+' turns', h:250, padR:104});
+
+  legend(document.getElementById('lg-down'), ARMS.map(a=>a.label));
+  lineChart(document.getElementById('ch-down'), armSeries(c=>c.downed), Z,
+    {ymax:4, xlabel:'Zombies:', tfmt:v=>v.toFixed(2)+' of 4', h:250, padR:104});
+
+  const ss = D.strengthSweep;
+  barChart(document.getElementById('ch-str'), ss.map(r=>'Str '+r.x), ss.map(r=>r.win), {
+    ymax:100, yfmt:v=>Math.round(v)+'%', lfmt:v=>v.toFixed(0)+'%', h:300,
+    colorFn:(i)=> ss[i].massive>=10 ? cv('--s2') : cv('--s1'),
+    tfmt:i=>`Massive Strike ${ss[i].massive} dmg · ${ss[i].massive>=10?'one-shots':'two hits for'} a 10hp zombie<br>${ss[i].turns.toFixed(1)} turns`});
+
+  const st = D.staminaSweep;
+  barChart(document.getElementById('ch-sta'), st.map(r=>'Max '+r.x), st.map(r=>r.win), {
+    ymax:100, yfmt:v=>Math.round(v)+'%', lfmt:v=>v.toFixed(0)+'%', h:300,
+    colorFn:()=>cv('--s3'),
+    tfmt:i=>`kite denied ${st[i].kite.toFixed(2)}/battle<br>${st[i].turns.toFixed(1)} turns`});
+
+  barChart(document.getElementById('ch-kite'), st.map(r=>'Max '+r.x), st.map(r=>r.kite), {
+    yfmt:v=>v.toFixed(1), lfmt:v=>v.toFixed(2), h:240, colorFn:()=>cv('--s3'),
+    tfmt:i=>`win ${st[i].win.toFixed(0)}%`});
+
+  const maxT = 12;
+  const fat = ARMS.map(a => ({label:a.label,
+    v: Array.from({length:maxT},(_,i)=> cell(a.id,8).stamina[i+1] ?? null)}));
+  legend(document.getElementById('lg-fat'), ARMS.map(a=>a.label));
+  lineChart(document.getElementById('ch-fat'), fat, Array.from({length:maxT},(_,i)=>i+1),
+    {ymax:10, xlabel:'Turn', tfmt:v=>v.toFixed(2)+' stamina', h:300, padR:104});
+
+  const hist = cell('baseline',8).turnHist;
+  const hk = Object.keys(hist).map(Number).sort((a,b)=>a-b);
+  barChart(document.getElementById('ch-hist'), hk.map(String), hk.map(k=>hist[k]),
+    {h:240, xlabel:'Turn', lfmt:v=>v, colorFn:()=>cv('--s1'), tfmt:i=>`${hist[hk[i]]} of ${D.n} battles`});
+
+  const keys = ['warrior','ranger','mage','zombie'];
+  legend(document.getElementById('lg-dmg'), keys);
+  stackChart(document.getElementById('ch-dmg'), Z.map(String), keys, Z.map(z=>cell('baseline',z).dmg),
+    {xlabel:'Zombies:', h:300});
+}
+
+/* table view */
+function tpTable(){
+  let h = '<table><thead><tr><th>Zombies</th>' + ARMS.map(a=>`<th>${a.label}</th>`).join('') + '</tr></thead><tbody>';
+  Z.forEach(z => { h += `<tr><td>${z}</td>` + ARMS.map(a=>`<td>${cell(a.id,z).win.toFixed(0)}%</td>`).join('') + '</tr>' });
+  document.getElementById('tp-table').innerHTML = h + '</tbody></table>';
+}
+document.getElementById('tblToggle').addEventListener('click', e => {
+  const on = e.target.getAttribute('aria-pressed') === 'true';
+  e.target.setAttribute('aria-pressed', String(!on));
+  e.target.textContent = on ? 'Show table' : 'Hide table';
+  document.getElementById('tp-table').hidden = on;
+});
+tpTable();
+
+/* attack table */
+const armSel = document.getElementById('atkArm');
+armSel.innerHTML = ARMS.map(a=>`<option value="${a.id}">${a.label}</option>`).join('');
+function atkTable(){
+  const a = D.grid[armSel.value][8].atk;
+  const rows = Object.entries(a).sort((x,y)=>y[1].dmg-x[1].dmg);
+  let h = '<table><thead><tr><th>Attack</th><th>Swings</th><th>Hit rate</th><th>Damage</th><th>Damage / swing</th></tr></thead><tbody>';
+  for (const [k,v] of rows) h += `<tr><td class="mono">${k.replace('attack.','')}</td><td>${v.swings.toFixed(2)}</td>
+    <td>${v.hitPct.toFixed(0)}%</td><td>${v.dmg.toFixed(1)}</td><td>${(v.dmg/Math.max(v.swings,.01)).toFixed(2)}</td></tr>`;
+  document.getElementById('atk-table').innerHTML = h + '</tbody></table>';
+}
+armSel.addEventListener('change', atkTable); atkTable();
+
+/* terrain */
+const MP = D.mapPanel;
+legend(document.getElementById('lg-map'), ['6 zombies','8 zombies','10 zombies']);
+function drawMaps(){
+  const zs = [6,8,10];
+  const series = zs.map((z,i)=>({label:z+' zombies', v: MP.map(m=>m.byZ[z].win)}));
+  lineChart(document.getElementById('ch-map'), series, MP.map(m=>m.name),
+    {ymax:100, rule:50, xlabel:'', tfmt:v=>v.toFixed(0)+'%', yfmt:v=>Math.round(v)+'%', h:300, padR:104});
+  document.getElementById('mapCards').innerHTML = MP.map(m=>{
+    const c = m.byZ[8];
+    return `<div style="display:grid;grid-template-columns:max-content 1fr;gap:22px;padding:16px 0;border-top:1px solid var(--grid)">
+      <pre style="max-height:none">${m.rows.join('\n')}</pre>
+      <div><div style="font-weight:600;margin-bottom:3px">${m.name} <span style="color:var(--muted);font-weight:400">· ${m.hills} hill hexes</span></div>
+      <div style="color:var(--ink2);font-size:13px;margin-bottom:10px">${m.note}</div>
+      <table style="max-width:460px"><tbody>
+        <tr><td>Hero win rate</td><td>${c.win.toFixed(0)}%</td></tr>
+        <tr><td>Turns</td><td>${c.turns.toFixed(1)}</td></tr>
+        <tr><td>Heroes downed</td><td>${c.downed.toFixed(2)} of 4</td></tr>
+        <tr><td>High ground taken</td><td>${c.highGround.toFixed(2)} / battle</td></tr>
+        <tr><td>Arcane Bolts cast</td><td>${c.casts.toFixed(2)} / battle</td></tr>
+      </tbody></table></div></div>`;
+  }).join('');
+}
+
+/* battle explorer */
+const sSel = document.getElementById('sampleSel'), bSel = document.getElementById('boardSel');
+sSel.innerHTML = D.samples.map((s,i)=>`<option value="${i}">${s.mapId} · ${s.zombies} zombies · ${s.outcome} · ${s.turns} turns</option>`).join('');
+function drawSample(){
+  const s = D.samples[+sSel.value];
+  bSel.innerHTML = s.boards.map((b,i)=>`<option value="${i}">${b.label}</option>`).join('');
+  document.getElementById('sampleMeta').textContent = `${s.events} events`;
+  drawBoard();
+  document.getElementById('log').innerHTML = s.log.map(l =>
+    /\*\*\*|>>>|TURN/.test(l) ? `<b>${esc(l)}</b>` : esc(l)).join('\n');
+}
+function drawBoard(){ document.getElementById('board').textContent = D.samples[+sSel.value].boards[+bSel.value||0].board }
+sSel.addEventListener('change', drawSample); bSel.addEventListener('change', drawBoard); drawSample();
+
+/* tabs */
+document.querySelectorAll('.tab').forEach(b => b.addEventListener('click', () => {
+  document.querySelectorAll('.tab').forEach(x=>x.setAttribute('aria-selected','false'));
+  b.setAttribute('aria-selected','true');
+  document.querySelectorAll('.panel').forEach(p=>p.hidden = p.id !== b.dataset.p);
+}));
+
+/* theme */
+document.getElementById('theme').addEventListener('click', () => {
+  const cur = document.documentElement.getAttribute('data-theme');
+  const next = cur === 'dark' ? 'light' : cur === 'light' ? 'dark'
+    : (matchMedia('(prefers-color-scheme: dark)').matches ? 'light' : 'dark');
+  document.documentElement.setAttribute('data-theme', next);
+  drawAll(); drawMaps();
+});
+matchMedia('(prefers-color-scheme: dark)').addEventListener('change', ()=>{drawAll();drawMaps();});
+drawAll(); drawMaps();
+</script>
+</body>
+</html>
