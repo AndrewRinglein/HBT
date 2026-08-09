@@ -96,7 +96,7 @@ const samples = [
 })
 
 const data = {
-  generated: 'baseline.4v4 · Combat Framework',
+  generated: 'baseline.4v4 · The Combat Framework',
   n: N, arms: ARMS.map(({ id, label }) => ({ id, label })), zombies: ZOMBIES,
   grid, strengthSweep, staminaSweep, samples, mapPanel,
   totals: { battles: N * ARMS.length * ZOMBIES.length + N * (strengthSweep.length + staminaSweep.length) },

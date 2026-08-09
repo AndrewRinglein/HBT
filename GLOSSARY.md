@@ -15,7 +15,7 @@ Proper nouns. Capitalised, used as names, never paraphrased.
 
 | System | What it owns | Documented in |
 |---|---|---|
-| **Combat Framework** | Combat. Hexes, turns, damage, statuses, AI, terrain. Also the simulation harness — same engine. | `COMBAT-FRAMEWORK.md` |
+| **The Combat Framework** | Combat. Hexes, turns, damage, statuses, AI, terrain. Also the simulation harness — same engine. | `COMBAT-FRAMEWORK.md` |
 | **The Crucible** | Hero generation. Randomised stats, badges, origins, art, name, history. | *(needs a doc)* |
 | **The Kingdom** | The strategic map. Hexes, claiming, regions, buildings, the five-phase strategic turn. | *(needs a doc)* |
 | **The Hand** | The commander's cards and spells. Energy, draw, card actions. | *(needs a doc)* |

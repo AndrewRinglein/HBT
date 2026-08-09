@@ -1,4 +1,4 @@
-# Combat Framework — project instructions
+# The Combat Framework — project instructions
 
 Combat engine and simulation harness for *Heroes of Blight and Tragic*.
 

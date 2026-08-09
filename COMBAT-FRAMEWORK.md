@@ -1,10 +1,10 @@
-# Combat Framework
+# The Combat Framework
 
 *The combat system for Heroes of Blight and Tragic — engine, simulator, and the apparatus for finding out whether the game is any good.*
 
 > *"Casualties: within projections. The projections were grim."* — the Chronicler
 >
-> *(This line named the system before it was called Combat Framework. Kept because
+> *(This line named the system before the rename. Kept because
 > it is still the best one-line statement of what the simulator is for.)*
 
 **Start here.** This is the entry point. The other two documents are reference.

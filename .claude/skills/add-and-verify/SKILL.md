@@ -1,6 +1,6 @@
 ---
 name: add-and-verify
-description: Add a new effect, unit, map, or AI mode to Combat Framework and prove it works before any balance conclusion is drawn. Use whenever adding, changing, or fixing game content or mechanics — poison, protection, a new enemy, a terrain event, a behaviour mode. Covers the five verification gates and the failure triage.
+description: Add a new effect, unit, map, or AI mode to The Combat Framework and prove it works before any balance conclusion is drawn. Use whenever adding, changing, or fixing game content or mechanics — poison, protection, a new enemy, a terrain event, a behaviour mode. Covers the five verification gates and the failure triage.
 ---
 
 # Add and verify

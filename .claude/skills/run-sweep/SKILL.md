@@ -1,6 +1,6 @@
 ---
 name: run-sweep
-description: Run a comparison in Combat Framework and report what it means — does a change help, and how much. Use after a mechanic has passed verification, or to compare AI modes, enemy counts, wave schedules, or maps. Covers paired dice, the map panel, reading result shape, and the traps that make small-sample results look real when they are not.
+description: Run a comparison in The Combat Framework and report what it means — does a change help, and how much. Use after a mechanic has passed verification, or to compare AI modes, enemy counts, wave schedules, or maps. Covers paired dice, the map panel, reading result shape, and the traps that make small-sample results look real when they are not.
 ---
 
 # Run a sweep

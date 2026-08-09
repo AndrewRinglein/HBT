@@ -54,7 +54,7 @@ what it produces, and a link.**
 
 Not how it works. Not its rules. Not its numbers.
 
-> ### Combat — *Combat Framework*
+> ### The Combat Framework
 > Resolves one battle to an outcome.
 > **Consumes:** a hero roster · a map id · an encounter definition · a seed
 > **Produces:** an outcome · casualties and wound levels · XP · loot · an event log
