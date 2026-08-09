@@ -5,7 +5,7 @@ import { foldToTurn, setupSeq, nameMap, renderBoard, renderLog, renderRoster, ma
 const replicate = Number(process.argv[2] ?? 0)
 const showBoards = process.argv.includes('--boards')
 
-const mapId = process.argv.find(a => a.startsWith('--map='))?.split('=')[1] ?? 'open'
+const mapId = process.argv.find(a => a.startsWith('--map='))?.split('=')[1] ?? 'map.open'
 const ctx = createBattle({ replicate, mapId, strict: true })
 const result = runBattle(ctx)
 const names = nameMap(ctx.events)

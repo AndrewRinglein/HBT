@@ -15,7 +15,7 @@
 // out by construction. Additive and override only, integers only.
 
 import type { Ctx, Unit } from './types.js'
-import { accuracyBonusOf, reachBonusOf, dodgeBonusOf, armorBonusOf } from '../content/maps.js'
+import { accuracyBonusOf, reachBonusOf, dodgeBonusOf, armorBonusOf, terrainIdOf } from '../content/maps.js'
 
 export type StatName =
   | 'strength' | 'precision' | 'magic'
@@ -75,7 +75,7 @@ export function terrainMods(ctx: Ctx, u: Unit): StatMod[] {
   const t = ctx.state.terrain[u.hex] ?? 0
   const out: StatMod[] = []
   const push = (stat: StatName, value: number) => {
-    if (value !== 0) out.push({ stat, op: 'add', value, source: `terrain.${t}`, scope: 'unit' })
+    if (value !== 0) out.push({ stat, op: 'add', value, source: terrainIdOf(t), scope: 'unit' })
   }
   push('accuracy', accuracyBonusOf(t))
   push('reach', reachBonusOf(t))

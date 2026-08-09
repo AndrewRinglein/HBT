@@ -21,7 +21,7 @@ type UnitView = {
 /** Rebuild board state at a point in the log, purely by folding events. */
 export function mapIdOf(events: Event[]): string {
   for (const e of events) if (e.type === 'map.loaded') return e['mapId'] as string
-  return 'open'
+  return 'map.open'
 }
 
 export function foldToTurn(events: Event[], upToSeq: number): Map<number, UnitView> {
@@ -51,7 +51,7 @@ export function foldToTurn(events: Event[], upToSeq: number): Map<number, UnitVi
 const GLYPH: Record<string, string> = { warrior: 'W', ranger: 'R', mage: 'M', zombie: 'z' }
 
 /** L1 — the board, odd-r offset, indented rows. */
-export function renderBoard(units: Map<number, UnitView>, mapId = 'open'): string {
+export function renderBoard(units: Map<number, UnitView>, mapId = 'map.open'): string {
   const terr = terrainOf(mapId)
   const grid: string[][] = Array.from({ length: HEIGHT }, (_, r) =>
     Array.from({ length: WIDTH }, (_, c) => (terr[r * WIDTH + c] === 1 ? ' ^ ' : ' . ')))

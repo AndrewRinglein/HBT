@@ -40,7 +40,7 @@ describe('pass 2 — hills', () => {
     expect(new Set(counts).size).toBe(MAPS.length)
   })
   it('gate 2 — hills cost 2 movement, open ground 1', () => {
-    const ctx = createBattle({ replicate: 0, mapId: 'ridge' })
+    const ctx = createBattle({ replicate: 0, mapId: 'map.ridge' })
     const hill = ctx.state.terrain.findIndex(t => t === TERRAIN.HILLS)
     const flat = ctx.state.terrain.findIndex(t => t === TERRAIN.OPEN)
     expect(stepCost(ctx, hill)).toBe(2)
@@ -48,7 +48,7 @@ describe('pass 2 — hills', () => {
   })
   it('gate 2 — hills give exactly +10 accuracy', () => {
     const ctx = createCustomBattle(
-      [{ type: 'ranger', hex: hexId(5, 5) }], [{ type: 'zombie', hex: hexId(5, 8) }], { mapId: 'open' })
+      [{ type: 'ranger', hex: hexId(5, 5) }], [{ type: 'zombie', hex: hexId(5, 8) }], { mapId: 'map.open' })
     const [r, z] = [ctx.state.units[0]!, ctx.state.units[1]!]
     const flat = resolveAccuracy(ctx, r, z, ATTACKS['attack.ranger.bow']!).value
     ctx.state.terrain[r.hex] = TERRAIN.HILLS
@@ -57,7 +57,7 @@ describe('pass 2 — hills', () => {
   })
   it('gate 2 — hills give exactly +2 reach, ranged only', () => {
     const ctx = createCustomBattle(
-      [{ type: 'ranger', hex: hexId(5, 5) }], [{ type: 'zombie', hex: hexId(5, 8) }], { mapId: 'open' })
+      [{ type: 'ranger', hex: hexId(5, 5) }], [{ type: 'zombie', hex: hexId(5, 8) }], { mapId: 'map.open' })
     const r = ctx.state.units[0]!
     expect(reachOf(ctx, r, ATTACKS['attack.ranger.bow']!)).toBe(6)
     ctx.state.terrain[r.hex] = TERRAIN.HILLS
@@ -65,21 +65,21 @@ describe('pass 2 — hills', () => {
     expect(reachOf(ctx, r, ATTACKS['attack.punch']!)).toBe(1)
   })
   it('gate 2 — reachability shrinks on rough ground', () => {
-    const open = createBattle({ replicate: 0, mapId: 'open' })
-    const high = createBattle({ replicate: 0, mapId: 'highlands' })
+    const open = createBattle({ replicate: 0, mapId: 'map.open' })
+    const high = createBattle({ replicate: 0, mapId: 'map.highlands' })
     const w1 = open.state.units[0]!, w2 = high.state.units[0]!
     w1.movePointsLeft = w1.movement; w2.movePointsLeft = w2.movement
     expect(reachable(high, w2).size).toBeLessThan(reachable(open, w1).size)
   })
   it('gate 3 — the open map is byte-identical to having no terrain at all', () => {
     const h = (c: ReturnType<typeof createBattle>) => JSON.stringify(c.events.map(e => ({ ...e, terrain: undefined })))
-    const a = createBattle({ replicate: 3, mapId: 'open' }); runBattle(a)
+    const a = createBattle({ replicate: 3, mapId: 'map.open' }); runBattle(a)
     const b = createBattle({ replicate: 3 }); runBattle(b)
     expect(h(a)).toBe(h(b))
   })
   it('gate 1 — ranged heroes actually take the high ground when maps have hills', () => {
     let took = 0
-    for (const mapId of ['ridge', 'flanks', 'highlands'])
+    for (const mapId of ['map.ridge', 'map.flanks', 'map.highlands'])
       for (let r = 0; r < 30; r++) {
         const ctx = createBattle({ replicate: r, mapId, enemyCount: 8 }); runBattle(ctx)
         took += ctx.events.filter(e => e.type === 'ai.tookHighGround').length
@@ -215,7 +215,7 @@ describe('everything together', () => {
       }
   })
   it('state still round-trips through JSON with terrain and cooldowns', () => {
-    const ctx = createBattle({ replicate: 2, mapId: 'highlands', enemyCount: 8 }); runBattle(ctx)
+    const ctx = createBattle({ replicate: 2, mapId: 'map.highlands', enemyCount: 8 }); runBattle(ctx)
     expect(JSON.parse(JSON.stringify(ctx.state))).toEqual(ctx.state)
     expect(ctx.state.terrain.length).toBe(144)
   })

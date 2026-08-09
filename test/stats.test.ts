@@ -9,7 +9,7 @@ import { TERRAIN } from '../src/core/types.js'
 
 function ranger() {
   const ctx = createCustomBattle(
-    [{ type: 'ranger', hex: hexId(5, 5) }], [{ type: 'zombie', hex: hexId(5, 8) }], { mapId: 'open' })
+    [{ type: 'ranger', hex: hexId(5, 5) }], [{ type: 'zombie', hex: hexId(5, 8) }], { mapId: 'map.open' })
   return { ctx, r: ctx.state.units[0]!, z: ctx.state.units[1]! }
 }
 
@@ -105,7 +105,7 @@ describe('the ledger explains the number', () => {
     ctx.state.terrain[r.hex] = TERRAIN.HILLS
     const e = effective(ctx, r, 'accuracy')
     expect(e.ledger.length).toBe(1)
-    expect(e.ledger[0]!.source).toBe(`terrain.${TERRAIN.HILLS}`)
+    expect(e.ledger[0]!.source).toBe('terrain.hills')
     expect(e.ledger[0]).toMatchObject({ op: 'add', delta: 10, from: r.accuracy, to: r.accuracy + 10 })
   })
 

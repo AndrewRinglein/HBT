@@ -54,7 +54,7 @@ export function createBattle(opts: BattleOptions): Ctx {
   const rootSeed = rootSeedOf(FIRST_BATTLE.scenarioId, opts.variantId ?? 0, opts.replicate)
   const rng = makeRng(rootSeed, opts.strict ? { strict: true } : undefined)
 
-  const mapId = opts.mapId ?? 'open'
+  const mapId = opts.mapId ?? 'map.open'
   const state: State = { turn: 0, phase: 'hero', mapId, terrain: terrainOf(mapId), units: [], outcome: null, seq: 0 }
   const ctx: Ctx = { state, events: [], rng, cfg, attacks: ATTACKS, abilities: ABILITIES, statuses: STATUSES }
 
@@ -94,7 +94,7 @@ export function createBattle(opts: BattleOptions): Ctx {
       role: u.role, hex: u.hex, hp: u.hp, terrain: state.terrain[u.hex],
     })
   }
-  emit(ctx, 'map.loaded', `map.${mapId}`, { mapId, hills: state.terrain.filter((t) => t === 1).length })
+  emit(ctx, 'map.loaded', mapId, { mapId, hills: state.terrain.filter((t) => t === 1).length })
   return ctx
 }
 
@@ -109,7 +109,7 @@ export function createCustomBattle(
     switches: { ...DEFAULT_CONFIG.switches, ...(opts.cfg?.switches ?? {}) },
   }
   const rng = makeRng(rootSeedOf(99, 0, opts.replicate ?? 0), opts.strict ? { strict: true } : undefined)
-  const mapId = opts.mapId ?? 'open'
+  const mapId = opts.mapId ?? 'map.open'
   const state: State = { turn: 0, phase: 'hero', mapId, terrain: terrainOf(mapId), units: [], outcome: null, seq: 0 }
   const ctx: Ctx = { state, events: [], rng, cfg, attacks: ATTACKS, abilities: ABILITIES, statuses: STATUSES }
   let id = 0
@@ -121,6 +121,6 @@ export function createCustomBattle(
       role: u.role, hex: u.hex, hp: u.hp, terrain: state.terrain[u.hex],
     })
   }
-  emit(ctx, 'map.loaded', `map.${mapId}`, { mapId, hills: state.terrain.filter((t) => t === 1).length })
+  emit(ctx, 'map.loaded', mapId, { mapId, hills: state.terrain.filter((t) => t === 1).length })
   return ctx
 }

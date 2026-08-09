@@ -13,7 +13,7 @@ export type MapDef = { id: string; name: string; note: string; rows: readonly st
 
 export const MAPS: readonly MapDef[] = [
   {
-    id: 'open',
+    id: 'map.open',
     name: 'Open Field',
     note: 'No terrain at all. The control map — keeps every earlier result comparable.',
     rows: [
@@ -23,7 +23,7 @@ export const MAPS: readonly MapDef[] = [
     ],
   },
   {
-    id: 'ridge',
+    id: 'map.ridge',
     name: 'The Ridge',
     note: 'A band across the middle. Both sides must cross it; whoever holds it shoots from height.',
     rows: [
@@ -33,7 +33,7 @@ export const MAPS: readonly MapDef[] = [
     ],
   },
   {
-    id: 'flanks',
+    id: 'map.flanks',
     name: 'Two Knolls',
     note: 'High ground on both wings, open in the centre. Rewards splitting, punishes the walk out.',
     rows: [
@@ -43,7 +43,7 @@ export const MAPS: readonly MapDef[] = [
     ],
   },
   {
-    id: 'highlands',
+    id: 'map.highlands',
     name: 'Highlands',
     note: 'Broken ground everywhere. Movement is expensive and nearly every hex is a firing position.',
     rows: [
@@ -70,6 +70,11 @@ export function terrainOf(mapId: string): number[] {
     }
   }
   return out
+}
+
+/** The id a terrain type answers to in a log line or a modifier source. */
+export function terrainIdOf(terrain: number): string {
+  return terrain === TERRAIN.HILLS ? 'terrain.hills' : 'terrain.open'
 }
 
 /** Movement points to enter a hex. Open 1, hills 2. */

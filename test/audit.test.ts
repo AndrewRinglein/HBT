@@ -14,7 +14,7 @@ describe('independent audit of logged battles', () => {
     let checkedDamage = 0, checkedAcc = 0, checkedStamina = 0, checkedMoves = 0
 
     for (let r = 0; r < 60; r++) {
-      const mapId = ['open','ridge','flanks','highlands'][r % 4]!
+      const mapId = ['map.open','map.ridge','map.flanks','map.highlands'][r % 4]!
       const ctx = createBattle({ replicate: r, enemyCount: r % 2 ? 4 : 8, mapId, strict: true })
       runBattle(ctx)
       const terr = terrainOf(mapId)

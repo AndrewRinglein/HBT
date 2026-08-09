@@ -89,3 +89,23 @@ index a2d8b8f..2c053fe 100644
   PASS  brought its own tests — test/status.test.ts
   PASS  existing tests untouched
   PASS  control battle unchanged — re-blessed — this item DECLARED it changes the control battle (3ca8bcab -> 2fb265a1)
+
+---
+## 2026-08-09 — map ids namespaced (`ridge` → `map.ridge`)
+
+Baseline re-blessed **2fb265a1 → 08392339**. Label-only, proven not asserted:
+the 25-battle control log is byte-identical once `"mapId":"map.open"` is
+substituted back to `"mapId":"open"` (`diff` = 0 lines).
+
+Also fixed at the same time: `map.loaded` was emitting `causeId: \`map.${mapId}\``,
+which is *why* the ids were bare — the prefix was being bolted on at the emit
+site. Namespacing the id and removing the template stopped it reading
+`map.map.open`.
+
+**Finding worth keeping:** the stat pipeline landed with the baseline hash
+unchanged, and I read that as proof it was behaviour-neutral. It was weaker
+proof than that. The control map is `map.open` — **zero terrain, therefore zero
+terrain modifiers, therefore no ledger rows for the baseline to notice.** The
+control map is blind to the entire terrain path by construction. Behaviour
+neutrality there was established by the 118 tests, not by the hash.
+Split the baseline: a second hash on `map.ridge` would have covered it.
