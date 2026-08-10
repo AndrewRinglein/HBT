@@ -4,6 +4,8 @@ Combat engine and simulation harness for *Heroes of Blight and Tragic*.
 
 **Read `COMBAT-FRAMEWORK.md` first** if you don't know what this project is. `COMBAT-SEQUENCE.md` has the order of operations. `ENGINE-CONSTITUTION.md` has the laws — read it before writing engine code.
 
+**The glossary is `../GLOSSARY.md`, one level up.** It is the naming authority for the whole game, not just the engine. There is deliberately no copy in this folder — a second copy forked from it once already and both were edited for hours before anyone noticed.
+
 ---
 
 ## Vocabulary — use these words, no others
