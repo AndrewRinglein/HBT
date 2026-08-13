@@ -123,7 +123,7 @@ export function heal(ctx: Ctx, unitId: number, amount: number, causeId: string):
 
 /** Damage from a status, not an attack. Same mutator, different cause. */
 export function statusDamage(ctx: Ctx, unitId: number, amount: number, causeId: string): void {
-  applyDamage(ctx, unitId, amount, causeId, { actor: null, statusId: causeId })
+  applyDamage(ctx, unitId, amount, causeId, { actor: null, statusId: causeId, damageType: 'true' })
 }
 
 /** Total of everything on this unit that absorbs incoming damage. */

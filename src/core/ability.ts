@@ -91,7 +91,7 @@ export function usePower(ctx: Ctx, userId: number, targetId: number, abilityId: 
     ledger: dmg.ledger.map((r) => ({ station: r.name, effectId: r.effectId, delta: r.delta })),
   })
 
-  applyDamage(ctx, targetId, dmg.value, a.id, { actor: userId, abilityId })
+  applyDamage(ctx, targetId, dmg.value, a.id, { actor: userId, abilityId, damageType: a.damageType })
 
   const readyAgain = ctx.state.turn + a.cooldown
   u.cooldowns[abilityId] = readyAgain

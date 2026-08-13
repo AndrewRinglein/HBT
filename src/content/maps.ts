@@ -52,6 +52,25 @@ export const MAPS: readonly MapDef[] = [
       '^..^..^^..^.', '..^^..^..^^.', '.^..^^..^..^', '..^..^..^^..',
     ],
   },
+  {
+    id: 'map.field',
+    name: 'The Field',
+    note: 'A 12x12 crop of MAP-01 (rows 4-15, cols 10-21), for the replay viewer. Terrain the engine does not yet model (forest, rocky, water) reads as open — the art shows it, the rules ignore it.',
+    rows: [
+      '..^^^^^...^.',
+      '.^^^......^.',
+      '..^^^.......',
+      '............',
+      '............',
+      '............',
+      '............',
+      '............',
+      '............',
+      '.......^^^^.',
+      '........^^^^',
+      '....^^.^^^^^',
+    ],
+  },
 ] as const
 
 export const MAP_PANEL = MAPS.map((m) => m.id)

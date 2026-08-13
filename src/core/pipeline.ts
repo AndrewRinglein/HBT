@@ -189,6 +189,9 @@ export function performAttack(ctx: Ctx, attackerId: number, targetId: number, at
 
   emit(ctx, 'attack.declared', a.id, {
     actor: attackerId, target: targetId, attackId, ordinal: ord,
+    // kind and damageType are on the event, not looked up from ATTACKS, so a
+    // renderer can pick an animation without importing game content.
+    kind: a.kind, damageType: a.damageType,
     distance: distance(at.hex, tg.hex), hitChance: pv.hitChance, damageOnHit: pv.damageOnHit,
   })
 
@@ -228,8 +231,8 @@ export function performAttack(ctx: Ctx, attackerId: number, targetId: number, at
   const hpBefore = tg.hp
   applyDamage(ctx, targetId, dmg.value, a.id,
     dmg.absorbed > 0
-      ? { actor: attackerId, attackId, crit, absorbed: dmg.absorbed }
-      : { actor: attackerId, attackId, crit })
+      ? { actor: attackerId, attackId, crit, damageType: a.damageType, absorbed: dmg.absorbed }
+      : { actor: attackerId, attackId, crit, damageType: a.damageType })
 
   // Riders are triggers, not stations: damage resolves completely, then they fire.
   if (a.applies && tg.lifeState === 'standing') {

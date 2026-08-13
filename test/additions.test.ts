@@ -37,7 +37,11 @@ describe('pass 2 — hills', () => {
     const counts = MAPS.map(m => terrainOf(m.id).filter(t => t === TERRAIN.HILLS).length)
     for (const m of MAPS) expect(terrainOf(m.id).length).toBe(144)
     expect(counts[0]).toBe(0)                    // open field is the control
-    expect(new Set(counts).size).toBe(MAPS.length)
+    // The RULE is that no two maps are the same board. Hill COUNT was a proxy for
+    // that, and it broke the moment two different maps happened to have 28 hills
+    // each (flanks and field). Assert the layout, which is what we actually mean.
+    const layouts = MAPS.map(m => terrainOf(m.id).join(''))
+    expect(new Set(layouts).size).toBe(MAPS.length)
   })
   it('gate 2 — hills cost 2 movement, open ground 1', () => {
     const ctx = createBattle({ replicate: 0, mapId: 'map.ridge' })

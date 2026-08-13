@@ -91,7 +91,8 @@ export function createBattle(opts: BattleOptions): Ctx {
   for (const u of state.units) {
     emit(ctx, 'unit.enter', `unit.${u.typeId}`, {
       actor: u.id, uid: u.uid, name: u.name, side: u.side, typeId: u.typeId,
-      role: u.role, hex: u.hex, hp: u.hp, terrain: state.terrain[u.hex],
+      role: u.role, hex: u.hex, hp: u.hp, maxHp: u.maxHp,
+      stamina: u.stamina, maxStamina: u.maxStamina, terrain: state.terrain[u.hex],
     })
   }
   emit(ctx, 'map.loaded', mapId, { mapId, hills: state.terrain.filter((t) => t === 1).length })
@@ -118,7 +119,8 @@ export function createCustomBattle(
   for (const u of state.units) {
     emit(ctx, 'unit.enter', `unit.${u.typeId}`, {
       actor: u.id, uid: u.uid, name: u.name, side: u.side, typeId: u.typeId,
-      role: u.role, hex: u.hex, hp: u.hp, terrain: state.terrain[u.hex],
+      role: u.role, hex: u.hex, hp: u.hp, maxHp: u.maxHp,
+      stamina: u.stamina, maxStamina: u.maxStamina, terrain: state.terrain[u.hex],
     })
   }
   emit(ctx, 'map.loaded', mapId, { mapId, hills: state.terrain.filter((t) => t === 1).length })
