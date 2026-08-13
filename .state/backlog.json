@@ -16,7 +16,7 @@
   "id": "status.burn",
   "kind": "status",
   "shape": "counter",
-  "spec": "Burn: same tick as poison, and halves all healing received while held. Source: a new terrain status is out of scope here — give the Mage's staff bolt a burn 2 rider. Declares changesBaseline.",
+  "spec": "Burn: same tick as poison, and halves all healing received while held. Source: a new terrain status is out of scope here \u2014 give the Mage's staff bolt a burn 2 rider. Declares changesBaseline.",
   "expect": "burn 3 deals 3/2/1; healing while burning is halved, rounded down",
   "changesBaseline": true,
   "status": "done",
@@ -109,5 +109,33 @@
   "shape": "data",
   "spec": "Support mode: holds at range, prefers using abilities on allies over attacking, retreats when threatened.",
   "expect": "exercises the support role, which is currently declared and unused"
+ },
+ {
+  "id": "movement.zone-of-control",
+  "kind": "movement",
+  "shape": "rule",
+  "spec": "Zone of Control: a standing unit exerts ZoC on its six adjacent hexes. Moving from a hex inside an enemy ZoC into another hex inside that same enemy's ZoC costs the mover its remaining movement (it may enter, then stops). Leaving a ZoC entirely provokes nothing yet \u2014 attacks of opportunity are a separate item. Downed and dead units exert no ZoC.",
+  "expect": "a zombie adjacent to a hero cannot be walked past freely: a unit that starts adjacent and moves to another hex still adjacent to that same zombie ends its movement there, and the log shows a move.stopped event naming the zoc",
+  "changesBaseline": true,
+  "note": "Rung 2 of the movement ladder in COMBAT-SEQUENCE.md. The hook point already exists in movement.ts (the per-step loop). Angela expected this to be built; it never was."
+ },
+ {
+  "id": "movement.attack-of-opportunity",
+  "kind": "movement",
+  "shape": "rule",
+  "needs": [
+   "movement.zone-of-control"
+  ],
+  "spec": "Leaving a hex adjacent to a standing enemy provokes one free attack from that enemy, resolved through performAttack with the enemy's cheapest melee attack, then settle. Once per enemy per activation.",
+  "expect": "a ranger that kites away from an adjacent zombie takes a hit doing so, and the log shows the attack with causeId aoo",
+  "changesBaseline": true
+ },
+ {
+  "id": "content.mage-staff",
+  "kind": "content",
+  "shape": "numbers",
+  "spec": "The Mage's basic attack is a strictly worse Ranger bow: same stat (precision 4), same reach 6, bonus 0 vs 1, and 10 less accuracy (80 vs 90). Measured over 300 battles on map.field it deals 2.16 damage per swing at 59% hit \u2014 below the ranger's 3.09 and barely above a zombie's 1.98. The Mage's Magic stat (2) contributes NOTHING to it. Decide whether the staff scales off Magic, or whether the Mage is deliberately a weak attacker between Arcane Bolt cooldowns.",
+  "expect": "a sweep comparing staff variants shows which one moves hero win rate, and mage.staff stops being the worst-value attack in the game",
+  "note": "Also: attack.mage.strike was used 0 times in 300 battles on map.field, the same dead-content finding as Massive Strike. Two of the Mage's three attacks are doing nothing."
  }
 ]

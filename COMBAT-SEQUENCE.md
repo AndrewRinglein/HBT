@@ -121,12 +121,20 @@ Movement, then the primary action.
 
 ### Movement — per step
 
-1. Check movement points — enough to enter?
-2. Attacks of opportunity fire → **settle**
-3. Enter the hex, spend the points
-4. Traps → **settle**
-5. Gain terrain status from the hex
-6. Recalculate vision and stealth
+| # | Rung | Built? |
+|---|---|---|
+| 1 | Check movement points — enough to enter? | **yes** |
+| 2 | Attacks of opportunity fire → **settle** | *not yet* |
+| 3 | Enter the hex, spend the points | **yes** |
+| 4 | Traps → **settle** | *not yet* |
+| 5 | Gain terrain status from the hex | *not yet* |
+| 6 | Recalculate vision and stealth | *not yet* |
+
+**The "Built?" column is not decoration.** This ladder was read as a description of
+what the engine does, and four of its six rungs are reserved slots — `movement.ts`
+has the comments marking where each goes, and nothing else. A sequence document that
+does not say which rungs exist will be believed. Every ladder below carries the same
+column for the same reason.
 
 Repeat per hex. Vision and stealth recalculate after **every** step, after everything else in that step. Reveal auras (e.g. *reveal all stealth within 4*) are evaluated here too.
 
