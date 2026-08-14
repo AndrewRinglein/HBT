@@ -80,6 +80,25 @@ export const MAPS: readonly MapDef[] = [
       'w.rrRh.hhhhh',
     ],
   },
+  {
+    id: 'map.thicket',
+    name: 'The Thicket',
+    note: 'A 12x12 crop of MAP-01 (rows 10-21, cols 0-11). Carries the only obstacles on the panel and a wide water channel — the map that makes terrain.passable testable at all.',
+    rows: [
+      'hhhhhhhhhwww',
+      '.hhhhwwwwwww',
+      '...hhh..wwww',
+      '...xh....wwr',
+      '...h....wwwr',
+      '...h....www.',
+      '......x..ww.',
+      '.........ww.',
+      '..x......www',
+      '...f.....www',
+      '.fff......ww',
+      '.ff.......ww',
+    ],
+  },
 ] as const
 
 export const MAP_PANEL = MAPS.map((m) => m.id)
@@ -118,8 +137,19 @@ export function terrainIdOf(terrain: number): string {
   return TERRAIN_ID[terrain] ?? `terrain.${terrain}`
 }
 
-/** IMPASSABLE — a cost no budget can pay. Not Infinity: Law 7, integers only. */
+/**
+ * IMPASSABLE — a cost no movement budget can ever pay.
+ *
+ * 999, not Infinity: Law 7 says integers only in combat math, and Infinity
+ * poisons every arithmetic comparison downstream. A budget is at most a unit's
+ * movement, which is single digits, so 999 is unreachable by construction.
+ */
 export const IMPASSABLE = 999
+
+/** Can a unit stand here at all? */
+export function isPassable(terrain: number): boolean {
+  return moveCostOf(terrain) < IMPASSABLE
+}
 
 /**
  * Movement points to enter a hex.
@@ -136,29 +166,43 @@ export const MOVE_COST: Readonly<Record<number, number>> = {
   [TERRAIN.ROCKY]: 2,         // switch terrain.rocky.moveCost
   [TERRAIN.ROCKY_HILLS]: 2,   // switch terrain.rocky-hills.moveCost
   [TERRAIN.WATER]: 3,         // switch terrain.water.passable — 3 = a tax, IMPASSABLE = a wall
-  [TERRAIN.OBSTACLE]: 1,      // stays cheap until terrain.passable lands; nothing blocks yet
+  [TERRAIN.OBSTACLE]: IMPASSABLE,  // a wrecked cart. If it protrudes, it blocks (MAP-01's legend)
 }
 
 export function moveCostOf(terrain: number): number {
   return MOVE_COST[terrain] ?? 1
 }
 
-/** Accuracy bonus for standing here. */
-export function accuracyBonusOf(terrain: number): number {
-  return terrain === TERRAIN.HILLS ? 10 : 0
+/**
+ * What the ground gives you, per stat.
+ *
+ * One table, four readers. These are SWITCHES — MAP-01 leaves `coverBonus` and
+ * `modifiers` null on purpose, saying outright that they are design decisions and
+ * not generated data. `SWITCHES.md` carries the questions; a sweep answers them.
+ *
+ * Note what this ISN'T: there is no new pipeline station, no branch on terrain
+ * inside resolveAccuracy, no special case at a point of use. Terrain feeds
+ * `terrainMods()` and flows through `effective()` like any other modifier, which
+ * is the whole reason the stat pipeline was built before these items were queued.
+ */
+const TERRAIN_STATS: Readonly<Record<number, Readonly<Record<string, number>>>> = {
+  [TERRAIN.HILLS]:       { accuracy: 10, reach: 2 },
+  [TERRAIN.ROCKY_HILLS]: { accuracy: 10, reach: 2 },   // high ground is high ground
+  [TERRAIN.FOREST]:      { dodge: 10, armor: 1 },      // switch terrain.forest.cover
+  [TERRAIN.ROCKY]:       { dodge: 5 },                 // switch terrain.rocky.cover
+  [TERRAIN.WATER]:       { accuracy: -10, dodge: -5 },  // switch terrain.water.penalty
 }
+
+const statOf = (terrain: number, stat: string): number => TERRAIN_STATS[terrain]?.[stat] ?? 0
+
+/** Accuracy bonus for standing here. */
+export function accuracyBonusOf(terrain: number): number { return statOf(terrain, 'accuracy') }
 
 /** Extra reach for ranged weapons fired from here. */
-export function reachBonusOf(terrain: number): number {
-  return terrain === TERRAIN.HILLS ? 2 : 0
-}
+export function reachBonusOf(terrain: number): number { return statOf(terrain, 'reach') }
 
 /** Harder to hit while standing here. */
-export function dodgeBonusOf(_terrain: number): number {
-  return 0   // forest will be +10
-}
+export function dodgeBonusOf(terrain: number): number { return statOf(terrain, 'dodge') }
 
 /** Flat physical mitigation while standing here. */
-export function armorBonusOf(_terrain: number): number {
-  return 0   // forest will be +1
-}
+export function armorBonusOf(terrain: number): number { return statOf(terrain, 'armor') }

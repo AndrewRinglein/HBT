@@ -3,7 +3,7 @@ import { makeRng, rootSeedOf, sample } from './rng.js'
 import type { Ctx, State, Unit, UnitDef, Config } from './types.js'
 import { DEFAULT_CONFIG } from './types.js'
 import { ATTACKS, ABILITIES, UNITS, FIRST_BATTLE } from '../content/index.js'
-import { terrainOf, terrainIdOf } from '../content/maps.js'
+import { terrainOf, terrainIdOf, isPassable } from '../content/maps.js'
 import { STATUSES } from '../content/statuses.js'
 import { emit } from './mutate.js'
 
@@ -77,8 +77,18 @@ export function createBattle(opts: BattleOptions): Ctx {
   const enemyCount = opts.enemyCount ?? FIRST_BATTLE.enemies.length
   const enemies = Array.from({ length: enemyCount }, () => 'zombie')
 
-  const cols = Array.from({ length: WIDTH }, (_, i) => i)
-  const enemyCols = opts.enemyHexes ? [] : sample(rng, cols, WIDTH, 'enemy-placement')
+  // Deployment must not put a unit inside a wall. Nothing checked this before
+  // obstacles existed; the first authored map with one on a deployment row would
+  // have placed a unit in it silently. Law 9: fail loudly instead.
+  const passableCols = (row: number) =>
+    Array.from({ length: WIDTH }, (_, i) => i).filter((c) => isPassable(state.terrain[hexId(c, row)] ?? 0))
+  const cols = passableCols(FIRST_BATTLE.heroRow)
+  const eCols = passableCols(FIRST_BATTLE.enemyRow ?? 0)
+  if (cols.length < heroes.length) {
+    throw new Error(`map '${mapId}' has only ${cols.length} passable hexes on the hero deployment row, need ${heroes.length}`)
+  }
+  if (eCols.length === 0) throw new Error(`map '${mapId}' has no passable hex on the enemy deployment row`)
+  const enemyCols = opts.enemyHexes ? [] : sample(rng, eCols, eCols.length, 'enemy-placement')
   const heroCols = opts.heroHexes ? [] : sample(rng, cols, heroes.length, 'hero-deployment')
 
   let id = 0

@@ -21,6 +21,9 @@ the default freezes and the baseline uses it. Without recording the answers,
 | `terrain.forest.moveCost` | Is cover slow, or free? | 2 | open |
 | `terrain.rocky.moveCost` | Rough ground: a tax, or just scenery? | 2 | open |
 | `terrain.water.passable` | Is water a wall or a toll? | cost 3 | open |
+| `terrain.forest.cover` | Does forest hide you (+dodge), armour you (+armor), or both? | +10 dodge, +1 armor | open |
+| `terrain.rocky.cover` | Is broken ground cover, or just slow? | +5 dodge | open |
+| `terrain.water.penalty` | Does wading cost accuracy, or only movement? | −10 acc, −5 dodge | open |
 | `hazardOnDowned` | Does terrain reach a downed hero? | not modelled — downed carry no statuses | answered |
 | `protectionStacking` | A pulse of 2 onto a hero holding 1 gives 3 or 2? | additive | answered |
 

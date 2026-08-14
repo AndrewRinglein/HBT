@@ -57,7 +57,9 @@
    "terrain.water"
   ],
   "note": "Costs are SWITCHES, recorded in SWITCHES.md: terrain.forest.moveCost, terrain.rocky.moveCost, terrain.water.passable. IMPASSABLE (999) is introduced but unused — terrain.passable is the item that uses it.",
-  "attempts": 1
+  "attempts": 1,
+  "status": "done-needs-review",
+  "sha": "013a373"
  },
  {
   "id": "terrain.passable",
@@ -68,7 +70,15 @@
   ],
   "spec": "An impassable hex cannot be entered: reachable() never returns it and pathTo() never routes through it. Obstacles are impassable. Water passability is a SWITCH. This is the first terrain that can make a hex unreachable, so it is also the first that can strand a unit.",
   "expect": "no path on map.field ever enters an obstacle hex across 200 battles, and no battle ends capped because a unit could not find a route",
-  "changesBaseline": true
+  "changesBaseline": true,
+  "probeIds": [
+   "terrain.obstacle"
+  ],
+  "note": "Adds map.thicket (MAP-01 rows 10-21, cols 0-11) because no existing map had an obstacle, so the rule was untestable. Also hardens deployment: it now refuses impassable hexes loudly instead of placing a unit inside a wall. | Probed NEUTRAL, and that is the assertion, not a dodge: for a WALL, zero interactions is the pass condition. terrain.obstacle must appear on the board (it does, 75x) and must never appear in a moved event. The stronger form of the same claim is in the test — 0 obstacle entries across 60 battles and 13645 moves, and 0 capped outcomes proving the wall does not strand the AI.",
+  "attempts": 1,
+  "neutral": true,
+  "status": "done-needs-review",
+  "sha": "b6da318"
  },
  {
   "id": "terrain.modifiers",
@@ -80,7 +90,14 @@
   "spec": "Terrain grants stat modifiers through the EXISTING stat pipeline — rows in terrainMods(), not new stations. Forest +10 dodge +1 armor. Water -10 accuracy. Rocky-hills as hills. Values are SWITCHES; map.json leaves coverBonus and modifiers null on purpose.",
   "expect": "a unit standing in forest shows terrain.forest rows in its effective(dodge) ledger, and hit rate against it drops measurably in a paired sweep",
   "changesBaseline": true,
-  "note": "This should be almost free. The stat pipeline landed for exactly this — if it needs a pipeline change, something is wrong with the design, not the item."
+  "note": "Zero changes to stats.ts or pipeline.ts — one table in maps.ts and four readers. Values are SWITCHES (terrain.forest.cover, terrain.rocky.cover, terrain.water.penalty). Baselines: map.open/ridge/flanks/highlands are UNTOUCHED because they contain only open and hills, whose values did not change. Only map.field and map.thicket move.",
+  "probeIds": [
+   "terrain.forest",
+   "terrain.water",
+   "terrain.rocky"
+  ],
+  "status": "done-needs-review",
+  "sha": "be0cbb2"
  },
  {
   "id": "movement.zone-of-control",
