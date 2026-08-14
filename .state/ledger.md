@@ -499,3 +499,31 @@ index 850a0e0..5c1601e 100644
 +})
 ```
 </details>
+
+
+---
+
+# ⚠ FINDINGS STRUCK — 2026-08-14
+
+Everything below this line that reads as a balance finding is **void**. It was
+computed from content this session invented, not from published design.
+
+| Struck | Why |
+|---|---|
+| "terrain swings hero win rate 18% → 41% → 30%" | move costs were mine, not §1.1's |
+| "water at cost 3 is a hero win button (95%)" | water is cost 2 in `GROUND-REQUIREMENTS.md` §1.1 |
+| "symmetric cover favours the outnumbering side" | derived from a +10 dodge on rocky that §1.1 never specified |
+| "move cost is the strongest ranged-vs-melee lever" | the ratio measured was between two invented numbers |
+| "Massive Strike is dead content" | Massive Strike itself is invented — `attack.warrior.massive` has no published source |
+| "the Mage staff is a worse Ranger bow" | both attacks are invented; also wrong on the design intent (magic vs physical) |
+| "`attack.mage.strike` used 0 times in 300 battles" | the attack is invented; the observation is about scaffolding |
+
+**The measurements were correctly executed. The subjects were not real.** A sweep
+is only a finding about the game if the content it ran on came through the content
+structure. `node tools/content-check.mjs` now says which content has.
+
+Kept, because they are about the ENGINE and not the content:
+- the RNG streams are independent (verified against the Slay the Spire bug)
+- 5000 battles with zero invalid states
+- the log is sufficient to drive a renderer with no content imports
+- `map.open` cannot see terrain changes — the reason the baseline is split per map

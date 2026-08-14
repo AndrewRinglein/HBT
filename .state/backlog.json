@@ -19,8 +19,9 @@
   "spec": "Burn: same tick as poison, and halves all healing received while held. Source: a new terrain status is out of scope here — give the Mage's staff bolt a burn 2 rider. Declares changesBaseline.",
   "expect": "burn 3 deals 3/2/1; healing while burning is halved, rounded down",
   "changesBaseline": true,
-  "status": "done",
-  "sha": "f7e2041"
+  "status": "reverted",
+  "sha": "f7e2041",
+  "reason": "1-EFFECTS-SETTLED.md marks status.burn not yet shaped and says not to reference it. Built anyway. Removed 2026-08-14; restore from f7e2041 when Effects publishes it."
  },
  {
   "id": "terrain.kinds",
@@ -106,7 +107,8 @@
   "spec": "A standing unit exerts ZoC on its six adjacent hexes. A unit that ENTERS a hex inside an enemy ZoC stops there — it may enter, then its movement ends. Downed and dead units exert nothing. THE AI IS DELIBERATELY BLIND TO THIS (Angela, 2026-08-13): it keeps its current scoring, picks a destination as if ZoC did not exist, and gets stopped short. That is accepted, not a defect.",
   "expect": "a unit pathing past an adjacent zombie ends its move on the first hex inside that zombie's ZoC, and the log carries move.stopped naming the unit that stopped it",
   "changesBaseline": true,
-  "note": "BECAUSE THE AI IS BLIND: reachable() still offers hexes the unit cannot actually reach, so units will routinely end up somewhere they did not choose. That MUST emit move.stopped. A unit ending somewhere unexplained with no log line is the exact silent-failure class the harness exists to catch."
+  "note": "BECAUSE THE AI IS BLIND: reachable() still offers hexes the unit cannot actually reach, so units will routinely end up somewhere they did not choose. That MUST emit move.stopped. A unit ending somewhere unexplained with no log line is the exact silent-failure class the harness exists to catch.",
+  "attempts": 1
  },
  {
   "id": "movement.attack-of-opportunity",
@@ -121,10 +123,10 @@
   "note": "HAZARD: this lands damage MID-MOVE, so settle can fire inside executeMove's per-step loop. A unit can die between two steps, and victory can trigger mid-activation. executeMove already breaks on lifeState !== standing; that guard is now load-bearing and needs its own test."
  },
  {
-  "id": "status.regen",
+  "id": "status.regeneration",
   "kind": "status",
   "shape": "counter",
-  "spec": "Regeneration: at End of Phase heal its value, then reduce by 1. Never above max HP. Source: a new Warrior class power 'Second Wind', 1 stamina, cooldown 4, grants regen 3 to self.",
+  "spec": "PUBLISHED: 1-EFFECTS-SETTLED.md — pool. Heals equal to its value at End of Phase, then -1. Poison mirrored, so one number reads both directions. Halved while status.burn is present (burn not yet shaped — do not implement that clause).",
   "expect": "regen 3 on a damaged unit heals 3 then 2 then 1, capped at max HP",
   "attempts": 1
  },
@@ -204,5 +206,22 @@
   "needs": [
    "unit.brute"
   ]
+ },
+ {
+  "id": "terrain.water-cleanses",
+  "kind": "terrain",
+  "shape": "rule",
+  "spec": "PUBLISHED: 1-EFFECTS-SETTLED.md — poison and regeneration are stripped by water at the occupant END OF ACTIVATION. The rung is specified; do not re-decide it.",
+  "expect": "a poisoned unit that walks into water loses the status, and the log shows status.expired with causeId terrain.water",
+  "changesBaseline": true,
+  "note": "I queued this asking which rung. It was already answered in the published file."
+ },
+ {
+  "id": "terrain.impassable-naming",
+  "kind": "naming",
+  "shape": "decision",
+  "spec": "GROUND-REQUIREMENTS.md §1.1 names it terrain.impassable. MAP-01's legend calls it Obstruction, glyph x. The engine uses terrain.obstacle. Two names for one thing — Angela picks, then it goes in GLOSSARY.md and the other is retired.",
+  "expect": "one id, in the glossary, and no occurrence of the other anywhere",
+  "note": "BRING TO ANGELA — a naming collision is hers, not a switch."
  }
 ]
