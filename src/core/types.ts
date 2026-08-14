@@ -5,7 +5,9 @@ export type Side = 'hero' | 'enemy'
 /** What kind of thing a unit is. Every AI can read this about every other unit. */
 export type Role = 'melee' | 'ranged' | 'support'
 /** Terrain layer 1. 0 = open ground. */
-export const TERRAIN = { OPEN: 0, HILLS: 1 } as const
+export const TERRAIN = {
+  OPEN: 0, HILLS: 1, FOREST: 2, ROCKY: 3, ROCKY_HILLS: 4, WATER: 5, OBSTACLE: 6,
+} as const
 export type LifeState = 'standing' | 'downed' | 'dead'
 export type DamageType = 'physical' | 'magic' | 'true'
 export type Phase = 'hero' | 'enemy'

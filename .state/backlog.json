@@ -28,8 +28,16 @@
   "shape": "plumbing",
   "spec": "Add forest, rocky, rocky-hills, water, obstacle to TERRAIN alongside OPEN and HILLS, and teach terrainOf() their glyphs (f r R w x) from MAP-01's legend. NO RULES YET \u2014 every new kind behaves exactly like open. This item is pure plumbing and must be provably behaviour-neutral.",
   "expect": "map.field loads its real 7-terrain layout instead of collapsing to open/hills, and all four original baselines are BYTE-IDENTICAL because no existing map contains a new glyph",
-  "changesBaseline": false,
-  "note": "If a baseline moves, the plumbing leaked into behaviour. That is the whole point of doing this as its own item."
+  "changesBaseline": true,
+  "note": "PLUMBING \u2014 declared neutral: the five new kinds must appear in the log and must NOT change state. Baselines: all five moved, and the reason is LABEL-ONLY \u2014 map.loaded now carries a terrain census by id instead of a bare hills count, because a log holding raw integers cannot tell forest from water. Proven: rebuilding the old map.loaded payload from the new one reproduces fed687ad / 9f243cac / eaa096cb / 4c71eb68 exactly. map.field additionally moved because its terrain array now carries real values. terrain.obstacle is NOT probed: no authored map contains one yet, so it genuinely is not wired in \u2014 it arrives with terrain.passable, which must add one to a map.",
+  "attempts": 2,
+  "neutral": true,
+  "probeIds": [
+   "terrain.forest",
+   "terrain.rocky",
+   "terrain.rocky-hills",
+   "terrain.water"
+  ]
  },
  {
   "id": "terrain.movecost",

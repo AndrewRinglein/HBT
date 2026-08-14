@@ -3,7 +3,7 @@ import { makeRng, rootSeedOf, sample } from './rng.js'
 import type { Ctx, State, Unit, UnitDef, Config } from './types.js'
 import { DEFAULT_CONFIG } from './types.js'
 import { ATTACKS, ABILITIES, UNITS, FIRST_BATTLE } from '../content/index.js'
-import { terrainOf } from '../content/maps.js'
+import { terrainOf, terrainIdOf } from '../content/maps.js'
 import { STATUSES } from '../content/statuses.js'
 import { emit } from './mutate.js'
 
@@ -43,6 +43,20 @@ export type BattleOptions = {
   mapId?: string
   /** Stat overrides by unit type. Does NOT change the seed, so arms stay paired. */
   overrides?: Readonly<Record<string, Partial<UnitDef>>>
+}
+
+/**
+ * What the board is MADE OF, by terrain id. Goes on map.loaded.
+ *
+ * Before this, map.loaded carried `hills: 14` and nothing else, so a log could not
+ * tell forest from rocky from water — the terrain array holds bare integers and a
+ * reader has no enum. A census by id makes the board self-describing, and makes
+ * "is this terrain wired in?" answerable from the log (Law 12).
+ */
+export function terrainCensus(terrain: readonly number[]): Record<string, number> {
+  const out: Record<string, number> = {}
+  for (const t of terrain) { const k = terrainIdOf(t); out[k] = (out[k] ?? 0) + 1 }
+  return out
 }
 
 export function createBattle(opts: BattleOptions): Ctx {
@@ -95,7 +109,7 @@ export function createBattle(opts: BattleOptions): Ctx {
       stamina: u.stamina, maxStamina: u.maxStamina, terrain: state.terrain[u.hex],
     })
   }
-  emit(ctx, 'map.loaded', mapId, { mapId, hills: state.terrain.filter((t) => t === 1).length })
+  emit(ctx, 'map.loaded', mapId, { mapId, ...terrainCensus(state.terrain) })
   return ctx
 }
 
@@ -123,6 +137,6 @@ export function createCustomBattle(
       stamina: u.stamina, maxStamina: u.maxStamina, terrain: state.terrain[u.hex],
     })
   }
-  emit(ctx, 'map.loaded', mapId, { mapId, hills: state.terrain.filter((t) => t === 1).length })
+  emit(ctx, 'map.loaded', mapId, { mapId, ...terrainCensus(state.terrain) })
   return ctx
 }

@@ -76,8 +76,18 @@ check('full test suite', () => {
 })
 
 check('gate 1 — the id appears in a real battle', () => {
-  const r = tryRun(`npx tsx tools/probe.mts ${id}`)
-  return { ok: r.ok, note: r.out.trim().split('\n').pop() ?? '' }
+  // An item may nominate the ids to probe when its own id is not a content id
+  // (a plumbing item like terrain.kinds introduces terrain.forest, not itself).
+  const ids = item.probeIds ?? [id]
+  const flag = item.neutral ? ' --neutral' : ''
+  const notes = []
+  for (const probeId of ids) {
+    const r = tryRun(`npx tsx tools/probe.mts ${probeId}${flag}`)
+    const line = r.out.trim().split('\n').pop() ?? ''
+    if (!r.ok) return { ok: false, note: `${probeId}: ${line}` }
+    notes.push(`${probeId}: ${line}`)
+  }
+  return { ok: true, note: item.neutral ? `NEUTRAL — ${notes.length} ids present, none changed state` : notes.join(' · ') }
 })
 
 check('brought its own tests', () => {
