@@ -134,8 +134,11 @@
   "id": "content.mage-staff",
   "kind": "content",
   "shape": "numbers",
-  "spec": "The Mage's basic attack is a strictly worse Ranger bow: same stat (precision 4), same reach 6, bonus 0 vs 1, and 10 less accuracy (80 vs 90). Measured over 300 battles on map.field it deals 2.16 damage per swing at 59% hit \u2014 below the ranger's 3.09 and barely above a zombie's 1.98. The Mage's Magic stat (2) contributes NOTHING to it. Decide whether the staff scales off Magic, or whether the Mage is deliberately a weak attacker between Arcane Bolt cooldowns.",
-  "expect": "a sweep comparing staff variants shows which one moves hero win rate, and mage.staff stops being the worst-value attack in the game",
-  "note": "Also: attack.mage.strike was used 0 times in 300 battles on map.field, the same dead-content finding as Massive Strike. Two of the Mage's three attacks are doing nothing."
+  "spec": "NOT A DEFECT \u2014 Angela: the Mage/Ranger split is intentional. The Mage deals MAGIC damage and the Ranger PHYSICAL, which diverge sharply once enemies carry armor; and the Mage has Arcane Bolt and more to come, while the Ranger is essentially just its attack. Raw damage-per-swing is therefore the wrong yardstick. What is still worth measuring: the staff is only distinguishable from the bow against a target with armor > 0, and every enemy in the game today has armor 0. Add an armored enemy, then sweep staff vs bow against it.",
+  "expect": "against an armored enemy the Mage out-damages the Ranger, and against an unarmored one it does not \u2014 the split is visible in the sweep, not just in the design",
+  "note": "Open question that IS real: attack.mage.strike was used 0 times in 300 battles, the same dead-content shape as Massive Strike. The melee option on a ranged unit may never be worth taking.",
+  "needs": [
+   "unit.brute"
+  ]
  }
 ]
