@@ -79,7 +79,7 @@ describe('status.poison', () => {
     expect(dmg).toBeGreaterThan(0)
   })
 
-  it('poison does not affect healing — only burn does that', () => {
+  it('poison does not affect healing', () => {
     const ctx = isolated()
     ctx.state.units[0]!.hp = 4
     applyStatus(ctx, 0, 'status.poison', 3, 'test')
@@ -96,69 +96,30 @@ describe('status.poison', () => {
   })
 })
 
-describe('status.burn', () => {
-  const iso = () => createCustomBattle(
-    [{ type: 'warrior', hex: hexId(0, 11) }], [{ type: 'zombie', hex: hexId(11, 0) }])
-
-  it('gate 2 — 3 burn deals 3 then 2 then 1, like poison', () => {
-    const ctx = iso()
-    ctx.state.units[0]!.maxHp = 99; ctx.state.units[0]!.hp = 99
-    applyStatus(ctx, 0, 'status.burn', 3, 'test')
-    const from = ctx.events.length
-    for (let i = 0; i < 4; i++) tickStatuses(ctx, 'hero')
-    expect(ctx.events.slice(from)
-      .filter(e => e.type === 'damage.applied' && e.causeId === 'status.burn')
-      .map(e => e['amount'] as number)).toEqual([3, 2, 1])
-  })
-
-  it('gate 2 — burn halves healing, truncated; poison does not', () => {
-    const ctx = iso()
-    ctx.state.units[0]!.hp = 2
-    applyStatus(ctx, 0, 'status.burn', 3, 'test')
-    expect(heal(ctx, 0, 5, 'test')).toBe(2)     // 5 -> 2, truncated
-    ctx.state.units[0]!.hp = 2
-    expect(heal(ctx, 0, 4, 'test')).toBe(2)     // 4 -> 2
-  })
-
-  it('gate 2 — burn and poison stack independently and both tick', () => {
-    const ctx = iso()
-    ctx.state.units[0]!.maxHp = 99; ctx.state.units[0]!.hp = 99
-    applyStatus(ctx, 0, 'status.burn', 2, 'test')
-    applyStatus(ctx, 0, 'status.poison', 3, 'test')
-    const from = ctx.events.length
-    tickStatuses(ctx, 'hero')
-    const ticks = ctx.events.slice(from).filter(e => e.type === 'damage.applied')
-    expect(ticks.map(e => e.causeId).sort()).toEqual(['status.burn', 'status.poison'])
-    expect(99 - ctx.state.units[0]!.hp).toBe(5)
-  })
-
-  it('gate 1 — the Mage actually burns things in real battles', () => {
-    let applied = 0, ticked = 0
-    for (let r = 0; r < 40; r++) {
-      const ctx = createBattle({ replicate: r, enemyCount: 8, strict: true })
-      runBattle(ctx)
-      for (const e of ctx.events) {
-        if (e.type === 'status.applied' && e['statusId'] === 'status.burn') applied++
-        if (e.type === 'damage.applied' && e.causeId === 'status.burn') ticked++
-      }
-    }
-    expect(applied).toBeGreaterThan(0)
-    expect(ticked).toBeGreaterThan(0)
-  })
-})
+// status.burn REMOVED 2026-08-14. `1-EFFECTS-SETTLED.md` says it "is not yet
+// shaped, so do not reference it from another session yet" — it was implemented here
+// anyway. Its tests are removed with it rather than weakened: an unpublished status
+// should not have a verify scenario, because passing one implies it is real.
+// Restore from git (f7e2041) when Effects publishes it.
 
 describe('the status system itself', () => {
   const iso = () => createCustomBattle(
     [{ type: 'warrior', hex: hexId(0, 11) }], [{ type: 'zombie', hex: hexId(11, 0) }])
 
-  it('one pass: every status acts and decays together, whatever its shape', () => {
+  // This test needed TWO statuses to prove one pass handles them together, and the
+  // second one was status.burn. With burn removed there is only one published
+  // status, so the multi-status claim cannot be tested at all right now — it is
+  // restored, not deleted, the moment Effects publishes a second one.
+  it.todo('one pass: every status acts and decays together — needs a second published status')
+
+  it('stacking is additive, and one pass ticks and decays once', () => {
     const ctx = iso()
     ctx.state.units[0]!.maxHp = 99; ctx.state.units[0]!.hp = 99
     applyStatus(ctx, 0, 'status.poison', 2, 'test')
-    applyStatus(ctx, 0, 'status.burn', 2, 'test')
+    applyStatus(ctx, 0, 'status.poison', 2, 'test')
+    expect(valueOf(ctx.state.units[0]!, 'status.poison')).toBe(4)
     tickStatuses(ctx, 'hero')
-    expect(valueOf(ctx.state.units[0]!, 'status.poison')).toBe(1)
-    expect(valueOf(ctx.state.units[0]!, 'status.burn')).toBe(1)
+    expect(valueOf(ctx.state.units[0]!, 'status.poison')).toBe(3)
   })
 
   it('resolveDamage stays PURE — a preview never spends an absorbing status', () => {

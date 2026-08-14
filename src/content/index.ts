@@ -4,35 +4,60 @@
 
 import type { AbilityDef, AttackDef, UnitDef } from '../core/types.js'
 
+// ─────────────────────────────────────────────────────────────────────────────
+// PROVISIONAL CONTENT — NOT PUBLISHED, NOT DESIGN
+//
+// Every attack and unit in this file was invented by an engine session to have
+// something to run the harness against. NONE of it comes through the content
+// structure: sessions 2 (Actions) and 3 (Units) have not published these ids in
+// `2-ACTIONS-SETTLED.md` or `3-UNITS-SETTLED.md`, and until they do, these numbers
+// are scaffolding.
+//
+// WHAT THIS MEANS IN PRACTICE:
+//   · No balance conclusion drawn from these numbers is a finding about the game.
+//     Several were reported as findings on 2026-08-14. They were not.
+//   · Changing a number here is not a design change. It is moving scaffolding.
+//   · When a session publishes the real rows, these are REPLACED, not reconciled.
+//
+// `node tools/content-check.mjs` lists exactly which ids are in this state.
+// ─────────────────────────────────────────────────────────────────────────────
+
+
 export const ATTACKS: Readonly<Record<string, AttackDef>> = {
   'attack.zombie.basic': {
+    // PROVISIONAL — no published source
     id: 'attack.zombie.basic', name: 'Rotting Bite', kind: 'melee',
     damageType: 'physical', bonus: 0, stat: 'strength', reach: 1, staminaCost: 0,
     // Poison needed a source. Declared as a baseline change in the backlog.
     applies: { statusId: 'status.poison', value: 2 },
   },
   'attack.warrior.axe': {
+    // PROVISIONAL — no published source
     id: 'attack.warrior.axe', name: 'Axe', kind: 'melee',
     damageType: 'physical', bonus: 1, stat: 'strength', reach: 1, staminaCost: 1,
   },
   'attack.warrior.massive': {
+    // PROVISIONAL — no published source
     id: 'attack.warrior.massive', name: 'Massive Strike', kind: 'melee',
     damageType: 'physical', bonus: 3, stat: 'strength', reach: 1, staminaCost: 2,
   },
   'attack.ranger.bow': {
+    // PROVISIONAL — no published source
     id: 'attack.ranger.bow', name: 'Bow', kind: 'ranged',
     damageType: 'physical', bonus: 1, stat: 'precision', reach: 6, staminaCost: 1,
   },
   'attack.mage.staff': {
+    // PROVISIONAL — no published source
     id: 'attack.mage.staff', name: 'Staff (bolt)', kind: 'ranged',
     damageType: 'magic', bonus: 0, stat: 'precision', reach: 6, staminaCost: 1,
-    applies: { statusId: 'status.burn', value: 2 },
   },
   'attack.mage.strike': {
+    // PROVISIONAL — no published source
     id: 'attack.mage.strike', name: 'Staff (strike)', kind: 'melee',
     damageType: 'physical', bonus: 0, stat: 'strength', reach: 1, staminaCost: 1,
   },
   'attack.punch': {
+    // PROVISIONAL — no published source
     id: 'attack.punch', name: 'Punch', kind: 'melee',
     damageType: 'physical', bonus: -1, stat: 'strength', reach: 1, staminaCost: 0,
   },

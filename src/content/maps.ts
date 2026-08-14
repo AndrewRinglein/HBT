@@ -152,48 +152,69 @@ export function isPassable(terrain: number): boolean {
 }
 
 /**
- * Movement points to enter a hex.
+ * Terrain is COMPOSED from ground traits — cost AND modifiers.
  *
- * These are SWITCHES, not decisions. MAP-01 leaves `moveCost` null on purpose —
- * its own note says these are design questions, not generated data. Each default
- * below is what runs today; `SWITCHES.md` carries the question, and a sweep
- * answers it. Changing a number here is changing a switch, not fixing a bug.
+ * SOURCE OF TRUTH: `GROUND-REQUIREMENTS.md` §1.1 (Angela, 2026-08-13). Every number
+ * here is copied from that table. None of them are chosen in this file, and none of
+ * them are switches — a value with a stated owner is not an open question.
+ *
+ * That table marks Rocky Hills "composed", and composition covers the MODIFIERS as
+ * well as the cost: it is rock and a climb, so it carries both sets. That is why
+ * traits exist rather than a hand-written row per combination.
  */
-export const MOVE_COST: Readonly<Record<number, number>> = {
-  [TERRAIN.OPEN]: 1,
-  [TERRAIN.HILLS]: 2,
-  [TERRAIN.FOREST]: 2,        // switch terrain.forest.moveCost
-  [TERRAIN.ROCKY]: 2,         // switch terrain.rocky.moveCost
-  [TERRAIN.ROCKY_HILLS]: 2,   // switch terrain.rocky-hills.moveCost
-  [TERRAIN.WATER]: 3,         // switch terrain.water.passable — 3 = a tax, IMPASSABLE = a wall
-  [TERRAIN.OBSTACLE]: IMPASSABLE,  // a wrecked cart. If it protrudes, it blocks (MAP-01's legend)
+export type Trait = 'rough' | 'elevated' | 'wet'
+type Mods = { moveCost: number
+  accuracy?: number; reach?: number; dodge?: number; armor?: number; resist?: number }
+
+/** GROUND-REQUIREMENTS.md §1.1. Change these only from that document. */
+export const TRAIT: Readonly<Record<Trait, Mods>> = {
+  rough:    { moveCost: 1, accuracy: -5, armor: 1, resist: 1 },  // rocky: 2, -5 Acc, +1 Armor, +1 Resist
+  elevated: { moveCost: 1, accuracy: 10, reach: 2 },             // hills: 2, +10 Acc, +2 Reach
+  wet:      { moveCost: 1, accuracy: -10 },                      // water: 2, -10 Acc (+ strips Burn/Poison — NOT BUILT)
 }
 
-export function moveCostOf(terrain: number): number {
-  return MOVE_COST[terrain] ?? 1
+/** What each terrain is made of. */
+export const TRAITS: Readonly<Record<number, ReadonlyArray<Trait>>> = {
+  [TERRAIN.OPEN]: [],
+  [TERRAIN.HILLS]: ['elevated'],
+  [TERRAIN.FOREST]: [],                            // stated directly below — see EXTRA
+  [TERRAIN.ROCKY]: ['rough'],
+  [TERRAIN.ROCKY_HILLS]: ['rough', 'elevated'],    // composed, per §1.1
+  [TERRAIN.WATER]: ['wet'],
+  [TERRAIN.OBSTACLE]: [],
 }
 
 /**
- * What the ground gives you, per stat.
- *
- * One table, four readers. These are SWITCHES — MAP-01 leaves `coverBonus` and
- * `modifiers` null on purpose, saying outright that they are design decisions and
- * not generated data. `SWITCHES.md` carries the questions; a sweep answers them.
- *
- * Note what this ISN'T: there is no new pipeline station, no branch on terrain
- * inside resolveAccuracy, no special case at a point of use. Terrain feeds
- * `terrainMods()` and flows through `effective()` like any other modifier, which
- * is the whole reason the stat pipeline was built before these items were queued.
+ * Modifiers a terrain carries that its traits do not explain.
+ * Forest is +10 Dodge, +1 Armor at cost 2 — a shape no other row shares, so it is
+ * stated rather than given an invented 'wooded' trait nobody asked for.
  */
-const TERRAIN_STATS: Readonly<Record<number, Readonly<Record<string, number>>>> = {
-  [TERRAIN.HILLS]:       { accuracy: 10, reach: 2 },
-  [TERRAIN.ROCKY_HILLS]: { accuracy: 10, reach: 2 },   // high ground is high ground
-  [TERRAIN.FOREST]:      { dodge: 10, armor: 1 },      // switch terrain.forest.cover
-  [TERRAIN.ROCKY]:       { dodge: 5 },                 // switch terrain.rocky.cover
-  [TERRAIN.WATER]:       { accuracy: -10, dodge: -5 },  // switch terrain.water.penalty
+const EXTRA: Readonly<Record<number, Mods>> = {
+  [TERRAIN.FOREST]: { moveCost: 1, dodge: 10, armor: 1 },
 }
 
-const statOf = (terrain: number, stat: string): number => TERRAIN_STATS[terrain]?.[stat] ?? 0
+type Stat = 'accuracy' | 'reach' | 'dodge' | 'armor' | 'resist'
+const STATS: Stat[] = ['accuracy', 'reach', 'dodge', 'armor', 'resist']
+
+function composed(terrain: number): Mods {
+  const out: Mods = { moveCost: 1 }
+  const add = (d?: Mods) => {
+    if (!d) return
+    out.moveCost += d.moveCost
+    for (const k of STATS) if (d[k]) out[k] = (out[k] ?? 0) + d[k]!
+  }
+  for (const t of TRAITS[terrain] ?? []) add(TRAIT[t])
+  add(EXTRA[terrain])
+  return out
+}
+
+export function moveCostOf(terrain: number): number {
+  if (terrain === TERRAIN.OBSTACLE) return IMPASSABLE
+  return composed(terrain).moveCost
+}
+
+const statOf = (terrain: number, stat: Stat): number =>
+  terrain === TERRAIN.OBSTACLE ? 0 : (composed(terrain)[stat] ?? 0)
 
 /** Accuracy bonus for standing here. */
 export function accuracyBonusOf(terrain: number): number { return statOf(terrain, 'accuracy') }
@@ -206,3 +227,6 @@ export function dodgeBonusOf(terrain: number): number { return statOf(terrain, '
 
 /** Flat physical mitigation while standing here. */
 export function armorBonusOf(terrain: number): number { return statOf(terrain, 'armor') }
+
+/** Flat magic mitigation while standing here. */
+export function resistBonusOf(terrain: number): number { return statOf(terrain, 'resist') }

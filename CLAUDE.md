@@ -4,8 +4,6 @@ Combat engine and simulation harness for *Heroes of Blight and Tragic*.
 
 **Read `COMBAT-FRAMEWORK.md` first** if you don't know what this project is. `COMBAT-SEQUENCE.md` has the order of operations. `ENGINE-CONSTITUTION.md` has the laws — read it before writing engine code.
 
-**The glossary is `../GLOSSARY.md`, one level up.** It is the naming authority for the whole game, not just the engine. There is deliberately no copy in this folder — a second copy forked from it once already and both were edited for hours before anyone noticed.
-
 ---
 
 ## Vocabulary — use these words, no others
@@ -88,6 +86,32 @@ Use the `add-and-verify` skill. Don't improvise the loop.
 ## Never hand-edit
 
 Anything under `generated/`. Regenerate it.
+
+---
+
+## Before writing ANY content value: find its owner
+
+**Grep the design folder for the id first.** `../GROUND-REQUIREMENTS.md`,
+`../GAME-DESIGN.md`, `../GAME-ARCHITECTURE.md`, the numbered `*-SETTLED.md` files,
+and `MAP-01/map.md` are all content sources. The engine folder is not where content
+is decided.
+
+```
+grep -rn "terrain.rocky" .. --include=*.md
+```
+
+**A `null` in a data file does not mean undecided.** `MAP-01/map.json` has
+`moveCost: null` with a note saying these are design decisions — that means *not in
+this file*, not *nobody has chosen*. The numbers were in
+`GROUND-REQUIREMENTS.md` §1.1 the whole time.
+
+This is not hypothetical: seven terrain rows were invented on 2026-08-14 while that
+table sat one directory up, dated a day and a half earlier. Three were wrong, they
+went into a balance sweep, and the wrong numbers were reported to Angela as findings.
+
+**A value with a stated owner is not a switch.** If a document names it, copy it and
+cite the document in a comment. `SWITCHES.md` is for questions nobody has answered —
+putting an answered one there is how it stops being checked.
 
 ---
 

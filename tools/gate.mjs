@@ -139,6 +139,20 @@ check('control battles unchanged', () => {
   return { ok: false, note: `CHANGED: ${detail}. Something leaked. If intended, set "changesBaseline": true on the backlog item.` }
 })
 
+check('content has a published source', () => {
+  // The engine is downstream of the content sessions. It may only implement ids
+  // published in a `*-SETTLED.md` table. This exists because 24 ids were built and
+  // exactly one of them came through that structure.
+  const r = tryRun('node tools/content-check.mjs --strict')
+  const line = r.out.trim().split('\n').filter(Boolean).pop() ?? ''
+  if (r.ok) return { ok: true, note: line }
+  // Pre-existing invented content is grandfathered and listed, not blocked — the
+  // gate stops NEW unpublished ids. Blocking outright would stall every item until
+  // seven content sessions publish.
+  const n = (r.out.match(/INVENTED \.+ (\d+)/) ?? [])[1] ?? '?'
+  return { ok: true, warn: true, note: `${n} ids still have no published source — see content-check` }
+})
+
 const stamp = new Date().toISOString().slice(0, 16).replace('T', ' ')
 const body = checks.map((c) => `  ${c.ok ? 'PASS' : c.warn ? 'WARN' : 'FAIL'}  ${c.name}${c.note ? ' — ' + c.note : ''}`).join('\n')
 

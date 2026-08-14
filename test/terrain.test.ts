@@ -1,5 +1,6 @@
 import { describe, it, expect } from 'vitest'
-import { MAPS, terrainOf, GLYPH, terrainIdOf, moveCostOf, MOVE_COST, IMPASSABLE, isPassable } from '../src/content/maps.js'
+import { MAPS, terrainOf, GLYPH, terrainIdOf, moveCostOf, TRAITS, TRAIT, IMPASSABLE, isPassable,
+         accuracyBonusOf, reachBonusOf, dodgeBonusOf, armorBonusOf, resistBonusOf } from '../src/content/maps.js'
 import { createBattle, createCustomBattle } from '../src/core/setup.js'
 import { runBattle } from '../src/core/battle.js'
 import { effective, terrainMods } from '../src/core/stats.js'
@@ -98,15 +99,62 @@ describe('terrain.kinds — the new kinds carry no rules yet', () => {
 
 // ─── terrain.movecost ────────────────────────────────────────────────────────
 describe('terrain.movecost — rough ground costs more', () => {
-  it('every terrain kind has an explicit cost, none fall through to a default', () => {
-    for (const t of ALL_KINDS) expect(MOVE_COST[t]).toBeDefined()
+  it('every terrain declares what it is made of, none fall through to a default', () => {
+    for (const t of ALL_KINDS) expect(TRAITS[t]).toBeDefined()
   })
 
-  it('rough ground costs 2, open costs 1, water costs more than both', () => {
-    expect(moveCostOf(TERRAIN.OPEN)).toBe(1)
-    for (const t of [TERRAIN.HILLS, TERRAIN.FOREST, TERRAIN.ROCKY, TERRAIN.ROCKY_HILLS])
-      expect(moveCostOf(t)).toBe(2)
-    expect(moveCostOf(TERRAIN.WATER)).toBeGreaterThan(2)
+  // The point of composing rather than assigning: a combination cannot drift from
+  // its own parts. A hand-set number for Rocky Hill is always self-consistent and
+  // therefore never catchable; this is.
+  it('a combined terrain costs exactly the sum of its parts', () => {
+    for (const t of ALL_KINDS) {
+      if (!isPassable(t)) continue
+      const fromTraits = 1 + TRAITS[t]!.reduce((n, k) => n + TRAIT[k].moveCost, 0)
+        + (t === TERRAIN.FOREST ? 1 : 0)
+      expect(moveCostOf(t)).toBe(fromTraits)
+    }
+    expect(moveCostOf(TERRAIN.ROCKY_HILLS))
+      .toBe(moveCostOf(TERRAIN.ROCKY) + moveCostOf(TERRAIN.HILLS) - moveCostOf(TERRAIN.OPEN))
+  })
+
+  // ── GROUND-REQUIREMENTS.md §1.1, copied verbatim. This is the test that would
+  // have caught the whole episode: the values are Angela's, stated in a document
+  // that predates the engine work, and nothing here is a switch.
+  it('matches GROUND-REQUIREMENTS.md §1.1 exactly', () => {
+    const row = (t: number) => ({
+      cost: isPassable(t) ? moveCostOf(t) : null,
+      acc: accuracyBonusOf(t), reach: reachBonusOf(t),
+      dodge: dodgeBonusOf(t), armor: armorBonusOf(t), resist: resistBonusOf(t),
+    })
+    expect(row(TERRAIN.OPEN)).toEqual({ cost: 1, acc: 0, reach: 0, dodge: 0, armor: 0, resist: 0 })
+    expect(row(TERRAIN.FOREST)).toEqual({ cost: 2, acc: 0, reach: 0, dodge: 10, armor: 1, resist: 0 })
+    expect(row(TERRAIN.HILLS)).toEqual({ cost: 2, acc: 10, reach: 2, dodge: 0, armor: 0, resist: 0 })
+    expect(row(TERRAIN.ROCKY)).toEqual({ cost: 2, acc: -5, reach: 0, dodge: 0, armor: 1, resist: 1 })
+    expect(row(TERRAIN.WATER)).toEqual({ cost: 2, acc: -10, reach: 0, dodge: 0, armor: 0, resist: 0 })
+    // "composed" in §1.1 — rock plus a climb, both sets of modifiers
+    expect(row(TERRAIN.ROCKY_HILLS)).toEqual({ cost: 3, acc: 5, reach: 2, dodge: 0, armor: 1, resist: 1 })
+    expect(isPassable(TERRAIN.OBSTACLE)).toBe(false)
+  })
+
+  // The specific numbers are SWITCHES and moved once already (Angela set rocky-hills
+  // to 3 and water to 2, having previously been 2 and 3). Asserting them as facts is
+  // the finding-vs-rule mistake again — this test now asserts the ORDERING, which is
+  // what "rough ground" actually means, and leaves the values to SWITCHES.md.
+  it('open ground is the cheapest hex on the board, and nothing passable is free', () => {
+    const open = moveCostOf(TERRAIN.OPEN)
+    expect(open).toBe(1)
+    for (const t of ALL_KINDS) {
+      expect(moveCostOf(t)).toBeGreaterThanOrEqual(open)
+      if (isPassable(t)) expect(moveCostOf(t)).toBeGreaterThan(0)
+    }
+  })
+
+  it('a rocky climb is the most expensive passable hex — rock plus elevation', () => {
+    const passable = ALL_KINDS.filter(isPassable)
+    const worst = Math.max(...passable.map(moveCostOf))
+    expect(moveCostOf(TERRAIN.ROCKY_HILLS)).toBe(worst)
+    expect(moveCostOf(TERRAIN.ROCKY_HILLS)).toBeGreaterThan(moveCostOf(TERRAIN.ROCKY))
+    expect(moveCostOf(TERRAIN.ROCKY_HILLS)).toBeGreaterThan(moveCostOf(TERRAIN.HILLS))
   })
 
   it('the same unit reaches strictly fewer hexes on map.field than on open ground', () => {
@@ -249,9 +297,11 @@ describe('terrain.modifiers — the ground is just another modifier', () => {
 
     expect(on(TERRAIN.FOREST, 'dodge') - b('dodge')).toBe(10)
     expect(on(TERRAIN.FOREST, 'armor') - b('armor')).toBe(1)
-    expect(on(TERRAIN.ROCKY, 'dodge') - b('dodge')).toBe(5)
+    expect(on(TERRAIN.ROCKY, 'armor') - b('armor')).toBe(1)
+    expect(on(TERRAIN.ROCKY, 'resist') - b('resist')).toBe(1)
     expect(on(TERRAIN.WATER, 'accuracy') - b('accuracy')).toBe(-10)
-    expect(on(TERRAIN.ROCKY_HILLS, 'accuracy') - b('accuracy')).toBe(10)
+    // composed: rocky's -5 plus hills' +10
+    expect(on(TERRAIN.ROCKY_HILLS, 'accuracy') - b('accuracy')).toBe(5)
     expect(on(TERRAIN.ROCKY_HILLS, 'reach') - b('reach')).toBe(2)
   })
 
