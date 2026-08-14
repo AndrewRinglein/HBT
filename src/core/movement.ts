@@ -5,7 +5,7 @@
 import { distance, neighboursOf } from './hex.js'
 import type { HexId } from './hex.js'
 import type { Ctx, Unit } from './types.js'
-import { moveCostOf } from '../content/maps.js'
+import { moveCostOf, terrainIdOf } from '../content/maps.js'
 import { emit, markMoveUsed, moveUnit, spendStamina, unit } from './mutate.js'
 
 export const MOVE_STAMINA_COST = 1
@@ -99,7 +99,7 @@ export function executeMove(ctx: Ctx, unitId: number, path: HexId[], onStep?: St
     if (u.movePointsLeft < cost) break
     // 2. attacks of opportunity — not in the baseline
     // 3. enter and spend
-    moveUnit(ctx, unitId, hex, cost, 'move')
+    moveUnit(ctx, unitId, hex, cost, 'move', terrainIdOf(ctx.state.terrain[hex] ?? 0))
     moved++
     // 4. traps  5. terrain status  6. vision — none in the baseline
     if (onStep && !onStep(ctx, unitId, hex)) break

@@ -118,9 +118,29 @@ export function terrainIdOf(terrain: number): string {
   return TERRAIN_ID[terrain] ?? `terrain.${terrain}`
 }
 
-/** Movement points to enter a hex. Open 1, hills 2. */
+/** IMPASSABLE — a cost no budget can pay. Not Infinity: Law 7, integers only. */
+export const IMPASSABLE = 999
+
+/**
+ * Movement points to enter a hex.
+ *
+ * These are SWITCHES, not decisions. MAP-01 leaves `moveCost` null on purpose —
+ * its own note says these are design questions, not generated data. Each default
+ * below is what runs today; `SWITCHES.md` carries the question, and a sweep
+ * answers it. Changing a number here is changing a switch, not fixing a bug.
+ */
+export const MOVE_COST: Readonly<Record<number, number>> = {
+  [TERRAIN.OPEN]: 1,
+  [TERRAIN.HILLS]: 2,
+  [TERRAIN.FOREST]: 2,        // switch terrain.forest.moveCost
+  [TERRAIN.ROCKY]: 2,         // switch terrain.rocky.moveCost
+  [TERRAIN.ROCKY_HILLS]: 2,   // switch terrain.rocky-hills.moveCost
+  [TERRAIN.WATER]: 3,         // switch terrain.water.passable — 3 = a tax, IMPASSABLE = a wall
+  [TERRAIN.OBSTACLE]: 1,      // stays cheap until terrain.passable lands; nothing blocks yet
+}
+
 export function moveCostOf(terrain: number): number {
-  return terrain === TERRAIN.HILLS ? 2 : 1
+  return MOVE_COST[terrain] ?? 1
 }
 
 /** Accuracy bonus for standing here. */

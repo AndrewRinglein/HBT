@@ -16,7 +16,7 @@
   "id": "status.burn",
   "kind": "status",
   "shape": "counter",
-  "spec": "Burn: same tick as poison, and halves all healing received while held. Source: a new terrain status is out of scope here \u2014 give the Mage's staff bolt a burn 2 rider. Declares changesBaseline.",
+  "spec": "Burn: same tick as poison, and halves all healing received while held. Source: a new terrain status is out of scope here — give the Mage's staff bolt a burn 2 rider. Declares changesBaseline.",
   "expect": "burn 3 deals 3/2/1; healing while burning is halved, rounded down",
   "changesBaseline": true,
   "status": "done",
@@ -26,10 +26,10 @@
   "id": "terrain.kinds",
   "kind": "terrain",
   "shape": "plumbing",
-  "spec": "Add forest, rocky, rocky-hills, water, obstacle to TERRAIN alongside OPEN and HILLS, and teach terrainOf() their glyphs (f r R w x) from MAP-01's legend. NO RULES YET \u2014 every new kind behaves exactly like open. This item is pure plumbing and must be provably behaviour-neutral.",
+  "spec": "Add forest, rocky, rocky-hills, water, obstacle to TERRAIN alongside OPEN and HILLS, and teach terrainOf() their glyphs (f r R w x) from MAP-01's legend. NO RULES YET — every new kind behaves exactly like open. This item is pure plumbing and must be provably behaviour-neutral.",
   "expect": "map.field loads its real 7-terrain layout instead of collapsing to open/hills, and all four original baselines are BYTE-IDENTICAL because no existing map contains a new glyph",
   "changesBaseline": true,
-  "note": "PLUMBING \u2014 declared neutral: the five new kinds must appear in the log and must NOT change state. Baselines: all five moved, and the reason is LABEL-ONLY \u2014 map.loaded now carries a terrain census by id instead of a bare hills count, because a log holding raw integers cannot tell forest from water. Proven: rebuilding the old map.loaded payload from the new one reproduces fed687ad / 9f243cac / eaa096cb / 4c71eb68 exactly. map.field additionally moved because its terrain array now carries real values. terrain.obstacle is NOT probed: no authored map contains one yet, so it genuinely is not wired in \u2014 it arrives with terrain.passable, which must add one to a map.",
+  "note": "PLUMBING — declared neutral: the five new kinds must appear in the log and must NOT change state. Baselines: all five moved, and the reason is LABEL-ONLY — map.loaded now carries a terrain census by id instead of a bare hills count, because a log holding raw integers cannot tell forest from water. Proven: rebuilding the old map.loaded payload from the new one reproduces fed687ad / 9f243cac / eaa096cb / 4c71eb68 exactly. map.field additionally moved because its terrain array now carries real values. terrain.obstacle is NOT probed: no authored map contains one yet, so it genuinely is not wired in — it arrives with terrain.passable, which must add one to a map.",
   "attempts": 2,
   "neutral": true,
   "probeIds": [
@@ -37,7 +37,9 @@
    "terrain.rocky",
    "terrain.rocky-hills",
    "terrain.water"
-  ]
+  ],
+  "status": "done",
+  "sha": "92bb6e5"
  },
  {
   "id": "terrain.movecost",
@@ -46,9 +48,16 @@
   "needs": [
    "terrain.kinds"
   ],
-  "spec": "moveCostOf gains a case per kind. SWITCH, do not decide: forest 2, rocky 2, rocky-hills 2, water 3-or-impassable, obstacle impassable. map.json leaves moveCost null ON PURPOSE \u2014 these are design decisions. Put each in SWITCHES.md with a default and let a sweep answer.",
+  "spec": "moveCostOf gains a case per kind. SWITCH, do not decide: forest 2, rocky 2, rocky-hills 2, water 3-or-impassable, obstacle impassable. map.json leaves moveCost null ON PURPOSE — these are design decisions. Put each in SWITCHES.md with a default and let a sweep answer.",
   "expect": "reachable() shrinks on map.field relative to terrain.kinds, and the shrink is larger for a move-4 unit than a move-5 unit",
-  "changesBaseline": true
+  "changesBaseline": true,
+  "probeIds": [
+   "terrain.forest",
+   "terrain.rocky",
+   "terrain.water"
+  ],
+  "note": "Costs are SWITCHES, recorded in SWITCHES.md: terrain.forest.moveCost, terrain.rocky.moveCost, terrain.water.passable. IMPASSABLE (999) is introduced but unused — terrain.passable is the item that uses it.",
+  "attempts": 1
  },
  {
   "id": "terrain.passable",
@@ -68,16 +77,16 @@
   "needs": [
    "terrain.kinds"
   ],
-  "spec": "Terrain grants stat modifiers through the EXISTING stat pipeline \u2014 rows in terrainMods(), not new stations. Forest +10 dodge +1 armor. Water -10 accuracy. Rocky-hills as hills. Values are SWITCHES; map.json leaves coverBonus and modifiers null on purpose.",
+  "spec": "Terrain grants stat modifiers through the EXISTING stat pipeline — rows in terrainMods(), not new stations. Forest +10 dodge +1 armor. Water -10 accuracy. Rocky-hills as hills. Values are SWITCHES; map.json leaves coverBonus and modifiers null on purpose.",
   "expect": "a unit standing in forest shows terrain.forest rows in its effective(dodge) ledger, and hit rate against it drops measurably in a paired sweep",
   "changesBaseline": true,
-  "note": "This should be almost free. The stat pipeline landed for exactly this \u2014 if it needs a pipeline change, something is wrong with the design, not the item."
+  "note": "This should be almost free. The stat pipeline landed for exactly this — if it needs a pipeline change, something is wrong with the design, not the item."
  },
  {
   "id": "movement.zone-of-control",
   "kind": "movement",
   "shape": "rule",
-  "spec": "A standing unit exerts ZoC on its six adjacent hexes. A unit that ENTERS a hex inside an enemy ZoC stops there \u2014 it may enter, then its movement ends. Downed and dead units exert nothing. THE AI IS DELIBERATELY BLIND TO THIS (Angela, 2026-08-13): it keeps its current scoring, picks a destination as if ZoC did not exist, and gets stopped short. That is accepted, not a defect.",
+  "spec": "A standing unit exerts ZoC on its six adjacent hexes. A unit that ENTERS a hex inside an enemy ZoC stops there — it may enter, then its movement ends. Downed and dead units exert nothing. THE AI IS DELIBERATELY BLIND TO THIS (Angela, 2026-08-13): it keeps its current scoring, picks a destination as if ZoC did not exist, and gets stopped short. That is accepted, not a defect.",
   "expect": "a unit pathing past an adjacent zombie ends its move on the first hex inside that zombie's ZoC, and the log carries move.stopped naming the unit that stopped it",
   "changesBaseline": true,
   "note": "BECAUSE THE AI IS BLIND: reachable() still offers hexes the unit cannot actually reach, so units will routinely end up somewhere they did not choose. That MUST emit move.stopped. A unit ending somewhere unexplained with no log line is the exact silent-failure class the harness exists to catch."
@@ -89,7 +98,7 @@
   "needs": [
    "movement.zone-of-control"
   ],
-  "spec": "Leaving a hex inside an enemy's ZoC provokes one free attack from that enemy, resolved through performAttack with its cheapest melee attack, then settle. Once per enemy per activation. Costs the attacker nothing. AI remains blind \u2014 it will walk into these.",
+  "spec": "Leaving a hex inside an enemy's ZoC provokes one free attack from that enemy, resolved through performAttack with its cheapest melee attack, then settle. Once per enemy per activation. Costs the attacker nothing. AI remains blind — it will walk into these.",
   "expect": "a kiting ranger adjacent to a zombie takes a hit when it disengages, the log shows the attack with causeId movement.aoo, and the ranger's damage-taken share rises measurably in a paired sweep",
   "changesBaseline": true,
   "note": "HAZARD: this lands damage MID-MOVE, so settle can fire inside executeMove's per-step loop. A unit can die between two steps, and victory can trigger mid-activation. executeMove already breaks on lifeState !== standing; that guard is now load-bearing and needs its own test."
@@ -172,8 +181,8 @@
   "id": "content.mage-staff",
   "kind": "content",
   "shape": "numbers",
-  "spec": "NOT A DEFECT \u2014 Angela: the Mage/Ranger split is intentional. The Mage deals MAGIC damage and the Ranger PHYSICAL, which diverge sharply once enemies carry armor; and the Mage has Arcane Bolt and more to come, while the Ranger is essentially just its attack. Raw damage-per-swing is therefore the wrong yardstick. What is still worth measuring: the staff is only distinguishable from the bow against a target with armor > 0, and every enemy in the game today has armor 0. Add an armored enemy, then sweep staff vs bow against it.",
-  "expect": "against an armored enemy the Mage out-damages the Ranger, and against an unarmored one it does not \u2014 the split is visible in the sweep, not just in the design",
+  "spec": "NOT A DEFECT — Angela: the Mage/Ranger split is intentional. The Mage deals MAGIC damage and the Ranger PHYSICAL, which diverge sharply once enemies carry armor; and the Mage has Arcane Bolt and more to come, while the Ranger is essentially just its attack. Raw damage-per-swing is therefore the wrong yardstick. What is still worth measuring: the staff is only distinguishable from the bow against a target with armor > 0, and every enemy in the game today has armor 0. Add an armored enemy, then sweep staff vs bow against it.",
+  "expect": "against an armored enemy the Mage out-damages the Ranger, and against an unarmored one it does not — the split is visible in the sweep, not just in the design",
   "note": "Open question that IS real: attack.mage.strike was used 0 times in 300 battles, the same dead-content shape as Massive Strike. The melee option on a ranged unit may never be worth taking.",
   "needs": [
    "unit.brute"

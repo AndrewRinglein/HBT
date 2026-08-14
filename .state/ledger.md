@@ -109,3 +109,14 @@ terrain modifiers, therefore no ledger rows for the baseline to notice.** The
 control map is blind to the entire terrain path by construction. Behaviour
 neutrality there was established by the 118 tests, not by the hash.
 Split the baseline: a second hash on `map.ridge` would have covered it.
+
+## terrain.kinds — LANDED `92bb6e5`
+2026-08-14 22:12
+
+  PASS  dependencies landed
+  PASS  typecheck
+  PASS  full test suite — 127 passed
+  PASS  gate 1 — the id appears in a real battle — NEUTRAL — 4 ids present, none changed state
+  PASS  brought its own tests — test/terrain.test.ts
+  PASS  existing tests untouched
+  PASS  control battles unchanged — re-blessed — this item DECLARED it changes the control battles: map.open fed687ad->9385811f, map.ridge 9f243cac->ad151d26, map.flanks eaa096cb->8867b503, map.highlands 4c71eb68->9a6ad9b4, map.field 41ca42db->d0701a01

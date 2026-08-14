@@ -18,6 +18,9 @@ the default freezes and the baseline uses it. Without recording the answers,
 | `statusDecayRung` | Does a status decay at the tick rung, or at the later duration rung? | tick — act and decay in one pass | open |
 | `absorbSpendOrder` | Which absorbing status pays first when several are held? | id order | open |
 | `activationOrder` | Fixed by unit id, random, or best-first? | fixed | open |
+| `terrain.forest.moveCost` | Is cover slow, or free? | 2 | open |
+| `terrain.rocky.moveCost` | Rough ground: a tax, or just scenery? | 2 | open |
+| `terrain.water.passable` | Is water a wall or a toll? | cost 3 | open |
 | `hazardOnDowned` | Does terrain reach a downed hero? | not modelled — downed carry no statuses | answered |
 | `protectionStacking` | A pulse of 2 onto a hero holding 1 gives 3 or 2? | additive | answered |
 
