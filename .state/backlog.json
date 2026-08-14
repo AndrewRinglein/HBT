@@ -23,6 +23,70 @@
   "sha": "f7e2041"
  },
  {
+  "id": "terrain.kinds",
+  "kind": "terrain",
+  "shape": "plumbing",
+  "spec": "Add forest, rocky, rocky-hills, water, obstacle to TERRAIN alongside OPEN and HILLS, and teach terrainOf() their glyphs (f r R w x) from MAP-01's legend. NO RULES YET \u2014 every new kind behaves exactly like open. This item is pure plumbing and must be provably behaviour-neutral.",
+  "expect": "map.field loads its real 7-terrain layout instead of collapsing to open/hills, and all four original baselines are BYTE-IDENTICAL because no existing map contains a new glyph",
+  "changesBaseline": false,
+  "note": "If a baseline moves, the plumbing leaked into behaviour. That is the whole point of doing this as its own item."
+ },
+ {
+  "id": "terrain.movecost",
+  "kind": "terrain",
+  "shape": "numbers",
+  "needs": [
+   "terrain.kinds"
+  ],
+  "spec": "moveCostOf gains a case per kind. SWITCH, do not decide: forest 2, rocky 2, rocky-hills 2, water 3-or-impassable, obstacle impassable. map.json leaves moveCost null ON PURPOSE \u2014 these are design decisions. Put each in SWITCHES.md with a default and let a sweep answer.",
+  "expect": "reachable() shrinks on map.field relative to terrain.kinds, and the shrink is larger for a move-4 unit than a move-5 unit",
+  "changesBaseline": true
+ },
+ {
+  "id": "terrain.passable",
+  "kind": "terrain",
+  "shape": "rule",
+  "needs": [
+   "terrain.kinds"
+  ],
+  "spec": "An impassable hex cannot be entered: reachable() never returns it and pathTo() never routes through it. Obstacles are impassable. Water passability is a SWITCH. This is the first terrain that can make a hex unreachable, so it is also the first that can strand a unit.",
+  "expect": "no path on map.field ever enters an obstacle hex across 200 battles, and no battle ends capped because a unit could not find a route",
+  "changesBaseline": true
+ },
+ {
+  "id": "terrain.modifiers",
+  "kind": "terrain",
+  "shape": "numbers",
+  "needs": [
+   "terrain.kinds"
+  ],
+  "spec": "Terrain grants stat modifiers through the EXISTING stat pipeline \u2014 rows in terrainMods(), not new stations. Forest +10 dodge +1 armor. Water -10 accuracy. Rocky-hills as hills. Values are SWITCHES; map.json leaves coverBonus and modifiers null on purpose.",
+  "expect": "a unit standing in forest shows terrain.forest rows in its effective(dodge) ledger, and hit rate against it drops measurably in a paired sweep",
+  "changesBaseline": true,
+  "note": "This should be almost free. The stat pipeline landed for exactly this \u2014 if it needs a pipeline change, something is wrong with the design, not the item."
+ },
+ {
+  "id": "movement.zone-of-control",
+  "kind": "movement",
+  "shape": "rule",
+  "spec": "A standing unit exerts ZoC on its six adjacent hexes. A unit that ENTERS a hex inside an enemy ZoC stops there \u2014 it may enter, then its movement ends. Downed and dead units exert nothing. THE AI IS DELIBERATELY BLIND TO THIS (Angela, 2026-08-13): it keeps its current scoring, picks a destination as if ZoC did not exist, and gets stopped short. That is accepted, not a defect.",
+  "expect": "a unit pathing past an adjacent zombie ends its move on the first hex inside that zombie's ZoC, and the log carries move.stopped naming the unit that stopped it",
+  "changesBaseline": true,
+  "note": "BECAUSE THE AI IS BLIND: reachable() still offers hexes the unit cannot actually reach, so units will routinely end up somewhere they did not choose. That MUST emit move.stopped. A unit ending somewhere unexplained with no log line is the exact silent-failure class the harness exists to catch."
+ },
+ {
+  "id": "movement.attack-of-opportunity",
+  "kind": "movement",
+  "shape": "rule",
+  "needs": [
+   "movement.zone-of-control"
+  ],
+  "spec": "Leaving a hex inside an enemy's ZoC provokes one free attack from that enemy, resolved through performAttack with its cheapest melee attack, then settle. Once per enemy per activation. Costs the attacker nothing. AI remains blind \u2014 it will walk into these.",
+  "expect": "a kiting ranger adjacent to a zombie takes a hit when it disengages, the log shows the attack with causeId movement.aoo, and the ranger's damage-taken share rises measurably in a paired sweep",
+  "changesBaseline": true,
+  "note": "HAZARD: this lands damage MID-MOVE, so settle can fire inside executeMove's per-step loop. A unit can die between two steps, and victory can trigger mid-activation. executeMove already breaks on lifeState !== standing; that guard is now load-bearing and needs its own test."
+ },
+ {
   "id": "status.regen",
   "kind": "status",
   "shape": "counter",
@@ -50,20 +114,6 @@
   "shape": "pool",
   "spec": "Protection: reduces incoming damage at station 550 AND is reduced by the damage it absorbs. Also loses 1 at End of Phase. Additive when granted again. Source: landed together with ability.warrior.rally, which grants it.",
   "expect": "protection 3 hit for 2 absorbs 2 and drops to 1; then End of Phase takes it to 0"
- },
- {
-  "id": "terrain.forest",
-  "kind": "terrain",
-  "shape": "modifier",
-  "spec": "Forest: costs 2 movement, grants +10 Dodge and +1 Armor to the occupant.",
-  "expect": "attacks against a unit in forest are 10 less likely to hit and land 1 less physical damage"
- },
- {
-  "id": "terrain.water",
-  "kind": "terrain",
-  "shape": "modifier",
-  "spec": "Water: costs 2 movement, -10 Accuracy to the occupant, and reduces burn and poison by 1 at End of Activation.",
-  "expect": "a unit standing in water shoots at -10 and sheds one point of burn per activation"
  },
  {
   "id": "unit.archer",
@@ -109,26 +159,6 @@
   "shape": "data",
   "spec": "Support mode: holds at range, prefers using abilities on allies over attacking, retreats when threatened.",
   "expect": "exercises the support role, which is currently declared and unused"
- },
- {
-  "id": "movement.zone-of-control",
-  "kind": "movement",
-  "shape": "rule",
-  "spec": "Zone of Control: a standing unit exerts ZoC on its six adjacent hexes. Moving from a hex inside an enemy ZoC into another hex inside that same enemy's ZoC costs the mover its remaining movement (it may enter, then stops). Leaving a ZoC entirely provokes nothing yet \u2014 attacks of opportunity are a separate item. Downed and dead units exert no ZoC.",
-  "expect": "a zombie adjacent to a hero cannot be walked past freely: a unit that starts adjacent and moves to another hex still adjacent to that same zombie ends its movement there, and the log shows a move.stopped event naming the zoc",
-  "changesBaseline": true,
-  "note": "Rung 2 of the movement ladder in COMBAT-SEQUENCE.md. The hook point already exists in movement.ts (the per-step loop). Angela expected this to be built; it never was."
- },
- {
-  "id": "movement.attack-of-opportunity",
-  "kind": "movement",
-  "shape": "rule",
-  "needs": [
-   "movement.zone-of-control"
-  ],
-  "spec": "Leaving a hex adjacent to a standing enemy provokes one free attack from that enemy, resolved through performAttack with the enemy's cheapest melee attack, then settle. Once per enemy per activation.",
-  "expect": "a ranger that kites away from an adjacent zombie takes a hit doing so, and the log shows the attack with causeId aoo",
-  "changesBaseline": true
  },
  {
   "id": "content.mage-staff",
