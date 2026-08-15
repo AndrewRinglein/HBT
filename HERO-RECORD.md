@@ -92,6 +92,85 @@ This has a hard engineering consequence, stated in §5 as lesson 4 of "do not po
 
 ---
 
+## 1b. Progression
+
+**RULED, Angela 2026-08-15.** The record carries:
+
+| | |
+|---|---|
+| **Experience points** | XP per kill, `3/6/9` by rank (§7). |
+| **Level** | Starts at 1, runs to 10. Accuracy `+5`/level is the spine of the curve. |
+| **Level-up tree** | **Per hero.** See below. |
+| **Level modifiers** | What the tree has actually granted so far. Reach is a rare high-value grant; Stamina Max grows often, Regen almost never. |
+| **Specialties** | Specialty class is already named in §5 as a trigger source, distinct from base class. |
+| **Class powers** | Dual-path, plus a cross-path point currency (§7). Badges can also grant one. |
+
+### The level-up tree is per hero
+
+**RULED, Angela 2026-08-15:**
+
+> "Each hero has their own level-up tree: what they gain at each level. They start at
+> level one and go all the way to level 10, and each level gives them different
+> abilities. And stats."
+
+So the tree is **part of the hero record**, not a property of the class. Class fixes
+base stats and kit (§7); the tree is the hero's own. Ten levels, nine level-ups, each
+granting **abilities and stats**.
+
+**⚠ This collides with Crucible.** If heroes are randomly generated *and* each carries
+its own ten-level tree, something has to produce that tree for a generated hero. §7's
+generator list — *"stat modifications (gain and loss profiles), badges, art, gender,
+personality, name, and background"* — does not mention one.
+
+Two readings, and they lead to very different generators:
+
+- **"Gain and loss profiles" already is the tree** — a rolled growth curve, in which
+  case that phrase in §7 should be expanded to say so.
+- **The tree is authored separately** — in which case a generated hero needs an
+  authored tree from somewhere, and fixed heroes like the Crown Prince get a
+  hand-written one.
+
+Fixed heroes have no problem either way: a one-off hero gets a hand-authored tree.
+It is only the generated ones that need an answer.
+
+None of this exists in the engine. `UnitDef` has no level, no XP, no tree, and no
+notion of a class at all — `role` is an AI hint.
+
+---
+
+## 1c. Art — nineteen assets per hero
+
+**RULED, Angela 2026-08-15.** Three art sets, each varying over level and status.
+
+| Set | Purpose | Level variants | Status variants | Total |
+|---|---|---|---|---|
+| **Card art** | The display portrait. The existing Hell TCG art — §13: *"the 2:3 card portraits are the game's face."* | 3 | 4 | **7** |
+| **Hex map art** | The token used on the battle map. | 3 | 4 | **7** |
+| **Unconscious art** | **One version only — it does not vary by level.** | 1 | 4 | **5** |
+
+> "They have their card art, and then they also have their hex map art, so they have
+> seven of both. […] They have their unconscious art. There is only one version for
+> level, and then there are the four other statuses, so there are five for each one.
+> We don't need level up unconscious."
+
+**Nineteen assets per hero**, which is the number that should drive the pipeline and
+the naming scheme.
+
+**Two things to pin down before authoring:**
+
+1. **Is it 3 level variants or 4?** The stated totals — seven, and five as `1 + 4` —
+   only work if the normal sets carry **3** level variants, so that is what is written
+   above. Said aloud it came out as *"three level-ups and base,"* which would be 4 and
+   would make the total 8. Three is taken here because it matches the seven.
+2. **What are the four alternate statuses?** Named nowhere yet. Unconscious is *not*
+   one of them — it is its own set. Whatever they are, they multiply across all three
+   sets, so the list needs to be fixed before any art id is minted.
+
+`ART-SETTLED.md` has an empty `## Ids` section — no art id is published yet, so the
+naming scheme is still free.
+
+---
+
 ## 2b. Identity — every hero has a unique name
 
 **RULED, Angela 2026-08-15.** A hero is an individual, not an archetype. There is no
@@ -289,23 +368,22 @@ it — not a wound, not an injury, not a personality tag a story event reads.
    beyond Toughness convert to a major."* `"She's at 2/2 minors"` is the real reason
    to turn for home.
 
-### ⚠ Retiring Resolute orphans two injuries
+### Retiring Resolute — not a content problem
 
-`Resolute` appears three times in `GAME-DESIGN.md`. Removing it from the sheet
-(line 545) leaves the other two dangling:
+`Resolute` appears three times in `GAME-DESIGN.md`: the sheet (line 545) and two
+injuries, *Frightened* (`−1 Resolute`) and *Terrified* (`−2 Resolute / −1 Resist`).
 
-| Injury | Tier | Effect as written | After the ruling |
-|---|---|---|---|
-| **Frightened** | Minor | `−1 Resolute` | **Becomes a no-op.** Its only effect was the retired stat. |
-| **Terrified** | Medium | `−2 Resolute / −1 Resist` | Loses half its effect; survives as a plain `−1 Resist`, which is thin for a Medium. |
+**This does not need fixing row by row.** Angela, 2026-08-15: *"The whole badge system
+might be reused in some way, but all the badges need to be redesigned. The fact that
+Resolute is in some of them is pretty irrelevant."* §8 already says as much — the
+badges are all newly authored, and Hell TCG's 238-badge library is *"a reference, not
+a port."*
 
-Both need a replacement effect or a replacement name, and *Frightened* needs one
-before it can be authored at all — a badge that does nothing is exactly the kind of
-row that looks published and is not.
-
-Worth noting these were the two morale-flavoured injuries. If the fear axis is going
-away with the stat, that is a design choice worth making on purpose rather than
-inheriting from a deletion.
+The only thing to carry forward is the **shape**: badges hold stat modifiers,
+triggers on any hook, class-power grants, tactic grants, deploy-cost modifiers, slayer
+bonuses, wound capacity, art and name changes, overworld effects, and invisible
+personality tags. Line 545 should drop `Resolute`; the injury list is drafting
+material, not published content.
 
 ---
 

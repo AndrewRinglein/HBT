@@ -177,3 +177,80 @@ are one system, and the whole consequence stack is badge-borne.
 
 **Toughness does double duty:** Deathbed Fighting (`20 + 5×Toughness + badges`) and
 injury capacity (minors beyond Toughness convert to a medium, mediums to a major).
+
+---
+
+## 2026-08-15 — Progression fields on the hero record
+
+**Ruled: heroes carry experience points, a level, level modifiers, specialties, and
+class powers.**
+
+§7 supplies the numbers already: XP per kill `3/6/9` by rank, level cap 10, Accuracy
+`+5`/level as the spine of the curve, dual-path class powers with a cross-path point
+currency. §5 already names specialty class and level paths as trigger sources.
+
+None of it exists in the engine — `UnitDef` has no level, no XP, and no class.
+
+---
+
+## 2026-08-15 — Art: nineteen assets per hero
+
+**Ruled: three art sets.**
+
+> "They have their card art, and then they also have their hex map art, so they have
+> seven of both. […] They have their unconscious art. There is only one version for
+> level, and then there are the four other statuses, so there are five for each one.
+> We don't need level up unconscious."
+
+| Set | Level variants | Status variants | Total |
+|---|---|---|---|
+| Card art — the Hell TCG display portrait | 3 | 4 | 7 |
+| Hex map art — the battle-map token | 3 | 4 | 7 |
+| Unconscious art — no level variants | 1 | 4 | 5 |
+
+**Nineteen per hero.**
+
+Two things still open, recorded so they are not re-derived:
+
+- **3 level variants or 4?** Written as 3 because that is what makes the stated seven
+  and the stated `1 + 4` work. Spoken it came out as "three level-ups and base," which
+  would be 4 and total 8.
+- **What are the four alternate statuses?** Not named anywhere. Unconscious is not one
+  of them. They multiply across all three sets, so the list must be fixed before an
+  art id is minted. `ART-SETTLED.md` publishes no ids yet, so the scheme is free.
+
+---
+
+## 2026-08-15 — All badges get redesigned
+
+> "The whole badge system might be reused in some way, but all the badges need to be
+> redesigned. The fact that Resolute is in some of them is pretty irrelevant."
+
+The badge **system** may be reused; the badge **content** is not. §8 already says the
+badges are all newly authored and that Hell TCG's 238-badge library is "a reference,
+not a port."
+
+**Consequence for engine sessions:** do not report individual badge or injury rows as
+findings needing repair. The specific rows in §9's injury list are drafting material.
+What carries forward is the shape of what a badge can hold — stat modifiers, triggers
+on any hook, class-power grants, tactic grants, deploy-cost modifiers, slayer bonuses,
+wound capacity, art and name changes, overworld effects, personality tags.
+
+---
+
+## 2026-08-15 — The level-up tree is per hero
+
+> "Each hero has their own level-up tree: what they gain at each level. They start at
+> level one and go all the way to level 10, and each level gives them different
+> abilities. And stats."
+
+The tree belongs to the **hero record**, not the class. Class fixes base stats and kit;
+the tree is the individual's. Ten levels, nine level-ups, each granting abilities and
+stats.
+
+**Open, and it shapes Crucible:** who produces the tree for a *generated* hero? §7's
+generator list — "stat modifications (gain and loss profiles), badges, art, gender,
+personality, name, and background" — does not name one. Either "gain and loss profiles"
+already means the tree (and §7 should say so), or trees are authored separately and
+generated heroes need one from somewhere. Fixed heroes such as the Crown Prince are
+unaffected — a one-off gets a hand-authored tree.
