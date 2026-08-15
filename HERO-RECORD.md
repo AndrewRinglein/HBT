@@ -1,199 +1,200 @@
-# The hero record — what Crucible needs to emit
+# The hero record — design truth vs. what the engine implements
 
-Written 2026-08-15 for building a new Crucible. Describes what the engine
-*currently* reads, not what it ought to. Where the two differ, that is called out
-rather than smoothed over.
+Rewritten 2026-08-15. **The first version of this file was wrong.** It documented
+`src/content/index.ts` — the scaffolding an engine session invented to have
+something to run the harness against — and presented it as the authoring shape.
+It is not. `GAME-DESIGN.md` is the source, and this file is now written from it.
+
+Read §1 for what a hero IS. Read §4 before building Crucible: the engine
+implements roughly half of the sheet, and the half it is missing is the half
+Crucible produces.
 
 ---
 
-## 1. One hero = one `UnitDef` row
+## 1. The hero sheet — GAME-DESIGN §7
 
-There is exactly one shape. It lives in `src/core/types.ts` as `UnitDef`, and rows
-of it live in `src/content/index.ts` under `UNITS`, keyed by `typeId`.
+**Strength · Precision · Accuracy · Crit · Grit · Reach · Dodge · Vision · Armor ·
+Resist · Health · Magic · Spirit · Toughness · Resolute · Movement · Stamina
+(max/regen) · Item Slots**
 
-```ts
-warrior: {
-  typeId: 'warrior', side: 'hero',
+Plus:
 
-  // survivability
-  maxHp: 10, armor: 1, resist: 0,
+- **Deathbed Fighting** — derived, `20 + 5×Toughness + badges`. Not stored.
+- **Corruption / Favor** — non-combat.
+- **Type** — class, plus Civilian.
+- **Unique name.**
+- **Triggers** — see §3.
+- **Badges** — see §5. A hero's whole history lives here.
+- **Loadout** — main hand + off hand · 1 armor · X accessories (Item Slots).
 
-  // to-hit
-  accuracy: 80, dodge: 0,
+Banned: initiative. Dodge and hero Crit are stats again, in new forms.
 
-  // damage-carrying stats
-  strength: 5, precision: 3, magic: 0, spirit: 0,
+Notes that change how the record is built:
 
-  // movement
-  role: 'melee', movement: 5, reach: 0,
+- **Accuracy and Crit are read in the shot preview, not tracked.**
+- **Reach, Vision and Grit are near-invisible** — they set what is legal, what is
+  lit, and what luck can do to you. They surface as overlays, not numbers.
+- **Hero Reach adds only to ranged weapons.** Melee gets nothing from it.
+- **Strength and Precision no longer affect whether you hit — only how hard.**
 
-  // economy
-  maxStamina: 5, staminaRegen: 1,
+---
 
-  // behaviour
-  ai: 'melee-aggressive',
+## 2. Attacks and powers — GAME-DESIGN §4 and §5
 
-  // what it can do — IDS ONLY, resolved against the ATTACKS / ABILITIES registries
-  attacks: ['attack.warrior.massive', 'attack.warrior.axe', 'attack.punch'],
-  abilities: [],
+**A hero gets a move and one primary action. The primary action is an attack or a
+power.**
 
-  // what it IS
-  attributes: [],
-}
-```
+**Attacks belong to weapons, not to heroes.** A typical weapon carries **two
+attacks** — two distinct options in the attack menu, of which the primary action
+spends one. Levelling widens the menu rather than granting extra swings. Every hero
+has a **punch at 0 stamina**, the floor that guarantees no dead turns.
 
-Field notes that are not obvious from the name:
+**Damage = weapon base + stat bonus.** Strength for melee, Precision for ranged.
+**Weapons carry the majority of the number and define the attack kit.**
 
-| Field | Meaning |
+An attack carries:
+
+| | |
 |---|---|
-| `typeId` | The registry key. Must match the key it is stored under. |
-| `side` | `'hero'` or `'enemy'`. Fixed on the type, not chosen per battle. |
-| `armor` / `resist` | Flat reduction against `physical` / `magic` respectively. |
-| `accuracy` / `dodge` | Percentages. Enemies currently run `dodge: 0` across the board. |
-| `strength` / `precision` / `magic` | The stat an attack names in its own `stat` field. Damage = that stat + the attack's `bonus`. |
-| `spirit` | *Ruled by Angela 2026-08-15: identical to Magic, including the party-wide sum (§5).* Currently `0` on every unit and read by nothing. |
-| `role` | `melee` / `ranged` / `support`. Every AI can read this about every other unit. |
-| `movement` | Move points per activation. |
-| `reach` | The hero **Reach stat**. Adds to *ranged* weapon reach only — not melee. Distinct from an attack's own `reach`. |
-| `maxStamina` / `staminaRegen` | Enemies run `0/0` — they do not use stamina at all. |
-| `ai` | A string naming a behaviour: `melee-aggressive`, `ranged-kite`, `dumb-melee`. |
-| `attacks` | **Ordered by preference.** The AI takes the first one it can afford. This ordering is load-bearing, not cosmetic. |
-| `attributes` | What the unit *is* — `['undead']`. **See §5, this field has a problem.** |
+| **Stamina cost** | The throttle. Punch is 0. |
+| **Damage type** | `physical` / `magic` / `true` |
+| **Reach** | On the weapon. Longsword 1, longbow 6, sniper bow 9. Hero Reach adds to *ranged* only. |
+| **Governing stat** | Strength (melee) or Precision (ranged) — carries the damage, not the to-hit. |
+| **Damage modifier** | The weapon's own base, added to the stat. |
+| **Triggers** | On any hook. A flaming bow is `onHit: apply 2 Burn`. |
+| **Type modifiers to damage** | Slayer-style bonuses read off the *target's* type. |
 
-Optional, currently unused by hero content: `triggers`, `tags`.
+Priced tradeoffs, all §4: **split attacks** (armor applies per hit), **self-cost
+attacks**, **positional bonuses** (flank = +damage, shown in preview),
+**charge-ups**. Crits, if added, are **weapon properties — upside only**.
+
+**Powers carry all of the above, plus a cooldown** — and instead of triggers they
+have **effects**. A power's effect can be **area**, and can **heal**; the trigger
+vocabulary is `status.apply` / `status.remove` / `status.reduce` / `damage` /
+`heal`, over the full targeting model.
+
+> Angela, 2026-08-15: *"Powers have all these same things and cooldowns. Because
+> they don't have triggers, because they really have effects. Powers have a variety
+> of effects, like they can have area effect attacks and they can heal."*
+
+### The damage preview contract
+
+**The attack menu shows final damage, every modifier already baked in** — not base,
+not a formula. Moving the cursor onto a target **updates the number for that
+target**: its armor, resist, vulnerable, position. Nothing is discovered after
+committing.
+
+This has a hard engineering consequence, stated in §5 as lesson 4 of "do not port":
+**preview and resolution must be the same code path. Not similar. The same.**
 
 ---
 
-## 2. What is NOT in the record
+## 3. Triggers — GAME-DESIGN §5
 
-Crucible should not emit any of these — the engine creates them at spawn:
+Twelve hooks:
 
-- `hp`, `stamina` — start full, from `maxHp` / `maxStamina`
-- `lifeState` (`'standing'`), `bleedOut` (`0`)
-- `statuses`, `mods`, `cooldowns` — all start empty
-- `hex` — position is assigned by battle setup, not by the hero
-- `id`, `uid` — array index and persistent identity, assigned at spawn
-- `name` — **passed in at spawn, not stored on the def.** See §3.
+`startOfBattle` · `onEnter` · `onAttack` · `onMiss` · `onHit` · `onDamage` ·
+`onTakingDamage` · `onKill` · `onDeath` · `onWounded` · `onEquip` · `turnEnd`
 
-Terrain effects are derived every time they are read, never stored on the unit.
+**The rule: `onAttack` always. Then `onMiss` or `onHit`. Then `onDamage` only if
+damage landed.** `onHit` fires even if armor absorbed all of it.
+
+**Sources** — base class, specialty class, items, class powers, badges, origins,
+level paths. They **stack additively. No dedup, no priority**; two sources of the
+same trigger both fire.
+
+> Minor inconsistency worth resolving: §7's hero paragraph lists a nine-hook set
+> that omits `onHit`, `startOfBattle` and `onEquip`. §5's list is the fuller one and
+> is treated here as authoritative.
 
 ---
 
-## 3. The structural question: archetype or individual?
+## 4. ⚠ What the engine actually implements
 
-This is the thing to settle before Crucible emits anything.
+`UnitDef` in `src/core/types.ts` is roughly half the sheet. This is the gap
+Crucible runs into.
 
-Today `UNITS` is keyed by **type**, and a battle names types with repeats:
+**On the sheet, present in the engine:** Strength, Precision, Accuracy, Dodge,
+Reach, Armor, Resist, Health (`maxHp`), Magic, Spirit, Movement, Stamina (max +
+regen).
+
+**On the sheet, MISSING from the engine:**
+
+| Missing | Consequence |
+|---|---|
+| **Crit** | §4's crit branch and the six-injury table are unbuilt (`crit.branch-and-injuries`). |
+| **Grit** | Nothing reads it. |
+| **Vision** | No vision, darkness, fog or stealth layer at all. |
+| **Toughness** | So **Deathbed Fighting cannot be derived** — the whole consequence stack (§9) has no input. |
+| **Resolute** | Nothing reads it. |
+| **Item Slots / loadout** | **No weapon entity exists.** See below. |
+| **Badges** | The entire persistent-history system (§8) is absent. |
+| **Type / class** | `role` (melee/ranged/support) is an AI hint, not a class. |
+| **Unique name** | Assigned at spawn, not stored on the record. |
+| **Level / XP** | Absent. |
+| **Corruption / Favor** | Absent. |
+
+**The structural one: there is no weapon.** The design says attacks come from
+equipped weapons — main hand and off hand, each carrying two attacks and its own
+Reach. The engine hangs a flat list of attack ids directly off the unit:
 
 ```ts
-heroes: ['warrior', 'warrior', 'ranger', 'mage']
+attacks: ['attack.warrior.massive', 'attack.warrior.axe', 'attack.punch']
 ```
 
-Two warriors, one `warrior` row, identical stats. `name` is a spawn-time argument
-precisely because the def describes a *kind of thing*, not a person.
+No main hand, no off hand, no armor slot, no accessories. So a hero cannot currently
+be equipped, gear cannot carry Reach or +Accuracy, and `onEquip` has nothing to fire
+on. **For Crucible this is the load-bearing gap**, because a generated hero's kit is
+gear, and gear is where the design puts the majority of the damage number.
 
-If Crucible produces **specific named heroes with their own stat lines** — Dario
-the warrior with his own numbers, distinct from Wren the warrior — then each hero
-is its own `UnitDef` under its own key, and `name` should move onto the def. That
-works with the engine as written and needs no core change, but it is a different
-output shape, and it changes what a battle roster looks like.
-
-Both are viable. It only breaks if Crucible emits one and the roster assumes the
-other.
+**Also missing on attacks/powers:** attacks have no `triggers` field (only a single
+`applies` status rider) and no type-modifier hook (`station.vs-target`, open).
+Powers have **no effects at all** — `AbilityDef` is a single-target damage row, so
+**no power can heal or hit an area today** (`ability.effects`, open). The targeting
+model *does* already support area and type filters; abilities simply do not reach it.
 
 ---
 
-## 4. Attacks and abilities are separate rows
+## 5. Crucible — GAME-DESIGN §7
 
-A hero's `attacks` / `abilities` are **ids**, resolved against sibling registries.
-Crucible has to emit those rows too, or the hero references content that does not
-exist.
+The spec, verbatim in substance:
 
-```ts
-// ATTACKS — a weapon swing. No cooldown; gated by stamina and reach.
-'attack.warrior.axe': {
-  id: 'attack.warrior.axe', name: 'Axe', kind: 'melee',
-  damageType: 'physical',       // physical | magic | true
-  bonus: 1,                     // added to the governing stat
-  stat: 'strength',             // which stat carries the damage
-  reach: 1,                     // weapon reach; melee 1, bow 6
-  staminaCost: 1,
-  applies: { statusId: 'status.poison', value: 2 },   // optional on-hit rider
-}
+- **Heroes are randomized when you get them.** Ported in spirit from Hell TCG.
+- The generator rolls **stat modifications (gain and loss profiles), badges, art,
+  gender, personality, name, and background.**
+- **Class fixes base stats and kit.**
+- **Rerolling a recruit costs 10 Faith.**
+- **Attaching a special origin costs 10 Mana**, unlocked by a building.
+  *[OPEN: which building; whether the 10 Mana is repeatable per recruit or once.]*
+- **One hero per strategic turn**, in the Buy phase.
+- *[OPEN: a refreshing stock of candidates, or a single take-it-or-reroll offer.]*
 
-// ABILITIES — a power. Has a cooldown; uses `range`, not `reach`.
-'power.mage.bolt': {
-  id: 'power.mage.bolt', name: 'Arcane Bolt',
-  stat: 'magic', bonus: 6, damageType: 'magic',
-  range: 10, staminaCost: 1, cooldown: 6,   // 0 cooldown = every turn
-}
-```
+**Origins are the composition layer** — a generation-time script that can grant
+stats, badges, triggers, spells, tactics, class powers and run-level effects.
 
-Note the asymmetry: attacks have `reach` and `kind`; abilities have `range` and
-`cooldown`. They are not the same shape and do not share a type.
+> **They are consumed at attachment. A hero has no "origin" object afterward, only
+> what it left behind.**
 
-**Id convention**, as actually used: `attack.<owner>.<thing>`, `power.<owner>.<thing>`,
-`status.<thing>`, `terrain.<thing>`, `unit.<thing>`, `map.<thing>`. Owner is the type
-id. Shared content drops the owner (`attack.punch`).
+That sentence decides the save format: **origin effects must be baked into the hero
+record at generation.** There is no origin id to re-resolve on load, and a saved
+hero must be complete on its own.
+
+Badge rules that constrain generation: **a fresh recruit rolls 0–2 badges, skewed
+good.** Bad badges arrive later as scars and injuries from play. **Origin badges are
+immutable; earned badges are mutable** — curable at the Hospice, cleansable at the
+Chapel.
 
 ---
 
-## 5. ⚠ `attributes` vs `tags` — read this before authoring
+## 6. Nothing is published yet
 
-`UnitDef` carries **two** fields for what a unit is, and they are not connected.
+`2-ACTIONS-SETTLED.md` — the file that publishes `attack.*`, `power.*`, `item.*`
+and `card.*` — **has an empty `## Ids` section.** Not one action is published.
 
-- Content fills `attributes` — the zombie has `attributes: ['undead']`.
-- Every *reader* uses `tags` — `target.ts` `requireTags`, and the planned
-  `VS_TARGET` damage station.
-- `makeUnit` copies each straight across: `tags: def.tags ?? []`. Nothing bridges them.
+That is why `content-check` reports 10 INVENTED ids covering every attack in the
+game. The scaffolding in `src/content/index.ts` says so itself at the top: no
+balance conclusion drawn from those numbers is a finding about the game.
 
-**So today, "target all undead" matches no zombies.** A hero authored with
-`attributes: ['hero','ranger']` is invisible to any effect that filters on type.
-
-This is open as `fix.unit-tags` in the backlog, specced as a Law 11 collapse to a
-single field. It is worth resolving *before* Crucible emits a corpus, because the
-choice determines which key every hero record carries — and renaming it afterwards
-means rewriting all of them.
-
-The decision is a naming one and it is Angela's: keep `attributes`, or keep `tags`.
-It matters because `attributes` may already mean something specific in the design
-docs, in which case reusing it for creature types would collide.
-
----
-
-## 6. How content gets *recorded* — the published-source rule
-
-Emitting a row into `src/content/` is not the same as the content existing.
-
-`node tools/content-check.mjs` sorts every id in the engine into three buckets:
-
-- **PUBLISHED** — the id has a table row in a numbered `*-SETTLED.md` file. This is
-  the only evidence that counts.
-- **context** — the id is mentioned in some other doc (`GLOSSARY`, `HANDOFF`,
-  `CONTENT-AUDIT`). Not sufficient.
-- **INVENTED** — no design source anywhere. Currently 10 ids, including every
-  attack in the game and the baseline scenario.
-
-Everything currently in `src/content/index.ts` is scaffolding, and the file says so
-at the top: numbers invented by an engine session so the harness had something to
-run. **No balance conclusion drawn from them is a finding about the game** — several
-were reported as findings on 2026-08-14 and should not have been.
-
-The practical rule for Crucible: **whatever it emits needs a row in a numbered
-SETTLED file, or it lands as INVENTED.** If Crucible is going to be the thing that
-produces heroes, the cleanest arrangement is that it writes the SETTLED rows *and*
-the content rows from one source, so they cannot drift.
-
----
-
-## 7. Minimum viable Crucible output
-
-```
-1. a UnitDef row per hero            → UNITS,     keyed by typeId
-2. an AttackDef row per weapon       → ATTACKS,   ids referenced by the hero
-3. an AbilityDef row per power       → ABILITIES, ids referenced by the hero
-4. a published table row for each of the above, in the right numbered SETTLED file
-```
-
-Emit 1–3 without 4 and the content exists but is not real. Emit 4 without 1–3 and
-`content-check` reports it as published-but-not-built.
+So Crucible is not filling a gap in a populated system. **It is the first
+publication of actions and heroes.** Whatever shape it emits should write the
+SETTLED rows and the engine content from one source, so the two cannot drift.

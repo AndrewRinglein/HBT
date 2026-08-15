@@ -74,3 +74,41 @@ land in `1-EFFECTS-SETTLED.md` first?
 Riding on it: four engine paths that are built and have never once executed —
 Protection absorbing, Weakness reducing damage, Stun blocking a turn, and Burn
 halving healing.
+
+---
+
+## 2026-08-15 — Attacks and powers: what they actually carry
+
+Correcting an engine-session error. `HERO-RECORD.md` v1 described `AttackDef` out of
+`src/content/index.ts` — provisional scaffolding — as though it were the design.
+`GAME-DESIGN.md` §4 and §5 are the source.
+
+**An attack carries:** stamina cost · damage type · reach (on the weapon; hero Reach
+adds to ranged only) · the governing stat (Strength melee, Precision ranged) · the
+damage modifier · **triggers** · **type modifiers to damage**.
+
+**A power carries all of the same, plus a cooldown** — and instead of triggers it has
+**effects**.
+
+> "Powers have all these same things and cooldowns. Because they don't have triggers,
+> because they really have effects. Powers have a variety of effects, like they can
+> have area effect attacks and they can heal."
+
+She also asked whether the engine's `kind` field is what she means by damage type. It
+is not: `kind` is melee/ranged and `damageType` is physical/magic/true. Two fields.
+
+Consequences for the engine, all open: attacks have no `triggers` field (only a single
+`applies` status rider) and no target-type modifier; and `AbilityDef` has no effects at
+all, so no power can heal or hit an area today.
+
+---
+
+## 2026-08-15 — The design document is the source
+
+> "We have a highly detailed design document, which I've talked about extensively, and
+> then you're defining attacks as two stats?"
+
+`GAME-DESIGN.md` (~64k) is canonical. `src/content/index.ts` is scaffolding an engine
+session invented and labelled as such at the top of the file. **Describe the design from
+the design document.** Reading the content file and reporting its shape as the design is
+the error that produced `HERO-RECORD.md` v1.
