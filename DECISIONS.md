@@ -112,3 +112,68 @@ all, so no power can heal or hit an area today.
 session invented and labelled as such at the top of the file. **Describe the design from
 the design document.** Reading the content file and reporting its shape as the design is
 the error that produced `HERO-RECORD.md` v1.
+
+---
+
+## 2026-08-15 — Every hero has a unique name
+
+**Ruled: a hero is an individual, not an archetype.**
+
+> "Every hero has a unique name. And now we haven't really been following that with
+> Warrior and Ranger, but every hero has a unique name. So this should never be a
+> generic ranger, one ranger, two. No, it's gonna be Sylva Shepherd and Mary
+> Meriwether and chaos mage."
+
+Two provenances. **Generated** — Crucible rolls the name with the stats, badges, art,
+gender, personality and background. **Fixed** — a one-off: *"If it's like the Crown
+Prince, that's just one unit named Crown Prince. You'll never have another one."*
+
+Class fixes base stats and kit; the individual carries the name and the rolled
+modifications on top. The engine's `heroes: ['warrior','warrior','ranger','mage']`
+roster and its spawn-time `name` argument both contradict this.
+
+---
+
+## 2026-08-15 — Two classes of trigger, and a grant at load
+
+**Ruled: triggers a hero always brings are distinct from triggers granted in combat.**
+
+> "There's a difference between triggers that a hero has that will always be present
+> in combat and things that are granted in combat. Many things in combat give
+> triggers to a unit. So presumably, when you're loading the unit into combat, there
+> is a sort of grant the trigger at start."
+
+Permanent triggers are stored on the hero record and granted at load. Combat-granted
+triggers are never stored. Persistence already holds by construction — `makeUnit`
+rebuilds from the def each battle — but granting is unbuilt: no mutator, no
+`trigger.grant` effect kind, and `startOfBattle` is not among the nine implemented
+hooks.
+
+---
+
+## 2026-08-15 — Resolute is no longer a stat
+
+**Ruled: retired from the sheet.**
+
+> "Resolute is no longer a stat."
+
+`GAME-DESIGN.md` line 545 still lists it, and two injuries read it: **Frightened**
+(Minor, `−1 Resolute` — its only effect, so it becomes a no-op) and **Terrified**
+(Medium, `−2 Resolute / −1 Resist` — left with half). Both need a new effect or a new
+name before they can be authored.
+
+---
+
+## 2026-08-15 — Permanent injuries are badges
+
+**Confirmed against the design document, which already says it.**
+
+> "We have permanent injuries. I guess those are just badges, so"
+
+§9: *"Every wounding mints an injury. All injuries are mechanical badges."* Wound
+levels are badges too — Wounded *"persists while the badge does."* So §8 is literal:
+abilities, flaws, scars, permanent injuries, blessings, afflictions and personality
+are one system, and the whole consequence stack is badge-borne.
+
+**Toughness does double duty:** Deathbed Fighting (`20 + 5×Toughness + badges`) and
+injury capacity (minors beyond Toughness convert to a medium, mediums to a major).

@@ -14,8 +14,11 @@ Crucible produces.
 ## 1. The hero sheet — GAME-DESIGN §7
 
 **Strength · Precision · Accuracy · Crit · Grit · Reach · Dodge · Vision · Armor ·
-Resist · Health · Magic · Spirit · Toughness · Resolute · Movement · Stamina
-(max/regen) · Item Slots**
+Resist · Health · Magic · Spirit · Toughness · Movement · Stamina (max/regen) ·
+Item Slots**
+
+> **RULED, Angela 2026-08-15: Resolute is no longer a stat.** `GAME-DESIGN.md` line
+> 545 still lists it. Two injuries depend on it — see §5b.
 
 Plus:
 
@@ -89,7 +92,58 @@ This has a hard engineering consequence, stated in §5 as lesson 4 of "do not po
 
 ---
 
+## 2b. Identity — every hero has a unique name
+
+**RULED, Angela 2026-08-15.** A hero is an individual, not an archetype. There is no
+"warrior, warrior, ranger" — there is Sylva Shepherd, Mary Meriwether, a chaos mage.
+
+> "Every hero has a unique name. So this should never be a generic ranger, one
+> ranger, two."
+
+**Names have two provenances:**
+
+| | |
+|---|---|
+| **Generated** | Crucible rolls the name along with stats, badges, art, gender, personality and background. |
+| **Fixed** | A one-off. *"If it's like the Crown Prince, that's just one unit named Crown Prince. You'll never have another one."* |
+
+Class is not identity. Class **fixes base stats and kit** (§7); the individual carries
+the unique name and the rolled modifications on top of it.
+
+**What this breaks.** The engine keys `UNITS` by *type* and builds a roster by naming
+types with repeats — `heroes: ['warrior', 'warrior', 'ranger', 'mage']`, two warriors
+sharing one stat line. `name` is a spawn-time argument to `makeUnit`, not a stored
+field, precisely because the record was built to describe a kind of thing.
+
+The record has to become per-hero: its own key, its own `name`, a reference to its
+class, and its own stat line. Fixed heroes are the same shape — they are simply
+authored once instead of rolled, and never instanced twice.
+
+---
+
 ## 3. Triggers — GAME-DESIGN §5
+
+### Two classes of trigger
+
+**RULED, Angela 2026-08-15.**
+
+> "There's a difference between triggers that a hero has that will always be present
+> in combat and things that are granted in combat. Many things in combat give
+> triggers to a unit. So presumably, when you're loading the unit into combat, there
+> is a sort of grant the trigger at start."
+
+- **Permanent** — what the hero always brings: base class, specialty class, items,
+  class powers, badges, origins, level paths. **These are stored on the hero record**,
+  and granting them is what loading a unit into combat *does*.
+- **Granted in combat** — handed out during the battle by whatever grants them.
+  **These are never stored.** They live on the live unit and evaporate when the battle
+  ends, because the unit is rebuilt from the record each time.
+
+The persistence half of this already works by construction: `makeUnit` assembles a
+fresh unit from the def every battle, so nothing granted mid-fight can leak into the
+saved hero. The *granting* half does not exist — see below.
+
+### The hooks
 
 Twelve hooks:
 
@@ -106,6 +160,21 @@ same trigger both fire.
 > Minor inconsistency worth resolving: §7's hero paragraph lists a nine-hook set
 > that omits `onHit`, `startOfBattle` and `onEquip`. §5's list is the fuller one and
 > is treated here as authoritative.
+
+**Nine of the twelve are implemented.** `HOOKS` in `src/core/trigger.ts`:
+
+`onAttack` · `onMiss` · `onHit` · `onCrit` · `onDamage` · `onKill` · `onTakingDamage` ·
+`onDeath` · `onActivationEnd`
+
+- **Missing: `startOfBattle`, `onEnter`, `onWounded`, `onEquip`.** The first is exactly
+  the hook "grant the trigger at start" needs; the last is the one gear would fire on.
+- **Extra: `onCrit`** — the attacker's, the instant a crit is confirmed, before damage
+  is computed. Not in §5's list.
+- **`turnEnd` was deliberately renamed `onActivationEnd`**, and this one is worth
+  keeping. `turnEnd` collides with the fixed vocabulary: a Turn is a Hero Phase plus an
+  Enemy Phase, while a unit finishing its go is an Activation. On an eight-zombie board
+  that is 16 firings a turn versus 1. **If §5 means "when this unit finishes its go,"
+  the design document should say Activation.**
 
 ---
 
@@ -126,11 +195,10 @@ regen).
 | **Grit** | Nothing reads it. |
 | **Vision** | No vision, darkness, fog or stealth layer at all. |
 | **Toughness** | So **Deathbed Fighting cannot be derived** — the whole consequence stack (§9) has no input. |
-| **Resolute** | Nothing reads it. |
 | **Item Slots / loadout** | **No weapon entity exists.** See below. |
 | **Badges** | The entire persistent-history system (§8) is absent. |
 | **Type / class** | `role` (melee/ranged/support) is an AI hint, not a class. |
-| **Unique name** | Assigned at spawn, not stored on the record. |
+| **Unique name** | Assigned at spawn, not stored on the record. Contradicts the §2b ruling outright. |
 | **Level / XP** | Absent. |
 | **Corruption / Favor** | Absent. |
 
@@ -152,6 +220,23 @@ gear, and gear is where the design puts the majority of the damage number.
 Powers have **no effects at all** — `AbilityDef` is a single-target damage row, so
 **no power can heal or hit an area today** (`ability.effects`, open). The targeting
 model *does* already support area and type filters; abilities simply do not reach it.
+
+**A trigger cannot be granted in combat.** Per §3 this is half the trigger model, and
+none of it is built:
+
+- `Unit.triggers` is populated once, in `makeUnit`, and never touched again.
+- There is **no mutator** to grant or revoke one — `mutate.ts` has 16 mutators and
+  none of them concern triggers. By Law 3 every state change goes through a mutator
+  and emits an event, so granting one today is not merely unimplemented, it is
+  illegal.
+- `TriggerEffect` has three kinds — `status.apply`, `status.remove`, `damage`. There
+  is no `trigger.grant`, so nothing can express the grant even as data.
+
+Two things are already right and worth not breaking. **`Trigger.source` exists**
+("which class / item / badge granted it"), so revoke-by-source is expressible the day
+a mutator arrives — that is §5's "do not port" lesson 2, the empty removal branch,
+pre-empted. And **`triggersFrom` freezes an own copy per unit**, so two heroes
+carrying the same badge cannot share a mutable entry — lesson 3, also pre-empted.
 
 ---
 
@@ -183,6 +268,44 @@ Badge rules that constrain generation: **a fresh recruit rolls 0–2 badges, ske
 good.** Bad badges arrive later as scars and injuries from play. **Origin badges are
 immutable; earned badges are mutable** — curable at the Hospice, cleansable at the
 Chapel.
+
+---
+
+## 5b. Badges are the substrate — and two injuries just came loose
+
+**Injuries are badges. The design already says so outright** (§9): *"Every wounding
+mints an injury. **All injuries are mechanical badges.**"* Wound levels are badges
+too — Wounded *"applies in-battle and persists while the badge does."*
+
+So §8's claim is literal: abilities, flaws, scars, permanent injuries, blessings,
+afflictions and personality are **one system**. The whole consequence stack in §9 is
+badge-borne, which means a hero record with no badge layer cannot represent any of
+it — not a wound, not an injury, not a personality tag a story event reads.
+
+**Toughness does double duty**, and this is easy to miss:
+
+1. **Deathbed Fighting** — `20 + 5×Toughness + badges`.
+2. **Injury capacity** — *"minors beyond Toughness convert to a medium; mediums
+   beyond Toughness convert to a major."* `"She's at 2/2 minors"` is the real reason
+   to turn for home.
+
+### ⚠ Retiring Resolute orphans two injuries
+
+`Resolute` appears three times in `GAME-DESIGN.md`. Removing it from the sheet
+(line 545) leaves the other two dangling:
+
+| Injury | Tier | Effect as written | After the ruling |
+|---|---|---|---|
+| **Frightened** | Minor | `−1 Resolute` | **Becomes a no-op.** Its only effect was the retired stat. |
+| **Terrified** | Medium | `−2 Resolute / −1 Resist` | Loses half its effect; survives as a plain `−1 Resist`, which is thin for a Medium. |
+
+Both need a replacement effect or a replacement name, and *Frightened* needs one
+before it can be authored at all — a badge that does nothing is exactly the kind of
+row that looks published and is not.
+
+Worth noting these were the two morale-flavoured injuries. If the fear axis is going
+away with the stat, that is a design choice worth making on purpose rather than
+inheriting from a deletion.
 
 ---
 
