@@ -7,6 +7,7 @@
 import { distance } from './hex.js'
 import { roll100 } from './rng.js'
 import type { AttackDef, Ctx, Unit } from './types.js'
+import { fireTriggers } from './trigger.js'
 import { applyStatus, incomingAbsorb, outgoingPenalty, spendAbsorb } from './status.js'
 import { effective, stat } from './stats.js'
 import { applyDamage, emit, markPrimaryUsed, spendStamina, unit } from './mutate.js'
@@ -195,11 +196,22 @@ export function performAttack(ctx: Ctx, attackerId: number, targetId: number, at
     distance: distance(at.hex, tg.hex), hitChance: pv.hitChance, damageOnHit: pv.damageOnHit,
   })
 
+  // GAME-DESIGN §5: "onAttack always. Then onMiss or onHit. Then onDamage only if
+  // damage landed." Every swing, hit or miss — this is where a Mage's burn-on-attack
+  // fires, and it is deliberately NOT the same hook as a flaming bow's onHit.
+  const fc = { ownerId: attackerId, targetId, causeId: a.id, ordinal: ord }
+  fireTriggers(ctx, 'onAttack', fc)
+
   const roll = roll100(ctx.rng, 'to-hit', at.uid, ord)
   const hit = roll <= pv.hitChance
 
   if (!hit) {
     emit(ctx, 'attack.miss', a.id, { actor: attackerId, target: targetId, roll, hitChance: pv.hitChance })
+    // The CALLER settles after performAttack (see ai/modes.ts) — including after a
+    // miss, so an onMiss trigger that deals damage is picked up there. Settling here
+    // too would nest a settle inside the caller's, which the reentrancy guard turns
+    // into a silent no-op rather than an error.
+    fireTriggers(ctx, 'onMiss', fc)
     return { hit: false, crit: false, accuracy: pv.accuracy, roll, damage: 0, killed: false }
   }
 
@@ -225,6 +237,9 @@ export function performAttack(ctx: Ctx, attackerId: number, targetId: number, at
     ledger: dmg.ledger.map((r) => ({ station: r.name, effectId: r.effectId, delta: r.delta })),
   })
 
+  // "The attack connected — even if armor absorbed all of it."
+  fireTriggers(ctx, 'onHit', fc)
+
   // Spend what the pipeline said would be absorbed, before the damage lands.
   if (dmg.absorbed > 0) spendAbsorb(ctx, targetId, dmg.absorbed, a.id)
 
@@ -234,7 +249,14 @@ export function performAttack(ctx: Ctx, attackerId: number, targetId: number, at
       ? { actor: attackerId, attackId, crit, damageType: a.damageType, absorbed: dmg.absorbed }
       : { actor: attackerId, attackId, crit, damageType: a.damageType })
 
-  // Riders are triggers, not stations: damage resolves completely, then they fire.
+  // "At least 1 damage got through mitigation." applyDamage already computed
+  // applied = min(amount, hpBefore), so absorbed-to-zero distinguishes itself.
+  const applied = Math.min(dmg.value, hpBefore)
+  if (applied > 0) fireTriggers(ctx, 'onDamage', fc)
+  if (tg.hp === 0 && applied > 0) fireTriggers(ctx, 'onKill', fc)
+
+  // The legacy `applies` rider — a hardcoded 100% onHit trigger with no chance and
+  // no hook. Kept working until its content moves to a real trigger, then deleted.
   if (a.applies && tg.lifeState === 'standing') {
     applyStatus(ctx, targetId, a.applies.statusId, a.applies.value, a.id)
   }

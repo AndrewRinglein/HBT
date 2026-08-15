@@ -51,6 +51,7 @@ export type UnitDef = {
   readonly resist: number
   readonly accuracy: number
   readonly dodge: number
+  readonly triggers?: readonly import('./trigger.js').Trigger[]
   readonly strength: number
   readonly precision: number
   readonly magic: number
@@ -103,6 +104,8 @@ export type Unit = {
   statuses: { id: string; value: number }[]
   /** Stored stat modifiers — gear, wounds, badges. Terrain is derived, not stored. */
   mods: import('./stats.js').StatMod[]
+  /** Assembled from the unit's sources at makeUnit — own frozen copies (GAME-DESIGN §5). */
+  triggers: import('./trigger.js').Trigger[]
   attributes: string[]
   // Per-activation budget.
   moveUsed: boolean

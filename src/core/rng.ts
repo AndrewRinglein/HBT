@@ -16,6 +16,7 @@ export const STREAMS = [
   'hero-deployment',
   'terrain-event',
   'card',
+  'trigger',
   'ai-tiebreak',
   'activation-order',
 ] as const

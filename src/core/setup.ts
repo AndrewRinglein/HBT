@@ -5,6 +5,7 @@ import { DEFAULT_CONFIG } from './types.js'
 import { ATTACKS, ABILITIES, UNITS, FIRST_BATTLE } from '../content/index.js'
 import { terrainOf, terrainIdOf, isPassable } from '../content/maps.js'
 import { STATUSES } from '../content/statuses.js'
+import { triggersFrom } from './trigger.js'
 import { emit } from './mutate.js'
 
 function makeUnit(id: number, uid: number, name: string, def: UnitDef, hex: number): Unit {
@@ -23,6 +24,7 @@ function makeUnit(id: number, uid: number, name: string, def: UnitDef, hex: numb
     cooldowns: {},
     statuses: [],
     mods: [],
+    triggers: triggersFrom(def.triggers ?? []),
     attributes: [...def.attributes],
     moveUsed: false, primaryUsed: false, movePointsLeft: 0,
     activationOrdinal: 0, attackOrdinal: 0, deathbedOrdinal: 0,
