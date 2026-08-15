@@ -5,7 +5,7 @@ Rewritten 2026-08-15. **The first version of this file was wrong.** It documente
 something to run the harness against — and presented it as the authoring shape.
 It is not. `GAME-DESIGN.md` is the source, and this file is now written from it.
 
-Read §1 for what a hero IS. Read §4 before building Crucible: the engine
+Read §1 for what a hero IS. Read §5 before building Crucible: the engine
 implements roughly half of the sheet, and the half it is missing is the half
 Crucible produces.
 
@@ -17,8 +17,9 @@ Crucible produces.
 Resist · Health · Magic · Spirit · Toughness · Movement · Stamina (max/regen) ·
 Item Slots**
 
-> **RULED, Angela 2026-08-15: Resolute is no longer a stat.** `GAME-DESIGN.md` line
-> 545 still lists it. Two injuries depend on it — see §5b.
+> **RULED, Angela 2026-08-15: Resolute is no longer a stat.** Removed from
+> `GAME-DESIGN.md` line 545. Two injury rows still name it; those are drafting
+> material — see §6b.
 
 Plus:
 
@@ -27,7 +28,7 @@ Plus:
 - **Type** — class, plus Civilian.
 - **Unique name.**
 - **Triggers** — see §3.
-- **Badges** — see §5. A hero's whole history lives here.
+- **Badges** — see §6b. A hero's whole history lives here.
 - **Loadout** — main hand + off hand · 1 armor · X accessories (Item Slots).
 
 Banned: initiative. Dodge and hero Crit are stats again, in new forms.
@@ -42,7 +43,106 @@ Notes that change how the record is built:
 
 ---
 
-## 2. Attacks and powers — GAME-DESIGN §4 and §5
+## 1b. Progression
+
+**RULED, Angela 2026-08-15.** The record carries:
+
+| | |
+|---|---|
+| **Experience points** | XP per kill, `3/6/9` by rank (§7). |
+| **Level** | Starts at 1, runs to 10. |
+| **Level-up path** | **Per hero type.** See below. |
+| **Level modifiers** | What the path has actually granted so far. Reach is a rare high-value grant; Stamina Max grows often, Regen almost never. |
+| **Specialties** | **Chosen, not fixed.** Class gives *access* to specialties; the player picks. |
+| **Class powers** | Dual-path, plus a cross-path point currency (§7). Badges can also grant one. |
+| **Background story** | The hero's history. |
+| **Background events** | The events that shaped them — what personality tags and story events read from. |
+
+### The level-up path is per hero TYPE
+
+**RULED, Angela 2026-08-15.** Each hero *type* has its own path — what it gains at
+each of the ten levels, in both **abilities and stats**. Levels run 1 to 10.
+
+> "There are six types of rangers. For a standard ranger generated, they will all
+> have a unique name. They will all have unique stats, but they will all have the
+> same ranger level up path."
+
+**This does not collide with Crucible.** An earlier version of this file claimed it
+did; that was wrong. Generation varies the name, the stats and some abilities —
+**it never forks the path.** A generated ranger is one of six ranger types and
+inherits that type's path unchanged.
+
+**Accuracy `+5`/level is a typical shape, not a rule.** `GAME-DESIGN.md` line 145 read
+as a law and has been corrected; gains come from the type's path.
+
+None of this exists in the engine. `UnitDef` has no level, no XP, no tree, and no
+notion of a class at all — `role` is an AI hint.
+
+---
+
+## 1c. Art — nineteen assets per hero
+
+**RULED, Angela 2026-08-15.** Three art sets, each varying over level and status.
+
+| Set | Purpose | Level variants | Status variants | Total |
+|---|---|---|---|---|
+| **Card art** | The display portrait. The existing Hell TCG art — §13: *"the 2:3 card portraits are the game's face."* | 3 | 4 | **7** |
+| **Hex map art** | The token used on the battle map. | 3 | 4 | **7** |
+| **Unconscious art** | **One version only — it does not vary by level.** | 1 | 4 | **5** |
+
+> "They have their card art, and then they also have their hex map art, so they have
+> seven of both. […] They have their unconscious art. There is only one version for
+> level, and then there are the four other statuses, so there are five for each one.
+> We don't need level up unconscious."
+
+**Nineteen assets per hero**, which is the number that should drive the pipeline and
+the naming scheme.
+
+**Both open questions are now closed.**
+
+- **Three level variants.** Angela, 2026-08-15: *"It's three-level variance."*
+  Confirms the arithmetic — 3 + 4 = 7, and unconscious 1 + 4 = 5.
+- **The four alternate statuses:** **Vampirism · Werewolf · Rotting Flesh** (the
+  zombie form) **· Possessed.** Unconscious is *not* one of them — it is its own set.
+
+Class also creates **types**, which is what type-filtered targeting reads.
+
+`ART-SETTLED.md` has an empty `## Ids` section — no art id is published yet, so the
+naming scheme is still free.
+
+---
+
+## 2. Identity — every hero has a unique name
+
+**RULED, Angela 2026-08-15.** A hero is an individual, not an archetype. There is no
+"warrior, warrior, ranger" — there is Sylva Shepherd, Mary Meriwether, a chaos mage.
+
+> "Every hero has a unique name. So this should never be a generic ranger, one
+> ranger, two."
+
+**Names have two provenances:**
+
+| | |
+|---|---|
+| **Generated** | Crucible rolls the name along with stats, badges, art, gender, personality and background. |
+| **Fixed** | A one-off. *"If it's like the Crown Prince, that's just one unit named Crown Prince. You'll never have another one."* |
+
+Class is not identity, and **class does not fix base stats** — that line in §7 has been
+corrected. What class gives is **access to specialties, which are chosen.** The
+individual carries the unique name, its own stats, and its type's level-up path.
+
+**What this breaks.** The engine keys `UNITS` by *type* and builds a roster by naming
+types with repeats — `heroes: ['warrior', 'warrior', 'ranger', 'mage']`, two warriors
+sharing one stat line. `name` is a spawn-time argument to `makeUnit`, not a stored
+field, precisely because the record was built to describe a kind of thing.
+
+The record has to become per-hero: its own key, its own `name`, a reference to its
+class, and its own stat line. Fixed heroes are the same shape — they are simply
+authored once instead of rolled, and never instanced twice.
+
+---
+
+## 3. Attacks and powers — GAME-DESIGN §4 and §5
 
 **A hero gets a move and one primary action. The primary action is an attack or a
 power.**
@@ -92,115 +192,7 @@ This has a hard engineering consequence, stated in §5 as lesson 4 of "do not po
 
 ---
 
-## 1b. Progression
-
-**RULED, Angela 2026-08-15.** The record carries:
-
-| | |
-|---|---|
-| **Experience points** | XP per kill, `3/6/9` by rank (§7). |
-| **Level** | Starts at 1, runs to 10. Accuracy `+5`/level is the spine of the curve. |
-| **Level-up tree** | **Per hero.** See below. |
-| **Level modifiers** | What the tree has actually granted so far. Reach is a rare high-value grant; Stamina Max grows often, Regen almost never. |
-| **Specialties** | Specialty class is already named in §5 as a trigger source, distinct from base class. |
-| **Class powers** | Dual-path, plus a cross-path point currency (§7). Badges can also grant one. |
-
-### The level-up tree is per hero
-
-**RULED, Angela 2026-08-15:**
-
-> "Each hero has their own level-up tree: what they gain at each level. They start at
-> level one and go all the way to level 10, and each level gives them different
-> abilities. And stats."
-
-So the tree is **part of the hero record**, not a property of the class. Class fixes
-base stats and kit (§7); the tree is the hero's own. Ten levels, nine level-ups, each
-granting **abilities and stats**.
-
-**⚠ This collides with Crucible.** If heroes are randomly generated *and* each carries
-its own ten-level tree, something has to produce that tree for a generated hero. §7's
-generator list — *"stat modifications (gain and loss profiles), badges, art, gender,
-personality, name, and background"* — does not mention one.
-
-Two readings, and they lead to very different generators:
-
-- **"Gain and loss profiles" already is the tree** — a rolled growth curve, in which
-  case that phrase in §7 should be expanded to say so.
-- **The tree is authored separately** — in which case a generated hero needs an
-  authored tree from somewhere, and fixed heroes like the Crown Prince get a
-  hand-written one.
-
-Fixed heroes have no problem either way: a one-off hero gets a hand-authored tree.
-It is only the generated ones that need an answer.
-
-None of this exists in the engine. `UnitDef` has no level, no XP, no tree, and no
-notion of a class at all — `role` is an AI hint.
-
----
-
-## 1c. Art — nineteen assets per hero
-
-**RULED, Angela 2026-08-15.** Three art sets, each varying over level and status.
-
-| Set | Purpose | Level variants | Status variants | Total |
-|---|---|---|---|---|
-| **Card art** | The display portrait. The existing Hell TCG art — §13: *"the 2:3 card portraits are the game's face."* | 3 | 4 | **7** |
-| **Hex map art** | The token used on the battle map. | 3 | 4 | **7** |
-| **Unconscious art** | **One version only — it does not vary by level.** | 1 | 4 | **5** |
-
-> "They have their card art, and then they also have their hex map art, so they have
-> seven of both. […] They have their unconscious art. There is only one version for
-> level, and then there are the four other statuses, so there are five for each one.
-> We don't need level up unconscious."
-
-**Nineteen assets per hero**, which is the number that should drive the pipeline and
-the naming scheme.
-
-**Two things to pin down before authoring:**
-
-1. **Is it 3 level variants or 4?** The stated totals — seven, and five as `1 + 4` —
-   only work if the normal sets carry **3** level variants, so that is what is written
-   above. Said aloud it came out as *"three level-ups and base,"* which would be 4 and
-   would make the total 8. Three is taken here because it matches the seven.
-2. **What are the four alternate statuses?** Named nowhere yet. Unconscious is *not*
-   one of them — it is its own set. Whatever they are, they multiply across all three
-   sets, so the list needs to be fixed before any art id is minted.
-
-`ART-SETTLED.md` has an empty `## Ids` section — no art id is published yet, so the
-naming scheme is still free.
-
----
-
-## 2b. Identity — every hero has a unique name
-
-**RULED, Angela 2026-08-15.** A hero is an individual, not an archetype. There is no
-"warrior, warrior, ranger" — there is Sylva Shepherd, Mary Meriwether, a chaos mage.
-
-> "Every hero has a unique name. So this should never be a generic ranger, one
-> ranger, two."
-
-**Names have two provenances:**
-
-| | |
-|---|---|
-| **Generated** | Crucible rolls the name along with stats, badges, art, gender, personality and background. |
-| **Fixed** | A one-off. *"If it's like the Crown Prince, that's just one unit named Crown Prince. You'll never have another one."* |
-
-Class is not identity. Class **fixes base stats and kit** (§7); the individual carries
-the unique name and the rolled modifications on top of it.
-
-**What this breaks.** The engine keys `UNITS` by *type* and builds a roster by naming
-types with repeats — `heroes: ['warrior', 'warrior', 'ranger', 'mage']`, two warriors
-sharing one stat line. `name` is a spawn-time argument to `makeUnit`, not a stored
-field, precisely because the record was built to describe a kind of thing.
-
-The record has to become per-hero: its own key, its own `name`, a reference to its
-class, and its own stat line. Fixed heroes are the same shape — they are simply
-authored once instead of rolled, and never instanced twice.
-
----
-
-## 3. Triggers — GAME-DESIGN §5
+## 4. Triggers — GAME-DESIGN §5
 
 ### Two classes of trigger
 
@@ -240,24 +232,29 @@ same trigger both fire.
 > that omits `onHit`, `startOfBattle` and `onEquip`. §5's list is the fuller one and
 > is treated here as authoritative.
 
-**Nine of the twelve are implemented.** `HOOKS` in `src/core/trigger.ts`:
+**RULED, Angela 2026-08-15**, and `GAME-DESIGN.md` now reflects all three: **`onEnter`
+is gone** (entering the battle is `startOfBattle`), **`onWounded` is removed**, and
+**`turnEnd` was the wrong term — it is `onActivationEnd`.** The engine had already made
+that rename on vocabulary grounds; it is now canon rather than a local deviation.
+
+**The design list is now ten:** `startOfBattle` · `onAttack` · `onMiss` · `onHit` ·
+`onDamage` · `onTakingDamage` · `onKill` · `onDeath` · `onEquip` · `onActivationEnd`.
+
+**Nine are implemented.** `HOOKS` in `src/core/trigger.ts`:
 
 `onAttack` · `onMiss` · `onHit` · `onCrit` · `onDamage` · `onKill` · `onTakingDamage` ·
 `onDeath` · `onActivationEnd`
 
-- **Missing: `startOfBattle`, `onEnter`, `onWounded`, `onEquip`.** The first is exactly
-  the hook "grant the trigger at start" needs; the last is the one gear would fire on.
+- **Missing: `startOfBattle` and `onEquip`.** The first is exactly the hook "grant the
+  trigger at start" needs; the second is the one gear fires on. Only two now that
+  `onEnter` and `onWounded` are retired.
 - **Extra: `onCrit`** — the attacker's, the instant a crit is confirmed, before damage
-  is computed. Not in §5's list.
-- **`turnEnd` was deliberately renamed `onActivationEnd`**, and this one is worth
-  keeping. `turnEnd` collides with the fixed vocabulary: a Turn is a Hero Phase plus an
-  Enemy Phase, while a unit finishing its go is an Activation. On an eight-zombie board
-  that is 16 firings a turn versus 1. **If §5 means "when this unit finishes its go,"
-  the design document should say Activation.**
+  is computed. §4 has a full crit system, but §5's hook list does not name `onCrit`.
+  **Open: add it to the design list, or is the engine's hook surplus?**
 
 ---
 
-## 4. ⚠ What the engine actually implements
+## 5. ⚠ What the engine actually implements
 
 `UnitDef` in `src/core/types.ts` is roughly half the sheet. This is the gap
 Crucible runs into.
@@ -271,7 +268,7 @@ regen).
 | Missing | Consequence |
 |---|---|
 | **Crit** | §4's crit branch and the six-injury table are unbuilt (`crit.branch-and-injuries`). |
-| **Grit** | Nothing reads it. |
+| **Grit** | Nothing reads it. **Grit subtracts flat from an attacker's crit chance** — the exact defensive opposite of Crit. Already correct in §4's formula (`− target's Grit`); it is the engine that is missing it. |
 | **Vision** | No vision, darkness, fog or stealth layer at all. |
 | **Toughness** | So **Deathbed Fighting cannot be derived** — the whole consequence stack (§9) has no input. |
 | **Item Slots / loadout** | **No weapon entity exists.** See below. |
@@ -300,7 +297,7 @@ Powers have **no effects at all** — `AbilityDef` is a single-target damage row
 **no power can heal or hit an area today** (`ability.effects`, open). The targeting
 model *does* already support area and type filters; abilities simply do not reach it.
 
-**A trigger cannot be granted in combat.** Per §3 this is half the trigger model, and
+**A trigger cannot be granted in combat.** Per §4 this is half the trigger model, and
 none of it is built:
 
 - `Unit.triggers` is populated once, in `makeUnit`, and never touched again.
@@ -319,7 +316,7 @@ carrying the same badge cannot share a mutable entry — lesson 3, also pre-empt
 
 ---
 
-## 5. Crucible — GAME-DESIGN §7
+## 6. Crucible — GAME-DESIGN §7
 
 The spec, verbatim in substance:
 
@@ -350,7 +347,7 @@ Chapel.
 
 ---
 
-## 5b. Badges are the substrate — and two injuries just came loose
+## 6b. Badges are the substrate
 
 **Injuries are badges. The design already says so outright** (§9): *"Every wounding
 mints an injury. **All injuries are mechanical badges.**"* Wound levels are badges
@@ -387,7 +384,7 @@ material, not published content.
 
 ---
 
-## 6. Nothing is published yet
+## 7. Nothing is published yet
 
 `2-ACTIONS-SETTLED.md` — the file that publishes `attack.*`, `power.*`, `item.*`
 and `card.*` — **has an empty `## Ids` section.** Not one action is published.

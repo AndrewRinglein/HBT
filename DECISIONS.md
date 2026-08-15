@@ -254,3 +254,42 @@ personality, name, and background" — does not name one. Either "gain and loss 
 already means the tree (and §7 should say so), or trees are authored separately and
 generated heroes need one from somewhere. Fixed heroes such as the Crown Prince are
 unaffected — a one-off gets a hand-authored tree.
+
+---
+
+## 2026-08-15 — Corrections batch (design document amended)
+
+Angela reviewed the hero record and corrected seven things. `GAME-DESIGN.md` was
+amended for all of them, with an **Amendments — 2026-08-15** table added to §0.
+
+**Background.** Heroes carry a **background story** and **background events that have
+shaped them**, on top of the `background` the generator already rolled.
+
+**Accuracy per level is not a rule.** *"It is not a rule that states accuracy is +5 per
+level."* Line 145 read as a law. Gains come from the hero type's level-up path; +5 is a
+typical shape.
+
+**The level-up path is per hero TYPE, and there is no Crucible collision.** A previous
+entry in this file claimed one; it was wrong.
+
+> "The generated heroes randomize some level of stats and abilities, but they remain
+> one class with the same level up. There are six types of rangers. For a standard
+> ranger generated, they will all have a unique name. They will all have unique stats,
+> but they will all have the same ranger level up path."
+
+**Class does not fix base stats.** It gives **access to specialties, which are chosen.**
+The §7 line saying otherwise is corrected.
+
+**Art: three-level variance**, confirmed — *"It's three-level variance."* So 3 + 4 = 7
+for card and hex art, 1 + 4 = 5 for unconscious. **The four alternate statuses are
+Vampirism · Werewolf · Rotting Flesh** (zombie-like) **· Possessed.** Class also creates
+types for targeting.
+
+**Hooks, three changes:** `onEnter` no longer exists — that is `startOfBattle`.
+`onWounded` is removed. **`turnEnd` is the wrong term; it is `onActivationEnd`** — the
+rename the engine had already made on vocabulary grounds is now canon. The design list
+is ten.
+
+**Grit subtracts from crit chance** — a defensive trait that exactly opposes Crit. No
+edit needed: §4's formula already reads `− target's Grit (flat subtraction)`. The
+engine is what lacks it.
