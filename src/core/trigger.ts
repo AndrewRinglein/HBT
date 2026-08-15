@@ -26,6 +26,8 @@
 
 import type { Ctx, Unit, DamageType } from './types.js'
 import { distance } from './hex.js'
+import type { Targeting } from './target.js'
+import { resolveTargets, validateTargeting } from './target.js'
 import { roll100 } from './rng.js'
 import { applyDamage, emit } from './mutate.js'
 import { applyStatus, removeStatus } from './status.js'
@@ -65,6 +67,14 @@ export type Selector = 'self' | 'target'
 export const SELECTORS: readonly Selector[] = ['self', 'target'] as const
 
 /**
+ * The richer form, shared with abilities (`target.ts`). A trigger may state EITHER
+ * the shorthand — `self` / `target`, the two shapes that cover most riders — or a
+ * full Targeting for area and type-filtered effects. One vocabulary either way:
+ * two target languages in two files is how "target" comes to mean two things.
+ */
+export type TriggerTarget = Selector | Targeting
+
+/**
  * HOW MUCH. A plain integer, or a scaling rule.
  *
  * §5, stated as a law: "effects that scale off Magic or Spirit use the party-wide
@@ -74,7 +84,14 @@ export const SELECTORS: readonly Selector[] = ['self', 'target'] as const
  */
 export type ValueSpec =
   | number
-  | { readonly scale: 'partyMagic'; readonly div: number; readonly round: 'up' | 'down' }
+  | {
+      readonly scale: 'partyMagic' | 'partySpirit'
+      /** value = base + mult x sum / div, rounded as stated. Law 7: integers only. */
+      readonly div?: number
+      readonly mult?: number
+      readonly base?: number
+      readonly round?: 'up' | 'down'
+    }
 
 /** WHAT it does. */
 export type TriggerEffect =
@@ -87,7 +104,7 @@ export type Trigger = {
   readonly hook: Hook
   /** Integer percent, 0..100 (Law 7). */
   readonly chance: number
-  readonly select: Selector
+  readonly select: TriggerTarget
   readonly effect: TriggerEffect
   /** Which class / item / badge granted it. §5: no dedup, so two sources both fire. */
   readonly source: string
@@ -102,11 +119,16 @@ export type Trigger = {
 export function validateTrigger(t: Trigger): void {
   const where = `trigger '${t.id}'`
   if (!HOOKS.includes(t.hook)) throw new Error(`${where}: unknown hook '${t.hook}'`)
-  if (!SELECTORS.includes(t.select)) throw new Error(`${where}: unknown selector '${t.select}'`)
+  if (typeof t.select === 'string') {
+    if (!SELECTORS.includes(t.select)) throw new Error(`${where}: unknown selector '${t.select}'`)
+  } else {
+    validateTargeting(t.select, where)
+  }
   if (!Number.isInteger(t.chance) || t.chance < 0 || t.chance > 100) {
     throw new Error(`${where}: chance must be an integer 0..100, got ${t.chance}`)
   }
-  if (t.select === 'target' && !HAS_TARGET.has(t.hook)) {
+  const needsTarget = t.select === 'target' || (typeof t.select !== 'string' && t.select.select !== 'self')
+  if (needsTarget && !HAS_TARGET.has(t.hook)) {
     throw new Error(`${where}: hook '${t.hook}' has no target, so select:'target' can never resolve`)
   }
   if (!t.source) throw new Error(`${where}: every trigger names the source that granted it`)
@@ -159,21 +181,32 @@ export function resolveTriggerChance(_ctx: Ctx, _owner: Unit, t: Trigger): Resol
 
 // ── value resolution ────────────────────────────────────────────────────────
 
-/** §5: Magic and Spirit scale off the party-wide sum, every other stat off the unit. */
-export function partyMagicSum(ctx: Ctx, side: Unit['side']): number {
+/**
+ * §5: "effects that scale off Magic or Spirit use the party-wide sum; every other
+ * stat scales off the acting unit alone." Two stats, one rule — so one function.
+ */
+export function partySum(ctx: Ctx, side: Unit['side'], stat: 'magic' | 'spirit'): number {
   let n = 0
   for (const u of ctx.state.units) {
-    if (u.side === side && u.lifeState !== 'dead') n += u.magic
+    if (u.side === side && u.lifeState !== 'dead') n += u[stat]
   }
   return n
 }
 
+export const partyMagicSum = (ctx: Ctx, side: Unit['side']) => partySum(ctx, side, 'magic')
+export const partySpiritSum = (ctx: Ctx, side: Unit['side']) => partySum(ctx, side, 'spirit')
+
 export function valueOf(ctx: Ctx, owner: Unit, spec: ValueSpec): number {
   if (typeof spec === 'number') return spec
-  if (spec.scale === 'partyMagic') {
-    const total = partyMagicSum(ctx, owner.side)
-    // Integers only, one stated rounding rule per spec (Law 7).
-    return spec.round === 'up' ? Math.ceil(total / spec.div) : Math.trunc(total / spec.div)
+  if (spec.scale === 'partyMagic' || spec.scale === 'partySpirit') {
+    const total = partySum(ctx, owner.side, spec.scale === 'partyMagic' ? 'magic' : 'spirit')
+    const div = spec.div ?? 1
+    const scaled = (total * (spec.mult ?? 1)) / div
+    // Integers only, one stated rounding rule (Law 7).
+    const rounded = spec.round === 'up' ? Math.ceil(scaled) : Math.trunc(scaled)
+    // `base` survives a zero stat: the Priest's heal is 6 + 2 x Spirit, and at
+    // Spirit 0 it is still 6. Angela, 2026-08-15.
+    return (spec.base ?? 0) + rounded
   }
   throw new Error(`unknown value scale '${(spec as { scale: string }).scale}'`)
 }
@@ -189,6 +222,11 @@ export type FireContext = {
 }
 
 export function selectOf(ctx: Ctx, t: Trigger, fc: FireContext): number[] {
+  if (typeof t.select !== 'string') {
+    const owner = ctx.state.units[fc.ownerId]!
+    const aim = t.select.select === 'self' ? fc.ownerId : (fc.targetId ?? -1)
+    return resolveTargets(ctx, owner, t.select, aim)
+  }
   switch (t.select) {
     case 'self': return [fc.ownerId]
     case 'target': return fc.targetId === null ? [] : [fc.targetId]

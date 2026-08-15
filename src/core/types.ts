@@ -52,9 +52,18 @@ export type UnitDef = {
   readonly accuracy: number
   readonly dodge: number
   readonly triggers?: readonly import('./trigger.js').Trigger[]
+  /**
+   * What this unit IS, for targeting and for damage-vs-target modifiers:
+   * ['undead'], ['demon'], ['hero','ranger']. A unit is often several things, so
+   * a list rather than one `type` field.
+   * The MECHANISM is here; which units carry which tags is content (session 6).
+   */
+  readonly tags?: readonly string[]
   readonly strength: number
   readonly precision: number
   readonly magic: number
+  /** Angela 2026-08-15: identical to Magic, including the party-wide sum (§5). */
+  readonly spirit: number
   readonly role: Role
   readonly movement: number
   /** Hero Reach stat. Adds to ranged weapon reach only. */
@@ -87,6 +96,7 @@ export type Unit = {
   strength: number
   precision: number
   magic: number
+  spirit: number
   role: Role
   movement: number
   reach: number
@@ -104,6 +114,7 @@ export type Unit = {
   statuses: { id: string; value: number }[]
   /** Stored stat modifiers — gear, wounds, badges. Terrain is derived, not stored. */
   mods: import('./stats.js').StatMod[]
+  tags: readonly string[]
   /** Assembled from the unit's sources at makeUnit — own frozen copies (GAME-DESIGN §5). */
   triggers: import('./trigger.js').Trigger[]
   attributes: string[]

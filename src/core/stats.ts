@@ -18,7 +18,7 @@ import type { Ctx, Unit } from './types.js'
 import { accuracyBonusOf, reachBonusOf, dodgeBonusOf, armorBonusOf, resistBonusOf, terrainIdOf } from '../content/maps.js'
 
 export type StatName =
-  | 'strength' | 'precision' | 'magic'
+  | 'strength' | 'precision' | 'magic' | 'spirit'
   | 'accuracy' | 'dodge'
   | 'armor' | 'resist'
   | 'movement' | 'reach'
@@ -55,6 +55,7 @@ const BASE: Record<StatName, (u: Unit) => number> = {
   strength: (u) => u.strength,
   precision: (u) => u.precision,
   magic: (u) => u.magic,
+  spirit: (u) => u.spirit,
   accuracy: (u) => u.accuracy,
   dodge: (u) => u.dodge,
   armor: (u) => u.armor,

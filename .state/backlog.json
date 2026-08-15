@@ -276,5 +276,53 @@
   "spec": "DMG.VS_TARGET at 275: damage modifiers that read the TARGET -- its type/tags and its statuses. NOT triggers: they change a number, so they are a station in the one damage pipeline (Law 1). The status half needs nothing new; the type half needs tags[] on unit defs, which is Bestiary's call.",
   "expect": "'+50% vs poisoned' appears as a row in the damage ledger and in the replay waterfall",
   "note": "Captured in neither GAME-DESIGN.md nor GAME-ARCHITECTURE.md -- see TRIGGER-NOTES.md 2."
+ },
+ {
+  "id": "target.model",
+  "kind": "engine",
+  "shape": "rule",
+  "status": "done",
+  "neutral": true,
+  "spec": "One targeting vocabulary shared by abilities and triggers: select (self/unit/area) x side (ally/enemy/any) x optional radius x requireTags. Angela 2026-08-15.",
+  "expect": "all six baselines byte-identical; nothing targets anything differently until content uses it",
+  "changesBaseline": false,
+  "note": "Also adds tags[] on units (the MECHANISM only -- which units are undead is session 6's) and the Spirit stat with partySpiritSum. ANGELA TO CONFIRM: the actor counts as one of its own allies by default; excludeSelf expresses the other reading."
+ },
+ {
+  "id": "attack.multihit",
+  "kind": "engine",
+  "shape": "rule",
+  "spec": "An attack may contain N hits. Angela 2026-08-15: each hit resolves COMPLETELY -- damage, triggers, settle -- before the next begins. No retargeting. Remaining hits are cancelled the moment the target stops standing. Hit 2 is re-resolved from scratch, never a replay of hit 1's preview, because hit 1 can apply a status that hit 2's damage reads.",
+  "expect": "Double Toss throws two daggers at one target; a kill on the first cancels the second; poison applied by hit 1 is visible to hit 2's resolution",
+  "changesBaseline": true,
+  "note": "Each hit needs its own ordinal in the to-hit key or both daggers share one roll -- the same correlation bug as two triggers on one hit."
+ },
+ {
+  "id": "ability.effects",
+  "kind": "engine",
+  "shape": "rule",
+  "spec": "Abilities get the trigger effect vocabulary (status.apply / status.remove / status.reduce / damage / heal) plus the target.model targeting, instead of always being damage. Unblocks Heal Ally and Poison Knives.",
+  "expect": "an ability can heal an ally, and an ability can grant its user a trigger",
+  "needs": [
+   "target.model"
+  ]
+ },
+ {
+  "id": "move.actions",
+  "kind": "engine",
+  "shape": "rule",
+  "spec": "Movement becomes a chosen action from a list, like attacks. Angela 2026-08-15: one movement option THEN one attack-or-power, both optional. Most units start with one movement option; more arrive with levels. Rogue Sprint is move +3 for 2 stamina.",
+  "expect": "a unit with two movement options picks one, and the log names which",
+  "changesBaseline": true
+ },
+ {
+  "id": "stat.spirit",
+  "kind": "engine",
+  "shape": "numbers",
+  "status": "done",
+  "spec": "Spirit, identical to Magic including the party-wide sum (GAME-DESIGN 5). Angela 2026-08-15.",
+  "expect": "partySpiritSum totals the side; 6 + 2 x Spirit is 6 at Spirit 0 and 10 at Spirit 2",
+  "changesBaseline": false,
+  "note": "The four provisional units carry spirit 0 -- a stated absence, not an invented value."
  }
 ]

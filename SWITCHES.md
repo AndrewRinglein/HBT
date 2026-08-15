@@ -13,7 +13,8 @@ the default freezes and the baseline uses it. Without recording the answers,
 | `rangerPunchesWhenAdjacent` | Adjacent ranger: punch, or back off and shoot? | back off | open |
 | `moveCostPerHex` | Does stamina cost per hex, or per move action? | per action | open |
 | `recomputeStatsBetweenHits` | Does a stat gain from hit 1 apply to hit 2? | no | open |
-| `multiAttackRetargets` | If the target dies, does hit 2 retarget or fizzle? | fizzle | open |
+| `multiAttackRetargets` | If the target dies, does hit 2 retarget or fizzle? | **fizzle — answered by Angela 2026-08-15** | answered |
+| `multiAttackResolution` | Do the hits of a multi-attack resolve together or one at a time? | **fully, one at a time — answered 2026-08-15** | answered |
 | `powerRollsToHit` | Do class powers roll to hit (and so crit)? | no — auto-hit | **not implemented** |
 | `statusDecayRung` | Does a status decay at the tick rung, or at the later duration rung? | tick — act and decay in one pass | open |
 | `absorbSpendOrder` | Which absorbing status pays first when several are held? | id order | open |
@@ -39,6 +40,26 @@ effect gets one more tick out of the status or not.
 different durations it decides whether you spend the one about to expire or the
 one that would have lasted. Worth answering before a second shield exists.
 
+
+## Multi-attack, answered 2026-08-15
+
+> *"We need to fully resolve the first attack. There is no new target for the second
+> attack, but there are things that can trigger out of the first attack that can be
+> relevant to the second attack ... if the target is no longer there because the
+> attack was killed, then there are no more attacks against it."*
+
+Three rulings in one, and the third has teeth:
+
+1. **Each hit resolves completely before the next begins** — damage, triggers,
+   settle, all of it.
+2. **No retargeting.** A multi-attack names one target and keeps it.
+3. **Hit 2 must be re-resolved from scratch, not reused.** Hit 1 can apply poison,
+   and a `DMG.VS_TARGET` station reads the target's statuses — so caching hit 1's
+   preview and replaying it would compute hit 2 against a target that no longer
+   exists in that state. **A multi-attack is a loop over full resolutions, never one
+   resolution applied twice.**
+
+Remaining hits are cancelled the moment the target stops standing.
 
 ## These were never switches — they were already specified
 
