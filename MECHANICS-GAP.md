@@ -47,10 +47,10 @@ the trigger that never fires and the baseline that could not move.
 | Statuses (§5) | 1 | 0 | **6** |
 | Status *behaviour hooks* | 1 | **5** | 0 |
 | Battle-setup rungs | 2 | 0 | **5** |
-| Start-of-Turn rungs | 2 | 0 | **1** |
+| Start-of-Turn rungs | 0 | 0 | **2** |
 | Movement rungs | 2 | **4** | 0 |
 | End-of-Activation rungs | 0 | **1** | **1** |
-| End-of-Phase rungs | 3 (+1 half) | 0 | **2** |
+| End-of-Phase rungs | 4 (+1 half) | 0 | **2** |
 | Per-hit steps | 10 | **1** | 0 |
 | Victory outcomes | 3 | 0 | **2** |
 
@@ -78,13 +78,16 @@ work at all (hordes). The other ten are absent.
 swamping every measurement — *"clustered, spread, ranged-back, bad-start"* — and
 there are none. Today deployment is pure cup, which is the case CS warns against.
 
-### 1.2 Start of Turn — 1½ of 3
+### 1.2 Start of Turn — 0 of 2
 
 | # | Rung | State |
 |---|---|---|
 | 1 | The wave schedule fires → `onEnter` → settle | **absent** |
-| 2 | Bleed-out counters advance | **built** — `advanceBleedOuts` |
-| 3 | Victory check | **half** — there is no Start-of-Turn victory check. It happens only *transitively*, inside the `settle()` that `advanceBleedOuts` runs, and that settle is guarded by `if (downed.length)`. **With nobody downed, Start of Turn checks nothing** |
+| 2 | Victory check | **absent** — and now plainly so. Bleed-out used to run here and its settle checked victory as a side effect; with that rung moved to End of Hero Phase (Angela, 2026-08-15), Start of Turn does nothing at all |
+
+Ranked as the least urgent gap on this page: End of Phase and settle both check
+victory, so nothing can run long. It is listed because the ladder claims a rung
+that is not there.
 
 > **Open, and it is the phase/turn collision biting.** GD §9 gives the bleed-out
 > counter as **"3-4 phases."** `advanceBleedOuts` runs once per **Turn**, and
@@ -110,7 +113,7 @@ All four slots are literally comment lines in `movement.ts:100` and `:104`.
 We renamed it off `turnEnd` last night, wrote it into the glossary, and never
 called it.
 
-### 1.5 End of Phase — 3½ of 6
+### 1.5 End of Phase — 4½ of 7
 
 | # | Rung | State |
 |---|---|---|
@@ -118,6 +121,7 @@ called it.
 | 2 | Corpse effects | **absent** — nothing leaves a corpse |
 | 3 | Statuses tick → settle | **built** — `tickStatuses` |
 | 4 | Durations tick down | **half** — `StatMod.expiresAtTurn` is filtered lazily on read. Nothing counts it down, nothing emits an expiry event, so a modifier's last turn is invisible in the log |
+| 4b | Bleed-out advances — **hero ladder only** | **built** 2026-08-15, moved here from Start of Turn (Angela) |
 | 5 | Stamina regen | **built** |
 | 6 | Victory check | **built** |
 
@@ -198,7 +202,7 @@ Written today: `BASE` (+ a `BASE_MOD` row per stat modifier) · `RANGE` ·
 | 400 | TERRAIN | **retired on purpose** — terrain now arrives as `BASE_MOD` through the stat pipeline, with the same provenance. The constant is dead and should be deleted or commented as retired, because right now it reads as unbuilt |
 | 500 | CONDITION — fog, snow, darkness | **slot** — nothing writes it. This is the station the whole battle-condition system lands on |
 | 700 | SITUATIONAL | **slot** — nothing writes it. This is where **every** attack-level accuracy modifier goes: the AoO's −20, flight's −30, a Dagger Toss's −10, a Smite's +20. `AttackDef` has no `accuracy` field to feed it |
-| 900 | FINAL | **slot** — the constant exists; the clamp happens in `preview()` and emits no ledger line, so a hit's ledger cannot show where the value stopped being the roll |
+| 900 | FINAL | **slot** — the constant exists; the clamp happens in `preview()` and emits no ledger line of its own. *(The rest of the accuracy ledger IS now logged, as of 2026-08-15 — `attack.declared` carries `accLedger`. Until then it was computed and discarded.)* |
 
 All four of those constants — `ACC.TERRAIN`, `ACC.CONDITION`, `ACC.SITUATIONAL`,
 `ACC.FINAL` — appear nowhere in `src/` or `test/` outside their own declaration.
@@ -440,13 +444,20 @@ Separate list, because these are not gaps. These are two answers to one question
 and CS's own note says it: *"Two documents, opposite answers, and whichever a
 session read first won."*
 
-1. **The adjacent-ranged penalty is on the wrong case.** GD §4 line 139: *"Ranged
-   cannot target an adjacent enemy at all. You may shoot past it at something
-   distant, at −20."* The engine applies −20 when the **target** is at distance 1
-   (`pipeline.ts:89`) and applies nothing when a distant target is shot while an
-   enemy stands adjacent to the shooter. The penalty and the prohibition are
-   swapped. (`rangerPunchesWhenAdjacent` is a switch about the AI's *choice*, not
-   about legality, so it does not cover this.)
+1. ~~**The adjacent-ranged penalty is on the wrong case.**~~ **RULED AND LANDED
+   2026-08-15** (`178f608`). Angela: *"You cannot use a ranged attack on something
+   adjacent. You can use a ranged attack on something not adjacent at −20."*
+   Legality moved into `canAttack`; the penalty now reads the shooter's
+   surroundings via `inMelee()`. Both halves had been wrong at once, which is why
+   the old assertion passed — the penalty was always being paid by somebody.
+
+   **It surfaced a second thing.** Gate 1 could not probe for `ADJACENT`, because
+   **the accuracy ledger was computed and thrown away.** This document and
+   `COMBAT-SEQUENCE.md` both said the accuracy roll carries a ledger; no event
+   carried it, so no log could explain a hit chance. `attack.declared` now emits
+   `accLedger`. Worth naming as its own class of gap: *a station nobody logs is
+   indistinguishable from a station nobody runs*, and gate 1 is the thing that
+   tells them apart.
 
 2. **Two damage functions.** § 4.3 above. Law 1.
 
@@ -456,7 +467,11 @@ session read first won."*
    **So "target undead" finds no zombies today.** `attributes` is read nowhere in
    `src/`. One of the two fields should go; Law 11.
 
-4. **Bleed-out is 6 phases, the design says 3-4.** § 1.2 above.
+4. ~~**Bleed-out is 6 phases, the design says 3-4.**~~ **RULED AND LANDED
+   2026-08-15** (`97ceb68`). Angela: *"Bleed Out counter should be five phases, but
+   it only moves forward at the end of the hero phase."* The counter is 5 and the
+   rung moved out of Start of Turn into End of Hero Phase — so the enemy phase, the
+   one where nobody can reach her, no longer spends the clock.
 
 5. **The downed cannot be attacked.** § 6.6 above.
 

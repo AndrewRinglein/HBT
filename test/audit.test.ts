@@ -22,6 +22,11 @@ describe('independent audit of logged battles', () => {
       const type = new Map<number, string>()
       const hex = new Map<number, number>()
       const stamina = new Map<number, number>()
+      // Side and standing-ness, tracked only so the auditor can re-derive the
+      // ranged adjacency penalty, which is a question about the SHOOTER's
+      // surroundings rather than about the target's distance.
+      const side = new Map<number, string>()
+      const standing = new Set<number>()
       let pending: { actor: number; target: number; attackId: string; dist: number } | null = null
       let pendingPower: { actor: number; target: number; abilityId: string } | null = null
 
@@ -32,8 +37,15 @@ describe('independent audit of logged battles', () => {
             type.set(e.actor!, t)
             hex.set(e.actor!, e['hex'] as number)
             stamina.set(e.actor!, UNITS[t]!.maxStamina)
+            side.set(e.actor!, e['side'] as string)
+            standing.add(e.actor!)
             break
           }
+
+          case 'life.downed':
+          case 'life.dead':
+            standing.delete(e.target!)
+            break
 
           case 'moved': {
             const t = UNITS[type.get(e.actor!)!]!
@@ -74,9 +86,27 @@ describe('independent audit of logged battles', () => {
             const reach = a.kind === 'ranged' ? a.reach + at.reach + reachBonusOf(myTerr) : a.reach
             expect(d, 'attack was within reach').toBeLessThanOrEqual(reach)
 
-            // accuracy, recomputed
+            // A ranged attack may not target an adjacent enemy at all.
+            // Angela 2026-08-15; GAME-DESIGN.md §4.
+            if (a.kind === 'ranged') expect(d, 'ranged never targets an adjacent enemy').toBeGreaterThan(1)
+
+            // accuracy, recomputed.
+            //
+            // CHANGED 2026-08-15, and this auditor is the reason the change was safe
+            // to make: the −20 is charged when a living enemy is adjacent to the
+            // SHOOTER, whatever the shooter is aiming at. It used to be charged when
+            // the TARGET was at distance 1 — the case that is now illegal. Both
+            // halves were wrong at once, so the old assertion passed: the penalty
+            // was always being paid by somebody.
             let acc = at.accuracy
-            if (a.kind === 'ranged') acc += d === 1 ? -20 : -(d - 1) * 5
+            if (a.kind === 'ranged') {
+              acc -= (d - 1) * 5
+              const me = hex.get(e.actor!)!
+              const mySide = side.get(e.actor!)!
+              const inMelee = [...standing].some(
+                (id) => side.get(id) !== mySide && distance(me, hex.get(id)!) === 1)
+              if (inMelee) acc -= 20
+            }
             acc += accuracyBonusOf(myTerr)
             expect(e['hitChance'], `hit chance for ${a.id} at range ${d}`).toBe(Math.max(0, Math.min(100, acc)))
             checkedAcc++

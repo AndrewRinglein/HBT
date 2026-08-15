@@ -527,3 +527,182 @@ Kept, because they are about the ENGINE and not the content:
 - 5000 battles with zero invalid states
 - the log is sufficient to drive a renderer with no content imports
 - `map.open` cannot see terrain changes — the reason the baseline is split per map
+
+## fix.adjacent-ranged — LANDED `178f608` **NEEDS REVIEW**
+2026-08-15 03:05
+
+  PASS  dependencies landed
+  PASS  typecheck
+  PASS  full test suite — 202 passed
+  PASS  gate 1 — the id appears in a real battle — ADJACENT: 192 log lines, 192 fired, 192 changed state
+  PASS  brought its own tests — test/audit.test.ts, test/rulings-2026-08-15.test.ts
+  WARN  existing tests untouched — DELETED LINES in test/audit.test.ts (-2) — will land FLAGGED for review
+  PASS  control battles unchanged — re-blessed — this item DECLARED it changes the control battles: map.open 711f8976->9311b2f3, map.ridge e2db1e40->b250a04c, map.flanks 66a7b4e1->a3daa57a, map.highlands b9627212->d4aeca14, map.field ceef18a6->7e2480ac, map.thicket 6453f7b0->db37ba79
+  PASS  content has a published source — 10 ids still have no published source — see content-check
+
+<details><summary>Existing tests were edited — review this diff</summary>
+
+```diff
+diff --git a/test/audit.test.ts b/test/audit.test.ts
+index aa3739f..21c4460 100644
+--- a/test/audit.test.ts
++++ b/test/audit.test.ts
+@@ -23,4 +23,9 @@ describe('independent audit of logged battles', () => {
+       const hex = new Map<number, number>()
+       const stamina = new Map<number, number>()
++      // Side and standing-ness, tracked only so the auditor can re-derive the
++      // ranged adjacency penalty, which is a question about the SHOOTER's
++      // surroundings rather than about the target's distance.
++      const side = new Map<number, string>()
++      const standing = new Set<number>()
+       let pending: { actor: number; target: number; attackId: string; dist: number } | null = null
+       let pendingPower: { actor: number; target: number; abilityId: string } | null = null
+@@ -33,7 +38,14 @@ describe('independent audit of logged battles', () => {
+             hex.set(e.actor!, e['hex'] as number)
+             stamina.set(e.actor!, UNITS[t]!.maxStamina)
++            side.set(e.actor!, e['side'] as string)
++            standing.add(e.actor!)
+             break
+           }
+ 
++          case 'life.downed':
++          case 'life.dead':
++            standing.delete(e.target!)
++            break
++
+           case 'moved': {
+             const t = UNITS[type.get(e.actor!)!]!
+@@ -75,7 +87,25 @@ describe('independent audit of logged battles', () => {
+             expect(d, 'attack was within reach').toBeLessThanOrEqual(reach)
+ 
+-            // accuracy, recomputed
++            // A ranged attack may not target an adjacent enemy at all.
++            // Angela 2026-08-15; GAME-DESIGN.md §4.
++            if (a.kind === 'ranged') expect(d, 'ranged never targets an adjacent enemy').toBeGreaterThan(1)
++
++            // accuracy, recomputed.
++            //
++            // CHANGED 2026-08-15, and this auditor is the reason the change was safe
++            // to make: the −20 is charged when a living enemy is adjacent to the
++            // SHOOTER, whatever the shooter is aiming at. It used to be charged when
++            // the TARGET was at distance 1 — the case that is now illegal. Both
++            // halves were wrong at once, so the old assertion passed: the penalty
++            // was always being paid by somebody.
+             let acc = at.accuracy
+-            if (a.kind === 'ranged') acc += d === 1 ? -20 : -(d - 1) * 5
++            if (a.kind === 'ranged') {
++              acc -= (d - 1) * 5
++              const me = hex.get(e.actor!)!
++              const mySide = side.get(e.actor!)!
++              const inMelee = [...standing].some(
++                (id) => side.get(id) !== mySide && distance(me, hex.get(id)!) === 1)
++              if (inMelee) acc -= 20
++            }
+             acc += accuracyBonusOf(myTerr)
+             expect(e['hitChance'], `hit chance for ${a.id} at range ${d}`).toBe(Math.max(0, Math.min(100, acc)))
+```
+</details>
+
+## fix.bleedout-duration — LANDED `97ceb68` **NEEDS REVIEW**
+2026-08-15 03:06
+
+  PASS  dependencies landed
+  PASS  typecheck
+  PASS  full test suite — 207 passed
+  PASS  gate 1 — the id appears in a real battle — bleedout: 4221 log lines, 4221 fired, 4221 changed state
+  PASS  brought its own tests — test/rulings-2026-08-15.test.ts
+  WARN  existing tests untouched — DELETED LINES in test/rulings-2026-08-15.test.ts (-1) — will land FLAGGED for review
+  PASS  control battles unchanged — re-blessed — this item DECLARED it changes the control battles: map.open 9311b2f3->648b97c7, map.ridge b250a04c->e5407033, map.flanks a3daa57a->252cc021, map.highlands d4aeca14->e1496515, map.field 7e2480ac->e7b62e1e, map.thicket db37ba79->18e7edcf
+  PASS  content has a published source — 10 ids still have no published source — see content-check
+
+<details><summary>Existing tests were edited — review this diff</summary>
+
+```diff
+diff --git a/test/rulings-2026-08-15.test.ts b/test/rulings-2026-08-15.test.ts
+index a8e4f28..147cc16 100644
+--- a/test/rulings-2026-08-15.test.ts
++++ b/test/rulings-2026-08-15.test.ts
+@@ -1,5 +1,7 @@
+ import { describe, it, expect } from 'vitest'
+-import { createCustomBattle } from '../src/core/setup.js'
++import { createBattle, createCustomBattle } from '../src/core/setup.js'
++import { runBattle } from '../src/core/battle.js'
+ import { canAttack, preview, resolveAccuracy, inMelee } from '../src/core/pipeline.js'
++import { BLEED_OUT_COUNTER } from '../src/core/settle.js'
+ import { hexId } from '../src/core/hex.js'
+ 
+@@ -84,2 +86,72 @@ describe('ranged attacks and adjacency (Angela 2026-08-15)', () => {
+   })
+ })
++
++// ─── Bleed-out ───────────────────────────────────────────────────────────────
++//
++//   "Bleed Out counter should be five phases, but it only moves forward at the end
++//    of the hero phase."
++//
++// Previously 3, advancing at Start of Turn. Both numbers moved, and the cadence
++// matters more than the count: five ticks that only happen on the hero phase are
++// five hero phases of rescue window, not five half-turns.
++
++describe('bleed-out (Angela 2026-08-15)', () => {
++  it('the counter is five', () => {
++    expect(BLEED_OUT_COUNTER).toBe(5)
++  })
++
++  it('a hero who drops is set to five, every time', () => {
++    for (let r = 0; r < 8; r++) {
++      const ctx = createBattle({ replicate: r, enemyCount: 10, mapId: 'map.open' })
++      runBattle(ctx)
++      const set = ctx.events.filter((e) => e.type === 'bleedout.set')
++      expect(set.length, `replicate ${r} put nobody down`).toBeGreaterThan(0)
++      for (const e of set) expect(e['bleedOut']).toBe(5)
++    }
++  })
++
++  it('it advances ONLY inside the End of Hero Phase ladder', () => {
++    let ticksChecked = 0
++    for (let r = 0; r < 8; r++) {
++      const ctx = createBattle({ replicate: r, enemyCount: 10, mapId: 'map.open' })
++      runBattle(ctx)
++
++      // Walk the log and remember which ladder, if any, we are standing in.
++      let ladder: string | null = null
++      for (const e of ctx.events) {
++        if (e.type === 'phase.end.begin') ladder = e['side'] as string
++        else if (e.type === 'phase.end.done') ladder = null
++        else if (e.type === 'bleedout.tick') {
++          expect(ladder, `a bleed-out tick outside any End of Phase ladder, replicate ${r}`).toBe('hero')
++          ticksChecked++
++        }
++      }
++    }
++    expect(ticksChecked, 'no ticks were examined — this test proved nothing').toBeGreaterThan(20)
++  })
++
++  it('it does NOT advance at Start of Turn any more', () => {
++    const ctx = createBattle({ replicate: 0, enemyCount: 10, mapId: 'map.open' })
++    runBattle(ctx)
++    for (let i = 1; i < ctx.events.length; i++) {
++      if (ctx.events[i]!.type === 'bleedout.tick') {
++        // The event immediately before a tick is never turn.begin, which is what
++        // Start-of-Turn advancement looked like.
++        expect(ctx.events[i - 1]!.type).not.toBe('turn.begin')
++      }
++    }
++  })
++
++  it('five ticks and no rescue is a death, not a fourth or sixth', () => {
++    const ctx = createBattle({ replicate: 0, enemyCount: 10, mapId: 'map.open' })
++    runBattle(ctx)
++    const ticksBefore = new Map<number, number>()
++    for (const e of ctx.events) {
++      if (e.type === 'bleedout.set') ticksBefore.set(e.target!, 0)
++      else if (e.type === 'bleedout.tick') ticksBefore.set(e.target!, (ticksBefore.get(e.target!) ?? 0) + 1)
++      else if (e.type === 'life.dead' && e['reason'] === 'bledOut') {
++        expect(ticksBefore.get(e.target!), `unit ${e.target} bled out on the wrong tick`).toBe(5)
++      }
++    }
++  })
++})
+```
+</details>

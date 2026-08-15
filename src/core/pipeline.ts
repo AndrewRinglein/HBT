@@ -58,6 +58,32 @@ function step(ledger: LedgerRow[], station: number, name: string, effectId: stri
 }
 
 /**
+ * Is a living enemy standing next to this unit?
+ *
+ * This is the condition on the ranged adjacency penalty, and it is about the
+ * SHOOTER's surroundings, not about where the target is. GAME-DESIGN.md §4:
+ *
+ *   "− 20 if you are adjacent to an enemy   (ranged only)"
+ *   "Ranged cannot target an adjacent enemy at all. You may shoot PAST it at
+ *    something distant, at −20."
+ *
+ * Angela, 2026-08-15: "You cannot use a ranged attack on something adjacent. You
+ * can use a ranged attack on something not adjacent at -20."
+ *
+ * Until 2026-08-15 the engine had this inside out — it charged −20 for shooting the
+ * adjacent enemy (which is now illegal) and charged nothing for shooting past one
+ * (which is the case the rule exists for). Both halves were wrong at once, so no
+ * test caught it: the penalty was always being paid by somebody.
+ */
+export function inMelee(ctx: Ctx, u: Unit): boolean {
+  for (const o of ctx.state.units) {
+    if (o.side === u.side || o.lifeState !== 'standing') continue
+    if (distance(u.hex, o.hex) === 1) return true
+  }
+  return false
+}
+
+/**
  * Effective reach. The Reach stat carries everything that adds to it — the hero's
  * own Reach, high ground, and later gear — so this no longer knows about terrain.
  */
@@ -86,7 +112,10 @@ export function resolveAccuracy(ctx: Ctx, attacker: Unit, target: Unit, a: Attac
   v = acc.value
 
   if (a.kind === 'ranged' && d > 1) v = step(ledger, ACC.RANGE, 'RANGE', a.id, v, v - (d - 1) * 5)
-  if (a.kind === 'ranged' && d === 1) v = step(ledger, ACC.ADJACENT, 'ADJACENT', a.id, v, v - 20)
+  // The shooter's own surroundings, not the target's distance. See inMelee().
+  if (a.kind === 'ranged' && inMelee(ctx, attacker)) {
+    v = step(ledger, ACC.ADJACENT, 'ADJACENT', a.id, v, v - 20)
+  }
   // CONDITION, SITUATIONAL: nothing live yet.
   const dodge = effective(ctx, target, 'dodge')
   v = step(ledger, ACC.TARGET_DODGE, 'TARGET_DODGE', `unit.${target.typeId}`, v, v - dodge.value)
@@ -146,7 +175,12 @@ export function canAttack(ctx: Ctx, attackerId: number, targetId: number, attack
   if (at.side === tg.side) return false
   if (at.primaryUsed) return false
   if (at.stamina < a.staminaCost) return false
-  return distance(at.hex, tg.hex) <= reachOf(ctx, at, a)
+  const d = distance(at.hex, tg.hex)
+  // "You cannot use a ranged attack on something adjacent." (Angela, 2026-08-15;
+  // GAME-DESIGN.md §4.) A legality rule, so it is answered here rather than as a
+  // penalty the shooter can eat — the shot does not exist.
+  if (a.kind === 'ranged' && d <= 1) return false
+  return d <= reachOf(ctx, at, a)
 }
 
 /** Preview: the same pipeline, run without applying. Law 1 — never a second formula. */
@@ -159,6 +193,7 @@ export function preview(ctx: Ctx, attackerId: number, targetId: number, attackId
   return {
     hitChance,
     accuracy: acc.value,
+    accLedger: acc.ledger,
     damageOnHit: resolveDamage(ctx, at, tg, a, false, outgoingPenalty(ctx, at), incomingAbsorb(ctx, tg)).value,
     damageOnCrit: resolveDamage(ctx, at, tg, a, true, outgoingPenalty(ctx, at), incomingAbsorb(ctx, tg)).value,
     critChance: critChanceOf(ctx, at, tg, acc.value),
@@ -194,6 +229,11 @@ export function performAttack(ctx: Ctx, attackerId: number, targetId: number, at
     // renderer can pick an animation without importing game content.
     kind: a.kind, damageType: a.damageType,
     distance: distance(at.hex, tg.hex), hitChance: pv.hitChance, damageOnHit: pv.damageOnHit,
+    // COMBAT-SEQUENCE: "The accuracy roll carries the same [ledger]." It did — and
+    // nothing emitted it, so until 2026-08-15 no log could say WHY a hit chance was
+    // what it was. Found by gate 1: the ADJACENT station could not be probed for,
+    // because a station nobody logs is indistinguishable from a station nobody runs.
+    accLedger: pv.accLedger.map((r) => ({ station: r.name, effectId: r.effectId, delta: r.delta })),
   })
 
   // GAME-DESIGN §5: "onAttack always. Then onMiss or onHit. Then onDamage only if

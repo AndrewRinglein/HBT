@@ -353,10 +353,16 @@
   "id": "fix.adjacent-ranged",
   "kind": "engine",
   "shape": "rule",
-  "spec": "ACC.ADJACENT is applied to the wrong case. GAME-DESIGN 4: \"Ranged cannot target an adjacent enemy at all. You may shoot past it at something distant, at -20.\" The engine applies -20 when the TARGET is at distance 1 and nothing when a distant target is shot while an enemy stands next to the shooter. NEEDS ANGELA: which of the two moves.",
-  "expect": "a ranged attack on an adjacent enemy is illegal; a ranged attack at distance while adjacent to any enemy takes -20",
+  "spec": "RULED, Angela 2026-08-15: 'You cannot use a ranged attack on something adjacent. You can use a ranged attack on something not adjacent at -20.' Matches GAME-DESIGN 4 ('-20 if YOU are adjacent to an enemy, ranged only' / 'Ranged cannot target an adjacent enemy at all. You may shoot past it at something distant, at -20'). The engine had it inside out: it charged -20 when the TARGET was at distance 1 (now illegal) and nothing for shooting past an adjacent enemy (the case the rule exists for). Legality moves to canAttack; the penalty reads the SHOOTER's surroundings.",
+  "expect": "a bow on an adjacent enemy is illegal; the same shot at range costs 20 more accuracy when an enemy stands next to the shooter and nothing when none does",
   "changesBaseline": true,
-  "needsAngela": true
+  "needsAngela": false,
+  "attempts": 2,
+  "probeIds": [
+   "ADJACENT"
+  ],
+  "status": "done-needs-review",
+  "sha": "178f608"
  },
  {
   "id": "fix.downed-targetable",
@@ -370,10 +376,15 @@
   "id": "fix.bleedout-duration",
   "kind": "engine",
   "shape": "numbers",
-  "spec": "BLEED_OUT_TURNS = 3 and advanceBleedOuts runs once per TURN, so a downed hero has six phases. GAME-DESIGN 9 says \"3-4 phases\". The phase/turn collision, biting. NEEDS ANGELA: is the counter in turns or in phases.",
-  "expect": "the counter advances on the stated cadence and a test names which",
+  "spec": "RULED, Angela 2026-08-15: 'Bleed Out counter should be five phases, but it only moves forward at the end of the hero phase.' Was 3, advancing at Start of Turn. Counter becomes 5 and the rung moves into the End of Hero Phase ladder — not Start of Turn, not the enemy phase.",
+  "expect": "a downed hero is set to 5, the counter advances only inside an End of Hero Phase ladder, and death arrives on the fifth tick",
   "changesBaseline": true,
-  "needsAngela": true
+  "needsAngela": false,
+  "probeIds": [
+   "bleedout"
+  ],
+  "status": "done-needs-review",
+  "sha": "97ceb68"
  },
  {
   "id": "fix.start-of-turn-victory",

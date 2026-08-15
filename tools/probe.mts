@@ -14,8 +14,14 @@ if (!id) { console.error('usage: probe <id> [--neutral]'); process.exit(2) }
 // landing. Law 10: the gate is not weakened, it is pointed the other way.
 const NEUTRAL = process.argv.includes('--neutral')
 
+// What counts as "it changed something." Death and the bleed-out counter were
+// missing until 2026-08-15 — every one of them goes through a mutator and emits an
+// event, so leaving them out meant an item whose only effect was killing a unit
+// read as "fired but changed nothing." Widening this makes the gate stricter, not
+// looser: more items can now be held to gate 1 rather than needing probeIds.
 const ACTED = new Set(['damage.applied','heal.applied','power.used','attack.declared',
-  'unit.enter','moved','ai.mode','status.applied','status.reduced','status.expired'])
+  'unit.enter','moved','ai.mode','status.applied','status.reduced','status.expired',
+  'life.downed','life.dead','bleedout.set','bleedout.tick'])
 
 let mentions = 0, acted = 0, changed = 0
 for (const mapId of MAP_PANEL) for (const z of [4, 8, 12]) for (let r = 0; r < 25; r++) {

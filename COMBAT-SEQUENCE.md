@@ -81,8 +81,9 @@ damage applies
 | # | Rung | Built? |
 |---|---|---|
 | 1 | The wave schedule fires — this turn's spawns arrive → `onEnter` → **settle** | *not yet* |
-| 2 | Bleed-out counters advance on downed heroes → **settle** | **yes** |
-| 3 | Victory check | **yes** |
+| 2 | Victory check | *not directly* — it happens only inside the settle another rung runs, so with nothing else happening, Start of Turn checks nothing |
+
+> **CHANGED 2026-08-15 — bleed-out left this ladder.** Angela: *"Bleed Out counter should be five phases, but it only moves forward at the end of the hero phase."* It advanced here, once per Turn, at 3. It is now 5 and lives at End of Hero Phase — see rung 4b there. The rung moved, not just the number: a counter that ticks on both phases and a counter that ticks on one are different rescue windows, and only one of them is what was asked for.
 
 ---
 
@@ -102,8 +103,11 @@ The ladder is an **ordered list of named rungs supplied by config**, not six har
 | 2 | Corpse effects for heroes standing on a corpse | *not yet* — nothing leaves a corpse |
 | 3 | Hero statuses tick — poison, burn, regeneration, weakness, stun → **settle** | **yes** *(only poison exists as content)* |
 | 4 | Hero durations tick down — protection, buffs, debuffs | **half** — `StatMod.expiresAtTurn` is filtered lazily on read; nothing counts down and no expiry is emitted |
+| 4b | **Bleed-out counters advance on downed heroes → settle** | **yes** — hero phase only |
 | 5 | Hero stamina regen | **yes** |
 | 6 | Victory check | **yes** |
+
+**Rung 4b is on the hero ladder and only the hero ladder.** Angela, 2026-08-15: *"Bleed Out counter should be five phases, but it only moves forward at the end of the hero phase."* So a downed hero has **five hero phases**, and the enemy phase — the one where nobody can reach her — does not spend the clock. Enemy-phase End of Phase runs the same ladder without this rung.
 
 ---
 
@@ -301,14 +305,23 @@ To-hit is now the core roll of the game and its **final output feeds the crit fo
 |---|---|---|
 | 100 | BASE — the attacker's Accuracy | **yes**, plus a `BASE_MOD` row per stat modifier |
 | 200 | RANGE — −5 per hex past the first, for ranged | **yes** |
-| 300 | ADJACENT — −20 for firing while adjacent | **yes**, but see the note below |
+| 300 | ADJACENT — −20 for firing while **you** are adjacent to an enemy | **yes** — see the ruling below |
 | 400 | TERRAIN — the target's occupied-hex modifier | **retired** — terrain now arrives as `BASE_MOD` through the stat pipeline, with the same provenance. The constant is dead |
 | 500 | CONDITION — fog, snow, darkness | *not yet* — nothing writes it. This is where the whole battle-condition system lands |
 | 600 | TARGET_DODGE | **yes** |
 | 700 | SITUATIONAL — the design's open melee penalties land here | *not yet* — and it is where **every** attack-level accuracy modifier goes: the AoO's −20, flight's −30, a per-attack ±. `AttackDef` has no `accuracy` field to feed it |
 | 900 | FINAL | *not yet as a row* — the clamp happens in `preview()` and emits no ledger line |
 
-> **ADJACENT is currently applied to the wrong case.** `GAME-DESIGN.md` §4: *"Ranged cannot target an adjacent enemy at all. You may shoot past it at something distant, at −20."* The engine applies −20 when the **target** is at distance 1, and nothing when a distant target is shot while an enemy stands next to the shooter. The prohibition and the penalty are swapped. Flagged, not fixed — which one moves is a design call.
+> **RULED 2026-08-15.** Angela: *"You cannot use a ranged attack on something adjacent. You can use a ranged attack on something not adjacent at −20."* Matching `GAME-DESIGN.md` §4.
+>
+> Two separate rules, and they live in two separate places:
+>
+> - **Legality** — a ranged attack may not target a unit at distance 1. Answered in `canAttack`, so the shot does not exist rather than being a bad shot. The shooter falls back to a melee option.
+> - **Penalty** — −20 when a living enemy is adjacent to the **shooter**, whatever the shooter is aiming at. It reads the shooter's surroundings, never the target's distance.
+>
+> The engine had this inside out: it charged the −20 for shooting the adjacent enemy — the shot that is now illegal — and charged nothing for shooting *past* one, which is the entire case the rule exists for. **Both halves were wrong at once, which is why no test caught it: the penalty was always being paid by somebody.**
+>
+> A second thing fell out of fixing it. `ADJACENT` could not be probed for, because **the accuracy ledger was computed and never emitted** — this document said *"the accuracy roll carries the same [ledger]"* and no event carried it, so no log could say why a hit chance was what it was. `attack.declared` now carries `accLedger`. A station nobody logs is indistinguishable from a station nobody runs.
 
 **Do not clamp the Accuracy value.** The *roll* clamps to 0–100; the value must not, because Crit reads `(final Accuracy − 100) ÷ 4`. Clamping the value silently kills Design Law 21 — the point-blank +10 crit the design promises becomes +0, and no test would catch it.
 
@@ -365,7 +378,7 @@ Triggers are not stations. Damage resolves completely, then triggers fire.
 **A downed hero** is deliberately simple in the first model:
 
 - No stat modifiers, no triggers, no aura pulse.
-- Bleed-out advances at Start of Turn.
+- **Bleed-out advances at End of Hero Phase, and nowhere else. The counter is 5.** *(Angela, 2026-08-15. Was 3, at Start of Turn.)*
 - No activation.
 - Hits on the downed accelerate bleed-out and never kill. *(Design Law 3.)*
 

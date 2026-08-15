@@ -7,7 +7,19 @@ import { emit, setBleedOut, setLifeState, setOutcome, tickBleedOut } from './mut
 import { fireTriggers } from './trigger.js'
 
 const MAX_ROUNDS = 64
-export const BLEED_OUT_TURNS = 3
+
+/**
+ * How many times the counter has to advance before a downed hero dies.
+ *
+ * Angela, 2026-08-15: "Bleed Out counter should be five phases, but it only moves
+ * forward at the end of the hero phase."
+ *
+ * Deliberately not named `_TURNS` or `_PHASES`: it advances on ONE rung — End of
+ * Hero Phase — and naming it after either unit invites the next reader to derive
+ * the other. The cadence lives at the call site, in `battle.ts`, and nowhere else.
+ * Until 2026-08-15 it was 3 and advanced at Start of Turn.
+ */
+export const BLEED_OUT_COUNTER = 5
 
 let settling = false
 
@@ -27,7 +39,7 @@ export function settle(ctx: Ctx, causeId: string): void {
             died.push(u.id)
           } else {
             setLifeState(ctx, u.id, 'downed', causeId, { reason: 'hp0' })
-            setBleedOut(ctx, u.id, BLEED_OUT_TURNS, causeId)
+            setBleedOut(ctx, u.id, BLEED_OUT_COUNTER, causeId)
           }
           changed = true
         }
@@ -69,7 +81,13 @@ export function checkVictory(ctx: Ctx, causeId: string): boolean {
   return false
 }
 
-/** Start of Turn: bleed-out counters advance on the downed. */
+/**
+ * Bleed-out counters advance on the downed.
+ *
+ * Called from ONE place — End of Hero Phase — so the cadence is a single fact in a
+ * single file. It is not a Start-of-Turn rung and it does not advance on the enemy
+ * phase. (Angela, 2026-08-15.)
+ */
 export function advanceBleedOuts(ctx: Ctx): void {
   const downed = ctx.state.units.filter((u) => u.lifeState === 'downed')
   for (const u of downed) tickBleedOut(ctx, u.id, 'bleedout')
