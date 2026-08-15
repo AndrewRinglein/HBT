@@ -52,6 +52,16 @@ export type Targeting = {
    * ANGELA TO CONFIRM.
    */
   readonly excludeSelf?: boolean
+  /**
+   * Area only — what the radius is measured FROM.
+   *
+   * `self` (default): a whirlwind, an aura, an explosion where you died.
+   * `target`: a cleave — everything near the thing you just hit.
+   *
+   * Both are real, so it is stated rather than inferred from the hook. This is
+   * TRIGGER-NOTES.md Q2, answered by making it explicit instead of picking.
+   */
+  readonly origin?: 'self' | 'target'
 }
 
 export function validateTargeting(t: Targeting, where: string): void {
@@ -65,6 +75,10 @@ export function validateTargeting(t: Targeting, where: string): void {
   }
   if (t.select === 'self' && t.side !== 'any' && t.side !== 'ally') {
     throw new Error(`${where}: select:'self' cannot have side:'${t.side}'`)
+  }
+  if (t.origin !== undefined) {
+    if (t.select !== 'area') throw new Error(`${where}: origin only means something for select:'area'`)
+    if (t.origin !== 'self' && t.origin !== 'target') throw new Error(`${where}: unknown origin '${t.origin}'`)
   }
   if (t.requireTags?.some((x) => !x)) throw new Error(`${where}: an empty tag is not a tag`)
 }

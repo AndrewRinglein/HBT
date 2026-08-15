@@ -4,6 +4,7 @@
 
 import type { Ctx } from './types.js'
 import { emit, setBleedOut, setLifeState, setOutcome, tickBleedOut } from './mutate.js'
+import { fireTriggers } from './trigger.js'
 
 const MAX_ROUNDS = 64
 export const BLEED_OUT_TURNS = 3
@@ -16,12 +17,14 @@ export function settle(ctx: Ctx, causeId: string): void {
   try {
     for (let round = 0; round < MAX_ROUNDS; round++) {
       let changed = false
+      const died: number[] = []
 
       for (const u of ctx.state.units) {
         // Enemies have no consequence stack: zero HP is simply dead.
         if (u.lifeState === 'standing' && u.hp <= 0) {
           if (u.side === 'enemy') {
             setLifeState(ctx, u.id, 'dead', causeId, { reason: 'hp0' })
+            died.push(u.id)
           } else {
             setLifeState(ctx, u.id, 'downed', causeId, { reason: 'hp0' })
             setBleedOut(ctx, u.id, BLEED_OUT_TURNS, causeId)
@@ -31,9 +34,20 @@ export function settle(ctx: Ctx, causeId: string): void {
         // A downed hero whose counter has run out.
         if (u.lifeState === 'downed' && u.bleedOut <= 0) {
           setLifeState(ctx, u.id, 'dead', causeId, { reason: 'bledOut' })
+          died.push(u.id)
           changed = true
         }
       }
+
+      // onDeath belongs to the unit that died, and fires here rather than in
+      // performAttack because death also arrives from a poison tick and from
+      // bleeding out. Fired AFTER the whole sweep so every death in this round is
+      // known first — a trigger that reads the board should not see it half-resolved.
+      // Anything it causes is picked up by the next round of this same loop.
+      for (const id of died) {
+        fireTriggers(ctx, 'onDeath', { ownerId: id, targetId: null, causeId, ordinal: 0 })
+      }
+      if (died.length) changed = true
 
       if (checkVictory(ctx, causeId)) return
       if (!changed) return

@@ -1,10 +1,12 @@
 import { describe, it, expect } from 'vitest'
 import { createCustomBattle } from '../src/core/setup.js'
 import { performAttack } from '../src/core/pipeline.js'
+import { settle } from '../src/core/settle.js'
+import { applyDamage } from '../src/core/mutate.js'
 import { valueOf as statusValueOf } from '../src/core/status.js'
 import {
   HOOKS, SELECTORS, validateTrigger, triggersFrom, resolveTriggerChance,
-  partyMagicSum, valueOf, fireTriggers,
+  partyMagicSum, valueOf, fireTriggers, selectOf,
 } from '../src/core/trigger.js'
 import type { Trigger } from '../src/core/trigger.js'
 import { hexId } from '../src/core/hex.js'
@@ -350,5 +352,129 @@ describe('COMBAT-SEQUENCE.md per-hit order', () => {
     }
     expect(mk(99)).toEqual(['onDamage'])                 // survived
     expect(mk(1)).toEqual(['onDamage', 'onKill'])        // died — onKill last
+  })
+})
+
+// ─── onDeath — the victim's, and it fires from settle ───────────────────────
+describe('onDeath', () => {
+  it('fires for the unit that died, whose owner is dead by definition', () => {
+    const ctx = createCustomBattle(
+      [{ type: 'warrior', hex: hexId(5, 5) }], [{ type: 'zombie', hex: hexId(6, 5) }],
+      { mapId: 'map.open' })
+    const [w, z] = [ctx.state.units[0]!, ctx.state.units[1]!]
+    w.accuracy = 999
+    z.hp = 1
+    // the zombie's parting shot: poison whoever is nearby when it dies
+    z.triggers = triggersFrom([T({ id: 'trigger.rot', hook: 'onDeath', chance: 100, source: 'z',
+      select: { select: 'area', side: 'enemy', radius: 2, origin: 'self' },
+      effect: { kind: 'status.apply', statusId: 'status.poison', value: 3 } })])
+    performAttack(ctx, 0, 1, 'attack.warrior.axe')
+    settle(ctx, 'test')
+    expect(z.lifeState).toBe('dead')
+    expect(ctx.events.some((e) => e.type === 'trigger.rolled' && e['hook'] === 'onDeath')).toBe(true)
+    expect(statusValueOf(w, 'status.poison')).toBe(3)   // the corpse got its revenge
+  })
+
+  it('also fires when death comes from a status tick, not an attack', () => {
+    // This is why onDeath lives in settle: a hook wired only into performAttack
+    // would miss every poison death and every bleed-out.
+    const ctx = createCustomBattle(
+      [{ type: 'warrior', hex: hexId(5, 5) }], [{ type: 'zombie', hex: hexId(6, 5) }],
+      { mapId: 'map.open' })
+    const z = ctx.state.units[1]!
+    z.hp = 1
+    z.triggers = triggersFrom([T({ id: 'trigger.rot', hook: 'onDeath', chance: 100, select: 'self',
+      source: 'z', effect: { kind: 'status.apply', statusId: 'status.poison', value: 1 } })])
+    applyDamage(ctx, z.id, 5, 'status.poison', { actor: null })
+    settle(ctx, 'status.poison')
+    expect(z.lifeState).toBe('dead')
+    const d = ctx.events.filter((e) => e.type === 'trigger.rolled' && e['hook'] === 'onDeath')
+    expect(d.length).toBe(1)
+    expect(d[0]!.causeId).toBe('trigger.rot')
+  })
+
+  it('a dead unit fires nothing ELSE — only onDeath is excepted', () => {
+    const ctx = createCustomBattle(
+      [{ type: 'warrior', hex: hexId(5, 5) }], [{ type: 'zombie', hex: hexId(6, 5) }],
+      { mapId: 'map.open' })
+    const z = ctx.state.units[1]!
+    z.lifeState = 'dead'
+    z.triggers = triggersFrom([T({ id: 'trigger.x', hook: 'onDamage', chance: 100, select: 'self', source: 'z' })])
+    fireTriggers(ctx, 'onDamage', { ownerId: z.id, targetId: 0, causeId: 't', ordinal: 1 })
+    expect(ctx.events.some((e) => e.type === 'trigger.rolled')).toBe(false)
+  })
+
+  it('onDeath has no target, so select:"target" is a load error', () => {
+    expect(() => validateTrigger(T({ hook: 'onDeath', select: 'target' }))).toThrow(/has no target/)
+    expect(() => validateTrigger(T({ hook: 'onDeath', select: 'self' }))).not.toThrow()
+  })
+})
+
+describe('onCrit', () => {
+  it('fires the instant a crit is confirmed, before damage', () => {
+    let sawCrit = 0, sawOrder = 0
+    for (let r = 0; r < 400 && sawCrit < 3; r++) {
+      const ctx = createCustomBattle(
+        [{ type: 'warrior', hex: hexId(5, 5) }], [{ type: 'zombie', hex: hexId(6, 5) }],
+        { mapId: 'map.open', replicate: r })
+      const [w, z] = [ctx.state.units[0]!, ctx.state.units[1]!]
+      ctx.cfg.switches.critEnabled = true
+      w.accuracy = 160          // surplus accuracy above 100 becomes crit chance
+      z.hp = 99
+      w.triggers = triggersFrom([T({ id: 'trigger.c', hook: 'onCrit', chance: 100, source: 'c' })])
+      performAttack(ctx, 0, 1, 'attack.warrior.axe')
+      const hit = ctx.events.find((e) => e.type === 'attack.hit')
+      if (!hit?.['crit']) continue
+      sawCrit++
+      const seq = ctx.events
+        .filter((e) => e.type === 'trigger.rolled' || e.type === 'damage.applied')
+        .map((e) => (e.type === 'trigger.rolled' ? String(e['hook']) : e.type))
+      // onCrit precedes the damage it modifies nothing about
+      expect(seq.indexOf('onCrit')).toBeGreaterThanOrEqual(0)
+      expect(seq.indexOf('onCrit')).toBeLessThan(seq.indexOf('damage.applied'))
+      sawOrder++
+    }
+    expect(sawCrit).toBeGreaterThan(0)
+    expect(sawOrder).toBe(sawCrit)
+  })
+
+  it('does not fire when the attack does not crit', () => {
+    const ctx = createCustomBattle(
+      [{ type: 'warrior', hex: hexId(5, 5) }], [{ type: 'zombie', hex: hexId(6, 5) }],
+      { mapId: 'map.open' })
+    const [w, z] = [ctx.state.units[0]!, ctx.state.units[1]!]
+    ctx.cfg.switches.critEnabled = false     // crit system off entirely
+    w.accuracy = 999; z.hp = 99
+    w.triggers = triggersFrom([T({ id: 'trigger.c', hook: 'onCrit', chance: 100, source: 'c' })])
+    performAttack(ctx, 0, 1, 'attack.warrior.axe')
+    expect(ctx.events.some((e) => e.type === 'trigger.rolled' && e['hook'] === 'onCrit')).toBe(false)
+  })
+})
+
+describe('area origin — TRIGGER-NOTES Q2, answered explicitly', () => {
+  it('origin:self is a whirlwind; origin:target is a cleave', () => {
+    const ctx = createCustomBattle(
+      [{ type: 'warrior', hex: hexId(5, 5) }],
+      [{ type: 'zombie', hex: hexId(6, 5) },     // 1 — adjacent to the warrior
+       { type: 'zombie', hex: hexId(8, 5) },     // 2 — adjacent to unit 1's far side
+       { type: 'zombie', hex: hexId(7, 5) }],    // 3 — between them
+      { mapId: 'map.open' })
+    const w = ctx.state.units[0]!
+    const whirl = { select: 'area', side: 'enemy', radius: 1, origin: 'self' } as const
+    const cleave = { select: 'area', side: 'enemy', radius: 1, origin: 'target' } as const
+    w.triggers = triggersFrom([T({ id: 'trigger.w', hook: 'onHit', chance: 100, select: whirl, source: 'w' })])
+    expect(selectOf(ctx, w.triggers[0]!, { ownerId: 0, targetId: 3, causeId: 't', ordinal: 1 }))
+      .toEqual([1])                              // around the WARRIOR
+    w.triggers = triggersFrom([T({ id: 'trigger.c', hook: 'onHit', chance: 100, select: cleave, source: 'c' })])
+    expect(selectOf(ctx, w.triggers[0]!, { ownerId: 0, targetId: 3, causeId: 't', ordinal: 1 }))
+      // around the TARGET at (7,5): units 1, 2 and 3 are all within 1 of it.
+      // I first wrote [2,3] and forgot the zombie on the near side — the engine
+      // was right and the expectation was sloppy.
+      .toEqual([1, 2, 3])
+  })
+
+  it('origin only means something for an area', () => {
+    expect(() => validateTrigger(T({ select: { select: 'unit', side: 'enemy', origin: 'self' } as never })))
+      .toThrow(/origin only/)
   })
 })

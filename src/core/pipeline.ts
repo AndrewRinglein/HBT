@@ -219,6 +219,9 @@ export function performAttack(ctx: Ctx, attackerId: number, targetId: number, at
   if (ctx.cfg.switches.critEnabled && pv.critChance > 0) {
     crit = roll100(ctx.rng, 'crit', at.uid, ord) <= pv.critChance
   }
+  // Angela 2026-08-15. Fires the instant the crit is confirmed, before the damage
+  // stations run — a crit is a thing that happened, not a size of number.
+  if (crit) fireTriggers(ctx, 'onCrit', fc)
 
   const dmg = resolveDamage(ctx, at, tg, a, crit, outgoingPenalty(ctx, at), incomingAbsorb(ctx, tg))
 

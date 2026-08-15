@@ -166,8 +166,34 @@ An attack is a list of hits, resolved **one at a time**. Each hit runs the full 
 7. `onHit`
 8. Apply the damage
 9. If damage ≥ 1: **`onDamage`** *(the attacker's)* → **`onTakingDamage`** *(the **victim's** — its owner is the unit that was hit, so a retaliation aims back at the attacker)*
-10. **`onKill`**, if the target died
-11. **Settle** (which also handles death and `onDeath`)
+10. **`onKill`**, if the target died — *the **killer's** hook*
+11. **Settle**
+
+### `onDeath` is not in this list, on purpose
+
+**`onKill` is in the attack sequence. `onDeath` is not.** The killer's hook belongs
+to the swing; the victim's belongs to dying, and dying is not an attack.
+
+A unit dies from a poison tick, from bleeding out on the Deathbed, from a trap, from
+an aura — and every one of those routes ends in the same place: **`settle`**, which
+is the only code that decides a unit is dead. So `onDeath` fires there, once, for
+whoever died, whatever killed them.
+
+Wiring it into `performAttack` as well would mean two firing sites for one event,
+which is the same shape as two functions computing damage: they agree until they
+don't, and the disagreement is a death that silently triggers nothing.
+
+Two details that follow from living in `settle`:
+
+- It fires **after** the whole sweep, so a trigger that reads the board sees every
+  death in that round rather than a half-resolved one.
+- Anything it causes is picked up by the next round of the same settle loop — the
+  fixpoint already handles cascades, so a chain of death triggers needs no new
+  machinery.
+
+`onDeath` is also the one hook whose owner is **dead when it fires**, which the
+engine has to except explicitly or the hook is wired, logged as absent, and silently
+never fires.
 
 > **CHANGED 2026-08-15 — `onAttack` moved from step 6 to step 1.** Angela: *"On
 > Attack happens the second the attack starts. It has nothing to do with hitting or

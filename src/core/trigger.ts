@@ -44,18 +44,28 @@ export type Hook =
   | 'onMiss'            // only when it missed
   | 'onHit'             // connected, even if armor absorbed all of it
   | 'onDamage'          // at least 1 damage got through mitigation
+  /** The attacker's, the instant a crit is confirmed — before damage is computed. */
+  | 'onCrit'
+  /** The KILLER's hook. */
   | 'onKill'
   /** The VICTIM's hook, not the attacker's — its owner is the unit that was hit. */
   | 'onTakingDamage'
+  /**
+   * The VICTIM's hook, on dying. Fires from `settle`, not from the attack —
+   * because death also arrives from a poison tick and from bleeding out, and a
+   * hook wired only into `performAttack` would miss both.
+   */
+  | 'onDeath'
   | 'onActivationEnd'
 
 export const HOOKS: readonly Hook[] = [
-  'onAttack', 'onMiss', 'onHit', 'onDamage', 'onKill', 'onTakingDamage', 'onActivationEnd',
+  'onAttack', 'onMiss', 'onHit', 'onCrit', 'onDamage', 'onKill', 'onTakingDamage',
+  'onDeath', 'onActivationEnd',
 ] as const
 
 /** Hooks that have a natural target. Authoring `target` on any other is a load error. */
 const HAS_TARGET: ReadonlySet<Hook> = new Set<Hook>([
-  'onAttack', 'onMiss', 'onHit', 'onDamage', 'onKill', 'onTakingDamage',
+  'onAttack', 'onMiss', 'onHit', 'onCrit', 'onDamage', 'onKill', 'onTakingDamage',
 ])
 
 /**
@@ -128,7 +138,9 @@ export function validateTrigger(t: Trigger): void {
   if (!Number.isInteger(t.chance) || t.chance < 0 || t.chance > 100) {
     throw new Error(`${where}: chance must be an integer 0..100, got ${t.chance}`)
   }
-  const needsTarget = t.select === 'target' || (typeof t.select !== 'string' && t.select.select !== 'self')
+  const needsTarget = t.select === 'target' ||
+    (typeof t.select !== 'string' &&
+      (t.select.select === 'unit' || (t.select.select === 'area' && t.select.origin === 'target')))
   if (needsTarget && !HAS_TARGET.has(t.hook)) {
     throw new Error(`${where}: hook '${t.hook}' has no target, so select:'target' can never resolve`)
   }
@@ -225,7 +237,11 @@ export type FireContext = {
 export function selectOf(ctx: Ctx, t: Trigger, fc: FireContext): number[] {
   if (typeof t.select !== 'string') {
     const owner = ctx.state.units[fc.ownerId]!
-    const aim = t.select.select === 'self' ? fc.ownerId : (fc.targetId ?? -1)
+    // An area measures from its stated origin — default self. `unit` aims at the
+    // hook's target. TRIGGER-NOTES.md Q2, answered explicitly.
+    const wantsTarget = t.select.select === 'unit' ||
+      (t.select.select === 'area' && t.select.origin === 'target')
+    const aim = wantsTarget ? (fc.targetId ?? -1) : fc.ownerId
     return resolveTargets(ctx, owner, t.select, aim)
   }
   switch (t.select) {
@@ -267,7 +283,11 @@ export function within(ctx: Ctx, from: Unit, n: number, side: 'ally' | 'enemy' |
  */
 export function fireTriggers(ctx: Ctx, hook: Hook, fc: FireContext): void {
   const owner = ctx.state.units[fc.ownerId]
-  if (!owner || owner.lifeState === 'dead') return
+  if (!owner) return
+  // A dead unit takes no further actions — EXCEPT onDeath, whose owner is dead by
+  // definition. Without this exception the hook would be wired, logged as absent,
+  // and silently never fire: the worst failure shape in this project.
+  if (owner.lifeState === 'dead' && hook !== 'onDeath') return
 
   const slots = owner.triggers
     .map((t, slot) => ({ t, slot }))
