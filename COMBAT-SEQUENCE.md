@@ -291,7 +291,7 @@ requireTags : legality, not preference — "target undead" is NOT CASTABLE
               with no undead on the board, answered before stamina is spent
 ```
 
-The actor **is** one of its own allies unless `excludeSelf` says otherwise.
+**The actor is always one of its own allies. There is no opt-out.** *(Angela, 2026-08-15: "I don't think we're ever gonna use exclude self. Because it's already either including or excluding heroes or things by target, but I don't think self will ever be one of those.")* An `excludeSelf` flag existed and was deleted — side and `requireTags` are the two axes an effect discriminates on, and "everyone but me" is not a third one.
 
 An unknown select, side, origin or an empty tag **throws at load**. §5's first
 "do not port" is Hell TCG's silent fallback, where a mistyped target quietly resolved

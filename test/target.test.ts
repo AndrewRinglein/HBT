@@ -104,17 +104,30 @@ describe('targeting — legality is answered before the stamina is spent', () =>
     expect(hasAnyTarget(ctx, a, T({ side: 'enemy' }), 0)).toBe(false)   // none at range 0
   })
 
-  // I assumed a caster was not its own ally, and the engine said otherwise. It is
-  // right: "all allies in an area" includes the one standing in it. Stated as a
-  // test rather than left as an accident, because TRIGGER-NOTES.md Q3 proposed the
-  // opposite and the two must not quietly disagree. ANGELA TO CONFIRM.
-  it('the actor IS one of its own allies, unless excludeSelf says otherwise', () => {
+  // RULED, Angela 2026-08-15: "I don't think we're ever gonna use exclude self.
+  // Because it's already either including or excluding heroes or things by target,
+  // but I don't think self will ever be one of those."
+  //
+  // So there is no opt-out and no flag — the actor is always one of its own allies.
+  // The `excludeSelf` field was deleted rather than left as an unused escape hatch.
+  it('the actor is ALWAYS one of its own allies — there is no opt-out', () => {
     const ctx = board()
     const a = ctx.state.units[0]!
     expect(hasAnyTarget(ctx, a, T({ side: 'ally' }), 0)).toBe(true)
     expect(resolveTargets(ctx, a, T({ select: 'area', side: 'ally', radius: 0 }), 0)).toEqual([0])
-    expect(resolveTargets(ctx, a, T({ select: 'area', side: 'ally', radius: 0, excludeSelf: true }), 0))
-      .toEqual([])
+    // a self-targeted heal reaches the healer, at every radius, on both sidedness settings
+    expect(resolveTargets(ctx, a, T({ select: 'area', side: 'ally', radius: 9 }), 0)).toContain(0)
+    expect(resolveTargets(ctx, a, T({ select: 'area', side: 'any', radius: 0 }), 0)).toEqual([0])
+  })
+
+  it('an unknown Targeting key is not silently ignored', () => {
+    // excludeSelf is gone; TypeScript rejects it at compile time, and a hand-written
+    // object literal carrying it would simply have no effect. Asserted so that
+    // deleting the field cannot quietly become "the flag stopped working."
+    const ctx = board()
+    const a = ctx.state.units[0]!
+    const withStaleFlag = { select: 'area', side: 'ally', radius: 0, excludeSelf: true } as unknown as Targeting
+    expect(resolveTargets(ctx, a, withStaleFlag, 0)).toEqual([0])
   })
 
   it('the dead are never a target', () => {

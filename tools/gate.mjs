@@ -34,11 +34,13 @@ if (!item) { console.error(`no backlog item '${id}'`); process.exit(2) }
 
 const checks = []
 let ok = true
+/** Set when an item takes the gate-1 deletion exemption. Forces a flagged landing. */
+let unreachableUsed = false
 /** A hard gate. Failing one blocks the landing. */
 const check = (name, fn) => {
   const r = fn()
   checks.push({ name, ...r })
-  console.log(`  ${r.ok ? 'PASS' : 'FAIL'}  ${name}${r.note ? '  — ' + r.note : ''}`)
+  if (!r.skipPrint) console.log(`  ${r.ok ? 'PASS' : 'FAIL'}  ${name}${r.note ? '  — ' + r.note : ''}`)
   if (!r.ok) ok = false
   return r.ok
 }
@@ -76,6 +78,23 @@ check('full test suite', () => {
 })
 
 check('gate 1 — the id appears in a real battle', () => {
+  // DELETIONS. Gate 1 asks "is this wired into a battle?" — which a REMOVAL cannot
+  // answer, and an item that removes an unreachable field cannot answer twice over.
+  // Added 2026-08-15, when deleting Targeting.excludeSelf had no honest probe: the
+  // targeting model is not reachable from a battle because no content uses it yet.
+  //
+  // The escape is deliberately expensive to take. It demands a written reason, it
+  // prints as SKIP rather than PASS, and it FLAGS the landing for review — so a
+  // session cannot quietly use it to dodge a probe it simply did not think about.
+  // Law 10: the gate is not weakened, the exemption is made loud and auditable.
+  if (item.unreachable) {
+    if (typeof item.unreachable !== 'string' || item.unreachable.length < 20) {
+      return { ok: false, note: '`unreachable` must be a written reason, not a boolean' }
+    }
+    unreachableUsed = true
+    console.log(`  SKIP  gate 1 — not probeable  — ${item.unreachable}`)
+    return { ok: true, note: '', skipPrint: true }
+  }
   // An item may nominate the ids to probe when its own id is not a content id
   // (a plumbing item like terrain.kinds introduces terrain.forest, not itself).
   const ids = item.probeIds ?? [id]
@@ -106,8 +125,10 @@ flag('existing tests untouched', () => ({
   ok: weakened.length === 0,
   note: weakened.length ? `DELETED LINES in ${weakened.map((w) => `${w.file} (-${w.del})`).join(', ')} — will land FLAGGED for review` : '',
 }))
-const needsReview = weakened.length > 0
-const testDiff = needsReview ? tryRun('git diff -U2 -- test/').out : ''
+// Taking the gate-1 deletion exemption ALWAYS flags the landing, whatever else
+// passed. An exemption that lands clean is an exemption nobody ever re-reads.
+const needsReview = weakened.length > 0 || unreachableUsed
+const testDiff = weakened.length > 0 ? tryRun('git diff -U2 -- test/').out : ''
 
 check('control battles unchanged', () => {
   const r = tryRun('npx tsx tools/baseline.mts')

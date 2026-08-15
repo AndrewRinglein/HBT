@@ -42,17 +42,6 @@ export type Targeting = {
    */
   readonly requireTags?: readonly string[]
   /**
-   * Does the actor count as one of its own allies?
-   *
-   * DEFAULT: yes. "All allies in an area" reads as including the caster standing in
-   * it, and a heal that skips the healer would surprise every time. But the opposite
-   * reading is real — an aura that buffs everyone *else* — so it is expressible
-   * rather than assumed. TRIGGER-NOTES.md Q3 proposed the opposite default; this is
-   * the reversal, stated here so the two do not quietly disagree.
-   * ANGELA TO CONFIRM.
-   */
-  readonly excludeSelf?: boolean
-  /**
    * Area only — what the radius is measured FROM.
    *
    * `self` (default): a whirlwind, an aura, an explosion where you died.
@@ -83,10 +72,23 @@ export function validateTargeting(t: Targeting, where: string): void {
   if (t.requireTags?.some((x) => !x)) throw new Error(`${where}: an empty tag is not a tag`)
 }
 
-/** Does this unit satisfy the side and type filters? */
+/**
+ * Does this unit satisfy the side and type filters?
+ *
+ * THE ACTOR IS ALWAYS ONE OF ITS OWN ALLIES. There is no opt-out, by ruling.
+ *
+ * Angela, 2026-08-15: "I don't think we're ever gonna use exclude self. Because
+ * it's already either including or excluding heroes or things by target, but I
+ * don't think self will ever be one of those."
+ *
+ * `excludeSelf` existed here as a flag and was deleted. The reasoning is worth
+ * keeping: side and `requireTags` are the two axes an effect actually discriminates
+ * on, and "everyone but me" is not a third one — it is a shape nobody authors. A
+ * flag that no content ever sets is a branch that is never exercised, and this file
+ * already carries four of those in the shape of unfired hooks.
+ */
 export function eligible(actor: Unit, u: Unit, t: Targeting): boolean {
   if (u.lifeState === 'dead') return false
-  if (t.excludeSelf && u.id === actor.id) return false
   const isAlly = u.side === actor.side
   if (t.side === 'ally' && !isAlly) return false
   if (t.side === 'enemy' && isAlly) return false

@@ -449,5 +449,17 @@
   "spec": "GAME-DESIGN 5 lists onEnter and startOfBattle among the hooks; COMBAT-SEQUENCE fires onEnter at battle setup and again at every wave arrival. Neither hook exists. onWounded and onEquip are also in that list and are blocked on wound levels and gear respectively.",
   "expect": "a unit placed at setup fires onEnter once, and settle runs after",
   "changesBaseline": false
+ },
+ {
+  "id": "target.no-exclude-self",
+  "kind": "engine",
+  "shape": "plumbing",
+  "spec": "RULED, Angela 2026-08-15: 'I don't think we're ever gonna use exclude self. Because it's already either including or excluding heroes or things by target, but I don't think self will ever be one of those.' Delete Targeting.excludeSelf. The actor is always one of its own allies; side and requireTags are the only two axes an effect discriminates on. Removes the last ANGELA TO CONFIRM in src/.",
+  "expect": "the field is gone from the type and from eligible(); an area heal still reaches the caster at every radius",
+  "changesBaseline": false,
+  "attempts": 1,
+  "unreachable": "A deletion, and of a field nothing reached: no content uses the targeting model yet, so no battle log can mention it. Neutrality is proven instead by the six control baselines being byte-identical.",
+  "status": "done-needs-review",
+  "sha": "03a87e0"
  }
 ]
