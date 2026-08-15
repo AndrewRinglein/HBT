@@ -161,8 +161,8 @@ An attack is a list of hits, resolved **one at a time**. Each hit runs the full 
 2. To-hit roll *(dice cup)* → hit or miss
 3. On miss: `onMiss` → **settle** → done
 4. Crit roll *(dice cup)*; on crit, `critBranch` *(damage or injury)* then `critInjury` *(which one)* — two cups, because the branch weights and the injury table are tuned independently
-5. Run the damage stations
-6. *(damage is known, not yet applied)*
+5. **`onCrit`**, if it crit — fires the instant the crit is confirmed, before the damage stations. A crit is a thing that happened, not a size of number
+6. Run the damage stations
 7. `onHit`
 8. Apply the damage
 9. If damage ≥ 1: **`onDamage`** *(the attacker's)* → **`onTakingDamage`** *(the **victim's** — its owner is the unit that was hit, so a retaliation aims back at the attacker)*
@@ -213,6 +213,68 @@ never fires.
 > the sequence at all, and it is the one hook whose **owner is the victim** rather
 > than the actor — worth stating, because every other hook on this list belongs to
 > the unit that swung.
+
+## Triggers
+
+Nine hooks. **Most belong to the unit that acted; three do not**, and getting that
+wrong is silent — a retaliation that hits the wrong unit still looks like it worked.
+
+| Hook | Fires | Owner |
+|---|---|---|
+| `onAttack` | every swing, hit or miss | attacker |
+| `onMiss` | the swing missed | attacker |
+| `onHit` | connected, even if armor absorbed it all | attacker |
+| `onCrit` | the crit is confirmed | attacker |
+| `onDamage` | at least 1 damage got through | attacker |
+| `onKill` | the target died | **killer** |
+| `onTakingDamage` | it was hit | **victim** |
+| `onDeath` | it died — fires from `settle`, not the attack | **victim** |
+| `onActivationEnd` | the unit's go is over | the unit |
+
+**`onActivationEnd`, never `turnEnd`.** A Turn is a Hero Phase plus an Enemy Phase;
+a unit finishing its go is an Activation. On an eight-zombie board the two readings
+differ by sixteen firings a turn against one. *(`GAME-DESIGN.md` §5 still says
+`turnEnd` — it needs the same edit.)*
+
+**A failed roll still logs.** `trigger.rolled` is emitted whether or not it fired.
+A 20% trigger that leaves no line when it misses is indistinguishable from one that
+was never wired in, and that ambiguity has already cost this project days once.
+
+### Chance is a number; firing is a rung
+
+The chance resolves through its own small station table, so a badge granting
+"+10% trigger chance" has somewhere to land:
+
+| # | Station |
+|---|---|
+| 100 | BASE — the authored percentage |
+| 200 | SOURCE — the unit's own modifiers |
+| 400 | SITUATIONAL |
+| 900 | FINAL — clamp 0..100 |
+
+`resolveTriggerChance` is pure and previewable. **Nothing rolls until `perform`** —
+a roll inside a resolve would consume an RNG key during `preview()`, and the real
+roll would then hit the key-collision assert.
+
+### Targeting
+
+One vocabulary, used by triggers **and** abilities. Two target languages in two files
+is how "target" comes to mean two things.
+
+```
+select : self | unit | area
+side   : ally | enemy | any
+radius : area only. omitted = the whole side ("heal all rangers")
+origin : area only. self = whirlwind (default) · target = cleave
+requireTags : legality, not preference — "target undead" is NOT CASTABLE
+              with no undead on the board, answered before stamina is spent
+```
+
+The actor **is** one of its own allies unless `excludeSelf` says otherwise.
+
+An unknown select, side, origin or an empty tag **throws at load**. §5's first
+"do not port" is Hell TCG's silent fallback, where a mistyped target quietly resolved
+to the trigger's owner and every typo became a self-target.
 
 ### Accuracy stations
 
@@ -321,7 +383,13 @@ Outcomes are an enum: `heroClear · objectiveMet · wipe · retreat · capped`. 
 
 ## Dice cups
 
-to-hit · crit · crit effect · Deathbed Fighting · schedule event · wave composition · enemy count · enemy placement · **hero deployment** · terrain event · card draws · AI tiebreak · activation order (when random)
+to-hit · crit · crit effect · **trigger** · Deathbed Fighting · schedule event · wave composition · enemy count · enemy placement · **hero deployment** · terrain event · card draws · AI tiebreak · activation order (when random)
+
+**The trigger cup's key carries the trigger's SLOT on its owner.** Two 20% triggers
+on the same hit — a zombie with poison *and* weakness — would otherwise draw the same
+key, return a bit-identical value, and always fire together: two 20% triggers
+behaving as one. Verified at 4% both / 32% exactly one, which is what independence
+looks like.
 
 Every roll is addressed by **what it is**, never by **when it happened**. "Hero 7's second hit of her third activation" — not "roll #47," and **not** anything containing a turn number.
 
