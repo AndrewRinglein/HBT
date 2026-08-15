@@ -45,6 +45,7 @@ export type Hook =
   | 'onHit'             // connected, even if armor absorbed all of it
   | 'onDamage'          // at least 1 damage got through mitigation
   | 'onKill'
+  /** The VICTIM's hook, not the attacker's — its owner is the unit that was hit. */
   | 'onTakingDamage'
   | 'onActivationEnd'
 

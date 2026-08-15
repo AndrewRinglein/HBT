@@ -251,8 +251,18 @@ export function performAttack(ctx: Ctx, attackerId: number, targetId: number, at
 
   // "At least 1 damage got through mitigation." applyDamage already computed
   // applied = min(amount, hpBefore), so absorbed-to-zero distinguishes itself.
+  // Angela 2026-08-15, the canonical tail:
+  //   "If damage is applied on damage triggers, then on taking damage triggers,
+  //    then on kill triggers if there's a kill."
   const applied = Math.min(dmg.value, hpBefore)
-  if (applied > 0) fireTriggers(ctx, 'onDamage', fc)
+  if (applied > 0) {
+    fireTriggers(ctx, 'onDamage', fc)
+    // onTakingDamage belongs to the VICTIM, so the owner flips. From the victim's
+    // side the "target" is whoever hit it — which is what a thorns or a retaliation
+    // trigger needs to aim at.
+    fireTriggers(ctx, 'onTakingDamage',
+      { ownerId: targetId, targetId: attackerId, causeId: a.id, ordinal: ord })
+  }
   if (tg.hp === 0 && applied > 0) fireTriggers(ctx, 'onKill', fc)
 
   // The legacy `applies` rider — a hardcoded 100% onHit trigger with no chance and

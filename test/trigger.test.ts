@@ -261,3 +261,94 @@ describe('triggers — the mechanism is inert until content uses it', () => {
     expect(SELECTORS).toEqual(['self', 'target'])
   })
 })
+
+// ─── the sequence itself, as an assertion ───────────────────────────────────
+describe('COMBAT-SEQUENCE.md per-hit order', () => {
+  // Angela, 2026-08-15: "On Attack happens the second the attack starts. It has
+  // nothing to do with hitting or missing." The document had it at step 6, after
+  // Apply, where a miss could never reach it. The code happened to be right and the
+  // document wrong — which is luck, not correctness, so the ORDER is asserted here.
+  const order = (ctx: ReturnType<typeof duel>) =>
+    ctx.events
+      .filter((e) => e.type === 'trigger.rolled' || e.type === 'attack.hit' ||
+                     e.type === 'attack.miss' || e.type === 'damage.applied')
+      .map((e) => (e.type === 'trigger.rolled' ? String(e['hook']) : e.type))
+
+  function swing(replicate: number) {
+    const ctx = createCustomBattle(
+      [{ type: 'warrior', hex: hexId(5, 5) }], [{ type: 'zombie', hex: hexId(6, 5) }],
+      { mapId: 'map.open', replicate })
+    ctx.state.units[0]!.triggers = triggersFrom([
+      T({ id: 'trigger.a', hook: 'onAttack', chance: 100, select: 'self', source: 'a',
+          effect: { kind: 'status.apply', statusId: 'status.poison', value: 1 } }),
+      T({ id: 'trigger.m', hook: 'onMiss', chance: 100, select: 'self', source: 'm',
+          effect: { kind: 'status.apply', statusId: 'status.poison', value: 1 } }),
+      T({ id: 'trigger.h', hook: 'onHit', chance: 100, select: 'target', source: 'h' }),
+      T({ id: 'trigger.d', hook: 'onDamage', chance: 100, select: 'target', source: 'd' }),
+    ])
+    ctx.state.units[1]!.hp = 99
+    performAttack(ctx, 0, 1, 'attack.warrior.axe')
+    return order(ctx)
+  }
+
+  it('onAttack is FIRST — before the to-hit roll is even known', () => {
+    for (let r = 0; r < 40; r++) expect(swing(r)[0]).toBe('onAttack')
+  })
+
+  it('a miss runs onAttack then onMiss, and nothing else', () => {
+    const missed = Array.from({ length: 60 }, (_, r) => swing(r)).find((o) => o.includes('attack.miss'))!
+    expect(missed).toEqual(['onAttack', 'attack.miss', 'onMiss'])
+  })
+
+  it('a hit runs the full tail in Angela\'s stated order', () => {
+    // "On attack triggers, roll to hit, on hit or on miss trigger, a variety of
+    //  things happen with damage application. If damage is applied on damage
+    //  triggers, then on taking damage triggers, then on kill triggers if there's
+    //  a kill." — 2026-08-15
+    const hit = Array.from({ length: 60 }, (_, r) => swing(r)).find((o) => o.includes('attack.hit'))!
+    expect(hit).toEqual(['onAttack', 'attack.hit', 'onHit', 'damage.applied', 'onDamage'])
+  })
+
+  it('onTakingDamage belongs to the VICTIM and fires after onDamage', () => {
+    const ctx = createCustomBattle(
+      [{ type: 'warrior', hex: hexId(5, 5) }], [{ type: 'zombie', hex: hexId(6, 5) }],
+      { mapId: 'map.open' })
+    const [w, z] = [ctx.state.units[0]!, ctx.state.units[1]!]
+    w.accuracy = 999
+    z.hp = 99
+    w.triggers = triggersFrom([T({ id: 'trigger.d', hook: 'onDamage', chance: 100, source: 'd' })])
+    // the zombie's own trigger — it fires because the zombie was hit, not because
+    // it swung, and it aims back at whoever hit it
+    z.triggers = triggersFrom([T({ id: 'trigger.t', hook: 'onTakingDamage', chance: 100,
+      select: 'target', source: 't',
+      effect: { kind: 'status.apply', statusId: 'status.poison', value: 2 } })])
+    performAttack(ctx, 0, 1, 'attack.warrior.axe')
+
+    const seq = ctx.events.filter((e) => e.type === 'trigger.rolled').map((e) => String(e['hook']))
+    expect(seq).toEqual(['onDamage', 'onTakingDamage'])
+    // the retaliation landed on the ATTACKER (2), and the attacker's own onDamage
+    // landed on the victim (1) — each trigger aimed from its own owner
+    expect(statusValueOf(w, 'status.poison')).toBe(2)
+    expect(statusValueOf(z, 'status.poison')).toBe(1)
+  })
+
+  it('onKill fires last, and only on a kill', () => {
+    const mk = (hp: number) => {
+      const ctx = createCustomBattle(
+        [{ type: 'warrior', hex: hexId(5, 5) }], [{ type: 'zombie', hex: hexId(6, 5) }],
+        { mapId: 'map.open' })
+      const [w, z] = [ctx.state.units[0]!, ctx.state.units[1]!]
+      w.accuracy = 999
+      z.hp = hp
+      w.triggers = triggersFrom([
+        T({ id: 'trigger.d', hook: 'onDamage', chance: 100, source: 'd' }),
+        T({ id: 'trigger.k', hook: 'onKill', chance: 100, select: 'self', source: 'k',
+            effect: { kind: 'status.apply', statusId: 'status.poison', value: 1 } }),
+      ])
+      performAttack(ctx, 0, 1, 'attack.warrior.axe')
+      return ctx.events.filter((e) => e.type === 'trigger.rolled').map((e) => String(e['hook']))
+    }
+    expect(mk(99)).toEqual(['onDamage'])                 // survived
+    expect(mk(1)).toEqual(['onDamage', 'onKill'])        // died — onKill last
+  })
+})

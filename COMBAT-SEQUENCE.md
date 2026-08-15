@@ -156,13 +156,37 @@ An attack is a list of hits, resolved **one at a time**. Each hit runs the full 
 
 ### Per hit
 
-1. To-hit roll *(dice cup)* → hit or miss
-2. On miss: queue `onMiss` → **settle** → done
-3. Crit roll *(dice cup)*; on crit, `critBranch` *(damage or injury)* then `critInjury` *(which one)* — two cups, because the branch weights and the injury table are tuned independently
-4. Run the damage stations
-5. Apply
-6. Queue `onAttack`, `onHit`, and — if damage ≥ 1 — `onDamage`
-7. **Settle** (which also handles death and `onDeath`)
+1. **`onAttack`** — fires the second the swing begins. It has nothing to do with
+   hitting or missing, so it cannot be bundled with the hooks that do.
+2. To-hit roll *(dice cup)* → hit or miss
+3. On miss: `onMiss` → **settle** → done
+4. Crit roll *(dice cup)*; on crit, `critBranch` *(damage or injury)* then `critInjury` *(which one)* — two cups, because the branch weights and the injury table are tuned independently
+5. Run the damage stations
+6. *(damage is known, not yet applied)*
+7. `onHit`
+8. Apply the damage
+9. If damage ≥ 1: **`onDamage`** *(the attacker's)* → **`onTakingDamage`** *(the **victim's** — its owner is the unit that was hit, so a retaliation aims back at the attacker)*
+10. **`onKill`**, if the target died
+11. **Settle** (which also handles death and `onDeath`)
+
+> **CHANGED 2026-08-15 — `onAttack` moved from step 6 to step 1.** Angela: *"On
+> Attack happens the second the attack starts. It has nothing to do with hitting or
+> missing."* At step 6 it sat after `Apply`, and a miss exits at step 3 — so a missed
+> swing never reached it, contradicting `GAME-DESIGN.md` §5 (*"onAttack — every
+> swing, hit or miss"*). Two documents, opposite answers, and whichever a session
+> read first won.
+>
+> This is load-bearing, not cosmetic: the Mage's 100% Burn on attack is compensation
+> for a low hit chance. Under the old step 6 the Mage only burned what it already
+> hit, and the compensation did not exist.
+>
+> **CHANGED 2026-08-15 — the tail is now explicit.** Angela: *"On attack triggers,
+> roll to hit, on hit or on miss trigger, a variety of things happen with damage
+> application. If damage is applied on damage triggers, then on taking damage
+> triggers, then on kill triggers if there's a kill."* `onTakingDamage` was not in
+> the sequence at all, and it is the one hook whose **owner is the victim** rather
+> than the actor — worth stating, because every other hook on this list belongs to
+> the unit that swung.
 
 ### Accuracy stations
 

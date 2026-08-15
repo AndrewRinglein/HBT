@@ -233,7 +233,7 @@
   "spec": "The trigger layer per GAME-DESIGN.md 5: hooks (onAttack/onMiss/onHit/onDamage/onKill/onTakingDamage/onActivationEnd), selectors (self/target), effects (status.apply/status.remove/damage), integer percent chance, party-wide Magic scaling. Chance resolves as a number with stations; firing is a rung. Rolls in perform only.",
   "expect": "all six baselines byte-identical, because no unit carries a trigger yet",
   "changesBaseline": false,
-  "note": "turnEnd renamed to onActivationEnd -- GAME-DESIGN 5 uses the banned Turn/Activation collision. Four Hell TCG anti-patterns designed out with a test each."
+  "note": "turnEnd renamed to onActivationEnd -- GAME-DESIGN 5 uses the banned Turn/Activation collision. Four Hell TCG anti-patterns designed out with a test each. | 2026-08-15: COMBAT-SEQUENCE.md had onAttack at step 6 (after Apply), where a miss could never reach it. Angela moved it to step 1. The code was already right and the DOCUMENT was wrong -- luck, not correctness, so the per-hit order is now asserted in test/trigger.test.ts."
  },
  {
   "id": "trigger.zombie.rot",

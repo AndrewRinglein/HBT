@@ -115,6 +115,31 @@ putting an answered one there is how it stops being checked.
 
 ---
 
+## Before ASKING a question: check whether it was already ruled on
+
+```
+node tools/decided.mjs "does a multi-attack resolve one hit at a time"
+node tools/decided.mjs --scan MY-PLAN.md      # every question in a doc at once
+```
+
+**Run this on every plan or notes document before it ships.** Not as a habit — as a
+step, the same way the gate is a step.
+
+`COMBAT-SEQUENCE.md` line 155 has said since the framework was built: *"An attack is
+a list of hits, resolved one at a time. Each hit runs the full cycle — damage,
+triggers, settle — before the next hit begins."* Angela litigated it then. It was
+re-asked as an open question on 2026-08-15 — hours after the rule above about
+grepping the design folder was added to this file.
+
+**A rule you have to remember is not a mechanism.** The rule failed within a day. The
+tool runs in a second and reads every document, including the ones you forgot exist.
+
+Asking a settled question is not a small cost. It spends the one thing the person has
+that you do not — the memory of having already decided — and it makes them wonder
+what else is being re-litigated silently.
+
+---
+
 ## When a rule is ambiguous
 
 **Don't decide it — expose it as a switch** and let a sweep answer it. Record it in `SWITCHES.md` with its question and default. When a sweep answers it, record the answer and date; keep the other code path so it stays sweepable.
