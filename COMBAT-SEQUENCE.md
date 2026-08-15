@@ -4,6 +4,8 @@
 
 This is the engine's skeleton. It says **what stages exist and in what order**, not what the rules are. Anything genuinely arguable is marked as a **switch**, because the harness exists to answer those.
 
+**Every ladder and station table below carries a `Built?` column.** This document describes the *design's* sequence, and most of it is not yet code — without the column a reader assumes the whole thing runs. `MECHANICS-GAP.md` holds the same answer organised by system, plus the list of places where this document and the engine currently disagree.
+
 ---
 
 ## Vocabulary
@@ -62,21 +64,25 @@ damage applies
 
 ## Battle setup
 
-1. Roll enemy count *(dice cup)*
-2. Roll wave composition *(dice cup)*
-3. Roll placement *(dice cup)*
-4. Place heroes
-5. Reveal the battle condition
-6. Fire `onEnter` triggers → **settle**
-7. Calculate vision and stealth
+| # | Rung | Built? |
+|---|---|---|
+| 1 | Roll enemy count *(dice cup)* | *not yet* — the roster is a fixed array |
+| 2 | Roll wave composition *(dice cup)* | *not yet* |
+| 3 | Roll placement *(dice cup)* | **yes** |
+| 4 | Place heroes | **yes** |
+| 5 | Reveal the battle condition | *not yet* |
+| 6 | Fire `onEnter` triggers → **settle** | *not yet* — `onEnter` is not one of the nine hooks |
+| 7 | Calculate vision and stealth | *not yet* — there is no Vision stat |
 
 ---
 
 ## Start of Turn
 
-1. The wave schedule fires — this turn's spawns arrive → `onEnter` → **settle**
-2. Bleed-out counters advance on downed heroes → **settle**
-3. Victory check
+| # | Rung | Built? |
+|---|---|---|
+| 1 | The wave schedule fires — this turn's spawns arrive → `onEnter` → **settle** | *not yet* |
+| 2 | Bleed-out counters advance on downed heroes → **settle** | **yes** |
+| 3 | Victory check | **yes** |
 
 ---
 
@@ -88,14 +94,16 @@ Downed heroes do not activate.
 
 ### End of Hero Phase
 
-The ladder is an **ordered list of named rungs supplied by config**, not six hardcoded calls — so reordering it is a sweep axis rather than a diff.
+The ladder is an **ordered list of named rungs supplied by config**, not six hardcoded calls — so reordering it is a sweep axis rather than a diff. *(It is six hardcoded calls in `battle.ts:41`. The reorder sweep axis does not exist yet.)*
 
-1. Auras resolve their end-of-phase effects on heroes still inside them
-2. Corpse effects for heroes standing on a corpse
-3. Hero statuses tick — poison, burn, regeneration, weakness, stun → **settle**
-4. Hero durations tick down — protection, buffs, debuffs
-5. Hero stamina regen
-6. Victory check
+| # | Rung | Built? |
+|---|---|---|
+| 1 | Auras resolve their end-of-phase effects on heroes still inside them | *not yet* — there is no aura type |
+| 2 | Corpse effects for heroes standing on a corpse | *not yet* — nothing leaves a corpse |
+| 3 | Hero statuses tick — poison, burn, regeneration, weakness, stun → **settle** | **yes** *(only poison exists as content)* |
+| 4 | Hero durations tick down — protection, buffs, debuffs | **half** — `StatMod.expiresAtTurn` is filtered lazily on read; nothing counts down and no expiry is emitted |
+| 5 | Hero stamina regen | **yes** |
+| 6 | Victory check | **yes** |
 
 ---
 
@@ -133,8 +141,9 @@ Movement, then the primary action.
 **The "Built?" column is not decoration.** This ladder was read as a description of
 what the engine does, and four of its six rungs are reserved slots — `movement.ts`
 has the comments marking where each goes, and nothing else. A sequence document that
-does not say which rungs exist will be believed. Every ladder below carries the same
-column for the same reason.
+does not say which rungs exist will be believed. Every ladder and station table in
+this document now carries the same column for the same reason — added 2026-08-15,
+when the claim that they already did turned out to be true of this ladder only.
 
 Repeat per hex. Vision and stealth recalculate after **every** step, after everything else in that step. Reveal auras (e.g. *reveal all stealth within 4*) are evaluated here too.
 
@@ -144,9 +153,14 @@ Attack or class power.
 
 ### End of Activation
 
-If the unit is standing on a hex carrying a terrain status, **it gains a stack.**
+| # | Rung | Built? |
+|---|---|---|
+| 1 | Standing on a hex carrying a terrain status → **gain a stack** | *not yet* — terrain layer 2 does not exist |
+| 2 | `onActivationEnd` triggers fire | *not yet* — **the hook exists and is never called.** `fireTriggers(ctx, 'onActivationEnd', …)` appears nowhere in `src/` |
 
-This is the second of the two applications: once on entering during movement, once here. Move through a fire hex and you took one stack. Move onto it and stop, and you took two. The statuses themselves don't tick until End of Phase.
+Rung 1 is the second of the two applications: once on entering during movement, once here. Move through a fire hex and you took one stack. Move onto it and stop, and you took two. The statuses themselves don't tick until End of Phase.
+
+Rung 2 is the reason this ladder needed the column. `onActivationEnd` is in `HOOKS`, is validated, is in the glossary, and has a written ruling banning `turnEnd` as its name — and nothing fires it. A hook in that state is indistinguishable from a working one until a piece of content depends on it.
 
 ---
 
@@ -156,18 +170,21 @@ An attack is a list of hits, resolved **one at a time**. Each hit runs the full 
 
 ### Per hit
 
-1. **`onAttack`** — fires the second the swing begins. It has nothing to do with
-   hitting or missing, so it cannot be bundled with the hooks that do.
-2. To-hit roll *(dice cup)* → hit or miss
-3. On miss: `onMiss` → **settle** → done
-4. Crit roll *(dice cup)*; on crit, `critBranch` *(damage or injury)* then `critInjury` *(which one)* — two cups, because the branch weights and the injury table are tuned independently
-5. **`onCrit`**, if it crit — fires the instant the crit is confirmed, before the damage stations. A crit is a thing that happened, not a size of number
-6. Run the damage stations
-7. `onHit`
-8. Apply the damage
-9. If damage ≥ 1: **`onDamage`** *(the attacker's)* → **`onTakingDamage`** *(the **victim's** — its owner is the unit that was hit, so a retaliation aims back at the attacker)*
-10. **`onKill`**, if the target died — *the **killer's** hook*
-11. **Settle**
+| # | Step | Built? |
+|---|---|---|
+| 1 | **`onAttack`** — fires the second the swing begins. It has nothing to do with hitting or missing, so it cannot be bundled with the hooks that do | **yes** |
+| 2 | To-hit roll *(dice cup)* → hit or miss | **yes** |
+| 3 | On miss: `onMiss` → **settle** → done | **yes** |
+| 4 | Crit roll *(dice cup)*; on crit, `critBranch` *(damage or injury)* then `critInjury` *(which one)* — two cups, because the branch weights and the injury table are tuned independently | **half** — the roll exists behind the `critEnabled` switch. **The branch and the injury table do not**: a crit always takes the damage arm. The `crit-effect` cup has never been drawn |
+| 5 | **`onCrit`**, if it crit — fires the instant the crit is confirmed, before the damage stations. A crit is a thing that happened, not a size of number | **yes** |
+| 6 | Run the damage stations | **yes** — 7 of 10, see below |
+| 7 | `onHit` | **yes** |
+| 8 | Apply the damage | **yes** |
+| 9 | If damage ≥ 1: **`onDamage`** *(the attacker's)* → **`onTakingDamage`** *(the **victim's** — its owner is the unit that was hit, so a retaliation aims back at the attacker)* | **yes** |
+| 10 | **`onKill`**, if the target died — *the **killer's** hook* | **yes** |
+| 11 | **Settle** | **yes** |
+
+**An Attack is still exactly one Hit.** `AttackDef` has no `hits` field and `performAttack` resolves once, while the vocabulary table above defines an Attack as *"one or more Hits"* — and two switches (`multiAttackRetargets`, `recomputeStatsBetweenHits`) are already written against a loop that does not exist.
 
 ### `onDeath` is not in this list, on purpose
 
@@ -280,16 +297,18 @@ to the trigger's owner and every typo became a self-target.
 
 To-hit is now the core roll of the game and its **final output feeds the crit formula** — surplus Accuracy above 100 becomes Crit. So it needs the same treatment as damage: a spaced station table, and a ledger per roll.
 
-| # | Station |
-|---|---|
-| 100 | BASE — the attacker's Accuracy |
-| 200 | RANGE — −5 per hex past the first, for ranged |
-| 300 | ADJACENT — −20 for firing while adjacent |
-| 400 | TERRAIN — the target's occupied-hex modifier |
-| 500 | CONDITION — fog, snow, darkness |
-| 600 | TARGET_DODGE |
-| 700 | SITUATIONAL — the design's open melee penalties land here |
-| 900 | FINAL |
+| # | Station | Built? |
+|---|---|---|
+| 100 | BASE — the attacker's Accuracy | **yes**, plus a `BASE_MOD` row per stat modifier |
+| 200 | RANGE — −5 per hex past the first, for ranged | **yes** |
+| 300 | ADJACENT — −20 for firing while adjacent | **yes**, but see the note below |
+| 400 | TERRAIN — the target's occupied-hex modifier | **retired** — terrain now arrives as `BASE_MOD` through the stat pipeline, with the same provenance. The constant is dead |
+| 500 | CONDITION — fog, snow, darkness | *not yet* — nothing writes it. This is where the whole battle-condition system lands |
+| 600 | TARGET_DODGE | **yes** |
+| 700 | SITUATIONAL — the design's open melee penalties land here | *not yet* — and it is where **every** attack-level accuracy modifier goes: the AoO's −20, flight's −30, a per-attack ±. `AttackDef` has no `accuracy` field to feed it |
+| 900 | FINAL | *not yet as a row* — the clamp happens in `preview()` and emits no ledger line |
+
+> **ADJACENT is currently applied to the wrong case.** `GAME-DESIGN.md` §4: *"Ranged cannot target an adjacent enemy at all. You may shoot past it at something distant, at −20."* The engine applies −20 when the **target** is at distance 1, and nothing when a distant target is shot while an enemy stands next to the shooter. The prohibition and the penalty are swapped. Flagged, not fixed — which one moves is a design call.
 
 **Do not clamp the Accuracy value.** The *roll* clamps to 0–100; the value must not, because Crit reads `(final Accuracy − 100) ÷ 4`. Clamping the value silently kills Design Law 21 — the point-blank +10 crit the design promises becomes +0, and no test would catch it.
 
@@ -297,17 +316,21 @@ To-hit is now the core roll of the game and its **final output feeds the crit fo
 
 Numbered with gaps on purpose. Ordering is a property of the **station**, not of the effect, and a new station can be inserted at 425 without renumbering anything.
 
-| # | Station |
-|---|---|
-| 100 | DECLARE — the attack's base damage, type, and which stat it uses *(punch: −1, physical, Strength. Longsword: +1, physical, Strength.)* |
-| 200 | SOURCE_STAT — add the unit's modified Strength or Precision |
-| 300 | TERRAIN |
-| 350 | POSITIONAL — flank |
-| 450 | CRIT — the +50%, before all mitigation |
-| 550 | PROTECTION — consumes; see below |
-| 600 | MITIGATION — Armor (physical) or Resist (magic); true damage skips both |
-| 700 | FLOOR at zero |
-| 850 | APPLY |
+| # | Station | Built? |
+|---|---|---|
+| 100 | DECLARE — the attack's base damage, type, and which stat it uses *(punch: −1, physical, Strength. Longsword: +1, physical, Strength.)* | **yes** |
+| 200 | SOURCE_STAT — add the unit's modified Strength or Precision | **yes** |
+| 250 | SOURCE_STATUS — what the attacker carries that lowers its own damage | **yes** as a station; **no status declares `reducesOutgoingDamage`**, so it has never run with a live value |
+| 300 | TERRAIN | **retired** — same as ACC.TERRAIN |
+| 350 | POSITIONAL — flank | *not yet* — nothing computes facing or flanking |
+| 450 | CRIT — the +50%, before all mitigation | **yes**, behind the `critEnabled` switch |
+| 550 | PROTECTION — consumes; see below | **yes** as a station; **no status declares `reducesIncomingDamage`**, so it has never run with a live value |
+| 600 | MITIGATION — Armor (physical) or Resist (magic); true damage skips both | **yes** |
+| 700 | FLOOR at zero | **yes** |
+| 850 | APPLY | *not yet as a row* — `applyDamage` is a mutator, not a ledger step |
+| — | **VS_TARGET** — slayer bonuses, *+2 vs undead*, damage by target type or by status on the target | *not yet* — **no number is even reserved** |
+
+> **`usePower` does not run this table.** `ability.ts:resolvePowerDamage` is a second damage pipeline: DECLARE → SOURCE_STAT → MITIGATION → FLOOR, skipping SOURCE_STATUS, POSITIONAL, CRIT and PROTECTION. So Weakness would not reduce a power's damage and Protection would not absorb one. Constitution Law 1 says one damage function; there are two.
 
 **Protection is a depleting pool that also decays.** It is a status the hero carries — granted by an aura, a card, anything — not a question asked about the granter's position. It reduces incoming damage *and* is reduced by the damage it absorbs: `absorbed = min(protection, damage)`, then `protection -= absorbed`. On top of that it loses 1 at End of Phase. Damage burns it fast, time burns it slowly.
 
@@ -383,7 +406,13 @@ Outcomes are an enum: `heroClear · objectiveMet · wipe · retreat · capped`. 
 
 ## Dice cups
 
-to-hit · crit · crit effect · **trigger** · Deathbed Fighting · schedule event · wave composition · enemy count · enemy placement · **hero deployment** · terrain event · card draws · AI tiebreak · activation order (when random)
+Fourteen cups. **Five have ever been drawn.**
+
+| Drawn today | Declared in `STREAMS`, never drawn |
+|---|---|
+| to-hit · crit · **trigger** · enemy placement · **hero deployment** | crit effect · Deathbed Fighting · schedule event · wave composition · enemy count · terrain event · card draws · AI tiebreak · activation order |
+
+The names being right is worth something — the key-collision assert will catch a mis-keyed draw the day each one is first used. But nine empty cups is the honest measure of how much of the battle model is not yet running, and a reader of this section would otherwise assume all fourteen were live.
 
 **The trigger cup's key carries the trigger's SLOT on its owner.** Two 20% triggers
 on the same hit — a zombie with poison *and* weakness — would otherwise draw the same
