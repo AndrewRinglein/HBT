@@ -127,7 +127,7 @@ flag('existing tests untouched', () => ({
 }))
 // Taking the gate-1 deletion exemption ALWAYS flags the landing, whatever else
 // passed. An exemption that lands clean is an exemption nobody ever re-reads.
-const needsReview = weakened.length > 0 || unreachableUsed
+let needsReview = weakened.length > 0 || unreachableUsed
 const testDiff = weakened.length > 0 ? tryRun('git diff -U2 -- test/').out : ''
 
 check('control battles unchanged', () => {
@@ -141,7 +141,17 @@ check('control battles unchanged', () => {
   let golden = null
   try { golden = readFileSync(GOLDEN, 'utf8').trim() } catch {}
   if (!golden) { if (MODE === 'land') writeFileSync(GOLDEN, now + '\n'); return { ok: true, note: 'blessed (first run)' } }
-  if (golden === now) return { ok: true, note: '' }
+  if (golden === now) {
+    // THE CONSEQUENCE CLAUSE (2026-08-20). An item that DECLARES it changes the
+    // control battles and then changes nothing has not done its job — "the aura
+    // should have some consequence." Before this clause, changesBaseline:true with
+    // identical hashes passed silently, so a mechanic that claimed to matter and
+    // did nothing landed clean.
+    if (item.changesBaseline) {
+      return { ok: false, note: 'declared changesBaseline — but every control battle is byte-identical. The mechanic had no consequence. Wire it into a control map, or remove the declaration and explain why it is neutral.' }
+    }
+    return { ok: true, note: '' }
+  }
 
   const was = new Map(golden.split('\n').map((l) => l.split(' ')))
   const is = new Map(now.split('\n').map((l) => l.split(' ')))
@@ -175,6 +185,95 @@ check('content has a published source', () => {
 })
 
 const stamp = new Date().toISOString().slice(0, 16).replace('T', ' ')
+// ── the anti-hardcode gates (2026-08-20) ────────────────────────────────────
+// "It is easier to add +2 damage against demons as some custom one-off thing
+// than to make sure it is implemented properly." — Angela. These three checks
+// exist to make the one-off HARDER than the system, not just discouraged.
+
+/** Added lines of the current working diff, restricted to a path. */
+function addedLines(path) {
+  const out = tryRun(`git diff -U0 -- ${path}`).out
+  return out.split('\n').filter((l) => l.startsWith('+') && !l.startsWith('+++'))
+}
+
+// Content-instance ids are three segments (attack.zombie.basic). Two-segment
+// names in core are EVENT vocabulary (attack.declared, status.applied) and are
+// legal. Tag literals mirror CODEX.md §12 creature+ancestry as of 2026-08-20 —
+// if §12 changes, this list is regenerated, not trusted.
+const CONTENT_ID_IN_CORE = /['"`](attack|power|unit|badge|item|enchant|specialty|map)\.[a-z0-9-]+\.[a-z0-9-]+['"`]/
+const TAG_LITERALS = /['"`](beast|construct|demon|dragon|elemental|giant|horror|nightmare|plant|undead|vampire|werewolf|catfolk|dwarf|elf|fae)['"`]/
+
+check('hardcode scan — core knows mechanisms, never names', () => {
+  if (item.coreLiteralAllow) {
+    if (typeof item.coreLiteralAllow !== 'string' || item.coreLiteralAllow.length < 20) {
+      return { ok: false, note: '`coreLiteralAllow` must be a written reason, not a boolean' }
+    }
+    needsReview = true
+    console.log(`  SKIP  hardcode scan — exemption taken  — ${item.coreLiteralAllow}`)
+    return { ok: true, note: '', skipPrint: true }
+  }
+  const bad = addedLines('src/core').filter((l) => CONTENT_ID_IN_CORE.test(l) || TAG_LITERALS.test(l))
+  return {
+    ok: bad.length === 0,
+    note: bad.length ? `content names in engine code: ${bad.slice(0, 3).map((l) => l.trim().slice(0, 60)).join(' | ')} — a mechanism reads data; only content knows names. If this is genuinely a board rule (like ZoC), set coreLiteralAllow with the reason.` : '',
+  }
+})
+
+// Shapes that introduce a MECHANISM must prove the second instance is data.
+const MECHANISM_SHAPES = ['rule', 'station', 'trigger', 'modifier', 'pool', 'counter']
+check('generalizes — the second instance costs zero engine code', () => {
+  if (!MECHANISM_SHAPES.includes(item.shape)) return { ok: true, note: `shape '${item.shape}' — not a mechanism, exempt` }
+  if (item.generalizationExempt) {
+    if (typeof item.generalizationExempt !== 'string' || item.generalizationExempt.length < 20) {
+      return { ok: false, note: '`generalizationExempt` must be a written reason, not a boolean' }
+    }
+    needsReview = true
+    console.log(`  SKIP  generalizes — exemption taken  — ${item.generalizationExempt}`)
+    return { ok: true, note: '', skipPrint: true }
+  }
+  const variants = item.variants ?? []
+  if (variants.length < 2) {
+    return { ok: false, note: `a '${item.shape}' item must declare "variants": two or more ids that exercise the SAME mechanism with different data (+2 vs demons proves nothing; +2 vs demons AND +4 vs undead proves a system). Or set generalizationExempt with a written reason.` }
+  }
+  const notes = []
+  for (const v of variants) {
+    // The variant must live in content, not in the engine…
+    const inCore = tryRun(`grep -rl "${v}" src/core`).out.trim()
+    if (inCore) return { ok: false, note: `variant '${v}' appears in ${inCore.split('\n')[0]} — the second instance must be pure data` }
+    // …and must actually run in a battle.
+    const r = tryRun(`npx tsx tools/probe.mts ${v}`)
+    const line = r.out.trim().split('\n').pop() ?? ''
+    if (!r.ok) return { ok: false, note: `variant '${v}': ${line}` }
+    notes.push(`${v} live`)
+  }
+  return { ok: true, note: notes.join(' · ') }
+})
+
+// Naming: GLOSSARY.md is the authority; this is its teeth. Grammar violations
+// block; style smells flag the landing for review rather than deadlocking it.
+const KNOWN_KINDS = ['attack', 'power', 'status', 'unit', 'terrain', 'map', 'badge', 'item', 'enchant', 'specialty', 'origin', 'card', 'class', 'art', 'rule', 'engagement']
+check('naming — new content ids use declared kinds', () => {
+  const ids = new Set()
+  for (const l of addedLines('src/content')) {
+    for (const m of l.matchAll(/['"`]([a-z]+)\.[a-z0-9][a-z0-9.-]*['"`]/g)) ids.add(m[1])
+  }
+  const unknown = [...ids].filter((k) => !KNOWN_KINDS.includes(k))
+  return { ok: unknown.length === 0, note: unknown.length ? `unknown id kind(s): ${unknown.join(', ')} — declare the kind in GLOSSARY.md before minting ids under it` : '' }
+})
+flag('naming — no banned words invented', () => {
+  const smells = []
+  for (const l of [...addedLines('src'), ...addedLines('test')]) {
+    if (/(class|function|const|let)\s+\w*(Manager|Controller|Service)\b/.test(l)) smells.push('a *Manager/*Controller/*Service — name the state slice and the functions separately')
+    if (/\b(proc|procs)\b/i.test(l)) smells.push("'proc' — say trigger")
+    if (/\b(buff|debuff)s?\b/i.test(l)) smells.push("'buff/debuff' — say status")
+  }
+  const newFiles = sh('git status --porcelain').split('\n').filter((l) => l.startsWith('??') || l.startsWith('A '))
+    .map((l) => l.slice(3)).filter((f) => /(utils|helpers|misc|stuff)\.(ts|mjs)$/.test(f))
+  for (const f of newFiles) smells.push(`${f} — a file named utils is where names go to be invented`)
+  if (smells.length) needsReview = true
+  return { ok: smells.length === 0, note: smells.length ? [...new Set(smells)].slice(0, 4).join(' | ') + ' — will land FLAGGED' : '' }
+})
+
 const body = checks.map((c) => `  ${c.ok ? 'PASS' : c.warn ? 'WARN' : 'FAIL'}  ${c.name}${c.note ? ' — ' + c.note : ''}`).join('\n')
 
 if (MODE === 'abandon') {
@@ -209,4 +308,26 @@ item.sha = sha
 writeFileSync(BACKLOG, JSON.stringify(backlog, null, 1))
 appendFileSync(LEDGER, `\n## ${id} — LANDED \`${sha}\`${needsReview ? ' **NEEDS REVIEW**' : ''}\n${stamp}\n\n${body}\n` +
   (needsReview ? `\n<details><summary>Existing tests were edited — review this diff</summary>\n\n\`\`\`diff\n${testDiff}\`\`\`\n</details>\n` : ''))
-console.log(`\nLANDED as ${sha}${needsReview ? '  (flagged: existing tests were edited)' : ''}\n`)
+// ── post-land audit (2026-08-20) ────────────────────────────────────────────
+// Re-run the decisive checks FROM THE COMMITTED TREE. The classic laundering
+// failure is a pass that depended on a file that never got committed — every
+// pre-land check ran against the working tree, so only a post-commit rerun can
+// catch it. On failure the landing is undone, loudly.
+{
+  const t = tryRun('npx vitest run --reporter=dot')
+  const b = tryRun('npx tsx tools/baseline.mts')
+  const nowHashes = b.out.trim().split('\n').filter((l) => / [0-9a-f]{8}$/.test(l)).join('\n')
+  const goldenNow = (() => { try { return readFileSync(GOLDEN, 'utf8').trim() } catch { return '' } })()
+  const auditOk = t.ok && b.ok && nowHashes === goldenNow
+  if (!auditOk) {
+    sh('git reset --hard HEAD~1')
+    const why = !t.ok ? 'test suite fails on the committed tree' : !b.ok ? 'baseline probe errors on the committed tree' : 'control battles differ on the committed tree'
+    const bl = JSON.parse(readFileSync(BACKLOG, 'utf8'))
+    const it = bl.find((x) => x.id === id)
+    if (it) { it.attempts = (it.attempts ?? 0) + 1; it.auditFailed = why; writeFileSync(BACKLOG, JSON.stringify(bl, null, 1)) }
+    appendFileSync(LEDGER, `\n## ${id} — LANDING REVERTED BY POST-LAND AUDIT\n${stamp}\n\n${why}. The pre-land pass depended on state that did not survive the commit.\n`)
+    console.log(`\nLANDING REVERTED: ${why}. The commit is undone; nothing is lost from the working tree of the last good landing. Fix and gate again.\n`)
+    process.exit(1)
+  }
+}
+console.log(`\nLANDED as ${sha}${needsReview ? '  (flagged for review)' : ''}\n`)
