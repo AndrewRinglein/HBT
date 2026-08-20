@@ -488,3 +488,59 @@ duration-limited, that suppresses the occupied tile's end-of-activation effects.
 Engine shape: a condition consulted by the end-of-activation ground step — cheap
 once the ground layer exists, and the suppression check belongs in the ladder rung
 that fires tile effects, not in the tile.
+
+---
+
+## 2026-08-20 — Both remaining cut candidates are cut; Flight's full movement model
+
+**Cut: prevent damage entirely** (1 use). "We don't need to prevent damage
+entirely." Protection-as-a-pool is the only damage-prevention mechanic.
+
+**Cut: pass through occupied hexes** (7 uses). "We sort of don't need to pass
+through occupied hexes." The rows likely reword — several are probably flight-type
+moves, which cover the need by jumping rather than passing through.
+
+**Flight, the complete model:**
+
+> "When you do a flight movement, you move to the hex that you target. It's a
+> one-movement. You don't get to move square by square. You ignore all of the
+> terrain effects in between. You ignore impassable terrain. You just need a viable
+> square that you fly to. And then your movement is over... You then land on that
+> square, which will trigger things at your end of activation. That is how Airwalk
+> is different. If you have both, then you also wouldn't land on anything."
+
+Precisely:
+
+1. **Targeted, atomic.** Click the destination hex; the move happens as one jump.
+   No square-by-square control, no partial flight.
+2. **Everything between is skipped** — terrain effects AND impassability. Only the
+   destination must be viable (in range, landable).
+3. **The move ends on landing.** Flight consumes the movement.
+4. **Landing is real.** The destination tile's end-of-activation effects fire
+   normally — flying onto burning ground burns you at end of activation.
+5. **Flight + Airwalk compose:** fly there, and land on nothing — the destination
+   tile's end-of-activation effects are suppressed too.
+
+Engine shape: a flight move is `moveUnit` straight to the target hex with no path —
+no per-Step iteration, no ZoC provoke along the way (there is no "along the way"),
+no movement-cost sum; legality is only range + destination viability. The Step
+vocabulary does not apply to it: a flight move contains zero Steps. Airwalk stays
+where the previous ruling put it — a check in the ground rung — and Flight never
+touches that rung for intermediate hexes because it never occupies them.
+
+**Conflict found by `decided.mjs` in the same turn:** `GAME-DESIGN.md` §4 line 373
+carries the OLD Flight — per-hex movement at cost 1 per hex, terrain surcharges
+ignored, interceptable mid-crossing ("clipped out of the sky"), and AoO against
+fliers at an additional −30. Today's ruling replaces that mechanic wholesale:
+atomic jump, no per-hex anything, no mid-crossing interception possible, and
+landing DOES fire the tile. Fresh over stale — line 373 joins the amendment list.
+Two details of the old text die with it unless deliberately kept: the −30 AoO
+rider against fliers, and "terrain status never triggers" (superseded by "landing
+is real"). The old Airwalk line ("still triggers status on entry, avoids the
+end-of-turn effect") also needs rewording to the end-of-activation phrasing.
+
+One question this leaves genuinely open (not decided here): does a flight move
+that BEGINS inside an enemy's zone of control provoke, or is flight one of the
+non-provoking movement types? The AoO ruling says conventional movement provokes
+and some movement types do not; flight is presumably in the second group, but
+presumably is not a ruling.
