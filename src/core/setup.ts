@@ -77,7 +77,10 @@ export function createBattle(opts: BattleOptions): Ctx {
 
   const def = (t: string): UnitDef => ({ ...UNITS[t]!, ...(opts.overrides?.[t] ?? {}) })
   const heroes = opts.heroes ?? FIRST_BATTLE.heroes
-  const enemyCount = opts.enemyCount ?? FIRST_BATTLE.enemies.length
+  // The default battle size is pinned by content, not by the cycle's length —
+  // the roster array is a repeating PATTERN (2026-08-20, the Beast pen), and
+  // growing the pattern must not silently grow the canonical battle.
+  const enemyCount = opts.enemyCount ?? FIRST_BATTLE.defaultEnemyCount ?? FIRST_BATTLE.enemies.length
   // Cycle the DECLARED roster — before 2026-08-20 this line hardcoded 'zombie',
   // a content name in core that ignored FIRST_BATTLE.enemies entirely. The mix
   // (one burning zombie per four) comes from the data, where it belongs.
@@ -111,10 +114,17 @@ export function createBattle(opts: BattleOptions): Ctx {
     state.units.push(makeUnit(id, 100 + i, nm, def(t), hex))
     id++
   })
+  const seenEnemy: Record<string, number> = {}
   enemies.forEach((t, i) => {
     // More enemies than columns spill onto the next row back.
     const hex = opts.enemyHexes?.[i] ?? hexId(enemyCols[i % WIDTH]!, FIRST_BATTLE.enemyRow + Math.floor(i / WIDTH))
-    state.units.push(makeUnit(id, 200 + i, `Zombie ${i + 1}`, def(t), hex))
+    // Named from the typeId, counted per type — `Zombie ${i+1}` was a content
+    // literal in core that would have called a Spirit Snake "Zombie 5"
+    // (found landing unit.spirit-snake, 2026-08-20). Law 12: the log names
+    // what a thing IS.
+    seenEnemy[t] = (seenEnemy[t] ?? 0) + 1
+    const label = t.split('-').map((w) => (w[0] ?? '').toUpperCase() + w.slice(1)).join(' ')
+    state.units.push(makeUnit(id, 200 + i, `${label} ${seenEnemy[t]}`, def(t), hex))
     id++
   })
 

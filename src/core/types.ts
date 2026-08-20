@@ -7,6 +7,7 @@ export type Role = 'melee' | 'ranged' | 'support'
 /** Terrain layer 1. 0 = open ground. */
 export const TERRAIN = {
   OPEN: 0, HILLS: 1, FOREST: 2, ROCKY: 3, ROCKY_HILLS: 4, WATER: 5, OBSTACLE: 6,
+  BURNING: 7, POISONED: 8,
 } as const
 export type LifeState = 'standing' | 'downed' | 'dead'
 export type DamageType = 'physical' | 'magic' | 'true'

@@ -1260,3 +1260,522 @@ IRON GAUNTLET: PASSED
   PASS  kill switch — the tests fail without the content — tests fail without unit.zombie-burning — they genuinely test it
 
 IRON GAUNTLET: PASSED
+
+## status.stun — LANDED `23a048c` **NEEDS REVIEW**
+2026-08-20 09:07
+
+  PASS  dependencies landed
+  PASS  typecheck
+  PASS  full test suite — 262 passed
+  PASS  gate 1 — the id appears in a real battle — status.stun: 1076 log lines, 1076 fired, 655 changed state · test.warrior.stagger: 2835 log lines, 2835 fired, 421 changed state · test.status.daze: 788 log lines, 788 fired, 532 changed state · test.zombie-burning.lurch: 1862 log lines, 1862 fired, 256 changed state
+  PASS  brought its own tests — test/burn.test.ts, test/zombie-rot.test.ts, test/stun.test.ts
+  WARN  existing tests untouched — DELETED LINES in test/burn.test.ts (-1), test/zombie-rot.test.ts (-1) — will land FLAGGED for review
+  PASS  control battles unchanged — will re-bless at commit — this item DECLARED it changes the control battles: map.open 1f50d565->940f7026, map.ridge 7d575901->9b96e7c2, map.flanks 1ec2d8c4->1b1317ee, map.highlands ed305041->b992b905, map.field 5e58fe0b->d2a59a74, map.thicket af8d6bb1->256a5257
+  PASS  content has a published source — 10 ids without a published source (all grandfathered)
+  PASS  hardcode scan — core knows mechanisms, never names
+  PASS  generalizes — the second instance costs zero engine code — status.stun live · test.status.daze live
+  PASS  naming — new content ids use declared kinds
+  PASS  naming — no banned words invented
+  PASS  kill switch — the tests fail without the content — tests fail without status.stun,test.warrior.stagger,test.status.daze,test.zombie-burning.lurch — they genuinely test it
+
+<details><summary>Existing tests were edited — review this diff</summary>
+
+```diff
+diff --git a/test/burn.test.ts b/test/burn.test.ts
+index ab07b85..6c11dba 100644
+--- a/test/burn.test.ts
++++ b/test/burn.test.ts
+@@ -80,5 +80,10 @@ describe('status.burn', () => {
+     const { ctx } = board()
+     const zdef = UNITS['zombie-burning']!
+-    expect(zdef.triggers?.map((t) => t.id)).toEqual(['trigger.zombie-burning.sear'])
++    // WEAKENED 2026-08-20 with a reason (Law 10): this asserted sear was the
++    // ONLY trigger. status.stun's landing gave the burning zombie a second,
++    // testing-lane trigger (test.zombie-burning.lurch — the blocksAction
++    // generalization variant's battle source), so exclusivity is stale by
++    // design. The sear itself is unchanged and still asserted.
++    expect(zdef.triggers?.map((t) => t.id)).toContain('trigger.zombie-burning.sear')
+     // end-to-end across real battles: sear fires and heroes carry burn
+     let seared = 0
+diff --git a/test/zombie-rot.test.ts b/test/zombie-rot.test.ts
+index e1a44da..2a63728 100644
+--- a/test/zombie-rot.test.ts
++++ b/test/zombie-rot.test.ts
+@@ -21,6 +21,11 @@ describe('trigger.zombie.rot', () => {
+     // survive balance changes, tight enough to catch 100% (the old rider) or 0%
+     // (a dead trigger).
++    // Battle count raised 40 → 70 on 2026-08-20 (Law 10, written reason): the
++    // status.stun landing lets warriors stun zombies, so zombies land fewer
++    // bites per battle and 40 battles slid to exactly the 50-roll floor. The
++    // RULE under test is the rate band, which is untouched; the sample floor is
++    // calibration, restored by more battles rather than a lower bar.
+     let rolled = 0, fired = 0, poisonFromRot = 0
+-    for (let r = 0; r < 40; r++) {
++    for (let r = 0; r < 70; r++) {
+       const ctx = createBattle({ replicate: r }); runBattle(ctx)
+       for (const e of ctx.events) {
+```
+</details>
+
+IRON GAUNTLET: NOT PASSED — 1 FLAG(S) WARNED
+
+```
+effect of status.stun,test.warrior.stagger,test.status.daze,test.zombie-burning.lurch — 25 paired battles per map, WITH vs WITHOUT
+  map.open: heroWins 8->6 (-2)  meanTurns 7.9->8.1
+  map.ridge: heroWins 11->12 (+1)  meanTurns 8.3->8.5
+  map.flanks: heroWins 8->7 (-1)  meanTurns 7.8->8.2
+  map.highlands: heroWins 16->18 (+2)  meanTurns 8.4->8.5
+  map.field: heroWins 19->19 (+0)  meanTurns 10.3->9.9
+  map.thicket: heroWins 9->8 (-1)  meanTurns 8.3->8.8
+MEASURABLE
+```
+
+## status.weakness — LANDED `50d4eed` **NEEDS REVIEW**
+2026-08-20 09:11
+
+  PASS  dependencies landed
+  PASS  typecheck
+  PASS  full test suite — 270 passed
+  PASS  gate 1 — the id appears in a real battle — status.weak: 1506 log lines, 1506 fired, 1009 changed state · test.zombie.sap: 3738 log lines, 3738 fired, 497 changed state · test.status.enfeeble: 786 log lines, 786 fired, 551 changed state · test.mage.dampen: 1590 log lines, 1590 fired, 235 changed state
+  PASS  brought its own tests — test/audit.test.ts, test/zombie-rot.test.ts, test/weak.test.ts
+  WARN  existing tests untouched — DELETED LINES in test/audit.test.ts (-2), test/zombie-rot.test.ts (-2) — will land FLAGGED for review
+  PASS  control battles unchanged — will re-bless at commit — this item DECLARED it changes the control battles: map.open 940f7026->aed5033a, map.ridge 9b96e7c2->b9096799, map.flanks 1b1317ee->3be3e886, map.highlands b992b905->e7de7b16, map.field d2a59a74->03478960, map.thicket 256a5257->fa257e3b
+  PASS  content has a published source — 10 ids without a published source (all grandfathered)
+  PASS  hardcode scan — core knows mechanisms, never names
+  PASS  generalizes — the second instance costs zero engine code — status.weak live · test.status.enfeeble live
+  PASS  naming — new content ids use declared kinds
+  PASS  naming — no banned words invented
+  PASS  kill switch — the tests fail without the content — tests fail without status.weak,test.zombie.sap,test.status.enfeeble,test.mage.dampen — they genuinely test it
+
+<details><summary>Existing tests were edited — review this diff</summary>
+
+```diff
+diff --git a/test/audit.test.ts b/test/audit.test.ts
+index 21c4460..ec9be28 100644
+--- a/test/audit.test.ts
++++ b/test/audit.test.ts
+@@ -3,4 +3,5 @@ import { createBattle } from '../src/core/setup.js'
+ import { runBattle } from '../src/core/battle.js'
+ import { UNITS, ATTACKS, ABILITIES } from '../src/content/index.js'
++import { STATUSES } from '../src/content/statuses.js'
+ import { accuracyBonusOf, reachBonusOf, terrainOf } from '../src/content/maps.js'
+ import { distance } from '../src/core/hex.js'
+@@ -28,4 +29,12 @@ describe('independent audit of logged battles', () => {
+       const side = new Map<number, string>()
+       const standing = new Set<number>()
++      // The auditor LEARNED SOURCE_STATUS on 2026-08-20 (the status.weakness
++      // landing made the station live): damage dealt is reduced by the
++      // attacker's active outgoing-penalty stacks, tracked here independently
++      // from the status events. It re-derives WHICH statuses penalize from the
++      // registry flag — data, not a hardcoded name list.
++      const outPenalty = new Map<number, Map<string, number>>()
++      const penaltyOf = (id: number) =>
++        [...(outPenalty.get(id) ?? new Map()).values()].reduce((a, b) => a + b, 0)
+       let pending: { actor: number; target: number; attackId: string; dist: number } | null = null
+       let pendingPower: { actor: number; target: number; abilityId: string } | null = null
+@@ -48,4 +57,17 @@ describe('independent audit of logged battles', () => {
+             break
+ 
++          case 'status.applied': case 'status.reduced': {
++            const sid = e['statusId'] as string
++            if (!STATUSES[sid]?.reducesOutgoingDamage) break
++            const m = outPenalty.get(e.target!) ?? new Map<string, number>()
++            m.set(sid, e['after'] as number)
++            outPenalty.set(e.target!, m)
++            break
++          }
++          case 'status.expired': {
++            outPenalty.get(e.target!)?.delete(e['statusId'] as string)
++            break
++          }
++
+           case 'moved': {
+             const t = UNITS[type.get(e.actor!)!]!
+@@ -141,5 +163,5 @@ describe('independent audit of logged battles', () => {
+               const stat = ab.stat === 'strength' ? at.strength : ab.stat === 'magic' ? at.magic : at.precision
+               const mit = ab.damageType === 'physical' ? tg.armor : ab.damageType === 'magic' ? tg.resist : 0
+-              const expected = Math.max(0, ab.bonus + stat - mit)
++              const expected = Math.max(0, ab.bonus + stat - penaltyOf(pendingPower.actor) - mit)
+               expect((e['amount'] as number) + (e['overkill'] as number), `${ab.id} damage`).toBe(expected)
+               checkedDamage++
+@@ -153,5 +175,5 @@ describe('independent audit of logged battles', () => {
+             const stat = a.stat === 'strength' ? at.strength : at.precision
+             const mit = a.damageType === 'physical' ? tg.armor : tg.resist
+-            const expected = Math.max(0, a.bonus + stat - mit)
++            const expected = Math.max(0, a.bonus + stat - penaltyOf(pending.actor) - mit)
+             const total = (e['amount'] as number) + (e['overkill'] as number)
+             expect(total, `${a.id} damage`).toBe(expected)
+diff --git a/test/zombie-rot.test.ts b/test/zombie-rot.test.ts
+index 2a63728..a494f3b 100644
+--- a/test/zombie-rot.test.ts
++++ b/test/zombie-rot.test.ts
+@@ -12,6 +12,10 @@ describe('trigger.zombie.rot', () => {
+   })
+ 
+-  it('the zombie def declares rot, and only rot', () => {
+-    expect((UNITS['zombie']!.triggers ?? []).map((t) => t.id)).toEqual(['trigger.zombie.rot'])
++  it('the zombie def declares rot (exclusivity retired 2026-08-20, Law 10)', () => {
++    // WEAKENED with a reason: this asserted rot was the zombie's ONLY trigger.
++    // The status.weakness landing added test.zombie.sap (backlog
++    // trigger.zombie.sap absorbed as a testing-lane id), so exclusivity is
++    // stale by design. Rot itself is unchanged and still asserted.
++    expect((UNITS['zombie']!.triggers ?? []).map((t) => t.id)).toContain('trigger.zombie.rot')
+   })
+ 
+```
+</details>
+
+IRON GAUNTLET: NOT PASSED — 1 FLAG(S) WARNED
+
+```
+effect of status.weak,test.zombie.sap,test.status.enfeeble,test.mage.dampen — 25 paired battles per map, WITH vs WITHOUT
+  map.open: heroWins 6->5 (-1)  meanTurns 8.1->8.0
+  map.ridge: heroWins 12->12 (+0)  meanTurns 8.5->8.4
+  map.flanks: heroWins 7->8 (+1)  meanTurns 8.2->8.4
+  map.highlands: heroWins 18->17 (-1)  meanTurns 8.5->8.5
+  map.field: heroWins 19->19 (+0)  meanTurns 9.9->9.8
+  map.thicket: heroWins 8->8 (+0)  meanTurns 8.8->9.1
+MEASURABLE
+```
+
+## status.protection — LANDED `affba58` **NEEDS REVIEW**
+2026-08-20 09:15
+
+  PASS  dependencies landed
+  PASS  typecheck
+  PASS  full test suite — 278 passed
+  PASS  gate 1 — the id appears in a real battle — status.protection: 1839 log lines, 1839 fired, 1333 changed state · test.mage.arcane-ward: 1518 log lines, 1518 fired, 506 changed state · test.status.ward: 6648 log lines, 6648 fired, 4820 changed state · test.warrior.brace: 7269 log lines, 7269 fired, 1828 changed state
+  PASS  brought its own tests — test/audit.test.ts, test/protection.test.ts
+  WARN  existing tests untouched — DELETED LINES in test/audit.test.ts (-2) — will land FLAGGED for review
+  PASS  control battles unchanged — will re-bless at commit — this item DECLARED it changes the control battles: map.open aed5033a->fd60c6cc, map.ridge b9096799->e47a1847, map.flanks 3be3e886->9b091f02, map.highlands e7de7b16->a3d1c6b9, map.field 03478960->e33351f2, map.thicket fa257e3b->8889dd60
+  PASS  content has a published source — 10 ids without a published source (all grandfathered)
+  PASS  hardcode scan — core knows mechanisms, never names
+  PASS  generalizes — the second instance costs zero engine code — status.protection live · test.status.ward live
+  PASS  naming — new content ids use declared kinds
+  PASS  naming — no banned words invented
+  PASS  kill switch — the tests fail without the content — tests fail without status.protection,test.mage.arcane-ward,test.status.ward,test.warrior.brace — they genuinely test it
+
+<details><summary>Existing tests were edited — review this diff</summary>
+
+```diff
+diff --git a/test/audit.test.ts b/test/audit.test.ts
+index ec9be28..ebe71a8 100644
+--- a/test/audit.test.ts
++++ b/test/audit.test.ts
+@@ -163,5 +163,9 @@ describe('independent audit of logged battles', () => {
+               const stat = ab.stat === 'strength' ? at.strength : ab.stat === 'magic' ? at.magic : at.precision
+               const mit = ab.damageType === 'physical' ? tg.armor : ab.damageType === 'magic' ? tg.resist : 0
+-              const expected = Math.max(0, ab.bonus + stat - penaltyOf(pendingPower.actor) - mit)
++              // The auditor learned PROTECTION with the status.protection
++              // landing (2026-08-20): the event names what a pool absorbed, and
++              // the pipeline subtracts it before mitigation.
++              const expected = Math.max(0, ab.bonus + stat - penaltyOf(pendingPower.actor)
++                - ((e['absorbed'] as number) ?? 0) - mit)
+               expect((e['amount'] as number) + (e['overkill'] as number), `${ab.id} damage`).toBe(expected)
+               checkedDamage++
+@@ -175,5 +179,6 @@ describe('independent audit of logged battles', () => {
+             const stat = a.stat === 'strength' ? at.strength : at.precision
+             const mit = a.damageType === 'physical' ? tg.armor : tg.resist
+-            const expected = Math.max(0, a.bonus + stat - penaltyOf(pending.actor) - mit)
++            const expected = Math.max(0, a.bonus + stat - penaltyOf(pending.actor)
++              - ((e['absorbed'] as number) ?? 0) - mit)
+             const total = (e['amount'] as number) + (e['overkill'] as number)
+             expect(total, `${a.id} damage`).toBe(expected)
+```
+</details>
+
+IRON GAUNTLET: NOT PASSED — 1 FLAG(S) WARNED
+
+```
+effect of status.protection,test.mage.arcane-ward,test.status.ward,test.warrior.brace — 25 paired battles per map, WITH vs WITHOUT
+  map.open: heroWins 5->9 (+4)  meanTurns 8.0->8.5
+  map.ridge: heroWins 12->14 (+2)  meanTurns 8.4->8.0
+  map.flanks: heroWins 8->12 (+4)  meanTurns 8.4->8.5
+  map.highlands: heroWins 17->19 (+2)  meanTurns 8.5->8.2
+  map.field: heroWins 19->20 (+1)  meanTurns 9.8->9.8
+  map.thicket: heroWins 8->11 (+3)  meanTurns 9.1->9.2
+MEASURABLE
+```
+
+## status.bleed — LANDED `849ead6`
+2026-08-20 09:16
+
+  PASS  dependencies landed
+  PASS  typecheck
+  PASS  full test suite — 283 passed
+  PASS  gate 1 — the id appears in a real battle — status.bleed: 5597 log lines, 5597 fired, 3767 changed state · test.ranger.serrated-arrows: 5490 log lines, 5490 fired, 1830 changed state
+  PASS  brought its own tests — test/bleed.test.ts
+  PASS  existing tests untouched
+  PASS  control battles unchanged — will re-bless at commit — this item DECLARED it changes the control battles: map.open fd60c6cc->ca18bf26, map.ridge e47a1847->994718ea, map.flanks 9b091f02->0b0777e5, map.highlands a3d1c6b9->146c063d, map.field e33351f2->e63c1423, map.thicket 8889dd60->bc5d804b
+  PASS  content has a published source — 10 ids without a published source (all grandfathered)
+  PASS  hardcode scan — core knows mechanisms, never names
+  PASS  generalizes — the second instance costs zero engine code — status.bleed live · status.poison live
+  PASS  naming — new content ids use declared kinds
+  PASS  naming — no banned words invented
+  PASS  kill switch — the tests fail without the content — tests fail without status.bleed,test.ranger.serrated-arrows — they genuinely test it
+
+IRON GAUNTLET: PASSED
+
+```
+effect of status.bleed,test.ranger.serrated-arrows — 25 paired battles per map, WITH vs WITHOUT
+  map.open: heroWins 9->14 (+5)  meanTurns 8.5->7.8
+  map.ridge: heroWins 14->16 (+2)  meanTurns 8.0->8.0
+  map.flanks: heroWins 12->17 (+5)  meanTurns 8.5->7.8
+  map.highlands: heroWins 19->18 (-1)  meanTurns 8.2->8.0
+  map.field: heroWins 20->21 (+1)  meanTurns 9.8->9.5
+  map.thicket: heroWins 11->13 (+2)  meanTurns 9.2->9.0
+MEASURABLE
+```
+
+## status.slow — LANDED `380e43e`
+2026-08-20 09:20
+
+  PASS  dependencies landed
+  PASS  typecheck
+  PASS  full test suite — 291 passed
+  PASS  gate 1 — the id appears in a real battle — status.slow: 1763 log lines, 1763 fired, 1195 changed state · test.zombie.grasp: 4091 log lines, 4091 fired, 568 changed state · test.status.hobble: 1112 log lines, 1112 fired, 742 changed state · test.ranger.pin: 2567 log lines, 2567 fired, 370 changed state
+  PASS  brought its own tests — test/slow.test.ts
+  PASS  existing tests untouched
+  PASS  control battles unchanged — will re-bless at commit — this item DECLARED it changes the control battles: map.open ca18bf26->9a41f33a, map.ridge 994718ea->f292db0d, map.flanks 0b0777e5->1b99cb94, map.highlands 146c063d->756b321c, map.field e63c1423->a614e63a, map.thicket bc5d804b->6704ba23
+  PASS  content has a published source — 10 ids without a published source (all grandfathered)
+  PASS  hardcode scan — core knows mechanisms, never names
+  PASS  generalizes — the second instance costs zero engine code — status.slow live · test.status.hobble live
+  PASS  naming — new content ids use declared kinds
+  PASS  naming — no banned words invented
+  PASS  kill switch — the tests fail without the content — tests fail without status.slow,test.zombie.grasp,test.status.hobble,test.ranger.pin — they genuinely test it
+
+IRON GAUNTLET: PASSED
+
+```
+effect of status.slow,test.zombie.grasp,test.status.hobble,test.ranger.pin — 25 paired battles per map, WITH vs WITHOUT
+  map.open: heroWins 14->13 (-1)  meanTurns 7.8->7.8
+  map.ridge: heroWins 16->17 (+1)  meanTurns 8.0->8.2
+  map.flanks: heroWins 17->17 (+0)  meanTurns 7.8->7.8
+  map.highlands: heroWins 18->18 (+0)  meanTurns 8.0->8.0
+  map.field: heroWins 21->21 (+0)  meanTurns 9.5->9.4
+  map.thicket: heroWins 13->13 (+0)  meanTurns 9.0->9.0
+MEASURABLE
+```
+
+## terrain.burning-ground — LANDED `9899d10` **NEEDS REVIEW**
+2026-08-20 09:25
+
+  PASS  dependencies landed
+  PASS  typecheck
+  PASS  full test suite — 299 passed
+  PASS  gate 1 — the id appears in a real battle — terrain.burning: 4273 log lines, 4273 fired, 4198 changed state · terrain.poisoned: 2065 log lines, 2065 fired, 1990 changed state
+  PASS  brought its own tests — test/terrain.test.ts, test/burning-ground.test.ts
+  WARN  existing tests untouched — DELETED LINES in test/terrain.test.ts (-4) — will land FLAGGED for review
+  PASS  control battles unchanged — will re-bless at commit — this item DECLARED it changes the control battles: test.map.embers ?->f1a0e6f8, test.map.embers NEW
+  PASS  content has a published source — 10 ids without a published source (all grandfathered)
+  PASS  hardcode scan — core knows mechanisms, never names
+  PASS  generalizes — the second instance costs zero engine code — terrain.burning live · terrain.poisoned live
+  PASS  naming — new content ids use declared kinds
+  PASS  naming — no banned words invented
+  PASS  kill switch — the tests fail without the content — tests fail without terrain.burning,terrain.poisoned — they genuinely test it
+
+<details><summary>Existing tests were edited — review this diff</summary>
+
+```diff
+diff --git a/test/terrain.test.ts b/test/terrain.test.ts
+index dcb4ea3..85c93c2 100644
+--- a/test/terrain.test.ts
++++ b/test/terrain.test.ts
+@@ -24,9 +24,13 @@ function warriorOn(terrain: number) {
+ describe('terrain.kinds — the seven are recognised', () => {
+   it('every kind has a glyph and an id, and no glyph means two things', () => {
++    // Count derived from the enum, not hardcoded (updated 2026-08-20 when
++    // burning and poisoned ground grew the legend from 7 to 9 — the OLD
++    // assertion was the correct failure, this is the correct fix).
++    const KINDS = Object.values(TERRAIN).length
+     const glyphs = Object.entries(GLYPH)
+-    expect(glyphs.length).toBe(7)
+-    expect(new Set(glyphs.map(([, v]) => v)).size).toBe(7)   // no two glyphs share a kind
+-    for (const t of ALL_KINDS) expect(terrainIdOf(t)).toMatch(/^terrain\.[a-z-]+$/)
+-    expect(new Set(ALL_KINDS.map(terrainIdOf)).size).toBe(7)
++    expect(glyphs.length).toBe(KINDS)
++    expect(new Set(glyphs.map(([, v]) => v)).size).toBe(KINDS)   // no two glyphs share a kind
++    for (const t of Object.values(TERRAIN)) expect(terrainIdOf(t)).toMatch(/^terrain\.[a-z-]+$/)
++    expect(new Set(Object.values(TERRAIN).map(terrainIdOf)).size).toBe(KINDS)
+   })
+ 
+```
+</details>
+
+IRON GAUNTLET: NOT PASSED — 1 FLAG(S) WARNED · periodic audit clean
+
+```
+effect of terrain.burning,terrain.poisoned — 25 paired battles per map, WITH vs WITHOUT
+  map.open: heroWins 13->13 (+0)  meanTurns 7.8->7.8
+  map.ridge: heroWins 17->17 (+0)  meanTurns 8.2->8.2
+  map.flanks: heroWins 17->17 (+0)  meanTurns 7.8->7.8
+  map.highlands: heroWins 18->18 (+0)  meanTurns 8.0->8.0
+  map.field: heroWins 21->21 (+0)  meanTurns 9.4->9.4
+  map.thicket: heroWins 13->13 (+0)  meanTurns 9.0->9.0
+  test.map.embers: heroWins 13->22 (+9)  meanTurns 7.8->5.4
+MEASURABLE
+```
+
+## unit.spirit-snake — LANDED `2ca5d4d` **NEEDS REVIEW**
+2026-08-20 09:37
+
+  PASS  dependencies landed
+  PASS  typecheck
+  PASS  full test suite — 306 passed
+  PASS  gate 1 — the id appears in a real battle — unit.spirit-snake: 544 log lines, 544 fired, 368 changed state · trigger.spirit-snake.venom: 12 log lines, 12 fired, 4 changed state · attack.fangs.bite: 32 log lines, 32 fired, 20 changed state
+  PASS  brought its own tests — test/burn.test.ts, test/replay.test.ts, test/spirit-snake.test.ts
+  WARN  existing tests untouched — DELETED LINES in test/burn.test.ts (-1), test/replay.test.ts (-3) — will land FLAGGED for review
+  PASS  control battles unchanged — will re-bless at commit — this item DECLARED it changes the control battles: map.open 9a41f33a->d7b95a4d, map.ridge f292db0d->b3d94a5a, map.flanks 1b99cb94->ea07f000, map.highlands 756b321c->dd488136, map.field a614e63a->ce48ba70, map.thicket 6704ba23->93155e78, test.map.embers f1a0e6f8->f00389c4
+  PASS  content has a published source — 10 ids without a published source (all grandfathered)
+  PASS  hardcode scan — core knows mechanisms, never names
+  PASS  generalizes — the second instance costs zero engine code — shape 'data' — not a mechanism, exempt
+  PASS  naming — new content ids use declared kinds
+  PASS  naming — no banned words invented
+  PASS  kill switch — the tests fail without the content — tests fail without unit.spirit-snake,trigger.spirit-snake.venom,attack.fangs.bite — they genuinely test it
+
+<details><summary>Existing tests were edited — review this diff</summary>
+
+```diff
+diff --git a/test/burn.test.ts b/test/burn.test.ts
+index 6c11dba..16189a7 100644
+--- a/test/burn.test.ts
++++ b/test/burn.test.ts
+@@ -96,7 +96,11 @@ describe('status.burn', () => {
+ 
+   it('the mix: enemyCount 8 fields exactly 2 burning zombies (one per four, cycled)', () => {
++    // Zombie count updated 6 → 5 on 2026-08-20 (Law 10, written reason): the
++    // Beast pen put a spirit-snake in the cycle's sixth slot. The claim under
++    // test — one burning zombie per four, preserved at slots 4 and 8 — is
++    // untouched and still asserted exactly.
+     const ctx = createBattle({ replicate: 3, enemyCount: 8 })
+     expect(ctx.state.units.filter((u) => u.typeId === 'zombie-burning').length).toBe(2)
+-    expect(ctx.state.units.filter((u) => u.typeId === 'zombie').length).toBe(6)
++    expect(ctx.state.units.filter((u) => u.typeId === 'zombie').length).toBe(5)
+   })
+ })
+diff --git a/test/replay.test.ts b/test/replay.test.ts
+index 107d695..ed24989 100644
+--- a/test/replay.test.ts
++++ b/test/replay.test.ts
+@@ -11,5 +11,10 @@ let battle: { engineCommit: string; events: { type: string; causeId?: string }[]
+ 
+ beforeAll(() => {
+-  execSync('npx tsx tools/export-battle.mts 21 map.thicket 8 > /tmp/replay-test-battle.json', { shell: '/bin/bash' })
++  // Demo seed 21 → 1 on 2026-08-20 (Law 10, written reason): the Beast-pen
++  // roster and the status batch changed battle flow, and seed 21 no longer
++  // happens to contain a river wash. Seed 1 shows sear 5, heal 7, wash 2 under
++  // the new content — the CLAIMS under test (rig assembly, determinism, the
++  // events carry the mechanics) are unchanged.
++  execSync('npx tsx tools/export-battle.mts 1 map.thicket 8 > /tmp/replay-test-battle.json', { shell: '/bin/bash' })
+   execSync('node tools/build-replay.mjs /tmp/replay-test-battle.json /tmp/replay-test.html')
+   html = readFileSync('/tmp/replay-test.html', 'utf8')
+@@ -26,10 +31,10 @@ describe('the replay rig', () => {
+   it('the battle is a seed with its engine commit — a stale replay says so', () => {
+     expect(html).toContain(`"engineCommit":"${battle.engineCommit}"`)
+-    expect(html).toContain('"replicate":21')
++    expect(html).toContain('"replicate":1')
+     expect(html).toContain('"mapId":"map.thicket"')
+   })
+ 
+   it('every token the battle needs is embedded — a Burning Zombie is never invisible', () => {
+-    for (const t of ['warrior', 'ranger', 'mage', 'zombie', 'zombie-burning']) {
++    for (const t of ['warrior', 'ranger', 'mage', 'zombie', 'zombie-burning', 'spirit-snake']) {
+       expect(html, `token ${t}`).toContain(`"${t}":{"w":`)
+     }
+```
+</details>
+
+IRON GAUNTLET: NOT PASSED — 1 FLAG(S) WARNED
+
+## unit.green-drake — LANDED `1880d24`
+2026-08-20 09:42
+
+  PASS  dependencies landed
+  PASS  typecheck
+  PASS  full test suite — 312 passed
+  PASS  gate 1 — the id appears in a real battle — unit.green-drake: 1616 log lines, 1616 fired, 1012 changed state · trigger.green-drake.venom-breath: 1338 log lines, 1338 fired, 446 changed state · attack.breath.hiss: 2048 log lines, 2048 fired, 1247 changed state
+  PASS  brought its own tests — test/green-drake.test.ts
+  PASS  existing tests untouched
+  PASS  control battles unchanged
+  PASS  content has a published source — 10 ids without a published source (all grandfathered)
+  PASS  hardcode scan — core knows mechanisms, never names
+  PASS  generalizes — the second instance costs zero engine code — shape 'data' — not a mechanism, exempt
+  PASS  naming — new content ids use declared kinds
+  PASS  naming — no banned words invented
+  PASS  kill switch — the tests fail without the content — tests fail without unit.green-drake,trigger.green-drake.venom-breath,attack.breath.hiss — they genuinely test it
+
+IRON GAUNTLET: PASSED
+
+## unit.shadow-hound-puppy — LANDED `792cc14`
+2026-08-20 09:43
+
+  PASS  dependencies landed
+  PASS  typecheck
+  PASS  full test suite — 316 passed
+  PASS  gate 1 — the id appears in a real battle — unit.shadow-hound-puppy: 839 log lines, 839 fired, 461 changed state · trigger.shadow-hound-puppy.worry: 546 log lines, 546 fired, 182 changed state
+  PASS  brought its own tests — test/shadow-hound-puppy.test.ts
+  PASS  existing tests untouched
+  PASS  control battles unchanged
+  PASS  content has a published source — 10 ids without a published source (all grandfathered)
+  PASS  hardcode scan — core knows mechanisms, never names
+  PASS  generalizes — the second instance costs zero engine code — shape 'data' — not a mechanism, exempt
+  PASS  naming — new content ids use declared kinds
+  PASS  naming — no banned words invented
+  PASS  kill switch — the tests fail without the content — tests fail without unit.shadow-hound-puppy,trigger.shadow-hound-puppy.worry — they genuinely test it
+
+IRON GAUNTLET: PASSED
+
+## viewer.status-legibility — LANDED `4d4d47f` **NEEDS REVIEW**
+2026-08-20 09:47
+
+  PASS  dependencies landed
+  PASS  typecheck
+  PASS  full test suite — 317 passed
+  PASS  gate 1 — the id appears in a real battle — status.bleed: 6403 log lines, 6403 fired, 4335 changed state
+  PASS  brought its own tests — test/replay.test.ts
+  WARN  existing tests untouched — DELETED LINES in test/replay.test.ts (-3) — will land FLAGGED for review
+  PASS  control battles unchanged
+  PASS  content has a published source — 10 ids without a published source (all grandfathered)
+  PASS  hardcode scan — core knows mechanisms, never names
+  PASS  generalizes — the second instance costs zero engine code — shape 'plumbing' — not a mechanism, exempt
+  PASS  naming — new content ids use declared kinds
+  PASS  naming — no banned words invented
+  PASS  kill switch — the tests fail without the content — tests fail without status.bleed — they genuinely test it
+
+<details><summary>Existing tests were edited — review this diff</summary>
+
+```diff
+diff --git a/test/replay.test.ts b/test/replay.test.ts
+index ed24989..74043a9 100644
+--- a/test/replay.test.ts
++++ b/test/replay.test.ts
+@@ -50,7 +50,22 @@ describe('the replay rig', () => {
+ 
+ describe('the viewer speaks the new events', () => {
+-  it('regeneration has its own colour and vfx name — never poison-green fallback', () => {
+-    expect(html).toContain("'status.regeneration':'#7cd9a6'")
+-    expect(html).toContain("n === 'regeneration' ? 'regen'")
++  it('every landed status has its OWN pip colour and a NAMED vfx style — no silent fallback', () => {
++    // Angela 2026-08-20: poison-green and regen-mint were indistinguishable at
++    // pip size. One distinct hue per family, and regeneration moved to teal.
++    for (const id of ['status.poison', 'status.burn', 'status.regeneration', 'status.bleed',
++      'status.stun', 'status.weak', 'status.slow', 'status.protection']) {
++      expect(html, id).toMatch(new RegExp(`'${id}':'#[0-9a-f]{6}'`))
++    }
++    expect(html).not.toContain("'status.regeneration':'#7cd9a6'")   // the old poison-twin mint
++    for (const pair of ["stun: 'shadow'", "slow: 'frost'", "weak: 'affliction'", "protection: 'weak'", "bleed: 'bleed'"]) {
++      expect(html, pair).toContain(pair)
++    }
++  })
++  it('the new mechanics read as sentences: stun, slow, protection, ground', () => {
++    expect(html).toContain('is stunned — the activation is lost')
++    expect(html).toContain('is slowed — ')
++    expect(html).toContain('absorbed by protection')
++    expect(html).toContain('the embers catch')
++    expect(html).toContain('the blight seeps')
+   })
+   it('the river wash, the sear, the resist pop and the heal log line all render', () => {
+```
+</details>
+
+IRON GAUNTLET: NOT PASSED — 1 FLAG(S) WARNED

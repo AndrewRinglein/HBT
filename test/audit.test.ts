@@ -2,6 +2,7 @@ import { describe, it, expect } from 'vitest'
 import { createBattle } from '../src/core/setup.js'
 import { runBattle } from '../src/core/battle.js'
 import { UNITS, ATTACKS, ABILITIES } from '../src/content/index.js'
+import { STATUSES } from '../src/content/statuses.js'
 import { accuracyBonusOf, reachBonusOf, terrainOf } from '../src/content/maps.js'
 import { distance } from '../src/core/hex.js'
 
@@ -27,6 +28,14 @@ describe('independent audit of logged battles', () => {
       // surroundings rather than about the target's distance.
       const side = new Map<number, string>()
       const standing = new Set<number>()
+      // The auditor LEARNED SOURCE_STATUS on 2026-08-20 (the status.weakness
+      // landing made the station live): damage dealt is reduced by the
+      // attacker's active outgoing-penalty stacks, tracked here independently
+      // from the status events. It re-derives WHICH statuses penalize from the
+      // registry flag — data, not a hardcoded name list.
+      const outPenalty = new Map<number, Map<string, number>>()
+      const penaltyOf = (id: number) =>
+        [...(outPenalty.get(id) ?? new Map()).values()].reduce((a, b) => a + b, 0)
       let pending: { actor: number; target: number; attackId: string; dist: number } | null = null
       let pendingPower: { actor: number; target: number; abilityId: string } | null = null
 
@@ -46,6 +55,19 @@ describe('independent audit of logged battles', () => {
           case 'life.dead':
             standing.delete(e.target!)
             break
+
+          case 'status.applied': case 'status.reduced': {
+            const sid = e['statusId'] as string
+            if (!STATUSES[sid]?.reducesOutgoingDamage) break
+            const m = outPenalty.get(e.target!) ?? new Map<string, number>()
+            m.set(sid, e['after'] as number)
+            outPenalty.set(e.target!, m)
+            break
+          }
+          case 'status.expired': {
+            outPenalty.get(e.target!)?.delete(e['statusId'] as string)
+            break
+          }
 
           case 'moved': {
             const t = UNITS[type.get(e.actor!)!]!
@@ -140,7 +162,11 @@ describe('independent audit of logged battles', () => {
               const ab = ABILITIES[pendingPower.abilityId]!
               const stat = ab.stat === 'strength' ? at.strength : ab.stat === 'magic' ? at.magic : at.precision
               const mit = ab.damageType === 'physical' ? tg.armor : ab.damageType === 'magic' ? tg.resist : 0
-              const expected = Math.max(0, ab.bonus + stat - mit)
+              // The auditor learned PROTECTION with the status.protection
+              // landing (2026-08-20): the event names what a pool absorbed, and
+              // the pipeline subtracts it before mitigation.
+              const expected = Math.max(0, ab.bonus + stat - penaltyOf(pendingPower.actor)
+                - ((e['absorbed'] as number) ?? 0) - mit)
               expect((e['amount'] as number) + (e['overkill'] as number), `${ab.id} damage`).toBe(expected)
               checkedDamage++
               pendingPower = null
@@ -152,7 +178,8 @@ describe('independent audit of logged battles', () => {
             const a = ATTACKS[pending.attackId]!
             const stat = a.stat === 'strength' ? at.strength : at.precision
             const mit = a.damageType === 'physical' ? tg.armor : tg.resist
-            const expected = Math.max(0, a.bonus + stat - mit)
+            const expected = Math.max(0, a.bonus + stat - penaltyOf(pending.actor)
+              - ((e['absorbed'] as number) ?? 0) - mit)
             const total = (e['amount'] as number) + (e['overkill'] as number)
             expect(total, `${a.id} damage`).toBe(expected)
             expect(e['hpBefore'] as number - (e['amount'] as number)).toBe(e['hpAfter'])

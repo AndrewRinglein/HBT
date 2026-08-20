@@ -5,9 +5,9 @@
 import { distance, neighboursOf } from './hex.js'
 import type { HexId } from './hex.js'
 import type { Ctx, Unit } from './types.js'
-import { moveCostOf, stripsOnEnterOf, terrainIdOf } from '../content/maps.js'
+import { appliesOnEnterOf, moveCostOf, stripsOnEnterOf, terrainIdOf } from '../content/maps.js'
 import { emit, markMoveUsed, moveUnit, spendStamina, unit } from './mutate.js'
-import { reduceStatus } from './status.js'
+import { applyStatus, reduceStatus } from './status.js'
 
 export const MOVE_STAMINA_COST = 1
 
@@ -109,6 +109,12 @@ export function executeMove(ctx: Ctx, unitId: number, path: HexId[], onStep?: St
     //    lands, skips this by construction: a flight move contains zero Steps.
     for (const sid of stripsOnEnterOf(terrainHere)) {
       reduceStatus(ctx, unitId, sid, 1, terrainIdOf(terrainHere))
+    }
+    // 5b. terrain status ON ENTRY, the inverse — burning ground sears as you
+    //     cross ("running through costs 1 stack", GAME-DESIGN §4). Same beat as
+    //     the strips, so flight skips both by construction (zero Steps).
+    for (const [sid, n] of appliesOnEnterOf(terrainHere)) {
+      applyStatus(ctx, unitId, sid, n, terrainIdOf(terrainHere))
     }
     // 6. vision — none in the baseline
     if (onStep && !onStep(ctx, unitId, hex)) break

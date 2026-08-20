@@ -4,9 +4,9 @@
 
 import { runActivation } from '../ai/modes.js'
 import { beginActivation, beginTurn, emit, endActivation, regenStamina, setOutcome, setPhase } from './mutate.js'
-import { stripsOnActivationEndOf, terrainIdOf } from '../content/maps.js'
+import { appliesOnActivationEndOf, stripsOnActivationEndOf, terrainIdOf } from '../content/maps.js'
 import { advanceBleedOuts, checkVictory, settle } from './settle.js'
-import { isBlocked, reduceStatus, tickStatuses } from './status.js'
+import { applyStatus, isBlocked, reduceStatus, tickStatuses } from './status.js'
 import type { Ctx, Phase, Side } from './types.js'
 
 function activationOrder(ctx: Ctx, side: Side): number[] {
@@ -46,21 +46,28 @@ function runPhase(ctx: Ctx, phase: Phase): void {
  * | # | Rung |
  * |---|---|
  * | 1 | Terrain strips — the occupied hex reduces the statuses its terrain names |
- * | 2 | (reserved) tile end-of-activation effects — where AIRWALK will check: an
- * |   | airwalking unit "is not going to trigger anything at the end of
- * |   | activation for whatever tile they're standing on" (ruled 2026-08-20) |
+ * | 2 | Tile effects — terrain APPLIES (born with burning ground, 2026-08-20):
+ * |   | the occupied hex applies the statuses its terrain names. This is the
+ * |   | rung AIRWALK will gate: an airwalking unit "is not going to trigger
+ * |   | anything at the end of activation for whatever tile they're standing
+ * |   | on" (ruled 2026-08-20) — it will skip rung 2, never rung 1. |
  *
  * Runs for EVERY unit that activated, including blocked ones — a stunned hero
- * standing in the river still soaks. GAME-DESIGN §4 relies on this preceding the
- * status tick: reach water and you shed Burn BEFORE it deals damage this turn.
+ * standing in the river still soaks, and one standing in embers still sears.
+ * GAME-DESIGN §4 relies on this preceding the status tick: reach water and you
+ * shed Burn BEFORE it deals damage this turn — and catch fire and it BURNS this
+ * turn. (The old early-return on empty strips is gone: it would have silently
+ * eaten the applies rung on strip-free terrain.)
  */
 function endOfActivation(ctx: Ctx, unitId: number): void {
   const u = ctx.state.units[unitId]!
   if (u.lifeState !== 'standing') return
   const t = ctx.state.terrain[u.hex] ?? 0
   const strips = stripsOnActivationEndOf(t)
-  if (strips.length === 0) return
   for (const sid of strips) reduceStatus(ctx, unitId, sid, 1, terrainIdOf(t))
+  const applies = appliesOnActivationEndOf(t)
+  for (const [sid, n] of applies) applyStatus(ctx, unitId, sid, n, terrainIdOf(t))
+  if (strips.length === 0 && applies.length === 0) return
   settle(ctx, terrainIdOf(t))
 }
 

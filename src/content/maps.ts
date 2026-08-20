@@ -17,6 +17,7 @@
 
 import { TERRAIN } from '../core/types.js'
 import { WIDTH, HEIGHT } from '../core/hex.js'
+import { disabledIds } from './disable.js'
 
 export type MapDef = { id: string; name: string; note: string; rows: readonly string[] }
 
@@ -99,6 +100,16 @@ export const MAPS: readonly MapDef[] = [
       '.ff.......ww',
     ],
   },
+  {
+    id: 'test.map.embers',
+    name: 'The Ember Field (TESTING)',
+    note: 'TESTING LANE — never ships. A full-width burning band and a poisoned belt both sides must cross, so the terrain-applies mechanism can be probed live. Mirrors map.ridge. Joining MAPS puts it on MAP_PANEL, which is what makes probing possible — the same reason map.field and map.thicket were added.',
+    rows: [
+      '............', '............', '............', '............',
+      'bbbbbbbbbbbb', 'bbbbbbbbbbbb', '............', 'pppppppppppp',
+      'pppppppppppp', '............', '............', '............',
+    ],
+  },
 ] as const
 
 export const MAP_PANEL = MAPS.map((m) => m.id)
@@ -107,6 +118,7 @@ export const MAP_PANEL = MAPS.map((m) => m.id)
 export const GLYPH: Readonly<Record<string, number>> = {
   '.': TERRAIN.OPEN, 'h': TERRAIN.HILLS, 'f': TERRAIN.FOREST, 'r': TERRAIN.ROCKY,
   'R': TERRAIN.ROCKY_HILLS, 'w': TERRAIN.WATER, 'x': TERRAIN.OBSTACLE,
+  'b': TERRAIN.BURNING, 'p': TERRAIN.POISONED,
 }
 
 /** The id a terrain kind answers to in a log line or a modifier source. */
@@ -115,6 +127,7 @@ const TERRAIN_ID: Readonly<Record<number, string>> = {
   [TERRAIN.FOREST]: 'terrain.forest', [TERRAIN.ROCKY]: 'terrain.rocky',
   [TERRAIN.ROCKY_HILLS]: 'terrain.rocky-hills', [TERRAIN.WATER]: 'terrain.water',
   [TERRAIN.OBSTACLE]: 'terrain.obstacle',
+  [TERRAIN.BURNING]: 'terrain.burning', [TERRAIN.POISONED]: 'terrain.poisoned',
 }
 
 export function terrainOf(mapId: string): number[] {
@@ -162,13 +175,19 @@ export function isPassable(terrain: number): boolean {
  * well as the cost: it is rock and a climb, so it carries both sets. That is why
  * traits exist rather than a hand-written row per combination.
  */
-export type Trait = 'rough' | 'elevated' | 'wet'
+export type Trait = 'rough' | 'elevated' | 'wet' | 'burning' | 'poisoned'
+/** [statusId, amount] pairs — what a terrain APPLIES, the inverse of its strips. */
+export type Applies = readonly (readonly [string, number])[]
 type Mods = { moveCost: number
   accuracy?: number; reach?: number; dodge?: number; armor?: number; resist?: number
   /** Statuses reduced by 1 when a unit STEPS ONTO this terrain. */
   stripsOnEnter?: readonly string[]
   /** Statuses reduced by 1 at the occupant's END OF ACTIVATION (the rung Airwalk will also consult). */
-  stripsOnActivationEnd?: readonly string[] }
+  stripsOnActivationEnd?: readonly string[]
+  /** Statuses APPLIED [id, amount] when a unit STEPS ONTO this terrain — the inverse of wet's strips. Flight skips it (zero Steps). */
+  appliesOnEnter?: Applies
+  /** Statuses APPLIED at the occupant's END OF ACTIVATION — ladder rung 2, the tile-effects rung Airwalk will gate. */
+  appliesOnActivationEnd?: Applies }
 
 /** GROUND-REQUIREMENTS.md §1.1. Change these only from that document. */
 export const TRAIT: Readonly<Record<Trait, Mods>> = {
@@ -182,6 +201,24 @@ export const TRAIT: Readonly<Record<Trait, Mods>> = {
     // water sheds 1 Burn; standing in it sheds 2 Burn and 1 Poison.
     stripsOnEnter: ['status.burn'],
     stripsOnActivationEnd: ['status.burn', 'status.poison'] },
+  burning: { moveCost: 0,
+    // PUBLISHED: 5-GROUND-SETTLED § terrain.* (2026-08-20). GAME-DESIGN §4:
+    // water is "the exact inverse of fire, where running through costs 1 stack
+    // and standing costs 2" — +1 Burn on entry, +1 at End of Activation; §6:
+    // the status layer is "applied once on entry and again at the occupant's
+    // end of turn". DECISIONS 2026-08-20 (Flight): "flying onto burning ground
+    // burns you at end of activation" — flight skips only the entry beat.
+    // The layer carries no move cost of its own — the base ground owns cost.
+    appliesOnEnter: [['status.burn', 1]],
+    appliesOnActivationEnd: [['status.burn', 1]] },
+  poisoned: { moveCost: 0,
+    // PUBLISHED: 5-GROUND-SETTLED § terrain.* (2026-08-20); Codex, Creeping
+    // Blight: "Any unit that begins its Turn on poisoned ground gains 2 Poison
+    // and 1 Weak — allies included. No roll, no crit." No entry clause is
+    // published, so there is none (unlike burning). Timing is SWITCHES.md
+    // poisonedGroundTiming, default End of Activation — the one tile-effects
+    // rung Airwalk will gate.
+    appliesOnActivationEnd: [['status.poison', 2], ['status.weak', 1]] },
 }
 
 /** What each terrain is made of. */
@@ -193,6 +230,8 @@ export const TRAITS: Readonly<Record<number, ReadonlyArray<Trait>>> = {
   [TERRAIN.ROCKY_HILLS]: ['rough', 'elevated'],    // composed, per §1.1
   [TERRAIN.WATER]: ['wet'],
   [TERRAIN.OBSTACLE]: [],
+  [TERRAIN.BURNING]: ['burning'],
+  [TERRAIN.POISONED]: ['poisoned'],
 }
 
 /**
@@ -216,6 +255,9 @@ function composed(terrain: number): Mods {
     // strip lists compose by union — a composed wet terrain would strip too
     if (d.stripsOnEnter) out.stripsOnEnter = [...(out.stripsOnEnter ?? []), ...d.stripsOnEnter]
     if (d.stripsOnActivationEnd) out.stripsOnActivationEnd = [...(out.stripsOnActivationEnd ?? []), ...d.stripsOnActivationEnd]
+    // applies lists compose the same way — the inverse funnel, one mechanism
+    if (d.appliesOnEnter) out.appliesOnEnter = [...(out.appliesOnEnter ?? []), ...d.appliesOnEnter]
+    if (d.appliesOnActivationEnd) out.appliesOnActivationEnd = [...(out.appliesOnActivationEnd ?? []), ...d.appliesOnActivationEnd]
   }
   for (const t of TRAITS[terrain] ?? []) add(TRAIT[t])
   add(EXTRA[terrain])
@@ -234,6 +276,18 @@ const statOf = (terrain: number, stat: Stat): number =>
 export function accuracyBonusOf(terrain: number): number { return statOf(terrain, 'accuracy') }
 export function stripsOnEnterOf(terrain: number): readonly string[] { return composed(terrain).stripsOnEnter ?? [] }
 export function stripsOnActivationEndOf(terrain: number): readonly string[] { return composed(terrain).stripsOnActivationEnd ?? [] }
+// The applies getters carry the kill-switch seam directly: CF_DISABLE_IDS with a
+// terrain id silences that terrain's applies, so the kill-switch check can prove
+// the tests genuinely depend on the content. (Water's strips predate the seam
+// and took exemptions; new mechanisms don't get to.)
+export function appliesOnEnterOf(terrain: number): Applies {
+  if (disabledIds().has(terrainIdOf(terrain))) return []
+  return composed(terrain).appliesOnEnter ?? []
+}
+export function appliesOnActivationEndOf(terrain: number): Applies {
+  if (disabledIds().has(terrainIdOf(terrain))) return []
+  return composed(terrain).appliesOnActivationEnd ?? []
+}
 
 /** Extra reach for ranged weapons fired from here. */
 export function reachBonusOf(terrain: number): number { return statOf(terrain, 'reach') }

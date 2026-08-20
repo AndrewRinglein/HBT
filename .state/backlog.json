@@ -153,22 +153,66 @@
   "id": "status.weakness",
   "kind": "status",
   "shape": "counter",
-  "spec": "Weakness: lowers damage DEALT by 1 per point (not the Strength/Precision stats), reduces by 1 at End of Phase. Source: a new Ghoul enemy attack 'Sapping Claw' applying weakness 2. Add the Ghoul as part of this item.",
-  "expect": "a warrior with weakness 2 does axe damage minus 2; the stat itself is unchanged"
+  "spec": "Weak (id status.weak — Codex fresh name over GAME-DESIGN \"Weakness\"): −1 damage dealt per point, read at station SOURCE_STATUS (250) by outgoingPenalty — attacks and powers through the one damage function; never the Strength/Precision stats; −1 at End of Phase, never ticks damage. The station was built and synthetic-tested; this is the content that makes it live. Bearers TESTING LANE: test.zombie.sap (backlog trigger.zombie.sap absorbed here — second independent 20% onDamage beside rot) and test.mage.dampen (variant source). Published: 1-EFFECTS-SETTLED § status.* row (2026-08-20) + GAME-DESIGN §5 + Codex census (38 uses).",
+  "expect": "a warrior with weakness 2 does axe damage minus 2; the stat itself is unchanged",
+  "variants": [
+   "status.weak",
+   "test.status.enfeeble"
+  ],
+  "probeIds": [
+   "status.weak",
+   "test.zombie.sap",
+   "test.status.enfeeble",
+   "test.mage.dampen"
+  ],
+  "changesBaseline": true,
+  "attempts": 1,
+  "status": "done-needs-review",
+  "sha": "50d4eed",
+  "gauntlet": "not passed — 1 flag(s) warned"
  },
  {
   "id": "status.stun",
   "kind": "status",
   "shape": "counter",
-  "spec": "Stunned: the unit cannot act at all, reduces by 1 at End of Phase. Source: the Ghoul Brute's heavy attack applies stun 1 on hit.",
-  "expect": "a stunned unit produces no move and no primary, and the log says why"
+  "spec": "Stun: the unit cannot act — the whole Activation (move and primary) is skipped, the End of Activation ladder still runs; −1 at End of Phase, so Stun N is exactly N lost activations. blocksAction was already consumed generically by the turn loop; this item is the data that makes the path live. Sources are TESTING LANE (test.warrior.stagger 20% onDamage; the old Ghoul Brute source predates the testing-lane ruling and was never published). Published: 1-EFFECTS-SETTLED § status.* row (2026-08-20) + GAME-DESIGN §5 + Codex census (22 uses).",
+  "expect": "a stunned unit produces no move and no primary, and the log says why",
+  "variants": [
+   "status.stun",
+   "test.status.daze"
+  ],
+  "probeIds": [
+   "status.stun",
+   "test.warrior.stagger",
+   "test.status.daze",
+   "test.zombie-burning.lurch"
+  ],
+  "changesBaseline": true,
+  "attempts": 1,
+  "status": "done-needs-review",
+  "sha": "23a048c",
+  "gauntlet": "not passed — 1 flag(s) warned"
  },
  {
   "id": "status.protection",
   "kind": "status",
   "shape": "pool",
-  "spec": "Protection: reduces incoming damage at station 550 AND is reduced by the damage it absorbs. Also loses 1 at End of Phase. Additive when granted again. Source: landed together with ability.warrior.rally, which grants it.",
-  "expect": "protection 3 hit for 2 absorbs 2 and drops to 1; then End of Phase takes it to 0"
+  "spec": "Protection: the pool shape made real — absorbed at station PROTECTION (550, before armor/resist) and SPENT by what it absorbs (spendAbsorb after the hit; preview never spends); also −1 at End of Phase so it cannot be banked; additive per the answered protectionStacking switch. The station was built and synthetic-tested; this is the content that makes it live. The old ability.warrior.rally source waits on ability effects — bearers are TESTING LANE: test.mage.arcane-ward (flat 3, Codex Earth Shield shape) and test.warrior.brace (the ward variant). Published: 1-EFFECTS-SETTLED § status.* row (2026-08-20) + Codex census (40 uses) + COMBAT-SEQUENCE pool clause.",
+  "expect": "protection 3 hit for 2 absorbs 2 and drops to 1; then End of Phase takes it to 0",
+  "variants": [
+   "status.protection",
+   "test.status.ward"
+  ],
+  "probeIds": [
+   "status.protection",
+   "test.mage.arcane-ward",
+   "test.status.ward",
+   "test.warrior.brace"
+  ],
+  "changesBaseline": true,
+  "status": "done-needs-review",
+  "sha": "affba58",
+  "gauntlet": "not passed — 1 flag(s) warned"
  },
  {
   "id": "unit.archer",
@@ -291,7 +335,7 @@
   "needs": [
    "trigger.mechanism"
   ],
-  "note": "WAITING ON ANGELA: status.weakness is fully defined in GAME-DESIGN 5 (-1 damage per point, reduces damage dealt not the stats) but is not published in any SETTLED file. Buildable the moment she says GAME-DESIGN counts."
+  "note": "ABSORBED 2026-08-20 into the status.weakness landing as test.zombie.sap (testing-lane id — trigger.* is not a publishable kind). Its spec and expect are covered by test/weak.test.ts. Do not build separately."
  },
  {
   "id": "trigger.mage.kindle",
@@ -641,5 +685,137 @@
   "status": "done",
   "sha": "a2e5d83",
   "gauntlet": "passed"
+ },
+ {
+  "id": "status.bleed",
+  "kind": "status",
+  "shape": "counter",
+  "spec": "Bleed: flat 2 damage at End of Phase — Resist NEVER touches it (ruled 2026-08-20; tickMitigatedByResist deliberately absent, the seam statusDamage was built with); the value is a turn counter, not a magnitude; −1 at End of Phase; never stripped by water (ruled: burn+poison only, nothing else). Bearer TESTING LANE: test.ranger.serrated-arrows (Codex Hunters Mark shape, onHit apply 2 Bleed). Published: 1-EFFECTS-SETTLED § status.* row (2026-08-20) + Codex census (63 uses) + GAME-DESIGN §5.",
+  "expect": "bleed 5 vs resist 2 ticks 2,2,2,2,2 in the same harness where poison 5 vs resist 2 ticks 3,2,1,0,0",
+  "variants": [
+   "status.bleed",
+   "status.poison"
+  ],
+  "probeIds": [
+   "status.bleed",
+   "test.ranger.serrated-arrows"
+  ],
+  "changesBaseline": true,
+  "status": "done",
+  "sha": "849ead6",
+  "gauntlet": "passed"
+ },
+ {
+  "id": "status.slow",
+  "kind": "status",
+  "shape": "counter",
+  "spec": "Slow: reduces Movement by its value, read ONCE at beginActivation (the one new core read — everything downstream flows from movePointsLeft); floor 0, and at 0 points the unit still ACTS from where it stands (Slow is not Stun); −1 at End of Phase. Two switches recorded: slowReadAtActivationStart (default: next activation only) and slowVsEffectiveMovement (default: base). Bearers TESTING LANE: test.zombie.grasp (Codex Lash shape) and test.ranger.pin (hobble variant). Published: 1-EFFECTS-SETTLED § status.* row (2026-08-20) + GAME-DESIGN §5 + Codex 2026-08-20 sub-note (19 uses).",
+  "expect": "zombie (movement 4) with Slow 3 gets budgets 1,2,3,4 as the value decays; overstack floors at 0 and the unit still attacks",
+  "variants": [
+   "status.slow",
+   "test.status.hobble"
+  ],
+  "probeIds": [
+   "status.slow",
+   "test.zombie.grasp",
+   "test.status.hobble",
+   "test.ranger.pin"
+  ],
+  "changesBaseline": true,
+  "status": "done",
+  "sha": "380e43e",
+  "gauntlet": "passed"
+ },
+ {
+  "id": "terrain.burning-ground",
+  "kind": "terrain",
+  "shape": "rule",
+  "spec": "Terrain that APPLIES statuses — the exact inverse of water strips, as ONE general mechanism: appliesOnEnter / appliesOnActivationEnd [statusId, amount] lists on Mods, unioned by composed(), consumed at the two existing sites (the movement step loop beat 5b, and End of Activation ladder rung 2 — the rung reserved for tile effects that Airwalk will gate; the early-return that would have eaten rung 2 on strip-free terrain is removed). Burning: +1 Burn on enter, +1 at EoA (GAME-DESIGN §4 running-through-1/standing-2; §6; Flight ruling). Second pure-data instance: poisoned ground, 2 Poison + 1 Weak at EoA only (Codex Creeping Blight — landable in full because status.weak landed tonight). Both carried by test.map.embers (TESTING LANE map, joins MAP_PANEL to be probeable — the map.field precedent). Kill-switch seam lives in the applies getters (CF_DISABLE_IDS with a terrain id silences it). Switch recorded: poisonedGroundTiming (default EoA). Published: 5-GROUND-SETTLED § terrain.* rows (2026-08-20).",
+  "expect": "crossing 2 ember hexes = Burn 2; ending on embers adds 1 more; poisoned ground applies nothing on entry and 2 Poison + 1 Weak at EoA; the six real maps are byte-identical",
+  "variants": [
+   "terrain.burning",
+   "terrain.poisoned"
+  ],
+  "probeIds": [
+   "terrain.burning",
+   "terrain.poisoned"
+  ],
+  "changesBaseline": true,
+  "attempts": 1,
+  "status": "done-needs-review",
+  "sha": "9899d10",
+  "gauntlet": "not passed — 1 flag(s) warned"
+ },
+ {
+  "id": "unit.spirit-snake",
+  "kind": "content",
+  "shape": "data",
+  "spec": "The Spirit Snake — first of the Beast pen, mined from the Codex Beast class (published source, ruled 2026-08-20). Codex §10 statline verbatim (str 1, prec 1, armor 1, hp 2, reach 1); §5 Fangs Bite (+2 strength melee, shared attack row); §3 Serpent rider as trigger.spirit-snake.venom (onHit 100%, poison 2 — unconditional onHit is identical while the bite is its only attack). Accuracy 70 = SWITCHES.md beastAccuracy (Codex prices every class but Beast); stamina 0 (enemies do not run stamina). Extends the FIRST_BATTLE cycle at slot 5 — composition of the first four unchanged. Forced one core fix: setup named every enemy Zombie N (content literal in core); enemies are now named from their typeId. Viewer: zombie art + green coil-ring overlay + venom pop; token in static.json. Published: 6-BESTIARY-SETTLED rows (2026-08-20).",
+  "expect": "bite previews 3 vs the ranger and 2 vs the warrior; venom applies poison 2 in real battles; at enemyCount 4 the composition is the original 4v4",
+  "probeIds": [
+   "unit.spirit-snake",
+   "trigger.spirit-snake.venom",
+   "attack.fangs.bite"
+  ],
+  "changesBaseline": true,
+  "attempts": 1,
+  "status": "done-needs-review",
+  "sha": "2ca5d4d",
+  "gauntlet": "not passed — 1 flag(s) warned"
+ },
+ {
+  "id": "unit.green-drake",
+  "kind": "content",
+  "shape": "data",
+  "needs": [
+   "unit.spirit-snake"
+  ],
+  "spec": "The Green Drake — Codex §10 statline verbatim (str 5, prec 4, armor 1, hp 12, reach 2, resist 1; toughness dropped, no field); §5 Breath Hiss (+0 magic, range 3, rider as trigger.green-drake.venom-breath onHit 100% poison 2). Published magic 0 makes Hiss a 0-damage attack — the threat is the poison clock, faithful to the rows (flagged for Angela: if this reads wrong in play the fix is attack-scoped triggers, not a fangs fallback). Extends the cycle at slot 10 — enemyCount 8 control battles are BYTE-IDENTICAL (changesBaseline false, proven neutral). Forced one AI generalization: dumb-melee swings at what is IN REACH via canAttack (Law 2), not merely adjacent — an adjacency-only check meant the drake closed and never attacked; for reach-1 units (every zombie) candidates and idle text are the old behaviour exactly. Viewer: double emerald ring + venom pop; token in static.json. Published: 6-BESTIARY-SETTLED rows (2026-08-20).",
+  "expect": "hiss previews 0 damage at reach 5; venom-breath poisons in z=12 battles; z=8 battles byte-identical",
+  "probeIds": [
+   "unit.green-drake",
+   "trigger.green-drake.venom-breath",
+   "attack.breath.hiss"
+  ],
+  "changesBaseline": false,
+  "status": "done",
+  "sha": "1880d24",
+  "gauntlet": "passed"
+ },
+ {
+  "id": "unit.shadow-hound-puppy",
+  "kind": "content",
+  "shape": "data",
+  "needs": [
+   "unit.spirit-snake",
+   "status.bleed"
+  ],
+  "spec": "The Shadow Hound Puppy — Codex §10 statline verbatim (str 6, prec 2, armor 0, hp 12, reach 1; toughness dropped, no field); §3 Hound rider as trigger.shadow-hound-puppy.worry (onHit 100%, bleed 1 — named for the Hound power Worry the Wound); shares attack.fangs.bite. Landed LAST of the pen because the kit needs status.bleed. melee-aggressive — the thing that is still coming. Cycle slot 11 — z=8 control battles byte-identical (changesBaseline false). Viewer: umbral violet ring + worried! pop; token in static.json. Published: 6-BESTIARY-SETTLED rows (2026-08-20).",
+  "expect": "bite previews 7 vs the warrior; worry bleeds in z=12 battles and the bleed ticks its flat 2; z=8 battles byte-identical",
+  "probeIds": [
+   "unit.shadow-hound-puppy",
+   "trigger.shadow-hound-puppy.worry"
+  ],
+  "changesBaseline": false,
+  "status": "done",
+  "sha": "792cc14",
+  "gauntlet": "passed"
+ },
+ {
+  "id": "viewer.status-legibility",
+  "kind": "engine",
+  "shape": "plumbing",
+  "needs": [
+   "viewer.replay-rig"
+  ],
+  "spec": "Angela 2026-08-20 (on watching the thicket replay): poison-green and regeneration-mint dots were indistinguishable at pip size — \"a legibility bug of mine, not your eyes\". With four more statuses landing tonight the collision would have compounded. Every status now has ONE distinct pip hue (regeneration moved from mint to teal and renders as a square pip — a shape cue on top of colour); every status maps to a NAMED hexVFX style (stun/daze→shadow, slow/hobble→frost, weak/enfeeble→affliction, protection/ward→weak, bleed→bleed) so nothing silently falls back to poison-green; and the new mechanics read as log sentences (stunned — the activation is lost / is slowed — N move points / N absorbed by protection / the embers catch / the blight seeps). Beast pops: venom!, worried!. Viewer only — zero engine bytes.",
+  "expect": "built page carries a distinct colour per status id, the five style mappings, and the five new log sentences; control battles untouched",
+  "probeIds": [
+   "status.bleed"
+  ],
+  "changesBaseline": false,
+  "status": "done-needs-review",
+  "sha": "4d4d47f",
+  "gauntlet": "not passed — 1 flag(s) warned"
  }
 ]

@@ -10,7 +10,12 @@ let html = ''
 let battle: { engineCommit: string; events: { type: string; causeId?: string }[] }
 
 beforeAll(() => {
-  execSync('npx tsx tools/export-battle.mts 21 map.thicket 8 > /tmp/replay-test-battle.json', { shell: '/bin/bash' })
+  // Demo seed 21 → 1 on 2026-08-20 (Law 10, written reason): the Beast-pen
+  // roster and the status batch changed battle flow, and seed 21 no longer
+  // happens to contain a river wash. Seed 1 shows sear 5, heal 7, wash 2 under
+  // the new content — the CLAIMS under test (rig assembly, determinism, the
+  // events carry the mechanics) are unchanged.
+  execSync('npx tsx tools/export-battle.mts 1 map.thicket 8 > /tmp/replay-test-battle.json', { shell: '/bin/bash' })
   execSync('node tools/build-replay.mjs /tmp/replay-test-battle.json /tmp/replay-test.html')
   html = readFileSync('/tmp/replay-test.html', 'utf8')
   battle = JSON.parse(readFileSync('/tmp/replay-test-battle.json', 'utf8'))
@@ -25,12 +30,12 @@ describe('the replay rig', () => {
 
   it('the battle is a seed with its engine commit — a stale replay says so', () => {
     expect(html).toContain(`"engineCommit":"${battle.engineCommit}"`)
-    expect(html).toContain('"replicate":21')
+    expect(html).toContain('"replicate":1')
     expect(html).toContain('"mapId":"map.thicket"')
   })
 
   it('every token the battle needs is embedded — a Burning Zombie is never invisible', () => {
-    for (const t of ['warrior', 'ranger', 'mage', 'zombie', 'zombie-burning']) {
+    for (const t of ['warrior', 'ranger', 'mage', 'zombie', 'zombie-burning', 'spirit-snake']) {
       expect(html, `token ${t}`).toContain(`"${t}":{"w":`)
     }
   })
@@ -44,9 +49,24 @@ describe('the replay rig', () => {
 })
 
 describe('the viewer speaks the new events', () => {
-  it('regeneration has its own colour and vfx name — never poison-green fallback', () => {
-    expect(html).toContain("'status.regeneration':'#7cd9a6'")
-    expect(html).toContain("n === 'regeneration' ? 'regen'")
+  it('every landed status has its OWN pip colour and a NAMED vfx style — no silent fallback', () => {
+    // Angela 2026-08-20: poison-green and regen-mint were indistinguishable at
+    // pip size. One distinct hue per family, and regeneration moved to teal.
+    for (const id of ['status.poison', 'status.burn', 'status.regeneration', 'status.bleed',
+      'status.stun', 'status.weak', 'status.slow', 'status.protection']) {
+      expect(html, id).toMatch(new RegExp(`'${id}':'#[0-9a-f]{6}'`))
+    }
+    expect(html).not.toContain("'status.regeneration':'#7cd9a6'")   // the old poison-twin mint
+    for (const pair of ["stun: 'shadow'", "slow: 'frost'", "weak: 'affliction'", "protection: 'weak'", "bleed: 'bleed'"]) {
+      expect(html, pair).toContain(pair)
+    }
+  })
+  it('the new mechanics read as sentences: stun, slow, protection, ground', () => {
+    expect(html).toContain('is stunned — the activation is lost')
+    expect(html).toContain('is slowed — ')
+    expect(html).toContain('absorbed by protection')
+    expect(html).toContain('the embers catch')
+    expect(html).toContain('the blight seeps')
   })
   it('the river wash, the sear, the resist pop and the heal log line all render', () => {
     expect(html).toContain('the river takes 1 ')

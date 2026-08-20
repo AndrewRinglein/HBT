@@ -48,6 +48,13 @@ export type StatusDef = {
   readonly reducesOutgoingDamage?: boolean
   /** Read by the turn loop: the unit cannot move or act. */
   readonly blocksAction?: boolean
+  /**
+   * Read ONCE at beginActivation: this Activation's movement points are the
+   * unit's Movement minus the summed value of every such status (floor 0 — the
+   * unit still acts from where it stands). Applied mid-activation it bites the
+   * NEXT activation, never the current one (SWITCHES.md slowReadAtActivationStart).
+   */
+  readonly reducesMovement?: boolean
   /** Read by heal(): healing received is halved. */
   readonly halvesHealing?: boolean
 }

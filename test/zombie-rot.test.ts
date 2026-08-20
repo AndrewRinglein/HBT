@@ -11,8 +11,12 @@ describe('trigger.zombie.rot', () => {
     for (const a of Object.values(ATTACKS)) expect(a.applies).toBeUndefined()
   })
 
-  it('the zombie def declares rot, and only rot', () => {
-    expect((UNITS['zombie']!.triggers ?? []).map((t) => t.id)).toEqual(['trigger.zombie.rot'])
+  it('the zombie def declares rot (exclusivity retired 2026-08-20, Law 10)', () => {
+    // WEAKENED with a reason: this asserted rot was the zombie's ONLY trigger.
+    // The status.weakness landing added test.zombie.sap (backlog
+    // trigger.zombie.sap absorbed as a testing-lane id), so exclusivity is
+    // stale by design. Rot itself is unchanged and still asserted.
+    expect((UNITS['zombie']!.triggers ?? []).map((t) => t.id)).toContain('trigger.zombie.rot')
   })
 
   it('rot fires in real battles at roughly its chance — a rule, not a snapshot', () => {
@@ -20,8 +24,13 @@ describe('trigger.zombie.rot', () => {
     // on a minority of them. 20% declared: accept 8%–35% — a band wide enough to
     // survive balance changes, tight enough to catch 100% (the old rider) or 0%
     // (a dead trigger).
+    // Battle count raised 40 → 70 on 2026-08-20 (Law 10, written reason): the
+    // status.stun landing lets warriors stun zombies, so zombies land fewer
+    // bites per battle and 40 battles slid to exactly the 50-roll floor. The
+    // RULE under test is the rate band, which is untouched; the sample floor is
+    // calibration, restored by more battles rather than a lower bar.
     let rolled = 0, fired = 0, poisonFromRot = 0
-    for (let r = 0; r < 40; r++) {
+    for (let r = 0; r < 70; r++) {
       const ctx = createBattle({ replicate: r }); runBattle(ctx)
       for (const e of ctx.events) {
         if (e.causeId === 'trigger.zombie.rot') {

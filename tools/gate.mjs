@@ -438,7 +438,9 @@ let auditNote = ''
   writeFileSync('.state/gauntlet.json', JSON.stringify(g))
   if (g.landings % 10 === 0) {
     console.log(`\nlanding #${g.landings} — running the periodic full audit`) 
-    const a = tryRun('node tools/audit-all.mjs')
+    // --checkpoint: a mid-batch health check, NOT a batch boundary — the
+    // unflagged call here once split "movement + ground" into two bars.
+    const a = tryRun('node tools/audit-all.mjs --checkpoint')
     console.log(a.out.trim())
     if (!a.ok) { gauntletNotes.push('periodic full audit FAILED — investigate before the next item'); auditNote = ' · periodic audit FAILED' }
     else auditNote = ' · periodic audit clean'

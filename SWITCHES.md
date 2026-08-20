@@ -120,3 +120,57 @@ with zero extra state: Burn 1 deals its last tick, expires, and a Regeneration
 resolving later that phase heals in full. Deterministic and stated in
 test/burn.test.ts. The snapshot reading would need a pre-pass; build it only if
 a sweep shows the difference matters. *(2026-08-20, found landing status.burn.)*
+
+## slowReadAtActivationStart
+
+**Question.** Slow applied MID-activation (a future attack-of-opportunity or
+retaliation rider) — does it cut the CURRENT activation's remaining points, or
+only the next one's?
+
+**Default: next activation only.** The reducesMovement read happens exactly once,
+in `beginActivation` — one consumption site, no mid-move re-budgeting. The AoO's
+own move-point bite (half the damage, rounded down — ruled) is a separate
+mechanism and must not double-dip through Slow. *(2026-08-20, landing
+status.slow.)*
+
+## slowVsEffectiveMovement
+
+**Question.** When Movement StatMods exist (a Limp badge, gear), does Slow
+subtract from BASE Movement or from effective Movement?
+
+**Default: base.** `beginActivation` reads `u.movement` raw today — nothing else
+reaches movePointsLeft yet, so the two readings are indistinguishable. The flip
+point is when beginActivation adopts the stat pipeline (`effective(…,'movement')`);
+re-decide with a sweep then. *(2026-08-20, landing status.slow.)*
+
+## poisonedGroundTiming
+
+**Question.** The Codex says poisoned ground hits units that "begin their Turn"
+on it; the engine's tile-effects rung is End of Activation (where Airwalk was
+ruled to check, and where burning fires per the Flight ruling). Begin-of-
+activation, or End of Activation?
+
+**Default: End of Activation** — one consumption site for ALL ground applies;
+the rung Airwalk gates already exists. The fork is real: under EoA, a unit that
+walks onto poisoned ground and stops is hit this Turn while one that starts
+there and leaves escapes; under begin-of-Turn, exactly the reverse. A sweep can
+price the difference. *(2026-08-20, landing terrain.burning-ground.)*
+
+## beastAccuracy
+
+**Question.** What Accuracy does a Beast-class enemy baseline at? The Codex
+class derivation prices every class (Priest and Ranger 80 … Civilian 70) but
+never Beast.
+
+**Default: 70** — the Civilian "untrained" tier; a beast aims with instinct, not
+drill. Sweepable the day the Codex prices Beast. *(2026-08-20, landing the Beast
+pen.)*
+
+## brawlStaminaCost
+
+**Question.** Do natural-weapon attacks (Fangs, Breath) cost their Codex Stam
+when the wielder runs a stamina bar?
+
+**Default: 0 while only enemies wield them** — GAME-DESIGN rules enemies
+costless ("the tireless dead versus the winded living"). Revisit when a
+hero-side Beast lands. *(2026-08-20, landing the Beast pen.)*

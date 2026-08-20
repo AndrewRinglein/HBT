@@ -36,6 +36,24 @@ function adjacentEnemies(ctx: Ctx, u: Unit): Unit[] {
   return livingEnemies(ctx, u).filter((e) => distance(u.hex, e.hex) === 1)
 }
 
+/**
+ * Enemies this unit can legally attack RIGHT NOW, by THE legality function
+ * (Law 2 — canAttack, never a reimplemented distance check). For every reach-1
+ * unit this is exactly adjacentEnemies; it exists because the Green Drake
+ * (2026-08-20) hisses at reach 5, and an adjacency-only swing check meant a
+ * reach unit closed politely and then never attacked at all.
+ */
+function enemiesInAttackReach(ctx: Ctx, u: Unit): Unit[] {
+  return livingEnemies(ctx, u).filter((e) => u.attacks.some((id) => canAttack(ctx, u.id, e.id, id)))
+}
+
+/** The farthest this unit can strike with any of its attacks, for honest idle text. */
+function maxAttackReach(ctx: Ctx, u: Unit): number {
+  let r = 1
+  for (const id of u.attacks) { const a = ctx.attacks[id]; if (a) r = Math.max(r, reachOf(ctx, u, a)) }
+  return r
+}
+
 /** First affordable attack, in the unit's declared preference order. */
 function bestAttack(ctx: Ctx, attackerId: number, targetId: number): string | null {
   for (const id of unit(ctx, attackerId).attacks) {
@@ -86,7 +104,14 @@ function dumbMelee(ctx: Ctx, u: Unit): void {
     if (bestHex !== null) executeMove(ctx, u.id, pathTo(reach, u.hex, bestHex))
   }
   if (u.lifeState !== 'standing') return
-  if (!attackIfPossible(ctx, u, adjacentEnemies(ctx, u))) idle(ctx, u, 'nothing adjacent')
+  // Swing at whatever is IN REACH, not merely adjacent (found landing
+  // unit.green-drake, 2026-08-20). For reach-1 units — every zombie — the
+  // candidate set and the idle text are both byte-identical to the old
+  // adjacency check, which is what keeps this landing proven-neutral on the
+  // control battles.
+  if (!attackIfPossible(ctx, u, enemiesInAttackReach(ctx, u))) {
+    idle(ctx, u, maxAttackReach(ctx, u) > 1 ? 'no enemy in reach' : 'nothing adjacent')
+  }
 }
 
 // ── melee-aggressive ─────────────────────────────────────────────────────────

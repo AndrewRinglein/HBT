@@ -79,7 +79,12 @@ describe('status.burn', () => {
   it('the sear: hitting a burning zombie burns the attacker, 1 per connected hit', () => {
     const { ctx } = board()
     const zdef = UNITS['zombie-burning']!
-    expect(zdef.triggers?.map((t) => t.id)).toEqual(['trigger.zombie-burning.sear'])
+    // WEAKENED 2026-08-20 with a reason (Law 10): this asserted sear was the
+    // ONLY trigger. status.stun's landing gave the burning zombie a second,
+    // testing-lane trigger (test.zombie-burning.lurch — the blocksAction
+    // generalization variant's battle source), so exclusivity is stale by
+    // design. The sear itself is unchanged and still asserted.
+    expect(zdef.triggers?.map((t) => t.id)).toContain('trigger.zombie-burning.sear')
     // end-to-end across real battles: sear fires and heroes carry burn
     let seared = 0
     for (let r = 0; r < 12; r++) {
@@ -90,8 +95,12 @@ describe('status.burn', () => {
   })
 
   it('the mix: enemyCount 8 fields exactly 2 burning zombies (one per four, cycled)', () => {
+    // Zombie count updated 6 → 5 on 2026-08-20 (Law 10, written reason): the
+    // Beast pen put a spirit-snake in the cycle's sixth slot. The claim under
+    // test — one burning zombie per four, preserved at slots 4 and 8 — is
+    // untouched and still asserted exactly.
     const ctx = createBattle({ replicate: 3, enemyCount: 8 })
     expect(ctx.state.units.filter((u) => u.typeId === 'zombie-burning').length).toBe(2)
-    expect(ctx.state.units.filter((u) => u.typeId === 'zombie').length).toBe(6)
+    expect(ctx.state.units.filter((u) => u.typeId === 'zombie').length).toBe(5)
   })
 })

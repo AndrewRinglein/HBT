@@ -92,7 +92,11 @@ for (let i = 0; i < process.argv.length; i++) if (process.argv[i] === '--artifac
   const [href, alabel] = String(process.argv[i + 1] ?? '').split('|')
   if (href) artifacts.push({ href, label: alabel || href })
 }
-appendFileSync('.state/gauntlet-log.jsonl', JSON.stringify({ at: stamp, type: 'batch-end', audit: failed.length ? 'FAILED' : 'clean', ...(label ? { label } : {}), ...(artifacts.length ? { artifacts } : {}) }) + '\n')
+// --checkpoint (the gate's every-10-landings run): audit only, NO batch-end
+// marker — a health check mid-batch is not a boundary, and writing one split
+// a real batch in two on 2026-08-20.
+const checkpoint = process.argv.includes('--checkpoint')
+if (!checkpoint) appendFileSync('.state/gauntlet-log.jsonl', JSON.stringify({ at: stamp, type: 'batch-end', audit: failed.length ? 'FAILED' : 'clean', ...(label ? { label } : {}), ...(artifacts.length ? { artifacts } : {}) }) + '\n')
 try { execSync('node tools/game-builder.mjs --quiet', { stdio: 'ignore' }) } catch {}
 if (failed.length) {
   appendFileSync('.state/ledger.md',

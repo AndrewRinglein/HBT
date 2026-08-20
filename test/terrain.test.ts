@@ -23,11 +23,15 @@ function warriorOn(terrain: number) {
 
 describe('terrain.kinds — the seven are recognised', () => {
   it('every kind has a glyph and an id, and no glyph means two things', () => {
+    // Count derived from the enum, not hardcoded (updated 2026-08-20 when
+    // burning and poisoned ground grew the legend from 7 to 9 — the OLD
+    // assertion was the correct failure, this is the correct fix).
+    const KINDS = Object.values(TERRAIN).length
     const glyphs = Object.entries(GLYPH)
-    expect(glyphs.length).toBe(7)
-    expect(new Set(glyphs.map(([, v]) => v)).size).toBe(7)   // no two glyphs share a kind
-    for (const t of ALL_KINDS) expect(terrainIdOf(t)).toMatch(/^terrain\.[a-z-]+$/)
-    expect(new Set(ALL_KINDS.map(terrainIdOf)).size).toBe(7)
+    expect(glyphs.length).toBe(KINDS)
+    expect(new Set(glyphs.map(([, v]) => v)).size).toBe(KINDS)   // no two glyphs share a kind
+    for (const t of Object.values(TERRAIN)) expect(terrainIdOf(t)).toMatch(/^terrain\.[a-z-]+$/)
+    expect(new Set(Object.values(TERRAIN).map(terrainIdOf)).size).toBe(KINDS)
   })
 
   it('hills are `h` and only `h` — the old `^` is gone, not aliased', () => {

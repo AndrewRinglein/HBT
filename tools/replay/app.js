@@ -86,6 +86,35 @@ function frame() {
     // the Burning Zombie: same art as the zombie, identity carried by corpse-heat.
     // A pulsing ember ring plus drifting sparks — an overlay, like everything
     // else the tokens deliberately ship without.
+    // the Shadow Hound Puppy: umbral violet ring, low and quick.
+    if (u.typeId === 'shadow-hound-puppy' && u.life === 'standing') {
+      const pt = performance.now() / 1000;
+      const pulse = 0.5 + 0.3 * Math.sin(pt * 4.2 + u.id);
+      ux.strokeStyle = `rgba(150,110,220,${pulse})`;
+      ux.lineWidth = 2.5; ux.beginPath();
+      ux.ellipse(sx, sy + 4, w * 0.35, w * 0.15, 0, 0, 7); ux.stroke();
+    }
+    // the Green Drake: zombie art for now, identity carried by scale and a
+    // double emerald ring — a big thing that hisses from five hexes out.
+    if (u.typeId === 'green-drake' && u.life === 'standing') {
+      const pt = performance.now() / 1000;
+      const pulse = 0.5 + 0.3 * Math.sin(pt * 1.6 + u.id);
+      ux.strokeStyle = `rgba(60,200,120,${pulse})`;
+      ux.lineWidth = 3; ux.beginPath();
+      ux.ellipse(sx, sy + 3, w * 0.45, w * 0.20, 0, 0, 7); ux.stroke();
+      ux.strokeStyle = `rgba(60,200,120,${pulse * 0.5})`;
+      ux.lineWidth = 1.5; ux.beginPath();
+      ux.ellipse(sx, sy + 3, w * 0.55, w * 0.25, 0, 0, 7); ux.stroke();
+    }
+    // the Spirit Snake: zombie art, identity carried by its venom — a slow
+    // pulsing green coil-ring, low to the ground.
+    if (u.typeId === 'spirit-snake' && u.life === 'standing') {
+      const pt = performance.now() / 1000;
+      const pulse = 0.45 + 0.3 * Math.sin(pt * 2.2 + u.id);
+      ux.strokeStyle = `rgba(120,220,90,${pulse})`;
+      ux.lineWidth = 2.5; ux.beginPath();
+      ux.ellipse(sx, sy + 4, w * 0.37, w * 0.15, 0, 0, 7); ux.stroke();
+    }
     if (u.typeId === 'zombie-burning' && u.life === 'standing') {
       const pt = performance.now() / 1000;
       const pulse = 0.55 + 0.25 * Math.sin(pt * 3.1 + u.id);
@@ -148,10 +177,35 @@ function drawHealth(c, u, x, y) {
     c.beginPath(); c.arc(x - w/2 + 3 + i*7, y + 9, 2.6, 0, 7); c.fill(); });
   c.restore();
 }
-const STCOL = { 'status.poison':'#8ed14f', 'status.burn':'#ff9d3c', 'status.regeneration':'#7cd9a6' };
+// One DISTINCT hue per status family — Angela 2026-08-20: poison-green and
+// regen-mint were indistinguishable at pip size ("that's a legibility bug").
+// Regeneration additionally renders as a '+' in the roster, a SHAPE cue on top
+// of the colour. Testing-lane statuses take muted cousins of their family hue.
+const STCOL = {
+  'status.poison':'#8ed14f',        // sickly green
+  'status.burn':'#ff9d3c',          // ember orange
+  'status.regeneration':'#3fd0c9',  // clear teal — no longer poison's twin
+  'status.bleed':'#e05252',         // arterial red
+  'status.stun':'#f5d442',          // stars-yellow
+  'status.weak':'#b48ae0',          // drained violet
+  'status.slow':'#6fb3df',          // ice blue
+  'status.protection':'#e8c35a',    // shield gold
+  'test.status.daze':'#c4b25a', 'test.status.hobble':'#4f7f9f',
+  'test.status.ward':'#a08840', 'test.status.enfeeble':'#7a5f96',
+};
+// Every status maps to a NAMED hexVFX style — an unmapped name silently falls
+// back to poison-green, which is exactly the legibility bug Angela caught.
+// stun/daze land as 'shadow' (concussive dark), slow/hobble as 'frost',
+// weak/enfeeble as 'affliction' (the drain), protection/ward as 'weak' (the
+// white shield ring), bleed as itself.
+const STVFX_MAP = {
+  regeneration: 'regen', stun: 'shadow', daze: 'shadow', slow: 'frost',
+  hobble: 'frost', weak: 'affliction', enfeeble: 'affliction',
+  protection: 'weak', ward: 'weak', bleed: 'bleed',
+};
 // hexVFX's style table says 'regen'; the engine says 'status.regeneration'.
 // Without this map the fallback silently painted regeneration poison-green.
-const STVFX = (id) => { const n = id.replace('status.',''); return n === 'regeneration' ? 'regen' : n; };
+const STVFX = (id) => { const n = id.replace(/^test\./, '').replace(/^status\./, ''); return STVFX_MAP[n] ?? n; };
 
 // MAP-01's own legend colours, so the overlay agrees with map.json
 const TCOL = {
@@ -320,6 +374,8 @@ async function apply(e) {
         // The Burning Zombie's sear: corpse-heat answering the blow. Give the
         // retaliation its own read — a pop on the victim naming the source.
         if (e.causeId === 'trigger.zombie-burning.sear') t.pops.push({ s:'seared!', col:'#ff9d3c', t:0 });
+        if (e.causeId === 'trigger.spirit-snake.venom' || e.causeId === 'trigger.green-drake.venom-breath') t.pops.push({ s:'venom!', col:'#78dc5a', t:0 });
+        if (e.causeId === 'trigger.shadow-hound-puppy.worry') t.pops.push({ s:'worried!', col:'#b48ae0', t:0 });
         drawRoster(); }
       break;
     case 'status.reduced':
@@ -367,13 +423,20 @@ async function loop() {
 // ── side panel ──────────────────────────────────────────────────────────────
 // Display names only — the engine's log names stay untouched (Law 12: the log
 // is the record). The Burning Zombie deserves to be READ as one everywhere.
-const dispName = (u) => u.typeId === 'zombie-burning' ? u.name.replace(/^Zombie/, 'Burning Zombie') : u.name;
+// Setup names enemies from their typeId since 2026-08-20 ("Zombie Burning 2",
+// "Spirit Snake 1") — the viewer only reorders the burning zombie's words so it
+// READS as one.
+const dispName = (u) => u.typeId === 'zombie-burning' ? u.name.replace(/^Zombie Burning/, 'Burning Zombie').replace(/^Zombie /, 'Burning Zombie ') : u.name;
 function drawRoster() {
   for (const [side, el] of [['hero', heroes], ['enemy', enemies]]) {
     el.innerHTML = [...U.values()].filter(u => u.side === side).map(u => {
       const pct = Math.max(0, u.hp / u.maxHp * 100);
       const st = Object.keys(u.statuses).filter(k => u.statuses[k] > 0)
-        .map(k => `<b style="background:${STCOL[k]||'#aaa'}" title="${k} ${u.statuses[k]}"></b>`).join('');
+        .map(k => k === 'status.regeneration'
+          // regen is the one HELPFUL status — a square pip, a shape cue on top
+          // of the new teal, so it can never be misread as a poison dot again
+          ? `<b style="background:${STCOL[k]};border-radius:1px" title="${k} ${u.statuses[k]}"></b>`
+          : `<b style="background:${STCOL[k]||'#aaa'}" title="${k} ${u.statuses[k]}"></b>`).join('');
       return `<div class="u ${side} ${u.life==='dead'?'dead':u.life==='downed'?'down':''}">
         <span class="nm">${dispName(u)}</span>
         <span class="bar"><i style="width:${pct}%"></i></span>
@@ -402,14 +465,18 @@ function buildLog() {
       s = `      into ${TNAME[e.terrain] ?? e.terrain} (cost ${e.cost})`;
     else if (e.type === 'attack.declared') s = `  ${who(e.actor)} → ${who(e.target)} (${e.attackId.replace('attack.','')}, ${e.hitChance}%)`;
     else if (e.type === 'attack.miss') s = `    miss (rolled ${e.roll})`;
-    else if (e.type === 'damage.applied') { s = `    −${e.amount+(e.overkill||0)} ${e.damageType} → ${who(e.target)} ${e.hpBefore}→${e.hpAfter}${e.resisted ? ` (${e.resisted} resisted)` : ''}`; cls='d'; }
+    else if (e.type === 'damage.applied') { s = `    −${e.amount+(e.overkill||0)} ${e.damageType} → ${who(e.target)} ${e.hpBefore}→${e.hpAfter}${e.resisted ? ` (${e.resisted} resisted)` : ''}${e.absorbed ? ` (${e.absorbed} absorbed by protection)` : ''}`; cls='d'; }
     else if (e.type === 'heal.applied') { if ((e.amount|0) > 0) { s = `    +${e.amount} heals ${who(e.target)} ${e.hpBefore}→${e.hpAfter}${e.halvedBy ? ' (halved by burn)' : ''}`; cls='h'; } }
     else if (e.type === 'status.reduced' && e.causeId === 'terrain.water') s = `    the river takes 1 ${e.statusId.replace('status.','')} off ${who(e.target)}`;
     else if (e.type === 'status.applied' && e.causeId === 'trigger.zombie-burning.sear') s = `    SEAR — ${who(e.target)} takes 1 burn for striking corpse-heat`;
-    else if (e.type === 'status.applied') s = `    ${e.statusId.replace('status.','')} ${e.after} on ${who(e.target)}`;
+    else if (e.type === 'status.applied' && e.causeId === 'terrain.burning') s = `    the embers catch — burn ${e.after} on ${who(e.target)}`;
+    else if (e.type === 'status.applied' && e.causeId === 'terrain.poisoned') s = `    the blight seeps — ${e.statusId.replace('status.','')} ${e.after} on ${who(e.target)}`;
+    else if (e.type === 'status.applied') s = `    ${e.statusId.replace('status.','').replace('test.','')} ${e.after} on ${who(e.target)}`;
+    else if (e.type === 'activation.begin' && e.movePoints !== undefined) s = `  ${who(e.actor)} is slowed — ${e.movePoints} move point${e.movePoints === 1 ? '' : 's'}`;
     else if (e.type === 'power.used') s = `  ${who(e.actor)} casts ${e.name}`;
     else if (e.type === 'life.downed') { s = `  *** ${who(e.target)} goes down`; cls='k'; }
     else if (e.type === 'life.dead') { s = `  *** ${who(e.target)} dies`; cls='k'; }
+    else if (e.type === 'activation.idle' && e.reason === 'cannot act') { s = `  *** ${who(e.actor)} is stunned — the activation is lost`; cls='d'; }
     else if (e.type === 'activation.idle') s = `  ${who(e.actor)} holds (${e.reason})`;
     else if (e.type === 'ai.tookHighGround') s = `  ${who(e.actor)} takes the high ground`;
     else if (e.type === 'battle.end') { s = `>>> ${e.outcome}`; cls='t'; }

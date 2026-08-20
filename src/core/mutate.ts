@@ -125,9 +125,20 @@ export function beginActivation(ctx: Ctx, id: number, causeId: string): void {
   u.activationOrdinal += 1
   u.moveUsed = false
   u.primaryUsed = false
-  u.movePointsLeft = u.movement
+  // Slow — and any status declaring reducesMovement: this Activation's points
+  // are Movement minus the summed stack values, floored at 0 (the unit still
+  // acts from where it stands; that is what separates Slow from Stun). Read
+  // ONCE, here — a slow applied mid-activation bites the NEXT activation
+  // (SWITCHES.md slowReadAtActivationStart). The registry is read inline off
+  // ctx rather than via status.ts, which imports this file (cycle).
+  let mp = u.movement
+  for (const s of u.statuses) if (ctx.statuses[s.id]?.reducesMovement && s.value > 0) mp -= s.value
+  u.movePointsLeft = Math.max(0, mp)
   emit(ctx, 'activation.begin', causeId, {
     actor: id, ordinal: u.activationOrdinal, hex: u.hex, hp: u.hp, stamina: u.stamina,
+    // Named only when reduced (Law 12: the log says why the unit moved less) —
+    // an unslowed activation's event is byte-identical to before this landed.
+    ...(u.movePointsLeft !== u.movement ? { movePoints: u.movePointsLeft } : {}),
   })
 }
 
