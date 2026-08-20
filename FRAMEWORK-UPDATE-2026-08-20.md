@@ -10,8 +10,8 @@ Every finding is classified **built** (code runs, a test asserts it), **slot** (
 name exists, nothing reaches it), or **absent**. Every engine claim below was
 re-verified today by reading `src/`, not by trusting `MECHANICS-GAP.md`.
 
-Passes 3–5 (targeting · effects · the 33 capabilities) follow after Angela reads
-passes 1–2.
+All five passes are complete. Every open design question raised by the review has
+since been ruled and is marked inline.
 
 ---
 
@@ -50,9 +50,8 @@ construction (`makeUnit`), Movement heroes 5 / enemies 4 matches.
    the damage pipeline entirely, so "Resist mitigates ticks" either adds a
    mitigation step to `tickStatuses` or routes ticks through a pipeline. Needs a
    per-status flag either way, because bleed is exempt by rule.
-2. **Stamina Regen "hard-caps around 3."** No cap exists anywhere in the engine.
-   "Around" is not a number — this is a **switch** (`staminaRegenCap`, default 3),
-   not a decision to make silently.
+2. ~~Stamina Regen cap~~ — **withdrawn. RULED 2026-08-20: no cap.** The ladder's
+   "hard-caps around 3" is the stale text; Codex-side amendment.
 
 ### Design-doc amendments this pass produces (proposed, not applied)
 
@@ -84,11 +83,14 @@ Codex §11 usage, against the engine's `HOOKS` and `GAME-DESIGN.md` §5's amende
 | `onDodge` | 9 | **absent** | **missing** | New, defined nowhere. See below. |
 | `onAttack` | 8 | built | listed | — |
 | `onMiss` | 5 | built | listed | — |
-| `onEquip` | 2 | **absent** | listed | Blocked on the loadout layer existing at all. |
+| `onEquip` | 2 | **absent** | listed | **RETIRED, ruled 2026-08-20** — units start fully equipped, so equip-time IS battle-start. The 2 uses reword to `startOfBattle`. |
 | `onDeath` | 2 | built | listed | — |
 
-Retired hooks — `onEnter`, `onWounded`, `turnEnd` — have **zero** Codex uses.
-Consistent everywhere; closed.
+Retired hooks — `onEnter`, `onWounded`, `turnEnd`, and now `onEquip` — closed.
+
+**With `onEquip` retired, the lists converge exactly:** the engine's nine built
+hooks plus `startOfBattle` are the complete set of ten. One hook to build, zero to
+delete, and the design list and the engine agree for the first time.
 
 ### `passive` and `aura` should not enter the Hook enum
 
@@ -117,9 +119,7 @@ defender, and cheap.)
 
 ### What this pass does NOT recommend
 
-No hook is recommended for cutting. The least-used real hooks (`onEquip`,
-`onDeath`, both 2) are load-bearing anyway — `onEquip` is the loadout layer's only
-hook and `onDeath` anchors deathrattles.
+No further cuts. `onDeath` (2 uses) stays — it anchors deathrattles.
 
 ---
 
@@ -138,14 +138,14 @@ The shapes fall into six families against the engine's `Targeting`
 | Family | Shapes (uses) | Engine today |
 |---|---|---|
 | **Unit-in-radius** | self (121) · one enemy in melee reach (89) · one enemy/ally within N (132) · allies/enemies/every unit within N (63) · every enemy adjacent to you (4) | **Expressible now.** ~409 of ~460 targeting uses — the model already covers the bulk. |
-| **Count-capped** | up to N enemies/allies within M (15) | Needs a `maxTargets` field. Thin. |
+| **Count-capped** | up to N enemies/allies within M (15) | **CUT, ruled 2026-08-20** — "things are either area of effect... or it's targeting a unit." The 15 rows reword content-side; no engine work. |
 | **LifeState-filtered** | one downed ally within N (4) | Needs a lifeState filter on `Targeting`. Thin, and `fix.downed-targetable` is already open. |
 | **Hex-targeted** | a hex within N (8) · a hex + every adjacent (13) · three hexes within N (3) · your own hex (2) · a hex (1) | **Structural.** `resolveTargets` returns unit ids; these target ground. Needed by fireball-style placement and the whole terrain-status layer. Targets must become units *or* hexes. |
 | **Directional** | arcs of 2/3 (3) · lines of 2 (2) · hex directly behind the target (2) · adjacent-to-both templates (3) | New geometry — `hex.ts` has distance only, no direction/facing math. Small in uses, distinctive in feel (cleaves, impales). |
 | **Derived-radius & path** | within your Vision (5+) · the hexes you leave this Turn · every enemy you pass | Vision-radius needs the Vision stat (pass 1). Path shapes couple targeting to the move just made — new, 2 canonical shapes, powers like fel-rush. |
 
-**Recommendation:** extend `Targeting` with `maxTargets` and a lifeState filter
-(cheap, immediate); design the hex-target extension as one change serving both
+**Recommendation:** extend `Targeting` with a lifeState filter (cheap, immediate);
+design the hex-target extension as one change serving both
 targeting and the terrain-status layer; treat directional templates and path
 targeting as their own small geometry module. Nothing here suggests cutting — even
 the one-use shapes are weapon identity (glaive, halberd).
@@ -162,7 +162,8 @@ effects table, routed:
 | **Built** | deal TRUE/MAGIC/PHYSICAL damage (86) · apply a status (138, gated on the statuses existing) · read the party-wide sum (23 — `ValueSpec.partyMagic/partySpirit`, verified) |
 | **Thin extension** — mechanism exists, effect kind missing | **grant a stat (226 across four durations)** — `StatMod` is built and waiting; no effect writes one · heal (86) · remove N of a status (45 — `status.reduce`, already in the backlog) · regain stamina (13 — mutator exists) · take damage yourself / lose a stat (18 — self-targeted existing kinds) · stabilise a downed ally (5 — `setLifeState` exists; rules needed) |
 | **One shared mechanism** | move yourself (29) + Knockback N (3) + move WITHOUT provoking (11) → a forced/free movement effect family · Immunity N (12) → a gate in `applyStatus` that consumes charges · consume the target's status (7) → read-then-remove, atomic · Thorns N (11) → a status carrying an `onTakingDamage` trigger — falls out of statuses-carry-triggers |
-| **Subsystem** | grant an aura (28) · reveal/break/enter stealth (22) · place a trap (15) · set a ground layer (12) · grant Flight (2) |
+| **Subsystem** | grant an aura (28) · reveal/break/enter stealth (22) · place a trap (15) · set a ground layer (12) |
+| **Withdrawn — legacy, ruled 2026-08-20** | ~~grant Flight (2)~~ — Flight is a movement type carried by the move or power itself, never granted as a status. The real persistent thing is **Airwalk**: a condition, optionally duration-limited, that suppresses the occupied tile's end-of-activation effects — a check in the ground rung, cheap once the ground layer exists. |
 | **Loadout-dependent** | deal damage, type from the weapon (14) · change damage type / `damageTypeOverride` (4) · slayer bonus (1 — the VS_TARGET station) |
 | **Surge system** | grant Surge Chance (7) |
 | **Campaign seam** | raise the party-wide sum permanently is battle-tier, but corruption (2) and `deathbedFighting` as a modifier target (1) write campaign state — defer with the seam |

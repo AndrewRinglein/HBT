@@ -443,3 +443,48 @@ occurrence of "stealth", plus the names "Soul Stealer" and "Life Steal". The 19
 uses are stealth vocabulary double-counted. Proposed fix (not applied — review is
 read-only): `\bsteal\b` in place of `steal`, then regenerate the census. The
 pass-5 "needs design" entry for this capability is withdrawn.
+
+---
+
+## 2026-08-20 — Corrections batch two: the review's edges trimmed
+
+**No stamina regen cap.** "No need for a stamina regen cap." The proposed
+`staminaRegenCap` switch is withdrawn before it existed. The Codex ladder's
+"hard-caps around 3" is the stale text — Codex-side amendment.
+
+**`passive` is just a modifier.** "It's just a modifier." Confirms the pass-2
+routing: the loader writes a `StatMod`, never a trigger. The remaining work is
+content-side vocabulary — the function list should stop presenting `passive` as a
+trigger hook.
+
+**`onEquip` is legacy and is retired.** "There's no reason for unequip. It is not
+doing anything because you start with all your items equipped." Units enter battle
+fully equipped, so equip-time IS battle-start: the two corpus uses
+(velans-ferryman-coin, vigils-shield) reword to `startOfBattle`. With this, the
+design hook list and the engine converge exactly: the engine's nine built hooks
+plus `startOfBattle` are the complete set of ten. `onEquip` joins `onEnter`,
+`onWounded` and `turnEnd` in the retired list.
+
+**Count-capped targeting is cut.** "Things are either area of effect, and they're
+included in that, or it's targeting a unit." No `maxTargets` field. The 15 "up to N
+within M" corpus rows reword to an area shape or a single-unit shape — content-side
+rewrite, no engine work.
+
+**"Grant Flight" is a legacy error.** "There's no granting flight. Flight is a
+movement type triggered by a movement or a power" — a property of the move being
+made, carried by the movement action or power itself, never a status hung on a
+unit. The 2 corpus uses reword.
+
+**Airwalk is the thing that persists — and it is distinct from Flight.**
+
+> "Airwalk prevents you from triggering anything on the ground during your end of
+> turn. And it is a condition that just persists. You might have airwalk for 4
+> turns, or you might have airwalk with no turn limits, and then that unit is not
+> going to trigger anything at the end of activation for whatever tile they're
+> standing on."
+
+So: Flight = per-move property (pathing). Airwalk = persistent condition, optionally
+duration-limited, that suppresses the occupied tile's end-of-activation effects.
+Engine shape: a condition consulted by the end-of-activation ground step — cheap
+once the ground layer exists, and the suppression check belongs in the ladder rung
+that fires tile effects, not in the tile.
