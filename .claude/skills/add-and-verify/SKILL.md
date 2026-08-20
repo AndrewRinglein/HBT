@@ -32,6 +32,10 @@ If you can't write that sentence, you don't know what you're building yet. Ask.
 
 Then name: which **station** (if it touches a number in the accuracy or damage pipeline), which **hook** (if it reacts to something), which **ladder rung** (if it acts at End of Activation / End of Phase / Start of Turn), and how it **stacks**.
 
+**If the shape is a mechanism (rule · station · trigger · modifier · pool · counter), declare its `variants` on the backlog item before writing code**: two or more ids that exercise the SAME mechanism with different data. +2 vs demons proves nothing; +2 vs demons and +4 vs undead proves a system. The gate probes every variant in a live battle and rejects any variant whose id appears in `src/core` — the second instance must be pure data. Picking the variants FIRST is the point: it forces the parameterization to exist before the temptation to hardcode does. If a mechanism truly cannot have a second instance, `generalizationExempt` takes a written reason and flags the landing for review.
+
+**Never put a content name in engine code.** The gate scans every added `src/core` line for content-instance ids and creature-tag literals and fails on sight. A genuine board rule (zone of control is the canonical exception) takes `coreLiteralAllow` with a written reason and lands flagged.
+
 If the thing doesn't fit one of the four shapes, stop and say so — that's an architecture question, not a content one.
 
 ## 3. Write it
