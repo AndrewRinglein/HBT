@@ -256,7 +256,7 @@
   "note": "status.poison is PUBLISHED in 1-EFFECTS-SETTLED.md -- the only one of the three rows that is.",
   "variants": [
    "trigger.zombie.rot",
-   "trigger.warrior.second-wind"
+   "test.warrior.second-wind"
   ],
   "attempts": 1,
   "status": "done-needs-review",
@@ -451,7 +451,13 @@
   "shape": "plumbing",
   "spec": "status.poison is declared shape:'pool'; core/status.ts's own table says poison is a counter (a pool is spent when something consumes it — protection, shields). shape is documentation and never branches, which is why a wrong one sits there indefinitely.",
   "expect": "the declared shape matches the shape table",
-  "changesBaseline": false
+  "changesBaseline": false,
+  "probeIds": [
+   "status.poison"
+  ],
+  "status": "done",
+  "sha": "afb6ff9",
+  "gauntlet": "passed"
  },
  {
   "id": "station.accuracy-field",
@@ -516,5 +522,20 @@
   "status": "done-needs-review",
   "sha": "fae1c37",
   "gauntlet": "not passed — 1 exemption(s) taken"
+ },
+ {
+  "id": "content.test-lane",
+  "kind": "naming",
+  "shape": "naming",
+  "spec": "RULED 2026-08-20: the testing lane. Content invented to exercise a mechanic under test carries the `test` id kind, lives in content/ beside real rows, is excluded from the published-source contract, and never ships. Renames trigger.warrior.second-wind to test.warrior.second-wind as the first citizen. Declares changesBaseline: the hashes cover the event log and every trigger firing names its id (Law 12), so a rename moves every hash while outcomes stay identical.",
+  "expect": "the id appears in battles under its test.* name; content-check reports it in the TESTING lane, not INVENTED",
+  "probeIds": [
+   "test.warrior.second-wind"
+  ],
+  "attempts": 2,
+  "changesBaseline": true,
+  "status": "done-needs-review",
+  "sha": "252be44",
+  "gauntlet": "not passed — 1 flag(s) warned"
  }
 ]

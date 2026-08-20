@@ -33,14 +33,32 @@ for (const r of runs) for (const c of r.checks ?? []) {
 }
 const failRows = Object.entries(failCounts).sort((a, b) => b[1] - a[1])
 
-// runs grouped by item, newest activity first
-const byItem = new Map()
-for (const r of runs) {
-  if (!byItem.has(r.id)) byItem.set(r.id, [])
-  byItem.get(r.id).push(r)
+// ── batches ──────────────────────────────────────────────────────────────────
+// A batch is a working session: consecutive runs with < 3h between them. Old
+// batches collapse to one summary bar — "4 landed, 1 sealed" — with the detail
+// inside; the newest batch renders open on top. The Approve button marks a batch
+// read (a per-viewer localStorage convenience — the durable review state stays
+// in the backlog's done-needs-review flags).
+const GAP_MS = 3 * 60 * 60 * 1000
+const sorted = [...runs].sort((a, b) => (a.at ?? '').localeCompare(b.at ?? ''))
+const batches = []
+for (const r of sorted) {
+  const last = batches[batches.length - 1]
+  if (!last || (new Date(r.at) - new Date(last.runs[last.runs.length - 1].at)) > GAP_MS) {
+    batches.push({ id: `batch-${(r.at ?? '').slice(0, 10)}-${batches.length + 1}`, runs: [r] })
+  } else last.runs.push(r)
 }
-const itemsOrdered = [...byItem.entries()].sort((a, b) =>
-  (b[1][b[1].length - 1].at ?? '').localeCompare(a[1][a[1].length - 1].at ?? ''))
+batches.reverse() // newest first
+
+function groupByItem(rs) {
+  const byItem = new Map()
+  for (const r of rs) {
+    if (!byItem.has(r.id)) byItem.set(r.id, [])
+    byItem.get(r.id).push(r)
+  }
+  return [...byItem.entries()].sort((a, b) =>
+    (b[1][b[1].length - 1].at ?? '').localeCompare(a[1][a[1].length - 1].at ?? ''))
+}
 
 // questions: split OPEN / ANSWERED sections of the md
 function section(md, header) {
@@ -81,7 +99,7 @@ const dispBadge = (r) => {
   return `<span class="b b-good">✓ CHECKS PASS</span>`
 }
 
-const itemCards = itemsOrdered.map(([id, rs]) => {
+const itemCardsFor = (itemsOrdered) => itemsOrdered.map(([id, rs]) => {
   const item = backlog.find((b) => b.id === id) ?? {}
   const last = rs[rs.length - 1]
   const state = last.disposition === 'landed' ? (last.seal === 'passed' ? 'sealed' : 'landed') : 'failing'
@@ -167,6 +185,18 @@ const html = `<!doctype html>
     border-radius:6px; padding:9px 13px; margin:7px 0; font-size:13px }
   .q.done { border-left-color:var(--good); color:var(--ink2) }
   details { margin-top:8px } summary { cursor:pointer; color:var(--ink2); font-size:12.5px }
+  .batch { border:1px solid var(--line); border-radius:10px; margin:14px 0; background:var(--surface) }
+  .batchbar { display:flex; gap:10px; align-items:center; flex-wrap:wrap; padding:10px 14px;
+    background:var(--card); border-radius:10px; font-size:13px }
+  details.batch > summary.batchbar { list-style:none } details.batch > summary::-webkit-details-marker { display:none }
+  details.batch > summary.batchbar::before { content:'▸ '; color:var(--ink3) }
+  details.batch[open] > summary.batchbar::before { content:'▾ ' }
+  .bday { font-weight:700 } .bmeta { color:var(--ink3); font-size:12px }
+  .batch .cards { padding:0 14px 12px }
+  .approve { margin-left:auto; background:var(--surface); border:1px solid var(--line); color:var(--ink2);
+    border-radius:14px; padding:3px 12px; cursor:pointer; font-size:12px }
+  .approve:hover { border-color:var(--good); color:var(--good) }
+  .approved-tick { color:var(--good); font-weight:600; font-size:12.5px; margin-left:auto }
   table { border-collapse:collapse; margin-top:6px } td,th { border:1px solid var(--line); padding:3px 10px; font-size:12.5px }
 </style></head><body>
 <h1>The Game Builder</h1>
@@ -190,24 +220,69 @@ ${qOpen.map((q) => `<div class="q">❓ ${esc(q)}</div>`).join('')}
 ${qDone.length ? `<details><summary>${qDone.length} answered</summary>${qDone.map((q) => `<div class="q done">✓ ${esc(q)}</div>`).join('')}</details>` : ''}
 <div class="sub" style="margin-top:8px">Add or answer questions in <code>.state/questions.md</code> — this page re-renders on the next gate run (or <code>node tools/game-builder.mjs</code>).</div>
 
-<h2>Run log — newest first</h2>
+<h2>Run log — newest batch on top, older batches collapsed</h2>
 <div class="filters" role="group" aria-label="filter runs">
   <button aria-pressed="true" data-f="all">all</button>
   <button aria-pressed="false" data-f="failing">failing</button>
   <button aria-pressed="false" data-f="landed">landed</button>
   <button aria-pressed="false" data-f="sealed">⛓ sealed</button>
 </div>
-<div id="cards">${itemCards || '<div class="sub">No runs yet — the log fills as the gate runs.</div>'}</div>
+${batches.map((batch, bi) => {
+  const items = groupByItem(batch.runs)
+  const landedRuns = batch.runs.filter((r) => r.disposition === 'landed')
+  const sealedRuns = landedRuns.filter((r) => r.seal === 'passed')
+  const failedRuns = batch.runs.filter((r) => r.disposition === 'failed-checks').length
+  const day = (batch.runs[0].at ?? '').slice(0, 10)
+  const bar = `<span class="bday">${esc(day)}</span>
+    <span class="b b-good">✓ ${landedRuns.length} landed</span>
+    ${sealedRuns.length ? `<span class="b b-seal">⛓ ${sealedRuns.length} sealed</span>` : ''}
+    ${failedRuns ? `<span class="b b-crit">✗ ${failedRuns} failed attempts</span>` : ''}
+    <span class="bmeta">${items.length} item${items.length === 1 ? '' : 's'} · ${batch.runs.length} runs</span>
+    <button class="approve" data-batch="${batch.id}">Approve — collapse when read</button>
+    <span class="approved-tick" hidden>✓ approved</span>`
+  const body = `<div class="cards">${itemCardsFor(items)}</div>`
+  return bi === 0
+    ? `<section class="batch open" data-batch="${batch.id}"><div class="batchbar">${bar}</div>${body}</section>`
+    : `<details class="batch" data-batch="${batch.id}"><summary class="batchbar">${bar}</summary>${body}</details>`
+}).join('') || '<div class="sub">No runs yet — the log fills as the gate runs.</div>'}
 
 <script>
-  // in-memory filter only — no storage APIs (file:// page)
   document.querySelector('.filters').addEventListener('click', (e) => {
     const b = e.target.closest('button'); if (!b) return
     document.querySelectorAll('.filters button').forEach((x) => x.setAttribute('aria-pressed', String(x === b)))
     const f = b.dataset.f
-    document.querySelectorAll('#cards .card').forEach((c) => {
+    document.querySelectorAll('.batch .card').forEach((c) => {
       c.style.display = (f === 'all' || c.dataset.state === f) ? '' : 'none'
     })
+  })
+  // Approve = a per-viewer read-marker. Stored in this browser only (the page is
+  // a local file that regenerates); the DURABLE review state is the backlog's
+  // done-needs-review flags, which approving does not touch. Wrapped in
+  // try/catch — if storage is unavailable the button still collapses for now.
+  const store = { get(k) { try { return localStorage.getItem(k) } catch { return null } },
+                  set(k, v) { try { localStorage.setItem(k, v) } catch {} } }
+  function applyApproval(el) {
+    const id = el.dataset.batch
+    if (store.get('gb-approved-' + id) !== '1') return
+    el.querySelector('.approve')?.setAttribute('hidden', '')
+    el.querySelector('.approved-tick')?.removeAttribute('hidden')
+    if (el.tagName === 'DETAILS') el.removeAttribute('open')
+    else { // the newest batch collapses into a details element on approval
+      const d = document.createElement('details')
+      d.className = 'batch'; d.dataset.batch = id
+      const bar = el.querySelector('.batchbar'); const sum = document.createElement('summary')
+      sum.className = 'batchbar'; sum.innerHTML = bar.innerHTML; bar.remove()
+      d.appendChild(sum); while (el.firstChild) d.appendChild(el.firstChild)
+      el.replaceWith(d)
+    }
+  }
+  document.querySelectorAll('.batch').forEach(applyApproval)
+  document.addEventListener('click', (e) => {
+    const b = e.target.closest('.approve'); if (!b) return
+    e.preventDefault()
+    const el = b.closest('.batch')
+    store.set('gb-approved-' + el.dataset.batch, '1')
+    applyApproval(el)
   })
 </script>
 </body></html>`

@@ -1012,3 +1012,58 @@ effect of status.poison — 25 paired battles per map, WITH vs WITHOUT
   map.thicket: heroWins 1->10 (+9)  meanTurns 0.4->8.5
 MEASURABLE
 ```
+
+## fix.poison-shape — LANDED `afb6ff9`
+2026-08-20 07:09
+
+  PASS  dependencies landed
+  PASS  typecheck
+  PASS  full test suite — 232 passed
+  PASS  gate 1 — the id appears in a real battle — status.poison: 2920 log lines, 2920 fired, 2057 changed state
+  PASS  brought its own tests — test/status-shapes.test.ts
+  PASS  existing tests untouched
+  PASS  control battles unchanged
+  PASS  content has a published source — 12 ids without a published source (2 awaiting publication from earlier items — see audit)
+  PASS  hardcode scan — core knows mechanisms, never names
+  PASS  generalizes — the second instance costs zero engine code — shape 'plumbing' — not a mechanism, exempt
+  PASS  naming — new content ids use declared kinds
+  PASS  naming — no banned words invented
+  PASS  kill switch — the tests fail without the content — tests fail without status.poison — they genuinely test it
+
+IRON GAUNTLET: PASSED
+
+## content.test-lane — LANDED `252be44` **NEEDS REVIEW**
+2026-08-20 07:12
+
+  PASS  dependencies landed
+  PASS  typecheck
+  PASS  full test suite — 232 passed
+  PASS  gate 1 — the id appears in a real battle — test.warrior.second-wind: 9522 log lines, 9522 fired, 3174 changed state
+  PASS  brought its own tests — test/regeneration.test.ts
+  WARN  existing tests untouched — DELETED LINES in test/regeneration.test.ts (-1) — will land FLAGGED for review
+  PASS  control battles unchanged — will re-bless at commit — this item DECLARED it changes the control battles: map.open a7ebbc45->a7c855b3, map.ridge f613cb0c->ae1c7ae2, map.flanks 9d3e000f->d36d4143, map.highlands 9e5a90fa->918e420c, map.field 5ce148d7->9fa4fded, map.thicket b7303f06->b47a5842
+  PASS  content has a published source — 11 ids without a published source (1 awaiting publication from earlier items — see audit)
+  PASS  hardcode scan — core knows mechanisms, never names
+  PASS  generalizes — the second instance costs zero engine code — shape 'naming' — not a mechanism, exempt
+  PASS  naming — new content ids use declared kinds
+  PASS  naming — no banned words invented
+  PASS  kill switch — the tests fail without the content — tests fail without test.warrior.second-wind — they genuinely test it
+
+<details><summary>Existing tests were edited — review this diff</summary>
+
+```diff
+diff --git a/test/regeneration.test.ts b/test/regeneration.test.ts
+index 238c670..cbfdece 100644
+--- a/test/regeneration.test.ts
++++ b/test/regeneration.test.ts
+@@ -55,5 +55,5 @@ describe('status.regeneration', () => {
+     // simulate the trigger path end-to-end via a real attack is modes' job;
+     // here assert the def carries it and the status lands through applyStatus
+-    expect(w.triggers.some((t) => t.id === 'trigger.warrior.second-wind')).toBe(true)
++    expect(w.triggers.some((t) => t.id === 'test.warrior.second-wind')).toBe(true)  // test.* = the testing lane
+     void z
+   })
+```
+</details>
+
+IRON GAUNTLET: NOT PASSED — 1 FLAG(S) WARNED

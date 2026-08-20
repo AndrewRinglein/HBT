@@ -53,8 +53,23 @@ const otherDocs = existsSync(DESIGN)
   ? readdirSync(DESIGN).filter((f) => f.endsWith('.md') && !/-SETTLED\.md$/.test(f)).map((f) => join(DESIGN, f))
   : []
 
+// RULED, Angela 2026-08-20: THE CODEX COUNTS AS A PUBLISHED SOURCE — it is the
+// fresh generated layer and may still change, but a row in it is a decision, not
+// an invention. An id counts as Codex-published when it appears in CODEX.md at
+// all (the Codex is generated from authored content; it has no provisional prose
+// the way NOTES files do).
+const codexPath = join(DESIGN, 'CODEX.md')
+const codexIds = scanDoc(codexPath)
+
+// RULED, Angela 2026-08-20: THE TESTING LANE. Content invented purely to exercise
+// a mechanic under test is legal when marked — the id kind is `test`
+// (test.warrior.second-wind). Test rows live in content/ beside real rows, are
+// excluded from the published-source contract, and never ship.
+const isTestId = (id) => id.startsWith('test.')
+
 const published = new Map()   // id -> file   (the contract)
 for (const f of settledFiles) for (const [id, p] of publishedIn(f)) if (!published.has(id)) published.set(id, p)
+for (const [id, p] of codexIds) if (!published.has(id)) published.set(id, p)
 const mentioned = new Map()   // id -> file   (context only)
 // A SETTLED file's PROSE is context, not contract — same as any other document.
 for (const f of [...otherDocs, ...settledFiles]) for (const [id, p] of scanDoc(f)) if (!mentioned.has(id)) mentioned.set(id, p)
@@ -74,13 +89,16 @@ function scanSrc(dir) {
 scanSrc('src')
 
 // ── report ──────────────────────────────────────────────────────────────────
-const invented = [], contextOnly = [], ok = [], unbuilt = []
+const invented = [], contextOnly = [], ok = [], unbuilt = [], testing = []
 for (const [id, where] of [...engineIds].sort()) {
-  if (published.has(id)) ok.push([id, published.get(id)])
+  if (isTestId(id)) testing.push([id, where])
+  else if (published.has(id)) ok.push([id, published.get(id)])
   else if (mentioned.has(id)) contextOnly.push([id, where, mentioned.get(id)])
   else invented.push([id, where])
 }
-for (const [id, f] of [...published].sort()) if (!engineIds.has(id)) unbuilt.push([id, f])
+// The unbuilt list stays SETTLED-only: the Codex publishes hundreds of ids the
+// engine hasn't built yet, and that gap is the roadmap, not a finding.
+for (const [id, f] of [...published].sort()) if (!engineIds.has(id) && !String(f).endsWith('CODEX.md')) unbuilt.push([id, f])
 
 const pad = (s, n) => String(s).padEnd(n)
 console.log(`\ncontent-check — ${settledFiles.length} SETTLED files, ${engineIds.size} ids in the engine\n`)
@@ -91,6 +109,8 @@ for (const [id, f] of ok) console.log(`  ok        ${pad(id, 26)} ${f}`)
 console.log(`\nMENTIONED but not published ... ${contextOnly.length}   <- in a design doc, not in a SETTLED file`)
 for (const [id, where, doc] of contextOnly) console.log(`  context   ${pad(id, 26)} engine:${where}  doc:${doc}`)
 
+if (testing.length) console.log(`\nTESTING lane .................. ${testing.length}   <- marked test.*, never ships`)
+for (const [id, where] of testing) console.log(`  ${pad('test', 9)} ${pad(id, 26)} ${where}`)
 console.log(`\nINVENTED ...................... ${invented.length}   <- no design source anywhere`)
 for (const [id, where] of invented) console.log(`  INVENTED  ${pad(id, 26)} ${where}`)
 

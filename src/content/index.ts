@@ -101,12 +101,12 @@ const RAW_UNITS: Readonly<Record<string, UnitDef>> = {
     role: 'melee',
     movement: 5, reach: 0,
     maxStamina: 5, staminaRegen: 1,
-    // PROVISIONAL scaffolding source for status.regeneration (the status is
-    // published; this trigger id is not — it exists so the status appears in a
-    // real battle, and is REPLACED when a content session publishes a real
-    // regen source). Second Wind: taking damage grants Regeneration 1, self.
+    // TESTING LANE (ruled 2026-08-20): test.* content exists to exercise a
+    // mechanic under test, lives beside real rows, and never ships. This one is
+    // status.regeneration's battle source until a real regen source publishes.
+    // Second Wind: taking damage grants Regeneration 1, self.
     triggers: [{
-      id: 'trigger.warrior.second-wind', hook: 'onTakingDamage', chance: 100,
+      id: 'test.warrior.second-wind', hook: 'onTakingDamage', chance: 100,
       select: 'self',
       effect: { kind: 'status.apply', statusId: 'status.regeneration', value: 1 },
       source: 'unit.warrior',

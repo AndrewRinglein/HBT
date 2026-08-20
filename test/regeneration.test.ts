@@ -54,7 +54,7 @@ describe('status.regeneration', () => {
     const z = ctx.state.units[1]!
     // simulate the trigger path end-to-end via a real attack is modes' job;
     // here assert the def carries it and the status lands through applyStatus
-    expect(w.triggers.some((t) => t.id === 'trigger.warrior.second-wind')).toBe(true)
+    expect(w.triggers.some((t) => t.id === 'test.warrior.second-wind')).toBe(true)  // test.* = the testing lane
     void z
   })
 })

@@ -559,3 +559,41 @@ if that hex was in a zone of control. The flight path provokes nothing — consi
 with the atomic model, where intermediate hexes are never occupied. GAME-DESIGN §4
 already grants Flight −30 against attacks of opportunity; under this ruling that
 modifier has exactly one place to apply, the launch provoke.
+
+---
+
+## 2026-08-20 — Five answers: the testing lane, the Codex as source, counters, the AoO refined, DBF clarified
+
+**The testing lane.** "Invent enemies with the right-shaped abilities for each
+thing that we're testing. We can also invent other testing abilities for heroes.
+Just make sure we mark them as testing and put them in content." Convention: the
+id kind is `test` (test.warrior.second-wind). Test rows live in content/ beside
+real rows, are excluded from the published-source contract, and never ship.
+
+**The Codex is a published source for content-check** — "yes, before changes,
+because you might need to make changes as we go." A row in CODEX.md is a decision
+even though the Codex may still change. This unblocks status.burn (79 Codex uses)
+and retires most of the INVENTED backlog: mage bolt, the staff, terrain
+forest/hills/water and status.poison all resolve to Codex rows.
+
+**Statuses are COUNTERS.** "I personally like poison, burn and all these status
+effects being counters. Because they do also count, they tick down. They are an
+accumulation of everything that's added into it, and then they tick down."
+Resolves the pool-vs-counter vocabulary clash in the engine's favor: counter =
+accumulates, ticks, decays (poison, burn, regeneration); pool stays reserved for
+spent-when-consumed (protection). 1-EFFECTS-SETTLED's two 'pool' rows are the
+stale text and get a CHANGED entry.
+
+**The attack of opportunity, final form.** "The old text: minus 1 damage, we can
+remove that. The attacker chooses one of their attacks. They do pay stamina for
+it. It could have a cooldown, and if it was on cooldown, they can't use it. They
+choose their attack. That attack has a −20 accuracy." So: −1 damage struck; the
+provoked unit chooses among its LEGAL attacks — stamina is paid as normal, an
+attack on cooldown cannot be chosen (attacks may carry cooldowns) — at −20.
+
+**Deathbed Fighting, clarified.** "It has a calculated percentage total that gets
+rolled when you hit zero health." Derived at the moment of the roll — base 20 +
+5×Toughness + everything badges and enchants add. So enchant.enduring's
++1 deathbedFighting is simply an input to that calculation, not a write to a
+stored stat. The inbox question dissolves: modifiers naming deathbedFighting are
+legitimate terms of the formula.

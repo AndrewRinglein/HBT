@@ -13,7 +13,9 @@ const RAW_STATUSES: Readonly<Record<string, StatusDef>> = {
   // Shapes are a checklist, not a branch — see StatusDef. What differs between
   // these is only which hooks each one declares.
   'status.poison': {
-    id: 'status.poison', name: 'Poison', shape: 'pool', stacking: 'add',
+    // RULED 2026-08-20: counters accumulate and tick down; pool is reserved for
+    // spent-when-consumed (protection). 1-EFFECTS-SETTLED amended with a CHANGED entry.
+    id: 'status.poison', name: 'Poison', shape: 'counter', stacking: 'add',
     tickMitigatedByResist: true,   // ruled 2026-08-20 — the 5-vs-2 table
     onPhaseEnd: (ctx, unitId, value) => statusDamage(ctx, unitId, value, 'status.poison'),
   },
@@ -22,7 +24,7 @@ const RAW_STATUSES: Readonly<Record<string, StatusDef>> = {
     // then −1 — poison's mirror, so one number reads both directions."
     // The halved-while-Burn clause is deliberately NOT here: the same file says
     // status.burn is not yet shaped, do not reference it.
-    id: 'status.regeneration', name: 'Regeneration', shape: 'pool', stacking: 'add',
+    id: 'status.regeneration', name: 'Regeneration', shape: 'counter', stacking: 'add',
     onPhaseEnd: (ctx, unitId, value) => statusHeal(ctx, unitId, value, 'status.regeneration'),
   },
 }

@@ -5,13 +5,15 @@ never reads this file; it is the human channel the dashboard renders.
 
 ## OPEN
 
-- Publication authority: does the Codex count as a "published source" for content-check, or only the numbered *-SETTLED tables? Blocks status.burn and the two scaffolding trigger ids (trigger.warrior.second-wind, trigger.zombie.rot).
-- Status shape vocabulary: 1-EFFECTS-SETTLED calls poison a "pool" (value = magnitude + timer); the engine's own table reserves "pool" for spent-when-consumed (protection) and calls poison's shape "counter". One word, two meanings — which taxonomy wins? (backlog: fix.poison-shape)
-- Attack of opportunity: the old text's "−1 damage" rider was kept when "defender chooses the attack" was ruled — confirm it survives, or strike it.
-- deathbedFighting as a modifier target (enchant.enduring, 1 use): is that simply the "+ badges" term of the DBF formula? One sentence settles it.
-- Effect-size tool wart: when the disabled id is referenced by other content, the WITHOUT arm crashes ("presence is total") — right for riders, misleading for rules like tick-resist. Improve: disable only the item's own content.
+- Effect-size tool: for RULE items (like tick-resist) the measurement should toggle the rule, not disable referenced content — a rule item needs a switch or flag the WITHOUT arm can flip. Design the toggle convention, then wire effect-size to it.
 
 ## ANSWERED
+
+- (2026-08-20) Codex counts as a published source — yes, before changes; rows may still change as we go. content-check now reads CODEX.md.
+- (2026-08-20) Statuses are counters — they accumulate and tick down; pool stays reserved for spent-when-consumed (protection). SETTLED rows amended with a CHANGED entry.
+- (2026-08-20) AoO −1 damage: struck. Final form — provoked unit chooses a legal attack (stamina paid, cooldowns respected) at −20.
+- (2026-08-20) deathbedFighting modifiers: legitimate inputs to the calculated total rolled at zero health — not writes to a stored stat.
+- (2026-08-20) Testing lane ruled: invent test enemies/abilities per mechanic under test, id kind `test`, in content/, marked, never ships.
 
 - (2026-08-20) Does flight from inside a ZoC provoke? — Yes, once, leaving the first hex only.
 - (2026-08-20) onDodge: any miss or dodge-caused? — Dodge-caused only; one roll, the dodge-sized band at the deep end.
