@@ -23,6 +23,25 @@ if (!id) { console.error('usage: node tools/gate.mjs <item-id> [--land|--abandon
 const BACKLOG = '.state/backlog.json'
 const LEDGER = '.state/ledger.md'
 const GOLDEN = '.state/baseline.hash'
+const RUNLOG = '.state/gauntlet-log.jsonl'
+
+/**
+ * The Game Builder's data source: one JSON line per gate invocation, appended at
+ * every exit. `checks` carries each check's name/ok/warn/note verbatim, so the
+ * run log is detailed enough to improve the gauntlet itself — which failures
+ * recur, which checks never fire, where the loop spends its attempts.
+ */
+function logRun(disposition, extra = {}) {
+  try {
+    appendFileSync(RUNLOG, JSON.stringify({
+      at: new Date().toISOString(), id, mode: MODE, disposition,
+      attempt: (item.attempts ?? 0) + (disposition === 'failed-checks' ? 0 : 1),
+      checks: checks.map((c) => ({ name: c.name, ok: !!c.ok, warn: !!c.warn, note: c.note || undefined })),
+      ...extra,
+    }) + '\n')
+  } catch { /* the log is best-effort; the gate's verdict never depends on it */ }
+  try { execSync('node tools/game-builder.mjs --quiet', { stdio: 'ignore' }) } catch { /* ditto */ }
+}
 
 const sh = (cmd, opts = {}) => execSync(cmd, { encoding: 'utf8', stdio: 'pipe', ...opts })
 const tryRun = (cmd) => { try { return { ok: true, out: sh(cmd) } } catch (e) {
@@ -330,6 +349,7 @@ if (MODE === 'abandon') {
   item.reason = checks.filter((c) => !c.ok).map((c) => `${c.name}: ${c.note}`).join(' | ')
   writeFileSync(BACKLOG, JSON.stringify(backlog, null, 1))
   appendFileSync(LEDGER, `\n## ${id} — ABANDONED\n${stamp}\n\n${body}\n`)
+  logRun('abandoned', { reason: item.reason })
   console.log('\nABANDONED. Working tree is back to the last landed commit.\n')
   process.exit(1)
 }
@@ -339,11 +359,13 @@ if (!ok) {
   writeFileSync(BACKLOG, JSON.stringify(backlog, null, 1))
   console.log(`\nNOT READY (attempt ${item.attempts}). Nothing reverted — fix and run the gate again.` +
     `\nIf it cannot be made to pass:  node tools/gate.mjs ${id} --abandon\n`)
+  logRun('failed-checks')
   process.exit(1)
 }
 
 if (MODE !== 'land') {
   console.log('\nAll gates pass. Run with --land to commit.\n')
+  logRun('check-passed')
   process.exit(0)
 }
 
@@ -375,6 +397,7 @@ appendFileSync(LEDGER, `\n## ${id} — LANDED \`${sha}\`${needsReview ? ' **NEED
     if (it) { it.attempts = (it.attempts ?? 0) + 1; it.auditFailed = why; writeFileSync(BACKLOG, JSON.stringify(bl, null, 1)) }
     appendFileSync(LEDGER, `\n## ${id} — LANDING REVERTED BY POST-LAND AUDIT\n${stamp}\n\n${why}. The pre-land pass depended on state that did not survive the commit.\n`)
     console.log(`\nLANDING REVERTED: ${why}. The commit is undone; nothing is lost from the working tree of the last good landing. Fix and gate again.\n`)
+    logRun('reverted-by-post-land-audit', { reason: why })
     process.exit(1)
   }
 }
@@ -436,6 +459,7 @@ item.gauntlet = gauntletPassed ? 'passed' : `not passed — ${gauntletNotes.join
   sh('git add -A')
   sh(`git -c user.email=a@b -c user.name=combat-framework commit -q --amend --no-edit`)
 }
+logRun('landed', { sha, seal: gauntletPassed ? 'passed' : gauntletNotes.join('; '), effect: effectReport || undefined })
 console.log(gauntletPassed
   ? `\n⛓  IRON GAUNTLET: PASSED — every check, no flags, no exemptions.`
   : `\n⛓  IRON GAUNTLET: NOT PASSED — ${gauntletNotes.join('; ')}. The landing stands; the seal is withheld.`)

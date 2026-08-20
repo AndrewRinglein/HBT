@@ -48,7 +48,16 @@ node tools/gate.mjs <id> --abandon     give up, revert, record why
 node tools/report.mjs                  what landed, abandoned, or needs review
 
 npm test   npm run typecheck   npm run battle <n> [--map=id]   npm run sweep <n>
+
+node tools/game-builder.mjs           rebuild GAME-BUILDER.html (the gate does this after every run)
+node tools/audit-all.mjs              the Iron Gauntlet's full-tree audit
 ```
+
+**THE GAME BUILDER** — `GAME-BUILDER.html`, double-click it. The gauntlet's
+running log: every landing, every failed check, seals, and the questions inbox.
+Data: `.state/gauntlet-log.jsonl` (the gate appends one line per run) and
+`.state/questions.md` (the human inbox — add and answer questions there; the
+page re-renders on the next gate run).
 
 **The gate decides whether an item passed, not you.** Never write `status` into
 `.state/backlog.json` by hand — only the gate does. Adding many mechanics in a row
