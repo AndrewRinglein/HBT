@@ -38,10 +38,10 @@
   "id": "terrain.kinds",
   "kind": "terrain",
   "shape": "plumbing",
-  "spec": "Add forest, rocky, rocky-hills, water, obstacle to TERRAIN alongside OPEN and HILLS, and teach terrainOf() their glyphs (f r R w x) from MAP-01's legend. NO RULES YET — every new kind behaves exactly like open. This item is pure plumbing and must be provably behaviour-neutral.",
+  "spec": "Add forest, rocky, rocky-hills, water, obstacle to TERRAIN alongside OPEN and HILLS, and teach terrainOf() their glyphs (f r R w x) from MAP-01's legend. NO RULES YET \u2014 every new kind behaves exactly like open. This item is pure plumbing and must be provably behaviour-neutral.",
   "expect": "map.field loads its real 7-terrain layout instead of collapsing to open/hills, and all four original baselines are BYTE-IDENTICAL because no existing map contains a new glyph",
   "changesBaseline": true,
-  "note": "PLUMBING — declared neutral: the five new kinds must appear in the log and must NOT change state. Baselines: all five moved, and the reason is LABEL-ONLY — map.loaded now carries a terrain census by id instead of a bare hills count, because a log holding raw integers cannot tell forest from water. Proven: rebuilding the old map.loaded payload from the new one reproduces fed687ad / 9f243cac / eaa096cb / 4c71eb68 exactly. map.field additionally moved because its terrain array now carries real values. terrain.obstacle is NOT probed: no authored map contains one yet, so it genuinely is not wired in — it arrives with terrain.passable, which must add one to a map.",
+  "note": "PLUMBING \u2014 declared neutral: the five new kinds must appear in the log and must NOT change state. Baselines: all five moved, and the reason is LABEL-ONLY \u2014 map.loaded now carries a terrain census by id instead of a bare hills count, because a log holding raw integers cannot tell forest from water. Proven: rebuilding the old map.loaded payload from the new one reproduces fed687ad / 9f243cac / eaa096cb / 4c71eb68 exactly. map.field additionally moved because its terrain array now carries real values. terrain.obstacle is NOT probed: no authored map contains one yet, so it genuinely is not wired in \u2014 it arrives with terrain.passable, which must add one to a map.",
   "attempts": 2,
   "neutral": true,
   "probeIds": [
@@ -60,7 +60,7 @@
   "needs": [
    "terrain.kinds"
   ],
-  "spec": "moveCostOf gains a case per kind. SWITCH, do not decide: forest 2, rocky 2, rocky-hills 2, water 3-or-impassable, obstacle impassable. map.json leaves moveCost null ON PURPOSE — these are design decisions. Put each in SWITCHES.md with a default and let a sweep answer.",
+  "spec": "moveCostOf gains a case per kind. SWITCH, do not decide: forest 2, rocky 2, rocky-hills 2, water 3-or-impassable, obstacle impassable. map.json leaves moveCost null ON PURPOSE \u2014 these are design decisions. Put each in SWITCHES.md with a default and let a sweep answer.",
   "expect": "reachable() shrinks on map.field relative to terrain.kinds, and the shrink is larger for a move-4 unit than a move-5 unit",
   "changesBaseline": true,
   "probeIds": [
@@ -68,7 +68,7 @@
    "terrain.rocky",
    "terrain.water"
   ],
-  "note": "Costs are SWITCHES, recorded in SWITCHES.md: terrain.forest.moveCost, terrain.rocky.moveCost, terrain.water.passable. IMPASSABLE (999) is introduced but unused — terrain.passable is the item that uses it.",
+  "note": "Costs are SWITCHES, recorded in SWITCHES.md: terrain.forest.moveCost, terrain.rocky.moveCost, terrain.water.passable. IMPASSABLE (999) is introduced but unused \u2014 terrain.passable is the item that uses it.",
   "attempts": 1,
   "status": "done-needs-review",
   "sha": "013a373"
@@ -86,7 +86,7 @@
   "probeIds": [
    "terrain.obstacle"
   ],
-  "note": "Adds map.thicket (MAP-01 rows 10-21, cols 0-11) because no existing map had an obstacle, so the rule was untestable. Also hardens deployment: it now refuses impassable hexes loudly instead of placing a unit inside a wall. | Probed NEUTRAL, and that is the assertion, not a dodge: for a WALL, zero interactions is the pass condition. terrain.obstacle must appear on the board (it does, 75x) and must never appear in a moved event. The stronger form of the same claim is in the test — 0 obstacle entries across 60 battles and 13645 moves, and 0 capped outcomes proving the wall does not strand the AI.",
+  "note": "Adds map.thicket (MAP-01 rows 10-21, cols 0-11) because no existing map had an obstacle, so the rule was untestable. Also hardens deployment: it now refuses impassable hexes loudly instead of placing a unit inside a wall. | Probed NEUTRAL, and that is the assertion, not a dodge: for a WALL, zero interactions is the pass condition. terrain.obstacle must appear on the board (it does, 75x) and must never appear in a moved event. The stronger form of the same claim is in the test \u2014 0 obstacle entries across 60 battles and 13645 moves, and 0 capped outcomes proving the wall does not strand the AI.",
   "attempts": 1,
   "neutral": true,
   "status": "done-needs-review",
@@ -99,10 +99,10 @@
   "needs": [
    "terrain.kinds"
   ],
-  "spec": "Terrain grants stat modifiers through the EXISTING stat pipeline — rows in terrainMods(), not new stations. Forest +10 dodge +1 armor. Water -10 accuracy. Rocky-hills as hills. Values are SWITCHES; map.json leaves coverBonus and modifiers null on purpose.",
+  "spec": "Terrain grants stat modifiers through the EXISTING stat pipeline \u2014 rows in terrainMods(), not new stations. Forest +10 dodge +1 armor. Water -10 accuracy. Rocky-hills as hills. Values are SWITCHES; map.json leaves coverBonus and modifiers null on purpose.",
   "expect": "a unit standing in forest shows terrain.forest rows in its effective(dodge) ledger, and hit rate against it drops measurably in a paired sweep",
   "changesBaseline": true,
-  "note": "Zero changes to stats.ts or pipeline.ts — one table in maps.ts and four readers. Values are SWITCHES (terrain.forest.cover, terrain.rocky.cover, terrain.water.penalty). Baselines: map.open/ridge/flanks/highlands are UNTOUCHED because they contain only open and hills, whose values did not change. Only map.field and map.thicket move.",
+  "note": "Zero changes to stats.ts or pipeline.ts \u2014 one table in maps.ts and four readers. Values are SWITCHES (terrain.forest.cover, terrain.rocky.cover, terrain.water.penalty). Baselines: map.open/ridge/flanks/highlands are UNTOUCHED because they contain only open and hills, whose values did not change. Only map.field and map.thicket move.",
   "probeIds": [
    "terrain.forest",
    "terrain.water",
@@ -115,7 +115,7 @@
   "id": "movement.zone-of-control",
   "kind": "movement",
   "shape": "rule",
-  "spec": "A standing unit exerts ZoC on its six adjacent hexes. A unit that ENTERS a hex inside an enemy ZoC stops there — it may enter, then its movement ends. Downed and dead units exert nothing. THE AI IS DELIBERATELY BLIND TO THIS (Angela, 2026-08-13): it keeps its current scoring, picks a destination as if ZoC did not exist, and gets stopped short. That is accepted, not a defect.",
+  "spec": "A standing unit exerts ZoC on its six adjacent hexes. A unit that ENTERS a hex inside an enemy ZoC stops there \u2014 it may enter, then its movement ends. Downed and dead units exert nothing. THE AI IS DELIBERATELY BLIND TO THIS (Angela, 2026-08-13): it keeps its current scoring, picks a destination as if ZoC did not exist, and gets stopped short. That is accepted, not a defect.",
   "expect": "a unit pathing past an adjacent zombie ends its move on the first hex inside that zombie's ZoC, and the log carries move.stopped naming the unit that stopped it",
   "changesBaseline": true,
   "note": "BECAUSE THE AI IS BLIND: reachable() still offers hexes the unit cannot actually reach, so units will routinely end up somewhere they did not choose. That MUST emit move.stopped. A unit ending somewhere unexplained with no log line is the exact silent-failure class the harness exists to catch.",
@@ -128,7 +128,7 @@
   "needs": [
    "movement.zone-of-control"
   ],
-  "spec": "Leaving a hex inside an enemy's ZoC provokes one free attack from that enemy, resolved through performAttack with its cheapest melee attack, then settle. Once per enemy per activation. Costs the attacker nothing. AI remains blind — it will walk into these.",
+  "spec": "Leaving a hex inside an enemy's ZoC provokes one free attack from that enemy, resolved through performAttack with its cheapest melee attack, then settle. Once per enemy per activation. Costs the attacker nothing. AI remains blind \u2014 it will walk into these.",
   "expect": "a kiting ranger adjacent to a zombie takes a hit when it disengages, the log shows the attack with causeId movement.aoo, and the ranger's damage-taken share rises measurably in a paired sweep",
   "changesBaseline": true,
   "note": "HAZARD: this lands damage MID-MOVE, so settle can fire inside executeMove's per-step loop. A unit can die between two steps, and victory can trigger mid-activation. executeMove already breaks on lifeState !== standing; that guard is now load-bearing and needs its own test."
@@ -137,7 +137,7 @@
   "id": "status.regeneration",
   "kind": "status",
   "shape": "counter",
-  "spec": "PUBLISHED: 1-EFFECTS-SETTLED.md — pool. Heals equal to its value at End of Phase, then -1. Poison mirrored, so one number reads both directions. Halved while status.burn is present (burn not yet shaped — do not implement that clause).",
+  "spec": "PUBLISHED: 1-EFFECTS-SETTLED.md \u2014 pool. Heals equal to its value at End of Phase, then -1. Poison mirrored, so one number reads both directions. Halved while status.burn is present (burn not yet shaped \u2014 do not implement that clause).",
   "expect": "regen 3 on a damaged unit heals 3 then 2 then 1, capped at max HP",
   "attempts": 4,
   "variants": [
@@ -147,7 +147,7 @@
   "changesBaseline": true,
   "status": "done-needs-review",
   "sha": "36211e9",
-  "gauntlet": "not passed — 2 flag(s) warned"
+  "gauntlet": "not passed \u2014 2 flag(s) warned"
  },
  {
   "id": "status.weakness",
@@ -219,8 +219,8 @@
   "id": "content.mage-staff",
   "kind": "content",
   "shape": "numbers",
-  "spec": "NOT A DEFECT — Angela: the Mage/Ranger split is intentional. The Mage deals MAGIC damage and the Ranger PHYSICAL, which diverge sharply once enemies carry armor; and the Mage has Arcane Bolt and more to come, while the Ranger is essentially just its attack. Raw damage-per-swing is therefore the wrong yardstick. What is still worth measuring: the staff is only distinguishable from the bow against a target with armor > 0, and every enemy in the game today has armor 0. Add an armored enemy, then sweep staff vs bow against it.",
-  "expect": "against an armored enemy the Mage out-damages the Ranger, and against an unarmored one it does not — the split is visible in the sweep, not just in the design",
+  "spec": "NOT A DEFECT \u2014 Angela: the Mage/Ranger split is intentional. The Mage deals MAGIC damage and the Ranger PHYSICAL, which diverge sharply once enemies carry armor; and the Mage has Arcane Bolt and more to come, while the Ranger is essentially just its attack. Raw damage-per-swing is therefore the wrong yardstick. What is still worth measuring: the staff is only distinguishable from the bow against a target with armor > 0, and every enemy in the game today has armor 0. Add an armored enemy, then sweep staff vs bow against it.",
+  "expect": "against an armored enemy the Mage out-damages the Ranger, and against an unarmored one it does not \u2014 the split is visible in the sweep, not just in the design",
   "note": "Open question that IS real: attack.mage.strike was used 0 times in 300 battles, the same dead-content shape as Massive Strike. The melee option on a ranged unit may never be worth taking.",
   "needs": [
    "unit.brute"
@@ -230,7 +230,7 @@
   "id": "terrain.water-cleanses",
   "kind": "terrain",
   "shape": "rule",
-  "spec": "PUBLISHED: 1-EFFECTS-SETTLED.md — poison and regeneration are stripped by water at the occupant END OF ACTIVATION. The rung is specified; do not re-decide it.",
+  "spec": "PUBLISHED: 1-EFFECTS-SETTLED.md \u2014 poison and regeneration are stripped by water at the occupant END OF ACTIVATION. The rung is specified; do not re-decide it.",
   "expect": "a poisoned unit that walks into water loses the status, and the log shows status.expired with causeId terrain.water",
   "changesBaseline": true,
   "note": "I queued this asking which rung. It was already answered in the published file.",
@@ -241,15 +241,15 @@
   "killSwitchExempt": "terrain.water is not a registry row the CF_DISABLE_IDS seam can remove -- terrain is an enum plus trait tables. The tests assert strip data and live battle events directly; a future terrain-registry refactor brings terrain under the seam.",
   "status": "done-needs-review",
   "sha": "a44a94a",
-  "gauntlet": "not passed — 2 exemption(s) taken"
+  "gauntlet": "not passed \u2014 2 exemption(s) taken"
  },
  {
   "id": "terrain.impassable-naming",
   "kind": "naming",
   "shape": "decision",
-  "spec": "GROUND-REQUIREMENTS.md §1.1 names it terrain.impassable. MAP-01's legend calls it Obstruction, glyph x. The engine uses terrain.obstacle. Two names for one thing — Angela picks, then it goes in GLOSSARY.md and the other is retired.",
+  "spec": "GROUND-REQUIREMENTS.md \u00a71.1 names it terrain.impassable. MAP-01's legend calls it Obstruction, glyph x. The engine uses terrain.obstacle. Two names for one thing \u2014 Angela picks, then it goes in GLOSSARY.md and the other is retired.",
   "expect": "one id, in the glossary, and no occurrence of the other anywhere",
-  "note": "BRING TO ANGELA — a naming collision is hers, not a switch."
+  "note": "BRING TO ANGELA \u2014 a naming collision is hers, not a switch."
  },
  {
   "id": "trigger.mechanism",
@@ -280,7 +280,7 @@
   "attempts": 1,
   "status": "done-needs-review",
   "sha": "676f6b3",
-  "gauntlet": "not passed — 2 flag(s) warned"
+  "gauntlet": "not passed \u2014 2 flag(s) warned"
  },
  {
   "id": "trigger.zombie.sap",
@@ -372,7 +372,7 @@
   "id": "fix.unit-tags",
   "kind": "engine",
   "shape": "plumbing",
-  "spec": "UnitDef carries BOTH `attributes` and `tags` for what a unit is. Content fills `attributes` (zombie: ['undead']); every reader — target.ts requireTags, the planned VS_TARGET station — uses `tags`, and no UnitDef sets it. So \"target undead\" finds no zombies. Collapse to one field (Law 11).",
+  "spec": "UnitDef carries BOTH `attributes` and `tags` for what a unit is. Content fills `attributes` (zombie: ['undead']); every reader \u2014 target.ts requireTags, the planned VS_TARGET station \u2014 uses `tags`, and no UnitDef sets it. So \"target undead\" finds no zombies. Collapse to one field (Law 11).",
   "expect": "resolveTargets with requireTags:[\"undead\"] returns the zombies",
   "changesBaseline": false
  },
@@ -393,7 +393,7 @@
   "attempts": 1,
   "status": "done",
   "sha": "5e7f33d",
-  "gauntlet": "not passed — 1 flag(s) warned"
+  "gauntlet": "not passed \u2014 1 flag(s) warned"
  },
  {
   "id": "fix.adjacent-ranged",
@@ -414,7 +414,7 @@
   "id": "fix.downed-targetable",
   "kind": "engine",
   "shape": "rule",
-  "spec": "canAttack refuses any attack whose target is not standing, so a downed hero cannot be attacked at all. GAME-DESIGN 9: enemies roll at +20 against the downed, and a hit only accelerates the bleed-out counter — it never kills.",
+  "spec": "canAttack refuses any attack whose target is not standing, so a downed hero cannot be attacked at all. GAME-DESIGN 9: enemies roll at +20 against the downed, and a hit only accelerates the bleed-out counter \u2014 it never kills.",
   "expect": "an enemy can attack a downed hero, at +20, and the hit reduces bleedOut rather than hp",
   "changesBaseline": true
  },
@@ -422,7 +422,7 @@
   "id": "fix.bleedout-duration",
   "kind": "engine",
   "shape": "numbers",
-  "spec": "RULED, Angela 2026-08-15: 'Bleed Out counter should be five phases, but it only moves forward at the end of the hero phase.' Was 3, advancing at Start of Turn. Counter becomes 5 and the rung moves into the End of Hero Phase ladder — not Start of Turn, not the enemy phase.",
+  "spec": "RULED, Angela 2026-08-15: 'Bleed Out counter should be five phases, but it only moves forward at the end of the hero phase.' Was 3, advancing at Start of Turn. Counter becomes 5 and the rung moves into the End of Hero Phase ladder \u2014 not Start of Turn, not the enemy phase.",
   "expect": "a downed hero is set to 5, the counter advances only inside an End of Hero Phase ladder, and death arrives on the fifth tick",
   "changesBaseline": true,
   "needsAngela": false,
@@ -436,7 +436,7 @@
   "id": "fix.start-of-turn-victory",
   "kind": "engine",
   "shape": "plumbing",
-  "spec": "COMBAT-SEQUENCE Start of Turn rung 3 is a victory check. battle.ts runs only advanceBleedOuts, whose settle is guarded by if (downed.length) — so with nobody downed, Start of Turn checks nothing.",
+  "spec": "COMBAT-SEQUENCE Start of Turn rung 3 is a victory check. battle.ts runs only advanceBleedOuts, whose settle is guarded by if (downed.length) \u2014 so with nobody downed, Start of Turn checks nothing.",
   "expect": "a battle that becomes decided between phases ends at Start of Turn rather than mid-activation",
   "changesBaseline": false
  },
@@ -468,7 +468,7 @@
   "id": "fix.poison-shape",
   "kind": "content",
   "shape": "plumbing",
-  "spec": "status.poison is declared shape:'pool'; core/status.ts's own table says poison is a counter (a pool is spent when something consumes it — protection, shields). shape is documentation and never branches, which is why a wrong one sits there indefinitely.",
+  "spec": "status.poison is declared shape:'pool'; core/status.ts's own table says poison is a counter (a pool is spent when something consumes it \u2014 protection, shields). shape is documentation and never branches, which is why a wrong one sits there indefinitely.",
   "expect": "the declared shape matches the shape table",
   "changesBaseline": false,
   "probeIds": [
@@ -490,7 +490,7 @@
   "id": "crit.branch-and-injuries",
   "kind": "engine",
   "shape": "rule",
-  "spec": "On a crit the engine always applies the +50% arm. GAME-DESIGN 4: flip a coin — half the time +50% before mitigation, half the time roll evenly among six injuries, with normal damage still landing. Two cups (critBranch, critInjury) because the weights and the table tune independently; the crit-effect stream is declared and never drawn. Also needs the Crit and Grit stats: crit chance is 3 + gear/badges + (final Accuracy - 100)/4 - target Grit, and the Grit term does not exist.",
+  "spec": "On a crit the engine always applies the +50% arm. GAME-DESIGN 4: flip a coin \u2014 half the time +50% before mitigation, half the time roll evenly among six injuries, with normal damage still landing. Two cups (critBranch, critInjury) because the weights and the table tune independently; the crit-effect stream is declared and never drawn. Also needs the Crit and Grit stats: crit chance is 3 + gear/badges + (final Accuracy - 100)/4 - target Grit, and the Grit term does not exist.",
   "expect": "over many crits the branch splits about evenly and each of the six injuries appears; a high-Grit target is crit measurably less often",
   "changesBaseline": true
  },
@@ -525,7 +525,7 @@
   "unreachable": "Test-harness plumbing: the seam is invisible in any battle unless the env var is set, and no battle sets it. Neutrality is proven by the control baselines being byte-identical with the seam in place.",
   "status": "done-needs-review",
   "sha": "839460a",
-  "gauntlet": "not passed — 1 flag(s) warned; 1 exemption(s) taken"
+  "gauntlet": "not passed \u2014 1 flag(s) warned; 1 exemption(s) taken"
  },
  {
   "id": "status.tick-resist",
@@ -540,7 +540,7 @@
   "generalizationExempt": "Only one damaging tick status exists as published content (poison). The second instance is burn, which 1-EFFECTS-SETTLED explicitly marks not-yet-shaped -- do not reference. The flag is data on StatusDef, so burn setting it WILL be the zero-engine-code second instance the day it publishes.",
   "status": "done-needs-review",
   "sha": "fae1c37",
-  "gauntlet": "not passed — 1 exemption(s) taken"
+  "gauntlet": "not passed \u2014 1 exemption(s) taken"
  },
  {
   "id": "content.test-lane",
@@ -555,6 +555,13 @@
   "changesBaseline": true,
   "status": "done-needs-review",
   "sha": "252be44",
-  "gauntlet": "not passed — 1 flag(s) warned"
+  "gauntlet": "not passed \u2014 1 flag(s) warned"
+ },
+ {
+  "id": "tool.effect-size-rules",
+  "kind": "engine",
+  "shape": "plumbing",
+  "spec": "Effect measurement for RULE items currently disables the content the rule touches, which crashes the comparison arm (Law 9) and reports nothing useful -- seen on status.tick-resist and terrain.water-cleanses. Give rules a toggle the WITHOUT arm can flip (a cfg switch per rule item, declared on the backlog row), and teach effect-size.mts to use it. A tool chore, not a design question -- moved out of the questions inbox 2026-08-20.",
+  "expect": "effect-size on a rule item runs both arms and reports a real delta"
  }
 ]

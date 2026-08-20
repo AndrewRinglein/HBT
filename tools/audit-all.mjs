@@ -80,6 +80,11 @@ audit('flagged landings awaiting review', () => {
 
 const failed = results.filter((r) => !r.ok)
 const stamp = new Date().toISOString()
+// The audit runs at batch end — so it OWNS the batch boundary. One marker line
+// into the run log; the Game Builder splits its bars on these, never on a time
+// heuristic (a gap guess once swallowed a new session inside an approved bar).
+appendFileSync('.state/gauntlet-log.jsonl', JSON.stringify({ at: stamp, type: 'batch-end', audit: failed.length ? 'FAILED' : 'clean' }) + '\n')
+try { execSync('node tools/game-builder.mjs --quiet', { stdio: 'ignore' }) } catch {}
 if (failed.length) {
   appendFileSync('.state/ledger.md',
     `\n## IRON GAUNTLET FULL AUDIT — FAILED\n${stamp}\n\n${failed.map((f) => `  FAIL  ${f.name} — ${f.note}`).join('\n')}\n`)
