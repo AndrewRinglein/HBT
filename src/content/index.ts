@@ -94,6 +94,30 @@ const RAW_UNITS: Readonly<Record<string, UnitDef>> = {
     abilities: [],
     attributes: ['undead'],
   },
+  'zombie-burning': {
+    // Angela 2026-08-20: "You could create a burning zombie and mix them in with
+    // the other zombies. On taking damage, the zombie deals 1 burn to its
+    // attacker." Same stat line as the zombie — the identity is the sear, not
+    // the numbers. Published: 6-BESTIARY-SETTLED.md.
+    typeId: 'zombie-burning', side: 'enemy',
+    maxHp: 10, armor: 0, resist: 0,
+    accuracy: 65, dodge: 0, strength: 4, precision: 0, magic: 0, spirit: 0,
+    role: 'melee',
+    movement: 4, reach: 0,
+    maxStamina: 0, staminaRegen: 0,
+    triggers: [{
+      // onTakingDamage is the VICTIM's hook, so from this zombie's side the
+      // "target" is whoever hit it — exactly where the sear lands.
+      id: 'trigger.zombie-burning.sear', hook: 'onTakingDamage', chance: 100,
+      select: 'target',
+      effect: { kind: 'status.apply', statusId: 'status.burn', value: 1 },
+      source: 'unit.zombie-burning',
+    }],
+    ai: 'dumb-melee',
+    attacks: ['attack.zombie.basic'],
+    abilities: [],
+    attributes: ['undead'],
+  },
   warrior: {
     typeId: 'warrior', side: 'hero',
     maxHp: 10, armor: 1, resist: 0,
@@ -154,7 +178,9 @@ export const FIRST_BATTLE = {
   id: 'baseline.4v4',
   scenarioId: 1,
   heroes: ['warrior', 'warrior', 'ranger', 'mage'] as const,
-  enemies: ['zombie', 'zombie', 'zombie', 'zombie'] as const,
+  // One burning zombie per four — the horde's texture, cycled by setup when
+  // enemyCount exceeds the roster length.
+  enemies: ['zombie', 'zombie', 'zombie', 'zombie-burning'] as const,
   heroRow: 11,
   enemyRow: 0,
 }

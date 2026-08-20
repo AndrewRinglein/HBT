@@ -19,6 +19,17 @@ const RAW_STATUSES: Readonly<Record<string, StatusDef>> = {
     tickMitigatedByResist: true,   // ruled 2026-08-20 — the 5-vs-2 table
     onPhaseEnd: (ctx, unitId, value) => statusDamage(ctx, unitId, value, 'status.poison'),
   },
+  'status.burn': {
+    // Codex-published (79 uses). Same tick as poison — damage equal to value,
+    // Resist-mitigated (ruled 2026-08-20), decay 1 — AND halves all healing
+    // received while held (§5: halves, never blocks). 1-EFFECTS-SETTLED's regen
+    // row already says "halved while status.burn is present"; the halving is
+    // read by applyHealing from the halvesHealing flag, one code path.
+    id: 'status.burn', name: 'Burn', shape: 'counter', stacking: 'add',
+    tickMitigatedByResist: true,
+    halvesHealing: true,
+    onPhaseEnd: (ctx, unitId, value) => statusDamage(ctx, unitId, value, 'status.burn'),
+  },
   'status.regeneration': {
     // PUBLISHED: 1-EFFECTS-SETTLED.md — "Heals equal to its value at End of Phase,
     // then −1 — poison's mirror, so one number reads both directions."

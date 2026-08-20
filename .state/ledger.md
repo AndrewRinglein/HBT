@@ -1067,3 +1067,69 @@ index 238c670..cbfdece 100644
 </details>
 
 IRON GAUNTLET: NOT PASSED — 1 FLAG(S) WARNED
+
+## status.burn — LANDED `9b9229a`
+2026-08-20 07:29
+
+  PASS  dependencies landed
+  PASS  typecheck
+  PASS  full test suite — 239 passed
+  PASS  gate 1 — the id appears in a real battle — status.burn: 5678 log lines, 5678 fired, 4444 changed state · unit.zombie-burning: 5810 log lines, 5810 fired, 3076 changed state · trigger.zombie-burning.sear: 3702 log lines, 3702 fired, 1234 changed state
+  PASS  brought its own tests — test/burn.test.ts
+  PASS  existing tests untouched
+  PASS  control battles unchanged — will re-bless at commit — this item DECLARED it changes the control battles: map.open a7c855b3->1f50d565, map.ridge ae1c7ae2->7d575901, map.flanks d36d4143->1ec2d8c4, map.highlands 918e420c->ed305041, map.field 9fa4fded->a0e0592e, map.thicket b47a5842->f629ca41
+  PASS  content has a published source — 11 ids without a published source (1 awaiting publication from earlier items — see audit)
+  PASS  hardcode scan — core knows mechanisms, never names
+  PASS  generalizes — the second instance costs zero engine code — status.poison live · status.burn live
+  PASS  naming — new content ids use declared kinds
+  PASS  naming — no banned words invented
+  PASS  kill switch — the tests fail without the content — tests fail without status.burn,unit.zombie-burning,trigger.zombie-burning.sear — they genuinely test it
+
+IRON GAUNTLET: PASSED
+
+```
+effect of status.burn,unit.zombie-burning,trigger.zombie-burning.sear — 25 paired battles per map, WITH vs WITHOUT
+  map.open: WITHOUT arm invalid — other content references the disabled id (loud failure, Law 9). Presence is total.
+  map.ridge: WITHOUT arm invalid — other content references the disabled id (loud failure, Law 9). Presence is total.
+  map.flanks: WITHOUT arm invalid — other content references the disabled id (loud failure, Law 9). Presence is total.
+  map.highlands: WITHOUT arm invalid — other content references the disabled id (loud failure, Law 9). Presence is total.
+  map.field: WITHOUT arm invalid — other content references the disabled id (loud failure, Law 9). Presence is total.
+  map.thicket: WITHOUT arm invalid — other content references the disabled id (loud failure, Law 9). Presence is total.
+MEASURABLE
+```
+
+## terrain.water-cleanses — LANDED `a44a94a` **NEEDS REVIEW**
+2026-08-20 07:35
+
+  PASS  dependencies landed
+  PASS  typecheck
+  PASS  full test suite — 243 passed
+  PASS  gate 1 — the id appears in a real battle — terrain.water: 3040 log lines, 3040 fired, 2890 changed state
+  PASS  brought its own tests — test/water-cleanses.test.ts
+  PASS  existing tests untouched
+  PASS  control battles unchanged — will re-bless at commit — this item DECLARED it changes the control battles: map.field a0e0592e->eef87468, map.thicket f629ca41->d1b8d9b4
+  PASS  content has a published source — 11 ids without a published source (1 awaiting publication from earlier items — see audit)
+  PASS  hardcode scan — core knows mechanisms, never names
+  PASS  generalizes — the second instance costs zero engine code
+  PASS  naming — new content ids use declared kinds
+  PASS  naming — no banned words invented
+  PASS  kill switch — the tests fail without the content
+
+<details><summary>Existing tests were edited — review this diff</summary>
+
+```diff
+```
+</details>
+
+IRON GAUNTLET: NOT PASSED — 2 EXEMPTION(S) TAKEN
+
+```
+effect of terrain.water — 25 paired battles per map, WITH vs WITHOUT
+  map.open: heroWins 8->8 (+0)  meanTurns 7.9->7.9
+  map.ridge: heroWins 11->11 (+0)  meanTurns 8.3->8.3
+  map.flanks: heroWins 8->8 (+0)  meanTurns 7.8->7.8
+  map.highlands: heroWins 16->16 (+0)  meanTurns 8.4->8.4
+  map.field: heroWins 19->19 (+0)  meanTurns 10.4->10.4
+  map.thicket: heroWins 9->9 (+0)  meanTurns 8.3->8.3
+NO MEASURABLE EFFECT at this sample size — consequence clause caught state changes, but outcomes did not move. Consider a sweep with more replicates before drawing balance conclusions.
+```

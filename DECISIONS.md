@@ -597,3 +597,33 @@ rolled when you hit zero health." Derived at the moment of the roll — base 20 
 +1 deathbedFighting is simply an input to that calculation, not a write to a
 stored stat. The inbox question dissolves: modifiers naming deathbedFighting are
 legitimate terms of the formula.
+
+---
+
+## 2026-08-20 — The Burning Zombie, burn, and water
+
+> "You could create a burning zombie and mix them in with the other zombies. We
+> could do, on taking damage, the zombie deals 1 burn to its attacker. I think we
+> also need to add in terrain, so you figure out what makes sense."
+
+Landed, both through the Iron Gauntlet:
+
+**status.burn** (⛓ SEAL PASSED, 9b9229a) — poison's tick, Resist-mitigated, PLUS
+halves all healing (the gate lives inside applyHealing, the one heal mutator — a
+dormant second heal path with its own halving math was found and collapsed into a
+delegate). Source: **unit.zombie-burning**, same stat line as the zombie, whose
+sear (trigger.zombie-burning.sear, onTakingDamage 100%) deals 1 Burn to the
+attacker. Mixed one per four via FIRST_BATTLE.enemies — which also deleted a
+'zombie' literal hardcoded in core setup that had ignored the declared roster
+entirely. Published in 6-BESTIARY-SETTLED. One emergent rule found and stated as
+a switch (burnHalvingReadLive): a Burn that expires by decay mid-tick releases
+that same phase's Regeneration from halving.
+
+**terrain.water-cleanses** (landed a44a94a, 2 honest exemptions) — water strips as
+TRAIT DATA on `wet`: 1 Burn on entry; 1 Burn, 1 Poison, 1 Regeneration at End of
+Activation. GD §4 and 1-EFFECTS-SETTLED disagree on the strip list (burn+poison
+vs poison+regen); implemented as the union, flagged in the inbox (waterStripList).
+This birthed the **End of Activation ladder** (was 0 of 2 rungs): rung 1 terrain
+strips → settle; rung 2 reserved as Airwalk's check-point. Runs for blocked units
+too — a stunned hero in the river still soaks. The §4 ordering promise holds and
+is tested: reach water and Burn is shed BEFORE it ticks that turn.

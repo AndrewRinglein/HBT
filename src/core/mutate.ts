@@ -83,11 +83,21 @@ export function applyDamage(ctx: Ctx, id: number, amount: number, causeId: strin
 export function applyHealing(ctx: Ctx, id: number, amount: number, causeId: string): void {
   const u = unit(ctx, id)
   if (u.lifeState !== 'standing' || amount <= 0) return
+  const asked = amount
+  // GAME-DESIGN §5: "Burn is the only thing that reduces healing, and it halves
+  // rather than blocks." The gate lives INSIDE the one heal mutator, so no future
+  // heal source can forget it — statuses declare `halvesHealing`, this reads it.
+  // Truncating division, the one rounding rule (Law 7).
+  let halvedBy
+  for (const s of u.statuses) {
+    if (ctx.statuses[s.id]?.halvesHealing) { amount = Math.trunc(amount / 2); halvedBy = s.id; break }
+  }
   const hpBefore = u.hp
   const applied = Math.min(amount, u.maxHp - hpBefore)
-  if (applied <= 0) { emit(ctx, 'heal.applied', causeId, { target: id, asked: amount, amount: 0, hpBefore, hpAfter: hpBefore }); return }
+  const tail = halvedBy ? { halvedBy } : {}
+  if (applied <= 0) { emit(ctx, 'heal.applied', causeId, { target: id, asked, amount: 0, hpBefore, hpAfter: hpBefore, ...tail }); return }
   u.hp = hpBefore + applied
-  emit(ctx, 'heal.applied', causeId, { target: id, asked: amount, amount: applied, hpBefore, hpAfter: u.hp })
+  emit(ctx, 'heal.applied', causeId, { target: id, asked, amount: applied, hpBefore, hpAfter: u.hp, ...tail })
 }
 
 export function setLifeState(ctx: Ctx, id: number, to: LifeState, causeId: string, extra: Record<string, unknown> = {}): void {

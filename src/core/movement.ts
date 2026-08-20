@@ -5,8 +5,9 @@
 import { distance, neighboursOf } from './hex.js'
 import type { HexId } from './hex.js'
 import type { Ctx, Unit } from './types.js'
-import { moveCostOf, terrainIdOf } from '../content/maps.js'
+import { moveCostOf, stripsOnEnterOf, terrainIdOf } from '../content/maps.js'
 import { emit, markMoveUsed, moveUnit, spendStamina, unit } from './mutate.js'
+import { reduceStatus } from './status.js'
 
 export const MOVE_STAMINA_COST = 1
 
@@ -99,9 +100,17 @@ export function executeMove(ctx: Ctx, unitId: number, path: HexId[], onStep?: St
     if (u.movePointsLeft < cost) break
     // 2. attacks of opportunity — not in the baseline
     // 3. enter and spend
-    moveUnit(ctx, unitId, hex, cost, 'move', terrainIdOf(ctx.state.terrain[hex] ?? 0))
+    const terrainHere = ctx.state.terrain[hex] ?? 0
+    moveUnit(ctx, unitId, hex, cost, 'move', terrainIdOf(terrainHere))
     moved++
-    // 4. traps  5. terrain status  6. vision — none in the baseline
+    // 4. traps — none in the baseline
+    // 5. terrain status ON ENTRY — water strips 1 Burn as you splash through
+    //    (GAME-DESIGN §4: "running through water strips 1 Burn"). Flight, when it
+    //    lands, skips this by construction: a flight move contains zero Steps.
+    for (const sid of stripsOnEnterOf(terrainHere)) {
+      reduceStatus(ctx, unitId, sid, 1, terrainIdOf(terrainHere))
+    }
+    // 6. vision — none in the baseline
     if (onStep && !onStep(ctx, unitId, hex)) break
     if (u.lifeState !== 'standing') break
   }

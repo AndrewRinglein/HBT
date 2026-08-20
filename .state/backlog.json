@@ -16,12 +16,23 @@
   "id": "status.burn",
   "kind": "status",
   "shape": "counter",
-  "spec": "Burn: same tick as poison, and halves all healing received while held. Source: a new terrain status is out of scope here — give the Mage's staff bolt a burn 2 rider. Declares changesBaseline.",
+  "spec": "Burn: same tick as poison (Resist-mitigated, ruled 2026-08-20) and halves all healing received while held. Codex-published (79 uses). Source: the Burning Zombie (unit.zombie-burning, 6-BESTIARY-SETTLED) -- onTakingDamage, deal 1 Burn to the attacker; mixed into the horde one per four. Also removes the zombie literal hardcoded in setup.ts roster construction. Declares changesBaseline.",
   "expect": "burn 3 deals 3/2/1; healing while burning is halved, rounded down",
   "changesBaseline": true,
-  "status": "reverted",
-  "sha": "f7e2041",
-  "reason": "1-EFFECTS-SETTLED.md marks status.burn not yet shaped and says not to reference it. Built anyway. Removed 2026-08-14; restore from f7e2041 when Effects publishes it."
+  "status": "done",
+  "sha": "9b9229a",
+  "reason": "1-EFFECTS-SETTLED.md marks status.burn not yet shaped and says not to reference it. Built anyway. Removed 2026-08-14; restore from f7e2041 when Effects publishes it.",
+  "probeIds": [
+   "status.burn",
+   "unit.zombie-burning",
+   "trigger.zombie-burning.sear"
+  ],
+  "variants": [
+   "status.poison",
+   "status.burn"
+  ],
+  "attempts": 1,
+  "gauntlet": "passed"
  },
  {
   "id": "terrain.kinds",
@@ -222,7 +233,15 @@
   "spec": "PUBLISHED: 1-EFFECTS-SETTLED.md — poison and regeneration are stripped by water at the occupant END OF ACTIVATION. The rung is specified; do not re-decide it.",
   "expect": "a poisoned unit that walks into water loses the status, and the log shows status.expired with causeId terrain.water",
   "changesBaseline": true,
-  "note": "I queued this asking which rung. It was already answered in the published file."
+  "note": "I queued this asking which rung. It was already answered in the published file.",
+  "probeIds": [
+   "terrain.water"
+  ],
+  "generalizationExempt": "The design names exactly one anti-status terrain (GD SS4: water is THE retreat tile). The mechanism is trait data -- stripsOnEnter/stripsOnActivationEnd rows on wet -- so a second stripping terrain is a data row costing zero engine code the day one is designed.",
+  "killSwitchExempt": "terrain.water is not a registry row the CF_DISABLE_IDS seam can remove -- terrain is an enum plus trait tables. The tests assert strip data and live battle events directly; a future terrain-registry refactor brings terrain under the seam.",
+  "status": "done-needs-review",
+  "sha": "a44a94a",
+  "gauntlet": "not passed — 2 exemption(s) taken"
  },
  {
   "id": "terrain.impassable-naming",

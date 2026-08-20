@@ -112,16 +112,18 @@ export function healingHalved(ctx: Ctx, u: Unit): boolean {
   return u.statuses.some((s) => ctx.statuses[s.id]?.halvesHealing && s.value > 0)
 }
 
-/** Heal, honouring anything that halves it. Integer division, truncated (Law 7). */
+/**
+ * Heal, honouring anything that halves it. NOW A DELEGATE (2026-08-20): this was
+ * a slot with its own halving math, which became a SECOND healing path the moment
+ * `applyHealing` gained the Burn gate — the exact preview/resolution drift §5's
+ * "do not port" list warns about. One mutator, one gate; this survives only as a
+ * convenience that returns how much landed.
+ */
 export function heal(ctx: Ctx, unitId: number, amount: number, causeId: string): number {
   const u = unit(ctx, unitId)
-  const halved = healingHalved(ctx, u)
-  const eff = halved ? Math.trunc(amount / 2) : amount
   const before = u.hp
-  u.hp = Math.min(u.maxHp, u.hp + eff)
-  const healed = u.hp - before
-  emit(ctx, 'heal.applied', causeId, { target: unitId, requested: amount, halved, amount: healed, hpBefore: before, hpAfter: u.hp })
-  return healed
+  applyHealing(ctx, unitId, amount, causeId)
+  return u.hp - before
 }
 
 /**
@@ -152,6 +154,7 @@ export function statusDamage(ctx: Ctx, unitId: number, amount: number, causeId: 
 export function statusHeal(ctx: Ctx, unitId: number, amount: number, causeId: string): void {
   applyHealing(ctx, unitId, amount, causeId)
 }
+
 
 /** Total of everything on this unit that absorbs incoming damage. */
 export function incomingAbsorb(ctx: Ctx, u: Unit): number {

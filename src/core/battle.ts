@@ -4,8 +4,9 @@
 
 import { runActivation } from '../ai/modes.js'
 import { beginActivation, beginTurn, emit, endActivation, regenStamina, setOutcome, setPhase } from './mutate.js'
+import { stripsOnActivationEndOf, terrainIdOf } from '../content/maps.js'
 import { advanceBleedOuts, checkVictory, settle } from './settle.js'
-import { isBlocked, tickStatuses } from './status.js'
+import { isBlocked, reduceStatus, tickStatuses } from './status.js'
 import type { Ctx, Phase, Side } from './types.js'
 
 function activationOrder(ctx: Ctx, side: Side): number[] {
@@ -28,13 +29,39 @@ function runPhase(ctx: Ctx, phase: Phase): void {
     if (isBlocked(ctx, u)) {
       emit(ctx, 'activation.idle', 'status', { actor: id, reason: 'cannot act' })
       endActivation(ctx, id, 'engine')
+      endOfActivation(ctx, id)   // a stunned unit standing in water still soaks
       continue
     }
     runActivation(ctx, id)
     endActivation(ctx, id, 'engine')
+    endOfActivation(ctx, id)
   }
 
   endOfPhase(ctx, side)
+}
+
+/**
+ * The End of Activation ladder — born 2026-08-20 with water (it was 0 of 2 rungs).
+ *
+ * | # | Rung |
+ * |---|---|
+ * | 1 | Terrain strips — the occupied hex reduces the statuses its terrain names |
+ * | 2 | (reserved) tile end-of-activation effects — where AIRWALK will check: an
+ * |   | airwalking unit "is not going to trigger anything at the end of
+ * |   | activation for whatever tile they're standing on" (ruled 2026-08-20) |
+ *
+ * Runs for EVERY unit that activated, including blocked ones — a stunned hero
+ * standing in the river still soaks. GAME-DESIGN §4 relies on this preceding the
+ * status tick: reach water and you shed Burn BEFORE it deals damage this turn.
+ */
+function endOfActivation(ctx: Ctx, unitId: number): void {
+  const u = ctx.state.units[unitId]!
+  if (u.lifeState !== 'standing') return
+  const t = ctx.state.terrain[u.hex] ?? 0
+  const strips = stripsOnActivationEndOf(t)
+  if (strips.length === 0) return
+  for (const sid of strips) reduceStatus(ctx, unitId, sid, 1, terrainIdOf(t))
+  settle(ctx, terrainIdOf(t))
 }
 
 /** The End of Phase ladder. An ordered list of named rungs, so reordering is a sweep axis. */

@@ -164,13 +164,25 @@ export function isPassable(terrain: number): boolean {
  */
 export type Trait = 'rough' | 'elevated' | 'wet'
 type Mods = { moveCost: number
-  accuracy?: number; reach?: number; dodge?: number; armor?: number; resist?: number }
+  accuracy?: number; reach?: number; dodge?: number; armor?: number; resist?: number
+  /** Statuses reduced by 1 when a unit STEPS ONTO this terrain. */
+  stripsOnEnter?: readonly string[]
+  /** Statuses reduced by 1 at the occupant's END OF ACTIVATION (the rung Airwalk will also consult). */
+  stripsOnActivationEnd?: readonly string[] }
 
 /** GROUND-REQUIREMENTS.md §1.1. Change these only from that document. */
 export const TRAIT: Readonly<Record<Trait, Mods>> = {
   rough:    { moveCost: 1, accuracy: -5, armor: 1, resist: 1 },  // rocky: 2, -5 Acc, +1 Armor, +1 Resist
   elevated: { moveCost: 1, accuracy: 10, reach: 2 },             // hills: 2, +10 Acc, +2 Reach
-  wet:      { moveCost: 1, accuracy: -10 },                      // water: 2, -10 Acc (+ strips Burn/Poison — NOT BUILT)
+  wet:      { moveCost: 1, accuracy: -10,                        // water: 2, -10 Acc
+    // GAME-DESIGN §4 (Water — the anti-status terrain): entry strips 1 Burn;
+    // End of Activation strips 1 Burn and 1 Poison. 1-EFFECTS-SETTLED adds
+    // regeneration to the EoA strip ("Both are stripped by water"). The two
+    // documents disagree on coverage — implemented as the UNION, flagged in the
+    // questions inbox (waterStripList). Running through water sheds 1 Burn;
+    // standing in it sheds 2 Burn, 1 Poison, 1 Regeneration.
+    stripsOnEnter: ['status.burn'],
+    stripsOnActivationEnd: ['status.burn', 'status.poison', 'status.regeneration'] },
 }
 
 /** What each terrain is made of. */
@@ -202,6 +214,9 @@ function composed(terrain: number): Mods {
     if (!d) return
     out.moveCost += d.moveCost
     for (const k of STATS) if (d[k]) out[k] = (out[k] ?? 0) + d[k]!
+    // strip lists compose by union — a composed wet terrain would strip too
+    if (d.stripsOnEnter) out.stripsOnEnter = [...(out.stripsOnEnter ?? []), ...d.stripsOnEnter]
+    if (d.stripsOnActivationEnd) out.stripsOnActivationEnd = [...(out.stripsOnActivationEnd ?? []), ...d.stripsOnActivationEnd]
   }
   for (const t of TRAITS[terrain] ?? []) add(TRAIT[t])
   add(EXTRA[terrain])
@@ -218,6 +233,8 @@ const statOf = (terrain: number, stat: Stat): number =>
 
 /** Accuracy bonus for standing here. */
 export function accuracyBonusOf(terrain: number): number { return statOf(terrain, 'accuracy') }
+export function stripsOnEnterOf(terrain: number): readonly string[] { return composed(terrain).stripsOnEnter ?? [] }
+export function stripsOnActivationEndOf(terrain: number): readonly string[] { return composed(terrain).stripsOnActivationEnd ?? [] }
 
 /** Extra reach for ranged weapons fired from here. */
 export function reachBonusOf(terrain: number): number { return statOf(terrain, 'reach') }

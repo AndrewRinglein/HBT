@@ -5,6 +5,8 @@ never reads this file; it is the human channel the dashboard renders.
 
 ## OPEN
 
+- waterStripList: GAME-DESIGN §4 says water strips Burn (entry) and Burn+Poison (End of Activation); 1-EFFECTS-SETTLED says poison and regeneration. Implemented as the union — Burn on entry; Burn, Poison AND Regeneration at EoA. Bless the union, or trim it?
+
 - Effect-size tool: for RULE items (like tick-resist) the measurement should toggle the rule, not disable referenced content — a rule item needs a switch or flag the WITHOUT arm can flip. Design the toggle convention, then wire effect-size to it.
 
 ## ANSWERED

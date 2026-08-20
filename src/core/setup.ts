@@ -78,7 +78,10 @@ export function createBattle(opts: BattleOptions): Ctx {
   const def = (t: string): UnitDef => ({ ...UNITS[t]!, ...(opts.overrides?.[t] ?? {}) })
   const heroes = opts.heroes ?? FIRST_BATTLE.heroes
   const enemyCount = opts.enemyCount ?? FIRST_BATTLE.enemies.length
-  const enemies = Array.from({ length: enemyCount }, () => 'zombie')
+  // Cycle the DECLARED roster — before 2026-08-20 this line hardcoded 'zombie',
+  // a content name in core that ignored FIRST_BATTLE.enemies entirely. The mix
+  // (one burning zombie per four) comes from the data, where it belongs.
+  const enemies = Array.from({ length: enemyCount }, (_, i) => FIRST_BATTLE.enemies[i % FIRST_BATTLE.enemies.length]!)
 
   // Deployment must not put a unit inside a wall. Nothing checked this before
   // obstacles existed; the first authored map with one on a deployment row would
