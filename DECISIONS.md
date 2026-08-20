@@ -316,3 +316,45 @@ together by `mkcodexmd.mjs` from `content/`, so they cannot drift from each othe
 
 Consequence for the framework review now being planned: every pass diffs the engine
 and the design docs AGAINST the Codex censuses, in that direction.
+
+---
+
+## 2026-08-20 — Poison ticks do not bypass Resist
+
+> "Poison ticks are not supposed to bypass resist."
+
+Confirms the Codex stat-ladder rule (§13: Resist — "flat mitigation, magic — and
+burn/poison per tick, never bleed") against the engine, which currently applies
+poison's per-tick damage raw: `status.poison.onPhaseEnd` calls `statusDamage` and
+Resist is never consulted.
+
+**The formula, ruled with a worked example:** per-tick damage = `max(0, value − Resist)`.
+
+> "Poison and burn damage are both decreased by resist. On each tick, if I have 5
+> poison and 2 resist, I will take 3 damage. Then poison will go to 4. The next
+> turn, I'll take 2. Poison will go to 2. I'll take 0."
+
+Resist reduces the DAMAGE, never the status value — the poison decays on its own
+clock regardless of what Resist absorbed. Burn identical. Bleed exempt by rule, so
+the status def needs a flag distinguishing the two.
+
+Decay is the standard −1 per tick — Angela corrected the middle of the example in
+the same conversation: *"poison would go to 3, and then you take 1; then poison
+would go to 2, and you take 0. Then poison would go to 1, you take 0 again. Then
+poison would be at zero."* The full canonical sequence for 5 poison vs 2 Resist:
+
+| Tick | Value before | Damage taken | Value after |
+|---|---|---|---|
+| 1 | 5 | 3 | 4 |
+| 2 | 4 | 2 | 3 |
+| 3 | 3 | 1 | 2 |
+| 4 | 2 | 0 | 1 |
+| 5 | 1 | 0 | 0 |
+
+Note the tail: a resisted status still runs its full clock, dealing nothing at the
+end. Resist shortens the pain, never the duration. This table is the verify
+scenario for the mitigation step when it gets built.
+
+Consequence: the status tick needs a mitigation step — either inside `tickStatuses`
+or by routing ticks through a damage pipeline (Law 1 pressure points the same way).
+Found in framework review pass 1; not yet built — review is read-only.
