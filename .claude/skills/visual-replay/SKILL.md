@@ -43,7 +43,7 @@ tools/export-battle.mts    runs a real battle, emits the log + engine commit
    (ember ring pattern) when the identity is behavioural.
 4. **Build and verify with your eyes AND the DOM:**
    ```
-   node tools/build-replay.mjs /tmp/b.json ../replay.html
+   node tools/build-replay.mjs /tmp/b.json ../VFX/replay.html
    ```
    The log is built up-front, so `#log` textContent contains every line without
    playing — grep it for each new mechanic's sentence. Then screenshot start /
@@ -57,8 +57,8 @@ tools/export-battle.mts    runs a real battle, emits the log + engine commit
 6. **Close the batch with its name AND its artifacts:**
    ```
    node tools/audit-all.mjs --label "visual replay test" \
-     --artifact "replay.html|watch the battle — seed 21, map.thicket" \
-     --artifact "battle-replay-thicket.mp4|mp4"
+     --artifact "VFX/replay.html|watch the battle — seed 21, map.thicket" \
+     --artifact "VFX/battle-replay-thicket.mp4|mp4"
    ```
    The label becomes the Game Builder bar's title. The artifacts become links on
    the bar, and the `.html` one gets a "watch it right here" drawer — the replay
@@ -67,10 +67,11 @@ tools/export-battle.mts    runs a real battle, emits the log + engine commit
    without `--artifact` is HALF-SHIPPED — the paper trail lands but the thing
    itself is unreachable from the dashboard (this happened; she had to ask).
    Artifact hrefs are relative to the PROJECT ROOT, where the shipped
-   GAME-BUILDER.html sits beside replay.html — not the engine folder.
-7. **Ship** `replay.html` AND the rebuilt `GAME-BUILDER.html` to the project
-   root (beside README-REPLAY.md) and update that README's battle line. Both
-   must travel together: the dashboard's watch drawer points at a sibling file.
+   GAME-BUILDER.html lives — replays live under `VFX/` (Angela 2026-08-20:
+   everything VFX-related lives in the VFX folder), so hrefs start `VFX/`.
+7. **Ship** the replay into `VFX/` (beside VFX/README-REPLAY.md — update that
+   README's battle line) and the rebuilt `GAME-BUILDER.html` to the project
+   root. They travel together: the dashboard's watch drawer points into VFX/.
 
 ## Traps already paid for
 
