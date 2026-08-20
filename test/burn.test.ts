@@ -95,12 +95,12 @@ describe('status.burn', () => {
   })
 
   it('the mix: enemyCount 8 fields exactly 2 burning zombies (one per four, cycled)', () => {
-    // Zombie count updated 6 → 5 on 2026-08-20 (Law 10, written reason): the
-    // Beast pen put a spirit-snake in the cycle's sixth slot. The claim under
-    // test — one burning zombie per four, preserved at slots 4 and 8 — is
-    // untouched and still asserted exactly.
+    // Zombie count 6 → 5 → 6 across 2026-08-20 (Law 10, reasons written both
+    // times): the Beast pen borrowed the cycle's sixth slot, then left the
+    // horde entirely when Angela ruled the beasts are PLAYER units. The claim
+    // under test — one burning zombie per four — never moved.
     const ctx = createBattle({ replicate: 3, enemyCount: 8 })
     expect(ctx.state.units.filter((u) => u.typeId === 'zombie-burning').length).toBe(2)
-    expect(ctx.state.units.filter((u) => u.typeId === 'zombie').length).toBe(5)
+    expect(ctx.state.units.filter((u) => u.typeId === 'zombie').length).toBe(6)
   })
 })

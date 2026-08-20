@@ -310,7 +310,7 @@ missing is the unit-anchored version and End-of-Phase rung 1.
 ### 6.5 Terrain layers 2 and 3 — **absent**
 
 Layer 1 (cost + occupancy modifiers) is **built**, trait-composed, and matches
-GROUND-REQUIREMENTS §1.1.
+`../VFX/GROUND-REQUIREMENTS.md` §1.1.
 
 - **Layer 2, status on the ground** — No spread, no decay, overwritten rather than
   stacked, and applied on **two** beats: on entering, and again at End of Activation.

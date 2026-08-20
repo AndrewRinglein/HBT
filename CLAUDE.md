@@ -134,7 +134,7 @@ Anything under `generated/`. Regenerate it.
 
 ## Before writing ANY content value: find its owner
 
-**Grep the design folder for the id first.** `../GROUND-REQUIREMENTS.md`,
+**Grep the design folder for the id first.** `../VFX/GROUND-REQUIREMENTS.md`,
 `../GAME-DESIGN.md`, `../GAME-ARCHITECTURE.md`, the numbered `*-SETTLED.md` files,
 and `MAP-01/map.md` are all content sources. The engine folder is not where content
 is decided.
@@ -146,7 +146,7 @@ grep -rn "terrain.rocky" .. --include=*.md
 **A `null` in a data file does not mean undecided.** `MAP-01/map.json` has
 `moveCost: null` with a note saying these are design decisions — that means *not in
 this file*, not *nobody has chosen*. The numbers were in
-`GROUND-REQUIREMENTS.md` §1.1 the whole time.
+`VFX/GROUND-REQUIREMENTS.md` §1.1 the whole time.
 
 This is not hypothetical: seven terrain rows were invented on 2026-08-14 while that
 table sat one directory up, dated a day and a half earlier. Three were wrong, they

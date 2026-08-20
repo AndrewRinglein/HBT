@@ -950,5 +950,47 @@
   "status": "done",
   "sha": "2e7ce07",
   "gauntlet": "passed"
+ },
+ {
+  "id": "trigger.attack-scoped",
+  "kind": "engine",
+  "shape": "trigger",
+  "spec": "Attack-scoped triggers: Trigger gains onlyWithAttack — when set, the trigger fires only when the firing context cause IS that attack (validated at load: must name an attack id). Forced by Angela's Green Drake redesign (2026-08-20): its Poison Breath applies 3 Poison on hit and its Snap applies 1, so onHit alone cannot say which. Makes the Codex's your-fang-attacks phrasing pure data. Retro-scoped variants: trigger.zombie.rot rides attack.zombie.basic and trigger.spirit-snake.venom rides attack.fangs.bite — vacuous while each bearer has one attack, which is exactly what keeps this landing byte-identical on the control battles. The differential (fires on its attack, silent on a sibling attack, never even ROLLS on the wrong one) is proven with a synthetic scoped trigger on the two-attack warrior.",
+  "expect": "a trigger scoped to the axe fires on axe hits and never on Massive Strike hits; control battles byte-identical",
+  "variants": [
+   "trigger.zombie.rot",
+   "trigger.spirit-snake.venom"
+  ],
+  "probeIds": [
+   "trigger.zombie.rot",
+   "trigger.spirit-snake.venom"
+  ],
+  "changesBaseline": false,
+  "attempts": 1,
+  "status": "done",
+  "sha": "5d7a21b",
+  "gauntlet": "passed"
+ },
+ {
+  "id": "fix.beast-pen-hero-correction",
+  "kind": "content",
+  "shape": "data",
+  "needs": [
+   "trigger.attack-scoped"
+  ],
+  "spec": "Angela 2026-08-20: the Beast pen are PLAYER beasts and the ported blocks were never her design; content changes land in the CODEX, the source of truth, not hard-coded. Her rulings went into content/settled.json (a new hero-rulings overlay assemble.mjs applies) and the Codex was regenerated (PROBLEMS: 0); the engine now mirrors the Codex. Spirit Snake: hero-side, her dictated block (hp 4, dodge 50, move 8, acc 110, armor 0, resist 2, str 2, prec 0, stamina 8), venom 3 Poison on hit scoped to the fangs; zero item slots and no weapon slots (slots live in the Codex — no engine loadout yet). Green Drake: hero-side, her block (hp 12, armor 2, resist 1, str 4, prec 3, acc 65, reach 2), two attacks with different scoped riders — Poison Breath (precision magic, 3 Poison, 2 Stam) and Snap (strength, 1 Poison, 1 Stam); Flight waits on movement.flight. Puppy: pulled, benched-provisional, pending her block. The horde cycle is the original undead texture again; fangs cost their Codex Stam 1 (brawlStaminaCost answered). ALL THREE ARE BENCHED by her fielding ruling — hence the unreachable exemption: they appear in no standard battle until party assembly exists; the custom-battle tests field them.",
+  "expect": "snake never misses a zombie (acc 110) and lands 4 damage + 3 poison per bite; drake breath poisons 3 and snap poisons 1 with correct stamina; no beast in any horde; control battles re-blessed",
+  "unreachable": "BENCHED by Angela's fielding ruling (2026-08-20): all three beasts are hero-side and out of the default party until party assembly exists — no standard battle can field them, so gate 1 has nothing to probe; the custom-battle tests in test/spirit-snake.test.ts and test/green-drake.test.ts field them instead.",
+  "changesBaseline": true,
+  "status": "done-needs-review",
+  "sha": "a4822ab",
+  "gauntlet": "not passed — 2 flag(s) warned; 1 exemption(s) taken"
+ },
+ {
+  "id": "movement.flight",
+  "kind": "engine",
+  "shape": "rule",
+  "spec": "Movement POWERS, starting with Flight — Angela 2026-08-20 (Green Drake): \"a flight movement power that moves +0 and costs 1 stamina\" beside \"a regular movement power that costs 1 stamina... movement value of 5.\" Flight is atomic (ruled): no entry strips/applies along the way; End of Activation ladder still runs (flying onto burning ground burns you at EoA — rung 2). Needs: a movement-mode concept on the unit/def, an atomic executeFlight that skips the step loop beats, and AI awareness. Blocked-shaped work — do not improvise it inside a content landing.",
+  "expect": "a flying move crosses water without shedding burn and crosses embers without catching fire, then the EoA rung fires normally on the landing hex"
  }
 ]

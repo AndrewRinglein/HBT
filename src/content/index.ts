@@ -74,12 +74,27 @@ const RAW_ATTACKS: Readonly<Record<string, AttackDef>> = {
     damageType: 'magic', bonus: 0, stat: 'magic', reach: 3, staminaCost: 0,
   },
   'attack.fangs.bite': {
-    // PUBLISHED: 6-BESTIARY-SETTLED § attack.* (2026-08-20); Codex §5 Fangs:
-    // "Bite | melee | strength | +2 | physical | reach 1 | Crit +5 | Stam 1".
-    // Crit +5 dropped (no AttackDef field, crits disabled). Stam 1 is the
-    // HERO-side cost; enemies do not run stamina — SWITCHES.md brawlStaminaCost.
+    // PUBLISHED: Codex §5 Fangs: "Bite | melee | strength | +2 | physical |
+    // reach 1 | Crit +5 | Stam 1". Crit +5 dropped (no AttackDef field, crits
+    // disabled). Stam 1 is REAL as of 2026-08-20 — the Spirit Snake is a hero
+    // and pays it (SWITCHES.md brawlStaminaCost, answered).
     id: 'attack.fangs.bite', name: 'Bite', kind: 'melee',
-    damageType: 'physical', bonus: 2, stat: 'strength', reach: 1, staminaCost: 0,
+    damageType: 'physical', bonus: 2, stat: 'strength', reach: 1, staminaCost: 1,
+  },
+  'attack.drake.poison-breath': {
+    // PUBLISHED: Codex §5, Drake's Maw (Angela 2026-08-20, dictated): "Poison
+    // Breath — precision magic damage, on hit applies 3 Poison, 2 Stamina."
+    // Range 3 carried from the Breath family (not dictated). The 3-Poison
+    // rider lives on trigger.green-drake.venom-breath, attack-scoped.
+    id: 'attack.drake.poison-breath', name: 'Poison Breath', kind: 'ranged',
+    damageType: 'magic', bonus: 0, stat: 'precision', reach: 3, staminaCost: 2,
+  },
+  'attack.drake.snap': {
+    // PUBLISHED: Codex §5, Drake's Maw (Angela 2026-08-20, dictated): "a bite
+    // or some other name — disambiguate it": Snap. Strength damage, on hit
+    // applies 1 Poison (trigger.green-drake.venom-snap, attack-scoped), 1 Stamina.
+    id: 'attack.drake.snap', name: 'Snap', kind: 'melee',
+    damageType: 'physical', bonus: 0, stat: 'strength', reach: 1, staminaCost: 1,
   },
 }
 
@@ -106,6 +121,11 @@ const RAW_UNITS: Readonly<Record<string, UnitDef>> = {
       select: 'target',
       effect: { kind: 'status.apply', statusId: 'status.poison', value: 1 },
       source: 'unit.zombie',
+      // Scoped to the bite (2026-08-20, the attack-scoped mechanism's first
+      // variant). Vacuous while the bite is the zombie's only attack — which is
+      // exactly what keeps this landing byte-identical — and correct the day a
+      // second zombie attack exists: rot rides the BITE, not the zombie.
+      onlyWithAttack: 'attack.zombie.basic',
     }, {
       // TESTING LANE — this is backlog trigger.zombie.sap, absorbed into the
       // status.weakness landing: a SECOND independent 20% onDamage, weak 1 to
@@ -160,36 +180,39 @@ const RAW_UNITS: Readonly<Record<string, UnitDef>> = {
     attributes: ['undead'],
   },
   'spirit-snake': {
-    // PUBLISHED: 6-BESTIARY-SETTLED § unit.* (2026-08-20); Codex §10:
-    // "Spirit Snake | Beast | str 1 | prec 1 | armor 1 | health 2 | reach 1".
-    // Accuracy has no Beast baseline in the Codex derivation — SWITCHES.md
-    // beastAccuracy, default 70. Movement: "enemies 4" (Codex §13).
-    typeId: 'spirit-snake', side: 'enemy',
-    maxHp: 2, armor: 1, resist: 0,
-    accuracy: 70, dodge: 0, strength: 1, precision: 1, magic: 0, spirit: 0,
+    // A PLAYER BEAST — Angela 2026-08-20: "These beasts were meant to be
+    // player beasts... Spirit Snake is supposed to be a hero unit." Her block,
+    // dictated and recorded in the Codex SOURCE (settled.json hero ruling →
+    // Codex §10 hero table): Health 4, Dodge 50, Move 8, Accuracy 110,
+    // Armor 0, Resist 2, Strength 2, Precision 0, Magic 0, Spirit 0,
+    // Stamina 8; venom is 3 Poison on hit; ZERO Item Slots and NO weapon
+    // slots (slots live in the Codex — the engine has no loadout yet).
+    // BENCHED by her fielding ruling: hero-side, not in the default party.
+    typeId: 'spirit-snake', side: 'hero',
+    maxHp: 4, armor: 0, resist: 2,
+    accuracy: 110, dodge: 50, strength: 2, precision: 0, magic: 0, spirit: 0,
     role: 'melee',
-    movement: 4, reach: 1,
-    maxStamina: 0, staminaRegen: 0,   // enemies do not run stamina
+    movement: 8, reach: 1,
+    maxStamina: 8, staminaRegen: 1,
     triggers: [{
-      // Codex §3 Serpent: "onHit your fang attacks apply 2 Poison." The snake's
-      // only attack IS a fang attack, so unconditional onHit is behaviourally
-      // identical — the engine has no attack-form trigger condition yet.
+      // "make it apply 3 poison to the target on hit" — scoped to the fangs.
       id: 'trigger.spirit-snake.venom', hook: 'onHit', chance: 100,
       select: 'target',
-      effect: { kind: 'status.apply', statusId: 'status.poison', value: 2 },
+      effect: { kind: 'status.apply', statusId: 'status.poison', value: 3 },
       source: 'unit.spirit-snake',
+      onlyWithAttack: 'attack.fangs.bite',
     }],
-    ai: 'dumb-melee',
+    ai: 'melee-aggressive',
     attacks: ['attack.fangs.bite'],
     abilities: [],
     attributes: ['beast'],
   },
   'shadow-hound-puppy': {
-    // PUBLISHED: 6-BESTIARY-SETTLED § unit.* (2026-08-20); Codex §10:
-    // "Shadow Hound Puppy | Beast | str 6 | prec 2 | armor 0 | health 12 |
-    // reach 1". Toughness 1 dropped — no field. Accuracy: SWITCHES.md
-    // beastAccuracy. The hound that is still coming: melee-aggressive hunts
-    // the weakest reachable target, and its worrying fangs bleed.
+    // PENDING REDESIGN — Angela 2026-08-20: the Beast pen are PLAYER beasts
+    // and this ported block was never her design. Pulled from the horde,
+    // BENCHED, kept only so the id and its tests survive until she dictates
+    // its real block (the snake and drake precedent). Provisional numbers
+    // below are the ported Codex §10 row, unchanged.
     typeId: 'shadow-hound-puppy', side: 'enemy',
     maxHp: 12, armor: 0, resist: 0,
     accuracy: 70, dodge: 0, strength: 6, precision: 2, magic: 0, spirit: 0,
@@ -204,6 +227,7 @@ const RAW_UNITS: Readonly<Record<string, UnitDef>> = {
       select: 'target',
       effect: { kind: 'status.apply', statusId: 'status.bleed', value: 1 },
       source: 'unit.shadow-hound-puppy',
+      onlyWithAttack: 'attack.fangs.bite',
     }],
     ai: 'melee-aggressive',
     attacks: ['attack.fangs.bite'],
@@ -211,29 +235,37 @@ const RAW_UNITS: Readonly<Record<string, UnitDef>> = {
     attributes: ['beast'],
   },
   'green-drake': {
-    // PUBLISHED: 6-BESTIARY-SETTLED § unit.* (2026-08-20); Codex §10:
-    // "Green Drake | Beast | str 5 | prec 4 | armor 1 | health 12 | reach 2 |
-    // resist 1". Toughness 1 dropped — no field; enemies take no injuries.
-    // Accuracy: SWITCHES.md beastAccuracy. Role melee + ai dumb-melee is
-    // load-bearing: ranged-kite gates repositioning on stamina, and a
-    // 0-stamina enemy would idle at spawn forever — the drake plays as a
-    // closer that hisses point-blank (adjacent-ranged landed 2026-08-15).
-    typeId: 'green-drake', side: 'enemy',
-    maxHp: 12, armor: 1, resist: 1,
-    accuracy: 70, dodge: 0, strength: 5, precision: 4, magic: 0, spirit: 0,
-    role: 'melee',
-    movement: 4, reach: 2,
-    maxStamina: 0, staminaRegen: 0,   // enemies do not run stamina
+    // A PLAYER BEAST — Angela 2026-08-20, dictated block, recorded in the
+    // Codex source (settled.json hero ruling; §5 Drake's Maw; §10 hero table):
+    // Health 12, Armor 2, Resist 1, Strength 4, Precision 3, Magic 0,
+    // Spirit 0, Accuracy 65; reach 2. Two attacks with DIFFERENT riders —
+    // the case that forced attack-scoped triggers. Her two movement powers
+    // (Flight: +0 move for 1 Stamina, atomic; regular: movement 5 for 1
+    // Stamina) wait on backlog movement.flight — movement modes don't exist
+    // yet; movement 5 is the regular power's value. BENCHED like the snake.
+    typeId: 'green-drake', side: 'hero',
+    maxHp: 12, armor: 2, resist: 1,
+    accuracy: 65, dodge: 0, strength: 4, precision: 3, magic: 0, spirit: 0,
+    role: 'ranged',
+    movement: 5, reach: 2,
+    maxStamina: 5, staminaRegen: 1,
     triggers: [{
-      // Codex §5 Breath/Hiss rider: "onHit apply 2 Poison." Attack-scoped in
-      // the Codex; unit-scoped here — identical while Hiss is its only attack.
+      // "poison breath... on hit, applies 3 poison" — the breath's rider only.
       id: 'trigger.green-drake.venom-breath', hook: 'onHit', chance: 100,
       select: 'target',
-      effect: { kind: 'status.apply', statusId: 'status.poison', value: 2 },
+      effect: { kind: 'status.apply', statusId: 'status.poison', value: 3 },
       source: 'unit.green-drake',
+      onlyWithAttack: 'attack.drake.poison-breath',
+    }, {
+      // "That does strength damage and, on hit, applies one poison."
+      id: 'trigger.green-drake.venom-snap', hook: 'onHit', chance: 100,
+      select: 'target',
+      effect: { kind: 'status.apply', statusId: 'status.poison', value: 1 },
+      source: 'unit.green-drake',
+      onlyWithAttack: 'attack.drake.snap',
     }],
-    ai: 'dumb-melee',
-    attacks: ['attack.breath.hiss'],
+    ai: 'ranged-kite',
+    attacks: ['attack.drake.poison-breath', 'attack.drake.snap'],
     abilities: [],
     attributes: ['beast', 'dragon'],
   },
@@ -351,9 +383,12 @@ export const FIRST_BATTLE = {
   // battle at 4 (the original composition, byte-for-byte), the one-per-four
   // burning cadence holds (slots 4 and 8), and the beasts appear from the
   // sixth enemy on.
-  enemies: ['zombie', 'zombie', 'zombie', 'zombie-burning',
-    'zombie', 'spirit-snake', 'zombie', 'zombie-burning',
-    'zombie', 'green-drake', 'shadow-hound-puppy', 'zombie-burning'] as const,
+  // The Beast pen LEFT the horde on 2026-08-20 — Angela: "These beasts were
+  // meant to be player beasts," and the ported stat blocks were never her
+  // design. The cycle is the original undead texture again; the beasts are
+  // hero-side (snake and drake redesigned by her, puppy pending) and BENCHED
+  // until party assembly exists.
+  enemies: ['zombie', 'zombie', 'zombie', 'zombie-burning'] as const,
   defaultEnemyCount: 4,
   heroRow: 11,
   enemyRow: 0,

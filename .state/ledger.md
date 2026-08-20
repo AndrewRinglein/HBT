@@ -1841,3 +1841,446 @@ IRON GAUNTLET: PASSED
   ok  terrain.burning-ground
   ok  unit.spirit-snake
   ok  viewer.status-legibility
+
+## trigger.attack-scoped — LANDED `5d7a21b`
+2026-08-20 21:13
+
+  PASS  dependencies landed
+  PASS  typecheck
+  PASS  full test suite — 326 passed
+  PASS  gate 1 — the id appears in a real battle — trigger.zombie.rot: 3681 log lines, 3681 fired, 548 changed state · trigger.spirit-snake.venom: 9 log lines, 9 fired, 3 changed state
+  PASS  brought its own tests — test/attack-scoped-triggers.test.ts
+  PASS  existing tests untouched
+  PASS  control battles unchanged
+  PASS  content has a published source — 10 ids without a published source (all grandfathered)
+  PASS  hardcode scan — core knows mechanisms, never names
+  PASS  generalizes — the second instance costs zero engine code — trigger.zombie.rot live · trigger.spirit-snake.venom live
+  PASS  naming — new content ids use declared kinds
+  PASS  naming — no banned words invented
+  PASS  kill switch — the tests fail without the content — tests fail without trigger.zombie.rot,trigger.spirit-snake.venom — they genuinely test it
+
+IRON GAUNTLET: PASSED
+
+## fix.beast-pen-hero-correction — LANDED `a4822ab` **NEEDS REVIEW**
+2026-08-20 21:21
+
+  PASS  dependencies landed
+  PASS  typecheck
+  PASS  full test suite — 322 passed
+  PASS  gate 1 — the id appears in a real battle
+  PASS  brought its own tests — test/burn.test.ts, test/green-drake.test.ts, test/shadow-hound-puppy.test.ts, test/spirit-snake.test.ts
+  WARN  existing tests untouched — DELETED LINES in test/burn.test.ts (-5), test/green-drake.test.ts (-60), test/shadow-hound-puppy.test.ts (-51), test/spirit-snake.test.ts (-75) — will land FLAGGED for review
+  PASS  control battles unchanged — will re-bless at commit — this item DECLARED it changes the control battles: map.open d7b95a4d->20b95292, map.ridge b3d94a5a->f1c138fd, map.flanks ea07f000->7445a030, map.highlands dd488136->91734280, map.field ce48ba70->f88d0f26, map.thicket 93155e78->bcddd10f, test.map.embers f00389c4->d4162f08, test.map.showcase 371964a8->fc06cec1
+  PASS  content has a published source — 11 ids without a published source — 1 NEW from THIS item, seal withheld until published
+  PASS  hardcode scan — core knows mechanisms, never names
+  PASS  generalizes — the second instance costs zero engine code — shape 'data' — not a mechanism, exempt
+  PASS  naming — new content ids use declared kinds
+  PASS  naming — no banned words invented
+  PASS  kill switch — the tests fail without the content — no content id to disable — engine plumbing, not applicable
+
+<details><summary>Existing tests were edited — review this diff</summary>
+
+```diff
+diff --git a/test/burn.test.ts b/test/burn.test.ts
+index 16189a7..49b2dc6 100644
+--- a/test/burn.test.ts
++++ b/test/burn.test.ts
+@@ -96,11 +96,11 @@ describe('status.burn', () => {
+ 
+   it('the mix: enemyCount 8 fields exactly 2 burning zombies (one per four, cycled)', () => {
+-    // Zombie count updated 6 → 5 on 2026-08-20 (Law 10, written reason): the
+-    // Beast pen put a spirit-snake in the cycle's sixth slot. The claim under
+-    // test — one burning zombie per four, preserved at slots 4 and 8 — is
+-    // untouched and still asserted exactly.
++    // Zombie count 6 → 5 → 6 across 2026-08-20 (Law 10, reasons written both
++    // times): the Beast pen borrowed the cycle's sixth slot, then left the
++    // horde entirely when Angela ruled the beasts are PLAYER units. The claim
++    // under test — one burning zombie per four — never moved.
+     const ctx = createBattle({ replicate: 3, enemyCount: 8 })
+     expect(ctx.state.units.filter((u) => u.typeId === 'zombie-burning').length).toBe(2)
+-    expect(ctx.state.units.filter((u) => u.typeId === 'zombie').length).toBe(5)
++    expect(ctx.state.units.filter((u) => u.typeId === 'zombie').length).toBe(6)
+   })
+ })
+diff --git a/test/green-drake.test.ts b/test/green-drake.test.ts
+index cd81e5d..3661516 100644
+--- a/test/green-drake.test.ts
++++ b/test/green-drake.test.ts
+@@ -1,80 +1,83 @@
+-// The Green Drake — Codex §10: "Green Drake | Beast | str 5 | prec 4 | armor 1
+-// | health 12 | reach 2 | resist 1"; §5 Breath: "Hiss | range 3 | magic | +0 |
+-// magic | onHit apply 2 Poison." With the published magic 0 the Hiss is a
+-// 0-damage attack — the whole threat is the poison clock, faithful to the rows.
+-// It extends the FIRST_BATTLE cycle at slot 10, so enemyCount 8 battles (the
+-// control set) are BYTE-IDENTICAL — a proven-neutral landing whose one engine
+-// change is reach-aware swinging in dumb-melee (an adjacency-only check meant a
+-// reach unit closed and then never attacked; for reach-1 units the new check is
+-// the old check exactly).
++// The Green Drake — a PLAYER BEAST, redesigned by Angela 2026-08-20 and
++// recorded in the Codex SOURCE (settled.json hero ruling → §10 hero table +
++// §5 Drake's Maw): Health 12, Armor 2, Resist 1, Strength 4, Precision 3,
++// Accuracy 65, reach 2. Two attacks with DIFFERENT on-hit riders — the case
++// that forced attack-scoped triggers: Poison Breath (precision magic, 3
++// Poison, 2 Stamina) and Snap (strength, 1 Poison, 1 Stamina). Her two
++// movement powers (Flight +0 for 1 Stamina; regular movement 5 for 1 Stamina)
++// wait on backlog movement.flight. BENCHED like the snake.
+ import { describe, expect, it } from 'vitest'
+ import { createBattle, createCustomBattle } from '../src/core/setup.js'
+-import { runBattle } from '../src/core/battle.js'
+-import { preview, reachOf } from '../src/core/pipeline.js'
+-import { UNITS, ATTACKS, FIRST_BATTLE } from '../src/content/index.js'
++import { performAttack, preview } from '../src/core/pipeline.js'
++import { beginActivation } from '../src/core/mutate.js'
++import { removeStatus, valueOf } from '../src/core/status.js'
++import { UNITS, ATTACKS } from '../src/content/index.js'
+ import { hexId } from '../src/core/hex.js'
+ 
+-describe('the data — the Codex rows, verbatim', () => {
+-  it('unit.green-drake carries the §10 statline', () => {
++describe('the block — her dictation, verbatim', () => {
++  it('every number she gave', () => {
+     const d = UNITS['green-drake']!
+     expect(d).toBeDefined()
+-    expect([d.maxHp, d.armor, d.resist, d.strength, d.precision, d.reach])
+-      .toEqual([12, 1, 1, 5, 4, 2])
+-    expect(d.maxStamina).toBe(0)
+-    expect(d.attacks).toEqual(['attack.breath.hiss'])
+-    expect(d.attributes).toEqual(['beast', 'dragon'])
+-    expect(d.triggers?.map((t) => t.id)).toEqual(['trigger.green-drake.venom-breath'])
++    expect(d.side).toBe('hero')
++    expect([d.maxHp, d.armor, d.resist, d.strength, d.precision, d.magic, d.spirit])
++      .toEqual([12, 2, 1, 4, 3, 0, 0])
++    expect(d.accuracy).toBe(65)
++    expect([d.movement, d.reach]).toEqual([5, 2])   // the regular movement power's value
++    expect(d.attacks).toEqual(['attack.drake.poison-breath', 'attack.drake.snap'])
+   })
+-  it('attack.breath.hiss is the §5 Breath row', () => {
+-    const a = ATTACKS['attack.breath.hiss']!
+-    expect([a.kind, a.stat, a.bonus, a.damageType, a.reach, a.staminaCost])
+-      .toEqual(['ranged', 'magic', 0, 'magic', 3, 0])
++  it('the two attacks — Poison Breath and the disambiguated bite, Snap', () => {
++    const b = ATTACKS['attack.drake.poison-breath']!
++    expect([b.kind, b.stat, b.bonus, b.damageType, b.staminaCost]).toEqual(['ranged', 'precision', 0, 'magic', 2])
++    const s = ATTACKS['attack.drake.snap']!
++    expect([s.kind, s.stat, s.bonus, s.damageType, s.staminaCost]).toEqual(['melee', 'strength', 0, 'physical', 1])
+   })
+ })
+ 
+-describe('the 0-damage identity — the threat is the clock', () => {
+-  it('hiss previews 0 damage vs everyone; the reach is 3 + 2 = 5', () => {
++describe('two riders, two attacks — attack scoping doing real work', () => {
++  function board() {
++    // A ranged attack cannot fire adjacent (ruled 2026-08-15), so the drake
++    // gets a breath target at range 3 and a snap target at its jaws.
+     const ctx = createCustomBattle(
+-      [{ type: 'warrior', hex: hexId(5, 5) }],
+-      [{ type: 'green-drake', hex: hexId(5, 8) }],
++      [{ type: 'green-drake', hex: hexId(5, 5) }],
++      [{ type: 'zombie', hex: hexId(5, 8) }, { type: 'zombie', hex: hexId(5, 6) }],
+     )
+-    const drake = ctx.state.units[1]!
+-    expect(preview(ctx, drake.id, 0, 'attack.breath.hiss').damageOnHit).toBe(0)
+-    expect(reachOf(ctx, drake, ATTACKS['attack.breath.hiss']!)).toBe(5)
+-  })
+-})
++    const d = ctx.state.units[0]!
++    d.mods.push({ stat: 'accuracy', op: 'add', value: 60, source: 'test', scope: 'unit' })  // never miss
++    return { ctx, d, far: ctx.state.units[1]!, near: ctx.state.units[2]! }
++  }
++  it('the breath poisons 3; the snap poisons 1 — same hook, different attacks, different venom', () => {
++    const { ctx, d, far, near } = board()
++    beginActivation(ctx, d.id, 'test')
++    performAttack(ctx, d.id, far.id, 'attack.drake.poison-breath')
++    expect(valueOf(far, 'status.poison')).toBe(3)
++    expect(valueOf(near, 'status.poison')).toBe(0)
+ 
+-describe('the cycle — and the byte-identity claim', () => {
+-  it('no drake below enemyCount 10; one at 12; the one-per-four burning cadence holds', () => {
+-    const eight = createBattle({ replicate: 0, enemyCount: 8 })
+-    expect(eight.state.units.filter((u) => u.typeId === 'green-drake').length).toBe(0)
+-    const twelve = createBattle({ replicate: 0, enemyCount: 12 })
+-    expect(twelve.state.units.filter((u) => u.typeId === 'green-drake').length).toBe(1)
+-    expect(twelve.state.units.filter((u) => u.typeId === 'zombie-burning').length).toBe(3)
++    beginActivation(ctx, d.id, 'test')
++    performAttack(ctx, d.id, near.id, 'attack.drake.snap')
++    expect(valueOf(near, 'status.poison')).toBe(1)
++    removeStatus(ctx, far.id, 'status.poison', 'test')
++  })
++  it('the numbers: breath previews 3 magic (precision 3), snap previews 4 physical (strength 4) vs no armor', () => {
++    const { ctx, d, far, near } = board()
++    expect(preview(ctx, d.id, far.id, 'attack.drake.poison-breath').damageOnHit).toBe(3)
++    expect(preview(ctx, d.id, near.id, 'attack.drake.snap').damageOnHit).toBe(4)
+   })
+-  it('reach-1 units still idle with the exact old words — the neutrality hinge', () => {
+-    // A lone zombie far from the heroes idles as it approaches; its text must
+-    // be byte-identical to the pre-drake engine or the control battles move.
+-    const ctx = createBattle({ replicate: 0, enemyCount: 4 })
+-    runBattle(ctx)
+-    const idles = ctx.events.filter((e) => e.type === 'activation.idle' && String(e.causeId).startsWith('ai.'))
+-    for (const e of idles) expect(['nothing adjacent', 'could not reach an enemy', 'no target in range', 'no enemy in reach']).toContain(e['reason'])
+-    expect(idles.some((e) => e['reason'] === 'no enemy in reach')).toBe(false)   // no reach unit in a 4v4
++  it('the stamina ledger: a breath costs 2, a snap costs 1', () => {
++    const { ctx, d, far, near } = board()
++    beginActivation(ctx, d.id, 'test')
++    performAttack(ctx, d.id, far.id, 'attack.drake.poison-breath')
++    expect(d.stamina).toBe(d.maxStamina - 2)
++    beginActivation(ctx, d.id, 'test')
++    performAttack(ctx, d.id, near.id, 'attack.drake.snap')
++    expect(d.stamina).toBe(d.maxStamina - 3)
+   })
+ })
+ 
+-describe('the drake actually fights now', () => {
+-  it('venom-breath poisons a hero in the first z=12 seeds — the reach-aware swing at work', () => {
+-    let found = 0, hisses = 0
+-    for (let r = 0; r < 10 && !found; r++) {
+-      const ctx = createBattle({ replicate: r, enemyCount: 12 })
+-      runBattle(ctx)
+-      const drake = ctx.state.units.find((u) => u.typeId === 'green-drake')!
+-      hisses += ctx.events.filter((e) => e.type === 'attack.declared' && e['actor'] === drake.id).length
+-      found += ctx.events.filter((e) => e.type === 'status.applied'
+-        && e['causeId'] === 'trigger.green-drake.venom-breath' && e['amount'] === 2).length
++describe('benched', () => {
++  it('no drake in any horde', () => {
++    for (const z of [4, 8, 12]) {
++      const ctx = createBattle({ replicate: 0, enemyCount: z })
++      expect(ctx.state.units.some((u) => u.typeId === 'green-drake'), String(z)).toBe(false)
+     }
+-    expect(hisses).toBeGreaterThan(0)
+-    expect(found).toBeGreaterThan(0)
+   })
+ })
+diff --git a/test/shadow-hound-puppy.test.ts b/test/shadow-hound-puppy.test.ts
+index 083b49d..676597a 100644
+--- a/test/shadow-hound-puppy.test.ts
++++ b/test/shadow-hound-puppy.test.ts
+@@ -1,62 +1,26 @@
+-// The Shadow Hound Puppy — Codex §10: "Shadow Hound Puppy | Beast | str 6 |
+-// prec 2 | armor 0 | health 12 | reach 1"; §3 Hound: "onHit your fang attacks
+-// apply 1 Bleed." The heavy hitter of the Beast pen, landed LAST because its
+-// kit needs status.bleed (849ead6). Cycle slot 11 — enemyCount 8 control
+-// battles stay byte-identical (changesBaseline false, proven neutral).
++// The Shadow Hound Puppy — PENDING REDESIGN. Angela 2026-08-20: the Beast pen
++// are PLAYER beasts and the ported blocks were never her design. Pulled from
++// the horde and benched; the def survives (provisional, the ported Codex row)
++// so the id and this coverage are waiting when she dictates its real block,
++// the way she did the snake and the drake.
+ import { describe, expect, it } from 'vitest'
+-import { createBattle, createCustomBattle } from '../src/core/setup.js'
+-import { runBattle } from '../src/core/battle.js'
+-import { preview } from '../src/core/pipeline.js'
++import { createBattle } from '../src/core/setup.js'
+ import { UNITS, FIRST_BATTLE } from '../src/content/index.js'
+-import { hexId } from '../src/core/hex.js'
+ 
+-describe('the data — the Codex row, verbatim', () => {
+-  it('unit.shadow-hound-puppy carries the §10 statline and the Hound rider', () => {
++describe('benched, provisional, waiting', () => {
++  it('the def survives with the ported row and the fang-scoped worry', () => {
+     const d = UNITS['shadow-hound-puppy']!
+     expect(d).toBeDefined()
+-    expect([d.maxHp, d.armor, d.strength, d.precision, d.reach]).toEqual([12, 0, 6, 2, 1])
+-    expect(d.maxStamina).toBe(0)
+-    expect(d.ai).toBe('melee-aggressive')
+-    expect(d.attacks).toEqual(['attack.fangs.bite'])   // the shared Fangs row
++    expect([d.maxHp, d.armor, d.strength, d.precision]).toEqual([12, 0, 6, 2])
+     const t = d.triggers![0]!
+-    expect(t.id).toBe('trigger.shadow-hound-puppy.worry')
+     expect(t.effect).toEqual({ kind: 'status.apply', statusId: 'status.bleed', value: 1 })
++    expect(t.onlyWithAttack).toBe('attack.fangs.bite')
+   })
+-})
+-
+-describe('the numbers', () => {
+-  it('its bite previews 7 vs the warrior (6 str + 2 bonus − 1 armor) — the pen heavyweight', () => {
+-    const ctx = createCustomBattle(
+-      [{ type: 'warrior', hex: hexId(5, 5) }],
+-      [{ type: 'shadow-hound-puppy', hex: hexId(5, 6) }],
+-    )
+-    expect(preview(ctx, 1, 0, 'attack.fangs.bite').damageOnHit).toBe(7)
+-  })
+-})
+-
+-describe('the cycle', () => {
+-  it('slot 11; nothing below enemyCount 11; the burning cadence still holds at 12', () => {
+-    expect(FIRST_BATTLE.enemies[10]).toBe('shadow-hound-puppy')
+-    const eight = createBattle({ replicate: 0, enemyCount: 8 })
+-    expect(eight.state.units.filter((u) => u.typeId === 'shadow-hound-puppy').length).toBe(0)
+-    const twelve = createBattle({ replicate: 0, enemyCount: 12 })
+-    expect(twelve.state.units.filter((u) => u.typeId === 'shadow-hound-puppy').length).toBe(1)
+-    expect(twelve.state.units.filter((u) => u.typeId === 'zombie-burning').length).toBe(3)
+-  })
+-})
+-
+-describe('the worry fires in real battles', () => {
+-  it('bleeds a hero in the first z=12 seeds — and the bleed then ticks its flat 2', () => {
+-    let worried = 0, tickedFlat = 0
+-    for (let r = 0; r < 10 && !worried; r++) {
+-      const ctx = createBattle({ replicate: r, enemyCount: 12 })
+-      runBattle(ctx)
+-      worried += ctx.events.filter((e) => e.type === 'status.applied'
+-        && e['causeId'] === 'trigger.shadow-hound-puppy.worry' && e['statusId'] === 'status.bleed').length
+-      tickedFlat += ctx.events.filter((e) => e.type === 'damage.applied'
+-        && e['causeId'] === 'status.bleed' && (e['amount'] as number) === 2).length
++  it('it is in NO horde at any count', () => {
++    expect([...FIRST_BATTLE.enemies]).not.toContain('shadow-hound-puppy')
++    for (const z of [4, 8, 12]) {
++      const ctx = createBattle({ replicate: 0, enemyCount: z })
++      expect(ctx.state.units.some((u) => u.typeId === 'shadow-hound-puppy'), String(z)).toBe(false)
+     }
+-    expect(worried).toBeGreaterThan(0)
+-    expect(tickedFlat).toBeGreaterThan(0)
+   })
+ })
+diff --git a/test/spirit-snake.test.ts b/test/spirit-snake.test.ts
+index 67c1eec..9628b38 100644
+--- a/test/spirit-snake.test.ts
++++ b/test/spirit-snake.test.ts
+@@ -1,95 +1,68 @@
+-// The Spirit Snake — first of the Beast pen. Codex §10: "Spirit Snake | Beast |
+-// str 1 | prec 1 | armor 1 | health 2 | reach 1"; §5 Fangs: "Bite | melee |
+-// strength | +2 | physical"; §3 Serpent: "onHit your fang attacks apply 2
+-// Poison." Chaff with a venom clock. It extends the FIRST_BATTLE CYCLE — the
+-// first four enemies are the original 4v4 composition; the snake appears from
+-// the fifth enemy on. Accuracy 70 is SWITCHES.md beastAccuracy (no published
+-// Beast baseline); stamina 0 because enemies do not run stamina.
++// The Spirit Snake — a PLAYER BEAST. Angela 2026-08-20: "These beasts were
++// meant to be player beasts... Spirit Snake is supposed to be a hero unit,"
++// and she dictated its block, recorded in the Codex SOURCE (settled.json hero
++// ruling → the §10 hero table): Health 4, Dodge 50, Move 8, Accuracy 110,
++// Armor 0, Resist 2, Strength 2, Precision 0, Stamina 8; venom 3 Poison on
++// hit; zero Item Slots and no weapon slots. BENCHED by her fielding ruling —
++// hero-side, out of the default party, fielded here in custom battles.
+ import { describe, expect, it } from 'vitest'
+ import { createBattle, createCustomBattle } from '../src/core/setup.js'
+-import { runBattle } from '../src/core/battle.js'
+-import { preview } from '../src/core/pipeline.js'
++import { performAttack, preview, resolveAccuracy } from '../src/core/pipeline.js'
++import { beginActivation } from '../src/core/mutate.js'
++import { valueOf } from '../src/core/status.js'
+ import { UNITS, ATTACKS, FIRST_BATTLE } from '../src/content/index.js'
+ import { hexId } from '../src/core/hex.js'
+ 
+-describe('the data — the Codex row, verbatim', () => {
+-  it('unit.spirit-snake carries the §10 statline', () => {
++describe('the block — Angela\'s dictation, verbatim from the Codex hero table', () => {
++  it('every number she gave', () => {
+     const d = UNITS['spirit-snake']!
+     expect(d).toBeDefined()
+-    expect([d.maxHp, d.armor, d.strength, d.precision, d.reach]).toEqual([2, 1, 1, 1, 1])
+-    expect(d.maxStamina).toBe(0)                       // enemies do not run stamina
+-    expect(d.movement).toBe(4)                         // "enemies 4"
++    expect(d.side).toBe('hero')
++    expect([d.maxHp, d.dodge, d.movement, d.accuracy]).toEqual([4, 50, 8, 110])
++    expect([d.armor, d.resist, d.strength, d.precision, d.magic, d.spirit]).toEqual([0, 2, 2, 0, 0, 0])
++    expect(d.maxStamina).toBe(8)
+     expect(d.attacks).toEqual(['attack.fangs.bite'])
+-    expect(d.attributes).toContain('beast')
+-    expect(d.triggers?.map((t) => t.id)).toEqual(['trigger.spirit-snake.venom'])
++    const t = d.triggers![0]!
++    expect(t.effect).toEqual({ kind: 'status.apply', statusId: 'status.poison', value: 3 })
++    expect(t.hook).toBe('onHit')
++    expect(t.onlyWithAttack).toBe('attack.fangs.bite')
+   })
+-  it('attack.fangs.bite is the §5 Fangs row', () => {
+-    const a = ATTACKS['attack.fangs.bite']!
+-    expect(a).toBeDefined()
+-    expect([a.kind, a.stat, a.bonus, a.damageType, a.reach, a.staminaCost])
+-      .toEqual(['melee', 'strength', 2, 'physical', 1, 0])
++  it('the bite pays its Codex Stam 1 — a hero wields it now (brawlStaminaCost, answered)', () => {
++    expect(ATTACKS['attack.fangs.bite']!.staminaCost).toBe(1)
+   })
+ })
+ 
+-describe('the horde cycle', () => {
+-  it('the first four enemies are the ORIGINAL 4v4 — the snake slithers in at the sixth', () => {
+-    expect(FIRST_BATTLE.enemies.slice(0, 4)).toEqual(['zombie', 'zombie', 'zombie', 'zombie-burning'])
+-    expect(FIRST_BATTLE.enemies[5]).toBe('spirit-snake')
+-    expect(FIRST_BATTLE.defaultEnemyCount).toBe(4)   // the canonical battle stays 4v4
+-    const four = createBattle({ replicate: 0, enemyCount: 4 })
+-    expect(four.state.units.filter((u) => u.typeId === 'spirit-snake').length).toBe(0)
+-    const eight = createBattle({ replicate: 0, enemyCount: 8 })
+-    expect(eight.state.units.filter((u) => u.typeId === 'spirit-snake').length).toBe(1)
+-    expect(eight.state.units.filter((u) => u.typeId === 'zombie').length).toBe(5)
+-    // the one-per-four burning cadence survives the Beast pen
+-    expect(eight.state.units.filter((u) => u.typeId === 'zombie-burning').length).toBe(2)
+-  })
+-  it('enemies are named for what they ARE — a snake is never "Zombie 5"', () => {
+-    const eight = createBattle({ replicate: 0, enemyCount: 8 })
+-    const snake = eight.state.units.find((u) => u.typeId === 'spirit-snake')!
+-    expect(snake.name).toBe('Spirit Snake 1')
+-    expect(eight.state.units.some((u) => u.name === 'Zombie Burning 1')).toBe(true)
++describe('benched — out of every horde, off the default party', () => {
++  it('no snake at any enemy count, and the horde is the undead texture again', () => {
++    for (const z of [4, 8, 12]) {
++      const ctx = createBattle({ replicate: 0, enemyCount: z })
++      expect(ctx.state.units.some((u) => u.typeId === 'spirit-snake'), String(z)).toBe(false)
++    }
++    expect([...FIRST_BATTLE.enemies]).toEqual(['zombie', 'zombie', 'zombie', 'zombie-burning'])
++    expect([...FIRST_BATTLE.heroes]).toEqual(['warrior', 'warrior', 'ranger', 'mage'])
+   })
+ })
+ 
+-describe('the numbers', () => {
+-  it('bite previews 3 vs the unarmored ranger (1 str + 2 bonus), 2 vs the warrior (armor 1)', () => {
+-    const ctx = createCustomBattle(
+-      [{ type: 'ranger', hex: hexId(5, 5) }, { type: 'warrior', hex: hexId(6, 5) }],
+-      [{ type: 'spirit-snake', hex: hexId(5, 6) }],
+-    )
+-    expect(preview(ctx, 2, 0, 'attack.fangs.bite').damageOnHit).toBe(3)
+-    expect(preview(ctx, 2, 1, 'attack.fangs.bite').damageOnHit).toBe(2)
+-  })
+-  it('chaff by design: one warrior axe (6) is more than its whole body (2)', () => {
++describe('fielded in a custom battle, it plays like her block says', () => {
++  function board() {
+     const ctx = createCustomBattle(
+-      [{ type: 'warrior', hex: hexId(5, 5) }],
+-      [{ type: 'spirit-snake', hex: hexId(5, 6) }],
++      [{ type: 'spirit-snake', hex: hexId(5, 5) }],
++      [{ type: 'zombie', hex: hexId(5, 6) }],
+     )
+-    expect(preview(ctx, 0, 1, 'attack.warrior.axe').damageOnHit)
+-      .toBeGreaterThanOrEqual(UNITS['spirit-snake']!.maxHp)
++    return { ctx, s: ctx.state.units[0]!, z: ctx.state.units[1]! }
++  }
++  it('accuracy 110 vs no dodge NEVER misses — the bite lands 4 and venom lands 3, every time', () => {
++    const { ctx, s, z } = board()
++    expect(preview(ctx, s.id, z.id, 'attack.fangs.bite').hitChance).toBeGreaterThanOrEqual(100)
++    beginActivation(ctx, s.id, 'test')
++    const r = performAttack(ctx, s.id, z.id, 'attack.fangs.bite')
++    expect(r.hit).toBe(true)
++    expect(r.damage).toBe(4)                       // strength 2 + fangs +2, armor 0
++    expect(valueOf(z, 'status.poison')).toBe(3)    // her venom, scoped to the fangs
++    expect(s.stamina).toBe(s.maxStamina - 1)       // the bite cost its Stam 1
+   })
+-})
+-
+-describe('the venom fires in real battles', () => {
+-  it('venom lands somewhere on the terrain maps — rare by DESIGN of the published row', () => {
+-    // FINDING (2026-08-20, recorded for Angela): with the Codex §10 statline
+-    // (hp 2) the snake almost never survives contact — venom fired 4 times in
+-    // 350 panel battles, and only where terrain slows the heroes down. The row
+-    // is faithful; whether chaff-with-a-clock is the intent is a design call.
+-    let found = 0
+-    outer: for (const mapId of ['map.field', 'map.thicket']) {
+-      for (const z of [8, 12]) {
+-        for (let r = 0; r < 25; r++) {
+-          const ctx = createBattle({ replicate: r, enemyCount: z, mapId })
+-          runBattle(ctx)
+-          found += ctx.events.filter((e) => e.type === 'status.applied'
+-            && e['causeId'] === 'trigger.spirit-snake.venom'
+-            && e['statusId'] === 'status.poison' && e['amount'] === 2).length
+-          if (found) break outer
+-        }
+-      }
+-    }
+-    expect(found).toBeGreaterThan(0)
++  it('dodge 50 makes it slippery: a zombie bite has only a 15% chance to touch it', () => {
++    const { ctx, s, z } = board()
++    expect(resolveAccuracy(ctx, z, s, ctx.attacks['attack.zombie.basic']!).value).toBe(15)  // 65 − 50
+   })
+ })
+```
+</details>
+
+IRON GAUNTLET: NOT PASSED — 2 FLAG(S) WARNED; 1 EXEMPTION(S) TAKEN

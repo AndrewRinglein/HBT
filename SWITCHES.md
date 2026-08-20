@@ -166,6 +166,10 @@ never Beast.
 drill. Sweepable the day the Codex prices Beast. *(2026-08-20, landing the Beast
 pen.)*
 
+**ANSWERED for the fixed beasts, 2026-08-20:** Angela dictated per-hero
+accuracies (Spirit Snake 110, Green Drake 65). The 70 default stands only for
+future beasts she has not priced.
+
 ## brawlStaminaCost
 
 **Question.** Do natural-weapon attacks (Fangs, Breath) cost their Codex Stam
@@ -174,3 +178,9 @@ when the wielder runs a stamina bar?
 **Default: 0 while only enemies wield them** — GAME-DESIGN rules enemies
 costless ("the tireless dead versus the winded living"). Revisit when a
 hero-side Beast lands. *(2026-08-20, landing the Beast pen.)*
+
+**ANSWERED 2026-08-20, same day:** a hero-side Beast landed (Angela's Spirit
+Snake redesign). Fangs cost their Codex Stam 1; the drake's Breath costs 2 and
+Snap costs 1, all dictated. No enemy wields a natural weapon in the standard
+battles any more, so the 0-stamina-enemy conflict never arises; if one ever
+does, enemies-don't-run-stamina wins and the cost is waived enemy-side.

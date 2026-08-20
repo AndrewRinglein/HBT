@@ -645,3 +645,28 @@ Angela, reviewing the withheld seals: **"Every seal I read was reasonable."**
 All 20 flagged landings cleared via `tools/review.mjs` (built this session —
 the human-verdict half of the flag mechanism). The gate's seal history is
 untouched; review records the verdict, it never rewrites the verdict.
+
+## 2026-08-20 — the Beast pen are PLAYER beasts; the Codex is where content changes land
+Angela: **"These beasts were meant to be player beasts, but these stat blocks
+were not designed by me. So Spirit Snake is supposed to be a hero unit."** And,
+on where such changes belong: **"This should be updated inside of the codex,
+inside of our source of truth, not hard-coded somewhere."** Rulings applied via
+`content/settled.json` hero rulings (a new overlay assemble.mjs applies onto the
+ported blocks), regenerated through her pipeline (assemble → build-viewer →
+mkcodexmd, PROBLEMS: 0).
+
+**Spirit Snake (dictated block):** Health 4 · Dodge 50 · Move 8 · Accuracy 110 ·
+Armor 0 · Resist 2 · Strength 2 · Precision 0 · Magic 0 · Spirit 0 · Stamina 8;
+venom applies 3 Poison on hit. **"It has zero item slots. It needs zero item
+slots. And there are no weapon slots either."** Fielding: **built but benched** —
+hero-side, out of the default party until parties are assembled.
+
+**Green Drake (dictated block):** Health 12 · Armor 2 · Resist 1 · Strength 4 ·
+Precision 3 · Magic 0 · Spirit 0 · Accuracy 65; reach 2. Two movement powers:
+**Flight** (+0 movement, 1 Stamina) and regular (movement 5, 1 Stamina). Attacks:
+**Poison Breath** (precision magic damage, on hit 3 Poison, 2 Stamina) and a
+disambiguated bite, **Snap** (strength damage, on hit 1 Poison, 1 Stamina).
+Benched with the snake. Flight waits on backlog `movement.flight`.
+
+**Shadow Hound Puppy:** pulled from the horde, benched-provisional, pending her
+block.

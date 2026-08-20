@@ -1,95 +1,68 @@
-// The Spirit Snake — first of the Beast pen. Codex §10: "Spirit Snake | Beast |
-// str 1 | prec 1 | armor 1 | health 2 | reach 1"; §5 Fangs: "Bite | melee |
-// strength | +2 | physical"; §3 Serpent: "onHit your fang attacks apply 2
-// Poison." Chaff with a venom clock. It extends the FIRST_BATTLE CYCLE — the
-// first four enemies are the original 4v4 composition; the snake appears from
-// the fifth enemy on. Accuracy 70 is SWITCHES.md beastAccuracy (no published
-// Beast baseline); stamina 0 because enemies do not run stamina.
+// The Spirit Snake — a PLAYER BEAST. Angela 2026-08-20: "These beasts were
+// meant to be player beasts... Spirit Snake is supposed to be a hero unit,"
+// and she dictated its block, recorded in the Codex SOURCE (settled.json hero
+// ruling → the §10 hero table): Health 4, Dodge 50, Move 8, Accuracy 110,
+// Armor 0, Resist 2, Strength 2, Precision 0, Stamina 8; venom 3 Poison on
+// hit; zero Item Slots and no weapon slots. BENCHED by her fielding ruling —
+// hero-side, out of the default party, fielded here in custom battles.
 import { describe, expect, it } from 'vitest'
 import { createBattle, createCustomBattle } from '../src/core/setup.js'
-import { runBattle } from '../src/core/battle.js'
-import { preview } from '../src/core/pipeline.js'
+import { performAttack, preview, resolveAccuracy } from '../src/core/pipeline.js'
+import { beginActivation } from '../src/core/mutate.js'
+import { valueOf } from '../src/core/status.js'
 import { UNITS, ATTACKS, FIRST_BATTLE } from '../src/content/index.js'
 import { hexId } from '../src/core/hex.js'
 
-describe('the data — the Codex row, verbatim', () => {
-  it('unit.spirit-snake carries the §10 statline', () => {
+describe('the block — Angela\'s dictation, verbatim from the Codex hero table', () => {
+  it('every number she gave', () => {
     const d = UNITS['spirit-snake']!
     expect(d).toBeDefined()
-    expect([d.maxHp, d.armor, d.strength, d.precision, d.reach]).toEqual([2, 1, 1, 1, 1])
-    expect(d.maxStamina).toBe(0)                       // enemies do not run stamina
-    expect(d.movement).toBe(4)                         // "enemies 4"
+    expect(d.side).toBe('hero')
+    expect([d.maxHp, d.dodge, d.movement, d.accuracy]).toEqual([4, 50, 8, 110])
+    expect([d.armor, d.resist, d.strength, d.precision, d.magic, d.spirit]).toEqual([0, 2, 2, 0, 0, 0])
+    expect(d.maxStamina).toBe(8)
     expect(d.attacks).toEqual(['attack.fangs.bite'])
-    expect(d.attributes).toContain('beast')
-    expect(d.triggers?.map((t) => t.id)).toEqual(['trigger.spirit-snake.venom'])
+    const t = d.triggers![0]!
+    expect(t.effect).toEqual({ kind: 'status.apply', statusId: 'status.poison', value: 3 })
+    expect(t.hook).toBe('onHit')
+    expect(t.onlyWithAttack).toBe('attack.fangs.bite')
   })
-  it('attack.fangs.bite is the §5 Fangs row', () => {
-    const a = ATTACKS['attack.fangs.bite']!
-    expect(a).toBeDefined()
-    expect([a.kind, a.stat, a.bonus, a.damageType, a.reach, a.staminaCost])
-      .toEqual(['melee', 'strength', 2, 'physical', 1, 0])
-  })
-})
-
-describe('the horde cycle', () => {
-  it('the first four enemies are the ORIGINAL 4v4 — the snake slithers in at the sixth', () => {
-    expect(FIRST_BATTLE.enemies.slice(0, 4)).toEqual(['zombie', 'zombie', 'zombie', 'zombie-burning'])
-    expect(FIRST_BATTLE.enemies[5]).toBe('spirit-snake')
-    expect(FIRST_BATTLE.defaultEnemyCount).toBe(4)   // the canonical battle stays 4v4
-    const four = createBattle({ replicate: 0, enemyCount: 4 })
-    expect(four.state.units.filter((u) => u.typeId === 'spirit-snake').length).toBe(0)
-    const eight = createBattle({ replicate: 0, enemyCount: 8 })
-    expect(eight.state.units.filter((u) => u.typeId === 'spirit-snake').length).toBe(1)
-    expect(eight.state.units.filter((u) => u.typeId === 'zombie').length).toBe(5)
-    // the one-per-four burning cadence survives the Beast pen
-    expect(eight.state.units.filter((u) => u.typeId === 'zombie-burning').length).toBe(2)
-  })
-  it('enemies are named for what they ARE — a snake is never "Zombie 5"', () => {
-    const eight = createBattle({ replicate: 0, enemyCount: 8 })
-    const snake = eight.state.units.find((u) => u.typeId === 'spirit-snake')!
-    expect(snake.name).toBe('Spirit Snake 1')
-    expect(eight.state.units.some((u) => u.name === 'Zombie Burning 1')).toBe(true)
+  it('the bite pays its Codex Stam 1 — a hero wields it now (brawlStaminaCost, answered)', () => {
+    expect(ATTACKS['attack.fangs.bite']!.staminaCost).toBe(1)
   })
 })
 
-describe('the numbers', () => {
-  it('bite previews 3 vs the unarmored ranger (1 str + 2 bonus), 2 vs the warrior (armor 1)', () => {
-    const ctx = createCustomBattle(
-      [{ type: 'ranger', hex: hexId(5, 5) }, { type: 'warrior', hex: hexId(6, 5) }],
-      [{ type: 'spirit-snake', hex: hexId(5, 6) }],
-    )
-    expect(preview(ctx, 2, 0, 'attack.fangs.bite').damageOnHit).toBe(3)
-    expect(preview(ctx, 2, 1, 'attack.fangs.bite').damageOnHit).toBe(2)
-  })
-  it('chaff by design: one warrior axe (6) is more than its whole body (2)', () => {
-    const ctx = createCustomBattle(
-      [{ type: 'warrior', hex: hexId(5, 5) }],
-      [{ type: 'spirit-snake', hex: hexId(5, 6) }],
-    )
-    expect(preview(ctx, 0, 1, 'attack.warrior.axe').damageOnHit)
-      .toBeGreaterThanOrEqual(UNITS['spirit-snake']!.maxHp)
-  })
-})
-
-describe('the venom fires in real battles', () => {
-  it('venom lands somewhere on the terrain maps — rare by DESIGN of the published row', () => {
-    // FINDING (2026-08-20, recorded for Angela): with the Codex §10 statline
-    // (hp 2) the snake almost never survives contact — venom fired 4 times in
-    // 350 panel battles, and only where terrain slows the heroes down. The row
-    // is faithful; whether chaff-with-a-clock is the intent is a design call.
-    let found = 0
-    outer: for (const mapId of ['map.field', 'map.thicket']) {
-      for (const z of [8, 12]) {
-        for (let r = 0; r < 25; r++) {
-          const ctx = createBattle({ replicate: r, enemyCount: z, mapId })
-          runBattle(ctx)
-          found += ctx.events.filter((e) => e.type === 'status.applied'
-            && e['causeId'] === 'trigger.spirit-snake.venom'
-            && e['statusId'] === 'status.poison' && e['amount'] === 2).length
-          if (found) break outer
-        }
-      }
+describe('benched — out of every horde, off the default party', () => {
+  it('no snake at any enemy count, and the horde is the undead texture again', () => {
+    for (const z of [4, 8, 12]) {
+      const ctx = createBattle({ replicate: 0, enemyCount: z })
+      expect(ctx.state.units.some((u) => u.typeId === 'spirit-snake'), String(z)).toBe(false)
     }
-    expect(found).toBeGreaterThan(0)
+    expect([...FIRST_BATTLE.enemies]).toEqual(['zombie', 'zombie', 'zombie', 'zombie-burning'])
+    expect([...FIRST_BATTLE.heroes]).toEqual(['warrior', 'warrior', 'ranger', 'mage'])
+  })
+})
+
+describe('fielded in a custom battle, it plays like her block says', () => {
+  function board() {
+    const ctx = createCustomBattle(
+      [{ type: 'spirit-snake', hex: hexId(5, 5) }],
+      [{ type: 'zombie', hex: hexId(5, 6) }],
+    )
+    return { ctx, s: ctx.state.units[0]!, z: ctx.state.units[1]! }
+  }
+  it('accuracy 110 vs no dodge NEVER misses — the bite lands 4 and venom lands 3, every time', () => {
+    const { ctx, s, z } = board()
+    expect(preview(ctx, s.id, z.id, 'attack.fangs.bite').hitChance).toBeGreaterThanOrEqual(100)
+    beginActivation(ctx, s.id, 'test')
+    const r = performAttack(ctx, s.id, z.id, 'attack.fangs.bite')
+    expect(r.hit).toBe(true)
+    expect(r.damage).toBe(4)                       // strength 2 + fangs +2, armor 0
+    expect(valueOf(z, 'status.poison')).toBe(3)    // her venom, scoped to the fangs
+    expect(s.stamina).toBe(s.maxStamina - 1)       // the bite cost its Stam 1
+  })
+  it('dodge 50 makes it slippery: a zombie bite has only a 15% chance to touch it', () => {
+    const { ctx, s, z } = board()
+    expect(resolveAccuracy(ctx, z, s, ctx.attacks['attack.zombie.basic']!).value).toBe(15)  // 65 − 50
   })
 })

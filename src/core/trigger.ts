@@ -119,6 +119,14 @@ export type Trigger = {
   readonly effect: TriggerEffect
   /** Which class / item / badge granted it. §5: no dedup, so two sources both fire. */
   readonly source: string
+  /**
+   * ATTACK-SCOPED trigger (2026-08-20, forced by Angela's Green Drake — its
+   * breath applies 3 Poison on hit and its bite applies 1, so "onHit" alone
+   * cannot say WHICH). When set, the trigger fires only when the firing
+   * context's cause IS this attack — the Codex's "your fang attacks" made
+   * data. Absent = unit-scoped, exactly the old behaviour.
+   */
+  readonly onlyWithAttack?: string
 }
 
 // ── validation, at load ─────────────────────────────────────────────────────
@@ -130,6 +138,9 @@ export type Trigger = {
 export function validateTrigger(t: Trigger): void {
   const where = `trigger '${t.id}'`
   if (!HOOKS.includes(t.hook)) throw new Error(`${where}: unknown hook '${t.hook}'`)
+  if (t.onlyWithAttack !== undefined && !/^attack\.[a-z0-9][a-z0-9.-]*$/.test(t.onlyWithAttack)) {
+    throw new Error(`${where}: onlyWithAttack must name an attack id, got '${t.onlyWithAttack}'`)
+  }
   if (typeof t.select === 'string') {
     if (!SELECTORS.includes(t.select)) throw new Error(`${where}: unknown selector '${t.select}'`)
   } else {
@@ -292,6 +303,11 @@ export function fireTriggers(ctx: Ctx, hook: Hook, fc: FireContext): void {
   const slots = owner.triggers
     .map((t, slot) => ({ t, slot }))
     .filter((x) => x.t.hook === hook)
+    // Attack scope: on attack-anchored hooks the FireContext's causeId is the
+    // attack's id; a scoped trigger fires only for its own attack. A scoped
+    // trigger on a cause that is not an attack (a status tick, a terrain
+    // event) never fires — the scope is a claim about attacks.
+    .filter((x) => !x.t.onlyWithAttack || x.t.onlyWithAttack === fc.causeId)
     .sort((a, b) => (a.t.source < b.t.source ? -1 : a.t.source > b.t.source ? 1
                      : a.t.id < b.t.id ? -1 : a.t.id > b.t.id ? 1 : a.slot - b.slot))
 
