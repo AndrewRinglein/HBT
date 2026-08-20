@@ -296,7 +296,11 @@ const KNOWN_KINDS = ['attack', 'power', 'status', 'unit', 'terrain', 'map', 'bad
 check('naming — new content ids use declared kinds', () => {
   const ids = new Set()
   for (const l of addedLines('src/content')) {
-    for (const m of l.matchAll(/['"`]([a-z]+)\.[a-z0-9][a-z0-9.-]*['"`]/g)) ids.add(m[1])
+    // Map ROW art is not an id: a quoted 12-glyph string with a '..' run is
+    // board ASCII ('ww..bbbb....'), and reading 'ww' as an id kind was a false
+    // positive found landing map.showcase (2026-08-20).
+    const stripped = l.replace(/['"][a-zA-Z.]{12}['"]/g, (s) => (s.includes('..') ? "''" : s))
+    for (const m of stripped.matchAll(/['"`]([a-z]+)\.[a-z0-9][a-z0-9.-]*['"`]/g)) ids.add(m[1])
   }
   const unknown = [...ids].filter((k) => !KNOWN_KINDS.includes(k))
   return { ok: unknown.length === 0, note: unknown.length ? `unknown id kind(s): ${unknown.join(', ')} — declare the kind in GLOSSARY.md before minting ids under it` : '' }

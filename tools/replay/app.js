@@ -3,7 +3,7 @@ const EV = D.battle.events;
 
 const TOKEN = {};            // typeId -> Image
 for (const k in D.tokens) { const i = new Image(); i.src = D.tokens[k].d; TOKEN[k] = i; }
-const art = new Image(); art.src = D.art;
+const art = new Image(); if (D.art) art.src = D.art;   // null on artless testing maps
 
 // Tokens are anchored at the FEET and stand ~70px tall, so row 0 needs headroom
 // or the top rank renders off-canvas. Pad the stage and offset every hex.
@@ -58,9 +58,39 @@ const anchor = (u) => ({ get x(){return u.x+u.dx}, get y(){return u.y+u.dy+34}, 
 const tierOf = (n) => n <= 3 ? 'low' : n <= 6 ? 'med' : n <= 10 ? 'high' : 'super';
 const VFXTYPE = { physical:'phys', magic:'mag', true:'true' };
 
+// Hexes whose ground breathes — embers rise off burning hexes, blight motes
+// drift over poisoned ones. Precomputed once; drawn under the tokens.
+const LIVE_GROUND = D.field.hexes
+  .map((h) => ({ h, id: D.field.terrainIds[h.r * 12 + h.c] }))
+  .filter((x) => x.id === 'terrain.burning' || x.id === 'terrain.poisoned');
+
+function drawLiveGround() {
+  if (!LIVE_GROUND.length) return;
+  const pt = performance.now() / 1000;
+  for (const { h, id } of LIVE_GROUND) {
+    const cx = h.px + PAD_X, cy = h.py + PAD_T;
+    ux.save(); ux.globalCompositeOperation = 'lighter';
+    for (let k = 0; k < 2; k++) {
+      const ph = (pt * (id === 'terrain.burning' ? 0.5 : 0.22) + k / 2 + (h.r * 7 + h.c) * 0.13) % 1;
+      const ex = cx + Math.sin((ph + k) * 9.7 + h.c * 3.1 + h.r) * 16;
+      if (id === 'terrain.burning') {
+        const ey = cy + 14 - ph * 34;
+        ux.fillStyle = `rgba(255,${150 - ph * 80 | 0},40,${(1 - ph) * 0.55})`;
+        ux.beginPath(); ux.arc(ex, ey, 1.6 + (1 - ph), 0, 7); ux.fill();
+      } else {
+        const ey = cy + Math.cos((ph * 6.3) + h.c) * 8;
+        ux.fillStyle = `rgba(150,190,60,${0.28 + 0.2 * Math.sin(ph * 6.3)})`;
+        ux.beginPath(); ux.arc(ex, ey, 1.8, 0, 7); ux.fill();
+      }
+    }
+    ux.restore();
+  }
+}
+
 // ── the render loop — continuous, independent of the event pump ─────────────
 function frame() {
   ux.clearRect(0,0,W,H);
+  drawLiveGround();
   const order = [...U.values()].sort((a,b) => a.y - b.y || a.id - b.id);
   for (const u of order) {
     // tween toward the logical hex
@@ -86,6 +116,35 @@ function frame() {
     // the Burning Zombie: same art as the zombie, identity carried by corpse-heat.
     // A pulsing ember ring plus drifting sparks — an overlay, like everything
     // else the tokens deliberately ship without.
+    // ── status marks on the token — the pips made visible on the BOARD ──────
+    // (Angela 2026-08-20: "what visual elements are we missing?")
+    const stVal = (id) => u.statuses?.[id] > 0;
+    if (stVal('status.stun') || stVal('test.status.daze')) {
+      // orbiting stars over a stunned head
+      const pt2 = performance.now() / 1000;
+      for (let k = 0; k < 3; k++) {
+        const a = pt2 * 2.4 + (k * Math.PI * 2) / 3 + u.id;
+        ux.fillStyle = 'rgba(245,212,66,.9)';
+        ux.beginPath(); ux.arc(sx + Math.cos(a) * 13, sy - h + 6 + Math.sin(a) * 4, 1.8, 0, 7); ux.fill();
+      }
+    }
+    if (stVal('status.slow') || stVal('test.status.hobble')) {
+      // an icy shackle-arc at the feet
+      ux.strokeStyle = 'rgba(111,179,223,.9)'; ux.lineWidth = 2.5;
+      ux.beginPath(); ux.ellipse(sx, sy + 5, w * 0.30, w * 0.12, 0, 0.4, Math.PI - 0.4); ux.stroke();
+    }
+    if (stVal('status.protection') || stVal('test.status.ward')) {
+      // a golden guard-arc over the shoulders
+      ux.strokeStyle = 'rgba(232,195,90,.9)'; ux.lineWidth = 2.5;
+      ux.beginPath(); ux.ellipse(sx, sy - h * 0.55, w * 0.34, w * 0.20, 0, Math.PI + 0.5, -0.5); ux.stroke();
+    }
+    if (stVal('status.bleed')) {
+      // dripping ticks down the flank
+      const pt3 = (performance.now() / 400 + u.id) % 1;
+      ux.fillStyle = 'rgba(224,82,82,.85)';
+      ux.beginPath(); ux.arc(sx + w * 0.22, sy - h * 0.45 + pt3 * h * 0.4, 1.7, 0, 7); ux.fill();
+      ux.beginPath(); ux.arc(sx - w * 0.20, sy - h * 0.30 + ((pt3 + 0.5) % 1) * h * 0.3, 1.4, 0, 7); ux.fill();
+    }
     // the Shadow Hound Puppy: umbral violet ring, low and quick.
     if (u.typeId === 'shadow-hound-puppy' && u.life === 'standing') {
       const pt = performance.now() / 1000;
@@ -212,11 +271,13 @@ const TCOL = {
   'terrain.open':'#6E7C34', 'terrain.forest':'#2C3A22', 'terrain.rocky':'#969694',
   'terrain.hills':'#CEBA28', 'terrain.rocky-hills':'#92683A', 'terrain.water':'#2C6084',
   'terrain.obstacle':'#805430',
+  'terrain.burning':'#A6431C', 'terrain.poisoned':'#55701F',
 };
 const TNAME = {
   'terrain.open':'Flatland', 'terrain.forest':'Forest', 'terrain.rocky':'Rocky',
   'terrain.hills':'Hill', 'terrain.rocky-hills':'Rocky Hill', 'terrain.water':'Water',
   'terrain.obstacle':'Obstruction',
+  'terrain.burning':'Burning Ground', 'terrain.poisoned':'Poisoned Ground',
 };
 // Effects are DERIVED from the engine's own tables at build time, never typed here.
 // They were hand-written once and immediately disagreed with the rules when a move
@@ -228,18 +289,34 @@ for (const row of D.field.table) {
   for (const [k, lab] of [['accuracy','acc'],['reach','reach'],['dodge','dodge'],['armor','armor']]) {
     if (row[k]) bits.push(`${row[k] > 0 ? '+' : ''}${row[k]} ${lab}`);
   }
+  // engine-derived geometry carries the ground's status behaviour too
+  if (row.ground) bits.push(row.ground);
   TEFFECT[row.id] = bits.join(' · ');
 }
 
 function drawGrid() {
   bx.clearRect(0,0,W,H);
   bx.fillStyle = '#0b0c0e'; bx.fillRect(0,0,W,H);
-  if (art.complete) {
+  if (D.art && art.complete) {
     // headroom above row 0: a soft fade out of the map edge, not a hard letterbox
     const g = bx.createLinearGradient(0, 0, 0, PAD_T);
     g.addColorStop(0, '#0b0c0e'); g.addColorStop(1, '#2a3016');
     bx.fillStyle = g; bx.fillRect(0, 0, W, PAD_T + 2);
     bx.drawImage(art, PAD_X, PAD_T, D.field.w, D.field.h);
+  }
+  if (!D.art) {
+    // No painting exists for this map (a testing-lane board) — the ground IS
+    // the terrain data, painted flat at full strength so nothing lies.
+    const w2 = HEXW/2, hh2 = HEXH/2, q2 = hh2/2;
+    for (const h of D.field.hexes) {
+      const id = D.field.terrainIds[h.r * 12 + h.c];
+      const cx = h.px + PAD_X, cy = h.py + PAD_T;
+      bx.beginPath();
+      bx.moveTo(cx, cy-hh2); bx.lineTo(cx+w2, cy-q2); bx.lineTo(cx+w2, cy+q2);
+      bx.lineTo(cx, cy+hh2); bx.lineTo(cx-w2, cy+q2); bx.lineTo(cx-w2, cy-q2); bx.closePath();
+      bx.fillStyle = TCOL[id] || '#3a3a3a'; bx.fill();
+      bx.lineWidth = 1; bx.strokeStyle = 'rgba(0,0,0,.35)'; bx.stroke();
+    }
   }
   if (!showGrid && !showCosts) return;
   const w = HEXW/2, hh = HEXH/2, q = hh/2;
@@ -367,6 +444,9 @@ async function apply(e) {
       pending = null; break;
 
     case 'heal.applied': if (t) { t.hp = e.hpAfter; t.pops.push({s:'+'+e.amount,col:'#8ed14f',t:0}); drawRoster(); } break;
+    case 'stamina.spent': case 'stamina.regen': {
+      const su = U.get(e.actor ?? e.target); if (su) { su.stamina = e.stamina; drawRoster(); } break;
+    }
 
     case 'status.applied':
       if (t) { t.statuses[e.statusId] = e.after;
@@ -439,6 +519,7 @@ function drawRoster() {
           : `<b style="background:${STCOL[k]||'#aaa'}" title="${k} ${u.statuses[k]}"></b>`).join('');
       return `<div class="u ${side} ${u.life==='dead'?'dead':u.life==='downed'?'down':''}">
         <span class="nm">${dispName(u)}</span>
+        ${u.maxStamina > 0 ? `<span class="stam" title="stamina ${u.stamina}/${u.maxStamina}">⚡${u.stamina}</span>` : ''}
         <span class="bar"><i style="width:${pct}%"></i></span>
         <span class="st">${st}</span>
         <span class="hp">${u.life==='dead'?'—':u.hp+'/'+u.maxHp}</span></div>`;

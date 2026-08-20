@@ -11,6 +11,19 @@
 //   .state/questions.md         the human inbox — OPEN and ANSWERED
 
 import { readFileSync, writeFileSync, existsSync } from 'node:fs'
+import { createHash } from 'node:crypto'
+import { join } from 'node:path'
+
+// Artifact links carry a content-hash cache-buster (?v=). Browsers cache
+// file:// pages hard — Angela rebuilt the replay overnight and her browser
+// showed her the OLD battle (2026-08-20). Content-derived, so the build stays
+// deterministic: same file → same URL; changed file → forced fresh load.
+const artHref = (href) => {
+  try {
+    const v = createHash('sha1').update(readFileSync(join('..', href))).digest('hex').slice(0, 8)
+    return `${href}?v=${v}`
+  } catch { return href }
+}
 
 const quiet = process.argv.includes('--quiet')
 const read = (p, fallback = '') => (existsSync(p) ? readFileSync(p, 'utf8') : fallback)
@@ -255,14 +268,14 @@ ${batches.map((batch, bi) => {
     ${sealedRuns.length ? `<span class="b b-seal">⛓ ${sealedRuns.length} sealed</span>` : ''}
     ${failedRuns ? `<span class="b b-crit">✗ ${failedRuns} failed attempts</span>` : ''}
     <span class="bmeta">${items.length} item${items.length === 1 ? '' : 's'} · ${batch.runs.length} runs</span>
-    ${(batch.artifacts ?? []).map((a) => `<a class="art" href="${esc(a.href)}" target="_blank" onclick="event.stopPropagation()">▶ ${esc(a.label)}</a>`).join('')}
+    ${(batch.artifacts ?? []).map((a) => `<a class="art" href="${esc(artHref(a.href))}" target="_blank" onclick="event.stopPropagation()">▶ ${esc(a.label)}</a>`).join('')}
     <button class="approve" data-batch="${batch.id}">Approve — collapse when read</button>
     <span class="approved-tick" hidden>✓ approved</span>`
   // An html artifact plays INSIDE the batch — a lazy iframe that only loads when
   // opened, so twenty batches of history never load twenty replays at once.
   const playable = (batch.artifacts ?? []).find((a) => a.href.endsWith('.html'))
   const watch = playable ? `<details class="watch"><summary>▶ watch it right here — ${esc(playable.label)}</summary>
-    <iframe data-src="${esc(playable.href)}" title="${esc(playable.label)}"></iframe></details>` : ''
+    <iframe data-src="${esc(artHref(playable.href))}" title="${esc(playable.label)}"></iframe></details>` : ''
   const body = `${watch}<div class="cards">${itemCardsFor(items)}</div>`
   return bi === 0
     ? `<section class="batch open" data-batch="${batch.id}"><div class="batchbar">${bar}</div>${body}</section>`

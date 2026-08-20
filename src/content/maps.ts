@@ -21,7 +21,7 @@ import { disabledIds } from './disable.js'
 
 export type MapDef = { id: string; name: string; note: string; rows: readonly string[] }
 
-export const MAPS: readonly MapDef[] = [
+const RAW_MAPS: readonly MapDef[] = [
   {
     id: 'map.open',
     name: 'Open Field',
@@ -110,7 +110,31 @@ export const MAPS: readonly MapDef[] = [
       'pppppppppppp', '............', '............', '............',
     ],
   },
+  {
+    id: 'test.map.showcase',
+    name: 'The Proving Ground (TESTING)',
+    note: 'TESTING LANE — never ships. One board that exercises every ground mechanic at once: a western river (washes), an ember band and a blight belt both sides must cross, and hills. Built 2026-08-20 so a single replay can SHOW every landed mechanic (Angela: "a replay that shows off all the various new things").',
+    rows: [
+      '............',
+      'ww...hh.....',
+      'ww..........',
+      'ww..bbbb....',
+      'www.bbbb....',
+      'ww..........',
+      'ww...pppp...',
+      'www..pppp...',
+      'ww..........',
+      'ww.....hh...',
+      'ww..........',
+      '............',
+    ],
+  },
 ] as const
+
+// Kill-switch seam (2026-08-20, found landing map.showcase): a disabled map id
+// leaves the roster entirely, so its tests genuinely fail without it —
+// identical array when CF_DISABLE_IDS is unset.
+export const MAPS: readonly MapDef[] = RAW_MAPS.filter((m) => !disabledIds().has(m.id))
 
 export const MAP_PANEL = MAPS.map((m) => m.id)
 

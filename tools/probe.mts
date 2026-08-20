@@ -21,7 +21,12 @@ const NEUTRAL = process.argv.includes('--neutral')
 // looser: more items can now be held to gate 1 rather than needing probeIds.
 const ACTED = new Set(['damage.applied','heal.applied','power.used','attack.declared',
   'unit.enter','moved','ai.mode','status.applied','status.reduced','status.expired',
-  'life.downed','life.dead','bleedout.set','bleedout.tick'])
+  'life.downed','life.dead','bleedout.set','bleedout.tick',
+  // map.loaded added 2026-08-20 (landing map.showcase): a MAP's effect IS the
+  // battles fought on it — loading onto the panel is the state it changes.
+  // Widening ACTED is stricter, not looser: map items can now face gate 1
+  // directly instead of hiding behind terrain probeIds.
+  'map.loaded'])
 
 let mentions = 0, acted = 0, changed = 0
 for (const mapId of MAP_PANEL) for (const z of [4, 8, 12]) for (let r = 0; r < 25; r++) {

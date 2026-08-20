@@ -817,5 +817,38 @@
   "status": "done-needs-review",
   "sha": "4d4d47f",
   "gauntlet": "not passed — 1 flag(s) warned"
+ },
+ {
+  "id": "map.showcase",
+  "kind": "content",
+  "shape": "data",
+  "spec": "The Proving Ground (test.map.showcase, TESTING LANE — never ships): one board exercising every ground mechanic at once — western river (washes), an ember band (rows 3-4) and a blight belt (rows 6-7) both sides must cross, hills for modifiers, both deployment rows clean. Exists so a single replay can SHOW every landed mechanic (Angela 2026-08-20: a replay that shows off all the various new things). Joins MAP_PANEL, so the baseline gains one line; the six real maps and embers are untouched.",
+  "expect": "battles on it produce ember applies, blight applies and river washes; deployment rows are hazard-free",
+  "probeIds": [
+   "test.map.showcase"
+  ],
+  "changesBaseline": true,
+  "attempts": 3,
+  "status": "done",
+  "sha": "5788005",
+  "gauntlet": "passed"
+ },
+ {
+  "id": "viewer.showcase-vfx",
+  "kind": "engine",
+  "shape": "plumbing",
+  "needs": [
+   "viewer.replay-rig",
+   "map.showcase"
+  ],
+  "spec": "Angela 2026-08-20: \"What visual elements are we missing? Status effect on ground. What else are we missing?\" The gaps, closed: (1) replay geometry was frozen to the thicket painting — tools/field-geometry.mts now derives ANY map board from the engine tables (terrain, costs, modifiers AND ground behaviour for the legend), and build-replay uses it whenever the battle map is not static.json artMapId, shipping art:null so a testing board is painted flat from its terrain ids instead of lying with the wrong art. (2) Ground had no life — burning hexes shed rising embers, poisoned hexes drift blight motes (drawLiveGround, under the tokens). (3) Statuses existed only as roster pips — now stun/daze orbit stars over the head, slow/hobble ring icy shackles at the feet, protection/ward hold a golden guard-arc, bleed drips down the flank. (4) Hero stamina was invisible — the roster shows a live counter fed by stamina.spent/regen events. Viewer + build tooling only, zero engine bytes.",
+  "expect": "a showcase build carries art:null + 144 generated hexes + ground notes in the legend; both build paths byte-identical on rebuild",
+  "probeIds": [
+   "test.map.showcase"
+  ],
+  "changesBaseline": false,
+  "status": "done",
+  "sha": "2e7ce07",
+  "gauntlet": "passed"
  }
 ]

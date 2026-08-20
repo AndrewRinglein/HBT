@@ -100,6 +100,36 @@ describe('the log lives to the RIGHT of the board and scrolls itself', () => {
   })
 })
 
+describe('the showcase build — engine-derived geometry, never the wrong painting', () => {
+  let sh = ''
+  beforeAll(() => {
+    execSync('npx tsx tools/export-battle.mts 0 test.map.showcase 12 > /tmp/replay-showcase-battle.json', { shell: '/bin/bash' })
+    execSync('node tools/build-replay.mjs /tmp/replay-showcase-battle.json /tmp/replay-showcase.html')
+    sh = readFileSync('/tmp/replay-showcase.html', 'utf8')
+  }, 30_000)
+
+  it('an artless map ships NO art and full engine-derived geometry', () => {
+    expect(sh).toContain('"art":null')
+    expect(sh).toContain('"terrain.burning"')
+    expect(sh).toContain('"terrain.poisoned"')
+    expect((sh.match(/"px":/g) ?? []).length).toBe(144)   // 12×12 hexes, generated
+  })
+  it('the legend carries the ground behaviour, derived from the engine tables', () => {
+    expect(sh).toContain('end of activation')   // burning/poisoned applies note
+    expect(sh).toContain('washes')              // water strip note
+  })
+  it('ground breathes and statuses stand ON the tokens — the viewer code is present', () => {
+    for (const probe of ['drawLiveGround', "'terrain.burning':'#A6431C'", 'status.stun', 'guard-arc', 'stam']) {
+      expect(sh, probe).toContain(probe)
+    }
+  })
+  it('two showcase builds are byte-identical — the geometry path is deterministic too', () => {
+    execSync('node tools/build-replay.mjs /tmp/replay-showcase-battle.json /tmp/replay-sh-a.html')
+    execSync('node tools/build-replay.mjs /tmp/replay-showcase-battle.json /tmp/replay-sh-b.html')
+    expect(readFileSync('/tmp/replay-sh-a.html', 'utf8')).toBe(readFileSync('/tmp/replay-sh-b.html', 'utf8'))
+  })
+})
+
 describe('the replay is an artifact of its inputs — nothing else', () => {
   it('two builds of the same battle are byte-identical', () => {
     execSync('node tools/build-replay.mjs /tmp/replay-test-battle.json /tmp/replay-a.html')

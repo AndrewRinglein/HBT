@@ -1779,3 +1779,41 @@ index ed24989..74043a9 100644
 </details>
 
 IRON GAUNTLET: NOT PASSED — 1 FLAG(S) WARNED
+
+## map.showcase — LANDED `5788005`
+2026-08-20 17:36
+
+  PASS  dependencies landed
+  PASS  typecheck
+  PASS  full test suite — 319 passed
+  PASS  gate 1 — the id appears in a real battle — test.map.showcase: 75 log lines, 75 fired, 75 changed state
+  PASS  brought its own tests — test/showcase-map.test.ts
+  PASS  existing tests untouched
+  PASS  control battles unchanged — will re-bless at commit — this item DECLARED it changes the control battles: test.map.showcase ?->371964a8, test.map.showcase NEW
+  PASS  content has a published source — 10 ids without a published source (all grandfathered)
+  PASS  hardcode scan — core knows mechanisms, never names
+  PASS  generalizes — the second instance costs zero engine code — shape 'data' — not a mechanism, exempt
+  PASS  naming — new content ids use declared kinds
+  PASS  naming — no banned words invented
+  PASS  kill switch — the tests fail without the content — tests fail without test.map.showcase — they genuinely test it
+
+IRON GAUNTLET: PASSED
+
+## viewer.showcase-vfx — LANDED `2e7ce07`
+2026-08-20 17:39
+
+  PASS  dependencies landed
+  PASS  typecheck
+  PASS  full test suite — 323 passed
+  PASS  gate 1 — the id appears in a real battle — test.map.showcase: 75 log lines, 75 fired, 75 changed state
+  PASS  brought its own tests — test/replay.test.ts
+  PASS  existing tests untouched
+  PASS  control battles unchanged
+  PASS  content has a published source — 10 ids without a published source (all grandfathered)
+  PASS  hardcode scan — core knows mechanisms, never names
+  PASS  generalizes — the second instance costs zero engine code — shape 'plumbing' — not a mechanism, exempt
+  PASS  naming — new content ids use declared kinds
+  PASS  naming — no banned words invented
+  PASS  kill switch — the tests fail without the content — tests fail without test.map.showcase — they genuinely test it
+
+IRON GAUNTLET: PASSED
