@@ -544,3 +544,18 @@ that BEGINS inside an enemy's zone of control provoke, or is flight one of the
 non-provoking movement types? The AoO ruling says conventional movement provokes
 and some movement types do not; flight is presumably in the second group, but
 presumably is not a ruling.
+
+---
+
+## 2026-08-20 — Flight and zones of control
+
+> "You ignore zones of control while you were flying, but if you start a flight
+> movement while you were in a zone of control, that will provoke. But only as you
+> move out of your first square. Later, as you move through nearby other enemies,
+> they will not additionally provoke."
+
+One provoke, maximum, per flight move: at the moment of leaving the starting hex,
+if that hex was in a zone of control. The flight path provokes nothing — consistent
+with the atomic model, where intermediate hexes are never occupied. GAME-DESIGN §4
+already grants Flight −30 against attacks of opportunity; under this ruling that
+modifier has exactly one place to apply, the launch provoke.
