@@ -83,7 +83,8 @@ const stamp = new Date().toISOString()
 // The audit runs at batch end — so it OWNS the batch boundary. One marker line
 // into the run log; the Game Builder splits its bars on these, never on a time
 // heuristic (a gap guess once swallowed a new session inside an approved bar).
-appendFileSync('.state/gauntlet-log.jsonl', JSON.stringify({ at: stamp, type: 'batch-end', audit: failed.length ? 'FAILED' : 'clean' }) + '\n')
+const label = (() => { const i = process.argv.indexOf('--label'); return i > 0 ? process.argv[i + 1] : undefined })()
+appendFileSync('.state/gauntlet-log.jsonl', JSON.stringify({ at: stamp, type: 'batch-end', audit: failed.length ? 'FAILED' : 'clean', ...(label ? { label } : {}) }) + '\n')
 try { execSync('node tools/game-builder.mjs --quiet', { stdio: 'ignore' }) } catch {}
 if (failed.length) {
   appendFileSync('.state/ledger.md',

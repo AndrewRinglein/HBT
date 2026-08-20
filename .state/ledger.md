@@ -1184,3 +1184,41 @@ index 6df49b0..ccc0993 100644
 </details>
 
 IRON GAUNTLET: NOT PASSED — 1 FLAG(S) WARNED; 1 EXEMPTION(S) TAKEN · periodic audit clean
+
+## viewer.replay-rig — LANDED `c5ec972`
+2026-08-20 08:08
+
+  PASS  dependencies landed
+  PASS  typecheck
+  PASS  full test suite — 250 passed
+  PASS  gate 1 — the id appears in a real battle — unit.zombie-burning: 5812 log lines, 5812 fired, 3072 changed state
+  PASS  brought its own tests — test/replay.test.ts
+  PASS  existing tests untouched
+  PASS  control battles unchanged
+  PASS  content has a published source — 11 ids without a published source (1 awaiting publication from earlier items — see audit)
+  PASS  hardcode scan — core knows mechanisms, never names
+  PASS  generalizes — the second instance costs zero engine code — shape 'plumbing' — not a mechanism, exempt
+  PASS  naming — new content ids use declared kinds
+  PASS  naming — no banned words invented
+  PASS  kill switch — the tests fail without the content — tests fail without unit.zombie-burning — they genuinely test it
+
+IRON GAUNTLET: PASSED
+
+## viewer.replay-publish — LANDED `26fdc48`
+2026-08-20 08:10
+
+  PASS  dependencies landed
+  PASS  typecheck
+  PASS  full test suite — 252 passed
+  PASS  gate 1 — the id appears in a real battle — status.regeneration: 9019 log lines, 9019 fired, 5860 changed state · terrain.water: 2996 log lines, 2996 fired, 2846 changed state
+  PASS  brought its own tests — test/replay.test.ts
+  PASS  existing tests untouched
+  PASS  control battles unchanged
+  PASS  content has a published source — 11 ids without a published source (1 awaiting publication from earlier items — see audit)
+  PASS  hardcode scan — core knows mechanisms, never names
+  PASS  generalizes — the second instance costs zero engine code — shape 'plumbing' — not a mechanism, exempt
+  PASS  naming — new content ids use declared kinds
+  PASS  naming — no banned words invented
+  PASS  kill switch — the tests fail without the content — tests fail without status.regeneration,terrain.water — they genuinely test it
+
+IRON GAUNTLET: PASSED

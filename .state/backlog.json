@@ -578,5 +578,36 @@
   "status": "done-needs-review",
   "sha": "97229ec",
   "gauntlet": "not passed — 1 flag(s) warned; 1 exemption(s) taken"
+ },
+ {
+  "id": "viewer.replay-rig",
+  "kind": "engine",
+  "shape": "plumbing",
+  "spec": "The visual replay rig, made repeatable: replay.html split into three committed templates (tools/replay/prefix.html shell+hexVFX, static.json geometry+tokens+art, app.js the viewer application) plus tools/build-replay.mjs to assemble any exported battle into a fresh page. export-battle.mts restored to this repo from the device. The Burning Zombie token added to static (same art as the zombie; identity is a runtime overlay).",
+  "expect": "node tools/build-replay.mjs <battle.json> <out.html> produces a self-contained page whose header names the engine commit",
+  "probeIds": [
+   "unit.zombie-burning"
+  ],
+  "status": "done",
+  "sha": "c5ec972",
+  "gauntlet": "passed"
+ },
+ {
+  "id": "viewer.replay-publish",
+  "kind": "engine",
+  "shape": "plumbing",
+  "needs": [
+   "viewer.replay-rig"
+  ],
+  "spec": "Publication and determinism. PROCESS NOTE, recorded not hidden: the new-events viewer work was built alongside the rig and landed inside viewer.replay-rig s commit -- the one-item-one-commit split was violated, so this item carries what genuinely remained: prove the builder is deterministic (same battle + same templates = byte-identical page, so a replay can be trusted as an artifact of its inputs), prove the page carries zero timestamps, and publish the seed-21 thicket replay.",
+  "expect": "two builds of the same inputs are byte-identical; replay.html ships at the project root",
+  "probeIds": [
+   "status.regeneration",
+   "terrain.water"
+  ],
+  "attempts": 1,
+  "status": "done",
+  "sha": "26fdc48",
+  "gauntlet": "passed"
  }
 ]

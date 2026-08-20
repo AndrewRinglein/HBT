@@ -49,6 +49,7 @@ const batches = [{ id: 'batch-1', runs: [], closed: false }]
 for (const r of runs) {
   if (r.type === 'batch-end') {
     batches[batches.length - 1].closed = true
+    if (r.label) batches[batches.length - 1].label = r.label
     batches.push({ id: `batch-${batches.length + 1}`, runs: [], closed: false })
     continue
   }
@@ -240,7 +241,7 @@ ${batches.map((batch, bi) => {
   const sealedRuns = landedRuns.filter((r) => r.seal === 'passed')
   const failedRuns = batch.runs.filter((r) => r.disposition === 'failed-checks').length
   const day = (batch.runs[0].at ?? '').slice(0, 10)
-  const bar = `<span class="bday">${esc(batch.id.replace('batch-', 'Batch '))} · ${esc(day)}</span>
+  const bar = `<span class="bday">${esc(batch.id.replace('batch-', 'Batch '))}${batch.label ? ' — ' + esc(batch.label) : ''} · ${esc(day)}</span>
     <span class="b b-good">✓ ${landedRuns.length} landed</span>
     ${sealedRuns.length ? `<span class="b b-seal">⛓ ${sealedRuns.length} sealed</span>` : ''}
     ${failedRuns ? `<span class="b b-crit">✗ ${failedRuns} failed attempts</span>` : ''}
