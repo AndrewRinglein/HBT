@@ -207,8 +207,9 @@ needs regenerating to confirm they were reworded out.
 | **Subsystem: ground** (~30) | place terrain (3) · status on a hex (4) · set ground layer (12) · place a trap (12). Same hex-target extension as pass 3. |
 | **Subsystem: auras** (~41) | grant mid-battle (2) + the rest of the aura vocabulary. Fixed radii, lends-not-gives, stacking — §5 rules are complete; nothing exists. |
 | **Subsystem: turn economy** | free activation (2) · act out of turn (4) — touches the activation ladder, the most order-sensitive code in the engine. Recommend last. |
-| **Needs design before routing** | **copy or steal an effect (19)** — the one genuinely unresolved capability; meta-operations on statuses/triggers have no shape yet · **a second resource bar (8)** — which resources? (surge chance, karma, charges?) needs enumeration · summon / companion (3 — all one specialty, magical-friend: **build the subsystem or cut the specialty**, a design call, not an engineering one) |
-| **Campaign seam — defer** | charge Faith (1) · grant a badge (1) · corruption (2) |
+| **Withdrawn — census artifact** | ~~copy or steal an effect (19)~~ — `/steal/` in `oneoffs.mjs:51` substring-matches "stealth" (+ the names Soul Stealer, Life Steal). The capability does not exist. Proposed one-line fix: `\bsteal\b`; regenerate the census. |
+| **Ruled 2026-08-20** | **Combat resources**: Faith, mana crystals and supply are usable as costs and gains inside combat — "charge a campaign resource" is battle-tier vocabulary, and the "second resource bar" (8) is most likely these commander resources in power costs (confirm at census regen). · **Summoning stays** — only the scheduling is open; near-term consequence is just that roster code must not assume a fixed-size unit array. · **onDodge**: fires only when the miss roll lands in the dodge-sized band at the deep end of the miss range — one roll, no second cup; engine mapping `miss AND roll > 100 − dodge`. |
+| **Campaign seam — defer** | grant a badge (1) · corruption (2) |
 | **Cut candidates** | prevent damage entirely (1 — fold into Protection or cut) · charge a campaign resource (1) · pass through occupied hexes (7 — real movement-rule work for a niche verb; flag, Angela's call) |
 
 ### Reconciliation items — the fresh layer disagrees with itself in three places
@@ -216,11 +217,11 @@ needs regenerating to confirm they were reworded out.
 1. Census counts *did-not-move/did-not-attack* (2) and *forced move, not knockback*
    (1); the ban list forbids both. Same build date. Regenerate the census or rewrite
    the two rows.
-2. The ban list forbids *zone of control*; `GAME-DESIGN.md` §4 has a full ZoC
-   section and `movement.zone-of-control` sits in the engine backlog — while *move
-   WITHOUT provoking* (11 uses) presupposes AoO exists. Is ZoC banned from
-   **content** but still a **board rule**? Needs a ruling before the movement
-   family is built.
+2. **RESOLVED 2026-08-20: ZoC is a board rule**; the ban only keeps it out of
+   content. Full AoO flow ruled and recorded in DECISIONS.md — provoke on
+   conventional movement while in ZoC, defender chooses the attack, −20 at the
+   SITUATIONAL station, and on damage `floor(damage/2)` comes off the mover's
+   remaining move points. *Move WITHOUT provoking* (11) is the exemption flag.
 3. Modifiers may name `deathbedFighting` (1 use) — a **derived** stat by ruling
    (`20 + 5×Toughness + badges`). Either it stops being derived, or the enchant
    rewords to +Toughness, or badges-adding-DBF is exactly the `+ badges` term.
@@ -250,5 +251,14 @@ Plus three one-line engine fixes already implied by rulings: Luck into
 mitigation with the 5-vs-2 verify table.
 
 **Held out deliberately:** turn economy (act out of turn / free activation) until
-the six above land; copy/steal and second-resource-bar until designed; summon until
-the build-or-cut call; everything campaign-seam.
+the six above land; summoning until Angela schedules it (it stays in the game —
+roster code just must not assume a fixed-size unit array); badge-grant and
+corruption writes at the campaign seam. The former "needs design" list is empty:
+copy/steal was a census artifact, the second resource bar resolved to the three
+combat-usable commander resources, and onDodge is ruled.
+
+**Workstream 2 gains the AoO flow** (ruled 2026-08-20): ZoC-as-adjacency, the
+provoke check on conventional movement, the defender's attack-choice policy for
+the AI, −20 at SITUATIONAL, and the half-damage-floor subtraction from
+`movePointsLeft` mid-move — the one place a full attack pipeline runs inside a
+move.

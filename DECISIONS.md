@@ -358,3 +358,88 @@ scenario for the mitigation step when it gets built.
 Consequence: the status tick needs a mitigation step — either inside `tickStatuses`
 or by routing ticks through a damage pipeline (Law 1 pressure points the same way).
 Found in framework review pass 1; not yet built — review is read-only.
+
+---
+
+## 2026-08-20 — Zone of control is a board rule; the attack-of-opportunity flow
+
+> "Zoning control is definitely a board rule. Whenever a unit does conventional
+> movement when they are in someone's zone of control, they provoke an attack of
+> opportunity. The attacking player can choose what kind of attack to use, and they
+> get −20 to their accuracy. If the attack does damage — on that damage, one half of
+> the damage, rounded down, is subtracted from the available move of the unit that
+> was moving. There are movement types that can happen without provoking. Starting
+> model is: zone of control is basically being adjacent to an enemy."
+
+Resolves reconciliation item 2: the Codex ban list keeps ZoC out of CONTENT; the
+BOARD rule stands. The flow, precisely:
+
+1. ZoC = adjacent to an enemy (starting model).
+2. Conventional movement while already in a ZoC provokes. Some movement types
+   (Disengage-family) do not.
+3. The provoked side CHOOSES which attack — a decision point, so the simulator
+   needs an AI policy for it.
+4. The AoO is a real attack at −20 accuracy (the SITUATIONAL station, 700, exactly
+   where COMBAT-SEQUENCE.md reserved it).
+5. If damage lands: `floor(damage / 2)` is subtracted from the mover's REMAINING
+   move points. `Unit.movePointsLeft` already exists — the flow interrupts a move
+   mid-step, resolves a full attack pipeline, then resumes with less movement.
+
+"Move WITHOUT provoking" (11 corpus uses) is the exemption flag on movement types.
+
+---
+
+## 2026-08-20 — Faith, mana crystals, and supply are usable inside combat
+
+> "We do have resources of faith, mana crystals, and supply that should be capable
+> of being used as a cost or as a gain inside combat."
+
+Re-routes two pass-5 findings at once: "charge a campaign resource" is NOT
+seam-deferred — costs and gains in the three campaign currencies are battle-tier
+vocabulary. And the census's "second resource bar" (8 uses) is most likely these
+commander-level resources appearing in power costs, not a new per-unit bar — to be
+confirmed when the census regenerates.
+
+---
+
+## 2026-08-20 — Summoning stays in the game; build-now vs defer is open
+
+> "We are going to use summoning. I don't know if it should be cut now for
+> simplicity or flushed out so that we're more complete."
+
+The capability is permanent; only the scheduling is open. Engine consequence
+regardless of timing: code written for the loadout/roster work must not bake in a
+fixed-size unit array — mid-battle unit addition (uid allocation, AI assignment,
+activation ordering for a unit that arrived late) becomes possible later without a
+migration.
+
+---
+
+## 2026-08-20 — onDodge fires only when Dodge caused the miss, read off the one roll
+
+> "It's literally if your dodge stat caused the miss. If I have a 25 dodge stat and
+> you have a 75 accuracy, and you attack, we need that one dice cup to roll. If the
+> low numbers are missing, then the lowest numbers that are below the dodge mean
+> the dodge caused the miss."
+
+One roll, one cup — never a second dodge roll. The die has a dodge-owned band of
+size = the target's effective Dodge, sitting at the deep end of the miss range. A
+miss whose roll lands in that band fires onDodge; any other miss does not.
+
+Engine mapping (engine hits on roll ≤ chance, so its miss end is the HIGH numbers):
+onDodge fires when the attack missed AND `roll > 100 − dodge`. Her example — 75
+accuracy, 25 dodge, final 50: rolls 51–75 miss plain, rolls 76–100 miss by dodge.
+Probability of onDodge given a swing = dodge/100 whenever accuracy covers the rest,
+which matches "the lowest numbers below the dodge" exactly.
+
+---
+
+## 2026-08-20 — "Copy or steal an effect" does not exist; it is a census bug
+
+Angela: "I actually don't even know what you're talking about for copy, steal, and
+effect." She is right — the capability is an artifact. `content/oneoffs.mjs:51`
+counts `/gain it yourself|copy|steal/i`, and `steal` substring-matches every
+occurrence of "stealth", plus the names "Soul Stealer" and "Life Steal". The 19
+uses are stealth vocabulary double-counted. Proposed fix (not applied — review is
+read-only): `\bsteal\b` in place of `steal`, then regenerate the census. The
+pass-5 "needs design" entry for this capability is withdrawn.
