@@ -11,9 +11,13 @@ const PAD_T = 78, PAD_B = 16, PAD_X = 10;
 const W = D.field.w + PAD_X*2, H = D.field.h + PAD_T + PAD_B;
 const board = document.getElementById('board'), unitsC = document.getElementById('units'),
       fxC = document.getElementById('fx');
-for (const c of [board, unitsC, fxC]) { c.width = W; c.height = H; c.style.width = W+'px'; c.style.height = H+'px'; }
+// The canvases keep their pixel space (W×H drawing buffers) — CSS scales the
+// picture uniformly to whatever width the log column leaves the stage, so the
+// board shrinks on narrow screens instead of pushing the log below itself.
+for (const c of [board, unitsC, fxC]) { c.width = W; c.height = H; c.style.width = '100%'; c.style.height = '100%'; }
 const stage = document.getElementById('stage');
-stage.style.width = W+'px'; stage.style.height = H+'px';
+stage.style.aspectRatio = W + ' / ' + H;
+stage.style.maxWidth = W + 'px';
 const bx = board.getContext('2d'), ux = unitsC.getContext('2d');
 const fx = createHexVFX(fxC);
 

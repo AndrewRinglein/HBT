@@ -60,6 +60,26 @@ describe('the viewer speaks the new events', () => {
   })
 })
 
+describe('the log lives to the RIGHT of the board and scrolls itself', () => {
+  // Angela 2026-08-20: "Put the log to the right, and keep the screen in place
+  // and let the scrolling of the log move the log text, not expand down."
+  it('the main row never wraps — the log column cannot drop below the board', () => {
+    expect(html).toMatch(/#main\s*\{[^}]*flex-wrap:\s*nowrap/)
+  })
+  it('the board gives way on narrow screens — CSS-scaled canvases, pixel space intact', () => {
+    expect(html).toContain('stage.style.aspectRatio')
+    expect(html).toContain("c.style.width = '100%'")
+  })
+  it('the event counter reserves its width — the toolbar never wraps mid-play', () => {
+    expect(html).toMatch(/id="pos"[^>]*min-width:\s*13\dpx/)
+  })
+  it('the panel column is pinned and the log scrolls its own text inside it', () => {
+    expect(html).toMatch(/aside\s*\{[^}]*position:\s*sticky/)
+    expect(html).toMatch(/#log\s*\{[^}]*overflow-y:\s*auto/)
+    expect(html).toMatch(/#panels\s*\{[^}]*overflow-y:\s*auto/)
+  })
+})
+
 describe('the replay is an artifact of its inputs — nothing else', () => {
   it('two builds of the same battle are byte-identical', () => {
     execSync('node tools/build-replay.mjs /tmp/replay-test-battle.json /tmp/replay-a.html')

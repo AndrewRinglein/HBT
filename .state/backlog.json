@@ -609,5 +609,37 @@
   "status": "done",
   "sha": "26fdc48",
   "gauntlet": "passed"
+ },
+ {
+  "id": "viewer.replay-layout",
+  "kind": "engine",
+  "shape": "plumbing",
+  "needs": [
+   "viewer.replay-rig"
+  ],
+  "spec": "Angela 2026-08-20: \"in the game builder replay, the log is at the bottom and not side and keeps expanding down, blocking view of the battle. Put the log to the right, and keep the screen in place and let the scrolling of the log move the log text, not expand down.\" The replay page docks the log as a permanent right-hand column at EVERY width (flex-wrap removed, so it can never fall below the board), the board scales down instead (CSS-scaled canvases keeping their pixel space), the panel column is sticky and viewport-capped with the roster cards scrolling in their own region, and the log scrolls its own text in a fixed box.",
+  "expect": "built page: #main nowrap, canvases responsive, aside sticky, #log and #panels overflow-y:auto",
+  "probeIds": [
+   "unit.zombie-burning"
+  ],
+  "status": "done",
+  "sha": "175377b",
+  "gauntlet": "passed"
+ },
+ {
+  "id": "fix.replay-bar-jitter",
+  "kind": "engine",
+  "shape": "plumbing",
+  "needs": [
+   "viewer.replay-layout"
+  ],
+  "spec": "Found while verifying viewer.replay-layout at 900px: the toolbar wraps mid-battle when the event counter first renders, dropping the board 32px — the exact keeps-expanding-down class Angela reported. The counter now reserves its width before play begins.",
+  "expect": "page height identical before play and after 4s of playback at 900x700",
+  "probeIds": [
+   "unit.zombie-burning"
+  ],
+  "status": "done",
+  "sha": "a2e5d83",
+  "gauntlet": "passed"
  }
 ]

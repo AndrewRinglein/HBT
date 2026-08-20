@@ -1222,3 +1222,41 @@ IRON GAUNTLET: PASSED
   PASS  kill switch — the tests fail without the content — tests fail without status.regeneration,terrain.water — they genuinely test it
 
 IRON GAUNTLET: PASSED
+
+## viewer.replay-layout — LANDED `175377b`
+2026-08-20 08:41
+
+  PASS  dependencies landed
+  PASS  typecheck
+  PASS  full test suite — 255 passed
+  PASS  gate 1 — the id appears in a real battle — unit.zombie-burning: 5812 log lines, 5812 fired, 3072 changed state
+  PASS  brought its own tests — test/replay.test.ts
+  PASS  existing tests untouched
+  PASS  control battles unchanged
+  PASS  content has a published source — 10 ids without a published source (all grandfathered)
+  PASS  hardcode scan — core knows mechanisms, never names
+  PASS  generalizes — the second instance costs zero engine code — shape 'plumbing' — not a mechanism, exempt
+  PASS  naming — new content ids use declared kinds
+  PASS  naming — no banned words invented
+  PASS  kill switch — the tests fail without the content — tests fail without unit.zombie-burning — they genuinely test it
+
+IRON GAUNTLET: PASSED
+
+## fix.replay-bar-jitter — LANDED `a2e5d83`
+2026-08-20 08:43
+
+  PASS  dependencies landed
+  PASS  typecheck
+  PASS  full test suite — 256 passed
+  PASS  gate 1 — the id appears in a real battle — unit.zombie-burning: 5812 log lines, 5812 fired, 3072 changed state
+  PASS  brought its own tests — test/replay.test.ts
+  PASS  existing tests untouched
+  PASS  control battles unchanged
+  PASS  content has a published source — 10 ids without a published source (all grandfathered)
+  PASS  hardcode scan — core knows mechanisms, never names
+  PASS  generalizes — the second instance costs zero engine code — shape 'plumbing' — not a mechanism, exempt
+  PASS  naming — new content ids use declared kinds
+  PASS  naming — no banned words invented
+  PASS  kill switch — the tests fail without the content — tests fail without unit.zombie-burning — they genuinely test it
+
+IRON GAUNTLET: PASSED

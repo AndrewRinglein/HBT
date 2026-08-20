@@ -12,12 +12,22 @@
            padding:6px 13px; font:inherit; cursor:pointer }
   button:hover { background:#2c2f38 } button:disabled { opacity:.4; cursor:default }
   button.on { background:#3a4a34; border-color:#4d6144 }
-  #main { display:flex; gap:16px; padding:16px; align-items:flex-start; flex-wrap:wrap }
-  #stage { position:relative; flex:0 0 auto; line-height:0;
+  /* Angela 2026-08-20: the log lives to the RIGHT of the board at every width —
+     never below it. nowrap means the column cannot drop under the board when the
+     window (or the Game Builder's iframe) is narrow; the BOARD gives way instead,
+     scaling down while the canvases keep their pixel space. */
+  #main { display:flex; gap:16px; padding:16px; align-items:flex-start; flex-wrap:nowrap }
+  #stage { position:relative; flex:1 1 auto; min-width:0; line-height:0;
            box-shadow:0 6px 34px #0009; border-radius:4px; overflow:hidden }
   #stage canvas, #stage img { position:absolute; left:0; top:0 }
   #stage { background:#0b0c0e }
-  aside { flex:1 1 300px; min-width:280px; max-width:440px }
+  /* The panel column: sticky, capped to the viewport, and split in two — the
+     roster cards scroll in their own region, the log fills what remains and
+     scrolls ITS OWN text. Nothing here ever grows the page downward. */
+  aside { flex:0 0 340px; min-width:300px; max-width:380px;
+          display:flex; flex-direction:column; position:sticky; top:62px;
+          max-height:calc(100vh - 78px); overflow:hidden }
+  #panels { overflow-y:auto; flex:0 1 auto; min-height:0 }
   h2 { font-size:12px; letter-spacing:.09em; text-transform:uppercase; color:var(--dim);
        margin:0 0 8px; font-weight:600 }
   .card { background:#181a1f; border:1px solid var(--line); border-radius:8px;
@@ -36,7 +46,7 @@
   .lg i { width:12px; height:12px; border-radius:2px; border:1px solid #0007; flex:0 0 auto }
   .lg .nm2 { flex:0 0 96px }
   .lg .ef { color:var(--dim) }
-  #log { font:12px/1.55 ui-monospace,monospace; height:330px; overflow-y:auto;
+  #log { font:12px/1.55 ui-monospace,monospace; flex:1 1 200px; min-height:150px; overflow-y:auto;
          background:#111216; border:1px solid var(--line); border-radius:8px; padding:10px 12px }
   #log div { padding:1px 0; color:#a9a698; white-space:pre-wrap }
   #log div.now { color:#fff; background:#26303a; margin:0 -12px; padding-left:12px; padding-right:12px }
@@ -57,7 +67,9 @@
   <span class="meta" id="spdv">1.0×</span>
   <button id="grid">Terrain overlay</button>
   <button id="costs">Move costs</button>
-  <span class="meta" id="pos"></span>
+  <!-- min-width reserves the counter's room BEFORE play starts — otherwise the
+       bar wraps mid-battle when "event N / 688" appears and the board jumps down -->
+  <span class="meta" id="pos" style="display:inline-block;min-width:132px"></span>
 </div>
 
 <div id="main">
@@ -68,10 +80,12 @@
   </div>
 
   <aside>
-    <div class="card" id="hdr"></div>
-    <div class="card"><h2>Terrain</h2><div id="legend"></div></div>
-    <div class="card"><h2>Heroes</h2><div id="heroes"></div></div>
-    <div class="card"><h2>Enemies</h2><div id="enemies"></div></div>
+    <div id="panels">
+      <div class="card" id="hdr"></div>
+      <div class="card"><h2>Terrain</h2><div id="legend"></div></div>
+      <div class="card"><h2>Heroes</h2><div id="heroes"></div></div>
+      <div class="card"><h2>Enemies</h2><div id="enemies"></div></div>
+    </div>
     <h2>Event log</h2>
     <div id="log"></div>
   </aside>
