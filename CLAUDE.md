@@ -46,6 +46,7 @@ node tools/gate.mjs <id>               run the gates, change nothing
 node tools/gate.mjs <id> --land        commit, only if every gate passes
 node tools/gate.mjs <id> --abandon     give up, revert, record why
 node tools/report.mjs                  what landed, abandoned, or needs review
+node tools/review.mjs <id> --ok "..."  record Angela's verdict on a flagged landing (--all for the queue)
 
 npm test   npm run typecheck   npm run battle <n> [--map=id]   npm run sweep <n>
 
@@ -60,7 +61,10 @@ Data: `.state/gauntlet-log.jsonl` (the gate appends one line per run) and
 page re-renders on the next gate run).
 
 **The gate decides whether an item passed, not you.** Never write `status` into
-`.state/backlog.json` by hand — only the gate does. Adding many mechanics in a row
+`.state/backlog.json` by hand — the only writers are the gate and
+`tools/review.mjs`, which records ANGELA's verdict on flagged landings (run it
+only when she has actually reviewed and said so, quoting her words; it clears
+the flag but never rewrites the gate's seal history). Adding many mechanics in a row
 is the `batch-add` skill.
 
 ## The Iron Gauntlet

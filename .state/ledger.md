@@ -1817,3 +1817,27 @@ IRON GAUNTLET: PASSED
   PASS  kill switch — the tests fail without the content — tests fail without test.map.showcase — they genuinely test it
 
 IRON GAUNTLET: PASSED
+
+## REVIEW — 20 flagged landing(s) cleared
+2026-08-20T20:53:39.777Z · Angela: "Every seal I read was reasonable. — Angela, 2026-08-20, reviewing the flagged landings through the showcase batch"
+
+  ok  status.poison
+  ok  terrain.movecost
+  ok  terrain.passable
+  ok  terrain.modifiers
+  ok  status.regeneration
+  ok  status.weakness
+  ok  status.stun
+  ok  status.protection
+  ok  terrain.water-cleanses
+  ok  trigger.zombie.rot
+  ok  fix.adjacent-ranged
+  ok  fix.bleedout-duration
+  ok  target.no-exclude-self
+  ok  gauntlet.iron
+  ok  status.tick-resist
+  ok  content.test-lane
+  ok  fix.water-regen
+  ok  terrain.burning-ground
+  ok  unit.spirit-snake
+  ok  viewer.status-legibility

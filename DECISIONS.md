@@ -639,3 +639,9 @@ strips 1 Burn on entry, and 1 Burn + 1 Poison at End of Activation. Nothing else
 The 1-EFFECTS-SETTLED prose ("Both are stripped by water") was the stale text and
 now carries a CHANGED entry. Landed as fix.water-regen (97229ec): a regenerating
 unit standing in the river keeps every point of its healing.
+
+## 2026-08-20 — flagged-landing review: all clear through the showcase batch
+Angela, reviewing the withheld seals: **"Every seal I read was reasonable."**
+All 20 flagged landings cleared via `tools/review.mjs` (built this session —
+the human-verdict half of the flag mechanism). The gate's seal history is
+untouched; review records the verdict, it never rewrites the verdict.

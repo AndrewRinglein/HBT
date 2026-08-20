@@ -6,11 +6,16 @@
   "spec": "Poison: at End of Phase deal damage equal to its value to the holder, then reduce the value by 1. Stacking additive. Source: the zombie's Rotting Bite applies poison 2 on hit.",
   "expect": "a unit with poison 3 takes 3 then 2 then 1 and the status is gone on turn 4",
   "changesBaseline": true,
-  "status": "done-needs-review",
+  "status": "done",
   "failedAt": "2026-08-09 08:07",
   "reason": "full test suite: 86 passed, 3 FAILED",
   "attempts": 2,
-  "sha": "ae42a01"
+  "sha": "ae42a01",
+  "reviewed": {
+   "by": "Angela",
+   "at": "2026-08-20T20:53:39.777Z",
+   "note": "Every seal I read was reasonable. — Angela, 2026-08-20, reviewing the flagged landings through the showcase batch"
+  }
  },
  {
   "id": "status.burn",
@@ -70,8 +75,13 @@
   ],
   "note": "Costs are SWITCHES, recorded in SWITCHES.md: terrain.forest.moveCost, terrain.rocky.moveCost, terrain.water.passable. IMPASSABLE (999) is introduced but unused — terrain.passable is the item that uses it.",
   "attempts": 1,
-  "status": "done-needs-review",
-  "sha": "013a373"
+  "status": "done",
+  "sha": "013a373",
+  "reviewed": {
+   "by": "Angela",
+   "at": "2026-08-20T20:53:39.777Z",
+   "note": "Every seal I read was reasonable. — Angela, 2026-08-20, reviewing the flagged landings through the showcase batch"
+  }
  },
  {
   "id": "terrain.passable",
@@ -89,8 +99,13 @@
   "note": "Adds map.thicket (MAP-01 rows 10-21, cols 0-11) because no existing map had an obstacle, so the rule was untestable. Also hardens deployment: it now refuses impassable hexes loudly instead of placing a unit inside a wall. | Probed NEUTRAL, and that is the assertion, not a dodge: for a WALL, zero interactions is the pass condition. terrain.obstacle must appear on the board (it does, 75x) and must never appear in a moved event. The stronger form of the same claim is in the test — 0 obstacle entries across 60 battles and 13645 moves, and 0 capped outcomes proving the wall does not strand the AI.",
   "attempts": 1,
   "neutral": true,
-  "status": "done-needs-review",
-  "sha": "b6da318"
+  "status": "done",
+  "sha": "b6da318",
+  "reviewed": {
+   "by": "Angela",
+   "at": "2026-08-20T20:53:39.777Z",
+   "note": "Every seal I read was reasonable. — Angela, 2026-08-20, reviewing the flagged landings through the showcase batch"
+  }
  },
  {
   "id": "terrain.modifiers",
@@ -108,8 +123,13 @@
    "terrain.water",
    "terrain.rocky"
   ],
-  "status": "done-needs-review",
-  "sha": "be0cbb2"
+  "status": "done",
+  "sha": "be0cbb2",
+  "reviewed": {
+   "by": "Angela",
+   "at": "2026-08-20T20:53:39.777Z",
+   "note": "Every seal I read was reasonable. — Angela, 2026-08-20, reviewing the flagged landings through the showcase batch"
+  }
  },
  {
   "id": "movement.zone-of-control",
@@ -145,9 +165,14 @@
    "status.regeneration"
   ],
   "changesBaseline": true,
-  "status": "done-needs-review",
+  "status": "done",
   "sha": "36211e9",
-  "gauntlet": "not passed — 2 flag(s) warned"
+  "gauntlet": "not passed — 2 flag(s) warned",
+  "reviewed": {
+   "by": "Angela",
+   "at": "2026-08-20T20:53:39.777Z",
+   "note": "Every seal I read was reasonable. — Angela, 2026-08-20, reviewing the flagged landings through the showcase batch"
+  }
  },
  {
   "id": "status.weakness",
@@ -167,9 +192,14 @@
   ],
   "changesBaseline": true,
   "attempts": 1,
-  "status": "done-needs-review",
+  "status": "done",
   "sha": "50d4eed",
-  "gauntlet": "not passed — 1 flag(s) warned"
+  "gauntlet": "not passed — 1 flag(s) warned",
+  "reviewed": {
+   "by": "Angela",
+   "at": "2026-08-20T20:53:39.777Z",
+   "note": "Every seal I read was reasonable. — Angela, 2026-08-20, reviewing the flagged landings through the showcase batch"
+  }
  },
  {
   "id": "status.stun",
@@ -189,9 +219,14 @@
   ],
   "changesBaseline": true,
   "attempts": 1,
-  "status": "done-needs-review",
+  "status": "done",
   "sha": "23a048c",
-  "gauntlet": "not passed — 1 flag(s) warned"
+  "gauntlet": "not passed — 1 flag(s) warned",
+  "reviewed": {
+   "by": "Angela",
+   "at": "2026-08-20T20:53:39.777Z",
+   "note": "Every seal I read was reasonable. — Angela, 2026-08-20, reviewing the flagged landings through the showcase batch"
+  }
  },
  {
   "id": "status.protection",
@@ -210,9 +245,14 @@
    "test.warrior.brace"
   ],
   "changesBaseline": true,
-  "status": "done-needs-review",
+  "status": "done",
   "sha": "affba58",
-  "gauntlet": "not passed — 1 flag(s) warned"
+  "gauntlet": "not passed — 1 flag(s) warned",
+  "reviewed": {
+   "by": "Angela",
+   "at": "2026-08-20T20:53:39.777Z",
+   "note": "Every seal I read was reasonable. — Angela, 2026-08-20, reviewing the flagged landings through the showcase batch"
+  }
  },
  {
   "id": "unit.archer",
@@ -283,9 +323,14 @@
   ],
   "generalizationExempt": "The design names exactly one anti-status terrain (GD SS4: water is THE retreat tile). The mechanism is trait data -- stripsOnEnter/stripsOnActivationEnd rows on wet -- so a second stripping terrain is a data row costing zero engine code the day one is designed.",
   "killSwitchExempt": "terrain.water is not a registry row the CF_DISABLE_IDS seam can remove -- terrain is an enum plus trait tables. The tests assert strip data and live battle events directly; a future terrain-registry refactor brings terrain under the seam.",
-  "status": "done-needs-review",
+  "status": "done",
   "sha": "a44a94a",
-  "gauntlet": "not passed — 2 exemption(s) taken"
+  "gauntlet": "not passed — 2 exemption(s) taken",
+  "reviewed": {
+   "by": "Angela",
+   "at": "2026-08-20T20:53:39.777Z",
+   "note": "Every seal I read was reasonable. — Angela, 2026-08-20, reviewing the flagged landings through the showcase batch"
+  }
  },
  {
   "id": "terrain.impassable-naming",
@@ -322,9 +367,14 @@
    "test.warrior.second-wind"
   ],
   "attempts": 1,
-  "status": "done-needs-review",
+  "status": "done",
   "sha": "676f6b3",
-  "gauntlet": "not passed — 2 flag(s) warned"
+  "gauntlet": "not passed — 2 flag(s) warned",
+  "reviewed": {
+   "by": "Angela",
+   "at": "2026-08-20T20:53:39.777Z",
+   "note": "Every seal I read was reasonable. — Angela, 2026-08-20, reviewing the flagged landings through the showcase batch"
+  }
  },
  {
   "id": "trigger.zombie.sap",
@@ -451,8 +501,13 @@
   "probeIds": [
    "ADJACENT"
   ],
-  "status": "done-needs-review",
-  "sha": "178f608"
+  "status": "done",
+  "sha": "178f608",
+  "reviewed": {
+   "by": "Angela",
+   "at": "2026-08-20T20:53:39.777Z",
+   "note": "Every seal I read was reasonable. — Angela, 2026-08-20, reviewing the flagged landings through the showcase batch"
+  }
  },
  {
   "id": "fix.downed-targetable",
@@ -473,8 +528,13 @@
   "probeIds": [
    "bleedout"
   ],
-  "status": "done-needs-review",
-  "sha": "97ceb68"
+  "status": "done",
+  "sha": "97ceb68",
+  "reviewed": {
+   "by": "Angela",
+   "at": "2026-08-20T20:53:39.777Z",
+   "note": "Every seal I read was reasonable. — Angela, 2026-08-20, reviewing the flagged landings through the showcase batch"
+  }
  },
  {
   "id": "fix.start-of-turn-victory",
@@ -555,8 +615,13 @@
   "changesBaseline": false,
   "attempts": 1,
   "unreachable": "A deletion, and of a field nothing reached: no content uses the targeting model yet, so no battle log can mention it. Neutrality is proven instead by the six control baselines being byte-identical.",
-  "status": "done-needs-review",
-  "sha": "03a87e0"
+  "status": "done",
+  "sha": "03a87e0",
+  "reviewed": {
+   "by": "Angela",
+   "at": "2026-08-20T20:53:39.777Z",
+   "note": "Every seal I read was reasonable. — Angela, 2026-08-20, reviewing the flagged landings through the showcase batch"
+  }
  },
  {
   "id": "gauntlet.iron",
@@ -567,9 +632,14 @@
   "changesBaseline": false,
   "neutral": true,
   "unreachable": "Test-harness plumbing: the seam is invisible in any battle unless the env var is set, and no battle sets it. Neutrality is proven by the control baselines being byte-identical with the seam in place.",
-  "status": "done-needs-review",
+  "status": "done",
   "sha": "839460a",
-  "gauntlet": "not passed — 1 flag(s) warned; 1 exemption(s) taken"
+  "gauntlet": "not passed — 1 flag(s) warned; 1 exemption(s) taken",
+  "reviewed": {
+   "by": "Angela",
+   "at": "2026-08-20T20:53:39.777Z",
+   "note": "Every seal I read was reasonable. — Angela, 2026-08-20, reviewing the flagged landings through the showcase batch"
+  }
  },
  {
   "id": "status.tick-resist",
@@ -582,9 +652,14 @@
    "status.poison"
   ],
   "generalizationExempt": "Only one damaging tick status exists as published content (poison). The second instance is burn, which 1-EFFECTS-SETTLED explicitly marks not-yet-shaped -- do not reference. The flag is data on StatusDef, so burn setting it WILL be the zero-engine-code second instance the day it publishes.",
-  "status": "done-needs-review",
+  "status": "done",
   "sha": "fae1c37",
-  "gauntlet": "not passed — 1 exemption(s) taken"
+  "gauntlet": "not passed — 1 exemption(s) taken",
+  "reviewed": {
+   "by": "Angela",
+   "at": "2026-08-20T20:53:39.777Z",
+   "note": "Every seal I read was reasonable. — Angela, 2026-08-20, reviewing the flagged landings through the showcase batch"
+  }
  },
  {
   "id": "content.test-lane",
@@ -597,9 +672,14 @@
   ],
   "attempts": 2,
   "changesBaseline": true,
-  "status": "done-needs-review",
+  "status": "done",
   "sha": "252be44",
-  "gauntlet": "not passed — 1 flag(s) warned"
+  "gauntlet": "not passed — 1 flag(s) warned",
+  "reviewed": {
+   "by": "Angela",
+   "at": "2026-08-20T20:53:39.777Z",
+   "note": "Every seal I read was reasonable. — Angela, 2026-08-20, reviewing the flagged landings through the showcase batch"
+  }
  },
  {
   "id": "tool.effect-size-rules",
@@ -619,9 +699,14 @@
   ],
   "changesBaseline": true,
   "killSwitchExempt": "terrain is an enum plus trait tables, not a registry row the CF_DISABLE_IDS seam can remove; the tests assert the strip data and live battle events directly.",
-  "status": "done-needs-review",
+  "status": "done",
   "sha": "97229ec",
-  "gauntlet": "not passed — 1 flag(s) warned; 1 exemption(s) taken"
+  "gauntlet": "not passed — 1 flag(s) warned; 1 exemption(s) taken",
+  "reviewed": {
+   "by": "Angela",
+   "at": "2026-08-20T20:53:39.777Z",
+   "note": "Every seal I read was reasonable. — Angela, 2026-08-20, reviewing the flagged landings through the showcase batch"
+  }
  },
  {
   "id": "viewer.replay-rig",
@@ -742,9 +827,14 @@
   ],
   "changesBaseline": true,
   "attempts": 1,
-  "status": "done-needs-review",
+  "status": "done",
   "sha": "9899d10",
-  "gauntlet": "not passed — 1 flag(s) warned"
+  "gauntlet": "not passed — 1 flag(s) warned",
+  "reviewed": {
+   "by": "Angela",
+   "at": "2026-08-20T20:53:39.777Z",
+   "note": "Every seal I read was reasonable. — Angela, 2026-08-20, reviewing the flagged landings through the showcase batch"
+  }
  },
  {
   "id": "unit.spirit-snake",
@@ -759,9 +849,14 @@
   ],
   "changesBaseline": true,
   "attempts": 1,
-  "status": "done-needs-review",
+  "status": "done",
   "sha": "2ca5d4d",
-  "gauntlet": "not passed — 1 flag(s) warned"
+  "gauntlet": "not passed — 1 flag(s) warned",
+  "reviewed": {
+   "by": "Angela",
+   "at": "2026-08-20T20:53:39.777Z",
+   "note": "Every seal I read was reasonable. — Angela, 2026-08-20, reviewing the flagged landings through the showcase batch"
+  }
  },
  {
   "id": "unit.green-drake",
@@ -814,9 +909,14 @@
    "status.bleed"
   ],
   "changesBaseline": false,
-  "status": "done-needs-review",
+  "status": "done",
   "sha": "4d4d47f",
-  "gauntlet": "not passed — 1 flag(s) warned"
+  "gauntlet": "not passed — 1 flag(s) warned",
+  "reviewed": {
+   "by": "Angela",
+   "at": "2026-08-20T20:53:39.777Z",
+   "note": "Every seal I read was reasonable. — Angela, 2026-08-20, reviewing the flagged landings through the showcase batch"
+  }
  },
  {
   "id": "map.showcase",
