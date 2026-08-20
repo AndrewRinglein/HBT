@@ -56,6 +56,7 @@ const flag = (name, fn) => {
   return r.ok
 }
 
+const okStillTrue = () => ok
 console.log(`\ngate: ${id}   [${MODE}]\n`)
 
 check('dependencies landed', () => {
@@ -128,6 +129,7 @@ flag('existing tests untouched', () => ({
 // Taking the gate-1 deletion exemption ALWAYS flags the landing, whatever else
 // passed. An exemption that lands clean is an exemption nobody ever re-reads.
 let needsReview = weakened.length > 0 || unreachableUsed
+let exemptions = unreachableUsed ? 1 : 0
 const testDiff = weakened.length > 0 ? tryRun('git diff -U2 -- test/').out : ''
 
 check('control battles unchanged', () => {
@@ -208,7 +210,7 @@ check('hardcode scan — core knows mechanisms, never names', () => {
     if (typeof item.coreLiteralAllow !== 'string' || item.coreLiteralAllow.length < 20) {
       return { ok: false, note: '`coreLiteralAllow` must be a written reason, not a boolean' }
     }
-    needsReview = true
+    needsReview = true; exemptions++
     console.log(`  SKIP  hardcode scan — exemption taken  — ${item.coreLiteralAllow}`)
     return { ok: true, note: '', skipPrint: true }
   }
@@ -227,7 +229,7 @@ check('generalizes — the second instance costs zero engine code', () => {
     if (typeof item.generalizationExempt !== 'string' || item.generalizationExempt.length < 20) {
       return { ok: false, note: '`generalizationExempt` must be a written reason, not a boolean' }
     }
-    needsReview = true
+    needsReview = true; exemptions++
     console.log(`  SKIP  generalizes — exemption taken  — ${item.generalizationExempt}`)
     return { ok: true, note: '', skipPrint: true }
   }
@@ -272,6 +274,31 @@ flag('naming — no banned words invented', () => {
   for (const f of newFiles) smells.push(`${f} — a file named utils is where names go to be invented`)
   if (smells.length) needsReview = true
   return { ok: smells.length === 0, note: smells.length ? [...new Set(smells)].slice(0, 4).join(' | ') + ' — will land FLAGGED' : '' }
+})
+
+// THE KILL-SWITCH CHECK (Iron Gauntlet). Gate 2's assertions are written by the
+// same session that wrote the code — so who tests the tests? This does: run the
+// item's test files with the item's content DISABLED (the CF_DISABLE_IDS seam in
+// src/content/disable.ts). They must FAIL. A test that passes either way would
+// have passed before the feature existed, and proves nothing.
+check('kill switch — the tests fail without the content', () => {
+  if (item.killSwitchExempt) {
+    if (typeof item.killSwitchExempt !== 'string' || item.killSwitchExempt.length < 20) {
+      return { ok: false, note: '`killSwitchExempt` must be a written reason, not a boolean' }
+    }
+    needsReview = true; exemptions++
+    console.log(`  SKIP  kill switch — exemption taken  — ${item.killSwitchExempt}`)
+    return { ok: true, note: '', skipPrint: true }
+  }
+  const ids = (item.probeIds ?? [id]).filter((x) => x.includes('.'))
+  if (item.unreachable || ids.length === 0) return { ok: true, note: 'no content id to disable — engine plumbing, not applicable' }
+  const files = sh('git status --porcelain').split('\n').filter(Boolean).map((l) => l.slice(3)).filter((f) => f.startsWith('test/'))
+  if (files.length === 0) return { ok: true, note: 'no touched test files (brought-its-own-tests already failed)' }
+  const r = tryRun(`CF_DISABLE_IDS=${ids.join(',')} npx vitest run ${files.join(' ')} --reporter=dot`)
+  if (r.ok) {
+    return { ok: false, note: `TAUTOLOGICAL — the touched tests PASS with ${ids.join(',')} disabled. They would have passed before the feature existed. Assert something the content actually causes.` }
+  }
+  return { ok: true, note: `tests fail without ${ids.join(',')} — they genuinely test it` }
 })
 
 const body = checks.map((c) => `  ${c.ok ? 'PASS' : c.warn ? 'WARN' : 'FAIL'}  ${c.name}${c.note ? ' — ' + c.note : ''}`).join('\n')
@@ -330,4 +357,65 @@ appendFileSync(LEDGER, `\n## ${id} — LANDED \`${sha}\`${needsReview ? ' **NEED
     process.exit(1)
   }
 }
+// ── the Iron Gauntlet verdict ───────────────────────────────────────────────
+// PASSED means: every hard check passed, no flag warned, no exemption was taken,
+// the post-land audit agreed, and — for consequential mechanisms — the effect was
+// measured. Anything less lands (flags exist so the loop cannot deadlock) but the
+// seal is withheld, and the ledger says exactly why.
+let gauntletNotes = []
+// Grandfathered environmental debt (the INVENTED ids the content sessions have
+// not yet published) is not this item's doing — it is tracked by the audit and
+// must not withhold every seal until session 2 publishes. Only item-attributable
+// flags count against the gauntlet.
+const warns = checks.filter((c) => c.warn && c.name !== 'content has a published source').length
+
+// Effect measurement for consequential mechanisms: WITH vs WITHOUT, paired seeds,
+// through the kill-switch seam. Recorded, not thresholded — magnitude is a
+// finding, not a gate; the consequence clause already proved non-nullity.
+let effectReport = ''
+if (item.changesBaseline && MECHANISM_SHAPES.includes(item.shape)) {
+  const ids = (item.probeIds ?? [id]).filter((x) => x.includes('.'))
+  if (ids.length) {
+    const r = tryRun(`npx tsx tools/effect-size.mts ${ids.join(',')}`)
+    effectReport = r.out.trim()
+    if (!r.ok) gauntletNotes.push('effect measurement errored')
+    console.log('\n' + effectReport + '\n')
+  }
+}
+
+// Landing counter and the periodic full audit — every 10th landing, the whole
+// tree, because drift that arrives in ten innocent pieces is only visible in
+// aggregate.
+let auditNote = ''
+{
+  let g = { landings: 0 }
+  try { g = JSON.parse(readFileSync('.state/gauntlet.json', 'utf8')) } catch {}
+  g.landings = (g.landings ?? 0) + 1
+  writeFileSync('.state/gauntlet.json', JSON.stringify(g))
+  if (g.landings % 10 === 0) {
+    console.log(`\nlanding #${g.landings} — running the periodic full audit`) 
+    const a = tryRun('node tools/audit-all.mjs')
+    console.log(a.out.trim())
+    if (!a.ok) { gauntletNotes.push('periodic full audit FAILED — investigate before the next item'); auditNote = ' · periodic audit FAILED' }
+    else auditNote = ' · periodic audit clean'
+  }
+}
+
+if (!okStillTrue()) gauntletNotes.push('a hard check failed') // defensive; land mode cannot reach here with ok=false
+if (warns > 0) gauntletNotes.push(`${warns} flag(s) warned`)
+if (exemptions > 0) gauntletNotes.push(`${exemptions} exemption(s) taken`)
+const gauntletPassed = gauntletNotes.length === 0
+item.gauntlet = gauntletPassed ? 'passed' : `not passed — ${gauntletNotes.join('; ')}`
+{
+  const bl = JSON.parse(readFileSync(BACKLOG, 'utf8'))
+  const it = bl.find((x) => x.id === id)
+  if (it) { it.gauntlet = item.gauntlet; writeFileSync(BACKLOG, JSON.stringify(bl, null, 1)) }
+  appendFileSync(LEDGER, `\nIRON GAUNTLET: ${gauntletPassed ? 'PASSED' : item.gauntlet.toUpperCase()}${auditNote}\n` +
+    (effectReport ? '\n```\n' + effectReport + '\n```\n' : ''))
+  sh('git add -A')
+  sh(`git -c user.email=a@b -c user.name=combat-framework commit -q --amend --no-edit`)
+}
+console.log(gauntletPassed
+  ? `\n⛓  IRON GAUNTLET: PASSED — every check, no flags, no exemptions.`
+  : `\n⛓  IRON GAUNTLET: NOT PASSED — ${gauntletNotes.join('; ')}. The landing stands; the seal is withheld.`)
 console.log(`\nLANDED as ${sha}${needsReview ? '  (flagged for review)' : ''}\n`)

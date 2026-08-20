@@ -764,3 +764,28 @@ index 5d849ed..2b553fb 100644
  
 ```
 </details>
+
+## gauntlet.iron — LANDED `839460a` **NEEDS REVIEW**
+2026-08-20 06:20
+
+  PASS  dependencies landed
+  PASS  typecheck
+  PASS  full test suite — 212 passed
+  PASS  gate 1 — the id appears in a real battle
+  PASS  brought its own tests — test/killswitch.test.ts
+  PASS  existing tests untouched
+  PASS  control battles unchanged
+  PASS  content has a published source — 10 ids still have no published source — see content-check
+  PASS  hardcode scan — core knows mechanisms, never names
+  PASS  generalizes — the second instance costs zero engine code — shape 'plumbing' — not a mechanism, exempt
+  PASS  naming — new content ids use declared kinds
+  PASS  naming — no banned words invented
+  PASS  kill switch — the tests fail without the content — no content id to disable — engine plumbing, not applicable
+
+<details><summary>Existing tests were edited — review this diff</summary>
+
+```diff
+```
+</details>
+
+IRON GAUNTLET: NOT PASSED — 1 FLAG(S) WARNED; 1 EXEMPTION(S) TAKEN

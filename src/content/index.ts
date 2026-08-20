@@ -3,6 +3,7 @@
 // because load order would become a hidden global that shifts tie-breaks between runs.
 
 import type { AbilityDef, AttackDef, UnitDef } from '../core/types.js'
+import { omitDisabled } from './disable.js'
 
 // ─────────────────────────────────────────────────────────────────────────────
 // PROVISIONAL CONTENT — NOT PUBLISHED, NOT DESIGN
@@ -23,7 +24,7 @@ import type { AbilityDef, AttackDef, UnitDef } from '../core/types.js'
 // ─────────────────────────────────────────────────────────────────────────────
 
 
-export const ATTACKS: Readonly<Record<string, AttackDef>> = {
+const RAW_ATTACKS: Readonly<Record<string, AttackDef>> = {
   'attack.zombie.basic': {
     // PROVISIONAL — no published source
     id: 'attack.zombie.basic', name: 'Rotting Bite', kind: 'melee',
@@ -63,7 +64,7 @@ export const ATTACKS: Readonly<Record<string, AttackDef>> = {
   },
 }
 
-export const ABILITIES: Readonly<Record<string, AbilityDef>> = {
+const RAW_ABILITIES: Readonly<Record<string, AbilityDef>> = {
   'power.mage.bolt': {
     id: 'power.mage.bolt', name: 'Arcane Bolt',
     stat: 'magic', bonus: 6, damageType: 'magic',
@@ -71,7 +72,7 @@ export const ABILITIES: Readonly<Record<string, AbilityDef>> = {
   },
 }
 
-export const UNITS: Readonly<Record<string, UnitDef>> = {
+const RAW_UNITS: Readonly<Record<string, UnitDef>> = {
   zombie: {
     typeId: 'zombie', side: 'enemy',
     maxHp: 10, armor: 0, resist: 0,
@@ -122,6 +123,12 @@ export const UNITS: Readonly<Record<string, UnitDef>> = {
     attributes: [],
   },
 }
+
+// The kill-switch seam (see disable.ts). With CF_DISABLE_IDS unset these are the
+// raw objects, byte for byte — the control baselines cannot tell the difference.
+export const ATTACKS = omitDisabled(RAW_ATTACKS)
+export const ABILITIES = omitDisabled(RAW_ABILITIES)
+export const UNITS = omitDisabled(RAW_UNITS, 'unit.')
 
 /** The first battle: 4 zombies on row 0, 2 warriors + 2 rangers on row 11. */
 export const FIRST_BATTLE = {

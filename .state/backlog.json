@@ -461,5 +461,18 @@
   "unreachable": "A deletion, and of a field nothing reached: no content uses the targeting model yet, so no battle log can mention it. Neutrality is proven instead by the six control baselines being byte-identical.",
   "status": "done-needs-review",
   "sha": "03a87e0"
+ },
+ {
+  "id": "gauntlet.iron",
+  "kind": "engine",
+  "shape": "plumbing",
+  "spec": "The Iron Gauntlet: kill-switch seam (CF_DISABLE_IDS filters content registries at load, loudly per Law 9 when referenced content is disabled), kill-switch gate check (item tests must FAIL with the content disabled), periodic full audit every 10 landings (tools/audit-all.mjs), paired effect measurement for consequential mechanisms (tools/effect-size.mts, WITH vs WITHOUT through the seam), and the gauntlet verdict: PASSED only when every check passes with no flags and no exemptions.",
+  "expect": "with CF_DISABLE_IDS unset every registry is byte-identical (baseline proves it); with it set, rows vanish and referencing content fails loudly",
+  "changesBaseline": false,
+  "neutral": true,
+  "unreachable": "Test-harness plumbing: the seam is invisible in any battle unless the env var is set, and no battle sets it. Neutrality is proven by the control baselines being byte-identical with the seam in place.",
+  "status": "done-needs-review",
+  "sha": "839460a",
+  "gauntlet": "not passed — 1 flag(s) warned; 1 exemption(s) taken"
  }
 ]

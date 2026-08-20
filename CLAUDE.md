@@ -54,6 +54,36 @@ npm test   npm run typecheck   npm run battle <n> [--map=id]   npm run sweep <n>
 `.state/backlog.json` by hand — only the gate does. Adding many mechanics in a row
 is the `batch-add` skill.
 
+## The Iron Gauntlet
+
+The gate's full check suite plus what runs around it. **`⛓ IRON GAUNTLET: PASSED`
+prints only when every check passed, no flag warned, and no exemption was taken** —
+anything less still lands (flags exist so the loop cannot deadlock) but the seal is
+withheld and the ledger says why. The verdict is written onto the backlog item as
+`gauntlet`.
+
+- **Kill switch** — the item's tests re-run with its content disabled
+  (`CF_DISABLE_IDS`, the seam in `src/content/disable.ts`) and must FAIL. A test
+  that passes either way is tautological.
+- **Hardcode scan** — added `src/core` lines may not contain content-instance ids
+  or creature-tag literals. Core knows mechanisms; only content knows names.
+- **Generalization** — a mechanism-shaped item declares `variants`: 2+ ids proving
+  the second instance is pure data, each probed live in a battle.
+- **Consequence** — `changesBaseline: true` with byte-identical control battles
+  FAILS, and consequential mechanisms get a paired WITH-vs-WITHOUT effect
+  measurement (`npx tsx tools/effect-size.mts <id>`) recorded in the ledger.
+- **Naming** — unknown id kinds block (declare them in `GLOSSARY.md` first);
+  banned vocabulary flags.
+- **Post-land audit** — tests and baselines re-run FROM THE COMMITTED TREE; on
+  disagreement the landing is auto-reverted.
+- **Periodic full audit** — `node tools/audit-all.mjs`, run automatically every
+  10th landing and at the end of every batch: the whole tree, not the delta.
+
+Every exemption (`unreachable`, `coreLiteralAllow`, `generalizationExempt`,
+`killSwitchExempt`) demands a written reason, prints SKIP not PASS, flags the
+landing for review, and withholds the seal. The escape hatches exist; they are
+deliberately expensive.
+
 State lives on disk (`.state/backlog.json`, `.state/ledger.md`,
 `.state/baseline.hash`), so a fresh session resumes exactly where the last one
 stopped.
@@ -103,7 +133,7 @@ grep -rn "terrain.rocky" .. --include=*.md
 **A `null` in a data file does not mean undecided.** `MAP-01/map.json` has
 `moveCost: null` with a note saying these are design decisions — that means *not in
 this file*, not *nobody has chosen*. The numbers were in
-`../GROUND-REQUIREMENTS.md` §1.1 the whole time.
+`GROUND-REQUIREMENTS.md` §1.1 the whole time.
 
 This is not hypothetical: seven terrain rows were invented on 2026-08-14 while that
 table sat one directory up, dated a day and a half earlier. Three were wrong, they

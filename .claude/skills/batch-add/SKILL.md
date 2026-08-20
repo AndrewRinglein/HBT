@@ -91,3 +91,20 @@ Otherwise run to the end of the backlog without checking in.
 1. `node tools/report.mjs` — what landed, what was abandoned, what is flagged.
 2. Re-run the sweep and rebuild the dashboard so the numbers match the new content.
 3. Report: items landed, items abandoned and why, items flagged for review, and any switch you added.
+
+---
+
+## The Iron Gauntlet, in a batch
+
+Every landing already runs the full gauntlet. Batch duties on top:
+
+- **Run `node tools/audit-all.mjs` at the end of every batch**, whatever the
+  count. The gate runs it automatically every 10th landing; the batch end is the
+  other mandatory moment.
+- **Report the seal per item**: `⛓ PASSED` or the withheld reason, in the batch
+  summary. A batch of ten landings with three withheld seals is a different
+  result than ten clean ones, and the summary must show it.
+- **Never spend an exemption to keep the batch moving.** An exemption is a
+  written-reason escape for a genuine structural case, not a way past a check
+  that is inconvenient tonight. If a check keeps failing, abandon the item and
+  record why — an abandoned item is a finding; a laundered one is a landmine.
