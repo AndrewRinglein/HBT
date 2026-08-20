@@ -293,3 +293,26 @@ is ten.
 **Grit subtracts from crit chance** — a defensive trait that exactly opposes Crit. No
 edit needed: §4's formula already reads `− target's Grit (flat subtraction)`. The
 engine is what lacks it.
+
+---
+
+## 2026-08-20 — Grit is renamed Luck; the Codex is fresh and earlier docs are stale
+
+**Ruled, two parts.**
+
+> "We also updated the stat grit to luck. My new content in the Codex is fresh, and
+> things from before are stale."
+
+**Grit → Luck.** Same job — a flat subtraction from the attacker's crit chance, the
+defensive opposite of Crit — new name. The Codex stat ladder (§13) already says Luck;
+`GAME-DESIGN.md` still says Grit in five places and needs the rename.
+
+**Authority order is recency: CODEX.md over everything earlier.** Not merely
+"Codex wins on disagreement" — the Codex is the fresh layer, and `GAME-DESIGN.md`,
+`COMBAT-SEQUENCE.md` and the numbered SETTLED files are stale where they differ from
+it. A divergence is by default a pending amendment to the older document, not
+content drift to correct backward. (`CODEX.md` and `HBT-CODEX.html` are generated
+together by `mkcodexmd.mjs` from `content/`, so they cannot drift from each other.)
+
+Consequence for the framework review now being planned: every pass diffs the engine
+and the design docs AGAINST the Codex censuses, in that direction.

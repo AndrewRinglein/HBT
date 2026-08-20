@@ -89,7 +89,7 @@ content row. That's the right shape; the engine doesn't have it.
 
 ### 3.3 The Spirit stat — *heal for 6 + 2×Spirit*
 
-**Spirit does not exist in the engine.** It's named once in `GAME-DESIGN.md` §5 —
+**Spirit does not exist in the engine.** It's named once in `../GAME-DESIGN.md` §5 —
 *"effects that scale off Magic or Spirit use the party-wide sum"* — and nowhere else.
 
 Two consequences:
@@ -153,7 +153,7 @@ somebody deciding that a zombie is `undead`, which is session 6's call.
 
 **`status.bleed`.** Heal Ally removes it. §5 defines it — *"Bleed: flat 2 damage, its
 value is a turn counter, not a magnitude"* — but it is not published in
-`1-EFFECTS-SETTLED.md`, same as weakness and burn.
+`../1-EFFECTS-SETTLED.md`, same as weakness and burn.
 
 Note it's the *odd* status: poison and regeneration use their value as both magnitude
 and timer; bleed's value is **only** a timer and the damage is flat. That's a

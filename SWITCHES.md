@@ -19,7 +19,7 @@ the default freezes and the baseline uses it. Without recording the answers,
 | `statusDecayRung` | Does a status decay at the tick rung, or at the later duration rung? | tick — act and decay in one pass | open |
 | `absorbSpendOrder` | Which absorbing status pays first when several are held? | id order | open |
 | `activationOrder` | Fixed by unit id, random, or best-first? | fixed | open |
-| ~~all `terrain.*` values~~ | ~~cost and cover~~ | **NOT SWITCHES — specified in `GROUND-REQUIREMENTS.md` §1.1** | closed |
+| ~~all `terrain.*` values~~ | ~~cost and cover~~ | **NOT SWITCHES — specified in `../GROUND-REQUIREMENTS.md` §1.1** | closed |
 | `terrain.forest.cover` | Does forest hide you (+dodge), armour you (+armor), or both? | +10 dodge, +1 armor | open |
 | `terrain.rocky.cover` | Is broken ground cover, or just slow? | +5 dodge | open |
 | `terrain.water.penalty` | Does wading cost accuracy, or only movement? | −10 acc, −5 dodge | open |
@@ -65,7 +65,7 @@ Remaining hits are cancelled the moment the target stops standing.
 
 **2026-08-14, corrected.** The section below said I had invented terrain values and
 should not have. That was true but incomplete. The values were **already written
-down**, by Angela, in `GROUND-REQUIREMENTS.md` §1.1, dated 2026-08-13 — a day and a
+down**, by Angela, in `../GROUND-REQUIREMENTS.md` §1.1, dated 2026-08-13 — a day and a
 half before the engine work — in the same folder, in a file named for the subject.
 
 I never opened it. I read `MAP-01/map.json`, saw `moveCost: null` with the note
@@ -108,3 +108,28 @@ its parts, and there is a test that fails if it ever does.
 composition exists. If a value is the sum, product or consequence of other values,
 it is derived, not switched — and putting it in this table is how it stops being
 checked.
+
+---
+
+## Added 2026-08-17 — from the retired trigger docs and the content sessions
+
+`TRIGGERS-PLAN.md` and `TRIGGER-NOTES.md` were retired to `_to_delete/` on
+2026-08-17: their live content had already been absorbed into
+`COMBAT-SEQUENCE.md`, and what remained was stale (a twelve-hook list) or wrong
+(station `DMG.VS_TARGET 275`, a number `COMBAT-SEQUENCE.md` says is unreserved).
+Their four genuinely open questions land here, which is the file that owns
+open questions.
+
+| Switch | Question | Default | Status |
+|---|---|---|---|
+| `hooklessTarget` | On a hook with no natural target, who does a trigger resolve against? | the owner | open — **must error loudly on unknown, per `GAME-DESIGN.md` §5 lesson 1** |
+| `rangeOrigin` | Does a radius measure from the trigger's owner or from the event's location? | owner | open |
+| `downedTriggerable` | Can a downed unit be selected by a trigger's targeting? | no | open — pairs with `hazardOnDowned` |
+| `modifierStacking` | Two modifiers on the same value — additive or multiplicative? | additive | open |
+| `knockbackTieBreak` | Off the six hex axes, "directly away" ties between two neighbours. Law 6 forbids a tie. | clockwise from a fixed reference | open — **new, from the Actions session** |
+| `stunTickOrder` | Does a status tick run before or after the holder's next Activation? Decides whether 1 Stun costs a turn or nothing. | after | open — **new**; interacts with `statusDecayRung` but is not the same question |
+| `roundUp` | **Cited by `COMBAT-SEQUENCE.md` and defined nowhere.** Karma's "rounded up" has nothing to ride. Integer division is truncated everywhere else. | truncate | **open — this row exists because two documents assumed it did** |
+
+**Doc drift found the same day:** `COMBAT-SEQUENCE.md` still presents
+`protectionStacking` as undecided — *"either 3 (add) or 2 (take highest)"* — when
+this file records it **answered: additive**. That sentence needs a note.

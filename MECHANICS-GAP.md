@@ -2,7 +2,7 @@
 
 *Snapshot, 2026-08-15. What the Combat Framework is missing.*
 
-> **This is a snapshot, not a ninth live document.** `DOCS.md` says eight, and it is
+> **This is a snapshot, not a ninth live document.** `../DOCS.md` says eight, and it is
 > right: a gap list restates facts that belong somewhere else, and it starts rotting
 > the day something ships. So the durable answers were moved out before this was
 > written —
@@ -40,9 +40,9 @@ the trigger that never fires and the baseline that could not move.
 | | built | slot | absent |
 |---|---|---|---|
 | Hero stat sheet (§7) | 13 | 0 | **6** (+1 derived) |
-| Trigger hooks (§5) | 8 | **1** | **4** |
+| Trigger hooks (§5) | 8 | **1** | **5** |
 | Accuracy stations | 4 | **3** | 0 (+1 retired) |
-| Damage stations | 7 | **2** | 1 (+1 retired) |
+| Damage stations | 7 | **2** | 1 reserved-not-built (+1 retired) |
 | Dice cups | 5 | **9** | 0 |
 | Statuses (§5) | 1 | 0 | **6** |
 | Status *behaviour hooks* | 1 | **5** | 0 |
@@ -145,7 +145,7 @@ Everything Angela ruled on 2026-08-15 is built and asserted. The one gap:
 
 Also at this level, and **absent**: an Attack is exactly one Hit.
 `AttackDef` has no `hits` field and `performAttack` resolves once — while
-`GLOSSARY.md` and CS both define an Attack as *"one or more Hits."* Two switches
+`../GLOSSARY.md` and CS both define an Attack as *"one or more Hits."* Two switches
 already stand ready for it (`multiAttackRetargets` answered, `recomputeStatsBetweenHits`
 open) and there is nothing for them to switch.
 
@@ -172,7 +172,7 @@ The stat pipeline itself is ready for all seven — adding one is a `StatName`, 
 
 ---
 
-## 3. Trigger hooks — 8 of 13
+## 3. Trigger hooks — 8 of 14
 
 Fired and tested: `onAttack` `onMiss` `onHit` `onCrit` `onDamage` `onTakingDamage`
 `onKill` `onDeath`.
@@ -184,6 +184,7 @@ Fired and tested: `onAttack` `onMiss` `onHit` `onCrit` `onDamage` `onTakingDamag
 | `onEnter` | **absent** | GD §5 line 442. CS wants it at battle setup *and* at every wave arrival |
 | `onWounded` | **absent** | GD §5 line 442. Blocked on wound levels existing at all |
 | `onEquip` | **absent** | GD §5 line 442. Blocked on gear |
+| `onDodge` | **absent** | Ruled 2026-08-20. Fires on the **defender**. Needs no new computation — the predicate is *the roll failed and removing station `600 TARGET_DODGE` from `accLedger` makes it succeed* — but it needs the hook, and it must carry the attacker. `COMBAT-SEQUENCE.md` §`onDodge` has the full requirement |
 
 `onCrit` is ours — Angela added it 2026-08-15 and it is not in §5's list, so §5's
 hook list needs the addition at the same time it needs `turnEnd` → `onActivationEnd`.
@@ -207,7 +208,7 @@ Written today: `BASE` (+ a `BASE_MOD` row per stat modifier) · `RANGE` ·
 All four of those constants — `ACC.TERRAIN`, `ACC.CONDITION`, `ACC.SITUATIONAL`,
 `ACC.FINAL` — appear nowhere in `src/` or `test/` outside their own declaration.
 
-### 4.2 Damage — 7 of 10
+### 4.2 Damage — 7 of 11
 
 Written today: `DECLARE` · `SOURCE_STAT` · `SOURCE_STATUS` · `CRIT` ·
 `PROTECTION` · `MITIGATION` · `FLOOR`.
@@ -217,7 +218,7 @@ Written today: `DECLARE` · `SOURCE_STAT` · `SOURCE_STATUS` · `CRIT` ·
 | 300 | TERRAIN | **retired on purpose**, same as ACC.TERRAIN |
 | 350 | POSITIONAL — flank | **slot**. GD §4 line 411 promises *"positional bonuses (flank = +damage, shown in preview)"*. Nothing computes facing or flanking |
 | 850 | APPLY | **slot** — `applyDamage` is a mutator, not a ledger step, so `base + Σdeltas === applied + overkill` is asserted against the value rather than shown |
-| — | **VS_TARGET** | **absent** — no station number is even reserved. Slayer bonuses (§8 line 589), *+2 vs undead*, and *"modifiers to damage based on target type / based on status on target"* all need it |
+| 400 | **VS_TARGET** | **reserved, not built.** Ruled 2026-08-20. Number now assigned — between `350 POSITIONAL` and `450 CRIT`, so a crit multiplies the bonus. Slayer bonuses (§8 line 589), *+2 vs undead*, and *"modifiers to damage based on target type / based on status on target"* all land here. **The station is only two-thirds of the mechanic** — thirteen authored entries also need the same predicate read at *status application* (`apply 3 Burn, or 5 against undead`) and at a *waived self-cost* (`power.exorcist.banish`), neither of which is a damage row. `COMBAT-SEQUENCE.md` §Conditional-on-the-target has the full requirement |
 
 `DMG.TERRAIN`, `DMG.POSITIONAL` and `DMG.APPLY` likewise appear nowhere outside
 their own declaration.
@@ -268,13 +269,13 @@ empty is the honest measure of how much of the battle model is not yet running.
 
 Ordered roughly by how much of the design leans on them.
 
-### 6.1 Zones of control, attacks of opportunity, Disengage — **absent**
+### 6.1 Zones of control, attacks of opportunity, Sidestep — **absent**
 
 GD §4 lines 248-289, and it is the longest single mechanic in the design doc.
 Needed: a threatened-hex derivation, the AoO attack itself (melee at −20 and −1
 damage), **the movement-loss rule** (*"an attack of opportunity that connects also
 costs the target half its damage in Movement"* — the rule GD calls the one that
-makes the system bite), the Juggernaut exemption axis, and Disengage as a movement
+makes the system bite), the Juggernaut exemption axis, and Sidestep as a movement
 action with its directly-opposite-hex geometry.
 
 `movement.ts` walks the path one hex at a time specifically so this has somewhere
@@ -282,7 +283,7 @@ to go. The place is ready; nothing is in it.
 
 ### 6.2 Movement actions as a family — **absent**
 
-GD §4 line 391: *Move (1 stamina) · Sprint (2, Movement +3) · Disengage (1, one hex).*
+GD §4: *Move (1 stamina) · Sidestep (0 stamina, one hex, any direction, never provokes) · Sprint (2, Movement +3).* Disengage removed 2026-08-17.
 The engine has one hardcoded move: `MOVE_STAMINA_COST = 1`, budget = the
 `movement` stat. Angela's own Rogue sheet writes the default as a content row
 ("move +0, cost 1"), which is the right shape and does not exist.
@@ -311,9 +312,24 @@ missing is the unit-anchored version and End-of-Phase rung 1.
 Layer 1 (cost + occupancy modifiers) is **built**, trait-composed, and matches
 GROUND-REQUIREMENTS §1.1.
 
-- **Layer 2, status on the ground** — Burning · Frost · Curse · Damage. No spread,
-  no decay, overwritten rather than stacked, and applied on **two** beats: on
-  entering, and again at End of Activation. Neither beat exists.
+- **Layer 2, status on the ground** — No spread, no decay, overwritten rather than
+  stacked, and applied on **two** beats: on entering, and again at End of Activation.
+  Neither beat exists.
+
+  **Angela confirmed layer 2's shape on 2026-08-20** and it is exactly what this line
+  already said: *"Status effects on terrain are just persistent. No turn tracking, just
+  'it's burning' or 'it's frost.' The only thing that should replace a ground layer effect
+  is if a different one is applied, it replaces the previous one. The ground can only have
+  one effect on it, and that effect stays."* So: **no magnitude, no duration, one layer
+  per hex, last one applied wins.** The engine spec was right; the CONTENT was wrong —
+  ten entries carried numbers and clocks (*"burning 2 for two Turns"*) and have been
+  rewritten. `rule.ground-layers` in `settled.json` is the authored statement of it.
+
+  **The layer list disagrees between the two documents.** This section says
+  *Burning · Frost · Curse · Damage*; the content ships **burning · frost · poisoned ·
+  darkness**. `poisoned` is plausibly this doc's `Damage`, and `darkness` is treated as a
+  ground layer by the content but is not in this list at all — it is bound up with Vision
+  and stealth, which live in §6.3. One of the two lists needs to give.
 - **Water strips status** — GD §4 line 313 gives water a job no other terrain has:
   −1 Burn on entry, −1 Burn and −1 Poison at End of Activation. Absent, and it is
   the mirror-image test case for layer 2.
@@ -480,10 +496,10 @@ session read first won."*
 7. **The End-of-Phase ladder is hardcoded**, and CS says it must be config so
    reordering is a sweep axis. § 1.5 above.
 
-8. **`GAME-DESIGN.md` §5 line 442 still says `turnEnd`**, and its hook list is
+8. **`../GAME-DESIGN.md` §5 line 442 still says `turnEnd`**, and its hook list is
    missing `onCrit`. Both were ruled on 2026-08-15.
 
-9. **`GAME-ARCHITECTURE.md` still says "The Projections"** in ten places
+9. **`../GAME-ARCHITECTURE.md` still says "The Projections"** in ten places
    (lines 68, 69, 70, 74, 88, 341, 484, 631, 632, 633). The rename to The Combat
    Framework missed the file.
 
@@ -509,7 +525,7 @@ does not have to. `node tools/next.mjs` is the live version of this table.
 | 4 | `station.accuracy-field` | Opens the station every later modifier needs — AoO, flight, Dagger Toss, Smite |
 | 5 | `ability.effects` *(already queued)* | Turns abilities from damage-only into the effect vocabulary triggers already have. Unblocks every support class, and the first thing in the engine that heals |
 | 6 | `movement.zone-of-control` + `movement.attack-of-opportunity` *(already queued)* | Biggest single design system with a prepared slot |
-| 7 | `move.actions` *(already queued)* | Disengage is meaningless without 6; do them adjacent |
+| 7 | `move.actions` *(already queued)* | Sidestep is meaningless without 6; do them adjacent |
 | 8 | `attack.multihit` *(already queued)* | Two switches are waiting on it |
 | 9 | terrain layer 2 + `terrain.water-cleanses` *(queued)* | Fills movement rung 5 and End of Activation, and Water is its own mirror-image test case |
 | 10 | `crit.branch-and-injuries` | Turns the `critEnabled` switch from a half-system into a real sweep axis |

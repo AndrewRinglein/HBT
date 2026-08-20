@@ -103,7 +103,7 @@ grep -rn "terrain.rocky" .. --include=*.md
 **A `null` in a data file does not mean undecided.** `MAP-01/map.json` has
 `moveCost: null` with a note saying these are design decisions — that means *not in
 this file*, not *nobody has chosen*. The numbers were in
-`GROUND-REQUIREMENTS.md` §1.1 the whole time.
+`../GROUND-REQUIREMENTS.md` §1.1 the whole time.
 
 This is not hypothetical: seven terrain rows were invented on 2026-08-14 while that
 table sat one directory up, dated a day and a half earlier. Three were wrong, they

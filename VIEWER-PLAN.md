@@ -161,7 +161,7 @@ It matters here specifically because the viewer needs a typeId → token mapping
 Point that mapping at `battle-tokens/manifest.json`, which already records each
 unit's slot and `kind` — a generated manifest is a better source of truth than
 filenames, and it regenerates when the art does. Note the manifest's own warning:
-*"Ids here are provisional and NOT published to ART-SETTLED.md."* So the mapping
+*"Ids here are provisional and NOT published to ../ART-SETTLED.md."* So the mapping
 table is the seam where provisional art ids meet settled engine ids, and it should
 be the only place the two ever touch.
 

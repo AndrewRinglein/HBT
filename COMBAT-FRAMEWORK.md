@@ -131,7 +131,7 @@ The one discipline: a switch that has been answered records its answer, and the 
 | **COMBAT-FRAMEWORK.md** | This file. What the system is. |
 | **COMBAT-SEQUENCE.md** | The order everything happens in. Vocabulary, stations, ladders, cups. |
 | **ENGINE-CONSTITUTION.md** | Laws the code must obey. Read before writing any. |
-| **GAME-DESIGN.md** | The game itself. The engine serves this, never the reverse. |
+| **../GAME-DESIGN.md** | The game itself. The engine serves this, never the reverse. |
 | **HARNESS-DESIGN.md** | Research snapshot. Superseded in places — background only. |
 
 ---

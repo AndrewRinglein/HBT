@@ -131,7 +131,7 @@ Battle · Turn · Phase · Activation · Step · Primary Action · Card Play · 
 
 *Caught by:* a lint rule banning the identifier `round` in the engine package.
 
-*Why it matters:* "phase" currently means a full round in GAME-DESIGN.md and a half-turn here. A fresh session believes whichever file it opens first, and the resulting bug looks like a rules error for days.
+*Why it matters:* "phase" currently means a full round in ../GAME-DESIGN.md and a half-turn here. A fresh session believes whichever file it opens first, and the resulting bug looks like a rules error for days.
 
 ---
 

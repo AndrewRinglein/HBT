@@ -25,7 +25,7 @@ Fixed terms. Each word means exactly one thing.
 | **Hit** | One instance of damage resolution. |
 | **Settle** | The resolution loop that runs after damage lands. |
 
-> **Naming collision to resolve in GAME-DESIGN.md.** The wave schedule currently calls a full round a "phase" — *phase 5 adds a second necromancer, battles run ~9 phases.* Under this vocabulary those are **Turns**. One find-replace, and "phase" is free to mean the Hero/Enemy half everywhere.
+> **Naming collision to resolve in ../GAME-DESIGN.md.** The wave schedule currently calls a full round a "phase" — *phase 5 adds a second necromancer, battles run ~9 phases.* Under this vocabulary those are **Turns**. One find-replace, and "phase" is free to mean the Hero/Enemy half everywhere.
 
 **An Activation has exactly two parts: movement, then the primary action.** Either may be skipped.
 
@@ -89,7 +89,7 @@ damage applies
 
 ## Hero Phase
 
-A sequence of **Hero Activations and Card Plays, interleaved**, in the order the player chooses. The simulator approximates the ordering with a switch: `random` · `best-first` · `fixed`. When random, it draws from its own dice cup.
+**Two segments.** First, every **summoned** hero-side unit activates, in ascending `summonOrder`, before anything that was already on the field — see `rule.summon-order` and the Summoning section below. *(Not built; nothing summons yet.)* Then a sequence of **Hero Activations and Card Plays, interleaved**, in the order the player chooses. The simulator approximates that second ordering with a switch: `random` · `best-first` · `fixed`. When random, it draws from its own dice cup. **The summon segment is not reorderable** — it is not the player's to choose.
 
 Downed heroes do not activate.
 
@@ -113,7 +113,7 @@ The ladder is an **ordered list of named rungs supplied by config**, not six har
 
 ## Enemy Phase
 
-A sequence of Enemy Activations. Same shape as the Hero Phase without card plays. Enemies do not spend stamina.
+A sequence of Enemy Activations. Same shape as the Hero Phase without card plays, **including the summon segment** — summoned enemy-side units activate first, in ascending `summonOrder`. Enemies do not spend stamina.
 
 ### End of Enemy Phase
 
@@ -219,7 +219,7 @@ never fires.
 > **CHANGED 2026-08-15 — `onAttack` moved from step 6 to step 1.** Angela: *"On
 > Attack happens the second the attack starts. It has nothing to do with hitting or
 > missing."* At step 6 it sat after `Apply`, and a miss exits at step 3 — so a missed
-> swing never reached it, contradicting `GAME-DESIGN.md` §5 (*"onAttack — every
+> swing never reached it, contradicting `../GAME-DESIGN.md` §5 (*"onAttack — every
 > swing, hit or miss"*). Two documents, opposite answers, and whichever a session
 > read first won.
 >
@@ -237,7 +237,7 @@ never fires.
 
 ## Triggers
 
-Nine hooks. **Most belong to the unit that acted; three do not**, and getting that
+Ten hooks. **Most belong to the unit that acted; four do not**, and getting that
 wrong is silent — a retaliation that hits the wrong unit still looks like it worked.
 
 | Hook | Fires | Owner |
@@ -246,6 +246,7 @@ wrong is silent — a retaliation that hits the wrong unit still looks like it w
 | `onMiss` | the swing missed | attacker |
 | `onHit` | connected, even if armor absorbed it all | attacker |
 | `onCrit` | the crit is confirmed | attacker |
+| `onDodge` | the swing missed *because of the target's Dodge* | **defender** — see the requirement below |
 | `onDamage` | at least 1 damage got through | attacker |
 | `onKill` | the target died | **killer** |
 | `onTakingDamage` | it was hit | **victim** |
@@ -254,7 +255,7 @@ wrong is silent — a retaliation that hits the wrong unit still looks like it w
 
 **`onActivationEnd`, never `turnEnd`.** A Turn is a Hero Phase plus an Enemy Phase;
 a unit finishing its go is an Activation. On an eight-zombie board the two readings
-differ by sixteen firings a turn against one. *(`GAME-DESIGN.md` §5 still says
+differ by sixteen firings a turn against one. *(`../GAME-DESIGN.md` §5 still says
 `turnEnd` — it needs the same edit.)*
 
 **A failed roll still logs.** `trigger.rolled` is emitted whether or not it fired.
@@ -312,7 +313,7 @@ To-hit is now the core roll of the game and its **final output feeds the crit fo
 | 700 | SITUATIONAL — the design's open melee penalties land here | *not yet* — and it is where **every** attack-level accuracy modifier goes: the AoO's −20, flight's −30, a per-attack ±. `AttackDef` has no `accuracy` field to feed it |
 | 900 | FINAL | *not yet as a row* — the clamp happens in `preview()` and emits no ledger line |
 
-> **RULED 2026-08-15.** Angela: *"You cannot use a ranged attack on something adjacent. You can use a ranged attack on something not adjacent at −20."* Matching `GAME-DESIGN.md` §4.
+> **RULED 2026-08-15.** Angela: *"You cannot use a ranged attack on something adjacent. You can use a ranged attack on something not adjacent at −20."* Matching `../GAME-DESIGN.md` §4.
 >
 > Two separate rules, and they live in two separate places:
 >
@@ -323,7 +324,150 @@ To-hit is now the core roll of the game and its **final output feeds the crit fo
 >
 > A second thing fell out of fixing it. `ADJACENT` could not be probed for, because **the accuracy ledger was computed and never emitted** — this document said *"the accuracy roll carries the same [ledger]"* and no event carried it, so no log could say why a hit chance was what it was. `attack.declared` now carries `accLedger`. A station nobody logs is indistinguishable from a station nobody runs.
 
+### `onDodge` — REQUIRED, NOT BUILT. Ruled by Angela 2026-08-20.
+
+The twelfth trigger hook (see `../3-UNITS-SETTLED.md` §Trigger hooks), firing on the **defender** when its Dodge is the reason an
+attack missed. `onMiss` already exists and is not this: `onMiss` fires on the attacker and
+does not care why.
+
+**The predicate.** An attack is a *dodge* when it **missed**, and would have **hit** had the
+target's Dodge been 0. Everything needed to answer that is already here — Dodge is station
+`600 TARGET_DODGE` and `attack.declared` now carries `accLedger`, so the check is: did the
+roll fail, and does removing the `600` row from the ledger make it succeed. **No new
+computation, one new comparison.** A miss against a target with 0 Dodge is never a dodge.
+
+**Where it fires.** The attack resolves and settles as it does today. `onDodge` fires **at
+the end of that settlement**, then settles itself. It obeys the standing rule that settle is
+never reentrant: damage a `onDodge` trigger deals enqueues into the settle that is already
+running.
+
+**What it must carry.** The defender (the trigger's owner) and **the attacker** — five of
+the seven authored payloads reach back at whoever swung (`enchant.riposte` deals it 5 true
+damage, `enchant.scalding-ward` gives it 3 Burn). An `onDodge` that cannot name the attacker
+is half a hook.
+
+**Why it matters beyond the content.** It is the pricing tool for Dodge. Dodge gains value
+as it accumulates, so a large Dodge number has always been hard to sell — `+100 Dodge would
+break the game` is in the authoring guide. An `onDodge` cost inverts that: `item.wraithform-
+cloak` carries +40 Dodge and takes 2 true damage every time it dodges, and the bestiary
+pattern is a boss at +100 Dodge taking 1. The stat becomes self-limiting instead of capped.
+
 **Do not clamp the Accuracy value.** The *roll* clamps to 0–100; the value must not, because Crit reads `(final Accuracy − 100) ÷ 4`. Clamping the value silently kills Design Law 21 — the point-blank +10 crit the design promises becomes +0, and no test would catch it.
+
+### Conditional-on-the-target — REQUIRED, NOT BUILT. Ruled by Angela 2026-08-20.
+
+> *"We need to have the ability to have a status effect or some other thing applied to a
+> given target. That is a different mechanic than just adding damage."*
+
+**The shape.** An effect names a class of target, and does something *more* — or something
+*different* — when the target is in that class. **Forty-three authored entries need it**:
+thirty already carry it as structured data (`slayer: {undead: 3, demon: 2}` on weapons,
+enchants and attacks) and thirteen more express it in prose on powers and durations. The
+prose ones split into three kinds, which is why it is one mechanic and not three:
+
+| Kind | Example | What changes |
+|---|---|---|
+| **More damage** | `power.holy-avenger.reckoning` — *a further 4 damage against undead or demon* | a number on the hit |
+| **A status, or more of one** | `power.crusader.flaming-smite` — *apply 3 Burn on hit, or 5 Burn against undead, demon or horror* | how much of a status lands |
+| **A cost that is waived** | `power.exorcist.banish` — *take 4 true damage yourself; against demon, nightmare or horror you take none* | a self-effect, not the hit at all |
+
+The third kind is the one that proves the point: it never touches the damage ledger, so
+this cannot be built as a damage station alone.
+
+**The predicate.** One predicate, evaluated against the *target of the effect*, drawn only
+from things the engine already stores:
+
+- **the target has tag X** — `undead`, `demon`, `horror`, `beast`, `giant`, `dragon`,
+  `plant`, `elemental`, `nightmare`. Already an authored condition; already on every unit.
+- **the target carries status X** — already an authored condition.
+
+Nothing else. No facing, no terrain, no distance, no HP threshold — those were pruned from
+the content on purpose and must not come back in through this door. A tag list is an OR
+(`undead, demon or horror` is one predicate over three tags), never a nested expression.
+
+**Where it fires — two places, because the three kinds land in two different pipelines.**
+
+1. **Station `400 VS_TARGET`** in the damage table below, between `350 POSITIONAL` and
+   `450 CRIT`. Sitting before CRIT is deliberate: the bonus is part of the hit, so a crit
+   multiplies it. It is an ordinary ledger row — `{station:400, effectId, before, after,
+   delta}` — so *"how much did slayer bonuses add this battle"* stays a `GROUP BY` and
+   needs no new instrumentation.
+2. **At status application**, where the amount is resolved. `apply N Burn` becomes
+   `apply N Burn, or M against <predicate>` — the predicate is read once, at the moment the
+   status lands on that target, and picks which number is used. It is a **selection between
+   two authored amounts**, not a multiplier and not a second application: an attack that
+   hits three targets asks the question three times and may answer differently each time.
+
+The waived-cost kind (`banish`) is the same predicate read at the point the self-effect
+would resolve, gating it off. Same question, third site.
+
+**The `slayer` field is the machine form of kind one and should stay.** Thirty entries carry
+`slayer: {tag: N}` already; station 400 reads that map directly. The thirteen prose entries
+are the ones with no field to live in, because they are granted by a *power* for a duration
+rather than carried by a weapon — those need the predicate at effect level, not item level.
+
+**What it must not become.** Not a general conditional-expression system. The authored form
+is `<effect>, or <effect> against <tags>` — one predicate, two branches, no else-if chain,
+no combining with the trigger's own condition. If a future entry wants more than that, the
+answer is a different entry, not a deeper grammar.
+
+**Priced as.** The bonus half only ever fires against part of the roster, so it prices below
+the equivalent flat number — the same reasoning that lets `power.crusader.oathbound` pay for
+`+2 Strength and +2 Resist` with a flat `-5 Accuracy against everything else`. The
+authoring guide's stat ladder applies to the flat half at full rate and to the conditional
+half at a discount; **the discount is not yet a number** and needs one before the paladin
+tables can be balanced against the others.
+
+### Summoning — REQUIRED, NOT BUILT. Ruled by Angela 2026-08-20.
+
+> *"We are going to want to have summoned enemies and heroes. We can summon something. It
+> has an AI assigned to it, whether it's an enemy or a hero, and it has a stat block. That
+> is a feature that we want."*
+
+**What a summon is.** A **unit**, in the full sense of `Unit` — a hex, a stat block, Health,
+statuses, a side. Not a token, not a marker, not a property of the summoner. Three fields
+are what make it a summon rather than a deployed hero:
+
+| Field | Meaning |
+|---|---|
+| `summonedBy` | the unit that put it on the field. Null for everything that started there |
+| `summonOrder` | 1, 2, 3 … assigned on arrival, **counted separately per side** |
+| `ai` | the behaviour profile driving it — the same field an enemy already needs |
+
+**A summoned hero-side unit is driven by AI, not by the player.** That is the ruling and it
+is what makes the feature cheap: the enemy side already needs an AI driver, and a summoned
+ally uses the same one pointed at a different target set. There is no second control mode
+to build.
+
+**Activation order — `rule.summon-order`.** Summoned units activate **first in their own
+Phase, in `summonOrder` order, before any unit that was already on the field.** Summoned
+hero-side units go first in the Hero Phase; summoned enemy-side units go first in the Enemy
+Phase. A summon that arrives and then queues behind the whole roster has done nothing on
+the Turn you paid for it, so going first is most of what the summon is.
+
+This changes the Hero Phase from *"the order the player chooses"* to **two segments**: the
+summon segment, which is fully ordered and not the player's to reorder, then the free
+segment, which is. The Enemy Phase gets the same split.
+
+```
+Hero Phase  = [ summons, ascending summonOrder ] ++ [ everything else, player's order ]
+Enemy Phase = [ summons, ascending summonOrder ] ++ [ everything else, AI order ]
+```
+
+`summonOrder` is assigned **once, on arrival, and never renumbered.** When summon 2 dies,
+summon 3 does not become 2 — it stays 3 and simply has nothing in front of it. Renumbering
+would let a player reorder their own summons by killing one, and it would make the number
+mean two different things on two different Turns.
+
+**Open, and deliberately not decided here:** whether a summon expires, whether it counts
+for victory conditions, whether it can itself summon, and what a summoned unit's death does
+to its summoner. None of those block the field or the ordering rule, which is what this
+section exists to lock down.
+
+**First customer.** `specialty.magical-friend` — the Ranger's companion — is the only
+content that needs this today. Its `needsCapability` is now `summoning`, and its four
+powers all measure from the companion's hex. It deploys at `startOfBattle`, which makes it
+summon 1 with nothing in front of it, and it does not attack.
 
 ### Damage stations
 
@@ -336,12 +480,12 @@ Numbered with gaps on purpose. Ordering is a property of the **station**, not of
 | 250 | SOURCE_STATUS — what the attacker carries that lowers its own damage | **yes** as a station; **no status declares `reducesOutgoingDamage`**, so it has never run with a live value |
 | 300 | TERRAIN | **retired** — same as ACC.TERRAIN |
 | 350 | POSITIONAL — flank | *not yet* — nothing computes facing or flanking |
+| 400 | **VS_TARGET** — slayer bonuses, *+2 vs undead*, damage by target type or by status on the target. Sits before CRIT so a crit multiplies it | *not yet* — **number now reserved; see "Conditional-on-the-target" above** |
 | 450 | CRIT — the +50%, before all mitigation | **yes**, behind the `critEnabled` switch |
 | 550 | PROTECTION — consumes; see below | **yes** as a station; **no status declares `reducesIncomingDamage`**, so it has never run with a live value |
 | 600 | MITIGATION — Armor (physical) or Resist (magic); true damage skips both | **yes** |
 | 700 | FLOOR at zero | **yes** |
 | 850 | APPLY | *not yet as a row* — `applyDamage` is a mutator, not a ledger step |
-| — | **VS_TARGET** — slayer bonuses, *+2 vs undead*, damage by target type or by status on the target | *not yet* — **no number is even reserved** |
 
 > **`usePower` does not run this table.** `ability.ts:resolvePowerDamage` is a second damage pipeline: DECLARE → SOURCE_STAT → MITIGATION → FLOOR, skipping SOURCE_STATUS, POSITIONAL, CRIT and PROTECTION. So Weakness would not reduce a power's damage and Protection would not absorb one. Constitution Law 1 says one damage function; there are two.
 

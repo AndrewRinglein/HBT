@@ -3,7 +3,7 @@
 Rewritten 2026-08-15. **The first version of this file was wrong.** It documented
 `src/content/index.ts` — the scaffolding an engine session invented to have
 something to run the harness against — and presented it as the authoring shape.
-It is not. `GAME-DESIGN.md` is the source, and this file is now written from it.
+It is not. `../GAME-DESIGN.md` is the source, and this file is now written from it.
 
 Read §1 for what a hero IS. Read §5 before building Crucible: the engine
 implements roughly half of the sheet, and the half it is missing is the half
@@ -18,7 +18,7 @@ Resist · Health · Magic · Spirit · Toughness · Movement · Stamina (max/reg
 Item Slots**
 
 > **RULED, Angela 2026-08-15: Resolute is no longer a stat.** Removed from
-> `GAME-DESIGN.md` line 545. Two injury rows still name it; those are drafting
+> `../GAME-DESIGN.md` line 545. Two injury rows still name it; those are drafting
 > material — see §6b.
 
 Plus:
@@ -72,7 +72,7 @@ did; that was wrong. Generation varies the name, the stats and some abilities �
 **it never forks the path.** A generated ranger is one of six ranger types and
 inherits that type's path unchanged.
 
-**Accuracy `+5`/level is a typical shape, not a rule.** `GAME-DESIGN.md` line 145 read
+**Accuracy `+5`/level is a typical shape, not a rule.** `../GAME-DESIGN.md` line 145 read
 as a law and has been corrected; gains come from the type's path.
 
 None of this exists in the engine. `UnitDef` has no level, no XP, no tree, and no
@@ -107,7 +107,7 @@ the naming scheme.
 
 Class also creates **types**, which is what type-filtered targeting reads.
 
-`ART-SETTLED.md` has an empty `## Ids` section — no art id is published yet, so the
+`../ART-SETTLED.md` has an empty `## Ids` section — no art id is published yet, so the
 naming scheme is still free.
 
 ---
@@ -232,7 +232,7 @@ same trigger both fire.
 > that omits `onHit`, `startOfBattle` and `onEquip`. §5's list is the fuller one and
 > is treated here as authoritative.
 
-**RULED, Angela 2026-08-15**, and `GAME-DESIGN.md` now reflects all three: **`onEnter`
+**RULED, Angela 2026-08-15**, and `../GAME-DESIGN.md` now reflects all three: **`onEnter`
 is gone** (entering the battle is `startOfBattle`), **`onWounded` is removed**, and
 **`turnEnd` was the wrong term — it is `onActivationEnd`.** The engine had already made
 that rename on vocabulary grounds; it is now canon rather than a local deviation.
@@ -367,7 +367,7 @@ it — not a wound, not an injury, not a personality tag a story event reads.
 
 ### Retiring Resolute — not a content problem
 
-`Resolute` appears three times in `GAME-DESIGN.md`: the sheet (line 545) and two
+`Resolute` appears three times in `../GAME-DESIGN.md`: the sheet (line 545) and two
 injuries, *Frightened* (`−1 Resolute`) and *Terrified* (`−2 Resolute / −1 Resist`).
 
 **This does not need fixing row by row.** Angela, 2026-08-15: *"The whole badge system
@@ -386,7 +386,7 @@ material, not published content.
 
 ## 7. Nothing is published yet
 
-`2-ACTIONS-SETTLED.md` — the file that publishes `attack.*`, `power.*`, `item.*`
+`../2-ACTIONS-SETTLED.md` — the file that publishes `attack.*`, `power.*`, `item.*`
 and `card.*` — **has an empty `## Ids` section.** Not one action is published.
 
 That is why `content-check` reports 10 INVENTED ids covering every attack in the
