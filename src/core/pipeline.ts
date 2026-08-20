@@ -122,8 +122,15 @@ export function resolveAccuracy(ctx: Ctx, attacker: Unit, target: Unit, a: Attac
   return { value: v, ledger, absorbed: 0 }
 }
 
+/**
+ * What the damage pipeline actually reads. AttackDef and AbilityDef both satisfy
+ * it — which is the mechanism behind Law 1: powers do not get a second pipeline,
+ * they get this one with crit forced false (Design Law 23: no roll, no crit).
+ */
+export type DamageSource = Pick<AttackDef, 'id' | 'bonus' | 'stat' | 'damageType'>
+
 export function resolveDamage(
-  ctx: Ctx, attacker: Unit, target: Unit, a: AttackDef, crit: boolean,
+  ctx: Ctx, attacker: Unit, target: Unit, a: DamageSource, crit: boolean,
   outPenalty = 0, absorbAvailable = 0,
 ): Resolved {
   const ledger: LedgerRow[] = []

@@ -128,7 +128,15 @@
   "shape": "counter",
   "spec": "PUBLISHED: 1-EFFECTS-SETTLED.md — pool. Heals equal to its value at End of Phase, then -1. Poison mirrored, so one number reads both directions. Halved while status.burn is present (burn not yet shaped — do not implement that clause).",
   "expect": "regen 3 on a damaged unit heals 3 then 2 then 1, capped at max HP",
-  "attempts": 1
+  "attempts": 4,
+  "variants": [
+   "status.poison",
+   "status.regeneration"
+  ],
+  "changesBaseline": true,
+  "status": "done-needs-review",
+  "sha": "36211e9",
+  "gauntlet": "not passed — 2 flag(s) warned"
  },
  {
   "id": "status.weakness",
@@ -245,7 +253,15 @@
   "needs": [
    "trigger.mechanism"
   ],
-  "note": "status.poison is PUBLISHED in 1-EFFECTS-SETTLED.md -- the only one of the three rows that is."
+  "note": "status.poison is PUBLISHED in 1-EFFECTS-SETTLED.md -- the only one of the three rows that is.",
+  "variants": [
+   "trigger.zombie.rot",
+   "trigger.warrior.second-wind"
+  ],
+  "attempts": 1,
+  "status": "done-needs-review",
+  "sha": "676f6b3",
+  "gauntlet": "not passed — 2 flag(s) warned"
  },
  {
   "id": "trigger.zombie.sap",
@@ -345,9 +361,20 @@
   "id": "fix.one-damage-function",
   "kind": "engine",
   "shape": "rule",
-  "spec": "ability.ts:resolvePowerDamage is a second damage pipeline: DECLARE -> SOURCE_STAT -> MITIGATION -> FLOOR, skipping SOURCE_STATUS, CRIT and PROTECTION. So Weakness would not reduce a power and Protection would not absorb one. Constitution Law 1: one damage function.",
+  "spec": "ability.ts:resolvePowerDamage is a second damage pipeline: DECLARE -> SOURCE_STAT -> MITIGATION -> FLOOR, skipping SOURCE_STATUS, CRIT and PROTECTION. So Weakness would not reduce a power and Protection would not absorb one. Constitution Law 1: one damage function. PROVEN NEUTRAL at landing: no live status declares reducesOutgoing/IncomingDamage, so the unified pipeline is byte-identical in every control battle -- the refactor is pure. The stations become consequential the day weakness/protection land as content.",
   "expect": "a power aimed at a unit holding an absorbing status is reduced by it, and the ledger says so",
-  "changesBaseline": true
+  "changesBaseline": false,
+  "probeIds": [
+   "power.mage.bolt"
+  ],
+  "variants": [
+   "power.mage.bolt",
+   "attack.ranger.bow"
+  ],
+  "attempts": 1,
+  "status": "done",
+  "sha": "5e7f33d",
+  "gauntlet": "not passed — 1 flag(s) warned"
  },
  {
   "id": "fix.adjacent-ranged",
@@ -474,5 +501,20 @@
   "status": "done-needs-review",
   "sha": "839460a",
   "gauntlet": "not passed — 1 flag(s) warned; 1 exemption(s) taken"
+ },
+ {
+  "id": "status.tick-resist",
+  "kind": "status",
+  "shape": "rule",
+  "spec": "RULED, Angela 2026-08-20: Resist mitigates Burn and Poison per tick, never Bleed. Per-tick damage = max(0, value - Resist); the status value decays on its own clock regardless. Canonical verify table (5 poison vs 2 resist): take 3,2,1,0,0. Flag: tickMitigatedByResist on StatusDef; poison sets it, bleed never will.",
+  "expect": "the 5-vs-2 walk holds; zero resist is byte-old-behaviour; regen ticks untouched",
+  "changesBaseline": true,
+  "probeIds": [
+   "status.poison"
+  ],
+  "generalizationExempt": "Only one damaging tick status exists as published content (poison). The second instance is burn, which 1-EFFECTS-SETTLED explicitly marks not-yet-shaped -- do not reference. The flag is data on StatusDef, so burn setting it WILL be the zero-engine-code second instance the day it publishes.",
+  "status": "done-needs-review",
+  "sha": "fae1c37",
+  "gauntlet": "not passed — 1 exemption(s) taken"
  }
 ]

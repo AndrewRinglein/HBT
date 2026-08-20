@@ -74,6 +74,22 @@ export function applyDamage(ctx: Ctx, id: number, amount: number, causeId: strin
   })
 }
 
+/**
+ * Healing. Clamped at maxHp; the event carries what was asked vs what landed,
+ * because "asked 3, landed 1" is the number Burn-halving and overheal analysis
+ * will need (GAME-DESIGN §5: Burn halves healing — not yet implemented, and when
+ * it is, it belongs on the ASKED amount before this mutator, one code path).
+ */
+export function applyHealing(ctx: Ctx, id: number, amount: number, causeId: string): void {
+  const u = unit(ctx, id)
+  if (u.lifeState !== 'standing' || amount <= 0) return
+  const hpBefore = u.hp
+  const applied = Math.min(amount, u.maxHp - hpBefore)
+  if (applied <= 0) { emit(ctx, 'heal.applied', causeId, { target: id, asked: amount, amount: 0, hpBefore, hpAfter: hpBefore }); return }
+  u.hp = hpBefore + applied
+  emit(ctx, 'heal.applied', causeId, { target: id, asked: amount, amount: applied, hpBefore, hpAfter: u.hp })
+}
+
 export function setLifeState(ctx: Ctx, id: number, to: LifeState, causeId: string, extra: Record<string, unknown> = {}): void {
   const u = unit(ctx, id)
   const from = u.lifeState

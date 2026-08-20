@@ -38,6 +38,8 @@ export function foldToTurn(events: Event[], upToSeq: number): Map<number, UnitVi
         break
       case 'moved': units.get(e.actor!)!.hex = e['to'] as number; break
       case 'damage.applied': units.get(e.target!)!.hp = e['hpAfter'] as number; break
+      // heal.applied joined the event vocabulary with status.regeneration (2026-08-20)
+      case 'heal.applied': units.get(e.target!)!.hp = e['hpAfter'] as number; break
       case 'stamina.spent':
       case 'stamina.regen': units.get(e.actor!)!.stamina = e['stamina'] as number; break
       case 'activation.begin': units.get(e.actor!)!.stamina = e['stamina'] as number; break
@@ -108,6 +110,9 @@ export function renderLog(events: Event[], names: Map<number, string>): string[]
         break
       case 'power.used':
         lastPower = e
+        break
+      case 'heal.applied':
+        if ((e['amount'] as number) > 0) out.push(`    ${who(e.target)} heals ${e['amount']} (${e.causeId})   ${e['hpBefore']}->${e['hpAfter']}`)
         break
       case 'damage.applied': {
         if (lastPower) {

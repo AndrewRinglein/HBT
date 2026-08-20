@@ -3,7 +3,7 @@
 // because load order would become a hidden global that shifts tie-breaks between runs.
 
 import type { AbilityDef, AttackDef, UnitDef } from '../core/types.js'
-import { omitDisabled } from './disable.js'
+import { omitDisabled, stripDisabledTriggers } from './disable.js'
 
 // ─────────────────────────────────────────────────────────────────────────────
 // PROVISIONAL CONTENT — NOT PUBLISHED, NOT DESIGN
@@ -29,8 +29,9 @@ const RAW_ATTACKS: Readonly<Record<string, AttackDef>> = {
     // PROVISIONAL — no published source
     id: 'attack.zombie.basic', name: 'Rotting Bite', kind: 'melee',
     damageType: 'physical', bonus: 0, stat: 'strength', reach: 1, staminaCost: 0,
-    // Poison needed a source. Declared as a baseline change in the backlog.
-    applies: { statusId: 'status.poison', value: 2 },
+    // The poison rider moved to trigger.zombie.rot (2026-08-20) — it was a
+    // hardcoded 100% on-hit with no chance and no hook, the exact shape the
+    // trigger system exists to replace.
   },
   'attack.warrior.axe': {
     // PROVISIONAL — no published source
@@ -80,6 +81,14 @@ const RAW_UNITS: Readonly<Record<string, UnitDef>> = {
     role: 'melee',
     movement: 4, reach: 0,
     maxStamina: 0, staminaRegen: 0,   // enemies do not run stamina
+    // Backlog trigger.zombie.rot: 20% onDamage, poison 1 to the target —
+    // replaces the hardcoded 100% rider that lived on attack.zombie.basic.
+    triggers: [{
+      id: 'trigger.zombie.rot', hook: 'onDamage', chance: 20,
+      select: 'target',
+      effect: { kind: 'status.apply', statusId: 'status.poison', value: 1 },
+      source: 'unit.zombie',
+    }],
     ai: 'dumb-melee',
     attacks: ['attack.zombie.basic'],
     abilities: [],
@@ -92,6 +101,16 @@ const RAW_UNITS: Readonly<Record<string, UnitDef>> = {
     role: 'melee',
     movement: 5, reach: 0,
     maxStamina: 5, staminaRegen: 1,
+    // PROVISIONAL scaffolding source for status.regeneration (the status is
+    // published; this trigger id is not — it exists so the status appears in a
+    // real battle, and is REPLACED when a content session publishes a real
+    // regen source). Second Wind: taking damage grants Regeneration 1, self.
+    triggers: [{
+      id: 'trigger.warrior.second-wind', hook: 'onTakingDamage', chance: 100,
+      select: 'self',
+      effect: { kind: 'status.apply', statusId: 'status.regeneration', value: 1 },
+      source: 'unit.warrior',
+    }],
     ai: 'melee-aggressive',
     // Ordered by preference. The AI takes the first it can afford.
     attacks: ['attack.warrior.massive', 'attack.warrior.axe', 'attack.punch'],
@@ -128,7 +147,7 @@ const RAW_UNITS: Readonly<Record<string, UnitDef>> = {
 // raw objects, byte for byte — the control baselines cannot tell the difference.
 export const ATTACKS = omitDisabled(RAW_ATTACKS)
 export const ABILITIES = omitDisabled(RAW_ABILITIES)
-export const UNITS = omitDisabled(RAW_UNITS, 'unit.')
+export const UNITS = stripDisabledTriggers(omitDisabled(RAW_UNITS, 'unit.'))
 
 /** The first battle: 4 zombies on row 0, 2 warriors + 2 rangers on row 11. */
 export const FIRST_BATTLE = {

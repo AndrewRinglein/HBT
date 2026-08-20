@@ -7,9 +7,8 @@
 import { distance } from './hex.js'
 import type { AbilityDef, Ctx, Unit } from './types.js'
 import { applyDamage, emit, markPrimaryUsed, spendStamina, unit } from './mutate.js'
-import { DMG } from './pipeline.js'
-import type { LedgerRow } from './pipeline.js'
-import { effective } from './stats.js'
+import { resolveDamage } from './pipeline.js'
+import { incomingAbsorb, outgoingPenalty, spendAbsorb } from './status.js'
 
 export function abilityDef(ctx: Ctx, id: string): AbilityDef {
   const a = ctx.abilities[id]
@@ -41,31 +40,29 @@ export function canUsePower(ctx: Ctx, userId: number, targetId: number, abilityI
   return distance(u.hex, tg.hex) <= a.range
 }
 
-/** Same stations as an attack, minus the ones that don't apply. Never a second formula (Law 1). */
-export function resolvePowerDamage(ctx: Ctx, user: Unit, target: Unit, a: AbilityDef): { value: number; ledger: LedgerRow[] } {
-  const ledger: LedgerRow[] = []
-  let v = a.bonus
-  ledger.push({ station: DMG.DECLARE, name: 'DECLARE', effectId: a.id, before: 0, after: v, delta: v })
-
-  const statVal = effective(ctx, user, a.stat).value
-  const before = v
-  v = v + statVal
-  ledger.push({ station: DMG.SOURCE_STAT, name: 'SOURCE_STAT', effectId: `unit.${user.typeId}`, before, after: v, delta: statVal })
-
-  if (a.damageType !== 'true') {
-    const mit = effective(ctx, target, a.damageType === 'physical' ? 'armor' : 'resist').value
-    if (mit !== 0) {
-      ledger.push({ station: DMG.MITIGATION, name: 'MITIGATION', effectId: `unit.${target.typeId}`, before: v, after: v - mit, delta: -mit })
-      v -= mit
-    }
-  }
-  if (v < 0) { ledger.push({ station: DMG.FLOOR, name: 'FLOOR', effectId: 'engine', before: v, after: 0, delta: -v }); v = 0 }
-  return { value: v, ledger }
+/**
+ * LAW 1, RESTORED (2026-08-20). This WAS a second damage pipeline — DECLARE →
+ * SOURCE_STAT → MITIGATION → FLOOR, hand-rolled, skipping SOURCE_STATUS, CRIT and
+ * PROTECTION. So Weakness would not have reduced a power and Protection would not
+ * have absorbed one, and the two pipelines would have drifted the first time a
+ * station changed. Now it is a call into THE pipeline with crit forced false
+ * (Design Law 23: powers do not roll, so they cannot crit).
+ */
+export function resolvePowerDamage(
+  ctx: Ctx, user: Unit, target: Unit, a: AbilityDef, outPenalty = 0, absorbAvailable = 0,
+) {
+  return resolveDamage(ctx, user, target, a, false, outPenalty, absorbAvailable)
 }
 
 export function previewPower(ctx: Ctx, userId: number, targetId: number, abilityId: string) {
   const a = abilityDef(ctx, abilityId)
-  return { damage: resolvePowerDamage(ctx, unit(ctx, userId), unit(ctx, targetId), a).value, hitChance: 100 }
+  const u = unit(ctx, userId)
+  const tg = unit(ctx, targetId)
+  // Law 1's sibling: the preview runs the identical pipeline, penalties and all.
+  return {
+    damage: resolvePowerDamage(ctx, u, tg, a, outgoingPenalty(ctx, u), incomingAbsorb(ctx, tg)).value,
+    hitChance: 100,
+  }
 }
 
 export function usePower(ctx: Ctx, userId: number, targetId: number, abilityId: string): { damage: number } {
@@ -79,7 +76,7 @@ export function usePower(ctx: Ctx, userId: number, targetId: number, abilityId: 
   spendStamina(ctx, userId, a.staminaCost, a.id)
   markPrimaryUsed(ctx, userId)
 
-  const dmg = resolvePowerDamage(ctx, u, tg, a)
+  const dmg = resolvePowerDamage(ctx, u, tg, a, outgoingPenalty(ctx, u), incomingAbsorb(ctx, tg))
   const summed = dmg.ledger.reduce((s, r) => s + r.delta, 0)
   if (summed !== dmg.value) throw new Error(`power ledger does not reconcile: ${summed} vs ${dmg.value}`)
   const pv = previewPower(ctx, userId, targetId, abilityId)
@@ -91,7 +88,12 @@ export function usePower(ctx: Ctx, userId: number, targetId: number, abilityId: 
     ledger: dmg.ledger.map((r) => ({ station: r.name, effectId: r.effectId, delta: r.delta })),
   })
 
-  applyDamage(ctx, targetId, dmg.value, a.id, { actor: userId, abilityId, damageType: a.damageType })
+  // Spend what the pipeline said Protection would absorb — same order as attacks.
+  if (dmg.absorbed > 0) spendAbsorb(ctx, targetId, dmg.absorbed, a.id)
+  applyDamage(ctx, targetId, dmg.value, a.id,
+    dmg.absorbed > 0
+      ? { actor: userId, abilityId, damageType: a.damageType, absorbed: dmg.absorbed }
+      : { actor: userId, abilityId, damageType: a.damageType })
 
   const readyAgain = ctx.state.turn + a.cooldown
   u.cooldowns[abilityId] = readyAgain

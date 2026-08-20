@@ -108,11 +108,13 @@ describe('gate 2 — invariants across many battles', () => {
         expect(u.stamina).toBeLessThanOrEqual(u.maxStamina)
         if (u.lifeState === 'standing') expect(u.hp).toBeGreaterThan(0)
       }
-      // every hp change is explained by exactly one logged damage event
+      // every hp change is explained by exactly one logged damage OR heal event
+      // (heal.applied joined the vocabulary with status.regeneration, 2026-08-20 —
+      // the invariant is unchanged: the log alone rebuilds the battle)
       const hpFromLog = new Map<number, number>()
       for (const e of ctx.events) {
         if (e.type === 'unit.enter') hpFromLog.set(e.actor!, e['hp'] as number)
-        if (e.type === 'damage.applied') {
+        if (e.type === 'damage.applied' || e.type === 'heal.applied') {
           expect(hpFromLog.get(e.target!)).toBe(e['hpBefore'])
           hpFromLog.set(e.target!, e['hpAfter'] as number)
         }

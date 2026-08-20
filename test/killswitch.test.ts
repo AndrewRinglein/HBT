@@ -36,28 +36,33 @@ describe('the kill-switch seam', () => {
   })
 
   it('disabling content that other content references fails LOUDLY (Law 9)', () => {
-    // The zombie's bite carries `applies: status.poison`. With the status disabled
-    // the registry lookup throws rather than silently skipping — a battle minus a
-    // referenced row is invalid, not merely quieter. This loud failure is exactly
-    // what the gate's kill-switch check counts on: tests cannot pass without the
-    // content they claim to test.
+    // status.poison is referenced by trigger.zombie.rot (formerly a 100% rider —
+    // rewritten 2026-08-20, which made "does a battle crash" depend on a 20%
+    // roll). So assert the loud failure at its source, deterministically:
+    // applying the disabled status throws, never no-ops.
     expect(() => execSync(
       `CF_DISABLE_IDS=status.poison npx tsx -e "` +
       `import('./src/core/setup.js').then(async (m) => {` +
-      `  const { runBattle } = await import('./src/core/battle.js');` +
-      `  runBattle(m.createBattle({ replicate: 1, enemyCount: 4 }))})"`,
+      `  const { applyStatus } = await import('./src/core/status.js');` +
+      `  const ctx = m.createBattle({ replicate: 1, enemyCount: 4 });` +
+      `  applyStatus(ctx, 0, 'status.poison', 2, 'test')})"`,
       { encoding: 'utf8', cwd: process.cwd(), stdio: 'pipe' },
     )).toThrow()
   })
 
-  it('sanity: with the seam OFF, poison does land in the same battle', () => {
+  it('sanity: with the seam OFF, rot-sourced poison lands across battles', () => {
+    // 20% per damaging bite: across 20 battles this is overwhelmingly certain.
     const out = execSync(
       `npx tsx -e "` +
       `import('./src/core/setup.js').then(async (m) => {` +
       `  const { runBattle } = await import('./src/core/battle.js');` +
-      `  const ctx = m.createBattle({ replicate: 1, enemyCount: 4 });` +
-      `  runBattle(ctx);` +
-      `  console.log(JSON.stringify(ctx.events.some((e) => JSON.stringify(e).includes('status.poison'))))})"`,
+      `  let found = false;` +
+      `  for (let r = 0; r < 20 && !found; r++) {` +
+      `    const ctx = m.createBattle({ replicate: r, enemyCount: 4 });` +
+      `    runBattle(ctx);` +
+      `    found = ctx.events.some((e) => e.type === 'status.applied' && e.causeId === 'trigger.zombie.rot');` +
+      `  }` +
+      `  console.log(JSON.stringify(found))})"`,
       { encoding: 'utf8', cwd: process.cwd() },
     )
     expect(JSON.parse(out.trim().split('\n').pop()!)).toBe(true)

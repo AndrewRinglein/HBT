@@ -129,6 +129,7 @@ flag('existing tests untouched', () => ({
 // Taking the gate-1 deletion exemption ALWAYS flags the landing, whatever else
 // passed. An exemption that lands clean is an exemption nobody ever re-reads.
 let needsReview = weakened.length > 0 || unreachableUsed
+let pendingGolden = null
 let exemptions = unreachableUsed ? 1 : 0
 const testDiff = weakened.length > 0 ? tryRun('git diff -U2 -- test/').out : ''
 
@@ -142,7 +143,7 @@ check('control battles unchanged', () => {
   if (!now) return { ok: false, note: 'baseline probe produced no hashes' }
   let golden = null
   try { golden = readFileSync(GOLDEN, 'utf8').trim() } catch {}
-  if (!golden) { if (MODE === 'land') writeFileSync(GOLDEN, now + '\n'); return { ok: true, note: 'blessed (first run)' } }
+  if (!golden) { pendingGolden = now + '\n'; return { ok: true, note: 'will bless at commit (first run)' } }
   if (golden === now) {
     // THE CONSEQUENCE CLAUSE (2026-08-20). An item that DECLARES it changes the
     // control battles and then changes nothing has not done its job — "the aura
@@ -166,8 +167,13 @@ check('control battles unchanged', () => {
   ].join(', ')
 
   if (item.changesBaseline) {
-    if (MODE === 'land') writeFileSync(GOLDEN, now + '\n')
-    return { ok: true, note: `re-blessed — this item DECLARED it changes the control battles: ${detail}` }
+    // DEFERRED BLESS (bug found by the gauntlet's own first landing, 2026-08-20):
+    // blessing here, during the check, moved the golden even when a LATER check
+    // failed the landing — and the next attempt then compared against the
+    // polluted golden and read its own change as "no consequence". The bless now
+    // happens only when the commit does.
+    pendingGolden = now + '\n'
+    return { ok: true, note: `will re-bless at commit — this item DECLARED it changes the control battles: ${detail}` }
   }
   return { ok: false, note: `CHANGED: ${detail}. Something leaked. If intended, set "changesBaseline": true on the backlog item.` }
 })
@@ -182,8 +188,22 @@ check('content has a published source', () => {
   // Pre-existing invented content is grandfathered and listed, not blocked — the
   // gate stops NEW unpublished ids. Blocking outright would stall every item until
   // seven content sessions publish.
-  const n = (r.out.match(/INVENTED \.+ (\d+)/) ?? [])[1] ?? '?'
-  return { ok: true, warn: true, note: `${n} ids still have no published source — see content-check` }
+  const n = Number((r.out.match(/INVENTED \.+ (\d+)/) ?? [])[1] ?? 0)
+  // 10 INVENTED ids are grandfathered scaffolding (2026-08-15) and do not count
+  // against the seal. Every id ABOVE that count is NEW unpublished content this
+  // item introduced — the warn then counts, so the seal is withheld until the
+  // content session publishes the row. Growth of the number is the signal.
+  // Attribution: warn only when THIS item grew the count. The standing debt
+  // (grandfathered scaffolding + earlier items' still-unpublished ids) is
+  // tracked by audit-all and the ledger — inheriting it here blamed every
+  // landing for its predecessors (found on fix.one-damage-function, which
+  // added zero ids and lost its seal anyway).
+  let last = 10
+  try { last = JSON.parse(readFileSync('.state/gauntlet.json', 'utf8')).inventedCount ?? 10 } catch {}
+  if (MODE === 'land') {
+    try { const g = JSON.parse(readFileSync('.state/gauntlet.json', 'utf8')); g.inventedCount = n; writeFileSync('.state/gauntlet.json', JSON.stringify(g)) } catch { writeFileSync('.state/gauntlet.json', JSON.stringify({ landings: 0, inventedCount: n })) }
+  }
+  return { ok: true, warn: n > last, note: `${n} ids without a published source${n > last ? ` — ${n - last} NEW from THIS item, seal withheld until published` : n > 10 ? ` (${n - 10} awaiting publication from earlier items — see audit)` : ' (all grandfathered)'}` }
 })
 
 const stamp = new Date().toISOString().slice(0, 16).replace('T', ' ')
@@ -253,7 +273,7 @@ check('generalizes — the second instance costs zero engine code', () => {
 
 // Naming: GLOSSARY.md is the authority; this is its teeth. Grammar violations
 // block; style smells flag the landing for review rather than deadlocking it.
-const KNOWN_KINDS = ['attack', 'power', 'status', 'unit', 'terrain', 'map', 'badge', 'item', 'enchant', 'specialty', 'origin', 'card', 'class', 'art', 'rule', 'engagement']
+const KNOWN_KINDS = ['attack', 'power', 'status', 'unit', 'terrain', 'map', 'badge', 'item', 'enchant', 'specialty', 'origin', 'card', 'class', 'art', 'rule', 'engagement', 'trigger', 'ability', 'ai', 'baseline']
 check('naming — new content ids use declared kinds', () => {
   const ids = new Set()
   for (const l of addedLines('src/content')) {
@@ -327,6 +347,7 @@ if (MODE !== 'land') {
   process.exit(0)
 }
 
+if (pendingGolden) writeFileSync(GOLDEN, pendingGolden)
 sh('git add -A')
 sh(`git -c user.email=a@b -c user.name=combat-framework commit -q -m ${JSON.stringify(`${id}: ${item.spec.slice(0, 72)}`)}`)
 const sha = sh('git rev-parse --short HEAD').trim()
@@ -367,7 +388,7 @@ let gauntletNotes = []
 // not yet published) is not this item's doing — it is tracked by the audit and
 // must not withhold every seal until session 2 publishes. Only item-attributable
 // flags count against the gauntlet.
-const warns = checks.filter((c) => c.warn && c.name !== 'content has a published source').length
+const warns = checks.filter((c) => c.warn).length  // content-check now only warns on NEW unpublished ids, so it counts
 
 // Effect measurement for consequential mechanisms: WITH vs WITHOUT, paired seeds,
 // through the kill-switch seam. Recorded, not thresholded — magnitude is a

@@ -1,4 +1,5 @@
 import { describe, it, expect } from 'vitest'
+import { UNITS } from '../src/content/index.js'
 import { createCustomBattle } from '../src/core/setup.js'
 import { performAttack } from '../src/core/pipeline.js'
 import { settle } from '../src/core/settle.js'
@@ -255,11 +256,20 @@ describe('triggers — the chance is a resolvable number', () => {
   })
 })
 
-describe('triggers — the mechanism is inert until content uses it', () => {
-  it('no unit in a normal battle carries a trigger yet', () => {
+describe('triggers — every trigger on the board is declared content', () => {
+  // Until 2026-08-20 this asserted that NO unit carried a trigger — the mechanism
+  // was built before any content used it, and the guard proved inertness. The
+  // warrior's second-wind (status.regeneration's scaffolding source) is the first
+  // real carrier, so the guard is rewritten as the rule it was protecting: a
+  // trigger appears on a unit only because the unit's DEF declared it. No trigger
+  // arrives from anywhere else.
+  it('units carry exactly the triggers their defs declare, copied not shared', () => {
     const ctx = createCustomBattle([{ type: 'warrior', hex: hexId(5, 5) }],
       [{ type: 'zombie', hex: hexId(6, 5) }], { mapId: 'map.open' })
-    for (const u of ctx.state.units) expect(u.triggers).toEqual([])
+    for (const u of ctx.state.units) {
+      const declared = (UNITS[u.typeId]?.triggers ?? []).map((t) => t.id)
+      expect(u.triggers.map((t) => t.id)).toEqual(declared)
+    }
     expect(SELECTORS).toEqual(['self', 'target'])
   })
 })

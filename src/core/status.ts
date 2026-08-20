@@ -9,7 +9,8 @@
 // row in the registry and, if it needs behaviour, one function.
 
 import type { Ctx, Side, Unit } from './types.js'
-import { applyDamage, emit, unit } from './mutate.js'
+import { applyDamage, applyHealing, emit, unit } from './mutate.js'
+import { effective } from './stats.js'
 
 /**
  * `shape` is DOCUMENTATION and a checklist — not a branch.
@@ -33,6 +34,8 @@ export type StatusDef = {
   readonly name: string
   readonly shape: StatusShape
   readonly stacking: Stacking
+  /** Ruled 2026-08-20: per-tick damage is reduced by the holder's Resist. Poison and Burn set it; Bleed never does. */
+  readonly tickMitigatedByResist?: boolean
 
   // ── hooks: what reads and writes this status ──────────────────────────────
   /** End of Phase, before decay. */
@@ -121,9 +124,33 @@ export function heal(ctx: Ctx, unitId: number, amount: number, causeId: string):
   return healed
 }
 
-/** Damage from a status, not an attack. Same mutator, different cause. */
+/**
+ * Damage from a status, not an attack. Same mutator, different cause.
+ *
+ * RULED, Angela 2026-08-20: Resist mitigates Burn and Poison per tick — never
+ * Bleed. Per-tick damage = max(0, value − Resist), and Resist never touches the
+ * status VALUE, which decays on its own clock: 5 Poison vs 2 Resist deals
+ * 3, 2, 1, 0, 0 as the value walks 5→4→3→2→1→0. A resisted status runs its full
+ * duration; Resist shortens the pain, never the clock. The per-status flag is
+ * `tickMitigatedByResist` — bleed, when it lands, simply does not set it.
+ */
 export function statusDamage(ctx: Ctx, unitId: number, amount: number, causeId: string): void {
-  applyDamage(ctx, unitId, amount, causeId, { actor: null, statusId: causeId, damageType: 'true' })
+  const def = ctx.statuses[causeId]
+  let resisted = 0
+  if (def?.tickMitigatedByResist) {
+    const resist = effective(ctx, unit(ctx, unitId), 'resist').value
+    resisted = Math.min(amount, Math.max(0, resist))
+    amount -= resisted
+  }
+  applyDamage(ctx, unitId, amount, causeId,
+    resisted > 0
+      ? { actor: null, statusId: causeId, damageType: 'true', resisted }
+      : { actor: null, statusId: causeId, damageType: 'true' })
+}
+
+/** Healing from a status, not an action. Same mutator, different cause. */
+export function statusHeal(ctx: Ctx, unitId: number, amount: number, causeId: string): void {
+  applyHealing(ctx, unitId, amount, causeId)
 }
 
 /** Total of everything on this unit that absorbs incoming damage. */

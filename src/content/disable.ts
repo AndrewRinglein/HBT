@@ -26,3 +26,21 @@ export function omitDisabled<T>(reg: Readonly<Record<string, T>>, prefix = ''): 
 
 /** Visible for tests. */
 export function disabledIds(): ReadonlySet<string> { return DISABLED }
+
+/**
+ * Strip disabled TRIGGER ids from unit defs. Triggers live inline on the def,
+ * not in a registry of their own, so the registry filter above cannot reach
+ * them — this can. Same contract: byte-identical input object when nothing is
+ * disabled.
+ */
+export function stripDisabledTriggers<U extends { triggers?: readonly { id: string }[] }>(
+  reg: Readonly<Record<string, U>>,
+): Readonly<Record<string, U>> {
+  if (DISABLED.size === 0) return reg
+  return Object.fromEntries(Object.entries(reg).map(([k, u]) => [
+    k,
+    u.triggers?.some((t) => DISABLED.has(t.id))
+      ? { ...u, triggers: u.triggers.filter((t) => !DISABLED.has(t.id)) }
+      : u,
+  ]))
+}

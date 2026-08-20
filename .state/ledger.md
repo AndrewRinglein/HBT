@@ -789,3 +789,226 @@ index 5d849ed..2b553fb 100644
 </details>
 
 IRON GAUNTLET: NOT PASSED — 1 FLAG(S) WARNED; 1 EXEMPTION(S) TAKEN
+
+## status.regeneration — LANDED `36211e9` **NEEDS REVIEW**
+2026-08-20 06:43
+
+  PASS  dependencies landed
+  PASS  typecheck
+  PASS  full test suite — 216 passed
+  PASS  gate 1 — the id appears in a real battle — status.regeneration: 6811 log lines, 6811 fired, 4386 changed state
+  PASS  brought its own tests — test/integration.test.ts, test/trigger.test.ts, test/regeneration.test.ts
+  WARN  existing tests untouched — DELETED LINES in test/integration.test.ts (-2), test/trigger.test.ts (-3) — will land FLAGGED for review
+  PASS  control battles unchanged — will re-bless at commit — this item DECLARED it changes the control battles: map.open 648b97c7->e2dd2c4f, map.ridge e5407033->a4dcc60a, map.flanks 252cc021->edb7a3e5, map.highlands e1496515->2937a7f5, map.field e7b62e1e->626af778, map.thicket 18e7edcf->798bd68b
+  PASS  content has a published source — 11 ids without a published source — 1 NEW since grandfathering, seal withheld until published
+  PASS  hardcode scan — core knows mechanisms, never names
+  PASS  generalizes — the second instance costs zero engine code — status.poison live · status.regeneration live
+  PASS  naming — new content ids use declared kinds
+  PASS  naming — no banned words invented
+  PASS  kill switch — the tests fail without the content — tests fail without status.regeneration — they genuinely test it
+
+<details><summary>Existing tests were edited — review this diff</summary>
+
+```diff
+diff --git a/test/integration.test.ts b/test/integration.test.ts
+index 2c053fe..1951c4e 100644
+--- a/test/integration.test.ts
++++ b/test/integration.test.ts
+@@ -109,9 +109,11 @@ describe('gate 2 — invariants across many battles', () => {
+         if (u.lifeState === 'standing') expect(u.hp).toBeGreaterThan(0)
+       }
+-      // every hp change is explained by exactly one logged damage event
++      // every hp change is explained by exactly one logged damage OR heal event
++      // (heal.applied joined the vocabulary with status.regeneration, 2026-08-20 —
++      // the invariant is unchanged: the log alone rebuilds the battle)
+       const hpFromLog = new Map<number, number>()
+       for (const e of ctx.events) {
+         if (e.type === 'unit.enter') hpFromLog.set(e.actor!, e['hp'] as number)
+-        if (e.type === 'damage.applied') {
++        if (e.type === 'damage.applied' || e.type === 'heal.applied') {
+           expect(hpFromLog.get(e.target!)).toBe(e['hpBefore'])
+           hpFromLog.set(e.target!, e['hpAfter'] as number)
+diff --git a/test/trigger.test.ts b/test/trigger.test.ts
+index 6cdc20b..9e108f3 100644
+--- a/test/trigger.test.ts
++++ b/test/trigger.test.ts
+@@ -1,3 +1,4 @@
+ import { describe, it, expect } from 'vitest'
++import { UNITS } from '../src/content/index.js'
+ import { createCustomBattle } from '../src/core/setup.js'
+ import { performAttack } from '../src/core/pipeline.js'
+@@ -256,9 +257,18 @@ describe('triggers — the chance is a resolvable number', () => {
+ })
+ 
+-describe('triggers — the mechanism is inert until content uses it', () => {
+-  it('no unit in a normal battle carries a trigger yet', () => {
++describe('triggers — every trigger on the board is declared content', () => {
++  // Until 2026-08-20 this asserted that NO unit carried a trigger — the mechanism
++  // was built before any content used it, and the guard proved inertness. The
++  // warrior's second-wind (status.regeneration's scaffolding source) is the first
++  // real carrier, so the guard is rewritten as the rule it was protecting: a
++  // trigger appears on a unit only because the unit's DEF declared it. No trigger
++  // arrives from anywhere else.
++  it('units carry exactly the triggers their defs declare, copied not shared', () => {
+     const ctx = createCustomBattle([{ type: 'warrior', hex: hexId(5, 5) }],
+       [{ type: 'zombie', hex: hexId(6, 5) }], { mapId: 'map.open' })
+-    for (const u of ctx.state.units) expect(u.triggers).toEqual([])
++    for (const u of ctx.state.units) {
++      const declared = (UNITS[u.typeId]?.triggers ?? []).map((t) => t.id)
++      expect(u.triggers.map((t) => t.id)).toEqual(declared)
++    }
+     expect(SELECTORS).toEqual(['self', 'target'])
+   })
+```
+</details>
+
+IRON GAUNTLET: NOT PASSED — 2 FLAG(S) WARNED
+
+```
+effect of status.regeneration — 25 paired battles per map, WITH vs WITHOUT
+  map.open: WITHOUT arm invalid — other content references the disabled id (loud failure, Law 9). Presence is total.
+  map.ridge: WITHOUT arm invalid — other content references the disabled id (loud failure, Law 9). Presence is total.
+  map.flanks: WITHOUT arm invalid — other content references the disabled id (loud failure, Law 9). Presence is total.
+  map.highlands: WITHOUT arm invalid — other content references the disabled id (loud failure, Law 9). Presence is total.
+  map.field: WITHOUT arm invalid — other content references the disabled id (loud failure, Law 9). Presence is total.
+  map.thicket: WITHOUT arm invalid — other content references the disabled id (loud failure, Law 9). Presence is total.
+MEASURABLE
+```
+
+## trigger.zombie.rot — LANDED `676f6b3` **NEEDS REVIEW**
+2026-08-20 06:46
+
+  PASS  dependencies landed
+  PASS  typecheck
+  PASS  full test suite — 220 passed
+  PASS  gate 1 — the id appears in a real battle — trigger.zombie.rot: 5777 log lines, 5777 fired, 854 changed state
+  PASS  brought its own tests — test/killswitch.test.ts, test/zombie-rot.test.ts
+  WARN  existing tests untouched — DELETED LINES in test/killswitch.test.ts (-11) — will land FLAGGED for review
+  PASS  control battles unchanged — will re-bless at commit — this item DECLARED it changes the control battles: map.open e2dd2c4f->7b63ec95, map.ridge a4dcc60a->2c192fe1, map.flanks edb7a3e5->d1ba6192, map.highlands 2937a7f5->048b9892, map.field 626af778->3ad3f9b7, map.thicket 798bd68b->042aeb6d
+  PASS  content has a published source — 12 ids without a published source — 2 NEW since grandfathering, seal withheld until published
+  PASS  hardcode scan — core knows mechanisms, never names
+  PASS  generalizes — the second instance costs zero engine code — trigger.zombie.rot live · trigger.warrior.second-wind live
+  PASS  naming — new content ids use declared kinds
+  PASS  naming — no banned words invented
+  PASS  kill switch — the tests fail without the content — tests fail without trigger.zombie.rot — they genuinely test it
+
+<details><summary>Existing tests were edited — review this diff</summary>
+
+```diff
+diff --git a/test/killswitch.test.ts b/test/killswitch.test.ts
+index 5de00c5..1bf3178 100644
+--- a/test/killswitch.test.ts
++++ b/test/killswitch.test.ts
+@@ -37,26 +37,31 @@ describe('the kill-switch seam', () => {
+ 
+   it('disabling content that other content references fails LOUDLY (Law 9)', () => {
+-    // The zombie's bite carries `applies: status.poison`. With the status disabled
+-    // the registry lookup throws rather than silently skipping — a battle minus a
+-    // referenced row is invalid, not merely quieter. This loud failure is exactly
+-    // what the gate's kill-switch check counts on: tests cannot pass without the
+-    // content they claim to test.
++    // status.poison is referenced by trigger.zombie.rot (formerly a 100% rider —
++    // rewritten 2026-08-20, which made "does a battle crash" depend on a 20%
++    // roll). So assert the loud failure at its source, deterministically:
++    // applying the disabled status throws, never no-ops.
+     expect(() => execSync(
+       `CF_DISABLE_IDS=status.poison npx tsx -e "` +
+       `import('./src/core/setup.js').then(async (m) => {` +
+-      `  const { runBattle } = await import('./src/core/battle.js');` +
+-      `  runBattle(m.createBattle({ replicate: 1, enemyCount: 4 }))})"`,
++      `  const { applyStatus } = await import('./src/core/status.js');` +
++      `  const ctx = m.createBattle({ replicate: 1, enemyCount: 4 });` +
++      `  applyStatus(ctx, 0, 'status.poison', 2, 'test')})"`,
+       { encoding: 'utf8', cwd: process.cwd(), stdio: 'pipe' },
+     )).toThrow()
+   })
+ 
+-  it('sanity: with the seam OFF, poison does land in the same battle', () => {
++  it('sanity: with the seam OFF, rot-sourced poison lands across battles', () => {
++    // 20% per damaging bite: across 20 battles this is overwhelmingly certain.
+     const out = execSync(
+       `npx tsx -e "` +
+       `import('./src/core/setup.js').then(async (m) => {` +
+       `  const { runBattle } = await import('./src/core/battle.js');` +
+-      `  const ctx = m.createBattle({ replicate: 1, enemyCount: 4 });` +
+-      `  runBattle(ctx);` +
+-      `  console.log(JSON.stringify(ctx.events.some((e) => JSON.stringify(e).includes('status.poison'))))})"`,
++      `  let found = false;` +
++      `  for (let r = 0; r < 20 && !found; r++) {` +
++      `    const ctx = m.createBattle({ replicate: r, enemyCount: 4 });` +
++      `    runBattle(ctx);` +
++      `    found = ctx.events.some((e) => e.type === 'status.applied' && e.causeId === 'trigger.zombie.rot');` +
++      `  }` +
++      `  console.log(JSON.stringify(found))})"`,
+       { encoding: 'utf8', cwd: process.cwd() },
+     )
+```
+</details>
+
+IRON GAUNTLET: NOT PASSED — 2 FLAG(S) WARNED
+
+```
+effect of trigger.zombie.rot — 25 paired battles per map, WITH vs WITHOUT
+  map.open: heroWins 11->10 (-1)  meanTurns 7.8->8.1
+  map.ridge: heroWins 13->11 (-2)  meanTurns 8.2->8.1
+  map.flanks: heroWins 11->9 (-2)  meanTurns 7.9->8.0
+  map.highlands: heroWins 19->18 (-1)  meanTurns 8.4->8.4
+  map.field: heroWins 21->19 (-2)  meanTurns 10.1->10.3
+  map.thicket: heroWins 12->10 (-2)  meanTurns 8.7->8.5
+MEASURABLE
+```
+
+## fix.one-damage-function — LANDED `5e7f33d`
+2026-08-20 06:49
+
+  PASS  dependencies landed
+  PASS  typecheck
+  PASS  full test suite — 225 passed
+  PASS  gate 1 — the id appears in a real battle — power.mage.bolt: 2954 log lines, 2954 fired, 1675 changed state
+  PASS  brought its own tests — test/one-damage-function.test.ts
+  PASS  existing tests untouched
+  PASS  control battles unchanged
+  PASS  content has a published source — 12 ids without a published source — 2 NEW since grandfathering, seal withheld until published
+  PASS  hardcode scan — core knows mechanisms, never names
+  PASS  generalizes — the second instance costs zero engine code — power.mage.bolt live · attack.ranger.bow live
+  PASS  naming — new content ids use declared kinds
+  PASS  naming — no banned words invented
+  PASS  kill switch — the tests fail without the content — tests fail without power.mage.bolt — they genuinely test it
+
+IRON GAUNTLET: NOT PASSED — 1 FLAG(S) WARNED
+
+## status.tick-resist — LANDED `fae1c37` **NEEDS REVIEW**
+2026-08-20 06:51
+
+  PASS  dependencies landed
+  PASS  typecheck
+  PASS  full test suite — 229 passed
+  PASS  gate 1 — the id appears in a real battle — status.poison: 2920 log lines, 2920 fired, 2057 changed state
+  PASS  brought its own tests — test/tick-resist.test.ts
+  PASS  existing tests untouched
+  PASS  control battles unchanged — will re-bless at commit — this item DECLARED it changes the control battles: map.open 7b63ec95->a7ebbc45, map.ridge 2c192fe1->f613cb0c, map.flanks d1ba6192->9d3e000f, map.highlands 048b9892->9e5a90fa, map.field 3ad3f9b7->5ce148d7, map.thicket 042aeb6d->b7303f06
+  PASS  content has a published source — 12 ids without a published source (2 awaiting publication from earlier items — see audit)
+  PASS  hardcode scan — core knows mechanisms, never names
+  PASS  generalizes — the second instance costs zero engine code
+  PASS  naming — new content ids use declared kinds
+  PASS  naming — no banned words invented
+  PASS  kill switch — the tests fail without the content — tests fail without status.poison — they genuinely test it
+
+<details><summary>Existing tests were edited — review this diff</summary>
+
+```diff
+```
+</details>
+
+IRON GAUNTLET: NOT PASSED — 1 EXEMPTION(S) TAKEN
+
+```
+effect of status.poison — 25 paired battles per map, WITH vs WITHOUT
+  map.open: WITHOUT arm invalid — other content references the disabled id (loud failure, Law 9). Presence is total.
+  map.ridge: heroWins 1->11 (+10)  meanTurns 0.3->8.1
+  map.flanks: heroWins 1->9 (+8)  meanTurns 0.3->8.0
+  map.highlands: heroWins 3->18 (+15)  meanTurns 0.9->8.4
+  map.field: heroWins 1->20 (+19)  meanTurns 0.8->10.3
+  map.thicket: heroWins 1->10 (+9)  meanTurns 0.4->8.5
+MEASURABLE
+```
