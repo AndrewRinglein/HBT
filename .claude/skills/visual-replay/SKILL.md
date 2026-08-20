@@ -54,13 +54,23 @@ tools/export-battle.mts    runs a real battle, emits the log + engine commit
    - one item, one commit. Building two items' work before landing either sweeps
      both into the first commit and the second arrives empty-handed at
      "brought its own tests" (this happened; see viewer.replay-publish).
-6. **Close the batch with its name:**
+6. **Close the batch with its name AND its artifacts:**
    ```
-   node tools/audit-all.mjs --label "visual replay test"
+   node tools/audit-all.mjs --label "visual replay test" \
+     --artifact "replay.html|watch the battle — seed 21, map.thicket" \
+     --artifact "battle-replay-thicket.mp4|mp4"
    ```
-   The label becomes the Game Builder bar's title.
-7. **Ship** `replay.html` to the project root (beside README-REPLAY.md) and
-   update that README's battle line.
+   The label becomes the Game Builder bar's title. The artifacts become links on
+   the bar, and the `.html` one gets a "watch it right here" drawer — the replay
+   plays inside the Game Builder in a lazy iframe. Angela watches it there,
+   approves it there, and the batch collapses to its own line. A visual batch
+   without `--artifact` is HALF-SHIPPED — the paper trail lands but the thing
+   itself is unreachable from the dashboard (this happened; she had to ask).
+   Artifact hrefs are relative to the PROJECT ROOT, where the shipped
+   GAME-BUILDER.html sits beside replay.html — not the engine folder.
+7. **Ship** `replay.html` AND the rebuilt `GAME-BUILDER.html` to the project
+   root (beside README-REPLAY.md) and update that README's battle line. Both
+   must travel together: the dashboard's watch drawer points at a sibling file.
 
 ## Traps already paid for
 

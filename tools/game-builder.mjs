@@ -50,6 +50,10 @@ for (const r of runs) {
   if (r.type === 'batch-end') {
     batches[batches.length - 1].closed = true
     if (r.label) batches[batches.length - 1].label = r.label
+    // Artifacts ride the marker: things this batch produced that a human WATCHES,
+    // not reads — a replay, an mp4. Hrefs are relative to the shipped page's home
+    // (the project root, where replay.html lives), not the engine folder.
+    if (r.artifacts) batches[batches.length - 1].artifacts = r.artifacts
     batches.push({ id: `batch-${batches.length + 1}`, runs: [], closed: false })
     continue
   }
@@ -204,6 +208,11 @@ const html = `<!doctype html>
   .approve { margin-left:auto; background:var(--surface); border:1px solid var(--line); color:var(--ink2);
     border-radius:14px; padding:3px 12px; cursor:pointer; font-size:12px }
   .approve:hover { border-color:var(--good); color:var(--good) }
+  .art { color:var(--seq); font-size:12px; text-decoration:none; border:1px solid var(--line);
+    border-radius:14px; padding:2px 10px; background:var(--surface) }
+  .art:hover { border-color:var(--seq) }
+  .watch { margin:10px 14px 0 }
+  .watch iframe { width:100%; height:660px; border:1px solid var(--line); border-radius:8px; background:#111; margin-top:8px }
   .approved-tick { color:var(--good); font-weight:600; font-size:12.5px; margin-left:auto }
   table { border-collapse:collapse; margin-top:6px } td,th { border:1px solid var(--line); padding:3px 10px; font-size:12.5px }
 </style></head><body>
@@ -246,9 +255,15 @@ ${batches.map((batch, bi) => {
     ${sealedRuns.length ? `<span class="b b-seal">⛓ ${sealedRuns.length} sealed</span>` : ''}
     ${failedRuns ? `<span class="b b-crit">✗ ${failedRuns} failed attempts</span>` : ''}
     <span class="bmeta">${items.length} item${items.length === 1 ? '' : 's'} · ${batch.runs.length} runs</span>
+    ${(batch.artifacts ?? []).map((a) => `<a class="art" href="${esc(a.href)}" target="_blank" onclick="event.stopPropagation()">▶ ${esc(a.label)}</a>`).join('')}
     <button class="approve" data-batch="${batch.id}">Approve — collapse when read</button>
     <span class="approved-tick" hidden>✓ approved</span>`
-  const body = `<div class="cards">${itemCardsFor(items)}</div>`
+  // An html artifact plays INSIDE the batch — a lazy iframe that only loads when
+  // opened, so twenty batches of history never load twenty replays at once.
+  const playable = (batch.artifacts ?? []).find((a) => a.href.endsWith('.html'))
+  const watch = playable ? `<details class="watch"><summary>▶ watch it right here — ${esc(playable.label)}</summary>
+    <iframe data-src="${esc(playable.href)}" title="${esc(playable.label)}"></iframe></details>` : ''
+  const body = `${watch}<div class="cards">${itemCardsFor(items)}</div>`
   return bi === 0
     ? `<section class="batch open" data-batch="${batch.id}"><div class="batchbar">${bar}</div>${body}</section>`
     : `<details class="batch" data-batch="${batch.id}"><summary class="batchbar">${bar}</summary>${body}</details>`
@@ -285,6 +300,10 @@ ${batches.map((batch, bi) => {
     }
   }
   document.querySelectorAll('.batch').forEach(applyApproval)
+  // The embedded replay loads only when its drawer opens — and only once.
+  document.querySelectorAll('details.watch').forEach((d) => d.addEventListener('toggle', () => {
+    const f = d.querySelector('iframe'); if (d.open && f && !f.src) f.src = f.dataset.src
+  }))
   document.addEventListener('click', (e) => {
     const b = e.target.closest('.approve'); if (!b) return
     e.preventDefault()

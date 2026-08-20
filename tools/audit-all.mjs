@@ -84,7 +84,15 @@ const stamp = new Date().toISOString()
 // into the run log; the Game Builder splits its bars on these, never on a time
 // heuristic (a gap guess once swallowed a new session inside an approved bar).
 const label = (() => { const i = process.argv.indexOf('--label'); return i > 0 ? process.argv[i + 1] : undefined })()
-appendFileSync('.state/gauntlet-log.jsonl', JSON.stringify({ at: stamp, type: 'batch-end', audit: failed.length ? 'FAILED' : 'clean', ...(label ? { label } : {}) }) + '\n')
+// --artifact "href|label" (repeatable): a thing this batch produced that a human
+// WATCHES — the Game Builder puts it on the batch bar and plays .html ones inline.
+// Hrefs are relative to the shipped page's home (the project root).
+const artifacts = []
+for (let i = 0; i < process.argv.length; i++) if (process.argv[i] === '--artifact') {
+  const [href, alabel] = String(process.argv[i + 1] ?? '').split('|')
+  if (href) artifacts.push({ href, label: alabel || href })
+}
+appendFileSync('.state/gauntlet-log.jsonl', JSON.stringify({ at: stamp, type: 'batch-end', audit: failed.length ? 'FAILED' : 'clean', ...(label ? { label } : {}), ...(artifacts.length ? { artifacts } : {}) }) + '\n')
 try { execSync('node tools/game-builder.mjs --quiet', { stdio: 'ignore' }) } catch {}
 if (failed.length) {
   appendFileSync('.state/ledger.md',
