@@ -7,9 +7,9 @@ and date. Tool tasks and engine chores go in the backlog, never here.
 
 ## OPEN
 
-- When a character stands in water, which effects should wash off at the end of their turn? Your design doc says burning and poison wash off. The effects document also lists regeneration — which would mean standing in water weakens your own healing too. Right now water removes all three (burning, poison, and regeneration). Keep all three, or should water leave regeneration alone?
-
 ## ANSWERED
+
+- (2026-08-20) Water and regeneration — regeneration is NOT washed off by water. Water removes burning (on entry, and at end of activation) and poison (at end of activation) only. Fixed and landed (fix.water-regen).
 
 - (2026-08-20) Codex counts as a published source — yes, before changes; rows may still change as we go. content-check now reads CODEX.md.
 - (2026-08-20) Statuses are counters — they accumulate and tick down; pool stays reserved for spent-when-consumed (protection). SETTLED rows amended with a CHANGED entry.

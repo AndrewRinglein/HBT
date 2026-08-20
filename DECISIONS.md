@@ -627,3 +627,15 @@ This birthed the **End of Activation ladder** (was 0 of 2 rungs): rung 1 terrain
 strips → settle; rung 2 reserved as Airwalk's check-point. Runs for blocked units
 too — a stunned hero in the river still soaks. The §4 ordering promise holds and
 is tested: reach water and Burn is shed BEFORE it ticks that turn.
+
+---
+
+## 2026-08-20 — Water does not strip Regeneration
+
+> "Regeneration is not stripped EOA by water."
+
+Closes the waterStripList question: GAME-DESIGN §4 was exact all along — water
+strips 1 Burn on entry, and 1 Burn + 1 Poison at End of Activation. Nothing else.
+The 1-EFFECTS-SETTLED prose ("Both are stripped by water") was the stale text and
+now carries a CHANGED entry. Landed as fix.water-regen (97229ec): a regenerating
+unit standing in the river keeps every point of its healing.

@@ -176,13 +176,12 @@ export const TRAIT: Readonly<Record<Trait, Mods>> = {
   elevated: { moveCost: 1, accuracy: 10, reach: 2 },             // hills: 2, +10 Acc, +2 Reach
   wet:      { moveCost: 1, accuracy: -10,                        // water: 2, -10 Acc
     // GAME-DESIGN §4 (Water — the anti-status terrain): entry strips 1 Burn;
-    // End of Activation strips 1 Burn and 1 Poison. 1-EFFECTS-SETTLED adds
-    // regeneration to the EoA strip ("Both are stripped by water"). The two
-    // documents disagree on coverage — implemented as the UNION, flagged in the
-    // questions inbox (waterStripList). Running through water sheds 1 Burn;
-    // standing in it sheds 2 Burn, 1 Poison, 1 Regeneration.
+    // End of Activation strips 1 Burn and 1 Poison. RULED, Angela 2026-08-20:
+    // "Regeneration is not stripped EOA by water" — the SETTLED prose that
+    // implied it was the stale text and carries a CHANGED entry. Running through
+    // water sheds 1 Burn; standing in it sheds 2 Burn and 1 Poison.
     stripsOnEnter: ['status.burn'],
-    stripsOnActivationEnd: ['status.burn', 'status.poison', 'status.regeneration'] },
+    stripsOnActivationEnd: ['status.burn', 'status.poison'] },
 }
 
 /** What each terrain is made of. */

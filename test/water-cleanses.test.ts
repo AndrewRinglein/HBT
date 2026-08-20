@@ -1,7 +1,7 @@
 // Water — the anti-status terrain. GAME-DESIGN §4: entry strips 1 Burn; End of
-// Activation strips 1 Burn and 1 Poison. 1-EFFECTS-SETTLED adds regeneration.
-// Implemented as the union (flagged in the questions inbox), as trait DATA on
-// `wet` — a second stripping terrain is a data row, zero engine code.
+// Activation strips 1 Burn and 1 Poison. RULED, Angela 2026-08-20: regeneration
+// is NOT stripped — your healing survives the river. Trait DATA on `wet`; a
+// second stripping terrain is a data row, zero engine code.
 import { describe, expect, it } from 'vitest'
 import { stripsOnEnterOf, stripsOnActivationEndOf } from '../src/content/maps.js'
 import { TERRAIN } from '../src/core/types.js'
@@ -13,10 +13,11 @@ import { beginActivation } from '../src/core/mutate.js'
 import { hexId, neighboursOf } from '../src/core/hex.js'
 
 describe('water cleanses', () => {
-  it('the data: wet strips burn on enter; burn, poison and regeneration at EoA', () => {
+  it('the data: wet strips burn on enter; burn and poison at EoA — NEVER regeneration', () => {
     expect(stripsOnEnterOf(TERRAIN.WATER)).toEqual(['status.burn'])
     expect([...stripsOnActivationEndOf(TERRAIN.WATER)].sort())
-      .toEqual(['status.burn', 'status.poison', 'status.regeneration'])
+      .toEqual(['status.burn', 'status.poison'])
+    expect(stripsOnActivationEndOf(TERRAIN.WATER)).not.toContain('status.regeneration')
     expect(stripsOnEnterOf(TERRAIN.OPEN)).toEqual([])
     expect(stripsOnActivationEndOf(TERRAIN.FOREST)).toEqual([])
   })
