@@ -741,3 +741,45 @@ a stale snapshot by the other session a second time (testCohort, hero rulings,
 drake attacks, Drake's Maw erased); restored by merging git HEAD with their
 additions — nothing of theirs was lost. The re-stage-before-writing protocol
 still stands.
+
+---
+
+## 2026-08-21 — the Shadow Hound Puppy is a hero; so was every beast in the pen
+
+> "Shadow Hound Puppy is supposed to be a hero, not an enemy. All of those
+> initial beasts, of which there were only a couple, were meant to be heroes."
+
+Closes the last open side in the Beast pen. The 2026-08-20 ruling ("these beasts
+were meant to be player beasts... Spirit Snake is supposed to be a hero unit")
+was applied to the snake and the drake by `fix.beast-pen-hero-correction`
+(a4822ab); the puppy kept `side: 'enemy'` from its ported block, so the file
+carried a comment reading *"the Beast pen are PLAYER beasts"* directly above a
+field saying `enemy`. This ruling makes the field agree with the comment.
+
+**Discovered by the gate, not by reading.** `scenario.export` added a check that
+a unit fielded on a side must be the side its row declares — it threw when
+`showcase.beasts` listed the puppy as a hero, which is what surfaced the
+contradiction. Before that check, `makeUnit` read `def.side` and would have
+placed it on the enemy side without a word.
+
+**What this does NOT settle: its stat block.** The numbers are still the ported
+Codex §10 row, still provisional, still awaiting her dictated block (the snake
+and drake precedent). One consequence is immediate and worth stating rather than
+papering over:
+
+- The row carries `maxStamina: 0` — an ENEMY property; enemies do not run
+  stamina. Its only attack, `attack.fangs.bite`, costs 1 Stamina.
+- So as a hero with 0 Stamina, **the puppy can move but can never attack.**
+- The snake precedent is the shape of the fix: Angela dictated Stamina 8 for the
+  Spirit Snake, and `SWITCHES.md brawlStaminaCost` was answered "the Spirit Snake
+  is a hero and pays it."
+
+A stamina figure has NOT been invented here ("copy, don't invent"). The puppy
+stays benched, where a hero who cannot attack costs nothing, and the number waits
+for her block.
+
+**Codex note.** Unlike the snake and the drake, the puppy has no row in
+`content/settled.json` at all — it exists only as a hand-typed def in
+`engine/src/content/index.ts`. So this ruling could not be recorded in the Codex
+source and applied through the pipeline the way the 2026-08-20 beast rulings
+were. That is a content gap, not a preference.

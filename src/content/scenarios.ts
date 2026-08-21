@@ -33,16 +33,20 @@ const RAW_SCENARIOS: Readonly<Record<string, ScenarioDef>> = {
       + 'Green Drake comes the only grantor of the flight ladder, which no '
       + 'standard battle can exercise.',
     mapId: 'map.thicket',
-    // Spirit Snake and Green Drake are hero-side by Angela\'s 2026-08-20 ruling
-    // ("these beasts were meant to be player beasts"). The Shadow Hound Puppy is
-    // NOT — its row carries side: 'enemy', so it is fielded as one. §6.2's
-    // example listed all three as heroes; setup would have placed the puppy on
-    // the enemy side anyway, because makeUnit reads the def. Now that disagreement
-    // throws instead of resolving silently.
-    heroes: ['spirit-snake', 'green-drake'],
-    heroHexes: [79, 80],
-    enemies: ['shadow-hound-puppy', 'test-zombie', 'test-zombie-burning'],
-    enemyHexes: [40, 41, 42],
+    // All three beasts are HEROES — ruled 2026-08-21: "All of those initial
+    // beasts, of which there were only a couple, were meant to be heroes."
+    // PLAYBACK-DESIGN §6.2's example scenario had this right and the DATA had it
+    // wrong: the puppy's row still said side 'enemy', so the side check added
+    // with this item threw. The check did its job — it turned a silent
+    // side-swap into a ruling.
+    //
+    // The puppy can move and cannot attack (maxStamina 0 against a 1-Stamina
+    // bite) until her dictated block lands. It is fielded anyway: a showcase
+    // shows what the game currently IS, and hiding the unit would hide the gap.
+    heroes: ['spirit-snake', 'green-drake', 'shadow-hound-puppy'],
+    heroHexes: [79, 80, 91],
+    enemies: ['test-zombie', 'test-zombie-burning'],
+    enemyHexes: [40, 41],
     replicate: 0,
   },
 }

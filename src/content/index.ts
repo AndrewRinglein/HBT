@@ -217,17 +217,28 @@ const RAW_UNITS: Readonly<Record<string, UnitDef>> = {
     attributes: ['beast'],
   },
   'shadow-hound-puppy': {
-    // PENDING REDESIGN — Angela 2026-08-20: the Beast pen are PLAYER beasts
-    // and this ported block was never her design. Pulled from the horde,
-    // BENCHED, kept only so the id and its tests survive until she dictates
-    // its real block (the snake and drake precedent). Provisional numbers
-    // below are the ported Codex §10 row, unchanged.
-    typeId: 'shadow-hound-puppy', side: 'enemy',
+    // A PLAYER BEAST — ruled 2026-08-21: "Shadow Hound Puppy is supposed to be
+    // a hero, not an enemy. All of those initial beasts, of which there were
+    // only a couple, were meant to be heroes." The 2026-08-20 Beast-pen ruling
+    // reached the snake and the drake (fix.beast-pen-hero-correction, a4822ab)
+    // and missed this row, so the comment here said PLAYER beasts directly
+    // above a field saying `enemy`. The field now agrees with the comment.
+    //
+    // STILL PENDING REDESIGN. The numbers below are the ported Codex §10 row,
+    // never her design, kept so the id and its tests survive until she dictates
+    // its real block (the snake and drake precedent). BENCHED.
+    typeId: 'shadow-hound-puppy', side: 'hero',
     maxHp: 12, armor: 0, resist: 0,
     accuracy: 70, dodge: 0, strength: 6, precision: 2, magic: 0, spirit: 0,
     role: 'melee',
     movement: 4, reach: 1,
-    maxStamina: 0, staminaRegen: 0,   // enemies do not run stamina
+    // maxStamina 0 is an ENEMY property that came in with the ported block, and
+    // it is now load-bearing in a way it was not: attack.fangs.bite costs 1
+    // Stamina, so this hero CAN MOVE AND CAN NEVER ATTACK. Deliberately left
+    // wrong rather than invented — Angela dictated Stamina 8 for the Spirit
+    // Snake, and "copy, don't invent" forbids picking a number for this one.
+    // Harmless while benched; it is the first thing her dictated block fixes.
+    maxStamina: 0, staminaRegen: 0,
     triggers: [{
       // Codex §3 Hound: "onHit your fang attacks apply 1 Bleed." Named for the
       // Hound power "Worry the Wound". Unconditional onHit — the bite is its
