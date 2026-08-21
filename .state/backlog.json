@@ -1068,7 +1068,11 @@
     "expect": "a scenario id fields the named units at the named hexes and exports a battle whose log mentions ids no standard battle can produce (the benched beasts, the flight ladder); an out-of-range or impassable hex throws at scenario load rather than silently relocating",
     "changesBaseline": false,
     "needs": [],
-    "note": "Gate 1: probe.mts runs createBattle over the standard MAP_PANEL and cannot field a scenario, so no standard battle can mention a scenario id. Expect `unreachable` with a written reason, which flags the landing for review — the correct outcome, not a dodge."
+    "note": "Gate 1: probe.mts runs createBattle over the standard MAP_PANEL and cannot field a scenario, so no standard battle can mention a scenario id. Expect `unreachable` with a written reason, which flags the landing for review — the correct outcome, not a dodge.",
+    "attempts": 1,
+    "probeIds": [
+      "showcase.beasts"
+    ]
   },
   {
     "id": "viewer.geometry",

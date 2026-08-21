@@ -1,6 +1,6 @@
 import { WIDTH, hexId } from './hex.js'
 import { makeRng, rootSeedOf, sample } from './rng.js'
-import type { Ctx, State, Unit, UnitDef, Config } from './types.js'
+import type { Ctx, Side, State, Unit, UnitDef, Config } from './types.js'
 import { DEFAULT_CONFIG } from './types.js'
 import { ATTACKS, ABILITIES, UNITS, FIRST_BATTLE } from '../content/index.js'
 import { terrainOf, terrainIdOf, isPassable } from '../content/maps.js'
@@ -45,7 +45,16 @@ export type BattleOptions = {
   /** Sweep axes. */
   enemyCount?: number
   heroes?: readonly string[]
+  /**
+   * The enemy roster, unit typeIds. Absent = cycle `FIRST_BATTLE.enemies` as
+   * always. Added 2026-08-21 with scenarios: `heroes` could be named from
+   * outside and the enemy side could not, so a fielding could only ever be half
+   * chosen.
+   */
+  enemies?: readonly string[]
   mapId?: string
+  /** Names the fielding in errors and on the export. Never read by the rules. */
+  scenarioId?: string
   /** Stat overrides by unit type. Does NOT change the seed, so arms stay paired. */
   overrides?: Readonly<Record<string, Partial<UnitDef>>>
 }
@@ -86,7 +95,65 @@ export function createBattle(opts: BattleOptions): Ctx {
   // Cycle the DECLARED roster — before 2026-08-20 this line hardcoded 'zombie',
   // a content name in core that ignored FIRST_BATTLE.enemies entirely. The mix
   // (one burning zombie per four) comes from the data, where it belongs.
-  const enemies = Array.from({ length: enemyCount }, (_, i) => FIRST_BATTLE.enemies[i % FIRST_BATTLE.enemies.length]!)
+  const enemies = opts.enemies
+    ? [...opts.enemies]
+    : Array.from({ length: enemyCount }, (_, i) => FIRST_BATTLE.enemies[i % FIRST_BATTLE.enemies.length]!)
+
+  /**
+   * Positions named from outside are checked, loudly (Law 9).
+   *
+   * Nothing checked these before 2026-08-21 — `opts.heroHexes?.[i]` went
+   * straight into `makeUnit`, so a scenario naming a hex inside a wall, off the
+   * board, or already taken produced a battle that ran and looked fine. The
+   * rolled deployment below has been obstacle-checked since obstacles existed;
+   * the authored path had no equivalent.
+   *
+   * Every failure names the scenario, the unit and the hex, because "invalid
+   * hex" in a 144-hex board is not a diagnosis.
+   */
+  const where = opts.scenarioId ? `scenario '${opts.scenarioId}'` : 'battle options'
+  const taken = new Map<number, string>()
+  const checkHexes = (hexes: readonly number[] | undefined, types: readonly string[], side: Side) => {
+    if (!hexes) return
+    if (hexes.length !== types.length) {
+      throw new Error(`${where}: ${side} side names ${types.length} units but ${hexes.length} hexes — they must correspond`)
+    }
+    hexes.forEach((hex, i) => {
+      const who = `${types[i]} (${side} ${i})`
+      if (!Number.isInteger(hex) || hex < 0 || hex >= state.terrain.length) {
+        throw new Error(`${where}: ${who} is placed on hex ${hex}, which is off a ${state.terrain.length}-hex board`)
+      }
+      if (!isPassable(state.terrain[hex] ?? 0)) {
+        throw new Error(`${where}: ${who} is placed on hex ${hex}, which is ${terrainIdOf(state.terrain[hex] ?? 0)} — impassable`)
+      }
+      const already = taken.get(hex)
+      if (already) throw new Error(`${where}: ${who} and ${already} are both placed on hex ${hex}`)
+      taken.set(hex, who)
+    })
+  }
+  checkHexes(opts.heroHexes, heroes, 'hero')
+  checkHexes(opts.enemyHexes, enemies, 'enemy')
+
+  /**
+   * A unit fielded on the side its row does not declare.
+   *
+   * `makeUnit` reads `def.side`, so listing an enemy-side row under `heroes`
+   * silently produces an enemy — which is exactly what PLAYBACK-DESIGN §6.2's
+   * example scenario would have done with the Shadow Hound Puppy. Silent is the
+   * problem: the fielding you asked for and the fielding you got differ, and the
+   * battle runs either way.
+   */
+  const checkSides = (types: readonly string[], side: Side) => {
+    for (const t of types) {
+      const d = UNITS[t]
+      if (!d) throw new Error(`${where}: unknown unit typeId '${t}' — units are an explicit registry, check content/index.ts`)
+      if (d.side !== side) {
+        throw new Error(`${where}: '${t}' is fielded as a ${side} but its row declares side '${d.side}'. Field it on its own side, or rule that the row changes.`)
+      }
+    }
+  }
+  checkSides(heroes, 'hero')
+  checkSides(enemies, 'enemy')
 
   // Deployment must not put a unit inside a wall. Nothing checked this before
   // obstacles existed; the first authored map with one on a deployment row would
@@ -95,10 +162,16 @@ export function createBattle(opts: BattleOptions): Ctx {
     Array.from({ length: WIDTH }, (_, i) => i).filter((c) => isPassable(state.terrain[hexId(c, row)] ?? 0))
   const cols = passableCols(FIRST_BATTLE.heroRow)
   const eCols = passableCols(FIRST_BATTLE.enemyRow ?? 0)
-  if (cols.length < heroes.length) {
+  // Only the ROLLED path needs a deployment row wide enough. A scenario names
+  // its own hexes (already validated above), so a map with a narrow row is not
+  // its problem — before this guard, an authored fielding could be refused for a
+  // row it never used.
+  if (!opts.heroHexes && cols.length < heroes.length) {
     throw new Error(`map '${mapId}' has only ${cols.length} passable hexes on the hero deployment row, need ${heroes.length}`)
   }
-  if (eCols.length === 0) throw new Error(`map '${mapId}' has no passable hex on the enemy deployment row`)
+  if (!opts.enemyHexes && eCols.length === 0) {
+    throw new Error(`map '${mapId}' has no passable hex on the enemy deployment row`)
+  }
   const enemyCols = opts.enemyHexes ? [] : sample(rng, eCols, eCols.length, 'enemy-placement')
   const heroCols = opts.heroHexes ? [] : sample(rng, cols, heroes.length, 'hero-deployment')
 
@@ -137,7 +210,14 @@ export function createBattle(opts: BattleOptions): Ctx {
       stamina: u.stamina, maxStamina: u.maxStamina, terrain: state.terrain[u.hex],
     })
   }
-  emit(ctx, 'map.loaded', mapId, { mapId, ...terrainCensus(state.terrain) })
+  // A battle fielded by a scenario says so IN THE LOG, not only in the export
+  // envelope (Law 12: every line names its cause). The replay is built from the
+  // event log alone, so a fielding recorded only in `seed` is invisible to it —
+  // and gate 1 could not probe a scenario at all. Emitted ONLY when there is a
+  // scenario, so every standard battle stays byte-identical.
+  emit(ctx, 'map.loaded', mapId, opts.scenarioId
+    ? { mapId, scenarioId: opts.scenarioId, ...terrainCensus(state.terrain) }
+    : { mapId, ...terrainCensus(state.terrain) })
   return ctx
 }
 

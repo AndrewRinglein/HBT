@@ -3,6 +3,7 @@
 import { createBattle } from '../src/core/setup.js'
 import { runBattle } from '../src/core/battle.js'
 import { MAP_PANEL } from '../src/content/maps.js'
+import { SCENARIOS, scenarioOptions } from '../src/content/scenarios.js'
 
 const id = process.argv[2]
 if (!id) { console.error('usage: probe <id> [--neutral]'); process.exit(2) }
@@ -28,9 +29,30 @@ const ACTED = new Set(['damage.applied','heal.applied','power.used','attack.decl
   // directly instead of hiding behind terrain probeIds.
   'map.loaded'])
 
+/**
+ * A SCENARIO is probed by fielding it, not by sweeping the standard panel.
+ *
+ * Added 2026-08-21 with `scenario.export`. A scenario exists precisely because
+ * no standard battle can produce it — the benched beasts and the flight ladder
+ * are unreachable from `createBattle`'s default roster — so sweeping the panel
+ * would always report "never appears in any log" and every scenario would have
+ * to buy an `unreachable` exemption. Teaching the probe to field one keeps
+ * scenarios under gate 1 instead of exempt from it, which is stricter, not
+ * looser: the same widening argument as `map.loaded` joining ACTED.
+ *
+ * A scenario DISABLED through the kill-switch seam is absent from `SCENARIOS`,
+ * falls through to the panel sweep, and correctly reports that it is not wired in.
+ */
+const scenario = SCENARIOS[id]
+
 let mentions = 0, acted = 0, changed = 0
-for (const mapId of MAP_PANEL) for (const z of [4, 8, 12]) for (let r = 0; r < 25; r++) {
-  const ctx = createBattle({ replicate: r, enemyCount: z, mapId, strict: true })
+const battles: (() => ReturnType<typeof createBattle>)[] = scenario
+  ? [() => createBattle(scenarioOptions(scenario))]
+  : MAP_PANEL.flatMap((mapId) => [4, 8, 12].flatMap((z) =>
+      Array.from({ length: 25 }, (_, r) => () => createBattle({ replicate: r, enemyCount: z, mapId, strict: true }))))
+
+for (const make of battles) {
+  const ctx = make()
   runBattle(ctx)
   for (const e of ctx.events) {
     if (!JSON.stringify(e).includes(id)) continue

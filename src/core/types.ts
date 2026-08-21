@@ -54,6 +54,36 @@ export type MoveDef = {
   readonly cooldown: number
 }
 
+/**
+ * A named fielding — which units stand where, on which map.
+ *
+ * PLAYBACK-DESIGN §6.2: the standard battle cannot show the benched beasts or
+ * the flight ladder, so nothing new can be shown until a fielding can be named
+ * from outside. Measured 2026-08-21: across 640 battles on all 8 maps at two
+ * army sizes, `power.flight`, `power.flight-swift`, `power.flight-labored` and
+ * all four beast attacks fired ZERO times.
+ *
+ * **There is deliberately no `overrides` field, and there must never be one.**
+ * A scenario names units and positions; statistics belong to sweeps. A showcase
+ * that can change numbers is a showcase that can lie about the game — so the
+ * constraint is enforced by the type, not by a convention someone can forget.
+ */
+export type ScenarioDef = {
+  readonly id: string
+  /** Why this fielding exists. Shown by the tool; never read by the engine. */
+  readonly note: string
+  readonly mapId: string
+  /** Unit typeIds. Every one must carry `side: 'hero'` or setup throws. */
+  readonly heroes: readonly string[]
+  /** One hex per hero, same order. Validated passable, in range and unoccupied. */
+  readonly heroHexes: readonly number[]
+  /** Unit typeIds. Every one must carry `side: 'enemy'` or setup throws. */
+  readonly enemies: readonly string[]
+  readonly enemyHexes: readonly number[]
+  /** The RNG replicate, so a scenario is still a seed rather than a recording. */
+  readonly replicate: number
+}
+
 export type AttackDef = {
   readonly id: string
   readonly name: string
