@@ -694,3 +694,26 @@ mkenginepack.mjs → engine `generated/pack.ts` (never hand-edited) → loud loa
 Riders travelled with unchanged ids; first retirement taken:
 test.ranger.serrated-arrows → the Sky Pirate's published Cutlass bleed.
 Old dictated defs are unfielded fixtures until `test.fixture-migration`.
+
+## 2026-08-21 — movement is content, not code
+Angela: **"Movement is supposed to be a type of activation. There are different
+abilities in movement, like the sidestep, the regular move, or the flight.
+Movement is a choice, and that movement choice can have a modifier. It can cost
+stamina. It shouldn't be hard-coded. It should be content-driven."** Player side.
+
+Enemy side, her current thinking (stated tentatively): **"I don't know if we
+want to follow the same model on the enemy side, since we don't have stamina,
+and I think they're just going to have movement. They don't need to have more
+than one. I think they're just going to have one type of movement that an enemy
+always uses. That still might be a flight movement or not flight movement."**
+This supersedes the enemy half of the 2026-08-17 Sidestep ruling ("Every unit
+has it, enemies included") — enemies now carry exactly ONE movement power in
+their data row, which may or may not be Flight. Flagged to her in-chat the same
+day; the hero half (every hero starts with Move and Sidestep) stands.
+
+State of the engine when she ruled (honest audit): the movement BUDGET and
+terrain step costs were already data; the move ACTION was not — one built-in
+walk per activation, `MOVE_STAMINA_COST = 1` as an engine constant, enemies
+exempted by a maxStamina>0 conditional. No sidestep, sprint, or flight existed
+in the engine. Backlog: `movement.powers` (the architecture), then
+`movement.flight` rides on it.
