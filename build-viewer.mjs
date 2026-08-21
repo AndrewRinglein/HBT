@@ -159,7 +159,7 @@ input{width:240px}input:focus,select:focus{outline:none;border-color:var(--gold)
 .atk-s{margin-bottom:4px;line-height:1.9}
 @media(max-width:900px){.wpn{grid-template-columns:1fr}.atk-rows{grid-template-columns:1fr}.wpn-head{border-right:none;border-bottom:1px solid var(--border)}}
 </style></head><body>
-<header><h1>The HoBaT Codex</h1><span class="sub">Heroes of Blight and Tragic &middot; content browser &middot; generated 2026-08-17</span></header>
+<header><h1>The HoBaT Codex</h1><span class="sub">Heroes of Blight and Tragic &middot; content browser &middot; generated ${new Date().toISOString().slice(0,10)}</span></header>
 <nav id="tabs"></nav><main id="main"></main>
 <script>
 const D = ${DATA};

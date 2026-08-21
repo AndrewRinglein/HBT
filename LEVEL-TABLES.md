@@ -247,9 +247,9 @@ Ladder total across the run: **31.2**
 
 ## Beast
 
-`class.beast` · **undefined**
+`class.beast` · **AUTHORED**
 
-> undefined
+> No Item Slots at any level — that is the branch, not a gap. The roughly four ladder points other classes spend on slots come back as Health, Strength and Reach, which is why the L5 choice list offers Reach where every other class offers a slot.
 
 | Lv | Grants | Ladder |
 |---|---|---|

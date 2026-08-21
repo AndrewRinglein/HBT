@@ -11,7 +11,17 @@
 // sixteen false failures. Ask me how I know.
 import fs from 'fs';
 import path from 'path';
-import {chromium} from '/tmp/node_modules/playwright/index.mjs';
+// Bare specifier so this resolves through node_modules like anything else.
+// Was hardcoded to /tmp/node_modules, which only worked on one machine.
+// Install with:  npm install  &&  npx playwright install chromium
+//
+// Playwright is OPTIONAL. Only check 2 (every tab renders, no page errors) needs a browser.
+// Checks 1, 3, 4 and 5 are file- and data-based, so a missing browser degrades this script
+// rather than disabling it — gating all five behind the import meant a stranger without
+// Playwright got nothing at all.
+let chromium = null;
+try { ({ chromium } = await import('playwright')); } catch { /* handled at check 2 */ }
+const HAVE_BROWSER = !!chromium;
 
 const HTML='hbt-codex.html';
 let fails=0; const bad=m=>{console.log('  FAIL  '+m);fails++;};
@@ -27,10 +37,23 @@ const srcs=[...fs.readdirSync('gen').filter(f=>f.endsWith('.json')).map(f=>'gen/
             'build-viewer.mjs','assemble.mjs','functions.mjs','hbt-content.json'].filter(f=>fs.existsSync(f));
 const stale=srcs.filter(f=>fs.statSync(f).mtimeMs>htmlAge);
 console.log('\n1 · FRESHNESS');
-if(stale.length) bad('codex is older than: '+stale.join(', ')+'  — rerun the build order in README.md');
+// mtime-based, so it is meaningful only in a working tree. A fresh `git clone` writes every
+// file at checkout time, and the ordering it produces is arbitrary — so skip rather than
+// report a fake failure to someone who has just cloned this.
+const CLONED = process.env.HOBAT_FRESH_CLONE === '1';
+if(CLONED) console.log('  skip  freshness is mtime-based and meaningless after a clone');
+else if(stale.length) bad('codex is older than: '+stale.join(', ')+'  — rerun the build order in README.md');
 else ok(HTML+' is newer than all '+srcs.length+' sources');
 
 // ---- 2 + 3. render every tab, then read the WHOLE document ------------------
+if(!HAVE_BROWSER){
+  console.log('\n2 · TABS RENDER');
+  console.log('  SKIP  Playwright not installed — run: npm install && npx playwright install chromium');
+  console.log('        Checks 3, 4 and 5 do not need a browser and still run below.');
+  // Fall back to the built HTML's source text. Not a rendered DOM, but every check below is
+  // a plain substring test, and the Codex embeds its data as text at build time.
+  globalThis.__ALL__ = fs.readFileSync(HTML,'utf8');
+} else {
 const b=await chromium.launch({executablePath:'/opt/pw-browsers/chromium'}).catch(()=>chromium.launch());
 const p=await b.newPage(); const errs=[];
 p.on('pageerror',e=>errs.push(String(e)));
@@ -45,6 +68,10 @@ if(!tabs.length) bad('no tabs found at all');
 else ok(tabs.length+' tabs clicked and read');
 if(errs.length){ bad(errs.length+' page errors'); errs.slice(0,5).forEach(e=>console.log('        '+e)); }
 else ok('0 page errors');
+globalThis.__ALL__ = all;
+await b.close();
+}
+const all = globalThis.__ALL__;
 
 // ---- 3. the rulings ---------------------------------------------------------
 // PRESENT: a ruling that must be visible somewhere in the Codex.
@@ -111,6 +138,5 @@ for(const [label,needle] of ABSENT){
   noTable.length ? bad('classes with no level table: '+noTable.map(c=>c.id).join(' ')) : ok('all '+D.classes.length+' classes have a level table');
 }
 
-await b.close();
 console.log('\nVERIFY FAILURES: '+fails);
 process.exit(fails?1:0);

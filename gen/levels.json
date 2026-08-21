@@ -919,6 +919,8 @@
   },
   {
    "id": "class.beast",
+      "source": "AUTHORED",
+      "note": "No Item Slots at any level — that is the branch, not a gap. The roughly four ladder points other classes spend on slots come back as Health, Strength and Reach, which is why the L5 choice list offers Reach where every other class offers a slot.",
    "name": "Beast",
    "rows": [
     {

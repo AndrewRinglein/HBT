@@ -1,5 +1,17 @@
 import fs from 'fs';
-const S='/mnt/user-data/uploads/hell-tcg/';
+// Where the Hell-TCG project lives. This script is the ONLY thing in the pipeline that
+// needs it, and its output (gen/heroes.json) is checked in — so you never have to run this
+// unless you are re-extracting heroes from Hell-TCG.
+//
+// Was hardcoded to a sandbox path that no longer exists. Override with:
+//   HELL_TCG=/path/to/hell-tcg node build-heroes.mjs
+const S = (process.env.HELL_TCG || '../../hell-tcg').replace(/\/?$/, '/');
+if (!fs.existsSync(S)) {
+  console.error(`\nbuild-heroes.mjs needs the Hell-TCG project, which is not at:\n  ${S}\n`);
+  console.error('Set HELL_TCG=/path/to/hell-tcg, or skip this script entirely —');
+  console.error('gen/heroes.json is checked in and nothing else in the build reads Hell-TCG.\n');
+  process.exit(2);
+}
 const {HERO_DATA}=await import(S+'src/state/heroData.js');
 const {AVTAIR_HERO_TYPES}=await import(S+'data/shadowsHeroTypes.js');
 const {AERONISSA_HERO_TYPES}=await import(S+'data/skyshipHeroes.js');
