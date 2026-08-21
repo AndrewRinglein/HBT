@@ -98,7 +98,7 @@
   "maxAfflictions": "toughness"
  },
  "dodgeScale": 5,
- "rule": "ONE PIECE OF ART, ONE UNIQUE HERO. Ruled by Angela 2026-08-20. Every generative template owns four distinct designs and each is its own hero — so 12 Shadows subtypes are 48 heroes, not 12. What does NOT split is a hero’s own level-and-status set: a folder of 1/2/3/4 plus l/p/r/v is one hero at four levels wearing four afflictions, which is why the 98 fixed cast stay 98. | 2026-08-20 Angela: a hero no longer carries a damage type. THE ATTACK DECIDES — a Mage shooting a bow deals physical damage, because the bow says so. | 2026-08-20: every hero now has a class. Beast became class.beast (4 heroes); Spirit folded into class.civilian (1 hero), because a class of one is an outlier, not a class.",
+ "rule": "ONE PIECE OF ART, ONE UNIQUE HERO. Ruled 2026-08-20. Every generative template owns four distinct designs and each is its own hero — so 12 Shadows subtypes are 48 heroes, not 12. What does NOT split is a hero’s own level-and-status set: a folder of 1/2/3/4 plus l/p/r/v is one hero at four levels wearing four afflictions, which is why the 98 fixed cast stay 98. | 2026-08-20: a hero no longer carries a damage type. THE ATTACK DECIDES — a Mage shooting a bow deals physical damage, because the bow says so. | 2026-08-20: every hero now has a class. Beast became class.beast (4 heroes); Spirit folded into class.civilian (1 hero), because a class of one is an outlier, not a class.",
  "paths": [
   {
    "path": "fixed",
@@ -1017,7 +1017,7 @@
    },
    "notes": [
     "Toughness 1 is hell-tcg maxAfflictions, ported straight across — same meaning.",
-    "2026-08-20 Angela: class.beast created for these four. They were the only heroes in the game with no class."
+    "2026-08-20: class.beast created for these four. They were the only heroes in the game with no class."
    ],
    "specialty": null,
    "originBadges": [
@@ -1582,7 +1582,7 @@
    },
    "notes": [
     "Toughness 0 is hell-tcg maxAfflictions, ported straight across — same meaning.",
-    "2026-08-20 Angela: \"change the Spirit to just be a Civilian so that there are no outliers on classes.\" One hero is not a class."
+    "2026-08-20: \"change the Spirit to just be a Civilian so that there are no outliers on classes.\" One hero is not a class."
    ],
    "specialty": null,
    "originBadges": [
@@ -2697,7 +2697,7 @@
    },
    "notes": [
     "Toughness 0 is hell-tcg maxAfflictions, ported straight across — same meaning.",
-    "2026-08-20 Angela: class.beast created for these four. They were the only heroes in the game with no class."
+    "2026-08-20: class.beast created for these four. They were the only heroes in the game with no class."
    ],
    "specialty": null,
    "originBadges": [
@@ -3959,7 +3959,7 @@
    },
    "notes": [
     "Toughness 1 is hell-tcg maxAfflictions, ported straight across — same meaning.",
-    "2026-08-20 Angela: class.beast created for these four. They were the only heroes in the game with no class."
+    "2026-08-20: class.beast created for these four. They were the only heroes in the game with no class."
    ],
    "specialty": null,
    "originBadges": [
@@ -5145,7 +5145,7 @@
    },
    "notes": [
     "Toughness 0 is hell-tcg maxAfflictions, ported straight across — same meaning.",
-    "2026-08-20 Angela: class.beast created for these four. They were the only heroes in the game with no class."
+    "2026-08-20: class.beast created for these four. They were the only heroes in the game with no class."
    ],
    "specialty": null,
    "originBadges": [

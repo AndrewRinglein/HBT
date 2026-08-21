@@ -50,12 +50,12 @@ for(const c of L.classes){
 }
 o.push('## What is still owed\n');
 o.push('1. **Ranger 7–10, Rogue, Mage, Priest, Paladin and Civilian are authored, not dictated.**');
-o.push('   They are built to the ladder and to the shape of the two tables Angela gave, but');
+o.push('   They are built to the ladder and to the shape of the two dictated tables, but');
 o.push('   nobody has said these numbers out loud. Every authored row is marked in the Codex.');
 o.push('2. **The Warrior L5 choice list had no magnitudes** — it was dictated as five bare stat');
 o.push('   names. The magnitudes here are copied from the Ranger L5 list, which is the only');
 o.push('   place any were given.');
-o.push('3. **Sprint.** Angela ruled that a hero starts with two movement abilities, Move and');
+o.push('3. **Sprint.** Ruled: a hero starts with two movement abilities, Move and');
 o.push('   Sidestep. Sprint is still in `GAME-DESIGN.md` §4 with no source that grants it.');
 o.push('   Either it needs a grantor or it needs cutting.');
 o.push('4. **Specialty counts.** Every class has nine specialties, so the L2 pick is a nine-way');

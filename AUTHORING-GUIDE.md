@@ -145,7 +145,7 @@ Magic and Spirit at 1.5.
 | **Accuracy · Crit · Luck · Vision** | **0.2** | all four are worth about the same |
 | **Surge** | **0.15** | the cheapest thing on the board. **Fine to modify** — it is not a sacred stat |
 
-**Nothing sits outside this table any more.** Angela priced the last five on
+**Nothing sits outside this table any more.** The last five were priced on
 2026-08-20: Movement 0.7 · Stamina Max 0.3 · Stamina Regen 2.0 · Surge 0.15 ·
 Toughness 0.4. Only `deathbedFighting` has no entry, because it is derived rather
 than granted — `20 + 5 × Toughness`, which prices a Toughness point at 5 Deathbed.
@@ -319,7 +319,7 @@ checks all three, plus that no class ends up with two and that Civilian and Beas
 with none.
 
 **Zero hexes is a legal distance, and it is the caster answer.** Focus and Devotion do not
-move you at all. Angela, 2026-08-21: *"it makes a much harsher penalty on mages and priests
+move you at all. Ruled 2026-08-21: *"it makes a much harsher penalty on mages and priests
 who get engaged in melee."* A caught Mage may Focus and catch its breath, but **it is still
 caught** — the choice each Activation is *reposition or refuel*, never both.
 

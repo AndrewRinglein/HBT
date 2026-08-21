@@ -1,7 +1,7 @@
 // mkenginepack.mjs — export the TEST COHORT as the engine's generated unit pack.
 // Run AFTER assemble.mjs. Writes ../engine/src/content/generated/pack.ts.
 //
-// Angela 2026-08-20: "we're going to read from the data and it's clearly
+// Ruled 2026-08-20: "we're going to read from the data and it's clearly
 // differentiated text. We're not hardcoding." The engine's standard battle
 // party and enemies come from HERE — the Codex pipeline — not from hand-typed
 // rows. Deterministic output: same inputs, byte-identical pack.
@@ -47,7 +47,7 @@ const heroes = D.testCohort.heroes.map((h) => {
     role: e.role, movement: d.movement, reach: p.reach ?? 0,
     maxStamina: d.staminaMax, staminaRegen: d.staminaRegen ?? 1,
     ai: e.ai, attacks: e.attacks || [], abilities: e.abilities || [],
-    // Movement is a granted CHOICE (Angela 2026-08-21) — no default here: a
+    // Movement is a granted CHOICE (ruled 2026-08-21) — no default here: a
     // cohort row without moves should fail the loader, loudly.
     moves: e.moves,
     attributes: ['hero-test'],

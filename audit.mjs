@@ -163,7 +163,7 @@ for(const e of all) for(const t of tagRefs(e))
     for(const g of t.matchAll(/\bagainst ((?:a |an |the )?[a-z][a-z, ]*?)(?=[.,;|]|$| and (?:-|\+))/gi)){
       let x=g[1].trim().replace(/^(a|an|the) /,'').replace(DUR,'');
       if(!x||NOTPRED.test(x)) continue;
-      if(x.split(/\s+/).length>3) continue;   // a long tail is Angela's design commentary, not a predicate
+      if(x.split(/\s+/).length>3) continue;   // a long tail is design commentary, not a predicate
       if(/^(something|anything|nothing|someone)\b/i.test(x)) continue;  // commentary, never a mechanic
       if(/^(unarmoured|unarmored|the unwary)$/i.test(x)) continue;
       const words=x.split(/,| or | and /).map(w=>w.trim().replace(/^(a|an|the) /,'')).filter(Boolean);
@@ -251,7 +251,7 @@ for(const e of all) for(const t of tagRefs(e))
 }
 
 // R50 every specialty carries four powers. Ruled by the shape of the level tables.
-//     specialty.wild-shaper is deliberately SHORT until Angela restores Bear Form.
+//     specialty.wild-shaper is deliberately SHORT until Bear Form is restored.
 for(const sp of D.specialties){ const n=(sp.powers||[]).length;
   if(n!==4 && !['Berserker','Shieldbearer','Leader','Bowmaster','Winged Assassin'].includes(sp.name))
     add('specialty-not-four-powers',sp.name,n+' powers'); }
@@ -276,7 +276,7 @@ for(const a of D.attacks){ const r=a.range;
     if(!enchTags.has(t)) add('weapon-form-takes-no-enchantment',t,'no enchant lists this form in appliesToTags'); } }
 
 // R57-R60 the TEST BESTIARY must stay obviously, deletably test.
-//   Angela 2026-08-20: "clearly designated as tests so they can be thrown away later,
+//   Ruled 2026-08-20: "clearly designated as tests so they can be thrown away later,
 //   or duplicated into real." That is only true if nothing real ever points at it.
 if(D.bestiaryTest){ const B=D.bestiaryTest;
   const ENGINE_HOOKS=['onAttack','onMiss','onHit','onDamage','onCrit','onKill','onTakingDamage','onDeath','onActivationEnd'];
@@ -367,6 +367,33 @@ if(D.levels) for(const c of D.levels.classes){
 if(D.heroes) for(const h of D.heroes.heroes){
   if(!h.ported||!Object.keys(h.ported).length) add('hero-has-no-ported-stats',h.name,h.id);
   if(h.ported&&h.ported.health===0) add('hero-has-zero-health',h.name,h.id);
+}
+
+// R17 NO NAMED ROLE. Ruled 2026-08-21: there is one person on this project and no
+//     named sign-off authority. A source note records WHAT was ruled and WHEN, never
+//     WHO — attributing a ruling to a person invented an approval gate that chats then
+//     deferred to, and it put a real person's name on 538 rows of provenance.
+//     Passive voice: "Ruled 2026-08-20: …", not "<name> ruled …".
+//     Swept 2026-08-21 across gen/*.json and settled.json; 538 -> 0.
+//     Hero FICTION is untouched by this rule — backstories, quotes and flavour
+//     descriptions may say anything, including a character's name and pronouns.
+{
+  const NAMES=/\b(Angela|Andrew)\b/;
+  const PROV=['source','rule','offLadder','movement','notes','intent'];
+  const seen=new Set();
+  const walk=(node,who,key)=>{
+    if(typeof node==='string'){
+      if(PROV.includes(key)&&NAMES.test(node)&&!seen.has(who+key)){
+        seen.add(who+key);
+        add('provenance-names-a-person',who,`${key}: "${node.slice(0,90).replace(/\s+/g,' ')}…"`);
+      }
+      return;
+    }
+    if(Array.isArray(node)) return node.forEach(v=>walk(v,who,key));
+    if(node&&typeof node==='object') return Object.entries(node).forEach(([k,v])=>walk(v,who,k));
+  };
+  for(const group of ['items','enchants','specialties','attacks','powers','badges'])
+    for(const e of (D[group]||[])) walk(e,e.name||e.id||group,null);
 }
 
 const by={}; F.forEach(f=>(by[f.rule]=by[f.rule]||[]).push(f));

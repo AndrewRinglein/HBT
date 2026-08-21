@@ -175,7 +175,7 @@
    "payload": "+2 Health",
    "category": "AWARDED",
    "group": "",
-   "source": "2026-08-20 Angela: created. Earned by killing a dragon with a Dragon Slayer weapon. The first slayer badge in the set."
+   "source": "2026-08-20: created. Earned by killing a dragon with a Dragon Slayer weapon. The first slayer badge in the set."
   },
   {
    "id": "badge.drilled",
@@ -680,7 +680,7 @@
    "payload": "Thorns 2",
    "category": "GENERATIVE — FAVOURABLE",
    "group": "Trigger",
-   "source": "2026-08-20 Angela: Thorns should live in a badge as well as in armour. On taking damage, the attacker takes 2 true damage — at any range."
+   "source": "2026-08-20: Thorns should live in a badge as well as in armour. On taking damage, the attacker takes 2 true damage — at any range."
   },
   {
    "id": "badge.trailwise",

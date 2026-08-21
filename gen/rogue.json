@@ -23,7 +23,7 @@
     "power.poison-master.antidote",
     "power.poison-master.creeping-dose"
    ],
-   "source": "Hell-TCG Rogue/Poison Master (its Poison Trap was already spent on Ranger's specialty.trapper — this line was rebuilt around a self-immunity and per-tick Resist arithmetic instead) | 2026-08-17 Angela trim: three stats, no negatives, one ability. Dropped stats: strength -1; accuracy -5; health +1. Parked abilities: onHit: your dagger and thrown attacks apply 1 Poison; each tick of it is reduced separately by the target's Resist. | 2026-08-20 Angela: \"you ignore all Poison applied to you from any source\" is cut. Immunity N is the mechanic that already does this — it removes N before the status resolves — so this is Immunity to poison 3."
+   "source": "Hell-TCG Rogue/Poison Master (its Poison Trap was already spent on Ranger's specialty.trapper — this line was rebuilt around a self-immunity and per-tick Resist arithmetic instead) | 2026-08-17 trim: three stats, no negatives, one ability. Dropped stats: strength -1; accuracy -5; health +1. Parked abilities: onHit: your dagger and thrown attacks apply 1 Poison; each tick of it is reduced separately by the target's Resist. | 2026-08-20: \"you ignore all Poison applied to you from any source\" is cut. Immunity N is the mechanic that already does this — it removes N before the status resolves — so this is Immunity to poison 3."
   },
   {
    "id": "specialty.assassin",
@@ -47,7 +47,7 @@
     "power.assassin.double-strike",
     "power.assassin.dodge-behind"
    ],
-   "source": "Hell-TCG Rogue/Assassin (name kept — no id collision with Ranger's specialty.winged-assassin, which Hell-TCG also ran alongside it; the onDamage hook rebuilt as flanking plus a stealth opener) | 2026-08-17 Angela trim: three stats, no negatives, one ability. Dropped stats: health -3; armor -1; strength +1. Parked abilities: onHit: you are flanking when you and an ally are both adjacent to the target on two hexes that are not adjacent to each other; a flanking attack of yours gains +2 Strength || onHit: an attack made out of stealth gains +15 Crit; making it breaks stealth. | 2026-08-17: my trim ranked stats by rarity and dropped a class-PRIMARY stat to keep a rarer one. Restored; the cheapest stat on Angela’s ladder (Accuracy, then Dodge) was dropped instead. | 2026-08-17 design pass: stealth rewritten to the settled definition: it breaks on an attack OR a power, never on movement, and the invented \"breaks when you gain Burn\" clause is gone."
+   "source": "Hell-TCG Rogue/Assassin (name kept — no id collision with Ranger's specialty.winged-assassin, which Hell-TCG also ran alongside it; the onDamage hook rebuilt as flanking plus a stealth opener) | 2026-08-17 trim: three stats, no negatives, one ability. Dropped stats: health -3; armor -1; strength +1. Parked abilities: onHit: you are flanking when you and an ally are both adjacent to the target on two hexes that are not adjacent to each other; a flanking attack of yours gains +2 Strength || onHit: an attack made out of stealth gains +15 Crit; making it breaks stealth. | 2026-08-17: my trim ranked stats by rarity and dropped a class-PRIMARY stat to keep a rarer one. Restored; the cheapest stat on the ladder (Accuracy, then Dodge) was dropped instead. | 2026-08-17 design pass: stealth rewritten to the settled definition: it breaks on an attack OR a power, never on movement, and the invented \"breaks when you gain Burn\" clause is gone."
   },
   {
    "id": "specialty.shadowdancer",
@@ -71,7 +71,7 @@
     "power.shadowdancer.assassination-strike",
     "power.shadowdancer.shadow-dance"
    ],
-   "source": "Hell-TCG Rogue/ShadowDancer (spelling normalised; the +2 Reach was cut — Reach does nothing for a dagger — and the Dodge stack rebuilt around actually leaving the map) | 2026-08-17 Angela trim: three stats, no negatives, one ability. Dropped stats: health -3; armor -1; strength -1; vision +1. Parked abilities: onActivationEnd: if you neither attacked nor used a power this Turn and no enemy is adjacent to you, enter stealth. | 2026-08-17 design pass: \"move 2 hexes without breaking it\" implied movement breaks stealth, which it never does — reworded so the branch reads the rule correctly."
+   "source": "Hell-TCG Rogue/ShadowDancer (spelling normalised; the +2 Reach was cut — Reach does nothing for a dagger — and the Dodge stack rebuilt around actually leaving the map) | 2026-08-17 trim: three stats, no negatives, one ability. Dropped stats: health -3; armor -1; strength -1; vision +1. Parked abilities: onActivationEnd: if you neither attacked nor used a power this Turn and no enemy is adjacent to you, enter stealth. | 2026-08-17 design pass: \"move 2 hexes without breaking it\" implied movement breaks stealth, which it never does — reworded so the branch reads the rule correctly."
   },
   {
    "id": "specialty.shadowbound",
@@ -95,7 +95,7 @@
     "power.shadowbound.void-strike",
     "power.shadowbound.gathering-dark"
    ],
-   "source": "Hell-TCG Ebony Mask/Shadowbound (Corruption is non-combat and was left there; the shadow magic rebuilt as terrain, which is the only thing that makes Vision bite) | 2026-08-17 Angela trim: three stats, no negatives, one ability. Dropped stats: health -2; strength -1; precision -1; resist +1. Parked abilities: onKill: the hex the enemy fell on becomes darkness for the rest of the Battle || onTurnStart: while you stand in darkness you have +5 Dodge and +1 Resist. | 2026-08-17 off-primary pass: Magic doubled — the shadow-magic Rogue is a genuine hybrid, so it has to be paid for. | 2026-08-20 Angela: ground layers are PERSISTENT and carry no number and no clock. A hex is burning or it is not. One layer per hex; applying a different one replaces it. See rule.ground-layers."
+   "source": "Hell-TCG Ebony Mask/Shadowbound (Corruption is non-combat and was left there; the shadow magic rebuilt as terrain, which is the only thing that makes Vision bite) | 2026-08-17 trim: three stats, no negatives, one ability. Dropped stats: health -2; strength -1; precision -1; resist +1. Parked abilities: onKill: the hex the enemy fell on becomes darkness for the rest of the Battle || onTurnStart: while you stand in darkness you have +5 Dodge and +1 Resist. | 2026-08-17 off-primary pass: Magic doubled — the shadow-magic Rogue is a genuine hybrid, so it has to be paid for. | 2026-08-20: ground layers are PERSISTENT and carry no number and no clock. A hex is burning or it is not. One layer per hex; applying a different one replaces it. See rule.ground-layers."
   },
   {
    "id": "specialty.contractbound",
@@ -119,7 +119,7 @@
     "power.contractbound.collect-the-debt",
     "power.contractbound.paid-in-full"
    ],
-   "source": "Hell-TCG Ebony Mask/Contractbound (Faith was CUT — 'kills earn faith, death costs it' rebuilt as a named mark you bleed for until you close it) | 2026-08-17 Angela trim: three stats, no negatives, one ability. Dropped stats: health -2; resist -1; strength +1. Parked abilities: onKill: if the unit killed was your mark, heal 5, the debt ends, and you may name a new mark at the start of your next Turn. | 2026-08-17: my trim ranked stats by rarity and dropped a class-PRIMARY stat to keep a rarer one. Restored; the cheapest stat on Angela’s ladder (Accuracy, then Dodge) was dropped instead. | 2026-08-20 Angela: the mark is cut. the named-enemy mark was a per-target designation system the engine does not have. The contract now simply runs on you: the bonus and the bill both apply from the start, no target to nominate."
+   "source": "Hell-TCG Ebony Mask/Contractbound (Faith was CUT — 'kills earn faith, death costs it' rebuilt as a named mark you bleed for until you close it) | 2026-08-17 trim: three stats, no negatives, one ability. Dropped stats: health -2; resist -1; strength +1. Parked abilities: onKill: if the unit killed was your mark, heal 5, the debt ends, and you may name a new mark at the start of your next Turn. | 2026-08-17: my trim ranked stats by rarity and dropped a class-PRIMARY stat to keep a rarer one. Restored; the cheapest stat on the ladder (Accuracy, then Dodge) was dropped instead. | 2026-08-20: the mark is cut. the named-enemy mark was a per-target designation system the engine does not have. The contract now simply runs on you: the bonus and the bill both apply from the start, no target to nominate."
   },
   {
    "id": "specialty.nightblade",
@@ -143,7 +143,7 @@
     "power.nightblade.exsanguinate",
     "power.nightblade.long-knife"
    ],
-   "source": "Hell-TCG Ebony Mask/Nightblade ('every cut bleeds' kept literally; the Reach kept and paid for in Health, since Reach is the one stat that makes thrown daggers a build) | 2026-08-17 Angela trim: three stats, no negatives, one ability. Dropped stats: health -3; armor -1; dodge -5; strength +1. Parked abilities: onActivationEnd: if no enemy is within 3 hexes of you, enter stealth. | 2026-08-17: my trim ranked stats by rarity and dropped a class-PRIMARY stat to keep a rarer one. Restored; the cheapest stat on Angela’s ladder (Accuracy, then Dodge) was dropped instead."
+   "source": "Hell-TCG Ebony Mask/Nightblade ('every cut bleeds' kept literally; the Reach kept and paid for in Health, since Reach is the one stat that makes thrown daggers a build) | 2026-08-17 trim: three stats, no negatives, one ability. Dropped stats: health -3; armor -1; dodge -5; strength +1. Parked abilities: onActivationEnd: if no enemy is within 3 hexes of you, enter stealth. | 2026-08-17: my trim ranked stats by rarity and dropped a class-PRIMARY stat to keep a rarer one. Restored; the cheapest stat on the ladder (Accuracy, then Dodge) was dropped instead."
   },
   {
    "id": "specialty.havoc",
@@ -167,7 +167,7 @@
     "power.havoc.fel-fury",
     "power.havoc.momentum"
    ],
-   "source": "Hell-TCG Demon Hunter/Havoc (bleeding-on-attack kept; the row-wipe rebuilt as movement plus a slayer band on demon and undead) | 2026-08-17 Angela trim: three stats, no negatives, one ability. Dropped stats: armor -1; health -1; accuracy -5; strength +1. Parked abilities: onKill: regain 1 Stamina and move up to 2 hexes immediately. | 2026-08-17: my trim ranked stats by rarity and dropped a class-PRIMARY stat to keep a rarer one. Restored; the cheapest stat on Angela’s ladder (Accuracy, then Dodge) was dropped instead."
+   "source": "Hell-TCG Demon Hunter/Havoc (bleeding-on-attack kept; the row-wipe rebuilt as movement plus a slayer band on demon and undead) | 2026-08-17 trim: three stats, no negatives, one ability. Dropped stats: armor -1; health -1; accuracy -5; strength +1. Parked abilities: onKill: regain 1 Stamina and move up to 2 hexes immediately. | 2026-08-17: my trim ranked stats by rarity and dropped a class-PRIMARY stat to keep a rarer one. Restored; the cheapest stat on the ladder (Accuracy, then Dodge) was dropped instead."
   },
   {
    "id": "specialty.demonic-ward",
@@ -191,7 +191,7 @@
     "power.demonic-ward.consume-magic",
     "power.demonic-ward.warded-ground"
    ],
-   "source": "Hell-TCG Demon Hunter/Demonic Ward (Protection and Burn-stripping kept; 'Spectral Sight' promoted from a Reach buff into the class's reveal, which is the counter to its own stealth line) | 2026-08-17 Angela trim: three stats, no negatives, one ability. Dropped stats: movement -1; dodge -5; crit -2; vision +3. Parked abilities: onTakingDamage: if the attacker is a demon or undead, reduce that damage by 2. | 2026-08-17 design pass: the see-through-stealth half was a battle-start snapshot, which shows nothing at deployment; rebuilt as an aura, which is checked continuously, and written as a proper reveal."
+   "source": "Hell-TCG Demon Hunter/Demonic Ward (Protection and Burn-stripping kept; 'Spectral Sight' promoted from a Reach buff into the class's reveal, which is the counter to its own stealth line) | 2026-08-17 trim: three stats, no negatives, one ability. Dropped stats: movement -1; dodge -5; crit -2; vision +3. Parked abilities: onTakingDamage: if the attacker is a demon or undead, reduce that damage by 2. | 2026-08-17 design pass: the see-through-stealth half was a battle-start snapshot, which shows nothing at deployment; rebuilt as an aura, which is checked continuously, and written as a proper reveal."
   },
   {
    "id": "specialty.vengeance",
@@ -215,7 +215,7 @@
     "power.vengeance.repay-in-kind",
     "power.vengeance.every-wound-remembered"
    ],
-   "source": "Hell-TCG Demon Hunter/Vengeance (onTakingDamage kept as the whole identity; built on Crit and Accuracy, which had no Hell-TCG equivalent, so being hit sharpens you rather than just inflating damage) | 2026-08-17 Angela trim: three stats, no negatives, one ability. Dropped stats: dodge -10; movement -1; health +4. Parked abilities: onKill: heal 3, or 6 if the unit was a demon or undead. | 2026-08-20 Angela: \"if the attacker is adjacent to you it gains 1 Bleed\" read the attacker’s position. Cut."
+   "source": "Hell-TCG Demon Hunter/Vengeance (onTakingDamage kept as the whole identity; built on Crit and Accuracy, which had no Hell-TCG equivalent, so being hit sharpens you rather than just inflating damage) | 2026-08-17 trim: three stats, no negatives, one ability. Dropped stats: dodge -10; movement -1; health +4. Parked abilities: onKill: heal 3, or 6 if the unit was a demon or undead. | 2026-08-20: \"if the attacker is adjacent to you it gains 1 Bleed\" read the attacker’s position. Cut."
   }
  ],
  "powers": [
@@ -299,7 +299,7 @@
     "melee"
    ],
    "description": "Until the end of your next Turn, your attacks of opportunity gain +20 Accuracy and +5 Strength. It never rolls itself — it sharpens the swing your weapon was already going to make when something walked past you.",
-   "source": "Hell-TCG name reused (Rogue/Assassin, Knife in the Back — 'lowest Health enemy' rebuilt as a positional gate, which is what the Rogue is actually for) | 2026-08-17: was an attack in its own right, so it competed with the weapon in your hands and lost the moment you found a good one. Rebuilt as a next-attack modifier. | 2026-08-17: \"difficult terrain\" is not a thing in HoBaT — there are hexes that cost extra Movement. Reworded. | 2026-08-17: flanking was a hard gate; made it a reward instead so the power is never dead. | 2026-08-17 Angela: THERE IS NO FLANKING. It appears in no current design document — I carried it forward from a stale snapshot. Rebuilt on plain adjacency, which is real and checkable. | 2026-08-17 Angela: +20 Accuracy and +5 damage, and it can be spent on an attack of opportunity. That is what makes it a knife in the back — you are hitting someone who chose to turn away. | 2026-08-17 Angela: I had made it a next-DAGGER-attack modifier that could optionally be spent on an opportunity attack, which is a layer of choice that does not belong. It is simply: your next attack of opportunity is much better. | 2026-08-17 design pass: written as a proper next-attack modifier with a modifies block, so it sharpens the weapon in your hands instead of competing with it. | 2026-08-20 Angela: \"your next <form> attack\" is gone. Nothing tracks which attack is next or what form it is. Rewritten as a duration: until the end of your next Turn, your attacks carry it. The form qualifier is dropped with it. ",
+   "source": "Hell-TCG name reused (Rogue/Assassin, Knife in the Back — 'lowest Health enemy' rebuilt as a positional gate, which is what the Rogue is actually for) | 2026-08-17: was an attack in its own right, so it competed with the weapon in your hands and lost the moment you found a good one. Rebuilt as a next-attack modifier. | 2026-08-17: \"difficult terrain\" is not a thing in HoBaT — there are hexes that cost extra Movement. Reworded. | 2026-08-17: flanking was a hard gate; made it a reward instead so the power is never dead. | 2026-08-17: THERE IS NO FLANKING. It appears in no current design document — I carried it forward from a stale snapshot. Rebuilt on plain adjacency, which is real and checkable. | 2026-08-17: +20 Accuracy and +5 damage, and it can be spent on an attack of opportunity. That is what makes it a knife in the back — you are hitting someone who chose to turn away. | 2026-08-17: I had made it a next-DAGGER-attack modifier that could optionally be spent on an opportunity attack, which is a layer of choice that does not belong. It is simply: your next attack of opportunity is much better. | 2026-08-17 design pass: written as a proper next-attack modifier with a modifies block, so it sharpens the weapon in your hands instead of competing with it. | 2026-08-20: \"your next <form> attack\" is gone. Nothing tracks which attack is next or what form it is. Rewritten as a duration: until the end of your next Turn, your attacks carry it. The form qualifier is dropped with it. ",
    "triggers": [],
    "modifies": {
     "tags": [
@@ -326,7 +326,7 @@
     "melee"
    ],
    "description": "Until the end of your next Turn, your attacks gain +5 Crit and apply 4 Bleed on hit, or 6 Bleed if you were in stealth.",
-   "source": "Hell-TCG name reused (Rogue/Assassin, Deep Cut) | 2026-08-17: was an attack in its own right, so it competed with the weapon in your hands and lost the moment you found a good one. Rebuilt as a next-attack modifier. | 2026-08-17: \"difficult terrain\" is not a thing in HoBaT — there are hexes that cost extra Movement. Reworded. | 2026-08-17 Angela: THERE IS NO FLANKING. It appears in no current design document — I carried it forward from a stale snapshot. Rebuilt on plain adjacency, which is real and checkable. | 2026-08-20 Angela: \"your next <form> attack\" is gone. Nothing tracks which attack is next or what form it is. Rewritten as a duration: until the end of your next Turn, your attacks carry it. The form qualifier is dropped with it. ",
+   "source": "Hell-TCG name reused (Rogue/Assassin, Deep Cut) | 2026-08-17: was an attack in its own right, so it competed with the weapon in your hands and lost the moment you found a good one. Rebuilt as a next-attack modifier. | 2026-08-17: \"difficult terrain\" is not a thing in HoBaT — there are hexes that cost extra Movement. Reworded. | 2026-08-17: THERE IS NO FLANKING. It appears in no current design document — I carried it forward from a stale snapshot. Rebuilt on plain adjacency, which is real and checkable. | 2026-08-20: \"your next <form> attack\" is gone. Nothing tracks which attack is next or what form it is. Rewritten as a duration: until the end of your next Turn, your attacks carry it. The form qualifier is dropped with it. ",
    "modifies": {
     "tags": [
      "dagger"
@@ -352,7 +352,7 @@
     "melee"
    ],
    "description": "Make two dagger attacks at -5 Accuracy each.",
-   "source": "Hell-TCG name reused (Rogue/Assassin, Double Strike — random targeting rebuilt as a choice between focus and spread) | 2026-08-17: \"difficult terrain\" is not a thing in HoBaT — there are hexes that cost extra Movement. Reworded. | 2026-08-20 Angela: \"if you split them across two different enemies both gain +5 Crit instead of the penalty\" is a branch you pick at use time. The power is the choice; it does not then offer a second one.",
+   "source": "Hell-TCG name reused (Rogue/Assassin, Double Strike — random targeting rebuilt as a choice between focus and spread) | 2026-08-17: \"difficult terrain\" is not a thing in HoBaT — there are hexes that cost extra Movement. Reworded. | 2026-08-20: \"if you split them across two different enemies both gain +5 Crit instead of the penalty\" is a branch you pick at use time. The power is the choice; it does not then offer a second one.",
    "triggers": []
   },
   {
@@ -366,7 +366,7 @@
    "targets": "self",
    "tags": [],
    "description": "Move 2 hexes as FLIGHT: 1 Movement per hex, over units and obstructions, taking nothing from the ground on the way, and it provokes nothing. The hex you land on must be legal like any other.",
-   "source": "Hell-TCG name reused (Rogue/Assassin, Dodge Behind — the draw was cut and the Dodge gated behind actually getting behind something) | 2026-08-17: \"difficult terrain\" is not a thing in HoBaT — there are hexes that cost extra Movement. Reworded. | 2026-08-17 Angela: THERE IS NO FLANKING. It appears in no current design document — I carried it forward from a stale snapshot. Rebuilt on plain adjacency, which is real and checkable. | 2026-08-20 Angela: \"if you end that move adjacent to an enemy\" was a post-move position check — the engine re-reading where you landed to decide whether the power paid out. | 2026-08-20 Angela: rebuilt on flight, which already exists, instead of a post-move position check. Two hexes, over anything, no attack of opportunity.",
+   "source": "Hell-TCG name reused (Rogue/Assassin, Dodge Behind — the draw was cut and the Dodge gated behind actually getting behind something) | 2026-08-17: \"difficult terrain\" is not a thing in HoBaT — there are hexes that cost extra Movement. Reworded. | 2026-08-17: THERE IS NO FLANKING. It appears in no current design document — I carried it forward from a stale snapshot. Rebuilt on plain adjacency, which is real and checkable. | 2026-08-20: \"if you end that move adjacent to an enemy\" was a post-move position check — the engine re-reading where you landed to decide whether the power paid out. | 2026-08-20: rebuilt on flight, which already exists, instead of a post-move position check. Two hexes, over anything, no attack of opportunity.",
    "triggers": [],
    "intent": "Behind them, past them, or simply somewhere else. The point is that nothing in between gets a say."
   },
@@ -381,7 +381,7 @@
    "targets": "self",
    "tags": [],
    "description": "Immediately enter stealth: you cannot be seen and cannot be targeted by an attack. Area effects, terrain and auras still reach you. It breaks the moment you use an attack or another power — not when you move — and whenever a reveal effect finds you. Free.",
-   "source": "Hell-TCG name reused (Rogue/ShadowDancer, Vanish in Shadow — the flat Dodge grant rebuilt as the actual stealth the name promises) | 2026-08-17: \"difficult terrain\" is not a thing in HoBaT — there are hexes that cost extra Movement. Reworded. | 2026-08-17 design pass: stealth rewritten to the settled definition and the invented Burn clause removed; using this power is what grants the stealth, so it is the next attack or power that ends it. | 2026-08-20 Angela sweep: \"usable even while an enemy is adjacent\" was an exception to a restriction that does not exist — no power anywhere is barred by an adjacent enemy.",
+   "source": "Hell-TCG name reused (Rogue/ShadowDancer, Vanish in Shadow — the flat Dodge grant rebuilt as the actual stealth the name promises) | 2026-08-17: \"difficult terrain\" is not a thing in HoBaT — there are hexes that cost extra Movement. Reworded. | 2026-08-17 design pass: stealth rewritten to the settled definition and the invented Burn clause removed; using this power is what grants the stealth, so it is the next attack or power that ends it. | 2026-08-20 sweep: \"usable even while an enemy is adjacent\" was an exception to a restriction that does not exist — no power anywhere is barred by an adjacent enemy.",
    "triggers": []
   },
   {
@@ -395,7 +395,7 @@
    "targets": "self",
    "tags": [],
    "description": "Move up to 4 hexes. It provokes nothing.",
-   "source": "Hell-TCG name reused (Rogue class power, Blink — 'return to hand, gain 1 Action' had no meaning here; rebuilt as a real teleport, which is what the name was always describing) | 2026-08-17 Angela: CUT. ally-reactive hooks, guarding, Consequence-Stack interference and non-knockback forced movement all removed by ruling. | 2026-08-17 Angela: CUT. teleport cut; rebuilt as ordinary movement that does not provoke, which the design already has via Disengage.",
+   "source": "Hell-TCG name reused (Rogue class power, Blink — 'return to hand, gain 1 Action' had no meaning here; rebuilt as a real teleport, which is what the name was always describing) | 2026-08-17: CUT. ally-reactive hooks, guarding, Consequence-Stack interference and non-knockback forced movement all removed by ruling. | 2026-08-17: CUT. teleport cut; rebuilt as ordinary movement that does not provoke, which the design already has via Disengage.",
    "triggers": []
   },
   {
@@ -412,7 +412,7 @@
     "melee"
    ],
    "description": "Dagger attack at +2 Strength and +10 Crit.",
-   "source": "Hell-TCG name reused (Rogue/ShadowDancer, Assassination Strike — flat 8 damage rebuilt as a crit-loaded strike that pays out in staying invisible) | 2026-08-17: \"difficult terrain\" is not a thing in HoBaT — there are hexes that cost extra Movement. Reworded. | 2026-08-20 Angela: \"if it kills\" written inside a description IS onKill, spelled out the long way. Moved onto the hook, which is where the engine already looks. The condition category \"the attack killed\" disappears with it — there was never a condition, only a trigger written as prose.",
+   "source": "Hell-TCG name reused (Rogue/ShadowDancer, Assassination Strike — flat 8 damage rebuilt as a crit-loaded strike that pays out in staying invisible) | 2026-08-17: \"difficult terrain\" is not a thing in HoBaT — there are hexes that cost extra Movement. Reworded. | 2026-08-20: \"if it kills\" written inside a description IS onKill, spelled out the long way. Moved onto the hook, which is where the engine already looks. The condition category \"the attack killed\" disappears with it — there was never a condition, only a trigger written as prose.",
    "triggers": [
     {
      "hook": "onKill",
@@ -434,7 +434,7 @@
     "melee"
    ],
    "description": "Move up to your Movement, passing freely through occupied hexes, then make a dagger attack at -10 Accuracy against up to three enemies within 3 hexes.",
-   "source": "new (the specialty's signature — Hell-TCG's ShadowDancer had nothing that used the map, and this is the reason the name exists) | 2026-08-17: \"difficult terrain\" is not a thing in HoBaT — there are hexes that cost extra Movement. Reworded. | 2026-08-20 Angela: \"every enemy you pass\" is cut — a shape that reads the path you walked. Up to three targets in a radius, which is a shape the game already has.",
+   "source": "new (the specialty's signature — Hell-TCG's ShadowDancer had nothing that used the map, and this is the reason the name exists) | 2026-08-17: \"difficult terrain\" is not a thing in HoBaT — there are hexes that cost extra Movement. Reworded. | 2026-08-20: \"every enemy you pass\" is cut — a shape that reads the path you walked. Up to three targets in a radius, which is a shape the game already has.",
    "triggers": []
   },
   {
@@ -448,7 +448,7 @@
    "targets": "a hex within 6 hexes",
    "tags": [],
    "description": "Move up to 6 hexes and gain +10 Dodge until the start of your next Turn. It provokes nothing.",
-   "source": "Hell-TCG name reused (Ebony Mask/Shadowbound, Shadow Step — the Dodge grant made conditional on the terrain the specialty creates) | 2026-08-17: \"difficult terrain\" is not a thing in HoBaT — there are hexes that cost extra Movement. Reworded. | 2026-08-20 Angela: \"if you both start and end in darkness\" checked terrain at two positions across one action. The destination is already darkness; that is the condition. | 2026-08-20 Angela: remove the shadow targeting. \"Any hex of darkness within 6 hexes\" was the last terrain-gated target in the game — a shape that can only be used where you have already spent a power. It is an ordinary move now, and it provokes nothing, which is what the power was really selling.",
+   "source": "Hell-TCG name reused (Ebony Mask/Shadowbound, Shadow Step — the Dodge grant made conditional on the terrain the specialty creates) | 2026-08-17: \"difficult terrain\" is not a thing in HoBaT — there are hexes that cost extra Movement. Reworded. | 2026-08-20: \"if you both start and end in darkness\" checked terrain at two positions across one action. The destination is already darkness; that is the condition. | 2026-08-20: remove the shadow targeting. \"Any hex of darkness within 6 hexes\" was the last terrain-gated target in the game — a shape that can only be used where you have already spent a power. It is an ordinary move now, and it provokes nothing, which is what the power was really selling.",
    "triggers": []
   },
   {
@@ -465,7 +465,7 @@
     "aura"
    ],
    "description": "Every enemy within 3 hexes gains 2 Weak for the rest of the Battle; as an area effect it cannot crit.",
-   "source": "Hell-TCG name reused (Ebony Mask/Shadowbound, Dark Veil — the Vision strip added, because a veil that does not blind anyone is not a veil) | 2026-08-17: \"difficult terrain\" is not a thing in HoBaT — there are hexes that cost extra Movement. Reworded. | 2026-08-20 Angela: enemies do not have Vision — the Vision loss did nothing and is cut. The Weak is untouched, so this power is now slightly weaker than it read; compensation is a design call, not mine. | 2026-08-20 Angela: enemies do not have Vision, so taking it off them did nothing. Cut. The Weak is untouched, which leaves this power slightly weaker than it read — compensating is a design call, not mine.",
+   "source": "Hell-TCG name reused (Ebony Mask/Shadowbound, Dark Veil — the Vision strip added, because a veil that does not blind anyone is not a veil) | 2026-08-17: \"difficult terrain\" is not a thing in HoBaT — there are hexes that cost extra Movement. Reworded. | 2026-08-20: enemies do not have Vision — the Vision loss did nothing and is cut. The Weak is untouched, so this power is now slightly weaker than it read; compensation is a design call, not mine. | 2026-08-20: enemies do not have Vision, so taking it off them did nothing. Cut. The Weak is untouched, which leaves this power slightly weaker than it read — compensating is a design call, not mine.",
    "triggers": []
   },
   {
@@ -482,7 +482,7 @@
     "melee"
    ],
    "description": "Until the end of your next Turn, your attacks gain +1 Strength, add the party’s Magic to their damage, and deal true damage instead of physical.",
-   "source": "Hell-TCG name reused (Ebony Mask/Shadowbound, Void Strike — flat 8 True rebuilt to scale off Magic, the stat the specialty grants) | 2026-08-17: was an attack in its own right, so it competed with the weapon in your hands and lost the moment you found a good one. Rebuilt as a next-attack modifier. | 2026-08-17: \"difficult terrain\" is not a thing in HoBaT — there are hexes that cost extra Movement. Reworded. | 2026-08-17 design pass: the Magic it already added is now written into the modifies block as an explicit stat blend rather than living only in prose. | 2026-08-20 Angela: \"your next <form> attack\" is gone. Nothing tracks which attack is next or what form it is. Rewritten as a duration: until the end of your next Turn, your attacks carry it. The form qualifier is dropped with it. ",
+   "source": "Hell-TCG name reused (Ebony Mask/Shadowbound, Void Strike — flat 8 True rebuilt to scale off Magic, the stat the specialty grants) | 2026-08-17: was an attack in its own right, so it competed with the weapon in your hands and lost the moment you found a good one. Rebuilt as a next-attack modifier. | 2026-08-17: \"difficult terrain\" is not a thing in HoBaT — there are hexes that cost extra Movement. Reworded. | 2026-08-17 design pass: the Magic it already added is now written into the modifies block as an explicit stat blend rather than living only in prose. | 2026-08-20: \"your next <form> attack\" is gone. Nothing tracks which attack is next or what form it is. Rewritten as a duration: until the end of your next Turn, your attacks carry it. The form qualifier is dropped with it. ",
    "modifies": {
     "tags": [
      "dagger"
@@ -508,7 +508,7 @@
     "area"
    ],
    "description": "Those hexes become darkness. You and every ally within 2 hexes of you ignore darkness entirely for the rest of the Battle; nobody else does.",
-   "source": "new (the specialty's payoff — darkness is only an advantage once you are the one who can see through it) | 2026-08-17: \"difficult terrain\" is not a thing in HoBaT — there are hexes that cost extra Movement. Reworded. | 2026-08-20 Angela: ground layers are PERSISTENT and carry no number and no clock. A hex is burning or it is not. One layer per hex; applying a different one replaces it. See rule.ground-layers.",
+   "source": "new (the specialty's payoff — darkness is only an advantage once you are the one who can see through it) | 2026-08-17: \"difficult terrain\" is not a thing in HoBaT — there are hexes that cost extra Movement. Reworded. | 2026-08-20: ground layers are PERSISTENT and carry no number and no clock. A hex is burning or it is not. One layer per hex; applying a different one replaces it. See rule.ground-layers.",
    "triggers": []
   },
   {
@@ -525,7 +525,7 @@
     "melee"
    ],
    "description": "Until the end of your next Turn, your attacks gain +4 Strength and +10 Accuracy. You take 4 true damage when you use this, whether or not anything lands.",
-   "source": "Hell-TCG name reused (Ebony Mask/Contractbound, Blood Contract — the self-damage kept, and gated onto the mark so the specialty's own trigger is the price of admission) | 2026-08-17: was an attack in its own right, so it competed with the weapon in your hands and lost the moment you found a good one. Rebuilt as a next-attack modifier. | 2026-08-17: \"difficult terrain\" is not a thing in HoBaT — there are hexes that cost extra Movement. Reworded. | 2026-08-20 Angela: \"your next <form> attack\" is gone. Nothing tracks which attack is next or what form it is. Rewritten as a duration: until the end of your next Turn, your attacks carry it. The form qualifier is dropped with it. ",
+   "source": "Hell-TCG name reused (Ebony Mask/Contractbound, Blood Contract — the self-damage kept, and gated onto the mark so the specialty's own trigger is the price of admission) | 2026-08-17: was an attack in its own right, so it competed with the weapon in your hands and lost the moment you found a good one. Rebuilt as a next-attack modifier. | 2026-08-17: \"difficult terrain\" is not a thing in HoBaT — there are hexes that cost extra Movement. Reworded. | 2026-08-20: \"your next <form> attack\" is gone. Nothing tracks which attack is next or what form it is. Rewritten as a duration: until the end of your next Turn, your attacks carry it. The form qualifier is dropped with it. ",
    "modifies": {
     "tags": [
      "dagger"
@@ -568,7 +568,7 @@
     "melee"
    ],
    "description": "Dagger attack at +5 Crit that deals TRUE damage instead of physical, and you take 2 true damage for asking.",
-   "source": "new (the mark trigger drains you every Turn — this is where the drain is spent) | 2026-08-17: \"difficult terrain\" is not a thing in HoBaT — there are hexes that cost extra Movement. Reworded. | 2026-08-20 Angela: the \"mark\" was a per-target designation system built for one power. Cut; the bonus is flat now. | 2026-08-20 Angela: a power may not simply be an attack. The contract pays in true damage and charges you in the same coin.",
+   "source": "new (the mark trigger drains you every Turn — this is where the drain is spent) | 2026-08-17: \"difficult terrain\" is not a thing in HoBaT — there are hexes that cost extra Movement. Reworded. | 2026-08-20: the \"mark\" was a per-target designation system built for one power. Cut; the bonus is flat now. | 2026-08-20: a power may not simply be an attack. The contract pays in true damage and charges you in the same coin.",
    "triggers": []
   },
   {
@@ -582,7 +582,7 @@
    "targets": "self",
    "tags": [],
    "description": "Heal 6, remove 5 Bleed and Poison from yourself, and gain +1 Item Slot for the rest of the Battle.",
-   "source": "new (the settled half of Hell-TCG's 'kills earn faith' — Faith was CUT, so the reward is Health and carrying capacity) | 2026-08-17: \"difficult terrain\" is not a thing in HoBaT — there are hexes that cost extra Movement. Reworded. | 2026-08-20 Angela: the mark is cut. \"on a Turn in which your mark died\" needed the mark and a per-Turn kill flag. Cut; the power is now simply available.",
+   "source": "new (the settled half of Hell-TCG's 'kills earn faith' — Faith was CUT, so the reward is Health and carrying capacity) | 2026-08-17: \"difficult terrain\" is not a thing in HoBaT — there are hexes that cost extra Movement. Reworded. | 2026-08-20: the mark is cut. \"on a Turn in which your mark died\" needed the mark and a per-Turn kill flag. Cut; the power is now simply available.",
    "triggers": []
   },
   {
@@ -632,7 +632,7 @@
    "targets": "one enemy in melee reach",
    "tags": [],
    "description": "All Bleed on that enemy ticks immediately and none of it is reduced by Resist. The Bleed is spent afterwards.",
-   "source": "new (the Nightblade's finisher — the specialty piles Bleed on everything, and this is the button that cashes it) | 2026-08-17: \"difficult terrain\" is not a thing in HoBaT — there are hexes that cost extra Movement. Reworded. | 2026-08-20 Angela: nothing counts occurrences — no \"first time\", no Nth hit, no per-Turn or per-Battle tally. \"and then ticks a second time\" counted occurrences. One immediate tick.",
+   "source": "new (the Nightblade's finisher — the specialty piles Bleed on everything, and this is the button that cashes it) | 2026-08-17: \"difficult terrain\" is not a thing in HoBaT — there are hexes that cost extra Movement. Reworded. | 2026-08-20: nothing counts occurrences — no \"first time\", no Nth hit, no per-Turn or per-Battle tally. \"and then ticks a second time\" counted occurrences. One immediate tick.",
    "triggers": []
   },
   {
@@ -698,7 +698,7 @@
    "targets": "one enemy within 3 hexes",
    "tags": [],
    "description": "Gain +4 Strength and +4 Precision until the end of your next Turn.",
-   "source": "Hell-TCG name reused, renamed (Demon Hunter/Havoc, Fury — renamed to keep clear of Warrior's power.berserker.fast-fury; duration made explicit, since power stat grants otherwise last the Battle) | 2026-08-17: \"difficult terrain\" is not a thing in HoBaT — there are hexes that cost extra Movement. Reworded. | 2026-08-20 Angela: \"+4 instead if there is a demon or undead within 3 hexes\" is a proximity check on a creature tag — a scan of the board, not a check on the thing you hit. Flat +3. | 2026-08-20 Angela: it does not scan the board for a demon — it TARGETS one. The tag is a targeting restriction, which the game already does, rather than a proximity sweep, which it does not. | 2026-08-20 Angela: \"one demon or undead enemy within 3 hexes\" is cut — a tag is not part of a targeting shape. It targets an enemy; that is the whole shape.",
+   "source": "Hell-TCG name reused, renamed (Demon Hunter/Havoc, Fury — renamed to keep clear of Warrior's power.berserker.fast-fury; duration made explicit, since power stat grants otherwise last the Battle) | 2026-08-17: \"difficult terrain\" is not a thing in HoBaT — there are hexes that cost extra Movement. Reworded. | 2026-08-20: \"+4 instead if there is a demon or undead within 3 hexes\" is a proximity check on a creature tag — a scan of the board, not a check on the thing you hit. Flat +3. | 2026-08-20: it does not scan the board for a demon — it TARGETS one. The tag is a targeting restriction, which the game already does, rather than a proximity sweep, which it does not. | 2026-08-20: \"one demon or undead enemy within 3 hexes\" is cut — a tag is not part of a targeting shape. It targets an enemy; that is the whole shape.",
    "triggers": [],
    "intent": "You do not look around for one. You pick one, and it is what makes you worse."
   },
@@ -716,7 +716,7 @@
     "melee"
    ],
    "description": "Free. Until the end of your next Turn, your attacks gain +1 Strength and +5 Crit, and on a hit your Surge Chance rises by 30. Havoc does not want a bigger swing, it wants another Activation, and this is how it buys one.",
-   "source": "new (the specialty punishes standing still and nothing in the Hell-TCG list rewarded moving — this is the one that does) | 2026-08-17: \"difficult terrain\" is not a thing in HoBaT — there are hexes that cost extra Movement. Reworded. | 2026-08-17 quality pass: carried a condition the engine cannot check ('a Turn in which you have already moved at least 4 hexes'). Rebuilt as a shape-1 tag modifier that buys Surge Chance, which is what a specialty named Momentum should actually be doing. | 2026-08-20: reworded the opening. \"Free\" here means it does not consume your primary action — it never meant costless, and on an item that also charges stamina the old wording read as though it did. | 2026-08-20 Angela: standardised to \"Free.\" A trinket that does not use your action is a power and appears in the power list, so it uses the same word powers use. The stamina cost is a field, not prose. | 2026-08-20 Angela: \"your next <form> attack\" is gone. Nothing tracks which attack is next or what form it is. Rewritten as a duration: until the end of your next Turn, your attacks carry it. The form qualifier is dropped with it. ",
+   "source": "new (the specialty punishes standing still and nothing in the Hell-TCG list rewarded moving — this is the one that does) | 2026-08-17: \"difficult terrain\" is not a thing in HoBaT — there are hexes that cost extra Movement. Reworded. | 2026-08-17 quality pass: carried a condition the engine cannot check ('a Turn in which you have already moved at least 4 hexes'). Rebuilt as a shape-1 tag modifier that buys Surge Chance, which is what a specialty named Momentum should actually be doing. | 2026-08-20: reworded the opening. \"Free\" here means it does not consume your primary action — it never meant costless, and on an item that also charges stamina the old wording read as though it did. | 2026-08-20: standardised to \"Free.\" A trinket that does not use your action is a power and appears in the power list, so it uses the same word powers use. The stamina cost is a field, not prose. | 2026-08-20: \"your next <form> attack\" is gone. Nothing tracks which attack is next or what form it is. Rewritten as a duration: until the end of your next Turn, your attacks carry it. The form qualifier is dropped with it. ",
    "triggers": [],
    "modifies": {
     "tags": [
@@ -747,7 +747,7 @@
    "targets": "self",
    "tags": [],
    "description": "Take 4 true damage to raise the ward properly: Protection equal to 3 + twice your Resist, and remove 5 Burn from yourself. Decline the damage and the ward is only Protection equal to your Resist. The barrier is paid for in the currency it protects.",
-   "source": "Hell-TCG name reused (Demon Hunter/Demonic Ward, Soul Barrier — scaled off Resist rather than Ranged, since Precision is damage-only now) | 2026-08-17 Angela: Protection has no duration — it decays 1 a Turn and by the damage it absorbs. Duration clause removed. | 2026-08-17: \"difficult terrain\" is not a thing in HoBaT — there are hexes that cost extra Movement. Reworded. | 2026-08-17 quality pass: a flat Protection grant with no decision. Now a cost/benefit — the full ward is bought with 4 true damage.",
+   "source": "Hell-TCG name reused (Demon Hunter/Demonic Ward, Soul Barrier — scaled off Resist rather than Ranged, since Precision is damage-only now) | 2026-08-17: Protection has no duration — it decays 1 a Turn and by the damage it absorbs. Duration clause removed. | 2026-08-17: \"difficult terrain\" is not a thing in HoBaT — there are hexes that cost extra Movement. Reworded. | 2026-08-17 quality pass: a flat Protection grant with no decision. Now a cost/benefit — the full ward is bought with 4 true damage.",
    "triggers": []
   },
   {
@@ -761,7 +761,7 @@
    "targets": "self",
    "tags": [],
    "description": "Reveal every unit in stealth within your Vision and break its stealth. For the rest of the Battle, darkness and fog do not reduce your Vision.",
-   "source": "Hell-TCG name reused (Demon Hunter/Demonic Ward, Spectral Sight — the +2 Reach was cut; this is the class's own answer to the class's stealth line, and the reason the enemy roster can carry stealth at all) | 2026-08-17: \"difficult terrain\" is not a thing in HoBaT — there are hexes that cost extra Movement. Reworded. | 2026-08-20 Angela: \"everything you can see\" as a target shape is cut — the power reads your own Vision, which is a stat, not a targeting shape.",
+   "source": "Hell-TCG name reused (Demon Hunter/Demonic Ward, Spectral Sight — the +2 Reach was cut; this is the class's own answer to the class's stealth line, and the reason the enemy roster can carry stealth at all) | 2026-08-17: \"difficult terrain\" is not a thing in HoBaT — there are hexes that cost extra Movement. Reworded. | 2026-08-20: \"everything you can see\" as a target shape is cut — the power reads your own Vision, which is a stat, not a targeting shape.",
    "triggers": []
   },
   {
@@ -777,7 +777,7 @@
     "heal"
    ],
    "description": "remove 5 Burn and Poison from the target and heal it 4.",
-   "source": "Hell-TCG name reused (Demon Hunter/Demonic Ward, Consume Magic — extended to reach an ally, which is the whole reason this specialty is in a party) | 2026-08-17: \"difficult terrain\" is not a thing in HoBaT — there are hexes that cost extra Movement. Reworded. | 2026-08-20 Angela: \"if the target was carrying at least 4 of either, heal 4 instead\" is a threshold branch on the target's status count. Flat 4.",
+   "source": "Hell-TCG name reused (Demon Hunter/Demonic Ward, Consume Magic — extended to reach an ally, which is the whole reason this specialty is in a party) | 2026-08-17: \"difficult terrain\" is not a thing in HoBaT — there are hexes that cost extra Movement. Reworded. | 2026-08-20: \"if the target was carrying at least 4 of either, heal 4 instead\" is a threshold branch on the target's status count. Flat 4.",
    "triggers": []
   },
   {
@@ -794,7 +794,7 @@
     "stance"
    ],
    "description": "Aura 2, centred on you, for the rest of the Battle: every enemy inside gains 2 Burn at the end of your Activation.",
-   "source": "new (the defensive anchor the Demon Hunter line needed, built on the two creature tags the class is named for) | 2026-08-17: \"difficult terrain\" is not a thing in HoBaT — there are hexes that cost extra Movement. Reworded. | 2026-08-17 quality pass: carried a condition the engine cannot check ('while you do not move on your Turn'). Rebuilt on zones of control, which is what warding ground means. | 2026-08-17 Angela: every unit has Sidestep, so a zone of control cannot pin anything — it taxes the SECOND hex of a withdrawal, not the first. Reworded to say what it actually does. | 2026-08-20 Angela: the zone-of-control clause is cut — taxing movement out of a hex is a subsystem, and this is the fourth entry carrying it. Burn instead.",
+   "source": "new (the defensive anchor the Demon Hunter line needed, built on the two creature tags the class is named for) | 2026-08-17: \"difficult terrain\" is not a thing in HoBaT — there are hexes that cost extra Movement. Reworded. | 2026-08-17 quality pass: carried a condition the engine cannot check ('while you do not move on your Turn'). Rebuilt on zones of control, which is what warding ground means. | 2026-08-17: every unit has Sidestep, so a zone of control cannot pin anything — it taxes the SECOND hex of a withdrawal, not the first. Reworded to say what it actually does. | 2026-08-20: the zone-of-control clause is cut — taxing movement out of a hex is a subsystem, and this is the fourth entry carrying it. Burn instead.",
    "triggers": [
     {
      "hook": "aura",
@@ -816,7 +816,7 @@
     "ranged"
    ],
    "description": "Until the end of your next Turn, your attacks gain +5 Crit, and a further +2 Precision and +10 Accuracy against demon or undead.",
-   "source": "Hell-TCG name reused (Demon Hunter, Crossbow Shot — the -1 damage penalty replaced with a slayer band, so it is a choice rather than a worse attack) | 2026-08-17: was an attack in its own right, so it competed with the weapon in your hands and lost the moment you found a good one. Rebuilt as a next-attack modifier. | 2026-08-17: \"difficult terrain\" is not a thing in HoBaT — there are hexes that cost extra Movement. Reworded. | 2026-08-20 Angela: \"your next <form> attack\" is gone. Nothing tracks which attack is next or what form it is. Rewritten as a duration: until the end of your next Turn, your attacks carry it. The form qualifier is dropped with it. ",
+   "source": "Hell-TCG name reused (Demon Hunter, Crossbow Shot — the -1 damage penalty replaced with a slayer band, so it is a choice rather than a worse attack) | 2026-08-17: was an attack in its own right, so it competed with the weapon in your hands and lost the moment you found a good one. Rebuilt as a next-attack modifier. | 2026-08-17: \"difficult terrain\" is not a thing in HoBaT — there are hexes that cost extra Movement. Reworded. | 2026-08-20: \"your next <form> attack\" is gone. Nothing tracks which attack is next or what form it is. Rewritten as a duration: until the end of your next Turn, your attacks carry it. The form qualifier is dropped with it. ",
    "modifies": {
     "tags": [
      "crossbow"
@@ -858,7 +858,7 @@
     "ranged"
    ],
    "description": "Until the end of your next Turn, your attacks gain +3 Precision and +15 Accuracy.",
-   "source": "Hell-TCG mechanic reused, renamed (badge power Counter-Strike and Vengeance — Thorns rebuilt as an actual return shot, since HoBaT makes you roll for it) | 2026-08-17: was an attack in its own right, so it competed with the weapon in your hands and lost the moment you found a good one. Rebuilt as a next-attack modifier. | 2026-08-17: \"difficult terrain\" is not a thing in HoBaT — there are hexes that cost extra Movement. Reworded. | 2026-08-20 Angela: \"your next <form> attack\" is gone. Nothing tracks which attack is next or what form it is. Rewritten as a duration: until the end of your next Turn, your attacks carry it. The form qualifier is dropped with it. ALSO cut \"usable only after you have taken damage since the start of your last Turn\" — a condition reading your damage history, which nothing tracks.",
+   "source": "Hell-TCG mechanic reused, renamed (badge power Counter-Strike and Vengeance — Thorns rebuilt as an actual return shot, since HoBaT makes you roll for it) | 2026-08-17: was an attack in its own right, so it competed with the weapon in your hands and lost the moment you found a good one. Rebuilt as a next-attack modifier. | 2026-08-17: \"difficult terrain\" is not a thing in HoBaT — there are hexes that cost extra Movement. Reworded. | 2026-08-20: \"your next <form> attack\" is gone. Nothing tracks which attack is next or what form it is. Rewritten as a duration: until the end of your next Turn, your attacks carry it. The form qualifier is dropped with it. ALSO cut \"usable only after you have taken damage since the start of your last Turn\" — a condition reading your damage history, which nothing tracks.",
    "modifies": {
     "tags": [
      "crossbow"
@@ -879,7 +879,7 @@
    "targets": "self",
    "tags": [],
    "description": "Gain +5 Crit and +10 Accuracy for the rest of the Battle, and heal 4.",
-   "source": "new (the specialty's own trigger stacks Crit off being hit — this is the power that keeps you alive long enough to spend it) | 2026-08-17: \"difficult terrain\" is not a thing in HoBaT — there are hexes that cost extra Movement. Reworded. | 2026-08-20 Angela: a \"usable only if\" gate on your own or the target's state is not a thing — nothing reads a Health threshold or an event history to decide whether a power is legal. \"heal 2 for every 10 Health you are currently missing\" read a Health threshold and scaled off it. Flat numbers instead.",
+   "source": "new (the specialty's own trigger stacks Crit off being hit — this is the power that keeps you alive long enough to spend it) | 2026-08-17: \"difficult terrain\" is not a thing in HoBaT — there are hexes that cost extra Movement. Reworded. | 2026-08-20: a \"usable only if\" gate on your own or the target's state is not a thing — nothing reads a Health threshold or an event history to decide whether a power is legal. \"heal 2 for every 10 Health you are currently missing\" read a Health threshold and scaled off it. Flat numbers instead.",
    "triggers": []
   },
   {
@@ -896,7 +896,7 @@
    ],
    "description": "Immediately enter stealth: you cannot be seen and cannot be targeted by an attack. It breaks the moment you attack, and area effects, terrain and auras reach you anyway.",
    "intent": "Not an escape — a question the enemy has to answer before it can do anything else.",
-   "source": "new 2026-08-20: Angela wants more things touching stealth. The cheap, repeatable entry into it."
+   "source": "new 2026-08-20: more things should touch stealth. The cheap, repeatable entry into it."
   }
  ]
 }

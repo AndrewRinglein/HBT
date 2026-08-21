@@ -6,7 +6,7 @@ Run this ON THE MACHINE THAT HAS THE ART, before build-heroes.mjs.
 Writes ../art/variants.json: for every generative template, the list of DISTINCT
 art files that belong to it. build-heroes.mjs then emits one hero per file.
 
-THE RULE (Angela, 2026-08-20). One piece of art is one unique hero.
+THE RULE (ruled 2026-08-20). One piece of art is one unique hero.
   -v1 -v2 -v3 -v4        four separate designs   -> four heroes
   {style}1..4            four separate designs   -> four heroes   (Eve tutorial)
   1 2 3 4 l p r v        one hero, four levels plus four statuses -> ONE hero

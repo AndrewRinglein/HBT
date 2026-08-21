@@ -7,7 +7,7 @@ const {TUTORIAL_HERO_VARIANTS}=await import(S+'src/eveOfRuin/tutorialHeroes.js')
 const {generateAspiringHero}=await import(S+'src/generators/aspiringHeroGenerator.js');
 
 // ---------------------------------------------------- ONE PIECE OF ART, ONE HERO
-// Angela, 2026-08-20. Every generative template owns four distinct pieces of art and
+// Ruled 2026-08-20. Every generative template owns four distinct pieces of art and
 // each one is a separate hero. art/variants.json is produced by art-tools/scan-variants.py
 // on the machine that has the art; it lists the distinct files per template, byte-duplicates
 // already collapsed. Without it we cannot know how many heroes a template is.
@@ -23,7 +23,7 @@ const DODGE_SCALE=5;   // hell-tcg dodge is 0-3; HoBaT Dodge is a flat to-hit pe
 const CLASSMAP={Warrior:'class.warrior',Ranger:'class.ranger',Rogue:'class.rogue',Mage:'class.mage',
   Priest:'class.priest',Paladin:'class.paladin',Civilian:'class.civilian','Aspiring Hero':'class.civilian',
   Beast:'class.beast',Spirit:'class.civilian'};
-// 2026-08-20 Angela: Beast is now a real class and Spirit folds into Civilian, so nothing is unmapped.
+// 2026-08-20: Beast is now a real class and Spirit folds into Civilian, so nothing is unmapped.
 
 // ------------------------------------------------- the six stats with no source
 // A level-1 base per class. Documented constants first, then the per-class lean.
@@ -147,7 +147,7 @@ for(const h of heroes){
   if(seen.has(h.id)) problems.push('DUPLICATE '+h.id); seen.add(h.id);
 }
 const out={derivation:DERIVATION, derivedBase:DERIVED_BASE, portMap:PORT, dodgeScale:DODGE_SCALE,
-  rule:'ONE PIECE OF ART, ONE UNIQUE HERO. Ruled by Angela 2026-08-20. Every generative template owns four distinct designs and each is its own hero — so 12 Shadows subtypes are 48 heroes, not 12. What does NOT split is a hero\u2019s own level-and-status set: a folder of 1/2/3/4 plus l/p/r/v is one hero at four levels wearing four afflictions, which is why the 98 fixed cast stay 98.',
+  rule:'ONE PIECE OF ART, ONE UNIQUE HERO. Ruled 2026-08-20. Every generative template owns four distinct designs and each is its own hero — so 12 Shadows subtypes are 48 heroes, not 12. What does NOT split is a hero\u2019s own level-and-status set: a folder of 1/2/3/4 plus l/p/r/v is one hero at four levels wearing four afflictions, which is why the 98 fixed cast stay 98.',
   paths:[
    {path:'fixed',   file:'src/state/heroData.js → HERO_DATA', note:'the named cast. One hero per entry; their 1/2/3/4 + l/p/r/v art is levels and statuses, so they do not split'},
    {path:'shadows', file:'data/shadowsHeroTypes.js → AVTAIR_HERO_TYPES', note:'12 subtypes x 4 designs (-v1..v4) = 48 heroes sharing 12 stat blocks'},

@@ -254,7 +254,7 @@
     "stance"
    ],
    "description": "Stance: for the rest of the Battle you cut both ways.",
-   "source": "settled | 2026-08-20 Angela sweep: both hooks were written inside the prose instead of being triggers. Same mechanic, moved into the fields that hold them.",
+   "source": "settled | 2026-08-20 sweep: both hooks were written inside the prose instead of being triggers. Same mechanic, moved into the fields that hold them.",
    "triggers": [
     {
      "hook": "onDamage",
@@ -280,7 +280,7 @@
     "heal"
    ],
    "description": "Gain +10 Deathbed Fighting for the rest of the Battle and heal 10.",
-   "source": "settled | 2026-08-20 Angela: \"only if you have stood at least once this Battle\" is an event-history gate — the engine does not remember what you have done. | 2026-08-20 Angela: not in effect as written. It was a passive AND an active in one power, which is a third shape — a power is either a duration modifier on your attacks or a standalone effect. Rewritten as one standalone effect."
+   "source": "settled | 2026-08-20: \"only if you have stood at least once this Battle\" is an event-history gate — the engine does not remember what you have done. | 2026-08-20: not in effect as written. It was a passive AND an active in one power, which is a third shape — a power is either a duration modifier on your attacks or a standalone effect. Rewritten as one standalone effect."
   },
   {
    "id": "power.berserker.mortal-strikes",
@@ -357,7 +357,7 @@
     "shield"
    ],
    "description": "Melee attack at +0 Strength and +30 Accuracy.",
-   "source": "settled | 2026-08-20 Angela sweep: the hook was written inside the prose (\"onHit: apply weak 4\") instead of being a trigger. Same mechanic, moved into the field that holds it. | 2026-08-20 Angela: disambiguate. attack.pot-lid.bash already owns \"Bash\". | 2026-08-20 Angela: disambiguate. Bash belongs to attack.pot-lid.bash and Shield Bash to attack.holy-shield.shield-bash, so the power takes a third name.",
+   "source": "settled | 2026-08-20 sweep: the hook was written inside the prose (\"onHit: apply weak 4\") instead of being a trigger. Same mechanic, moved into the field that holds it. | 2026-08-20: disambiguate. attack.pot-lid.bash already owns \"Bash\". | 2026-08-20: disambiguate. Bash belongs to attack.pot-lid.bash and Shield Bash to attack.holy-shield.shield-bash, so the power takes a third name.",
    "triggers": [
     {
      "hook": "onHit",
@@ -379,7 +379,7 @@
     "shield"
    ],
    "description": "The target ally gains 5 Protection. You gain 3.",
-   "source": "settled | 2026-08-20 Angela sweep: \"hero\" in a mechanical sentence — the word everywhere else is \"ally\", and an ally shape already exists. Same effect, one vocabulary."
+   "source": "settled | 2026-08-20 sweep: \"hero\" in a mechanical sentence — the word everywhere else is \"ally\", and an ally shape already exists. Same effect, one vocabulary."
   },
   {
    "id": "power.leader.command",
@@ -393,7 +393,7 @@
    "targets": "one ally within 6 hexes",
    "tags": [],
    "description": "The target ally's Surge Chance +100. It must not have acted yet this Turn.",
-   "source": "settled | 2026-08-20 Angela sweep: \"hero\" in a mechanical sentence — the word everywhere else is \"ally\", and an ally shape already exists. Same effect, one vocabulary."
+   "source": "settled | 2026-08-20 sweep: \"hero\" in a mechanical sentence — the word everywhere else is \"ally\", and an ally shape already exists. Same effect, one vocabulary."
   },
   {
    "id": "power.leader.leadership",
@@ -423,7 +423,7 @@
    "targets": "one ally within 4 hexes",
    "tags": [],
    "description": "The target ally gains 3 Stamina.",
-   "source": "settled | 2026-08-20 Angela sweep: \"hero\" in a mechanical sentence — the word everywhere else is \"ally\", and an ally shape already exists. Same effect, one vocabulary."
+   "source": "settled | 2026-08-20 sweep: \"hero\" in a mechanical sentence — the word everywhere else is \"ally\", and an ally shape already exists. Same effect, one vocabulary."
   },
   {
    "id": "power.leader.battle-cry",
@@ -439,7 +439,7 @@
     "area"
    ],
    "description": "Every enemy within 5 hexes gains 1 Weak. You and every ally within 5 hexes remove 1 Weak.",
-   "source": "settled | 2026-08-20 Angela sweep: the targets field said \"allies within 5 hexes\" but the sentence hit enemies too, and \"in range\" is not a shape. Rewritten to the shape it actually is. Radius and numbers unchanged."
+   "source": "settled | 2026-08-20 sweep: the targets field said \"allies within 5 hexes\" but the sentence hit enemies too, and \"in range\" is not a shape. Rewritten to the shape it actually is. Radius and numbers unchanged."
   },
   {
    "id": "power.leader.find-weakness",
@@ -481,7 +481,7 @@
    "targets": "self",
    "tags": [],
    "description": "Free, and it uses your Activation. Gain 2 Stamina, +1 Strength and +1 Movement. Granted by armor.",
-   "source": "settled | 2026-08-20: reworded the opening. \"Free\" here means it does not consume your primary action — it never meant costless, and on an item that also charges stamina the old wording read as though it did. | 2026-08-20 Angela: standardised to \"Free.\" A trinket that does not use your action is a power and appears in the power list, so it uses the same word powers use. The stamina cost is a field, not prose. | 2026-08-20 Angela sweep: \"ACTIVATION.\" in capitals was notation, not a sentence, and the only one in the content."
+   "source": "settled | 2026-08-20: reworded the opening. \"Free\" here means it does not consume your primary action — it never meant costless, and on an item that also charges stamina the old wording read as though it did. | 2026-08-20: standardised to \"Free.\" A trinket that does not use your action is a power and appears in the power list, so it uses the same word powers use. The stamina cost is a field, not prose. | 2026-08-20 sweep: \"ACTIVATION.\" in capitals was notation, not a sentence, and the only one in the content."
   },
   {
    "id": "power.regen",
@@ -531,7 +531,7 @@
    "tags": [],
    "description": "Move exactly 1 hex in any direction. It provokes nothing, and the destination’s terrain cost is irrelevant — step into a hex costing 1, 2 or 3 alike. Costs no Stamina, and it is usable every other Turn. It is a bonus move, so it does NOT add your Movement stat. Paladins only.",
    "intent": "The free half-step, and the drawback is the wait. On the Turn it is down you can be pinned, which is the whole reason it has a cooldown.",
-   "source": "Angela 2026-08-17. Universal — every hero starts with Move and Sidestep. | 2026-08-17 Angela: enemies have it too. This is the rule that makes zones of control soft. | Angela 2026-08-21: Sidestep gets a cooldown of 1 — \"it does break this statement of 'it's always available.' No, it's available every other turn.\" Enemies lose it entirely (engine/DECISIONS.md 2026-08-21: an enemy carries exactly ONE movement power in its data row). Split into two: Sidestep is free but every other Turn; Side Roll costs 1 Stamina but is always there. Rogues and Rangers take Side Roll by default, everyone else Sidestep. Beasts and Civilians get NEITHER. | Angela 2026-08-21: \"Leap. It'll move you two squares with no attacks of opportunity given. Cost 2 stamina. And give you +2 Strength until the end of your activation. And this one goes on a Warrior. And let's remove the one we gave to Priest and Mage, they both don't get one.\" Sidestep narrows to the Paladin — the Warrior took Leap instead, and Mage and Priest now get nothing. | Angela 2026-08-21: the BONUS MOVE family. \"Mage gets Focus. It actually does zero movement, zero stamina cost. They gain one stamina. Priest gets Devotion. Does zero movement. They lose 1 maximum stamina, and they gain 2 stamina.\" A bonus move IS your movement for the Activation — you pick Move, a Flight, or your bonus move, never two. \"Only the full movement actions and things like them benefit from the Move stat, so all of these bonus moves do not benefit from the Move stat.\"",
+   "source": "2026-08-17. Universal — every hero starts with Move and Sidestep. | 2026-08-17: enemies have it too. This is the rule that makes zones of control soft. | 2026-08-21: Sidestep gets a cooldown of 1 — \"it does break this statement of 'it's always available.' No, it's available every other turn.\" Enemies lose it entirely (engine/DECISIONS.md 2026-08-21: an enemy carries exactly ONE movement power in its data row). Split into two: Sidestep is free but every other Turn; Side Roll costs 1 Stamina but is always there. Rogues and Rangers take Side Roll by default, everyone else Sidestep. Beasts and Civilians get NEITHER. | 2026-08-21: \"Leap. It'll move you two squares with no attacks of opportunity given. Cost 2 stamina. And give you +2 Strength until the end of your activation. And this one goes on a Warrior. And let's remove the one we gave to Priest and Mage, they both don't get one.\" Sidestep narrows to the Paladin — the Warrior took Leap instead, and Mage and Priest now get nothing. | 2026-08-21: the BONUS MOVE family. \"Mage gets Focus. It actually does zero movement, zero stamina cost. They gain one stamina. Priest gets Devotion. Does zero movement. They lose 1 maximum stamina, and they gain 2 stamina.\" A bonus move IS your movement for the Activation — you pick Move, a Flight, or your bonus move, never two. \"Only the full movement actions and things like them benefit from the Move stat, so all of these bonus moves do not benefit from the Move stat.\"",
    "universalToAllUnits": false,
    "grantedToClasses": [
     "class.paladin"
@@ -558,7 +558,7 @@
    "tags": [],
    "description": "Move exactly 1 hex in any direction. It provokes nothing, and the destination’s terrain cost is irrelevant — step into a hex costing 1, 2 or 3 alike. It costs 1 Stamina, and there is no cooldown — you can do it every Turn. It is a bonus move, so it does NOT add your Movement stat. Rogues and Rangers.",
    "intent": "The same half-step, priced the other way round. Sidestep is free but makes you wait; Side Roll is always there and you pay for it. A Rogue who wants out every single Turn can have it, at a Stamina a Turn.",
-   "source": "Angela 2026-08-21: Sidestep gets a cooldown of 1 — \"it does break this statement of 'it's always available.' No, it's available every other turn.\" Enemies lose it entirely (engine/DECISIONS.md 2026-08-21: an enemy carries exactly ONE movement power in its data row). Split into two: Sidestep is free but every other Turn; Side Roll costs 1 Stamina but is always there. Rogues and Rangers take Side Roll by default, everyone else Sidestep. Beasts and Civilians get NEITHER. | Angela 2026-08-21: the BONUS MOVE family. \"Mage gets Focus. It actually does zero movement, zero stamina cost. They gain one stamina. Priest gets Devotion. Does zero movement. They lose 1 maximum stamina, and they gain 2 stamina.\" A bonus move IS your movement for the Activation — you pick Move, a Flight, or your bonus move, never two. \"Only the full movement actions and things like them benefit from the Move stat, so all of these bonus moves do not benefit from the Move stat.\"",
+   "source": "2026-08-21: Sidestep gets a cooldown of 1 — \"it does break this statement of 'it's always available.' No, it's available every other turn.\" Enemies lose it entirely (engine/DECISIONS.md 2026-08-21: an enemy carries exactly ONE movement power in its data row). Split into two: Sidestep is free but every other Turn; Side Roll costs 1 Stamina but is always there. Rogues and Rangers take Side Roll by default, everyone else Sidestep. Beasts and Civilians get NEITHER. | 2026-08-21: the BONUS MOVE family. \"Mage gets Focus. It actually does zero movement, zero stamina cost. They gain one stamina. Priest gets Devotion. Does zero movement. They lose 1 maximum stamina, and they gain 2 stamina.\" A bonus move IS your movement for the Activation — you pick Move, a Flight, or your bonus move, never two. \"Only the full movement actions and things like them benefit from the Move stat, so all of these bonus moves do not benefit from the Move stat.\"",
    "bonusMove": true
   },
   {
@@ -580,7 +580,7 @@
    "tags": [],
    "description": "Move exactly 2 hexes in any direction. It provokes nothing, and the destination’s terrain cost is irrelevant. You gain +2 Strength until the end of the Turn. It costs 2 Stamina and there is no cooldown. It is a bonus move, so it does NOT add your Movement stat. Warriors only.",
    "intent": "The only movement power that is an opening rather than an escape. Two hexes gets you INTO the fight and the Strength lands on the swing you take when you arrive. It rides your attacks of opportunity for the rest of the Turn too, once those exist — a Warrior who leaps into the middle punishes everything that walks past.",
-   "source": "Angela 2026-08-21: \"Leap. It'll move you two squares with no attacks of opportunity given. Cost 2 stamina. And give you +2 Strength until the end of your activation. And this one goes on a Warrior. And let's remove the one we gave to Priest and Mage, they both don't get one.\" | 2026-08-21 Angela: \"isn’t the end of activation the same as the end of this turn? I’m not trying to add one.\" An Activation is movement plus ONE primary action, so “until the end of your Activation” is exactly the one swing after the leap — and with attacks of opportunity unbuilt, that is behaviourally identical to end of the Turn today. Using the duration that already exists rather than adding a fifth. The two diverge once AoO is built, and end-of-Turn is the more generous reading, which suits a Warrior that just landed in the middle. | Angela 2026-08-21: the BONUS MOVE family. \"Mage gets Focus. It actually does zero movement, zero stamina cost. They gain one stamina. Priest gets Devotion. Does zero movement. They lose 1 maximum stamina, and they gain 2 stamina.\" A bonus move IS your movement for the Activation — you pick Move, a Flight, or your bonus move, never two. \"Only the full movement actions and things like them benefit from the Move stat, so all of these bonus moves do not benefit from the Move stat.\"",
+   "source": "2026-08-21: \"Leap. It'll move you two squares with no attacks of opportunity given. Cost 2 stamina. And give you +2 Strength until the end of your activation. And this one goes on a Warrior. And let's remove the one we gave to Priest and Mage, they both don't get one.\" | 2026-08-21: \"isn’t the end of activation the same as the end of this turn? I’m not trying to add one.\" An Activation is movement plus ONE primary action, so “until the end of your Activation” is exactly the one swing after the leap — and with attacks of opportunity unbuilt, that is behaviourally identical to end of the Turn today. Using the duration that already exists rather than adding a fifth. The two diverge once AoO is built, and end-of-Turn is the more generous reading, which suits a Warrior that just landed in the middle. | 2026-08-21: the BONUS MOVE family. \"Mage gets Focus. It actually does zero movement, zero stamina cost. They gain one stamina. Priest gets Devotion. Does zero movement. They lose 1 maximum stamina, and they gain 2 stamina.\" A bonus move IS your movement for the Activation — you pick Move, a Flight, or your bonus move, never two. \"Only the full movement actions and things like them benefit from the Move stat, so all of these bonus moves do not benefit from the Move stat.\"",
    "bonusMove": true
   },
   {
@@ -603,7 +603,7 @@
    "tags": [],
    "description": "Do not move at all. Gain 1 Stamina. It costs no Stamina and there is no cooldown. It is a bonus move, so it does NOT add your Movement stat — it moves you zero hexes on purpose. Mages only.",
    "intent": "The Mage’s bonus move is to stand still and breathe. It is the cheapest stamina in the game and the price is that you are exactly where you were — a caught caster can Focus, but it will still be caught.",
-   "source": "Angela 2026-08-21: the BONUS MOVE family. \"Mage gets Focus. It actually does zero movement, zero stamina cost. They gain one stamina. Priest gets Devotion. Does zero movement. They lose 1 maximum stamina, and they gain 2 stamina.\" A bonus move IS your movement for the Activation — you pick Move, a Flight, or your bonus move, never two. \"Only the full movement actions and things like them benefit from the Move stat, so all of these bonus moves do not benefit from the Move stat.\""
+   "source": "2026-08-21: the BONUS MOVE family. \"Mage gets Focus. It actually does zero movement, zero stamina cost. They gain one stamina. Priest gets Devotion. Does zero movement. They lose 1 maximum stamina, and they gain 2 stamina.\" A bonus move IS your movement for the Activation — you pick Move, a Flight, or your bonus move, never two. \"Only the full movement actions and things like them benefit from the Move stat, so all of these bonus moves do not benefit from the Move stat.\""
   },
   {
    "id": "power.devotion",
@@ -625,7 +625,7 @@
    "tags": [],
    "description": "Do not move at all. Lose 1 Stamina Max for the rest of the Battle, and gain 2 Stamina. There is no cooldown. It is a bonus move, so it does NOT add your Movement stat — it moves you zero hexes on purpose. Priests only.",
    "intent": "Burn the candle. Two Stamina now against a bar that is one shorter for the rest of the fight, and you may do it again, and again, until there is no bar left. The Priest chooses how much of the end of the battle to spend on the middle of it.",
-   "source": "Angela 2026-08-21: the BONUS MOVE family. \"Mage gets Focus. It actually does zero movement, zero stamina cost. They gain one stamina. Priest gets Devotion. Does zero movement. They lose 1 maximum stamina, and they gain 2 stamina.\" A bonus move IS your movement for the Activation — you pick Move, a Flight, or your bonus move, never two. \"Only the full movement actions and things like them benefit from the Move stat, so all of these bonus moves do not benefit from the Move stat.\""
+   "source": "2026-08-21: the BONUS MOVE family. \"Mage gets Focus. It actually does zero movement, zero stamina cost. They gain one stamina. Priest gets Devotion. Does zero movement. They lose 1 maximum stamina, and they gain 2 stamina.\" A bonus move IS your movement for the Activation — you pick Move, a Flight, or your bonus move, never two. \"Only the full movement actions and things like them benefit from the Move stat, so all of these bonus moves do not benefit from the Move stat.\""
   },
   {
    "id": "power.flight",
@@ -642,7 +642,7 @@
    "tags": [],
    "description": "Movement action. Move up to your Movement, 1 Movement per hex, passing over units and obstructions and taking nothing from the ground on the way — no terrain cost, no trap, no hex status. Where you LAND is a hex like any other.",
    "intent": "One click, straight over everything in between.",
-   "source": "Angela 2026-08-20: flight is a granted movement power, never a standing property. Items that used to say \"you have FLIGHT\" grant this."
+   "source": "2026-08-20: flight is a granted movement power, never a standing property. Items that used to say \"you have FLIGHT\" grant this."
   },
   {
    "id": "power.flight-swift",
@@ -659,7 +659,7 @@
    "tags": [],
    "description": "Movement action. Move up to your Movement + 1, 1 Movement per hex, passing over units and obstructions and taking nothing from the ground on the way. Costs no Stamina.",
    "intent": "The good version: a hex further than anyone else, and it costs nothing.",
-   "source": "Angela 2026-08-20: \"give a power move flight cost 0 stamina, moves +1, as a flight.\" Granted by item.aegis-of-the-fleet."
+   "source": "2026-08-20: \"give a power move flight cost 0 stamina, moves +1, as a flight.\" Granted by item.aegis-of-the-fleet."
   },
   {
    "id": "power.flight-labored",
@@ -676,7 +676,7 @@
    "tags": [],
    "description": "Movement action. Move up to your Movement - 1, 1 Movement per hex, passing over units and obstructions and taking nothing from the ground on the way. Costs 2 Stamina.",
    "intent": "It gets you over the thing in the way and it charges you for the privilege.",
-   "source": "Angela 2026-08-20: the weak rung of the flight ladder — labored 2 stamina and Movement -1, standard 1 stamina and full Movement, swift 0 stamina and Movement +1."
+   "source": "2026-08-20: the weak rung of the flight ladder — labored 2 stamina and Movement -1, standard 1 stamina and full Movement, swift 0 stamina and Movement +1."
   },
   {
    "id": "rule.karma-decay",
@@ -699,7 +699,7 @@
    ],
    "description": "UNIVERSAL RULE, not a power you take. Every unit in the game carries this: on kill, your Karma drops by 1.",
    "intent": "Karma is the only status you spend rather than wait out. It leaves when you take a life.",
-   "source": "Angela 2026-08-20: \"every hero has, on kill, lower Karma by 1.\""
+   "source": "2026-08-20: \"every hero has, on kill, lower Karma by 1.\""
   },
   {
    "id": "rule.ground-layers",
@@ -717,7 +717,7 @@
    "triggers": [],
    "description": "UNIVERSAL RULE, not a power you take. There are four ground layers — burning, frost, poisoned and darkness. A layer is PERSISTENT: it carries no number and no clock, and once it is on a hex it stays there. A hex holds exactly ONE layer. Applying a different layer to a hex REPLACES the one already there.",
    "intent": "The ground is a state, not a countdown. Frost put out a fire because it took the hex, not because it cancelled anything.",
-   "source": "Angela 2026-08-20: \"Status effects on terrain are just persistent. No turn tracking, just it is burning or it is frost. The only thing that should replace a ground layer effect is if a different one is applied, it replaces the previous one. The ground can only have one effect on it, and that effect stays.\""
+   "source": "2026-08-20: \"Status effects on terrain are just persistent. No turn tracking, just it is burning or it is frost. The only thing that should replace a ground layer effect is if a different one is applied, it replaces the previous one. The ground can only have one effect on it, and that effect stays.\""
   },
   {
    "id": "rule.summon-order",
@@ -735,7 +735,7 @@
    "triggers": [],
    "description": "UNIVERSAL RULE, not a power you take. Every summoned unit is given a summon number when it arrives — the first thing summoned is 1, the second is 2, and so on, counted separately for each side. In its own Phase, summoned units activate FIRST, in summon-number order, BEFORE any unit that was already on the field. Summoned heroes go first in the Hero Phase; summoned enemies go first in the Enemy Phase.",
    "intent": "A summon that arrives and then waits behind everything else is a summon that did nothing. Going first is most of what you paid for.",
-   "source": "Angela 2026-08-20. Written ahead of the summoning system itself, which does not exist yet — see engine/COMBAT-SEQUENCE.md #Summoning."
+   "source": "2026-08-20. Written ahead of the summoning system itself, which does not exist yet — see engine/COMBAT-SEQUENCE.md #Summoning."
   }
  ],
  "items": [
@@ -758,7 +758,7 @@
    },
    "description": "Immunity to Burn 1. One point of Burn is removed BEFORE Burn resolves, so that point never gets to deal its damage or halve your healing. The ordinary -1 decay still follows, so Burn falls by 2 a Turn.",
    "intent": "One point of Immunity makes you substantially immune to the thing. That is the whole item.",
-   "source": "Settled content, 2026-08-17 — rebuilt on Angela's Immunity mechanic (was written as a plain End-of-Activation strip, which is half of it). | 2026-08-17 Angela, corrected: immunity resolves BEFORE the status does; it is not a second strip. The status still takes its own -1 afterwards."
+   "source": "Settled content, 2026-08-17 — rebuilt on the Immunity mechanic (was written as a plain End-of-Activation strip, which is half of it). | 2026-08-17 corrected: immunity resolves BEFORE the status does; it is not a second strip. The status still takes its own -1 afterwards."
   },
   {
    "id": "item.necklace-of-poison-immunity",
@@ -779,7 +779,7 @@
    },
    "description": "Immunity to Poison 1. One point of Poison is removed BEFORE Poison resolves, so that point never gets to deal its damage. The ordinary -1 decay still follows, so Poison falls by 2 a Turn.",
    "intent": "One point of Immunity makes you substantially immune to the thing. That is the whole item.",
-   "source": "Settled content, 2026-08-17 — rebuilt on Angela's Immunity mechanic (was written as a plain End-of-Activation strip, which is half of it). | 2026-08-17 Angela, corrected: immunity resolves BEFORE the status does; it is not a second strip. The status still takes its own -1 afterwards."
+   "source": "Settled content, 2026-08-17 — rebuilt on the Immunity mechanic (was written as a plain End-of-Activation strip, which is half of it). | 2026-08-17 corrected: immunity resolves BEFORE the status does; it is not a second strip. The status still takes its own -1 afterwards."
   },
   {
    "id": "item.necklace-of-weakness-immunity",
@@ -800,7 +800,7 @@
    },
    "description": "Immunity to Weak 1. One point of Weak is removed BEFORE Weak resolves, so that point never gets to reduce the damage you deal. The ordinary -1 decay still follows, so Weak falls by 2 a Turn.",
    "intent": "One point of Immunity makes you substantially immune to the thing. That is the whole item.",
-   "source": "Settled content, 2026-08-17 — rebuilt on Angela's Immunity mechanic (was written as a plain End-of-Activation strip, which is half of it). | 2026-08-17 Angela, corrected: immunity resolves BEFORE the status does; it is not a second strip. The status still takes its own -1 afterwards."
+   "source": "Settled content, 2026-08-17 — rebuilt on the Immunity mechanic (was written as a plain End-of-Activation strip, which is half of it). | 2026-08-17 corrected: immunity resolves BEFORE the status does; it is not a second strip. The status still takes its own -1 afterwards."
   },
   {
    "id": "item.necklace-of-frost-immunity",
@@ -821,7 +821,7 @@
    },
    "description": "Immunity to Frost 1. One point of Frost is removed BEFORE Frost resolves, so that point never gets to increase the physical damage you take. The ordinary -1 decay still follows, so Frost falls by 2 a Turn.",
    "intent": "One point of Immunity makes you substantially immune to the thing. That is the whole item.",
-   "source": "Settled content, 2026-08-17 — rebuilt on Angela's Immunity mechanic (was written as a plain End-of-Activation strip, which is half of it). | 2026-08-17 Angela, corrected: immunity resolves BEFORE the status does; it is not a second strip. The status still takes its own -1 afterwards."
+   "source": "Settled content, 2026-08-17 — rebuilt on the Immunity mechanic (was written as a plain End-of-Activation strip, which is half of it). | 2026-08-17 corrected: immunity resolves BEFORE the status does; it is not a second strip. The status still takes its own -1 afterwards."
   }
  ],
  "attacks": [],
@@ -834,7 +834,7 @@
    "shape": "pool",
    "effect": "While you carry Karma: every heal you receive is increased by your Karma, and every point of damage you deal is increased by HALF your Karma, rounded down.",
    "decay": "It does not tick down at End of Phase like the others. Karma is spent by KILLING: every unit in the game has, on kill, lose 1 Karma.",
-   "source": "Angela 2026-08-20. The only status that decays on an event rather than on the clock."
+   "source": "2026-08-20. The only status that decays on an event rather than on the clock."
   },
   {
    "id": "status.slow",
@@ -842,7 +842,7 @@
    "shape": "pool",
    "effect": "While you carry Slow, your Movement is reduced by your Slow.",
    "decay": "-1 at End of Phase, like Burn, Poison, Bleed, Weak, Stun and Frost.",
-   "source": "Angela 2026-08-20: \"clean up that movement stuff.\" Fourteen entries said \"the target loses N Movement on its next Turn\" — one meaning, two wordings, and the only per-target clock left in the game. It is a status now, so it decays on the same ladder as everything else and nothing has to remember whose next Turn it is."
+   "source": "2026-08-20: \"clean up that movement stuff.\" Fourteen entries said \"the target loses N Movement on its next Turn\" — one meaning, two wordings, and the only per-target clock left in the game. It is a status now, so it decays on the same ladder as everything else and nothing has to remember whose next Turn it is."
   }
  ]
 }

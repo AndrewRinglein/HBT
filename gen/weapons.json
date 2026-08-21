@@ -384,7 +384,7 @@
     }
    ],
    "intent": "It does not hit hard. It hits where you said it would, and it leaves you somewhere the answer is not.",
-   "source": "Hell-TCG name reused (Admiral's Rapier — rebuilt as the Accuracy-and-Crit sword) | 2026-08-20 Angela: attacking with it now buys a Turn of evasion — +10 Dodge until the end of your next Turn. That is an effect rather than a modifier on the attack, so the onAttack hook is doing real work here."
+   "source": "Hell-TCG name reused (Admiral's Rapier — rebuilt as the Accuracy-and-Crit sword) | 2026-08-20: attacking with it now buys a Turn of evasion — +10 Dodge until the end of your next Turn. That is an effect rather than a modifier on the attack, so the onAttack hook is doing real work here."
   },
   {
    "id": "item.raiders-cutlass",
@@ -585,7 +585,7 @@
    "statModifiers": {},
    "triggers": [],
    "intent": "A one-handed focus anyone can point: the party's Magic is small, but it is magic damage, and some things only bleed for that.",
-   "source": "new (unrestricted one-handed caster focus — the Mage staves are all two-handed and gated) | 2026-08-20 Angela: the ITEM dictates the damage type and the CLASS dictates the item, so a magic-damage weapon is a Mage weapon."
+   "source": "new (unrestricted one-handed caster focus — the Mage staves are all two-handed and gated) | 2026-08-20: the ITEM dictates the damage type and the CLASS dictates the item, so a magic-damage weapon is a Mage weapon."
   },
   {
    "id": "item.ancient-tome",
@@ -607,7 +607,7 @@
    },
    "triggers": [],
    "intent": "Held open in the off hand: one line at one throat, or the whole paragraph at everyone standing near it.",
-   "source": "Hell-TCG name reused (Mage, Ancient Tome — draw effects cut, rebuilt as an off-hand focus) | 2026-08-20 Angela: the ITEM dictates the damage type and the CLASS dictates the item, so a magic-damage weapon is a Mage weapon."
+   "source": "Hell-TCG name reused (Mage, Ancient Tome — draw effects cut, rebuilt as an off-hand focus) | 2026-08-20: the ITEM dictates the damage type and the CLASS dictates the item, so a magic-damage weapon is a Mage weapon."
   },
   {
    "id": "item.holy-texts",
@@ -772,7 +772,7 @@
     }
    ],
    "intent": "You are not carrying it for yourself, and it knows the difference.",
-   "source": "Hell-TCG name reused (Paladin, Holy Shield — the Paladin Resist line kept as stats) | 2026-08-17 Angela: CUT. ally-reactive hooks, guarding, Consequence-Stack interference and non-knockback forced movement all removed by ruling. | 2026-08-17 quality pass: replaced a placeholder aura with a distinct effect. | 2026-08-17 Angela: THERE IS NO FLANKING. It appears in no current design document — I carried it forward from a stale snapshot. Rebuilt on plain adjacency, which is real and checkable."
+   "source": "Hell-TCG name reused (Paladin, Holy Shield — the Paladin Resist line kept as stats) | 2026-08-17: CUT. ally-reactive hooks, guarding, Consequence-Stack interference and non-knockback forced movement all removed by ruling. | 2026-08-17 quality pass: replaced a placeholder aura with a distinct effect. | 2026-08-17: THERE IS NO FLANKING. It appears in no current design document — I carried it forward from a stale snapshot. Rebuilt on plain adjacency, which is real and checkable."
   },
   {
    "id": "item.death-blade",
@@ -983,7 +983,7 @@
     }
    ],
    "intent": "Something is still living in the wood and it is glad to be pointed at people.",
-   "source": "Hell-TCG name reused (Wraith-Touched Staff — left unrestricted so non-Mages have a magic-damage option) | 2026-08-20 Angela: the ITEM dictates the damage type and the CLASS dictates the item, so a magic-damage weapon is a Mage weapon."
+   "source": "Hell-TCG name reused (Wraith-Touched Staff — left unrestricted so non-Mages have a magic-damage option) | 2026-08-20: the ITEM dictates the damage type and the CLASS dictates the item, so a magic-damage weapon is a Mage weapon."
   },
   {
    "id": "item.book-of-exorcisms",
@@ -1315,7 +1315,7 @@
     }
    ],
    "intent": "A one-handed orb that turns the enemy's Health into yours at a poor exchange rate you will take every time.",
-   "source": "Hell-TCG name reused (Orb of the Soul Stealer — Regen rebuilt as lifesteal) | 2026-08-20 Angela: the ITEM dictates the damage type and the CLASS dictates the item, so a magic-damage weapon is a Mage weapon."
+   "source": "Hell-TCG name reused (Orb of the Soul Stealer — Regen rebuilt as lifesteal) | 2026-08-20: the ITEM dictates the damage type and the CLASS dictates the item, so a magic-damage weapon is a Mage weapon."
   },
   {
    "id": "item.blade-of-demon-slaying",
@@ -1398,7 +1398,7 @@
     }
    ],
    "intent": "Every swing of it is a small mercy for someone behind you, whether you were aiming that way or not.",
-   "source": "Hell-TCG name reused (Scepter of Salvation — pulled down from tier 4, Faith gain cut) | 2026-08-20 Angela: \"the ally with the lowest Health within 6 hexes\" was auto-selection by a stat — the engine picking your target for you. Replaced with regeneration on yourself, which is a status that already exists."
+   "source": "Hell-TCG name reused (Scepter of Salvation — pulled down from tier 4, Faith gain cut) | 2026-08-20: \"the ally with the lowest Health within 6 hexes\" was auto-selection by a stat — the engine picking your target for you. Replaced with regeneration on yourself, which is a status that already exists."
   },
   {
    "id": "item.tomb-sentinels-blade",
@@ -1429,7 +1429,7 @@
     }
    ],
    "intent": "It was set to guard one doorway for four hundred years, and it rewards you for standing exactly still.",
-   "source": "Hell-TCG name reused (Tomb Sentinel's Blade — on-kill Counterspell rebuilt as a stacking Armor gain) | 2026-08-20 Angela: Thorns 3 added — the tomb sentinel answers being struck.",
+   "source": "Hell-TCG name reused (Tomb Sentinel's Blade — on-kill Counterspell rebuilt as a stacking Armor gain) | 2026-08-20: Thorns 3 added — the tomb sentinel answers being struck.",
    "thorns": 3
   },
   {
@@ -1645,7 +1645,7 @@
     }
    ],
    "slayer": null,
-   "source": " | 2026-08-20 Angela: Strength +2, -5 Accuracy, 2 stamina, and +4 damage on a crit. A tier-0 axe that swings hard, misses more, and occasionally takes a leg off."
+   "source": " | 2026-08-20: Strength +2, -5 Accuracy, 2 stamina, and +4 damage on a crit. A tier-0 axe that swings hard, misses more, and occasionally takes a leg off."
   },
   {
    "id": "attack.sharpened-stake.jab",
@@ -1716,7 +1716,7 @@
     }
    ],
    "slayer": null,
-   "source": "2026-08-20 Angela: \"clean up that movement stuff.\" A one-Turn Movement loss is now the Slow status — apply N Slow. Fourteen entries said this two different ways and every one of them needed the engine to remember whose next Turn it was. Amount unchanged."
+   "source": "2026-08-20: \"clean up that movement stuff.\" A one-Turn Movement loss is now the Slow status — apply N Slow. Fourteen entries said this two different ways and every one of them needed the engine to remember whose next Turn it was. Amount unchanged."
   },
   {
    "id": "attack.fishing-net.cast",
@@ -1741,7 +1741,7 @@
     }
    ],
    "slayer": null,
-   "source": "2026-08-20 Angela: \"clean up that movement stuff.\" A one-Turn Movement loss is now the Slow status — apply N Slow. Fourteen entries said this two different ways and every one of them needed the engine to remember whose next Turn it was. Amount unchanged."
+   "source": "2026-08-20: \"clean up that movement stuff.\" A one-Turn Movement loss is now the Slow status — apply N Slow. Fourteen entries said this two different ways and every one of them needed the engine to remember whose next Turn it was. Amount unchanged."
   },
   {
    "id": "attack.pot-lid.bash",
@@ -1888,7 +1888,7 @@
    "triggers": [],
    "slayer": null,
    "description": "Three hexes in one swing: the hex you name and the one either side of it. Each is resolved as its own attack, so each rolls, and each can crit.",
-   "source": " | 2026-08-20 Angela: \"every enemy adjacent to you\" was the wrong shape. You name a hex and it hits that hex plus left and right — three attacks, same shape as attack.halberd.cleave."
+   "source": " | 2026-08-20: \"every enemy adjacent to you\" was the wrong shape. You name a hex and it hits that hex plus left and right — three attacks, same shape as attack.halberd.cleave."
   },
   {
    "id": "attack.war-axe.chop",
@@ -2047,7 +2047,7 @@
    "triggers": [],
    "slayer": null,
    "description": "The spear goes through. It hits what you aimed at and whatever is standing behind it.",
-   "source": " | 2026-08-20 Angela: now hits the hex behind the target as well — that is what a spear is for."
+   "source": " | 2026-08-20: now hits the hex behind the target as well — that is what a spear is for."
   },
   {
    "id": "attack.hunting-spear.hurl",
@@ -2069,7 +2069,7 @@
    "triggers": [],
    "slayer": null,
    "description": "Throw the spear. You do not lose it — weapons are never lost to being thrown.",
-   "source": " | 2026-08-20 Angela: the \"you are unarmed until you recover it\" clause is cut; weapons are not lost to being thrown. NOTE: that drawback WAS the attack’s whole identity, so what is left is a plain range-4 throw. If you wanted a different second attack on the hunting spear rather than a de-fanged Hurl, say so and I will replace it."
+   "source": " | 2026-08-20: the \"you are unarmed until you recover it\" clause is cut; weapons are not lost to being thrown. NOTE: that drawback WAS the attack’s whole identity, so what is left is a plain range-4 throw. If you wanted a different second attack on the hunting spear rather than a de-fanged Hurl, say so and I will replace it."
   },
   {
    "id": "attack.glaive.sweep",
@@ -2091,7 +2091,7 @@
    "triggers": [],
    "slayer": null,
    "description": "Two hexes: the one you name and one beside it.",
-   "source": " | 2026-08-20 Angela: not every adjacent enemy — the hex it targets and one to the left."
+   "source": " | 2026-08-20: not every adjacent enemy — the hex it targets and one to the left."
   },
   {
    "id": "attack.glaive.impale",
@@ -2112,7 +2112,7 @@
    "triggers": [],
    "slayer": null,
    "description": "A blade on a pole reaches the row behind the row, and this is the attack that says so: the target and whatever is behind it.",
-   "source": " | 2026-08-20 Angela: now hits the hex behind the target as well."
+   "source": " | 2026-08-20: now hits the hex behind the target as well."
   },
   {
    "id": "attack.crossbow.bolt",
@@ -2414,7 +2414,7 @@
    ],
    "triggers": [],
    "slayer": null,
-   "source": " | 2026-08-20 Angela: \"if the target has not yet acted this Turn\" is cut — the only condition that read turn order. Folded in at half: +5 Accuracy, +5 Crit on the face."
+   "source": " | 2026-08-20: \"if the target has not yet acted this Turn\" is cut — the only condition that read turn order. Folded in at half: +5 Accuracy, +5 Crit on the face."
   },
   {
    "id": "attack.duel-runeblades.twin-cut",
@@ -2549,7 +2549,7 @@
     }
    ],
    "slayer": null,
-   "source": "2026-08-20 Angela: \"clean up that movement stuff.\" A one-Turn Movement loss is now the Slow status — apply N Slow. Fourteen entries said this two different ways and every one of them needed the engine to remember whose next Turn it was. Amount unchanged."
+   "source": "2026-08-20: \"clean up that movement stuff.\" A one-Turn Movement loss is now the Slow status — apply N Slow. Fourteen entries said this two different ways and every one of them needed the engine to remember whose next Turn it was. Amount unchanged."
   },
   {
    "id": "attack.iron-claws.rake",
@@ -2639,7 +2639,7 @@
    ],
    "triggers": [],
    "slayer": null,
-   "source": " | 2026-08-17 Angela: CUT. ally-reactive hooks, guarding, Consequence-Stack interference and non-knockback forced movement all removed by ruling. | 2026-08-17 design pass: blended onto Precision + Strength — aim puts it on the target and shoulder puts it through.",
+   "source": " | 2026-08-17: CUT. ally-reactive hooks, guarding, Consequence-Stack interference and non-knockback forced movement all removed by ruling. | 2026-08-17 design pass: blended onto Precision + Strength — aim puts it on the target and shoulder puts it through.",
    "addsStat": "strength",
    "description": "Damage equals your Precision plus your Strength. Aim puts it on the target; shoulder puts it through."
   },
@@ -2771,7 +2771,7 @@
    ],
    "triggers": [],
    "slayer": null,
-   "source": " | 2026-08-17 Angela: CUT. ally-reactive hooks, guarding, Consequence-Stack interference and non-knockback forced movement all removed by ruling."
+   "source": " | 2026-08-17: CUT. ally-reactive hooks, guarding, Consequence-Stack interference and non-knockback forced movement all removed by ruling."
   },
   {
    "id": "attack.bane-blade.strike",
@@ -3048,7 +3048,7 @@
    "slayer": null,
    "addsStat": "armor",
    "description": "Damage equals your Strength plus your Armor: the shield arrives with everything you are wearing behind it.",
-   "source": "2026-08-17 design pass: blended damage onto Strength + Armor, which is what a shield attack should have been scaling off all along. | 2026-08-20 Angela: \"clean up that movement stuff.\" A one-Turn Movement loss is now the Slow status — apply N Slow. Fourteen entries said this two different ways and every one of them needed the engine to remember whose next Turn it was. Amount unchanged."
+   "source": "2026-08-17 design pass: blended damage onto Strength + Armor, which is what a shield attack should have been scaling off all along. | 2026-08-20: \"clean up that movement stuff.\" A one-Turn Movement loss is now the Slow status — apply N Slow. Fourteen entries said this two different ways and every one of them needed the engine to remember whose next Turn it was. Amount unchanged."
   },
   {
    "id": "attack.death-blade.reap",
@@ -3092,7 +3092,7 @@
     }
    ],
    "slayer": null,
-   "source": " | 2026-08-20 Angela: \"+10 Accuracy against a target at or below half Health\" read a Health threshold. Folded in unconditionally on the attack’s face."
+   "source": " | 2026-08-20: \"+10 Accuracy against a target at or below half Health\" read a Health threshold. Folded in unconditionally on the attack’s face."
   },
   {
    "id": "attack.sniper-bow.loose",
@@ -3131,7 +3131,7 @@
    ],
    "triggers": [],
    "slayer": null,
-   "source": " | 2026-08-20 Angela: \"may not be used if any enemy is adjacent to you\" restates a global rule — a ranged attack may not target an adjacent unit, and firing while something is adjacent to YOU costs -20. Both live in the accuracy stations, not on one bow."
+   "source": " | 2026-08-20: \"may not be used if any enemy is adjacent to you\" restates a global rule — a ranged attack may not target an adjacent unit, and firing while something is adjacent to YOU costs -20. Both live in the accuracy stations, not on one bow."
   },
   {
    "id": "attack.runed-crossbow.rune-bolt",
@@ -3265,7 +3265,7 @@
     "consumes": false
    },
    "description": "Damage is your Strength +2, plus the Bleed already on the target. It READS the Bleed — every stack stays, still ticking, and Resist never touched any of it.",
-   "source": "2026-08-17 design pass: the knife now adds the target's Bleed, reading it, so a Nightblade party has something that cashes in without turning the clock off. | 2026-08-20 Angela: \"if an ally is adjacent to the target\" is adjacency to the TARGET, the same check that cut enchant.catch-them-off-guard — it walks a second unit's neighbours. Condition removed. The bonus was +15 Accuracy and +10 Crit when it fired; folded in unconditionally at roughly half, so the attack now reads +8 Accuracy and +15 Crit on its face. THE SPLIT IS MINE, not dictated — say the word and I will move it."
+   "source": "2026-08-17 design pass: the knife now adds the target's Bleed, reading it, so a Nightblade party has something that cashes in without turning the clock off. | 2026-08-20: \"if an ally is adjacent to the target\" is adjacency to the TARGET, the same check that cut enchant.catch-them-off-guard — it walks a second unit's neighbours. Condition removed. The bonus was +15 Accuracy and +10 Crit when it fired; folded in unconditionally at roughly half, so the attack now reads +8 Accuracy and +15 Crit on its face. THE SPLIT IS MINE, not dictated — say the word and I will move it."
   },
   {
    "id": "attack.stormforged-blade.arc-cut",
@@ -3398,7 +3398,7 @@
     "consumes": true
    },
    "description": "Damage is the party's Magic +1, plus every stack of Frost on the target — and the grasp CONSUMES it, closing on the cold and taking it away with the hand. Shattering the Frost also gives up the physical amplification it was providing, which is the decision.",
-   "source": "2026-08-17 design pass: the grasp now closes on the target's Frost and takes it, giving the frost side of the caster roster a payoff attack. | 2026-08-20 Angela: \"clean up that movement stuff.\" A one-Turn Movement loss is now the Slow status — apply N Slow. Fourteen entries said this two different ways and every one of them needed the engine to remember whose next Turn it was. Amount unchanged."
+   "source": "2026-08-17 design pass: the grasp now closes on the target's Frost and takes it, giving the frost side of the caster roster a payoff attack. | 2026-08-20: \"clean up that movement stuff.\" A one-Turn Movement loss is now the Slow status — apply N Slow. Fourteen entries said this two different ways and every one of them needed the engine to remember whose next Turn it was. Amount unchanged."
   },
   {
    "id": "attack.book-of-exorcisms.reading",
@@ -3483,7 +3483,7 @@
    ],
    "triggers": [],
    "slayer": null,
-   "source": " | 2026-08-17 Angela: CUT. ally-reactive hooks, guarding, Consequence-Stack interference and non-knockback forced movement all removed by ruling. | 2026-08-17 design pass: blended damage onto Strength + Magic and moved it to magic damage, so the curse is doing the work instead of a flat +4.",
+   "source": " | 2026-08-17: CUT. ally-reactive hooks, guarding, Consequence-Stack interference and non-knockback forced movement all removed by ruling. | 2026-08-17 design pass: blended damage onto Strength + Magic and moved it to magic damage, so the curse is doing the work instead of a flat +4.",
    "addsStat": "magic",
    "description": "Damage equals your Strength plus the party's Magic, and a further +1, carried as magic damage — the sand goes where the curse tells it and neither of them cares how strong your arm is on its own."
   },
@@ -3547,7 +3547,7 @@
    ],
    "triggers": [],
    "slayer": null,
-   "source": " | 2026-08-17 Angela: CUT. ally-reactive hooks, guarding, Consequence-Stack interference and non-knockback forced movement all removed by ruling."
+   "source": " | 2026-08-17: CUT. ally-reactive hooks, guarding, Consequence-Stack interference and non-knockback forced movement all removed by ruling."
   },
   {
    "id": "attack.boarding-hook.drag-down",
@@ -3567,7 +3567,7 @@
    ],
    "triggers": [],
    "slayer": null,
-   "source": " | 2026-08-17 Angela: CUT. ally-reactive hooks, guarding, Consequence-Stack interference and non-knockback forced movement all removed by ruling."
+   "source": " | 2026-08-17: CUT. ally-reactive hooks, guarding, Consequence-Stack interference and non-knockback forced movement all removed by ruling."
   },
   {
    "id": "attack.mirage-dagger.flicker-cut",
@@ -3823,7 +3823,7 @@
    ],
    "triggers": [],
    "slayer": null,
-   "source": " | 2026-08-17 Angela: CUT. ally-reactive hooks, guarding, Consequence-Stack interference and non-knockback forced movement all removed by ruling. | 2026-08-17 design pass: blended onto Strength + Precision so the signature rogue knife counts both stats a Rogue actually buys.",
+   "source": " | 2026-08-17: CUT. ally-reactive hooks, guarding, Consequence-Stack interference and non-knockback forced movement all removed by ruling. | 2026-08-17 design pass: blended onto Strength + Precision so the signature rogue knife counts both stats a Rogue actually buys.",
    "addsStat": "precision",
    "description": "Damage equals your Strength plus your Precision, as true damage. The favour is that it counts both hands of what a Rogue is instead of making you choose."
   },
@@ -4048,7 +4048,7 @@
    ],
    "triggers": [],
    "slayer": null,
-   "source": " | 2026-08-17 Angela: CUT. ally-reactive hooks, guarding, Consequence-Stack interference and non-knockback forced movement all removed by ruling."
+   "source": " | 2026-08-17: CUT. ally-reactive hooks, guarding, Consequence-Stack interference and non-knockback forced movement all removed by ruling."
   },
   {
    "id": "attack.tomb-sentinels-blade.sentinel-cut",

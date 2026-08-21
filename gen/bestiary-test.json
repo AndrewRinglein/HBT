@@ -1,10 +1,10 @@
 {
  "note": "TEST BESTIARY — throwaway by design. Every id begins `test.`, every display name begins \"TEST — \", every row carries test:true. Delete this one file and nothing else in the project changes. To promote one to real content, copy the row, drop the test flag, and rename the id.",
- "source": "TEST CONTENT 2026-08-20 — Angela: \"we need to create a test bestiary… a series of different enemies that are somewhat simple… small versions of different features that we have in the game… clearly designated as tests so they can be thrown away later, or duplicated into real.\"",
+ "source": "TEST CONTENT 2026-08-20 — \"we need to create a test bestiary… a series of different enemies that are somewhat simple… small versions of different features that we have in the game… clearly designated as tests so they can be thrown away later, or duplicated into real.\"",
  "units": [
   {
    "test": true,
-   "source": "TEST CONTENT 2026-08-20 — Angela: \"we need to create a test bestiary… a series of different enemies that are somewhat simple… small versions of different features that we have in the game… clearly designated as tests so they can be thrown away later, or duplicated into real.\"",
+   "source": "TEST CONTENT 2026-08-20 — \"we need to create a test bestiary… a series of different enemies that are somewhat simple… small versions of different features that we have in the game… clearly designated as tests so they can be thrown away later, or duplicated into real.\"",
    "id": "test.unit.rat",
    "name": "TEST — Rat",
    "art": "zombie",
@@ -35,7 +35,7 @@
   },
   {
    "test": true,
-   "source": "TEST CONTENT 2026-08-20 — Angela: \"we need to create a test bestiary… a series of different enemies that are somewhat simple… small versions of different features that we have in the game… clearly designated as tests so they can be thrown away later, or duplicated into real.\"",
+   "source": "TEST CONTENT 2026-08-20 — \"we need to create a test bestiary… a series of different enemies that are somewhat simple… small versions of different features that we have in the game… clearly designated as tests so they can be thrown away later, or duplicated into real.\"",
    "id": "test.unit.bruteling",
    "name": "TEST — Bruteling",
    "art": "skeleton",
@@ -66,7 +66,7 @@
   },
   {
    "test": true,
-   "source": "TEST CONTENT 2026-08-20 — Angela: \"we need to create a test bestiary… a series of different enemies that are somewhat simple… small versions of different features that we have in the game… clearly designated as tests so they can be thrown away later, or duplicated into real.\"",
+   "source": "TEST CONTENT 2026-08-20 — \"we need to create a test bestiary… a series of different enemies that are somewhat simple… small versions of different features that we have in the game… clearly designated as tests so they can be thrown away later, or duplicated into real.\"",
    "id": "test.unit.wardling",
    "name": "TEST — Wardling",
    "art": "cultist",
@@ -97,7 +97,7 @@
   },
   {
    "test": true,
-   "source": "TEST CONTENT 2026-08-20 — Angela: \"we need to create a test bestiary… a series of different enemies that are somewhat simple… small versions of different features that we have in the game… clearly designated as tests so they can be thrown away later, or duplicated into real.\"",
+   "source": "TEST CONTENT 2026-08-20 — \"we need to create a test bestiary… a series of different enemies that are somewhat simple… small versions of different features that we have in the game… clearly designated as tests so they can be thrown away later, or duplicated into real.\"",
    "id": "test.unit.flicker",
    "name": "TEST — Flicker",
    "art": "imp",
@@ -128,7 +128,7 @@
   },
   {
    "test": true,
-   "source": "TEST CONTENT 2026-08-20 — Angela: \"we need to create a test bestiary… a series of different enemies that are somewhat simple… small versions of different features that we have in the game… clearly designated as tests so they can be thrown away later, or duplicated into real.\"",
+   "source": "TEST CONTENT 2026-08-20 — \"we need to create a test bestiary… a series of different enemies that are somewhat simple… small versions of different features that we have in the game… clearly designated as tests so they can be thrown away later, or duplicated into real.\"",
    "id": "test.unit.truebearer",
    "name": "TEST — Truebearer",
    "art": "skeletal-archer",
@@ -159,7 +159,7 @@
   },
   {
    "test": true,
-   "source": "TEST CONTENT 2026-08-20 — Angela: \"we need to create a test bestiary… a series of different enemies that are somewhat simple… small versions of different features that we have in the game… clearly designated as tests so they can be thrown away later, or duplicated into real.\"",
+   "source": "TEST CONTENT 2026-08-20 — \"we need to create a test bestiary… a series of different enemies that are somewhat simple… small versions of different features that we have in the game… clearly designated as tests so they can be thrown away later, or duplicated into real.\"",
    "id": "test.unit.swinger",
    "name": "TEST — Swinger",
    "art": "soldier",
@@ -202,7 +202,7 @@
   },
   {
    "test": true,
-   "source": "TEST CONTENT 2026-08-20 — Angela: \"we need to create a test bestiary… a series of different enemies that are somewhat simple… small versions of different features that we have in the game… clearly designated as tests so they can be thrown away later, or duplicated into real.\"",
+   "source": "TEST CONTENT 2026-08-20 — \"we need to create a test bestiary… a series of different enemies that are somewhat simple… small versions of different features that we have in the game… clearly designated as tests so they can be thrown away later, or duplicated into real.\"",
    "id": "test.unit.flailer",
    "name": "TEST — Flailer",
    "art": "zombie",
@@ -245,7 +245,7 @@
   },
   {
    "test": true,
-   "source": "TEST CONTENT 2026-08-20 — Angela: \"we need to create a test bestiary… a series of different enemies that are somewhat simple… small versions of different features that we have in the game… clearly designated as tests so they can be thrown away later, or duplicated into real.\"",
+   "source": "TEST CONTENT 2026-08-20 — \"we need to create a test bestiary… a series of different enemies that are somewhat simple… small versions of different features that we have in the game… clearly designated as tests so they can be thrown away later, or duplicated into real.\"",
    "id": "test.unit.critter",
    "name": "TEST — Critter",
    "art": "vampire",
@@ -289,7 +289,7 @@
   },
   {
    "test": true,
-   "source": "TEST CONTENT 2026-08-20 — Angela: \"we need to create a test bestiary… a series of different enemies that are somewhat simple… small versions of different features that we have in the game… clearly designated as tests so they can be thrown away later, or duplicated into real.\"",
+   "source": "TEST CONTENT 2026-08-20 — \"we need to create a test bestiary… a series of different enemies that are somewhat simple… small versions of different features that we have in the game… clearly designated as tests so they can be thrown away later, or duplicated into real.\"",
    "id": "test.unit.devourer",
    "name": "TEST — Devourer",
    "art": "werewolf",
@@ -333,7 +333,7 @@
   },
   {
    "test": true,
-   "source": "TEST CONTENT 2026-08-20 — Angela: \"we need to create a test bestiary… a series of different enemies that are somewhat simple… small versions of different features that we have in the game… clearly designated as tests so they can be thrown away later, or duplicated into real.\"",
+   "source": "TEST CONTENT 2026-08-20 — \"we need to create a test bestiary… a series of different enemies that are somewhat simple… small versions of different features that we have in the game… clearly designated as tests so they can be thrown away later, or duplicated into real.\"",
    "id": "test.unit.thornback",
    "name": "TEST — Thornback",
    "art": "bone-colossus",
@@ -377,7 +377,7 @@
   },
   {
    "test": true,
-   "source": "TEST CONTENT 2026-08-20 — Angela: \"we need to create a test bestiary… a series of different enemies that are somewhat simple… small versions of different features that we have in the game… clearly designated as tests so they can be thrown away later, or duplicated into real.\"",
+   "source": "TEST CONTENT 2026-08-20 — \"we need to create a test bestiary… a series of different enemies that are somewhat simple… small versions of different features that we have in the game… clearly designated as tests so they can be thrown away later, or duplicated into real.\"",
    "id": "test.unit.bloatling",
    "name": "TEST — Bloatling",
    "art": "zombie",
@@ -425,7 +425,7 @@
   },
   {
    "test": true,
-   "source": "TEST CONTENT 2026-08-20 — Angela: \"we need to create a test bestiary… a series of different enemies that are somewhat simple… small versions of different features that we have in the game… clearly designated as tests so they can be thrown away later, or duplicated into real.\"",
+   "source": "TEST CONTENT 2026-08-20 — \"we need to create a test bestiary… a series of different enemies that are somewhat simple… small versions of different features that we have in the game… clearly designated as tests so they can be thrown away later, or duplicated into real.\"",
    "id": "test.unit.pacer",
    "name": "TEST — Pacer",
    "art": "skeleton",
@@ -468,7 +468,7 @@
   },
   {
    "test": true,
-   "source": "TEST CONTENT 2026-08-20 — Angela: \"we need to create a test bestiary… a series of different enemies that are somewhat simple… small versions of different features that we have in the game… clearly designated as tests so they can be thrown away later, or duplicated into real.\"",
+   "source": "TEST CONTENT 2026-08-20 — \"we need to create a test bestiary… a series of different enemies that are somewhat simple… small versions of different features that we have in the game… clearly designated as tests so they can be thrown away later, or duplicated into real.\"",
    "id": "test.unit.gravecaller",
    "name": "TEST — Gravecaller",
    "art": "necromancer",
@@ -519,7 +519,7 @@
   },
   {
    "test": true,
-   "source": "TEST CONTENT 2026-08-20 — Angela: \"we need to create a test bestiary… a series of different enemies that are somewhat simple… small versions of different features that we have in the game… clearly designated as tests so they can be thrown away later, or duplicated into real.\"",
+   "source": "TEST CONTENT 2026-08-20 — \"we need to create a test bestiary… a series of different enemies that are somewhat simple… small versions of different features that we have in the game… clearly designated as tests so they can be thrown away later, or duplicated into real.\"",
    "id": "test.unit.dreadbrand",
    "name": "TEST — Dreadbrand",
    "art": "cultist",
@@ -567,7 +567,7 @@
   },
   {
    "test": true,
-   "source": "TEST CONTENT 2026-08-20 — Angela: \"we need to create a test bestiary… a series of different enemies that are somewhat simple… small versions of different features that we have in the game… clearly designated as tests so they can be thrown away later, or duplicated into real.\"",
+   "source": "TEST CONTENT 2026-08-20 — \"we need to create a test bestiary… a series of different enemies that are somewhat simple… small versions of different features that we have in the game… clearly designated as tests so they can be thrown away later, or duplicated into real.\"",
    "id": "test.unit.hellsherald",
    "name": "TEST — Hell’s Herald",
    "art": "imp",
@@ -615,7 +615,7 @@
   },
   {
    "test": true,
-   "source": "TEST CONTENT 2026-08-20 — Angela: \"we need to create a test bestiary… a series of different enemies that are somewhat simple… small versions of different features that we have in the game… clearly designated as tests so they can be thrown away later, or duplicated into real.\"",
+   "source": "TEST CONTENT 2026-08-20 — \"we need to create a test bestiary… a series of different enemies that are somewhat simple… small versions of different features that we have in the game… clearly designated as tests so they can be thrown away later, or duplicated into real.\"",
    "id": "test.unit.plaguebell",
    "name": "TEST — Plague Bell",
    "art": "necromancer",
@@ -661,7 +661,7 @@
   },
   {
    "test": true,
-   "source": "TEST CONTENT 2026-08-20 — Angela: \"we need to create a test bestiary… a series of different enemies that are somewhat simple… small versions of different features that we have in the game… clearly designated as tests so they can be thrown away later, or duplicated into real.\"",
+   "source": "TEST CONTENT 2026-08-20 — \"we need to create a test bestiary… a series of different enemies that are somewhat simple… small versions of different features that we have in the game… clearly designated as tests so they can be thrown away later, or duplicated into real.\"",
    "id": "test.unit.cleanser",
    "name": "TEST — Cleanser",
    "art": "priest-armored",
@@ -708,7 +708,7 @@
   },
   {
    "test": true,
-   "source": "TEST CONTENT 2026-08-20 — Angela: \"we need to create a test bestiary… a series of different enemies that are somewhat simple… small versions of different features that we have in the game… clearly designated as tests so they can be thrown away later, or duplicated into real.\"",
+   "source": "TEST CONTENT 2026-08-20 — \"we need to create a test bestiary… a series of different enemies that are somewhat simple… small versions of different features that we have in the game… clearly designated as tests so they can be thrown away later, or duplicated into real.\"",
    "id": "test.unit.channeler",
    "name": "TEST — Channeler",
    "art": "mage-fire",
@@ -757,7 +757,7 @@
   },
   {
    "test": true,
-   "source": "TEST CONTENT 2026-08-20 — Angela: \"we need to create a test bestiary… a series of different enemies that are somewhat simple… small versions of different features that we have in the game… clearly designated as tests so they can be thrown away later, or duplicated into real.\"",
+   "source": "TEST CONTENT 2026-08-20 — \"we need to create a test bestiary… a series of different enemies that are somewhat simple… small versions of different features that we have in the game… clearly designated as tests so they can be thrown away later, or duplicated into real.\"",
    "id": "test.unit.coinflip",
    "name": "TEST — Coinflip",
    "art": "imp",
@@ -811,7 +811,7 @@
   },
   {
    "test": true,
-   "source": "TEST CONTENT 2026-08-20 — Angela: \"we need to create a test bestiary… a series of different enemies that are somewhat simple… small versions of different features that we have in the game… clearly designated as tests so they can be thrown away later, or duplicated into real.\"",
+   "source": "TEST CONTENT 2026-08-20 — \"we need to create a test bestiary… a series of different enemies that are somewhat simple… small versions of different features that we have in the game… clearly designated as tests so they can be thrown away later, or duplicated into real.\"",
    "id": "test.unit.cleaver",
    "name": "TEST — Cleaver",
    "art": "soldier",
@@ -859,7 +859,7 @@
   },
   {
    "test": true,
-   "source": "TEST CONTENT 2026-08-20 — Angela: \"we need to create a test bestiary… a series of different enemies that are somewhat simple… small versions of different features that we have in the game… clearly designated as tests so they can be thrown away later, or duplicated into real.\"",
+   "source": "TEST CONTENT 2026-08-20 — \"we need to create a test bestiary… a series of different enemies that are somewhat simple… small versions of different features that we have in the game… clearly designated as tests so they can be thrown away later, or duplicated into real.\"",
    "id": "test.unit.hunter",
    "name": "TEST — Hunter",
    "art": "werewolf",

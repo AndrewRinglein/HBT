@@ -8,7 +8,7 @@
 // compares the VOCABULARY each side uses: hooks, targeting shapes, ranges, damage types,
 // source stats, stat keys, tags, item classes, statuses, durations and effect verbs.
 // Anything that appears on the new side and NOWHERE else is a thing that was invented for
-// this content, which is exactly what Angela keeps asking about. Exits 1 if it finds any.
+// this content, which is exactly the question this tool exists to answer. Exits 1 if it finds any.
 //
 // It caught three in the Beast class: range written as "ranged" when every other attack
 // states a number of hexes; flight asserted in prose when every other source grants the

@@ -66,7 +66,7 @@ new half uses and nothing else does.
 > when all four existing sources grant the power through the `grants` field; and three
 > weapon-form tags that no rule read and no enchantment applied to. None of those are
 > errors. They are second ways to say things the game already says, which is the thing
-> Angela has spent this whole pass removing.
+> this whole pass has been spent removing.
 
 A flagged value is not automatically wrong — `spirit` shows up as novel for `class.priest`
 because the Priest is genuinely the only class whose attacks scale off it. The tool finds
@@ -175,7 +175,7 @@ can double-click with no image folder next to it.
 
 ## The rule that matters
 
-`audit.mjs` encodes every ruling Angela has made — no flanking, Protection never has a
+`audit.mjs` encodes every ruling made so far — no flanking, Protection never has a
 duration, relics are objects with one good stat and one bad, no bespoke conditions, no
 tag that does not exist, no two things sharing a display name, and the level-table
 invariants. Add a rule there the moment a ruling lands; that is what stops the same

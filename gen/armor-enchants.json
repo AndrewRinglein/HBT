@@ -228,7 +228,7 @@
     }
    ],
    "intent": "It is woven from something that was never quite present, and every miss makes there be less of it to hit.",
-   "source": "Hell-TCG name reused (Rogue, Ghost-Thread Cloak — +2 Dodge / −2 Health scaled to the tier) | 2026-08-20 Angela: onDodge is a new hook. this was on onTakingDamage, which had it backwards — gaining Dodge for being HIT. Moved to onDodge, where the snowball actually snowballs."
+   "source": "Hell-TCG name reused (Rogue, Ghost-Thread Cloak — +2 Dodge / −2 Health scaled to the tier) | 2026-08-20: onDodge is a new hook. this was on onTakingDamage, which had it backwards — gaining Dodge for being HIT. Moved to onDodge, where the snowball actually snowballs."
   },
   {
    "id": "item.wind-blessed-leather",
@@ -290,7 +290,7 @@
     }
    ],
    "intent": "Forty Dodge and a body that pays for every use of it. Almost nothing lands on you, and the parts of you that stepped out of the way do not all come back.",
-   "source": "Hell-TCG name reused (Priest, Wraithform Cloak — +2 Resist / +2 Dodge / −2 Ranged kept as the shape) | 2026-08-20 Angela: the once-a-battle magic-damage veto is replaced with a heal for half the party Magic on taking damage — no flag to store, and it scales off a stat the wearer already cares about. | 2026-08-20 Angela: onDodge is a new hook. Dodge raised to 40 and every dodge costs 2 true damage. NOTE ON PRICE: +40 Dodge is 12 ladder points at tier 2, which only works because the self-damage is the real cost — this item is the reference case for the pattern, not an outlier to fix."
+   "source": "Hell-TCG name reused (Priest, Wraithform Cloak — +2 Resist / +2 Dodge / −2 Ranged kept as the shape) | 2026-08-20: the once-a-battle magic-damage veto is replaced with a heal for half the party Magic on taking damage — no flag to store, and it scales off a stat the wearer already cares about. | 2026-08-20: onDodge is a new hook. Dodge raised to 40 and every dodge costs 2 true damage. NOTE ON PRICE: +40 Dodge is 12 ladder points at tier 2, which only works because the self-damage is the real cost — this item is the reference case for the pattern, not an outlier to fix."
   },
   {
    "id": "item.qi-wraps",
@@ -348,7 +348,7 @@
     }
    ],
    "intent": "You are never quite where the blow lands and you never pay to leave: the longer the fight runs, the harder you are to find and the cheaper it is to be somewhere else.",
-   "source": "Hell-TCG name reused (Gale Shroud — the Gale Force power rebuilt as a miss-triggered step) | 2026-08-17 Angela: CUT. ally-reactive hooks, guarding, Consequence-Stack interference and non-knockback forced movement all removed by ruling. | 2026-08-17 quality pass: the passive +5 Dodge duplicated the stat block. Replaced with freedom from provocation, which is what a gale shroud is for and which nothing else in the armour list grants. | 2026-08-17 Angela: Flight is a granted MOVEMENT ACTION (1 Movement per hex, passes over units and obstructions, takes nothing from the ground on the way, one click). Airwalk is a standing property covering only the hex you END your Turn on. Neither existed in the content. | 2026-08-20 Angela: flight is a granted movement POWER, never a property. Grants power.flight-labored — 2 stamina, Movement -1, which is exactly what the prose said. | 2026-08-20 Angela: onDodge is a new hook. evading teaches you where they are — +10 Accuracy for the Battle each time."
+   "source": "Hell-TCG name reused (Gale Shroud — the Gale Force power rebuilt as a miss-triggered step) | 2026-08-17: CUT. ally-reactive hooks, guarding, Consequence-Stack interference and non-knockback forced movement all removed by ruling. | 2026-08-17 quality pass: the passive +5 Dodge duplicated the stat block. Replaced with freedom from provocation, which is what a gale shroud is for and which nothing else in the armour list grants. | 2026-08-17: Flight is a granted MOVEMENT ACTION (1 Movement per hex, passes over units and obstructions, takes nothing from the ground on the way, one click). Airwalk is a standing property covering only the hex you END your Turn on. Neither existed in the content. | 2026-08-20: flight is a granted movement POWER, never a property. Grants power.flight-labored — 2 stamina, Movement -1, which is exactly what the prose said. | 2026-08-20: onDodge is a new hook. evading teaches you where they are — +10 Accuracy for the Battle each time."
   },
   {
    "id": "item.scorpion-carapace",
@@ -377,7 +377,7 @@
     }
    ],
    "intent": "Chitin plates lashed over a gambeson; whatever hits it comes away with a small hole and a long afternoon.",
-   "source": "Hell-TCG name reused (Scorpion Carapace — the on-hit thorns-and-poison kept as the trigger) | 2026-08-20 Angela: Thorns keyword applied — it wrote the effect longhand and gated it on adjacency.",
+   "source": "Hell-TCG name reused (Scorpion Carapace — the on-hit thorns-and-poison kept as the trigger) | 2026-08-20: Thorns keyword applied — it wrote the effect longhand and gated it on adjacency.",
    "thorns": 2
   },
   {
@@ -404,7 +404,7 @@
     }
    ],
    "intent": "Static in the weave. Hitting it costs something, and that is the whole of what it does.",
-   "source": "Hell-TCG name reused (Stormweave Armor) | 2026-08-17 Angela: removed Resist and Accuracy and the invented magic-reflect; it is Thorns 2 and +2 Health. | 2026-08-20 Angela: THORNS is a keyword now: on taking damage the attacker takes N TRUE damage, at any range. This wrote it longhand, as physical, from an adjacent attacker — all three wrong.",
+   "source": "Hell-TCG name reused (Stormweave Armor) | 2026-08-17: removed Resist and Accuracy and the invented magic-reflect; it is Thorns 2 and +2 Health. | 2026-08-20: THORNS is a keyword now: on taking damage the attacker takes N TRUE damage, at any range. This wrote it longhand, as physical, from an adjacent attacker — all three wrong.",
    "thorns": 2
   },
   {
@@ -435,7 +435,7 @@
     }
    ],
    "intent": "Plate for a person who intends to stand still and read; the longer you refuse to swing, the better your spells land.",
-   "source": "Hell-TCG name reused (Battlemage's Cuirass — +2 Health / Mage +1 Magic rebuilt at tier 2) | 2026-08-17 Angela: the \"if you made no attack this Turn\" condition was a mechanic invented for one armor. Replaced with protection, which already exists."
+   "source": "Hell-TCG name reused (Battlemage's Cuirass — +2 Health / Mage +1 Magic rebuilt at tier 2) | 2026-08-17: the \"if you made no attack this Turn\" condition was a mechanic invented for one armor. Replaced with protection, which already exists."
   },
   {
    "id": "item.troll-gut-vest",
@@ -468,7 +468,7 @@
     }
    ],
    "intent": "It is still trying to knit itself back together, and it has generously included you in that project.",
-   "source": "Hell-TCG name reused (Warrior, Troll-Gut Vest — 'Regen 1/turn' rebuilt as the end-of-Turn heal) | 2026-08-17 Angela: \"took no damage this Turn\" is not a condition the engine has. Split into two ordinary triggers. | 2026-08-20 Angela: rebuilt on the regeneration status rather than flat heals — a score that heals then decays, which is what troll blood should do."
+   "source": "Hell-TCG name reused (Warrior, Troll-Gut Vest — 'Regen 1/turn' rebuilt as the end-of-Turn heal) | 2026-08-17: \"took no damage this Turn\" is not a condition the engine has. Split into two ordinary triggers. | 2026-08-20: rebuilt on the regeneration status rather than flat heals — a score that heals then decays, which is what troll blood should do."
   },
   {
    "id": "item.chains-of-the-faithful",
@@ -501,7 +501,7 @@
     }
    ],
    "intent": "The fire has to go somewhere, and you decided it goes on you. Every swing costs you a little of it.",
-   "source": "Hell-TCG name reused (Martyr, Chains of the Faithful — the Martyr line rebuilt as damage redirection) | 2026-08-17 Angela: CUT. ally-reactive hooks, guarding, Consequence-Stack interference and non-knockback forced movement all removed by ruling. | 2026-08-17 quality pass: replaced a placeholder aura with a distinct effect. | 2026-08-20 Angela: the 1 Burn hung on \"the end of each of your Activations while any ally is standing inside\" — a clock with a condition on it. Moved inside the attack: you swing, you burn. The aura keeps the ally immunity."
+   "source": "Hell-TCG name reused (Martyr, Chains of the Faithful — the Martyr line rebuilt as damage redirection) | 2026-08-17: CUT. ally-reactive hooks, guarding, Consequence-Stack interference and non-knockback forced movement all removed by ruling. | 2026-08-17 quality pass: replaced a placeholder aura with a distinct effect. | 2026-08-20: the 1 Burn hung on \"the end of each of your Activations while any ally is standing inside\" — a clock with a condition on it. Moved inside the attack: you swing, you burn. The aura keeps the ally immunity."
   },
   {
    "id": "item.cloudsteel-plate",
@@ -531,7 +531,7 @@
     }
    ],
    "intent": "Light for plate, which means it is merely very heavy, and it starts every fight with three points you did not have to earn.",
-   "source": "Hell-TCG name reused (Warrior, Cloudsteel Plate — +4 Health / −1 Melee rebuilt as the heavy-band opener) | 2026-08-17 Angela: Protection has no duration — it decays 1 a Turn and by the damage it absorbs. Duration clause removed. | 2026-08-17 Angela: Flight is a granted MOVEMENT ACTION (1 Movement per hex, passes over units and obstructions, takes nothing from the ground on the way, one click). Airwalk is a standing property covering only the hex you END your Turn on. Neither existed in the content.",
+   "source": "Hell-TCG name reused (Warrior, Cloudsteel Plate — +4 Health / −1 Melee rebuilt as the heavy-band opener) | 2026-08-17: Protection has no duration — it decays 1 a Turn and by the damage it absorbs. Duration clause removed. | 2026-08-17: Flight is a granted MOVEMENT ACTION (1 Movement per hex, passes over units and obstructions, takes nothing from the ground on the way, one click). Airwalk is a standing property covering only the hex you END your Turn on. Neither existed in the content.",
    "airwalk": true
   },
   {
@@ -553,7 +553,7 @@
    },
    "triggers": [],
    "intent": "Nothing finds a gap in it because there are no gaps in it, only a great deal of stone and a man somewhere inside.",
-   "source": "Hell-TCG name reused (Sandstone Aegis — rebuilt as the anti-crit plate) | 2026-08-17 Angela: CUT. ally-reactive hooks, guarding, Consequence-Stack interference and non-knockback forced movement all removed by ruling. | 2026-08-20 Angela: a \"+5 Luck\" passive is a stat line, not a standing rule. Moved into statModifiers."
+   "source": "Hell-TCG name reused (Sandstone Aegis — rebuilt as the anti-crit plate) | 2026-08-17: CUT. ally-reactive hooks, guarding, Consequence-Stack interference and non-knockback forced movement all removed by ruling. | 2026-08-20: a \"+5 Luck\" passive is a stat line, not a standing rule. Moved into statModifiers."
   },
   {
    "id": "item.armor-of-thorns",
@@ -582,7 +582,7 @@
     }
    ],
    "intent": "Hitting you is a decision, and it is one the thing hitting you gets to regret at its own pace.",
-   "source": "Hell-TCG name reused (Armor of Thorns — '2 Thorns' ported directly) | 2026-08-20 Angela: THORNS is a keyword now: on taking damage the attacker takes N TRUE damage, at any range. This wrote it longhand, as physical, from an adjacent attacker — all three wrong.",
+   "source": "Hell-TCG name reused (Armor of Thorns — '2 Thorns' ported directly) | 2026-08-20: THORNS is a keyword now: on taking damage the attacker takes N TRUE damage, at any range. This wrote it longhand, as physical, from an adjacent attacker — all three wrong.",
    "thorns": 3
   },
   {
@@ -671,7 +671,7 @@
     }
    ],
    "intent": "You are only really there when you decide to be, and the decision costs you the moment you make it.",
-   "source": "Hell-TCG name reused (Ebony Mask, Cloak of Ghostform — rebuilt as the tier-3 evasion cloak) | 2026-08-17 Angela: CUT. ally-reactive hooks, guarding, Consequence-Stack interference and non-knockback forced movement all removed by ruling. | 2026-08-20 Angela: onDodge is a new hook. the tier-3 version: one miss and nothing else lands that Turn. | 2026-08-20 Angela: nothing counts occurrences — no \"first time\", no Nth hit, no per-Turn or per-Battle tally. \"until you make your first attack\" counted occurrences. Cut; the onDodge is the whole cloak."
+   "source": "Hell-TCG name reused (Ebony Mask, Cloak of Ghostform — rebuilt as the tier-3 evasion cloak) | 2026-08-17: CUT. ally-reactive hooks, guarding, Consequence-Stack interference and non-knockback forced movement all removed by ruling. | 2026-08-20: onDodge is a new hook. the tier-3 version: one miss and nothing else lands that Turn. | 2026-08-20: nothing counts occurrences — no \"first time\", no Nth hit, no per-Turn or per-Battle tally. \"until you make your first attack\" counted occurrences. Cut; the onDodge is the whole cloak."
   },
   {
    "id": "item.phantoms-mantle",
@@ -700,7 +700,7 @@
     }
    ],
    "intent": "Kill something and stop existing; miss and it moves you anyway. It is an argument for never being where you were.",
-   "source": "Hell-TCG name reused (Phantom's Mantle) | 2026-08-17 Angela: CUT. ally-reactive hooks, guarding, Consequence-Stack interference and non-knockback forced movement all removed by ruling. | 2026-08-17 design pass: stealth rewritten to the settled definition — no duration clause, since stealth ends when you attack or use a power and never when you move. | 2026-08-20 Angela: a \"+5 Dodge\" passive is a stat line wearing a trigger. Folded into statModifiers, which is where a flat stat belongs."
+   "source": "Hell-TCG name reused (Phantom's Mantle) | 2026-08-17: CUT. ally-reactive hooks, guarding, Consequence-Stack interference and non-knockback forced movement all removed by ruling. | 2026-08-17 design pass: stealth rewritten to the settled definition — no duration clause, since stealth ends when you attack or use a power and never when you move. | 2026-08-20: a \"+5 Dodge\" passive is a stat line wearing a trigger. Folded into statModifiers, which is where a flat stat belongs."
   },
   {
    "id": "item.skypriests-vestments",
@@ -729,7 +729,7 @@
     }
    ],
    "intent": "Spirit is a party-wide sum, so this is two points for everyone and four fewer Health for exactly one person.",
-   "source": "Hell-TCG name reused (Skypriest's Vestments — Priest +1 Spirit scaled to tier 3) | 2026-08-17 Angela: CUT. ally-reactive hooks, guarding, Consequence-Stack interference and non-knockback forced movement all removed by ruling. | 2026-08-17 quality pass: replaced a placeholder aura with a distinct effect. | 2026-08-17 Angela: Flight is a granted MOVEMENT ACTION (1 Movement per hex, passes over units and obstructions, takes nothing from the ground on the way, one click). Airwalk is a standing property covering only the hex you END your Turn on. Neither existed in the content.",
+   "source": "Hell-TCG name reused (Skypriest's Vestments — Priest +1 Spirit scaled to tier 3) | 2026-08-17: CUT. ally-reactive hooks, guarding, Consequence-Stack interference and non-knockback forced movement all removed by ruling. | 2026-08-17 quality pass: replaced a placeholder aura with a distinct effect. | 2026-08-17: Flight is a granted MOVEMENT ACTION (1 Movement per hex, passes over units and obstructions, takes nothing from the ground on the way, one click). Airwalk is a standing property covering only the hex you END your Turn on. Neither existed in the content.",
    "airwalk": true
   },
   {
@@ -761,7 +761,7 @@
     }
    ],
    "intent": "Seven Movement and a bonus for spending all of it: the only way to wear this badly is to stand somewhere.",
-   "source": "Hell-TCG name reused (Wind Dancer's Cloak — the Wind Leap power rebuilt as movement stats and a trigger) | 2026-08-17: carried a condition the engine has no way to check (did-not-move / made-no-attack / moved-N-hexes). Condition removed and the effect reduced to match. | 2026-08-17: \"difficult terrain\" is not a thing in HoBaT — there are hexes that cost extra Movement. Reworded. | 2026-08-17 Angela: Flight is a granted MOVEMENT ACTION (1 Movement per hex, passes over units and obstructions, takes nothing from the ground on the way, one click). Airwalk is a standing property covering only the hex you END your Turn on. Neither existed in the content. | 2026-08-20 Angela: the shape was already right — a passive that hands you a movement ability. Written properly now as a grant of power.flight rather than prose in a trigger. | 2026-08-20 Angela: onDodge is a new hook. a near miss is momentum: Surge Chance +30 each time."
+   "source": "Hell-TCG name reused (Wind Dancer's Cloak — the Wind Leap power rebuilt as movement stats and a trigger) | 2026-08-17: carried a condition the engine has no way to check (did-not-move / made-no-attack / moved-N-hexes). Condition removed and the effect reduced to match. | 2026-08-17: \"difficult terrain\" is not a thing in HoBaT — there are hexes that cost extra Movement. Reworded. | 2026-08-17: Flight is a granted MOVEMENT ACTION (1 Movement per hex, passes over units and obstructions, takes nothing from the ground on the way, one click). Airwalk is a standing property covering only the hex you END your Turn on. Neither existed in the content. | 2026-08-20: the shape was already right — a passive that hands you a movement ability. Written properly now as a grant of power.flight rather than prose in a trigger. | 2026-08-20: onDodge is a new hook. a near miss is momentum: Surge Chance +30 each time."
   },
   {
    "id": "item.sturdy-runed-leather",
@@ -785,7 +785,7 @@
    },
    "triggers": [],
    "intent": "The runes only wake up when something unholy is in the room, which makes it a very expensive coat on a quiet day.",
-   "source": "Hell-TCG name reused (Warrior, Sturdy Runed Leather — the class line rebuilt as a threat-reactive ward) | 2026-08-17 Angela: a startOfBattle trigger with an ENEMY radius fires on nobody — the two sides do not deploy near each other. Rebuilt as an aura, which is checked continuously. | 2026-08-17: Accuracy is worth about a quarter as a cost, so -5 was not paying for Armor and Resist. | 2026-08-20 Angela: \"when Resist reduces magic damage to 0, heal 1\" is the same branch inside the damage pipeline that was cut from item.mystic-armor. | 2026-08-20 Angela sweep: the aura did two banned things at once — it scanned the whole field counting enemies by tag, and it capped itself at +3. Nothing counts units on the board and there is no stacking-limit feature. The Resist is now flat and lives in the stat block."
+   "source": "Hell-TCG name reused (Warrior, Sturdy Runed Leather — the class line rebuilt as a threat-reactive ward) | 2026-08-17: a startOfBattle trigger with an ENEMY radius fires on nobody — the two sides do not deploy near each other. Rebuilt as an aura, which is checked continuously. | 2026-08-17: Accuracy is worth about a quarter as a cost, so -5 was not paying for Armor and Resist. | 2026-08-20: \"when Resist reduces magic damage to 0, heal 1\" is the same branch inside the damage pipeline that was cut from item.mystic-armor. | 2026-08-20 sweep: the aura did two banned things at once — it scanned the whole field counting enemies by tag, and it capped itself at +3. Nothing counts units on the board and there is no stacking-limit feature. The Resist is now flat and lives in the stat block."
   },
   {
    "id": "item.drakescale-coat",
@@ -845,7 +845,7 @@
    },
    "triggers": [],
    "intent": "Command armour: it does not make you harder to kill, it makes you impossible to keep out of the fight.",
-   "source": "Hell-TCG name reused (Aegis of the Fleet — rebuilt as the party-facing medium) | 2026-08-17 Angela: CUT. ally-reactive hooks, guarding, Consequence-Stack interference and non-knockback forced movement all removed by ruling. | 2026-08-17 quality pass: replaced a placeholder aura with a distinct effect. | 2026-08-17 Angela: Flight is a granted MOVEMENT ACTION (1 Movement per hex, passes over units and obstructions, takes nothing from the ground on the way, one click). Airwalk is a standing property covering only the hex you END your Turn on. Neither existed in the content. | 2026-08-20 Angela: flight is not a property you have, it is a movement action you are granted. This grants power.flight-swift — 0 stamina, moves your Movement + 1."
+   "source": "Hell-TCG name reused (Aegis of the Fleet — rebuilt as the party-facing medium) | 2026-08-17: CUT. ally-reactive hooks, guarding, Consequence-Stack interference and non-knockback forced movement all removed by ruling. | 2026-08-17 quality pass: replaced a placeholder aura with a distinct effect. | 2026-08-17: Flight is a granted MOVEMENT ACTION (1 Movement per hex, passes over units and obstructions, takes nothing from the ground on the way, one click). Airwalk is a standing property covering only the hex you END your Turn on. Neither existed in the content. | 2026-08-20: flight is not a property you have, it is a movement action you are granted. This grants power.flight-swift — 0 stamina, moves your Movement + 1."
   },
   {
    "id": "item.mystic-armor",
@@ -874,7 +874,7 @@
     }
    ],
    "intent": "It is forged rather than sewn, and it gets better the more of your party can read.",
-   "source": "Hell-TCG name reused (Forge Mystic Armor — the crafted result, rebuilt as an item) | 2026-08-20 Angela: the onTakingDamage carried its own branch — it had to know whether Resist was what took the magic damage to zero. Cut. The Protection at battle start is the whole item now."
+   "source": "Hell-TCG name reused (Forge Mystic Armor — the crafted result, rebuilt as an item) | 2026-08-20: the onTakingDamage carried its own branch — it had to know whether Resist was what took the magic damage to zero. Cut. The Protection at battle start is the whole item now."
   },
   {
    "id": "item.patrocoleas-armor",
@@ -909,7 +909,7 @@
     }
    ],
    "intent": "Three points of Armor, a bubble to get you through the opening exchange, and a body that cannot carry any of it.",
-   "source": "Hell-TCG name reused (Patrocolea's Armor — +3 Armor / −3 Health and the Regen kept, dropped from tier 4) | 2026-08-20 Angela: \"the first hit against you each Battle deals no damage\" needed a per-battle flag and a veto inside the damage pipeline. Replaced with 6 Protection at battle start, which is the same idea — a bubble that eats the opening blow — written in a mechanic that already exists. THE NUMBER 6 IS MINE."
+   "source": "Hell-TCG name reused (Patrocolea's Armor — +3 Armor / −3 Health and the Regen kept, dropped from tier 4) | 2026-08-20: \"the first hit against you each Battle deals no damage\" needed a per-battle flag and a veto inside the damage pipeline. Replaced with 6 Protection at battle start, which is the same idea — a bubble that eats the opening blow — written in a mechanic that already exists. THE NUMBER 6 IS MINE."
   },
   {
    "id": "item.chains-of-the-damned",
@@ -935,7 +935,7 @@
    },
    "triggers": [],
    "intent": "Six Health and two Armor bolted onto someone who can barely walk. There is nothing clever here and that is the point.",
-   "source": "Hell-TCG name reused (Chains of the Damned — rebuilt as the cursed heavy) | 2026-08-17 quality pass: the armour said 'nothing gets past' and did nothing about it. A zone-of-control aura added, which is the system the name has always been describing. | 2026-08-17 Angela: every unit has Sidestep, so a zone of control cannot pin anything — it taxes the SECOND hex of a withdrawal, not the first. Reworded to say what it actually does. | 2026-08-20 Angela: the zone-of-control aura is cut — extra Movement cost to leave a hex and a provoked attack on the way out is a subsystem, not a trigger. The armour is its stat line, which is already a big one."
+   "source": "Hell-TCG name reused (Chains of the Damned — rebuilt as the cursed heavy) | 2026-08-17 quality pass: the armour said 'nothing gets past' and did nothing about it. A zone-of-control aura added, which is the system the name has always been describing. | 2026-08-17: every unit has Sidestep, so a zone of control cannot pin anything — it taxes the SECOND hex of a withdrawal, not the first. Reworded to say what it actually does. | 2026-08-20: the zone-of-control aura is cut — extra Movement cost to leave a hex and a provoked attack on the way out is a subsystem, not a trigger. The armour is its stat line, which is already a big one."
   },
   {
    "id": "item.storm-bastion",
@@ -966,7 +966,7 @@
     }
    ],
    "intent": "It exists to be the thing arrows hit, and it is extremely good at being the thing arrows hit.",
-   "source": "Hell-TCG name reused (Storm Bastion — rebuilt as the anti-ranged wall) | 2026-08-17 Angela: CUT. ally-reactive hooks, guarding, Consequence-Stack interference and non-knockback forced movement all removed by ruling. | 2026-08-17 quality pass: replaced a placeholder aura with a distinct effect. | 2026-08-20 Angela: \"and the first enemy to do so each Turn is knocked back\" counted occurrences. Cut; every enemy that stops inside takes the Frost, none are knocked back. | 2026-08-20 Angela sweep: \"reduce all incoming ranged damage by 2\" filtered damage by how it was delivered — ranged is not a damage type, and nothing else in the game reduces damage by delivery. Flat reduction is Toughness, so it is +2 Toughness in the stat block. | 2026-08-20 Angela: the Toughness I put here does not reduce damage. The anti-ranged filter is gone (ranged is not a damage type), so the wall is Armor, which is what stops physical damage — 2 becomes 3."
+   "source": "Hell-TCG name reused (Storm Bastion — rebuilt as the anti-ranged wall) | 2026-08-17: CUT. ally-reactive hooks, guarding, Consequence-Stack interference and non-knockback forced movement all removed by ruling. | 2026-08-17 quality pass: replaced a placeholder aura with a distinct effect. | 2026-08-20: \"and the first enemy to do so each Turn is knocked back\" counted occurrences. Cut; every enemy that stops inside takes the Frost, none are knocked back. | 2026-08-20 sweep: \"reduce all incoming ranged damage by 2\" filtered damage by how it was delivered — ranged is not a damage type, and nothing else in the game reduces damage by delivery. Flat reduction is Toughness, so it is +2 Toughness in the stat block. | 2026-08-20: the Toughness I put here does not reduce damage. The anti-ranged filter is gone (ranged is not a damage type), so the wall is Armor, which is what stops physical damage — 2 becomes 3."
   }
  ],
  "enchants": [
@@ -992,7 +992,7 @@
    "slayer": null,
    "grants": [],
    "intent": "Frost cancels burn on application and amplifies the next physical hit by its value, which makes one point of it worth more than it reads.",
-   "source": "Hell-TCG name reused (Frost Arrows / Frost Touched — generalised off the bow) | 2026-08-20 Angela: onCrit is a real hook now, and this is the standard rider on a status enchantment — a crit deals 2 more of whatever status it already applies. enchant.bloodletting had it first and it is now the pattern."
+   "source": "Hell-TCG name reused (Frost Arrows / Frost Touched — generalised off the bow) | 2026-08-20: onCrit is a real hook now, and this is the standard rider on a status enchantment — a crit deals 2 more of whatever status it already applies. enchant.bloodletting had it first and it is now the pattern."
   },
   {
    "id": "enchant.venomous",
@@ -1021,7 +1021,7 @@
    "slayer": null,
    "grants": [],
    "intent": "Cheap, patient and completely useless against anything with two Resist — which is most of what the late campaign fields.",
-   "source": "Hell-TCG name reused (Venomous / Poison Stars — the on-damage Poison ported directly) | 2026-08-20 Angela: onCrit is a real hook now, and this is the standard rider on a status enchantment — a crit deals 2 more of whatever status it already applies. enchant.bloodletting had it first and it is now the pattern. | 2026-08-20 self-check: +fang. The Beast’s Claws could take this and its Fangs could not, purely because `claw` predated `fang`. Same weapon, same body, same enchant."
+   "source": "Hell-TCG name reused (Venomous / Poison Stars — the on-damage Poison ported directly) | 2026-08-20: onCrit is a real hook now, and this is the standard rider on a status enchantment — a crit deals 2 more of whatever status it already applies. enchant.bloodletting had it first and it is now the pattern. | 2026-08-20 self-check: +fang. The Beast’s Claws could take this and its Fangs could not, purely because `claw` predated `fang`. Same weapon, same body, same enchant."
   },
   {
    "id": "enchant.bloodletting",
@@ -1071,7 +1071,7 @@
    "slayer": null,
    "grants": [],
    "intent": "It only arcs on a crit, so it is worth exactly as much as the Accuracy you are carrying above 100.",
-   "source": "Hell-TCG name reused (Lightning Bracers / Chain Lightning) | 2026-08-20 Angela: reworded \"a second enemy\" to \"another enemy\" — it never meant the second occurrence, and the words invited the wrong reading. | 2026-08-20 self-check: +breath. Breath is the Beast’s magic-ranged form; the enchants that reach a staff reach it."
+   "source": "Hell-TCG name reused (Lightning Bracers / Chain Lightning) | 2026-08-20: reworded \"a second enemy\" to \"another enemy\" — it never meant the second occurrence, and the words invited the wrong reading. | 2026-08-20 self-check: +breath. Breath is the Beast’s magic-ranged form; the enchants that reach a staff reach it."
   },
   {
    "id": "enchant.holy-water",
@@ -1171,7 +1171,7 @@
    "slayer": null,
    "grants": [],
    "intent": "Reach only helps ranged, which is why it lives here — and every crit blows the shot a little further out than the last one.",
-   "source": "Hell-TCG name reused (Gale Arrows) | 2026-08-17 quality pass: the flat +5 Accuracy was worth almost nothing to the veterans who could afford the enchant. Rebuilt to branch on the 100-Accuracy threshold so it is live at both ends of a campaign. | 2026-08-20 Angela: the 100-Accuracy branch is cut. Below 100 it gave +15 Accuracy and above it +3 Crit, which is almost exactly what a flat +20 Accuracy does on its own — the branch bought nothing and cost a rule. And an onAttack that only modifies its own attack is not a trigger at all, because onAttack always fires; that is a stat line. Now a stat line: +20 Accuracy, +1 Reach, plus an onCrit that grows the Reach."
+   "source": "Hell-TCG name reused (Gale Arrows) | 2026-08-17 quality pass: the flat +5 Accuracy was worth almost nothing to the veterans who could afford the enchant. Rebuilt to branch on the 100-Accuracy threshold so it is live at both ends of a campaign. | 2026-08-20: the 100-Accuracy branch is cut. Below 100 it gave +15 Accuracy and above it +3 Crit, which is almost exactly what a flat +20 Accuracy does on its own — the branch bought nothing and cost a rule. And an onAttack that only modifies its own attack is not a trigger at all, because onAttack always fires; that is a stat line. Now a stat line: +20 Accuracy, +1 Reach, plus an onCrit that grows the Reach."
   },
   {
    "id": "enchant.abundant-arrows",
@@ -1192,7 +1192,7 @@
    "slayer": null,
    "grants": [],
    "intent": "It does not make you hit. It makes missing free, which on a crossbow is very nearly the same thing.",
-   "source": "Hell-TCG name reused (Abundant Arrows — the draw effect rebuilt as a Stamina refund) | 2026-08-20 Angela: \"the attack costs 0 Stamina instead of its printed cost\" changes a cost after the fact — nothing else in the game rewrites a printed cost. Refunds a stamina instead, which is the same feeling through a mechanic that exists."
+   "source": "Hell-TCG name reused (Abundant Arrows — the draw effect rebuilt as a Stamina refund) | 2026-08-20: \"the attack costs 0 Stamina instead of its printed cost\" changes a cost after the fact — nothing else in the game rewrites a printed cost. Refunds a stamina instead, which is the same feeling through a mechanic that exists."
   },
   {
    "id": "enchant.magic-arrows",
@@ -1290,7 +1290,7 @@
    "slayer": null,
    "grants": [],
    "intent": "Insurance against the opening spell, and after that it is one point of Resist like everyone else's.",
-   "source": "Hell-TCG name reused (Warded / Warding) | 2026-08-20 Angela: nothing counts occurrences — no \"first time\", no Nth hit, no per-Turn or per-Battle tally. \"the first magic damage you take each Battle is reduced by 3\" was an occurrence count. Replaced with +2 Resist, which reduces magic damage every time instead of once."
+   "source": "Hell-TCG name reused (Warded / Warding) | 2026-08-20: nothing counts occurrences — no \"first time\", no Nth hit, no per-Turn or per-Battle tally. \"the first magic damage you take each Battle is reduced by 3\" was an occurrence count. Replaced with +2 Resist, which reduces magic damage every time instead of once."
   },
   {
    "id": "enchant.ancient-ward",
@@ -1324,7 +1324,7 @@
    "slayer": null,
    "grants": [],
    "intent": "Burn simply stops being a thing that happens to you, which is either the best line on the page or completely dead.",
-   "source": "Hell-TCG name reused (Fire Ward / Fire Shield) | 2026-08-17 Angela, corrected: immunity resolves BEFORE the status does; it is not a second strip. The status still takes its own -1 afterwards.",
+   "source": "Hell-TCG name reused (Fire Ward / Fire Shield) | 2026-08-17 corrected: immunity resolves BEFORE the status does; it is not a second strip. The status still takes its own -1 afterwards.",
    "immunity": {
     "burn": 2
    },
@@ -1369,7 +1369,7 @@
    "slayer": null,
    "grants": [],
    "intent": "Zero stats and a standing tax on melee — the enchant that only pays out when things are going badly.",
-   "source": "Hell-TCG name reused (Armor of Thorns / Wreath of Nature's Protection — Thorns as a portable rider) | 2026-08-20 Angela: THORNS is a keyword now: on taking damage the attacker takes N TRUE damage, at any range. This wrote it longhand, as physical, from an adjacent attacker — all three wrong.",
+   "source": "Hell-TCG name reused (Armor of Thorns / Wreath of Nature's Protection — Thorns as a portable rider) | 2026-08-20: THORNS is a keyword now: on taking damage the attacker takes N TRUE damage, at any range. This wrote it longhand, as physical, from an adjacent attacker — all three wrong.",
    "thorns": 2
   },
   {
@@ -1406,7 +1406,7 @@
    "slayer": null,
    "grants": [],
    "intent": "Luck is already the anti-crit stat — a flat subtraction from the attacker’s crit chance. This is simply a lot of it.",
-   "source": "Hell-TCG name reused (Blessed / Blessing — the corpus's most-repeated word, made into the anti-crit ward) | 2026-08-20 Angela: nothing counts occurrences — no \"first time\", no Nth hit, no per-Turn or per-Battle tally. \"the first critical hit against you each Battle is an ordinary hit\" was both a crit cancel and an occurrence count. Cut. Luck raised 3 to 6, which says the same thing in a stat that already exists."
+   "source": "Hell-TCG name reused (Blessed / Blessing — the corpus's most-repeated word, made into the anti-crit ward) | 2026-08-20: nothing counts occurrences — no \"first time\", no Nth hit, no per-Turn or per-Battle tally. \"the first critical hit against you each Battle is an ordinary hit\" was both a crit cancel and an occurrence count. Cut. Luck raised 3 to 6, which says the same thing in a stat that already exists."
   },
   {
    "id": "enchant.divine-protection",
@@ -1519,7 +1519,7 @@
    },
    "grants": [],
    "intent": "Armor floors at zero, so the shred alone stopped mattering — now the same swing puts four points through the plating regardless, and a crit puts the construct two hexes into whatever is behind it.",
-   "source": "Hell-TCG name reused (Bane Blade / Elemental Bane — the bane family, pointed at constructs) | 2026-08-17 quality pass: Armor shred floors out and left the enchant dead late. Knockback added on crit, so hammers, axes and chains have the effect their form implies. | 2026-08-20 Angela: the construct clause now also deals 4 true damage, which skips Armor and Resist both and so keeps paying after the shred has floored out. Knockback on crit stays."
+   "source": "Hell-TCG name reused (Bane Blade / Elemental Bane — the bane family, pointed at constructs) | 2026-08-17 quality pass: Armor shred floors out and left the enchant dead late. Knockback added on crit, so hammers, axes and chains have the effect their form implies. | 2026-08-20: the construct clause now also deals 4 true damage, which skips Armor and Resist both and so keeps paying after the shred has floored out. Knockback on crit stays."
   },
   {
    "id": "enchant.giant-slayer",
@@ -1543,7 +1543,7 @@
    },
    "grants": [],
    "intent": "You do not kill it. You hamstring it and make it walk to you, which takes a while and is the entire plan.",
-   "source": "Hell-TCG name reused (Monster Slayer — split out onto the giant tag) | 2026-08-20 Angela: \"clean up that movement stuff.\" A one-Turn Movement loss is now the Slow status — apply N Slow. Fourteen entries said this two different ways and every one of them needed the engine to remember whose next Turn it was. Amount unchanged."
+   "source": "Hell-TCG name reused (Monster Slayer — split out onto the giant tag) | 2026-08-20: \"clean up that movement stuff.\" A one-Turn Movement loss is now the Slow status — apply N Slow. Fourteen entries said this two different ways and every one of them needed the engine to remember whose next Turn it was. Amount unchanged."
   },
   {
    "id": "enchant.dragon-slayer",
@@ -1571,7 +1571,7 @@
     "badge.dragon-slayer"
    ],
    "intent": "Bleed is never resisted and a dragon is mostly Resist; the whole enchant is that one sentence.",
-   "source": "Hell-TCG name reused (Dragon Slayer) | 2026-08-20 Angela: Bleed on hit raised 2 to 4, and the campaign Toughness grant became the Dragon Slayer badge, which is a thing that exists rather than a bespoke campaign rider. | 2026-08-20 Angela sweep: the onKill line restated the grants field. The badge is awarded by grants: [badge.dragon-slayer]; saying it again in prose made it look like a bespoke in-battle award, which is the only one in the game."
+   "source": "Hell-TCG name reused (Dragon Slayer) | 2026-08-20: Bleed on hit raised 2 to 4, and the campaign Toughness grant became the Dragon Slayer badge, which is a thing that exists rather than a bespoke campaign rider. | 2026-08-20 sweep: the onKill line restated the grants field. The badge is awarded by grants: [badge.dragon-slayer]; saying it again in prose made it look like a bespoke in-battle award, which is the only one in the game."
   },
   {
    "id": "enchant.ghost-slayer",
@@ -1594,7 +1594,7 @@
    },
    "grants": [],
    "intent": "Ghost was its own type in the old game; here it is two tags and a kill that turns the lights on everywhere at once.",
-   "source": "Hell-TCG name reused (Ghost Slayer — the Ghost type folded into horror and nightmare) | 2026-08-20 Angela: Vision is not something an attacking weapon adds — cut. Slayer raised to +4 against both tags, and the kill now reveals every stealthed enemy on the map. NOTE: there is no tag.ghost; \"ghost\" was folded into horror and nightmare when this was first written, so +4 against ghosts means +4 against both of those."
+   "source": "Hell-TCG name reused (Ghost Slayer — the Ghost type folded into horror and nightmare) | 2026-08-20: Vision is not something an attacking weapon adds — cut. Slayer raised to +4 against both tags, and the kill now reveals every stealthed enemy on the map. NOTE: there is no tag.ghost; \"ghost\" was folded into horror and nightmare when this was first written, so +4 against ghosts means +4 against both of those."
   },
   {
    "id": "enchant.werewolf-bane",

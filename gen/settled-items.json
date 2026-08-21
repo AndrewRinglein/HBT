@@ -1386,7 +1386,7 @@
     "shield"
    ],
    "description": "Gain Protection equal to 4 + your Armor, and lose 5 Dodge for the rest of the Battle. Every use costs another 5 Dodge; the shield only knows one answer and it gets worse at the other one.",
-   "source": "settled content | 2026-08-17 quality pass: '5 protection and +2 Armor for the Turn' was a flat number. Now it scales off Armor and each use permanently trades away Dodge. | 2026-08-20 Angela: \"every use costs another 5 Dodge\" was a per-use escalation. The stat loss is the rest of the Battle either way, so it stacks naturally without a counter. | 2026-08-20 Angela: the escalating cost is back. It needs no counter — a rest-of-Battle stat loss simply applies again each time, and there is no cap on it either.",
+   "source": "settled content | 2026-08-17 quality pass: '5 protection and +2 Armor for the Turn' was a flat number. Now it scales off Armor and each use permanently trades away Dodge. | 2026-08-20: \"every use costs another 5 Dodge\" was a per-use escalation. The stat loss is the rest of the Battle either way, so it stacks naturally without a counter. | 2026-08-20: the escalating cost is back. It needs no counter — a rest-of-Battle stat loss simply applies again each time, and there is no cap on it either.",
    "triggers": [],
    "intent": "The straightforward brace — a flat mitigation bump plus a pool of protection to spend."
   },
@@ -1423,7 +1423,7 @@
     "stance"
    ],
    "description": "Stance: for the rest of the Battle you have +2 Armor and +1 Resist, and lose 3 Movement.",
-   "source": "settled content | 2026-08-17 quality pass: '+3 Armor and +2 Resist for 1 Turn' was a flat, decisionless number. Now permanent, and permanently costs most of your Movement. | 2026-08-20 Angela: \"your Movement is 2 whatever it was\" was a stat OVERRIDE — nothing else in the game replaces a stat rather than modifying it. -3 Movement instead.",
+   "source": "settled content | 2026-08-17 quality pass: '+3 Armor and +2 Resist for 1 Turn' was a flat, decisionless number. Now permanent, and permanently costs most of your Movement. | 2026-08-20: \"your Movement is 2 whatever it was\" was a stat OVERRIDE — nothing else in the game replaces a stat rather than modifying it. -3 Movement instead.",
    "triggers": [],
    "intent": "The heaviest mitigation available at tier 1, sold at the price of ever being somewhere else."
   },
@@ -1442,7 +1442,7 @@
     "area"
    ],
    "description": "Deal magic damage equal to your Magic to every unit in the blast, and those seven hexes become burning. It does not roll to hit, so it cannot crit, and allies caught in it burn too.",
-   "source": "settled content | 2026-08-19: power.fire-master.fireball owns \"Fireball\" — two powers with one name is the worst of the collisions. The staff grants the smaller baseline version. | 2026-08-20 Angela: ground layers are PERSISTENT and carry no number and no clock. A hex is burning or it is not. One layer per hex; applying a different one replaces it. See rule.ground-layers.",
+   "source": "settled content | 2026-08-19: power.fire-master.fireball owns \"Fireball\" — two powers with one name is the worst of the collisions. The staff grants the smaller baseline version. | 2026-08-20: ground layers are PERSISTENT and carry no number and no clock. A hex is burning or it is not. One layer per hex; applying a different one replaces it. See rule.ground-layers.",
    "triggers": [],
    "intent": "The blast is the smaller half; the burning ground it leaves is the real payload."
   },
@@ -1461,7 +1461,7 @@
     "area"
    ],
    "description": "Deal magic damage equal to your Magic to every unit in the blast, and those seven hexes become frost. It does not roll to hit, so it cannot crit.",
-   "source": "settled content | 2026-08-20 Angela: ground layers are PERSISTENT and carry no number and no clock. A hex is burning or it is not. One layer per hex; applying a different one replaces it. See rule.ground-layers.",
+   "source": "settled content | 2026-08-20: ground layers are PERSISTENT and carry no number and no clock. A hex is burning or it is not. One layer per hex; applying a different one replaces it. See rule.ground-layers.",
    "triggers": [],
    "intent": "Seven hexes of frost is seven hexes where the warriors suddenly hit for more."
   },
@@ -1534,7 +1534,7 @@
     "heal"
    ],
    "description": "Heal every ally within 6 hexes for 2 + half your Spirit, rounded down.",
-   "source": "settled content | 2026-08-20 Angela sweep: \"hero\" in a mechanical sentence — the word everywhere else is \"ally\", and an ally shape already exists. Same effect, one vocabulary.",
+   "source": "settled content | 2026-08-20 sweep: \"hero\" in a mechanical sentence — the word everywhere else is \"ally\", and an ally shape already exists. Same effect, one vocabulary.",
    "triggers": [],
    "intent": "Party-wide healing at half the scaling — breadth instead of depth."
   },
@@ -1553,7 +1553,7 @@
     "ranged"
    ],
    "description": "The target hex and every hex adjacent to it become burning. It does not roll to hit, so it cannot crit.",
-   "source": "settled content | 2026-08-20 Angela: ground layers are PERSISTENT and carry no number and no clock. A hex is burning or it is not. One layer per hex; applying a different one replaces it. See rule.ground-layers.",
+   "source": "settled content | 2026-08-20: ground layers are PERSISTENT and carry no number and no clock. A hex is burning or it is not. One layer per hex; applying a different one replaces it. See rule.ground-layers.",
    "triggers": [],
    "intent": "The terrain half of the fire enchant, on a long enough cooldown to be a decision."
   }
@@ -1583,7 +1583,7 @@
     "power.enchant-fire.ignite"
    ],
    "intent": "Burning arrows: a stack on every hit, and once every six Turns a patch of ground that burns on its own.",
-   "source": "settled content | 2026-08-20 Angela: onCrit is a real hook now, and this is the standard rider on a status enchantment — a crit deals 2 more of whatever status it already applies. enchant.bloodletting had it first and it is now the pattern."
+   "source": "settled content | 2026-08-20: onCrit is a real hook now, and this is the standard rider on a status enchantment — a crit deals 2 more of whatever status it already applies. enchant.bloodletting had it first and it is now the pattern."
   },
   {
    "id": "enchant.recklessness",
