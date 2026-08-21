@@ -17,6 +17,7 @@ ghosts, because a clean opaque matte composited at runtime opacity looks better 
 controllable, whereas baked semi-transparency fights every effect layered on top of it.
 """
 import hashlib, json, os, sys
+import numpy as np
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 CONT = os.path.dirname(HERE)
@@ -30,13 +31,49 @@ try:
 except ImportError:
     sys.exit('pillow required: pip install pillow')
 
+# ---------------------------------------------------------------------------
+# THE STATURE LADDER. scale = how many hexes tall the creature stands.
+#
+# A first pass put every creature between 0.6 and 1.6, which is not a size system -
+# a wolf came out nearly as tall as a man and a bone dragon barely taller. Real
+# creature size spans a much wider range and the board should show it. Assign a
+# creature to a rung by what it IS, not by how its card art happens to be cropped.
+#
+# Anchored on human = 1.00.
+# ---------------------------------------------------------------------------
+SIZES = {
+    'tiny':     0.30,   # mites, wisps, familiars - ankle height
+    'small':    0.45,   # wolf, hound, hyena - a four-legged animal
+    'child':    0.60,   # children, halflings
+    'lesser':   0.75,   # imp, goblin, gremlin - small humanoid
+    'human':    1.00,   # the anchor. soldiers, cultists, skeletons, ghosts
+    'large':    1.50,   # werewolf, ogre, troll, brute - looms over a man
+    'huge':     2.20,   # golem, colossus, hulk - twice a man and more
+    'colossal': 2.50,   # dragons, world-enders. spans several hexes.
+}
+
+# A one-tile creature is one whose FEET fit the tile. Its silhouette may overhang into
+# neighbouring hexes - that is correct and desirable for a winged or long-limbed unit.
+# Capping on silhouette WIDTH is wrong: a bone dragon's stance is only ~38% of its own
+# width, so a width cap either clips the wings or shrinks the creature to nothing.
+FOOT_CAP = 0.72          # max ground footprint, in hex-widths
+
+
+def footprint_fraction(im):
+    """How much of the token's width the creature actually plants on, measured from
+    the bottom 12% of the alpha. This is the ground contact, not the silhouette."""
+    a = np.array(im)[:, :, 3] > 128
+    band = a[int(a.shape[0] * 0.88):, :]
+    cols = band.any(0).nonzero()[0]
+    return float((cols.max() - cols.min() + 1) / im.width) if len(cols) else 0.0
+
 
 def main():
     bm = json.load(open(os.path.join(ART, 'bestiary-manifest.json')))
     hexmap = json.load(open(os.path.join(HERE, 'bestiary-hex-map.json')))
     os.makedirs(OUTDIR, exist_ok=True)
 
-    out, missing = {}, []
+    out, missing, wide = {}, [], []
     for uuid, ent in hexmap.items():
         slug = ent['slug']
         if uuid not in bm:
@@ -55,10 +92,37 @@ def main():
         im.resize((WIDTH, h), Image.LANCZOS).save(
             os.path.join(OUTDIR, key), 'WEBP', quality=90)
 
+        # Overflow guard. Scale is set from stature ("a rank-3 dragon should tower"),
+        # but a WIDE creature scaled by HEIGHT can run off the sides of the tile. The
+        # bone-dragon at 1.60 measured 200px across a 190px hex. Catch it here rather
+        # than discovering it on the board, because the bestiary has plenty of wide
+        # silhouettes still to come.
+        # Size category is the normal way to set this. An explicit `scale` overrides
+        # the rung when a creature genuinely does not fit a category.
+        size = ent.get('size')
+        if size and size not in SIZES:
+            missing.append((uuid, f'unknown size "{size}"')); continue
+        stature = ent.get('scale', SIZES.get(size, 1.0))
+        aspect = im.width / im.height
+        ff = footprint_fraction(im)
+        foot_per_scale = aspect * ff * 0.98
+        scale, capped = stature, False
+        if foot_per_scale > 0 and foot_per_scale * stature > FOOT_CAP:
+            scale = FOOT_CAP / foot_per_scale
+            capped = True
+            wide.append((uuid, stature, scale))
+        width_at_scale = aspect * 0.98 * scale
+
         out[uuid] = {
             'hex': key, 'src': src, 'slug': slug,
-            'scale': ent.get('scale', 1.0),          # advisory stature, not baked in
+            'size': size or 'human',
+            'stature': stature,                      # ladder value before the foot cap
+            'scale': round(scale, 3),                # advisory, applied at render time
+            'footprintCapped': capped,
+            'footprint': round(foot_per_scale * scale, 3),   # hex-widths of ground contact
             'render': ent.get('render', 'solid'),    # solid | incorporeal
+            'aspect': round(aspect, 4),
+            'hexWidthAtScale': round(width_at_scale, 3),
             'tiers': {t: f'{slug}_{t}.png' for t in ('full', '1024', '256')},
         }
 
@@ -68,6 +132,9 @@ def main():
           f'-> art/bestiary-hex/ + art/bestiary-hex-manifest.json')
     for uuid, why in missing:
         print(f'  SKIP {uuid}: {why}')
+    for uuid, stat, sc in wide:
+        print(f'  CAPPED {uuid}: stature {stat:.2f} -> {sc:.2f} so its feet fit the tile '
+              f'(silhouette still overhangs, which is fine)')
     return 0
 
 

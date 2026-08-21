@@ -35,7 +35,7 @@ a tag or a status, not a stat.
 | **Movement** | hexes per move action. heroes 5 | +1 · −1 · −2 | −1 is a real cost, not flavour |
 | **Stamina Max** | the throttle. level-1 hero has 5 | +1 · +2 | |
 | **Stamina Regen** | **the sacred stat.** hard-caps ~3 | +1 | almost never grant this |
-| **Surge** | base = character level | rarely modified | grants an extra Activation |
+| **Surge** | base = character level | rarely modified | grants another movement and primary action **inside the same Activation** |
 | **Item Slots** | accessories beyond the two hands | +1 · +2 · −1 | |
 
 **Deathbed Fighting** — derived AND grantable. Starts at `20 + 5×Toughness` (`20 + 5×Toughness + Σ`).
@@ -278,42 +278,56 @@ So content in this area does exactly one of three things:
 not exist yet. It is the standard companion to stabilising and there is no content
 for it. Do not write it until it does.
 
-### Movement actions — what every hero already has
+### Movement powers — a class has at most one, and four have none
 
-**Every hero starts with exactly two movement abilities**, and they spend the
-movement slot:
+**Every hero has Move.** On top of that a class has **at most one** movement power, and
+four classes have none at all. That is a ruling, not an oversight.
 
-| | Cost | Distance | Terrain | Provokes |
-|---|---|---|---|---|
-| **Move** | 1 stamina | up to your Movement | pays each hex's cost | **yes** |
-| **Sidestep** | **0 stamina** | exactly 1 hex, any direction | **cost irrelevant** — step into a 1, 2 or 3 alike | **no** |
+| | Cost | Cooldown | Distance | Extra | Who |
+|---|---|---|---|---|---|
+| **Move** | 1 stamina | — | up to your Movement | pays each hex's cost, **provokes** | everyone |
+| **Sidestep** | **0** | **1** | exactly 1 hex | — | **Paladin** |
+| **Side Roll** | **1** | 0 | exactly 1 hex | — | **Rogue · Ranger** |
+| **Leap** | **2** | 0 | **exactly 2 hexes** | **+2 Strength until the end of your Activation** | **Warrior** |
+| *(none)* | — | — | — | — | **Mage · Priest · Civilian · Beast · every enemy** |
 
-**Disengage is removed from the game.** Sidestep supersedes it on every axis — free
-instead of 1 stamina, any direction instead of directly away, and it ignores terrain
-cost. Nothing should reference Disengage.
+All three ignore the destination's terrain cost and none of them provoke.
 
-**Every unit has Sidestep, enemies included.** This is the single most important
-consequence and it is easy to design past:
+**Mage and Priest having nothing is the design, and it is load-bearing.** Angela,
+2026-08-21: *"it makes a much harsher penalty on mages and priests who get engaged in
+melee, and all the other classes, even the ranger, have more flexibility and options when
+someone's next to them."* A caught caster can Move and provoke, shoot at −20 for firing
+while adjacent, or stand there. The back line being reachable is what makes the front line
+mean anything.
 
-> An enemy standing next to your Warrior can **Sidestep to your Priest** and pay
-> nothing for it — no stamina, no attack of opportunity, whatever the ground costs.
+**So do not hand it back.** Three ways content quietly undoes this ruling, all of them
+easy to write by accident:
 
-**So a zone of control cannot pin anything.** A tank does not lock enemies down; it
-taxes the *second* hex of a withdrawal, not the first. Write zone-of-control content
-as "an enemy that **Moves** out of this hex provokes" and understand that a Sidestep
-slips it for free. Tanking in this game is about **making the step after the
-Sidestep expensive**, not about stopping the Sidestep.
+1. **A power that moves you.** `power.mystic.ghost-walk` and `power.diviner.the-path` both
+   move a caster out of contact for cheap. One per class is texture; a second is the rule
+   repealed.
+2. **Unrestricted gear.** Gale Shroud, Wind Dancer's Cloak and Aegis of the Fleet each
+   grant a flight power with **no `classRestriction`**, so any Mage or Priest can buy the
+   escape the ruling removed. `audit.mjs` flags all three.
+3. **A duration modifier that makes standing still fine.** If being adjacent stops
+   costing a caster anything, the penalty is gone even with no movement written.
 
-Everything else that follows from the free half-step:
+**Leap is the odd one and should stay odd.** It is the only movement power that is an
+*entrance*. Two hexes and a Strength bump that expires at the end of the same Activation —
+it exists to be spent arriving, not leaving, and nothing else in the family should copy it.
 
-- **Do not write content whose value is "the enemy cannot reposition."** They can,
-  once, for free, every Turn.
-- **Knockback 1 is worth less than it looks** — they can sidestep back. Knockback
-  is about *where* they end up, not about denying them a move.
-- **A one-hex penalty is not a real cost.** Effects that cost the target 1 hex of
-  position are shrugged off; effects that cost them 2 or more are real.
-- **Terrain that costs 3 to enter is one free Sidestep away**, so difficult ground
-  slows an *advance*, not an *escape*.
+**Leap uses `until the end of the Turn`, not a new duration.** An Activation is movement
+plus **one** primary action, so *"until the end of your Activation"* would have meant
+exactly the single swing after the leap — and with attacks of opportunity unbuilt, that is
+behaviourally identical to end of the Turn. There was no reason to add a fifth duration to
+say the same thing. The four are: *rest of the Battle* · *until the end of your next Turn* ·
+*until the start of your next Turn* · *until the end of the Turn*.
+
+The two readings **do** diverge once AoO exists — Strength is melee damage only, so after
+your one swing the bonus does nothing unless you swing again, and an attack of opportunity
+during the Enemy Phase is the only way that happens before your next Turn. End-of-Turn is
+the more generous reading and it suits the power: a Warrior who leapt into the middle
+punishes what walks past.
 
 ### Flight and Airwalk — two different things
 
@@ -731,6 +745,23 @@ classes."* Five heroes used to carry `class: null` — four Beasts and one Spiri
 got a class built for them; the Spirit became a Civilian, because **one hero is not a
 class.** `verify-codex.mjs` now fails if any hero is classless, if a hero points at a class
 that does not exist, if a class has fewer than two heroes, or if a class has no level table.
+
+### End of Activation runs ONCE per unit, however many times it surged
+
+Ruled 2026-08-21. **An Activation is the totality of one unit's doing of things** — you
+pick the unit, it moves, it takes its primary action, and when it is finished the
+Activation is over. A **Surge** does not end it and start another; it grants another
+movement and another primary action *inside the same Activation*, and the surge check sits
+**above** the End of Activation ladder.
+
+So an `onActivationEnd` effect fires **once per unit per Phase**. Fourteen entries hang off
+that ladder and eleven of them are sustain — heal 1, heal 2, gain 2 Protection, remove 1
+Weak and 1 Poison. Under the old ordering a surging hero got every one of them twice, on
+top of the free stamina and the free go that the surge already hands out.
+
+**Write End-of-Activation content as if it happens once, because it does.** If you want
+something to scale with how much a hero did, that is a different hook — and probably a
+counter, which does not exist.
 
 ### Vision does not go on a weapon
 

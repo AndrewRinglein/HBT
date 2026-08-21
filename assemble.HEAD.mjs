@@ -38,6 +38,37 @@ const cl=R('classes.json'); out.classes=cl.classes; out.stats=cl.stats; out.art=
 out.levels=R('levels.json');
 // ---- heroes, extracted mechanically from hell-tcg's five creation paths
 out.heroes=R('heroes.json');
+// ---- Angela's hero rulings (settled.json "heroes"): overrides applied onto the
+// mechanically-ported blocks — where she has dictated a block, hers wins
+// (2026-08-20, the Beast redesigns). RESTORED after a concurrent-session
+// clobber the same day; content/ is under git now so the next one is a diff.
+for(const o of (settled.heroes||[])){
+  const h=out.heroes.heroes.find(x=>x.id===o.id);
+  if(!h){ prob.push('settled hero ruling: unknown id '+o.id); continue; }
+  Object.assign(h.ported, o.ported||{});
+  Object.assign(h.derivedBase, o.derivedBase||{});
+  if(o.triggers) h.triggers=o.triggers;
+  if(o.namedSpecials) h.namedSpecials=o.namedSpecials;
+  if(o.attacks) h.attacks=o.attacks;
+  (h.notes=h.notes||[]).push(...(o.notes||[]));
+}
+// ---- the TEST COHORT (settled.json testCohort, Angela 2026-08-20): the standard
+// engine test party — six clones of live heroes plus test enemies, resolved so
+// the Codex renders them and mkenginepack.mjs can export them. A clone copies
+// its source hero at assemble time; tweaks land as overrides on the clone.
+out.testCohort=null;
+if(settled.testCohort){
+  const tc={note:settled.testCohort.note, heroes:[], enemies:settled.testCohort.enemies||[]};
+  for(const t of (settled.testCohort.heroes||[])){
+    const src=out.heroes.heroes.find(x=>x.id===t.copyOf);
+    if(!src){ prob.push('testCohort: unknown copyOf '+t.copyOf); continue; }
+    tc.heroes.push({ ...JSON.parse(JSON.stringify(src)),
+      id:'hero.test.'+t.typeId, typeId:t.typeId, name:t.name, path:'test',
+      copyOf:t.copyOf, engine:t.engine,
+      notes:[...(src.notes||[]), 'TEST COHORT clone of '+t.copyOf+' — tweak here, never the original.'] });
+  }
+  out.testCohort=tc;
+}
 // ---- the function list: the complete vocabulary content is allowed to use
 if(fs.existsSync(G+'functions.json')) out.functions=R('functions.json');
 { const known=new Set(out.classes.map(c=>c.id)); const hid=new Set();

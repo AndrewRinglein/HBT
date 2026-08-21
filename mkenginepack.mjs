@@ -47,6 +47,9 @@ const heroes = D.testCohort.heroes.map((h) => {
     role: e.role, movement: d.movement, reach: p.reach ?? 0,
     maxStamina: d.staminaMax, staminaRegen: d.staminaRegen ?? 1,
     ai: e.ai, attacks: e.attacks || [], abilities: e.abilities || [],
+    // Movement is a granted CHOICE (Angela 2026-08-21) — no default here: a
+    // cohort row without moves should fail the loader, loudly.
+    moves: e.moves,
     attributes: ['hero-test'],
     triggers: [...mapCodexTriggers(h, h.typeId), ...(e.riders || [])],
   };

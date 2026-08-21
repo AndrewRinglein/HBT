@@ -317,7 +317,7 @@
  "shapes": [
   {
    "name": "self",
-   "uses": 140,
+   "uses": 142,
    "ids": [
     "item.loaded-dice-of-mirran",
     "item.mug-of-endless-dregs",
@@ -1304,6 +1304,25 @@
    ]
   },
   {
+   "name": "move WITHOUT provoking",
+   "uses": 13,
+   "ids": [
+    "power.crusader.holy-charge",
+    "power.assassin.dodge-behind",
+    "power.shadowdancer.blink",
+    "power.shadowbound.shadow-step",
+    "power.grand-master.grand-charge",
+    "power.hound.run-them-down",
+    "power.drake.stoop",
+    "power.direbeast.trample",
+    "power.warbeast.charge-together",
+    "power.wyrmling.take-wing",
+    "power.sidestep",
+    "power.side-roll",
+    "power.leap"
+   ]
+  },
+  {
    "name": "Immunity N",
    "uses": 12,
    "ids": [
@@ -1372,23 +1391,6 @@
     "power.wyrmling.molten-scales",
     "enchant.thorned",
     "specialty.direbeast"
-   ]
-  },
-  {
-   "name": "move WITHOUT provoking",
-   "uses": 11,
-   "ids": [
-    "power.crusader.holy-charge",
-    "power.assassin.dodge-behind",
-    "power.shadowdancer.blink",
-    "power.shadowbound.shadow-step",
-    "power.grand-master.grand-charge",
-    "power.hound.run-them-down",
-    "power.drake.stoop",
-    "power.direbeast.trample",
-    "power.warbeast.charge-together",
-    "power.wyrmling.take-wing",
-    "power.sidestep"
    ]
   },
   {
@@ -2512,10 +2514,11 @@
   },
   {
    "name": "until the end of the Turn",
-   "uses": 2,
+   "uses": 3,
    "ids": [
     "item.crows-eye-pendant",
-    "item.brass-spyglass-of-thessan"
+    "item.brass-spyglass-of-thessan",
+    "power.leap"
    ]
   }
  ],

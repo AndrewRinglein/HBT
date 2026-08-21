@@ -11,18 +11,6 @@ if(fs.existsSync('art/manifest.json')){
   const bytes=Object.values(ART_IMG).reduce((n,s)=>n+s.length,0);
   console.log('  art:', Object.keys(ART_IMG).length, 'images inlined,', (bytes/1048576).toFixed(2), 'MB base64');
 }
-// bestiary: live hell-tcg creatures (scan-bestiary.mjs + build-bestiary-art.py), thumbs share the ART_IMG pool
-let BST=[];
-if(fs.existsSync('gen/bestiary.json') && fs.existsSync('art/bestiary-manifest.json')){
-  const bm=JSON.parse(fs.readFileSync('art/bestiary-manifest.json','utf8'));
-  BST=JSON.parse(fs.readFileSync('gen/bestiary.json','utf8'))
-    .map(c=>({uuid:c.uuid,name:c.name,campaign:c.campaign,rank:c.rank,types:c.types,uses:c.uses.length,
-              thumbs:bm[c.uuid]?.thumbs||[],copies:bm[c.uuid]?.copies||[]}));
-  let added=0;
-  for(const c of BST) for(const f of c.thumbs) if(!ART_IMG[f]){
-    ART_IMG[f]='data:image/webp;base64,'+fs.readFileSync('art/thumbs/'+f).toString('base64'); added++; }
-  console.log('  bestiary:', BST.length, 'creatures,', added, 'thumbs inlined');
-}
 const html = String.raw`<!DOCTYPE html>
 <html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>HoBaT Codex — content browser</title>
@@ -115,11 +103,6 @@ input{width:240px}input:focus,select:focus{outline:none;border-color:var(--gold)
 .lvl-n{padding:9px 10px;color:var(--gold);font-weight:bold;font-size:14px;border-right:1px solid var(--border);text-align:center}
 .lvl-n small{display:block;font-size:9px;color:var(--dim);font-weight:normal;letter-spacing:.4px}
 .lvl-b{padding:9px 12px}
-.card.bst{padding:0;overflow:hidden;display:flex;flex-direction:column}
-.bst-art{height:240px;background:#0d0a14;background-size:cover;background-position:top center;border-bottom:1px solid var(--border)}
-.bst-b{padding:8px 12px 10px}
-.bst-sec{color:var(--gold);font-size:16px;margin:22px 0 2px}
-.bst-sub{color:var(--dim);font-size:12px;margin:10px 0 8px;text-transform:uppercase;letter-spacing:.5px}
 .lvl-tbl{background:var(--panel2);border:1px solid var(--border);border-radius:8px;overflow:hidden;margin-bottom:8px}
 .g{display:inline-block;padding:2px 8px;border-radius:9px;font-size:11.5px;margin:2px 4px 2px 0;background:var(--panel);border:1px solid #3a5a3a;color:var(--pos)}
 .g.big{border-color:var(--gold);color:var(--gold)}
@@ -176,14 +159,13 @@ input{width:240px}input:focus,select:focus{outline:none;border-color:var(--gold)
 .atk-s{margin-bottom:4px;line-height:1.9}
 @media(max-width:900px){.wpn{grid-template-columns:1fr}.atk-rows{grid-template-columns:1fr}.wpn-head{border-right:none;border-bottom:1px solid var(--border)}}
 </style></head><body>
-<header><h1>The HoBaT Codex</h1><span class="sub">Heroes of Blight and Tragic &middot; content browser &middot; generated 2026-08-20</span></header>
+<header><h1>The HoBaT Codex</h1><span class="sub">Heroes of Blight and Tragic &middot; content browser &middot; generated 2026-08-17</span></header>
 <nav id="tabs"></nav><main id="main"></main>
 <script>
 const D = ${DATA};
 const GUIDE_MD = ${JSON.stringify(GUIDE)};
 const ART_IMG = ${JSON.stringify(ART_IMG)};
 const ART_OF  = ${JSON.stringify(ART_OF)};
-const BESTIARY = ${JSON.stringify(BST)};
 const artOf = id => ART_IMG[ART_OF[id]] || null;
 function paintArt(root){ root.querySelectorAll('[data-a]').forEach(el=>{
   const u=ART_IMG[el.dataset.a]; if(!u) return;
@@ -541,47 +523,6 @@ const TABS=[
          o.values.map(v=>'<option>'+esc(v)+'</option>').join('')+'</select>').join('')+
        '<span class="lvlpick">Level <input type="range" id="lvH" min="1" max="10" value="1"><b id="lvnH">1</b></span>'+
        '<span class="count" id="cH"></span></div><div class="hgrid" id="gH"></div>'; }},
- {id:'creatures',label:'Bestiary',n:BESTIARY.length,render(){
-   if(!BESTIARY.length) return '<div class="spec-block">No bestiary in this build — run scan-bestiary.mjs + build-bestiary-art.py, then rebuild.</div>';
-   const CAMP={eve:'Eve of Ruin',shadows:'Shadows',skyship:'Skyship'};
-   const RANK={0:'Tutorial',1:'Regular',2:'Elite',3:'Boss'};
-   const RCLS={0:'t0',1:'t1',2:'t2',3:'t3'};
-   const camps=['eve','shadows','skyship'].filter(c=>BESTIARY.some(b=>b.campaign===c));
-   const card=b=>'<div class="card bst">'+
-     (b.thumbs[0]?'<div class="bst-art" data-a="'+b.thumbs[0]+'"></div>':'<div class="noart">no art</div>')+
-     '<div class="bst-b"><h3>'+esc(b.name)+'</h3>'+
-     '<div class="meta">'+(CAMP[b.campaign]||b.campaign)+' &middot; <span class="pill '+RCLS[b.rank]+'">'+RANK[b.rank]+'</span>'+
-       (b.thumbs.length>1?' &middot; '+b.thumbs.length+' art variants':'')+'</div>'+
-     (b.types.length?'<div class="tags">'+b.types.map(t=>'<span class="tag creature">'+esc(t)+'</span>').join('')+'</div>':'')+
-     '<div style="font-size:11px;color:var(--dim);margin-top:5px">fielded in '+b.uses+' encounter'+(b.uses===1?'':'s')+'</div>'+
-     '<div class="id">'+esc(b.uuid)+(b.copies[0]?' &middot; '+esc(b.copies[0]):'')+'</div></div></div>';
-   let h='<div class="rulebox"><b>Live creatures only</b><div>'+
-     'Harvested from hell-tcg: every creature here is fielded by at least one encounter, escalation, or boss pool. '+
-     'Orphaned definitions, dead art, and enemy spell cards are excluded. '+
-     'Full-resolution copies live in <code>assets/bestiary/&lt;campaign&gt;/</code>, named by creature. '+
-     'Rebuild with <code>scan-bestiary.mjs</code> &rarr; <code>build-bestiary-art.py</code> &rarr; <code>build-viewer.mjs</code>.</div></div>'+
-     '<div class="stats">'+camps.map(c=>'<div class="stat"><div class="v">'+BESTIARY.filter(b=>b.campaign===c).length+'</div><div class="l">'+CAMP[c]+'</div></div>').join('')+
-     '<div class="stat"><div class="v">'+BESTIARY.length+'</div><div class="l">creatures</div></div></div>'+
-     '<div class="bar"><input id="qB" placeholder="search&hellip;">'+
-     '<select id="fcB"><option value="">All campaigns</option>'+camps.map(c=>'<option value="'+c+'">'+CAMP[c]+'</option>').join('')+'</select>'+
-     '<select id="frB"><option value="">All ranks</option>'+[1,2,3,0].map(r=>'<option value="'+r+'">'+RANK[r]+'</option>').join('')+'</select>'+
-     '<span class="count" id="cB"></span></div><div id="gB"></div>';
-   setTimeout(()=>{
-     const q=document.getElementById('qB'),fc=document.getElementById('fcB'),fr=document.getElementById('frB'),
-           g=document.getElementById('gB'),c=document.getElementById('cB');
-     const run=()=>{ const t=(q.value||'').toLowerCase();
-       const r=BESTIARY.filter(b=>(!fc.value||b.campaign===fc.value)&&(fr.value===''||b.rank===+fr.value)&&
-         (!t||(b.name+' '+b.uuid+' '+b.types.join(' ')).toLowerCase().includes(t)));
-       g.innerHTML=camps.map(cp=>{
-         const inC=r.filter(b=>b.campaign===cp); if(!inC.length) return '';
-         return '<h2 class="bst-sec">'+CAMP[cp]+' <span style="color:var(--dim);font-size:12px">'+inC.length+'</span></h2>'+
-           [1,2,3,0].map(rk=>{ const inR=inC.filter(b=>b.rank===rk); if(!inR.length) return '';
-             return '<div class="bst-sub">'+RANK[rk]+' &middot; '+inR.length+'</div><div class="grid">'+
-               inR.sort((a,b)=>a.name.localeCompare(b.name)).map(card).join('')+'</div>'; }).join('');
-       }).join('')||'<div class="empty">nothing matches</div>';
-       paintArt(g); c.textContent=r.length+' of '+BESTIARY.length; };
-     q.oninput=run; fc.onchange=run; fr.onchange=run; run(); },0);
-   return h; }},
  {id:'levels',label:'Level Tables',n:(D.levels&&D.levels.classes?D.levels.classes.length:0),render(){
    const L=D.levels, BIG=new Set(['armor','resist','magic','spirit']),
          OFF=new Set([]),

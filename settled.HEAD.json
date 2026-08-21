@@ -203,12 +203,12 @@
   {
    "id": "tag.fang",
    "group": "form",
-   "source": "new 2026-08-20 — weapon-form tags for class.beast's natural weapons. Same kind of vocabulary as axe, spear and claw; `claw` already existed and is reused."
+   "source": "new 2026-08-20 \u2014 weapon-form tags for class.beast's natural weapons. Same kind of vocabulary as axe, spear and claw; `claw` already existed and is reused."
   },
   {
    "id": "tag.breath",
    "group": "form",
-   "source": "new 2026-08-20 — weapon-form tags for class.beast's natural weapons. Same kind of vocabulary as axe, spear and claw; `claw` already existed and is reused."
+   "source": "new 2026-08-20 \u2014 weapon-form tags for class.beast's natural weapons. Same kind of vocabulary as axe, spear and claw; `claw` already existed and is reused."
   }
  ],
  "powers": [
@@ -223,7 +223,7 @@
    "free": true,
    "targets": "self",
    "tags": [],
-   "description": "Gain badge.exhausted and take 5 damage. Surge Chance +100 — a guaranteed extra Activation.",
+   "description": "Gain badge.exhausted and take 5 damage. Surge Chance +100 \u2014 a guaranteed extra Activation.",
    "source": "settled"
   },
   {
@@ -280,7 +280,7 @@
     "heal"
    ],
    "description": "Gain +10 Deathbed Fighting for the rest of the Battle and heal 10.",
-   "source": "settled | 2026-08-20 Angela: \"only if you have stood at least once this Battle\" is an event-history gate — the engine does not remember what you have done. | 2026-08-20 Angela: not in effect as written. It was a passive AND an active in one power, which is a third shape — a power is either a duration modifier on your attacks or a standalone effect. Rewritten as one standalone effect."
+   "source": "settled | 2026-08-20 Angela: \"only if you have stood at least once this Battle\" is an event-history gate \u2014 the engine does not remember what you have done. | 2026-08-20 Angela: not in effect as written. It was a passive AND an active in one power, which is a third shape \u2014 a power is either a duration modifier on your attacks or a standalone effect. Rewritten as one standalone effect."
   },
   {
    "id": "power.berserker.mortal-strikes",
@@ -379,7 +379,7 @@
     "shield"
    ],
    "description": "The target ally gains 5 Protection. You gain 3.",
-   "source": "settled | 2026-08-20 Angela sweep: \"hero\" in a mechanical sentence — the word everywhere else is \"ally\", and an ally shape already exists. Same effect, one vocabulary."
+   "source": "settled | 2026-08-20 Angela sweep: \"hero\" in a mechanical sentence \u2014 the word everywhere else is \"ally\", and an ally shape already exists. Same effect, one vocabulary."
   },
   {
    "id": "power.leader.command",
@@ -393,7 +393,7 @@
    "targets": "one ally within 6 hexes",
    "tags": [],
    "description": "The target ally's Surge Chance +100. It must not have acted yet this Turn.",
-   "source": "settled | 2026-08-20 Angela sweep: \"hero\" in a mechanical sentence — the word everywhere else is \"ally\", and an ally shape already exists. Same effect, one vocabulary."
+   "source": "settled | 2026-08-20 Angela sweep: \"hero\" in a mechanical sentence \u2014 the word everywhere else is \"ally\", and an ally shape already exists. Same effect, one vocabulary."
   },
   {
    "id": "power.leader.leadership",
@@ -423,7 +423,7 @@
    "targets": "one ally within 4 hexes",
    "tags": [],
    "description": "The target ally gains 3 Stamina.",
-   "source": "settled | 2026-08-20 Angela sweep: \"hero\" in a mechanical sentence — the word everywhere else is \"ally\", and an ally shape already exists. Same effect, one vocabulary."
+   "source": "settled | 2026-08-20 Angela sweep: \"hero\" in a mechanical sentence \u2014 the word everywhere else is \"ally\", and an ally shape already exists. Same effect, one vocabulary."
   },
   {
    "id": "power.leader.battle-cry",
@@ -481,7 +481,7 @@
    "targets": "self",
    "tags": [],
    "description": "Free, and it uses your Activation. Gain 2 Stamina, +1 Strength and +1 Movement. Granted by armor.",
-   "source": "settled | 2026-08-20: reworded the opening. \"Free\" here means it does not consume your primary action — it never meant costless, and on an item that also charges stamina the old wording read as though it did. | 2026-08-20 Angela: standardised to \"Free.\" A trinket that does not use your action is a power and appears in the power list, so it uses the same word powers use. The stamina cost is a field, not prose. | 2026-08-20 Angela sweep: \"ACTIVATION.\" in capitals was notation, not a sentence, and the only one in the content."
+   "source": "settled | 2026-08-20: reworded the opening. \"Free\" here means it does not consume your primary action \u2014 it never meant costless, and on an item that also charges stamina the old wording read as though it did. | 2026-08-20 Angela: standardised to \"Free.\" A trinket that does not use your action is a power and appears in the power list, so it uses the same word powers use. The stamina cost is a field, not prose. | 2026-08-20 Angela sweep: \"ACTIVATION.\" in capitals was notation, not a sentence, and the only one in the content."
   },
   {
    "id": "power.regen",
@@ -522,63 +522,17 @@
    "specialty": null,
    "class": null,
    "stamina": 0,
-   "cooldown": 1,
+   "cooldown": 0,
    "warmup": 0,
    "free": false,
    "movementAction": true,
    "universal": true,
    "targets": "self",
    "tags": [],
-   "description": "Move exactly 1 hex in any direction. It provokes nothing, and the destination’s terrain cost is irrelevant — step into a hex costing 1, 2 or 3 alike. Costs no Stamina, and it is usable every other Turn. Paladins only.",
-   "intent": "The free half-step, and the drawback is the wait. On the Turn it is down you can be pinned, which is the whole reason it has a cooldown.",
-   "source": "Angela 2026-08-17. Universal — every hero starts with Move and Sidestep. | 2026-08-17 Angela: enemies have it too. This is the rule that makes zones of control soft. | Angela 2026-08-21: Sidestep gets a cooldown of 1 — \"it does break this statement of 'it's always available.' No, it's available every other turn.\" Enemies lose it entirely (engine/DECISIONS.md 2026-08-21: an enemy carries exactly ONE movement power in its data row). Split into two: Sidestep is free but every other Turn; Side Roll costs 1 Stamina but is always there. Rogues and Rangers take Side Roll by default, everyone else Sidestep. Beasts and Civilians get NEITHER. | Angela 2026-08-21: \"Leap. It'll move you two squares with no attacks of opportunity given. Cost 2 stamina. And give you +2 Strength until the end of your activation. And this one goes on a Warrior. And let's remove the one we gave to Priest and Mage, they both don't get one.\" Sidestep narrows to the Paladin — the Warrior took Leap instead, and Mage and Priest now get nothing.",
-   "universalToAllUnits": false,
-   "grantedToClasses": [
-    "class.paladin"
-   ]
-  },
-  {
-   "id": "power.side-roll",
-   "name": "Side Roll",
-   "specialty": null,
-   "class": null,
-   "stamina": 1,
-   "cooldown": 0,
-   "warmup": 0,
-   "free": false,
-   "movementAction": true,
-   "universal": false,
-   "universalToAllUnits": false,
-   "grantedToClasses": [
-    "class.rogue",
-    "class.ranger"
-   ],
-   "targets": "self",
-   "tags": [],
-   "description": "Move exactly 1 hex in any direction. It provokes nothing, and the destination’s terrain cost is irrelevant — step into a hex costing 1, 2 or 3 alike. It costs 1 Stamina, and there is no cooldown — you can do it every Turn. Rogues and Rangers.",
-   "intent": "The same half-step, priced the other way round. Sidestep is free but makes you wait; Side Roll is always there and you pay for it. A Rogue who wants out every single Turn can have it, at a Stamina a Turn.",
-   "source": "Angela 2026-08-21: Sidestep gets a cooldown of 1 — \"it does break this statement of 'it's always available.' No, it's available every other turn.\" Enemies lose it entirely (engine/DECISIONS.md 2026-08-21: an enemy carries exactly ONE movement power in its data row). Split into two: Sidestep is free but every other Turn; Side Roll costs 1 Stamina but is always there. Rogues and Rangers take Side Roll by default, everyone else Sidestep. Beasts and Civilians get NEITHER."
-  },
-  {
-   "id": "power.leap",
-   "name": "Leap",
-   "specialty": null,
-   "class": null,
-   "stamina": 2,
-   "cooldown": 0,
-   "warmup": 0,
-   "free": false,
-   "movementAction": true,
-   "universal": false,
-   "universalToAllUnits": false,
-   "grantedToClasses": [
-    "class.warrior"
-   ],
-   "targets": "self",
-   "tags": [],
-   "description": "Move exactly 2 hexes in any direction. It provokes nothing, and the destination’s terrain cost is irrelevant. You gain +2 Strength until the end of the Turn. It costs 2 Stamina and there is no cooldown. Warriors only.",
-   "intent": "The only movement power that is an opening rather than an escape. Two hexes gets you INTO the fight and the Strength lands on the swing you take when you arrive. It rides your attacks of opportunity for the rest of the Turn too, once those exist — a Warrior who leaps into the middle punishes everything that walks past.",
-   "source": "Angela 2026-08-21: \"Leap. It'll move you two squares with no attacks of opportunity given. Cost 2 stamina. And give you +2 Strength until the end of your activation. And this one goes on a Warrior. And let's remove the one we gave to Priest and Mage, they both don't get one.\" | 2026-08-21 Angela: \"isn’t the end of activation the same as the end of this turn? I’m not trying to add one.\" An Activation is movement plus ONE primary action, so “until the end of your Activation” is exactly the one swing after the leap — and with attacks of opportunity unbuilt, that is behaviourally identical to end of the Turn today. Using the duration that already exists rather than adding a fifth. The two diverge once AoO is built, and end-of-Turn is the more generous reading, which suits a Warrior that just landed in the middle."
+   "description": "Move exactly 1 hex in any direction. It provokes nothing, and the destination's terrain cost is irrelevant \u2014 step into a hex costing 1, 2 or 3 alike. Costs no Stamina. EVERY UNIT HAS THIS, enemies included.",
+   "intent": "The free half-step. An enemy standing next to your Warrior can sidestep to your Priest and pay nothing for it. Nobody is ever pinned.",
+   "source": "Angela 2026-08-17. Universal \u2014 every hero starts with Move and Sidestep. | 2026-08-17 Angela: enemies have it too. This is the rule that makes zones of control soft.",
+   "universalToAllUnits": true
   },
   {
    "id": "power.flight",
@@ -593,7 +547,7 @@
    "granted": true,
    "targets": "self",
    "tags": [],
-   "description": "Movement action. Move up to your Movement, 1 Movement per hex, passing over units and obstructions and taking nothing from the ground on the way — no terrain cost, no trap, no hex status. Where you LAND is a hex like any other.",
+   "description": "Movement action. Move up to your Movement, 1 Movement per hex, passing over units and obstructions and taking nothing from the ground on the way \u2014 no terrain cost, no trap, no hex status. Where you LAND is a hex like any other.",
    "intent": "One click, straight over everything in between.",
    "source": "Angela 2026-08-20: flight is a granted movement power, never a standing property. Items that used to say \"you have FLIGHT\" grant this."
   },
@@ -629,7 +583,7 @@
    "tags": [],
    "description": "Movement action. Move up to your Movement - 1, 1 Movement per hex, passing over units and obstructions and taking nothing from the ground on the way. Costs 2 Stamina.",
    "intent": "It gets you over the thing in the way and it charges you for the privilege.",
-   "source": "Angela 2026-08-20: the weak rung of the flight ladder — labored 2 stamina and Movement -1, standard 1 stamina and full Movement, swift 0 stamina and Movement +1."
+   "source": "Angela 2026-08-20: the weak rung of the flight ladder \u2014 labored 2 stamina and Movement -1, standard 1 stamina and full Movement, swift 0 stamina and Movement +1."
   },
   {
    "id": "rule.karma-decay",
@@ -668,7 +622,7 @@
    "targets": "a hex",
    "tags": [],
    "triggers": [],
-   "description": "UNIVERSAL RULE, not a power you take. There are four ground layers — burning, frost, poisoned and darkness. A layer is PERSISTENT: it carries no number and no clock, and once it is on a hex it stays there. A hex holds exactly ONE layer. Applying a different layer to a hex REPLACES the one already there.",
+   "description": "UNIVERSAL RULE, not a power you take. There are four ground layers \u2014 burning, frost, poisoned and darkness. A layer is PERSISTENT: it carries no number and no clock, and once it is on a hex it stays there. A hex holds exactly ONE layer. Applying a different layer to a hex REPLACES the one already there.",
    "intent": "The ground is a state, not a countdown. Frost put out a fire because it took the hex, not because it cancelled anything.",
    "source": "Angela 2026-08-20: \"Status effects on terrain are just persistent. No turn tracking, just it is burning or it is frost. The only thing that should replace a ground layer effect is if a different one is applied, it replaces the previous one. The ground can only have one effect on it, and that effect stays.\""
   },
@@ -686,9 +640,9 @@
    "targets": "self",
    "tags": [],
    "triggers": [],
-   "description": "UNIVERSAL RULE, not a power you take. Every summoned unit is given a summon number when it arrives — the first thing summoned is 1, the second is 2, and so on, counted separately for each side. In its own Phase, summoned units activate FIRST, in summon-number order, BEFORE any unit that was already on the field. Summoned heroes go first in the Hero Phase; summoned enemies go first in the Enemy Phase.",
+   "description": "UNIVERSAL RULE, not a power you take. Every summoned unit is given a summon number when it arrives \u2014 the first thing summoned is 1, the second is 2, and so on, counted separately for each side. In its own Phase, summoned units activate FIRST, in summon-number order, BEFORE any unit that was already on the field. Summoned heroes go first in the Hero Phase; summoned enemies go first in the Enemy Phase.",
    "intent": "A summon that arrives and then waits behind everything else is a summon that did nothing. Going first is most of what you paid for.",
-   "source": "Angela 2026-08-20. Written ahead of the summoning system itself, which does not exist yet — see engine/COMBAT-SEQUENCE.md #Summoning."
+   "source": "Angela 2026-08-20. Written ahead of the summoning system itself, which does not exist yet \u2014 see engine/COMBAT-SEQUENCE.md #Summoning."
   }
  ],
  "items": [
@@ -711,7 +665,7 @@
    },
    "description": "Immunity to Burn 1. One point of Burn is removed BEFORE Burn resolves, so that point never gets to deal its damage or halve your healing. The ordinary -1 decay still follows, so Burn falls by 2 a Turn.",
    "intent": "One point of Immunity makes you substantially immune to the thing. That is the whole item.",
-   "source": "Settled content, 2026-08-17 — rebuilt on Angela's Immunity mechanic (was written as a plain End-of-Activation strip, which is half of it). | 2026-08-17 Angela, corrected: immunity resolves BEFORE the status does; it is not a second strip. The status still takes its own -1 afterwards."
+   "source": "Settled content, 2026-08-17 \u2014 rebuilt on Angela's Immunity mechanic (was written as a plain End-of-Activation strip, which is half of it). | 2026-08-17 Angela, corrected: immunity resolves BEFORE the status does; it is not a second strip. The status still takes its own -1 afterwards."
   },
   {
    "id": "item.necklace-of-poison-immunity",
@@ -732,7 +686,7 @@
    },
    "description": "Immunity to Poison 1. One point of Poison is removed BEFORE Poison resolves, so that point never gets to deal its damage. The ordinary -1 decay still follows, so Poison falls by 2 a Turn.",
    "intent": "One point of Immunity makes you substantially immune to the thing. That is the whole item.",
-   "source": "Settled content, 2026-08-17 — rebuilt on Angela's Immunity mechanic (was written as a plain End-of-Activation strip, which is half of it). | 2026-08-17 Angela, corrected: immunity resolves BEFORE the status does; it is not a second strip. The status still takes its own -1 afterwards."
+   "source": "Settled content, 2026-08-17 \u2014 rebuilt on Angela's Immunity mechanic (was written as a plain End-of-Activation strip, which is half of it). | 2026-08-17 Angela, corrected: immunity resolves BEFORE the status does; it is not a second strip. The status still takes its own -1 afterwards."
   },
   {
    "id": "item.necklace-of-weakness-immunity",
@@ -753,7 +707,7 @@
    },
    "description": "Immunity to Weak 1. One point of Weak is removed BEFORE Weak resolves, so that point never gets to reduce the damage you deal. The ordinary -1 decay still follows, so Weak falls by 2 a Turn.",
    "intent": "One point of Immunity makes you substantially immune to the thing. That is the whole item.",
-   "source": "Settled content, 2026-08-17 — rebuilt on Angela's Immunity mechanic (was written as a plain End-of-Activation strip, which is half of it). | 2026-08-17 Angela, corrected: immunity resolves BEFORE the status does; it is not a second strip. The status still takes its own -1 afterwards."
+   "source": "Settled content, 2026-08-17 \u2014 rebuilt on Angela's Immunity mechanic (was written as a plain End-of-Activation strip, which is half of it). | 2026-08-17 Angela, corrected: immunity resolves BEFORE the status does; it is not a second strip. The status still takes its own -1 afterwards."
   },
   {
    "id": "item.necklace-of-frost-immunity",
@@ -774,10 +728,87 @@
    },
    "description": "Immunity to Frost 1. One point of Frost is removed BEFORE Frost resolves, so that point never gets to increase the physical damage you take. The ordinary -1 decay still follows, so Frost falls by 2 a Turn.",
    "intent": "One point of Immunity makes you substantially immune to the thing. That is the whole item.",
-   "source": "Settled content, 2026-08-17 — rebuilt on Angela's Immunity mechanic (was written as a plain End-of-Activation strip, which is half of it). | 2026-08-17 Angela, corrected: immunity resolves BEFORE the status does; it is not a second strip. The status still takes its own -1 afterwards."
+   "source": "Settled content, 2026-08-17 \u2014 rebuilt on Angela's Immunity mechanic (was written as a plain End-of-Activation strip, which is half of it). | 2026-08-17 Angela, corrected: immunity resolves BEFORE the status does; it is not a second strip. The status still takes its own -1 afterwards."
+  },
+  {
+   "id": "item.drake-maw",
+   "name": "Drake's Maw",
+   "itemClass": "weapon",
+   "tier": 2,
+   "hands": 0,
+   "slots": 0,
+   "classRestriction": "class.beast",
+   "tags": [
+    "brawl",
+    "melee",
+    "ranged",
+    "fang",
+    "breath"
+   ],
+   "grants": [
+    "attack.drake.poison-breath",
+    "attack.drake.snap"
+   ],
+   "statModifiers": {},
+   "triggers": [],
+   "intent": "The Green Drake's own body as its arsenal: venom on the breath and on the bite. Not carried, not dropped, no slot.",
+   "source": "2026-08-20 Angela (Green Drake redesign): Poison Breath (precision magic, on hit 3 Poison, 2 Stamina) and Snap (strength, on hit 1 Poison, 1 Stamina)."
   }
  ],
- "attacks": [],
+ "attacks": [
+  {
+   "id": "attack.drake.poison-breath",
+   "name": "Poison Breath",
+   "range": 3,
+   "stat": "precision",
+   "damage": 0,
+   "stamina": 2,
+   "accuracy": 0,
+   "crit": 0,
+   "hits": 1,
+   "targets": "one enemy within 3 hexes",
+   "damageType": "magic",
+   "tags": [
+    "brawl",
+    "ranged",
+    "breath"
+   ],
+   "triggers": [
+    {
+     "hook": "onHit",
+     "effect": "apply 3 Poison"
+    }
+   ],
+   "slayer": null,
+   "source": "2026-08-20 Angela (Green Drake redesign): precision magic damage, on hit applies 3 Poison, costs 2 Stamina. Range 3 carried over from the Breath family; not dictated."
+  },
+  {
+   "id": "attack.drake.snap",
+   "name": "Snap",
+   "range": "melee",
+   "stat": "strength",
+   "damage": 0,
+   "stamina": 1,
+   "accuracy": 0,
+   "crit": 0,
+   "hits": 1,
+   "targets": "one enemy in melee reach",
+   "damageType": "physical",
+   "tags": [
+    "brawl",
+    "melee",
+    "fang"
+   ],
+   "triggers": [
+    {
+     "hook": "onHit",
+     "effect": "apply 1 Poison"
+    }
+   ],
+   "slayer": null,
+   "source": "2026-08-20 Angela (Green Drake redesign): a bite 'or some other name \u2014 disambiguate it': Snap. Strength damage, on hit applies 1 Poison, costs 1 Stamina."
+  }
+ ],
  "enchants": [],
  "specialties": [],
  "statuses": [
@@ -795,7 +826,396 @@
    "shape": "pool",
    "effect": "While you carry Slow, your Movement is reduced by your Slow.",
    "decay": "-1 at End of Phase, like Burn, Poison, Bleed, Weak, Stun and Frost.",
-   "source": "Angela 2026-08-20: \"clean up that movement stuff.\" Fourteen entries said \"the target loses N Movement on its next Turn\" — one meaning, two wordings, and the only per-target clock left in the game. It is a status now, so it decays on the same ladder as everything else and nothing has to remember whose next Turn it is."
+   "source": "Angela 2026-08-20: \"clean up that movement stuff.\" Fourteen entries said \"the target loses N Movement on its next Turn\" \u2014 one meaning, two wordings, and the only per-target clock left in the game. It is a status now, so it decays on the same ladder as everything else and nothing has to remember whose next Turn it is."
+  }
+ ],
+ "testCohort": {
+  "note": "Angela 2026-08-20: the standard engine test party \u2014 six heroes, one per class, COPIED from live Codex heroes so they can be tweaked without touching the originals. Clearly differentiated: test- typeIds, (TEST) names, never ships. The engine reads these through the generated pack (mkenginepack.mjs) \u2014 nothing hand-typed engine-side. Testing-lane riders travel on the cohort and retire one by one as published sources land; the Sky Pirate's own Cutlass bleed already retires test.ranger.serrated-arrows.",
+  "heroes": [
+   {
+    "copyOf": "hero.shadows.oathblade.v1",
+    "typeId": "test-oathblade",
+    "name": "Oathblade (TEST)",
+    "engine": {
+     "role": "melee",
+     "ai": "melee-aggressive",
+     "attacks": [
+      "attack.warrior.massive",
+      "attack.warrior.axe",
+      "attack.punch"
+     ],
+     "abilities": [],
+     "riders": [
+      {
+       "id": "test.warrior.second-wind",
+       "hook": "onTakingDamage",
+       "chance": 100,
+       "select": "self",
+       "effect": {
+        "kind": "status.apply",
+        "statusId": "status.regeneration",
+        "value": 1
+       },
+       "source": "unit.test-oathblade"
+      },
+      {
+       "id": "test.warrior.stagger",
+       "hook": "onDamage",
+       "chance": 20,
+       "select": "target",
+       "effect": {
+        "kind": "status.apply",
+        "statusId": "status.stun",
+        "value": 1
+       },
+       "source": "unit.test-oathblade"
+      },
+      {
+       "id": "test.warrior.brace",
+       "hook": "onTakingDamage",
+       "chance": 50,
+       "select": "self",
+       "effect": {
+        "kind": "status.apply",
+        "statusId": "test.status.ward",
+        "value": 1
+       },
+       "source": "unit.test-oathblade"
+      }
+     ]
+    }
+   },
+   {
+    "copyOf": "hero.skyship.sky-pirate.v1",
+    "typeId": "test-sky-pirate",
+    "name": "Sky Pirate (TEST)",
+    "engine": {
+     "role": "melee",
+     "ai": "melee-aggressive",
+     "attacks": [
+      "attack.warrior.axe",
+      "attack.punch"
+     ],
+     "abilities": [],
+     "riders": []
+    }
+   },
+   {
+    "copyOf": "hero.shadows.dusk-hawk.v1",
+    "typeId": "test-dusk-hawk",
+    "name": "Dusk Hawk (TEST)",
+    "engine": {
+     "role": "ranged",
+     "ai": "ranged-kite",
+     "attacks": [
+      "attack.ranger.bow",
+      "attack.punch"
+     ],
+     "abilities": [],
+     "riders": [
+      {
+       "id": "test.ranger.pin",
+       "hook": "onHit",
+       "chance": 20,
+       "select": "target",
+       "effect": {
+        "kind": "status.apply",
+        "statusId": "test.status.hobble",
+        "value": 1
+       },
+       "source": "unit.test-dusk-hawk"
+      }
+     ]
+    }
+   },
+   {
+    "copyOf": "hero.fixed.air-mage",
+    "typeId": "test-air-mage",
+    "name": "Air Mage (TEST)",
+    "engine": {
+     "role": "ranged",
+     "ai": "ranged-kite",
+     "attacks": [
+      "attack.mage.staff",
+      "attack.mage.strike"
+     ],
+     "abilities": [
+      "power.mage.bolt"
+     ],
+     "riders": [
+      {
+       "id": "test.mage.dampen",
+       "hook": "onHit",
+       "chance": 20,
+       "select": "target",
+       "effect": {
+        "kind": "status.apply",
+        "statusId": "test.status.enfeeble",
+        "value": 1
+       },
+       "source": "unit.test-air-mage"
+      },
+      {
+       "id": "test.mage.arcane-ward",
+       "hook": "onTakingDamage",
+       "chance": 100,
+       "select": "self",
+       "effect": {
+        "kind": "status.apply",
+        "statusId": "status.protection",
+        "value": 3
+       },
+       "source": "unit.test-air-mage"
+      }
+     ]
+    }
+   },
+   {
+    "copyOf": "hero.tutorial.priest-scantily.lucius",
+    "typeId": "test-lucius",
+    "name": "Lucius (TEST)",
+    "engine": {
+     "role": "ranged",
+     "ai": "ranged-kite",
+     "attacks": [
+      "attack.mage.staff",
+      "attack.punch"
+     ],
+     "abilities": [],
+     "riders": []
+    }
+   },
+   {
+    "copyOf": "hero.tutorial.paladin-shiney.osric",
+    "typeId": "test-osric",
+    "name": "Osric (TEST)",
+    "engine": {
+     "role": "melee",
+     "ai": "melee-aggressive",
+     "attacks": [
+      "attack.warrior.axe",
+      "attack.punch"
+     ],
+     "abilities": [],
+     "riders": []
+    }
+   }
+  ],
+  "enemies": [
+   {
+    "typeId": "test-zombie",
+    "name": "Zombie (TEST)",
+    "copyOf": "engine unit 'zombie' (provisional rows, 2026-08-14)",
+    "maxHp": 10,
+    "armor": 0,
+    "resist": 0,
+    "accuracy": 65,
+    "dodge": 0,
+    "strength": 4,
+    "precision": 0,
+    "magic": 0,
+    "spirit": 0,
+    "role": "melee",
+    "movement": 4,
+    "reach": 0,
+    "maxStamina": 0,
+    "staminaRegen": 0,
+    "ai": "dumb-melee",
+    "attacks": [
+     "attack.zombie.basic"
+    ],
+    "abilities": [],
+    "attributes": [
+     "undead"
+    ],
+    "triggers": [
+     {
+      "id": "trigger.zombie.rot",
+      "hook": "onDamage",
+      "chance": 20,
+      "select": "target",
+      "effect": {
+       "kind": "status.apply",
+       "statusId": "status.poison",
+       "value": 1
+      },
+      "source": "unit.test-zombie",
+      "onlyWithAttack": "attack.zombie.basic"
+     },
+     {
+      "id": "test.zombie.sap",
+      "hook": "onDamage",
+      "chance": 20,
+      "select": "target",
+      "effect": {
+       "kind": "status.apply",
+       "statusId": "status.weak",
+       "value": 1
+      },
+      "source": "unit.test-zombie"
+     },
+     {
+      "id": "test.zombie.grasp",
+      "hook": "onHit",
+      "chance": 20,
+      "select": "target",
+      "effect": {
+       "kind": "status.apply",
+       "statusId": "status.slow",
+       "value": 1
+      },
+      "source": "unit.test-zombie"
+     }
+    ]
+   },
+   {
+    "typeId": "test-zombie-burning",
+    "name": "Burning Zombie (TEST)",
+    "copyOf": "engine unit 'zombie-burning' (published 6-BESTIARY 2026-08-20)",
+    "maxHp": 10,
+    "armor": 0,
+    "resist": 0,
+    "accuracy": 65,
+    "dodge": 0,
+    "strength": 4,
+    "precision": 0,
+    "magic": 0,
+    "spirit": 0,
+    "role": "melee",
+    "movement": 4,
+    "reach": 0,
+    "maxStamina": 0,
+    "staminaRegen": 0,
+    "ai": "dumb-melee",
+    "attacks": [
+     "attack.zombie.basic"
+    ],
+    "abilities": [],
+    "attributes": [
+     "undead"
+    ],
+    "triggers": [
+     {
+      "id": "trigger.zombie-burning.sear",
+      "hook": "onTakingDamage",
+      "chance": 100,
+      "select": "target",
+      "effect": {
+       "kind": "status.apply",
+       "statusId": "status.burn",
+       "value": 1
+      },
+      "source": "unit.test-zombie-burning"
+     },
+     {
+      "id": "test.zombie-burning.lurch",
+      "hook": "onDamage",
+      "chance": 15,
+      "select": "target",
+      "effect": {
+       "kind": "status.apply",
+       "statusId": "test.status.daze",
+       "value": 1
+      },
+      "source": "unit.test-zombie-burning"
+     }
+    ]
+   }
+  ]
+ },
+ "heroes": [
+  {
+   "id": "hero.fixed.spirit-snake",
+   "ruled": "2026-08-20",
+   "by": "Angela",
+   "ported": {
+    "strength": 2,
+    "precision": 0,
+    "armor": 0,
+    "health": 4,
+    "resist": 2,
+    "dodge": 50,
+    "magic": 0,
+    "spirit": 0
+   },
+   "derivedBase": {
+    "accuracy": 110,
+    "movement": 8,
+    "staminaMax": 8
+   },
+   "triggers": {
+    "onEnter": [],
+    "onDeath": [],
+    "onAttack": [],
+    "onDamage": [],
+    "onTakingDamage": [],
+    "onKill": [],
+    "turnEnd": [],
+    "onHit": [
+     {
+      "action": "applyPoison",
+      "target": "attacked",
+      "value": 3,
+      "onlyWithAttack": "attack.fangs.bite"
+     }
+    ]
+   },
+   "namedSpecials": [
+    {
+     "name": "Venomous",
+     "description": "onHit your fang attacks apply 3 Poison."
+    }
+   ],
+   "attacks": [
+    "attack.fangs.bite"
+   ],
+   "notes": [
+    "2026-08-20 Angela, full redesign \u2014 the ported block was not her design: Health 4, Dodge 50, Move 8, Accuracy 110, Armor 0, Resist 2, Strength 2, Precision 0, Magic 0, Spirit 0, Stamina 8; venom is 3 Poison on hit. Zero Item Slots and NO weapon slots \u2014 a Beast carries nothing."
+   ]
+  },
+  {
+   "id": "hero.fixed.green-drake",
+   "ruled": "2026-08-20",
+   "by": "Angela",
+   "ported": {
+    "strength": 4,
+    "precision": 3,
+    "armor": 2,
+    "health": 12,
+    "resist": 1,
+    "magic": 0,
+    "spirit": 0
+   },
+   "derivedBase": {
+    "accuracy": 65,
+    "movement": 5
+   },
+   "triggers": {
+    "onEnter": [],
+    "onDeath": [],
+    "onAttack": [],
+    "onDamage": [],
+    "onTakingDamage": [],
+    "onKill": [],
+    "turnEnd": []
+   },
+   "namedSpecials": [
+    {
+     "name": "Flight",
+     "description": "A movement power: move +0 as flight for 1 Stamina (atomic, per the Flight ruling)."
+    },
+    {
+     "name": "Wingborne Stride",
+     "description": "The regular movement power: movement 5 for 1 Stamina."
+    }
+   ],
+   "attacks": [
+    "attack.drake.poison-breath",
+    "attack.drake.snap"
+   ],
+   "notes": [
+    "2026-08-20 Angela, full redesign \u2014 the ported block (and Dragon Fire) was not her design: Health 12, Armor 2, Resist 1, Strength 4, Precision 3, Magic 0, Spirit 0, Accuracy 65; reach 2. Two movement powers: Flight (+0 move, 1 Stamina) and regular (movement 5, 1 Stamina). Attacks: Poison Breath and Snap. Zero Item Slots and no weapon slots."
+   ]
   }
  ]
 }
