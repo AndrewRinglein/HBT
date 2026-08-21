@@ -1,6 +1,6 @@
 ---
 name: iron-gauntlet
-description: The landing loop for the Heroes of Blight and Tragic combat engine. Use before and during ANY work in engine/ — adding or fixing a mechanic, status, unit, terrain, trigger, ability, AI mode or movement power; working the backlog; landing, abandoning, or reviewing an item; or answering "what should I work on next". Covers the gate, the pre-flight checks, the exemption discipline, the stopping rules, and which sibling skill to hand off to.
+description: Iron Gauntlet — the landing loop for the Heroes of Blight and Tragic combat engine. Use ONLY when working inside that project's engine/ folder — adding or fixing a game mechanic, status, unit, terrain, trigger, ability, AI mode or movement power; running tools/gate.mjs, tools/next.mjs or tools/audit-all.mjs; or landing, abandoning or reviewing an item in .state/backlog.json. Covers the gate, the pre-flight checks, the exemption discipline, the stopping rules, and which sibling skill to hand off to. Not applicable to any other project.
 ---
 
 # The Iron Gauntlet
