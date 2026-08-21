@@ -8,6 +8,9 @@ import { TERRAIN } from '../src/core/types.js'
 import { createCustomBattle } from '../src/core/setup.js'
 import { applyStatus, valueOf } from '../src/core/status.js'
 import { executeMove, reachable, pathTo } from '../src/core/movement.js'
+// executeMove takes the chosen movement power since 2026-08-21 (Law 10:
+// movement became a content-driven CHOICE — same walk, now named).
+import { MOVES } from '../src/content/moves.js'
 import { runBattle } from '../src/core/battle.js'
 import { beginActivation } from '../src/core/mutate.js'
 import { hexId, neighboursOf } from '../src/core/hex.js'
@@ -48,7 +51,7 @@ describe('water cleanses', () => {
     beginActivation(ctx, w.id, 'test')   // movePointsLeft is granted per activation
     const path = pathTo(reachable(ctx, w), w.hex, water)
     expect(path.length).toBeGreaterThan(0)
-    executeMove(ctx, w.id, path)
+    executeMove(ctx, w.id, path, MOVES['power.move']!)
     expect(w.hex).toBe(water)
     expect(valueOf(w, 'status.burn')).toBe(2)   // entry stripped exactly 1
   })

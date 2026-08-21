@@ -4,7 +4,11 @@
 
 import { distance } from './../core/hex.js'
 import type { HexId } from './../core/hex.js'
-import { executeMove, livingEnemies, nearestEnemy, pathTo, reachable } from './../core/movement.js'
+import { executeFlight, executeMove, executeSidestep, flightLandings, livingEnemies, movePowerOf, moveStaminaCost, nearestEnemy, occupancy, pathTo, reachable, usableMoves } from './../core/movement.js'
+import type { Reach } from './../core/movement.js'
+import type { MoveDef } from './../core/types.js'
+import { isPassable } from './../content/maps.js'
+import { neighboursOf } from './../core/hex.js'
 import { canAttack, performAttack, reachOf } from './../core/pipeline.js'
 import { canUsePower, previewPower, usePower } from './../core/ability.js'
 import { reachBonusOf } from './../content/maps.js'
@@ -62,6 +66,29 @@ function bestAttack(ctx: Ctx, attackerId: number, targetId: number): string | nu
   return null
 }
 
+/**
+ * The fallback when the walk power is unaffordable: a granted sidestep-shaped
+ * power moves one hex toward `dest` — Angela 2026-08-21, movement is a CHOICE
+ * among granted powers, and the free one is what a stamina-starved unit still
+ * has. Only steps if it strictly shortens the distance (a sideways shuffle is
+ * noise, not progress). Ties break on lower HexId (Law 6).
+ */
+function sidestepToward(ctx: Ctx, u: Unit, dest: HexId): boolean {
+  const power = movePowerOf(ctx, u, 'sidestep')
+  if (!power) return false
+  const occ = occupancy(ctx)
+  const d0 = distance(u.hex, dest)
+  let best: HexId | null = null
+  let bestD = d0
+  for (const n of [...neighboursOf(u.hex)].sort((a, b) => a - b)) {
+    if (occ.has(n) || !isPassable(ctx.state.terrain[n] ?? 0)) continue
+    const d = distance(n, dest)
+    if (d < bestD) { bestD = d; best = n }
+  }
+  if (best === null) return false
+  return executeSidestep(ctx, u.id, best, power)
+}
+
 function idle(ctx: Ctx, u: Unit, reason: string): void {
   emit(ctx, 'activation.idle', `ai.${u.ai}`, { actor: u.id, reason })
 }
@@ -94,14 +121,22 @@ function dumbMelee(ctx: Ctx, u: Unit): void {
   if (!target) return
 
   if (distance(u.hex, target.hex) > 1) {
-    const reach = reachable(ctx, u)
-    let bestHex: HexId | null = null
-    let bestD = distance(u.hex, target.hex)
-    for (const [hex] of [...reach].sort((a, b) => a[0] - b[0])) {
-      const d = distance(hex, target.hex)
-      if (d < bestD) { bestD = d; bestHex = hex }
+    // The movement CHOICE (2026-08-21): first affordable path-shaped power in
+    // the unit's declared order; a stamina-starved unit falls back to its free
+    // sidestep rather than standing refused.
+    const walk = movePowerOf(ctx, u, 'path')
+    if (walk) {
+      const reach = reachable(ctx, u, walk.budgetMod)
+      let bestHex: HexId | null = null
+      let bestD = distance(u.hex, target.hex)
+      for (const [hex] of [...reach].sort((a, b) => a[0] - b[0])) {
+        const d = distance(hex, target.hex)
+        if (d < bestD) { bestD = d; bestHex = hex }
+      }
+      if (bestHex !== null) executeMove(ctx, u.id, pathTo(reach, u.hex, bestHex), walk)
+    } else {
+      sidestepToward(ctx, u, target.hex)
     }
-    if (bestHex !== null) executeMove(ctx, u.id, pathTo(reach, u.hex, bestHex))
   }
   if (u.lifeState !== 'standing') return
   // Swing at whatever is IN REACH, not merely adjacent (found landing
@@ -122,7 +157,16 @@ function meleeAggressive(ctx: Ctx, u: Unit): void {
   if (enemies.length === 0) return
 
   if (adjacentEnemies(ctx, u).length === 0) {
-    const reach = reachable(ctx, u)
+    const walk = movePowerOf(ctx, u, 'path')
+    if (!walk) {
+      // No affordable walk — the free sidestep (if granted) closes one hex.
+      const nearest = nearestEnemy(ctx, u)
+      if (nearest) sidestepToward(ctx, u, nearest.hex)
+      if (u.lifeState !== 'standing') return
+      if (!attackIfPossible(ctx, u, adjacentEnemies(ctx, u))) idle(ctx, u, 'could not reach an enemy')
+      return
+    }
+    const reach = reachable(ctx, u, walk.budgetMod)
     const hexes = [...reach.keys()].sort((a, b) => a - b)
 
     // Prefer ending adjacent to the weakest enemy we can actually reach.
@@ -144,7 +188,7 @@ function meleeAggressive(ctx: Ctx, u: Unit): void {
         if (d < bestD) { bestD = d; bestHex = h }
       }
     }
-    if (bestHex !== null) executeMove(ctx, u.id, pathTo(reach, u.hex, bestHex))
+    if (bestHex !== null) executeMove(ctx, u.id, pathTo(reach, u.hex, bestHex), walk)
   }
   if (u.lifeState !== 'standing') return
   if (!attackIfPossible(ctx, u, adjacentEnemies(ctx, u))) idle(ctx, u, 'could not reach an enemy')
@@ -183,23 +227,61 @@ function rangedKite(ctx: Ctx, u: Unit): void {
   }
 
   const here = scoreOf(u.hex)
-  if (u.stamina > RESERVE) {
-    const reach = reachable(ctx, u)
-    let bestHex: HexId | null = null
+  // The movement CHOICE (2026-08-21): a kiter walks when it can afford the
+  // walk AND the shot (the shot is the point); when it cannot, the free
+  // sidestep still buys one hex of safety or line — which is exactly what the
+  // old `ai.denied reason: stamina` line was wishing it had.
+  // Every affordable full-move power competes on the same score — path powers
+  // offer their walk-reach, flight powers their landing set (the drake's
+  // wings, 2026-08-21). Powers are tried in the unit's DECLARED order and a
+  // later candidate must strictly beat the standing best (Law 6: ties go to
+  // the earlier grant), so a unit granted only the walk behaves exactly as
+  // before this existed.
+  const movers = usableMoves(ctx, u).filter(
+    (m) => (m.shape === 'path' || m.shape === 'flight') && u.stamina >= moveStaminaCost(u, m) + RESERVE,
+  )
+  if (movers.length > 0) {
+    let plan: { power: MoveDef; hex: HexId; reach?: Reach } | null = null
     let best = here
-    for (const h of [...reach.keys()].sort((a, b) => a - b)) {
-      const sc = scoreOf(h)
-      if (better(sc, best)) { best = sc; bestHex = h }
+    for (const m of movers) {
+      if (m.shape === 'path') {
+        const reach = reachable(ctx, u, m.budgetMod)
+        for (const h of [...reach.keys()].sort((a, b) => a - b)) {
+          const sc = scoreOf(h)
+          if (better(sc, best)) { best = sc; plan = { power: m, hex: h, reach } }
+        }
+      } else {
+        for (const h of flightLandings(ctx, u, m)) {
+          const sc = scoreOf(h)
+          if (better(sc, best)) { best = sc; plan = { power: m, hex: h } }
+        }
+      }
     }
-    if (bestHex !== null) {
-      const terr = ctx.state.terrain[bestHex] ?? 0
-      if (terr === TERRAIN.HILLS) emit(ctx, 'ai.tookHighGround', `ai.${u.ai}`, { actor: u.id, hex: bestHex })
-      executeMove(ctx, u.id, pathTo(reach, u.hex, bestHex))
+    if (plan) {
+      const terr = ctx.state.terrain[plan.hex] ?? 0
+      if (terr === TERRAIN.HILLS) emit(ctx, 'ai.tookHighGround', `ai.${u.ai}`, { actor: u.id, hex: plan.hex })
+      if (plan.reach) executeMove(ctx, u.id, pathTo(plan.reach, u.hex, plan.hex), plan.power)
+      else executeFlight(ctx, u.id, plan.hex, plan.power)
     }
-  } else if (here[0] === 0 || here[1] === 0) {
-    emit(ctx, 'ai.denied', `ai.${u.ai}`, {
-      actor: u.id, wanted: 'reposition', reason: 'stamina', stamina: u.stamina,
-    })
+  } else {
+    const power = movePowerOf(ctx, u, 'sidestep')
+    let stepped = false
+    if (power) {
+      const occ = occupancy(ctx)
+      let bestHex: HexId | null = null
+      let best = here
+      for (const n of [...neighboursOf(u.hex)].sort((a, b) => a - b)) {
+        if (occ.has(n) || !isPassable(ctx.state.terrain[n] ?? 0)) continue
+        const sc = scoreOf(n)
+        if (better(sc, best)) { best = sc; bestHex = n }
+      }
+      if (bestHex !== null) stepped = executeSidestep(ctx, u.id, bestHex, power)
+    }
+    if (!stepped && (here[0] === 0 || here[1] === 0)) {
+      emit(ctx, 'ai.denied', `ai.${u.ai}`, {
+        actor: u.id, wanted: 'reposition', reason: 'stamina', stamina: u.stamina,
+      })
+    }
   }
   if (u.lifeState !== 'standing') return
 

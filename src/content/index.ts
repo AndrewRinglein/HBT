@@ -146,6 +146,10 @@ const RAW_UNITS: Readonly<Record<string, UnitDef>> = {
     ai: 'dumb-melee',
     attacks: ['attack.zombie.basic'],
     abilities: [],
+    // ONE movement power per enemy row (Angela 2026-08-21); power.move is
+    // universal to all units (Codex) and enemies pay no stamina for it —
+    // stamina is the hero throttle.
+    moves: ['power.move'],
     attributes: ['undead'],
   },
   'zombie-burning': {
@@ -178,6 +182,7 @@ const RAW_UNITS: Readonly<Record<string, UnitDef>> = {
     ai: 'dumb-melee',
     attacks: ['attack.zombie.basic'],
     abilities: [],
+    moves: ['power.move'],
     attributes: ['undead'],
   },
   'spirit-snake': {
@@ -206,6 +211,9 @@ const RAW_UNITS: Readonly<Record<string, UnitDef>> = {
     ai: 'melee-aggressive',
     attacks: ['attack.fangs.bite'],
     abilities: [],
+    // A hero, but a BEAST: "Beasts and Civilians get neither" Sidestep nor
+    // Side Roll (Angela 2026-08-21, Codex sidestep ruling).
+    moves: ['power.move'],
     attributes: ['beast'],
   },
   'shadow-hound-puppy': {
@@ -233,6 +241,7 @@ const RAW_UNITS: Readonly<Record<string, UnitDef>> = {
     ai: 'melee-aggressive',
     attacks: ['attack.fangs.bite'],
     abilities: [],
+    moves: ['power.move'],
     attributes: ['beast'],
   },
   'green-drake': {
@@ -268,6 +277,12 @@ const RAW_UNITS: Readonly<Record<string, UnitDef>> = {
     ai: 'ranged-kite',
     attacks: ['attack.drake.poison-breath', 'attack.drake.snap'],
     abilities: [],
+    // Angela dictated the drake exactly TWO movement powers (2026-08-20), in
+    // this order: "a flight movement power that moves +0 and costs 1 stamina"
+    // (= the ladder's standard rung) and a regular move. Beasts get neither
+    // Sidestep nor Side Roll (Codex 2026-08-21). Declared order is AI
+    // preference order — ties go to the wings.
+    moves: ['power.flight', 'power.move'],
     attributes: ['beast', 'dragon'],
   },
   warrior: {
@@ -307,6 +322,9 @@ const RAW_UNITS: Readonly<Record<string, UnitDef>> = {
     // Ordered by preference. The AI takes the first it can afford.
     attacks: ['attack.warrior.massive', 'attack.warrior.axe', 'attack.punch'],
     abilities: [],
+    // Warrior class: Move + Sidestep (Codex 2026-08-21 — Sidestep to
+    // Warrior/Mage/Priest/Paladin; Rogues and Rangers take Side Roll).
+    moves: ['power.move', 'power.sidestep'],
     attributes: [],
   },
   ranger: {
@@ -327,6 +345,8 @@ const RAW_UNITS: Readonly<Record<string, UnitDef>> = {
     ai: 'ranged-kite',
     attacks: ['attack.ranger.bow', 'attack.punch'],
     abilities: [],
+    // Ranger class takes Side Roll, not Sidestep (Codex 2026-08-21).
+    moves: ['power.move', 'power.side-roll'],
     attributes: [],
   },
   mage: {
@@ -356,6 +376,7 @@ const RAW_UNITS: Readonly<Record<string, UnitDef>> = {
     ai: 'ranged-kite',
     attacks: ['attack.mage.staff', 'attack.mage.strike'],
     abilities: ['power.mage.bolt'],
+    moves: ['power.move', 'power.sidestep'],
     attributes: [],
   },
 }

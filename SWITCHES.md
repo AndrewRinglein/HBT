@@ -184,3 +184,17 @@ Snake redesign). Fangs cost their Codex Stam 1; the drake's Breath costs 2 and
 Snap costs 1, all dictated. No enemy wields a natural weapon in the standard
 battles any more, so the 0-stamina-enemy conflict never arises; if one ever
 does, enemies-don't-run-stamina wins and the cost is waived enemy-side.
+
+## sidestepUnderFullSlow
+
+**Question.** Can a unit Slowed to 0 movement points still Sidestep / Side
+Roll? The published Sidestep rule says the destination's terrain cost is
+irrelevant, and Slow's rule says a 0-point unit "still acts from where it
+stands" — neither says whether the half-step survives full Slow.
+
+**Default: YES** — a sidestep-shaped power never consults the movement-point
+budget at all (the slot is the price, not the points), so full Slow does not
+block it. This reads the "terrain cost is irrelevant" clause as "points are
+not this power's currency". The other path (require 1 point) stays one line
+away in `executeSidestep` if a sweep or a ruling wants it. *(2026-08-21,
+landing movement.powers.)*

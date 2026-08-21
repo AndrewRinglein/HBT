@@ -59,7 +59,10 @@ function runPhase(ctx: Ctx, phase: Phase): void {
  * turn. (The old early-return on empty strips is gone: it would have silently
  * eaten the applies rung on strip-free terrain.)
  */
-function endOfActivation(ctx: Ctx, unitId: number): void {
+// Exported 2026-08-21 (landing movement.flight) so tests can prove the rung
+// fires on a flight LANDING — "where you LAND is a hex like any other". No
+// behaviour change; the loop below calls it exactly as before.
+export function endOfActivation(ctx: Ctx, unitId: number): void {
   const u = ctx.state.units[unitId]!
   if (u.lifeState !== 'standing') return
   const t = ctx.state.terrain[u.hex] ?? 0

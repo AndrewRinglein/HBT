@@ -3,6 +3,7 @@ import { createBattle } from '../src/core/setup.js'
 import { runBattle } from '../src/core/battle.js'
 import { UNITS, ATTACKS, ABILITIES } from '../src/content/index.js'
 import { STATUSES } from '../src/content/statuses.js'
+import { MOVES } from '../src/content/moves.js'
 import { accuracyBonusOf, dodgeBonusOf, reachBonusOf, terrainOf } from '../src/content/maps.js'
 import { distance } from '../src/core/hex.js'
 
@@ -73,9 +74,17 @@ describe('independent audit of logged battles', () => {
             const t = UNITS[type.get(e.actor!)!]!
             // one hex per point, and never more than the unit's movement
             expect(distance(e['from'] as number, e['to'] as number), 'a step is one hex').toBe(1)
-            expect(e['cost']).toBe(terr[e['to'] as number] === 1 ? 2 : 1)
+            // The auditor learned the movement CHOICE 2026-08-21 (Law 10:
+            // rule widened, not weakened): every moved event now names its
+            // power as causeId, and a sidestep-shaped power ignores terrain
+            // cost BY THE PUBLISHED RULE ("the destination's terrain cost is
+            // irrelevant"), so its recomputed cost is 0. A path-shaped move
+            // still pays the terrain, recomputed from the board as before.
+            const shape = MOVES[e.causeId]?.shape
+            expect(shape, `moved must be caused by a movement power (got '${e.causeId}')`).toBeDefined()
+            expect(e['cost']).toBe(shape === 'sidestep' ? 0 : terr[e['to'] as number] === 1 ? 2 : 1)
             expect(e['movePointsLeft'] as number).toBeGreaterThanOrEqual(0)
-            expect(e['movePointsLeft'] as number).toBeLessThanOrEqual(t.movement - 1)
+            expect(e['movePointsLeft'] as number).toBeLessThanOrEqual(t.movement - (shape === 'sidestep' ? 0 : 1))
             hex.set(e.actor!, e['to'] as number)
             checkedMoves++
             break

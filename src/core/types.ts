@@ -28,6 +28,32 @@ export type AbilityDef = {
   readonly cooldown: number
 }
 
+/**
+ * A movement power — Angela 2026-08-21: "Movement is a choice, and that
+ * movement choice can have a modifier. It can cost stamina. It shouldn't be
+ * hard-coded. It should be content-driven." Rows live in content/moves.ts;
+ * which unit grants which powers is unit data (UnitDef.moves).
+ */
+export type MoveDef = {
+  readonly id: string
+  readonly name: string
+  /**
+   * How the move resolves. `path` walks the step loop one hex at a time;
+   * `sidestep` is exactly one hex, any direction, terrain cost ignored, still
+   * a Step; `flight` is a targeted atomic jump with zero Steps (GAME-DESIGN
+   * §Movement keywords, rewritten 2026-08-20).
+   */
+  readonly shape: 'path' | 'sidestep' | 'flight'
+  readonly staminaCost: number
+  /** Added to the unit's movement-point budget for this power. Move/Sidestep 0; flight-swift +1. */
+  readonly budgetMod: number
+  /**
+   * Turns DOWN after use — Codex semantics (Angela 2026-08-21 on Sidestep:
+   * "it's available every other turn" = cooldown 1). 0 = every turn.
+   */
+  readonly cooldown: number
+}
+
 export type AttackDef = {
   readonly id: string
   readonly name: string
@@ -74,6 +100,14 @@ export type UnitDef = {
   readonly ai: string
   readonly attacks: readonly string[]
   readonly abilities: readonly string[]
+  /**
+   * Movement powers this unit grants, in preference order — REQUIRED, no core
+   * default (content-driven, Angela 2026-08-21). Every hero row carries the
+   * universal walk plus its class's half-step; an enemy row carries exactly
+   * one (her 2026-08-21 ruling). Which ids those are is content's business —
+   * content/moves.ts has the rows.
+   */
+  readonly moves: readonly string[]
   readonly attributes: readonly string[]
   /**
    * Display base name ("Oathblade (TEST)"). Setup derives battle names from it
@@ -115,6 +149,8 @@ export type Unit = {
   ai: string
   attacks: string[]
   abilities: string[]
+  /** Granted movement powers, in preference order (see UnitDef.moves). */
+  moves: string[]
   /** Ability id -> the turn on which it becomes usable again. Plain object, JSON-safe. */
   cooldowns: Record<string, number>
   /** Live statuses, kept sorted by id so iteration is never insertion order. */
@@ -187,4 +223,5 @@ export type Ctx = {
   attacks: Readonly<Record<string, AttackDef>>
   abilities: Readonly<Record<string, AbilityDef>>
   statuses: Readonly<Record<string, import('./status.js').StatusDef>>
+  moves: Readonly<Record<string, MoveDef>>
 }

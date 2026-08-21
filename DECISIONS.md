@@ -717,3 +717,27 @@ walk per activation, `MOVE_STAMINA_COST = 1` as an engine constant, enemies
 exempted by a maxStamina>0 conditional. No sidestep, sprint, or flight existed
 in the engine. Backlog: `movement.powers` (the architecture), then
 `movement.flight` rides on it.
+
+### Addendum, same day — the Codex chat ruled further while this landed
+Merged from content/settled.json (the other session, Angela 2026-08-21), and
+they partially supersede the morning entry above:
+
+- **Sidestep has a cooldown**: *"it does break this statement of 'it's always
+  available.' No, it's available every other turn."* → `power.sidestep`, free,
+  cooldown 1, granted to **Warrior / Mage / Priest / Paladin**.
+- **Side Roll** is the split's other half: 1 Stamina, no cooldown, **Rogues
+  and Rangers take it instead of Sidestep**. So "every hero starts with Move
+  and Sidestep" is now "Move plus the class's half-step".
+- **Beasts and Civilians get neither** half-step.
+- **Enemies lose Sidestep entirely** — consistent with her ruling here that an
+  enemy row carries exactly ONE movement power.
+- The **flight ladder** is Codex-published: labored (2 Stam, Move −1),
+  standard (1 Stam, +0 — the drake's dictated power), swift (0 Stam, +1,
+  granted by item.aegis-of-the-fleet).
+
+Landed accordingly: `movement.powers` (ba09f6a) and `movement.flight`
+(a61228f), both flagged for her review. NOTE: settled.json was clobbered from
+a stale snapshot by the other session a second time (testCohort, hero rulings,
+drake attacks, Drake's Maw erased); restored by merging git HEAD with their
+additions — nothing of theirs was lost. The re-stage-before-writing protocol
+still stands.

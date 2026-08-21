@@ -2582,3 +2582,144 @@ index 76df2be..7fdd633 100644
 </details>
 
 IRON GAUNTLET: NOT PASSED — 1 FLAG(S) WARNED
+
+## movement.powers — LANDED `ba09f6a` **NEEDS REVIEW**
+2026-08-21 05:47
+
+  PASS  dependencies landed
+  PASS  typecheck
+  PASS  full test suite — 336 passed
+  PASS  gate 1 — the id appears in a real battle — power.sidestep: 1143 log lines, 1143 fired, 381 changed state
+  PASS  brought its own tests — test/audit.test.ts, test/burning-ground.test.ts, test/water-cleanses.test.ts, test/movement-powers.test.ts
+  WARN  existing tests untouched — DELETED LINES in test/audit.test.ts (-2), test/burning-ground.test.ts (-2), test/water-cleanses.test.ts (-1) — will land FLAGGED for review
+  PASS  control battles unchanged — will re-bless at commit — this item DECLARED it changes the control battles: map.open c65cca96->4a21cec5, map.ridge 0f22a0e7->ae2e7170, map.flanks 01196de5->6e10a9df, map.highlands a0ac79e6->9a951ecc, map.field 84e2412a->f9e9ff12, map.thicket 259bb1dc->49bee8fa, test.map.embers 71a97088->c6894c10, test.map.showcase 3bebebbc->53e8141c
+  PASS  content has a published source — 13 ids without a published source — 3 NEW from THIS item, seal withheld until published
+  PASS  hardcode scan — core knows mechanisms, never names
+  PASS  generalizes — the second instance costs zero engine code — power.sidestep live · power.side-roll live
+  PASS  naming — new content ids use declared kinds
+  PASS  naming — no banned words invented
+  PASS  kill switch — the tests fail without the content — tests fail without power.sidestep — they genuinely test it
+
+<details><summary>Existing tests were edited — review this diff</summary>
+
+```diff
+diff --git a/test/audit.test.ts b/test/audit.test.ts
+index 2c8ba5c..abae88b 100644
+--- a/test/audit.test.ts
++++ b/test/audit.test.ts
+@@ -4,4 +4,5 @@ import { runBattle } from '../src/core/battle.js'
+ import { UNITS, ATTACKS, ABILITIES } from '../src/content/index.js'
+ import { STATUSES } from '../src/content/statuses.js'
++import { MOVES } from '../src/content/moves.js'
+ import { accuracyBonusOf, dodgeBonusOf, reachBonusOf, terrainOf } from '../src/content/maps.js'
+ import { distance } from '../src/core/hex.js'
+@@ -74,7 +75,15 @@ describe('independent audit of logged battles', () => {
+             // one hex per point, and never more than the unit's movement
+             expect(distance(e['from'] as number, e['to'] as number), 'a step is one hex').toBe(1)
+-            expect(e['cost']).toBe(terr[e['to'] as number] === 1 ? 2 : 1)
++            // The auditor learned the movement CHOICE 2026-08-21 (Law 10:
++            // rule widened, not weakened): every moved event now names its
++            // power as causeId, and a sidestep-shaped power ignores terrain
++            // cost BY THE PUBLISHED RULE ("the destination's terrain cost is
++            // irrelevant"), so its recomputed cost is 0. A path-shaped move
++            // still pays the terrain, recomputed from the board as before.
++            const shape = MOVES[e.causeId]?.shape
++            expect(shape, `moved must be caused by a movement power (got '${e.causeId}')`).toBeDefined()
++            expect(e['cost']).toBe(shape === 'sidestep' ? 0 : terr[e['to'] as number] === 1 ? 2 : 1)
+             expect(e['movePointsLeft'] as number).toBeGreaterThanOrEqual(0)
+-            expect(e['movePointsLeft'] as number).toBeLessThanOrEqual(t.movement - 1)
++            expect(e['movePointsLeft'] as number).toBeLessThanOrEqual(t.movement - (shape === 'sidestep' ? 0 : 1))
+             hex.set(e.actor!, e['to'] as number)
+             checkedMoves++
+diff --git a/test/burning-ground.test.ts b/test/burning-ground.test.ts
+index 62edd3c..776ba25 100644
+--- a/test/burning-ground.test.ts
++++ b/test/burning-ground.test.ts
+@@ -16,4 +16,7 @@ import { valueOf } from '../src/core/status.js'
+ import { beginActivation } from '../src/core/mutate.js'
+ import { executeMove, pathTo, reachable } from '../src/core/movement.js'
++// executeMove takes the chosen movement power since 2026-08-21 (Law 10:
++// movement became a content-driven CHOICE — same walk, now named).
++import { MOVES } from '../src/content/moves.js'
+ import { hexId } from '../src/core/hex.js'
+ 
+@@ -52,5 +55,5 @@ describe('running through costs 1 stack per splash — the entry beat', () => {
+     const path = pathTo(reachable(ctx, w), w.hex, hexId(5, 5))
+     expect(path.length).toBeGreaterThan(0)
+-    executeMove(ctx, w.id, path)
++    executeMove(ctx, w.id, path, MOVES['power.move']!)
+     expect(w.hex).toBe(hexId(5, 5))
+     expect(valueOf(w, 'status.burn')).toBe(2)   // one per entered ember hex
+@@ -70,5 +73,5 @@ describe('running through costs 1 stack per splash — the entry beat', () => {
+     const path = pathTo(reachable(ctx, w), w.hex, hexId(9, 5))   // through both p rows
+     expect(path.length).toBeGreaterThan(0)
+-    executeMove(ctx, w.id, path)
++    executeMove(ctx, w.id, path, MOVES['power.move']!)
+     expect(valueOf(w, 'status.poison')).toBe(0)
+     expect(valueOf(w, 'status.weak')).toBe(0)
+diff --git a/test/water-cleanses.test.ts b/test/water-cleanses.test.ts
+index ccc0993..e1415c5 100644
+--- a/test/water-cleanses.test.ts
++++ b/test/water-cleanses.test.ts
+@@ -9,4 +9,7 @@ import { createCustomBattle } from '../src/core/setup.js'
+ import { applyStatus, valueOf } from '../src/core/status.js'
+ import { executeMove, reachable, pathTo } from '../src/core/movement.js'
++// executeMove takes the chosen movement power since 2026-08-21 (Law 10:
++// movement became a content-driven CHOICE — same walk, now named).
++import { MOVES } from '../src/content/moves.js'
+ import { runBattle } from '../src/core/battle.js'
+ import { beginActivation } from '../src/core/mutate.js'
+@@ -49,5 +52,5 @@ describe('water cleanses', () => {
+     const path = pathTo(reachable(ctx, w), w.hex, water)
+     expect(path.length).toBeGreaterThan(0)
+-    executeMove(ctx, w.id, path)
++    executeMove(ctx, w.id, path, MOVES['power.move']!)
+     expect(w.hex).toBe(water)
+     expect(valueOf(w, 'status.burn')).toBe(2)   // entry stripped exactly 1
+```
+</details>
+
+IRON GAUNTLET: NOT PASSED — 2 FLAG(S) WARNED · periodic audit clean
+
+```
+effect of power.sidestep — 25 paired battles per map, WITH vs WITHOUT
+  map.open: heroWins 18->17 (-1)  meanTurns 8.0->8.0
+  map.ridge: heroWins 17->17 (+0)  meanTurns 8.9->8.8
+  map.flanks: heroWins 22->21 (-1)  meanTurns 7.5->7.7
+  map.highlands: heroWins 25->25 (+0)  meanTurns 7.5->7.4
+  map.field: heroWins 22->21 (-1)  meanTurns 9.0->9.3
+  map.thicket: heroWins 22->22 (+0)  meanTurns 8.0->8.0
+  test.map.embers: heroWins 24->23 (-1)  meanTurns 5.8->5.7
+  test.map.showcase: heroWins 22->21 (-1)  meanTurns 6.9->7.0
+MEASURABLE
+```
+
+## movement.flight — LANDED `a61228f` **NEEDS REVIEW**
+2026-08-21 05:55
+
+  PASS  dependencies landed
+  PASS  typecheck
+  PASS  full test suite — 345 passed
+  PASS  gate 1 — the id appears in a real battle
+  PASS  brought its own tests — test/flight.test.ts
+  PASS  existing tests untouched
+  PASS  control battles unchanged
+  PASS  content has a published source — 16 ids without a published source — 3 NEW from THIS item, seal withheld until published
+  PASS  hardcode scan — core knows mechanisms, never names
+  PASS  generalizes — the second instance costs zero engine code
+  PASS  naming — new content ids use declared kinds
+  PASS  naming — no banned words invented
+  PASS  kill switch — the tests fail without the content — no content id to disable — engine plumbing, not applicable
+
+<details><summary>Existing tests were edited — review this diff</summary>
+
+```diff
+```
+</details>
+
+IRON GAUNTLET: NOT PASSED — 1 FLAG(S) WARNED; 2 EXEMPTION(S) TAKEN
+
+> movement.flight kill-switch, proven BY HAND (the gate auto-skips it when
+> `unreachable` is set): `CF_DISABLE_IDS=power.flight npx vitest run
+> test/flight.test.ts` → 7 failed / 2 passed. The two survivors assert the
+> OTHER ladder rows' data. The tests genuinely test the thing.

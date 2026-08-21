@@ -129,7 +129,51 @@ Victory check, including the turn cap.
 
 ## Activation
 
-Movement, then the primary action.
+**An Activation is the TOTALITY of one unit's doing of things.** Ruled by Angela,
+2026-08-21: *"You activate a unit by double-clicking on it. Now you get to do stuff.
+You're going to do a bunch of stuff. When you're done, your activation is over. It is not
+per power."*
+
+```
+Activation
+  ├── movement, then the primary action
+  ├── SURGE CHECK          heroes only; enemies never surge
+  │      Surge Chance += Surge, roll against it
+  │      HIT  -> gain 1 + Stamina Regen stamina, Surge Chance = 0,
+  │              go again from movement — STILL THE SAME ACTIVATION
+  │      MISS -> Surge Chance persists; fall through
+  └── End of Activation    ONCE, however many times you surged
+```
+
+**The surge check sits BEFORE the End of Activation ladder, and that is the whole point
+of this section.** Angela: *"The end of activation shouldn't be triggering twice in a
+single unit's doing of things… the action surge happens before all the stat effects that
+are supposed to happen at the end of activation."*
+
+**What this fixes.** The previous reading — Activation = *"movement, then the primary
+action"*, with the surge check hanging off End of Activation — made a surged hero run the
+End of Activation ladder **twice**. That is not a rounding error:
+
+- `onActivationEnd` triggers fired twice, so a Pacer-style *"gain 1 Protection at end of
+  activation"* paid double for surging.
+- The **twelve** content effects on this ladder — the four immunity necklaces, `enchant.damned`,
+  `item.healing-charm`, water stripping Poison — all cleansed twice.
+- The terrain stack was taken at the hex you stopped on *mid-surge*, then again at the hex
+  you finally stopped on, so a hero who surged out of a fire hex took the stack for a hex
+  it had already left.
+
+Under the corrected order every one of those happens **exactly once per unit per Phase**,
+at the hex the unit finally stops on, no matter how many Activations' worth of doing it
+packed into the one Activation.
+
+**A surged Activation can surge again** — from a freshly zeroed pool, so the second chain
+link is only as likely as `Surge` itself. At level 1 that is 1%.
+
+**A stunned unit skips movement and primary action, AND the surge check** — there is
+nothing to repeat, and a stunned hero winning a free Activation it cannot use is not a
+thing anyone means. **The End of Activation ladder still runs**, which is what makes
+`status.stun` cost exactly N Activations and not N Activations plus N ticks.
+*(That last clause is a reading, not a dictation — flagged for Angela.)*
 
 ### Movement — per step
 
@@ -155,14 +199,27 @@ Repeat per hex. Vision and stealth recalculate after **every** step, after every
 
 Attack or class power.
 
+### Surge check
+
+| # | Rung | Built? |
+|---|---|---|
+| 1 | `Surge Chance += Surge`, roll against it. **Heroes only** | *not yet* — Surge is a stat with no roll behind it |
+| 2 | On a hit: `+1 + Stamina Regen` stamina, `Surge Chance = 0`, **loop back to movement** | *not yet* |
+
+**This runs before End of Activation, not after it.** Ruled 2026-08-21. Putting it after
+is what made the ladder below fire twice for a surging hero.
+
 ### End of Activation
+
+**Runs exactly ONCE per unit per Phase**, after the surge loop has finished — not once per
+movement-and-action cycle.
 
 | # | Rung | Built? |
 |---|---|---|
 | 1 | Standing on a hex carrying a terrain status → **gain a stack** | *not yet* — terrain layer 2 does not exist |
 | 2 | `onActivationEnd` triggers fire | *not yet* — **the hook exists and is never called.** `fireTriggers(ctx, 'onActivationEnd', …)` appears nowhere in `src/` |
 
-Rung 1 is the second of the two applications: once on entering during movement, once here. Move through a fire hex and you took one stack. Move onto it and stop, and you took two. The statuses themselves don't tick until End of Phase.
+Rung 1 is the second of the two applications: once on entering during movement, once here. Move through a fire hex and you took one stack. Move onto it and stop, and you took two. **"Stop" means where you finally stop** — a hero who surges and moves on has not stopped. The statuses themselves don't tick until End of Phase.
 
 Rung 2 is the reason this ladder needed the column. `onActivationEnd` is in `HOOKS`, is validated, is in the glossary, and has a written ruling banning `turnEnd` as its name — and nothing fires it. A hook in that state is indistinguishable from a working one until a piece of content depends on it.
 

@@ -4,12 +4,64 @@
 
 import { distance, neighboursOf } from './hex.js'
 import type { HexId } from './hex.js'
-import type { Ctx, Unit } from './types.js'
-import { appliesOnEnterOf, moveCostOf, stripsOnEnterOf, terrainIdOf } from '../content/maps.js'
+import type { Ctx, MoveDef, Unit } from './types.js'
+import { appliesOnEnterOf, isPassable, moveCostOf, stripsOnEnterOf, terrainIdOf } from '../content/maps.js'
 import { emit, markMoveUsed, moveUnit, spendStamina, unit } from './mutate.js'
 import { applyStatus, reduceStatus } from './status.js'
 
-export const MOVE_STAMINA_COST = 1
+// MOVE_STAMINA_COST is gone (2026-08-21) — Angela: "It shouldn't be
+// hard-coded. It should be content-driven." The cost of moving is a field on
+// the CHOSEN movement power (ctx.moves), and which powers a unit may choose
+// from is unit data (unit.moves). Core reads rows; it names none.
+
+/**
+ * What this unit pays to use a movement power. Stamina is the HERO throttle
+ * (GAME-DESIGN §Stamina); the enemy side does not run it — Angela 2026-08-21:
+ * "I don't know if we want to follow the same model on the enemy side, since
+ * we don't have stamina." A unit with no stamina pool pays nothing and can
+ * never be refused for lack of it. A stat read, not a content name.
+ */
+export function moveStaminaCost(u: Unit, power: MoveDef): number {
+  return u.maxStamina > 0 ? power.staminaCost : 0
+}
+
+/**
+ * The movement powers this unit can use right now, in the unit's declared
+ * preference order: granted, affordable, and off cooldown. A granted id whose
+ * row is missing from the registry is skipped — indistinguishable from the
+ * content never having been authored (the kill-switch seam relies on exactly
+ * this).
+ */
+export function usableMoves(ctx: Ctx, u: Unit): MoveDef[] {
+  const out: MoveDef[] = []
+  for (const id of u.moves) {
+    const m = ctx.moves[id]
+    if (!m) continue
+    if (u.stamina < moveStaminaCost(u, m)) continue
+    // Cooldown gate — same map and comparison abilities use. Codex counts
+    // Turns DOWN, so a used power wrote turn + cooldown + 1 (see below).
+    if (ctx.state.turn < (u.cooldowns[id] ?? 0)) continue
+    out.push(m)
+  }
+  return out
+}
+
+/** After a power with a cooldown is used, mark when it is ready again. */
+function setMoveCooldown(ctx: Ctx, unitId: number, power: MoveDef): void {
+  if (power.cooldown === 0) return
+  const u = unit(ctx, unitId)
+  // Codex semantics: "usable every other Turn" (cooldown 1) = down for one
+  // full Turn = ready on turn + 2 under the `turn >= readyOn` gate.
+  const readyAgain = ctx.state.turn + power.cooldown + 1
+  u.cooldowns[power.id] = readyAgain
+  emit(ctx, 'cooldown.set', power.id, { actor: unitId, abilityId: power.id, readyOnTurn: readyAgain })
+}
+
+/** First affordable granted power of a shape, or null. Order is the unit's data (Law 6: no re-sorting). */
+export function movePowerOf(ctx: Ctx, u: Unit, shape: MoveDef['shape']): MoveDef | null {
+  for (const m of usableMoves(ctx, u)) if (m.shape === shape) return m
+  return null
+}
 
 /** Standing and downed bodies both occupy their hex; the dead do not. */
 export function occupancy(ctx: Ctx): Map<HexId, number> {
@@ -30,9 +82,12 @@ export function stepCost(ctx: Ctx, to: HexId): number {
  * Dijkstra over integer movement points — hills cost 2, open ground 1.
  * Ties break on lower HexId so paths are reproducible (Law 6).
  */
-export function reachable(ctx: Ctx, u: Unit): Reach {
+export function reachable(ctx: Ctx, u: Unit, budgetMod = 0): Reach {
   const occ = occupancy(ctx)
-  const budget = u.movePointsLeft
+  // The power's modifier widens or narrows THIS move's budget (Sprint would be
+  // +3); the activation budget itself was set at beginActivation (Slow reads
+  // there, once — SWITCHES.md slowReadAtActivationStart).
+  const budget = Math.max(0, u.movePointsLeft + budgetMod)
   const out: Reach = new Map()
   out.set(u.hex, { cost: 0, prev: u.hex })
   // Bucket queue: costs are small integers, so this is exact and order-stable.
@@ -78,20 +133,24 @@ export function pathTo(reach: Reach, from: HexId, dest: HexId): HexId[] {
 export type StepHook = (ctx: Ctx, unitId: number, entered: HexId) => boolean
 
 /**
- * Walk a path. Returns the number of hexes actually moved.
+ * Walk a path with a chosen `path`-shaped movement power. Returns the number
+ * of hexes actually moved.
  * `onStep` returns false to interrupt (a unit dropped mid-move, for example).
+ * Every move event names the POWER as its cause (Law 12) — the log says not
+ * just that the unit moved, but which choice moved it.
  */
-export function executeMove(ctx: Ctx, unitId: number, path: HexId[], onStep?: StepHook): number {
+export function executeMove(ctx: Ctx, unitId: number, path: HexId[], power: MoveDef, onStep?: StepHook): number {
   if (path.length === 0) return 0
   const u = unit(ctx, unitId)
-  if (u.stamina < MOVE_STAMINA_COST && u.maxStamina > 0) {
-    emit(ctx, 'move.refused', 'engine', { actor: unitId, reason: 'stamina' })
+  if (u.stamina < moveStaminaCost(u, power)) {
+    emit(ctx, 'move.refused', power.id, { actor: unitId, reason: 'stamina' })
     return 0
   }
 
-  spendStamina(ctx, unitId, u.maxStamina > 0 ? MOVE_STAMINA_COST : 0, 'move')
+  spendStamina(ctx, unitId, moveStaminaCost(u, power), power.id)
   markMoveUsed(ctx, unitId)
-  emit(ctx, 'move.begin', 'move', { actor: unitId, from: u.hex, to: path[path.length - 1], hexes: path.length })
+  setMoveCooldown(ctx, unitId, power)
+  emit(ctx, 'move.begin', power.id, { actor: unitId, from: u.hex, to: path[path.length - 1], hexes: path.length })
 
   let moved = 0
   for (const hex of path) {
@@ -101,7 +160,7 @@ export function executeMove(ctx: Ctx, unitId: number, path: HexId[], onStep?: St
     // 2. attacks of opportunity — not in the baseline
     // 3. enter and spend
     const terrainHere = ctx.state.terrain[hex] ?? 0
-    moveUnit(ctx, unitId, hex, cost, 'move', terrainIdOf(terrainHere))
+    moveUnit(ctx, unitId, hex, cost, power.id, terrainIdOf(terrainHere))
     moved++
     // 4. traps — none in the baseline
     // 5. terrain status ON ENTRY — water strips 1 Burn as you splash through
@@ -121,6 +180,96 @@ export function executeMove(ctx: Ctx, unitId: number, path: HexId[], onStep?: St
     if (u.lifeState !== 'standing') break
   }
   return moved
+}
+
+/**
+ * Sidestep: exactly one hex, any direction, with a `sidestep`-shaped power.
+ * GAME-DESIGN §4 (ruled 2026-08-17): free, never provokes, and the
+ * destination's terrain COST is irrelevant — so no movement points are spent
+ * and the point budget is never consulted (SWITCHES.md sidestepUnderFullSlow:
+ * a fully-Slowed unit can still sidestep; the slot, not the points, is the
+ * price). It is still a Step, so ground effects on entry fire — Flight is the
+ * only move with zero Steps.
+ * Returns true if the unit moved.
+ */
+export function executeSidestep(ctx: Ctx, unitId: number, to: HexId, power: MoveDef): boolean {
+  const u = unit(ctx, unitId)
+  if (u.stamina < moveStaminaCost(u, power)) {
+    emit(ctx, 'move.refused', power.id, { actor: unitId, reason: 'stamina' })
+    return false
+  }
+  if (distance(u.hex, to) !== 1) throw new Error(`sidestep must move exactly one hex (${u.hex} -> ${to})`)
+  const terrainHere = ctx.state.terrain[to] ?? 0
+  if (!isPassable(terrainHere) || occupancy(ctx).has(to)) {
+    throw new Error(`sidestep destination ${to} is not open`)
+  }
+  spendStamina(ctx, unitId, moveStaminaCost(u, power), power.id)
+  markMoveUsed(ctx, unitId)
+  setMoveCooldown(ctx, unitId, power)
+  emit(ctx, 'move.begin', power.id, { actor: unitId, from: u.hex, to, hexes: 1 })
+  moveUnit(ctx, unitId, to, 0, power.id, terrainIdOf(terrainHere))
+  for (const sid of stripsOnEnterOf(terrainHere)) reduceStatus(ctx, unitId, sid, 1, terrainIdOf(terrainHere))
+  for (const [sid, n] of appliesOnEnterOf(terrainHere)) applyStatus(ctx, unitId, sid, n, terrainIdOf(terrainHere))
+  return true
+}
+
+/**
+ * How far a flight-shaped power can jump right now: the activation's movement
+ * points plus the power's modifier (the ladder: labored -1, standard +0,
+ * swift +1), 1 Movement per hex. Slow already bit at beginActivation.
+ */
+export function flightRange(u: Unit, power: MoveDef): number {
+  return Math.max(0, u.movePointsLeft + power.budgetMod)
+}
+
+/**
+ * Every hex a flight-shaped power could land on: within range, passable, and
+ * free. "Only the destination needs to be viable" (GAME-DESIGN §Movement
+ * keywords) — what lies between is never consulted. Sorted ascending so
+ * callers iterate reproducibly (Law 6).
+ */
+export function flightLandings(ctx: Ctx, u: Unit, power: MoveDef): HexId[] {
+  const occ = occupancy(ctx)
+  const range = flightRange(u, power)
+  const out: HexId[] = []
+  for (let h = 0; h < ctx.state.terrain.length; h++) {
+    if (h === u.hex || distance(u.hex, h) > range) continue
+    if (!isPassable(ctx.state.terrain[h] ?? 0) || occ.has(h)) continue
+    out.push(h)
+  }
+  return out
+}
+
+/**
+ * Flight: a targeted, ATOMIC jump (GAME-DESIGN §Movement keywords, rewritten
+ * 2026-08-20). One motion, zero Steps: units, obstructions, terrain cost and
+ * every on-entry ground beat in between are skipped by construction — the
+ * strips/applies loops simply never run because there is no step loop. The
+ * landing hex is a hex like any other: its End-of-Activation ladder fires
+ * normally later in the turn, and that is the ONLY ground the flier touches.
+ * Returns true if the unit flew.
+ */
+export function executeFlight(ctx: Ctx, unitId: number, to: HexId, power: MoveDef): boolean {
+  const u = unit(ctx, unitId)
+  if (u.stamina < moveStaminaCost(u, power)) {
+    emit(ctx, 'move.refused', power.id, { actor: unitId, reason: 'stamina' })
+    return false
+  }
+  const d = distance(u.hex, to)
+  if (d < 1 || d > flightRange(u, power)) throw new Error(`flight to ${to} is out of range (${d} > ${flightRange(u, power)})`)
+  const terrainThere = ctx.state.terrain[to] ?? 0
+  if (!isPassable(terrainThere) || occupancy(ctx).has(to)) {
+    throw new Error(`flight landing ${to} is not open`)
+  }
+  spendStamina(ctx, unitId, moveStaminaCost(u, power), power.id)
+  markMoveUsed(ctx, unitId)
+  setMoveCooldown(ctx, unitId, power)
+  emit(ctx, 'move.begin', power.id, { actor: unitId, from: u.hex, to, hexes: d })
+  // Points drawn from the unit's own store; the power's modifier covers the
+  // rest (swift can jump one hex past the store without sending it negative).
+  const paid = u.movePointsLeft - Math.max(0, u.movePointsLeft + power.budgetMod - d)
+  moveUnit(ctx, unitId, to, paid, power.id, terrainIdOf(terrainThere))
+  return true
 }
 
 /** Nearest living enemy. Ties break on lower unit id (Law 6). */

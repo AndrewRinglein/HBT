@@ -4,7 +4,7 @@
 // Regenerate:  cd content && node assemble.mjs && node mkenginepack.mjs
 // Dropped (no engine meaning yet): test-sky-pirate: onKill/grantDraws -> no engine meaning yet | test-air-mage: onEnter/modifyStatPermanent -> no engine meaning yet
 export const UNIT_PACK = {
-  "note": "Angela 2026-08-20: the standard engine test party — six heroes, one per class, COPIED from live Codex heroes so they can be tweaked without touching the originals. Clearly differentiated: test- typeIds, (TEST) names, never ships. The engine reads these through the generated pack (mkenginepack.mjs) — nothing hand-typed engine-side. Testing-lane riders travel on the cohort and retire one by one as published sources land; the Sky Pirate's own Cutlass bleed already retires test.ranger.serrated-arrows.",
+  "note": "Angela 2026-08-20: the standard engine test party — six heroes, one per class, COPIED from live Codex heroes so they can be tweaked without touching the originals. Clearly differentiated: test- typeIds, (TEST) names, never ships. The engine reads these through the generated pack (mkenginepack.mjs) — nothing hand-typed engine-side. Testing-lane riders travel on the cohort and retire one by one as published sources land; the Sky Pirate's own Cutlass bleed already retires test.ranger.serrated-arrows. Movement powers granted 2026-08-21 per the Codex sidestep ruling: power.move universal; Sidestep to warrior/mage/priest/paladin clones, Side Roll to the rogue and ranger clones; enemy rows carry exactly one movement power.",
   "heroes": [
     {
       "typeId": "test-oathblade",
@@ -32,6 +32,10 @@ export const UNIT_PACK = {
         "attack.punch"
       ],
       "abilities": [],
+      "moves": [
+        "power.move",
+        "power.sidestep"
+      ],
       "attributes": [
         "hero-test"
       ],
@@ -111,6 +115,10 @@ export const UNIT_PACK = {
         "attack.punch"
       ],
       "abilities": [],
+      "moves": [
+        "power.move",
+        "power.side-roll"
+      ],
       "attributes": [
         "hero-test"
       ],
@@ -154,6 +162,10 @@ export const UNIT_PACK = {
         "attack.punch"
       ],
       "abilities": [],
+      "moves": [
+        "power.move",
+        "power.side-roll"
+      ],
       "attributes": [
         "hero-test"
       ],
@@ -198,6 +210,10 @@ export const UNIT_PACK = {
       ],
       "abilities": [
         "power.mage.bolt"
+      ],
+      "moves": [
+        "power.move",
+        "power.sidestep"
       ],
       "attributes": [
         "hero-test"
@@ -254,6 +270,10 @@ export const UNIT_PACK = {
         "attack.punch"
       ],
       "abilities": [],
+      "moves": [
+        "power.move",
+        "power.sidestep"
+      ],
       "attributes": [
         "hero-test"
       ],
@@ -284,6 +304,10 @@ export const UNIT_PACK = {
         "attack.punch"
       ],
       "abilities": [],
+      "moves": [
+        "power.move",
+        "power.sidestep"
+      ],
       "attributes": [
         "hero-test"
       ],
@@ -355,6 +379,9 @@ export const UNIT_PACK = {
           "source": "unit.test-zombie"
         }
       ],
+      "moves": [
+        "power.move"
+      ],
       "side": "enemy",
       "copyOf": "engine unit 'zombie' (provisional rows, 2026-08-14)"
     },
@@ -408,6 +435,9 @@ export const UNIT_PACK = {
           },
           "source": "unit.test-zombie-burning"
         }
+      ],
+      "moves": [
+        "power.move"
       ],
       "side": "enemy",
       "copyOf": "engine unit 'zombie-burning' (published 6-BESTIARY 2026-08-20)"

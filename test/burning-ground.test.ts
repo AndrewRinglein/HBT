@@ -15,6 +15,9 @@ import { runBattle } from '../src/core/battle.js'
 import { valueOf } from '../src/core/status.js'
 import { beginActivation } from '../src/core/mutate.js'
 import { executeMove, pathTo, reachable } from '../src/core/movement.js'
+// executeMove takes the chosen movement power since 2026-08-21 (Law 10:
+// movement became a content-driven CHOICE — same walk, now named).
+import { MOVES } from '../src/content/moves.js'
 import { hexId } from '../src/core/hex.js'
 
 describe('the data — one mechanism, two pure-data instances', () => {
@@ -51,7 +54,7 @@ describe('running through costs 1 stack per splash — the entry beat', () => {
     beginActivation(ctx, w.id, 'test')
     const path = pathTo(reachable(ctx, w), w.hex, hexId(5, 5))
     expect(path.length).toBeGreaterThan(0)
-    executeMove(ctx, w.id, path)
+    executeMove(ctx, w.id, path, MOVES['power.move']!)
     expect(w.hex).toBe(hexId(5, 5))
     expect(valueOf(w, 'status.burn')).toBe(2)   // one per entered ember hex
     const causes = ctx.events.filter((e) => e.type === 'status.applied' && e.causeId === 'terrain.burning')
@@ -69,7 +72,7 @@ describe('running through costs 1 stack per splash — the entry beat', () => {
     beginActivation(ctx, w.id, 'test')
     const path = pathTo(reachable(ctx, w), w.hex, hexId(9, 5))   // through both p rows
     expect(path.length).toBeGreaterThan(0)
-    executeMove(ctx, w.id, path)
+    executeMove(ctx, w.id, path, MOVES['power.move']!)
     expect(valueOf(w, 'status.poison')).toBe(0)
     expect(valueOf(w, 'status.weak')).toBe(0)
   })

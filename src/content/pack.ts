@@ -9,7 +9,10 @@ import { validateTrigger } from '../core/trigger.js'
 
 const REQUIRED = ['typeId', 'name', 'side', 'maxHp', 'armor', 'resist', 'accuracy', 'dodge',
   'strength', 'precision', 'magic', 'spirit', 'role', 'movement', 'reach',
-  'maxStamina', 'staminaRegen', 'ai', 'attacks'] as const
+  'maxStamina', 'staminaRegen', 'ai', 'attacks',
+  // moves joined 2026-08-21 — movement is a granted CHOICE, read from the
+  // data like everything else; a pack row without one is a pipeline bug.
+  'moves'] as const
 
 export function packUnits(): Readonly<Record<string, UnitDef>> {
   const out: Record<string, UnitDef> = {}
@@ -24,6 +27,11 @@ export function packUnits(): Readonly<Record<string, UnitDef>> {
       throw new Error(`unit pack: '${r.typeId}' is not test- prefixed — the cohort must stay clearly differentiated (Angela 2026-08-20)`)
     }
     for (const t of r.triggers ?? []) validateTrigger(t)
+    for (const m of r.moves) {
+      if (!/^power\./.test(m)) {
+        throw new Error(`unit pack: '${r.typeId}' grants movement '${m}' — movement powers live under power.* (Codex 2026-08-20: "Grants power.flight")`)
+      }
+    }
     if (out[r.typeId]) throw new Error(`unit pack: duplicate typeId '${r.typeId}'`)
     out[r.typeId] = r
   }
