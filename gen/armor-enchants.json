@@ -1,0 +1,1754 @@
+{
+ "items": [
+  {
+   "id": "item.thick-hide",
+   "name": "Thick Hide",
+   "itemClass": "armor",
+   "tier": 0,
+   "armorWeight": null,
+   "slots": 1,
+   "hands": 0,
+   "classRestriction": null,
+   "tags": [
+    "armor"
+   ],
+   "grants": [],
+   "statModifiers": {
+    "health": 3,
+    "movement": -1,
+    "dodge": -5
+   },
+   "triggers": [],
+   "intent": "Three fingers of untanned something, still faintly warm, and it will absolutely stop a knife once.",
+   "source": "Hell-TCG name reused (Thick Hide — rebuilt as the tier-0 hide that costs you your feet)"
+  },
+  {
+   "id": "item.tanners-apron",
+   "name": "Tanner's Apron",
+   "itemClass": "armor",
+   "tier": 0,
+   "armorWeight": null,
+   "slots": 1,
+   "hands": 0,
+   "classRestriction": null,
+   "tags": [
+    "armor"
+   ],
+   "grants": [],
+   "statModifiers": {
+    "resist": 1,
+    "movement": -1,
+    "accuracy": -5
+   },
+   "triggers": [],
+   "intent": "Lye-stiff and shaped like a door; the one point of Resist is the only kind thing anyone has ever said about it.",
+   "source": "new (tier-0 armour that buys Resist instead of Health — nothing else at the tier does)"
+  },
+  {
+   "id": "item.pilgrims-habit",
+   "name": "Pilgrim's Habit",
+   "itemClass": "armor",
+   "tier": 0,
+   "armorWeight": null,
+   "slots": 1,
+   "hands": 0,
+   "classRestriction": null,
+   "tags": [
+    "armor"
+   ],
+   "grants": [],
+   "statModifiers": {
+    "movement": 1,
+    "health": -2,
+    "dodge": -5
+   },
+   "triggers": [],
+   "intent": "It is cloth. It has walked four hundred miles and it will walk four hundred more, and it will not stop one arrow on the way.",
+   "source": "Hell-TCG name reused (Pilgrim's Warding Stone — name only; the Movement-for-Health trade is new)"
+  },
+  {
+   "id": "item.watchmans-coat",
+   "name": "Watchman's Coat",
+   "itemClass": "armor",
+   "tier": 0,
+   "armorWeight": null,
+   "slots": 1,
+   "hands": 0,
+   "classRestriction": null,
+   "tags": [
+    "armor"
+   ],
+   "grants": [],
+   "statModifiers": {
+    "vision": 2,
+    "staminaMax": -1
+   },
+   "triggers": [],
+   "intent": "Oiled wool with a lantern hook sewn at the shoulder: you will see the thing that kills you from a long way off.",
+   "source": "new (tier-0 armour on the Vision axis; Vision is one of the seven stats with no Hell-TCG source)"
+  },
+  {
+   "id": "item.peddlers-vest",
+   "name": "Peddler's Vest",
+   "itemClass": "armor",
+   "tier": 0,
+   "armorWeight": null,
+   "slots": 1,
+   "hands": 0,
+   "classRestriction": null,
+   "tags": [
+    "armor"
+   ],
+   "grants": [],
+   "statModifiers": {
+    "itemSlots": 1,
+    "health": -2,
+    "dodge": -5,
+    "accuracy": -5
+   },
+   "triggers": [],
+   "intent": "Fourteen pockets and no armour whatsoever — you wear it for the pockets and you die in it for the pockets.",
+   "source": "new (tier-0 armour that buys an Item Slot; the guide prices slots above one point, so it pays for it)"
+  },
+  {
+   "id": "item.borrowed-vestments",
+   "name": "Borrowed Vestments",
+   "itemClass": "armor",
+   "tier": 0,
+   "armorWeight": null,
+   "slots": 1,
+   "hands": 0,
+   "classRestriction": null,
+   "tags": [
+    "armor"
+   ],
+   "grants": [],
+   "statModifiers": {
+    "spirit": 1,
+    "movement": -1
+   },
+   "triggers": [],
+   "intent": "They are not yours, they do not fit, and every single person in the room can tell which of those is the problem.",
+   "source": "Hell-TCG name reused (Skypriest's Vestments / Stormweave Vestments — name shape only, dropped to tier 0)"
+  },
+  {
+   "id": "item.silkweave-armor",
+   "name": "Silkweave Armor",
+   "itemClass": "armor",
+   "tier": 1,
+   "armorWeight": "light",
+   "slots": 1,
+   "hands": 0,
+   "classRestriction": null,
+   "tags": [
+    "armor",
+    "light"
+   ],
+   "grants": [],
+   "statModifiers": {
+    "armor": 1,
+    "dodge": 5,
+    "health": -2
+   },
+   "triggers": [],
+   "intent": "A hundred layers of spider-silk: it is the only light armour with a point of Armor on it, and it bought that point with your ribs.",
+   "source": "Hell-TCG name reused (Ebony Mask, Silkweave Armor — +1 Armor / -2 Health kept almost verbatim)"
+  },
+  {
+   "id": "item.brutes-harness",
+   "name": "Brute's Harness",
+   "itemClass": "armor",
+   "tier": 1,
+   "armorWeight": "medium",
+   "slots": 1,
+   "hands": 0,
+   "classRestriction": null,
+   "tags": [
+    "armor",
+    "medium"
+   ],
+   "grants": [],
+   "statModifiers": {
+    "health": 4,
+    "strength": 1,
+    "dodge": -5,
+    "accuracy": -5
+   },
+   "triggers": [],
+   "intent": "Straps and buckles that hold your shoulder together while you swing; it does not care where the swing lands.",
+   "source": "Hell-TCG name reused (Brute's Harness — rebuilt as the medium band's Strength trade)"
+  },
+  {
+   "id": "item.guardians-mail",
+   "name": "Guardian's Mail",
+   "itemClass": "armor",
+   "tier": 1,
+   "armorWeight": "heavy",
+   "slots": 1,
+   "hands": 0,
+   "classRestriction": null,
+   "tags": [
+    "armor",
+    "heavy"
+   ],
+   "grants": [],
+   "statModifiers": {
+    "armor": 1,
+    "resist": 1,
+    "movement": -1,
+    "staminaMax": -1
+   },
+   "triggers": [],
+   "intent": "The only armour at its tier with both mitigations on it, and it charges you a step and a breath every Turn for the privilege.",
+   "source": "Hell-TCG name reused (Warrior, Guardian's Mail — 'costs 2 actions' rebuilt as −1 Movement / −1 Stamina)"
+  },
+  {
+   "id": "item.ghost-thread-cloak",
+   "name": "Ghost-Thread Cloak",
+   "itemClass": "armor",
+   "tier": 2,
+   "armorWeight": "light",
+   "slots": 1,
+   "hands": 0,
+   "classRestriction": null,
+   "tags": [
+    "armor",
+    "light"
+   ],
+   "grants": [],
+   "statModifiers": {
+    "dodge": 15,
+    "luck": 3,
+    "health": -3
+   },
+   "triggers": [
+    {
+     "hook": "onDodge",
+     "effect": "gain +10 Dodge until the end of your next Turn"
+    }
+   ],
+   "intent": "It is woven from something that was never quite present, and every miss makes there be less of it to hit.",
+   "source": "Hell-TCG name reused (Rogue, Ghost-Thread Cloak — +2 Dodge / −2 Health scaled to the tier) | 2026-08-20 Angela: onDodge is a new hook. this was on onTakingDamage, which had it backwards — gaining Dodge for being HIT. Moved to onDodge, where the snowball actually snowballs."
+  },
+  {
+   "id": "item.wind-blessed-leather",
+   "name": "Wind-Blessed Leather",
+   "itemClass": "armor",
+   "tier": 2,
+   "armorWeight": "light",
+   "slots": 1,
+   "hands": 0,
+   "classRestriction": null,
+   "tags": [
+    "armor",
+    "light"
+   ],
+   "grants": [],
+   "statModifiers": {
+    "dodge": 5,
+    "health": 2,
+    "movement": 1,
+    "staminaMax": -1
+   },
+   "triggers": [
+    {
+     "hook": "onActivationEnd",
+     "effect": "heal 1"
+    }
+   ],
+   "intent": "Rewards the coward's virtue: it only heals you on the Turns you spent running.",
+   "source": "Hell-TCG name reused (Ranger, Wind-Blessed Leather) | 2026-08-17: carried a condition the engine has no way to check (did-not-move / made-no-attack / moved-N-hexes). Condition removed and the effect reduced to match."
+  },
+  {
+   "id": "item.wraithform-cloak",
+   "name": "Wraithform Cloak",
+   "itemClass": "armor",
+   "tier": 2,
+   "armorWeight": "light",
+   "slots": 1,
+   "hands": 0,
+   "classRestriction": null,
+   "tags": [
+    "armor",
+    "light"
+   ],
+   "grants": [],
+   "statModifiers": {
+    "resist": 1,
+    "dodge": 40,
+    "precision": -1,
+    "health": -2
+   },
+   "triggers": [
+    {
+     "hook": "onDodge",
+     "effect": "take 2 true damage"
+    },
+    {
+     "hook": "onTakingDamage",
+     "effect": "heal half the party's Magic, rounded down"
+    }
+   ],
+   "intent": "Forty Dodge and a body that pays for every use of it. Almost nothing lands on you, and the parts of you that stepped out of the way do not all come back.",
+   "source": "Hell-TCG name reused (Priest, Wraithform Cloak — +2 Resist / +2 Dodge / −2 Ranged kept as the shape) | 2026-08-20 Angela: the once-a-battle magic-damage veto is replaced with a heal for half the party Magic on taking damage — no flag to store, and it scales off a stat the wearer already cares about. | 2026-08-20 Angela: onDodge is a new hook. Dodge raised to 40 and every dodge costs 2 true damage. NOTE ON PRICE: +40 Dodge is 12 ladder points at tier 2, which only works because the self-damage is the real cost — this item is the reference case for the pattern, not an outlier to fix."
+  },
+  {
+   "id": "item.qi-wraps",
+   "name": "Qi Wraps",
+   "itemClass": "armor",
+   "tier": 2,
+   "armorWeight": "light",
+   "slots": 1,
+   "hands": 0,
+   "classRestriction": null,
+   "tags": [
+    "armor",
+    "light"
+   ],
+   "grants": [],
+   "statModifiers": {
+    "staminaMax": 2,
+    "dodge": 5,
+    "health": -3
+   },
+   "triggers": [
+    {
+     "hook": "onKill",
+     "effect": "regain 1 Stamina"
+    }
+   ],
+   "intent": "Two extra Stamina is two extra decisions a Turn, and the only thing between you and a spear is linen.",
+   "source": "Hell-TCG name reused (Qi Wraps — rebuilt as the light band's Stamina trade)"
+  },
+  {
+   "id": "item.gale-shroud",
+   "name": "Gale Shroud",
+   "itemClass": "armor",
+   "tier": 2,
+   "armorWeight": "light",
+   "slots": 1,
+   "hands": 0,
+   "classRestriction": null,
+   "tags": [
+    "armor",
+    "light"
+   ],
+   "grants": [
+    "power.flight-labored"
+   ],
+   "statModifiers": {
+    "dodge": 10,
+    "movement": 1,
+    "health": -3
+   },
+   "triggers": [
+    {
+     "hook": "onDodge",
+     "effect": "gain +10 Accuracy for the rest of the Battle"
+    }
+   ],
+   "intent": "You are never quite where the blow lands and you never pay to leave: the longer the fight runs, the harder you are to find and the cheaper it is to be somewhere else.",
+   "source": "Hell-TCG name reused (Gale Shroud — the Gale Force power rebuilt as a miss-triggered step) | 2026-08-17 Angela: CUT. ally-reactive hooks, guarding, Consequence-Stack interference and non-knockback forced movement all removed by ruling. | 2026-08-17 quality pass: the passive +5 Dodge duplicated the stat block. Replaced with freedom from provocation, which is what a gale shroud is for and which nothing else in the armour list grants. | 2026-08-17 Angela: Flight is a granted MOVEMENT ACTION (1 Movement per hex, passes over units and obstructions, takes nothing from the ground on the way, one click). Airwalk is a standing property covering only the hex you END your Turn on. Neither existed in the content. | 2026-08-20 Angela: flight is a granted movement POWER, never a property. Grants power.flight-labored — 2 stamina, Movement -1, which is exactly what the prose said. | 2026-08-20 Angela: onDodge is a new hook. evading teaches you where they are — +10 Accuracy for the Battle each time."
+  },
+  {
+   "id": "item.scorpion-carapace",
+   "name": "Scorpion Carapace",
+   "itemClass": "armor",
+   "tier": 2,
+   "armorWeight": "medium",
+   "slots": 1,
+   "hands": 0,
+   "classRestriction": null,
+   "tags": [
+    "armor",
+    "medium"
+   ],
+   "grants": [],
+   "statModifiers": {
+    "health": 6,
+    "resist": 1,
+    "movement": -1,
+    "dodge": -5
+   },
+   "triggers": [
+    {
+     "hook": "onTakingDamage",
+     "effect": "Thorns 2, and the attacker gains 2 Poison"
+    }
+   ],
+   "intent": "Chitin plates lashed over a gambeson; whatever hits it comes away with a small hole and a long afternoon.",
+   "source": "Hell-TCG name reused (Scorpion Carapace — the on-hit thorns-and-poison kept as the trigger) | 2026-08-20 Angela: Thorns keyword applied — it wrote the effect longhand and gated it on adjacency.",
+   "thorns": 2
+  },
+  {
+   "id": "item.stormweave-armor",
+   "name": "Stormweave Armor",
+   "itemClass": "armor",
+   "tier": 2,
+   "armorWeight": "medium",
+   "slots": 1,
+   "hands": 0,
+   "classRestriction": null,
+   "tags": [
+    "armor",
+    "medium"
+   ],
+   "grants": [],
+   "statModifiers": {
+    "health": 2
+   },
+   "triggers": [
+    {
+     "hook": "onTakingDamage",
+     "effect": "Thorns 2"
+    }
+   ],
+   "intent": "Static in the weave. Hitting it costs something, and that is the whole of what it does.",
+   "source": "Hell-TCG name reused (Stormweave Armor) | 2026-08-17 Angela: removed Resist and Accuracy and the invented magic-reflect; it is Thorns 2 and +2 Health. | 2026-08-20 Angela: THORNS is a keyword now: on taking damage the attacker takes N TRUE damage, at any range. This wrote it longhand, as physical, from an adjacent attacker — all three wrong.",
+   "thorns": 2
+  },
+  {
+   "id": "item.battlemages-cuirass",
+   "name": "Battlemage's Cuirass",
+   "itemClass": "armor",
+   "tier": 2,
+   "armorWeight": "medium",
+   "slots": 1,
+   "hands": 0,
+   "classRestriction": null,
+   "tags": [
+    "armor",
+    "medium"
+   ],
+   "grants": [],
+   "statModifiers": {
+    "magic": 1,
+    "health": 4,
+    "armor": 1,
+    "movement": -1,
+    "dodge": -5
+   },
+   "triggers": [
+    {
+     "hook": "onActivationEnd",
+     "effect": "gain 2 Protection"
+    }
+   ],
+   "intent": "Plate for a person who intends to stand still and read; the longer you refuse to swing, the better your spells land.",
+   "source": "Hell-TCG name reused (Battlemage's Cuirass — +2 Health / Mage +1 Magic rebuilt at tier 2) | 2026-08-17 Angela: the \"if you made no attack this Turn\" condition was a mechanic invented for one armor. Replaced with protection, which already exists."
+  },
+  {
+   "id": "item.troll-gut-vest",
+   "name": "Troll-Gut Vest",
+   "itemClass": "armor",
+   "tier": 2,
+   "armorWeight": "medium",
+   "slots": 1,
+   "hands": 0,
+   "classRestriction": null,
+   "tags": [
+    "armor",
+    "medium"
+   ],
+   "grants": [],
+   "statModifiers": {
+    "health": 6,
+    "armor": 1,
+    "staminaMax": -1,
+    "accuracy": -5
+   },
+   "triggers": [
+    {
+     "hook": "startOfBattle",
+     "effect": "gain 3 Regeneration"
+    },
+    {
+     "hook": "onTakingDamage",
+     "effect": "gain 2 Regeneration"
+    }
+   ],
+   "intent": "It is still trying to knit itself back together, and it has generously included you in that project.",
+   "source": "Hell-TCG name reused (Warrior, Troll-Gut Vest — 'Regen 1/turn' rebuilt as the end-of-Turn heal) | 2026-08-17 Angela: \"took no damage this Turn\" is not a condition the engine has. Split into two ordinary triggers. | 2026-08-20 Angela: rebuilt on the regeneration status rather than flat heals — a score that heals then decays, which is what troll blood should do."
+  },
+  {
+   "id": "item.chains-of-the-faithful",
+   "name": "Chains of the Faithful",
+   "itemClass": "armor",
+   "tier": 2,
+   "armorWeight": "medium",
+   "slots": 1,
+   "hands": 0,
+   "classRestriction": "class.priest",
+   "tags": [
+    "armor",
+    "medium"
+   ],
+   "grants": [],
+   "statModifiers": {
+    "armor": 2,
+    "health": 2,
+    "strength": -1,
+    "movement": -1
+   },
+   "triggers": [
+    {
+     "hook": "aura",
+     "effect": "AURA radius 2 — allies inside have Immunity to Burn 1"
+    },
+    {
+     "hook": "onAttack",
+     "effect": "you gain 1 Burn"
+    }
+   ],
+   "intent": "The fire has to go somewhere, and you decided it goes on you. Every swing costs you a little of it.",
+   "source": "Hell-TCG name reused (Martyr, Chains of the Faithful — the Martyr line rebuilt as damage redirection) | 2026-08-17 Angela: CUT. ally-reactive hooks, guarding, Consequence-Stack interference and non-knockback forced movement all removed by ruling. | 2026-08-17 quality pass: replaced a placeholder aura with a distinct effect. | 2026-08-20 Angela: the 1 Burn hung on \"the end of each of your Activations while any ally is standing inside\" — a clock with a condition on it. Moved inside the attack: you swing, you burn. The aura keeps the ally immunity."
+  },
+  {
+   "id": "item.cloudsteel-plate",
+   "name": "Cloudsteel Plate",
+   "itemClass": "armor",
+   "tier": 2,
+   "armorWeight": "heavy",
+   "slots": 1,
+   "hands": 0,
+   "classRestriction": null,
+   "tags": [
+    "armor",
+    "heavy"
+   ],
+   "grants": [],
+   "statModifiers": {
+    "armor": 1,
+    "health": 6,
+    "movement": -1,
+    "dodge": -5,
+    "accuracy": -5
+   },
+   "triggers": [
+    {
+     "hook": "passive",
+     "effect": "You have AIRWALK: no trap and no terrain status from the hex you end your Turn on."
+    }
+   ],
+   "intent": "Light for plate, which means it is merely very heavy, and it starts every fight with three points you did not have to earn.",
+   "source": "Hell-TCG name reused (Warrior, Cloudsteel Plate — +4 Health / −1 Melee rebuilt as the heavy-band opener) | 2026-08-17 Angela: Protection has no duration — it decays 1 a Turn and by the damage it absorbs. Duration clause removed. | 2026-08-17 Angela: Flight is a granted MOVEMENT ACTION (1 Movement per hex, passes over units and obstructions, takes nothing from the ground on the way, one click). Airwalk is a standing property covering only the hex you END your Turn on. Neither existed in the content.",
+   "airwalk": true
+  },
+  {
+   "id": "item.sandstone-aegis",
+   "name": "Sandstone Aegis",
+   "itemClass": "armor",
+   "tier": 2,
+   "armorWeight": "heavy",
+   "slots": 1,
+   "hands": 0,
+   "classRestriction": null,
+   "tags": [
+    "armor",
+    "heavy"
+   ],
+   "grants": [],
+   "statModifiers": {
+    "luck": 5
+   },
+   "triggers": [],
+   "intent": "Nothing finds a gap in it because there are no gaps in it, only a great deal of stone and a man somewhere inside.",
+   "source": "Hell-TCG name reused (Sandstone Aegis — rebuilt as the anti-crit plate) | 2026-08-17 Angela: CUT. ally-reactive hooks, guarding, Consequence-Stack interference and non-knockback forced movement all removed by ruling. | 2026-08-20 Angela: a \"+5 Luck\" passive is a stat line, not a standing rule. Moved into statModifiers."
+  },
+  {
+   "id": "item.armor-of-thorns",
+   "name": "Armor of Thorns",
+   "itemClass": "armor",
+   "tier": 2,
+   "armorWeight": "heavy",
+   "slots": 1,
+   "hands": 0,
+   "classRestriction": null,
+   "tags": [
+    "armor",
+    "heavy"
+   ],
+   "grants": [],
+   "statModifiers": {
+    "health": 6,
+    "armor": 1,
+    "movement": -1,
+    "dodge": -5
+   },
+   "triggers": [
+    {
+     "hook": "onTakingDamage",
+     "effect": "Thorns 3"
+    }
+   ],
+   "intent": "Hitting you is a decision, and it is one the thing hitting you gets to regret at its own pace.",
+   "source": "Hell-TCG name reused (Armor of Thorns — '2 Thorns' ported directly) | 2026-08-20 Angela: THORNS is a keyword now: on taking damage the attacker takes N TRUE damage, at any range. This wrote it longhand, as physical, from an adjacent attacker — all three wrong.",
+   "thorns": 3
+  },
+  {
+   "id": "item.divine-bulwark",
+   "name": "Divine Bulwark",
+   "itemClass": "armor",
+   "tier": 2,
+   "armorWeight": "heavy",
+   "slots": 1,
+   "hands": 0,
+   "classRestriction": "class.paladin",
+   "tags": [
+    "armor",
+    "heavy"
+   ],
+   "grants": [],
+   "statModifiers": {
+    "armor": 1,
+    "resist": 1,
+    "health": 4,
+    "movement": -1,
+    "staminaMax": -1
+   },
+   "triggers": [
+    {
+     "hook": "startOfBattle",
+     "effect": "you may not act on Turn 1; from Turn 2 you have +1 Armor for the rest of the Battle"
+    }
+   ],
+   "intent": "It takes a full Turn to become the thing it is, and engagement lands on Turns 2 to 4, so it is nearly always ready in time.",
+   "source": "Hell-TCG name reused (Divine Bulwark — 'on equip: 2 Stun to self' rebuilt as a Turn-1 lockout)"
+  },
+  {
+   "id": "item.stoneskin-hauberk",
+   "name": "Stoneskin Hauberk",
+   "itemClass": "armor",
+   "tier": 2,
+   "armorWeight": "heavy",
+   "slots": 1,
+   "hands": 0,
+   "classRestriction": null,
+   "tags": [
+    "armor",
+    "heavy"
+   ],
+   "grants": [],
+   "statModifiers": {
+    "armor": 2,
+    "health": 2,
+    "movement": -2,
+    "dodge": -5
+   },
+   "triggers": [
+    {
+     "hook": "onActivationEnd",
+     "effect": "gain +1 Armor until the end of your next Turn"
+    }
+   ],
+   "intent": "Two points of Armor for standing still and a third for refusing to stop standing still — it makes a doorway out of a person.",
+   "source": "Hell-TCG name reused (Stone Skin — the badge power rebuilt as the turtle plate) | 2026-08-17: carried a condition the engine has no way to check (did-not-move / made-no-attack / moved-N-hexes). Condition removed and the effect reduced to match."
+  },
+  {
+   "id": "item.cloak-of-ghostform",
+   "name": "Cloak of Ghostform",
+   "itemClass": "armor",
+   "tier": 3,
+   "armorWeight": "light",
+   "slots": 1,
+   "hands": 0,
+   "classRestriction": null,
+   "tags": [
+    "armor",
+    "light"
+   ],
+   "grants": [],
+   "statModifiers": {
+    "dodge": 15,
+    "luck": 5,
+    "resist": 1,
+    "health": -4
+   },
+   "triggers": [
+    {
+     "hook": "onDodge",
+     "effect": "gain +50 Dodge until the end of your next Turn"
+    }
+   ],
+   "intent": "You are only really there when you decide to be, and the decision costs you the moment you make it.",
+   "source": "Hell-TCG name reused (Ebony Mask, Cloak of Ghostform — rebuilt as the tier-3 evasion cloak) | 2026-08-17 Angela: CUT. ally-reactive hooks, guarding, Consequence-Stack interference and non-knockback forced movement all removed by ruling. | 2026-08-20 Angela: onDodge is a new hook. the tier-3 version: one miss and nothing else lands that Turn. | 2026-08-20 Angela: nothing counts occurrences — no \"first time\", no Nth hit, no per-Turn or per-Battle tally. \"until you make your first attack\" counted occurrences. Cut; the onDodge is the whole cloak."
+  },
+  {
+   "id": "item.phantoms-mantle",
+   "name": "Phantom's Mantle",
+   "itemClass": "armor",
+   "tier": 3,
+   "armorWeight": "light",
+   "slots": 1,
+   "hands": 0,
+   "classRestriction": null,
+   "tags": [
+    "armor",
+    "light"
+   ],
+   "grants": [],
+   "statModifiers": {
+    "dodge": 15,
+    "movement": 1,
+    "luck": 5,
+    "health": -4
+   },
+   "triggers": [
+    {
+     "hook": "onKill",
+     "effect": "enters stealth: you cannot be seen and cannot be targeted by an attack. It breaks the moment you use an attack or a power — moving does not break it — and area effects, terrain and auras still reach you"
+    }
+   ],
+   "intent": "Kill something and stop existing; miss and it moves you anyway. It is an argument for never being where you were.",
+   "source": "Hell-TCG name reused (Phantom's Mantle) | 2026-08-17 Angela: CUT. ally-reactive hooks, guarding, Consequence-Stack interference and non-knockback forced movement all removed by ruling. | 2026-08-17 design pass: stealth rewritten to the settled definition — no duration clause, since stealth ends when you attack or use a power and never when you move. | 2026-08-20 Angela: a \"+5 Dodge\" passive is a stat line wearing a trigger. Folded into statModifiers, which is where a flat stat belongs."
+  },
+  {
+   "id": "item.skypriests-vestments",
+   "name": "Skypriest's Vestments",
+   "itemClass": "armor",
+   "tier": 3,
+   "armorWeight": "light",
+   "slots": 1,
+   "hands": 0,
+   "classRestriction": "class.priest",
+   "tags": [
+    "armor",
+    "light"
+   ],
+   "grants": [],
+   "statModifiers": {
+    "spirit": 2,
+    "resist": 1,
+    "dodge": 5,
+    "health": -4
+   },
+   "triggers": [
+    {
+     "hook": "passive",
+     "effect": "You have AIRWALK: no trap and no terrain status from the hex you end your Turn on."
+    }
+   ],
+   "intent": "Spirit is a party-wide sum, so this is two points for everyone and four fewer Health for exactly one person.",
+   "source": "Hell-TCG name reused (Skypriest's Vestments — Priest +1 Spirit scaled to tier 3) | 2026-08-17 Angela: CUT. ally-reactive hooks, guarding, Consequence-Stack interference and non-knockback forced movement all removed by ruling. | 2026-08-17 quality pass: replaced a placeholder aura with a distinct effect. | 2026-08-17 Angela: Flight is a granted MOVEMENT ACTION (1 Movement per hex, passes over units and obstructions, takes nothing from the ground on the way, one click). Airwalk is a standing property covering only the hex you END your Turn on. Neither existed in the content.",
+   "airwalk": true
+  },
+  {
+   "id": "item.wind-dancers-cloak",
+   "name": "Wind Dancer's Cloak",
+   "itemClass": "armor",
+   "tier": 3,
+   "armorWeight": "light",
+   "slots": 1,
+   "hands": 0,
+   "classRestriction": null,
+   "tags": [
+    "armor",
+    "light"
+   ],
+   "grants": [
+    "power.flight"
+   ],
+   "statModifiers": {
+    "dodge": 10,
+    "movement": 2,
+    "staminaMax": 1,
+    "health": -4
+   },
+   "triggers": [
+    {
+     "hook": "onDodge",
+     "effect": "Surge Chance +30"
+    }
+   ],
+   "intent": "Seven Movement and a bonus for spending all of it: the only way to wear this badly is to stand somewhere.",
+   "source": "Hell-TCG name reused (Wind Dancer's Cloak — the Wind Leap power rebuilt as movement stats and a trigger) | 2026-08-17: carried a condition the engine has no way to check (did-not-move / made-no-attack / moved-N-hexes). Condition removed and the effect reduced to match. | 2026-08-17: \"difficult terrain\" is not a thing in HoBaT — there are hexes that cost extra Movement. Reworded. | 2026-08-17 Angela: Flight is a granted MOVEMENT ACTION (1 Movement per hex, passes over units and obstructions, takes nothing from the ground on the way, one click). Airwalk is a standing property covering only the hex you END your Turn on. Neither existed in the content. | 2026-08-20 Angela: the shape was already right — a passive that hands you a movement ability. Written properly now as a grant of power.flight rather than prose in a trigger. | 2026-08-20 Angela: onDodge is a new hook. a near miss is momentum: Surge Chance +30 each time."
+  },
+  {
+   "id": "item.sturdy-runed-leather",
+   "name": "Sturdy Runed Leather",
+   "itemClass": "armor",
+   "tier": 3,
+   "armorWeight": "medium",
+   "slots": 1,
+   "hands": 0,
+   "classRestriction": null,
+   "tags": [
+    "armor",
+    "medium"
+   ],
+   "grants": [],
+   "statModifiers": {
+    "health": 6,
+    "resist": 2,
+    "armor": 1,
+    "accuracy": -20
+   },
+   "triggers": [],
+   "intent": "The runes only wake up when something unholy is in the room, which makes it a very expensive coat on a quiet day.",
+   "source": "Hell-TCG name reused (Warrior, Sturdy Runed Leather — the class line rebuilt as a threat-reactive ward) | 2026-08-17 Angela: a startOfBattle trigger with an ENEMY radius fires on nobody — the two sides do not deploy near each other. Rebuilt as an aura, which is checked continuously. | 2026-08-17: Accuracy is worth about a quarter as a cost, so -5 was not paying for Armor and Resist. | 2026-08-20 Angela: \"when Resist reduces magic damage to 0, heal 1\" is the same branch inside the damage pipeline that was cut from item.mystic-armor. | 2026-08-20 Angela sweep: the aura did two banned things at once — it scanned the whole field counting enemies by tag, and it capped itself at +3. Nothing counts units on the board and there is no stacking-limit feature. The Resist is now flat and lives in the stat block."
+  },
+  {
+   "id": "item.drakescale-coat",
+   "name": "Drakescale Coat",
+   "itemClass": "armor",
+   "tier": 3,
+   "armorWeight": "medium",
+   "slots": 1,
+   "hands": 0,
+   "classRestriction": null,
+   "tags": [
+    "armor",
+    "medium"
+   ],
+   "grants": [],
+   "statModifiers": {
+    "resist": 2,
+    "armor": 1,
+    "health": 4,
+    "movement": -1,
+    "dodge": -5
+   },
+   "triggers": [
+    {
+     "hook": "startOfBattle",
+     "effect": "gain +2 Resist against dragon for the rest of the Battle"
+    },
+    {
+     "hook": "onTakingDamage",
+     "effect": "Burn applied to you is halved, rounded down, before it is applied"
+    }
+   ],
+   "intent": "Taken off the thing it was best at protecting, which tells you both how good it is and how little that helped.",
+   "source": "Hell-TCG name reused (Dragon's Blood / Dragon Slayer — name family only; the fire ward is new)"
+  },
+  {
+   "id": "item.aegis-of-the-fleet",
+   "name": "Aegis of the Fleet",
+   "itemClass": "armor",
+   "tier": 3,
+   "armorWeight": "medium",
+   "slots": 1,
+   "hands": 0,
+   "classRestriction": null,
+   "tags": [
+    "armor",
+    "medium"
+   ],
+   "grants": [
+    "power.flight-swift"
+   ],
+   "statModifiers": {
+    "armor": 1,
+    "resist": 1,
+    "health": 4,
+    "dodge": -5
+   },
+   "triggers": [],
+   "intent": "Command armour: it does not make you harder to kill, it makes you impossible to keep out of the fight.",
+   "source": "Hell-TCG name reused (Aegis of the Fleet — rebuilt as the party-facing medium) | 2026-08-17 Angela: CUT. ally-reactive hooks, guarding, Consequence-Stack interference and non-knockback forced movement all removed by ruling. | 2026-08-17 quality pass: replaced a placeholder aura with a distinct effect. | 2026-08-17 Angela: Flight is a granted MOVEMENT ACTION (1 Movement per hex, passes over units and obstructions, takes nothing from the ground on the way, one click). Airwalk is a standing property covering only the hex you END your Turn on. Neither existed in the content. | 2026-08-20 Angela: flight is not a property you have, it is a movement action you are granted. This grants power.flight-swift — 0 stamina, moves your Movement + 1."
+  },
+  {
+   "id": "item.mystic-armor",
+   "name": "Mystic Armor",
+   "itemClass": "armor",
+   "tier": 3,
+   "armorWeight": "medium",
+   "slots": 1,
+   "hands": 0,
+   "classRestriction": null,
+   "tags": [
+    "armor",
+    "medium"
+   ],
+   "grants": [],
+   "statModifiers": {
+    "magic": 1,
+    "resist": 2,
+    "health": 4,
+    "movement": -1
+   },
+   "triggers": [
+    {
+     "hook": "startOfBattle",
+     "effect": "gain Protection equal to 2 plus the party's Magic"
+    }
+   ],
+   "intent": "It is forged rather than sewn, and it gets better the more of your party can read.",
+   "source": "Hell-TCG name reused (Forge Mystic Armor — the crafted result, rebuilt as an item) | 2026-08-20 Angela: the onTakingDamage carried its own branch — it had to know whether Resist was what took the magic damage to zero. Cut. The Protection at battle start is the whole item now."
+  },
+  {
+   "id": "item.patrocoleas-armor",
+   "name": "Patrocolea's Armor",
+   "itemClass": "armor",
+   "tier": 3,
+   "armorWeight": "heavy",
+   "slots": 1,
+   "hands": 0,
+   "classRestriction": null,
+   "tags": [
+    "armor",
+    "heavy"
+   ],
+   "grants": [],
+   "statModifiers": {
+    "armor": 3,
+    "resist": 1,
+    "health": -4,
+    "movement": -2,
+    "accuracy": -10,
+    "dodge": -10
+   },
+   "triggers": [
+    {
+     "hook": "startOfBattle",
+     "effect": "gain 6 Protection"
+    },
+    {
+     "hook": "startOfBattle",
+     "effect": "heal 1 at the end of each of your Turns for the rest of the Battle"
+    }
+   ],
+   "intent": "Three points of Armor, a bubble to get you through the opening exchange, and a body that cannot carry any of it.",
+   "source": "Hell-TCG name reused (Patrocolea's Armor — +3 Armor / −3 Health and the Regen kept, dropped from tier 4) | 2026-08-20 Angela: \"the first hit against you each Battle deals no damage\" needed a per-battle flag and a veto inside the damage pipeline. Replaced with 6 Protection at battle start, which is the same idea — a bubble that eats the opening blow — written in a mechanic that already exists. THE NUMBER 6 IS MINE."
+  },
+  {
+   "id": "item.chains-of-the-damned",
+   "name": "Chains of the Damned",
+   "itemClass": "armor",
+   "tier": 3,
+   "armorWeight": "heavy",
+   "slots": 1,
+   "hands": 0,
+   "classRestriction": null,
+   "tags": [
+    "armor",
+    "heavy"
+   ],
+   "grants": [],
+   "statModifiers": {
+    "armor": 2,
+    "health": 6,
+    "strength": 1,
+    "movement": -1,
+    "staminaMax": -1,
+    "dodge": -10
+   },
+   "triggers": [],
+   "intent": "Six Health and two Armor bolted onto someone who can barely walk. There is nothing clever here and that is the point.",
+   "source": "Hell-TCG name reused (Chains of the Damned — rebuilt as the cursed heavy) | 2026-08-17 quality pass: the armour said 'nothing gets past' and did nothing about it. A zone-of-control aura added, which is the system the name has always been describing. | 2026-08-17 Angela: every unit has Sidestep, so a zone of control cannot pin anything — it taxes the SECOND hex of a withdrawal, not the first. Reworded to say what it actually does. | 2026-08-20 Angela: the zone-of-control aura is cut — extra Movement cost to leave a hex and a provoked attack on the way out is a subsystem, not a trigger. The armour is its stat line, which is already a big one."
+  },
+  {
+   "id": "item.storm-bastion",
+   "name": "Storm Bastion",
+   "itemClass": "armor",
+   "tier": 3,
+   "armorWeight": "heavy",
+   "slots": 1,
+   "hands": 0,
+   "classRestriction": null,
+   "tags": [
+    "armor",
+    "heavy"
+   ],
+   "grants": [],
+   "statModifiers": {
+    "armor": 3,
+    "resist": 1,
+    "health": 4,
+    "movement": -1,
+    "accuracy": -10,
+    "dodge": -5
+   },
+   "triggers": [
+    {
+     "hook": "aura",
+     "effect": "AURA radius 1 — an enemy that ends its movement inside gains 1 Frost. The Frost cancels any Burn it carried."
+    }
+   ],
+   "intent": "It exists to be the thing arrows hit, and it is extremely good at being the thing arrows hit.",
+   "source": "Hell-TCG name reused (Storm Bastion — rebuilt as the anti-ranged wall) | 2026-08-17 Angela: CUT. ally-reactive hooks, guarding, Consequence-Stack interference and non-knockback forced movement all removed by ruling. | 2026-08-17 quality pass: replaced a placeholder aura with a distinct effect. | 2026-08-20 Angela: \"and the first enemy to do so each Turn is knocked back\" counted occurrences. Cut; every enemy that stops inside takes the Frost, none are knocked back. | 2026-08-20 Angela sweep: \"reduce all incoming ranged damage by 2\" filtered damage by how it was delivered — ranged is not a damage type, and nothing else in the game reduces damage by delivery. Flat reduction is Toughness, so it is +2 Toughness in the stat block. | 2026-08-20 Angela: the Toughness I put here does not reduce damage. The anti-ranged filter is gone (ranged is not a damage type), so the wall is Armor, which is what stops physical damage — 2 becomes 3."
+  }
+ ],
+ "enchants": [
+  {
+   "id": "enchant.frost",
+   "name": "Frost",
+   "appliesToTags": [
+    "melee",
+    "ranged"
+   ],
+   "tier": 1,
+   "statModifiers": {},
+   "triggers": [
+    {
+     "hook": "onHit",
+     "effect": "apply 1 Frost"
+    },
+    {
+     "hook": "onCrit",
+     "effect": "apply 2 more Frost"
+    }
+   ],
+   "slayer": null,
+   "grants": [],
+   "intent": "Frost cancels burn on application and amplifies the next physical hit by its value, which makes one point of it worth more than it reads.",
+   "source": "Hell-TCG name reused (Frost Arrows / Frost Touched — generalised off the bow) | 2026-08-20 Angela: onCrit is a real hook now, and this is the standard rider on a status enchantment — a crit deals 2 more of whatever status it already applies. enchant.bloodletting had it first and it is now the pattern."
+  },
+  {
+   "id": "enchant.venomous",
+   "name": "Venomous",
+   "appliesToTags": [
+    "dagger",
+    "claw",
+    "thrown",
+    "bow",
+    "crossbow",
+    "sling",
+    "fang"
+   ],
+   "tier": 1,
+   "statModifiers": {},
+   "triggers": [
+    {
+     "hook": "onDamage",
+     "effect": "apply 1 Poison"
+    },
+    {
+     "hook": "onCrit",
+     "effect": "apply 2 more Poison"
+    }
+   ],
+   "slayer": null,
+   "grants": [],
+   "intent": "Cheap, patient and completely useless against anything with two Resist — which is most of what the late campaign fields.",
+   "source": "Hell-TCG name reused (Venomous / Poison Stars — the on-damage Poison ported directly) | 2026-08-20 Angela: onCrit is a real hook now, and this is the standard rider on a status enchantment — a crit deals 2 more of whatever status it already applies. enchant.bloodletting had it first and it is now the pattern. | 2026-08-20 self-check: +fang. The Beast’s Claws could take this and its Fangs could not, purely because `claw` predated `fang`. Same weapon, same body, same enchant."
+  },
+  {
+   "id": "enchant.bloodletting",
+   "name": "Bloodletting",
+   "appliesToTags": [
+    "sword",
+    "axe",
+    "dagger",
+    "claw",
+    "polearm",
+    "fang"
+   ],
+   "tier": 1,
+   "statModifiers": {
+    "crit": 3
+   },
+   "triggers": [
+    {
+     "hook": "onCrit",
+     "effect": "apply 2 Bleed"
+    }
+   ],
+   "slayer": null,
+   "grants": [],
+   "intent": "Bleed is never resisted, so this is the one rider that keeps working after everything else has stopped.",
+   "source": "Hell-TCG name reused (Bloody Strike / Bloody Axe — moved onto the crit) | 2026-08-20 self-check: +fang. The Beast’s Claws could take this and its Fangs could not, purely because `claw` predated `fang`. Same weapon, same body, same enchant."
+  },
+  {
+   "id": "enchant.lightning",
+   "name": "Lightning",
+   "appliesToTags": [
+    "melee",
+    "ranged",
+    "staff",
+    "breath"
+   ],
+   "tier": 2,
+   "statModifiers": {
+    "accuracy": 5
+   },
+   "triggers": [
+    {
+     "hook": "onCrit",
+     "effect": "2 magic damage arcs to another enemy within 2 hexes of the target"
+    }
+   ],
+   "slayer": null,
+   "grants": [],
+   "intent": "It only arcs on a crit, so it is worth exactly as much as the Accuracy you are carrying above 100.",
+   "source": "Hell-TCG name reused (Lightning Bracers / Chain Lightning) | 2026-08-20 Angela: reworded \"a second enemy\" to \"another enemy\" — it never meant the second occurrence, and the words invited the wrong reading. | 2026-08-20 self-check: +breath. Breath is the Beast’s magic-ranged form; the enchants that reach a staff reach it."
+  },
+  {
+   "id": "enchant.holy-water",
+   "name": "Holy Water",
+   "appliesToTags": [
+    "melee",
+    "ranged"
+   ],
+   "tier": 2,
+   "statModifiers": {},
+   "triggers": [
+    {
+     "hook": "onHit",
+     "effect": "if the target is undead, demon or vampire, apply 2 Burn"
+    }
+   ],
+   "slayer": {
+    "undead": 1,
+    "demon": 1,
+    "vampire": 1
+   },
+   "grants": [],
+   "intent": "A flask, a rag and a prayer; against anything that is merely alive it is a slightly damp weapon.",
+   "source": "Hell-TCG name reused (Holy Water)"
+  },
+  {
+   "id": "enchant.shadow-touched",
+   "name": "Shadow-Touched",
+   "appliesToTags": [
+    "melee",
+    "dagger",
+    "bow"
+   ],
+   "tier": 2,
+   "statModifiers": {
+    "crit": 3
+   },
+   "triggers": [
+    {
+     "hook": "onHit",
+     "effect": "the target has −10 Accuracy until the end of its next Turn"
+    }
+   ],
+   "slayer": null,
+   "grants": [],
+   "intent": "It does not blind them so much as put the room somewhere slightly to their left.",
+   "source": "Hell-TCG name reused (Flame Touched / Frost Touched / Tome of Shadows — the name family, rebuilt)"
+  },
+  {
+   "id": "enchant.eternal-ice",
+   "name": "Eternal Ice",
+   "appliesToTags": [
+    "staff",
+    "melee",
+    "breath"
+   ],
+   "tier": 3,
+   "statModifiers": {
+    "magic": 1,
+    "movement": -1
+   },
+   "triggers": [
+    {
+     "hook": "onHit",
+     "effect": "apply 2 Frost"
+    },
+    {
+     "hook": "onKill",
+     "effect": "every enemy within 2 hexes of the target gains 1 Frost"
+    }
+   ],
+   "slayer": null,
+   "grants": [],
+   "intent": "Two Frost strips the target's burn and opens it up for whoever swings next — this is a setup enchant wearing a damage enchant's coat.",
+   "source": "Hell-TCG name reused (Eternal Ice) | 2026-08-20 self-check: +breath. Breath is the Beast’s magic-ranged form; the enchants that reach a staff reach it."
+  },
+  {
+   "id": "enchant.gale-arrows",
+   "name": "Gale Arrows",
+   "appliesToTags": [
+    "bow",
+    "crossbow",
+    "sling",
+    "thrown"
+   ],
+   "tier": 2,
+   "statModifiers": {
+    "accuracy": 20,
+    "reach": 1
+   },
+   "triggers": [
+    {
+     "hook": "onCrit",
+     "effect": "gain +1 Reach for the rest of the Battle"
+    }
+   ],
+   "slayer": null,
+   "grants": [],
+   "intent": "Reach only helps ranged, which is why it lives here — and every crit blows the shot a little further out than the last one.",
+   "source": "Hell-TCG name reused (Gale Arrows) | 2026-08-17 quality pass: the flat +5 Accuracy was worth almost nothing to the veterans who could afford the enchant. Rebuilt to branch on the 100-Accuracy threshold so it is live at both ends of a campaign. | 2026-08-20 Angela: the 100-Accuracy branch is cut. Below 100 it gave +15 Accuracy and above it +3 Crit, which is almost exactly what a flat +20 Accuracy does on its own — the branch bought nothing and cost a rule. And an onAttack that only modifies its own attack is not a trigger at all, because onAttack always fires; that is a stat line. Now a stat line: +20 Accuracy, +1 Reach, plus an onCrit that grows the Reach."
+  },
+  {
+   "id": "enchant.abundant-arrows",
+   "name": "Abundant Arrows",
+   "appliesToTags": [
+    "bow",
+    "crossbow",
+    "sling"
+   ],
+   "tier": 2,
+   "statModifiers": {},
+   "triggers": [
+    {
+     "hook": "onMiss",
+     "effect": "regain 1 Stamina"
+    }
+   ],
+   "slayer": null,
+   "grants": [],
+   "intent": "It does not make you hit. It makes missing free, which on a crossbow is very nearly the same thing.",
+   "source": "Hell-TCG name reused (Abundant Arrows — the draw effect rebuilt as a Stamina refund) | 2026-08-20 Angela: \"the attack costs 0 Stamina instead of its printed cost\" changes a cost after the fact — nothing else in the game rewrites a printed cost. Refunds a stamina instead, which is the same feeling through a mechanic that exists."
+  },
+  {
+   "id": "enchant.magic-arrows",
+   "name": "Magic Arrows",
+   "appliesToTags": [
+    "bow",
+    "crossbow",
+    "sling"
+   ],
+   "tier": 2,
+   "statModifiers": {
+    "precision": 1
+   },
+   "triggers": [],
+   "slayer": null,
+   "grants": [],
+   "intent": "Mitigation is a three-way branch and this moves you to the other side of it — wonderful against plate, miserable against a warded thing.",
+   "source": "Hell-TCG name reused (Magic Arrows) | 2026-08-20: an unconditional onAttack that only changes this attack is not a trigger — onAttack always fires. Moved to a damageTypeOverride property on the enchant, which is what it always was.",
+   "damageTypeOverride": "magic"
+  },
+  {
+   "id": "enchant.soul-reaper",
+   "name": "Soul Reaper",
+   "appliesToTags": [
+    "melee"
+   ],
+   "tier": 3,
+   "statModifiers": {
+    "strength": 1
+   },
+   "triggers": [
+    {
+     "hook": "onKill",
+     "effect": "heal 3 and gain +1 Strength for the rest of the Battle, stacking"
+    }
+   ],
+   "slayer": null,
+   "grants": [],
+   "intent": "The wrong incentive handed to the wrong person, which is the only reason anyone still makes these.",
+   "source": "Hell-TCG name reused (Soul Reaper)"
+  },
+  {
+   "id": "enchant.bloodthirsty",
+   "name": "Bloodthirsty",
+   "appliesToTags": [
+    "melee",
+    "brawl"
+   ],
+   "tier": 2,
+   "statModifiers": {
+    "strength": 1,
+    "dodge": -5
+   },
+   "triggers": [
+    {
+     "hook": "onKill",
+     "effect": "regain 1 Stamina"
+    }
+   ],
+   "slayer": null,
+   "grants": [],
+   "intent": "Every kill buys the next swing, and every Turn you fail to kill something you are simply easier to hit.",
+   "source": "Hell-TCG name reused (Bloodthirsty)"
+  },
+  {
+   "id": "enchant.runed",
+   "name": "Runed",
+   "appliesToTags": [
+    "armor"
+   ],
+   "tier": 1,
+   "statModifiers": {
+    "armor": 1,
+    "resist": 1,
+    "accuracy": -20
+   },
+   "triggers": [],
+   "slayer": null,
+   "grants": [],
+   "intent": "The armoursmith's first trick and still the honest one: both mitigations, and your aim pays for the etching.",
+   "source": "Hell-TCG name reused (Sturdy Runed Leather / Runed Crossbow — the adjective, made portable) | 2026-08-17: Accuracy is worth about a quarter as a cost, so -5 was not paying for Armor and Resist."
+  },
+  {
+   "id": "enchant.warded",
+   "name": "Warded",
+   "appliesToTags": [
+    "armor",
+    "shield"
+   ],
+   "tier": 2,
+   "statModifiers": {
+    "resist": 2
+   },
+   "triggers": [],
+   "slayer": null,
+   "grants": [],
+   "intent": "Insurance against the opening spell, and after that it is one point of Resist like everyone else's.",
+   "source": "Hell-TCG name reused (Warded / Warding) | 2026-08-20 Angela: nothing counts occurrences — no \"first time\", no Nth hit, no per-Turn or per-Battle tally. \"the first magic damage you take each Battle is reduced by 3\" was an occurrence count. Replaced with +2 Resist, which reduces magic damage every time instead of once."
+  },
+  {
+   "id": "enchant.ancient-ward",
+   "name": "Ancient Ward",
+   "appliesToTags": [
+    "armor"
+   ],
+   "tier": 2,
+   "statModifiers": {
+    "resist": 2,
+    "movement": -1
+   },
+   "triggers": [],
+   "slayer": null,
+   "grants": [],
+   "intent": "Two Resist neutralises two burn and two poison at once, per tick, and the price is one hex a Turn forever.",
+   "source": "Hell-TCG name reused (Ancient Ward)"
+  },
+  {
+   "id": "enchant.fire-ward",
+   "name": "Fire Ward",
+   "appliesToTags": [
+    "armor",
+    "shield"
+   ],
+   "tier": 2,
+   "statModifiers": {
+    "resist": 1
+   },
+   "triggers": [],
+   "slayer": null,
+   "grants": [],
+   "intent": "Burn simply stops being a thing that happens to you, which is either the best line on the page or completely dead.",
+   "source": "Hell-TCG name reused (Fire Ward / Fire Shield) | 2026-08-17 Angela, corrected: immunity resolves BEFORE the status does; it is not a second strip. The status still takes its own -1 afterwards.",
+   "immunity": {
+    "burn": 2
+   },
+   "description": "Immunity to Burn 2. 2 points of Burn are removed BEFORE Burn resolves, so those points never get to deal its damage or halve your healing. The ordinary -1 decay still follows, so Burn falls by 3 a Turn."
+  },
+  {
+   "id": "enchant.stormward",
+   "name": "Stormward",
+   "appliesToTags": [
+    "armor",
+    "shield"
+   ],
+   "tier": 2,
+   "statModifiers": {
+    "dodge": 5
+   },
+   "triggers": [
+    {
+     "hook": "onTakingDamage",
+     "effect": "ranged attacks against you deal 2 less damage"
+    }
+   ],
+   "slayer": null,
+   "grants": [],
+   "intent": "It is a wind that lives around you and disagrees with arrows specifically.",
+   "source": "Hell-TCG name reused (Stormward / Tempest Ward)"
+  },
+  {
+   "id": "enchant.thorned",
+   "name": "Thorned",
+   "appliesToTags": [
+    "armor"
+   ],
+   "tier": 2,
+   "statModifiers": {},
+   "triggers": [
+    {
+     "hook": "onTakingDamage",
+     "effect": "Thorns 2"
+    }
+   ],
+   "slayer": null,
+   "grants": [],
+   "intent": "Zero stats and a standing tax on melee — the enchant that only pays out when things are going badly.",
+   "source": "Hell-TCG name reused (Armor of Thorns / Wreath of Nature's Protection — Thorns as a portable rider) | 2026-08-20 Angela: THORNS is a keyword now: on taking damage the attacker takes N TRUE damage, at any range. This wrote it longhand, as physical, from an adjacent attacker — all three wrong.",
+   "thorns": 2
+  },
+  {
+   "id": "enchant.silkweave",
+   "name": "Silkweave",
+   "appliesToTags": [
+    "armor"
+   ],
+   "tier": 2,
+   "statModifiers": {
+    "dodge": 5,
+    "staminaMax": 1,
+    "health": -2
+   },
+   "triggers": [],
+   "slayer": null,
+   "grants": [],
+   "intent": "It re-cuts whatever it is sewn into as light armour, including the plate you spent a campaign finding.",
+   "source": "Hell-TCG name reused (Silkweave Armor — the treatment rather than the coat)"
+  },
+  {
+   "id": "enchant.blessed",
+   "name": "Blessed",
+   "appliesToTags": [
+    "armor",
+    "shield"
+   ],
+   "tier": 2,
+   "statModifiers": {
+    "luck": 6,
+    "health": 2
+   },
+   "triggers": [],
+   "slayer": null,
+   "grants": [],
+   "intent": "Luck is already the anti-crit stat — a flat subtraction from the attacker’s crit chance. This is simply a lot of it.",
+   "source": "Hell-TCG name reused (Blessed / Blessing — the corpus's most-repeated word, made into the anti-crit ward) | 2026-08-20 Angela: nothing counts occurrences — no \"first time\", no Nth hit, no per-Turn or per-Battle tally. \"the first critical hit against you each Battle is an ordinary hit\" was both a crit cancel and an occurrence count. Cut. Luck raised 3 to 6, which says the same thing in a stat that already exists."
+  },
+  {
+   "id": "enchant.divine-protection",
+   "name": "Divine Protection",
+   "appliesToTags": [
+    "armor",
+    "shield"
+   ],
+   "tier": 3,
+   "statModifiers": {
+    "armor": 1,
+    "resist": 1,
+    "movement": -1
+   },
+   "triggers": [
+    {
+     "hook": "startOfBattle",
+     "effect": "gain Protection equal to 2 plus the party's Spirit"
+    }
+   ],
+   "slayer": null,
+   "grants": [],
+   "intent": "The best defensive enchant in the book and it is still only worth what your Priest is worth.",
+   "source": "Hell-TCG name reused (Divine Protection / Ring of Divine Protection)"
+  },
+  {
+   "id": "enchant.undead-slayer",
+   "name": "Undead Slayer",
+   "appliesToTags": [
+    "melee",
+    "ranged"
+   ],
+   "tier": 2,
+   "statModifiers": {},
+   "triggers": [
+    {
+     "hook": "onKill",
+     "effect": "if the target was undead, heal 2"
+    }
+   ],
+   "slayer": {
+    "undead": 3
+   },
+   "grants": [],
+   "intent": "Three points against the one thing the campaign will not stop sending, and nothing at all against a man.",
+   "source": "Hell-TCG name reused (Undead Slayer — Required Type / Adds Type ports straight into tags)"
+  },
+  {
+   "id": "enchant.demon-slayer",
+   "name": "Demon Slayer",
+   "appliesToTags": [
+    "melee",
+    "ranged"
+   ],
+   "tier": 2,
+   "statModifiers": {
+    "resist": 1
+   },
+   "triggers": [],
+   "slayer": {
+    "demon": 3
+   },
+   "grants": [],
+   "intent": "The Resist is not generosity; it is an acknowledgement of what happens when the demon gets its Turn.",
+   "source": "Hell-TCG name reused (Demon Slayer / Blade of Demon Slaying)"
+  },
+  {
+   "id": "enchant.hunting-arrows",
+   "name": "Hunting Arrows",
+   "appliesToTags": [
+    "bow",
+    "crossbow",
+    "sling",
+    "thrown"
+   ],
+   "tier": 1,
+   "statModifiers": {
+    "precision": 1
+   },
+   "triggers": [],
+   "slayer": {
+    "beast": 2
+   },
+   "grants": [],
+   "intent": "Broadheads for something with fur on it; the cheapest useful enchant a Ranger will ever bolt onto a bow.",
+   "source": "Hell-TCG name reused (Ranger, Hunting Arrows — '+2 vs Animals' becomes the beast tag)"
+  },
+  {
+   "id": "enchant.ironbane",
+   "name": "Ironbane",
+   "appliesToTags": [
+    "hammer",
+    "axe",
+    "chain"
+   ],
+   "tier": 2,
+   "statModifiers": {},
+   "triggers": [
+    {
+     "hook": "onHit",
+     "effect": "if the target is a construct, it loses 1 Armor for the rest of the Battle and takes 4 true damage"
+    },
+    {
+     "hook": "onCrit",
+     "effect": "Knockback 2 — the target is moved 2 hexes directly away, blocked by units and impassable terrain, springing any trap and picking up any terrain status on the hex it lands in"
+    }
+   ],
+   "slayer": {
+    "construct": 2
+   },
+   "grants": [],
+   "intent": "Armor floors at zero, so the shred alone stopped mattering — now the same swing puts four points through the plating regardless, and a crit puts the construct two hexes into whatever is behind it.",
+   "source": "Hell-TCG name reused (Bane Blade / Elemental Bane — the bane family, pointed at constructs) | 2026-08-17 quality pass: Armor shred floors out and left the enchant dead late. Knockback added on crit, so hammers, axes and chains have the effect their form implies. | 2026-08-20 Angela: the construct clause now also deals 4 true damage, which skips Armor and Resist both and so keeps paying after the shred has floored out. Knockback on crit stays."
+  },
+  {
+   "id": "enchant.giant-slayer",
+   "name": "Giant Slayer",
+   "appliesToTags": [
+    "spear",
+    "polearm",
+    "bow",
+    "crossbow"
+   ],
+   "tier": 2,
+   "statModifiers": {},
+   "triggers": [
+    {
+     "hook": "onHit",
+     "effect": "if the target is a giant, it gains 1 Slow"
+    }
+   ],
+   "slayer": {
+    "giant": 3
+   },
+   "grants": [],
+   "intent": "You do not kill it. You hamstring it and make it walk to you, which takes a while and is the entire plan.",
+   "source": "Hell-TCG name reused (Monster Slayer — split out onto the giant tag) | 2026-08-20 Angela: \"clean up that movement stuff.\" A one-Turn Movement loss is now the Slow status — apply N Slow. Fourteen entries said this two different ways and every one of them needed the engine to remember whose next Turn it was. Amount unchanged."
+  },
+  {
+   "id": "enchant.dragon-slayer",
+   "name": "Dragon Slayer",
+   "appliesToTags": [
+    "spear",
+    "polearm",
+    "bow",
+    "crossbow"
+   ],
+   "tier": 3,
+   "statModifiers": {
+    "resist": 1
+   },
+   "triggers": [
+    {
+     "hook": "onHit",
+     "effect": "if the target is a dragon, apply 4 Bleed"
+    }
+   ],
+   "slayer": {
+    "dragon": 4
+   },
+   "grants": [
+    "badge.dragon-slayer"
+   ],
+   "intent": "Bleed is never resisted and a dragon is mostly Resist; the whole enchant is that one sentence.",
+   "source": "Hell-TCG name reused (Dragon Slayer) | 2026-08-20 Angela: Bleed on hit raised 2 to 4, and the campaign Toughness grant became the Dragon Slayer badge, which is a thing that exists rather than a bespoke campaign rider. | 2026-08-20 Angela sweep: the onKill line restated the grants field. The badge is awarded by grants: [badge.dragon-slayer]; saying it again in prose made it look like a bespoke in-battle award, which is the only one in the game."
+  },
+  {
+   "id": "enchant.ghost-slayer",
+   "name": "Ghost Slayer",
+   "appliesToTags": [
+    "melee",
+    "ranged"
+   ],
+   "tier": 2,
+   "statModifiers": {},
+   "triggers": [
+    {
+     "hook": "onKill",
+     "effect": "every stealthed enemy on the battlefield is revealed and its stealth breaks"
+    }
+   ],
+   "slayer": {
+    "horror": 4,
+    "nightmare": 4
+   },
+   "grants": [],
+   "intent": "Ghost was its own type in the old game; here it is two tags and a kill that turns the lights on everywhere at once.",
+   "source": "Hell-TCG name reused (Ghost Slayer — the Ghost type folded into horror and nightmare) | 2026-08-20 Angela: Vision is not something an attacking weapon adds — cut. Slayer raised to +4 against both tags, and the kill now reveals every stealthed enemy on the map. NOTE: there is no tag.ghost; \"ghost\" was folded into horror and nightmare when this was first written, so +4 against ghosts means +4 against both of those."
+  },
+  {
+   "id": "enchant.werewolf-bane",
+   "name": "Werewolf Bane",
+   "appliesToTags": [
+    "dagger",
+    "sword",
+    "claw",
+    "thrown",
+    "fang"
+   ],
+   "tier": 2,
+   "statModifiers": {},
+   "triggers": [
+    {
+     "hook": "onAttack",
+     "effect": "this attack deals true damage against werewolf"
+    }
+   ],
+   "slayer": {
+    "werewolf": 2,
+    "beast": 1
+   },
+   "grants": [],
+   "intent": "Silver does not hit harder. It hits past everything the thing was counting on.",
+   "source": "Hell-TCG name reused (Werewolf Bane) | 2026-08-20 self-check: +fang. The Beast’s Claws could take this and its Fangs could not, purely because `claw` predated `fang`. Same weapon, same body, same enchant."
+  },
+  {
+   "id": "enchant.cursed-skull",
+   "name": "Cursed Skull",
+   "appliesToTags": [
+    "armor",
+    "staff",
+    "breath"
+   ],
+   "tier": 2,
+   "statModifiers": {
+    "spirit": 1,
+    "health": 4
+   },
+   "triggers": [
+    {
+     "hook": "onActivationEnd",
+     "effect": "you take 1 true damage"
+    }
+   ],
+   "slayer": null,
+   "grants": [],
+   "intent": "It talks. Everything it says is useful and none of it is free.",
+   "source": "Hell-TCG name reused (Martyr, Cursed Skull — the party heal rebuilt as a Spirit line with a tithe) | 2026-08-20 self-check: +breath. Breath is the Beast’s magic-ranged form; the enchants that reach a staff reach it."
+  },
+  {
+   "id": "enchant.tainted-blood",
+   "name": "Tainted Blood",
+   "appliesToTags": [
+    "armor"
+   ],
+   "tier": 2,
+   "statModifiers": {
+    "health": 6,
+    "strength": 1,
+    "luck": -3
+   },
+   "triggers": [
+    {
+     "hook": "onTakingDamage",
+     "effect": "Bleed on you ticks twice"
+    }
+   ],
+   "slayer": null,
+   "grants": [],
+   "intent": "Six Health and a body that will not close a wound; you are bigger and you are leaking.",
+   "source": "Hell-TCG name reused (Tainted Blood / Cursed Blood)"
+  },
+  {
+   "id": "enchant.sacrifice",
+   "name": "Martyr's Edge",
+   "appliesToTags": [
+    "melee",
+    "ranged"
+   ],
+   "tier": 3,
+   "statModifiers": {
+    "strength": 2,
+    "precision": 2,
+    "health": -4,
+    "dodge": -10
+   },
+   "triggers": [],
+   "slayer": null,
+   "grants": [],
+   "intent": "Two points on both damage stats is a tier-3 weapon's whole budget; this hands it to you and then removes the person holding it.",
+   "source": "Hell-TCG name reused (Sacrifice) | 2026-08-19: power.beastward.sacrifice already owns \"Sacrifice\", and power.reaver.blood-price already owns the obvious replacement."
+  },
+  {
+   "id": "enchant.blight",
+   "name": "Blight",
+   "appliesToTags": [
+    "melee"
+   ],
+   "tier": 3,
+   "statModifiers": {
+    "strength": 2,
+    "toughness": -1
+   },
+   "triggers": [
+    {
+     "hook": "onKill",
+     "effect": "gain 1 Corruption"
+    }
+   ],
+   "slayer": null,
+   "grants": [],
+   "intent": "Toughness is injury capacity and the base for Deathbed Fighting, so this does not cost you damage — it costs you the campaign.",
+   "source": "Hell-TCG name reused (Blight / Torment of Ire — rebuilt against Toughness and Corruption)"
+  },
+  {
+   "id": "enchant.riposte",
+   "name": "Riposte",
+   "appliesToTags": [
+    "armor"
+   ],
+   "tier": 2,
+   "statModifiers": {},
+   "triggers": [
+    {
+     "hook": "onDodge",
+     "effect": "the attacker takes 5 true damage"
+    }
+   ],
+   "slayer": null,
+   "grants": [],
+   "intent": "They swung, they missed, and the answer was already on its way. True damage, so their armour has nothing to say about it.",
+   "source": "new 2026-08-20: the first counter-enchant on the onDodge hook. Thorns punishes being hit; this punishes missing."
+  },
+  {
+   "id": "enchant.scalding-ward",
+   "name": "Scalding Ward",
+   "appliesToTags": [
+    "armor",
+    "shield"
+   ],
+   "tier": 2,
+   "statModifiers": {},
+   "triggers": [
+    {
+     "hook": "onDodge",
+     "effect": "the attacker gains 3 Burn"
+    }
+   ],
+   "slayer": null,
+   "grants": [],
+   "intent": "Step out of the way and leave the heat where you were standing.",
+   "source": "new 2026-08-20: the status half of the onDodge counter pair."
+  }
+ ]
+}

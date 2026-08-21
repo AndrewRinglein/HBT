@@ -1,0 +1,74 @@
+# Clauses that branch, measure or remember — 69 clauses, 67 distinct patterns
+# Showing only patterns that appear ONCE. A one-off branch is a rule for one card.
+
+
+## BRANCH  (39 one-off patterns)
+  attack.iron-mace.crush              It READS the Stun and leaves it: you hit them while they are still seeing stars and they go on seeing the
+  enchant.dragon-slayer               if the target is a dragon, apply 4 Bleed
+  enchant.dragon-slayer               if the target was a dragon, gain the Dragon Slayer badge
+  enchant.giant-slayer                if the target is a giant, it has −1 Movement until the end of its next Turn
+  enchant.holy-water                  if the target is undead, demon or vampire, apply 2 Burn
+  enchant.ironbane                    if the target is a construct, it loses 1 Armor for the rest of the Battle and takes 4 true damage
+  enchant.undead-slayer               if the target was undead, heal 2
+  item.blade-of-demon-slaying         apply 5 Burn if the target is demon, otherwise 2 Burn
+  item.loaded-dice-of-mirran          Surplus over 100 still becomes Crit, so on a reliable hero this is roughly +4 Crit instead
+  item.rune-elemental-bane            if the target has the elemental or dragon tag it loses 1 Resist for the rest of the Battle, to a floor of
+  item.rune-plant-killer              if the kill had the plant tag, immediately regain 1 stamina
+  item.runed-crossbow                 if the target is demon or undead, apply 2 Burn
+  item.stormcallers-orb               if the attacker has the elemental or dragon tag, you have +3 Resist against that attack
+  item.vigils-shield                  The modifier hangs on the idol, so it goes when the Battle does
+  power.apothecary.fire-bomb          Every enemy on or adjacent to the target hex gains 2 Burn, or 4 Burn if it is plant or undead
+  power.archer.flurry-of-arrows       Make two ranged attacks at -1 Precision each, spread across two different enemies if two are in range
+  power.assassin.deep-cut             Until the end of your next Turn, your attacks gain +5 Crit and apply 4 Bleed on hit, or 6 Bleed if you we
+  power.assassin.knife-in-the-back    It never rolls itself — it sharpens the swing your weapon was already going to make when something walked
+  power.contractbound.blood-contract  You take 4 true damage when you use this, whether or not anything lands
+  power.contractbound.collect-the-debtDagger attack at +5 Crit that deals TRUE damage instead of physical, and you take 2 true damage for askin
+  power.crusader.holy-fire            Every enemy within 2 hexes gains 3 Burn, or 5 Burn if undead, demon or horror
+  power.deathknight.unholy-wrath      Melee attack at +3 Strength dealing magic damage instead of physical, and every other enemy adjacent to y
+  power.diviner.last-vision           When you die, every ally within 4 hexes gains +10 Accuracy and +1 Movement for the rest of the Battle
+  power.grand-master.muster           Free, and Protection decays 1 a Phase, so spend it on the hero about to be hit rather than banking it
+  power.havoc.fel-rush                every enemy whose hex you passed through or beside takes 4 magic damage, or 6 if it is demon or undead
+  power.holy-champion.sacred-flame    The target gains 3 Burn, or 5 Burn if it is undead or demon
+  power.leader.titans-inspiration     If it hits, every ally within 3 hexes gains +1 Strength for the rest of the Battle
+  power.magical-friend.share-senses   Until the start of your next Turn, your Vision is measured from your companion's hex instead of your own,
+  power.nightblade.silent-cut         on hit the target gains 4 Bleed, and if you were in stealth when you made it you do not break stealth
+  power.shadowbound.void-strike       Until the end of your next Turn, your attacks gain +1 Strength, add the party’s Magic to their damage, an
+  power.shadowdancer.vanish-in-shadow It breaks the moment you use an attack or another power — not when you move — and whenever a reveal effec
+  power.shadowdancer.vanish-in-shadow Free, and usable even while an enemy is adjacent
+  power.totem-master.totem-of-protectionAura 2, centred on you, for the rest of the Battle: allies gain +1 Armor and +1 Resist while they remain 
+  power.trickster.impersonation       Stance: for the rest of the Battle you satisfy EVERY class restriction on every item you carry, and enemi
+  power.wild-shaper.bear-form         While it holds you ARE a bear: your Claw is your only attack and you have no other powers
+  power.winged-assassin.rapid-fire    Make two ranged attacks at -10 Accuracy each, against two different enemies if two are in Reach
+  power.witch-hunter.burn-the-guilty  Every enemy within 2 hexes gains 4 Burn, or 6 if it is undead, demon or horror
+  specialty.assassin                  It breaks the moment you use an attack or a power, and whenever a reveal effect finds you — moving never 
+  specialty.redeemer                  you gain 3 Burn, and gain +1 Strength for the Battle for as long as you are carrying any Burn
+
+## MEASURE  (13 one-off patterns)
+  attack.demonic-shiv.the-devils-favourThe favour is that it counts both hands of what a Rogue is instead of making you choose
+  item.sturdy-runed-leather           AURA — gain +1 Resist for each enemy on the field with the demon or undead tag, to a maximum of +3
+  power.apothecary.stretcher-run      Stabilise an adjacent downed ally, removing its bleed-out counter, then move up to your Movement
+  power.archivist.scroll-of-power     Read it aloud and burn it: the party's Magic total rises by 3 for the rest of the Battle, and your own St
+  power.grand-master.grand-charge     Every ally that began the Turn adjacent to you may immediately move 2 hexes, and for each of them that en
+  power.holy-avenger.succor-of-the-faithfulremove 5 Burn and 5 Poison from yourself and gain Protection equal to your Spirit — and take 1 true damag
+  power.martyred-saint.oblation       Heal every ally within 3 hexes for 2 + Spirit and take 2 true damage for each ally you healed
+  power.porter.drop-the-pack          Leave the pack where you stand: for the rest of the Battle any ally that ends its Turn on that hex heals 
+  power.redeemer.uncorrupted          remove 5 Burn from every ally within 3 hexes and take 1 Burn for each stack removed
+  power.sage.ancient-knowledge        Every ally within 4 hexes gains +2 Resist for the rest of the Battle, and the party's Magic total rises b
+  power.sage.wisdom                   Stop keeping up with the fight in order to keep reading it: the party's Spirit total rises by 2 for the r
+  power.shepherd.call-them-back       Stabilise a downed ally within 6 hexes: its bleed-out counter is removed
+  specialty.sage                      the party's Magic sum and Spirit sum each count 1 higher
+
+## REMEMBER  (13 one-off patterns)
+  attack.apprentice-wand.surge        Damage is the party's Magic +1, plus the Burn already on the target
+  attack.bloody-axe.butcher           Damage is your Strength +2, plus every stack of Bleed on the target, which it CONSUMES — you find the cut
+  attack.poison-throwing-knives.venom-fanAgainst each, damage is your Precision plus every stack of Poison already in it — and the fan CONSUMES th
+  item.velans-ferryman-coin           The ferryman has been paid
+  power.bowmaster.sniper              It makes no attack itself — it sharpens the ones your weapon already makes
+  power.fire-master.fireball          Deal 2 + Magic magic damage to every unit in the blast, plus every stack of Burn that unit is already car
+  power.grove-keeper.quench           Those seven hexes gain Frost 2 for two Turns, cancelling any burning already on them
+  power.mystic.hex                    Against something already reliable the Accuracy loss eats its Crit before it eats its hit rate, which is 
+  power.oracle.prophecy-of-light      On a hero already past 100 the surplus turns into Crit at a quarter, so it is never a dead grant
+  power.poison-master.hail-of-poison-knivesevery hit adds 2 Poison on top of whatever the attack already applies
+  power.shepherd.prayer               It costs nothing and does not use your primary action, so it is what you do on a Turn you have already sp
+  power.storm-caller.ethereal-form    Armor floors at zero, so on a Storm Caller who already sits at -1 this is pure upside — until somebody ha
+  power.storm-caller.storm-surge      Every enemy within 3 hexes takes 2 + Magic magic damage plus the Frost it is already carrying, and 1 Stun

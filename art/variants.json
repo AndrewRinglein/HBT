@@ -1,0 +1,324 @@
+{
+ "shadows": {
+  "priestess-of-ire": [
+   "New Art/avtair-approved/priestess-of-ire-v1.png",
+   "New Art/avtair-approved/priestess-of-ire-v2.png",
+   "New Art/avtair-approved/priestess-of-ire-v3.png",
+   "New Art/avtair-approved/priestess-of-ire-v4.png"
+  ],
+  "priestess-of-solace": [
+   "New Art/avtair-approved/priestess-of-solace-v1.png",
+   "New Art/avtair-approved/priestess-of-solace-v2.png",
+   "New Art/avtair-approved/priestess-of-solace-v3.png",
+   "New Art/avtair-approved/priestess-of-solace-v4.png"
+  ],
+  "servant-of-omen": [
+   "New Art/avtair-approved/servant-of-omen-v1.png",
+   "New Art/avtair-approved/servant-of-omen-v2.png",
+   "New Art/avtair-approved/servant-of-omen-v3.png",
+   "New Art/avtair-approved/servant-of-omen-v4.png"
+  ],
+  "shadow-sorceress": [
+   "New Art/avtair-approved/shadow-sorceress-v1.png",
+   "New Art/avtair-approved/shadow-sorceress-v2.png",
+   "New Art/avtair-approved/shadow-sorceress-v3.png",
+   "New Art/avtair-approved/shadow-sorceress-v4.png"
+  ],
+  "sand-knight": [
+   "New Art/avtair-approved/sand-knight-v1.png",
+   "New Art/avtair-approved/sand-knight-v2.png",
+   "New Art/avtair-approved/sand-knight-v3.png",
+   "New Art/avtair-approved/sand-knight-v4.png"
+  ],
+  "rider-of-ire": [
+   "New Art/avtair-approved/rider-of-ire-v1.png",
+   "New Art/avtair-approved/rider-of-ire-v2.png",
+   "New Art/avtair-approved/rider-of-ire-v3.png",
+   "New Art/avtair-approved/rider-of-ire-v4.png"
+  ],
+  "bodani": [
+   "New Art/avtair-approved/bodani-v1.png",
+   "New Art/avtair-approved/bodani-v2.png",
+   "New Art/avtair-approved/bodani-v3.png",
+   "New Art/avtair-approved/bodani-v4.png"
+  ],
+  "oathblade": [
+   "New Art/avtair-approved/oathblade-v1.png",
+   "New Art/avtair-approved/oathblade-v2.png",
+   "New Art/avtair-approved/oathblade-v3.png",
+   "New Art/avtair-approved/oathblade-v4.png"
+  ],
+  "soul-reaver": [
+   "New Art/avtair-approved/soul-reaver-v1.png",
+   "New Art/avtair-approved/soul-reaver-v2.png",
+   "New Art/avtair-approved/soul-reaver-v3.png",
+   "New Art/avtair-approved/soul-reaver-v4.png"
+  ],
+  "nightblade": [
+   "New Art/avtair-approved/nightblade-v1.png",
+   "New Art/avtair-approved/nightblade-v2.png",
+   "New Art/avtair-approved/nightblade-v3.png",
+   "New Art/avtair-approved/nightblade-v4.png"
+  ],
+  "dusk-hawk": [
+   "New Art/avtair-approved/dusk-hawk-v1.png",
+   "New Art/avtair-approved/dusk-hawk-v2.png",
+   "New Art/avtair-approved/dusk-hawk-v3.png",
+   "New Art/avtair-approved/dusk-hawk-v4.png"
+  ],
+  "runebow": [
+   "New Art/avtair-approved/runebow-v1.png",
+   "New Art/avtair-approved/runebow-v2.png",
+   "New Art/avtair-approved/runebow-v3.png",
+   "New Art/avtair-approved/runebow-v4.png"
+  ]
+ },
+ "skyship": {
+  "brute": [
+   "New Art/aeronissa-concepts/brute.png",
+   "New Art/aeronissa-concepts/brute-v2.png",
+   "New Art/aeronissa-concepts/brute-v3.png",
+   "New Art/aeronissa-concepts/brute-v4.png"
+  ],
+  "phantom-striker": [
+   "New Art/aeronissa-concepts/phantom-striker.png",
+   "New Art/aeronissa-concepts/phantom-striker-v2.png",
+   "New Art/aeronissa-concepts/phantom-striker-v3.png",
+   "New Art/aeronissa-concepts/phantom-striker-v4.png"
+  ],
+  "troll-pirate": [
+   "New Art/aeronissa-concepts/troll-pirate.png",
+   "New Art/aeronissa-concepts/troll-pirate-v2.png",
+   "New Art/aeronissa-concepts/troll-pirate-v3.png",
+   "New Art/aeronissa-concepts/troll-pirate-v4.png"
+  ],
+  "open-hand": [
+   "New Art/aeronissa-concepts/open-hand.png",
+   "New Art/aeronissa-concepts/open-hand-v2.png",
+   "New Art/aeronissa-concepts/open-hand-v3.png",
+   "New Art/aeronissa-concepts/open-hand-v4.png"
+  ],
+  "sky-captain": [
+   "New Art/aeronissa-concepts/sky-captain.png",
+   "New Art/aeronissa-concepts/sky-captain-v2.png",
+   "New Art/aeronissa-concepts/sky-captain-v3.png"
+  ],
+  "windwalker": [
+   "New Art/aeronissa-concepts/windwalker.png",
+   "New Art/aeronissa-concepts/windwalker-v2.png",
+   "New Art/aeronissa-concepts/windwalker-v3.png",
+   "New Art/aeronissa-concepts/windwalker-v4.png"
+  ],
+  "sky-pirate": [
+   "New Art/aeronissa-concepts/sky-pirate.png",
+   "New Art/aeronissa-concepts/sky-pirate-v2.png",
+   "New Art/aeronissa-concepts/sky-pirate-v3.png",
+   "New Art/aeronissa-concepts/sky-pirate-v4.png"
+  ],
+  "air-mage": [
+   "New Art/aeronissa-concepts/air-mage.png",
+   "New Art/aeronissa-concepts/air-mage-v2.png",
+   "New Art/aeronissa-concepts/air-mage-v3.png",
+   "New Art/aeronissa-concepts/air-mage-v4.png"
+  ],
+  "spellblade": [
+   "New Art/aeronissa-concepts/spellblade.png",
+   "New Art/aeronissa-concepts/spellblade-v2.png",
+   "New Art/aeronissa-concepts/spellblade-v3.png",
+   "New Art/aeronissa-concepts/spellblade-v4.png"
+  ],
+  "aeronissa-priest": [
+   "New Art/aeronissa-concepts/aeronissa-priest.png",
+   "New Art/aeronissa-concepts/aeronissa-priest-v2.png",
+   "New Art/aeronissa-concepts/aeronissa-priest-v3.png",
+   "New Art/aeronissa-concepts/aeronissa-priest-v4.png"
+  ],
+  "mirran-priest": [
+   "New Art/aeronissa-concepts/mirran-priest.png",
+   "New Art/aeronissa-concepts/mirran-priest-v2.png",
+   "New Art/aeronissa-concepts/mirran-priest-v3.png",
+   "New Art/aeronissa-concepts/mirran-priest-v4.png"
+  ],
+  "vigil-of-the-fallen": [
+   "New Art/aeronissa-concepts/vigil-of-the-fallen.png",
+   "New Art/aeronissa-concepts/vigil-of-the-fallen-v2.png",
+   "New Art/aeronissa-concepts/vigil-of-the-fallen-v3.png",
+   "New Art/aeronissa-concepts/vigil-of-the-fallen-v4.png"
+  ]
+ },
+ "tutorial": {
+  "warrior-iron": [
+   "New Art/warrior-iron1.png",
+   "New Art/warrior-iron2.png",
+   "New Art/warrior-iron3.png",
+   "New Art/warrior-iron4.png"
+  ],
+  "warrior-fearsome": [
+   "New Art/warrior-fearsome1.png",
+   "New Art/warrior-fearsome2.png",
+   "New Art/warrior-fearsome3.png",
+   "New Art/warrior-fearsome4.png"
+  ],
+  "warrior-barbarian": [
+   "New Art/warrior-barbarian1.png",
+   "New Art/warrior-barbarian2.png",
+   "New Art/warrior-barbarian3.png",
+   "New Art/warrior-barbarian4.png"
+  ],
+  "warrior-brawler": [
+   "New Art/warrior-brawler1.png",
+   "New Art/warrior-brawler2.png",
+   "New Art/warrior-brawler3.png",
+   "New Art/warrior-brawler4.png"
+  ],
+  "mage-fire": [
+   "New Art/mage-fire1.png",
+   "New Art/mage-fire2.png",
+   "New Art/mage-fire3.png",
+   "New Art/mage-fire4.png"
+  ],
+  "mage-fireaura": [
+   "New Art/mage-fireaura1.png",
+   "New Art/mage-fireaura2.png",
+   "New Art/mage-fireaura3.png",
+   "New Art/mage-fireaura4.png"
+  ],
+  "mage-thinking": [
+   "New Art/mage-thinking1.png",
+   "New Art/mage-thinking2.png",
+   "New Art/mage-thinking3.png",
+   "New Art/mage-thinking4.png"
+  ],
+  "mage-sexy": [
+   "New Art/mage-sexy1.png",
+   "New Art/mage-sexy2.png",
+   "New Art/mage-sexy3.png",
+   "New Art/mage-sexy4.png"
+  ],
+  "priest-armored": [
+   "New Art/priest-armored1.png",
+   "New Art/priest-armored2.png",
+   "New Art/priest-armored3.png",
+   "New Art/priest-armored4.png"
+  ],
+  "priest-pauper": [
+   "New Art/priest-pauper1.png",
+   "New Art/priest-pauper2.png",
+   "New Art/priest-pauper3.png",
+   "New Art/priest-pauper4.png"
+  ],
+  "priest-robes": [
+   "New Art/priest-robes1.png",
+   "New Art/priest-robes2.png",
+   "New Art/priest-robes3.png",
+   "New Art/priest-robes4.png"
+  ],
+  "priest-scantily": [
+   "New Art/priest-scantily1.png",
+   "New Art/priest-scantily2.png",
+   "New Art/priest-scantily3.png",
+   "New Art/priest-scantily4.png"
+  ],
+  "paladin-dark": [
+   "New Art/paladin-dark1.png",
+   "New Art/paladin-dark2.png",
+   "New Art/paladin-dark3.png",
+   "New Art/paladin-dark4.png"
+  ],
+  "paladin-hunk": [
+   "New Art/paladin-hunk1.png",
+   "New Art/paladin-hunk2.png",
+   "New Art/paladin-hunk3.png",
+   "New Art/paladin-hunk4.png"
+  ],
+  "paladin-shiney": [
+   "New Art/paladin-shiney1.png",
+   "New Art/paladin-shiney2.png",
+   "New Art/paladin-shiney3.png",
+   "New Art/paladin-shiney4.png"
+  ],
+  "paladin-smug": [
+   "New Art/paladin-smug1.png",
+   "New Art/paladin-smug2.png",
+   "New Art/paladin-smug3.png",
+   "New Art/paladin-smug4.png"
+  ],
+  "ranger-aggressive": [
+   "New Art/ranger-aggressive1.png",
+   "New Art/ranger-aggressive2.png",
+   "New Art/ranger-aggressive3.png",
+   "New Art/ranger-aggressive4.png"
+  ],
+  "ranger-nature": [
+   "New Art/ranger-nature1.png",
+   "New Art/ranger-nature2.png",
+   "New Art/ranger-nature3.png",
+   "New Art/ranger-nature4.png"
+  ],
+  "ranger-ranger": [
+   "New Art/ranger-ranger1.png",
+   "New Art/ranger-ranger2.png",
+   "New Art/ranger-ranger3.png",
+   "New Art/ranger-ranger4.png"
+  ],
+  "ranger-scantily": [
+   "New Art/ranger-scantily1.png",
+   "New Art/ranger-scantily2.png",
+   "New Art/ranger-scantily3.png",
+   "New Art/ranger-scantily4.png"
+  ],
+  "rogue-raven": [
+   "New Art/rogue-raven1.jpg",
+   "New Art/rogue-raven2.jpg",
+   "New Art/rogue-raven3.jpg",
+   "New Art/rogue-raven4.jpg"
+  ],
+  "rogue-rose": [
+   "New Art/rogue-rose1.png",
+   "New Art/rogue-rose2.png",
+   "New Art/rogue-rose3.png",
+   "New Art/rogue-rose4.png"
+  ],
+  "rogue-skull": [
+   "New Art/rogue-skull1.png",
+   "New Art/rogue-skull2.png",
+   "New Art/rogue-skull3.png",
+   "New Art/rogue-skull4.png"
+  ],
+  "rogue-snake": [
+   "New Art/rogue-snake1.png",
+   "New Art/rogue-snake2.png",
+   "New Art/rogue-snake3.png",
+   "New Art/rogue-snake4.png"
+  ]
+ },
+ "aspiring": {
+  "male-style-1": [
+   "assets/cards/heroes/aspiring/male/style-1/1.png"
+  ],
+  "male-style-2": [
+   "assets/cards/heroes/aspiring/male/style-2/1.png"
+  ],
+  "male-style-3": [
+   "assets/cards/heroes/aspiring/male/style-3/1.png"
+  ],
+  "male-style-4": [
+   "assets/cards/heroes/aspiring/male/style-4/1.png"
+  ],
+  "female-style-1": [
+   "assets/cards/heroes/aspiring/female/style-1/1.png"
+  ],
+  "female-style-2": [
+   "assets/cards/heroes/aspiring/female/style-2/1.png"
+  ],
+  "female-style-3": [
+   "assets/cards/heroes/aspiring/female/style-3/1.png"
+  ],
+  "female-style-4": [
+   "assets/cards/heroes/aspiring/female/style-4/1.png"
+  ]
+ },
+ "_notes": [
+  "skyship/sky-captain has 3 distinct pieces of art, not 4"
+ ]
+}

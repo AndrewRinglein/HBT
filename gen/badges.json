@@ -1,0 +1,1030 @@
+{
+ "badges": [
+  {
+   "id": "badge.accurate",
+   "name": "Accurate",
+   "rarity": "common",
+   "payload": "+10 Accuracy",
+   "category": "GENERATIVE — FAVOURABLE",
+   "group": "Flat stat"
+  },
+  {
+   "id": "badge.anguish",
+   "name": "Anguish",
+   "rarity": "rare",
+   "payload": "−1 card draw per Turn",
+   "category": "SIGNATURE",
+   "group": ""
+  },
+  {
+   "id": "badge.attuned",
+   "name": "Attuned",
+   "rarity": "mage",
+   "payload": "+1 Magic",
+   "category": "CLASS-LOCKED",
+   "group": ""
+  },
+  {
+   "id": "badge.aura-of-courage",
+   "name": "Aura of Courage",
+   "rarity": "paladin",
+   "payload": "**aura r3**: allies +5 Accuracy",
+   "category": "CLASS-LOCKED",
+   "group": ""
+  },
+  {
+   "id": "badge.backstabber",
+   "name": "Backstabber",
+   "rarity": "rogue",
+   "payload": "+10 Crit from a flanking position",
+   "category": "CLASS-LOCKED",
+   "group": ""
+  },
+  {
+   "id": "badge.badly-wounded",
+   "name": "Badly Wounded",
+   "rarity": "",
+   "payload": "(prose only — not in a table)",
+   "category": "",
+   "group": ""
+  },
+  {
+   "id": "badge.blessed",
+   "name": "Blessed",
+   "rarity": "uncommon",
+   "payload": "+1 Favor",
+   "category": "AWARDED",
+   "group": ""
+  },
+  {
+   "id": "badge.blood-in-the-eye",
+   "name": "Blood in the Eye",
+   "rarity": "berserker",
+   "payload": "+5 Crit, −5 Luck",
+   "category": "SPECIALTY GRANTS",
+   "group": ""
+  },
+  {
+   "id": "badge.born-archer",
+   "name": "Born Archer",
+   "rarity": "uncommon",
+   "payload": "+2 Reach",
+   "category": "GENERATIVE — FAVOURABLE",
+   "group": "Flat stat"
+  },
+  {
+   "id": "badge.braced",
+   "name": "Braced",
+   "rarity": "shieldbearer",
+   "payload": "+1 Armor, −1 Movement",
+   "category": "SPECIALTY GRANTS",
+   "group": ""
+  },
+  {
+   "id": "badge.brittle",
+   "name": "Brittle",
+   "rarity": "uncommon",
+   "payload": "−1 Armor, −1 Resist",
+   "category": "GENERATIVE — FLAWED",
+   "group": ""
+  },
+  {
+   "id": "badge.captured",
+   "name": "Captured",
+   "rarity": "play",
+   "payload": "**blocks deployment**; lifts on rescue",
+   "category": "FATIGUE & CONDITION",
+   "group": ""
+  },
+  {
+   "id": "badge.carrying-voice",
+   "name": "Carrying Voice",
+   "rarity": "leader",
+   "payload": "all auras this hero grants gain +1 radius",
+   "category": "SPECIALTY GRANTS",
+   "group": ""
+  },
+  {
+   "id": "badge.climber",
+   "name": "Climber",
+   "rarity": "uncommon",
+   "payload": "−1 Movement cost into Hills; +5 Dodge on Hills",
+   "category": "GENERATIVE — FAVOURABLE",
+   "group": "Terrain"
+  },
+  {
+   "id": "badge.clumsy",
+   "name": "Clumsy",
+   "rarity": "common",
+   "payload": "−5 Accuracy",
+   "category": "GENERATIVE — FLAWED",
+   "group": ""
+  },
+  {
+   "id": "badge.cursed",
+   "name": "Cursed",
+   "rarity": "rare",
+   "payload": "+1 Corruption, +2 Stamina Max",
+   "category": "GENERATIVE — FLAWED",
+   "group": ""
+  },
+  {
+   "id": "badge.death-marked",
+   "name": "Death-Marked",
+   "rarity": "legendary",
+   "payload": "+20 Deathbed Fighting, −1 Toughness",
+   "category": "AWARDED",
+   "group": ""
+  },
+  {
+   "id": "badge.defiant",
+   "name": "Defiant",
+   "rarity": "rare",
+   "payload": "`startOfBattle`: protection 3 · +5 Deathbed Fighting",
+   "category": "SIGNATURE",
+   "group": ""
+  },
+  {
+   "id": "badge.devout",
+   "name": "Devout",
+   "rarity": "priest",
+   "payload": "+1 Spirit, +1 Favor",
+   "category": "CLASS-LOCKED",
+   "group": ""
+  },
+  {
+   "id": "badge.dim-sighted",
+   "name": "Dim-Sighted",
+   "rarity": "common",
+   "payload": "−2 Vision",
+   "category": "GENERATIVE — FLAWED",
+   "group": ""
+  },
+  {
+   "id": "badge.dodger",
+   "name": "Dodger",
+   "rarity": "common",
+   "payload": "+10 Dodge",
+   "category": "GENERATIVE — FAVOURABLE",
+   "group": "Flat stat"
+  },
+  {
+   "id": "badge.dragon-slayer",
+   "name": "Dragon Slayer",
+   "rarity": "legendary",
+   "payload": "+2 Health",
+   "category": "AWARDED",
+   "group": "",
+   "source": "2026-08-20 Angela: created. Earned by killing a dragon with a Dragon Slayer weapon. The first slayer badge in the set."
+  },
+  {
+   "id": "badge.drilled",
+   "name": "Drilled",
+   "rarity": "uncommon",
+   "payload": "+1 Surge",
+   "category": "AWARDED",
+   "group": ""
+  },
+  {
+   "id": "badge.exhausted",
+   "name": "Exhausted",
+   "rarity": "power, play",
+   "payload": "−2 Stamina Max, −1 Surge",
+   "category": "FATIGUE & CONDITION",
+   "group": ""
+  },
+  {
+   "id": "badge.fearful",
+   "name": "Fearful",
+   "rarity": "common",
+   "payload": "−1 Resist",
+   "category": "GENERATIVE — FLAWED",
+   "group": ""
+  },
+  {
+   "id": "badge.feeble",
+   "name": "Feeble",
+   "rarity": "common",
+   "payload": "−1 Strength",
+   "category": "GENERATIVE — FLAWED",
+   "group": ""
+  },
+  {
+   "id": "badge.field-surgeon",
+   "name": "Field Surgeon",
+   "rarity": "uncommon",
+   "payload": "grants `power.general.push-through`",
+   "category": "AWARDED",
+   "group": ""
+  },
+  {
+   "id": "badge.first-in",
+   "name": "First In",
+   "rarity": "leader",
+   "payload": "+1 Surge",
+   "category": "SPECIALTY GRANTS",
+   "group": ""
+  },
+  {
+   "id": "badge.footsore",
+   "name": "Footsore",
+   "rarity": "play",
+   "payload": "−1 Movement",
+   "category": "FATIGUE & CONDITION",
+   "group": ""
+  },
+  {
+   "id": "badge.forester",
+   "name": "Forester",
+   "rarity": "uncommon",
+   "payload": "−1 Movement cost in Forest; +10 Dodge in Forest",
+   "category": "GENERATIVE — FAVOURABLE",
+   "group": "Terrain"
+  },
+  {
+   "id": "badge.frail",
+   "name": "Frail",
+   "rarity": "common",
+   "payload": "−2 Health",
+   "category": "GENERATIVE — FLAWED",
+   "group": ""
+  },
+  {
+   "id": "badge.giant-killer",
+   "name": "Giant-Killer",
+   "rarity": "rare",
+   "payload": "slayer +2 vs the type that nearly killed her",
+   "category": "AWARDED",
+   "group": ""
+  },
+  {
+   "id": "badge.greedy",
+   "name": "Greedy",
+   "rarity": "uncommon",
+   "payload": "−1 Item Slots, +1 Favor",
+   "category": "GENERATIVE — FLAWED",
+   "group": ""
+  },
+  {
+   "id": "badge.grieving",
+   "name": "Grieving",
+   "rarity": "event",
+   "payload": "−1 Surge, +1 Strength",
+   "category": "FATIGUE & CONDITION",
+   "group": ""
+  },
+  {
+   "id": "badge.grudge-bearer",
+   "name": "Grudge-Bearer",
+   "rarity": "rare",
+   "payload": "+2 Strength vs the type that last killed an ally",
+   "category": "SIGNATURE",
+   "group": ""
+  },
+  {
+   "id": "badge.hardy",
+   "name": "Hardy",
+   "rarity": "common",
+   "payload": "+2 Health",
+   "category": "GENERATIVE — FAVOURABLE",
+   "group": "Flat stat"
+  },
+  {
+   "id": "badge.heavy-footed",
+   "name": "Heavy-Footed",
+   "rarity": "common",
+   "payload": "−5 Dodge",
+   "category": "GENERATIVE — FLAWED",
+   "group": ""
+  },
+  {
+   "id": "badge.hells-mark",
+   "name": "Hell's Mark",
+   "rarity": "legendary",
+   "payload": "+2 Corruption, +2 Strength, +2 Precision · `startOfBattle`: **all heroes** gain burn 1",
+   "category": "GENERATIVE — FLAWED",
+   "group": ""
+  },
+  {
+   "id": "badge.hero-among-them",
+   "name": "Hero Among Them",
+   "rarity": "rare",
+   "payload": "`class.civilian` only · +3 Health, +2 Str, +2 Pre, +1 Reach, +1 Resist, +2 Item Slots, +10 DBF",
+   "category": "AWARDED",
+   "group": ""
+  },
+  {
+   "id": "badge.huge",
+   "name": "Huge",
+   "rarity": "uncommon",
+   "payload": "+2 Strength, +2 Health, −15 Dodge",
+   "category": "GENERATIVE — FAVOURABLE",
+   "group": "Flat stat"
+  },
+  {
+   "id": "badge.hunter",
+   "name": "Hunter",
+   "rarity": "uncommon",
+   "payload": "+1 Reach, +10 Accuracy",
+   "category": "GENERATIVE — FAVOURABLE",
+   "group": "Flat stat"
+  },
+  {
+   "id": "badge.immovable",
+   "name": "Immovable",
+   "rarity": "shieldbearer",
+   "payload": "immune to knockback",
+   "category": "SPECIALTY GRANTS",
+   "group": ""
+  },
+  {
+   "id": "badge.inspired-cond",
+   "name": "Inspired",
+   "rarity": "event",
+   "payload": "+1 Resist, +5 Accuracy",
+   "category": "FATIGUE & CONDITION",
+   "group": ""
+  },
+  {
+   "id": "badge.killer-instinct",
+   "name": "Killer Instinct",
+   "rarity": "uncommon",
+   "payload": "+5 Crit",
+   "category": "GENERATIVE — FAVOURABLE",
+   "group": "Flat stat"
+  },
+  {
+   "id": "badge.known-face",
+   "name": "Known Face",
+   "rarity": "leader",
+   "payload": "+1 Favor, +5 Deathbed Fighting to allies within 4",
+   "category": "SPECIALTY GRANTS",
+   "group": ""
+  },
+  {
+   "id": "badge.laying-on-hands",
+   "name": "Laying On Hands",
+   "rarity": "priest",
+   "payload": "grants `power.holy-symbol.heal`",
+   "category": "CLASS-LOCKED",
+   "group": ""
+  },
+  {
+   "id": "badge.light-step",
+   "name": "Light Step",
+   "rarity": "rogue",
+   "payload": "+1 Movement, +10 Dodge",
+   "category": "CLASS-LOCKED",
+   "group": ""
+  },
+  {
+   "id": "badge.lightning-fast",
+   "name": "Lightning Fast",
+   "rarity": "uncommon",
+   "payload": "+1 Movement, +5 Dodge",
+   "category": "GENERATIVE — FAVOURABLE",
+   "group": "Flat stat"
+  },
+  {
+   "id": "badge.long-eye",
+   "name": "Long Eye",
+   "rarity": "ranger",
+   "payload": "+1 Reach, +5 Accuracy",
+   "category": "CLASS-LOCKED",
+   "group": ""
+  },
+  {
+   "id": "badge.lycanthropy",
+   "name": "Lycanthropy",
+   "rarity": "legendary",
+   "payload": "+2 Str, +2 Move, +2 Stamina, −5 Crit, −1 Spirit · `startOfBattle`: regeneration 5 · `onAttack`: +1 Strength",
+   "category": "SIGNATURE",
+   "group": ""
+  },
+  {
+   "id": "badge.many-pockets",
+   "name": "Many Pockets",
+   "rarity": "uncommon",
+   "payload": "+1 Item Slots",
+   "category": "GENERATIVE — FAVOURABLE",
+   "group": "Flat stat"
+  },
+  {
+   "id": "badge.marksman",
+   "name": "Marksman",
+   "rarity": "common",
+   "payload": "+1 Precision",
+   "category": "GENERATIVE — FAVOURABLE",
+   "group": "Flat stat"
+  },
+  {
+   "id": "badge.mystic",
+   "name": "Mystic",
+   "rarity": "common",
+   "payload": "+1 Magic",
+   "category": "GENERATIVE — FAVOURABLE",
+   "group": "Flat stat"
+  },
+  {
+   "id": "badge.name-in-the-hall",
+   "name": "A Name in the Hall",
+   "rarity": "rare",
+   "payload": "+1 Toughness, grants a tactic slot",
+   "category": "AWARDED",
+   "group": ""
+  },
+  {
+   "id": "badge.night-vision",
+   "name": "Night Vision",
+   "rarity": "uncommon",
+   "payload": "+4 Vision",
+   "category": "GENERATIVE — FAVOURABLE",
+   "group": "Flat stat"
+  },
+  {
+   "id": "badge.no-guard",
+   "name": "No Guard",
+   "rarity": "berserker",
+   "payload": "+2 Strength, −1 Armor",
+   "category": "SPECIALTY GRANTS",
+   "group": ""
+  },
+  {
+   "id": "badge.oath-bound",
+   "name": "Oath-Bound",
+   "rarity": "quest",
+   "payload": "**blocks deployment** except on the named Engagement",
+   "category": "FATIGUE & CONDITION",
+   "group": ""
+  },
+  {
+   "id": "badge.oathkeeper",
+   "name": "Oathkeeper",
+   "rarity": "uncommon",
+   "payload": "+1 Resist, +5 Deathbed Fighting",
+   "category": "AWARDED",
+   "group": ""
+  },
+  {
+   "id": "badge.oathsworn",
+   "name": "Oathsworn",
+   "rarity": "paladin",
+   "payload": "+1 Resist, +10 Deathbed Fighting",
+   "category": "CLASS-LOCKED",
+   "group": ""
+  },
+  {
+   "id": "badge.overchanneller",
+   "name": "Overchanneller",
+   "rarity": "mage",
+   "payload": "+2 Magic, −2 Health",
+   "category": "CLASS-LOCKED",
+   "group": ""
+  },
+  {
+   "id": "badge.plague-touched",
+   "name": "Plague-Touched",
+   "rarity": "event",
+   "payload": "−2 Health; **blocks deployment**",
+   "category": "FATIGUE & CONDITION",
+   "group": ""
+  },
+  {
+   "id": "badge.possession",
+   "name": "Possession",
+   "rarity": "legendary",
+   "payload": "+2 Magic, +1 Resist, +3 Vision · `startOfBattle`: −2 card draw",
+   "category": "SIGNATURE",
+   "group": ""
+  },
+  {
+   "id": "badge.quick-study",
+   "name": "Quick Study",
+   "rarity": "rare",
+   "payload": "+1 Surge",
+   "category": "GENERATIVE — FAVOURABLE",
+   "group": "Flat stat"
+  },
+  {
+   "id": "badge.rage",
+   "name": "Rage",
+   "rarity": "rare",
+   "payload": "`onMiss`: +1 Strength, +1 Health (Battle only)",
+   "category": "GENERATIVE — FAVOURABLE",
+   "group": "Trigger"
+  },
+  {
+   "id": "badge.reckless",
+   "name": "Reckless",
+   "rarity": "uncommon",
+   "payload": "+10 Crit, −10 Dodge",
+   "category": "GENERATIVE — FLAWED",
+   "group": ""
+  },
+  {
+   "id": "badge.resolve",
+   "name": "Resolve",
+   "rarity": "uncommon",
+   "payload": "+2 Stamina Max, +1 Health",
+   "category": "GENERATIVE — FAVOURABLE",
+   "group": "Flat stat"
+  },
+  {
+   "id": "badge.rocky-tactician",
+   "name": "Rocky Tactician",
+   "rarity": "uncommon",
+   "payload": "+10 Accuracy in Rocky",
+   "category": "GENERATIVE — FAVOURABLE",
+   "group": "Terrain"
+  },
+  {
+   "id": "badge.rotting-flesh",
+   "name": "Rotting Flesh",
+   "rarity": "legendary",
+   "payload": "+4 Health, +2 Armor, −2 Movement, −10 Accuracy · immune to poison",
+   "category": "SIGNATURE",
+   "group": ""
+  },
+  {
+   "id": "badge.scarred-hide",
+   "name": "Scarred Hide",
+   "rarity": "rare",
+   "payload": "+1 Toughness",
+   "category": "GENERATIVE — FAVOURABLE",
+   "group": "Flat stat"
+  },
+  {
+   "id": "badge.second-wind",
+   "name": "Second Wind",
+   "rarity": "berserker",
+   "payload": "+10 Deathbed Fighting, `onKill`: +2 Stamina",
+   "category": "SPECIALTY GRANTS",
+   "group": ""
+  },
+  {
+   "id": "badge.seen-the-other-side",
+   "name": "Seen the Other Side",
+   "rarity": "legendary",
+   "payload": "`startOfBattle`: protection 5 · cannot be crit",
+   "category": "AWARDED",
+   "group": ""
+  },
+  {
+   "id": "badge.shaken",
+   "name": "Shaken",
+   "rarity": "play",
+   "payload": "−5 Accuracy, −5 Luck",
+   "category": "FATIGUE & CONDITION",
+   "group": ""
+  },
+  {
+   "id": "badge.shield-born",
+   "name": "Shield-Born",
+   "rarity": "warrior",
+   "payload": "+1 Armor, +1 Health",
+   "category": "CLASS-LOCKED",
+   "group": ""
+  },
+  {
+   "id": "badge.shield-eye",
+   "name": "Shield Eye",
+   "rarity": "shieldbearer",
+   "payload": "`startOfBattle`: protection 3",
+   "category": "SPECIALTY GRANTS",
+   "group": ""
+  },
+  {
+   "id": "badge.slow",
+   "name": "Slow",
+   "rarity": "common",
+   "payload": "−1 Movement",
+   "category": "GENERATIVE — FLAWED",
+   "group": ""
+  },
+  {
+   "id": "badge.soldier",
+   "name": "Soldier",
+   "rarity": "common",
+   "payload": "classification only; no modifiers",
+   "category": "AWARDED",
+   "group": ""
+  },
+  {
+   "id": "badge.spiritual",
+   "name": "Spiritual",
+   "rarity": "common",
+   "payload": "+1 Spirit",
+   "category": "GENERATIVE — FAVOURABLE",
+   "group": "Flat stat"
+  },
+  {
+   "id": "badge.standard-bearer",
+   "name": "Standard Bearer",
+   "rarity": "rare",
+   "payload": "**aura r4**: allies +1 Resist, +5 Deathbed Fighting",
+   "category": "AWARDED",
+   "group": ""
+  },
+  {
+   "id": "badge.starving",
+   "name": "Starving",
+   "rarity": "Kingdom",
+   "payload": "−1 all stats; lifts on supply",
+   "category": "FATIGUE & CONDITION",
+   "group": ""
+  },
+  {
+   "id": "badge.strong",
+   "name": "Strong",
+   "rarity": "common",
+   "payload": "+1 Strength, +1 Stamina Max",
+   "category": "GENERATIVE — FAVOURABLE",
+   "group": "Flat stat"
+  },
+  {
+   "id": "badge.survivor",
+   "name": "Survivor",
+   "rarity": "civilian",
+   "payload": "+1 Toughness, −1 Strength",
+   "category": "CLASS-LOCKED",
+   "group": ""
+  },
+  {
+   "id": "badge.swimmer",
+   "name": "Swimmer",
+   "rarity": "common",
+   "payload": "+10 Dodge in Water",
+   "category": "GENERATIVE — FAVOURABLE",
+   "group": "Terrain"
+  },
+  {
+   "id": "badge.the-lovers",
+   "name": "The Lovers",
+   "rarity": "rare",
+   "payload": "if the paired hero is also deployed: both +2 Health, +5 Crit, +2 Stamina",
+   "category": "SIGNATURE",
+   "group": ""
+  },
+  {
+   "id": "badge.thick-skinned",
+   "name": "Thick-Skinned",
+   "rarity": "common",
+   "payload": "+1 Armor",
+   "category": "GENERATIVE — FAVOURABLE",
+   "group": "Flat stat"
+  },
+  {
+   "id": "badge.thorned-hide",
+   "name": "Thorned Hide",
+   "rarity": "uncommon",
+   "payload": "Thorns 2",
+   "category": "GENERATIVE — FAVOURABLE",
+   "group": "Trigger",
+   "source": "2026-08-20 Angela: Thorns should live in a badge as well as in armour. On taking damage, the attacker takes 2 true damage — at any range."
+  },
+  {
+   "id": "badge.trailwise",
+   "name": "Trailwise",
+   "rarity": "ranger",
+   "payload": "+1 Vision, −1 Movement cost in Forest",
+   "category": "CLASS-LOCKED",
+   "group": ""
+  },
+  {
+   "id": "badge.uncanny",
+   "name": "Uncanny",
+   "rarity": "uncommon",
+   "payload": "+5 Luck",
+   "category": "GENERATIVE — FAVOURABLE",
+   "group": "Flat stat"
+  },
+  {
+   "id": "badge.unlucky",
+   "name": "Unlucky",
+   "rarity": "uncommon",
+   "payload": "−5 Luck",
+   "category": "GENERATIVE — FLAWED",
+   "group": ""
+  },
+  {
+   "id": "badge.unrelenting",
+   "name": "Unrelenting",
+   "rarity": "rare",
+   "payload": "+1 Stamina **Regen**",
+   "category": "GENERATIVE — FAVOURABLE",
+   "group": "Flat stat"
+  },
+  {
+   "id": "badge.unstoppable",
+   "name": "Unstoppable",
+   "rarity": "legendary",
+   "payload": "+40 Deathbed Fighting",
+   "category": "GENERATIVE — FAVOURABLE",
+   "group": "Flat stat"
+  },
+  {
+   "id": "badge.vampirism",
+   "name": "Vampirism",
+   "rarity": "legendary",
+   "payload": "+2 Strength · grants `power.vampirism.blood-drain` · `onDamage` (melee): heal 1",
+   "category": "SIGNATURE",
+   "group": ""
+  },
+  {
+   "id": "badge.vengeful",
+   "name": "Vengeful",
+   "rarity": "rare",
+   "payload": "`onTakingDamage`: +1 Stamina",
+   "category": "GENERATIVE — FAVOURABLE",
+   "group": "Trigger"
+  },
+  {
+   "id": "badge.veteran",
+   "name": "Veteran",
+   "rarity": "uncommon",
+   "payload": "+10 Deathbed Fighting",
+   "category": "GENERATIVE — FAVOURABLE",
+   "group": "Flat stat"
+  },
+  {
+   "id": "badge.walking-wounded",
+   "name": "Walking Wounded",
+   "rarity": "",
+   "payload": "(prose only — not in a table)",
+   "category": "",
+   "group": ""
+  },
+  {
+   "id": "badge.wall-veteran",
+   "name": "Wall Veteran",
+   "rarity": "uncommon",
+   "payload": "+1 Armor when defending",
+   "category": "AWARDED",
+   "group": ""
+  },
+  {
+   "id": "badge.war-bred",
+   "name": "War-Bred",
+   "rarity": "warrior",
+   "payload": "+1 Strength, +1 Stamina Max",
+   "category": "CLASS-LOCKED",
+   "group": ""
+  },
+  {
+   "id": "badge.warded",
+   "name": "Warded",
+   "rarity": "common",
+   "payload": "+1 Resist",
+   "category": "GENERATIVE — FAVOURABLE",
+   "group": "Flat stat"
+  },
+  {
+   "id": "badge.willing-hands",
+   "name": "Willing Hands",
+   "rarity": "civilian",
+   "payload": "+1 Item Slots",
+   "category": "CLASS-LOCKED",
+   "group": ""
+  },
+  {
+   "id": "badge.winded",
+   "name": "Winded",
+   "rarity": "uncommon",
+   "payload": "−1 Stamina Max, −1 Surge",
+   "category": "GENERATIVE — FLAWED",
+   "group": ""
+  },
+  {
+   "id": "badge.wounded",
+   "name": "Wounded",
+   "rarity": "",
+   "payload": "(prose only — not in a table)",
+   "category": "",
+   "group": ""
+  },
+  {
+   "id": "injury.borrowed-time",
+   "name": "Borrowed Time",
+   "rarity": "major",
+   "payload": "**legendary** · −2 Health, −1 Toughness, +30 Deathbed Fighting",
+   "category": "INJURIES",
+   "group": ""
+  },
+  {
+   "id": "injury.burn-scars",
+   "name": "Burn Scars",
+   "rarity": "minor",
+   "payload": "−1 Health",
+   "category": "INJURIES",
+   "group": ""
+  },
+  {
+   "id": "injury.clouded-eye",
+   "name": "Clouded Eye",
+   "rarity": "minor",
+   "payload": "−1 Vision",
+   "category": "INJURIES",
+   "group": ""
+  },
+  {
+   "id": "injury.cracked-ribs",
+   "name": "Cracked Ribs",
+   "rarity": "minor",
+   "payload": "−1 Stamina Max",
+   "category": "INJURIES",
+   "group": ""
+  },
+  {
+   "id": "injury.crippled-arm",
+   "name": "Crippled Arm",
+   "rarity": "medium",
+   "payload": "−1 Strength, −1 Precision, −1 Reach",
+   "category": "INJURIES",
+   "group": ""
+  },
+  {
+   "id": "injury.crippled-leg",
+   "name": "Crippled Leg",
+   "rarity": "medium",
+   "payload": "−2 Movement, −1 Stamina Max, −1 Item Slot",
+   "category": "INJURIES",
+   "group": ""
+  },
+  {
+   "id": "injury.limp",
+   "name": "Limp",
+   "rarity": "minor",
+   "payload": "−1 Movement",
+   "category": "INJURIES",
+   "group": ""
+  },
+  {
+   "id": "injury.missing-arm",
+   "name": "Missing Arm",
+   "rarity": "major",
+   "payload": "−1 Strength, −1 Precision, **no off-hand**",
+   "category": "INJURIES",
+   "group": ""
+  },
+  {
+   "id": "injury.missing-fingers",
+   "name": "Missing Fingers",
+   "rarity": "minor",
+   "payload": "−1 Precision",
+   "category": "INJURIES",
+   "group": ""
+  },
+  {
+   "id": "injury.missing-leg",
+   "name": "Missing Leg",
+   "rarity": "major",
+   "payload": "−3 Movement, −1 Stamina Max, −2 Item Slots, **cannot Sprint, cannot Sidestep**",
+   "category": "INJURIES",
+   "group": ""
+  },
+  {
+   "id": "injury.shaking-hands",
+   "name": "Shaking Hands",
+   "rarity": "minor",
+   "payload": "−1 Accuracy",
+   "category": "INJURIES",
+   "group": ""
+  },
+  {
+   "id": "injury.shattered-nerve",
+   "name": "Shattered Nerve",
+   "rarity": "medium",
+   "payload": "−1 Resist, −5 Luck",
+   "category": "INJURIES",
+   "group": ""
+  },
+  {
+   "id": "injury.slow-to-flinch",
+   "name": "Slow to Flinch",
+   "rarity": "minor",
+   "payload": "−5 Dodge",
+   "category": "INJURIES",
+   "group": ""
+  },
+  {
+   "id": "injury.wounded-arm",
+   "name": "Wounded Arm",
+   "rarity": "minor",
+   "payload": "−1 Strength",
+   "category": "INJURIES",
+   "group": ""
+  },
+  {
+   "id": "origin.bardic",
+   "name": "Bardic",
+   "rarity": "rare",
+   "payload": "**aura r7**: all heroes +10 Accuracy",
+   "category": "SPECIAL ORIGINS",
+   "group": ""
+  },
+  {
+   "id": "origin.black-wings",
+   "name": "Black Wings",
+   "rarity": "rare",
+   "payload": "+1 Movement, **flight**",
+   "category": "SPECIAL ORIGINS",
+   "group": ""
+  },
+  {
+   "id": "origin.dead-mans-luck",
+   "name": "Dead Man's Luck",
+   "rarity": "legendary",
+   "payload": "+15 Luck, +20 Deathbed Fighting, −2 Health",
+   "category": "SPECIAL ORIGINS",
+   "group": ""
+  },
+  {
+   "id": "origin.deep-drinker",
+   "name": "Deep Drinker",
+   "rarity": "uncommon",
+   "payload": "`onActivationEnd`: −1 burn, −1 poison, −1 frost",
+   "category": "SPECIAL ORIGINS",
+   "group": ""
+  },
+  {
+   "id": "origin.fire-shield",
+   "name": "Fire Shield",
+   "rarity": "rare",
+   "payload": "`class.mage` · `onTakingDamage`: burn 3 to attacker · `onActivationEnd`: protection = Magic ÷ 2",
+   "category": "SPECIAL ORIGINS",
+   "group": ""
+  },
+  {
+   "id": "origin.hedge-taught",
+   "name": "Hedge-Taught",
+   "rarity": "uncommon",
+   "payload": "+1 Magic, +1 Spirit",
+   "category": "SPECIAL ORIGINS",
+   "group": ""
+  },
+  {
+   "id": "origin.hells-chosen",
+   "name": "Hell's Chosen",
+   "rarity": "legendary",
+   "payload": "+2 Corruption, +2 Strength, +2 Precision · `startOfBattle`: all heroes burn 1 · `onDamage`: burn 2",
+   "category": "SPECIAL ORIGINS",
+   "group": ""
+  },
+  {
+   "id": "origin.ironwearer",
+   "name": "Ironwearer",
+   "rarity": "rare",
+   "payload": "−1 Movement, +4 Luck, +4 Health, +1 Armor",
+   "category": "SPECIAL ORIGINS",
+   "group": ""
+  },
+  {
+   "id": "origin.old-blood",
+   "name": "Old Blood",
+   "rarity": "uncommon",
+   "payload": "+1 Toughness, +10 Deathbed Fighting",
+   "category": "SPECIAL ORIGINS",
+   "group": ""
+  },
+  {
+   "id": "origin.pack-raised",
+   "name": "Pack-Raised",
+   "rarity": "uncommon",
+   "payload": "+1 Strength, +1 Movement, +1 Vision",
+   "category": "SPECIAL ORIGINS",
+   "group": ""
+  },
+  {
+   "id": "origin.stonewrought",
+   "name": "Stonewrought",
+   "rarity": "rare",
+   "payload": "+2 Armor, −1 Movement, −5 Dodge",
+   "category": "SPECIAL ORIGINS",
+   "group": ""
+  },
+  {
+   "id": "origin.temple-ward",
+   "name": "Temple Ward",
+   "rarity": "uncommon",
+   "payload": "+1 Resist, +1 Favor, `startOfBattle`: protection 3",
+   "category": "SPECIAL ORIGINS",
+   "group": ""
+  },
+  {
+   "id": "origin.the-unnamed",
+   "name": "The Unnamed",
+   "rarity": "legendary",
+   "payload": "`op: set` — Accuracy 100, Crit 3, Luck 0. Nothing modifies them again.",
+   "category": "SPECIAL ORIGINS",
+   "group": ""
+  },
+  {
+   "id": "origin.wind-touched",
+   "name": "Wind-Touched",
+   "rarity": "rare",
+   "payload": "+2 Movement, +10 Dodge, −1 Armor",
+   "category": "SPECIAL ORIGINS",
+   "group": ""
+  }
+ ]
+}

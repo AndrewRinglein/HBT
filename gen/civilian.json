@@ -1,0 +1,801 @@
+{
+ "class": "class.civilian",
+ "specialties": [
+  {
+   "id": "specialty.apothecary",
+   "name": "Apothecary",
+   "class": "class.civilian",
+   "intent": "You do not fight; you get to the person bleeding out on the hex before the Battle decides the matter for them.",
+   "statModifiers": {
+    "resist": 1,
+    "health": 2,
+    "movement": 1
+   },
+   "triggers": [
+    {
+     "hook": "passive",
+     "effect": "your healing is never halved by Burn, and any unit you heal loses 1 Burn as the dressing goes on."
+    }
+   ],
+   "powers": [
+    "power.apothecary.healing-potion",
+    "power.apothecary.stretcher-run",
+    "power.apothecary.smoke-bomb",
+    "power.apothecary.fire-bomb"
+   ],
+   "source": "Hell-TCG Civilian/Apothecary (reach/resist block rebuilt as the stretcher-bearer role named in the HoBaT deployment design) | 2026-08-17 Angela trim: three stats, no negatives, one ability. Dropped stats: strength -1. Parked abilities: onAttach: while attached, the hero you follow loses 1 Burn and 1 Poison at the start of each of its Turns, costing you no decision. | 2026-08-17 Angela: CUT. ally-reactive hooks, guarding, Consequence-Stack interference and non-knockback forced movement all removed by ruling. | 2026-08-17 quality pass: replaced a placeholder aura with a distinct effect."
+  },
+  {
+   "id": "specialty.torchbearer",
+   "name": "Torch-Bearer",
+   "class": "class.civilian",
+   "intent": "You carry the only light anyone has, which means you decide what the party can see and exactly where the enemy will aim.",
+   "statModifiers": {
+    "health": 1,
+    "resist": 1,
+    "vision": 2
+   },
+   "triggers": [
+    {
+     "hook": "startOfBattle",
+     "effect": "every ally within 2 hexes gains +1 Vision for the rest of the Battle"
+    }
+   ],
+   "powers": [
+    "power.torchbearer.raise-the-torch",
+    "power.torchbearer.flare",
+    "power.torchbearer.hold-the-light",
+    "power.torchbearer.burn-it-out"
+   ],
+   "source": "new — the torch-bearer named in the HoBaT deployment design as a walking +Vision; Vision has no Hell-TCG equivalent | 2026-08-17 Angela trim: three stats, no negatives, one ability. Dropped stats: dodge -5; vision +3. Parked abilities: onAttach: while attached, the hero you follow gains +2 Vision; it lapses the moment you detach or are downed. | 2026-08-17: third stat vision +2 — the one place Vision genuinely is the specialty."
+  },
+  {
+   "id": "specialty.porter",
+   "name": "Porter",
+   "class": "class.civilian",
+   "intent": "You carry what the heroes cannot, and the party's real capacity is however much of it you are still standing next to.",
+   "statModifiers": {
+    "itemSlots": 2,
+    "movement": 1,
+    "health": 1
+   },
+   "triggers": [
+    {
+     "hook": "passive",
+     "effect": "every ally within 2 hexes has +1 Item Slot"
+    }
+   ],
+   "powers": [
+    "power.porter.drop-the-pack",
+    "power.porter.shoulder-the-load",
+    "power.porter.brace-the-line",
+    "power.porter.set-it-down"
+   ],
+   "source": "new — the porter named in the HoBaT deployment design; the Hell-TCG Civilian power Equip is folded in here | 2026-08-17 Angela trim: three stats, no negatives, one ability. Dropped stats: precision -1; dodge -5. Parked abilities: onDeath: everything in your Item Slots falls on your hex and may be taken by any unit that ends its Turn there. | 2026-08-17 Angela: CUT. ally-reactive hooks, guarding, Consequence-Stack interference and non-knockback forced movement all removed by ruling. | 2026-08-20 Angela: \"the hero you follow\" was a follow/attachment relationship built for one specialty. An aura on a radius instead."
+  },
+  {
+   "id": "specialty.militia",
+   "name": "Militia",
+   "class": "class.civilian",
+   "intent": "Someone put a spear in your hands last week and told you where to stand, and you have not left that hex since.",
+   "statModifiers": {
+    "accuracy": 5,
+    "resist": 1,
+    "strength": 1
+   },
+   "triggers": [
+    {
+     "hook": "startOfBattle",
+     "effect": "gain +1 Armor for the rest of the Battle"
+    }
+   ],
+   "powers": [
+    "power.militia.fall-in",
+    "power.militia.ready",
+    "power.militia.aim",
+    "power.militia.take-the-wall"
+   ],
+   "source": "Hell-TCG Civilian/Soldier, RENAMED to Militia — Soldier is a badge in HoBaT (badge.soldier), a classification any hero may hold regardless of class, so the specialty cannot own the name. The soldier ROLE tag and the soldier identity are granted by badge.soldier, never by this specialty; Militia keeps only the drilled-farmhand stat block. Militia is also the fourth civilian role named in the deployment design. | 2026-08-17 Angela trim: three stats, no negatives, one ability. Dropped stats: movement -1; health +2. Parked abilities: onAllyDeath: if the ally died within 2 hexes of you, lose 5 Accuracy for the rest of the Battle. | 2026-08-20 Angela: \"if you begin the Battle adjacent to any ally\" was a deployment-position check. Unconditional."
+  },
+  {
+   "id": "specialty.trickster",
+   "name": "Trickster",
+   "class": "class.civilian",
+   "intent": "You have never won a fight, but you have survived every one of them, and the enemy keeps swinging at where you just were.",
+   "statModifiers": {
+    "dodge": 10,
+    "luck": 3,
+    "itemSlots": 1
+   },
+   "triggers": [
+    {
+     "hook": "onDodge",
+     "effect": "heal 2"
+    }
+   ],
+   "powers": [
+    "power.trickster.armor-gap",
+    "power.trickster.poison-nick",
+    "power.trickster.escape",
+    "power.trickster.impersonation"
+   ],
+   "source": "Hell-TCG Civilian/Trickster (dodge/reach/slots block rebuilt; Reach cut because it does nothing for a melee civilian) | 2026-08-17 Angela trim: three stats, no negatives, one ability. Dropped stats: strength -1; health -1. | 2026-08-20 Angela: onDodge is a new hook. the \"first time each Battle you take damage, move 1 hex\" flag is replaced by heal 2 on every dodge — no per-battle flag to store, and it says the same thing about the Trickster: never hit, never quite hurt."
+  },
+  {
+   "id": "specialty.archer",
+   "name": "Archer",
+   "class": "class.civilian",
+   "intent": "You hunted for the pot, not for glory, and the difference has never mattered less than it does right now.",
+   "statModifiers": {
+    "precision": 2,
+    "reach": 1,
+    "crit": 3
+   },
+   "triggers": [
+    {
+     "hook": "startOfBattle",
+     "effect": "gain +5 Accuracy for the rest of the Battle"
+    }
+   ],
+   "powers": [
+    "power.archer.dedication",
+    "power.archer.flurry-of-arrows",
+    "power.archer.small-bandage",
+    "power.archer.take-the-shot"
+   ],
+   "source": "Hell-TCG Civilian/Archer (kept the name; Ranger owns Bowmaster and Winged Assassin, so there is no collision) | 2026-08-17 Angela: \"if no enemy is within 4 hexes\" is trivially true at deployment, so it was a free bonus. Split into a flat grant plus a live condition. | 2026-08-17 Angela trim: three stats, no negatives, one ability. Dropped stats: health -2; armor -1; dodge -5. Parked abilities: onAttack: if no enemy is adjacent to you, this attack gains a further +5 Accuracy. | 2026-08-17: third stat crit +3 — you hunted for the pot; you know where the soft parts are."
+  },
+  {
+   "id": "specialty.archivist",
+   "name": "Archivist",
+   "class": "class.civilian",
+   "intent": "You have read about every one of these things, and knowing what it is turns out to be worth more than being able to fight it.",
+   "statModifiers": {
+    "resist": 1,
+    "itemSlots": 1,
+    "luck": 3
+   },
+   "triggers": [
+    {
+     "hook": "passive",
+     "effect": "every ally within 4 hexes gains +2 damage"
+    }
+   ],
+   "powers": [
+    "power.archivist.identify",
+    "power.archivist.scroll-of-power",
+    "power.archivist.forbidden-tome",
+    "power.archivist.cross-reference"
+   ],
+   "source": "Hell-TCG Lorekeeper/Archivist (the draw-flooding identity has no meaning without The Hand; rebuilt on Vision, reveal and creature-tag bonuses) | 2026-08-17: was a battle-start snapshot of enemies in Vision, which shows nothing at deployment. Made continuous. | 2026-08-17 Angela trim: three stats, no negatives, one ability. Dropped stats: health -1; strength -1; vision +2. Parked abilities: onAllyDeath: you write down what killed them: every ally gains +2 damage against that enemy's creature tags for the rest of the Battle. | 2026-08-17: third stat luck +3 — you have read about this thing, so nothing it does surprises you. | 2026-08-20 Angela: creature tags are player-visible by design, so \"you reveal their tags\" was not an effect and the damage bonus was gated on a step that never had to happen. Cut the reveal; the aura now hangs on your Vision, which is the Archivist's own stat and the real limiter. | 2026-08-20 Angela sweep: \"against any enemy within your Vision\" was a predicate on the target that is neither a tag nor a status — and it was vacuous besides, since an ally you are buffing is almost always looking at the same enemy you are. Flat +2 damage."
+  },
+  {
+   "id": "specialty.sage",
+   "name": "Sage",
+   "class": "class.civilian",
+   "intent": "You are eighty years old and cannot lift a shield, but the party's magic runs deeper for every hour you stay upright on the field.",
+   "statModifiers": {
+    "magic": 1,
+    "spirit": 1,
+    "resist": 1
+   },
+   "triggers": [
+    {
+     "hook": "passive",
+     "effect": "the party's Magic sum and Spirit sum each count 1 higher"
+    }
+   ],
+   "powers": [
+    "power.sage.wisdom",
+    "power.sage.enlighten",
+    "power.sage.ancient-knowledge",
+    "power.sage.meditation"
+   ],
+   "source": "Hell-TCG Lorekeeper/Sage (the +1 Magic ports directly and is the point: three civilians in the flex slot can carry a party's Magic sum, and losing one takes it back) | 2026-08-17 Angela trim: three stats, no negatives, one ability. Dropped stats: health -2; movement -1. Parked abilities: onDeath: the +1 Magic and +1 Spirit you contributed to the party sums are lost the instant you fall, and every ally within 4 hexes gains 2 Weak. | 2026-08-17 quality pass: replaced a placeholder aura with a distinct effect. | 2026-08-20 Angela: a \"usable only if\" gate on your own or the target's state is not a thing — nothing reads a Health threshold or an event history to decide whether a power is legal. the above/below half Health branch is cut. The Sage simply raises both sums."
+  },
+  {
+   "id": "specialty.remembrancer",
+   "name": "Remembrancer",
+   "class": "class.civilian",
+   "intent": "You are the one who writes down who died and where, and the party fights better knowing the page gets filled in either way.",
+   "statModifiers": {
+    "luck": 3,
+    "resist": 1,
+    "health": 1
+   },
+   "triggers": [
+    {
+     "hook": "onKill",
+     "effect": "gain +2 Crit for the rest of the Battle"
+    }
+   ],
+   "powers": [
+    "power.remembrancer.take-down-the-name",
+    "power.remembrancer.story-of-heroes",
+    "power.remembrancer.read-the-field",
+    "power.remembrancer.close-the-ledger"
+   ],
+   "source": "Hell-TCG Lorekeeper/Chronicler, RENAMED to Remembrancer — Chronicler is the name of the game's narrating voice in HoBaT and is reserved for it; a specialty sharing that name would read as the narrator being a unit on the map. The tactic-slot and draw mechanics were cut with The Hand and rebuilt onto the civilian death ledger. | 2026-08-17 Angela trim: three stats, no negatives, one ability. Dropped stats: strength -1; vision +2. Parked abilities: startOfBattle: every ally that has survived a previous Battle alongside you gains +3 Crit for the Battle. | 2026-08-17 Angela: CUT. ally-reactive hooks, guarding, Consequence-Stack interference and non-knockback forced movement all removed by ruling. | 2026-08-17 quality pass: replaced a placeholder aura with a distinct effect. | 2026-08-20 Angela: \"take down this name\" is not in effect. It was a per-tag ledger written during the Battle — nothing remembers what you have killed, and nothing matches a tag against a remembered one. The kill now pays a flat +2 Crit for the rest of the Battle."
+  }
+ ],
+ "powers": [
+  {
+   "id": "power.apothecary.healing-potion",
+   "name": "Poultice",
+   "specialty": "specialty.apothecary",
+   "stamina": 0,
+   "cooldown": 2,
+   "warmup": 0,
+   "free": false,
+   "targets": "one ally within 1 hex",
+   "tags": [
+    "heal"
+   ],
+   "description": "Heal an adjacent ally 5 and remove 2 Burn from it. You have to be standing next to them, so the decision is where you walked, not what you clicked.",
+   "source": "Hell-TCG name reused (Civilian/Apothecary, Healing Potion — retargeted to adjacency) | 2026-08-17: \"difficult terrain\" is not a thing in HoBaT — there are hexes that cost extra Movement. Reworded. | 2026-08-19: item.healing-potion is a real consumable. A power must not share a name with an item you can pick up.",
+   "triggers": []
+  },
+  {
+   "id": "power.apothecary.stretcher-run",
+   "name": "Stretcher Run",
+   "specialty": "specialty.apothecary",
+   "stamina": 0,
+   "cooldown": 4,
+   "warmup": 0,
+   "free": false,
+   "targets": "one downed ally within 1 hex",
+   "tags": [],
+   "description": "Stabilise an adjacent downed ally, removing its bleed-out counter, then move up to your Movement.",
+   "source": "new — the stretcher-bearer's mobile stabilize, named in the HoBaT deployment design | 2026-08-17: \"difficult terrain\" is not a thing in HoBaT — there are hexes that cost extra Movement. Reworded. | 2026-08-17 Angela: rebuilt. Passing a Deathbed check returns you to MAX Health with the wounded badge; failing kills you outright. There is no downed state, no bleed-out counter and no stabilising, and nothing may override the roll. Granting Deathbed Fighting is the legitimate way to touch this. | 2026-08-17 Angela: downed IS a state and stabilising IS a mechanic — I over-cut them. Stabilise removes the bleed-out counter and nothing else: no Health, no standing up.",
+   "triggers": [],
+   "intent": "the stretcher-bearer's whole job, and the reason to take one"
+  },
+  {
+   "id": "power.apothecary.smoke-bomb",
+   "name": "Smoke Bomb",
+   "specialty": "specialty.apothecary",
+   "stamina": 0,
+   "cooldown": 3,
+   "warmup": 1,
+   "free": false,
+   "targets": "enemies within 2 hexes",
+   "tags": [
+    "thrown",
+    "area"
+   ],
+   "description": "Every enemy within 2 hexes gains 2 Weak for the rest of the Battle; as an area effect it cannot crit.",
+   "source": "Hell-TCG name reused (Civilian/Apothecary, Smoke Bomb — row targeting rebuilt as a radius, with a Vision bite added) | 2026-08-17: \"difficult terrain\" is not a thing in HoBaT — there are hexes that cost extra Movement. Reworded. | 2026-08-20 Angela: enemies do not have Vision — the Vision loss did nothing and is cut. The Weak is untouched, so this power is now slightly weaker than it read; compensation is a design call, not mine. | 2026-08-20 Angela: enemies do not have Vision, so taking it off them did nothing. Cut. The Weak is untouched, which leaves this power slightly weaker than it read — compensating is a design call, not mine.",
+   "triggers": []
+  },
+  {
+   "id": "power.apothecary.fire-bomb",
+   "name": "Fire Bomb",
+   "specialty": "specialty.apothecary",
+   "stamina": 0,
+   "cooldown": 3,
+   "warmup": 1,
+   "free": false,
+   "targets": "a hex within 4 hexes and every hex adjacent to it",
+   "tags": [
+    "thrown",
+    "area"
+   ],
+   "description": "Every enemy on or adjacent to the target hex gains 2 Burn, or 4 Burn if it is plant or undead; as an area effect it cannot crit, and each tick is reduced by Resist.",
+   "source": "Hell-TCG name reused (Civilian/Apothecary, Fire Bomb — row targeting rebuilt as a thrown blast) | 2026-08-17: \"difficult terrain\" is not a thing in HoBaT — there are hexes that cost extra Movement. Reworded.",
+   "triggers": []
+  },
+  {
+   "id": "power.torchbearer.raise-the-torch",
+   "name": "Raise the Torch",
+   "specialty": "specialty.torchbearer",
+   "stamina": 0,
+   "cooldown": 0,
+   "warmup": 0,
+   "free": false,
+   "targets": "you and allies within 3 hexes",
+   "tags": [
+    "stance",
+    "aura"
+   ],
+   "description": "Stance: for the rest of the Battle every ally within 3 hexes has +2 Vision, and the torch reveals stealthed units within 3 hexes of you — their stealth breaks and they can be targeted like anything else. It lapses the moment you go down, which is the whole tension of bringing you.",
+   "source": "new | 2026-08-17: \"difficult terrain\" is not a thing in HoBaT — there are hexes that cost extra Movement. Reworded. | 2026-08-17 design pass: \"cannot be attacked from stealth\" is not a rule in this game — stealth breaks the instant its holder attacks — so the torch does the thing torches do and reveals instead.",
+   "triggers": []
+  },
+  {
+   "id": "power.torchbearer.flare",
+   "name": "Flare",
+   "specialty": "specialty.torchbearer",
+   "stamina": 0,
+   "cooldown": 4,
+   "warmup": 0,
+   "free": false,
+   "targets": "a hex within 6 hexes",
+   "tags": [
+    "thrown"
+   ],
+   "description": "Light a hex within 6 and it becomes burning. It reveals stealthed units within 3 hexes of it — their stealth breaks — nothing within 3 hexes is hidden by darkness or fog, and every unit inside loses 5 Dodge.",
+   "source": "new | 2026-08-17: \"difficult terrain\" is not a thing in HoBaT — there are hexes that cost extra Movement. Reworded. | 2026-08-17 design pass: reveal rewritten in the settled wording — it strips stealth from units in a radius rather than granting some standing see-through-stealth sense. | 2026-08-20 Angela: ground layers are PERSISTENT and carry no number and no clock. A hex is burning or it is not. One layer per hex; applying a different one replaces it. See rule.ground-layers.",
+   "triggers": []
+  },
+  {
+   "id": "power.torchbearer.hold-the-light",
+   "name": "Hold the Light",
+   "specialty": "specialty.torchbearer",
+   "stamina": 0,
+   "cooldown": 3,
+   "warmup": 0,
+   "free": true,
+   "targets": "allies within 4 hexes",
+   "tags": [
+    "aura"
+   ],
+   "description": "Free: you do not move this Turn, and every ally within 4 hexes gains +1 Vision and +5 Accuracy until the start of your next Turn.",
+   "source": "new | 2026-08-17: \"difficult terrain\" is not a thing in HoBaT — there are hexes that cost extra Movement. Reworded.",
+   "triggers": []
+  },
+  {
+   "id": "power.torchbearer.burn-it-out",
+   "name": "Burn It Out",
+   "specialty": "specialty.torchbearer",
+   "stamina": 0,
+   "cooldown": 5,
+   "warmup": 2,
+   "free": false,
+   "targets": "self",
+   "tags": [
+    "improvised",
+    "melee"
+   ],
+   "description": "Until the end of your next Turn, your attacks gain -1 Strength and apply 4 Burn on hit, or 6 against a plant or construct.",
+   "source": "new | 2026-08-17: was an attack in its own right, so it competed with the weapon in your hands and lost the moment you found a good one. Rebuilt as a next-attack modifier. | 2026-08-17: \"difficult terrain\" is not a thing in HoBaT — there are hexes that cost extra Movement. Reworded. | 2026-08-20 Angela: \"your next <form> attack\" is gone. Nothing tracks which attack is next or what form it is. Rewritten as a duration: until the end of your next Turn, your attacks carry it. The form qualifier is dropped with it. ",
+   "modifies": {
+    "tags": [
+     "melee"
+    ],
+    "scope": "until-end-of-your-next-turn",
+    "statModifiers": {
+     "strength": -1
+    }
+   },
+   "triggers": []
+  },
+  {
+   "id": "power.porter.drop-the-pack",
+   "name": "Drop the Pack",
+   "specialty": "specialty.porter",
+   "stamina": 0,
+   "cooldown": 5,
+   "warmup": 1,
+   "free": false,
+   "targets": "your own hex",
+   "tags": [],
+   "description": "Leave the pack where you stand: for the rest of the Battle, the first ally to end its Turn on that hex heals 3 and removes 1 Weak. The pack is spent when it does.",
+   "source": "new — replaces the cut Hell-TCG Supply economy with a hex the party has to walk to | 2026-08-17: \"difficult terrain\" is not a thing in HoBaT — there are hexes that cost extra Movement. Reworded. | 2026-08-20 Angela sweep: \"up to three times in total\" was a tally. Nothing counts occurrences. The pack is now an object that is spent, which is exactly how traps already work.",
+   "triggers": []
+  },
+  {
+   "id": "power.porter.shoulder-the-load",
+   "name": "Shoulder the Load",
+   "specialty": "specialty.porter",
+   "stamina": 0,
+   "cooldown": 4,
+   "warmup": 0,
+   "free": false,
+   "targets": "one ally within 1 hex",
+   "tags": [],
+   "description": "One ally within 1 hex gains +1 Movement and +5 Dodge for the rest of the Battle, and you lose 1 Movement for the rest of the Battle.",
+   "source": "new | 2026-08-17: \"difficult terrain\" is not a thing in HoBaT — there are hexes that cost extra Movement. Reworded. | 2026-08-20 Angela: reworded off \"take their burden onto your back\" — no item moves, so the words should not imply one.",
+   "triggers": []
+  },
+  {
+   "id": "power.militia.fall-in",
+   "name": "Fall In",
+   "specialty": "specialty.militia",
+   "stamina": 0,
+   "cooldown": 4,
+   "warmup": 0,
+   "free": false,
+   "targets": "self",
+   "tags": [
+    "stance"
+   ],
+   "description": "Stance: gain +2 Health and +1 Armor for the rest of the Battle.",
+   "source": "Hell-TCG mechanic reused, renamed (Civilian/Soldier, Soldier Up! — renamed because Soldier is badge.soldier in HoBaT) | 2026-08-17: \"difficult terrain\" is not a thing in HoBaT — there are hexes that cost extra Movement. Reworded. | 2026-08-20 Angela: \"while you remain adjacent to at least one ally, lapses on any Turn you stand alone and returns when you are not\" is a toggling condition that switches on and off between Turns — nothing else in the game does that.",
+   "triggers": []
+  },
+  {
+   "id": "power.militia.ready",
+   "name": "Ready!",
+   "specialty": "specialty.militia",
+   "stamina": 0,
+   "cooldown": 3,
+   "warmup": 0,
+   "free": false,
+   "targets": "self",
+   "tags": [
+    "stance"
+   ],
+   "description": "Stance: gain +1 Strength and +1 Precision for the rest of the Battle and lose 1 Movement, because you are not leaving this hex now.",
+   "source": "Hell-TCG name reused (Civilian/Soldier, Ready! — melee/ranged mapped to Strength/Precision) | 2026-08-17: \"difficult terrain\" is not a thing in HoBaT — there are hexes that cost extra Movement. Reworded.",
+   "triggers": []
+  },
+  {
+   "id": "power.militia.aim",
+   "name": "Aim!",
+   "specialty": "specialty.militia",
+   "stamina": 0,
+   "cooldown": 2,
+   "warmup": 0,
+   "free": false,
+   "targets": "one enemy within your Vision",
+   "tags": [
+    "ranged",
+    "spear"
+   ],
+   "description": "Until the end of your next Turn, your attacks ignore your Reach limit and have +30 Accuracy; you may not move on the Turn you use this.",
+   "source": "Hell-TCG name reused (Civilian/Soldier, Aim! — the ignores-Reach clause ports intact) | 2026-08-17: \"difficult terrain\" is not a thing in HoBaT — there are hexes that cost extra Movement. Reworded. | 2026-08-17 quality pass: was a bare attack at +2 Precision, which loses to whatever weapon is already in your hands. Rebuilt as a shape-1 tag modifier built on the Accuracy-surplus rule, so it reads differently to a rookie and to a veteran. | 2026-08-20 Angela: \"your next <form> attack\" is gone. Nothing tracks which attack is next or what form it is. Rewritten as a duration: until the end of your next Turn, your attacks carry it. The form qualifier is dropped with it. ",
+   "triggers": [],
+   "modifies": {
+    "tags": [
+     "ranged",
+     "spear"
+    ],
+    "scope": "until-end-of-your-next-turn",
+    "statModifiers": {
+     "accuracy": 30
+    }
+   }
+  },
+  {
+   "id": "power.militia.take-the-wall",
+   "name": "Take the Wall",
+   "specialty": "specialty.militia",
+   "stamina": 0,
+   "cooldown": 5,
+   "warmup": 2,
+   "free": false,
+   "targets": "you and allies within 1 hex",
+   "tags": [
+    "aura"
+   ],
+   "description": "For the rest of the Battle, you and every ally within 1 hex gain +1 Armor and +5 Dodge.",
+   "source": "new | 2026-08-17: \"difficult terrain\" is not a thing in HoBaT — there are hexes that cost extra Movement. Reworded. | 2026-08-17 quality pass: carried a condition the engine cannot check ('any Turn in which none of you moved'). Rebuilt on zones of control, which is what taking a wall actually is. | 2026-08-17 Angela: every unit has Sidestep, so a zone of control cannot pin anything — it taxes the SECOND hex of a withdrawal, not the first. Reworded to say what it actually does. | 2026-08-20 Angela: the zone-of-control clause is cut — the third and last one in the set. Rebuilt as a defensive aura, which is what holding a wall is.",
+   "triggers": []
+  },
+  {
+   "id": "power.trickster.armor-gap",
+   "name": "Armor Gap",
+   "specialty": "specialty.trickster",
+   "stamina": 0,
+   "cooldown": 2,
+   "warmup": 0,
+   "free": false,
+   "targets": "one enemy within 3 hexes",
+   "tags": [],
+   "description": "The target loses 2 Armor for the rest of the Battle. Armor floors at zero, so spend this on something that had some.",
+   "source": "Hell-TCG name reused (Civilian/Trickster, Armor Gap) | 2026-08-17: \"difficult terrain\" is not a thing in HoBaT — there are hexes that cost extra Movement. Reworded.",
+   "triggers": []
+  },
+  {
+   "id": "power.trickster.poison-nick",
+   "name": "Poison Nick",
+   "specialty": "specialty.trickster",
+   "stamina": 0,
+   "cooldown": 2,
+   "warmup": 0,
+   "free": false,
+   "targets": "one enemy in melee reach",
+   "tags": [
+    "dagger",
+    "melee"
+   ],
+   "description": "Melee attack at -1 Strength; on hit the target gains 4 Poison, reduced by its Resist on every tick.",
+   "source": "Hell-TCG name reused (Civilian/Trickster, Poison Nick) | 2026-08-17: \"difficult terrain\" is not a thing in HoBaT — there are hexes that cost extra Movement. Reworded.",
+   "triggers": []
+  },
+  {
+   "id": "power.trickster.escape",
+   "name": "Escape",
+   "specialty": "specialty.trickster",
+   "stamina": 0,
+   "cooldown": 6,
+   "warmup": 0,
+   "free": false,
+   "targets": "self",
+   "tags": [],
+   "description": "Move up to twice your Movement toward the nearest map edge and leave the Battle. You keep everything you are carrying and you are available for the next one — the cheapest death you never had.",
+   "source": "Hell-TCG name reused (Civilian/Trickster, Escape — deck return rebuilt as a map-edge withdrawal, items no longer discarded) | 2026-08-17: \"difficult terrain\" is not a thing in HoBaT — there are hexes that cost extra Movement. Reworded.",
+   "triggers": []
+  },
+  {
+   "id": "power.trickster.impersonation",
+   "name": "Impersonation",
+   "specialty": "specialty.trickster",
+   "stamina": 0,
+   "cooldown": 8,
+   "warmup": 3,
+   "free": false,
+   "targets": "self",
+   "tags": [
+    "stance"
+   ],
+   "description": "Stance: for the rest of the Battle you satisfy EVERY class restriction on every item you carry, and enemies choose targets as though you were a hero rather than a civilian.",
+   "source": "Hell-TCG name reused (Civilian/Trickster, Impersonation — 'gain ALL class bonuses' rebuilt against classRestriction, which is a gate in HoBaT rather than a bonus) | 2026-08-17: \"difficult terrain\" is not a thing in HoBaT — there are hexes that cost extra Movement. Reworded. | 2026-08-20 Angela: no naming function anywhere — you do not use a power and then make a second choice inside it. The choice is the power, or the target. \"name one class\" is gone; it grants ALL classes, which is both stronger and simpler — and it is what the old game did.",
+   "triggers": [],
+   "intent": "Not one class. All of them. A civilian holding the Holy Avenger, the void staff and the paladin plate at the same time, and being shot at like someone who deserves it."
+  },
+  {
+   "id": "power.archer.dedication",
+   "name": "Dedication",
+   "specialty": "specialty.archer",
+   "stamina": 0,
+   "cooldown": 4,
+   "warmup": 0,
+   "free": false,
+   "targets": "self",
+   "tags": [
+    "stance"
+   ],
+   "description": "Stance: gain +3 Precision for the rest of the Battle and take 2 true damage immediately.",
+   "source": "Hell-TCG name reused (Civilian/Archer, Dedication) | 2026-08-17: \"difficult terrain\" is not a thing in HoBaT — there are hexes that cost extra Movement. Reworded.",
+   "triggers": []
+  },
+  {
+   "id": "power.archer.flurry-of-arrows",
+   "name": "Flurry of Arrows",
+   "specialty": "specialty.archer",
+   "stamina": 0,
+   "cooldown": 3,
+   "warmup": 1,
+   "free": false,
+   "targets": "up to 2 enemies within 3 hexes",
+   "tags": [
+    "bow",
+    "ranged"
+   ],
+   "description": "Make two ranged attacks at -1 Precision each, spread across two different enemies if two are in range.",
+   "source": "Hell-TCG name reused (Civilian/Archer, Flurry of Arrows — random targeting rebuilt as a reach-limited spread) | 2026-08-17: \"difficult terrain\" is not a thing in HoBaT — there are hexes that cost extra Movement. Reworded.",
+   "triggers": []
+  },
+  {
+   "id": "power.archer.small-bandage",
+   "name": "Small Bandage",
+   "specialty": "specialty.archer",
+   "stamina": 0,
+   "cooldown": 3,
+   "warmup": 0,
+   "free": false,
+   "targets": "one ally within 1 hex",
+   "tags": [
+    "heal"
+   ],
+   "description": "Heal an adjacent ally 3 and remove 5 Burn from it.",
+   "source": "Hell-TCG name reused (Civilian/Archer, Small Bandage — retargeted to adjacency) | 2026-08-17: \"difficult terrain\" is not a thing in HoBaT — there are hexes that cost extra Movement. Reworded.",
+   "triggers": []
+  },
+  {
+   "id": "power.archer.take-the-shot",
+   "name": "Take the Shot",
+   "specialty": "specialty.archer",
+   "stamina": 0,
+   "cooldown": 2,
+   "warmup": 0,
+   "free": false,
+   "targets": "one enemy within 6 hexes",
+   "tags": [
+    "bow",
+    "ranged"
+   ],
+   "description": "Ranged attack at +10 Accuracy; you may not move this Turn.",
+   "source": "new | 2026-08-17: \"difficult terrain\" is not a thing in HoBaT — there are hexes that cost extra Movement. Reworded. | 2026-08-20 Angela: \"the furthest enemy you can see\" was auto-selection by distance, a targeting rule built for one power. You pick, at range 6.",
+   "triggers": []
+  },
+  {
+   "id": "power.archivist.identify",
+   "name": "Identify",
+   "specialty": "specialty.archivist",
+   "stamina": 0,
+   "cooldown": 2,
+   "warmup": 0,
+   "free": false,
+   "targets": "one enemy within your Vision",
+   "tags": [],
+   "description": "For the rest of the Battle it takes +2 damage from every source.",
+   "source": "Hell-TCG name reused (Lorekeeper/Archivist, Identify — the reveal half is new, since Hell-TCG had no hidden information) | 2026-08-17: \"difficult terrain\" is not a thing in HoBaT — there are hexes that cost extra Movement. Reworded. | 2026-08-20 Angela: creature tags are player-visible by design and Armor and Resist are on the sheet, so revealing them is not an effect. The +2 damage is the whole power.",
+   "triggers": []
+  },
+  {
+   "id": "power.archivist.scroll-of-power",
+   "name": "Scroll of Power",
+   "specialty": "specialty.archivist",
+   "stamina": 0,
+   "cooldown": 5,
+   "warmup": 1,
+   "free": false,
+   "targets": "allies within 6 hexes",
+   "tags": [],
+   "description": "Read it aloud and burn it: the party's Magic total rises by 3 for the rest of the Battle, and your own Stamina Max drops by 2 for the rest of the Battle. That is one grant to the party-wide sum, not +3 to each hero — and it is worth nothing at all in a party fielding no caster.",
+   "source": "Hell-TCG name reused (Lorekeeper/Archivist, Scroll of Power — 'all heroes gain +1 Magic' would multiply a party-wide sum, so it is folded into a single grant) | 2026-08-17: \"difficult terrain\" is not a thing in HoBaT — there are hexes that cost extra Movement. Reworded. | 2026-08-17 quality pass: a free party-wide sum grant with no decision. Now bought with the Archivist's own tempo, and only worth buying if the party has someone to spend it.",
+   "triggers": []
+  },
+  {
+   "id": "power.archivist.forbidden-tome",
+   "name": "Forbidden Tome",
+   "specialty": "specialty.archivist",
+   "stamina": 0,
+   "cooldown": 6,
+   "warmup": 2,
+   "free": false,
+   "targets": "self",
+   "tags": [],
+   "description": "Take 3 true damage and read anyway: every enemy on the map is revealed and every one of them in stealth has it broken, and for the rest of the Battle darkness and fog hide nothing from you.",
+   "source": "Hell-TCG name reused (Lorekeeper/Archivist, Forbidden Tome — Draw 4 cut with The Hand, the true damage kept, the payoff rebuilt on Vision) | 2026-08-17: \"difficult terrain\" is not a thing in HoBaT — there are hexes that cost extra Movement. Reworded. | 2026-08-17 design pass: reveal rewritten as a one-shot strip of stealth plus a lasting answer to darkness and fog, instead of a permanent map-wide anti-stealth field.",
+   "triggers": []
+  },
+  {
+   "id": "power.archivist.cross-reference",
+   "name": "Cross-Reference",
+   "specialty": "specialty.archivist",
+   "stamina": 0,
+   "cooldown": 4,
+   "warmup": 0,
+   "free": false,
+   "targets": "allies within 6 hexes",
+   "tags": [
+    "aura"
+   ],
+   "description": "Every ally within 6 hexes gains +2 damage for the rest of the Battle, and you gain +2 Vision.",
+   "source": "new | 2026-08-17: \"difficult terrain\" is not a thing in HoBaT — there are hexes that cost extra Movement. Reworded. | 2026-08-20 Angela: no naming function anywhere — you do not use a power and then make a second choice inside it. The choice is the power, or the target. \"name one creature tag\" is gone. The bonus applies against everything that carries any creature tag, which is what having read all of it should mean. | 2026-08-20 Angela sweep: \"against every creature tag\" is a flat bonus wearing a condition. Every enemy carries a creature tag, so the clause never fails. Say +2 damage.",
+   "triggers": [],
+   "intent": "You already read the book. It does not matter what walks in."
+  },
+  {
+   "id": "power.sage.wisdom",
+   "name": "Wisdom",
+   "specialty": "specialty.sage",
+   "stamina": 0,
+   "cooldown": 5,
+   "warmup": 1,
+   "free": false,
+   "targets": "allies within 6 hexes",
+   "tags": [],
+   "description": "Stop keeping up with the fight in order to keep reading it: the party's Spirit total rises by 2 for the rest of the Battle and you lose 2 Movement for the rest of the Battle. One grant to the party-wide sum, not +2 to each hero.",
+   "source": "Hell-TCG name reused (Lorekeeper/Sage, Wisdom) | 2026-08-17: \"difficult terrain\" is not a thing in HoBaT — there are hexes that cost extra Movement. Reworded. | 2026-08-17 quality pass: a free party-wide sum grant with no decision. Doubled, and paid for in Movement, which is a real cost.",
+   "triggers": []
+  },
+  {
+   "id": "power.sage.enlighten",
+   "name": "Enlighten",
+   "specialty": "specialty.sage",
+   "stamina": 0,
+   "cooldown": 3,
+   "warmup": 0,
+   "free": false,
+   "targets": "one ally within 3 hexes",
+   "tags": [],
+   "description": "The target's next power this Battle costs 1 less Stamina, and it gains +5 Accuracy for the rest of the Battle.",
+   "source": "Hell-TCG name reused (Lorekeeper/Sage, Enlighten — the double Magic/Spirit grant would multiply party-wide sums, so it is rebuilt as a one-off Stamina discount) | 2026-08-17: \"difficult terrain\" is not a thing in HoBaT — there are hexes that cost extra Movement. Reworded.",
+   "triggers": []
+  },
+  {
+   "id": "power.sage.ancient-knowledge",
+   "name": "Ancient Knowledge",
+   "specialty": "specialty.sage",
+   "stamina": 0,
+   "cooldown": 6,
+   "warmup": 2,
+   "free": false,
+   "targets": "allies within 4 hexes",
+   "tags": [
+    "aura"
+   ],
+   "description": "Every ally within 4 hexes gains +2 Resist for the rest of the Battle, and the party's Magic total rises by 1.",
+   "source": "Hell-TCG name reused (Lorekeeper restricted power, Ancient Knowledge — Draw 2 cut with The Hand) | 2026-08-17: \"difficult terrain\" is not a thing in HoBaT — there are hexes that cost extra Movement. Reworded.",
+   "triggers": []
+  },
+  {
+   "id": "power.sage.meditation",
+   "name": "Meditation",
+   "specialty": "specialty.sage",
+   "stamina": 0,
+   "cooldown": 4,
+   "warmup": 0,
+   "free": false,
+   "targets": "self",
+   "tags": [
+    "stance"
+   ],
+   "description": "Stance: you do not move for the rest of the Battle. Heal yourself equal to the party's Spirit at the start of each of your Turns.",
+   "source": "Hell-TCG name reused (Lorekeeper/Sage, Meditation — 'Gain 2 Actions' cut; the Stamina return is deliberately once per ally, never a Stamina Regen grant) | 2026-08-17: \"difficult terrain\" is not a thing in HoBaT — there are hexes that cost extra Movement. Reworded. | 2026-08-20 Angela: nothing counts occurrences — no \"first time\", no Nth hit, no per-Turn or per-Battle tally. the trailing \"and the first ...\" clause counted occurrences. Cut.",
+   "triggers": []
+  },
+  {
+   "id": "power.remembrancer.take-down-the-name",
+   "name": "Take Down the Name",
+   "specialty": "specialty.remembrancer",
+   "stamina": 0,
+   "cooldown": 3,
+   "warmup": 0,
+   "free": false,
+   "targets": "allies within 6 hexes",
+   "tags": [],
+   "description": "Every ally within 6 hexes gains +1 Strength and +1 Precision for the rest of the Battle.",
+   "source": "new — built on the ledger-heavy civilian death the HoBaT deployment design calls for | 2026-08-17: \"difficult terrain\" is not a thing in HoBaT — there are hexes that cost extra Movement. Reworded. | 2026-08-20 Angela: \"name an ally, and if that ally dies\" was a naming function plus a death watch on one designated unit. Both gone; the buff is simply given.",
+   "triggers": []
+  },
+  {
+   "id": "power.remembrancer.story-of-heroes",
+   "name": "Story of Heroes",
+   "specialty": "specialty.remembrancer",
+   "stamina": 0,
+   "cooldown": 6,
+   "warmup": 2,
+   "free": false,
+   "targets": "allies within 4 hexes",
+   "tags": [
+    "aura"
+   ],
+   "description": "Every ally within 4 hexes gains +1 Strength and +1 Precision for the rest of the Battle.",
+   "source": "Hell-TCG name reused (Lorekeeper/Chronicler, Story of Heroes — melee/ranged mapped to Strength/Precision, all-heroes narrowed to a radius) | 2026-08-17: \"difficult terrain\" is not a thing in HoBaT — there are hexes that cost extra Movement. Reworded.",
+   "triggers": []
+  },
+  {
+   "id": "power.remembrancer.read-the-field",
+   "name": "Read the Field",
+   "specialty": "specialty.remembrancer",
+   "stamina": 0,
+   "cooldown": 3,
+   "warmup": 0,
+   "free": false,
+   "targets": "self",
+   "tags": [],
+   "description": "Gain +3 Vision for the rest of the Battle and reveal every enemy within 8 hexes until the end of your next Turn.",
+   "source": "Hell-TCG mechanic reused, renamed (Lorekeeper/Chronicler, Record — the draw and the extra Action were cut with The Hand, and the name is reserved for the narrator) | 2026-08-17: \"difficult terrain\" is not a thing in HoBaT — there are hexes that cost extra Movement. Reworded.",
+   "triggers": []
+  },
+  {
+   "id": "power.remembrancer.close-the-ledger",
+   "name": "Close the Ledger",
+   "specialty": "specialty.remembrancer",
+   "stamina": 0,
+   "cooldown": 8,
+   "warmup": 3,
+   "free": false,
+   "targets": "allies within 6 hexes",
+   "tags": [
+    "aura"
+   ],
+   "description": "Every ally within 6 hexes heals 4 and loses all Bleed.",
+   "source": "Hell-TCG mechanic reused, renamed (Lorekeeper/Chronicler, Chronicle — the per-turn draw was cut with The Hand, and the name is reserved for the narrator) | 2026-08-17: \"difficult terrain\" is not a thing in HoBaT — there are hexes that cost extra Movement. Reworded. | 2026-08-20 Angela: a \"usable only if\" gate on your own or the target's state is not a thing — nothing reads a Health threshold or an event history to decide whether a power is legal. \"usable only after an ally has died this Battle\" cut — an event-history gate.",
+   "triggers": []
+  },
+  {
+   "id": "power.porter.brace-the-line",
+   "name": "Brace the Line",
+   "specialty": "specialty.porter",
+   "stamina": 1,
+   "cooldown": 3,
+   "warmup": 0,
+   "free": false,
+   "targets": "you and allies within 1 hex",
+   "tags": [],
+   "description": "You and every ally within 1 hex gain 3 Protection.",
+   "intent": "You carried it this far. You can carry them for one exchange.",
+   "source": "new 2026-08-20: replaces power.porter.equip, which granted a power mid-battle and moved an item — two subsystems for one card."
+  },
+  {
+   "id": "power.porter.set-it-down",
+   "name": "Set It Down",
+   "specialty": "specialty.porter",
+   "stamina": 0,
+   "cooldown": 4,
+   "warmup": 0,
+   "free": true,
+   "targets": "self",
+   "tags": [],
+   "description": "Free. Gain +2 Movement and +10 Dodge until the end of your next Turn.",
+   "intent": "Whatever you were carrying is somebody else’s problem for one Turn.",
+   "source": "new 2026-08-20: replaces power.porter.hand-it-over, which needed items to move between heroes and onto the ground. | 2026-08-20 Angela: standardised to \"Free.\" A trinket that does not use your action is a power and appears in the power list, so it uses the same word powers use. The stamina cost is a field, not prose."
+  }
+ ]
+}

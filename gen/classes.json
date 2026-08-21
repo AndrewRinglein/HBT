@@ -1,0 +1,230 @@
+{
+ "classes": [
+  {
+   "id": "class.warrior",
+   "name": "Warrior",
+   "primary": [
+    "strength",
+    "armor",
+    "health"
+   ],
+   "specialties": 9,
+   "intent": "The melee anchor. Armour is a mobility stat here — the Warrior is who finishes a run through threatened ground.",
+   "levelTable": "dictated 1–10"
+  },
+  {
+   "id": "class.ranger",
+   "name": "Ranger",
+   "primary": [
+    "precision",
+    "reach"
+   ],
+   "specialties": 9,
+   "intent": "Standoff damage. Reach and Vision are its real stats and both are near-invisible, which is the design's own warning label.",
+   "levelTable": "dictated 2–6, 7–10 owed"
+  },
+  {
+   "id": "class.rogue",
+   "name": "Rogue",
+   "primary": [
+    "precision",
+    "crit",
+    "strength"
+   ],
+   "specialties": 9,
+   "intent": "Stealth, poison and bleed, daggers and thrown weapons. Arrives, strikes, and is gone before the answer lands.",
+   "levelTable": "owed"
+  },
+  {
+   "id": "class.mage",
+   "name": "Mage",
+   "primary": [
+    "magic",
+    "precision"
+   ],
+   "specialties": 9,
+   "intent": "Magic damage and the terrain layer. Staves scale their basic attacks off Precision; only the big powers spend Magic.",
+   "levelTable": "owed"
+  },
+  {
+   "id": "class.priest",
+   "name": "Priest",
+   "primary": [
+    "spirit",
+    "precision"
+   ],
+   "specialties": 9,
+   "intent": "True damage — it skips Armor and Resist both. Hits soft, hits reliably, and is the only thing standing between a fallen hero and the clock.",
+   "levelTable": "owed"
+  },
+  {
+   "id": "class.paladin",
+   "name": "Paladin",
+   "primary": [
+    "strength",
+    "armor",
+    "resist"
+   ],
+   "specialties": 9,
+   "intent": "Armour, auras and protection, with slayer bonuses against undead and demon. The wall that also punishes.",
+   "levelTable": "owed"
+  },
+  {
+   "id": "class.civilian",
+   "name": "Civilian",
+   "primary": [],
+   "specialties": 9,
+   "intent": "An ordinary class, surfaced at different times. One action, no stamina bar, low-decision — three of them fill the flex slot one hero would.",
+   "levelTable": "owed"
+  },
+  {
+   "id": "class.beast",
+   "name": "Beast",
+   "primary": [
+    "strength",
+    "health",
+    "reach"
+   ],
+   "specialties": 9,
+   "intent": "Teeth, hide and mass. The Beast is the mirror of the Civilian: it is granted NO Item Slots at any level, so nothing it does comes out of a bag — every point of it is the animal.",
+   "levelTable": "authored 1–10"
+  }
+ ],
+ "stats": [
+  {
+   "name": "Strength",
+   "does": "melee damage only — never to-hit",
+   "value": 1
+  },
+  {
+   "name": "Precision",
+   "does": "ranged damage only — never to-hit",
+   "value": 1
+  },
+  {
+   "name": "Accuracy",
+   "does": "the core roll. surplus over 100 becomes Crit at ÷4",
+   "value": 0.2,
+   "note": "loses value as you stack it"
+  },
+  {
+   "name": "Crit",
+   "does": "chance to land one. base 3",
+   "value": 0.2
+  },
+  {
+   "name": "Luck",
+   "does": "flat subtraction from the ATTACKER's crit chance",
+   "value": 0.2
+  },
+  {
+   "name": "Reach",
+   "does": "ranged weapons only. melee gains nothing",
+   "value": 0.5
+  },
+  {
+   "name": "Dodge",
+   "does": "flat to-hit penalty on the attacker",
+   "value": 0.3,
+   "note": "GAINS value as you stack it — +100 Dodge would break the game"
+  },
+  {
+   "name": "Vision",
+   "does": "a radius, base 6. bites in darkness, fog and stealth-detection",
+   "value": 0.2
+  },
+  {
+   "name": "Armor",
+   "does": "flat mitigation, physical",
+   "value": 2
+  },
+  {
+   "name": "Resist",
+   "does": "flat mitigation, magic — and burn/poison per tick, never bleed",
+   "value": 2
+  },
+  {
+   "name": "Health",
+   "does": "max. resets every Battle",
+   "value": 0.5
+  },
+  {
+   "name": "Magic",
+   "does": "scales off the PARTY-WIDE SUM",
+   "value": 1.5
+  },
+  {
+   "name": "Spirit",
+   "does": "scales off the PARTY-WIDE SUM",
+   "value": 1.5
+  },
+  {
+   "name": "Toughness",
+   "does": "injury capacity, and the base for Deathbed Fighting",
+   "value": 0.4,
+   "note": "injury capacity, and the base for Deathbed Fighting"
+  },
+  {
+   "name": "Movement",
+   "does": "hexes per move action. heroes 5, enemies 4",
+   "value": 0.7
+  },
+  {
+   "name": "Stamina Max",
+   "does": "the throttle. a level-1 hero has 5",
+   "value": 0.3
+  },
+  {
+   "name": "Stamina Regen",
+   "does": "THE SACRED STAT. hard-caps around 3",
+   "value": 2,
+   "note": "THE SACRED STAT. as expensive as Armor, and it hard-caps at 3"
+  },
+  {
+   "name": "Surge",
+   "does": "base value equals the character's level",
+   "value": 0.15,
+   "note": "fine to modify — it is not a sacred stat"
+  },
+  {
+   "name": "Item Slots",
+   "does": "accessories beyond the two hands",
+   "value": 0.67
+  }
+ ],
+ "art": {
+  "note": "19 assets per hero template, not per hero — which is why a generated hero costs no new art. 30 generative templates → 30 art sets.",
+  "sets": [
+   {
+    "set": "Card art — the 2:3 display portrait",
+    "level": 3,
+    "status": 4,
+    "total": 7
+   },
+   {
+    "set": "Hex map art — the battle-map token",
+    "level": 3,
+    "status": 4,
+    "total": 7
+   },
+   {
+    "set": "Unconscious art — does NOT vary by level",
+    "level": 1,
+    "status": 4,
+    "total": 5
+   }
+  ],
+  "levelBands": [
+   "1–3",
+   "4–6",
+   "7–10"
+  ],
+  "statuses": [
+   "Vampirism",
+   "Werewolf",
+   "Rotting Flesh",
+   "Possessed"
+  ],
+  "rule": "A status OVERRIDES the level band totally. A level-7 vampire shows vampire art, not tier-3 art. No merge."
+ }
+}

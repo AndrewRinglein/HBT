@@ -1,0 +1,692 @@
+{
+ "class": "class.warrior",
+ "specialties": [
+  {
+   "id": "specialty.berserker",
+   "name": "Berserker",
+   "class": "class.warrior",
+   "intent": "You gave up your guard and your grip on your gear for the biggest swing on the field, and you cannot afford to miss twice.",
+   "statModifiers": {
+    "strength": 2,
+    "staminaMax": 1,
+    "health": 3,
+    "precision": -2,
+    "accuracy": -10,
+    "itemSlots": -1
+   },
+   "triggers": [],
+   "powers": [
+    "power.berserker.unleash",
+    "power.berserker.mighty",
+    "power.berserker.bloody-strikes",
+    "power.berserker.draw-from-death",
+    "power.berserker.mortal-strikes",
+    "power.berserker.fast-fury"
+   ],
+   "source": "Hell-TCG Warrior/Beserker (settled; spelling corrected, keeps the name in the collision with Barbarian/Berserker)"
+  },
+  {
+   "id": "specialty.shieldbearer",
+   "name": "Shieldbearer",
+   "class": "class.warrior",
+   "intent": "You are the piece of the line that does not move, and the enemy has to solve you before they solve anyone else.",
+   "statModifiers": {
+    "armor": 1,
+    "health": 4
+   },
+   "triggers": [],
+   "powers": [
+    "power.shieldbearer.shield-wall",
+    "power.shieldbearer.last-stand",
+    "power.shieldbearer.resistance",
+    "power.shieldbearer.bash",
+    "power.shieldbearer.shield-other",
+    "power.shieldbearer.unbreakable"
+   ],
+   "source": "Hell-TCG Warrior/Shieldbearer (settled)"
+  },
+  {
+   "id": "specialty.leader",
+   "name": "Leader",
+   "class": "class.warrior",
+   "intent": "You fight with your eyes up: your own numbers are good, and everyone standing near you gets better ones.",
+   "statModifiers": {
+    "accuracy": 10,
+    "crit": 5,
+    "itemSlots": 2
+   },
+   "triggers": [],
+   "powers": [
+    "power.leader.command",
+    "power.leader.leadership",
+    "power.leader.refresh",
+    "power.leader.battle-cry",
+    "power.leader.find-weakness",
+    "power.leader.titans-inspiration"
+   ],
+   "source": "Hell-TCG Warrior/Warleader (settled, renamed Leader)"
+  },
+  {
+   "id": "specialty.reaver",
+   "name": "Reaver",
+   "class": "class.warrior",
+   "intent": "Everyone on this hex is bleeding, including you; the fight is a race and you started with more blood to spend.",
+   "statModifiers": {
+    "strength": 2,
+    "health": 3,
+    "surge": 1
+   },
+   "triggers": [
+    {
+     "hook": "startOfBattle",
+     "effect": "apply 2 Bleed to yourself"
+    }
+   ],
+   "powers": [
+    "power.reaver.rend",
+    "power.reaver.cleave",
+    "power.reaver.gore",
+    "power.reaver.blood-price"
+   ],
+   "source": "Hell-TCG Barbarian/Reaver | 2026-08-17 Angela: a startOfBattle trigger with an ENEMY radius fires on nobody — the two sides do not deploy near each other. Rebuilt as an aura, which is checked continuously. | 2026-08-17 Angela trim: three stats, no negatives, one ability. Dropped stats: armor -1; dodge -5. Parked abilities: aura: AURA radius 2 — an enemy that ends its Activation inside gains 1 Bleed || onKill: remove all Bleed from yourself. | 2026-08-17: third stat surge +1 — the fight is a race and you take more swings in it."
+  },
+  {
+   "id": "specialty.warchief",
+   "name": "Warchief",
+   "class": "class.warrior",
+   "intent": "You drive the warband forward by fear and by blood — everyone hits harder, everyone pays for it, and nobody argues.",
+   "statModifiers": {
+    "strength": 1,
+    "health": 3,
+    "resist": 1
+   },
+   "triggers": [
+    {
+     "hook": "startOfBattle",
+     "effect": "every ally within 3 hexes gains +1 Strength for the rest of the Battle"
+    }
+   ],
+   "powers": [
+    "power.warchief.war-cry",
+    "power.warchief.intimidate",
+    "power.warchief.blood-oath",
+    "power.warchief.lead-from-front"
+   ],
+   "source": "Hell-TCG Barbarian/Warchief | 2026-08-17 Angela trim: three stats, no negatives, one ability. Dropped stats: dodge -5. Parked abilities: onKill: every ally within 3 hexes loses 1 Weak."
+  },
+  {
+   "id": "specialty.bloodrage",
+   "name": "Bloodrage",
+   "class": "class.warrior",
+   "intent": "Every corpse makes the next swing worse for someone; you are strongest in the last third of a battle that has gone badly.",
+   "statModifiers": {
+    "strength": 2,
+    "crit": 3,
+    "surge": 1
+   },
+   "triggers": [
+    {
+     "hook": "onKill",
+     "effect": "gain +1 Strength and +2 Crit for the rest of the Battle, stacking"
+    }
+   ],
+   "powers": [
+    "power.bloodrage.frenzy",
+    "power.bloodrage.bloodlust",
+    "power.bloodrage.unstoppable",
+    "power.bloodrage.death-feeds"
+   ],
+   "source": "Hell-TCG Barbarian/Berserker (renamed — collided with Warrior/Beserker; name taken from its own power Blood Rage) | 2026-08-17 Angela trim: three stats, no negatives, one ability. Dropped stats: health -2; resist -1. Parked abilities: onAllyDeath: regain 1 Stamina and gain +5 Accuracy for the rest of the Battle. | 2026-08-17: third stat surge +1 — strongest in the last third of a battle — Surge is the stat that gets you there."
+  },
+  {
+   "id": "specialty.champion",
+   "name": "Champion",
+   "class": "class.warrior",
+   "intent": "You pick one enemy out of the mess and make the whole battle about the two of you.",
+   "statModifiers": {
+    "crit": 3,
+    "strength": 1,
+    "health": 2
+   },
+   "triggers": [
+    {
+     "hook": "onKill",
+     "effect": "remove 5 Weak from yourself and heal 3"
+    }
+   ],
+   "powers": [
+    "power.champion.challenge",
+    "power.champion.righteous-blow",
+    "power.champion.heroic-charge",
+    "power.champion.prove-yourself"
+   ],
+   "source": "Hell-TCG Knight/Champion | 2026-08-17 Angela trim: three stats, no negatives, one ability. Dropped stats: dodge -5; health +2. | 2026-08-17: my trim ranked stats by rarity and dropped a class-PRIMARY stat to keep a rarer one. Restored; the cheapest stat on Angela’s ladder (Accuracy, then Dodge) was dropped instead."
+  },
+  {
+   "id": "specialty.guardian",
+   "name": "Guardian",
+   "class": "class.warrior",
+   "intent": "You give your own protection away and stand in the doorway; the enemy can go through you or go nowhere.",
+   "statModifiers": {
+    "health": 3,
+    "resist": 1,
+    "luck": 5
+   },
+   "triggers": [
+    {
+     "hook": "startOfBattle",
+     "effect": "you lose 1 Armor for the rest of the Battle; every ally within 3 hexes gains +1 Armor for the rest of the Battle"
+    }
+   ],
+   "powers": [
+    "power.guardian.iron-wall",
+    "power.guardian.hold-the-line",
+    "power.guardian.stalwart",
+    "power.guardian.no-way-past"
+   ],
+   "source": "Hell-TCG Knight/Guardian | 2026-08-17 Angela trim: three stats, no negatives, one ability. Dropped stats: movement -1. Parked abilities: onAllyDamaged: if the ally is adjacent to you, reduce that damage by 1. | 2026-08-17: third stat luck +5 — hard to crit is what standing in a doorway actually means."
+  },
+  {
+   "id": "specialty.crusader",
+   "name": "Crusader",
+   "class": "class.warrior",
+   "intent": "Every blow you land burns; you are what gets sent at the things that should not exist.",
+   "statModifiers": {
+    "resist": 1,
+    "strength": 1,
+    "health": 2
+   },
+   "triggers": [
+    {
+     "hook": "onHit",
+     "effect": "your melee attacks apply 1 Burn, or 2 Burn against undead, demon or horror"
+    }
+   ],
+   "powers": [
+    "power.crusader.holy-charge",
+    "power.crusader.flaming-smite",
+    "power.crusader.oathbound",
+    "power.crusader.holy-fire"
+   ],
+   "source": "Hell-TCG Knight/Crusader | 2026-08-17 Angela trim: three stats, no negatives, one ability. Dropped stats: dodge -5; health +2. | 2026-08-17: my trim ranked stats by rarity and dropped a class-PRIMARY stat to keep a rarer one. Restored; the cheapest stat on Angela’s ladder (Accuracy, then Dodge) was dropped instead."
+  }
+ ],
+ "powers": [
+  {
+   "id": "power.berserker.fast-fury",
+   "name": "Fast Fury",
+   "specialty": "specialty.berserker",
+   "stamina": 0,
+   "cooldown": 2,
+   "warmup": 0,
+   "free": true,
+   "targets": "self",
+   "tags": [],
+   "description": "Take 2 true damage and gain +1 Strength for the rest of the Battle; the bonus stacks each time you use it.",
+   "source": "Hell-TCG name reused (Warrior/Beserker, Fast Fury) | 2026-08-17: \"difficult terrain\" is not a thing in HoBaT — there are hexes that cost extra Movement. Reworded.",
+   "triggers": []
+  },
+  {
+   "id": "power.shieldbearer.unbreakable",
+   "name": "Unbreakable",
+   "specialty": "specialty.shieldbearer",
+   "stamina": 1,
+   "cooldown": 6,
+   "warmup": 6,
+   "free": false,
+   "targets": "self",
+   "tags": [
+    "shield"
+   ],
+   "description": "Lose 3 Movement for the rest of the Battle and gain Protection equal to 4 + three times your Armor. Using it IS the choice — there is no second option to weigh, only the question of whether this is the Turn.",
+   "source": "Hell-TCG name reused (badge power, Unbreakable) | 2026-08-17 Angela: Protection has no duration — it decays 1 a Turn and by the damage it absorbs. Duration clause removed. | 2026-08-17: \"difficult terrain\" is not a thing in HoBaT — there are hexes that cost extra Movement. Reworded. | 2026-08-17 quality pass: was a flat, decisionless grant. Rebuilt as a cost/benefit — the big version is bought with 2 Movement for the Battle. | 2026-08-20 Angela: there is no in-power choice mechanic, so the two-option version is gone — choosing to activate it is the choice. Warmup 6, cooldown 6, 1 stamina, -3 Movement, Protection 4 + 3x Armor.",
+   "triggers": [],
+   "intent": "It arrives late, it costs you the ability to be anywhere else, and on a Warrior in real armour it is the largest single number in the game."
+  },
+  {
+   "id": "power.leader.titans-inspiration",
+   "name": "Titan's Inspiration",
+   "specialty": "specialty.leader",
+   "stamina": 2,
+   "cooldown": 4,
+   "warmup": 0,
+   "free": false,
+   "targets": "one enemy in melee reach",
+   "tags": [
+    "melee"
+   ],
+   "description": "Melee attack at +1 Strength. If it hits, every ally within 3 hexes gains +1 Strength for the rest of the Battle.",
+   "source": "Hell-TCG name reused (Warrior/Warleader, Titan's Strength) | 2026-08-17 Angela: renamed from Titan's Strength; the buff is +1 Strength, not +5 Accuracy; 1 stam/CD2 -> 2 stam/CD4. | 2026-08-17: \"difficult terrain\" is not a thing in HoBaT — there are hexes that cost extra Movement. Reworded.",
+   "triggers": []
+  },
+  {
+   "id": "power.reaver.rend",
+   "name": "Rend",
+   "specialty": "specialty.reaver",
+   "stamina": 1,
+   "cooldown": 2,
+   "warmup": 0,
+   "free": false,
+   "targets": "self",
+   "tags": [
+    "melee"
+   ],
+   "description": "Until the end of your next Turn, your attacks apply 4 Bleed on hit. Bleed is never reduced by Resist.",
+   "source": "Hell-TCG name reused (Barbarian/Reaver, Rend) | 2026-08-17: was an attack in its own right, so it competed with the weapon in your hands and lost the moment you found a good one. Rebuilt as a next-attack modifier. | 2026-08-17: \"difficult terrain\" is not a thing in HoBaT — there are hexes that cost extra Movement. Reworded. | 2026-08-20 Angela: \"your next MELEE attack\" asks the engine to hold a modifier against one future attack and to check its form when it happens. Neither is tracked. Rewritten as a duration: until the end of your next Turn your attacks apply 4 Bleed. Also dropped the \"which Resist does not stop\" clause — Resist never stops Bleed, so the sentence was restating a rule.",
+   "modifies": {
+    "tags": [
+     "melee"
+    ],
+    "scope": "until-end-of-your-next-turn",
+    "statModifiers": {}
+   },
+   "triggers": [],
+   "intent": "Four Bleed that nothing mitigates, hung on whatever you swing for the next Turn rather than on one nominated swing."
+  },
+  {
+   "id": "power.reaver.cleave",
+   "name": "Red Harvest",
+   "specialty": "specialty.reaver",
+   "stamina": 2,
+   "cooldown": 3,
+   "warmup": 1,
+   "free": false,
+   "targets": "every enemy adjacent to you",
+   "tags": [
+    "melee",
+    "area"
+   ],
+   "description": "Deal Strength physical damage to every enemy adjacent to you and give each 1 Bleed; as an area effect it cannot crit.",
+   "source": "Hell-TCG name reused (Barbarian/Reaver, Cleave — row targeting rebuilt as adjacency) | 2026-08-17: \"difficult terrain\" is not a thing in HoBaT — there are hexes that cost extra Movement. Reworded. | 2026-08-20 Angela: disambiguate. attack.halberd.cleave already owns \"Cleave\" — an attack and a power sharing a name puts two different things on one hero sheet under one word.",
+   "triggers": []
+  },
+  {
+   "id": "power.reaver.gore",
+   "name": "Gore",
+   "specialty": "specialty.reaver",
+   "stamina": 2,
+   "cooldown": 4,
+   "warmup": 1,
+   "free": false,
+   "targets": "one enemy in melee reach",
+   "tags": [
+    "melee"
+   ],
+   "description": "Make two melee attacks against the same enemy at -10 Accuracy each; you gain 2 Bleed whether or not they land.",
+   "source": "Hell-TCG name reused (Barbarian/Reaver, Gore) | 2026-08-17: \"difficult terrain\" is not a thing in HoBaT — there are hexes that cost extra Movement. Reworded.",
+   "triggers": []
+  },
+  {
+   "id": "power.reaver.blood-price",
+   "name": "Blood Price",
+   "specialty": "specialty.reaver",
+   "stamina": 0,
+   "cooldown": 1,
+   "warmup": 0,
+   "free": true,
+   "targets": "self",
+   "tags": [],
+   "description": "Take 4 true damage to immediately regain 2 Stamina.",
+   "source": "new | 2026-08-17: \"difficult terrain\" is not a thing in HoBaT — there are hexes that cost extra Movement. Reworded. | 2026-08-20 Angela: the \"you may not use this while Bleed would kill you this Turn\" restriction is cut — it needed a lethality check nothing else runs, and it is not a decision worth protecting the player from. Cooldown dropped to 1: usable every other Turn.",
+   "triggers": [],
+   "intent": "A stamina engine with a bill. Every other Turn, if you can stand the bleeding."
+  },
+  {
+   "id": "power.warchief.war-cry",
+   "name": "War Cry",
+   "specialty": "specialty.warchief",
+   "stamina": 2,
+   "cooldown": 4,
+   "warmup": 1,
+   "free": false,
+   "targets": "every unit within 3 hexes",
+   "tags": [
+    "aura",
+    "area"
+   ],
+   "description": "Apply 2 Weak to every enemy within 3 hexes; every ally within 3 hexes gains +1 Strength for the rest of the Battle.",
+   "source": "Hell-TCG name reused (Barbarian/Warchief, War Cry) | 2026-08-17: \"difficult terrain\" is not a thing in HoBaT — there are hexes that cost extra Movement. Reworded.",
+   "triggers": []
+  },
+  {
+   "id": "power.warchief.intimidate",
+   "name": "Intimidate",
+   "specialty": "specialty.warchief",
+   "stamina": 2,
+   "cooldown": 5,
+   "warmup": 2,
+   "free": false,
+   "targets": "enemies within 4 hexes",
+   "tags": [
+    "aura",
+    "area"
+   ],
+   "description": "Every enemy within 4 hexes takes -10 Accuracy for the rest of the Battle and gains 1 Slow.",
+   "source": "Hell-TCG name reused (Barbarian/Warchief, Intimidate — mass Stun rebuilt as an Accuracy and Movement debuff) | 2026-08-17: \"difficult terrain\" is not a thing in HoBaT — there are hexes that cost extra Movement. Reworded. | 2026-08-20 Angela: \"clean up that movement stuff.\" A one-Turn Movement loss is now the Slow status — apply N Slow. Fourteen entries said this two different ways and every one of them needed the engine to remember whose next Turn it was. Amount unchanged.",
+   "triggers": []
+  },
+  {
+   "id": "power.warchief.blood-oath",
+   "name": "Blood Oath",
+   "specialty": "specialty.warchief",
+   "stamina": 2,
+   "cooldown": 6,
+   "warmup": 2,
+   "free": false,
+   "targets": "you and allies within 3 hexes",
+   "tags": [
+    "aura"
+   ],
+   "description": "You and every ally within 3 hexes gain +2 Strength for the rest of the Battle and immediately take 3 true damage.",
+   "source": "Hell-TCG mechanic reused, renamed (Barbarian/Warchief, Blood Rage) | 2026-08-17: \"difficult terrain\" is not a thing in HoBaT — there are hexes that cost extra Movement. Reworded.",
+   "triggers": []
+  },
+  {
+   "id": "power.warchief.lead-from-front",
+   "name": "Lead From Front",
+   "specialty": "specialty.warchief",
+   "stamina": 2,
+   "cooldown": 4,
+   "warmup": 1,
+   "free": false,
+   "targets": "one enemy in melee reach",
+   "tags": [
+    "melee"
+   ],
+   "description": "Move up to 3 hexes and make a melee attack at +1 Strength. Every ally adjacent to you afterwards gains +1 Surge for the rest of the Battle.",
+   "source": "Hell-TCG name reused (Barbarian/Warchief, Lead from Front — roster-size effect cut) | 2026-08-17: \"difficult terrain\" is not a thing in HoBaT — there are hexes that cost extra Movement. Reworded. | 2026-08-17 quality pass: the ally payoff was +5 Accuracy, which on a veteran is +1.25 Crit. Changed to +1 Surge — a Warchief should give people more turns.",
+   "triggers": []
+  },
+  {
+   "id": "power.bloodrage.frenzy",
+   "name": "Frenzy",
+   "specialty": "specialty.bloodrage",
+   "stamina": 2,
+   "cooldown": 4,
+   "warmup": 2,
+   "free": false,
+   "targets": "up to 3 enemies within 3 hexes",
+   "tags": [
+    "melee"
+   ],
+   "description": "Make three melee attacks at -10 Accuracy each, spread across as many different enemies in reach as possible.",
+   "source": "Hell-TCG name reused (Barbarian, Frenzy — random targeting rebuilt as reach-limited spread) | 2026-08-17: \"difficult terrain\" is not a thing in HoBaT — there are hexes that cost extra Movement. Reworded.",
+   "triggers": []
+  },
+  {
+   "id": "power.bloodrage.bloodlust",
+   "name": "Bloodlust",
+   "specialty": "specialty.bloodrage",
+   "stamina": 0,
+   "cooldown": 5,
+   "warmup": 0,
+   "free": false,
+   "targets": "self",
+   "tags": [
+    "stance"
+   ],
+   "description": "Stance: gain +3 Strength and -10 Accuracy for the rest of the Battle, and take 1 true damage at the start of each of your Turns.",
+   "source": "Hell-TCG name reused (Barbarian, Bloodlust) | 2026-08-17: \"difficult terrain\" is not a thing in HoBaT — there are hexes that cost extra Movement. Reworded.",
+   "triggers": []
+  },
+  {
+   "id": "power.bloodrage.unstoppable",
+   "name": "Unstoppable",
+   "specialty": "specialty.bloodrage",
+   "stamina": 1,
+   "cooldown": 6,
+   "warmup": 3,
+   "free": false,
+   "targets": "self",
+   "tags": [],
+   "description": "remove 5 Stun and 5 Weak from yourself and heal 4.",
+   "source": "Hell-TCG name reused (Barbarian, Unstoppable) | 2026-08-17: \"difficult terrain\" is not a thing in HoBaT — there are hexes that cost extra Movement. Reworded. | 2026-08-20 Angela: \"ignore the next Stun applied to you this Battle\" is cut — there is no ignoring a status. Immunity N is the mechanic for that, and it belongs on items rather than bolted onto a cleanse.",
+   "triggers": []
+  },
+  {
+   "id": "power.bloodrage.death-feeds",
+   "name": "Death Feeds the Rage",
+   "specialty": "specialty.bloodrage",
+   "stamina": 0,
+   "cooldown": 4,
+   "warmup": 0,
+   "free": true,
+   "targets": "one enemy in melee reach",
+   "tags": [
+    "melee"
+   ],
+   "description": "Make a melee attack at +5 Accuracy. On kill, heal 4 and gain +1 Strength for the rest of the Battle.",
+   "source": "new | 2026-08-17: \"difficult terrain\" is not a thing in HoBaT — there are hexes that cost extra Movement. Reworded. | 2026-08-20 Angela: a \"usable only if\" gate on your own or the target's state is not a thing — nothing reads a Health threshold or an event history to decide whether a power is legal. \"usable only on a Turn in which any unit within 4 hexes died\" cut — an event-history gate. The payoff moved onto the kill itself.",
+   "triggers": []
+  },
+  {
+   "id": "power.champion.challenge",
+   "name": "Challenge",
+   "specialty": "specialty.champion",
+   "stamina": 1,
+   "cooldown": 5,
+   "warmup": 1,
+   "free": false,
+   "targets": "self",
+   "tags": [],
+   "description": "For the rest of the Battle you have +2 Strength and +10 Accuracy, and -5 Dodge.",
+   "source": "Hell-TCG name reused (Knight/Champion, Challenge — flat stat dump rebuilt as a single-target commitment) | 2026-08-17: \"difficult terrain\" is not a thing in HoBaT — there are hexes that cost extra Movement. Reworded. | 2026-08-20 Angela: \"name one enemy\" was the mark system again — a persistent per-target designation, which was cut with item.rune-hunters-mark and the whole Contractbound line. Rebuilt without a nominated target. | 2026-08-20 Angela sweep: \"-5 Accuracy against anything you have not attacked this Turn\" was the mark system a third time — a per-target memory of who you have swung at. Nothing counts occurrences and nothing remembers a target. The cost is now a flat -5 Dodge, and the power targets self, because there is no longer anyone to point at.",
+   "triggers": []
+  },
+  {
+   "id": "power.champion.righteous-blow",
+   "name": "Righteous Blow",
+   "specialty": "specialty.champion",
+   "stamina": 2,
+   "cooldown": 2,
+   "warmup": 0,
+   "free": false,
+   "targets": "self",
+   "tags": [
+    "melee"
+   ],
+   "description": "Until the end of your next Turn, your attacks gain +5 Crit and add your Armor to their damage, and heal you 2 on a hit.",
+   "source": "Hell-TCG name reused (Knight, Righteous Blow) | 2026-08-17: \"difficult terrain\" is not a thing in HoBaT — there are hexes that cost extra Movement. Reworded. | 2026-08-17 design pass: rebuilt a power that was just an attack into a next-attack Armor blend, so it scales with every weapon and every breastplate you will ever find. | 2026-08-20 Angela: \"your next <form> attack\" is gone. Nothing tracks which attack is next or what form it is. Rewritten as a duration: until the end of your next Turn, your attacks carry it. The form qualifier is dropped with it. ",
+   "triggers": [],
+   "modifies": {
+    "tags": [
+     "melee"
+    ],
+    "scope": "until-end-of-your-next-turn",
+    "addsStat": "armor",
+    "statModifiers": {
+     "crit": 5
+    }
+   }
+  },
+  {
+   "id": "power.champion.heroic-charge",
+   "name": "Heroic Charge",
+   "specialty": "specialty.champion",
+   "stamina": 2,
+   "cooldown": 3,
+   "warmup": 1,
+   "free": false,
+   "targets": "one enemy in melee reach",
+   "tags": [
+    "melee"
+   ],
+   "description": "Move up to your Movement in a straight line and make a melee attack at +2 Strength.",
+   "source": "Hell-TCG name reused (badge power, Heroic Charge — row damage and extra Action cut) | 2026-08-17: \"difficult terrain\" is not a thing in HoBaT — there are hexes that cost extra Movement. Reworded. | 2026-08-20 Angela: \"if it kills\" written inside a description IS onKill, spelled out the long way. Moved onto the hook, which is where the engine already looks. The condition category \"the attack killed\" disappears with it — there was never a condition, only a trigger written as prose.",
+   "triggers": [
+    {
+     "hook": "onKill",
+     "effect": "move up to 2 more hexes"
+    }
+   ]
+  },
+  {
+   "id": "power.champion.prove-yourself",
+   "name": "Prove Yourself",
+   "specialty": "specialty.champion",
+   "stamina": 0,
+   "cooldown": 4,
+   "warmup": 0,
+   "free": true,
+   "targets": "self",
+   "tags": [],
+   "description": "Free. Until the end of your next Turn, you have: on kill, gain +2 Strength, +2 Precision and +10 Crit for the rest of the Battle.",
+   "source": "Hell-TCG name reused (badge power, Prove Yourself) | 2026-08-17: \"difficult terrain\" is not a thing in HoBaT — there are hexes that cost extra Movement. Reworded. | 2026-08-20 Angela: a \"usable only if\" gate on your own or the target's state is not a thing — nothing reads a Health threshold or an event history to decide whether a power is legal. \"usable only at or below half Health\" cut. It is now a free window that pays out if you kill inside it — the same idea without asking the engine how hurt you are.",
+   "triggers": [],
+   "intent": "A window, not a condition. Open it and then go and earn something inside it."
+  },
+  {
+   "id": "power.guardian.iron-wall",
+   "name": "Iron Wall",
+   "specialty": "specialty.guardian",
+   "stamina": 0,
+   "cooldown": 6,
+   "warmup": 2,
+   "free": false,
+   "targets": "self",
+   "tags": [
+    "stance"
+   ],
+   "description": "Stance: gain +2 Armor and -2 Movement for the rest of the Battle.",
+   "source": "Hell-TCG name reused (Knight/Guardian, Iron Wall) | 2026-08-17: \"difficult terrain\" is not a thing in HoBaT — there are hexes that cost extra Movement. Reworded.",
+   "triggers": []
+  },
+  {
+   "id": "power.guardian.hold-the-line",
+   "name": "Hold the Line",
+   "specialty": "specialty.guardian",
+   "stamina": 1,
+   "cooldown": 4,
+   "warmup": 1,
+   "free": false,
+   "targets": "self",
+   "tags": [
+    "aura",
+    "stance"
+   ],
+   "description": "Stance: for the rest of the Battle, your attacks of opportunity gain +30 Accuracy and +4 damage.",
+   "source": "Hell-TCG name reused (Priest/War Priest, Hold the Line — repurposed to the ally-facing Guardian) | 2026-08-17: \"difficult terrain\" is not a thing in HoBaT — there are hexes that cost extra Movement. Reworded. | 2026-08-17 quality pass: carried a condition the engine cannot check ('while you do not move') around a flat ally buff. Rebuilt on zones of control, which is what holding a line means and which one row in the entire set currently uses. | 2026-08-17 Angela: every unit has Sidestep, so a zone of control cannot pin anything — it taxes the SECOND hex of a withdrawal, not the first. Reworded to say what it actually does. | 2026-08-20 Angela: the zone-of-control aura is cut — taxing movement out of a hex is a subsystem, and it was already cut from item.chains-of-the-damned for the same reason. Rebuilt on attacks of opportunity, which exist.",
+   "triggers": [],
+   "intent": "You do not stop them leaving. You make leaving the most expensive thing they do all fight."
+  },
+  {
+   "id": "power.guardian.stalwart",
+   "name": "Stalwart",
+   "specialty": "specialty.guardian",
+   "stamina": 0,
+   "cooldown": 3,
+   "warmup": 0,
+   "free": true,
+   "targets": "self",
+   "tags": [],
+   "description": "Free. Take 3 true damage, remove 1 Stun from yourself, and gain +2 Resist for the rest of the Battle.",
+   "source": "Hell-TCG name reused (Knight/Guardian, Stalwart — Resolute was CUT, rebuilt as Resist plus a Stun strip) | 2026-08-17: \"difficult terrain\" is not a thing in HoBaT — there are hexes that cost extra Movement. Reworded. | 2026-08-17 quality pass: a free power handing out a permanent +2 Resist, top of the stat ladder, with no decision in it. The Resist now costs 3 true damage and is bought once. | 2026-08-20: reworded the opening. \"Free\" here means it does not consume your primary action — it never meant costless, and on an item that also charges stamina the old wording read as though it did. | 2026-08-20 Angela: standardised to \"Free.\" A trinket that does not use your action is a power and appears in the power list, so it uses the same word powers use. The stamina cost is a field, not prose. | 2026-08-20 Angela: the \"you may take 3 true damage to\" choice is cut — there is no in-power choice mechanic. The damage is simply the cost. The \"does not stack with itself\" clause went with it; there is no stacking limit either.",
+   "triggers": [],
+   "intent": "The Stun comes off and the Resist goes on, and both of them cost blood."
+  },
+  {
+   "id": "power.guardian.no-way-past",
+   "name": "No Way Past",
+   "specialty": "specialty.guardian",
+   "stamina": 2,
+   "cooldown": 5,
+   "warmup": 2,
+   "free": false,
+   "targets": "every enemy adjacent to you",
+   "tags": [
+    "aura"
+   ],
+   "description": "For the rest of the Battle, any enemy that begins its Turn adjacent to you takes -15 Accuracy against every target except you.",
+   "source": "new | 2026-08-17: \"difficult terrain\" is not a thing in HoBaT — there are hexes that cost extra Movement. Reworded.",
+   "triggers": []
+  },
+  {
+   "id": "power.crusader.holy-charge",
+   "name": "Holy Charge",
+   "specialty": "specialty.crusader",
+   "stamina": 2,
+   "cooldown": 3,
+   "warmup": 2,
+   "free": false,
+   "targets": "one enemy in melee reach",
+   "tags": [
+    "melee"
+   ],
+   "description": "Move up to 4 hexes and make a melee attack at +2 Strength dealing true damage. It provokes nothing — you are not leaving the line, you are extending it.",
+   "source": "Hell-TCG name reused (Knight, Holy Charge) | 2026-08-17: \"difficult terrain\" is not a thing in HoBaT — there are hexes that cost extra Movement. Reworded. | 2026-08-17 quality pass: kept the true damage, added provocation immunity so it is a charge rather than a longer step.",
+   "triggers": []
+  },
+  {
+   "id": "power.crusader.flaming-smite",
+   "name": "Flaming Smite",
+   "specialty": "specialty.crusader",
+   "stamina": 1,
+   "cooldown": 2,
+   "warmup": 0,
+   "free": false,
+   "targets": "self",
+   "tags": [
+    "melee"
+   ],
+   "description": "Until the end of your next Turn, your attacks apply 3 Burn on hit, or 5 Burn against undead, demon or horror.",
+   "source": "Hell-TCG name reused (Templar/Holy Champion, Flaming Smite) | 2026-08-17: was an attack in its own right, so it competed with the weapon in your hands and lost the moment you found a good one. Rebuilt as a next-attack modifier. | 2026-08-17: \"difficult terrain\" is not a thing in HoBaT — there are hexes that cost extra Movement. Reworded. | 2026-08-20 Angela: \"your next <form> attack\" is gone. Nothing tracks which attack is next or what form it is. Rewritten as a duration: until the end of your next Turn, your attacks carry it. The form qualifier is dropped with it. ",
+   "modifies": {
+    "tags": [
+     "melee"
+    ],
+    "scope": "until-end-of-your-next-turn",
+    "statModifiers": {}
+   },
+   "triggers": []
+  },
+  {
+   "id": "power.crusader.oathbound",
+   "name": "Oathbound",
+   "specialty": "specialty.crusader",
+   "stamina": 0,
+   "cooldown": 5,
+   "warmup": 0,
+   "free": false,
+   "targets": "self",
+   "tags": [
+    "stance"
+   ],
+   "description": "Stance: for the rest of the Battle gain +2 Strength and +2 Resist against undead, demon and horror, and -5 Accuracy against everything else.",
+   "source": "Hell-TCG name reused (Knight, Oathbound — Faith and Spirit gain cut) | 2026-08-17: \"difficult terrain\" is not a thing in HoBaT — there are hexes that cost extra Movement. Reworded.",
+   "triggers": []
+  },
+  {
+   "id": "power.crusader.holy-fire",
+   "name": "Holy Fire",
+   "specialty": "specialty.crusader",
+   "stamina": 2,
+   "cooldown": 5,
+   "warmup": 2,
+   "free": false,
+   "targets": "enemies within 2 hexes",
+   "tags": [
+    "area"
+   ],
+   "description": "Every enemy within 2 hexes gains 3 Burn, or 5 Burn if undead, demon or horror; as an area effect it cannot crit and each tick is reduced by Resist.",
+   "source": "Hell-TCG name reused (Inquisitor, Holy Fire) | 2026-08-17: \"difficult terrain\" is not a thing in HoBaT — there are hexes that cost extra Movement. Reworded.",
+   "triggers": []
+  },
+  {
+   "id": "power.shieldbearer.bramble-guard",
+   "name": "Bramble Guard",
+   "specialty": "specialty.shieldbearer",
+   "stamina": 2,
+   "cooldown": 4,
+   "warmup": 1,
+   "free": false,
+   "targets": "self",
+   "tags": [
+    "shield",
+    "stance"
+   ],
+   "description": "Stance: gain Thorns 4 for the rest of the Battle. Anything that damages you takes 4 true damage, at any range — the archer on the ridge included.",
+   "intent": "You stop being something they can attack for free.",
+   "source": "new 2026-08-20: Angela wants Thorns in class powers, and the Shieldbearer is where being hit is the plan."
+  }
+ ]
+}

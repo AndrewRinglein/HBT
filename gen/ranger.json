@@ -1,0 +1,896 @@
+{
+ "class": "class.ranger",
+ "specialties": [
+  {
+   "id": "specialty.bowmaster",
+   "name": "Bowmaster",
+   "class": "class.ranger",
+   "intent": "You plant your feet and the fight comes to you at your distance; the price of that reach is that you cannot keep the one hex of daylight everyone else lives on.",
+   "statModifiers": {
+    "precision": 2,
+    "reach": 1,
+    "accuracy": 5
+   },
+   "triggers": [
+    {
+     "hook": "passive",
+     "effect": "your bow attacks gain +5 Accuracy"
+    }
+   ],
+   "powers": [
+    "power.bowmaster.careful-aim",
+    "power.bowmaster.sniper",
+    "power.bowmaster.rain-of-arrows",
+    "power.bowmaster.extra-shot",
+    "power.bowmaster.long-shot"
+   ],
+   "source": "Hell-TCG Ranger/Bowmaster (item-slot dump rebuilt as Reach and a stand-still trigger) | 2026-08-17 Angela trim: three stats, no negatives, one ability. Dropped stats: health -2; movement -1. | 2026-08-17: carried a condition the engine has no way to check (did-not-move / made-no-attack / moved-N-hexes). Condition removed and the effect reduced to match."
+  },
+  {
+   "id": "specialty.winged-assassin",
+   "name": "Winged Assassin",
+   "class": "class.ranger",
+   "intent": "You do not cross the ground, you cross the air above it. Whatever you touch bleeds, and anything that reaches you kills you.",
+   "statModifiers": {
+    "crit": 3,
+    "precision": 1,
+    "movement": 1
+   },
+   "triggers": [],
+   "powers": [
+    "power.winged-assassin.poison-shot",
+    "power.winged-assassin.rapid-fire",
+    "power.winged-assassin.leaping-shot",
+    "power.winged-assassin.poisoning",
+    "power.flight"
+   ],
+   "source": "Hell-TCG Ranger/Winged Assassin (onDamage Bleed kept; flight rebuilt as Movement and terrain-ignoring leaps) | 2026-08-17 Angela trim: three stats, no negatives, one ability. Dropped stats: health -3; armor -1; dodge +10. Parked abilities: onKill: move up to 2 hexes immediately, ignoring difficult terrain. | 2026-08-17 Angela: Flight is a granted MOVEMENT ACTION (1 Movement per hex, passes over units and obstructions, takes nothing from the ground on the way, one click). Airwalk is a standing property covering only the hex you END your Turn on. Neither existed in the content. | 2026-08-20 Angela: flight is a granted movement POWER, never a property. Grants power.flight. The old \"grants: [flight]\" pointed at an id that never existed.",
+   "grants": [
+    "power.flight"
+   ]
+  },
+  {
+   "id": "specialty.wayfinder",
+   "name": "Wayfinder",
+   "class": "class.ranger",
+   "intent": "The Ranger who is fine once they close. Broken ground is free to you, and you are carrying enough to fight in it.",
+   "statModifiers": {
+    "strength": 2,
+    "health": 3,
+    "itemSlots": 2
+   },
+   "triggers": [
+    {
+     "hook": "passive",
+     "effect": "Terrain that costs extra Movement to enter costs you nothing extra."
+    }
+   ],
+   "powers": [
+    "power.wayfinder.stunning-arrow",
+    "power.wayfinder.quick-evasion",
+    "power.wayfinder.switch-to-melee",
+    "power.wayfinder.guide-the-party"
+   ],
+   "source": "Hell-TCG Ranger/Wayfinder (pathfinding rebuilt as terrain immunity; melee lean kept) | 2026-08-17 Angela trim: three stats, no negatives, one ability. Dropped stats: precision -1; strength +1; health +2. | 2026-08-17 Angela: +2 Strength / +3 Health / +2 Item Slots, no Precision loss. Strength is OFF-PRIMARY for a Ranger, so it has to be granted in quantity to be worth anything — that is what makes this the hybrid melee branch. The ally clause on the terrain trigger was too complicated and is cut."
+  },
+  {
+   "id": "specialty.sentinel",
+   "name": "Sentinel",
+   "class": "class.ranger",
+   "intent": "Really slow, and shooting from further away than anyone else on the field. You pick your hex once and the battle comes to you.",
+   "statModifiers": {
+    "movement": -2,
+    "health": 4,
+    "reach": 2,
+    "precision": 1
+   },
+   "triggers": [],
+   "powers": [
+    "power.sentinel.overwatch",
+    "power.sentinel.sting-of-the-watch",
+    "power.sentinel.take-root",
+    "power.sentinel.far-watch"
+   ],
+   "source": "Hell-TCG Warden/Sentinel (onTakingDamage Poison kept; watchfulness rebuilt on Vision, which had no Hell-TCG equivalent) | 2026-08-17 Angela trim: three stats, no negatives, one ability. Dropped stats: movement -1. Parked abilities: onActivationEnd: if you did not move this Turn, gain +1 Armor and +5 Accuracy until the end of your next Turn. | 2026-08-17 Angela: rebuilt. The old version wanted you stationary and armoured, which is a Warrior, not a Ranger. -2 Movement / +4 Health / +2 Reach / +1 Precision keeps the identity in the Ranger's own stats. Deliberately four stats with a negative — the negative IS the identity here. onTakingDamage trigger removed."
+  },
+  {
+   "id": "specialty.trapper",
+   "name": "Trapper",
+   "class": "class.ranger",
+   "intent": "You do not fight the enemy, you fight the ground they are standing on, and they cannot see a single thing you have done to it.",
+   "statModifiers": {
+    "reach": 1,
+    "precision": 1,
+    "dodge": 5
+   },
+   "triggers": [
+    {
+     "hook": "startOfBattle",
+     "effect": "place one unseen trap on any hex within 3 hexes of your starting hex: the first enemy to enter it gains 2 Slow"
+    }
+   ],
+   "powers": [
+    "power.trapper.poison-trap",
+    "power.trapper.bear-trap",
+    "power.trapper.entangle",
+    "power.trapper.spring-the-trap"
+   ],
+   "source": "Hell-TCG Warden/Trapper (whole-army Poison on entry rebuilt as placed, unseen, per-hex traps) | 2026-08-17 Angela trim: three stats, no negatives, one ability. Dropped stats: health -1; vision +1. Parked abilities: onHit: an enemy standing in difficult terrain when you hit it gains 1 Weak. | 2026-08-20 Angela: \"clean up that movement stuff.\" A one-Turn Movement loss is now the Slow status — apply N Slow. Fourteen entries said this two different ways and every one of them needed the engine to remember whose next Turn it was. Amount unchanged."
+  },
+  {
+   "id": "specialty.protector",
+   "name": "Protector",
+   "class": "class.ranger",
+   "intent": "You grow the battlefield a wall and stand behind it; nothing you do is fast, and everyone you are near is harder to kill than they were.",
+   "statModifiers": {
+    "armor": 1,
+    "resist": 1,
+    "health": 3
+   },
+   "triggers": [
+    {
+     "hook": "aura",
+     "effect": "AURA radius 1 — briars close in around you: every hex inside costs an enemy 1 extra Movement to enter."
+    }
+   ],
+   "powers": [
+    "power.protector.wall-of-thorns",
+    "power.protector.sanctuary",
+    "power.protector.take-the-blow",
+    "power.protector.harmony"
+   ],
+   "source": "Hell-TCG Warden/Protector (KEEPS the name in the Warden/Beast Protector collision; party-wide Resist rebuilt as a radius, powers drawn from Druid's nature line) | 2026-08-17 Angela trim: three stats, no negatives, one ability. Dropped stats: precision -1; movement -1. Parked abilities: onAllyDamaged: if the ally is within 2 hexes of you or standing in difficult terrain, reduce that damage by 1. | 2026-08-17 off-primary pass: spirit +1 was off-primary for a Ranger; Resist does the warding job and is top of the ladder. | 2026-08-17 quality pass: replaced a placeholder aura with a distinct effect."
+  },
+  {
+   "id": "specialty.magical-friend",
+   "name": "Magical Friend",
+   "class": "class.ranger",
+   "intent": "Something small and bright walks the field on your behalf: it heals what you cannot reach and you see through its eyes.",
+   "needsCapability": "summoning",
+   "statModifiers": {
+    "magic": 2,
+    "precision": 1,
+    "itemSlots": 1
+   },
+   "triggers": [
+    {
+     "hook": "startOfBattle",
+     "effect": "summon your companion on any hex within 2 hexes of you. It is a summoned ally with its own stat block and its own AI, it has your Vision, and it does not attack"
+    }
+   ],
+   "powers": [
+    "power.magical-friend.succor",
+    "power.magical-friend.cuddle",
+    "power.magical-friend.mystic-wrath",
+    "power.magical-friend.share-senses"
+   ],
+   "source": "Hell-TCG Beast/Magical Friend (HoBaT has no pet system — gated on needsCapability rather than faked, and every power is written to measure from the companion's hex) | 2026-08-17 Angela trim: three stats, no negatives, one ability. Dropped stats: strength -1; precision -1; health +2. | 2026-08-17 off-primary pass: two off-primaries at +1 was nothing; Magic doubled makes the branch real. | 2026-08-20 Angela: summoning is a feature we want — \"we can summon something, it has an AI assigned to it, whether it is an enemy or a hero, and it has a stat block.\" The companion is the first thing that needs it, so it is written in those words now instead of as a bespoke pet. See engine/COMBAT-SEQUENCE.md #Summoning and rule.summon-order."
+  },
+  {
+   "id": "specialty.feral",
+   "name": "Feral",
+   "class": "class.ranger",
+   "intent": "You are the thing that closes the one hex of daylight, not the thing that keeps it; you run everything down and everything you touch bleeds.",
+   "statModifiers": {
+    "crit": 3,
+    "movement": 1,
+    "strength": 2
+   },
+   "triggers": [
+    {
+     "hook": "onHit",
+     "effect": "your claw and brawl attacks apply 1 Bleed"
+    }
+   ],
+   "powers": [
+    "power.feral.pounce",
+    "power.feral.ravage",
+    "power.feral.ignore-wounds",
+    "power.feral.run-down"
+   ],
+   "source": "Hell-TCG Beast/Feral (no companion needed — the hero is the beast; claw is a real FORM tag so it carries the attacks) | 2026-08-17 Angela trim: three stats, no negatives, one ability. Dropped stats: armor -1; precision -1; itemSlots -1; health +2. Parked abilities: onKill: move up to 2 hexes immediately."
+  },
+  {
+   "id": "specialty.beastward",
+   "name": "Beastward",
+   "class": "class.ranger",
+   "intent": "You are what stands between the party and the things in the treeline, and you pay for every ally you keep upright out of your own body.",
+   "statModifiers": {
+    "health": 4,
+    "armor": 1,
+    "resist": 1
+   },
+   "triggers": [
+    {
+     "hook": "startOfBattle",
+     "effect": "you and every ally within 3 hexes gain +1 Resist for the rest of the Battle"
+    }
+   ],
+   "powers": [
+    "power.beastward.protect",
+    "power.beastward.conduct-life",
+    "power.beastward.sacrifice",
+    "power.beastward.usher-away"
+   ],
+   "source": "Hell-TCG Beast/Protector (RENAMED — collided with Warden/Protector; rebuilt companion-free as a hero who wards the party against beast, horror and dragon) | 2026-08-17 Angela trim: three stats, no negatives, one ability. Dropped stats: accuracy -5; movement -1. Parked abilities: onAllyDamaged: if the attacker is a beast, horror or dragon and the ally is within 3 hexes of you, reduce that damage by 2."
+  }
+ ],
+ "powers": [
+  {
+   "id": "power.bowmaster.careful-aim",
+   "name": "Careful Aim",
+   "specialty": "specialty.bowmaster",
+   "stamina": 1,
+   "cooldown": 5,
+   "warmup": 0,
+   "free": false,
+   "targets": "self",
+   "tags": [
+    "bow",
+    "crossbow"
+   ],
+   "description": "Until the end of your next Turn, your attacks have +3 Precision, +2 Reach and +20 Accuracy. Read that last number honestly: under 100 Accuracy the whole 20 is reliability, and over it the surplus converts at a quarter.",
+   "source": "Hell-TCG name reused (Ranger/Bowmaster, Careful Aim — gated behind standing still, since Reach is the most expensive thing on the sheet) | 2026-08-17: \"difficult terrain\" is not a thing in HoBaT — there are hexes that cost extra Movement. Reworded. | 2026-08-17 quality pass: carried a condition the engine cannot check ('a Turn in which you have not moved') wrapped around a flat buff. Rebuilt as a shape-1 next-attack tag modifier, so it scales with whatever bow the Ranger is holding. | 2026-08-20 Angela: \"your next <form> attack\" is gone. Nothing tracks which attack is next or what form it is. Rewritten as a duration: until the end of your next Turn, your attacks carry it. The form qualifier is dropped with it. ",
+   "triggers": [],
+   "modifies": {
+    "tags": [
+     "bow",
+     "crossbow"
+    ],
+    "scope": "until-end-of-your-next-turn",
+    "statModifiers": {
+     "precision": 3,
+     "reach": 2,
+     "accuracy": 20
+    }
+   }
+  },
+  {
+   "id": "power.bowmaster.sniper",
+   "name": "Sniper",
+   "specialty": "specialty.bowmaster",
+   "stamina": 2,
+   "cooldown": 2,
+   "warmup": 0,
+   "free": false,
+   "targets": "self",
+   "tags": [
+    "bow",
+    "ranged"
+   ],
+   "description": "Until the end of your next Turn, your attacks gain +4 Precision, +20 Accuracy and +2 Reach. It makes no attack itself — it sharpens the ones your weapon already makes.",
+   "source": "Hell-TCG name reused (Ranger/Bowmaster, Sniper — flat +4 damage rebuilt as a distance band) | 2026-08-17 Angela: rebuilt as a tag modifier rather than its own attack. A power that IS an attack competes with the weapon you are holding, so a good magic bow made the old Sniper worthless. | 2026-08-17: \"difficult terrain\" is not a thing in HoBaT — there are hexes that cost extra Movement. Reworded. | 2026-08-20 Angela: \"your next <form> attack\" is gone. Nothing tracks which attack is next or what form it is. Rewritten as a duration: until the end of your next Turn, your attacks carry it. The form qualifier is dropped with it. ",
+   "modifies": {
+    "tags": [
+     "bow",
+     "ranged"
+    ],
+    "scope": "until-end-of-your-next-turn",
+    "statModifiers": {
+     "precision": 4,
+     "accuracy": 20,
+     "reach": 2
+    }
+   },
+   "triggers": []
+  },
+  {
+   "id": "power.bowmaster.rain-of-arrows",
+   "name": "Rain of Arrows",
+   "specialty": "specialty.bowmaster",
+   "stamina": 2,
+   "cooldown": 4,
+   "warmup": 1,
+   "free": false,
+   "targets": "a hex within 4 hexes and every hex adjacent to it",
+   "tags": [
+    "bow",
+    "ranged",
+    "area"
+   ],
+   "description": "Every unit in those hexes, ally or enemy, takes Precision - 1 physical damage; as an area effect it cannot crit.",
+   "source": "Hell-TCG name reused (Ranger/Bowmaster, Rain of Arrows — row damage rebuilt as a hex blossom, Drained cut, friendly fire kept as the cost) | 2026-08-17: \"difficult terrain\" is not a thing in HoBaT — there are hexes that cost extra Movement. Reworded.",
+   "triggers": []
+  },
+  {
+   "id": "power.bowmaster.extra-shot",
+   "name": "Extra Shot",
+   "specialty": "specialty.bowmaster",
+   "stamina": 1,
+   "cooldown": 3,
+   "warmup": 0,
+   "free": false,
+   "targets": "up to 2 enemies within Reach",
+   "tags": [
+    "bow",
+    "ranged"
+   ],
+   "description": "Make two ranged attacks at -10 Accuracy each.",
+   "source": "Hell-TCG name reused (Ranger/Bowmaster, Extra Shot — noTap became free, with a standoff gate) | 2026-08-17: was an attack in its own right, so it competed with the weapon in your hands and lost the moment you found a good one. Rebuilt as a next-attack modifier. | 2026-08-17: \"difficult terrain\" is not a thing in HoBaT — there are hexes that cost extra Movement. Reworded. | 2026-08-20 Angela: \"your next <form> attack\" is gone. Nothing tracks which attack is next or what form it is. Rewritten as a duration: until the end of your next Turn, your attacks carry it. The form qualifier is dropped with it.  | 2026-08-20 Angela sweep: \"may be made against anything not adjacent to you\" was a targeting predicate on the target's adjacency — the only one of its kind, and not one of the 22 shapes. Cutting it left the power with nothing but -1 Precision, all cost and no benefit. Rebuilt on the Rapid Fire pattern: two ranged attacks with your own weapon at -10 Accuracy each, which is what \"Extra Shot\" says on the tin.",
+   "modifies": null,
+   "triggers": []
+  },
+  {
+   "id": "power.winged-assassin.poison-shot",
+   "name": "Poison Shot",
+   "specialty": "specialty.winged-assassin",
+   "stamina": 1,
+   "cooldown": 2,
+   "warmup": 0,
+   "free": false,
+   "targets": "one enemy in melee reach",
+   "tags": [
+    "bow",
+    "ranged"
+   ],
+   "description": "Ranged attack; on hit the target gains 4 Poison, each tick of which its Resist reduces separately.",
+   "source": "Hell-TCG name reused (Ranger/Winged Assassin, Poison Shot — random targeting rebuilt as a chosen target in Reach) | 2026-08-17: \"difficult terrain\" is not a thing in HoBaT — there are hexes that cost extra Movement. Reworded.",
+   "triggers": []
+  },
+  {
+   "id": "power.winged-assassin.rapid-fire",
+   "name": "Rapid Fire",
+   "specialty": "specialty.winged-assassin",
+   "stamina": 2,
+   "cooldown": 3,
+   "warmup": 1,
+   "free": false,
+   "targets": "up to 2 enemies within 3 hexes",
+   "tags": [
+    "bow",
+    "ranged"
+   ],
+   "description": "Make two ranged attacks at -10 Accuracy each, against two different enemies if two are in Reach.",
+   "source": "Hell-TCG name reused (Ranger/Winged Assassin, Rapid Fire — random targeting rebuilt as a Reach-limited spread) | 2026-08-17: \"difficult terrain\" is not a thing in HoBaT — there are hexes that cost extra Movement. Reworded.",
+   "triggers": []
+  },
+  {
+   "id": "power.winged-assassin.leaping-shot",
+   "name": "Leaping Shot",
+   "specialty": "specialty.winged-assassin",
+   "stamina": 1,
+   "cooldown": 3,
+   "warmup": 0,
+   "free": false,
+   "targets": "one enemy in melee reach",
+   "tags": [
+    "bow",
+    "ranged"
+   ],
+   "description": "Fly up to 3 hexes — 1 Movement per hex, over units and obstructions, taking nothing from the ground — then make a ranged attack at -1 Precision.",
+   "source": "Hell-TCG name reused (Ranger/Winged Assassin, Leaping Shot — 'Flying damage' had no meaning here, rebuilt as the kite that ignores broken ground) | 2026-08-17: \"difficult terrain\" is not a thing in HoBaT — there are hexes that cost extra Movement. Reworded. | 2026-08-17 Angela: Flight is a granted MOVEMENT ACTION (1 Movement per hex, passes over units and obstructions, takes nothing from the ground on the way, one click). Airwalk is a standing property covering only the hex you END your Turn on. Neither existed in the content.",
+   "triggers": []
+  },
+  {
+   "id": "power.winged-assassin.poisoning",
+   "name": "Poisoning",
+   "specialty": "specialty.winged-assassin",
+   "stamina": 0,
+   "cooldown": 6,
+   "warmup": 0,
+   "free": false,
+   "targets": "self",
+   "tags": [
+    "stance"
+   ],
+   "description": "Stance: for the rest of the Battle your ranged attacks apply 1 Poison on hit, and you take -1 Precision.",
+   "source": "Hell-TCG name reused (Ranger/Winged Assassin, Poisoning — a cost added, since a rest-of-Battle onHit rider is a stance in HoBaT) | 2026-08-17: \"difficult terrain\" is not a thing in HoBaT — there are hexes that cost extra Movement. Reworded.",
+   "triggers": []
+  },
+  {
+   "id": "power.wayfinder.stunning-arrow",
+   "name": "Stunning Arrow",
+   "specialty": "specialty.wayfinder",
+   "stamina": 2,
+   "cooldown": 3,
+   "warmup": 0,
+   "free": false,
+   "targets": "one enemy in melee reach",
+   "tags": [
+    "bow",
+    "ranged"
+   ],
+   "description": "Ranged attack; on hit the target takes 1 Stun and gains 2 Slow.",
+   "source": "Hell-TCG name reused (Ranger/Wayfinder, Stunning Arrow — Movement loss added, because losing the chase is the Ranger's win condition) | 2026-08-17: \"difficult terrain\" is not a thing in HoBaT — there are hexes that cost extra Movement. Reworded. | 2026-08-20 Angela: \"clean up that movement stuff.\" A one-Turn Movement loss is now the Slow status — apply N Slow. Fourteen entries said this two different ways and every one of them needed the engine to remember whose next Turn it was. Amount unchanged.",
+   "triggers": []
+  },
+  {
+   "id": "power.wayfinder.quick-evasion",
+   "name": "Quick Evasion",
+   "specialty": "specialty.wayfinder",
+   "stamina": 1,
+   "cooldown": 3,
+   "warmup": 0,
+   "free": true,
+   "targets": "self",
+   "tags": [],
+   "description": "Move up to 3 hexes, paying no extra Movement for terrain, and remove 5 Burn and Poison from yourself.",
+   "source": "Hell-TCG name reused (Ranger/Wayfinder, Quick Evasion — the Dodge grant became actual repositioning) | 2026-08-17: \"difficult terrain\" is not a thing in HoBaT — there are hexes that cost extra Movement. Reworded.",
+   "triggers": []
+  },
+  {
+   "id": "power.wayfinder.switch-to-melee",
+   "name": "Switch to Melee",
+   "specialty": "specialty.wayfinder",
+   "stamina": 0,
+   "cooldown": 5,
+   "warmup": 0,
+   "free": false,
+   "targets": "self",
+   "tags": [
+    "stance"
+   ],
+   "description": "Stance: for the rest of the Battle your MELEE attacks add your Precision to their damage, you gain +5 Dodge, and you take -2 Precision and -1 Reach. The Precision you give up comes straight off the melee damage you just bought, which is the whole trade.",
+   "source": "Hell-TCG name reused (Ranger/Wayfinder, Switch to Melee) | 2026-08-17: \"difficult terrain\" is not a thing in HoBaT — there are hexes that cost extra Movement. Reworded. | 2026-08-17 design pass: the stance now blends Precision into your melee damage instead of handing out a flat +2 Strength, and the -2 Precision it already charged is now a real cost against its own payoff.",
+   "triggers": [],
+   "modifies": {
+    "tags": [
+     "melee"
+    ],
+    "scope": "rest-of-battle",
+    "addsStat": "precision"
+   },
+   "statModifiers": {
+    "dodge": 5,
+    "precision": -2,
+    "reach": -1
+   }
+  },
+  {
+   "id": "power.wayfinder.guide-the-party",
+   "name": "Guide the Party",
+   "specialty": "specialty.wayfinder",
+   "stamina": 2,
+   "cooldown": 6,
+   "warmup": 1,
+   "free": false,
+   "targets": "allies within 3 hexes",
+   "tags": [
+    "aura"
+   ],
+   "description": "Every ally within 3 hexes gains +1 Movement for the rest of the Battle; you take -1 Precision for the rest of the Battle.",
+   "source": "Hell-TCG name reused (Ranger/Wayfinder, Guide the Party — the extra Action per turn was cut, rebuilt as the party keeping its one hex of lead) | 2026-08-17: \"difficult terrain\" is not a thing in HoBaT — there are hexes that cost extra Movement. Reworded.",
+   "triggers": []
+  },
+  {
+   "id": "power.sentinel.overwatch",
+   "name": "Overwatch",
+   "specialty": "specialty.sentinel",
+   "stamina": 1,
+   "cooldown": 3,
+   "warmup": 0,
+   "free": false,
+   "targets": "self",
+   "tags": [
+    "bow",
+    "ranged",
+    "stance"
+   ],
+   "description": "Until the start of your next Turn, an enemy that moves within both your Vision and your Reach takes one free ranged attack from you at -5 Accuracy. The watch is spent once it fires.",
+   "source": "new (built on Vision and Reach, the two stats with no Hell-TCG equivalent that the Ranger is supposed to care about) | 2026-08-17: \"difficult terrain\" is not a thing in HoBaT — there are hexes that cost extra Movement. Reworded. | 2026-08-20 Angela: reworded off \"the first enemy that\". Overwatch is an object that gets spent, like a trap — not a tally of how many enemies have moved.",
+   "triggers": []
+  },
+  {
+   "id": "power.sentinel.sting-of-the-watch",
+   "name": "Sting of the Watch",
+   "specialty": "specialty.sentinel",
+   "stamina": 0,
+   "cooldown": 5,
+   "warmup": 0,
+   "free": false,
+   "targets": "self",
+   "tags": [
+    "stance"
+   ],
+   "description": "Stance: for the rest of the Battle, any enemy that hits you in melee gains 2 Poison and gains 1 Slow.",
+   "source": "Hell-TCG mechanic reused (Warden/Sentinel's onTakingDamage Poison, promoted to a power) | 2026-08-17: \"difficult terrain\" is not a thing in HoBaT — there are hexes that cost extra Movement. Reworded. | 2026-08-20 Angela: \"clean up that movement stuff.\" A one-Turn Movement loss is now the Slow status — apply N Slow. Fourteen entries said this two different ways and every one of them needed the engine to remember whose next Turn it was. Amount unchanged.",
+   "triggers": []
+  },
+  {
+   "id": "power.sentinel.take-root",
+   "name": "Take Root",
+   "specialty": "specialty.sentinel",
+   "stamina": 1,
+   "cooldown": 0,
+   "warmup": 0,
+   "free": true,
+   "targets": "self",
+   "tags": [
+    "ranged",
+    "stance"
+   ],
+   "description": "Plant yourself. Your ranged attacks gain +20 Accuracy until you next move.",
+   "source": "New, Angela 2026-08-17 — replaces the \"if you did not move this Turn\" trigger, which is not a condition the engine has. The player chooses to stand still instead of the game checking whether they did. | 2026-08-17: \"difficult terrain\" is not a thing in HoBaT — there are hexes that cost extra Movement. Reworded.",
+   "modifies": {
+    "tags": [
+     "ranged"
+    ],
+    "scope": "until-you-move",
+    "statModifiers": {
+     "accuracy": 20
+    }
+   },
+   "triggers": []
+  },
+  {
+   "id": "power.sentinel.far-watch",
+   "name": "Range the Field",
+   "specialty": "specialty.sentinel",
+   "stamina": 2,
+   "cooldown": 6,
+   "warmup": 0,
+   "free": false,
+   "targets": "you and allies within 3 hexes",
+   "tags": [
+    "ranged"
+   ],
+   "description": "For the rest of the Battle your ranged attacks gain +1 Reach, and every ally within 3 hexes gains +1 Reach on theirs.",
+   "source": "Hell-TCG name reused in spirit (badge power, Wisdom of Age gave party-wide Reach; rebuilt on Vision, which only bites in darkness, fog and stealth) | 2026-08-17: rebuilt off Vision onto Reach, which is what this branch is actually about. | 2026-08-17: \"difficult terrain\" is not a thing in HoBaT — there are hexes that cost extra Movement. Reworded.",
+   "modifies": {
+    "tags": [
+     "ranged"
+    ],
+    "scope": "rest-of-battle",
+    "statModifiers": {
+     "reach": 1
+    }
+   },
+   "triggers": []
+  },
+  {
+   "id": "power.trapper.poison-trap",
+   "name": "Poison Trap",
+   "specialty": "specialty.trapper",
+   "stamina": 1,
+   "cooldown": 3,
+   "warmup": 0,
+   "free": false,
+   "targets": "a hex within 3 hexes",
+   "tags": [],
+   "description": "Place one unseen trap on a hex within 3 hexes. The first enemy to enter it gains 4 Poison.",
+   "source": "Hell-TCG name reused (Rogue/Poison Master, Poison Trap — row targeting rebuilt as a genuine placed, hidden trap) | 2026-08-17 Angela: CUT. terrain creation cut; the trap now applies a status, which terrain already does.",
+   "triggers": []
+  },
+  {
+   "id": "power.trapper.bear-trap",
+   "name": "Bear Trap",
+   "specialty": "specialty.trapper",
+   "stamina": 1,
+   "cooldown": 4,
+   "warmup": 0,
+   "free": false,
+   "targets": "a hex within 3 hexes",
+   "tags": [],
+   "description": "Place an unseen trap. The first enemy to enter that hex takes 4 physical damage, gains 2 Bleed, and gains 3 Slow.",
+   "source": "new (Hell-TCG's Warden/Trapper had no power list; this is the specialty's signature) | 2026-08-17: \"difficult terrain\" is not a thing in HoBaT — there are hexes that cost extra Movement. Reworded. | 2026-08-20 Angela: \"clean up that movement stuff.\" A one-Turn Movement loss is now the Slow status — apply N Slow. Fourteen entries said this two different ways and every one of them needed the engine to remember whose next Turn it was. Amount unchanged.",
+   "triggers": []
+  },
+  {
+   "id": "power.trapper.entangle",
+   "name": "Entangle",
+   "specialty": "specialty.trapper",
+   "stamina": 2,
+   "cooldown": 4,
+   "warmup": 1,
+   "free": false,
+   "targets": "a hex within 4 hexes and every hex adjacent to it",
+   "tags": [
+    "area"
+   ],
+   "description": "Set a snare across that hex and the six around it: seven unseen traps, one per hex, invisible to the enemy. The first enemy to enter a snared hex gains 4 Slow. Springing one does not reveal the other six.",
+   "source": "Hell-TCG name reused (Druid/Nature Warden, Entangle — single-target Stun and Weak rebuilt as a permanent terrain scar) | 2026-08-17 Angela: CUT. terrain creation cut. | 2026-08-17 quality pass: was a flat single-target Movement debuff on the one Ranger branch whose whole identity is traps. Rebuilt as seven unseen traps so it plays like the specialty it belongs to. | 2026-08-20 sweep: \"spends 1 extra Movement leaving the hex it is standing on\" was zone of control — the sixth instance, and the audit regex was too narrow to see it. \"Loses 2 Movement for the rest of the Battle\" was also a permanent Movement debuff where every other trap applies Slow. Both replaced by 4 Slow.",
+   "triggers": []
+  },
+  {
+   "id": "power.trapper.spring-the-trap",
+   "name": "Spring the Trap",
+   "specialty": "specialty.trapper",
+   "stamina": 0,
+   "cooldown": 2,
+   "warmup": 0,
+   "free": true,
+   "targets": "a hex within 4 hexes",
+   "tags": [],
+   "description": "Every enemy on or adjacent to that hex takes 4 physical damage and gains 2 Bleed.",
+   "source": "new | 2026-08-17: \"difficult terrain\" is not a thing in HoBaT — there are hexes that cost extra Movement. Reworded. | 2026-08-20 Angela: \"one of your own traps within your Vision\" is cut — targeting your own placed objects is a shape built for one power. It targets a hex now, like every other blast.",
+   "triggers": [],
+   "intent": "You do not wait for them to find it. You decide where the ground opens."
+  },
+  {
+   "id": "power.protector.wall-of-thorns",
+   "name": "Wall of Thorns",
+   "specialty": "specialty.protector",
+   "stamina": 2,
+   "cooldown": 5,
+   "warmup": 1,
+   "free": false,
+   "targets": "three hexes within 3 hexes",
+   "tags": [
+    "area"
+   ],
+   "description": "Lay three connected hexes of unseen briar traps. The first enemy to enter each hex gains 3 Bleed, which is never resisted.",
+   "source": "Hell-TCG name reused (Druid/Wild Shaper, Wall of Thorns — party-wide Thorns rebuilt as an actual wall on the map) | 2026-08-17 Angela: CUT. terrain creation cut. | 2026-08-17 quality pass: was a battle-start radius of Bleed, which is a wall in name only. Rebuilt as three connected traps, so the enemy has to walk into it to learn it is there. | 2026-08-20 Angela: zone-of-control clause cut.",
+   "triggers": []
+  },
+  {
+   "id": "power.protector.sanctuary",
+   "name": "Sanctuary",
+   "specialty": "specialty.protector",
+   "stamina": 2,
+   "cooldown": 5,
+   "warmup": 1,
+   "free": false,
+   "targets": "you and allies within 2 hexes",
+   "tags": [
+    "aura"
+   ],
+   "description": "Aura: you and every ally within 2 hexes gain +1 Resist for the rest of the Battle and lose 1 Burn and 1 Poison at the start of each of your Turns.",
+   "source": "Hell-TCG name reused (Druid/Grove Keeper, Sanctuary — party-wide became a radius you have to hold) | 2026-08-17: \"difficult terrain\" is not a thing in HoBaT — there are hexes that cost extra Movement. Reworded.",
+   "triggers": []
+  },
+  {
+   "id": "power.protector.take-the-blow",
+   "name": "Take the Blow",
+   "specialty": "specialty.protector",
+   "stamina": 1,
+   "cooldown": 3,
+   "warmup": 0,
+   "free": false,
+   "targets": "one ally within 3 hexes",
+   "tags": [],
+   "description": "Until the start of your next Turn, all damage dealt to that ally is reduced by 2, and you take 2 true damage each time it is.",
+   "source": "Hell-TCG name reused (badge power, Take the Blow — max-Health swapping rebuilt as live damage redirection) | 2026-08-17: \"difficult terrain\" is not a thing in HoBaT — there are hexes that cost extra Movement. Reworded.",
+   "triggers": []
+  },
+  {
+   "id": "power.protector.harmony",
+   "name": "Harmony",
+   "specialty": "specialty.protector",
+   "stamina": 1,
+   "cooldown": 4,
+   "warmup": 0,
+   "free": false,
+   "targets": "allies within 3 hexes",
+   "tags": [
+    "heal",
+    "aura"
+   ],
+   "description": "remove 5 Burn and Poison from every ally within 3 hexes; each of them heals 2.",
+   "source": "Hell-TCG name reused (Druid/Grove Keeper, Harmony — party-wide became a radius) | 2026-08-17: \"difficult terrain\" is not a thing in HoBaT — there are hexes that cost extra Movement. Reworded.",
+   "triggers": []
+  },
+  {
+   "id": "power.magical-friend.succor",
+   "name": "Succor",
+   "specialty": "specialty.magical-friend",
+   "stamina": 1,
+   "cooldown": 3,
+   "warmup": 0,
+   "free": false,
+   "targets": "one ally within 2 hexes",
+   "tags": [
+    "heal"
+   ],
+   "description": "Heal that ally for 2 + Spirit; your companion may move up to 3 hexes first.",
+   "source": "Hell-TCG name reused (Beast/Magical Friend, Succor — range measured from the companion, not from you) | 2026-08-17: \"difficult terrain\" is not a thing in HoBaT — there are hexes that cost extra Movement. Reworded.",
+   "triggers": []
+  },
+  {
+   "id": "power.magical-friend.cuddle",
+   "name": "Cuddle",
+   "specialty": "specialty.magical-friend",
+   "stamina": 1,
+   "cooldown": 4,
+   "warmup": 0,
+   "free": false,
+   "targets": "one ally within 1 hex",
+   "tags": [
+    "heal"
+   ],
+   "description": "remove 5 Burn and Poison from that ally and give it +1 Resist for the rest of the Battle.",
+   "source": "Hell-TCG name reused (Beast/Magical Friend, Cuddle) | 2026-08-17: \"difficult terrain\" is not a thing in HoBaT — there are hexes that cost extra Movement. Reworded.",
+   "triggers": []
+  },
+  {
+   "id": "power.magical-friend.mystic-wrath",
+   "name": "Mystic Wrath",
+   "specialty": "specialty.magical-friend",
+   "stamina": 2,
+   "cooldown": 3,
+   "warmup": 2,
+   "free": false,
+   "targets": "one enemy within 3 hexes",
+   "tags": [
+    "ranged"
+   ],
+   "description": "Deal Magic + 2 magic damage to that enemy; it does not roll to hit and so cannot crit.",
+   "source": "Hell-TCG name reused (Beast/Magical Friend, Mystic Wrath — range measured from the companion) | 2026-08-17: \"difficult terrain\" is not a thing in HoBaT — there are hexes that cost extra Movement. Reworded.",
+   "triggers": []
+  },
+  {
+   "id": "power.magical-friend.share-senses",
+   "name": "Share Senses",
+   "specialty": "specialty.magical-friend",
+   "stamina": 0,
+   "cooldown": 3,
+   "warmup": 0,
+   "free": true,
+   "targets": "self",
+   "tags": [],
+   "description": "Until the start of your next Turn, your Vision is measured from your companion's hex instead of your own, and darkness and fog do not hide anything inside it.",
+   "source": "new (the companion as a Vision relay — the Ranger's real stat, expressed through the thing that walks ahead of you) | 2026-08-17: \"difficult terrain\" is not a thing in HoBaT — there are hexes that cost extra Movement. Reworded.",
+   "triggers": []
+  },
+  {
+   "id": "power.feral.pounce",
+   "name": "Pounce",
+   "specialty": "specialty.feral",
+   "stamina": 2,
+   "cooldown": 3,
+   "warmup": 0,
+   "free": false,
+   "targets": "one enemy in melee reach",
+   "tags": [
+    "claw",
+    "melee"
+   ],
+   "description": "Move up to your Movement + 2 in a straight line and make a claw attack at +2 Strength that also applies 1 Stun.",
+   "source": "Hell-TCG name reused (Beast/Feral, Pounce — 'Melee position only' rebuilt as an actual charge across hexes) | 2026-08-17: \"difficult terrain\" is not a thing in HoBaT — there are hexes that cost extra Movement. Reworded. | 2026-08-20 Angela: \"if the target has not acted yet this Turn\" reads turn order. Cut; the Stun is unconditional.",
+   "triggers": []
+  },
+  {
+   "id": "power.feral.ravage",
+   "name": "Ravage",
+   "specialty": "specialty.feral",
+   "stamina": 2,
+   "cooldown": 3,
+   "warmup": 0,
+   "free": false,
+   "targets": "one enemy in melee reach",
+   "tags": [
+    "claw",
+    "melee"
+   ],
+   "description": "Make two claw attacks at -5 Accuracy each against the same enemy; each hit applies 2 Bleed.",
+   "source": "Hell-TCG mechanic reused, renamed (Beast/Feral, Rend — renamed to avoid the collision with Warrior's power.reaver.rend) | 2026-08-17: \"difficult terrain\" is not a thing in HoBaT — there are hexes that cost extra Movement. Reworded.",
+   "triggers": []
+  },
+  {
+   "id": "power.feral.ignore-wounds",
+   "name": "Ignore Wounds",
+   "specialty": "specialty.feral",
+   "stamina": 1,
+   "cooldown": 5,
+   "warmup": 2,
+   "free": false,
+   "targets": "self",
+   "tags": [],
+   "description": "Heal 4, remove 5 Bleed from yourself, and gain +1 Armor for the rest of the Battle.",
+   "source": "Hell-TCG name reused (Beast/Feral, Ignore Wounds — max-Health inflation rebuilt as a heal plus the Armor the specialty gave up) | 2026-08-17: \"difficult terrain\" is not a thing in HoBaT — there are hexes that cost extra Movement. Reworded.",
+   "triggers": []
+  },
+  {
+   "id": "power.feral.run-down",
+   "name": "Run Down",
+   "specialty": "specialty.feral",
+   "stamina": 0,
+   "cooldown": 3,
+   "warmup": 0,
+   "free": true,
+   "targets": "self",
+   "tags": [],
+   "description": "Move up to 3 hexes toward the nearest enemy, paying no extra Movement for terrain.",
+   "source": "new (the answer to kiting, given to the one Ranger specialty that wants to be adjacent) | 2026-08-17: \"difficult terrain\" is not a thing in HoBaT — there are hexes that cost extra Movement. Reworded. | 2026-08-17: the \"if it moved away from you last Turn\" condition is not checkable; removed.",
+   "triggers": []
+  },
+  {
+   "id": "power.beastward.protect",
+   "name": "Protect",
+   "specialty": "specialty.beastward",
+   "stamina": 1,
+   "cooldown": 3,
+   "warmup": 0,
+   "free": false,
+   "targets": "one ally within 3 hexes",
+   "tags": [],
+   "description": "That ally gains +1 Armor and +1 Resist for the rest of the Battle; you take -5 Accuracy for the rest of the Battle each time you use it.",
+   "source": "Hell-TCG name reused (Beast/Protector, Protect — a stacking cost added, since power stat grants last the Battle) | 2026-08-17: \"difficult terrain\" is not a thing in HoBaT — there are hexes that cost extra Movement. Reworded.",
+   "triggers": []
+  },
+  {
+   "id": "power.beastward.conduct-life",
+   "name": "Conduct Life",
+   "specialty": "specialty.beastward",
+   "stamina": 1,
+   "cooldown": 3,
+   "warmup": 0,
+   "free": false,
+   "targets": "one ally within 2 hexes",
+   "tags": [
+    "heal"
+   ],
+   "description": "Heal that ally for 4 and remove 1 Bleed from it; take 3 true damage.",
+   "source": "Hell-TCG name reused (Beast/Protector, Conduct Life — max-Health transfer rebuilt as a heal paid in your own blood) | 2026-08-17: \"difficult terrain\" is not a thing in HoBaT — there are hexes that cost extra Movement. Reworded.",
+   "triggers": []
+  },
+  {
+   "id": "power.beastward.sacrifice",
+   "name": "Sacrifice",
+   "specialty": "specialty.beastward",
+   "stamina": 2,
+   "cooldown": 6,
+   "warmup": 2,
+   "free": false,
+   "targets": "allies within 3 hexes",
+   "tags": [
+    "heal",
+    "aura"
+   ],
+   "description": "Heal every ally within 3 hexes for 4 + Spirit; take 8 true damage.",
+   "source": "Hell-TCG name reused (Beast/Protector, Sacrifice — party-wide became a radius) | 2026-08-17: \"difficult terrain\" is not a thing in HoBaT — there are hexes that cost extra Movement. Reworded.",
+   "triggers": []
+  },
+  {
+   "id": "power.beastward.usher-away",
+   "name": "Usher Away",
+   "specialty": "specialty.beastward",
+   "stamina": 1,
+   "cooldown": 4,
+   "warmup": 0,
+   "free": true,
+   "targets": "one ally within 3 hexes",
+   "tags": [],
+   "description": "That ally immediately moves up to its Movement directly away from the nearest enemy, paying no extra Movement for terrain.",
+   "source": "Hell-TCG name reused (Beast/Protector, Usher Away — 'return them to deck' had no meaning here; rebuilt as buying an ally back its one hex of daylight) | 2026-08-17: \"difficult terrain\" is not a thing in HoBaT — there are hexes that cost extra Movement. Reworded.",
+   "triggers": []
+  },
+  {
+   "id": "power.bowmaster.long-shot",
+   "name": "Range Finder",
+   "specialty": "specialty.bowmaster",
+   "stamina": 2,
+   "cooldown": 8,
+   "warmup": 3,
+   "free": false,
+   "targets": "self",
+   "tags": [
+    "bow",
+    "ranged"
+   ],
+   "modifies": {
+    "tags": [
+     "ranged"
+    ],
+    "scope": "rest-of-battle",
+    "statModifiers": {
+     "reach": 1,
+     "precision": 1
+    },
+    "slayer": {
+     "beast": 2,
+     "giant": 2,
+     "dragon": 2
+    }
+   },
+   "description": "For the rest of the Battle your ranged attacks gain +1 Reach and +1 Precision, and deal +2 damage against beast, giant and dragon.",
+   "source": "New. Angela 2026-08-17 — the permanent-modifier shape, as against Sniper's next-attack shape. | 2026-08-17: \"difficult terrain\" is not a thing in HoBaT — there are hexes that cost extra Movement. Reworded. | 2026-08-19: \"monster\" is not a tag. Unfolded onto the creature tags that do exist, following item.rune-monster-slayer, which had already made that call. | 2026-08-20 Angela: disambiguate. attack.longbow.long-shot and attack.sniper-bow.long-shot already own \"Long Shot\".",
+   "triggers": []
+  },
+  {
+   "id": "power.sentinel.flush-them-out",
+   "name": "Flush Them Out",
+   "specialty": "specialty.sentinel",
+   "stamina": 1,
+   "cooldown": 3,
+   "warmup": 0,
+   "free": false,
+   "targets": "enemies within 4 hexes",
+   "tags": [
+    "ranged"
+   ],
+   "description": "Every stealthed enemy within 4 hexes is revealed and its stealth breaks; each of them also gains 2 Bleed.",
+   "intent": "They were counting on you not knowing. Now everyone knows, and they are bleeding.",
+   "source": "new 2026-08-20: Angela wants stealth to be a thing enemies engage with too — this is the answer to an enemy that hides."
+  }
+ ]
+}

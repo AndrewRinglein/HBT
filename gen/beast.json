@@ -1,0 +1,787 @@
+{
+ "class": "class.beast",
+ "specialties": [
+  {
+   "id": "specialty.hound",
+   "name": "Hound",
+   "class": "class.beast",
+   "intent": "You are not the biggest thing on the field and you never needed to be. You are the thing that is still coming.",
+   "statModifiers": {
+    "movement": 1,
+    "precision": 1,
+    "dodge": 5
+   },
+   "triggers": [
+    {
+     "hook": "onHit",
+     "effect": "your fang attacks apply 1 Bleed"
+    }
+   ],
+   "powers": [
+    "power.hound.run-them-down",
+    "power.hound.worry-the-wound",
+    "power.hound.bay",
+    "power.hound.loose-rein"
+   ],
+   "source": "new 2026-08-20 — Angela: \"we need to create a new class, Beast, and change the Spirit to just be a Civilian so there are no outliers on classes.\" Beast was four heroes with class:null; Spirit was one."
+  },
+  {
+   "id": "specialty.serpent",
+   "name": "Serpent",
+   "class": "class.beast",
+   "intent": "Small, low, and almost impossible to land a clean hit on — and everything you touch is dying on a schedule you set.",
+   "statModifiers": {
+    "dodge": 15,
+    "precision": 2,
+    "toughness": 1
+   },
+   "triggers": [
+    {
+     "hook": "onHit",
+     "effect": "your fang attacks apply 2 Poison"
+    }
+   ],
+   "powers": [
+    "power.serpent.venom-spit",
+    "power.serpent.coil",
+    "power.serpent.constrict",
+    "power.serpent.shed"
+   ],
+   "source": "new 2026-08-20 — Angela: \"we need to create a new class, Beast, and change the Spirit to just be a Civilian so there are no outliers on classes.\" Beast was four heroes with class:null; Spirit was one."
+  },
+  {
+   "id": "specialty.drake",
+   "name": "Drake",
+   "class": "class.beast",
+   "intent": "Armour and a long neck. You fly badly and land like a dropped anvil, and both of those are the point.",
+   "statModifiers": {
+    "armor": 2,
+    "reach": 1,
+    "health": 4
+   },
+   "triggers": [
+    {
+     "hook": "passive",
+     "effect": "Immunity to Burn 2"
+    }
+   ],
+   "powers": [
+    "power.drake.stoop",
+    "power.drake.wing-buffet",
+    "power.drake.scale-and-bone",
+    "power.drake.roost"
+   ],
+   "source": "new 2026-08-20 — Angela: \"we need to create a new class, Beast, and change the Spirit to just be a Civilian so there are no outliers on classes.\" Beast was four heroes with class:null; Spirit was one. | 2026-08-20 self-check: flight was written into a trigger as prose. Every other source of standing flight in the game — item.gale-shroud, item.wind-dancers-cloak, item.aegis-of-the-fleet, specialty.winged-assassin — grants the power through the `grants` field. Moved there, which frees the one-ability slot for Immunity to Burn 2.",
+   "grants": [
+    "power.flight-labored"
+   ]
+  },
+  {
+   "id": "specialty.direbeast",
+   "name": "Direbeast",
+   "class": "class.beast",
+   "intent": "There is no trick here. You are simply larger than the problem.",
+   "statModifiers": {
+    "strength": 3,
+    "health": 6,
+    "toughness": 2
+   },
+   "triggers": [
+    {
+     "hook": "passive",
+     "effect": "Thorns 2"
+    }
+   ],
+   "powers": [
+    "power.direbeast.maul",
+    "power.direbeast.trample",
+    "power.direbeast.bellow",
+    "power.direbeast.thick-pelt"
+   ],
+   "source": "new 2026-08-20 — Angela: \"we need to create a new class, Beast, and change the Spirit to just be a Civilian so there are no outliers on classes.\" Beast was four heroes with class:null; Spirit was one."
+  },
+  {
+   "id": "specialty.stalker",
+   "name": "Stalker",
+   "class": "class.beast",
+   "intent": "The fight starts when you decide it starts, and by then somebody is already down.",
+   "statModifiers": {
+    "crit": 10,
+    "precision": 2,
+    "dodge": 5
+   },
+   "triggers": [
+    {
+     "hook": "startOfBattle",
+     "effect": "you begin the Battle in stealth: you cannot be seen and cannot be targeted by an attack. Area effects, terrain and auras all still reach you. It breaks the moment you use an attack or a power, and whenever a reveal effect finds you — moving never breaks it"
+    }
+   ],
+   "powers": [
+    "power.stalker.from-the-grass",
+    "power.stalker.throat-hold",
+    "power.stalker.melt-away",
+    "power.stalker.patience"
+   ],
+   "source": "new 2026-08-20 — Angela: \"we need to create a new class, Beast, and change the Spirit to just be a Civilian so there are no outliers on classes.\" Beast was four heroes with class:null; Spirit was one."
+  },
+  {
+   "id": "specialty.broodmother",
+   "name": "Broodmother",
+   "class": "class.beast",
+   "intent": "You do not fight. You arrive with the fight already in progress.",
+   "statModifiers": {
+    "health": 6,
+    "spirit": 2,
+    "resist": 1
+   },
+   "triggers": [
+    {
+     "hook": "startOfBattle",
+     "effect": "summon two hatchlings on any hexes within 2 hexes of you. Each is a summoned ally with its own stat block and its own AI"
+    }
+   ],
+   "powers": [
+    "power.broodmother.hatch",
+    "power.broodmother.screen",
+    "power.broodmother.feed-the-brood",
+    "power.broodmother.nest"
+   ],
+   "source": "new 2026-08-20 — Angela: \"we need to create a new class, Beast, and change the Spirit to just be a Civilian so there are no outliers on classes.\" Beast was four heroes with class:null; Spirit was one."
+  },
+  {
+   "id": "specialty.carrion",
+   "name": "Carrion",
+   "class": "class.beast",
+   "intent": "Every unit in the game loses 1 Karma when it kills. You gain three. The maths is the whole branch.",
+   "statModifiers": {
+    "health": 4,
+    "strength": 2,
+    "toughness": 2
+   },
+   "triggers": [
+    {
+     "hook": "onKill",
+     "effect": "gain 3 Karma"
+    }
+   ],
+   "powers": [
+    "power.carrion.gorge",
+    "power.carrion.reek",
+    "power.carrion.pick-the-bones",
+    "power.carrion.carrion-song"
+   ],
+   "source": "new 2026-08-20 — Angela: \"we need to create a new class, Beast, and change the Spirit to just be a Civilian so there are no outliers on classes.\" Beast was four heroes with class:null; Spirit was one."
+  },
+  {
+   "id": "specialty.warbeast",
+   "name": "Warbeast",
+   "class": "class.beast",
+   "intent": "Somebody put a harness on you and you did not mind. The line holds better with you in it.",
+   "statModifiers": {
+    "strength": 2,
+    "armor": 1,
+    "health": 4
+   },
+   "triggers": [
+    {
+     "hook": "aura",
+     "effect": "AURA radius 2 — every ally inside gains +5 Accuracy"
+    }
+   ],
+   "powers": [
+    "power.warbeast.charge-together",
+    "power.warbeast.stand-over",
+    "power.warbeast.harness",
+    "power.warbeast.warcry"
+   ],
+   "source": "new 2026-08-20 — Angela: \"we need to create a new class, Beast, and change the Spirit to just be a Civilian so there are no outliers on classes.\" Beast was four heroes with class:null; Spirit was one."
+  },
+  {
+   "id": "specialty.wyrmling",
+   "name": "Wyrmling",
+   "class": "class.beast",
+   "intent": "Too young to be a dragon and old enough to be a problem. The Magic you add is the party’s, not yours.",
+   "statModifiers": {
+    "magic": 2,
+    "health": 4,
+    "resist": 1
+   },
+   "triggers": [
+    {
+     "hook": "onHit",
+     "effect": "your breath attacks apply 2 Burn"
+    }
+   ],
+   "powers": [
+    "power.wyrmling.kindle",
+    "power.wyrmling.scorch",
+    "power.wyrmling.molten-scales",
+    "power.wyrmling.take-wing"
+   ],
+   "source": "new 2026-08-20 — Angela: \"we need to create a new class, Beast, and change the Spirit to just be a Civilian so there are no outliers on classes.\" Beast was four heroes with class:null; Spirit was one."
+  }
+ ],
+ "powers": [
+  {
+   "id": "power.hound.run-them-down",
+   "name": "Run Them Down",
+   "specialty": "specialty.hound",
+   "stamina": 1,
+   "cooldown": 3,
+   "warmup": 0,
+   "free": false,
+   "targets": "self",
+   "tags": [
+    "melee"
+   ],
+   "description": "Move up to your Movement and make a melee attack at +1 Strength. It provokes nothing.",
+   "source": "new 2026-08-20 — Angela: \"we need to create a new class, Beast, and change the Spirit to just be a Civilian so there are no outliers on classes.\" Beast was four heroes with class:null; Spirit was one.",
+   "triggers": []
+  },
+  {
+   "id": "power.hound.worry-the-wound",
+   "name": "Worry the Wound",
+   "specialty": "specialty.hound",
+   "stamina": 1,
+   "cooldown": 2,
+   "warmup": 0,
+   "free": false,
+   "targets": "self",
+   "tags": [
+    "melee"
+   ],
+   "description": "Until the end of your next Turn, your attacks gain +1 Strength and apply 3 Bleed on hit.",
+   "source": "new 2026-08-20 — Angela: \"we need to create a new class, Beast, and change the Spirit to just be a Civilian so there are no outliers on classes.\" Beast was four heroes with class:null; Spirit was one.",
+   "triggers": []
+  },
+  {
+   "id": "power.hound.bay",
+   "name": "Bay",
+   "specialty": "specialty.hound",
+   "stamina": 1,
+   "cooldown": 4,
+   "warmup": 0,
+   "free": false,
+   "targets": "enemies within 3 hexes",
+   "tags": [
+    "area"
+   ],
+   "description": "Every enemy within 3 hexes gains 2 Weak and 1 Slow. As an area effect it cannot crit.",
+   "source": "new 2026-08-20 — Angela: \"we need to create a new class, Beast, and change the Spirit to just be a Civilian so there are no outliers on classes.\" Beast was four heroes with class:null; Spirit was one.",
+   "triggers": []
+  },
+  {
+   "id": "power.hound.loose-rein",
+   "name": "Loose Rein",
+   "specialty": "specialty.hound",
+   "stamina": 0,
+   "cooldown": 3,
+   "warmup": 0,
+   "free": true,
+   "targets": "self",
+   "tags": [],
+   "description": "Free. Until the end of your next Turn you gain +2 Movement and +10 Dodge.",
+   "source": "new 2026-08-20 — Angela: \"we need to create a new class, Beast, and change the Spirit to just be a Civilian so there are no outliers on classes.\" Beast was four heroes with class:null; Spirit was one.",
+   "triggers": []
+  },
+  {
+   "id": "power.serpent.venom-spit",
+   "name": "Venom Spit",
+   "specialty": "specialty.serpent",
+   "stamina": 1,
+   "cooldown": 3,
+   "warmup": 0,
+   "free": false,
+   "targets": "one enemy within 4 hexes",
+   "tags": [
+    "ranged"
+   ],
+   "description": "Ranged attack at +2 Precision that applies 4 Poison on hit.",
+   "source": "new 2026-08-20 — Angela: \"we need to create a new class, Beast, and change the Spirit to just be a Civilian so there are no outliers on classes.\" Beast was four heroes with class:null; Spirit was one.",
+   "triggers": []
+  },
+  {
+   "id": "power.serpent.coil",
+   "name": "Coil",
+   "specialty": "specialty.serpent",
+   "stamina": 1,
+   "cooldown": 2,
+   "warmup": 0,
+   "free": false,
+   "targets": "self",
+   "tags": [
+    "melee"
+   ],
+   "description": "Until the end of your next Turn, your attacks gain +5 Crit and apply 3 Poison on hit.",
+   "source": "new 2026-08-20 — Angela: \"we need to create a new class, Beast, and change the Spirit to just be a Civilian so there are no outliers on classes.\" Beast was four heroes with class:null; Spirit was one.",
+   "triggers": []
+  },
+  {
+   "id": "power.serpent.constrict",
+   "name": "Constrict",
+   "specialty": "specialty.serpent",
+   "stamina": 2,
+   "cooldown": 4,
+   "warmup": 1,
+   "free": false,
+   "targets": "one enemy in melee reach",
+   "tags": [
+    "melee"
+   ],
+   "description": "Deal 3 + Strength physical damage and the target gains 3 Slow and 2 Weak.",
+   "source": "new 2026-08-20 — Angela: \"we need to create a new class, Beast, and change the Spirit to just be a Civilian so there are no outliers on classes.\" Beast was four heroes with class:null; Spirit was one.",
+   "triggers": []
+  },
+  {
+   "id": "power.serpent.shed",
+   "name": "Shed",
+   "specialty": "specialty.serpent",
+   "stamina": 1,
+   "cooldown": 4,
+   "warmup": 0,
+   "free": false,
+   "targets": "self",
+   "tags": [],
+   "description": "Remove 5 Poison, 5 Bleed and 5 Burn from yourself and gain +15 Dodge until the end of your next Turn.",
+   "source": "new 2026-08-20 — Angela: \"we need to create a new class, Beast, and change the Spirit to just be a Civilian so there are no outliers on classes.\" Beast was four heroes with class:null; Spirit was one.",
+   "triggers": []
+  },
+  {
+   "id": "power.drake.stoop",
+   "name": "Stoop",
+   "specialty": "specialty.drake",
+   "stamina": 1,
+   "cooldown": 3,
+   "warmup": 0,
+   "free": false,
+   "targets": "self",
+   "tags": [
+    "melee"
+   ],
+   "description": "Move up to your Movement and make a melee attack at +2 Strength. It provokes nothing.",
+   "source": "new 2026-08-20 — Angela: \"we need to create a new class, Beast, and change the Spirit to just be a Civilian so there are no outliers on classes.\" Beast was four heroes with class:null; Spirit was one.",
+   "triggers": []
+  },
+  {
+   "id": "power.drake.wing-buffet",
+   "name": "Wing Buffet",
+   "specialty": "specialty.drake",
+   "stamina": 2,
+   "cooldown": 4,
+   "warmup": 0,
+   "free": false,
+   "targets": "every enemy adjacent to you",
+   "tags": [
+    "area"
+   ],
+   "description": "Every adjacent enemy takes 2 + Strength physical damage and is knocked back 1 hex. As an area effect it cannot crit.",
+   "source": "new 2026-08-20 — Angela: \"we need to create a new class, Beast, and change the Spirit to just be a Civilian so there are no outliers on classes.\" Beast was four heroes with class:null; Spirit was one.",
+   "triggers": []
+  },
+  {
+   "id": "power.drake.scale-and-bone",
+   "name": "Scale and Bone",
+   "specialty": "specialty.drake",
+   "stamina": 1,
+   "cooldown": 4,
+   "warmup": 0,
+   "free": false,
+   "targets": "self",
+   "tags": [
+    "stance"
+   ],
+   "description": "Stance: for the rest of the Battle gain +2 Armor and +1 Resist, and lose 1 Movement.",
+   "source": "new 2026-08-20 — Angela: \"we need to create a new class, Beast, and change the Spirit to just be a Civilian so there are no outliers on classes.\" Beast was four heroes with class:null; Spirit was one.",
+   "triggers": []
+  },
+  {
+   "id": "power.drake.roost",
+   "name": "Roost",
+   "specialty": "specialty.drake",
+   "stamina": 0,
+   "cooldown": 5,
+   "warmup": 0,
+   "free": false,
+   "targets": "self",
+   "tags": [
+    "heal"
+   ],
+   "description": "Heal 4 and remove 3 Bleed from yourself.",
+   "source": "new 2026-08-20 — Angela: \"we need to create a new class, Beast, and change the Spirit to just be a Civilian so there are no outliers on classes.\" Beast was four heroes with class:null; Spirit was one.",
+   "triggers": []
+  },
+  {
+   "id": "power.direbeast.maul",
+   "name": "Maul",
+   "specialty": "specialty.direbeast",
+   "stamina": 2,
+   "cooldown": 3,
+   "warmup": 0,
+   "free": false,
+   "targets": "one enemy in melee reach",
+   "tags": [
+    "melee"
+   ],
+   "description": "Make two melee attacks at -5 Accuracy each against the same enemy.",
+   "source": "new 2026-08-20 — Angela: \"we need to create a new class, Beast, and change the Spirit to just be a Civilian so there are no outliers on classes.\" Beast was four heroes with class:null; Spirit was one.",
+   "triggers": []
+  },
+  {
+   "id": "power.direbeast.trample",
+   "name": "Trample",
+   "specialty": "specialty.direbeast",
+   "stamina": 2,
+   "cooldown": 4,
+   "warmup": 1,
+   "free": false,
+   "targets": "self",
+   "tags": [
+    "area"
+   ],
+   "description": "Move up to your Movement; every enemy whose hex you passed beside takes 3 + Strength physical damage. It provokes nothing and it cannot crit.",
+   "source": "new 2026-08-20 — Angela: \"we need to create a new class, Beast, and change the Spirit to just be a Civilian so there are no outliers on classes.\" Beast was four heroes with class:null; Spirit was one.",
+   "triggers": []
+  },
+  {
+   "id": "power.direbeast.bellow",
+   "name": "Bellow",
+   "specialty": "specialty.direbeast",
+   "stamina": 1,
+   "cooldown": 4,
+   "warmup": 0,
+   "free": false,
+   "targets": "enemies within 3 hexes",
+   "tags": [
+    "area"
+   ],
+   "description": "Every enemy within 3 hexes gains 3 Weak. As an area effect it cannot crit.",
+   "source": "new 2026-08-20 — Angela: \"we need to create a new class, Beast, and change the Spirit to just be a Civilian so there are no outliers on classes.\" Beast was four heroes with class:null; Spirit was one.",
+   "triggers": []
+  },
+  {
+   "id": "power.direbeast.thick-pelt",
+   "name": "Thick Pelt",
+   "specialty": "specialty.direbeast",
+   "stamina": 1,
+   "cooldown": 5,
+   "warmup": 0,
+   "free": false,
+   "targets": "self",
+   "tags": [],
+   "description": "Gain Protection equal to 4 + your Toughness.",
+   "source": "new 2026-08-20 — Angela: \"we need to create a new class, Beast, and change the Spirit to just be a Civilian so there are no outliers on classes.\" Beast was four heroes with class:null; Spirit was one.",
+   "triggers": []
+  },
+  {
+   "id": "power.stalker.from-the-grass",
+   "name": "From the Grass",
+   "specialty": "specialty.stalker",
+   "stamina": 1,
+   "cooldown": 3,
+   "warmup": 0,
+   "free": false,
+   "targets": "one enemy in melee reach",
+   "tags": [
+    "melee"
+   ],
+   "description": "Melee attack at +2 Strength and +15 Crit.",
+   "source": "new 2026-08-20 — Angela: \"we need to create a new class, Beast, and change the Spirit to just be a Civilian so there are no outliers on classes.\" Beast was four heroes with class:null; Spirit was one.",
+   "triggers": [
+    {
+     "hook": "onHit",
+     "effect": "you do not break stealth, and move up to 3 hexes"
+    }
+   ]
+  },
+  {
+   "id": "power.stalker.throat-hold",
+   "name": "Throat Hold",
+   "specialty": "specialty.stalker",
+   "stamina": 2,
+   "cooldown": 4,
+   "warmup": 1,
+   "free": false,
+   "targets": "one enemy in melee reach",
+   "tags": [
+    "melee"
+   ],
+   "description": "Deal 4 + Strength physical damage; the target gains 2 Stun and 4 Bleed.",
+   "source": "new 2026-08-20 — Angela: \"we need to create a new class, Beast, and change the Spirit to just be a Civilian so there are no outliers on classes.\" Beast was four heroes with class:null; Spirit was one.",
+   "triggers": []
+  },
+  {
+   "id": "power.stalker.melt-away",
+   "name": "Melt Away",
+   "specialty": "specialty.stalker",
+   "stamina": 1,
+   "cooldown": 4,
+   "warmup": 0,
+   "free": true,
+   "targets": "self",
+   "tags": [],
+   "description": "Free. Immediately enter stealth: you cannot be seen and cannot be targeted by an attack. Area effects, terrain and auras still reach you. It breaks the moment you use an attack or another power — not when you move — and whenever a reveal effect finds you.",
+   "source": "new 2026-08-20 — Angela: \"we need to create a new class, Beast, and change the Spirit to just be a Civilian so there are no outliers on classes.\" Beast was four heroes with class:null; Spirit was one.",
+   "triggers": []
+  },
+  {
+   "id": "power.stalker.patience",
+   "name": "Patience",
+   "specialty": "specialty.stalker",
+   "stamina": 1,
+   "cooldown": 3,
+   "warmup": 0,
+   "free": false,
+   "targets": "self",
+   "tags": [],
+   "description": "Until the end of your next Turn, your attacks gain +10 Crit and +10 Accuracy.",
+   "source": "new 2026-08-20 — Angela: \"we need to create a new class, Beast, and change the Spirit to just be a Civilian so there are no outliers on classes.\" Beast was four heroes with class:null; Spirit was one.",
+   "triggers": []
+  },
+  {
+   "id": "power.broodmother.hatch",
+   "name": "Hatch",
+   "specialty": "specialty.broodmother",
+   "stamina": 2,
+   "cooldown": 4,
+   "warmup": 1,
+   "free": false,
+   "targets": "self",
+   "tags": [],
+   "description": "Summon one hatchling on a hex adjacent to you. It is a summoned ally with its own stat block and its own AI.",
+   "source": "new 2026-08-20 — Angela: \"we need to create a new class, Beast, and change the Spirit to just be a Civilian so there are no outliers on classes.\" Beast was four heroes with class:null; Spirit was one.",
+   "triggers": []
+  },
+  {
+   "id": "power.broodmother.screen",
+   "name": "Screen",
+   "specialty": "specialty.broodmother",
+   "stamina": 1,
+   "cooldown": 3,
+   "warmup": 0,
+   "free": false,
+   "targets": "you and allies within 2 hexes",
+   "tags": [],
+   "description": "You and every ally within 2 hexes gain 4 Protection.",
+   "source": "new 2026-08-20 — Angela: \"we need to create a new class, Beast, and change the Spirit to just be a Civilian so there are no outliers on classes.\" Beast was four heroes with class:null; Spirit was one.",
+   "triggers": []
+  },
+  {
+   "id": "power.broodmother.feed-the-brood",
+   "name": "Feed the Brood",
+   "specialty": "specialty.broodmother",
+   "stamina": 1,
+   "cooldown": 3,
+   "warmup": 0,
+   "free": false,
+   "targets": "one ally within 3 hexes",
+   "tags": [
+    "heal"
+   ],
+   "description": "Take 2 true damage and heal that ally for 3 + Spirit.",
+   "source": "new 2026-08-20 — Angela: \"we need to create a new class, Beast, and change the Spirit to just be a Civilian so there are no outliers on classes.\" Beast was four heroes with class:null; Spirit was one.",
+   "triggers": []
+  },
+  {
+   "id": "power.broodmother.nest",
+   "name": "Nest",
+   "specialty": "specialty.broodmother",
+   "stamina": 1,
+   "cooldown": 5,
+   "warmup": 1,
+   "free": false,
+   "targets": "a hex within 3 hexes and every hex adjacent to it",
+   "tags": [
+    "area"
+   ],
+   "description": "Those seven hexes become poisoned.",
+   "source": "new 2026-08-20 — Angela: \"we need to create a new class, Beast, and change the Spirit to just be a Civilian so there are no outliers on classes.\" Beast was four heroes with class:null; Spirit was one.",
+   "triggers": []
+  },
+  {
+   "id": "power.carrion.gorge",
+   "name": "Gorge",
+   "specialty": "specialty.carrion",
+   "stamina": 1,
+   "cooldown": 3,
+   "warmup": 0,
+   "free": false,
+   "targets": "self",
+   "tags": [
+    "heal"
+   ],
+   "description": "Heal 5 and gain 2 Karma.",
+   "source": "new 2026-08-20 — Angela: \"we need to create a new class, Beast, and change the Spirit to just be a Civilian so there are no outliers on classes.\" Beast was four heroes with class:null; Spirit was one.",
+   "triggers": []
+  },
+  {
+   "id": "power.carrion.reek",
+   "name": "Reek",
+   "specialty": "specialty.carrion",
+   "stamina": 1,
+   "cooldown": 4,
+   "warmup": 0,
+   "free": false,
+   "targets": "enemies within 2 hexes",
+   "tags": [
+    "area"
+   ],
+   "description": "Every enemy within 2 hexes gains 3 Poison and 2 Weak. As an area effect it cannot crit.",
+   "source": "new 2026-08-20 — Angela: \"we need to create a new class, Beast, and change the Spirit to just be a Civilian so there are no outliers on classes.\" Beast was four heroes with class:null; Spirit was one.",
+   "triggers": []
+  },
+  {
+   "id": "power.carrion.pick-the-bones",
+   "name": "Pick the Bones",
+   "specialty": "specialty.carrion",
+   "stamina": 1,
+   "cooldown": 4,
+   "warmup": 0,
+   "free": false,
+   "targets": "one downed ally within 2 hexes",
+   "tags": [
+    "heal"
+   ],
+   "description": "Stabilise a downed ally within 2 hexes, removing its bleed-out counter, and gain 2 Karma.",
+   "source": "new 2026-08-20 — Angela: \"we need to create a new class, Beast, and change the Spirit to just be a Civilian so there are no outliers on classes.\" Beast was four heroes with class:null; Spirit was one.",
+   "triggers": []
+  },
+  {
+   "id": "power.carrion.carrion-song",
+   "name": "Carrion Song",
+   "specialty": "specialty.carrion",
+   "stamina": 2,
+   "cooldown": 5,
+   "warmup": 1,
+   "free": false,
+   "targets": "self",
+   "tags": [
+    "stance"
+   ],
+   "description": "Stance: for the rest of the Battle gain +2 Strength and +1 Toughness.",
+   "source": "new 2026-08-20 — Angela: \"we need to create a new class, Beast, and change the Spirit to just be a Civilian so there are no outliers on classes.\" Beast was four heroes with class:null; Spirit was one.",
+   "triggers": []
+  },
+  {
+   "id": "power.warbeast.charge-together",
+   "name": "Charge Together",
+   "specialty": "specialty.warbeast",
+   "stamina": 2,
+   "cooldown": 4,
+   "warmup": 0,
+   "free": false,
+   "targets": "self",
+   "tags": [
+    "melee"
+   ],
+   "description": "Move up to 4 hexes and make a melee attack at +2 Strength. Every ally within 2 hexes may immediately move up to 2 hexes; it provokes nothing.",
+   "source": "new 2026-08-20 — Angela: \"we need to create a new class, Beast, and change the Spirit to just be a Civilian so there are no outliers on classes.\" Beast was four heroes with class:null; Spirit was one.",
+   "triggers": []
+  },
+  {
+   "id": "power.warbeast.stand-over",
+   "name": "Stand Over",
+   "specialty": "specialty.warbeast",
+   "stamina": 1,
+   "cooldown": 3,
+   "warmup": 0,
+   "free": false,
+   "targets": "one ally within 1 hex",
+   "tags": [],
+   "description": "That ally gains 5 Protection and you gain 3.",
+   "source": "new 2026-08-20 — Angela: \"we need to create a new class, Beast, and change the Spirit to just be a Civilian so there are no outliers on classes.\" Beast was four heroes with class:null; Spirit was one.",
+   "triggers": []
+  },
+  {
+   "id": "power.warbeast.harness",
+   "name": "Harness",
+   "specialty": "specialty.warbeast",
+   "stamina": 1,
+   "cooldown": 5,
+   "warmup": 0,
+   "free": false,
+   "targets": "you and allies within 3 hexes",
+   "tags": [
+    "aura"
+   ],
+   "description": "You and every ally within 3 hexes gain +1 Armor for the rest of the Battle.",
+   "source": "new 2026-08-20 — Angela: \"we need to create a new class, Beast, and change the Spirit to just be a Civilian so there are no outliers on classes.\" Beast was four heroes with class:null; Spirit was one.",
+   "triggers": []
+  },
+  {
+   "id": "power.warbeast.warcry",
+   "name": "Warcry",
+   "specialty": "specialty.warbeast",
+   "stamina": 1,
+   "cooldown": 4,
+   "warmup": 0,
+   "free": false,
+   "targets": "every unit within 3 hexes",
+   "tags": [
+    "area"
+   ],
+   "description": "Every enemy within 3 hexes gains 2 Weak. You and every ally within 3 hexes remove 2 Weak.",
+   "source": "new 2026-08-20 — Angela: \"we need to create a new class, Beast, and change the Spirit to just be a Civilian so there are no outliers on classes.\" Beast was four heroes with class:null; Spirit was one.",
+   "triggers": []
+  },
+  {
+   "id": "power.wyrmling.kindle",
+   "name": "Kindle",
+   "specialty": "specialty.wyrmling",
+   "stamina": 1,
+   "cooldown": 2,
+   "warmup": 0,
+   "free": false,
+   "targets": "self",
+   "tags": [],
+   "description": "Until the end of your next Turn, your attacks apply 4 Burn on hit.",
+   "source": "new 2026-08-20 — Angela: \"we need to create a new class, Beast, and change the Spirit to just be a Civilian so there are no outliers on classes.\" Beast was four heroes with class:null; Spirit was one.",
+   "triggers": []
+  },
+  {
+   "id": "power.wyrmling.scorch",
+   "name": "Scorch",
+   "specialty": "specialty.wyrmling",
+   "stamina": 2,
+   "cooldown": 3,
+   "warmup": 1,
+   "free": false,
+   "targets": "a hex within 3 hexes and every hex adjacent to it",
+   "tags": [
+    "area"
+   ],
+   "description": "Deal 2 + Magic magic damage to every unit in the blast, and those seven hexes become burning. It does not roll to hit, so it cannot crit.",
+   "source": "new 2026-08-20 — Angela: \"we need to create a new class, Beast, and change the Spirit to just be a Civilian so there are no outliers on classes.\" Beast was four heroes with class:null; Spirit was one.",
+   "triggers": []
+  },
+  {
+   "id": "power.wyrmling.molten-scales",
+   "name": "Molten Scales",
+   "specialty": "specialty.wyrmling",
+   "stamina": 1,
+   "cooldown": 4,
+   "warmup": 0,
+   "free": false,
+   "targets": "self",
+   "tags": [
+    "stance"
+   ],
+   "description": "Stance: for the rest of the Battle you have Thorns 3 and +1 Resist.",
+   "source": "new 2026-08-20 — Angela: \"we need to create a new class, Beast, and change the Spirit to just be a Civilian so there are no outliers on classes.\" Beast was four heroes with class:null; Spirit was one.",
+   "triggers": []
+  },
+  {
+   "id": "power.wyrmling.take-wing",
+   "name": "Take Wing",
+   "specialty": "specialty.wyrmling",
+   "stamina": 1,
+   "cooldown": 4,
+   "warmup": 0,
+   "free": false,
+   "targets": "self",
+   "tags": [],
+   "description": "Move 4 hexes as FLIGHT: 1 Movement per hex, over units and obstructions, taking nothing from the ground on the way, and it provokes nothing. The hex you land on must be legal like any other.",
+   "source": "new 2026-08-20 — Angela: \"we need to create a new class, Beast, and change the Spirit to just be a Civilian so there are no outliers on classes.\" Beast was four heroes with class:null; Spirit was one. | 2026-08-20 self-check: \"until the end of your next Turn you have power.flight\" would have been the only power in the game that grants another power for a duration. Rewritten on the power.assassin.dodge-behind pattern, which is Angela's own wording for a one-off flying move.",
+   "triggers": []
+  }
+ ]
+}

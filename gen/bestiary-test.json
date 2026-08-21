@@ -1,0 +1,956 @@
+{
+ "note": "TEST BESTIARY — throwaway by design. Every id begins `test.`, every display name begins \"TEST — \", every row carries test:true. Delete this one file and nothing else in the project changes. To promote one to real content, copy the row, drop the test flag, and rename the id.",
+ "source": "TEST CONTENT 2026-08-20 — Angela: \"we need to create a test bestiary… a series of different enemies that are somewhat simple… small versions of different features that we have in the game… clearly designated as tests so they can be thrown away later, or duplicated into real.\"",
+ "units": [
+  {
+   "test": true,
+   "source": "TEST CONTENT 2026-08-20 — Angela: \"we need to create a test bestiary… a series of different enemies that are somewhat simple… small versions of different features that we have in the game… clearly designated as tests so they can be thrown away later, or duplicated into real.\"",
+   "id": "test.unit.rat",
+   "name": "TEST — Rat",
+   "art": "zombie",
+   "tags": [
+    "beast"
+   ],
+   "role": "melee",
+   "ai": "dumb-melee",
+   "stats": {
+    "maxHp": 2,
+    "armor": 0,
+    "resist": 0,
+    "accuracy": 60,
+    "dodge": 0,
+    "strength": 1,
+    "precision": 0,
+    "magic": 0,
+    "spirit": 0,
+    "movement": 5,
+    "reach": 0
+   },
+   "attacks": [
+    "attack.fangs.bite"
+   ],
+   "triggers": [],
+   "runs": "today",
+   "tests": "The floor. Two health, nothing else — proves a kill resolves and a corpse leaves the board."
+  },
+  {
+   "test": true,
+   "source": "TEST CONTENT 2026-08-20 — Angela: \"we need to create a test bestiary… a series of different enemies that are somewhat simple… small versions of different features that we have in the game… clearly designated as tests so they can be thrown away later, or duplicated into real.\"",
+   "id": "test.unit.bruteling",
+   "name": "TEST — Bruteling",
+   "art": "skeleton",
+   "tags": [
+    "undead"
+   ],
+   "role": "melee",
+   "ai": "dumb-melee",
+   "stats": {
+    "maxHp": 30,
+    "armor": 3,
+    "resist": 0,
+    "accuracy": 70,
+    "dodge": 0,
+    "strength": 6,
+    "precision": 0,
+    "magic": 0,
+    "spirit": 0,
+    "movement": 3,
+    "reach": 0
+   },
+   "attacks": [
+    "attack.zombie.basic"
+   ],
+   "triggers": [],
+   "runs": "today",
+   "tests": "ARMOR. High Armor, zero Resist — physical damage should crawl and magic should not care."
+  },
+  {
+   "test": true,
+   "source": "TEST CONTENT 2026-08-20 — Angela: \"we need to create a test bestiary… a series of different enemies that are somewhat simple… small versions of different features that we have in the game… clearly designated as tests so they can be thrown away later, or duplicated into real.\"",
+   "id": "test.unit.wardling",
+   "name": "TEST — Wardling",
+   "art": "cultist",
+   "tags": [
+    "demon"
+   ],
+   "role": "melee",
+   "ai": "dumb-melee",
+   "stats": {
+    "maxHp": 20,
+    "armor": 0,
+    "resist": 3,
+    "accuracy": 70,
+    "dodge": 0,
+    "strength": 4,
+    "precision": 0,
+    "magic": 0,
+    "spirit": 0,
+    "movement": 4,
+    "reach": 0
+   },
+   "attacks": [
+    "attack.zombie.basic"
+   ],
+   "triggers": [],
+   "runs": "today",
+   "tests": "RESIST — the mirror of the Bruteling. Run the same two attacks at both and the mitigation split has to show."
+  },
+  {
+   "test": true,
+   "source": "TEST CONTENT 2026-08-20 — Angela: \"we need to create a test bestiary… a series of different enemies that are somewhat simple… small versions of different features that we have in the game… clearly designated as tests so they can be thrown away later, or duplicated into real.\"",
+   "id": "test.unit.flicker",
+   "name": "TEST — Flicker",
+   "art": "imp",
+   "tags": [
+    "demon"
+   ],
+   "role": "melee",
+   "ai": "melee-aggressive",
+   "stats": {
+    "maxHp": 8,
+    "armor": 0,
+    "resist": 0,
+    "accuracy": 70,
+    "dodge": 40,
+    "strength": 3,
+    "precision": 0,
+    "magic": 0,
+    "spirit": 0,
+    "movement": 6,
+    "reach": 0
+   },
+   "attacks": [
+    "attack.fangs.bite"
+   ],
+   "triggers": [],
+   "runs": "today",
+   "tests": "DODGE, and the onDodge predicate when it is built: 40 Dodge means misses that are dodges, not misses that are bad rolls."
+  },
+  {
+   "test": true,
+   "source": "TEST CONTENT 2026-08-20 — Angela: \"we need to create a test bestiary… a series of different enemies that are somewhat simple… small versions of different features that we have in the game… clearly designated as tests so they can be thrown away later, or duplicated into real.\"",
+   "id": "test.unit.truebearer",
+   "name": "TEST — Truebearer",
+   "art": "skeletal-archer",
+   "tags": [
+    "undead"
+   ],
+   "role": "ranged",
+   "ai": "ranged-kite",
+   "stats": {
+    "maxHp": 10,
+    "armor": 0,
+    "resist": 0,
+    "accuracy": 75,
+    "dodge": 0,
+    "strength": 0,
+    "precision": 4,
+    "magic": 0,
+    "spirit": 0,
+    "movement": 4,
+    "reach": 5
+   },
+   "attacks": [
+    "attack.ranger.bow"
+   ],
+   "triggers": [],
+   "runs": "today",
+   "tests": "REACH and the ranged accuracy stations — -5 a hex past the first, and -20 if it fires while something is adjacent to it."
+  },
+  {
+   "test": true,
+   "source": "TEST CONTENT 2026-08-20 — Angela: \"we need to create a test bestiary… a series of different enemies that are somewhat simple… small versions of different features that we have in the game… clearly designated as tests so they can be thrown away later, or duplicated into real.\"",
+   "id": "test.unit.swinger",
+   "name": "TEST — Swinger",
+   "art": "soldier",
+   "tags": [
+    "undead"
+   ],
+   "role": "melee",
+   "ai": "dumb-melee",
+   "stats": {
+    "maxHp": 12,
+    "armor": 1,
+    "resist": 0,
+    "accuracy": 70,
+    "dodge": 0,
+    "strength": 4,
+    "precision": 0,
+    "magic": 0,
+    "spirit": 0,
+    "movement": 4,
+    "reach": 0
+   },
+   "attacks": [
+    "attack.zombie.basic"
+   ],
+   "runs": "today",
+   "triggers": [
+    {
+     "id": "test.trigger.swinger.wind-up",
+     "hook": "onAttack",
+     "chance": 100,
+     "select": "self",
+     "effect": {
+      "kind": "status.apply",
+      "statusId": "status.protection",
+      "value": 1
+     }
+    }
+   ],
+   "tests": "onAttack — fires on EVERY swing, hit or miss. If Protection climbs on a miss, the hook is on the right rung."
+  },
+  {
+   "test": true,
+   "source": "TEST CONTENT 2026-08-20 — Angela: \"we need to create a test bestiary… a series of different enemies that are somewhat simple… small versions of different features that we have in the game… clearly designated as tests so they can be thrown away later, or duplicated into real.\"",
+   "id": "test.unit.flailer",
+   "name": "TEST — Flailer",
+   "art": "zombie",
+   "tags": [
+    "undead"
+   ],
+   "role": "melee",
+   "ai": "dumb-melee",
+   "stats": {
+    "maxHp": 12,
+    "armor": 0,
+    "resist": 0,
+    "accuracy": 40,
+    "dodge": 0,
+    "strength": 5,
+    "precision": 0,
+    "magic": 0,
+    "spirit": 0,
+    "movement": 4,
+    "reach": 0
+   },
+   "attacks": [
+    "attack.zombie.basic"
+   ],
+   "runs": "today",
+   "triggers": [
+    {
+     "id": "test.trigger.flailer.overswing",
+     "hook": "onMiss",
+     "chance": 100,
+     "select": "self",
+     "effect": {
+      "kind": "damage",
+      "amount": 1,
+      "damageType": "true"
+     }
+    }
+   ],
+   "tests": "onMiss — and deliberately 40 Accuracy so it misses often enough to see. It hurts itself when it whiffs."
+  },
+  {
+   "test": true,
+   "source": "TEST CONTENT 2026-08-20 — Angela: \"we need to create a test bestiary… a series of different enemies that are somewhat simple… small versions of different features that we have in the game… clearly designated as tests so they can be thrown away later, or duplicated into real.\"",
+   "id": "test.unit.critter",
+   "name": "TEST — Critter",
+   "art": "vampire",
+   "tags": [
+    "undead",
+    "vampire"
+   ],
+   "role": "melee",
+   "ai": "melee-aggressive",
+   "stats": {
+    "maxHp": 14,
+    "armor": 0,
+    "resist": 0,
+    "accuracy": 130,
+    "dodge": 0,
+    "strength": 3,
+    "precision": 0,
+    "magic": 0,
+    "spirit": 0,
+    "movement": 5,
+    "reach": 0
+   },
+   "attacks": [
+    "attack.fangs.bite"
+   ],
+   "runs": "today",
+   "triggers": [
+    {
+     "id": "test.trigger.critter.taste",
+     "hook": "onCrit",
+     "chance": 100,
+     "select": "target",
+     "effect": {
+      "kind": "status.apply",
+      "statusId": "status.bleed",
+      "value": 2
+     }
+    }
+   ],
+   "tests": "onCrit, and the crit formula itself. 130 Accuracy is 30 surplus, which is (130-100)/4 = +7 Crit. If it never crits, the surplus is being clamped."
+  },
+  {
+   "test": true,
+   "source": "TEST CONTENT 2026-08-20 — Angela: \"we need to create a test bestiary… a series of different enemies that are somewhat simple… small versions of different features that we have in the game… clearly designated as tests so they can be thrown away later, or duplicated into real.\"",
+   "id": "test.unit.devourer",
+   "name": "TEST — Devourer",
+   "art": "werewolf",
+   "tags": [
+    "beast",
+    "werewolf"
+   ],
+   "role": "melee",
+   "ai": "melee-aggressive",
+   "stats": {
+    "maxHp": 18,
+    "armor": 1,
+    "resist": 0,
+    "accuracy": 75,
+    "dodge": 0,
+    "strength": 5,
+    "precision": 0,
+    "magic": 0,
+    "spirit": 0,
+    "movement": 5,
+    "reach": 0
+   },
+   "attacks": [
+    "attack.fangs.bite"
+   ],
+   "runs": "today",
+   "triggers": [
+    {
+     "id": "test.trigger.devourer.feed",
+     "hook": "onKill",
+     "chance": 100,
+     "select": "self",
+     "effect": {
+      "kind": "status.apply",
+      "statusId": "status.regeneration",
+      "value": 3
+     }
+    }
+   ],
+   "tests": "onKill — the KILLER’s hook. Pair it with the Rat so a kill is easy to force."
+  },
+  {
+   "test": true,
+   "source": "TEST CONTENT 2026-08-20 — Angela: \"we need to create a test bestiary… a series of different enemies that are somewhat simple… small versions of different features that we have in the game… clearly designated as tests so they can be thrown away later, or duplicated into real.\"",
+   "id": "test.unit.thornback",
+   "name": "TEST — Thornback",
+   "art": "bone-colossus",
+   "tags": [
+    "undead",
+    "construct"
+   ],
+   "role": "melee",
+   "ai": "dumb-melee",
+   "stats": {
+    "maxHp": 16,
+    "armor": 2,
+    "resist": 0,
+    "accuracy": 65,
+    "dodge": 0,
+    "strength": 3,
+    "precision": 0,
+    "magic": 0,
+    "spirit": 0,
+    "movement": 3,
+    "reach": 0
+   },
+   "attacks": [
+    "attack.zombie.basic"
+   ],
+   "runs": "today",
+   "triggers": [
+    {
+     "id": "test.trigger.thornback.spines",
+     "hook": "onTakingDamage",
+     "chance": 100,
+     "select": "target",
+     "effect": {
+      "kind": "damage",
+      "amount": 2,
+      "damageType": "true"
+     }
+    }
+   ],
+   "tests": "onTakingDamage — the VICTIM’s hook, so its \"target\" is whoever swung. This is Thorns, and it should reach a ranged attacker too."
+  },
+  {
+   "test": true,
+   "source": "TEST CONTENT 2026-08-20 — Angela: \"we need to create a test bestiary… a series of different enemies that are somewhat simple… small versions of different features that we have in the game… clearly designated as tests so they can be thrown away later, or duplicated into real.\"",
+   "id": "test.unit.bloatling",
+   "name": "TEST — Bloatling",
+   "art": "zombie",
+   "tags": [
+    "undead"
+   ],
+   "role": "melee",
+   "ai": "dumb-melee",
+   "stats": {
+    "maxHp": 6,
+    "armor": 0,
+    "resist": 0,
+    "accuracy": 60,
+    "dodge": 0,
+    "strength": 2,
+    "precision": 0,
+    "magic": 0,
+    "spirit": 0,
+    "movement": 4,
+    "reach": 0
+   },
+   "attacks": [
+    "attack.zombie.basic"
+   ],
+   "runs": "today",
+   "triggers": [
+    {
+     "id": "test.trigger.bloatling.burst",
+     "hook": "onDeath",
+     "chance": 100,
+     "select": {
+      "select": "area",
+      "side": "any",
+      "radius": 1,
+      "origin": "self"
+     },
+     "effect": {
+      "kind": "damage",
+      "amount": 3,
+      "damageType": "magic"
+     }
+    }
+   ],
+   "tests": "onDeath, AND that it fires from Settle rather than from the attack — kill it with a Poison tick and the burst must still happen. Also the first area-origin-self trigger."
+  },
+  {
+   "test": true,
+   "source": "TEST CONTENT 2026-08-20 — Angela: \"we need to create a test bestiary… a series of different enemies that are somewhat simple… small versions of different features that we have in the game… clearly designated as tests so they can be thrown away later, or duplicated into real.\"",
+   "id": "test.unit.pacer",
+   "name": "TEST — Pacer",
+   "art": "skeleton",
+   "tags": [
+    "undead"
+   ],
+   "role": "melee",
+   "ai": "dumb-melee",
+   "stats": {
+    "maxHp": 10,
+    "armor": 0,
+    "resist": 0,
+    "accuracy": 65,
+    "dodge": 0,
+    "strength": 3,
+    "precision": 0,
+    "magic": 0,
+    "spirit": 0,
+    "movement": 4,
+    "reach": 0
+   },
+   "attacks": [
+    "attack.zombie.basic"
+   ],
+   "runs": "today",
+   "triggers": [
+    {
+     "id": "test.trigger.pacer.settle",
+     "hook": "onActivationEnd",
+     "chance": 100,
+     "select": "self",
+     "effect": {
+      "kind": "status.apply",
+      "statusId": "status.protection",
+      "value": 1
+     }
+    }
+   ],
+   "tests": "onActivationEnd, NOT turnEnd. On an eight-unit board this must fire eight times a Turn, not once."
+  },
+  {
+   "test": true,
+   "source": "TEST CONTENT 2026-08-20 — Angela: \"we need to create a test bestiary… a series of different enemies that are somewhat simple… small versions of different features that we have in the game… clearly designated as tests so they can be thrown away later, or duplicated into real.\"",
+   "id": "test.unit.gravecaller",
+   "name": "TEST — Gravecaller",
+   "art": "necromancer",
+   "tags": [
+    "undead"
+   ],
+   "role": "support",
+   "ai": "ranged-kite",
+   "stats": {
+    "maxHp": 14,
+    "armor": 0,
+    "resist": 1,
+    "accuracy": 70,
+    "dodge": 0,
+    "strength": 0,
+    "precision": 2,
+    "magic": 3,
+    "spirit": 0,
+    "movement": 4,
+    "reach": 3
+   },
+   "attacks": [
+    "attack.mage.staff"
+   ],
+   "runs": "today",
+   "triggers": [
+    {
+     "id": "test.trigger.gravecaller.grave-tide",
+     "hook": "onActivationEnd",
+     "chance": 100,
+     "select": {
+      "select": "area",
+      "side": "ally",
+      "radius": 3,
+      "origin": "self",
+      "requireTags": [
+       "undead"
+      ]
+     },
+     "effect": {
+      "kind": "status.apply",
+      "statusId": "status.regeneration",
+      "value": 2
+     }
+    }
+   ],
+   "tests": "THE HEAL-ALL-ZOMBIES AURA. Area + side:ally + requireTags:[undead] + radius 3. Put one live zombie and one Rat (beast) inside it — the Rat must get nothing. Standing auras do not exist yet, so this fires at end of activation instead; see the note below."
+  },
+  {
+   "test": true,
+   "source": "TEST CONTENT 2026-08-20 — Angela: \"we need to create a test bestiary… a series of different enemies that are somewhat simple… small versions of different features that we have in the game… clearly designated as tests so they can be thrown away later, or duplicated into real.\"",
+   "id": "test.unit.dreadbrand",
+   "name": "TEST — Dreadbrand",
+   "art": "cultist",
+   "tags": [
+    "demon"
+   ],
+   "role": "support",
+   "ai": "dumb-melee",
+   "stats": {
+    "maxHp": 16,
+    "armor": 1,
+    "resist": 1,
+    "accuracy": 70,
+    "dodge": 0,
+    "strength": 3,
+    "precision": 0,
+    "magic": 0,
+    "spirit": 0,
+    "movement": 4,
+    "reach": 0
+   },
+   "attacks": [
+    "attack.zombie.basic"
+   ],
+   "runs": "today",
+   "triggers": [
+    {
+     "id": "test.trigger.dreadbrand.dread",
+     "hook": "onActivationEnd",
+     "chance": 100,
+     "select": {
+      "select": "area",
+      "side": "enemy",
+      "radius": 2,
+      "origin": "self"
+     },
+     "effect": {
+      "kind": "damage",
+      "amount": 2,
+      "damageType": "magic"
+     }
+    }
+   ],
+   "tests": "THE DAMAGE-ALL-HEROES AURA. Area + side:enemy + radius 2. Every hero inside takes 2 magic; nothing enemy-side does. Walk a hero in and out to see the boundary."
+  },
+  {
+   "test": true,
+   "source": "TEST CONTENT 2026-08-20 — Angela: \"we need to create a test bestiary… a series of different enemies that are somewhat simple… small versions of different features that we have in the game… clearly designated as tests so they can be thrown away later, or duplicated into real.\"",
+   "id": "test.unit.hellsherald",
+   "name": "TEST — Hell’s Herald",
+   "art": "imp",
+   "tags": [
+    "demon"
+   ],
+   "role": "support",
+   "ai": "dumb-melee",
+   "stats": {
+    "maxHp": 12,
+    "armor": 0,
+    "resist": 2,
+    "accuracy": 70,
+    "dodge": 0,
+    "strength": 2,
+    "precision": 0,
+    "magic": 0,
+    "spirit": 0,
+    "movement": 4,
+    "reach": 0
+   },
+   "attacks": [
+    "attack.zombie.basic"
+   ],
+   "runs": "today",
+   "triggers": [
+    {
+     "id": "test.trigger.hellsherald.everyone",
+     "hook": "onActivationEnd",
+     "chance": 100,
+     "select": {
+      "select": "area",
+      "side": "any",
+      "radius": 2,
+      "origin": "self"
+     },
+     "effect": {
+      "kind": "status.apply",
+      "statusId": "status.weak",
+      "value": 1
+     }
+    }
+   ],
+   "tests": "side:any — the aura that hits enemies, allies AND itself. The actor is always one of its own allies, by ruling, so it must Weak itself too."
+  },
+  {
+   "test": true,
+   "source": "TEST CONTENT 2026-08-20 — Angela: \"we need to create a test bestiary… a series of different enemies that are somewhat simple… small versions of different features that we have in the game… clearly designated as tests so they can be thrown away later, or duplicated into real.\"",
+   "id": "test.unit.plaguebell",
+   "name": "TEST — Plague Bell",
+   "art": "necromancer",
+   "tags": [
+    "undead"
+   ],
+   "role": "support",
+   "ai": "ranged-kite",
+   "stats": {
+    "maxHp": 12,
+    "armor": 0,
+    "resist": 0,
+    "accuracy": 70,
+    "dodge": 0,
+    "strength": 0,
+    "precision": 2,
+    "magic": 0,
+    "spirit": 0,
+    "movement": 4,
+    "reach": 3
+   },
+   "attacks": [
+    "attack.mage.staff"
+   ],
+   "runs": "today",
+   "triggers": [
+    {
+     "id": "test.trigger.plaguebell.toll",
+     "hook": "onActivationEnd",
+     "chance": 100,
+     "select": {
+      "select": "area",
+      "side": "enemy"
+     },
+     "effect": {
+      "kind": "status.apply",
+      "statusId": "status.poison",
+      "value": 1
+     }
+    }
+   ],
+   "tests": "AREA WITH NO RADIUS — the unbounded form, \"every hero on the board\". Distance must not be consulted at all."
+  },
+  {
+   "test": true,
+   "source": "TEST CONTENT 2026-08-20 — Angela: \"we need to create a test bestiary… a series of different enemies that are somewhat simple… small versions of different features that we have in the game… clearly designated as tests so they can be thrown away later, or duplicated into real.\"",
+   "id": "test.unit.cleanser",
+   "name": "TEST — Cleanser",
+   "art": "priest-armored",
+   "tags": [
+    "undead"
+   ],
+   "role": "support",
+   "ai": "ranged-kite",
+   "stats": {
+    "maxHp": 12,
+    "armor": 0,
+    "resist": 1,
+    "accuracy": 70,
+    "dodge": 0,
+    "strength": 0,
+    "precision": 2,
+    "magic": 0,
+    "spirit": 2,
+    "movement": 4,
+    "reach": 3
+   },
+   "attacks": [
+    "attack.mage.staff"
+   ],
+   "runs": "today",
+   "triggers": [
+    {
+     "id": "test.trigger.cleanser.scour",
+     "hook": "onActivationEnd",
+     "chance": 100,
+     "select": {
+      "select": "area",
+      "side": "ally",
+      "radius": 2,
+      "origin": "self"
+     },
+     "effect": {
+      "kind": "status.remove",
+      "statusId": "status.burn"
+     }
+    }
+   ],
+   "tests": "status.remove — the only effect kind nothing else here exercises. Set its friends on fire and watch it put them out."
+  },
+  {
+   "test": true,
+   "source": "TEST CONTENT 2026-08-20 — Angela: \"we need to create a test bestiary… a series of different enemies that are somewhat simple… small versions of different features that we have in the game… clearly designated as tests so they can be thrown away later, or duplicated into real.\"",
+   "id": "test.unit.channeler",
+   "name": "TEST — Channeler",
+   "art": "mage-fire",
+   "tags": [
+    "demon"
+   ],
+   "role": "ranged",
+   "ai": "ranged-kite",
+   "stats": {
+    "maxHp": 12,
+    "armor": 0,
+    "resist": 1,
+    "accuracy": 75,
+    "dodge": 0,
+    "strength": 0,
+    "precision": 2,
+    "magic": 4,
+    "spirit": 0,
+    "movement": 4,
+    "reach": 4
+   },
+   "attacks": [
+    "attack.mage.strike"
+   ],
+   "runs": "today",
+   "triggers": [
+    {
+     "id": "test.trigger.channeler.draw",
+     "hook": "onHit",
+     "chance": 100,
+     "select": "target",
+     "effect": {
+      "kind": "damage",
+      "amount": {
+       "scale": "partyMagic",
+       "mult": 1,
+       "div": 2,
+       "base": 1,
+       "round": "down"
+      },
+      "damageType": "magic"
+     }
+    }
+   ],
+   "tests": "ValueSpec SCALING — partyMagic, the SIDE-WIDE sum, not this unit’s own Magic. Field it alone, then field it beside another Magic user; the number has to move."
+  },
+  {
+   "test": true,
+   "source": "TEST CONTENT 2026-08-20 — Angela: \"we need to create a test bestiary… a series of different enemies that are somewhat simple… small versions of different features that we have in the game… clearly designated as tests so they can be thrown away later, or duplicated into real.\"",
+   "id": "test.unit.coinflip",
+   "name": "TEST — Coinflip",
+   "art": "imp",
+   "tags": [
+    "demon"
+   ],
+   "role": "melee",
+   "ai": "dumb-melee",
+   "stats": {
+    "maxHp": 10,
+    "armor": 0,
+    "resist": 0,
+    "accuracy": 70,
+    "dodge": 0,
+    "strength": 3,
+    "precision": 0,
+    "magic": 0,
+    "spirit": 0,
+    "movement": 4,
+    "reach": 0
+   },
+   "attacks": [
+    "attack.zombie.basic"
+   ],
+   "runs": "today",
+   "triggers": [
+    {
+     "id": "test.trigger.coinflip.a",
+     "hook": "onDamage",
+     "chance": 50,
+     "select": "target",
+     "effect": {
+      "kind": "status.apply",
+      "statusId": "status.stun",
+      "value": 1
+     }
+    },
+    {
+     "id": "test.trigger.coinflip.b",
+     "hook": "onDamage",
+     "chance": 50,
+     "select": "target",
+     "effect": {
+      "kind": "status.apply",
+      "statusId": "status.slow",
+      "value": 1
+     }
+    }
+   ],
+   "tests": "CHANCE, and two triggers on the SAME hook from the same source. Both must roll on their own named stream — about a quarter of hits should land both."
+  },
+  {
+   "test": true,
+   "source": "TEST CONTENT 2026-08-20 — Angela: \"we need to create a test bestiary… a series of different enemies that are somewhat simple… small versions of different features that we have in the game… clearly designated as tests so they can be thrown away later, or duplicated into real.\"",
+   "id": "test.unit.cleaver",
+   "name": "TEST — Cleaver",
+   "art": "soldier",
+   "tags": [
+    "undead"
+   ],
+   "role": "melee",
+   "ai": "melee-aggressive",
+   "stats": {
+    "maxHp": 18,
+    "armor": 1,
+    "resist": 0,
+    "accuracy": 70,
+    "dodge": 0,
+    "strength": 5,
+    "precision": 0,
+    "magic": 0,
+    "spirit": 0,
+    "movement": 4,
+    "reach": 0
+   },
+   "attacks": [
+    "attack.warrior.axe"
+   ],
+   "runs": "today",
+   "triggers": [
+    {
+     "id": "test.trigger.cleaver.follow-through",
+     "hook": "onHit",
+     "chance": 100,
+     "select": {
+      "select": "area",
+      "side": "enemy",
+      "radius": 1,
+      "origin": "target"
+     },
+     "effect": {
+      "kind": "damage",
+      "amount": 2,
+      "damageType": "physical"
+     }
+    }
+   ],
+   "tests": "origin:’target’ — the cleave. The radius is measured from the thing it just hit, not from itself. This is the pair to the Bloatling’s origin:self."
+  },
+  {
+   "test": true,
+   "source": "TEST CONTENT 2026-08-20 — Angela: \"we need to create a test bestiary… a series of different enemies that are somewhat simple… small versions of different features that we have in the game… clearly designated as tests so they can be thrown away later, or duplicated into real.\"",
+   "id": "test.unit.hunter",
+   "name": "TEST — Hunter",
+   "art": "werewolf",
+   "tags": [
+    "beast"
+   ],
+   "role": "melee",
+   "ai": "melee-aggressive",
+   "stats": {
+    "maxHp": 16,
+    "armor": 0,
+    "resist": 0,
+    "accuracy": 75,
+    "dodge": 10,
+    "strength": 4,
+    "precision": 0,
+    "magic": 0,
+    "spirit": 0,
+    "movement": 6,
+    "reach": 0
+   },
+   "attacks": [
+    "attack.fangs.bite"
+   ],
+   "runs": "today",
+   "triggers": [
+    {
+     "id": "test.trigger.hunter.mark-the-dead",
+     "hook": "onHit",
+     "chance": 100,
+     "select": {
+      "select": "area",
+      "side": "enemy",
+      "radius": 2,
+      "origin": "self",
+      "requireTags": [
+       "undead"
+      ]
+     },
+     "effect": {
+      "kind": "damage",
+      "amount": 2,
+      "damageType": "true"
+     }
+    }
+   ],
+   "tests": "requireTags as a FILTER on an enemy-side area. Field it against a mixed hero party plus a raised skeleton and only the undead should take it."
+  }
+ ],
+ "blocked": [
+  {
+   "id": "test.unit.standing-aura",
+   "name": "TEST — Standing Aura (BLOCKED)",
+   "needs": "the `aura` hook — a standing property with a radius, checked continuously",
+   "why": "Every aura above is faked as onActivationEnd, so it pulses once per activation instead of being TRUE while you stand there. A hero who walks in and out mid-activation is untouched. 28 content entries carry a real aura; this is the gap."
+  },
+  {
+   "id": "test.unit.opener",
+   "name": "TEST — Opener (BLOCKED)",
+   "needs": "the `startOfBattle` hook",
+   "why": "36 content entries fire at startOfBattle. Nothing enemy-side can currently deploy, buff itself, or summon on turn zero."
+  },
+  {
+   "id": "test.unit.riposte",
+   "name": "TEST — Riposte (BLOCKED)",
+   "needs": "the `onDodge` hook",
+   "why": "Fires on the DEFENDER when its Dodge is why the attack missed. The Flicker at 40 Dodge is the fixture waiting for it. See engine/COMBAT-SEQUENCE.md #onDodge."
+  },
+  {
+   "id": "test.unit.slayer",
+   "name": "TEST — Slayer (BLOCKED)",
+   "needs": "damage station 400 VS_TARGET",
+   "why": "\"+2 damage against undead\" cannot be expressed. 43 content entries need it. See engine/COMBAT-SEQUENCE.md #Conditional-on-the-target."
+  },
+  {
+   "id": "test.unit.brood",
+   "name": "TEST — Brood (BLOCKED)",
+   "needs": "summoning, and rule.summon-order",
+   "why": "A unit that puts two more units on the board, each with its own stat block and AI, acting first in summon order."
+  },
+  {
+   "id": "test.unit.groundskeeper",
+   "name": "TEST — Groundskeeper (BLOCKED)",
+   "needs": "ground layers as a persistent tile state",
+   "why": "TERRAIN.BURNING and TERRAIN.POISONED exist as constants in types.ts and nothing writes them. A hex that is set burning must still be burning next Turn."
+  },
+  {
+   "id": "test.unit.frostbite",
+   "name": "TEST — Frostbite (BLOCKED)",
+   "needs": "status.frost",
+   "why": "Frost is one of the ten authored statuses and `src/content/statuses.ts` does not define it. Same for status.karma."
+  }
+ ]
+}

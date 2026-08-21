@@ -1,0 +1,62 @@
+[
+ {
+  "id": "item.plague-survivor",
+  "name": "Plague Survivor",
+  "itemClass": "relic",
+  "tier": 2,
+  "slots": 1,
+  "hands": 0,
+  "classRestriction": null,
+  "statModifiers": {
+   "health": 4,
+   "crit": -5
+  },
+  "triggers": [],
+  "grants": [],
+  "equipCost": {},
+  "persists": true,
+  "tags": [],
+  "intent": "You lived through the thing that killed the village and something in you never sharpened up again.",
+  "source": "Hell-TCG name reused (origin, Plague Survivor — rebuilt as bulk bought with the Crit stat Hell-TCG never had)"
+ },
+ {
+  "id": "item.skyward-censer",
+  "name": "Skyward Censer",
+  "itemClass": "relic",
+  "tier": 2,
+  "slots": 1,
+  "hands": 0,
+  "classRestriction": null,
+  "statModifiers": {
+   "spirit": 2,
+   "health": -4
+  },
+  "triggers": [],
+  "grants": [],
+  "equipCost": {},
+  "persists": true,
+  "tags": [],
+  "intent": "Two Spirit into a party-wide sum is enormous and it is bought with four Health off the one hero holding the censer.",
+  "source": "Hell-TCG name reused (Priest item, Skyward Censer — the Faith grant is Kingdom-tier; rebuilt as Spirit bought with the bearer's body)"
+ },
+ {
+  "id": "item.hunters-instinct",
+  "name": "Hunter's Instinct",
+  "itemClass": "relic",
+  "tier": 1,
+  "slots": 1,
+  "hands": 0,
+  "classRestriction": null,
+  "statModifiers": {
+   "vision": 1,
+   "health": -2
+  },
+  "triggers": [],
+  "grants": [],
+  "equipCost": {},
+  "persists": true,
+  "tags": [],
+  "intent": "One extra ring of sight, paid for in the thing that keeps you alive when the sight stops mattering.",
+  "source": "Hell-TCG name reused (origin, Hunter's Instinct — Vision is authored from nothing, so this is the cheap entry point to it)"
+ }
+]

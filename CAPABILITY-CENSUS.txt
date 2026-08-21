@@ -1,0 +1,50 @@
+# Engine capabilities each rule asks for, counted
+
+   1  charge a campaign resource  <-- 
+        attack.hammer-of-justice.sentence
+   1  measure a stat from another unit  <-- 
+        power.magical-friend.share-senses
+   1  prevent damage entirely  <-- 
+        power.grove-keeper.quench
+   1  grant a badge  <-- 
+        enchant.dragon-slayer
+   1  a unit that does not attack  <-- 
+        specialty.magical-friend
+   2  count units on the field  <-- 
+        item.sturdy-runed-leather, power.martyred-saint.oblation
+   2  grant an aura mid-battle  <-- 
+        power.protector.sanctuary, power.grand-master.close-ranks
+   2  read another unit’s Vision  <-- 
+        power.magical-friend.share-senses, specialty.magical-friend
+   2  grant a free activation  <-- 
+        power.diviner.quicken, power.berserker.unleash
+   2  did-not-move / did-not-attack  <-- 
+        power.militia.aim, power.archer.take-the-shot
+   3  knockback  <-- 
+        item.war-hammer, item.rune-bashing, enchant.ironbane
+   3  summon / companion unit  <-- 
+        power.magical-friend.succor, power.magical-friend.share-senses, specialty.magical-friend
+   3  auto-select by distance  <-- 
+        power.feral.run-down, power.beastward.usher-away, specialty.witch-hunter
+   3  place terrain  <-- 
+        power.fire-master.fireball, power.blightcaller.creeping-blight, power.fire-staff.fireball
+   3  modify the PARTY-WIDE total  <-- 
+        power.archivist.scroll-of-power, power.sage.wisdom, power.sage.ancient-knowledge
+   4  revive / stabilise
+   4  act out of turn
+   4  status on a HEX not a unit
+   6  halve or double a value
+   6  stealth: enter
+   6  see through darkness or fog
+   7  pass through occupied hexes
+   8  move another unit
+   8  scale off a stat with a multiplier
+   8  a second resource bar
+   9  thorns
+  11  stealth: break/reveal
+  11  consume a status on the target
+  12  place a trap
+  12  immunity to a status
+  19  copy or steal an effect
+  24  modify an attack you have not made
+  28  read the party-wide sum

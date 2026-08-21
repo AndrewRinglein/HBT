@@ -1,0 +1,369 @@
+# HELL-TCG NAME + MECHANIC CORPUS — harvested 2026-08-17
+
+## SPECIALTIES (61) — id | name | class | description | statBonuses | triggers
+rogue-poison-master | Poison Master | Rogue | Expert in toxins and venoms | {"health":1} | onDamage
+rogue-assassin | Assassin | Rogue | Deadly striker with precision attacks | {"melee":1,"dodge":1} | onDamage
+rogue-shadowdancer | ShadowDancer | Rogue | Master of shadows and deception. Gains Blink class power. | {"reach":2,"dodge":1} | 
+mage-fire-master | Fire-master | Mage | Warrior-mage with arcane power. Attacks apply Burn equal to Magic. | {"health":1,"reach":2} | onAttack
+mage-soul-stealer | Soul Stealer | Mage | Drains life force from enemies. Dealing damage heals self for 2. Can survive an extra wound. | {"ranged":2} | onDamage
+mage-mystic | Mystic | Mage | Seer of hidden paths. Attacks apply 2 Weak to target. | {"spirit":1,"dodge":1} | onAttack
+paladin-vigil | Vigil | Paladin | Watchful guardian of the faithful. +Resist, +Favor. Extra wound. | {"resist":1} | 
+paladin-deathknight | DeathKnight | Paladin | Fallen warrior wielding dark power. Poison on attack, heals on kill. Returns to hand when wounded. | {} | onAttack,onKill
+paladin-holy-avenger | Holy Avenger | Paladin | Divine warrior smiting evil. Burns on hit. | {"melee":2,"health":2} | onDamage
+priest-war-priest | War Priest | Priest | Warrior of faith and steel | {"armor":1,"melee":2,"ranged":1} | 
+priest-oracle | Oracle | Priest | Seer of divine will. Grants a tactic slot and divine tactics. | {} | onEnter
+priest-divine-light | Divine Light | Priest | Beacon of holy power | {"resist":2} | onEnter
+ranger-bowmaster | Bowmaster | Ranger | Master archer with deadly precision | {"ranged":1,"health":-1,"itemSlots":2} | 
+ranger-winged-assassin | Winged Assassin | Ranger | Swift killer from above | {"ranged":1} | onDamage
+ranger-wayfinder | Wayfinder | Ranger | Expert pathfinder and survivor | {"melee":2,"health":1,"itemSlots":1,"dodge":1} | 
+warrior-beserker | Beserker | Warrior | Frenzied warrior. -2 Item Slots, +3 Health, +2 Melee. | {"itemSlots":-2,"health":3,"melee":2} | 
+warrior-shieldbearer | Shieldbearer | Warrior | Stalwart defender. +1 Item Slot, +2 Health, +1 Resolute. | {"ranged":-1,"health":6,"itemSlots":1} | 
+warrior-warleader | Warleader | Warrior | Born for combat and glory. On enter: removes 3 Weak from all heroes. | {"itemSlots":1} | onEnter
+civilian-apothecary | Apothecary | Civilian | Healer with knowledge of herbs and remedies | {"reach":1,"resist":1} | onEnter
+civilian-trickster | Trickster | Civilian | Quick-witted survivor using cunning to survive | {"dodge":1,"reach":1,"itemSlots":2} | onEnter
+civilian-soldier | Soldier | Civilian | Basic combat training | {"melee":1,"resist":1} | 
+civilian-archer | Archer | Civilian | Hunter trained in ranged combat | {"ranged":2,"reach":2,"health":-1} | 
+beast-magical-friend | Magical Friend | Beast | A mystical companion with healing and arcane powers | {"health":2,"spirit":1,"magic":1,"itemSlots":1} | 
+beast-feral | Feral | Beast | A savage predator that tears enemies apart | {"health":2,"melee":2} | onDamage
+beast-protector | Protector | Beast | A guardian that shields allies from harm | {"health":4} | onEnter
+ebony-mask-shadowbound | Shadowbound | Ebony Mask | Embraces shadow magic, gaining dodge and corruption | {"magic":1,"dodge":1,"itemSlots":1} | 
+ebony-mask-contractbound | Contractbound | Ebony Mask | Dark contracts pay in blood and coin. Kills earn faith; death costs it. | {"melee":1,"itemSlots":1} | onKill,onEnter
+ebony-mask-nightblade | Nightblade | Ebony Mask | Silent killer. Every cut bleeds. Reach lets them strike from safety. | {"melee":2,"reach":1} | onDamage
+martyr-redeemer | Redeemer | Martyr | Sacrifices self to save others through holy fire | {"spirit":1} | onEnter
+martyr-blessed-sufferer | Blessed Sufferer | Martyr | Endures pain to protect the faithful | {"dodge":3} | 
+martyr-martyred-saint | Martyred Saint | Martyr | Death is not the end — it is the weapon. Detonates in holy fire. | {"health":2,"spirit":1} | onDeath
+demon-hunter-havoc | Havoc | Demon Hunter | Unleashes devastating attacks that cause bleeding | {"melee":1,"ranged":1} | onKill
+demon-hunter-demonic-ward | Demonic Ward | Demon Hunter | Armored against demonic corruption | {"armor":1} | 
+demon-hunter-vengeance | Vengeance | Demon Hunter | Every wound fuels the rage. Gets stronger each time they are hit. | {"ranged":1} | onTakingDamage
+shaman-storm-caller | Storm Caller | Shaman | Channels the fury of storms. +1 Magic, +1 Ranged, +2 Reach. | {"magic":1,"ranged":1,"reach":2} | 
+shaman-totem-master | Totem Master | Shaman | Draws power from ancestral totems. turnEnd: +1 Magic. onTakingDamage: -1 Magic. | {"ranged":-1} | turnEnd,onTakingDamage
+shaman-spirit-walker | Spirit Walker | Shaman | Walks between worlds, mending wounds with ancestral power. | {"spirit":1,"resist":1,"health":1} | onEnter
+templar-holy-champion | Holy Champion | Templar | Crusader of the faith. +1 Armor, -1 Health. +1 Favor. | {"armor":1,"health":-1} | 
+templar-sacred-shield | Sacred Shield | Templar | Protected by divine magic. +2 Resist. | {"resist":2} | 
+templar-grand-master | Grand Master | Templar | Commanding presence that armors the entire party on arrival. | {"melee":1} | onEnter
+barbarian-reaver | Reaver | Barbarian | Blood-soaked berserker. On enter: applies 2 Bleed to all enemies and self. +1 Melee. | {"melee":1} | onEnter
+barbarian-warchief | Warchief | Barbarian | War leader. On enter: all heroes +1 Melee, +1 max Health. | {} | onEnter
+barbarian-berserker | Berserker | Barbarian | Frenzy builds with each kill. Every death feeds the rage. | {"melee":2,"health":-1} | onKill
+inquisitor-purifier | Purifier | Inquisitor | Sacrifices own health to purify allies. When attacking: takes 2 true damage, heals party for 1. +1 Melee, +2 Health. | {"melee":1,"health":2} | onAttack
+inquisitor-exorcist | Exorcist | Inquisitor | Transfers afflictions to enemies. When attacking: removes 1 Burn and Poison from self, applies 1 Burn and Poison to target. | {} | onAttack
+inquisitor-witch-hunter | Witch Hunter | Inquisitor | Relentless hunter of darkness. Each kill reveals the next prey. | {"ranged":1,"melee":1} | onKill
+druid-nature-warden | Nature Warden | Druid | Weakens enemies with nature magic. turnEnd: 1 Weak to same row. | {} | turnEnd
+druid-wild-shaper | Wild Shaper | Druid | Shapeshifter with regen. turnEnd: heal self 1. +3 Health. | {"dodge":3} | turnEnd
+druid-grove-keeper | Grove Keeper | Druid | Nature's mender. Deployment heals the whole party. | {"spirit":1,"health":1} | onEnter
+knight-champion | Champion | Knight | Rallies allies to fight harder. On enter: all heroes +2 Melee, +2 max Health. +1 Action, -1 Draw. | {} | onEnter
+knight-guardian | Guardian | Knight | Protects allies with shared armor. On enter: self -1 Armor, allHeroes +1 Armor. | {} | onEnter
+knight-crusader | Crusader | Knight | Holy warrior who scorches enemies with divine fire on every hit. | {"melee":2,"health":1} | onDamage
+lorekeeper-archivist | Archivist | Lorekeeper | Living library. Floods you with options every turn and on deployment. | {"health":-1} | onEnter
+lorekeeper-sage | Sage | Lorekeeper | Ancient knowledge empowers everyone's arcane abilities. | {"magic":1} | onEnter
+lorekeeper-chronicler | Chronicler | Lorekeeper | Recorded histories inform better tactics. Extra tactic slot. | {"health":1,"resist":1} | 
+warden-sentinel | Sentinel | Warden | The unyielding watchman. Attack them and feel the sting. | {"health":2,"armor":1} | onTakingDamage
+warden-trapper | Trapper | Warden | The field is laced with traps. Enemies are poisoned on entry, weakened on hit. | {"reach":1,"dodge":1} | onEnter,onDamage
+warden-protector | Protector | Warden | Guardian of the wild. Shields allies with natural resilience. | {"armor":1,"spirit":1} | onEnter
+prophet-oracle | Oracle | Prophet | Visions flood in — cards flow like water. Fragile but omniscient. | {"health":-1} | onEnter
+prophet-seer | Seer | Prophet | Foresees enemy weakness and exploits it. | {"spirit":1} | onEnter,onDamage
+prophet-diviner | Diviner | Prophet | 'Act NOW — I foresee the path.' Entry burst of actions. Last vision on death. | {"spirit":1,"health":1} | onEnter,onDeath
+
+## CLASS POWERS (303) — name | class | specialty | cd | warmUp | category | description
+Knife in the Back | Rogue | Assassin | 3 | 2 | offensive | Deal 10 Physical damage to lowest Health enemy.
+Hail of Poison Knives | Rogue | ShadowDancer | 2 | 0 | offensive | 2 Poison to enemies in your row.
+Poison Arrow | Rogue | Poison Master | 1 | 0 | offensive | 2 Poison to target enemy.
+Double Strike | Rogue | Assassin | 1 | 0 | offensive | Attack 2 random enemies.
+Antidote | Rogue | Poison Master | 1 | 0 | support | Remove 3 Poison from all heroes.
+Dodge Behind | Rogue | Assassin | 4 | 0 | defensive | Gain 1 Dodge, Draw 1, and gain +1 Melee.
+Vanish in Shadow | Rogue | ShadowDancer | 4 | 0 | defensive | Gain 2 Dodge.
+Assassination Strike | Rogue | ShadowDancer | 4 | 0 | offensive | Deal 8 Physical damage to target enemy.
+Poison Cloud | Rogue | Poison Master | 4 | 0 | offensive | 2 Poison to all enemies.
+Dark Bolt | Mage | Soul Stealer | 4 | 0 | offensive | Attacks apply 2 Bleed.
+Fireball | Mage | Fire-master | 2 | 0 | offensive | Half Magic Burn to enemies in your row.
+Lightning Strike | Mage | Mystic | 1 | 0 | offensive | Deal Magic damage to a random enemy.
+Protection | Mage | Fire-master | 2 | 0 | defensive | Grant Protection equal to Half Magic + 2.
+Eldritch Might | Mage | Fire-master | 0 | 0 | support | Gain +1 Magic. Lose 1 max Health.
+Divination | Mage | Mystic | 3 | 0 | support | Grant +1 Resist and 1 Dodge to two random heroes.
+Life Drain | Mage | Soul Stealer | 3 | 0 | offensive | Attacks heal self for 2.
+Greater Visions | Mage | Mystic | 2 | 0 | support | Draw 1, gain 1 Action, lose 1 max Health.
+Eldritch Sacrifice | Mage | Soul Stealer | 5 | 0 | offensive | Deal 15 True damage to a random hero. Draw 5 and gain 3 Actions. Deal Half Magic + 2 Magic damage to all enemies.
+Smite | Paladin | Holy Avenger | 2 | 0 | offensive | Deal Spirit Magic damage to target enemy.
+Holy Protection | Paladin | Vigil | 4 | 0 | defensive | Gain +1 Armor. Lose 2 max Health.
+Succor of the Faithful | Paladin | Holy Avenger | 1 | 0 | support | Gain +1 Spirit, remove 2 Burn and 2 Poison.
+Bravery | Paladin | Vigil | 1 | 0 | support | All heroes gain +1 Resist for combat and remove 2 Weak.
+Mass Healing | Paladin | Vigil | 2 | 0 | support | Heal all heroes for Half Spirit - 1.
+Righteous Fury | Paladin | DeathKnight | 10 | 0 | offensive | Attacks reduce target Armor by 1.
+Lay on Hands | Paladin | Holy Avenger | 1 | 0 | support | Heal target for 3.
+Unholy Shield | Paladin | DeathKnight | 10 | 0 | defensive | When hit, 2 Burn to attacker.
+Unholy Wrath | Paladin | DeathKnight | 3 | 1 | offensive | Deal Spirit x3 Magic damage to target enemy. Deal 1 Magic damage to all enemies.
+Circle of Healing | Priest | Oracle | 1 | 0 | support | Heal all heroes for Half Spirit - 1.
+Restoration | Priest | War Priest | 2 | 0 | support | Heal target for Spirit and remove Half Spirit stacks of Poison.
+Purify | Priest | Divine Light | 2 | 0 | support | Heal target for Half Spirit + 3 and remove all Poison.
+Close Wounds | Priest | Oracle | 2 | 0 | support | Heal target for Half Spirit + 1 and remove all Burn.
+Holy Flames | Priest | War Priest | 4 | 0 | offensive | Spirit Burn to a random enemy.
+Total Healing | Priest | Divine Light | 3 | 0 | support | Heal all heroes for Spirit x2.
+Smite Evil | Priest | War Priest | 1 | 0 | offensive | Gain +2 Ranged.
+Sanctuary | Priest | Divine Light | 4 | 1 | defensive | Grant Protection equal to Spirit + 3.
+Prophecy of Light | Priest | Oracle | 3 | 2 | support | Draw 2.
+Stamina for the Weak | Priest | Any Priest | 10 | 2 | support | All heroes gain +1 Health. Remove all Drained from party.
+Poison Shot | Ranger | Winged Assassin | 1 | 0 | offensive | 4 Poison to a random enemy.
+Rapid Fire | Ranger | Winged Assassin | 2 | 0 | offensive | Attack 2 random enemies.
+Careful Aim | Ranger | Bowmaster | 1 | 0 | support | Gain +1 Reach, +1 Ranged.
+Bandage | Ranger | Any Ranger | 3 | 0 | support | Heal target for 2, remove 2 Burn from target.
+Sniper | Ranger | Bowmaster | 2 | 0 | offensive | Attack target enemy with +4 damage.
+Rain of Arrows | Ranger | Bowmaster | 2 | 0 | offensive | Deal Ranged - 1 Physical damage to enemies in your row. Become Drained.
+Stunning Arrow | Ranger | Wayfinder | 2 | 0 | offensive | Attack target enemy. 1 Stun.
+Poisoning | Ranger | Winged Assassin | 5 | 0 | offensive | Attacks apply 1 Poison.
+Quick Evasion | Ranger | Wayfinder | 3 | 0 | defensive | Gain 1 Dodge and remove all Burn and Poison from self.
+Berserker Fury | Warrior | Beserker | 0 | 0 | offensive | Take 1 True damage, gain +2 Melee.
+Double Attack | Warrior | Beserker | 3 | 0 | offensive | Attack an enemy twice (respects Reach). Take 1 True damage.
+Shield Wall | Warrior | Shieldbearer | 3 | 0 | defensive | For combat, gain 1 Armor, lose 1 Max Health and 1 Melee.
+Stunning Strike | Warrior | Shieldbearer | 2 | 0 | offensive | Attack with +2 damage. 1 Stun.
+Last Stand | Warrior | Shieldbearer | 7 | 0 | defensive | Gain +1 Armor, +1 Resist, +4 Health temporarily.
+Battle Cry | Warrior | Beserker | 3 | 0 | support | 1 Weak to all enemies.
+Second Wind | Warrior | Warleader | 5 | 0 | support | Heal self for 5 and gain 1 max Health.
+Titan's Strength | Warrior | Warleader | 1 | 0 | offensive | Attack target enemy and gain +1 Melee (Melee position only).
+Whirlwind Strike | Warrior | Warleader | 3 | 0 | offensive | Attack 2 random enemies at Melee - 2 damage. 2 Bleed to each.
+Rallying Cry | Warrior | restricted | 10 | 0 | support | Remove all Weak from target hero.
+Fire Bomb | Civilian | Apothecary | 3 | 0 | offensive | 2 Burn to all enemies in row.
+Healing Potion | Civilian | Apothecary | 4 | 0 | support | Heal target for 5.
+Smoke Bomb | Civilian | Apothecary | 3 | 0 | support | 1 Weak to enemies in your row.
+Armor Gap | Civilian | Trickster | 5 | 0 | offensive | Lower target Armor by 2.
+Poison Nick | Civilian | Trickster | 3 | 0 | offensive | 2 Poison to target enemy.
+Escape | Civilian | Trickster | 5 | 0 | defensive | Leave the battlefield (items discarded, return to hero deck).
+Impersonation | Civilian | Trickster | 20 | 0 | support | Become any class. Gain ALL class-specific bonuses from equipped items.
+Soldier Up! | Civilian | Soldier | 4 | 0 | support | Gain 2 max Health.
+Ready! | Civilian | Soldier | 3 | 0 | support | Gain +1 Melee and +1 Ranged.
+Aim! | Civilian | Soldier | 2 | 0 | offensive | Attack any enemy with +2 damage (ignores Reach).
+Dedication | Civilian | Archer | 0 | 0 | offensive | Gain +3 Ranged, lose 2 Health.
+Flurry of Arrows | Civilian | Archer | 1 | 0 | offensive | Attack 2 random enemies dealing Ranged -1 damage each.
+Small Bandage | Civilian | Archer | 1 | 0 | support | Heal target for 3 and remove all Burn.
+Knowledge is Power | Civilian | restricted | 0 | 0 | support | Gain +1 Magic. Draw 1.
+Equip | Civilian | Any Civilian | 3 | 0 | support | Target hero gains +1 item slot.
+Barrier | Civilian | restricted | 2 | 0 | defensive | Grant Protection equal to Half Magic + 1.
+Chain Lightning | Civilian | restricted | 2 | 0 | offensive | Deal Half Magic + 1 Magic damage to all enemies. 1 Burn to all enemies.
+Succor | Beast | Magical Friend | 4 | 0 | support | Heal target for Half Spirit.
+Cuddle | Beast | Magical Friend | 3 | 0 | support | Remove all Burn and Poison from target.
+Mystic Wrath | Beast | Magical Friend | 3 | 3 | offensive | Deal Magic + 2 Magic damage to target enemy.
+Pounce | Beast | Feral | 3 | 0 | offensive | Attack target with +2 damage. 1 Stun (Melee position only).
+Rend | Beast | Feral | 3 | 0 | offensive | Attack twice and gain +1 Melee.
+Ignore Wounds | Beast | Feral | 6 | 0 | defensive | Heal self for 2 and gain +3 max Health.
+Protect | Beast | Protector | 3 | 0 | support | Target hero gains +1 Armor and +1 Resist.
+Conduct Life | Beast | Protector | 1 | 0 | support | Target hero gains +4 max Health. Take 3 True damage.
+Sacrifice | Beast | Protector | 4 | 0 | support | Heal all heroes for Spirit x1.5. Take 8 True damage.
+Flight | Mage | Any Mage | 2 | 0 | defensive | Gain +1 Dodge, +2 Reach, +1 Ranged.
+Earth Wall | Mage | Any Mage | 3 | 0 | defensive | Lose 1 max Health. All heroes gain Protection equal to Quarter Magic + 2.
+Arcane Strike | Mage |  | 0 | 0 | offensive | Deal Magic damage to target enemy. Gain Drained.
+Supply | Civilian | Any Civilian | 4 | 0 | support | Gain 1 Supply.
+Bear Form | Druid | restricted | 10 | 0 | support | Transform into a bear. +7 Health, +2 Armor, +3 Melee, +1 Ranged, -1 Magic. Changes appearance.
+Nature's Blessing | Druid | Nature Warden | 2 | 0 | support | Heal all heroes for Half Magic + 1.
+Entangle | Druid | Nature Warden | 3 | 0 | offensive | 2 Stun and 3 Weak to target enemy.
+Regrowth | Druid | Nature Warden | 4 | 0 | support | Target gains Regen 5.
+Wild Growth | Druid | Wild Shaper | 3 | 0 | support | Gain +1 Melee and +2 Health. Become Drained.
+Wall of Thorns | Druid | Wild Shaper | 7 | 0 | defensive | All heroes gain Thorns 1.
+Primal Roar | Druid | Wild Shaper | 4 | 2 | support | 2 Weak to all enemies.
+Harmony | Druid | Grove Keeper | 3 | 0 | support | Remove all Burn and Poison from all heroes.
+Sanctuary | Druid | Grove Keeper | 5 | 0 | support | All heroes gain +1 Resist.
+Life Bloom | Druid | Grove Keeper | 2 | 0 | support | Heal target for Magic, target gains +2 Health.
+Rejuvenation | Druid | Any Druid | 8 | 0 | support | Heal all heroes for 2. All heroes gain +2 Health. Remove all Drained and Fatigued from party.
+Shield Bash | Knight | Champion | 5 | 0 | offensive | 1 Stun and 1 True damage to target.
+Challenge | Knight | Champion | 5 | 10 | support | Gain +6 Melee and +3 Armor, heal 10.
+Rally | Knight | Champion | 4 | 1 | support | All heroes gain +1 Melee.
+Iron Wall | Knight | Guardian | 5 | 6 | defensive | Gain +2 Armor.
+Protection | Knight | Guardian | 4 | 2 | support | Remove target hero from play. Gain 1 Armor.
+Stalwart | Knight | Guardian | 0 | 0 | support | Gain +1 Resolute. Lose 1 Melee.
+Holy Charge | Knight | Any Knight | 3 | 2 | offensive | Attack target enemy with +2 damage.
+Righteous Blow | Knight | Any Knight | 2 | 0 | offensive | Attack with +3 damage. Heal self for 2.
+Oathbound | Knight | Any Knight | 5 | 5 | support | Gain +1 Spirit and gain 1 Faith.
+Purify | Inquisitor | restricted | 2 | 0 | support | Remove up to 10 Burn and 10 Poison from target hero.
+Aura of Purity | Inquisitor | restricted | 0 | 0 | passive | Passive: At end of turn, remove 1 Weak from all heroes.
+Holy Fire | Inquisitor | Any Inquisitor | 6 | 4 | offensive | Half Spirit Burn to all enemies.
+Judgment | Inquisitor | Any Inquisitor | 4 | 2 | offensive | Deal 8 True damage to target enemy.
+Cleanse | Inquisitor | Purifier | 4 | 3 | support | Remove all status effects from all heroes, take 5 damage, lose 2 Health.
+Blessing | Inquisitor | Purifier | 2 | 2 | support | Heal target for Half Spirit + 3 and grant +1 Resist.
+True Sanctuary | Inquisitor | Purifier | 4 | 1 | defensive | Grant Protection equal to Spirit x1.5.
+Banish | Inquisitor | Exorcist | 10 | 3 | offensive | Deal 12 True damage to target. Take 4 damage.
+Holy Shield | Inquisitor | Exorcist | 3 | 1 | defensive | Grant Protection equal to Spirit + 3.
+Exorcism | Inquisitor | Exorcist | 4 | 3 | offensive | Deal 4 True damage to all enemies. Take 3 damage.
+Rage | Barbarian | restricted | 3 | 1 | support | Enter a rage. +5 Melee (1 turn).
+Rend | Barbarian | Reaver | 2 | 1 | offensive | Attack target. 4 Bleed.
+Cleave | Barbarian | Reaver | 3 | 2 | offensive | Deal Melee - 1 Physical damage to enemies in your row. Become Drained.
+Gore | Barbarian | Reaver | 4 | 1 | offensive | Attack twice. 2 Bleed to self.
+War Cry | Barbarian | Warchief | 3 | 1 | support | 2 Weak to all enemies. All heroes gain +1 Melee temporarily.
+Intimidate | Barbarian | Warchief | 10 | 4 | support | 1 Stun to all enemies and 2 Weak to all heroes.
+Blood Rage | Barbarian | Warchief | 8 | 3 | offensive | All heroes gain +2 Melee and +1 Ranged. All heroes take 2 True damage.
+Frenzy | Barbarian | Any Barbarian | 2 | 2 | offensive | Attack 3 random enemies. Become Drained.
+Bloodlust | Barbarian | Any Barbarian | 4 | 0 | offensive | Gain +2 Melee. Become Drained.
+Unstoppable | Barbarian | Any Barbarian | 6 | 3 | defensive | Gain +4 max Health. Remove all Stun and Weak from self.
+Poison Roots | Shaman | restricted | 3 | 0 | offensive | Deal 2 True damage. 1 Stun and 4 Weak.
+Totem of Healing | Shaman | Totem Master | 4 | 0 | support | Each turn, heal all heroes for 1.
+Totem of Wrath | Shaman | Totem Master | 4 | 0 | offensive | Each turn, 1 Burn to all enemies.
+Totem of Protection | Shaman | Totem Master | 5 | 0 | defensive | All heroes gain +1 Armor.
+Lightning Bolt | Shaman | Storm Caller | 2 | 0 | offensive | Deal Magic damage to target enemy.
+Ethereal Form | Shaman | Storm Caller | 3 | 0 | defensive | Gain 2 Dodge and +2 Resist.
+Storm Surge | Shaman | Storm Caller | 4 | 0 | offensive | Deal Half Magic damage to all enemies. 1 Stun to all enemies. Become Drained.
+Spirit Link | Shaman | Any Shaman | 2 | 0 | support | Heal all heroes for 2. Draw 1.
+Ancestor's Call | Shaman | Any Shaman | 4 | 0 | support | Draw 3. Gain 1 Action. Become Fatigued.
+Exemplify | Templar | restricted | 2 | 0 | support | Remove up to 10 Poison from target. Target gains +1 Armor.
+Holy Radiance | Templar | Holy Champion | 3 | 1 | support | Heal all heroes for 3. 2 Burn to all enemies.
+Flaming Smite | Templar | Holy Champion | 2 | 0 | offensive | Attack target enemy. Half Spirit Burn.
+Fervor | Templar | Holy Champion | 3 | 5 | offensive | Gain +2 Melee and +1 Armor.
+Bound by the Flesh | Templar | Any Templar | 4 | 0 | support | Lose 6 Health. All heroes gain 2 Health.
+Flash | Templar | Any Templar | 5 | 0 | offensive | 2 Burn to target enemy.
+Sacred Shield | Templar | Sacred Shield | 3 | 0 | defensive | Target gains Protection equal to Spirit.
+Fortify | Templar | Sacred Shield | 4 | 3 | defensive | All heroes gain +1 Armor. Gain +2 max Health.
+Guardian Angel | Templar | Sacred Shield | 2 | 0 | support | Remove target hero from play. Heal party for 2.
+Demon Hunting | Demon Hunter | restricted | 0 | 0 | support | Remove up to 10 Burn from self. Gain +1 Ranged and +1 Melee.
+Blade Dance | Demon Hunter | Havoc | 3 | 0 | offensive | Attack 3 random enemies at Ranged - 1 damage each.
+Fel Rush | Demon Hunter | Havoc | 4 | 4 | offensive | Deal 4 Magic damage to enemies in your row. Gain 1 Dodge.
+Fury | Demon Hunter | Havoc | 2 | 0 | offensive | Gain +2 Melee and +2 Ranged temporarily (1 turn).
+Demon Shield | Demon Hunter | Any Demon Hunter | 7 | 0 | defensive | Grant 4 Protection.
+Crossbow Shot | Demon Hunter | Any Demon Hunter | 4 | 1 | offensive | Attack target enemy with -1 damage.
+Soul Barrier | Demon Hunter | Demonic Ward | 3 | 0 | defensive | Grant Protection equal to Ranged + 3. Remove all Burn from self.
+Spectral Sight | Demon Hunter | Demonic Ward | 4 | 0 | support | Gain +2 Reach and +1 Resist.
+Consume Magic | Demon Hunter | Demonic Ward | 4 | 0 | support | Remove all Burn and Poison from self. Heal 2.
+Ancient Knowledge | Lorekeeper | restricted | 3 | 0 | support | Draw 2. Gain +1 Magic.
+Identify | Lorekeeper | Archivist | 2 | 0 | offensive | Target enemy takes +2 damage from all sources.
+Scroll of Power | Lorekeeper | Archivist | 4 | 0 | support | All heroes gain +1 Magic.
+Forbidden Tome | Lorekeeper | Archivist | 5 | 0 | support | Draw 4. Take 3 True damage.
+Wisdom | Lorekeeper | Sage | 0 | 0 | support | Gain +1 Spirit.
+Enlighten | Lorekeeper | Sage | 3 | 0 | support | Target gains +1 Magic and +1 Spirit.
+Meditation | Lorekeeper | Sage | 4 | 0 | support | Heal self for Spirit. Gain 2 Actions.
+Record | Lorekeeper | Chronicler | 2 | 0 | support | Draw 1. Gain 1 Action.
+Chronicle | Lorekeeper | Chronicler | 4 | 0 | support | All heroes draw 1 per turn for rest of combat.
+Story of Heroes | Lorekeeper | Chronicler | 5 | 0 | support | All heroes gain +1 Melee and +1 Ranged.
+Shadow Step | Ebony Mask | Shadowbound | 3 | 1 | defensive | Gain 2 Dodge.
+Dark Veil | Ebony Mask | Shadowbound | 4 | 2 | support | 2 Weak to all enemies.
+Void Strike | Ebony Mask | Shadowbound | 5 | 3 | offensive | Deal 8 True damage to target enemy.
+Blood Contract | Ebony Mask | Contractbound | 6 | 2 | offensive | Deal 12 Physical damage to target enemy. Take 4 True damage.
+True Sacrifice | Martyr | Redeemer | 10 | 3 | offensive | Target enemy gains 10 Burn. Gain 10 Burn.
+Holy Retribution | Martyr | Redeemer | 3 | 0 | defensive | Gain Thorns 2. Gain 2 Burn.
+Uncorrupted | Martyr | Redeemer | 5 | 5 | support | Remove all Burn from party. Heal party for 2.
+Unbent | Martyr | Blessed Sufferer | 3 | 3 | defensive | Gain 3 permanent Health.
+Instant Healing | Martyr | Blessed Sufferer | 3 | 1 | support | Heal target for Half Spirit - 1.
+Shield of Flesh | Martyr | Blessed Sufferer | 2 | 0 | defensive | Take 5 damage. Gain Protection equal to Half Spirit + 5.
+Inner Light | Martyr | Any Martyr | 4 | 0 | support | Heal self for 10. Heal party for Half Spirit - 1.
+Sacrifice | Martyr | Any Martyr | 4 | 0 | support | Heal party for Half Spirit + 2. Take 2 True damage.
+Cleanse Burn | Demon Hunter | Demonic Ward | 0 | 0 | support | Remove 2 Burn from self.
+Cleanse Poison | Demon Hunter | Demonic Ward | 0 | 0 | support | Remove 2 Poison from self.
+Blood Drain |  | badge | 2 | 1 | offensive | Deal 3 True damage to lowest Health enemy, heal 3.
+Claw |  | badge | 3 | 0 | offensive | 2 Bleed and 2 True damage to lowest Health enemy.
+Spirit Lash |  | badge | 3 | 1 | offensive | Deal 2 Magic damage to all enemies.
+Decompose |  | badge | 6 | 6 | offensive | 4 Poison to all enemies in your row.
+Blind Fury |  | badge | 2 | 0 | offensive | Attack 2 random enemies at Melee damage each.
+Dark Surge |  | badge | 2 | 0 | offensive | Deal 6 Physical damage to target enemy. Take 2 True damage.
+Forbidden Knowledge |  | badge | 2 | 0 | support | Draw 2. Take 1 True damage.
+Embrace Despair |  | badge | 3 | 0 | support | 3 Weak to target enemy. Gain +1 Resolute.
+Nothing to Lose |  | badge | 2 | 0 | offensive | Attack with +4 damage.
+Channel Anguish |  | badge | 2 | 0 | offensive | Deal 1 True damage to all enemies. Take 1 True damage.
+Paralyzing Fear |  | badge | 2 | 0 | support | 1 Stun to target enemy.
+Share Torment |  | badge | 2 | 0 | offensive | Deal 4 True damage to target enemy. Take 2 True damage.
+Unpredictable |  | badge | 3 | 0 | offensive | Deal 3 True damage to 3 random enemies.
+Void Rift |  | badge | 4 | 2 | offensive | Deal 2 True damage to all enemies and all heroes. Gain +1 Magic.
+Stand Firm |  | badge | 1 | 0 | defensive | Gain +2 Resist until end of turn.
+Quick Motion |  | badge | 2 | 0 | offensive | Gain 1 Action.
+Graceful Dodge |  | badge | 3 | 2 | defensive | Gain 1 Dodge.
+Mighty Blow |  | badge | 3 | 1 | offensive | Deal Melee + 4 Physical damage to target enemy. 1 Stun.
+Unbreakable |  | badge | 3 | 1 | defensive | Grant Protection equal to Armor + 3.
+Iron Resolve |  | badge | 3 | 0 | defensive | Remove all Weak and Stun from self. Gain +1 Resist.
+Avoid Notice |  | badge | 5 | 4 | defensive | Gain 2 Dodge.
+Careful Positioning |  | badge | 1 | 0 | support | Gain +1 Reach.
+Sage Advice |  | badge | 4 | 0 | support | Draw 1.
+Study Weakness |  | badge | 10 | 0 | support | Target enemy loses 2 Armor.
+Dark Ritual |  | badge | 4 | 0 | support | Sacrifice 3 Health. Draw 2 and gain 1 Action.
+Battlefield Experience |  | badge | 4 | 2 | offensive | Gain +1 Melee and +1 Ranged.
+Improvise |  | badge | 1 | 0 | support | Draw 1. Gain 1 Action.
+Look Out for Self |  | badge | 2 | 0 | defensive | Heal self for 4. Random ally takes 2 Physical damage.
+Wisdom of Age |  | badge | 2 | 0 | support | All heroes gain +1 Reach.
+Ancient Secrets |  | badge | 4 | 2 | support | 3 Weak to target enemy. Draw 1.
+Innocent Distraction |  | badge | 2 | 0 | support | 2 Weak to target enemy.
+Self-Reliance |  | badge | 1 | 0 | defensive | Heal self for 3.
+Brute Force |  | badge | 2 | 0 | offensive | Deal Melee + 2 damage. Ignores Magic resistance.
+Stumble Into |  | badge | 3 | 1 | offensive | Deal 2 Physical damage to random enemy.
+Curse Shield |  | badge | 2 | 0 | defensive | Lose 3 max Health, gain 8 Protection.
+Take the Blow |  | badge | 2 | 0 | defensive | Give target hero 2 max Health, lose 2 max Health.
+Counter-Strike |  | badge | 2 | 0 | offensive | Add 1 more Thorns.
+Vengeance |  | badge | 3 | 1 | offensive | Lose 2 Health, gain +1 Melee and +1 Ranged.
+Shrug It Off |  | badge | 2 | 0 | defensive | Heal 2 and gain +1 max Health.
+Inspire |  | badge | 3 | 1 | support | All heroes gain +1 Melee until end of turn.
+Distract |  | badge | 4 | 1 | support | 1 Stun to target enemy.
+Arcane Bolt |  | badge | 3 | 0 | offensive | Deal Half Magic + 2 Magic damage to target enemy.
+Prayer |  | badge | 2 | 0 | support | Heal target hero for Half Spirit.
+Evasive Maneuver |  | badge | 1 | 0 | defensive | Gain 1 Dodge.
+Precise Shot |  | badge | 4 | 0 | offensive | Lower target enemy Resist and Armor by 1.
+Intimidate |  | badge | 2 | 0 | support | 1 Weak to all enemies.
+Defy Death |  | badge | 6 | 3 | defensive | Heal 10.
+Embrace the Curse |  | badge | 2 | 0 | offensive | Draw 4. Gain +1 Magic.
+Hellfire |  | badge | 3 | 2 | offensive | Deal 5 Magic damage to all enemies. Take 3 True damage.
+Divine Purpose |  | badge | 4 | 1 | offensive | All stats gain +2 until end of turn. Gain 1 Action.
+Infernal Bargain |  | badge | 6 | 3 | offensive | Gain onKill heal party for 2. Deal 8 True damage to target enemy.
+Dragon Breath |  | badge | 3 | 1 | offensive | 3 Burn to all enemies in row.
+Lightning Strike |  | badge | 3 | 3 | support | Deal Half Magic + 4 Magic damage to target enemy.
+Divine Light |  | badge | 5 | 2 | support | Heal target hero for Half Spirit + 2.
+Swift Strike |  | badge | 3 | 1 | offensive | Attack and gain 1 Dodge.
+Crushing Blow |  | badge | 2 | 1 | offensive | Deal Melee + 3 Physical damage. Reduce target's Armor by 1.
+Martyr's Strength |  | badge | 5 | 1 | offensive | Gain 3 Health.
+Tactical Leadership |  | badge |  |  | support | +1 Tactic Slot.
+Cold Calculus |  | badge | 2 | 0 | offensive | Deal 6 Physical damage to target enemy. A random ally takes 2 Physical damage.
+Heroic Charge |  | badge | 5 | 1 | offensive | Deal Melee Physical damage to enemies in your row. Gain +4 max Health. Gain 1 Action.
+Flicker of Hope |  | badge | 2 | 0 | support | Heal for 6. Lose 2 Resolute and 1 Resist.
+Hex |  | restricted | 2 | 2 | offensive | 1 Stun to target enemy.
+Shield Wall |  | restricted | 3 | 0 | defensive | Gain +2 Armor this turn.
+Cleanse Burn |  | restricted | 0 | 0 | support | Remove 2 Burn from self.
+Cleanse Poison |  | restricted | 0 | 0 | support | Remove 2 Poison from self.
+Sacred Flame |  | badge | 2 | 0 | offensive | 2 Burn to target enemy.
+Break Free |  | badge | 3 | 0 | utility | Remove 1 Stun from self.
+Survivor |  | badge | 4 | 0 | defensive | Heal self for 3.
+Blood Surge |  | badge | 3 | 0 | offensive | Deal 4 Magic damage to lowest Health enemy.
+Prove Yourself |  | badge | 2 | 0 | offensive | Gain +1 Melee.
+Royal Decree |  | badge | 4 | 0 | support | Grant +1 Action this turn.
+Lucky Break |  | badge | 3 | 0 | utility | Draw 2.
+Legendary Feat |  | badge | 4 | 0 | offensive | Deal 8 Physical damage to lowest Health enemy.
+Arcane Blast | Mage |  | 4 | 0 | offensive | Deal Ranged Physical + Half Magic damage to target enemy.
+Lightning Blast | Mage |  | 3 | 1 | offensive | Deal Half Magic damage to target enemy.
+Medicine | Warrior |  | 2 | 0 | support | Heal self for 4, remove 3 Poison from self.
+Blink | Rogue |  | 5 | 1 | defensive | Gain 1 Action. Return to hand (items stay equipped).
+Apocalypse | Ranger |  | 5 | 4 | offensive | Deal Ranged + 2 Physical damage to all enemies. Take 6 True damage.
+Support | Civilian | Any Civilian | 3 | 3 | support | Gain 1 Action.
+Deep Cut | Rogue | Assassin | 3 | 0 | offensive | 2 Bleed to target.
+Fast Fury | Warrior | Beserker | 3 | 0 | offensive | Take 1 damage, gain +1 Melee.
+Power of the Divine | Martyr | Blessed Sufferer | 3 | 1 | support | Take 5 True damage, gain 2 Actions.
+Extra Shot | Ranger | Bowmaster | 3 | 0 | offensive | Deal Ranged - 1 damage.
+Consume the Living | Paladin | DeathKnight | 7 | 1 | offensive | Monster, Human, Nature +2 damage. Undead, Demon, Elemental -2 damage. On kill: +1 max Health.
+Divine Leadership | Priest | Divine Light | 20 | 1 | support | Gain 1 Action per turn. Become Drained.
+Fire Shield | Mage | Fire-master | 4 | 0 | defensive | Target hero gains: on taking damage, deal 2 Burn to attacker.
+Strike at Evil | Paladin | Holy Avenger | 3 | 0 | offensive | Attack Undead, Demon, or Boss with + Half Spirit damage.
+Guidance | Mage | Mystic | 3 | 0 | support | Grant target hero +2 Ranged, +2 Melee.
+Predict | Priest | Oracle | 4 | 0 | support | Heal target for Quarter Spirit and grant 1 Dodge.
+Poison Trap | Rogue | Poison Master | 4 | 0 | offensive | 3 Poison to all enemies in your row.
+Usher Away | Beast | Protector | 7 | 0 | support | Escape target hero and return them to deck.
+Purification | Inquisitor | Purifier | 5 | 1 | offensive | Deal 4 damage to all Ghosts and Demons.
+Incite Charge | Barbarian | Reaver | 5 | 1 | offensive | All Warriors take 1 Bleed, gain +2 Melee, +2 Ranged, +2 Health.
+Soul Thief | Mage | Soul Stealer | 15 | 0 | offensive | Become Drained. On kill: +1 Magic permanently.
+Up To No Good | Civilian | Trickster | 5 | 0 | support | Lose 1 Faith. Gain 1 Dodge, Draw 2.
+Protect the Weak | Paladin | Vigil | 4 | 0 | support | Escape target hero, return them to hero deck.
+Hold the Line | Priest | War Priest | 7 | 1 | defensive | Gain +1 Armor and +3 Health.
+Lead from Front | Barbarian | Warchief | 10 | 0 | support | Gain 1 max hero, +2 Melee. Become Fatigued.
+Lead! | Warrior | Warleader | 8 | 3 | support | Gain 1 max hero. -1 Melee and -1 Ranged.
+Guide the Party | Ranger | Wayfinder | 10 | 1 | support | -1 Ranged, -1 Reach, gain +1 Action per turn.
+Switch to Melee | Ranger | Wayfinder | 5 | 0 | support | Gain 1 Dodge, -2 Reach, +1 Melee, -1 Ranged.
+Leaping Shot | Ranger | Winged Assassin | 4 | 0 | offensive | Gain 1 Dodge, gain +2 Flying damage. Attack with -1 damage.
+Ride Off | Paladin |  | 0 | 0 | defensive | Escape to hand, gain 2 Actions.
+Doubleshot | Ranger |  | 0 | 0 | offensive | Attack 2 random enemies at Ranged - 1 damage each.
+Runesmith Forge | Civilian |  | 5 | 0 | support | Cost 2 Supplies. Target hero gains +1 Armor, +1 Melee, +2 Item Slots.
+Mirage | Mage |  | 2 | 0 | defensive | Return target hero to hand.
+Sand Blast | Beast |  | 0 | 0 | offensive | Deal 1 True damage to all enemies.
+Coordinate | Civilian |  | 0 | 0 | support | Escape self to deck, gain 2 Actions.
+To Arms! | Paladin |  | 3 | 0 | support | Gain 1 max hero. Costs 1 Supply.
+Escape | Ranger |  | 2 | 0 | defensive | Escape self to deck.
+Vigil | Paladin |  | 3 | 0 | defensive | Escape target hero to deck. Gain 3 max Health.
+Protect and Shield | Paladin |  | 3 | 0 | support | Remove 5 Burn, Bleed, and Poison from target. Grant 3 Protection.
+Support | Civilian |  | 10 | 0 | support | All Warriors gain +1 Health and +1 Melee.
+Escape | Civilian |  | 2 | 0 | defensive | Escape self to deck.
+Bolster | Warrior |  | 3 | 0 | support | Target hero gains 2 Health.
+Take Aim | Ranger |  | 10 | 0 | support | Target hero gains 2 Ranged.
+Sand Mirage | Mage |  | 4 | 0 | defensive | Return target hero to hand.
+Shadow Strike | Mage |  | 3 | 0 | offensive | 2 Shadow and deal Half Magic Magic damage to target enemy.
+Desert Wind | Mage |  | 4 | 0 | defensive | Target hero escapes. All heroes gain Protection equal to Quarter Spirit.
+Sand King's Will | Mage |  | 5 | 0 | defensive | Return target hero to hand. Heal all heroes for Half Spirit. Draw 2.
+Wind Leap | Ranger |  | 3 | 0 | defensive | Escape self to deck. Draw 1.
+Gust Strike | Mage |  | 3 | 0 | offensive | Deal Half Magic Magic damage to target enemy. 2 Weak.
+Gale Force | Ranger |  | 4 | 0 | defensive | Return self to hand. Gain 2 Actions and Draw 1.
+Storm's Embrace | Paladin |  | 5 | 0 | defensive | Target hero escapes. All heroes gain 2 Protection. Gain 2 Actions.
+Perform | Ranger |  | 2 | 0 | support | All heroes gain +2 Melee, +2 Ranged, and +2 Resist (temporary).
+Thick Skin | Rogue |  | 5 | 0 | defensive | Gain +1 Armor and +1 Resist permanently. Lose 3 Health.

@@ -1,0 +1,844 @@
+{
+ "class": "class.mage",
+ "specialties": [
+  {
+   "id": "specialty.fire-master",
+   "name": "Fire-master",
+   "class": "class.mage",
+   "intent": "You do not aim at units, you aim at ground: the field burns where you point, and everyone has to walk around your work.",
+   "statModifiers": {
+    "magic": 1,
+    "reach": 1,
+    "resist": 1
+   },
+   "triggers": [
+    {
+     "hook": "passive",
+     "effect": "your staff attacks apply 2 Burn"
+    }
+   ],
+   "powers": [
+    "power.fire-master.fireball",
+    "power.fire-master.fire-shield",
+    "power.fire-master.eldritch-might",
+    "power.fire-master.wake-of-cinders"
+   ],
+   "source": "Hell-TCG Mage/Fire-master (row Burn rebuilt as burning-terrain painting; the +2 Reach became +1 Reach, which is worth more here) | 2026-08-17 Angela trim: three stats, no negatives, one ability. Dropped stats: health -2; movement -1. Parked abilities: startOfBattle: burning hexes deal you no damage for the rest of the Battle; they still halve your healing and still reveal you in darkness. | 2026-08-20 Angela: \"or 2 Burn if the target is standing on a burning hex\" was a terrain check on the target’s hex. Flat 2."
+  },
+  {
+   "id": "specialty.soul-stealer",
+   "name": "Soul Stealer",
+   "class": "class.mage",
+   "intent": "Every wound you open is a meal; you have almost no Health of your own and you take everyone else's.",
+   "statModifiers": {
+    "precision": 2,
+    "magic": 1,
+    "crit": 3
+   },
+   "triggers": [
+    {
+     "hook": "passive",
+     "effect": "your staff attacks heal you 2"
+    }
+   ],
+   "powers": [
+    "power.soul-stealer.dark-bolt",
+    "power.soul-stealer.life-drain",
+    "power.soul-stealer.soul-thief",
+    "power.soul-stealer.eldritch-sacrifice"
+   ],
+   "source": "Hell-TCG Mage/Soul Stealer (the extra-wound clause cut; ranged 2 became Precision 2) | 2026-08-17 Angela trim: three stats, no negatives, one ability. Dropped stats: health -3; luck -3. Parked abilities: onKill: heal 4 and gain +1 Magic for the rest of the Battle — remember Magic is the party-wide sum, so the whole party's spells improve. | 2026-08-17: third stat crit +3 — every wound you open is a meal, so you want to open the worst ones. | 2026-08-20 Angela: the burning-ground halving is cut — Burn does that on its own."
+  },
+  {
+   "id": "specialty.mystic",
+   "name": "Mystic",
+   "class": "class.mage",
+   "intent": "You see the fight one beat before it happens: you barely damage anything, and everyone standing near you stops missing.",
+   "statModifiers": {
+    "magic": 2,
+    "resist": 1,
+    "dodge": 5
+   },
+   "triggers": [
+    {
+     "hook": "onHit",
+     "effect": "your staff attacks apply 2 Weak"
+    }
+   ],
+   "powers": [
+    "power.mystic.divination",
+    "power.mystic.guidance",
+    "power.mystic.second-sight",
+    "power.mystic.hex"
+   ],
+   "source": "Hell-TCG Mage/Mystic (kept; the seer half rebuilt on Vision, which Hell-TCG had no equivalent for) | 2026-08-17 Angela trim: three stats, no negatives, one ability. Dropped stats: health -2; precision -1; vision +2. Parked abilities: startOfBattle: every ally within 3 hexes gains +5 Accuracy for the Battle; on an already-reliable hero that surplus becomes Crit at a quarter rate. | 2026-08-17 off-primary pass: a Mage with no Magic at all was the oddest block in the set."
+  },
+  {
+   "id": "specialty.storm-caller",
+   "name": "Storm Caller",
+   "class": "class.mage",
+   "intent": "You are the longest reach on the field and the thinnest skin: everything you throw jumps to a second target, and nothing survives touching you.",
+   "statModifiers": {
+    "magic": 1,
+    "precision": 1,
+    "reach": 1
+   },
+   "triggers": [
+    {
+     "hook": "onHit",
+     "effect": "your staff attacks deal +2 damage against a target carrying Frost"
+    }
+   ],
+   "powers": [
+    "power.storm-caller.lightning-bolt",
+    "power.storm-caller.chain-lightning",
+    "power.storm-caller.storm-surge",
+    "power.storm-caller.ethereal-form"
+   ],
+   "source": "Hell-TCG Shaman/Storm Caller (kept; the +2 Reach halved because Reach is ranged-only and expensive here) | 2026-08-17 Angela trim: three stats, no negatives, one ability. Dropped stats: armor -1; health -2. Parked abilities: onTakingDamage: the attacker gains 1 Stun the first time it hits you each Turn."
+  },
+  {
+   "id": "specialty.totem-master",
+   "name": "Totem Master",
+   "class": "class.mage",
+   "intent": "You plant your feet and the ground around you becomes yours; the moment you move, every promise you made lapses.",
+   "statModifiers": {
+    "magic": 1,
+    "resist": 1,
+    "health": 3
+   },
+   "triggers": [
+    {
+     "hook": "passive",
+     "effect": "gain +1 Magic for the rest of the Battle, once"
+    }
+   ],
+   "powers": [
+    "power.totem-master.totem-of-healing",
+    "power.totem-master.totem-of-wrath",
+    "power.totem-master.totem-of-protection",
+    "power.totem-master.ancestral-anchor"
+   ],
+   "source": "Hell-TCG Shaman/Totem Master (HoBaT has no summons — totems rebuilt as caster-centred auras that lapse the Turn you move, which preserves the turnEnd/onTakingDamage Magic ratchet exactly) | 2026-08-17 Angela trim: three stats, no negatives, one ability. Dropped stats: movement -1; precision -1; dodge -5. Parked abilities: onTakingDamage: lose 1 of the Magic accumulated this way, to a minimum of 0. | 2026-08-17: carried a condition the engine has no way to check (did-not-move / made-no-attack / moved-N-hexes). Condition removed and the effect reduced to match."
+  },
+  {
+   "id": "specialty.spirit-walker",
+   "name": "Spirit Walker",
+   "class": "class.mage",
+   "intent": "You are the party's second life: you mend what the fight takes, and you pay for it by making everyone's spells a little weaker.",
+   "statModifiers": {
+    "spirit": 2,
+    "movement": 1,
+    "resist": 1
+   },
+   "triggers": [
+    {
+     "hook": "onActivationEnd",
+     "effect": "lay the cold thread on yourself or on one ally within 3 hexes: it gains 1 Frost, which cancels every point of Burn on it as it lands and amplifies the next physical damage it takes."
+    }
+   ],
+   "powers": [
+    "power.spirit-walker.spirit-link",
+    "power.spirit-walker.ancestors-call",
+    "power.spirit-walker.ghost-walk",
+    "power.spirit-walker.mend-the-thread"
+   ],
+   "source": "Hell-TCG Shaman/Spirit Walker (kept; the -1 Magic is new — a healer shaman dilutes the party-wide Magic sum, which is the real cost of taking one) | 2026-08-17 Angela trim: three stats, no negatives, one ability. Dropped stats: magic -1; health +3. Parked abilities: startOfBattle: you may cross burning and frost hexes without taking their effects for the rest of the Battle. | 2026-08-17 off-primary pass: Spirit doubled — it is the branch identity. | 2026-08-17 Angela: CUT. ally-reactive hooks, guarding, Consequence-Stack interference and non-knockback forced movement all removed by ruling. | 2026-08-17 quality pass: replaced a placeholder aura with a distinct effect."
+  },
+  {
+   "id": "specialty.blightcaller",
+   "name": "Blightcaller",
+   "class": "class.mage",
+   "intent": "You do not kill things, you make them worse: everything near you is weaker, slower and rotting before your allies arrive.",
+   "statModifiers": {
+    "magic": 2,
+    "resist": 1,
+    "health": 2
+   },
+   "triggers": [
+    {
+     "hook": "onActivationEnd",
+     "effect": "every enemy within 2 hexes gains 1 Weak"
+    }
+   ],
+   "powers": [
+    "power.blightcaller.poison-roots",
+    "power.blightcaller.wither",
+    "power.blightcaller.regrowth",
+    "power.blightcaller.creeping-blight"
+   ],
+   "source": "Hell-TCG Druid/Nature Warden — RENAMED. Its turnEnd row-Weak is intact, but 'Warden' is taken: gen/ranger.json holds the whole Hell-TCG Warden class (Sentinel, Trapper, Protector) plus an invented Beastward, so a second nature-facing 'Warden' would read as the same branch on the wrong class. | 2026-08-17 Angela trim: three stats, no negatives, one ability. Dropped stats: health -2; accuracy -5; movement -1. Parked abilities: onHit: your staff attacks apply 1 Weak in addition to their damage. | 2026-08-17 off-primary pass: Spirit dropped rather than doubled; this branch is Magic, not healing."
+  },
+  {
+   "id": "specialty.wild-shaper",
+   "name": "Wild Shaper",
+   "class": "class.mage",
+   "intent": "You gave up half of what a caster is for teeth. You put the Weak on them yourself and then you hit the soft place you just made — nothing else in the game finds a wound this fast.",
+   "statModifiers": {
+    "strength": 2,
+    "health": 4,
+    "dodge": 5
+   },
+   "triggers": [
+    {
+     "hook": "onHit",
+     "effect": "your brawl attacks add the target's Weak to their damage. They READ it: the stacks stay on the target and keep working"
+    }
+   ],
+   "powers": [
+    "power.wild-shaper.wild-growth",
+    "power.wild-shaper.primal-roar",
+    "power.wild-shaper.claw"
+   ],
+   "source": "Hell-TCG Druid/Wild Shaper (HoBaT has no shapeshift system — the forms are rebuilt as a stance and a claw attack, which is why this branch pays 1 Magic to the party sum) | 2026-08-17 Angela trim: three stats, no negatives, one ability. Dropped stats: magic -1; precision -2; itemSlots -1. Parked abilities: onKill: heal 3 and gain +5 Dodge for the rest of the Battle. | 2026-08-17 design pass: gave the branch the brawl/Weak identity — its own Primal Roar hands out the Weak and its bare hands cash it in; the flat heal-2 moved out of the way for it. | 2026-08-20 Angela: \"I believe I do want Bear Form, but let's take it out for now.\" Removed. It was the only power in the game that replaces your whole kit — your Claw becomes your only attack and your other powers stop existing — and nothing in the engine expresses that. The branch is deliberately left SHORT A POWER rather than backfilled, so putting Bear Form back is a restore and not an argument with something invented in the meantime."
+  },
+  {
+   "id": "specialty.grove-keeper",
+   "name": "Grove Keeper",
+   "class": "class.mage",
+   "intent": "You are the reason a bad fight is survivable: you put out fires, you pull the poison out, and you never once threaten anybody.",
+   "statModifiers": {
+    "spirit": 2,
+    "magic": 1,
+    "health": 2
+   },
+   "triggers": [
+    {
+     "hook": "startOfBattle",
+     "effect": "every ally within 3 hexes heals 4"
+    }
+   ],
+   "powers": [
+    "power.grove-keeper.life-bloom",
+    "power.grove-keeper.rejuvenation",
+    "power.grove-keeper.quench",
+    "power.grove-keeper.grove-ward"
+   ],
+   "source": "Hell-TCG Druid/Grove Keeper (kept; Harmony and Sanctuary were spent on gen/ranger.json, so the cleanse became a specialty trigger and the ward is new) | 2026-08-17 Angela trim: three stats, no negatives, one ability. Dropped stats: movement -1; precision -1; dodge -5. Parked abilities: onActivationEnd: remove 1 Burn and 1 Poison from every ally within 2 hexes — each removed tick is a tick Resist no longer has to eat. | 2026-08-17 off-primary pass: Spirit is the heal stat and this is the healer-Mage, so it wants +2."
+  }
+ ],
+ "powers": [
+  {
+   "id": "power.fire-master.fireball",
+   "name": "Fireball",
+   "specialty": "specialty.fire-master",
+   "stamina": 2,
+   "cooldown": 3,
+   "warmup": 1,
+   "free": false,
+   "targets": "a hex within 6 hexes and every hex adjacent to it",
+   "tags": [
+    "area",
+    "staff"
+   ],
+   "description": "Deal 2 + Magic magic damage to every unit in the blast, plus every stack of Burn that unit is already carrying — the blast CONSUMES that Burn — and then those seven hexes become burning. It does not roll to hit, so it cannot crit; Resist reduces both the hit and each Burn tick, and allies caught in it burn too. Thrown into a field you set alight last Turn, it is the biggest number this class produces.",
+   "source": "Hell-TCG name reused (Mage/Fire-master, Fireball — row Burn rebuilt as a hex blast that paints burning terrain) | 2026-08-17: \"difficult terrain\" is not a thing in HoBaT — there are hexes that cost extra Movement. Reworded. | 2026-08-17 design pass: the blast now cashes in the Burn already on each unit and consumes it, which is what makes a burning-terrain branch pay twice. | 2026-08-20 Angela: ground layers are PERSISTENT and carry no number and no clock. A hex is burning or it is not. One layer per hex; applying a different one replaces it. See rule.ground-layers.",
+   "triggers": []
+  },
+  {
+   "id": "power.fire-master.fire-shield",
+   "name": "Fire Shield",
+   "specialty": "specialty.fire-master",
+   "stamina": 1,
+   "cooldown": 4,
+   "warmup": 0,
+   "free": false,
+   "targets": "one ally within 4 hexes",
+   "tags": [
+    "staff"
+   ],
+   "description": "For the rest of the Battle, any enemy that hits the target with a melee attack gains 2 Burn. Put it on whoever is holding the line, not on yourself.",
+   "source": "Hell-TCG name reused (Mage/Fire-master, Fire Shield) | 2026-08-17: \"difficult terrain\" is not a thing in HoBaT — there are hexes that cost extra Movement. Reworded.",
+   "triggers": []
+  },
+  {
+   "id": "power.fire-master.eldritch-might",
+   "name": "Eldritch Might",
+   "specialty": "specialty.fire-master",
+   "stamina": 1,
+   "cooldown": 5,
+   "warmup": 0,
+   "free": false,
+   "targets": "self",
+   "tags": [],
+   "description": "Take 3 true damage and gain +1 Magic for the rest of the Battle. Because Magic is the party-wide sum, this is the single cheapest way a party gets better at magic — and the mage pays for all of it in Health.",
+   "source": "Hell-TCG name reused (Mage/Fire-master, Eldritch Might — the max-Health loss became flat true damage) | 2026-08-17: \"difficult terrain\" is not a thing in HoBaT — there are hexes that cost extra Movement. Reworded. | 2026-08-20 sweep: \"it may stack to +2\" is a stacking limit, which does not exist. The cooldown is what paces it.",
+   "triggers": []
+  },
+  {
+   "id": "power.fire-master.wake-of-cinders",
+   "name": "Wake of Cinders",
+   "specialty": "specialty.fire-master",
+   "stamina": 1,
+   "cooldown": 3,
+   "warmup": 0,
+   "free": true,
+   "targets": "a hex within 3 hexes and every hex adjacent to it",
+   "tags": [
+    "area",
+    "staff"
+   ],
+   "description": "Those seven hexes become burning. Burning ground ticks damage and reveals whatever stands there in darkness — used well this is a wall, not a weapon. It cannot crit, and it will happily catch a pursuing ally.",
+   "source": "new (built for the burning-terrain layer; there was no Hell-TCG equivalent because there was no map) | 2026-08-17: \"difficult terrain\" is not a thing in HoBaT — there are hexes that cost extra Movement. Reworded. | 2026-08-20 Angela: dropped \"halves any healing done on it\" — standing in fire gives you Burn, and Burn already halves healing. The clause restated a rule that fires on its own. | 2026-08-20 Angela: \"the hexes you leave this Turn\" is cut — a shape that reads your own path. A blast, which is a shape the game already has. | 2026-08-20 Angela: ground layers are PERSISTENT and carry no number and no clock. A hex is burning or it is not. One layer per hex; applying a different one replaces it. See rule.ground-layers.",
+   "triggers": [],
+   "intent": "You choose where the fire goes rather than dragging it behind you."
+  },
+  {
+   "id": "power.soul-stealer.dark-bolt",
+   "name": "Dark Bolt",
+   "specialty": "specialty.soul-stealer",
+   "stamina": 1,
+   "cooldown": 2,
+   "warmup": 0,
+   "free": false,
+   "targets": "one enemy within 6 hexes",
+   "tags": [
+    "ranged",
+    "staff"
+   ],
+   "description": "Ranged magic attack at +2 Precision. It rolls to hit, so it can crit. On hit the target gains 3 Bleed — Resist never stops Bleed — and you heal 2.",
+   "source": "Hell-TCG name reused (Mage/Soul Stealer, Dark Bolt — the passive Bleed rider became the attack itself) | 2026-08-17: \"difficult terrain\" is not a thing in HoBaT — there are hexes that cost extra Movement. Reworded.",
+   "triggers": []
+  },
+  {
+   "id": "power.soul-stealer.life-drain",
+   "name": "Life Drain",
+   "specialty": "specialty.soul-stealer",
+   "stamina": 2,
+   "cooldown": 3,
+   "warmup": 0,
+   "free": false,
+   "targets": "one enemy within 5 hexes",
+   "tags": [
+    "staff",
+    "heal"
+   ],
+   "description": "Staff attack dealing Magic magic damage; heal yourself half of what it deals.",
+   "source": "Hell-TCG name reused (Mage/Soul Stealer, Life Drain) | 2026-08-17: \"difficult terrain\" is not a thing in HoBaT — there are hexes that cost extra Movement. Reworded. | 2026-08-20 Angela: \"healing is halved on burning ground\" is cut. Standing in fire gives you Burn, and Burn already halves healing on its holder — the clause restated a rule that fires on its own. ",
+   "triggers": []
+  },
+  {
+   "id": "power.soul-stealer.soul-thief",
+   "name": "Soul Thief",
+   "specialty": "specialty.soul-stealer",
+   "stamina": 0,
+   "cooldown": 6,
+   "warmup": 1,
+   "free": false,
+   "targets": "self",
+   "tags": [
+    "stance"
+   ],
+   "description": "Stance: for the rest of the Battle your staff attacks deal +2 damage and no ally may heal you — the only Health you get is what you take. Every kill still pays out through the specialty.",
+   "source": "Hell-TCG name reused (Mage/Soul Stealer, Soul Thief — the permanent Magic gain was campaign-tier and moved to the specialty's onKill) | 2026-08-17: \"difficult terrain\" is not a thing in HoBaT — there are hexes that cost extra Movement. Reworded.",
+   "triggers": []
+  },
+  {
+   "id": "power.soul-stealer.eldritch-sacrifice",
+   "name": "Eldritch Sacrifice",
+   "specialty": "specialty.soul-stealer",
+   "stamina": 2,
+   "cooldown": 6,
+   "warmup": 3,
+   "free": false,
+   "targets": "enemies within 3 hexes",
+   "tags": [
+    "area",
+    "staff"
+   ],
+   "description": "Take 8 true damage, then deal 4 + twice your Magic magic damage to every enemy within 3 hexes. Area — it does not roll and cannot crit, and Resist eats a flat point off every instance. At party Magic 2 that is 8; at party Magic 5 it is the biggest number a mage owns.",
+   "source": "Hell-TCG name reused (Mage/Soul Stealer, Eldritch Sacrifice — the draws, Actions and friendly-fire true damage cut; the self-cost kept) | 2026-08-17: \"difficult terrain\" is not a thing in HoBaT — there are hexes that cost extra Movement. Reworded.",
+   "triggers": []
+  },
+  {
+   "id": "power.mystic.divination",
+   "name": "Divination",
+   "specialty": "specialty.mystic",
+   "stamina": 1,
+   "cooldown": 3,
+   "warmup": 0,
+   "free": false,
+   "targets": "up to 2 allies within 4 hexes",
+   "tags": [],
+   "description": "Up to 2 allies within 4 hexes each gain +1 Resist and +5 Dodge for the rest of the Battle.",
+   "source": "Hell-TCG name reused (Mage/Mystic, Divination — random targeting replaced with choice) | 2026-08-17: \"difficult terrain\" is not a thing in HoBaT — there are hexes that cost extra Movement. Reworded. | 2026-08-20 Angela: no naming function anywhere — you do not use a power and then make a second choice inside it. The choice is the power, or the target. \"two CHOSEN allies\" reworded — targets are chosen by definition, and the word invited the naming pattern. | 2026-08-20 Angela sweep: the targets field said 4 hexes and the sentence said 2. The field wins.",
+   "triggers": []
+  },
+  {
+   "id": "power.mystic.guidance",
+   "name": "Guidance",
+   "specialty": "specialty.mystic",
+   "stamina": 1,
+   "cooldown": 4,
+   "warmup": 0,
+   "free": false,
+   "targets": "one ally within 4 hexes",
+   "tags": [
+    "sword"
+   ],
+   "description": "For the rest of the Battle that ally's SWORD attacks add the party's Magic to their damage. You do not lend them strength, you lend them the spell: a Warrior with a longsword and a Mystic behind him is swinging for Strength plus Magic every Turn.",
+   "source": "Hell-TCG name reused (Mage/Mystic, Guidance — melee/ranged became Strength/Precision, which are damage-only now) | 2026-08-17: \"difficult terrain\" is not a thing in HoBaT — there are hexes that cost extra Movement. Reworded. | 2026-08-17 design pass: rebuilt a flat +1/+1 ally buff into the spellblade modifier — the ally's sword attacks add the party Magic for the rest of the Battle.",
+   "triggers": [],
+   "modifies": {
+    "tags": [
+     "sword"
+    ],
+    "scope": "rest-of-battle",
+    "addsStat": "magic"
+   }
+  },
+  {
+   "id": "power.mystic.second-sight",
+   "name": "Second Sight",
+   "specialty": "specialty.mystic",
+   "stamina": 1,
+   "cooldown": 4,
+   "warmup": 0,
+   "free": false,
+   "targets": "self",
+   "tags": [
+    "staff",
+    "ranged"
+   ],
+   "description": "Take 4 true damage. It reveals stealthed units within your Vision as you cast it — their stealth breaks — you gain +2 Vision for the rest of the Battle, and for the rest of the Battle your staff and ranged attacks have +10 Accuracy. The gamble is the map: in darkness, fog or against a hidden enemy the sight is the best thing you do all fight, and in an open field you have paid 4 Health for +10 Accuracy, which past 100 is +2.5 Crit.",
+   "source": "Hell-TCG mechanic reused, renamed (Mage/Mystic, Greater Visions — draws and Actions were CUT, so the seer payload was rebuilt entirely on Vision) | 2026-08-17: \"difficult terrain\" is not a thing in HoBaT — there are hexes that cost extra Movement. Reworded. | 2026-08-17 quality pass: was +3 Vision and nothing else, and Vision is the quietest stat in the game. Rebuilt as a shape-2 tag modifier with a Health price, so it is a bet on the map rather than a free number. | 2026-08-17 design pass: an attack cannot strip stealth from its target, because a stealthed unit cannot be targeted by an attack in the first place — the reveal moved onto the casting.",
+   "triggers": [],
+   "modifies": {
+    "tags": [
+     "staff",
+     "ranged"
+    ],
+    "scope": "rest-of-battle",
+    "statModifiers": {
+     "accuracy": 10
+    }
+   }
+  },
+  {
+   "id": "power.mystic.hex",
+   "name": "Hex",
+   "specialty": "specialty.mystic",
+   "stamina": 2,
+   "cooldown": 4,
+   "warmup": 1,
+   "free": false,
+   "targets": "one enemy within 6 hexes",
+   "tags": [
+    "staff"
+   ],
+   "description": "The target gains 1 Stun and takes -10 Accuracy for the rest of the Battle. Against something already reliable the Accuracy loss eats its Crit before it eats its hit rate, which is usually the better trade for you.",
+   "source": "Hell-TCG name reused (restricted power, Hex) | 2026-08-17: \"difficult terrain\" is not a thing in HoBaT — there are hexes that cost extra Movement. Reworded.",
+   "triggers": []
+  },
+  {
+   "id": "power.storm-caller.lightning-bolt",
+   "name": "Lightning Bolt",
+   "specialty": "specialty.storm-caller",
+   "stamina": 1,
+   "cooldown": 2,
+   "warmup": 0,
+   "free": false,
+   "targets": "one enemy within 6 hexes",
+   "tags": [
+    "ranged",
+    "staff"
+   ],
+   "description": "Ranged magic attack at +1 Precision. It rolls, so it can crit. On hit it also deals Magic magic damage to one enemy adjacent to the target; that splash does not roll and cannot crit.",
+   "source": "Hell-TCG name reused (Shaman/Storm Caller, Lightning Bolt — flat Magic damage rebuilt as an attack with an adjacency splash) | 2026-08-17: \"difficult terrain\" is not a thing in HoBaT — there are hexes that cost extra Movement. Reworded.",
+   "triggers": []
+  },
+  {
+   "id": "power.storm-caller.chain-lightning",
+   "name": "Chain Lightning",
+   "specialty": "specialty.storm-caller",
+   "stamina": 2,
+   "cooldown": 4,
+   "warmup": 1,
+   "free": false,
+   "targets": "up to 2 enemies within 6 hexes",
+   "tags": [
+    "ranged",
+    "staff"
+   ],
+   "description": "Ranged magic attack. On hit it arcs to the two nearest enemies within 3 hexes of the first, dealing 1 + Magic magic damage each. Only the first strike rolls and only the first strike can crit; the arcs are automatic and reduced by Resist.",
+   "source": "Hell-TCG name reused (restricted power, Chain Lightning — 'all enemies' rebuilt as a two-hop arc off a real to-hit roll) | 2026-08-17: \"difficult terrain\" is not a thing in HoBaT — there are hexes that cost extra Movement. Reworded.",
+   "triggers": []
+  },
+  {
+   "id": "power.storm-caller.storm-surge",
+   "name": "Storm Surge",
+   "specialty": "specialty.storm-caller",
+   "stamina": 2,
+   "cooldown": 5,
+   "warmup": 2,
+   "free": false,
+   "targets": "enemies within 3 hexes",
+   "tags": [
+    "area",
+    "staff"
+   ],
+   "description": "Every enemy within 3 hexes takes 2 + Magic magic damage plus the Frost it is already carrying, and 1 Stun. It READS the Frost and leaves it in place, so the physical amplification survives for whoever swings next. Area — no roll, no crit, Resist applies to the damage.",
+   "source": "Hell-TCG name reused (Shaman/Storm Caller, Storm Surge — Drained cut, radius replaces 'all enemies') | 2026-08-17: \"difficult terrain\" is not a thing in HoBaT — there are hexes that cost extra Movement. Reworded. | 2026-08-17 design pass: the surge now adds each target's Frost, reading it, so the branch that stands next to frost hexes gets paid for them.",
+   "triggers": []
+  },
+  {
+   "id": "power.storm-caller.ethereal-form",
+   "name": "Ethereal Form",
+   "specialty": "specialty.storm-caller",
+   "stamina": 1,
+   "cooldown": 4,
+   "warmup": 0,
+   "free": false,
+   "targets": "self",
+   "tags": [
+    "stance"
+   ],
+   "description": "Stance: gain +10 Dodge and +2 Resist and lose your remaining Armor for the rest of the Battle. Armor floors at zero, so on a Storm Caller who already sits at -1 this is pure upside — until somebody hands you plate.",
+   "source": "Hell-TCG name reused (Shaman/Storm Caller, Ethereal Form) | 2026-08-17: \"difficult terrain\" is not a thing in HoBaT — there are hexes that cost extra Movement. Reworded.",
+   "triggers": []
+  },
+  {
+   "id": "power.totem-master.totem-of-healing",
+   "name": "Totem of Healing",
+   "specialty": "specialty.totem-master",
+   "stamina": 1,
+   "cooldown": 4,
+   "warmup": 0,
+   "free": false,
+   "targets": "allies within 2 hexes",
+   "tags": [
+    "aura",
+    "heal"
+   ],
+   "description": "Aura 2, centred on you, for the rest of the Battle: at the end of your Turn every ally inside heals 2.",
+   "source": "Hell-TCG name reused (Shaman/Totem Master, Totem of Healing — no summon system, so the totem is an aura anchored on the caster) | 2026-08-17: \"difficult terrain\" is not a thing in HoBaT — there are hexes that cost extra Movement. Reworded. | 2026-08-20 Angela: \"if you did not move\" and \"it lapses the Turn you move\" are did-not-move conditions, cut everywhere else in the set. | 2026-08-20 Angela: \"healing is halved on burning ground\" is cut. Standing in fire gives you Burn, and Burn already halves healing on its holder — the clause restated a rule that fires on its own. ",
+   "triggers": []
+  },
+  {
+   "id": "power.totem-master.totem-of-wrath",
+   "name": "Totem of Wrath",
+   "specialty": "specialty.totem-master",
+   "stamina": 2,
+   "cooldown": 4,
+   "warmup": 1,
+   "free": false,
+   "targets": "enemies within 2 hexes",
+   "tags": [
+    "aura",
+    "area"
+   ],
+   "description": "Aura 2, centred on you, for the rest of the Battle: at the end of your Turn every enemy inside gains 2 Burn. No roll, no crit; each tick is reduced by that enemy’s Resist.",
+   "source": "Hell-TCG name reused (Shaman/Totem Master, Totem of Wrath) | 2026-08-17: \"difficult terrain\" is not a thing in HoBaT — there are hexes that cost extra Movement. Reworded. | 2026-08-20 Angela: \"if you did not move\" and \"it lapses the Turn you move\" are did-not-move conditions, cut everywhere else in the set.",
+   "triggers": []
+  },
+  {
+   "id": "power.totem-master.totem-of-protection",
+   "name": "Totem of Protection",
+   "specialty": "specialty.totem-master",
+   "stamina": 2,
+   "cooldown": 5,
+   "warmup": 2,
+   "free": false,
+   "targets": "allies within 2 hexes",
+   "tags": [
+    "aura"
+   ],
+   "description": "Aura 2, centred on you, for the rest of the Battle: allies gain +1 Armor and +1 Resist while they remain inside it.",
+   "source": "Hell-TCG name reused (Shaman/Totem Master, Totem of Protection — party-wide became radius-gated) | 2026-08-17: \"difficult terrain\" is not a thing in HoBaT — there are hexes that cost extra Movement. Reworded. | 2026-08-20 Angela: \"it lapses the Turn you move\" is a did-not-move condition. The aura simply moves with you, like every other aura.",
+   "triggers": []
+  },
+  {
+   "id": "power.totem-master.ancestral-anchor",
+   "name": "Ancestral Anchor",
+   "specialty": "specialty.totem-master",
+   "stamina": 2,
+   "cooldown": 6,
+   "warmup": 2,
+   "free": false,
+   "targets": "your own hex",
+   "tags": [
+    "aura"
+   ],
+   "description": "Fix one of your active auras to the hex you are standing on. For the next three Turns it stays there at radius 2, keeps paying out at the end of your Turn, and no longer cares whether you moved or how far away you are. This is the only way a Totem Master ever leaves their own aura.",
+   "needsCapability": "hex-anchored persistent aura — an aura object that exists on a hex independently of the unit that created it, ticking on the owner's turn order",
+   "source": "new (the honest form of a totem; flagged rather than faked, since every other totem here is caster-anchored) | 2026-08-17: \"difficult terrain\" is not a thing in HoBaT — there are hexes that cost extra Movement. Reworded.",
+   "triggers": []
+  },
+  {
+   "id": "power.spirit-walker.spirit-link",
+   "name": "Spirit Link",
+   "specialty": "specialty.spirit-walker",
+   "stamina": 2,
+   "cooldown": 4,
+   "warmup": 0,
+   "free": false,
+   "targets": "up to 2 allies within 4 hexes",
+   "tags": [
+    "aura"
+   ],
+   "description": "Up to 2 allies within 4 hexes each gain 3 Protection, and you take 2 true damage now.",
+   "source": "Hell-TCG name reused (Shaman/Spirit Link — mass heal and draw rebuilt as a two-way damage share) | 2026-08-17: \"difficult terrain\" is not a thing in HoBaT — there are hexes that cost extra Movement. Reworded. | 2026-08-20 Angela: \"the link breaks if you fall\" is a bespoke teardown condition. Being down already stops your effects. | 2026-08-20 Angela: not in effect. It carried two mechanics that exist nowhere else — a flat \"1 less damage from every source\", and a link that pushed the damage back onto you every time either ally was hit. Flat damage reduction already has a name: Toughness. The cost is paid up front, which is what Blood Price and Collect the Debt already do. Radius corrected to match the targets field. | 2026-08-20 Angela: Toughness is injury capacity and the base for Deathbed Fighting — it does not reduce damage and never did. Reducing damage from EVERY source is Protection and only Protection; everything else is mitigated by Armor or by Resist, per damage type. Rewritten as Protection.",
+   "triggers": []
+  },
+  {
+   "id": "power.spirit-walker.ancestors-call",
+   "name": "Ancestor's Call",
+   "specialty": "specialty.spirit-walker",
+   "stamina": 2,
+   "cooldown": 6,
+   "warmup": 2,
+   "free": false,
+   "targets": "allies within 4 hexes",
+   "tags": [
+    "heal",
+    "area"
+   ],
+   "description": "Every ally within 4 hexes heals 2 + Spirit and loses 1 Stun. Spirit is the party-wide sum and a starting party has about 2 of it, so read this as a 4-point party heal until somebody else brings Spirit.",
+   "source": "Hell-TCG name reused (Shaman/Ancestor's Call — draws, Actions and Fatigued were CUT; rebuilt as the branch's party heal) | 2026-08-17: \"difficult terrain\" is not a thing in HoBaT — there are hexes that cost extra Movement. Reworded. | 2026-08-20 Angela: \"healing is halved on burning ground\" is cut. Standing in fire gives you Burn, and Burn already halves healing on its holder — the clause restated a rule that fires on its own. ",
+   "triggers": []
+  },
+  {
+   "id": "power.spirit-walker.ghost-walk",
+   "name": "Ghost Walk",
+   "specialty": "specialty.spirit-walker",
+   "stamina": 1,
+   "cooldown": 4,
+   "warmup": 0,
+   "free": true,
+   "targets": "self",
+   "tags": [],
+   "description": "Move up to your Movement, passing through units and taking no effect from any hex you cross, and gain +10 Dodge until the start of your next Turn. It is a free power, so it stacks with whatever else you were going to do.",
+   "source": "new (built for the map; Hell-TCG's escape-to-hand powers have no meaning without a hand) | 2026-08-17: \"difficult terrain\" is not a thing in HoBaT — there are hexes that cost extra Movement. Reworded.",
+   "triggers": []
+  },
+  {
+   "id": "power.spirit-walker.mend-the-thread",
+   "name": "Mend the Thread",
+   "specialty": "specialty.spirit-walker",
+   "stamina": 1,
+   "cooldown": 3,
+   "warmup": 0,
+   "free": false,
+   "targets": "one ally within 6 hexes",
+   "tags": [
+    "heal"
+   ],
+   "description": "One ally heals 3 + Spirit and loses all Bleed. Bleed is the one status Resist never touches, so this is often the only answer the party has to it.",
+   "source": "new (replaces the cut Restoration/Circle-of-Healing pile; aimed at Bleed specifically) | 2026-08-17: \"difficult terrain\" is not a thing in HoBaT — there are hexes that cost extra Movement. Reworded.",
+   "triggers": []
+  },
+  {
+   "id": "power.blightcaller.poison-roots",
+   "name": "Poison Roots",
+   "specialty": "specialty.blightcaller",
+   "stamina": 2,
+   "cooldown": 3,
+   "warmup": 1,
+   "free": false,
+   "targets": "one enemy within 5 hexes",
+   "tags": [
+    "staff"
+   ],
+   "description": "The target takes 2 true damage, gains 4 Poison and gains 2 Slow. No roll, no crit; Resist eats a point off each Poison tick but not off the true damage.",
+   "source": "Hell-TCG name reused (Shaman restricted power, Poison Roots — moved to the nature branch where it belongs; the Stun became a Movement bite) | 2026-08-17: \"difficult terrain\" is not a thing in HoBaT — there are hexes that cost extra Movement. Reworded. | 2026-08-20 Angela: \"clean up that movement stuff.\" A one-Turn Movement loss is now the Slow status — apply N Slow. Fourteen entries said this two different ways and every one of them needed the engine to remember whose next Turn it was. Amount unchanged.",
+   "triggers": []
+  },
+  {
+   "id": "power.blightcaller.wither",
+   "name": "Wither",
+   "specialty": "specialty.blightcaller",
+   "stamina": 1,
+   "cooldown": 2,
+   "warmup": 0,
+   "free": false,
+   "targets": "one enemy within 5 hexes",
+   "tags": [
+    "staff"
+   ],
+   "description": "The target gains 3 Weak and loses 1 Armor and 1 Resist for the rest of the Battle. Both floor at zero, so the second cast on the same target is usually wasted — spread it.",
+   "source": "new (the Nature Warden's debuff identity as an on-demand power; named for what it does) | 2026-08-17: \"difficult terrain\" is not a thing in HoBaT — there are hexes that cost extra Movement. Reworded.",
+   "triggers": []
+  },
+  {
+   "id": "power.blightcaller.regrowth",
+   "name": "Regrowth",
+   "specialty": "specialty.blightcaller",
+   "stamina": 1,
+   "cooldown": 4,
+   "warmup": 0,
+   "free": false,
+   "targets": "one ally within 4 hexes",
+   "tags": [
+    "heal"
+   ],
+   "description": "The target gains Regen 3: it heals 3 at the end of each of its next three Turns.",
+   "source": "Hell-TCG name reused (Druid/Nature Warden, Regrowth — Regen 5 retuned to 3 over three Turns) | 2026-08-17: \"difficult terrain\" is not a thing in HoBaT — there are hexes that cost extra Movement. Reworded. | 2026-08-20 Angela: \"healing is halved on burning ground\" is cut. Standing in fire gives you Burn, and Burn already halves healing on its holder — the clause restated a rule that fires on its own. ",
+   "triggers": []
+  },
+  {
+   "id": "power.blightcaller.creeping-blight",
+   "name": "Creeping Blight",
+   "specialty": "specialty.blightcaller",
+   "stamina": 2,
+   "cooldown": 5,
+   "warmup": 2,
+   "free": false,
+   "targets": "a hex within 5 hexes and every hex adjacent to it",
+   "tags": [
+    "area",
+    "staff"
+   ],
+   "description": "Those seven hexes become poisoned. Any unit that begins its Turn on poisoned ground gains 2 Poison and 1 Weak — allies included. No roll, no crit.",
+   "needsCapability": "a third terrain status alongside burning and frost — 'blighted', which applies statuses on turn-start rather than ticking damage",
+   "source": "new (the terrain-painting expression of Nature Warden's turnEnd Weak; flagged because HoBaT currently defines only two hex statuses) | 2026-08-17: \"difficult terrain\" is not a thing in HoBaT — there are hexes that cost extra Movement. Reworded. | 2026-08-20 Angela: \"blighted ground\" renamed — Blight is not a status and those hexes already applied Poison. | 2026-08-20 Angela: ground layers are PERSISTENT and carry no number and no clock. A hex is burning or it is not. One layer per hex; applying a different one replaces it. See rule.ground-layers. The \"does not interact with burning or frost\" line went with it: a hex now holds one layer, so the question cannot arise.",
+   "triggers": []
+  },
+  {
+   "id": "power.wild-shaper.wild-growth",
+   "name": "Wild Growth",
+   "specialty": "specialty.wild-shaper",
+   "stamina": 1,
+   "cooldown": 3,
+   "warmup": 0,
+   "free": false,
+   "targets": "self",
+   "tags": [
+    "claw",
+    "melee"
+   ],
+   "description": "Roots come up through you. Heal 3, and for the rest of the Battle your claw and melee attacks gain +1 Strength and heal you 1 on damage — and you lose 1 Movement for the rest of the Battle.",
+   "source": "Hell-TCG name reused (Druid/Wild Shaper, Wild Growth — Drained was CUT, replaced by the cooldown) | 2026-08-17: \"difficult terrain\" is not a thing in HoBaT — there are hexes that cost extra Movement. Reworded. | 2026-08-17 quality pass: stacked a flat +1 Strength / +3 Health three times for nothing. Rebuilt as a shape-2 tag modifier that stacks Movement loss alongside the benefit, so the third stack is a real question. | 2026-08-20 sweep: \"It stacks up to three times, and so does the Movement\" is a stacking limit AND a tally of how often you have used it. Neither exists. The cooldown paces it and the Movement keeps stacking, which is the real cost.",
+   "triggers": [],
+   "modifies": {
+    "tags": [
+     "claw",
+     "melee"
+    ],
+    "scope": "rest-of-battle",
+    "statModifiers": {
+     "strength": 1
+    },
+    "triggers": [
+     {
+      "hook": "onDamage",
+      "effect": "heal 1"
+     }
+    ]
+   }
+  },
+  {
+   "id": "power.wild-shaper.primal-roar",
+   "name": "Primal Roar",
+   "specialty": "specialty.wild-shaper",
+   "stamina": 2,
+   "cooldown": 4,
+   "warmup": 2,
+   "free": false,
+   "targets": "enemies within 3 hexes",
+   "tags": [
+    "area",
+    "aura"
+   ],
+   "description": "Every enemy within 3 hexes gains 2 Weak and gains 1 Slow. Area — no roll, no crit.",
+   "source": "Hell-TCG name reused (Druid/Wild Shaper, Primal Roar) | 2026-08-17: \"difficult terrain\" is not a thing in HoBaT — there are hexes that cost extra Movement. Reworded. | 2026-08-20 Angela: \"clean up that movement stuff.\" A one-Turn Movement loss is now the Slow status — apply N Slow. Fourteen entries said this two different ways and every one of them needed the engine to remember whose next Turn it was. Amount unchanged.",
+   "triggers": []
+  },
+  {
+   "id": "power.wild-shaper.claw",
+   "name": "Claw",
+   "specialty": "specialty.wild-shaper",
+   "stamina": 1,
+   "cooldown": 2,
+   "warmup": 0,
+   "free": false,
+   "targets": "self",
+   "tags": [
+    "melee",
+    "claw",
+    "brawl"
+   ],
+   "description": "Until the end of your next Turn, your attacks gain +2 Strength, can crit, and apply 2 Bleed on hit. They CONSUME the target’s Weak: add it to the damage and remove 5 stacks.",
+   "source": "Hell-TCG name reused (badge power, Claw — rebuilt as a real melee attack on the one caster who wants one) | 2026-08-17: was an attack in its own right, so it competed with the weapon in your hands and lost the moment you found a good one. Rebuilt as a next-attack modifier. | 2026-08-17: \"difficult terrain\" is not a thing in HoBaT — there are hexes that cost extra Movement. Reworded. | 2026-08-17 design pass: the branch reads Weak; this power tears it out instead — the consuming, higher-tier version of the same family. | 2026-08-20 Angela: \"your next <form> attack\" is gone. Nothing tracks which attack is next or what form it is. Rewritten as a duration: until the end of your next Turn, your attacks carry it. The form qualifier is dropped with it. ",
+   "modifies": {
+    "tags": [
+     "brawl"
+    ],
+    "scope": "until-end-of-your-next-turn",
+    "statModifiers": {
+     "strength": 2
+    },
+    "addsTargetStatus": {
+     "status": "weak",
+     "consumes": true
+    }
+   },
+   "triggers": []
+  },
+  {
+   "id": "power.grove-keeper.life-bloom",
+   "name": "Life Bloom",
+   "specialty": "specialty.grove-keeper",
+   "stamina": 1,
+   "cooldown": 3,
+   "warmup": 0,
+   "free": false,
+   "targets": "one ally within 5 hexes",
+   "tags": [
+    "heal"
+   ],
+   "description": "One ally heals 2 + Magic and gains +2 Health for the rest of the Battle.",
+   "source": "Hell-TCG name reused (Druid/Grove Keeper, Life Bloom) | 2026-08-17: \"difficult terrain\" is not a thing in HoBaT — there are hexes that cost extra Movement. Reworded. | 2026-08-20 Angela: \"healing is halved on burning ground\" is cut. Standing in fire gives you Burn, and Burn already halves healing on its holder — the clause restated a rule that fires on its own. ",
+   "triggers": []
+  },
+  {
+   "id": "power.grove-keeper.rejuvenation",
+   "name": "Rejuvenation",
+   "specialty": "specialty.grove-keeper",
+   "stamina": 2,
+   "cooldown": 6,
+   "warmup": 3,
+   "free": false,
+   "targets": "allies within 4 hexes",
+   "tags": [
+    "heal",
+    "area"
+   ],
+   "description": "Every ally within 4 hexes heals 2 + Spirit and loses all Poison. Spirit is the party-wide sum, so with one caster in the party this is about a 4-point heal. Anyone still standing in fire gets half of it — Quench first, then cast this.",
+   "source": "Hell-TCG name reused (Druid/Rejuvenation — Drained and Fatigued were CUT; max-Health grant trimmed) | 2026-08-17: \"difficult terrain\" is not a thing in HoBaT — there are hexes that cost extra Movement. Reworded.",
+   "triggers": []
+  },
+  {
+   "id": "power.grove-keeper.quench",
+   "name": "Quench",
+   "specialty": "specialty.grove-keeper",
+   "stamina": 1,
+   "cooldown": 3,
+   "warmup": 0,
+   "free": false,
+   "targets": "a hex within 4 hexes and every hex adjacent to it",
+   "tags": [
+    "area",
+    "staff"
+   ],
+   "description": "Those seven hexes become frost. Frost ground deals no damage, but every unit standing in it takes 2 extra physical damage from every hit — including your own front line. No roll, no crit. Use it to put out a Fire-master’s mess or to soften a knot of enemies for the melee.",
+   "source": "new (built on the frost terrain status; the anti-fire half of Grove Keeper, which Hell-TCG expressed as a party cleanse) | 2026-08-17: \"difficult terrain\" is not a thing in HoBaT — there are hexes that cost extra Movement. Reworded. | 2026-08-20 Angela: ground layers are PERSISTENT and carry no number and no clock. A hex is burning or it is not. One layer per hex; applying a different one replaces it. See rule.ground-layers. \"Cancelling any burning already on them\" is now the universal replacement rule, not this power’s trick.",
+   "triggers": []
+  },
+  {
+   "id": "power.grove-keeper.grove-ward",
+   "name": "Grove Ward",
+   "specialty": "specialty.grove-keeper",
+   "stamina": 2,
+   "cooldown": 5,
+   "warmup": 2,
+   "free": false,
+   "targets": "allies within 2 hexes",
+   "tags": [
+    "aura"
+   ],
+   "description": "Aura 2, centred on you: allies inside gain +1 Resist and 2 Regeneration.",
+   "source": "new (replaces Harmony and Sanctuary, both of which were spent on gen/ranger.json) | 2026-08-17: \"difficult terrain\" is not a thing in HoBaT — there are hexes that cost extra Movement. Reworded. | 2026-08-20 Angela: \"while you did not move on your Turn\" is a did-not-move condition and \"cannot be dropped below 1 Health\" is a damage floor. Both cut; regeneration replaces the floor.",
+   "triggers": []
+  }
+ ]
+}

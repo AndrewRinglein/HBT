@@ -1,0 +1,909 @@
+# ITEMS (190) — name | tier | forClass | stats | description | triggers
+Lucky Charm | 0 |  | {melee,ranged,armor,health:1,reach,magic,spirit,resist,dodge} |  | onEquip
+Heaven Edge | 1 | Paladin | {melee:1,ranged,armor,health,reach,magic,spirit,resist,dodge} | On attack: heal self for Half Spirit. | onAttack
+Holy Shield | 1 | Paladin | {melee,ranged,armor,health:3,reach,magic,spirit,resist,dodge} | Paladin: +1 Resist. | 
+Bracer of Courage | 1 | Paladin | {melee,ranged,armor,health:2,reach,magic,spirit,resist,dodge,resolute:1} | Paladin: +1 Resist. | 
+Holy Avenger | 1 | Paladin | {melee:1,ranged,armor,health,reach,magic,spirit,resist:1,dodge} | Paladin: +2 vs Undead, +2 vs Demons. | 
+Seraph Bow | 1 | Ranger | {melee,ranged:1,armor,health,reach:1,magic,spirit,resist,dodge} | Ranger: +1 Ranged. | 
+Flaming Arrows | 1 | Ranger | {melee,ranged:1,armor,health,reach,magic,spirit,resist,dodge} | On damage: 1 Burn. Ranger: +1 Ranged. | onDamage
+Elven Protection Charm | 1 | Ranger | {melee,ranged,armor,health:2,reach,magic,spirit,resist,dodge} | On equip: +1 Draw. Ranger: +2 Armor, +2 Resist. | onEquip
+Hunting Arrows | 1 | Ranger | {melee,ranged:1,armor,health,reach,magic,spirit,resist,dodge} | +2 vs Animals. Ranger: +1 Reach, +2 vs Monsters. | 
+Guardian's Mail | 1 | Warrior | {melee:-1,ranged,armor:1,health,reach,magic,spirit,resist,dodge} | +1 Armor, -1 Melee. Costs 2 actions. | 
+Bloody Axe | 1 | Warrior | {melee:1,ranged,armor,health,reach,magic,spirit,resist,dodge} | On damage: 1 Bleed. Warrior: +3 Health. | onDamage
+Sturdy Runed Leather | 1 | Warrior | {melee:-1,ranged:-1,armor,health:4,reach,magic,spirit,resist,dodge} | Warrior: +2 Melee, +2 Ranged. | 
+Bracers of Assault | 1 | Warrior | {melee:4,ranged,armor,health,reach,magic,spirit,resist,dodge} | On equip: 4 Weak to self. Warrior: on attack remove 2 Weak. | onEquip
+Arcane Staff | 1 | Mage | {melee,ranged:1,armor,health,reach:1,magic,spirit,resist,dodge} | Mage: +1 Magic. Grants Arcane Blast class power. | 
+Staff of the Magi | 1 | Mage | {melee,ranged:1,armor,health,reach:1,magic,spirit,resist,dodge} | Mage: +1 Magic. | 
+Lightning Bracers | 1 | Mage | {melee,ranged:1,armor,health,reach,magic,spirit,resist,dodge} | Mage: +1 Magic. Grants Lightning Blast class power. | 
+Ring of Protection | 1 | Mage | {melee,ranged,armor,health:2,reach,magic,spirit,resist,dodge} | End of turn: heal self 1. Mage: +1 Armor, +3 Health. | turnEnd
+Holy Texts | 1 | Priest | {melee,ranged,armor,health,reach,magic,spirit,resist,dodge} | Priest: +2 Spirit. | 
+Commanding Scepter | 1 | Priest | {melee,ranged,armor,health,reach,magic,spirit,resist,dodge} | On equip: +1 Hero. Priest: +2 Spirit. | onEquip
+Cursed Tome | 1 | Priest | {melee,ranged,armor,health,reach,magic,spirit,resist,dodge,actionsPerTurn:1,drawPerTurn:1} | On equip: 4 Poison to self. +1 Action/turn, +1 Draw/turn. Priest: +5 Health. | onEquip
+Saint's Fingerbone | 1 | Priest | {melee,ranged,armor,health:1,reach,magic,spirit,resist,dodge,resolute:2} | Priest: +1 Faith on equip. | 
+Shadowstep Boots | 1 | Rogue | {melee,ranged,armor,health,reach,magic,spirit,resist,dodge:1} | Rogue: +1 Dodge, +1 Draw. | 
+Poison Stars | 1 | Rogue | {melee,ranged,armor,health,reach:1,magic,spirit,resist,dodge} | On damage: 1 Poison. | onDamage
+Cloak of Shadows | 1 | Rogue | {melee,ranged,armor,health,reach,magic,spirit,resist,dodge} | On equip: +1 Draw. Rogue: Impersonation, +1 Dodge. | onEquip
+Bag of Tricks | 1 | Rogue | {melee,ranged,armor,health,reach,magic,spirit,resist,dodge,itemSlots:2} | +2 Item Slots. On equip: +1 Draw. | onEquip
+Duel Runeblades | 1 | Demon Hunter | {melee:1,ranged,armor,health,reach,magic,spirit,resist,dodge} | Ranger: +2 Melee, +2 vs Demons. | 
+Runed Crossbow | 1 | Demon Hunter | {melee,ranged:1,armor,health,reach,magic,spirit,resist,dodge} | +2 vs Demons, +1 vs Undead. Ranger: +1 Ranged. | 
+Wreath of Nature's Protection | 1 | Druid | {melee,ranged,armor,health,reach,magic,spirit,resist:2,dodge,resolute:2} | 1 Thorns. Druid: +1 Thorns. | onTakingDamage
+Shaman's Staff | 1 | Druid | {melee,ranged:1,armor,health,reach,magic,spirit,resist,dodge} | Mage: +1 Magic. Druid: +4 Health. | 
+Book of Exorcisms | 1 | Inquisitor | {melee,ranged,armor,health,reach:1,magic,spirit,resist,dodge} | On attack: 1 Burn. Inquisitor: +4 vs Ghost, +1 vs Demons. | onAttack
+Hammer of Justice | 1 | Inquisitor | {melee:1,ranged,armor,health,reach,magic,spirit,resist,dodge} | On attack: enemy loses 1 Armor. +2 vs Boss. Inquisitor: +4 vs Human. | onAttack
+Chains of the Faithful | 1 | Martyr | {melee:-1,ranged,armor:3,health,reach,magic,spirit,resist,dodge} | Priest: +3 Health. | 
+Cursed Skull | 1 | Martyr | {melee:-3,ranged,armor,health,reach,magic,spirit,resist,dodge} | End of turn: heal party for Half Spirit. Priest: +1 Spirit. | turnEnd
+Barbarian Furs | 1 | Barbarian | {melee,ranged,armor,health:2,reach,magic,spirit,resist,dodge} | Barbarian: on equip remove all Burn. | 
+Medicine Belt | 1 | Barbarian | {melee,ranged,armor,health:1,reach,magic,spirit,resist,dodge} | Warrior: Grants Medicine class power. | 
+Silkweave Armor | 1 | Ebony Mask | {melee,ranged,armor:1,health:-2,reach,magic,spirit,resist,dodge} | Rogue: +1 Dodge. Ebony Mask: +1 Draw. | 
+Cloak of Ghostform | 1 | Ebony Mask | {melee,ranged,armor,health,reach,magic,spirit,resist,dodge:2} | On equip: 2 Weak to self. Rogue: +2 vs Ghost, +1 Resist. | onEquip
+Frost Arrows | 2 |  | {melee,ranged:1,armor,health,reach:1,magic,spirit,resist,dodge} | On attack: 2 Weak. Ranger: +1 Ranged. | onAttack
+Death Bow | 2 |  | {melee,ranged:3,armor,health,reach,magic,spirit,resist,dodge} | On attack: Drained. On kill: remove Drained. Ranger: +2 Ranged. | onAttack,onKill
+Death Blade | 2 |  | {melee:4,ranged,armor,health,reach,magic,spirit,resist,dodge} | On attack: Drained. On kill: remove Drained. +2 vs Human. Warrior: +2 Melee. | onAttack,onKill
+Divine Bulwark | 2 |  | {melee,ranged,armor:1,health:2,reach,magic,spirit,resist:1,dodge} | On equip: 2 Stun to self. | onEquip
+Rod of Peerless Power | 2 |  | {melee,ranged,armor,health,reach,magic:3,spirit,resist,dodge} | On equip: Drained. Mage: +4 Draw. | onEquip
+Holy Chalice | 2 |  | {melee,ranged,armor,health,reach,magic,spirit,resist,dodge} | On attack: +1 Spirit permanently. Priest: +1 Spirit, +2 Health. | onAttack
+Texts of Illudustia | 2 |  | {melee,ranged,armor,health,reach,magic,spirit,resist,dodge} | On equip: 4 Regen. Priest: +6 Health, +1 Spirit. | onEquip
+Armor of Thorns | 2 |  | {melee,ranged,armor,health:3,reach,magic,spirit,resist,dodge} | 2 Thorns. | onTakingDamage
+Poison Throwing Knives | 2 |  | {melee,ranged:2,armor,health,reach,magic,spirit,resist,dodge} | Rogue: on damage 1 Poison. | 
+Swiftboots | 2 |  | {melee,ranged,armor,health,reach,magic,spirit,resist,dodge:2} | On equip: remove Weak. Rogue: +2 Reach, +2 Melee. | onEquip
+Sniper Bow | 2 |  | {melee,ranged:1,armor,health,reach:3,magic,spirit,resist,dodge} | On kill: +1 Draw. Ranger: +2 Ranged. | onKill
+Divine Charm | 2 |  | {melee,ranged,armor,health,reach,magic,spirit:1,resist,dodge} | +1 Spirit. When hit: heal all heroes for 1. | onTakingDamage
+Paladin's Keepsake | 2 |  | {melee,ranged,armor,health,reach,magic,spirit,resist,dodge} | Paladin: +2 Spirit, +1 Armor. | 
+Blink Ring | 2 |  | {melee,ranged,armor,health,reach,magic,spirit,resist,dodge:1} | Grants Blink class power. Rogue: +1 Dodge, +1 Melee. | 
+Burden of Eternity | 2 |  | {melee,ranged,armor,health,reach,magic,spirit,resist,dodge,actionsPerTurn:1} | On equip: Fatigued. +1 Action/turn, +1 Hero. | onEquip
+Burden of Wisdom | 2 |  | {melee,ranged,armor,health,reach,magic,spirit,resist,dodge,drawPerTurn:1} | On equip: Drained. +1 Draw/turn. | onEquip
+Void Staff | 3 |  | {melee,ranged:1,armor,health,reach,magic:2,spirit,resist,dodge} | Mage: +4 Health. | 
+Blessed Tome | 3 |  | {melee,ranged,armor,health,reach,magic,spirit,resist:1,dodge} | On equip: Draw 2. Priest: +2 Faith. | onEquip
+Demon Whip | 3 |  | {melee:4,ranged:2,armor,health,reach:1,magic,spirit,resist,dodge} | On attack: 2 Burn to target. | onAttack
+Demon's Wish | 3 |  | {melee,ranged:2,armor,health,reach,magic,spirit,resist,dodge} | On kill: +1 Resist, lose 1 Faith. Ranger: +2 Ranged. | onKill
+Orb of the Soul Stealer | 3 |  | {melee,ranged,armor,health,reach:4,magic,spirit,resist,dodge} | On attack: gain 2 Regen. | onAttack
+Shadow Dagger | 3 |  | {melee:1,ranged,armor,health,reach,magic,spirit,resist,dodge} | On kill: +1 Dodge. Rogue: +1 Dodge. | onKill
+Warlord Banner | 3 |  | {melee:-1,ranged:-1,armor,health,reach,magic,spirit,resist:1,dodge} | On equip: +1 Hero. | onEquip
+Commander's Signet | 3 |  | {melee,ranged:-1,armor:1,health:2,reach,magic,spirit,resist,dodge} | On equip: +1 Action/turn. | onEquip
+Ring of Divine Protection | 3 |  | {melee,ranged,armor,health:2,reach,magic,spirit,resist:1,dodge} | Paladin: +1 Armor. | 
+Poison Shiv | 3 |  | {melee:1,ranged:1,armor,health,reach,magic,spirit,resist,dodge} | On damage: 1 Poison. Rogue: additional 1 Poison. | onDamage
+Hero's Gear | 3 |  | {melee,ranged,armor,health:2,reach,magic,spirit,resist,dodge,itemSlots:2} | Civilian: +2 Melee, +2 Ranged. | 
+Scepter of Salvation | 4 |  | {melee,ranged,armor,health,reach,magic,spirit,resist,dodge} | On equip: +3 Faith. Priest: on attack heal lowest health hero for 3. | onEnter
+Eye of Damnation | 4 |  | {melee,ranged,armor,health:-3,reach,magic:4,spirit,resist,dodge,drawPerTurn:2,actionsPerTurn:2} | +4 Magic, -3 Health. +2 Draw/turn, +2 Action/turn. Gain Despair badge. | onEnter
+Blade of Demon Slaying | 4 |  | {melee:1,ranged,armor,health,reach,magic,spirit,resist,dodge} | +1 Melee. On enter: Protection = Half Magic. On melee damage: 5 Burn. | onEnter,onDamage
+Bow of the Apocalypse | 4 |  | {melee,ranged:3,armor,health,reach,magic,spirit,resist,dodge} | On enter: deal 20 to random enemy. On attack: deal Ranged to random enemy. Ranger: +2 Ranged. Grants Apocalypse, Rain of Arrows class powers. | onEnter,onAttack
+Patrocolea's Armor | 4 |  | {melee,ranged,armor:3,health:-3,reach,magic,spirit,resist,dodge} | +3 Armor, -3 Health. On equip: 6 Regen, 2 Stun to self. | onEquip
+Demonic Shiv | 4 |  | {melee:1,ranged,armor,health,reach,magic,spirit,resist,dodge} | +1 Melee. On kill: deal 10 to two random enemies. | onKill
+Necromancer's Orb | 4 |  | {melee,ranged,armor,health,reach,magic,spirit,resist,dodge} | On damage: 3 Poison. Mage: +1 Magic, -2 Health. Rogue: +2 Reach. | onDamage
+Divine Ward | 4 |  | {melee,ranged,armor,health,reach,magic,spirit,resist,dodge} | End of turn: Protection = Half Spirit + 2. Paladin: +4 Health. Priest: +1 Spirit. Civilian: +6 Health. | turnEnd
+Rod of Arcane Protection | 1 | Mage | {melee,ranged,armor,health,reach,magic,spirit,resist,dodge} | Protection = Magic x2. Mage: +1 Magic, 1 Counterspell. | onEquip
+Ring of Power Draining | 1 | Mage | {melee,ranged,armor,health,reach,magic:1,spirit,resist:1,dodge} | +1 Magic, +1 Resist. Mage: enemy Power -2, +1 Magic. | 
+Fire Staff | 1 | Mage | {melee,ranged,armor,health,reach,magic,spirit,resist,dodge} | On attack: deal Half Magic as Burn. Mage: +2 Magic. | onAttack
+Ancient Tome | 1 | Mage | {melee,ranged,armor,health,reach,magic,spirit,resist,dodge} | Draw 4 cards. Mage: +1 Draw/turn. | onEquip
+Ironborn Shield | 1 | Paladin | {melee,ranged,armor,health:6,reach,magic,spirit,resist,dodge} | +6 Health. Paladin: +1 Armor. | 
+Blacksteed | 1 | Paladin | {melee:3,ranged,armor,health,reach,magic,spirit,resist,dodge} | +3 Melee. Paladin: grants Ride Off power. | 
+Bane Blade | 1 | Paladin | {melee:2,ranged,armor,health,reach,magic,spirit,resist,dodge} | +2 Melee. Paladin: +2 vs Ghost, +2 vs Sand. | 
+Crippling Whip | 1 | Paladin | {melee,ranged,armor,health,reach:1,magic,spirit,resist,dodge} | On attack: 2 Weak. +1 Reach. Paladin: on attack lower enemy Armor by 1. | onAttack
+Sandworn Shield | 1 | Priest | {melee,ranged,armor,health:3,reach,magic,spirit,resist,dodge} | +3 Health. Priest: +1 Spirit. | 
+Hourglass of Omen | 1 | Priest | {melee,ranged,armor,health,reach,magic,spirit,resist,dodge} | Draw 2, gain 1 Faith. Priest: +1 Action/turn. | onEquip
+Torment of Ire | 1 | Priest | {melee,ranged,armor,health,reach,magic,spirit,resist,dodge} | On attack: 1 Blight. Self takes 4 Poison. Priest: +5 Health. | onEquip,onAttack
+Wraithform Cloak | 1 | Priest | {melee,ranged:-2,armor,health,reach,magic,spirit,resist:2,dodge:2} | +2 Resist, +2 Dodge, -2 Ranged. Priest: +2 Spirit. | 
+Runestrung Bow | 1 | Ranger | {melee,ranged:1,armor,health,reach:2,magic,spirit,resist,dodge} | +1 Ranged, +2 Reach. Ranger: +2 Ranged, -3 Health. | 
+Spectral Quiver | 1 | Ranger | {melee,ranged:2,armor,health,reach,magic,spirit,resist,dodge} | +2 Ranged, +3 vs Ghost. Ranger: +5 Health. | 
+Glyph-Etched Bracers | 1 | Ranger | {melee,ranged:1,armor,health,reach,magic,spirit,resist,dodge} | +1 Action, 2 Misdirection. +1 Ranged. Ranger: on kill deal 1 magic damage to all enemies. | onEquip
+Twin Talon Bow | 1 | Ranger | {melee,ranged:1,armor,health,reach,magic,spirit,resist,dodge} | +1 Ranged. On damage: 1 Bleed. Ranger: +1 Ranged, +3 Melee. | onDamage
+Duskwoven Cloak | 1 | Rogue | {melee,ranged,armor,health:-2,reach,magic,spirit,resist,dodge:2} | +2 Dodge, -2 Health. Rogue: Impersonation. | 
+Obsidian Fang Dagger | 1 | Rogue | {melee:3,ranged,armor,health,reach,magic,spirit,resist,dodge} | +3 Melee. On attack: -1 Melee to self. Rogue: on attack lower enemy Armor by 1. | onAttack
+Featherstep Boots | 1 | Rogue | {melee,ranged,armor,health,reach,magic,spirit,resist,dodge:1} | 2 Misdirection, +1 Dodge. Rogue: +2 Misdirection. | onEquip
+Poison Caltrops | 1 | Rogue | {melee,ranged,armor,health,reach,magic,spirit,resist,dodge} | Aura: enemies gain 1 Poison each turn. Rogue: on attack deal 1 Poison. | turnEnd
+Vow of Iron | 1 | Warrior | {melee,ranged,armor,health:2,reach,magic,spirit,resist,dodge} | +2 Health, 5 Regen. Warrior: +1 Armor. | turnEnd
+Bloodbound Gauntlets | 1 | Warrior | {melee,ranged,armor,health,reach,magic,spirit,resist,dodge} | On attack: all heroes +1 Melee. Self takes 3 damage. Warrior: +3 Health. | onEquip,onAttack
+Shadow's Edge | 1 | Warrior | {melee:2,ranged,armor,health,reach,magic,spirit,resist,dodge} | +2 Melee. Warrior: on damage deal shadow stacks as damage. | 
+Scorpion Shield | 1 | Warrior | {melee,ranged,armor,health:5,reach,magic,spirit,resist,dodge} | +5 Health. Warrior: on taking damage deal 2 Poison to attacker. | 
+Hourglass of Visions | 2 |  | {melee,ranged,armor,health,reach,magic,spirit,resist,dodge} | On equip: Draws per turn equal to Half Spirit (rounded down). | onEquip
+Mirage Dagger | 2 |  | {melee:1,ranged,armor,health,reach,magic,spirit,resist,dodge} | +1 Melee. On kill: 1 Misdirection. Mage: +1 Magic. | onKill
+Scorching Arrows | 2 |  | {melee,ranged:1,armor,health,reach:1,magic,spirit,resist,dodge} | +1 Ranged, +1 Reach. On attack: 1 Burn. Ranger: +1 Ranged. | onAttack
+Sandstorm Cloak | 2 |  | {melee,ranged,armor,health,reach,magic,spirit,resist:1,dodge} | +1 Resist. Grants Sand Mirage class power. | 
+Dune Sniper Bow | 2 |  | {melee,ranged:1,armor,health,reach:2,magic,spirit,resist,dodge} | +1 Ranged, +2 Reach. On kill: Draw 1. Ranger: +2 Ranged. | onKill
+Cursed Sand Blade | 2 |  | {melee:4,ranged,armor,health,reach,magic,spirit,resist,dodge} | +4 Melee. On equip: 2 Shadow to self. Rogue: +2 Dodge. | onEquip
+Sand Ward Amulet | 2 |  | {melee,ranged,armor,health,reach,magic,spirit,resist:1,dodge} | +1 Resist. On equip: 1 Counterspell. Priest: +1 Spirit. | onEquip
+Scorpion Carapace | 2 |  | {melee,ranged,armor,health:3,reach,magic,spirit,resist,dodge} | +3 Health. When hit: 2 damage and 1 Poison to attacker. | onTakingDamage
+Tomb Guardian Shield | 2 |  | {melee,ranged,armor:1,health:2,reach,magic,spirit,resist:1,dodge} | +1 Armor, +2 Health, +1 Resist. Paladin: +2 vs Undead. | 
+Wraith-Touched Staff | 2 |  | {melee,ranged,armor,health,reach:1,magic:1,spirit,resist,dodge} | +1 Magic, +1 Reach. Grants Shadow Strike class power. | 
+Hourglass of Eternity | 3 |  | {melee,ranged,armor,health,reach,magic,spirit,resist:1,dodge} | +1 Resist. On equip: +Heroes equal to Half Spirit (rounded down). | onEquip
+Tomb Sentinel's Blade | 3 |  | {melee:2,ranged,armor,health,reach:1,magic,spirit,resist,dodge} | +2 Melee, +1 Reach. On kill: 1 Counterspell. Mage: +1 Magic. | onKill
+Desert Wind Cloak | 3 |  | {melee,ranged,armor,health,reach,magic,spirit,resist:1,dodge:1} | +1 Dodge, +1 Resist. Grants Desert Wind class power. | 
+Sand Serpent Bow | 3 |  | {melee,ranged:2,armor,health,reach:1,magic,spirit,resist,dodge} | +2 Ranged, +1 Reach. On kill: 2 Poison. Ranger: +2 Ranged. | onKill
+Cursed Sarcophagus | 3 |  | {melee,ranged,armor:1,health:3,reach,magic,spirit,resist,dodge} | +1 Armor, +3 Health. On equip: +1 Action/turn, 3 Shadow to self. | onEquip
+Tomb Priest's Censer | 3 |  | {melee,ranged,armor,health,reach,magic,spirit:1,resist:1,dodge} | +1 Resist, +1 Spirit. On equip: Draw 2, 1 Counterspell. Priest: +1 Spirit. | onEquip
+Pharaoh's Gauntlets | 3 |  | {melee:3,ranged:1,armor,health,reach:1,magic,spirit,resist,dodge} | +3 Melee, +1 Ranged, +1 Reach. On attack: 1 Weak. Warrior: +2 Melee. | onAttack
+Sandstone Aegis | 3 |  | {melee,ranged,armor,health:4,reach,magic,spirit,resist:1,dodge} | +4 Health, +1 Resist. On equip: 2 Protection to all heroes, 2 Shadow to self. | onEquip
+Crown of the Sand King | 4 |  | {melee,ranged,armor,health,reach,magic,spirit:2,resist:1,dodge} | +2 Spirit, +1 Resist. On equip: +3 Heroes. | onEquip
+Eye of the Desert | 4 |  | {melee,ranged,armor,health:-2,reach,magic:2,spirit:2,resist,dodge} | +2 Magic, +2 Spirit, -2 Health. On equip: +Heroes and +Actions/turn = ceil(Spirit/4). 4 Shadow to self. | onEquip
+Blade of the Sand King | 4 |  | {melee:2,ranged,armor,health,reach,magic,spirit,resist,dodge} | +2 Melee. On enter: Protection = Half Magic. On melee damage: 3 Shadow. Warrior: +3 Melee. | onEnter,onDamage
+Tomb King's Scepter | 4 |  | {melee,ranged,armor,health,reach,magic,spirit,resist:1,dodge} | +1 Resist. On enter: +3 Faith, on attack heals lowest hero for 3. Priest: +2 Spirit. | onEnter
+Desert Phantom Shroud | 4 |  | {melee,ranged,armor,health,reach,magic,spirit,resist:1,dodge:2} | +2 Dodge, +1 Resist. Grants Sand King's Will class power. | 
+Storm Gauntlets | 1 | Warrior | {melee:2,ranged,armor,health,reach,magic,spirit,resist,dodge} | +2 Melee. Warrior: +3 Health. | 
+Boarding Axe | 1 | Warrior | {melee:1,ranged,armor,health,reach,magic,spirit,resist,dodge} | +1 Melee. On kill: Draw 1. Warrior: +2 Melee. | onKill
+Cloudsteel Plate | 1 | Warrior | {melee:-1,ranged,armor,health:4,reach,magic,spirit,resist,dodge} | +4 Health, -1 Melee. Warrior: +1 Armor. | 
+Berserker's Torc | 1 | Warrior | {melee:3,ranged,armor,health,reach,magic,spirit,resist,dodge} | +3 Melee. On equip: 3 Burn to self. Warrior: +2 Health. | onEquip
+Skybow | 1 | Ranger | {melee,ranged:1,armor,health,reach:2,magic,spirit,resist,dodge} | +1 Ranged, +2 Reach. Ranger: +1 Ranged. | 
+Stormfeather Quiver | 1 | Ranger | {melee,ranged:2,armor,health,reach,magic,spirit,resist,dodge} | +2 Ranged. On damage: 1 Weak. Ranger: +3 Health. | onDamage
+Wind-Blessed Leather | 1 | Ranger | {melee,ranged,armor,health:2,reach,magic,spirit,resist,dodge:1} | +1 Dodge, +2 Health. Ranger: +1 Ranged, +1 Reach. | 
+Grappling Harpoon | 1 | Ranger | {melee,ranged:1,armor,health,reach,magic,spirit,resist,dodge} | +1 Ranged. Draw 2. Ranger: +2 Melee. | onEquip
+Rigging Daggers | 1 | Rogue | {melee:1,ranged,armor,health,reach:1,magic,spirit,resist,dodge} | +1 Melee, +1 Reach. On damage: 1 Bleed. Rogue: +1 Dodge. | onDamage
+Ghost-Thread Cloak | 1 | Rogue | {melee,ranged,armor,health:-2,reach,magic,spirit,resist,dodge:2} | +2 Dodge, -2 Health. Rogue: +1 Resist. | 
+Plunderer's Satchel | 1 | Rogue | {melee,ranged,armor,health,reach,magic,spirit,resist,dodge,itemSlots:1} | +1 Item Slot. Draw 1. | onEquip
+Phantom Blade | 1 | Rogue | {melee:2,ranged,armor,health,reach,magic,spirit,resist,dodge} | +2 Melee. Rogue: +1 Dodge, +3 vs Ghost. | 
+Tempest Rod | 1 | Mage | {melee,ranged:1,armor,health,reach:1,magic,spirit,resist,dodge} | +1 Ranged, +1 Reach. Mage: +1 Magic. | 
+Arcane Conduit | 1 | Mage | {melee,ranged,armor,health,reach,magic,spirit,resist,dodge} | Draw 2. Mage: +1 Magic. | onEquip
+Windshear Blade | 1 | Mage | {melee:1,ranged,armor,health,reach,magic,spirit,resist,dodge} | +1 Melee. On attack: 1 Burn. Mage: +1 Magic. | onAttack
+Aether Crystal | 1 | Mage | {melee,ranged,armor,health:2,reach,magic,spirit,resist,dodge} | +2 Health. Mage: +1 Magic, +1 Health. | 
+Skyward Censer | 1 | Priest | {melee,ranged,armor,health,reach,magic,spirit,resist,dodge} | Gain 2 Faith. Priest: +2 Spirit. | onEquip
+Stormweave Vestments | 1 | Priest | {melee,ranged,armor,health:3,reach,magic,spirit,resist,dodge} | +3 Health. Priest: +1 Spirit. | 
+Winds of Mercy | 1 | Priest | {melee,ranged:-2,armor,health,reach,magic,spirit,resist,dodge} | -2 Ranged. End of turn: heal party 1. Priest: +1 Spirit. | turnEnd
+Relic of the First Voyage | 1 | Priest | {melee,ranged,armor,health,reach,magic,spirit,resist,dodge,resolute:1} | +1 Resolute. Draw 1. Priest: +1 Spirit. | onEquip
+Captain's Saber | 1 | Paladin | {melee:1,ranged,armor,health,reach,magic,spirit,resist,dodge} | +1 Melee. Paladin: +1 Resist. | 
+Aegis of the Fleet | 1 | Paladin | {melee,ranged,armor,health:3,reach,magic,spirit,resist,dodge} | +3 Health. Paladin: +2 Health. | 
+Skyforged Halberd | 1 | Paladin | {melee:1,ranged,armor,health,reach:1,magic,spirit,resist,dodge} | +1 Melee, +1 Reach. Paladin: +2 vs Demons, +2 vs Undead. | 
+Banner of Resolve | 1 | Paladin | {melee,ranged,armor,health,reach,magic,spirit,resist,dodge} | All heroes +1 Resolute. Paladin: +2 Health. | onEquip
+Troll-Gut Vest | 1 | Warrior | {melee,ranged,armor,health:3,reach,magic,spirit,resist,dodge} | +3 Health. Warrior: Regen 1/turn. | 
+Raider's Cutlass | 1 | Warrior | {melee:1,ranged,armor,health,reach,magic,spirit,resist,dodge} | +1 Melee. On damage: 1 Bleed. Warrior: +2 vs Human. | onDamage
+Qi Wraps | 1 | Warrior | {melee:1,ranged,armor,health,reach,magic,spirit,resist,dodge} | +1 Melee. On attack: 1 Weak. Warrior: +1 Dodge. | onAttack
+Meditation Beads | 1 | Warrior | {melee,ranged,armor,health:2,reach,magic,spirit,resist,dodge,resolute:1} | +2 Health, +1 Resolute. Warrior: +1 Health. | 
+Siege Crossbow | 1 | Ranger | {melee,ranged:3,armor,health,reach,magic,spirit,resist,dodge} | +3 Ranged. Ranger: -3 Health. | 
+Brute's Harness | 1 | Ranger | {melee,ranged,armor,health:3,reach,magic,spirit,resist,dodge} | +3 Health. Ranger: +1 Melee. | 
+Zephyr Bow | 1 | Ranger | {melee,ranged:1,armor,health,reach,magic,spirit,resist,dodge} | +1 Ranged. On damage: 1 Burn. Ranger: +1 Reach. Mage: +2 Health. | onDamage
+Windcaller's Charm | 1 | Ranger | {melee,ranged,armor,health,reach,magic:1,spirit,resist,dodge} | +1 Magic. Ranger: +1 Resist. Mage: +1 Ranged. | 
+Boarding Hook | 1 | Rogue | {melee:1,ranged,armor,health,reach,magic,spirit,resist,dodge} | +1 Melee. On damage: 1 Bleed. Rogue: +1 Dodge. | onDamage
+Corsair's Eyepatch | 1 | Rogue | {melee,ranged,armor,health,reach,magic,spirit,resist,dodge:1} | +1 Dodge. Draw 1. Rogue: 1 Misdirection. | onEquip
+Spectral Longbow | 1 | Rogue | {melee,ranged:1,armor,health,reach:1,magic,spirit,resist,dodge} | +1 Ranged, +1 Reach. Rogue: +1 Dodge. Ranger: +1 Ranged. | 
+Phantom's Mantle | 1 | Rogue | {melee,ranged,armor,health,reach,magic,spirit,resist,dodge:1} | +1 Dodge. Rogue: +2 vs Ghost. | 
+Stormcaller's Orb | 1 | Mage | {melee,ranged,armor,health,reach,magic,spirit,resist,dodge} | Protection = Magic. Mage: +1 Magic. | onEquip
+Updraft Sandals | 1 | Mage | {melee,ranged,armor,health,reach,magic,spirit,resist,dodge:1} | +1 Dodge. Mage: +1 Reach. | 
+Runic Longsword | 1 | Mage | {melee:1,ranged,armor,health,reach,magic,spirit,resist,dodge} | +1 Melee. Mage: +1 Magic. Warrior: +1 Melee. | 
+Battlemage's Cuirass | 1 | Mage | {melee,ranged,armor,health:2,reach,magic,spirit,resist,dodge} | +2 Health. Mage: +1 Magic. | 
+Censer of True Light | 1 | Priest | {melee,ranged,armor,health,reach,magic,spirit,resist,dodge} | End of turn: heal Half Spirit. Priest: +1 Spirit, +2 vs Undead. | turnEnd
+Skypriest's Vestments | 1 | Priest | {melee,ranged,armor,health:2,reach,magic,spirit,resist,dodge} | +2 Health. Priest: +1 Spirit. | 
+Tome of Blessings | 1 | Priest | {melee,ranged,armor,health,reach,magic,spirit,resist,dodge} | On equip: All heroes +1 Health. Priest: +1 Spirit. | onEquip
+Prayer Beads of Mirra | 1 | Priest | {melee,ranged,armor,health,reach,magic,spirit,resist,dodge,resolute:1} | +1 Resolute. Priest: +1 Faith on equip. | 
+Admiral's Rapier | 1 | Paladin | {melee:1,ranged,armor,health,reach,magic,spirit,resist,dodge} | +1 Melee. On equip: All heroes +1 Melee. | onEquip
+Fleet Standard | 1 | Paladin | {melee,ranged,armor,health,reach,magic,spirit,resist,dodge} | Draw 1. Paladin: +2 Health. | onEquip
+Vigil's Shield | 1 | Paladin | {melee,ranged,armor,health:2,reach,magic,spirit,resist,dodge,resolute:1} | +2 Health, +1 Resolute. Paladin: +1 Resist. | 
+Sword of the Fallen | 1 | Paladin | {melee:1,ranged,armor,health,reach,magic,spirit,resist,dodge} | +1 Melee. End of turn: heal 1. Paladin: +1 Melee. | turnEnd
+Stormcaller's Focus | 2 |  | {melee,ranged,armor,health,reach:1,magic:1,spirit,resist,dodge} | +1 Magic, +1 Reach. On kill: 1 Misdirection and draw 1. Mage: +1 Magic. | onKill
+Wind Dancer's Cloak | 2 |  | {melee,ranged,armor,health,reach,magic,spirit,resist:1,dodge:1} | +1 Dodge, +1 Resist. Grants Wind Leap class power. | 
+Gale Arrows | 2 |  | {melee,ranged:1,armor,health,reach:1,magic,spirit,resist,dodge} | +1 Ranged, +1 Reach. On attack: 1 Weak and 1 Burn. Ranger: +1 Ranged. | onAttack
+Tempest Longbow | 2 |  | {melee,ranged:1,armor,health,reach:3,magic,spirit,resist,dodge} | +1 Ranged, +3 Reach. On attack: 1 Weak. Ranger: +1 Ranged, +1 Reach. | onAttack
+Stormforged Blade | 2 |  | {melee:2,ranged,armor,health,reach:1,magic,spirit,resist,dodge} | +2 Melee, +1 Reach. On equip: Protection = Half Magic. Rogue: +1 Melee, +1 Dodge. | onEquip
+Sky Priest's Censer | 2 |  | {melee,ranged,armor,health,reach:1,magic,spirit:1,resist,dodge} | +1 Spirit, +1 Reach. On equip: 1 Counterspell, 1 Dodge. Priest: +1 Spirit. | onEquip
+Admiral's Compass | 2 |  | {melee,ranged,armor,health,reach:1,magic,spirit:1,resist,dodge} | +1 Spirit, +1 Reach. On equip: Draws/turn = Half Spirit. Gain 1 Action. | onEquip
+Cloudsteel Shield | 2 |  | {melee,ranged,armor:1,health:1,reach,magic,spirit,resist,dodge:1} | +1 Armor, +1 Health, +1 Dodge. On equip: 1 Dodge. Paladin: +2 vs Demons. | onEquip
+Wind-Touched Staff | 2 |  | {melee,ranged,armor,health,reach:1,magic:1,spirit,resist,dodge} | +1 Magic, +1 Reach. Grants Gust Strike class power. | 
+Fleet Standard | 2 |  | {melee,ranged,armor,health,reach,magic,spirit,resist,dodge,actionsPerTurn:1} | +1 Action/turn. On equip: Draw 1. | onEquip
+Storm Sentinel's Blade | 3 |  | {melee:1,ranged,armor,health,reach:2,magic,spirit,resist,dodge} | +1 Melee, +2 Reach. On kill: 1 Counterspell, 1 Dodge. Mage: +1 Magic. | onKill
+Gale Shroud | 3 |  | {melee,ranged,armor,health,reach,magic,spirit,resist:1,dodge:1} | +1 Dodge, +1 Resist. Grants Gale Force class power. | 
+Tempest Whip | 3 |  | {melee:3,ranged:1,armor,health,reach:1,magic,spirit,resist,dodge} | +3 Melee, +1 Ranged, +1 Reach. On attack: 2 Weak. Warrior: +2 Melee. | onAttack
+Storm Admiral's Banner | 3 |  | {melee:-1,ranged,armor,health,reach,magic,spirit:1,resist,dodge} | -1 Melee, +1 Spirit. On equip: +1 Hero. | onEquip
+Sky Commander's Signet | 3 |  | {melee,ranged,armor:1,health:2,reach,magic,spirit,resist,dodge} | +1 Armor, +2 Health. On equip: +1 Action/turn, draw 1. | onEquip
+Stormweave Bow | 3 |  | {melee,ranged:2,armor,health,reach:1,magic,spirit,resist,dodge} | +2 Ranged, +1 Reach. On kill: 1 Burn to all enemies. Ranger: +2 Ranged. | onKill
+Skyforged Tome | 3 |  | {melee,ranged,armor,health,reach,magic,spirit:1,resist:1,dodge} | +1 Resist, +1 Spirit. On equip: Draw 2, all heroes gain 1 Protection. Priest: +1 Spirit. | onEquip
+Crown of the Tempest | 4 |  | {melee,ranged,armor,health,reach:1,magic,spirit:1,resist,dodge:1} | +1 Spirit, +1 Dodge, +1 Reach. On equip: +3 Heroes, gain 1 Action. | onEquip
+Eye of the Tempest | 4 |  | {melee,ranged,armor,health:-2,reach,magic:2,spirit:2,resist,dodge} | +2 Magic, +2 Spirit, -2 Health. On equip: +Heroes and +Actions/turn = ceil(Spirit/4). 3 Stun to self. | onEquip
+Stormforged Halberd | 4 |  | {melee:2,ranged,armor,health,reach,magic,spirit,resist,dodge} | +2 Melee. On enter: Protection = Half Magic. On melee damage: 4 Burn. Warrior: +3 Melee. | onEnter,onDamage
+Scepter of the Skies | 4 |  | {melee,ranged,armor,health,reach:1,magic,spirit,resist:1,dodge} | +1 Resist, +1 Reach. On enter: +3 Faith, on attack protect lowest hero for 3. Priest: +2 Spirit. | onEnter
+Storm Phantom Shroud | 4 |  | {melee,ranged,armor,health,reach,magic,spirit,resist:1,dodge:2} | +2 Dodge, +1 Resist. Grants Storm's Embrace class power. | 
+Eye of Worlds | 0 |  | {melee,ranged,armor,health,reach,magic,spirit,resist,dodge} | Recovered by brave heroes who died in the process. May be necessary to save humankind. | turnEnd
+
+# SPELLS (194) — name | tier | cost | description
+Divine Grace | 1 | {"action":1,"faith":0,"discard":0,"supplies":0} | Heal all heroes for Spirit + 2.
+Rain of Lightning | 1 | {"action":2,"faith":0,"discard":0,"supplies":0} | Deal Half Magic + 1 damage to all enemies.
+Wrath of the Elements | 1 | {"action":1,"faith":0,"discard":0,"supplies":0} | Deal Magic + 4 damage to target enemy.
+Warding | 1 | {"action":1,"faith":0,"discard":0,"supplies":0} | Grant Magic x0.75 + 3 Protection to all heroes.
+Holy Pact | 1 | {"action":1,"faith":2,"discard":0,"supplies":0} | Draw 3 and gain 2 Actions.
+Pray | 1 | {"action":2,"faith":0,"discard":1,"supplies":0} | Gain 1 Faith.
+Retreat the Wounded | 1 | {"action":1,"faith":0,"discard":0,"supplies":0} | Target hero escapes the battlefield.
+Poison Cloud | 1 | {"action":2,"faith":0,"discard":0,"supplies":0} | 2 Poison to all enemies.
+Bandage | 1 | {"action":2,"faith":0,"discard":0,"supplies":0} | Heal 5 and remove 10 Poison from target hero.
+Stunning Bash | 1 | {"action":2,"faith":0,"discard":0,"supplies":0} | Deal 4 damage and 1 Stun to target enemy.
+Fishing Net | 1 | {"action":0,"faith":0,"discard":0,"supplies":0} | 3 Weak to target enemy.
+Gut | 1 | {"action":0,"faith":0,"discard":0,"supplies":0} | 2 true damage to target enemy. On kill: gain 2 Supplies.
+Troll's Blood | 1 | {"action":0,"faith":0,"discard":0,"supplies":0} | 3 Regen to target hero.
+Caravan Cover | 1 | {"action":2,"faith":0,"discard":0,"supplies":0} | +1 Armor to target hero.
+Overwhelming Numbers | 1 | {"action":4,"faith":0,"discard":0,"supplies":0} | +1 Hero.
+Lots of Gear | 1 | {"action":2,"faith":0,"discard":0,"supplies":3} | +1 Armor and +1 Melee to all heroes.
+Teleportation | 1 | {"action":3,"faith":0,"discard":0,"supplies":0} | Target hero returns to hand. Gain 2 Actions.
+Fire Wave | 2 | {"action":1,"faith":0,"discard":2,"supplies":0} | Deal Half Magic + 1 damage and 1 Burn to all enemies.
+Furious Assault | 2 | {"action":1,"faith":0,"discard":0,"supplies":0} | Target hero takes 2 damage, gains Fatigued, then attacks 3 times.
+Protection | 2 | {"action":1,"faith":0,"discard":0,"supplies":0} | All heroes gain +2 Armor and +2 Resist this turn.
+Divine Blessing | 2 | {"action":1,"faith":0,"discard":0,"supplies":0} | Heal all heroes for Half Spirit + 3. Remove 1 Burn from party.
+Arcane Missiles | 2 | {"action":1,"faith":0,"discard":0,"supplies":0} | Deal Half Magic + 1 damage 3 times to random enemies.
+Frost Bolt | 2 | {"action":1,"faith":0,"discard":1,"supplies":0} | Deal Half Magic + 1 damage and 4 Weak to target enemy.
+Holy Light | 2 | {"action":1,"faith":0,"discard":0,"supplies":0} | Heal target hero for Half Spirit + 5. Remove all Burn and Weak.
+Life Steal | 2 | {"action":2,"faith":0,"discard":0,"supplies":0} | Deal Half Magic + 2 damage to all enemies. Heal all heroes for 3.
+Obscuring Mist | 2 | {"action":1,"faith":0,"discard":1,"supplies":0} | All heroes gain 1 Dodge.
+Smoke Bomb | 2 | {"action":1,"faith":0,"discard":0,"supplies":0} | 2 Weak to all enemies.
+Purify | 2 | {"action":1,"faith":0,"discard":0,"supplies":0} | Remove all Burn, Poison, Weak, and Stun from all heroes. Heal all heroes for 2.
+Fireball | 2 | {"action":1,"faith":0,"discard":0,"supplies":0} | Deal Half Magic damage to target enemy. 2 Burn to all enemies.
+Bloodlust | 2 | {"action":0,"faith":0,"discard":0,"supplies":0} | Target hero gains +2 Melee and +2 Ranged. Takes 4 true damage.
+Protected Swap | 2 | {"action":2,"faith":0,"discard":0,"supplies":0} | Target hero escapes. Quarter Spirit + 1 Protection to all heroes.
+Cursed Corruption | 2 | {"action":2,"faith":0,"discard":0,"supplies":0} | Half Spirit + 2 Poison to target enemy.
+Arcane Assassin | 2 | {"action":2,"faith":0,"discard":0,"supplies":0} | Each turn: deal Quarter Magic to a random enemy. Hero takes 1 true damage per turn.
+Divine Aura | 2 | {"action":3,"faith":0,"discard":0,"supplies":0} | Target hero heals Half Spirit. Gain Spirit / 6 Heroes.
+Divine Inspiration | 2 | {"action":2,"faith":0,"discard":0,"supplies":0} | Target hero gains +2 Resist. Gain Spirit / 6 Actions.
+Transforming Tactics | 2 | {"action":3,"faith":0,"discard":0,"supplies":0} | Gain 4 Actions. Target hero returns to hand.
+Time Stop | 3 | {"action":1,"faith":0,"discard":1,"supplies":0} | 4 Weak and 4 Stun to all heroes and enemies.
+Meteor Shower | 3 | {"action":1,"faith":0,"discard":2,"supplies":0} | Deal 4 true damage and 2 Burn to all heroes. Deal Magic x2 damage and 2 Burn to all enemies.
+Greater Heal | 3 | {"action":1,"faith":0,"discard":3,"supplies":0} | Remove all Burn and Weak from all heroes. Heal all heroes to full.
+Eternal Ice | 3 | {"action":1,"faith":0,"discard":1,"supplies":0} | Deal Half Magic damage and 2 Stun to target enemy.
+Forge Mystic Armor | 3 | {"action":1,"faith":0,"discard":0,"supplies":2} | All heroes gain +1 Armor and +2 Resist. 1 Weak to all enemies.
+Miasma | 3 | {"action":1,"faith":0,"discard":0,"supplies":0} | Target hero gains: when hit, 2 Poison to attacker.
+Fire Ward | 3 | {"action":1,"faith":0,"discard":0,"supplies":0} | Target gains Spirit Protection. When hit: 1 Burn and deal 2 damage to attacker.
+Sundering Magic | 3 | {"action":0,"faith":0,"discard":1,"supplies":0} | Deal Quarter Magic + Quarter Spirit damage to target enemy.
+Bubble of Invulnerability | 3 | {"action":1,"faith":0,"discard":0,"supplies":0} | Target hero gains +10 Armor and +10 Resist this turn. 2 Stun and 3 Weak to self.
+Sacrilege | 3 | {"action":1,"faith":0,"discard":0,"supplies":0} | Target hero gains Corruption badge.
+Exertion | 3 | {"action":1,"faith":0,"discard":0,"supplies":0} | Target hero attacks 3 random enemies. Gains Fatigued.
+Power Overwhelming | 3 | {"action":1,"faith":2,"discard":0,"supplies":0} | Draw 5. Target hero gains +2 Magic. Takes 100 true damage.
+Faith Overwhelming | 3 | {"action":1,"faith":6,"discard":0,"supplies":0} | All heroes gain Spirit x2 Protection, heal for Spirit + 2, remove all debuffs, and gain +2 max Health.
+Battle Restoration | 3 | {"action":1,"faith":4,"discard":3,"supplies":0} | Target hero removes WOUNDED, Fatigued, Drained, and Weakened badges.
+Claws | 3 | {"action":1,"faith":0,"discard":0,"supplies":0} | Target hero gains +1 Melee. Attacks apply 4 Bleed.
+Rain of Poison | 3 | {"action":2,"faith":0,"discard":0,"supplies":0} | Deal 1 damage to all enemies. Half Magic Poison to all enemies.
+Reign of Knives | 3 | {"action":1,"faith":0,"discard":0,"supplies":0} | Deal 2 physical damage to all enemies. Half Magic Bleed to all enemies.
+Save the Fallen | 3 | {"action":0,"faith":0,"discard":0,"supplies":0} | Target hero escapes. All heroes heal 1.
+Cover | 3 | {"action":1,"faith":0,"discard":2,"supplies":0} | All heroes gain +2 Armor and +2 Resist this turn.
+Total Insanity | 4 | {"action":1,"faith":0,"discard":2,"supplies":0} | All heroes gain +6 Melee and +6 Ranged. 7 Stun to all heroes.
+Armageddon Blast | 4 | {"action":1,"faith":0,"discard":3,"supplies":0} | Deal Magic x2 damage to all enemies.
+Second Chance | 4 | {"action":1,"faith":0,"discard":0,"supplies":0} | Target hero escapes. +Half Spirit Draw and Actions.
+Abandon Hero | 0 | {"action":0,"faith":0,"discard":0,"supplies":0} | Hero flees. Not wounded.
+Fall Back | 0 | {"action":1,"faith":0,"discard":0,"supplies":0} | Target hero falls back to the deck.
+Tactical Withdrawal | 0 | {"action":2,"faith":0,"discard":0,"supplies":0} | Target hero returns to hand.
+Test: Mass Burn | 0 | {"action":1,"faith":0,"discard":0,"supplies":0} | 5 Burn to all enemies.
+Test: Poison Strike | 0 | {"action":1,"faith":0,"discard":0,"supplies":0} | 7 Poison to target enemy.
+Test: Mass Weak | 0 | {"action":1,"faith":0,"discard":0,"supplies":0} | 4 Weak to all enemies.
+Test: Stun | 0 | {"faith":0,"discard":0,"supplies":0} | 2 Stun to target enemy.
+Test: Bleeding Strike | 0 | {"faith":0,"discard":0,"supplies":0} | 5 Bleed to target enemy.
+Test: Shadow Step | 0 | {"faith":0,"discard":0,"supplies":0} | All heroes gain 3 Dodge.
+Test: Mass Heal | 0 | {"faith":0,"discard":0,"supplies":0} | Heal all heroes for 5.
+Test: Execute | 0 | {"faith":0,"discard":0,"supplies":0} | Deal 10 damage to target enemy.
+Test: Knowledge | 0 | {"faith":0,"discard":0,"supplies":0} | Draw 3 from Arsenal.
+Ironclad | 1 | {"action":0,"faith":0,"discard":0,"supplies":0} | +1 Armor to target hero.
+Quick Getaway | 1 | {"action":0,"faith":0,"discard":0,"supplies":0} | Target hero escapes the battlefield.
+Leadership Training | 1 | {"action":3,"faith":0,"discard":0,"supplies":0} | +1 Hero.
+Sacrifice | 1 | {"action":0,"faith":0,"discard":0,"supplies":0} | Target hero takes 9 true damage. All heroes gain 4 Regen.
+Burn | 1 | {"action":0,"faith":0,"discard":0,"supplies":0} | 2 Burn to target enemy.
+Freeze | 1 | {"action":0,"faith":0,"discard":0,"supplies":0} | 3 Weak to target enemy.
+Unflinching | 1 | {"action":0,"faith":0,"discard":0,"supplies":0} | Remove 20 Weak from target hero.
+Bastard's Backstab | 1 | {"action":0,"faith":0,"discard":0,"supplies":2} | Deal 5 true damage and 3 Poison to target enemy.
+Fire Shield | 2 | {"action":2,"faith":0,"discard":0,"supplies":0} | Target hero gains +1 Armor. When hit: 2 Burn to attacker.
+Bloody Strike | 1 | {"action":0,"faith":0,"discard":0,"supplies":0} | Deal 2 damage and 2 Bleed to target enemy.
+High Priest Blessing | 2 | {"action":0,"faith":0,"discard":0,"supplies":0} | Heal all heroes for Half Spirit. Remove all Burn and Poison from party.
+Take Cover | 0 | {"action":1,"faith":0,"discard":0,"supplies":0} | Target hero gains +1 Dodge and +1 Armor.
+Escape | 0 | {"action":0,"faith":0,"discard":0,"supplies":0} | Target hero escapes the battlefield unwounded.
+Escape | 0 | {"action":0,"faith":0,"discard":0,"supplies":0} | Target hero escapes the battlefield unwounded.
+High Ground | 0 | {"action":1,"faith":0,"discard":0,"supplies":0} | Target hero gains +2 Reach, +1 Ranged, +1 Armor.
+Switch Positions | 0 | {"action":0,"faith":0,"discard":0,"supplies":0} | Target hero returns to hand.
+Combat Looting | 0 | {"action":3,"discard":0,"supplies":0} | Lose 1 Faith. Gain 5 Supplies.
+Good Positioning | 0 | {"action":2,"faith":0,"discard":0,"supplies":0} | All heroes gain +1 Ranged.
+Defensive Position | 0 | {"action":1,"faith":0,"discard":0,"supplies":0} | All heroes gain +1 Health and +1 Resist.
+Knowledge | 0 | {"action":1,"faith":0,"discard":0,"supplies":0} | Draw 2.
+Charge! | 1 | {"action":2,"faith":0,"discard":0,"supplies":0} | Target hero attacks 3 times, then takes 9 physical damage.
+Sand Trap | 1 | {"action":1,"faith":0,"discard":0,"supplies":0} | Target enemy gets 4 Weak.
+Consume in Shadows | 1 | {"action":2,"faith":0,"discard":0,"supplies":0} | Target enemy gets 1 Shadow, then takes Shadow in magic damage.
+Blight | 1 | {"action":0,"faith":1,"discard":0,"supplies":0} | Target enemy gets Half Magic Blight.
+Blessing of the Sovereignty | 1 | {"action":3,"faith":3,"discard":0,"supplies":0} | Gain 2 Hero slots. All heroes +2 Health. Lose 1 Draw/turn.
+Wave of Shadows | 1 | {"action":2,"faith":0,"discard":0,"supplies":0} | 2 Shadow to all enemies.
+Shadow Countermagic | 1 | {"action":0,"faith":0,"discard":0,"supplies":0} | 2 Counterspell. Lower enemy power by 2. Lowers Magic by 2.
+Mystic Misdirection | 1 | {"action":1,"faith":0,"discard":0,"supplies":0} | Gain Half Magic Misdirection.
+Greater Prayer | 1 | {"action":2,"faith":0,"discard":3,"supplies":0} | Gain 2 Faith. Lose 1 Spirit.
+Divine Solace | 1 | {"action":2,"faith":0,"discard":0,"supplies":0} | Heal target hero for Spirit. Remove 5 Bleed, Burn, Poison.
+Fearlessness | 1 | {"action":0,"faith":0,"discard":0,"supplies":0} | Remove 10 Weak and 10 Bleed from all heroes.
+Sand Storm | 2 | {"action":3,"faith":0,"discard":0,"supplies":0} | All heroes gain Magic / 3 Dodge. All enemies gain 1 Dodge.
+Sand Blast | 2 | {"action":0,"faith":0,"discard":0,"supplies":0} | Deal Half Magic magic damage to target enemy. Draw 1.
+Shadow Blast | 2 | {"action":0,"faith":0,"discard":0,"supplies":0} | Half Magic Shadow to target enemy. Draw 2.
+Sand Ward | 2 | {"action":2,"faith":0,"discard":0,"supplies":0} | All heroes gain Magic Protection. All heroes +1 Armor.
+Sandstrip | 2 | {"action":0,"faith":0,"discard":0,"supplies":0} | All enemies lose 1 Armor and 1 Resist.
+Sand Escape | 2 | {"action":0,"faith":0,"discard":0,"supplies":0} | Target hero escapes to deck.
+Desert Visions | 2 | {"action":1,"faith":0,"discard":0,"supplies":0} | Draw cards equal to Magic.
+Mirage Veil | 2 | {"action":1,"faith":0,"discard":0,"supplies":0} | Gain Misdirection equal to Magic.
+Sand Shroud | 2 | {"action":1,"faith":0,"discard":0,"supplies":0} | Gain 3 Counterspell. Draw 1.
+Oasis Blessing | 2 | {"action":1,"faith":0,"discard":0,"supplies":0} | Heal all heroes for Half Spirit + 2.
+Scorching Winds | 2 | {"action":1,"faith":0,"discard":0,"supplies":0} | Deal Half Magic magic damage to all enemies. 1 Burn to all enemies.
+Blessing of the Dunes | 2 | {"action":1,"faith":0,"discard":1,"supplies":0} | All heroes gain +1 Melee and +1 Ranged permanently.
+Sands of Prophecy | 3 | {"action":2,"faith":0,"discard":0,"supplies":0} | Draw Magic + 3.
+Desert Exodus | 3 | {"action":0,"faith":0,"discard":0,"supplies":0} | Target hero escapes. All heroes heal 3.
+Grand Mirage | 3 | {"action":1,"faith":0,"discard":1,"supplies":0} | Gain Magic x1.5 Misdirection.
+Warding Sands | 3 | {"action":1,"faith":0,"discard":0,"supplies":0} | Gain 4 Counterspell. All heroes gain 1 Protection.
+Sandstorm Cataclysm | 3 | {"action":2,"faith":0,"discard":1,"supplies":0} | Deal Magic magic damage to all enemies. 2 Burn to all enemies.
+Tomb King's Judgment | 3 | {"action":1,"faith":0,"discard":1,"supplies":0} | Deal Magic magic damage to target enemy. 2 Stun.
+Greater Oasis Blessing | 3 | {"action":1,"faith":0,"discard":2,"supplies":0} | Heal all heroes for Spirit. Remove all Burn, Poison, and Weak.
+Desert Fortification | 3 | {"action":1,"faith":0,"discard":0,"supplies":0} | All heroes gain +2 Armor, +1 Resist, and 2 Protection.
+Shadow Tempest | 3 | {"action":1,"faith":0,"discard":0,"supplies":0} | Half Magic Shadow to all enemies. 1 Blight to all enemies.
+Curse of Ancients | 3 | {"action":1,"faith":0,"discard":1,"supplies":0} | All enemies gain 4 Weak and 2 Poison.
+Sand King's Decree | 3 | {"action":1,"faith":0,"discard":0,"supplies":0} | Gain 2 Actions, draw 2, gain 2 Faith.
+Desert Venom | 3 | {"action":1,"faith":0,"discard":0,"supplies":0} | Target hero's attacks deal 2 Poison.
+Blessing of the Tomb | 3 | {"action":1,"faith":0,"discard":2,"supplies":0} | All heroes gain +2 Melee and +2 Ranged permanently.
+Sands of Omniscience | 4 | {"action":3,"faith":0,"discard":0,"supplies":0} | Draw Magic x2 + 3.
+Sand King's Exodus | 4 | {"action":1,"faith":0,"discard":0,"supplies":0} | Target hero escapes. Draw 3, gain 2 Actions, heal all heroes 5.
+Mirages | 1 | {"action":1,"faith":0,"discard":0,"supplies":0} | Target hero returns to hand. Items stay equipped.
+Outcast | 1 | {"action":0,"faith":0,"discard":1,"supplies":0} | Draw 2. Gain 1 Action.
+To Protect the Weak | 1 | {"action":1,"faith":0,"discard":0,"supplies":0} | Half Spirit Protection to all heroes. Gain 1 Action.
+No Recourse | 1 | {"action":1,"faith":0,"discard":0,"supplies":0} | Heal all heroes for Spirit + 3.
+Solace of Refugees | 1 | {"action":2,"faith":0,"discard":0,"supplies":0} | Spirit Protection to all heroes. Heal all heroes for 2.
+Refreshing Waters | 0 | {"action":1,"faith":0,"discard":0,"supplies":0} | Heal all heroes for 2.
+Desert Spring | 0 | {"action":1,"faith":0,"discard":0,"supplies":0} | Target hero removes 2 Burn and 2 Poison.
+Shifting Sands | 0 | {"action":1,"faith":0,"discard":0,"supplies":0} | Target hero returns to hand. Draw 1.
+Sand Cover | 0 | {"action":1,"faith":0,"discard":0,"supplies":0} | Target hero gains +1 Dodge.
+Chokepoint | 0 | {"action":2,"faith":0,"discard":0,"supplies":0} | All heroes gain +1 Armor and +1 Resist.
+Rockslide | 0 | {"action":1,"faith":0,"discard":0,"supplies":0} | Deal 3 physical damage to enemies in your row.
+Grave Dust | 0 | {"action":0,"faith":0,"discard":0,"supplies":0} | 1 Shadow to all enemies and all heroes.
+Tomb Plunder | 0 | {"action":3,"faith":0,"discard":0,"supplies":0} | Lose 1 Faith. Gain 5 Supplies.
+Ancient Ward | 0 | {"action":1,"faith":0,"discard":0,"supplies":0} | Target hero gains +2 Resist.
+Scavenge Ruins | 0 | {"action":2,"faith":0,"discard":0,"supplies":0} | Gain 3 Supplies.
+Ancient Inscription | 0 | {"action":1,"faith":0,"discard":0,"supplies":0} | Draw 2.
+Blinding Sand | 0 | {"action":0,"faith":0,"discard":0,"supplies":0} | All heroes and all enemies lose 1 Ranged.
+Hunker Down | 0 | {"action":1,"faith":0,"discard":0,"supplies":0} | Target hero gains +2 Armor, -1 Reach.
+Escape the Storm | 0 | {"action":0,"faith":0,"discard":0,"supplies":0} | Target hero flees.
+Escaping Flight | 1 | {"action":3,"faith":0,"discard":0,"supplies":0} | Target hero returns to hand. All heroes gain 1 Dodge.
+Tailwind | 1 | {"action":1,"faith":0,"discard":0,"supplies":0} | Draw 3.
+Updraft | 1 | {"action":0,"faith":0,"discard":1,"supplies":0} | Target hero gains 1 Dodge. Draw 1.
+Skyward Retreat | 1 | {"action":1,"faith":0,"discard":0,"supplies":0} | Target hero escapes. Draw 2.
+Thunderbolt | 1 | {"action":1,"faith":0,"discard":0,"supplies":0} | Deal Magic + 2 damage to target enemy. 1 Burn.
+Chain Lightning | 1 | {"action":1,"faith":0,"discard":1,"supplies":0} | Deal Half Magic damage to all enemies.
+Gale Strike | 1 | {"action":1,"faith":0,"discard":0,"supplies":0} | Deal 3 physical damage and 3 Weak to target enemy.
+Static Discharge | 1 | {"action":0,"faith":0,"discard":0,"supplies":0} | Deal 2 true damage to target enemy. On kill: gain 2 Supplies.
+Healing Gale | 1 | {"action":1,"faith":2,"discard":0,"supplies":0} | Heal all heroes for Half Spirit. Draw 3.
+Calm Skies | 1 | {"action":2,"faith":0,"discard":2,"supplies":0} | Heal all heroes for Half Spirit + 2.
+Sky Mending | 1 | {"action":1,"faith":0,"discard":0,"supplies":0} | Heal target hero for Spirit. Remove 5 Burn and 5 Weak.
+Skyship Rally | 1 | {"action":2,"faith":0,"discard":0,"supplies":0} | All heroes gain +1 Melee and +1 Ranged.
+Wind Wall | 1 | {"action":1,"faith":0,"discard":1,"supplies":0} | Gain 1 Counterspell and 1 Misdirection.
+Evasive Maneuvers | 1 | {"action":1,"faith":0,"discard":0,"supplies":0} | Gain 2 Misdirection. Draw 1.
+Stormward | 1 | {"action":2,"faith":0,"discard":0,"supplies":0} | Grant Magic Protection to a hero. All heroes gain 1 Dodge.
+Sky Offering | 1 | {"action":1,"faith":0,"discard":0,"supplies":0} | Gain 1 Faith. Draw 1.
+Darkening Skies | 1 | {"action":1,"faith":0,"discard":0,"supplies":0} | 1 Shadow to all enemies.
+Storm Shadow | 1 | {"action":2,"faith":0,"discard":0,"supplies":0} | 2 Shadow to target enemy. Half Magic Burn to all enemies.
+Eclipsing Storm | 1 | {"action":1,"faith":0,"discard":0,"supplies":0} | Half Magic Blight to target enemy.
+Blinding Storm | 1 | {"action":1,"faith":0,"discard":0,"supplies":0} | 2 Weak to all enemies.
+Wind Oracle | 2 | {"action":1,"faith":0,"discard":0,"supplies":0} | Draw cards equal to Magic. All heroes gain 1 Dodge.
+Gale Retreat | 2 | {"action":0,"faith":0,"discard":0,"supplies":0} | Target hero escapes to deck. Draw 1.
+Cloud Cover | 2 | {"action":1,"faith":0,"discard":0,"supplies":0} | Gain Magic x0.75 Misdirection. All heroes gain 1 Dodge.
+Wind Dispersal | 2 | {"action":1,"faith":0,"discard":0,"supplies":0} | Gain 2 Counterspell. Gain 1 Action.
+Lightning Bolt | 2 | {"action":0,"faith":0,"discard":0,"supplies":0} | Deal Half Magic magic damage to target enemy. 1 Stun.
+Tempest Blast | 2 | {"action":1,"faith":0,"discard":0,"supplies":0} | Deal Half Magic magic damage to all enemies. 1 Weak to all enemies.
+Winds of Mercy | 2 | {"action":1,"faith":0,"discard":0,"supplies":0} | Heal all heroes for Half Spirit + 1. All heroes gain 1 Dodge.
+Storm Barrier | 2 | {"action":2,"faith":0,"discard":0,"supplies":0} | All heroes gain Magic Protection. All heroes +1 Resist.
+Greater Tailwind | 2 | {"action":1,"faith":0,"discard":1,"supplies":0} | All heroes gain +1 Ranged and +1 Reach permanently.
+Thunderclap | 2 | {"action":0,"faith":0,"discard":0,"supplies":0} | All enemies gain 2 Weak and 1 Burn.
+Greater Updraft | 2 | {"action":0,"faith":0,"discard":0,"supplies":0} | Target hero gains 2 Dodge and +1 Resist permanently.
+Sky Captain's Rally | 2 | {"action":1,"faith":0,"discard":0,"supplies":0} | Gain 1 Action. Draw 2. All heroes gain 1 Protection.
+Storm Oracle | 3 | {"action":2,"faith":0,"discard":0,"supplies":0} | Draw Magic + 3.
+Gale Exodus | 3 | {"action":0,"faith":0,"discard":0,"supplies":0} | Target hero escapes. All heroes gain 1 Protection.
+Grand Cloud Cover | 3 | {"action":1,"faith":0,"discard":1,"supplies":0} | Gain Magic x1.5 Misdirection.
+Tempest Ward | 3 | {"action":1,"faith":0,"discard":0,"supplies":0} | Gain 4 Counterspell. All heroes gain 1 Dodge.
+Lightning Storm | 3 | {"action":2,"faith":0,"discard":1,"supplies":0} | Deal Magic magic damage to all enemies. 1 Stun to all enemies.
+Thunder Judgment | 3 | {"action":1,"faith":0,"discard":1,"supplies":0} | Deal Magic magic damage to target enemy. 3 Burn.
+Greater Winds of Mercy | 3 | {"action":1,"faith":0,"discard":2,"supplies":0} | Heal all heroes for Spirit. Remove all Burn, Weak, and Stun.
+Storm Bastion | 3 | {"action":1,"faith":0,"discard":0,"supplies":0} | All heroes gain 2 Protection and +1 Dodge this turn.
+Gale Force Blast | 3 | {"action":1,"faith":0,"discard":0,"supplies":0} | Deal 3 physical damage to all enemies. 3 Weak to all enemies.
+Admiral's Decree | 3 | {"action":1,"faith":0,"discard":0,"supplies":0} | Gain 2 Actions. Draw 3.
+Stormweave Armor | 3 | {"action":1,"faith":0,"discard":0,"supplies":0} | Target hero gains: when hit, 1 Burn to attacker. Protection = Half Spirit.
+Fleet Coordination | 3 | {"action":1,"faith":0,"discard":0,"supplies":0} | Gain 1 Action. All heroes gain +1 Reach permanently. All heroes gain 2 Dodge.
+Zephyr's Touch | 3 | {"action":1,"faith":0,"discard":0,"supplies":0} | Target hero gains +2 Dodge and +1 Ranged permanently. 1 Dodge.
+Storm of Revelation | 4 | {"action":3,"faith":0,"discard":0,"supplies":0} | Draw Magic x2 + 3.
+Storm's Salvation | 4 | {"action":1,"faith":0,"discard":0,"supplies":0} | Target hero escapes. All heroes gain 3 Protection. Gain 2 Actions. Draw 2.
+
+# ARTIFACTS (48) — name | rarity | description
+Marching Orders | common | Tactical documents recovered from an Imperial commander. The formations still work against demons.
+Mug of Endless Dregs | common | A dwarven drinking vessel that always has one more sip. Keeps spirits high on the long road.
+Roster of the Fallen | common | Names of the dead, carefully recorded. Their sacrifice demands we find more to carry on.
+Wayfinder's Compass | common | An old ranger tool. The needle always points toward the safest path.
+Crow's Eye Pendant | common | A charm worn by Keth scouts. See what the crows see.
+Tome of Forgotten Whispers | common | Pages filled with knowledge too dangerous to remember. Read at your own risk.
+Loaded Dice of Mirran | common | Blessed by the Laughing Shadow. Fortune favors those who cheat.
+Dusty Map Case | common | Contains maps of lands that no longer exist as they were. Still useful for finding hidden paths.
+Tactician's Monocle | common | A scratched lens from a fallen officer. Reveals patterns in the chaos of battle.
+Scout's Lucky Charm | common | A carved bone token. Scouts who carry it find opportunities others miss.
+Captain's Seal | uncommon | Authority demands action. Every order must be followed, even when supplies run thin.
+Scavenger's Satchel | uncommon | A bag that seems to hold more than it should. Always something useful at the bottom.
+Banner of the Lost Legion | uncommon | The Twelfth Legion died to the last. Their banner draws survivors who remember.
+Finger of Saint Aldwyn | uncommon | A holy relic from Valdris. The saint points the way, but demands focus over numbers.
+Tandra's Empty Cradle | uncommon | A relic of the Hearthmother. She mourns the children who will never be born.
+War Council Table | uncommon | A portable planning surface. Maps and tokens spread across wood stained with old wine.
+Ranger's Worn Boots | uncommon | A thousand miles in these boots. They know every shortcut in Keth.
+Brass Spyglass of Thessan | uncommon | Naval captains used these to spot danger from leagues away. The harbor burns, but the glass endures.
+Skull of the Grey Scribe | uncommon | A Grey Scribe who died protecting forbidden knowledge. Her skull still whispers secrets.
+Mask of the Velvet Hand | uncommon | Worn by master assassins. The face beneath is always someone else.
+Astrolabe of the Threshold | uncommon | Used by the Order that ended the world. It still charts paths between places.
+Vial of Abyssal Essence | uncommon | Bottled corruption from the Abyss itself. Power at a terrible price.
+Pilgrim's Warding Stone | uncommon | Carried by those who walked to Solhaven. Protection mixed with the stain of the road.
+Veteran's War Journal | uncommon | Scars teach better than any academy. Annotated with hard-won lessons from every campaign.
+Quartermaster's Manifest | uncommon | Meticulous records of supplies and stratagems. Always one more trick at the bottom.
+Tandra's Blood Vial | rare | Blood freely given to the Hearthmother. Her blessing flows through those who carry it.
+Heart of Vyrmothax | rare | The last dragon's heart, cut from the beast that founded Gein. It still beats.
+Eye of the Oracle | rare | The Oracle of Delphara plucked out her own eye when she saw what was coming. It still sees.
+Crown of Emperor Valdric | rare | Recovered from Melandar. The weight of an empire demands decisions.
+Chains of the Damned | rare | Forged in Hell to bind mortal souls. Now they bind demons to your purpose.
+Blessing of the Hearthmother | rare | Tandra's grace made manifest. Warmth and safety in a world of fire and death.
+Starweaver Loom Fragment | rare | A piece of the elven artifact that wove fate itself. The threads still connect.
+Frostleaf Battle Standard | rare | House Frostleaf fights alongside humanity. Their banner brings elven discipline.
+Tome of Superior Tactics | rare | Annotated tactics from the last great generals of the Empire. Most of them died, but the strategies lived.
+Council of Echoes | rare | Ghostly advisors whisper forgotten battle plans. Sometimes useful, always unsettling.
+Seal of the Radiant Order | legendary | Kal's paladins carried this seal. The greater good demands sacrifice—and rewards it.
+Mara's Hourglass | legendary | Time itself bends to the Veiled One. The sand flows in both directions.
+Velan's Ferryman Coin | legendary | Payment for passage across the Veil. Those who carry it walk between life and death.
+Tongue of Xar'veth | legendary | The Dreaming Dark whispers through this foul relic. Knowledge from beyond the stars.
+Miessler's Empty Chalice | legendary | The Purpose-Eater's vessel. It drains meaning—but meaning can be redirected.
+Throne Fragment of Melandar | legendary | A piece of the Imperial Throne. Morvethis the Despoiler sits there now, but this piece escaped.
+Kal's Mercy | legendary | The All-Father does not protect individuals. But sometimes, he makes exceptions.
+Shard of the Shattered Spire | legendary | From the tower where the gates opened. Reality itself bleeds from its edges.
+Codex of the Last War | legendary | The final strategic doctrine written before the Fall. Every plan accounts for demons.
+Strategist's Crown | legendary | Worn by generals who saw every possibility. The crown shows you paths unseen.
+Light of Hope | legendary | A divine blessing eases your journey.
+Mark of Suffering | legendary | The world demands more from you.
+Seal of Damnation | legendary | Even the gods have abandoned you.
+
+# POTIONS (25) — name | tier | description
+Healing Potion | 1 | Heal target hero for 5.
+Potion of Strength | 1 | +4 Melee, +2 Health this combat.
+Potion of Agility | 1 | +1 Ranged, +1 Dodge this combat. Rogue: +1 Dodge.
+Cleanse Potion | 1 | Remove 5 Burn and 5 Poison from target hero.
+Basic Heal | 0 | Heal target hero for 5.
+Embolden | 0 | +2 Melee, +1 Ranged this combat.
+Cure | 0 | Heal 2. Remove 2 Poison and 2 Burn.
+Potion of Arcane Knowledge | 0 | +1 Draw. Mage: +3 Draw.
+Burst of Speed | 0 | +1 Action this turn.
+Restorative Tonic | 0 | Heal 2. Remove Fatigued and Drained.
+Supercharge | 0 | Heal 2. +2 Health. Remove Drained.
+Frenzy Potion | 0 | +3 Melee, +1 Health. 2 true damage to self. Gain Fatigued.
+Full Healing | 2 | Heal target hero for 20. Remove all negative status effects.
+Full Restoration | 3 | Heal 2. Remove negative status effects and one level of Wounding.
+Dragon's Blood | 3 | Remove infirmities. Gain Dragon's Blood badge.
+Water of Divinity | 2 | +4 Spirit, +1 Resist to target hero. Heal all heroes for 3.
+Holy Water | 3 | Deal 5 damage to target hero. Remove Vampirism, Lycanthropy, and Possession. Gain Fatigued.
+Invigorate | 2 | +2 Health, +1 Resist. Remove Fatigued and Drained.
+Draining Elixir | 2 | Heal 20. Remove 5 Burn and 5 Poison. Gain Drained.
+Greater Strength | 2 | +5 Melee, +3 Health. Gain Drained. Warrior: +2 Health.
+Arcane Power | 2 | +2 Magic, +1 Ranged, +1 Draw.
+Demon Hunter's Brew | 2 | All enemies gain 2 Burn. Demon Hunter: +2 Ranged, all enemies gain 2 more Burn.
+Inquisitor's Scroll | 2 | Remove 10 Burn from all heroes. Target gains +3 Health. Gain Fatigued. Inquisitor: all enemies gain 4 Poison.
+Barbarian Potion | 2 | Target gains 1 Stun and Fatigued. +3 Melee, +3 Health. Barbarian: heal 8.
+Knight's Boon Water | 2 | Remove 10 Burn and 10 Poison. Heal 2. Knight: +2 Armor, +2 Resist, heal 6.
+
+# TOMES (10)
+Tome of Mending | 
+Tome of Storms | 
+Tome of Shadows | 
+Tome of Wards | 
+Tome of Devotion | 
+Tome of Gales | 
+Tome of Thunder | 
+Tome of Mercy | 
+Tome of Tempest | 
+Tome of Darkness | 
+
+# TACTICS (73) — name | tier | description
+Greater Preparation | 2 | +1 FTD per 3 supplies, up to +6
+Readiness | 0 | +3 first-turn draws
+Basic Command | 0 | +1 max heroes
+Deployment | 0 | +1 Action, +1 max heroes. Heroes enter Stunned.
+Guardian | 0 | Start combat with Protection equal to one-quarter Faith on each hero.
+Devil's Bargain | 0 | +2 FTD, +1 Draw/turn, +1 Action/turn
+Manage Party | 0 | Manage party: bench 2 at 10 heroes, +1 per 2 additional
+Manage Arsenal | 0 | Manage arsenal: trim deck down to 15 minimum
+Divine Support | 0 | +1 max heroes, +1 draw/turn
+Greater Divine Support | 0 | Heroes gain 8 health on enter
+True Favor | 0 | +2 max heroes, +2 draw/turn, heroes gain 5 health on enter
+Doom Befalls All | 0 | -1 enemy slots, -1 max heroes, +2 draw/turn, +3 actions/turn
+Magical Power | 0 | Heroes gain +1 magic on enter
+Who's Side Are You On | 0 | Heroes and enemies suffer 2 damage on enter
+Hell's Agent | 0 | Heroes and enemies suffer 2 burn on enter
+Immortal's Ally | 0 | Heroes gain +1 health on enter
+Cursed Ally | 0 | Heroes and enemies suffer 2 poison on enter
+Devil's Ally | 0 | Heroes and enemies suffer 1 weak on enter
+Grim Troubles | 0 | Heroes suffer 1 damage on enter. Gain 1 supply.
+Grim Party | 0 | All heroes and enemies gain +2 melee on enter
+Happy Party | 0 | All heroes and enemies gain +2 health on enter
+Bloodthirsty Party | 0 | All heroes gain +1 resist on enter
+Coward's Party | 0 | All heroes gain +1 dodge on enter
+Courage of Love | 0 | All heroes gain +3 resolute
+No Mercy | 0 | +1 action/turn. Heroes enter with 2 weak.
+Lead the Charge! | 0 | +2 actions/turn
+Preparation | 0 | +1 FTD per 4 supplies, up to +4
+Buying Time | 0 | +2 FTD, +1 max heroes. Only available in Nightmare mode.
+Smell the Roses | 0 | Heal and inspire one wounded hero. Only available in Easy mode.
+Glorious Burden | 0 | +2 max heroes, +1 draw/turn. Costs 10 faith.
+Pathfinder | 0 | +1 Supply. All heroes gain +1 Reach.
+March of Pain | 0 | Choose 1 hero to start in your hand. They gain Fatigued.
+Flanking Maneuver | 1 | +1 max heroes
+Deploy Heroes | 1 | +3 max heroes, -1 FTD, -1 action/turn
+Well Fed | 1 | Heroes gain +2 health on enter
+Superior Maneuvers | 2 | +3 max heroes
+Anticipate Weaknesses | 1 | Cause an enemy tactic to be redrawn
+Awareness | 1 | Significantly decrease chance of enemy reinforcements
+Find Weaknesses | 1 | Enemies lose 1 armor on enter
+Catch Them Off Guard | 2 | Enemy loses 1 tactic slot and redraws all
+Traps | 1 | All enemies enter play with 3 damage
+Ambush | 1 | -1 enemy slots
+Path of Retreat | 1 | Retreat is guaranteed (100%) and no supplies lost
+Scouted Position | 1 | Remove all terrain modifiers
+Better Traps | 2 | All enemies enter play with 2 damage
+Greater Ambush | 2 | -1 enemy slots, +1 max heroes, heroes gain +1 ranged on enter
+Concealing Terrain | 2 | Heroes gain +1 dodge on enter
+Book Learning | 1 | +1 draw per turn
+Educated Tactics | 1 | +3 first-turn draws
+Insight | 0 | Reveal all enemies. Prevents terror. Shows escalation fork.
+Known Foe | 2 | +5 first-turn draws, -1 draw per turn
+Divine Knowledge | 1 | +2 draw per turn
+Action Surge | 1 | +1 action per turn
+Well Trained | 1 | +1 max heroes, +1 action/turn, -1 draw/turn
+Overwhelm | 2 | +2 actions per turn
+Divine Force | 1 | +1 draw/turn, +1 action/turn
+Equipment Ready | 1 | Heroes gain +1 item slot on enter
+Sharpening Stones | 1 | Heroes gain +2 melee on enter
+Abundant Arrows | 1 | Heroes gain +2 reach on enter
+Magic Arrows | 1 | Heroes gain +1 ranged on enter
+Armor Up | 1 | Heroes gain +1 armor on enter
+Deploy Army | 2 | +5 max heroes
+Counterplay | 1 | After your draft, the enemy draws a new master tactic
+Superior Armor | 2 | Give one hero the Superior Armor badge (+1 Health, +1 Armor)
+Inspiring | 1 | Give one hero the Inspired badge (+1 Resolute)
+Blessed Healing | 1 | Remove Wounded, Badly Wounded, Fatigued, or Drained from one hero
+Corrupted Knowledge | 1 | Give one hero the Infernal Knowledge badge (Discard 1, On enter: +1 Draw)
+Forced March | 1 | Choose 1 hero to start in your hand. They gain Fatigued.
+Tactical Retreat | 1 | Start with 3 retreat spells in your hand.
+Arcane Preparation | 1 | Start combat with 1 Counterspell (negate enemy spell)
+Tactical Confusion | 1 | Heroes on enter grant 1 Misdirection (redirect, return, or mass return)
+Misdirection Mastery | 2 | Heroes on enter grant 1 Misdirection (return enemy to deck)
+Force Redraw | 2 | Heroes on enter grant 2 Misdirection (redirect, return, or mass return)
+
+# ORIGINS (76) — name | description
+Old Veteran | 
+Experienced | 
+Blessed Birth | 
+Plague Survivor | 
+Warrior's Blood | 
+Lucky Charm | 
+Hunter's Instinct | 
+Knowledgeable | 
+Nomad | 
+Iron Will | 
+Shield Bearer | 
+Dragon Blood | 
+Tainted Blood | 
+Raised in the Veil | 
+Noble Birth | 
+Blade Dancer | 
+Fire Shield | 
+Arcane Shield | 
+Cross-Trained | 
+Elven Magic | 
+Fleet-Footed | 
+Touched by Death | 
+Temple Raised | 
+Flame Touched | 
+Frost Born | 
+Last of Their Line | 
+Blood Knight | 
+Lore Seeker | 
+Unbroken | 
+Escaped Slave | 
+Orphan | 
+Protege | 
+Battle-Scarred | 
+Ironclad | 
+Raised by Monks | 
+Dwarven Smith | 
+Sister of the Flames | 
+Former Soldier | 
+Hedge Witch | 
+Furious Brawler | 
+Archer's Eye | 
+Mercenary | 
+Cursed Blood | 
+Afflicted | 
+Righteous Fury | 
+Rich Bastard | 
+Demon Winged | 
+Martyrdom | 
+War Chanter | 
+Touched by Fae | 
+Angel Blessed | 
+Shadow Pact | 
+High Priest | 
+Devoted Servant | 
+Titan's Descendant | 
+Death God's Favored | 
+Death's Bargain | 
+Archer Turned | 
+Dragon Heir | 
+King in Waiting | 
+Legendary Warrior | 
+Dying King | 
+The Devil You Know | 
+Hell's Agent | 
+Treasure Seeker | 
+Abuse Fate | 
+Hard Fought Loot | 
+Defeated Commander | 
+Hero of Legend | 
+Undying | 
+Many Faces | 
+Quick as Lightning | 
+Knower of All | 
+Battle Planner | 
+Divine Warrior | 
+Spell Blade Training | 
+
+# BADGES (238) — name | description
+Vampire Lord | Heals when dealing damage. (Standing drawback TBD — e.g. extra damage from holy sources.)
+The Last King | A fallen monarch who endures. (Standing effect TBD.)
+Immortal | Returns to life after dying. Modest but reliable.
+Wounded | -1 Melee, -1 Ranged, -2 Health. Two wounds = Badly Wounded.
+Badly Wounded | -2 Melee, -2 Ranged, -4 Health. One more wound = Death.
+Dead | You are haunted by the spirit of {heroName}
+Frail | Cannot survive being wounded. One wound is fatal.
+Survivor | Can endure one additional wound before death. Three wounds to kill.
+Unstoppable | When wounded, returns to your hand instead of leaving play.
+Relentless | When wounded, shuffles back into your deck instead of leaving play.
+Vampirism | +2 Melee, +2 Ranged, +1 Magic, +4 Health. Discard 3 to deploy. Heals 2 when attacking. When wounded, shuffles back into deck.
+Lycanthropy | +2 Melee. Costs 1 Faith to deploy. Deploys with Regen 3. Each attack grants +1 Melee permanently.
+Possession | +1 Magic, +1 Resist. Costs 1 extra Action to deploy. Reflects 1 damage when hit.
+Rotting Flesh | +3 Max Health, but deploys with 6 damage taken.
+Weakened | -1 Melee, -1 Ranged.
+Blinded | -1 Ranged, -1 Reach.
+Fatigued | Discard 1 card to deploy.
+Drained | -1 Ranged. Magically or physically overexerted.
+Exhausted | Discard 3 cards to deploy. Can be removed at a Shrine.
+Corruption | +3 Melee, +2 Ranged, +3 Health, -2 Spirit, +2 Corruption.
+Magic Corruption | +1 Magic, +1 Corruption. Forbidden knowledge seeps into your soul.
+Despair | -1 Resolute.
+Hopelessness | -1 Spirit.
+Anguish | Discard 1 card to deploy.
+Dread | -1 Magic.
+Torment | Takes 2 unavoidable damage when deployed.
+Madness | +2 Health, but deals 4 damage to a random ally when deployed.
+Void Madness | +1 Corruption, +1 Magic. On enter, all heroes and enemies take 1 true damage.
+Brave | +1 Resist.
+Quick | -2 Health. Costs 1 less Action to deploy.
+Lithe | Costs 1 less Action to deploy. Frail (one wound is fatal).
+Huge | +1 Melee, +3 Health. Costs 1 extra Action to deploy.
+Stalwart | +1 Armor, +1 Resist. Costs 1 extra Action to deploy.
+Unwavering | +1 Resist, +2 Health. Costs 1 extra Action to deploy.
+Timid | -1 Resolute.
+Fragile | -1 Health.
+Wise | Grants Tactic: Knowledge.
+Diverse Learner | Adaptable and quick to learn.
+Quick Learner | Quick Learner.
+Cultist | Follower of forbidden practices.
+Veteran | +1 Item Slot.
+Resourceful | Draw 1 card when deployed.
+Selfish | Costs 1 Faith to deploy.
+Old | Discard 1 to deploy.
+Ancient | -1 Melee, -1 Ranged, -2 Health. Lived longer than anyone should.
+Child | -2 Melee, -2 Ranged, -4 Health. Too young to put into battle, right?
+Angry | +1 Melee, +1 Ranged, +1 Health. Costs 1 extra Action to deploy. She is angry at you for abandoning the children.
+Atheist | -1 Spirit, +2 Health.
+Ignorant | -1 Magic, +1 Health.
+Clumsy | -2 Melee.
+Cursed | Can hold 2 extra afflictions.
+Selfless | Gain 1 Faith when deployed.
+Retaliating | -1 Health. Reflects 1 damage when hit.
+Vengeful | +1 Melee, +1 Health.
+Tough | +2 Health.
+Noble | Gain 1 Supply when deployed.
+Beautiful | Draw 1 card when deployed.
+Mystic | +1 Magic.
+Faithful | +1 Spirit.
+Agile | +1 Dodge.
+Secret | This hero has a secret...
+Cunning | +1 Reach.
+Scarred | Bears terrible scars from past battles.
+Sisters of the Flame | A devotee of the sacred flame sisterhood.
+Slave | Once bound in chains, now fighting for freedom.
+Orphan | Grew up alone, surviving on the streets.
+Cursed Blood | +1 Magic, +1 Corruption. When taking damage, all heroes take 1 physical damage and all enemies take 1 magic damage.
+Bastard | -1 Supply on enter. Born outside of marriage.
+King | +1 Action/turn, +1 Tactic Slot. Born to rule.
+War Chanter | +1 Action/turn, -3 Health. On enter, all heroes gain 1 health.
+Lucky | Fortune smiles upon this hero. Improved Rewards.
+Legendary | A hero of legend. +1 to all combat stats.
+Immortal | +1 Armor. Can be played from hand while dead by discarding 4 cards. Removes DEAD badge on entry. Can hold 1 fewer affliction.
+Cursed at Birth | Draw 1 extra card each turn. +2 Corruption. Can hold 3 extra afflictions.
+Hell's Agent | +1 Armor, +4 Health. Can hold 1 fewer affliction. Deals 5 magic damage to a random ally when deployed.
+Chosen | +1 Health, +1 Melee, +1 Ranged, +1 Magic, +1 Reach. Can hold 1 fewer affliction. Costs 1 less Action and discard 2 to deploy.
+Devil in Disguise | +4 Resist, +1 Armor, -1 Magic. Can hold 1 fewer affliction.
+Dragon's Blood | +1 Armor, +1 Resist. Granted by Dragon's Blood potion.
+Tandra's Blessing | Blessed by Tandra, the Hearthmother.
+Velan's Blessing | Blessed by Velan, the Ferryman.
+Belden's Blessing | Blessed by Belden, the Fair Hand.
+Mara's Blessing | Blessed by Mara, the Veiled One.
+Shand's Blessing | Blessed by Shand, the Mad God.
+Mirran's Blessing | Blessed by Mirran, the Laughing Shadow.
+Gorn's Blessing | Blessed by Gorn, the Reaper.
+Kal's Blessing | Blessed by Kal, the All-Father.
+Ranon's Blessing | Blessed by Ranon, the Destroyer.
+Tisa's Blessing | Blessed by Tisa, the Deceiver. +1 Tactic Slot.
+Power | +1 Magic. Arcane power surges through you.
+Blessing | +1 Spirit. Divine favor flows through you.
+Deft | +1 Reach, +1 Ranged, +1 Dodge. Swift and precise.
+Might | +2 Melee, +1 Health. Raw strength courses through you.
+Price | -1 Health. The cost of another's boon.
+Leader | Draw 1 card when deployed. +1 Tactic slot. Alters story outcomes and reveals relevant locations at game start.
+Heartless | +1 Resolute. You made a cold choice.
+Hero Among Them | +3 Health, +1 Melee, +1 Ranged. A champion rises from within.
+Disheartened | Discard 1 to deploy. The children have lost hope.
+Bardic | On enter, all heroes heal 1. Music and tales lift spirits in battle.
+Lovers | +1 Resolute, +1 Max Afflictions. A romantic bond strengthens resolve.
+Superior Armor | +1 Health, +1 Armor. Reinforced with superior materials.
+Inspired | +1 Resolute. Bolstered by inspiring words.
+Infernal Knowledge | Discard 1 to deploy. On enter: +1 Draw/turn. Dark secrets haunt the mind.
+Hunter | +1 Ranged, +1 Reach. Skilled at tracking and ranged combat.
+Physician | +2 Health, +1 Spirit. Trained in the healing arts.
+Scout | +1 Reach. Two free scouts periodically.
+Looting | +1 Melee, +1 Armor. Improved Rewards. Experienced scavenger with salvaged gear.
+Scavenging | +2 Free Digging in ruins. Knows where to look.
+Hunting | +2 Melee, +1 Health. Hardened by the hunt.
+Explorer | +1 node revealed on entry.
+Navigator | Revisiting nodes costs 0 supplies.
+Grim | Fatalistic, expects death, dark acceptance of doom.
+Cheerful | Defiant optimism, finds hope in darkness, supportive.
+Flirty | Playful charm, teasing, uses wit as armor.
+Sultry | Confident sensuality, direct about desires, alluring.
+Bloodthirsty | Loves violence, eager for battle, aggressive.
+Brooding | Mysterious, hints at dark past, emotionally distant.
+Cold | Professional, mission-focused, no-nonsense tactical mind.
+Sardonic | Cynical wit, gallows humor, copes through sarcasm.
+Fearful | Terrified, hesitant, overwhelmed by the horrors around them.
+Aspiring | Eager to prove themselves, ambitious, hungry for glory.
+Demon Slayer | +4 damage vs Demon enemies.
+Undead Slayer | +4 damage vs Undead enemies.
+Human Slayer | +4 damage vs Human enemies.
+Sand Slayer | +4 damage vs Sand enemies.
+Ghost Slayer | +4 damage vs Ghost enemies.
+Air Slayer | +3 damage vs Air enemies.
+Warded | Protection against hostile magic.
+Steadfast | Unwavering determination reduces all harm.
+Bashing | Enhanced striking power.
+Sharp Eyes | See further into enemy lines.
+Cat Eyes | Keen vision improves ranged accuracy.
+Vampire Hunter | Blessed by vampire hunters of old. +6 damage vs Vampires.
+Werewolf Bane | Silver-touched and effective against lycanthropes. +6 damage vs Werewolves.
+Dragon Slayer | Forged in dragon fire. +6 damage vs Dragons.
+Ghost Slayer | Strikes true against the ethereal. +4 damage vs Ghosts.
+Poison Killer | Purified blood resists all toxins. +4 damage vs Poison enemies.
+Elemental Bane | Dominion over primal forces. +4 damage vs Elementals.
+Demon Slayer | +4 damage vs Demons.
+Fire Slayer | +4 damage vs Fire enemies.
+Undead Slayer | +4 damage vs Undead.
+Boss Killer | +4 damage vs Bosses.
+Monster Slayer | +4 damage vs Monsters.
+Human Slayer | +4 damage vs Humans.
+Tough | Hardy constitution grants extra resilience.
+Blessed | Divine blessing grants faith upon entering battle.
+Dual Master | Master of fighting with two weapons.
+Reckless | Abandon defense for devastating strikes.
+Fortified | An impenetrable shell at the cost of offensive power.
+Enchanted | Magical power courses through fragile veins.
+Blessed Soul | Divine connection strengthens the spirit but weakens the arm.
+Far Sighted | See far, strike far, but struggle up close.
+Iron Will | Mental fortitude blocks magic at the cost of casting ability.
+Battle Hardened | Years of combat hone offense but leave magical vulnerabilities.
+Scholar | A life of study strengthens the mind, not the body.
+Veteran Fighter | Experience grants both resilience and an extra equipment slot.
+Lucky Charm | Fortune favors the bearer.
+Scarred Warrior | Battle scars intimidate enemies and strengthen resolve.
+Selfless Hero | Devotion to others grants divine favor. +1 Faith on enter.
+Resourceful Mind | Quick thinking provides options. Draw 1 card on enter.
+Agile Fighter | Trade durability for evasion. +1 Dodge.
+Vengeful Spirit | Righteous anger fuels combat prowess. +1 Melee, +1 Health.
+Retaliator | Every blow received is answered. Reflect 1 damage on hit.
+Mystic Blood | Arcane heritage enhances magical capability. +1 Magic, +1 Reach.
+Venomous | Each strike delivers a dose of poison.
+Burning Touch | Flames lick from every weapon strike.
+Bleeding Strike | Wounds from this bearer refuse to close.
+Weakening Blow | Sap the strength from your enemies.
+Supplier | Always comes prepared with extra supplies.
+Faithful | Divine favor follows in their wake.
+Quartermaster | Trained to carry and use additional equipment.
+Stone Skin | Flesh hardens to stone, resistant but slow.
+Thick Hide | Endurance at the cost of flexibility.
+Crushing | Overwhelming physical force at the cost of versatility.
+Eye of Eagle | Eagle-like vision improves ranged combat.
+Demon Tainted | Touched by demonic power.
+Noble Spirit | Nobility of spirit inspires others.
+Catblood | Dance around attacks with supernatural grace.
+Sorcerer | End of turn: deal Half Magic - 2 damage to a random enemy.
+Witch | End of turn: apply Half Magic - 1 Weak to a random enemy.
+Hero | Rise from civilian to hero status.
+Brilliance | Quick mind learns faster but lacks resolve.
+Beautiful Soul | Inner beauty inspires allies.
+Immortal Champion | Marked by immortality.
+Holy Paladin | +4 damage vs Undead.
+Berserker Blood | The blood of berserkers grants fury with each kill.
+Shadow Walker | Move through shadows, striking fear into enemies.
+Nature's Blessing | The natural world mends wounds over time.
+Arcane Mastery | Master of arcane arts, with fire at your fingertips.
+Divine Protection | Divine shields manifest upon entering battle.
+Hunter's Mark | Each confirmed kill reveals new opportunities.
+Commander | A natural leader whose presence inspires all allies.
+Blood Mage | Life force flows from victims to caster.
+Demon Pact | Power from the pit, at a cost to your soul.
+Elemental Affinity | One with the elements, resistant to their harmful effects.
+Beast Master | Call upon a loyal beast companion.
+Mirror Soul | Damage inflicted is damage returned.
+Absorbing | A protective barrier absorbs the first blows.
+Tactician | Strategic brilliance grants additional actions each turn.
+Card Sharp | Always have more options. Draw an extra card each turn.
+Battle Medic | Trained to patch wounds even in the chaos of battle.
+Death Wish | Live fast, die hard, and take them with you.
+Blood Bond | Your pain sustains your allies.
+Executioner | Swift execution enables continued assault.
+Aura of Dread | Your presence alone weakens the resolve of enemies.
+Strength | Raw physical power at the cost of finesse.
+Jack of All | Versatility in all things grants expanded capabilities.
+Of the Commons | Connection to common folk grants the Civilian type.
+Juggernaut | Unstoppable force trades offense for defense.
+Deathdealer | +4 damage vs Demons, Humans, and Nature enemies.
+Kai'rin | Ancient bloodline grants regeneration and bonus damage.
+Soul Reaper | Harvest souls to mend the living. Death serves life.
+Perfect Hunter | The ultimate predator. All slayer bonuses increased by +2.
+Immortal Champion | Legendary champion who cannot fall in the opening moments of battle.
+Hell's Chosen | Marked by Hell itself. Power beyond measure, but at terrible cost.
+Champion | A true champion of the people. Protect the innocent.
+Mage's Focus | Focused magical training grants the Fireball ability.
+Ranger's Eye | Perfect aim grants the Aimed Shot ability.
+Rogue's Shadow | Strike from the shadows with Backstab.
+Warrior's Rage | Channel battle fury with the Rage ability.
+Priest's Prayer | Divine connection grants the Heal ability.
+Paladin's Oath | Holy vows empower the Smite ability.
+Civilian's Grit | Survival instincts grant the Escape ability.
+Desert Born | +1 Protection each turn. Born under the desert sun.
+Serpent Born | +1 Resist, -1 Health. Touched by the serpent spirits.
+Curse of Ire | +2 Max Afflictions. Marked by the ancient curse.
+Water Seeker | Skilled at finding water in the desert.
+Merchant | Trading expertise.
+Fire Spirit | On death: Apply 1 Burn to all enemies.
+Sovereignty's Child | On enter: +2 Faith, -1 Supply.
+Shadowborn | -1 Magic, +3 Resist. Born in the shadow realm.
+Sand Cursed | -1 Spirit, +3 Health. Marked by desert hex.
+Outcast | +3 Health. Costs 2 extra cards to deploy.
+Crippled | -1 Melee, -1 Ranged. Carries old wounds.
+Flame Touched | Attacks apply 1 Burn. On death: inflict 5 Burn on all heroes.
+Frost Touched | Attacks apply 1 Weak. On death: inflict 5 Weak on all heroes.
+Rannon's Faithful | On enter: deal 3 damage to lowest health enemy.
+Hero of Legend | +1 Tactic Slot. A hero whose deeds echo through history.
+Many Faces | Impersonation: counts as all classes for ifClass bonuses and class effects.
+
+# TYPE REGISTRY (38 tags) — key | category
+Undead | enemy
+Monster | enemy
+Demon | enemy
+Elemental | enemy
+Nightmare | enemy
+Human | enemy
+Fire | enemy-subtype
+Poison | enemy-subtype
+Ice | enemy-subtype
+Shadow | enemy-subtype
+Plant | enemy-subtype
+Horror | enemy-subtype
+Nature | enemy-subtype
+Boss | enemy-subtype
+Vampire | enemy-subtype
+Werewolf | enemy-subtype
+Dragon | enemy-subtype
+Warrior | hero-class
+Mage | hero-class
+Priest | hero-class
+Rogue | hero-class
+Ranger | hero-class
+Paladin | hero-class
+Civilian | hero-class
+Aspiring Hero | hero-class
+Demon Hunter | hero-class
+Templar | hero-class
+Inquisitor | hero-class
+Barbarian | hero-class
+Shaman | hero-class
+Druid | hero-class
+Prophet | hero-class
+Warden | hero-class
+Martyr | hero-class
+Hero | hero-subtype
+Catfolk | hero-subtype
+DualWielder | hero-subtype
+Deathdealer | hero-subtype

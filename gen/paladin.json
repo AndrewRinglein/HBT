@@ -1,0 +1,805 @@
+{
+ "class": "class.paladin",
+ "specialties": [
+  {
+   "id": "specialty.vigil",
+   "name": "Vigil",
+   "class": "class.paladin",
+   "intent": "You are slow, hard to kill and hard to finish off — and you are the reason a hero who went down gets back up instead of bleeding out.",
+   "statModifiers": {
+    "resist": 2,
+    "toughness": 1,
+    "luck": 5
+   },
+   "triggers": [
+    {
+     "hook": "aura",
+     "effect": "AURA radius 1 — allies inside gain +1 Armor"
+    }
+   ],
+   "powers": [
+    "power.vigil.holy-protection",
+    "power.vigil.bravery",
+    "power.vigil.protect-and-shield",
+    "power.vigil.keep-the-watch"
+   ],
+   "source": "Hell-TCG Paladin/Vigil (+Resist and 'extra wound' — maxAfflictions is Toughness now; the Favor grant is non-combat and stays out of the stat block; Protect the Weak's escape-to-deck is cut and rebuilt against the Consequence Stack) | 2026-08-17 Angela trim: three stats, no negatives, one ability. Dropped stats: movement -1; dodge -5; crit -3. Parked abilities: onAllyDowned: if you are within 2 hexes of the downed ally, its bleed-out counter runs 1 Turn slower for the rest of the Battle. | 2026-08-17: third stat luck +5 — nothing lucky happens to the people who fight you. | 2026-08-17 quality pass: replaced a placeholder aura with a distinct effect. | 2026-08-17 Angela: every unit has Sidestep, so a zone of control cannot pin anything — it taxes the SECOND hex of a withdrawal, not the first. Reworded to say what it actually does. | 2026-08-20 Angela: the zone-of-control clause is cut — the fifth and last entry carrying it."
+  },
+  {
+   "id": "specialty.deathknight",
+   "name": "DeathKnight",
+   "class": "class.paladin",
+   "intent": "You took the armour and the oath and something else besides: you poison what you touch, you feed on kills, and the undead do not fear you the way they should.",
+   "statModifiers": {
+    "strength": 1,
+    "armor": 1,
+    "health": 2
+   },
+   "triggers": [
+    {
+     "hook": "onHit",
+     "effect": "your melee attacks apply 2 Poison"
+    }
+   ],
+   "powers": [
+    "power.deathknight.righteous-fury",
+    "power.deathknight.unholy-shield",
+    "power.deathknight.unholy-wrath",
+    "power.deathknight.consume-the-living"
+   ],
+   "source": "Hell-TCG Paladin/DeathKnight (poison-on-attack and heal-on-kill kept; 'returns to hand when wounded' is cut — there is no hand) | 2026-08-17 Angela trim: three stats, no negatives, one ability. Dropped stats: resist -1; luck -3. Parked abilities: onKill: heal 4 and gain 1 Corruption."
+  },
+  {
+   "id": "specialty.holy-avenger",
+   "name": "Avenger",
+   "class": "class.paladin",
+   "intent": "You are the sharp end of the class: everything you hit catches fire, and the things that should not exist catch more of it.",
+   "statModifiers": {
+    "strength": 2,
+    "health": 2,
+    "crit": 3
+   },
+   "triggers": [
+    {
+     "hook": "onHit",
+     "effect": "your melee attacks apply 2 Burn, or 4 Burn against undead or demon"
+    }
+   ],
+   "powers": [
+    "power.holy-avenger.strike-at-evil",
+    "power.holy-avenger.lay-on-hands",
+    "power.holy-avenger.succor-of-the-faithful",
+    "power.holy-avenger.reckoning"
+   ],
+   "source": "Hell-TCG Paladin/Holy Avenger (Smite cut — attack.priest-chain.smite already owns that name; Strike at Evil carries the slayer role instead) | 2026-08-17 Angela trim: three stats, no negatives, one ability. Dropped stats: dodge -5. Parked abilities: onKill: if the kill was undead or demon, gain 3 Protection and remove all Weak from yourself. | 2026-08-19: item.holy-avenger is the named sword the class is measured against; the specialty is the archetype and takes the shorter name."
+  },
+  {
+   "id": "specialty.holy-champion",
+   "name": "Holy Champion",
+   "class": "class.paladin",
+   "intent": "You start every fight already shielded and you hand out the shield as you kill; your Health bar is short on purpose, because you are not meant to be spending it.",
+   "statModifiers": {
+    "armor": 1,
+    "strength": 1,
+    "accuracy": 5
+   },
+   "triggers": [
+    {
+     "hook": "startOfBattle",
+     "effect": "you gain Protection equal to 2 + your Armor"
+    }
+   ],
+   "powers": [
+    "power.holy-champion.holy-radiance",
+    "power.holy-champion.fervor",
+    "power.holy-champion.sacred-flame",
+    "power.holy-champion.bound-by-the-flesh"
+   ],
+   "source": "Hell-TCG Templar/Holy Champion (+1 Armor / -1 Health kept exactly; Flaming Smite's name was already spent on Warrior/Crusader, so Sacred Flame from the badge pool carries the burn slot) | 2026-08-17 Angela trim: three stats, no negatives, one ability. Dropped stats: health -1. Parked abilities: onKill: every ally within 2 hexes gains 2 Protection."
+  },
+  {
+   "id": "specialty.sacred-shield",
+   "name": "Sacred Shield",
+   "class": "class.paladin",
+   "intent": "Protection is your whole economy — you generate more of it than anyone and, uniquely, yours does not evaporate before it gets used.",
+   "statModifiers": {
+    "resist": 2,
+    "armor": 1,
+    "health": 1
+   },
+   "triggers": [
+    {
+     "hook": "startOfBattle",
+     "effect": "you and every ally within 2 hexes gain 4 Protection"
+    }
+   ],
+   "powers": [
+    "power.sacred-shield.aegis",
+    "power.sacred-shield.fortify",
+    "power.sacred-shield.guardian-angel",
+    "power.sacred-shield.exemplify"
+   ],
+   "source": "Hell-TCG Templar/Sacred Shield (+2 Resist kept; the Sacred Shield power is renamed Aegis so the specialty and the power are not the same string; Guardian Angel's remove-from-play is rebuilt as a reposition) | 2026-08-17 Angela trim: three stats, no negatives, one ability. Dropped stats: strength -1; movement -1. Parked abilities: onActivationEnd: Protection you granted decays 1 every second Phase instead of every Phase."
+  },
+  {
+   "id": "specialty.grand-master",
+   "name": "Grand Master",
+   "class": "class.paladin",
+   "intent": "You do not fight alone and neither does anyone standing near you; the order's whole value is that the line holds its shape.",
+   "statModifiers": {
+    "itemSlots": 1,
+    "armor": 1,
+    "strength": 1
+   },
+   "triggers": [
+    {
+     "hook": "startOfBattle",
+     "effect": "every ally within 3 hexes gains +1 Armor for the rest of the Battle"
+    }
+   ],
+   "powers": [
+    "power.grand-master.close-ranks",
+    "power.grand-master.muster",
+    "power.grand-master.grand-charge",
+    "power.grand-master.unyielding"
+   ],
+   "source": "Hell-TCG Templar/Grand Master ('armors the entire party on arrival' — onEnter has no meaning, so it is onBattleStart and radius-limited; the power pool is authored from nothing, the original had none) | 2026-08-17 Angela trim: three stats, no negatives, one ability. Dropped stats: staminaMax -1; strength +1. Parked abilities: onAllyDamaged: once per Turn, an ally within 3 hexes reduces that damage by 1. | 2026-08-17: my trim ranked stats by rarity and dropped a class-PRIMARY stat to keep a rarer one. Restored; the cheapest stat on Angela’s ladder (Accuracy, then Dodge) was dropped instead."
+  },
+  {
+   "id": "specialty.purifier",
+   "name": "Purifier",
+   "class": "class.paladin",
+   "intent": "You bleed so the party does not have to carry anything: every swing you take costs you Health and buys everyone else a clean status bar.",
+   "statModifiers": {
+    "strength": 1,
+    "health": 3,
+    "resist": 1
+   },
+   "triggers": [
+    {
+     "hook": "onHit",
+     "effect": "take 2 true damage; every ally within 3 hexes heals 1 and loses 1 Burn"
+    }
+   ],
+   "powers": [
+    "power.purifier.purify",
+    "power.purifier.cleanse",
+    "power.purifier.blessing",
+    "power.purifier.sanctified-ward"
+   ],
+   "source": "Hell-TCG Inquisitor/Purifier (onAttack self-damage-for-party-heal kept verbatim in spirit; Purify is assigned here, resolving its collision with Priest/Divine Light's cleanse — status removal is the Inquisitor's lean) | 2026-08-17 Angela trim: three stats, no negatives, one ability. Dropped stats: luck -3. Parked abilities: onKill: remove one status effect of your choice from every ally within 3 hexes."
+  },
+  {
+   "id": "specialty.exorcist",
+   "name": "Exorcist",
+   "class": "class.paladin",
+   "intent": "Whatever is on you goes onto them. You are the party's answer to a caster and the reason a burning hero stops burning.",
+   "statModifiers": {
+    "resist": 2,
+    "health": 1,
+    "accuracy": 5
+   },
+   "triggers": [
+    {
+     "hook": "onHit",
+     "effect": "remove 1 Burn and 1 Poison from yourself and apply each removed stack to the target"
+    }
+   ],
+   "powers": [
+    "power.exorcist.banish",
+    "power.exorcist.holy-shield",
+    "power.exorcist.exorcism",
+    "power.exorcist.sever-the-channel"
+   ],
+   "source": "Hell-TCG Inquisitor/Exorcist (affliction transfer kept exactly; the anti-caster half of the Inquisitor brief lives here) | 2026-08-17 Angela trim: three stats, no negatives, one ability. Dropped stats: armor -1. Parked abilities: onTakingDamage: if the damage was magic, gain 2 Protection."
+  },
+  {
+   "id": "specialty.witch-hunter",
+   "name": "Witch Hunter",
+   "class": "class.paladin",
+   "intent": "You pick one thing out of the dark, you keep seeing it whatever it does, and when it dies you already know what you are looking at next.",
+   "statModifiers": {
+    "precision": 2,
+    "crit": 3,
+    "resist": 1
+   },
+   "triggers": [
+    {
+     "hook": "onKill",
+     "effect": "the nearest enemy within your Vision is Marked: you have +10 Accuracy and +2 damage against it for the rest of the Battle"
+    }
+   ],
+   "powers": [
+    "power.witch-hunter.hunt",
+    "power.witch-hunter.judgment",
+    "power.witch-hunter.iron-and-salt",
+    "power.witch-hunter.burn-the-guilty"
+   ],
+   "source": "Hell-TCG Inquisitor/Witch Hunter ('each kill reveals the next prey' rebuilt on Vision and Accuracy, neither of which existed in Hell-TCG) | 2026-08-17: reworded as a standing property; as a battle-start snapshot it saw nobody. | 2026-08-17 Angela trim: three stats, no negatives, one ability. Dropped stats: health -2; vision +3. Parked abilities: passive: you see stealthed units within 4 hexes at all times, and you ignore Dodge that was granted by a magic effect. | 2026-08-17 off-primary pass: Precision doubled — a ranged Paladin has to pay for being ranged."
+  }
+ ],
+ "powers": [
+  {
+   "id": "power.vigil.holy-protection",
+   "name": "Holy Protection",
+   "specialty": "specialty.vigil",
+   "stamina": 1,
+   "cooldown": 4,
+   "warmup": 1,
+   "free": false,
+   "targets": "self",
+   "tags": [
+    "stance"
+   ],
+   "description": "Stance: gain +1 Armor and +1 Resist for the rest of the Battle and lose 2 Health.",
+   "source": "Hell-TCG name reused (Paladin/Vigil, Holy Protection) | 2026-08-17: \"difficult terrain\" is not a thing in HoBaT — there are hexes that cost extra Movement. Reworded.",
+   "triggers": []
+  },
+  {
+   "id": "power.vigil.bravery",
+   "name": "Bravery",
+   "specialty": "specialty.vigil",
+   "stamina": 1,
+   "cooldown": 4,
+   "warmup": 1,
+   "free": false,
+   "targets": "allies within 3 hexes",
+   "tags": [
+    "aura"
+   ],
+   "description": "Every ally within 3 hexes gains +1 Resist for the rest of the Battle and loses 2 Weak.",
+   "source": "Hell-TCG name reused (Paladin/Vigil, Bravery — all-heroes rebuilt as a 3-hex radius) | 2026-08-17: \"difficult terrain\" is not a thing in HoBaT — there are hexes that cost extra Movement. Reworded.",
+   "triggers": []
+  },
+  {
+   "id": "power.vigil.protect-and-shield",
+   "name": "Protect and Shield",
+   "specialty": "specialty.vigil",
+   "stamina": 2,
+   "cooldown": 4,
+   "warmup": 1,
+   "free": false,
+   "targets": "one ally within 3 hexes",
+   "tags": [],
+   "description": "Remove 5 Burn, 5 Bleed and 5 Poison from the target and give it 4 Protection. Bleed is not resisted by anything else, so this is often the only answer to it.",
+   "source": "Hell-TCG name reused (Paladin, Protect and Shield) | 2026-08-17: \"difficult terrain\" is not a thing in HoBaT — there are hexes that cost extra Movement. Reworded.",
+   "triggers": []
+  },
+  {
+   "id": "power.vigil.keep-the-watch",
+   "name": "Keep the Watch",
+   "specialty": "specialty.vigil",
+   "stamina": 0,
+   "cooldown": 5,
+   "warmup": 0,
+   "free": true,
+   "targets": "one downed ally within 2 hexes",
+   "tags": [],
+   "description": "Stabilise a downed ally within 2 hexes, removing its bleed-out counter.",
+   "source": "new — rebuilt from Paladin/Vigil's Protect the Weak, which removed a hero from play; the Consequence Stack is where that fantasy lives now | 2026-08-17: \"difficult terrain\" is not a thing in HoBaT — there are hexes that cost extra Movement. Reworded. | 2026-08-17 Angela: rebuilt. Passing a Deathbed check returns you to MAX Health with the wounded badge; failing kills you outright. There is no downed state, no bleed-out counter and no stabilising, and nothing may override the roll. Granting Deathbed Fighting is the legitimate way to touch this. | 2026-08-17 Angela: downed IS a state and stabilising IS a mechanic — I over-cut them. Stabilise removes the bleed-out counter and nothing else: no Health, no standing up. | 2026-08-20 Angela: \"if it is not downed, grant +20 Deathbed Fighting instead\" branched on the target’s downed state to pick between two different effects. | 2026-08-20 Angela sweep: the targets field said 2 hexes and the sentence said 4. The field wins.",
+   "triggers": [],
+   "intent": "stabilise, or pre-empt the fall"
+  },
+  {
+   "id": "power.deathknight.righteous-fury",
+   "name": "Righteous Fury",
+   "specialty": "specialty.deathknight",
+   "stamina": 1,
+   "cooldown": 4,
+   "warmup": 1,
+   "free": false,
+   "targets": "self",
+   "tags": [
+    "stance"
+   ],
+   "description": "Stance: for the rest of the Battle every melee attack you land reduces the target's Armor by 1. Armor floors at zero, so the fourth hit on a knight is worth less than the first.",
+   "source": "Hell-TCG name reused (Paladin/DeathKnight, Righteous Fury) | 2026-08-17: \"difficult terrain\" is not a thing in HoBaT — there are hexes that cost extra Movement. Reworded.",
+   "triggers": []
+  },
+  {
+   "id": "power.deathknight.unholy-shield",
+   "name": "Unholy Shield",
+   "specialty": "specialty.deathknight",
+   "stamina": 1,
+   "cooldown": 4,
+   "warmup": 1,
+   "free": false,
+   "targets": "self",
+   "tags": [
+    "stance"
+   ],
+   "description": "Stance: for the rest of the Battle anything that hits you gains 2 Burn. Each tick is still reduced by the holder's Resist, so it does most for you against the unarmoured.",
+   "source": "Hell-TCG name reused (Paladin/DeathKnight, Unholy Shield) | 2026-08-17: \"difficult terrain\" is not a thing in HoBaT — there are hexes that cost extra Movement. Reworded.",
+   "triggers": []
+  },
+  {
+   "id": "power.deathknight.unholy-wrath",
+   "name": "Unholy Wrath",
+   "specialty": "specialty.deathknight",
+   "stamina": 2,
+   "cooldown": 5,
+   "warmup": 2,
+   "free": false,
+   "targets": "one enemy in melee reach",
+   "tags": [
+    "melee"
+   ],
+   "description": "Melee attack at +3 Strength dealing magic damage instead of physical, and every other enemy adjacent to you takes 2 magic damage.",
+   "source": "Hell-TCG name reused (Paladin/DeathKnight, Unholy Wrath — Spirit x3 was priced for a party sum of 10; it is not one here) | 2026-08-17: \"difficult terrain\" is not a thing in HoBaT — there are hexes that cost extra Movement. Reworded.",
+   "triggers": []
+  },
+  {
+   "id": "power.deathknight.consume-the-living",
+   "name": "Consume the Living",
+   "specialty": "specialty.deathknight",
+   "stamina": 0,
+   "cooldown": 5,
+   "warmup": 1,
+   "free": false,
+   "targets": "self",
+   "tags": [
+    "stance"
+   ],
+   "description": "Stance: for the rest of the Battle you have +2 Strength against beast, giant, dragon and plant, and -2 Strength against undead, demon and elemental. You are the one paladin the graveyard is not afraid of.",
+   "source": "Hell-TCG name reused (Paladin/DeathKnight, Consume the Living — the inverted slayer table is the whole joke and it ports cleanly to creature tags) | 2026-08-17: \"difficult terrain\" is not a thing in HoBaT — there are hexes that cost extra Movement. Reworded.",
+   "triggers": []
+  },
+  {
+   "id": "power.holy-avenger.strike-at-evil",
+   "name": "Strike at Evil",
+   "specialty": "specialty.holy-avenger",
+   "stamina": 1,
+   "cooldown": 2,
+   "warmup": 0,
+   "free": false,
+   "targets": "self",
+   "tags": [
+    "melee"
+   ],
+   "description": "Until the end of your next Turn, your attacks deal 2 + Spirit extra damage and apply 3 Burn against undead or demon.",
+   "source": "Hell-TCG name reused (Paladin/Holy Avenger, Strike at Evil — the Boss category is cut, the creature tags carry it) | 2026-08-17: was an attack in its own right, so it competed with the weapon in your hands and lost the moment you found a good one. Rebuilt as a next-attack modifier. | 2026-08-17: \"difficult terrain\" is not a thing in HoBaT — there are hexes that cost extra Movement. Reworded. | 2026-08-20 Angela: \"your next <form> attack\" is gone. Nothing tracks which attack is next or what form it is. Rewritten as a duration: until the end of your next Turn, your attacks carry it. The form qualifier is dropped with it. ",
+   "modifies": {
+    "tags": [
+     "melee"
+    ],
+    "scope": "until-end-of-your-next-turn",
+    "statModifiers": {}
+   },
+   "triggers": []
+  },
+  {
+   "id": "power.holy-avenger.lay-on-hands",
+   "name": "Lay on Hands",
+   "specialty": "specialty.holy-avenger",
+   "stamina": 1,
+   "cooldown": 3,
+   "warmup": 0,
+   "free": false,
+   "targets": "one ally within 1 hex",
+   "tags": [
+    "heal"
+   ],
+   "description": "Heal the target 4. You are not a priest; you get one heal and it is short-ranged.",
+   "source": "Hell-TCG name reused (Paladin/Holy Avenger, Lay on Hands) | 2026-08-17: \"difficult terrain\" is not a thing in HoBaT — there are hexes that cost extra Movement. Reworded. | 2026-08-20 Angela: \"or 2 if it is carrying Burn\" restates what Burn already does. The halving happens on its own.",
+   "triggers": []
+  },
+  {
+   "id": "power.holy-avenger.succor-of-the-faithful",
+   "name": "Succor of the Faithful",
+   "specialty": "specialty.holy-avenger",
+   "stamina": 0,
+   "cooldown": 3,
+   "warmup": 0,
+   "free": true,
+   "targets": "self",
+   "tags": [],
+   "description": "Free. remove 5 Burn and 5 Poison from yourself and gain Protection equal to your Spirit — and take 1 true damage for every point you removed. Cleansing one tick is free insurance. Cleansing eight is a decision about which of the two things kills you.",
+   "source": "Hell-TCG name reused (Paladin/Holy Avenger, Succor of the Faithful — the +1 Spirit is cut, party sums are not handed out this cheaply) | 2026-08-17: \"difficult terrain\" is not a thing in HoBaT — there are hexes that cost extra Movement. Reworded. | 2026-08-17 quality pass: 'remove 2 and 2, gain 2 Protection' had no decision. The cleanse now scales, and so does its price. | 2026-08-20: reworded the opening. \"Free\" here means it does not consume your primary action — it never meant costless, and on an item that also charges stamina the old wording read as though it did. | 2026-08-20 Angela: standardised to \"Free.\" A trinket that does not use your action is a power and appears in the power list, so it uses the same word powers use. The stamina cost is a field, not prose.",
+   "triggers": []
+  },
+  {
+   "id": "power.holy-avenger.reckoning",
+   "name": "Reckoning",
+   "specialty": "specialty.holy-avenger",
+   "stamina": 2,
+   "cooldown": 5,
+   "warmup": 2,
+   "free": false,
+   "targets": "self",
+   "tags": [
+    "melee"
+   ],
+   "description": "Until the end of your next Turn, your attacks gain +2 Strength and +5 Crit, and deal a further 4 damage against undead or demon.",
+   "source": "new — Holy Charge and Righteous Blow were both already spent on Warrior/Crusader and Warrior/Champion | 2026-08-17: was an attack in its own right, so it competed with the weapon in your hands and lost the moment you found a good one. Rebuilt as a next-attack modifier. | 2026-08-17: \"difficult terrain\" is not a thing in HoBaT — there are hexes that cost extra Movement. Reworded. | 2026-08-20 Angela: \"your next <form> attack\" is gone. Nothing tracks which attack is next or what form it is. Rewritten as a duration: until the end of your next Turn, your attacks carry it. The form qualifier is dropped with it. ",
+   "modifies": {
+    "tags": [
+     "melee"
+    ],
+    "scope": "until-end-of-your-next-turn",
+    "statModifiers": {
+     "strength": 2,
+     "crit": 5
+    }
+   },
+   "triggers": []
+  },
+  {
+   "id": "power.holy-champion.holy-radiance",
+   "name": "Holy Radiance",
+   "specialty": "specialty.holy-champion",
+   "stamina": 2,
+   "cooldown": 4,
+   "warmup": 1,
+   "free": false,
+   "targets": "every unit within 2 hexes",
+   "tags": [
+    "area",
+    "heal"
+   ],
+   "description": "Heal every ally within 2 hexes for 3 and give every enemy within 2 hexes 2 Burn. As an area effect it cannot crit.",
+   "source": "Hell-TCG name reused (Templar/Holy Champion, Holy Radiance) | 2026-08-17: \"difficult terrain\" is not a thing in HoBaT — there are hexes that cost extra Movement. Reworded.",
+   "triggers": []
+  },
+  {
+   "id": "power.holy-champion.fervor",
+   "name": "Fervor",
+   "specialty": "specialty.holy-champion",
+   "stamina": 0,
+   "cooldown": 5,
+   "warmup": 2,
+   "free": false,
+   "targets": "self",
+   "tags": [
+    "stance"
+   ],
+   "description": "Stance: gain +2 Strength and +1 Armor for the rest of the Battle and lose 5 Dodge.",
+   "source": "Hell-TCG name reused (Templar/Holy Champion, Fervor) | 2026-08-17: \"difficult terrain\" is not a thing in HoBaT — there are hexes that cost extra Movement. Reworded.",
+   "triggers": []
+  },
+  {
+   "id": "power.holy-champion.sacred-flame",
+   "name": "Sacred Flame",
+   "specialty": "specialty.holy-champion",
+   "stamina": 1,
+   "cooldown": 2,
+   "warmup": 0,
+   "free": false,
+   "targets": "one enemy within 3 hexes",
+   "tags": [],
+   "description": "The target gains 3 Burn, or 5 Burn if it is undead or demon. Each tick is reduced by its Resist, so it is a wound-opener, not a finisher.",
+   "source": "Hell-TCG name reused (badge power, Sacred Flame — stands in for Flaming Smite, which Warrior/Crusader already took) | 2026-08-17: \"difficult terrain\" is not a thing in HoBaT — there are hexes that cost extra Movement. Reworded.",
+   "triggers": []
+  },
+  {
+   "id": "power.holy-champion.bound-by-the-flesh",
+   "name": "Bound by the Flesh",
+   "specialty": "specialty.holy-champion",
+   "stamina": 1,
+   "cooldown": 5,
+   "warmup": 2,
+   "free": false,
+   "targets": "allies within 3 hexes",
+   "tags": [
+    "aura"
+   ],
+   "description": "Take 6 true damage; every ally within 3 hexes gains 4 Protection. Protection decays 1 a Phase, so hand it out on the Turn contact lands.",
+   "source": "Hell-TCG name reused (Templar, Bound by the Flesh — 'give away max Health' rebuilt as giving away Protection) | 2026-08-17: \"difficult terrain\" is not a thing in HoBaT — there are hexes that cost extra Movement. Reworded.",
+   "triggers": []
+  },
+  {
+   "id": "power.sacred-shield.aegis",
+   "name": "Aegis",
+   "specialty": "specialty.sacred-shield",
+   "stamina": 1,
+   "cooldown": 2,
+   "warmup": 0,
+   "free": false,
+   "targets": "one ally within 3 hexes",
+   "tags": [],
+   "description": "The target gains Protection equal to 3 + Spirit. Cheap and repeatable — this is the button you press most Turns.",
+   "source": "Hell-TCG mechanic reused, RENAMED (Templar/Sacred Shield, Sacred Shield — a power and its specialty should not share a name) | 2026-08-17: \"difficult terrain\" is not a thing in HoBaT — there are hexes that cost extra Movement. Reworded.",
+   "triggers": []
+  },
+  {
+   "id": "power.sacred-shield.fortify",
+   "name": "Fortify",
+   "specialty": "specialty.sacred-shield",
+   "stamina": 2,
+   "cooldown": 5,
+   "warmup": 3,
+   "free": false,
+   "targets": "you and allies within 3 hexes",
+   "tags": [
+    "aura"
+   ],
+   "description": "Every ally within 3 hexes gains +1 Armor for the rest of the Battle; you gain +3 Health.",
+   "source": "Hell-TCG name reused (Templar/Sacred Shield, Fortify) | 2026-08-17: \"difficult terrain\" is not a thing in HoBaT — there are hexes that cost extra Movement. Reworded.",
+   "triggers": []
+  },
+  {
+   "id": "power.sacred-shield.guardian-angel",
+   "name": "Guardian Angel",
+   "specialty": "specialty.sacred-shield",
+   "stamina": 2,
+   "cooldown": 5,
+   "warmup": 1,
+   "free": false,
+   "targets": "one ally within 3 hexes",
+   "tags": [],
+   "description": "Give one ally within 3 hexes 4 Protection. It does not spend its own Turn — you spent yours.",
+   "source": "Hell-TCG name reused (Templar/Sacred Shield, Guardian Angel — 'remove from play' rebuilt as a repositioning save, which is what it was doing) | 2026-08-17: \"difficult terrain\" is not a thing in HoBaT — there are hexes that cost extra Movement. Reworded. | 2026-08-20 Angela: the pull is cut. Knockback is the only forced movement in the game; pulling an ally into a hex you choose is a second forced-movement system for one power. | 2026-08-20 Angela sweep: the targets field said 3 hexes and the sentence said 4. The field wins.",
+   "triggers": []
+  },
+  {
+   "id": "power.sacred-shield.exemplify",
+   "name": "Exemplify",
+   "specialty": "specialty.sacred-shield",
+   "stamina": 1,
+   "cooldown": 3,
+   "warmup": 0,
+   "free": false,
+   "targets": "one ally within 3 hexes",
+   "tags": [],
+   "description": "remove 5 Poison from the target and give it +1 Armor for the rest of the Battle.",
+   "source": "Hell-TCG name reused (Templar, Exemplify) | 2026-08-17: \"difficult terrain\" is not a thing in HoBaT — there are hexes that cost extra Movement. Reworded.",
+   "triggers": []
+  },
+  {
+   "id": "power.grand-master.close-ranks",
+   "name": "Close Ranks",
+   "specialty": "specialty.grand-master",
+   "stamina": 2,
+   "cooldown": 5,
+   "warmup": 1,
+   "free": false,
+   "targets": "allies within 2 hexes",
+   "tags": [
+    "aura"
+   ],
+   "description": "Aura: for the rest of the Battle, any ally within 2 hexes of you that is also adjacent to another ally has +1 Armor and +5 Dodge. It rewards a formation and it lapses the moment the line scatters.",
+   "source": "new | 2026-08-17: \"difficult terrain\" is not a thing in HoBaT — there are hexes that cost extra Movement. Reworded.",
+   "triggers": []
+  },
+  {
+   "id": "power.grand-master.muster",
+   "name": "Muster",
+   "specialty": "specialty.grand-master",
+   "stamina": 0,
+   "cooldown": 3,
+   "warmup": 0,
+   "free": true,
+   "targets": "one ally within 4 hexes",
+   "tags": [],
+   "description": "The target gains 3 Protection. Free, and Protection decays 1 a Phase, so spend it on the hero about to be hit rather than banking it.",
+   "source": "new | 2026-08-17: \"difficult terrain\" is not a thing in HoBaT — there are hexes that cost extra Movement. Reworded.",
+   "triggers": []
+  },
+  {
+   "id": "power.grand-master.grand-charge",
+   "name": "Grand Charge",
+   "specialty": "specialty.grand-master",
+   "stamina": 2,
+   "cooldown": 4,
+   "warmup": 2,
+   "free": false,
+   "targets": "one enemy in melee reach",
+   "tags": [
+    "melee"
+   ],
+   "description": "Move up to 4 hexes and make a melee attack at +2 Strength. Every ally within 2 hexes may immediately move up to 2 hexes; it provokes nothing.",
+   "source": "new | 2026-08-17: \"difficult terrain\" is not a thing in HoBaT — there are hexes that cost extra Movement. Reworded. | 2026-08-17 quality pass: the ally movement was decoration. Tied to flanking, so the Grand Master is arranging a pincer rather than just walking people forward. | 2026-08-17: restored — a fuzzy duplicate check flagged it against two other charge powers and I briefly flattened the best of the three. It is the only flanking-setup power in the game. | 2026-08-17 Angela: THERE IS NO FLANKING. It appears in no current design document — I carried it forward from a stale snapshot. Rebuilt on plain adjacency, which is real and checkable. | 2026-08-20 Angela sweep: \"every ally that BEGAN the Turn adjacent to you\" remembered a position from earlier in the Turn, and \"for each of them that ends adjacent to your target\" counted them. Nothing remembers where a unit was and nothing counts. Current adjacency, flat effect.",
+   "triggers": []
+  },
+  {
+   "id": "power.grand-master.unyielding",
+   "name": "Unyielding",
+   "specialty": "specialty.grand-master",
+   "stamina": 1,
+   "cooldown": 4,
+   "warmup": 1,
+   "free": false,
+   "targets": "you and allies within 2 hexes",
+   "tags": [
+    "aura"
+   ],
+   "description": "remove 5 Stun and 5 Weak from yourself and every ally within 2 hexes.",
+   "source": "Hell-TCG mechanic reused (Iron Resolve / Rallying Cry — Resolute was CUT, so the payload is purely the status strip) | 2026-08-17: \"difficult terrain\" is not a thing in HoBaT — there are hexes that cost extra Movement. Reworded.",
+   "triggers": []
+  },
+  {
+   "id": "power.purifier.purify",
+   "name": "Purify",
+   "specialty": "specialty.purifier",
+   "stamina": 1,
+   "cooldown": 2,
+   "warmup": 0,
+   "free": false,
+   "targets": "one ally within 3 hexes",
+   "tags": [],
+   "description": "remove 5 Burn and 5 Poison from the target. Burn halves every heal it receives, so stripping it is usually worth more than the heal you would have cast.",
+   "source": "Hell-TCG name reused (Inquisitor, Purify) — COLLISION: Priest/Divine Light also had a Purify; it went to the Inquisitor, whose whole lean is status removal, and the priest kept Close Wounds and Hallowed Ground | 2026-08-17: \"difficult terrain\" is not a thing in HoBaT — there are hexes that cost extra Movement. Reworded.",
+   "triggers": []
+  },
+  {
+   "id": "power.purifier.cleanse",
+   "name": "Cleanse",
+   "specialty": "specialty.purifier",
+   "stamina": 2,
+   "cooldown": 5,
+   "warmup": 2,
+   "free": false,
+   "targets": "allies within 3 hexes",
+   "tags": [
+    "area"
+   ],
+   "description": "remove 3 of every status, including Bleed, from every ally within 3 hexes, and take 5 true damage.",
+   "source": "Hell-TCG name reused (Inquisitor/Purifier, Cleanse) | 2026-08-17: \"difficult terrain\" is not a thing in HoBaT — there are hexes that cost extra Movement. Reworded.",
+   "triggers": []
+  },
+  {
+   "id": "power.purifier.blessing",
+   "name": "Blessing",
+   "specialty": "specialty.purifier",
+   "stamina": 1,
+   "cooldown": 3,
+   "warmup": 1,
+   "free": false,
+   "targets": "one ally within 3 hexes",
+   "tags": [
+    "heal"
+   ],
+   "description": "Heal the target for 3 + Spirit and give it +1 Resist for the rest of the Battle.",
+   "source": "Hell-TCG name reused (Inquisitor/Purifier, Blessing) | 2026-08-17: \"difficult terrain\" is not a thing in HoBaT — there are hexes that cost extra Movement. Reworded.",
+   "triggers": []
+  },
+  {
+   "id": "power.purifier.sanctified-ward",
+   "name": "Sanctified Ward",
+   "specialty": "specialty.purifier",
+   "stamina": 2,
+   "cooldown": 4,
+   "warmup": 1,
+   "free": false,
+   "targets": "one ally within 3 hexes",
+   "tags": [],
+   "description": "The target gains Protection equal to 4 + Spirit.",
+   "source": "Hell-TCG mechanic reused, RENAMED (Inquisitor/Purifier, True Sanctuary — Sanctuary is taken by Ranger/Protector and Hallowed Ground by Priest/Divine Light) | 2026-08-17 Angela: Protection has no duration — it decays 1 a Turn and by the damage it absorbs. Duration clause removed. | 2026-08-17 Angela: CUT. status immunity cut.",
+   "triggers": []
+  },
+  {
+   "id": "power.exorcist.banish",
+   "name": "Banish",
+   "specialty": "specialty.exorcist",
+   "stamina": 2,
+   "cooldown": 6,
+   "warmup": 3,
+   "free": false,
+   "targets": "one enemy within 3 hexes",
+   "tags": [],
+   "description": "Deal 12 true damage to the target and take 4 true damage yourself; against demon, nightmare or horror you take none.",
+   "source": "Hell-TCG name reused (Inquisitor/Exorcist, Banish) | 2026-08-17: \"difficult terrain\" is not a thing in HoBaT — there are hexes that cost extra Movement. Reworded.",
+   "triggers": []
+  },
+  {
+   "id": "power.exorcist.holy-shield",
+   "name": "Name the Enemy",
+   "specialty": "specialty.exorcist",
+   "stamina": 1,
+   "cooldown": 3,
+   "warmup": 1,
+   "free": false,
+   "targets": "self",
+   "tags": [],
+   "description": "Gain Protection equal to 3 + twice the party’s Spirit, and remove 1 Stun from yourself. Spirit is the party-wide sum, so with no Priest in the party this is a small bubble.",
+   "source": "Hell-TCG name reused (Inquisitor/Exorcist, Holy Shield) | 2026-08-17: \"difficult terrain\" is not a thing in HoBaT — there are hexes that cost extra Movement. Reworded. | 2026-08-17 quality pass: a flat Protection grant. Now you have to name the threat before you know what is coming, which is the decision the power was missing. | 2026-08-17 Angela: THERE IS NO FLANKING. It appears in no current design document — I carried it forward from a stale snapshot. Rebuilt on plain adjacency, which is real and checkable. | 2026-08-19: item.holy-shield already owns \"Holy Shield\" and is the Paladin’s iconic shield. The power is renamed for the decision it actually asks you to make. | 2026-08-19: Removed an aura trigger copy-pasted from item.holy-shield during the quality pass. The power grants Protection to itself; it does not project anything. | 2026-08-20 Angela: no naming function anywhere — you do not use a power and then make a second choice inside it. The choice is the power, or the target. \"name one of undead, demon or horror\" is gone, and with it the two-tier Protection. One number, twice Spirit — the size the named case used to give.",
+   "triggers": [],
+   "intent": "The ward does not care what is coming. It was never going to ask."
+  },
+  {
+   "id": "power.exorcist.exorcism",
+   "name": "Exorcism",
+   "specialty": "specialty.exorcist",
+   "stamina": 2,
+   "cooldown": 5,
+   "warmup": 3,
+   "free": false,
+   "targets": "enemies within 2 hexes",
+   "tags": [
+    "area"
+   ],
+   "description": "Every enemy within 2 hexes takes 4 true damage and you take 3. As an area effect it cannot crit — but nothing mitigates it either.",
+   "source": "Hell-TCG name reused (Inquisitor/Exorcist, Exorcism) | 2026-08-17: \"difficult terrain\" is not a thing in HoBaT — there are hexes that cost extra Movement. Reworded.",
+   "triggers": []
+  },
+  {
+   "id": "power.exorcist.sever-the-channel",
+   "name": "Sever the Channel",
+   "specialty": "specialty.exorcist",
+   "stamina": 1,
+   "cooldown": 4,
+   "warmup": 1,
+   "free": false,
+   "targets": "one enemy within 4 hexes",
+   "tags": [],
+   "description": "For the rest of the Battle the target's magic damage is reduced by 3 and it cannot apply Burn.",
+   "source": "new — the anti-caster half of the Inquisitor brief had no Hell-TCG equivalent, because Hell-TCG had no way to shut a caster down | 2026-08-17: \"difficult terrain\" is not a thing in HoBaT — there are hexes that cost extra Movement. Reworded.",
+   "triggers": []
+  },
+  {
+   "id": "power.witch-hunter.hunt",
+   "name": "Hunt",
+   "specialty": "specialty.witch-hunter",
+   "stamina": 1,
+   "cooldown": 3,
+   "warmup": 0,
+   "free": false,
+   "targets": "one enemy within your Vision",
+   "tags": [],
+   "description": "Mark one enemy for the rest of the Battle: you have +10 Accuracy and +2 Precision against it, and you always know which hex it is in, whatever it does to hide.",
+   "source": "new | 2026-08-17: \"difficult terrain\" is not a thing in HoBaT — there are hexes that cost extra Movement. Reworded.",
+   "triggers": []
+  },
+  {
+   "id": "power.witch-hunter.judgment",
+   "name": "The Verdict",
+   "specialty": "specialty.witch-hunter",
+   "stamina": 2,
+   "cooldown": 4,
+   "warmup": 2,
+   "free": false,
+   "targets": "one enemy within 4 hexes",
+   "tags": [
+    "ranged"
+   ],
+   "description": "Deal 8 true damage to the target. It skips Armor and it skips Resist; the only defence is not being seen.",
+   "source": "Hell-TCG name reused (Inquisitor, Judgment) | 2026-08-17: \"difficult terrain\" is not a thing in HoBaT — there are hexes that cost extra Movement. Reworded. | 2026-08-20 Angela: disambiguate. attack.hammer-of-justice.judgment already owns \"Judgment\".",
+   "triggers": []
+  },
+  {
+   "id": "power.witch-hunter.iron-and-salt",
+   "name": "Iron and Salt",
+   "specialty": "specialty.witch-hunter",
+   "stamina": 1,
+   "cooldown": 4,
+   "warmup": 1,
+   "free": false,
+   "targets": "one enemy within 3 hexes",
+   "tags": [],
+   "description": "The target loses 2 Resist for the rest of the Battle and cannot gain Protection. Resist floors at zero.",
+   "source": "new | 2026-08-17 Angela: Protection has no duration — it decays 1 a Turn and by the damage it absorbs. Duration clause removed. | 2026-08-17: \"difficult terrain\" is not a thing in HoBaT — there are hexes that cost extra Movement. Reworded.",
+   "triggers": []
+  },
+  {
+   "id": "power.witch-hunter.burn-the-guilty",
+   "name": "Burn the Guilty",
+   "specialty": "specialty.witch-hunter",
+   "stamina": 2,
+   "cooldown": 5,
+   "warmup": 2,
+   "free": false,
+   "targets": "enemies within 2 hexes",
+   "tags": [
+    "area"
+   ],
+   "description": "Every enemy within 2 hexes gains 4 Burn, or 6 if it is undead, demon or horror. Each tick is reduced by its Resist, and as an area effect it cannot crit.",
+   "source": "Hell-TCG mechanic reused, RENAMED (Inquisitor, Holy Fire — that name was already spent on Warrior/Crusader) | 2026-08-17: \"difficult terrain\" is not a thing in HoBaT — there are hexes that cost extra Movement. Reworded.",
+   "triggers": []
+  },
+  {
+   "id": "power.sacred-shield.crown-of-thorns",
+   "name": "Crown of Thorns",
+   "specialty": "specialty.sacred-shield",
+   "stamina": 2,
+   "cooldown": 5,
+   "warmup": 2,
+   "free": false,
+   "targets": "you and allies within 2 hexes",
+   "tags": [
+    "aura"
+   ],
+   "description": "You and every ally within 2 hexes gain Thorns 2 for the rest of the Battle.",
+   "intent": "The whole line becomes expensive to touch at once.",
+   "source": "new 2026-08-20: the party-wide Thorns power. Angela: Thorns should appear in several class powers."
+  }
+ ]
+}

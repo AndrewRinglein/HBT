@@ -1,0 +1,4458 @@
+{
+ "items": [
+  {
+   "id": "item.hand-axe",
+   "name": "Hand Axe",
+   "itemClass": "weapon",
+   "tier": 0,
+   "hands": 1,
+   "slots": 1,
+   "classRestriction": null,
+   "tags": [
+    "axe"
+   ],
+   "grants": [
+    "attack.hand-axe.chop"
+   ],
+   "statModifiers": {},
+   "triggers": [],
+   "intent": "It splits firewood beautifully and people badly, and it costs you the whole swing either way.",
+   "source": "new (fills the axe form at tier 0)"
+  },
+  {
+   "id": "item.sharpened-stake",
+   "name": "Sharpened Stake",
+   "itemClass": "weapon",
+   "tier": 0,
+   "hands": 1,
+   "slots": 1,
+   "classRestriction": null,
+   "tags": [
+    "spear"
+   ],
+   "grants": [
+    "attack.sharpened-stake.jab"
+   ],
+   "statModifiers": {},
+   "triggers": [],
+   "intent": "A fence post with one good end; against most things it is a joke, and against one thing it is the answer.",
+   "source": "new (tier-0 spear; the slayer line is the whole item)"
+  },
+  {
+   "id": "item.carpenters-mallet",
+   "name": "Carpenter's Mallet",
+   "itemClass": "weapon",
+   "tier": 0,
+   "hands": 1,
+   "slots": 1,
+   "classRestriction": null,
+   "tags": [
+    "hammer"
+   ],
+   "grants": [
+    "attack.carpenters-mallet.bonk"
+   ],
+   "statModifiers": {},
+   "triggers": [],
+   "intent": "Heavy at the wrong end and slow in the wrong hands, but a skull is only a nail that argues.",
+   "source": "new (fills the hammer form at tier 0)"
+  },
+  {
+   "id": "item.cart-chain",
+   "name": "Cart Chain",
+   "itemClass": "weapon",
+   "tier": 0,
+   "hands": 1,
+   "slots": 1,
+   "classRestriction": null,
+   "tags": [
+    "chain"
+   ],
+   "grants": [
+    "attack.cart-chain.swing"
+   ],
+   "statModifiers": {},
+   "triggers": [],
+   "intent": "Four feet of tow chain off a dead cart; you cannot aim it, only start it and hope.",
+   "source": "new (fills the chain form at tier 0)"
+  },
+  {
+   "id": "item.fishing-net",
+   "name": "Fishing Net",
+   "itemClass": "weapon",
+   "tier": 0,
+   "hands": 1,
+   "slots": 1,
+   "classRestriction": null,
+   "tags": [
+    "thrown"
+   ],
+   "grants": [
+    "attack.fishing-net.cast"
+   ],
+   "statModifiers": {},
+   "triggers": [],
+   "intent": "It does no damage at all, which is fine, because the thing in it is no longer the problem it was.",
+   "source": "Hell-TCG name reused (tactic, Fishing Net — 3 Weak — rebuilt as a tier-0 thrown control weapon)"
+  },
+  {
+   "id": "item.pot-lid",
+   "name": "Pot Lid",
+   "itemClass": "weapon",
+   "tier": 0,
+   "hands": 1,
+   "slots": 1,
+   "classRestriction": null,
+   "tags": [
+    "shield"
+   ],
+   "grants": [
+    "attack.pot-lid.bash"
+   ],
+   "statModifiers": {
+    "armor": 1,
+    "accuracy": -15
+   },
+   "triggers": [],
+   "intent": "One point of armour and a permanent apology to your accuracy — exactly what a first shield should feel like.",
+   "source": "new (tier-0 shield; the armoursmith has to feel like a relief) | 2026-08-17: Accuracy is worth about a quarter as a cost, so -5 was not paying for Armor and Resist."
+  },
+  {
+   "id": "item.broken-bottle",
+   "name": "Broken Bottle",
+   "itemClass": "weapon",
+   "tier": 0,
+   "hands": 1,
+   "slots": 1,
+   "classRestriction": null,
+   "tags": [
+    "improvised"
+   ],
+   "grants": [
+    "attack.broken-bottle.jab"
+   ],
+   "statModifiers": {},
+   "triggers": [],
+   "intent": "No damage worth the name and a wonderful habit of finding the soft parts anyway.",
+   "source": "new (tier-0 improvised)"
+  },
+  {
+   "id": "item.rusted-crossbow",
+   "name": "Rusted Crossbow",
+   "itemClass": "weapon",
+   "tier": 0,
+   "hands": 2,
+   "slots": 2,
+   "classRestriction": null,
+   "tags": [
+    "crossbow"
+   ],
+   "grants": [
+    "attack.rusted-crossbow.bolt"
+   ],
+   "statModifiers": {},
+   "triggers": [],
+   "intent": "It hits hard once and then you spend the rest of the Turn wrestling the crank.",
+   "source": "new (tier-0 crossbow; the three stamina is the joke)"
+  },
+  {
+   "id": "item.trappers-claws",
+   "name": "Trapper's Claws",
+   "itemClass": "weapon",
+   "tier": 0,
+   "hands": 1,
+   "slots": 1,
+   "classRestriction": null,
+   "tags": [
+    "claw"
+   ],
+   "grants": [
+    "attack.trappers-claws.rake"
+   ],
+   "statModifiers": {},
+   "triggers": [],
+   "intent": "Skinning hooks strapped over the knuckles: they open things, they do not stop things.",
+   "source": "new (fills the claw form at tier 0)"
+  },
+  {
+   "id": "item.practice-sword",
+   "name": "Practice Sword",
+   "itemClass": "weapon",
+   "tier": 0,
+   "hands": 1,
+   "slots": 1,
+   "classRestriction": null,
+   "tags": [
+    "sword"
+   ],
+   "grants": [
+    "attack.practice-sword.swing"
+   ],
+   "statModifiers": {},
+   "triggers": [],
+   "intent": "You will hit with it every single time, and every single time nothing will happen.",
+   "source": "new (tier-0 sword; the reliable-and-useless pole of the tier)"
+  },
+  {
+   "id": "item.greatsword",
+   "name": "Greatsword",
+   "itemClass": "weapon",
+   "tier": 1,
+   "hands": 2,
+   "slots": 2,
+   "classRestriction": null,
+   "tags": [
+    "sword"
+   ],
+   "grants": [
+    "attack.greatsword.hew",
+    "attack.greatsword.great-cleave"
+   ],
+   "statModifiers": {},
+   "triggers": [],
+   "intent": "Too much sword for one hand and too much sword for one enemy — you pick which of those problems to have.",
+   "source": "named in the design with no attacks written; authored here"
+  },
+  {
+   "id": "item.war-axe",
+   "name": "War Axe",
+   "itemClass": "weapon",
+   "tier": 1,
+   "hands": 1,
+   "slots": 1,
+   "classRestriction": null,
+   "tags": [
+    "axe"
+   ],
+   "grants": [
+    "attack.war-axe.chop",
+    "attack.war-axe.hack"
+   ],
+   "statModifiers": {},
+   "triggers": [],
+   "intent": "The axe is the sword's worse-tempered cousin: it trades the sure hit for the wound that keeps working.",
+   "source": "new (axe identity: crit and Bleed where the sword takes Accuracy)"
+  },
+  {
+   "id": "item.iron-mace",
+   "name": "Iron Mace",
+   "itemClass": "weapon",
+   "tier": 1,
+   "hands": 1,
+   "slots": 1,
+   "classRestriction": null,
+   "tags": [
+    "hammer"
+   ],
+   "grants": [
+    "attack.iron-mace.swing",
+    "attack.iron-mace.crush"
+   ],
+   "statModifiers": {},
+   "triggers": [],
+   "intent": "It is a bad way to cut someone and the best way to make the next four people's cuts land.",
+   "source": "new (hammer identity: Armor shred)"
+  },
+  {
+   "id": "item.war-hammer",
+   "name": "War Hammer",
+   "itemClass": "weapon",
+   "tier": 1,
+   "hands": 2,
+   "slots": 2,
+   "classRestriction": null,
+   "tags": [
+    "hammer"
+   ],
+   "grants": [
+    "attack.war-hammer.smash",
+    "attack.war-hammer.skullsplitter"
+   ],
+   "statModifiers": {},
+   "triggers": [
+    {
+     "hook": "onCrit",
+     "effect": "Knockback 1 — the target is moved 1 hex directly away from you. It resolves in Settle, is blocked by units and impassable terrain, and the moved target springs any trap on the hex it lands in and picks up that hex's terrain status"
+    }
+   ],
+   "intent": "Nothing about it is quick; everything about it is final — and when it lands properly the thing it landed on is standing somewhere else, possibly in a fire.",
+   "source": "new (two-handed hammer) | 2026-08-17 quality pass: a two-handed hammer with no rider at all. Knockback added on crit, which is the one weapon effect the form exists for and which only one row in the set used."
+  },
+  {
+   "id": "item.hunting-spear",
+   "name": "Hunting Spear",
+   "itemClass": "weapon",
+   "tier": 1,
+   "hands": 1,
+   "slots": 1,
+   "classRestriction": null,
+   "tags": [
+    "spear",
+    "thrown"
+   ],
+   "grants": [
+    "attack.hunting-spear.thrust",
+    "attack.hunting-spear.hurl"
+   ],
+   "statModifiers": {},
+   "triggers": [],
+   "intent": "Keep it and you have a decent poke; throw it and you have a decent shot and no spear.",
+   "source": "new (spear identity: the melee-or-throw choice)"
+  },
+  {
+   "id": "item.glaive",
+   "name": "Glaive",
+   "itemClass": "weapon",
+   "tier": 1,
+   "hands": 2,
+   "slots": 2,
+   "classRestriction": null,
+   "tags": [
+    "polearm"
+   ],
+   "grants": [
+    "attack.glaive.sweep",
+    "attack.glaive.impale"
+   ],
+   "statModifiers": {},
+   "triggers": [],
+   "intent": "A blade on a pole reaches the row behind the row, and that is worth more than the sharpness ever was.",
+   "source": "new (polearm; the unrestricted counterpart to the Warrior halberd)"
+  },
+  {
+   "id": "item.crossbow",
+   "name": "Crossbow",
+   "itemClass": "weapon",
+   "tier": 1,
+   "hands": 2,
+   "slots": 2,
+   "classRestriction": null,
+   "tags": [
+    "crossbow"
+   ],
+   "grants": [
+    "attack.crossbow.bolt",
+    "attack.crossbow.punch-through"
+   ],
+   "statModifiers": {},
+   "triggers": [],
+   "intent": "Slower than any bow and it does not care what you are wearing.",
+   "source": "new (fills the crossbow form; the anti-armour ranged option)"
+  },
+  {
+   "id": "item.hand-crossbow",
+   "name": "Hand Crossbow",
+   "itemClass": "weapon",
+   "tier": 1,
+   "hands": 1,
+   "slots": 1,
+   "classRestriction": null,
+   "tags": [
+    "crossbow"
+   ],
+   "grants": [
+    "attack.hand-crossbow.snapshot",
+    "attack.hand-crossbow.loaded-bolt"
+   ],
+   "statModifiers": {},
+   "triggers": [],
+   "intent": "One hand, five hexes, and whatever you smeared on the bolt this morning.",
+   "source": "new (one-handed crossbow, off-hand ranged option)"
+  },
+  {
+   "id": "item.rapier",
+   "name": "Duelist's Rapier",
+   "itemClass": "weapon",
+   "tier": 1,
+   "hands": 1,
+   "slots": 1,
+   "classRestriction": null,
+   "tags": [
+    "sword"
+   ],
+   "grants": [
+    "attack.rapier.thrust",
+    "attack.rapier.pierce"
+   ],
+   "statModifiers": {
+    "dodge": 5
+   },
+   "triggers": [
+    {
+     "hook": "onAttack",
+     "effect": "gain +10 Dodge until the end of your next Turn"
+    }
+   ],
+   "intent": "It does not hit hard. It hits where you said it would, and it leaves you somewhere the answer is not.",
+   "source": "Hell-TCG name reused (Admiral's Rapier — rebuilt as the Accuracy-and-Crit sword) | 2026-08-20 Angela: attacking with it now buys a Turn of evasion — +10 Dodge until the end of your next Turn. That is an effect rather than a modifier on the attack, so the onAttack hook is doing real work here."
+  },
+  {
+   "id": "item.raiders-cutlass",
+   "name": "Raider's Cutlass",
+   "itemClass": "weapon",
+   "tier": 1,
+   "hands": 1,
+   "slots": 1,
+   "classRestriction": null,
+   "tags": [
+    "sword"
+   ],
+   "grants": [
+    "attack.raiders-cutlass.slash",
+    "attack.raiders-cutlass.boarding-swing"
+   ],
+   "statModifiers": {},
+   "triggers": [],
+   "intent": "A short heavy blade for a crowded deck, and everything it touches keeps leaking afterwards.",
+   "source": "Hell-TCG name reused (Warrior, Raider's Cutlass — on-damage Bleed ported to the attacks)"
+  },
+  {
+   "id": "item.throwing-knives",
+   "name": "Throwing Knives",
+   "itemClass": "weapon",
+   "tier": 1,
+   "hands": 1,
+   "slots": 1,
+   "classRestriction": null,
+   "tags": [
+    "thrown"
+   ],
+   "grants": [
+    "attack.throwing-knives.flick",
+    "attack.throwing-knives.fan"
+   ],
+   "statModifiers": {},
+   "triggers": [],
+   "intent": "One knife where you want it, or three knives at three throats and a prayer about all of them.",
+   "source": "new (fills the thrown form; the spread-versus-single choice)"
+  },
+  {
+   "id": "item.poison-stars",
+   "name": "Poison Stars",
+   "itemClass": "weapon",
+   "tier": 1,
+   "hands": 1,
+   "slots": 1,
+   "classRestriction": "class.rogue",
+   "tags": [
+    "thrown"
+   ],
+   "grants": [
+    "attack.poison-stars.star",
+    "attack.poison-stars.venom-spread"
+   ],
+   "statModifiers": {},
+   "triggers": [],
+   "intent": "The cut is nothing. The cut was never the point.",
+   "source": "Hell-TCG name reused (Rogue, Poison Stars)"
+  },
+  {
+   "id": "item.obsidian-fang-dagger",
+   "name": "Obsidian Fang Dagger",
+   "itemClass": "weapon",
+   "tier": 1,
+   "hands": 1,
+   "slots": 1,
+   "classRestriction": "class.rogue",
+   "tags": [
+    "dagger"
+   ],
+   "grants": [
+    "attack.obsidian-fang-dagger.fang",
+    "attack.obsidian-fang-dagger.gut"
+   ],
+   "statModifiers": {},
+   "triggers": [],
+   "intent": "Volcanic glass takes an edge no steel can and loses it just as fast, so use it on someone who is not looking.",
+   "source": "Hell-TCG name reused (Rogue, Obsidian Fang Dagger — the self-debuff rebuilt as a first-strike window)"
+  },
+  {
+   "id": "item.duel-runeblades",
+   "name": "Duel Runeblades",
+   "itemClass": "weapon",
+   "tier": 1,
+   "hands": 2,
+   "slots": 2,
+   "classRestriction": null,
+   "tags": [
+    "sword"
+   ],
+   "grants": [
+    "attack.duel-runeblades.twin-cut",
+    "attack.duel-runeblades.rune-cross"
+   ],
+   "statModifiers": {},
+   "triggers": [],
+   "intent": "Two blades means twice the openings and no hand left for a shield; the runes only care about demons.",
+   "source": "Hell-TCG name reused (Demon Hunter, Duel Runeblades — the dual-wield slot)"
+  },
+  {
+   "id": "item.shepherds-sling",
+   "name": "Shepherd's Sling",
+   "itemClass": "weapon",
+   "tier": 1,
+   "hands": 1,
+   "slots": 1,
+   "classRestriction": null,
+   "tags": [
+    "sling"
+   ],
+   "grants": [
+    "attack.shepherds-sling.stone",
+    "attack.shepherds-sling.whirl"
+   ],
+   "statModifiers": {},
+   "triggers": [],
+   "intent": "A strap and a rock outrange most bows if you are willing to stand still and wind up.",
+   "source": "new (tier-1 sling; the cheap long-range option)"
+  },
+  {
+   "id": "item.crippling-whip",
+   "name": "Crippling Whip",
+   "itemClass": "weapon",
+   "tier": 1,
+   "hands": 1,
+   "slots": 1,
+   "classRestriction": null,
+   "tags": [
+    "chain"
+   ],
+   "grants": [
+    "attack.crippling-whip.lash",
+    "attack.crippling-whip.hamstring"
+   ],
+   "statModifiers": {},
+   "triggers": [],
+   "intent": "It will not kill anything. It will make sure the thing arrives late and hits soft.",
+   "source": "Hell-TCG name reused (Paladin, Crippling Whip — unrestricted here; on-attack Weak kept)"
+  },
+  {
+   "id": "item.iron-claws",
+   "name": "Iron Claws",
+   "itemClass": "weapon",
+   "tier": 1,
+   "hands": 2,
+   "slots": 2,
+   "classRestriction": null,
+   "tags": [
+    "claw"
+   ],
+   "grants": [
+    "attack.iron-claws.rake",
+    "attack.iron-claws.eviscerate"
+   ],
+   "statModifiers": {},
+   "triggers": [],
+   "intent": "Both hands committed to the same short ugly distance, and neither of them lets go.",
+   "source": "new (tier-1 claw; brawl-tagged, so brawl buffs read onto it)"
+  },
+  {
+   "id": "item.grappling-harpoon",
+   "name": "Grappling Harpoon",
+   "itemClass": "weapon",
+   "tier": 1,
+   "hands": 2,
+   "slots": 2,
+   "classRestriction": null,
+   "tags": [
+    "spear",
+    "thrown"
+   ],
+   "grants": [
+    "attack.grappling-harpoon.brace",
+    "attack.grappling-harpoon.hurl"
+   ],
+   "statModifiers": {},
+   "triggers": [],
+   "intent": "The rope is the weapon; the barb is just how you get hold of the conversation.",
+   "source": "Hell-TCG name reused (Ranger, Grappling Harpoon — rebuilt as a pull)"
+  },
+  {
+   "id": "item.apprentice-wand",
+   "name": "Apprentice Wand",
+   "itemClass": "weapon",
+   "tier": 1,
+   "hands": 1,
+   "slots": 1,
+   "classRestriction": "class.mage",
+   "tags": [
+    "staff"
+   ],
+   "grants": [
+    "attack.apprentice-wand.spark",
+    "attack.apprentice-wand.surge"
+   ],
+   "statModifiers": {},
+   "triggers": [],
+   "intent": "A one-handed focus anyone can point: the party's Magic is small, but it is magic damage, and some things only bleed for that.",
+   "source": "new (unrestricted one-handed caster focus — the Mage staves are all two-handed and gated) | 2026-08-20 Angela: the ITEM dictates the damage type and the CLASS dictates the item, so a magic-damage weapon is a Mage weapon."
+  },
+  {
+   "id": "item.ancient-tome",
+   "name": "Ancient Tome",
+   "itemClass": "weapon",
+   "tier": 1,
+   "hands": 1,
+   "slots": 1,
+   "classRestriction": "class.mage",
+   "tags": [
+    "staff"
+   ],
+   "grants": [
+    "attack.ancient-tome.read-the-page",
+    "attack.ancient-tome.long-passage"
+   ],
+   "statModifiers": {
+    "resist": 1
+   },
+   "triggers": [],
+   "intent": "Held open in the off hand: one line at one throat, or the whole paragraph at everyone standing near it.",
+   "source": "Hell-TCG name reused (Mage, Ancient Tome — draw effects cut, rebuilt as an off-hand focus) | 2026-08-20 Angela: the ITEM dictates the damage type and the CLASS dictates the item, so a magic-damage weapon is a Mage weapon."
+  },
+  {
+   "id": "item.holy-texts",
+   "name": "Holy Texts",
+   "itemClass": "weapon",
+   "tier": 1,
+   "hands": 1,
+   "slots": 1,
+   "classRestriction": "class.priest",
+   "tags": [
+    "staff"
+   ],
+   "grants": [
+    "attack.holy-texts.verse",
+    "attack.holy-texts.mercy"
+   ],
+   "statModifiers": {},
+   "triggers": [],
+   "intent": "The same book either way — you are choosing which of two people it is aimed at.",
+   "source": "Hell-TCG name reused (Priest, Holy Texts — the hurt-or-heal choice is the tier-1 shape)"
+  },
+  {
+   "id": "item.bane-blade",
+   "name": "Bane Blade",
+   "itemClass": "weapon",
+   "tier": 1,
+   "hands": 1,
+   "slots": 1,
+   "classRestriction": "class.paladin",
+   "tags": [
+    "sword"
+   ],
+   "grants": [
+    "attack.bane-blade.strike",
+    "attack.bane-blade.banishing-blow"
+   ],
+   "statModifiers": {},
+   "triggers": [],
+   "intent": "An ordinary blade against ordinary things, which is not what they gave it to you for.",
+   "source": "Hell-TCG name reused (Paladin, Bane Blade)"
+  },
+  {
+   "id": "item.sword-of-the-fallen",
+   "name": "Sword of the Fallen",
+   "itemClass": "weapon",
+   "tier": 1,
+   "hands": 1,
+   "slots": 1,
+   "classRestriction": "class.paladin",
+   "tags": [
+    "sword"
+   ],
+   "grants": [
+    "attack.sword-of-the-fallen.remembrance",
+    "attack.sword-of-the-fallen.honour-the-dead"
+   ],
+   "statModifiers": {},
+   "triggers": [],
+   "intent": "It belonged to someone who did not come back, and it pays you a little of them every time it lands.",
+   "source": "Hell-TCG name reused (Paladin, Sword of the Fallen — end-of-turn heal moved onto the attacks)"
+  },
+  {
+   "id": "item.buckler",
+   "name": "Buckler",
+   "itemClass": "weapon",
+   "tier": 1,
+   "hands": 1,
+   "slots": 1,
+   "classRestriction": null,
+   "tags": [
+    "shield"
+   ],
+   "grants": [
+    "attack.buckler.punch",
+    "attack.buckler.deflect-and-cut"
+   ],
+   "statModifiers": {
+    "dodge": 5
+   },
+   "triggers": [],
+   "intent": "The small shield buys no armour at all; it buys the half-step that means the blow missed.",
+   "source": "new (the light pole of the shield family — Knight Shield and Tower Shield hold the heavy end)"
+  },
+  {
+   "id": "item.bloody-axe",
+   "name": "Bloody Axe",
+   "itemClass": "weapon",
+   "tier": 2,
+   "hands": 1,
+   "slots": 1,
+   "classRestriction": null,
+   "tags": [
+    "axe"
+   ],
+   "grants": [
+    "attack.bloody-axe.cleave-open",
+    "attack.bloody-axe.butcher"
+   ],
+   "statModifiers": {
+    "strength": 1
+   },
+   "triggers": [
+    {
+     "hook": "onDamage",
+     "effect": "apply 1 Bleed"
+    }
+   ],
+   "intent": "It has never once been cleaned, and it has never once needed to finish the job by itself.",
+   "source": "Hell-TCG name reused (Warrior, Bloody Axe — on-damage Bleed kept as the item trigger)"
+  },
+  {
+   "id": "item.hammer-of-justice",
+   "name": "Hammer of Justice",
+   "itemClass": "weapon",
+   "tier": 2,
+   "hands": 2,
+   "slots": 2,
+   "classRestriction": "class.paladin",
+   "tags": [
+    "hammer"
+   ],
+   "grants": [
+    "attack.hammer-of-justice.judgment",
+    "attack.hammer-of-justice.sentence"
+   ],
+   "statModifiers": {
+    "strength": 1
+   },
+   "triggers": [
+    {
+     "hook": "onHit",
+     "effect": "the target loses 1 Armor for the rest of the Battle"
+    }
+   ],
+   "intent": "It does not open the guilty. It removes the part of them that was holding the shield.",
+   "source": "Hell-TCG name reused (Inquisitor, Hammer of Justice — given to the Paladin, who had no weapons)"
+  },
+  {
+   "id": "item.holy-shield",
+   "name": "Holy Shield",
+   "itemClass": "weapon",
+   "tier": 2,
+   "hands": 1,
+   "slots": 1,
+   "classRestriction": "class.paladin",
+   "tags": [
+    "shield"
+   ],
+   "grants": [
+    "attack.holy-shield.shield-bash",
+    "attack.holy-shield.aegis-slam"
+   ],
+   "statModifiers": {
+    "armor": 1,
+    "resist": 1,
+    "health": 2
+   },
+   "triggers": [
+    {
+     "hook": "aura",
+     "effect": "AURA radius 1 — an enemy adjacent to you takes -10 Accuracy against anyone except you."
+    }
+   ],
+   "intent": "You are not carrying it for yourself, and it knows the difference.",
+   "source": "Hell-TCG name reused (Paladin, Holy Shield — the Paladin Resist line kept as stats) | 2026-08-17 Angela: CUT. ally-reactive hooks, guarding, Consequence-Stack interference and non-knockback forced movement all removed by ruling. | 2026-08-17 quality pass: replaced a placeholder aura with a distinct effect. | 2026-08-17 Angela: THERE IS NO FLANKING. It appears in no current design document — I carried it forward from a stale snapshot. Rebuilt on plain adjacency, which is real and checkable."
+  },
+  {
+   "id": "item.death-blade",
+   "name": "Death Blade",
+   "itemClass": "weapon",
+   "tier": 2,
+   "hands": 1,
+   "slots": 1,
+   "classRestriction": null,
+   "tags": [
+    "sword"
+   ],
+   "grants": [
+    "attack.death-blade.reap",
+    "attack.death-blade.death-stroke"
+   ],
+   "statModifiers": {
+    "strength": 1
+   },
+   "triggers": [
+    {
+     "hook": "onKill",
+     "effect": "heal 3 and gain +1 Strength for the rest of the Battle, stacking"
+    }
+   ],
+   "intent": "It gets better the closer the thing in front of you is to dead, which is precisely the wrong incentive to hand a person.",
+   "source": "Hell-TCG name reused (Death Blade — Drained rebuilt as an execution bonus and an on-kill stack)"
+  },
+  {
+   "id": "item.sniper-bow",
+   "name": "Sniper Bow",
+   "itemClass": "weapon",
+   "tier": 2,
+   "hands": 2,
+   "slots": 2,
+   "classRestriction": null,
+   "tags": [
+    "bow"
+   ],
+   "grants": [
+    "attack.sniper-bow.loose",
+    "attack.sniper-bow.long-shot"
+   ],
+   "statModifiers": {
+    "reach": 1
+   },
+   "triggers": [
+    {
+     "hook": "onKill",
+     "effect": "gain +5 Accuracy for the rest of the Battle, stacking"
+    }
+   ],
+   "intent": "Fourteen hexes of patience; the moment anything reaches you, the expensive half of this weapon stops existing.",
+   "source": "Hell-TCG name reused (Sniper Bow — +3 Reach rebuilt as an extreme-range shot with a melee lockout)"
+  },
+  {
+   "id": "item.runed-crossbow",
+   "name": "Runed Crossbow",
+   "itemClass": "weapon",
+   "tier": 2,
+   "hands": 2,
+   "slots": 2,
+   "classRestriction": null,
+   "tags": [
+    "crossbow"
+   ],
+   "grants": [
+    "attack.runed-crossbow.rune-bolt",
+    "attack.runed-crossbow.banishing-bolt"
+   ],
+   "statModifiers": {},
+   "triggers": [
+    {
+     "hook": "onHit",
+     "effect": "if the target is demon or undead, apply 2 Burn"
+    }
+   ],
+   "intent": "Someone carved a great deal of certainty into the stock, and all of it is about demons.",
+   "source": "Hell-TCG name reused (Demon Hunter, Runed Crossbow)"
+  },
+  {
+   "id": "item.poison-throwing-knives",
+   "name": "Poison Throwing Knives",
+   "itemClass": "weapon",
+   "tier": 2,
+   "hands": 1,
+   "slots": 1,
+   "classRestriction": "class.rogue",
+   "tags": [
+    "thrown"
+   ],
+   "grants": [
+    "attack.poison-throwing-knives.toss",
+    "attack.poison-throwing-knives.venom-fan"
+   ],
+   "statModifiers": {},
+   "triggers": [
+    {
+     "hook": "onDamage",
+     "effect": "apply 1 Poison"
+    }
+   ],
+   "intent": "Three enemies, three small cuts, and a Turn or two later it will not matter how big any of them were.",
+   "source": "Hell-TCG name reused (Poison Throwing Knives)"
+  },
+  {
+   "id": "item.shadow-dagger",
+   "name": "Shadow Dagger",
+   "itemClass": "weapon",
+   "tier": 2,
+   "hands": 1,
+   "slots": 1,
+   "classRestriction": "class.rogue",
+   "tags": [
+    "dagger"
+   ],
+   "grants": [
+    "attack.shadow-dagger.shadow-cut",
+    "attack.shadow-dagger.from-behind"
+   ],
+   "statModifiers": {
+    "dodge": 5
+   },
+   "triggers": [
+    {
+     "hook": "onKill",
+     "effect": "gain +5 Dodge for the rest of the Battle"
+    }
+   ],
+   "intent": "It is a mediocre knife in a fair fight, and you are not supposed to be in one.",
+   "source": "Hell-TCG name reused (Rogue, Shadow Dagger — on-kill Dodge kept)"
+  },
+  {
+   "id": "item.stormforged-blade",
+   "name": "Stormforged Blade",
+   "itemClass": "weapon",
+   "tier": 2,
+   "hands": 1,
+   "slots": 1,
+   "classRestriction": null,
+   "tags": [
+    "sword"
+   ],
+   "grants": [
+    "attack.stormforged-blade.arc-cut",
+    "attack.stormforged-blade.thunder-strike"
+   ],
+   "statModifiers": {
+    "strength": 1
+   },
+   "triggers": [
+    {
+     "hook": "onCrit",
+     "effect": "deal 3 magic damage to every enemy adjacent to the target"
+    }
+   ],
+   "intent": "The crit is the point: when it lands properly, everything standing near the target learns about it too.",
+   "source": "Hell-TCG name reused (Stormforged Blade — Protection rebuilt as a crit-driven chain)"
+  },
+  {
+   "id": "item.twin-talon-bow",
+   "name": "Twin Talon Bow",
+   "itemClass": "weapon",
+   "tier": 2,
+   "hands": 2,
+   "slots": 2,
+   "classRestriction": null,
+   "tags": [
+    "bow"
+   ],
+   "grants": [
+    "attack.twin-talon-bow.talon-shot",
+    "attack.twin-talon-bow.double-nock"
+   ],
+   "statModifiers": {},
+   "triggers": [
+    {
+     "hook": "onDamage",
+     "effect": "apply 1 Bleed"
+    }
+   ],
+   "intent": "Two arrows on one string is a worse shot and twice as many holes, and the holes do not close.",
+   "source": "Hell-TCG name reused (Ranger, Twin Talon Bow — on-damage Bleed kept)"
+  },
+  {
+   "id": "item.wraith-touched-staff",
+   "name": "Wraith-Touched Staff",
+   "itemClass": "weapon",
+   "tier": 2,
+   "hands": 2,
+   "slots": 2,
+   "classRestriction": "class.mage",
+   "tags": [
+    "staff"
+   ],
+   "grants": [
+    "attack.wraith-touched-staff.wraith-bolt",
+    "attack.wraith-touched-staff.grasp"
+   ],
+   "statModifiers": {
+    "magic": 1,
+    "reach": 1
+   },
+   "triggers": [
+    {
+     "hook": "onKill",
+     "effect": "heal 2"
+    }
+   ],
+   "intent": "Something is still living in the wood and it is glad to be pointed at people.",
+   "source": "Hell-TCG name reused (Wraith-Touched Staff — left unrestricted so non-Mages have a magic-damage option) | 2026-08-20 Angela: the ITEM dictates the damage type and the CLASS dictates the item, so a magic-damage weapon is a Mage weapon."
+  },
+  {
+   "id": "item.book-of-exorcisms",
+   "name": "Book of Exorcisms",
+   "itemClass": "weapon",
+   "tier": 2,
+   "hands": 1,
+   "slots": 1,
+   "classRestriction": "class.priest",
+   "tags": [
+    "staff"
+   ],
+   "grants": [
+    "attack.book-of-exorcisms.reading",
+    "attack.book-of-exorcisms.rite-of-expulsion"
+   ],
+   "statModifiers": {},
+   "triggers": [
+    {
+     "hook": "onAttack",
+     "effect": "apply 1 Burn"
+    }
+   ],
+   "intent": "Read quietly it kills one thing; read properly it clears the room and costs you your voice.",
+   "source": "Hell-TCG name reused (Inquisitor, Book of Exorcisms — given to the Priest; true damage per the weapon rule)"
+  },
+  {
+   "id": "item.cursed-sand-blade",
+   "name": "Cursed Sand Blade",
+   "itemClass": "weapon",
+   "tier": 2,
+   "hands": 2,
+   "slots": 2,
+   "classRestriction": null,
+   "tags": [
+    "sword"
+   ],
+   "grants": [
+    "attack.cursed-sand-blade.sand-cut",
+    "attack.cursed-sand-blade.the-cursed-swing"
+   ],
+   "statModifiers": {
+    "strength": 2,
+    "health": -2
+   },
+   "triggers": [
+    {
+     "hook": "startOfBattle",
+     "effect": "take 2 true damage"
+    }
+   ],
+   "intent": "It is the biggest number available at this tier and it takes its fee out of you first, every time.",
+   "source": "Hell-TCG name reused (Cursed Sand Blade — Shadow self-application rebuilt as true damage)"
+  },
+  {
+   "id": "item.skyforged-halberd",
+   "name": "Skyforged Halberd",
+   "itemClass": "weapon",
+   "tier": 2,
+   "hands": 2,
+   "slots": 2,
+   "classRestriction": "class.paladin",
+   "tags": [
+    "polearm"
+   ],
+   "grants": [
+    "attack.skyforged-halberd.sky-sweep",
+    "attack.skyforged-halberd.hallowed-thrust"
+   ],
+   "statModifiers": {},
+   "triggers": [
+    {
+     "hook": "startOfBattle",
+     "effect": "every ally within 2 hexes gains +1 Armor for the rest of the Battle"
+    }
+   ],
+   "intent": "Two hexes of consecrated reach, so the line behind you never has to meet what you are holding off.",
+   "source": "Hell-TCG name reused (Paladin, Skyforged Halberd)"
+  },
+  {
+   "id": "item.boarding-hook",
+   "name": "Boarding Hook",
+   "itemClass": "weapon",
+   "tier": 2,
+   "hands": 1,
+   "slots": 1,
+   "classRestriction": null,
+   "tags": [
+    "chain"
+   ],
+   "grants": [
+    "attack.boarding-hook.hook",
+    "attack.boarding-hook.drag-down"
+   ],
+   "statModifiers": {},
+   "triggers": [
+    {
+     "hook": "onDamage",
+     "effect": "apply 1 Bleed"
+    }
+   ],
+   "intent": "A hook on a chain. It opens a wound that will not close while they run.",
+   "source": "Hell-TCG name reused (Rogue, Boarding Hook — on-damage Bleed kept, pull added) | 2026-08-17: flavour still described a pull, which was cut. Reworded."
+  },
+  {
+   "id": "item.mirage-dagger",
+   "name": "Mirage Dagger",
+   "itemClass": "weapon",
+   "tier": 2,
+   "hands": 1,
+   "slots": 1,
+   "classRestriction": null,
+   "tags": [
+    "dagger"
+   ],
+   "grants": [
+    "attack.mirage-dagger.flicker-cut",
+    "attack.mirage-dagger.two-places-at-once"
+   ],
+   "statModifiers": {
+    "dodge": 5
+   },
+   "triggers": [
+    {
+     "hook": "onKill",
+     "effect": "gain +10 Dodge until the start of your next Turn"
+    }
+   ],
+   "intent": "Half of it is somewhere else, and after a kill so are you.",
+   "source": "Hell-TCG name reused (Mirage Dagger — Misdirection rebuilt as Dodge and a free step)"
+  },
+  {
+   "id": "item.seraph-bow",
+   "name": "Seraph Bow",
+   "itemClass": "weapon",
+   "tier": 2,
+   "hands": 2,
+   "slots": 2,
+   "classRestriction": "class.ranger",
+   "tags": [
+    "bow"
+   ],
+   "grants": [
+    "attack.seraph-bow.seraph-shot",
+    "attack.seraph-bow.feathered-judgment"
+   ],
+   "statModifiers": {
+    "precision": 1,
+    "reach": 1
+   },
+   "triggers": [
+    {
+     "hook": "onKill",
+     "effect": "heal 2"
+    }
+   ],
+   "intent": "It was made to shoot things that do not belong here, and it is politely adequate against everything else.",
+   "source": "Hell-TCG name reused (Ranger, Seraph Bow)"
+  },
+  {
+   "id": "item.death-bow",
+   "name": "Death Bow",
+   "itemClass": "weapon",
+   "tier": 3,
+   "hands": 2,
+   "slots": 2,
+   "classRestriction": null,
+   "tags": [
+    "bow"
+   ],
+   "grants": [
+    "attack.death-bow.death-shot",
+    "attack.death-bow.the-last-arrow"
+   ],
+   "statModifiers": {
+    "precision": 2
+   },
+   "triggers": [
+    {
+     "hook": "onHit",
+     "effect": "the target cannot be healed until the end of its next Turn"
+    },
+    {
+     "hook": "onKill",
+     "effect": "regain 1 Stamina"
+    }
+   ],
+   "intent": "Nothing it touches gets better, and if the big shot lands the way it wants to, it takes a second one with it.",
+   "source": "Hell-TCG name reused (Death Bow — Drained rebuilt as a heal lock, on-kill kept)"
+  },
+  {
+   "id": "item.holy-avenger",
+   "name": "Holy Avenger",
+   "itemClass": "weapon",
+   "tier": 3,
+   "hands": 1,
+   "slots": 1,
+   "classRestriction": "class.paladin",
+   "tags": [
+    "sword"
+   ],
+   "grants": [
+    "attack.holy-avenger.avenging-strike",
+    "attack.holy-avenger.the-avenger-wakes"
+   ],
+   "statModifiers": {
+    "strength": 1,
+    "resist": 1
+   },
+   "triggers": [
+    {
+     "hook": "startOfBattle",
+     "effect": "gain +2 Strength against demon and undead for the rest of the Battle"
+    },
+    {
+     "hook": "onKill",
+     "effect": "every ally within 3 hexes heals 2"
+    }
+   ],
+   "intent": "The sword every Paladin is measured against: the heavy swing is true damage, and armour has nothing to say about it.",
+   "source": "Hell-TCG name reused (Paladin, Holy Avenger)"
+  },
+  {
+   "id": "item.demon-whip",
+   "name": "Demon Whip",
+   "itemClass": "weapon",
+   "tier": 3,
+   "hands": 1,
+   "slots": 1,
+   "classRestriction": null,
+   "tags": [
+    "chain"
+   ],
+   "grants": [
+    "attack.demon-whip.crack",
+    "attack.demon-whip.hellcoil"
+   ],
+   "statModifiers": {
+    "strength": 2
+   },
+   "triggers": [
+    {
+     "hook": "onAttack",
+     "effect": "apply 2 Burn to the target"
+    }
+   ],
+   "intent": "Three hexes of burning cord that reaches over your own front line and takes two throats at once.",
+   "source": "Hell-TCG name reused (Demon Whip — on-attack Burn kept, +Reach rebuilt as attack range)"
+  },
+  {
+   "id": "item.demonic-shiv",
+   "name": "Demonic Shiv",
+   "itemClass": "weapon",
+   "tier": 3,
+   "hands": 1,
+   "slots": 1,
+   "classRestriction": "class.rogue",
+   "tags": [
+    "dagger"
+   ],
+   "grants": [
+    "attack.demonic-shiv.shiv",
+    "attack.demonic-shiv.the-devils-favour"
+   ],
+   "statModifiers": {
+    "strength": 1,
+    "crit": 5
+   },
+   "triggers": [
+    {
+     "hook": "onKill",
+     "effect": "deal 5 true damage to up to two enemies within 4 hexes"
+    }
+   ],
+   "intent": "It will happily kill for you and it is quietly keeping a tally of what that has cost you.",
+   "source": "Hell-TCG name reused (Demonic Shiv — random on-kill damage kept, scaled down from tier 4)"
+  },
+  {
+   "id": "item.void-staff",
+   "name": "Void Staff",
+   "itemClass": "weapon",
+   "tier": 3,
+   "hands": 2,
+   "slots": 2,
+   "classRestriction": "class.mage",
+   "tags": [
+    "staff"
+   ],
+   "grants": [
+    "attack.void-staff.void-bolt",
+    "attack.void-staff.unmaking"
+   ],
+   "statModifiers": {
+    "magic": 2,
+    "resist": 1
+   },
+   "triggers": [
+    {
+     "hook": "onKill",
+     "effect": "regain 1 Stamina"
+    }
+   ],
+   "intent": "The cheap bolt is already better than most staves; the expensive one removes the reason magic was ever resisted.",
+   "source": "Hell-TCG name reused (Void Staff)"
+  },
+  {
+   "id": "item.orb-of-the-soul-stealer",
+   "name": "Orb of the Soul Stealer",
+   "itemClass": "weapon",
+   "tier": 3,
+   "hands": 1,
+   "slots": 1,
+   "classRestriction": "class.mage",
+   "tags": [
+    "staff"
+   ],
+   "grants": [
+    "attack.orb-of-the-soul-stealer.soul-tap",
+    "attack.orb-of-the-soul-stealer.steal-the-spark"
+   ],
+   "statModifiers": {
+    "magic": 1,
+    "reach": 2
+   },
+   "triggers": [
+    {
+     "hook": "onAttack",
+     "effect": "heal 2 at the start of your next Turn"
+    }
+   ],
+   "intent": "A one-handed orb that turns the enemy's Health into yours at a poor exchange rate you will take every time.",
+   "source": "Hell-TCG name reused (Orb of the Soul Stealer — Regen rebuilt as lifesteal) | 2026-08-20 Angela: the ITEM dictates the damage type and the CLASS dictates the item, so a magic-damage weapon is a Mage weapon."
+  },
+  {
+   "id": "item.blade-of-demon-slaying",
+   "name": "Blade of Demon Slaying",
+   "itemClass": "weapon",
+   "tier": 3,
+   "hands": 2,
+   "slots": 2,
+   "classRestriction": null,
+   "tags": [
+    "sword"
+   ],
+   "grants": [
+    "attack.blade-of-demon-slaying.slayer-cut",
+    "attack.blade-of-demon-slaying.demonbane"
+   ],
+   "statModifiers": {
+    "strength": 1,
+    "resist": 1
+   },
+   "triggers": [
+    {
+     "hook": "onDamage",
+     "effect": "apply 5 Burn if the target is demon, otherwise 2 Burn"
+    }
+   ],
+   "intent": "Against a demon it is the best thing in the game; against a bandit it is a very heavy sword.",
+   "source": "Hell-TCG name reused (Blade of Demon Slaying — pulled down from tier 4, Protection cut)"
+  },
+  {
+   "id": "item.pharaohs-gauntlets",
+   "name": "Pharaoh's Gauntlets",
+   "itemClass": "weapon",
+   "tier": 3,
+   "hands": 2,
+   "slots": 2,
+   "classRestriction": null,
+   "tags": [
+    "claw"
+   ],
+   "grants": [
+    "attack.pharaohs-gauntlets.gilded-strike",
+    "attack.pharaohs-gauntlets.the-kings-hands"
+   ],
+   "statModifiers": {
+    "strength": 2,
+    "armor": 1
+   },
+   "triggers": [
+    {
+     "hook": "onHit",
+     "effect": "apply 1 Weak"
+    }
+   ],
+   "intent": "Both hands are the weapon, so nothing you find later can replace them — which is the price of them being this good.",
+   "source": "Hell-TCG name reused (Pharaoh's Gauntlets — on-attack Weak kept)"
+  },
+  {
+   "id": "item.scepter-of-salvation",
+   "name": "Scepter of Salvation",
+   "itemClass": "weapon",
+   "tier": 3,
+   "hands": 1,
+   "slots": 1,
+   "classRestriction": "class.priest",
+   "tags": [
+    "staff"
+   ],
+   "grants": [
+    "attack.scepter-of-salvation.rebuke",
+    "attack.scepter-of-salvation.salvation"
+   ],
+   "statModifiers": {
+    "spirit": 1
+   },
+   "triggers": [
+    {
+     "hook": "onHit",
+     "effect": "gain 2 Regeneration"
+    }
+   ],
+   "intent": "Every swing of it is a small mercy for someone behind you, whether you were aiming that way or not.",
+   "source": "Hell-TCG name reused (Scepter of Salvation — pulled down from tier 4, Faith gain cut) | 2026-08-20 Angela: \"the ally with the lowest Health within 6 hexes\" was auto-selection by a stat — the engine picking your target for you. Replaced with regeneration on yourself, which is a status that already exists."
+  },
+  {
+   "id": "item.tomb-sentinels-blade",
+   "name": "Tomb Sentinel's Blade",
+   "itemClass": "weapon",
+   "tier": 3,
+   "hands": 1,
+   "slots": 1,
+   "classRestriction": null,
+   "tags": [
+    "sword"
+   ],
+   "grants": [
+    "attack.tomb-sentinels-blade.sentinel-cut",
+    "attack.tomb-sentinels-blade.grave-warden"
+   ],
+   "statModifiers": {
+    "strength": 2
+   },
+   "triggers": [
+    {
+     "hook": "onKill",
+     "effect": "gain +1 Armor for the rest of the Battle, stacking"
+    },
+    {
+     "hook": "onTakingDamage",
+     "effect": "Thorns 3"
+    }
+   ],
+   "intent": "It was set to guard one doorway for four hundred years, and it rewards you for standing exactly still.",
+   "source": "Hell-TCG name reused (Tomb Sentinel's Blade — on-kill Counterspell rebuilt as a stacking Armor gain) | 2026-08-20 Angela: Thorns 3 added — the tomb sentinel answers being struck.",
+   "thorns": 3
+  },
+  {
+   "id": "item.siege-crossbow",
+   "name": "Siege Crossbow",
+   "itemClass": "weapon",
+   "tier": 3,
+   "hands": 2,
+   "slots": 2,
+   "classRestriction": null,
+   "tags": [
+    "crossbow"
+   ],
+   "grants": [
+    "attack.siege-crossbow.bolt",
+    "attack.siege-crossbow.siege-shot"
+   ],
+   "statModifiers": {
+    "precision": 2,
+    "movement": -1
+   },
+   "triggers": [
+    {
+     "hook": "onHit",
+     "effect": "ignore 3 of the target's Armor"
+    }
+   ],
+   "intent": "It is a wall weapon someone strapped a shoulder to; you give up a hex of movement forever and it goes through anything.",
+   "source": "Hell-TCG name reused (Ranger, Siege Crossbow — the -3 Health cost rebuilt as -1 Movement)"
+  },
+  {
+   "id": "item.stormforged-halberd",
+   "name": "Stormforged Halberd",
+   "itemClass": "weapon",
+   "tier": 3,
+   "hands": 2,
+   "slots": 2,
+   "classRestriction": "class.warrior",
+   "tags": [
+    "polearm"
+   ],
+   "grants": [
+    "attack.stormforged-halberd.storm-sweep",
+    "attack.stormforged-halberd.thunderhead"
+   ],
+   "statModifiers": {
+    "strength": 2
+   },
+   "triggers": [
+    {
+     "hook": "onDamage",
+     "effect": "apply 4 Burn"
+    }
+   ],
+   "intent": "The Warrior's answer to a bad Turn: everyone adjacent, or one thing two hexes away that stops taking Turns.",
+   "source": "Hell-TCG name reused (Warrior, Stormforged Halberd — pulled down from tier 4)"
+  },
+  {
+   "id": "item.fangs",
+   "name": "Fangs",
+   "itemClass": "weapon",
+   "tier": 1,
+   "hands": 0,
+   "slots": 0,
+   "classRestriction": "class.beast",
+   "tags": [
+    "brawl",
+    "melee",
+    "fang"
+   ],
+   "grants": [
+    "attack.fangs.bite",
+    "attack.fangs.savage"
+   ],
+   "statModifiers": {},
+   "triggers": [],
+   "intent": "Not carried, not dropped, and it does not take a slot. It is part of you.",
+   "source": "new 2026-08-20 — natural weapons for class.beast. A Beast carries nothing (0 Item Slots at every level), so its attacks have to come from its own body. Slots 0, hands 0, restricted to the class."
+  },
+  {
+   "id": "item.claws",
+   "name": "Claws",
+   "itemClass": "weapon",
+   "tier": 1,
+   "hands": 0,
+   "slots": 0,
+   "classRestriction": "class.beast",
+   "tags": [
+    "brawl",
+    "melee",
+    "claw"
+   ],
+   "grants": [
+    "attack.claws.swipe",
+    "attack.claws.flense"
+   ],
+   "statModifiers": {},
+   "triggers": [],
+   "intent": "Not carried, not dropped, and it does not take a slot. It is part of you.",
+   "source": "new 2026-08-20 — natural weapons for class.beast. A Beast carries nothing (0 Item Slots at every level), so its attacks have to come from its own body. Slots 0, hands 0, restricted to the class."
+  },
+  {
+   "id": "item.tail",
+   "name": "Tail",
+   "itemClass": "weapon",
+   "tier": 1,
+   "hands": 0,
+   "slots": 0,
+   "classRestriction": "class.beast",
+   "tags": [
+    "brawl",
+    "melee"
+   ],
+   "grants": [
+    "attack.tail.lash",
+    "attack.tail.tail-sweep"
+   ],
+   "statModifiers": {
+    "reach": 1
+   },
+   "triggers": [],
+   "intent": "Not carried, not dropped, and it does not take a slot. It is part of you.",
+   "source": "new 2026-08-20 — natural weapons for class.beast. A Beast carries nothing (0 Item Slots at every level), so its attacks have to come from its own body. Slots 0, hands 0, restricted to the class. | 2026-08-20 self-check: dropped the private form tag. No rule read it and no enchantment applied to it, so it was vocabulary that did nothing. These carry `brawl` like the other body weapons."
+  },
+  {
+   "id": "item.horns",
+   "name": "Horns",
+   "itemClass": "weapon",
+   "tier": 1,
+   "hands": 0,
+   "slots": 0,
+   "classRestriction": "class.beast",
+   "tags": [
+    "brawl",
+    "melee"
+   ],
+   "grants": [
+    "attack.horns.ram",
+    "attack.horns.toss"
+   ],
+   "statModifiers": {},
+   "triggers": [],
+   "intent": "Not carried, not dropped, and it does not take a slot. It is part of you.",
+   "source": "new 2026-08-20 — natural weapons for class.beast. A Beast carries nothing (0 Item Slots at every level), so its attacks have to come from its own body. Slots 0, hands 0, restricted to the class. | 2026-08-20 self-check: dropped the private form tag. No rule read it and no enchantment applied to it, so it was vocabulary that did nothing. These carry `brawl` like the other body weapons."
+  },
+  {
+   "id": "item.breath",
+   "name": "Breath",
+   "itemClass": "weapon",
+   "tier": 2,
+   "hands": 0,
+   "slots": 0,
+   "classRestriction": "class.beast",
+   "tags": [
+    "brawl",
+    "ranged",
+    "breath"
+   ],
+   "grants": [
+    "attack.breath.gout",
+    "attack.breath.hiss"
+   ],
+   "statModifiers": {},
+   "triggers": [],
+   "intent": "Not carried, not dropped, and it does not take a slot. It is part of you.",
+   "source": "new 2026-08-20 — natural weapons for class.beast. A Beast carries nothing (0 Item Slots at every level), so its attacks have to come from its own body. Slots 0, hands 0, restricted to the class."
+  },
+  {
+   "id": "item.hooves",
+   "name": "Hooves",
+   "itemClass": "weapon",
+   "tier": 1,
+   "hands": 0,
+   "slots": 0,
+   "classRestriction": "class.beast",
+   "tags": [
+    "brawl",
+    "melee"
+   ],
+   "grants": [
+    "attack.hooves.kick",
+    "attack.hooves.stomp"
+   ],
+   "statModifiers": {
+    "movement": 1
+   },
+   "triggers": [],
+   "intent": "Not carried, not dropped, and it does not take a slot. It is part of you.",
+   "source": "new 2026-08-20 — natural weapons for class.beast. A Beast carries nothing (0 Item Slots at every level), so its attacks have to come from its own body. Slots 0, hands 0, restricted to the class. | 2026-08-20 self-check: dropped the private form tag. No rule read it and no enchantment applied to it, so it was vocabulary that did nothing. These carry `brawl` like the other body weapons."
+  }
+ ],
+ "attacks": [
+  {
+   "id": "attack.hand-axe.chop",
+   "name": "Chop",
+   "range": "melee",
+   "stat": "strength",
+   "damage": 2,
+   "stamina": 2,
+   "accuracy": -5,
+   "crit": 0,
+   "hits": 1,
+   "targets": "one enemy in melee reach",
+   "damageType": "physical",
+   "tags": [
+    "axe",
+    "melee"
+   ],
+   "triggers": [
+    {
+     "hook": "onCrit",
+     "effect": "+4 damage"
+    }
+   ],
+   "slayer": null,
+   "source": " | 2026-08-20 Angela: Strength +2, -5 Accuracy, 2 stamina, and +4 damage on a crit. A tier-0 axe that swings hard, misses more, and occasionally takes a leg off."
+  },
+  {
+   "id": "attack.sharpened-stake.jab",
+   "name": "Jab",
+   "range": "melee",
+   "stat": "strength",
+   "damage": 0,
+   "stamina": 1,
+   "accuracy": 5,
+   "crit": 2,
+   "hits": 1,
+   "targets": "one enemy in melee reach",
+   "damageType": "physical",
+   "tags": [
+    "spear",
+    "melee"
+   ],
+   "triggers": [],
+   "slayer": {
+    "vampire": 3,
+    "undead": 1
+   }
+  },
+  {
+   "id": "attack.carpenters-mallet.bonk",
+   "name": "Bonk",
+   "range": "melee",
+   "stat": "strength",
+   "damage": 1,
+   "stamina": 2,
+   "accuracy": -10,
+   "crit": 0,
+   "hits": 1,
+   "targets": "one enemy in melee reach",
+   "damageType": "physical",
+   "tags": [
+    "hammer",
+    "melee"
+   ],
+   "triggers": [
+    {
+     "hook": "onCrit",
+     "effect": "apply 1 Stun to the target"
+    }
+   ],
+   "slayer": null
+  },
+  {
+   "id": "attack.cart-chain.swing",
+   "name": "Swing",
+   "range": "melee",
+   "stat": "strength",
+   "damage": 1,
+   "stamina": 2,
+   "accuracy": -10,
+   "crit": 0,
+   "hits": 1,
+   "targets": "one enemy in melee reach",
+   "damageType": "physical",
+   "tags": [
+    "chain",
+    "melee"
+   ],
+   "triggers": [
+    {
+     "hook": "onHit",
+     "effect": "the target gains 1 Slow"
+    }
+   ],
+   "slayer": null,
+   "source": "2026-08-20 Angela: \"clean up that movement stuff.\" A one-Turn Movement loss is now the Slow status — apply N Slow. Fourteen entries said this two different ways and every one of them needed the engine to remember whose next Turn it was. Amount unchanged."
+  },
+  {
+   "id": "attack.fishing-net.cast",
+   "name": "Cast",
+   "range": 3,
+   "stat": "precision",
+   "damage": 0,
+   "stamina": 1,
+   "accuracy": 0,
+   "crit": 0,
+   "hits": 1,
+   "targets": "one enemy within 3 hexes",
+   "damageType": "physical",
+   "tags": [
+    "thrown",
+    "ranged"
+   ],
+   "triggers": [
+    {
+     "hook": "onHit",
+     "effect": "apply 3 Weak; the target gains 1 Slow"
+    }
+   ],
+   "slayer": null,
+   "source": "2026-08-20 Angela: \"clean up that movement stuff.\" A one-Turn Movement loss is now the Slow status — apply N Slow. Fourteen entries said this two different ways and every one of them needed the engine to remember whose next Turn it was. Amount unchanged."
+  },
+  {
+   "id": "attack.pot-lid.bash",
+   "name": "Bash",
+   "range": "melee",
+   "stat": "strength",
+   "damage": 0,
+   "stamina": 1,
+   "accuracy": -5,
+   "crit": 0,
+   "hits": 1,
+   "targets": "one enemy in melee reach",
+   "damageType": "physical",
+   "tags": [
+    "shield",
+    "melee"
+   ],
+   "triggers": [],
+   "slayer": null
+  },
+  {
+   "id": "attack.broken-bottle.jab",
+   "name": "Jab",
+   "range": "melee",
+   "stat": "strength",
+   "damage": 0,
+   "stamina": 1,
+   "accuracy": 0,
+   "crit": 5,
+   "hits": 1,
+   "targets": "one enemy in melee reach",
+   "damageType": "physical",
+   "tags": [
+    "improvised",
+    "melee"
+   ],
+   "triggers": [
+    {
+     "hook": "onHit",
+     "effect": "apply 1 Bleed"
+    }
+   ],
+   "slayer": null
+  },
+  {
+   "id": "attack.rusted-crossbow.bolt",
+   "name": "Bolt",
+   "range": 7,
+   "stat": "precision",
+   "damage": 2,
+   "stamina": 3,
+   "accuracy": -10,
+   "crit": 0,
+   "hits": 1,
+   "targets": "one enemy within 7 hexes",
+   "damageType": "physical",
+   "tags": [
+    "crossbow",
+    "ranged"
+   ],
+   "triggers": [],
+   "slayer": null
+  },
+  {
+   "id": "attack.trappers-claws.rake",
+   "name": "Rake",
+   "range": "melee",
+   "stat": "strength",
+   "damage": 0,
+   "stamina": 1,
+   "accuracy": 5,
+   "crit": 3,
+   "hits": 1,
+   "targets": "one enemy in melee reach",
+   "damageType": "physical",
+   "tags": [
+    "claw",
+    "brawl",
+    "melee"
+   ],
+   "triggers": [
+    {
+     "hook": "onHit",
+     "effect": "apply 1 Bleed"
+    }
+   ],
+   "slayer": null
+  },
+  {
+   "id": "attack.practice-sword.swing",
+   "name": "Swing",
+   "range": "melee",
+   "stat": "strength",
+   "damage": 0,
+   "stamina": 1,
+   "accuracy": 10,
+   "crit": 0,
+   "hits": 1,
+   "targets": "one enemy in melee reach",
+   "damageType": "physical",
+   "tags": [
+    "sword",
+    "melee"
+   ],
+   "triggers": [],
+   "slayer": null
+  },
+  {
+   "id": "attack.greatsword.hew",
+   "name": "Hew",
+   "range": "melee",
+   "stat": "strength",
+   "damage": 2,
+   "stamina": 2,
+   "accuracy": 0,
+   "crit": 2,
+   "hits": 1,
+   "targets": "one enemy in melee reach",
+   "damageType": "physical",
+   "tags": [
+    "sword",
+    "melee"
+   ],
+   "triggers": [],
+   "slayer": null
+  },
+  {
+   "id": "attack.greatsword.great-cleave",
+   "name": "Great Cleave",
+   "range": "melee",
+   "stat": "strength",
+   "damage": 1,
+   "stamina": 3,
+   "accuracy": -5,
+   "crit": 0,
+   "hits": 1,
+   "targets": "an adjacent hex and the two hexes adjacent to both you and it",
+   "damageType": "physical",
+   "tags": [
+    "sword",
+    "melee",
+    "area"
+   ],
+   "triggers": [],
+   "slayer": null,
+   "description": "Three hexes in one swing: the hex you name and the one either side of it. Each is resolved as its own attack, so each rolls, and each can crit.",
+   "source": " | 2026-08-20 Angela: \"every enemy adjacent to you\" was the wrong shape. You name a hex and it hits that hex plus left and right — three attacks, same shape as attack.halberd.cleave."
+  },
+  {
+   "id": "attack.war-axe.chop",
+   "name": "Chop",
+   "range": "melee",
+   "stat": "strength",
+   "damage": 1,
+   "stamina": 1,
+   "accuracy": 0,
+   "crit": 0,
+   "hits": 1,
+   "targets": "one enemy in melee reach",
+   "damageType": "physical",
+   "tags": [
+    "axe",
+    "melee"
+   ],
+   "triggers": [],
+   "slayer": null
+  },
+  {
+   "id": "attack.war-axe.hack",
+   "name": "Hack",
+   "range": "melee",
+   "stat": "strength",
+   "damage": 2,
+   "stamina": 2,
+   "accuracy": -5,
+   "crit": 5,
+   "hits": 1,
+   "targets": "one enemy in melee reach",
+   "damageType": "physical",
+   "tags": [
+    "axe",
+    "melee"
+   ],
+   "triggers": [
+    {
+     "hook": "onHit",
+     "effect": "apply 2 Bleed"
+    }
+   ],
+   "slayer": null
+  },
+  {
+   "id": "attack.iron-mace.swing",
+   "name": "Swing",
+   "range": "melee",
+   "stat": "strength",
+   "damage": 1,
+   "stamina": 1,
+   "accuracy": 0,
+   "crit": 0,
+   "hits": 1,
+   "targets": "one enemy in melee reach",
+   "damageType": "physical",
+   "tags": [
+    "hammer",
+    "melee"
+   ],
+   "triggers": [],
+   "slayer": null
+  },
+  {
+   "id": "attack.iron-mace.crush",
+   "name": "Crush",
+   "range": "melee",
+   "stat": "strength",
+   "damage": 1,
+   "stamina": 2,
+   "accuracy": 0,
+   "crit": 0,
+   "hits": 1,
+   "targets": "one enemy in melee reach",
+   "damageType": "physical",
+   "tags": [
+    "hammer",
+    "melee"
+   ],
+   "triggers": [
+    {
+     "hook": "onHit",
+     "effect": "the target loses 1 Armor for the rest of the Battle"
+    }
+   ],
+   "slayer": null,
+   "addsTargetStatus": {
+    "status": "stun",
+    "consumes": false
+   },
+   "description": "Damage is your Strength +1, plus the Stun on the target. It READS the Stun and leaves it: you hit them while they are still seeing stars and they go on seeing them.",
+   "source": "2026-08-17 design pass: the mace now adds the target's Stun, reading it — you hit them while they are still seeing stars."
+  },
+  {
+   "id": "attack.war-hammer.smash",
+   "name": "Smash",
+   "range": "melee",
+   "stat": "strength",
+   "damage": 2,
+   "stamina": 2,
+   "accuracy": -5,
+   "crit": 0,
+   "hits": 1,
+   "targets": "one enemy in melee reach",
+   "damageType": "physical",
+   "tags": [
+    "hammer",
+    "melee"
+   ],
+   "triggers": [],
+   "slayer": null
+  },
+  {
+   "id": "attack.war-hammer.skullsplitter",
+   "name": "Skullsplitter",
+   "range": "melee",
+   "stat": "strength",
+   "damage": 0,
+   "stamina": 3,
+   "accuracy": -10,
+   "crit": 3,
+   "hits": 1,
+   "targets": "one enemy in melee reach",
+   "damageType": "physical",
+   "tags": [
+    "hammer",
+    "melee"
+   ],
+   "triggers": [
+    {
+     "hook": "onHit",
+     "effect": "apply 1 Stun"
+    }
+   ],
+   "slayer": null,
+   "addsStat": "armor",
+   "description": "Damage equals your Strength plus your Armor. The head is only as heavy as the person swinging it is willing to stand still, so the more plate you are carrying the harder it lands.",
+   "source": "2026-08-17 design pass: blended damage onto Strength + Armor and dropped the flat +3, so the heaviest, slowest fighter hits hardest instead of just hitting for a bigger printed number."
+  },
+  {
+   "id": "attack.hunting-spear.thrust",
+   "name": "Thrust",
+   "range": "melee",
+   "stat": "strength",
+   "damage": 1,
+   "stamina": 1,
+   "accuracy": 5,
+   "crit": 0,
+   "hits": 1,
+   "targets": "one enemy in melee reach and the hex directly behind it",
+   "damageType": "physical",
+   "tags": [
+    "spear",
+    "melee"
+   ],
+   "triggers": [],
+   "slayer": null,
+   "description": "The spear goes through. It hits what you aimed at and whatever is standing behind it.",
+   "source": " | 2026-08-20 Angela: now hits the hex behind the target as well — that is what a spear is for."
+  },
+  {
+   "id": "attack.hunting-spear.hurl",
+   "name": "Hurl",
+   "range": 4,
+   "stat": "precision",
+   "damage": 1,
+   "stamina": 2,
+   "accuracy": 0,
+   "crit": 0,
+   "hits": 1,
+   "targets": "one enemy within 4 hexes",
+   "damageType": "physical",
+   "tags": [
+    "spear",
+    "thrown",
+    "ranged"
+   ],
+   "triggers": [],
+   "slayer": null,
+   "description": "Throw the spear. You do not lose it — weapons are never lost to being thrown.",
+   "source": " | 2026-08-20 Angela: the \"you are unarmed until you recover it\" clause is cut; weapons are not lost to being thrown. NOTE: that drawback WAS the attack’s whole identity, so what is left is a plain range-4 throw. If you wanted a different second attack on the hunting spear rather than a de-fanged Hurl, say so and I will replace it."
+  },
+  {
+   "id": "attack.glaive.sweep",
+   "name": "Sweep",
+   "range": "melee",
+   "stat": "strength",
+   "damage": 1,
+   "stamina": 2,
+   "accuracy": -5,
+   "crit": 0,
+   "hits": 1,
+   "targets": "an adjacent hex and one hex adjacent to both you and it",
+   "damageType": "physical",
+   "tags": [
+    "polearm",
+    "melee",
+    "area"
+   ],
+   "triggers": [],
+   "slayer": null,
+   "description": "Two hexes: the one you name and one beside it.",
+   "source": " | 2026-08-20 Angela: not every adjacent enemy — the hex it targets and one to the left."
+  },
+  {
+   "id": "attack.glaive.impale",
+   "name": "Impale",
+   "range": 2,
+   "stat": "strength",
+   "damage": 2,
+   "stamina": 2,
+   "accuracy": 5,
+   "crit": 3,
+   "hits": 1,
+   "targets": "one enemy within 2 hexes and the hex directly behind it",
+   "damageType": "physical",
+   "tags": [
+    "polearm",
+    "melee"
+   ],
+   "triggers": [],
+   "slayer": null,
+   "description": "A blade on a pole reaches the row behind the row, and this is the attack that says so: the target and whatever is behind it.",
+   "source": " | 2026-08-20 Angela: now hits the hex behind the target as well."
+  },
+  {
+   "id": "attack.crossbow.bolt",
+   "name": "Bolt",
+   "range": 8,
+   "stat": "precision",
+   "damage": 2,
+   "stamina": 2,
+   "accuracy": 5,
+   "crit": 0,
+   "hits": 1,
+   "targets": "one enemy within 8 hexes",
+   "damageType": "physical",
+   "tags": [
+    "crossbow",
+    "ranged"
+   ],
+   "triggers": [],
+   "slayer": null
+  },
+  {
+   "id": "attack.crossbow.punch-through",
+   "name": "Punch Through",
+   "range": 8,
+   "stat": "precision",
+   "damage": 3,
+   "stamina": 3,
+   "accuracy": 0,
+   "crit": 3,
+   "hits": 1,
+   "targets": "one enemy within 8 hexes",
+   "damageType": "physical",
+   "tags": [
+    "crossbow",
+    "ranged"
+   ],
+   "triggers": [
+    {
+     "hook": "onHit",
+     "effect": "ignore 2 of the target's Armor"
+    }
+   ],
+   "slayer": null
+  },
+  {
+   "id": "attack.hand-crossbow.snapshot",
+   "name": "Snapshot",
+   "range": 5,
+   "stat": "precision",
+   "damage": 1,
+   "stamina": 1,
+   "accuracy": 5,
+   "crit": 0,
+   "hits": 1,
+   "targets": "one enemy within 5 hexes",
+   "damageType": "physical",
+   "tags": [
+    "crossbow",
+    "ranged"
+   ],
+   "triggers": [],
+   "slayer": null
+  },
+  {
+   "id": "attack.hand-crossbow.loaded-bolt",
+   "name": "Loaded Bolt",
+   "range": 5,
+   "stat": "precision",
+   "damage": 1,
+   "stamina": 2,
+   "accuracy": 0,
+   "crit": 3,
+   "hits": 1,
+   "targets": "one enemy within 5 hexes",
+   "damageType": "physical",
+   "tags": [
+    "crossbow",
+    "ranged"
+   ],
+   "triggers": [
+    {
+     "hook": "onHit",
+     "effect": "apply 2 Poison"
+    }
+   ],
+   "slayer": null
+  },
+  {
+   "id": "attack.rapier.thrust",
+   "name": "Thrust",
+   "range": "melee",
+   "stat": "strength",
+   "damage": 0,
+   "stamina": 1,
+   "accuracy": 10,
+   "crit": 3,
+   "hits": 1,
+   "targets": "one enemy in melee reach",
+   "damageType": "physical",
+   "tags": [
+    "sword",
+    "melee"
+   ],
+   "triggers": [],
+   "slayer": null
+  },
+  {
+   "id": "attack.rapier.pierce",
+   "name": "Pierce",
+   "range": "melee",
+   "stat": "strength",
+   "damage": 2,
+   "stamina": 2,
+   "accuracy": 5,
+   "crit": 5,
+   "hits": 1,
+   "targets": "one enemy in melee reach",
+   "damageType": "physical",
+   "tags": [
+    "sword",
+    "melee"
+   ],
+   "triggers": [
+    {
+     "hook": "onHit",
+     "effect": "ignore 1 of the target's Armor"
+    }
+   ],
+   "slayer": null
+  },
+  {
+   "id": "attack.raiders-cutlass.slash",
+   "name": "Slash",
+   "range": "melee",
+   "stat": "strength",
+   "damage": 1,
+   "stamina": 1,
+   "accuracy": 0,
+   "crit": 0,
+   "hits": 1,
+   "targets": "one enemy in melee reach",
+   "damageType": "physical",
+   "tags": [
+    "sword",
+    "melee"
+   ],
+   "triggers": [
+    {
+     "hook": "onHit",
+     "effect": "apply 1 Bleed"
+    }
+   ],
+   "slayer": null
+  },
+  {
+   "id": "attack.raiders-cutlass.boarding-swing",
+   "name": "Boarding Swing",
+   "range": "melee",
+   "stat": "strength",
+   "damage": 2,
+   "stamina": 2,
+   "accuracy": -5,
+   "crit": 3,
+   "hits": 1,
+   "targets": "one enemy in melee reach",
+   "damageType": "physical",
+   "tags": [
+    "sword",
+    "melee"
+   ],
+   "triggers": [
+    {
+     "hook": "onHit",
+     "effect": "apply 2 Bleed"
+    }
+   ],
+   "slayer": null
+  },
+  {
+   "id": "attack.throwing-knives.flick",
+   "name": "Flick",
+   "range": 4,
+   "stat": "precision",
+   "damage": 1,
+   "stamina": 1,
+   "accuracy": 5,
+   "crit": 0,
+   "hits": 1,
+   "targets": "one enemy within 4 hexes",
+   "damageType": "physical",
+   "tags": [
+    "thrown",
+    "ranged"
+   ],
+   "triggers": [],
+   "slayer": null
+  },
+  {
+   "id": "attack.throwing-knives.fan",
+   "name": "Fan",
+   "range": 3,
+   "stat": "precision",
+   "damage": 0,
+   "stamina": 2,
+   "accuracy": -5,
+   "crit": 0,
+   "hits": 3,
+   "targets": "up to 3 enemies within 3 hexes",
+   "damageType": "physical",
+   "tags": [
+    "thrown",
+    "ranged"
+   ],
+   "triggers": [],
+   "slayer": null
+  },
+  {
+   "id": "attack.poison-stars.star",
+   "name": "Star",
+   "range": 4,
+   "stat": "precision",
+   "damage": 1,
+   "stamina": 1,
+   "accuracy": 0,
+   "crit": 0,
+   "hits": 1,
+   "targets": "one enemy within 4 hexes",
+   "damageType": "physical",
+   "tags": [
+    "thrown",
+    "ranged"
+   ],
+   "triggers": [
+    {
+     "hook": "onHit",
+     "effect": "apply 2 Poison"
+    }
+   ],
+   "slayer": null
+  },
+  {
+   "id": "attack.poison-stars.venom-spread",
+   "name": "Venom Spread",
+   "range": 4,
+   "stat": "precision",
+   "damage": 0,
+   "stamina": 2,
+   "accuracy": -5,
+   "crit": 0,
+   "hits": 2,
+   "targets": "up to 2 enemies within 4 hexes",
+   "damageType": "physical",
+   "tags": [
+    "thrown",
+    "ranged"
+   ],
+   "triggers": [
+    {
+     "hook": "onHit",
+     "effect": "apply 2 Poison to each target hit"
+    }
+   ],
+   "slayer": null
+  },
+  {
+   "id": "attack.obsidian-fang-dagger.fang",
+   "name": "Fang",
+   "range": "melee",
+   "stat": "strength",
+   "damage": 1,
+   "stamina": 1,
+   "accuracy": 5,
+   "crit": 5,
+   "hits": 1,
+   "targets": "one enemy in melee reach",
+   "damageType": "physical",
+   "tags": [
+    "dagger",
+    "melee"
+   ],
+   "triggers": [],
+   "slayer": null
+  },
+  {
+   "id": "attack.obsidian-fang-dagger.gut",
+   "name": "Gut",
+   "range": "melee",
+   "stat": "strength",
+   "damage": 3,
+   "stamina": 2,
+   "accuracy": 5,
+   "crit": 10,
+   "hits": 1,
+   "targets": "one enemy in melee reach",
+   "damageType": "physical",
+   "tags": [
+    "dagger",
+    "melee"
+   ],
+   "triggers": [],
+   "slayer": null,
+   "source": " | 2026-08-20 Angela: \"if the target has not yet acted this Turn\" is cut — the only condition that read turn order. Folded in at half: +5 Accuracy, +5 Crit on the face."
+  },
+  {
+   "id": "attack.duel-runeblades.twin-cut",
+   "name": "Twin Cut",
+   "range": "melee",
+   "stat": "strength",
+   "damage": 0,
+   "stamina": 1,
+   "accuracy": 0,
+   "crit": 0,
+   "hits": 2,
+   "targets": "one enemy in melee reach",
+   "damageType": "physical",
+   "tags": [
+    "sword",
+    "melee"
+   ],
+   "triggers": [],
+   "slayer": null
+  },
+  {
+   "id": "attack.duel-runeblades.rune-cross",
+   "name": "Rune Cross",
+   "range": "melee",
+   "stat": "strength",
+   "damage": 0,
+   "stamina": 2,
+   "accuracy": 5,
+   "crit": 3,
+   "hits": 1,
+   "targets": "one enemy in melee reach",
+   "damageType": "magic",
+   "tags": [
+    "sword",
+    "melee"
+   ],
+   "triggers": [],
+   "slayer": {
+    "demon": 2
+   },
+   "addsStat": "magic",
+   "description": "The runes take light on the cross-cut: damage equals your Strength plus the party's Magic, and it lands as magic damage. Twin Cut is still the cheap physical option; this is the one a caster picks the weapon up for.",
+   "source": "2026-08-17 design pass: made the runeblade an actual spellblade — damage blends Strength with the party Magic and lands as magic damage, which gives a Mage a melee attack worth holding."
+  },
+  {
+   "id": "attack.shepherds-sling.stone",
+   "name": "Stone",
+   "range": 5,
+   "stat": "precision",
+   "damage": 1,
+   "stamina": 1,
+   "accuracy": 0,
+   "crit": 0,
+   "hits": 1,
+   "targets": "one enemy within 5 hexes",
+   "damageType": "physical",
+   "tags": [
+    "sling",
+    "ranged"
+   ],
+   "triggers": [],
+   "slayer": null
+  },
+  {
+   "id": "attack.shepherds-sling.whirl",
+   "name": "Whirl",
+   "range": 7,
+   "stat": "precision",
+   "damage": 2,
+   "stamina": 2,
+   "accuracy": -5,
+   "crit": 3,
+   "hits": 1,
+   "targets": "one enemy within 7 hexes",
+   "damageType": "physical",
+   "tags": [
+    "sling",
+    "ranged"
+   ],
+   "triggers": [
+    {
+     "hook": "onCrit",
+     "effect": "apply 1 Stun"
+    }
+   ],
+   "slayer": null
+  },
+  {
+   "id": "attack.crippling-whip.lash",
+   "name": "Lash",
+   "range": 2,
+   "stat": "strength",
+   "damage": 0,
+   "stamina": 1,
+   "accuracy": 0,
+   "crit": 0,
+   "hits": 1,
+   "targets": "one enemy within 2 hexes",
+   "damageType": "physical",
+   "tags": [
+    "chain",
+    "melee"
+   ],
+   "triggers": [
+    {
+     "hook": "onHit",
+     "effect": "apply 2 Weak"
+    }
+   ],
+   "slayer": null
+  },
+  {
+   "id": "attack.crippling-whip.hamstring",
+   "name": "Hamstring",
+   "range": 2,
+   "stat": "strength",
+   "damage": 1,
+   "stamina": 2,
+   "accuracy": -5,
+   "crit": 0,
+   "hits": 1,
+   "targets": "one enemy within 2 hexes",
+   "damageType": "physical",
+   "tags": [
+    "chain",
+    "melee"
+   ],
+   "triggers": [
+    {
+     "hook": "onHit",
+     "effect": "apply 2 Weak and the target gains 1 Slow"
+    }
+   ],
+   "slayer": null,
+   "source": "2026-08-20 Angela: \"clean up that movement stuff.\" A one-Turn Movement loss is now the Slow status — apply N Slow. Fourteen entries said this two different ways and every one of them needed the engine to remember whose next Turn it was. Amount unchanged."
+  },
+  {
+   "id": "attack.iron-claws.rake",
+   "name": "Rake",
+   "range": "melee",
+   "stat": "strength",
+   "damage": 0,
+   "stamina": 1,
+   "accuracy": 5,
+   "crit": 0,
+   "hits": 2,
+   "targets": "one enemy in melee reach",
+   "damageType": "physical",
+   "tags": [
+    "claw",
+    "brawl",
+    "melee"
+   ],
+   "triggers": [],
+   "slayer": null
+  },
+  {
+   "id": "attack.iron-claws.eviscerate",
+   "name": "Eviscerate",
+   "range": "melee",
+   "stat": "strength",
+   "damage": 1,
+   "stamina": 2,
+   "accuracy": 0,
+   "crit": 5,
+   "hits": 1,
+   "targets": "one enemy in melee reach",
+   "damageType": "physical",
+   "tags": [
+    "claw",
+    "brawl",
+    "melee"
+   ],
+   "triggers": [
+    {
+     "hook": "onHit",
+     "effect": "apply 3 Bleed"
+    }
+   ],
+   "slayer": null,
+   "addsTargetStatus": {
+    "status": "weak",
+    "consumes": false
+   },
+   "description": "Damage is your Strength +1, plus the Weak already on the target. It READS the Weak — the stacks are left where they are, so the next hit finds them too.",
+   "source": "2026-08-17 design pass: brawl attack now adds the target's Weak, reading it rather than spending it, which is the tier-1 entry to the martial-artist family."
+  },
+  {
+   "id": "attack.grappling-harpoon.brace",
+   "name": "Brace",
+   "range": "melee",
+   "stat": "strength",
+   "damage": 1,
+   "stamina": 1,
+   "accuracy": 5,
+   "crit": 0,
+   "hits": 1,
+   "targets": "one enemy in melee reach",
+   "damageType": "physical",
+   "tags": [
+    "spear",
+    "melee"
+   ],
+   "triggers": [],
+   "slayer": null
+  },
+  {
+   "id": "attack.grappling-harpoon.hurl",
+   "name": "Hurl",
+   "range": 4,
+   "stat": "precision",
+   "damage": 0,
+   "stamina": 2,
+   "accuracy": 0,
+   "crit": 0,
+   "hits": 1,
+   "targets": "one enemy within 4 hexes",
+   "damageType": "physical",
+   "tags": [
+    "thrown",
+    "ranged"
+   ],
+   "triggers": [],
+   "slayer": null,
+   "source": " | 2026-08-17 Angela: CUT. ally-reactive hooks, guarding, Consequence-Stack interference and non-knockback forced movement all removed by ruling. | 2026-08-17 design pass: blended onto Precision + Strength — aim puts it on the target and shoulder puts it through.",
+   "addsStat": "strength",
+   "description": "Damage equals your Precision plus your Strength. Aim puts it on the target; shoulder puts it through."
+  },
+  {
+   "id": "attack.apprentice-wand.spark",
+   "name": "Spark",
+   "range": 5,
+   "stat": "magic",
+   "damage": 1,
+   "stamina": 1,
+   "accuracy": 5,
+   "crit": 0,
+   "hits": 1,
+   "targets": "one enemy within 5 hexes",
+   "damageType": "magic",
+   "tags": [
+    "staff",
+    "ranged"
+   ],
+   "triggers": [],
+   "slayer": null
+  },
+  {
+   "id": "attack.apprentice-wand.surge",
+   "name": "Surge",
+   "range": 5,
+   "stat": "magic",
+   "damage": 1,
+   "stamina": 2,
+   "accuracy": 0,
+   "crit": 3,
+   "hits": 1,
+   "targets": "one enemy within 5 hexes",
+   "damageType": "magic",
+   "tags": [
+    "staff",
+    "ranged"
+   ],
+   "triggers": [
+    {
+     "hook": "onHit",
+     "effect": "apply 1 Burn"
+    }
+   ],
+   "slayer": null,
+   "addsTargetStatus": {
+    "status": "burn",
+    "consumes": false
+   },
+   "description": "Damage is the party's Magic +1, plus the Burn already on the target. It READS the Burn and leaves it burning, so the stack it found is still there next Turn.",
+   "source": "2026-08-17 design pass: the wand now adds the Burn already on the target, reading it — the cheap, safe tier-1 version of the family."
+  },
+  {
+   "id": "attack.ancient-tome.read-the-page",
+   "name": "Read the Page",
+   "range": 4,
+   "stat": "magic",
+   "damage": 1,
+   "stamina": 1,
+   "accuracy": 0,
+   "crit": 0,
+   "hits": 1,
+   "targets": "one enemy within 4 hexes",
+   "damageType": "magic",
+   "tags": [
+    "staff",
+    "ranged"
+   ],
+   "triggers": [],
+   "slayer": null
+  },
+  {
+   "id": "attack.ancient-tome.long-passage",
+   "name": "Long Passage",
+   "range": 4,
+   "stat": "magic",
+   "damage": 2,
+   "stamina": 2,
+   "accuracy": -5,
+   "crit": 0,
+   "hits": 1,
+   "targets": "one enemy within 4 hexes and every enemy adjacent to it",
+   "damageType": "magic",
+   "tags": [
+    "staff",
+    "ranged",
+    "area"
+   ],
+   "triggers": [],
+   "slayer": null
+  },
+  {
+   "id": "attack.holy-texts.verse",
+   "name": "Verse",
+   "range": 4,
+   "stat": "precision",
+   "damage": 0,
+   "stamina": 1,
+   "accuracy": 0,
+   "crit": 0,
+   "hits": 1,
+   "targets": "one enemy within 4 hexes",
+   "damageType": "true",
+   "tags": [
+    "staff",
+    "ranged"
+   ],
+   "triggers": [],
+   "slayer": null,
+   "addsStat": "spirit",
+   "description": "Damage equals your Precision plus the party's Spirit. A priest is both halves of that and this is the weapon that pays for both.",
+   "source": "2026-08-17 design pass: the priest weapon now reads damage = Precision + Spirit, the blend the guide names, instead of Spirit alone."
+  },
+  {
+   "id": "attack.holy-texts.mercy",
+   "name": "Mercy",
+   "range": 4,
+   "stat": "spirit",
+   "damage": 2,
+   "stamina": 2,
+   "accuracy": 0,
+   "crit": 0,
+   "hits": 1,
+   "targets": "one ally within 4 hexes",
+   "damageType": "true",
+   "tags": [
+    "staff",
+    "heal"
+   ],
+   "triggers": [],
+   "slayer": null,
+   "source": " | 2026-08-17 Angela: CUT. ally-reactive hooks, guarding, Consequence-Stack interference and non-knockback forced movement all removed by ruling."
+  },
+  {
+   "id": "attack.bane-blade.strike",
+   "name": "Strike",
+   "range": "melee",
+   "stat": "strength",
+   "damage": 1,
+   "stamina": 1,
+   "accuracy": 5,
+   "crit": 0,
+   "hits": 1,
+   "targets": "one enemy in melee reach",
+   "damageType": "physical",
+   "tags": [
+    "sword",
+    "melee"
+   ],
+   "triggers": [],
+   "slayer": null
+  },
+  {
+   "id": "attack.bane-blade.banishing-blow",
+   "name": "Banishing Blow",
+   "range": "melee",
+   "stat": "strength",
+   "damage": 2,
+   "stamina": 2,
+   "accuracy": 0,
+   "crit": 3,
+   "hits": 1,
+   "targets": "one enemy in melee reach",
+   "damageType": "physical",
+   "tags": [
+    "sword",
+    "melee"
+   ],
+   "triggers": [],
+   "slayer": {
+    "undead": 2,
+    "demon": 2
+   }
+  },
+  {
+   "id": "attack.sword-of-the-fallen.remembrance",
+   "name": "Remembrance",
+   "range": "melee",
+   "stat": "strength",
+   "damage": 1,
+   "stamina": 1,
+   "accuracy": 0,
+   "crit": 0,
+   "hits": 1,
+   "targets": "one enemy in melee reach",
+   "damageType": "physical",
+   "tags": [
+    "sword",
+    "melee"
+   ],
+   "triggers": [
+    {
+     "hook": "onHit",
+     "effect": "heal 1"
+    }
+   ],
+   "slayer": null
+  },
+  {
+   "id": "attack.sword-of-the-fallen.honour-the-dead",
+   "name": "Honour the Dead",
+   "range": "melee",
+   "stat": "strength",
+   "damage": 2,
+   "stamina": 2,
+   "accuracy": 5,
+   "crit": 0,
+   "hits": 1,
+   "targets": "one enemy in melee reach",
+   "damageType": "physical",
+   "tags": [
+    "sword",
+    "melee"
+   ],
+   "triggers": [
+    {
+     "hook": "onKill",
+     "effect": "heal 3, and every ally within 2 hexes heals 1"
+    }
+   ],
+   "slayer": null
+  },
+  {
+   "id": "attack.buckler.punch",
+   "name": "Shield Punch",
+   "range": "melee",
+   "stat": "strength",
+   "damage": 0,
+   "stamina": 1,
+   "accuracy": 5,
+   "crit": 0,
+   "hits": 1,
+   "targets": "one enemy in melee reach",
+   "damageType": "physical",
+   "tags": [
+    "shield",
+    "brawl",
+    "melee"
+   ],
+   "triggers": [],
+   "slayer": null
+  },
+  {
+   "id": "attack.buckler.deflect-and-cut",
+   "name": "Deflect and Cut",
+   "range": "melee",
+   "stat": "strength",
+   "damage": 1,
+   "stamina": 2,
+   "accuracy": 0,
+   "crit": 0,
+   "hits": 1,
+   "targets": "one enemy in melee reach",
+   "damageType": "physical",
+   "tags": [
+    "shield",
+    "melee"
+   ],
+   "triggers": [
+    {
+     "hook": "onHit",
+     "effect": "gain +5 Dodge until the start of your next Turn"
+    }
+   ],
+   "slayer": null
+  },
+  {
+   "id": "attack.bloody-axe.cleave-open",
+   "name": "Cleave Open",
+   "range": "melee",
+   "stat": "strength",
+   "damage": 2,
+   "stamina": 1,
+   "accuracy": -5,
+   "crit": 0,
+   "hits": 1,
+   "targets": "one enemy in melee reach",
+   "damageType": "physical",
+   "tags": [
+    "axe",
+    "melee"
+   ],
+   "triggers": [],
+   "slayer": null
+  },
+  {
+   "id": "attack.bloody-axe.butcher",
+   "name": "Butcher",
+   "range": "melee",
+   "stat": "strength",
+   "damage": 2,
+   "stamina": 2,
+   "accuracy": 0,
+   "crit": 5,
+   "hits": 1,
+   "targets": "one enemy in melee reach",
+   "damageType": "physical",
+   "tags": [
+    "axe",
+    "melee"
+   ],
+   "triggers": [
+    {
+     "hook": "onHit",
+     "effect": "apply 3 Bleed"
+    }
+   ],
+   "slayer": null,
+   "addsTargetStatus": {
+    "status": "bleed",
+    "consumes": true
+   },
+   "description": "Damage is your Strength +2, plus every stack of Bleed on the target, which it CONSUMES — you find the cut that is already open and put the whole axe into it. It applies 3 fresh Bleed afterwards, so the clock restarts from nothing.",
+   "source": "2026-08-17 design pass: the axe now opens the wound that is already there — it consumes the target's Bleed, which is exactly what the weapon is named for."
+  },
+  {
+   "id": "attack.hammer-of-justice.judgment",
+   "name": "Judgment",
+   "range": "melee",
+   "stat": "strength",
+   "damage": 2,
+   "stamina": 2,
+   "accuracy": 5,
+   "crit": 0,
+   "hits": 1,
+   "targets": "one enemy in melee reach",
+   "damageType": "physical",
+   "tags": [
+    "hammer",
+    "melee"
+   ],
+   "triggers": [],
+   "slayer": null
+  },
+  {
+   "id": "attack.hammer-of-justice.sentence",
+   "name": "Sentence",
+   "range": "melee",
+   "stat": "strength",
+   "damage": 1,
+   "stamina": 3,
+   "accuracy": -5,
+   "crit": 3,
+   "hits": 1,
+   "targets": "one enemy in melee reach",
+   "damageType": "physical",
+   "tags": [
+    "hammer",
+    "melee"
+   ],
+   "triggers": [],
+   "slayer": {
+    "demon": 2,
+    "undead": 2
+   },
+   "addsStat": "spirit",
+   "description": "Damage equals your Strength plus the party's Spirit, and a further +1. The sentence is only ever as heavy as the faith standing behind it.",
+   "source": "2026-08-17 design pass: blended the finisher onto Strength + Spirit and cut the flat +4, so a Paladin swinging it in a party with a Priest hits like the name promises."
+  },
+  {
+   "id": "attack.holy-shield.shield-bash",
+   "name": "Shield Bash",
+   "range": "melee",
+   "stat": "strength",
+   "damage": 1,
+   "stamina": 1,
+   "accuracy": 5,
+   "crit": 0,
+   "hits": 1,
+   "targets": "one enemy in melee reach",
+   "damageType": "physical",
+   "tags": [
+    "shield",
+    "melee"
+   ],
+   "triggers": [
+    {
+     "hook": "onCrit",
+     "effect": "apply 1 Stun"
+    }
+   ],
+   "slayer": null
+  },
+  {
+   "id": "attack.holy-shield.aegis-slam",
+   "name": "Aegis Slam",
+   "range": "melee",
+   "stat": "strength",
+   "damage": 0,
+   "stamina": 2,
+   "accuracy": 0,
+   "crit": 0,
+   "hits": 1,
+   "targets": "one enemy in melee reach",
+   "damageType": "physical",
+   "tags": [
+    "shield",
+    "melee"
+   ],
+   "triggers": [
+    {
+     "hook": "onHit",
+     "effect": "push the target 1 hex and it gains 1 Slow"
+    }
+   ],
+   "slayer": null,
+   "addsStat": "armor",
+   "description": "Damage equals your Strength plus your Armor: the shield arrives with everything you are wearing behind it.",
+   "source": "2026-08-17 design pass: blended damage onto Strength + Armor, which is what a shield attack should have been scaling off all along. | 2026-08-20 Angela: \"clean up that movement stuff.\" A one-Turn Movement loss is now the Slow status — apply N Slow. Fourteen entries said this two different ways and every one of them needed the engine to remember whose next Turn it was. Amount unchanged."
+  },
+  {
+   "id": "attack.death-blade.reap",
+   "name": "Reap",
+   "range": "melee",
+   "stat": "strength",
+   "damage": 2,
+   "stamina": 1,
+   "accuracy": 0,
+   "crit": 0,
+   "hits": 1,
+   "targets": "one enemy in melee reach",
+   "damageType": "physical",
+   "tags": [
+    "sword",
+    "melee"
+   ],
+   "triggers": [],
+   "slayer": null
+  },
+  {
+   "id": "attack.death-blade.death-stroke",
+   "name": "Death Stroke",
+   "range": "melee",
+   "stat": "strength",
+   "damage": 3,
+   "stamina": 2,
+   "accuracy": 10,
+   "crit": 5,
+   "hits": 1,
+   "targets": "one enemy in melee reach",
+   "damageType": "physical",
+   "tags": [
+    "sword",
+    "melee"
+   ],
+   "triggers": [
+    {
+     "hook": "onHit",
+     "effect": "heal 3 and gain +1 Strength for the rest of the Battle, stacking"
+    }
+   ],
+   "slayer": null,
+   "source": " | 2026-08-20 Angela: \"+10 Accuracy against a target at or below half Health\" read a Health threshold. Folded in unconditionally on the attack’s face."
+  },
+  {
+   "id": "attack.sniper-bow.loose",
+   "name": "Loose",
+   "range": 9,
+   "stat": "precision",
+   "damage": 1,
+   "stamina": 1,
+   "accuracy": 5,
+   "crit": 0,
+   "hits": 1,
+   "targets": "one enemy within 9 hexes",
+   "damageType": "physical",
+   "tags": [
+    "bow",
+    "ranged"
+   ],
+   "triggers": [],
+   "slayer": null
+  },
+  {
+   "id": "attack.sniper-bow.long-shot",
+   "name": "Long Shot",
+   "range": 14,
+   "stat": "precision",
+   "damage": 2,
+   "stamina": 3,
+   "accuracy": 10,
+   "crit": 5,
+   "hits": 1,
+   "targets": "one enemy within 14 hexes",
+   "damageType": "physical",
+   "tags": [
+    "bow",
+    "ranged"
+   ],
+   "triggers": [],
+   "slayer": null,
+   "source": " | 2026-08-20 Angela: \"may not be used if any enemy is adjacent to you\" restates a global rule — a ranged attack may not target an adjacent unit, and firing while something is adjacent to YOU costs -20. Both live in the accuracy stations, not on one bow."
+  },
+  {
+   "id": "attack.runed-crossbow.rune-bolt",
+   "name": "Rune Bolt",
+   "range": 8,
+   "stat": "precision",
+   "damage": 2,
+   "stamina": 2,
+   "accuracy": 5,
+   "crit": 0,
+   "hits": 1,
+   "targets": "one enemy within 8 hexes",
+   "damageType": "physical",
+   "tags": [
+    "crossbow",
+    "ranged"
+   ],
+   "triggers": [],
+   "slayer": null
+  },
+  {
+   "id": "attack.runed-crossbow.banishing-bolt",
+   "name": "Banishing Bolt",
+   "range": 8,
+   "stat": "precision",
+   "damage": 3,
+   "stamina": 3,
+   "accuracy": 0,
+   "crit": 3,
+   "hits": 1,
+   "targets": "one enemy within 8 hexes",
+   "damageType": "physical",
+   "tags": [
+    "crossbow",
+    "ranged"
+   ],
+   "triggers": [],
+   "slayer": {
+    "demon": 3,
+    "undead": 2
+   }
+  },
+  {
+   "id": "attack.poison-throwing-knives.toss",
+   "name": "Toss",
+   "range": 5,
+   "stat": "precision",
+   "damage": 2,
+   "stamina": 1,
+   "accuracy": 0,
+   "crit": 0,
+   "hits": 1,
+   "targets": "one enemy within 5 hexes",
+   "damageType": "physical",
+   "tags": [
+    "thrown",
+    "ranged"
+   ],
+   "triggers": [],
+   "slayer": null
+  },
+  {
+   "id": "attack.poison-throwing-knives.venom-fan",
+   "name": "Venom Fan",
+   "range": 4,
+   "stat": "precision",
+   "damage": 0,
+   "stamina": 2,
+   "accuracy": -5,
+   "crit": 0,
+   "hits": 3,
+   "targets": "up to 3 enemies within 4 hexes",
+   "damageType": "physical",
+   "tags": [
+    "thrown",
+    "ranged"
+   ],
+   "triggers": [
+    {
+     "hook": "onHit",
+     "effect": "apply 2 Poison to each target hit"
+    }
+   ],
+   "slayer": null,
+   "addsTargetStatus": {
+    "status": "poison",
+    "consumes": true
+   },
+   "description": "Three targets. Against each, damage is your Precision plus every stack of Poison already in it — and the fan CONSUMES that Poison, calling the whole slow dose due at once. It leaves 2 fresh Poison in each on hit, so the clock starts again from a much smaller number.",
+   "source": "2026-08-17 design pass: the fan now drinks the Poison already in each target it hits, the poison member of the status-consuming family."
+  },
+  {
+   "id": "attack.shadow-dagger.shadow-cut",
+   "name": "Shadow Cut",
+   "range": "melee",
+   "stat": "strength",
+   "damage": 2,
+   "stamina": 1,
+   "accuracy": 5,
+   "crit": 5,
+   "hits": 1,
+   "targets": "one enemy in melee reach",
+   "damageType": "physical",
+   "tags": [
+    "dagger",
+    "melee"
+   ],
+   "triggers": [],
+   "slayer": null
+  },
+  {
+   "id": "attack.shadow-dagger.from-behind",
+   "name": "From Behind",
+   "range": "melee",
+   "stat": "strength",
+   "damage": 2,
+   "stamina": 2,
+   "accuracy": 8,
+   "crit": 15,
+   "hits": 1,
+   "targets": "one enemy in melee reach",
+   "damageType": "physical",
+   "tags": [
+    "dagger",
+    "melee"
+   ],
+   "triggers": [],
+   "slayer": null,
+   "addsTargetStatus": {
+    "status": "bleed",
+    "consumes": false
+   },
+   "description": "Damage is your Strength +2, plus the Bleed already on the target. It READS the Bleed — every stack stays, still ticking, and Resist never touched any of it.",
+   "source": "2026-08-17 design pass: the knife now adds the target's Bleed, reading it, so a Nightblade party has something that cashes in without turning the clock off. | 2026-08-20 Angela: \"if an ally is adjacent to the target\" is adjacency to the TARGET, the same check that cut enchant.catch-them-off-guard — it walks a second unit's neighbours. Condition removed. The bonus was +15 Accuracy and +10 Crit when it fired; folded in unconditionally at roughly half, so the attack now reads +8 Accuracy and +15 Crit on its face. THE SPLIT IS MINE, not dictated — say the word and I will move it."
+  },
+  {
+   "id": "attack.stormforged-blade.arc-cut",
+   "name": "Arc Cut",
+   "range": "melee",
+   "stat": "strength",
+   "damage": 2,
+   "stamina": 1,
+   "accuracy": 5,
+   "crit": 0,
+   "hits": 1,
+   "targets": "one enemy in melee reach",
+   "damageType": "physical",
+   "tags": [
+    "sword",
+    "melee"
+   ],
+   "triggers": [],
+   "slayer": null
+  },
+  {
+   "id": "attack.stormforged-blade.thunder-strike",
+   "name": "Thunder Strike",
+   "range": "melee",
+   "stat": "strength",
+   "damage": 0,
+   "stamina": 2,
+   "accuracy": 0,
+   "crit": 5,
+   "hits": 1,
+   "targets": "one enemy in melee reach",
+   "damageType": "physical",
+   "tags": [
+    "sword",
+    "melee"
+   ],
+   "triggers": [
+    {
+     "hook": "onHit",
+     "effect": "apply 2 Burn"
+    }
+   ],
+   "slayer": null,
+   "addsStat": "resist",
+   "description": "The blade earths the storm through you before it lets go of it: damage equals your Strength plus your Resist.",
+   "source": "2026-08-17 design pass: blended onto Strength + Resist, so the blade that carries lightning wants a wielder who can hold it."
+  },
+  {
+   "id": "attack.twin-talon-bow.talon-shot",
+   "name": "Talon Shot",
+   "range": 8,
+   "stat": "precision",
+   "damage": 2,
+   "stamina": 1,
+   "accuracy": 5,
+   "crit": 0,
+   "hits": 1,
+   "targets": "one enemy within 8 hexes",
+   "damageType": "physical",
+   "tags": [
+    "bow",
+    "ranged"
+   ],
+   "triggers": [],
+   "slayer": null
+  },
+  {
+   "id": "attack.twin-talon-bow.double-nock",
+   "name": "Double Nock",
+   "range": 7,
+   "stat": "precision",
+   "damage": 1,
+   "stamina": 2,
+   "accuracy": -5,
+   "crit": 0,
+   "hits": 2,
+   "targets": "one enemy within 7 hexes",
+   "damageType": "physical",
+   "tags": [
+    "bow",
+    "ranged"
+   ],
+   "triggers": [],
+   "slayer": null
+  },
+  {
+   "id": "attack.wraith-touched-staff.wraith-bolt",
+   "name": "Wraith Bolt",
+   "range": 6,
+   "stat": "magic",
+   "damage": 2,
+   "stamina": 1,
+   "accuracy": 0,
+   "crit": 0,
+   "hits": 1,
+   "targets": "one enemy within 6 hexes",
+   "damageType": "magic",
+   "tags": [
+    "staff",
+    "ranged"
+   ],
+   "triggers": [],
+   "slayer": null
+  },
+  {
+   "id": "attack.wraith-touched-staff.grasp",
+   "name": "Grasp of the Wraith",
+   "range": 5,
+   "stat": "magic",
+   "damage": 1,
+   "stamina": 2,
+   "accuracy": 0,
+   "crit": 3,
+   "hits": 1,
+   "targets": "one enemy within 5 hexes",
+   "damageType": "magic",
+   "tags": [
+    "staff",
+    "ranged"
+   ],
+   "triggers": [
+    {
+     "hook": "onHit",
+     "effect": "the target gains 1 Slow and you heal 2"
+    }
+   ],
+   "slayer": null,
+   "addsTargetStatus": {
+    "status": "frost",
+    "consumes": true
+   },
+   "description": "Damage is the party's Magic +1, plus every stack of Frost on the target — and the grasp CONSUMES it, closing on the cold and taking it away with the hand. Shattering the Frost also gives up the physical amplification it was providing, which is the decision.",
+   "source": "2026-08-17 design pass: the grasp now closes on the target's Frost and takes it, giving the frost side of the caster roster a payoff attack. | 2026-08-20 Angela: \"clean up that movement stuff.\" A one-Turn Movement loss is now the Slow status — apply N Slow. Fourteen entries said this two different ways and every one of them needed the engine to remember whose next Turn it was. Amount unchanged."
+  },
+  {
+   "id": "attack.book-of-exorcisms.reading",
+   "name": "Reading",
+   "range": 4,
+   "stat": "spirit",
+   "damage": 2,
+   "stamina": 1,
+   "accuracy": 0,
+   "crit": 0,
+   "hits": 1,
+   "targets": "one enemy within 4 hexes",
+   "damageType": "true",
+   "tags": [
+    "staff",
+    "ranged"
+   ],
+   "triggers": [],
+   "slayer": null
+  },
+  {
+   "id": "attack.book-of-exorcisms.rite-of-expulsion",
+   "name": "Rite of Expulsion",
+   "range": 3,
+   "stat": "spirit",
+   "damage": 0,
+   "stamina": 2,
+   "accuracy": 0,
+   "crit": 0,
+   "hits": 1,
+   "targets": "one enemy within 3 hexes and every enemy adjacent to it",
+   "damageType": "true",
+   "tags": [
+    "staff",
+    "ranged",
+    "area"
+   ],
+   "triggers": [],
+   "slayer": {
+    "undead": 3,
+    "demon": 2,
+    "horror": 2
+   },
+   "addsStat": "resist",
+   "description": "Damage equals the party's Spirit plus your own Resist: you push with the same wards that keep it off you. As an area effect it does not roll and cannot crit.",
+   "source": "2026-08-17 design pass: blended the rite onto Spirit + Resist, so warding and expelling are the same stat investment."
+  },
+  {
+   "id": "attack.cursed-sand-blade.sand-cut",
+   "name": "Sand Cut",
+   "range": "melee",
+   "stat": "strength",
+   "damage": 2,
+   "stamina": 1,
+   "accuracy": -5,
+   "crit": 0,
+   "hits": 1,
+   "targets": "one enemy in melee reach",
+   "damageType": "physical",
+   "tags": [
+    "sword",
+    "melee"
+   ],
+   "triggers": [],
+   "slayer": null
+  },
+  {
+   "id": "attack.cursed-sand-blade.the-cursed-swing",
+   "name": "The Cursed Swing",
+   "range": "melee",
+   "stat": "strength",
+   "damage": 1,
+   "stamina": 2,
+   "accuracy": 0,
+   "crit": 5,
+   "hits": 1,
+   "targets": "one enemy in melee reach",
+   "damageType": "magic",
+   "tags": [
+    "sword",
+    "melee"
+   ],
+   "triggers": [],
+   "slayer": null,
+   "source": " | 2026-08-17 Angela: CUT. ally-reactive hooks, guarding, Consequence-Stack interference and non-knockback forced movement all removed by ruling. | 2026-08-17 design pass: blended damage onto Strength + Magic and moved it to magic damage, so the curse is doing the work instead of a flat +4.",
+   "addsStat": "magic",
+   "description": "Damage equals your Strength plus the party's Magic, and a further +1, carried as magic damage — the sand goes where the curse tells it and neither of them cares how strong your arm is on its own."
+  },
+  {
+   "id": "attack.skyforged-halberd.sky-sweep",
+   "name": "Sky Sweep",
+   "range": "melee",
+   "stat": "strength",
+   "damage": 1,
+   "stamina": 2,
+   "accuracy": -5,
+   "crit": 0,
+   "hits": 1,
+   "targets": "every enemy adjacent to you",
+   "damageType": "physical",
+   "tags": [
+    "polearm",
+    "melee",
+    "area"
+   ],
+   "triggers": [],
+   "slayer": null
+  },
+  {
+   "id": "attack.skyforged-halberd.hallowed-thrust",
+   "name": "Hallowed Thrust",
+   "range": 2,
+   "stat": "strength",
+   "damage": 3,
+   "stamina": 2,
+   "accuracy": 5,
+   "crit": 3,
+   "hits": 1,
+   "targets": "one enemy within 2 hexes",
+   "damageType": "physical",
+   "tags": [
+    "polearm",
+    "melee"
+   ],
+   "triggers": [],
+   "slayer": {
+    "demon": 2,
+    "undead": 2
+   }
+  },
+  {
+   "id": "attack.boarding-hook.hook",
+   "name": "Hook",
+   "range": 2,
+   "stat": "strength",
+   "damage": 1,
+   "stamina": 1,
+   "accuracy": 0,
+   "crit": 0,
+   "hits": 1,
+   "targets": "one enemy within 2 hexes",
+   "damageType": "physical",
+   "tags": [
+    "chain",
+    "melee"
+   ],
+   "triggers": [],
+   "slayer": null,
+   "source": " | 2026-08-17 Angela: CUT. ally-reactive hooks, guarding, Consequence-Stack interference and non-knockback forced movement all removed by ruling."
+  },
+  {
+   "id": "attack.boarding-hook.drag-down",
+   "name": "Drag Down",
+   "range": 2,
+   "stat": "strength",
+   "damage": 2,
+   "stamina": 2,
+   "accuracy": -5,
+   "crit": 0,
+   "hits": 1,
+   "targets": "one enemy within 2 hexes",
+   "damageType": "physical",
+   "tags": [
+    "chain",
+    "melee"
+   ],
+   "triggers": [],
+   "slayer": null,
+   "source": " | 2026-08-17 Angela: CUT. ally-reactive hooks, guarding, Consequence-Stack interference and non-knockback forced movement all removed by ruling."
+  },
+  {
+   "id": "attack.mirage-dagger.flicker-cut",
+   "name": "Flicker Cut",
+   "range": "melee",
+   "stat": "strength",
+   "damage": 2,
+   "stamina": 1,
+   "accuracy": 10,
+   "crit": 3,
+   "hits": 1,
+   "targets": "one enemy in melee reach",
+   "damageType": "physical",
+   "tags": [
+    "dagger",
+    "melee"
+   ],
+   "triggers": [],
+   "slayer": null
+  },
+  {
+   "id": "attack.mirage-dagger.two-places-at-once",
+   "name": "Two Places at Once",
+   "range": "melee",
+   "stat": "strength",
+   "damage": 2,
+   "stamina": 2,
+   "accuracy": -5,
+   "crit": 3,
+   "hits": 2,
+   "targets": "one enemy in melee reach",
+   "damageType": "physical",
+   "tags": [
+    "dagger",
+    "melee"
+   ],
+   "triggers": [
+    {
+     "hook": "onHit",
+     "effect": "after the attack resolves you may move 1 hex"
+    }
+   ],
+   "slayer": null
+  },
+  {
+   "id": "attack.seraph-bow.seraph-shot",
+   "name": "Seraph Shot",
+   "range": 9,
+   "stat": "precision",
+   "damage": 2,
+   "stamina": 1,
+   "accuracy": 5,
+   "crit": 0,
+   "hits": 1,
+   "targets": "one enemy within 9 hexes",
+   "damageType": "physical",
+   "tags": [
+    "bow",
+    "ranged"
+   ],
+   "triggers": [],
+   "slayer": null
+  },
+  {
+   "id": "attack.seraph-bow.feathered-judgment",
+   "name": "Feathered Judgment",
+   "range": 9,
+   "stat": "precision",
+   "damage": 3,
+   "stamina": 2,
+   "accuracy": 5,
+   "crit": 5,
+   "hits": 1,
+   "targets": "one enemy within 9 hexes",
+   "damageType": "physical",
+   "tags": [
+    "bow",
+    "ranged"
+   ],
+   "triggers": [],
+   "slayer": {
+    "demon": 2,
+    "undead": 2
+   }
+  },
+  {
+   "id": "attack.death-bow.death-shot",
+   "name": "Death Shot",
+   "range": 9,
+   "stat": "precision",
+   "damage": 3,
+   "stamina": 1,
+   "accuracy": 5,
+   "crit": 0,
+   "hits": 1,
+   "targets": "one enemy within 9 hexes",
+   "damageType": "physical",
+   "tags": [
+    "bow",
+    "ranged"
+   ],
+   "triggers": [],
+   "slayer": null
+  },
+  {
+   "id": "attack.death-bow.the-last-arrow",
+   "name": "The Last Arrow",
+   "range": 12,
+   "stat": "precision",
+   "damage": 5,
+   "stamina": 3,
+   "accuracy": 10,
+   "crit": 5,
+   "hits": 1,
+   "targets": "one enemy within 12 hexes",
+   "damageType": "physical",
+   "tags": [
+    "bow",
+    "ranged"
+   ],
+   "triggers": [
+    {
+     "hook": "onKill",
+     "effect": "make one free Death Shot against a different enemy"
+    }
+   ],
+   "slayer": null
+  },
+  {
+   "id": "attack.holy-avenger.avenging-strike",
+   "name": "Avenging Strike",
+   "range": "melee",
+   "stat": "strength",
+   "damage": 2,
+   "stamina": 1,
+   "accuracy": 5,
+   "crit": 0,
+   "hits": 1,
+   "targets": "one enemy in melee reach",
+   "damageType": "physical",
+   "tags": [
+    "sword",
+    "melee"
+   ],
+   "triggers": [],
+   "slayer": null
+  },
+  {
+   "id": "attack.holy-avenger.the-avenger-wakes",
+   "name": "The Avenger Wakes",
+   "range": "melee",
+   "stat": "strength",
+   "damage": 4,
+   "stamina": 2,
+   "accuracy": 5,
+   "crit": 5,
+   "hits": 1,
+   "targets": "one enemy in melee reach",
+   "damageType": "true",
+   "tags": [
+    "sword",
+    "melee"
+   ],
+   "triggers": [],
+   "slayer": {
+    "demon": 3,
+    "undead": 3
+   }
+  },
+  {
+   "id": "attack.demon-whip.crack",
+   "name": "Crack",
+   "range": 3,
+   "stat": "strength",
+   "damage": 2,
+   "stamina": 1,
+   "accuracy": 0,
+   "crit": 0,
+   "hits": 1,
+   "targets": "one enemy within 3 hexes",
+   "damageType": "physical",
+   "tags": [
+    "chain",
+    "melee"
+   ],
+   "triggers": [],
+   "slayer": null
+  },
+  {
+   "id": "attack.demon-whip.hellcoil",
+   "name": "Hellcoil",
+   "range": 3,
+   "stat": "strength",
+   "damage": 2,
+   "stamina": 2,
+   "accuracy": -5,
+   "crit": 0,
+   "hits": 2,
+   "targets": "up to 2 enemies within 3 hexes",
+   "damageType": "physical",
+   "tags": [
+    "chain",
+    "melee"
+   ],
+   "triggers": [
+    {
+     "hook": "onHit",
+     "effect": "apply 3 Burn to each target hit"
+    }
+   ],
+   "slayer": null,
+   "addsTargetStatus": {
+    "status": "bleed",
+    "consumes": true
+   },
+   "description": "Two targets. Against each, damage is your Strength +2 plus every stack of Bleed that target is carrying, and the coil CONSUMES it. It leaves 3 Burn behind in its place.",
+   "source": "2026-08-17 design pass: the tier-3 whip now consumes the Bleed on each of the two targets it reaches."
+  },
+  {
+   "id": "attack.demonic-shiv.shiv",
+   "name": "Shiv",
+   "range": "melee",
+   "stat": "strength",
+   "damage": 2,
+   "stamina": 1,
+   "accuracy": 10,
+   "crit": 5,
+   "hits": 1,
+   "targets": "one enemy in melee reach",
+   "damageType": "physical",
+   "tags": [
+    "dagger",
+    "melee"
+   ],
+   "triggers": [],
+   "slayer": null
+  },
+  {
+   "id": "attack.demonic-shiv.the-devils-favour",
+   "name": "The Devil's Favour",
+   "range": "melee",
+   "stat": "strength",
+   "damage": 0,
+   "stamina": 2,
+   "accuracy": 0,
+   "crit": 10,
+   "hits": 1,
+   "targets": "one enemy in melee reach",
+   "damageType": "true",
+   "tags": [
+    "dagger",
+    "melee"
+   ],
+   "triggers": [],
+   "slayer": null,
+   "source": " | 2026-08-17 Angela: CUT. ally-reactive hooks, guarding, Consequence-Stack interference and non-knockback forced movement all removed by ruling. | 2026-08-17 design pass: blended onto Strength + Precision so the signature rogue knife counts both stats a Rogue actually buys.",
+   "addsStat": "precision",
+   "description": "Damage equals your Strength plus your Precision, as true damage. The favour is that it counts both hands of what a Rogue is instead of making you choose."
+  },
+  {
+   "id": "attack.void-staff.void-bolt",
+   "name": "Void Bolt",
+   "range": 6,
+   "stat": "magic",
+   "damage": 3,
+   "stamina": 1,
+   "accuracy": 0,
+   "crit": 0,
+   "hits": 1,
+   "targets": "one enemy within 6 hexes",
+   "damageType": "magic",
+   "tags": [
+    "staff",
+    "ranged"
+   ],
+   "triggers": [],
+   "slayer": null
+  },
+  {
+   "id": "attack.void-staff.unmaking",
+   "name": "Unmaking",
+   "range": 6,
+   "stat": "magic",
+   "damage": 4,
+   "stamina": 3,
+   "accuracy": 0,
+   "crit": 5,
+   "hits": 1,
+   "targets": "one enemy within 6 hexes",
+   "damageType": "magic",
+   "tags": [
+    "staff",
+    "ranged"
+   ],
+   "triggers": [
+    {
+     "hook": "onHit",
+     "effect": "the target loses 2 Resist for the rest of the Battle"
+    }
+   ],
+   "slayer": null
+  },
+  {
+   "id": "attack.orb-of-the-soul-stealer.soul-tap",
+   "name": "Soul Tap",
+   "range": "melee",
+   "stat": "magic",
+   "damage": 0,
+   "stamina": 1,
+   "accuracy": 0,
+   "crit": 0,
+   "hits": 1,
+   "targets": "one enemy in melee reach",
+   "damageType": "magic",
+   "tags": [
+    "staff",
+    "melee"
+   ],
+   "triggers": [
+    {
+     "hook": "onHit",
+     "effect": "heal 1"
+    }
+   ],
+   "slayer": null,
+   "addsStat": "spirit",
+   "description": "You close your hand on it. Damage equals the party's Magic plus the party's Spirit — a melee attack built entirely out of caster stats, and the reason a Priest will carry a Mage's orb.",
+   "source": "2026-08-17 design pass: turned the cheap tap into a melee attack whose damage blends Magic + Spirit, so a Mage or Priest finally has something to do in reach that spends the stats they already have."
+  },
+  {
+   "id": "attack.orb-of-the-soul-stealer.steal-the-spark",
+   "name": "Steal the Spark",
+   "range": 7,
+   "stat": "magic",
+   "damage": 3,
+   "stamina": 2,
+   "accuracy": 0,
+   "crit": 3,
+   "hits": 1,
+   "targets": "one enemy within 7 hexes",
+   "damageType": "magic",
+   "tags": [
+    "staff",
+    "ranged"
+   ],
+   "triggers": [
+    {
+     "hook": "onHit",
+     "effect": "heal for half the damage dealt, rounded down"
+    }
+   ],
+   "slayer": null
+  },
+  {
+   "id": "attack.blade-of-demon-slaying.slayer-cut",
+   "name": "Slayer's Cut",
+   "range": "melee",
+   "stat": "strength",
+   "damage": 2,
+   "stamina": 1,
+   "accuracy": 5,
+   "crit": 0,
+   "hits": 1,
+   "targets": "one enemy in melee reach",
+   "damageType": "physical",
+   "tags": [
+    "sword",
+    "melee"
+   ],
+   "triggers": [],
+   "slayer": null
+  },
+  {
+   "id": "attack.blade-of-demon-slaying.demonbane",
+   "name": "Demonbane",
+   "range": "melee",
+   "stat": "strength",
+   "damage": 4,
+   "stamina": 3,
+   "accuracy": 0,
+   "crit": 5,
+   "hits": 1,
+   "targets": "one enemy in melee reach",
+   "damageType": "physical",
+   "tags": [
+    "sword",
+    "melee"
+   ],
+   "triggers": [],
+   "slayer": {
+    "demon": 4,
+    "horror": 2
+   }
+  },
+  {
+   "id": "attack.pharaohs-gauntlets.gilded-strike",
+   "name": "Gilded Strike",
+   "range": "melee",
+   "stat": "strength",
+   "damage": 2,
+   "stamina": 1,
+   "accuracy": 5,
+   "crit": 0,
+   "hits": 1,
+   "targets": "one enemy in melee reach",
+   "damageType": "physical",
+   "tags": [
+    "claw",
+    "brawl",
+    "melee"
+   ],
+   "triggers": [],
+   "slayer": null
+  },
+  {
+   "id": "attack.pharaohs-gauntlets.the-kings-hands",
+   "name": "The King's Hands",
+   "range": "melee",
+   "stat": "strength",
+   "damage": 2,
+   "stamina": 2,
+   "accuracy": -5,
+   "crit": 3,
+   "hits": 2,
+   "targets": "one enemy in melee reach",
+   "damageType": "physical",
+   "tags": [
+    "claw",
+    "brawl",
+    "melee"
+   ],
+   "triggers": [],
+   "slayer": null,
+   "addsTargetStatus": {
+    "status": "weak",
+    "consumes": true
+   },
+   "description": "Two hits. Damage is your Strength +2, plus every stack of Weak on the target — and it CONSUMES them, all of it spent in one grip. Against something nobody has softened it is an ordinary pair of gauntlets.",
+   "source": "2026-08-17 design pass: the tier-3 brawl signature now CONSUMES the target's Weak, the dramatic end of the family the iron claws start."
+  },
+  {
+   "id": "attack.scepter-of-salvation.rebuke",
+   "name": "Rebuke",
+   "range": 4,
+   "stat": "spirit",
+   "damage": 0,
+   "stamina": 1,
+   "accuracy": 0,
+   "crit": 0,
+   "hits": 1,
+   "targets": "one enemy within 4 hexes",
+   "damageType": "true",
+   "tags": [
+    "staff",
+    "ranged"
+   ],
+   "triggers": [],
+   "slayer": null,
+   "addsStat": "magic",
+   "description": "Damage equals the party's Spirit plus the party's Magic. The scepter does not much care which of the two you brought, only that somebody did.",
+   "source": "2026-08-17 design pass: blended the rebuke onto Spirit + Magic so a mixed caster party gets full value out of a priest signature."
+  },
+  {
+   "id": "attack.scepter-of-salvation.salvation",
+   "name": "Salvation",
+   "range": 5,
+   "stat": "spirit",
+   "damage": 3,
+   "stamina": 2,
+   "accuracy": 0,
+   "crit": 0,
+   "hits": 1,
+   "targets": "one ally within 5 hexes",
+   "damageType": "true",
+   "tags": [
+    "staff",
+    "heal"
+   ],
+   "triggers": [],
+   "slayer": null,
+   "source": " | 2026-08-17 Angela: CUT. ally-reactive hooks, guarding, Consequence-Stack interference and non-knockback forced movement all removed by ruling."
+  },
+  {
+   "id": "attack.tomb-sentinels-blade.sentinel-cut",
+   "name": "Sentinel's Cut",
+   "range": "melee",
+   "stat": "strength",
+   "damage": 2,
+   "stamina": 1,
+   "accuracy": 5,
+   "crit": 0,
+   "hits": 1,
+   "targets": "one enemy in melee reach",
+   "damageType": "physical",
+   "tags": [
+    "sword",
+    "melee"
+   ],
+   "triggers": [],
+   "slayer": null
+  },
+  {
+   "id": "attack.tomb-sentinels-blade.grave-warden",
+   "name": "Grave Warden",
+   "range": "melee",
+   "stat": "strength",
+   "damage": 1,
+   "stamina": 2,
+   "accuracy": 5,
+   "crit": 3,
+   "hits": 1,
+   "targets": "one enemy in melee reach",
+   "damageType": "physical",
+   "tags": [
+    "sword",
+    "melee"
+   ],
+   "triggers": [],
+   "slayer": {
+    "undead": 3
+   },
+   "description": "Damage equals your Strength plus your Armor, and a further +1. A slow, heavy swing that rewards standing your ground in armour — without needing the game to check whether you moved.",
+   "addsStat": "armor",
+   "source": "2026-08-17 design pass: blended damage onto Strength + Armor and removed the unconditional onAttack rider, folding it into the base numbers."
+  },
+  {
+   "id": "attack.siege-crossbow.bolt",
+   "name": "Bolt",
+   "range": 10,
+   "stat": "precision",
+   "damage": 3,
+   "stamina": 2,
+   "accuracy": 0,
+   "crit": 0,
+   "hits": 1,
+   "targets": "one enemy within 10 hexes",
+   "damageType": "physical",
+   "tags": [
+    "crossbow",
+    "ranged"
+   ],
+   "triggers": [],
+   "slayer": null
+  },
+  {
+   "id": "attack.siege-crossbow.siege-shot",
+   "name": "Siege Shot",
+   "range": 12,
+   "stat": "precision",
+   "damage": 1,
+   "stamina": 3,
+   "accuracy": -5,
+   "crit": 3,
+   "hits": 1,
+   "targets": "one enemy within 12 hexes",
+   "damageType": "physical",
+   "tags": [
+    "crossbow",
+    "ranged"
+   ],
+   "triggers": [],
+   "slayer": null,
+   "addsStat": "strength",
+   "description": "Damage equals your Precision plus your Strength, and a further +1. The span has to be cranked before it will shoot, and a marksman who never lifted anything heavy will never get the full pull out of it.",
+   "source": "2026-08-17 design pass: blended onto Precision + Strength and removed the \"on a Turn in which you moved\" rider, which is a condition the engine cannot check."
+  },
+  {
+   "id": "attack.stormforged-halberd.storm-sweep",
+   "name": "Storm Sweep",
+   "range": "melee",
+   "stat": "strength",
+   "damage": 2,
+   "stamina": 2,
+   "accuracy": -5,
+   "crit": 0,
+   "hits": 1,
+   "targets": "every enemy adjacent to you",
+   "damageType": "physical",
+   "tags": [
+    "polearm",
+    "melee",
+    "area"
+   ],
+   "triggers": [],
+   "slayer": null
+  },
+  {
+   "id": "attack.stormforged-halberd.thunderhead",
+   "name": "Thunderhead",
+   "range": 2,
+   "stat": "strength",
+   "damage": 4,
+   "stamina": 3,
+   "accuracy": 5,
+   "crit": 5,
+   "hits": 1,
+   "targets": "one enemy within 2 hexes",
+   "damageType": "physical",
+   "tags": [
+    "polearm",
+    "melee"
+   ],
+   "triggers": [
+    {
+     "hook": "onHit",
+     "effect": "apply 1 Stun"
+    }
+   ],
+   "slayer": null
+  },
+  {
+   "id": "attack.fangs.bite",
+   "name": "Bite",
+   "range": "melee",
+   "stat": "strength",
+   "damage": 2,
+   "stamina": 1,
+   "accuracy": 0,
+   "crit": 5,
+   "hits": 1,
+   "targets": "one enemy in melee reach",
+   "damageType": "physical",
+   "tags": [
+    "brawl",
+    "melee",
+    "fang"
+   ],
+   "triggers": [],
+   "slayer": null,
+   "source": "new 2026-08-20 — natural weapons for class.beast. A Beast carries nothing (0 Item Slots at every level), so its attacks have to come from its own body. Slots 0, hands 0, restricted to the class."
+  },
+  {
+   "id": "attack.fangs.savage",
+   "name": "Savage",
+   "range": "melee",
+   "stat": "strength",
+   "damage": 1,
+   "stamina": 2,
+   "accuracy": -10,
+   "crit": 0,
+   "hits": 2,
+   "targets": "one enemy in melee reach",
+   "damageType": "physical",
+   "tags": [
+    "brawl",
+    "melee",
+    "fang"
+   ],
+   "triggers": [
+    {
+     "hook": "onHit",
+     "effect": "apply 2 Bleed"
+    }
+   ],
+   "slayer": null,
+   "source": "new 2026-08-20 — natural weapons for class.beast. A Beast carries nothing (0 Item Slots at every level), so its attacks have to come from its own body. Slots 0, hands 0, restricted to the class."
+  },
+  {
+   "id": "attack.claws.swipe",
+   "name": "Swipe",
+   "range": "melee",
+   "stat": "strength",
+   "damage": 1,
+   "stamina": 1,
+   "accuracy": 5,
+   "crit": 5,
+   "hits": 1,
+   "targets": "one enemy in melee reach",
+   "damageType": "physical",
+   "tags": [
+    "brawl",
+    "melee",
+    "claw"
+   ],
+   "triggers": [],
+   "slayer": null,
+   "source": "new 2026-08-20 — natural weapons for class.beast. A Beast carries nothing (0 Item Slots at every level), so its attacks have to come from its own body. Slots 0, hands 0, restricted to the class."
+  },
+  {
+   "id": "attack.claws.flense",
+   "name": "Flense",
+   "range": "melee",
+   "stat": "strength",
+   "damage": 0,
+   "stamina": 2,
+   "accuracy": 0,
+   "crit": 0,
+   "hits": 2,
+   "targets": "one enemy in melee reach",
+   "damageType": "physical",
+   "tags": [
+    "brawl",
+    "melee",
+    "claw"
+   ],
+   "triggers": [
+    {
+     "hook": "onCrit",
+     "effect": "apply 3 Bleed"
+    }
+   ],
+   "slayer": null,
+   "source": "new 2026-08-20 — natural weapons for class.beast. A Beast carries nothing (0 Item Slots at every level), so its attacks have to come from its own body. Slots 0, hands 0, restricted to the class."
+  },
+  {
+   "id": "attack.tail.lash",
+   "name": "Lash",
+   "range": "melee",
+   "stat": "strength",
+   "damage": 1,
+   "stamina": 1,
+   "accuracy": 0,
+   "crit": 0,
+   "hits": 1,
+   "targets": "one enemy in melee reach",
+   "damageType": "physical",
+   "tags": [
+    "brawl",
+    "melee"
+   ],
+   "triggers": [
+    {
+     "hook": "onHit",
+     "effect": "the target gains 1 Slow"
+    }
+   ],
+   "slayer": null,
+   "source": "new 2026-08-20 — natural weapons for class.beast. A Beast carries nothing (0 Item Slots at every level), so its attacks have to come from its own body. Slots 0, hands 0, restricted to the class. | 2026-08-20 self-check: dropped the private form tag. No rule read it and no enchantment applied to it, so it was vocabulary that did nothing. These carry `brawl` like the other body weapons."
+  },
+  {
+   "id": "attack.tail.tail-sweep",
+   "name": "Tail Sweep",
+   "range": "melee",
+   "stat": "strength",
+   "damage": 0,
+   "stamina": 2,
+   "accuracy": -5,
+   "crit": 0,
+   "hits": 1,
+   "targets": "every enemy adjacent to you",
+   "damageType": "physical",
+   "tags": [
+    "brawl",
+    "melee"
+   ],
+   "triggers": [],
+   "slayer": null,
+   "source": "new 2026-08-20 — natural weapons for class.beast. A Beast carries nothing (0 Item Slots at every level), so its attacks have to come from its own body. Slots 0, hands 0, restricted to the class. | 2026-08-20 self-check: dropped the private form tag. No rule read it and no enchantment applied to it, so it was vocabulary that did nothing. These carry `brawl` like the other body weapons."
+  },
+  {
+   "id": "attack.horns.ram",
+   "name": "Ram",
+   "range": "melee",
+   "stat": "strength",
+   "damage": 3,
+   "stamina": 2,
+   "accuracy": -10,
+   "crit": 0,
+   "hits": 1,
+   "targets": "one enemy in melee reach",
+   "damageType": "physical",
+   "tags": [
+    "brawl",
+    "melee"
+   ],
+   "triggers": [
+    {
+     "hook": "onHit",
+     "effect": "the target is knocked back 1 hex"
+    }
+   ],
+   "slayer": null,
+   "source": "new 2026-08-20 — natural weapons for class.beast. A Beast carries nothing (0 Item Slots at every level), so its attacks have to come from its own body. Slots 0, hands 0, restricted to the class. | 2026-08-20 self-check: dropped the private form tag. No rule read it and no enchantment applied to it, so it was vocabulary that did nothing. These carry `brawl` like the other body weapons."
+  },
+  {
+   "id": "attack.horns.toss",
+   "name": "Toss",
+   "range": "melee",
+   "stat": "strength",
+   "damage": 1,
+   "stamina": 1,
+   "accuracy": 0,
+   "crit": 5,
+   "hits": 1,
+   "targets": "one enemy in melee reach",
+   "damageType": "physical",
+   "tags": [
+    "brawl",
+    "melee"
+   ],
+   "triggers": [],
+   "slayer": null,
+   "source": "new 2026-08-20 — natural weapons for class.beast. A Beast carries nothing (0 Item Slots at every level), so its attacks have to come from its own body. Slots 0, hands 0, restricted to the class. | 2026-08-20 self-check: dropped the private form tag. No rule read it and no enchantment applied to it, so it was vocabulary that did nothing. These carry `brawl` like the other body weapons."
+  },
+  {
+   "id": "attack.breath.gout",
+   "name": "Gout",
+   "range": 3,
+   "stat": "magic",
+   "damage": 1,
+   "stamina": 2,
+   "accuracy": 0,
+   "crit": 0,
+   "hits": 1,
+   "targets": "a hex within 3 hexes and every hex adjacent to it",
+   "damageType": "magic",
+   "tags": [
+    "brawl",
+    "ranged",
+    "breath"
+   ],
+   "triggers": [
+    {
+     "hook": "onHit",
+     "effect": "apply 2 Burn"
+    }
+   ],
+   "slayer": null,
+   "source": "new 2026-08-20 — natural weapons for class.beast. A Beast carries nothing (0 Item Slots at every level), so its attacks have to come from its own body. Slots 0, hands 0, restricted to the class. | 2026-08-20 self-check: range was written \"ranged\". Every other ranged attack in the game states a NUMBER of hexes; only melee is a word. Set to 3 to match the targets field."
+  },
+  {
+   "id": "attack.breath.hiss",
+   "name": "Hiss",
+   "range": 3,
+   "stat": "magic",
+   "damage": 0,
+   "stamina": 1,
+   "accuracy": 5,
+   "crit": 0,
+   "hits": 1,
+   "targets": "one enemy within 3 hexes",
+   "damageType": "magic",
+   "tags": [
+    "brawl",
+    "ranged",
+    "breath"
+   ],
+   "triggers": [
+    {
+     "hook": "onHit",
+     "effect": "apply 2 Poison"
+    }
+   ],
+   "slayer": null,
+   "source": "new 2026-08-20 — natural weapons for class.beast. A Beast carries nothing (0 Item Slots at every level), so its attacks have to come from its own body. Slots 0, hands 0, restricted to the class. | 2026-08-20 self-check: range was written \"ranged\". Every other ranged attack in the game states a NUMBER of hexes; only melee is a word. Set to 3 to match the targets field."
+  },
+  {
+   "id": "attack.hooves.kick",
+   "name": "Kick",
+   "range": "melee",
+   "stat": "strength",
+   "damage": 2,
+   "stamina": 1,
+   "accuracy": -5,
+   "crit": 0,
+   "hits": 1,
+   "targets": "one enemy in melee reach",
+   "damageType": "physical",
+   "tags": [
+    "brawl",
+    "melee"
+   ],
+   "triggers": [],
+   "slayer": null,
+   "source": "new 2026-08-20 — natural weapons for class.beast. A Beast carries nothing (0 Item Slots at every level), so its attacks have to come from its own body. Slots 0, hands 0, restricted to the class. | 2026-08-20 self-check: dropped the private form tag. No rule read it and no enchantment applied to it, so it was vocabulary that did nothing. These carry `brawl` like the other body weapons."
+  },
+  {
+   "id": "attack.hooves.stomp",
+   "name": "Stomp",
+   "range": "melee",
+   "stat": "strength",
+   "damage": 1,
+   "stamina": 2,
+   "accuracy": -5,
+   "crit": 0,
+   "hits": 2,
+   "targets": "one enemy in melee reach",
+   "damageType": "physical",
+   "tags": [
+    "brawl",
+    "melee"
+   ],
+   "triggers": [],
+   "slayer": null,
+   "source": "new 2026-08-20 — natural weapons for class.beast. A Beast carries nothing (0 Item Slots at every level), so its attacks have to come from its own body. Slots 0, hands 0, restricted to the class. | 2026-08-20 self-check: dropped the private form tag. No rule read it and no enchantment applied to it, so it was vocabulary that did nothing. These carry `brawl` like the other body weapons."
+  }
+ ]
+}

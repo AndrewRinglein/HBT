@@ -1,0 +1,804 @@
+{
+ "class": "class.priest",
+ "specialties": [
+  {
+   "id": "specialty.war-priest",
+   "name": "War Priest",
+   "class": "class.priest",
+   "intent": "You are the only priest who stands in the front rank: your damage is small, but it is true, and nothing the enemy wears makes it smaller.",
+   "statModifiers": {
+    "strength": 2,
+    "armor": 1,
+    "health": 3
+   },
+   "triggers": [
+    {
+     "hook": "onHit",
+     "effect": "your melee attacks deal +2 true damage against undead or demon"
+    }
+   ],
+   "powers": [
+    "power.war-priest.restoration",
+    "power.war-priest.holy-flames",
+    "power.war-priest.smite-evil",
+    "power.war-priest.shield-of-faith"
+   ],
+   "source": "Hell-TCG Priest/War Priest (melee 2 / ranged 1 / armor 1 rebuilt to Strength and Armor; Hold the Line's name went to Warrior/Guardian, so its mechanic is re-authored as Shield of Faith) | 2026-08-17 Angela trim: three stats, no negatives, one ability. Dropped stats: dodge -5. Parked abilities: onKill: heal yourself 2 and every ally adjacent to you 1. | 2026-08-17 off-primary pass: the Wayfinder case exactly — a melee Priest needs +2 Strength to be one."
+  },
+  {
+   "id": "specialty.shepherd",
+   "name": "Shepherd",
+   "class": "class.priest",
+   "intent": "You keep the flock standing — small, constant, cheap healing, and you strip the Burn first because Burn is what makes healing worthless.",
+   "statModifiers": {
+    "spirit": 1,
+    "health": 1,
+    "resist": 1
+   },
+   "triggers": [
+    {
+     "hook": "passive",
+     "effect": "your healing is increased by 1"
+    }
+   ],
+   "powers": [
+    "power.shepherd.circle-of-healing",
+    "power.shepherd.close-wounds",
+    "power.shepherd.prayer",
+    "power.shepherd.call-them-back"
+   ],
+   "source": "Hell-TCG Priest/Oracle, RENAMED — Oracle collided with Prophet/Oracle and the Prophet has the stronger claim. The draw engine (Prophecy of Light) moved to the Prophet; the healing kit (Circle of Healing, Close Wounds) stayed here under a new name. | 2026-08-17 Angela trim: three stats, no negatives, one ability. Dropped stats: strength -1. Parked abilities: onActivationEnd: the ally within 3 hexes with the lowest current Health heals 1. | 2026-08-17 Angela: CUT. ally-reactive hooks, guarding, Consequence-Stack interference and non-knockback forced movement all removed by ruling."
+  },
+  {
+   "id": "specialty.divine-light",
+   "name": "Divine Light",
+   "class": "class.priest",
+   "intent": "You are a fixed point on the map that the party fights around: slow, bright, and everything standing in your light is harder to kill.",
+   "statModifiers": {
+    "resist": 2,
+    "spirit": 1,
+    "health": 1
+   },
+   "triggers": [
+    {
+     "hook": "aura",
+     "effect": "AURA radius 2 — at the end of your Activation every ally inside gains Protection 2, which decays 1 a Phase and by whatever it absorbs, so the light is worth standing in again next Turn."
+    }
+   ],
+   "powers": [
+    "power.divine-light.total-healing",
+    "power.divine-light.hallowed-ground",
+    "power.divine-light.beacon",
+    "power.divine-light.searing-light"
+   ],
+   "source": "Hell-TCG Priest/Divine Light (Divine Leadership cut — it granted Actions; Sanctuary renamed to Hallowed Ground, Sanctuary is taken by Ranger) | 2026-08-17 Angela trim: three stats, no negatives, one ability. Dropped stats: movement -1. Parked abilities: onAllyDamaged: once per Turn, if an ally within 2 hexes is reduced below half Health, it gains 2 Protection. | 2026-08-17 quality pass: replaced a placeholder aura with a distinct effect."
+  },
+  {
+   "id": "specialty.redeemer",
+   "name": "Redeemer",
+   "class": "class.priest",
+   "intent": "You burn on purpose. The fire is your weapon and your penance — and it means nobody can heal you properly for the rest of the fight.",
+   "statModifiers": {
+    "spirit": 1,
+    "health": 2,
+    "resist": 1
+   },
+   "triggers": [
+    {
+     "hook": "startOfBattle",
+     "effect": "you gain 3 Burn, and gain +1 Strength for the rest of the Battle for as long as you are carrying any Burn"
+    }
+   ],
+   "powers": [
+    "power.redeemer.true-sacrifice",
+    "power.redeemer.holy-retribution",
+    "power.redeemer.uncorrupted",
+    "power.redeemer.bear-the-flame"
+   ],
+   "source": "Hell-TCG Martyr/Redeemer (self-Burn kept and made the identity, now that Burn halves healing on its holder) | 2026-08-17 Angela trim: three stats, no negatives, one ability. Dropped stats: armor -1. Parked abilities: onTakingDamage: if the attacker is adjacent to you, it gains 1 Burn."
+  },
+  {
+   "id": "specialty.blessed-sufferer",
+   "name": "Blessed Sufferer",
+   "class": "class.priest",
+   "intent": "You have more room to be hurt than anyone, and you spend it on other people: the party's damage arrives at your Health bar instead of theirs.",
+   "statModifiers": {
+    "toughness": 1,
+    "health": 2,
+    "dodge": 5
+   },
+   "triggers": [
+    {
+     "hook": "onTakingDamage",
+     "effect": "the wound is taken as a gift: gain Protection 1."
+    }
+   ],
+   "powers": [
+    "power.blessed-sufferer.unbent",
+    "power.blessed-sufferer.instant-healing",
+    "power.blessed-sufferer.shield-of-flesh",
+    "power.blessed-sufferer.power-of-the-divine"
+   ],
+   "source": "Hell-TCG Martyr/Blessed Sufferer (dodge 3 rebuilt as +5 Dodge; maxAfflictions is Toughness now and this is where it belongs) | 2026-08-17 Angela trim: three stats, no negatives, one ability. Dropped stats: strength -1; itemSlots -1. Parked abilities: onDowned: when you fail Deathbed Fighting, every ally within 3 hexes heals 3. | 2026-08-17 Angela: CUT. ally-reactive hooks, guarding, Consequence-Stack interference and non-knockback forced movement all removed by ruling. | 2026-08-17 quality pass: replaced a placeholder aura with a distinct effect. | 2026-08-20 Angela: there is no stacking-limit feature, so the cap is cut. Now unbounded: Protection decays 1 a Phase and is spent by what it absorbs, so it limits itself."
+  },
+  {
+   "id": "specialty.martyred-saint",
+   "name": "Martyred Saint",
+   "class": "class.priest",
+   "intent": "Going down is your best turn. You are dangerous standing, worse bleeding out, and worst of all at zero.",
+   "statModifiers": {
+    "health": 3,
+    "spirit": 1,
+    "resist": 1
+   },
+   "triggers": [
+    {
+     "hook": "onDeath",
+     "effect": "every enemy within 3 hexes takes 6 true damage and gains 3 Burn; every ally within 3 hexes heals 4"
+    }
+   ],
+   "powers": [
+    "power.martyred-saint.inner-light",
+    "power.martyred-saint.oblation",
+    "power.martyred-saint.last-rites",
+    "power.martyred-saint.the-last-word"
+   ],
+   "source": "Hell-TCG Martyr/Martyred Saint (onDeath detonation kept, extended down the Consequence Stack to the bleed-out state) | 2026-08-17 Angela trim: three stats, no negatives, one ability. Dropped stats: dodge -5. Parked abilities: onDowned: while you are downed and bleeding out, every enemy adjacent to you takes 2 true damage at the end of each Turn."
+  },
+  {
+   "id": "specialty.oracle",
+   "name": "Oracle",
+   "class": "class.priest",
+   "intent": "You see the field before it happens: thin, slow to hurt anything, and the reason everyone else's numbers are better than they should be.",
+   "statModifiers": {
+    "spirit": 1,
+    "accuracy": 5,
+    "luck": 5
+   },
+   "triggers": [
+    {
+     "hook": "startOfBattle",
+     "effect": "you and every ally within 3 hexes gain +5 Accuracy for the rest of the Battle"
+    }
+   ],
+   "powers": [
+    "power.oracle.prophecy-of-light",
+    "power.oracle.predict",
+    "power.oracle.read-the-signs",
+    "power.oracle.the-hour-of-your-death"
+   ],
+   "source": "Hell-TCG Prophet/Oracle — WINNER of the Oracle collision. The card-draw payload is gone; 'omniscient but fragile' is rebuilt on Vision and Accuracy, which HoBaT has and Hell-TCG did not. | 2026-08-17 Angela trim: three stats, no negatives, one ability. Dropped stats: health -2; vision +3. Parked abilities: onActivationEnd: name one enemy within your Vision; it has -5 Dodge against your party until the end of the next Turn. | 2026-08-17: third stat luck +5 — you see it coming, which is the same thing as being hard to crit."
+  },
+  {
+   "id": "specialty.seer",
+   "name": "Seer",
+   "class": "class.priest",
+   "intent": "You do not make the party stronger, you make the enemy thinner: armour, resist and luck all come off the thing you are looking at.",
+   "statModifiers": {
+    "spirit": 1,
+    "crit": 5,
+    "accuracy": 5
+   },
+   "triggers": [
+    {
+     "hook": "onHit",
+     "effect": "the target loses 1 Luck against your party for the rest of the Battle"
+    }
+   ],
+   "powers": [
+    "power.seer.foresee-the-blow",
+    "power.seer.study-weakness",
+    "power.seer.certainty",
+    "power.seer.inevitable"
+   ],
+   "source": "Hell-TCG Prophet/Seer ('foresees enemy weakness and exploits it' — rebuilt as Luck, Armor and Resist stripping; Study Weakness name harvested from the badge pool) | 2026-08-17 Angela trim: three stats, no negatives, one ability. Dropped stats: health -1; vision +1. Parked abilities: onAllyDamaged: once per Turn, when an ally within 4 hexes is hit, that ally gains +5 Dodge against that attacker for the rest of the Battle. | 2026-08-20 Angela: there is no stacking-limit feature, so the cap is cut. Now unbounded: onHit against one target — the least self-limiting of the seven, and the one worth a second look."
+  },
+  {
+   "id": "specialty.diviner",
+   "name": "Diviner",
+   "class": "class.priest",
+   "intent": "You buy the party tempo — a hex here, a Stamina there — and the single most useful thing you do all fight might happen while you are bleeding out.",
+   "statModifiers": {
+    "staminaMax": 1,
+    "spirit": 1,
+    "movement": 1
+   },
+   "triggers": [
+    {
+     "hook": "startOfBattle",
+     "effect": "on Turn 1 only, you and every ally within 3 hexes gain +1 Movement and 1 Stamina"
+    }
+   ],
+   "powers": [
+    "power.diviner.the-path",
+    "power.diviner.quicken",
+    "power.diviner.last-vision",
+    "power.diviner.act-now"
+   ],
+   "source": "Hell-TCG Prophet/Diviner (the entry burst of Actions and the death-draw are rebuilt as Movement and Stamina tempo — Actions and draws are cut in HoBaT) | 2026-08-17 Angela trim: three stats, no negatives, one ability. Dropped stats: armor -1; health +1. Parked abilities: onDeath: every ally within 4 hexes gains +10 Accuracy and +1 Movement for the rest of the Battle."
+  }
+ ],
+ "powers": [
+  {
+   "id": "power.war-priest.restoration",
+   "name": "Restoration",
+   "specialty": "specialty.war-priest",
+   "stamina": 1,
+   "cooldown": 2,
+   "warmup": 0,
+   "free": false,
+   "targets": "one ally within 3 hexes",
+   "tags": [
+    "heal"
+   ],
+   "description": "remove 5 Poison and 1 Burn from the target, then heal it for 2 + Spirit; the order matters, because Burn halves what a heal is worth.",
+   "source": "Hell-TCG name reused (Priest/War Priest, Restoration) | 2026-08-17: \"difficult terrain\" is not a thing in HoBaT — there are hexes that cost extra Movement. Reworded.",
+   "triggers": []
+  },
+  {
+   "id": "power.war-priest.holy-flames",
+   "name": "Holy Flames",
+   "specialty": "specialty.war-priest",
+   "stamina": 1,
+   "cooldown": 2,
+   "warmup": 0,
+   "free": false,
+   "targets": "self",
+   "tags": [
+    "ranged"
+   ],
+   "description": "Until the end of your next Turn, your attacks gain +2 Spirit, deal true damage, and apply 2 Burn on hit, or 4 against undead.",
+   "source": "Hell-TCG name reused (Priest/War Priest, Holy Flames — random targeting rebuilt as a real ranged attack) | 2026-08-17: was an attack in its own right, so it competed with the weapon in your hands and lost the moment you found a good one. Rebuilt as a next-attack modifier. | 2026-08-17: \"difficult terrain\" is not a thing in HoBaT — there are hexes that cost extra Movement. Reworded. | 2026-08-20 Angela: \"your next <form> attack\" is gone. Nothing tracks which attack is next or what form it is. Rewritten as a duration: until the end of your next Turn, your attacks carry it. The form qualifier is dropped with it. ",
+   "modifies": {
+    "tags": [
+     "ranged"
+    ],
+    "scope": "until-end-of-your-next-turn",
+    "statModifiers": {
+     "spirit": 2
+    }
+   },
+   "triggers": []
+  },
+  {
+   "id": "power.war-priest.smite-evil",
+   "name": "Smite Evil",
+   "specialty": "specialty.war-priest",
+   "stamina": 2,
+   "cooldown": 3,
+   "warmup": 1,
+   "free": false,
+   "targets": "self",
+   "tags": [
+    "melee",
+    "chain"
+   ],
+   "description": "Until the end of your next Turn, your attacks add the party’s Spirit to their damage and deal true damage, and a further 3 against undead or demon.",
+   "source": "Hell-TCG name reused (Priest/War Priest, Smite Evil — a flat +2 Ranged in the original, rebuilt as the attack the name promises) | 2026-08-17: was an attack in its own right, so it competed with the weapon in your hands and lost the moment you found a good one. Rebuilt as a next-attack modifier. | 2026-08-17: \"difficult terrain\" is not a thing in HoBaT — there are hexes that cost extra Movement. Reworded. | 2026-08-17 design pass: rebuilt the flat +2 Strength into a Spirit blend, which is the melee attack a Priest should want and the Priest stat it should spend. | 2026-08-20 Angela: \"your next <form> attack\" is gone. Nothing tracks which attack is next or what form it is. Rewritten as a duration: until the end of your next Turn, your attacks carry it. The form qualifier is dropped with it. ",
+   "modifies": {
+    "tags": [
+     "melee"
+    ],
+    "scope": "until-end-of-your-next-turn",
+    "addsStat": "spirit"
+   },
+   "triggers": []
+  },
+  {
+   "id": "power.war-priest.shield-of-faith",
+   "name": "Shield of Faith",
+   "specialty": "specialty.war-priest",
+   "stamina": 1,
+   "cooldown": 4,
+   "warmup": 1,
+   "free": false,
+   "targets": "you and allies within 1 hex",
+   "tags": [
+    "aura"
+   ],
+   "description": "You and every ally adjacent to you gain +1 Armor and +1 Resist for the rest of the Battle; you lose 1 Movement for the rest of the Battle.",
+   "source": "Hell-TCG mechanic reused, RENAMED (Priest/War Priest, Hold the Line — that name was already spent on Warrior/Guardian) | 2026-08-17: \"difficult terrain\" is not a thing in HoBaT — there are hexes that cost extra Movement. Reworded.",
+   "triggers": []
+  },
+  {
+   "id": "power.shepherd.circle-of-healing",
+   "name": "Circle of Healing",
+   "specialty": "specialty.shepherd",
+   "stamina": 2,
+   "cooldown": 3,
+   "warmup": 1,
+   "free": false,
+   "targets": "allies within 3 hexes",
+   "tags": [
+    "heal",
+    "area"
+   ],
+   "description": "Heal every ally within 3 hexes for 1 + Spirit — about 3 in a party with one priest. Anyone carrying Burn gets half of that, rounded down.",
+   "source": "Hell-TCG name reused (Priest/Oracle → Shepherd, Circle of Healing) | 2026-08-17: \"difficult terrain\" is not a thing in HoBaT — there are hexes that cost extra Movement. Reworded.",
+   "triggers": []
+  },
+  {
+   "id": "power.shepherd.close-wounds",
+   "name": "Close Wounds",
+   "specialty": "specialty.shepherd",
+   "stamina": 1,
+   "cooldown": 1,
+   "warmup": 0,
+   "free": false,
+   "targets": "one ally within 3 hexes",
+   "tags": [
+    "heal"
+   ],
+   "description": "remove 5 Burn from the target, then heal it for 2 + Spirit. Your cheap, repeatable heal, and the only one that fully undoes a fire.",
+   "source": "Hell-TCG name reused (Priest/Oracle → Shepherd, Close Wounds) | 2026-08-17: \"difficult terrain\" is not a thing in HoBaT — there are hexes that cost extra Movement. Reworded.",
+   "triggers": []
+  },
+  {
+   "id": "power.shepherd.prayer",
+   "name": "Prayer",
+   "specialty": "specialty.shepherd",
+   "stamina": 0,
+   "cooldown": 3,
+   "warmup": 0,
+   "free": true,
+   "targets": "one ally within 4 hexes",
+   "tags": [
+    "heal"
+   ],
+   "description": "Heal the target 2. It costs nothing and does not use your primary action, so it is what you do on a Turn you have already spent.",
+   "source": "Hell-TCG name reused (badge power, Prayer) | 2026-08-17: \"difficult terrain\" is not a thing in HoBaT — there are hexes that cost extra Movement. Reworded.",
+   "triggers": []
+  },
+  {
+   "id": "power.shepherd.call-them-back",
+   "name": "Call Them Back",
+   "specialty": "specialty.shepherd",
+   "stamina": 2,
+   "cooldown": 5,
+   "warmup": 1,
+   "free": false,
+   "targets": "one downed ally within 4 hexes",
+   "tags": [
+    "heal"
+   ],
+   "description": "Stabilise a downed ally within 4 hexes: its bleed-out counter is removed. It is still down and still out of the fight — it is simply no longer on a clock.",
+   "source": "new — the Consequence Stack's stabilize-in-place rule is the priest's core job, so one specialty gets to do it from safety | 2026-08-17: \"difficult terrain\" is not a thing in HoBaT — there are hexes that cost extra Movement. Reworded. | 2026-08-17 Angela: rebuilt. Passing a Deathbed check returns you to MAX Health with the wounded badge; failing kills you outright. There is no downed state, no bleed-out counter and no stabilising, and nothing may override the roll. Granting Deathbed Fighting is the legitimate way to touch this. | 2026-08-17 Angela: downed IS a state and stabilising IS a mechanic — I over-cut them. Stabilise removes the bleed-out counter and nothing else: no Health, no standing up. | 2026-08-20 Angela sweep: the targets field said 4 hexes and the sentence said 6. The field wins.",
+   "triggers": [],
+   "intent": "the only ranged stabilise in the game"
+  },
+  {
+   "id": "power.divine-light.total-healing",
+   "name": "Total Healing",
+   "specialty": "specialty.divine-light",
+   "stamina": 2,
+   "cooldown": 5,
+   "warmup": 2,
+   "free": false,
+   "targets": "allies within 4 hexes",
+   "tags": [
+    "heal",
+    "area"
+   ],
+   "description": "Remove 2 Burn from every ally within 4 hexes, then heal each of them for 2 + Spirit x2. Your one big button; it is a Turn 3 button, not a Turn 1 one.",
+   "source": "Hell-TCG name reused (Priest/Divine Light, Total Healing — Spirit x2 kept, but Spirit is a party sum of roughly 2, so this heals about 6) | 2026-08-17: \"difficult terrain\" is not a thing in HoBaT — there are hexes that cost extra Movement. Reworded.",
+   "triggers": []
+  },
+  {
+   "id": "power.divine-light.hallowed-ground",
+   "name": "Hallowed Ground",
+   "specialty": "specialty.divine-light",
+   "stamina": 2,
+   "cooldown": 5,
+   "warmup": 1,
+   "free": false,
+   "targets": "a hex within 4 hexes and every hex adjacent to it",
+   "tags": [
+    "area",
+    "aura"
+   ],
+   "description": "Consecrate seven hexes for the rest of the Battle: allies standing in them lose 1 Burn and 1 Poison at the end of each Turn, and undead or demons standing in them take 2 true damage.",
+   "source": "Hell-TCG mechanic reused, RENAMED (Priest/Divine Light, Sanctuary — Sanctuary is taken by Ranger/Protector; the Protection grant became terrain, which is what a beacon should be on a map) | 2026-08-17: \"difficult terrain\" is not a thing in HoBaT — there are hexes that cost extra Movement. Reworded.",
+   "triggers": []
+  },
+  {
+   "id": "power.divine-light.beacon",
+   "name": "Beacon",
+   "specialty": "specialty.divine-light",
+   "stamina": 0,
+   "cooldown": 6,
+   "warmup": 1,
+   "free": false,
+   "targets": "self",
+   "tags": [
+    "stance",
+    "aura"
+   ],
+   "description": "Stance: gain +3 Vision for the rest of the Battle, and every ally within 3 hexes ignores darkness and fog and gains +5 Accuracy.",
+   "source": "new — Vision is one of the seven stats with no Hell-TCG equivalent, and the specialty is literally called Divine Light | 2026-08-17: \"difficult terrain\" is not a thing in HoBaT — there are hexes that cost extra Movement. Reworded.",
+   "triggers": []
+  },
+  {
+   "id": "power.divine-light.searing-light",
+   "name": "Searing Light",
+   "specialty": "specialty.divine-light",
+   "stamina": 2,
+   "cooldown": 4,
+   "warmup": 2,
+   "free": false,
+   "targets": "enemies within 3 hexes",
+   "tags": [
+    "area"
+   ],
+   "description": "Every enemy within 3 hexes takes 2 + Spirit true damage, doubled against undead. As an area effect it cannot crit — but true damage means neither Armor nor Resist takes anything off it.",
+   "source": "new | 2026-08-17: \"difficult terrain\" is not a thing in HoBaT — there are hexes that cost extra Movement. Reworded.",
+   "triggers": []
+  },
+  {
+   "id": "power.redeemer.true-sacrifice",
+   "name": "True Sacrifice",
+   "specialty": "specialty.redeemer",
+   "stamina": 2,
+   "cooldown": 6,
+   "warmup": 3,
+   "free": false,
+   "targets": "one enemy within 3 hexes",
+   "tags": [],
+   "description": "The target gains 10 Burn and you gain 6 Burn.",
+   "source": "Hell-TCG name reused (Martyr/Redeemer, True Sacrifice) | 2026-08-17: \"difficult terrain\" is not a thing in HoBaT — there are hexes that cost extra Movement. Reworded. | 2026-08-20 Angela: \"every heal you receive is halved\" restates what Burn already does — Burn halves healing on its holder. You are carrying 6 of it.",
+   "triggers": []
+  },
+  {
+   "id": "power.redeemer.holy-retribution",
+   "name": "Holy Retribution",
+   "specialty": "specialty.redeemer",
+   "stamina": 1,
+   "cooldown": 3,
+   "warmup": 0,
+   "free": false,
+   "targets": "self",
+   "tags": [
+    "stance"
+   ],
+   "description": "Stance: for the rest of the Battle anything that hits you in melee takes 2 true damage and gains 1 Burn. You gain 2 Burn now.",
+   "source": "Hell-TCG name reused (Martyr/Redeemer, Holy Retribution — Thorns 2 rebuilt as a durable retaliation stance) | 2026-08-17: \"difficult terrain\" is not a thing in HoBaT — there are hexes that cost extra Movement. Reworded.",
+   "triggers": []
+  },
+  {
+   "id": "power.redeemer.uncorrupted",
+   "name": "Uncorrupted",
+   "specialty": "specialty.redeemer",
+   "stamina": 2,
+   "cooldown": 5,
+   "warmup": 2,
+   "free": false,
+   "targets": "allies within 3 hexes",
+   "tags": [
+    "heal",
+    "area"
+   ],
+   "description": "Remove 5 Burn from every ally within 3 hexes and heal each of them 2. You gain 5 Burn.",
+   "source": "Hell-TCG name reused (Martyr/Redeemer, Uncorrupted — the party cleanse now has a price, and the price is on-theme) | 2026-08-17: \"difficult terrain\" is not a thing in HoBaT — there are hexes that cost extra Movement. Reworded. | 2026-08-20 Angela: remove the effect. \"Take N for each X\" scaled the cost by how much good you just did, which means the player cannot know the price before committing, and it was one of only two entries doing it. Flat cost. The self-Burn is fixed at 5 — the same number you pulled off them, and the Redeemer wants to be carrying Burn anyway.",
+   "triggers": []
+  },
+  {
+   "id": "power.redeemer.bear-the-flame",
+   "name": "Bear the Flame",
+   "specialty": "specialty.redeemer",
+   "stamina": 0,
+   "cooldown": 3,
+   "warmup": 0,
+   "free": true,
+   "targets": "one ally within 3 hexes",
+   "tags": [],
+   "description": "Move every stack of Burn and Poison from one ally onto yourself. Free, and you will want it more often than the cooldown lets you have it.",
+   "source": "new | 2026-08-17: \"difficult terrain\" is not a thing in HoBaT — there are hexes that cost extra Movement. Reworded.",
+   "triggers": []
+  },
+  {
+   "id": "power.blessed-sufferer.unbent",
+   "name": "Unbent",
+   "specialty": "specialty.blessed-sufferer",
+   "stamina": 1,
+   "cooldown": 5,
+   "warmup": 3,
+   "free": false,
+   "targets": "self",
+   "tags": [],
+   "description": "Take 5 true damage to remove 5 Stun from yourself and gain +2 Resist and +4 Health for the rest of the Battle. The whole bargain of the branch in one power: you buy the ability to keep standing with the standing you have left.",
+   "source": "Hell-TCG name reused (Martyr/Blessed Sufferer, Unbent — 'permanent Health' rebuilt as Battle-long, since Health resets every Battle in HoBaT) | 2026-08-17: \"difficult terrain\" is not a thing in HoBaT — there are hexes that cost extra Movement. Reworded. | 2026-08-17 quality pass: a flat grant with a free Stun strip stapled on. Now paid for in true damage, which is what a Blessed Sufferer is supposed to spend.",
+   "triggers": []
+  },
+  {
+   "id": "power.blessed-sufferer.instant-healing",
+   "name": "Instant Healing",
+   "specialty": "specialty.blessed-sufferer",
+   "stamina": 1,
+   "cooldown": 2,
+   "warmup": 0,
+   "free": false,
+   "targets": "one ally within 2 hexes",
+   "tags": [
+    "heal"
+   ],
+   "description": "Heal the target for 1 + Spirit and take 2 true damage yourself. You have the Toughness to keep paying this; nobody else does.",
+   "source": "Hell-TCG name reused (Martyr/Blessed Sufferer, Instant Healing) | 2026-08-17: \"difficult terrain\" is not a thing in HoBaT — there are hexes that cost extra Movement. Reworded.",
+   "triggers": []
+  },
+  {
+   "id": "power.blessed-sufferer.shield-of-flesh",
+   "name": "Shield of Flesh",
+   "specialty": "specialty.blessed-sufferer",
+   "stamina": 1,
+   "cooldown": 3,
+   "warmup": 1,
+   "free": false,
+   "targets": "one ally within 2 hexes",
+   "tags": [],
+   "description": "Take 5 true damage; the target gains Protection equal to 5 + Spirit, which decays 1 a Phase like any Protection, so give it to whoever is about to be hit.",
+   "source": "Hell-TCG name reused (Martyr/Blessed Sufferer, Shield of Flesh — redirected from self to an ally, which is what a Martyr is for) | 2026-08-17: \"difficult terrain\" is not a thing in HoBaT — there are hexes that cost extra Movement. Reworded.",
+   "triggers": []
+  },
+  {
+   "id": "power.blessed-sufferer.power-of-the-divine",
+   "name": "Power of the Divine",
+   "specialty": "specialty.blessed-sufferer",
+   "stamina": 0,
+   "cooldown": 5,
+   "warmup": 1,
+   "free": true,
+   "targets": "self",
+   "tags": [],
+   "description": "Take 5 true damage to immediately regain 3 Stamina. This is a one-off refill and does not touch Stamina Regen.",
+   "source": "Hell-TCG name reused (Martyr/Blessed Sufferer, Power of the Divine — 'gain 2 Actions' rebuilt as Stamina, the throttle HoBaT actually has) | 2026-08-17: \"difficult terrain\" is not a thing in HoBaT — there are hexes that cost extra Movement. Reworded.",
+   "triggers": []
+  },
+  {
+   "id": "power.martyred-saint.inner-light",
+   "name": "Inner Light",
+   "specialty": "specialty.martyred-saint",
+   "stamina": 2,
+   "cooldown": 5,
+   "warmup": 2,
+   "free": false,
+   "targets": "you and allies within 3 hexes",
+   "tags": [
+    "heal",
+    "area"
+   ],
+   "description": "Heal yourself 6 and every ally within 3 hexes for 1 + Spirit. You are the reason you are still standing, and standing is the point.",
+   "source": "Hell-TCG name reused (Martyr, Inner Light) | 2026-08-17: \"difficult terrain\" is not a thing in HoBaT — there are hexes that cost extra Movement. Reworded.",
+   "triggers": []
+  },
+  {
+   "id": "power.martyred-saint.oblation",
+   "name": "Oblation",
+   "specialty": "specialty.martyred-saint",
+   "stamina": 1,
+   "cooldown": 3,
+   "warmup": 0,
+   "free": false,
+   "targets": "allies within 3 hexes",
+   "tags": [
+    "heal",
+    "area"
+   ],
+   "description": "Heal every ally within 3 hexes for 2 + Spirit and take 4 true damage.",
+   "source": "Hell-TCG mechanic reused, RENAMED (Martyr, Sacrifice — Sacrifice is taken by Ranger/Protector) | 2026-08-17: \"difficult terrain\" is not a thing in HoBaT — there are hexes that cost extra Movement. Reworded. | 2026-08-20 Angela: remove the effect. \"Take N for each X\" scaled the cost by how much good you just did, which means the player cannot know the price before committing, and it was one of only two entries doing it. Flat cost. Fixed at 4 true damage, which is what it used to cost to heal two people. Check that against three- and four-ally boards.",
+   "triggers": []
+  },
+  {
+   "id": "power.martyred-saint.last-rites",
+   "name": "Last Rites",
+   "specialty": "specialty.martyred-saint",
+   "stamina": 2,
+   "cooldown": 6,
+   "warmup": 2,
+   "free": false,
+   "targets": "one ally within 3 hexes",
+   "tags": [],
+   "description": "Bless one ally for the rest of the Battle: +25 Deathbed Fighting. It does not stop them falling — it makes it much less likely.",
+   "source": "new — the Consequence Stack made a 'you pass the roll' effect possible, and this is the single most priestly thing in the game | 2026-08-17: \"difficult terrain\" is not a thing in HoBaT — there are hexes that cost extra Movement. Reworded. | 2026-08-17 Angela: rebuilt. Passing a Deathbed check returns you to MAX Health with the wounded badge; failing kills you outright. There is no downed state, no bleed-out counter and no stabilising, and nothing may override the roll. Granting Deathbed Fighting is the legitimate way to touch this.",
+   "triggers": []
+  },
+  {
+   "id": "power.martyred-saint.the-last-word",
+   "name": "The Last Word",
+   "specialty": "specialty.martyred-saint",
+   "stamina": 0,
+   "cooldown": 8,
+   "warmup": 3,
+   "free": true,
+   "targets": "self",
+   "tags": [
+    "area"
+   ],
+   "description": "Take 8 true damage. Every enemy within 3 hexes takes 6 damage. Area — it does not roll and cannot crit.",
+   "source": "new | 2026-08-17: \"difficult terrain\" is not a thing in HoBaT — there are hexes that cost extra Movement. Reworded. | 2026-08-17 Angela: rebuilt. Passing a Deathbed check returns you to MAX Health with the wounded badge; failing kills you outright. There is no downed state, no bleed-out counter and no stabilising, and nothing may override the roll. Granting Deathbed Fighting is the legitimate way to touch this.",
+   "triggers": []
+  },
+  {
+   "id": "power.oracle.prophecy-of-light",
+   "name": "Prophecy of Light",
+   "specialty": "specialty.oracle",
+   "stamina": 2,
+   "cooldown": 5,
+   "warmup": 1,
+   "free": false,
+   "targets": "allies within 4 hexes",
+   "tags": [
+    "aura"
+   ],
+   "description": "Every ally within 4 hexes gains +10 Accuracy for the rest of the Battle. On a hero already past 100 the surplus turns into Crit at a quarter, so it is never a dead grant.",
+   "source": "Hell-TCG name reused (Priest/Oracle, Prophecy of Light — 'Draw 2' has no meaning here; the name moved to the Prophet's Oracle with the foresight fantasy attached) | 2026-08-17: \"difficult terrain\" is not a thing in HoBaT — there are hexes that cost extra Movement. Reworded.",
+   "triggers": []
+  },
+  {
+   "id": "power.oracle.predict",
+   "name": "Predict",
+   "specialty": "specialty.oracle",
+   "stamina": 1,
+   "cooldown": 3,
+   "warmup": 0,
+   "free": false,
+   "targets": "one ally within 4 hexes",
+   "tags": [
+    "heal"
+   ],
+   "description": "Heal the target 2 and give it +10 Dodge until the end of its next Turn — you saw the blow coming, so it does not land.",
+   "source": "Hell-TCG name reused (Priest/Oracle, Predict — moved to the Prophet's Oracle in the collision resolution) | 2026-08-17: \"difficult terrain\" is not a thing in HoBaT — there are hexes that cost extra Movement. Reworded.",
+   "triggers": []
+  },
+  {
+   "id": "power.oracle.read-the-signs",
+   "name": "Read the Signs",
+   "specialty": "specialty.oracle",
+   "stamina": 1,
+   "cooldown": 4,
+   "warmup": 0,
+   "free": false,
+   "targets": "self",
+   "tags": [
+    "stance"
+   ],
+   "description": "Stance: gain +3 Vision for the rest of the Battle and reveal every stealthed or hidden unit within it.",
+   "source": "new — Vision is authored from nothing in HoBaT and the Oracle is where it should bite hardest | 2026-08-17: \"difficult terrain\" is not a thing in HoBaT — there are hexes that cost extra Movement. Reworded. | 2026-08-20 Angela: the \"while the stance holds\" clause is cut — the only condition that read a stance's ongoing state.",
+   "triggers": []
+  },
+  {
+   "id": "power.oracle.the-hour-of-your-death",
+   "name": "The Hour of Your Death",
+   "specialty": "specialty.oracle",
+   "stamina": 2,
+   "cooldown": 6,
+   "warmup": 2,
+   "free": false,
+   "targets": "self",
+   "tags": [],
+   "description": "Every attack your party makes deals +2 damage for the rest of the Battle, and you lose 1 Movement for the rest of the Battle.",
+   "source": "new | 2026-08-17: \"difficult terrain\" is not a thing in HoBaT — there are hexes that cost extra Movement. Reworded. | 2026-08-20 Angela: \"name one enemy\" was a persistent per-target designation. Cut; the buff is party-wide and paid for in Movement.",
+   "triggers": []
+  },
+  {
+   "id": "power.seer.foresee-the-blow",
+   "name": "Foresee the Blow",
+   "specialty": "specialty.seer",
+   "stamina": 0,
+   "cooldown": 3,
+   "warmup": 0,
+   "free": true,
+   "targets": "one ally within 3 hexes",
+   "tags": [],
+   "description": "The next attack made against the target this Turn takes -15 Accuracy. It is free, so you can call it after you have seen who moved.",
+   "source": "new | 2026-08-17: \"difficult terrain\" is not a thing in HoBaT — there are hexes that cost extra Movement. Reworded.",
+   "triggers": []
+  },
+  {
+   "id": "power.seer.study-weakness",
+   "name": "Study Weakness",
+   "specialty": "specialty.seer",
+   "stamina": 1,
+   "cooldown": 3,
+   "warmup": 1,
+   "free": false,
+   "targets": "one enemy within your Vision",
+   "tags": [],
+   "description": "The target loses 2 Armor and 2 Resist for the rest of the Battle. Both floor at zero, so spend it on something that had them.",
+   "source": "Hell-TCG name reused (badge power, Study Weakness — merged with Precise Shot's Resist shred) | 2026-08-17: \"difficult terrain\" is not a thing in HoBaT — there are hexes that cost extra Movement. Reworded.",
+   "triggers": []
+  },
+  {
+   "id": "power.seer.certainty",
+   "name": "Certainty",
+   "specialty": "specialty.seer",
+   "stamina": 1,
+   "cooldown": 4,
+   "warmup": 1,
+   "free": false,
+   "targets": "self",
+   "tags": [
+    "stance"
+   ],
+   "description": "Stance: gain +25 Accuracy and lose 1 Movement for the rest of the Battle.",
+   "source": "new | 2026-08-17: \"difficult terrain\" is not a thing in HoBaT — there are hexes that cost extra Movement. Reworded. | 2026-08-17 quality pass: was a flat +10 Accuracy / +5 Crit. Rebuilt around the 100-Accuracy threshold itself, which is the rule the name was always about and which no other row in the game references. | 2026-08-20 Angela: \"your Accuracy cannot fall below 100\" was a stat FLOOR, a second override mechanic. A flat +25 Accuracy does the same job through the pipeline everything else uses.",
+   "triggers": [],
+   "intent": "You stop moving in order to stop missing."
+  },
+  {
+   "id": "power.seer.inevitable",
+   "name": "Inevitable",
+   "specialty": "specialty.seer",
+   "stamina": 2,
+   "cooldown": 5,
+   "warmup": 2,
+   "free": false,
+   "targets": "one enemy within 4 hexes",
+   "tags": [
+    "ranged"
+   ],
+   "description": "Ranged attack at +15 Accuracy for 3 + Spirit true damage.",
+   "source": "new | 2026-08-17: \"difficult terrain\" is not a thing in HoBaT — there are hexes that cost extra Movement. Reworded. | 2026-08-20 Angela: a \"usable only if\" gate on your own or the target's state is not a thing — nothing reads a Health threshold or an event history to decide whether a power is legal. \"if the target is at or below half Health, add its missing Health\" cut — a Health-threshold read plus a scale off missing Health.",
+   "triggers": []
+  },
+  {
+   "id": "power.diviner.the-path",
+   "name": "The Path",
+   "specialty": "specialty.diviner",
+   "stamina": 1,
+   "cooldown": 3,
+   "warmup": 0,
+   "free": false,
+   "targets": "one ally within 4 hexes",
+   "tags": [],
+   "description": "The target immediately moves up to its Movement, ignoring the extra cost of rough hexes, without spending its own Turn.",
+   "source": "Hell-TCG mechanic reused, renamed (Prophet/Diviner's 'Act NOW' entry burst — Actions are cut, so the burst is measured in hexes) | 2026-08-17: \"difficult terrain\" is not a thing in HoBaT — there are hexes that cost extra Movement. Reworded.",
+   "triggers": []
+  },
+  {
+   "id": "power.diviner.quicken",
+   "name": "Quicken",
+   "specialty": "specialty.diviner",
+   "stamina": 0,
+   "cooldown": 5,
+   "warmup": 1,
+   "free": true,
+   "targets": "one ally within 4 hexes",
+   "tags": [],
+   "description": "That ally's Surge Chance rises by 40 for this Turn. On a hit it takes a whole extra Activation and gets Stamina Regen + 1 stamina back with it — far more tempo than a refill, and it never touches the sacred stat itself.",
+   "source": "new | 2026-08-17: \"difficult terrain\" is not a thing in HoBaT — there are hexes that cost extra Movement. Reworded. | 2026-08-17 quality pass: a flat 2-Stamina refill. Rebuilt onto Surge, which is the actual mechanism for buying a hero tempo and which nothing outside two specialties currently grants.",
+   "triggers": []
+  },
+  {
+   "id": "power.diviner.last-vision",
+   "name": "Last Vision",
+   "specialty": "specialty.diviner",
+   "stamina": 0,
+   "cooldown": 6,
+   "warmup": 0,
+   "free": false,
+   "targets": "allies within 4 hexes",
+   "tags": [
+    "aura"
+   ],
+   "description": "When you die, every ally within 4 hexes gains +10 Accuracy and +1 Movement for the rest of the Battle.",
+   "source": "Hell-TCG mechanic reused (Prophet/Diviner, 'last vision on death' — moved one step up the Consequence Stack so the player gets to choose the Turn) | 2026-08-17: \"difficult terrain\" is not a thing in HoBaT — there are hexes that cost extra Movement. Reworded. | 2026-08-17 Angela: rebuilt. Passing a Deathbed check returns you to MAX Health with the wounded badge; failing kills you outright. There is no downed state, no bleed-out counter and no stabilising, and nothing may override the roll. Granting Deathbed Fighting is the legitimate way to touch this.",
+   "triggers": []
+  },
+  {
+   "id": "power.diviner.act-now",
+   "name": "Act Now",
+   "specialty": "specialty.diviner",
+   "stamina": 2,
+   "cooldown": 4,
+   "warmup": 0,
+   "free": false,
+   "targets": "allies within 3 hexes",
+   "tags": [
+    "aura",
+    "area"
+   ],
+   "description": "Every ally within 3 hexes gains +1 Movement and +5 Accuracy until the end of the next Turn.",
+   "source": "Hell-TCG name reused (Prophet/Diviner flavour line, 'Act NOW — I foresee the path') | 2026-08-17: \"difficult terrain\" is not a thing in HoBaT — there are hexes that cost extra Movement. Reworded.",
+   "triggers": []
+  }
+ ]
+}

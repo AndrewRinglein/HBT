@@ -1,0 +1,183 @@
+# content/ — the HoBaT content pipeline
+
+Everything authored for Heroes of Blight and Tragic that is *data* rather than prose,
+plus the viewer that makes it readable.
+
+## Open this
+
+Both live one level up, at the top of the project folder, so neither is buried in here:
+
+- **`../HBT-CODEX.html`** — self-contained, no server, no network. Double-click it. Twenty
+  tabs, hero art inlined, every tab reading data embedded at build time.
+- **`../CODEX.md`** — the same content as one markdown file, ~3,000 lines. No art and no
+  sorting, but you can search it, diff it between builds, and paste any section into a chat.
+
+`content/hbt-codex.html` is the build output; `../HBT-CODEX.html` is the copy you open.
+`mkcodexmd.mjs` writes both root files, so they cannot drift from each other.
+
+## The pipeline
+
+```
+hell-tcg (5 modules)
+      └─ node build-heroes.mjs  →    gen/heroes.json       extract + convert 230 heroes
+hell-tcg art tree
+      ├─ python art-tools/scan-variants.py
+      │                         →    art/variants.json     which art files each template owns
+      └─ python art-tools/build-hero-art.py
+                                →    art/thumbs/*.webp     295 unique images, 280px
+                                →    art/manifest.json     heroId -> thumbnail
+
+gen/*.json  +  settled.json          the authored sources
+      │
+      ├─ node functions.mjs     →    gen/functions.json    the vocabulary, counted
+      ├─ node assemble.mjs      →    hbt-content.json      merge + validate
+      ├─ node mklevelsmd.mjs    →    LEVEL-TABLES.md
+      ├─ node build-viewer.mjs  →    hbt-codex.html        embed + render
+      ├─ node audit.mjs         →    findings on stdout    lint every ruling
+      ├─ node checklevels.mjs   →    per-row ladder prices
+      ├─ node novelty.mjs <id>  →    exit 0 / 1            did this content invent anything
+      ├─ node mkcodexmd.mjs     →    ../CODEX.md           the whole Codex as markdown
+      │                         →    ../HBT-CODEX.html     copy of the browsable Codex
+      └─ node verify-codex.mjs  →    exit 0 / 1            did the codex actually get it
+```
+
+**From a clean checkout, run `assemble` once first.** `functions.mjs` reads
+`hbt-content.json`, which does not exist yet, so the very first build is
+**assemble → functions → assemble → build-viewer**. After that the steady-state order below
+applies. `functions.mjs` now bootstraps itself if the file is missing, so this is a note
+rather than a trap, and `mkcodexmd.mjs` exits 1 with the correct order if it is handed a
+half-built `hbt-content.json`.
+
+**Run them in that order — it matters.** `functions.mjs` reads `hbt-content.json` and writes
+`gen/functions.json`, which `assemble.mjs` then folds back in, so the sequence for a full
+rebuild is **functions → assemble → build-viewer**. Running functions and then jumping
+straight to build-viewer ships a stale vocabulary table. `assemble` must be green (PROBLEMS: 0) before `audit` means
+anything, and `audit` must be at 0 findings before content ships.
+
+**`novelty.mjs` before you ship new content.** `audit.mjs` catches rules that break a
+ruling. `novelty.mjs` catches something quieter: content that works fine but says an
+existing thing a NEW way. Give it an id prefix — `node novelty.mjs class.beast` — and it
+splits the content in two, compares the vocabulary each half uses, and prints anything the
+new half uses and nothing else does.
+
+> It earned its keep the day it was written. The Beast class passed `assemble` and `audit`
+> clean and still had three inventions in it: an attack range written as `"ranged"` when
+> every other ranged attack in the game states a number of hexes; flight asserted in prose
+> when all four existing sources grant the power through the `grants` field; and three
+> weapon-form tags that no rule read and no enchantment applied to. None of those are
+> errors. They are second ways to say things the game already says, which is the thing
+> Angela has spent this whole pass removing.
+
+A flagged value is not automatically wrong — `spirit` shows up as novel for `class.priest`
+because the Priest is genuinely the only class whose attacks scale off it. The tool finds
+candidates; you justify them in the `source` note or cut them.
+
+**`verify-codex.mjs` is the last word, and it is not optional.** A green build means the
+files parsed; it does not mean the Codex says the right thing. This script asks the three
+questions a build cannot: is the HTML newer than every source, does every tab render
+without a page error, and are the rulings actually in the rendered text with the cut
+things actually gone. It exits non-zero if not.
+
+> Two traps it exists to catch, both of which have already happened here:
+> **`innerText` returns only the VISIBLE tab.** Reading the page that way scans one pane
+> of twenty and reports sixteen false failures. Use `textContent`, and click every tab
+> first. **A cut phrase legitimately survives in two places** — a `source` note, which is
+> the entry's history, and the Authoring Guide, which quotes bad wording on purpose. So
+> "this must be gone" is checked against `hbt-content.json`'s live descriptions and
+> triggers, never against the page text.
+
+## What this folder does and does not contain
+
+**The Codex rebuilds from this folder alone.** Delete `hbt-codex.html`, `hbt-content.json`,
+`gen/functions.json`, `FUNCTIONS.md` and `LEVEL-TABLES.md`, run the pipeline, and you get
+**byte-identical** files back. Verified 2026-08-20 by doing exactly that in a clean
+directory: same MD5 on both outputs.
+
+`hbt-codex.html` is self-contained — all 295 hero images are inlined as base64 and there is
+no network fetch — so that one file *is* the Codex. The rest of this folder is how it gets
+made.
+
+**Two scripts reach outside it, and neither is needed to build the Codex:**
+
+| Script | Needs | Why it does not matter |
+|---|---|---|
+| `build-heroes.mjs` | the `hell-tcg` repo, 5 modules | its output `gen/heroes.json` is checked in |
+| `art-tools/*.py` | the `hell-tcg` art tree | their outputs `art/thumbs/*` and `art/manifest.json` are checked in |
+
+So the folder is self-sufficient for everything except **re-extracting heroes or re-cutting
+art from Hell-TCG**. Both of those need `hell-tcg` sitting next to this project.
+
+## What is where
+
+| File | Holds |
+|---|---|
+| `gen/warrior.json` … `civilian.json` | specialties and class powers, one file per class |
+| `gen/weapons.json` | weapons and the attacks they grant |
+| `gen/armor-enchants.json` | armor bases and the enchantment overlays |
+| `gen/gear.json` | trinkets · relics · blood runes · idols · consumables |
+| `gen/settled-items.json` | content that existed only as prose in `2-ACTIONS-SETTLED.md` |
+| `gen/badges.json` | 126 badges, parsed from the MANIFEST in `4-BADGES-NOTES.md` |
+| `gen/classes.json` | the 7 classes, the 19-stat ladder, the hero art scheme |
+| `gen/levels.json` | the 7 level tables |
+| `gen/functions.json` | the complete function vocabulary with usage counts, generated |
+| `gen/heroes.json` | 297 heroes pulled from hell-tcg's five creation paths, converted to the 19-stat block |
+| `settled.json` | universal powers, the tag vocabulary, immunity necklaces |
+| `AUTHORING-GUIDE.md` | **read this before authoring anything.** Every rule and every trap |
+| `LEVEL-TABLES.md` | the level tables as prose, generated from `gen/levels.json` |
+| `corpus-*.txt` | 1,276 rows harvested mechanically from hell-tcg, kept for reference |
+| `art/` | 146 hero thumbnails + the manifest. Regenerate with `art-tools/build-hero-art.py` |
+| `_archive/` | one-shot patch scripts already applied. Kept for the record, never re-run |
+
+## Heroes
+
+`build-heroes.mjs` imports hell-tcg's modules directly rather than reading them — nothing is
+retyped. It needs `../hell-tcg/` beside this project. Five paths in, 230 rows out:
+
+| Path | Source | Rows |
+|---|---|---|
+| fixed | `src/state/heroData.js` → `HERO_DATA` | 98 |
+| shadows | `data/shadowsHeroTypes.js` → `AVTAIR_HERO_TYPES` | 48 — 12 subtypes × 4 designs |
+| skyship | `data/skyshipHeroes.js` → `AERONISSA_HERO_TYPES` | 47 — 12 subtypes × 4, less one duplicate |
+| tutorial | `src/eveOfRuin/tutorialHeroes.js` → `TUTORIAL_HERO_VARIANTS` | 96 — 24 art sets × 4 designs |
+| aspiring | `src/generators/aspiringHeroGenerator.js` | 8 art templates |
+
+**297 heroes.** The count comes from the art, not from the code.
+
+Eleven of hell-tcg's twelve `baseStats` fields port across; `resolute` was deleted as a stat
+and is recorded per hero as dropped. Six HoBaT stats have no source and are **derived** — the
+rule for each is in `gen/heroes.json` under `derivation` and rendered at the top of the Heroes
+tab. In the viewer every number is colour-coded: green ported, purple derived, gold added by
+the class level table. The level slider recomputes against `gen/levels.json`.
+
+### One piece of art, one unique hero
+
+Ruled 2026-08-20. Every generative template owns four distinct designs, and each design
+is its own hero — so the 12 Shadows subtypes are **48** heroes, not 12, all sharing 12
+stat blocks. What does *not* split is a hero's own level-and-status set: a folder holding
+`1 2 3 4 l p r v` is one hero at four levels wearing four afflictions, which is why the
+98 fixed cast stay 98 and the aspiring generator is 8 templates rather than 32.
+
+`art-tools/scan-variants.py` is what makes this checkable — it lists the distinct art
+files per template with byte-identical duplicates collapsed, and `build-heroes.mjs`
+emits one hero per file. Run it before `build-heroes.mjs`; without it the split is a
+guess.
+
+### Hero art
+
+`art-tools/build-hero-art.py` needs the hell-tcg art tree beside this project and PIL
+installed. Hell-TCG resolves hero art through a pile of special cases in its own viewer —
+a NEW_ART_HEROES map, a CIVILIAN_FOLDER_HEROES list, two variant naming styles, a jpg
+exception and a style alias. Rather than reimplement that, the script indexes every image
+file that actually exists and resolves each hero against it in priority order. **230/230
+match.** The 146 unique images (tutorial variants share art four ways) are thumbnailed to
+280px webp and base64-inlined by `build-viewer.mjs`, so the codex is still one file you
+can double-click with no image folder next to it.
+
+## The rule that matters
+
+`audit.mjs` encodes every ruling Angela has made — no flanking, Protection never has a
+duration, relics are objects with one good stat and one bad, no bespoke conditions, no
+tag that does not exist, no two things sharing a display name, and the level-table
+invariants. Add a rule there the moment a ruling lands; that is what stops the same
+mistake coming back three sessions later. `ACCEPTED` at the top is the exceptions map —
+deliberate violations, each named.

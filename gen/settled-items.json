@@ -1,0 +1,1848 @@
+{
+ "items": [
+  {
+   "id": "item.longbow",
+   "name": "Longbow",
+   "itemClass": "weapon",
+   "tier": 1,
+   "hands": 2,
+   "slots": 2,
+   "classRestriction": "class.ranger",
+   "tags": [
+    "bow"
+   ],
+   "grants": [
+    "attack.longbow.shot",
+    "attack.longbow.long-shot"
+   ],
+   "statModifiers": {},
+   "triggers": [],
+   "intent": "The ranger's baseline: reliable at six hexes, and one hex further if you are willing to pay double.",
+   "source": "settled content"
+  },
+  {
+   "id": "item.shortbow",
+   "name": "Shortbow",
+   "itemClass": "weapon",
+   "tier": 1,
+   "hands": 2,
+   "slots": 2,
+   "classRestriction": null,
+   "tags": [
+    "bow"
+   ],
+   "grants": [
+    "attack.shortbow.short-shot",
+    "attack.shortbow.quick-shot"
+   ],
+   "statModifiers": {},
+   "triggers": [],
+   "intent": "Short in the draw and short in the range, but the only bow that will shoot for free.",
+   "source": "settled content"
+  },
+  {
+   "id": "item.elfbow",
+   "name": "Elfbow",
+   "itemClass": "weapon",
+   "tier": 1,
+   "hands": 2,
+   "slots": 2,
+   "classRestriction": "class.ranger",
+   "tags": [
+    "bow"
+   ],
+   "grants": [
+    "attack.elfbow.elf-shot",
+    "attack.elfbow.double-shot"
+   ],
+   "statModifiers": {},
+   "triggers": [],
+   "intent": "It does not hit harder than a longbow; it simply does not miss, and when it must, it misses twice at once.",
+   "source": "settled content"
+  },
+  {
+   "id": "item.barbarian-bow",
+   "name": "Barbarian Bow",
+   "itemClass": "weapon",
+   "tier": 1,
+   "hands": 2,
+   "slots": 2,
+   "classRestriction": null,
+   "tags": [
+    "bow"
+   ],
+   "grants": [
+    "attack.barbarian-bow.power-shot",
+    "attack.barbarian-bow.crippling-shot"
+   ],
+   "statModifiers": {},
+   "triggers": [],
+   "intent": "A bow built by someone who wanted it to be an axe; it hits like one and aims like one too.",
+   "source": "settled content"
+  },
+  {
+   "id": "item.javelin",
+   "name": "Javelin",
+   "itemClass": "weapon",
+   "tier": 1,
+   "hands": 1,
+   "slots": 1,
+   "classRestriction": null,
+   "tags": [
+    "spear",
+    "thrown"
+   ],
+   "grants": [
+    "attack.javelin.throw",
+    "attack.javelin.stab"
+   ],
+   "statModifiers": {},
+   "triggers": [],
+   "intent": "The only tier-1 weapon that is genuinely both — throw it at four hexes or keep it and stab.",
+   "source": "settled content"
+  },
+  {
+   "id": "item.longsword",
+   "name": "Longsword",
+   "itemClass": "weapon",
+   "tier": 1,
+   "hands": 1,
+   "slots": 1,
+   "classRestriction": null,
+   "tags": [
+    "sword"
+   ],
+   "grants": [
+    "attack.longsword.slash",
+    "attack.longsword.stab"
+   ],
+   "statModifiers": {},
+   "triggers": [],
+   "intent": "The reference weapon: cheap-and-reliable or expensive-and-heavy, and nothing else to think about.",
+   "source": "settled content"
+  },
+  {
+   "id": "item.halberd",
+   "name": "Halberd",
+   "itemClass": "weapon",
+   "tier": 1,
+   "hands": 2,
+   "slots": 2,
+   "classRestriction": "class.warrior",
+   "tags": [
+    "polearm"
+   ],
+   "grants": [
+    "attack.halberd.hack",
+    "attack.halberd.cleave"
+   ],
+   "statModifiers": {},
+   "triggers": [],
+   "intent": "Two hands, two hexes of consequence: shove one enemy off you, or catch three of them at once.",
+   "source": "settled content"
+  },
+  {
+   "id": "item.knight-shield",
+   "name": "Knight Shield",
+   "itemClass": "weapon",
+   "tier": 1,
+   "hands": 1,
+   "slots": 1,
+   "classRestriction": null,
+   "tags": [
+    "shield"
+   ],
+   "grants": [
+    "power.knight-shield.block",
+    "attack.knight-shield.shield-slam"
+   ],
+   "statModifiers": {},
+   "triggers": [],
+   "intent": "A shield that answers back: brace behind it, or put its edge through someone's helmet.",
+   "source": "settled content"
+  },
+  {
+   "id": "item.tower-shield",
+   "name": "Tower Shield",
+   "itemClass": "weapon",
+   "tier": 1,
+   "hands": 1,
+   "slots": 1,
+   "classRestriction": null,
+   "tags": [
+    "shield"
+   ],
+   "grants": [
+    "power.tower-shield.cover",
+    "power.tower-shield.stand-tall"
+   ],
+   "statModifiers": {},
+   "triggers": [],
+   "intent": "It has no attack whatsoever, which is the point — it is a wall you happen to be carrying.",
+   "source": "settled content"
+  },
+  {
+   "id": "item.fire-staff",
+   "name": "Fire Staff",
+   "itemClass": "weapon",
+   "tier": 1,
+   "hands": 2,
+   "slots": 2,
+   "classRestriction": "class.mage",
+   "tags": [
+    "staff"
+   ],
+   "grants": [
+    "attack.fire-staff.fire-blast",
+    "power.fire-staff.fireball"
+   ],
+   "statModifiers": {},
+   "triggers": [],
+   "intent": "Burn one thing every turn, or burn seven hexes of ground once.",
+   "source": "settled content"
+  },
+  {
+   "id": "item.frost-staff",
+   "name": "Frost Staff",
+   "itemClass": "weapon",
+   "tier": 1,
+   "hands": 2,
+   "slots": 2,
+   "classRestriction": "class.mage",
+   "tags": [
+    "staff"
+   ],
+   "grants": [
+    "attack.frost-staff.frost-blast",
+    "power.frost-staff.frost-nova"
+   ],
+   "statModifiers": {},
+   "triggers": [],
+   "intent": "Frost cancels burn and amplifies the next physical hit, so this staff is a setup tool wearing a weapon's clothes.",
+   "source": "settled content"
+  },
+  {
+   "id": "item.earth-staff",
+   "name": "Earth Staff",
+   "itemClass": "weapon",
+   "tier": 1,
+   "hands": 2,
+   "slots": 2,
+   "classRestriction": "class.mage",
+   "tags": [
+    "staff"
+   ],
+   "grants": [
+    "attack.earth-staff.earth-blast",
+    "power.earth-staff.earth-shield"
+   ],
+   "statModifiers": {},
+   "triggers": [],
+   "intent": "The only staff whose power points the other way — it protects an ally instead of painting the ground.",
+   "source": "settled content"
+  },
+  {
+   "id": "item.lightning-staff",
+   "name": "Lightning Staff",
+   "itemClass": "weapon",
+   "tier": 1,
+   "hands": 2,
+   "slots": 2,
+   "classRestriction": "class.mage",
+   "tags": [
+    "staff"
+   ],
+   "grants": [
+    "attack.lightning-staff.bolt",
+    "power.lightning-staff.storm"
+   ],
+   "statModifiers": {},
+   "triggers": [],
+   "intent": "The longest reach and the hardest hit of any staff, and it will miss more than any of them.",
+   "source": "settled content"
+  },
+  {
+   "id": "item.force-staff",
+   "name": "Force Staff",
+   "itemClass": "weapon",
+   "tier": 1,
+   "hands": 2,
+   "slots": 2,
+   "classRestriction": "class.mage",
+   "tags": [
+    "staff"
+   ],
+   "grants": [
+    "attack.force-staff.force-blast"
+   ],
+   "statModifiers": {},
+   "triggers": [],
+   "intent": "One attack and no power at all — everything this staff has went into the single blast.",
+   "source": "settled content"
+  },
+  {
+   "id": "item.holy-symbol",
+   "name": "Holy Symbol",
+   "itemClass": "weapon",
+   "tier": 1,
+   "hands": 1,
+   "slots": 1,
+   "classRestriction": "class.priest",
+   "tags": [
+    "staff"
+   ],
+   "grants": [
+    "attack.holy-symbol.wrath",
+    "power.holy-symbol.heal"
+   ],
+   "statModifiers": {},
+   "triggers": [],
+   "intent": "A hand's worth of god: it hurts the walking dead and mends the walking living.",
+   "source": "settled content"
+  },
+  {
+   "id": "item.priest-chain",
+   "name": "Priest Chain",
+   "itemClass": "weapon",
+   "tier": 1,
+   "hands": 1,
+   "slots": 1,
+   "classRestriction": "class.priest",
+   "tags": [
+    "chain"
+   ],
+   "grants": [
+    "attack.priest-chain.smite",
+    "power.priest-chain.benediction"
+   ],
+   "statModifiers": {},
+   "triggers": [],
+   "intent": "A censer on a length of chain — it swings at one enemy and blesses everyone behind it.",
+   "source": "settled content"
+  },
+  {
+   "id": "item.pile-of-rocks",
+   "name": "Pile of Rocks",
+   "itemClass": "weapon",
+   "tier": 0,
+   "hands": 1,
+   "slots": 1,
+   "classRestriction": null,
+   "tags": [
+    "thrown"
+   ],
+   "grants": [
+    "attack.pile-of-rocks.throw"
+   ],
+   "statModifiers": {},
+   "triggers": [],
+   "intent": "It is rocks. You throw them. They are free and they are accurate and they do almost nothing.",
+   "source": "settled content"
+  },
+  {
+   "id": "item.slingshot",
+   "name": "Slingshot",
+   "itemClass": "weapon",
+   "tier": 0,
+   "hands": 1,
+   "slots": 1,
+   "classRestriction": null,
+   "tags": [
+    "sling"
+   ],
+   "grants": [
+    "attack.slingshot.shot"
+   ],
+   "statModifiers": {},
+   "triggers": [],
+   "intent": "A forked stick and a strip of hide, and it will still outrange a thrown rock.",
+   "source": "settled content"
+  },
+  {
+   "id": "item.pitchfork",
+   "name": "Pitchfork",
+   "itemClass": "weapon",
+   "tier": 0,
+   "hands": 2,
+   "slots": 2,
+   "classRestriction": null,
+   "tags": [
+    "spear"
+   ],
+   "grants": [
+    "attack.pitchfork.jab"
+   ],
+   "statModifiers": {},
+   "triggers": [],
+   "intent": "Two hands and a farm tool's balance; it is a real damage point and a real apology.",
+   "source": "settled content"
+  },
+  {
+   "id": "item.club",
+   "name": "Club",
+   "itemClass": "weapon",
+   "tier": 0,
+   "hands": 1,
+   "slots": 1,
+   "classRestriction": null,
+   "tags": [
+    "hammer"
+   ],
+   "grants": [
+    "attack.club.swing"
+   ],
+   "statModifiers": {},
+   "triggers": [],
+   "intent": "A length of wood with the bark still on it, and it takes the strength out of whatever it lands on.",
+   "source": "settled content"
+  },
+  {
+   "id": "item.dagger",
+   "name": "Dagger",
+   "itemClass": "weapon",
+   "tier": 0,
+   "hands": 1,
+   "slots": 1,
+   "classRestriction": null,
+   "tags": [
+    "dagger"
+   ],
+   "grants": [
+    "attack.dagger.stab"
+   ],
+   "statModifiers": {},
+   "triggers": [],
+   "intent": "Fast, free and barely lethal — you stab with it mostly to keep your guard up.",
+   "source": "settled content"
+  },
+  {
+   "id": "item.basic-armor",
+   "name": "Basic Armor",
+   "itemClass": "armor",
+   "tier": 0,
+   "armorWeight": null,
+   "slots": 1,
+   "hands": 0,
+   "classRestriction": null,
+   "tags": [
+    "armor"
+   ],
+   "grants": [],
+   "statModifiers": {
+    "health": 1
+   },
+   "triggers": [],
+   "intent": "One point of Health and not one word of drawback — the floor everything else is measured against.",
+   "source": "settled content"
+  },
+  {
+   "id": "item.flowing-cloak",
+   "name": "Flowing Cloak",
+   "itemClass": "armor",
+   "tier": 0,
+   "armorWeight": null,
+   "slots": 1,
+   "hands": 0,
+   "classRestriction": null,
+   "tags": [
+    "armor"
+   ],
+   "grants": [],
+   "statModifiers": {
+    "dodge": 5
+   },
+   "triggers": [],
+   "intent": "It does not stop anything; it just makes you slightly harder to be sure about.",
+   "source": "settled content"
+  },
+  {
+   "id": "item.nice-robes",
+   "name": "Nice Robes",
+   "itemClass": "armor",
+   "tier": 0,
+   "armorWeight": null,
+   "slots": 1,
+   "hands": 0,
+   "classRestriction": null,
+   "tags": [
+    "armor"
+   ],
+   "grants": [],
+   "statModifiers": {
+    "luck": 3
+   },
+   "triggers": [],
+   "intent": "Good cloth, well cut, and the only protection it offers is that nobody wants to ruin it.",
+   "source": "settled content"
+  },
+  {
+   "id": "item.ragged-hides",
+   "name": "Ragged Hides",
+   "itemClass": "armor",
+   "tier": 0,
+   "armorWeight": null,
+   "slots": 1,
+   "hands": 0,
+   "classRestriction": null,
+   "tags": [
+    "armor"
+   ],
+   "grants": [],
+   "statModifiers": {
+    "health": 2,
+    "staminaMax": -1
+   },
+   "triggers": [],
+   "intent": "Twice the Health of basic armour, and it takes a point of stamina every fight to wear.",
+   "source": "settled content"
+  },
+  {
+   "id": "item.rusted-plate",
+   "name": "Rusted Plate",
+   "itemClass": "armor",
+   "tier": 0,
+   "armorWeight": null,
+   "slots": 1,
+   "hands": 0,
+   "classRestriction": null,
+   "tags": [
+    "armor"
+   ],
+   "grants": [],
+   "statModifiers": {
+    "armor": 1,
+    "movement": -2,
+    "staminaMax": -2,
+    "accuracy": -10,
+    "crit": -5
+   },
+   "triggers": [],
+   "intent": "One point of Armor for four separate miseries — this is the item the armoursmith exists to replace.",
+   "source": "settled content"
+  },
+  {
+   "id": "item.destroyed-mail",
+   "name": "Destroyed Mail",
+   "itemClass": "armor",
+   "tier": 0,
+   "armorWeight": null,
+   "slots": 1,
+   "hands": 0,
+   "classRestriction": null,
+   "tags": [
+    "armor"
+   ],
+   "grants": [],
+   "statModifiers": {
+    "health": 4,
+    "movement": -1,
+    "staminaMax": -1,
+    "accuracy": -20
+   },
+   "triggers": [],
+   "intent": "Four Health is a lot at tier 0, and twenty Accuracy is what four Health costs when the mail is in pieces.",
+   "source": "settled content"
+  },
+  {
+   "id": "item.barbarian-hide",
+   "name": "Barbarian Hide",
+   "itemClass": "armor",
+   "tier": 1,
+   "armorWeight": "light",
+   "slots": 1,
+   "hands": 0,
+   "classRestriction": null,
+   "tags": [
+    "armor",
+    "light"
+   ],
+   "grants": [],
+   "statModifiers": {
+    "staminaMax": 1,
+    "luck": 3
+   },
+   "triggers": [],
+   "intent": "Light armour that buys stamina and luck instead of Health, with nothing given back.",
+   "source": "settled content"
+  },
+  {
+   "id": "item.studded-leather",
+   "name": "Studded Leather",
+   "itemClass": "armor",
+   "tier": 1,
+   "armorWeight": "light",
+   "slots": 1,
+   "hands": 0,
+   "classRestriction": null,
+   "tags": [
+    "armor",
+    "light"
+   ],
+   "grants": [],
+   "statModifiers": {
+    "health": 2
+   },
+   "triggers": [],
+   "intent": "Two Health, clean, no cost — the light band's honest baseline.",
+   "source": "settled content"
+  },
+  {
+   "id": "item.heavy-leather",
+   "name": "Heavy Leather",
+   "itemClass": "armor",
+   "tier": 1,
+   "armorWeight": "light",
+   "slots": 1,
+   "hands": 0,
+   "classRestriction": null,
+   "tags": [
+    "armor",
+    "light"
+   ],
+   "grants": [],
+   "statModifiers": {
+    "health": 4,
+    "staminaMax": -1,
+    "dodge": -5
+   },
+   "triggers": [],
+   "intent": "The heaviest thing in the light band: it trades the band's own Dodge and stamina for Health.",
+   "source": "settled content"
+  },
+  {
+   "id": "item.heavy-chain",
+   "name": "Heavy Chain",
+   "itemClass": "armor",
+   "tier": 1,
+   "armorWeight": "medium",
+   "slots": 1,
+   "hands": 0,
+   "classRestriction": null,
+   "tags": [
+    "armor",
+    "medium"
+   ],
+   "grants": [],
+   "statModifiers": {
+    "armor": 1,
+    "movement": -1
+   },
+   "triggers": [],
+   "intent": "A point of Armor for a hex of Movement, and no other conversation.",
+   "source": "settled content"
+  },
+  {
+   "id": "item.mismatched-armor",
+   "name": "Mismatched Armor",
+   "itemClass": "armor",
+   "tier": 1,
+   "armorWeight": "medium",
+   "slots": 1,
+   "hands": 0,
+   "classRestriction": null,
+   "tags": [
+    "armor",
+    "medium"
+   ],
+   "grants": [],
+   "statModifiers": {
+    "health": 4,
+    "movement": -1
+   },
+   "triggers": [],
+   "intent": "Four pieces from four dead men; it covers you and it slows you and it matches nothing.",
+   "source": "settled content"
+  },
+  {
+   "id": "item.creature-hide",
+   "name": "Creature Hide",
+   "itemClass": "armor",
+   "tier": 1,
+   "armorWeight": "medium",
+   "slots": 1,
+   "hands": 0,
+   "classRestriction": null,
+   "tags": [
+    "armor",
+    "medium"
+   ],
+   "grants": [],
+   "statModifiers": {
+    "luck": 5,
+    "dodge": 5,
+    "health": 1
+   },
+   "triggers": [],
+   "intent": "Something's skin, and whatever it was, things still seem reluctant to land a good hit on it.",
+   "source": "settled content"
+  },
+  {
+   "id": "item.plated-armor",
+   "name": "Plated Armor",
+   "itemClass": "armor",
+   "tier": 1,
+   "armorWeight": "heavy",
+   "slots": 1,
+   "hands": 0,
+   "classRestriction": null,
+   "tags": [
+    "armor",
+    "heavy"
+   ],
+   "grants": [],
+   "statModifiers": {
+    "armor": 2,
+    "health": 4,
+    "luck": 3,
+    "movement": -2,
+    "staminaMax": -2,
+    "dodge": -10,
+    "accuracy": -10
+   },
+   "triggers": [],
+   "intent": "The heavy band at full commitment: two Armor and four Health, and you will never dodge anything again.",
+   "source": "settled content"
+  },
+  {
+   "id": "item.reflective-armor",
+   "name": "Reflective Armor",
+   "itemClass": "armor",
+   "tier": 1,
+   "armorWeight": "heavy",
+   "slots": 1,
+   "hands": 0,
+   "classRestriction": null,
+   "tags": [
+    "armor",
+    "heavy"
+   ],
+   "grants": [],
+   "statModifiers": {
+    "armor": 1,
+    "resist": 2,
+    "movement": -3,
+    "accuracy": -15,
+    "reach": -1
+   },
+   "triggers": [],
+   "intent": "The only tier-1 armour that answers magic, and it costs three hexes of Movement to wear.",
+   "source": "settled content"
+  },
+  {
+   "id": "item.soaked-plate",
+   "name": "Soaked Plate",
+   "itemClass": "armor",
+   "tier": 1,
+   "armorWeight": "heavy",
+   "slots": 1,
+   "hands": 0,
+   "classRestriction": null,
+   "tags": [
+    "armor",
+    "heavy"
+   ],
+   "grants": [],
+   "statModifiers": {
+    "armor": 1,
+    "health": 3
+   },
+   "triggers": [],
+   "intent": "Heavy plate with no penalty at all, which is the strangest thing in the band.",
+   "source": "settled content"
+  }
+ ],
+ "attacks": [
+  {
+   "id": "attack.longbow.shot",
+   "name": "Shot",
+   "range": 6,
+   "stat": "precision",
+   "damage": 1,
+   "stamina": 1,
+   "accuracy": 0,
+   "crit": 0,
+   "hits": 1,
+   "targets": "one enemy within 6 hexes",
+   "damageType": "physical",
+   "tags": [
+    "bow",
+    "ranged"
+   ],
+   "triggers": [],
+   "slayer": null,
+   "intent": "The cheap, repeatable shot the whole class is built around.",
+   "source": "settled content"
+  },
+  {
+   "id": "attack.longbow.long-shot",
+   "name": "Long Shot",
+   "range": 7,
+   "stat": "precision",
+   "damage": 2,
+   "stamina": 2,
+   "accuracy": 0,
+   "crit": 0,
+   "hits": 1,
+   "targets": "one enemy within 7 hexes",
+   "damageType": "physical",
+   "tags": [
+    "bow",
+    "ranged"
+   ],
+   "triggers": [],
+   "slayer": null,
+   "intent": "One more hex and one more point of damage, for twice the stamina.",
+   "source": "settled content"
+  },
+  {
+   "id": "attack.shortbow.short-shot",
+   "name": "Short Shot",
+   "range": 5,
+   "stat": "precision",
+   "damage": 1,
+   "stamina": 1,
+   "accuracy": 5,
+   "crit": 0,
+   "hits": 1,
+   "targets": "one enemy within 5 hexes",
+   "damageType": "physical",
+   "tags": [
+    "bow",
+    "ranged"
+   ],
+   "triggers": [],
+   "slayer": null,
+   "intent": "Closer in than a longbow wants to be, and steadier for it.",
+   "source": "settled content"
+  },
+  {
+   "id": "attack.shortbow.quick-shot",
+   "name": "Quick Shot",
+   "range": 4,
+   "stat": "precision",
+   "damage": 0,
+   "stamina": 0,
+   "accuracy": 0,
+   "crit": 5,
+   "hits": 1,
+   "targets": "one enemy within 4 hexes",
+   "damageType": "physical",
+   "tags": [
+    "bow",
+    "ranged"
+   ],
+   "triggers": [],
+   "slayer": null,
+   "intent": "Costs nothing, so it is what you do on the turn you have nothing left.",
+   "source": "settled content"
+  },
+  {
+   "id": "attack.elfbow.elf-shot",
+   "name": "Elf Shot",
+   "range": 6,
+   "stat": "precision",
+   "damage": 0,
+   "stamina": 1,
+   "accuracy": 15,
+   "crit": 0,
+   "hits": 1,
+   "targets": "one enemy within 6 hexes",
+   "damageType": "physical",
+   "tags": [
+    "bow",
+    "ranged"
+   ],
+   "triggers": [],
+   "slayer": null,
+   "intent": "Fifteen Accuracy instead of a damage point — reliability as the whole payload.",
+   "source": "settled content"
+  },
+  {
+   "id": "attack.elfbow.double-shot",
+   "name": "Double Shot",
+   "range": 4,
+   "stat": "precision",
+   "damage": -1,
+   "stamina": 2,
+   "accuracy": -5,
+   "crit": 0,
+   "hits": 2,
+   "targets": "up to 2 enemies within 4 hexes",
+   "damageType": "physical",
+   "tags": [
+    "bow",
+    "ranged"
+   ],
+   "triggers": [],
+   "slayer": null,
+   "intent": "Two weak arrows in the time of one good one; it is a spread, not an upgrade.",
+   "source": "settled content"
+  },
+  {
+   "id": "attack.barbarian-bow.power-shot",
+   "name": "Power Shot",
+   "range": 6,
+   "stat": "precision",
+   "damage": 2,
+   "stamina": 2,
+   "accuracy": -10,
+   "crit": 0,
+   "hits": 1,
+   "targets": "one enemy within 6 hexes",
+   "damageType": "physical",
+   "tags": [
+    "bow",
+    "ranged"
+   ],
+   "triggers": [
+    {
+     "hook": "onDamage",
+     "effect": "push the target 1 hex directly away from you"
+    }
+   ],
+   "slayer": null,
+   "intent": "The hardest-hitting tier-1 shot, paid for in Accuracy and a hex of shove.",
+   "source": "settled content"
+  },
+  {
+   "id": "attack.barbarian-bow.crippling-shot",
+   "name": "Crippling Shot",
+   "range": 6,
+   "stat": "precision",
+   "damage": 1,
+   "stamina": 2,
+   "accuracy": -10,
+   "crit": 0,
+   "hits": 1,
+   "targets": "one enemy within 6 hexes",
+   "damageType": "physical",
+   "tags": [
+    "bow",
+    "ranged"
+   ],
+   "triggers": [
+    {
+     "hook": "onDamage",
+     "effect": "apply 2 Weak"
+    }
+   ],
+   "slayer": null,
+   "intent": "Trades a damage point for two Weak — the shot you open a big enemy with.",
+   "source": "settled content"
+  },
+  {
+   "id": "attack.javelin.throw",
+   "name": "Throw",
+   "range": 4,
+   "stat": "precision",
+   "damage": 2,
+   "stamina": 1,
+   "accuracy": -10,
+   "crit": 0,
+   "hits": 1,
+   "targets": "one enemy within 4 hexes",
+   "damageType": "physical",
+   "tags": [
+    "thrown",
+    "ranged"
+   ],
+   "triggers": [],
+   "slayer": null,
+   "intent": "Ranged damage on a one-handed weapon, and the Accuracy is what it costs.",
+   "source": "settled content"
+  },
+  {
+   "id": "attack.javelin.stab",
+   "name": "Stab",
+   "range": "melee",
+   "stat": "strength",
+   "damage": 1,
+   "stamina": 0,
+   "accuracy": 0,
+   "crit": 3,
+   "hits": 1,
+   "targets": "one enemy in melee reach",
+   "damageType": "physical",
+   "tags": [
+    "spear",
+    "melee"
+   ],
+   "triggers": [],
+   "slayer": null,
+   "intent": "Free, and better than a punch — the reason you keep hold of it.",
+   "source": "settled content"
+  },
+  {
+   "id": "attack.longsword.slash",
+   "name": "Slash",
+   "range": "melee",
+   "stat": "strength",
+   "damage": 1,
+   "stamina": 1,
+   "accuracy": 0,
+   "crit": 0,
+   "hits": 1,
+   "targets": "one enemy in melee reach",
+   "damageType": "physical",
+   "tags": [
+    "sword",
+    "melee"
+   ],
+   "triggers": [],
+   "slayer": null,
+   "intent": "One stamina, one damage; the honest option.",
+   "source": "settled content"
+  },
+  {
+   "id": "attack.longsword.stab",
+   "name": "Stab",
+   "range": "melee",
+   "stat": "strength",
+   "damage": 2,
+   "stamina": 2,
+   "accuracy": 5,
+   "crit": 3,
+   "hits": 1,
+   "targets": "one enemy in melee reach",
+   "damageType": "physical",
+   "tags": [
+    "sword",
+    "melee"
+   ],
+   "triggers": [],
+   "slayer": null,
+   "intent": "Twice the stamina for more damage, more Accuracy and more Crit — the committed swing.",
+   "source": "settled content"
+  },
+  {
+   "id": "attack.halberd.hack",
+   "name": "Hack",
+   "range": "melee",
+   "stat": "strength",
+   "damage": 2,
+   "stamina": 1,
+   "accuracy": 0,
+   "crit": 0,
+   "hits": 1,
+   "targets": "one enemy in melee reach",
+   "damageType": "physical",
+   "tags": [
+    "polearm",
+    "melee"
+   ],
+   "triggers": [
+    {
+     "hook": "onDamage",
+     "effect": "push the target 1 hex directly away from you"
+    }
+   ],
+   "slayer": null,
+   "intent": "Strong, cheap, and it makes room — the warrior's default halberd swing.",
+   "source": "settled content"
+  },
+  {
+   "id": "attack.halberd.cleave",
+   "name": "Cleave",
+   "range": "melee",
+   "stat": "strength",
+   "damage": 1,
+   "stamina": 2,
+   "accuracy": 0,
+   "crit": 0,
+   "hits": 1,
+   "targets": "an adjacent hex and the two hexes adjacent to both you and it",
+   "damageType": "physical",
+   "tags": [
+    "polearm",
+    "melee",
+    "area"
+   ],
+   "triggers": [],
+   "slayer": null,
+   "description": "An area attack across a three-hex arc. It does not roll to hit, so it cannot crit.",
+   "intent": "Three hexes in one swing, at the price of never critting.",
+   "source": "settled content"
+  },
+  {
+   "id": "attack.knight-shield.shield-slam",
+   "name": "Shield Slam",
+   "range": "melee",
+   "stat": "strength",
+   "damage": 0,
+   "stamina": 2,
+   "accuracy": 0,
+   "crit": 0,
+   "hits": 1,
+   "targets": "one enemy in melee reach",
+   "damageType": "physical",
+   "tags": [
+    "shield",
+    "melee"
+   ],
+   "triggers": [
+    {
+     "hook": "onDamage",
+     "effect": "apply 1 Stun"
+    }
+   ],
+   "slayer": null,
+   "cooldown": 4,
+   "intent": "No damage bonus at all; you are paying two stamina and a cooldown for the Stun.",
+   "source": "settled content"
+  },
+  {
+   "id": "attack.fire-staff.fire-blast",
+   "name": "Fire Blast",
+   "range": 4,
+   "stat": "precision",
+   "damage": 1,
+   "stamina": 1,
+   "accuracy": 0,
+   "crit": 0,
+   "hits": 1,
+   "targets": "one enemy within 4 hexes",
+   "damageType": "magic",
+   "tags": [
+    "staff",
+    "ranged"
+   ],
+   "triggers": [
+    {
+     "hook": "onHit",
+     "effect": "apply 1 Burn"
+    }
+   ],
+   "slayer": null,
+   "intent": "The mage's repeatable magic attack, with a burn stack riding on it.",
+   "source": "settled content"
+  },
+  {
+   "id": "attack.frost-staff.frost-blast",
+   "name": "Frost Blast",
+   "range": 4,
+   "stat": "precision",
+   "damage": 1,
+   "stamina": 1,
+   "accuracy": 0,
+   "crit": 0,
+   "hits": 1,
+   "targets": "one enemy within 4 hexes",
+   "damageType": "magic",
+   "tags": [
+    "staff",
+    "ranged"
+   ],
+   "triggers": [
+    {
+     "hook": "onHit",
+     "effect": "apply 1 Frost"
+    }
+   ],
+   "slayer": null,
+   "intent": "Same shape as Fire Blast, but the stack it leaves makes your melee hit harder.",
+   "source": "settled content"
+  },
+  {
+   "id": "attack.earth-staff.earth-blast",
+   "name": "Earth Blast",
+   "range": 3,
+   "stat": "precision",
+   "damage": 1,
+   "stamina": 1,
+   "accuracy": 0,
+   "crit": 0,
+   "hits": 1,
+   "targets": "one enemy within 3 hexes",
+   "damageType": "magic",
+   "tags": [
+    "staff",
+    "ranged"
+   ],
+   "triggers": [
+    {
+     "hook": "onDamage",
+     "effect": "push the target 1 hex directly away from you"
+    }
+   ],
+   "slayer": null,
+   "intent": "Shortest range of the staves, and the only one that moves the target.",
+   "source": "settled content"
+  },
+  {
+   "id": "attack.lightning-staff.bolt",
+   "name": "Bolt",
+   "range": 5,
+   "stat": "precision",
+   "damage": 3,
+   "stamina": 2,
+   "accuracy": -20,
+   "crit": 0,
+   "hits": 1,
+   "targets": "one enemy within 5 hexes",
+   "damageType": "magic",
+   "tags": [
+    "staff",
+    "ranged"
+   ],
+   "triggers": [],
+   "slayer": null,
+   "intent": "Three damage at five hexes, bought with the largest Accuracy penalty at the tier.",
+   "source": "settled content"
+  },
+  {
+   "id": "attack.force-staff.force-blast",
+   "name": "Force Blast",
+   "range": 4,
+   "stat": "precision",
+   "damage": 0,
+   "stamina": 2,
+   "accuracy": 0,
+   "crit": 0,
+   "hits": 1,
+   "targets": "one enemy within 4 hexes",
+   "damageType": "magic",
+   "tags": [
+    "staff",
+    "ranged"
+   ],
+   "triggers": [],
+   "slayer": null,
+   "description": "Damage equals your Precision plus the party's Magic.",
+   "intent": "Deliberately the only tier-1 weapon with one attack; the double scaling is what it bought.",
+   "source": "settled content"
+  },
+  {
+   "id": "attack.holy-symbol.wrath",
+   "name": "Wrath",
+   "range": 5,
+   "stat": "precision",
+   "damage": 0,
+   "stamina": 1,
+   "accuracy": 5,
+   "crit": 0,
+   "hits": 1,
+   "targets": "one enemy within 5 hexes",
+   "damageType": "true",
+   "tags": [
+    "staff",
+    "ranged"
+   ],
+   "triggers": [],
+   "slayer": {
+    "undead": 2
+   },
+   "intent": "True damage ignores mitigation entirely, and against undead it is two points better again.",
+   "source": "settled content"
+  },
+  {
+   "id": "attack.priest-chain.smite",
+   "name": "Smite",
+   "range": 5,
+   "stat": "precision",
+   "damage": 1,
+   "stamina": 1,
+   "accuracy": 0,
+   "crit": 0,
+   "hits": 1,
+   "targets": "one enemy within 5 hexes",
+   "damageType": "true",
+   "tags": [
+    "chain",
+    "ranged"
+   ],
+   "triggers": [],
+   "slayer": null,
+   "intent": "A point better than Wrath, with no slayer line and no Accuracy bonus.",
+   "source": "settled content"
+  },
+  {
+   "id": "attack.pile-of-rocks.throw",
+   "name": "Throw",
+   "range": 3,
+   "stat": "precision",
+   "damage": -1,
+   "stamina": 0,
+   "accuracy": 10,
+   "crit": 0,
+   "hits": 1,
+   "targets": "one enemy within 3 hexes",
+   "damageType": "physical",
+   "tags": [
+    "thrown",
+    "ranged"
+   ],
+   "triggers": [],
+   "slayer": null,
+   "intent": "Zero stamina and +10 Accuracy against a damage point of negative one.",
+   "source": "settled content"
+  },
+  {
+   "id": "attack.slingshot.shot",
+   "name": "Shot",
+   "range": 4,
+   "stat": "precision",
+   "damage": 0,
+   "stamina": 0,
+   "accuracy": 0,
+   "crit": 0,
+   "hits": 1,
+   "targets": "one enemy within 4 hexes",
+   "damageType": "physical",
+   "tags": [
+    "sling",
+    "ranged"
+   ],
+   "triggers": [],
+   "slayer": null,
+   "intent": "Free, four hexes, flat — the cleanest tier-0 ranged attack there is.",
+   "source": "settled content"
+  },
+  {
+   "id": "attack.pitchfork.jab",
+   "name": "Jab",
+   "range": "melee",
+   "stat": "strength",
+   "damage": 1,
+   "stamina": 1,
+   "accuracy": -5,
+   "crit": 0,
+   "hits": 1,
+   "targets": "one enemy in melee reach",
+   "damageType": "physical",
+   "tags": [
+    "spear",
+    "melee"
+   ],
+   "triggers": [],
+   "slayer": null,
+   "intent": "Tier-1 damage on a tier-0 weapon, paid for with both hands and some Accuracy.",
+   "source": "settled content"
+  },
+  {
+   "id": "attack.club.swing",
+   "name": "Swing",
+   "range": "melee",
+   "stat": "strength",
+   "damage": 0,
+   "stamina": 1,
+   "accuracy": 0,
+   "crit": 0,
+   "hits": 1,
+   "targets": "one enemy in melee reach",
+   "damageType": "physical",
+   "tags": [
+    "hammer",
+    "melee"
+   ],
+   "triggers": [
+    {
+     "hook": "onDamage",
+     "effect": "apply 1 Weak"
+    }
+   ],
+   "slayer": null,
+   "intent": "No damage bonus; the Weak stack is the whole weapon.",
+   "source": "settled content"
+  },
+  {
+   "id": "attack.dagger.stab",
+   "name": "Stab",
+   "range": "melee",
+   "stat": "strength",
+   "damage": -1,
+   "stamina": 0,
+   "accuracy": 0,
+   "crit": 5,
+   "hits": 1,
+   "targets": "one enemy in melee reach",
+   "damageType": "physical",
+   "tags": [
+    "dagger",
+    "melee"
+   ],
+   "triggers": [
+    {
+     "hook": "onAttack",
+     "effect": "gain 1 Protection"
+    }
+   ],
+   "slayer": null,
+   "intent": "It pays you a point of protection every time you swing, whether or not you connect.",
+   "source": "settled content"
+  }
+ ],
+ "powers": [
+  {
+   "id": "power.knight-shield.block",
+   "name": "Block",
+   "specialty": null,
+   "owner": "item.knight-shield",
+   "stamina": 1,
+   "cooldown": 3,
+   "warmup": 0,
+   "free": false,
+   "targets": "self",
+   "tags": [
+    "shield"
+   ],
+   "description": "Gain Protection equal to 4 + your Armor, and lose 5 Dodge for the rest of the Battle. Every use costs another 5 Dodge; the shield only knows one answer and it gets worse at the other one.",
+   "source": "settled content | 2026-08-17 quality pass: '5 protection and +2 Armor for the Turn' was a flat number. Now it scales off Armor and each use permanently trades away Dodge. | 2026-08-20 Angela: \"every use costs another 5 Dodge\" was a per-use escalation. The stat loss is the rest of the Battle either way, so it stacks naturally without a counter. | 2026-08-20 Angela: the escalating cost is back. It needs no counter — a rest-of-Battle stat loss simply applies again each time, and there is no cap on it either.",
+   "triggers": [],
+   "intent": "The straightforward brace — a flat mitigation bump plus a pool of protection to spend."
+  },
+  {
+   "id": "power.tower-shield.cover",
+   "name": "Cover",
+   "specialty": null,
+   "owner": "item.tower-shield",
+   "stamina": 1,
+   "cooldown": 3,
+   "warmup": 0,
+   "free": false,
+   "targets": "self",
+   "tags": [
+    "shield"
+   ],
+   "description": "Plant the shield: for the rest of the Battle you have +20 Dodge against ranged attacks and -10 Dodge against melee. It is a pavise, not a buckler — once it is down, the thing you want walking towards you is an archer.",
+   "source": "settled content | 2026-08-17 quality pass: '+15 Dodge and 2 protection' was a flat number with no decision. Rebuilt as a directional trade that has to be read against the enemy list.",
+   "triggers": [],
+   "intent": "Dodge for the fight you expect arrows in, and a liability the moment blades close."
+  },
+  {
+   "id": "power.tower-shield.stand-tall",
+   "name": "Stand Tall",
+   "specialty": null,
+   "owner": "item.tower-shield",
+   "stamina": 2,
+   "cooldown": 4,
+   "warmup": 0,
+   "free": false,
+   "targets": "self",
+   "tags": [
+    "shield",
+    "stance"
+   ],
+   "description": "Stance: for the rest of the Battle you have +2 Armor and +1 Resist, and lose 3 Movement.",
+   "source": "settled content | 2026-08-17 quality pass: '+3 Armor and +2 Resist for 1 Turn' was a flat, decisionless number. Now permanent, and permanently costs most of your Movement. | 2026-08-20 Angela: \"your Movement is 2 whatever it was\" was a stat OVERRIDE — nothing else in the game replaces a stat rather than modifying it. -3 Movement instead.",
+   "triggers": [],
+   "intent": "The heaviest mitigation available at tier 1, sold at the price of ever being somewhere else."
+  },
+  {
+   "id": "power.fire-staff.fireball",
+   "name": "Flame Burst",
+   "specialty": null,
+   "owner": "item.fire-staff",
+   "stamina": 3,
+   "cooldown": 0,
+   "warmup": 0,
+   "free": false,
+   "targets": "a hex within 4 hexes and every hex adjacent to it",
+   "tags": [
+    "staff",
+    "area"
+   ],
+   "description": "Deal magic damage equal to your Magic to every unit in the blast, and those seven hexes become burning. It does not roll to hit, so it cannot crit, and allies caught in it burn too.",
+   "source": "settled content | 2026-08-19: power.fire-master.fireball owns \"Fireball\" — two powers with one name is the worst of the collisions. The staff grants the smaller baseline version. | 2026-08-20 Angela: ground layers are PERSISTENT and carry no number and no clock. A hex is burning or it is not. One layer per hex; applying a different one replaces it. See rule.ground-layers.",
+   "triggers": [],
+   "intent": "The blast is the smaller half; the burning ground it leaves is the real payload."
+  },
+  {
+   "id": "power.frost-staff.frost-nova",
+   "name": "Frost Nova",
+   "specialty": null,
+   "owner": "item.frost-staff",
+   "stamina": 3,
+   "cooldown": 0,
+   "warmup": 0,
+   "free": false,
+   "targets": "a hex within 4 hexes and every hex adjacent to it",
+   "tags": [
+    "staff",
+    "area"
+   ],
+   "description": "Deal magic damage equal to your Magic to every unit in the blast, and those seven hexes become frost. It does not roll to hit, so it cannot crit.",
+   "source": "settled content | 2026-08-20 Angela: ground layers are PERSISTENT and carry no number and no clock. A hex is burning or it is not. One layer per hex; applying a different one replaces it. See rule.ground-layers.",
+   "triggers": [],
+   "intent": "Seven hexes of frost is seven hexes where the warriors suddenly hit for more."
+  },
+  {
+   "id": "power.earth-staff.earth-shield",
+   "name": "Earth Shield",
+   "specialty": null,
+   "owner": "item.earth-staff",
+   "stamina": 2,
+   "cooldown": 4,
+   "warmup": 0,
+   "free": false,
+   "targets": "one ally within 4 hexes",
+   "tags": [
+    "staff"
+   ],
+   "description": "The target ally gains 3 + Magic Protection.",
+   "source": "settled content",
+   "triggers": [],
+   "intent": "Protection scaled off the party's Magic — a mage keeping the front line standing."
+  },
+  {
+   "id": "power.lightning-staff.storm",
+   "name": "Storm",
+   "specialty": null,
+   "owner": "item.lightning-staff",
+   "stamina": 3,
+   "cooldown": 0,
+   "warmup": 0,
+   "free": false,
+   "targets": "a hex within 4 hexes and every hex adjacent to it",
+   "tags": [
+    "staff",
+    "area"
+   ],
+   "description": "Deal magic damage equal to your Magic + 1 to every unit in the blast. It does not roll to hit, so it cannot crit.",
+   "source": "settled content",
+   "triggers": [],
+   "intent": "Pure damage where the other staves leave terrain — one more point, nothing lingering."
+  },
+  {
+   "id": "power.holy-symbol.heal",
+   "name": "Heal",
+   "specialty": null,
+   "owner": "item.holy-symbol",
+   "stamina": 1,
+   "cooldown": 0,
+   "warmup": 0,
+   "free": false,
+   "targets": "one ally within 6 hexes",
+   "tags": [
+    "heal"
+   ],
+   "description": "Heal the target for 1 + 2 x Spirit.",
+   "source": "settled content",
+   "triggers": [],
+   "intent": "Doubled Spirit scaling is what makes a priest worth the slot."
+  },
+  {
+   "id": "power.priest-chain.benediction",
+   "name": "Benediction",
+   "specialty": null,
+   "owner": "item.priest-chain",
+   "stamina": 2,
+   "cooldown": 0,
+   "warmup": 0,
+   "free": false,
+   "targets": "allies within 6 hexes",
+   "tags": [
+    "heal"
+   ],
+   "description": "Heal every ally within 6 hexes for 2 + half your Spirit, rounded down.",
+   "source": "settled content | 2026-08-20 Angela sweep: \"hero\" in a mechanical sentence — the word everywhere else is \"ally\", and an ally shape already exists. Same effect, one vocabulary.",
+   "triggers": [],
+   "intent": "Party-wide healing at half the scaling — breadth instead of depth."
+  },
+  {
+   "id": "power.enchant-fire.ignite",
+   "name": "Ignite",
+   "specialty": null,
+   "owner": "enchant.fire",
+   "stamina": 1,
+   "cooldown": 6,
+   "warmup": 0,
+   "free": false,
+   "targets": "a hex within 4 hexes and every hex adjacent to it",
+   "tags": [
+    "area",
+    "ranged"
+   ],
+   "description": "The target hex and every hex adjacent to it become burning. It does not roll to hit, so it cannot crit.",
+   "source": "settled content | 2026-08-20 Angela: ground layers are PERSISTENT and carry no number and no clock. A hex is burning or it is not. One layer per hex; applying a different one replaces it. See rule.ground-layers.",
+   "triggers": [],
+   "intent": "The terrain half of the fire enchant, on a long enough cooldown to be a decision."
+  }
+ ],
+ "enchants": [
+  {
+   "id": "enchant.fire",
+   "name": "Fire",
+   "appliesToTags": [
+    "bow",
+    "ranged"
+   ],
+   "tier": null,
+   "statModifiers": {},
+   "triggers": [
+    {
+     "hook": "onHit",
+     "effect": "apply 1 Burn"
+    },
+    {
+     "hook": "onCrit",
+     "effect": "apply 2 more Burn"
+    }
+   ],
+   "slayer": null,
+   "grants": [
+    "power.enchant-fire.ignite"
+   ],
+   "intent": "Burning arrows: a stack on every hit, and once every six Turns a patch of ground that burns on its own.",
+   "source": "settled content | 2026-08-20 Angela: onCrit is a real hook now, and this is the standard rider on a status enchantment — a crit deals 2 more of whatever status it already applies. enchant.bloodletting had it first and it is now the pattern."
+  },
+  {
+   "id": "enchant.recklessness",
+   "name": "Recklessness",
+   "appliesToTags": [
+    "bow",
+    "crossbow",
+    "sword",
+    "dagger",
+    "axe",
+    "hammer",
+    "spear",
+    "polearm",
+    "staff",
+    "shield",
+    "thrown",
+    "sling",
+    "improvised",
+    "chain",
+    "claw"
+   ],
+   "tier": null,
+   "statModifiers": {},
+   "triggers": [
+    {
+     "hook": "onMiss",
+     "effect": "gain +20 Accuracy and +10 Crit until the end of your next Turn"
+    }
+   ],
+   "slayer": null,
+   "grants": [],
+   "intent": "It pays out only when you have already failed, which makes it a comeback rider rather than a bonus.",
+   "source": "settled content"
+  },
+  {
+   "id": "enchant.death",
+   "name": "Death",
+   "appliesToTags": [
+    "bow",
+    "crossbow",
+    "sword",
+    "dagger",
+    "axe",
+    "hammer",
+    "spear",
+    "polearm",
+    "staff",
+    "shield",
+    "thrown",
+    "sling",
+    "improvised",
+    "chain",
+    "claw"
+   ],
+   "tier": null,
+   "statModifiers": {},
+   "triggers": [
+    {
+     "hook": "onKill",
+     "effect": "gain 2 Stamina"
+    }
+   ],
+   "slayer": null,
+   "grants": [],
+   "intent": "Two stamina back on a kill — it turns a finished enemy into most of another attack.",
+   "source": "settled content"
+  },
+  {
+   "id": "enchant.heavens-edge",
+   "name": "Heaven's Edge",
+   "appliesToTags": [
+    "melee"
+   ],
+   "tier": null,
+   "statModifiers": {},
+   "triggers": [
+    {
+     "hook": "onDamage",
+     "effect": "heal for half your Spirit, rounded down"
+    }
+   ],
+   "slayer": null,
+   "grants": [],
+   "intent": "Melee-only lifesteal that scales off the party's Spirit, so it is worth most in a party with a priest.",
+   "source": "settled content"
+  },
+  {
+   "id": "enchant.the-master",
+   "name": "The Master",
+   "appliesToTags": [
+    "bow",
+    "crossbow",
+    "sword",
+    "dagger",
+    "axe",
+    "hammer",
+    "spear",
+    "polearm",
+    "staff",
+    "shield",
+    "thrown",
+    "sling",
+    "improvised",
+    "chain",
+    "claw"
+   ],
+   "tier": null,
+   "statModifiers": {},
+   "triggers": [
+    {
+     "hook": "onHit",
+     "effect": "gain +10 Accuracy and +1 Crit"
+    },
+    {
+     "hook": "onMiss",
+     "effect": "gain -20 Accuracy"
+    }
+   ],
+   "slayer": null,
+   "grants": [],
+   "intent": "It rewards a hot streak and punishes a cold one, twice as hard in the wrong direction.",
+   "source": "settled content"
+  },
+  {
+   "id": "enchant.white-steel",
+   "name": "White Steel",
+   "appliesToTags": [
+    "armor"
+   ],
+   "tier": null,
+   "statModifiers": {},
+   "triggers": [
+    {
+     "hook": "onActivationEnd",
+     "effect": "gain 2 Protection"
+    }
+   ],
+   "slayer": null,
+   "grants": [],
+   "intent": "Two protection every activation, forever; the decay is the only thing keeping it honest.",
+   "source": "settled content"
+  },
+  {
+   "id": "enchant.charmed",
+   "name": "Charmed",
+   "appliesToTags": [
+    "armor"
+   ],
+   "tier": null,
+   "statModifiers": {
+    "luck": 5,
+    "health": 2
+   },
+   "triggers": [],
+   "slayer": null,
+   "grants": [
+    "power.recover"
+   ],
+   "intent": "Luck, Health and a way to get your stamina back — the generalist's enchant.",
+   "source": "settled content"
+  },
+  {
+   "id": "enchant.enchanted",
+   "name": "Enchanted",
+   "appliesToTags": [
+    "armor"
+   ],
+   "tier": null,
+   "statModifiers": {
+    "armor": 1,
+    "resist": 1
+   },
+   "triggers": [],
+   "slayer": null,
+   "grants": [],
+   "intent": "One point of each mitigation, no drawback, nothing clever. The most valuable single points in the game.",
+   "source": "settled content"
+  },
+  {
+   "id": "enchant.damned",
+   "name": "Damned",
+   "appliesToTags": [
+    "armor"
+   ],
+   "tier": null,
+   "statModifiers": {
+    "corruption": 1
+   },
+   "triggers": [
+    {
+     "hook": "onActivationEnd",
+     "effect": "remove 1 Weak and 1 Poison from yourself"
+    }
+   ],
+   "slayer": null,
+   "grants": [],
+   "intent": "It sheds the two statuses that stack in ones, and it charges you in Corruption rather than in stats.",
+   "source": "settled content"
+  },
+  {
+   "id": "enchant.might",
+   "name": "Might",
+   "appliesToTags": [
+    "armor"
+   ],
+   "tier": null,
+   "statModifiers": {
+    "strength": 1,
+    "health": 2,
+    "resist": 1
+   },
+   "triggers": [],
+   "slayer": null,
+   "grants": [
+    "power.charge"
+   ],
+   "intent": "Strength, Health, Resist and a free activation to close with — armour written for the front rank.",
+   "source": "settled content"
+  },
+  {
+   "id": "enchant.enduring",
+   "name": "Enduring",
+   "appliesToTags": [
+    "armor"
+   ],
+   "tier": null,
+   "statModifiers": {
+    "staminaMax": 2,
+    "health": 4,
+    "deathbedFighting": 10
+   },
+   "triggers": [],
+   "slayer": null,
+   "grants": [
+    "power.recover"
+   ],
+   "intent": "Everything on it is about lasting: more stamina, more Health, and a better chance of standing back up.",
+   "source": "settled content"
+  },
+  {
+   "id": "enchant.regeneration",
+   "name": "Regeneration",
+   "appliesToTags": [
+    "armor"
+   ],
+   "tier": null,
+   "statModifiers": {},
+   "triggers": [
+    {
+     "hook": "onTakingDamage",
+     "effect": "gain 1 Regeneration"
+    }
+   ],
+   "slayer": null,
+   "grants": [
+    "power.regen"
+   ],
+   "intent": "It only starts working once someone has hit you, which is exactly when you want it.",
+   "source": "settled content"
+  }
+ ]
+}

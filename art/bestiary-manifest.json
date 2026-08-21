@@ -1,0 +1,1595 @@
+{
+ "enemy-imp": {
+  "thumbs": [
+   "8ecc1e8f5a6a.webp"
+  ],
+  "src": [
+   "assets/cards/enemies/imp.png"
+  ],
+  "copies": [
+   "assets/bestiary/eve/imp.png"
+  ]
+ },
+ "enemy-soldier": {
+  "thumbs": [
+   "4a9e02ff4316.webp"
+  ],
+  "src": [
+   "assets/cards/enemies/soldier.png"
+  ],
+  "copies": [
+   "assets/bestiary/eve/soldier.png"
+  ]
+ },
+ "enemy-skeleton": {
+  "thumbs": [
+   "d8fa6e9f0655.webp"
+  ],
+  "src": [
+   "assets/cards/enemies/skeleton.png"
+  ],
+  "copies": [
+   "assets/bestiary/eve/skeleton.png"
+  ]
+ },
+ "enemy-skeletal-archer": {
+  "thumbs": [
+   "a04f5c6266f2.webp"
+  ],
+  "src": [
+   "assets/cards/enemies/skeletal-archer.png"
+  ],
+  "copies": [
+   "assets/bestiary/eve/skeletal-archer.png"
+  ]
+ },
+ "enemy-poison-imp": {
+  "thumbs": [
+   "0be2e968bfd8.webp"
+  ],
+  "src": [
+   "assets/cards/enemies/poison-imp.png"
+  ],
+  "copies": [
+   "assets/bestiary/eve/poison-imp.png"
+  ]
+ },
+ "enemy-fire-imp": {
+  "thumbs": [
+   "988ff365e915.webp"
+  ],
+  "src": [
+   "assets/cards/enemies/fire-imp.png"
+  ],
+  "copies": [
+   "assets/bestiary/eve/fire-imp.png"
+  ]
+ },
+ "enemy-bloody-imp": {
+  "thumbs": [
+   "767b0a6cad01.webp"
+  ],
+  "src": [
+   "assets/cards/enemies/bloody-imp.png"
+  ],
+  "copies": [
+   "assets/bestiary/eve/bloody-imp.png"
+  ]
+ },
+ "enemy-cultist": {
+  "thumbs": [
+   "fdb4d9bc0bc7.webp"
+  ],
+  "src": [
+   "assets/cards/enemies/cultist.png"
+  ],
+  "copies": [
+   "assets/bestiary/eve/cultist.png"
+  ]
+ },
+ "enemy-zombie": {
+  "thumbs": [
+   "25a469a8cff5.webp"
+  ],
+  "src": [
+   "assets/cards/enemies/zombie.png"
+  ],
+  "copies": [
+   "assets/bestiary/eve/zombie.png"
+  ]
+ },
+ "enemy-ghost": {
+  "thumbs": [
+   "289960dfb61d.webp"
+  ],
+  "src": [
+   "assets/cards/enemies/ghost.png"
+  ],
+  "copies": [
+   "assets/bestiary/eve/ghost.png"
+  ]
+ },
+ "enemy-plague-bearer": {
+  "thumbs": [
+   "0d26ff8c041e.webp"
+  ],
+  "src": [
+   "assets/cards/enemies/plague-bearer.png"
+  ],
+  "copies": [
+   "assets/bestiary/eve/plague-bearer.png"
+  ]
+ },
+ "enemy-hellhound": {
+  "thumbs": [
+   "cb6ad0a3a815.webp"
+  ],
+  "src": [
+   "assets/cards/enemies/hellhound.png"
+  ],
+  "copies": [
+   "assets/bestiary/eve/hellhound.png"
+  ]
+ },
+ "enemy-wolf": {
+  "thumbs": [
+   "3e6eafb3a1d4.webp"
+  ],
+  "src": [
+   "assets/cards/enemies/wolf.png"
+  ],
+  "copies": [
+   "assets/bestiary/eve/wolf.png"
+  ]
+ },
+ "enemy-werewolf": {
+  "thumbs": [
+   "e80889ab3de8.webp"
+  ],
+  "src": [
+   "assets/cards/enemies/werewolf.png"
+  ],
+  "copies": [
+   "assets/bestiary/eve/werewolf.png"
+  ]
+ },
+ "enemy-dark-priest": {
+  "thumbs": [
+   "000c34be8b8c.webp"
+  ],
+  "src": [
+   "assets/cards/enemies/dark-priest.png"
+  ],
+  "copies": [
+   "assets/bestiary/eve/dark-priest.png"
+  ]
+ },
+ "enemy-dark-mage": {
+  "thumbs": [
+   "bf6b536459ed.webp"
+  ],
+  "src": [
+   "assets/cards/enemies/dark-mage.png"
+  ],
+  "copies": [
+   "assets/bestiary/eve/dark-mage.png"
+  ]
+ },
+ "enemy-frost-wraith": {
+  "thumbs": [
+   "f09f3e9cc3b1.webp"
+  ],
+  "src": [
+   "assets/cards/enemies/frost-wraith.png"
+  ],
+  "copies": [
+   "assets/bestiary/eve/frost-wraith.png"
+  ]
+ },
+ "enemy-fire-demon": {
+  "thumbs": [
+   "2c3f0a03f919.webp"
+  ],
+  "src": [
+   "assets/cards/enemies/fire-demon.png"
+  ],
+  "copies": [
+   "assets/bestiary/eve/fire-demon.png"
+  ]
+ },
+ "enemy-vampire": {
+  "thumbs": [
+   "a965aa2b89f2.webp"
+  ],
+  "src": [
+   "assets/cards/enemies/vampire.png"
+  ],
+  "copies": [
+   "assets/bestiary/eve/vampire.png"
+  ]
+ },
+ "enemy-greater-werewolf": {
+  "thumbs": [
+   "afc96b44b846.webp"
+  ],
+  "src": [
+   "assets/cards/enemies/greater-werewolf.png"
+  ],
+  "copies": [
+   "assets/bestiary/eve/greater-werewolf.png"
+  ]
+ },
+ "enemy-succubus": {
+  "thumbs": [
+   "ab85efd1bb0f.webp"
+  ],
+  "src": [
+   "assets/cards/enemies/succubus.png"
+  ],
+  "copies": [
+   "assets/bestiary/eve/succubus.png"
+  ]
+ },
+ "enemy-spectral-knight": {
+  "thumbs": [
+   "f5c870f4ab21.webp"
+  ],
+  "src": [
+   "assets/cards/enemies/spectral-knight.png"
+  ],
+  "copies": [
+   "assets/bestiary/eve/spectral-knight.png"
+  ]
+ },
+ "enemy-death-knight": {
+  "thumbs": [
+   "f7d3b6d99f28.webp"
+  ],
+  "src": [
+   "assets/cards/enemies/death-knight.png"
+  ],
+  "copies": [
+   "assets/bestiary/eve/death-knight.png"
+  ]
+ },
+ "enemy-greater-vampire": {
+  "thumbs": [
+   "500e1c31dc42.webp"
+  ],
+  "src": [
+   "assets/cards/enemies/greater-vampire.png"
+  ],
+  "copies": [
+   "assets/bestiary/eve/greater-vampire.png"
+  ]
+ },
+ "enemy-bone-dragon": {
+  "thumbs": [
+   "e9bc2c6a14a9.webp"
+  ],
+  "src": [
+   "assets/cards/enemies/bone-dragon.png"
+  ],
+  "copies": [
+   "assets/bestiary/eve/bone-dragon.png"
+  ]
+ },
+ "enemy-lich": {
+  "thumbs": [
+   "dfb506ffc4df.webp"
+  ],
+  "src": [
+   "assets/cards/enemies/lich.png"
+  ],
+  "copies": [
+   "assets/bestiary/eve/lich.png"
+  ]
+ },
+ "enemy-fire-witch": {
+  "thumbs": [
+   "d54d90f25df1.webp"
+  ],
+  "src": [
+   "assets/cards/enemies/fire-witch.png"
+  ],
+  "copies": [
+   "assets/bestiary/eve/fire-witch.png"
+  ]
+ },
+ "enemy-nightmare-twin": {
+  "thumbs": [
+   "cf141b92a10c.webp"
+  ],
+  "src": [
+   "assets/cards/enemies/nightmare-twin.png"
+  ],
+  "copies": [
+   "assets/bestiary/eve/nightmare-twin.png"
+  ]
+ },
+ "enemy-demon-gremlin": {
+  "thumbs": [
+   "eb26d136889d.webp"
+  ],
+  "src": [
+   "assets/cards/enemies/demon-gremlin.png"
+  ],
+  "copies": [
+   "assets/bestiary/eve/demon-gremlin.png"
+  ]
+ },
+ "enemy-golem": {
+  "thumbs": [
+   "b608eff6b5ef.webp"
+  ],
+  "src": [
+   "assets/cards/enemies/golem.png"
+  ],
+  "copies": [
+   "assets/bestiary/eve/stone-golem.png"
+  ]
+ },
+ "enemy-explosive-mite": {
+  "thumbs": [
+   "064ecb80610e.webp"
+  ],
+  "src": [
+   "assets/cards/enemies/explosive-mite.png"
+  ],
+  "copies": [
+   "assets/bestiary/eve/explosive-mite.png"
+  ]
+ },
+ "enemy-fire-mite": {
+  "thumbs": [
+   "d917725e6ba8.webp"
+  ],
+  "src": [
+   "assets/cards/enemies/fire-mite.png"
+  ],
+  "copies": [
+   "assets/bestiary/eve/fire-mite.png"
+  ]
+ },
+ "enemy-poison-mite": {
+  "thumbs": [
+   "ac5a3e62bd55.webp"
+  ],
+  "src": [
+   "assets/cards/enemies/poison-mite.png"
+  ],
+  "copies": [
+   "assets/bestiary/eve/poison-mite.png"
+  ]
+ },
+ "enemy-weakness-mite": {
+  "thumbs": [
+   "1f6f5f08a1e0.webp"
+  ],
+  "src": [
+   "assets/cards/enemies/weakness-mite.png"
+  ],
+  "copies": [
+   "assets/bestiary/eve/weakness-mite.png"
+  ]
+ },
+ "enemy-bone-weaver": {
+  "thumbs": [
+   "3e49d580feea.webp"
+  ],
+  "src": [
+   "assets/cards/enemies/bone-weaver.png"
+  ],
+  "copies": [
+   "assets/bestiary/eve/bone-weaver.png"
+  ]
+ },
+ "enemy-fallen-warrior": {
+  "thumbs": [
+   "f808a91365f9.webp"
+  ],
+  "src": [
+   "assets/cards/enemies/fallen-warrior.png"
+  ],
+  "copies": [
+   "assets/bestiary/eve/fallen-warrior.png"
+  ]
+ },
+ "enemy-fallen-rogue": {
+  "thumbs": [
+   "ff9864ad9d9d.webp"
+  ],
+  "src": [
+   "assets/cards/enemies/fallen-rogue.png"
+  ],
+  "copies": [
+   "assets/bestiary/eve/fallen-rogue.png"
+  ]
+ },
+ "enemy-fallen-ranger": {
+  "thumbs": [
+   "1c764ac88d65.webp"
+  ],
+  "src": [
+   "assets/cards/enemies/fallen-ranger.png"
+  ],
+  "copies": [
+   "assets/bestiary/eve/fallen-ranger.png"
+  ]
+ },
+ "enemy-fallen-priest": {
+  "thumbs": [
+   "11af525f92b1.webp"
+  ],
+  "src": [
+   "assets/cards/enemies/fallen-priest.png"
+  ],
+  "copies": [
+   "assets/bestiary/eve/fallen-priest.png"
+  ]
+ },
+ "enemy-demon-commander": {
+  "thumbs": [
+   "1c23d9624481.webp"
+  ],
+  "src": [
+   "assets/cards/enemies/demon-lieutenant.png"
+  ],
+  "copies": [
+   "assets/bestiary/eve/demon-commander.png"
+  ]
+ },
+ "enemy-flesh-horror": {
+  "thumbs": [
+   "c549c4cfaaba.webp"
+  ],
+  "src": [
+   "assets/cards/enemies/flesh-horror.png"
+  ],
+  "copies": [
+   "assets/bestiary/eve/flesh-horror.png"
+  ]
+ },
+ "enemy-plague-spawn": {
+  "thumbs": [
+   "2dd708ef6fa5.webp"
+  ],
+  "src": [
+   "assets/cards/enemies/plague-spawn.png"
+  ],
+  "copies": [
+   "assets/bestiary/eve/plague-spawn.png"
+  ]
+ },
+ "enemy-bone-barricade": {
+  "thumbs": [
+   "06084e4fc514.webp"
+  ],
+  "src": [
+   "assets/cards/enemies/bone-barricade.png"
+  ],
+  "copies": [
+   "assets/bestiary/eve/bone-barricade.png"
+  ]
+ },
+ "enemy-bloodhound": {
+  "thumbs": [
+   "394bf4ad6363.webp"
+  ],
+  "src": [
+   "assets/cards/enemies/bloodhound.png"
+  ],
+  "copies": [
+   "assets/bestiary/eve/bloodhound.png"
+  ]
+ },
+ "enemy-scythe-cultist": {
+  "thumbs": [
+   "05da37bae0fa.webp"
+  ],
+  "src": [
+   "assets/cards/enemies/scythe-cultist.png"
+  ],
+  "copies": [
+   "assets/bestiary/eve/scythe-cultist.png"
+  ]
+ },
+ "enemy-corrupted-cultist": {
+  "thumbs": [
+   "d429b17ea736.webp"
+  ],
+  "src": [
+   "assets/cards/enemies/corrupted-cultist.png"
+  ],
+  "copies": [
+   "assets/bestiary/eve/corrupted-cultist.png"
+  ]
+ },
+ "enemy-mystic-cultist": {
+  "thumbs": [
+   "d8a9ca0f7623.webp"
+  ],
+  "src": [
+   "assets/cards/enemies/mystic-cultist.png"
+  ],
+  "copies": [
+   "assets/bestiary/eve/mystic-cultist.png"
+  ]
+ },
+ "enemy-lesser-necromancer": {
+  "thumbs": [
+   "451c44c938a0.webp"
+  ],
+  "src": [
+   "assets/cards/enemies/lesser-necromancer.png"
+  ],
+  "copies": [
+   "assets/bestiary/eve/lesser-necromancer.png"
+  ]
+ },
+ "enemy-vampire-thrallmaster": {
+  "thumbs": [
+   "12cd483ed8f5.webp"
+  ],
+  "src": [
+   "assets/cards/enemies/vampire-thrallmaster.png"
+  ],
+  "copies": [
+   "assets/bestiary/eve/vampire-thrallmaster.png"
+  ]
+ },
+ "enemy-thrall": {
+  "thumbs": [
+   "8f101a53f5c2.webp"
+  ],
+  "src": [
+   "assets/cards/enemies/thrall.png"
+  ],
+  "copies": [
+   "assets/bestiary/eve/thrall.png"
+  ]
+ },
+ "enemy-weak-zombie": {
+  "thumbs": [
+   "a20af6c76590.webp",
+   "63af92db84e1.webp",
+   "6ceb14b29865.webp",
+   "76947df85934.webp"
+  ],
+  "src": [
+   "assets/cards/enemies/undead/weak-zombie-1.png",
+   "assets/cards/enemies/undead/weak-zombie-2.png",
+   "assets/cards/enemies/undead/weak-zombie-3.png",
+   "assets/cards/enemies/undead/weak-zombie-4.png"
+  ],
+  "copies": [
+   "assets/bestiary/eve/weak-zombie.png",
+   "assets/bestiary/eve/weak-zombie-2.png",
+   "assets/bestiary/eve/weak-zombie-3.png",
+   "assets/bestiary/eve/weak-zombie-4.png"
+  ]
+ },
+ "enemy-imp-basic": {
+  "thumbs": [
+   "57ac3fd1304d.webp"
+  ],
+  "src": [
+   "assets/cards/enemies/basic-imp.png"
+  ],
+  "copies": [
+   "assets/bestiary/eve/basic-imp.png"
+  ]
+ },
+ "enemy-weak-soldier": {
+  "thumbs": [
+   "c4d25433ed00.webp"
+  ],
+  "src": [
+   "assets/cards/enemies/weak-soldier.png"
+  ],
+  "copies": [
+   "assets/bestiary/eve/weak-soldier.png"
+  ]
+ },
+ "enemy-tomb-ghoul": {
+  "thumbs": [
+   "86c2f8b37513.webp"
+  ],
+  "src": [
+   "assets/cards/enemies/tomb-ghoul.png"
+  ],
+  "copies": [
+   "assets/bestiary/shadows/tomb-ghoul.png"
+  ]
+ },
+ "enemy-tomb-specter": {
+  "thumbs": [
+   "f909a83cfb0b.webp"
+  ],
+  "src": [
+   "assets/cards/enemies/tomb-specter.png"
+  ],
+  "copies": [
+   "assets/bestiary/shadows/tomb-specter.png"
+  ]
+ },
+ "enemy-dusk-hyena": {
+  "thumbs": [
+   "9340b996603c.webp"
+  ],
+  "src": [
+   "assets/cards/enemies/dusk-hyena.png"
+  ],
+  "copies": [
+   "assets/bestiary/shadows/dusk-hyena.png"
+  ]
+ },
+ "enemy-cursed-wretch": {
+  "thumbs": [
+   "6b133a609b55.webp"
+  ],
+  "src": [
+   "assets/cards/enemies/cursed-wretch.png"
+  ],
+  "copies": [
+   "assets/bestiary/shadows/cursed-wretch.png"
+  ]
+ },
+ "enemy-bone-serpent": {
+  "thumbs": [
+   "006b52c32726.webp"
+  ],
+  "src": [
+   "assets/cards/enemies/bone-serpent.png"
+  ],
+  "copies": [
+   "assets/bestiary/shadows/bone-serpent.png"
+  ]
+ },
+ "enemy-sandstorm-guardian": {
+  "thumbs": [
+   "a19b0a81e3b2.webp"
+  ],
+  "src": [
+   "assets/cards/enemies/sandstorm-guardian.png"
+  ],
+  "copies": [
+   "assets/bestiary/shadows/sandstorm-guardian.png"
+  ]
+ },
+ "enemy-tomb-echo": {
+  "thumbs": [
+   "44f6e00fae42.webp"
+  ],
+  "src": [
+   "assets/cards/enemies/tomb-echo.png"
+  ],
+  "copies": [
+   "assets/bestiary/shadows/tomb-echo.png"
+  ]
+ },
+ "enemy-mummified-priest": {
+  "thumbs": [
+   "ee8ce90f50c1.webp"
+  ],
+  "src": [
+   "assets/cards/enemies/mummified-priest.png"
+  ],
+  "copies": [
+   "assets/bestiary/shadows/mummified-priest.png"
+  ]
+ },
+ "enemy-sand-soldier": {
+  "thumbs": [
+   "c4c04f4219cf.webp"
+  ],
+  "src": [
+   "assets/cards/enemies/sand-soldier.png"
+  ],
+  "copies": [
+   "assets/bestiary/shadows/sand-soldier.png"
+  ]
+ },
+ "enemy-tomb-hierophant": {
+  "thumbs": [
+   "7225a886620a.webp"
+  ],
+  "src": [
+   "assets/cards/enemies/tomb-hierophant.png"
+  ],
+  "copies": [
+   "assets/bestiary/shadows/tomb-hierophant.png"
+  ]
+ },
+ "enemy-tomb-guardian": {
+  "thumbs": [
+   "19d7f01e2c43.webp"
+  ],
+  "src": [
+   "assets/cards/enemies/tomb-guardian.png"
+  ],
+  "copies": [
+   "assets/bestiary/shadows/tomb-guardian.png"
+  ]
+ },
+ "enemy-sand-sentinel": {
+  "thumbs": [
+   "3c2f1e575a20.webp"
+  ],
+  "src": [
+   "assets/cards/enemies/sand-sentinel.png"
+  ],
+  "copies": [
+   "assets/bestiary/shadows/sand-sentinel.png"
+  ]
+ },
+ "enemy-bone-mite": {
+  "thumbs": [
+   "45c1988280af.webp"
+  ],
+  "src": [
+   "assets/cards/enemies/bone-mite.png"
+  ],
+  "copies": [
+   "assets/bestiary/shadows/bone-mite.png"
+  ]
+ },
+ "enemy-infernal-soldier": {
+  "thumbs": [
+   "9cc7f6d413a8.webp"
+  ],
+  "src": [
+   "assets/cards/enemies/infernal-soldier.png"
+  ],
+  "copies": [
+   "assets/bestiary/shadows/infernal-soldier.png"
+  ]
+ },
+ "enemy-flame-imp": {
+  "thumbs": [
+   "209c752daaf4.webp"
+  ],
+  "src": [
+   "assets/cards/enemies/flame-imp.png"
+  ],
+  "copies": [
+   "assets/bestiary/shadows/flame-imp.png"
+  ]
+ },
+ "enemy-tomb-warden": {
+  "thumbs": [
+   "43ae791c0063.webp"
+  ],
+  "src": [
+   "assets/cards/enemies/tomb-warden.png"
+  ],
+  "copies": [
+   "assets/bestiary/shadows/tomb-warden.png"
+  ]
+ },
+ "enemy-doom-herald": {
+  "thumbs": [
+   "133b90687598.webp"
+  ],
+  "src": [
+   "assets/cards/enemies/doom-herald.png"
+  ],
+  "copies": [
+   "assets/bestiary/shadows/doom-herald.png"
+  ]
+ },
+ "enemy-tomb-sentry": {
+  "thumbs": [
+   "dfa5e011fbd2.webp"
+  ],
+  "src": [
+   "assets/cards/enemies/tomb-sentry.png"
+  ],
+  "copies": [
+   "assets/bestiary/shadows/tomb-sentry.png"
+  ]
+ },
+ "enemy-dark-spearman": {
+  "thumbs": [
+   "29154875aca9.webp"
+  ],
+  "src": [
+   "assets/cards/enemies/dark-spearman.png"
+  ],
+  "copies": [
+   "assets/bestiary/shadows/dark-spearman.png"
+  ]
+ },
+ "enemy-cursed-legionnaire": {
+  "thumbs": [
+   "6e042ca0bb57.webp"
+  ],
+  "src": [
+   "assets/cards/enemies/cursed-legionnaire.png"
+  ],
+  "copies": [
+   "assets/bestiary/shadows/cursed-legionnaire.png"
+  ]
+ },
+ "enemy-cursed-archer": {
+  "thumbs": [
+   "1b2ab9589e1d.webp"
+  ],
+  "src": [
+   "assets/cards/enemies/cursed-archer.png"
+  ],
+  "copies": [
+   "assets/bestiary/shadows/cursed-archer.png"
+  ]
+ },
+ "enemy-desert-wolf": {
+  "thumbs": [
+   "964bb47d3d93.webp"
+  ],
+  "src": [
+   "assets/cards/enemies/desert-wolf.png"
+  ],
+  "copies": [
+   "assets/bestiary/shadows/desert-wolf.png"
+  ]
+ },
+ "enemy-dormant-fiend": {
+  "thumbs": [
+   "7205723de5c8.webp"
+  ],
+  "src": [
+   "assets/cards/enemies/dormant-fiend.png"
+  ],
+  "copies": [
+   "assets/bestiary/shadows/dormant-fiend.png"
+  ]
+ },
+ "enemy-conjured-warrior": {
+  "thumbs": [
+   "f4ad55571ae0.webp"
+  ],
+  "src": [
+   "assets/cards/enemies/conjured-warrior.png"
+  ],
+  "copies": [
+   "assets/bestiary/shadows/conjured-warrior.png"
+  ]
+ },
+ "enemy-tomb-wraith": {
+  "thumbs": [
+   "fc7ede1a73f5.webp"
+  ],
+  "src": [
+   "assets/cards/enemies/tomb-wraith.png"
+  ],
+  "copies": [
+   "assets/bestiary/shadows/tomb-wraith.png"
+  ]
+ },
+ "enemy-vengeful-spirit": {
+  "thumbs": [
+   "78aaa2cc3dd0.webp"
+  ],
+  "src": [
+   "assets/cards/enemies/vengeful-spirit.png"
+  ],
+  "copies": [
+   "assets/bestiary/shadows/vengeful-spirit.png"
+  ]
+ },
+ "enemy-vampire-spawn": {
+  "thumbs": [
+   "5c4755677ab7.webp"
+  ],
+  "src": [
+   "assets/cards/enemies/vampire-spawn.png"
+  ],
+  "copies": [
+   "assets/bestiary/shadows/vampire-spawn.png"
+  ]
+ },
+ "enemy-horror-fragment": {
+  "thumbs": [
+   "2575f2a3e0b9.webp"
+  ],
+  "src": [
+   "assets/cards/enemies/horror-fragment.png"
+  ],
+  "copies": [
+   "assets/bestiary/shadows/horror-fragment.png"
+  ]
+ },
+ "enemy-plague-zombie": {
+  "thumbs": [
+   "3fa8606c30e3.webp"
+  ],
+  "src": [
+   "assets/cards/enemies/plague-zombie.png"
+  ],
+  "copies": [
+   "assets/bestiary/shadows/plague-zombie.png"
+  ]
+ },
+ "enemy-plague-carrier": {
+  "thumbs": [
+   "c27dea137dfb.webp"
+  ],
+  "src": [
+   "assets/cards/enemies/plague-carrier.png"
+  ],
+  "copies": [
+   "assets/bestiary/shadows/plague-carrier.png"
+  ]
+ },
+ "enemy-sand-guardian": {
+  "thumbs": [
+   "0429b7dc8f08.webp"
+  ],
+  "src": [
+   "assets/cards/enemies/sand-guardian.png"
+  ],
+  "copies": [
+   "assets/bestiary/shadows/sand-guardian.png"
+  ]
+ },
+ "enemy-soul-wisp": {
+  "thumbs": [
+   "7980a63e3ad9.webp"
+  ],
+  "src": [
+   "assets/cards/enemies/soul-wisp.png"
+  ],
+  "copies": [
+   "assets/bestiary/shadows/soul-wisp.png"
+  ]
+ },
+ "enemy-tomb-mender": {
+  "thumbs": [
+   "d35c6056bf85.webp"
+  ],
+  "src": [
+   "assets/cards/enemies/tomb-mender.png"
+  ],
+  "copies": [
+   "assets/bestiary/shadows/tomb-mender.png"
+  ]
+ },
+ "enemy-obsidian-hulk": {
+  "thumbs": [
+   "c3e3c7cc3e73.webp"
+  ],
+  "src": [
+   "assets/cards/enemies/obsidian-hulk.png"
+  ],
+  "copies": [
+   "assets/bestiary/shadows/obsidian-hulk.png"
+  ]
+ },
+ "enemy-phantom-knight": {
+  "thumbs": [
+   "7ac415dfc3f1.webp"
+  ],
+  "src": [
+   "assets/cards/enemies/phantom-knight.png"
+  ],
+  "copies": [
+   "assets/bestiary/shadows/phantom-knight.png"
+  ]
+ },
+ "enemy-abyssal-spawn": {
+  "thumbs": [
+   "19aeb7d40919.webp"
+  ],
+  "src": [
+   "assets/cards/enemies/abyssal-spawn.png"
+  ],
+  "copies": [
+   "assets/bestiary/shadows/abyssal-spawn.png"
+  ]
+ },
+ "enemy-tomb-stalker": {
+  "thumbs": [
+   "c011029c796c.webp"
+  ],
+  "src": [
+   "assets/cards/enemies/tomb-stalker.png"
+  ],
+  "copies": [
+   "assets/bestiary/shadows/tomb-stalker.png"
+  ]
+ },
+ "enemy-hellbound-legionnaire": {
+  "thumbs": [
+   "db79c643f3d6.webp"
+  ],
+  "src": [
+   "assets/cards/enemies/hellbound-legionnaire.png"
+  ],
+  "copies": [
+   "assets/bestiary/shadows/hellbound-legionnaire.png"
+  ]
+ },
+ "enemy-tomb-berserker": {
+  "thumbs": [
+   "a9eb5014e81d.webp"
+  ],
+  "src": [
+   "assets/cards/enemies/tomb-berserker.png"
+  ],
+  "copies": [
+   "assets/bestiary/shadows/tomb-berserker.png"
+  ]
+ },
+ "enemy-tomb-archer": {
+  "thumbs": [
+   "da251df4472b.webp"
+  ],
+  "src": [
+   "assets/cards/enemies/tomb-archer.png"
+  ],
+  "copies": [
+   "assets/bestiary/shadows/tomb-archer.png"
+  ]
+ },
+ "enemy-tomb-champion": {
+  "thumbs": [
+   "64f3eac7db20.webp"
+  ],
+  "src": [
+   "assets/cards/enemies/tomb-champion.png"
+  ],
+  "copies": [
+   "assets/bestiary/shadows/tomb-champion.png"
+  ]
+ },
+ "enemy-deranged-acolyte": {
+  "thumbs": [
+   "2fd80578d4c9.webp"
+  ],
+  "src": [
+   "assets/cards/enemies/deranged-acolyte.png"
+  ],
+  "copies": [
+   "assets/bestiary/shadows/deranged-acolyte.png"
+  ]
+ },
+ "enemy-bone-revenant": {
+  "thumbs": [
+   "37284ba82f6c.webp"
+  ],
+  "src": [
+   "assets/cards/enemies/bone-revenant.png"
+  ],
+  "copies": [
+   "assets/bestiary/shadows/bone-revenant.png"
+  ]
+ },
+ "enemy-tomb-ritualist": {
+  "thumbs": [
+   "c4ae0b0c0996.webp"
+  ],
+  "src": [
+   "assets/cards/enemies/tomb-ritualist.png"
+  ],
+  "copies": [
+   "assets/bestiary/shadows/tomb-ritualist.png"
+  ]
+ },
+ "enemy-profane-acolyte": {
+  "thumbs": [
+   "de9b40869f0e.webp"
+  ],
+  "src": [
+   "assets/cards/enemies/profane-acolyte.png"
+  ],
+  "copies": [
+   "assets/bestiary/shadows/profane-acolyte.png"
+  ]
+ },
+ "enemy-damned-wretch": {
+  "thumbs": [
+   "2046777c3536.webp"
+  ],
+  "src": [
+   "assets/cards/enemies/damned-wretch.png"
+  ],
+  "copies": [
+   "assets/bestiary/shadows/damned-wretch.png"
+  ]
+ },
+ "enemy-cinder-wraith": {
+  "thumbs": [
+   "37e76a0c0389.webp"
+  ],
+  "src": [
+   "assets/cards/enemies/cinder-wraith.png"
+  ],
+  "copies": [
+   "assets/bestiary/shadows/cinder-wraith.png"
+  ]
+ },
+ "enemy-burning-revenant": {
+  "thumbs": [
+   "7a0c25aabacb.webp"
+  ],
+  "src": [
+   "assets/cards/enemies/burning-revenant.png"
+  ],
+  "copies": [
+   "assets/bestiary/shadows/burning-revenant.png"
+  ]
+ },
+ "enemy-profane-pyrekeeper": {
+  "thumbs": [
+   "da38b55215e7.webp"
+  ],
+  "src": [
+   "assets/cards/enemies/profane-pyrekeeper.png"
+  ],
+  "copies": [
+   "assets/bestiary/shadows/profane-pyrekeeper.png"
+  ]
+ },
+ "enemy-ashen-thrall": {
+  "thumbs": [
+   "fc8559065604.webp"
+  ],
+  "src": [
+   "assets/cards/enemies/ashen-thrall.png"
+  ],
+  "copies": [
+   "assets/bestiary/shadows/ashen-thrall.png"
+  ]
+ },
+ "enemy-damned-congregant": {
+  "thumbs": [
+   "f6ae3d5a09be.webp"
+  ],
+  "src": [
+   "assets/cards/enemies/damned-congregant.png"
+  ],
+  "copies": [
+   "assets/bestiary/shadows/damned-congregant.png"
+  ]
+ },
+ "enemy-blighted-deacon": {
+  "thumbs": [
+   "2e40373ee6c0.webp"
+  ],
+  "src": [
+   "assets/cards/enemies/blighted-deacon.png"
+  ],
+  "copies": [
+   "assets/bestiary/shadows/blighted-deacon.png"
+  ]
+ },
+ "enemy-skyship-cursed-blademaster": {
+  "thumbs": [
+   "d19b9ea30e43.webp"
+  ],
+  "src": [
+   "assets/cards/enemies/cursed-blademaster.png"
+  ],
+  "copies": [
+   "assets/bestiary/skyship/cursed-blademaster.png"
+  ]
+ },
+ "enemy-skyship-spectral-bowman": {
+  "thumbs": [
+   "db41188051c1.webp"
+  ],
+  "src": [
+   "assets/cards/enemies/spectral-bowman.png"
+  ],
+  "copies": [
+   "assets/bestiary/skyship/spectral-bowman.png"
+  ]
+ },
+ "enemy-skyship-hellwasp-drone": {
+  "thumbs": [
+   "1d479ac047e2.webp"
+  ],
+  "src": [
+   "assets/cards/enemies/hellwasp-drone.png"
+  ],
+  "copies": [
+   "assets/bestiary/skyship/hellwasp-drone.png"
+  ]
+ },
+ "enemy-skyship-jade-sentinel": {
+  "thumbs": [
+   "c03ca9a1a9c5.webp"
+  ],
+  "src": [
+   "assets/cards/enemies/jade-sentinel.png"
+  ],
+  "copies": [
+   "assets/bestiary/skyship/jade-sentinel.png"
+  ]
+ },
+ "enemy-skyship-yaoguai-brute": {
+  "thumbs": [
+   "d7602d183915.webp"
+  ],
+  "src": [
+   "assets/cards/enemies/yaoguai-brute.png"
+  ],
+  "copies": [
+   "assets/bestiary/skyship/yaoguai-brute.png"
+  ]
+ },
+ "enemy-skyship-abyssal-crawler": {
+  "thumbs": [
+   "6273f49253e2.webp"
+  ],
+  "src": [
+   "assets/cards/enemies/abyssal-crawler.png"
+  ],
+  "copies": [
+   "assets/bestiary/skyship/abyssal-crawler.png"
+  ]
+ },
+ "enemy-skyship-ironbound-fiend": {
+  "thumbs": [
+   "96fc48f5394c.webp"
+  ],
+  "src": [
+   "assets/cards/enemies/ironbound-fiend.png"
+  ],
+  "copies": [
+   "assets/bestiary/skyship/ironbound-fiend.png"
+  ]
+ },
+ "enemy-skyship-bone-mantis": {
+  "thumbs": [
+   "e788f3dee437.webp"
+  ],
+  "src": [
+   "assets/cards/enemies/bone-mantis.png"
+  ],
+  "copies": [
+   "assets/bestiary/skyship/bone-mantis.png"
+  ]
+ },
+ "enemy-skyship-bone-legionnaire": {
+  "thumbs": [
+   "92b332208d87.webp"
+  ],
+  "src": [
+   "assets/cards/enemies/bone-legionnaire.png"
+  ],
+  "copies": [
+   "assets/bestiary/skyship/bone-legionnaire.png"
+  ]
+ },
+ "enemy-skyship-carrion-ghast": {
+  "thumbs": [
+   "ebeac4a7efcd.webp"
+  ],
+  "src": [
+   "assets/cards/enemies/carrion-ghast.png"
+  ],
+  "copies": [
+   "assets/bestiary/skyship/carrion-ghast.png"
+  ]
+ },
+ "enemy-skyship-rot-priest": {
+  "thumbs": [
+   "1aabbc56baf7.webp"
+  ],
+  "src": [
+   "assets/cards/enemies/rot-priest.png"
+  ],
+  "copies": [
+   "assets/bestiary/skyship/rot-priest.png"
+  ]
+ },
+ "enemy-skyship-frozen-attendant": {
+  "thumbs": [
+   "c62255259c8a.webp"
+  ],
+  "src": [
+   "assets/cards/enemies/frozen-attendant.png"
+  ],
+  "copies": [
+   "assets/bestiary/skyship/frozen-attendant.png"
+  ]
+ },
+ "enemy-skyship-pit-digger": {
+  "thumbs": [
+   "0a79a9f105ca.webp"
+  ],
+  "src": [
+   "assets/cards/enemies/pit-digger.png"
+  ],
+  "copies": [
+   "assets/bestiary/skyship/pit-digger.png"
+  ]
+ },
+ "enemy-skyship-temple-supplicant": {
+  "thumbs": [
+   "3da1eb1ce8e9.webp"
+  ],
+  "src": [
+   "assets/cards/enemies/temple-supplicant.png"
+  ],
+  "copies": [
+   "assets/bestiary/skyship/temple-supplicant.png"
+  ]
+ },
+ "enemy-skyship-hellforged-legionnaire": {
+  "thumbs": [
+   "8beead1571ed.webp"
+  ],
+  "src": [
+   "assets/cards/enemies/hellforged-legionnaire.png"
+  ],
+  "copies": [
+   "assets/bestiary/skyship/hellforged-legionnaire.png"
+  ]
+ },
+ "enemy-skyship-infernal-marksman": {
+  "thumbs": [
+   "8ea92faac0b6.webp"
+  ],
+  "src": [
+   "assets/cards/enemies/infernal-marksman.png"
+  ],
+  "copies": [
+   "assets/bestiary/skyship/infernal-marksman.png"
+  ]
+ },
+ "enemy-skyship-iron-yaoguai": {
+  "thumbs": [
+   "2b50a259e8fb.webp"
+  ],
+  "src": [
+   "assets/cards/enemies/iron-yaoguai.png"
+  ],
+  "copies": [
+   "assets/bestiary/skyship/iron-yaoguai.png"
+  ]
+ },
+ "enemy-skyship-flesh-stitcher": {
+  "thumbs": [
+   "fc644dc09498.webp"
+  ],
+  "src": [
+   "assets/cards/enemies/flesh-stitcher.png"
+  ],
+  "copies": [
+   "assets/bestiary/skyship/flesh-stitcher.png"
+  ]
+ },
+ "enemy-skyship-abyssal-flesh-weaver": {
+  "thumbs": [
+   "c923e6aef302.webp"
+  ],
+  "src": [
+   "assets/cards/enemies/abyssal-flesh-weaver.png"
+  ],
+  "copies": [
+   "assets/bestiary/skyship/abyssal-flesh-weaver.png"
+  ]
+ },
+ "enemy-skyship-jade-revenant": {
+  "thumbs": [
+   "6ecd0c7732e6.webp"
+  ],
+  "src": [
+   "assets/cards/enemies/jade-revenant.png"
+  ],
+  "copies": [
+   "assets/bestiary/skyship/jade-revenant.png"
+  ]
+ },
+ "enemy-skyship-jade-priest": {
+  "thumbs": [
+   "9b0cc949043b.webp"
+  ],
+  "src": [
+   "assets/cards/enemies/jade-priest.png"
+  ],
+  "copies": [
+   "assets/bestiary/skyship/jade-priest.png"
+  ]
+ },
+ "enemy-skyship-silk-broodling": {
+  "thumbs": [
+   "9722481aa100.webp"
+  ],
+  "src": [
+   "assets/cards/enemies/silk-broodling.png"
+  ],
+  "copies": [
+   "assets/bestiary/skyship/silk-broodling.png"
+  ]
+ },
+ "enemy-skyship-forge-imp": {
+  "thumbs": [
+   "6d933f966b21.webp"
+  ],
+  "src": [
+   "assets/cards/enemies/forge-imp.png"
+  ],
+  "copies": [
+   "assets/bestiary/skyship/forge-imp.png"
+  ]
+ },
+ "enemy-skyship-infernal-mender": {
+  "thumbs": [
+   "6f0cac11021f.webp"
+  ],
+  "src": [
+   "assets/cards/enemies/infernal-mender.png"
+  ],
+  "copies": [
+   "assets/bestiary/skyship/infernal-mender.png"
+  ]
+ },
+ "enemy-skyship-crimson-lotus": {
+  "thumbs": [
+   "357de47e2efa.webp"
+  ],
+  "src": [
+   "assets/cards/enemies/crimson-lotus.png"
+  ],
+  "copies": [
+   "assets/bestiary/skyship/crimson-lotus.png"
+  ]
+ },
+ "enemy-skyship-blood-lotus-elder": {
+  "thumbs": [
+   "8153e7a98cca.webp"
+  ],
+  "src": [
+   "assets/cards/enemies/blood-lotus-elder.png"
+  ],
+  "copies": [
+   "assets/bestiary/skyship/blood-lotus-elder.png"
+  ]
+ },
+ "enemy-skyship-hellspawn-minion": {
+  "thumbs": [
+   "fe1050c0a0ec.webp"
+  ],
+  "src": [
+   "assets/cards/enemies/hellspawn-minion.png"
+  ],
+  "copies": [
+   "assets/bestiary/skyship/hellspawn-minion.png"
+  ]
+ },
+ "enemy-skyship-cursed-crow-soldier": {
+  "thumbs": [
+   "c37a00fa04d8.webp"
+  ],
+  "src": [
+   "assets/cards/enemies/cursed-crow-soldier.png"
+  ],
+  "copies": [
+   "assets/bestiary/skyship/cursed-crow-soldier.png"
+  ]
+ },
+ "enemy-skyship-bone-colossus": {
+  "thumbs": [
+   "73fd0d797e37.webp"
+  ],
+  "src": [
+   "assets/cards/enemies/bone-colossus.png"
+  ],
+  "copies": [
+   "assets/bestiary/skyship/bone-colossus.png"
+  ]
+ },
+ "enemy-skyship-infernal-conjurer": {
+  "thumbs": [
+   "c33068c999f3.webp"
+  ],
+  "src": [
+   "assets/cards/enemies/infernal-conjurer.png"
+  ],
+  "copies": [
+   "assets/bestiary/skyship/infernal-conjurer.png"
+  ]
+ },
+ "enemy-skyship-hellbound-escort": {
+  "thumbs": [
+   "13eb69744f2b.webp"
+  ],
+  "src": [
+   "assets/cards/enemies/hellbound-escort.png"
+  ],
+  "copies": [
+   "assets/bestiary/skyship/hellbound-escort.png"
+  ]
+ },
+ "enemy-skyship-jiangshi-revenant": {
+  "thumbs": [
+   "df34c44bdde6.webp"
+  ],
+  "src": [
+   "assets/cards/enemies/jiangshi-revenant.png"
+  ],
+  "copies": [
+   "assets/bestiary/skyship/jiangshi-revenant.png"
+  ]
+ },
+ "enemy-skyship-crypt-elder": {
+  "thumbs": [
+   "8842d5356071.webp"
+  ],
+  "src": [
+   "assets/cards/enemies/crypt-elder.png"
+  ],
+  "copies": [
+   "assets/bestiary/skyship/crypt-elder.png"
+  ]
+ },
+ "enemy-skyship-shrine-attendant": {
+  "thumbs": [
+   "214dd59de58d.webp"
+  ],
+  "src": [
+   "assets/cards/enemies/shrine-attendant.png"
+  ],
+  "copies": [
+   "assets/bestiary/skyship/shrine-attendant.png"
+  ]
+ },
+ "enemy-skyship-yaoguai-sentinel": {
+  "thumbs": [
+   "16637042fabc.webp"
+  ],
+  "src": [
+   "assets/cards/enemies/yaoguai-sentinel.png"
+  ],
+  "copies": [
+   "assets/bestiary/skyship/yaoguai-sentinel.png"
+  ]
+ },
+ "enemy-skyship-diyu-specter": {
+  "thumbs": [
+   "6b1249184498.webp"
+  ],
+  "src": [
+   "assets/cards/enemies/diyu-specter.png"
+  ],
+  "copies": [
+   "assets/bestiary/skyship/diyu-specter.png"
+  ]
+ },
+ "enemy-skyship-imp-delegate": {
+  "thumbs": [
+   "bbc59a8474b6.webp"
+  ],
+  "src": [
+   "assets/cards/enemies/imp-delegate.png"
+  ],
+  "copies": [
+   "assets/bestiary/skyship/imp-delegate.png"
+  ]
+ },
+ "enemy-skyship-imperial-jade-guard": {
+  "thumbs": [
+   "cd08721973dd.webp"
+  ],
+  "src": [
+   "assets/cards/enemies/imperial-jade-guard.png"
+  ],
+  "copies": [
+   "assets/bestiary/skyship/imperial-jade-guard.png"
+  ]
+ },
+ "enemy-skyship-infernal-lieutenant": {
+  "thumbs": [
+   "01ecd1b7904a.webp"
+  ],
+  "src": [
+   "assets/cards/enemies/infernal-lieutenant.png"
+  ],
+  "copies": [
+   "assets/bestiary/skyship/infernal-lieutenant.png"
+  ]
+ }
+}

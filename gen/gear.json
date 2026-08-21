@@ -1,0 +1,2720 @@
+{
+ "trinkets": [
+  {
+   "id": "item.loaded-dice-of-mirran",
+   "name": "Loaded Dice of Mirran",
+   "itemClass": "trinket",
+   "tier": 1,
+   "slots": 1,
+   "hands": 0,
+   "classRestriction": null,
+   "statModifiers": {},
+   "triggers": [],
+   "grants": [],
+   "equipCost": {},
+   "persists": true,
+   "tags": [],
+   "stamina": 1,
+   "cooldown": 3,
+   "warmup": 0,
+   "free": true,
+   "targets": "self",
+   "description": "Free. Until the end of your next Turn, your attacks gain +15 Accuracy. Surplus over 100 still becomes Crit, so on a reliable hero this is roughly +4 Crit instead.",
+   "intent": "The cheapest way to buy certainty on the one swing of the Turn that actually mattered.",
+   "source": "Hell-TCG name reused (artifact, Loaded Dice of Mirran — the cunning modifier is a Kingdom stat, so the payload was rebuilt as an Accuracy spike) | 2026-08-20: reworded the opening. \"Free\" here means it does not consume your primary action — it never meant costless, and on an item that also charges stamina the old wording read as though it did. | 2026-08-20 Angela: standardised to \"Free.\" A trinket that does not use your action is a power and appears in the power list, so it uses the same word powers use. The stamina cost is a field, not prose. | 2026-08-20 Angela: \"your next <form> attack\" is gone. Nothing tracks which attack is next or what form it is. Rewritten as a duration: until the end of your next Turn, your attacks carry it. The form qualifier is dropped with it. "
+  },
+  {
+   "id": "item.crows-eye-pendant",
+   "name": "Crow's Eye Pendant",
+   "itemClass": "trinket",
+   "tier": 1,
+   "slots": 1,
+   "hands": 0,
+   "classRestriction": null,
+   "statModifiers": {},
+   "triggers": [],
+   "grants": [],
+   "equipCost": {},
+   "persists": true,
+   "tags": [],
+   "stamina": 1,
+   "cooldown": 2,
+   "warmup": 0,
+   "free": false,
+   "targets": "a hex within 8 hexes",
+   "description": "Reveal every hidden, stealthed or obscured unit within 3 hexes of that hex until the end of the Turn. Ignores darkness and fog.",
+   "intent": "It does no damage and wins the fight anyway, because you cannot shoot the thing you cannot see.",
+   "source": "Hell-TCG name reused (artifact, Crow's Eye Pendant — scouting is a Kingdom stat; rebuilt against Vision, darkness and stealth)"
+  },
+  {
+   "id": "item.mug-of-endless-dregs",
+   "name": "Mug of Endless Dregs",
+   "itemClass": "trinket",
+   "tier": 1,
+   "slots": 1,
+   "hands": 0,
+   "classRestriction": null,
+   "statModifiers": {},
+   "triggers": [],
+   "grants": [],
+   "equipCost": {},
+   "persists": true,
+   "tags": [
+    "heal"
+   ],
+   "stamina": 0,
+   "cooldown": 4,
+   "warmup": 0,
+   "free": true,
+   "targets": "self",
+   "description": "Free. Heal 3 and remove 1 Weak. You take -5 Accuracy until the end of your next Turn.",
+   "intent": "There is always one more sip, and it is always slightly worse for you than the last one.",
+   "source": "Hell-TCG name reused (artifact, Mug of Endless Dregs — 'keeps spirits high on the long road' rebuilt as a free, slightly drunk self-heal) | 2026-08-20: reworded the opening. \"Free\" here means it does not consume your primary action — it never meant costless, and on an item that also charges stamina the old wording read as though it did. | 2026-08-20 Angela: standardised to \"Free.\" A trinket that does not use your action is a power and appears in the power list, so it uses the same word powers use. The stamina cost is a field, not prose."
+  },
+  {
+   "id": "item.aether-crystal",
+   "name": "Aether Crystal",
+   "itemClass": "trinket",
+   "tier": 1,
+   "slots": 1,
+   "hands": 0,
+   "classRestriction": null,
+   "statModifiers": {},
+   "triggers": [],
+   "grants": [],
+   "equipCost": {},
+   "persists": true,
+   "tags": [],
+   "stamina": 1,
+   "cooldown": 3,
+   "warmup": 0,
+   "free": false,
+   "targets": "self",
+   "description": "Gain 4 Protection. Protection is spent before Health and STACKS with itself — using this again adds to whatever is left.",
+   "intent": "Four points of somebody else's problem, held one Turn ahead of when you need it.",
+   "source": "Hell-TCG name reused (Mage item, Aether Crystal — the flat +2 Health was too plain for a trinket, so the payload became an activated Protection bubble) | 2026-08-20 Angela: Protection STACKS with itself. The old line said it did not and that a second use discarded the remainder, which was simply wrong."
+  },
+  {
+   "id": "item.saints-fingerbone",
+   "name": "Saint's Fingerbone",
+   "itemClass": "trinket",
+   "tier": 1,
+   "slots": 1,
+   "hands": 0,
+   "classRestriction": null,
+   "statModifiers": {},
+   "triggers": [],
+   "grants": [],
+   "equipCost": {},
+   "persists": true,
+   "tags": [],
+   "stamina": 1,
+   "cooldown": 4,
+   "warmup": 0,
+   "free": false,
+   "targets": "one ally within 2 hexes",
+   "description": "Remove 1 Burn, 1 Poison and 1 Bleed from the target. Bleed is never resisted, so this is usually the only way it comes off at all.",
+   "intent": "A stripper that answers the one status Resist can never touch — which is the whole reason to carry it.",
+   "source": "Hell-TCG name reused (Priest item, Saint's Fingerbone — the Faith grant is Kingdom-tier and was cut; rebuilt as a three-status strip)"
+  },
+  {
+   "id": "item.poison-caltrops",
+   "name": "Poison Caltrops",
+   "itemClass": "trinket",
+   "tier": 1,
+   "slots": 1,
+   "hands": 0,
+   "classRestriction": null,
+   "statModifiers": {},
+   "triggers": [],
+   "grants": [],
+   "equipCost": {},
+   "persists": true,
+   "tags": [
+    "area"
+   ],
+   "stamina": 1,
+   "cooldown": 2,
+   "warmup": 0,
+   "free": false,
+   "targets": "three hexes within 2 hexes",
+   "description": "Place three unseen traps: that hex and any two adjacent to it. Your side can see them and the enemy cannot. The first enemy to enter each one gains 3 Poison and 1 Bleed and gains 1 Slow. They sit there until they are sprung, and a unit knocked back into one springs it exactly the same way.",
+   "intent": "Three hexes the enemy cannot see and cannot cross for free, which is worth considerably more than the damage the caltrops themselves do.",
+   "source": "Hell-TCG name reused (Rogue item, Poison Caltrops — the turnEnd aura had no map to sit on; rebuilt as seven hexes of persistent terrain) | 2026-08-17 quality pass: was authored terrain visible to both sides and dangerous to your own party. Rebuilt as real traps — unseen by the enemy, sprung on entry — which is the system the item was describing all along. | 2026-08-20 Angela: \"clean up that movement stuff.\" A one-Turn Movement loss is now the Slow status — apply N Slow. Fourteen entries said this two different ways and every one of them needed the engine to remember whose next Turn it was. Amount unchanged."
+  },
+  {
+   "id": "item.featherstep-boots",
+   "name": "Featherstep Boots",
+   "itemClass": "trinket",
+   "tier": 1,
+   "slots": 1,
+   "hands": 0,
+   "classRestriction": null,
+   "statModifiers": {},
+   "triggers": [],
+   "grants": [],
+   "equipCost": {},
+   "persists": true,
+   "tags": [],
+   "stamina": 1,
+   "cooldown": 2,
+   "warmup": 0,
+   "free": true,
+   "targets": "self",
+   "description": "You have AIRWALK: you take no trap and no terrain status from the hex you end your Turn on. You still pick things up crossing them.",
+   "intent": "Two hexes for one stamina and no action, which is how you leave the caltrops you just walked into.",
+   "source": "Hell-TCG name reused (Rogue item, Featherstep Boots — Misdirection has no HoBaT equivalent; rebuilt as a free short reposition) | 2026-08-17: \"difficult terrain\" is not a thing in HoBaT — there are hexes that cost extra Movement. Reworded. | 2026-08-17 Angela: Flight is a granted MOVEMENT ACTION (1 Movement per hex, passes over units and obstructions, takes nothing from the ground on the way, one click). Airwalk is a standing property covering only the hex you END your Turn on. Neither existed in the content.",
+   "airwalk": true
+  },
+  {
+   "id": "item.medicine-belt",
+   "name": "Medicine Belt",
+   "itemClass": "trinket",
+   "tier": 1,
+   "slots": 1,
+   "hands": 0,
+   "classRestriction": null,
+   "statModifiers": {},
+   "triggers": [],
+   "grants": [],
+   "equipCost": {},
+   "persists": true,
+   "tags": [
+    "heal"
+   ],
+   "stamina": 2,
+   "cooldown": 3,
+   "warmup": 0,
+   "free": false,
+   "targets": "one ally within 1 hex",
+   "description": "Heal 4 and remove 2 Bleed. You must be adjacent — this is hands on a wound, not a prayer.",
+   "intent": "The only healing a party without a Priest is ever going to get, and it costs you your whole Turn.",
+   "source": "Hell-TCG name reused (Barbarian item, Medicine Belt — 'grants Medicine class power' made into the trinket's own activated effect)"
+  },
+  {
+   "id": "item.wayfinders-compass",
+   "name": "Wayfinder's Compass",
+   "itemClass": "trinket",
+   "tier": 1,
+   "slots": 1,
+   "hands": 0,
+   "classRestriction": null,
+   "statModifiers": {},
+   "triggers": [
+    {
+     "hook": "startOfBattle",
+     "effect": "gain +2 Vision for the rest of the Battle, and you are never blinded below Vision 3 by darkness or fog"
+    }
+   ],
+   "grants": [],
+   "equipCost": {},
+   "persists": true,
+   "tags": [],
+   "intent": "Vision only bites in darkness, fog and stealth — so this is either dead weight or the best trinket you own, and the map tells you which.",
+   "source": "Hell-TCG name reused (artifact, Wayfinder's Compass — trailblazing is a Kingdom stat; rebuilt onto Vision, which had no Hell-TCG equivalent at all)"
+  },
+  {
+   "id": "item.lucky-charm",
+   "name": "Lucky Charm",
+   "itemClass": "trinket",
+   "tier": 1,
+   "slots": 1,
+   "hands": 0,
+   "classRestriction": null,
+   "statModifiers": {},
+   "triggers": [
+    {
+     "hook": "onMiss",
+     "effect": "gain +2 Accuracy for the rest of the Battle"
+    }
+   ],
+   "grants": [],
+   "equipCost": {},
+   "persists": true,
+   "tags": [],
+   "intent": "It rewards you precisely for being bad at this, and stops rewarding you once you are not.",
+   "source": "Hell-TCG name reused (item and origin, Lucky Charm — the flat +1 Health was nothing; rebuilt as a self-correcting Accuracy ramp) | 2026-08-20 Angela: there is no stacking-limit feature, so the cap is cut. Now unbounded: onMiss, once a Turn — over a long fight this is now a large number. | 2026-08-20 Angela: nothing counts occurrences — no \"first time\", no Nth hit, no per-Turn or per-Battle tally. \"the first time you miss each Turn\" counted occurrences. Now every miss, at +2 instead of +5."
+  },
+  {
+   "id": "item.mark-of-suffering",
+   "name": "Mark of Suffering",
+   "itemClass": "trinket",
+   "tier": 1,
+   "slots": 1,
+   "hands": 0,
+   "classRestriction": null,
+   "statModifiers": {},
+   "triggers": [
+    {
+     "hook": "onTakingDamage",
+     "effect": "gain +1 Strength and +1 Precision until the end of your next Turn"
+    }
+   ],
+   "grants": [],
+   "equipCost": {},
+   "persists": true,
+   "tags": [],
+   "intent": "The world demands more from you, and briefly makes you capable of giving it.",
+   "source": "Hell-TCG name reused (legendary artifact, Mark of Suffering — the Kingdom penalty is cut and the name reused for a get-hit-hit-back rider) | 2026-08-20 Angela: nothing counts occurrences — no \"first time\", no Nth hit, no per-Turn or per-Battle tally. \"the first time you take damage each Turn\" counted occurrences. Now it fires every time, at half the size."
+  },
+  {
+   "id": "item.mask-of-the-velvet-hand",
+   "name": "Mask of the Velvet Hand",
+   "itemClass": "trinket",
+   "tier": 2,
+   "slots": 1,
+   "hands": 0,
+   "classRestriction": null,
+   "statModifiers": {},
+   "triggers": [],
+   "grants": [],
+   "equipCost": {},
+   "persists": true,
+   "tags": [],
+   "stamina": 2,
+   "cooldown": 5,
+   "warmup": 1,
+   "free": true,
+   "targets": "self",
+   "description": "Free. Enter stealth, and gain +10 Luck for the rest of the Battle.",
+   "intent": "You were never the one they were looking at, and when they finally do look, they still cannot find the soft spot.",
+   "source": "Hell-TCG name reused (artifact, Mask of the Velvet Hand — 'the face beneath is always someone else' rebuilt as a ranged-targeting lockout) | 2026-08-20 Angela: the range-gated targeting rule is cut — \"not a legal target for anything more than 2 hexes away\" was a targeting restriction built for one item. Replaced with stealth, which already exists, plus +10 Luck."
+  },
+  {
+   "id": "item.brass-spyglass-of-thessan",
+   "name": "Brass Spyglass of Thessan",
+   "itemClass": "trinket",
+   "tier": 2,
+   "slots": 1,
+   "hands": 0,
+   "classRestriction": null,
+   "statModifiers": {},
+   "triggers": [],
+   "grants": [],
+   "equipCost": {},
+   "persists": true,
+   "tags": [],
+   "stamina": 1,
+   "cooldown": 3,
+   "warmup": 0,
+   "free": true,
+   "targets": "a hex within 8 hexes",
+   "description": "Free. Until the end of the Turn every attack you or any ally makes against enemies within 3 hexes of that hex gains +10 Accuracy.",
+   "intent": "One stamina turns the whole party's Turn into a focus-fire order, which is worth more than any number you could have put on yourself.",
+   "source": "Hell-TCG name reused (artifact, Brass Spyglass of Thessan — 'spot danger from leagues away' rebuilt as a party-wide Accuracy mark) | 2026-08-20: reworded the opening. \"Free\" here means it does not consume your primary action — it never meant costless, and on an item that also charges stamina the old wording read as though it did. | 2026-08-20 Angela: the mark is cut. \"mark that enemy, only one at a time\" was the mark system again. Rebuilt on a hex, which the game already targets. | 2026-08-20 Angela: standardised to \"Free.\" A trinket that does not use your action is a power and appears in the power list, so it uses the same word powers use. The stamina cost is a field, not prose."
+  },
+  {
+   "id": "item.vial-of-abyssal-essence",
+   "name": "Vial of Abyssal Essence",
+   "itemClass": "trinket",
+   "tier": 2,
+   "slots": 1,
+   "hands": 0,
+   "classRestriction": null,
+   "statModifiers": {},
+   "triggers": [
+    {
+     "hook": "onCrit",
+     "effect": "the target gains 3 Poison and you take 1 true damage"
+    }
+   ],
+   "grants": [],
+   "equipCost": {},
+   "persists": true,
+   "tags": [],
+   "intent": "Power at a terrible price, priced honestly: the price is one point of you, every single time it works.",
+   "source": "Hell-TCG name reused (artifact, Vial of Abyssal Essence — corruption is a non-combat stat, so the cost was rebuilt as true damage to the bearer) | 2026-08-20 Angela: Blight is removed as a status; this was its only use. Poison at 3, because Poison is resisted per tick and Blight was not."
+  },
+  {
+   "id": "item.blink-ring",
+   "name": "Blink Ring",
+   "itemClass": "trinket",
+   "tier": 2,
+   "slots": 1,
+   "hands": 0,
+   "classRestriction": null,
+   "statModifiers": {},
+   "triggers": [],
+   "grants": [],
+   "equipCost": {},
+   "persists": true,
+   "tags": [],
+   "stamina": 2,
+   "cooldown": 4,
+   "warmup": 0,
+   "free": true,
+   "targets": "self",
+   "description": "Free. This is not movement and cannot be interrupted.",
+   "intent": "Four hexes of nothing at all, which is the only real answer to being surrounded.",
+   "source": "Hell-TCG name reused (item, Blink Ring — 'grants Blink class power' rebuilt as the trinket's own activated teleport now that there are hexes) | 2026-08-17 Angela: CUT. ally-reactive hooks, guarding, Consequence-Stack interference and non-knockback forced movement all removed by ruling. | 2026-08-20: reworded the opening. \"Free\" here means it does not consume your primary action — it never meant costless, and on an item that also charges stamina the old wording read as though it did. | 2026-08-20 Angela: standardised to \"Free.\" A trinket that does not use your action is a power and appears in the power list, so it uses the same word powers use. The stamina cost is a field, not prose."
+  },
+  {
+   "id": "item.holy-chalice",
+   "name": "Holy Chalice",
+   "itemClass": "trinket",
+   "tier": 2,
+   "slots": 1,
+   "hands": 0,
+   "classRestriction": null,
+   "statModifiers": {},
+   "triggers": [],
+   "grants": [],
+   "equipCost": {},
+   "persists": true,
+   "tags": [
+    "heal"
+   ],
+   "stamina": 2,
+   "cooldown": 4,
+   "warmup": 1,
+   "free": false,
+   "targets": "allies within 3 hexes",
+   "description": "Each ally within 3 hexes, including you, heals 2 + Spirit. Spirit is the party-wide sum and a starting party runs about 2, so read this as a heal for 4.",
+   "intent": "A party heal that scales off a stat most parties barely have — it gets better as the campaign does, and never before.",
+   "source": "Hell-TCG name reused (item, Holy Chalice — the permanent +1 Spirit on attack was a runaway; rebuilt as a Spirit-scaling area heal)"
+  },
+  {
+   "id": "item.wreath-of-natures-protection",
+   "name": "Wreath of Nature's Protection",
+   "itemClass": "trinket",
+   "tier": 2,
+   "slots": 1,
+   "hands": 0,
+   "classRestriction": null,
+   "statModifiers": {},
+   "triggers": [
+    {
+     "hook": "onTakingDamage",
+     "effect": "Thorns 3"
+    },
+    {
+     "hook": "startOfBattle",
+     "effect": "gain 2 Regeneration"
+    }
+   ],
+   "grants": [],
+   "equipCost": {},
+   "persists": true,
+   "tags": [],
+   "intent": "Thorns that punish the choice to close, and quietly do nothing at all to the archer line.",
+   "source": "Hell-TCG name reused (Druid item, Wreath of Nature's Protection — the Thorns keyword ported, with a melee bias added because range should dodge it) | 2026-08-20 Angela: THORNS is a keyword now: on taking damage the attacker takes N TRUE damage, at any range. This wrote it longhand, as physical, from an adjacent attacker — all three wrong. | 2026-08-20 Angela: regeneration added — the wreath both punishes and mends.",
+   "thorns": 3
+  },
+  {
+   "id": "item.astrolabe-of-the-threshold",
+   "name": "Astrolabe of the Threshold",
+   "itemClass": "trinket",
+   "tier": 2,
+   "slots": 1,
+   "hands": 0,
+   "classRestriction": null,
+   "statModifiers": {},
+   "triggers": [],
+   "grants": [],
+   "equipCost": {},
+   "persists": true,
+   "tags": [],
+   "stamina": 1,
+   "cooldown": 5,
+   "warmup": 0,
+   "free": false,
+   "targets": "one ally within 6 hexes",
+   "description": "Once per Battle, an ally within 6 hexes may immediately take a Move action.",
+   "intent": "Pull the dying Mage out of the melee and put the Paladin in her place, for one stamina and no movement at all.",
+   "source": "Hell-TCG name reused (artifact, Astrolabe of the Threshold — 'charts paths between places' rebuilt as a hex swap, since row/column targeting was cut) | 2026-08-17 Angela: CUT. swap-places cut. | 2026-08-17 Angela: swap-places cut; rebuilt as an ordinary granted Move."
+  },
+  {
+   "id": "item.council-of-echoes",
+   "name": "Council of Echoes",
+   "itemClass": "trinket",
+   "tier": 2,
+   "slots": 1,
+   "hands": 0,
+   "classRestriction": null,
+   "statModifiers": {},
+   "triggers": [
+    {
+     "hook": "onMiss",
+     "effect": "until the end of your next Turn your attacks gain +20 Accuracy"
+    }
+   ],
+   "grants": [],
+   "equipCost": {},
+   "persists": true,
+   "tags": [],
+   "intent": "Sometimes useful, always unsettling: a miss buys you a Turn of being better at this.",
+   "source": "Hell-TCG name reused (rare artifact, Council of Echoes — 'ghostly advisors whisper forgotten battle plans' rebuilt onto the ally-death hook) | 2026-08-17 Angela: CUT. ally-reactive hooks, guarding, Consequence-Stack interference and non-knockback forced movement all removed by ruling. | 2026-08-17 quality pass: replaced a placeholder aura with a distinct effect. | 2026-08-20 Angela:  | 2026-08-20 Angela: intent text still said \"your next attack\" after the trigger was rewritten. Reworded."
+  },
+  {
+   "id": "item.tandras-blood-vial",
+   "name": "Tandra's Blood Vial",
+   "itemClass": "trinket",
+   "tier": 2,
+   "slots": 1,
+   "hands": 0,
+   "classRestriction": null,
+   "statModifiers": {},
+   "triggers": [
+    {
+     "hook": "onCrit",
+     "effect": "deal 2 crits"
+    }
+   ],
+   "grants": [],
+   "equipCost": {},
+   "persists": true,
+   "tags": [],
+   "intent": "One crit becomes two. Worthless on a hero sitting at 3 Crit and terrifying on the one running +40.",
+   "source": "Hell-TCG name reused (rare artifact, Tandra's Blood Vial — the Kingdom modifiers cut; rebuilt as the crit multiplier, which needs Crit to exist and so could not have been a Hell-TCG card) | 2026-08-20 Angela: crits are not a x2 multiplier, so \"x2.5 instead of x2\" was built on a number that does not exist. Rebuilt as an on-crit that deals a second crit — the same intent, expressed in the mechanic the engine actually has. | 2026-08-20 Angela: worded as \"on crit, deal 2 crits\" — that IS the crit-multiplier effect, expressed in the hook rather than as a damage multiplier that does not exist."
+  },
+  {
+   "id": "item.eye-of-the-oracle",
+   "name": "Eye of the Oracle",
+   "itemClass": "trinket",
+   "tier": 3,
+   "slots": 1,
+   "hands": 0,
+   "classRestriction": null,
+   "statModifiers": {},
+   "triggers": [],
+   "grants": [],
+   "equipCost": {},
+   "persists": true,
+   "tags": [],
+   "stamina": 1,
+   "cooldown": 6,
+   "warmup": 1,
+   "free": true,
+   "targets": "self",
+   "description": "Free. Until the end of your next Turn you gain +20 Dodge and +20 Luck.",
+   "intent": "She plucked out her own eye when she saw what was coming, and for one Turn you get to be the thing nobody can hit or crit.",
+   "source": "Hell-TCG name reused (rare artifact, Eye of the Oracle — the wisdom/draw payload is Kingdom-tier; rebuilt as pre-emptive single-target defence) | 2026-08-20: reworded the opening. \"Free\" here means it does not consume your primary action — it never meant costless, and on an item that also charges stamina the old wording read as though it did. | 2026-08-20 Angela: the old payload invented a per-enemy accuracy debuff and a crit veto. Rebuilt on stats that already exist: +20 Dodge and +20 Luck until the end of your next Turn. Dodge is the to-hit penalty, Luck is the flat subtraction from the attacker’s crit chance — between them they say the same thing the old wording was reaching for. | 2026-08-20 Angela: standardised to \"Free.\" A trinket that does not use your action is a power and appears in the power list, so it uses the same word powers use. The stamina cost is a field, not prose."
+  },
+  {
+   "id": "item.heart-of-vyrmothax",
+   "name": "Heart of Vyrmothax",
+   "itemClass": "trinket",
+   "tier": 3,
+   "slots": 1,
+   "hands": 0,
+   "classRestriction": null,
+   "statModifiers": {},
+   "triggers": [
+    {
+     "hook": "onKill",
+     "effect": "gain 4 Protection and +1 Strength for the rest of the Battle"
+    }
+   ],
+   "grants": [],
+   "equipCost": {},
+   "persists": true,
+   "tags": [],
+   "intent": "It still beats, and it pays you in both directions every time something else stops.",
+   "source": "Hell-TCG name reused (rare artifact, Heart of Vyrmothax — 'the last dragon's heart' rebuilt as a stacking on-kill snowball) | 2026-08-20 Angela: there is no stacking-limit feature, so the cap is cut. Now unbounded: onKill, so the fight length caps it on its own."
+  },
+  {
+   "id": "item.velans-ferryman-coin",
+   "name": "Velan's Ferryman Coin",
+   "itemClass": "trinket",
+   "tier": 3,
+   "slots": 1,
+   "hands": 0,
+   "classRestriction": null,
+   "statModifiers": {},
+   "triggers": [
+    {
+     "hook": "onEquip",
+     "effect": "+20 Deathbed Fighting"
+    }
+   ],
+   "grants": [],
+   "equipCost": {},
+   "persists": true,
+   "tags": [],
+   "stamina": 0,
+   "cooldown": 4,
+   "warmup": 0,
+   "free": true,
+   "targets": "one downed ally within 2 hexes",
+   "description": "Free. Stabilise a downed ally within 2 hexes, removing its bleed-out counter. The ferryman has been paid; he is in no hurry.",
+   "intent": "buys a body back from the clock",
+   "source": "Hell-TCG name reused (legendary artifact, Velan's Ferryman Coin — 'walk between life and death' rebuilt against the Deathbed Fighting and bleed-out clock) | 2026-08-17 Angela: rebuilt off the downed/bleed-out model, which does not exist. Deathbed Fighting is granted, never overridden. | 2026-08-17 Angela: downed IS a state and stabilising IS a mechanic — I over-cut them. Stabilise removes the bleed-out counter and nothing else: no Health, no standing up. | 2026-08-20: reworded the opening. \"Free\" here means it does not consume your primary action — it never meant costless, and on an item that also charges stamina the old wording read as though it did. | 2026-08-20 Angela: standardised to \"Free.\" A trinket that does not use your action is a power and appears in the power list, so it uses the same word powers use. The stamina cost is a field, not prose."
+  },
+  {
+   "id": "item.tongue-of-xarveth",
+   "name": "Tongue of Xar'veth",
+   "itemClass": "trinket",
+   "tier": 3,
+   "slots": 1,
+   "hands": 0,
+   "classRestriction": null,
+   "statModifiers": {
+    "corruption": 2
+   },
+   "triggers": [
+    {
+     "hook": "aura",
+     "effect": "AURA — every enemy within 4 hexes of you takes -10 Accuracy, re-checked each Turn as enemies enter and leave the radius"
+    }
+   ],
+   "grants": [],
+   "equipCost": {},
+   "persists": true,
+   "tags": [
+    "aura"
+   ],
+   "intent": "A moving four-hex hole in everyone else's aim, and it costs two points of your soul for as long as you carry it.",
+   "source": "Hell-TCG name reused (legendary artifact, Tongue of Xar'veth — 'knowledge from beyond the stars' rebuilt as a debuff aura with a Corruption bill, since Corruption is the surviving non-combat cost) | 2026-08-17 Angela: a startOfBattle trigger with an ENEMY radius fires on nobody — the two sides do not deploy near each other. Rebuilt as an aura, which is checked continuously. | 2026-08-20 Angela: enemies do not have Vision, so -1 Vision on them did nothing. Folded into the Accuracy: -5 and -1 Vision became a flat -10 Accuracy. | 2026-08-20 Angela: Corruption is PERMANENT and comes from what you have equipped — never gained during a Battle. The per-Activation tick becomes a flat +2 Corruption while equipped."
+  },
+  {
+   "id": "item.starweaver-loom-fragment",
+   "name": "Starweaver Loom Fragment",
+   "itemClass": "trinket",
+   "tier": 3,
+   "slots": 1,
+   "hands": 0,
+   "classRestriction": null,
+   "statModifiers": {},
+   "triggers": [
+    {
+     "hook": "aura",
+     "effect": "AURA radius 3 — every ally inside has +3 Luck, and an ally that ends its Activation inside gains 1 Protection."
+    }
+   ],
+   "grants": [],
+   "equipCost": {},
+   "persists": true,
+   "tags": [
+    "aura"
+   ],
+   "intent": "The threads still connect: it pays the party for standing together and pays double for standing on opposite sides of the same thing.",
+   "source": "Hell-TCG name reused (rare artifact, Starweaver Loom Fragment — 'wove fate itself' rebuilt onto Luck, the defensive crit-subtraction stat that Hell-TCG had no equivalent for) | 2026-08-17 quality pass: the Luck aura paid for proximity, which is free. A flanking clause added so the relic pays for the positioning the flavour describes. | 2026-08-17 Angela: THERE IS NO FLANKING. It appears in no current design document — I carried it forward from a stale snapshot. Rebuilt on plain adjacency, which is real and checkable."
+  },
+  {
+   "id": "item.shard-of-the-shattered-spire",
+   "name": "Shard of the Shattered Spire",
+   "itemClass": "trinket",
+   "tier": 3,
+   "slots": 1,
+   "hands": 0,
+   "classRestriction": null,
+   "statModifiers": {},
+   "triggers": [],
+   "grants": [],
+   "equipCost": {},
+   "persists": true,
+   "tags": [
+    "area"
+   ],
+   "stamina": 2,
+   "cooldown": 6,
+   "warmup": 2,
+   "free": false,
+   "targets": "three hexes within 5 hexes",
+   "description": "Place three unseen traps on any three hexes within 5 hexes of you. The enemy sees nothing. The first enemy to enter one takes 4 true damage and is knocked back 1 hex directly away from the trap — and knockback springs traps exactly as walking does, so the three are laid to feed each other. Blocked by units and impassable terrain, resolved in Settle. True damage ignores Armor and Resist.",
+   "intent": "Reality is thin in three places and only your side knows which three. The knockback is the trick: laid well, the first shard delivers the enemy to the second.",
+   "source": "Hell-TCG name reused (legendary artifact, Shard of the Shattered Spire — 'reality itself bleeds' rebuilt as authored terrain, which is only possible now that there is a map) | 2026-08-17 quality pass: was a visible two-Turn hazard zone. Rebuilt as traps plus knockback so the two systems interact, which is the tactic the rules were written to allow."
+  }
+ ],
+ "relics": [
+  {
+   "id": "item.bloodbound-gauntlets",
+   "name": "Bloodbound Gauntlets",
+   "itemClass": "relic",
+   "tier": 1,
+   "slots": 1,
+   "hands": 0,
+   "classRestriction": null,
+   "statModifiers": {
+    "strength": 1,
+    "health": -2
+   },
+   "triggers": [],
+   "grants": [],
+   "equipCost": {},
+   "persists": true,
+   "tags": [],
+   "intent": "The named example of the whole category: one point of melee damage, bought with two points of the cheapest currency there is.",
+   "source": "Hell-TCG name reused (Warrior item, Bloodbound Gauntlets — 'on attack all heroes +1 Melee, self takes 3 damage' compressed into a flat relic trade)"
+  },
+  {
+   "id": "item.stormfeather-quiver",
+   "name": "Stormfeather Quiver",
+   "itemClass": "relic",
+   "tier": 1,
+   "slots": 1,
+   "hands": 0,
+   "classRestriction": null,
+   "statModifiers": {
+    "precision": 1,
+    "reach": -1
+   },
+   "triggers": [],
+   "grants": [],
+   "equipCost": {},
+   "persists": true,
+   "tags": [],
+   "intent": "Heavier shafts hit harder and drop sooner; Reach is worth more than a point, which is why one point of Precision is all you get for it.",
+   "source": "Hell-TCG name reused (Ranger item, Stormfeather Quiver — +2 Ranged rebuilt as the Precision-for-Reach trade)"
+  },
+  {
+   "id": "item.barbarian-furs",
+   "name": "Barbarian Furs",
+   "itemClass": "relic",
+   "tier": 1,
+   "slots": 1,
+   "hands": 0,
+   "classRestriction": null,
+   "statModifiers": {
+    "health": 2,
+    "accuracy": -10
+   },
+   "triggers": [],
+   "grants": [],
+   "equipCost": {},
+   "persists": true,
+   "tags": [],
+   "intent": "You are wrapped in enough dead animal to survive one more hit and you cannot see past your own shoulders.",
+   "source": "Hell-TCG name reused (Barbarian item, Barbarian Furs — the burn-strip is idol work now; the name kept for the bulk-for-aim trade)"
+  },
+  {
+   "id": "item.veterans-war-journal",
+   "name": "Veteran's War Journal",
+   "itemClass": "relic",
+   "tier": 1,
+   "slots": 1,
+   "hands": 0,
+   "classRestriction": null,
+   "statModifiers": {
+    "accuracy": 10,
+    "health": -3
+   },
+   "triggers": [],
+   "grants": [],
+   "equipCost": {},
+   "persists": true,
+   "tags": [],
+   "intent": "Scars teach better than any academy, and the tuition was three Health you are never getting back.",
+   "source": "Hell-TCG name reused (uncommon artifact, Veteran's War Journal — 'annotated with hard-won lessons' rebuilt as Accuracy bought with Health)"
+  },
+  {
+   "id": "item.elven-protection-charm",
+   "name": "Elven Protection Charm",
+   "itemClass": "relic",
+   "tier": 1,
+   "slots": 1,
+   "hands": 0,
+   "classRestriction": null,
+   "statModifiers": {
+    "resist": 1,
+    "armor": -1
+   },
+   "triggers": [],
+   "grants": [],
+   "equipCost": {},
+   "persists": true,
+   "tags": [],
+   "intent": "It hardens you against magic by opening you to a knife, and against burn and poison it pays back per tick.",
+   "source": "Hell-TCG name reused (Ranger item, Elven Protection Charm — the +Draw is cut; the Armor/Resist pair split across the two relic faces)"
+  },
+  {
+   "id": "item.vow-of-iron",
+   "name": "Vow of Iron",
+   "itemClass": "relic",
+   "tier": 1,
+   "slots": 1,
+   "hands": 0,
+   "classRestriction": null,
+   "statModifiers": {
+    "armor": 1,
+    "resist": -1
+   },
+   "triggers": [],
+   "grants": [],
+   "equipCost": {},
+   "persists": true,
+   "tags": [],
+   "intent": "The mirror of the Charm, and the one you want in a campaign that fields more blades than casters.",
+   "source": "Hell-TCG name reused (Warrior item, Vow of Iron — the Regen ported to consumables; the name kept for the Armor-over-Resist vow)"
+  },
+  {
+   "id": "item.rangers-worn-boots",
+   "name": "Ranger's Worn Boots",
+   "itemClass": "relic",
+   "tier": 1,
+   "slots": 1,
+   "hands": 0,
+   "classRestriction": null,
+   "statModifiers": {
+    "movement": 1,
+    "dodge": -5
+   },
+   "triggers": [],
+   "grants": [],
+   "equipCost": {},
+   "persists": true,
+   "tags": [],
+   "intent": "A thousand miles in these boots taught you how to cover ground and how to never quite stop.",
+   "source": "Hell-TCG name reused (uncommon artifact, Ranger's Worn Boots — trailblazing is a Kingdom stat; rebuilt onto Movement, which had no Hell-TCG equivalent)"
+  },
+  {
+   "id": "item.scouts-lucky-charm",
+   "name": "Scout's Lucky Charm",
+   "itemClass": "relic",
+   "tier": 1,
+   "slots": 1,
+   "hands": 0,
+   "classRestriction": null,
+   "statModifiers": {
+    "luck": 3,
+    "crit": -3
+   },
+   "triggers": [],
+   "grants": [],
+   "equipCost": {},
+   "persists": true,
+   "tags": [],
+   "intent": "Fortune protects you from other people's crits by taking away your own — a defensive trade that looks like nothing and reads like everything.",
+   "source": "Hell-TCG name reused (common artifact, Scout's Lucky Charm — rebuilt onto the Luck/Crit axis, neither of which existed in Hell-TCG)"
+  },
+  {
+   "id": "item.meditation-beads",
+   "name": "Meditation Beads",
+   "itemClass": "relic",
+   "tier": 1,
+   "slots": 1,
+   "hands": 0,
+   "classRestriction": null,
+   "statModifiers": {
+    "staminaMax": 1,
+    "movement": -1
+   },
+   "triggers": [],
+   "grants": [],
+   "equipCost": {},
+   "persists": true,
+   "tags": [],
+   "intent": "One more thing per Turn, one fewer hex per Turn — and Movement is a real cost, not flavour.",
+   "source": "Hell-TCG name reused (Warrior item, Meditation Beads — Resolute was CUT; rebuilt as the stamina-for-mobility trade)"
+  },
+  {
+   "id": "item.marching-orders",
+   "name": "Marching Orders",
+   "itemClass": "relic",
+   "tier": 2,
+   "slots": 1,
+   "hands": 0,
+   "classRestriction": null,
+   "statModifiers": {
+    "movement": 1,
+    "itemSlots": -1
+   },
+   "triggers": [],
+   "grants": [],
+   "equipCost": {},
+   "persists": true,
+   "tags": [],
+   "intent": "The formations still work against demons, and they work best if you are not carrying anything.",
+   "source": "Hell-TCG name reused (common artifact, Marching Orders — the draw modifiers are Kingdom-tier; rebuilt as Movement paid in a slot)"
+  },
+  {
+   "id": "item.tome-of-forgotten-whispers",
+   "name": "Tome of Forgotten Whispers",
+   "itemClass": "relic",
+   "tier": 2,
+   "slots": 1,
+   "hands": 0,
+   "classRestriction": null,
+   "statModifiers": {
+    "magic": 1,
+    "dodge": -5
+   },
+   "triggers": [],
+   "grants": [],
+   "equipCost": {},
+   "persists": true,
+   "tags": [],
+   "intent": "Read at your own risk: Magic is a party-wide sum and a starting party has about two, so one point is a real quarter of everything the casters do.",
+   "source": "Hell-TCG name reused (common artifact, Tome of Forgotten Whispers — the wisdom stat is Kingdom-tier; rebuilt onto party-wide Magic)"
+  },
+  {
+   "id": "item.quartermasters-manifest",
+   "name": "Quartermaster's Manifest",
+   "itemClass": "relic",
+   "tier": 2,
+   "slots": 1,
+   "hands": 0,
+   "classRestriction": null,
+   "statModifiers": {
+    "itemSlots": 1,
+    "staminaMax": -1
+   },
+   "triggers": [],
+   "grants": [],
+   "equipCost": {},
+   "persists": true,
+   "tags": [],
+   "intent": "Always one more trick at the bottom, and one fewer chance per Turn to use any of them.",
+   "source": "Hell-TCG name reused (uncommon artifact, Quartermaster's Manifest — supplies are Kingdom-tier; rebuilt as slots bought with the stamina throttle)"
+  },
+  {
+   "id": "item.captains-seal",
+   "name": "Captain's Seal",
+   "itemClass": "relic",
+   "tier": 2,
+   "slots": 1,
+   "hands": 0,
+   "classRestriction": null,
+   "statModifiers": {
+    "strength": 2,
+    "accuracy": -10
+   },
+   "triggers": [],
+   "grants": [],
+   "equipCost": {},
+   "persists": true,
+   "tags": [],
+   "intent": "Authority demands action: you swing very hard and you do not especially care where.",
+   "source": "Hell-TCG name reused (uncommon artifact, Captain's Seal — the action/draw payload cut; rebuilt as the classic power-for-aim relic)"
+  },
+  {
+   "id": "item.banner-of-the-lost-legion",
+   "name": "Banner of the Lost Legion",
+   "itemClass": "relic",
+   "tier": 2,
+   "slots": 1,
+   "hands": 0,
+   "classRestriction": null,
+   "statModifiers": {
+    "dodge": 10,
+    "strength": -1
+   },
+   "triggers": [],
+   "grants": [],
+   "equipCost": {},
+   "persists": true,
+   "tags": [],
+   "intent": "The Twelfth died to the last, so the survivors it draws are the ones who learned to not be where the blow lands.",
+   "source": "Hell-TCG name reused (uncommon artifact, Banner of the Lost Legion — hero slots are Kingdom-tier; rebuilt as Dodge bought with melee damage)"
+  },
+  {
+   "id": "item.tandras-empty-cradle",
+   "name": "Tandra's Empty Cradle",
+   "itemClass": "relic",
+   "tier": 2,
+   "slots": 1,
+   "hands": 0,
+   "classRestriction": null,
+   "statModifiers": {
+    "resist": 2,
+    "accuracy": -20
+   },
+   "triggers": [],
+   "grants": [],
+   "equipCost": {},
+   "persists": true,
+   "tags": [],
+   "intent": "She mourns the children who will never be born. Two Resist neutralises two burn and two poison at once — and you pay for it every single time you swing.",
+   "source": "Hell-TCG name reused (uncommon artifact, Tandra's Empty Cradle — the Kingdom modifiers cut; rebuilt onto Resist, priced against the per-tick rule)"
+  },
+  {
+   "id": "item.frostleaf-battle-standard",
+   "name": "Frostleaf Battle Standard",
+   "itemClass": "relic",
+   "tier": 2,
+   "slots": 1,
+   "hands": 0,
+   "classRestriction": null,
+   "statModifiers": {
+    "accuracy": 10,
+    "movement": -1
+   },
+   "triggers": [],
+   "grants": [],
+   "equipCost": {},
+   "persists": true,
+   "tags": [],
+   "intent": "Elven discipline, honestly priced: a hex of Movement for ten Accuracy — which under 100 is a real hit rate and over it is +2.5 Crit and nothing else. This is a rookie's relic, and a veteran should leave it in the cart.",
+   "source": "Hell-TCG name reused (rare artifact, Frostleaf Battle Standard — 'brings elven discipline' rebuilt as Accuracy paid in a hex per Turn) | 2026-08-17 quality pass: the +10 Accuracy read as a flat upside. Reworded to state what the surplus rule actually does to it, so the relic is legible as the rookie item it is."
+  },
+  {
+   "id": "item.dusty-map-case",
+   "name": "Dusty Map Case",
+   "itemClass": "relic",
+   "tier": 2,
+   "slots": 1,
+   "hands": 0,
+   "classRestriction": null,
+   "statModifiers": {
+    "vision": 2,
+    "dodge": -5
+   },
+   "triggers": [],
+   "grants": [],
+   "equipCost": {},
+   "persists": true,
+   "tags": [],
+   "intent": "Maps of lands that no longer exist as they were, held close enough to your face that you never see the blow.",
+   "source": "Hell-TCG name reused (common artifact, Dusty Map Case — rebuilt onto Vision, which only bites in darkness, fog and stealth)"
+  },
+  {
+   "id": "item.berserkers-torc",
+   "name": "Berserker's Torc",
+   "itemClass": "relic",
+   "tier": 2,
+   "slots": 1,
+   "hands": 0,
+   "classRestriction": null,
+   "statModifiers": {
+    "strength": 2,
+    "armor": -1
+   },
+   "triggers": [],
+   "grants": [],
+   "equipCost": {},
+   "persists": true,
+   "tags": [],
+   "intent": "Two points of melee damage and a permanent hole where your mitigation used to be — the honest version of rage.",
+   "source": "Hell-TCG name reused (Warrior item, Berserker's Torc — the on-equip Burn rebuilt as a flat Armor cost, which is the same idea without a timer)"
+  },
+  {
+   "id": "item.admirals-compass",
+   "name": "Admiral's Compass",
+   "itemClass": "relic",
+   "tier": 2,
+   "slots": 1,
+   "hands": 0,
+   "classRestriction": null,
+   "statModifiers": {
+    "reach": 1,
+    "health": -4
+   },
+   "triggers": [],
+   "grants": [],
+   "equipCost": {},
+   "persists": true,
+   "tags": [],
+   "intent": "Reach is the highest-value stat on this list, which is why it is priced at four Health and does absolutely nothing for a melee hero.",
+   "source": "Hell-TCG name reused (item, Admiral's Compass — the draw/action economy cut; the name kept for the one relic that only ranged heroes should ever want)"
+  },
+  {
+   "id": "item.crown-of-emperor-valdric",
+   "name": "Crown of Emperor Valdric",
+   "itemClass": "relic",
+   "tier": 3,
+   "slots": 1,
+   "hands": 0,
+   "classRestriction": null,
+   "statModifiers": {
+    "strength": 2,
+    "health": -4
+   },
+   "triggers": [],
+   "grants": [],
+   "equipCost": {},
+   "persists": true,
+   "tags": [],
+   "intent": "The weight of an empire, which is exactly twice the weight of the Bloodbound Gauntlets.",
+   "source": "Hell-TCG name reused (rare artifact, Crown of Emperor Valdric — 'the weight of an empire demands decisions' rebuilt as the doubled tier-1 melee trade)"
+  },
+  {
+   "id": "item.seal-of-the-radiant-order",
+   "name": "Seal of the Radiant Order",
+   "itemClass": "relic",
+   "tier": 3,
+   "slots": 1,
+   "hands": 0,
+   "classRestriction": null,
+   "statModifiers": {
+    "resist": 2,
+    "accuracy": -20
+   },
+   "triggers": [],
+   "grants": [],
+   "equipCost": {},
+   "persists": true,
+   "tags": [],
+   "intent": "The greater good demands sacrifice, and the sacrifice is every point of crit your surplus Accuracy was quietly making.",
+   "source": "Hell-TCG name reused (legendary artifact, Seal of the Radiant Order — rebuilt as mitigation bought with the roll)"
+  },
+  {
+   "id": "item.throne-fragment-of-melandar",
+   "name": "Throne Fragment of Melandar",
+   "itemClass": "relic",
+   "tier": 3,
+   "slots": 1,
+   "hands": 0,
+   "classRestriction": null,
+   "statModifiers": {
+    "armor": 2,
+    "movement": -2
+   },
+   "triggers": [],
+   "grants": [],
+   "equipCost": {},
+   "persists": true,
+   "tags": [],
+   "intent": "A piece of the Imperial Throne, and it sits on you the way it sat on the Empire.",
+   "source": "Hell-TCG name reused (legendary artifact, Throne Fragment of Melandar — rebuilt as heavy mitigation paid in two hexes a Turn)"
+  },
+  {
+   "id": "item.unbroken",
+   "name": "Ossuary Reliquary",
+   "itemClass": "relic",
+   "tier": 3,
+   "slots": 1,
+   "hands": 0,
+   "classRestriction": null,
+   "statModifiers": {
+    "toughness": 1,
+    "health": -6
+   },
+   "triggers": [],
+   "grants": [],
+   "equipCost": {},
+   "persists": true,
+   "tags": [],
+   "intent": "A finger-bone in a glass tube. It teaches the body to take one more wound than it should, and takes the padding to pay for it.",
+   "source": "Hell-TCG name reused (origin, Unbroken — maxAfflictions became Toughness, and this is the relic that sells it) | 2026-08-17: renamed from \"Unbroken\" (an attribute, not an object) and re-costed off Item Slots, which double-dips against the slot the relic already occupies."
+  },
+  {
+   "id": "item.codex-of-the-last-war",
+   "name": "Codex of the Last War",
+   "itemClass": "relic",
+   "tier": 3,
+   "slots": 1,
+   "hands": 0,
+   "classRestriction": null,
+   "statModifiers": {
+    "magic": 2,
+    "health": -4
+   },
+   "triggers": [],
+   "grants": [],
+   "equipCost": {},
+   "persists": true,
+   "tags": [],
+   "intent": "Every plan accounts for demons; none of them accounts for how thin the person holding the book has become.",
+   "source": "Hell-TCG name reused (legendary artifact, Codex of the Last War — rebuilt as party-wide Magic bought with the bearer's Health)"
+  },
+  {
+   "id": "item.eye-of-damnation",
+   "name": "Eye of Damnation",
+   "itemClass": "relic",
+   "tier": 3,
+   "slots": 1,
+   "hands": 0,
+   "classRestriction": null,
+   "statModifiers": {
+    "crit": 15,
+    "dodge": -15
+   },
+   "triggers": [],
+   "grants": [],
+   "equipCost": {},
+   "persists": true,
+   "tags": [],
+   "intent": "You see the moment the killing blow opens up. You stop seeing theirs.",
+   "source": "Hell-TCG name reused (legendary item, Eye of Damnation — the draw/action engine cut; rebuilt onto the Crit/Accuracy axis that defines HoBaT) | 2026-08-17 re-costed: -10 Accuracy is only -2.5 Crit to a veteran, so +15 Crit for -10 Accuracy was very nearly free."
+  },
+  {
+   "id": "item.light-of-hope",
+   "name": "Light of Hope",
+   "itemClass": "relic",
+   "tier": 3,
+   "slots": 1,
+   "hands": 0,
+   "classRestriction": null,
+   "statModifiers": {
+    "staminaRegen": 1,
+    "toughness": -1
+   },
+   "triggers": [],
+   "grants": [],
+   "equipCost": {},
+   "persists": true,
+   "tags": [],
+   "intent": "Stamina Regen is the sacred stat and this is the only relic that grants it. It burns down what you can survive to do it.",
+   "source": "Hell-TCG name reused (legendary artifact, Light of Hope — 'a divine blessing eases your journey' rebuilt as the single Stamina Regen grant in the set) | 2026-08-17 re-costed off Accuracy: -15 Accuracy is under 4 Crit to a veteran, nowhere near the price of a Regen point."
+  },
+  {
+   "id": "item.seal-of-damnation",
+   "name": "Seal of Damnation",
+   "itemClass": "relic",
+   "tier": 3,
+   "slots": 1,
+   "hands": 0,
+   "classRestriction": null,
+   "statModifiers": {
+    "armor": 2,
+    "spirit": -1
+   },
+   "triggers": [],
+   "grants": [],
+   "equipCost": {},
+   "persists": true,
+   "tags": [],
+   "intent": "Even the gods have abandoned you — and Spirit is a party-wide sum, so they have abandoned everyone standing near you too.",
+   "source": "Hell-TCG name reused (legendary artifact, Seal of Damnation — rebuilt so the penalty lands on the party, not the bearer)"
+  },
+  {
+   "id": "item.crown-of-the-tempest",
+   "name": "Crown of the Tempest",
+   "itemClass": "relic",
+   "tier": 3,
+   "slots": 1,
+   "hands": 0,
+   "classRestriction": null,
+   "statModifiers": {
+    "precision": 2,
+    "movement": -2
+   },
+   "triggers": [],
+   "grants": [],
+   "equipCost": {},
+   "persists": true,
+   "tags": [],
+   "intent": "The storm shoots beautifully and does not walk anywhere.",
+   "source": "Hell-TCG name reused (item, Crown of the Tempest — the hero-slot payload is Kingdom-tier; rebuilt as the ranged mirror of the Throne Fragment)"
+  },
+  {
+   "id": "item.crown-of-the-sand-king",
+   "name": "Crown of the Sand King",
+   "itemClass": "relic",
+   "tier": 3,
+   "slots": 1,
+   "hands": 0,
+   "classRestriction": null,
+   "statModifiers": {
+    "dodge": 15,
+    "health": -4
+   },
+   "triggers": [],
+   "grants": [],
+   "equipCost": {},
+   "persists": true,
+   "tags": [],
+   "intent": "Fifteen Dodge is a flat penalty on every attacker in the Battle, and it is worth exactly as much as four Health is cheap.",
+   "source": "Hell-TCG name reused (item, Crown of the Sand King — rebuilt onto Dodge, and priced against the fact that Health is the cheapest currency)"
+  },
+  {
+   "id": "item.gravediggers-lantern",
+   "name": "Gravedigger's Lantern",
+   "itemClass": "relic",
+   "tier": 2,
+   "slots": 1,
+   "hands": 0,
+   "classRestriction": null,
+   "statModifiers": {
+    "health": 4,
+    "crit": -5
+   },
+   "triggers": [],
+   "grants": [],
+   "equipCost": {},
+   "persists": true,
+   "tags": [],
+   "intent": "He carried it through the plague years and it never went out. The body it hardened stopped being quick.",
+   "source": "Replaces item.plague-survivor, whose name described a person rather than an object. Same numbers."
+  },
+  {
+   "id": "item.censer-of-the-high-choir",
+   "name": "Censer of the High Choir",
+   "itemClass": "relic",
+   "tier": 2,
+   "slots": 1,
+   "hands": 0,
+   "classRestriction": null,
+   "statModifiers": {
+    "spirit": 2,
+    "health": -4
+   },
+   "triggers": [],
+   "grants": [],
+   "equipCost": {},
+   "persists": true,
+   "tags": [],
+   "intent": "Two Spirit into a party-wide sum is enormous, and it is bought out of the one body swinging the censer.",
+   "source": "Replaces item.skyward-censer. Same numbers, an unambiguously object name."
+  },
+  {
+   "id": "item.trackers-eyeglass",
+   "name": "Tracker's Eyeglass",
+   "itemClass": "relic",
+   "tier": 1,
+   "slots": 1,
+   "hands": 0,
+   "classRestriction": null,
+   "statModifiers": {
+    "vision": 1,
+    "health": -2
+   },
+   "triggers": [],
+   "grants": [],
+   "equipCost": {},
+   "persists": true,
+   "tags": [],
+   "intent": "A cracked lens on a thong. You see one hex further and you have spent something to do it.",
+   "source": "Replaces item.hunters-instinct, whose name described a trait rather than an object. Same numbers."
+  }
+ ],
+ "bloodrunes": [
+  {
+   "id": "item.rune-bashing",
+   "name": "Bashing",
+   "itemClass": "bloodrune",
+   "tier": 1,
+   "slots": 0,
+   "hands": 0,
+   "classRestriction": null,
+   "statModifiers": {
+    "strength": 1
+   },
+   "triggers": [
+    {
+     "hook": "onCrit",
+     "effect": "apply 1 Stun to the target and Knockback 1 — it is moved 1 hex directly away, blocked by units and impassable terrain, and it springs any trap and picks up any terrain status on the hex it lands in"
+    }
+   ],
+   "grants": [],
+   "equipCost": {
+    "manaCrystals": 3
+   },
+   "persists": true,
+   "tags": [
+    "melee"
+   ],
+   "intent": "Three crystals for a point of melee damage and the cheapest knockback in the game: one hex is nothing at all until the hex behind them is on fire.",
+   "source": "Hell-TCG name reused (blood rune, Bashing — melee:1 ported to Strength, with the Stun rider added onto the crit hook) | 2026-08-17 quality pass: a rune called Bashing that did not move anything. Knockback added alongside the Stun rider."
+  },
+  {
+   "id": "item.rune-cat-eyes",
+   "name": "Cat Eyes",
+   "itemClass": "bloodrune",
+   "tier": 1,
+   "slots": 0,
+   "hands": 0,
+   "classRestriction": null,
+   "statModifiers": {
+    "precision": 1,
+    "accuracy": 5
+   },
+   "triggers": [],
+   "grants": [],
+   "equipCost": {
+    "manaCrystals": 3
+   },
+   "persists": true,
+   "tags": [
+    "ranged"
+   ],
+   "intent": "The ranged floor: a point of damage and five Accuracy, and past 100 the Accuracy quietly becomes crit anyway.",
+   "source": "Hell-TCG name reused (blood rune, Cat Eyes — 'keen vision improves ranged accuracy' split correctly now that Precision is damage and Accuracy is the roll)"
+  },
+  {
+   "id": "item.rune-sharp-eyes",
+   "name": "Sharp Eyes",
+   "itemClass": "bloodrune",
+   "tier": 1,
+   "slots": 0,
+   "hands": 0,
+   "classRestriction": null,
+   "statModifiers": {
+    "reach": 1
+   },
+   "triggers": [],
+   "grants": [],
+   "equipCost": {
+    "manaCrystals": 3
+   },
+   "persists": true,
+   "tags": [
+    "ranged"
+   ],
+   "intent": "One Reach for three crystals and nothing else at all — and it does nothing whatsoever for a melee hero.",
+   "source": "Hell-TCG name reused (blood rune, Sharp Eyes — reach:2 halved, because Reach is worth more than a point here)"
+  },
+  {
+   "id": "item.rune-vampire-hunter",
+   "name": "Vampire Hunter",
+   "itemClass": "bloodrune",
+   "tier": 1,
+   "slots": 0,
+   "hands": 0,
+   "classRestriction": null,
+   "statModifiers": {},
+   "triggers": [],
+   "grants": [],
+   "equipCost": {
+    "manaCrystals": 3
+   },
+   "persists": true,
+   "tags": [
+    "vampire",
+    "undead"
+   ],
+   "slayer": {
+    "vampire": 3,
+    "undead": 1
+   },
+   "intent": "Blessed by vampire hunters of old, useless against everything else, and worth every crystal on the night it matters.",
+   "source": "Hell-TCG name reused (blood rune, Vampire Hunter — the VampireSlayer badge rebuilt as an authored slayer table)"
+  },
+  {
+   "id": "item.rune-nightmare-slayer",
+   "name": "Nightmare Slayer",
+   "itemClass": "bloodrune",
+   "tier": 1,
+   "slots": 0,
+   "hands": 0,
+   "classRestriction": null,
+   "statModifiers": {},
+   "triggers": [],
+   "grants": [],
+   "equipCost": {
+    "manaCrystals": 3
+   },
+   "persists": true,
+   "tags": [
+    "nightmare",
+    "horror"
+   ],
+   "slayer": {
+    "nightmare": 3
+   },
+   "intent": "Dreams cannot harm the waking mind, and the rune is what keeps you awake.",
+   "source": "Hell-TCG name reused (blood rune, Nightmare Slayer — NightmareSlayer badge rebuilt as slayer plus an anti-fear rider) | 2026-08-20 Angela: \"you ignore Accuracy penalties applied to you by nightmare and horror enemies\" is cut — a conditional immunity to stat penalties, from named creature tags, built for one rune. The slayer bonus is the whole thing now."
+  },
+  {
+   "id": "item.rune-plant-killer",
+   "name": "Plant Killer",
+   "itemClass": "bloodrune",
+   "tier": 1,
+   "slots": 0,
+   "hands": 0,
+   "classRestriction": null,
+   "statModifiers": {},
+   "triggers": [
+    {
+     "hook": "onKill",
+     "effect": "if the kill had the plant tag, immediately regain 1 stamina"
+    }
+   ],
+   "grants": [],
+   "equipCost": {
+    "manaCrystals": 3
+   },
+   "persists": true,
+   "tags": [
+    "plant"
+   ],
+   "slayer": {
+    "plant": 3
+   },
+   "intent": "Withers all manner of hostile flora, and pays you a stamina back for every stem you cut.",
+   "source": "Hell-TCG name reused (blood rune, Plant Killer — PlantSlayer badge plus an on-kill stamina refund, since stamina is the real throttle)"
+  },
+  {
+   "id": "item.rune-burning-touch",
+   "name": "Burning Touch",
+   "itemClass": "bloodrune",
+   "tier": 1,
+   "slots": 0,
+   "hands": 0,
+   "classRestriction": null,
+   "statModifiers": {},
+   "triggers": [
+    {
+     "hook": "onHit",
+     "effect": "apply 1 Burn"
+    }
+   ],
+   "grants": [],
+   "equipCost": {
+    "manaCrystals": 3
+   },
+   "persists": true,
+   "tags": [],
+   "intent": "Flames lick from every strike, and two Resist on the target neutralises the whole rune per tick.",
+   "source": "Hell-TCG name reused (blood rune, Burning Touch — onAttack:applyBurn moved to the onHit hook, since HoBaT rolls to hit)"
+  },
+  {
+   "id": "item.rune-bleeding-strike",
+   "name": "Bleeding Strike",
+   "itemClass": "bloodrune",
+   "tier": 1,
+   "slots": 0,
+   "hands": 0,
+   "classRestriction": null,
+   "statModifiers": {
+    "crit": 3
+   },
+   "triggers": [
+    {
+     "hook": "onCrit",
+     "effect": "apply 3 Bleed"
+    }
+   ],
+   "grants": [],
+   "equipCost": {
+    "manaCrystals": 3
+   },
+   "persists": true,
+   "tags": [],
+   "intent": "Wounds from this bearer refuse to close — and bleed is never resisted, which makes three ticks on a crit the most reliable damage in the set.",
+   "source": "Hell-TCG name reused (blood rune, Bleeding Strike — moved onto the crit, where the unresistable status belongs)"
+  },
+  {
+   "id": "item.rune-horror-breaker",
+   "name": "Horror Breaker",
+   "itemClass": "bloodrune",
+   "tier": 2,
+   "slots": 0,
+   "hands": 0,
+   "classRestriction": null,
+   "statModifiers": {},
+   "triggers": [
+    {
+     "hook": "onKill",
+     "effect": "gain +5 Accuracy for the rest of the Battle"
+    }
+   ],
+   "grants": [],
+   "equipCost": {
+    "manaCrystals": 3
+   },
+   "persists": true,
+   "tags": [
+    "horror",
+    "nightmare"
+   ],
+   "slayer": {
+    "horror": 4,
+    "nightmare": 2
+   },
+   "intent": "Courage against the unknowable, which turns into raw aim the moment the unknowable stops moving.",
+   "source": "Hell-TCG name reused (blood rune, Horror Breaker — HorrorSlayer badge plus an on-kill Accuracy ramp) | 2026-08-20 Angela: there is no stacking-limit feature, so the cap is cut. Now unbounded: onKill, so the fight length caps it on its own."
+  },
+  {
+   "id": "item.rune-elemental-bane",
+   "name": "Elemental Bane",
+   "itemClass": "bloodrune",
+   "tier": 2,
+   "slots": 0,
+   "hands": 0,
+   "classRestriction": null,
+   "statModifiers": {},
+   "triggers": [
+    {
+     "hook": "onHit",
+     "effect": "if the target has the elemental or dragon tag it loses 1 Resist for the rest of the Battle"
+    }
+   ],
+   "grants": [],
+   "equipCost": {
+    "manaCrystals": 3
+   },
+   "persists": true,
+   "tags": [
+    "elemental",
+    "dragon"
+   ],
+   "slayer": {
+    "elemental": 4,
+    "dragon": 2
+   },
+   "intent": "Dominion over primal forces: it does not just hit them harder, it takes the thing that was blunting you.",
+   "source": "Hell-TCG name reused (blood rune, Elemental Bane — ElementalSlayer badge plus Resist shred, which floors at zero) | 2026-08-20 sweep: \"to a floor of 0\" restates a rule that already fires — Armor and Resist floor at zero for everything, everywhere. Saying it again on one rune makes it read like this rune is special."
+  },
+  {
+   "id": "item.rune-monster-slayer",
+   "name": "Monster Slayer",
+   "itemClass": "bloodrune",
+   "tier": 2,
+   "slots": 0,
+   "hands": 0,
+   "classRestriction": null,
+   "statModifiers": {},
+   "triggers": [],
+   "grants": [],
+   "equipCost": {
+    "manaCrystals": 3
+   },
+   "persists": true,
+   "tags": [
+    "beast",
+    "giant",
+    "construct",
+    "dragon"
+   ],
+   "slayer": {
+    "beast": 2,
+    "giant": 2,
+    "construct": 2,
+    "dragon": 2
+   },
+   "intent": "Broad and shallow: two points against almost everything with claws, which beats four points against the thing you did not meet.",
+   "source": "Hell-TCG name reused (blood rune, Monster Slayer — the single 'Monster' type unfolded into HoBaT's four beast-shaped creature tags)"
+  },
+  {
+   "id": "item.rune-executioner",
+   "name": "Executioner",
+   "itemClass": "bloodrune",
+   "tier": 2,
+   "slots": 0,
+   "hands": 0,
+   "classRestriction": null,
+   "statModifiers": {
+    "strength": 1,
+    "precision": 1
+   },
+   "triggers": [
+    {
+     "hook": "onKill",
+     "effect": "regain 1 stamina, and until the end of your next Turn your attacks gain +10 Accuracy"
+    }
+   ],
+   "grants": [],
+   "equipCost": {
+    "manaCrystals": 3
+   },
+   "persists": true,
+   "tags": [],
+   "intent": "Swift execution enables continued assault, and the stamina it hands back is worth more than the Accuracy.",
+   "source": "Hell-TCG name reused (blood rune, Executioner — 'onKill: grantActions 1' rebuilt against stamina, since the action economy is gone) | 2026-08-20 Angela:  | 2026-08-20 Angela: intent text still said \"your next attack\" after the trigger was rewritten. Reworded."
+  },
+  {
+   "id": "item.rune-hunters-mark",
+   "name": "Hunter's Mark",
+   "itemClass": "bloodrune",
+   "tier": 2,
+   "slots": 0,
+   "hands": 0,
+   "classRestriction": null,
+   "statModifiers": {},
+   "triggers": [
+    {
+     "hook": "onHit",
+     "effect": "the target gains 2 Bleed"
+    }
+   ],
+   "grants": [],
+   "equipCost": {
+    "manaCrystals": 3
+   },
+   "persists": true,
+   "tags": [],
+   "intent": "Every fight it picks one thing, and what it hands you depends on how good you already were: a rookie gets a hit rate against it, a veteran gets five points of crit.",
+   "source": "Hell-TCG name reused (blood rune, Hunter's Mark — 'onKill: grantDraws' rebuilt as a persistent single-target mark) | 2026-08-17 quality pass: the +5 Accuracy / +3 Crit split was two small flat numbers. Folded into one +20 Accuracy that the surplus rule reads differently depending on the bearer. | 2026-08-20 Angela: nothing counts occurrences — no \"first time\", no Nth hit, no per-Turn or per-Battle tally. \"the first enemy you hit each Battle is Marked\" was an occurrence count AND the mark system, which is gone. Rebuilt as Bleed on hit."
+  },
+  {
+   "id": "item.rune-reckless",
+   "name": "Reckless",
+   "itemClass": "bloodrune",
+   "tier": 2,
+   "slots": 0,
+   "hands": 0,
+   "classRestriction": null,
+   "statModifiers": {
+    "crit": 8
+   },
+   "triggers": [],
+   "grants": [],
+   "equipCost": {
+    "manaCrystals": 3
+   },
+   "persists": true,
+   "tags": [],
+   "intent": "Abandon defence for devastating strikes — except the rune only sells you the strikes, and the defence you abandon is your own decision.",
+   "source": "Hell-TCG name reused (blood rune, Reckless — the armor:-1 cost is relic work in HoBaT, so the rune is upside paid in crystals)"
+  },
+  {
+   "id": "item.rune-crushing",
+   "name": "Crushing",
+   "itemClass": "bloodrune",
+   "tier": 2,
+   "slots": 0,
+   "hands": 0,
+   "classRestriction": null,
+   "statModifiers": {
+    "strength": 1
+   },
+   "triggers": [
+    {
+     "hook": "onHit",
+     "effect": "the target loses 1 Armor for the rest of the Battle"
+    }
+   ],
+   "grants": [],
+   "equipCost": {
+    "manaCrystals": 3
+   },
+   "persists": true,
+   "tags": [
+    "melee"
+   ],
+   "intent": "Overwhelming physical force, applied to the target's Armor until there is none of it left.",
+   "source": "Hell-TCG name reused (blood rune, Crushing — the melee/ranged trade removed; rebuilt as persistent Armor shred, which floors at 0) | 2026-08-20 sweep: \"to a floor of 0\" restates the universal floor. Cut."
+  },
+  {
+   "id": "item.rune-catblood",
+   "name": "Catblood",
+   "itemClass": "bloodrune",
+   "tier": 2,
+   "slots": 0,
+   "hands": 0,
+   "classRestriction": null,
+   "statModifiers": {
+    "crit": 3
+   },
+   "triggers": [],
+   "grants": [
+    "tag.catfolk"
+   ],
+   "equipCost": {
+    "manaCrystals": 3
+   },
+   "persists": true,
+   "tags": [
+    "catfolk"
+   ],
+   "intent": "It makes you catfolk, and everything that keys off catfolk — badges, origins, specialties, and the odd enemy that hates them — now keys off you.",
+   "source": "Hell-TCG name reused (blood rune, Catblood — 'Adds Type: Catfolk' ports directly; Adds Type is the shipped precedent for a rune granting a tag)"
+  },
+  {
+   "id": "item.rune-aura-of-dread",
+   "name": "Aura of Dread",
+   "itemClass": "bloodrune",
+   "tier": 2,
+   "slots": 0,
+   "hands": 0,
+   "classRestriction": null,
+   "statModifiers": {},
+   "triggers": [
+    {
+     "hook": "aura",
+     "effect": "AURA — every enemy within 3 hexes gains 2 Weak"
+    }
+   ],
+   "grants": [],
+   "equipCost": {
+    "manaCrystals": 3
+   },
+   "persists": true,
+   "tags": [
+    "aura"
+   ],
+   "intent": "Your presence alone weakens the resolve of enemies, in a radius, before anyone has swung anything.",
+   "source": "Hell-TCG name reused (blood rune, Aura of Dread — 'onEnter: applyWeak allEnemies' scoped to a hex radius, since there are no rows) | 2026-08-17 Angela: a startOfBattle trigger with an ENEMY radius fires on nobody — the two sides do not deploy near each other. Rebuilt as an aura, which is checked continuously."
+  },
+  {
+   "id": "item.rune-berserker-blood",
+   "name": "Berserker Blood",
+   "itemClass": "bloodrune",
+   "tier": 3,
+   "slots": 0,
+   "hands": 0,
+   "classRestriction": null,
+   "statModifiers": {
+    "strength": 1
+   },
+   "triggers": [
+    {
+     "hook": "onKill",
+     "effect": "gain +1 Strength for the rest of the Battle, and heal 2"
+    }
+   ],
+   "grants": [],
+   "equipCost": {
+    "manaCrystals": 3
+   },
+   "persists": true,
+   "tags": [
+    "melee"
+   ],
+   "intent": "The blood of berserkers, which pays in the one currency that compounds: it gets better every time it works.",
+   "source": "Hell-TCG name reused (blood rune, Berserker Blood — 'onKill: +1 melee + heal 1' kept, capped, and the class gate repealed as a bonus) | 2026-08-20 Angela: there is no stacking-limit feature, so the cap is cut. Now unbounded: onKill, so the fight length caps it on its own."
+  },
+  {
+   "id": "item.rune-deathdealer",
+   "name": "Deathdealer",
+   "itemClass": "bloodrune",
+   "tier": 3,
+   "slots": 0,
+   "hands": 0,
+   "classRestriction": null,
+   "statModifiers": {},
+   "triggers": [
+    {
+     "hook": "onDodge",
+     "effect": "gain +10 Crit for the rest of the Battle"
+    },
+    {
+     "hook": "onCrit",
+     "effect": "gain +10 Dodge for the rest of the Battle"
+    }
+   ],
+   "grants": [
+    "tag.outcast"
+   ],
+   "equipCost": {
+    "manaCrystals": 3
+   },
+   "persists": true,
+   "tags": [
+    "demon",
+    "plant",
+    "beast",
+    "outcast"
+   ],
+   "slayer": {
+    "demon": 4,
+    "plant": 4,
+    "beast": 4
+   },
+   "intent": "Four points against demons and everything that grows, and a loop underneath it: every miss they make sharpens you, every crit you land makes you harder to touch. It marks you an outcast for taking it.",
+   "source": "Hell-TCG name reused (blood rune, Deathdealer — the slayerBonus triple ported to creature tags, and 'Adds Type: Deathdealer' rebuilt as the outcast role tag) | 2026-08-20 Angela: onDodge grants Crit and onCrit grants Dodge — the two new hooks feeding each other. The first entry in the set where a dodge makes you deadlier and a crit makes you harder to hit."
+  },
+  {
+   "id": "item.rune-kairin",
+   "name": "Kai'rin",
+   "itemClass": "bloodrune",
+   "tier": 3,
+   "slots": 0,
+   "hands": 0,
+   "classRestriction": null,
+   "statModifiers": {},
+   "triggers": [
+    {
+     "hook": "onActivationEnd",
+     "effect": "heal 2"
+    }
+   ],
+   "grants": [],
+   "equipCost": {
+    "manaCrystals": 3
+   },
+   "persists": true,
+   "tags": [
+    "undead",
+    "demon"
+   ],
+   "slayer": {
+    "undead": 3,
+    "demon": 3
+   },
+   "intent": "An ancient bloodline that hunts the two things the campaign fields most, and quietly stitches you back together while it does.",
+   "source": "Hell-TCG name reused (blood rune, Kai'rin — slayer triple trimmed to two tags; the turnEnd Regen kept)"
+  },
+  {
+   "id": "item.rune-avatar-of-war",
+   "name": "Avatar of War",
+   "itemClass": "bloodrune",
+   "tier": 3,
+   "slots": 0,
+   "hands": 0,
+   "classRestriction": null,
+   "statModifiers": {
+    "strength": 1,
+    "precision": 1,
+    "accuracy": 5
+   },
+   "triggers": [
+    {
+     "hook": "onKill",
+     "effect": "Surge Chance +20 for the rest of the Battle, stacking with itself, and gain +1 Armor for the rest of the Battle"
+    }
+   ],
+   "grants": [],
+   "equipCost": {
+    "manaCrystals": 3
+   },
+   "persists": true,
+   "tags": [],
+   "intent": "Become warfare itself: every kill makes the next Activation more likely to happen twice, and by the fourth kill you are simply taking extra turns.",
+   "source": "Hell-TCG name reused (blood rune, Avatar of War — the class gate repealed as a bonus, the on-kill stack capped) | 2026-08-17 quality pass: the on-kill Armor stack was a flat number. Surge Chance added on top — the only bloodrune in the set that touches Surge, and the tier-3 kill-snowball is where it belongs. | 2026-08-20 Angela: there is no stacking-limit feature, so the cap is cut. Now unbounded: onKill, so the fight length caps it on its own."
+  },
+  {
+   "id": "item.rune-perfect-hunter",
+   "name": "Perfect Hunter",
+   "itemClass": "bloodrune",
+   "tier": 3,
+   "slots": 0,
+   "hands": 0,
+   "classRestriction": null,
+   "statModifiers": {
+    "precision": 1,
+    "reach": 1
+   },
+   "triggers": [
+    {
+     "hook": "startOfBattle",
+     "effect": "every slayer bonus you have from any source — weapon, enchant, specialty or this rune — increases by 2"
+    }
+   ],
+   "grants": [],
+   "equipCost": {
+    "manaCrystals": 3
+   },
+   "persists": true,
+   "tags": [
+    "ranged"
+   ],
+   "intent": "The ultimate predator: it is worthless on its own and it makes every other slayer source you own two points better.",
+   "source": "Hell-TCG name reused (blood rune, Perfect Hunter — 'slayerBonusAll: +2' ports exactly, and stacks with weapon and enchant slayer tables)"
+  },
+  {
+   "id": "item.rune-hells-chosen",
+   "name": "Hell's Chosen",
+   "itemClass": "bloodrune",
+   "tier": 3,
+   "slots": 0,
+   "hands": 0,
+   "classRestriction": null,
+   "statModifiers": {
+    "strength": 2,
+    "magic": 2
+   },
+   "triggers": [
+    {
+     "hook": "aura",
+     "effect": "AURA — every unit within 3 hexes takes -10 Accuracy: enemies, your own allies, and you"
+    }
+   ],
+   "grants": [
+    "tag.demon"
+   ],
+   "equipCost": {
+    "manaCrystals": 3
+   },
+   "persists": true,
+   "tags": [
+    "demon",
+    "aura"
+   ],
+   "intent": "Marked by Hell itself, and everything near you fights worse for it — your side included. Two Strength, two Magic, the demon tag, and a three-hex hole in everyone’s aim.",
+   "source": "Hell-TCG name reused (blood rune, Hell's Chosen — corruption cost rebuilt as the demon tag itself, which is a far worse and far more interesting price) | 2026-08-17 Angela: a startOfBattle trigger with an ENEMY radius fires on nobody — the two sides do not deploy near each other. Rebuilt as an aura, which is checked continuously. | 2026-08-20 Angela: the aura hits EVERY unit within 3 hexes at -10 Accuracy — enemies, allies and the wearer. It is not a debuff aura any more, it is a exclusion zone you happen to be standing in."
+  }
+ ],
+ "idols": [
+  {
+   "id": "item.pilgrims-warding-stone",
+   "name": "Pilgrim's Warding Stone",
+   "itemClass": "idol",
+   "tier": 1,
+   "slots": 1,
+   "hands": 0,
+   "classRestriction": null,
+   "statModifiers": {},
+   "triggers": [
+    {
+     "hook": "startOfBattle",
+     "effect": "gain 4 Protection"
+    }
+   ],
+   "grants": [],
+   "equipCost": {
+    "faith": 1
+   },
+   "persists": false,
+   "tags": [],
+   "intent": "One Faith buys four points of somebody else's opening shot, and buys it again next Battle or not at all.",
+   "source": "Hell-TCG name reused (uncommon artifact, Pilgrim's Warding Stone — 'protection mixed with the stain of the road' rebuilt as a per-Battle Protection buy)"
+  },
+  {
+   "id": "item.finger-of-saint-aldwyn",
+   "name": "Finger of Saint Aldwyn",
+   "itemClass": "idol",
+   "tier": 1,
+   "slots": 1,
+   "hands": 0,
+   "classRestriction": null,
+   "statModifiers": {},
+   "triggers": [
+    {
+     "hook": "aura",
+     "effect": "AURA radius 2 — an ally who ends its Activation inside gains 1 Protection"
+    }
+   ],
+   "grants": [],
+   "equipCost": {
+    "faith": 1
+   },
+   "persists": false,
+   "tags": [],
+   "intent": "Insurance against a caster you already know is out there, and dead weight against anything holding a sword.",
+   "source": "Hell-TCG name reused (uncommon artifact, Finger of Saint Aldwyn — 'the saint points the way' rebuilt as targeted magic mitigation) | 2026-08-17 Angela: CUT. ally-reactive hooks, guarding, Consequence-Stack interference and non-knockback forced movement all removed by ruling."
+  },
+  {
+   "id": "item.idol-of-the-hearthmother",
+   "name": "Idol of the Hearthmother",
+   "itemClass": "idol",
+   "tier": 1,
+   "slots": 1,
+   "hands": 0,
+   "classRestriction": null,
+   "statModifiers": {},
+   "triggers": [],
+   "grants": [],
+   "equipCost": {
+    "faith": 1
+   },
+   "persists": false,
+   "tags": [],
+   "intent": "Warmth and safety in a world of fire: it is the answer to a burning map and nothing else.",
+   "source": "Hell-TCG name reused (rare artifact, Blessing of the Hearthmother — rebuilt as a per-Turn Burn and Poison strip, which is what a fire campaign actually needs) | 2026-08-17 Angela: CUT. ally-reactive hooks, guarding, Consequence-Stack interference and non-knockback forced movement all removed by ruling. | 2026-08-17 Angela, corrected: immunity resolves BEFORE the status does; it is not a second strip. The status still takes its own -1 afterwards.",
+   "immunity": {
+    "burn": 1,
+    "poison": 1
+   },
+   "description": "Immunity to Burn 1 and Poison 1. Each is removed BEFORE that status resolves, so those points never get to act. The ordinary -1 decay still follows."
+  },
+  {
+   "id": "item.censer-of-true-light",
+   "name": "Censer of True Light",
+   "itemClass": "idol",
+   "tier": 1,
+   "slots": 1,
+   "hands": 0,
+   "classRestriction": null,
+   "statModifiers": {},
+   "triggers": [
+    {
+     "hook": "passive",
+     "effect": "Immunity to Burn 1"
+    }
+   ],
+   "grants": [],
+   "equipCost": {
+    "faith": 1
+   },
+   "persists": false,
+   "tags": [
+    "undead",
+    "demon"
+   ],
+   "intent": "Three Armor and three Resist against two creature tags: worth more than any relic on the right map and literally nothing on the wrong one.",
+   "source": "Hell-TCG name reused (Priest item, Censer of True Light — the '+2 vs Undead' offensive line inverted into tag-scoped defence, which is what an idol is for) | 2026-08-20 Angela: \"if the attacker has the undead or demon tag, +3 Armor and +3 Resist against that attack\" read the ATTACKER’s tags — the target’s tags are what the game checks, never the attacker’s. Rebuilt on Immunity, which exists."
+  },
+  {
+   "id": "item.vigils-shield",
+   "name": "Vigil's Shield",
+   "itemClass": "idol",
+   "tier": 2,
+   "slots": 1,
+   "hands": 0,
+   "classRestriction": null,
+   "statModifiers": {},
+   "triggers": [
+    {
+     "hook": "onEquip",
+     "effect": "+10 to your Deathbed Fighting roll. The modifier hangs on the idol, so it goes when the Battle does."
+    }
+   ],
+   "grants": [],
+   "equipCost": {
+    "faith": 1
+   },
+   "persists": false,
+   "tags": [],
+   "intent": "It does nothing at all until the worst thing has already happened, which is the definition of insurance.",
+   "source": "Hell-TCG name reused (Paladin item, Vigil's Shield — Resolute was CUT; rebuilt onto the Deathbed Fighting roll, which is derived from Toughness) | 2026-08-17 Angela: CUT. ally-reactive hooks, guarding, Consequence-Stack interference and non-knockback forced movement all removed by ruling. | 2026-08-17 quality pass: replaced a placeholder aura with a distinct effect."
+  },
+  {
+   "id": "item.divine-ward",
+   "name": "Divine Ward",
+   "itemClass": "idol",
+   "tier": 2,
+   "slots": 1,
+   "hands": 0,
+   "classRestriction": null,
+   "statModifiers": {},
+   "triggers": [],
+   "grants": [],
+   "equipCost": {
+    "faith": 1
+   },
+   "persists": false,
+   "tags": [],
+   "stamina": 1,
+   "cooldown": 3,
+   "warmup": 0,
+   "free": false,
+   "targets": "one ally within 2 hexes",
+   "description": "The target gains Protection equal to 2 + Spirit. Spirit is the party-wide sum; a starting party runs about 2.",
+   "intent": "Protection that scales with the party's Spirit and evaporates the moment the Battle ends, exactly like the Faith that bought it.",
+   "source": "Hell-TCG name reused (legendary item, Divine Ward — 'turnEnd: Protection = Half Spirit + 2' rebuilt as an activated, targetable ward)"
+  },
+  {
+   "id": "item.bracer-of-courage",
+   "name": "Bracer of Courage",
+   "itemClass": "idol",
+   "tier": 2,
+   "slots": 1,
+   "hands": 0,
+   "classRestriction": null,
+   "statModifiers": {},
+   "triggers": [],
+   "grants": [],
+   "equipCost": {
+    "faith": 1
+   },
+   "persists": false,
+   "tags": [],
+   "stamina": 1,
+   "cooldown": 4,
+   "warmup": 0,
+   "free": true,
+   "targets": "self",
+   "description": "Free. remove 5 Stun and 5 Weak from yourself.",
+   "intent": "Bought the morning you learned the warband fields a Stunner, and worthless the morning you learned it does not.",
+   "source": "Hell-TCG name reused (Paladin item, Bracer of Courage — Resolute was CUT; rebuilt as an activated anti-Stun and anti-Weak break) | 2026-08-20: reworded the opening. \"Free\" here means it does not consume your primary action — it never meant costless, and on an item that also charges stamina the old wording read as though it did. | 2026-08-20 Angela: standardised to \"Free.\" A trinket that does not use your action is a power and appears in the power list, so it uses the same word powers use. The stamina cost is a field, not prose. | 2026-08-20 Angela: \"ignore the next Stun applied to you this Battle\" is cut — no ignoring statuses, and it counted an occurrence besides."
+  },
+  {
+   "id": "item.scorpion-shield",
+   "name": "Scorpion Shield",
+   "itemClass": "idol",
+   "tier": 2,
+   "slots": 1,
+   "hands": 0,
+   "classRestriction": null,
+   "statModifiers": {},
+   "triggers": [
+    {
+     "hook": "onTakingDamage",
+     "effect": "Thorns 2, and the attacker gains 2 Poison and 1 Bleed"
+    }
+   ],
+   "grants": [],
+   "equipCost": {
+    "faith": 1
+   },
+   "persists": false,
+   "tags": [],
+   "intent": "It does not stop the blow — it makes the thing that landed it regret the choice, in a status Resist barely touches.",
+   "source": "Hell-TCG name reused (Warrior item, Scorpion Shield — 'on taking damage deal 2 Poison to attacker' kept and given a Bleed rider) | 2026-08-20 Angela: THORNS is a keyword now: on taking damage the attacker takes N TRUE damage, at any range. This wrote it longhand, as physical, from an adjacent attacker — all three wrong.",
+   "thorns": 2
+  },
+  {
+   "id": "item.blessing-of-the-hearthmother",
+   "name": "Blessing of the Hearthmother",
+   "itemClass": "idol",
+   "tier": 2,
+   "slots": 1,
+   "hands": 0,
+   "classRestriction": null,
+   "statModifiers": {},
+   "triggers": [
+    {
+     "hook": "onActivationEnd",
+     "effect": "heal 2 and remove 1 Weak"
+    }
+   ],
+   "grants": [],
+   "equipCost": {
+    "faith": 1
+   },
+   "persists": false,
+   "tags": [
+    "heal"
+   ],
+   "intent": "It pays a hero for not swinging, which is the only thing in the set that rewards standing still and holding a door.",
+   "source": "Hell-TCG name reused (rare artifact, Blessing of the Hearthmother — Tandra's grace rebuilt as a conditional per-Turn heal) | 2026-08-17: carried a condition the engine has no way to check (did-not-move / made-no-attack / moved-N-hexes). Condition removed and the effect reduced to match."
+  },
+  {
+   "id": "item.stormcallers-orb",
+   "name": "Stormcaller's Orb",
+   "itemClass": "idol",
+   "tier": 2,
+   "slots": 1,
+   "hands": 0,
+   "classRestriction": null,
+   "statModifiers": {},
+   "triggers": [],
+   "grants": [],
+   "equipCost": {
+    "faith": 1
+   },
+   "persists": false,
+   "tags": [
+    "elemental",
+    "dragon"
+   ],
+   "intent": "The elemental and dragon answer, priced so it is never the answer to anything else.",
+   "source": "Hell-TCG name reused (Mage item, Stormcaller's Orb — 'Protection = Magic' rebuilt as tag-scoped Resist plus a Frost strip, since Frost amplifies incoming physical) | 2026-08-17 Angela: CUT. ally-reactive hooks, guarding, Consequence-Stack interference and non-knockback forced movement all removed by ruling. | 2026-08-17 Angela, corrected: immunity resolves BEFORE the status does; it is not a second strip. The status still takes its own -1 afterwards. | 2026-08-20 Angela sweep: \"if the attacker has the elemental or dragon tag\" was the ONLY attacker-tag condition in the game — you asked what it was for and the answer was nothing else. Cut. Immunity to Frost 1 is the orb.",
+   "immunity": {
+    "frost": 1
+   },
+   "description": "Immunity to Frost 1. One point of Frost is removed BEFORE Frost resolves, so that point never gets to increase the physical damage you take. The ordinary -1 decay still follows, so Frost falls by 2 a Turn."
+  },
+  {
+   "id": "item.ring-of-divine-protection",
+   "name": "Ring of Divine Protection",
+   "itemClass": "idol",
+   "tier": 3,
+   "slots": 1,
+   "hands": 0,
+   "classRestriction": null,
+   "statModifiers": {},
+   "triggers": [
+    {
+     "hook": "startOfBattle",
+     "effect": "gain Protection equal to 4 + the party's Spirit"
+    }
+   ],
+   "grants": [],
+   "equipCost": {
+    "faith": 1
+   },
+   "persists": false,
+   "tags": [],
+   "intent": "One Faith buys a bubble sized by how much faith is in the party, and buys it again next Battle or not at all.",
+   "source": "Hell-TCG name reused (item, Ring of Divine Protection — the flat stat block replaced by the one effect an idol should be allowed to have) | 2026-08-20 Angela: nothing counts occurrences — no \"first time\", no Nth hit, no per-Turn or per-Battle tally. \"left at 1 Health\" was a damage floor, and \"the first time each Battle\" was an occurrence count. Both cut. A Protection bubble at battle start does the same job with mechanics that exist."
+  },
+  {
+   "id": "item.kals-mercy",
+   "name": "Kal's Mercy",
+   "itemClass": "idol",
+   "tier": 3,
+   "slots": 1,
+   "hands": 0,
+   "classRestriction": null,
+   "statModifiers": {},
+   "triggers": [
+    {
+     "hook": "passive",
+     "effect": "Immunity to Bleed 1. One point of Bleed is removed BEFORE Bleed resolves, so that point never deals its damage — and nothing else in the game answers Bleed at all."
+    }
+   ],
+   "grants": [],
+   "equipCost": {
+    "faith": 1
+   },
+   "persists": false,
+   "tags": [],
+   "intent": "The All-Father does not protect individuals, but sometimes he makes exceptions, and the exception costs one Faith and lasts one Battle.",
+   "source": "Hell-TCG name reused (legendary artifact, Kal's Mercy — 'sometimes he makes exceptions' rebuilt as an automatic Deathbed Fighting pass) | 2026-08-17 Angela: CUT. ally-reactive hooks, guarding, Consequence-Stack interference and non-knockback forced movement all removed by ruling. | 2026-08-17 quality pass: replaced a placeholder aura with a distinct effect."
+  },
+  {
+   "id": "item.roster-of-the-fallen",
+   "name": "Roster of the Fallen",
+   "itemClass": "idol",
+   "tier": 3,
+   "slots": 1,
+   "hands": 0,
+   "classRestriction": null,
+   "statModifiers": {},
+   "triggers": [
+    {
+     "hook": "onDeath",
+     "effect": "your name goes on the roster: every ally gains +1 Armor and +1 Resist for the rest of the Battle."
+    }
+   ],
+   "grants": [],
+   "equipCost": {
+    "faith": 1
+   },
+   "persists": false,
+   "tags": [],
+   "intent": "Their sacrifice demands we find more to carry on: it is a defensive idol that only turns on after the party has started losing.",
+   "source": "Hell-TCG name reused (common artifact, Roster of the Fallen — the first-turn-draw payload is Kingdom-tier; rebuilt onto the ally-death hook as escalating mitigation) | 2026-08-17 Angela: CUT. ally-reactive hooks, guarding, Consequence-Stack interference and non-knockback forced movement all removed by ruling. | 2026-08-17 quality pass: replaced a placeholder aura with a distinct effect."
+  },
+  {
+   "id": "item.banner-of-resolve",
+   "name": "Banner of Resolve",
+   "itemClass": "idol",
+   "tier": 3,
+   "slots": 1,
+   "hands": 0,
+   "classRestriction": null,
+   "statModifiers": {},
+   "triggers": [],
+   "grants": [],
+   "equipCost": {
+    "faith": 1
+   },
+   "persists": false,
+   "tags": [],
+   "stamina": 2,
+   "cooldown": 5,
+   "warmup": 1,
+   "free": false,
+   "targets": "allies within 3 hexes",
+   "description": "Each ally within 3 hexes, including you, removes all Stun and all Weak and gains +2 Resist for the rest of the Battle.",
+   "intent": "One Faith, one Turn, and the whole front rank comes back off the floor at once.",
+   "source": "Hell-TCG name reused (Paladin item, Banner of Resolve — 'all heroes +1 Resolute' rebuilt as a party status break, since Resolute was CUT)"
+  }
+ ],
+ "consumables": [
+  {
+   "id": "item.healing-potion",
+   "name": "Healing Potion",
+   "itemClass": "consumable",
+   "tier": 1,
+   "slots": 0,
+   "hands": 0,
+   "classRestriction": null,
+   "statModifiers": {},
+   "triggers": [],
+   "grants": [],
+   "equipCost": {},
+   "persists": false,
+   "tags": [
+    "heal"
+   ],
+   "stamina": 1,
+   "free": false,
+   "targets": "one ally within 1 hex",
+   "description": "Heal 6.",
+   "intent": "The floor of the category and the only thing a party without a Priest can do about a bad Turn.",
+   "source": "Hell-TCG name reused (potion, Healing Potion — heal 5 rounded up to 6 against HoBaT's Health curve)"
+  },
+  {
+   "id": "item.cleanse-potion",
+   "name": "Cleanse Potion",
+   "itemClass": "consumable",
+   "tier": 1,
+   "slots": 0,
+   "hands": 0,
+   "classRestriction": null,
+   "statModifiers": {},
+   "triggers": [],
+   "grants": [],
+   "equipCost": {},
+   "persists": false,
+   "tags": [],
+   "stamina": 1,
+   "free": false,
+   "targets": "one ally within 1 hex",
+   "description": "Remove 3 Burn and 3 Poison.",
+   "intent": "Burn and poison are resisted per tick, so this is worth the most on the hero with the least Resist.",
+   "source": "Hell-TCG name reused (potion, Cleanse Potion — 5 Burn/5 Poison trimmed, since Resist already eats ticks)"
+  },
+  {
+   "id": "item.potion-of-strength",
+   "name": "Potion of Strength",
+   "itemClass": "consumable",
+   "tier": 1,
+   "slots": 0,
+   "hands": 0,
+   "classRestriction": null,
+   "statModifiers": {},
+   "triggers": [],
+   "grants": [],
+   "equipCost": {},
+   "persists": false,
+   "tags": [
+    "melee"
+   ],
+   "stamina": 1,
+   "free": false,
+   "targets": "self",
+   "description": "+2 Strength for the rest of the Battle.",
+   "intent": "Two points of melee damage for one stamina and one bottle — it does nothing at all for the archer who drank it.",
+   "source": "Hell-TCG name reused (potion, Potion of Strength — '+4 Melee' rescaled, since Strength is damage only now)"
+  },
+  {
+   "id": "item.potion-of-agility",
+   "name": "Potion of Agility",
+   "itemClass": "consumable",
+   "tier": 1,
+   "slots": 0,
+   "hands": 0,
+   "classRestriction": null,
+   "statModifiers": {},
+   "triggers": [],
+   "grants": [],
+   "equipCost": {},
+   "persists": false,
+   "tags": [],
+   "stamina": 1,
+   "free": false,
+   "targets": "self",
+   "description": "+5 Dodge and +1 Movement for the rest of the Battle.",
+   "intent": "Dodge is a flat penalty on every attacker for the rest of the fight, which is more than it reads.",
+   "source": "Hell-TCG name reused (potion, Potion of Agility — the class bonus repealed; Movement added because it had no Hell-TCG equivalent)"
+  },
+  {
+   "id": "item.embolden",
+   "name": "Embolden",
+   "itemClass": "consumable",
+   "tier": 1,
+   "slots": 0,
+   "hands": 0,
+   "classRestriction": null,
+   "statModifiers": {},
+   "triggers": [],
+   "grants": [],
+   "equipCost": {},
+   "persists": false,
+   "tags": [],
+   "stamina": 1,
+   "free": false,
+   "targets": "self",
+   "description": "+5 Accuracy and +3 Crit for the rest of the Battle.",
+   "intent": "On a hero already past 100 Accuracy this is closer to +4 Crit than +5 aim — read the sheet before you drink it.",
+   "source": "Hell-TCG name reused (potion, Embolden — rebuilt onto Accuracy and Crit, neither of which existed in Hell-TCG)"
+  },
+  {
+   "id": "item.burst-of-speed",
+   "name": "Burst of Speed",
+   "itemClass": "consumable",
+   "tier": 1,
+   "slots": 0,
+   "hands": 0,
+   "classRestriction": null,
+   "statModifiers": {},
+   "triggers": [],
+   "grants": [],
+   "equipCost": {},
+   "persists": false,
+   "tags": [],
+   "stamina": 0,
+   "free": true,
+   "targets": "self",
+   "description": "Free. Move up to 4 hexes immediately. This is not your move action.",
+   "intent": "Four hexes at no cost, which is a whole Turn of walking handed to you at the exact moment the line collapses.",
+   "source": "Hell-TCG name reused (potion, Burst of Speed — '+1 Action this turn' rebuilt as movement, since the action economy is gone) | 2026-08-20: reworded the opening. \"Free\" here means it does not consume your primary action — it never meant costless, and on an item that also charges stamina the old wording read as though it did. | 2026-08-20 Angela: standardised to \"Free.\" A trinket that does not use your action is a power and appears in the power list, so it uses the same word powers use. The stamina cost is a field, not prose."
+  },
+  {
+   "id": "item.restorative-tonic",
+   "name": "Restorative Tonic",
+   "itemClass": "consumable",
+   "tier": 1,
+   "slots": 0,
+   "hands": 0,
+   "classRestriction": null,
+   "statModifiers": {},
+   "triggers": [],
+   "grants": [],
+   "equipCost": {},
+   "persists": false,
+   "tags": [
+    "heal"
+   ],
+   "stamina": 1,
+   "free": false,
+   "targets": "one ally within 1 hex",
+   "description": "Heal 3 and remove 1 Stun and 1 Weak.",
+   "intent": "A small heal wrapped around the real payload, which is getting a stunned hero back into the Turn.",
+   "source": "Hell-TCG name reused (potion, Restorative Tonic — Fatigued/Drained are campaign badges; rebuilt against combat statuses)"
+  },
+  {
+   "id": "item.trolls-blood",
+   "name": "Troll's Blood",
+   "itemClass": "consumable",
+   "tier": 1,
+   "slots": 0,
+   "hands": 0,
+   "classRestriction": null,
+   "statModifiers": {},
+   "triggers": [],
+   "grants": [],
+   "equipCost": {},
+   "persists": false,
+   "tags": [
+    "heal"
+   ],
+   "stamina": 1,
+   "free": false,
+   "targets": "one ally within 1 hex",
+   "description": "The target gains 4 Regen: it heals 1 at the start of each of its Turns for the next four Turns.",
+   "intent": "It heals more than a Healing Potion and only if the fight lasts, which is a bet on the shape of the Battle.",
+   "source": "Hell-TCG name reused (tactic, Troll's Blood — 3 Regen ported and lengthened)"
+  },
+  {
+   "id": "item.invigorate",
+   "name": "Invigorate",
+   "itemClass": "consumable",
+   "tier": 2,
+   "slots": 0,
+   "hands": 0,
+   "classRestriction": null,
+   "statModifiers": {},
+   "triggers": [],
+   "grants": [],
+   "equipCost": {},
+   "persists": false,
+   "tags": [],
+   "stamina": 0,
+   "free": true,
+   "targets": "self",
+   "description": "Free. Immediately regain 3 stamina. This cannot take you above your Stamina Max.",
+   "intent": "The 0-stamina punch means there is never a dead Turn — but this is what turns a poor Turn into the Turn you had planned.",
+   "source": "Hell-TCG name reused (potion, Invigorate — rebuilt against stamina, which is the throttle Hell-TCG never had) | 2026-08-20: reworded the opening. \"Free\" here means it does not consume your primary action — it never meant costless, and on an item that also charges stamina the old wording read as though it did. | 2026-08-20 Angela: standardised to \"Free.\" A trinket that does not use your action is a power and appears in the power list, so it uses the same word powers use. The stamina cost is a field, not prose."
+  },
+  {
+   "id": "item.greater-strength",
+   "name": "Greater Strength",
+   "itemClass": "consumable",
+   "tier": 2,
+   "slots": 0,
+   "hands": 0,
+   "classRestriction": null,
+   "statModifiers": {},
+   "triggers": [],
+   "grants": [],
+   "equipCost": {},
+   "persists": false,
+   "tags": [
+    "melee"
+   ],
+   "stamina": 1,
+   "free": false,
+   "targets": "self",
+   "description": "+3 Strength for the rest of the Battle. You also take -5 Accuracy for the rest of the Battle.",
+   "intent": "It is the tier-1 potion with the flaw the tier-1 potion should have had, and it is still worth drinking.",
+   "source": "Hell-TCG name reused (potion, Greater Strength — 'Gain Drained' is a campaign badge; the cost rebuilt as Accuracy)"
+  },
+  {
+   "id": "item.arcane-power",
+   "name": "Arcane Power",
+   "itemClass": "consumable",
+   "tier": 2,
+   "slots": 0,
+   "hands": 0,
+   "classRestriction": null,
+   "statModifiers": {},
+   "triggers": [],
+   "grants": [],
+   "equipCost": {},
+   "persists": false,
+   "tags": [],
+   "stamina": 1,
+   "free": false,
+   "targets": "self",
+   "description": "+2 Magic for the rest of the Battle.",
+   "intent": "Magic is a party-wide sum and a starting party has about two of it, so this bottle roughly doubles what every caster does.",
+   "source": "Hell-TCG name reused (potion, Arcane Power — the draw payload cut; the Magic grant priced against the party-sum rule)"
+  },
+  {
+   "id": "item.water-of-divinity",
+   "name": "Water of Divinity",
+   "itemClass": "consumable",
+   "tier": 2,
+   "slots": 0,
+   "hands": 0,
+   "classRestriction": null,
+   "statModifiers": {},
+   "triggers": [],
+   "grants": [],
+   "equipCost": {},
+   "persists": false,
+   "tags": [
+    "heal"
+   ],
+   "stamina": 2,
+   "free": false,
+   "targets": "you and allies within 3 hexes",
+   "description": "+2 Spirit for the rest of the Battle, then every ally within 3 hexes heals 3.",
+   "intent": "It buys the party's Spirit up and then immediately spends the difference, which is the only way most parties ever feel the stat.",
+   "source": "Hell-TCG name reused (potion, Water of Divinity — kept nearly intact, scoped to hexes)"
+  },
+  {
+   "id": "item.full-healing",
+   "name": "Full Healing",
+   "itemClass": "consumable",
+   "tier": 2,
+   "slots": 0,
+   "hands": 0,
+   "classRestriction": null,
+   "statModifiers": {},
+   "triggers": [],
+   "grants": [],
+   "equipCost": {},
+   "persists": false,
+   "tags": [
+    "heal"
+   ],
+   "stamina": 1,
+   "free": false,
+   "targets": "one ally within 1 hex",
+   "description": "Heal 15 and remove 5 Burn, Poison, Bleed and Frost.",
+   "intent": "The bottle you carry for the Turn a hero is about to go down, and never open on any other Turn.",
+   "source": "Hell-TCG name reused (potion, Full Healing — heal 20 trimmed; 'all negative status effects' narrowed to the four combat ticks)"
+  },
+  {
+   "id": "item.demon-hunters-brew",
+   "name": "Demon Hunter's Brew",
+   "itemClass": "consumable",
+   "tier": 2,
+   "slots": 0,
+   "hands": 0,
+   "classRestriction": null,
+   "statModifiers": {},
+   "triggers": [],
+   "grants": [],
+   "equipCost": {},
+   "persists": false,
+   "tags": [
+    "demon",
+    "area"
+   ],
+   "stamina": 1,
+   "free": false,
+   "targets": "enemies within 3 hexes",
+   "description": "Every enemy within 3 hexes gains 3 Burn. Your attacks deal +2 damage against demon for the rest of the Battle.",
+   "intent": "The one consumable that is bought before the fight rather than during it, because you already know what is coming out of the gate.",
+   "source": "Hell-TCG name reused (potion, Demon Hunter's Brew — the class-conditional bonus repealed; the slayer line made universal) | 2026-08-20 Angela sweep: \"+2 slayer\" was a bespoke word for a number the function list already names. Slayer is the FIELD; the effect is +2 damage against a tag."
+  },
+  {
+   "id": "item.frenzy-potion",
+   "name": "Frenzy Potion",
+   "itemClass": "consumable",
+   "tier": 2,
+   "slots": 0,
+   "hands": 0,
+   "classRestriction": null,
+   "statModifiers": {},
+   "triggers": [],
+   "grants": [],
+   "equipCost": {},
+   "persists": false,
+   "tags": [
+    "melee"
+   ],
+   "stamina": 1,
+   "free": false,
+   "targets": "self",
+   "description": "+4 Strength and +10 Crit for the rest of the Battle. Take 4 true damage now and -10 Accuracy for the rest of the Battle.",
+   "intent": "It makes you enormous and unreliable at once, and the true damage means your Armor does not get a say.",
+   "source": "Hell-TCG name reused (potion, Frenzy Potion — kept in shape; Fatigued replaced with an Accuracy penalty, since badges are campaign-tier)"
+  },
+  {
+   "id": "item.supercharge",
+   "name": "Supercharge",
+   "itemClass": "consumable",
+   "tier": 2,
+   "slots": 0,
+   "hands": 0,
+   "classRestriction": null,
+   "statModifiers": {},
+   "triggers": [],
+   "grants": [],
+   "equipCost": {},
+   "persists": false,
+   "tags": [
+    "heal"
+   ],
+   "stamina": 0,
+   "free": true,
+   "targets": "self",
+   "description": "Free. Heal 4 and gain +1 Surge for the rest of the Battle. Surge base is your character level, so on a level-2 hero this is half again as much Surge Chance accumulating every Activation — and the Activation it eventually buys arrives with Stamina Regen + 1 stamina attached.",
+   "intent": "It does not make this Turn better. It makes some later Turn happen twice, and you do not get to know which one.",
+   "source": "Hell-TCG name reused (potion, Supercharge — 'Remove Drained' is campaign-tier; rebuilt as a small free package) | 2026-08-17 quality pass: a flat heal plus +3 Health was three small numbers. Rebuilt onto Surge, which almost nothing in the game grants and which the name was always describing. | 2026-08-20: reworded the opening. \"Free\" here means it does not consume your primary action — it never meant costless, and on an item that also charges stamina the old wording read as though it did. | 2026-08-20 Angela: standardised to \"Free.\" A trinket that does not use your action is a power and appears in the power list, so it uses the same word powers use. The stamina cost is a field, not prose."
+  },
+  {
+   "id": "item.full-restoration",
+   "name": "Full Restoration",
+   "itemClass": "consumable",
+   "tier": 3,
+   "slots": 0,
+   "hands": 0,
+   "classRestriction": null,
+   "statModifiers": {},
+   "triggers": [],
+   "grants": [],
+   "equipCost": {},
+   "persists": false,
+   "tags": [
+    "heal"
+   ],
+   "stamina": 2,
+   "free": false,
+   "targets": "one ally within 1 hex",
+   "description": "Heal to full, remove 3 of every status, and remove one level of Wounding.",
+   "intent": "It undoes an entire Battle for one hero and costs the whole Turn to pour, and the Wounding line is why you save it.",
+   "source": "Hell-TCG name reused (potion, Full Restoration — 'one level of Wounding' ported directly, which is the campaign-facing payload)"
+  },
+  {
+   "id": "item.dragons-blood",
+   "name": "Dragon's Blood",
+   "itemClass": "consumable",
+   "tier": 3,
+   "slots": 0,
+   "hands": 0,
+   "classRestriction": null,
+   "statModifiers": {},
+   "triggers": [],
+   "grants": [],
+   "equipCost": {},
+   "persists": false,
+   "tags": [],
+   "stamina": 1,
+   "free": false,
+   "targets": "self",
+   "description": "+1 Armor and +1 Resist for the rest of the Battle, and you are immune to Burn.",
+   "intent": "Burn immunity is a flat answer to an entire archetype, and the two points of mitigation are almost an afterthought.",
+   "source": "Hell-TCG name reused (potion, Dragon's Blood — the Dragon's Blood badge is campaign-tier; the combat half rebuilt as burn immunity)"
+  },
+  {
+   "id": "item.inquisitors-scroll",
+   "name": "Inquisitor's Scroll",
+   "itemClass": "consumable",
+   "tier": 3,
+   "slots": 0,
+   "hands": 0,
+   "classRestriction": null,
+   "statModifiers": {},
+   "triggers": [],
+   "grants": [],
+   "equipCost": {},
+   "persists": false,
+   "tags": [
+    "area"
+   ],
+   "stamina": 2,
+   "free": false,
+   "targets": "enemies within 4 hexes",
+   "description": "remove 5 Burn from every ally within 4 hexes. Every enemy within 4 hexes gains 4 Poison. Area effect: no roll, no crit.",
+   "intent": "It cleans the party and salts the ground in the same motion, and it cannot crit because nothing that does not roll ever can.",
+   "source": "Hell-TCG name reused (potion, Inquisitor's Scroll — the class-conditional half folded in and scoped to hexes)"
+  },
+  {
+   "id": "item.knights-boon-water",
+   "name": "Knight's Boon Water",
+   "itemClass": "consumable",
+   "tier": 3,
+   "slots": 0,
+   "hands": 0,
+   "classRestriction": null,
+   "statModifiers": {},
+   "triggers": [],
+   "grants": [],
+   "equipCost": {},
+   "persists": false,
+   "tags": [
+    "heal"
+   ],
+   "stamina": 1,
+   "free": false,
+   "targets": "self",
+   "description": "+2 Armor and +2 Resist for the rest of the Battle, and heal 6.",
+   "intent": "Four points of mitigation on one hero for the rest of the fight, which is what a tier-3 bottle is supposed to buy.",
+   "source": "Hell-TCG name reused (potion, Knight's Boon Water — the class gate repealed; the numbers kept)"
+  },
+  {
+   "id": "item.draining-elixir",
+   "name": "Draining Elixir",
+   "itemClass": "consumable",
+   "tier": 3,
+   "slots": 0,
+   "hands": 0,
+   "classRestriction": null,
+   "statModifiers": {},
+   "triggers": [],
+   "grants": [],
+   "equipCost": {},
+   "persists": false,
+   "tags": [
+    "heal"
+   ],
+   "stamina": 1,
+   "free": false,
+   "targets": "self",
+   "description": "Heal 20 and remove 5 Burn and 5 Poison. For the rest of the Battle you have -1 Stamina Max and -10 Accuracy.",
+   "intent": "It brings a hero back from nothing and hands you a worse hero than the one you saved, which is exactly the right price.",
+   "source": "Hell-TCG name reused (potion, Draining Elixir — 'Gain Drained' rebuilt as a stamina and Accuracy tax, since Drained is a campaign badge)"
+  }
+ ]
+}
