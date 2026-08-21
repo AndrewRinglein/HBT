@@ -1,0 +1,5 @@
+{
+ "enemy-wolf":        {"slug": "wolf",        "scale": 0.85, "render": "solid"},
+ "enemy-ghost":       {"slug": "ghost",       "scale": 1.00, "render": "incorporeal"},
+ "enemy-bone-dragon": {"slug": "bone-dragon", "scale": 1.60, "render": "solid"}
+}

@@ -1,0 +1,68 @@
+{
+ "hero.shadows.oathblade.v1": {
+  "hex": "31680c28b272.webp",
+  "src": "New Art/avtair-approved/oathblade-v1.png",
+  "slug": "oathblade",
+  "scale": 1.0,
+  "tiers": {
+   "full": "oathblade_full.png",
+   "1024": "oathblade_1024.png",
+   "256": "oathblade_256.png"
+  }
+ },
+ "hero.skyship.sky-pirate.v1": {
+  "hex": "dfae8082aadd.webp",
+  "src": "New Art/aeronissa-concepts/sky-pirate.png",
+  "slug": "sky-pirate",
+  "scale": 1.0,
+  "tiers": {
+   "full": "sky-pirate_full.png",
+   "1024": "sky-pirate_1024.png",
+   "256": "sky-pirate_256.png"
+  }
+ },
+ "hero.shadows.dusk-hawk.v1": {
+  "hex": "7576444ddd34.webp",
+  "src": "New Art/avtair-approved/dusk-hawk-v1.png",
+  "slug": "dusk-hawk",
+  "scale": 1.0,
+  "tiers": {
+   "full": "dusk-hawk_full.png",
+   "1024": "dusk-hawk_1024.png",
+   "256": "dusk-hawk_256.png"
+  }
+ },
+ "hero.fixed.air-mage": {
+  "hex": "50e7dd3237a5.webp",
+  "src": "New Art/aeronissa-concepts/air-mage.png",
+  "slug": "air-mage",
+  "scale": 1.0,
+  "tiers": {
+   "full": "air-mage_full.png",
+   "1024": "air-mage_1024.png",
+   "256": "air-mage_256.png"
+  }
+ },
+ "hero.tutorial.priest-scantily.lucius": {
+  "hex": "ed6c6a924e77.webp",
+  "src": "New Art/priest-scantily1.png",
+  "slug": "lucius",
+  "scale": 1.0,
+  "tiers": {
+   "full": "lucius_full.png",
+   "1024": "lucius_1024.png",
+   "256": "lucius_256.png"
+  }
+ },
+ "hero.tutorial.paladin-shiney.osric": {
+  "hex": "1dfe067e3b5f.webp",
+  "src": "New Art/paladin-shiney1.png",
+  "slug": "osric",
+  "scale": 1.0,
+  "tiers": {
+   "full": "osric_full.png",
+   "1024": "osric_1024.png",
+   "256": "osric_256.png"
+  }
+ }
+}

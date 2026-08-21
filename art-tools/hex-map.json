@@ -1,0 +1,8 @@
+{
+ "hero.shadows.oathblade.v1":            {"slug": "oathblade", "scale": 1.0},
+ "hero.skyship.sky-pirate.v1":           {"slug": "sky-pirate", "scale": 1.0},
+ "hero.shadows.dusk-hawk.v1":            {"slug": "dusk-hawk", "scale": 1.0},
+ "hero.fixed.air-mage":                  {"slug": "air-mage", "scale": 1.0},
+ "hero.tutorial.priest-scantily.lucius": {"slug": "lucius", "scale": 1.0},
+ "hero.tutorial.paladin-shiney.osric":   {"slug": "osric", "scale": 1.0}
+}

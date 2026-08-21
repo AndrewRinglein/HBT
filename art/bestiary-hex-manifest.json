@@ -1,0 +1,38 @@
+{
+ "enemy-wolf": {
+  "hex": "e3a98b6a7475.webp",
+  "src": "assets/cards/enemies/wolf.png",
+  "slug": "wolf",
+  "scale": 0.85,
+  "render": "solid",
+  "tiers": {
+   "full": "wolf_full.png",
+   "1024": "wolf_1024.png",
+   "256": "wolf_256.png"
+  }
+ },
+ "enemy-ghost": {
+  "hex": "3c5a35ae9f58.webp",
+  "src": "assets/cards/enemies/ghost.png",
+  "slug": "ghost",
+  "scale": 1.0,
+  "render": "incorporeal",
+  "tiers": {
+   "full": "ghost_full.png",
+   "1024": "ghost_1024.png",
+   "256": "ghost_256.png"
+  }
+ },
+ "enemy-bone-dragon": {
+  "hex": "0ffdb1b7c4d0.webp",
+  "src": "assets/cards/enemies/bone-dragon.png",
+  "slug": "bone-dragon",
+  "scale": 1.6,
+  "render": "solid",
+  "tiers": {
+   "full": "bone-dragon_full.png",
+   "1024": "bone-dragon_1024.png",
+   "256": "bone-dragon_256.png"
+  }
+ }
+}
