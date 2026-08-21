@@ -40,7 +40,7 @@ If the thing doesn't fit one of the four shapes, stop and say so — that's an a
 
 ## 3. Write it
 
-**An effect** → a code module in `packages/content/effects/`, plus its registry entry.
+**An effect** → a row in `src/content/` (statuses.ts, moves.ts, index.ts as the kind demands), plus its registry entry. *(Was `packages/content/effects/` — no `packages/` directory has ever existed. Corrected 2026-08-21.)*
 
 - Changes a number in flight → declare a **station**. It may only adjust the value; it cannot mutate the world.
 - Makes something happen → declare a **hook**. It is queued and runs after the damage resolves — never inside it.
@@ -57,8 +57,15 @@ Registry entries are explicit arrays. Never decorators, never import side-effect
 
 ## 4. Gate 1 — does it exist?
 
+> **`pnpm verify` never existed.** It was the pre-gauntlet command and is dead.
+> `tools/gate.mjs` now runs gates 1–3 below *and* the Iron Gauntlet's own checks
+> — kill switch, hardcode scan, generalization, consequence, naming, post-land
+> audit. See the `iron-gauntlet` skill for the loop this sits inside.
+> Corrected 2026-08-21.
+
 ```
-pnpm verify <id>
+node tools/gate.mjs <id>          # check only, changes nothing
+npx tsx tools/probe.mts <id>      # gate 1 on its own, if you want just this
 ```
 
 Run one battle, search the log for the id. Three distinct failures, and the log distinguishes them:

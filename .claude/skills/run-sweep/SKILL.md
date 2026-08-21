@@ -5,7 +5,9 @@ description: Run a comparison in The Combat Framework and report what it means â
 
 # Run a sweep
 
-Gates 4 and 5. **Only run this on something that has passed `pnpm verify`.** Sweeping an unverified mechanic measures a bug, and the resulting number is indistinguishable from a real one.
+Gates 4 and 5. **Only run this on something the gate has landed** â€” `node tools/gate.mjs <id>` must have passed. Sweeping an unverified mechanic measures a bug, and the resulting number is indistinguishable from a real one.
+
+*(Said `pnpm verify` until 2026-08-21. That command never existed; the Iron Gauntlet replaced it. The project is npm, not pnpm.)*
 
 ---
 
@@ -16,7 +18,8 @@ Gates 4 and 5. **Only run this on something that has passed `pnpm verify`.** Swe
 That holds whether you're testing an effect, an enemy, a wave schedule, a map, or an AI mode. The subject changes; the machinery doesn't.
 
 ```
-pnpm sweep <config>
+npm run sweep <n>                        # n replicates; src/cli/sweep.ts
+npx tsx tools/effect-size.mts <id>       # paired WITH vs WITHOUT, one id
 ```
 
 ## Four rules

@@ -8,7 +8,7 @@ Combat engine and simulation harness for *Heroes of Blight and Tragic*.
 
 ## Vocabulary — use these words, no others
 
-**Battle** → **Turn** (one Hero Phase + one Enemy Phase; the numbered one) → **Phase** → **Activation** (one unit's move + primary action) → **Step** / **Primary Action** → **Attack** → **Hit**
+**Battle** → **Turn** (one Hero Phase + one Enemy Phase; the numbered one) → **Phase** → **Activation** (**the totality of one unit's doing of things** — movement, then primary action; a Surge grants another of each *inside the same Activation*, and the End of Activation ladder runs **once**. Ruled 2026-08-21) → **Step** / **Primary Action** → **Attack** → **Hit**
 
 **Settle** is the repeat-until-nothing-changes loop after damage lands.
 **Card Play** is commander-level and is *not* a Primary Action.
@@ -103,14 +103,19 @@ stopped.
 
 ## Where things live
 
+**There is no `packages/` directory** — the tree is `src/`, and always has been.
+Corrected 2026-08-21; the old listing sent readers to `packages/content/effects/`,
+which has never existed.
+
 ```
-packages/core        rules. imports nothing.
-packages/content     units, weapons, effects, maps, encounters
-packages/ai          behaviour modes
-packages/sim         batch runner
-packages/analysis    logs → database → dashboard
-packages/view        renderer (later)
-tools/               verify, sweep
+src/core         rules. imports nothing.
+src/content      units, weapons, effects, maps, moves, statuses
+src/ai           behaviour modes
+src/sim          batch runner
+src/view         text renderer (the replay viewer is tools/replay/)
+src/cli          battle and sweep entry points
+tools/           the gate, the probes, the replay rig, the Game Builder
+.state/          the gauntlet's memory — backlog, ledger, baselines
 ```
 
 ---
