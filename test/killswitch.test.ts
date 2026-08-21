@@ -21,15 +21,23 @@ describe('the kill-switch seam', () => {
   it('drops exactly the named rows, by full id or bare key, in a child process', () => {
     // Env is read at module load, so the real behaviour is only observable in a
     // fresh process. Ask one.
+    // The env arrives through execSync's `env` option, NOT as a `VAR=x cmd`
+    // shell prefix. That prefix is bash syntax: cmd.exe reads CF_DISABLE_IDS as
+    // a program name and the test dies with "is not recognized" before the seam
+    // is ever exercised. Same variable, same child process, same assertions —
+    // this is a portability change only (Law 10: nothing was weakened).
     const out = execSync(
-      `CF_DISABLE_IDS=status.poison,unit.zombie npx tsx -e "` +
+      `npx tsx -e "` +
       `import('./src/content/statuses.js').then(async (s) => {` +
       `  const u = await import('./src/content/index.js');` +
       `  console.log(JSON.stringify({` +
       `    poison: 'status.poison' in s.STATUSES,` +
       `    zombie: 'zombie' in u.UNITS,` +
       `    axe: 'attack.warrior.axe' in u.ATTACKS }))})"`,
-      { encoding: 'utf8', cwd: process.cwd() },
+      {
+        encoding: 'utf8', cwd: process.cwd(),
+        env: { ...process.env, CF_DISABLE_IDS: 'status.poison,unit.zombie' },
+      },
     )
     const r = JSON.parse(out.trim().split('\n').pop()!)
     expect(r).toEqual({ poison: false, zombie: false, axe: true })
@@ -41,12 +49,18 @@ describe('the kill-switch seam', () => {
     // roll). So assert the loud failure at its source, deterministically:
     // applying the disabled status throws, never no-ops.
     expect(() => execSync(
-      `CF_DISABLE_IDS=status.poison npx tsx -e "` +
+      `npx tsx -e "` +
       `import('./src/core/setup.js').then(async (m) => {` +
       `  const { applyStatus } = await import('./src/core/status.js');` +
       `  const ctx = m.createBattle({ replicate: 1, enemyCount: 4 });` +
       `  applyStatus(ctx, 0, 'status.poison', 2, 'test')})"`,
-      { encoding: 'utf8', cwd: process.cwd(), stdio: 'pipe' },
+      {
+        encoding: 'utf8', cwd: process.cwd(), stdio: 'pipe',
+        // See the note above — env option, not a bash prefix. This one matters
+        // twice over: under cmd.exe the prefix threw for the WRONG reason, so
+        // `toThrow()` passed while proving nothing about Law 9's loud failure.
+        env: { ...process.env, CF_DISABLE_IDS: 'status.poison' },
+      },
     )).toThrow()
   })
 

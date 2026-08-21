@@ -44,7 +44,7 @@ function logRun(disposition, extra = {}) {
 }
 
 const sh = (cmd, opts = {}) => execSync(cmd, { encoding: 'utf8', stdio: 'pipe', ...opts })
-const tryRun = (cmd) => { try { return { ok: true, out: sh(cmd) } } catch (e) {
+const tryRun = (cmd, opts = {}) => { try { return { ok: true, out: sh(cmd, opts) } } catch (e) {
   return { ok: false, out: (e.stdout ?? '') + (e.stderr ?? '') } } }
 
 const backlog = JSON.parse(readFileSync(BACKLOG, 'utf8'))
@@ -337,7 +337,13 @@ check('kill switch — the tests fail without the content', () => {
   if (item.unreachable || ids.length === 0) return { ok: true, note: 'no content id to disable — engine plumbing, not applicable' }
   const files = sh('git status --porcelain').split('\n').filter(Boolean).map((l) => l.slice(3)).filter((f) => f.startsWith('test/'))
   if (files.length === 0) return { ok: true, note: 'no touched test files (brought-its-own-tests already failed)' }
-  const r = tryRun(`CF_DISABLE_IDS=${ids.join(',')} npx vitest run ${files.join(' ')} --reporter=dot`)
+  // The env goes through execSync's `env` option, not a `VAR=x cmd` prefix —
+  // that prefix is bash-only, and under cmd.exe this check would "fail" because
+  // the shell could not find a program called CF_DISABLE_IDS. A kill-switch
+  // gate that fails for that reason PASSES the item (it expects failure), so
+  // the tautology check would have been silently inert on Windows.
+  const r = tryRun(`npx vitest run ${files.join(' ')} --reporter=dot`,
+    { env: { ...process.env, CF_DISABLE_IDS: ids.join(',') } })
   if (r.ok) {
     return { ok: false, note: `TAUTOLOGICAL — the touched tests PASS with ${ids.join(',')} disabled. They would have passed before the feature existed. Assert something the content actually causes.` }
   }
@@ -347,7 +353,12 @@ check('kill switch — the tests fail without the content', () => {
 const body = checks.map((c) => `  ${c.ok ? 'PASS' : c.warn ? 'WARN' : 'FAIL'}  ${c.name}${c.note ? ' — ' + c.note : ''}`).join('\n')
 
 if (MODE === 'abandon') {
-  sh('git checkout -- . ; git clean -fdq -e node_modules -e .state -e scratch -e tools')
+  // Two calls, not one `;`-joined string: `;` is a bash statement separator and
+  // cmd.exe does not read it, so on Windows the whole tail became arguments to
+  // `git checkout` and the clean never ran — an --abandon that left the tree
+  // dirty while reporting success.
+  sh('git checkout -- .')
+  sh('git clean -fdq -e node_modules -e .state -e scratch -e tools')
   item.status = 'failed'
   item.failedAt = stamp
   item.reason = checks.filter((c) => !c.ok).map((c) => `${c.name}: ${c.note}`).join(' | ')

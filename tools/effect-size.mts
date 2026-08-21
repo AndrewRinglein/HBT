@@ -35,10 +35,17 @@ if (process.argv.includes('--arm')) {
 } else {
   const ids = process.argv[2]
   if (!ids) { console.error('usage: npx tsx tools/effect-size.mts <id>[,<id>...]'); process.exit(2) }
-  const run = (env: string) =>
-    JSON.parse(execSync(`${env}npx tsx tools/effect-size.mts --arm`, { encoding: 'utf8' }).trim().split('\n').pop()!)
-  const withArm = run('')
-  const without = run(`CF_DISABLE_IDS=${ids} `)
+  // `disable` arrives as an env option rather than a `VAR=x cmd` prefix: that
+  // prefix is bash-only, and under cmd.exe the WITHOUT arm would not run at all
+  // — which reads as "no measurable effect", the most dangerous wrong answer
+  // this tool can give.
+  const run = (disable?: string) =>
+    JSON.parse(execSync('npx tsx tools/effect-size.mts --arm', {
+      encoding: 'utf8',
+      env: disable ? { ...process.env, CF_DISABLE_IDS: disable } : process.env,
+    }).trim().split('\n').pop()!)
+  const withArm = run()
+  const without = run(ids)
   console.log(`effect of ${ids} — ${REPS} paired battles per map, WITH vs WITHOUT`)
   let anyDelta = false
   for (const map of Object.keys(withArm)) {
