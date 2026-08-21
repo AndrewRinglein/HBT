@@ -317,7 +317,7 @@
  "shapes": [
   {
    "name": "self",
-   "uses": 142,
+   "uses": 144,
    "ids": [
     "item.loaded-dice-of-mirran",
     "item.mug-of-endless-dregs",
@@ -805,7 +805,7 @@
  "effects": [
   {
    "name": "grant a stat for the Battle",
-   "uses": 169,
+   "uses": 170,
    "ids": [
     "item.hammer-of-justice",
     "item.death-blade",
@@ -1246,6 +1246,27 @@
    ]
   },
   {
+   "name": "regain stamina",
+   "uses": 15,
+   "ids": [
+    "item.death-bow",
+    "item.void-staff",
+    "item.qi-wraps",
+    "item.rune-plant-killer",
+    "item.rune-executioner",
+    "item.invigorate",
+    "power.reaver.blood-price",
+    "power.blessed-sufferer.power-of-the-divine",
+    "power.recover",
+    "power.charge",
+    "power.focus",
+    "power.devotion",
+    "enchant.abundant-arrows",
+    "enchant.bloodthirsty",
+    "enchant.death"
+   ]
+  },
+  {
    "name": "deal damage (type from the weapon)",
    "uses": 14,
    "ids": [
@@ -1263,25 +1284,6 @@
     "power.wyrmling.scorch",
     "power.berserker.unleash",
     "enchant.stormward"
-   ]
-  },
-  {
-   "name": "regain stamina",
-   "uses": 13,
-   "ids": [
-    "item.death-bow",
-    "item.void-staff",
-    "item.qi-wraps",
-    "item.rune-plant-killer",
-    "item.rune-executioner",
-    "item.invigorate",
-    "power.reaver.blood-price",
-    "power.blessed-sufferer.power-of-the-divine",
-    "power.recover",
-    "power.charge",
-    "enchant.abundant-arrows",
-    "enchant.bloodthirsty",
-    "enchant.death"
    ]
   },
   {
@@ -2408,7 +2410,7 @@
  "durations": [
   {
    "name": "rest of the Battle",
-   "uses": 169,
+   "uses": 170,
    "ids": [
     "item.hammer-of-justice",
     "item.death-blade",

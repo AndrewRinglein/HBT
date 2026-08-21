@@ -307,43 +307,48 @@ if(D.bestiaryTest){ const B=D.bestiaryTest;
     if(/"test\./.test(t)||/TEST — /.test(t)) add('real-content-references-test-content',e.name,e.id); }
 }
 
-// R61 movement powers: a class has AT MOST ONE, and four classes have none.
-//     Ruled 2026-08-21. Sidestep is free with a cooldown; Side Roll costs Stamina with
-//     none; Leap costs more, goes twice as far, and is an entrance rather than an escape.
-//     Mage and Priest have NONE on purpose — "a much harsher penalty on mages and priests
-//     who get engaged in melee" — so a leak here is a design regression, not a typo.
-{ const MOVE={'power.sidestep':{stamina:0,cooldown:1,hexes:1,classes:['class.paladin']},
-              'power.side-roll':{stamina:1,cooldown:0,hexes:1,classes:['class.rogue','class.ranger']},
-              'power.leap'    :{stamina:2,cooldown:0,hexes:2,classes:['class.warrior']}};
-  const NONE=['class.mage','class.priest','class.civilian','class.beast'];
+// R61 BONUS MOVES: one per base class, fixed distance, never reads the Movement stat.
+//     Ruled 2026-08-21. An Activation spends ONE movement choice — a movement action
+//     (Move / Flight, which read the stat) or your bonus move (which never does).
+//     Mage and Priest get bonus moves that move them ZERO hexes on purpose: "a much
+//     harsher penalty on mages and priests who get engaged in melee".
+{ const BONUS={'power.sidestep':{stamina:0,cooldown:1,hexes:1,classes:['class.paladin']},
+               'power.side-roll':{stamina:1,cooldown:0,hexes:1,classes:['class.rogue','class.ranger']},
+               'power.leap'    :{stamina:2,cooldown:0,hexes:2,classes:['class.warrior']},
+               'power.focus'   :{stamina:0,cooldown:0,hexes:0,classes:['class.mage']},
+               'power.devotion':{stamina:0,cooldown:0,hexes:0,classes:['class.priest']}};
+  const NONE=['class.civilian','class.beast'];
   const seen=new Map();
-  for(const [id,want] of Object.entries(MOVE)){
+  for(const [id,want] of Object.entries(BONUS)){
     const p=D.powers.find(x=>x.id===id);
-    if(!p){ add('movement-power-missing',id,'the power does not exist'); continue; }
-    if(p.stamina!==want.stamina) add('movement-power-wrong-stamina',p.name,'stamina '+p.stamina+', want '+want.stamina);
-    if(p.cooldown!==want.cooldown) add('movement-power-wrong-cooldown',p.name,'cooldown '+p.cooldown+', want '+want.cooldown);
-    if(p.universalToAllUnits) add('movement-power-still-on-enemies',p.name,'an enemy carries ONE movement power in its data row, by ruling');
-    if(!(p.description||'').includes('exactly '+want.hexes+' hex')) add('movement-power-wrong-distance',p.name,'want exactly '+want.hexes+' hex(es)');
-    // R62 no fifth duration. An Activation is movement plus one action, so "until the end of
-    // your Activation" says nothing "until the end of the Turn" does not already say.
-    if(/end of (your|its) Activation\b/i.test(p.description||''))
-      add('activation-is-not-a-duration',p.name,'use "until the end of the Turn" — the four durations are closed');
-    // the family shares two clauses; losing either stops it being the same kind of thing
-    for(const must of ['provokes nothing','terrain cost is irrelevant'])
-      if(!(p.description||'').includes(must)) add('movement-powers-have-drifted-apart',p.name,'lost: "'+must+'"');
+    if(!p){ add('bonus-move-missing',id,'the power does not exist'); continue; }
+    if(p.bonusMove!==true) add('bonus-move-missing-flag',p.name,'bonusMove:true');
+    if(p.stamina!==want.stamina) add('bonus-move-wrong-stamina',p.name,'stamina '+p.stamina+', want '+want.stamina);
+    if(p.cooldown!==want.cooldown) add('bonus-move-wrong-cooldown',p.name,'cooldown '+p.cooldown+', want '+want.cooldown);
+    if(p.universalToAllUnits) add('bonus-move-still-on-enemies',p.name,'an enemy carries ONE movement power in its data row, by ruling');
+    const d=p.description||'';
+    // the whole family shares this clause — a bonus move that reads the stat is not one
+    if(!/does NOT add your Movement stat/.test(d)) add('bonus-move-may-read-the-Movement-stat',p.name,'must say it does not');
+    if(/up to your Movement/.test(d)) add('bonus-move-scales-with-Movement',p.name,'that is a movement action, not a bonus move');
+    if(want.hexes===0){ if(!/Do not move at all/.test(d)) add('zero-hex-bonus-move-unclear',p.name,'say "Do not move at all"'); }
+    else { if(!d.includes('exactly '+want.hexes+' hex')) add('bonus-move-wrong-distance',p.name,'want exactly '+want.hexes+' hex(es)');
+           for(const must of ['provokes nothing','terrain cost is irrelevant'])
+             if(!d.includes(must)) add('bonus-moves-have-drifted-apart',p.name,'lost: "'+must+'"'); }
     const got=p.grantedToClasses||[];
-    for(const c of want.classes) if(!got.includes(c)) add('movement-power-class-missing',p.name,c);
+    for(const c of want.classes) if(!got.includes(c)) add('bonus-move-class-missing',p.name,c);
     for(const c of got){
-      if(NONE.includes(c)) add('movement-power-granted-to-a-class-that-gets-none',p.name,c);
-      if(seen.has(c)) add('class-has-two-movement-powers',c,seen.get(c)+' and '+p.name); else seen.set(c,p.name); }
+      if(NONE.includes(c)) add('bonus-move-granted-to-a-class-that-gets-none',p.name,c);
+      if(seen.has(c)) add('class-has-two-bonus-moves',c,seen.get(c)+' and '+p.name); else seen.set(c,p.name); }
   }
   for(const c of D.classes) if(!NONE.includes(c.id) && !seen.has(c.id))
-    add('class-has-no-movement-power',c.name,c.id+' — every class is either on the list or deliberately on the none list');
-  // GEAR MUST NOT UNDO THE CLASS RULE. Three armors grant a flight power with no class
-  // restriction, which hands a Mage or Priest the escape the ruling took away.
-  for(const it of D.items){ const g=(it.grants||[]).filter(x=>/^power\.(flight|sidestep|side-roll|leap)/.test(x));
+    add('class-has-no-bonus-move',c.name,c.id+' — every class is either on the list or deliberately on the none list');
+  // movement ACTIONS are the mirror: they must read the stat, and must not be tagged bonus
+  for(const p of D.powers.filter(x=>x.movementAction&&!x.bonusMove))
+    if(!/up to your Movement/.test(p.description||'')) add('movement-action-does-not-read-the-stat',p.name,p.id);
+  // GEAR MUST NOT UNDO THE CLASS RULE.
+  for(const it of D.items){ const g=(it.grants||[]).filter(x=>/^power\.(flight|sidestep|side-roll|leap|focus|devotion)/.test(x));
     if(g.length && !it.classRestriction)
-      add('gear-grants-a-movement-power-to-anyone',it.name,g.join(' ')+' — unrestricted, so a Mage or Priest can buy back what the class ruling removed'); }
+      add('gear-grants-a-movement-power-to-anyone',it.name,g.join(' ')+' — unrestricted, so a Mage or Priest can buy an escape the class ruling denies it'); }
 }
 
 // R15 the level tables must stay inside their own rules

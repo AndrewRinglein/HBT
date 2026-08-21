@@ -278,56 +278,61 @@ So content in this area does exactly one of three things:
 not exist yet. It is the standard companion to stabilising and there is no content
 for it. Do not write it until it does.
 
-### Movement powers — a class has at most one, and four have none
+### Movement actions and bonus moves — two families, one slot
 
-**Every hero has Move.** On top of that a class has **at most one** movement power, and
-four classes have none at all. That is a ruling, not an oversight.
+**An Activation spends exactly ONE movement choice.** A **movement action**, or your
+**bonus move**. Never both.
 
-| | Cost | Cooldown | Distance | Extra | Who |
+**Movement actions read the Movement stat.** All of them start at your *effective*
+Movement — the stat after Slow, after grants, after anything that speeds you up or slows
+you down — and apply their own flat modifier:
+
+```
+distance = effective Movement + the action's modifier
+```
+
+| | Stamina | Distance |
+|---|---|---|
+| **Move** | 1 | **Movement** — pays terrain, **provokes** |
+| **Flight** | 1 | **Movement** |
+| **Flight (Swift)** | 0 | **Movement + 1** |
+| **Flight (Labored)** | 2 | **Movement − 1** |
+
+**Bonus moves never read the stat.** The number in the rule is the number, at Movement 3 or
+Movement 8. One per base class by default:
+
+| | Stamina | Cooldown | Distance | Extra | Class |
 |---|---|---|---|---|---|
-| **Move** | 1 stamina | — | up to your Movement | pays each hex's cost, **provokes** | everyone |
-| **Sidestep** | **0** | **1** | exactly 1 hex | — | **Paladin** |
-| **Side Roll** | **1** | 0 | exactly 1 hex | — | **Rogue · Ranger** |
-| **Leap** | **2** | 0 | **exactly 2 hexes** | **+2 Strength until the end of your Activation** | **Warrior** |
-| *(none)* | — | — | — | — | **Mage · Priest · Civilian · Beast · every enemy** |
+| **Leap** | 2 | 0 | **2 hexes** | +2 Strength until end of Turn | **Warrior** |
+| **Side Roll** | 1 | 0 | 1 hex | — | **Rogue · Ranger** |
+| **Sidestep** | 0 | **1** | 1 hex | — | **Paladin** |
+| **Focus** | 0 | 0 | **none** | gain 1 Stamina | **Mage** |
+| **Devotion** | 0 | 0 | **none** | −1 Stamina Max for the Battle, gain 2 Stamina | **Priest** |
+| *(none)* | — | — | — | — | **Civilian · Beast · every enemy** |
 
-All three ignore the destination's terrain cost and none of them provoke.
+Every bonus move that moves you **provokes nothing** and **ignores the destination's
+terrain cost**. Each has exactly one drawback.
 
-**Mage and Priest having nothing is the design, and it is load-bearing.** Angela,
-2026-08-21: *"it makes a much harsher penalty on mages and priests who get engaged in
-melee, and all the other classes, even the ranger, have more flexibility and options when
-someone's next to them."* A caught caster can Move and provoke, shoot at −20 for firing
-while adjacent, or stand there. The back line being reachable is what makes the front line
-mean anything.
+**When you write a new bonus move, three things are non-negotiable:** a fixed distance, the
+sentence saying it does not add the Movement stat, and exactly one drawback. `audit.mjs`
+checks all three, plus that no class ends up with two and that Civilian and Beast end up
+with none.
 
-**So do not hand it back.** Three ways content quietly undoes this ruling, all of them
-easy to write by accident:
+**Zero hexes is a legal distance, and it is the caster answer.** Focus and Devotion do not
+move you at all. Angela, 2026-08-21: *"it makes a much harsher penalty on mages and priests
+who get engaged in melee."* A caught Mage may Focus and catch its breath, but **it is still
+caught** — the choice each Activation is *reposition or refuel*, never both.
 
-1. **A power that moves you.** `power.mystic.ghost-walk` and `power.diviner.the-path` both
-   move a caster out of contact for cheap. One per class is texture; a second is the rule
-   repealed.
-2. **Unrestricted gear.** Gale Shroud, Wind Dancer's Cloak and Aegis of the Fleet each
-   grant a flight power with **no `classRestriction`**, so any Mage or Priest can buy the
-   escape the ruling removed. `audit.mjs` flags all three.
-3. **A duration modifier that makes standing still fine.** If being adjacent stops
-   costing a caster anything, the penalty is gone even with no movement written.
+**Devotion is the only effect in the game that spends the end of a fight on the middle of
+it.** −1 Stamina Max for the Battle, repeatable, until a level-1 Priest with Max 5 has no
+bar at all. Do not copy that shape casually.
 
-**Leap is the odd one and should stay odd.** It is the only movement power that is an
-*entrance*. Two hexes and a Strength bump that expires at the end of the same Activation —
-it exists to be spent arriving, not leaving, and nothing else in the family should copy it.
+**These are the defaults, not the list.** Bonus moves are assigned per hero and there will
+be more; this is what a class starts with.
 
-**Leap uses `until the end of the Turn`, not a new duration.** An Activation is movement
-plus **one** primary action, so *"until the end of your Activation"* would have meant
-exactly the single swing after the leap — and with attacks of opportunity unbuilt, that is
-behaviourally identical to end of the Turn. There was no reason to add a fifth duration to
-say the same thing. The four are: *rest of the Battle* · *until the end of your next Turn* ·
-*until the start of your next Turn* · *until the end of the Turn*.
-
-The two readings **do** diverge once AoO exists — Strength is melee damage only, so after
-your one swing the bonus does nothing unless you swing again, and an attack of opportunity
-during the Enemy Phase is the only way that happens before your next Turn. End-of-Turn is
-the more generous reading and it suits the power: a Warrior who leapt into the middle
-punishes what walks past.
+**Slow does not touch a bonus move**, because Slow reduces the Movement stat and a bonus
+move never reads it. A Warrior on Slow 3 still Leaps two hexes. That is a consequence of
+the rule rather than a decision — flagged, not settled.
 
 ### Flight and Airwalk — two different things
 

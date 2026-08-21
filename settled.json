@@ -529,13 +529,14 @@
    "universal": true,
    "targets": "self",
    "tags": [],
-   "description": "Move exactly 1 hex in any direction. It provokes nothing, and the destination’s terrain cost is irrelevant — step into a hex costing 1, 2 or 3 alike. Costs no Stamina, and it is usable every other Turn. Paladins only.",
+   "description": "Move exactly 1 hex in any direction. It provokes nothing, and the destination’s terrain cost is irrelevant — step into a hex costing 1, 2 or 3 alike. Costs no Stamina, and it is usable every other Turn. It is a bonus move, so it does NOT add your Movement stat. Paladins only.",
    "intent": "The free half-step, and the drawback is the wait. On the Turn it is down you can be pinned, which is the whole reason it has a cooldown.",
-   "source": "Angela 2026-08-17. Universal — every hero starts with Move and Sidestep. | 2026-08-17 Angela: enemies have it too. This is the rule that makes zones of control soft. | Angela 2026-08-21: Sidestep gets a cooldown of 1 — \"it does break this statement of 'it's always available.' No, it's available every other turn.\" Enemies lose it entirely (engine/DECISIONS.md 2026-08-21: an enemy carries exactly ONE movement power in its data row). Split into two: Sidestep is free but every other Turn; Side Roll costs 1 Stamina but is always there. Rogues and Rangers take Side Roll by default, everyone else Sidestep. Beasts and Civilians get NEITHER. | Angela 2026-08-21: \"Leap. It'll move you two squares with no attacks of opportunity given. Cost 2 stamina. And give you +2 Strength until the end of your activation. And this one goes on a Warrior. And let's remove the one we gave to Priest and Mage, they both don't get one.\" Sidestep narrows to the Paladin — the Warrior took Leap instead, and Mage and Priest now get nothing.",
+   "source": "Angela 2026-08-17. Universal — every hero starts with Move and Sidestep. | 2026-08-17 Angela: enemies have it too. This is the rule that makes zones of control soft. | Angela 2026-08-21: Sidestep gets a cooldown of 1 — \"it does break this statement of 'it's always available.' No, it's available every other turn.\" Enemies lose it entirely (engine/DECISIONS.md 2026-08-21: an enemy carries exactly ONE movement power in its data row). Split into two: Sidestep is free but every other Turn; Side Roll costs 1 Stamina but is always there. Rogues and Rangers take Side Roll by default, everyone else Sidestep. Beasts and Civilians get NEITHER. | Angela 2026-08-21: \"Leap. It'll move you two squares with no attacks of opportunity given. Cost 2 stamina. And give you +2 Strength until the end of your activation. And this one goes on a Warrior. And let's remove the one we gave to Priest and Mage, they both don't get one.\" Sidestep narrows to the Paladin — the Warrior took Leap instead, and Mage and Priest now get nothing. | Angela 2026-08-21: the BONUS MOVE family. \"Mage gets Focus. It actually does zero movement, zero stamina cost. They gain one stamina. Priest gets Devotion. Does zero movement. They lose 1 maximum stamina, and they gain 2 stamina.\" A bonus move IS your movement for the Activation — you pick Move, a Flight, or your bonus move, never two. \"Only the full movement actions and things like them benefit from the Move stat, so all of these bonus moves do not benefit from the Move stat.\"",
    "universalToAllUnits": false,
    "grantedToClasses": [
     "class.paladin"
-   ]
+   ],
+   "bonusMove": true
   },
   {
    "id": "power.side-roll",
@@ -555,9 +556,10 @@
    ],
    "targets": "self",
    "tags": [],
-   "description": "Move exactly 1 hex in any direction. It provokes nothing, and the destination’s terrain cost is irrelevant — step into a hex costing 1, 2 or 3 alike. It costs 1 Stamina, and there is no cooldown — you can do it every Turn. Rogues and Rangers.",
+   "description": "Move exactly 1 hex in any direction. It provokes nothing, and the destination’s terrain cost is irrelevant — step into a hex costing 1, 2 or 3 alike. It costs 1 Stamina, and there is no cooldown — you can do it every Turn. It is a bonus move, so it does NOT add your Movement stat. Rogues and Rangers.",
    "intent": "The same half-step, priced the other way round. Sidestep is free but makes you wait; Side Roll is always there and you pay for it. A Rogue who wants out every single Turn can have it, at a Stamina a Turn.",
-   "source": "Angela 2026-08-21: Sidestep gets a cooldown of 1 — \"it does break this statement of 'it's always available.' No, it's available every other turn.\" Enemies lose it entirely (engine/DECISIONS.md 2026-08-21: an enemy carries exactly ONE movement power in its data row). Split into two: Sidestep is free but every other Turn; Side Roll costs 1 Stamina but is always there. Rogues and Rangers take Side Roll by default, everyone else Sidestep. Beasts and Civilians get NEITHER."
+   "source": "Angela 2026-08-21: Sidestep gets a cooldown of 1 — \"it does break this statement of 'it's always available.' No, it's available every other turn.\" Enemies lose it entirely (engine/DECISIONS.md 2026-08-21: an enemy carries exactly ONE movement power in its data row). Split into two: Sidestep is free but every other Turn; Side Roll costs 1 Stamina but is always there. Rogues and Rangers take Side Roll by default, everyone else Sidestep. Beasts and Civilians get NEITHER. | Angela 2026-08-21: the BONUS MOVE family. \"Mage gets Focus. It actually does zero movement, zero stamina cost. They gain one stamina. Priest gets Devotion. Does zero movement. They lose 1 maximum stamina, and they gain 2 stamina.\" A bonus move IS your movement for the Activation — you pick Move, a Flight, or your bonus move, never two. \"Only the full movement actions and things like them benefit from the Move stat, so all of these bonus moves do not benefit from the Move stat.\"",
+   "bonusMove": true
   },
   {
    "id": "power.leap",
@@ -576,9 +578,54 @@
    ],
    "targets": "self",
    "tags": [],
-   "description": "Move exactly 2 hexes in any direction. It provokes nothing, and the destination’s terrain cost is irrelevant. You gain +2 Strength until the end of the Turn. It costs 2 Stamina and there is no cooldown. Warriors only.",
+   "description": "Move exactly 2 hexes in any direction. It provokes nothing, and the destination’s terrain cost is irrelevant. You gain +2 Strength until the end of the Turn. It costs 2 Stamina and there is no cooldown. It is a bonus move, so it does NOT add your Movement stat. Warriors only.",
    "intent": "The only movement power that is an opening rather than an escape. Two hexes gets you INTO the fight and the Strength lands on the swing you take when you arrive. It rides your attacks of opportunity for the rest of the Turn too, once those exist — a Warrior who leaps into the middle punishes everything that walks past.",
-   "source": "Angela 2026-08-21: \"Leap. It'll move you two squares with no attacks of opportunity given. Cost 2 stamina. And give you +2 Strength until the end of your activation. And this one goes on a Warrior. And let's remove the one we gave to Priest and Mage, they both don't get one.\" | 2026-08-21 Angela: \"isn’t the end of activation the same as the end of this turn? I’m not trying to add one.\" An Activation is movement plus ONE primary action, so “until the end of your Activation” is exactly the one swing after the leap — and with attacks of opportunity unbuilt, that is behaviourally identical to end of the Turn today. Using the duration that already exists rather than adding a fifth. The two diverge once AoO is built, and end-of-Turn is the more generous reading, which suits a Warrior that just landed in the middle."
+   "source": "Angela 2026-08-21: \"Leap. It'll move you two squares with no attacks of opportunity given. Cost 2 stamina. And give you +2 Strength until the end of your activation. And this one goes on a Warrior. And let's remove the one we gave to Priest and Mage, they both don't get one.\" | 2026-08-21 Angela: \"isn’t the end of activation the same as the end of this turn? I’m not trying to add one.\" An Activation is movement plus ONE primary action, so “until the end of your Activation” is exactly the one swing after the leap — and with attacks of opportunity unbuilt, that is behaviourally identical to end of the Turn today. Using the duration that already exists rather than adding a fifth. The two diverge once AoO is built, and end-of-Turn is the more generous reading, which suits a Warrior that just landed in the middle. | Angela 2026-08-21: the BONUS MOVE family. \"Mage gets Focus. It actually does zero movement, zero stamina cost. They gain one stamina. Priest gets Devotion. Does zero movement. They lose 1 maximum stamina, and they gain 2 stamina.\" A bonus move IS your movement for the Activation — you pick Move, a Flight, or your bonus move, never two. \"Only the full movement actions and things like them benefit from the Move stat, so all of these bonus moves do not benefit from the Move stat.\"",
+   "bonusMove": true
+  },
+  {
+   "id": "power.focus",
+   "name": "Focus",
+   "specialty": null,
+   "class": null,
+   "stamina": 0,
+   "cooldown": 0,
+   "warmup": 0,
+   "free": false,
+   "movementAction": true,
+   "bonusMove": true,
+   "universal": false,
+   "universalToAllUnits": false,
+   "grantedToClasses": [
+    "class.mage"
+   ],
+   "targets": "self",
+   "tags": [],
+   "description": "Do not move at all. Gain 1 Stamina. It costs no Stamina and there is no cooldown. It is a bonus move, so it does NOT add your Movement stat — it moves you zero hexes on purpose. Mages only.",
+   "intent": "The Mage’s bonus move is to stand still and breathe. It is the cheapest stamina in the game and the price is that you are exactly where you were — a caught caster can Focus, but it will still be caught.",
+   "source": "Angela 2026-08-21: the BONUS MOVE family. \"Mage gets Focus. It actually does zero movement, zero stamina cost. They gain one stamina. Priest gets Devotion. Does zero movement. They lose 1 maximum stamina, and they gain 2 stamina.\" A bonus move IS your movement for the Activation — you pick Move, a Flight, or your bonus move, never two. \"Only the full movement actions and things like them benefit from the Move stat, so all of these bonus moves do not benefit from the Move stat.\""
+  },
+  {
+   "id": "power.devotion",
+   "name": "Devotion",
+   "specialty": null,
+   "class": null,
+   "stamina": 0,
+   "cooldown": 0,
+   "warmup": 0,
+   "free": false,
+   "movementAction": true,
+   "bonusMove": true,
+   "universal": false,
+   "universalToAllUnits": false,
+   "grantedToClasses": [
+    "class.priest"
+   ],
+   "targets": "self",
+   "tags": [],
+   "description": "Do not move at all. Lose 1 Stamina Max for the rest of the Battle, and gain 2 Stamina. There is no cooldown. It is a bonus move, so it does NOT add your Movement stat — it moves you zero hexes on purpose. Priests only.",
+   "intent": "Burn the candle. Two Stamina now against a bar that is one shorter for the rest of the fight, and you may do it again, and again, until there is no bar left. The Priest chooses how much of the end of the battle to spend on the middle of it.",
+   "source": "Angela 2026-08-21: the BONUS MOVE family. \"Mage gets Focus. It actually does zero movement, zero stamina cost. They gain one stamina. Priest gets Devotion. Does zero movement. They lose 1 maximum stamina, and they gain 2 stamina.\" A bonus move IS your movement for the Activation — you pick Move, a Flight, or your bonus move, never two. \"Only the full movement actions and things like them benefit from the Move stat, so all of these bonus moves do not benefit from the Move stat.\""
   },
   {
    "id": "power.flight",

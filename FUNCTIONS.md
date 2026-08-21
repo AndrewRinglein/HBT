@@ -32,7 +32,7 @@ When a rule fires. Twelve, plus `aura` and `passive` which are standing properti
 
 | Function | Uses |
 |---|---:|
-| `self` | 142 |
+| `self` | 144 |
 | `one enemy in melee reach` | 102 |
 | `one enemy within N hexes` | 81 |
 | `one ally within N hexes` | 55 |
@@ -73,7 +73,7 @@ What a rule may DO.
 
 | Function | Uses |
 |---|---:|
-| `grant a stat for the Battle` | 169 |
+| `grant a stat for the Battle` | 170 |
 | `apply a status` | 138 |
 | `heal` | 86 |
 | `deal TRUE damage` | 55 |
@@ -85,8 +85,8 @@ What a rule may DO.
 | `deal MAGIC damage` | 18 |
 | `reveal / break stealth` | 17 |
 | `place a trap` | 15 |
+| `regain stamina` | 15 |
 | `deal damage (type from the weapon)` | 14 |
-| `regain stamina` | 13 |
 | `deal PHYSICAL damage` | 13 |
 | `move WITHOUT provoking` | 13 |
 | `Immunity N` | 12 |
@@ -155,7 +155,7 @@ A stat modifier lasts the rest of the Battle unless the row says otherwise.
 
 | Function | Uses |
 |---|---:|
-| `rest of the Battle` | 169 |
+| `rest of the Battle` | 170 |
 | `until the end of your next Turn` | 40 |
 | `until the start of your next Turn` | 8 |
 | `until the end of the Turn` | 3 |
