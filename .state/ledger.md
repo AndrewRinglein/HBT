@@ -2740,3 +2740,138 @@ IRON GAUNTLET: NOT PASSED — 1 FLAG(S) WARNED; 2 EXEMPTION(S) TAKEN
   PASS  naming — new content ids use declared kinds
   PASS  naming — no banned words invented
   PASS  kill switch — the tests fail without the content — tests fail without showcase.beasts — they genuinely test it
+
+## fix.shadow-hound-hero-side — LANDED `3314213` **NEEDS REVIEW**
+2026-08-21 20:16
+
+  PASS  dependencies landed
+  PASS  typecheck
+  PASS  full test suite
+  PASS  gate 1 — the id appears in a real battle — showcase.beasts: 1 log lines, 1 fired, 1 changed state
+  PASS  brought its own tests — test/scenario.test.ts
+  WARN  existing tests untouched — DELETED LINES in test/scenario.test.ts (-13) — will land FLAGGED for review
+  PASS  control battles unchanged
+  PASS  content has a published source — 24 ids without a published source (14 awaiting publication from earlier items — see audit)
+  PASS  hardcode scan — core knows mechanisms, never names
+  PASS  generalizes — the second instance costs zero engine code — shape 'data' — not a mechanism, exempt
+  PASS  naming — new content ids use declared kinds
+  PASS  naming — no banned words invented
+  PASS  kill switch — the tests fail without the content — tests fail without showcase.beasts — they genuinely test it
+
+<details><summary>Existing tests were edited — review this diff</summary>
+
+```diff
+diff --git a/test/scenario.test.ts b/test/scenario.test.ts
+index 0779c50..213f12c 100644
+--- a/test/scenario.test.ts
++++ b/test/scenario.test.ts
+@@ -80,13 +80,32 @@ describe('fielding a scenario', () => {
+   })
+ 
+-  it('fields the benched beasts — all three appear as real units', () => {
++  it('fields the benched beasts — all three appear, all three hero-side', () => {
++    // Ruled 2026-08-21: "All of those initial beasts, of which there were only
++    // a couple, were meant to be heroes." The puppy was the last one still
++    // carrying side 'enemy' from its ported block.
+     const ctx = createBattle(scenarioOptions(scenarioDef(BEASTS)))
+     runBattle(ctx)
+-    const entered = new Set(ctx.events.filter((e) => e.type === 'unit.enter').map((e) => e['typeId']))
++    const entered = ctx.events.filter((e) => e.type === 'unit.enter')
+     for (const t of ['spirit-snake', 'green-drake', 'shadow-hound-puppy']) {
+-      expect(entered, `${t} was not fielded`).toContain(t)
++      const e = entered.find((x) => x['typeId'] === t)
++      expect(e, `${t} was not fielded`).toBeDefined()
++      expect(e!['side'], `${t} is not hero-side`).toBe('hero')
+     }
+   })
+ 
++  it('the puppy can move and cannot attack — the gap its block will close', () => {
++    // NOT a passing grade, a recorded one. maxStamina 0 came in with the ported
++    // enemy block and attack.fangs.bite costs 1 Stamina, so hero-side it can
++    // never swing. Asserted so that when her dictated block lands, this test
++    // fails and names the reason instead of the behaviour changing silently.
++    const ctx = createBattle(scenarioOptions(scenarioDef(BEASTS)))
++    runBattle(ctx)
++    const pup = ctx.state.units.find((u) => u.typeId === 'shadow-hound-puppy')!
++    expect(pup.maxStamina, 'block dictated? update this test and DECISIONS.md').toBe(0)
++    const swings = ctx.events.filter((e) => e.type === 'attack.declared' && e.actor === pup.id)
++    expect(swings.length, 'the puppy attacked — its block must have changed').toBe(0)
++    expect(ctx.events.some((e) => e.type === 'moved' && e.actor === pup.id), 'it should still move').toBe(true)
++  })
++
+   it('the LOG names the fielding, not just the export envelope', () => {
+     // The replay is built from the event log alone (PLAYBACK-DESIGN §1, seam 1),
+@@ -121,4 +140,14 @@ describe('positions are validated at load, loudly (Law 9)', () => {
+   // fine. Each failure must name the unit and the hex.
+   const base = () => scenarioOptions(scenarioDef(BEASTS))
++  /**
++   * The scenario's own hexes with ONE replaced. Derived rather than hardcoded:
++   * these tests used a two-hero literal and broke the moment the roster grew to
++   * three, failing on the length check before reaching the thing under test.
++   */
++  const heroHexesWith = (i: number, hex: number) => {
++    const h = [...base().heroHexes]
++    h[i] = hex
++    return h
++  }
+ 
+   it('an impassable hex throws and says what terrain it is', () => {
+@@ -126,34 +155,46 @@ describe('positions are validated at load, loudly (Law 9)', () => {
+     const blocked = terrain.findIndex((t) => !isPassable(t))
+     expect(blocked, 'map.thicket has no impassable hex to test with').toBeGreaterThan(-1)
+-    expect(() => createBattle({ ...base(), heroHexes: [blocked, 80] }))
++    expect(() => createBattle({ ...base(), heroHexes: heroHexesWith(0, blocked) }))
+       .toThrow(/impassable/)
+   })
+ 
+   it('an off-board hex throws', () => {
+-    expect(() => createBattle({ ...base(), heroHexes: [99999, 80] })).toThrow(/off a \d+-hex board/)
++    expect(() => createBattle({ ...base(), heroHexes: heroHexesWith(0, 99999) }))
++      .toThrow(/off a \d+-hex board/)
+   })
+ 
+   it('two units on one hex throws, naming both', () => {
+-    expect(() => createBattle({ ...base(), heroHexes: [79, 79] })).toThrow(/both placed on hex 79/)
++    const dup = base().heroHexes[0]!
++    expect(() => createBattle({ ...base(), heroHexes: heroHexesWith(1, dup) }))
++      .toThrow(new RegExp(`both placed on hex ${dup}`))
+   })
+ 
+   it('a hex count that does not match the roster throws', () => {
+-    expect(() => createBattle({ ...base(), heroHexes: [79] })).toThrow(/must correspond/)
++    expect(() => createBattle({ ...base(), heroHexes: base().heroHexes.slice(0, -1) }))
++      .toThrow(/must correspond/)
+   })
+ 
+   it('a unit fielded on the wrong side throws instead of silently switching', () => {
+     // makeUnit reads def.side, so this used to produce an enemy without a word.
+-    // PLAYBACK-DESIGN §6.2's own example scenario would have hit exactly this.
+-    expect(() => createBattle({ ...base(), heroes: ['shadow-hound-puppy', 'green-drake'] }))
+-      .toThrow(/declares side 'enemy'/)
++    //
++    // This check earned its keep on the day it was written: it threw on the
++    // Shadow Hound Puppy, which PLAYBACK-DESIGN §6.2 listed as a hero while its
++    // row still said `enemy` — and that turned a silent side-swap into the
++    // 2026-08-21 ruling that all the Beast-pen beasts are heroes. The example
++    // moved to a zombie because the puppy is, correctly, a hero now.
++    const heroes = [...base().heroes]
++    heroes[0] = 'test-zombie'
++    expect(() => createBattle({ ...base(), heroes })).toThrow(/declares side 'enemy'/)
+   })
+ 
+   it('an unknown typeId throws and points at the registry', () => {
+-    expect(() => createBattle({ ...base(), heroes: ['no-such-beast', 'green-drake'] }))
+-      .toThrow(/unknown unit typeId/)
++    const heroes = [...base().heroes]
++    heroes[0] = 'no-such-beast'
++    expect(() => createBattle({ ...base(), heroes })).toThrow(/unknown unit typeId/)
+   })
+ 
+   it('the error names the scenario when there is one', () => {
+-    expect(() => createBattle({ ...base(), heroHexes: [79, 79] })).toThrow(/showcase\.beasts/)
++    const dup = base().heroHexes[0]!
++    expect(() => createBattle({ ...base(), heroHexes: heroHexesWith(1, dup) })).toThrow(/showcase\.beasts/)
+   })
+ })
+```
+</details>
