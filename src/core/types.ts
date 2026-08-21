@@ -75,6 +75,12 @@ export type UnitDef = {
   readonly attacks: readonly string[]
   readonly abilities: readonly string[]
   readonly attributes: readonly string[]
+  /**
+   * Display base name ("Oathblade (TEST)"). Setup derives battle names from it
+   * — pack units carry theirs from the Codex; a def without one falls back to
+   * a title-cased typeId. Added 2026-08-20 with the generated unit pack.
+   */
+  readonly name?: string
 }
 
 /**

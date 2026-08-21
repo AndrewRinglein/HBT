@@ -4,6 +4,7 @@
 
 import type { AbilityDef, AttackDef, UnitDef } from '../core/types.js'
 import { omitDisabled, stripDisabledTriggers } from './disable.js'
+import { packUnits } from './pack.js'
 
 // ─────────────────────────────────────────────────────────────────────────────
 // PROVISIONAL CONTENT — NOT PUBLISHED, NOT DESIGN
@@ -317,19 +318,12 @@ const RAW_UNITS: Readonly<Record<string, UnitDef>> = {
     maxStamina: 5, staminaRegen: 1,
     // TESTING LANE — status.bleed's battle source, mirroring the published
     // Hunter's Mark shape (Codex: "onHit the target gains 2 Bleed").
-    triggers: [{
-      id: 'test.ranger.serrated-arrows', hook: 'onHit', chance: 100,
-      select: 'target',
-      effect: { kind: 'status.apply', statusId: 'status.bleed', value: 2 },
-      source: 'unit.ranger',
-    }, {
-      // TESTING LANE — test.status.hobble's battle source (the reducesMovement
-      // generalization variant must run live).
-      id: 'test.ranger.pin', hook: 'onHit', chance: 20,
-      select: 'target',
-      effect: { kind: 'status.apply', statusId: 'test.status.hobble', value: 1 },
-      source: 'unit.ranger',
-    }],
+    // test.ranger.serrated-arrows RETIRED 2026-08-20 — the first rider
+    // retirement: the Sky Pirate's own published Cutlass bleed (in the cohort
+    // pack) is status.bleed's battle source now. Pin moved to the cohort's
+    // Dusk Hawk; this whole def is an unfielded custom-battle fixture awaiting
+    // backlog test.fixture-migration.
+    triggers: [],
     ai: 'ranged-kite',
     attacks: ['attack.ranger.bow', 'attack.punch'],
     abilities: [],
@@ -370,25 +364,31 @@ const RAW_UNITS: Readonly<Record<string, UnitDef>> = {
 // raw objects, byte for byte — the control baselines cannot tell the difference.
 export const ATTACKS = omitDisabled(RAW_ATTACKS)
 export const ABILITIES = omitDisabled(RAW_ABILITIES)
-export const UNITS = stripDisabledTriggers(omitDisabled(RAW_UNITS, 'unit.'))
+// The generated pack (Codex-tracked test cohort) joins the hand-authored rows.
+// A collision is a LOUD failure: the pack owns test- ids, this file owns the
+// rest, and neither may quietly shadow the other.
+const PACK = packUnits()
+for (const k of Object.keys(PACK)) {
+  if (k in RAW_UNITS) throw new Error(`unit '${k}' exists in BOTH content/index.ts and the generated pack — one owner only`)
+}
+export const UNITS = stripDisabledTriggers(omitDisabled({ ...RAW_UNITS, ...PACK }, 'unit.'))
 
 /** The first battle: 4 zombies on row 0, 2 warriors + 2 rangers on row 11. */
 export const FIRST_BATTLE = {
-  id: 'baseline.4v4',
+  id: 'baseline.6v4',
   scenarioId: 1,
-  heroes: ['warrior', 'warrior', 'ranger', 'mage'] as const,
-  // One burning zombie per four — the horde's texture, cycled by setup when
-  // enemyCount exceeds the roster length. The Beast pen (2026-08-20) extends
-  // the CYCLE, not the default battle: defaultEnemyCount pins the canonical
-  // battle at 4 (the original composition, byte-for-byte), the one-per-four
-  // burning cadence holds (slots 4 and 8), and the beasts appear from the
-  // sixth enemy on.
-  // The Beast pen LEFT the horde on 2026-08-20 — Angela: "These beasts were
-  // meant to be player beasts," and the ported stat blocks were never her
-  // design. The cycle is the original undead texture again; the beasts are
-  // hero-side (snake and drake redesigned by her, puppy pending) and BENCHED
-  // until party assembly exists.
-  enemies: ['zombie', 'zombie', 'zombie', 'zombie-burning'] as const,
+  // THE STANDARD TEST SIX — Angela 2026-08-20: "Our standard test will run
+  // against six heroes, one of each class." Codex-tracked clones fielded from
+  // the generated pack, never hand-typed here: Oathblade I (warrior), Sky
+  // Pirate I (rogue), Dusk Hawk I (ranger), Air Mage (mage), Lucius (priest),
+  // Osric (paladin).
+  heroes: ['test-oathblade', 'test-sky-pirate', 'test-dusk-hawk',
+    'test-air-mage', 'test-lucius', 'test-osric'] as const,
+  // The horde is the pack's test enemies now — the same rows, Codex-sourced,
+  // one burning zombie per four as ever. The hand-typed zombie defs below
+  // survive only as custom-battle fixtures until the test-file migration
+  // chore retires them (backlog test.fixture-migration).
+  enemies: ['test-zombie', 'test-zombie', 'test-zombie', 'test-zombie-burning'] as const,
   defaultEnemyCount: 4,
   heroRow: 11,
   enemyRow: 0,

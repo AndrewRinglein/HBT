@@ -67,13 +67,17 @@ describe('flat 2, full clock — the ruled pair with poison, in one harness', ()
 })
 
 describe('the battle source fires in real battles', () => {
-  it('serrated arrows bleed zombies in the very first seeds — the ranger connects every battle', () => {
+  it('the Sky Pirate\'s Cutlass bleeds zombies — the first PUBLISHED rider, retiring serrated arrows (2026-08-20)', () => {
+    // Law 10, written reason: test.ranger.serrated-arrows was testing-lane
+    // scaffolding; the Codex cohort's Sky Pirate carries a real published
+    // bleed ("Cutlass and Plunder: on damage, bleed enemy"), so the scaffold
+    // retired exactly as the testing-lane ruling always intended.
     let found = 0
-    for (let r = 0; r < 5; r++) {
+    for (let r = 0; r < 10 && !found; r++) {
       const ctx = createBattle({ replicate: r, enemyCount: 8 })
       runBattle(ctx)
       found += ctx.events.filter((e) => e.type === 'status.applied'
-        && e['causeId'] === 'test.ranger.serrated-arrows' && e['statusId'] === 'status.bleed').length
+        && e['causeId'] === 'test.sky-pirate.apply-bleed' && e['statusId'] === 'status.bleed').length
     }
     expect(found).toBeGreaterThan(0)
   })

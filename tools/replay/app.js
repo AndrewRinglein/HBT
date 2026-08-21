@@ -174,7 +174,7 @@ function frame() {
       ux.lineWidth = 2.5; ux.beginPath();
       ux.ellipse(sx, sy + 4, w * 0.37, w * 0.15, 0, 0, 7); ux.stroke();
     }
-    if (u.typeId === 'zombie-burning' && u.life === 'standing') {
+    if (u.typeId.endsWith('zombie-burning') && u.life === 'standing') {
       const pt = performance.now() / 1000;
       const pulse = 0.55 + 0.25 * Math.sin(pt * 3.1 + u.id);
       ux.strokeStyle = `rgba(255,140,40,${pulse})`;
@@ -506,7 +506,7 @@ async function loop() {
 // Setup names enemies from their typeId since 2026-08-20 ("Zombie Burning 2",
 // "Spirit Snake 1") — the viewer only reorders the burning zombie's words so it
 // READS as one.
-const dispName = (u) => u.typeId === 'zombie-burning' ? u.name.replace(/^Zombie Burning/, 'Burning Zombie').replace(/^Zombie /, 'Burning Zombie ') : u.name;
+const dispName = (u) => u.typeId === 'zombie-burning' ? u.name.replace(/^Zombie Burning/, 'Burning Zombie').replace(/^Zombie /, 'Burning Zombie ') : u.name;   // pack units carry their Codex names already
 function drawRoster() {
   for (const [side, el] of [['hero', heroes], ['enemy', enemies]]) {
     el.innerHTML = [...U.values()].filter(u => u.side === side).map(u => {

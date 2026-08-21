@@ -101,30 +101,30 @@ export function createBattle(opts: BattleOptions): Ctx {
   const heroCols = opts.heroHexes ? [] : sample(rng, cols, heroes.length, 'hero-deployment')
 
   let id = 0
-  const NAMES: Record<string, string[]> = {
-    warrior: ['Warrior A', 'Warrior B'], ranger: ['Ranger A', 'Ranger B'],
-    mage: ['Mage A', 'Mage B'],
-  }
+  // Names come from the DEF (the pack carries Codex names like "Oathblade
+  // (TEST)"); a def without one falls back to its title-cased typeId. The old
+  // hand-typed NAMES map died with the hand-typed party (2026-08-20).
+  const label = (t: string) => t.split('-').map((w) => (w[0] ?? '').toUpperCase() + w.slice(1)).join(' ')
+  const LETTERS = 'ABCDEFGH'
   const seen: Record<string, number> = {}
   heroes.forEach((t, i) => {
     const hex = opts.heroHexes?.[i] ?? hexId(heroCols[i]!, FIRST_BATTLE.heroRow)
+    const d = def(t)
     seen[t] = (seen[t] ?? 0)
-    const nm = NAMES[t]?.[seen[t]!] ?? `${t} ${seen[t]! + 1}`
+    const nm = `${d.name ?? label(t)} ${LETTERS[seen[t]!] ?? seen[t]! + 1}`
     seen[t]!++
-    state.units.push(makeUnit(id, 100 + i, nm, def(t), hex))
+    state.units.push(makeUnit(id, 100 + i, nm, d, hex))
     id++
   })
   const seenEnemy: Record<string, number> = {}
   enemies.forEach((t, i) => {
     // More enemies than columns spill onto the next row back.
     const hex = opts.enemyHexes?.[i] ?? hexId(enemyCols[i % WIDTH]!, FIRST_BATTLE.enemyRow + Math.floor(i / WIDTH))
-    // Named from the typeId, counted per type — `Zombie ${i+1}` was a content
-    // literal in core that would have called a Spirit Snake "Zombie 5"
-    // (found landing unit.spirit-snake, 2026-08-20). Law 12: the log names
-    // what a thing IS.
+    // Named from the def (Codex name) or the typeId, counted per type — Law 12:
+    // the log names what a thing IS.
+    const d = def(t)
     seenEnemy[t] = (seenEnemy[t] ?? 0) + 1
-    const label = t.split('-').map((w) => (w[0] ?? '').toUpperCase() + w.slice(1)).join(' ')
-    state.units.push(makeUnit(id, 200 + i, `${label} ${seenEnemy[t]}`, def(t), hex))
+    state.units.push(makeUnit(id, 200 + i, `${d.name ?? label(t)} ${seenEnemy[t]}`, d, hex))
     id++
   })
 

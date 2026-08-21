@@ -670,3 +670,27 @@ Benched with the snake. Flight waits on backlog `movement.flight`.
 
 **Shadow Hound Puppy:** pulled from the horde, benched-provisional, pending her
 block.
+
+## 2026-08-20 — the standard battle reads from the Codex: the test cohort
+Angela: **"I would like to use heroes that are being tracked in our overall
+Codex... we don't want two warriors. We want one of the warriors changed into a
+rogue, but we want these to be stored the way heroes should be stored. Let's
+create an entire test class of heroes and a test class of enemies, where we're
+going to read from the data and it's clearly differentiated text. We're not
+hardcoding."** Then: **"Let's just do six heroes, so we'll always have one of
+each. Our standard test will run against six heroes, one of each class."**
+
+Her picks (copied into tweakable test clones, originals untouched): Warrior —
+**Oathblade I**; Rogue — **Sky Pirate I** (she recalled it "starts with
+regeneration"; the data says its special is Cutlass and Plunder — on damage,
+bleed — and she said "it's fine"); Ranger — **Dusk Hawk I**; Mage — **Air
+Mage**; Priest — **Lucius** ("give me the scantily clad priest, whatever number
+he is" — priest-scantily 1); Paladin — **Osric** ("give me the shiny paladin. I
+think that's one" — paladin-shiney 1). Weapons: **"Stats first, weapons next."**
+Enemies: **"Add a bestiary to the Codex"** — the test zombies seeded it.
+
+Mechanism: settled.json `testCohort` → assemble.mjs clone resolution →
+mkenginepack.mjs → engine `generated/pack.ts` (never hand-edited) → loud loader.
+Riders travelled with unchanged ids; first retirement taken:
+test.ranger.serrated-arrows → the Sky Pirate's published Cutlass bleed.
+Old dictated defs are unfielded fixtures until `test.fixture-migration`.

@@ -992,5 +992,34 @@
   "shape": "rule",
   "spec": "Movement POWERS, starting with Flight — Angela 2026-08-20 (Green Drake): \"a flight movement power that moves +0 and costs 1 stamina\" beside \"a regular movement power that costs 1 stamina... movement value of 5.\" Flight is atomic (ruled): no entry strips/applies along the way; End of Activation ladder still runs (flying onto burning ground burns you at EoA — rung 2). Needs: a movement-mode concept on the unit/def, an atomic executeFlight that skips the step loop beats, and AI awareness. Blocked-shaped work — do not improvise it inside a content landing.",
   "expect": "a flying move crosses water without shedding burn and crosses embers without catching fire, then the EoA rung fires normally on the landing hex"
+ },
+ {
+  "id": "content.test-cohort",
+  "kind": "content",
+  "shape": "data",
+  "spec": "THE STANDARD TEST SIX (Angela 2026-08-20): heroes tracked in the Codex, not dictated — six clones, one per class, copied so they can be tweaked without touching the originals: Oathblade I (warrior), Sky Pirate I (rogue), Dusk Hawk I (ranger), Air Mage (mage), Lucius (priest), Osric (paladin) — plus test copies of the zombie horde as the Codex bestiary seed. Source of truth: content/settled.json testCohort → assemble.mjs resolves clones → mkenginepack.mjs exports src/content/generated/pack.ts (NEVER hand-edited) → pack.ts loader validates loudly and merges with collision-is-an-error. Clearly differentiated: test- typeIds, (TEST) names, enforced by the loader. Stats first, weapons next (her ruling). The testing-lane riders travelled to the cohort with unchanged ids so every status kept its bearer, and the FIRST retIREMENT happened: test.ranger.serrated-arrows is gone — the Sky Pirates published Cutlass (converter-mapped from the Codex, on damage bleed 1) is bleeds battle source now. Old dictated defs remain ONLY as custom-battle fixtures pending backlog test.fixture-migration. New id kind declared: hero.* (GLOSSARY).",
+  "expect": "the standard battle is 6v4, every fielded typeId is test- prefixed, stat blocks match the Codex rows verbatim, the Cutlass bleeds, and no unit in the registry carries serrated-arrows",
+  "probeIds": [
+   "test-oathblade",
+   "test-sky-pirate",
+   "test-dusk-hawk",
+   "test-air-mage",
+   "test-lucius",
+   "test-osric",
+   "test-zombie",
+   "test-zombie-burning",
+   "test.sky-pirate.apply-bleed"
+  ],
+  "changesBaseline": true,
+  "status": "done-needs-review",
+  "sha": "286472a",
+  "gauntlet": "not passed — 1 flag(s) warned"
+ },
+ {
+  "id": "test.fixture-migration",
+  "kind": "engine",
+  "shape": "plumbing",
+  "spec": "CHORE (born with content.test-cohort): ~25 test files still build custom battles from the old dictated defs (warrior/ranger/mage/zombie/zombie-burning), which survive in index.ts as unfielded fixtures. Migrate the custom battles to the cohort units (or a scripted fixture pack), then DELETE the dictated rows — the last hand-typed units in the engine.",
+  "expect": "no unit def in index.ts except registries that read from data; the suite green throughout"
  }
 ]

@@ -3,25 +3,29 @@ import { createBattle } from '../src/core/setup.js'
 import { rowOf } from '../src/core/hex.js'
 
 describe('state and setup', () => {
-  it('creates 4 heroes and 4 zombies on the right rows', () => {
+  it('creates the standard SIX heroes and 4 zombies on the right rows (Angela 2026-08-20)', () => {
     const ctx = createBattle({ replicate: 0 })
     const heroes = ctx.state.units.filter(u => u.side === 'hero')
     const enemies = ctx.state.units.filter(u => u.side === 'enemy')
-    expect(heroes.length).toBe(4)
+    expect(heroes.length).toBe(6)
     expect(enemies.length).toBe(4)
     for (const h of heroes) expect(rowOf(h.hex)).toBe(11)
     for (const e of enemies) expect(rowOf(e.hex)).toBe(0)
   })
 
-  it('gives the specified stat blocks', () => {
+  it('gives the CODEX stat blocks — the party reads from the pack, not from typed rows (2026-08-20)', () => {
     const ctx = createBattle({ replicate: 0 })
-    const w = ctx.state.units.find(u => u.typeId === 'warrior')!
-    const r = ctx.state.units.find(u => u.typeId === 'ranger')!
-    const z = ctx.state.units.find(u => u.typeId === 'zombie')!
-    expect([w.maxHp, w.armor, w.accuracy, w.strength, w.precision, w.movement, w.maxStamina]).toEqual([10,1,80,5,3,5,5])
-    expect([r.maxHp, r.armor, r.accuracy, r.strength, r.precision, r.movement, r.maxStamina]).toEqual([7,0,90,3,4,5,5])
+    const w = ctx.state.units.find(u => u.typeId === 'test-oathblade')!
+    const r = ctx.state.units.find(u => u.typeId === 'test-dusk-hawk')!
+    const z = ctx.state.units.find(u => u.typeId === 'test-zombie')!
+    // Oathblade I, hero.shadows.oathblade.v1: the Codex row verbatim
+    expect([w.maxHp, w.armor, w.accuracy, w.strength, w.precision, w.movement, w.maxStamina]).toEqual([15,0,75,5,3,5,5])
+    // Dusk Hawk I, hero.shadows.dusk-hawk.v1
+    expect([r.maxHp, r.armor, r.accuracy, r.strength, r.precision, r.movement, r.maxStamina]).toEqual([5,0,80,3,4,5,5])
+    expect(r.dodge).toBe(5)
     expect([z.maxHp, z.armor, z.accuracy, z.strength, z.movement, z.maxStamina]).toEqual([10,0,65,4,4,0])
     expect(z.attributes).toContain('undead')
+    expect(w.name).toContain('(TEST)')   // clearly differentiated text, per the ruling
   })
 
   it('places units on distinct hexes', () => {
@@ -50,7 +54,7 @@ describe('state and setup', () => {
   it('every unit entering is logged with its cause', () => {
     const ctx = createBattle({ replicate: 1 })
     const enters = ctx.events.filter(e => e.type === 'unit.enter')
-    expect(enters.length).toBe(8)
+    expect(enters.length).toBe(10)   // six-hero cohort + four undead (2026-08-20)
     for (const e of enters) expect(e.causeId).toMatch(/^unit\./)
   })
 })

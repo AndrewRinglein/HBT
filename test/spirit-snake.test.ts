@@ -33,13 +33,14 @@ describe('the block — Angela\'s dictation, verbatim from the Codex hero table'
 })
 
 describe('benched — out of every horde, off the default party', () => {
-  it('no snake at any enemy count, and the horde is the undead texture again', () => {
+  it('no snake at any enemy count, and the standard battle is the Codex cohort (2026-08-20)', () => {
     for (const z of [4, 8, 12]) {
       const ctx = createBattle({ replicate: 0, enemyCount: z })
       expect(ctx.state.units.some((u) => u.typeId === 'spirit-snake'), String(z)).toBe(false)
     }
-    expect([...FIRST_BATTLE.enemies]).toEqual(['zombie', 'zombie', 'zombie', 'zombie-burning'])
-    expect([...FIRST_BATTLE.heroes]).toEqual(['warrior', 'warrior', 'ranger', 'mage'])
+    expect([...FIRST_BATTLE.enemies]).toEqual(['test-zombie', 'test-zombie', 'test-zombie', 'test-zombie-burning'])
+    expect([...FIRST_BATTLE.heroes]).toEqual(['test-oathblade', 'test-sky-pirate', 'test-dusk-hawk',
+      'test-air-mage', 'test-lucius', 'test-osric'])
   })
 })
 

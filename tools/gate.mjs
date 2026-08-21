@@ -292,7 +292,7 @@ check('generalizes — the second instance costs zero engine code', () => {
 
 // Naming: GLOSSARY.md is the authority; this is its teeth. Grammar violations
 // block; style smells flag the landing for review rather than deadlocking it.
-const KNOWN_KINDS = ['attack', 'power', 'status', 'unit', 'terrain', 'map', 'badge', 'item', 'enchant', 'specialty', 'origin', 'card', 'class', 'art', 'rule', 'engagement', 'trigger', 'ability', 'ai', 'baseline', 'test']
+const KNOWN_KINDS = ['attack', 'power', 'status', 'unit', 'terrain', 'map', 'badge', 'item', 'enchant', 'specialty', 'origin', 'card', 'class', 'art', 'rule', 'engagement', 'trigger', 'ability', 'ai', 'baseline', 'test', 'hero']
 check('naming — new content ids use declared kinds', () => {
   const ids = new Set()
   for (const l of addedLines('src/content')) {

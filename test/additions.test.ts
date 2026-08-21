@@ -4,7 +4,7 @@ import { runBattle } from '../src/core/battle.js'
 import { resolveDamage, resolveAccuracy, reachOf, canAttack } from '../src/core/pipeline.js'
 import { resolvePowerDamage, canUsePower, isReady } from '../src/core/ability.js'
 import { reachable, stepCost } from '../src/core/movement.js'
-import { ATTACKS, ABILITIES, UNITS } from '../src/content/index.js'
+import { ATTACKS, ABILITIES, UNITS, FIRST_BATTLE } from '../src/content/index.js'
 import { MAPS, terrainOf, MAP_PANEL } from '../src/content/maps.js'
 import { hexId, distance } from '../src/core/hex.js'
 import { TERRAIN } from '../src/core/types.js'
@@ -22,7 +22,8 @@ describe('pass 1 — unit roles', () => {
   it('gate 1 — the role appears in the log for every unit', () => {
     const ctx = createBattle({ replicate: 0 })
     const enters = ctx.events.filter(e => e.type === 'unit.enter')
-    expect(enters.length).toBe(8)
+    // Derived, not hardcoded, since the six-hero cohort landed (2026-08-20).
+    expect(enters.length).toBe(FIRST_BATTLE.heroes.length + FIRST_BATTLE.defaultEnemyCount)
     for (const e of enters) expect(['melee','ranged','support']).toContain(e['role'])
   })
   it('roles reach the unit at runtime', () => {
@@ -99,7 +100,7 @@ describe('pass 2 — hills', () => {
       for (const e of ctx.events) {
         if (e.type === 'unit.enter') { type.set(e.actor!, e['typeId'] as string); pos.set(e.actor!, e['hex'] as number) }
         if (e.type === 'moved') pos.set(e.actor!, e['to'] as number)
-        if (e.type === 'activation.end' && type.get(e.actor!) === 'ranger') {
+        if (e.type === 'activation.end' && type.get(e.actor!) === 'test-dusk-hawk') {
           total++
           const me = pos.get(e.actor!)!
           for (const [id, t] of type) if (t === 'zombie' && distance(me, pos.get(id)!) <= 5) { unsafe++; break }
@@ -141,10 +142,10 @@ describe('pass 3 — the Mage', () => {
       const type = new Map<number, string>()
       for (const e of ctx.events) {
         if (e.type === 'unit.enter') type.set(e.actor!, e['typeId'] as string)
-        if (e.type === 'moved' && type.get(e.actor!) === 'mage') seen.moved++
+        if (e.type === 'moved' && type.get(e.actor!) === 'test-air-mage') seen.moved++
         if (e.type === 'attack.declared' && e['attackId'] === 'attack.mage.staff') seen.staff++
         if (e.type === 'attack.declared' && e['attackId'] === 'attack.mage.strike') seen.strike++
-        if (e.type === 'damage.applied' && type.get(e.target!) === 'mage') seen.hurt++
+        if (e.type === 'damage.applied' && type.get(e.target!) === 'test-air-mage') seen.hurt++
       }
     }
     expect(seen.moved).toBeGreaterThan(0)

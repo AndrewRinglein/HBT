@@ -99,8 +99,10 @@ describe('status.burn', () => {
     // times): the Beast pen borrowed the cycle's sixth slot, then left the
     // horde entirely when Angela ruled the beasts are PLAYER units. The claim
     // under test — one burning zombie per four — never moved.
+    // typeIds updated 2026-08-20 (Law 10): the horde reads from the Codex pack
+    // now (test-zombie / test-zombie-burning). The cadence claim is unchanged.
     const ctx = createBattle({ replicate: 3, enemyCount: 8 })
-    expect(ctx.state.units.filter((u) => u.typeId === 'zombie-burning').length).toBe(2)
-    expect(ctx.state.units.filter((u) => u.typeId === 'zombie').length).toBe(6)
+    expect(ctx.state.units.filter((u) => u.typeId === 'test-zombie-burning').length).toBe(2)
+    expect(ctx.state.units.filter((u) => u.typeId === 'test-zombie').length).toBe(6)
   })
 })

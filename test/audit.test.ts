@@ -3,7 +3,7 @@ import { createBattle } from '../src/core/setup.js'
 import { runBattle } from '../src/core/battle.js'
 import { UNITS, ATTACKS, ABILITIES } from '../src/content/index.js'
 import { STATUSES } from '../src/content/statuses.js'
-import { accuracyBonusOf, reachBonusOf, terrainOf } from '../src/content/maps.js'
+import { accuracyBonusOf, dodgeBonusOf, reachBonusOf, terrainOf } from '../src/content/maps.js'
 import { distance } from '../src/core/hex.js'
 
 // An INDEPENDENT auditor. It re-derives every number straight from the stat blocks
@@ -130,6 +130,12 @@ describe('independent audit of logged battles', () => {
               if (inMelee) acc -= 20
             }
             acc += accuracyBonusOf(myTerr)
+            // The auditor learned TARGET_DODGE on 2026-08-20 — the Codex
+            // cohort brought the first nonzero dodge (Dusk Hawk 5), and dodge
+            // is flat off the hit chance, plus whatever the target's terrain
+            // grants (forest +10).
+            const tgDef = UNITS[type.get(e.target!)!]!
+            acc -= tgDef.dodge + dodgeBonusOf(terr[hex.get(e.target!)!] ?? 0)
             expect(e['hitChance'], `hit chance for ${a.id} at range ${d}`).toBe(Math.max(0, Math.min(100, acc)))
             checkedAcc++
 
@@ -214,11 +220,14 @@ describe('independent audit of logged battles', () => {
         }
       }
     }
-    expect(seen, 'zombie -> warrior = 3').toContain('attack.zombie.basic->warrior=3')
-    expect(seen, 'zombie -> ranger = 4').toContain('attack.zombie.basic->ranger=4')
-    expect(seen, 'axe -> zombie = 6').toContain('attack.warrior.axe->zombie=6')
-    expect(seen, 'massive -> zombie = 8').toContain('attack.warrior.massive->zombie=8')
-    expect(seen, 'bow -> zombie = 5').toContain('attack.ranger.bow->zombie=5')
+    // Pairs rewritten 2026-08-20 (Law 10): the party is the Codex cohort now.
+    // Same arithmetic, new bodies — a bite into the unarmoured Oathblade lands
+    // its full 4; Osric's armor 1 shaves it to 3.
+    expect(seen, 'zombie -> Oathblade = 4').toContain('attack.zombie.basic->test-oathblade=4')
+    expect(seen, 'zombie -> Osric = 3').toContain('attack.zombie.basic->test-osric=3')
+    expect(seen, 'axe -> zombie = 6').toContain('attack.warrior.axe->test-zombie=6')
+    expect(seen, 'massive -> zombie = 8').toContain('attack.warrior.massive->test-zombie=8')
+    expect(seen, 'bow -> zombie = 5').toContain('attack.ranger.bow->test-zombie=5')
   })
 
   it('observed hit rates converge on the declared accuracies', () => {

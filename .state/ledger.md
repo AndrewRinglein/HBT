@@ -2284,3 +2284,301 @@ index 67c1eec..9628b38 100644
 </details>
 
 IRON GAUNTLET: NOT PASSED — 2 FLAG(S) WARNED; 1 EXEMPTION(S) TAKEN
+
+## content.test-cohort — LANDED `286472a` **NEEDS REVIEW**
+2026-08-21 05:07
+
+  PASS  dependencies landed
+  PASS  typecheck
+  PASS  full test suite — 327 passed
+  PASS  gate 1 — the id appears in a real battle — test-oathblade: 10684 log lines, 10684 fired, 2473 changed state · test-sky-pirate: 4091 log lines, 4091 fired, 1945 changed state · test-dusk-hawk: 7901 log lines, 7901 fired, 4613 changed state · test-air-mage: 6817 log lines, 6817 fired, 4126 changed state · test-lucius: 5793 log lines, 5793 fired, 3994 changed state · test-osric: 3821 log lines, 3821 fired, 1877 changed state · test-zombie: 34379 log lines, 34379 fired, 13870 changed state · test-zombie-burning: 9689 log lines, 9689 fired, 4093 changed state · test.sky-pirate.apply-bleed: 3033 log lines, 3033 fired, 1011 changed state
+  PASS  brought its own tests — test/additions.test.ts, test/audit.test.ts, test/bleed.test.ts, test/burn.test.ts, test/integration.test.ts, test/replay.test.ts, test/spirit-snake.test.ts, test/state.test.ts, test/unit-pack.test.ts
+  WARN  existing tests untouched — DELETED LINES in test/additions.test.ts (-5), test/audit.test.ts (-6), test/bleed.test.ts (-3), test/burn.test.ts (-2), test/integration.test.ts (-8), test/replay.test.ts (-9), test/spirit-snake.test.ts (-3), test/state.test.ts (-9) — will land FLAGGED for review
+  PASS  control battles unchanged — will re-bless at commit — this item DECLARED it changes the control battles: map.open 20b95292->c65cca96, map.ridge f1c138fd->0f22a0e7, map.flanks 7445a030->01196de5, map.highlands 91734280->a0ac79e6, map.field f88d0f26->84e2412a, map.thicket bcddd10f->259bb1dc, test.map.embers d4162f08->71a97088, test.map.showcase fc06cec1->3bebebbc
+  PASS  content has a published source — 10 ids without a published source (all grandfathered)
+  PASS  hardcode scan — core knows mechanisms, never names
+  PASS  generalizes — the second instance costs zero engine code — shape 'data' — not a mechanism, exempt
+  PASS  naming — new content ids use declared kinds
+  PASS  naming — no banned words invented
+  PASS  kill switch — the tests fail without the content — tests fail without test.sky-pirate.apply-bleed — they genuinely test it
+
+<details><summary>Existing tests were edited — review this diff</summary>
+
+```diff
+diff --git a/test/additions.test.ts b/test/additions.test.ts
+index 6a291e7..c848da7 100644
+--- a/test/additions.test.ts
++++ b/test/additions.test.ts
+@@ -5,5 +5,5 @@ import { resolveDamage, resolveAccuracy, reachOf, canAttack } from '../src/core/
+ import { resolvePowerDamage, canUsePower, isReady } from '../src/core/ability.js'
+ import { reachable, stepCost } from '../src/core/movement.js'
+-import { ATTACKS, ABILITIES, UNITS } from '../src/content/index.js'
++import { ATTACKS, ABILITIES, UNITS, FIRST_BATTLE } from '../src/content/index.js'
+ import { MAPS, terrainOf, MAP_PANEL } from '../src/content/maps.js'
+ import { hexId, distance } from '../src/core/hex.js'
+@@ -23,5 +23,6 @@ describe('pass 1 — unit roles', () => {
+     const ctx = createBattle({ replicate: 0 })
+     const enters = ctx.events.filter(e => e.type === 'unit.enter')
+-    expect(enters.length).toBe(8)
++    // Derived, not hardcoded, since the six-hero cohort landed (2026-08-20).
++    expect(enters.length).toBe(FIRST_BATTLE.heroes.length + FIRST_BATTLE.defaultEnemyCount)
+     for (const e of enters) expect(['melee','ranged','support']).toContain(e['role'])
+   })
+@@ -100,5 +101,5 @@ describe('pass 2 — hills', () => {
+         if (e.type === 'unit.enter') { type.set(e.actor!, e['typeId'] as string); pos.set(e.actor!, e['hex'] as number) }
+         if (e.type === 'moved') pos.set(e.actor!, e['to'] as number)
+-        if (e.type === 'activation.end' && type.get(e.actor!) === 'ranger') {
++        if (e.type === 'activation.end' && type.get(e.actor!) === 'test-dusk-hawk') {
+           total++
+           const me = pos.get(e.actor!)!
+@@ -142,8 +143,8 @@ describe('pass 3 — the Mage', () => {
+       for (const e of ctx.events) {
+         if (e.type === 'unit.enter') type.set(e.actor!, e['typeId'] as string)
+-        if (e.type === 'moved' && type.get(e.actor!) === 'mage') seen.moved++
++        if (e.type === 'moved' && type.get(e.actor!) === 'test-air-mage') seen.moved++
+         if (e.type === 'attack.declared' && e['attackId'] === 'attack.mage.staff') seen.staff++
+         if (e.type === 'attack.declared' && e['attackId'] === 'attack.mage.strike') seen.strike++
+-        if (e.type === 'damage.applied' && type.get(e.target!) === 'mage') seen.hurt++
++        if (e.type === 'damage.applied' && type.get(e.target!) === 'test-air-mage') seen.hurt++
+       }
+     }
+diff --git a/test/audit.test.ts b/test/audit.test.ts
+index ebe71a8..2c8ba5c 100644
+--- a/test/audit.test.ts
++++ b/test/audit.test.ts
+@@ -4,5 +4,5 @@ import { runBattle } from '../src/core/battle.js'
+ import { UNITS, ATTACKS, ABILITIES } from '../src/content/index.js'
+ import { STATUSES } from '../src/content/statuses.js'
+-import { accuracyBonusOf, reachBonusOf, terrainOf } from '../src/content/maps.js'
++import { accuracyBonusOf, dodgeBonusOf, reachBonusOf, terrainOf } from '../src/content/maps.js'
+ import { distance } from '../src/core/hex.js'
+ 
+@@ -131,4 +131,10 @@ describe('independent audit of logged battles', () => {
+             }
+             acc += accuracyBonusOf(myTerr)
++            // The auditor learned TARGET_DODGE on 2026-08-20 — the Codex
++            // cohort brought the first nonzero dodge (Dusk Hawk 5), and dodge
++            // is flat off the hit chance, plus whatever the target's terrain
++            // grants (forest +10).
++            const tgDef = UNITS[type.get(e.target!)!]!
++            acc -= tgDef.dodge + dodgeBonusOf(terr[hex.get(e.target!)!] ?? 0)
+             expect(e['hitChance'], `hit chance for ${a.id} at range ${d}`).toBe(Math.max(0, Math.min(100, acc)))
+             checkedAcc++
+@@ -215,9 +221,12 @@ describe('independent audit of logged battles', () => {
+       }
+     }
+-    expect(seen, 'zombie -> warrior = 3').toContain('attack.zombie.basic->warrior=3')
+-    expect(seen, 'zombie -> ranger = 4').toContain('attack.zombie.basic->ranger=4')
+-    expect(seen, 'axe -> zombie = 6').toContain('attack.warrior.axe->zombie=6')
+-    expect(seen, 'massive -> zombie = 8').toContain('attack.warrior.massive->zombie=8')
+-    expect(seen, 'bow -> zombie = 5').toContain('attack.ranger.bow->zombie=5')
++    // Pairs rewritten 2026-08-20 (Law 10): the party is the Codex cohort now.
++    // Same arithmetic, new bodies — a bite into the unarmoured Oathblade lands
++    // its full 4; Osric's armor 1 shaves it to 3.
++    expect(seen, 'zombie -> Oathblade = 4').toContain('attack.zombie.basic->test-oathblade=4')
++    expect(seen, 'zombie -> Osric = 3').toContain('attack.zombie.basic->test-osric=3')
++    expect(seen, 'axe -> zombie = 6').toContain('attack.warrior.axe->test-zombie=6')
++    expect(seen, 'massive -> zombie = 8').toContain('attack.warrior.massive->test-zombie=8')
++    expect(seen, 'bow -> zombie = 5').toContain('attack.ranger.bow->test-zombie=5')
+   })
+ 
+diff --git a/test/bleed.test.ts b/test/bleed.test.ts
+index f427328..a19e8b9 100644
+--- a/test/bleed.test.ts
++++ b/test/bleed.test.ts
+@@ -68,11 +68,15 @@ describe('flat 2, full clock — the ruled pair with poison, in one harness', ()
+ 
+ describe('the battle source fires in real battles', () => {
+-  it('serrated arrows bleed zombies in the very first seeds — the ranger connects every battle', () => {
++  it('the Sky Pirate\'s Cutlass bleeds zombies — the first PUBLISHED rider, retiring serrated arrows (2026-08-20)', () => {
++    // Law 10, written reason: test.ranger.serrated-arrows was testing-lane
++    // scaffolding; the Codex cohort's Sky Pirate carries a real published
++    // bleed ("Cutlass and Plunder: on damage, bleed enemy"), so the scaffold
++    // retired exactly as the testing-lane ruling always intended.
+     let found = 0
+-    for (let r = 0; r < 5; r++) {
++    for (let r = 0; r < 10 && !found; r++) {
+       const ctx = createBattle({ replicate: r, enemyCount: 8 })
+       runBattle(ctx)
+       found += ctx.events.filter((e) => e.type === 'status.applied'
+-        && e['causeId'] === 'test.ranger.serrated-arrows' && e['statusId'] === 'status.bleed').length
++        && e['causeId'] === 'test.sky-pirate.apply-bleed' && e['statusId'] === 'status.bleed').length
+     }
+     expect(found).toBeGreaterThan(0)
+diff --git a/test/burn.test.ts b/test/burn.test.ts
+index 49b2dc6..f2c513e 100644
+--- a/test/burn.test.ts
++++ b/test/burn.test.ts
+@@ -100,7 +100,9 @@ describe('status.burn', () => {
+     // horde entirely when Angela ruled the beasts are PLAYER units. The claim
+     // under test — one burning zombie per four — never moved.
++    // typeIds updated 2026-08-20 (Law 10): the horde reads from the Codex pack
++    // now (test-zombie / test-zombie-burning). The cadence claim is unchanged.
+     const ctx = createBattle({ replicate: 3, enemyCount: 8 })
+-    expect(ctx.state.units.filter((u) => u.typeId === 'zombie-burning').length).toBe(2)
+-    expect(ctx.state.units.filter((u) => u.typeId === 'zombie').length).toBe(6)
++    expect(ctx.state.units.filter((u) => u.typeId === 'test-zombie-burning').length).toBe(2)
++    expect(ctx.state.units.filter((u) => u.typeId === 'test-zombie').length).toBe(6)
+   })
+ })
+diff --git a/test/integration.test.ts b/test/integration.test.ts
+index 1951c4e..7081250 100644
+--- a/test/integration.test.ts
++++ b/test/integration.test.ts
+@@ -38,14 +38,16 @@ describe('gate 1 — everything appears in the log', () => {
+       }
+     }
+-    for (const t of ['warrior', 'ranger', 'zombie']) {
++    // typeIds updated 2026-08-20 (Law 10): the standard battle fields the
++    // Codex cohort; same claim, new bodies.
++    for (const t of ['test-oathblade', 'test-dusk-hawk', 'test-zombie']) {
+       expect(seen.entered, `${t} entered`).toContain(t)
+       expect(seen.moved, `${t} moved`).toContain(t)
+       expect(seen.attacked, `${t} attacked`).toContain(t)
+     }
+-    expect(seen.killed).toContain('zombie')
++    expect(seen.killed).toContain('test-zombie')
+     // Rangers take no damage in the baseline. That is a FINDING about the scenario,
+     // not an engine fault — the next test proves the engine can damage them.
+-    expect(seen.damaged).toContain('warrior')
+-    expect(seen.damaged).toContain('zombie')
++    expect(seen.damaged).toContain('test-oathblade')
++    expect(seen.damaged).toContain('test-zombie')
+   })
+ 
+@@ -80,6 +82,9 @@ describe('gate 1 — everything appears in the log', () => {
+       }
+     }
+-    expect(dmg['warrior']).toBeGreaterThan(0)
+-    expect(dmg['ranger'] ?? 0).toBeLessThan(dmg['warrior']! / 10)
++    // typeIds updated 2026-08-20 (Law 10): the standard party is the
++    // Codex-tracked test cohort now — the RULE (kiting spares the archer)
++    // is unchanged and asserted on the same roles.
++    expect(dmg['test-oathblade']).toBeGreaterThan(0)
++    expect(dmg['test-dusk-hawk'] ?? 0).toBeLessThan(dmg['test-oathblade']! / 10)
+   })
+ 
+@@ -161,7 +166,7 @@ describe('the log alone can rebuild the battle', () => {
+     }
+   })
+-  it('the deployed board has all 8 units', () => {
++  it('the deployed board has all 10 units (six heroes + four undead, 2026-08-20)', () => {
+     const ctx = createBattle({ replicate: 2 }); runBattle(ctx)
+-    expect(foldToTurn(ctx.events, setupSeq(ctx.events)).size).toBe(8)
++    expect(foldToTurn(ctx.events, setupSeq(ctx.events)).size).toBe(10)
+   })
+ })
+diff --git a/test/replay.test.ts b/test/replay.test.ts
+index a2cc183..012f9ab 100644
+--- a/test/replay.test.ts
++++ b/test/replay.test.ts
+@@ -11,10 +11,9 @@ let battle: { engineCommit: string; events: { type: string; causeId?: string }[]
+ 
+ beforeAll(() => {
+-  // Demo seed 21 → 1 on 2026-08-20 (Law 10, written reason): the Beast-pen
+-  // roster and the status batch changed battle flow, and seed 21 no longer
+-  // happens to contain a river wash. Seed 1 shows sear 5, heal 7, wash 2 under
+-  // the new content — the CLAIMS under test (rig assembly, determinism, the
+-  // events carry the mechanics) are unchanged.
+-  execSync('npx tsx tools/export-battle.mts 1 map.thicket 8 > /tmp/replay-test-battle.json', { shell: '/bin/bash' })
++  // Demo seed 21 → 1 → 0 across 2026-08-20 (Law 10, reasons written each
++  // time): battle flow changes whenever the roster does — beasts, then the
++  // Codex cohort. Seed 0 shows sear 4, heal 3, wash 2 under the six-hero
++  // party. The CLAIMS under test are unchanged.
++  execSync('npx tsx tools/export-battle.mts 0 map.thicket 8 > /tmp/replay-test-battle.json', { shell: '/bin/bash' })
+   execSync('node tools/build-replay.mjs /tmp/replay-test-battle.json /tmp/replay-test.html')
+   html = readFileSync('/tmp/replay-test.html', 'utf8')
+@@ -31,10 +30,12 @@ describe('the replay rig', () => {
+   it('the battle is a seed with its engine commit — a stale replay says so', () => {
+     expect(html).toContain(`"engineCommit":"${battle.engineCommit}"`)
+-    expect(html).toContain('"replicate":1')
++    expect(html).toContain('"replicate":0')
+     expect(html).toContain('"mapId":"map.thicket"')
+   })
+ 
+   it('every token the battle needs is embedded — a Burning Zombie is never invisible', () => {
+-    for (const t of ['warrior', 'ranger', 'mage', 'zombie', 'zombie-burning', 'spirit-snake']) {
++    for (const t of ['warrior', 'ranger', 'mage', 'zombie', 'zombie-burning', 'spirit-snake',
++      'test-oathblade', 'test-sky-pirate', 'test-dusk-hawk', 'test-air-mage', 'test-lucius', 'test-osric',
++      'test-zombie', 'test-zombie-burning']) {
+       expect(html, `token ${t}`).toContain(`"${t}":{"w":`)
+     }
+@@ -76,5 +77,6 @@ describe('the viewer speaks the new events', () => {
+   })
+   it('the Burning Zombie carries its ember ring and its display name', () => {
+-    expect(html).toContain("u.typeId === 'zombie-burning' && u.life === 'standing'")
++    // endsWith since 2026-08-20: the pack's test-zombie-burning wears the same ring.
++    expect(html).toContain("u.typeId.endsWith('zombie-burning') && u.life === 'standing'")
+     expect(html).toContain("'Burning Zombie'")
+   })
+diff --git a/test/spirit-snake.test.ts b/test/spirit-snake.test.ts
+index 9628b38..86efaab 100644
+--- a/test/spirit-snake.test.ts
++++ b/test/spirit-snake.test.ts
+@@ -34,11 +34,12 @@ describe('the block — Angela\'s dictation, verbatim from the Codex hero table'
+ 
+ describe('benched — out of every horde, off the default party', () => {
+-  it('no snake at any enemy count, and the horde is the undead texture again', () => {
++  it('no snake at any enemy count, and the standard battle is the Codex cohort (2026-08-20)', () => {
+     for (const z of [4, 8, 12]) {
+       const ctx = createBattle({ replicate: 0, enemyCount: z })
+       expect(ctx.state.units.some((u) => u.typeId === 'spirit-snake'), String(z)).toBe(false)
+     }
+-    expect([...FIRST_BATTLE.enemies]).toEqual(['zombie', 'zombie', 'zombie', 'zombie-burning'])
+-    expect([...FIRST_BATTLE.heroes]).toEqual(['warrior', 'warrior', 'ranger', 'mage'])
++    expect([...FIRST_BATTLE.enemies]).toEqual(['test-zombie', 'test-zombie', 'test-zombie', 'test-zombie-burning'])
++    expect([...FIRST_BATTLE.heroes]).toEqual(['test-oathblade', 'test-sky-pirate', 'test-dusk-hawk',
++      'test-air-mage', 'test-lucius', 'test-osric'])
+   })
+ })
+diff --git a/test/state.test.ts b/test/state.test.ts
+index 76df2be..7fdd633 100644
+--- a/test/state.test.ts
++++ b/test/state.test.ts
+@@ -4,9 +4,9 @@ import { rowOf } from '../src/core/hex.js'
+ 
+ describe('state and setup', () => {
+-  it('creates 4 heroes and 4 zombies on the right rows', () => {
++  it('creates the standard SIX heroes and 4 zombies on the right rows (Angela 2026-08-20)', () => {
+     const ctx = createBattle({ replicate: 0 })
+     const heroes = ctx.state.units.filter(u => u.side === 'hero')
+     const enemies = ctx.state.units.filter(u => u.side === 'enemy')
+-    expect(heroes.length).toBe(4)
++    expect(heroes.length).toBe(6)
+     expect(enemies.length).toBe(4)
+     for (const h of heroes) expect(rowOf(h.hex)).toBe(11)
+@@ -14,13 +14,17 @@ describe('state and setup', () => {
+   })
+ 
+-  it('gives the specified stat blocks', () => {
++  it('gives the CODEX stat blocks — the party reads from the pack, not from typed rows (2026-08-20)', () => {
+     const ctx = createBattle({ replicate: 0 })
+-    const w = ctx.state.units.find(u => u.typeId === 'warrior')!
+-    const r = ctx.state.units.find(u => u.typeId === 'ranger')!
+-    const z = ctx.state.units.find(u => u.typeId === 'zombie')!
+-    expect([w.maxHp, w.armor, w.accuracy, w.strength, w.precision, w.movement, w.maxStamina]).toEqual([10,1,80,5,3,5,5])
+-    expect([r.maxHp, r.armor, r.accuracy, r.strength, r.precision, r.movement, r.maxStamina]).toEqual([7,0,90,3,4,5,5])
++    const w = ctx.state.units.find(u => u.typeId === 'test-oathblade')!
++    const r = ctx.state.units.find(u => u.typeId === 'test-dusk-hawk')!
++    const z = ctx.state.units.find(u => u.typeId === 'test-zombie')!
++    // Oathblade I, hero.shadows.oathblade.v1: the Codex row verbatim
++    expect([w.maxHp, w.armor, w.accuracy, w.strength, w.precision, w.movement, w.maxStamina]).toEqual([15,0,75,5,3,5,5])
++    // Dusk Hawk I, hero.shadows.dusk-hawk.v1
++    expect([r.maxHp, r.armor, r.accuracy, r.strength, r.precision, r.movement, r.maxStamina]).toEqual([5,0,80,3,4,5,5])
++    expect(r.dodge).toBe(5)
+     expect([z.maxHp, z.armor, z.accuracy, z.strength, z.movement, z.maxStamina]).toEqual([10,0,65,4,4,0])
+     expect(z.attributes).toContain('undead')
++    expect(w.name).toContain('(TEST)')   // clearly differentiated text, per the ruling
+   })
+ 
+@@ -51,5 +55,5 @@ describe('state and setup', () => {
+     const ctx = createBattle({ replicate: 1 })
+     const enters = ctx.events.filter(e => e.type === 'unit.enter')
+-    expect(enters.length).toBe(8)
++    expect(enters.length).toBe(10)   // six-hero cohort + four undead (2026-08-20)
+     for (const e of enters) expect(e.causeId).toMatch(/^unit\./)
+   })
+```
+</details>
+
+IRON GAUNTLET: NOT PASSED — 1 FLAG(S) WARNED

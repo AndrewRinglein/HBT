@@ -10,12 +10,11 @@ let html = ''
 let battle: { engineCommit: string; events: { type: string; causeId?: string }[] }
 
 beforeAll(() => {
-  // Demo seed 21 → 1 on 2026-08-20 (Law 10, written reason): the Beast-pen
-  // roster and the status batch changed battle flow, and seed 21 no longer
-  // happens to contain a river wash. Seed 1 shows sear 5, heal 7, wash 2 under
-  // the new content — the CLAIMS under test (rig assembly, determinism, the
-  // events carry the mechanics) are unchanged.
-  execSync('npx tsx tools/export-battle.mts 1 map.thicket 8 > /tmp/replay-test-battle.json', { shell: '/bin/bash' })
+  // Demo seed 21 → 1 → 0 across 2026-08-20 (Law 10, reasons written each
+  // time): battle flow changes whenever the roster does — beasts, then the
+  // Codex cohort. Seed 0 shows sear 4, heal 3, wash 2 under the six-hero
+  // party. The CLAIMS under test are unchanged.
+  execSync('npx tsx tools/export-battle.mts 0 map.thicket 8 > /tmp/replay-test-battle.json', { shell: '/bin/bash' })
   execSync('node tools/build-replay.mjs /tmp/replay-test-battle.json /tmp/replay-test.html')
   html = readFileSync('/tmp/replay-test.html', 'utf8')
   battle = JSON.parse(readFileSync('/tmp/replay-test-battle.json', 'utf8'))
@@ -30,12 +29,14 @@ describe('the replay rig', () => {
 
   it('the battle is a seed with its engine commit — a stale replay says so', () => {
     expect(html).toContain(`"engineCommit":"${battle.engineCommit}"`)
-    expect(html).toContain('"replicate":1')
+    expect(html).toContain('"replicate":0')
     expect(html).toContain('"mapId":"map.thicket"')
   })
 
   it('every token the battle needs is embedded — a Burning Zombie is never invisible', () => {
-    for (const t of ['warrior', 'ranger', 'mage', 'zombie', 'zombie-burning', 'spirit-snake']) {
+    for (const t of ['warrior', 'ranger', 'mage', 'zombie', 'zombie-burning', 'spirit-snake',
+      'test-oathblade', 'test-sky-pirate', 'test-dusk-hawk', 'test-air-mage', 'test-lucius', 'test-osric',
+      'test-zombie', 'test-zombie-burning']) {
       expect(html, `token ${t}`).toContain(`"${t}":{"w":`)
     }
   })
@@ -75,7 +76,8 @@ describe('the viewer speaks the new events', () => {
     expect(html).toContain('halved by burn')
   })
   it('the Burning Zombie carries its ember ring and its display name', () => {
-    expect(html).toContain("u.typeId === 'zombie-burning' && u.life === 'standing'")
+    // endsWith since 2026-08-20: the pack's test-zombie-burning wears the same ring.
+    expect(html).toContain("u.typeId.endsWith('zombie-burning') && u.life === 'standing'")
     expect(html).toContain("'Burning Zombie'")
   })
 })

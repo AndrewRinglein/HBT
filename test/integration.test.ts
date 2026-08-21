@@ -37,16 +37,18 @@ describe('gate 1 — everything appears in the log', () => {
         if (e.type === 'life.dead') seen.killed.add(type.get(e.target!)!)
       }
     }
-    for (const t of ['warrior', 'ranger', 'zombie']) {
+    // typeIds updated 2026-08-20 (Law 10): the standard battle fields the
+    // Codex cohort; same claim, new bodies.
+    for (const t of ['test-oathblade', 'test-dusk-hawk', 'test-zombie']) {
       expect(seen.entered, `${t} entered`).toContain(t)
       expect(seen.moved, `${t} moved`).toContain(t)
       expect(seen.attacked, `${t} attacked`).toContain(t)
     }
-    expect(seen.killed).toContain('zombie')
+    expect(seen.killed).toContain('test-zombie')
     // Rangers take no damage in the baseline. That is a FINDING about the scenario,
     // not an engine fault — the next test proves the engine can damage them.
-    expect(seen.damaged).toContain('warrior')
-    expect(seen.damaged).toContain('zombie')
+    expect(seen.damaged).toContain('test-oathblade')
+    expect(seen.damaged).toContain('test-zombie')
   })
 
   it('the engine CAN damage a ranger — so zero ranger damage is a scenario fact', () => {
@@ -79,8 +81,11 @@ describe('gate 1 — everything appears in the log', () => {
         }
       }
     }
-    expect(dmg['warrior']).toBeGreaterThan(0)
-    expect(dmg['ranger'] ?? 0).toBeLessThan(dmg['warrior']! / 10)
+    // typeIds updated 2026-08-20 (Law 10): the standard party is the
+    // Codex-tracked test cohort now — the RULE (kiting spares the archer)
+    // is unchanged and asserted on the same roles.
+    expect(dmg['test-oathblade']).toBeGreaterThan(0)
+    expect(dmg['test-dusk-hawk'] ?? 0).toBeLessThan(dmg['test-oathblade']! / 10)
   })
 
   it('every attack in the content library is actually used somewhere', () => {
@@ -160,9 +165,9 @@ describe('the log alone can rebuild the battle', () => {
       }
     }
   })
-  it('the deployed board has all 8 units', () => {
+  it('the deployed board has all 10 units (six heroes + four undead, 2026-08-20)', () => {
     const ctx = createBattle({ replicate: 2 }); runBattle(ctx)
-    expect(foldToTurn(ctx.events, setupSeq(ctx.events)).size).toBe(8)
+    expect(foldToTurn(ctx.events, setupSeq(ctx.events)).size).toBe(10)
   })
 })
 
