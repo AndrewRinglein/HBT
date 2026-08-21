@@ -2723,3 +2723,20 @@ IRON GAUNTLET: NOT PASSED — 1 FLAG(S) WARNED; 2 EXEMPTION(S) TAKEN
 > `unreachable` is set): `CF_DISABLE_IDS=power.flight npx vitest run
 > test/flight.test.ts` → 7 failed / 2 passed. The two survivors assert the
 > OTHER ladder rows' data. The tests genuinely test the thing.
+
+## scenario.export — LANDED `61f8496`
+2026-08-21 09:30
+
+  PASS  dependencies landed
+  PASS  typecheck
+  PASS  full test suite
+  PASS  gate 1 — the id appears in a real battle — showcase.beasts: 1 log lines, 1 fired, 1 changed state
+  PASS  brought its own tests — test/scenario.test.ts
+  PASS  existing tests untouched
+  PASS  control battles unchanged
+  PASS  content has a published source — 24 ids without a published source — 8 NEW from THIS item, seal withheld until published
+  PASS  hardcode scan — core knows mechanisms, never names
+  PASS  generalizes — the second instance costs zero engine code — shape 'plumbing' — not a mechanism, exempt
+  PASS  naming — new content ids use declared kinds
+  PASS  naming — no banned words invented
+  PASS  kill switch — the tests fail without the content — tests fail without showcase.beasts — they genuinely test it
