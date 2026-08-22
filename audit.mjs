@@ -475,6 +475,38 @@ if(D.heroes&&D.heroes.heroes){
     add('two-heroes-share-a-type',t,'a type is one piece of art and belongs to one hero');
 }
 
+// R24 BADGES ARE LINTED AT ALL, AND THEIR MACHINE-READABLE HALF IS CHECKED.
+//     Found 2026-08-21: line 12's `all` array is items, enchants, specialties, attacks and
+//     powers — the 128 badges passed through NONE of the ~60 rules. Two rows had been
+//     breaking rulings unseen, and are listed as known findings below until resolved.
+//     S14 also merged the Crucible's machine-readable fields onto 43 of them; the prose was
+//     already byte-identical, so only statModifiers/hook/rollable/blockers/engineStatGap
+//     were added. This checks the merged half stays valid.
+if(D.badges){
+  const STATSET=new Set(D.stats?D.stats.map(s=>s.id||s.name||s):[]);
+  const KNOWN=new Set(['strength','precision','accuracy','crit','luck','reach','dodge','vision',
+    'armor','resist','health','magic','spirit','toughness','movement','staminaMax','staminaRegen',
+    'surge','itemSlots','deathbedFighting','corruption','favor']);
+  for(const b of D.badges){
+    // the banned vocabulary, now actually applied to badges
+    const t=[b.name,b.payload].filter(Boolean).join(' | ');
+    if(/\bflank/i.test(t)) add('flanking-does-not-exist',b.name,b.payload);
+    if(/`?op: ?set`?|\bop: set\b/i.test(t)) add('stat-override',b.name,b.payload);
+    if(/stacks? up to|may stack to|stacking up to|to a (maximum|max|cap|floor) of/i.test(t))
+      add('stacking-limit',b.name,b.payload);
+    if(/your next [a-z' ]*attack/i.test(t)) add('next-attack-modifier',b.name,b.payload);
+    // the merged half must be valid
+    if(b.hook&&!HOOKS.has(b.hook)) add('badge-unknown-hook',b.name,b.hook);
+    const m=b.statModifiers;
+    if(m){
+      const keys=Array.isArray(m)?m.map(e=>e&&e.stat):Object.keys(m);
+      for(const k of keys) if(k&&!KNOWN.has(k)) add('badge-unknown-stat',b.name,k);
+      if(Array.isArray(m)) for(const e of m)
+        if(e&&e.op&&!['add','sub','mul'].includes(e.op)) add('badge-unknown-statmod-op',b.name,e.op);
+    }
+  }
+}
+
 // R23 CONTENT OWNS THE DERIVED STATS. Ruled 2026-08-21 (S8). Six stats have no source in
 //     Hell-TCG — accuracy, crit, luck, vision, movement, staminaMax, staminaRegen — and are
 //     a per-class level-1 baseline, now on the class row as `derivedBase`.

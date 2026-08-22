@@ -6,7 +6,16 @@
    "rarity": "common",
    "payload": "+10 Accuracy",
    "category": "GENERATIVE — FAVOURABLE",
-   "group": "Flat stat"
+   "group": "Flat stat",
+   "statModifiers": [
+    {
+     "stat": "accuracy",
+     "op": "add",
+     "value": 10
+    }
+   ],
+   "rollable": true,
+   "source": "2026-08-21: machine-readable fields merged from the Crucible. The prose was already byte-identical; only statModifiers/hook/rollable/blockers/engineStatGap were added."
   },
   {
    "id": "badge.anguish",
@@ -29,14 +38,6 @@
    "name": "Aura of Courage",
    "rarity": "paladin",
    "payload": "**aura r3**: allies +5 Accuracy",
-   "category": "CLASS-LOCKED",
-   "group": ""
-  },
-  {
-   "id": "badge.backstabber",
-   "name": "Backstabber",
-   "rarity": "rogue",
-   "payload": "+10 Crit from a flanking position",
    "category": "CLASS-LOCKED",
    "group": ""
   },
@@ -70,7 +71,16 @@
    "rarity": "uncommon",
    "payload": "+2 Reach",
    "category": "GENERATIVE — FAVOURABLE",
-   "group": "Flat stat"
+   "group": "Flat stat",
+   "statModifiers": [
+    {
+     "stat": "reach",
+     "op": "add",
+     "value": 2
+    }
+   ],
+   "rollable": true,
+   "source": "2026-08-21: machine-readable fields merged from the Crucible. The prose was already byte-identical; only statModifiers/hook/rollable/blockers/engineStatGap were added."
   },
   {
    "id": "badge.braced",
@@ -86,7 +96,21 @@
    "rarity": "uncommon",
    "payload": "−1 Armor, −1 Resist",
    "category": "GENERATIVE — FLAWED",
-   "group": ""
+   "group": "",
+   "statModifiers": [
+    {
+     "stat": "armor",
+     "op": "add",
+     "value": -1
+    },
+    {
+     "stat": "resist",
+     "op": "add",
+     "value": -1
+    }
+   ],
+   "rollable": true,
+   "source": "2026-08-21: machine-readable fields merged from the Crucible. The prose was already byte-identical; only statModifiers/hook/rollable/blockers/engineStatGap were added."
   },
   {
    "id": "badge.captured",
@@ -110,7 +134,13 @@
    "rarity": "uncommon",
    "payload": "−1 Movement cost into Hills; +5 Dodge on Hills",
    "category": "GENERATIVE — FAVOURABLE",
-   "group": "Terrain"
+   "group": "Terrain",
+   "blockers": [
+    "conditional-modifier",
+    "unparsed:movement cost into hills,dodge on hills"
+   ],
+   "rollable": false,
+   "source": "2026-08-21: machine-readable fields merged from the Crucible. The prose was already byte-identical; only statModifiers/hook/rollable/blockers/engineStatGap were added."
   },
   {
    "id": "badge.clumsy",
@@ -118,7 +148,16 @@
    "rarity": "common",
    "payload": "−5 Accuracy",
    "category": "GENERATIVE — FLAWED",
-   "group": ""
+   "group": "",
+   "statModifiers": [
+    {
+     "stat": "accuracy",
+     "op": "add",
+     "value": -5
+    }
+   ],
+   "rollable": true,
+   "source": "2026-08-21: machine-readable fields merged from the Crucible. The prose was already byte-identical; only statModifiers/hook/rollable/blockers/engineStatGap were added."
   },
   {
    "id": "badge.cursed",
@@ -126,7 +165,24 @@
    "rarity": "rare",
    "payload": "+1 Corruption, +2 Stamina Max",
    "category": "GENERATIVE — FLAWED",
-   "group": ""
+   "group": "",
+   "statModifiers": [
+    {
+     "stat": "corruption",
+     "op": "add",
+     "value": 1
+    },
+    {
+     "stat": "staminaMax",
+     "op": "add",
+     "value": 2
+    }
+   ],
+   "engineStatGap": [
+    "corruption"
+   ],
+   "rollable": true,
+   "source": "2026-08-21: machine-readable fields merged from the Crucible. The prose was already byte-identical; only statModifiers/hook/rollable/blockers/engineStatGap were added."
   },
   {
    "id": "badge.death-marked",
@@ -158,7 +214,19 @@
    "rarity": "common",
    "payload": "−2 Vision",
    "category": "GENERATIVE — FLAWED",
-   "group": ""
+   "group": "",
+   "statModifiers": [
+    {
+     "stat": "vision",
+     "op": "add",
+     "value": -2
+    }
+   ],
+   "engineStatGap": [
+    "vision"
+   ],
+   "rollable": true,
+   "source": "2026-08-21: machine-readable fields merged from the Crucible. The prose was already byte-identical; only statModifiers/hook/rollable/blockers/engineStatGap were added."
   },
   {
    "id": "badge.dodger",
@@ -166,7 +234,16 @@
    "rarity": "common",
    "payload": "+10 Dodge",
    "category": "GENERATIVE — FAVOURABLE",
-   "group": "Flat stat"
+   "group": "Flat stat",
+   "statModifiers": [
+    {
+     "stat": "dodge",
+     "op": "add",
+     "value": 10
+    }
+   ],
+   "rollable": true,
+   "source": "2026-08-21: machine-readable fields merged from the Crucible. The prose was already byte-identical; only statModifiers/hook/rollable/blockers/engineStatGap were added."
   },
   {
    "id": "badge.dragon-slayer",
@@ -199,7 +276,16 @@
    "rarity": "common",
    "payload": "−1 Resist",
    "category": "GENERATIVE — FLAWED",
-   "group": ""
+   "group": "",
+   "statModifiers": [
+    {
+     "stat": "resist",
+     "op": "add",
+     "value": -1
+    }
+   ],
+   "rollable": true,
+   "source": "2026-08-21: machine-readable fields merged from the Crucible. The prose was already byte-identical; only statModifiers/hook/rollable/blockers/engineStatGap were added."
   },
   {
    "id": "badge.feeble",
@@ -207,7 +293,16 @@
    "rarity": "common",
    "payload": "−1 Strength",
    "category": "GENERATIVE — FLAWED",
-   "group": ""
+   "group": "",
+   "statModifiers": [
+    {
+     "stat": "strength",
+     "op": "add",
+     "value": -1
+    }
+   ],
+   "rollable": true,
+   "source": "2026-08-21: machine-readable fields merged from the Crucible. The prose was already byte-identical; only statModifiers/hook/rollable/blockers/engineStatGap were added."
   },
   {
    "id": "badge.field-surgeon",
@@ -239,7 +334,13 @@
    "rarity": "uncommon",
    "payload": "−1 Movement cost in Forest; +10 Dodge in Forest",
    "category": "GENERATIVE — FAVOURABLE",
-   "group": "Terrain"
+   "group": "Terrain",
+   "blockers": [
+    "conditional-modifier",
+    "unparsed:movement cost in forest,dodge in forest"
+   ],
+   "rollable": false,
+   "source": "2026-08-21: machine-readable fields merged from the Crucible. The prose was already byte-identical; only statModifiers/hook/rollable/blockers/engineStatGap were added."
   },
   {
    "id": "badge.frail",
@@ -247,7 +348,16 @@
    "rarity": "common",
    "payload": "−2 Health",
    "category": "GENERATIVE — FLAWED",
-   "group": ""
+   "group": "",
+   "statModifiers": [
+    {
+     "stat": "health",
+     "op": "add",
+     "value": -2
+    }
+   ],
+   "rollable": true,
+   "source": "2026-08-21: machine-readable fields merged from the Crucible. The prose was already byte-identical; only statModifiers/hook/rollable/blockers/engineStatGap were added."
   },
   {
    "id": "badge.giant-killer",
@@ -263,7 +373,25 @@
    "rarity": "uncommon",
    "payload": "−1 Item Slots, +1 Favor",
    "category": "GENERATIVE — FLAWED",
-   "group": ""
+   "group": "",
+   "statModifiers": [
+    {
+     "stat": "itemSlots",
+     "op": "add",
+     "value": -1
+    },
+    {
+     "stat": "favor",
+     "op": "add",
+     "value": 1
+    }
+   ],
+   "engineStatGap": [
+    "itemSlots",
+    "favor"
+   ],
+   "rollable": true,
+   "source": "2026-08-21: machine-readable fields merged from the Crucible. The prose was already byte-identical; only statModifiers/hook/rollable/blockers/engineStatGap were added."
   },
   {
    "id": "badge.grieving",
@@ -287,7 +415,16 @@
    "rarity": "common",
    "payload": "+2 Health",
    "category": "GENERATIVE — FAVOURABLE",
-   "group": "Flat stat"
+   "group": "Flat stat",
+   "statModifiers": [
+    {
+     "stat": "health",
+     "op": "add",
+     "value": 2
+    }
+   ],
+   "rollable": true,
+   "source": "2026-08-21: machine-readable fields merged from the Crucible. The prose was already byte-identical; only statModifiers/hook/rollable/blockers/engineStatGap were added."
   },
   {
    "id": "badge.heavy-footed",
@@ -295,7 +432,16 @@
    "rarity": "common",
    "payload": "−5 Dodge",
    "category": "GENERATIVE — FLAWED",
-   "group": ""
+   "group": "",
+   "statModifiers": [
+    {
+     "stat": "dodge",
+     "op": "add",
+     "value": -5
+    }
+   ],
+   "rollable": true,
+   "source": "2026-08-21: machine-readable fields merged from the Crucible. The prose was already byte-identical; only statModifiers/hook/rollable/blockers/engineStatGap were added."
   },
   {
    "id": "badge.hells-mark",
@@ -303,7 +449,33 @@
    "rarity": "legendary",
    "payload": "+2 Corruption, +2 Strength, +2 Precision · `startOfBattle`: **all heroes** gain burn 1",
    "category": "GENERATIVE — FLAWED",
-   "group": ""
+   "group": "",
+   "statModifiers": [
+    {
+     "stat": "corruption",
+     "op": "add",
+     "value": 2
+    },
+    {
+     "stat": "strength",
+     "op": "add",
+     "value": 2
+    },
+    {
+     "stat": "precision",
+     "op": "add",
+     "value": 2
+    }
+   ],
+   "hook": "startOfBattle",
+   "engineStatGap": [
+    "corruption"
+   ],
+   "blockers": [
+    "TriggerEffect:startOfBattle"
+   ],
+   "rollable": false,
+   "source": "2026-08-21: machine-readable fields merged from the Crucible. The prose was already byte-identical; only statModifiers/hook/rollable/blockers/engineStatGap were added."
   },
   {
    "id": "badge.hero-among-them",
@@ -319,7 +491,26 @@
    "rarity": "uncommon",
    "payload": "+2 Strength, +2 Health, −15 Dodge",
    "category": "GENERATIVE — FAVOURABLE",
-   "group": "Flat stat"
+   "group": "Flat stat",
+   "statModifiers": [
+    {
+     "stat": "strength",
+     "op": "add",
+     "value": 2
+    },
+    {
+     "stat": "health",
+     "op": "add",
+     "value": 2
+    },
+    {
+     "stat": "dodge",
+     "op": "add",
+     "value": -15
+    }
+   ],
+   "rollable": true,
+   "source": "2026-08-21: machine-readable fields merged from the Crucible. The prose was already byte-identical; only statModifiers/hook/rollable/blockers/engineStatGap were added."
   },
   {
    "id": "badge.hunter",
@@ -327,7 +518,21 @@
    "rarity": "uncommon",
    "payload": "+1 Reach, +10 Accuracy",
    "category": "GENERATIVE — FAVOURABLE",
-   "group": "Flat stat"
+   "group": "Flat stat",
+   "statModifiers": [
+    {
+     "stat": "reach",
+     "op": "add",
+     "value": 1
+    },
+    {
+     "stat": "accuracy",
+     "op": "add",
+     "value": 10
+    }
+   ],
+   "rollable": true,
+   "source": "2026-08-21: machine-readable fields merged from the Crucible. The prose was already byte-identical; only statModifiers/hook/rollable/blockers/engineStatGap were added."
   },
   {
    "id": "badge.immovable",
@@ -351,7 +556,19 @@
    "rarity": "uncommon",
    "payload": "+5 Crit",
    "category": "GENERATIVE — FAVOURABLE",
-   "group": "Flat stat"
+   "group": "Flat stat",
+   "statModifiers": [
+    {
+     "stat": "crit",
+     "op": "add",
+     "value": 5
+    }
+   ],
+   "engineStatGap": [
+    "crit"
+   ],
+   "rollable": true,
+   "source": "2026-08-21: machine-readable fields merged from the Crucible. The prose was already byte-identical; only statModifiers/hook/rollable/blockers/engineStatGap were added."
   },
   {
    "id": "badge.known-face",
@@ -383,7 +600,21 @@
    "rarity": "uncommon",
    "payload": "+1 Movement, +5 Dodge",
    "category": "GENERATIVE — FAVOURABLE",
-   "group": "Flat stat"
+   "group": "Flat stat",
+   "statModifiers": [
+    {
+     "stat": "movement",
+     "op": "add",
+     "value": 1
+    },
+    {
+     "stat": "dodge",
+     "op": "add",
+     "value": 5
+    }
+   ],
+   "rollable": true,
+   "source": "2026-08-21: machine-readable fields merged from the Crucible. The prose was already byte-identical; only statModifiers/hook/rollable/blockers/engineStatGap were added."
   },
   {
    "id": "badge.long-eye",
@@ -407,7 +638,19 @@
    "rarity": "uncommon",
    "payload": "+1 Item Slots",
    "category": "GENERATIVE — FAVOURABLE",
-   "group": "Flat stat"
+   "group": "Flat stat",
+   "statModifiers": [
+    {
+     "stat": "itemSlots",
+     "op": "add",
+     "value": 1
+    }
+   ],
+   "engineStatGap": [
+    "itemSlots"
+   ],
+   "rollable": true,
+   "source": "2026-08-21: machine-readable fields merged from the Crucible. The prose was already byte-identical; only statModifiers/hook/rollable/blockers/engineStatGap were added."
   },
   {
    "id": "badge.marksman",
@@ -415,7 +658,16 @@
    "rarity": "common",
    "payload": "+1 Precision",
    "category": "GENERATIVE — FAVOURABLE",
-   "group": "Flat stat"
+   "group": "Flat stat",
+   "statModifiers": [
+    {
+     "stat": "precision",
+     "op": "add",
+     "value": 1
+    }
+   ],
+   "rollable": true,
+   "source": "2026-08-21: machine-readable fields merged from the Crucible. The prose was already byte-identical; only statModifiers/hook/rollable/blockers/engineStatGap were added."
   },
   {
    "id": "badge.mystic",
@@ -423,7 +675,16 @@
    "rarity": "common",
    "payload": "+1 Magic",
    "category": "GENERATIVE — FAVOURABLE",
-   "group": "Flat stat"
+   "group": "Flat stat",
+   "statModifiers": [
+    {
+     "stat": "magic",
+     "op": "add",
+     "value": 1
+    }
+   ],
+   "rollable": true,
+   "source": "2026-08-21: machine-readable fields merged from the Crucible. The prose was already byte-identical; only statModifiers/hook/rollable/blockers/engineStatGap were added."
   },
   {
    "id": "badge.name-in-the-hall",
@@ -439,7 +700,19 @@
    "rarity": "uncommon",
    "payload": "+4 Vision",
    "category": "GENERATIVE — FAVOURABLE",
-   "group": "Flat stat"
+   "group": "Flat stat",
+   "statModifiers": [
+    {
+     "stat": "vision",
+     "op": "add",
+     "value": 4
+    }
+   ],
+   "engineStatGap": [
+    "vision"
+   ],
+   "rollable": true,
+   "source": "2026-08-21: machine-readable fields merged from the Crucible. The prose was already byte-identical; only statModifiers/hook/rollable/blockers/engineStatGap were added."
   },
   {
    "id": "badge.no-guard",
@@ -503,7 +776,19 @@
    "rarity": "rare",
    "payload": "+1 Surge",
    "category": "GENERATIVE — FAVOURABLE",
-   "group": "Flat stat"
+   "group": "Flat stat",
+   "statModifiers": [
+    {
+     "stat": "surge",
+     "op": "add",
+     "value": 1
+    }
+   ],
+   "engineStatGap": [
+    "surge"
+   ],
+   "rollable": true,
+   "source": "2026-08-21: machine-readable fields merged from the Crucible. The prose was already byte-identical; only statModifiers/hook/rollable/blockers/engineStatGap were added."
   },
   {
    "id": "badge.rage",
@@ -511,7 +796,13 @@
    "rarity": "rare",
    "payload": "`onMiss`: +1 Strength, +1 Health (Battle only)",
    "category": "GENERATIVE — FAVOURABLE",
-   "group": "Trigger"
+   "group": "Trigger",
+   "hook": "onMiss",
+   "blockers": [
+    "TriggerEffect:onMiss"
+   ],
+   "rollable": false,
+   "source": "2026-08-21: machine-readable fields merged from the Crucible. The prose was already byte-identical; only statModifiers/hook/rollable/blockers/engineStatGap were added."
   },
   {
    "id": "badge.reckless",
@@ -519,7 +810,24 @@
    "rarity": "uncommon",
    "payload": "+10 Crit, −10 Dodge",
    "category": "GENERATIVE — FLAWED",
-   "group": ""
+   "group": "",
+   "statModifiers": [
+    {
+     "stat": "crit",
+     "op": "add",
+     "value": 10
+    },
+    {
+     "stat": "dodge",
+     "op": "add",
+     "value": -10
+    }
+   ],
+   "engineStatGap": [
+    "crit"
+   ],
+   "rollable": true,
+   "source": "2026-08-21: machine-readable fields merged from the Crucible. The prose was already byte-identical; only statModifiers/hook/rollable/blockers/engineStatGap were added."
   },
   {
    "id": "badge.resolve",
@@ -527,7 +835,21 @@
    "rarity": "uncommon",
    "payload": "+2 Stamina Max, +1 Health",
    "category": "GENERATIVE — FAVOURABLE",
-   "group": "Flat stat"
+   "group": "Flat stat",
+   "statModifiers": [
+    {
+     "stat": "staminaMax",
+     "op": "add",
+     "value": 2
+    },
+    {
+     "stat": "health",
+     "op": "add",
+     "value": 1
+    }
+   ],
+   "rollable": true,
+   "source": "2026-08-21: machine-readable fields merged from the Crucible. The prose was already byte-identical; only statModifiers/hook/rollable/blockers/engineStatGap were added."
   },
   {
    "id": "badge.rocky-tactician",
@@ -535,7 +857,13 @@
    "rarity": "uncommon",
    "payload": "+10 Accuracy in Rocky",
    "category": "GENERATIVE — FAVOURABLE",
-   "group": "Terrain"
+   "group": "Terrain",
+   "blockers": [
+    "conditional-modifier",
+    "unparsed:accuracy in rocky"
+   ],
+   "rollable": false,
+   "source": "2026-08-21: machine-readable fields merged from the Crucible. The prose was already byte-identical; only statModifiers/hook/rollable/blockers/engineStatGap were added."
   },
   {
    "id": "badge.rotting-flesh",
@@ -551,7 +879,19 @@
    "rarity": "rare",
    "payload": "+1 Toughness",
    "category": "GENERATIVE — FAVOURABLE",
-   "group": "Flat stat"
+   "group": "Flat stat",
+   "statModifiers": [
+    {
+     "stat": "toughness",
+     "op": "add",
+     "value": 1
+    }
+   ],
+   "engineStatGap": [
+    "toughness"
+   ],
+   "rollable": true,
+   "source": "2026-08-21: machine-readable fields merged from the Crucible. The prose was already byte-identical; only statModifiers/hook/rollable/blockers/engineStatGap were added."
   },
   {
    "id": "badge.second-wind",
@@ -599,7 +939,16 @@
    "rarity": "common",
    "payload": "−1 Movement",
    "category": "GENERATIVE — FLAWED",
-   "group": ""
+   "group": "",
+   "statModifiers": [
+    {
+     "stat": "movement",
+     "op": "add",
+     "value": -1
+    }
+   ],
+   "rollable": true,
+   "source": "2026-08-21: machine-readable fields merged from the Crucible. The prose was already byte-identical; only statModifiers/hook/rollable/blockers/engineStatGap were added."
   },
   {
    "id": "badge.soldier",
@@ -615,7 +964,16 @@
    "rarity": "common",
    "payload": "+1 Spirit",
    "category": "GENERATIVE — FAVOURABLE",
-   "group": "Flat stat"
+   "group": "Flat stat",
+   "statModifiers": [
+    {
+     "stat": "spirit",
+     "op": "add",
+     "value": 1
+    }
+   ],
+   "rollable": true,
+   "source": "2026-08-21: machine-readable fields merged from the Crucible. The prose was already byte-identical; only statModifiers/hook/rollable/blockers/engineStatGap were added."
   },
   {
    "id": "badge.standard-bearer",
@@ -639,7 +997,21 @@
    "rarity": "common",
    "payload": "+1 Strength, +1 Stamina Max",
    "category": "GENERATIVE — FAVOURABLE",
-   "group": "Flat stat"
+   "group": "Flat stat",
+   "statModifiers": [
+    {
+     "stat": "strength",
+     "op": "add",
+     "value": 1
+    },
+    {
+     "stat": "staminaMax",
+     "op": "add",
+     "value": 1
+    }
+   ],
+   "rollable": true,
+   "source": "2026-08-21: machine-readable fields merged from the Crucible. The prose was already byte-identical; only statModifiers/hook/rollable/blockers/engineStatGap were added."
   },
   {
    "id": "badge.survivor",
@@ -655,7 +1027,13 @@
    "rarity": "common",
    "payload": "+10 Dodge in Water",
    "category": "GENERATIVE — FAVOURABLE",
-   "group": "Terrain"
+   "group": "Terrain",
+   "blockers": [
+    "conditional-modifier",
+    "unparsed:dodge in water"
+   ],
+   "rollable": false,
+   "source": "2026-08-21: machine-readable fields merged from the Crucible. The prose was already byte-identical; only statModifiers/hook/rollable/blockers/engineStatGap were added."
   },
   {
    "id": "badge.the-lovers",
@@ -671,7 +1049,16 @@
    "rarity": "common",
    "payload": "+1 Armor",
    "category": "GENERATIVE — FAVOURABLE",
-   "group": "Flat stat"
+   "group": "Flat stat",
+   "statModifiers": [
+    {
+     "stat": "armor",
+     "op": "add",
+     "value": 1
+    }
+   ],
+   "rollable": true,
+   "source": "2026-08-21: machine-readable fields merged from the Crucible. The prose was already byte-identical; only statModifiers/hook/rollable/blockers/engineStatGap were added."
   },
   {
    "id": "badge.thorned-hide",
@@ -696,7 +1083,19 @@
    "rarity": "uncommon",
    "payload": "+5 Luck",
    "category": "GENERATIVE — FAVOURABLE",
-   "group": "Flat stat"
+   "group": "Flat stat",
+   "statModifiers": [
+    {
+     "stat": "luck",
+     "op": "add",
+     "value": 5
+    }
+   ],
+   "engineStatGap": [
+    "luck"
+   ],
+   "rollable": true,
+   "source": "2026-08-21: machine-readable fields merged from the Crucible. The prose was already byte-identical; only statModifiers/hook/rollable/blockers/engineStatGap were added."
   },
   {
    "id": "badge.unlucky",
@@ -704,7 +1103,19 @@
    "rarity": "uncommon",
    "payload": "−5 Luck",
    "category": "GENERATIVE — FLAWED",
-   "group": ""
+   "group": "",
+   "statModifiers": [
+    {
+     "stat": "luck",
+     "op": "add",
+     "value": -5
+    }
+   ],
+   "engineStatGap": [
+    "luck"
+   ],
+   "rollable": true,
+   "source": "2026-08-21: machine-readable fields merged from the Crucible. The prose was already byte-identical; only statModifiers/hook/rollable/blockers/engineStatGap were added."
   },
   {
    "id": "badge.unrelenting",
@@ -712,7 +1123,16 @@
    "rarity": "rare",
    "payload": "+1 Stamina **Regen**",
    "category": "GENERATIVE — FAVOURABLE",
-   "group": "Flat stat"
+   "group": "Flat stat",
+   "statModifiers": [
+    {
+     "stat": "staminaRegen",
+     "op": "add",
+     "value": 1
+    }
+   ],
+   "rollable": true,
+   "source": "2026-08-21: machine-readable fields merged from the Crucible. The prose was already byte-identical; only statModifiers/hook/rollable/blockers/engineStatGap were added."
   },
   {
    "id": "badge.unstoppable",
@@ -720,7 +1140,19 @@
    "rarity": "legendary",
    "payload": "+40 Deathbed Fighting",
    "category": "GENERATIVE — FAVOURABLE",
-   "group": "Flat stat"
+   "group": "Flat stat",
+   "statModifiers": [
+    {
+     "stat": "deathbedFighting",
+     "op": "add",
+     "value": 40
+    }
+   ],
+   "engineStatGap": [
+    "deathbedFighting"
+   ],
+   "rollable": true,
+   "source": "2026-08-21: machine-readable fields merged from the Crucible. The prose was already byte-identical; only statModifiers/hook/rollable/blockers/engineStatGap were added."
   },
   {
    "id": "badge.vampirism",
@@ -736,7 +1168,13 @@
    "rarity": "rare",
    "payload": "`onTakingDamage`: +1 Stamina",
    "category": "GENERATIVE — FAVOURABLE",
-   "group": "Trigger"
+   "group": "Trigger",
+   "hook": "onTakingDamage",
+   "blockers": [
+    "TriggerEffect:onTakingDamage"
+   ],
+   "rollable": false,
+   "source": "2026-08-21: machine-readable fields merged from the Crucible. The prose was already byte-identical; only statModifiers/hook/rollable/blockers/engineStatGap were added."
   },
   {
    "id": "badge.veteran",
@@ -744,7 +1182,19 @@
    "rarity": "uncommon",
    "payload": "+10 Deathbed Fighting",
    "category": "GENERATIVE — FAVOURABLE",
-   "group": "Flat stat"
+   "group": "Flat stat",
+   "statModifiers": [
+    {
+     "stat": "deathbedFighting",
+     "op": "add",
+     "value": 10
+    }
+   ],
+   "engineStatGap": [
+    "deathbedFighting"
+   ],
+   "rollable": true,
+   "source": "2026-08-21: machine-readable fields merged from the Crucible. The prose was already byte-identical; only statModifiers/hook/rollable/blockers/engineStatGap were added."
   },
   {
    "id": "badge.walking-wounded",
@@ -776,7 +1226,16 @@
    "rarity": "common",
    "payload": "+1 Resist",
    "category": "GENERATIVE — FAVOURABLE",
-   "group": "Flat stat"
+   "group": "Flat stat",
+   "statModifiers": [
+    {
+     "stat": "resist",
+     "op": "add",
+     "value": 1
+    }
+   ],
+   "rollable": true,
+   "source": "2026-08-21: machine-readable fields merged from the Crucible. The prose was already byte-identical; only statModifiers/hook/rollable/blockers/engineStatGap were added."
   },
   {
    "id": "badge.willing-hands",
@@ -792,7 +1251,24 @@
    "rarity": "uncommon",
    "payload": "−1 Stamina Max, −1 Surge",
    "category": "GENERATIVE — FLAWED",
-   "group": ""
+   "group": "",
+   "statModifiers": [
+    {
+     "stat": "staminaMax",
+     "op": "add",
+     "value": -1
+    },
+    {
+     "stat": "surge",
+     "op": "add",
+     "value": -1
+    }
+   ],
+   "engineStatGap": [
+    "surge"
+   ],
+   "rollable": true,
+   "source": "2026-08-21: machine-readable fields merged from the Crucible. The prose was already byte-identical; only statModifiers/hook/rollable/blockers/engineStatGap were added."
   },
   {
    "id": "badge.wounded",
@@ -1011,20 +1487,31 @@
    "group": ""
   },
   {
-   "id": "origin.the-unnamed",
-   "name": "The Unnamed",
-   "rarity": "legendary",
-   "payload": "`op: set` — Accuracy 100, Crit 3, Luck 0. Nothing modifies them again.",
-   "category": "SPECIAL ORIGINS",
-   "group": ""
-  },
-  {
    "id": "origin.wind-touched",
    "name": "Wind-Touched",
    "rarity": "rare",
    "payload": "+2 Movement, +10 Dodge, −1 Armor",
    "category": "SPECIAL ORIGINS",
    "group": ""
+  }
+ ],
+ "_machineReadable": "43 of the 128 badges carry statModifiers, hook, rollable, blockers and engineStatGap, merged from the Crucible 2026-08-21. The other 85 are prose only and still need the machine-readable half. content/ owns badges (COMBAT-DESIGN.md §8: HoBaT authored its own; the 238-row Hell-TCG library is a reference, not a port).",
+ "_cut": [
+  {
+   "id": "badge.backstabber",
+   "name": "Backstabber",
+   "payload": "+10 Crit from a flanking position",
+   "category": "CLASS-LOCKED",
+   "reason": "Built on flanking, which does not exist (Law 11 — positional advantage is adjacency, zones of control, knockback, Reach and terrain). Cut 2026-08-21 rather than reshaped.",
+   "cut": "2026-08-21"
+  },
+  {
+   "id": "origin.the-unnamed",
+   "name": "The Unnamed",
+   "payload": "`op: set` — Accuracy 100, Crit 3, Luck 0. Nothing modifies them again.",
+   "category": "SPECIAL ORIGINS",
+   "reason": "Used `op: set` to fix Accuracy/Crit/Luck so nothing could modify them. Stat overrides and floors are banned (FUNCTIONS.md) — modify a stat, never replace or clamp it. It was the only user of the mechanic. Cut 2026-08-21.",
+   "cut": "2026-08-21"
   }
  ]
 }
