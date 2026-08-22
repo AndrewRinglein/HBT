@@ -10,7 +10,9 @@
     "levels": "node checklevels.mjs",
     "verify": "node verify-codex.mjs",
     "check": "npm run build && npm run expect && npm run levels",
-    "expect": "node expect.mjs"
+    "expect": "node expect.mjs",
+    "ship": "node ship.mjs",
+    "ship:dry": "node ship.mjs --dry"
   },
   "devDependencies": {
     "playwright": "^1.40.0"
