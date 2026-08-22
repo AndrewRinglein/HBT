@@ -1003,7 +1003,7 @@
     }
    },
    {
-    "copyOf": "hero.tutorial.priest-scantily.lucius",
+    "copyOf": "hero.base.priest-scantily",
     "typeId": "test-lucius",
     "name": "Lucius (TEST)",
     "engine": {
@@ -1019,10 +1019,11 @@
       "power.move",
       "power.devotion"
      ]
-    }
+    },
+    "_wasCopyOf": "hero.tutorial.priest-scantily.lucius"
    },
    {
-    "copyOf": "hero.tutorial.paladin-shiney.osric",
+    "copyOf": "hero.base.paladin-shiney",
     "typeId": "test-osric",
     "name": "Osric (TEST)",
     "engine": {
@@ -1038,7 +1039,8 @@
       "power.move",
       "power.sidestep"
      ]
-    }
+    },
+    "_wasCopyOf": "hero.tutorial.paladin-shiney.osric"
    }
   ],
   "enemies": [
@@ -1168,6 +1170,7 @@
     ]
    }
   ],
-  "_movesNote": "moves are derived from the class bonusMove in gen/classes.json, ruled 2026-08-21: Warrior Leap, Rogue/Ranger Side Roll, Paladin Sidestep, Mage Focus, Priest Devotion, Civilian/Beast none. Corrected 2026-08-21 - the cohort had been carrying the pre-rebuild assignment where nearly everyone got Sidestep. audit.mjs enforces the match, so restoring the old values will fail the build."
+  "_movesNote": "moves are derived from the class bonusMove in gen/classes.json, ruled 2026-08-21: Warrior Leap, Rogue/Ranger Side Roll, Paladin Sidestep, Mage Focus, Priest Devotion, Civilian/Beast none. Corrected 2026-08-21 - the cohort had been carrying the pre-rebuild assignment where nearly everyone got Sidestep. audit.mjs enforces the match, so restoring the old values will fail the build.",
+  "_copyOfNote": "Lucius and Osric were tutorial heroes. The tutorial path was cut 2026-08-21 - its 96 rows were 24 heroes duplicated across their own level art - so they now copy the eve-base heroes that own those pictures. The cohort still covers six classes."
  }
 }

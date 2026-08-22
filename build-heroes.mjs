@@ -127,19 +127,46 @@ for(const [src,TABLE,camp] of [['shadows',AVTAIR_HERO_TYPES,'shadows'],['skyship
 const {default:_}={};
 const TUT_BASE=JSON.parse(fs.readFileSync(S+'src/eveOfRuin/tutorialHeroes.js','utf8')
   .match(/const CLASS_BASE_STATS = (\{[\s\S]*?\n\});/)[1].replace(/(\w+):/g,'"$1":').replace(/,(\s*\})/g,'$1'));
+// EVE BASE CLASSES. Ruled 2026-08-21: ONE PIECE OF BASE ART IS ONE HERO.
+// This used to mint 96 heroes - it read the art census, saw four files for warrior-iron,
+// and paired them with the four `variants` entries. But warrior-iron1..4 are the four
+// LEVELS of one character, and the variants carry NO art at all: they are alternative
+// stat/personality rolls of the same hero. The Hell-TCG header says so - "one random
+// variant is picked per art type -> 24 heroes shown". 72 of those 96 were duplications
+// of art, and they are cut.
+//
+// So: 24 heroes, one per art type, on its level-1 art. Six classes x four faces.
+//   class    warrior          the mechanical class
+//   subtype  Eve Warrior      the roster identity - one of each per campaign
+//   type     Iron Dwarf       the specific art
+//   name     rolled at campaign level from the art type's name pool
+const EVE_TYPE={
+ 'warrior-barbarian':'Mountain Berserker','warrior-brawler':'Dwarven Brawler',
+ 'warrior-fearsome':'Skullplate Veteran','warrior-iron':'Iron Dwarf',
+ 'ranger-aggressive':'Hunter','ranger-nature':'Forest Fey',
+ 'ranger-ranger':'Ancient Elf','ranger-scantily':'Forest Elf',
+ 'rogue-raven':'The Raven','rogue-rose':'The Rose','rogue-skull':'The Skull','rogue-snake':'The Serpent',
+ 'paladin-dark':'Black Oath','paladin-hunk':'Lion of the Host','paladin-shiney':'Dawnblade','paladin-smug':'Court Champion',
+ 'priest-armored':'Battle Chaplain','priest-pauper':'Barefoot Mendicant','priest-robes':'Cathedral Bishop','priest-scantily':'Rune-Marked Ascetic',
+ 'mage-fire':'Emberwright','mage-fireaura':'Pyre Witch','mage-sexy':'Crimson Sorceress','mage-thinking':'Archive Scholar'};
 for(const [k,t] of Object.entries(TUTORIAL_HERO_VARIANTS)){
   const files=VAR.tutorial[slug(k)]||[];
-  t.variants.forEach((v,i)=>{
-    const bs={...TUT_BASE[t.class]}; for(const [s,n] of Object.entries(v.statMods||{})) bs[s]=(bs[s]||0)+n;
-    if(!files[i]) problems.push(`tutorial/${k} variant ${i+1} (${v.name}) has no art`);
-    const hero=convert({name:v.name,class:t.class,gender:t.gender,tier:0,level:1,baseStats:bs,
-      originBadges:v.badges||[],quote:v.quote,backstory:v.description},
-      {path:'tutorial',idBase:'tutorial.'+slug(k)+'.'+slug(v.name),campaign:'eve-of-ruin',artOverride:files[i]||null});
-    hero.templateId='template.tutorial.'+slug(k); hero.templateName=k; hero.subtype=k;
-    hero.variant=i+1; hero.variantsOf=files.length;
-    hero.notes.push('One of '+files.length+' heroes off the '+k+' art set \u2014 one per piece of art, and this one ships its own name.');
-    heroes.push(hero);
-  });
+  const type=EVE_TYPE[slug(k)];
+  if(!type){ problems.push('eve-base: no type name for art set '+k); continue; }
+  if(!files.length){ problems.push('eve-base/'+k+' has no art'); continue; }
+  const v=t.variants[0]||{};
+  const bs={...TUT_BASE[t.class]}; for(const [s,n] of Object.entries(v.statMods||{})) bs[s]=(bs[s]||0)+n;
+  const hero=convert({name:type,class:t.class,gender:t.gender,tier:0,level:1,baseStats:bs,
+    originBadges:v.badges||[],quote:v.quote,backstory:v.description},
+    {path:'base',idBase:'base.'+slug(k),campaign:'eve-of-ruin',artOverride:files[0]});
+  hero.type=type;
+  hero.subtype='Eve '+t.class;
+  hero.templateId='template.base.'+slug(k); hero.templateName='Eve '+t.class;
+  hero.namePool=t.namePool||[];
+  hero.levelArt=files;
+  hero.notes.push('EVE BASE CLASS. One piece of base art, one hero - ruled 2026-08-21. Its '+files.length+' art files are this hero at four LEVELS, not four heroes; they are on levelArt.');
+  hero.notes.push('Hell-TCG shipped four alternative stat/personality rolls for this art set. Only the first is carried; the other three were cut as duplications of art.');
+  heroes.push(hero);
 }
 // 5 — the aspiring generator. Eight art templates, one hero each. The folders are
 //     1/2/3/4 + l/p/r/v, which is four LEVELS plus four statuses for a single hero,
@@ -215,7 +242,7 @@ const out={derivation:DERIVATION, derivedBase:DERIVED_BASE, portMap:PORT, dodgeS
    {path:'fixed',   file:'src/state/heroData.js → HERO_DATA', note:'the named cast. One hero per entry; their 1/2/3/4 + l/p/r/v art is levels and statuses, so they do not split'},
    {path:'shadows', file:'data/shadowsHeroTypes.js → AVTAIR_HERO_TYPES', note:'12 subtypes x 4 designs (-v1..v4) = 48 heroes sharing 12 stat blocks'},
    {path:'skyship', file:'data/skyshipHeroes.js → AERONISSA_HERO_TYPES', note:'12 subtypes x 4 designs = 47 heroes — sky-captain has only 3, its fourth file duplicates another'},
-   {path:'tutorial',file:'src/eveOfRuin/tutorialHeroes.js → TUTORIAL_HERO_VARIANTS', note:'24 art sets x 4 designs = 96 heroes, and these ship their own four names'},
+   {path:'base',file:'src/eveOfRuin/tutorialHeroes.js → TUTORIAL_HERO_VARIANTS', note:'24 Eve base classes - one per piece of base art. Was 96: the four art files per set are four LEVELS, not four heroes'},
    {path:'aspiring',file:'src/generators/aspiringHeroGenerator.js → generateAspiringHero()', note:'8 art templates (2 genders x 4 styles). Procedural: the art is fixed, the stat block is one draw'}],
   heroes};
 fs.mkdirSync('gen',{recursive:true});
