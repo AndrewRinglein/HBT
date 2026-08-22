@@ -12,7 +12,16 @@
    "intent": "The melee anchor. Armour is a mobility stat here — the Warrior is who finishes a run through threatened ground.",
    "levelTable": "dictated 1–10",
    "bonusMove": "power.leap",
-   "bonusMoveNote": "2 stamina, 2 hexes, +2 Strength until end of Turn."
+   "bonusMoveNote": "2 stamina, 2 hexes, +2 Strength until end of Turn.",
+   "derivedBase": {
+    "accuracy": 75,
+    "crit": 3,
+    "luck": 0,
+    "vision": 6,
+    "movement": 5,
+    "staminaMax": 5,
+    "staminaRegen": 1
+   }
   },
   {
    "id": "class.ranger",
@@ -25,7 +34,16 @@
    "intent": "Standoff damage. Reach and Vision are its real stats and both are near-invisible, which is the design's own warning label.",
    "levelTable": "dictated 2–6, 7–10 owed",
    "bonusMove": "power.side-roll",
-   "bonusMoveNote": "1 stamina, 1 hex."
+   "bonusMoveNote": "1 stamina, 1 hex.",
+   "derivedBase": {
+    "accuracy": 80,
+    "crit": 3,
+    "luck": 0,
+    "vision": 8,
+    "movement": 5,
+    "staminaMax": 5,
+    "staminaRegen": 1
+   }
   },
   {
    "id": "class.rogue",
@@ -39,7 +57,16 @@
    "intent": "Stealth, poison and bleed, daggers and thrown weapons. Arrives, strikes, and is gone before the answer lands.",
    "levelTable": "owed",
    "bonusMove": "power.side-roll",
-   "bonusMoveNote": "1 stamina, 1 hex."
+   "bonusMoveNote": "1 stamina, 1 hex.",
+   "derivedBase": {
+    "accuracy": 78,
+    "crit": 5,
+    "luck": 0,
+    "vision": 7,
+    "movement": 5,
+    "staminaMax": 5,
+    "staminaRegen": 1
+   }
   },
   {
    "id": "class.mage",
@@ -52,7 +79,16 @@
    "intent": "Magic damage and the terrain layer. Staves scale their basic attacks off Precision; only the big powers spend Magic.",
    "levelTable": "owed",
    "bonusMove": "power.focus",
-   "bonusMoveNote": "0 stamina, moves you ZERO hexes, gain 1 Stamina. A caught caster stays caught."
+   "bonusMoveNote": "0 stamina, moves you ZERO hexes, gain 1 Stamina. A caught caster stays caught.",
+   "derivedBase": {
+    "accuracy": 75,
+    "crit": 3,
+    "luck": 0,
+    "vision": 7,
+    "movement": 5,
+    "staminaMax": 5,
+    "staminaRegen": 1
+   }
   },
   {
    "id": "class.priest",
@@ -65,7 +101,16 @@
    "intent": "True damage — it skips Armor and Resist both. Hits soft, hits reliably, and is the only thing standing between a fallen hero and the clock.",
    "levelTable": "owed",
    "bonusMove": "power.devotion",
-   "bonusMoveNote": "0 stamina, moves you ZERO hexes, -1 Stamina Max for the Battle, gain 2 Stamina."
+   "bonusMoveNote": "0 stamina, moves you ZERO hexes, -1 Stamina Max for the Battle, gain 2 Stamina.",
+   "derivedBase": {
+    "accuracy": 80,
+    "crit": 3,
+    "luck": 0,
+    "vision": 6,
+    "movement": 5,
+    "staminaMax": 5,
+    "staminaRegen": 1
+   }
   },
   {
    "id": "class.paladin",
@@ -79,7 +124,16 @@
    "intent": "Armour, auras and protection, with slayer bonuses against undead and demon. The wall that also punishes.",
    "levelTable": "owed",
    "bonusMove": "power.sidestep",
-   "bonusMoveNote": "0 stamina, cooldown 1, 1 hex."
+   "bonusMoveNote": "0 stamina, cooldown 1, 1 hex.",
+   "derivedBase": {
+    "accuracy": 72,
+    "crit": 3,
+    "luck": 0,
+    "vision": 6,
+    "movement": 5,
+    "staminaMax": 5,
+    "staminaRegen": 1
+   }
   },
   {
    "id": "class.civilian",
@@ -89,7 +143,16 @@
    "intent": "An ordinary class, surfaced at different times. One action, no stamina bar, low-decision — three of them fill the flex slot one hero would.",
    "levelTable": "owed",
    "bonusMove": null,
-   "bonusMoveNote": "No bonus move. The Civilian carries; it does not scramble."
+   "bonusMoveNote": "No bonus move. The Civilian carries; it does not scramble.",
+   "derivedBase": {
+    "accuracy": 70,
+    "crit": 3,
+    "luck": 0,
+    "vision": 6,
+    "movement": 5,
+    "staminaMax": 0,
+    "staminaRegen": 0
+   }
   },
   {
    "id": "class.beast",
@@ -103,7 +166,16 @@
    "intent": "Teeth, hide and mass. The Beast is the mirror of the Civilian: it is granted NO Item Slots at any level, so nothing it does comes out of a bag — every point of it is the animal.",
    "levelTable": "authored 1–10",
    "bonusMove": null,
-   "bonusMoveNote": "No bonus move."
+   "bonusMoveNote": "No bonus move.",
+   "derivedBase": {
+    "accuracy": 72,
+    "crit": 3,
+    "luck": 0,
+    "vision": 7,
+    "movement": 6,
+    "staminaMax": 5,
+    "staminaRegen": 1
+   }
   }
  ],
  "stats": [
@@ -242,5 +314,18 @@
    "Possessed"
   ],
   "rule": "A status OVERRIDES the level band totally. A level-7 vampire shows vampire art, not tier-3 art. No merge."
+ },
+ "_derivedBase": "The six stats no hero has a source for - accuracy, crit, luck, vision, movement, staminaMax, staminaRegen - as a per-class level-1 baseline. Moved out of build-heroes.mjs and into the data 2026-08-21 so audit.mjs R23 can enforce it: content/ OWNS the derived stats, ruled 2026-08-21, and every hero must match its class exactly.",
+ "_derivation": {
+  "accuracy": "No source. Level-1 baseline by class: Priest and Ranger 80 (both are built to hit reliably), Rogue 78, Warrior and Mage 75, Paladin 72 (heavy and slow), Civilian 70 (untrained). Level rows add roughly +5 a level, so a level-10 hero lands near the 100 mark where surplus starts converting to Crit at ÷4.",
+  "crit": "Base 3 — documented in the stat sheet. Rogue starts at 5, the only class whose identity is landing one.",
+  "luck": "No source, and a rare grant in the level tables. Everyone starts at 0.",
+  "vision": "Base radius 6 — documented. Ranger 8 and Rogue 7 and Mage 7, the three classes that trade on seeing first.",
+  "movement": "5 — documented. Heroes 5, enemies 4.",
+  "staminaMax": "5 at level 1 — documented. Civilian 0: a Civilian has no stamina bar.",
+  "staminaRegen": "1 at level 1 — documented, and it hard-caps at 3. Civilian 0.",
+  "surge": "Not a baseline at all — Surge always EQUALS the character level. Documented rule, computed, never stored.",
+  "toughness": "Ported, not derived: hell-tcg maxAfflictions IS injury capacity, which is what Toughness means here.",
+  "deathbedFighting": "Derived, never stored: 20 + 5 x Toughness."
  }
 }

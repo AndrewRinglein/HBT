@@ -475,6 +475,32 @@ if(D.heroes&&D.heroes.heroes){
     add('two-heroes-share-a-type',t,'a type is one piece of art and belongs to one hero');
 }
 
+// R23 CONTENT OWNS THE DERIVED STATS. Ruled 2026-08-21 (S8). Six stats have no source in
+//     Hell-TCG — accuracy, crit, luck, vision, movement, staminaMax, staminaRegen — and are
+//     a per-class level-1 baseline, now on the class row as `derivedBase`.
+//
+//     The Crucible carried DIFFERENT numbers for these, copied per-template during the port:
+//     it had the Duelist at 100 accuracy and 8 crit where the rogue table says 78 and 5, and
+//     across the 116 heroes the two stores share, accuracy and luck disagreed on EVERY ONE.
+//     Ruled: content/ wins, and the Crucible's copies are superseded rather than reconciled
+//     — it stops having its own when it reads the generated pack.
+//
+//     So the table has to be data, not a constant inside build-heroes.mjs, or nothing can
+//     check it. Every hero must match its class exactly.
+if(D.heroes&&D.heroes.heroes&&D.classes){
+  const TBL=Object.fromEntries(D.classes.filter(c=>c.derivedBase).map(c=>[c.id,c.derivedBase]));
+  for(const c of D.classes)
+    if(!c.derivedBase) add('class-has-no-derivedBase',c.name,c.id+' — the per-class baseline must be data, not a constant in the extractor');
+  for(const h of D.heroes.heroes){
+    const want=TBL[h.class]; if(!want) continue;
+    const got=h.derivedBase||{};
+    const wrong=Object.keys(want).filter(k=>got[k]!==want[k]);
+    if(wrong.length)
+      add('hero-derived-stats-do-not-match-its-class',h.name||h.id,
+          String(h.class).replace('class.','')+' — '+wrong.map(k=>k+' '+got[k]+' should be '+want[k]).join(', '));
+  }
+}
+
 // R22 ONE PIECE OF ART, ONE HERO. Ruled 2026-08-21, after the same mistake three times:
 //     content/'s tutorial path made 96 heroes out of 24 by treating each hero's four LEVEL
 //     images as four characters; the Crucible made 29 out of rejected RETRY files; and

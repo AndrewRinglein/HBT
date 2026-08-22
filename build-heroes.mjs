@@ -38,18 +38,12 @@ const CLASSMAP={Warrior:'class.warrior',Ranger:'class.ranger',Rogue:'class.rogue
 // 2026-08-20: Beast is now a real class and Spirit folds into Civilian, so nothing is unmapped.
 
 // ------------------------------------------------- the six stats with no source
-// A level-1 base per class. Documented constants first, then the per-class lean.
-const DERIVED_BASE={
-  'class.warrior' :{accuracy:75,crit:3,luck:0,vision:6,movement:5,staminaMax:5,staminaRegen:1},
-  'class.ranger'  :{accuracy:80,crit:3,luck:0,vision:8,movement:5,staminaMax:5,staminaRegen:1},
-  'class.rogue'   :{accuracy:78,crit:5,luck:0,vision:7,movement:5,staminaMax:5,staminaRegen:1},
-  'class.mage'    :{accuracy:75,crit:3,luck:0,vision:7,movement:5,staminaMax:5,staminaRegen:1},
-  'class.priest'  :{accuracy:80,crit:3,luck:0,vision:6,movement:5,staminaMax:5,staminaRegen:1},
-  'class.paladin' :{accuracy:72,crit:3,luck:0,vision:6,movement:5,staminaMax:5,staminaRegen:1},
-  'class.civilian':{accuracy:70,crit:3,luck:0,vision:6,movement:5,staminaMax:0,staminaRegen:0},
-  'class.beast'   :{accuracy:72,crit:3,luck:0,vision:7,movement:6,staminaMax:5,staminaRegen:1},
-  '_unmapped'     :{accuracy:75,crit:3,luck:0,vision:6,movement:5,staminaMax:5,staminaRegen:1}
-};
+// The per-class level-1 baseline. NOT a constant here any more - it lives on the class row
+// in gen/classes.json so audit.mjs R23 can enforce it. Ruled 2026-08-21 (S8): content/ owns
+// the derived stats, and the Crucible values that disagreed are superseded, not reconciled.
+const CLASSES_JSON=JSON.parse(fs.readFileSync("gen/classes.json","utf8"));
+const DERIVED_BASE=Object.fromEntries(CLASSES_JSON.classes.filter(c=>c.derivedBase).map(c=>[c.id,c.derivedBase]));
+DERIVED_BASE._unmapped={accuracy:75,crit:3,luck:0,vision:6,movement:5,staminaMax:5,staminaRegen:1};
 const DERIVATION={
   accuracy:'No source. Level-1 baseline by class: Priest and Ranger 80 (both are built to hit reliably), Rogue 78, Warrior and Mage 75, Paladin 72 (heavy and slow), Civilian 70 (untrained). Level rows add roughly +5 a level, so a level-10 hero lands near the 100 mark where surplus starts converting to Crit at ÷4.',
   crit:'Base 3 — documented in the stat sheet. Rogue starts at 5, the only class whose identity is landing one.',
