@@ -37,6 +37,7 @@ gen/*.json  +  settled.json          the authored sources
       ├─ node checklevels.mjs   →    per-row ladder prices
       ├─ node novelty.mjs <id>  →    exit 0 / 1            did this content invent anything
       ├─ node mkcodexmd.mjs     →    ../CODEX.md           the whole Codex as markdown
+      ├─ node mkgaps.mjs        →    ../CONTENT-GAPS.md    what the engine cannot yet say
       │                         →    ../HBT-CODEX.html     copy of the browsable Codex
       └─ node verify-codex.mjs  →    exit 0 / 1            did the codex actually get it
 ```

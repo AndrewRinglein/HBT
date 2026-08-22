@@ -645,6 +645,30 @@ if(D.bestiary && D.bestiary.length){
   }
 }
 
+// R26 A CREATURE IS PLAIN ONLY ON PURPOSE. Ruled 2026-08-21. 38 of the 219 came out of
+// hell-tcg with nothing but a bare attack — no status, no rider, nothing to read. Each was
+// given an effect taken from its own name (Explosive Mite explodes, Soul Siphon drains) and
+// five were kept plain deliberately, because if everything has a rider then nothing does.
+// The distinction has to be DECLARED, in gen/bestiary-riders.json, not inferred from silence:
+// otherwise "we have not got to it yet" and "this one is meant to be simple" look identical,
+// and the first quietly becomes the second.
+if(D.bestiary && D.bestiary.length){
+  const hasRider = u => (u.attacks||[]).some(a=>(a.effects||[]).length) || (u.triggers||[]).length>0;
+  const bare = D.bestiary.filter(u=>!hasRider(u));
+
+  for(const u of bare)
+    if(!u.baseline)
+      add('creature-is-bare-and-nobody-said-why', u.name,
+          'no rider on any attack and no trigger — give it an effect from its own name, or declare it a baseline in gen/bestiary-riders.json');
+
+  // and the exception must stay an exception
+  const baselines = D.bestiary.filter(u=>u.baseline);
+  if(baselines.length > 8)
+    add('too-many-declared-baselines', baselines.length+' creatures',
+        'the plain enemies are a deliberate handful, not a parking space: '+
+        baselines.map(u=>u.name).join(', '));
+}
+
 const by={}; F.forEach(f=>(by[f.rule]=by[f.rule]||[]).push(f));
 for(const [r,list] of Object.entries(by).sort((a,b)=>b[1].length-a[1].length)){
   console.log('\n### '+r+'  ('+list.length+')');

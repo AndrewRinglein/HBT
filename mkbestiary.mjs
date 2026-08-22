@@ -25,6 +25,21 @@ const { ENEMY_CARDS } = await import(S + 'data/enemyCards.js');
 // ---------------------------------------------------------------- the port map
 // Enemies use the same eleven-field Hell-TCG block heroes did, minus itemSlots and
 // maxAfflictions. melee -> strength and ranged -> precision, as for heroes.
+// The 21 stat names HoBaT actually has. Anything else in an effect payload is a leak from
+// the source and gets reported rather than silently written into the bestiary.
+const VOCAB_STATS = new Set(['health','resist','strength','dodge','movement','armor','accuracy',
+  'precision','crit','magic','staminaMax','reach','luck','spirit','itemSlots','toughness',
+  'vision','corruption','surge','staminaRegen','deathbedFighting']);
+// The rest of the closed vocabulary, read from the generated list rather than restated here —
+// if functions.json loses a word, the riders that use it stop building instead of drifting.
+// Its rows are {name, uses, ids}, because functions.json is a CENSUS OF USE, not a declaration.
+// That makes this check deliberately strict: a rider may only use a word something else already
+// uses. Inventing a word for one creature is the exact failure CONTENT-GAPS.md exists to catch.
+const VOCAB = JSON.parse(fs.readFileSync('gen/functions.json', 'utf8'));
+const names = k => new Set((VOCAB[k] || []).map(x => typeof x === 'string' ? x : x.name));
+const VOCAB_EFFECTS = names('effects');
+const VOCAB_STATUSES = names('statuses');
+const VOCAB_HOOKS = names('hooks');
 const PORT = { melee:'strength', ranged:'precision', armor:'armor', health:'health',
                reach:'reach', resist:'resist', magic:'magic', spirit:'spirit' };
 const DODGE_SCALE = 5;   // same rescale heroes got: hell-tcg 0-3 -> flat to-hit points
@@ -209,8 +224,13 @@ for (const e of Object.values(ENEMY_CARDS)) {
       if (UNMAPPED[x.action]) { gaps.push(`${e.name}/${a.name}: ${x.action} — ${UNMAPPED[x.action]}`); continue; }
       const verb = ACTION[x.action];
       if (!verb) { gaps.push(`${e.name}/${a.name}: unknown action "${x.action}"`); continue; }
+      // The stat INSIDE an effect payload has to be ported too. It was not, so 50 units
+      // carried "melee" and "ranged" — hell-tcg's names, which are not words HoBaT has —
+      // buried in their riders while their stat blocks read correctly. Found 2026-08-21.
+      const st = x.stat ? (PORT[x.stat] || x.stat) : null;
+      if (st && !VOCAB_STATS.has(st)) gaps.push(`${e.name}/${a.name}: stat "${st}" is not in the vocabulary`);
       row.effects.push({ effect:verb, status:STATUS[x.action]||null,
-                         stat:x.stat||null, value:x.value ?? x.amount ?? null, target:x.target||null });
+                         stat:st, value:x.value ?? x.amount ?? null, target:x.target||null });
     }
     attacks.push(row);
   }
@@ -236,6 +256,55 @@ for (const e of Object.values(ENEMY_CARDS)) {
   });
 }
 
+// ---- RIDERS. 38 creatures came out of hell-tcg with nothing but a bare attack. gen/bestiary-
+// riders.json assigns each one an effect read off its own name — Explosive Mite explodes, Soul
+// Siphon drains — plus five deliberately left plain. This is the ONE authored layer over the
+// port, so it is data, it is applied here, and it fails loudly rather than rotting: a rider
+// naming a unit or an attack that no longer exists is a hard error, not a shrug.
+{
+  const R = JSON.parse(fs.readFileSync('gen/bestiary-riders.json', 'utf8'));
+  const byId = new Map(rows.map(r => [r.id, r]));
+  const problems = [];
+  for (const [uid, spec] of Object.entries(R.units)) {
+    const u = byId.get(uid);
+    if (!u) { problems.push(`riders: no such unit ${uid}`); continue; }
+    for (const [atkName, effects] of Object.entries(spec.attacks || {})) {
+      const a = u.attacks.find(x => x.name === atkName);
+      if (!a) { problems.push(`riders: ${uid} has no attack named "${atkName}"`); continue; }
+      for (const e of effects) {
+        if (!VOCAB_EFFECTS.has(e.effect)) problems.push(`riders: ${uid}/${atkName} — effect "${e.effect}" is not in the vocabulary`);
+        if (e.status && !VOCAB_STATUSES.has(e.status)) problems.push(`riders: ${uid}/${atkName} — status "${e.status}" is not in the vocabulary`);
+        if (e.stat && !VOCAB_STATS.has(e.stat)) problems.push(`riders: ${uid}/${atkName} — stat "${e.stat}" is not in the vocabulary`);
+      }
+      a.effects.push(...effects.map(e => ({ effect:e.effect, status:e.status||null,
+        stat:e.stat||null, value:e.value ?? null, target:e.target||null, authored:true })));
+    }
+    for (const t of (spec.triggers || [])) {
+      for (const e of (t.effects || [])) {
+        if (!VOCAB_EFFECTS.has(e.effect)) problems.push(`riders: ${uid} trigger — effect "${e.effect}" is not in the vocabulary`);
+        if (e.status && !VOCAB_STATUSES.has(e.status)) problems.push(`riders: ${uid} trigger — status "${e.status}" is not in the vocabulary`);
+        if (e.stat && !VOCAB_STATS.has(e.stat)) problems.push(`riders: ${uid} trigger — stat "${e.stat}" is not in the vocabulary`);
+      }
+      if (!VOCAB_HOOKS.has(t.hook)) problems.push(`riders: ${uid} trigger — hook "${t.hook}" is not in the vocabulary`);
+      u.triggers.push({ ...t, authored:true });
+    }
+    u.notes = (u.notes || []).filter(n => !/bare attack|NO ABILITIES/.test(n));
+    u.notes.push('Rider authored 2026-08-21 from its own name: ' + spec.why);
+  }
+  for (const uid of (R.baselines?.units || [])) {
+    const u = byId.get(uid);
+    if (!u) { problems.push(`riders: no such baseline unit ${uid}`); continue; }
+    u.notes = (u.notes || []).filter(n => !/bare attack|NO ABILITIES/.test(n));
+    u.notes.push('BARE ON PURPOSE — one of the five plain enemies. ' + R.baselines.note);
+    u.baseline = true;
+  }
+  if (problems.length) {
+    console.error('\nRIDERS FAILED — nothing written:');
+    problems.forEach(p => console.error('  ! ' + p));
+    process.exit(1);
+  }
+}
+
 const out = { _note:'All 412 enemies from hell-tcg data/enemyCards.js. Ruled 2026-08-21: all of them, not just the curated 144. `curated:true` marks the 144 that already had a campaign, art and an encounter list — that curation is real work and does not exist in enemyCards.js.',
   _derived:'Enemies carry accuracy, movement and zero stamina. NO crit, luck or vision — enemies do not have Vision at all. Accuracy by rank is SOFT; a sweep owns it.',
   _gaps:`${gaps.length} translation gaps — see CONTENT-GAPS.md`,
@@ -246,11 +315,15 @@ fs.writeFileSync('gen/enemy-spells.json', JSON.stringify({
   _note:'The 193 enemyCards rows with placement immediate-cast and an all-zero stat block. They are SPELLS the enemy side casts, not units placed on the board — ruled 2026-08-21. None is in the curated 144.',
   spells }, null, 1) + '\n');
 
-const withEff = rows.filter(r => r.attacks.some(a => a.effects.length)).length;
+// A rider can live on a trigger as easily as on an attack — Explosive Mite's whole point is an
+// onDeath, and an aura hangs off nothing at all. Counting only attacks called those three bare.
+const hasRider = r => r.attacks.some(a => a.effects.length) || (r.triggers || []).length > 0;
+const withEff = rows.filter(hasRider).length;
 console.log(`gen/bestiary.json    — ${rows.length} creatures`);
 console.log(`gen/enemy-spells.json — ${spells.length} enemy spells`);
 console.log(`  curated (art + encounters): ${rows.filter(r=>r.curated).length}`);
 console.log(`  with at least one rider   : ${withEff}`);
-console.log(`  no abilities at all       : ${rows.filter(r=>!r.attacks.length).length}`);
-console.log(`  bare attacks, no rider    : ${rows.filter(r=>r.attacks.length&&!r.attacks.some(a=>a.effects.length)).length}`);
+console.log(`  no abilities at all       : ${rows.filter(r=>!r.attacks.length&&!(r.triggers||[]).length).length}`);
+console.log(`  bare, and NOT a declared baseline: ${rows.filter(r=>!hasRider(r)&&!r.baseline).length}`);
+console.log(`  bare ON PURPOSE (baselines)      : ${rows.filter(r=>r.baseline).length}`);
 console.log(`  translation gaps          : ${gaps.length}  -> gen/bestiary-gaps.txt`);

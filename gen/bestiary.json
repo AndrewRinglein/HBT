@@ -231,9 +231,10 @@
    "backstory": "Animated bones of the long dead, held together by dark magic. These simple constructs shamble forward with rusted weapons, driven by an insatiable hatred for the living.",
    "quote": "*rattling bones*",
    "notes": [
-    "Every ability is a bare attack with no rider — a candidate for one."
+    "BARE ON PURPOSE — one of the five plain enemies. Left bare ON PURPOSE. These are the plain ones. If everything has a rider then nothing does, and the player never gets a turn where the read is simply 'it hits me'."
    ],
-   "source": "hell-tcg data/enemyCards.js, extracted 2026-08-21. Stats and abilities are ported, not authored."
+   "source": "hell-tcg data/enemyCards.js, extracted 2026-08-21. Stats and abilities are ported, not authored.",
+   "baseline": true
   },
   {
    "id": "unit.skeletal-archer",
@@ -288,9 +289,10 @@
    "backstory": "Skeletal remains of fallen archers, still clutching their bows in bony fingers. They rain arrows from the back lines with eerie precision.",
    "quote": "*twang*",
    "notes": [
-    "Every ability is a bare attack with no rider — a candidate for one."
+    "BARE ON PURPOSE — one of the five plain enemies. Left bare ON PURPOSE. These are the plain ones. If everything has a rider then nothing does, and the player never gets a turn where the read is simply 'it hits me'."
    ],
-   "source": "hell-tcg data/enemyCards.js, extracted 2026-08-21. Stats and abilities are ported, not authored."
+   "source": "hell-tcg data/enemyCards.js, extracted 2026-08-21. Stats and abilities are ported, not authored.",
+   "baseline": true
   },
   {
    "id": "unit.poison-imp",
@@ -494,7 +496,16 @@
      "targets": "one enemy in melee reach",
      "damageType": "physical",
      "damage": null,
-     "effects": []
+     "effects": [
+      {
+       "effect": "apply a status",
+       "status": "bleed",
+       "stat": null,
+       "value": 1,
+       "target": null,
+       "authored": true
+      }
+     ]
     }
    ],
    "triggers": [],
@@ -510,7 +521,7 @@
    "backstory": "Crimson-stained imps with razor-sharp claws that tear deep, ragged wounds. They feast on blood and grow stronger as it flows. Their victims bleed out slowly while the imps dance in delight.",
    "quote": "More blood! We hunger for more!",
    "notes": [
-    "Every ability is a bare attack with no rider — a candidate for one."
+    "Rider authored 2026-08-21 from its own name: Rend."
    ],
    "source": "hell-tcg data/enemyCards.js, extracted 2026-08-21. Stats and abilities are ported, not authored."
   },
@@ -807,7 +818,16 @@
      "targets": "enemies within N hexes",
      "damageType": "magic",
      "damage": 2,
-     "effects": []
+     "effects": [
+      {
+       "effect": "deal MAGIC damage",
+       "status": null,
+       "stat": null,
+       "value": 2,
+       "target": null,
+       "authored": true
+      }
+     ]
     }
    ],
    "triggers": [],
@@ -818,7 +838,7 @@
    "backstory": "Servants of greater demons, these infernal creatures radiate malevolent energy that saps the life force of nearby mortals. Their presence alone is enough to weaken heroes, and at the end of each turn their dark aura inflicts suffering on all who oppose them.",
    "quote": "Your pain feeds our masters. Submit or suffer.",
    "notes": [
-    "Every ability is a bare attack with no rider — a candidate for one."
+    "Rider authored 2026-08-21 from its own name: A Pulse goes outward from it, not at one target."
    ],
    "source": "hell-tcg data/enemyCards.js, extracted 2026-08-21. Stats and abilities are ported, not authored."
   },
@@ -1118,7 +1138,7 @@
       {
        "effect": "grant a stat for the Battle",
        "status": null,
-       "stat": "melee",
+       "stat": "strength",
        "value": 2,
        "target": "self"
       }
@@ -1923,14 +1943,14 @@
       {
        "effect": "grant a stat for the Battle",
        "status": null,
-       "stat": "melee",
+       "stat": "strength",
        "value": 3,
        "target": "self"
       },
       {
        "effect": "grant a stat for the Battle",
        "status": null,
-       "stat": "ranged",
+       "stat": "precision",
        "value": 1,
        "target": "self"
       }
@@ -2057,14 +2077,14 @@
       {
        "effect": "grant a stat for the Battle",
        "status": null,
-       "stat": "melee",
+       "stat": "strength",
        "value": 2,
        "target": "allEnemies"
       },
       {
        "effect": "grant a stat for the Battle",
        "status": null,
-       "stat": "ranged",
+       "stat": "precision",
        "value": 2,
        "target": "allEnemies"
       }
@@ -2755,7 +2775,7 @@
       {
        "effect": "grant a stat for the Battle",
        "status": null,
-       "stat": "ranged",
+       "stat": "precision",
        "value": 2,
        "target": "self"
       }
@@ -3025,7 +3045,7 @@
       {
        "effect": "grant a stat for the Battle",
        "status": null,
-       "stat": "melee",
+       "stat": "strength",
        "value": 2,
        "target": "self"
       }
@@ -3129,14 +3149,14 @@
       {
        "effect": "grant a stat until end of next Turn",
        "status": null,
-       "stat": "melee",
+       "stat": "strength",
        "value": 10,
        "target": "self"
       },
       {
        "effect": "grant a stat until end of next Turn",
        "status": null,
-       "stat": "ranged",
+       "stat": "precision",
        "value": 10,
        "target": "self"
       }
@@ -3205,9 +3225,10 @@
    "backstory": "These twisted creatures feed on violence. Each wound they receive fuels their transformation into something far more dangerous.",
    "quote": "More... MORE!",
    "notes": [
-    "Every ability is a bare attack with no rider — a candidate for one."
+    "BARE ON PURPOSE — one of the five plain enemies. Left bare ON PURPOSE. These are the plain ones. If everything has a rider then nothing does, and the player never gets a turn where the read is simply 'it hits me'."
    ],
-   "source": "hell-tcg data/enemyCards.js, extracted 2026-08-21. Stats and abilities are ported, not authored."
+   "source": "hell-tcg data/enemyCards.js, extracted 2026-08-21. Stats and abilities are ported, not authored.",
+   "baseline": true
   },
   {
    "id": "unit.stone-golem",
@@ -3338,7 +3359,19 @@
      "effects": []
     }
    ],
-   "triggers": [],
+   "triggers": [
+    {
+     "hook": "onDeath",
+     "targets": "every enemy adjacent to you",
+     "effects": [
+      {
+       "effect": "deal PHYSICAL damage",
+       "value": 3
+      }
+     ],
+     "authored": true
+    }
+   ],
    "art": "assets/cards/enemies/explosive-mite.png",
    "campaign": "eve",
    "encounters": [
@@ -3348,7 +3381,7 @@
    "backstory": "Volatile creatures filled with unstable demonic energy. When killed, they explode violently.",
    "quote": "*tick tick tick*",
    "notes": [
-    "Every ability is a bare attack with no rider — a candidate for one."
+    "Rider authored 2026-08-21 from its own name: It is called Explosive Mite and it did not explode. Killing it should be the dangerous part — the only creature here whose rider is on onDeath."
    ],
    "source": "hell-tcg data/enemyCards.js, extracted 2026-08-21. Stats and abilities are ported, not authored."
   },
@@ -3391,7 +3424,16 @@
      "targets": "one enemy in melee reach",
      "damageType": "physical",
      "damage": null,
-     "effects": []
+     "effects": [
+      {
+       "effect": "apply a status",
+       "status": "burn",
+       "stat": null,
+       "value": 1,
+       "target": null,
+       "authored": true
+      }
+     ]
     }
    ],
    "triggers": [],
@@ -3404,7 +3446,7 @@
    "backstory": "Infernal parasites that carry hellfire within. Slaying them releases scorching flames.",
    "quote": "*crackle*",
    "notes": [
-    "Every ability is a bare attack with no rider — a candidate for one."
+    "Rider authored 2026-08-21 from its own name: Fire."
    ],
    "source": "hell-tcg data/enemyCards.js, extracted 2026-08-21. Stats and abilities are ported, not authored."
   },
@@ -3447,7 +3489,16 @@
      "targets": "one enemy in melee reach",
      "damageType": "physical",
      "damage": null,
-     "effects": []
+     "effects": [
+      {
+       "effect": "apply a status",
+       "status": "poison",
+       "stat": null,
+       "value": 2,
+       "target": null,
+       "authored": true
+      }
+     ]
     }
    ],
    "triggers": [],
@@ -3460,7 +3511,7 @@
    "backstory": "These putrid creatures carry virulent toxins. Their death releases a cloud of poison.",
    "quote": "*hiss*",
    "notes": [
-    "Every ability is a bare attack with no rider — a candidate for one."
+    "Rider authored 2026-08-21 from its own name: Poison."
    ],
    "source": "hell-tcg data/enemyCards.js, extracted 2026-08-21. Stats and abilities are ported, not authored."
   },
@@ -3503,7 +3554,16 @@
      "targets": "one enemy in melee reach",
      "damageType": "physical",
      "damage": null,
-     "effects": []
+     "effects": [
+      {
+       "effect": "apply a status",
+       "status": "weak",
+       "stat": null,
+       "value": 1,
+       "target": null,
+       "authored": true
+      }
+     ]
     }
    ],
    "triggers": [],
@@ -3516,7 +3576,7 @@
    "backstory": "Draining parasites that sap the strength from any who kill them.",
    "quote": "*screech*",
    "notes": [
-    "Every ability is a bare attack with no rider — a candidate for one."
+    "Rider authored 2026-08-21 from its own name: Weakness."
    ],
    "source": "hell-tcg data/enemyCards.js, extracted 2026-08-21. Stats and abilities are ported, not authored."
   },
@@ -3559,7 +3619,16 @@
      "targets": "one enemy in melee reach",
      "damageType": "physical",
      "damage": null,
-     "effects": []
+     "effects": [
+      {
+       "effect": "apply a status",
+       "status": "bleed",
+       "stat": null,
+       "value": 1,
+       "target": null,
+       "authored": true
+      }
+     ]
     },
     {
      "id": "attack.bone-weaver.bone-arrows",
@@ -3581,7 +3650,7 @@
    "backstory": "A necromancer who fused with the bones of the dead. It weaves skeletal constructs and empowers undead allies.",
    "quote": "The bones remember... and they hunger.",
    "notes": [
-    "Every ability is a bare attack with no rider — a candidate for one."
+    "Rider authored 2026-08-21 from its own name: A lance of bone leaves a hole."
    ],
    "source": "hell-tcg data/enemyCards.js, extracted 2026-08-21. Stats and abilities are ported, not authored."
   },
@@ -3785,7 +3854,16 @@
      "targets": "one enemy in melee reach",
      "damageType": "physical",
      "damage": "ranged",
-     "effects": []
+     "effects": [
+      {
+       "effect": "deal TRUE damage",
+       "status": null,
+       "stat": null,
+       "value": 2,
+       "target": null,
+       "authored": true
+      }
+     ]
     },
     {
      "id": "attack.fallen-ranger.rain-of-arrows",
@@ -3807,7 +3885,7 @@
    "backstory": "Once the finest archer in the realm. Now she looses arrows from beyond the grave.",
    "quote": "My aim has only improved with death.",
    "notes": [
-    "Every ability is a bare attack with no rider — a candidate for one."
+    "Rider authored 2026-08-21 from its own name: A Piercing Shot that armour stops is not piercing anything."
    ],
    "source": "hell-tcg data/enemyCards.js, extracted 2026-08-21. Stats and abilities are ported, not authored."
   },
@@ -3853,7 +3931,21 @@
      "effects": []
     }
    ],
-   "triggers": [],
+   "triggers": [
+    {
+     "hook": "aura",
+     "targets": "allies within N hexes",
+     "range": 2,
+     "effects": [
+      {
+       "effect": "apply a status",
+       "status": "regeneration",
+       "value": 1
+      }
+     ],
+     "authored": true
+    }
+   ],
    "art": "assets/cards/enemies/fallen-priest.png",
    "campaign": "eve",
    "encounters": [
@@ -3863,7 +3955,7 @@
    "backstory": "A healer who turned to dark magic. His prayers now sustain the undead.",
    "quote": "Even in death, I serve.",
    "notes": [
-    "Every ability is a bare attack with no rider — a candidate for one."
+    "Rider authored 2026-08-21 from its own name: A priest, even a fallen one, is in the back keeping other things standing. Its whole point was missing."
    ],
    "source": "hell-tcg data/enemyCards.js, extracted 2026-08-21. Stats and abilities are ported, not authored."
   },
@@ -3935,14 +4027,14 @@
       {
        "effect": "grant a stat for the Battle",
        "status": null,
-       "stat": "melee",
+       "stat": "strength",
        "value": 2,
        "target": "allEnemies"
       },
       {
        "effect": "grant a stat for the Battle",
        "status": null,
-       "stat": "ranged",
+       "stat": "precision",
        "value": 1,
        "target": "allEnemies"
       },
@@ -4017,14 +4109,14 @@
       {
        "effect": "grant a stat for the Battle",
        "status": null,
-       "stat": "melee",
+       "stat": "strength",
        "value": 3,
        "target": "target"
       },
       {
        "effect": "grant a stat for the Battle",
        "status": null,
-       "stat": "ranged",
+       "stat": "precision",
        "value": 3,
        "target": "target"
       }
@@ -4200,7 +4292,16 @@
      "targets": "one enemy in melee reach",
      "damageType": "physical",
      "damage": null,
-     "effects": []
+     "effects": [
+      {
+       "effect": "apply a status",
+       "status": "poison",
+       "stat": null,
+       "value": 1,
+       "target": null,
+       "authored": true
+      }
+     ]
     }
    ],
    "triggers": [],
@@ -4213,7 +4314,7 @@
    "backstory": "Pustulent demonic growths that throb with corrupted life. Striking them ruptures their skin, spraying toxic ichor that burns through armor.",
    "quote": "...",
    "notes": [
-    "Every ability is a bare attack with no rider — a candidate for one."
+    "Rider authored 2026-08-21 from its own name: Plague."
    ],
    "source": "hell-tcg data/enemyCards.js, extracted 2026-08-21. Stats and abilities are ported, not authored."
   },
@@ -4250,7 +4351,19 @@
     "movement": "bulwark — it is there to be hit, not to hit"
    },
    "attacks": [],
-   "triggers": [],
+   "triggers": [
+    {
+     "hook": "passive",
+     "targets": "self",
+     "effects": [
+      {
+       "effect": "Thorns N",
+       "value": 1
+      }
+     ],
+     "authored": true
+    }
+   ],
    "art": "assets/cards/enemies/bone-barricade.png",
    "campaign": "eve",
    "encounters": [
@@ -4260,7 +4373,7 @@
    "backstory": "A wall of fused bones and corrupted flesh, built from the horror's victims. Shards of bone jut outward, cutting anyone who tries to break through.",
    "quote": "...",
    "notes": [
-    "NO ABILITIES in the source — needs one assigning from its name."
+    "Rider authored 2026-08-21 from its own name: A Wall with no attack at all — correctly, it is scenery. But it is scenery made of bone, and breaking it should cost something."
    ],
    "source": "hell-tcg data/enemyCards.js, extracted 2026-08-21. Stats and abilities are ported, not authored."
   },
@@ -4662,7 +4775,16 @@
      "targets": "one enemy in melee reach",
      "damageType": "magic",
      "damage": "ranged",
-     "effects": []
+     "effects": [
+      {
+       "effect": "deal MAGIC damage",
+       "status": null,
+       "stat": null,
+       "value": 2,
+       "target": null,
+       "authored": true
+      }
+     ]
     }
    ],
    "triggers": [],
@@ -4675,7 +4797,7 @@
    "backstory": "Cultists touched by abyssal corruption. Their flesh writhes with dark energy that they channel into deadly magic.",
    "quote": "The darkness... it speaks...",
    "notes": [
-    "Every ability is a bare attack with no rider — a candidate for one."
+    "Rider authored 2026-08-21 from its own name: Magic Strike was dealing weapon damage."
    ],
    "source": "hell-tcg data/enemyCards.js, extracted 2026-08-21. Stats and abilities are ported, not authored."
   },
@@ -4754,14 +4876,14 @@
       {
        "effect": "grant a stat for the Battle",
        "status": null,
-       "stat": "melee",
+       "stat": "strength",
        "value": 1,
        "target": "allEnemies"
       },
       {
        "effect": "grant a stat for the Battle",
        "status": null,
-       "stat": "ranged",
+       "stat": "precision",
        "value": 1,
        "target": "allEnemies"
       },
@@ -5157,9 +5279,10 @@
    "backstory": "Once ordinary citizens, these shambling corpses were claimed by the undead horde when Hell invaded. They retain no memory of their former lives, driven only by an insatiable hunger for the living.",
    "quote": "Braaains...",
    "notes": [
-    "Every ability is a bare attack with no rider — a candidate for one."
+    "BARE ON PURPOSE — one of the five plain enemies. Left bare ON PURPOSE. These are the plain ones. If everything has a rider then nothing does, and the player never gets a turn where the read is simply 'it hits me'."
    ],
-   "source": "hell-tcg data/enemyCards.js, extracted 2026-08-21. Stats and abilities are ported, not authored."
+   "source": "hell-tcg data/enemyCards.js, extracted 2026-08-21. Stats and abilities are ported, not authored.",
+   "baseline": true
   },
   {
    "id": "unit.basic-imp",
@@ -5213,9 +5336,10 @@
    "backstory": "The weakest of demon-kind, these small creatures serve as scouts and harassers. What they lack in power they make up for in numbers and malicious cunning.",
    "quote": "Hee hee hee!",
    "notes": [
-    "Every ability is a bare attack with no rider — a candidate for one."
+    "BARE ON PURPOSE — one of the five plain enemies. Left bare ON PURPOSE. These are the plain ones. If everything has a rider then nothing does, and the player never gets a turn where the read is simply 'it hits me'."
    ],
-   "source": "hell-tcg data/enemyCards.js, extracted 2026-08-21. Stats and abilities are ported, not authored."
+   "source": "hell-tcg data/enemyCards.js, extracted 2026-08-21. Stats and abilities are ported, not authored.",
+   "baseline": true
   },
   {
    "id": "unit.weak-soldier",
@@ -5380,7 +5504,7 @@
       {
        "effect": "grant a stat for the Battle",
        "status": null,
-       "stat": "ranged",
+       "stat": "precision",
        "value": 2,
        "target": "allEnemies"
       }
@@ -5440,7 +5564,33 @@
      "effects": []
     }
    ],
-   "triggers": [],
+   "triggers": [
+    {
+     "hook": "aura",
+     "targets": "allies within N hexes",
+     "range": 2,
+     "effects": [
+      {
+       "effect": "grant a stat for the Battle",
+       "stat": "strength",
+       "value": 1
+      }
+     ],
+     "authored": true
+    },
+    {
+     "hook": "onKill",
+     "targets": "self",
+     "effects": [
+      {
+       "effect": "heal",
+       "value": 3,
+       "target": "self"
+      }
+     ],
+     "authored": true
+    }
+   ],
    "art": "../assets/cards/enemies/demon-gremlin-lord.png",
    "campaign": null,
    "encounters": [],
@@ -5448,7 +5598,7 @@
    "backstory": "The lord of the gremlin swarm. Unassuming at first glance, but the first wound awakens something monstrous within.",
    "quote": "You shouldn't have done that.",
    "notes": [
-    "Every ability is a bare attack with no rider — a candidate for one."
+    "Rider authored 2026-08-21 from its own name: A rank-3 BOSS whose entire kit was the ability 'Attack'. It is a Lord — of gremlins — so it is worth fearing for what its swarm does while it is alive, not for its own swing."
    ],
    "source": "hell-tcg data/enemyCards.js, extracted 2026-08-21. Stats and abilities are ported, not authored."
   },
@@ -5545,7 +5695,7 @@
       {
        "effect": "grant a stat for the Battle",
        "status": null,
-       "stat": "melee",
+       "stat": "strength",
        "value": 2,
        "target": "allEnemies"
       },
@@ -5637,14 +5787,14 @@
       {
        "effect": "grant a stat for the Battle",
        "status": null,
-       "stat": "melee",
+       "stat": "strength",
        "value": 3,
        "target": "target"
       },
       {
        "effect": "grant a stat for the Battle",
        "status": null,
-       "stat": "ranged",
+       "stat": "precision",
        "value": 2,
        "target": "target"
       }
@@ -6002,7 +6152,7 @@
       {
        "effect": "grant a stat for the Battle",
        "status": null,
-       "stat": "melee",
+       "stat": "strength",
        "value": 1,
        "target": "allEnemies"
       }
@@ -6081,7 +6231,7 @@
       {
        "effect": "grant a stat for the Battle",
        "status": null,
-       "stat": "melee",
+       "stat": "strength",
        "value": 1,
        "target": "allEnemies"
       }
@@ -6158,7 +6308,7 @@
       {
        "effect": "grant a stat for the Battle",
        "status": null,
-       "stat": "melee",
+       "stat": "strength",
        "value": 1,
        "target": "allEnemies"
       }
@@ -6226,7 +6376,7 @@
       {
        "effect": "grant a stat for the Battle",
        "status": null,
-       "stat": "melee",
+       "stat": "strength",
        "value": 2,
        "target": "allEnemies"
       }
@@ -6716,7 +6866,7 @@
       {
        "effect": "grant a stat for the Battle",
        "status": null,
-       "stat": "ranged",
+       "stat": "precision",
        "value": 1,
        "target": "allEnemies"
       }
@@ -6821,7 +6971,7 @@
       {
        "effect": "grant a stat for the Battle",
        "status": null,
-       "stat": "melee",
+       "stat": "strength",
        "value": 1,
        "target": "allEnemies"
       }
@@ -6889,7 +7039,16 @@
      "targets": "one enemy within N hexes",
      "damageType": "physical",
      "damage": 4,
-     "effects": []
+     "effects": [
+      {
+       "effect": "move WITHOUT provoking",
+       "status": null,
+       "stat": null,
+       "value": 2,
+       "target": "self",
+       "authored": true
+      }
+     ]
     },
     {
      "id": "attack.sand-wyrm.quake",
@@ -6898,7 +7057,16 @@
      "targets": "enemies within N hexes",
      "damageType": "physical",
      "damage": 3,
-     "effects": []
+     "effects": [
+      {
+       "effect": "Knockback N",
+       "status": null,
+       "stat": null,
+       "value": 1,
+       "target": null,
+       "authored": true
+      }
+     ]
     }
    ],
    "triggers": [],
@@ -6909,7 +7077,7 @@
    "backstory": "A colossal wyrm that dwells beneath the dunes, growing stronger with each passing moment. Its 60 HP and 4 armor make it functionally unkillable within the time limit. The question is not whether you can slay it -- but whether you can survive its escalating fury.",
    "quote": "The desert devours all. I am the desert.",
    "notes": [
-    "Every ability is a bare attack with no rider — a candidate for one."
+    "Rider authored 2026-08-21 from its own name: It burrows and it quakes. Both are movement words, and it had neither."
    ],
    "source": "hell-tcg data/enemyCards.js, extracted 2026-08-21. Stats and abilities are ported, not authored."
   },
@@ -7073,7 +7241,7 @@
       {
        "effect": "grant a stat for the Battle",
        "status": null,
-       "stat": "ranged",
+       "stat": "precision",
        "value": 2,
        "target": "allEnemies"
       }
@@ -7280,7 +7448,16 @@
      "targets": "one enemy in melee reach",
      "damageType": "physical",
      "damage": null,
-     "effects": []
+     "effects": [
+      {
+       "effect": "apply a status",
+       "status": "bleed",
+       "stat": null,
+       "value": 1,
+       "target": null,
+       "authored": true
+      }
+     ]
     }
    ],
    "triggers": [],
@@ -7293,7 +7470,7 @@
    "backstory": "Tiny animated bone fragments, shards of the countless dead given terrible purpose by tomb curses. They swarm from disturbed graves in vast numbers, gnawing through armor and flesh alike.",
    "quote": "The bones themselves are crawling...",
    "notes": [
-    "Every ability is a bare attack with no rider — a candidate for one."
+    "Rider authored 2026-08-21 from its own name: It gnaws."
    ],
    "source": "hell-tcg data/enemyCards.js, extracted 2026-08-21. Stats and abilities are ported, not authored."
   },
@@ -7443,7 +7620,7 @@
       {
        "effect": "grant a stat for the Battle",
        "status": null,
-       "stat": "melee",
+       "stat": "strength",
        "value": 1,
        "target": "allEnemies"
       }
@@ -7601,7 +7778,7 @@
       {
        "effect": "grant a stat for the Battle",
        "status": null,
-       "stat": "ranged",
+       "stat": "precision",
        "value": 1,
        "target": "allEnemies"
       }
@@ -7686,7 +7863,7 @@
       {
        "effect": "grant a stat for the Battle",
        "status": null,
-       "stat": "melee",
+       "stat": "strength",
        "value": 2,
        "target": "self"
       }
@@ -7897,7 +8074,16 @@
      "targets": "one enemy in melee reach",
      "damageType": "physical",
      "damage": null,
-     "effects": []
+     "effects": [
+      {
+       "effect": "apply a status",
+       "status": "weak",
+       "stat": null,
+       "value": 1,
+       "target": null,
+       "authored": true
+      }
+     ]
     },
     {
      "id": "attack.doom-herald.dark-empower",
@@ -7905,7 +8091,16 @@
      "kind": "buff",
      "targets": "self",
      "damageType": null,
-     "effects": []
+     "effects": [
+      {
+       "effect": "grant a stat for the Battle",
+       "status": null,
+       "stat": "strength",
+       "value": 1,
+       "target": null,
+       "authored": true
+      }
+     ]
     }
    ],
    "triggers": [],
@@ -7918,7 +8113,7 @@
    "backstory": "Minor demons that are trivially easy to kill — 6 HP, no armor. But each death leaves a permanent curse: every hero entering play afterward takes 1 burn. With 16 Heralds in the encounter, the aura field becomes lethal. The threat is what happens AFTER they die.",
    "quote": "My death is your curse.",
    "notes": [
-    "Every ability is a bare attack with no rider — a candidate for one."
+    "Rider authored 2026-08-21 from its own name: A Herald announces something worse. Dark Empower is the announcement."
    ],
    "source": "hell-tcg data/enemyCards.js, extracted 2026-08-21. Stats and abilities are ported, not authored."
   },
@@ -8190,7 +8385,16 @@
      "targets": "one enemy in melee reach",
      "damageType": "physical",
      "damage": 6,
-     "effects": []
+     "effects": [
+      {
+       "effect": "apply a status",
+       "status": "weak",
+       "stat": null,
+       "value": 1,
+       "target": null,
+       "authored": true
+      }
+     ]
     },
     {
      "id": "attack.cursed-archer.rain-of-arrows",
@@ -8212,7 +8416,7 @@
    "backstory": "Undead archers who fire from the back lines with tireless precision. Their cursed arrows hit a single target for 6, while Rain of Arrows deals 3 to every hero on the field. Combined with Cursed Legionnaires blocking the front, they create a deadly kill zone.",
    "quote": "...loose...",
    "notes": [
-    "Every ability is a bare attack with no rider — a candidate for one."
+    "Rider authored 2026-08-21 from its own name: The arrow is cursed, not merely sharp."
    ],
    "source": "hell-tcg data/enemyCards.js, extracted 2026-08-21. Stats and abilities are ported, not authored."
   },
@@ -8361,7 +8565,7 @@
       {
        "effect": "grant a stat for the Battle",
        "status": null,
-       "stat": "melee",
+       "stat": "strength",
        "value": 1,
        "target": "allEnemies"
       }
@@ -8440,7 +8644,7 @@
       {
        "effect": "grant a stat for the Battle",
        "status": null,
-       "stat": "melee",
+       "stat": "strength",
        "value": 2,
        "target": "allEnemies"
       }
@@ -8885,7 +9089,16 @@
      "targets": "one enemy in melee reach",
      "damageType": "magic",
      "damage": null,
-     "effects": []
+     "effects": [
+      {
+       "effect": "deal TRUE damage",
+       "status": null,
+       "stat": null,
+       "value": 2,
+       "target": null,
+       "authored": true
+      }
+     ]
     },
     {
      "id": "attack.vengeful-spirit.wail",
@@ -8894,7 +9107,16 @@
      "targets": "enemies within N hexes",
      "damageType": "magic",
      "damage": 2,
-     "effects": []
+     "effects": [
+      {
+       "effect": "apply a status",
+       "status": "weak",
+       "stat": null,
+       "value": 1,
+       "target": null,
+       "authored": true
+      }
+     ]
     }
    ],
    "triggers": [],
@@ -8907,7 +9129,7 @@
    "backstory": "Spirits consumed by rage, seeking vessels for their vengeance. Killing one releases its fury -- it possesses the nearest soul before dissipating.",
    "quote": "If I fall, you carry my burden.",
    "notes": [
-    "Every ability is a bare attack with no rider — a candidate for one."
+    "Rider authored 2026-08-21 from its own name: A Wail is fear, and a spirit's touch does not care about armour."
    ],
    "source": "hell-tcg data/enemyCards.js, extracted 2026-08-21. Stats and abilities are ported, not authored."
   },
@@ -8959,7 +9181,16 @@
      "targets": "one enemy in melee reach",
      "damageType": "physical",
      "damage": null,
-     "effects": []
+     "effects": [
+      {
+       "effect": "heal",
+       "status": null,
+       "stat": null,
+       "value": 3,
+       "target": "self",
+       "authored": true
+      }
+     ]
     }
    ],
    "triggers": [],
@@ -8972,7 +9203,7 @@
    "backstory": "Mindless thralls created by the Desert Vampire, driven by an insatiable hunger for blood. They throw themselves at enemies, serving as both soldiers and shields for their master.",
    "quote": "Blood... must feed...",
    "notes": [
-    "Every ability is a bare attack with no rider — a candidate for one."
+    "Rider authored 2026-08-21 from its own name: Blood Frenzy — it feeds on what it kills."
    ],
    "source": "hell-tcg data/enemyCards.js, extracted 2026-08-21. Stats and abilities are ported, not authored."
   },
@@ -9851,7 +10082,16 @@
      "targets": "enemies within N hexes",
      "damageType": "magic",
      "damage": 3,
-     "effects": []
+     "effects": [
+      {
+       "effect": "apply a status",
+       "status": "weak",
+       "stat": null,
+       "value": 1,
+       "target": null,
+       "authored": true
+      }
+     ]
     }
    ],
    "triggers": [],
@@ -9862,7 +10102,7 @@
    "backstory": "Undead sorcerers who command the death energy of cursed tombs. From the safety of the back line, they unleash devastating bolts of necrotic energy that arc between targets.",
    "quote": "Death answers to no mortal.",
    "notes": [
-    "Every ability is a bare attack with no rider — a candidate for one."
+    "Rider authored 2026-08-21 from its own name: Chain Curse curses a chain of things."
    ],
    "source": "hell-tcg data/enemyCards.js, extracted 2026-08-21. Stats and abilities are ported, not authored."
   },
@@ -10004,7 +10244,7 @@
       {
        "effect": "grant a stat for the Battle",
        "status": null,
-       "stat": "ranged",
+       "stat": "precision",
        "value": 1,
        "target": "allEnemies"
       }
@@ -10071,7 +10311,16 @@
      "targets": "one enemy in melee reach",
      "damageType": "physical",
      "damage": null,
-     "effects": []
+     "effects": [
+      {
+       "effect": "Knockback N",
+       "status": null,
+       "stat": null,
+       "value": 1,
+       "target": null,
+       "authored": true
+      }
+     ]
     }
    ],
    "triggers": [],
@@ -10084,7 +10333,7 @@
    "backstory": "Living stone forged in volcanic fire, these hulks grow stronger as their kin fall. Each death leaves a permanent mark on the battlefield, empowering those that follow. The cascade of obsidian vengeance is inevitable.",
    "quote": "We are the mountain. Break one peak and another rises higher.",
    "notes": [
-    "Every ability is a bare attack with no rider — a candidate for one."
+    "Rider authored 2026-08-21 from its own name: A Slam moves what it hits."
    ],
    "source": "hell-tcg data/enemyCards.js, extracted 2026-08-21. Stats and abilities are ported, not authored."
   },
@@ -10127,7 +10376,16 @@
      "targets": "one enemy in melee reach",
      "damageType": "magic",
      "damage": "ranged",
-     "effects": []
+     "effects": [
+      {
+       "effect": "apply a status",
+       "status": "weak",
+       "stat": null,
+       "value": 2,
+       "target": null,
+       "authored": true
+      }
+     ]
     },
     {
      "id": "attack.tomb-lich.death-gaze",
@@ -10136,7 +10394,16 @@
      "targets": "enemies within N hexes",
      "damageType": "magic",
      "damage": 2,
-     "effects": []
+     "effects": [
+      {
+       "effect": "apply a status",
+       "status": "stun",
+       "stat": null,
+       "value": 1,
+       "target": null,
+       "authored": true
+      }
+     ]
     }
    ],
    "triggers": [],
@@ -10147,7 +10414,7 @@
    "backstory": "An ancient sorcerer who conquered death itself, ruling from the deepest sanctum of the desert tombs. Its power grows with each passing moment, and its necrotic magic devastates all who approach.",
    "quote": "I have defeated death. What hope do you have?",
    "notes": [
-    "Every ability is a bare attack with no rider — a candidate for one."
+    "Rider authored 2026-08-21 from its own name: A rank-3 boss that arrived with two bolts and no reason to fear it. The threat is what it does to you, which is the whole reason its accuracy is only 91."
    ],
    "source": "hell-tcg data/enemyCards.js, extracted 2026-08-21. Stats and abilities are ported, not authored."
   },
@@ -10328,7 +10595,16 @@
      "targets": "one enemy in melee reach",
      "damageType": "magic",
      "damage": null,
-     "effects": []
+     "effects": [
+      {
+       "effect": "heal",
+       "status": null,
+       "stat": null,
+       "value": 2,
+       "target": "self",
+       "authored": true
+      }
+     ]
     }
    ],
    "triggers": [],
@@ -10341,7 +10617,7 @@
    "backstory": "Tiny abyssal parasites birthed by the Broodmother. Fragile and weak, but their deaths feed dark energy back into the swarm. Each one killed makes the next wave more dangerous.",
    "quote": "*chittering screech*",
    "notes": [
-    "Every ability is a bare attack with no rider — a candidate for one."
+    "Rider authored 2026-08-21 from its own name: Soul Siphon takes something from you and keeps it."
    ],
    "source": "hell-tcg data/enemyCards.js, extracted 2026-08-21. Stats and abilities are ported, not authored."
   },
@@ -10452,7 +10728,16 @@
      "targets": "one enemy in melee reach",
      "damageType": "physical",
      "damage": null,
-     "effects": []
+     "effects": [
+      {
+       "effect": "slayer bonus",
+       "status": null,
+       "stat": null,
+       "value": 3,
+       "target": null,
+       "authored": true
+      }
+     ]
     }
    ],
    "triggers": [],
@@ -10465,7 +10750,7 @@
    "backstory": "Skeletal hunters that emerge from tomb darkness with terrifying speed. Fragile but devastating -- their cursed claws deliver a death strike that can fell even hardened warriors. Kill them before they strike.",
    "quote": "*scraping in the darkness*",
    "notes": [
-    "Every ability is a bare attack with no rider — a candidate for one."
+    "Rider authored 2026-08-21 from its own name: Precision 16 and an ability called Death Strike. It is an executioner, so it gets the executioner's effect rather than a bigger number."
    ],
    "source": "hell-tcg data/enemyCards.js, extracted 2026-08-21. Stats and abilities are ported, not authored."
   },
@@ -10600,14 +10885,14 @@
       {
        "effect": "grant a stat for the Battle",
        "status": null,
-       "stat": "melee",
+       "stat": "strength",
        "value": 2,
        "target": "allEnemies"
       },
       {
        "effect": "grant a stat for the Battle",
        "status": null,
-       "stat": "ranged",
+       "stat": "precision",
        "value": 1,
        "target": "allEnemies"
       }
@@ -10672,7 +10957,16 @@
      "targets": "one enemy in melee reach",
      "damageType": "physical",
      "damage": null,
-     "effects": []
+     "effects": [
+      {
+       "effect": "apply a status",
+       "status": "bleed",
+       "stat": null,
+       "value": 2,
+       "target": null,
+       "authored": true
+      }
+     ]
     }
    ],
    "triggers": [],
@@ -10685,7 +10979,7 @@
    "backstory": "Undead warriors driven by pure rage. Devastating in melee (M7, M10 spike), but nearly useless when stuck behind allies (R1). Their random placement means the board is a roll of the dice every turn.",
    "quote": "RAAAARGH!",
    "notes": [
-    "Every ability is a bare attack with no rider — a candidate for one."
+    "Rider authored 2026-08-21 from its own name: Savage Blow."
    ],
    "source": "hell-tcg data/enemyCards.js, extracted 2026-08-21. Stats and abilities are ported, not authored."
   },
@@ -10811,14 +11105,14 @@
       {
        "effect": "grant a stat for the Battle",
        "status": null,
-       "stat": "melee",
+       "stat": "strength",
        "value": 1,
        "target": "allEnemies"
       },
       {
        "effect": "grant a stat for the Battle",
        "status": null,
-       "stat": "ranged",
+       "stat": "precision",
        "value": 1,
        "target": "allEnemies"
       }
@@ -10972,7 +11266,7 @@
       {
        "effect": "grant a stat for the Battle",
        "status": null,
-       "stat": "melee",
+       "stat": "strength",
        "value": 1,
        "target": "allEnemies"
       }
@@ -11033,14 +11327,14 @@
       {
        "effect": "grant a stat for the Battle",
        "status": null,
-       "stat": "melee",
+       "stat": "strength",
        "value": 1,
        "target": "allEnemies"
       },
       {
        "effect": "grant a stat for the Battle",
        "status": null,
-       "stat": "ranged",
+       "stat": "precision",
        "value": 1,
        "target": "allEnemies"
       }
@@ -11689,7 +11983,7 @@
       {
        "effect": "grant a stat for the Battle",
        "status": null,
-       "stat": "ranged",
+       "stat": "precision",
        "value": 1,
        "target": "allEnemies"
       }
@@ -11911,7 +12205,7 @@
       {
        "effect": "grant a stat for the Battle",
        "status": null,
-       "stat": "ranged",
+       "stat": "precision",
        "value": 1,
        "target": "allEnemies"
       }
@@ -12244,14 +12538,14 @@
       {
        "effect": "grant a stat for the Battle",
        "status": null,
-       "stat": "melee",
+       "stat": "strength",
        "value": 1,
        "target": "self"
       },
       {
        "effect": "grant a stat for the Battle",
        "status": null,
-       "stat": "ranged",
+       "stat": "precision",
        "value": 1,
        "target": "self"
       }
@@ -12419,7 +12713,7 @@
       {
        "effect": "grant a stat for the Battle",
        "status": null,
-       "stat": "ranged",
+       "stat": "precision",
        "value": 1,
        "target": "sameRowEnemies"
       }
@@ -12578,7 +12872,7 @@
       {
        "effect": "grant a stat for the Battle",
        "status": null,
-       "stat": "melee",
+       "stat": "strength",
        "value": 1,
        "target": "sameRowEnemies"
       }
@@ -12657,7 +12951,7 @@
       {
        "effect": "grant a stat for the Battle",
        "status": null,
-       "stat": "melee",
+       "stat": "strength",
        "value": 2,
        "target": "allEnemies"
       }
@@ -13305,14 +13599,14 @@
       {
        "effect": "grant a stat for the Battle",
        "status": null,
-       "stat": "melee",
+       "stat": "strength",
        "value": 2,
        "target": "allEnemies"
       },
       {
        "effect": "grant a stat for the Battle",
        "status": null,
-       "stat": "ranged",
+       "stat": "precision",
        "value": 1,
        "target": "allEnemies"
       }
@@ -13472,7 +13766,16 @@
      "targets": "one enemy in melee reach",
      "damageType": "physical",
      "damage": null,
-     "effects": []
+     "effects": [
+      {
+       "effect": "apply a status",
+       "status": "bleed",
+       "stat": null,
+       "value": 2,
+       "target": null,
+       "authored": true
+      }
+     ]
     }
    ],
    "triggers": [],
@@ -13485,7 +13788,7 @@
    "backstory": "Skeletal insect predators from an abyssal rift, their blade-arms carve through flesh and bone with terrifying precision. Fragile but devastatingly powerful, their toxic ichor sprays when they die.",
    "quote": "One cut. That is all it takes.",
    "notes": [
-    "Every ability is a bare attack with no rider — a candidate for one."
+    "Rider authored 2026-08-21 from its own name: Reaping Strike, precision 14. It opens you up."
    ],
    "source": "hell-tcg data/enemyCards.js, extracted 2026-08-21. Stats and abilities are ported, not authored."
   },
@@ -13557,7 +13860,7 @@
       {
        "effect": "grant a stat for the Battle",
        "status": null,
-       "stat": "melee",
+       "stat": "strength",
        "value": 1,
        "target": "sameRowEnemies"
       }
@@ -13857,7 +14160,7 @@
       {
        "effect": "grant a stat for the Battle",
        "status": null,
-       "stat": "ranged",
+       "stat": "precision",
        "value": 1,
        "target": "allEnemies"
       }
@@ -14279,7 +14582,16 @@
      "targets": "one enemy in melee reach",
      "damageType": "physical",
      "damage": null,
-     "effects": []
+     "effects": [
+      {
+       "effect": "apply a status",
+       "status": "stun",
+       "stat": null,
+       "value": 1,
+       "target": null,
+       "authored": true
+      }
+     ]
     },
     {
      "id": "attack.possessed-abbot.possession-strike",
@@ -14288,7 +14600,16 @@
      "targets": "one enemy in melee reach",
      "damageType": "physical",
      "damage": null,
-     "effects": []
+     "effects": [
+      {
+       "effect": "apply a status",
+       "status": "weak",
+       "stat": null,
+       "value": 2,
+       "target": null,
+       "authored": true
+      }
+     ]
     }
    ],
    "triggers": [],
@@ -14299,7 +14620,7 @@
    "backstory": "Once the serene head of a mountain temple, now a vessel for demonic rage. His martial mastery remains, but every strike carries the demon's curse. The other monks worship him still, shielding him with prayer even as he destroys those who come to save them.",
    "quote": "The temple prays for you. It prays for your end.",
    "notes": [
-    "Every ability is a bare attack with no rider — a candidate for one."
+    "Rider authored 2026-08-21 from its own name: Grasp holds you; Possession takes you over."
    ],
    "source": "hell-tcg data/enemyCards.js, extracted 2026-08-21. Stats and abilities are ported, not authored."
   },
@@ -14441,14 +14762,14 @@
       {
        "effect": "grant a stat for the Battle",
        "status": null,
-       "stat": "melee",
+       "stat": "strength",
        "value": 1,
        "target": "allEnemies"
       },
       {
        "effect": "grant a stat for the Battle",
        "status": null,
-       "stat": "ranged",
+       "stat": "precision",
        "value": 1,
        "target": "allEnemies"
       }
@@ -14575,7 +14896,16 @@
      "targets": "one enemy in melee reach",
      "damageType": "physical",
      "damage": "ranged",
-     "effects": []
+     "effects": [
+      {
+       "effect": "apply a status",
+       "status": "burn",
+       "stat": null,
+       "value": 2,
+       "target": null,
+       "authored": true
+      }
+     ]
     },
     {
      "id": "attack.infernal-marksman.barrage-of-flames",
@@ -14597,7 +14927,7 @@
    "backstory": "Demonic archers who rain hellfire from the back ranks. Their reach 3 lets them target any hero on the field, and their barrage ability can devastate an entire party at once. Fragile alone, deadly behind a wall of legionnaires.",
    "quote": "The sky burns with our arrows.",
    "notes": [
-    "Every ability is a bare attack with no rider — a candidate for one."
+    "Rider authored 2026-08-21 from its own name: Hellfire Arrow — same reasoning."
    ],
    "source": "hell-tcg data/enemyCards.js, extracted 2026-08-21. Stats and abilities are ported, not authored."
   },
@@ -14661,7 +14991,7 @@
       {
        "effect": "grant a stat for the Battle",
        "status": null,
-       "stat": "melee",
+       "stat": "strength",
        "value": 1,
        "target": "sameRowEnemies"
       }
@@ -14732,14 +15062,14 @@
       {
        "effect": "grant a stat for the Battle",
        "status": null,
-       "stat": "melee",
+       "stat": "strength",
        "value": 2,
        "target": "allEnemies"
       },
       {
        "effect": "grant a stat for the Battle",
        "status": null,
-       "stat": "ranged",
+       "stat": "precision",
        "value": 2,
        "target": "allEnemies"
       }
@@ -14898,7 +15228,16 @@
      "targets": "one enemy in melee reach",
      "damageType": "physical",
      "damage": null,
-     "effects": []
+     "effects": [
+      {
+       "effect": "apply a status",
+       "status": "poison",
+       "stat": null,
+       "value": 1,
+       "target": null,
+       "authored": true
+      }
+     ]
     },
     {
      "id": "attack.flesh-stitcher.thread-of-agony",
@@ -14906,7 +15245,16 @@
      "kind": "buff",
      "targets": "self",
      "damageType": null,
-     "effects": []
+     "effects": [
+      {
+       "effect": "apply a status",
+       "status": "bleed",
+       "stat": null,
+       "value": 2,
+       "target": null,
+       "authored": true
+      }
+     ]
     }
    ],
    "triggers": [],
@@ -14919,7 +15267,7 @@
    "backstory": "Minor demons that stitch flesh with bone needles empowered by accumulated suffering. Individually fragile, but each death leaves a permanent cursed thread that burns heroes who enter the battlefield. Kill enough of them and the aura field becomes unsurvivable.",
    "quote": "My death is your curse.",
    "notes": [
-    "Every ability is a bare attack with no rider — a candidate for one."
+    "Rider authored 2026-08-21 from its own name: A needle and a thread of agony."
    ],
    "source": "hell-tcg data/enemyCards.js, extracted 2026-08-21. Stats and abilities are ported, not authored."
   },
@@ -14983,14 +15331,14 @@
       {
        "effect": "grant a stat for the Battle",
        "status": null,
-       "stat": "melee",
+       "stat": "strength",
        "value": 1,
        "target": "allEnemies"
       },
       {
        "effect": "grant a stat for the Battle",
        "status": null,
-       "stat": "ranged",
+       "stat": "precision",
        "value": 1,
        "target": "allEnemies"
       }
@@ -15140,7 +15488,7 @@
       {
        "effect": "grant a stat for the Battle",
        "status": null,
-       "stat": "ranged",
+       "stat": "precision",
        "value": 1,
        "target": "allEnemies"
       }
@@ -15466,7 +15814,16 @@
      "targets": "one enemy in melee reach",
      "damageType": "magic",
      "damage": null,
-     "effects": []
+     "effects": [
+      {
+       "effect": "apply a status",
+       "status": "burn",
+       "stat": null,
+       "value": 2,
+       "target": null,
+       "authored": true
+      }
+     ]
     },
     {
      "id": "attack.hellfire-channeler.focused-blast",
@@ -15484,7 +15841,16 @@
      "targets": "enemies within N hexes",
      "damageType": "magic",
      "damage": 4,
-     "effects": []
+     "effects": [
+      {
+       "effect": "apply a status",
+       "status": "burn",
+       "stat": null,
+       "value": 1,
+       "target": null,
+       "authored": true
+      }
+     ]
     }
    ],
    "triggers": [],
@@ -15495,7 +15861,7 @@
    "backstory": "A glass cannon mage that rains forge-fire from behind the Tyrant's bulk. R10 magic at reach 3 is devastating, and Chain Fire hits the entire party. Fragile at 0 armor and 14 HP — kill it fast.",
    "quote": "Burn. Burn. BURN.",
    "notes": [
-    "Every ability is a bare attack with no rider — a candidate for one."
+    "Rider authored 2026-08-21 from its own name: Hellfire burns. Chain Fire burns more things."
    ],
    "source": "hell-tcg data/enemyCards.js, extracted 2026-08-21. Stats and abilities are ported, not authored."
   },
@@ -15637,7 +16003,7 @@
       {
        "effect": "grant a stat for the Battle",
        "status": null,
-       "stat": "ranged",
+       "stat": "precision",
        "value": 1,
        "target": "allEnemies"
       }
@@ -15856,7 +16222,16 @@
      "targets": "one enemy in melee reach",
      "damageType": "physical",
      "damage": 0,
-     "effects": []
+     "effects": [
+      {
+       "effect": "deal MAGIC damage",
+       "status": null,
+       "stat": null,
+       "value": 4,
+       "target": null,
+       "authored": true
+      }
+     ]
     },
     {
      "id": "attack.the-rakshasa.shapeless-dread",
@@ -15864,7 +16239,16 @@
      "kind": "buff",
      "targets": "self",
      "damageType": null,
-     "effects": []
+     "effects": [
+      {
+       "effect": "apply a status",
+       "status": "weak",
+       "stat": null,
+       "value": 2,
+       "target": null,
+       "authored": true
+      }
+     ]
     }
    ],
    "triggers": [],
@@ -15875,7 +16259,7 @@
    "backstory": "A Rakshasa shapeshifter — an ancient demon of illusion and deceit. It begins as a formless, pulsating mass with enormous HP and zero offensive stats. Each unique spell drawn from the deck permanently reshapes its body. No two fights against the Rakshasa are alike.",
    "quote": "I am nothing. I am everything. I am what you fear most.",
    "notes": [
-    "Every ability is a bare attack with no rider — a candidate for one."
+    "Rider authored 2026-08-21 from its own name: Rank 3, 80 health, strength 0 and precision 0 — it has no physical attack at all, which is not a bug: Formless Pulse and Shapeless Dread are what it is. It needed the effects that make a body-less thing dangerous."
    ],
    "source": "hell-tcg data/enemyCards.js, extracted 2026-08-21. Stats and abilities are ported, not authored."
   },
@@ -15927,7 +16311,16 @@
      "targets": "one enemy in melee reach",
      "damageType": "physical",
      "damage": "melee",
-     "effects": []
+     "effects": [
+      {
+       "effect": "move WITHOUT provoking",
+       "status": null,
+       "stat": null,
+       "value": 2,
+       "target": "self",
+       "authored": true
+      }
+     ]
     }
    ],
    "triggers": [],
@@ -15940,7 +16333,7 @@
    "backstory": "Fragments of the Rakshasa's flesh, shaped into crude warriors. They exist to buy time while the master evolves. Each transformation spell also affects them — Claws makes them lethal, Hide makes them armored.",
    "quote": "We are its flesh. We serve.",
    "notes": [
-    "Every ability is a bare attack with no rider — a candidate for one."
+    "Rider authored 2026-08-21 from its own name: A Frenzied Lunge closes distance."
    ],
    "source": "hell-tcg data/enemyCards.js, extracted 2026-08-21. Stats and abilities are ported, not authored."
   },
@@ -15995,14 +16388,14 @@
       {
        "effect": "grant a stat for the Battle",
        "status": null,
-       "stat": "melee",
+       "stat": "strength",
        "value": 2,
        "target": "allEnemies"
       },
       {
        "effect": "grant a stat for the Battle",
        "status": null,
-       "stat": "ranged",
+       "stat": "precision",
        "value": 2,
        "target": "allEnemies"
       }
@@ -16160,7 +16553,16 @@
      "targets": "one enemy in melee reach",
      "damageType": "physical",
      "damage": "melee",
-     "effects": []
+     "effects": [
+      {
+       "effect": "apply a status",
+       "status": "bleed",
+       "stat": null,
+       "value": 1,
+       "target": null,
+       "authored": true
+      }
+     ]
     }
    ],
    "triggers": [],
@@ -16173,7 +16575,7 @@
    "backstory": "Cursed crow-warriors bound to the crow demon by a blood pact. Their deaths feed Power to their masters — every soldier killed makes the crow demon's ranged magic more devastating. A dilemma: kill them and face the escalation, or let them swarm.",
    "quote": "My death feeds the masters.",
    "notes": [
-    "Every ability is a bare attack with no rider — a candidate for one."
+    "Rider authored 2026-08-21 from its own name: Feather Blade is a blade."
    ],
    "source": "hell-tcg data/enemyCards.js, extracted 2026-08-21. Stats and abilities are ported, not authored."
   },
@@ -16341,7 +16743,7 @@
       {
        "effect": "grant a stat for the Battle",
        "status": null,
-       "stat": "ranged",
+       "stat": "precision",
        "value": 2,
        "target": "allEnemies"
       }
@@ -16561,14 +16963,14 @@
       {
        "effect": "grant a stat for the Battle",
        "status": null,
-       "stat": "melee",
+       "stat": "strength",
        "value": 2,
        "target": "allEnemies"
       },
       {
        "effect": "grant a stat for the Battle",
        "status": null,
-       "stat": "ranged",
+       "stat": "precision",
        "value": 1,
        "target": "allEnemies"
       }
@@ -16893,7 +17295,7 @@
       {
        "effect": "grant a stat for the Battle",
        "status": null,
-       "stat": "melee",
+       "stat": "strength",
        "value": 2,
        "target": "allEnemies"
       }
@@ -17369,14 +17771,14 @@
       {
        "effect": "grant a stat for the Battle",
        "status": null,
-       "stat": "melee",
+       "stat": "strength",
        "value": 2,
        "target": "allEnemies"
       },
       {
        "effect": "grant a stat for the Battle",
        "status": null,
-       "stat": "ranged",
+       "stat": "precision",
        "value": 2,
        "target": "allEnemies"
       }
@@ -17469,7 +17871,7 @@
       {
        "effect": "grant a stat for the Battle",
        "status": null,
-       "stat": "melee",
+       "stat": "strength",
        "value": 2,
        "target": "allEnemies"
       }

@@ -5,7 +5,7 @@
   "type": "module",
   "description": "Heroes of Blight and Tragic — content pipeline. Authored JSON in, a self-contained Codex out, with a linter that refuses to let the two disagree.",
   "scripts": {
-    "build": "node assemble.mjs && node functions.mjs && node assemble.mjs && node mklevelsmd.mjs && node build-viewer.mjs && node mkcodexmd.mjs",
+    "build": "node assemble.mjs && node functions.mjs && node assemble.mjs && node mklevelsmd.mjs && node build-viewer.mjs && node mkcodexmd.mjs && node mkgaps.mjs",
     "audit": "node audit.mjs",
     "levels": "node checklevels.mjs",
     "verify": "node verify-codex.mjs",

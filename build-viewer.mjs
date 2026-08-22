@@ -304,6 +304,12 @@ const TABS=[
     .map(function(u){
      const d=u.derivedBase||{}, p=u.ported||{};
      const atk=(u.attacks||[]).map(function(a){return esc(a.name);}).join(' &middot; ');
+     var trig=(u.triggers||[]).map(function(tr){
+       return '<span class="tag">['+esc(tr.hook)+(tr.targets?' '+esc(tr.targets):'')+'] '+
+         (tr.effects||[]).map(function(e){
+           return esc(e.effect)+(e.status?' '+esc(e.status):'')+(e.stat?' '+esc(e.stat):'')+
+                  (e.value!=null?' '+e.value:''); }).join(' + ')+'</span>';
+     }).join(' ');
      const riders=(u.attacks||[]).reduce(function(acc2,a){
        (a.effects||[]).forEach(function(e){
          acc2.push('<span class="tag">'+esc(a.name)+': '+esc(e.status||e.stat||e.effect)+(e.value!=null?' '+e.value:'')+'</span>');
@@ -321,7 +327,10 @@ const TABS=[
        '<td><small>'+esc(u.archetype||'-')+'</small></td>'+
        '<td><b>'+(d.accuracy!=null?d.accuracy:'-')+'</b></td>'+
        '<td><b>'+(d.movement!=null?d.movement:'-')+'</b></td>'+
-       '<td>'+(atk||'<small>no abilities</small>')+(riders?'<br>'+riders:'')+'</td></tr>';
+       '<td>'+(atk||'<small>no attack — it is scenery</small>')+(riders?'<br>'+riders:'')+
+         (trig?'<br>'+trig:'')+
+         (u.baseline?'<br><span class="tag">bare on purpose — one of the five plain enemies</span>':'')+
+         '</td></tr>';
     }).join('');
    return head+strip+'<div class="md"><table><tr><th></th><th>Creature</th><th>Rank</th><th>HP</th><th>Str</th>'+
      '<th>Pre</th><th>Arm</th><th>Rch</th><th>Archetype</th><th>Acc</th><th>Mov</th><th>Abilities</th></tr>'+rows+'</table></div>';
