@@ -455,6 +455,20 @@ if(D.heroes&&D.heroes.heroes){
     if(/\s(I{1,3}|IV|V|VI{1,3})$/.test(h.name||''))
       add('hero-name-is-a-placeholder',h.name,h.id+' — name the TYPE (the art), do not number it');
 
+  // R21 THE ASPIRING EIGHT ARE PARKED, NOT AUTHORED. Ruled 2026-08-21: they need a total
+  //     redesign. Their stats are a FROZEN RANDOM ROLL kept only so the build is
+  //     reproducible — gen/aspiring.json says so in three places. This rule stops the flag
+  //     being quietly dropped, which would leave arbitrary numbers looking authored, and
+  //     stops the Hell-TCG badge names coming back: 14 of the 17 the old generator rolled
+  //     do not exist in this game, because HoBaT authored its own badges rather than
+  //     porting the 238-row library (COMBAT-DESIGN.md §8).
+  for(const h of H.filter(x=>x.path==='aspiring')){
+    if(!h.needsRedesign)
+      add('aspiring-hero-not-flagged',h.name,h.id+' — its stats are a frozen roll, not authored');
+    if((h.originBadges||[]).length)
+      add('aspiring-hero-has-badges',h.name,JSON.stringify(h.originBadges)+' — cleared 2026-08-21; if they want badges they come from content’s own set');
+  }
+
   // A type is one picture, so two heroes may not claim the same one.
   const ty=H.filter(h=>h.type).map(h=>h.type);
   for(const t of [...new Set(ty.filter((x,i)=>ty.indexOf(x)!==i))])

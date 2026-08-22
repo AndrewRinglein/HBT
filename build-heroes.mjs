@@ -16,7 +16,6 @@ const {HERO_DATA}=await import(S+'src/state/heroData.js');
 const {AVTAIR_HERO_TYPES}=await import(S+'data/shadowsHeroTypes.js');
 const {AERONISSA_HERO_TYPES}=await import(S+'data/skyshipHeroes.js');
 const {TUTORIAL_HERO_VARIANTS}=await import(S+'src/eveOfRuin/tutorialHeroes.js');
-const {generateAspiringHero}=await import(S+'src/generators/aspiringHeroGenerator.js');
 
 // ---------------------------------------------------- ONE PIECE OF ART, ONE HERO
 // Ruled 2026-08-20. Every generative template owns four distinct pieces of art and
@@ -91,7 +90,9 @@ function convert(raw,{path,idBase,campaign,artOverride}){
     originBadges:raw.originBadges||raw.guaranteedBadges||[],
     classPowers:raw.classPowers||raw.startingClassPowers||[],
     namedSpecials:raw.namedSpecials||[],
-    damageType:raw.damageType||raw.attackDamageType||null,
+    // damageType is NOT a hero field. Ruled 2026-08-21: damage type lives on the WEAPON
+    // and the POWER - what a hero deals depends on what it is holding and what it uses.
+    // Hell-TCG had it on the hero; that concept did not port.
     triggers:raw.triggers||null, levelBonuses:raw.levelBonuses?Object.keys(raw.levelBonuses):null,
     cost:raw.cost||null, quote:raw.quote||null, backstory:raw.backstory||null,
     passiveDescription:raw.passiveDescription||null,
@@ -143,16 +144,63 @@ for(const [k,t] of Object.entries(TUTORIAL_HERO_VARIANTS)){
 // 5 — the aspiring generator. Eight art templates, one hero each. The folders are
 //     1/2/3/4 + l/p/r/v, which is four LEVELS plus four statuses for a single hero,
 //     not four designs — so these do not split.
+// NOT GENERATED ANY MORE. generateAspiringHero() rolls a fresh stat block and badge set
+// every call, so gen/heroes.json could never be reproduced and the badges it rolled were
+// Hell-TCG names that do not exist here. The eight are DATA now: gen/aspiring.json.
+// Ruled 2026-08-21 - they need a total redesign, so the frozen stats are a parked roll,
+// not authored numbers, and every row carries needsRedesign.
+const ASP=JSON.parse(fs.readFileSync('gen/aspiring.json','utf8'));
 for(const [key,files] of Object.entries(VAR.aspiring)){
-  const [gender,,styleN]=key.split('-');
-  let a=generateAspiringHero();
-  for(let t=0;t<40&&(a.gender||'').toLowerCase()!==gender;t++) a=generateAspiringHero();
-  const h=convert({...a,gender},{path:'aspiring',idBase:'aspiring.'+key,artOverride:files[0]});
-  h.name='Aspiring Hero \u2014 '+gender+' style '+styleN;
-  h.templateId='template.aspiring.'+key; h.templateName=key; h.subtype=key; h.sample=true;
+  const spec=ASP.heroes.find(x=>x.key===key);
+  if(!spec){ problems.push('aspiring: no row in gen/aspiring.json for '+key); continue; }
+  const frozen=(ASP.frozenStats[key]||{}).ported||{};
+  const h=convert({baseStats:{},gender:spec.gender,class:'Aspiring Hero',tier:0,level:1},{path:'aspiring',idBase:'aspiring.'+key,artOverride:files[0]});
+  h.ported={...frozen};
+  h.name=spec.name; h.gender=spec.gender; h.campaign=spec.campaign||null;
+  h.originBadges=[];
+  h.needsRedesign=true;
+  h.templateId='template.aspiring.'+key; h.templateName=spec.name; h.subtype=spec.name; h.sample=true;
   h.notes.unshift('One art template, one hero. Its folder holds 1/2/3/4 plus l/p/r/v \u2014 four levels and four statuses for THIS hero, not four designs, so it does not split the way Shadows and Skyship do.');
-  h.notes.push('STATS ARE ONE DRAW \u2014 generateAspiringHero() is procedural and rolls a fresh block every time. The art template is fixed; the numbers are not.');
+  h.notes.push('AWAITING REDESIGN. The stat block is a FROZEN random roll kept only so the build is reproducible - it is not authored and must not be balanced against. Badges are empty on purpose: the generator rolled Hell-TCG names that do not exist in this game.');
+  h.notes.push('Depicts: '+spec.depicts);
+  if(spec.artIncomplete) h.notes.push('ART INCOMPLETE - '+spec.artIncomplete);
   heroes.push(h);
+}
+
+// ---------------------------------------------------------- TYPE, and the rulings
+// Everything below is applied by the GENERATOR so that regenerating is safe. It was not,
+// and regenerating on 2026-08-21 destroyed all 112 type names and brought back all 95
+// roman-numeral placeholders, because those had been applied as a one-off patch. Anything
+// hand-patched onto gen/heroes.json must live here or it dies at the next rebuild.
+
+// TYPE = the specific piece of art. Named 2026-08-21 in crucible/data/types.json.
+// The four arts of one subtype are four different people, so the type IS the hero name.
+{
+  const TP=JSON.parse(fs.readFileSync("../crucible/data/types.json","utf8"));
+  const all={...TP.shadows,...TP.skyship};
+  const base=p=>String(p).split("/").pop().toLowerCase();
+  const byBase={}; for(const [k,v] of Object.entries(all)) byBase[base(k)]=v;
+  let typed=0;
+  for(const h of heroes){
+    const rec=h.art?byBase[base(h.art)]:null;
+    if(!rec||!rec.type) continue;
+    h.type=rec.type; typed++;
+    if(ROMAN.some(r=>h.name===h.subtype+" "+r)) h.name=rec.type;
+  }
+  if(typed<100) problems.push("type: only "+typed+" heroes matched crucible/data/types.json - expected 112");
+}
+
+// The class rulings of 2026-08-20, recorded on the heroes they were made about.
+{
+  // Derived from the data, not listed by hand - the fourth beast is young-sand-dragon and
+  // a hardcoded guess got it wrong once already.
+  const BEASTS=heroes.filter(h=>h.class==="class.beast").map(h=>h.id);
+  const NOTE_BEAST="2026-08-20: class.beast created for these four. They were the only heroes in the game with no class.";
+  const NOTE_SPIRIT="2026-08-20: \"change the Spirit to just be a Civilian so that there are no outliers on classes.\" One hero is not a class.";
+  for(const h of heroes){
+    if(BEASTS.includes(h.id) && !h.notes.includes(NOTE_BEAST)) h.notes.push(NOTE_BEAST);
+    if(h.id==="hero.fixed.living-ghost" && !h.notes.includes(NOTE_SPIRIT)) h.notes.push(NOTE_SPIRIT);
+  }
 }
 
 // ---- validation

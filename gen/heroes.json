@@ -75,6 +75,15 @@
    "staminaMax": 0,
    "staminaRegen": 0
   },
+  "class.beast": {
+   "accuracy": 72,
+   "crit": 3,
+   "luck": 0,
+   "vision": 7,
+   "movement": 6,
+   "staminaMax": 5,
+   "staminaRegen": 1
+  },
   "_unmapped": {
    "accuracy": 75,
    "crit": 3,
@@ -98,7 +107,7 @@
   "maxAfflictions": "toughness"
  },
  "dodgeScale": 5,
- "rule": "ONE PIECE OF ART, ONE UNIQUE HERO. Ruled 2026-08-20. Every generative template owns four distinct designs and each is its own hero — so 12 Shadows subtypes are 48 heroes, not 12. What does NOT split is a hero’s own level-and-status set: a folder of 1/2/3/4 plus l/p/r/v is one hero at four levels wearing four afflictions, which is why the 98 fixed cast stay 98. | 2026-08-20: a hero no longer carries a damage type. THE ATTACK DECIDES — a Mage shooting a bow deals physical damage, because the bow says so. | 2026-08-20: every hero now has a class. Beast became class.beast (4 heroes); Spirit folded into class.civilian (1 hero), because a class of one is an outlier, not a class.",
+ "rule": "ONE PIECE OF ART, ONE UNIQUE HERO. Ruled 2026-08-20. Every generative template owns four distinct designs and each is its own hero — so 12 Shadows subtypes are 48 heroes, not 12. What does NOT split is a hero’s own level-and-status set: a folder of 1/2/3/4 plus l/p/r/v is one hero at four levels wearing four afflictions, which is why the 98 fixed cast stay 98.",
  "paths": [
   {
    "path": "fixed",
@@ -179,7 +188,6 @@
      "description": "+1 Faith on enter. -2 Faith on death."
     }
    ],
-   "damageType": null,
    "triggers": {
     "onEnter": [
      {
@@ -259,7 +267,6 @@
    ],
    "classPowers": [],
    "namedSpecials": [],
-   "damageType": null,
    "triggers": {
     "onEnter": [],
     "onDeath": [],
@@ -398,7 +405,6 @@
    ],
    "classPowers": [],
    "namedSpecials": [],
-   "damageType": null,
    "triggers": {
     "onEnter": [],
     "onDeath": [],
@@ -640,7 +646,6 @@
      "description": "On death: lose 1 Faith. Grants divine tactics."
     }
    ],
-   "damageType": null,
    "triggers": {
     "onEnter": [],
     "onDeath": [
@@ -715,7 +720,6 @@
    ],
    "classPowers": [],
    "namedSpecials": [],
-   "damageType": null,
    "triggers": {
     "onEnter": [],
     "onDeath": [],
@@ -874,7 +878,6 @@
      "description": "On kill: kill the lowest health enemy."
     }
    ],
-   "damageType": null,
    "triggers": {
     "onEnter": [],
     "onDeath": [],
@@ -1018,11 +1021,11 @@
    },
    "dropped": {},
    "derivedBase": {
-    "accuracy": 75,
+    "accuracy": 72,
     "crit": 3,
     "luck": 0,
-    "vision": 6,
-    "movement": 5,
+    "vision": 7,
+    "movement": 6,
     "staminaMax": 5,
     "staminaRegen": 1
    },
@@ -1131,7 +1134,6 @@
      "description": "On enter: draw 2 cards."
     }
    ],
-   "damageType": null,
    "triggers": {
     "onEnter": [
      {
@@ -1205,7 +1207,6 @@
    ],
    "classPowers": [],
    "namedSpecials": [],
-   "damageType": null,
    "triggers": {
     "onEnter": [],
     "onDeath": [],
@@ -1281,7 +1282,6 @@
      "description": "On attack: inflict 1 Weak."
     }
    ],
-   "damageType": null,
    "triggers": {
     "onEnter": [],
     "onDeath": [],
@@ -1362,7 +1362,6 @@
      "description": "On enter: gain 1 Regen. Grants spell: Troll's Blood."
     }
    ],
-   "damageType": null,
    "triggers": {
     "onEnter": [
      {
@@ -1590,13 +1589,13 @@
    },
    "dropped": {},
    "derivedBase": {
-    "accuracy": 75,
+    "accuracy": 70,
     "crit": 3,
     "luck": 0,
     "vision": 6,
     "movement": 5,
-    "staminaMax": 5,
-    "staminaRegen": 1
+    "staminaMax": 0,
+    "staminaRegen": 0
    },
    "notes": [
     "Toughness 0 is hell-tcg maxAfflictions, ported straight across — same meaning.",
@@ -1615,7 +1614,6 @@
      "description": "End of turn: heal 10."
     }
    ],
-   "damageType": null,
    "triggers": {
     "onEnter": [],
     "onDeath": [],
@@ -1699,7 +1697,6 @@
      "description": "When hit: +1 damage taken, +1 Faith, -1 max health. On death: all heroes -1 Armor. Heals Spirit each turn."
     }
    ],
-   "damageType": null,
    "triggers": {
     "onEnter": [],
     "onDeath": [
@@ -1806,7 +1803,6 @@
      "description": "On enter: all heroes gain +1 Item Slot and +1 Reach."
     }
    ],
-   "damageType": null,
    "triggers": {
     "onEnter": [
      {
@@ -1897,7 +1893,6 @@
      "description": "On enter: heal all heroes 1. On kill: gain 2 Supplies."
     }
    ],
-   "damageType": null,
    "triggers": {
     "onEnter": [
      {
@@ -1982,7 +1977,6 @@
      "description": "On enter: +1 Armor, -1 Item Slot to all heroes. On damage: +1 Item Slot to a hero."
     }
    ],
-   "damageType": null,
    "triggers": {
     "onEnter": [
      {
@@ -2077,7 +2071,6 @@
    ],
    "classPowers": [],
    "namedSpecials": [],
-   "damageType": null,
    "triggers": {
     "onEnter": [],
     "onDeath": [],
@@ -2153,7 +2146,6 @@
      "description": "Grants spell: Fishing Net."
     }
    ],
-   "damageType": null,
    "triggers": {
     "onEnter": [],
     "onDeath": [],
@@ -2236,7 +2228,6 @@
      "description": "Grants spell: Gut."
     }
    ],
-   "damageType": null,
    "triggers": {
     "onEnter": [],
     "onDeath": [],
@@ -2307,7 +2298,6 @@
    ],
    "classPowers": [],
    "namedSpecials": [],
-   "damageType": null,
    "triggers": {
     "onEnter": [],
     "onDeath": [],
@@ -2382,7 +2372,6 @@
    ],
    "classPowers": [],
    "namedSpecials": [],
-   "damageType": null,
    "triggers": {
     "onEnter": [],
     "onDeath": [],
@@ -2452,7 +2441,6 @@
    ],
    "classPowers": [],
    "namedSpecials": [],
-   "damageType": null,
    "triggers": {
     "onEnter": [],
     "onDeath": [],
@@ -2523,7 +2511,6 @@
    ],
    "classPowers": [],
    "namedSpecials": [],
-   "damageType": null,
    "triggers": {
     "onEnter": [],
     "onDeath": [],
@@ -2596,7 +2583,6 @@
    ],
    "classPowers": [],
    "namedSpecials": [],
-   "damageType": null,
    "triggers": {
     "onEnter": [],
     "onDeath": [],
@@ -2666,7 +2652,6 @@
    ],
    "classPowers": [],
    "namedSpecials": [],
-   "damageType": null,
    "triggers": {
     "onEnter": [],
     "onDeath": [],
@@ -2719,11 +2704,11 @@
    },
    "dropped": {},
    "derivedBase": {
-    "accuracy": 75,
+    "accuracy": 72,
     "crit": 3,
     "luck": 0,
-    "vision": 6,
-    "movement": 5,
+    "vision": 7,
+    "movement": 6,
     "staminaMax": 5,
     "staminaRegen": 1
    },
@@ -2829,7 +2814,6 @@
      "description": "On enter: +1 Supplies. On death: -5 Supplies."
     }
    ],
-   "damageType": null,
    "triggers": {
     "onEnter": [
      {
@@ -2917,7 +2901,6 @@
      "description": "Stuns self on enter and on attack."
     }
    ],
-   "damageType": null,
    "triggers": {
     "onEnter": [
      {
@@ -3100,7 +3083,6 @@
      "description": "On enter: all heroes gain +1 Health. End of turn: gain 1 Dodge."
     }
    ],
-   "damageType": null,
    "triggers": {
     "onEnter": [
      {
@@ -3421,7 +3403,6 @@
      "description": "On damage: inflict 1 Weak. Power: Double Strike."
     }
    ],
-   "damageType": null,
    "triggers": {
     "onEnter": [],
     "onDeath": [],
@@ -3589,7 +3570,6 @@
      "description": "On enter: +1 Supplies and draw 2 cards. Power: Supply."
     }
    ],
-   "damageType": null,
    "triggers": {
     "onEnter": [
      {
@@ -3679,7 +3659,6 @@
      "description": "+1 action per turn. On death: all heroes gain 2 Weak. Power: Rallying Cry."
     }
    ],
-   "damageType": null,
    "triggers": {
     "onEnter": [],
     "onDeath": [
@@ -3760,7 +3739,6 @@
      "description": "On enter: all heroes gain +1 Ranged and +1 Reach."
     }
    ],
-   "damageType": null,
    "triggers": {
     "onEnter": [
      {
@@ -3850,7 +3828,6 @@
      "description": "On kill: deal 4 true damage to ALL heroes."
     }
    ],
-   "damageType": null,
    "triggers": {
     "onEnter": [],
     "onDeath": [],
@@ -3934,7 +3911,6 @@
      "description": "On death: lose 3 Faith and 3 Supplies."
     }
    ],
-   "damageType": null,
    "triggers": {
     "onEnter": [],
     "onDeath": [
@@ -3996,11 +3972,11 @@
    },
    "dropped": {},
    "derivedBase": {
-    "accuracy": 75,
+    "accuracy": 72,
     "crit": 3,
     "luck": 0,
-    "vision": 6,
-    "movement": 5,
+    "vision": 7,
+    "movement": 6,
     "staminaMax": 5,
     "staminaRegen": 1
    },
@@ -4100,7 +4076,6 @@
      "description": "On enter: draw 1 card. On death: lose 2 Supplies."
     }
    ],
-   "damageType": null,
    "triggers": {
     "onEnter": [
      {
@@ -4188,7 +4163,6 @@
      "description": "On enter: gain 4 Weak."
     }
    ],
-   "damageType": null,
    "triggers": {
     "onEnter": [
      {
@@ -4266,7 +4240,6 @@
    ],
    "classPowers": [],
    "namedSpecials": [],
-   "damageType": null,
    "triggers": {
     "onEnter": [],
     "onDeath": [],
@@ -4345,7 +4318,6 @@
      "description": "Power: Arcane Strike."
     }
    ],
-   "damageType": null,
    "triggers": {
     "onEnter": [],
     "onDeath": [],
@@ -4508,7 +4480,6 @@
    ],
    "classPowers": [],
    "namedSpecials": [],
-   "damageType": null,
    "triggers": {
     "onEnter": [],
     "onDeath": [],
@@ -4586,7 +4557,6 @@
      "description": "Grants Knowledge spell and Knowledge tactic."
     }
    ],
-   "damageType": null,
    "triggers": {
     "onEnter": [],
     "onDeath": [],
@@ -5199,11 +5169,11 @@
    },
    "dropped": {},
    "derivedBase": {
-    "accuracy": 75,
+    "accuracy": 72,
     "crit": 3,
     "luck": 0,
-    "vision": 6,
-    "movement": 5,
+    "vision": 7,
+    "movement": 6,
     "staminaMax": 5,
     "staminaRegen": 1
    },
@@ -7577,7 +7547,6 @@
      "description": "On enter: remove 1 Weak from all heroes. On attack: heal party for 1."
     }
    ],
-   "damageType": null,
    "triggers": {
     "onEnter": [
      {
@@ -7666,7 +7635,6 @@
      "description": "On attack: apply 1 Weak to all enemies in row."
     }
    ],
-   "damageType": null,
    "triggers": {
     "onEnter": [],
     "onDeath": [],
@@ -7750,7 +7718,6 @@
      "description": "On enter: gain 5 Weak. Overwhelming numbers but no discipline."
     }
    ],
-   "damageType": null,
    "triggers": {
     "onEnter": [
      {
@@ -7833,7 +7800,6 @@
      "description": "Costs nothing to deploy. Too young and frail for battle."
     }
    ],
-   "damageType": null,
    "triggers": {
     "onEnter": [],
     "onDeath": [],
@@ -8005,7 +7971,6 @@
      "description": "Counts as all class types for ifClass bonuses. Every class-specific item bonus applies."
     }
    ],
-   "damageType": null,
    "triggers": {
     "onEnter": [],
     "onDeath": [],
@@ -8126,9 +8091,9 @@
    "additionalClasses": null,
    "templateId": "template.shadows.priestess-of-ire",
    "templateName": "Priestess of Ire",
+   "subtype": "Priestess of Ire",
    "variant": 1,
    "variantsOf": 4,
-   "subtype": "Priestess of Ire",
    "type": "Sand Wraith"
   },
   {
@@ -8225,9 +8190,9 @@
    "additionalClasses": null,
    "templateId": "template.shadows.priestess-of-ire",
    "templateName": "Priestess of Ire",
+   "subtype": "Priestess of Ire",
    "variant": 2,
    "variantsOf": 4,
-   "subtype": "Priestess of Ire",
    "type": "Blood Offerer"
   },
   {
@@ -8324,9 +8289,9 @@
    "additionalClasses": null,
    "templateId": "template.shadows.priestess-of-ire",
    "templateName": "Priestess of Ire",
+   "subtype": "Priestess of Ire",
    "variant": 3,
    "variantsOf": 4,
-   "subtype": "Priestess of Ire",
    "type": "Snake Handler"
   },
   {
@@ -8423,9 +8388,9 @@
    "additionalClasses": null,
    "templateId": "template.shadows.priestess-of-ire",
    "templateName": "Priestess of Ire",
+   "subtype": "Priestess of Ire",
    "variant": 4,
    "variantsOf": 4,
-   "subtype": "Priestess of Ire",
    "type": "Scorpion Keeper"
   },
   {
@@ -8511,9 +8476,9 @@
    "additionalClasses": null,
    "templateId": "template.shadows.priestess-of-solace",
    "templateName": "Priestess of Solace",
+   "subtype": "Priestess of Solace",
    "variant": 1,
    "variantsOf": 4,
-   "subtype": "Priestess of Solace",
    "type": "Moon Bearer"
   },
   {
@@ -8599,9 +8564,9 @@
    "additionalClasses": null,
    "templateId": "template.shadows.priestess-of-solace",
    "templateName": "Priestess of Solace",
+   "subtype": "Priestess of Solace",
    "variant": 2,
    "variantsOf": 4,
-   "subtype": "Priestess of Solace",
    "type": "Temple Kindler"
   },
   {
@@ -8687,9 +8652,9 @@
    "additionalClasses": null,
    "templateId": "template.shadows.priestess-of-solace",
    "templateName": "Priestess of Solace",
+   "subtype": "Priestess of Solace",
    "variant": 3,
    "variantsOf": 4,
-   "subtype": "Priestess of Solace",
    "type": "Tide Walker"
   },
   {
@@ -8775,9 +8740,9 @@
    "additionalClasses": null,
    "templateId": "template.shadows.priestess-of-solace",
    "templateName": "Priestess of Solace",
+   "subtype": "Priestess of Solace",
    "variant": 4,
    "variantsOf": 4,
-   "subtype": "Priestess of Solace",
    "type": "Crescent Warden"
   },
   {
@@ -8865,9 +8830,9 @@
    "additionalClasses": null,
    "templateId": "template.shadows.servant-of-omen",
    "templateName": "Servant of Omen",
+   "subtype": "Servant of Omen",
    "variant": 1,
    "variantsOf": 4,
-   "subtype": "Servant of Omen",
    "type": "Dust Herald"
   },
   {
@@ -8955,9 +8920,9 @@
    "additionalClasses": null,
    "templateId": "template.shadows.servant-of-omen",
    "templateName": "Servant of Omen",
+   "subtype": "Servant of Omen",
    "variant": 2,
    "variantsOf": 4,
-   "subtype": "Servant of Omen",
    "type": "Star Oracle"
   },
   {
@@ -9045,9 +9010,9 @@
    "additionalClasses": null,
    "templateId": "template.shadows.servant-of-omen",
    "templateName": "Servant of Omen",
+   "subtype": "Servant of Omen",
    "variant": 3,
    "variantsOf": 4,
-   "subtype": "Servant of Omen",
    "type": "Velvet Mourner"
   },
   {
@@ -9135,9 +9100,9 @@
    "additionalClasses": null,
    "templateId": "template.shadows.servant-of-omen",
    "templateName": "Servant of Omen",
+   "subtype": "Servant of Omen",
    "variant": 4,
    "variantsOf": 4,
-   "subtype": "Servant of Omen",
    "type": "Ring Dancer"
   },
   {
@@ -9224,9 +9189,9 @@
    "additionalClasses": null,
    "templateId": "template.shadows.shadow-sorceress",
    "templateName": "Shadow Sorceress",
+   "subtype": "Shadow Sorceress",
    "variant": 1,
    "variantsOf": 4,
-   "subtype": "Shadow Sorceress",
    "type": "Green Seer"
   },
   {
@@ -9313,9 +9278,9 @@
    "additionalClasses": null,
    "templateId": "template.shadows.shadow-sorceress",
    "templateName": "Shadow Sorceress",
+   "subtype": "Shadow Sorceress",
    "variant": 2,
    "variantsOf": 4,
-   "subtype": "Shadow Sorceress",
    "type": "Spark Caller"
   },
   {
@@ -9402,9 +9367,9 @@
    "additionalClasses": null,
    "templateId": "template.shadows.shadow-sorceress",
    "templateName": "Shadow Sorceress",
+   "subtype": "Shadow Sorceress",
    "variant": 3,
    "variantsOf": 4,
-   "subtype": "Shadow Sorceress",
    "type": "Horned Crawler"
   },
   {
@@ -9491,9 +9456,9 @@
    "additionalClasses": null,
    "templateId": "template.shadows.shadow-sorceress",
    "templateName": "Shadow Sorceress",
+   "subtype": "Shadow Sorceress",
    "variant": 4,
    "variantsOf": 4,
-   "subtype": "Shadow Sorceress",
    "type": "Candle Reader"
   },
   {
@@ -9578,9 +9543,9 @@
    "additionalClasses": null,
    "templateId": "template.shadows.sand-knight",
    "templateName": "Sand Knight",
+   "subtype": "Sand Knight",
    "variant": 1,
    "variantsOf": 4,
-   "subtype": "Sand Knight",
    "type": "Axe Warden"
   },
   {
@@ -9665,9 +9630,9 @@
    "additionalClasses": null,
    "templateId": "template.shadows.sand-knight",
    "templateName": "Sand Knight",
+   "subtype": "Sand Knight",
    "variant": 2,
    "variantsOf": 4,
-   "subtype": "Sand Knight",
    "type": "Marble Sentinel"
   },
   {
@@ -9752,9 +9717,9 @@
    "additionalClasses": null,
    "templateId": "template.shadows.sand-knight",
    "templateName": "Sand Knight",
+   "subtype": "Sand Knight",
    "variant": 3,
    "variantsOf": 4,
-   "subtype": "Sand Knight",
    "type": "Sun Shield"
   },
   {
@@ -9839,9 +9804,9 @@
    "additionalClasses": null,
    "templateId": "template.shadows.sand-knight",
    "templateName": "Sand Knight",
+   "subtype": "Sand Knight",
    "variant": 4,
    "variantsOf": 4,
-   "subtype": "Sand Knight",
    "type": "Falcon Crest"
   },
   {
@@ -9920,9 +9885,9 @@
    "additionalClasses": null,
    "templateId": "template.shadows.rider-of-ire",
    "templateName": "Rider of Ire",
+   "subtype": "Rider of Ire",
    "variant": 1,
    "variantsOf": 4,
-   "subtype": "Rider of Ire",
    "type": "Warpaint Rider"
   },
   {
@@ -10001,9 +9966,9 @@
    "additionalClasses": null,
    "templateId": "template.shadows.rider-of-ire",
    "templateName": "Rider of Ire",
+   "subtype": "Rider of Ire",
    "variant": 2,
    "variantsOf": 4,
-   "subtype": "Rider of Ire",
    "type": "Sunset Courser"
   },
   {
@@ -10082,9 +10047,9 @@
    "additionalClasses": null,
    "templateId": "template.shadows.rider-of-ire",
    "templateName": "Rider of Ire",
+   "subtype": "Rider of Ire",
    "variant": 3,
    "variantsOf": 4,
-   "subtype": "Rider of Ire",
    "type": "Chestnut Outrider"
   },
   {
@@ -10163,9 +10128,9 @@
    "additionalClasses": null,
    "templateId": "template.shadows.rider-of-ire",
    "templateName": "Rider of Ire",
+   "subtype": "Rider of Ire",
    "variant": 4,
    "variantsOf": 4,
-   "subtype": "Rider of Ire",
    "type": "Veiled Raider"
   },
   {
@@ -10253,9 +10218,9 @@
    "additionalClasses": null,
    "templateId": "template.shadows.bodani",
    "templateName": "Bodani",
+   "subtype": "Bodani",
    "variant": 1,
    "variantsOf": 4,
-   "subtype": "Bodani",
    "type": "Gilded Lancer"
   },
   {
@@ -10343,9 +10308,9 @@
    "additionalClasses": null,
    "templateId": "template.shadows.bodani",
    "templateName": "Bodani",
+   "subtype": "Bodani",
    "variant": 2,
    "variantsOf": 4,
-   "subtype": "Bodani",
    "type": "Dune Leaper"
   },
   {
@@ -10433,9 +10398,9 @@
    "additionalClasses": null,
    "templateId": "template.shadows.bodani",
    "templateName": "Bodani",
+   "subtype": "Bodani",
    "variant": 3,
    "variantsOf": 4,
-   "subtype": "Bodani",
    "type": "Ribbon Dancer"
   },
   {
@@ -10523,9 +10488,9 @@
    "additionalClasses": null,
    "templateId": "template.shadows.bodani",
    "templateName": "Bodani",
+   "subtype": "Bodani",
    "variant": 4,
    "variantsOf": 4,
-   "subtype": "Bodani",
    "type": "Ember Skirmisher"
   },
   {
@@ -10608,9 +10573,9 @@
    "additionalClasses": null,
    "templateId": "template.shadows.oathblade",
    "templateName": "Oathblade",
+   "subtype": "Oathblade",
    "variant": 1,
    "variantsOf": 4,
-   "subtype": "Oathblade",
    "type": "Veteran Greatsword"
   },
   {
@@ -10693,9 +10658,9 @@
    "additionalClasses": null,
    "templateId": "template.shadows.oathblade",
    "templateName": "Oathblade",
+   "subtype": "Oathblade",
    "variant": 2,
    "variantsOf": 4,
-   "subtype": "Oathblade",
    "type": "Headband Duelist"
   },
   {
@@ -10778,9 +10743,9 @@
    "additionalClasses": null,
    "templateId": "template.shadows.oathblade",
    "templateName": "Oathblade",
+   "subtype": "Oathblade",
    "variant": 3,
    "variantsOf": 4,
-   "subtype": "Oathblade",
    "type": "Wall Sentry"
   },
   {
@@ -10863,9 +10828,9 @@
    "additionalClasses": null,
    "templateId": "template.shadows.oathblade",
    "templateName": "Oathblade",
+   "subtype": "Oathblade",
    "variant": 4,
    "variantsOf": 4,
-   "subtype": "Oathblade",
    "type": "Blue Sash Captain"
   },
   {
@@ -10952,9 +10917,9 @@
    "additionalClasses": null,
    "templateId": "template.shadows.soul-reaver",
    "templateName": "Soul Reaver",
+   "subtype": "Soul Reaver",
    "variant": 1,
    "variantsOf": 4,
-   "subtype": "Soul Reaver",
    "type": "Blue Sickles"
   },
   {
@@ -11041,9 +11006,9 @@
    "additionalClasses": null,
    "templateId": "template.shadows.soul-reaver",
    "templateName": "Soul Reaver",
+   "subtype": "Soul Reaver",
    "variant": 2,
    "variantsOf": 4,
-   "subtype": "Soul Reaver",
    "type": "Violet Knife"
   },
   {
@@ -11130,9 +11095,9 @@
    "additionalClasses": null,
    "templateId": "template.shadows.soul-reaver",
    "templateName": "Soul Reaver",
+   "subtype": "Soul Reaver",
    "variant": 3,
    "variantsOf": 4,
-   "subtype": "Soul Reaver",
    "type": "Storm Dancer"
   },
   {
@@ -11219,9 +11184,9 @@
    "additionalClasses": null,
    "templateId": "template.shadows.soul-reaver",
    "templateName": "Soul Reaver",
+   "subtype": "Soul Reaver",
    "variant": 4,
    "variantsOf": 4,
-   "subtype": "Soul Reaver",
    "type": "Silver Mask"
   },
   {
@@ -11309,9 +11274,9 @@
    "additionalClasses": null,
    "templateId": "template.shadows.nightblade",
    "templateName": "Nightblade",
+   "subtype": "Nightblade",
    "variant": 1,
    "variantsOf": 4,
-   "subtype": "Nightblade",
    "type": "Twin Sabers"
   },
   {
@@ -11399,9 +11364,9 @@
    "additionalClasses": null,
    "templateId": "template.shadows.nightblade",
    "templateName": "Nightblade",
+   "subtype": "Nightblade",
    "variant": 2,
    "variantsOf": 4,
-   "subtype": "Nightblade",
    "type": "Rope Climber"
   },
   {
@@ -11489,9 +11454,9 @@
    "additionalClasses": null,
    "templateId": "template.shadows.nightblade",
    "templateName": "Nightblade",
+   "subtype": "Nightblade",
    "variant": 3,
    "variantsOf": 4,
-   "subtype": "Nightblade",
    "type": "Tattooed Axeman"
   },
   {
@@ -11579,9 +11544,9 @@
    "additionalClasses": null,
    "templateId": "template.shadows.nightblade",
    "templateName": "Nightblade",
+   "subtype": "Nightblade",
    "variant": 4,
    "variantsOf": 4,
-   "subtype": "Nightblade",
    "type": "Alley Prowler"
   },
   {
@@ -11663,9 +11628,9 @@
    "additionalClasses": null,
    "templateId": "template.shadows.dusk-hawk",
    "templateName": "Dusk Hawk",
+   "subtype": "Dusk Hawk",
    "variant": 1,
    "variantsOf": 4,
-   "subtype": "Dusk Hawk",
    "type": "Longbow Hunter"
   },
   {
@@ -11747,9 +11712,9 @@
    "additionalClasses": null,
    "templateId": "template.shadows.dusk-hawk",
    "templateName": "Dusk Hawk",
+   "subtype": "Dusk Hawk",
    "variant": 2,
    "variantsOf": 4,
-   "subtype": "Dusk Hawk",
    "type": "Hooded Falconer"
   },
   {
@@ -11831,9 +11796,9 @@
    "additionalClasses": null,
    "templateId": "template.shadows.dusk-hawk",
    "templateName": "Dusk Hawk",
+   "subtype": "Dusk Hawk",
    "variant": 3,
    "variantsOf": 4,
-   "subtype": "Dusk Hawk",
    "type": "Hawk Caller"
   },
   {
@@ -11915,9 +11880,9 @@
    "additionalClasses": null,
    "templateId": "template.shadows.dusk-hawk",
    "templateName": "Dusk Hawk",
+   "subtype": "Dusk Hawk",
    "variant": 4,
    "variantsOf": 4,
-   "subtype": "Dusk Hawk",
    "type": "Grey Falconer"
   },
   {
@@ -12007,9 +11972,9 @@
    "additionalClasses": null,
    "templateId": "template.shadows.runebow",
    "templateName": "Runebow",
+   "subtype": "Runebow",
    "variant": 1,
    "variantsOf": 4,
-   "subtype": "Runebow",
    "type": "Storm Archer"
   },
   {
@@ -12099,9 +12064,9 @@
    "additionalClasses": null,
    "templateId": "template.shadows.runebow",
    "templateName": "Runebow",
+   "subtype": "Runebow",
    "variant": 2,
    "variantsOf": 4,
-   "subtype": "Runebow",
    "type": "Feather Archer"
   },
   {
@@ -12191,9 +12156,9 @@
    "additionalClasses": null,
    "templateId": "template.shadows.runebow",
    "templateName": "Runebow",
+   "subtype": "Runebow",
    "variant": 3,
    "variantsOf": 4,
-   "subtype": "Runebow",
    "type": "Burning Bow"
   },
   {
@@ -12283,9 +12248,9 @@
    "additionalClasses": null,
    "templateId": "template.shadows.runebow",
    "templateName": "Runebow",
+   "subtype": "Runebow",
    "variant": 4,
    "variantsOf": 4,
-   "subtype": "Runebow",
    "type": "Shade Fletcher"
   },
   {
@@ -12368,9 +12333,9 @@
    "additionalClasses": null,
    "templateId": "template.skyship.brute",
    "templateName": "Brute",
+   "subtype": "Brute",
    "variant": 1,
    "variantsOf": 4,
-   "subtype": "Brute",
    "type": "Inked Crossbowman"
   },
   {
@@ -12453,9 +12418,9 @@
    "additionalClasses": null,
    "templateId": "template.skyship.brute",
    "templateName": "Brute",
+   "subtype": "Brute",
    "variant": 2,
    "variantsOf": 4,
-   "subtype": "Brute",
    "type": "Warpaint Bowman"
   },
   {
@@ -12538,9 +12503,9 @@
    "additionalClasses": null,
    "templateId": "template.skyship.brute",
    "templateName": "Brute",
+   "subtype": "Brute",
    "variant": 3,
    "variantsOf": 4,
-   "subtype": "Brute",
    "type": "Skull Taker"
   },
   {
@@ -12623,9 +12588,9 @@
    "additionalClasses": null,
    "templateId": "template.skyship.brute",
    "templateName": "Brute",
+   "subtype": "Brute",
    "variant": 4,
    "variantsOf": 4,
-   "subtype": "Brute",
    "type": "Frost Lancer"
   },
   {
@@ -12710,9 +12675,9 @@
    ],
    "templateId": "template.skyship.phantom-striker",
    "templateName": "Phantom Striker",
+   "subtype": "Phantom Striker",
    "variant": 1,
    "variantsOf": 4,
-   "subtype": "Phantom Striker",
    "type": "Moon Hunter"
   },
   {
@@ -12797,9 +12762,9 @@
    ],
    "templateId": "template.skyship.phantom-striker",
    "templateName": "Phantom Striker",
+   "subtype": "Phantom Striker",
    "variant": 2,
    "variantsOf": 4,
-   "subtype": "Phantom Striker",
    "type": "Rooftop Assassin"
   },
   {
@@ -12884,9 +12849,9 @@
    ],
    "templateId": "template.skyship.phantom-striker",
    "templateName": "Phantom Striker",
+   "subtype": "Phantom Striker",
    "variant": 3,
    "variantsOf": 4,
-   "subtype": "Phantom Striker",
    "type": "Leaping Archer"
   },
   {
@@ -12971,9 +12936,9 @@
    ],
    "templateId": "template.skyship.phantom-striker",
    "templateName": "Phantom Striker",
+   "subtype": "Phantom Striker",
    "variant": 4,
    "variantsOf": 4,
-   "subtype": "Phantom Striker",
    "type": "Lightning Archer"
   },
   {
@@ -13066,9 +13031,9 @@
    "additionalClasses": null,
    "templateId": "template.skyship.troll-pirate",
    "templateName": "Troll Pirate",
+   "subtype": "Troll Pirate",
    "variant": 1,
    "variantsOf": 4,
-   "subtype": "Troll Pirate",
    "type": "Blue Buccaneer"
   },
   {
@@ -13161,9 +13126,9 @@
    "additionalClasses": null,
    "templateId": "template.skyship.troll-pirate",
    "templateName": "Troll Pirate",
+   "subtype": "Troll Pirate",
    "variant": 2,
    "variantsOf": 4,
-   "subtype": "Troll Pirate",
    "type": "Horned Ronin"
   },
   {
@@ -13256,9 +13221,9 @@
    "additionalClasses": null,
    "templateId": "template.skyship.troll-pirate",
    "templateName": "Troll Pirate",
+   "subtype": "Troll Pirate",
    "variant": 3,
    "variantsOf": 4,
-   "subtype": "Troll Pirate",
    "type": "Rigging Cutthroat"
   },
   {
@@ -13351,9 +13316,9 @@
    "additionalClasses": null,
    "templateId": "template.skyship.troll-pirate",
    "templateName": "Troll Pirate",
+   "subtype": "Troll Pirate",
    "variant": 4,
    "variantsOf": 4,
-   "subtype": "Troll Pirate",
    "type": "Tusked Mauler"
   },
   {
@@ -13440,9 +13405,9 @@
    "additionalClasses": null,
    "templateId": "template.skyship.open-hand",
    "templateName": "Open Hand",
+   "subtype": "Open Hand",
    "variant": 1,
    "variantsOf": 4,
-   "subtype": "Open Hand",
    "type": "Drunken Brawler"
   },
   {
@@ -13529,9 +13494,9 @@
    "additionalClasses": null,
    "templateId": "template.skyship.open-hand",
    "templateName": "Open Hand",
+   "subtype": "Open Hand",
    "variant": 2,
    "variantsOf": 4,
-   "subtype": "Open Hand",
    "type": "Blind Master"
   },
   {
@@ -13618,9 +13583,9 @@
    "additionalClasses": null,
    "templateId": "template.skyship.open-hand",
    "templateName": "Open Hand",
+   "subtype": "Open Hand",
    "variant": 3,
    "variantsOf": 4,
-   "subtype": "Open Hand",
    "type": "Dancer"
   },
   {
@@ -13707,9 +13672,9 @@
    "additionalClasses": null,
    "templateId": "template.skyship.open-hand",
    "templateName": "Open Hand",
+   "subtype": "Open Hand",
    "variant": 4,
    "variantsOf": 4,
-   "subtype": "Open Hand",
    "type": "Staff Master"
   },
   {
@@ -13797,9 +13762,9 @@
    "additionalClasses": null,
    "templateId": "template.skyship.sky-captain",
    "templateName": "Sky Captain",
+   "subtype": "Sky Captain",
    "variant": 1,
    "variantsOf": 3,
-   "subtype": "Sky Captain",
    "type": "Crossbow Officer"
   },
   {
@@ -13887,9 +13852,9 @@
    "additionalClasses": null,
    "templateId": "template.skyship.sky-captain",
    "templateName": "Sky Captain",
+   "subtype": "Sky Captain",
    "variant": 2,
    "variantsOf": 3,
-   "subtype": "Sky Captain",
    "type": "Spyglass Corsair"
   },
   {
@@ -13977,9 +13942,9 @@
    "additionalClasses": null,
    "templateId": "template.skyship.sky-captain",
    "templateName": "Sky Captain",
+   "subtype": "Sky Captain",
    "variant": 3,
    "variantsOf": 3,
-   "subtype": "Sky Captain",
    "type": "One-Eyed Duelist"
   },
   {
@@ -14068,9 +14033,9 @@
    ],
    "templateId": "template.skyship.windwalker",
    "templateName": "WindWalker",
+   "subtype": "WindWalker",
    "variant": 1,
    "variantsOf": 4,
-   "subtype": "WindWalker",
    "type": "Silk Fencer"
   },
   {
@@ -14159,9 +14124,9 @@
    ],
    "templateId": "template.skyship.windwalker",
    "templateName": "WindWalker",
+   "subtype": "WindWalker",
    "variant": 2,
    "variantsOf": 4,
-   "subtype": "WindWalker",
    "type": "Flame Archer"
   },
   {
@@ -14250,9 +14215,9 @@
    ],
    "templateId": "template.skyship.windwalker",
    "templateName": "WindWalker",
+   "subtype": "WindWalker",
    "variant": 3,
    "variantsOf": 4,
-   "subtype": "WindWalker",
    "type": "Dusk Archer"
   },
   {
@@ -14341,9 +14306,9 @@
    ],
    "templateId": "template.skyship.windwalker",
    "templateName": "WindWalker",
+   "subtype": "WindWalker",
    "variant": 4,
    "variantsOf": 4,
-   "subtype": "WindWalker",
    "type": "Chain Fighter"
   },
   {
@@ -14433,9 +14398,9 @@
    "additionalClasses": null,
    "templateId": "template.skyship.sky-pirate",
    "templateName": "Sky Pirate",
+   "subtype": "Sky Pirate",
    "variant": 1,
    "variantsOf": 4,
-   "subtype": "Sky Pirate",
    "type": "Cloud Reaver"
   },
   {
@@ -14525,9 +14490,9 @@
    "additionalClasses": null,
    "templateId": "template.skyship.sky-pirate",
    "templateName": "Sky Pirate",
+   "subtype": "Sky Pirate",
    "variant": 2,
    "variantsOf": 4,
-   "subtype": "Sky Pirate",
    "type": "Boarding Raider"
   },
   {
@@ -14617,9 +14582,9 @@
    "additionalClasses": null,
    "templateId": "template.skyship.sky-pirate",
    "templateName": "Sky Pirate",
+   "subtype": "Sky Pirate",
    "variant": 3,
    "variantsOf": 4,
-   "subtype": "Sky Pirate",
    "type": "Rope Runner"
   },
   {
@@ -14709,9 +14674,9 @@
    "additionalClasses": null,
    "templateId": "template.skyship.sky-pirate",
    "templateName": "Sky Pirate",
+   "subtype": "Sky Pirate",
    "variant": 4,
    "variantsOf": 4,
-   "subtype": "Sky Pirate",
    "type": "Ship Burner"
   },
   {
@@ -14794,9 +14759,9 @@
    "additionalClasses": null,
    "templateId": "template.skyship.air-mage",
    "templateName": "Air Mage",
+   "subtype": "Air Mage",
    "variant": 1,
    "variantsOf": 4,
-   "subtype": "Air Mage",
    "type": "Cloud Rider"
   },
   {
@@ -14879,9 +14844,9 @@
    "additionalClasses": null,
    "templateId": "template.skyship.air-mage",
    "templateName": "Air Mage",
+   "subtype": "Air Mage",
    "variant": 2,
    "variantsOf": 4,
-   "subtype": "Air Mage",
    "type": "Storm Caller"
   },
   {
@@ -14964,9 +14929,9 @@
    "additionalClasses": null,
    "templateId": "template.skyship.air-mage",
    "templateName": "Air Mage",
+   "subtype": "Air Mage",
    "variant": 3,
    "variantsOf": 4,
-   "subtype": "Air Mage",
    "type": "Gilded Sorceress"
   },
   {
@@ -15049,9 +15014,9 @@
    "additionalClasses": null,
    "templateId": "template.skyship.air-mage",
    "templateName": "Air Mage",
+   "subtype": "Air Mage",
    "variant": 4,
    "variantsOf": 4,
-   "subtype": "Air Mage",
    "type": "Cyclone Caster"
   },
   {
@@ -15140,9 +15105,9 @@
    ],
    "templateId": "template.skyship.spellblade",
    "templateName": "Spellblade",
+   "subtype": "Spellblade",
    "variant": 1,
    "variantsOf": 4,
-   "subtype": "Spellblade",
    "type": "Jade Ambusher"
   },
   {
@@ -15231,9 +15196,9 @@
    ],
    "templateId": "template.skyship.spellblade",
    "templateName": "Spellblade",
+   "subtype": "Spellblade",
    "variant": 2,
    "variantsOf": 4,
-   "subtype": "Spellblade",
    "type": "Frost Duelist"
   },
   {
@@ -15322,9 +15287,9 @@
    ],
    "templateId": "template.skyship.spellblade",
    "templateName": "Spellblade",
+   "subtype": "Spellblade",
    "variant": 3,
    "variantsOf": 4,
-   "subtype": "Spellblade",
    "type": "Lava Knight"
   },
   {
@@ -15413,9 +15378,9 @@
    ],
    "templateId": "template.skyship.spellblade",
    "templateName": "Spellblade",
+   "subtype": "Spellblade",
    "variant": 4,
    "variantsOf": 4,
-   "subtype": "Spellblade",
    "type": "Whipblade"
   },
   {
@@ -15510,9 +15475,9 @@
    "additionalClasses": null,
    "templateId": "template.skyship.aeronissa-priest",
    "templateName": "Aeronissa Priest",
+   "subtype": "Aeronissa Priest",
    "variant": 1,
    "variantsOf": 4,
-   "subtype": "Aeronissa Priest",
    "type": "White Pilgrim"
   },
   {
@@ -15607,9 +15572,9 @@
    "additionalClasses": null,
    "templateId": "template.skyship.aeronissa-priest",
    "templateName": "Aeronissa Priest",
+   "subtype": "Aeronissa Priest",
    "variant": 2,
    "variantsOf": 4,
-   "subtype": "Aeronissa Priest",
    "type": "Bead Whirler"
   },
   {
@@ -15704,9 +15669,9 @@
    "additionalClasses": null,
    "templateId": "template.skyship.aeronissa-priest",
    "templateName": "Aeronissa Priest",
+   "subtype": "Aeronissa Priest",
    "variant": 3,
    "variantsOf": 4,
-   "subtype": "Aeronissa Priest",
    "type": "Thunder Hermit"
   },
   {
@@ -15801,9 +15766,9 @@
    "additionalClasses": null,
    "templateId": "template.skyship.aeronissa-priest",
    "templateName": "Aeronissa Priest",
+   "subtype": "Aeronissa Priest",
    "variant": 4,
    "variantsOf": 4,
-   "subtype": "Aeronissa Priest",
    "type": "Candle Monk"
   },
   {
@@ -15909,9 +15874,9 @@
    "additionalClasses": null,
    "templateId": "template.skyship.mirran-priest",
    "templateName": "Mirran Priest",
+   "subtype": "Mirran Priest",
    "variant": 1,
    "variantsOf": 4,
-   "subtype": "Mirran Priest",
    "type": "Talisman Bearer"
   },
   {
@@ -16017,9 +15982,9 @@
    "additionalClasses": null,
    "templateId": "template.skyship.mirran-priest",
    "templateName": "Mirran Priest",
+   "subtype": "Mirran Priest",
    "variant": 2,
    "variantsOf": 4,
-   "subtype": "Mirran Priest",
    "type": "Fang Wielder"
   },
   {
@@ -16125,9 +16090,9 @@
    "additionalClasses": null,
    "templateId": "template.skyship.mirran-priest",
    "templateName": "Mirran Priest",
+   "subtype": "Mirran Priest",
    "variant": 3,
    "variantsOf": 4,
-   "subtype": "Mirran Priest",
    "type": "Storm Bringer"
   },
   {
@@ -16233,9 +16198,9 @@
    "additionalClasses": null,
    "templateId": "template.skyship.mirran-priest",
    "templateName": "Mirran Priest",
+   "subtype": "Mirran Priest",
    "variant": 4,
    "variantsOf": 4,
-   "subtype": "Mirran Priest",
    "type": "Beacon Keeper"
   },
   {
@@ -16323,9 +16288,9 @@
    "additionalClasses": null,
    "templateId": "template.skyship.vigil-of-the-fallen",
    "templateName": "Vigil of the Fallen",
+   "subtype": "Vigil of the Fallen",
    "variant": 1,
    "variantsOf": 4,
-   "subtype": "Vigil of the Fallen",
    "type": "Ash Sentinel"
   },
   {
@@ -16413,9 +16378,9 @@
    "additionalClasses": null,
    "templateId": "template.skyship.vigil-of-the-fallen",
    "templateName": "Vigil of the Fallen",
+   "subtype": "Vigil of the Fallen",
    "variant": 2,
    "variantsOf": 4,
-   "subtype": "Vigil of the Fallen",
    "type": "Grave Warden"
   },
   {
@@ -16503,9 +16468,9 @@
    "additionalClasses": null,
    "templateId": "template.skyship.vigil-of-the-fallen",
    "templateName": "Vigil of the Fallen",
+   "subtype": "Vigil of the Fallen",
    "variant": 3,
    "variantsOf": 4,
-   "subtype": "Vigil of the Fallen",
    "type": "Shrine Guard"
   },
   {
@@ -16593,9 +16558,9 @@
    "additionalClasses": null,
    "templateId": "template.skyship.vigil-of-the-fallen",
    "templateName": "Vigil of the Fallen",
+   "subtype": "Vigil of the Fallen",
    "variant": 4,
    "variantsOf": 4,
-   "subtype": "Vigil of the Fallen",
    "type": "Hall Sentry"
   },
   {
@@ -16642,7 +16607,6 @@
    ],
    "classPowers": [],
    "namedSpecials": [],
-   "damageType": null,
    "triggers": null,
    "levelBonuses": null,
    "cost": null,
@@ -16652,9 +16616,9 @@
    "additionalClasses": null,
    "templateId": "template.tutorial.warrior-iron",
    "templateName": "warrior-iron",
+   "subtype": "warrior-iron",
    "variant": 1,
-   "variantsOf": 4,
-   "subtype": "warrior-iron"
+   "variantsOf": 4
   },
   {
    "id": "hero.tutorial.warrior-iron.durin",
@@ -16700,7 +16664,6 @@
    ],
    "classPowers": [],
    "namedSpecials": [],
-   "damageType": null,
    "triggers": null,
    "levelBonuses": null,
    "cost": null,
@@ -16710,9 +16673,9 @@
    "additionalClasses": null,
    "templateId": "template.tutorial.warrior-iron",
    "templateName": "warrior-iron",
+   "subtype": "warrior-iron",
    "variant": 2,
-   "variantsOf": 4,
-   "subtype": "warrior-iron"
+   "variantsOf": 4
   },
   {
    "id": "hero.tutorial.warrior-iron.gareth",
@@ -16758,7 +16721,6 @@
    ],
    "classPowers": [],
    "namedSpecials": [],
-   "damageType": null,
    "triggers": null,
    "levelBonuses": null,
    "cost": null,
@@ -16768,9 +16730,9 @@
    "additionalClasses": null,
    "templateId": "template.tutorial.warrior-iron",
    "templateName": "warrior-iron",
+   "subtype": "warrior-iron",
    "variant": 3,
-   "variantsOf": 4,
-   "subtype": "warrior-iron"
+   "variantsOf": 4
   },
   {
    "id": "hero.tutorial.warrior-iron.thrain",
@@ -16816,7 +16778,6 @@
    ],
    "classPowers": [],
    "namedSpecials": [],
-   "damageType": null,
    "triggers": null,
    "levelBonuses": null,
    "cost": null,
@@ -16826,9 +16787,9 @@
    "additionalClasses": null,
    "templateId": "template.tutorial.warrior-iron",
    "templateName": "warrior-iron",
+   "subtype": "warrior-iron",
    "variant": 4,
-   "variantsOf": 4,
-   "subtype": "warrior-iron"
+   "variantsOf": 4
   },
   {
    "id": "hero.tutorial.warrior-fearsome.theron",
@@ -16874,7 +16835,6 @@
    ],
    "classPowers": [],
    "namedSpecials": [],
-   "damageType": null,
    "triggers": null,
    "levelBonuses": null,
    "cost": null,
@@ -16884,9 +16844,9 @@
    "additionalClasses": null,
    "templateId": "template.tutorial.warrior-fearsome",
    "templateName": "warrior-fearsome",
+   "subtype": "warrior-fearsome",
    "variant": 1,
-   "variantsOf": 4,
-   "subtype": "warrior-fearsome"
+   "variantsOf": 4
   },
   {
    "id": "hero.tutorial.warrior-fearsome.dolgrim",
@@ -16932,7 +16892,6 @@
    ],
    "classPowers": [],
    "namedSpecials": [],
-   "damageType": null,
    "triggers": null,
    "levelBonuses": null,
    "cost": null,
@@ -16942,9 +16901,9 @@
    "additionalClasses": null,
    "templateId": "template.tutorial.warrior-fearsome",
    "templateName": "warrior-fearsome",
+   "subtype": "warrior-fearsome",
    "variant": 2,
-   "variantsOf": 4,
-   "subtype": "warrior-fearsome"
+   "variantsOf": 4
   },
   {
    "id": "hero.tutorial.warrior-fearsome.ulric",
@@ -16991,7 +16950,6 @@
    ],
    "classPowers": [],
    "namedSpecials": [],
-   "damageType": null,
    "triggers": null,
    "levelBonuses": null,
    "cost": null,
@@ -17001,9 +16959,9 @@
    "additionalClasses": null,
    "templateId": "template.tutorial.warrior-fearsome",
    "templateName": "warrior-fearsome",
+   "subtype": "warrior-fearsome",
    "variant": 3,
-   "variantsOf": 4,
-   "subtype": "warrior-fearsome"
+   "variantsOf": 4
   },
   {
    "id": "hero.tutorial.warrior-fearsome.hrothgar",
@@ -17050,7 +17008,6 @@
    ],
    "classPowers": [],
    "namedSpecials": [],
-   "damageType": null,
    "triggers": null,
    "levelBonuses": null,
    "cost": null,
@@ -17060,9 +17017,9 @@
    "additionalClasses": null,
    "templateId": "template.tutorial.warrior-fearsome",
    "templateName": "warrior-fearsome",
+   "subtype": "warrior-fearsome",
    "variant": 4,
-   "variantsOf": 4,
-   "subtype": "warrior-fearsome"
+   "variantsOf": 4
   },
   {
    "id": "hero.tutorial.warrior-barbarian.leif",
@@ -17108,7 +17065,6 @@
    ],
    "classPowers": [],
    "namedSpecials": [],
-   "damageType": null,
    "triggers": null,
    "levelBonuses": null,
    "cost": null,
@@ -17118,9 +17074,9 @@
    "additionalClasses": null,
    "templateId": "template.tutorial.warrior-barbarian",
    "templateName": "warrior-barbarian",
+   "subtype": "warrior-barbarian",
    "variant": 1,
-   "variantsOf": 4,
-   "subtype": "warrior-barbarian"
+   "variantsOf": 4
   },
   {
    "id": "hero.tutorial.warrior-barbarian.magni",
@@ -17166,7 +17122,6 @@
    ],
    "classPowers": [],
    "namedSpecials": [],
-   "damageType": null,
    "triggers": null,
    "levelBonuses": null,
    "cost": null,
@@ -17176,9 +17131,9 @@
    "additionalClasses": null,
    "templateId": "template.tutorial.warrior-barbarian",
    "templateName": "warrior-barbarian",
+   "subtype": "warrior-barbarian",
    "variant": 2,
-   "variantsOf": 4,
-   "subtype": "warrior-barbarian"
+   "variantsOf": 4
   },
   {
    "id": "hero.tutorial.warrior-barbarian.harald",
@@ -17227,7 +17182,6 @@
    ],
    "classPowers": [],
    "namedSpecials": [],
-   "damageType": null,
    "triggers": null,
    "levelBonuses": null,
    "cost": null,
@@ -17237,9 +17191,9 @@
    "additionalClasses": null,
    "templateId": "template.tutorial.warrior-barbarian",
    "templateName": "warrior-barbarian",
+   "subtype": "warrior-barbarian",
    "variant": 3,
-   "variantsOf": 4,
-   "subtype": "warrior-barbarian"
+   "variantsOf": 4
   },
   {
    "id": "hero.tutorial.warrior-barbarian.balin",
@@ -17288,7 +17242,6 @@
    ],
    "classPowers": [],
    "namedSpecials": [],
-   "damageType": null,
    "triggers": null,
    "levelBonuses": null,
    "cost": null,
@@ -17298,9 +17251,9 @@
    "additionalClasses": null,
    "templateId": "template.tutorial.warrior-barbarian",
    "templateName": "warrior-barbarian",
+   "subtype": "warrior-barbarian",
    "variant": 4,
-   "variantsOf": 4,
-   "subtype": "warrior-barbarian"
+   "variantsOf": 4
   },
   {
    "id": "hero.tutorial.warrior-brawler.finn",
@@ -17346,7 +17299,6 @@
    ],
    "classPowers": [],
    "namedSpecials": [],
-   "damageType": null,
    "triggers": null,
    "levelBonuses": null,
    "cost": null,
@@ -17356,9 +17308,9 @@
    "additionalClasses": null,
    "templateId": "template.tutorial.warrior-brawler",
    "templateName": "warrior-brawler",
+   "subtype": "warrior-brawler",
    "variant": 1,
-   "variantsOf": 4,
-   "subtype": "warrior-brawler"
+   "variantsOf": 4
   },
   {
    "id": "hero.tutorial.warrior-brawler.nori",
@@ -17404,7 +17356,6 @@
    ],
    "classPowers": [],
    "namedSpecials": [],
-   "damageType": null,
    "triggers": null,
    "levelBonuses": null,
    "cost": null,
@@ -17414,9 +17365,9 @@
    "additionalClasses": null,
    "templateId": "template.tutorial.warrior-brawler",
    "templateName": "warrior-brawler",
+   "subtype": "warrior-brawler",
    "variant": 2,
-   "variantsOf": 4,
-   "subtype": "warrior-brawler"
+   "variantsOf": 4
   },
   {
    "id": "hero.tutorial.warrior-brawler.quinn",
@@ -17462,7 +17413,6 @@
    ],
    "classPowers": [],
    "namedSpecials": [],
-   "damageType": null,
    "triggers": null,
    "levelBonuses": null,
    "cost": null,
@@ -17472,9 +17422,9 @@
    "additionalClasses": null,
    "templateId": "template.tutorial.warrior-brawler",
    "templateName": "warrior-brawler",
+   "subtype": "warrior-brawler",
    "variant": 3,
-   "variantsOf": 4,
-   "subtype": "warrior-brawler"
+   "variantsOf": 4
   },
   {
    "id": "hero.tutorial.warrior-brawler.gloin",
@@ -17520,7 +17470,6 @@
    ],
    "classPowers": [],
    "namedSpecials": [],
-   "damageType": null,
    "triggers": null,
    "levelBonuses": null,
    "cost": null,
@@ -17530,9 +17479,9 @@
    "additionalClasses": null,
    "templateId": "template.tutorial.warrior-brawler",
    "templateName": "warrior-brawler",
+   "subtype": "warrior-brawler",
    "variant": 4,
-   "variantsOf": 4,
-   "subtype": "warrior-brawler"
+   "variantsOf": 4
   },
   {
    "id": "hero.tutorial.mage-fire.seraphina",
@@ -17578,7 +17527,6 @@
    ],
    "classPowers": [],
    "namedSpecials": [],
-   "damageType": null,
    "triggers": null,
    "levelBonuses": null,
    "cost": null,
@@ -17588,9 +17536,9 @@
    "additionalClasses": null,
    "templateId": "template.tutorial.mage-fire",
    "templateName": "mage-fire",
+   "subtype": "mage-fire",
    "variant": 1,
-   "variantsOf": 4,
-   "subtype": "mage-fire"
+   "variantsOf": 4
   },
   {
    "id": "hero.tutorial.mage-fire.elara",
@@ -17636,7 +17584,6 @@
    ],
    "classPowers": [],
    "namedSpecials": [],
-   "damageType": null,
    "triggers": null,
    "levelBonuses": null,
    "cost": null,
@@ -17646,9 +17593,9 @@
    "additionalClasses": null,
    "templateId": "template.tutorial.mage-fire",
    "templateName": "mage-fire",
+   "subtype": "mage-fire",
    "variant": 2,
-   "variantsOf": 4,
-   "subtype": "mage-fire"
+   "variantsOf": 4
   },
   {
    "id": "hero.tutorial.mage-fire.ignacia",
@@ -17697,7 +17644,6 @@
    ],
    "classPowers": [],
    "namedSpecials": [],
-   "damageType": null,
    "triggers": null,
    "levelBonuses": null,
    "cost": null,
@@ -17707,9 +17653,9 @@
    "additionalClasses": null,
    "templateId": "template.tutorial.mage-fire",
    "templateName": "mage-fire",
+   "subtype": "mage-fire",
    "variant": 3,
-   "variantsOf": 4,
-   "subtype": "mage-fire"
+   "variantsOf": 4
   },
   {
    "id": "hero.tutorial.mage-fire.pyrra",
@@ -17758,7 +17704,6 @@
    ],
    "classPowers": [],
    "namedSpecials": [],
-   "damageType": null,
    "triggers": null,
    "levelBonuses": null,
    "cost": null,
@@ -17768,9 +17713,9 @@
    "additionalClasses": null,
    "templateId": "template.tutorial.mage-fire",
    "templateName": "mage-fire",
+   "subtype": "mage-fire",
    "variant": 4,
-   "variantsOf": 4,
-   "subtype": "mage-fire"
+   "variantsOf": 4
   },
   {
    "id": "hero.tutorial.mage-fireaura.elena",
@@ -17816,7 +17761,6 @@
    ],
    "classPowers": [],
    "namedSpecials": [],
-   "damageType": null,
    "triggers": null,
    "levelBonuses": null,
    "cost": null,
@@ -17826,9 +17770,9 @@
    "additionalClasses": null,
    "templateId": "template.tutorial.mage-fireaura",
    "templateName": "mage-fireaura",
+   "subtype": "mage-fireaura",
    "variant": 1,
-   "variantsOf": 4,
-   "subtype": "mage-fireaura"
+   "variantsOf": 4
   },
   {
    "id": "hero.tutorial.mage-fireaura.ember",
@@ -17874,7 +17818,6 @@
    ],
    "classPowers": [],
    "namedSpecials": [],
-   "damageType": null,
    "triggers": null,
    "levelBonuses": null,
    "cost": null,
@@ -17884,9 +17827,9 @@
    "additionalClasses": null,
    "templateId": "template.tutorial.mage-fireaura",
    "templateName": "mage-fireaura",
+   "subtype": "mage-fireaura",
    "variant": 2,
-   "variantsOf": 4,
-   "subtype": "mage-fireaura"
+   "variantsOf": 4
   },
   {
    "id": "hero.tutorial.mage-fireaura.freya",
@@ -17930,7 +17873,6 @@
    "originBadges": [],
    "classPowers": [],
    "namedSpecials": [],
-   "damageType": null,
    "triggers": null,
    "levelBonuses": null,
    "cost": null,
@@ -17940,9 +17882,9 @@
    "additionalClasses": null,
    "templateId": "template.tutorial.mage-fireaura",
    "templateName": "mage-fireaura",
+   "subtype": "mage-fireaura",
    "variant": 3,
-   "variantsOf": 4,
-   "subtype": "mage-fireaura"
+   "variantsOf": 4
   },
   {
    "id": "hero.tutorial.mage-fireaura.solara",
@@ -17986,7 +17928,6 @@
    "originBadges": [],
    "classPowers": [],
    "namedSpecials": [],
-   "damageType": null,
    "triggers": null,
    "levelBonuses": null,
    "cost": null,
@@ -17996,9 +17937,9 @@
    "additionalClasses": null,
    "templateId": "template.tutorial.mage-fireaura",
    "templateName": "mage-fireaura",
+   "subtype": "mage-fireaura",
    "variant": 4,
-   "variantsOf": 4,
-   "subtype": "mage-fireaura"
+   "variantsOf": 4
   },
   {
    "id": "hero.tutorial.mage-thinking.cedra",
@@ -18044,7 +17985,6 @@
    ],
    "classPowers": [],
    "namedSpecials": [],
-   "damageType": null,
    "triggers": null,
    "levelBonuses": null,
    "cost": null,
@@ -18054,9 +17994,9 @@
    "additionalClasses": null,
    "templateId": "template.tutorial.mage-thinking",
    "templateName": "mage-thinking",
+   "subtype": "mage-thinking",
    "variant": 1,
-   "variantsOf": 4,
-   "subtype": "mage-thinking"
+   "variantsOf": 4
   },
   {
    "id": "hero.tutorial.mage-thinking.thessaly",
@@ -18102,7 +18042,6 @@
    ],
    "classPowers": [],
    "namedSpecials": [],
-   "damageType": null,
    "triggers": null,
    "levelBonuses": null,
    "cost": null,
@@ -18112,9 +18051,9 @@
    "additionalClasses": null,
    "templateId": "template.tutorial.mage-thinking",
    "templateName": "mage-thinking",
+   "subtype": "mage-thinking",
    "variant": 2,
-   "variantsOf": 4,
-   "subtype": "mage-thinking"
+   "variantsOf": 4
   },
   {
    "id": "hero.tutorial.mage-thinking.benedicta",
@@ -18160,7 +18099,6 @@
    ],
    "classPowers": [],
    "namedSpecials": [],
-   "damageType": null,
    "triggers": null,
    "levelBonuses": null,
    "cost": null,
@@ -18170,9 +18108,9 @@
    "additionalClasses": null,
    "templateId": "template.tutorial.mage-thinking",
    "templateName": "mage-thinking",
+   "subtype": "mage-thinking",
    "variant": 3,
-   "variantsOf": 4,
-   "subtype": "mage-thinking"
+   "variantsOf": 4
   },
   {
    "id": "hero.tutorial.mage-thinking.minerva",
@@ -18218,7 +18156,6 @@
    ],
    "classPowers": [],
    "namedSpecials": [],
-   "damageType": null,
    "triggers": null,
    "levelBonuses": null,
    "cost": null,
@@ -18228,9 +18165,9 @@
    "additionalClasses": null,
    "templateId": "template.tutorial.mage-thinking",
    "templateName": "mage-thinking",
+   "subtype": "mage-thinking",
    "variant": 4,
-   "variantsOf": 4,
-   "subtype": "mage-thinking"
+   "variantsOf": 4
   },
   {
    "id": "hero.tutorial.mage-sexy.vera",
@@ -18279,7 +18216,6 @@
    ],
    "classPowers": [],
    "namedSpecials": [],
-   "damageType": null,
    "triggers": null,
    "levelBonuses": null,
    "cost": null,
@@ -18289,9 +18225,9 @@
    "additionalClasses": null,
    "templateId": "template.tutorial.mage-sexy",
    "templateName": "mage-sexy",
+   "subtype": "mage-sexy",
    "variant": 1,
-   "variantsOf": 4,
-   "subtype": "mage-sexy"
+   "variantsOf": 4
   },
   {
    "id": "hero.tutorial.mage-sexy.vesper",
@@ -18340,7 +18276,6 @@
    ],
    "classPowers": [],
    "namedSpecials": [],
-   "damageType": null,
    "triggers": null,
    "levelBonuses": null,
    "cost": null,
@@ -18350,9 +18285,9 @@
    "additionalClasses": null,
    "templateId": "template.tutorial.mage-sexy",
    "templateName": "mage-sexy",
+   "subtype": "mage-sexy",
    "variant": 2,
-   "variantsOf": 4,
-   "subtype": "mage-sexy"
+   "variantsOf": 4
   },
   {
    "id": "hero.tutorial.mage-sexy.celeste",
@@ -18399,7 +18334,6 @@
    ],
    "classPowers": [],
    "namedSpecials": [],
-   "damageType": null,
    "triggers": null,
    "levelBonuses": null,
    "cost": null,
@@ -18409,9 +18343,9 @@
    "additionalClasses": null,
    "templateId": "template.tutorial.mage-sexy",
    "templateName": "mage-sexy",
+   "subtype": "mage-sexy",
    "variant": 3,
-   "variantsOf": 4,
-   "subtype": "mage-sexy"
+   "variantsOf": 4
   },
   {
    "id": "hero.tutorial.mage-sexy.starla",
@@ -18458,7 +18392,6 @@
    ],
    "classPowers": [],
    "namedSpecials": [],
-   "damageType": null,
    "triggers": null,
    "levelBonuses": null,
    "cost": null,
@@ -18468,9 +18401,9 @@
    "additionalClasses": null,
    "templateId": "template.tutorial.mage-sexy",
    "templateName": "mage-sexy",
+   "subtype": "mage-sexy",
    "variant": 4,
-   "variantsOf": 4,
-   "subtype": "mage-sexy"
+   "variantsOf": 4
   },
   {
    "id": "hero.tutorial.priest-armored.marcus",
@@ -18516,7 +18449,6 @@
    ],
    "classPowers": [],
    "namedSpecials": [],
-   "damageType": null,
    "triggers": null,
    "levelBonuses": null,
    "cost": null,
@@ -18526,9 +18458,9 @@
    "additionalClasses": null,
    "templateId": "template.tutorial.priest-armored",
    "templateName": "priest-armored",
+   "subtype": "priest-armored",
    "variant": 1,
-   "variantsOf": 4,
-   "subtype": "priest-armored"
+   "variantsOf": 4
   },
   {
    "id": "hero.tutorial.priest-armored.aldous",
@@ -18574,7 +18506,6 @@
    ],
    "classPowers": [],
    "namedSpecials": [],
-   "damageType": null,
    "triggers": null,
    "levelBonuses": null,
    "cost": null,
@@ -18584,9 +18515,9 @@
    "additionalClasses": null,
    "templateId": "template.tutorial.priest-armored",
    "templateName": "priest-armored",
+   "subtype": "priest-armored",
    "variant": 2,
-   "variantsOf": 4,
-   "subtype": "priest-armored"
+   "variantsOf": 4
   },
   {
    "id": "hero.tutorial.priest-armored.conrad",
@@ -18633,7 +18564,6 @@
    ],
    "classPowers": [],
    "namedSpecials": [],
-   "damageType": null,
    "triggers": null,
    "levelBonuses": null,
    "cost": null,
@@ -18643,9 +18573,9 @@
    "additionalClasses": null,
    "templateId": "template.tutorial.priest-armored",
    "templateName": "priest-armored",
+   "subtype": "priest-armored",
    "variant": 3,
-   "variantsOf": 4,
-   "subtype": "priest-armored"
+   "variantsOf": 4
   },
   {
    "id": "hero.tutorial.priest-armored.mordecai",
@@ -18692,7 +18622,6 @@
    ],
    "classPowers": [],
    "namedSpecials": [],
-   "damageType": null,
    "triggers": null,
    "levelBonuses": null,
    "cost": null,
@@ -18702,9 +18631,9 @@
    "additionalClasses": null,
    "templateId": "template.tutorial.priest-armored",
    "templateName": "priest-armored",
+   "subtype": "priest-armored",
    "variant": 4,
-   "variantsOf": 4,
-   "subtype": "priest-armored"
+   "variantsOf": 4
   },
   {
    "id": "hero.tutorial.priest-pauper.silas",
@@ -18748,7 +18677,6 @@
    "originBadges": [],
    "classPowers": [],
    "namedSpecials": [],
-   "damageType": null,
    "triggers": null,
    "levelBonuses": null,
    "cost": null,
@@ -18758,9 +18686,9 @@
    "additionalClasses": null,
    "templateId": "template.tutorial.priest-pauper",
    "templateName": "priest-pauper",
+   "subtype": "priest-pauper",
    "variant": 1,
-   "variantsOf": 4,
-   "subtype": "priest-pauper"
+   "variantsOf": 4
   },
   {
    "id": "hero.tutorial.priest-pauper.matthias",
@@ -18804,7 +18732,6 @@
    "originBadges": [],
    "classPowers": [],
    "namedSpecials": [],
-   "damageType": null,
    "triggers": null,
    "levelBonuses": null,
    "cost": null,
@@ -18814,9 +18741,9 @@
    "additionalClasses": null,
    "templateId": "template.tutorial.priest-pauper",
    "templateName": "priest-pauper",
+   "subtype": "priest-pauper",
    "variant": 2,
-   "variantsOf": 4,
-   "subtype": "priest-pauper"
+   "variantsOf": 4
   },
   {
    "id": "hero.tutorial.priest-pauper.yorick",
@@ -18862,7 +18789,6 @@
    ],
    "classPowers": [],
    "namedSpecials": [],
-   "damageType": null,
    "triggers": null,
    "levelBonuses": null,
    "cost": null,
@@ -18872,9 +18798,9 @@
    "additionalClasses": null,
    "templateId": "template.tutorial.priest-pauper",
    "templateName": "priest-pauper",
+   "subtype": "priest-pauper",
    "variant": 3,
-   "variantsOf": 4,
-   "subtype": "priest-pauper"
+   "variantsOf": 4
   },
   {
    "id": "hero.tutorial.priest-pauper.ezekiel",
@@ -18920,7 +18846,6 @@
    ],
    "classPowers": [],
    "namedSpecials": [],
-   "damageType": null,
    "triggers": null,
    "levelBonuses": null,
    "cost": null,
@@ -18930,9 +18855,9 @@
    "additionalClasses": null,
    "templateId": "template.tutorial.priest-pauper",
    "templateName": "priest-pauper",
+   "subtype": "priest-pauper",
    "variant": 4,
-   "variantsOf": 4,
-   "subtype": "priest-pauper"
+   "variantsOf": 4
   },
   {
    "id": "hero.tutorial.priest-robes.gregory",
@@ -18978,7 +18903,6 @@
    ],
    "classPowers": [],
    "namedSpecials": [],
-   "damageType": null,
    "triggers": null,
    "levelBonuses": null,
    "cost": null,
@@ -18988,9 +18912,9 @@
    "additionalClasses": null,
    "templateId": "template.tutorial.priest-robes",
    "templateName": "priest-robes",
+   "subtype": "priest-robes",
    "variant": 1,
-   "variantsOf": 4,
-   "subtype": "priest-robes"
+   "variantsOf": 4
   },
   {
    "id": "hero.tutorial.priest-robes.anselm",
@@ -19036,7 +18960,6 @@
    ],
    "classPowers": [],
    "namedSpecials": [],
-   "damageType": null,
    "triggers": null,
    "levelBonuses": null,
    "cost": null,
@@ -19046,9 +18969,9 @@
    "additionalClasses": null,
    "templateId": "template.tutorial.priest-robes",
    "templateName": "priest-robes",
+   "subtype": "priest-robes",
    "variant": 2,
-   "variantsOf": 4,
-   "subtype": "priest-robes"
+   "variantsOf": 4
   },
   {
    "id": "hero.tutorial.priest-robes.lawrence",
@@ -19094,7 +19017,6 @@
    ],
    "classPowers": [],
    "namedSpecials": [],
-   "damageType": null,
    "triggers": null,
    "levelBonuses": null,
    "cost": null,
@@ -19104,9 +19026,9 @@
    "additionalClasses": null,
    "templateId": "template.tutorial.priest-robes",
    "templateName": "priest-robes",
+   "subtype": "priest-robes",
    "variant": 3,
-   "variantsOf": 4,
-   "subtype": "priest-robes"
+   "variantsOf": 4
   },
   {
    "id": "hero.tutorial.priest-robes.cornelius",
@@ -19152,7 +19074,6 @@
    ],
    "classPowers": [],
    "namedSpecials": [],
-   "damageType": null,
    "triggers": null,
    "levelBonuses": null,
    "cost": null,
@@ -19162,9 +19083,9 @@
    "additionalClasses": null,
    "templateId": "template.tutorial.priest-robes",
    "templateName": "priest-robes",
+   "subtype": "priest-robes",
    "variant": 4,
-   "variantsOf": 4,
-   "subtype": "priest-robes"
+   "variantsOf": 4
   },
   {
    "id": "hero.tutorial.priest-scantily.lucius",
@@ -19213,7 +19134,6 @@
    ],
    "classPowers": [],
    "namedSpecials": [],
-   "damageType": null,
    "triggers": null,
    "levelBonuses": null,
    "cost": null,
@@ -19223,9 +19143,9 @@
    "additionalClasses": null,
    "templateId": "template.tutorial.priest-scantily",
    "templateName": "priest-scantily",
+   "subtype": "priest-scantily",
    "variant": 1,
-   "variantsOf": 4,
-   "subtype": "priest-scantily"
+   "variantsOf": 4
   },
   {
    "id": "hero.tutorial.priest-scantily.cassius",
@@ -19274,7 +19194,6 @@
    ],
    "classPowers": [],
    "namedSpecials": [],
-   "damageType": null,
    "triggers": null,
    "levelBonuses": null,
    "cost": null,
@@ -19284,9 +19203,9 @@
    "additionalClasses": null,
    "templateId": "template.tutorial.priest-scantily",
    "templateName": "priest-scantily",
+   "subtype": "priest-scantily",
    "variant": 2,
-   "variantsOf": 4,
-   "subtype": "priest-scantily"
+   "variantsOf": 4
   },
   {
    "id": "hero.tutorial.priest-scantily.iris",
@@ -19332,7 +19251,6 @@
    ],
    "classPowers": [],
    "namedSpecials": [],
-   "damageType": null,
    "triggers": null,
    "levelBonuses": null,
    "cost": null,
@@ -19342,9 +19260,9 @@
    "additionalClasses": null,
    "templateId": "template.tutorial.priest-scantily",
    "templateName": "priest-scantily",
+   "subtype": "priest-scantily",
    "variant": 3,
-   "variantsOf": 4,
-   "subtype": "priest-scantily"
+   "variantsOf": 4
   },
   {
    "id": "hero.tutorial.priest-scantily.orion",
@@ -19390,7 +19308,6 @@
    ],
    "classPowers": [],
    "namedSpecials": [],
-   "damageType": null,
    "triggers": null,
    "levelBonuses": null,
    "cost": null,
@@ -19400,9 +19317,9 @@
    "additionalClasses": null,
    "templateId": "template.tutorial.priest-scantily",
    "templateName": "priest-scantily",
+   "subtype": "priest-scantily",
    "variant": 4,
-   "variantsOf": 4,
-   "subtype": "priest-scantily"
+   "variantsOf": 4
   },
   {
    "id": "hero.tutorial.paladin-dark.roland",
@@ -19449,7 +19366,6 @@
    ],
    "classPowers": [],
    "namedSpecials": [],
-   "damageType": null,
    "triggers": null,
    "levelBonuses": null,
    "cost": null,
@@ -19459,9 +19375,9 @@
    "additionalClasses": null,
    "templateId": "template.tutorial.paladin-dark",
    "templateName": "paladin-dark",
+   "subtype": "paladin-dark",
    "variant": 1,
-   "variantsOf": 4,
-   "subtype": "paladin-dark"
+   "variantsOf": 4
   },
   {
    "id": "hero.tutorial.paladin-dark.malachar",
@@ -19508,7 +19424,6 @@
    ],
    "classPowers": [],
    "namedSpecials": [],
-   "damageType": null,
    "triggers": null,
    "levelBonuses": null,
    "cost": null,
@@ -19518,9 +19433,9 @@
    "additionalClasses": null,
    "templateId": "template.tutorial.paladin-dark",
    "templateName": "paladin-dark",
+   "subtype": "paladin-dark",
    "variant": 2,
-   "variantsOf": 4,
-   "subtype": "paladin-dark"
+   "variantsOf": 4
   },
   {
    "id": "hero.tutorial.paladin-dark.viktor",
@@ -19567,7 +19482,6 @@
    ],
    "classPowers": [],
    "namedSpecials": [],
-   "damageType": null,
    "triggers": null,
    "levelBonuses": null,
    "cost": null,
@@ -19577,9 +19491,9 @@
    "additionalClasses": null,
    "templateId": "template.tutorial.paladin-dark",
    "templateName": "paladin-dark",
+   "subtype": "paladin-dark",
    "variant": 3,
-   "variantsOf": 4,
-   "subtype": "paladin-dark"
+   "variantsOf": 4
   },
   {
    "id": "hero.tutorial.paladin-dark.damien",
@@ -19626,7 +19540,6 @@
    ],
    "classPowers": [],
    "namedSpecials": [],
-   "damageType": null,
    "triggers": null,
    "levelBonuses": null,
    "cost": null,
@@ -19636,9 +19549,9 @@
    "additionalClasses": null,
    "templateId": "template.tutorial.paladin-dark",
    "templateName": "paladin-dark",
+   "subtype": "paladin-dark",
    "variant": 4,
-   "variantsOf": 4,
-   "subtype": "paladin-dark"
+   "variantsOf": 4
   },
   {
    "id": "hero.tutorial.paladin-hunk.percival",
@@ -19686,7 +19599,6 @@
    ],
    "classPowers": [],
    "namedSpecials": [],
-   "damageType": null,
    "triggers": null,
    "levelBonuses": null,
    "cost": null,
@@ -19696,9 +19608,9 @@
    "additionalClasses": null,
    "templateId": "template.tutorial.paladin-hunk",
    "templateName": "paladin-hunk",
+   "subtype": "paladin-hunk",
    "variant": 1,
-   "variantsOf": 4,
-   "subtype": "paladin-hunk"
+   "variantsOf": 4
   },
   {
    "id": "hero.tutorial.paladin-hunk.galahad",
@@ -19746,7 +19658,6 @@
    ],
    "classPowers": [],
    "namedSpecials": [],
-   "damageType": null,
    "triggers": null,
    "levelBonuses": null,
    "cost": null,
@@ -19756,9 +19667,9 @@
    "additionalClasses": null,
    "templateId": "template.tutorial.paladin-hunk",
    "templateName": "paladin-hunk",
+   "subtype": "paladin-hunk",
    "variant": 2,
-   "variantsOf": 4,
-   "subtype": "paladin-hunk"
+   "variantsOf": 4
   },
   {
    "id": "hero.tutorial.paladin-hunk.dominic",
@@ -19805,7 +19716,6 @@
    ],
    "classPowers": [],
    "namedSpecials": [],
-   "damageType": null,
    "triggers": null,
    "levelBonuses": null,
    "cost": null,
@@ -19815,9 +19725,9 @@
    "additionalClasses": null,
    "templateId": "template.tutorial.paladin-hunk",
    "templateName": "paladin-hunk",
+   "subtype": "paladin-hunk",
    "variant": 3,
-   "variantsOf": 4,
-   "subtype": "paladin-hunk"
+   "variantsOf": 4
   },
   {
    "id": "hero.tutorial.paladin-hunk.adonis",
@@ -19864,7 +19774,6 @@
    ],
    "classPowers": [],
    "namedSpecials": [],
-   "damageType": null,
    "triggers": null,
    "levelBonuses": null,
    "cost": null,
@@ -19874,9 +19783,9 @@
    "additionalClasses": null,
    "templateId": "template.tutorial.paladin-hunk",
    "templateName": "paladin-hunk",
+   "subtype": "paladin-hunk",
    "variant": 4,
-   "variantsOf": 4,
-   "subtype": "paladin-hunk"
+   "variantsOf": 4
   },
   {
    "id": "hero.tutorial.paladin-shiney.osric",
@@ -19923,7 +19832,6 @@
    ],
    "classPowers": [],
    "namedSpecials": [],
-   "damageType": null,
    "triggers": null,
    "levelBonuses": null,
    "cost": null,
@@ -19933,9 +19841,9 @@
    "additionalClasses": null,
    "templateId": "template.tutorial.paladin-shiney",
    "templateName": "paladin-shiney",
+   "subtype": "paladin-shiney",
    "variant": 1,
-   "variantsOf": 4,
-   "subtype": "paladin-shiney"
+   "variantsOf": 4
   },
   {
    "id": "hero.tutorial.paladin-shiney.lucian",
@@ -19982,7 +19890,6 @@
    ],
    "classPowers": [],
    "namedSpecials": [],
-   "damageType": null,
    "triggers": null,
    "levelBonuses": null,
    "cost": null,
@@ -19992,9 +19899,9 @@
    "additionalClasses": null,
    "templateId": "template.tutorial.paladin-shiney",
    "templateName": "paladin-shiney",
+   "subtype": "paladin-shiney",
    "variant": 2,
-   "variantsOf": 4,
-   "subtype": "paladin-shiney"
+   "variantsOf": 4
   },
   {
    "id": "hero.tutorial.paladin-shiney.edmund",
@@ -20041,7 +19948,6 @@
    ],
    "classPowers": [],
    "namedSpecials": [],
-   "damageType": null,
    "triggers": null,
    "levelBonuses": null,
    "cost": null,
@@ -20051,9 +19957,9 @@
    "additionalClasses": null,
    "templateId": "template.tutorial.paladin-shiney",
    "templateName": "paladin-shiney",
+   "subtype": "paladin-shiney",
    "variant": 3,
-   "variantsOf": 4,
-   "subtype": "paladin-shiney"
+   "variantsOf": 4
   },
   {
    "id": "hero.tutorial.paladin-shiney.aurelius",
@@ -20100,7 +20006,6 @@
    ],
    "classPowers": [],
    "namedSpecials": [],
-   "damageType": null,
    "triggers": null,
    "levelBonuses": null,
    "cost": null,
@@ -20110,9 +20015,9 @@
    "additionalClasses": null,
    "templateId": "template.tutorial.paladin-shiney",
    "templateName": "paladin-shiney",
+   "subtype": "paladin-shiney",
    "variant": 4,
-   "variantsOf": 4,
-   "subtype": "paladin-shiney"
+   "variantsOf": 4
   },
   {
    "id": "hero.tutorial.paladin-smug.alaric",
@@ -20159,7 +20064,6 @@
    ],
    "classPowers": [],
    "namedSpecials": [],
-   "damageType": null,
    "triggers": null,
    "levelBonuses": null,
    "cost": null,
@@ -20169,9 +20073,9 @@
    "additionalClasses": null,
    "templateId": "template.tutorial.paladin-smug",
    "templateName": "paladin-smug",
+   "subtype": "paladin-smug",
    "variant": 1,
-   "variantsOf": 4,
-   "subtype": "paladin-smug"
+   "variantsOf": 4
   },
   {
    "id": "hero.tutorial.paladin-smug.constantine",
@@ -20218,7 +20122,6 @@
    ],
    "classPowers": [],
    "namedSpecials": [],
-   "damageType": null,
    "triggers": null,
    "levelBonuses": null,
    "cost": null,
@@ -20228,9 +20131,9 @@
    "additionalClasses": null,
    "templateId": "template.tutorial.paladin-smug",
    "templateName": "paladin-smug",
+   "subtype": "paladin-smug",
    "variant": 2,
-   "variantsOf": 4,
-   "subtype": "paladin-smug"
+   "variantsOf": 4
   },
   {
    "id": "hero.tutorial.paladin-smug.felix",
@@ -20277,7 +20180,6 @@
    ],
    "classPowers": [],
    "namedSpecials": [],
-   "damageType": null,
    "triggers": null,
    "levelBonuses": null,
    "cost": null,
@@ -20287,9 +20189,9 @@
    "additionalClasses": null,
    "templateId": "template.tutorial.paladin-smug",
    "templateName": "paladin-smug",
+   "subtype": "paladin-smug",
    "variant": 3,
-   "variantsOf": 4,
-   "subtype": "paladin-smug"
+   "variantsOf": 4
   },
   {
    "id": "hero.tutorial.paladin-smug.valerian",
@@ -20336,7 +20238,6 @@
    ],
    "classPowers": [],
    "namedSpecials": [],
-   "damageType": null,
    "triggers": null,
    "levelBonuses": null,
    "cost": null,
@@ -20346,9 +20247,9 @@
    "additionalClasses": null,
    "templateId": "template.tutorial.paladin-smug",
    "templateName": "paladin-smug",
+   "subtype": "paladin-smug",
    "variant": 4,
-   "variantsOf": 4,
-   "subtype": "paladin-smug"
+   "variantsOf": 4
   },
   {
    "id": "hero.tutorial.ranger-aggressive.kira",
@@ -20392,7 +20293,6 @@
    "originBadges": [],
    "classPowers": [],
    "namedSpecials": [],
-   "damageType": null,
    "triggers": null,
    "levelBonuses": null,
    "cost": null,
@@ -20402,9 +20302,9 @@
    "additionalClasses": null,
    "templateId": "template.tutorial.ranger-aggressive",
    "templateName": "ranger-aggressive",
+   "subtype": "ranger-aggressive",
    "variant": 1,
-   "variantsOf": 4,
-   "subtype": "ranger-aggressive"
+   "variantsOf": 4
   },
   {
    "id": "hero.tutorial.ranger-aggressive.artemis",
@@ -20448,7 +20348,6 @@
    "originBadges": [],
    "classPowers": [],
    "namedSpecials": [],
-   "damageType": null,
    "triggers": null,
    "levelBonuses": null,
    "cost": null,
@@ -20458,9 +20357,9 @@
    "additionalClasses": null,
    "templateId": "template.tutorial.ranger-aggressive",
    "templateName": "ranger-aggressive",
+   "subtype": "ranger-aggressive",
    "variant": 2,
-   "variantsOf": 4,
-   "subtype": "ranger-aggressive"
+   "variantsOf": 4
   },
   {
    "id": "hero.tutorial.ranger-aggressive.eryka",
@@ -20509,7 +20408,6 @@
    ],
    "classPowers": [],
    "namedSpecials": [],
-   "damageType": null,
    "triggers": null,
    "levelBonuses": null,
    "cost": null,
@@ -20519,9 +20417,9 @@
    "additionalClasses": null,
    "templateId": "template.tutorial.ranger-aggressive",
    "templateName": "ranger-aggressive",
+   "subtype": "ranger-aggressive",
    "variant": 3,
-   "variantsOf": 4,
-   "subtype": "ranger-aggressive"
+   "variantsOf": 4
   },
   {
    "id": "hero.tutorial.ranger-aggressive.nemesis",
@@ -20570,7 +20468,6 @@
    ],
    "classPowers": [],
    "namedSpecials": [],
-   "damageType": null,
    "triggers": null,
    "levelBonuses": null,
    "cost": null,
@@ -20580,9 +20477,9 @@
    "additionalClasses": null,
    "templateId": "template.tutorial.ranger-aggressive",
    "templateName": "ranger-aggressive",
+   "subtype": "ranger-aggressive",
    "variant": 4,
-   "variantsOf": 4,
-   "subtype": "ranger-aggressive"
+   "variantsOf": 4
   },
   {
    "id": "hero.tutorial.ranger-nature.wren",
@@ -20632,7 +20529,6 @@
    ],
    "classPowers": [],
    "namedSpecials": [],
-   "damageType": null,
    "triggers": null,
    "levelBonuses": null,
    "cost": null,
@@ -20642,9 +20538,9 @@
    "additionalClasses": null,
    "templateId": "template.tutorial.ranger-nature",
    "templateName": "ranger-nature",
+   "subtype": "ranger-nature",
    "variant": 1,
-   "variantsOf": 4,
-   "subtype": "ranger-nature"
+   "variantsOf": 4
   },
   {
    "id": "hero.tutorial.ranger-nature.fern",
@@ -20694,7 +20590,6 @@
    ],
    "classPowers": [],
    "namedSpecials": [],
-   "damageType": null,
    "triggers": null,
    "levelBonuses": null,
    "cost": null,
@@ -20704,9 +20599,9 @@
    "additionalClasses": null,
    "templateId": "template.tutorial.ranger-nature",
    "templateName": "ranger-nature",
+   "subtype": "ranger-nature",
    "variant": 2,
-   "variantsOf": 4,
-   "subtype": "ranger-nature"
+   "variantsOf": 4
   },
   {
    "id": "hero.tutorial.ranger-nature.yara",
@@ -20752,7 +20647,6 @@
    ],
    "classPowers": [],
    "namedSpecials": [],
-   "damageType": null,
    "triggers": null,
    "levelBonuses": null,
    "cost": null,
@@ -20762,9 +20656,9 @@
    "additionalClasses": null,
    "templateId": "template.tutorial.ranger-nature",
    "templateName": "ranger-nature",
+   "subtype": "ranger-nature",
    "variant": 3,
-   "variantsOf": 4,
-   "subtype": "ranger-nature"
+   "variantsOf": 4
   },
   {
    "id": "hero.tutorial.ranger-nature.willow",
@@ -20810,7 +20704,6 @@
    ],
    "classPowers": [],
    "namedSpecials": [],
-   "damageType": null,
    "triggers": null,
    "levelBonuses": null,
    "cost": null,
@@ -20820,9 +20713,9 @@
    "additionalClasses": null,
    "templateId": "template.tutorial.ranger-nature",
    "templateName": "ranger-nature",
+   "subtype": "ranger-nature",
    "variant": 4,
-   "variantsOf": 4,
-   "subtype": "ranger-nature"
+   "variantsOf": 4
   },
   {
    "id": "hero.tutorial.ranger-ranger.brenna",
@@ -20871,7 +20764,6 @@
    ],
    "classPowers": [],
    "namedSpecials": [],
-   "damageType": null,
    "triggers": null,
    "levelBonuses": null,
    "cost": null,
@@ -20881,9 +20773,9 @@
    "additionalClasses": null,
    "templateId": "template.tutorial.ranger-ranger",
    "templateName": "ranger-ranger",
+   "subtype": "ranger-ranger",
    "variant": 1,
-   "variantsOf": 4,
-   "subtype": "ranger-ranger"
+   "variantsOf": 4
   },
   {
    "id": "hero.tutorial.ranger-ranger.scout",
@@ -20932,7 +20824,6 @@
    ],
    "classPowers": [],
    "namedSpecials": [],
-   "damageType": null,
    "triggers": null,
    "levelBonuses": null,
    "cost": null,
@@ -20942,9 +20833,9 @@
    "additionalClasses": null,
    "templateId": "template.tutorial.ranger-ranger",
    "templateName": "ranger-ranger",
+   "subtype": "ranger-ranger",
    "variant": 2,
-   "variantsOf": 4,
-   "subtype": "ranger-ranger"
+   "variantsOf": 4
   },
   {
    "id": "hero.tutorial.ranger-ranger.ivana",
@@ -20990,7 +20881,6 @@
    ],
    "classPowers": [],
    "namedSpecials": [],
-   "damageType": null,
    "triggers": null,
    "levelBonuses": null,
    "cost": null,
@@ -21000,9 +20890,9 @@
    "additionalClasses": null,
    "templateId": "template.tutorial.ranger-ranger",
    "templateName": "ranger-ranger",
+   "subtype": "ranger-ranger",
    "variant": 3,
-   "variantsOf": 4,
-   "subtype": "ranger-ranger"
+   "variantsOf": 4
   },
   {
    "id": "hero.tutorial.ranger-ranger.huntress",
@@ -21048,7 +20938,6 @@
    ],
    "classPowers": [],
    "namedSpecials": [],
-   "damageType": null,
    "triggers": null,
    "levelBonuses": null,
    "cost": null,
@@ -21058,9 +20947,9 @@
    "additionalClasses": null,
    "templateId": "template.tutorial.ranger-ranger",
    "templateName": "ranger-ranger",
+   "subtype": "ranger-ranger",
    "variant": 4,
-   "variantsOf": 4,
-   "subtype": "ranger-ranger"
+   "variantsOf": 4
   },
   {
    "id": "hero.tutorial.ranger-scantily.mira",
@@ -21106,7 +20995,6 @@
    ],
    "classPowers": [],
    "namedSpecials": [],
-   "damageType": null,
    "triggers": null,
    "levelBonuses": null,
    "cost": null,
@@ -21116,9 +21004,9 @@
    "additionalClasses": null,
    "templateId": "template.tutorial.ranger-scantily",
    "templateName": "ranger-scantily",
+   "subtype": "ranger-scantily",
    "variant": 1,
-   "variantsOf": 4,
-   "subtype": "ranger-scantily"
+   "variantsOf": 4
   },
   {
    "id": "hero.tutorial.ranger-scantily.zephyr",
@@ -21164,7 +21052,6 @@
    ],
    "classPowers": [],
    "namedSpecials": [],
-   "damageType": null,
    "triggers": null,
    "levelBonuses": null,
    "cost": null,
@@ -21174,9 +21061,9 @@
    "additionalClasses": null,
    "templateId": "template.tutorial.ranger-scantily",
    "templateName": "ranger-scantily",
+   "subtype": "ranger-scantily",
    "variant": 2,
-   "variantsOf": 4,
-   "subtype": "ranger-scantily"
+   "variantsOf": 4
   },
   {
    "id": "hero.tutorial.ranger-scantily.kyla",
@@ -21222,7 +21109,6 @@
    ],
    "classPowers": [],
    "namedSpecials": [],
-   "damageType": null,
    "triggers": null,
    "levelBonuses": null,
    "cost": null,
@@ -21232,9 +21118,9 @@
    "additionalClasses": null,
    "templateId": "template.tutorial.ranger-scantily",
    "templateName": "ranger-scantily",
+   "subtype": "ranger-scantily",
    "variant": 3,
-   "variantsOf": 4,
-   "subtype": "ranger-scantily"
+   "variantsOf": 4
   },
   {
    "id": "hero.tutorial.ranger-scantily.swift",
@@ -21280,7 +21166,6 @@
    ],
    "classPowers": [],
    "namedSpecials": [],
-   "damageType": null,
    "triggers": null,
    "levelBonuses": null,
    "cost": null,
@@ -21290,9 +21175,9 @@
    "additionalClasses": null,
    "templateId": "template.tutorial.ranger-scantily",
    "templateName": "ranger-scantily",
+   "subtype": "ranger-scantily",
    "variant": 4,
-   "variantsOf": 4,
-   "subtype": "ranger-scantily"
+   "variantsOf": 4
   },
   {
    "id": "hero.tutorial.rogue-raven.nadia",
@@ -21339,7 +21224,6 @@
    ],
    "classPowers": [],
    "namedSpecials": [],
-   "damageType": null,
    "triggers": null,
    "levelBonuses": null,
    "cost": null,
@@ -21349,9 +21233,9 @@
    "additionalClasses": null,
    "templateId": "template.tutorial.rogue-raven",
    "templateName": "rogue-raven",
+   "subtype": "rogue-raven",
    "variant": 1,
-   "variantsOf": 4,
-   "subtype": "rogue-raven"
+   "variantsOf": 4
   },
   {
    "id": "hero.tutorial.rogue-raven.raven",
@@ -21398,7 +21282,6 @@
    ],
    "classPowers": [],
    "namedSpecials": [],
-   "damageType": null,
    "triggers": null,
    "levelBonuses": null,
    "cost": null,
@@ -21408,9 +21291,9 @@
    "additionalClasses": null,
    "templateId": "template.tutorial.rogue-raven",
    "templateName": "rogue-raven",
+   "subtype": "rogue-raven",
    "variant": 2,
-   "variantsOf": 4,
-   "subtype": "rogue-raven"
+   "variantsOf": 4
   },
   {
    "id": "hero.tutorial.rogue-raven.ophelia",
@@ -21457,7 +21340,6 @@
    ],
    "classPowers": [],
    "namedSpecials": [],
-   "damageType": null,
    "triggers": null,
    "levelBonuses": null,
    "cost": null,
@@ -21467,9 +21349,9 @@
    "additionalClasses": null,
    "templateId": "template.tutorial.rogue-raven",
    "templateName": "rogue-raven",
+   "subtype": "rogue-raven",
    "variant": 3,
-   "variantsOf": 4,
-   "subtype": "rogue-raven"
+   "variantsOf": 4
   },
   {
    "id": "hero.tutorial.rogue-raven.shade",
@@ -21516,7 +21398,6 @@
    ],
    "classPowers": [],
    "namedSpecials": [],
-   "damageType": null,
    "triggers": null,
    "levelBonuses": null,
    "cost": null,
@@ -21526,9 +21407,9 @@
    "additionalClasses": null,
    "templateId": "template.tutorial.rogue-raven",
    "templateName": "rogue-raven",
+   "subtype": "rogue-raven",
    "variant": 4,
-   "variantsOf": 4,
-   "subtype": "rogue-raven"
+   "variantsOf": 4
   },
   {
    "id": "hero.tutorial.rogue-rose.rosa",
@@ -21579,7 +21460,6 @@
    ],
    "classPowers": [],
    "namedSpecials": [],
-   "damageType": null,
    "triggers": null,
    "levelBonuses": null,
    "cost": null,
@@ -21589,9 +21469,9 @@
    "additionalClasses": null,
    "templateId": "template.tutorial.rogue-rose",
    "templateName": "rogue-rose",
+   "subtype": "rogue-rose",
    "variant": 1,
-   "variantsOf": 4,
-   "subtype": "rogue-rose"
+   "variantsOf": 4
   },
   {
    "id": "hero.tutorial.rogue-rose.scarlet",
@@ -21642,7 +21522,6 @@
    ],
    "classPowers": [],
    "namedSpecials": [],
-   "damageType": null,
    "triggers": null,
    "levelBonuses": null,
    "cost": null,
@@ -21652,9 +21531,9 @@
    "additionalClasses": null,
    "templateId": "template.tutorial.rogue-rose",
    "templateName": "rogue-rose",
+   "subtype": "rogue-rose",
    "variant": 2,
-   "variantsOf": 4,
-   "subtype": "rogue-rose"
+   "variantsOf": 4
   },
   {
    "id": "hero.tutorial.rogue-rose.dahlia",
@@ -21701,7 +21580,6 @@
    ],
    "classPowers": [],
    "namedSpecials": [],
-   "damageType": null,
    "triggers": null,
    "levelBonuses": null,
    "cost": null,
@@ -21711,9 +21589,9 @@
    "additionalClasses": null,
    "templateId": "template.tutorial.rogue-rose",
    "templateName": "rogue-rose",
+   "subtype": "rogue-rose",
    "variant": 3,
-   "variantsOf": 4,
-   "subtype": "rogue-rose"
+   "variantsOf": 4
   },
   {
    "id": "hero.tutorial.rogue-rose.crimson",
@@ -21760,7 +21638,6 @@
    ],
    "classPowers": [],
    "namedSpecials": [],
-   "damageType": null,
    "triggers": null,
    "levelBonuses": null,
    "cost": null,
@@ -21770,9 +21647,9 @@
    "additionalClasses": null,
    "templateId": "template.tutorial.rogue-rose",
    "templateName": "rogue-rose",
+   "subtype": "rogue-rose",
    "variant": 4,
-   "variantsOf": 4,
-   "subtype": "rogue-rose"
+   "variantsOf": 4
   },
   {
    "id": "hero.tutorial.rogue-skull.zara",
@@ -21819,7 +21696,6 @@
    ],
    "classPowers": [],
    "namedSpecials": [],
-   "damageType": null,
    "triggers": null,
    "levelBonuses": null,
    "cost": null,
@@ -21829,9 +21705,9 @@
    "additionalClasses": null,
    "templateId": "template.tutorial.rogue-skull",
    "templateName": "rogue-skull",
+   "subtype": "rogue-skull",
    "variant": 1,
-   "variantsOf": 4,
-   "subtype": "rogue-skull"
+   "variantsOf": 4
   },
   {
    "id": "hero.tutorial.rogue-skull.morticia",
@@ -21878,7 +21754,6 @@
    ],
    "classPowers": [],
    "namedSpecials": [],
-   "damageType": null,
    "triggers": null,
    "levelBonuses": null,
    "cost": null,
@@ -21888,9 +21763,9 @@
    "additionalClasses": null,
    "templateId": "template.tutorial.rogue-skull",
    "templateName": "rogue-skull",
+   "subtype": "rogue-skull",
    "variant": 2,
-   "variantsOf": 4,
-   "subtype": "rogue-skull"
+   "variantsOf": 4
   },
   {
    "id": "hero.tutorial.rogue-skull.jasmine",
@@ -21939,7 +21814,6 @@
    ],
    "classPowers": [],
    "namedSpecials": [],
-   "damageType": null,
    "triggers": null,
    "levelBonuses": null,
    "cost": null,
@@ -21949,9 +21823,9 @@
    "additionalClasses": null,
    "templateId": "template.tutorial.rogue-skull",
    "templateName": "rogue-skull",
+   "subtype": "rogue-skull",
    "variant": 3,
-   "variantsOf": 4,
-   "subtype": "rogue-skull"
+   "variantsOf": 4
   },
   {
    "id": "hero.tutorial.rogue-skull.bone",
@@ -22000,7 +21874,6 @@
    ],
    "classPowers": [],
    "namedSpecials": [],
-   "damageType": null,
    "triggers": null,
    "levelBonuses": null,
    "cost": null,
@@ -22010,9 +21883,9 @@
    "additionalClasses": null,
    "templateId": "template.tutorial.rogue-skull",
    "templateName": "rogue-skull",
+   "subtype": "rogue-skull",
    "variant": 4,
-   "variantsOf": 4,
-   "subtype": "rogue-skull"
+   "variantsOf": 4
   },
   {
    "id": "hero.tutorial.rogue-snake.sela",
@@ -22062,7 +21935,6 @@
    ],
    "classPowers": [],
    "namedSpecials": [],
-   "damageType": null,
    "triggers": null,
    "levelBonuses": null,
    "cost": null,
@@ -22072,9 +21944,9 @@
    "additionalClasses": null,
    "templateId": "template.tutorial.rogue-snake",
    "templateName": "rogue-snake",
+   "subtype": "rogue-snake",
    "variant": 1,
-   "variantsOf": 4,
-   "subtype": "rogue-snake"
+   "variantsOf": 4
   },
   {
    "id": "hero.tutorial.rogue-snake.viper",
@@ -22124,7 +21996,6 @@
    ],
    "classPowers": [],
    "namedSpecials": [],
-   "damageType": null,
    "triggers": null,
    "levelBonuses": null,
    "cost": null,
@@ -22134,9 +22005,9 @@
    "additionalClasses": null,
    "templateId": "template.tutorial.rogue-snake",
    "templateName": "rogue-snake",
+   "subtype": "rogue-snake",
    "variant": 2,
-   "variantsOf": 4,
-   "subtype": "rogue-snake"
+   "variantsOf": 4
   },
   {
    "id": "hero.tutorial.rogue-snake.xyla",
@@ -22184,7 +22055,6 @@
    ],
    "classPowers": [],
    "namedSpecials": [],
-   "damageType": null,
    "triggers": null,
    "levelBonuses": null,
    "cost": null,
@@ -22194,9 +22064,9 @@
    "additionalClasses": null,
    "templateId": "template.tutorial.rogue-snake",
    "templateName": "rogue-snake",
+   "subtype": "rogue-snake",
    "variant": 3,
-   "variantsOf": 4,
-   "subtype": "rogue-snake"
+   "variantsOf": 4
   },
   {
    "id": "hero.tutorial.rogue-snake.serpentina",
@@ -22244,7 +22114,6 @@
    ],
    "classPowers": [],
    "namedSpecials": [],
-   "damageType": null,
    "triggers": null,
    "levelBonuses": null,
    "cost": null,
@@ -22254,27 +22123,27 @@
    "additionalClasses": null,
    "templateId": "template.tutorial.rogue-snake",
    "templateName": "rogue-snake",
+   "subtype": "rogue-snake",
    "variant": 4,
-   "variantsOf": 4,
-   "subtype": "rogue-snake"
+   "variantsOf": 4
   },
   {
    "id": "hero.aspiring.male-style-1",
-   "name": "Aspiring Hero — male style 1",
+   "name": "Woodcutter's Son",
    "path": "aspiring",
    "sourceClass": "Aspiring Hero",
    "class": "class.civilian",
    "tier": 0,
    "level": 1,
    "gender": "male",
-   "campaign": null,
+   "campaign": "eve-of-ruin",
    "art": "assets/cards/heroes/aspiring/male/style-1/1.png",
    "ported": {
     "strength": 3,
     "precision": 2,
     "armor": 0,
     "health": 4,
-    "reach": 2,
+    "reach": 1,
     "magic": 0,
     "spirit": 0,
     "resist": 0,
@@ -22294,53 +22163,36 @@
    },
    "notes": [
     "One art template, one hero. Its folder holds 1/2/3/4 plus l/p/r/v — four levels and four statuses for THIS hero, not four designs, so it does not split the way Shadows and Skyship do.",
-    "Toughness 1 is hell-tcg maxAfflictions, ported straight across — same meaning.",
-    "STATS ARE ONE DRAW — generateAspiringHero() is procedural and rolls a fresh block every time. The art template is fixed; the numbers are not."
+    "AWAITING REDESIGN. The stat block is a FROZEN random roll kept only so the build is reproducible - it is not authored and must not be balanced against. Badges are empty on purpose: the generator rolled Hell-TCG names that do not exist in this game.",
+    "Depicts: farm lad in a mail vest over a linen shirt, woodsman's axe, dark forest"
    ],
    "specialty": null,
-   "originBadges": [
-    "Faithful",
-    "Old",
-    "Personality_Sardonic"
-   ],
+   "originBadges": [],
    "classPowers": [],
    "namedSpecials": [],
-   "damageType": null,
-   "triggers": {
-    "onEnter": [],
-    "onDeath": [],
-    "onAttack": [],
-    "onDamage": [],
-    "onTakingDamage": [],
-    "onKill": [],
-    "turnEnd": []
-   },
-   "levelBonuses": [],
-   "cost": {
-    "action": 1,
-    "faith": 0,
-    "discard": 0,
-    "supplies": 0
-   },
+   "triggers": null,
+   "levelBonuses": null,
+   "cost": null,
    "quote": null,
    "backstory": null,
    "passiveDescription": null,
    "additionalClasses": null,
+   "needsRedesign": true,
    "templateId": "template.aspiring.male-style-1",
-   "templateName": "male-style-1",
-   "sample": true,
-   "subtype": "male-style-1"
+   "templateName": "Woodcutter's Son",
+   "subtype": "Woodcutter's Son",
+   "sample": true
   },
   {
    "id": "hero.aspiring.male-style-2",
-   "name": "Aspiring Hero — male style 2",
+   "name": "Wild Spark",
    "path": "aspiring",
    "sourceClass": "Aspiring Hero",
    "class": "class.civilian",
    "tier": 0,
    "level": 1,
    "gender": "male",
-   "campaign": null,
+   "campaign": "eve-of-ruin",
    "art": "assets/cards/heroes/aspiring/male/style-2/1.png",
    "ported": {
     "strength": 4,
@@ -22367,52 +22219,36 @@
    },
    "notes": [
     "One art template, one hero. Its folder holds 1/2/3/4 plus l/p/r/v — four levels and four statuses for THIS hero, not four designs, so it does not split the way Shadows and Skyship do.",
-    "Toughness 1 is hell-tcg maxAfflictions, ported straight across — same meaning.",
-    "STATS ARE ONE DRAW — generateAspiringHero() is procedural and rolls a fresh block every time. The art template is fixed; the numbers are not."
+    "AWAITING REDESIGN. The stat block is a FROZEN random roll kept only so the build is reproducible - it is not authored and must not be balanced against. Badges are empty on purpose: the generator rolled Hell-TCG names that do not exist in this game.",
+    "Depicts: boy in blue robes, magic sparking out of both hands, alarmed"
    ],
    "specialty": null,
-   "originBadges": [
-    "Mystic",
-    "Personality_Flirty"
-   ],
+   "originBadges": [],
    "classPowers": [],
    "namedSpecials": [],
-   "damageType": null,
-   "triggers": {
-    "onEnter": [],
-    "onDeath": [],
-    "onAttack": [],
-    "onDamage": [],
-    "onTakingDamage": [],
-    "onKill": [],
-    "turnEnd": []
-   },
-   "levelBonuses": [],
-   "cost": {
-    "action": 1,
-    "faith": 0,
-    "discard": 0,
-    "supplies": 0
-   },
+   "triggers": null,
+   "levelBonuses": null,
+   "cost": null,
    "quote": null,
    "backstory": null,
    "passiveDescription": null,
    "additionalClasses": null,
+   "needsRedesign": true,
    "templateId": "template.aspiring.male-style-2",
-   "templateName": "male-style-2",
-   "sample": true,
-   "subtype": "male-style-2"
+   "templateName": "Wild Spark",
+   "subtype": "Wild Spark",
+   "sample": true
   },
   {
    "id": "hero.aspiring.male-style-3",
-   "name": "Aspiring Hero — male style 3",
+   "name": "Green Squire",
    "path": "aspiring",
    "sourceClass": "Aspiring Hero",
    "class": "class.civilian",
    "tier": 0,
    "level": 1,
    "gender": "male",
-   "campaign": null,
+   "campaign": "eve-of-ruin",
    "art": "assets/cards/heroes/aspiring/male/style-3/1.png",
    "ported": {
     "strength": 3,
@@ -22439,53 +22275,37 @@
    },
    "notes": [
     "One art template, one hero. Its folder holds 1/2/3/4 plus l/p/r/v — four levels and four statuses for THIS hero, not four designs, so it does not split the way Shadows and Skyship do.",
-    "Toughness 0 is hell-tcg maxAfflictions, ported straight across — same meaning.",
-    "STATS ARE ONE DRAW — generateAspiringHero() is procedural and rolls a fresh block every time. The art template is fixed; the numbers are not."
+    "AWAITING REDESIGN. The stat block is a FROZEN random roll kept only so the build is reproducible - it is not authored and must not be balanced against. Badges are empty on purpose: the generator rolled Hell-TCG names that do not exist in this game.",
+    "Depicts: young knight in plate and a blue cloak, sword lowered, an army behind him",
+    "ART INCOMPLETE - level 1 only — no levels 2-4, no afflictions"
    ],
    "specialty": null,
-   "originBadges": [
-    "Timid",
-    "Ignorant",
-    "Personality_Grim"
-   ],
+   "originBadges": [],
    "classPowers": [],
    "namedSpecials": [],
-   "damageType": null,
-   "triggers": {
-    "onEnter": [],
-    "onDeath": [],
-    "onAttack": [],
-    "onDamage": [],
-    "onTakingDamage": [],
-    "onKill": [],
-    "turnEnd": []
-   },
-   "levelBonuses": [],
-   "cost": {
-    "action": 1,
-    "faith": 0,
-    "discard": 0,
-    "supplies": 0
-   },
+   "triggers": null,
+   "levelBonuses": null,
+   "cost": null,
    "quote": null,
    "backstory": null,
    "passiveDescription": null,
    "additionalClasses": null,
+   "needsRedesign": true,
    "templateId": "template.aspiring.male-style-3",
-   "templateName": "male-style-3",
-   "sample": true,
-   "subtype": "male-style-3"
+   "templateName": "Green Squire",
+   "subtype": "Green Squire",
+   "sample": true
   },
   {
    "id": "hero.aspiring.male-style-4",
-   "name": "Aspiring Hero — male style 4",
+   "name": "Bamboo Novice",
    "path": "aspiring",
    "sourceClass": "Aspiring Hero",
    "class": "class.civilian",
    "tier": 0,
    "level": 1,
    "gender": "male",
-   "campaign": null,
+   "campaign": "skyship",
    "art": "assets/cards/heroes/aspiring/male/style-4/1.png",
    "ported": {
     "strength": 4,
@@ -22512,53 +22332,37 @@
    },
    "notes": [
     "One art template, one hero. Its folder holds 1/2/3/4 plus l/p/r/v — four levels and four statuses for THIS hero, not four designs, so it does not split the way Shadows and Skyship do.",
-    "Toughness 1 is hell-tcg maxAfflictions, ported straight across — same meaning.",
-    "STATS ARE ONE DRAW — generateAspiringHero() is procedural and rolls a fresh block every time. The art template is fixed; the numbers are not."
+    "AWAITING REDESIGN. The stat block is a FROZEN random roll kept only so the build is reproducible - it is not authored and must not be balanced against. Badges are empty on purpose: the generator rolled Hell-TCG names that do not exist in this game.",
+    "Depicts: ragged linen, topknot, bamboo staff, rope sandals",
+    "ART INCOMPLETE - level 1 only — no levels 2-4, no afflictions"
    ],
    "specialty": null,
-   "originBadges": [
-    "Quick",
-    "Mystic",
-    "Personality_Fearful"
-   ],
+   "originBadges": [],
    "classPowers": [],
    "namedSpecials": [],
-   "damageType": null,
-   "triggers": {
-    "onEnter": [],
-    "onDeath": [],
-    "onAttack": [],
-    "onDamage": [],
-    "onTakingDamage": [],
-    "onKill": [],
-    "turnEnd": []
-   },
-   "levelBonuses": [],
-   "cost": {
-    "action": 1,
-    "faith": 0,
-    "discard": 0,
-    "supplies": 0
-   },
+   "triggers": null,
+   "levelBonuses": null,
+   "cost": null,
    "quote": null,
    "backstory": null,
    "passiveDescription": null,
    "additionalClasses": null,
+   "needsRedesign": true,
    "templateId": "template.aspiring.male-style-4",
-   "templateName": "male-style-4",
-   "sample": true,
-   "subtype": "male-style-4"
+   "templateName": "Bamboo Novice",
+   "subtype": "Bamboo Novice",
+   "sample": true
   },
   {
    "id": "hero.aspiring.female-style-1",
-   "name": "Aspiring Hero — female style 1",
+   "name": "Forest Spear",
    "path": "aspiring",
    "sourceClass": "Aspiring Hero",
    "class": "class.civilian",
    "tier": 0,
    "level": 1,
    "gender": "female",
-   "campaign": null,
+   "campaign": "eve-of-ruin",
    "art": "assets/cards/heroes/aspiring/female/style-1/1.png",
    "ported": {
     "strength": 3,
@@ -22585,52 +22389,36 @@
    },
    "notes": [
     "One art template, one hero. Its folder holds 1/2/3/4 plus l/p/r/v — four levels and four statuses for THIS hero, not four designs, so it does not split the way Shadows and Skyship do.",
-    "Toughness 1 is hell-tcg maxAfflictions, ported straight across — same meaning.",
-    "STATS ARE ONE DRAW — generateAspiringHero() is procedural and rolls a fresh block every time. The art template is fixed; the numbers are not."
+    "AWAITING REDESIGN. The stat block is a FROZEN random roll kept only so the build is reproducible - it is not authored and must not be balanced against. Badges are empty on purpose: the generator rolled Hell-TCG names that do not exist in this game.",
+    "Depicts: layered leathers, one scavenged vambrace, wooden spear, sunlit deep forest"
    ],
    "specialty": null,
-   "originBadges": [
-    "Vengeful",
-    "Personality_Cold"
-   ],
+   "originBadges": [],
    "classPowers": [],
    "namedSpecials": [],
-   "damageType": null,
-   "triggers": {
-    "onEnter": [],
-    "onDeath": [],
-    "onAttack": [],
-    "onDamage": [],
-    "onTakingDamage": [],
-    "onKill": [],
-    "turnEnd": []
-   },
-   "levelBonuses": [],
-   "cost": {
-    "action": 1,
-    "faith": 0,
-    "discard": 0,
-    "supplies": 0
-   },
+   "triggers": null,
+   "levelBonuses": null,
+   "cost": null,
    "quote": null,
    "backstory": null,
    "passiveDescription": null,
    "additionalClasses": null,
+   "needsRedesign": true,
    "templateId": "template.aspiring.female-style-1",
-   "templateName": "female-style-1",
-   "sample": true,
-   "subtype": "female-style-1"
+   "templateName": "Forest Spear",
+   "subtype": "Forest Spear",
+   "sample": true
   },
   {
    "id": "hero.aspiring.female-style-2",
-   "name": "Aspiring Hero — female style 2",
+   "name": "Alley Knife",
    "path": "aspiring",
    "sourceClass": "Aspiring Hero",
    "class": "class.civilian",
    "tier": 0,
    "level": 1,
    "gender": "female",
-   "campaign": null,
+   "campaign": "eve-of-ruin",
    "art": "assets/cards/heroes/aspiring/female/style-2/1.png",
    "ported": {
     "strength": 4,
@@ -22657,52 +22445,36 @@
    },
    "notes": [
     "One art template, one hero. Its folder holds 1/2/3/4 plus l/p/r/v — four levels and four statuses for THIS hero, not four designs, so it does not split the way Shadows and Skyship do.",
-    "Toughness 1 is hell-tcg maxAfflictions, ported straight across — same meaning.",
-    "STATS ARE ONE DRAW — generateAspiringHero() is procedural and rolls a fresh block every time. The art template is fixed; the numbers are not."
+    "AWAITING REDESIGN. The stat block is a FROZEN random roll kept only so the build is reproducible - it is not authored and must not be balanced against. Badges are empty on purpose: the generator rolled Hell-TCG names that do not exist in this game.",
+    "Depicts: rain-slick alley, leather bodice over a white shirt, kitchen knife, lanterns behind"
    ],
    "specialty": null,
-   "originBadges": [
-    "Clumsy",
-    "Personality_Aspiring"
-   ],
+   "originBadges": [],
    "classPowers": [],
    "namedSpecials": [],
-   "damageType": null,
-   "triggers": {
-    "onEnter": [],
-    "onDeath": [],
-    "onAttack": [],
-    "onDamage": [],
-    "onTakingDamage": [],
-    "onKill": [],
-    "turnEnd": []
-   },
-   "levelBonuses": [],
-   "cost": {
-    "action": 1,
-    "faith": 0,
-    "discard": 0,
-    "supplies": 0
-   },
+   "triggers": null,
+   "levelBonuses": null,
+   "cost": null,
    "quote": null,
    "backstory": null,
    "passiveDescription": null,
    "additionalClasses": null,
+   "needsRedesign": true,
    "templateId": "template.aspiring.female-style-2",
-   "templateName": "female-style-2",
-   "sample": true,
-   "subtype": "female-style-2"
+   "templateName": "Alley Knife",
+   "subtype": "Alley Knife",
+   "sample": true
   },
   {
    "id": "hero.aspiring.female-style-3",
-   "name": "Aspiring Hero — female style 3",
+   "name": "Dust Blade",
    "path": "aspiring",
    "sourceClass": "Aspiring Hero",
    "class": "class.civilian",
    "tier": 0,
    "level": 1,
    "gender": "female",
-   "campaign": null,
+   "campaign": "shadows",
    "art": "assets/cards/heroes/aspiring/female/style-3/1.png",
    "ported": {
     "strength": 3,
@@ -22729,60 +22501,43 @@
    },
    "notes": [
     "One art template, one hero. Its folder holds 1/2/3/4 plus l/p/r/v — four levels and four statuses for THIS hero, not four designs, so it does not split the way Shadows and Skyship do.",
-    "Toughness 0 is hell-tcg maxAfflictions, ported straight across — same meaning.",
-    "STATS ARE ONE DRAW — generateAspiringHero() is procedural and rolls a fresh block every time. The art template is fixed; the numbers are not."
+    "AWAITING REDESIGN. The stat block is a FROZEN random roll kept only so the build is reproducible - it is not authored and must not be balanced against. Badges are empty on purpose: the generator rolled Hell-TCG names that do not exist in this game.",
+    "Depicts: headscarf and cream robes, curved sword raised, blowing dust"
    ],
    "specialty": null,
-   "originBadges": [
-    "Tough",
-    "Timid",
-    "Personality_Aspiring"
-   ],
+   "originBadges": [],
    "classPowers": [],
    "namedSpecials": [],
-   "damageType": null,
-   "triggers": {
-    "onEnter": [],
-    "onDeath": [],
-    "onAttack": [],
-    "onDamage": [],
-    "onTakingDamage": [],
-    "onKill": [],
-    "turnEnd": []
-   },
-   "levelBonuses": [],
-   "cost": {
-    "action": 1,
-    "faith": 0,
-    "discard": 0,
-    "supplies": 0
-   },
+   "triggers": null,
+   "levelBonuses": null,
+   "cost": null,
    "quote": null,
    "backstory": null,
    "passiveDescription": null,
    "additionalClasses": null,
+   "needsRedesign": true,
    "templateId": "template.aspiring.female-style-3",
-   "templateName": "female-style-3",
-   "sample": true,
-   "subtype": "female-style-3"
+   "templateName": "Dust Blade",
+   "subtype": "Dust Blade",
+   "sample": true
   },
   {
    "id": "hero.aspiring.female-style-4",
-   "name": "Aspiring Hero — female style 4",
+   "name": "Jade Staff",
    "path": "aspiring",
    "sourceClass": "Aspiring Hero",
    "class": "class.civilian",
    "tier": 0,
    "level": 1,
    "gender": "female",
-   "campaign": null,
+   "campaign": "skyship",
    "art": "assets/cards/heroes/aspiring/female/style-4/1.png",
    "ported": {
     "strength": 3,
     "precision": 2,
     "armor": 0,
     "health": 6,
-    "reach": 2,
+    "reach": 1,
     "magic": 0,
     "spirit": 0,
     "resist": 0,
@@ -22802,42 +22557,25 @@
    },
    "notes": [
     "One art template, one hero. Its folder holds 1/2/3/4 plus l/p/r/v — four levels and four statuses for THIS hero, not four designs, so it does not split the way Shadows and Skyship do.",
-    "Toughness 1 is hell-tcg maxAfflictions, ported straight across — same meaning.",
-    "STATS ARE ONE DRAW — generateAspiringHero() is procedural and rolls a fresh block every time. The art template is fixed; the numbers are not."
+    "AWAITING REDESIGN. The stat block is a FROZEN random roll kept only so the build is reproducible - it is not authored and must not be balanced against. Badges are empty on purpose: the generator rolled Hell-TCG names that do not exist in this game.",
+    "Depicts: long black hair, linen jacket, tall carved staff, mossy cliff"
    ],
    "specialty": null,
-   "originBadges": [
-    "Tough",
-    "Selfless",
-    "Personality_Bloodthirsty"
-   ],
+   "originBadges": [],
    "classPowers": [],
    "namedSpecials": [],
-   "damageType": null,
-   "triggers": {
-    "onEnter": [],
-    "onDeath": [],
-    "onAttack": [],
-    "onDamage": [],
-    "onTakingDamage": [],
-    "onKill": [],
-    "turnEnd": []
-   },
-   "levelBonuses": [],
-   "cost": {
-    "action": 1,
-    "faith": 0,
-    "discard": 0,
-    "supplies": 0
-   },
+   "triggers": null,
+   "levelBonuses": null,
+   "cost": null,
    "quote": null,
    "backstory": null,
    "passiveDescription": null,
    "additionalClasses": null,
+   "needsRedesign": true,
    "templateId": "template.aspiring.female-style-4",
-   "templateName": "female-style-4",
-   "sample": true,
-   "subtype": "female-style-4"
+   "templateName": "Jade Staff",
+   "subtype": "Jade Staff",
+   "sample": true
   }
  ]
 }

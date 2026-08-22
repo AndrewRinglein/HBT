@@ -768,6 +768,40 @@ top of the free stamina and the free go that the surge already hands out.
 something to scale with how much a hero did, that is a different hook — and probably a
 counter, which does not exist.
 
+### `onEnter` is not a hook, and mostly it is not a rule either
+
+Ruled 2026-08-21. Hell-TCG fired `onEnter` when a unit was played onto the board. HoBaT has
+no such moment — **the party is placed before Turn 1, so arriving is not an event.** The
+nearest thing is `startOfBattle`, and the difference matters: *"when this hero arrives"*
+becomes *"it is simply always true", and everything fires at once for the whole side.*
+
+`port/PORT-CONVERSION.md` §4.1 calls this the largest single blocker in the port — 34 badges
+plus 38 hero definitions, 72 objects on a hook with no equivalent. Most of them do not
+survive the translation, and that is the correct outcome rather than a loss.
+
+**What is still worth firing at battle start:**
+
+- gain or lose **Faith** · gain or lose **Supplies** · gain **mana crystals**
+- **Protection**
+- **applying a status**
+
+**What is not.** Named explicitly, because these three are the bulk of it:
+
+| Cut | Uses | Why |
+|---|---:|---|
+| `modifyStatPermanent` | 23 | a permanent stat edit that always fires is just the hero's stat line |
+| `grantDraws` | 9 | a one-shot on arrival, when everyone arrives at once |
+| `increaseActionRate` | 7 | same |
+
+Also gone for the same reason: `buffByType`, `damageByType`, `healParty`, `modifyMaxHeroes`,
+`grantActions`, `increaseDrawRate`, `modifyMaxHealth`. On a board where every unit is already
+standing there, these are either a flat opening bonus dressed up as a trigger, or nothing.
+
+> In the content today: **149 heroes carry an empty `onEnter` array** — inert noise from the
+> port — and **52 carry a real one**. Of those 52, **39 are the three cut actions above**.
+> **Do not author new `onEnter` content.** There is a separate battle-start hook and it
+> behaves differently; use that, and price it as the opening bonus it is.
+
 ### Vision does not go on a weapon
 
 Armour, relics and trinkets may grant Vision. **A weapon or a weapon enchant may not** —

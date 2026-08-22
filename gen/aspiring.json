@@ -1,0 +1,45 @@
+{
+ "_note": "The eight aspiring heroes, as DATA. They used to be produced by calling Hell-TCG's generateAspiringHero(), which rolls a fresh stat block and badge set every run — so gen/heroes.json could never be reproduced byte-identically, and the badges it rolled were Hell-TCG names that do not exist in this game. Frozen here 2026-08-21 so the pipeline is deterministic.",
+ "_status": "AWAITING REDESIGN. Ruled 2026-08-21: these eight need to be totally redesigned. The names and art below are settled — each is one character, named from its own picture. The STATS ARE A FROZEN RANDOM ROLL and mean nothing; do not price them, do not balance against them, do not treat them as authored. `needsRedesign: true` is on every row and audit.mjs R21 fails the build if it is removed while the stats are still the frozen roll.",
+ "_badges": "originBadges deliberately EMPTY. The generator rolled Hell-TCG badge names — Faithful, Old, Timid, Personality_Sardonic — and 14 of the 17 do not exist in this game. That is not a bug: COMBAT-DESIGN.md §8 says HoBaT's badges are newly authored and the 238-row Hell-TCG library is a reference, not a port. If these heroes want badges they come from content's own set.",
+
+ "heroes": [
+  { "key": "male-style-1",   "name": "Woodcutter's Son", "gender": "male",
+    "depicts": "farm lad in a mail vest over a linen shirt, woodsman's axe, dark forest",
+    "campaign": "eve-of-ruin" },
+  { "key": "male-style-2",   "name": "Wild Spark",       "gender": "male",
+    "depicts": "boy in blue robes, magic sparking out of both hands, alarmed",
+    "campaign": "eve-of-ruin" },
+  { "key": "male-style-3",   "name": "Green Squire",     "gender": "male",
+    "depicts": "young knight in plate and a blue cloak, sword lowered, an army behind him",
+    "campaign": "eve-of-ruin", "artIncomplete": "level 1 only — no levels 2-4, no afflictions" },
+  { "key": "male-style-4",   "name": "Bamboo Novice",    "gender": "male",
+    "depicts": "ragged linen, topknot, bamboo staff, rope sandals",
+    "campaign": "skyship", "artIncomplete": "level 1 only — no levels 2-4, no afflictions" },
+
+  { "key": "female-style-1", "name": "Forest Spear",     "gender": "female",
+    "depicts": "layered leathers, one scavenged vambrace, wooden spear, sunlit deep forest",
+    "campaign": "eve-of-ruin" },
+  { "key": "female-style-2", "name": "Alley Knife",      "gender": "female",
+    "depicts": "rain-slick alley, leather bodice over a white shirt, kitchen knife, lanterns behind",
+    "campaign": "eve-of-ruin" },
+  { "key": "female-style-3", "name": "Dust Blade",       "gender": "female",
+    "depicts": "headscarf and cream robes, curved sword raised, blowing dust",
+    "campaign": "shadows" },
+  { "key": "female-style-4", "name": "Jade Staff",       "gender": "female",
+    "depicts": "long black hair, linen jacket, tall carved staff, mossy cliff",
+    "campaign": "skyship" }
+ ],
+
+ "frozenStats": {
+  "_note": "The last roll generateAspiringHero() produced, frozen so the build is reproducible. ARBITRARY — replaced at redesign.",
+  "male-style-1":   { "ported": { "strength": 3, "precision": 2, "armor": 0, "health": 4, "reach": 1, "magic": 0, "spirit": 0, "resist": 0, "itemSlots": 1, "toughness": 1, "dodge": 0 } },
+  "male-style-2":   { "ported": { "strength": 4, "precision": 2, "armor": 0, "health": 5, "reach": 1, "magic": 0, "spirit": 0, "resist": 0, "itemSlots": 1, "toughness": 1, "dodge": 0 } },
+  "male-style-3":   { "ported": { "strength": 3, "precision": 2, "armor": 0, "health": 5, "reach": 1, "magic": 0, "spirit": 0, "resist": 0, "itemSlots": 1, "toughness": 0, "dodge": 0 } },
+  "male-style-4":   { "ported": { "strength": 4, "precision": 1, "armor": 0, "health": 5, "reach": 1, "magic": 0, "spirit": 0, "resist": 0, "itemSlots": 1, "toughness": 1, "dodge": 0 } },
+  "female-style-1": { "ported": { "strength": 3, "precision": 2, "armor": 0, "health": 5, "reach": 1, "magic": 0, "spirit": 0, "resist": 0, "itemSlots": 2, "toughness": 1, "dodge": 0 } },
+  "female-style-2": { "ported": { "strength": 4, "precision": 2, "armor": 0, "health": 5, "reach": 1, "magic": 0, "spirit": 0, "resist": 0, "itemSlots": 1, "toughness": 1, "dodge": 0 } },
+  "female-style-3": { "ported": { "strength": 3, "precision": 2, "armor": 0, "health": 5, "reach": 1, "magic": 0, "spirit": 0, "resist": 0, "itemSlots": 2, "toughness": 0, "dodge": 0 } },
+  "female-style-4": { "ported": { "strength": 3, "precision": 2, "armor": 0, "health": 6, "reach": 1, "magic": 0, "spirit": 0, "resist": 0, "itemSlots": 1, "toughness": 1, "dodge": 0 } }
+ }
+}
