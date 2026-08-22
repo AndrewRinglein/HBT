@@ -17226,21 +17226,7 @@
    ],
    "classPowers": [],
    "namedSpecials": [],
-   "triggers": [
-    {
-     "hook": "onTakingDamage",
-     "targets": null,
-     "effects": [
-      {
-       "effect": "apply a status",
-       "status": "burn",
-       "value": 2,
-       "target": "the attacker"
-      }
-     ],
-     "authored": true
-    }
-   ],
+   "triggers": null,
    "levelBonuses": null,
    "cost": null,
    "quote": "Come closer. I dare you.",
@@ -17282,6 +17268,21 @@
     "art/heroes/mage-fireaura/card/l2.png",
     "art/heroes/mage-fireaura/card/l3.png",
     "art/heroes/mage-fireaura/card/l4.png"
+   ],
+   "authoredTriggers": [
+    {
+     "hook": "onTakingDamage",
+     "targets": null,
+     "effects": [
+      {
+       "effect": "apply a status",
+       "status": "burn",
+       "value": 2,
+       "target": "the attacker"
+      }
+     ],
+     "authored": true
+    }
    ],
    "artSlug": "mage-fireaura",
    "afflictionArt": {
@@ -18073,20 +18074,7 @@
    ],
    "classPowers": [],
    "namedSpecials": [],
-   "triggers": [
-    {
-     "name": "Thorns",
-     "hook": "passive",
-     "targets": "self",
-     "effects": [
-      {
-       "effect": "Thorns N",
-       "value": 1
-      }
-     ],
-     "authored": true
-    }
-   ],
+   "triggers": null,
    "levelBonuses": null,
    "cost": null,
    "quote": "I am the darkness that hunts darkness.",
@@ -18125,6 +18113,20 @@
     "art/heroes/paladin-dark/card/l2.png",
     "art/heroes/paladin-dark/card/l3.png",
     "art/heroes/paladin-dark/card/l4.png"
+   ],
+   "authoredTriggers": [
+    {
+     "name": "Thorns",
+     "hook": "passive",
+     "targets": "self",
+     "effects": [
+      {
+       "effect": "Thorns N",
+       "value": 1
+      }
+     ],
+     "authored": true
+    }
    ],
    "artSlug": "paladin-dark",
    "afflictionArt": {
@@ -18327,21 +18329,7 @@
    ],
    "classPowers": [],
    "namedSpecials": [],
-   "triggers": [
-    {
-     "name": "Begins Owed",
-     "hook": "startOfBattle",
-     "targets": "self",
-     "effects": [
-      {
-       "effect": "apply a status",
-       "status": "karma",
-       "value": 2
-      }
-     ],
-     "authored": true
-    }
-   ],
+   "triggers": null,
    "levelBonuses": null,
    "cost": null,
    "quote": "My armor reflects the light of the divine.",
@@ -18380,6 +18368,21 @@
     "art/heroes/paladin-shiney/card/l2.png",
     "art/heroes/paladin-shiney/card/l3.png",
     "art/heroes/paladin-shiney/card/l4.png"
+   ],
+   "authoredTriggers": [
+    {
+     "name": "Begins Owed",
+     "hook": "startOfBattle",
+     "targets": "self",
+     "effects": [
+      {
+       "effect": "apply a status",
+       "status": "karma",
+       "value": 2
+      }
+     ],
+     "authored": true
+    }
    ],
    "artSlug": "paladin-shiney",
    "afflictionArt": {

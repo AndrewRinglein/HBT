@@ -373,16 +373,16 @@ for(const h of heroes){
       if (!h.originBadges.includes(b)) { h.originBadges.push(b); badgesAdded++; }
     }
     if (spec.thorns != null)
-      (h.triggers = h.triggers || []).push({ name:'Thorns', hook:'passive', targets:'self',
+      (h.authoredTriggers = h.authoredTriggers || []).push({ name:'Thorns', hook:'passive', targets:'self',
         effects:[{ effect:'Thorns N', value:spec.thorns }], authored:true });
     if (spec.startOfBattleStatus)
-      (h.triggers = h.triggers || []).push({ name:'Begins Owed', hook:'startOfBattle', targets:'self',
+      (h.authoredTriggers = h.authoredTriggers || []).push({ name:'Begins Owed', hook:'startOfBattle', targets:'self',
         effects:[{ effect:'apply a status', status:spec.startOfBattleStatus.status,
                    value:spec.startOfBattleStatus.value }], authored:true });
     // Only triggers that need NO condition outside the closed three can be built.
     for (const tr of (spec.triggers || [])) {
       if (tr.when) { deferred++; continue; }
-      (h.triggers = h.triggers || []).push({ ...tr, authored:true });
+      (h.authoredTriggers = h.authoredTriggers || []).push({ ...tr, authored:true });
     }
     // Record the deviation from the class baseline ON THE ROW. R23 says every hero must match
     // its class exactly, and it is right to - an undeclared drift is how the Crucible ended up
