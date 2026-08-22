@@ -100,7 +100,9 @@ function convert(raw,{path,idBase,campaign,artOverride}){
 }
 
 // 1 — 98 fixed hero cards
-for(const h of HERO_DATA) heroes.push(convert(h,{path:'fixed',idBase:'fixed.'+slug(h.uuid.replace(/^hero-/,''))}));
+// A fixed hero has no template, so its SUBTYPE is its own name. They are all unique,
+// so there is no collision - ruled 2026-08-21.
+for(const h of HERO_DATA){ const row=convert(h,{path:'fixed',idBase:'fixed.'+slug(h.uuid.replace(/^hero-/,''))}); row.subtype=row.name; heroes.push(row); }
 // 2 & 3 — the crucible templates, one hero per distinct piece of art
 for(const [src,TABLE,camp] of [['shadows',AVTAIR_HERO_TYPES,'shadows'],['skyship',AERONISSA_HERO_TYPES,'skyship']])
   for(const [k,h] of Object.entries(TABLE)){
@@ -111,6 +113,7 @@ for(const [src,TABLE,camp] of [['shadows',AVTAIR_HERO_TYPES,'shadows'],['skyship
       hero.name=h.name+' '+ROMAN[i];
       hero.templateId='template.'+src+'.'+slug(k);
       hero.templateName=h.name;
+      hero.subtype=h.name;              // SUBTYPE: the roster identity. One per campaign.
       hero.variant=i+1; hero.variantsOf=files.length;
       hero.notes.push('One of '+files.length+' heroes off the '+h.name+' template \u2014 one per piece of art. '+
         'All '+files.length+' share the template stat block, triggers and badges; they differ by art and name.');
@@ -131,7 +134,7 @@ for(const [k,t] of Object.entries(TUTORIAL_HERO_VARIANTS)){
     const hero=convert({name:v.name,class:t.class,gender:t.gender,tier:0,level:1,baseStats:bs,
       originBadges:v.badges||[],quote:v.quote,backstory:v.description},
       {path:'tutorial',idBase:'tutorial.'+slug(k)+'.'+slug(v.name),campaign:'eve-of-ruin',artOverride:files[i]||null});
-    hero.templateId='template.tutorial.'+slug(k); hero.templateName=k;
+    hero.templateId='template.tutorial.'+slug(k); hero.templateName=k; hero.subtype=k;
     hero.variant=i+1; hero.variantsOf=files.length;
     hero.notes.push('One of '+files.length+' heroes off the '+k+' art set \u2014 one per piece of art, and this one ships its own name.');
     heroes.push(hero);
@@ -146,7 +149,7 @@ for(const [key,files] of Object.entries(VAR.aspiring)){
   for(let t=0;t<40&&(a.gender||'').toLowerCase()!==gender;t++) a=generateAspiringHero();
   const h=convert({...a,gender},{path:'aspiring',idBase:'aspiring.'+key,artOverride:files[0]});
   h.name='Aspiring Hero \u2014 '+gender+' style '+styleN;
-  h.templateId='template.aspiring.'+key; h.templateName=key; h.sample=true;
+  h.templateId='template.aspiring.'+key; h.templateName=key; h.subtype=key; h.sample=true;
   h.notes.unshift('One art template, one hero. Its folder holds 1/2/3/4 plus l/p/r/v \u2014 four levels and four statuses for THIS hero, not four designs, so it does not split the way Shadows and Skyship do.');
   h.notes.push('STATS ARE ONE DRAW \u2014 generateAspiringHero() is procedural and rolls a fresh block every time. The art template is fixed; the numbers are not.');
   heroes.push(h);

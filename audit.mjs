@@ -428,6 +428,27 @@ if(D.classes){
   }
 }
 
+// R19 EVERY HERO HAS A SUBTYPE, and a fixed hero's subtype is its own name.
+//     The identity model is class -> subtype -> type -> name. SUBTYPE is the roster
+//     identity and you may hold only one of each per campaign; TYPE is the specific art.
+//     Ruled 2026-08-21. A generative hero takes its subtype from its template; a fixed
+//     hero has no template, so its subtype is its own name — they are all unique, and the
+//     uniqueness check below is what proves that premise still holds.
+if(D.heroes&&D.heroes.heroes){
+  const H=D.heroes.heroes;
+  for(const h of H){
+    if(!h.subtype){ add('hero-has-no-subtype',h.name||h.id,h.id); continue; }
+    if(h.templateName && h.subtype!==h.templateName)
+      add('subtype-does-not-match-template',h.name||h.id,'subtype "'+h.subtype+'" vs template "'+h.templateName+'"');
+    if(!h.templateName && h.subtype!==h.name)
+      add('fixed-hero-subtype-is-not-its-name',h.name||h.id,'subtype "'+h.subtype+'"');
+  }
+  const fx=H.filter(h=>!h.templateName).map(h=>h.name);
+  const dup=[...new Set(fx.filter((n,i)=>fx.indexOf(n)!==i))];
+  for(const n of dup)
+    add('two-fixed-heroes-share-a-name',n,'so they collide on subtype — the one-per-campaign rule breaks');
+}
+
 const by={}; F.forEach(f=>(by[f.rule]=by[f.rule]||[]).push(f));
 for(const [r,list] of Object.entries(by).sort((a,b)=>b[1].length-a[1].length)){
   console.log('\n### '+r+'  ('+list.length+')');

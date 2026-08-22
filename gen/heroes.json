@@ -213,7 +213,8 @@
    "quote": null,
    "backstory": null,
    "passiveDescription": "On enter: +1 Faith. On death: -2 Faith",
-   "additionalClasses": null
+   "additionalClasses": null,
+   "subtype": "Orphan Children"
   },
   {
    "id": "hero.fixed.survivors",
@@ -282,7 +283,8 @@
    "quote": null,
    "backstory": null,
    "passiveDescription": null,
-   "additionalClasses": null
+   "additionalClasses": null,
+   "subtype": "Ragtag Survivors"
   },
   {
    "id": "hero.fixed.imp",
@@ -350,7 +352,8 @@
    "quote": null,
    "backstory": null,
    "passiveDescription": null,
-   "additionalClasses": null
+   "additionalClasses": null,
+   "subtype": "Imp"
   },
   {
    "id": "hero.fixed.caravan",
@@ -419,7 +422,8 @@
    "quote": null,
    "backstory": null,
    "passiveDescription": null,
-   "additionalClasses": null
+   "additionalClasses": null,
+   "subtype": "Caravan"
   },
   {
    "id": "hero.fixed.wife3",
@@ -503,7 +507,8 @@
    "quote": null,
    "backstory": null,
    "passiveDescription": "End of turn: Deal half Magic damage (rounded up) to a chosen enemy",
-   "additionalClasses": null
+   "additionalClasses": null,
+   "subtype": "Wife #3"
   },
   {
    "id": "hero.fixed.mirian",
@@ -582,7 +587,8 @@
    "quote": "\"Every spell begins with a story. Every story holds power.\"",
    "backstory": "Once the head librarian of the great archives, Mirian watched helplessly as the library burned. Now she carries the remnants of forbidden knowledge in her mind, wielding arcane lore that scholars have forgotten.",
    "passiveDescription": null,
-   "additionalClasses": null
+   "additionalClasses": null,
+   "subtype": "Mirian, the Lore Keeper"
   },
   {
    "id": "hero.fixed.maiden",
@@ -663,7 +669,8 @@
    "quote": null,
    "backstory": null,
    "passiveDescription": null,
-   "additionalClasses": null
+   "additionalClasses": null,
+   "subtype": "Maiden"
   },
   {
    "id": "hero.fixed.demonlord",
@@ -732,7 +739,8 @@
    "quote": null,
    "backstory": null,
    "passiveDescription": null,
-   "additionalClasses": null
+   "additionalClasses": null,
+   "subtype": "Demon Lord"
   },
   {
    "id": "hero.fixed.angel",
@@ -815,7 +823,8 @@
    "quote": null,
    "backstory": null,
    "passiveDescription": null,
-   "additionalClasses": null
+   "additionalClasses": null,
+   "subtype": "Angel"
   },
   {
    "id": "hero.fixed.wife5",
@@ -896,7 +905,8 @@
    "quote": null,
    "backstory": null,
    "passiveDescription": "On kill: Kill the lowest health enemy. Lvl 3: On enter draw 4. Lvl 4: On kill +1 Action",
-   "additionalClasses": null
+   "additionalClasses": null,
+   "subtype": "Wife #5"
   },
   {
    "id": "hero.fixed.veiled-assassin",
@@ -979,7 +989,8 @@
    "quote": "\"Everyone has a price. I just help them pay it.\"",
    "backstory": "She appeared at the crossroads shrine, offering her services with a knowing smile. The Goddess of Deception sent her, but to what end? She serves loyally... for now.",
    "passiveDescription": null,
-   "additionalClasses": null
+   "additionalClasses": null,
+   "subtype": "The Veiled Assassin"
   },
   {
    "id": "hero.fixed.shadow-hound-puppy",
@@ -1065,7 +1076,8 @@
    "quote": "*happy shadow bark*",
    "backstory": "Found abandoned in the shadow realm, this puppy bonded with the first kind soul it encountered. Its instincts are sharp, granting allies uncanny reflexes.",
    "passiveDescription": null,
-   "additionalClasses": null
+   "additionalClasses": null,
+   "subtype": "Shadow Hound Puppy"
   },
   {
    "id": "hero.fixed.old-wise-man",
@@ -1147,7 +1159,8 @@
    "quote": "\"Listen well, for I shall not repeat myself.\"",
    "backstory": "He has seen civilizations rise and fall, remembers the old ways, and carries secrets that should have died with his generation.",
    "passiveDescription": null,
-   "additionalClasses": null
+   "additionalClasses": null,
+   "subtype": "Old Wise Man"
   },
   {
    "id": "hero.fixed.lumberjack-and-wife",
@@ -1215,7 +1228,8 @@
    "quote": "\"She swings the axe, I throw the hammer. Works every time.\"",
    "backstory": "They fled the burning village together, grabbing every tool they could carry. United in survival, they fight as one.",
    "passiveDescription": null,
-   "additionalClasses": null
+   "additionalClasses": null,
+   "subtype": "Lumberjack and Wife"
   },
   {
    "id": "hero.fixed.scary-kid",
@@ -1296,7 +1310,8 @@
    "quote": "\"Want to play a game?\"",
    "backstory": "The other children avoid this one. Animals flee. Even demons seem uneasy in its presence.",
    "passiveDescription": null,
-   "additionalClasses": null
+   "additionalClasses": null,
+   "subtype": "Scary Kid"
   },
   {
    "id": "hero.fixed.troll-child",
@@ -1377,7 +1392,8 @@
    "quote": "*confused troll rumbling*",
    "backstory": "Separated from its clan during the demon invasion, this young troll has imprinted on the refugee caravan. It heals quickly but cries when lonely.",
    "passiveDescription": null,
-   "additionalClasses": null
+   "additionalClasses": null,
+   "subtype": "Troll Child"
   },
   {
    "id": "hero.fixed.gang-of-nuns",
@@ -1458,7 +1474,8 @@
    "quote": "\"The Goddess protects, but we still carry maces.\"",
    "backstory": "Their convent was destroyed, but their faith remains unbroken. They march together, praying for the souls of the fallen and healing the wounded.",
    "passiveDescription": null,
-   "additionalClasses": null
+   "additionalClasses": null,
+   "subtype": "Gang of Nuns"
   },
   {
    "id": "hero.fixed.magi-apprentice",
@@ -1544,7 +1561,8 @@
    "quote": "\"If I fall... take them with me!\"",
    "backstory": "Their master died before completing their training. Now volatile magic builds within them, releasing in a devastating explosion upon death.",
    "passiveDescription": "💀 Martyr: On death, burns ALL heroes for 2 and ALL enemies for Half Magic",
-   "additionalClasses": null
+   "additionalClasses": null,
+   "subtype": "Magi Apprentice"
   },
   {
    "id": "hero.fixed.living-ghost",
@@ -1627,7 +1645,8 @@
    "quote": "\"...\"",
    "backstory": "It remembers dying, but death would not take it. Now it drifts, ethereal and nearly invulnerable, seeking purpose among the living.",
    "passiveDescription": null,
-   "additionalClasses": null
+   "additionalClasses": null,
+   "subtype": "Living Ghost"
   },
   {
    "id": "hero.fixed.warrior-nun",
@@ -1735,7 +1754,8 @@
    "passiveDescription": "⚠️ Martyr: When hit takes +1 damage, gains 1 Faith, loses 1 max HP. On death: All heroes -1 Armor. End of turn: Heals Spirit",
    "additionalClasses": [
     "Priest"
-   ]
+   ],
+   "subtype": "Warrior Nun"
   },
   {
    "id": "hero.fixed.librarian",
@@ -1825,7 +1845,8 @@
    "quote": null,
    "backstory": null,
    "passiveDescription": null,
-   "additionalClasses": null
+   "additionalClasses": null,
+   "subtype": "Librarian"
   },
   {
    "id": "hero.fixed.cook",
@@ -1910,7 +1931,8 @@
    "quote": null,
    "backstory": null,
    "passiveDescription": null,
-   "additionalClasses": null
+   "additionalClasses": null,
+   "subtype": "Cook"
   },
   {
    "id": "hero.fixed.blacksmith",
@@ -2004,7 +2026,8 @@
    "quote": null,
    "backstory": null,
    "passiveDescription": null,
-   "additionalClasses": null
+   "additionalClasses": null,
+   "subtype": "Blacksmith"
   },
   {
    "id": "hero.fixed.zombie-bride",
@@ -2078,7 +2101,8 @@
    "quote": null,
    "backstory": null,
    "passiveDescription": null,
-   "additionalClasses": null
+   "additionalClasses": null,
+   "subtype": "Zombie Bride"
   },
   {
    "id": "hero.fixed.fisherman",
@@ -2159,7 +2183,8 @@
    "quote": null,
    "backstory": null,
    "passiveDescription": null,
-   "additionalClasses": null
+   "additionalClasses": null,
+   "subtype": "Fisherman"
   },
   {
    "id": "hero.fixed.fishermans-wife",
@@ -2235,7 +2260,8 @@
    "quote": null,
    "backstory": null,
    "passiveDescription": null,
-   "additionalClasses": null
+   "additionalClasses": null,
+   "subtype": "Fishermans Wife"
   },
   {
    "id": "hero.fixed.farmer",
@@ -2305,7 +2331,8 @@
    "quote": null,
    "backstory": null,
    "passiveDescription": null,
-   "additionalClasses": null
+   "additionalClasses": null,
+   "subtype": "Farmer"
   },
   {
    "id": "hero.fixed.princess",
@@ -2379,7 +2406,8 @@
    "quote": null,
    "backstory": null,
    "passiveDescription": null,
-   "additionalClasses": null
+   "additionalClasses": null,
+   "subtype": "Princess"
   },
   {
    "id": "hero.fixed.farming-family",
@@ -2448,7 +2476,8 @@
    "quote": null,
    "backstory": null,
    "passiveDescription": null,
-   "additionalClasses": null
+   "additionalClasses": null,
+   "subtype": "Farming Family"
   },
   {
    "id": "hero.fixed.prince",
@@ -2518,7 +2547,8 @@
    "quote": null,
    "backstory": null,
    "passiveDescription": null,
-   "additionalClasses": null
+   "additionalClasses": null,
+   "subtype": "Prince"
   },
   {
    "id": "hero.fixed.royal-guard",
@@ -2590,7 +2620,8 @@
    "quote": null,
    "backstory": null,
    "passiveDescription": null,
-   "additionalClasses": null
+   "additionalClasses": null,
+   "subtype": "Royal Guard"
   },
   {
    "id": "hero.fixed.group-of-farmers",
@@ -2659,7 +2690,8 @@
    "quote": null,
    "backstory": null,
    "passiveDescription": null,
-   "additionalClasses": null
+   "additionalClasses": null,
+   "subtype": "Group of Farmers"
   },
   {
    "id": "hero.fixed.spirit-snake",
@@ -2746,7 +2778,8 @@
    "quote": null,
    "backstory": null,
    "passiveDescription": null,
-   "additionalClasses": null
+   "additionalClasses": null,
+   "subtype": "Spirit Snake"
   },
   {
    "id": "hero.fixed.big-caravan",
@@ -2830,7 +2863,8 @@
    "quote": null,
    "backstory": null,
    "passiveDescription": "⚠️ On enter: +1 Supplies. On death: -5 Supplies",
-   "additionalClasses": null
+   "additionalClasses": null,
+   "subtype": "Big Caravan"
   },
   {
    "id": "hero.fixed.one-armed-ogre",
@@ -2919,7 +2953,8 @@
    "quote": null,
    "backstory": null,
    "passiveDescription": null,
-   "additionalClasses": null
+   "additionalClasses": null,
+   "subtype": "One-Armed Ogre"
   },
   {
    "id": "hero.fixed.fey-queen",
@@ -3013,7 +3048,8 @@
    "quote": null,
    "backstory": null,
    "passiveDescription": null,
-   "additionalClasses": null
+   "additionalClasses": null,
+   "subtype": "Fey Queen"
   },
   {
    "id": "hero.fixed.fae-king",
@@ -3101,7 +3137,8 @@
    "quote": null,
    "backstory": null,
    "passiveDescription": null,
-   "additionalClasses": null
+   "additionalClasses": null,
+   "subtype": "Fae King"
   },
   {
    "id": "hero.fixed.sorceress",
@@ -3175,7 +3212,8 @@
    "quote": null,
    "backstory": null,
    "passiveDescription": null,
-   "additionalClasses": null
+   "additionalClasses": null,
+   "subtype": "Sorceress"
   },
   {
    "id": "hero.fixed.air-mage",
@@ -3257,7 +3295,8 @@
    "quote": "\"The wind whispers secrets to those who listen.\"",
    "backstory": "She dances on the wind itself, her magic making her nearly impossible to hit while weakening her foes.",
    "passiveDescription": null,
-   "additionalClasses": null
+   "additionalClasses": null,
+   "subtype": "Air Mage"
   },
   {
    "id": "hero.fixed.spellblade",
@@ -3328,7 +3367,8 @@
    "passiveDescription": null,
    "additionalClasses": [
     "Warrior"
-   ]
+   ],
+   "subtype": "Spellblade"
   },
   {
    "id": "hero.fixed.swashbuckler",
@@ -3413,7 +3453,8 @@
    "passiveDescription": null,
    "additionalClasses": [
     "Rogue"
-   ]
+   ],
+   "subtype": "Swashbuckler"
   },
   {
    "id": "hero.fixed.earth-mage",
@@ -3494,7 +3535,8 @@
    "quote": "\"The mountain does not move for the storm.\"",
    "backstory": "He commands the very earth itself, raising shields of stone and hurling boulders at his foes.",
    "passiveDescription": null,
-   "additionalClasses": null
+   "additionalClasses": null,
+   "subtype": "Earth Mage"
   },
   {
    "id": "hero.fixed.julie-supply-master",
@@ -3580,7 +3622,8 @@
    "quote": "\"I have just the thing in here somewhere...\"",
    "backstory": "Julie has an uncanny ability to find supplies where others see nothing. Her organizational skills keep the caravan running smoothly.",
    "passiveDescription": null,
-   "additionalClasses": null
+   "additionalClasses": null,
+   "subtype": "Julie the Supply Master"
   },
   {
    "id": "hero.fixed.general-kor",
@@ -3666,7 +3709,8 @@
    "quote": "\"Hold the line! Not one step back!\"",
    "backstory": "A grizzled veteran of a hundred battles, his mere presence galvanizes troops into action. But if he falls, morale crumbles.",
    "passiveDescription": null,
-   "additionalClasses": null
+   "additionalClasses": null,
+   "subtype": "General Kor"
   },
   {
    "id": "hero.fixed.beastmaster",
@@ -3755,7 +3799,8 @@
    "passiveDescription": null,
    "additionalClasses": [
     "Druid"
-   ]
+   ],
+   "subtype": "Beastmaster"
   },
   {
    "id": "hero.fixed.mr-black",
@@ -3838,7 +3883,8 @@
    "passiveDescription": "⚠️ On kill: Deals 4 TRUE damage to ALL heroes (including self)",
    "additionalClasses": [
     "Warrior"
-   ]
+   ],
+   "subtype": "Mr. Black"
   },
   {
    "id": "hero.fixed.desperate-villagers",
@@ -3921,7 +3967,8 @@
    "quote": "\"Please... we just want to survive.\"",
    "backstory": "They fled the burning villages with nothing but the clothes on their backs. Their numbers provide strength, but their loss would devastate the caravan.",
    "passiveDescription": "⚠️ On death: Lose 3 Faith AND 3 Supplies",
-   "additionalClasses": null
+   "additionalClasses": null,
+   "subtype": "Desperate Villagers"
   },
   {
    "id": "hero.fixed.green-drake",
@@ -4002,7 +4049,8 @@
    "quote": "*happy dragon chirps*",
    "backstory": "A young dragon who imprinted on the caravan after being separated from its mother. Its flame breath grows stronger with age.",
    "passiveDescription": null,
-   "additionalClasses": null
+   "additionalClasses": null,
+   "subtype": "Green Drake"
   },
   {
    "id": "hero.fixed.merchant-wagon",
@@ -4086,7 +4134,8 @@
    "quote": "\"Everything has a price, friend. Everything.\"",
    "backstory": "A shrewd traveling merchant whose wagon is packed with goods. Their death would mean the loss of valuable supplies.",
    "passiveDescription": null,
-   "additionalClasses": null
+   "additionalClasses": null,
+   "subtype": "Merchant Wagon"
   },
   {
    "id": "hero.fixed.ragtag-soldiers",
@@ -4169,7 +4218,8 @@
    "quote": "\"We may be broken, but we are not beaten.\"",
    "backstory": "What remains of a once-proud regiment. They fight on despite their wounds and exhaustion, for they have nothing left to lose.",
    "passiveDescription": null,
-   "additionalClasses": null
+   "additionalClasses": null,
+   "subtype": "Ragtag Soldiers"
   },
   {
    "id": "hero.fixed.catfolk-villager",
@@ -4240,7 +4290,8 @@
    "quote": "\"Nine lives? I intend to use every one of them.\"",
    "backstory": "A nimble catfolk who fled their burning village. Their quick reflexes have kept them alive through countless dangers.",
    "passiveDescription": null,
-   "additionalClasses": null
+   "additionalClasses": null,
+   "subtype": "Catfolk Villager"
   },
   {
    "id": "hero.fixed.tiempic-mage",
@@ -4318,7 +4369,8 @@
    "quote": "\"Every moment is a weapon, if you know how to wield it.\"",
    "backstory": "A mage who glimpsed the flow of time itself. Their arcane strikes drain their essence but devastate their foes.",
    "passiveDescription": null,
-   "additionalClasses": null
+   "additionalClasses": null,
+   "subtype": "Tiempic Mage"
   },
   {
    "id": "hero.fixed.void-dealer",
@@ -4407,7 +4459,8 @@
    "quote": "\"The void gives freely... but always collects its due.\"",
    "backstory": "Once a fortune teller who gazed too deep into the void between worlds. Now she deals in darker currencies, her body wracked by poisons that would kill lesser beings.",
    "passiveDescription": null,
-   "additionalClasses": null
+   "additionalClasses": null,
+   "subtype": "Void Dealer"
   },
   {
    "id": "hero.fixed.school-children",
@@ -4475,7 +4528,8 @@
    "quote": "\"Please... help us find our teacher!\"",
    "backstory": "A group of terrified schoolchildren found hiding in the burning school. They cling to each other for comfort amidst the chaos.",
    "passiveDescription": null,
-   "additionalClasses": null
+   "additionalClasses": null,
+   "subtype": "School Children"
   },
   {
    "id": "hero.fixed.school-teacher",
@@ -4552,7 +4606,8 @@
    "quote": "\"Knowledge is the one thing they cannot take from us.\"",
    "backstory": "A dedicated teacher who refused to abandon her students when demons attacked the city. Her calm demeanor helps keep others focused.",
    "passiveDescription": "Grants Knowledge spell and Knowledge tactic",
-   "additionalClasses": null
+   "additionalClasses": null,
+   "subtype": "School Teacher"
   },
   {
    "id": "hero.fixed.death-mage",
@@ -4636,7 +4691,8 @@
    "quote": null,
    "backstory": null,
    "passiveDescription": "On kill: +1 Faith. On attack: Inflict 1 Poison",
-   "additionalClasses": null
+   "additionalClasses": null,
+   "subtype": "Death Mage"
   },
   {
    "id": "hero.fixed.vibrant-mage",
@@ -4718,7 +4774,8 @@
    "quote": null,
    "backstory": null,
    "passiveDescription": "On attack: Gain protection equal to half magic",
-   "additionalClasses": null
+   "additionalClasses": null,
+   "subtype": "Vibrant Mage"
   },
   {
    "id": "hero.fixed.silk-merchant",
@@ -4799,7 +4856,8 @@
    "quote": null,
    "backstory": null,
    "passiveDescription": "On enter: +2 Supplies. Recruit bonus: +3 Supplies",
-   "additionalClasses": null
+   "additionalClasses": null,
+   "subtype": "Silk Merchant"
   },
   {
    "id": "hero.fixed.runesmith",
@@ -4872,7 +4930,8 @@
    "quote": null,
    "backstory": null,
    "passiveDescription": "Class Power: Runesmith Forge",
-   "additionalClasses": null
+   "additionalClasses": null,
+   "subtype": "Runesmith"
   },
   {
    "id": "hero.fixed.guard",
@@ -4940,7 +4999,8 @@
    "quote": null,
    "backstory": null,
    "passiveDescription": "A disciplined guard of the sovereignty",
-   "additionalClasses": null
+   "additionalClasses": null,
+   "subtype": "Guard"
   },
   {
    "id": "hero.fixed.captain",
@@ -5031,7 +5091,8 @@
    "quote": null,
    "backstory": null,
    "passiveDescription": "On enter: +2 Health to all Soldiers and Warriors, +1 Action per turn",
-   "additionalClasses": null
+   "additionalClasses": null,
+   "subtype": "Captain"
   },
   {
    "id": "hero.fixed.mirage-walker",
@@ -5107,7 +5168,8 @@
    "quote": null,
    "backstory": null,
    "passiveDescription": "Class Power: Mirage. Grants spell: Mirages",
-   "additionalClasses": null
+   "additionalClasses": null,
+   "subtype": "Mirage Walker"
   },
   {
    "id": "hero.fixed.young-sand-dragon",
@@ -5199,7 +5261,8 @@
    "quote": null,
    "backstory": null,
    "passiveDescription": "On enter: Gain 8 Regen. On kill: Deal 1 true damage to all heroes",
-   "additionalClasses": null
+   "additionalClasses": null,
+   "subtype": "Young Sand Dragon"
   },
   {
    "id": "hero.fixed.djinn-touched-child",
@@ -5267,7 +5330,8 @@
    "quote": null,
    "backstory": null,
    "passiveDescription": "A child touched by djinn magic",
-   "additionalClasses": null
+   "additionalClasses": null,
+   "subtype": "The Djinn-Touched Child"
   },
   {
    "id": "hero.fixed.eternal-prince",
@@ -5346,7 +5410,8 @@
    "quote": null,
    "backstory": null,
    "passiveDescription": "On enter: +1 Action per turn",
-   "additionalClasses": null
+   "additionalClasses": null,
+   "subtype": "The Eternal Prince"
   },
   {
    "id": "hero.fixed.the-outcast",
@@ -5422,7 +5487,8 @@
    "quote": null,
    "backstory": null,
    "passiveDescription": "Grants spell: Outcast",
-   "additionalClasses": null
+   "additionalClasses": null,
+   "subtype": "The Outcast"
   },
   {
    "id": "hero.fixed.refugee-children",
@@ -5502,7 +5568,8 @@
    "quote": null,
    "backstory": null,
    "passiveDescription": "On enter: +2 Faith",
-   "additionalClasses": null
+   "additionalClasses": null,
+   "subtype": "Refugee Children"
   },
   {
    "id": "hero.fixed.lost-fishers",
@@ -5582,7 +5649,8 @@
    "quote": null,
    "backstory": null,
    "passiveDescription": "On attack: Apply 2 Weak to target",
-   "additionalClasses": null
+   "additionalClasses": null,
+   "subtype": "Lost Fishers"
   },
   {
    "id": "hero.fixed.sailors",
@@ -5650,7 +5718,8 @@
    "quote": null,
    "backstory": null,
    "passiveDescription": "A group of rough sailors",
-   "additionalClasses": null
+   "additionalClasses": null,
+   "subtype": "Sailors"
   },
   {
    "id": "hero.fixed.refugees",
@@ -5728,7 +5797,8 @@
    "quote": null,
    "backstory": null,
    "passiveDescription": "On enter: +1 Faith",
-   "additionalClasses": null
+   "additionalClasses": null,
+   "subtype": "Refugees"
   },
   {
    "id": "hero.fixed.huge-group-of-refugees",
@@ -5799,7 +5869,8 @@
    "quote": null,
    "backstory": null,
    "passiveDescription": "Grants spell: Solace of Refugees",
-   "additionalClasses": null
+   "additionalClasses": null,
+   "subtype": "Huge Group of Refugees"
   },
   {
    "id": "hero.fixed.caravan-master",
@@ -5881,7 +5952,8 @@
    "quote": null,
    "backstory": null,
    "passiveDescription": "On enter: +2 Supplies, +1 Action per turn. Recruit bonus: +5 Supplies",
-   "additionalClasses": null
+   "additionalClasses": null,
+   "subtype": "Caravan Master"
   },
   {
    "id": "hero.fixed.badgered-soldier",
@@ -5956,7 +6028,8 @@
    "quote": null,
    "backstory": null,
    "passiveDescription": "A battered but resolute soldier",
-   "additionalClasses": null
+   "additionalClasses": null,
+   "subtype": "Badgered Soldier"
   },
   {
    "id": "hero.fixed.defenseless-women",
@@ -6029,7 +6102,8 @@
    "quote": null,
    "backstory": null,
    "passiveDescription": "Grants spells: Protect the Weak, No Recourse",
-   "additionalClasses": null
+   "additionalClasses": null,
+   "subtype": "Defenseless Women"
   },
   {
    "id": "hero.fixed.militia",
@@ -6095,7 +6169,8 @@
    "quote": null,
    "backstory": null,
    "passiveDescription": "An organized militia force",
-   "additionalClasses": null
+   "additionalClasses": null,
+   "subtype": "Militia"
   },
   {
    "id": "hero.fixed.militia-commander",
@@ -6170,7 +6245,8 @@
    "quote": null,
    "backstory": null,
    "passiveDescription": "+1 Max Heroes. Class Power: Coordinate",
-   "additionalClasses": null
+   "additionalClasses": null,
+   "subtype": "Militia Commander"
   },
   {
    "id": "hero.fixed.shadows-general-rinad",
@@ -6252,7 +6328,8 @@
    "quote": null,
    "backstory": null,
    "passiveDescription": "Commander: Grants 2 extra max hero slots",
-   "additionalClasses": null
+   "additionalClasses": null,
+   "subtype": "General Rinad"
   },
   {
    "id": "hero.fixed.catfolk-crew",
@@ -6329,7 +6406,8 @@
    "quote": null,
    "backstory": null,
    "passiveDescription": "Power: Support — All Warriors gain +1 Health and +1 Melee (CD 10)",
-   "additionalClasses": null
+   "additionalClasses": null,
+   "subtype": "Catfolk Crew"
   },
   {
    "id": "hero.fixed.catfolk-navigator",
@@ -6408,7 +6486,8 @@
    "quote": null,
    "backstory": null,
    "passiveDescription": "On enter: +1 draw per turn",
-   "additionalClasses": null
+   "additionalClasses": null,
+   "subtype": "Catfolk Navigator"
   },
   {
    "id": "hero.fixed.catfolk-cook",
@@ -6487,7 +6566,8 @@
    "quote": null,
    "backstory": null,
    "passiveDescription": "On kill: Gain 1 supply",
-   "additionalClasses": null
+   "additionalClasses": null,
+   "subtype": "Catfolk Cook"
   },
   {
    "id": "hero.fixed.catfolk-cabin-boy",
@@ -6568,7 +6648,8 @@
    "quote": null,
    "backstory": null,
    "passiveDescription": "Power: Escape (CD 2)",
-   "additionalClasses": null
+   "additionalClasses": null,
+   "subtype": "Catfolk Cabin Boy"
   },
   {
    "id": "hero.fixed.catfolk-soldier",
@@ -6646,7 +6727,8 @@
    "quote": null,
    "backstory": null,
    "passiveDescription": "Power: Bolster — Target hero gains 2 Health (CD 3)",
-   "additionalClasses": null
+   "additionalClasses": null,
+   "subtype": "Catfolk Soldier"
   },
   {
    "id": "hero.fixed.catfolk-archer",
@@ -6722,7 +6804,8 @@
    "quote": null,
    "backstory": null,
    "passiveDescription": "Power: Take Aim — Target hero gains 2 Ranged (CD 10)",
-   "additionalClasses": null
+   "additionalClasses": null,
+   "subtype": "Catfolk Archer"
   },
   {
    "id": "hero.fixed.catfolk-mystic",
@@ -6806,7 +6889,8 @@
    "quote": null,
    "backstory": null,
    "passiveDescription": "End of turn: Apply Burn equal to half Magic to target enemy",
-   "additionalClasses": null
+   "additionalClasses": null,
+   "subtype": "Catfolk Mystic"
   },
   {
    "id": "hero.fixed.catfolk-whip-master",
@@ -6886,7 +6970,8 @@
    "quote": null,
    "backstory": null,
    "passiveDescription": "On attack: Inflict 2 Weak",
-   "additionalClasses": null
+   "additionalClasses": null,
+   "subtype": "Catfolk Whip Master"
   },
   {
    "id": "hero.fixed.skyship-tiefling",
@@ -6966,7 +7051,8 @@
    "quote": null,
    "backstory": null,
    "passiveDescription": "Dagger Master: On damage inflict 1 Poison",
-   "additionalClasses": null
+   "additionalClasses": null,
+   "subtype": "Tiefling"
   },
   {
    "id": "hero.fixed.skyship-admiral",
@@ -7049,7 +7135,8 @@
    "quote": null,
    "backstory": null,
    "passiveDescription": "Commander: Grants 2 actions per turn and 1 max hero slot",
-   "additionalClasses": null
+   "additionalClasses": null,
+   "subtype": "The Admiral"
   },
   {
    "id": "hero.fixed.cargo-hold-crew",
@@ -7117,7 +7204,8 @@
    "quote": null,
    "backstory": null,
    "passiveDescription": "A large group of cargo handlers",
-   "additionalClasses": null
+   "additionalClasses": null,
+   "subtype": "Cargo Hold Crew"
   },
   {
    "id": "hero.fixed.ships-astrologer",
@@ -7198,7 +7286,8 @@
    "quote": null,
    "backstory": null,
    "passiveDescription": "On enter: draw 2 cards",
-   "additionalClasses": null
+   "additionalClasses": null,
+   "subtype": "Ship's Astrologer"
   },
   {
    "id": "hero.fixed.stowaway-children",
@@ -7277,7 +7366,8 @@
    "quote": null,
    "backstory": null,
    "passiveDescription": "On enter: +2 Faith",
-   "additionalClasses": null
+   "additionalClasses": null,
+   "subtype": "Stowaway Children"
   },
   {
    "id": "hero.fixed.cursed-passengers",
@@ -7350,7 +7440,8 @@
    "quote": null,
    "backstory": null,
    "passiveDescription": "On enter: +1 Faith",
-   "additionalClasses": null
+   "additionalClasses": null,
+   "subtype": "Cursed Passengers"
   },
   {
    "id": "hero.fixed.skyship-deckhands",
@@ -7418,7 +7509,8 @@
    "quote": null,
    "backstory": null,
    "passiveDescription": "A group of rough deckhands",
-   "additionalClasses": null
+   "additionalClasses": null,
+   "subtype": "Skyship Deckhands"
   },
   {
    "id": "hero.fixed.bard",
@@ -7506,7 +7598,8 @@
    "quote": null,
    "backstory": null,
    "passiveDescription": "On enter: remove 1 Weak from all heroes. On attack: heal party for 1.",
-   "additionalClasses": null
+   "additionalClasses": null,
+   "subtype": "Bard"
   },
   {
    "id": "hero.fixed.ethereal-bard",
@@ -7586,7 +7679,8 @@
    "quote": null,
    "backstory": null,
    "passiveDescription": "On attack: apply 1 Weak to all enemies in row.",
-   "additionalClasses": null
+   "additionalClasses": null,
+   "subtype": "Ethereal Bard"
   },
   {
    "id": "hero.fixed.small-army",
@@ -7669,7 +7763,8 @@
    "quote": null,
    "backstory": null,
    "passiveDescription": "On enter: gain 5 Weak. Overwhelming numbers but no discipline.",
-   "additionalClasses": null
+   "additionalClasses": null,
+   "subtype": "Small Army"
   },
   {
    "id": "hero.fixed.wayward-child",
@@ -7745,7 +7840,8 @@
    "quote": null,
    "backstory": null,
    "passiveDescription": "Free to deploy. Too young and frail for battle.",
-   "additionalClasses": null
+   "additionalClasses": null,
+   "subtype": "Wayward Child"
   },
   {
    "id": "hero.fixed.wandering-bard",
@@ -7835,7 +7931,8 @@
    "quote": null,
    "backstory": null,
    "passiveDescription": "On enter: all heroes gain +1 Health and +1 Item Slot. Future heroes entering also gain these bonuses.",
-   "additionalClasses": null
+   "additionalClasses": null,
+   "subtype": "Wandering Bard"
   },
   {
    "id": "hero.fixed.thespian",
@@ -7915,7 +8012,8 @@
    "quote": null,
    "backstory": null,
    "passiveDescription": "Impersonation: counts as ALL classes for item bonuses. Gets 2 random positive badges.",
-   "additionalClasses": null
+   "additionalClasses": null,
+   "subtype": "Thespian"
   },
   {
    "id": "hero.shadows.priestess-of-ire.v1",
@@ -8012,7 +8110,8 @@
    "templateId": "template.shadows.priestess-of-ire",
    "templateName": "Priestess of Ire",
    "variant": 1,
-   "variantsOf": 4
+   "variantsOf": 4,
+   "subtype": "Priestess of Ire"
   },
   {
    "id": "hero.shadows.priestess-of-ire.v2",
@@ -8109,7 +8208,8 @@
    "templateId": "template.shadows.priestess-of-ire",
    "templateName": "Priestess of Ire",
    "variant": 2,
-   "variantsOf": 4
+   "variantsOf": 4,
+   "subtype": "Priestess of Ire"
   },
   {
    "id": "hero.shadows.priestess-of-ire.v3",
@@ -8206,7 +8306,8 @@
    "templateId": "template.shadows.priestess-of-ire",
    "templateName": "Priestess of Ire",
    "variant": 3,
-   "variantsOf": 4
+   "variantsOf": 4,
+   "subtype": "Priestess of Ire"
   },
   {
    "id": "hero.shadows.priestess-of-ire.v4",
@@ -8303,7 +8404,8 @@
    "templateId": "template.shadows.priestess-of-ire",
    "templateName": "Priestess of Ire",
    "variant": 4,
-   "variantsOf": 4
+   "variantsOf": 4,
+   "subtype": "Priestess of Ire"
   },
   {
    "id": "hero.shadows.priestess-of-solace.v1",
@@ -8389,7 +8491,8 @@
    "templateId": "template.shadows.priestess-of-solace",
    "templateName": "Priestess of Solace",
    "variant": 1,
-   "variantsOf": 4
+   "variantsOf": 4,
+   "subtype": "Priestess of Solace"
   },
   {
    "id": "hero.shadows.priestess-of-solace.v2",
@@ -8475,7 +8578,8 @@
    "templateId": "template.shadows.priestess-of-solace",
    "templateName": "Priestess of Solace",
    "variant": 2,
-   "variantsOf": 4
+   "variantsOf": 4,
+   "subtype": "Priestess of Solace"
   },
   {
    "id": "hero.shadows.priestess-of-solace.v3",
@@ -8561,7 +8665,8 @@
    "templateId": "template.shadows.priestess-of-solace",
    "templateName": "Priestess of Solace",
    "variant": 3,
-   "variantsOf": 4
+   "variantsOf": 4,
+   "subtype": "Priestess of Solace"
   },
   {
    "id": "hero.shadows.priestess-of-solace.v4",
@@ -8647,7 +8752,8 @@
    "templateId": "template.shadows.priestess-of-solace",
    "templateName": "Priestess of Solace",
    "variant": 4,
-   "variantsOf": 4
+   "variantsOf": 4,
+   "subtype": "Priestess of Solace"
   },
   {
    "id": "hero.shadows.servant-of-omen.v1",
@@ -8735,7 +8841,8 @@
    "templateId": "template.shadows.servant-of-omen",
    "templateName": "Servant of Omen",
    "variant": 1,
-   "variantsOf": 4
+   "variantsOf": 4,
+   "subtype": "Servant of Omen"
   },
   {
    "id": "hero.shadows.servant-of-omen.v2",
@@ -8823,7 +8930,8 @@
    "templateId": "template.shadows.servant-of-omen",
    "templateName": "Servant of Omen",
    "variant": 2,
-   "variantsOf": 4
+   "variantsOf": 4,
+   "subtype": "Servant of Omen"
   },
   {
    "id": "hero.shadows.servant-of-omen.v3",
@@ -8911,7 +9019,8 @@
    "templateId": "template.shadows.servant-of-omen",
    "templateName": "Servant of Omen",
    "variant": 3,
-   "variantsOf": 4
+   "variantsOf": 4,
+   "subtype": "Servant of Omen"
   },
   {
    "id": "hero.shadows.servant-of-omen.v4",
@@ -8999,7 +9108,8 @@
    "templateId": "template.shadows.servant-of-omen",
    "templateName": "Servant of Omen",
    "variant": 4,
-   "variantsOf": 4
+   "variantsOf": 4,
+   "subtype": "Servant of Omen"
   },
   {
    "id": "hero.shadows.shadow-sorceress.v1",
@@ -9086,7 +9196,8 @@
    "templateId": "template.shadows.shadow-sorceress",
    "templateName": "Shadow Sorceress",
    "variant": 1,
-   "variantsOf": 4
+   "variantsOf": 4,
+   "subtype": "Shadow Sorceress"
   },
   {
    "id": "hero.shadows.shadow-sorceress.v2",
@@ -9173,7 +9284,8 @@
    "templateId": "template.shadows.shadow-sorceress",
    "templateName": "Shadow Sorceress",
    "variant": 2,
-   "variantsOf": 4
+   "variantsOf": 4,
+   "subtype": "Shadow Sorceress"
   },
   {
    "id": "hero.shadows.shadow-sorceress.v3",
@@ -9260,7 +9372,8 @@
    "templateId": "template.shadows.shadow-sorceress",
    "templateName": "Shadow Sorceress",
    "variant": 3,
-   "variantsOf": 4
+   "variantsOf": 4,
+   "subtype": "Shadow Sorceress"
   },
   {
    "id": "hero.shadows.shadow-sorceress.v4",
@@ -9347,7 +9460,8 @@
    "templateId": "template.shadows.shadow-sorceress",
    "templateName": "Shadow Sorceress",
    "variant": 4,
-   "variantsOf": 4
+   "variantsOf": 4,
+   "subtype": "Shadow Sorceress"
   },
   {
    "id": "hero.shadows.sand-knight.v1",
@@ -9432,7 +9546,8 @@
    "templateId": "template.shadows.sand-knight",
    "templateName": "Sand Knight",
    "variant": 1,
-   "variantsOf": 4
+   "variantsOf": 4,
+   "subtype": "Sand Knight"
   },
   {
    "id": "hero.shadows.sand-knight.v2",
@@ -9517,7 +9632,8 @@
    "templateId": "template.shadows.sand-knight",
    "templateName": "Sand Knight",
    "variant": 2,
-   "variantsOf": 4
+   "variantsOf": 4,
+   "subtype": "Sand Knight"
   },
   {
    "id": "hero.shadows.sand-knight.v3",
@@ -9602,7 +9718,8 @@
    "templateId": "template.shadows.sand-knight",
    "templateName": "Sand Knight",
    "variant": 3,
-   "variantsOf": 4
+   "variantsOf": 4,
+   "subtype": "Sand Knight"
   },
   {
    "id": "hero.shadows.sand-knight.v4",
@@ -9687,7 +9804,8 @@
    "templateId": "template.shadows.sand-knight",
    "templateName": "Sand Knight",
    "variant": 4,
-   "variantsOf": 4
+   "variantsOf": 4,
+   "subtype": "Sand Knight"
   },
   {
    "id": "hero.shadows.rider-of-ire.v1",
@@ -9766,7 +9884,8 @@
    "templateId": "template.shadows.rider-of-ire",
    "templateName": "Rider of Ire",
    "variant": 1,
-   "variantsOf": 4
+   "variantsOf": 4,
+   "subtype": "Rider of Ire"
   },
   {
    "id": "hero.shadows.rider-of-ire.v2",
@@ -9845,7 +9964,8 @@
    "templateId": "template.shadows.rider-of-ire",
    "templateName": "Rider of Ire",
    "variant": 2,
-   "variantsOf": 4
+   "variantsOf": 4,
+   "subtype": "Rider of Ire"
   },
   {
    "id": "hero.shadows.rider-of-ire.v3",
@@ -9924,7 +10044,8 @@
    "templateId": "template.shadows.rider-of-ire",
    "templateName": "Rider of Ire",
    "variant": 3,
-   "variantsOf": 4
+   "variantsOf": 4,
+   "subtype": "Rider of Ire"
   },
   {
    "id": "hero.shadows.rider-of-ire.v4",
@@ -10003,7 +10124,8 @@
    "templateId": "template.shadows.rider-of-ire",
    "templateName": "Rider of Ire",
    "variant": 4,
-   "variantsOf": 4
+   "variantsOf": 4,
+   "subtype": "Rider of Ire"
   },
   {
    "id": "hero.shadows.bodani.v1",
@@ -10091,7 +10213,8 @@
    "templateId": "template.shadows.bodani",
    "templateName": "Bodani",
    "variant": 1,
-   "variantsOf": 4
+   "variantsOf": 4,
+   "subtype": "Bodani"
   },
   {
    "id": "hero.shadows.bodani.v2",
@@ -10179,7 +10302,8 @@
    "templateId": "template.shadows.bodani",
    "templateName": "Bodani",
    "variant": 2,
-   "variantsOf": 4
+   "variantsOf": 4,
+   "subtype": "Bodani"
   },
   {
    "id": "hero.shadows.bodani.v3",
@@ -10267,7 +10391,8 @@
    "templateId": "template.shadows.bodani",
    "templateName": "Bodani",
    "variant": 3,
-   "variantsOf": 4
+   "variantsOf": 4,
+   "subtype": "Bodani"
   },
   {
    "id": "hero.shadows.bodani.v4",
@@ -10355,7 +10480,8 @@
    "templateId": "template.shadows.bodani",
    "templateName": "Bodani",
    "variant": 4,
-   "variantsOf": 4
+   "variantsOf": 4,
+   "subtype": "Bodani"
   },
   {
    "id": "hero.shadows.oathblade.v1",
@@ -10438,7 +10564,8 @@
    "templateId": "template.shadows.oathblade",
    "templateName": "Oathblade",
    "variant": 1,
-   "variantsOf": 4
+   "variantsOf": 4,
+   "subtype": "Oathblade"
   },
   {
    "id": "hero.shadows.oathblade.v2",
@@ -10521,7 +10648,8 @@
    "templateId": "template.shadows.oathblade",
    "templateName": "Oathblade",
    "variant": 2,
-   "variantsOf": 4
+   "variantsOf": 4,
+   "subtype": "Oathblade"
   },
   {
    "id": "hero.shadows.oathblade.v3",
@@ -10604,7 +10732,8 @@
    "templateId": "template.shadows.oathblade",
    "templateName": "Oathblade",
    "variant": 3,
-   "variantsOf": 4
+   "variantsOf": 4,
+   "subtype": "Oathblade"
   },
   {
    "id": "hero.shadows.oathblade.v4",
@@ -10687,7 +10816,8 @@
    "templateId": "template.shadows.oathblade",
    "templateName": "Oathblade",
    "variant": 4,
-   "variantsOf": 4
+   "variantsOf": 4,
+   "subtype": "Oathblade"
   },
   {
    "id": "hero.shadows.soul-reaver.v1",
@@ -10774,7 +10904,8 @@
    "templateId": "template.shadows.soul-reaver",
    "templateName": "Soul Reaver",
    "variant": 1,
-   "variantsOf": 4
+   "variantsOf": 4,
+   "subtype": "Soul Reaver"
   },
   {
    "id": "hero.shadows.soul-reaver.v2",
@@ -10861,7 +10992,8 @@
    "templateId": "template.shadows.soul-reaver",
    "templateName": "Soul Reaver",
    "variant": 2,
-   "variantsOf": 4
+   "variantsOf": 4,
+   "subtype": "Soul Reaver"
   },
   {
    "id": "hero.shadows.soul-reaver.v3",
@@ -10948,7 +11080,8 @@
    "templateId": "template.shadows.soul-reaver",
    "templateName": "Soul Reaver",
    "variant": 3,
-   "variantsOf": 4
+   "variantsOf": 4,
+   "subtype": "Soul Reaver"
   },
   {
    "id": "hero.shadows.soul-reaver.v4",
@@ -11035,7 +11168,8 @@
    "templateId": "template.shadows.soul-reaver",
    "templateName": "Soul Reaver",
    "variant": 4,
-   "variantsOf": 4
+   "variantsOf": 4,
+   "subtype": "Soul Reaver"
   },
   {
    "id": "hero.shadows.nightblade.v1",
@@ -11123,7 +11257,8 @@
    "templateId": "template.shadows.nightblade",
    "templateName": "Nightblade",
    "variant": 1,
-   "variantsOf": 4
+   "variantsOf": 4,
+   "subtype": "Nightblade"
   },
   {
    "id": "hero.shadows.nightblade.v2",
@@ -11211,7 +11346,8 @@
    "templateId": "template.shadows.nightblade",
    "templateName": "Nightblade",
    "variant": 2,
-   "variantsOf": 4
+   "variantsOf": 4,
+   "subtype": "Nightblade"
   },
   {
    "id": "hero.shadows.nightblade.v3",
@@ -11299,7 +11435,8 @@
    "templateId": "template.shadows.nightblade",
    "templateName": "Nightblade",
    "variant": 3,
-   "variantsOf": 4
+   "variantsOf": 4,
+   "subtype": "Nightblade"
   },
   {
    "id": "hero.shadows.nightblade.v4",
@@ -11387,7 +11524,8 @@
    "templateId": "template.shadows.nightblade",
    "templateName": "Nightblade",
    "variant": 4,
-   "variantsOf": 4
+   "variantsOf": 4,
+   "subtype": "Nightblade"
   },
   {
    "id": "hero.shadows.dusk-hawk.v1",
@@ -11469,7 +11607,8 @@
    "templateId": "template.shadows.dusk-hawk",
    "templateName": "Dusk Hawk",
    "variant": 1,
-   "variantsOf": 4
+   "variantsOf": 4,
+   "subtype": "Dusk Hawk"
   },
   {
    "id": "hero.shadows.dusk-hawk.v2",
@@ -11551,7 +11690,8 @@
    "templateId": "template.shadows.dusk-hawk",
    "templateName": "Dusk Hawk",
    "variant": 2,
-   "variantsOf": 4
+   "variantsOf": 4,
+   "subtype": "Dusk Hawk"
   },
   {
    "id": "hero.shadows.dusk-hawk.v3",
@@ -11633,7 +11773,8 @@
    "templateId": "template.shadows.dusk-hawk",
    "templateName": "Dusk Hawk",
    "variant": 3,
-   "variantsOf": 4
+   "variantsOf": 4,
+   "subtype": "Dusk Hawk"
   },
   {
    "id": "hero.shadows.dusk-hawk.v4",
@@ -11715,7 +11856,8 @@
    "templateId": "template.shadows.dusk-hawk",
    "templateName": "Dusk Hawk",
    "variant": 4,
-   "variantsOf": 4
+   "variantsOf": 4,
+   "subtype": "Dusk Hawk"
   },
   {
    "id": "hero.shadows.runebow.v1",
@@ -11805,7 +11947,8 @@
    "templateId": "template.shadows.runebow",
    "templateName": "Runebow",
    "variant": 1,
-   "variantsOf": 4
+   "variantsOf": 4,
+   "subtype": "Runebow"
   },
   {
    "id": "hero.shadows.runebow.v2",
@@ -11895,7 +12038,8 @@
    "templateId": "template.shadows.runebow",
    "templateName": "Runebow",
    "variant": 2,
-   "variantsOf": 4
+   "variantsOf": 4,
+   "subtype": "Runebow"
   },
   {
    "id": "hero.shadows.runebow.v3",
@@ -11985,7 +12129,8 @@
    "templateId": "template.shadows.runebow",
    "templateName": "Runebow",
    "variant": 3,
-   "variantsOf": 4
+   "variantsOf": 4,
+   "subtype": "Runebow"
   },
   {
    "id": "hero.shadows.runebow.v4",
@@ -12075,7 +12220,8 @@
    "templateId": "template.shadows.runebow",
    "templateName": "Runebow",
    "variant": 4,
-   "variantsOf": 4
+   "variantsOf": 4,
+   "subtype": "Runebow"
   },
   {
    "id": "hero.skyship.brute.v1",
@@ -12158,7 +12304,8 @@
    "templateId": "template.skyship.brute",
    "templateName": "Brute",
    "variant": 1,
-   "variantsOf": 4
+   "variantsOf": 4,
+   "subtype": "Brute"
   },
   {
    "id": "hero.skyship.brute.v2",
@@ -12241,7 +12388,8 @@
    "templateId": "template.skyship.brute",
    "templateName": "Brute",
    "variant": 2,
-   "variantsOf": 4
+   "variantsOf": 4,
+   "subtype": "Brute"
   },
   {
    "id": "hero.skyship.brute.v3",
@@ -12324,7 +12472,8 @@
    "templateId": "template.skyship.brute",
    "templateName": "Brute",
    "variant": 3,
-   "variantsOf": 4
+   "variantsOf": 4,
+   "subtype": "Brute"
   },
   {
    "id": "hero.skyship.brute.v4",
@@ -12407,7 +12556,8 @@
    "templateId": "template.skyship.brute",
    "templateName": "Brute",
    "variant": 4,
-   "variantsOf": 4
+   "variantsOf": 4,
+   "subtype": "Brute"
   },
   {
    "id": "hero.skyship.phantom-striker.v1",
@@ -12492,7 +12642,8 @@
    "templateId": "template.skyship.phantom-striker",
    "templateName": "Phantom Striker",
    "variant": 1,
-   "variantsOf": 4
+   "variantsOf": 4,
+   "subtype": "Phantom Striker"
   },
   {
    "id": "hero.skyship.phantom-striker.v2",
@@ -12577,7 +12728,8 @@
    "templateId": "template.skyship.phantom-striker",
    "templateName": "Phantom Striker",
    "variant": 2,
-   "variantsOf": 4
+   "variantsOf": 4,
+   "subtype": "Phantom Striker"
   },
   {
    "id": "hero.skyship.phantom-striker.v3",
@@ -12662,7 +12814,8 @@
    "templateId": "template.skyship.phantom-striker",
    "templateName": "Phantom Striker",
    "variant": 3,
-   "variantsOf": 4
+   "variantsOf": 4,
+   "subtype": "Phantom Striker"
   },
   {
    "id": "hero.skyship.phantom-striker.v4",
@@ -12747,7 +12900,8 @@
    "templateId": "template.skyship.phantom-striker",
    "templateName": "Phantom Striker",
    "variant": 4,
-   "variantsOf": 4
+   "variantsOf": 4,
+   "subtype": "Phantom Striker"
   },
   {
    "id": "hero.skyship.troll-pirate.v1",
@@ -12840,7 +12994,8 @@
    "templateId": "template.skyship.troll-pirate",
    "templateName": "Troll Pirate",
    "variant": 1,
-   "variantsOf": 4
+   "variantsOf": 4,
+   "subtype": "Troll Pirate"
   },
   {
    "id": "hero.skyship.troll-pirate.v2",
@@ -12933,7 +13088,8 @@
    "templateId": "template.skyship.troll-pirate",
    "templateName": "Troll Pirate",
    "variant": 2,
-   "variantsOf": 4
+   "variantsOf": 4,
+   "subtype": "Troll Pirate"
   },
   {
    "id": "hero.skyship.troll-pirate.v3",
@@ -13026,7 +13182,8 @@
    "templateId": "template.skyship.troll-pirate",
    "templateName": "Troll Pirate",
    "variant": 3,
-   "variantsOf": 4
+   "variantsOf": 4,
+   "subtype": "Troll Pirate"
   },
   {
    "id": "hero.skyship.troll-pirate.v4",
@@ -13119,7 +13276,8 @@
    "templateId": "template.skyship.troll-pirate",
    "templateName": "Troll Pirate",
    "variant": 4,
-   "variantsOf": 4
+   "variantsOf": 4,
+   "subtype": "Troll Pirate"
   },
   {
    "id": "hero.skyship.open-hand.v1",
@@ -13206,7 +13364,8 @@
    "templateId": "template.skyship.open-hand",
    "templateName": "Open Hand",
    "variant": 1,
-   "variantsOf": 4
+   "variantsOf": 4,
+   "subtype": "Open Hand"
   },
   {
    "id": "hero.skyship.open-hand.v2",
@@ -13293,7 +13452,8 @@
    "templateId": "template.skyship.open-hand",
    "templateName": "Open Hand",
    "variant": 2,
-   "variantsOf": 4
+   "variantsOf": 4,
+   "subtype": "Open Hand"
   },
   {
    "id": "hero.skyship.open-hand.v3",
@@ -13380,7 +13540,8 @@
    "templateId": "template.skyship.open-hand",
    "templateName": "Open Hand",
    "variant": 3,
-   "variantsOf": 4
+   "variantsOf": 4,
+   "subtype": "Open Hand"
   },
   {
    "id": "hero.skyship.open-hand.v4",
@@ -13467,7 +13628,8 @@
    "templateId": "template.skyship.open-hand",
    "templateName": "Open Hand",
    "variant": 4,
-   "variantsOf": 4
+   "variantsOf": 4,
+   "subtype": "Open Hand"
   },
   {
    "id": "hero.skyship.sky-captain.v1",
@@ -13555,7 +13717,8 @@
    "templateId": "template.skyship.sky-captain",
    "templateName": "Sky Captain",
    "variant": 1,
-   "variantsOf": 3
+   "variantsOf": 3,
+   "subtype": "Sky Captain"
   },
   {
    "id": "hero.skyship.sky-captain.v2",
@@ -13643,7 +13806,8 @@
    "templateId": "template.skyship.sky-captain",
    "templateName": "Sky Captain",
    "variant": 2,
-   "variantsOf": 3
+   "variantsOf": 3,
+   "subtype": "Sky Captain"
   },
   {
    "id": "hero.skyship.sky-captain.v3",
@@ -13731,7 +13895,8 @@
    "templateId": "template.skyship.sky-captain",
    "templateName": "Sky Captain",
    "variant": 3,
-   "variantsOf": 3
+   "variantsOf": 3,
+   "subtype": "Sky Captain"
   },
   {
    "id": "hero.skyship.windwalker.v1",
@@ -13820,7 +13985,8 @@
    "templateId": "template.skyship.windwalker",
    "templateName": "WindWalker",
    "variant": 1,
-   "variantsOf": 4
+   "variantsOf": 4,
+   "subtype": "WindWalker"
   },
   {
    "id": "hero.skyship.windwalker.v2",
@@ -13909,7 +14075,8 @@
    "templateId": "template.skyship.windwalker",
    "templateName": "WindWalker",
    "variant": 2,
-   "variantsOf": 4
+   "variantsOf": 4,
+   "subtype": "WindWalker"
   },
   {
    "id": "hero.skyship.windwalker.v3",
@@ -13998,7 +14165,8 @@
    "templateId": "template.skyship.windwalker",
    "templateName": "WindWalker",
    "variant": 3,
-   "variantsOf": 4
+   "variantsOf": 4,
+   "subtype": "WindWalker"
   },
   {
    "id": "hero.skyship.windwalker.v4",
@@ -14087,7 +14255,8 @@
    "templateId": "template.skyship.windwalker",
    "templateName": "WindWalker",
    "variant": 4,
-   "variantsOf": 4
+   "variantsOf": 4,
+   "subtype": "WindWalker"
   },
   {
    "id": "hero.skyship.sky-pirate.v1",
@@ -14177,7 +14346,8 @@
    "templateId": "template.skyship.sky-pirate",
    "templateName": "Sky Pirate",
    "variant": 1,
-   "variantsOf": 4
+   "variantsOf": 4,
+   "subtype": "Sky Pirate"
   },
   {
    "id": "hero.skyship.sky-pirate.v2",
@@ -14267,7 +14437,8 @@
    "templateId": "template.skyship.sky-pirate",
    "templateName": "Sky Pirate",
    "variant": 2,
-   "variantsOf": 4
+   "variantsOf": 4,
+   "subtype": "Sky Pirate"
   },
   {
    "id": "hero.skyship.sky-pirate.v3",
@@ -14357,7 +14528,8 @@
    "templateId": "template.skyship.sky-pirate",
    "templateName": "Sky Pirate",
    "variant": 3,
-   "variantsOf": 4
+   "variantsOf": 4,
+   "subtype": "Sky Pirate"
   },
   {
    "id": "hero.skyship.sky-pirate.v4",
@@ -14447,7 +14619,8 @@
    "templateId": "template.skyship.sky-pirate",
    "templateName": "Sky Pirate",
    "variant": 4,
-   "variantsOf": 4
+   "variantsOf": 4,
+   "subtype": "Sky Pirate"
   },
   {
    "id": "hero.skyship.air-mage.v1",
@@ -14530,7 +14703,8 @@
    "templateId": "template.skyship.air-mage",
    "templateName": "Air Mage",
    "variant": 1,
-   "variantsOf": 4
+   "variantsOf": 4,
+   "subtype": "Air Mage"
   },
   {
    "id": "hero.skyship.air-mage.v2",
@@ -14613,7 +14787,8 @@
    "templateId": "template.skyship.air-mage",
    "templateName": "Air Mage",
    "variant": 2,
-   "variantsOf": 4
+   "variantsOf": 4,
+   "subtype": "Air Mage"
   },
   {
    "id": "hero.skyship.air-mage.v3",
@@ -14696,7 +14871,8 @@
    "templateId": "template.skyship.air-mage",
    "templateName": "Air Mage",
    "variant": 3,
-   "variantsOf": 4
+   "variantsOf": 4,
+   "subtype": "Air Mage"
   },
   {
    "id": "hero.skyship.air-mage.v4",
@@ -14779,7 +14955,8 @@
    "templateId": "template.skyship.air-mage",
    "templateName": "Air Mage",
    "variant": 4,
-   "variantsOf": 4
+   "variantsOf": 4,
+   "subtype": "Air Mage"
   },
   {
    "id": "hero.skyship.spellblade.v1",
@@ -14868,7 +15045,8 @@
    "templateId": "template.skyship.spellblade",
    "templateName": "Spellblade",
    "variant": 1,
-   "variantsOf": 4
+   "variantsOf": 4,
+   "subtype": "Spellblade"
   },
   {
    "id": "hero.skyship.spellblade.v2",
@@ -14957,7 +15135,8 @@
    "templateId": "template.skyship.spellblade",
    "templateName": "Spellblade",
    "variant": 2,
-   "variantsOf": 4
+   "variantsOf": 4,
+   "subtype": "Spellblade"
   },
   {
    "id": "hero.skyship.spellblade.v3",
@@ -15046,7 +15225,8 @@
    "templateId": "template.skyship.spellblade",
    "templateName": "Spellblade",
    "variant": 3,
-   "variantsOf": 4
+   "variantsOf": 4,
+   "subtype": "Spellblade"
   },
   {
    "id": "hero.skyship.spellblade.v4",
@@ -15135,7 +15315,8 @@
    "templateId": "template.skyship.spellblade",
    "templateName": "Spellblade",
    "variant": 4,
-   "variantsOf": 4
+   "variantsOf": 4,
+   "subtype": "Spellblade"
   },
   {
    "id": "hero.skyship.aeronissa-priest.v1",
@@ -15230,7 +15411,8 @@
    "templateId": "template.skyship.aeronissa-priest",
    "templateName": "Aeronissa Priest",
    "variant": 1,
-   "variantsOf": 4
+   "variantsOf": 4,
+   "subtype": "Aeronissa Priest"
   },
   {
    "id": "hero.skyship.aeronissa-priest.v2",
@@ -15325,7 +15507,8 @@
    "templateId": "template.skyship.aeronissa-priest",
    "templateName": "Aeronissa Priest",
    "variant": 2,
-   "variantsOf": 4
+   "variantsOf": 4,
+   "subtype": "Aeronissa Priest"
   },
   {
    "id": "hero.skyship.aeronissa-priest.v3",
@@ -15420,7 +15603,8 @@
    "templateId": "template.skyship.aeronissa-priest",
    "templateName": "Aeronissa Priest",
    "variant": 3,
-   "variantsOf": 4
+   "variantsOf": 4,
+   "subtype": "Aeronissa Priest"
   },
   {
    "id": "hero.skyship.aeronissa-priest.v4",
@@ -15515,7 +15699,8 @@
    "templateId": "template.skyship.aeronissa-priest",
    "templateName": "Aeronissa Priest",
    "variant": 4,
-   "variantsOf": 4
+   "variantsOf": 4,
+   "subtype": "Aeronissa Priest"
   },
   {
    "id": "hero.skyship.mirran-priest.v1",
@@ -15621,7 +15806,8 @@
    "templateId": "template.skyship.mirran-priest",
    "templateName": "Mirran Priest",
    "variant": 1,
-   "variantsOf": 4
+   "variantsOf": 4,
+   "subtype": "Mirran Priest"
   },
   {
    "id": "hero.skyship.mirran-priest.v2",
@@ -15727,7 +15913,8 @@
    "templateId": "template.skyship.mirran-priest",
    "templateName": "Mirran Priest",
    "variant": 2,
-   "variantsOf": 4
+   "variantsOf": 4,
+   "subtype": "Mirran Priest"
   },
   {
    "id": "hero.skyship.mirran-priest.v3",
@@ -15833,7 +16020,8 @@
    "templateId": "template.skyship.mirran-priest",
    "templateName": "Mirran Priest",
    "variant": 3,
-   "variantsOf": 4
+   "variantsOf": 4,
+   "subtype": "Mirran Priest"
   },
   {
    "id": "hero.skyship.mirran-priest.v4",
@@ -15939,7 +16127,8 @@
    "templateId": "template.skyship.mirran-priest",
    "templateName": "Mirran Priest",
    "variant": 4,
-   "variantsOf": 4
+   "variantsOf": 4,
+   "subtype": "Mirran Priest"
   },
   {
    "id": "hero.skyship.vigil-of-the-fallen.v1",
@@ -16027,7 +16216,8 @@
    "templateId": "template.skyship.vigil-of-the-fallen",
    "templateName": "Vigil of the Fallen",
    "variant": 1,
-   "variantsOf": 4
+   "variantsOf": 4,
+   "subtype": "Vigil of the Fallen"
   },
   {
    "id": "hero.skyship.vigil-of-the-fallen.v2",
@@ -16115,7 +16305,8 @@
    "templateId": "template.skyship.vigil-of-the-fallen",
    "templateName": "Vigil of the Fallen",
    "variant": 2,
-   "variantsOf": 4
+   "variantsOf": 4,
+   "subtype": "Vigil of the Fallen"
   },
   {
    "id": "hero.skyship.vigil-of-the-fallen.v3",
@@ -16203,7 +16394,8 @@
    "templateId": "template.skyship.vigil-of-the-fallen",
    "templateName": "Vigil of the Fallen",
    "variant": 3,
-   "variantsOf": 4
+   "variantsOf": 4,
+   "subtype": "Vigil of the Fallen"
   },
   {
    "id": "hero.skyship.vigil-of-the-fallen.v4",
@@ -16291,7 +16483,8 @@
    "templateId": "template.skyship.vigil-of-the-fallen",
    "templateName": "Vigil of the Fallen",
    "variant": 4,
-   "variantsOf": 4
+   "variantsOf": 4,
+   "subtype": "Vigil of the Fallen"
   },
   {
    "id": "hero.tutorial.warrior-iron.aldric",
@@ -16348,7 +16541,8 @@
    "templateId": "template.tutorial.warrior-iron",
    "templateName": "warrior-iron",
    "variant": 1,
-   "variantsOf": 4
+   "variantsOf": 4,
+   "subtype": "warrior-iron"
   },
   {
    "id": "hero.tutorial.warrior-iron.durin",
@@ -16405,7 +16599,8 @@
    "templateId": "template.tutorial.warrior-iron",
    "templateName": "warrior-iron",
    "variant": 2,
-   "variantsOf": 4
+   "variantsOf": 4,
+   "subtype": "warrior-iron"
   },
   {
    "id": "hero.tutorial.warrior-iron.gareth",
@@ -16462,7 +16657,8 @@
    "templateId": "template.tutorial.warrior-iron",
    "templateName": "warrior-iron",
    "variant": 3,
-   "variantsOf": 4
+   "variantsOf": 4,
+   "subtype": "warrior-iron"
   },
   {
    "id": "hero.tutorial.warrior-iron.thrain",
@@ -16519,7 +16715,8 @@
    "templateId": "template.tutorial.warrior-iron",
    "templateName": "warrior-iron",
    "variant": 4,
-   "variantsOf": 4
+   "variantsOf": 4,
+   "subtype": "warrior-iron"
   },
   {
    "id": "hero.tutorial.warrior-fearsome.theron",
@@ -16576,7 +16773,8 @@
    "templateId": "template.tutorial.warrior-fearsome",
    "templateName": "warrior-fearsome",
    "variant": 1,
-   "variantsOf": 4
+   "variantsOf": 4,
+   "subtype": "warrior-fearsome"
   },
   {
    "id": "hero.tutorial.warrior-fearsome.dolgrim",
@@ -16633,7 +16831,8 @@
    "templateId": "template.tutorial.warrior-fearsome",
    "templateName": "warrior-fearsome",
    "variant": 2,
-   "variantsOf": 4
+   "variantsOf": 4,
+   "subtype": "warrior-fearsome"
   },
   {
    "id": "hero.tutorial.warrior-fearsome.ulric",
@@ -16691,7 +16890,8 @@
    "templateId": "template.tutorial.warrior-fearsome",
    "templateName": "warrior-fearsome",
    "variant": 3,
-   "variantsOf": 4
+   "variantsOf": 4,
+   "subtype": "warrior-fearsome"
   },
   {
    "id": "hero.tutorial.warrior-fearsome.hrothgar",
@@ -16749,7 +16949,8 @@
    "templateId": "template.tutorial.warrior-fearsome",
    "templateName": "warrior-fearsome",
    "variant": 4,
-   "variantsOf": 4
+   "variantsOf": 4,
+   "subtype": "warrior-fearsome"
   },
   {
    "id": "hero.tutorial.warrior-barbarian.leif",
@@ -16806,7 +17007,8 @@
    "templateId": "template.tutorial.warrior-barbarian",
    "templateName": "warrior-barbarian",
    "variant": 1,
-   "variantsOf": 4
+   "variantsOf": 4,
+   "subtype": "warrior-barbarian"
   },
   {
    "id": "hero.tutorial.warrior-barbarian.magni",
@@ -16863,7 +17065,8 @@
    "templateId": "template.tutorial.warrior-barbarian",
    "templateName": "warrior-barbarian",
    "variant": 2,
-   "variantsOf": 4
+   "variantsOf": 4,
+   "subtype": "warrior-barbarian"
   },
   {
    "id": "hero.tutorial.warrior-barbarian.harald",
@@ -16923,7 +17126,8 @@
    "templateId": "template.tutorial.warrior-barbarian",
    "templateName": "warrior-barbarian",
    "variant": 3,
-   "variantsOf": 4
+   "variantsOf": 4,
+   "subtype": "warrior-barbarian"
   },
   {
    "id": "hero.tutorial.warrior-barbarian.balin",
@@ -16983,7 +17187,8 @@
    "templateId": "template.tutorial.warrior-barbarian",
    "templateName": "warrior-barbarian",
    "variant": 4,
-   "variantsOf": 4
+   "variantsOf": 4,
+   "subtype": "warrior-barbarian"
   },
   {
    "id": "hero.tutorial.warrior-brawler.finn",
@@ -17040,7 +17245,8 @@
    "templateId": "template.tutorial.warrior-brawler",
    "templateName": "warrior-brawler",
    "variant": 1,
-   "variantsOf": 4
+   "variantsOf": 4,
+   "subtype": "warrior-brawler"
   },
   {
    "id": "hero.tutorial.warrior-brawler.nori",
@@ -17097,7 +17303,8 @@
    "templateId": "template.tutorial.warrior-brawler",
    "templateName": "warrior-brawler",
    "variant": 2,
-   "variantsOf": 4
+   "variantsOf": 4,
+   "subtype": "warrior-brawler"
   },
   {
    "id": "hero.tutorial.warrior-brawler.quinn",
@@ -17154,7 +17361,8 @@
    "templateId": "template.tutorial.warrior-brawler",
    "templateName": "warrior-brawler",
    "variant": 3,
-   "variantsOf": 4
+   "variantsOf": 4,
+   "subtype": "warrior-brawler"
   },
   {
    "id": "hero.tutorial.warrior-brawler.gloin",
@@ -17211,7 +17419,8 @@
    "templateId": "template.tutorial.warrior-brawler",
    "templateName": "warrior-brawler",
    "variant": 4,
-   "variantsOf": 4
+   "variantsOf": 4,
+   "subtype": "warrior-brawler"
   },
   {
    "id": "hero.tutorial.mage-fire.seraphina",
@@ -17268,7 +17477,8 @@
    "templateId": "template.tutorial.mage-fire",
    "templateName": "mage-fire",
    "variant": 1,
-   "variantsOf": 4
+   "variantsOf": 4,
+   "subtype": "mage-fire"
   },
   {
    "id": "hero.tutorial.mage-fire.elara",
@@ -17325,7 +17535,8 @@
    "templateId": "template.tutorial.mage-fire",
    "templateName": "mage-fire",
    "variant": 2,
-   "variantsOf": 4
+   "variantsOf": 4,
+   "subtype": "mage-fire"
   },
   {
    "id": "hero.tutorial.mage-fire.ignacia",
@@ -17385,7 +17596,8 @@
    "templateId": "template.tutorial.mage-fire",
    "templateName": "mage-fire",
    "variant": 3,
-   "variantsOf": 4
+   "variantsOf": 4,
+   "subtype": "mage-fire"
   },
   {
    "id": "hero.tutorial.mage-fire.pyrra",
@@ -17445,7 +17657,8 @@
    "templateId": "template.tutorial.mage-fire",
    "templateName": "mage-fire",
    "variant": 4,
-   "variantsOf": 4
+   "variantsOf": 4,
+   "subtype": "mage-fire"
   },
   {
    "id": "hero.tutorial.mage-fireaura.elena",
@@ -17502,7 +17715,8 @@
    "templateId": "template.tutorial.mage-fireaura",
    "templateName": "mage-fireaura",
    "variant": 1,
-   "variantsOf": 4
+   "variantsOf": 4,
+   "subtype": "mage-fireaura"
   },
   {
    "id": "hero.tutorial.mage-fireaura.ember",
@@ -17559,7 +17773,8 @@
    "templateId": "template.tutorial.mage-fireaura",
    "templateName": "mage-fireaura",
    "variant": 2,
-   "variantsOf": 4
+   "variantsOf": 4,
+   "subtype": "mage-fireaura"
   },
   {
    "id": "hero.tutorial.mage-fireaura.freya",
@@ -17614,7 +17829,8 @@
    "templateId": "template.tutorial.mage-fireaura",
    "templateName": "mage-fireaura",
    "variant": 3,
-   "variantsOf": 4
+   "variantsOf": 4,
+   "subtype": "mage-fireaura"
   },
   {
    "id": "hero.tutorial.mage-fireaura.solara",
@@ -17669,7 +17885,8 @@
    "templateId": "template.tutorial.mage-fireaura",
    "templateName": "mage-fireaura",
    "variant": 4,
-   "variantsOf": 4
+   "variantsOf": 4,
+   "subtype": "mage-fireaura"
   },
   {
    "id": "hero.tutorial.mage-thinking.cedra",
@@ -17726,7 +17943,8 @@
    "templateId": "template.tutorial.mage-thinking",
    "templateName": "mage-thinking",
    "variant": 1,
-   "variantsOf": 4
+   "variantsOf": 4,
+   "subtype": "mage-thinking"
   },
   {
    "id": "hero.tutorial.mage-thinking.thessaly",
@@ -17783,7 +18001,8 @@
    "templateId": "template.tutorial.mage-thinking",
    "templateName": "mage-thinking",
    "variant": 2,
-   "variantsOf": 4
+   "variantsOf": 4,
+   "subtype": "mage-thinking"
   },
   {
    "id": "hero.tutorial.mage-thinking.benedicta",
@@ -17840,7 +18059,8 @@
    "templateId": "template.tutorial.mage-thinking",
    "templateName": "mage-thinking",
    "variant": 3,
-   "variantsOf": 4
+   "variantsOf": 4,
+   "subtype": "mage-thinking"
   },
   {
    "id": "hero.tutorial.mage-thinking.minerva",
@@ -17897,7 +18117,8 @@
    "templateId": "template.tutorial.mage-thinking",
    "templateName": "mage-thinking",
    "variant": 4,
-   "variantsOf": 4
+   "variantsOf": 4,
+   "subtype": "mage-thinking"
   },
   {
    "id": "hero.tutorial.mage-sexy.vera",
@@ -17957,7 +18178,8 @@
    "templateId": "template.tutorial.mage-sexy",
    "templateName": "mage-sexy",
    "variant": 1,
-   "variantsOf": 4
+   "variantsOf": 4,
+   "subtype": "mage-sexy"
   },
   {
    "id": "hero.tutorial.mage-sexy.vesper",
@@ -18017,7 +18239,8 @@
    "templateId": "template.tutorial.mage-sexy",
    "templateName": "mage-sexy",
    "variant": 2,
-   "variantsOf": 4
+   "variantsOf": 4,
+   "subtype": "mage-sexy"
   },
   {
    "id": "hero.tutorial.mage-sexy.celeste",
@@ -18075,7 +18298,8 @@
    "templateId": "template.tutorial.mage-sexy",
    "templateName": "mage-sexy",
    "variant": 3,
-   "variantsOf": 4
+   "variantsOf": 4,
+   "subtype": "mage-sexy"
   },
   {
    "id": "hero.tutorial.mage-sexy.starla",
@@ -18133,7 +18357,8 @@
    "templateId": "template.tutorial.mage-sexy",
    "templateName": "mage-sexy",
    "variant": 4,
-   "variantsOf": 4
+   "variantsOf": 4,
+   "subtype": "mage-sexy"
   },
   {
    "id": "hero.tutorial.priest-armored.marcus",
@@ -18190,7 +18415,8 @@
    "templateId": "template.tutorial.priest-armored",
    "templateName": "priest-armored",
    "variant": 1,
-   "variantsOf": 4
+   "variantsOf": 4,
+   "subtype": "priest-armored"
   },
   {
    "id": "hero.tutorial.priest-armored.aldous",
@@ -18247,7 +18473,8 @@
    "templateId": "template.tutorial.priest-armored",
    "templateName": "priest-armored",
    "variant": 2,
-   "variantsOf": 4
+   "variantsOf": 4,
+   "subtype": "priest-armored"
   },
   {
    "id": "hero.tutorial.priest-armored.conrad",
@@ -18305,7 +18532,8 @@
    "templateId": "template.tutorial.priest-armored",
    "templateName": "priest-armored",
    "variant": 3,
-   "variantsOf": 4
+   "variantsOf": 4,
+   "subtype": "priest-armored"
   },
   {
    "id": "hero.tutorial.priest-armored.mordecai",
@@ -18363,7 +18591,8 @@
    "templateId": "template.tutorial.priest-armored",
    "templateName": "priest-armored",
    "variant": 4,
-   "variantsOf": 4
+   "variantsOf": 4,
+   "subtype": "priest-armored"
   },
   {
    "id": "hero.tutorial.priest-pauper.silas",
@@ -18418,7 +18647,8 @@
    "templateId": "template.tutorial.priest-pauper",
    "templateName": "priest-pauper",
    "variant": 1,
-   "variantsOf": 4
+   "variantsOf": 4,
+   "subtype": "priest-pauper"
   },
   {
    "id": "hero.tutorial.priest-pauper.matthias",
@@ -18473,7 +18703,8 @@
    "templateId": "template.tutorial.priest-pauper",
    "templateName": "priest-pauper",
    "variant": 2,
-   "variantsOf": 4
+   "variantsOf": 4,
+   "subtype": "priest-pauper"
   },
   {
    "id": "hero.tutorial.priest-pauper.yorick",
@@ -18530,7 +18761,8 @@
    "templateId": "template.tutorial.priest-pauper",
    "templateName": "priest-pauper",
    "variant": 3,
-   "variantsOf": 4
+   "variantsOf": 4,
+   "subtype": "priest-pauper"
   },
   {
    "id": "hero.tutorial.priest-pauper.ezekiel",
@@ -18587,7 +18819,8 @@
    "templateId": "template.tutorial.priest-pauper",
    "templateName": "priest-pauper",
    "variant": 4,
-   "variantsOf": 4
+   "variantsOf": 4,
+   "subtype": "priest-pauper"
   },
   {
    "id": "hero.tutorial.priest-robes.gregory",
@@ -18644,7 +18877,8 @@
    "templateId": "template.tutorial.priest-robes",
    "templateName": "priest-robes",
    "variant": 1,
-   "variantsOf": 4
+   "variantsOf": 4,
+   "subtype": "priest-robes"
   },
   {
    "id": "hero.tutorial.priest-robes.anselm",
@@ -18701,7 +18935,8 @@
    "templateId": "template.tutorial.priest-robes",
    "templateName": "priest-robes",
    "variant": 2,
-   "variantsOf": 4
+   "variantsOf": 4,
+   "subtype": "priest-robes"
   },
   {
    "id": "hero.tutorial.priest-robes.lawrence",
@@ -18758,7 +18993,8 @@
    "templateId": "template.tutorial.priest-robes",
    "templateName": "priest-robes",
    "variant": 3,
-   "variantsOf": 4
+   "variantsOf": 4,
+   "subtype": "priest-robes"
   },
   {
    "id": "hero.tutorial.priest-robes.cornelius",
@@ -18815,7 +19051,8 @@
    "templateId": "template.tutorial.priest-robes",
    "templateName": "priest-robes",
    "variant": 4,
-   "variantsOf": 4
+   "variantsOf": 4,
+   "subtype": "priest-robes"
   },
   {
    "id": "hero.tutorial.priest-scantily.lucius",
@@ -18875,7 +19112,8 @@
    "templateId": "template.tutorial.priest-scantily",
    "templateName": "priest-scantily",
    "variant": 1,
-   "variantsOf": 4
+   "variantsOf": 4,
+   "subtype": "priest-scantily"
   },
   {
    "id": "hero.tutorial.priest-scantily.cassius",
@@ -18935,7 +19173,8 @@
    "templateId": "template.tutorial.priest-scantily",
    "templateName": "priest-scantily",
    "variant": 2,
-   "variantsOf": 4
+   "variantsOf": 4,
+   "subtype": "priest-scantily"
   },
   {
    "id": "hero.tutorial.priest-scantily.iris",
@@ -18992,7 +19231,8 @@
    "templateId": "template.tutorial.priest-scantily",
    "templateName": "priest-scantily",
    "variant": 3,
-   "variantsOf": 4
+   "variantsOf": 4,
+   "subtype": "priest-scantily"
   },
   {
    "id": "hero.tutorial.priest-scantily.orion",
@@ -19049,7 +19289,8 @@
    "templateId": "template.tutorial.priest-scantily",
    "templateName": "priest-scantily",
    "variant": 4,
-   "variantsOf": 4
+   "variantsOf": 4,
+   "subtype": "priest-scantily"
   },
   {
    "id": "hero.tutorial.paladin-dark.roland",
@@ -19107,7 +19348,8 @@
    "templateId": "template.tutorial.paladin-dark",
    "templateName": "paladin-dark",
    "variant": 1,
-   "variantsOf": 4
+   "variantsOf": 4,
+   "subtype": "paladin-dark"
   },
   {
    "id": "hero.tutorial.paladin-dark.malachar",
@@ -19165,7 +19407,8 @@
    "templateId": "template.tutorial.paladin-dark",
    "templateName": "paladin-dark",
    "variant": 2,
-   "variantsOf": 4
+   "variantsOf": 4,
+   "subtype": "paladin-dark"
   },
   {
    "id": "hero.tutorial.paladin-dark.viktor",
@@ -19223,7 +19466,8 @@
    "templateId": "template.tutorial.paladin-dark",
    "templateName": "paladin-dark",
    "variant": 3,
-   "variantsOf": 4
+   "variantsOf": 4,
+   "subtype": "paladin-dark"
   },
   {
    "id": "hero.tutorial.paladin-dark.damien",
@@ -19281,7 +19525,8 @@
    "templateId": "template.tutorial.paladin-dark",
    "templateName": "paladin-dark",
    "variant": 4,
-   "variantsOf": 4
+   "variantsOf": 4,
+   "subtype": "paladin-dark"
   },
   {
    "id": "hero.tutorial.paladin-hunk.percival",
@@ -19340,7 +19585,8 @@
    "templateId": "template.tutorial.paladin-hunk",
    "templateName": "paladin-hunk",
    "variant": 1,
-   "variantsOf": 4
+   "variantsOf": 4,
+   "subtype": "paladin-hunk"
   },
   {
    "id": "hero.tutorial.paladin-hunk.galahad",
@@ -19399,7 +19645,8 @@
    "templateId": "template.tutorial.paladin-hunk",
    "templateName": "paladin-hunk",
    "variant": 2,
-   "variantsOf": 4
+   "variantsOf": 4,
+   "subtype": "paladin-hunk"
   },
   {
    "id": "hero.tutorial.paladin-hunk.dominic",
@@ -19457,7 +19704,8 @@
    "templateId": "template.tutorial.paladin-hunk",
    "templateName": "paladin-hunk",
    "variant": 3,
-   "variantsOf": 4
+   "variantsOf": 4,
+   "subtype": "paladin-hunk"
   },
   {
    "id": "hero.tutorial.paladin-hunk.adonis",
@@ -19515,7 +19763,8 @@
    "templateId": "template.tutorial.paladin-hunk",
    "templateName": "paladin-hunk",
    "variant": 4,
-   "variantsOf": 4
+   "variantsOf": 4,
+   "subtype": "paladin-hunk"
   },
   {
    "id": "hero.tutorial.paladin-shiney.osric",
@@ -19573,7 +19822,8 @@
    "templateId": "template.tutorial.paladin-shiney",
    "templateName": "paladin-shiney",
    "variant": 1,
-   "variantsOf": 4
+   "variantsOf": 4,
+   "subtype": "paladin-shiney"
   },
   {
    "id": "hero.tutorial.paladin-shiney.lucian",
@@ -19631,7 +19881,8 @@
    "templateId": "template.tutorial.paladin-shiney",
    "templateName": "paladin-shiney",
    "variant": 2,
-   "variantsOf": 4
+   "variantsOf": 4,
+   "subtype": "paladin-shiney"
   },
   {
    "id": "hero.tutorial.paladin-shiney.edmund",
@@ -19689,7 +19940,8 @@
    "templateId": "template.tutorial.paladin-shiney",
    "templateName": "paladin-shiney",
    "variant": 3,
-   "variantsOf": 4
+   "variantsOf": 4,
+   "subtype": "paladin-shiney"
   },
   {
    "id": "hero.tutorial.paladin-shiney.aurelius",
@@ -19747,7 +19999,8 @@
    "templateId": "template.tutorial.paladin-shiney",
    "templateName": "paladin-shiney",
    "variant": 4,
-   "variantsOf": 4
+   "variantsOf": 4,
+   "subtype": "paladin-shiney"
   },
   {
    "id": "hero.tutorial.paladin-smug.alaric",
@@ -19805,7 +20058,8 @@
    "templateId": "template.tutorial.paladin-smug",
    "templateName": "paladin-smug",
    "variant": 1,
-   "variantsOf": 4
+   "variantsOf": 4,
+   "subtype": "paladin-smug"
   },
   {
    "id": "hero.tutorial.paladin-smug.constantine",
@@ -19863,7 +20117,8 @@
    "templateId": "template.tutorial.paladin-smug",
    "templateName": "paladin-smug",
    "variant": 2,
-   "variantsOf": 4
+   "variantsOf": 4,
+   "subtype": "paladin-smug"
   },
   {
    "id": "hero.tutorial.paladin-smug.felix",
@@ -19921,7 +20176,8 @@
    "templateId": "template.tutorial.paladin-smug",
    "templateName": "paladin-smug",
    "variant": 3,
-   "variantsOf": 4
+   "variantsOf": 4,
+   "subtype": "paladin-smug"
   },
   {
    "id": "hero.tutorial.paladin-smug.valerian",
@@ -19979,7 +20235,8 @@
    "templateId": "template.tutorial.paladin-smug",
    "templateName": "paladin-smug",
    "variant": 4,
-   "variantsOf": 4
+   "variantsOf": 4,
+   "subtype": "paladin-smug"
   },
   {
    "id": "hero.tutorial.ranger-aggressive.kira",
@@ -20034,7 +20291,8 @@
    "templateId": "template.tutorial.ranger-aggressive",
    "templateName": "ranger-aggressive",
    "variant": 1,
-   "variantsOf": 4
+   "variantsOf": 4,
+   "subtype": "ranger-aggressive"
   },
   {
    "id": "hero.tutorial.ranger-aggressive.artemis",
@@ -20089,7 +20347,8 @@
    "templateId": "template.tutorial.ranger-aggressive",
    "templateName": "ranger-aggressive",
    "variant": 2,
-   "variantsOf": 4
+   "variantsOf": 4,
+   "subtype": "ranger-aggressive"
   },
   {
    "id": "hero.tutorial.ranger-aggressive.eryka",
@@ -20149,7 +20408,8 @@
    "templateId": "template.tutorial.ranger-aggressive",
    "templateName": "ranger-aggressive",
    "variant": 3,
-   "variantsOf": 4
+   "variantsOf": 4,
+   "subtype": "ranger-aggressive"
   },
   {
    "id": "hero.tutorial.ranger-aggressive.nemesis",
@@ -20209,7 +20469,8 @@
    "templateId": "template.tutorial.ranger-aggressive",
    "templateName": "ranger-aggressive",
    "variant": 4,
-   "variantsOf": 4
+   "variantsOf": 4,
+   "subtype": "ranger-aggressive"
   },
   {
    "id": "hero.tutorial.ranger-nature.wren",
@@ -20270,7 +20531,8 @@
    "templateId": "template.tutorial.ranger-nature",
    "templateName": "ranger-nature",
    "variant": 1,
-   "variantsOf": 4
+   "variantsOf": 4,
+   "subtype": "ranger-nature"
   },
   {
    "id": "hero.tutorial.ranger-nature.fern",
@@ -20331,7 +20593,8 @@
    "templateId": "template.tutorial.ranger-nature",
    "templateName": "ranger-nature",
    "variant": 2,
-   "variantsOf": 4
+   "variantsOf": 4,
+   "subtype": "ranger-nature"
   },
   {
    "id": "hero.tutorial.ranger-nature.yara",
@@ -20388,7 +20651,8 @@
    "templateId": "template.tutorial.ranger-nature",
    "templateName": "ranger-nature",
    "variant": 3,
-   "variantsOf": 4
+   "variantsOf": 4,
+   "subtype": "ranger-nature"
   },
   {
    "id": "hero.tutorial.ranger-nature.willow",
@@ -20445,7 +20709,8 @@
    "templateId": "template.tutorial.ranger-nature",
    "templateName": "ranger-nature",
    "variant": 4,
-   "variantsOf": 4
+   "variantsOf": 4,
+   "subtype": "ranger-nature"
   },
   {
    "id": "hero.tutorial.ranger-ranger.brenna",
@@ -20505,7 +20770,8 @@
    "templateId": "template.tutorial.ranger-ranger",
    "templateName": "ranger-ranger",
    "variant": 1,
-   "variantsOf": 4
+   "variantsOf": 4,
+   "subtype": "ranger-ranger"
   },
   {
    "id": "hero.tutorial.ranger-ranger.scout",
@@ -20565,7 +20831,8 @@
    "templateId": "template.tutorial.ranger-ranger",
    "templateName": "ranger-ranger",
    "variant": 2,
-   "variantsOf": 4
+   "variantsOf": 4,
+   "subtype": "ranger-ranger"
   },
   {
    "id": "hero.tutorial.ranger-ranger.ivana",
@@ -20622,7 +20889,8 @@
    "templateId": "template.tutorial.ranger-ranger",
    "templateName": "ranger-ranger",
    "variant": 3,
-   "variantsOf": 4
+   "variantsOf": 4,
+   "subtype": "ranger-ranger"
   },
   {
    "id": "hero.tutorial.ranger-ranger.huntress",
@@ -20679,7 +20947,8 @@
    "templateId": "template.tutorial.ranger-ranger",
    "templateName": "ranger-ranger",
    "variant": 4,
-   "variantsOf": 4
+   "variantsOf": 4,
+   "subtype": "ranger-ranger"
   },
   {
    "id": "hero.tutorial.ranger-scantily.mira",
@@ -20736,7 +21005,8 @@
    "templateId": "template.tutorial.ranger-scantily",
    "templateName": "ranger-scantily",
    "variant": 1,
-   "variantsOf": 4
+   "variantsOf": 4,
+   "subtype": "ranger-scantily"
   },
   {
    "id": "hero.tutorial.ranger-scantily.zephyr",
@@ -20793,7 +21063,8 @@
    "templateId": "template.tutorial.ranger-scantily",
    "templateName": "ranger-scantily",
    "variant": 2,
-   "variantsOf": 4
+   "variantsOf": 4,
+   "subtype": "ranger-scantily"
   },
   {
    "id": "hero.tutorial.ranger-scantily.kyla",
@@ -20850,7 +21121,8 @@
    "templateId": "template.tutorial.ranger-scantily",
    "templateName": "ranger-scantily",
    "variant": 3,
-   "variantsOf": 4
+   "variantsOf": 4,
+   "subtype": "ranger-scantily"
   },
   {
    "id": "hero.tutorial.ranger-scantily.swift",
@@ -20907,7 +21179,8 @@
    "templateId": "template.tutorial.ranger-scantily",
    "templateName": "ranger-scantily",
    "variant": 4,
-   "variantsOf": 4
+   "variantsOf": 4,
+   "subtype": "ranger-scantily"
   },
   {
    "id": "hero.tutorial.rogue-raven.nadia",
@@ -20965,7 +21238,8 @@
    "templateId": "template.tutorial.rogue-raven",
    "templateName": "rogue-raven",
    "variant": 1,
-   "variantsOf": 4
+   "variantsOf": 4,
+   "subtype": "rogue-raven"
   },
   {
    "id": "hero.tutorial.rogue-raven.raven",
@@ -21023,7 +21297,8 @@
    "templateId": "template.tutorial.rogue-raven",
    "templateName": "rogue-raven",
    "variant": 2,
-   "variantsOf": 4
+   "variantsOf": 4,
+   "subtype": "rogue-raven"
   },
   {
    "id": "hero.tutorial.rogue-raven.ophelia",
@@ -21081,7 +21356,8 @@
    "templateId": "template.tutorial.rogue-raven",
    "templateName": "rogue-raven",
    "variant": 3,
-   "variantsOf": 4
+   "variantsOf": 4,
+   "subtype": "rogue-raven"
   },
   {
    "id": "hero.tutorial.rogue-raven.shade",
@@ -21139,7 +21415,8 @@
    "templateId": "template.tutorial.rogue-raven",
    "templateName": "rogue-raven",
    "variant": 4,
-   "variantsOf": 4
+   "variantsOf": 4,
+   "subtype": "rogue-raven"
   },
   {
    "id": "hero.tutorial.rogue-rose.rosa",
@@ -21201,7 +21478,8 @@
    "templateId": "template.tutorial.rogue-rose",
    "templateName": "rogue-rose",
    "variant": 1,
-   "variantsOf": 4
+   "variantsOf": 4,
+   "subtype": "rogue-rose"
   },
   {
    "id": "hero.tutorial.rogue-rose.scarlet",
@@ -21263,7 +21541,8 @@
    "templateId": "template.tutorial.rogue-rose",
    "templateName": "rogue-rose",
    "variant": 2,
-   "variantsOf": 4
+   "variantsOf": 4,
+   "subtype": "rogue-rose"
   },
   {
    "id": "hero.tutorial.rogue-rose.dahlia",
@@ -21321,7 +21600,8 @@
    "templateId": "template.tutorial.rogue-rose",
    "templateName": "rogue-rose",
    "variant": 3,
-   "variantsOf": 4
+   "variantsOf": 4,
+   "subtype": "rogue-rose"
   },
   {
    "id": "hero.tutorial.rogue-rose.crimson",
@@ -21379,7 +21659,8 @@
    "templateId": "template.tutorial.rogue-rose",
    "templateName": "rogue-rose",
    "variant": 4,
-   "variantsOf": 4
+   "variantsOf": 4,
+   "subtype": "rogue-rose"
   },
   {
    "id": "hero.tutorial.rogue-skull.zara",
@@ -21437,7 +21718,8 @@
    "templateId": "template.tutorial.rogue-skull",
    "templateName": "rogue-skull",
    "variant": 1,
-   "variantsOf": 4
+   "variantsOf": 4,
+   "subtype": "rogue-skull"
   },
   {
    "id": "hero.tutorial.rogue-skull.morticia",
@@ -21495,7 +21777,8 @@
    "templateId": "template.tutorial.rogue-skull",
    "templateName": "rogue-skull",
    "variant": 2,
-   "variantsOf": 4
+   "variantsOf": 4,
+   "subtype": "rogue-skull"
   },
   {
    "id": "hero.tutorial.rogue-skull.jasmine",
@@ -21555,7 +21838,8 @@
    "templateId": "template.tutorial.rogue-skull",
    "templateName": "rogue-skull",
    "variant": 3,
-   "variantsOf": 4
+   "variantsOf": 4,
+   "subtype": "rogue-skull"
   },
   {
    "id": "hero.tutorial.rogue-skull.bone",
@@ -21615,7 +21899,8 @@
    "templateId": "template.tutorial.rogue-skull",
    "templateName": "rogue-skull",
    "variant": 4,
-   "variantsOf": 4
+   "variantsOf": 4,
+   "subtype": "rogue-skull"
   },
   {
    "id": "hero.tutorial.rogue-snake.sela",
@@ -21676,7 +21961,8 @@
    "templateId": "template.tutorial.rogue-snake",
    "templateName": "rogue-snake",
    "variant": 1,
-   "variantsOf": 4
+   "variantsOf": 4,
+   "subtype": "rogue-snake"
   },
   {
    "id": "hero.tutorial.rogue-snake.viper",
@@ -21737,7 +22023,8 @@
    "templateId": "template.tutorial.rogue-snake",
    "templateName": "rogue-snake",
    "variant": 2,
-   "variantsOf": 4
+   "variantsOf": 4,
+   "subtype": "rogue-snake"
   },
   {
    "id": "hero.tutorial.rogue-snake.xyla",
@@ -21796,7 +22083,8 @@
    "templateId": "template.tutorial.rogue-snake",
    "templateName": "rogue-snake",
    "variant": 3,
-   "variantsOf": 4
+   "variantsOf": 4,
+   "subtype": "rogue-snake"
   },
   {
    "id": "hero.tutorial.rogue-snake.serpentina",
@@ -21855,7 +22143,8 @@
    "templateId": "template.tutorial.rogue-snake",
    "templateName": "rogue-snake",
    "variant": 4,
-   "variantsOf": 4
+   "variantsOf": 4,
+   "subtype": "rogue-snake"
   },
   {
    "id": "hero.aspiring.male-style-1",
@@ -21927,7 +22216,8 @@
    "additionalClasses": null,
    "templateId": "template.aspiring.male-style-1",
    "templateName": "male-style-1",
-   "sample": true
+   "sample": true,
+   "subtype": "male-style-1"
   },
   {
    "id": "hero.aspiring.male-style-2",
@@ -21998,7 +22288,8 @@
    "additionalClasses": null,
    "templateId": "template.aspiring.male-style-2",
    "templateName": "male-style-2",
-   "sample": true
+   "sample": true,
+   "subtype": "male-style-2"
   },
   {
    "id": "hero.aspiring.male-style-3",
@@ -22070,7 +22361,8 @@
    "additionalClasses": null,
    "templateId": "template.aspiring.male-style-3",
    "templateName": "male-style-3",
-   "sample": true
+   "sample": true,
+   "subtype": "male-style-3"
   },
   {
    "id": "hero.aspiring.male-style-4",
@@ -22142,7 +22434,8 @@
    "additionalClasses": null,
    "templateId": "template.aspiring.male-style-4",
    "templateName": "male-style-4",
-   "sample": true
+   "sample": true,
+   "subtype": "male-style-4"
   },
   {
    "id": "hero.aspiring.female-style-1",
@@ -22213,7 +22506,8 @@
    "additionalClasses": null,
    "templateId": "template.aspiring.female-style-1",
    "templateName": "female-style-1",
-   "sample": true
+   "sample": true,
+   "subtype": "female-style-1"
   },
   {
    "id": "hero.aspiring.female-style-2",
@@ -22284,7 +22578,8 @@
    "additionalClasses": null,
    "templateId": "template.aspiring.female-style-2",
    "templateName": "female-style-2",
-   "sample": true
+   "sample": true,
+   "subtype": "female-style-2"
   },
   {
    "id": "hero.aspiring.female-style-3",
@@ -22356,7 +22651,8 @@
    "additionalClasses": null,
    "templateId": "template.aspiring.female-style-3",
    "templateName": "female-style-3",
-   "sample": true
+   "sample": true,
+   "subtype": "female-style-3"
   },
   {
    "id": "hero.aspiring.female-style-4",
@@ -22428,7 +22724,8 @@
    "additionalClasses": null,
    "templateId": "template.aspiring.female-style-4",
    "templateName": "female-style-4",
-   "sample": true
+   "sample": true,
+   "subtype": "female-style-4"
   }
  ]
 }
