@@ -16,6 +16,7 @@ const {HERO_DATA}=await import(S+'src/state/heroData.js');
 const {AVTAIR_HERO_TYPES}=await import(S+'data/shadowsHeroTypes.js');
 const {AERONISSA_HERO_TYPES}=await import(S+'data/skyshipHeroes.js');
 const {TUTORIAL_HERO_VARIANTS}=await import(S+'src/eveOfRuin/tutorialHeroes.js');
+const {SPECIAL_CLASSES}=await import(S+'data/specialClasses.js');
 
 // ---------------------------------------------------- ONE PIECE OF ART, ONE HERO
 // Ruled 2026-08-20. Every generative template owns four distinct pieces of art and
@@ -192,6 +193,73 @@ for(const [key,files] of Object.entries(VAR.aspiring)){
   h.notes.push('Depicts: '+spec.depicts);
   if(spec.artIncomplete) h.notes.push('ART INCOMPLETE - '+spec.artIncomplete);
   heroes.push(h);
+}
+
+// 6 — the ELEVEN SPECIAL CLASSES. Added 2026-08-21: content/ had none of them, and each
+//     is a real character with a full 19-stat block in hell-tcg's data/specialClasses.js
+//     and a complete eight-image set (4 levels + 4 afflictions) in New Art/<name>-variants/.
+//
+//     ONE PIECE OF BASE ART, ONE HERO. Their folders also hold rejected retries, so which
+//     file is the adopted one comes from crucible/data/art-rulings.json - Knight and Templar
+//     both use -v2, Knight because the base art is bugged and Templar because the base art
+//     is landscape and cannot be a card.
+//
+//     GENDER is read off the art. specialClasses.js does not record it and neither does the
+//     Crucible or its templates, so it was taken from the eleven pictures.
+const SPECIAL_ART_DIR = {
+  'Barbarian':'barbarian-variants','Demon Hunter':'demon-hunter-variants','Druid':'druid-variants',
+  'Ebony Mask':'ebony-mask-variants','Inquisitor':'inquisitor-variants','Knight':'knight-variants',
+  'Martyr':'martyr-variants','Prophet':'prophet-variants','Shaman':'shaman-variants',
+  'Templar':'templar-variants','Warden':'warden-variants'};
+const SPECIAL_GENDER = {
+  'Barbarian':'male','Demon Hunter':'female','Druid':'female','Ebony Mask':'female',
+  'Inquisitor':'male','Knight':'male','Martyr':'male','Prophet':'male','Shaman':'female',
+  'Templar':'male','Warden':'female'};
+const SPECIAL_DEPICTS = {
+  'Barbarian':'bare-chested axeman mid-swing, knotwork tattoos, fur boots, embers and smoke',
+  'Demon Hunter':'red leather armour, hand crossbow and shortsword, standing over dead imps in a lava field',
+  'Druid':'leaves and flowers in her locks, living staff wreathed in green light, deep wood',
+  'Ebony Mask':'filigree half-mask, black buckled leathers, dagger drawn in a wet moonlit alley',
+  'Inquisitor':'grey-haired, chained tome under one arm, warhammer low, candlelit chapel',
+  'Knight':'blond, blackened plate with gold trim, sword raised, dark red cloak',
+  'Martyr':'haloed, bleeding, torn pale robes, light gathering in an outstretched hand',
+  'Prophet':'blindfolded elder, ragged robes, blue lightning arcing from his hands into the dark',
+  'Shaman':'feathers and bone in her locks, fox on her shoulder, spirit owls and bears around her',
+  'Templar':'bearded crusader raising a burning sword, red cross on white, kite shield',
+  'Warden':'twin blades drawn, bow and quiver on her back, misty forest'};
+{
+  const RUL = JSON.parse(fs.readFileSync('../crucible/data/art-rulings.json','utf8'));
+  for(const sc of Object.values(SPECIAL_CLASSES)){
+    const dir = SPECIAL_ART_DIR[sc.name];
+    if(!dir){ problems.push('special class '+sc.name+' has no art folder mapping'); continue; }
+    const stem = dir.replace(/-variants$/,'');
+    const adopted = RUL.keep['variants/'+stem];
+    if(!adopted){ problems.push('special class '+sc.name+' has no art ruling for variants/'+stem); continue; }
+    const gender = SPECIAL_GENDER[sc.name] || null;
+    if(!gender) problems.push('special class '+sc.name+' has no gender');
+
+    const hero = convert({
+      name: sc.name, class: sc.baseClass, gender, tier: 1, level: 1,
+      baseStats: sc.baseStats||{},
+      startingClassPowers: sc.startingClassPowers||[],
+      triggers: sc.triggers||null,
+      backstory: sc.description||null
+    }, {path:'special', idBase:'special.'+slug(sc.name), campaign:'eve-of-ruin',
+        artOverride:'New Art/'+dir+'/'+adopted});
+
+    hero.subtype = sc.name;          // one of each per campaign; only one art, so no type layer
+    hero.templateId = 'template.special.'+slug(sc.name);
+    hero.templateName = sc.name;
+    hero.levelArt = [1,2,3,4].map(n=>'New Art/'+dir+'/'+stem+'-level'+n+'.png');
+    hero.specialClassId = sc.id || null;
+    hero.unlockXp = sc.unlockXp ?? null;
+    hero.notes.push('SPECIAL CLASS. Ported from hell-tcg data/specialClasses.js 2026-08-21 - content/ had no Druid, Knight, Templar or any of the other eight.');
+    hero.notes.push('Depicts: '+(SPECIAL_DEPICTS[sc.name]||'(not described)'));
+    hero.notes.push('Gender read off the art - specialClasses.js does not record it.');
+    if(RUL.exceptions && RUL.exceptions['variants/'+stem])
+      hero.notes.push('ART EXCEPTION - '+RUL.exceptions['variants/'+stem]);
+    heroes.push(hero);
+  }
 }
 
 // ---------------------------------------------------------- TYPE, and the rulings

@@ -19149,6 +19149,816 @@
    "templateName": "Jade Staff",
    "subtype": "Jade Staff",
    "sample": true
+  },
+  {
+   "id": "hero.special.druid",
+   "name": "Druid",
+   "path": "special",
+   "sourceClass": "Mage",
+   "class": "class.mage",
+   "tier": 1,
+   "level": 1,
+   "gender": "female",
+   "campaign": "eve-of-ruin",
+   "art": "New Art/druid-variants/druid-level1.png",
+   "ported": {
+    "strength": 3,
+    "precision": 3,
+    "armor": 0,
+    "health": 8,
+    "reach": 2,
+    "magic": 2,
+    "spirit": 0,
+    "resist": 0,
+    "itemSlots": 1,
+    "toughness": 2,
+    "dodge": 0
+   },
+   "dropped": {},
+   "derivedBase": {
+    "accuracy": 75,
+    "crit": 3,
+    "luck": 0,
+    "vision": 7,
+    "movement": 5,
+    "staminaMax": 5,
+    "staminaRegen": 1
+   },
+   "notes": [
+    "Toughness 2 is hell-tcg maxAfflictions, ported straight across — same meaning.",
+    "SPECIAL CLASS. Ported from hell-tcg data/specialClasses.js 2026-08-21 - content/ had no Druid, Knight, Templar or any of the other eight.",
+    "Depicts: leaves and flowers in her locks, living staff wreathed in green light, deep wood",
+    "Gender read off the art - specialClasses.js does not record it."
+   ],
+   "specialty": null,
+   "originBadges": [],
+   "classPowers": [
+    "druid-bear-form"
+   ],
+   "namedSpecials": [],
+   "triggers": {},
+   "levelBonuses": null,
+   "cost": null,
+   "quote": null,
+   "backstory": "Nature magic and healing. Can transform into a bear.",
+   "passiveDescription": null,
+   "additionalClasses": null,
+   "subtype": "Druid",
+   "templateId": "template.special.druid",
+   "templateName": "Druid",
+   "levelArt": [
+    "New Art/druid-variants/druid-level1.png",
+    "New Art/druid-variants/druid-level2.png",
+    "New Art/druid-variants/druid-level3.png",
+    "New Art/druid-variants/druid-level4.png"
+   ],
+   "specialClassId": "druid",
+   "unlockXp": null
+  },
+  {
+   "id": "hero.special.knight",
+   "name": "Knight",
+   "path": "special",
+   "sourceClass": "Warrior",
+   "class": "class.warrior",
+   "tier": 1,
+   "level": 1,
+   "gender": "male",
+   "campaign": "eve-of-ruin",
+   "art": "New Art/knight-variants/knight-level1-v2.png",
+   "ported": {
+    "strength": 5,
+    "precision": 2,
+    "armor": 2,
+    "health": 8,
+    "reach": 1,
+    "magic": 0,
+    "spirit": 0,
+    "resist": 0,
+    "itemSlots": 3,
+    "toughness": 2,
+    "dodge": 0
+   },
+   "dropped": {
+    "resolute": 1
+   },
+   "derivedBase": {
+    "accuracy": 75,
+    "crit": 3,
+    "luck": 0,
+    "vision": 6,
+    "movement": 5,
+    "staminaMax": 5,
+    "staminaRegen": 1
+   },
+   "notes": [
+    "Resolute +1 DROPPED — the stat was removed 2026-08-15 with no replacement.",
+    "Toughness 2 is hell-tcg maxAfflictions, ported straight across — same meaning.",
+    "SPECIAL CLASS. Ported from hell-tcg data/specialClasses.js 2026-08-21 - content/ had no Druid, Knight, Templar or any of the other eight.",
+    "Depicts: blond, blackened plate with gold trim, sword raised, dark red cloak",
+    "Gender read off the art - specialClasses.js does not record it.",
+    "ART EXCEPTION - The base art looks better but is BUGGED. v2 is used instead. Missed in earlier review."
+   ],
+   "specialty": null,
+   "originBadges": [],
+   "classPowers": [],
+   "namedSpecials": [],
+   "triggers": {},
+   "levelBonuses": null,
+   "cost": null,
+   "quote": null,
+   "backstory": "Heavy armor specialist. Excels at tanking damage.",
+   "passiveDescription": null,
+   "additionalClasses": null,
+   "subtype": "Knight",
+   "templateId": "template.special.knight",
+   "templateName": "Knight",
+   "levelArt": [
+    "New Art/knight-variants/knight-level1.png",
+    "New Art/knight-variants/knight-level2.png",
+    "New Art/knight-variants/knight-level3.png",
+    "New Art/knight-variants/knight-level4.png"
+   ],
+   "specialClassId": "knight",
+   "unlockXp": null
+  },
+  {
+   "id": "hero.special.inquisitor",
+   "name": "Inquisitor",
+   "path": "special",
+   "sourceClass": "Paladin",
+   "class": "class.paladin",
+   "tier": 1,
+   "level": 1,
+   "gender": "male",
+   "campaign": "eve-of-ruin",
+   "art": "New Art/inquisitor-variants/inquisitor-level1.png",
+   "ported": {
+    "strength": 4,
+    "precision": 2,
+    "armor": 1,
+    "health": 8,
+    "reach": 3,
+    "magic": 0,
+    "spirit": 1,
+    "resist": 1,
+    "itemSlots": 3,
+    "toughness": 1,
+    "dodge": 0
+   },
+   "dropped": {},
+   "derivedBase": {
+    "accuracy": 72,
+    "crit": 3,
+    "luck": 0,
+    "vision": 6,
+    "movement": 5,
+    "staminaMax": 5,
+    "staminaRegen": 1
+   },
+   "notes": [
+    "Toughness 1 is hell-tcg maxAfflictions, ported straight across — same meaning.",
+    "SPECIAL CLASS. Ported from hell-tcg data/specialClasses.js 2026-08-21 - content/ had no Druid, Knight, Templar or any of the other eight.",
+    "Depicts: grey-haired, chained tome under one arm, warhammer low, candlelit chapel",
+    "Gender read off the art - specialClasses.js does not record it."
+   ],
+   "specialty": null,
+   "originBadges": [],
+   "classPowers": [
+    "inquisitor-aura-of-purity",
+    "inquisitor-purify"
+   ],
+   "namedSpecials": [],
+   "triggers": {
+    "turnEnd": [
+     {
+      "action": "removeStatusEffects",
+      "target": "allHeroes",
+      "statuses": [
+       "weak"
+      ],
+      "value": 1
+     }
+    ]
+   },
+   "levelBonuses": null,
+   "cost": null,
+   "quote": null,
+   "backstory": "Holy hunters of darkness. At end of turn, removes 1 Weak from all heroes.",
+   "passiveDescription": null,
+   "additionalClasses": null,
+   "subtype": "Inquisitor",
+   "templateId": "template.special.inquisitor",
+   "templateName": "Inquisitor",
+   "levelArt": [
+    "New Art/inquisitor-variants/inquisitor-level1.png",
+    "New Art/inquisitor-variants/inquisitor-level2.png",
+    "New Art/inquisitor-variants/inquisitor-level3.png",
+    "New Art/inquisitor-variants/inquisitor-level4.png"
+   ],
+   "specialClassId": "inquisitor",
+   "unlockXp": null
+  },
+  {
+   "id": "hero.special.barbarian",
+   "name": "Barbarian",
+   "path": "special",
+   "sourceClass": "Warrior",
+   "class": "class.warrior",
+   "tier": 1,
+   "level": 1,
+   "gender": "male",
+   "campaign": "eve-of-ruin",
+   "art": "New Art/barbarian-variants/barbarian-level1.png",
+   "ported": {
+    "strength": 5,
+    "precision": 5,
+    "armor": 0,
+    "health": 14,
+    "reach": 1,
+    "magic": 0,
+    "spirit": 0,
+    "resist": 0,
+    "itemSlots": 1,
+    "toughness": 1,
+    "dodge": 0
+   },
+   "dropped": {},
+   "derivedBase": {
+    "accuracy": 75,
+    "crit": 3,
+    "luck": 0,
+    "vision": 6,
+    "movement": 5,
+    "staminaMax": 5,
+    "staminaRegen": 1
+   },
+   "notes": [
+    "Toughness 1 is hell-tcg maxAfflictions, ported straight across — same meaning.",
+    "SPECIAL CLASS. Ported from hell-tcg data/specialClasses.js 2026-08-21 - content/ had no Druid, Knight, Templar or any of the other eight.",
+    "Depicts: bare-chested axeman mid-swing, knotwork tattoos, fur boots, embers and smoke",
+    "Gender read off the art - specialClasses.js does not record it."
+   ],
+   "specialty": null,
+   "originBadges": [],
+   "classPowers": [
+    "barbarian-rage"
+   ],
+   "namedSpecials": [],
+   "triggers": {},
+   "levelBonuses": null,
+   "cost": null,
+   "quote": null,
+   "backstory": "Rage-fueled berserker. High damage, low defense.",
+   "passiveDescription": null,
+   "additionalClasses": null,
+   "subtype": "Barbarian",
+   "templateId": "template.special.barbarian",
+   "templateName": "Barbarian",
+   "levelArt": [
+    "New Art/barbarian-variants/barbarian-level1.png",
+    "New Art/barbarian-variants/barbarian-level2.png",
+    "New Art/barbarian-variants/barbarian-level3.png",
+    "New Art/barbarian-variants/barbarian-level4.png"
+   ],
+   "specialClassId": "barbarian",
+   "unlockXp": null
+  },
+  {
+   "id": "hero.special.shaman",
+   "name": "Shaman",
+   "path": "special",
+   "sourceClass": "Mage",
+   "class": "class.mage",
+   "tier": 1,
+   "level": 1,
+   "gender": "female",
+   "campaign": "eve-of-ruin",
+   "art": "New Art/shaman-variants/shaman-level1.png",
+   "ported": {
+    "strength": 3,
+    "precision": 2,
+    "armor": 0,
+    "health": 5,
+    "reach": 3,
+    "magic": 2,
+    "spirit": 0,
+    "resist": 0,
+    "itemSlots": 2,
+    "toughness": 1,
+    "dodge": 0
+   },
+   "dropped": {},
+   "derivedBase": {
+    "accuracy": 75,
+    "crit": 3,
+    "luck": 0,
+    "vision": 7,
+    "movement": 5,
+    "staminaMax": 5,
+    "staminaRegen": 1
+   },
+   "notes": [
+    "Toughness 1 is hell-tcg maxAfflictions, ported straight across — same meaning.",
+    "SPECIAL CLASS. Ported from hell-tcg data/specialClasses.js 2026-08-21 - content/ had no Druid, Knight, Templar or any of the other eight.",
+    "Depicts: feathers and bone in her locks, fox on her shoulder, spirit owls and bears around her",
+    "Gender read off the art - specialClasses.js does not record it."
+   ],
+   "specialty": null,
+   "originBadges": [],
+   "classPowers": [
+    "shaman-poison-roots"
+   ],
+   "namedSpecials": [],
+   "triggers": {},
+   "levelBonuses": null,
+   "cost": null,
+   "quote": null,
+   "backstory": "Spirit magic wielder. Draws more cards but has fewer actions.",
+   "passiveDescription": null,
+   "additionalClasses": null,
+   "subtype": "Shaman",
+   "templateId": "template.special.shaman",
+   "templateName": "Shaman",
+   "levelArt": [
+    "New Art/shaman-variants/shaman-level1.png",
+    "New Art/shaman-variants/shaman-level2.png",
+    "New Art/shaman-variants/shaman-level3.png",
+    "New Art/shaman-variants/shaman-level4.png"
+   ],
+   "specialClassId": "shaman",
+   "unlockXp": null
+  },
+  {
+   "id": "hero.special.martyr",
+   "name": "Martyr",
+   "path": "special",
+   "sourceClass": "Priest",
+   "class": "class.priest",
+   "tier": 1,
+   "level": 1,
+   "gender": "male",
+   "campaign": "eve-of-ruin",
+   "art": "New Art/martyr-variants/martyr-level1.png",
+   "ported": {
+    "strength": 1,
+    "precision": 1,
+    "armor": 0,
+    "health": 7,
+    "reach": 4,
+    "magic": 0,
+    "spirit": 2,
+    "resist": 0,
+    "itemSlots": 2,
+    "toughness": 4,
+    "dodge": 0
+   },
+   "dropped": {},
+   "derivedBase": {
+    "accuracy": 80,
+    "crit": 3,
+    "luck": 0,
+    "vision": 6,
+    "movement": 5,
+    "staminaMax": 5,
+    "staminaRegen": 1
+   },
+   "notes": [
+    "Toughness 4 is hell-tcg maxAfflictions, ported straight across — same meaning.",
+    "SPECIAL CLASS. Ported from hell-tcg data/specialClasses.js 2026-08-21 - content/ had no Druid, Knight, Templar or any of the other eight.",
+    "Depicts: haloed, bleeding, torn pale robes, light gathering in an outstretched hand",
+    "Gender read off the art - specialClasses.js does not record it."
+   ],
+   "specialty": null,
+   "originBadges": [],
+   "classPowers": [],
+   "namedSpecials": [],
+   "triggers": {
+    "onDeath": [
+     {
+      "action": "healParty",
+      "value": 6
+     },
+     {
+      "action": "removeStatusEffects",
+      "target": "allHeroes",
+      "statuses": [
+       "burn"
+      ],
+      "value": 3
+     },
+     {
+      "action": "removeStatusEffects",
+      "target": "allHeroes",
+      "statuses": [
+       "poison"
+      ],
+      "value": 3
+     }
+    ],
+    "onAttack": [
+     {
+      "action": "removeStatusEffects",
+      "target": "allHeroes",
+      "statuses": [
+       "burn"
+      ],
+      "value": 1
+     },
+     {
+      "action": "removeStatusEffects",
+      "target": "allHeroes",
+      "statuses": [
+       "poison"
+      ],
+      "value": 1
+     },
+     {
+      "action": "removeStatusEffects",
+      "target": "allHeroes",
+      "statuses": [
+       "bleed"
+      ],
+      "value": 1
+     },
+     {
+      "action": "applyBurn",
+      "target": "self",
+      "value": 2
+     }
+    ],
+    "turnEnd": [
+     {
+      "action": "healParty",
+      "value": 1
+     }
+    ]
+   },
+   "levelBonuses": null,
+   "cost": null,
+   "quote": null,
+   "backstory": "Self-sacrifice for party healing. Spirit deals true damage.",
+   "passiveDescription": null,
+   "additionalClasses": null,
+   "subtype": "Martyr",
+   "templateId": "template.special.martyr",
+   "templateName": "Martyr",
+   "levelArt": [
+    "New Art/martyr-variants/martyr-level1.png",
+    "New Art/martyr-variants/martyr-level2.png",
+    "New Art/martyr-variants/martyr-level3.png",
+    "New Art/martyr-variants/martyr-level4.png"
+   ],
+   "specialClassId": "martyr",
+   "unlockXp": null
+  },
+  {
+   "id": "hero.special.templar",
+   "name": "Templar",
+   "path": "special",
+   "sourceClass": "Paladin",
+   "class": "class.paladin",
+   "tier": 1,
+   "level": 1,
+   "gender": "male",
+   "campaign": "eve-of-ruin",
+   "art": "New Art/templar-variants/templar-level1-v2.png",
+   "ported": {
+    "strength": 3,
+    "precision": 2,
+    "armor": 2,
+    "health": 8,
+    "reach": 2,
+    "magic": 0,
+    "spirit": 0,
+    "resist": 0,
+    "itemSlots": 2,
+    "toughness": 1,
+    "dodge": 0
+   },
+   "dropped": {},
+   "derivedBase": {
+    "accuracy": 72,
+    "crit": 3,
+    "luck": 0,
+    "vision": 6,
+    "movement": 5,
+    "staminaMax": 5,
+    "staminaRegen": 1
+   },
+   "notes": [
+    "Toughness 1 is hell-tcg maxAfflictions, ported straight across — same meaning.",
+    "SPECIAL CLASS. Ported from hell-tcg data/specialClasses.js 2026-08-21 - content/ had no Druid, Knight, Templar or any of the other eight.",
+    "Depicts: bearded crusader raising a burning sword, red cross on white, kite shield",
+    "Gender read off the art - specialClasses.js does not record it.",
+    "ART EXCEPTION - The base and -v1 are the SAME landscape image at 1408x768 and cannot be a 2:3 card. -v2 is the only card-shaped Templar. The no-v rule cannot apply where the no-v file is the wrong shape."
+   ],
+   "specialty": null,
+   "originBadges": [],
+   "classPowers": [
+    "templar-exemplify"
+   ],
+   "namedSpecials": [],
+   "triggers": {},
+   "levelBonuses": null,
+   "cost": null,
+   "quote": null,
+   "backstory": "Crusading holy warrior. Grants armor to allies.",
+   "passiveDescription": null,
+   "additionalClasses": null,
+   "subtype": "Templar",
+   "templateId": "template.special.templar",
+   "templateName": "Templar",
+   "levelArt": [
+    "New Art/templar-variants/templar-level1.png",
+    "New Art/templar-variants/templar-level2.png",
+    "New Art/templar-variants/templar-level3.png",
+    "New Art/templar-variants/templar-level4.png"
+   ],
+   "specialClassId": "templar",
+   "unlockXp": null
+  },
+  {
+   "id": "hero.special.demon-hunter",
+   "name": "Demon Hunter",
+   "path": "special",
+   "sourceClass": "Ranger",
+   "class": "class.ranger",
+   "tier": 1,
+   "level": 1,
+   "gender": "female",
+   "campaign": "eve-of-ruin",
+   "art": "New Art/demon-hunter-variants/demon-hunter-level1.png",
+   "ported": {
+    "strength": 3,
+    "precision": 3,
+    "armor": 0,
+    "health": 9,
+    "reach": 3,
+    "magic": 0,
+    "spirit": 0,
+    "resist": 0,
+    "itemSlots": 2,
+    "toughness": 1,
+    "dodge": 0
+   },
+   "dropped": {},
+   "derivedBase": {
+    "accuracy": 80,
+    "crit": 3,
+    "luck": 0,
+    "vision": 8,
+    "movement": 5,
+    "staminaMax": 5,
+    "staminaRegen": 1
+   },
+   "notes": [
+    "Toughness 1 is hell-tcg maxAfflictions, ported straight across — same meaning.",
+    "SPECIAL CLASS. Ported from hell-tcg data/specialClasses.js 2026-08-21 - content/ had no Druid, Knight, Templar or any of the other eight.",
+    "Depicts: red leather armour, hand crossbow and shortsword, standing over dead imps in a lava field",
+    "Gender read off the art - specialClasses.js does not record it."
+   ],
+   "specialty": null,
+   "originBadges": [],
+   "classPowers": [
+    "demon-hunter-demon-hunting"
+   ],
+   "namedSpecials": [],
+   "triggers": {},
+   "levelBonuses": null,
+   "cost": null,
+   "quote": null,
+   "backstory": "Specialized demon slayers. Converts burn to damage.",
+   "passiveDescription": null,
+   "additionalClasses": null,
+   "subtype": "Demon Hunter",
+   "templateId": "template.special.demon-hunter",
+   "templateName": "Demon Hunter",
+   "levelArt": [
+    "New Art/demon-hunter-variants/demon-hunter-level1.png",
+    "New Art/demon-hunter-variants/demon-hunter-level2.png",
+    "New Art/demon-hunter-variants/demon-hunter-level3.png",
+    "New Art/demon-hunter-variants/demon-hunter-level4.png"
+   ],
+   "specialClassId": "demon-hunter",
+   "unlockXp": null
+  },
+  {
+   "id": "hero.special.ebony-mask",
+   "name": "Ebony Mask",
+   "path": "special",
+   "sourceClass": "Rogue",
+   "class": "class.rogue",
+   "tier": 1,
+   "level": 1,
+   "gender": "female",
+   "campaign": "eve-of-ruin",
+   "art": "New Art/ebony-mask-variants/ebony-mask-level1.png",
+   "ported": {
+    "strength": 5,
+    "precision": 2,
+    "armor": 0,
+    "health": 7,
+    "reach": 1,
+    "magic": 0,
+    "spirit": 0,
+    "resist": 0,
+    "itemSlots": 3,
+    "toughness": 3,
+    "dodge": 10
+   },
+   "dropped": {},
+   "derivedBase": {
+    "accuracy": 78,
+    "crit": 5,
+    "luck": 0,
+    "vision": 7,
+    "movement": 5,
+    "staminaMax": 5,
+    "staminaRegen": 1
+   },
+   "notes": [
+    "Dodge 2 scaled x5 to 10 — hell-tcg Dodge was a 0-3 integer, HoBaT Dodge is a flat to-hit penalty in points.",
+    "Toughness 3 is hell-tcg maxAfflictions, ported straight across — same meaning.",
+    "SPECIAL CLASS. Ported from hell-tcg data/specialClasses.js 2026-08-21 - content/ had no Druid, Knight, Templar or any of the other eight.",
+    "Depicts: filigree half-mask, black buckled leathers, dagger drawn in a wet moonlit alley",
+    "Gender read off the art - specialClasses.js does not record it."
+   ],
+   "specialty": null,
+   "originBadges": [],
+   "classPowers": [],
+   "namedSpecials": [],
+   "triggers": {
+    "onAttack": [
+     {
+      "action": "applyPoison",
+      "target": "attacked",
+      "value": 1
+     }
+    ],
+    "onDeath": [
+     {
+      "action": "gainFaith",
+      "value": -2
+     }
+    ]
+   },
+   "levelBonuses": null,
+   "cost": null,
+   "quote": null,
+   "backstory": "Shadow assassin. High dodge, poison attacks, cursed by their contracts.",
+   "passiveDescription": null,
+   "additionalClasses": null,
+   "subtype": "Ebony Mask",
+   "templateId": "template.special.ebony-mask",
+   "templateName": "Ebony Mask",
+   "levelArt": [
+    "New Art/ebony-mask-variants/ebony-mask-level1.png",
+    "New Art/ebony-mask-variants/ebony-mask-level2.png",
+    "New Art/ebony-mask-variants/ebony-mask-level3.png",
+    "New Art/ebony-mask-variants/ebony-mask-level4.png"
+   ],
+   "specialClassId": "ebony-mask",
+   "unlockXp": null
+  },
+  {
+   "id": "hero.special.warden",
+   "name": "Warden",
+   "path": "special",
+   "sourceClass": "Ranger",
+   "class": "class.ranger",
+   "tier": 1,
+   "level": 1,
+   "gender": "female",
+   "campaign": "eve-of-ruin",
+   "art": "New Art/warden-variants/warden-level1.png",
+   "ported": {
+    "strength": 2,
+    "precision": 3,
+    "armor": 1,
+    "health": 8,
+    "reach": 2,
+    "magic": 0,
+    "spirit": 0,
+    "resist": 1,
+    "itemSlots": 2,
+    "toughness": 2,
+    "dodge": 0
+   },
+   "dropped": {
+    "resolute": 1
+   },
+   "derivedBase": {
+    "accuracy": 80,
+    "crit": 3,
+    "luck": 0,
+    "vision": 8,
+    "movement": 5,
+    "staminaMax": 5,
+    "staminaRegen": 1
+   },
+   "notes": [
+    "Resolute +1 DROPPED — the stat was removed 2026-08-15 with no replacement.",
+    "Toughness 2 is hell-tcg maxAfflictions, ported straight across — same meaning.",
+    "SPECIAL CLASS. Ported from hell-tcg data/specialClasses.js 2026-08-21 - content/ had no Druid, Knight, Templar or any of the other eight.",
+    "Depicts: twin blades drawn, bow and quiver on her back, misty forest",
+    "Gender read off the art - specialClasses.js does not record it."
+   ],
+   "specialty": null,
+   "originBadges": [],
+   "classPowers": [],
+   "namedSpecials": [],
+   "triggers": {},
+   "levelBonuses": null,
+   "cost": null,
+   "quote": null,
+   "backstory": "Defensive ranger. Traps and area denial.",
+   "passiveDescription": null,
+   "additionalClasses": null,
+   "subtype": "Warden",
+   "templateId": "template.special.warden",
+   "templateName": "Warden",
+   "levelArt": [
+    "New Art/warden-variants/warden-level1.png",
+    "New Art/warden-variants/warden-level2.png",
+    "New Art/warden-variants/warden-level3.png",
+    "New Art/warden-variants/warden-level4.png"
+   ],
+   "specialClassId": "warden",
+   "unlockXp": null
+  },
+  {
+   "id": "hero.special.prophet",
+   "name": "Prophet",
+   "path": "special",
+   "sourceClass": "Priest",
+   "class": "class.priest",
+   "tier": 1,
+   "level": 1,
+   "gender": "male",
+   "campaign": "eve-of-ruin",
+   "art": "New Art/prophet-variants/prophet-level1.png",
+   "ported": {
+    "strength": 1,
+    "precision": 2,
+    "armor": 0,
+    "health": 6,
+    "reach": 2,
+    "magic": 0,
+    "spirit": 2,
+    "resist": 1,
+    "itemSlots": 2,
+    "toughness": 1,
+    "dodge": 0
+   },
+   "dropped": {},
+   "derivedBase": {
+    "accuracy": 80,
+    "crit": 3,
+    "luck": 0,
+    "vision": 6,
+    "movement": 5,
+    "staminaMax": 5,
+    "staminaRegen": 1
+   },
+   "notes": [
+    "Toughness 1 is hell-tcg maxAfflictions, ported straight across — same meaning.",
+    "SPECIAL CLASS. Ported from hell-tcg data/specialClasses.js 2026-08-21 - content/ had no Druid, Knight, Templar or any of the other eight.",
+    "Depicts: blindfolded elder, ragged robes, blue lightning arcing from his hands into the dark",
+    "Gender read off the art - specialClasses.js does not record it."
+   ],
+   "specialty": null,
+   "originBadges": [],
+   "classPowers": [],
+   "namedSpecials": [],
+   "triggers": {
+    "turnEnd": [
+     {
+      "action": "healParty",
+      "scaling": {
+       "stat": "spirit",
+       "multiplier": 0.5
+      }
+     }
+    ]
+   },
+   "levelBonuses": null,
+   "cost": null,
+   "quote": null,
+   "backstory": "Foresight and prophecy. Manipulates card draw.",
+   "passiveDescription": null,
+   "additionalClasses": null,
+   "subtype": "Prophet",
+   "templateId": "template.special.prophet",
+   "templateName": "Prophet",
+   "levelArt": [
+    "New Art/prophet-variants/prophet-level1.png",
+    "New Art/prophet-variants/prophet-level2.png",
+    "New Art/prophet-variants/prophet-level3.png",
+    "New Art/prophet-variants/prophet-level4.png"
+   ],
+   "specialClassId": "prophet",
+   "unlockXp": null
   }
  ]
 }
