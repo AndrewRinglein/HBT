@@ -116,6 +116,10 @@ for(const i of out.items) for(const gid of (i.grants||[])) if(!ids.has(gid)) pro
 for(const s of out.specialties) for(const pid of (s.powers||[])) if(!ids.has(pid)) prob.push(`specialty ${s.id} lists missing ${pid}`);
 
 try{ out.bestiaryTest=R('bestiary-test.json'); }catch{ out.bestiaryTest=null; }
+// ---- the REAL bestiary. 219 creatures ported from hell-tcg data/enemyCards.js, plus the
+// 193 immediate-cast rows which are enemy SPELLS, not units (ruled 2026-08-21).
+try{ out.bestiary=R('bestiary.json').units; }catch{ out.bestiary=null; }
+try{ out.enemySpells=R('enemy-spells.json').spells; }catch{ out.enemySpells=null; }
 fs.writeFileSync('hbt-content.json', JSON.stringify(out));
 console.log('TOTALS');
 for(const k of ['specialties','powers','items','attacks','enchants','tags','badges','classes']) console.log('  '+String(out[k].length).padStart(4), k);

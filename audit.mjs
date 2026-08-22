@@ -600,6 +600,51 @@ if(D.heroes&&D.heroes.heroes&&D.artConventions){
   }
 }
 
+// R25 ACCURACY IS NOT A FUNCTION OF RANK, AND HIGH ACCURACY MUST BE EARNED BY REACH.
+// Ruled 2026-08-21. The first bestiary derivation set accuracy from rank and nothing else
+// (55/65/85/110), which made every boss precise and every boss play the same way. Two questions
+// killed it: "is there some reason a lich would never miss its attacks?" — no — and the
+// observation that a long-reach thing blasting you from across the board is the one case where
+// near-perfect accuracy makes sense. So:
+//   (a) rank must not order accuracy. Every rank carries a wide spread, and the correlation
+//       between rank and accuracy stays low. A rank-3 juggernaut swings in the sixties.
+//   (b) nothing goes above 115 unless its reach is 4+. Menace is expressed as damage, health,
+//       riders and summons — never as a hit chance.
+// These are shape rules, not number rules; a sweep still owns every individual value.
+if(D.bestiary && D.bestiary.length){
+  const U=D.bestiary, acc=u=>(u.derivedBase||{}).accuracy;
+  const scored=U.filter(u=>typeof acc(u)==='number');
+
+  // (a) high accuracy has to be earned by reach
+  for(const u of scored)
+    if(acc(u)>115 && ((u.ported||{}).reach||0)<4)
+      add('high-accuracy-without-the-reach-to-justify-it', u.name,
+          'accuracy '+acc(u)+' at reach '+((u.ported||{}).reach||0)+
+          ' — above 115 is for things that hit you from outside your reach. Express the menace as damage or a rider.');
+
+  // (b) rank must not order accuracy: each populated rank needs real spread
+  const byRank={};
+  for(const u of scored)(byRank[u.rank]=byRank[u.rank]||[]).push(acc(u));
+  for(const [r,list] of Object.entries(byRank)){
+    if(list.length<10) continue;               // too few to say anything
+    const lo=Math.min(...list), hi=Math.max(...list);
+    if(hi-lo < 30)
+      add('rank-has-no-accuracy-spread','rank '+r,
+          list.length+' creatures spanning only '+lo+'-'+hi+
+          ' — a rank is not an accuracy band. Vary it by what KIND of creature each one is.');
+  }
+
+  // (c) and the ranks must not simply be stacked on top of each other
+  const ranks=Object.keys(byRank).filter(r=>byRank[r].length>=10).map(Number).sort((a,b)=>a-b);
+  for(let i=1;i<ranks.length;i++){
+    const lowerMax=Math.max(...byRank[ranks[i-1]]), upperMin=Math.min(...byRank[ranks[i]]);
+    if(upperMin > lowerMax)
+      add('accuracy-is-monotonic-in-rank','rank '+ranks[i-1]+' -> '+ranks[i],
+          'every rank-'+ranks[i]+' creature is more accurate than every rank-'+ranks[i-1]+
+          ' one (bands '+lowerMax+' | '+upperMin+'). That is a formula, not a bestiary.');
+  }
+}
+
 const by={}; F.forEach(f=>(by[f.rule]=by[f.rule]||[]).push(f));
 for(const [r,list] of Object.entries(by).sort((a,b)=>b[1].length-a[1].length)){
   console.log('\n### '+r+'  ('+list.length+')');

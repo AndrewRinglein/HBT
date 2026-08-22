@@ -1,0 +1,47 @@
+Zombie/Infectious Bite: applyBadge — badges on enemies — content/ has no enemy badge model
+Ghost/Possess: applyBadge — badges on enemies — content/ has no enemy badge model
+Vampire/Inflict Vampirism: applyBadge — badges on enemies — content/ has no enemy badge model
+Greater Werewolf/Spread the Curse: applyBadge — badges on enemies — content/ has no enemy badge model
+Succubus/Soul Corruption: applyBadge — badges on enemies — content/ has no enemy badge model
+Possessed Troll/Rotting Touch: applyBadge — badges on enemies — content/ has no enemy badge model
+Nightmare Twin/Inflict Madness: applyBadge — badges on enemies — content/ has no enemy badge model
+Fallen Rogue/Add Poison: grantTrigger — granting a trigger at runtime — not an effect content/ can express
+Vampire Thrallmaster/Inflict Vampirism: applyBadge — badges on enemies — content/ has no enemy badge model
+Mummified Priest/Empower: modifyPower — power scaling — no equivalent in the closed effect list
+Bone Ritualist/Ritual Chant: modifyPower — power scaling — no equivalent in the closed effect list
+Desert Mystic/Dark Ritual: modifyPower — power scaling — no equivalent in the closed effect list
+Doom Herald/Dark Empower: modifyPower — power scaling — no equivalent in the closed effect list
+Alpha Dune Wolf/Lycanthropy Bite: applyBadge — badges on enemies — content/ has no enemy badge model
+Desert Vampire/Blood Curse: applyBadge — badges on enemies — content/ has no enemy badge model
+Plague Carrier/Infectious Strike: applyBadge — badges on enemies — content/ has no enemy badge model
+The Obelisk/Pulse: modifyPower — power scaling — no equivalent in the closed effect list
+Bone Warden/Dark Attunement: modifyPower — power scaling — no equivalent in the closed effect list
+Infernal Warlord/Infernal Pact: applyBadge — badges on enemies — content/ has no enemy badge model
+Bound Phantom/Ritual Pulse: modifyPower — power scaling — no equivalent in the closed effect list
+The Defiler/Pulse of Corruption: modifyPower — power scaling — no equivalent in the closed effect list
+Tomb Ritualist/Ritual Chant: modifyPower — power scaling — no equivalent in the closed effect list
+Cursed Deacon/Empower: modifyPower — power scaling — no equivalent in the closed effect list
+Profane Pyrekeeper/Stoke the Flames: modifyPower — power scaling — no equivalent in the closed effect list
+Blighted Deacon/Unholy Litany: modifyPower — power scaling — no equivalent in the closed effect list
+Blighted Deacon/Damned Blessing: modifyPower — power scaling — no equivalent in the closed effect list
+Yaoguai Warchief/Cursed Mauling: applyBadge — badges on enemies — content/ has no enemy badge model
+Fiend Channeler/Dark Ritual: modifyPower — power scaling — no equivalent in the closed effect list
+Rot Priest/Corrupting Touch: applyBadge — badges on enemies — content/ has no enemy badge model
+Crimson Priestess/Ritual Chant: modifyPower — power scaling — no equivalent in the closed effect list
+Possessed Abbot/Possession Strike: applyBadge — badges on enemies — content/ has no enemy badge model
+Flesh Stitcher/Thread of Agony: modifyPower — power scaling — no equivalent in the closed effect list
+Abyssal Flesh Weaver/Blood Stitch: applyBadge — badges on enemies — content/ has no enemy badge model
+Jade Priest/Empower Jade: modifyPower — power scaling — no equivalent in the closed effect list
+Spider Demoness/Cursed Fang: applyBadge — badges on enemies — content/ has no enemy badge model
+Forge Tyrant/Hammer of the Forge: modifyPower — power scaling — no equivalent in the closed effect list
+Blood Lotus Elder/Blood Curse: applyBadge — badges on enemies — content/ has no enemy badge model
+The Rakshasa/Shapeless Dread: modifyPower — power scaling — no equivalent in the closed effect list
+Crow Demon War-Master/Blood Harvest: modifyPower — power scaling — no equivalent in the closed effect list
+Infernal Conjurer/Empower Convoy: modifyPower — power scaling — no equivalent in the closed effect list
+Crypt Elder/Rotting Embrace: applyBadge — badges on enemies — content/ has no enemy badge model
+The Asura/Meditate: modifyPower — power scaling — no equivalent in the closed effect list
+Shrine Attendant/Offering: modifyPower — power scaling — no equivalent in the closed effect list
+Diyu Gate/Spectral Torrent: modifyPower — power scaling — no equivalent in the closed effect list
+The Dragon Emperor/Jade Roar: modifyPower — power scaling — no equivalent in the closed effect list
+The Demon King/Channel Throne: modifyPower — power scaling — no equivalent in the closed effect list
+The Demon King/Infernal Edict: modifyPower — power scaling — no equivalent in the closed effect list

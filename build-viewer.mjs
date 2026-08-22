@@ -272,6 +272,74 @@ function wire(id, rows, render, opts){
 const uniq = (a,f)=>[...new Set(a.map(f).filter(x=>x!=null&&x!==''))].sort();
 
 const TABS=[
+ // The bestiary. 219 creatures ported from hell-tcg data/enemyCards.js 2026-08-21 - the
+ // stat blocks were never missing, they lived in a file the extractor did not read.
+ // NOTE: no backticks anywhere in a tab. This whole script sits inside a String.raw template.
+ {id:'bestiary',label:'Bestiary',n:(D.bestiary||[]).length,render(){
+   const U=D.bestiary||[]; if(!U.length) return '<div class="empty">no bestiary</div>';
+   const RANK={0:'-',1:'Regular',2:'Elite',3:'Boss'};
+   const acc=U.map(u=>(u.derivedBase||{}).accuracy).filter(n=>typeof n==='number');
+   const mov=U.map(u=>(u.derivedBase||{}).movement).filter(n=>typeof n==='number');
+   const head='<p>'+U.length+' creatures, ported from Hell-TCG. '+U.filter(u=>u.curated).length+
+     ' are the curated roster with art and encounters. Accuracy runs '+Math.min.apply(null,acc)+'-'+Math.max.apply(null,acc)+
+     ', movement '+Math.min.apply(null,mov)+'-'+Math.max.apply(null,mov)+
+     ' - both DERIVED from the creature ARCHETYPE (what kind of thing it is), never from rank:'+
+     ' rank only sharpens whatever the archetype already does. Nothing sits above 115 unless its'+
+     ' reach is 4+, because hitting from outside your reach is the only thing that earns it.'+
+     ' All numbers soft until a sweep prices them.'+
+     ' Enemies carry no crit, no luck and no Vision.</p>';
+   var byA={}; U.forEach(function(u){ var k=u.archetype||'?'; (byA[k]=byA[k]||[]).push(u); });
+   var strip='<div class="md"><table><tr><th>Archetype</th><th>n</th><th>Accuracy</th><th>Move</th><th>Why</th></tr>'+
+     Object.keys(byA).sort(function(a,b){
+       var f1=byA[a].map(function(u){return (u.derivedBase||{}).accuracy;});
+       var f2=byA[b].map(function(u){return (u.derivedBase||{}).accuracy;});
+       return Math.max.apply(null,f2)-Math.max.apply(null,f1); }).map(function(k){
+       var g=byA[k], A=g.map(function(u){return (u.derivedBase||{}).accuracy;}),
+           M=g.map(function(u){return (u.derivedBase||{}).movement;});
+       var why=((g[0].derivedWhy||{}).movement||'').split(' - ').slice(1).join(' - ');
+       return '<tr><td><b>'+esc(k)+'</b></td><td>'+g.length+'</td><td>'+Math.min.apply(null,A)+'-'+Math.max.apply(null,A)+
+         '</td><td>'+Math.min.apply(null,M)+'-'+Math.max.apply(null,M)+'</td><td><small>'+esc(why)+'</small></td></tr>';
+     }).join('')+'</table></div>';
+   const rows=U.slice().sort(function(a,b){return (b.rank||0)-(a.rank||0)||String(a.name).localeCompare(String(b.name));})
+    .map(function(u){
+     const d=u.derivedBase||{}, p=u.ported||{};
+     const atk=(u.attacks||[]).map(function(a){return esc(a.name);}).join(' &middot; ');
+     const riders=(u.attacks||[]).reduce(function(acc2,a){
+       (a.effects||[]).forEach(function(e){
+         acc2.push('<span class="tag">'+esc(a.name)+': '+esc(e.status||e.stat||e.effect)+(e.value!=null?' '+e.value:'')+'</span>');
+       }); return acc2; },[]).join(' ');
+     return '<tr>'+
+       '<td>'+(u.art?'<img class="thumb" src="'+esc(u.art)+'" alt="" loading="lazy">':'')+'</td>'+
+       '<td><b>'+esc(u.name)+'</b><br><small>'+esc((u.types||[]).join(' / '))+'</small>'+
+         (u.curated?'':'<br><span class="tag warn">not in the curated 144</span>')+'</td>'+
+       '<td>'+(RANK[u.rank]||u.rank||'-')+'</td>'+
+       '<td>'+(p.health!=null?p.health:'-')+'</td>'+
+       '<td>'+(p.strength!=null?p.strength:'-')+'</td>'+
+       '<td>'+(p.precision!=null?p.precision:'-')+'</td>'+
+       '<td>'+(p.armor!=null?p.armor:'-')+'</td>'+
+       '<td>'+(p.reach!=null?p.reach:'-')+'</td>'+
+       '<td><small>'+esc(u.archetype||'-')+'</small></td>'+
+       '<td><b>'+(d.accuracy!=null?d.accuracy:'-')+'</b></td>'+
+       '<td><b>'+(d.movement!=null?d.movement:'-')+'</b></td>'+
+       '<td>'+(atk||'<small>no abilities</small>')+(riders?'<br>'+riders:'')+'</td></tr>';
+    }).join('');
+   return head+strip+'<div class="md"><table><tr><th></th><th>Creature</th><th>Rank</th><th>HP</th><th>Str</th>'+
+     '<th>Pre</th><th>Arm</th><th>Rch</th><th>Archetype</th><th>Acc</th><th>Mov</th><th>Abilities</th></tr>'+rows+'</table></div>';
+ }},
+ // The 193 immediate-cast rows: enemy SPELLS, not units. Ruled 2026-08-21.
+ {id:'enemyspells',label:'Enemy Spells',n:(D.enemySpells||[]).length,render(){
+   const S=D.enemySpells||[]; if(!S.length) return '<div class="empty">none</div>';
+   const head='<p>'+S.length+' rows Hell-TCG filed as enemies which have an all-zero stat block and'+
+     ' placement immediate-cast. They are spells the enemy side casts, not creatures placed on the'+
+     ' board, so they carry no stats, no movement and no art.</p>';
+   const rows=S.slice().sort(function(a,b){return String(a.name).localeCompare(String(b.name));})
+    .map(function(s){
+     return '<tr><td><b>'+esc(s.name)+'</b></td><td>'+(s.rank!=null?s.rank:'-')+'</td>'+
+       '<td><small>'+esc((s.types||[]).join(' / '))+'</small></td>'+
+       '<td>'+((s.abilities||[]).map(function(a){return esc(a.name);}).join(' &middot; ')||'-')+'</td></tr>';
+    }).join('');
+   return head+'<div class="md"><table><tr><th>Spell</th><th>Rank</th><th>Types</th><th>Abilities</th></tr>'+rows+'</table></div>';
+ }},
  {id:'overview',label:'Overview',n:null,render(){
    const s=[['heroes',D.heroes.heroes.length],['specialties',D.specialties.length],['powers',D.powers.length],
      ['items',D.items.length],['attacks',D.attacks.length],['enchantments',D.enchants.length],

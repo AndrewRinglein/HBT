@@ -1,0 +1,1597 @@
+{
+ "_note": "The curated 144: which enemies were picked for the game, their campaign, their art and which encounters they appear in. This is AUTHORED work and does not exist in hell-tcg data/enemyCards.js - the extractor merges it back on. Split into its own file 2026-08-21 after a rebuild overwrote it once.",
+ "curation": {
+  "enemy-imp": {
+   "campaign": "eve",
+   "rank": 1,
+   "arts": [
+    "assets/cards/enemies/imp.png"
+   ],
+   "uses": [
+    "undead-patrol",
+    "imp-horde",
+    "mixed-force",
+    "mini-dragon-horde",
+    "imp-swarm",
+    "golem-and-imps",
+    "demon-commander",
+    "C",
+    "D",
+    "E",
+    "G",
+    "H",
+    "hold-the-line"
+   ]
+  },
+  "enemy-soldier": {
+   "campaign": "eve",
+   "rank": 1,
+   "arts": [
+    "assets/cards/enemies/soldier.png"
+   ],
+   "uses": [
+    "undead-patrol",
+    "bone-pit",
+    "imp-horde",
+    "mixed-force",
+    "mini-dragon-horde",
+    "bone-dragon-lair",
+    "imp-swarm",
+    "harsh-bone-dragon",
+    "E",
+    "F",
+    "hold-the-line"
+   ]
+  },
+  "enemy-skeleton": {
+   "campaign": "eve",
+   "rank": 1,
+   "arts": [
+    "assets/cards/enemies/skeleton.png"
+   ],
+   "uses": [
+    "skeletal-patrol",
+    "lich-vanguard",
+    "endless-horde"
+   ]
+  },
+  "enemy-skeletal-archer": {
+   "campaign": "eve",
+   "rank": 1,
+   "arts": [
+    "assets/cards/enemies/skeletal-archer.png"
+   ],
+   "uses": [
+    "skeletal-patrol",
+    "endless-horde"
+   ]
+  },
+  "enemy-poison-imp": {
+   "campaign": "eve",
+   "rank": 1,
+   "arts": [
+    "assets/cards/enemies/poison-imp.png"
+   ],
+   "uses": [
+    "imp-horde",
+    "imp-swarm",
+    "demon-commander"
+   ]
+  },
+  "enemy-fire-imp": {
+   "campaign": "eve",
+   "rank": 1,
+   "arts": [
+    "assets/cards/enemies/fire-imp.png"
+   ],
+   "uses": [
+    "fire-imps",
+    "imp-horde",
+    "imp-swarm",
+    "fire-witch",
+    "demon-commander",
+    "E",
+    "F",
+    "H",
+    "hold-the-line"
+   ]
+  },
+  "enemy-bloody-imp": {
+   "campaign": "eve",
+   "rank": 1,
+   "arts": [
+    "assets/cards/enemies/bloody-imp.png"
+   ],
+   "uses": [
+    "imp-horde",
+    "imp-swarm",
+    "demon-commander",
+    "tutorial-7"
+   ]
+  },
+  "enemy-cultist": {
+   "campaign": "eve",
+   "rank": 1,
+   "arts": [
+    "assets/cards/enemies/cultist.png"
+   ],
+   "uses": [
+    "tutorial-5"
+   ]
+  },
+  "enemy-zombie": {
+   "campaign": "eve",
+   "rank": 1,
+   "arts": [
+    "assets/cards/enemies/zombie.png"
+   ],
+   "uses": [
+    "fire-imps",
+    "bone-pit",
+    "zombie-horde",
+    "lich-vanguard",
+    "tutorial-6"
+   ]
+  },
+  "enemy-ghost": {
+   "campaign": "eve",
+   "rank": 1,
+   "arts": [
+    "assets/cards/enemies/ghost.png"
+   ],
+   "uses": [
+    "ghost-patrol",
+    "ghost-assault",
+    "mini-dragon-horde",
+    "greater-patrol",
+    "greater-mixed-patrol",
+    "doom-vanguard",
+    "doom-patrol",
+    "bone-dragon-scouts",
+    "bone-dragon-lair",
+    "harsh-bone-dragon",
+    "tutorial-9"
+   ]
+  },
+  "enemy-plague-bearer": {
+   "campaign": "eve",
+   "rank": 1,
+   "arts": [
+    "assets/cards/enemies/plague-bearer.png"
+   ],
+   "uses": [
+    "tutorial-5"
+   ]
+  },
+  "enemy-hellhound": {
+   "campaign": "eve",
+   "rank": 1,
+   "arts": [
+    "assets/cards/enemies/hellhound.png"
+   ],
+   "uses": [
+    "menagerie",
+    "advanced-patrol",
+    "hounds",
+    "fire-demons",
+    "mixed-force",
+    "mini-dragon-horde",
+    "greater-patrol",
+    "greater-mixed-patrol",
+    "doom-vanguard",
+    "doom-patrol",
+    "demon-commander"
+   ]
+  },
+  "enemy-wolf": {
+   "campaign": "eve",
+   "rank": 1,
+   "arts": [
+    "assets/cards/enemies/wolf.png"
+   ],
+   "uses": [
+    "wolf-pack",
+    "hounds",
+    "greater-wolf-pack",
+    "tutorial-8"
+   ]
+  },
+  "enemy-werewolf": {
+   "campaign": "eve",
+   "rank": 1,
+   "arts": [
+    "assets/cards/enemies/werewolf.png"
+   ],
+   "uses": [
+    "menagerie",
+    "advanced-patrol",
+    "hounds",
+    "werewolf-pack",
+    "large-werewolf-pack",
+    "greater-wolf-pack",
+    "mixed-force",
+    "mini-dragon-horde",
+    "greater-patrol",
+    "greater-mixed-patrol",
+    "doom-vanguard",
+    "doom-patrol"
+   ]
+  },
+  "enemy-dark-priest": {
+   "campaign": "eve",
+   "rank": 1,
+   "arts": [
+    "assets/cards/enemies/dark-priest.png"
+   ],
+   "uses": [
+    "advanced-patrol",
+    "zombie-horde",
+    "mixed-force",
+    "mini-dragon-horde",
+    "lich-vanguard",
+    "greater-patrol",
+    "greater-mixed-patrol",
+    "doom-vanguard",
+    "doom-patrol"
+   ]
+  },
+  "enemy-dark-mage": {
+   "campaign": "eve",
+   "rank": 1,
+   "arts": [
+    "assets/cards/enemies/dark-mage.png"
+   ],
+   "uses": [
+    "mixed-force",
+    "mini-dragon-horde",
+    "greater-patrol",
+    "greater-mixed-patrol",
+    "doom-patrol"
+   ]
+  },
+  "enemy-frost-wraith": {
+   "campaign": "eve",
+   "rank": 1,
+   "arts": [
+    "assets/cards/enemies/frost-wraith.png"
+   ],
+   "uses": [
+    "ghost-patrol",
+    "ghost-assault",
+    "mini-dragon-horde",
+    "lich-vanguard",
+    "greater-patrol",
+    "greater-mixed-patrol",
+    "doom-vanguard",
+    "doom-patrol",
+    "harsh-bone-dragon"
+   ]
+  },
+  "enemy-fire-demon": {
+   "campaign": "eve",
+   "rank": 1,
+   "arts": [
+    "assets/cards/enemies/fire-demon.png"
+   ],
+   "uses": [
+    "fire-demons"
+   ]
+  },
+  "enemy-vampire": {
+   "campaign": "eve",
+   "rank": 2,
+   "arts": [
+    "assets/cards/enemies/vampire.png"
+   ],
+   "uses": [
+    "vampire-and-bloodhounds",
+    "menagerie",
+    "mini-dragon-horde",
+    "vampire-coven",
+    "vampire-nest",
+    "greater-patrol",
+    "greater-mixed-patrol",
+    "doom-vanguard",
+    "doom-patrol",
+    "G",
+    "tutorial-10"
+   ]
+  },
+  "enemy-greater-werewolf": {
+   "campaign": "eve",
+   "rank": 2,
+   "arts": [
+    "assets/cards/enemies/greater-werewolf.png"
+   ],
+   "uses": [
+    "werewolf-pack",
+    "large-werewolf-pack",
+    "greater-wolf-pack",
+    "mixed-force",
+    "mini-dragon-horde",
+    "greater-patrol",
+    "greater-mixed-patrol",
+    "doom-vanguard",
+    "doom-patrol"
+   ]
+  },
+  "enemy-succubus": {
+   "campaign": "eve",
+   "rank": 2,
+   "arts": [
+    "assets/cards/enemies/succubus.png"
+   ],
+   "uses": [
+    "ghost-assault",
+    "mixed-force",
+    "mini-dragon-horde",
+    "greater-mixed-patrol",
+    "doom-patrol",
+    "bone-dragon-lair"
+   ]
+  },
+  "enemy-spectral-knight": {
+   "campaign": "eve",
+   "rank": 2,
+   "arts": [
+    "assets/cards/enemies/spectral-knight.png"
+   ],
+   "uses": [
+    "corrupted-dragon"
+   ]
+  },
+  "enemy-death-knight": {
+   "campaign": "eve",
+   "rank": 2,
+   "arts": [
+    "assets/cards/enemies/death-knight.png"
+   ],
+   "uses": [
+    "mixed-force",
+    "lich-vanguard",
+    "doom-vanguard",
+    "doom-patrol",
+    "bone-dragon-scouts",
+    "bone-dragon-lair",
+    "harsh-bone-dragon"
+   ]
+  },
+  "enemy-greater-vampire": {
+   "campaign": "eve",
+   "rank": 2,
+   "arts": [
+    "assets/cards/enemies/greater-vampire.png"
+   ],
+   "uses": [
+    "vampire-nest",
+    "doom-patrol"
+   ]
+  },
+  "enemy-bone-dragon": {
+   "campaign": "eve",
+   "rank": 3,
+   "arts": [
+    "assets/cards/enemies/bone-dragon.png"
+   ],
+   "uses": [
+    "zombie-horde",
+    "mini-dragon-horde",
+    "greater-mixed-patrol",
+    "doom-patrol",
+    "bone-dragon-scouts",
+    "bone-dragon-lair",
+    "harsh-bone-dragon"
+   ]
+  },
+  "enemy-lich": {
+   "campaign": "eve",
+   "rank": 3,
+   "arts": [
+    "assets/cards/enemies/lich.png"
+   ],
+   "uses": [
+    "doom-patrol"
+   ]
+  },
+  "enemy-fire-witch": {
+   "campaign": "eve",
+   "rank": 2,
+   "arts": [
+    "assets/cards/enemies/fire-witch.png"
+   ],
+   "uses": [
+    "fire-witch"
+   ]
+  },
+  "enemy-nightmare-twin": {
+   "campaign": "eve",
+   "rank": 2,
+   "arts": [
+    "assets/cards/enemies/nightmare-twin.png"
+   ],
+   "uses": [
+    "nightmare-twins"
+   ]
+  },
+  "enemy-demon-gremlin": {
+   "campaign": "eve",
+   "rank": 1,
+   "arts": [
+    "assets/cards/enemies/demon-gremlin.png"
+   ],
+   "uses": [
+    "demon-gremlins"
+   ]
+  },
+  "enemy-golem": {
+   "campaign": "eve",
+   "rank": 2,
+   "arts": [
+    "assets/cards/enemies/golem.png"
+   ],
+   "uses": [
+    "golem-and-imps"
+   ]
+  },
+  "enemy-explosive-mite": {
+   "campaign": "eve",
+   "rank": 1,
+   "arts": [
+    "assets/cards/enemies/explosive-mite.png"
+   ],
+   "uses": [
+    "demon-mites"
+   ]
+  },
+  "enemy-fire-mite": {
+   "campaign": "eve",
+   "rank": 1,
+   "arts": [
+    "assets/cards/enemies/fire-mite.png"
+   ],
+   "uses": [
+    "demon-mites"
+   ]
+  },
+  "enemy-poison-mite": {
+   "campaign": "eve",
+   "rank": 1,
+   "arts": [
+    "assets/cards/enemies/poison-mite.png"
+   ],
+   "uses": [
+    "demon-mites"
+   ]
+  },
+  "enemy-weakness-mite": {
+   "campaign": "eve",
+   "rank": 1,
+   "arts": [
+    "assets/cards/enemies/weakness-mite.png"
+   ],
+   "uses": [
+    "demon-mites"
+   ]
+  },
+  "enemy-bone-weaver": {
+   "campaign": "eve",
+   "rank": 2,
+   "arts": [
+    "assets/cards/enemies/bone-weaver.png"
+   ],
+   "uses": [
+    "bone-pit"
+   ]
+  },
+  "enemy-fallen-warrior": {
+   "campaign": "eve",
+   "rank": 1,
+   "arts": [
+    "assets/cards/enemies/fallen-warrior.png"
+   ],
+   "uses": [
+    "fallen-heroes-early",
+    "fallen-heroes"
+   ]
+  },
+  "enemy-fallen-rogue": {
+   "campaign": "eve",
+   "rank": 1,
+   "arts": [
+    "assets/cards/enemies/fallen-rogue.png"
+   ],
+   "uses": [
+    "fallen-heroes-early",
+    "fallen-heroes"
+   ]
+  },
+  "enemy-fallen-ranger": {
+   "campaign": "eve",
+   "rank": 1,
+   "arts": [
+    "assets/cards/enemies/fallen-ranger.png"
+   ],
+   "uses": [
+    "fallen-heroes"
+   ]
+  },
+  "enemy-fallen-priest": {
+   "campaign": "eve",
+   "rank": 1,
+   "arts": [
+    "assets/cards/enemies/fallen-priest.png"
+   ],
+   "uses": [
+    "fallen-heroes"
+   ]
+  },
+  "enemy-demon-commander": {
+   "campaign": "eve",
+   "rank": 2,
+   "arts": [
+    "assets/cards/enemies/demon-lieutenant.png"
+   ],
+   "uses": [
+    "demon-commander"
+   ]
+  },
+  "enemy-flesh-horror": {
+   "campaign": "eve",
+   "rank": 2,
+   "arts": [
+    "assets/cards/enemies/flesh-horror.png"
+   ],
+   "uses": [
+    "flesh-pit"
+   ]
+  },
+  "enemy-plague-spawn": {
+   "campaign": "eve",
+   "rank": 1,
+   "arts": [
+    "assets/cards/enemies/plague-spawn.png"
+   ],
+   "uses": [
+    "flesh-pit"
+   ]
+  },
+  "enemy-bone-barricade": {
+   "campaign": "eve",
+   "rank": 1,
+   "arts": [
+    "assets/cards/enemies/bone-barricade.png"
+   ],
+   "uses": [
+    "flesh-pit"
+   ]
+  },
+  "enemy-bloodhound": {
+   "campaign": "eve",
+   "rank": 1,
+   "arts": [
+    "assets/cards/enemies/bloodhound.png"
+   ],
+   "uses": [
+    "vampire-and-bloodhounds",
+    "hounds",
+    "G",
+    "tutorial-8"
+   ]
+  },
+  "enemy-scythe-cultist": {
+   "campaign": "eve",
+   "rank": 1,
+   "arts": [
+    "assets/cards/enemies/scythe-cultist.png"
+   ],
+   "uses": [
+    "cultists",
+    "tutorial-9"
+   ]
+  },
+  "enemy-corrupted-cultist": {
+   "campaign": "eve",
+   "rank": 1,
+   "arts": [
+    "assets/cards/enemies/corrupted-cultist.png"
+   ],
+   "uses": [
+    "cultists"
+   ]
+  },
+  "enemy-mystic-cultist": {
+   "campaign": "eve",
+   "rank": 1,
+   "arts": [
+    "assets/cards/enemies/mystic-cultist.png"
+   ],
+   "uses": [
+    "cultists"
+   ]
+  },
+  "enemy-lesser-necromancer": {
+   "campaign": "eve",
+   "rank": 1,
+   "arts": [
+    "assets/cards/enemies/lesser-necromancer.png"
+   ],
+   "uses": [
+    "menagerie"
+   ]
+  },
+  "enemy-vampire-thrallmaster": {
+   "campaign": "eve",
+   "rank": 2,
+   "arts": [
+    "assets/cards/enemies/vampire-thrallmaster.png"
+   ],
+   "uses": [
+    "vampire-thrallmaster"
+   ]
+  },
+  "enemy-thrall": {
+   "campaign": "eve",
+   "rank": 1,
+   "arts": [
+    "assets/cards/enemies/thrall.png"
+   ],
+   "uses": [
+    "vampire-thrallmaster",
+    "vampire-coven",
+    "vampire-nest",
+    "tutorial-10"
+   ]
+  },
+  "enemy-weak-zombie": {
+   "campaign": "eve",
+   "rank": 0,
+   "arts": [
+    "assets/cards/enemies/undead/weak-zombie-1.png",
+    "assets/cards/enemies/undead/weak-zombie-2.png",
+    "assets/cards/enemies/undead/weak-zombie-3.png",
+    "assets/cards/enemies/undead/weak-zombie-4.png"
+   ],
+   "uses": [
+    "A"
+   ]
+  },
+  "enemy-imp-basic": {
+   "campaign": "eve",
+   "rank": 0,
+   "arts": [
+    "assets/cards/enemies/basic-imp.png"
+   ],
+   "uses": [
+    "B"
+   ]
+  },
+  "enemy-weak-soldier": {
+   "campaign": "eve",
+   "rank": 0,
+   "arts": [
+    "assets/cards/enemies/weak-soldier.png"
+   ],
+   "uses": [
+    "C"
+   ]
+  },
+  "enemy-tomb-ghoul": {
+   "campaign": "shadows",
+   "rank": 1,
+   "arts": [
+    "assets/cards/enemies/tomb-ghoul.png"
+   ],
+   "uses": [
+    "ghoul-ambush",
+    "the-eternal-sandstorm"
+   ]
+  },
+  "enemy-tomb-specter": {
+   "campaign": "shadows",
+   "rank": 1,
+   "arts": [
+    "assets/cards/enemies/tomb-specter.png"
+   ],
+   "uses": [
+    "spectral-haunt",
+    "the-eternal-sandstorm",
+    "the-dark-convoy",
+    "the-haunt"
+   ]
+  },
+  "enemy-dusk-hyena": {
+   "campaign": "shadows",
+   "rank": 1,
+   "arts": [
+    "assets/cards/enemies/dusk-hyena.png"
+   ],
+   "uses": [
+    "the-eternal-sandstorm"
+   ]
+  },
+  "enemy-cursed-wretch": {
+   "campaign": "shadows",
+   "rank": 1,
+   "arts": [
+    "assets/cards/enemies/cursed-wretch.png"
+   ],
+   "uses": [
+    "bone-serpent-den",
+    "the-eternal-sandstorm"
+   ]
+  },
+  "enemy-bone-serpent": {
+   "campaign": "shadows",
+   "rank": 1,
+   "arts": [
+    "assets/cards/enemies/bone-serpent.png"
+   ],
+   "uses": [
+    "the-eternal-sandstorm"
+   ]
+  },
+  "enemy-sandstorm-guardian": {
+   "campaign": "shadows",
+   "rank": 1,
+   "arts": [
+    "assets/cards/enemies/sandstorm-guardian.png"
+   ],
+   "uses": [
+    "oasis-of-corruption"
+   ]
+  },
+  "enemy-tomb-echo": {
+   "campaign": "shadows",
+   "rank": 1,
+   "arts": [
+    "assets/cards/enemies/tomb-echo.png"
+   ],
+   "uses": [
+    "tomb-of-echoes",
+    "the-eternal-sandstorm"
+   ]
+  },
+  "enemy-mummified-priest": {
+   "campaign": "shadows",
+   "rank": 1,
+   "arts": [
+    "assets/cards/enemies/mummified-priest.png"
+   ],
+   "uses": [
+    "tomb-of-echoes",
+    "the-eternal-sandstorm"
+   ]
+  },
+  "enemy-sand-soldier": {
+   "campaign": "shadows",
+   "rank": 1,
+   "arts": [
+    "assets/cards/enemies/sand-soldier.png"
+   ],
+   "uses": [
+    "sand-wyrm-siege"
+   ]
+  },
+  "enemy-tomb-hierophant": {
+   "campaign": "shadows",
+   "rank": 1,
+   "arts": [
+    "assets/cards/enemies/tomb-hierophant.png"
+   ],
+   "uses": [
+    "pharaohs-guard"
+   ]
+  },
+  "enemy-tomb-guardian": {
+   "campaign": "shadows",
+   "rank": 1,
+   "arts": [
+    "assets/cards/enemies/tomb-guardian.png"
+   ],
+   "uses": [
+    "pharaohs-guard"
+   ]
+  },
+  "enemy-sand-sentinel": {
+   "campaign": "shadows",
+   "rank": 1,
+   "arts": [
+    "assets/cards/enemies/sand-sentinel.png"
+   ],
+   "uses": [
+    "pharaohs-guard"
+   ]
+  },
+  "enemy-bone-mite": {
+   "campaign": "shadows",
+   "rank": 1,
+   "arts": [
+    "assets/cards/enemies/bone-mite.png"
+   ],
+   "uses": [
+    "bone-swarm"
+   ]
+  },
+  "enemy-infernal-soldier": {
+   "campaign": "shadows",
+   "rank": 1,
+   "arts": [
+    "assets/cards/enemies/infernal-soldier.png"
+   ],
+   "uses": [
+    "infernal-skirmish"
+   ]
+  },
+  "enemy-flame-imp": {
+   "campaign": "shadows",
+   "rank": 1,
+   "arts": [
+    "assets/cards/enemies/flame-imp.png"
+   ],
+   "uses": [
+    "infernal-skirmish"
+   ]
+  },
+  "enemy-tomb-warden": {
+   "campaign": "shadows",
+   "rank": 1,
+   "arts": [
+    "assets/cards/enemies/tomb-warden.png"
+   ],
+   "uses": [
+    "the-warlords-guard"
+   ]
+  },
+  "enemy-doom-herald": {
+   "campaign": "shadows",
+   "rank": 1,
+   "arts": [
+    "assets/cards/enemies/doom-herald.png"
+   ],
+   "uses": [
+    "doom-heralds"
+   ]
+  },
+  "enemy-tomb-sentry": {
+   "campaign": "shadows",
+   "rank": 2,
+   "arts": [
+    "assets/cards/enemies/tomb-sentry.png"
+   ],
+   "uses": [
+    "tomb-sentries"
+   ]
+  },
+  "enemy-dark-spearman": {
+   "campaign": "shadows",
+   "rank": 2,
+   "arts": [
+    "assets/cards/enemies/dark-spearman.png"
+   ],
+   "uses": [
+    "the-dark-convoy"
+   ]
+  },
+  "enemy-cursed-legionnaire": {
+   "campaign": "shadows",
+   "rank": 2,
+   "arts": [
+    "assets/cards/enemies/cursed-legionnaire.png"
+   ],
+   "uses": [
+    "the-fallen-legion"
+   ]
+  },
+  "enemy-cursed-archer": {
+   "campaign": "shadows",
+   "rank": 1,
+   "arts": [
+    "assets/cards/enemies/cursed-archer.png"
+   ],
+   "uses": [
+    "the-fallen-legion"
+   ]
+  },
+  "enemy-desert-wolf": {
+   "campaign": "shadows",
+   "rank": 1,
+   "arts": [
+    "assets/cards/enemies/desert-wolf.png"
+   ],
+   "uses": [
+    "dune-wolves"
+   ]
+  },
+  "enemy-dormant-fiend": {
+   "campaign": "shadows",
+   "rank": 1,
+   "arts": [
+    "assets/cards/enemies/dormant-fiend.png"
+   ],
+   "uses": [
+    "demon-shells"
+   ]
+  },
+  "enemy-conjured-warrior": {
+   "campaign": "shadows",
+   "rank": 1,
+   "arts": [
+    "assets/cards/enemies/conjured-warrior.png"
+   ],
+   "uses": [
+    "the-conjurers-army"
+   ]
+  },
+  "enemy-tomb-wraith": {
+   "campaign": "shadows",
+   "rank": 1,
+   "arts": [
+    "assets/cards/enemies/tomb-wraith.png"
+   ],
+   "uses": [
+    "spectral-prison"
+   ]
+  },
+  "enemy-vengeful-spirit": {
+   "campaign": "shadows",
+   "rank": 1,
+   "arts": [
+    "assets/cards/enemies/vengeful-spirit.png"
+   ],
+   "uses": [
+    "spectral-prison"
+   ]
+  },
+  "enemy-vampire-spawn": {
+   "campaign": "shadows",
+   "rank": 1,
+   "arts": [
+    "assets/cards/enemies/vampire-spawn.png"
+   ],
+   "uses": [
+    "blood-court"
+   ]
+  },
+  "enemy-horror-fragment": {
+   "campaign": "shadows",
+   "rank": 1,
+   "arts": [
+    "assets/cards/enemies/horror-fragment.png"
+   ],
+   "uses": [
+    "the-nameless-horror"
+   ]
+  },
+  "enemy-plague-zombie": {
+   "campaign": "shadows",
+   "rank": 1,
+   "arts": [
+    "assets/cards/enemies/plague-zombie.png"
+   ],
+   "uses": [
+    "the-plague-pit"
+   ]
+  },
+  "enemy-plague-carrier": {
+   "campaign": "shadows",
+   "rank": 1,
+   "arts": [
+    "assets/cards/enemies/plague-carrier.png"
+   ],
+   "uses": [
+    "the-plague-pit"
+   ]
+  },
+  "enemy-sand-guardian": {
+   "campaign": "shadows",
+   "rank": 1,
+   "arts": [
+    "assets/cards/enemies/sand-guardian.png"
+   ],
+   "uses": [
+    "the-sand-king"
+   ]
+  },
+  "enemy-soul-wisp": {
+   "campaign": "shadows",
+   "rank": 1,
+   "arts": [
+    "assets/cards/enemies/soul-wisp.png"
+   ],
+   "uses": [
+    "the-death-ward"
+   ]
+  },
+  "enemy-tomb-mender": {
+   "campaign": "shadows",
+   "rank": 1,
+   "arts": [
+    "assets/cards/enemies/tomb-mender.png"
+   ],
+   "uses": [
+    "the-death-ward"
+   ]
+  },
+  "enemy-obsidian-hulk": {
+   "campaign": "shadows",
+   "rank": 2,
+   "arts": [
+    "assets/cards/enemies/obsidian-hulk.png"
+   ],
+   "uses": [
+    "obsidian-cascade"
+   ]
+  },
+  "enemy-phantom-knight": {
+   "campaign": "shadows",
+   "rank": 2,
+   "arts": [
+    "assets/cards/enemies/phantom-knight.png"
+   ],
+   "uses": [
+    "the-lichs-sanctum"
+   ]
+  },
+  "enemy-abyssal-spawn": {
+   "campaign": "shadows",
+   "rank": 1,
+   "arts": [
+    "assets/cards/enemies/abyssal-spawn.png"
+   ],
+   "uses": [
+    "abyssal-brood"
+   ]
+  },
+  "enemy-tomb-stalker": {
+   "campaign": "shadows",
+   "rank": 1,
+   "arts": [
+    "assets/cards/enemies/tomb-stalker.png"
+   ],
+   "uses": [
+    "the-stalkers-tomb"
+   ]
+  },
+  "enemy-hellbound-legionnaire": {
+   "campaign": "shadows",
+   "rank": 2,
+   "arts": [
+    "assets/cards/enemies/hellbound-legionnaire.png"
+   ],
+   "uses": [
+    "the-infernal-host"
+   ]
+  },
+  "enemy-tomb-berserker": {
+   "campaign": "shadows",
+   "rank": 2,
+   "arts": [
+    "assets/cards/enemies/tomb-berserker.png"
+   ],
+   "uses": [
+    "the-shifting-tomb"
+   ]
+  },
+  "enemy-tomb-archer": {
+   "campaign": "shadows",
+   "rank": 2,
+   "arts": [
+    "assets/cards/enemies/tomb-archer.png"
+   ],
+   "uses": [
+    "the-shifting-tomb"
+   ]
+  },
+  "enemy-tomb-champion": {
+   "campaign": "shadows",
+   "rank": 2,
+   "arts": [
+    "assets/cards/enemies/tomb-champion.png"
+   ],
+   "uses": [
+    "the-shifting-tomb"
+   ]
+  },
+  "enemy-deranged-acolyte": {
+   "campaign": "shadows",
+   "rank": 1,
+   "arts": [
+    "assets/cards/enemies/deranged-acolyte.png"
+   ],
+   "uses": [
+    "the-mad-congregation"
+   ]
+  },
+  "enemy-bone-revenant": {
+   "campaign": "shadows",
+   "rank": 2,
+   "arts": [
+    "assets/cards/enemies/bone-revenant.png"
+   ],
+   "uses": [
+    "the-defilers-march",
+    "skyship-white-bone-demon"
+   ]
+  },
+  "enemy-tomb-ritualist": {
+   "campaign": "shadows",
+   "rank": 2,
+   "arts": [
+    "assets/cards/enemies/tomb-ritualist.png"
+   ],
+   "uses": [
+    "the-defilers-march"
+   ]
+  },
+  "enemy-profane-acolyte": {
+   "campaign": "shadows",
+   "rank": 1,
+   "arts": [
+    "assets/cards/enemies/profane-acolyte.png"
+   ],
+   "uses": [
+    "infernal-chrysalis"
+   ]
+  },
+  "enemy-damned-wretch": {
+   "campaign": "shadows",
+   "rank": 1,
+   "arts": [
+    "assets/cards/enemies/damned-wretch.png"
+   ],
+   "uses": [
+    "the-condemned"
+   ]
+  },
+  "enemy-cinder-wraith": {
+   "campaign": "shadows",
+   "rank": 1,
+   "arts": [
+    "assets/cards/enemies/cinder-wraith.png"
+   ],
+   "uses": [
+    "infernal-pyre"
+   ]
+  },
+  "enemy-burning-revenant": {
+   "campaign": "shadows",
+   "rank": 1,
+   "arts": [
+    "assets/cards/enemies/burning-revenant.png"
+   ],
+   "uses": [
+    "infernal-pyre"
+   ]
+  },
+  "enemy-profane-pyrekeeper": {
+   "campaign": "shadows",
+   "rank": 1,
+   "arts": [
+    "assets/cards/enemies/profane-pyrekeeper.png"
+   ],
+   "uses": [
+    "profane-pyre"
+   ]
+  },
+  "enemy-ashen-thrall": {
+   "campaign": "shadows",
+   "rank": 1,
+   "arts": [
+    "assets/cards/enemies/ashen-thrall.png"
+   ],
+   "uses": [
+    "profane-pyre"
+   ]
+  },
+  "enemy-damned-congregant": {
+   "campaign": "shadows",
+   "rank": 1,
+   "arts": [
+    "assets/cards/enemies/damned-congregant.png"
+   ],
+   "uses": [
+    "the-condemner"
+   ]
+  },
+  "enemy-blighted-deacon": {
+   "campaign": "shadows",
+   "rank": 1,
+   "arts": [
+    "assets/cards/enemies/blighted-deacon.png"
+   ],
+   "uses": [
+    "the-condemner"
+   ]
+  },
+  "enemy-skyship-cursed-blademaster": {
+   "campaign": "skyship",
+   "rank": 1,
+   "arts": [
+    "assets/cards/enemies/cursed-blademaster.png"
+   ],
+   "uses": [
+    "skyship-cursed-blademaster-patrol"
+   ]
+  },
+  "enemy-skyship-spectral-bowman": {
+   "campaign": "skyship",
+   "rank": 1,
+   "arts": [
+    "assets/cards/enemies/spectral-bowman.png"
+   ],
+   "uses": [
+    "skyship-cursed-blademaster-patrol"
+   ]
+  },
+  "enemy-skyship-hellwasp-drone": {
+   "campaign": "skyship",
+   "rank": 1,
+   "arts": [
+    "assets/cards/enemies/hellwasp-drone.png"
+   ],
+   "uses": [
+    "skyship-hellwasp-swarm"
+   ]
+  },
+  "enemy-skyship-jade-sentinel": {
+   "campaign": "skyship",
+   "rank": 1,
+   "arts": [
+    "assets/cards/enemies/jade-sentinel.png"
+   ],
+   "uses": [
+    "skyship-jade-terracotta"
+   ]
+  },
+  "enemy-skyship-yaoguai-brute": {
+   "campaign": "skyship",
+   "rank": 1,
+   "arts": [
+    "assets/cards/enemies/yaoguai-brute.png"
+   ],
+   "uses": [
+    "skyship-yaoguai-warpack"
+   ]
+  },
+  "enemy-skyship-abyssal-crawler": {
+   "campaign": "skyship",
+   "rank": 1,
+   "arts": [
+    "assets/cards/enemies/abyssal-crawler.png"
+   ],
+   "uses": [
+    "skyship-infernal-crawlers"
+   ]
+  },
+  "enemy-skyship-ironbound-fiend": {
+   "campaign": "skyship",
+   "rank": 1,
+   "arts": [
+    "assets/cards/enemies/ironbound-fiend.png"
+   ],
+   "uses": [
+    "skyship-fiend-warren"
+   ]
+  },
+  "enemy-skyship-bone-mantis": {
+   "campaign": "skyship",
+   "rank": 1,
+   "arts": [
+    "assets/cards/enemies/bone-mantis.png"
+   ],
+   "uses": [
+    "skyship-bone-mantis-den"
+   ]
+  },
+  "enemy-skyship-bone-legionnaire": {
+   "campaign": "skyship",
+   "rank": 1,
+   "arts": [
+    "assets/cards/enemies/bone-legionnaire.png"
+   ],
+   "uses": [
+    "skyship-hungry-dead"
+   ]
+  },
+  "enemy-skyship-carrion-ghast": {
+   "campaign": "skyship",
+   "rank": 1,
+   "arts": [
+    "assets/cards/enemies/carrion-ghast.png"
+   ],
+   "uses": [
+    "skyship-hungry-dead"
+   ]
+  },
+  "enemy-skyship-rot-priest": {
+   "campaign": "skyship",
+   "rank": 1,
+   "arts": [
+    "assets/cards/enemies/rot-priest.png"
+   ],
+   "uses": [
+    "skyship-hungry-dead"
+   ]
+  },
+  "enemy-skyship-frozen-attendant": {
+   "campaign": "skyship",
+   "rank": 1,
+   "arts": [
+    "assets/cards/enemies/frozen-attendant.png"
+   ],
+   "uses": [
+    "skyship-frost-empress-court"
+   ]
+  },
+  "enemy-skyship-pit-digger": {
+   "campaign": "skyship",
+   "rank": 1,
+   "arts": [
+    "assets/cards/enemies/pit-digger.png"
+   ],
+   "uses": [
+    "skyship-abyssal-excavation"
+   ]
+  },
+  "enemy-skyship-temple-supplicant": {
+   "campaign": "skyship",
+   "rank": 1,
+   "arts": [
+    "assets/cards/enemies/temple-supplicant.png"
+   ],
+   "uses": [
+    "skyship-possessed-monks"
+   ]
+  },
+  "enemy-skyship-hellforged-legionnaire": {
+   "campaign": "skyship",
+   "rank": 1,
+   "arts": [
+    "assets/cards/enemies/hellforged-legionnaire.png"
+   ],
+   "uses": [
+    "skyship-hellforged-legion"
+   ]
+  },
+  "enemy-skyship-infernal-marksman": {
+   "campaign": "skyship",
+   "rank": 1,
+   "arts": [
+    "assets/cards/enemies/infernal-marksman.png"
+   ],
+   "uses": [
+    "skyship-hellforged-legion"
+   ]
+  },
+  "enemy-skyship-iron-yaoguai": {
+   "campaign": "skyship",
+   "rank": 2,
+   "arts": [
+    "assets/cards/enemies/iron-yaoguai.png"
+   ],
+   "uses": [
+    "skyship-iron-yaoguai-parade"
+   ]
+  },
+  "enemy-skyship-flesh-stitcher": {
+   "campaign": "skyship",
+   "rank": 1,
+   "arts": [
+    "assets/cards/enemies/flesh-stitcher.png"
+   ],
+   "uses": [
+    "skyship-flesh-weavers"
+   ]
+  },
+  "enemy-skyship-abyssal-flesh-weaver": {
+   "campaign": "skyship",
+   "rank": 2,
+   "arts": [
+    "assets/cards/enemies/abyssal-flesh-weaver.png"
+   ],
+   "uses": [
+    "skyship-flesh-weavers"
+   ]
+  },
+  "enemy-skyship-jade-revenant": {
+   "campaign": "skyship",
+   "rank": 2,
+   "arts": [
+    "assets/cards/enemies/jade-revenant.png"
+   ],
+   "uses": [
+    "skyship-the-jade-tomb"
+   ]
+  },
+  "enemy-skyship-jade-priest": {
+   "campaign": "skyship",
+   "rank": 2,
+   "arts": [
+    "assets/cards/enemies/jade-priest.png"
+   ],
+   "uses": [
+    "skyship-the-jade-tomb"
+   ]
+  },
+  "enemy-skyship-silk-broodling": {
+   "campaign": "skyship",
+   "rank": 1,
+   "arts": [
+    "assets/cards/enemies/silk-broodling.png"
+   ],
+   "uses": [
+    "skyship-spider-demoness-web"
+   ]
+  },
+  "enemy-skyship-forge-imp": {
+   "campaign": "skyship",
+   "rank": 1,
+   "arts": [
+    "assets/cards/enemies/forge-imp.png"
+   ],
+   "uses": [
+    "skyship-demon-forge"
+   ]
+  },
+  "enemy-skyship-infernal-mender": {
+   "campaign": "skyship",
+   "rank": 1,
+   "arts": [
+    "assets/cards/enemies/infernal-mender.png"
+   ],
+   "uses": [
+    "skyship-demon-forge"
+   ]
+  },
+  "enemy-skyship-crimson-lotus": {
+   "campaign": "skyship",
+   "rank": 2,
+   "arts": [
+    "assets/cards/enemies/crimson-lotus.png"
+   ],
+   "uses": [
+    "skyship-blood-lotus-garden"
+   ]
+  },
+  "enemy-skyship-blood-lotus-elder": {
+   "campaign": "skyship",
+   "rank": 3,
+   "arts": [
+    "assets/cards/enemies/blood-lotus-elder.png"
+   ],
+   "uses": [
+    "skyship-blood-lotus-garden"
+   ]
+  },
+  "enemy-skyship-hellspawn-minion": {
+   "campaign": "skyship",
+   "rank": 1,
+   "arts": [
+    "assets/cards/enemies/hellspawn-minion.png"
+   ],
+   "uses": [
+    "skyship-the-rakshasa"
+   ]
+  },
+  "enemy-skyship-cursed-crow-soldier": {
+   "campaign": "skyship",
+   "rank": 1,
+   "arts": [
+    "assets/cards/enemies/cursed-crow-soldier.png"
+   ],
+   "uses": [
+    "skyship-crow-demon-mountain"
+   ]
+  },
+  "enemy-skyship-bone-colossus": {
+   "campaign": "skyship",
+   "rank": 3,
+   "arts": [
+    "assets/cards/enemies/bone-colossus.png"
+   ],
+   "uses": [
+    "skyship-hellbound-caravan"
+   ]
+  },
+  "enemy-skyship-infernal-conjurer": {
+   "campaign": "skyship",
+   "rank": 2,
+   "arts": [
+    "assets/cards/enemies/infernal-conjurer.png"
+   ],
+   "uses": [
+    "skyship-hellbound-caravan"
+   ]
+  },
+  "enemy-skyship-hellbound-escort": {
+   "campaign": "skyship",
+   "rank": 2,
+   "arts": [
+    "assets/cards/enemies/hellbound-escort.png"
+   ],
+   "uses": [
+    "skyship-hellbound-caravan"
+   ]
+  },
+  "enemy-skyship-jiangshi-revenant": {
+   "campaign": "skyship",
+   "rank": 2,
+   "arts": [
+    "assets/cards/enemies/jiangshi-revenant.png"
+   ],
+   "uses": [
+    "skyship-jiangshi-crypt"
+   ]
+  },
+  "enemy-skyship-crypt-elder": {
+   "campaign": "skyship",
+   "rank": 3,
+   "arts": [
+    "assets/cards/enemies/crypt-elder.png"
+   ],
+   "uses": [
+    "skyship-jiangshi-crypt"
+   ]
+  },
+  "enemy-skyship-shrine-attendant": {
+   "campaign": "skyship",
+   "rank": 1,
+   "arts": [
+    "assets/cards/enemies/shrine-attendant.png"
+   ],
+   "uses": [
+    "skyship-the-asura"
+   ]
+  },
+  "enemy-skyship-yaoguai-sentinel": {
+   "campaign": "skyship",
+   "rank": 3,
+   "arts": [
+    "assets/cards/enemies/yaoguai-sentinel.png"
+   ],
+   "uses": [
+    "skyship-diyu-gate"
+   ]
+  },
+  "enemy-skyship-diyu-specter": {
+   "campaign": "skyship",
+   "rank": 2,
+   "arts": [
+    "assets/cards/enemies/diyu-specter.png"
+   ],
+   "uses": [
+    "skyship-diyu-gate"
+   ]
+  },
+  "enemy-skyship-imp-delegate": {
+   "campaign": "skyship",
+   "rank": 1,
+   "arts": [
+    "assets/cards/enemies/imp-delegate.png"
+   ],
+   "uses": [
+    "skyship-infernal-parliament"
+   ]
+  },
+  "enemy-skyship-imperial-jade-guard": {
+   "campaign": "skyship",
+   "rank": 2,
+   "arts": [
+    "assets/cards/enemies/imperial-jade-guard.png"
+   ],
+   "uses": [
+    "skyship-the-dragon-emperor"
+   ]
+  },
+  "enemy-skyship-infernal-lieutenant": {
+   "campaign": "skyship",
+   "rank": 3,
+   "arts": [
+    "assets/cards/enemies/infernal-lieutenant.png"
+   ],
+   "uses": [
+    "skyship-demon-kings-throne"
+   ]
+  }
+ }
+}
