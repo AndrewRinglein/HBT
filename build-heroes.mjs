@@ -262,6 +262,35 @@ const SPECIAL_DEPICTS = {
   }
 }
 
+// 7 — the two SKYSHIP subtypes Hell-TCG never defined. Added 2026-08-21.
+//     Duelist and Ward of Aeronissa have four pieces of art each and appear in the
+//     Crucible, but AERONISSA_HERO_TYPES has no entry for either, so content/ never saw
+//     them. Their ported stats are PROVISIONAL - copied from a sibling template, not
+//     authored - and are flagged needsPricing. Derived stats come from the per-class
+//     table like every other hero; the Crucible's derived numbers are not carried.
+{
+  const SP = JSON.parse(fs.readFileSync('gen/skyship-provisional.json','utf8'));
+  for(const s of SP.subtypes){
+    for(const ty of s.types){
+      const hero = convert({
+        name: ty.type, class: s.class, gender: s.gender, tier: 1, level: 1,
+        baseStats: {}
+      }, {path:'skyship', idBase:'skyship.'+slug(s.subtype)+'.'+slug(ty.type),
+          campaign:'skyship', artOverride: s.artDir+'/'+ty.file});
+      hero.ported = {...s.ported};
+      hero.subtype = s.subtype;
+      hero.type = ty.type;
+      hero.templateId = 'template.skyship.'+slug(s.subtype);
+      hero.templateName = s.subtype;
+      hero.needsPricing = true;
+      hero.notes.push('PROVISIONAL STATS - shaped on '+s.shapedOn+', not authored for this character. A sweep owns the numbers.');
+      hero.notes.push('Depicts: '+ty.depicts);
+      hero.notes.push('Gender read off the art - nothing in the source records it for this subtype.');
+      heroes.push(hero);
+    }
+  }
+}
+
 // ---------------------------------------------------------- TYPE, and the rulings
 // Everything below is applied by the GENERATOR so that regenerating is safe. It was not,
 // and regenerating on 2026-08-21 destroyed all 112 type names and brought back all 95

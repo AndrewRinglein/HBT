@@ -1,0 +1,39 @@
+{
+ "_note": "Two Skyship subtypes that Hell-TCG never gave hero definitions to. Their art exists (4 pieces each) and the Crucible carried them as `provisional` rows with stats copied from a sibling template. Imported 2026-08-21 on the ruling that they are real Skyship subtypes.",
+ "_stats": "PORTED STATS ONLY. The derived stats — accuracy, crit, luck, vision, movement, staminaMax, staminaRegen — are NOT copied from the Crucible: they come from the per-class table in build-heroes.mjs like every other hero, per the 2026-08-21 ruling that content/ owns the derived values. The Crucible's numbers for these two were themselves copied from an unrelated template and mean nothing.",
+ "_provisional": "Both carry needsPricing. The ported stats came from a sibling template (sky-pirate and vigil-of-the-fallen respectively), not from anything authored for these characters. A sweep owns the numbers.",
+ "_gender": "Read off the art 2026-08-21 — nothing in the source records it. All four Duelists are women, all four Wards are men.",
+
+ "subtypes": [
+  {
+   "subtype": "Duelist",
+   "class": "Rogue",
+   "gender": "female",
+   "artDir": "New Art/aeronissa-concepts",
+   "shapedOn": "template.sky-pirate",
+   "ported": { "strength": 4, "precision": 3, "armor": 0, "health": 10, "reach": 2,
+               "magic": 0, "spirit": 0, "resist": 0, "itemSlots": 3, "toughness": 3, "dodge": 0 },
+   "types": [
+    { "file": "duelist.png",    "type": "Lantern Blade",  "depicts": "black leather top and trousers, knee boots, gold-hilted sword, lantern-lit temple courtyard with red leaves" },
+    { "file": "duelist-v2.png", "type": "Red Fencer",     "depicts": "red leather cuirass with steel pauldrons, red-streaked ponytail, sword drawn in a torchlit stone hall" },
+    { "file": "duelist-v3.png", "type": "Rain Blade",     "depicts": "blackened plate over a ragged skirt, chain at the hip, curved sword, standing in rain on a lantern-lit street" },
+    { "file": "duelist-v4.png", "type": "Snowfall Blade", "depicts": "white silk robe and light plates, white hair in a topknot, thin sword, snow falling among stone figures" }
+   ]
+  },
+  {
+   "subtype": "Ward of Aeronissa",
+   "class": "Paladin",
+   "gender": "male",
+   "artDir": "New Art/aeronissa-concepts",
+   "shapedOn": "template.vigil-of-the-fallen",
+   "ported": { "strength": 5, "precision": 2, "armor": 2, "health": 12, "reach": 1,
+               "magic": 0, "spirit": 2, "resist": 0, "itemSlots": 3, "toughness": 2, "dodge": 0 },
+   "types": [
+    { "file": "ward-of-aeronissa.png",    "type": "Storm Lash",     "depicts": "silver-and-gold plate with a white cloak, heraldic shield, crackling blue lightning whip, under a stone arch" },
+    { "file": "ward-of-aeronissa-v2.png", "type": "Tide Guard",     "depicts": "dark blue and silver plate, torn blue cape, round wave-emblem shield, glowing spear, surf crashing behind" },
+    { "file": "ward-of-aeronissa-v3.png", "type": "Thunder Hammer", "depicts": "red and gold ornate armour, red cape, gold shield, war hammer wreathed in white lightning before a temple" },
+    { "file": "ward-of-aeronissa-v4.png", "type": "Flame Swordsman","depicts": "black and gold layered robes and armour, bearded topknot, long straight sword surrounded by swirling fire" }
+   ]
+  }
+ ]
+}
