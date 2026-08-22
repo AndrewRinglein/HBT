@@ -447,6 +447,18 @@ if(D.heroes&&D.heroes.heroes){
   const dup=[...new Set(fx.filter((n,i)=>fx.indexOf(n)!==i))];
   for(const n of dup)
     add('two-fixed-heroes-share-a-name',n,'so they collide on subtype — the one-per-campaign rule breaks');
+
+  // R20 NO PLACEHOLDER NAMES. Ruled 2026-08-21. 95 heroes were called "Priestess of Ire I"
+  //     … "IV" because the TYPE — the specific art — had no name. It does now: the type is
+  //     the name. A roman numeral on a hero name means a type went unnamed again.
+  for(const h of H)
+    if(/\s(I{1,3}|IV|V|VI{1,3})$/.test(h.name||''))
+      add('hero-name-is-a-placeholder',h.name,h.id+' — name the TYPE (the art), do not number it');
+
+  // A type is one picture, so two heroes may not claim the same one.
+  const ty=H.filter(h=>h.type).map(h=>h.type);
+  for(const t of [...new Set(ty.filter((x,i)=>ty.indexOf(x)!==i))])
+    add('two-heroes-share-a-type',t,'a type is one piece of art and belongs to one hero');
 }
 
 const by={}; F.forEach(f=>(by[f.rule]=by[f.rule]||[]).push(f));

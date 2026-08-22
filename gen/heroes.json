@@ -4692,7 +4692,8 @@
    "backstory": null,
    "passiveDescription": "On kill: +1 Faith. On attack: Inflict 1 Poison",
    "additionalClasses": null,
-   "subtype": "Death Mage"
+   "subtype": "Death Mage",
+   "type": "Wisp Crown"
   },
   {
    "id": "hero.fixed.vibrant-mage",
@@ -4775,7 +4776,8 @@
    "backstory": null,
    "passiveDescription": "On attack: Gain protection equal to half magic",
    "additionalClasses": null,
-   "subtype": "Vibrant Mage"
+   "subtype": "Vibrant Mage",
+   "type": "Aurora Weaver"
   },
   {
    "id": "hero.fixed.silk-merchant",
@@ -6407,7 +6409,8 @@
    "backstory": null,
    "passiveDescription": "Power: Support — All Warriors gain +1 Health and +1 Melee (CD 10)",
    "additionalClasses": null,
-   "subtype": "Catfolk Crew"
+   "subtype": "Catfolk Crew",
+   "type": "Ship Cat"
   },
   {
    "id": "hero.fixed.catfolk-navigator",
@@ -6487,7 +6490,8 @@
    "backstory": null,
    "passiveDescription": "On enter: +1 draw per turn",
    "additionalClasses": null,
-   "subtype": "Catfolk Navigator"
+   "subtype": "Catfolk Navigator",
+   "type": "Chart Reader"
   },
   {
    "id": "hero.fixed.catfolk-cook",
@@ -6567,7 +6571,8 @@
    "backstory": null,
    "passiveDescription": "On kill: Gain 1 supply",
    "additionalClasses": null,
-   "subtype": "Catfolk Cook"
+   "subtype": "Catfolk Cook",
+   "type": "Galley Cook"
   },
   {
    "id": "hero.fixed.catfolk-cabin-boy",
@@ -6649,7 +6654,8 @@
    "backstory": null,
    "passiveDescription": "Power: Escape (CD 2)",
    "additionalClasses": null,
-   "subtype": "Catfolk Cabin Boy"
+   "subtype": "Catfolk Cabin Boy",
+   "type": "Bucket Boy"
   },
   {
    "id": "hero.fixed.catfolk-soldier",
@@ -6728,7 +6734,8 @@
    "backstory": null,
    "passiveDescription": "Power: Bolster — Target hero gains 2 Health (CD 3)",
    "additionalClasses": null,
-   "subtype": "Catfolk Soldier"
+   "subtype": "Catfolk Soldier",
+   "type": "Shield Trooper"
   },
   {
    "id": "hero.fixed.catfolk-archer",
@@ -6805,7 +6812,8 @@
    "backstory": null,
    "passiveDescription": "Power: Take Aim — Target hero gains 2 Ranged (CD 10)",
    "additionalClasses": null,
-   "subtype": "Catfolk Archer"
+   "subtype": "Catfolk Archer",
+   "type": "Crow's Nest Archer"
   },
   {
    "id": "hero.fixed.catfolk-mystic",
@@ -6890,7 +6898,8 @@
    "backstory": null,
    "passiveDescription": "End of turn: Apply Burn equal to half Magic to target enemy",
    "additionalClasses": null,
-   "subtype": "Catfolk Mystic"
+   "subtype": "Catfolk Mystic",
+   "type": "Blue Flame Mystic"
   },
   {
    "id": "hero.fixed.catfolk-whip-master",
@@ -6971,7 +6980,8 @@
    "backstory": null,
    "passiveDescription": "On attack: Inflict 2 Weak",
    "additionalClasses": null,
-   "subtype": "Catfolk Whip Master"
+   "subtype": "Catfolk Whip Master",
+   "type": "Whip Handler"
   },
   {
    "id": "hero.fixed.skyship-tiefling",
@@ -7052,7 +7062,8 @@
    "backstory": null,
    "passiveDescription": "Dagger Master: On damage inflict 1 Poison",
    "additionalClasses": null,
-   "subtype": "Tiefling"
+   "subtype": "Tiefling",
+   "type": "Dagger Devil"
   },
   {
    "id": "hero.fixed.skyship-admiral",
@@ -7136,7 +7147,8 @@
    "backstory": null,
    "passiveDescription": "Commander: Grants 2 actions per turn and 1 max hero slot",
    "additionalClasses": null,
-   "subtype": "The Admiral"
+   "subtype": "The Admiral",
+   "type": "War Admiral"
   },
   {
    "id": "hero.fixed.cargo-hold-crew",
@@ -7205,7 +7217,8 @@
    "backstory": null,
    "passiveDescription": "A large group of cargo handlers",
    "additionalClasses": null,
-   "subtype": "Cargo Hold Crew"
+   "subtype": "Cargo Hold Crew",
+   "type": "Cargo Line"
   },
   {
    "id": "hero.fixed.ships-astrologer",
@@ -7287,7 +7300,8 @@
    "backstory": null,
    "passiveDescription": "On enter: draw 2 cards",
    "additionalClasses": null,
-   "subtype": "Ship's Astrologer"
+   "subtype": "Ship's Astrologer",
+   "type": "Globe Keeper"
   },
   {
    "id": "hero.fixed.stowaway-children",
@@ -7367,7 +7381,8 @@
    "backstory": null,
    "passiveDescription": "On enter: +2 Faith",
    "additionalClasses": null,
-   "subtype": "Stowaway Children"
+   "subtype": "Stowaway Children",
+   "type": "Knife Children"
   },
   {
    "id": "hero.fixed.cursed-passengers",
@@ -7441,7 +7456,8 @@
    "backstory": null,
    "passiveDescription": "On enter: +1 Faith",
    "additionalClasses": null,
-   "subtype": "Cursed Passengers"
+   "subtype": "Cursed Passengers",
+   "type": "Blood Marked"
   },
   {
    "id": "hero.fixed.skyship-deckhands",
@@ -7510,7 +7526,8 @@
    "backstory": null,
    "passiveDescription": "A group of rough deckhands",
    "additionalClasses": null,
-   "subtype": "Skyship Deckhands"
+   "subtype": "Skyship Deckhands",
+   "type": "Armed Deckhands"
   },
   {
    "id": "hero.fixed.bard",
@@ -8017,7 +8034,7 @@
   },
   {
    "id": "hero.shadows.priestess-of-ire.v1",
-   "name": "Priestess of Ire I",
+   "name": "Sand Wraith",
    "path": "shadows",
    "sourceClass": "Priest",
    "class": "class.priest",
@@ -8111,11 +8128,12 @@
    "templateName": "Priestess of Ire",
    "variant": 1,
    "variantsOf": 4,
-   "subtype": "Priestess of Ire"
+   "subtype": "Priestess of Ire",
+   "type": "Sand Wraith"
   },
   {
    "id": "hero.shadows.priestess-of-ire.v2",
-   "name": "Priestess of Ire II",
+   "name": "Blood Offerer",
    "path": "shadows",
    "sourceClass": "Priest",
    "class": "class.priest",
@@ -8209,11 +8227,12 @@
    "templateName": "Priestess of Ire",
    "variant": 2,
    "variantsOf": 4,
-   "subtype": "Priestess of Ire"
+   "subtype": "Priestess of Ire",
+   "type": "Blood Offerer"
   },
   {
    "id": "hero.shadows.priestess-of-ire.v3",
-   "name": "Priestess of Ire III",
+   "name": "Snake Handler",
    "path": "shadows",
    "sourceClass": "Priest",
    "class": "class.priest",
@@ -8307,11 +8326,12 @@
    "templateName": "Priestess of Ire",
    "variant": 3,
    "variantsOf": 4,
-   "subtype": "Priestess of Ire"
+   "subtype": "Priestess of Ire",
+   "type": "Snake Handler"
   },
   {
    "id": "hero.shadows.priestess-of-ire.v4",
-   "name": "Priestess of Ire IV",
+   "name": "Scorpion Keeper",
    "path": "shadows",
    "sourceClass": "Priest",
    "class": "class.priest",
@@ -8405,11 +8425,12 @@
    "templateName": "Priestess of Ire",
    "variant": 4,
    "variantsOf": 4,
-   "subtype": "Priestess of Ire"
+   "subtype": "Priestess of Ire",
+   "type": "Scorpion Keeper"
   },
   {
    "id": "hero.shadows.priestess-of-solace.v1",
-   "name": "Priestess of Solace I",
+   "name": "Moon Bearer",
    "path": "shadows",
    "sourceClass": "Priest",
    "class": "class.priest",
@@ -8492,11 +8513,12 @@
    "templateName": "Priestess of Solace",
    "variant": 1,
    "variantsOf": 4,
-   "subtype": "Priestess of Solace"
+   "subtype": "Priestess of Solace",
+   "type": "Moon Bearer"
   },
   {
    "id": "hero.shadows.priestess-of-solace.v2",
-   "name": "Priestess of Solace II",
+   "name": "Temple Kindler",
    "path": "shadows",
    "sourceClass": "Priest",
    "class": "class.priest",
@@ -8579,11 +8601,12 @@
    "templateName": "Priestess of Solace",
    "variant": 2,
    "variantsOf": 4,
-   "subtype": "Priestess of Solace"
+   "subtype": "Priestess of Solace",
+   "type": "Temple Kindler"
   },
   {
    "id": "hero.shadows.priestess-of-solace.v3",
-   "name": "Priestess of Solace III",
+   "name": "Tide Walker",
    "path": "shadows",
    "sourceClass": "Priest",
    "class": "class.priest",
@@ -8666,11 +8689,12 @@
    "templateName": "Priestess of Solace",
    "variant": 3,
    "variantsOf": 4,
-   "subtype": "Priestess of Solace"
+   "subtype": "Priestess of Solace",
+   "type": "Tide Walker"
   },
   {
    "id": "hero.shadows.priestess-of-solace.v4",
-   "name": "Priestess of Solace IV",
+   "name": "Crescent Warden",
    "path": "shadows",
    "sourceClass": "Priest",
    "class": "class.priest",
@@ -8753,11 +8777,12 @@
    "templateName": "Priestess of Solace",
    "variant": 4,
    "variantsOf": 4,
-   "subtype": "Priestess of Solace"
+   "subtype": "Priestess of Solace",
+   "type": "Crescent Warden"
   },
   {
    "id": "hero.shadows.servant-of-omen.v1",
-   "name": "Servant of Omen I",
+   "name": "Dust Herald",
    "path": "shadows",
    "sourceClass": "Mage",
    "class": "class.mage",
@@ -8842,11 +8867,12 @@
    "templateName": "Servant of Omen",
    "variant": 1,
    "variantsOf": 4,
-   "subtype": "Servant of Omen"
+   "subtype": "Servant of Omen",
+   "type": "Dust Herald"
   },
   {
    "id": "hero.shadows.servant-of-omen.v2",
-   "name": "Servant of Omen II",
+   "name": "Star Oracle",
    "path": "shadows",
    "sourceClass": "Mage",
    "class": "class.mage",
@@ -8931,11 +8957,12 @@
    "templateName": "Servant of Omen",
    "variant": 2,
    "variantsOf": 4,
-   "subtype": "Servant of Omen"
+   "subtype": "Servant of Omen",
+   "type": "Star Oracle"
   },
   {
    "id": "hero.shadows.servant-of-omen.v3",
-   "name": "Servant of Omen III",
+   "name": "Velvet Mourner",
    "path": "shadows",
    "sourceClass": "Mage",
    "class": "class.mage",
@@ -9020,11 +9047,12 @@
    "templateName": "Servant of Omen",
    "variant": 3,
    "variantsOf": 4,
-   "subtype": "Servant of Omen"
+   "subtype": "Servant of Omen",
+   "type": "Velvet Mourner"
   },
   {
    "id": "hero.shadows.servant-of-omen.v4",
-   "name": "Servant of Omen IV",
+   "name": "Ring Dancer",
    "path": "shadows",
    "sourceClass": "Mage",
    "class": "class.mage",
@@ -9109,11 +9137,12 @@
    "templateName": "Servant of Omen",
    "variant": 4,
    "variantsOf": 4,
-   "subtype": "Servant of Omen"
+   "subtype": "Servant of Omen",
+   "type": "Ring Dancer"
   },
   {
    "id": "hero.shadows.shadow-sorceress.v1",
-   "name": "Shadow Sorceress I",
+   "name": "Green Seer",
    "path": "shadows",
    "sourceClass": "Mage",
    "class": "class.mage",
@@ -9197,11 +9226,12 @@
    "templateName": "Shadow Sorceress",
    "variant": 1,
    "variantsOf": 4,
-   "subtype": "Shadow Sorceress"
+   "subtype": "Shadow Sorceress",
+   "type": "Green Seer"
   },
   {
    "id": "hero.shadows.shadow-sorceress.v2",
-   "name": "Shadow Sorceress II",
+   "name": "Spark Caller",
    "path": "shadows",
    "sourceClass": "Mage",
    "class": "class.mage",
@@ -9285,11 +9315,12 @@
    "templateName": "Shadow Sorceress",
    "variant": 2,
    "variantsOf": 4,
-   "subtype": "Shadow Sorceress"
+   "subtype": "Shadow Sorceress",
+   "type": "Spark Caller"
   },
   {
    "id": "hero.shadows.shadow-sorceress.v3",
-   "name": "Shadow Sorceress III",
+   "name": "Horned Crawler",
    "path": "shadows",
    "sourceClass": "Mage",
    "class": "class.mage",
@@ -9373,11 +9404,12 @@
    "templateName": "Shadow Sorceress",
    "variant": 3,
    "variantsOf": 4,
-   "subtype": "Shadow Sorceress"
+   "subtype": "Shadow Sorceress",
+   "type": "Horned Crawler"
   },
   {
    "id": "hero.shadows.shadow-sorceress.v4",
-   "name": "Shadow Sorceress IV",
+   "name": "Candle Reader",
    "path": "shadows",
    "sourceClass": "Mage",
    "class": "class.mage",
@@ -9461,11 +9493,12 @@
    "templateName": "Shadow Sorceress",
    "variant": 4,
    "variantsOf": 4,
-   "subtype": "Shadow Sorceress"
+   "subtype": "Shadow Sorceress",
+   "type": "Candle Reader"
   },
   {
    "id": "hero.shadows.sand-knight.v1",
-   "name": "Sand Knight I",
+   "name": "Axe Warden",
    "path": "shadows",
    "sourceClass": "Paladin",
    "class": "class.paladin",
@@ -9547,11 +9580,12 @@
    "templateName": "Sand Knight",
    "variant": 1,
    "variantsOf": 4,
-   "subtype": "Sand Knight"
+   "subtype": "Sand Knight",
+   "type": "Axe Warden"
   },
   {
    "id": "hero.shadows.sand-knight.v2",
-   "name": "Sand Knight II",
+   "name": "Marble Sentinel",
    "path": "shadows",
    "sourceClass": "Paladin",
    "class": "class.paladin",
@@ -9633,11 +9667,12 @@
    "templateName": "Sand Knight",
    "variant": 2,
    "variantsOf": 4,
-   "subtype": "Sand Knight"
+   "subtype": "Sand Knight",
+   "type": "Marble Sentinel"
   },
   {
    "id": "hero.shadows.sand-knight.v3",
-   "name": "Sand Knight III",
+   "name": "Sun Shield",
    "path": "shadows",
    "sourceClass": "Paladin",
    "class": "class.paladin",
@@ -9719,11 +9754,12 @@
    "templateName": "Sand Knight",
    "variant": 3,
    "variantsOf": 4,
-   "subtype": "Sand Knight"
+   "subtype": "Sand Knight",
+   "type": "Sun Shield"
   },
   {
    "id": "hero.shadows.sand-knight.v4",
-   "name": "Sand Knight IV",
+   "name": "Falcon Crest",
    "path": "shadows",
    "sourceClass": "Paladin",
    "class": "class.paladin",
@@ -9805,11 +9841,12 @@
    "templateName": "Sand Knight",
    "variant": 4,
    "variantsOf": 4,
-   "subtype": "Sand Knight"
+   "subtype": "Sand Knight",
+   "type": "Falcon Crest"
   },
   {
    "id": "hero.shadows.rider-of-ire.v1",
-   "name": "Rider of Ire I",
+   "name": "Warpaint Rider",
    "path": "shadows",
    "sourceClass": "Paladin",
    "class": "class.paladin",
@@ -9885,11 +9922,12 @@
    "templateName": "Rider of Ire",
    "variant": 1,
    "variantsOf": 4,
-   "subtype": "Rider of Ire"
+   "subtype": "Rider of Ire",
+   "type": "Warpaint Rider"
   },
   {
    "id": "hero.shadows.rider-of-ire.v2",
-   "name": "Rider of Ire II",
+   "name": "Sunset Courser",
    "path": "shadows",
    "sourceClass": "Paladin",
    "class": "class.paladin",
@@ -9965,11 +10003,12 @@
    "templateName": "Rider of Ire",
    "variant": 2,
    "variantsOf": 4,
-   "subtype": "Rider of Ire"
+   "subtype": "Rider of Ire",
+   "type": "Sunset Courser"
   },
   {
    "id": "hero.shadows.rider-of-ire.v3",
-   "name": "Rider of Ire III",
+   "name": "Chestnut Outrider",
    "path": "shadows",
    "sourceClass": "Paladin",
    "class": "class.paladin",
@@ -10045,11 +10084,12 @@
    "templateName": "Rider of Ire",
    "variant": 3,
    "variantsOf": 4,
-   "subtype": "Rider of Ire"
+   "subtype": "Rider of Ire",
+   "type": "Chestnut Outrider"
   },
   {
    "id": "hero.shadows.rider-of-ire.v4",
-   "name": "Rider of Ire IV",
+   "name": "Veiled Raider",
    "path": "shadows",
    "sourceClass": "Paladin",
    "class": "class.paladin",
@@ -10125,11 +10165,12 @@
    "templateName": "Rider of Ire",
    "variant": 4,
    "variantsOf": 4,
-   "subtype": "Rider of Ire"
+   "subtype": "Rider of Ire",
+   "type": "Veiled Raider"
   },
   {
    "id": "hero.shadows.bodani.v1",
-   "name": "Bodani I",
+   "name": "Gilded Lancer",
    "path": "shadows",
    "sourceClass": "Warrior",
    "class": "class.warrior",
@@ -10214,11 +10255,12 @@
    "templateName": "Bodani",
    "variant": 1,
    "variantsOf": 4,
-   "subtype": "Bodani"
+   "subtype": "Bodani",
+   "type": "Gilded Lancer"
   },
   {
    "id": "hero.shadows.bodani.v2",
-   "name": "Bodani II",
+   "name": "Dune Leaper",
    "path": "shadows",
    "sourceClass": "Warrior",
    "class": "class.warrior",
@@ -10303,11 +10345,12 @@
    "templateName": "Bodani",
    "variant": 2,
    "variantsOf": 4,
-   "subtype": "Bodani"
+   "subtype": "Bodani",
+   "type": "Dune Leaper"
   },
   {
    "id": "hero.shadows.bodani.v3",
-   "name": "Bodani III",
+   "name": "Ribbon Dancer",
    "path": "shadows",
    "sourceClass": "Warrior",
    "class": "class.warrior",
@@ -10392,11 +10435,12 @@
    "templateName": "Bodani",
    "variant": 3,
    "variantsOf": 4,
-   "subtype": "Bodani"
+   "subtype": "Bodani",
+   "type": "Ribbon Dancer"
   },
   {
    "id": "hero.shadows.bodani.v4",
-   "name": "Bodani IV",
+   "name": "Ember Skirmisher",
    "path": "shadows",
    "sourceClass": "Warrior",
    "class": "class.warrior",
@@ -10481,11 +10525,12 @@
    "templateName": "Bodani",
    "variant": 4,
    "variantsOf": 4,
-   "subtype": "Bodani"
+   "subtype": "Bodani",
+   "type": "Ember Skirmisher"
   },
   {
    "id": "hero.shadows.oathblade.v1",
-   "name": "Oathblade I",
+   "name": "Veteran Greatsword",
    "path": "shadows",
    "sourceClass": "Warrior",
    "class": "class.warrior",
@@ -10565,11 +10610,12 @@
    "templateName": "Oathblade",
    "variant": 1,
    "variantsOf": 4,
-   "subtype": "Oathblade"
+   "subtype": "Oathblade",
+   "type": "Veteran Greatsword"
   },
   {
    "id": "hero.shadows.oathblade.v2",
-   "name": "Oathblade II",
+   "name": "Headband Duelist",
    "path": "shadows",
    "sourceClass": "Warrior",
    "class": "class.warrior",
@@ -10649,11 +10695,12 @@
    "templateName": "Oathblade",
    "variant": 2,
    "variantsOf": 4,
-   "subtype": "Oathblade"
+   "subtype": "Oathblade",
+   "type": "Headband Duelist"
   },
   {
    "id": "hero.shadows.oathblade.v3",
-   "name": "Oathblade III",
+   "name": "Wall Sentry",
    "path": "shadows",
    "sourceClass": "Warrior",
    "class": "class.warrior",
@@ -10733,11 +10780,12 @@
    "templateName": "Oathblade",
    "variant": 3,
    "variantsOf": 4,
-   "subtype": "Oathblade"
+   "subtype": "Oathblade",
+   "type": "Wall Sentry"
   },
   {
    "id": "hero.shadows.oathblade.v4",
-   "name": "Oathblade IV",
+   "name": "Blue Sash Captain",
    "path": "shadows",
    "sourceClass": "Warrior",
    "class": "class.warrior",
@@ -10817,11 +10865,12 @@
    "templateName": "Oathblade",
    "variant": 4,
    "variantsOf": 4,
-   "subtype": "Oathblade"
+   "subtype": "Oathblade",
+   "type": "Blue Sash Captain"
   },
   {
    "id": "hero.shadows.soul-reaver.v1",
-   "name": "Soul Reaver I",
+   "name": "Blue Sickles",
    "path": "shadows",
    "sourceClass": "Rogue",
    "class": "class.rogue",
@@ -10905,11 +10954,12 @@
    "templateName": "Soul Reaver",
    "variant": 1,
    "variantsOf": 4,
-   "subtype": "Soul Reaver"
+   "subtype": "Soul Reaver",
+   "type": "Blue Sickles"
   },
   {
    "id": "hero.shadows.soul-reaver.v2",
-   "name": "Soul Reaver II",
+   "name": "Violet Knife",
    "path": "shadows",
    "sourceClass": "Rogue",
    "class": "class.rogue",
@@ -10993,11 +11043,12 @@
    "templateName": "Soul Reaver",
    "variant": 2,
    "variantsOf": 4,
-   "subtype": "Soul Reaver"
+   "subtype": "Soul Reaver",
+   "type": "Violet Knife"
   },
   {
    "id": "hero.shadows.soul-reaver.v3",
-   "name": "Soul Reaver III",
+   "name": "Storm Dancer",
    "path": "shadows",
    "sourceClass": "Rogue",
    "class": "class.rogue",
@@ -11081,11 +11132,12 @@
    "templateName": "Soul Reaver",
    "variant": 3,
    "variantsOf": 4,
-   "subtype": "Soul Reaver"
+   "subtype": "Soul Reaver",
+   "type": "Storm Dancer"
   },
   {
    "id": "hero.shadows.soul-reaver.v4",
-   "name": "Soul Reaver IV",
+   "name": "Silver Mask",
    "path": "shadows",
    "sourceClass": "Rogue",
    "class": "class.rogue",
@@ -11169,11 +11221,12 @@
    "templateName": "Soul Reaver",
    "variant": 4,
    "variantsOf": 4,
-   "subtype": "Soul Reaver"
+   "subtype": "Soul Reaver",
+   "type": "Silver Mask"
   },
   {
    "id": "hero.shadows.nightblade.v1",
-   "name": "Nightblade I",
+   "name": "Twin Sabers",
    "path": "shadows",
    "sourceClass": "Rogue",
    "class": "class.rogue",
@@ -11258,11 +11311,12 @@
    "templateName": "Nightblade",
    "variant": 1,
    "variantsOf": 4,
-   "subtype": "Nightblade"
+   "subtype": "Nightblade",
+   "type": "Twin Sabers"
   },
   {
    "id": "hero.shadows.nightblade.v2",
-   "name": "Nightblade II",
+   "name": "Rope Climber",
    "path": "shadows",
    "sourceClass": "Rogue",
    "class": "class.rogue",
@@ -11347,11 +11401,12 @@
    "templateName": "Nightblade",
    "variant": 2,
    "variantsOf": 4,
-   "subtype": "Nightblade"
+   "subtype": "Nightblade",
+   "type": "Rope Climber"
   },
   {
    "id": "hero.shadows.nightblade.v3",
-   "name": "Nightblade III",
+   "name": "Tattooed Axeman",
    "path": "shadows",
    "sourceClass": "Rogue",
    "class": "class.rogue",
@@ -11436,11 +11491,12 @@
    "templateName": "Nightblade",
    "variant": 3,
    "variantsOf": 4,
-   "subtype": "Nightblade"
+   "subtype": "Nightblade",
+   "type": "Tattooed Axeman"
   },
   {
    "id": "hero.shadows.nightblade.v4",
-   "name": "Nightblade IV",
+   "name": "Alley Prowler",
    "path": "shadows",
    "sourceClass": "Rogue",
    "class": "class.rogue",
@@ -11525,11 +11581,12 @@
    "templateName": "Nightblade",
    "variant": 4,
    "variantsOf": 4,
-   "subtype": "Nightblade"
+   "subtype": "Nightblade",
+   "type": "Alley Prowler"
   },
   {
    "id": "hero.shadows.dusk-hawk.v1",
-   "name": "Dusk Hawk I",
+   "name": "Longbow Hunter",
    "path": "shadows",
    "sourceClass": "Ranger",
    "class": "class.ranger",
@@ -11608,11 +11665,12 @@
    "templateName": "Dusk Hawk",
    "variant": 1,
    "variantsOf": 4,
-   "subtype": "Dusk Hawk"
+   "subtype": "Dusk Hawk",
+   "type": "Longbow Hunter"
   },
   {
    "id": "hero.shadows.dusk-hawk.v2",
-   "name": "Dusk Hawk II",
+   "name": "Hooded Falconer",
    "path": "shadows",
    "sourceClass": "Ranger",
    "class": "class.ranger",
@@ -11691,11 +11749,12 @@
    "templateName": "Dusk Hawk",
    "variant": 2,
    "variantsOf": 4,
-   "subtype": "Dusk Hawk"
+   "subtype": "Dusk Hawk",
+   "type": "Hooded Falconer"
   },
   {
    "id": "hero.shadows.dusk-hawk.v3",
-   "name": "Dusk Hawk III",
+   "name": "Hawk Caller",
    "path": "shadows",
    "sourceClass": "Ranger",
    "class": "class.ranger",
@@ -11774,11 +11833,12 @@
    "templateName": "Dusk Hawk",
    "variant": 3,
    "variantsOf": 4,
-   "subtype": "Dusk Hawk"
+   "subtype": "Dusk Hawk",
+   "type": "Hawk Caller"
   },
   {
    "id": "hero.shadows.dusk-hawk.v4",
-   "name": "Dusk Hawk IV",
+   "name": "Grey Falconer",
    "path": "shadows",
    "sourceClass": "Ranger",
    "class": "class.ranger",
@@ -11857,11 +11917,12 @@
    "templateName": "Dusk Hawk",
    "variant": 4,
    "variantsOf": 4,
-   "subtype": "Dusk Hawk"
+   "subtype": "Dusk Hawk",
+   "type": "Grey Falconer"
   },
   {
    "id": "hero.shadows.runebow.v1",
-   "name": "Runebow I",
+   "name": "Storm Archer",
    "path": "shadows",
    "sourceClass": "Ranger",
    "class": "class.ranger",
@@ -11948,11 +12009,12 @@
    "templateName": "Runebow",
    "variant": 1,
    "variantsOf": 4,
-   "subtype": "Runebow"
+   "subtype": "Runebow",
+   "type": "Storm Archer"
   },
   {
    "id": "hero.shadows.runebow.v2",
-   "name": "Runebow II",
+   "name": "Feather Archer",
    "path": "shadows",
    "sourceClass": "Ranger",
    "class": "class.ranger",
@@ -12039,11 +12101,12 @@
    "templateName": "Runebow",
    "variant": 2,
    "variantsOf": 4,
-   "subtype": "Runebow"
+   "subtype": "Runebow",
+   "type": "Feather Archer"
   },
   {
    "id": "hero.shadows.runebow.v3",
-   "name": "Runebow III",
+   "name": "Burning Bow",
    "path": "shadows",
    "sourceClass": "Ranger",
    "class": "class.ranger",
@@ -12130,11 +12193,12 @@
    "templateName": "Runebow",
    "variant": 3,
    "variantsOf": 4,
-   "subtype": "Runebow"
+   "subtype": "Runebow",
+   "type": "Burning Bow"
   },
   {
    "id": "hero.shadows.runebow.v4",
-   "name": "Runebow IV",
+   "name": "Shade Fletcher",
    "path": "shadows",
    "sourceClass": "Ranger",
    "class": "class.ranger",
@@ -12221,11 +12285,12 @@
    "templateName": "Runebow",
    "variant": 4,
    "variantsOf": 4,
-   "subtype": "Runebow"
+   "subtype": "Runebow",
+   "type": "Shade Fletcher"
   },
   {
    "id": "hero.skyship.brute.v1",
-   "name": "Brute I",
+   "name": "Inked Crossbowman",
    "path": "skyship",
    "sourceClass": "Ranger",
    "class": "class.ranger",
@@ -12305,11 +12370,12 @@
    "templateName": "Brute",
    "variant": 1,
    "variantsOf": 4,
-   "subtype": "Brute"
+   "subtype": "Brute",
+   "type": "Inked Crossbowman"
   },
   {
    "id": "hero.skyship.brute.v2",
-   "name": "Brute II",
+   "name": "Warpaint Bowman",
    "path": "skyship",
    "sourceClass": "Ranger",
    "class": "class.ranger",
@@ -12389,11 +12455,12 @@
    "templateName": "Brute",
    "variant": 2,
    "variantsOf": 4,
-   "subtype": "Brute"
+   "subtype": "Brute",
+   "type": "Warpaint Bowman"
   },
   {
    "id": "hero.skyship.brute.v3",
-   "name": "Brute III",
+   "name": "Skull Taker",
    "path": "skyship",
    "sourceClass": "Ranger",
    "class": "class.ranger",
@@ -12473,11 +12540,12 @@
    "templateName": "Brute",
    "variant": 3,
    "variantsOf": 4,
-   "subtype": "Brute"
+   "subtype": "Brute",
+   "type": "Skull Taker"
   },
   {
    "id": "hero.skyship.brute.v4",
-   "name": "Brute IV",
+   "name": "Frost Lancer",
    "path": "skyship",
    "sourceClass": "Ranger",
    "class": "class.ranger",
@@ -12557,11 +12625,12 @@
    "templateName": "Brute",
    "variant": 4,
    "variantsOf": 4,
-   "subtype": "Brute"
+   "subtype": "Brute",
+   "type": "Frost Lancer"
   },
   {
    "id": "hero.skyship.phantom-striker.v1",
-   "name": "Phantom Striker I",
+   "name": "Moon Hunter",
    "path": "skyship",
    "sourceClass": "Rogue",
    "class": "class.rogue",
@@ -12643,11 +12712,12 @@
    "templateName": "Phantom Striker",
    "variant": 1,
    "variantsOf": 4,
-   "subtype": "Phantom Striker"
+   "subtype": "Phantom Striker",
+   "type": "Moon Hunter"
   },
   {
    "id": "hero.skyship.phantom-striker.v2",
-   "name": "Phantom Striker II",
+   "name": "Rooftop Assassin",
    "path": "skyship",
    "sourceClass": "Rogue",
    "class": "class.rogue",
@@ -12729,11 +12799,12 @@
    "templateName": "Phantom Striker",
    "variant": 2,
    "variantsOf": 4,
-   "subtype": "Phantom Striker"
+   "subtype": "Phantom Striker",
+   "type": "Rooftop Assassin"
   },
   {
    "id": "hero.skyship.phantom-striker.v3",
-   "name": "Phantom Striker III",
+   "name": "Leaping Archer",
    "path": "skyship",
    "sourceClass": "Rogue",
    "class": "class.rogue",
@@ -12815,11 +12886,12 @@
    "templateName": "Phantom Striker",
    "variant": 3,
    "variantsOf": 4,
-   "subtype": "Phantom Striker"
+   "subtype": "Phantom Striker",
+   "type": "Leaping Archer"
   },
   {
    "id": "hero.skyship.phantom-striker.v4",
-   "name": "Phantom Striker IV",
+   "name": "Lightning Archer",
    "path": "skyship",
    "sourceClass": "Rogue",
    "class": "class.rogue",
@@ -12901,11 +12973,12 @@
    "templateName": "Phantom Striker",
    "variant": 4,
    "variantsOf": 4,
-   "subtype": "Phantom Striker"
+   "subtype": "Phantom Striker",
+   "type": "Lightning Archer"
   },
   {
    "id": "hero.skyship.troll-pirate.v1",
-   "name": "Troll Pirate I",
+   "name": "Blue Buccaneer",
    "path": "skyship",
    "sourceClass": "Warrior",
    "class": "class.warrior",
@@ -12995,11 +13068,12 @@
    "templateName": "Troll Pirate",
    "variant": 1,
    "variantsOf": 4,
-   "subtype": "Troll Pirate"
+   "subtype": "Troll Pirate",
+   "type": "Blue Buccaneer"
   },
   {
    "id": "hero.skyship.troll-pirate.v2",
-   "name": "Troll Pirate II",
+   "name": "Horned Ronin",
    "path": "skyship",
    "sourceClass": "Warrior",
    "class": "class.warrior",
@@ -13089,11 +13163,12 @@
    "templateName": "Troll Pirate",
    "variant": 2,
    "variantsOf": 4,
-   "subtype": "Troll Pirate"
+   "subtype": "Troll Pirate",
+   "type": "Horned Ronin"
   },
   {
    "id": "hero.skyship.troll-pirate.v3",
-   "name": "Troll Pirate III",
+   "name": "Rigging Cutthroat",
    "path": "skyship",
    "sourceClass": "Warrior",
    "class": "class.warrior",
@@ -13183,11 +13258,12 @@
    "templateName": "Troll Pirate",
    "variant": 3,
    "variantsOf": 4,
-   "subtype": "Troll Pirate"
+   "subtype": "Troll Pirate",
+   "type": "Rigging Cutthroat"
   },
   {
    "id": "hero.skyship.troll-pirate.v4",
-   "name": "Troll Pirate IV",
+   "name": "Tusked Mauler",
    "path": "skyship",
    "sourceClass": "Warrior",
    "class": "class.warrior",
@@ -13277,11 +13353,12 @@
    "templateName": "Troll Pirate",
    "variant": 4,
    "variantsOf": 4,
-   "subtype": "Troll Pirate"
+   "subtype": "Troll Pirate",
+   "type": "Tusked Mauler"
   },
   {
    "id": "hero.skyship.open-hand.v1",
-   "name": "Open Hand I",
+   "name": "Drunken Brawler",
    "path": "skyship",
    "sourceClass": "Warrior",
    "class": "class.warrior",
@@ -13365,11 +13442,12 @@
    "templateName": "Open Hand",
    "variant": 1,
    "variantsOf": 4,
-   "subtype": "Open Hand"
+   "subtype": "Open Hand",
+   "type": "Drunken Brawler"
   },
   {
    "id": "hero.skyship.open-hand.v2",
-   "name": "Open Hand II",
+   "name": "Blind Master",
    "path": "skyship",
    "sourceClass": "Warrior",
    "class": "class.warrior",
@@ -13453,11 +13531,12 @@
    "templateName": "Open Hand",
    "variant": 2,
    "variantsOf": 4,
-   "subtype": "Open Hand"
+   "subtype": "Open Hand",
+   "type": "Blind Master"
   },
   {
    "id": "hero.skyship.open-hand.v3",
-   "name": "Open Hand III",
+   "name": "Dancer",
    "path": "skyship",
    "sourceClass": "Warrior",
    "class": "class.warrior",
@@ -13541,11 +13620,12 @@
    "templateName": "Open Hand",
    "variant": 3,
    "variantsOf": 4,
-   "subtype": "Open Hand"
+   "subtype": "Open Hand",
+   "type": "Dancer"
   },
   {
    "id": "hero.skyship.open-hand.v4",
-   "name": "Open Hand IV",
+   "name": "Staff Master",
    "path": "skyship",
    "sourceClass": "Warrior",
    "class": "class.warrior",
@@ -13629,11 +13709,12 @@
    "templateName": "Open Hand",
    "variant": 4,
    "variantsOf": 4,
-   "subtype": "Open Hand"
+   "subtype": "Open Hand",
+   "type": "Staff Master"
   },
   {
    "id": "hero.skyship.sky-captain.v1",
-   "name": "Sky Captain I",
+   "name": "Crossbow Officer",
    "path": "skyship",
    "sourceClass": "Paladin",
    "class": "class.paladin",
@@ -13718,11 +13799,12 @@
    "templateName": "Sky Captain",
    "variant": 1,
    "variantsOf": 3,
-   "subtype": "Sky Captain"
+   "subtype": "Sky Captain",
+   "type": "Crossbow Officer"
   },
   {
    "id": "hero.skyship.sky-captain.v2",
-   "name": "Sky Captain II",
+   "name": "Spyglass Corsair",
    "path": "skyship",
    "sourceClass": "Paladin",
    "class": "class.paladin",
@@ -13807,11 +13889,12 @@
    "templateName": "Sky Captain",
    "variant": 2,
    "variantsOf": 3,
-   "subtype": "Sky Captain"
+   "subtype": "Sky Captain",
+   "type": "Spyglass Corsair"
   },
   {
    "id": "hero.skyship.sky-captain.v3",
-   "name": "Sky Captain III",
+   "name": "One-Eyed Duelist",
    "path": "skyship",
    "sourceClass": "Paladin",
    "class": "class.paladin",
@@ -13896,11 +13979,12 @@
    "templateName": "Sky Captain",
    "variant": 3,
    "variantsOf": 3,
-   "subtype": "Sky Captain"
+   "subtype": "Sky Captain",
+   "type": "One-Eyed Duelist"
   },
   {
    "id": "hero.skyship.windwalker.v1",
-   "name": "WindWalker I",
+   "name": "Silk Fencer",
    "path": "skyship",
    "sourceClass": "Ranger",
    "class": "class.ranger",
@@ -13986,11 +14070,12 @@
    "templateName": "WindWalker",
    "variant": 1,
    "variantsOf": 4,
-   "subtype": "WindWalker"
+   "subtype": "WindWalker",
+   "type": "Silk Fencer"
   },
   {
    "id": "hero.skyship.windwalker.v2",
-   "name": "WindWalker II",
+   "name": "Flame Archer",
    "path": "skyship",
    "sourceClass": "Ranger",
    "class": "class.ranger",
@@ -14076,11 +14161,12 @@
    "templateName": "WindWalker",
    "variant": 2,
    "variantsOf": 4,
-   "subtype": "WindWalker"
+   "subtype": "WindWalker",
+   "type": "Flame Archer"
   },
   {
    "id": "hero.skyship.windwalker.v3",
-   "name": "WindWalker III",
+   "name": "Dusk Archer",
    "path": "skyship",
    "sourceClass": "Ranger",
    "class": "class.ranger",
@@ -14166,11 +14252,12 @@
    "templateName": "WindWalker",
    "variant": 3,
    "variantsOf": 4,
-   "subtype": "WindWalker"
+   "subtype": "WindWalker",
+   "type": "Dusk Archer"
   },
   {
    "id": "hero.skyship.windwalker.v4",
-   "name": "WindWalker IV",
+   "name": "Chain Fighter",
    "path": "skyship",
    "sourceClass": "Ranger",
    "class": "class.ranger",
@@ -14256,11 +14343,12 @@
    "templateName": "WindWalker",
    "variant": 4,
    "variantsOf": 4,
-   "subtype": "WindWalker"
+   "subtype": "WindWalker",
+   "type": "Chain Fighter"
   },
   {
    "id": "hero.skyship.sky-pirate.v1",
-   "name": "Sky Pirate I",
+   "name": "Cloud Reaver",
    "path": "skyship",
    "sourceClass": "Rogue",
    "class": "class.rogue",
@@ -14347,11 +14435,12 @@
    "templateName": "Sky Pirate",
    "variant": 1,
    "variantsOf": 4,
-   "subtype": "Sky Pirate"
+   "subtype": "Sky Pirate",
+   "type": "Cloud Reaver"
   },
   {
    "id": "hero.skyship.sky-pirate.v2",
-   "name": "Sky Pirate II",
+   "name": "Boarding Raider",
    "path": "skyship",
    "sourceClass": "Rogue",
    "class": "class.rogue",
@@ -14438,11 +14527,12 @@
    "templateName": "Sky Pirate",
    "variant": 2,
    "variantsOf": 4,
-   "subtype": "Sky Pirate"
+   "subtype": "Sky Pirate",
+   "type": "Boarding Raider"
   },
   {
    "id": "hero.skyship.sky-pirate.v3",
-   "name": "Sky Pirate III",
+   "name": "Rope Runner",
    "path": "skyship",
    "sourceClass": "Rogue",
    "class": "class.rogue",
@@ -14529,11 +14619,12 @@
    "templateName": "Sky Pirate",
    "variant": 3,
    "variantsOf": 4,
-   "subtype": "Sky Pirate"
+   "subtype": "Sky Pirate",
+   "type": "Rope Runner"
   },
   {
    "id": "hero.skyship.sky-pirate.v4",
-   "name": "Sky Pirate IV",
+   "name": "Ship Burner",
    "path": "skyship",
    "sourceClass": "Rogue",
    "class": "class.rogue",
@@ -14620,11 +14711,12 @@
    "templateName": "Sky Pirate",
    "variant": 4,
    "variantsOf": 4,
-   "subtype": "Sky Pirate"
+   "subtype": "Sky Pirate",
+   "type": "Ship Burner"
   },
   {
    "id": "hero.skyship.air-mage.v1",
-   "name": "Air Mage I",
+   "name": "Cloud Rider",
    "path": "skyship",
    "sourceClass": "Mage",
    "class": "class.mage",
@@ -14704,11 +14796,12 @@
    "templateName": "Air Mage",
    "variant": 1,
    "variantsOf": 4,
-   "subtype": "Air Mage"
+   "subtype": "Air Mage",
+   "type": "Cloud Rider"
   },
   {
    "id": "hero.skyship.air-mage.v2",
-   "name": "Air Mage II",
+   "name": "Storm Caller",
    "path": "skyship",
    "sourceClass": "Mage",
    "class": "class.mage",
@@ -14788,11 +14881,12 @@
    "templateName": "Air Mage",
    "variant": 2,
    "variantsOf": 4,
-   "subtype": "Air Mage"
+   "subtype": "Air Mage",
+   "type": "Storm Caller"
   },
   {
    "id": "hero.skyship.air-mage.v3",
-   "name": "Air Mage III",
+   "name": "Gilded Sorceress",
    "path": "skyship",
    "sourceClass": "Mage",
    "class": "class.mage",
@@ -14872,11 +14966,12 @@
    "templateName": "Air Mage",
    "variant": 3,
    "variantsOf": 4,
-   "subtype": "Air Mage"
+   "subtype": "Air Mage",
+   "type": "Gilded Sorceress"
   },
   {
    "id": "hero.skyship.air-mage.v4",
-   "name": "Air Mage IV",
+   "name": "Cyclone Caster",
    "path": "skyship",
    "sourceClass": "Mage",
    "class": "class.mage",
@@ -14956,11 +15051,12 @@
    "templateName": "Air Mage",
    "variant": 4,
    "variantsOf": 4,
-   "subtype": "Air Mage"
+   "subtype": "Air Mage",
+   "type": "Cyclone Caster"
   },
   {
    "id": "hero.skyship.spellblade.v1",
-   "name": "Spellblade I",
+   "name": "Jade Ambusher",
    "path": "skyship",
    "sourceClass": "Mage",
    "class": "class.mage",
@@ -15046,11 +15142,12 @@
    "templateName": "Spellblade",
    "variant": 1,
    "variantsOf": 4,
-   "subtype": "Spellblade"
+   "subtype": "Spellblade",
+   "type": "Jade Ambusher"
   },
   {
    "id": "hero.skyship.spellblade.v2",
-   "name": "Spellblade II",
+   "name": "Frost Duelist",
    "path": "skyship",
    "sourceClass": "Mage",
    "class": "class.mage",
@@ -15136,11 +15233,12 @@
    "templateName": "Spellblade",
    "variant": 2,
    "variantsOf": 4,
-   "subtype": "Spellblade"
+   "subtype": "Spellblade",
+   "type": "Frost Duelist"
   },
   {
    "id": "hero.skyship.spellblade.v3",
-   "name": "Spellblade III",
+   "name": "Lava Knight",
    "path": "skyship",
    "sourceClass": "Mage",
    "class": "class.mage",
@@ -15226,11 +15324,12 @@
    "templateName": "Spellblade",
    "variant": 3,
    "variantsOf": 4,
-   "subtype": "Spellblade"
+   "subtype": "Spellblade",
+   "type": "Lava Knight"
   },
   {
    "id": "hero.skyship.spellblade.v4",
-   "name": "Spellblade IV",
+   "name": "Whipblade",
    "path": "skyship",
    "sourceClass": "Mage",
    "class": "class.mage",
@@ -15316,11 +15415,12 @@
    "templateName": "Spellblade",
    "variant": 4,
    "variantsOf": 4,
-   "subtype": "Spellblade"
+   "subtype": "Spellblade",
+   "type": "Whipblade"
   },
   {
    "id": "hero.skyship.aeronissa-priest.v1",
-   "name": "Aeronissa Priest I",
+   "name": "White Pilgrim",
    "path": "skyship",
    "sourceClass": "Priest",
    "class": "class.priest",
@@ -15412,11 +15512,12 @@
    "templateName": "Aeronissa Priest",
    "variant": 1,
    "variantsOf": 4,
-   "subtype": "Aeronissa Priest"
+   "subtype": "Aeronissa Priest",
+   "type": "White Pilgrim"
   },
   {
    "id": "hero.skyship.aeronissa-priest.v2",
-   "name": "Aeronissa Priest II",
+   "name": "Bead Whirler",
    "path": "skyship",
    "sourceClass": "Priest",
    "class": "class.priest",
@@ -15508,11 +15609,12 @@
    "templateName": "Aeronissa Priest",
    "variant": 2,
    "variantsOf": 4,
-   "subtype": "Aeronissa Priest"
+   "subtype": "Aeronissa Priest",
+   "type": "Bead Whirler"
   },
   {
    "id": "hero.skyship.aeronissa-priest.v3",
-   "name": "Aeronissa Priest III",
+   "name": "Thunder Hermit",
    "path": "skyship",
    "sourceClass": "Priest",
    "class": "class.priest",
@@ -15604,11 +15706,12 @@
    "templateName": "Aeronissa Priest",
    "variant": 3,
    "variantsOf": 4,
-   "subtype": "Aeronissa Priest"
+   "subtype": "Aeronissa Priest",
+   "type": "Thunder Hermit"
   },
   {
    "id": "hero.skyship.aeronissa-priest.v4",
-   "name": "Aeronissa Priest IV",
+   "name": "Candle Monk",
    "path": "skyship",
    "sourceClass": "Priest",
    "class": "class.priest",
@@ -15700,11 +15803,12 @@
    "templateName": "Aeronissa Priest",
    "variant": 4,
    "variantsOf": 4,
-   "subtype": "Aeronissa Priest"
+   "subtype": "Aeronissa Priest",
+   "type": "Candle Monk"
   },
   {
    "id": "hero.skyship.mirran-priest.v1",
-   "name": "Mirran Priest I",
+   "name": "Talisman Bearer",
    "path": "skyship",
    "sourceClass": "Priest",
    "class": "class.priest",
@@ -15807,11 +15911,12 @@
    "templateName": "Mirran Priest",
    "variant": 1,
    "variantsOf": 4,
-   "subtype": "Mirran Priest"
+   "subtype": "Mirran Priest",
+   "type": "Talisman Bearer"
   },
   {
    "id": "hero.skyship.mirran-priest.v2",
-   "name": "Mirran Priest II",
+   "name": "Fang Wielder",
    "path": "skyship",
    "sourceClass": "Priest",
    "class": "class.priest",
@@ -15914,11 +16019,12 @@
    "templateName": "Mirran Priest",
    "variant": 2,
    "variantsOf": 4,
-   "subtype": "Mirran Priest"
+   "subtype": "Mirran Priest",
+   "type": "Fang Wielder"
   },
   {
    "id": "hero.skyship.mirran-priest.v3",
-   "name": "Mirran Priest III",
+   "name": "Storm Bringer",
    "path": "skyship",
    "sourceClass": "Priest",
    "class": "class.priest",
@@ -16021,11 +16127,12 @@
    "templateName": "Mirran Priest",
    "variant": 3,
    "variantsOf": 4,
-   "subtype": "Mirran Priest"
+   "subtype": "Mirran Priest",
+   "type": "Storm Bringer"
   },
   {
    "id": "hero.skyship.mirran-priest.v4",
-   "name": "Mirran Priest IV",
+   "name": "Beacon Keeper",
    "path": "skyship",
    "sourceClass": "Priest",
    "class": "class.priest",
@@ -16128,11 +16235,12 @@
    "templateName": "Mirran Priest",
    "variant": 4,
    "variantsOf": 4,
-   "subtype": "Mirran Priest"
+   "subtype": "Mirran Priest",
+   "type": "Beacon Keeper"
   },
   {
    "id": "hero.skyship.vigil-of-the-fallen.v1",
-   "name": "Vigil of the Fallen I",
+   "name": "Ash Sentinel",
    "path": "skyship",
    "sourceClass": "Paladin",
    "class": "class.paladin",
@@ -16217,11 +16325,12 @@
    "templateName": "Vigil of the Fallen",
    "variant": 1,
    "variantsOf": 4,
-   "subtype": "Vigil of the Fallen"
+   "subtype": "Vigil of the Fallen",
+   "type": "Ash Sentinel"
   },
   {
    "id": "hero.skyship.vigil-of-the-fallen.v2",
-   "name": "Vigil of the Fallen II",
+   "name": "Grave Warden",
    "path": "skyship",
    "sourceClass": "Paladin",
    "class": "class.paladin",
@@ -16306,11 +16415,12 @@
    "templateName": "Vigil of the Fallen",
    "variant": 2,
    "variantsOf": 4,
-   "subtype": "Vigil of the Fallen"
+   "subtype": "Vigil of the Fallen",
+   "type": "Grave Warden"
   },
   {
    "id": "hero.skyship.vigil-of-the-fallen.v3",
-   "name": "Vigil of the Fallen III",
+   "name": "Shrine Guard",
    "path": "skyship",
    "sourceClass": "Paladin",
    "class": "class.paladin",
@@ -16395,11 +16505,12 @@
    "templateName": "Vigil of the Fallen",
    "variant": 3,
    "variantsOf": 4,
-   "subtype": "Vigil of the Fallen"
+   "subtype": "Vigil of the Fallen",
+   "type": "Shrine Guard"
   },
   {
    "id": "hero.skyship.vigil-of-the-fallen.v4",
-   "name": "Vigil of the Fallen IV",
+   "name": "Hall Sentry",
    "path": "skyship",
    "sourceClass": "Paladin",
    "class": "class.paladin",
@@ -16484,7 +16595,8 @@
    "templateName": "Vigil of the Fallen",
    "variant": 4,
    "variantsOf": 4,
-   "subtype": "Vigil of the Fallen"
+   "subtype": "Vigil of the Fallen",
+   "type": "Hall Sentry"
   },
   {
    "id": "hero.tutorial.warrior-iron.aldric",
