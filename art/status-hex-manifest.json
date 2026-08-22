@@ -1,0 +1,1154 @@
+{
+ "hero.tutorial.warrior-iron.aldric.vampirism": {
+  "hex": "767664da6968.webp",
+  "src": "art/heroes/warrior-iron/card/vampirism.png",
+  "slug": "warrior-iron",
+  "status": "vampirism",
+  "scale": 1.0,
+  "tiers": {
+   "full": "warrior-iron-vampirism_full.png",
+   "1024": "warrior-iron-vampirism_1024.png",
+   "256": "warrior-iron-vampirism_256.png"
+  }
+ },
+ "hero.tutorial.warrior-iron.aldric.lycanthropy": {
+  "hex": "929c4eb7f897.webp",
+  "src": "art/heroes/warrior-iron/card/lycanthropy.png",
+  "slug": "warrior-iron",
+  "status": "lycanthropy",
+  "scale": 1.0,
+  "tiers": {
+   "full": "warrior-iron-lycanthropy_full.png",
+   "1024": "warrior-iron-lycanthropy_1024.png",
+   "256": "warrior-iron-lycanthropy_256.png"
+  }
+ },
+ "hero.tutorial.warrior-iron.aldric.possession": {
+  "hex": "d04765b25ffa.webp",
+  "src": "art/heroes/warrior-iron/card/possession.png",
+  "slug": "warrior-iron",
+  "status": "possession",
+  "scale": 1.0,
+  "tiers": {
+   "full": "warrior-iron-possession_full.png",
+   "1024": "warrior-iron-possession_1024.png",
+   "256": "warrior-iron-possession_256.png"
+  }
+ },
+ "hero.tutorial.warrior-iron.aldric.rotting-flesh": {
+  "hex": "dafe3d97878f.webp",
+  "src": "art/heroes/warrior-iron/card/rotting-flesh.png",
+  "slug": "warrior-iron",
+  "status": "rotting-flesh",
+  "scale": 1.0,
+  "tiers": {
+   "full": "warrior-iron-rotting-flesh_full.png",
+   "1024": "warrior-iron-rotting-flesh_1024.png",
+   "256": "warrior-iron-rotting-flesh_256.png"
+  }
+ },
+ "hero.tutorial.warrior-fearsome.theron.vampirism": {
+  "hex": "5c588751cc5f.webp",
+  "src": "art/heroes/warrior-fearsome/card/vampirism.png",
+  "slug": "warrior-fearsome",
+  "status": "vampirism",
+  "scale": 1.0,
+  "tiers": {
+   "full": "warrior-fearsome-vampirism_full.png",
+   "1024": "warrior-fearsome-vampirism_1024.png",
+   "256": "warrior-fearsome-vampirism_256.png"
+  }
+ },
+ "hero.tutorial.warrior-fearsome.theron.lycanthropy": {
+  "hex": "d43d719fb833.webp",
+  "src": "art/heroes/warrior-fearsome/card/lycanthropy.png",
+  "slug": "warrior-fearsome",
+  "status": "lycanthropy",
+  "scale": 1.0,
+  "tiers": {
+   "full": "warrior-fearsome-lycanthropy_full.png",
+   "1024": "warrior-fearsome-lycanthropy_1024.png",
+   "256": "warrior-fearsome-lycanthropy_256.png"
+  }
+ },
+ "hero.tutorial.warrior-fearsome.theron.possession": {
+  "hex": "02c487fe0bed.webp",
+  "src": "art/heroes/warrior-fearsome/card/possession.png",
+  "slug": "warrior-fearsome",
+  "status": "possession",
+  "scale": 1.0,
+  "tiers": {
+   "full": "warrior-fearsome-possession_full.png",
+   "1024": "warrior-fearsome-possession_1024.png",
+   "256": "warrior-fearsome-possession_256.png"
+  }
+ },
+ "hero.tutorial.warrior-fearsome.theron.rotting-flesh": {
+  "hex": "daf40d41258b.webp",
+  "src": "art/heroes/warrior-fearsome/card/rotting-flesh.png",
+  "slug": "warrior-fearsome",
+  "status": "rotting-flesh",
+  "scale": 1.0,
+  "tiers": {
+   "full": "warrior-fearsome-rotting-flesh_full.png",
+   "1024": "warrior-fearsome-rotting-flesh_1024.png",
+   "256": "warrior-fearsome-rotting-flesh_256.png"
+  }
+ },
+ "hero.tutorial.warrior-barbarian.leif.vampirism": {
+  "hex": "c94b3210954d.webp",
+  "src": "art/heroes/warrior-barbarian/card/vampirism.png",
+  "slug": "warrior-barbarian",
+  "status": "vampirism",
+  "scale": 1.0,
+  "tiers": {
+   "full": "warrior-barbarian-vampirism_full.png",
+   "1024": "warrior-barbarian-vampirism_1024.png",
+   "256": "warrior-barbarian-vampirism_256.png"
+  }
+ },
+ "hero.tutorial.warrior-barbarian.leif.lycanthropy": {
+  "hex": "4f8f39344975.webp",
+  "src": "art/heroes/warrior-barbarian/card/lycanthropy.png",
+  "slug": "warrior-barbarian",
+  "status": "lycanthropy",
+  "scale": 1.0,
+  "tiers": {
+   "full": "warrior-barbarian-lycanthropy_full.png",
+   "1024": "warrior-barbarian-lycanthropy_1024.png",
+   "256": "warrior-barbarian-lycanthropy_256.png"
+  }
+ },
+ "hero.tutorial.warrior-barbarian.leif.possession": {
+  "hex": "f3cc975a836b.webp",
+  "src": "art/heroes/warrior-barbarian/card/possession.png",
+  "slug": "warrior-barbarian",
+  "status": "possession",
+  "scale": 1.0,
+  "tiers": {
+   "full": "warrior-barbarian-possession_full.png",
+   "1024": "warrior-barbarian-possession_1024.png",
+   "256": "warrior-barbarian-possession_256.png"
+  }
+ },
+ "hero.tutorial.warrior-barbarian.leif.rotting-flesh": {
+  "hex": "fe230b976c83.webp",
+  "src": "art/heroes/warrior-barbarian/card/rotting-flesh.png",
+  "slug": "warrior-barbarian",
+  "status": "rotting-flesh",
+  "scale": 1.0,
+  "tiers": {
+   "full": "warrior-barbarian-rotting-flesh_full.png",
+   "1024": "warrior-barbarian-rotting-flesh_1024.png",
+   "256": "warrior-barbarian-rotting-flesh_256.png"
+  }
+ },
+ "hero.tutorial.warrior-brawler.finn.vampirism": {
+  "hex": "f12ecedd8aab.webp",
+  "src": "art/heroes/warrior-brawler/card/vampirism.png",
+  "slug": "warrior-brawler",
+  "status": "vampirism",
+  "scale": 1.0,
+  "tiers": {
+   "full": "warrior-brawler-vampirism_full.png",
+   "1024": "warrior-brawler-vampirism_1024.png",
+   "256": "warrior-brawler-vampirism_256.png"
+  }
+ },
+ "hero.tutorial.warrior-brawler.finn.lycanthropy": {
+  "hex": "9a657deb4aa5.webp",
+  "src": "art/heroes/warrior-brawler/card/lycanthropy.png",
+  "slug": "warrior-brawler",
+  "status": "lycanthropy",
+  "scale": 1.0,
+  "tiers": {
+   "full": "warrior-brawler-lycanthropy_full.png",
+   "1024": "warrior-brawler-lycanthropy_1024.png",
+   "256": "warrior-brawler-lycanthropy_256.png"
+  }
+ },
+ "hero.tutorial.warrior-brawler.finn.possession": {
+  "hex": "d73f99398e63.webp",
+  "src": "art/heroes/warrior-brawler/card/possession.png",
+  "slug": "warrior-brawler",
+  "status": "possession",
+  "scale": 1.0,
+  "tiers": {
+   "full": "warrior-brawler-possession_full.png",
+   "1024": "warrior-brawler-possession_1024.png",
+   "256": "warrior-brawler-possession_256.png"
+  }
+ },
+ "hero.tutorial.warrior-brawler.finn.rotting-flesh": {
+  "hex": "9751d5a89984.webp",
+  "src": "art/heroes/warrior-brawler/card/rotting-flesh.png",
+  "slug": "warrior-brawler",
+  "status": "rotting-flesh",
+  "scale": 1.0,
+  "tiers": {
+   "full": "warrior-brawler-rotting-flesh_full.png",
+   "1024": "warrior-brawler-rotting-flesh_1024.png",
+   "256": "warrior-brawler-rotting-flesh_256.png"
+  }
+ },
+ "hero.tutorial.mage-fire.seraphina.vampirism": {
+  "hex": "6d99d20cd01b.webp",
+  "src": "art/heroes/mage-fire/card/vampirism.png",
+  "slug": "mage-fire",
+  "status": "vampirism",
+  "scale": 1.0,
+  "tiers": {
+   "full": "mage-fire-vampirism_full.png",
+   "1024": "mage-fire-vampirism_1024.png",
+   "256": "mage-fire-vampirism_256.png"
+  }
+ },
+ "hero.tutorial.mage-fire.seraphina.lycanthropy": {
+  "hex": "9a949e0d45d0.webp",
+  "src": "art/heroes/mage-fire/card/lycanthropy.png",
+  "slug": "mage-fire",
+  "status": "lycanthropy",
+  "scale": 1.0,
+  "tiers": {
+   "full": "mage-fire-lycanthropy_full.png",
+   "1024": "mage-fire-lycanthropy_1024.png",
+   "256": "mage-fire-lycanthropy_256.png"
+  }
+ },
+ "hero.tutorial.mage-fire.seraphina.possession": {
+  "hex": "ca279b1905a6.webp",
+  "src": "art/heroes/mage-fire/card/possession.png",
+  "slug": "mage-fire",
+  "status": "possession",
+  "scale": 1.0,
+  "tiers": {
+   "full": "mage-fire-possession_full.png",
+   "1024": "mage-fire-possession_1024.png",
+   "256": "mage-fire-possession_256.png"
+  }
+ },
+ "hero.tutorial.mage-fire.seraphina.rotting-flesh": {
+  "hex": "a39092f917c7.webp",
+  "src": "art/heroes/mage-fire/card/rotting-flesh.png",
+  "slug": "mage-fire",
+  "status": "rotting-flesh",
+  "scale": 1.0,
+  "tiers": {
+   "full": "mage-fire-rotting-flesh_full.png",
+   "1024": "mage-fire-rotting-flesh_1024.png",
+   "256": "mage-fire-rotting-flesh_256.png"
+  }
+ },
+ "hero.tutorial.mage-fireaura.elena.vampirism": {
+  "hex": "786b14f9ea06.webp",
+  "src": "art/heroes/mage-fireaura/card/vampirism.png",
+  "slug": "mage-fireaura",
+  "status": "vampirism",
+  "scale": 1.0,
+  "tiers": {
+   "full": "mage-fireaura-vampirism_full.png",
+   "1024": "mage-fireaura-vampirism_1024.png",
+   "256": "mage-fireaura-vampirism_256.png"
+  }
+ },
+ "hero.tutorial.mage-fireaura.elena.lycanthropy": {
+  "hex": "c15bbae6d508.webp",
+  "src": "art/heroes/mage-fireaura/card/lycanthropy.png",
+  "slug": "mage-fireaura",
+  "status": "lycanthropy",
+  "scale": 1.0,
+  "tiers": {
+   "full": "mage-fireaura-lycanthropy_full.png",
+   "1024": "mage-fireaura-lycanthropy_1024.png",
+   "256": "mage-fireaura-lycanthropy_256.png"
+  }
+ },
+ "hero.tutorial.mage-fireaura.elena.possession": {
+  "hex": "46b12b2b8bc3.webp",
+  "src": "art/heroes/mage-fireaura/card/possession.png",
+  "slug": "mage-fireaura",
+  "status": "possession",
+  "scale": 1.0,
+  "tiers": {
+   "full": "mage-fireaura-possession_full.png",
+   "1024": "mage-fireaura-possession_1024.png",
+   "256": "mage-fireaura-possession_256.png"
+  }
+ },
+ "hero.tutorial.mage-fireaura.elena.rotting-flesh": {
+  "hex": "03f96cfc1bcd.webp",
+  "src": "art/heroes/mage-fireaura/card/rotting-flesh.png",
+  "slug": "mage-fireaura",
+  "status": "rotting-flesh",
+  "scale": 1.0,
+  "tiers": {
+   "full": "mage-fireaura-rotting-flesh_full.png",
+   "1024": "mage-fireaura-rotting-flesh_1024.png",
+   "256": "mage-fireaura-rotting-flesh_256.png"
+  }
+ },
+ "hero.tutorial.mage-thinking.cedra.vampirism": {
+  "hex": "17618197f01a.webp",
+  "src": "art/heroes/mage-thinking/card/vampirism.png",
+  "slug": "mage-thinking",
+  "status": "vampirism",
+  "scale": 1.0,
+  "tiers": {
+   "full": "mage-thinking-vampirism_full.png",
+   "1024": "mage-thinking-vampirism_1024.png",
+   "256": "mage-thinking-vampirism_256.png"
+  }
+ },
+ "hero.tutorial.mage-thinking.cedra.lycanthropy": {
+  "hex": "7419e8f7fcf7.webp",
+  "src": "art/heroes/mage-thinking/card/lycanthropy.png",
+  "slug": "mage-thinking",
+  "status": "lycanthropy",
+  "scale": 1.0,
+  "tiers": {
+   "full": "mage-thinking-lycanthropy_full.png",
+   "1024": "mage-thinking-lycanthropy_1024.png",
+   "256": "mage-thinking-lycanthropy_256.png"
+  }
+ },
+ "hero.tutorial.mage-thinking.cedra.possession": {
+  "hex": "20a6c5df586b.webp",
+  "src": "art/heroes/mage-thinking/card/possession.png",
+  "slug": "mage-thinking",
+  "status": "possession",
+  "scale": 1.0,
+  "tiers": {
+   "full": "mage-thinking-possession_full.png",
+   "1024": "mage-thinking-possession_1024.png",
+   "256": "mage-thinking-possession_256.png"
+  }
+ },
+ "hero.tutorial.mage-thinking.cedra.rotting-flesh": {
+  "hex": "d6bcac8d4efd.webp",
+  "src": "art/heroes/mage-thinking/card/rotting-flesh.png",
+  "slug": "mage-thinking",
+  "status": "rotting-flesh",
+  "scale": 1.0,
+  "tiers": {
+   "full": "mage-thinking-rotting-flesh_full.png",
+   "1024": "mage-thinking-rotting-flesh_1024.png",
+   "256": "mage-thinking-rotting-flesh_256.png"
+  }
+ },
+ "hero.tutorial.mage-sexy.vera.vampirism": {
+  "hex": "e341c5d284ce.webp",
+  "src": "art/heroes/mage-sexy/card/vampirism.png",
+  "slug": "mage-sexy",
+  "status": "vampirism",
+  "scale": 1.0,
+  "tiers": {
+   "full": "mage-sexy-vampirism_full.png",
+   "1024": "mage-sexy-vampirism_1024.png",
+   "256": "mage-sexy-vampirism_256.png"
+  }
+ },
+ "hero.tutorial.mage-sexy.vera.lycanthropy": {
+  "hex": "141fe9975e37.webp",
+  "src": "art/heroes/mage-sexy/card/lycanthropy.png",
+  "slug": "mage-sexy",
+  "status": "lycanthropy",
+  "scale": 1.0,
+  "tiers": {
+   "full": "mage-sexy-lycanthropy_full.png",
+   "1024": "mage-sexy-lycanthropy_1024.png",
+   "256": "mage-sexy-lycanthropy_256.png"
+  }
+ },
+ "hero.tutorial.mage-sexy.vera.possession": {
+  "hex": "12a24aea99ab.webp",
+  "src": "art/heroes/mage-sexy/card/possession.png",
+  "slug": "mage-sexy",
+  "status": "possession",
+  "scale": 1.0,
+  "tiers": {
+   "full": "mage-sexy-possession_full.png",
+   "1024": "mage-sexy-possession_1024.png",
+   "256": "mage-sexy-possession_256.png"
+  }
+ },
+ "hero.tutorial.mage-sexy.vera.rotting-flesh": {
+  "hex": "4f29e1969423.webp",
+  "src": "art/heroes/mage-sexy/card/rotting-flesh.png",
+  "slug": "mage-sexy",
+  "status": "rotting-flesh",
+  "scale": 1.0,
+  "tiers": {
+   "full": "mage-sexy-rotting-flesh_full.png",
+   "1024": "mage-sexy-rotting-flesh_1024.png",
+   "256": "mage-sexy-rotting-flesh_256.png"
+  }
+ },
+ "hero.tutorial.priest-armored.marcus.vampirism": {
+  "hex": "09c3f7560625.webp",
+  "src": "art/heroes/priest-armored/card/vampirism.png",
+  "slug": "priest-armored",
+  "status": "vampirism",
+  "scale": 1.0,
+  "tiers": {
+   "full": "priest-armored-vampirism_full.png",
+   "1024": "priest-armored-vampirism_1024.png",
+   "256": "priest-armored-vampirism_256.png"
+  }
+ },
+ "hero.tutorial.priest-armored.marcus.lycanthropy": {
+  "hex": "e6705ce2f5e1.webp",
+  "src": "art/heroes/priest-armored/card/lycanthropy.png",
+  "slug": "priest-armored",
+  "status": "lycanthropy",
+  "scale": 1.0,
+  "tiers": {
+   "full": "priest-armored-lycanthropy_full.png",
+   "1024": "priest-armored-lycanthropy_1024.png",
+   "256": "priest-armored-lycanthropy_256.png"
+  }
+ },
+ "hero.tutorial.priest-armored.marcus.possession": {
+  "hex": "220d5cc8119d.webp",
+  "src": "art/heroes/priest-armored/card/possession.png",
+  "slug": "priest-armored",
+  "status": "possession",
+  "scale": 1.0,
+  "tiers": {
+   "full": "priest-armored-possession_full.png",
+   "1024": "priest-armored-possession_1024.png",
+   "256": "priest-armored-possession_256.png"
+  }
+ },
+ "hero.tutorial.priest-armored.marcus.rotting-flesh": {
+  "hex": "28c8e026695c.webp",
+  "src": "art/heroes/priest-armored/card/rotting-flesh.png",
+  "slug": "priest-armored",
+  "status": "rotting-flesh",
+  "scale": 1.0,
+  "tiers": {
+   "full": "priest-armored-rotting-flesh_full.png",
+   "1024": "priest-armored-rotting-flesh_1024.png",
+   "256": "priest-armored-rotting-flesh_256.png"
+  }
+ },
+ "hero.tutorial.priest-pauper.silas.vampirism": {
+  "hex": "f7873f3dd4b0.webp",
+  "src": "art/heroes/priest-pauper/card/vampirism.png",
+  "slug": "priest-pauper",
+  "status": "vampirism",
+  "scale": 1.0,
+  "tiers": {
+   "full": "priest-pauper-vampirism_full.png",
+   "1024": "priest-pauper-vampirism_1024.png",
+   "256": "priest-pauper-vampirism_256.png"
+  }
+ },
+ "hero.tutorial.priest-pauper.silas.lycanthropy": {
+  "hex": "96bd9eef8287.webp",
+  "src": "art/heroes/priest-pauper/card/lycanthropy.png",
+  "slug": "priest-pauper",
+  "status": "lycanthropy",
+  "scale": 1.0,
+  "tiers": {
+   "full": "priest-pauper-lycanthropy_full.png",
+   "1024": "priest-pauper-lycanthropy_1024.png",
+   "256": "priest-pauper-lycanthropy_256.png"
+  }
+ },
+ "hero.tutorial.priest-pauper.silas.possession": {
+  "hex": "68753103d3bf.webp",
+  "src": "art/heroes/priest-pauper/card/possession.png",
+  "slug": "priest-pauper",
+  "status": "possession",
+  "scale": 1.0,
+  "tiers": {
+   "full": "priest-pauper-possession_full.png",
+   "1024": "priest-pauper-possession_1024.png",
+   "256": "priest-pauper-possession_256.png"
+  }
+ },
+ "hero.tutorial.priest-pauper.silas.rotting-flesh": {
+  "hex": "0ecff6e924f1.webp",
+  "src": "art/heroes/priest-pauper/card/rotting-flesh.png",
+  "slug": "priest-pauper",
+  "status": "rotting-flesh",
+  "scale": 1.0,
+  "tiers": {
+   "full": "priest-pauper-rotting-flesh_full.png",
+   "1024": "priest-pauper-rotting-flesh_1024.png",
+   "256": "priest-pauper-rotting-flesh_256.png"
+  }
+ },
+ "hero.tutorial.priest-robes.gregory.vampirism": {
+  "hex": "101e67f0ee96.webp",
+  "src": "art/heroes/priest-robes/card/vampirism.png",
+  "slug": "priest-robes",
+  "status": "vampirism",
+  "scale": 1.0,
+  "tiers": {
+   "full": "priest-robes-vampirism_full.png",
+   "1024": "priest-robes-vampirism_1024.png",
+   "256": "priest-robes-vampirism_256.png"
+  }
+ },
+ "hero.tutorial.priest-robes.gregory.lycanthropy": {
+  "hex": "13b379b1eb9e.webp",
+  "src": "art/heroes/priest-robes/card/lycanthropy.png",
+  "slug": "priest-robes",
+  "status": "lycanthropy",
+  "scale": 1.0,
+  "tiers": {
+   "full": "priest-robes-lycanthropy_full.png",
+   "1024": "priest-robes-lycanthropy_1024.png",
+   "256": "priest-robes-lycanthropy_256.png"
+  }
+ },
+ "hero.tutorial.priest-robes.gregory.possession": {
+  "hex": "1e8a08e13885.webp",
+  "src": "art/heroes/priest-robes/card/possession.png",
+  "slug": "priest-robes",
+  "status": "possession",
+  "scale": 1.0,
+  "tiers": {
+   "full": "priest-robes-possession_full.png",
+   "1024": "priest-robes-possession_1024.png",
+   "256": "priest-robes-possession_256.png"
+  }
+ },
+ "hero.tutorial.priest-robes.gregory.rotting-flesh": {
+  "hex": "205e817c53da.webp",
+  "src": "art/heroes/priest-robes/card/rotting-flesh.png",
+  "slug": "priest-robes",
+  "status": "rotting-flesh",
+  "scale": 1.0,
+  "tiers": {
+   "full": "priest-robes-rotting-flesh_full.png",
+   "1024": "priest-robes-rotting-flesh_1024.png",
+   "256": "priest-robes-rotting-flesh_256.png"
+  }
+ },
+ "hero.tutorial.priest-scantily.lucius.vampirism": {
+  "hex": "fdd49141a667.webp",
+  "src": "art/heroes/priest-scantily/card/vampirism.png",
+  "slug": "priest-scantily",
+  "status": "vampirism",
+  "scale": 1.0,
+  "tiers": {
+   "full": "priest-scantily-vampirism_full.png",
+   "1024": "priest-scantily-vampirism_1024.png",
+   "256": "priest-scantily-vampirism_256.png"
+  }
+ },
+ "hero.tutorial.priest-scantily.lucius.lycanthropy": {
+  "hex": "ef4ee86a33e7.webp",
+  "src": "art/heroes/priest-scantily/card/lycanthropy.png",
+  "slug": "priest-scantily",
+  "status": "lycanthropy",
+  "scale": 1.0,
+  "tiers": {
+   "full": "priest-scantily-lycanthropy_full.png",
+   "1024": "priest-scantily-lycanthropy_1024.png",
+   "256": "priest-scantily-lycanthropy_256.png"
+  }
+ },
+ "hero.tutorial.priest-scantily.lucius.possession": {
+  "hex": "b5202ce10768.webp",
+  "src": "art/heroes/priest-scantily/card/possession.png",
+  "slug": "priest-scantily",
+  "status": "possession",
+  "scale": 1.0,
+  "tiers": {
+   "full": "priest-scantily-possession_full.png",
+   "1024": "priest-scantily-possession_1024.png",
+   "256": "priest-scantily-possession_256.png"
+  }
+ },
+ "hero.tutorial.priest-scantily.lucius.rotting-flesh": {
+  "hex": "f0e425b74fea.webp",
+  "src": "art/heroes/priest-scantily/card/rotting-flesh.png",
+  "slug": "priest-scantily",
+  "status": "rotting-flesh",
+  "scale": 1.0,
+  "tiers": {
+   "full": "priest-scantily-rotting-flesh_full.png",
+   "1024": "priest-scantily-rotting-flesh_1024.png",
+   "256": "priest-scantily-rotting-flesh_256.png"
+  }
+ },
+ "hero.tutorial.paladin-dark.roland.vampirism": {
+  "hex": "e19d4abde5cd.webp",
+  "src": "art/heroes/paladin-dark/card/vampirism.png",
+  "slug": "paladin-dark",
+  "status": "vampirism",
+  "scale": 1.0,
+  "tiers": {
+   "full": "paladin-dark-vampirism_full.png",
+   "1024": "paladin-dark-vampirism_1024.png",
+   "256": "paladin-dark-vampirism_256.png"
+  }
+ },
+ "hero.tutorial.paladin-dark.roland.lycanthropy": {
+  "hex": "3f5ba31ec6cd.webp",
+  "src": "art/heroes/paladin-dark/card/lycanthropy.png",
+  "slug": "paladin-dark",
+  "status": "lycanthropy",
+  "scale": 1.0,
+  "tiers": {
+   "full": "paladin-dark-lycanthropy_full.png",
+   "1024": "paladin-dark-lycanthropy_1024.png",
+   "256": "paladin-dark-lycanthropy_256.png"
+  }
+ },
+ "hero.tutorial.paladin-dark.roland.possession": {
+  "hex": "b7b4c573f2e5.webp",
+  "src": "art/heroes/paladin-dark/card/possession.png",
+  "slug": "paladin-dark",
+  "status": "possession",
+  "scale": 1.0,
+  "tiers": {
+   "full": "paladin-dark-possession_full.png",
+   "1024": "paladin-dark-possession_1024.png",
+   "256": "paladin-dark-possession_256.png"
+  }
+ },
+ "hero.tutorial.paladin-dark.roland.rotting-flesh": {
+  "hex": "1b01c6884056.webp",
+  "src": "art/heroes/paladin-dark/card/rotting-flesh.png",
+  "slug": "paladin-dark",
+  "status": "rotting-flesh",
+  "scale": 1.0,
+  "tiers": {
+   "full": "paladin-dark-rotting-flesh_full.png",
+   "1024": "paladin-dark-rotting-flesh_1024.png",
+   "256": "paladin-dark-rotting-flesh_256.png"
+  }
+ },
+ "hero.tutorial.paladin-hunk.percival.vampirism": {
+  "hex": "fc8e8cb79b05.webp",
+  "src": "art/heroes/paladin-hunk/card/vampirism.png",
+  "slug": "paladin-hunk",
+  "status": "vampirism",
+  "scale": 1.0,
+  "tiers": {
+   "full": "paladin-hunk-vampirism_full.png",
+   "1024": "paladin-hunk-vampirism_1024.png",
+   "256": "paladin-hunk-vampirism_256.png"
+  }
+ },
+ "hero.tutorial.paladin-hunk.percival.lycanthropy": {
+  "hex": "7cc063b6d7ed.webp",
+  "src": "art/heroes/paladin-hunk/card/lycanthropy.png",
+  "slug": "paladin-hunk",
+  "status": "lycanthropy",
+  "scale": 1.0,
+  "tiers": {
+   "full": "paladin-hunk-lycanthropy_full.png",
+   "1024": "paladin-hunk-lycanthropy_1024.png",
+   "256": "paladin-hunk-lycanthropy_256.png"
+  }
+ },
+ "hero.tutorial.paladin-hunk.percival.possession": {
+  "hex": "b77dfbeec1ca.webp",
+  "src": "art/heroes/paladin-hunk/card/possession.png",
+  "slug": "paladin-hunk",
+  "status": "possession",
+  "scale": 1.0,
+  "tiers": {
+   "full": "paladin-hunk-possession_full.png",
+   "1024": "paladin-hunk-possession_1024.png",
+   "256": "paladin-hunk-possession_256.png"
+  }
+ },
+ "hero.tutorial.paladin-hunk.percival.rotting-flesh": {
+  "hex": "deb4719f3257.webp",
+  "src": "art/heroes/paladin-hunk/card/rotting-flesh.png",
+  "slug": "paladin-hunk",
+  "status": "rotting-flesh",
+  "scale": 1.0,
+  "tiers": {
+   "full": "paladin-hunk-rotting-flesh_full.png",
+   "1024": "paladin-hunk-rotting-flesh_1024.png",
+   "256": "paladin-hunk-rotting-flesh_256.png"
+  }
+ },
+ "hero.tutorial.paladin-shiney.osric.vampirism": {
+  "hex": "ebab72ff91e8.webp",
+  "src": "art/heroes/paladin-shiney/card/vampirism.png",
+  "slug": "paladin-shiney",
+  "status": "vampirism",
+  "scale": 1.0,
+  "tiers": {
+   "full": "paladin-shiney-vampirism_full.png",
+   "1024": "paladin-shiney-vampirism_1024.png",
+   "256": "paladin-shiney-vampirism_256.png"
+  }
+ },
+ "hero.tutorial.paladin-shiney.osric.lycanthropy": {
+  "hex": "ced90e59a884.webp",
+  "src": "art/heroes/paladin-shiney/card/lycanthropy.png",
+  "slug": "paladin-shiney",
+  "status": "lycanthropy",
+  "scale": 1.0,
+  "tiers": {
+   "full": "paladin-shiney-lycanthropy_full.png",
+   "1024": "paladin-shiney-lycanthropy_1024.png",
+   "256": "paladin-shiney-lycanthropy_256.png"
+  }
+ },
+ "hero.tutorial.paladin-shiney.osric.possession": {
+  "hex": "41c47db8a94e.webp",
+  "src": "art/heroes/paladin-shiney/card/possession.png",
+  "slug": "paladin-shiney",
+  "status": "possession",
+  "scale": 1.0,
+  "tiers": {
+   "full": "paladin-shiney-possession_full.png",
+   "1024": "paladin-shiney-possession_1024.png",
+   "256": "paladin-shiney-possession_256.png"
+  }
+ },
+ "hero.tutorial.paladin-shiney.osric.rotting-flesh": {
+  "hex": "0a1144215afe.webp",
+  "src": "art/heroes/paladin-shiney/card/rotting-flesh.png",
+  "slug": "paladin-shiney",
+  "status": "rotting-flesh",
+  "scale": 1.0,
+  "tiers": {
+   "full": "paladin-shiney-rotting-flesh_full.png",
+   "1024": "paladin-shiney-rotting-flesh_1024.png",
+   "256": "paladin-shiney-rotting-flesh_256.png"
+  }
+ },
+ "hero.tutorial.paladin-smug.alaric.vampirism": {
+  "hex": "6c8d22ca126f.webp",
+  "src": "art/heroes/paladin-smug/card/vampirism.png",
+  "slug": "paladin-smug",
+  "status": "vampirism",
+  "scale": 1.0,
+  "tiers": {
+   "full": "paladin-smug-vampirism_full.png",
+   "1024": "paladin-smug-vampirism_1024.png",
+   "256": "paladin-smug-vampirism_256.png"
+  }
+ },
+ "hero.tutorial.paladin-smug.alaric.lycanthropy": {
+  "hex": "cd9c863231ab.webp",
+  "src": "art/heroes/paladin-smug/card/lycanthropy.png",
+  "slug": "paladin-smug",
+  "status": "lycanthropy",
+  "scale": 1.0,
+  "tiers": {
+   "full": "paladin-smug-lycanthropy_full.png",
+   "1024": "paladin-smug-lycanthropy_1024.png",
+   "256": "paladin-smug-lycanthropy_256.png"
+  }
+ },
+ "hero.tutorial.paladin-smug.alaric.possession": {
+  "hex": "840bbf574571.webp",
+  "src": "art/heroes/paladin-smug/card/possession.png",
+  "slug": "paladin-smug",
+  "status": "possession",
+  "scale": 1.0,
+  "tiers": {
+   "full": "paladin-smug-possession_full.png",
+   "1024": "paladin-smug-possession_1024.png",
+   "256": "paladin-smug-possession_256.png"
+  }
+ },
+ "hero.tutorial.paladin-smug.alaric.rotting-flesh": {
+  "hex": "9fa91ad3d6b8.webp",
+  "src": "art/heroes/paladin-smug/card/rotting-flesh.png",
+  "slug": "paladin-smug",
+  "status": "rotting-flesh",
+  "scale": 1.0,
+  "tiers": {
+   "full": "paladin-smug-rotting-flesh_full.png",
+   "1024": "paladin-smug-rotting-flesh_1024.png",
+   "256": "paladin-smug-rotting-flesh_256.png"
+  }
+ },
+ "hero.tutorial.ranger-aggressive.kira.vampirism": {
+  "hex": "81ad2de355cb.webp",
+  "src": "art/heroes/ranger-aggressive/card/vampirism.png",
+  "slug": "ranger-aggressive",
+  "status": "vampirism",
+  "scale": 1.0,
+  "tiers": {
+   "full": "ranger-aggressive-vampirism_full.png",
+   "1024": "ranger-aggressive-vampirism_1024.png",
+   "256": "ranger-aggressive-vampirism_256.png"
+  }
+ },
+ "hero.tutorial.ranger-aggressive.kira.lycanthropy": {
+  "hex": "375a108a253f.webp",
+  "src": "art/heroes/ranger-aggressive/card/lycanthropy.png",
+  "slug": "ranger-aggressive",
+  "status": "lycanthropy",
+  "scale": 1.0,
+  "tiers": {
+   "full": "ranger-aggressive-lycanthropy_full.png",
+   "1024": "ranger-aggressive-lycanthropy_1024.png",
+   "256": "ranger-aggressive-lycanthropy_256.png"
+  }
+ },
+ "hero.tutorial.ranger-aggressive.kira.possession": {
+  "hex": "47a2dbba688a.webp",
+  "src": "art/heroes/ranger-aggressive/card/possession.png",
+  "slug": "ranger-aggressive",
+  "status": "possession",
+  "scale": 1.0,
+  "tiers": {
+   "full": "ranger-aggressive-possession_full.png",
+   "1024": "ranger-aggressive-possession_1024.png",
+   "256": "ranger-aggressive-possession_256.png"
+  }
+ },
+ "hero.tutorial.ranger-aggressive.kira.rotting-flesh": {
+  "hex": "27272ae789e2.webp",
+  "src": "art/heroes/ranger-aggressive/card/rotting-flesh.png",
+  "slug": "ranger-aggressive",
+  "status": "rotting-flesh",
+  "scale": 1.0,
+  "tiers": {
+   "full": "ranger-aggressive-rotting-flesh_full.png",
+   "1024": "ranger-aggressive-rotting-flesh_1024.png",
+   "256": "ranger-aggressive-rotting-flesh_256.png"
+  }
+ },
+ "hero.tutorial.ranger-nature.wren.vampirism": {
+  "hex": "f7ac2b1b7bd2.webp",
+  "src": "art/heroes/ranger-nature/card/vampirism.png",
+  "slug": "ranger-nature",
+  "status": "vampirism",
+  "scale": 1.0,
+  "tiers": {
+   "full": "ranger-nature-vampirism_full.png",
+   "1024": "ranger-nature-vampirism_1024.png",
+   "256": "ranger-nature-vampirism_256.png"
+  }
+ },
+ "hero.tutorial.ranger-nature.wren.lycanthropy": {
+  "hex": "0e68da3759de.webp",
+  "src": "art/heroes/ranger-nature/card/lycanthropy.png",
+  "slug": "ranger-nature",
+  "status": "lycanthropy",
+  "scale": 1.0,
+  "tiers": {
+   "full": "ranger-nature-lycanthropy_full.png",
+   "1024": "ranger-nature-lycanthropy_1024.png",
+   "256": "ranger-nature-lycanthropy_256.png"
+  }
+ },
+ "hero.tutorial.ranger-nature.wren.possession": {
+  "hex": "19b9939997a4.webp",
+  "src": "art/heroes/ranger-nature/card/possession.png",
+  "slug": "ranger-nature",
+  "status": "possession",
+  "scale": 1.0,
+  "tiers": {
+   "full": "ranger-nature-possession_full.png",
+   "1024": "ranger-nature-possession_1024.png",
+   "256": "ranger-nature-possession_256.png"
+  }
+ },
+ "hero.tutorial.ranger-nature.wren.rotting-flesh": {
+  "hex": "f7d0e7850b1a.webp",
+  "src": "art/heroes/ranger-nature/card/rotting-flesh.png",
+  "slug": "ranger-nature",
+  "status": "rotting-flesh",
+  "scale": 1.0,
+  "tiers": {
+   "full": "ranger-nature-rotting-flesh_full.png",
+   "1024": "ranger-nature-rotting-flesh_1024.png",
+   "256": "ranger-nature-rotting-flesh_256.png"
+  }
+ },
+ "hero.tutorial.ranger-ranger.brenna.vampirism": {
+  "hex": "c1de175700dd.webp",
+  "src": "art/heroes/ranger-ranger/card/vampirism.png",
+  "slug": "ranger-ranger",
+  "status": "vampirism",
+  "scale": 1.0,
+  "tiers": {
+   "full": "ranger-ranger-vampirism_full.png",
+   "1024": "ranger-ranger-vampirism_1024.png",
+   "256": "ranger-ranger-vampirism_256.png"
+  }
+ },
+ "hero.tutorial.ranger-ranger.brenna.lycanthropy": {
+  "hex": "0d9e86e3423c.webp",
+  "src": "art/heroes/ranger-ranger/card/lycanthropy.png",
+  "slug": "ranger-ranger",
+  "status": "lycanthropy",
+  "scale": 1.0,
+  "tiers": {
+   "full": "ranger-ranger-lycanthropy_full.png",
+   "1024": "ranger-ranger-lycanthropy_1024.png",
+   "256": "ranger-ranger-lycanthropy_256.png"
+  }
+ },
+ "hero.tutorial.ranger-ranger.brenna.possession": {
+  "hex": "57a0626d293b.webp",
+  "src": "art/heroes/ranger-ranger/card/possession.png",
+  "slug": "ranger-ranger",
+  "status": "possession",
+  "scale": 1.0,
+  "tiers": {
+   "full": "ranger-ranger-possession_full.png",
+   "1024": "ranger-ranger-possession_1024.png",
+   "256": "ranger-ranger-possession_256.png"
+  }
+ },
+ "hero.tutorial.ranger-ranger.brenna.rotting-flesh": {
+  "hex": "05eca2ed90c7.webp",
+  "src": "art/heroes/ranger-ranger/card/rotting-flesh.png",
+  "slug": "ranger-ranger",
+  "status": "rotting-flesh",
+  "scale": 1.0,
+  "tiers": {
+   "full": "ranger-ranger-rotting-flesh_full.png",
+   "1024": "ranger-ranger-rotting-flesh_1024.png",
+   "256": "ranger-ranger-rotting-flesh_256.png"
+  }
+ },
+ "hero.tutorial.ranger-scantily.mira.vampirism": {
+  "hex": "e0485959e5e3.webp",
+  "src": "art/heroes/ranger-scantily/card/vampirism.png",
+  "slug": "ranger-scantily",
+  "status": "vampirism",
+  "scale": 1.0,
+  "tiers": {
+   "full": "ranger-scantily-vampirism_full.png",
+   "1024": "ranger-scantily-vampirism_1024.png",
+   "256": "ranger-scantily-vampirism_256.png"
+  }
+ },
+ "hero.tutorial.ranger-scantily.mira.lycanthropy": {
+  "hex": "708fe146192f.webp",
+  "src": "art/heroes/ranger-scantily/card/lycanthropy.png",
+  "slug": "ranger-scantily",
+  "status": "lycanthropy",
+  "scale": 1.0,
+  "tiers": {
+   "full": "ranger-scantily-lycanthropy_full.png",
+   "1024": "ranger-scantily-lycanthropy_1024.png",
+   "256": "ranger-scantily-lycanthropy_256.png"
+  }
+ },
+ "hero.tutorial.ranger-scantily.mira.possession": {
+  "hex": "91bf1c9385d1.webp",
+  "src": "art/heroes/ranger-scantily/card/possession.png",
+  "slug": "ranger-scantily",
+  "status": "possession",
+  "scale": 1.0,
+  "tiers": {
+   "full": "ranger-scantily-possession_full.png",
+   "1024": "ranger-scantily-possession_1024.png",
+   "256": "ranger-scantily-possession_256.png"
+  }
+ },
+ "hero.tutorial.ranger-scantily.mira.rotting-flesh": {
+  "hex": "31228ed33147.webp",
+  "src": "art/heroes/ranger-scantily/card/rotting-flesh.png",
+  "slug": "ranger-scantily",
+  "status": "rotting-flesh",
+  "scale": 1.0,
+  "tiers": {
+   "full": "ranger-scantily-rotting-flesh_full.png",
+   "1024": "ranger-scantily-rotting-flesh_1024.png",
+   "256": "ranger-scantily-rotting-flesh_256.png"
+  }
+ },
+ "hero.tutorial.rogue-raven.nadia.vampirism": {
+  "hex": "2da27091799f.webp",
+  "src": "art/heroes/rogue-raven/card/vampirism.jpg",
+  "slug": "rogue-raven",
+  "status": "vampirism",
+  "scale": 1.0,
+  "tiers": {
+   "full": "rogue-raven-vampirism_full.png",
+   "1024": "rogue-raven-vampirism_1024.png",
+   "256": "rogue-raven-vampirism_256.png"
+  }
+ },
+ "hero.tutorial.rogue-raven.nadia.lycanthropy": {
+  "hex": "007970d63d9f.webp",
+  "src": "art/heroes/rogue-raven/card/lycanthropy.jpg",
+  "slug": "rogue-raven",
+  "status": "lycanthropy",
+  "scale": 1.0,
+  "tiers": {
+   "full": "rogue-raven-lycanthropy_full.png",
+   "1024": "rogue-raven-lycanthropy_1024.png",
+   "256": "rogue-raven-lycanthropy_256.png"
+  }
+ },
+ "hero.tutorial.rogue-raven.nadia.possession": {
+  "hex": "ebd1213d8da9.webp",
+  "src": "art/heroes/rogue-raven/card/possession.jpg",
+  "slug": "rogue-raven",
+  "status": "possession",
+  "scale": 1.0,
+  "tiers": {
+   "full": "rogue-raven-possession_full.png",
+   "1024": "rogue-raven-possession_1024.png",
+   "256": "rogue-raven-possession_256.png"
+  }
+ },
+ "hero.tutorial.rogue-raven.nadia.rotting-flesh": {
+  "hex": "7443fbacb8e7.webp",
+  "src": "art/heroes/rogue-raven/card/rotting-flesh.jpg",
+  "slug": "rogue-raven",
+  "status": "rotting-flesh",
+  "scale": 1.0,
+  "tiers": {
+   "full": "rogue-raven-rotting-flesh_full.png",
+   "1024": "rogue-raven-rotting-flesh_1024.png",
+   "256": "rogue-raven-rotting-flesh_256.png"
+  }
+ },
+ "hero.tutorial.rogue-rose.rosa.vampirism": {
+  "hex": "082e5e8591fc.webp",
+  "src": "art/heroes/rogue-rose/card/vampirism.png",
+  "slug": "rogue-rose",
+  "status": "vampirism",
+  "scale": 1.0,
+  "tiers": {
+   "full": "rogue-rose-vampirism_full.png",
+   "1024": "rogue-rose-vampirism_1024.png",
+   "256": "rogue-rose-vampirism_256.png"
+  }
+ },
+ "hero.tutorial.rogue-rose.rosa.lycanthropy": {
+  "hex": "89d1051de86d.webp",
+  "src": "art/heroes/rogue-rose/card/lycanthropy.png",
+  "slug": "rogue-rose",
+  "status": "lycanthropy",
+  "scale": 1.0,
+  "tiers": {
+   "full": "rogue-rose-lycanthropy_full.png",
+   "1024": "rogue-rose-lycanthropy_1024.png",
+   "256": "rogue-rose-lycanthropy_256.png"
+  }
+ },
+ "hero.tutorial.rogue-rose.rosa.possession": {
+  "hex": "5c64c3241e68.webp",
+  "src": "art/heroes/rogue-rose/card/possession.png",
+  "slug": "rogue-rose",
+  "status": "possession",
+  "scale": 1.0,
+  "tiers": {
+   "full": "rogue-rose-possession_full.png",
+   "1024": "rogue-rose-possession_1024.png",
+   "256": "rogue-rose-possession_256.png"
+  }
+ },
+ "hero.tutorial.rogue-rose.rosa.rotting-flesh": {
+  "hex": "6865dc17aa35.webp",
+  "src": "art/heroes/rogue-rose/card/rotting-flesh.png",
+  "slug": "rogue-rose",
+  "status": "rotting-flesh",
+  "scale": 1.0,
+  "tiers": {
+   "full": "rogue-rose-rotting-flesh_full.png",
+   "1024": "rogue-rose-rotting-flesh_1024.png",
+   "256": "rogue-rose-rotting-flesh_256.png"
+  }
+ },
+ "hero.tutorial.rogue-skull.zara.vampirism": {
+  "hex": "a206b28e6076.webp",
+  "src": "art/heroes/rogue-skull/card/vampirism.png",
+  "slug": "rogue-skull",
+  "status": "vampirism",
+  "scale": 1.0,
+  "tiers": {
+   "full": "rogue-skull-vampirism_full.png",
+   "1024": "rogue-skull-vampirism_1024.png",
+   "256": "rogue-skull-vampirism_256.png"
+  }
+ },
+ "hero.tutorial.rogue-skull.zara.lycanthropy": {
+  "hex": "3487b6835d6a.webp",
+  "src": "art/heroes/rogue-skull/card/lycanthropy.png",
+  "slug": "rogue-skull",
+  "status": "lycanthropy",
+  "scale": 1.0,
+  "tiers": {
+   "full": "rogue-skull-lycanthropy_full.png",
+   "1024": "rogue-skull-lycanthropy_1024.png",
+   "256": "rogue-skull-lycanthropy_256.png"
+  }
+ },
+ "hero.tutorial.rogue-skull.zara.possession": {
+  "hex": "5550cd791105.webp",
+  "src": "art/heroes/rogue-skull/card/possession.png",
+  "slug": "rogue-skull",
+  "status": "possession",
+  "scale": 1.0,
+  "tiers": {
+   "full": "rogue-skull-possession_full.png",
+   "1024": "rogue-skull-possession_1024.png",
+   "256": "rogue-skull-possession_256.png"
+  }
+ },
+ "hero.tutorial.rogue-skull.zara.rotting-flesh": {
+  "hex": "4cd8ce043cdf.webp",
+  "src": "art/heroes/rogue-skull/card/rotting-flesh.png",
+  "slug": "rogue-skull",
+  "status": "rotting-flesh",
+  "scale": 1.0,
+  "tiers": {
+   "full": "rogue-skull-rotting-flesh_full.png",
+   "1024": "rogue-skull-rotting-flesh_1024.png",
+   "256": "rogue-skull-rotting-flesh_256.png"
+  }
+ },
+ "hero.tutorial.rogue-snake.sela.vampirism": {
+  "hex": "cebc7fdb83a9.webp",
+  "src": "art/heroes/rogue-snake/card/vampirism.png",
+  "slug": "rogue-snake",
+  "status": "vampirism",
+  "scale": 1.0,
+  "tiers": {
+   "full": "rogue-snake-vampirism_full.png",
+   "1024": "rogue-snake-vampirism_1024.png",
+   "256": "rogue-snake-vampirism_256.png"
+  }
+ },
+ "hero.tutorial.rogue-snake.sela.lycanthropy": {
+  "hex": "d44f9b858993.webp",
+  "src": "art/heroes/rogue-snake/card/lycanthropy.png",
+  "slug": "rogue-snake",
+  "status": "lycanthropy",
+  "scale": 1.0,
+  "tiers": {
+   "full": "rogue-snake-lycanthropy_full.png",
+   "1024": "rogue-snake-lycanthropy_1024.png",
+   "256": "rogue-snake-lycanthropy_256.png"
+  }
+ },
+ "hero.tutorial.rogue-snake.sela.possession": {
+  "hex": "0ef07b4ec3d3.webp",
+  "src": "art/heroes/rogue-snake/card/possession.png",
+  "slug": "rogue-snake",
+  "status": "possession",
+  "scale": 1.0,
+  "tiers": {
+   "full": "rogue-snake-possession_full.png",
+   "1024": "rogue-snake-possession_1024.png",
+   "256": "rogue-snake-possession_256.png"
+  }
+ },
+ "hero.tutorial.rogue-snake.sela.rotting-flesh": {
+  "hex": "a53df968286f.webp",
+  "src": "art/heroes/rogue-snake/card/rotting-flesh.png",
+  "slug": "rogue-snake",
+  "status": "rotting-flesh",
+  "scale": 1.0,
+  "tiers": {
+   "full": "rogue-snake-rotting-flesh_full.png",
+   "1024": "rogue-snake-rotting-flesh_1024.png",
+   "256": "rogue-snake-rotting-flesh_256.png"
+  }
+ }
+}

@@ -101,6 +101,14 @@ else for (const [reason, who] of [...byReason.entries()].sort((a,b) => b[1].leng
   if (who.length > shown.length) P(`- *…and ${who.length - shown.length} more*`);
   P('');
 }
+// Rows that name their own blocker via needsCapability - the field content already uses for
+// exactly this. A badge that says what it needs is worth more than a badge that silently
+// does nothing, and this is where those get counted.
+{ const need=[...(D.badges||[]),...(D.items||[]),...(D.powers||[]),...(D.specialties||[])].filter(x=>x.needsCapability);
+  if(need.length){ const g={}; for(const x of need){ const k=String(x.needsCapability).split(' — ')[0]; (g[k]=g[k]||[]).push(x.name); }
+    P('### Rows that name their own missing capability'); P('');
+    for(const [cap,names] of Object.entries(g).sort((a,b)=>b[1].length-a[1].length)){
+      P('**'+cap+'** — '+names.length+' rows: '+names.join(', ')); P(''); } } }
 P('## 3. Missing station — **stop here**');
 P('');
 P('Content that needs a new point in the combat sequence to fire at. Constitution-relevant:');

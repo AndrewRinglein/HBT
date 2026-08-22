@@ -16590,7 +16590,7 @@
     "strength": 4,
     "precision": 3,
     "armor": 1,
-    "health": 11,
+    "health": 12,
     "reach": 1,
     "magic": 0,
     "spirit": 0,
@@ -16612,11 +16612,13 @@
    "notes": [
     "Toughness 3 is hell-tcg maxAfflictions, ported straight across — same meaning.",
     "EVE BASE CLASS. One piece of base art, one hero - ruled 2026-08-21. Its 4 art files are this hero at four LEVELS, not four heroes; they are on levelArt.",
-    "Hell-TCG shipped four alternative stat/personality rolls for this art set. Only the first is carried; the other three were cut as duplications of art."
+    "Hell-TCG shipped four alternative stat/personality rolls for this art set. Only the first is carried; the other three were cut as duplications of art.",
+    "Differentiated 2026-08-22: A dwarf, and the one that leans into simply having more of him."
    ],
    "specialty": null,
    "originBadges": [
-    "Stalwart"
+    "Stalwart",
+    "Dwarf"
    ],
    "classPowers": [],
    "namedSpecials": [],
@@ -16679,7 +16681,19 @@
    "hexArt": [
     "art/heroes/warrior-iron/hex/l1_1024.png",
     "art/heroes/warrior-iron/hex/l1_256.png",
-    "art/heroes/warrior-iron/hex/l1_full.png"
+    "art/heroes/warrior-iron/hex/l1_full.png",
+    "art/heroes/warrior-iron/hex/lycanthropy_1024.png",
+    "art/heroes/warrior-iron/hex/lycanthropy_256.png",
+    "art/heroes/warrior-iron/hex/lycanthropy_full.png",
+    "art/heroes/warrior-iron/hex/possession_1024.png",
+    "art/heroes/warrior-iron/hex/possession_256.png",
+    "art/heroes/warrior-iron/hex/possession_full.png",
+    "art/heroes/warrior-iron/hex/rotting-flesh_1024.png",
+    "art/heroes/warrior-iron/hex/rotting-flesh_256.png",
+    "art/heroes/warrior-iron/hex/rotting-flesh_full.png",
+    "art/heroes/warrior-iron/hex/vampirism_1024.png",
+    "art/heroes/warrior-iron/hex/vampirism_256.png",
+    "art/heroes/warrior-iron/hex/vampirism_full.png"
    ]
   },
   {
@@ -16694,7 +16708,7 @@
    "campaign": "eve-of-ruin",
    "art": "art/heroes/warrior-fearsome/card/l1.png",
    "ported": {
-    "strength": 4,
+    "strength": 5,
     "precision": 3,
     "armor": 1,
     "health": 10,
@@ -16719,7 +16733,8 @@
    "notes": [
     "Toughness 3 is hell-tcg maxAfflictions, ported straight across — same meaning.",
     "EVE BASE CLASS. One piece of base art, one hero - ruled 2026-08-21. Its 4 art files are this hero at four LEVELS, not four heroes; they are on levelArt.",
-    "Hell-TCG shipped four alternative stat/personality rolls for this art set. Only the first is carried; the other three were cut as duplications of art."
+    "Hell-TCG shipped four alternative stat/personality rolls for this art set. Only the first is carried; the other three were cut as duplications of art.",
+    "Differentiated 2026-08-22: The one warrior who is NOT a dwarf, and pays for it in reach of arm rather than in badges."
    ],
    "specialty": null,
    "originBadges": [
@@ -16786,7 +16801,19 @@
    "hexArt": [
     "art/heroes/warrior-fearsome/hex/l1_1024.png",
     "art/heroes/warrior-fearsome/hex/l1_256.png",
-    "art/heroes/warrior-fearsome/hex/l1_full.png"
+    "art/heroes/warrior-fearsome/hex/l1_full.png",
+    "art/heroes/warrior-fearsome/hex/lycanthropy_1024.png",
+    "art/heroes/warrior-fearsome/hex/lycanthropy_256.png",
+    "art/heroes/warrior-fearsome/hex/lycanthropy_full.png",
+    "art/heroes/warrior-fearsome/hex/possession_1024.png",
+    "art/heroes/warrior-fearsome/hex/possession_256.png",
+    "art/heroes/warrior-fearsome/hex/possession_full.png",
+    "art/heroes/warrior-fearsome/hex/rotting-flesh_1024.png",
+    "art/heroes/warrior-fearsome/hex/rotting-flesh_256.png",
+    "art/heroes/warrior-fearsome/hex/rotting-flesh_full.png",
+    "art/heroes/warrior-fearsome/hex/vampirism_1024.png",
+    "art/heroes/warrior-fearsome/hex/vampirism_256.png",
+    "art/heroes/warrior-fearsome/hex/vampirism_full.png"
    ]
   },
   {
@@ -16826,11 +16853,14 @@
    "notes": [
     "Toughness 3 is hell-tcg maxAfflictions, ported straight across — same meaning.",
     "EVE BASE CLASS. One piece of base art, one hero - ruled 2026-08-21. Its 4 art files are this hero at four LEVELS, not four heroes; they are on levelArt.",
-    "Hell-TCG shipped four alternative stat/personality rolls for this art set. Only the first is carried; the other three were cut as duplications of art."
+    "Hell-TCG shipped four alternative stat/personality rolls for this art set. Only the first is carried; the other three were cut as duplications of art.",
+    "Differentiated 2026-08-22: The mountain dwarf. Climber is recorded but not built - see blocked."
    ],
    "specialty": null,
    "originBadges": [
-    "Huge"
+    "Huge",
+    "Dwarf",
+    "Climber"
    ],
    "classPowers": [],
    "namedSpecials": [],
@@ -16893,7 +16923,19 @@
    "hexArt": [
     "art/heroes/warrior-barbarian/hex/l1_1024.png",
     "art/heroes/warrior-barbarian/hex/l1_256.png",
-    "art/heroes/warrior-barbarian/hex/l1_full.png"
+    "art/heroes/warrior-barbarian/hex/l1_full.png",
+    "art/heroes/warrior-barbarian/hex/lycanthropy_1024.png",
+    "art/heroes/warrior-barbarian/hex/lycanthropy_256.png",
+    "art/heroes/warrior-barbarian/hex/lycanthropy_full.png",
+    "art/heroes/warrior-barbarian/hex/possession_1024.png",
+    "art/heroes/warrior-barbarian/hex/possession_256.png",
+    "art/heroes/warrior-barbarian/hex/possession_full.png",
+    "art/heroes/warrior-barbarian/hex/rotting-flesh_1024.png",
+    "art/heroes/warrior-barbarian/hex/rotting-flesh_256.png",
+    "art/heroes/warrior-barbarian/hex/rotting-flesh_full.png",
+    "art/heroes/warrior-barbarian/hex/vampirism_1024.png",
+    "art/heroes/warrior-barbarian/hex/vampirism_256.png",
+    "art/heroes/warrior-barbarian/hex/vampirism_full.png"
    ]
   },
   {
@@ -16933,11 +16975,14 @@
    "notes": [
     "Toughness 3 is hell-tcg maxAfflictions, ported straight across — same meaning.",
     "EVE BASE CLASS. One piece of base art, one hero - ruled 2026-08-21. Its 4 art files are this hero at four LEVELS, not four heroes; they are on levelArt.",
-    "Hell-TCG shipped four alternative stat/personality rolls for this art set. Only the first is carried; the other three were cut as duplications of art."
+    "Hell-TCG shipped four alternative stat/personality rolls for this art set. Only the first is carried; the other three were cut as duplications of art.",
+    "Differentiated 2026-08-22: The dwarf who fights with his hands. Brawler is BUILT - appliesToTags [\"brawl\"], +2 strength."
    ],
    "specialty": null,
    "originBadges": [
-    "Unwavering"
+    "Unwavering",
+    "Dwarf",
+    "Brawler"
    ],
    "classPowers": [],
    "namedSpecials": [],
@@ -17000,7 +17045,19 @@
    "hexArt": [
     "art/heroes/warrior-brawler/hex/l1_1024.png",
     "art/heroes/warrior-brawler/hex/l1_256.png",
-    "art/heroes/warrior-brawler/hex/l1_full.png"
+    "art/heroes/warrior-brawler/hex/l1_full.png",
+    "art/heroes/warrior-brawler/hex/lycanthropy_1024.png",
+    "art/heroes/warrior-brawler/hex/lycanthropy_256.png",
+    "art/heroes/warrior-brawler/hex/lycanthropy_full.png",
+    "art/heroes/warrior-brawler/hex/possession_1024.png",
+    "art/heroes/warrior-brawler/hex/possession_256.png",
+    "art/heroes/warrior-brawler/hex/possession_full.png",
+    "art/heroes/warrior-brawler/hex/rotting-flesh_1024.png",
+    "art/heroes/warrior-brawler/hex/rotting-flesh_256.png",
+    "art/heroes/warrior-brawler/hex/rotting-flesh_full.png",
+    "art/heroes/warrior-brawler/hex/vampirism_1024.png",
+    "art/heroes/warrior-brawler/hex/vampirism_256.png",
+    "art/heroes/warrior-brawler/hex/vampirism_full.png"
    ]
   },
   {
@@ -17040,7 +17097,8 @@
    "notes": [
     "Toughness 2 is hell-tcg maxAfflictions, ported straight across — same meaning.",
     "EVE BASE CLASS. One piece of base art, one hero - ruled 2026-08-21. Its 4 art files are this hero at four LEVELS, not four heroes; they are on levelArt.",
-    "Hell-TCG shipped four alternative stat/personality rolls for this art set. Only the first is carried; the other three were cut as duplications of art."
+    "Hell-TCG shipped four alternative stat/personality rolls for this art set. Only the first is carried; the other three were cut as duplications of art.",
+    "Differentiated 2026-08-22: Burn on a magic hit."
    ],
    "specialty": null,
    "originBadges": [
@@ -17107,7 +17165,19 @@
    "hexArt": [
     "art/heroes/mage-fire/hex/l1_1024.png",
     "art/heroes/mage-fire/hex/l1_256.png",
-    "art/heroes/mage-fire/hex/l1_full.png"
+    "art/heroes/mage-fire/hex/l1_full.png",
+    "art/heroes/mage-fire/hex/lycanthropy_1024.png",
+    "art/heroes/mage-fire/hex/lycanthropy_256.png",
+    "art/heroes/mage-fire/hex/lycanthropy_full.png",
+    "art/heroes/mage-fire/hex/possession_1024.png",
+    "art/heroes/mage-fire/hex/possession_256.png",
+    "art/heroes/mage-fire/hex/possession_full.png",
+    "art/heroes/mage-fire/hex/rotting-flesh_1024.png",
+    "art/heroes/mage-fire/hex/rotting-flesh_256.png",
+    "art/heroes/mage-fire/hex/rotting-flesh_full.png",
+    "art/heroes/mage-fire/hex/vampirism_1024.png",
+    "art/heroes/mage-fire/hex/vampirism_256.png",
+    "art/heroes/mage-fire/hex/vampirism_full.png"
    ]
   },
   {
@@ -17147,7 +17217,8 @@
    "notes": [
     "Toughness 2 is hell-tcg maxAfflictions, ported straight across — same meaning.",
     "EVE BASE CLASS. One piece of base art, one hero - ruled 2026-08-21. Its 4 art files are this hero at four LEVELS, not four heroes; they are on levelArt.",
-    "Hell-TCG shipped four alternative stat/personality rolls for this art set. Only the first is carried; the other three were cut as duplications of art."
+    "Hell-TCG shipped four alternative stat/personality rolls for this art set. Only the first is carried; the other three were cut as duplications of art.",
+    "Differentiated 2026-08-22: The aura is the point: she does not have to swing to burn you, she has to be hit."
    ],
    "specialty": null,
    "originBadges": [
@@ -17155,7 +17226,21 @@
    ],
    "classPowers": [],
    "namedSpecials": [],
-   "triggers": null,
+   "triggers": [
+    {
+     "hook": "onTakingDamage",
+     "targets": null,
+     "effects": [
+      {
+       "effect": "apply a status",
+       "status": "burn",
+       "value": 2,
+       "target": "the attacker"
+      }
+     ],
+     "authored": true
+    }
+   ],
    "levelBonuses": null,
    "cost": null,
    "quote": "Come closer. I dare you.",
@@ -17214,7 +17299,19 @@
    "hexArt": [
     "art/heroes/mage-fireaura/hex/l1_1024.png",
     "art/heroes/mage-fireaura/hex/l1_256.png",
-    "art/heroes/mage-fireaura/hex/l1_full.png"
+    "art/heroes/mage-fireaura/hex/l1_full.png",
+    "art/heroes/mage-fireaura/hex/lycanthropy_1024.png",
+    "art/heroes/mage-fireaura/hex/lycanthropy_256.png",
+    "art/heroes/mage-fireaura/hex/lycanthropy_full.png",
+    "art/heroes/mage-fireaura/hex/possession_1024.png",
+    "art/heroes/mage-fireaura/hex/possession_256.png",
+    "art/heroes/mage-fireaura/hex/possession_full.png",
+    "art/heroes/mage-fireaura/hex/rotting-flesh_1024.png",
+    "art/heroes/mage-fireaura/hex/rotting-flesh_256.png",
+    "art/heroes/mage-fireaura/hex/rotting-flesh_full.png",
+    "art/heroes/mage-fireaura/hex/vampirism_1024.png",
+    "art/heroes/mage-fireaura/hex/vampirism_256.png",
+    "art/heroes/mage-fireaura/hex/vampirism_full.png"
    ]
   },
   {
@@ -17254,7 +17351,8 @@
    "notes": [
     "Toughness 2 is hell-tcg maxAfflictions, ported straight across — same meaning.",
     "EVE BASE CLASS. One piece of base art, one hero - ruled 2026-08-21. Its 4 art files are this hero at four LEVELS, not four heroes; they are on levelArt.",
-    "Hell-TCG shipped four alternative stat/personality rolls for this art set. Only the first is carried; the other three were cut as duplications of art."
+    "Hell-TCG shipped four alternative stat/personality rolls for this art set. Only the first is carried; the other three were cut as duplications of art.",
+    "Differentiated 2026-08-22: The one in the library. Frost rather than fire - the only cold mage of the four."
    ],
    "specialty": null,
    "originBadges": [
@@ -17321,7 +17419,19 @@
    "hexArt": [
     "art/heroes/mage-thinking/hex/l1_1024.png",
     "art/heroes/mage-thinking/hex/l1_256.png",
-    "art/heroes/mage-thinking/hex/l1_full.png"
+    "art/heroes/mage-thinking/hex/l1_full.png",
+    "art/heroes/mage-thinking/hex/lycanthropy_1024.png",
+    "art/heroes/mage-thinking/hex/lycanthropy_256.png",
+    "art/heroes/mage-thinking/hex/lycanthropy_full.png",
+    "art/heroes/mage-thinking/hex/possession_1024.png",
+    "art/heroes/mage-thinking/hex/possession_256.png",
+    "art/heroes/mage-thinking/hex/possession_full.png",
+    "art/heroes/mage-thinking/hex/rotting-flesh_1024.png",
+    "art/heroes/mage-thinking/hex/rotting-flesh_256.png",
+    "art/heroes/mage-thinking/hex/rotting-flesh_full.png",
+    "art/heroes/mage-thinking/hex/vampirism_1024.png",
+    "art/heroes/mage-thinking/hex/vampirism_256.png",
+    "art/heroes/mage-thinking/hex/vampirism_full.png"
    ]
   },
   {
@@ -17364,7 +17474,8 @@
     "Resolute +1 DROPPED — the stat was removed 2026-08-15 with no replacement.",
     "Toughness 2 is hell-tcg maxAfflictions, ported straight across — same meaning.",
     "EVE BASE CLASS. One piece of base art, one hero - ruled 2026-08-21. Its 4 art files are this hero at four LEVELS, not four heroes; they are on levelArt.",
-    "Hell-TCG shipped four alternative stat/personality rolls for this art set. Only the first is carried; the other three were cut as duplications of art."
+    "Hell-TCG shipped four alternative stat/personality rolls for this art set. Only the first is carried; the other three were cut as duplications of art.",
+    "Differentiated 2026-08-22: The second burner."
    ],
    "specialty": null,
    "originBadges": [
@@ -17431,7 +17542,19 @@
    "hexArt": [
     "art/heroes/mage-sexy/hex/l1_1024.png",
     "art/heroes/mage-sexy/hex/l1_256.png",
-    "art/heroes/mage-sexy/hex/l1_full.png"
+    "art/heroes/mage-sexy/hex/l1_full.png",
+    "art/heroes/mage-sexy/hex/lycanthropy_1024.png",
+    "art/heroes/mage-sexy/hex/lycanthropy_256.png",
+    "art/heroes/mage-sexy/hex/lycanthropy_full.png",
+    "art/heroes/mage-sexy/hex/possession_1024.png",
+    "art/heroes/mage-sexy/hex/possession_256.png",
+    "art/heroes/mage-sexy/hex/possession_full.png",
+    "art/heroes/mage-sexy/hex/rotting-flesh_1024.png",
+    "art/heroes/mage-sexy/hex/rotting-flesh_256.png",
+    "art/heroes/mage-sexy/hex/rotting-flesh_full.png",
+    "art/heroes/mage-sexy/hex/vampirism_1024.png",
+    "art/heroes/mage-sexy/hex/vampirism_256.png",
+    "art/heroes/mage-sexy/hex/vampirism_full.png"
    ]
   },
   {
@@ -17448,7 +17571,7 @@
    "ported": {
     "strength": 2,
     "precision": 3,
-    "armor": 1,
+    "armor": 2,
     "health": 7,
     "reach": 2,
     "magic": 0,
@@ -17471,7 +17594,8 @@
    "notes": [
     "Toughness 1 is hell-tcg maxAfflictions, ported straight across — same meaning.",
     "EVE BASE CLASS. One piece of base art, one hero - ruled 2026-08-21. Its 4 art files are this hero at four LEVELS, not four heroes; they are on levelArt.",
-    "Hell-TCG shipped four alternative stat/personality rolls for this art set. Only the first is carried; the other three were cut as duplications of art."
+    "Hell-TCG shipped four alternative stat/personality rolls for this art set. Only the first is carried; the other three were cut as duplications of art.",
+    "Differentiated 2026-08-22: Shield and mace. He is the one wearing the fight."
    ],
    "specialty": null,
    "originBadges": [
@@ -17535,7 +17659,19 @@
    "hexArt": [
     "art/heroes/priest-armored/hex/l1_1024.png",
     "art/heroes/priest-armored/hex/l1_256.png",
-    "art/heroes/priest-armored/hex/l1_full.png"
+    "art/heroes/priest-armored/hex/l1_full.png",
+    "art/heroes/priest-armored/hex/lycanthropy_1024.png",
+    "art/heroes/priest-armored/hex/lycanthropy_256.png",
+    "art/heroes/priest-armored/hex/lycanthropy_full.png",
+    "art/heroes/priest-armored/hex/possession_1024.png",
+    "art/heroes/priest-armored/hex/possession_256.png",
+    "art/heroes/priest-armored/hex/possession_full.png",
+    "art/heroes/priest-armored/hex/rotting-flesh_1024.png",
+    "art/heroes/priest-armored/hex/rotting-flesh_256.png",
+    "art/heroes/priest-armored/hex/rotting-flesh_full.png",
+    "art/heroes/priest-armored/hex/vampirism_1024.png",
+    "art/heroes/priest-armored/hex/vampirism_256.png",
+    "art/heroes/priest-armored/hex/vampirism_full.png"
    ]
   },
   {
@@ -17575,10 +17711,13 @@
    "notes": [
     "Toughness 1 is hell-tcg maxAfflictions, ported straight across — same meaning.",
     "EVE BASE CLASS. One piece of base art, one hero - ruled 2026-08-21. Its 4 art files are this hero at four LEVELS, not four heroes; they are on levelArt.",
-    "Hell-TCG shipped four alternative stat/personality rolls for this art set. Only the first is carried; the other three were cut as duplications of art."
+    "Hell-TCG shipped four alternative stat/personality rolls for this art set. Only the first is carried; the other three were cut as duplications of art.",
+    "Differentiated 2026-08-22: The old priest with the bowl cut. Nothing to his name but the conviction."
    ],
    "specialty": null,
-   "originBadges": [],
+   "originBadges": [
+    "Faithful"
+   ],
    "classPowers": [],
    "namedSpecials": [],
    "triggers": null,
@@ -17637,7 +17776,19 @@
    "hexArt": [
     "art/heroes/priest-pauper/hex/l1_1024.png",
     "art/heroes/priest-pauper/hex/l1_256.png",
-    "art/heroes/priest-pauper/hex/l1_full.png"
+    "art/heroes/priest-pauper/hex/l1_full.png",
+    "art/heroes/priest-pauper/hex/lycanthropy_1024.png",
+    "art/heroes/priest-pauper/hex/lycanthropy_256.png",
+    "art/heroes/priest-pauper/hex/lycanthropy_full.png",
+    "art/heroes/priest-pauper/hex/possession_1024.png",
+    "art/heroes/priest-pauper/hex/possession_256.png",
+    "art/heroes/priest-pauper/hex/possession_full.png",
+    "art/heroes/priest-pauper/hex/rotting-flesh_1024.png",
+    "art/heroes/priest-pauper/hex/rotting-flesh_256.png",
+    "art/heroes/priest-pauper/hex/rotting-flesh_full.png",
+    "art/heroes/priest-pauper/hex/vampirism_1024.png",
+    "art/heroes/priest-pauper/hex/vampirism_256.png",
+    "art/heroes/priest-pauper/hex/vampirism_full.png"
    ]
   },
   {
@@ -17657,8 +17808,8 @@
     "armor": 0,
     "health": 7,
     "reach": 2,
-    "magic": 0,
-    "spirit": 2,
+    "magic": -1,
+    "spirit": 3,
     "resist": 0,
     "itemSlots": 1,
     "toughness": 1,
@@ -17677,7 +17828,8 @@
    "notes": [
     "Toughness 1 is hell-tcg maxAfflictions, ported straight across — same meaning.",
     "EVE BASE CLASS. One piece of base art, one hero - ruled 2026-08-21. Its 4 art files are this hero at four LEVELS, not four heroes; they are on levelArt.",
-    "Hell-TCG shipped four alternative stat/personality rolls for this art set. Only the first is carried; the other three were cut as duplications of art."
+    "Hell-TCG shipped four alternative stat/personality rolls for this art set. Only the first is carried; the other three were cut as duplications of art.",
+    "Differentiated 2026-08-22: Office rather than power - he trades the raw magic for the conviction behind it."
    ],
    "specialty": null,
    "originBadges": [
@@ -17741,7 +17893,19 @@
    "hexArt": [
     "art/heroes/priest-robes/hex/l1_1024.png",
     "art/heroes/priest-robes/hex/l1_256.png",
-    "art/heroes/priest-robes/hex/l1_full.png"
+    "art/heroes/priest-robes/hex/l1_full.png",
+    "art/heroes/priest-robes/hex/lycanthropy_1024.png",
+    "art/heroes/priest-robes/hex/lycanthropy_256.png",
+    "art/heroes/priest-robes/hex/lycanthropy_full.png",
+    "art/heroes/priest-robes/hex/possession_1024.png",
+    "art/heroes/priest-robes/hex/possession_256.png",
+    "art/heroes/priest-robes/hex/possession_full.png",
+    "art/heroes/priest-robes/hex/rotting-flesh_1024.png",
+    "art/heroes/priest-robes/hex/rotting-flesh_256.png",
+    "art/heroes/priest-robes/hex/rotting-flesh_full.png",
+    "art/heroes/priest-robes/hex/vampirism_1024.png",
+    "art/heroes/priest-robes/hex/vampirism_256.png",
+    "art/heroes/priest-robes/hex/vampirism_full.png"
    ]
   },
   {
@@ -17756,7 +17920,7 @@
    "campaign": "eve-of-ruin",
    "art": "art/heroes/priest-scantily/card/l1.png",
    "ported": {
-    "strength": 2,
+    "strength": 3,
     "precision": 3,
     "armor": 0,
     "health": 7,
@@ -17784,12 +17948,11 @@
     "Resolute +1 DROPPED — the stat was removed 2026-08-15 with no replacement.",
     "Toughness 1 is hell-tcg maxAfflictions, ported straight across — same meaning.",
     "EVE BASE CLASS. One piece of base art, one hero - ruled 2026-08-21. Its 4 art files are this hero at four LEVELS, not four heroes; they are on levelArt.",
-    "Hell-TCG shipped four alternative stat/personality rolls for this art set. Only the first is carried; the other three were cut as duplications of art."
+    "Hell-TCG shipped four alternative stat/personality rolls for this art set. Only the first is carried; the other three were cut as duplications of art.",
+    "Differentiated 2026-08-22: The muscly one. He carried the name Faithful from the original import, but the ruling gives Faithful to the old bowl-cut priest, so it comes off here - two priests with the same badge is the sharing this pass exists to end."
    ],
    "specialty": null,
-   "originBadges": [
-    "Faithful"
-   ],
+   "originBadges": [],
    "classPowers": [],
    "namedSpecials": [],
    "triggers": null,
@@ -17848,7 +18011,19 @@
    "hexArt": [
     "art/heroes/priest-scantily/hex/l1_1024.png",
     "art/heroes/priest-scantily/hex/l1_256.png",
-    "art/heroes/priest-scantily/hex/l1_full.png"
+    "art/heroes/priest-scantily/hex/l1_full.png",
+    "art/heroes/priest-scantily/hex/lycanthropy_1024.png",
+    "art/heroes/priest-scantily/hex/lycanthropy_256.png",
+    "art/heroes/priest-scantily/hex/lycanthropy_full.png",
+    "art/heroes/priest-scantily/hex/possession_1024.png",
+    "art/heroes/priest-scantily/hex/possession_256.png",
+    "art/heroes/priest-scantily/hex/possession_full.png",
+    "art/heroes/priest-scantily/hex/rotting-flesh_1024.png",
+    "art/heroes/priest-scantily/hex/rotting-flesh_256.png",
+    "art/heroes/priest-scantily/hex/rotting-flesh_full.png",
+    "art/heroes/priest-scantily/hex/vampirism_1024.png",
+    "art/heroes/priest-scantily/hex/vampirism_256.png",
+    "art/heroes/priest-scantily/hex/vampirism_full.png"
    ]
   },
   {
@@ -17888,7 +18063,8 @@
    "notes": [
     "Toughness 2 is hell-tcg maxAfflictions, ported straight across — same meaning.",
     "EVE BASE CLASS. One piece of base art, one hero - ruled 2026-08-21. Its 4 art files are this hero at four LEVELS, not four heroes; they are on levelArt.",
-    "Hell-TCG shipped four alternative stat/personality rolls for this art set. Only the first is carried; the other three were cut as duplications of art."
+    "Hell-TCG shipped four alternative stat/personality rolls for this art set. Only the first is carried; the other three were cut as duplications of art.",
+    "Differentiated 2026-08-22: The dark paladin, and the one holding the two-handed sword. Thorns 1 is a passive - the vocabulary already has Thorns N."
    ],
    "specialty": null,
    "originBadges": [
@@ -17897,7 +18073,20 @@
    ],
    "classPowers": [],
    "namedSpecials": [],
-   "triggers": null,
+   "triggers": [
+    {
+     "name": "Thorns",
+     "hook": "passive",
+     "targets": "self",
+     "effects": [
+      {
+       "effect": "Thorns N",
+       "value": 1
+      }
+     ],
+     "authored": true
+    }
+   ],
    "levelBonuses": null,
    "cost": null,
    "quote": "I am the darkness that hunts darkness.",
@@ -17953,7 +18142,19 @@
    "hexArt": [
     "art/heroes/paladin-dark/hex/l1_1024.png",
     "art/heroes/paladin-dark/hex/l1_256.png",
-    "art/heroes/paladin-dark/hex/l1_full.png"
+    "art/heroes/paladin-dark/hex/l1_full.png",
+    "art/heroes/paladin-dark/hex/lycanthropy_1024.png",
+    "art/heroes/paladin-dark/hex/lycanthropy_256.png",
+    "art/heroes/paladin-dark/hex/lycanthropy_full.png",
+    "art/heroes/paladin-dark/hex/possession_1024.png",
+    "art/heroes/paladin-dark/hex/possession_256.png",
+    "art/heroes/paladin-dark/hex/possession_full.png",
+    "art/heroes/paladin-dark/hex/rotting-flesh_1024.png",
+    "art/heroes/paladin-dark/hex/rotting-flesh_256.png",
+    "art/heroes/paladin-dark/hex/rotting-flesh_full.png",
+    "art/heroes/paladin-dark/hex/vampirism_1024.png",
+    "art/heroes/paladin-dark/hex/vampirism_256.png",
+    "art/heroes/paladin-dark/hex/vampirism_full.png"
    ]
   },
   {
@@ -17968,9 +18169,9 @@
    "campaign": "eve-of-ruin",
    "art": "art/heroes/paladin-hunk/card/l1.png",
    "ported": {
-    "strength": 4,
-    "precision": 2,
-    "armor": 1,
+    "strength": 3,
+    "precision": 1,
+    "armor": 2,
     "health": 9,
     "reach": 1,
     "magic": 0,
@@ -17986,14 +18187,15 @@
     "crit": 3,
     "luck": 0,
     "vision": 6,
-    "movement": 5,
+    "movement": 4,
     "staminaMax": 5,
     "staminaRegen": 1
    },
    "notes": [
     "Toughness 2 is hell-tcg maxAfflictions, ported straight across — same meaning.",
     "EVE BASE CLASS. One piece of base art, one hero - ruled 2026-08-21. Its 4 art files are this hero at four LEVELS, not four heroes; they are on levelArt.",
-    "Hell-TCG shipped four alternative stat/personality rolls for this art set. Only the first is carried; the other three were cut as duplications of art."
+    "Hell-TCG shipped four alternative stat/personality rolls for this art set. Only the first is carried; the other three were cut as duplications of art.",
+    "Differentiated 2026-08-22: The very armoured one. Everything he gains in protection he pays for in every other direction."
    ],
    "specialty": null,
    "originBadges": [
@@ -18043,6 +18245,10 @@
     "art/heroes/paladin-hunk/card/l3.png",
     "art/heroes/paladin-hunk/card/l4.png"
    ],
+   "derivedDeltas": {
+    "movement": -1
+   },
+   "derivedDeltaWhy": "The very armoured one. Everything he gains in protection he pays for in every other direction.",
    "artSlug": "paladin-hunk",
    "afflictionArt": {
     "lycanthropy": "art/heroes/paladin-hunk/card/lycanthropy.png",
@@ -18059,7 +18265,19 @@
    "hexArt": [
     "art/heroes/paladin-hunk/hex/l1_1024.png",
     "art/heroes/paladin-hunk/hex/l1_256.png",
-    "art/heroes/paladin-hunk/hex/l1_full.png"
+    "art/heroes/paladin-hunk/hex/l1_full.png",
+    "art/heroes/paladin-hunk/hex/lycanthropy_1024.png",
+    "art/heroes/paladin-hunk/hex/lycanthropy_256.png",
+    "art/heroes/paladin-hunk/hex/lycanthropy_full.png",
+    "art/heroes/paladin-hunk/hex/possession_1024.png",
+    "art/heroes/paladin-hunk/hex/possession_256.png",
+    "art/heroes/paladin-hunk/hex/possession_full.png",
+    "art/heroes/paladin-hunk/hex/rotting-flesh_1024.png",
+    "art/heroes/paladin-hunk/hex/rotting-flesh_256.png",
+    "art/heroes/paladin-hunk/hex/rotting-flesh_full.png",
+    "art/heroes/paladin-hunk/hex/vampirism_1024.png",
+    "art/heroes/paladin-hunk/hex/vampirism_256.png",
+    "art/heroes/paladin-hunk/hex/vampirism_full.png"
    ]
   },
   {
@@ -18099,7 +18317,8 @@
    "notes": [
     "Toughness 2 is hell-tcg maxAfflictions, ported straight across — same meaning.",
     "EVE BASE CLASS. One piece of base art, one hero - ruled 2026-08-21. Its 4 art files are this hero at four LEVELS, not four heroes; they are on levelArt.",
-    "Hell-TCG shipped four alternative stat/personality rolls for this art set. Only the first is carried; the other three were cut as duplications of art."
+    "Hell-TCG shipped four alternative stat/personality rolls for this art set. Only the first is carried; the other three were cut as duplications of art.",
+    "Differentiated 2026-08-22: The bright one. Begins the battle already owed something."
    ],
    "specialty": null,
    "originBadges": [
@@ -18108,7 +18327,21 @@
    ],
    "classPowers": [],
    "namedSpecials": [],
-   "triggers": null,
+   "triggers": [
+    {
+     "name": "Begins Owed",
+     "hook": "startOfBattle",
+     "targets": "self",
+     "effects": [
+      {
+       "effect": "apply a status",
+       "status": "karma",
+       "value": 2
+      }
+     ],
+     "authored": true
+    }
+   ],
    "levelBonuses": null,
    "cost": null,
    "quote": "My armor reflects the light of the divine.",
@@ -18164,7 +18397,19 @@
    "hexArt": [
     "art/heroes/paladin-shiney/hex/l1_1024.png",
     "art/heroes/paladin-shiney/hex/l1_256.png",
-    "art/heroes/paladin-shiney/hex/l1_full.png"
+    "art/heroes/paladin-shiney/hex/l1_full.png",
+    "art/heroes/paladin-shiney/hex/lycanthropy_1024.png",
+    "art/heroes/paladin-shiney/hex/lycanthropy_256.png",
+    "art/heroes/paladin-shiney/hex/lycanthropy_full.png",
+    "art/heroes/paladin-shiney/hex/possession_1024.png",
+    "art/heroes/paladin-shiney/hex/possession_256.png",
+    "art/heroes/paladin-shiney/hex/possession_full.png",
+    "art/heroes/paladin-shiney/hex/rotting-flesh_1024.png",
+    "art/heroes/paladin-shiney/hex/rotting-flesh_256.png",
+    "art/heroes/paladin-shiney/hex/rotting-flesh_full.png",
+    "art/heroes/paladin-shiney/hex/vampirism_1024.png",
+    "art/heroes/paladin-shiney/hex/vampirism_256.png",
+    "art/heroes/paladin-shiney/hex/vampirism_full.png"
    ]
   },
   {
@@ -18194,17 +18439,19 @@
    "dropped": {},
    "derivedBase": {
     "accuracy": 72,
-    "crit": 3,
+    "crit": 0,
     "luck": 0,
     "vision": 6,
     "movement": 5,
-    "staminaMax": 5,
-    "staminaRegen": 1
+    "staminaMax": 8,
+    "staminaRegen": 1,
+    "surge": -1
    },
    "notes": [
     "Toughness 2 is hell-tcg maxAfflictions, ported straight across — same meaning.",
     "EVE BASE CLASS. One piece of base art, one hero - ruled 2026-08-21. Its 4 art files are this hero at four LEVELS, not four heroes; they are on levelArt.",
-    "Hell-TCG shipped four alternative stat/personality rolls for this art set. Only the first is carried; the other three were cut as duplications of art."
+    "Hell-TCG shipped four alternative stat/personality rolls for this art set. Only the first is carried; the other three were cut as duplications of art.",
+    "Differentiated 2026-08-22: Insufferable, and the dice know it. Ruled: rather than invent a negative floor that would eat later gains, his crit and luck are simply subtracted to zero at the start and his surge drops by 1. He gets the stamina to keep swinging instead."
    ],
    "specialty": null,
    "originBadges": [
@@ -18253,6 +18500,11 @@
     "art/heroes/paladin-smug/card/l3.png",
     "art/heroes/paladin-smug/card/l4.png"
    ],
+   "derivedDeltas": {
+    "crit": -3,
+    "staminaMax": 3
+   },
+   "derivedDeltaWhy": "Insufferable, and the dice know it. Ruled: rather than invent a negative floor that would eat later gains, his crit and luck are simply subtracted to zero at the start and his surge drops by 1. He gets the stamina to keep swinging instead.",
    "artSlug": "paladin-smug",
    "afflictionArt": {
     "lycanthropy": "art/heroes/paladin-smug/card/lycanthropy.png",
@@ -18269,7 +18521,19 @@
    "hexArt": [
     "art/heroes/paladin-smug/hex/l1_1024.png",
     "art/heroes/paladin-smug/hex/l1_256.png",
-    "art/heroes/paladin-smug/hex/l1_full.png"
+    "art/heroes/paladin-smug/hex/l1_full.png",
+    "art/heroes/paladin-smug/hex/lycanthropy_1024.png",
+    "art/heroes/paladin-smug/hex/lycanthropy_256.png",
+    "art/heroes/paladin-smug/hex/lycanthropy_full.png",
+    "art/heroes/paladin-smug/hex/possession_1024.png",
+    "art/heroes/paladin-smug/hex/possession_256.png",
+    "art/heroes/paladin-smug/hex/possession_full.png",
+    "art/heroes/paladin-smug/hex/rotting-flesh_1024.png",
+    "art/heroes/paladin-smug/hex/rotting-flesh_256.png",
+    "art/heroes/paladin-smug/hex/rotting-flesh_full.png",
+    "art/heroes/paladin-smug/hex/vampirism_1024.png",
+    "art/heroes/paladin-smug/hex/vampirism_256.png",
+    "art/heroes/paladin-smug/hex/vampirism_full.png"
    ]
   },
   {
@@ -18309,10 +18573,13 @@
    "notes": [
     "Toughness 2 is hell-tcg maxAfflictions, ported straight across — same meaning.",
     "EVE BASE CLASS. One piece of base art, one hero - ruled 2026-08-21. Its 4 art files are this hero at four LEVELS, not four heroes; they are on levelArt.",
-    "Hell-TCG shipped four alternative stat/personality rolls for this art set. Only the first is carried; the other three were cut as duplications of art."
+    "Hell-TCG shipped four alternative stat/personality rolls for this art set. Only the first is carried; the other three were cut as duplications of art.",
+    "Differentiated 2026-08-22: The angry one, and the least elf-like. Vengeful already exists."
    ],
    "specialty": null,
-   "originBadges": [],
+   "originBadges": [
+    "Vengeful"
+   ],
    "classPowers": [],
    "namedSpecials": [],
    "triggers": null,
@@ -18374,7 +18641,19 @@
    "hexArt": [
     "art/heroes/ranger-aggressive/hex/l1_1024.png",
     "art/heroes/ranger-aggressive/hex/l1_256.png",
-    "art/heroes/ranger-aggressive/hex/l1_full.png"
+    "art/heroes/ranger-aggressive/hex/l1_full.png",
+    "art/heroes/ranger-aggressive/hex/lycanthropy_1024.png",
+    "art/heroes/ranger-aggressive/hex/lycanthropy_256.png",
+    "art/heroes/ranger-aggressive/hex/lycanthropy_full.png",
+    "art/heroes/ranger-aggressive/hex/possession_1024.png",
+    "art/heroes/ranger-aggressive/hex/possession_256.png",
+    "art/heroes/ranger-aggressive/hex/possession_full.png",
+    "art/heroes/ranger-aggressive/hex/rotting-flesh_1024.png",
+    "art/heroes/ranger-aggressive/hex/rotting-flesh_256.png",
+    "art/heroes/ranger-aggressive/hex/rotting-flesh_full.png",
+    "art/heroes/ranger-aggressive/hex/vampirism_1024.png",
+    "art/heroes/ranger-aggressive/hex/vampirism_256.png",
+    "art/heroes/ranger-aggressive/hex/vampirism_full.png"
    ]
   },
   {
@@ -18417,12 +18696,15 @@
     "Resolute +1 DROPPED — the stat was removed 2026-08-15 with no replacement.",
     "Toughness 2 is hell-tcg maxAfflictions, ported straight across — same meaning.",
     "EVE BASE CLASS. One piece of base art, one hero - ruled 2026-08-21. Its 4 art files are this hero at four LEVELS, not four heroes; they are on levelArt.",
-    "Hell-TCG shipped four alternative stat/personality rolls for this art set. Only the first is carried; the other three were cut as duplications of art."
+    "Hell-TCG shipped four alternative stat/personality rolls for this art set. Only the first is carried; the other three were cut as duplications of art.",
+    "Differentiated 2026-08-22: The fey-looking one. Fey is new and built; Forester is not."
    ],
    "specialty": null,
    "originBadges": [
     "Beautiful",
-    "Frail"
+    "Frail",
+    "Fey",
+    "Forester"
    ],
    "classPowers": [],
    "namedSpecials": [],
@@ -18485,7 +18767,19 @@
    "hexArt": [
     "art/heroes/ranger-nature/hex/l1_1024.png",
     "art/heroes/ranger-nature/hex/l1_256.png",
-    "art/heroes/ranger-nature/hex/l1_full.png"
+    "art/heroes/ranger-nature/hex/l1_full.png",
+    "art/heroes/ranger-nature/hex/lycanthropy_1024.png",
+    "art/heroes/ranger-nature/hex/lycanthropy_256.png",
+    "art/heroes/ranger-nature/hex/lycanthropy_full.png",
+    "art/heroes/ranger-nature/hex/possession_1024.png",
+    "art/heroes/ranger-nature/hex/possession_256.png",
+    "art/heroes/ranger-nature/hex/possession_full.png",
+    "art/heroes/ranger-nature/hex/rotting-flesh_1024.png",
+    "art/heroes/ranger-nature/hex/rotting-flesh_256.png",
+    "art/heroes/ranger-nature/hex/rotting-flesh_full.png",
+    "art/heroes/ranger-nature/hex/vampirism_1024.png",
+    "art/heroes/ranger-nature/hex/vampirism_256.png",
+    "art/heroes/ranger-nature/hex/vampirism_full.png"
    ]
   },
   {
@@ -18528,11 +18822,14 @@
     "Resolute +1 DROPPED — the stat was removed 2026-08-15 with no replacement.",
     "Toughness 2 is hell-tcg maxAfflictions, ported straight across — same meaning.",
     "EVE BASE CLASS. One piece of base art, one hero - ruled 2026-08-21. Its 4 art files are this hero at four LEVELS, not four heroes; they are on levelArt.",
-    "Hell-TCG shipped four alternative stat/personality rolls for this art set. Only the first is carried; the other three were cut as duplications of art."
+    "Hell-TCG shipped four alternative stat/personality rolls for this art set. Only the first is carried; the other three were cut as duplications of art.",
+    "Differentiated 2026-08-22: The wise silver-haired elf. Mystic already exists and already carries its +1 magic."
    ],
    "specialty": null,
    "originBadges": [
-    "Cultist"
+    "Cultist",
+    "Elf",
+    "Mystic"
    ],
    "classPowers": [],
    "namedSpecials": [],
@@ -18592,7 +18889,19 @@
    "hexArt": [
     "art/heroes/ranger-ranger/hex/l1_1024.png",
     "art/heroes/ranger-ranger/hex/l1_256.png",
-    "art/heroes/ranger-ranger/hex/l1_full.png"
+    "art/heroes/ranger-ranger/hex/l1_full.png",
+    "art/heroes/ranger-ranger/hex/lycanthropy_1024.png",
+    "art/heroes/ranger-ranger/hex/lycanthropy_256.png",
+    "art/heroes/ranger-ranger/hex/lycanthropy_full.png",
+    "art/heroes/ranger-ranger/hex/possession_1024.png",
+    "art/heroes/ranger-ranger/hex/possession_256.png",
+    "art/heroes/ranger-ranger/hex/possession_full.png",
+    "art/heroes/ranger-ranger/hex/rotting-flesh_1024.png",
+    "art/heroes/ranger-ranger/hex/rotting-flesh_256.png",
+    "art/heroes/ranger-ranger/hex/rotting-flesh_full.png",
+    "art/heroes/ranger-ranger/hex/vampirism_1024.png",
+    "art/heroes/ranger-ranger/hex/vampirism_256.png",
+    "art/heroes/ranger-ranger/hex/vampirism_full.png"
    ]
   },
   {
@@ -18632,11 +18941,14 @@
    "notes": [
     "Toughness 2 is hell-tcg maxAfflictions, ported straight across — same meaning.",
     "EVE BASE CLASS. One piece of base art, one hero - ruled 2026-08-21. Its 4 art files are this hero at four LEVELS, not four heroes; they are on levelArt.",
-    "Hell-TCG shipped four alternative stat/personality rolls for this art set. Only the first is carried; the other three were cut as duplications of art."
+    "Hell-TCG shipped four alternative stat/personality rolls for this art set. Only the first is carried; the other three were cut as duplications of art.",
+    "Differentiated 2026-08-22: An elf at home in the trees. Forester is recorded but not built - see blocked."
    ],
    "specialty": null,
    "originBadges": [
-    "Agile"
+    "Agile",
+    "Elf",
+    "Forester"
    ],
    "classPowers": [],
    "namedSpecials": [],
@@ -18696,7 +19008,19 @@
    "hexArt": [
     "art/heroes/ranger-scantily/hex/l1_1024.png",
     "art/heroes/ranger-scantily/hex/l1_256.png",
-    "art/heroes/ranger-scantily/hex/l1_full.png"
+    "art/heroes/ranger-scantily/hex/l1_full.png",
+    "art/heroes/ranger-scantily/hex/lycanthropy_1024.png",
+    "art/heroes/ranger-scantily/hex/lycanthropy_256.png",
+    "art/heroes/ranger-scantily/hex/lycanthropy_full.png",
+    "art/heroes/ranger-scantily/hex/possession_1024.png",
+    "art/heroes/ranger-scantily/hex/possession_256.png",
+    "art/heroes/ranger-scantily/hex/possession_full.png",
+    "art/heroes/ranger-scantily/hex/rotting-flesh_1024.png",
+    "art/heroes/ranger-scantily/hex/rotting-flesh_256.png",
+    "art/heroes/ranger-scantily/hex/rotting-flesh_full.png",
+    "art/heroes/ranger-scantily/hex/vampirism_1024.png",
+    "art/heroes/ranger-scantily/hex/vampirism_256.png",
+    "art/heroes/ranger-scantily/hex/vampirism_full.png"
    ]
   },
   {
@@ -18801,7 +19125,19 @@
    "hexArt": [
     "art/heroes/rogue-raven/hex/l1_1024.png",
     "art/heroes/rogue-raven/hex/l1_256.png",
-    "art/heroes/rogue-raven/hex/l1_full.png"
+    "art/heroes/rogue-raven/hex/l1_full.png",
+    "art/heroes/rogue-raven/hex/lycanthropy_1024.png",
+    "art/heroes/rogue-raven/hex/lycanthropy_256.png",
+    "art/heroes/rogue-raven/hex/lycanthropy_full.png",
+    "art/heroes/rogue-raven/hex/possession_1024.png",
+    "art/heroes/rogue-raven/hex/possession_256.png",
+    "art/heroes/rogue-raven/hex/possession_full.png",
+    "art/heroes/rogue-raven/hex/rotting-flesh_1024.png",
+    "art/heroes/rogue-raven/hex/rotting-flesh_256.png",
+    "art/heroes/rogue-raven/hex/rotting-flesh_full.png",
+    "art/heroes/rogue-raven/hex/vampirism_1024.png",
+    "art/heroes/rogue-raven/hex/vampirism_256.png",
+    "art/heroes/rogue-raven/hex/vampirism_full.png"
    ]
   },
   {
@@ -18913,7 +19249,19 @@
    "hexArt": [
     "art/heroes/rogue-rose/hex/l1_1024.png",
     "art/heroes/rogue-rose/hex/l1_256.png",
-    "art/heroes/rogue-rose/hex/l1_full.png"
+    "art/heroes/rogue-rose/hex/l1_full.png",
+    "art/heroes/rogue-rose/hex/lycanthropy_1024.png",
+    "art/heroes/rogue-rose/hex/lycanthropy_256.png",
+    "art/heroes/rogue-rose/hex/lycanthropy_full.png",
+    "art/heroes/rogue-rose/hex/possession_1024.png",
+    "art/heroes/rogue-rose/hex/possession_256.png",
+    "art/heroes/rogue-rose/hex/possession_full.png",
+    "art/heroes/rogue-rose/hex/rotting-flesh_1024.png",
+    "art/heroes/rogue-rose/hex/rotting-flesh_256.png",
+    "art/heroes/rogue-rose/hex/rotting-flesh_full.png",
+    "art/heroes/rogue-rose/hex/vampirism_1024.png",
+    "art/heroes/rogue-rose/hex/vampirism_256.png",
+    "art/heroes/rogue-rose/hex/vampirism_full.png"
    ]
   },
   {
@@ -19021,7 +19369,19 @@
    "hexArt": [
     "art/heroes/rogue-skull/hex/l1_1024.png",
     "art/heroes/rogue-skull/hex/l1_256.png",
-    "art/heroes/rogue-skull/hex/l1_full.png"
+    "art/heroes/rogue-skull/hex/l1_full.png",
+    "art/heroes/rogue-skull/hex/lycanthropy_1024.png",
+    "art/heroes/rogue-skull/hex/lycanthropy_256.png",
+    "art/heroes/rogue-skull/hex/lycanthropy_full.png",
+    "art/heroes/rogue-skull/hex/possession_1024.png",
+    "art/heroes/rogue-skull/hex/possession_256.png",
+    "art/heroes/rogue-skull/hex/possession_full.png",
+    "art/heroes/rogue-skull/hex/rotting-flesh_1024.png",
+    "art/heroes/rogue-skull/hex/rotting-flesh_256.png",
+    "art/heroes/rogue-skull/hex/rotting-flesh_full.png",
+    "art/heroes/rogue-skull/hex/vampirism_1024.png",
+    "art/heroes/rogue-skull/hex/vampirism_256.png",
+    "art/heroes/rogue-skull/hex/vampirism_full.png"
    ]
   },
   {
@@ -19132,7 +19492,19 @@
    "hexArt": [
     "art/heroes/rogue-snake/hex/l1_1024.png",
     "art/heroes/rogue-snake/hex/l1_256.png",
-    "art/heroes/rogue-snake/hex/l1_full.png"
+    "art/heroes/rogue-snake/hex/l1_full.png",
+    "art/heroes/rogue-snake/hex/lycanthropy_1024.png",
+    "art/heroes/rogue-snake/hex/lycanthropy_256.png",
+    "art/heroes/rogue-snake/hex/lycanthropy_full.png",
+    "art/heroes/rogue-snake/hex/possession_1024.png",
+    "art/heroes/rogue-snake/hex/possession_256.png",
+    "art/heroes/rogue-snake/hex/possession_full.png",
+    "art/heroes/rogue-snake/hex/rotting-flesh_1024.png",
+    "art/heroes/rogue-snake/hex/rotting-flesh_256.png",
+    "art/heroes/rogue-snake/hex/rotting-flesh_full.png",
+    "art/heroes/rogue-snake/hex/vampirism_1024.png",
+    "art/heroes/rogue-snake/hex/vampirism_256.png",
+    "art/heroes/rogue-snake/hex/vampirism_full.png"
    ]
   },
   {

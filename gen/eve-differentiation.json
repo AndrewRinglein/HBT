@@ -1,0 +1,394 @@
+{
+  "note": "The 24 Eve base heroes shared stat blocks and, in the case of the priests and mages, shared a power. Every one is now separated by at least a stat point or a badge. Ruled 2026-08-22. Art identification came from the person who drew them; where the art could not be told apart from the filename it was confirmed rather than guessed (priest-pauper is the old bowl-cut priest, priest-scantily is the muscly one, paladin-dark carries the two-handed sword).",
+  "newBadges": [
+    {
+      "id": "badge.dwarf",
+      "name": "Dwarf",
+      "rarity": "common",
+      "statModifiers": [
+        {
+          "stat": "movement",
+          "op": "add",
+          "value": -1
+        },
+        {
+          "stat": "health",
+          "op": "add",
+          "value": 2
+        }
+      ],
+      "intent": "Short, heavy and hard to move off a hex."
+    },
+    {
+      "id": "badge.elf",
+      "name": "Elf",
+      "rarity": "common",
+      "statModifiers": [
+        {
+          "stat": "vision",
+          "op": "add",
+          "value": 3
+        },
+        {
+          "stat": "luck",
+          "op": "add",
+          "value": 2
+        }
+      ],
+      "intent": "Sees further and is harder to catch out."
+    },
+    {
+      "id": "badge.fey",
+      "name": "Fey",
+      "rarity": "uncommon",
+      "statModifiers": [
+        {
+          "stat": "surge",
+          "op": "add",
+          "value": 10
+        }
+      ],
+      "intent": "Acts out of turn more often than anything mortal should. SOFT: +10 Surge is large against a stat whose base IS the character's level, and a sweep should price it."
+    },
+    {
+      "id": "badge.faithful",
+      "name": "Faithful",
+      "rarity": "common",
+      "statModifiers": [
+        {
+          "stat": "spirit",
+          "op": "add",
+          "value": 1
+        },
+        {
+          "stat": "deathbedFighting",
+          "op": "add",
+          "value": 10
+        }
+      ],
+      "intent": "Certain enough of what comes next to be difficult to finish off. Named on heroes since the first import with no definition behind it; defined 2026-08-22."
+    },
+    {
+      "id": "badge.brawler",
+      "name": "Brawler",
+      "rarity": "common",
+      "appliesToTags": [
+        "brawl"
+      ],
+      "statModifiers": [
+        {
+          "stat": "strength",
+          "op": "add",
+          "value": 2
+        }
+      ],
+      "intent": "Fights with what he has. +2 on anything tagged brawl, which includes Punch.",
+      "note": "I first called this blocked on the grounds that the three CONDITIONS all read the target. That was the wrong place to look: tag-scoped modifiers do not go through conditions at all, they go through `appliesToTags`, which 47 rows already use - Bloodthirsty is literally [\"melee\",\"brawl\"] -> strength +1. Corrected 2026-08-22."
+    }
+  ],
+  "blocked": {
+    "note": "Terrain-conditional badges. The definitions are real and are recorded on the badge rows themselves via `needsCapability`, the field content already uses for exactly this (Creeping Blight, Ancestral Anchor, Magical Friend). What is missing is the ability to READ THE GROUND A UNIT IS STANDING ON - both the base terrain and any terrain modifier on the hex - plus a movement-cost modifier, since movement cost is a property of terrain and not one of the stats. The ENGINE IS NOT BEING CHANGED for this; the gap is recorded in content and in the design document so the work is not lost. Ruled 2026-08-22.",
+    "badges": [
+      {
+        "id": "badge.forester",
+        "name": "Forester",
+        "payload": "-1 Movement cost into Forest; +10 Dodge while in Forest",
+        "status": "matches what was already narrated"
+      },
+      {
+        "id": "badge.climber",
+        "name": "Climber",
+        "payload": "-1 Movement cost into Rocky; +5 Accuracy while in Rocky",
+        "status": "CHANGED 2026-08-22. Was narrated as Hills, +5 Dodge. Now Rocky, and the bonus is to hit rather than to be missed."
+      },
+      {
+        "id": "badge.hillman",
+        "name": "Hillman",
+        "payload": "-1 Movement cost onto Hills; +1 Reach while on a Hill",
+        "status": "NEW 2026-08-22. Takes over the hills half that Climber used to hold."
+      },
+      {
+        "id": "badge.swimmer",
+        "name": "Swimmer",
+        "payload": "Reduces the penalties of being in Water to zero",
+        "status": "CHANGED 2026-08-22. Was +10 Dodge in Water; now it cancels the water penalty instead of offsetting it."
+      }
+    ],
+    "capability": {
+      "id": "capability.read-terrain",
+      "needs": [
+        "a modifier conditioned on the terrain the unit occupies, reading BOTH the base terrain and any terrain modifier on that hex",
+        "a movement-cost modifier, since movement cost belongs to terrain rather than to the 21 stats"
+      ],
+      "affects": [
+        "badge.forester",
+        "badge.climber",
+        "badge.hillman",
+        "badge.swimmer",
+        "badge.rocky-tactician",
+        "badge.trailwise"
+      ]
+    }
+  },
+  "heroes": {
+    "hero.base.warrior-iron": {
+      "name": "Iron Dwarf",
+      "addBadges": [
+        "Dwarf"
+      ],
+      "stats": {
+        "health": 1
+      },
+      "why": "A dwarf, and the one that leans into simply having more of him."
+    },
+    "hero.base.warrior-brawler": {
+      "name": "Dwarven Brawler",
+      "addBadges": [
+        "Dwarf",
+        "Brawler"
+      ],
+      "blockedBadges": [],
+      "why": "The dwarf who fights with his hands. Brawler is BUILT - appliesToTags [\"brawl\"], +2 strength."
+    },
+    "hero.base.warrior-barbarian": {
+      "name": "Mountain Berserker",
+      "addBadges": [
+        "Dwarf",
+        "Climber"
+      ],
+      "blockedBadges": [
+        "Climber"
+      ],
+      "why": "The mountain dwarf. Climber is recorded but not built - see blocked."
+    },
+    "hero.base.warrior-fearsome": {
+      "name": "Skullplate Veteran",
+      "stats": {
+        "strength": 1
+      },
+      "why": "The one warrior who is NOT a dwarf, and pays for it in reach of arm rather than in badges."
+    },
+    "hero.base.priest-armored": {
+      "name": "Battle Chaplain",
+      "stats": {
+        "armor": 1
+      },
+      "why": "Shield and mace. He is the one wearing the fight."
+    },
+    "hero.base.priest-pauper": {
+      "name": "Barefoot Mendicant",
+      "addBadges": [
+        "Faithful"
+      ],
+      "why": "The old priest with the bowl cut. Nothing to his name but the conviction."
+    },
+    "hero.base.priest-scantily": {
+      "name": "Rune-Marked Ascetic",
+      "stats": {
+        "strength": 1
+      },
+      "why": "The muscly one. He carried the name Faithful from the original import, but the ruling gives Faithful to the old bowl-cut priest, so it comes off here - two priests with the same badge is the sharing this pass exists to end.",
+      "removeBadges": [
+        "Faithful"
+      ]
+    },
+    "hero.base.priest-robes": {
+      "name": "Cathedral Bishop",
+      "stats": {
+        "spirit": 1,
+        "magic": -1
+      },
+      "why": "Office rather than power - he trades the raw magic for the conviction behind it."
+    },
+    "hero.base.ranger-aggressive": {
+      "name": "Hunter",
+      "addBadges": [
+        "Vengeful"
+      ],
+      "why": "The angry one, and the least elf-like. Vengeful already exists."
+    },
+    "hero.base.ranger-ranger": {
+      "name": "Ancient Elf",
+      "addBadges": [
+        "Elf",
+        "Mystic"
+      ],
+      "why": "The wise silver-haired elf. Mystic already exists and already carries its +1 magic."
+    },
+    "hero.base.ranger-scantily": {
+      "name": "Forest Elf",
+      "addBadges": [
+        "Elf",
+        "Forester"
+      ],
+      "blockedBadges": [
+        "Forester"
+      ],
+      "why": "An elf at home in the trees. Forester is recorded but not built - see blocked."
+    },
+    "hero.base.ranger-nature": {
+      "name": "Forest Fey",
+      "addBadges": [
+        "Fey",
+        "Forester"
+      ],
+      "blockedBadges": [
+        "Forester"
+      ],
+      "why": "The fey-looking one. Fey is new and built; Forester is not."
+    },
+    "hero.base.paladin-dark": {
+      "name": "Black Oath",
+      "thorns": 1,
+      "startingItems": [
+        "greatsword"
+      ],
+      "why": "The dark paladin, and the one holding the two-handed sword. Thorns 1 is a passive - the vocabulary already has Thorns N."
+    },
+    "hero.base.paladin-shiney": {
+      "name": "Dawnblade",
+      "startOfBattleStatus": {
+        "status": "karma",
+        "value": 2
+      },
+      "startingItems": [
+        "sword",
+        "shield"
+      ],
+      "why": "The bright one. Begins the battle already owed something."
+    },
+    "hero.base.paladin-hunk": {
+      "name": "Lion of the Host",
+      "stats": {
+        "armor": 1,
+        "movement": -1,
+        "strength": -1,
+        "precision": -1
+      },
+      "startingItems": [
+        "sword",
+        "shield"
+      ],
+      "why": "The very armoured one. Everything he gains in protection he pays for in every other direction."
+    },
+    "hero.base.paladin-smug": {
+      "name": "Court Champion",
+      "stats": {
+        "surge": -1,
+        "staminaMax": 3
+      },
+      "zeroStats": [
+        "crit",
+        "luck"
+      ],
+      "startingItems": [
+        "sword",
+        "shield"
+      ],
+      "why": "Insufferable, and the dice know it. Ruled: rather than invent a negative floor that would eat later gains, his crit and luck are simply subtracted to zero at the start and his surge drops by 1. He gets the stamina to keep swinging instead."
+    },
+    "hero.base.mage-fire": {
+      "name": "Emberwright",
+      "dropSharedPower": true,
+      "triggers": [
+        {
+          "hook": "onHit",
+          "when": "the attack dealt MAGIC damage",
+          "effects": [
+            {
+              "effect": "apply a status",
+              "status": "burn",
+              "value": 1
+            }
+          ]
+        }
+      ],
+      "startingItems": [
+        "magic-staff"
+      ],
+      "why": "Burn on a magic hit."
+    },
+    "hero.base.mage-sexy": {
+      "name": "Crimson Sorceress",
+      "dropSharedPower": true,
+      "triggers": [
+        {
+          "hook": "onHit",
+          "when": "the attack dealt MAGIC damage",
+          "effects": [
+            {
+              "effect": "apply a status",
+              "status": "burn",
+              "value": 1
+            }
+          ]
+        }
+      ],
+      "startingItems": [
+        "magic-staff"
+      ],
+      "why": "The second burner."
+    },
+    "hero.base.mage-thinking": {
+      "name": "Archive Scholar",
+      "dropSharedPower": true,
+      "triggers": [
+        {
+          "hook": "onHit",
+          "when": "the attack dealt MAGIC damage",
+          "effects": [
+            {
+              "effect": "apply a status",
+              "status": "frost",
+              "value": 1
+            }
+          ]
+        }
+      ],
+      "startingItems": [
+        "magic-staff"
+      ],
+      "why": "The one in the library. Frost rather than fire - the only cold mage of the four."
+    },
+    "hero.base.mage-fireaura": {
+      "name": "Pyre Witch",
+      "dropSharedPower": true,
+      "triggers": [
+        {
+          "hook": "onTakingDamage",
+          "targets": null,
+          "effects": [
+            {
+              "effect": "apply a status",
+              "status": "burn",
+              "value": 2,
+              "target": "the attacker"
+            }
+          ]
+        }
+      ],
+      "startingItems": [
+        "magic-staff"
+      ],
+      "why": "The aura is the point: she does not have to swing to burn you, she has to be hit."
+    }
+  },
+  "sharedPriestPower": {
+    "note": "All four priests are meant to share one power, and sharing it is correct - what was wrong was the four mages sharing a fire-damage power, which is now cut. Ruled 2026-08-22.",
+    "id": "power.eve.benediction",
+    "name": "Benediction",
+    "hook": "onActivationEnd",
+    "targets": "allies within N hexes",
+    "range": 4,
+    "effects": [
+      {
+        "effect": "heal",
+        "value": "half of your spirit"
+      }
+    ],
+    "blocked": "The value is a fraction of a caster stat. Every other heal in content is a flat integer, and Law 7 says integers only in combat math - `half of your spirit` needs either a stat-scaled heal or a ruling that it rounds. Recorded, not built."
+  },
+  "droppedMagePower": {
+    "note": "The four mages all carried the same base power dealing fire damage. Cut 2026-08-22 - it was the thing making them indistinguishable, and each now has its own trigger instead."
+  }
+}

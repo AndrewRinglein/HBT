@@ -132,7 +132,7 @@
    "id": "badge.climber",
    "name": "Climber",
    "rarity": "uncommon",
-   "payload": "−1 Movement cost into Hills; +5 Dodge on Hills",
+   "payload": "-1 Movement cost into Rocky; +5 Accuracy while in Rocky",
    "category": "GENERATIVE — FAVOURABLE",
    "group": "Terrain",
    "blockers": [
@@ -140,7 +140,9 @@
     "unparsed:movement cost into hills,dodge on hills"
    ],
    "rollable": false,
-   "source": "2026-08-21: machine-readable fields merged from the Crucible. The prose was already byte-identical; only statModifiers/hook/rollable/blockers/engineStatGap were added."
+   "source": "2026-08-21: machine-readable fields merged from the Crucible. The prose was already byte-identical; only statModifiers/hook/rollable/blockers/engineStatGap were added.",
+   "changed": "Was Hills / +5 Dodge. Rocky and to-hit as of 2026-08-22.",
+   "needsCapability": "capability.read-terrain — a modifier conditioned on the terrain the unit occupies, reading BOTH the base terrain and any terrain modifier on that hex; a movement-cost modifier, since movement cost belongs to terrain rather than to the 21 stats"
   },
   {
    "id": "badge.clumsy",
@@ -332,7 +334,7 @@
    "id": "badge.forester",
    "name": "Forester",
    "rarity": "uncommon",
-   "payload": "−1 Movement cost in Forest; +10 Dodge in Forest",
+   "payload": "-1 Movement cost into Forest; +10 Dodge while in Forest",
    "category": "GENERATIVE — FAVOURABLE",
    "group": "Terrain",
    "blockers": [
@@ -340,7 +342,8 @@
     "unparsed:movement cost in forest,dodge in forest"
    ],
    "rollable": false,
-   "source": "2026-08-21: machine-readable fields merged from the Crucible. The prose was already byte-identical; only statModifiers/hook/rollable/blockers/engineStatGap were added."
+   "source": "2026-08-21: machine-readable fields merged from the Crucible. The prose was already byte-identical; only statModifiers/hook/rollable/blockers/engineStatGap were added.",
+   "needsCapability": "capability.read-terrain — a modifier conditioned on the terrain the unit occupies, reading BOTH the base terrain and any terrain modifier on that hex; a movement-cost modifier, since movement cost belongs to terrain rather than to the 21 stats"
   },
   {
    "id": "badge.frail",
@@ -855,7 +858,7 @@
    "id": "badge.rocky-tactician",
    "name": "Rocky Tactician",
    "rarity": "uncommon",
-   "payload": "+10 Accuracy in Rocky",
+   "payload": "+10 Accuracy while in Rocky",
    "category": "GENERATIVE — FAVOURABLE",
    "group": "Terrain",
    "blockers": [
@@ -863,7 +866,8 @@
     "unparsed:accuracy in rocky"
    ],
    "rollable": false,
-   "source": "2026-08-21: machine-readable fields merged from the Crucible. The prose was already byte-identical; only statModifiers/hook/rollable/blockers/engineStatGap were added."
+   "source": "2026-08-21: machine-readable fields merged from the Crucible. The prose was already byte-identical; only statModifiers/hook/rollable/blockers/engineStatGap were added.",
+   "needsCapability": "capability.read-terrain — a modifier conditioned on the terrain the unit occupies, reading BOTH the base terrain and any terrain modifier on that hex; a movement-cost modifier, since movement cost belongs to terrain rather than to the 21 stats"
   },
   {
    "id": "badge.rotting-flesh",
@@ -1025,7 +1029,7 @@
    "id": "badge.swimmer",
    "name": "Swimmer",
    "rarity": "common",
-   "payload": "+10 Dodge in Water",
+   "payload": "Reduces the penalties of being in Water to zero",
    "category": "GENERATIVE — FAVOURABLE",
    "group": "Terrain",
    "blockers": [
@@ -1033,7 +1037,9 @@
     "unparsed:dodge in water"
    ],
    "rollable": false,
-   "source": "2026-08-21: machine-readable fields merged from the Crucible. The prose was already byte-identical; only statModifiers/hook/rollable/blockers/engineStatGap were added."
+   "source": "2026-08-21: machine-readable fields merged from the Crucible. The prose was already byte-identical; only statModifiers/hook/rollable/blockers/engineStatGap were added.",
+   "changed": "Was +10 Dodge in Water. Now it cancels the penalty rather than offsetting it.",
+   "needsCapability": "capability.read-terrain — a modifier conditioned on the terrain the unit occupies, reading BOTH the base terrain and any terrain modifier on that hex; a movement-cost modifier, since movement cost belongs to terrain rather than to the 21 stats"
   },
   {
    "id": "badge.the-lovers",
@@ -1073,9 +1079,10 @@
    "id": "badge.trailwise",
    "name": "Trailwise",
    "rarity": "ranger",
-   "payload": "+1 Vision, −1 Movement cost in Forest",
+   "payload": "+1 Vision; -1 Movement cost into Forest",
    "category": "CLASS-LOCKED",
-   "group": ""
+   "group": "",
+   "needsCapability": "capability.read-terrain — a modifier conditioned on the terrain the unit occupies, reading BOTH the base terrain and any terrain modifier on that hex; a movement-cost modifier, since movement cost belongs to terrain rather than to the 21 stats"
   },
   {
    "id": "badge.uncanny",
@@ -1493,6 +1500,87 @@
    "payload": "+2 Movement, +10 Dodge, −1 Armor",
    "category": "SPECIAL ORIGINS",
    "group": ""
+  },
+  {
+   "id": "badge.dwarf",
+   "name": "Dwarf",
+   "rarity": "common",
+   "statModifiers": [
+    {
+     "stat": "movement",
+     "op": "add",
+     "value": -1
+    },
+    {
+     "stat": "health",
+     "op": "add",
+     "value": 2
+    }
+   ],
+   "intent": "Short, heavy and hard to move off a hex.",
+   "source": "Authored 2026-08-22 to separate the 24 Eve base heroes, which shared stat blocks."
+  },
+  {
+   "id": "badge.elf",
+   "name": "Elf",
+   "rarity": "common",
+   "statModifiers": [
+    {
+     "stat": "vision",
+     "op": "add",
+     "value": 3
+    },
+    {
+     "stat": "luck",
+     "op": "add",
+     "value": 2
+    }
+   ],
+   "intent": "Sees further and is harder to catch out.",
+   "source": "Authored 2026-08-22 to separate the 24 Eve base heroes, which shared stat blocks."
+  },
+  {
+   "id": "badge.fey",
+   "name": "Fey",
+   "rarity": "uncommon",
+   "statModifiers": [
+    {
+     "stat": "surge",
+     "op": "add",
+     "value": 10
+    }
+   ],
+   "intent": "Acts out of turn more often than anything mortal should. SOFT: +10 Surge is large against a stat whose base IS the character's level, and a sweep should price it.",
+   "source": "Authored 2026-08-22 to separate the 24 Eve base heroes, which shared stat blocks."
+  },
+  {
+   "id": "badge.faithful",
+   "name": "Faithful",
+   "rarity": "common",
+   "statModifiers": [
+    {
+     "stat": "spirit",
+     "op": "add",
+     "value": 1
+    },
+    {
+     "stat": "deathbedFighting",
+     "op": "add",
+     "value": 10
+    }
+   ],
+   "intent": "Certain enough of what comes next to be difficult to finish off. Named on heroes since the first import with no definition behind it; defined 2026-08-22.",
+   "source": "Authored 2026-08-22 to separate the 24 Eve base heroes, which shared stat blocks."
+  },
+  {
+   "id": "badge.hillman",
+   "name": "Hillman",
+   "rarity": "uncommon",
+   "payload": "-1 Movement cost onto Hills; +1 Reach while on a Hill",
+   "statModifiers": {},
+   "intent": "Grew up looking down at people. Takes the high ground cheaply and reaches further from it.",
+   "needsCapability": "capability.read-terrain — a modifier conditioned on the terrain the unit occupies, reading BOTH the base terrain and any terrain modifier on that hex; a movement-cost modifier, since movement cost belongs to terrain rather than to the 21 stats",
+   "source": "Authored 2026-08-22. Takes the hills half that Climber used to hold before Climber moved to Rocky."
   }
  ],
  "_machineReadable": "43 of the 128 badges carry statModifiers, hook, rollable, blockers and engineStatGap, merged from the Crucible 2026-08-21. The other 85 are prose only and still need the machine-readable half. content/ owns badges (COMBAT-DESIGN.md §8: HoBaT authored its own; the 238-row Hell-TCG library is a reference, not a port).",

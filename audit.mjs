@@ -526,7 +526,15 @@ if(D.heroes&&D.heroes.heroes&&D.classes){
   for(const h of D.heroes.heroes){
     const want=TBL[h.class]; if(!want) continue;
     const got=h.derivedBase||{};
-    const wrong=Object.keys(want).filter(k=>got[k]!==want[k]);
+    // A DECLARED deviation is allowed; an undeclared one is not. A hero that means to differ
+    // from its class carries derivedDeltas saying by how much and why - that is the difference
+    // between a design decision and the silent drift this rule exists to catch.
+    const dd=h.derivedDeltas||{};
+    const wrong=Object.keys(want).filter(k=>got[k]!==want[k]+(dd[k]||0));
+    for(const k of Object.keys(dd)) if(!(k in want))
+      add('hero-declares-a-delta-on-a-stat-its-class-does-not-have',h.name||h.id,k);
+    if(Object.keys(dd).length && !h.derivedDeltaWhy)
+      add('hero-deviates-from-its-class-without-saying-why',h.name||h.id,Object.keys(dd).join(', '));
     if(wrong.length)
       add('hero-derived-stats-do-not-match-its-class',h.name||h.id,
           String(h.class).replace('class.','')+' — '+wrong.map(k=>k+' '+got[k]+' should be '+want[k]).join(', '));

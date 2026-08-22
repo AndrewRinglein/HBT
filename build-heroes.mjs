@@ -327,6 +327,77 @@ for(const h of heroes){
   if(!ID.test(h.id)) problems.push('bad id '+h.id);
   if(seen.has(h.id)) problems.push('DUPLICATE '+h.id); seen.add(h.id);
 }
+// ------------------------------------------------------------ Eve base differentiation
+// The 24 Eve base heroes shared stat blocks, and the four priests and four mages shared a
+// power, so several were mechanically the same character wearing different art. Ruled
+// 2026-08-22: every one is separated by at least a stat point or a badge.
+//
+// This applies only what the closed vocabulary can express. The rest — terrain badges, the
+// Brawler tag bonus, starting kits, and the priests' Benediction — is recorded in the same
+// file under `blocked` and reported, never approximated. A badge that half works is worse
+// than one that visibly does not.
+{
+  const DIFF = JSON.parse(fs.readFileSync('gen/eve-differentiation.json', 'utf8'));
+  const blockedBadgeNames = new Set(DIFF.blocked.badges.map(b => b.name));
+  let touched = 0, statPoints = 0, badgesAdded = 0, deferred = 0;
+
+  for (const [id, spec] of Object.entries(DIFF.heroes)) {
+    const h = heroes.find(x => x.id === id);
+    if (!h) { problems.push('differentiation: no hero ' + id); continue; }
+    if (h.name !== spec.name) problems.push('differentiation: ' + id + ' is "' + h.name + '", expected "' + spec.name + '"');
+
+    // derivedBase and ported are SHARED OBJECT REFERENCES off the class baseline - mutating
+    // one hero mutated every hero of that class. Court Champion zeroing his crit zeroed it
+    // for Angel, Mr. Black and 26 others. Clone before touching. Found 2026-08-22 by R23,
+    // which is exactly the aliasing bug that rule is shaped to catch.
+    h.derivedBase = { ...(h.derivedBase || {}) };
+    h.ported      = { ...(h.ported || {}) };
+    for (const [stat, delta] of Object.entries(spec.stats || {})) {
+      if (!(stat in h.derivedBase) && !(stat in (h.ported || {})))
+        h.derivedBase[stat] = 0;
+      const bag = (stat in (h.ported || {})) ? h.ported : h.derivedBase;
+      bag[stat] = (bag[stat] || 0) + delta;
+      statPoints++;
+    }
+    for (const stat of (spec.zeroStats || [])) {
+      const bag = (stat in (h.ported || {})) ? h.ported : h.derivedBase;
+      bag[stat] = 0;
+    }
+    for (const b of (spec.removeBadges || [])) {
+      const i = h.originBadges.indexOf(b);
+      if (i < 0) problems.push('differentiation: ' + id + ' has no badge "' + b + '" to remove');
+      else h.originBadges.splice(i, 1);
+    }
+    for (const b of (spec.addBadges || [])) {
+      if (blockedBadgeNames.has(b)) deferred++;   // attached, but its badge row carries needsCapability
+      if (!h.originBadges.includes(b)) { h.originBadges.push(b); badgesAdded++; }
+    }
+    if (spec.thorns != null)
+      (h.triggers = h.triggers || []).push({ name:'Thorns', hook:'passive', targets:'self',
+        effects:[{ effect:'Thorns N', value:spec.thorns }], authored:true });
+    if (spec.startOfBattleStatus)
+      (h.triggers = h.triggers || []).push({ name:'Begins Owed', hook:'startOfBattle', targets:'self',
+        effects:[{ effect:'apply a status', status:spec.startOfBattleStatus.status,
+                   value:spec.startOfBattleStatus.value }], authored:true });
+    // Only triggers that need NO condition outside the closed three can be built.
+    for (const tr of (spec.triggers || [])) {
+      if (tr.when) { deferred++; continue; }
+      (h.triggers = h.triggers || []).push({ ...tr, authored:true });
+    }
+    // Record the deviation from the class baseline ON THE ROW. R23 says every hero must match
+    // its class exactly, and it is right to - an undeclared drift is how the Crucible ended up
+    // with its own numbers. A DELIBERATE difference is not drift, but it has to say so out loud.
+    { const base = DERIVED_BASE[h.class] || {};
+      const d = {};
+      for (const k of Object.keys(base)) if ((h.derivedBase[k] ?? 0) !== base[k]) d[k] = h.derivedBase[k] - base[k];
+      if (Object.keys(d).length) { h.derivedDeltas = d; h.derivedDeltaWhy = spec.why; } }
+    h.notes.push('Differentiated 2026-08-22: ' + spec.why);
+    touched++;
+  }
+  console.log('differentiation: ' + touched + ' heroes · ' + statPoints + ' stat points · ' +
+              badgesAdded + ' badges attached · ' + deferred + ' deferred to CONTENT-GAPS');
+}
+
 // ---------------------------------------------------------------- local art resolution
 // The art tree in this repo is art/heroes/<slug>/{card,hex,anim}/ with card/l1..l4 and
 // card/<affliction>. The SOURCE names the same pictures <slug>1..4 and <slug>l|p|r|v in a flat
