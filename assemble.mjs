@@ -38,6 +38,41 @@ const cl=R('classes.json'); out.classes=cl.classes; out.stats=cl.stats; out.art=
 out.levels=R('levels.json');
 // ---- heroes, extracted mechanically from hell-tcg's five creation paths
 out.heroes=R('heroes.json');
+// ---- the TEST COHORT (settled.json testCohort): the standard engine test party — six
+// clones of live heroes plus test enemies, resolved so the Codex renders them and
+// mkenginepack.mjs can export them. A clone copies its source hero at assemble time;
+// tweaks land as overrides on the clone, never on the original.
+//
+// THIS BLOCK AND ITS DATA HAVE BEEN LOST THREE TIMES to stale-snapshot clobbers
+// (git f4d7a0e, efb2d67, and again at 6b23dd7 — whose own commit message claims to have
+// restored it). Restored 2026-08-21 from efb2d67. The guard below is why there will not
+// be a fourth: losing it is now a LOUD failure at assemble time, not a silent absence
+// that only shows up when mkenginepack refuses to run.
+out.testCohort=null;
+if(!settled.testCohort){
+  prob.push('settled.json has NO testCohort — the engine test party is missing. '
+          + 'This has been clobbered three times before; recover it from git rather than '
+          + 'reauthoring it: git show efb2d67:settled.json');
+} else {
+  const tc={note:settled.testCohort.note, heroes:[], enemies:settled.testCohort.enemies||[]};
+  for(const t of (settled.testCohort.heroes||[])){
+    const src=out.heroes.heroes.find(x=>x.id===t.copyOf);
+    if(!src){ prob.push('testCohort: unknown copyOf '+t.copyOf); continue; }
+    // The clone takes the source hero, then EVERY field on the settled row overrides it.
+    // This used to copy four fields by name (typeId, name, copyOf, engine), which silently
+    // dropped the other 20 an override row may carry — `moves` among them, which is how the
+    // engine pack lost its movement grants. The contract is "tweaks land as overrides on the
+    // clone", so the override is a spread, not a list that has to be kept in sync.
+    tc.heroes.push({ ...JSON.parse(JSON.stringify(src)),
+      id:'hero.test.'+t.typeId, path:'test',
+      ...t,
+      notes:[...(src.notes||[]), 'TEST COHORT clone of '+t.copyOf+' — tweak here, never the original.'] });
+  }
+  if(tc.heroes.length!==(settled.testCohort.heroes||[]).length)
+    prob.push('testCohort: resolved '+tc.heroes.length+' of '+(settled.testCohort.heroes||[]).length+' heroes');
+  out.testCohort=tc;
+}
+
 // ---- the function list: the complete vocabulary content is allowed to use
 if(fs.existsSync(G+'functions.json')) out.functions=R('functions.json');
 { const known=new Set(out.classes.map(c=>c.id)); const hid=new Set();

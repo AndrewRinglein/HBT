@@ -396,6 +396,38 @@ if(D.heroes) for(const h of D.heroes.heroes){
     for(const e of (D[group]||[])) walk(e,e.name||e.id||group,null);
 }
 
+// R18 A UNIT'S BONUS MOVE MUST MATCH ITS CLASS. Ruled 2026-08-21: one bonus move per base
+//     class — Warrior Leap, Rogue/Ranger Side Roll, Paladin Sidestep, Mage Focus, Priest
+//     Devotion, Civilian and Beast none. The mapping lives on the class row as `bonusMove`
+//     (gen/classes.json), NOT in prose, because prose is what let it drift: the engine test
+//     cohort spent weeks carrying the pre-rebuild assignment where nearly everyone had
+//     Sidestep, and two sessions disagreed about which was right with nothing to settle it.
+//     Every unit also needs `power.move` — a unit with no moves at all fails the engine
+//     loader with a raw throw, which is how six test heroes took 34 test files down.
+if(D.classes){
+  const BONUS=Object.fromEntries(D.classes.map(c=>[c.id,c.bonusMove??undefined]));
+  const ALLBONUS=new Set(['power.leap','power.side-roll','power.sidestep','power.focus','power.devotion']);
+  const heroById=Object.fromEntries(((D.heroes&&D.heroes.heroes)||[]).map(h=>[h.id,h]));
+  for(const c of D.classes)
+    if(!('bonusMove' in c)) add('class-has-no-bonusMove',c.name,c.id+' — the mapping must be data, not prose');
+
+  for(const u of ((D.testCohort&&D.testCohort.heroes)||[])){
+    const moves=(u.engine&&u.engine.moves)||u.moves;
+    if(!Array.isArray(moves)||!moves.length){
+      add('unit-has-no-moves',u.name||u.typeId,'the engine loader throws on this'); continue; }
+    if(!moves.includes('power.move'))
+      add('unit-cannot-plain-move',u.name||u.typeId,moves.join(' '));
+    const src=heroById[u.copyOf];
+    if(!src||!src.class) continue;
+    const want=BONUS[src.class];
+    const got=moves.filter(m=>ALLBONUS.has(m));
+    const expect=want?[want]:[];
+    if(JSON.stringify(got)!==JSON.stringify(expect))
+      add('bonus-move-does-not-match-class',u.name||u.typeId,
+          src.class.replace('class.','')+' should have '+(want||'no bonus move')+', has '+(got.join(' ')||'none'));
+  }
+}
+
 const by={}; F.forEach(f=>(by[f.rule]=by[f.rule]||[]).push(f));
 for(const [r,list] of Object.entries(by).sort((a,b)=>b[1].length-a[1].length)){
   console.log('\n### '+r+'  ('+list.length+')');

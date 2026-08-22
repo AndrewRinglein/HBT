@@ -844,5 +844,330 @@
    "decay": "-1 at End of Phase, like Burn, Poison, Bleed, Weak, Stun and Frost.",
    "source": "2026-08-20: \"clean up that movement stuff.\" Fourteen entries said \"the target loses N Movement on its next Turn\" — one meaning, two wordings, and the only per-target clock left in the game. It is a status now, so it decays on the same ladder as everything else and nothing has to remember whose next Turn it is."
   }
- ]
+ ],
+ "testCohort": {
+  "note": "Ruled 2026-08-20: the standard engine test party — six heroes, one per class, COPIED from live Codex heroes so they can be tweaked without touching the originals. Clearly differentiated: test- typeIds, (TEST) names, never ships. The engine reads these through the generated pack (mkenginepack.mjs) — nothing hand-typed engine-side. Testing-lane riders travel on the cohort and retire one by one as published sources land; the Sky Pirate's own Cutlass bleed already retires test.ranger.serrated-arrows.",
+  "heroes": [
+   {
+    "copyOf": "hero.shadows.oathblade.v1",
+    "typeId": "test-oathblade",
+    "name": "Oathblade (TEST)",
+    "engine": {
+     "role": "melee",
+     "ai": "melee-aggressive",
+     "attacks": [
+      "attack.warrior.massive",
+      "attack.warrior.axe",
+      "attack.punch"
+     ],
+     "abilities": [],
+     "riders": [
+      {
+       "id": "test.warrior.second-wind",
+       "hook": "onTakingDamage",
+       "chance": 100,
+       "select": "self",
+       "effect": {
+        "kind": "status.apply",
+        "statusId": "status.regeneration",
+        "value": 1
+       },
+       "source": "unit.test-oathblade"
+      },
+      {
+       "id": "test.warrior.stagger",
+       "hook": "onDamage",
+       "chance": 20,
+       "select": "target",
+       "effect": {
+        "kind": "status.apply",
+        "statusId": "status.stun",
+        "value": 1
+       },
+       "source": "unit.test-oathblade"
+      },
+      {
+       "id": "test.warrior.brace",
+       "hook": "onTakingDamage",
+       "chance": 50,
+       "select": "self",
+       "effect": {
+        "kind": "status.apply",
+        "statusId": "test.status.ward",
+        "value": 1
+       },
+       "source": "unit.test-oathblade"
+      }
+     ],
+     "moves": [
+      "power.move",
+      "power.leap"
+     ]
+    }
+   },
+   {
+    "copyOf": "hero.skyship.sky-pirate.v1",
+    "typeId": "test-sky-pirate",
+    "name": "Sky Pirate (TEST)",
+    "engine": {
+     "role": "melee",
+     "ai": "melee-aggressive",
+     "attacks": [
+      "attack.warrior.axe",
+      "attack.punch"
+     ],
+     "abilities": [],
+     "riders": [],
+     "moves": [
+      "power.move",
+      "power.side-roll"
+     ]
+    }
+   },
+   {
+    "copyOf": "hero.shadows.dusk-hawk.v1",
+    "typeId": "test-dusk-hawk",
+    "name": "Dusk Hawk (TEST)",
+    "engine": {
+     "role": "ranged",
+     "ai": "ranged-kite",
+     "attacks": [
+      "attack.ranger.bow",
+      "attack.punch"
+     ],
+     "abilities": [],
+     "riders": [
+      {
+       "id": "test.ranger.pin",
+       "hook": "onHit",
+       "chance": 20,
+       "select": "target",
+       "effect": {
+        "kind": "status.apply",
+        "statusId": "test.status.hobble",
+        "value": 1
+       },
+       "source": "unit.test-dusk-hawk"
+      }
+     ],
+     "moves": [
+      "power.move",
+      "power.side-roll"
+     ]
+    }
+   },
+   {
+    "copyOf": "hero.fixed.air-mage",
+    "typeId": "test-air-mage",
+    "name": "Air Mage (TEST)",
+    "engine": {
+     "role": "ranged",
+     "ai": "ranged-kite",
+     "attacks": [
+      "attack.mage.staff",
+      "attack.mage.strike"
+     ],
+     "abilities": [
+      "power.mage.bolt"
+     ],
+     "riders": [
+      {
+       "id": "test.mage.dampen",
+       "hook": "onHit",
+       "chance": 20,
+       "select": "target",
+       "effect": {
+        "kind": "status.apply",
+        "statusId": "test.status.enfeeble",
+        "value": 1
+       },
+       "source": "unit.test-air-mage"
+      },
+      {
+       "id": "test.mage.arcane-ward",
+       "hook": "onTakingDamage",
+       "chance": 100,
+       "select": "self",
+       "effect": {
+        "kind": "status.apply",
+        "statusId": "status.protection",
+        "value": 3
+       },
+       "source": "unit.test-air-mage"
+      }
+     ],
+     "moves": [
+      "power.move",
+      "power.focus"
+     ]
+    }
+   },
+   {
+    "copyOf": "hero.tutorial.priest-scantily.lucius",
+    "typeId": "test-lucius",
+    "name": "Lucius (TEST)",
+    "engine": {
+     "role": "ranged",
+     "ai": "ranged-kite",
+     "attacks": [
+      "attack.mage.staff",
+      "attack.punch"
+     ],
+     "abilities": [],
+     "riders": [],
+     "moves": [
+      "power.move",
+      "power.devotion"
+     ]
+    }
+   },
+   {
+    "copyOf": "hero.tutorial.paladin-shiney.osric",
+    "typeId": "test-osric",
+    "name": "Osric (TEST)",
+    "engine": {
+     "role": "melee",
+     "ai": "melee-aggressive",
+     "attacks": [
+      "attack.warrior.axe",
+      "attack.punch"
+     ],
+     "abilities": [],
+     "riders": [],
+     "moves": [
+      "power.move",
+      "power.sidestep"
+     ]
+    }
+   }
+  ],
+  "enemies": [
+   {
+    "typeId": "test-zombie",
+    "name": "Zombie (TEST)",
+    "copyOf": "engine unit 'zombie' (provisional rows, 2026-08-14)",
+    "maxHp": 10,
+    "armor": 0,
+    "resist": 0,
+    "accuracy": 65,
+    "dodge": 0,
+    "strength": 4,
+    "precision": 0,
+    "magic": 0,
+    "spirit": 0,
+    "role": "melee",
+    "movement": 4,
+    "reach": 0,
+    "maxStamina": 0,
+    "staminaRegen": 0,
+    "ai": "dumb-melee",
+    "attacks": [
+     "attack.zombie.basic"
+    ],
+    "abilities": [],
+    "attributes": [
+     "undead"
+    ],
+    "triggers": [
+     {
+      "id": "trigger.zombie.rot",
+      "hook": "onDamage",
+      "chance": 20,
+      "select": "target",
+      "effect": {
+       "kind": "status.apply",
+       "statusId": "status.poison",
+       "value": 1
+      },
+      "source": "unit.test-zombie",
+      "onlyWithAttack": "attack.zombie.basic"
+     },
+     {
+      "id": "test.zombie.sap",
+      "hook": "onDamage",
+      "chance": 20,
+      "select": "target",
+      "effect": {
+       "kind": "status.apply",
+       "statusId": "status.weak",
+       "value": 1
+      },
+      "source": "unit.test-zombie"
+     },
+     {
+      "id": "test.zombie.grasp",
+      "hook": "onHit",
+      "chance": 20,
+      "select": "target",
+      "effect": {
+       "kind": "status.apply",
+       "statusId": "status.slow",
+       "value": 1
+      },
+      "source": "unit.test-zombie"
+     }
+    ],
+    "moves": [
+     "power.move"
+    ]
+   },
+   {
+    "typeId": "test-zombie-burning",
+    "name": "Burning Zombie (TEST)",
+    "copyOf": "engine unit 'zombie-burning' (published 6-BESTIARY 2026-08-20)",
+    "maxHp": 10,
+    "armor": 0,
+    "resist": 0,
+    "accuracy": 65,
+    "dodge": 0,
+    "strength": 4,
+    "precision": 0,
+    "magic": 0,
+    "spirit": 0,
+    "role": "melee",
+    "movement": 4,
+    "reach": 0,
+    "maxStamina": 0,
+    "staminaRegen": 0,
+    "ai": "dumb-melee",
+    "attacks": [
+     "attack.zombie.basic"
+    ],
+    "abilities": [],
+    "attributes": [
+     "undead"
+    ],
+    "triggers": [
+     {
+      "id": "trigger.zombie-burning.sear",
+      "hook": "onTakingDamage",
+      "chance": 100,
+      "select": "target",
+      "effect": {
+       "kind": "status.apply",
+       "statusId": "status.burn",
+       "value": 1
+      },
+      "source": "unit.test-zombie-burning"
+     },
+     {
+      "id": "test.zombie-burning.lurch",
+      "hook": "onDamage",
+      "chance": 15,
+      "select": "target",
+      "effect": {
+       "kind": "status.apply",
+       "statusId": "test.status.daze",
+       "value": 1
+      },
+      "source": "unit.test-zombie-burning"
+     }
+    ],
+    "moves": [
+     "power.move"
+    ]
+   }
+  ],
+  "_movesNote": "moves are derived from the class bonusMove in gen/classes.json, ruled 2026-08-21: Warrior Leap, Rogue/Ranger Side Roll, Paladin Sidestep, Mage Focus, Priest Devotion, Civilian/Beast none. Corrected 2026-08-21 - the cohort had been carrying the pre-rebuild assignment where nearly everyone got Sidestep. audit.mjs enforces the match, so restoring the old values will fail the build."
+ }
 }

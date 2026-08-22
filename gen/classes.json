@@ -10,7 +10,9 @@
    ],
    "specialties": 9,
    "intent": "The melee anchor. Armour is a mobility stat here — the Warrior is who finishes a run through threatened ground.",
-   "levelTable": "dictated 1–10"
+   "levelTable": "dictated 1–10",
+   "bonusMove": "power.leap",
+   "bonusMoveNote": "2 stamina, 2 hexes, +2 Strength until end of Turn."
   },
   {
    "id": "class.ranger",
@@ -21,7 +23,9 @@
    ],
    "specialties": 9,
    "intent": "Standoff damage. Reach and Vision are its real stats and both are near-invisible, which is the design's own warning label.",
-   "levelTable": "dictated 2–6, 7–10 owed"
+   "levelTable": "dictated 2–6, 7–10 owed",
+   "bonusMove": "power.side-roll",
+   "bonusMoveNote": "1 stamina, 1 hex."
   },
   {
    "id": "class.rogue",
@@ -33,7 +37,9 @@
    ],
    "specialties": 9,
    "intent": "Stealth, poison and bleed, daggers and thrown weapons. Arrives, strikes, and is gone before the answer lands.",
-   "levelTable": "owed"
+   "levelTable": "owed",
+   "bonusMove": "power.side-roll",
+   "bonusMoveNote": "1 stamina, 1 hex."
   },
   {
    "id": "class.mage",
@@ -44,7 +50,9 @@
    ],
    "specialties": 9,
    "intent": "Magic damage and the terrain layer. Staves scale their basic attacks off Precision; only the big powers spend Magic.",
-   "levelTable": "owed"
+   "levelTable": "owed",
+   "bonusMove": "power.focus",
+   "bonusMoveNote": "0 stamina, moves you ZERO hexes, gain 1 Stamina. A caught caster stays caught."
   },
   {
    "id": "class.priest",
@@ -55,7 +63,9 @@
    ],
    "specialties": 9,
    "intent": "True damage — it skips Armor and Resist both. Hits soft, hits reliably, and is the only thing standing between a fallen hero and the clock.",
-   "levelTable": "owed"
+   "levelTable": "owed",
+   "bonusMove": "power.devotion",
+   "bonusMoveNote": "0 stamina, moves you ZERO hexes, -1 Stamina Max for the Battle, gain 2 Stamina."
   },
   {
    "id": "class.paladin",
@@ -67,7 +77,9 @@
    ],
    "specialties": 9,
    "intent": "Armour, auras and protection, with slayer bonuses against undead and demon. The wall that also punishes.",
-   "levelTable": "owed"
+   "levelTable": "owed",
+   "bonusMove": "power.sidestep",
+   "bonusMoveNote": "0 stamina, cooldown 1, 1 hex."
   },
   {
    "id": "class.civilian",
@@ -75,7 +87,9 @@
    "primary": [],
    "specialties": 9,
    "intent": "An ordinary class, surfaced at different times. One action, no stamina bar, low-decision — three of them fill the flex slot one hero would.",
-   "levelTable": "owed"
+   "levelTable": "owed",
+   "bonusMove": null,
+   "bonusMoveNote": "No bonus move. The Civilian carries; it does not scramble."
   },
   {
    "id": "class.beast",
@@ -87,7 +101,9 @@
    ],
    "specialties": 9,
    "intent": "Teeth, hide and mass. The Beast is the mirror of the Civilian: it is granted NO Item Slots at any level, so nothing it does comes out of a bag — every point of it is the animal.",
-   "levelTable": "authored 1–10"
+   "levelTable": "authored 1–10",
+   "bonusMove": null,
+   "bonusMoveNote": "No bonus move."
   }
  ],
  "stats": [
