@@ -3,7 +3,6 @@ Zombie/Infectious Bite: applyBadge — badges on enemies — content/ has no ene
 Zombie: 1 onEnter effect(s) dropped — onEnter was removed from the hook list 2026-08-15
 Ghost/Possess: applyBadge — badges on enemies — content/ has no enemy badge model
 Lesser Demon: 1 onEnter effect(s) dropped — onEnter was removed from the hook list 2026-08-15
-Hellhound: doubleAttackIfMelee — re-author as an attack against "up to N enemies"
 Hellhound: fastAttack acts on arrival — onEnter, removed 2026-08-15
 Hellhound: attackOnEnter — onEnter, removed 2026-08-15
 Wolf: fastAttack acts on arrival — onEnter, removed 2026-08-15
@@ -15,11 +14,9 @@ Necromancer: 3 onEnter effect(s) dropped — onEnter was removed from the hook l
 Vampire/Inflict Vampirism: applyBadge — badges on enemies — content/ has no enemy badge model
 Greater Werewolf/Spread the Curse: applyBadge — badges on enemies — content/ has no enemy badge model
 Demon Lieutenant: 1 onEnter effect(s) dropped — onEnter was removed from the hook list 2026-08-15
-Demon Lieutenant: doubleAttackIfMelee — re-author as an attack against "up to N enemies"
 Succubus/Soul Corruption: applyBadge — badges on enemies — content/ has no enemy badge model
 Spectral Knight: 1 onEnter effect(s) dropped — onEnter was removed from the hook list 2026-08-15
 Death Knight: 1 onEnter effect(s) dropped — onEnter was removed from the hook list 2026-08-15
-Bone Dragon: attacksAllInRow — ROWS do not exist on a hex board, needs re-authoring
 Lich: 2 onEnter effect(s) dropped — onEnter was removed from the hook list 2026-08-15
 Possessed Troll/Rotting Touch: applyBadge — badges on enemies — content/ has no enemy badge model
 Nightmare Twin/Inflict Madness: applyBadge — badges on enemies — content/ has no enemy badge model

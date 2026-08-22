@@ -320,7 +320,7 @@ const TABS=[
        '<td>'+(u.art?'<img class="thumb" src="'+esc(u.art)+'" alt="" loading="lazy">':'')+'</td>'+
        '<td><b>'+esc(u.name)+'</b><br><small>'+esc((u.types||[]).join(' / '))+'</small>'+
          (u.curated?'':'<br><span class="tag warn">not in the curated 144</span>')+'</td>'+
-       '<td>'+(RANK[u.rank]||u.rank||'-')+'</td>'+
+       '<td>'+(RANK[u.rank]||u.rank||'-')+'<br><small>'+esc(u.deploys||'')+'</small></td>'+
        '<td>'+(p.health!=null?p.health:'-')+'</td>'+
        '<td>'+(p.strength!=null?p.strength:'-')+'</td>'+
        '<td>'+(p.precision!=null?p.precision:'-')+'</td>'+

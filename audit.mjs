@@ -715,6 +715,45 @@ if(D.bestiary && D.bestiary.length){
   }
 }
 
+// R28 A RETIRED HOOK STAYS RETIRED, AND THE BOARD HAS NO LANES. Ruled 2026-08-22.
+//
+// COMBAT-DESIGN retires hooks by name and date, and content did not follow: onEnter and
+// onWounded went on 2026-08-15, turnEnd was renamed onActivationEnd the same day, and onEquip
+// went on 2026-08-20 — yet two items were still hanging effects on onEquip a week later. A
+// retirement written only in prose is a suggestion. This makes it a build failure.
+//
+// The lane half is the same failure from the other direction. Hell-TCG is three columns and
+// HoBaT is a hex board, so "the enemies in my row" and "deploys foremost" are not translations,
+// they are imports of a board that does not exist. A radius is not a row.
+{
+  const RETIRED = {
+    onEnter:      'removed 2026-08-15 — units do not arrive mid-battle',
+    onWounded:    'removed 2026-08-15',
+    turnEnd:      'renamed onActivationEnd 2026-08-15 — a unit\'s go, not a Turn',
+    onEquip:      'retired 2026-08-20 — units start fully equipped, so equip-time IS startOfBattle',
+  };
+  const LANES = { placement:'lane placement in a three-column grid', row:'rows do not exist on a hex board',
+                  sameRowEnemies:'ditto', attacksAllInRow:'ditto' };
+
+  // (a) retired hooks, anywhere a hook is named
+  for(const h of ((D.functions||{}).hooks||[])){
+    const n = typeof h==='string' ? h : h.name;
+    if(RETIRED[n]) add('retired-hook-still-in-use', n,
+      RETIRED[n]+' — used by '+((h.ids||[]).slice(0,4).join(', ')||(h.uses+' rows')));
+  }
+  for(const u of (D.bestiary||[])) for(const tr of (u.triggers||[]))
+    if(RETIRED[tr.hook]) add('retired-hook-still-in-use', u.name, tr.hook+': '+RETIRED[tr.hook]);
+
+  // (b) lane and row concepts
+  for(const u of (D.bestiary||[])){
+    for(const k of Object.keys(LANES))
+      if(u[k]!==undefined && k!=='row') add('lane-concept-on-a-hex-board', u.name, k+' — '+LANES[k]);
+    const shapes = [...(u.attacks||[]).map(a=>a.targets), ...(u.triggers||[]).map(x=>x.targets)];
+    for(const s of shapes) if(s && /\brow\b/i.test(s))
+      add('lane-concept-on-a-hex-board', u.name, 'shape "'+s+'" names a row');
+  }
+}
+
 const by={}; F.forEach(f=>(by[f.rule]=by[f.rule]||[]).push(f));
 for(const [r,list] of Object.entries(by).sort((a,b)=>b[1].length-a[1].length)){
   console.log('\n### '+r+'  ('+list.length+')');

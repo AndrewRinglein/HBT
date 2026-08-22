@@ -1,7 +1,7 @@
 {
  "_note": "All 412 enemies from hell-tcg data/enemyCards.js. Ruled 2026-08-21: all of them, not just the curated 144. `curated:true` marks the 144 that already had a campaign, art and an encounter list — that curation is real work and does not exist in enemyCards.js.",
  "_derived": "Enemies carry accuracy, movement and zero stamina. NO crit, luck or vision — enemies do not have Vision at all. Accuracy by rank is SOFT; a sweep owns it.",
- "_gaps": "118 translation gaps — see CONTENT-GAPS.md",
+ "_gaps": "115 translation gaps — see CONTENT-GAPS.md",
  "units": [
   {
    "id": "unit.imp",
@@ -12,7 +12,8 @@
     "Demon",
     "Fire"
    ],
-   "placement": "random",
+   "deploys": "anywhere",
+   "placementWas": "random",
    "ported": {
     "strength": 4,
     "precision": 3,
@@ -96,7 +97,8 @@
    "types": [
     "Undead"
    ],
-   "placement": "foremost",
+   "deploys": "front",
+   "placementWas": "foremost",
    "ported": {
     "strength": 5,
     "precision": 0,
@@ -187,7 +189,8 @@
    "types": [
     "Undead"
    ],
-   "placement": "foremost",
+   "deploys": "front",
+   "placementWas": "foremost",
    "ported": {
     "strength": 3,
     "precision": 1,
@@ -247,7 +250,8 @@
    "types": [
     "Undead"
    ],
-   "placement": "backmost",
+   "deploys": "back",
+   "placementWas": "backmost",
    "ported": {
     "strength": 1,
     "precision": 3,
@@ -307,7 +311,8 @@
     "Demon",
     "Poison"
    ],
-   "placement": "random",
+   "deploys": "anywhere",
+   "placementWas": "random",
    "ported": {
     "strength": 4,
     "precision": 3,
@@ -399,7 +404,8 @@
     "Demon",
     "Fire"
    ],
-   "placement": "random",
+   "deploys": "anywhere",
+   "placementWas": "random",
    "ported": {
     "strength": 3,
     "precision": 2,
@@ -496,7 +502,8 @@
    "types": [
     "Demon"
    ],
-   "placement": "random",
+   "deploys": "anywhere",
+   "placementWas": "random",
    "ported": {
     "strength": 4,
     "precision": 3,
@@ -606,7 +613,8 @@
    "types": [
     "Human"
    ],
-   "placement": "random",
+   "deploys": "anywhere",
+   "placementWas": "random",
    "ported": {
     "strength": 2,
     "precision": 3,
@@ -695,7 +703,8 @@
    "types": [
     "Undead"
    ],
-   "placement": "foremost",
+   "deploys": "front",
+   "placementWas": "foremost",
    "ported": {
     "strength": 6,
     "precision": 3,
@@ -798,7 +807,8 @@
     "Ghost",
     "Flying"
    ],
-   "placement": "random",
+   "deploys": "anywhere",
+   "placementWas": "random",
    "ported": {
     "strength": 4,
     "precision": 5,
@@ -888,7 +898,8 @@
    "types": [
     "Demon"
    ],
-   "placement": "random",
+   "deploys": "anywhere",
+   "placementWas": "random",
    "ported": {
     "strength": 4,
     "precision": 3,
@@ -994,7 +1005,8 @@
     "Undead",
     "Poison"
    ],
-   "placement": "random",
+   "deploys": "anywhere",
+   "placementWas": "random",
    "ported": {
     "strength": 2,
     "precision": 3,
@@ -1084,7 +1096,8 @@
     "Demon",
     "Fire"
    ],
-   "placement": "foremost",
+   "deploys": "front",
+   "placementWas": "foremost",
    "ported": {
     "strength": 6,
     "precision": 2,
@@ -1112,10 +1125,15 @@
      "id": "attack.hellhound.attack",
      "name": "Attack",
      "kind": "attack",
-     "targets": "one enemy in melee reach",
+     "targets": "up to N enemies within Reach",
      "damageType": "physical",
      "damage": "melee",
-     "effects": []
+     "effects": [],
+     "multiple": {
+      "count": 2,
+      "damageModifier": 0
+     },
+     "reauthored": "doubleAttackIfMelee — two targets in reach, not two swings"
     },
     {
      "id": "attack.hellhound.flaming-pounce",
@@ -1167,7 +1185,8 @@
     "Monster",
     "Nature"
    ],
-   "placement": "foremost",
+   "deploys": "front",
+   "placementWas": "foremost",
    "ported": {
     "strength": 3,
     "precision": 2,
@@ -1242,7 +1261,8 @@
    "types": [
     "Monster"
    ],
-   "placement": "foremost",
+   "deploys": "front",
+   "placementWas": "foremost",
    "ported": {
     "strength": 4,
     "precision": 0,
@@ -1358,7 +1378,8 @@
     "Human",
     "Ghost"
    ],
-   "placement": "random",
+   "deploys": "anywhere",
+   "placementWas": "random",
    "ported": {
     "strength": 5,
     "precision": 4,
@@ -1453,7 +1474,8 @@
    "types": [
     "Human"
    ],
-   "placement": "random",
+   "deploys": "anywhere",
+   "placementWas": "random",
    "ported": {
     "strength": 3,
     "precision": 5,
@@ -1589,7 +1611,8 @@
    "types": [
     "Human"
    ],
-   "placement": "random",
+   "deploys": "anywhere",
+   "placementWas": "random",
    "ported": {
     "strength": 2,
     "precision": 4,
@@ -1723,7 +1746,8 @@
     "Human",
     "Undead"
    ],
-   "placement": "backmost",
+   "deploys": "back",
+   "placementWas": "backmost",
    "ported": {
     "strength": 2,
     "precision": 5,
@@ -1826,7 +1850,8 @@
    "types": [
     "Ghost"
    ],
-   "placement": "random",
+   "deploys": "anywhere",
+   "placementWas": "random",
    "ported": {
     "strength": 3,
     "precision": 4,
@@ -1964,7 +1989,8 @@
     "Demon",
     "Ice"
    ],
-   "placement": "random",
+   "deploys": "anywhere",
+   "placementWas": "random",
    "ported": {
     "strength": 5,
     "precision": 3,
@@ -2052,7 +2078,8 @@
     "Demon",
     "Fire"
    ],
-   "placement": "random",
+   "deploys": "anywhere",
+   "placementWas": "random",
    "ported": {
     "strength": 6,
     "precision": 4,
@@ -2141,7 +2168,8 @@
    "types": [
     "Vampire"
    ],
-   "placement": "random",
+   "deploys": "anywhere",
+   "placementWas": "random",
    "ported": {
     "strength": 4,
     "precision": 4,
@@ -2265,7 +2293,8 @@
    "types": [
     "Werewolf"
    ],
-   "placement": "random",
+   "deploys": "anywhere",
+   "placementWas": "random",
    "ported": {
     "strength": 6,
     "precision": 4,
@@ -2393,7 +2422,8 @@
    "types": [
     "Demon"
    ],
-   "placement": "foremost",
+   "deploys": "front",
+   "placementWas": "foremost",
    "ported": {
     "strength": 6,
     "precision": 4,
@@ -2421,10 +2451,15 @@
      "id": "attack.demon-lieutenant.double-attack",
      "name": "Double Attack",
      "kind": "attack",
-     "targets": "one enemy in melee reach",
+     "targets": "up to N enemies within Reach",
      "damageType": "physical",
      "damage": "melee",
-     "effects": []
+     "effects": [],
+     "multiple": {
+      "count": 2,
+      "damageModifier": 0
+     },
+     "reauthored": "doubleAttackIfMelee — two targets in reach, not two swings"
     },
     {
      "id": "attack.demon-lieutenant.armor-crush",
@@ -2525,7 +2560,8 @@
    "types": [
     "Undead"
    ],
-   "placement": "foremost",
+   "deploys": "front",
+   "placementWas": "foremost",
    "ported": {
     "strength": 4,
     "precision": 2,
@@ -2644,7 +2680,8 @@
     "Demon",
     "Flying"
    ],
-   "placement": "random",
+   "deploys": "anywhere",
+   "placementWas": "random",
    "ported": {
     "strength": 4,
     "precision": 4,
@@ -2788,7 +2825,8 @@
     "Undead",
     "Shadow"
    ],
-   "placement": "foremost",
+   "deploys": "front",
+   "placementWas": "foremost",
    "ported": {
     "strength": 7,
     "precision": 0,
@@ -2910,7 +2948,8 @@
    "types": [
     "Undead"
    ],
-   "placement": "foremost",
+   "deploys": "front",
+   "placementWas": "foremost",
    "ported": {
     "strength": 6,
     "precision": 2,
@@ -3045,7 +3084,8 @@
     "Vampire",
     "Flying"
    ],
-   "placement": "random",
+   "deploys": "anywhere",
+   "placementWas": "random",
    "ported": {
     "strength": 7,
     "precision": 5,
@@ -3162,7 +3202,8 @@
     "Boss",
     "Flying"
    ],
-   "placement": "random",
+   "deploys": "anywhere",
+   "placementWas": "random",
    "ported": {
     "strength": 5,
     "precision": 4,
@@ -3190,16 +3231,21 @@
      "id": "attack.bone-dragon.claw-sweep",
      "name": "Claw Sweep",
      "kind": "attack",
-     "targets": "one enemy in melee reach",
+     "targets": "up to N enemies within Reach",
      "damageType": "physical",
      "damage": null,
-     "effects": []
+     "effects": [],
+     "multiple": {
+      "count": 3,
+      "damageModifier": 0
+     },
+     "reauthored": "attacksAllInRow. A SWEEP takes several things standing in reach - that is the multiple-attacks shape, not a row."
     },
     {
      "id": "attack.bone-dragon.poison-breath",
      "name": "Poison Breath",
      "kind": "attack",
-     "targets": "enemies within N hexes",
+     "targets": "a hex within N hexes and every hex adjacent to it",
      "damageType": "magic",
      "damage": 0,
      "effects": [
@@ -3210,7 +3256,9 @@
        "value": 3,
        "target": "enemies within N hexes"
       }
-     ]
+     ],
+     "range": 3,
+     "reauthored": "attacksAllInRow. A BREATH covers ground: it lands somewhere and catches what is around it. Not a radius centred on the dragon."
     },
     {
      "id": "attack.bone-dragon.indestructibility",
@@ -3276,7 +3324,9 @@
    "sourceGaveTriggers": true,
    "backstory": "The reanimated skeleton of a once-mighty dragon, now serving as an undead war machine. Its breath weapon sweeps across entire rows of enemies, and its bone armor provides formidable protection. Though its flesh is gone, its fury remains eternal.",
    "quote": "I soared above kingdoms. Now I rule over graves.",
-   "notes": [],
+   "notes": [
+    "attacksAllInRow in the source — rows do not exist here; re-authored as a sweep and a breath."
+   ],
    "source": "hell-tcg data/enemyCards.js, extracted 2026-08-21. Stats and abilities are ported, not authored."
   },
   {
@@ -3288,7 +3338,8 @@
     "Undead",
     "Boss"
    ],
-   "placement": "random",
+   "deploys": "anywhere",
+   "placementWas": "random",
    "ported": {
     "strength": 3,
     "precision": 4,
@@ -3464,7 +3515,8 @@
     "Monster",
     "Ghost"
    ],
-   "placement": "foremost",
+   "deploys": "front",
+   "placementWas": "foremost",
    "ported": {
     "strength": 12,
     "precision": 4,
@@ -3549,7 +3601,8 @@
     "Fire",
     "Boss"
    ],
-   "placement": "backmost",
+   "deploys": "back",
+   "placementWas": "backmost",
    "ported": {
     "strength": 2,
     "precision": 2,
@@ -3631,7 +3684,8 @@
     "Shadow",
     "Boss"
    ],
-   "placement": "random",
+   "deploys": "anywhere",
+   "placementWas": "random",
    "ported": {
     "strength": 6,
     "precision": 7,
@@ -3743,7 +3797,8 @@
     "Boss",
     "Flying"
    ],
-   "placement": "backmost",
+   "deploys": "back",
+   "placementWas": "backmost",
    "ported": {
     "strength": 14,
     "precision": 7,
@@ -3876,7 +3931,8 @@
    "types": [
     "Demon"
    ],
-   "placement": "foremost",
+   "deploys": "front",
+   "placementWas": "foremost",
    "ported": {
     "strength": 3,
     "precision": 1,
@@ -3934,7 +3990,8 @@
    "types": [
     "Elemental"
    ],
-   "placement": "foremost",
+   "deploys": "front",
+   "placementWas": "foremost",
    "ported": {
     "strength": 6,
     "precision": 0,
@@ -4022,7 +4079,8 @@
    "types": [
     "Fire"
    ],
-   "placement": "random",
+   "deploys": "anywhere",
+   "placementWas": "random",
    "ported": {
     "strength": 2,
     "precision": 2,
@@ -4093,7 +4151,8 @@
    "types": [
     "Fire"
    ],
-   "placement": "random",
+   "deploys": "anywhere",
+   "placementWas": "random",
    "ported": {
     "strength": 2,
     "precision": 2,
@@ -4174,7 +4233,8 @@
    "types": [
     "Poison"
    ],
-   "placement": "random",
+   "deploys": "anywhere",
+   "placementWas": "random",
    "ported": {
     "strength": 2,
     "precision": 2,
@@ -4255,7 +4315,8 @@
    "types": [
     "Ghost"
    ],
-   "placement": "random",
+   "deploys": "anywhere",
+   "placementWas": "random",
    "ported": {
     "strength": 2,
     "precision": 2,
@@ -4336,7 +4397,8 @@
    "types": [
     "Undead"
    ],
-   "placement": "backmost",
+   "deploys": "back",
+   "placementWas": "backmost",
    "ported": {
     "strength": 3,
     "precision": 3,
@@ -4382,10 +4444,12 @@
      "id": "attack.bone-weaver.bone-arrows",
      "name": "Bone Arrows",
      "kind": "attack",
-     "targets": "enemies within N hexes",
+     "targets": "a hex within N hexes and every hex adjacent to it",
      "damageType": "physical",
      "damage": "ranged",
-     "effects": []
+     "effects": [],
+     "range": 4,
+     "reauthored": "row targeting - a volley lands somewhere and covers the ground around it."
     }
    ],
    "triggers": [
@@ -4436,7 +4500,8 @@
    "types": [
     "Ghost"
    ],
-   "placement": "foremost",
+   "deploys": "front",
+   "placementWas": "foremost",
    "ported": {
     "strength": 4,
     "precision": 2,
@@ -4509,7 +4574,8 @@
    "types": [
     "Ghost"
    ],
-   "placement": "foremost",
+   "deploys": "front",
+   "placementWas": "foremost",
    "ported": {
     "strength": 4,
     "precision": 4,
@@ -4590,7 +4656,8 @@
    "types": [
     "Ghost"
    ],
-   "placement": "backmost",
+   "deploys": "back",
+   "placementWas": "backmost",
    "ported": {
     "strength": 2,
     "precision": 5,
@@ -4645,10 +4712,12 @@
      "id": "attack.fallen-ranger.rain-of-arrows",
      "name": "Rain of Arrows",
      "kind": "attack",
-     "targets": "enemies within N hexes",
+     "targets": "a hex within N hexes and every hex adjacent to it",
      "damageType": "physical",
      "damage": "ranged",
-     "effects": []
+     "effects": [],
+     "range": 4,
+     "reauthored": "row targeting - a volley lands somewhere and covers the ground around it."
     }
    ],
    "triggers": [],
@@ -4674,7 +4743,8 @@
    "types": [
     "Ghost"
    ],
-   "placement": "backmost",
+   "deploys": "back",
+   "placementWas": "backmost",
    "ported": {
     "strength": 2,
     "precision": 2,
@@ -4751,7 +4821,8 @@
    "types": [
     "Monster"
    ],
-   "placement": "foremost",
+   "deploys": "front",
+   "placementWas": "foremost",
    "ported": {
     "strength": 4,
     "precision": 2,
@@ -4851,7 +4922,8 @@
    "types": [
     "Demon"
    ],
-   "placement": "backmost",
+   "deploys": "back",
+   "placementWas": "backmost",
    "ported": {
     "strength": 4,
     "precision": 4,
@@ -4960,7 +5032,8 @@
     "Demon",
     "Horror"
    ],
-   "placement": "backmost",
+   "deploys": "back",
+   "placementWas": "backmost",
    "ported": {
     "strength": 4,
     "precision": 4,
@@ -5081,7 +5154,8 @@
    "types": [
     "Demon"
    ],
-   "placement": "random",
+   "deploys": "anywhere",
+   "placementWas": "random",
    "ported": {
     "strength": 1,
     "precision": 1,
@@ -5172,7 +5246,8 @@
     "Undead",
     "Wall"
    ],
-   "placement": "foremost",
+   "deploys": "front",
+   "placementWas": "foremost",
    "ported": {
     "strength": 0,
     "precision": 0,
@@ -5237,7 +5312,8 @@
     "Undead",
     "Horror"
    ],
-   "placement": "foremost",
+   "deploys": "front",
+   "placementWas": "foremost",
    "ported": {
     "strength": 5,
     "precision": 4,
@@ -5377,7 +5453,8 @@
     "Demon",
     "Fire"
    ],
-   "placement": "backmost",
+   "deploys": "back",
+   "placementWas": "backmost",
    "ported": {
     "strength": 1,
     "precision": 2,
@@ -5448,7 +5525,8 @@
     "Demon",
     "Beast"
    ],
-   "placement": "foremost",
+   "deploys": "front",
+   "placementWas": "foremost",
    "ported": {
     "strength": 3,
     "precision": 0,
@@ -5532,7 +5610,8 @@
    "types": [
     "Human"
    ],
-   "placement": "foremost",
+   "deploys": "front",
+   "placementWas": "foremost",
    "ported": {
     "strength": 3,
     "precision": 2,
@@ -5623,7 +5702,8 @@
    "types": [
     "Human"
    ],
-   "placement": "random",
+   "deploys": "anywhere",
+   "placementWas": "random",
    "ported": {
     "strength": 2,
     "precision": 3,
@@ -5698,7 +5778,8 @@
    "types": [
     "Human"
    ],
-   "placement": "backmost",
+   "deploys": "back",
+   "placementWas": "backmost",
    "ported": {
     "strength": 1,
     "precision": 3,
@@ -5808,7 +5889,8 @@
     "Human",
     "Undead"
    ],
-   "placement": "backmost",
+   "deploys": "back",
+   "placementWas": "backmost",
    "ported": {
     "strength": 1,
     "precision": 1,
@@ -5930,7 +6012,8 @@
     "Undead",
     "Vampire"
    ],
-   "placement": "backmost",
+   "deploys": "back",
+   "placementWas": "backmost",
    "ported": {
     "strength": 4,
     "precision": 4,
@@ -6029,7 +6112,8 @@
     "Undead",
     "Vampire"
    ],
-   "placement": "foremost",
+   "deploys": "front",
+   "placementWas": "foremost",
    "ported": {
     "strength": 3,
     "precision": 3,
@@ -6145,7 +6229,8 @@
    "types": [
     "Undead"
    ],
-   "placement": "foremost",
+   "deploys": "front",
+   "placementWas": "foremost",
    "ported": {
     "strength": 3,
     "precision": 1,
@@ -6203,7 +6288,8 @@
    "types": [
     "Demon"
    ],
-   "placement": "backmost",
+   "deploys": "back",
+   "placementWas": "backmost",
    "ported": {
     "strength": 1,
     "precision": 2,
@@ -6261,7 +6347,8 @@
    "types": [
     "Undead"
    ],
-   "placement": "foremost",
+   "deploys": "front",
+   "placementWas": "foremost",
    "ported": {
     "strength": 4,
     "precision": 0,
@@ -6343,7 +6430,8 @@
     "Undead",
     "Boss"
    ],
-   "placement": "backmost",
+   "deploys": "back",
+   "placementWas": "backmost",
    "ported": {
     "strength": 5,
     "precision": 5,
@@ -6444,7 +6532,8 @@
     "Demon",
     "Boss"
    ],
-   "placement": "random",
+   "deploys": "anywhere",
+   "placementWas": "random",
    "ported": {
     "strength": 5,
     "precision": 5,
@@ -6526,7 +6615,8 @@
     "Beast",
     "Boss"
    ],
-   "placement": "backmost",
+   "deploys": "back",
+   "placementWas": "backmost",
    "ported": {
     "strength": 7,
     "precision": 6,
@@ -6683,7 +6773,8 @@
     "Boss",
     "Fire"
    ],
-   "placement": "backmost",
+   "deploys": "back",
+   "placementWas": "backmost",
    "ported": {
     "strength": 4,
     "precision": 8,
@@ -6792,7 +6883,8 @@
     "Undead",
     "Boss"
    ],
-   "placement": "backmost",
+   "deploys": "back",
+   "placementWas": "backmost",
    "ported": {
     "strength": 7,
     "precision": 7,
@@ -6915,7 +7007,8 @@
    "types": [
     "Undead"
    ],
-   "placement": "foremost",
+   "deploys": "front",
+   "placementWas": "foremost",
    "ported": {
     "strength": 5,
     "precision": 4,
@@ -6997,7 +7090,8 @@
    "types": [
     "Ghost"
    ],
-   "placement": "random",
+   "deploys": "anywhere",
+   "placementWas": "random",
    "ported": {
     "strength": 3,
     "precision": 4,
@@ -7088,7 +7182,8 @@
    "types": [
     "Monster"
    ],
-   "placement": "foremost",
+   "deploys": "front",
+   "placementWas": "foremost",
    "ported": {
     "strength": 5,
     "precision": 4,
@@ -7168,7 +7263,8 @@
    "types": [
     "Monster"
    ],
-   "placement": "foremost",
+   "deploys": "front",
+   "placementWas": "foremost",
    "ported": {
     "strength": 5,
     "precision": 4,
@@ -7246,7 +7342,8 @@
    "types": [
     "Monster"
    ],
-   "placement": "foremost",
+   "deploys": "front",
+   "placementWas": "foremost",
    "ported": {
     "strength": 5,
     "precision": 4,
@@ -7324,7 +7421,8 @@
    "types": [
     "Monster"
    ],
-   "placement": "backmost",
+   "deploys": "back",
+   "placementWas": "backmost",
    "ported": {
     "strength": 6,
     "precision": 5,
@@ -7418,7 +7516,8 @@
    "types": [
     "Undead"
    ],
-   "placement": "foremost",
+   "deploys": "front",
+   "placementWas": "foremost",
    "ported": {
     "strength": 6,
     "precision": 3,
@@ -7491,7 +7590,8 @@
    "types": [
     "Undead"
    ],
-   "placement": "backmost",
+   "deploys": "back",
+   "placementWas": "backmost",
    "ported": {
     "strength": 3,
     "precision": 7,
@@ -7572,7 +7672,8 @@
    "types": [
     "Elemental"
    ],
-   "placement": "backmost",
+   "deploys": "back",
+   "placementWas": "backmost",
    "ported": {
     "strength": 5,
     "precision": 7,
@@ -7667,7 +7768,8 @@
    "types": [
     "Elemental"
    ],
-   "placement": "foremost",
+   "deploys": "front",
+   "placementWas": "foremost",
    "ported": {
     "strength": 6,
     "precision": 2,
@@ -7738,7 +7840,8 @@
    "types": [
     "Undead"
    ],
-   "placement": "foremost",
+   "deploys": "front",
+   "placementWas": "foremost",
    "ported": {
     "strength": 6,
     "precision": 5,
@@ -7837,7 +7940,8 @@
    "types": [
     "Undead"
    ],
-   "placement": "backmost",
+   "deploys": "back",
+   "placementWas": "backmost",
    "ported": {
     "strength": 3,
     "precision": 6,
@@ -7926,7 +8030,8 @@
     "Human",
     "Sand"
    ],
-   "placement": "foremost",
+   "deploys": "front",
+   "placementWas": "foremost",
    "ported": {
     "strength": 6,
     "precision": 4,
@@ -8015,7 +8120,8 @@
     "Monster",
     "Sand"
    ],
-   "placement": "backmost",
+   "deploys": "back",
+   "placementWas": "backmost",
    "ported": {
     "strength": 4,
     "precision": 5,
@@ -8106,7 +8212,8 @@
    "types": [
     "Undead"
    ],
-   "placement": "foremost",
+   "deploys": "front",
+   "placementWas": "foremost",
    "ported": {
     "strength": 7,
     "precision": 3,
@@ -8200,7 +8307,8 @@
    "types": [
     "Undead"
    ],
-   "placement": "backmost",
+   "deploys": "back",
+   "placementWas": "backmost",
    "ported": {
     "strength": 3,
     "precision": 7,
@@ -8287,7 +8395,8 @@
    "types": [
     "Undead"
    ],
-   "placement": "foremost",
+   "deploys": "front",
+   "placementWas": "foremost",
    "ported": {
     "strength": 6,
     "precision": 2,
@@ -8358,7 +8467,8 @@
    "types": [
     "Undead"
    ],
-   "placement": "foremost",
+   "deploys": "front",
+   "placementWas": "foremost",
    "ported": {
     "strength": 6,
     "precision": 5,
@@ -8438,7 +8548,8 @@
    "types": [
     "Undead"
    ],
-   "placement": "random",
+   "deploys": "anywhere",
+   "placementWas": "random",
    "ported": {
     "strength": 3,
     "precision": 3,
@@ -8541,7 +8652,8 @@
     "Elemental",
     "Sand"
    ],
-   "placement": "random",
+   "deploys": "anywhere",
+   "placementWas": "random",
    "ported": {
     "strength": 5,
     "precision": 5,
@@ -8619,7 +8731,8 @@
    "types": [
     "Demon"
    ],
-   "placement": "foremost",
+   "deploys": "front",
+   "placementWas": "foremost",
    "ported": {
     "strength": 5,
     "precision": 4,
@@ -8708,7 +8821,8 @@
     "Demon",
     "Fire"
    ],
-   "placement": "random",
+   "deploys": "anywhere",
+   "placementWas": "random",
    "ported": {
     "strength": 4,
     "precision": 5,
@@ -8796,7 +8910,8 @@
    "types": [
     "Undead"
    ],
-   "placement": "backmost",
+   "deploys": "back",
+   "placementWas": "backmost",
    "ported": {
     "strength": 3,
     "precision": 5,
@@ -8882,7 +8997,8 @@
     "Human",
     "Sand"
    ],
-   "placement": "foremost",
+   "deploys": "front",
+   "placementWas": "foremost",
    "ported": {
     "strength": 10,
     "precision": 3,
@@ -8960,7 +9076,8 @@
    "types": [
     "Undead"
    ],
-   "placement": "backmost",
+   "deploys": "back",
+   "placementWas": "backmost",
    "ported": {
     "strength": 2,
     "precision": 2,
@@ -9048,7 +9165,8 @@
    "types": [
     "Human"
    ],
-   "placement": "backmost",
+   "deploys": "back",
+   "placementWas": "backmost",
    "ported": {
     "strength": 2,
     "precision": 4,
@@ -9125,7 +9243,8 @@
    "types": [
     "Demon"
    ],
-   "placement": "random",
+   "deploys": "anywhere",
+   "placementWas": "random",
    "ported": {
     "strength": 3,
     "precision": 3,
@@ -9208,7 +9327,8 @@
    "types": [
     "Undead"
    ],
-   "placement": "random",
+   "deploys": "anywhere",
+   "placementWas": "random",
    "ported": {
     "strength": 5,
     "precision": 5,
@@ -9313,7 +9433,8 @@
    "types": [
     "Undead"
    ],
-   "placement": "foremost",
+   "deploys": "front",
+   "placementWas": "foremost",
    "ported": {
     "strength": 7,
     "precision": 3,
@@ -9393,7 +9514,8 @@
    "types": [
     "Undead"
    ],
-   "placement": "foremost",
+   "deploys": "front",
+   "placementWas": "foremost",
    "ported": {
     "strength": 5,
     "precision": 4,
@@ -9465,7 +9587,8 @@
    "types": [
     "Undead"
    ],
-   "placement": "backmost",
+   "deploys": "back",
+   "placementWas": "backmost",
    "ported": {
     "strength": 2,
     "precision": 6,
@@ -9540,7 +9663,8 @@
    "types": [
     "Ghost"
    ],
-   "placement": "backmost",
+   "deploys": "back",
+   "placementWas": "backmost",
    "ported": {
     "strength": 4,
     "precision": 6,
@@ -9652,7 +9776,8 @@
    "types": [
     "Monster"
    ],
-   "placement": "foremost",
+   "deploys": "front",
+   "placementWas": "foremost",
    "ported": {
     "strength": 4,
     "precision": 3,
@@ -9723,7 +9848,8 @@
    "types": [
     "Monster"
    ],
-   "placement": "backmost",
+   "deploys": "back",
+   "placementWas": "backmost",
    "ported": {
     "strength": 5,
     "precision": 4,
@@ -9802,7 +9928,8 @@
     "Construct",
     "Undead"
    ],
-   "placement": "random",
+   "deploys": "anywhere",
+   "placementWas": "random",
    "ported": {
     "strength": 4,
     "precision": 4,
@@ -9897,7 +10024,8 @@
    "types": [
     "Demon"
    ],
-   "placement": "foremost",
+   "deploys": "front",
+   "placementWas": "foremost",
    "ported": {
     "strength": 3,
     "precision": 2,
@@ -9968,7 +10096,8 @@
    "types": [
     "Human"
    ],
-   "placement": "foremost",
+   "deploys": "front",
+   "placementWas": "foremost",
    "ported": {
     "strength": 5,
     "precision": 3,
@@ -10039,7 +10168,8 @@
    "types": [
     "Human"
    ],
-   "placement": "backmost",
+   "deploys": "back",
+   "placementWas": "backmost",
    "ported": {
     "strength": 2,
     "precision": 4,
@@ -10125,7 +10255,8 @@
    "types": [
     "Ghost"
    ],
-   "placement": "random",
+   "deploys": "anywhere",
+   "placementWas": "random",
    "ported": {
     "strength": 4,
     "precision": 5,
@@ -10213,7 +10344,8 @@
    "types": [
     "Ghost"
    ],
-   "placement": "random",
+   "deploys": "anywhere",
+   "placementWas": "random",
    "ported": {
     "strength": 3,
     "precision": 4,
@@ -10297,7 +10429,8 @@
    "types": [
     "Undead"
    ],
-   "placement": "foremost",
+   "deploys": "front",
+   "placementWas": "foremost",
    "ported": {
     "strength": 5,
     "precision": 3,
@@ -10372,7 +10505,8 @@
    "types": [
     "Undead"
    ],
-   "placement": "backmost",
+   "deploys": "back",
+   "placementWas": "backmost",
    "ported": {
     "strength": 4,
     "precision": 6,
@@ -10467,7 +10601,8 @@
    "types": [
     "Demon"
    ],
-   "placement": "backmost",
+   "deploys": "back",
+   "placementWas": "backmost",
    "ported": {
     "strength": 5,
     "precision": 4,
@@ -10545,7 +10680,8 @@
    "types": [
     "Demon"
    ],
-   "placement": "foremost",
+   "deploys": "front",
+   "placementWas": "foremost",
    "ported": {
     "strength": 4,
     "precision": 3,
@@ -10617,7 +10753,8 @@
    "types": [
     "Undead"
    ],
-   "placement": "foremost",
+   "deploys": "front",
+   "placementWas": "foremost",
    "ported": {
     "strength": 5,
     "precision": 3,
@@ -10689,7 +10826,8 @@
    "types": [
     "Undead"
    ],
-   "placement": "backmost",
+   "deploys": "back",
+   "placementWas": "backmost",
    "ported": {
     "strength": 3,
     "precision": 5,
@@ -10778,7 +10916,8 @@
     "Monster",
     "Sand"
    ],
-   "placement": "backmost",
+   "deploys": "back",
+   "placementWas": "backmost",
    "ported": {
     "strength": 7,
     "precision": 6,
@@ -10891,7 +11030,8 @@
    "types": [
     "Sand"
    ],
-   "placement": "foremost",
+   "deploys": "front",
+   "placementWas": "foremost",
    "ported": {
     "strength": 6,
     "precision": 2,
@@ -10963,7 +11103,8 @@
     "Elemental",
     "Sand"
    ],
-   "placement": "foremost",
+   "deploys": "front",
+   "placementWas": "foremost",
    "ported": {
     "strength": 6,
     "precision": 3,
@@ -11049,7 +11190,8 @@
     "Elemental",
     "Sand"
    ],
-   "placement": "backmost",
+   "deploys": "back",
+   "placementWas": "backmost",
    "ported": {
     "strength": 0,
     "precision": 0,
@@ -11125,7 +11267,8 @@
    "types": [
     "Undead"
    ],
-   "placement": "foremost",
+   "deploys": "front",
+   "placementWas": "foremost",
    "ported": {
     "strength": 6,
     "precision": 2,
@@ -11211,7 +11354,8 @@
    "types": [
     "Undead"
    ],
-   "placement": "backmost",
+   "deploys": "back",
+   "placementWas": "backmost",
    "ported": {
     "strength": 2,
     "precision": 8,
@@ -11293,7 +11437,8 @@
    "types": [
     "Ghost"
    ],
-   "placement": "foremost",
+   "deploys": "front",
+   "placementWas": "foremost",
    "ported": {
     "strength": 0,
     "precision": 2,
@@ -11382,7 +11527,8 @@
    "types": [
     "Undead"
    ],
-   "placement": "backmost",
+   "deploys": "back",
+   "placementWas": "backmost",
    "ported": {
     "strength": 2,
     "precision": 2,
@@ -11486,7 +11632,8 @@
    "types": [
     "Elemental"
    ],
-   "placement": "foremost",
+   "deploys": "front",
+   "placementWas": "foremost",
    "ported": {
     "strength": 6,
     "precision": 5,
@@ -11578,7 +11725,8 @@
    "types": [
     "Undead"
    ],
-   "placement": "backmost",
+   "deploys": "back",
+   "placementWas": "backmost",
    "ported": {
     "strength": 3,
     "precision": 3,
@@ -11677,7 +11825,8 @@
    "types": [
     "Ghost"
    ],
-   "placement": "foremost",
+   "deploys": "front",
+   "placementWas": "foremost",
    "ported": {
     "strength": 5,
     "precision": 3,
@@ -11748,7 +11897,8 @@
    "types": [
     "Demon"
    ],
-   "placement": "foremost",
+   "deploys": "front",
+   "placementWas": "foremost",
    "ported": {
     "strength": 2,
     "precision": 2,
@@ -11817,7 +11967,8 @@
    "types": [
     "Demon"
    ],
-   "placement": "backmost",
+   "deploys": "back",
+   "placementWas": "backmost",
    "ported": {
     "strength": 2,
     "precision": 3,
@@ -11883,7 +12034,8 @@
    "types": [
     "Undead"
    ],
-   "placement": "foremost",
+   "deploys": "front",
+   "placementWas": "foremost",
    "ported": {
     "strength": 4,
     "precision": 2,
@@ -11952,7 +12104,8 @@
    "types": [
     "Undead"
    ],
-   "placement": "foremost",
+   "deploys": "front",
+   "placementWas": "foremost",
    "ported": {
     "strength": 2,
     "precision": 16,
@@ -12026,7 +12179,8 @@
    "types": [
     "Demon"
    ],
-   "placement": "foremost",
+   "deploys": "front",
+   "placementWas": "foremost",
    "ported": {
     "strength": 5,
     "precision": 4,
@@ -12115,7 +12269,8 @@
    "types": [
     "Demon"
    ],
-   "placement": "backmost",
+   "deploys": "back",
+   "placementWas": "backmost",
    "ported": {
     "strength": 7,
     "precision": 5,
@@ -12200,7 +12355,8 @@
    "types": [
     "Undead"
    ],
-   "placement": "random",
+   "deploys": "anywhere",
+   "placementWas": "random",
    "ported": {
     "strength": 7,
     "precision": 1,
@@ -12275,7 +12431,8 @@
    "types": [
     "Undead"
    ],
-   "placement": "random",
+   "deploys": "anywhere",
+   "placementWas": "random",
    "ported": {
     "strength": 1,
     "precision": 6,
@@ -12347,7 +12504,8 @@
    "types": [
     "Undead"
    ],
-   "placement": "foremost",
+   "deploys": "front",
+   "placementWas": "foremost",
    "ported": {
     "strength": 5,
     "precision": 5,
@@ -12425,7 +12583,8 @@
    "types": [
     "Human"
    ],
-   "placement": "foremost",
+   "deploys": "front",
+   "placementWas": "foremost",
    "ported": {
     "strength": 7,
     "precision": 2,
@@ -12520,7 +12679,8 @@
    "types": [
     "Human"
    ],
-   "placement": "foremost",
+   "deploys": "front",
+   "placementWas": "foremost",
    "ported": {
     "strength": 2,
     "precision": 2,
@@ -12598,7 +12758,8 @@
    "types": [
     "Human"
    ],
-   "placement": "backmost",
+   "deploys": "back",
+   "placementWas": "backmost",
    "ported": {
     "strength": 2,
     "precision": 4,
@@ -12690,7 +12851,8 @@
    "types": [
     "Ghost"
    ],
-   "placement": "random",
+   "deploys": "anywhere",
+   "placementWas": "random",
    "ported": {
     "strength": 4,
     "precision": 4,
@@ -12767,7 +12929,8 @@
    "types": [
     "Undead"
    ],
-   "placement": "backmost",
+   "deploys": "back",
+   "placementWas": "backmost",
    "ported": {
     "strength": 0,
     "precision": 0,
@@ -12842,7 +13005,8 @@
    "types": [
     "Undead"
    ],
-   "placement": "foremost",
+   "deploys": "front",
+   "placementWas": "foremost",
    "ported": {
     "strength": 6,
     "precision": 5,
@@ -12924,7 +13088,8 @@
    "types": [
     "Undead"
    ],
-   "placement": "backmost",
+   "deploys": "back",
+   "placementWas": "backmost",
    "ported": {
     "strength": 2,
     "precision": 4,
@@ -13013,7 +13178,8 @@
     "Demon",
     "Fire"
    ],
-   "placement": "backmost",
+   "deploys": "back",
+   "placementWas": "backmost",
    "ported": {
     "strength": 2,
     "precision": 2,
@@ -13093,7 +13259,8 @@
     "Human",
     "Demon"
    ],
-   "placement": "foremost",
+   "deploys": "front",
+   "placementWas": "foremost",
    "ported": {
     "strength": 2,
     "precision": 3,
@@ -13164,7 +13331,8 @@
    "types": [
     "Undead"
    ],
-   "placement": "foremost",
+   "deploys": "front",
+   "placementWas": "foremost",
    "ported": {
     "strength": 4,
     "precision": 2,
@@ -13262,7 +13430,8 @@
     "Undead",
     "Demon"
    ],
-   "placement": "backmost",
+   "deploys": "back",
+   "placementWas": "backmost",
    "ported": {
     "strength": 3,
     "precision": 4,
@@ -13348,7 +13517,8 @@
     "Ghost",
     "Fire"
    ],
-   "placement": "random",
+   "deploys": "anywhere",
+   "placementWas": "random",
    "ported": {
     "strength": 3,
     "precision": 4,
@@ -13421,7 +13591,8 @@
     "Undead",
     "Fire"
    ],
-   "placement": "foremost",
+   "deploys": "front",
+   "placementWas": "foremost",
    "ported": {
     "strength": 5,
     "precision": 2,
@@ -13494,7 +13665,8 @@
     "Demon",
     "Undead"
    ],
-   "placement": "backmost",
+   "deploys": "back",
+   "placementWas": "backmost",
    "ported": {
     "strength": 3,
     "precision": 5,
@@ -13574,7 +13746,8 @@
    "types": [
     "Undead"
    ],
-   "placement": "foremost",
+   "deploys": "front",
+   "placementWas": "foremost",
    "ported": {
     "strength": 4,
     "precision": 2,
@@ -13647,7 +13820,8 @@
     "Undead",
     "Human"
    ],
-   "placement": "foremost",
+   "deploys": "front",
+   "placementWas": "foremost",
    "ported": {
     "strength": 4,
     "precision": 3,
@@ -13745,7 +13919,8 @@
     "Undead",
     "Demon"
    ],
-   "placement": "backmost",
+   "deploys": "back",
+   "placementWas": "backmost",
    "ported": {
     "strength": 3,
     "precision": 5,
@@ -13833,7 +14008,8 @@
     "Undead",
     "Human"
    ],
-   "placement": "foremost",
+   "deploys": "front",
+   "placementWas": "foremost",
    "ported": {
     "strength": 5,
     "precision": 2,
@@ -13944,7 +14120,8 @@
     "Undead",
     "Ghost"
    ],
-   "placement": "backmost",
+   "deploys": "back",
+   "placementWas": "backmost",
    "ported": {
     "strength": 2,
     "precision": 6,
@@ -14025,7 +14202,8 @@
     "Demon",
     "Monster"
    ],
-   "placement": "foremost",
+   "deploys": "front",
+   "placementWas": "foremost",
    "ported": {
     "strength": 5,
     "precision": 4,
@@ -14089,7 +14267,9 @@
        "value": 1,
        "target": "allies within N hexes"
       }
-     ]
+     ],
+     "range": 2,
+     "reauthored": "sameRowEnemies - a shout to the rank beside you becomes a shout to the allies around you."
     }
    ],
    "triggers": [],
@@ -14114,7 +14294,8 @@
     "Elemental",
     "Sand"
    ],
-   "placement": "random",
+   "deploys": "anywhere",
+   "placementWas": "random",
    "ported": {
     "strength": 6,
     "precision": 5,
@@ -14194,7 +14375,8 @@
    "types": [
     "Demon"
    ],
-   "placement": "foremost",
+   "deploys": "front",
+   "placementWas": "foremost",
    "ported": {
     "strength": 6,
     "precision": 4,
@@ -14250,7 +14432,9 @@
        "value": 1,
        "target": "allies within N hexes"
       }
-     ]
+     ],
+     "range": 2,
+     "reauthored": "sameRowEnemies re-authored as a radius."
     }
    ],
    "triggers": [],
@@ -14274,7 +14458,8 @@
    "types": [
     "Demon"
    ],
-   "placement": "backmost",
+   "deploys": "back",
+   "placementWas": "backmost",
    "ported": {
     "strength": 7,
     "precision": 5,
@@ -14362,7 +14547,8 @@
     "Demon",
     "Monster"
    ],
-   "placement": "foremost",
+   "deploys": "front",
+   "placementWas": "foremost",
    "ported": {
     "strength": 7,
     "precision": 5,
@@ -14450,7 +14636,8 @@
    "types": [
     "Demon"
    ],
-   "placement": "foremost",
+   "deploys": "front",
+   "placementWas": "foremost",
    "ported": {
     "strength": 4,
     "precision": 3,
@@ -14521,7 +14708,8 @@
    "types": [
     "Demon"
    ],
-   "placement": "backmost",
+   "deploys": "back",
+   "placementWas": "backmost",
    "ported": {
     "strength": 3,
     "precision": 5,
@@ -14599,7 +14787,8 @@
     "Demon",
     "Fire"
    ],
-   "placement": "random",
+   "deploys": "anywhere",
+   "placementWas": "random",
    "ported": {
     "strength": 7,
     "precision": 6,
@@ -14695,7 +14884,8 @@
     "Elemental",
     "Sand"
    ],
-   "placement": "foremost",
+   "deploys": "front",
+   "placementWas": "foremost",
    "ported": {
     "strength": 8,
     "precision": 5,
@@ -14782,7 +14972,8 @@
     "Elemental",
     "Sand"
    ],
-   "placement": "foremost",
+   "deploys": "front",
+   "placementWas": "foremost",
    "ported": {
     "strength": 8,
     "precision": 5,
@@ -14869,7 +15060,8 @@
     "Elemental",
     "Sand"
    ],
-   "placement": "foremost",
+   "deploys": "front",
+   "placementWas": "foremost",
    "ported": {
     "strength": 8,
     "precision": 5,
@@ -14956,7 +15148,8 @@
     "Elemental",
     "Sand"
    ],
-   "placement": "backmost",
+   "deploys": "back",
+   "placementWas": "backmost",
    "ported": {
     "strength": 9,
     "precision": 7,
@@ -15058,7 +15251,8 @@
     "Demon",
     "Monster"
    ],
-   "placement": "foremost",
+   "deploys": "front",
+   "placementWas": "foremost",
    "ported": {
     "strength": 8,
     "precision": 3,
@@ -15137,7 +15331,8 @@
     "Demon",
     "Undead"
    ],
-   "placement": "foremost",
+   "deploys": "front",
+   "placementWas": "foremost",
    "ported": {
     "strength": 3,
     "precision": 14,
@@ -15220,7 +15415,8 @@
    "types": [
     "Undead"
    ],
-   "placement": "foremost",
+   "deploys": "front",
+   "placementWas": "foremost",
    "ported": {
     "strength": 8,
     "precision": 6,
@@ -15284,7 +15480,9 @@
        "value": 1,
        "target": "allies within N hexes"
       }
-     ]
+     ],
+     "range": 2,
+     "reauthored": "sameRowEnemies re-authored as a radius."
     }
    ],
    "triggers": [],
@@ -15309,7 +15507,8 @@
     "Undead",
     "Ghost"
    ],
-   "placement": "random",
+   "deploys": "anywhere",
+   "placementWas": "random",
    "ported": {
     "strength": 6,
     "precision": 7,
@@ -15382,7 +15581,8 @@
     "Undead",
     "Demon"
    ],
-   "placement": "backmost",
+   "deploys": "back",
+   "placementWas": "backmost",
    "ported": {
     "strength": 4,
     "precision": 6,
@@ -15462,7 +15662,8 @@
    "types": [
     "Demon"
    ],
-   "placement": "foremost",
+   "deploys": "front",
+   "placementWas": "foremost",
    "ported": {
     "strength": 9,
     "precision": 4,
@@ -15541,7 +15742,8 @@
     "Demon",
     "Human"
    ],
-   "placement": "backmost",
+   "deploys": "back",
+   "placementWas": "backmost",
    "ported": {
     "strength": 4,
     "precision": 7,
@@ -15627,7 +15829,8 @@
     "Ghost",
     "Undead"
    ],
-   "placement": "backmost",
+   "deploys": "back",
+   "placementWas": "backmost",
    "ported": {
     "strength": 5,
     "precision": 9,
@@ -15730,7 +15933,8 @@
    "types": [
     "Ghost"
    ],
-   "placement": "foremost",
+   "deploys": "front",
+   "placementWas": "foremost",
    "ported": {
     "strength": 6,
     "precision": 4,
@@ -15802,7 +16006,8 @@
    "types": [
     "Demon"
    ],
-   "placement": "foremost",
+   "deploys": "front",
+   "placementWas": "foremost",
    "ported": {
     "strength": 8,
     "precision": 5,
@@ -15875,7 +16080,8 @@
     "Demon",
     "Monster"
    ],
-   "placement": "backmost",
+   "deploys": "back",
+   "placementWas": "backmost",
    "ported": {
     "strength": 4,
     "precision": 9,
@@ -15971,7 +16177,8 @@
     "Human",
     "Demon"
    ],
-   "placement": "foremost",
+   "deploys": "front",
+   "placementWas": "foremost",
    "ported": {
     "strength": 11,
     "precision": 4,
@@ -16062,7 +16269,8 @@
    "types": [
     "Human"
    ],
-   "placement": "backmost",
+   "deploys": "back",
+   "placementWas": "backmost",
    "ported": {
     "strength": 3,
     "precision": 3,
@@ -16151,7 +16359,8 @@
     "Human",
     "Demon"
    ],
-   "placement": "backmost",
+   "deploys": "back",
+   "placementWas": "backmost",
    "ported": {
     "strength": 3,
     "precision": 6,
@@ -16243,7 +16452,8 @@
    "types": [
     "Demon"
    ],
-   "placement": "foremost",
+   "deploys": "front",
+   "placementWas": "foremost",
    "ported": {
     "strength": 8,
     "precision": 6,
@@ -16315,7 +16525,8 @@
    "types": [
     "Demon"
    ],
-   "placement": "backmost",
+   "deploys": "back",
+   "placementWas": "backmost",
    "ported": {
     "strength": 3,
     "precision": 8,
@@ -16390,7 +16601,8 @@
    "types": [
     "Demon"
    ],
-   "placement": "foremost",
+   "deploys": "front",
+   "placementWas": "foremost",
    "ported": {
     "strength": 9,
     "precision": 7,
@@ -16446,7 +16658,9 @@
        "value": 1,
        "target": "allies within N hexes"
       }
-     ]
+     ],
+     "range": 3,
+     "reauthored": "sameRowEnemies re-authored as a radius. A roar carries further than a shout."
     }
    ],
    "triggers": [],
@@ -16471,7 +16685,8 @@
     "Demon",
     "Human"
    ],
-   "placement": "backmost",
+   "deploys": "back",
+   "placementWas": "backmost",
    "ported": {
     "strength": 4,
     "precision": 3,
@@ -16564,7 +16779,8 @@
     "Undead",
     "Demon"
    ],
-   "placement": "foremost",
+   "deploys": "front",
+   "placementWas": "foremost",
    "ported": {
     "strength": 10,
     "precision": 8,
@@ -16668,7 +16884,8 @@
    "types": [
     "Demon"
    ],
-   "placement": "random",
+   "deploys": "anywhere",
+   "placementWas": "random",
    "ported": {
     "strength": 5,
     "precision": 5,
@@ -16751,7 +16968,8 @@
    "types": [
     "Demon"
    ],
-   "placement": "backmost",
+   "deploys": "back",
+   "placementWas": "backmost",
    "ported": {
     "strength": 6,
     "precision": 7,
@@ -16838,7 +17056,8 @@
    "types": [
     "Undead"
    ],
-   "placement": "foremost",
+   "deploys": "front",
+   "placementWas": "foremost",
    "ported": {
     "strength": 10,
     "precision": 8,
@@ -16936,7 +17155,8 @@
    "types": [
     "Undead"
    ],
-   "placement": "backmost",
+   "deploys": "back",
+   "placementWas": "backmost",
    "ported": {
     "strength": 4,
     "precision": 9,
@@ -17024,7 +17244,8 @@
     "Demon",
     "Monster"
    ],
-   "placement": "backmost",
+   "deploys": "back",
+   "placementWas": "backmost",
    "ported": {
     "strength": 8,
     "precision": 11,
@@ -17120,7 +17341,8 @@
     "Demon",
     "Monster"
    ],
-   "placement": "foremost",
+   "deploys": "front",
+   "placementWas": "foremost",
    "ported": {
     "strength": 9,
     "precision": 7,
@@ -17192,7 +17414,8 @@
    "types": [
     "Demon"
    ],
-   "placement": "foremost",
+   "deploys": "front",
+   "placementWas": "foremost",
    "ported": {
     "strength": 11,
     "precision": 4,
@@ -17278,7 +17501,8 @@
    "types": [
     "Demon"
    ],
-   "placement": "backmost",
+   "deploys": "back",
+   "placementWas": "backmost",
    "ported": {
     "strength": 3,
     "precision": 10,
@@ -17369,7 +17593,8 @@
    "types": [
     "Demon"
    ],
-   "placement": "foremost",
+   "deploys": "front",
+   "placementWas": "foremost",
    "ported": {
     "strength": 0,
     "precision": 3,
@@ -17458,7 +17683,8 @@
    "types": [
     "Demon"
    ],
-   "placement": "backmost",
+   "deploys": "back",
+   "placementWas": "backmost",
    "ported": {
     "strength": 3,
     "precision": 3,
@@ -17563,7 +17789,8 @@
     "Demon",
     "Undead"
    ],
-   "placement": "random",
+   "deploys": "anywhere",
+   "placementWas": "random",
    "ported": {
     "strength": 10,
     "precision": 9,
@@ -17669,7 +17896,8 @@
     "Demon",
     "Undead"
    ],
-   "placement": "backmost",
+   "deploys": "back",
+   "placementWas": "backmost",
    "ported": {
     "strength": 9,
     "precision": 10,
@@ -17750,7 +17978,8 @@
    "types": [
     "Demon"
    ],
-   "placement": "backmost",
+   "deploys": "back",
+   "placementWas": "backmost",
    "ported": {
     "strength": 0,
     "precision": 0,
@@ -17831,7 +18060,8 @@
    "types": [
     "Demon"
    ],
-   "placement": "foremost",
+   "deploys": "front",
+   "placementWas": "foremost",
    "ported": {
     "strength": 9,
     "precision": 5,
@@ -17906,7 +18136,8 @@
    "types": [
     "Demon"
    ],
-   "placement": "backmost",
+   "deploys": "back",
+   "placementWas": "backmost",
    "ported": {
     "strength": 6,
     "precision": 11,
@@ -17990,7 +18221,8 @@
    "types": [
     "Demon"
    ],
-   "placement": "backmost",
+   "deploys": "back",
+   "placementWas": "backmost",
    "ported": {
     "strength": 4,
     "precision": 9,
@@ -18076,7 +18308,8 @@
    "types": [
     "Demon"
    ],
-   "placement": "foremost",
+   "deploys": "front",
+   "placementWas": "foremost",
    "ported": {
     "strength": 9,
     "precision": 6,
@@ -18152,7 +18385,8 @@
     "Undead",
     "Demon"
    ],
-   "placement": "foremost",
+   "deploys": "front",
+   "placementWas": "foremost",
    "ported": {
     "strength": 12,
     "precision": 4,
@@ -18249,7 +18483,8 @@
    "types": [
     "Demon"
    ],
-   "placement": "backmost",
+   "deploys": "back",
+   "placementWas": "backmost",
    "ported": {
     "strength": 4,
     "precision": 10,
@@ -18336,7 +18571,8 @@
    "types": [
     "Demon"
    ],
-   "placement": "foremost",
+   "deploys": "front",
+   "placementWas": "foremost",
    "ported": {
     "strength": 10,
     "precision": 8,
@@ -18407,7 +18643,8 @@
    "types": [
     "Undead"
    ],
-   "placement": "foremost",
+   "deploys": "front",
+   "placementWas": "foremost",
    "ported": {
     "strength": 11,
     "precision": 9,
@@ -18496,7 +18733,8 @@
    "types": [
     "Undead"
    ],
-   "placement": "foremost",
+   "deploys": "front",
+   "placementWas": "foremost",
    "ported": {
     "strength": 13,
     "precision": 10,
@@ -18583,7 +18821,8 @@
    "types": [
     "Demon"
    ],
-   "placement": "backmost",
+   "deploys": "back",
+   "placementWas": "backmost",
    "ported": {
     "strength": 6,
     "precision": 5,
@@ -18669,7 +18908,8 @@
    "types": [
     "Demon"
    ],
-   "placement": "foremost",
+   "deploys": "front",
+   "placementWas": "foremost",
    "ported": {
     "strength": 8,
     "precision": 6,
@@ -18740,7 +18980,8 @@
    "types": [
     "Demon"
    ],
-   "placement": "backmost",
+   "deploys": "back",
+   "placementWas": "backmost",
    "ported": {
     "strength": 0,
     "precision": 0,
@@ -18830,7 +19071,8 @@
    "types": [
     "Demon"
    ],
-   "placement": "foremost",
+   "deploys": "front",
+   "placementWas": "foremost",
    "ported": {
     "strength": 13,
     "precision": 10,
@@ -18910,7 +19152,8 @@
    "types": [
     "Ghost"
    ],
-   "placement": "random",
+   "deploys": "anywhere",
+   "placementWas": "random",
    "ported": {
     "strength": 8,
     "precision": 10,
@@ -18982,7 +19225,8 @@
    "types": [
     "Demon"
    ],
-   "placement": "foremost",
+   "deploys": "front",
+   "placementWas": "foremost",
    "ported": {
     "strength": 4,
     "precision": 3,
@@ -19067,7 +19311,8 @@
    "types": [
     "Demon"
    ],
-   "placement": "backmost",
+   "deploys": "back",
+   "placementWas": "backmost",
    "ported": {
     "strength": 10,
     "precision": 8,
@@ -19140,7 +19385,8 @@
     "Demon",
     "Monster"
    ],
-   "placement": "backmost",
+   "deploys": "back",
+   "placementWas": "backmost",
    "ported": {
     "strength": 15,
     "precision": 14,
@@ -19236,7 +19482,8 @@
    "types": [
     "Demon"
    ],
-   "placement": "foremost",
+   "deploys": "front",
+   "placementWas": "foremost",
    "ported": {
     "strength": 12,
     "precision": 8,
@@ -19323,7 +19570,8 @@
    "types": [
     "Demon"
    ],
-   "placement": "backmost",
+   "deploys": "back",
+   "placementWas": "backmost",
    "ported": {
     "strength": 0,
     "precision": 0,
@@ -19420,7 +19668,8 @@
    "types": [
     "Demon"
    ],
-   "placement": "foremost",
+   "deploys": "front",
+   "placementWas": "foremost",
    "ported": {
     "strength": 14,
     "precision": 10,
@@ -19500,7 +19749,8 @@
    "types": [
     "Demon"
    ],
-   "placement": "backmost",
+   "deploys": "back",
+   "placementWas": "backmost",
    "ported": {
     "strength": 4,
     "precision": 5,

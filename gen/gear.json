@@ -523,7 +523,7 @@
    "statModifiers": {},
    "triggers": [
     {
-     "hook": "onEquip",
+     "hook": "startOfBattle",
      "effect": "+20 Deathbed Fighting"
     }
    ],
@@ -2007,7 +2007,7 @@
    "statModifiers": {},
    "triggers": [
     {
-     "hook": "onEquip",
+     "hook": "startOfBattle",
      "effect": "+10 to your Deathbed Fighting roll. The modifier hangs on the idol, so it goes when the Battle does."
     }
    ],

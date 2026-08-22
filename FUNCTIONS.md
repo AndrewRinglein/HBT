@@ -13,7 +13,7 @@ When a rule fires. Twelve, plus `aura` and `passive` which are standing properti
 |---|---:|---|
 | `onHit` | 76 | after a hit lands, even if armour ate all of it |
 | `onKill` | 37 |  |
-| `startOfBattle` | 35 |  |
+| `startOfBattle` | 37 |  |
 | `onCrit` | 19 | after its own onHit, only if it crit |
 | `passive` | 17 | always true |
 | `onTakingDamage` | 16 |  |
@@ -23,7 +23,6 @@ When a rule fires. Twelve, plus `aura` and `passive` which are standing properti
 | `onDodge` | 9 | on the DEFENDER, when its Dodge is why the attack missed |
 | `onAttack` | 8 |  |
 | `onMiss` | 5 | on the ATTACKER |
-| `onEquip` | 2 |  |
 | `onDeath` | 2 |  |
 
 ## 2 · Targeting shapes

@@ -44,6 +44,7 @@ const VOCAB_SHAPES = names('shapes');
 const PORT = { melee:'strength', ranged:'precision', armor:'armor', health:'health',
                reach:'reach', resist:'resist', magic:'magic', spirit:'spirit' };
 const DODGE_SCALE = 5;   // same rescale heroes got: hell-tcg 0-3 -> flat to-hit points
+const DEPLOYS = { foremost:'front', backmost:'back', random:'anywhere' };
 
 // ------------------------------------------------- the stats enemies have no source for
 // SOFT — a sweep owns every number. But the shape is the point, and the FIRST attempt got it
@@ -168,8 +169,12 @@ const TARGET = {
   randomHero:       'one enemy within N hexes',
   randomEnemy:      'one ally within N hexes',
   lowestHealthEnemy:'one ally within N hexes',
+  // A shout to the rank beside you becomes a shout to the allies around you. Rows are a
+  // three-column Hell-TCG grid and there is no such thing on a hex board.
   sameRowEnemies:   'allies within N hexes',
-  row:              'enemies within N hexes',
+  // A volley LANDS somewhere and covers the ground around where it lands — it is not a
+  // radius centred on the archer, which is what this used to become.
+  row:              'a hex within N hexes and every hex adjacent to it',
 };
 
 // The target named INSIDE an effect payload has to be ported through the same inversion, and
@@ -323,16 +328,30 @@ for (const e of Object.values(ENEMY_CARDS)) {
                     ported:true });
     portedTriggerCount++;
   }
-  if (SM.doubleAttackIfMelee) gaps.push(`${e.name}: doubleAttackIfMelee — re-author as an attack against "up to N enemies"`);
+  if (SM.doubleAttackIfMelee) {
+    // Ruled 2026-08-22: this is the multiple-attacks shape, which already exists. It swings
+    // at two things in reach rather than swinging twice.
+    const melee = attacks.find(a => a.targets === 'one enemy in melee reach');
+    if (!melee) gaps.push(`${e.name}: doubleAttackIfMelee but it has no melee attack to widen`);
+    else { melee.targets = 'up to N enemies within Reach'; melee.multiple = { count:2, damageModifier:0 };
+           melee.reauthored = 'doubleAttackIfMelee — two targets in reach, not two swings'; }
+  }
   if (SM.fastAttack)          gaps.push(`${e.name}: fastAttack acts on arrival — onEnter, removed 2026-08-15`);
-  if (SM.attacksAllInRow)     gaps.push(`${e.name}: attacksAllInRow — ROWS do not exist on a hex board, needs re-authoring`);
+  // attacksAllInRow is re-authored per creature in gen/bestiary-riders.json overrides —
+  // a claw SWEEP hits several things in reach, a BREATH covers ground. Different shapes.
+  if (SM.attacksAllInRow) notes.push('attacksAllInRow in the source — rows do not exist here; re-authored as a sweep and a breath.');
   if (e.transformedName)      gaps.push(`${e.name}: transforms into "${e.transformedName}" — transformation CUT 2026-08-22`);
   if (e.attackOnEnter)        gaps.push(`${e.name}: attackOnEnter — onEnter, removed 2026-08-15`);
 
   const c = curated[e.uuid];
   rows.push({
     id:`unit.${slug(e.name)}`, uuid:e.uuid, name:e.name, rank:e.tier ?? null,
-    types:e.types || [], placement:e.placement || null,
+    types:e.types || [],
+    // DEPLOYS, not placement. The source's foremost/backmost/random named a lane in a
+    // three-column grid; a hex board has no lanes, but 'starts near the front' is still a
+    // real and useful preference, so the preference is kept and the lane is not.
+    deploys: DEPLOYS[e.placement] || 'anywhere',
+    placementWas: e.placement || null,
     ported, derivedBase:{ accuracy:acc.accuracy, movement:mov.movement, ...ENEMY_DERIVED },
     archetype:archetypeOf(e).id,
     derivedWhy:{ accuracy:acc.why, movement:mov.why },
@@ -398,6 +417,15 @@ for (const e of Object.values(ENEMY_CARDS)) {
     const u = byId.get(uid);
     if (!u) { problems.push(`overrides: no such unit ${uid}`); continue; }
     for (const o of list) {
+      if (o.attack) {   // patch a named attack rather than a trigger
+        const a = (u.attacks || []).find(x => x.name === o.attack);
+        if (!a) { problems.push(`overrides: ${uid} has no attack named "${o.attack}"`); continue; }
+        Object.assign(a, o.set || {});
+        a.reauthored = o.why;
+        if (o.set && o.set.targets && !VOCAB_SHAPES.has(o.set.targets))
+          problems.push(`overrides: ${uid} — shape "${o.set.targets}" is not in the vocabulary`);
+        continue;
+      }
       const tr = (u.triggers || []).filter(x => x.hook === o.hook && x.ported);
       if (!tr.length) { problems.push(`overrides: ${uid} has no ported "${o.hook}" trigger to correct`); continue; }
       for (const x of tr) {

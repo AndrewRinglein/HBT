@@ -91,7 +91,7 @@
   },
   {
    "name": "startOfBattle",
-   "uses": 35,
+   "uses": 37,
    "ids": [
     "item.cursed-sand-blade",
     "item.skyforged-halberd",
@@ -103,8 +103,10 @@
     "item.patrocoleas-armor",
     "item.wayfinders-compass",
     "item.wreath-of-natures-protection",
+    "item.velans-ferryman-coin",
     "item.rune-perfect-hunter",
     "item.pilgrims-warding-stone",
+    "item.vigils-shield",
     "item.ring-of-divine-protection",
     "enchant.divine-protection",
     "specialty.reaver",
@@ -295,14 +297,6 @@
     "enchant.abundant-arrows",
     "enchant.recklessness",
     "enchant.the-master"
-   ]
-  },
-  {
-   "name": "onEquip",
-   "uses": 2,
-   "ids": [
-    "item.velans-ferryman-coin",
-    "item.vigils-shield"
    ]
   },
   {

@@ -64,5 +64,104 @@
    "1024": "osric_1024.png",
    "256": "osric_256.png"
   }
+ },
+ "hero.tutorial.warrior-iron.aldric": {
+  "hex": "f8f49e40a793.webp",
+  "src": "New Art/warrior-iron1.png",
+  "slug": "warrior-iron",
+  "scale": 1.0,
+  "tiers": {
+   "full": "warrior-iron_full.png",
+   "1024": "warrior-iron_1024.png",
+   "256": "warrior-iron_256.png"
+  }
+ },
+ "hero.tutorial.warrior-fearsome.theron": {
+  "hex": "59ae968364af.webp",
+  "src": "New Art/warrior-fearsome1.png",
+  "slug": "warrior-fearsome",
+  "scale": 1.0,
+  "tiers": {
+   "full": "warrior-fearsome_full.png",
+   "1024": "warrior-fearsome_1024.png",
+   "256": "warrior-fearsome_256.png"
+  }
+ },
+ "hero.tutorial.mage-sexy.vera": {
+  "hex": "5951cd892bb0.webp",
+  "src": "New Art/mage-sexy1.png",
+  "slug": "mage-sexy",
+  "scale": 1.0,
+  "tiers": {
+   "full": "mage-sexy_full.png",
+   "1024": "mage-sexy_1024.png",
+   "256": "mage-sexy_256.png"
+  }
+ },
+ "hero.tutorial.priest-robes.gregory": {
+  "hex": "5200e4ea9dd2.webp",
+  "src": "New Art/priest-robes1.png",
+  "slug": "priest-robes",
+  "scale": 1.0,
+  "tiers": {
+   "full": "priest-robes_full.png",
+   "1024": "priest-robes_1024.png",
+   "256": "priest-robes_256.png"
+  }
+ },
+ "hero.tutorial.paladin-smug.alaric": {
+  "hex": "4862ec21842c.webp",
+  "src": "New Art/paladin-smug1.png",
+  "slug": "paladin-smug",
+  "scale": 1.0,
+  "tiers": {
+   "full": "paladin-smug_full.png",
+   "1024": "paladin-smug_1024.png",
+   "256": "paladin-smug_256.png"
+  }
+ },
+ "hero.tutorial.ranger-ranger.brenna": {
+  "hex": "8b24f4a7f4ab.webp",
+  "src": "New Art/ranger-ranger1.png",
+  "slug": "ranger-ranger",
+  "scale": 1.0,
+  "tiers": {
+   "full": "ranger-ranger_full.png",
+   "1024": "ranger-ranger_1024.png",
+   "256": "ranger-ranger_256.png"
+  }
+ },
+ "hero.tutorial.ranger-scantily.mira": {
+  "hex": "6b97f207b493.webp",
+  "src": "New Art/ranger-scantily1.png",
+  "slug": "ranger-scantily",
+  "scale": 1.0,
+  "tiers": {
+   "full": "ranger-scantily_full.png",
+   "1024": "ranger-scantily_1024.png",
+   "256": "ranger-scantily_256.png"
+  }
+ },
+ "hero.tutorial.rogue-skull.zara": {
+  "hex": "96d2f1cba937.webp",
+  "src": "New Art/rogue-skull1.png",
+  "slug": "rogue-skull",
+  "scale": 1.0,
+  "tiers": {
+   "full": "rogue-skull_full.png",
+   "1024": "rogue-skull_1024.png",
+   "256": "rogue-skull_256.png"
+  }
+ },
+ "hero.tutorial.rogue-snake.sela": {
+  "hex": "17b4ccb0e2bf.webp",
+  "src": "New Art/rogue-snake1.png",
+  "slug": "rogue-snake",
+  "scale": 1.0,
+  "tiers": {
+   "full": "rogue-snake_full.png",
+   "1024": "rogue-snake_1024.png",
+   "256": "rogue-snake_256.png"
+  }
  }
 }

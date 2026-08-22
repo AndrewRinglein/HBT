@@ -733,7 +733,7 @@
     }
   },
   "overrides": {
-    "note": "Patches to what the SOURCE gave a creature, where the source content is right but its shape or radius was not. Distinct from a rider (which adds) and from reauthored (which replaces): this edits a ported trigger in place. Ruled 2026-08-22.",
+    "note": "Patches to what the SOURCE gave a creature, where the source content is right but its shape or radius was not. Distinct from a rider (which adds) and from reauthored (which replaces): this edits a ported trigger in place. Ruled 2026-08-22. Extended 2026-08-22 to patch a named ATTACK as well as a ported trigger, which is what the row re-authoring needed.",
     "units": {
       "unit.fallen-priest": [
         {
@@ -752,6 +752,85 @@
           "set": {
             "targets": "allies within N hexes",
             "range": 2
+          }
+        }
+      ],
+      "unit.bone-dragon": [
+        {
+          "attack": "Claw Sweep",
+          "why": "attacksAllInRow. A SWEEP takes several things standing in reach - that is the multiple-attacks shape, not a row.",
+          "set": {
+            "targets": "up to N enemies within Reach",
+            "multiple": {
+              "count": 3,
+              "damageModifier": 0
+            }
+          }
+        },
+        {
+          "attack": "Poison Breath",
+          "why": "attacksAllInRow. A BREATH covers ground: it lands somewhere and catches what is around it. Not a radius centred on the dragon.",
+          "set": {
+            "targets": "a hex within N hexes and every hex adjacent to it",
+            "range": 3
+          }
+        }
+      ],
+      "unit.hellwasp-drone": [
+        {
+          "attack": "Swarm Coordination",
+          "why": "sameRowEnemies - a shout to the rank beside you becomes a shout to the allies around you.",
+          "set": {
+            "targets": "allies within N hexes",
+            "range": 2
+          }
+        }
+      ],
+      "unit.yaoguai-brute": [
+        {
+          "attack": "Snarl",
+          "why": "sameRowEnemies re-authored as a radius.",
+          "set": {
+            "targets": "allies within N hexes",
+            "range": 2
+          }
+        }
+      ],
+      "unit.bone-legionnaire": [
+        {
+          "attack": "War Shout",
+          "why": "sameRowEnemies re-authored as a radius.",
+          "set": {
+            "targets": "allies within N hexes",
+            "range": 2
+          }
+        }
+      ],
+      "unit.iron-yaoguai": [
+        {
+          "attack": "Demonic Roar",
+          "why": "sameRowEnemies re-authored as a radius. A roar carries further than a shout.",
+          "set": {
+            "targets": "allies within N hexes",
+            "range": 3
+          }
+        }
+      ],
+      "unit.bone-weaver": [
+        {
+          "attack": "Bone Arrows",
+          "why": "row targeting - a volley lands somewhere and covers the ground around it.",
+          "set": {
+            "range": 4
+          }
+        }
+      ],
+      "unit.fallen-ranger": [
+        {
+          "attack": "Rain of Arrows",
+          "why": "row targeting - a volley lands somewhere and covers the ground around it.",
+          "set": {
+            "range": 4
           }
         }
       ]
