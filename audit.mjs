@@ -475,6 +475,73 @@ if(D.heroes&&D.heroes.heroes){
     add('two-heroes-share-a-type',t,'a type is one piece of art and belongs to one hero');
 }
 
+// R22 ONE PIECE OF ART, ONE HERO. Ruled 2026-08-21, after the same mistake three times:
+//     content/'s tutorial path made 96 heroes out of 24 by treating each hero's four LEVEL
+//     images as four characters; the Crucible made 29 out of rejected RETRY files; and
+//     Martial Artist was Open Hand's four pictures under a second name. 106 heroes that
+//     were duplications of art.
+//
+//     The trap: `-v2` means OPPOSITE THINGS in different folders — a fourth DESIGN in
+//     avtair/aeronissa, a rejected RETRY in the *-variants folders — and nothing in the
+//     filename says which. So the meaning is data: gen/art-conventions.json. This rule
+//     collapses each art path to a CHARACTER STEM under its folder's declared convention
+//     and fails if two heroes land on the same one.
+if(D.heroes&&D.heroes.heroes&&D.artConventions){
+  const CONV=D.artConventions.conventions||[];
+  const dirOf=p=>String(p).split('/').slice(0,-1).join('/');
+  const fileOf=p=>String(p).split('/').pop();
+  const esc=s=>s.replace(/[.+?^${}()|[\]\\]/g,'\\$&');
+  // EXACT by default. "New Art" must NOT swallow "New Art/some-new-batch" — a new folder
+  // has to declare itself, which is the whole point. Only subtree:true matches below itself.
+  const convFor=dir=>{
+    let best=null;
+    for(const c of CONV){
+      const m=c.match;
+      const hit = m.includes('*')
+        ? new RegExp('^'+esc(m).replace(/\*/g,'[^/]*')+'$').test(dir)
+        : (c.subtree ? (dir===m||dir.startsWith(m+'/')) : dir===m);
+      if(hit && (!best || m.length>best.match.length)) best=c;
+    }
+    return best;
+  };
+  const stemOf=(path,c)=>{
+    const dir=dirOf(path); let f=fileOf(path).replace(/\.[a-z0-9]+$/i,'');
+    if(c.characterIsFolder) return dir;                     // the folder IS the character
+    if(c.variantSuffix==='retry')  f=f.replace(/-(v\d+|new)$/i,'');
+    if(c.levels==='-levelN')       f=f.replace(/-level\d+$/i,'');
+    if(c.levels==='trailingDigit') f=f.replace(/\d+$/,'');
+    if(typeof c.afflictions==='string'&&c.afflictions.startsWith('-'))
+      f=f.replace(new RegExp('('+c.afflictions+')$','i'),'');
+    if(c.afflictions==='trailingLPRV') f=f.replace(/[lprv]$/,'');
+    return dir+'/'+f;
+  };
+  const arted=D.heroes.heroes.filter(h=>h.art);
+
+  // (a) the same file, claimed twice
+  const byPath={};
+  for(const h of arted)(byPath[h.art]=byPath[h.art]||[]).push(h.name);
+  for(const [p,who] of Object.entries(byPath))
+    if(who.length>1) add('two-heroes-share-one-art-file',who.join(' + '),p);
+
+  // (b) a folder that never said what its suffixes mean
+  const undeclared=new Set();
+  for(const h of arted) if(!convFor(dirOf(h.art))) undeclared.add(dirOf(h.art));
+  for(const d of undeclared)
+    add('art-folder-has-no-declared-convention',d,
+        'add it to gen/art-conventions.json — a suffix means nothing until the folder says what it means');
+
+  // (c) two heroes that are the same character under that folder's own rules
+  const byStem={};
+  for(const h of arted){ const c=convFor(dirOf(h.art)); if(!c) continue;
+    (byStem[stemOf(h.art,c)]=byStem[stemOf(h.art,c)]||[]).push(h); }
+  for(const [s,hs] of Object.entries(byStem)){
+    if(hs.length<2) continue;
+    const c=convFor(dirOf(hs[0].art));
+    add('two-heroes-are-the-same-character',hs.map(h=>h.name).join(' + '),
+        s+' — '+hs.map(h=>fileOf(h.art)).join(', ')+'  ['+c.match+': -vN means '+c.variantSuffix+']');
+  }
+}
+
 const by={}; F.forEach(f=>(by[f.rule]=by[f.rule]||[]).push(f));
 for(const [r,list] of Object.entries(by).sort((a,b)=>b[1].length-a[1].length)){
   console.log('\n### '+r+'  ('+list.length+')');

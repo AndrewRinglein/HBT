@@ -73,6 +73,9 @@ if(!settled.testCohort){
   out.testCohort=tc;
 }
 
+// ---- what a filename suffix means, per art folder. R22 reads this.
+if(fs.existsSync(G+'art-conventions.json')) out.artConventions=R('art-conventions.json');
+
 // ---- the function list: the complete vocabulary content is allowed to use
 if(fs.existsSync(G+'functions.json')) out.functions=R('functions.json');
 { const known=new Set(out.classes.map(c=>c.id)); const hid=new Set();

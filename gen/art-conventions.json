@@ -1,0 +1,79 @@
+{
+ "_note": "What a filename suffix MEANS, per art directory. This exists because the same suffix means opposite things in different folders, and reading it wrong minted 106 heroes that were duplications of art — 72 in content/'s tutorial path, 29 in the Crucible's variants/, and 4 more from one subtype copied under a second name.",
+ "_theTrap": "`-v2` means TWO DIFFERENT THINGS. In avtair-approved and aeronissa-concepts it is a fourth DESIGN — a different person sharing a subtype, and correctly its own hero. In the *-variants folders it is a rejected RETRY of one picture, and not a hero at all. Nothing in a filename tells you which; only the folder does. So the folder has to say.",
+ "_howItIsUsed": "audit.mjs R22 collapses each hero's art filename to a CHARACTER STEM using the convention for its directory, then fails if two heroes land on the same stem. A directory with no entry here is itself a finding — a new art tree must declare what its suffixes mean before heroes can be built from it.",
+ "conventions": [
+  {
+   "match": "New Art/avtair-approved",
+   "variantSuffix": "design",
+   "note": "-v1..-v4 are four DIFFERENT PEOPLE sharing one subtype. Priestess of Ire v1-v4 are Sand Wraith, Blood Offerer, Snake Handler and Scorpion Keeper — four women, four heroes. Do not collapse.",
+   "levels": false,
+   "afflictions": false
+  },
+  {
+   "match": "New Art/aeronissa-concepts",
+   "variantSuffix": "design",
+   "note": "Same as avtair, except the FIRST variant is the bare filename — there is no -v1 here.",
+   "levels": false,
+   "afflictions": false
+  },
+  {
+   "match": "New Art/*-variants",
+   "variantSuffix": "retry",
+   "note": "One character per folder. -levelN is that character at four levels; -lycanthropy/-possessed/-rotting/-vampire are its four afflictions; -vN and -new are REJECTED RETRIES of a single picture. Which retry was adopted is ruled in crucible/data/art-rulings.json.",
+   "levels": "-levelN",
+   "afflictions": "-lycanthropy|-possessed|-rotting|-vampire"
+  },
+  {
+   "match": "New Art/*-series",
+   "variantSuffix": "retry",
+   "note": "Same shape as *-variants.",
+   "levels": "-levelN",
+   "afflictions": "-lycanthropy|-possessed|-rotting|-vampire"
+  },
+  {
+   "match": "New Art",
+   "variantSuffix": "retry",
+   "note": "The flat root. `<class>-<style>1..4` is ONE hero at four levels and `<class>-<style>l/p/r/v` is that hero's four afflictions — this is the convention that produced 96 tutorial heroes where there were 24. Trailing digits and trailing l/p/r/v are NOT separate characters.",
+   "levels": "trailingDigit",
+   "afflictions": "trailingLPRV"
+  },
+  {
+   "match": "New Art/avtair-heroes-batch2",
+   "variantSuffix": "none",
+   "note": "One bare filename per character. No levels, no afflictions, no variants.",
+   "levels": false,
+   "afflictions": false
+  },
+  {
+   "match": "New Art/aeronissa-concepts/catfolk",
+   "variantSuffix": "none",
+   "note": "One bare filename per character.",
+   "levels": false,
+   "afflictions": false
+  },
+  {
+   "match": "New Art/shadows-in-the-sand-concepts",
+   "variantSuffix": "none",
+   "levels": false,
+   "afflictions": false
+  },
+  {
+   "match": "New Art/nightmare-series",
+   "variantSuffix": "none",
+   "note": "Named *-series but does not follow the series shape — `void-dealer-1.png` is a bare one-off.",
+   "levels": false,
+   "afflictions": false
+  },
+  {
+   "match": "assets/cards/heroes",
+   "variantSuffix": "none",
+   "note": "One FOLDER per character, and the filename is the slot: 1.png..4.png are four levels, l/p/r/v.png are four afflictions. The character is the folder, never the filename — every hero here would otherwise collapse onto a stem of `1`.",
+   "levels": "bareDigit",
+   "afflictions": "bareLPRV",
+   "characterIsFolder": true,
+   "subtree": true,
+   "_subtree": "Matches below itself: every hero here lives in its own deep folder."
+  }
+ ]
+}
