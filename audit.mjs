@@ -669,6 +669,48 @@ if(D.bestiary && D.bestiary.length){
         baselines.map(u=>u.name).join(', '));
 }
 
+// R27 AN EFFECT THAT DOES NOTHING IS A DROPPED MECHANIC, NOT AN EFFECT. Ruled 2026-08-21,
+// after a review asked the simplest possible question — does any enemy need a mechanic we do
+// not have? — and found that 14 of them HAD one and it had been silently swallowed.
+//
+// hell-tcg's createAura is not a spatial aura: it fires when a unit ARRIVES on the board, and
+// the payload rides inside the aura object. The port mapped the verb and dropped the payload,
+// so all 14 became {grant an aura, null, null, null, null} — a legal-looking effect that does
+// nothing at all. Nine were rank-3 bosses; one was the Demon King's signature ability. Every
+// vocabulary check passed, because an empty effect uses no illegal words. That is the hole.
+//
+// So: an effect must DO something, and every target it names must be a real shape.
+if(D.bestiary && D.bestiary.length){
+  const SH=new Set(((D.functions||{}).shapes||[]).map(x=>typeof x==='string'?x:x.name));
+  const carries = e => e.status!=null || e.stat!=null || e.value!=null || (e.multiple!=null);
+  // verbs that are complete on their own — they need no status, stat or number
+  const SELF_SUFFICIENT = new Set(['enter stealth','reveal / break stealth','grant Flight',
+    'move yourself','move WITHOUT provoking','stabilise a downed ally','deal damage (type from the weapon)']);
+
+  const walk = (u, where, list) => {
+    for(const e of (list||[])){
+      if(!SELF_SUFFICIENT.has(e.effect) && !carries(e))
+        add('effect-does-nothing', u.name, where+': "'+e.effect+'" carries no status, stat or value — '+
+            'if the payload was dropped in translation the mechanic went with it');
+      if(e.target!=null && !SH.has(e.target))
+        add('effect-target-is-not-a-shape', u.name, where+': target "'+e.target+'" is not one of the '+
+            SH.size+' shapes — a raw source string here reads BACKWARDS, since an enemy\'s "allEnemies" is its own side');
+    }
+  };
+  for(const u of D.bestiary){
+    for(const a of (u.attacks||[])){
+      walk(u, a.name, a.effects);
+      if(a.targets!=null && !SH.has(a.targets))
+        add('attack-shape-is-not-in-the-vocabulary', u.name, a.name+': "'+a.targets+'"');
+    }
+    for(const tr of (u.triggers||[])){
+      walk(u, tr.name||tr.hook, tr.effects);
+      if(tr.targets!=null && !SH.has(tr.targets))
+        add('trigger-shape-is-not-in-the-vocabulary', u.name, (tr.name||tr.hook)+': "'+tr.targets+'"');
+    }
+  }
+}
+
 const by={}; F.forEach(f=>(by[f.rule]=by[f.rule]||[]).push(f));
 for(const [r,list] of Object.entries(by).sort((a,b)=>b[1].length-a[1].length)){
   console.log('\n### '+r+'  ('+list.length+')');

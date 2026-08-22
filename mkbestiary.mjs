@@ -40,6 +40,7 @@ const names = k => new Set((VOCAB[k] || []).map(x => typeof x === 'string' ? x :
 const VOCAB_EFFECTS = names('effects');
 const VOCAB_STATUSES = names('statuses');
 const VOCAB_HOOKS = names('hooks');
+const VOCAB_SHAPES = names('shapes');
 const PORT = { melee:'strength', ranged:'precision', armor:'armor', health:'health',
                reach:'reach', resist:'resist', magic:'magic', spirit:'spirit' };
 const DODGE_SCALE = 5;   // same rescale heroes got: hell-tcg 0-3 -> flat to-hit points
@@ -171,6 +172,14 @@ const TARGET = {
   row:              'enemies within N hexes',
 };
 
+// The target named INSIDE an effect payload has to be ported through the same inversion, and
+// was not: 207 effects kept raw hell-tcg strings, which read backwards — from an enemy's point
+// of view "allEnemies" means its own allies. Found 2026-08-21 reviewing what would force a new
+// mechanic. Two of those strings are not shapes at all but REFERENTS to the ability's own
+// target, so they resolve to null and inherit the ability's targeting.
+const EFFECT_TARGET = { ...TARGET, attacked:null, target:null };
+const portTarget = v => (v == null ? null : (v in EFFECT_TARGET ? EFFECT_TARGET[v] : v));
+
 // --------------------------------------------------------------- effect action -> vocabulary
 // The 17 actions enemyCards uses, against the closed list in FUNCTIONS.md. Anything not
 // here is reported, never guessed — an unmapped action is a CONTENT GAP, not a licence to
@@ -229,8 +238,26 @@ for (const e of Object.values(ENEMY_CARDS)) {
       // buried in their riders while their stat blocks read correctly. Found 2026-08-21.
       const st = x.stat ? (PORT[x.stat] || x.stat) : null;
       if (st && !VOCAB_STATS.has(st)) gaps.push(`${e.name}/${a.name}: stat "${st}" is not in the vocabulary`);
+
+      // MULTIPLE ATTACKS. hell-tcg's attackMultiple is "swing N times at random targets, each
+      // at reduced damage". HoBaT already has this and does not need a repeat-attack effect:
+      // it is one attack against `up to N enemies`, a shape that already exists. Ruled
+      // 2026-08-21. The count and the per-hit modifier were being DROPPED on the floor — the
+      // ability became a single ordinary swing and Nightmare Barrage stopped being a barrage.
+      if (x.action === 'attackMultiple') {
+        // Shapes keep their literal N placeholders — that is how the vocabulary stores them.
+        // The actual count lives on the row, not baked into the shape string.
+        const n = x.count || 2;
+        row.targets = (ported.reach || 1) > 1 ? 'up to N enemies within N hexes'
+                                              : 'up to N enemies within Reach';
+        row.multiple = { count:n, damageModifier:x.damageModifier ?? 0 };
+        row.effects.push({ effect:verb, status:null, stat:null,
+                           value:x.damageModifier ?? null, target:null, multiple:n });
+        continue;
+      }
+
       row.effects.push({ effect:verb, status:STATUS[x.action]||null,
-                         stat:st, value:x.value ?? x.amount ?? null, target:x.target||null });
+                         stat:st, value:x.value ?? x.amount ?? null, target:portTarget(x.target) });
     }
     attacks.push(row);
   }
@@ -291,6 +318,31 @@ for (const e of Object.values(ENEMY_CARDS)) {
     u.notes = (u.notes || []).filter(n => !/bare attack|NO ABILITIES/.test(n));
     u.notes.push('Rider authored 2026-08-21 from its own name: ' + spec.why);
   }
+  // Abilities whose SOURCE MECHANIC does not exist in HoBaT, re-authored as something that
+  // does. Distinct from a rider: a rider adds to what the port produced, this replaces it,
+  // and the attack row it came from is dropped.
+  for (const [uid, spec] of Object.entries(R.reauthored?.units || {})) {
+    const u = byId.get(uid);
+    if (!u) { problems.push(`reauthored: no such unit ${uid}`); continue; }
+    for (const name of (spec.drop || [])) {
+      const i = u.attacks.findIndex(x => x.name === name);
+      if (i < 0) { problems.push(`reauthored: ${uid} has no attack named "${name}" to drop`); continue; }
+      u.attacks.splice(i, 1);
+    }
+    for (const t of (spec.triggers || [])) {
+      if (!VOCAB_HOOKS.has(t.hook)) problems.push(`reauthored: ${uid} — hook "${t.hook}" is not in the vocabulary`);
+      if (t.targets && !VOCAB_SHAPES.has(t.targets)) problems.push(`reauthored: ${uid} — shape "${t.targets}" is not in the vocabulary`);
+      for (const e of (t.effects || [])) {
+        if (!VOCAB_EFFECTS.has(e.effect)) problems.push(`reauthored: ${uid} — effect "${e.effect}" is not in the vocabulary`);
+        if (e.status && !VOCAB_STATUSES.has(e.status)) problems.push(`reauthored: ${uid} — status "${e.status}" is not in the vocabulary`);
+        if (e.stat && !VOCAB_STATS.has(e.stat)) problems.push(`reauthored: ${uid} — stat "${e.stat}" is not in the vocabulary`);
+      }
+      u.triggers.push({ ...t, authored:true, reauthored:true });
+    }
+    u.notes = (u.notes || []).filter(n => !/bare attack|NO ABILITIES/.test(n));
+    u.notes.push('Re-authored 2026-08-21: its source ability used onEnter timing, which HoBaT does not have. '+ ' Now a spatial aura.');
+  }
+
   for (const uid of (R.baselines?.units || [])) {
     const u = byId.get(uid);
     if (!u) { problems.push(`riders: no such baseline unit ${uid}`); continue; }

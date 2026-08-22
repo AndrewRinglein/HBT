@@ -6,6 +6,61 @@
     "units": ["unit.skeletal-archer", "unit.skeleton", "unit.weak-zombie", "unit.basic-imp", "unit.demon-gremlin"]
   },
 
+  "reauthored": {
+    "note": "The 14 createAura abilities in hell-tcg are not spatial auras at all: every one fires on auraTarget heroOnEnter or enemyOnEnter — WHEN A UNIT ARRIVES ON THE BOARD — and the nested target 'self' means the arriving unit, not the aura's owner. HoBaT has no onEnter hook and no mid-battle arrival, so that timing was ruled not relevant to the new game structure (2026-08-21) and these are re-authored as what they look like from the table: a dangerous thing you should not stand next to. The port had been silently DROPPING the nested payload, so all 14 were empty objects — nine of them on rank-3 bosses, including the Demon King's signature. Each becomes an `aura` trigger, which is in the vocabulary, and the attack row it came from is dropped because an aura is not an action you take.",
+    "units": {
+      "unit.the-haunt": { "drop": ["Cursed Presence"], "triggers": [
+        { "name": "Cursed Presence", "hook": "aura", "targets": "enemies within N hexes", "range": 1,
+          "effects": [ { "effect": "deal MAGIC damage", "value": 1 } ] } ] },
+
+      "unit.the-defiler": { "drop": ["Pulse of Corruption", "Wave of Corruption"], "triggers": [
+        { "name": "Pulse of Corruption", "hook": "aura", "targets": "enemies within N hexes", "range": 2,
+          "effects": [ { "effect": "deal MAGIC damage", "value": 1 } ] },
+        { "name": "Wave of Corruption", "hook": "aura", "targets": "enemies within N hexes", "range": 2,
+          "effects": [ { "effect": "apply a status", "status": "weak", "value": 1 } ] } ] },
+
+      "unit.tomb-ritualist": { "drop": ["Ritual Chant"], "triggers": [
+        { "name": "Ritual Chant", "hook": "aura", "targets": "enemies within N hexes", "range": 1,
+          "effects": [ { "effect": "deal MAGIC damage", "value": 1 } ] } ] },
+
+      "unit.white-bone-demon": { "drop": ["Dread Presence"], "triggers": [
+        { "name": "Dread Presence", "hook": "aura", "targets": "enemies within N hexes", "range": 2,
+          "effects": [ { "effect": "deal MAGIC damage", "value": 2 } ] } ] },
+
+      "unit.diyu-gate": { "drop": ["Spectral Torrent", "Death Resonance", "Gate Pulse"], "triggers": [
+        { "name": "Spectral Torrent", "hook": "aura", "targets": "enemies within N hexes", "range": 2,
+          "effects": [ { "effect": "deal MAGIC damage", "value": 2 } ] },
+        { "name": "Death Resonance", "hook": "aura", "targets": "enemies within N hexes", "range": 2,
+          "effects": [ { "effect": "apply a status", "status": "burn", "value": 2 } ] },
+        { "name": "Gate Pulse", "hook": "aura", "targets": "enemies within N hexes", "range": 2,
+          "effects": [ { "effect": "apply a status", "status": "weak", "value": 1 } ] } ] },
+
+      "unit.the-dragon-emperor": { "drop": ["Jade Roar"], "triggers": [
+        { "name": "Jade Roar", "hook": "aura", "targets": "enemies within N hexes", "range": 3,
+          "effects": [ { "effect": "deal MAGIC damage", "value": 2 } ] } ] },
+
+      "unit.the-demon-king": { "drop": ["Throne's Aura"], "triggers": [
+        { "name": "Throne's Corruption", "hook": "aura", "targets": "enemies within N hexes", "range": 3,
+          "effects": [ { "effect": "deal MAGIC damage", "value": 3 },
+                       { "effect": "apply a status", "status": "burn", "value": 2 } ] } ] },
+
+      "unit.werewolf-lord": { "drop": ["Fierce Call"], "triggers": [
+        { "name": "Fierce Call", "hook": "aura", "targets": "allies within N hexes", "range": 2,
+          "effects": [ { "effect": "grant a stat for the Battle", "stat": "strength", "value": 2 },
+                       { "effect": "grant a stat for the Battle", "stat": "health", "value": 2 } ] } ] },
+
+      "unit.sand-conjurer": { "drop": ["Empower Army", "Shield Enchantment"], "triggers": [
+        { "name": "Empowered Army", "hook": "aura", "targets": "allies within N hexes", "range": 2,
+          "effects": [ { "effect": "grant a stat for the Battle", "stat": "strength", "value": 1 } ] },
+        { "name": "Shielded Army", "hook": "aura", "targets": "allies within N hexes", "range": 2,
+          "effects": [ { "effect": "grant a stat for the Battle", "stat": "armor", "value": 1 } ] } ] },
+
+      "unit.the-sand-king": { "drop": ["Fortify"], "triggers": [
+        { "name": "Sand Fortress", "hook": "aura", "targets": "allies within N hexes", "range": 3,
+          "effects": [ { "effect": "grant a stat for the Battle", "stat": "armor", "value": 1 } ] } ] }
+    }
+  },
+
   "units": {
     "unit.abyssal-spawn": { "why": "Soul Siphon takes something from you and keeps it.",
       "attacks": { "Soul Siphon": [ { "effect": "heal", "value": 2, "target": "self" } ] } },

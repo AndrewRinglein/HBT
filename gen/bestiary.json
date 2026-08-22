@@ -58,7 +58,7 @@
        "status": "burn",
        "stat": null,
        "value": 3,
-       "target": "attacked"
+       "target": null
       }
      ]
     }
@@ -141,7 +141,7 @@
        "status": "weak",
        "stat": null,
        "value": 3,
-       "target": "attacked"
+       "target": null
       }
      ]
     },
@@ -349,7 +349,7 @@
        "status": "poison",
        "stat": null,
        "value": 3,
-       "target": "attacked"
+       "target": null
       }
      ]
     }
@@ -423,7 +423,7 @@
        "status": "burn",
        "stat": null,
        "value": 4,
-       "target": "attacked"
+       "target": null
       }
      ]
     }
@@ -579,7 +579,7 @@
        "status": "weak",
        "stat": null,
        "value": 2,
-       "target": "attacked"
+       "target": null
       }
      ]
     }
@@ -650,7 +650,7 @@
        "status": "weak",
        "stat": null,
        "value": 3,
-       "target": "attacked"
+       "target": null
       }
      ]
     },
@@ -897,7 +897,7 @@
        "status": "poison",
        "stat": null,
        "value": 1,
-       "target": "allHeroes"
+       "target": "enemies within N hexes"
       }
      ]
     }
@@ -969,7 +969,7 @@
        "status": "burn",
        "stat": null,
        "value": 2,
-       "target": "attacked"
+       "target": null
       }
      ]
     }
@@ -1051,7 +1051,7 @@
        "status": "weak",
        "stat": null,
        "value": 1,
-       "target": "attacked"
+       "target": null
       }
      ]
     }
@@ -1299,7 +1299,7 @@
        "status": null,
        "stat": null,
        "value": 1,
-       "target": "allEnemies"
+       "target": "allies within N hexes"
       }
      ]
     },
@@ -1316,14 +1316,14 @@
        "status": "poison",
        "stat": null,
        "value": 3,
-       "target": "attacked"
+       "target": null
       },
       {
        "effect": "apply a status",
        "status": "weak",
        "stat": null,
        "value": 2,
-       "target": "attacked"
+       "target": null
       }
      ]
     }
@@ -1402,7 +1402,7 @@
        "status": "burn",
        "stat": null,
        "value": 2,
-       "target": "attacked"
+       "target": null
       }
      ]
     },
@@ -1510,7 +1510,7 @@
        "status": null,
        "stat": null,
        "value": 4,
-       "target": "allEnemies"
+       "target": "allies within N hexes"
       }
      ]
     }
@@ -1579,7 +1579,7 @@
        "status": "weak",
        "stat": null,
        "value": 3,
-       "target": "attacked"
+       "target": null
       }
      ]
     },
@@ -1675,7 +1675,7 @@
        "status": "weak",
        "stat": null,
        "value": 4,
-       "target": "attacked"
+       "target": null
       }
      ]
     }
@@ -1745,7 +1745,7 @@
        "status": "burn",
        "stat": null,
        "value": 2,
-       "target": "allHeroes"
+       "target": "enemies within N hexes"
       }
      ]
     }
@@ -1841,7 +1841,7 @@
        "status": "weak",
        "stat": null,
        "value": 4,
-       "target": "attacked"
+       "target": null
       }
      ]
     },
@@ -2049,14 +2049,14 @@
        "status": null,
        "stat": "armor",
        "value": -2,
-       "target": "attacked"
+       "target": null
       },
       {
        "effect": "grant a stat for the Battle",
        "status": null,
        "stat": "resist",
        "value": -2,
-       "target": "attacked"
+       "target": null
       }
      ]
     },
@@ -2072,21 +2072,21 @@
        "status": null,
        "stat": null,
        "value": 2,
-       "target": "allEnemies"
+       "target": "allies within N hexes"
       },
       {
        "effect": "grant a stat for the Battle",
        "status": null,
        "stat": "strength",
        "value": 2,
-       "target": "allEnemies"
+       "target": "allies within N hexes"
       },
       {
        "effect": "grant a stat for the Battle",
        "status": null,
        "stat": "precision",
        "value": 2,
-       "target": "allEnemies"
+       "target": "allies within N hexes"
       }
      ]
     }
@@ -2240,14 +2240,14 @@
        "status": "weak",
        "stat": null,
        "value": 3,
-       "target": "attacked"
+       "target": null
       },
       {
        "effect": "apply a status",
        "status": "poison",
        "stat": null,
        "value": 2,
-       "target": "attacked"
+       "target": null
       }
      ]
     },
@@ -2264,7 +2264,7 @@
        "status": "poison",
        "stat": null,
        "value": 4,
-       "target": "attacked"
+       "target": null
       }
      ]
     },
@@ -2366,7 +2366,7 @@
        "status": "weak",
        "stat": null,
        "value": 2,
-       "target": "attacked"
+       "target": null
       }
      ]
     },
@@ -2454,7 +2454,7 @@
        "status": "weak",
        "stat": null,
        "value": 3,
-       "target": "attacked"
+       "target": null
       },
       {
        "effect": "heal",
@@ -2477,7 +2477,7 @@
        "status": null,
        "stat": null,
        "value": 3,
-       "target": "allEnemies"
+       "target": "allies within N hexes"
       }
      ]
     }
@@ -2572,7 +2572,7 @@
        "status": "weak",
        "stat": null,
        "value": 6,
-       "target": "attacked"
+       "target": null
       }
      ]
     }
@@ -2646,7 +2646,7 @@
        "status": "poison",
        "stat": null,
        "value": 3,
-       "target": "allHeroes"
+       "target": "enemies within N hexes"
       }
      ]
     },
@@ -2754,7 +2754,7 @@
        "status": "weak",
        "stat": null,
        "value": 1,
-       "target": "allHeroes"
+       "target": "enemies within N hexes"
       }
      ]
     },
@@ -2887,7 +2887,7 @@
      "id": "attack.possessed-troll.throwing-stones",
      "name": "Throwing Stones",
      "kind": "attack",
-     "targets": "one enemy within N hexes",
+     "targets": "up to N enemies within N hexes",
      "damageType": "physical",
      "damage": "ranged",
      "effects": [
@@ -2896,9 +2896,14 @@
        "status": null,
        "stat": null,
        "value": null,
-       "target": null
+       "target": null,
+       "multiple": 2
       }
-     ]
+     ],
+     "multiple": {
+      "count": 2,
+      "damageModifier": 0
+     }
     },
     {
      "id": "attack.possessed-troll.rotting-touch",
@@ -2966,7 +2971,7 @@
        "status": "burn",
        "stat": null,
        "value": 2,
-       "target": "attacked"
+       "target": null
       }
      ]
     }
@@ -3021,7 +3026,7 @@
      "id": "attack.nightmare-twin.nightmare-barrage",
      "name": "Nightmare Barrage",
      "kind": "attack",
-     "targets": "one enemy within N hexes",
+     "targets": "up to N enemies within N hexes",
      "damageType": "physical",
      "damage": "ranged",
      "effects": [
@@ -3029,10 +3034,15 @@
        "effect": "deal damage (type from the weapon)",
        "status": null,
        "stat": null,
-       "value": null,
-       "target": null
+       "value": -2,
+       "target": null,
+       "multiple": 3
       }
-     ]
+     ],
+     "multiple": {
+      "count": 3,
+      "damageModifier": -2
+     }
     },
     {
      "id": "attack.nightmare-twin.nightmare-fury",
@@ -3119,7 +3129,7 @@
        "status": "poison",
        "stat": null,
        "value": 1,
-       "target": "attacked"
+       "target": null
       }
      ]
     },
@@ -3135,7 +3145,7 @@
        "status": "poison",
        "stat": null,
        "value": 4,
-       "target": "allHeroes"
+       "target": "enemies within N hexes"
       }
      ]
     },
@@ -3284,7 +3294,7 @@
        "status": "weak",
        "stat": null,
        "value": 3,
-       "target": "attacked"
+       "target": null
       }
      ]
     },
@@ -4013,7 +4023,7 @@
        "status": "weak",
        "stat": null,
        "value": 1,
-       "target": "attacked"
+       "target": null
       }
      ]
     },
@@ -4029,21 +4039,21 @@
        "status": null,
        "stat": "strength",
        "value": 2,
-       "target": "allEnemies"
+       "target": "allies within N hexes"
       },
       {
        "effect": "grant a stat for the Battle",
        "status": null,
        "stat": "precision",
        "value": 1,
-       "target": "allEnemies"
+       "target": "allies within N hexes"
       },
       {
        "effect": "heal",
        "status": null,
        "stat": null,
        "value": 2,
-       "target": "allEnemies"
+       "target": "allies within N hexes"
       }
      ]
     }
@@ -4111,14 +4121,14 @@
        "status": null,
        "stat": "strength",
        "value": 3,
-       "target": "target"
+       "target": null
       },
       {
        "effect": "grant a stat for the Battle",
        "status": null,
        "stat": "precision",
        "value": 3,
-       "target": "target"
+       "target": null
       }
      ]
     },
@@ -4134,21 +4144,21 @@
        "status": null,
        "stat": "armor",
        "value": 1,
-       "target": "target"
+       "target": null
       },
       {
        "effect": "grant a stat for the Battle",
        "status": null,
        "stat": "health",
        "value": 3,
-       "target": "target"
+       "target": null
       },
       {
        "effect": "heal",
        "status": null,
        "stat": null,
        "value": 2,
-       "target": "target"
+       "target": null
       }
      ]
     }
@@ -4220,7 +4230,7 @@
        "status": "poison",
        "stat": null,
        "value": 2,
-       "target": "attacked"
+       "target": null
       }
      ]
     },
@@ -4236,7 +4246,7 @@
        "status": "weak",
        "stat": null,
        "value": 4,
-       "target": "target"
+       "target": null
       }
      ]
     }
@@ -4431,14 +4441,14 @@
        "status": "weak",
        "stat": null,
        "value": 2,
-       "target": "target"
+       "target": null
       },
       {
        "effect": "apply a status",
        "status": "poison",
        "stat": null,
        "value": 3,
-       "target": "target"
+       "target": null
       }
      ]
     },
@@ -4529,7 +4539,7 @@
        "status": "burn",
        "stat": null,
        "value": 1,
-       "target": "attacked"
+       "target": null
       }
      ]
     },
@@ -4617,7 +4627,7 @@
        "status": "weak",
        "stat": null,
        "value": 1,
-       "target": "attacked"
+       "target": null
       }
      ]
     }
@@ -4855,7 +4865,7 @@
        "status": "weak",
        "stat": null,
        "value": 3,
-       "target": "attacked"
+       "target": null
       }
      ]
     },
@@ -4878,21 +4888,21 @@
        "status": null,
        "stat": "strength",
        "value": 1,
-       "target": "allEnemies"
+       "target": "allies within N hexes"
       },
       {
        "effect": "grant a stat for the Battle",
        "status": null,
        "stat": "precision",
        "value": 1,
-       "target": "allEnemies"
+       "target": "allies within N hexes"
       },
       {
        "effect": "grant a stat for the Battle",
        "status": null,
        "stat": "armor",
        "value": 1,
-       "target": "allEnemies"
+       "target": "allies within N hexes"
       }
      ]
     }
@@ -4964,7 +4974,7 @@
        "status": "burn",
        "stat": null,
        "value": 2,
-       "target": "allHeroes"
+       "target": "enemies within N hexes"
       }
      ]
     },
@@ -4990,7 +5000,7 @@
        "status": "poison",
        "stat": null,
        "value": 2,
-       "target": "allHeroes"
+       "target": "enemies within N hexes"
       }
      ]
     },
@@ -5006,14 +5016,14 @@
        "status": null,
        "stat": null,
        "value": 10,
-       "target": "allEnemies"
+       "target": "allies within N hexes"
       },
       {
        "effect": "apply a status",
        "status": "regeneration",
        "stat": null,
        "value": 2,
-       "target": "allEnemies"
+       "target": "allies within N hexes"
       }
      ]
     }
@@ -5200,7 +5210,7 @@
        "status": "weak",
        "stat": null,
        "value": 3,
-       "target": "attacked"
+       "target": null
       },
       {
        "effect": "deal damage (type from the weapon)",
@@ -5395,7 +5405,7 @@
        "status": "weak",
        "stat": null,
        "value": 3,
-       "target": "attacked"
+       "target": null
       }
      ]
     },
@@ -5467,7 +5477,7 @@
        "status": null,
        "stat": null,
        "value": null,
-       "target": "target"
+       "target": null
       }
      ]
     },
@@ -5483,7 +5493,7 @@
        "status": "protection",
        "stat": null,
        "value": 2,
-       "target": "allEnemies"
+       "target": "allies within N hexes"
       }
      ]
     },
@@ -5499,14 +5509,14 @@
        "status": null,
        "stat": "armor",
        "value": 1,
-       "target": "allEnemies"
+       "target": "allies within N hexes"
       },
       {
        "effect": "grant a stat for the Battle",
        "status": null,
        "stat": "precision",
        "value": 2,
-       "target": "allEnemies"
+       "target": "allies within N hexes"
       }
      ]
     }
@@ -5648,7 +5658,7 @@
      "id": "attack.werewolf-lord.double-strike",
      "name": "Double Strike",
      "kind": "attack",
-     "targets": "one enemy within N hexes",
+     "targets": "up to N enemies within Reach",
      "damageType": "physical",
      "damage": "melee",
      "effects": [
@@ -5656,10 +5666,15 @@
        "effect": "deal damage (type from the weapon)",
        "status": null,
        "stat": null,
-       "value": null,
-       "target": null
+       "value": -3,
+       "target": null,
+       "multiple": 2
       }
-     ]
+     ],
+     "multiple": {
+      "count": 2,
+      "damageModifier": -3
+     }
     },
     {
      "id": "attack.werewolf-lord.savage-blow",
@@ -5674,49 +5689,42 @@
        "status": "bleed",
        "stat": null,
        "value": 2,
-       "target": "target"
-      }
-     ]
-    },
-    {
-     "id": "attack.werewolf-lord.fierce-call",
-     "name": "Fierce Call",
-     "kind": "buff",
-     "targets": "allies within N hexes",
-     "damageType": null,
-     "effects": [
-      {
-       "effect": "grant a stat for the Battle",
-       "status": null,
-       "stat": "health",
-       "value": 7,
-       "target": "allEnemies"
-      },
-      {
-       "effect": "grant a stat for the Battle",
-       "status": null,
-       "stat": "strength",
-       "value": 2,
-       "target": "allEnemies"
-      },
-      {
-       "effect": "grant an aura",
-       "status": null,
-       "stat": null,
-       "value": null,
        "target": null
       }
      ]
     }
    ],
-   "triggers": [],
+   "triggers": [
+    {
+     "name": "Fierce Call",
+     "hook": "aura",
+     "targets": "allies within N hexes",
+     "range": 2,
+     "effects": [
+      {
+       "effect": "grant a stat for the Battle",
+       "stat": "strength",
+       "value": 2
+      },
+      {
+       "effect": "grant a stat for the Battle",
+       "stat": "health",
+       "value": 2
+      }
+     ],
+     "authored": true,
+     "reauthored": true
+    }
+   ],
    "art": "../assets/cards/enemies/werewolf-lord.png",
    "campaign": null,
    "encounters": [],
    "curated": false,
    "backstory": "Alpha of all werewolves, his mere presence drives his pack into a frenzy. Each attack makes him stronger, and his regeneration makes him nearly impossible to bring down.",
    "quote": "The hunt never ends.",
-   "notes": [],
+   "notes": [
+    "Re-authored 2026-08-21: its source ability used onEnter timing, which HoBaT does not have.  Now a spatial aura."
+   ],
    "source": "hell-tcg data/enemyCards.js, extracted 2026-08-21. Stats and abilities are ported, not authored."
   },
   {
@@ -5766,7 +5774,7 @@
        "status": "burn",
        "stat": null,
        "value": 2,
-       "target": "target"
+       "target": null
       }
      ]
     },
@@ -5782,21 +5790,21 @@
        "status": null,
        "stat": "health",
        "value": 6,
-       "target": "target"
+       "target": null
       },
       {
        "effect": "grant a stat for the Battle",
        "status": null,
        "stat": "strength",
        "value": 3,
-       "target": "target"
+       "target": null
       },
       {
        "effect": "grant a stat for the Battle",
        "status": null,
        "stat": "precision",
        "value": 2,
-       "target": "target"
+       "target": null
       }
      ]
     },
@@ -5813,7 +5821,7 @@
        "status": "burn",
        "stat": null,
        "value": 3,
-       "target": "allHeroes"
+       "target": "enemies within N hexes"
       }
      ]
     }
@@ -5874,7 +5882,7 @@
      "id": "attack.vampire-grandmaster.twin-fangs",
      "name": "Twin Fangs",
      "kind": "attack",
-     "targets": "one enemy within N hexes",
+     "targets": "up to N enemies within N hexes",
      "damageType": "physical",
      "damage": "melee",
      "effects": [
@@ -5882,10 +5890,15 @@
        "effect": "deal damage (type from the weapon)",
        "status": null,
        "stat": null,
-       "value": null,
-       "target": null
+       "value": -2,
+       "target": null,
+       "multiple": 2
       }
-     ]
+     ],
+     "multiple": {
+      "count": 2,
+      "damageModifier": -2
+     }
     },
     {
      "id": "attack.vampire-grandmaster.vampiric-surge",
@@ -5984,7 +5997,7 @@
        "status": "weak",
        "stat": null,
        "value": 1,
-       "target": "attacked"
+       "target": null
       }
      ]
     }
@@ -6056,7 +6069,7 @@
        "status": "weak",
        "stat": null,
        "value": 1,
-       "target": "attacked"
+       "target": null
       }
      ]
     },
@@ -6154,7 +6167,7 @@
        "status": null,
        "stat": "strength",
        "value": 1,
-       "target": "allEnemies"
+       "target": "allies within N hexes"
       }
      ]
     }
@@ -6233,7 +6246,7 @@
        "status": null,
        "stat": "strength",
        "value": 1,
-       "target": "allEnemies"
+       "target": "allies within N hexes"
       }
      ]
     }
@@ -6310,7 +6323,7 @@
        "status": null,
        "stat": "strength",
        "value": 1,
-       "target": "allEnemies"
+       "target": "allies within N hexes"
       }
      ]
     }
@@ -6378,7 +6391,7 @@
        "status": null,
        "stat": "strength",
        "value": 2,
-       "target": "allEnemies"
+       "target": "allies within N hexes"
       }
      ]
     },
@@ -6403,7 +6416,7 @@
        "status": null,
        "stat": null,
        "value": 3,
-       "target": "allEnemies"
+       "target": "allies within N hexes"
       }
      ]
     }
@@ -6472,7 +6485,7 @@
        "status": "poison",
        "stat": null,
        "value": 2,
-       "target": "attacked"
+       "target": null
       }
      ]
     }
@@ -6544,7 +6557,7 @@
        "status": "weak",
        "stat": null,
        "value": 2,
-       "target": "attacked"
+       "target": null
       }
      ]
     },
@@ -6633,7 +6646,7 @@
        "status": "burn",
        "stat": null,
        "value": 3,
-       "target": "attacked"
+       "target": null
       }
      ]
     },
@@ -6797,7 +6810,7 @@
        "status": "burn",
        "stat": null,
        "value": 2,
-       "target": "attacked"
+       "target": null
       }
      ]
     }
@@ -6868,7 +6881,7 @@
        "status": null,
        "stat": "precision",
        "value": 1,
-       "target": "allEnemies"
+       "target": "allies within N hexes"
       }
      ]
     },
@@ -6884,7 +6897,7 @@
        "status": null,
        "stat": null,
        "value": 5,
-       "target": "allEnemies"
+       "target": "allies within N hexes"
       }
      ]
     }
@@ -6957,7 +6970,7 @@
        "status": "weak",
        "stat": null,
        "value": 1,
-       "target": "attacked"
+       "target": null
       }
      ]
     },
@@ -6973,7 +6986,7 @@
        "status": null,
        "stat": "strength",
        "value": 1,
-       "target": "allEnemies"
+       "target": "allies within N hexes"
       }
      ]
     }
@@ -7159,7 +7172,7 @@
        "status": "weak",
        "stat": null,
        "value": 2,
-       "target": "attacked"
+       "target": null
       }
      ]
     }
@@ -7227,7 +7240,7 @@
        "status": null,
        "stat": null,
        "value": 6,
-       "target": "allEnemies"
+       "target": "allies within N hexes"
       }
      ]
     },
@@ -7243,7 +7256,7 @@
        "status": null,
        "stat": "precision",
        "value": 2,
-       "target": "allEnemies"
+       "target": "allies within N hexes"
       }
      ]
     }
@@ -7606,7 +7619,7 @@
        "status": "burn",
        "stat": null,
        "value": 1,
-       "target": "attacked"
+       "target": null
       }
      ]
     },
@@ -7622,7 +7635,7 @@
        "status": null,
        "stat": "strength",
        "value": 1,
-       "target": "allEnemies"
+       "target": "allies within N hexes"
       }
      ]
     }
@@ -7694,7 +7707,7 @@
        "status": "burn",
        "stat": null,
        "value": 2,
-       "target": "attacked"
+       "target": null
       }
      ]
     },
@@ -7780,7 +7793,7 @@
        "status": null,
        "stat": "precision",
        "value": 1,
-       "target": "allEnemies"
+       "target": "allies within N hexes"
       }
      ]
     },
@@ -7796,7 +7809,7 @@
        "status": "protection",
        "stat": null,
        "value": 2,
-       "target": "allEnemies"
+       "target": "allies within N hexes"
       }
      ]
     }
@@ -7942,7 +7955,7 @@
        "status": "protection",
        "stat": null,
        "value": 2,
-       "target": "allEnemies"
+       "target": "allies within N hexes"
       }
      ]
     }
@@ -8012,7 +8025,7 @@
        "status": null,
        "stat": null,
        "value": 6,
-       "target": "lowestHealthEnemy"
+       "target": "one ally within N hexes"
       }
      ]
     },
@@ -8179,7 +8192,7 @@
        "status": null,
        "stat": "armor",
        "value": 1,
-       "target": "allEnemies"
+       "target": "allies within N hexes"
       }
      ]
     }
@@ -8329,7 +8342,7 @@
        "status": "weak",
        "stat": null,
        "value": 1,
-       "target": "attacked"
+       "target": null
       }
      ]
     }
@@ -8483,35 +8496,36 @@
        "status": "weak",
        "stat": null,
        "value": 2,
-       "target": "attacked"
-      }
-     ]
-    },
-    {
-     "id": "attack.the-haunt.cursed-presence",
-     "name": "Cursed Presence",
-     "kind": "buff",
-     "targets": "self",
-     "damageType": null,
-     "effects": [
-      {
-       "effect": "grant an aura",
-       "status": null,
-       "stat": null,
-       "value": null,
        "target": null
       }
      ]
     }
    ],
-   "triggers": [],
+   "triggers": [
+    {
+     "name": "Cursed Presence",
+     "hook": "aura",
+     "targets": "enemies within N hexes",
+     "range": 1,
+     "effects": [
+      {
+       "effect": "deal MAGIC damage",
+       "value": 1
+      }
+     ],
+     "authored": true,
+     "reauthored": true
+    }
+   ],
    "art": "../assets/cards/enemies/the-haunt.png",
    "campaign": null,
    "encounters": [],
    "curated": false,
    "backstory": "A terrifying spectral entity that grows stronger with every passing turn. Each turn end it gains dodge (becoming unhittable), raises Power (making Spirit Blast devastating), and creates another aura (punishing hero deployment). Three escalating threats from one source. Kill it fast or die slowly.",
    "quote": "You cannot kill what is already dead. You can only join us.",
-   "notes": [],
+   "notes": [
+    "Re-authored 2026-08-21: its source ability used onEnter timing, which HoBaT does not have.  Now a spatial aura."
+   ],
    "source": "hell-tcg data/enemyCards.js, extracted 2026-08-21. Stats and abilities are ported, not authored."
   },
   {
@@ -8567,7 +8581,7 @@
        "status": null,
        "stat": "strength",
        "value": 1,
-       "target": "allEnemies"
+       "target": "allies within N hexes"
       }
      ]
     }
@@ -8646,7 +8660,7 @@
        "status": null,
        "stat": "strength",
        "value": 2,
-       "target": "allEnemies"
+       "target": "allies within N hexes"
       }
      ]
     }
@@ -8919,48 +8933,49 @@
      "damageType": "magic",
      "damage": "ranged",
      "effects": []
-    },
-    {
-     "id": "attack.sand-conjurer.empower-army",
-     "name": "Empower Army",
-     "kind": "buff",
-     "targets": "allies within N hexes",
-     "damageType": null,
-     "effects": [
-      {
-       "effect": "grant an aura",
-       "status": null,
-       "stat": null,
-       "value": null,
-       "target": null
-      }
-     ]
-    },
-    {
-     "id": "attack.sand-conjurer.shield-enchantment",
-     "name": "Shield Enchantment",
-     "kind": "buff",
-     "targets": "allies within N hexes",
-     "damageType": null,
-     "effects": [
-      {
-       "effect": "grant an aura",
-       "status": null,
-       "stat": null,
-       "value": null,
-       "target": null
-      }
-     ]
     }
    ],
-   "triggers": [],
+   "triggers": [
+    {
+     "name": "Empowered Army",
+     "hook": "aura",
+     "targets": "allies within N hexes",
+     "range": 2,
+     "effects": [
+      {
+       "effect": "grant a stat for the Battle",
+       "stat": "strength",
+       "value": 1
+      }
+     ],
+     "authored": true,
+     "reauthored": true
+    },
+    {
+     "name": "Shielded Army",
+     "hook": "aura",
+     "targets": "allies within N hexes",
+     "range": 2,
+     "effects": [
+      {
+       "effect": "grant a stat for the Battle",
+       "stat": "armor",
+       "value": 1
+      }
+     ],
+     "authored": true,
+     "reauthored": true
+    }
+   ],
    "art": "../assets/cards/enemies/sand-conjurer.png",
    "campaign": null,
    "encounters": [],
    "curated": false,
    "backstory": "A master of sand magic who conjures warriors from the desert itself. Each wave of soldiers is permanently stronger than the last, layered with enchantments.",
    "quote": "My army grows with every breath.",
-   "notes": [],
+   "notes": [
+    "Re-authored 2026-08-21: its source ability used onEnter timing, which HoBaT does not have.  Now a spatial aura."
+   ],
    "source": "hell-tcg data/enemyCards.js, extracted 2026-08-21. Stats and abilities are ported, not authored."
   },
   {
@@ -9017,7 +9032,7 @@
        "status": "weak",
        "stat": null,
        "value": 1,
-       "target": "attacked"
+       "target": null
       }
      ]
     },
@@ -9432,7 +9447,7 @@
        "status": "weak",
        "stat": null,
        "value": 1,
-       "target": "attacked"
+       "target": null
       }
      ]
     }
@@ -9503,7 +9518,7 @@
        "status": "poison",
        "stat": null,
        "value": 1,
-       "target": "attacked"
+       "target": null
       }
      ]
     }
@@ -9574,7 +9589,7 @@
        "status": "poison",
        "stat": null,
        "value": 2,
-       "target": "attacked"
+       "target": null
       }
      ]
     },
@@ -9590,7 +9605,7 @@
        "status": null,
        "stat": null,
        "value": 3,
-       "target": "allEnemies"
+       "target": "allies within N hexes"
       }
      ]
     }
@@ -9671,42 +9686,37 @@
        "status": "weak",
        "stat": null,
        "value": 2,
-       "target": "attacked"
-      }
-     ]
-    },
-    {
-     "id": "attack.the-sand-king.fortify",
-     "name": "Fortify",
-     "kind": "buff",
-     "targets": "self",
-     "damageType": null,
-     "effects": [
-      {
-       "effect": "grant a stat for the Battle",
-       "status": null,
-       "stat": "armor",
-       "value": 2,
-       "target": "self"
-      },
-      {
-       "effect": "grant an aura",
-       "status": null,
-       "stat": null,
-       "value": null,
        "target": null
       }
      ]
     }
    ],
-   "triggers": [],
+   "triggers": [
+    {
+     "name": "Sand Fortress",
+     "hook": "aura",
+     "targets": "allies within N hexes",
+     "range": 3,
+     "effects": [
+      {
+       "effect": "grant a stat for the Battle",
+       "stat": "armor",
+       "value": 1
+      }
+     ],
+     "authored": true,
+     "reauthored": true
+    }
+   ],
    "art": "../assets/cards/enemies/the-sand-king.png",
    "campaign": null,
    "encounters": [],
    "curated": false,
    "backstory": "An ancient sovereign of the desert, fused with the sand itself. Thorns of crystallized sand punish every attacker. Its Power grows each turn, feeding its devastating strikes. Its Fortify auras make each new guardian tankier than the last.",
    "quote": "I am the desert. Strike me, and the desert strikes back.",
-   "notes": [],
+   "notes": [
+    "Re-authored 2026-08-21: its source ability used onEnter timing, which HoBaT does not have.  Now a spatial aura."
+   ],
    "source": "hell-tcg data/enemyCards.js, extracted 2026-08-21. Stats and abilities are ported, not authored."
   },
   {
@@ -9849,7 +9859,7 @@
        "status": null,
        "stat": "armor",
        "value": 2,
-       "target": "allEnemies"
+       "target": "allies within N hexes"
       }
      ]
     }
@@ -9909,7 +9919,7 @@
        "status": null,
        "stat": null,
        "value": 3,
-       "target": "allEnemies"
+       "target": "allies within N hexes"
       }
      ]
     },
@@ -9925,7 +9935,7 @@
        "status": null,
        "stat": "armor",
        "value": 1,
-       "target": "allEnemies"
+       "target": "allies within N hexes"
       }
      ]
     }
@@ -10010,7 +10020,7 @@
        "status": "weak",
        "stat": null,
        "value": 2,
-       "target": "allHeroes"
+       "target": "enemies within N hexes"
       }
      ]
     }
@@ -10160,7 +10170,7 @@
        "status": "poison",
        "stat": null,
        "value": 1,
-       "target": "attacked"
+       "target": null
       }
      ]
     }
@@ -10230,7 +10240,7 @@
        "status": null,
        "stat": null,
        "value": 3,
-       "target": "lowestHealthEnemy"
+       "target": "one ally within N hexes"
       }
      ]
     },
@@ -10246,7 +10256,7 @@
        "status": null,
        "stat": "precision",
        "value": 1,
-       "target": "allEnemies"
+       "target": "allies within N hexes"
       }
      ]
     }
@@ -10808,7 +10818,7 @@
        "status": "burn",
        "stat": null,
        "value": 1,
-       "target": "attacked"
+       "target": null
       }
      ]
     }
@@ -10887,14 +10897,14 @@
        "status": null,
        "stat": "strength",
        "value": 2,
-       "target": "allEnemies"
+       "target": "allies within N hexes"
       },
       {
        "effect": "grant a stat for the Battle",
        "status": null,
        "stat": "precision",
        "value": 1,
-       "target": "allEnemies"
+       "target": "allies within N hexes"
       }
      ]
     }
@@ -11037,7 +11047,7 @@
        "status": "poison",
        "stat": null,
        "value": 2,
-       "target": "attacked"
+       "target": null
       }
      ]
     }
@@ -11107,14 +11117,14 @@
        "status": null,
        "stat": "strength",
        "value": 1,
-       "target": "allEnemies"
+       "target": "allies within N hexes"
       },
       {
        "effect": "grant a stat for the Battle",
        "status": null,
        "stat": "precision",
        "value": 1,
-       "target": "allEnemies"
+       "target": "allies within N hexes"
       }
      ]
     }
@@ -11252,7 +11262,7 @@
        "status": null,
        "stat": null,
        "value": 3,
-       "target": "lowestHealthEnemy"
+       "target": "one ally within N hexes"
       }
      ]
     },
@@ -11268,7 +11278,7 @@
        "status": null,
        "stat": "strength",
        "value": 1,
-       "target": "allEnemies"
+       "target": "allies within N hexes"
       }
      ]
     }
@@ -11329,14 +11339,14 @@
        "status": null,
        "stat": "strength",
        "value": 1,
-       "target": "allEnemies"
+       "target": "allies within N hexes"
       },
       {
        "effect": "grant a stat for the Battle",
        "status": null,
        "stat": "precision",
        "value": 1,
-       "target": "allEnemies"
+       "target": "allies within N hexes"
       }
      ]
     },
@@ -11361,7 +11371,7 @@
        "status": null,
        "stat": null,
        "value": 4,
-       "target": "lowestHealthEnemy"
+       "target": "one ally within N hexes"
       }
      ]
     }
@@ -11429,7 +11439,7 @@
        "status": null,
        "stat": null,
        "value": 4,
-       "target": "lowestHealthEnemy"
+       "target": "one ally within N hexes"
       }
      ]
     },
@@ -11483,48 +11493,47 @@
     ],
     "movement": "bulwark — it is there to be hit, not to hit"
    },
-   "attacks": [
+   "attacks": [],
+   "triggers": [
     {
-     "id": "attack.the-defiler.pulse-of-corruption",
      "name": "Pulse of Corruption",
-     "kind": "buff",
-     "targets": "self",
-     "damageType": null,
+     "hook": "aura",
+     "targets": "enemies within N hexes",
+     "range": 2,
      "effects": [
       {
-       "effect": "grant an aura",
-       "status": null,
-       "stat": null,
-       "value": null,
-       "target": null
+       "effect": "deal MAGIC damage",
+       "value": 1
       }
-     ]
+     ],
+     "authored": true,
+     "reauthored": true
     },
     {
-     "id": "attack.the-defiler.wave-of-corruption",
      "name": "Wave of Corruption",
-     "kind": "buff",
-     "targets": "self",
-     "damageType": null,
+     "hook": "aura",
+     "targets": "enemies within N hexes",
+     "range": 2,
      "effects": [
       {
-       "effect": "grant an aura",
-       "status": null,
-       "stat": null,
-       "value": null,
-       "target": null
+       "effect": "apply a status",
+       "status": "weak",
+       "value": 1
       }
-     ]
+     ],
+     "authored": true,
+     "reauthored": true
     }
    ],
-   "triggers": [],
    "art": "../assets/cards/enemies/the-defiler.png",
    "campaign": null,
    "encounters": [],
    "curated": false,
    "backstory": "An ancient undead horror that never attacks directly. Instead, it poisons the very battlefield -- every turn it exists, deploying new heroes becomes more painful. By late game, entering combat is itself a death sentence.",
    "quote": "I do not need to kill you. The battlefield will do that for me.",
-   "notes": [],
+   "notes": [
+    "Re-authored 2026-08-21: its source ability used onEnter timing, which HoBaT does not have.  Now a spatial aura."
+   ],
    "source": "hell-tcg data/enemyCards.js, extracted 2026-08-21. Stats and abilities are ported, not authored."
   },
   {
@@ -11590,7 +11599,7 @@
        "status": "weak",
        "stat": null,
        "value": 1,
-       "target": "attacked"
+       "target": null
       }
      ]
     }
@@ -11650,22 +11659,6 @@
      "effects": []
     },
     {
-     "id": "attack.tomb-ritualist.ritual-chant",
-     "name": "Ritual Chant",
-     "kind": "buff",
-     "targets": "self",
-     "damageType": null,
-     "effects": [
-      {
-       "effect": "grant an aura",
-       "status": null,
-       "stat": null,
-       "value": null,
-       "target": null
-      }
-     ]
-    },
-    {
      "id": "attack.tomb-ritualist.dark-mending",
      "name": "Dark Mending",
      "kind": "heal",
@@ -11677,12 +11670,27 @@
        "status": null,
        "stat": null,
        "value": 5,
-       "target": "lowestHealthEnemy"
+       "target": "one ally within N hexes"
       }
      ]
     }
    ],
-   "triggers": [],
+   "triggers": [
+    {
+     "name": "Ritual Chant",
+     "hook": "aura",
+     "targets": "enemies within N hexes",
+     "range": 1,
+     "effects": [
+      {
+       "effect": "deal MAGIC damage",
+       "value": 1
+      }
+     ],
+     "authored": true,
+     "reauthored": true
+    }
+   ],
    "art": "assets/cards/enemies/tomb-ritualist.png",
    "campaign": "shadows",
    "encounters": [
@@ -11691,7 +11699,9 @@
    "curated": true,
    "backstory": "Undead spellcasters who serve the Defiler, chanting dark rituals that poison the battlefield and heal their allies. They amplify the Defiler's aura engine while providing ranged support.",
    "quote": "The ritual must not be interrupted...",
-   "notes": [],
+   "notes": [
+    "Re-authored 2026-08-21: its source ability used onEnter timing, which HoBaT does not have.  Now a spatial aura."
+   ],
    "source": "hell-tcg data/enemyCards.js, extracted 2026-08-21. Stats and abilities are ported, not authored."
   },
   {
@@ -11749,7 +11759,7 @@
        "status": "burn",
        "stat": null,
        "value": 1,
-       "target": "attacked"
+       "target": null
       }
      ]
     },
@@ -11827,7 +11837,7 @@
        "status": null,
        "stat": null,
        "value": 2,
-       "target": "allEnemies"
+       "target": "allies within N hexes"
       }
      ]
     }
@@ -11898,7 +11908,7 @@
        "status": "poison",
        "stat": null,
        "value": 1,
-       "target": "attacked"
+       "target": null
       }
      ]
     }
@@ -11969,7 +11979,7 @@
        "status": null,
        "stat": null,
        "value": 3,
-       "target": "allEnemies"
+       "target": "allies within N hexes"
       }
      ]
     },
@@ -11985,7 +11995,7 @@
        "status": null,
        "stat": "precision",
        "value": 1,
-       "target": "allEnemies"
+       "target": "allies within N hexes"
       }
      ]
     }
@@ -12055,7 +12065,7 @@
        "status": "burn",
        "stat": null,
        "value": 1,
-       "target": "attacked"
+       "target": null
       }
      ]
     }
@@ -12127,7 +12137,7 @@
        "status": "burn",
        "stat": null,
        "value": 2,
-       "target": "attacked"
+       "target": null
       }
      ]
     }
@@ -12207,7 +12217,7 @@
        "status": null,
        "stat": "precision",
        "value": 1,
-       "target": "allEnemies"
+       "target": "allies within N hexes"
       }
      ]
     }
@@ -12278,7 +12288,7 @@
        "status": "burn",
        "stat": null,
        "value": 1,
-       "target": "attacked"
+       "target": null
       }
      ]
     }
@@ -12350,7 +12360,7 @@
        "status": "weak",
        "stat": null,
        "value": 1,
-       "target": "attacked"
+       "target": null
       }
      ]
     }
@@ -12421,7 +12431,7 @@
        "status": null,
        "stat": null,
        "value": 3,
-       "target": "allEnemies"
+       "target": "allies within N hexes"
       }
      ]
     },
@@ -12437,7 +12447,7 @@
        "status": null,
        "stat": "armor",
        "value": 1,
-       "target": "allEnemies"
+       "target": "allies within N hexes"
       }
      ]
     }
@@ -12500,7 +12510,7 @@
        "status": null,
        "stat": "armor",
        "value": -1,
-       "target": "attacked"
+       "target": null
       }
      ]
     },
@@ -12699,7 +12709,7 @@
        "status": "poison",
        "stat": null,
        "value": 2,
-       "target": "attacked"
+       "target": null
       }
      ]
     },
@@ -12715,7 +12725,7 @@
        "status": null,
        "stat": "precision",
        "value": 1,
-       "target": "sameRowEnemies"
+       "target": "allies within N hexes"
       }
      ]
     }
@@ -12874,7 +12884,7 @@
        "status": null,
        "stat": "strength",
        "value": 1,
-       "target": "sameRowEnemies"
+       "target": "allies within N hexes"
       }
      ]
     }
@@ -12953,7 +12963,7 @@
        "status": null,
        "stat": "strength",
        "value": 2,
-       "target": "allEnemies"
+       "target": "allies within N hexes"
       }
      ]
     },
@@ -13032,7 +13042,7 @@
        "status": "poison",
        "stat": null,
        "value": 2,
-       "target": "attacked"
+       "target": null
       }
      ]
     },
@@ -13188,7 +13198,7 @@
        "status": "protection",
        "stat": null,
        "value": 4,
-       "target": "allEnemies"
+       "target": "allies within N hexes"
       }
      ]
     },
@@ -13344,7 +13354,7 @@
        "status": "weak",
        "stat": null,
        "value": 1,
-       "target": "attacked"
+       "target": null
       }
      ]
     },
@@ -13430,7 +13440,7 @@
        "status": "weak",
        "stat": null,
        "value": 1,
-       "target": "attacked"
+       "target": null
       }
      ]
     },
@@ -13516,7 +13526,7 @@
        "status": "weak",
        "stat": null,
        "value": 1,
-       "target": "attacked"
+       "target": null
       }
      ]
     },
@@ -13601,14 +13611,14 @@
        "status": null,
        "stat": "strength",
        "value": 2,
-       "target": "allEnemies"
+       "target": "allies within N hexes"
       },
       {
        "effect": "grant a stat for the Battle",
        "status": null,
        "stat": "precision",
        "value": 1,
-       "target": "allEnemies"
+       "target": "allies within N hexes"
       }
      ]
     },
@@ -13846,7 +13856,7 @@
        "status": "poison",
        "stat": null,
        "value": 1,
-       "target": "attacked"
+       "target": null
       }
      ]
     },
@@ -13862,7 +13872,7 @@
        "status": null,
        "stat": "strength",
        "value": 1,
-       "target": "sameRowEnemies"
+       "target": "allies within N hexes"
       }
      ]
     }
@@ -13934,7 +13944,7 @@
        "status": "burn",
        "stat": null,
        "value": 1,
-       "target": "attacked"
+       "target": null
       }
      ]
     }
@@ -14014,7 +14024,7 @@
        "status": null,
        "stat": null,
        "value": 6,
-       "target": "lowestHealthEnemy"
+       "target": "one ally within N hexes"
       }
      ]
     }
@@ -14162,7 +14172,7 @@
        "status": null,
        "stat": "precision",
        "value": 1,
-       "target": "allEnemies"
+       "target": "allies within N hexes"
       }
      ]
     },
@@ -14178,7 +14188,7 @@
        "status": null,
        "stat": null,
        "value": 5,
-       "target": "lowestHealthEnemy"
+       "target": "one ally within N hexes"
       }
      ]
     }
@@ -14248,7 +14258,7 @@
        "status": "poison",
        "stat": null,
        "value": 2,
-       "target": "attacked"
+       "target": null
       }
      ]
     },
@@ -14265,7 +14275,7 @@
        "status": "weak",
        "stat": null,
        "value": 2,
-       "target": "attacked"
+       "target": null
       }
      ]
     },
@@ -14350,7 +14360,7 @@
        "status": "weak",
        "stat": null,
        "value": 1,
-       "target": "attacked"
+       "target": null
       }
      ]
     }
@@ -14421,7 +14431,7 @@
        "status": "poison",
        "stat": null,
        "value": 2,
-       "target": "attacked"
+       "target": null
       }
      ]
     }
@@ -14493,7 +14503,7 @@
        "status": "weak",
        "stat": null,
        "value": 2,
-       "target": "attacked"
+       "target": null
       }
      ]
     },
@@ -14677,7 +14687,7 @@
        "status": "protection",
        "stat": null,
        "value": 4,
-       "target": "allEnemies"
+       "target": "allies within N hexes"
       }
      ]
     }
@@ -14748,7 +14758,7 @@
        "status": null,
        "stat": null,
        "value": 7,
-       "target": "lowestHealthEnemy"
+       "target": "one ally within N hexes"
       }
      ]
     },
@@ -14764,14 +14774,14 @@
        "status": null,
        "stat": "strength",
        "value": 1,
-       "target": "allEnemies"
+       "target": "allies within N hexes"
       },
       {
        "effect": "grant a stat for the Battle",
        "status": null,
        "stat": "precision",
        "value": 1,
-       "target": "allEnemies"
+       "target": "allies within N hexes"
       }
      ]
     }
@@ -14840,7 +14850,7 @@
        "status": "weak",
        "stat": null,
        "value": 1,
-       "target": "attacked"
+       "target": null
       }
      ]
     }
@@ -14993,7 +15003,7 @@
        "status": null,
        "stat": "strength",
        "value": 1,
-       "target": "sameRowEnemies"
+       "target": "allies within N hexes"
       }
      ]
     }
@@ -15064,14 +15074,14 @@
        "status": null,
        "stat": "strength",
        "value": 2,
-       "target": "allEnemies"
+       "target": "allies within N hexes"
       },
       {
        "effect": "grant a stat for the Battle",
        "status": null,
        "stat": "precision",
        "value": 2,
-       "target": "allEnemies"
+       "target": "allies within N hexes"
       }
      ]
     },
@@ -15087,7 +15097,7 @@
        "status": null,
        "stat": "armor",
        "value": 2,
-       "target": "allEnemies"
+       "target": "allies within N hexes"
       }
      ]
     }
@@ -15161,32 +15171,33 @@
      "damageType": "magic",
      "damage": null,
      "effects": []
-    },
-    {
-     "id": "attack.white-bone-demon.dread-presence",
-     "name": "Dread Presence",
-     "kind": "buff",
-     "targets": "self",
-     "damageType": null,
-     "effects": [
-      {
-       "effect": "grant an aura",
-       "status": null,
-       "stat": null,
-       "value": null,
-       "target": null
-      }
-     ]
     }
    ],
-   "triggers": [],
+   "triggers": [
+    {
+     "name": "Dread Presence",
+     "hook": "aura",
+     "targets": "enemies within N hexes",
+     "range": 2,
+     "effects": [
+      {
+       "effect": "deal MAGIC damage",
+       "value": 2
+      }
+     ],
+     "authored": true,
+     "reauthored": true
+    }
+   ],
    "art": "../assets/cards/enemies/white-bone-demon.png",
    "campaign": null,
    "encounters": [],
    "curated": false,
    "backstory": "A towering skeletal titan from ancient myth, corrupted by demonic influence. It grows stronger every moment — dodging more attacks, hitting harder, and making the very air lethal to new arrivals. Kill it fast or watch your options disappear.",
    "quote": "I am the mountain of bones. You are another stone.",
-   "notes": [],
+   "notes": [
+    "Re-authored 2026-08-21: its source ability used onEnter timing, which HoBaT does not have.  Now a spatial aura."
+   ],
    "source": "hell-tcg data/enemyCards.js, extracted 2026-08-21. Stats and abilities are ported, not authored."
   },
   {
@@ -15333,14 +15344,14 @@
        "status": null,
        "stat": "strength",
        "value": 1,
-       "target": "allEnemies"
+       "target": "allies within N hexes"
       },
       {
        "effect": "grant a stat for the Battle",
        "status": null,
        "stat": "precision",
        "value": 1,
-       "target": "allEnemies"
+       "target": "allies within N hexes"
       }
      ]
     }
@@ -15420,7 +15431,7 @@
        "status": "burn",
        "stat": null,
        "value": 2,
-       "target": "attacked"
+       "target": null
       }
      ]
     }
@@ -15490,7 +15501,7 @@
        "status": null,
        "stat": "precision",
        "value": 1,
-       "target": "allEnemies"
+       "target": "allies within N hexes"
       }
      ]
     },
@@ -15506,7 +15517,7 @@
        "status": null,
        "stat": null,
        "value": 7,
-       "target": "lowestHealthEnemy"
+       "target": "one ally within N hexes"
       }
      ]
     }
@@ -15578,7 +15589,7 @@
        "status": "weak",
        "stat": null,
        "value": 2,
-       "target": "attacked"
+       "target": null
       }
      ]
     },
@@ -15673,7 +15684,7 @@
        "status": "poison",
        "stat": null,
        "value": 2,
-       "target": "attacked"
+       "target": null
       }
      ]
     }
@@ -15760,7 +15771,7 @@
        "status": "weak",
        "stat": null,
        "value": 2,
-       "target": "allHeroes"
+       "target": "enemies within N hexes"
       }
      ]
     }
@@ -15919,7 +15930,7 @@
        "status": "poison",
        "stat": null,
        "value": 1,
-       "target": "attacked"
+       "target": null
       }
      ]
     }
@@ -15989,7 +16000,7 @@
        "status": null,
        "stat": null,
        "value": 5,
-       "target": "lowestHealthEnemy"
+       "target": "one ally within N hexes"
       }
      ]
     },
@@ -16005,7 +16016,7 @@
        "status": null,
        "stat": "precision",
        "value": 1,
-       "target": "allEnemies"
+       "target": "allies within N hexes"
       }
      ]
     }
@@ -16085,7 +16096,7 @@
        "status": null,
        "stat": "armor",
        "value": 2,
-       "target": "allEnemies"
+       "target": "allies within N hexes"
       }
      ]
     }
@@ -16390,14 +16401,14 @@
        "status": null,
        "stat": "strength",
        "value": 2,
-       "target": "allEnemies"
+       "target": "allies within N hexes"
       },
       {
        "effect": "grant a stat for the Battle",
        "status": null,
        "stat": "precision",
        "value": 2,
-       "target": "allEnemies"
+       "target": "allies within N hexes"
       }
      ]
     },
@@ -16473,7 +16484,7 @@
        "status": null,
        "stat": null,
        "value": 7,
-       "target": "lowestHealthEnemy"
+       "target": "one ally within N hexes"
       }
      ]
     },
@@ -16490,7 +16501,7 @@
        "status": "weak",
        "stat": null,
        "value": 2,
-       "target": "attacked"
+       "target": null
       }
      ]
     }
@@ -16659,7 +16670,7 @@
        "status": "weak",
        "stat": null,
        "value": 3,
-       "target": "attacked"
+       "target": null
       }
      ]
     }
@@ -16729,7 +16740,7 @@
        "status": null,
        "stat": null,
        "value": 8,
-       "target": "lowestHealthEnemy"
+       "target": "one ally within N hexes"
       }
      ]
     },
@@ -16745,7 +16756,7 @@
        "status": null,
        "stat": "precision",
        "value": 2,
-       "target": "allEnemies"
+       "target": "allies within N hexes"
       }
      ]
     }
@@ -16965,14 +16976,14 @@
        "status": null,
        "stat": "strength",
        "value": 2,
-       "target": "allEnemies"
+       "target": "allies within N hexes"
       },
       {
        "effect": "grant a stat for the Battle",
        "status": null,
        "stat": "precision",
        "value": 1,
-       "target": "allEnemies"
+       "target": "allies within N hexes"
       }
      ]
     }
@@ -17059,7 +17070,7 @@
        "status": "weak",
        "stat": null,
        "value": 2,
-       "target": "allHeroes"
+       "target": "enemies within N hexes"
       }
      ]
     }
@@ -17127,7 +17138,7 @@
        "status": null,
        "stat": null,
        "value": 5,
-       "target": "lowestHealthEnemy"
+       "target": "one ally within N hexes"
       }
      ]
     }
@@ -17175,64 +17186,62 @@
     ],
     "movement": "bulwark — it is there to be hit, not to hit"
    },
-   "attacks": [
+   "attacks": [],
+   "triggers": [
     {
-     "id": "attack.diyu-gate.spectral-torrent",
      "name": "Spectral Torrent",
-     "kind": "buff",
-     "targets": "self",
-     "damageType": null,
+     "hook": "aura",
+     "targets": "enemies within N hexes",
+     "range": 2,
      "effects": [
       {
-       "effect": "grant an aura",
-       "status": null,
-       "stat": null,
-       "value": null,
-       "target": null
+       "effect": "deal MAGIC damage",
+       "value": 2
       }
-     ]
+     ],
+     "authored": true,
+     "reauthored": true
     },
     {
-     "id": "attack.diyu-gate.death-resonance",
      "name": "Death Resonance",
-     "kind": "buff",
-     "targets": "self",
-     "damageType": null,
+     "hook": "aura",
+     "targets": "enemies within N hexes",
+     "range": 2,
      "effects": [
       {
-       "effect": "grant an aura",
-       "status": null,
-       "stat": null,
-       "value": null,
-       "target": null
+       "effect": "apply a status",
+       "status": "burn",
+       "value": 2
       }
-     ]
+     ],
+     "authored": true,
+     "reauthored": true
     },
     {
-     "id": "attack.diyu-gate.gate-pulse",
      "name": "Gate Pulse",
-     "kind": "buff",
-     "targets": "self",
-     "damageType": null,
+     "hook": "aura",
+     "targets": "enemies within N hexes",
+     "range": 2,
      "effects": [
       {
-       "effect": "grant an aura",
-       "status": null,
-       "stat": null,
-       "value": null,
-       "target": null
+       "effect": "apply a status",
+       "status": "weak",
+       "value": 1
       }
-     ]
+     ],
+     "authored": true,
+     "reauthored": true
     }
    ],
-   "triggers": [],
    "art": "../assets/cards/enemies/diyu-gate.png",
    "campaign": null,
    "encounters": [],
    "curated": false,
    "backstory": "The Gate to Diyu -- the underworld -- has cracked open. It never attacks directly, but its aura-creating abilities make hero deployment increasingly suicidal as the fight progresses.",
    "quote": "The gate does not close. The gate has never closed.",
-   "notes": [],
+   "notes": [
+    "Re-authored 2026-08-21: its source ability used onEnter timing, which HoBaT does not have.  Now a spatial aura."
+   ],
    "source": "hell-tcg data/enemyCards.js, extracted 2026-08-21. Stats and abilities are ported, not authored."
   },
   {
@@ -17297,7 +17306,7 @@
        "status": null,
        "stat": "strength",
        "value": 2,
-       "target": "allEnemies"
+       "target": "allies within N hexes"
       }
      ]
     }
@@ -17368,7 +17377,7 @@
        "status": "weak",
        "stat": null,
        "value": 1,
-       "target": "attacked"
+       "target": null
       }
      ]
     }
@@ -17454,7 +17463,7 @@
        "status": null,
        "stat": null,
        "value": 4,
-       "target": "allEnemies"
+       "target": "allies within N hexes"
       }
      ]
     }
@@ -17523,7 +17532,7 @@
        "status": "weak",
        "stat": null,
        "value": 1,
-       "target": "attacked"
+       "target": null
       }
      ]
     }
@@ -17592,22 +17601,6 @@
      "effects": []
     },
     {
-     "id": "attack.the-dragon-emperor.jade-roar",
-     "name": "Jade Roar",
-     "kind": "buff",
-     "targets": "self",
-     "damageType": null,
-     "effects": [
-      {
-       "effect": "grant an aura",
-       "status": null,
-       "stat": null,
-       "value": null,
-       "target": null
-      }
-     ]
-    },
-    {
      "id": "attack.the-dragon-emperor.devouring-bite",
      "name": "Devouring Bite",
      "kind": "attack",
@@ -17625,14 +17618,31 @@
      ]
     }
    ],
-   "triggers": [],
+   "triggers": [
+    {
+     "name": "Jade Roar",
+     "hook": "aura",
+     "targets": "enemies within N hexes",
+     "range": 3,
+     "effects": [
+      {
+       "effect": "deal MAGIC damage",
+       "value": 2
+      }
+     ],
+     "authored": true,
+     "reauthored": true
+    }
+   ],
    "art": "../assets/cards/enemies/the-dragon-emperor.png",
    "campaign": null,
    "encounters": [],
    "curated": false,
    "backstory": "A corrupted jade dragon emperor -- once a guardian of the celestial realm, now twisted by infernal corruption. It combines Power-scaled attacks, aura creation, and a devastating spell deck. The climactic boss of the Skyship campaign.",
    "quote": "I was a guardian once. Now I consume.",
-   "notes": [],
+   "notes": [
+    "Re-authored 2026-08-21: its source ability used onEnter timing, which HoBaT does not have.  Now a spatial aura."
+   ],
    "source": "hell-tcg data/enemyCards.js, extracted 2026-08-21. Stats and abilities are ported, not authored."
   },
   {
@@ -17704,7 +17714,7 @@
        "status": null,
        "stat": "armor",
        "value": 2,
-       "target": "allEnemies"
+       "target": "allies within N hexes"
       }
      ]
     }
@@ -17773,42 +17783,48 @@
        "status": null,
        "stat": "strength",
        "value": 2,
-       "target": "allEnemies"
+       "target": "allies within N hexes"
       },
       {
        "effect": "grant a stat for the Battle",
        "status": null,
        "stat": "precision",
        "value": 2,
-       "target": "allEnemies"
-      }
-     ]
-    },
-    {
-     "id": "attack.the-demon-king.throne-s-aura",
-     "name": "Throne's Aura",
-     "kind": "buff",
-     "targets": "self",
-     "damageType": null,
-     "effects": [
-      {
-       "effect": "grant an aura",
-       "status": null,
-       "stat": null,
-       "value": null,
-       "target": null
+       "target": "allies within N hexes"
       }
      ]
     }
    ],
-   "triggers": [],
+   "triggers": [
+    {
+     "name": "Throne's Corruption",
+     "hook": "aura",
+     "targets": "enemies within N hexes",
+     "range": 3,
+     "effects": [
+      {
+       "effect": "deal MAGIC damage",
+       "value": 3
+      },
+      {
+       "effect": "apply a status",
+       "status": "burn",
+       "value": 2
+      }
+     ],
+     "authored": true,
+     "reauthored": true
+    }
+   ],
    "art": "../assets/cards/enemies/the-demon-king.png",
    "campaign": null,
    "encounters": [],
    "curated": false,
    "backstory": "The Demon King sits upon its infernal throne, flanked by its most powerful lieutenants. It never attacks directly -- its threat is Power generation, aura creation, and its devastating spell deck. The final enemy of the entire game.",
    "quote": "I am the end of all things.",
-   "notes": [],
+   "notes": [
+    "Re-authored 2026-08-21: its source ability used onEnter timing, which HoBaT does not have.  Now a spatial aura."
+   ],
    "source": "hell-tcg data/enemyCards.js, extracted 2026-08-21. Stats and abilities are ported, not authored."
   },
   {
@@ -17873,7 +17889,7 @@
        "status": null,
        "stat": "strength",
        "value": 2,
-       "target": "allEnemies"
+       "target": "allies within N hexes"
       }
      ]
     }
@@ -17943,7 +17959,7 @@
        "status": "protection",
        "stat": null,
        "value": 3,
-       "target": "allEnemies"
+       "target": "allies within N hexes"
       }
      ]
     },
@@ -17959,7 +17975,7 @@
        "status": null,
        "stat": null,
        "value": 4,
-       "target": "lowestHealthEnemy"
+       "target": "one ally within N hexes"
       }
      ]
     }
