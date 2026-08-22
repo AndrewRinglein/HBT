@@ -76,6 +76,10 @@ if(!settled.testCohort){
 // ---- what a filename suffix means, per art folder. R22 reads this.
 if(fs.existsSync(G+'art-conventions.json')) out.artConventions=R('art-conventions.json');
 
+// ---- the two REFERENTS. Not shapes: a shape says which hexes, a referent says "the one
+// this event was already about". audit R27 accepts them alongside the 24 shapes.
+if(fs.existsSync(G+'referents.json')) out.referents=R('referents.json').referents;
+
 // ---- the function list: the complete vocabulary content is allowed to use
 if(fs.existsSync(G+'functions.json')) out.functions=R('functions.json');
 { const known=new Set(out.classes.map(c=>c.id)); const hid=new Set();

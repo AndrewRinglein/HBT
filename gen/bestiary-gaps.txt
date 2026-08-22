@@ -1,47 +1,118 @@
+Soldier: 1 onEnter effect(s) dropped — onEnter was removed from the hook list 2026-08-15
 Zombie/Infectious Bite: applyBadge — badges on enemies — content/ has no enemy badge model
+Zombie: 1 onEnter effect(s) dropped — onEnter was removed from the hook list 2026-08-15
 Ghost/Possess: applyBadge — badges on enemies — content/ has no enemy badge model
+Lesser Demon: 1 onEnter effect(s) dropped — onEnter was removed from the hook list 2026-08-15
+Hellhound: doubleAttackIfMelee — re-author as an attack against "up to N enemies"
+Hellhound: fastAttack acts on arrival — onEnter, removed 2026-08-15
+Hellhound: attackOnEnter — onEnter, removed 2026-08-15
+Wolf: fastAttack acts on arrival — onEnter, removed 2026-08-15
+Wolf: attackOnEnter — onEnter, removed 2026-08-15
+Shadow Assassin: 1 onEnter effect(s) dropped — onEnter was removed from the hook list 2026-08-15
+Dark Priest: 1 onEnter effect(s) dropped — onEnter was removed from the hook list 2026-08-15
+Dark Mage: 1 onEnter effect(s) dropped — onEnter was removed from the hook list 2026-08-15
+Necromancer: 3 onEnter effect(s) dropped — onEnter was removed from the hook list 2026-08-15
 Vampire/Inflict Vampirism: applyBadge — badges on enemies — content/ has no enemy badge model
 Greater Werewolf/Spread the Curse: applyBadge — badges on enemies — content/ has no enemy badge model
+Demon Lieutenant: 1 onEnter effect(s) dropped — onEnter was removed from the hook list 2026-08-15
+Demon Lieutenant: doubleAttackIfMelee — re-author as an attack against "up to N enemies"
 Succubus/Soul Corruption: applyBadge — badges on enemies — content/ has no enemy badge model
+Spectral Knight: 1 onEnter effect(s) dropped — onEnter was removed from the hook list 2026-08-15
+Death Knight: 1 onEnter effect(s) dropped — onEnter was removed from the hook list 2026-08-15
+Bone Dragon: attacksAllInRow — ROWS do not exist on a hex board, needs re-authoring
+Lich: 2 onEnter effect(s) dropped — onEnter was removed from the hook list 2026-08-15
 Possessed Troll/Rotting Touch: applyBadge — badges on enemies — content/ has no enemy badge model
 Nightmare Twin/Inflict Madness: applyBadge — badges on enemies — content/ has no enemy badge model
+Demon Gremlin: transformEnemy — transformation CUT 2026-08-22, second forms may return as their own creatures
+Demon Gremlin: transforms into "Demon Brute" — transformation CUT 2026-08-22
 Fallen Rogue/Add Poison: grantTrigger — granting a trigger at runtime — not an effect content/ can express
+Fallen Rogue: 1 onEnter effect(s) dropped — onEnter was removed from the hook list 2026-08-15
+Fallen Ranger: 1 onEnter effect(s) dropped — onEnter was removed from the hook list 2026-08-15
+Fallen Priest: 1 onEnter effect(s) dropped — onEnter was removed from the hook list 2026-08-15
+Alpha Wolf: transformEnemy — transformation CUT 2026-08-22, second forms may return as their own creatures
+Alpha Wolf: transforms into "Alpha Werewolf" — transformation CUT 2026-08-22
+Bloodhound: fastAttack acts on arrival — onEnter, removed 2026-08-15
+Bloodhound: attackOnEnter — onEnter, removed 2026-08-15
 Vampire Thrallmaster/Inflict Vampirism: applyBadge — badges on enemies — content/ has no enemy badge model
+Necromantic Summoner/turnEnd: modifyPower — power scaling — no equivalent in the closed effect list
+Demon Gremlin Lord: transformEnemy — transformation CUT 2026-08-22, second forms may return as their own creatures
+Demon Gremlin Lord: transforms into "Demon Gremlin Overlord" — transformation CUT 2026-08-22
+Tomb Ghoul: 1 onEnter effect(s) dropped — onEnter was removed from the hook list 2026-08-15
+Dusk Hyena: 1 onEnter effect(s) dropped — onEnter was removed from the hook list 2026-08-15
+Dusk Hyena: 1 onEnter effect(s) dropped — onEnter was removed from the hook list 2026-08-15
+Sand Matriarch: 1 onEnter effect(s) dropped — onEnter was removed from the hook list 2026-08-15
 Mummified Priest/Empower: modifyPower — power scaling — no equivalent in the closed effect list
+Sand Wyrm/turnEnd: modifyPower — power scaling — no equivalent in the closed effect list
 Bone Ritualist/Ritual Chant: modifyPower — power scaling — no equivalent in the closed effect list
 Desert Mystic/Dark Ritual: modifyPower — power scaling — no equivalent in the closed effect list
 Doom Herald/Dark Empower: modifyPower — power scaling — no equivalent in the closed effect list
+Doom Herald/onDeath: createAura inside a trigger — onEnter timing, cut with the other 14
+The Haunt/turnEnd: modifyPower — power scaling — no equivalent in the closed effect list
+The Haunt/turnEnd: createAura inside a trigger — onEnter timing, cut with the other 14
 Alpha Dune Wolf/Lycanthropy Bite: applyBadge — badges on enemies — content/ has no enemy badge model
+Dormant Fiend: transformEnemy — transformation CUT 2026-08-22, second forms may return as their own creatures
+Dormant Fiend: transforms into "Awakened Fiend" — transformation CUT 2026-08-22
+Vengeful Spirit/onDeath: applyBadge — badges on enemies — content/ has no enemy badge model
 Desert Vampire/Blood Curse: applyBadge — badges on enemies — content/ has no enemy badge model
+The Nameless Horror: transformEnemy — transformation CUT 2026-08-22, second forms may return as their own creatures
+The Nameless Horror: transforms into "The Awakened Horror" — transformation CUT 2026-08-22
 Plague Carrier/Infectious Strike: applyBadge — badges on enemies — content/ has no enemy badge model
+The Sand King/turnEnd: modifyPower — power scaling — no equivalent in the closed effect list
 The Obelisk/Pulse: modifyPower — power scaling — no equivalent in the closed effect list
+The Obelisk/turnEnd: createAura inside a trigger — onEnter timing, cut with the other 14
 Bone Warden/Dark Attunement: modifyPower — power scaling — no equivalent in the closed effect list
+Obsidian Hulk/onDeath: createAura inside a trigger — onEnter timing, cut with the other 14
+Tomb Lich/turnEnd: modifyPower — power scaling — no equivalent in the closed effect list
+Abyssal Spawn/onDeath: modifyPower — power scaling — no equivalent in the closed effect list
 Infernal Warlord/Infernal Pact: applyBadge — badges on enemies — content/ has no enemy badge model
 Bound Phantom/Ritual Pulse: modifyPower — power scaling — no equivalent in the closed effect list
 The Defiler/Pulse of Corruption: modifyPower — power scaling — no equivalent in the closed effect list
 Tomb Ritualist/Ritual Chant: modifyPower — power scaling — no equivalent in the closed effect list
+Infernal Chrysalis: transformEnemy — transformation CUT 2026-08-22, second forms may return as their own creatures
+Infernal Chrysalis: transforms into "Hatched Fiend" — transformation CUT 2026-08-22
 Cursed Deacon/Empower: modifyPower — power scaling — no equivalent in the closed effect list
+Cinder Wraith/onDeath: createAura inside a trigger — onEnter timing, cut with the other 14
 Profane Pyrekeeper/Stoke the Flames: modifyPower — power scaling — no equivalent in the closed effect list
+Profane Pyrekeeper/onDeath: createAura inside a trigger — onEnter timing, cut with the other 14
 Blighted Deacon/Unholy Litany: modifyPower — power scaling — no equivalent in the closed effect list
 Blighted Deacon/Damned Blessing: modifyPower — power scaling — no equivalent in the closed effect list
 Yaoguai Warchief/Cursed Mauling: applyBadge — badges on enemies — content/ has no enemy badge model
+Abyssal Crawler: 1 onEnter effect(s) dropped — onEnter was removed from the hook list 2026-08-15
+Ironbound Fiend: transformEnemy — transformation CUT 2026-08-22, second forms may return as their own creatures
+Ironbound Fiend: transforms into "Unchained Fiend" — transformation CUT 2026-08-22
 Fiend Channeler/Dark Ritual: modifyPower — power scaling — no equivalent in the closed effect list
+Jade Lion: 1 onEnter effect(s) dropped — onEnter was removed from the hook list 2026-08-15
+Jade Lion: 1 onEnter effect(s) dropped — onEnter was removed from the hook list 2026-08-15
+Jade Empress Guardian: 1 onEnter effect(s) dropped — onEnter was removed from the hook list 2026-08-15
 Rot Priest/Corrupting Touch: applyBadge — badges on enemies — content/ has no enemy badge model
+Crimson Yaoguai/onTakingDamage: modifyPower — power scaling — no equivalent in the closed effect list
 Crimson Priestess/Ritual Chant: modifyPower — power scaling — no equivalent in the closed effect list
+Frost Empress/turnEnd: modifyPower — power scaling — no equivalent in the closed effect list
 Possessed Abbot/Possession Strike: applyBadge — badges on enemies — content/ has no enemy badge model
+White Bone Demon/turnEnd: modifyPower — power scaling — no equivalent in the closed effect list
+White Bone Demon/turnEnd: createAura inside a trigger — onEnter timing, cut with the other 14
 Flesh Stitcher/Thread of Agony: modifyPower — power scaling — no equivalent in the closed effect list
+Flesh Stitcher/onDeath: createAura inside a trigger — onEnter timing, cut with the other 14
 Abyssal Flesh Weaver/Blood Stitch: applyBadge — badges on enemies — content/ has no enemy badge model
 Jade Priest/Empower Jade: modifyPower — power scaling — no equivalent in the closed effect list
 Spider Demoness/Cursed Fang: applyBadge — badges on enemies — content/ has no enemy badge model
 Forge Tyrant/Hammer of the Forge: modifyPower — power scaling — no equivalent in the closed effect list
 Blood Lotus Elder/Blood Curse: applyBadge — badges on enemies — content/ has no enemy badge model
 The Rakshasa/Shapeless Dread: modifyPower — power scaling — no equivalent in the closed effect list
+The Rakshasa/turnEnd: modifyPower — power scaling — no equivalent in the closed effect list
 Crow Demon War-Master/Blood Harvest: modifyPower — power scaling — no equivalent in the closed effect list
+Cursed Crow-Soldier/onDeath: modifyPower — power scaling — no equivalent in the closed effect list
 Infernal Conjurer/Empower Convoy: modifyPower — power scaling — no equivalent in the closed effect list
+Jiangshi Revenant/onDeath: createAura inside a trigger — onEnter timing, cut with the other 14
 Crypt Elder/Rotting Embrace: applyBadge — badges on enemies — content/ has no enemy badge model
 The Asura/Meditate: modifyPower — power scaling — no equivalent in the closed effect list
+The Asura: transformEnemy — transformation CUT 2026-08-22, second forms may return as their own creatures
+The Asura: transforms into "The Awakened Asura" — transformation CUT 2026-08-22
 Shrine Attendant/Offering: modifyPower — power scaling — no equivalent in the closed effect list
 Diyu Gate/Spectral Torrent: modifyPower — power scaling — no equivalent in the closed effect list
+Diyu Specter/onDeath: createAura inside a trigger — onEnter timing, cut with the other 14
+Imp Delegate/onDeath: modifyPower — power scaling — no equivalent in the closed effect list
 The Dragon Emperor/Jade Roar: modifyPower — power scaling — no equivalent in the closed effect list
+The Dragon Emperor/turnEnd: modifyPower — power scaling — no equivalent in the closed effect list
 The Demon King/Channel Throne: modifyPower — power scaling — no equivalent in the closed effect list
 The Demon King/Infernal Edict: modifyPower — power scaling — no equivalent in the closed effect list

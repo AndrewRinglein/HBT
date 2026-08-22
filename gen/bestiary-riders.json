@@ -1,186 +1,760 @@
 {
   "note": "Riders for the 38 creatures that came out of hell-tcg with nothing but a bare attack. Nothing here is invented: every rider is read off the creature's own name or its ability's name. A thing called Explosive Mite explodes; Soul Siphon drains; Wail frightens. Where the source already told us what the creature does and simply had no mechanism attached, this is the mechanism. Five are deliberately left bare and listed under baselines — a bestiary needs plain enemies to make the rest read as special. Every effect verb, status, hook and shape here comes from the closed vocabulary in gen/functions.json; anything that needed a word the engine does not have went to CONTENT-GAPS instead. All values soft — a sweep prices them.",
-
   "baselines": {
     "note": "Left bare ON PURPOSE. These are the plain ones. If everything has a rider then nothing does, and the player never gets a turn where the read is simply 'it hits me'.",
-    "units": ["unit.skeletal-archer", "unit.skeleton", "unit.weak-zombie", "unit.basic-imp", "unit.demon-gremlin"]
+    "units": [
+      "unit.skeletal-archer",
+      "unit.skeleton",
+      "unit.weak-zombie",
+      "unit.basic-imp",
+      "unit.demon-gremlin"
+    ]
   },
-
   "reauthored": {
     "note": "The 14 createAura abilities in hell-tcg are not spatial auras at all: every one fires on auraTarget heroOnEnter or enemyOnEnter — WHEN A UNIT ARRIVES ON THE BOARD — and the nested target 'self' means the arriving unit, not the aura's owner. HoBaT has no onEnter hook and no mid-battle arrival, so that timing was ruled not relevant to the new game structure (2026-08-21) and these are re-authored as what they look like from the table: a dangerous thing you should not stand next to. The port had been silently DROPPING the nested payload, so all 14 were empty objects — nine of them on rank-3 bosses, including the Demon King's signature. Each becomes an `aura` trigger, which is in the vocabulary, and the attack row it came from is dropped because an aura is not an action you take.",
     "units": {
-      "unit.the-haunt": { "drop": ["Cursed Presence"], "triggers": [
-        { "name": "Cursed Presence", "hook": "aura", "targets": "enemies within N hexes", "range": 1,
-          "effects": [ { "effect": "deal MAGIC damage", "value": 1 } ] } ] },
-
-      "unit.the-defiler": { "drop": ["Pulse of Corruption", "Wave of Corruption"], "triggers": [
-        { "name": "Pulse of Corruption", "hook": "aura", "targets": "enemies within N hexes", "range": 2,
-          "effects": [ { "effect": "deal MAGIC damage", "value": 1 } ] },
-        { "name": "Wave of Corruption", "hook": "aura", "targets": "enemies within N hexes", "range": 2,
-          "effects": [ { "effect": "apply a status", "status": "weak", "value": 1 } ] } ] },
-
-      "unit.tomb-ritualist": { "drop": ["Ritual Chant"], "triggers": [
-        { "name": "Ritual Chant", "hook": "aura", "targets": "enemies within N hexes", "range": 1,
-          "effects": [ { "effect": "deal MAGIC damage", "value": 1 } ] } ] },
-
-      "unit.white-bone-demon": { "drop": ["Dread Presence"], "triggers": [
-        { "name": "Dread Presence", "hook": "aura", "targets": "enemies within N hexes", "range": 2,
-          "effects": [ { "effect": "deal MAGIC damage", "value": 2 } ] } ] },
-
-      "unit.diyu-gate": { "drop": ["Spectral Torrent", "Death Resonance", "Gate Pulse"], "triggers": [
-        { "name": "Spectral Torrent", "hook": "aura", "targets": "enemies within N hexes", "range": 2,
-          "effects": [ { "effect": "deal MAGIC damage", "value": 2 } ] },
-        { "name": "Death Resonance", "hook": "aura", "targets": "enemies within N hexes", "range": 2,
-          "effects": [ { "effect": "apply a status", "status": "burn", "value": 2 } ] },
-        { "name": "Gate Pulse", "hook": "aura", "targets": "enemies within N hexes", "range": 2,
-          "effects": [ { "effect": "apply a status", "status": "weak", "value": 1 } ] } ] },
-
-      "unit.the-dragon-emperor": { "drop": ["Jade Roar"], "triggers": [
-        { "name": "Jade Roar", "hook": "aura", "targets": "enemies within N hexes", "range": 3,
-          "effects": [ { "effect": "deal MAGIC damage", "value": 2 } ] } ] },
-
-      "unit.the-demon-king": { "drop": ["Throne's Aura"], "triggers": [
-        { "name": "Throne's Corruption", "hook": "aura", "targets": "enemies within N hexes", "range": 3,
-          "effects": [ { "effect": "deal MAGIC damage", "value": 3 },
-                       { "effect": "apply a status", "status": "burn", "value": 2 } ] } ] },
-
-      "unit.werewolf-lord": { "drop": ["Fierce Call"], "triggers": [
-        { "name": "Fierce Call", "hook": "aura", "targets": "allies within N hexes", "range": 2,
-          "effects": [ { "effect": "grant a stat for the Battle", "stat": "strength", "value": 2 },
-                       { "effect": "grant a stat for the Battle", "stat": "health", "value": 2 } ] } ] },
-
-      "unit.sand-conjurer": { "drop": ["Empower Army", "Shield Enchantment"], "triggers": [
-        { "name": "Empowered Army", "hook": "aura", "targets": "allies within N hexes", "range": 2,
-          "effects": [ { "effect": "grant a stat for the Battle", "stat": "strength", "value": 1 } ] },
-        { "name": "Shielded Army", "hook": "aura", "targets": "allies within N hexes", "range": 2,
-          "effects": [ { "effect": "grant a stat for the Battle", "stat": "armor", "value": 1 } ] } ] },
-
-      "unit.the-sand-king": { "drop": ["Fortify"], "triggers": [
-        { "name": "Sand Fortress", "hook": "aura", "targets": "allies within N hexes", "range": 3,
-          "effects": [ { "effect": "grant a stat for the Battle", "stat": "armor", "value": 1 } ] } ] }
+      "unit.the-haunt": {
+        "drop": [
+          "Cursed Presence"
+        ],
+        "triggers": [
+          {
+            "name": "Cursed Presence",
+            "hook": "aura",
+            "targets": "enemies within N hexes",
+            "range": 1,
+            "effects": [
+              {
+                "effect": "deal MAGIC damage",
+                "value": 1
+              }
+            ]
+          }
+        ]
+      },
+      "unit.the-defiler": {
+        "drop": [
+          "Pulse of Corruption",
+          "Wave of Corruption"
+        ],
+        "triggers": [
+          {
+            "name": "Pulse of Corruption",
+            "hook": "aura",
+            "targets": "enemies within N hexes",
+            "range": 2,
+            "effects": [
+              {
+                "effect": "deal MAGIC damage",
+                "value": 1
+              }
+            ]
+          },
+          {
+            "name": "Wave of Corruption",
+            "hook": "aura",
+            "targets": "enemies within N hexes",
+            "range": 2,
+            "effects": [
+              {
+                "effect": "apply a status",
+                "status": "weak",
+                "value": 1
+              }
+            ]
+          }
+        ]
+      },
+      "unit.tomb-ritualist": {
+        "drop": [
+          "Ritual Chant"
+        ],
+        "triggers": [
+          {
+            "name": "Ritual Chant",
+            "hook": "aura",
+            "targets": "enemies within N hexes",
+            "range": 1,
+            "effects": [
+              {
+                "effect": "deal MAGIC damage",
+                "value": 1
+              }
+            ]
+          }
+        ]
+      },
+      "unit.white-bone-demon": {
+        "drop": [
+          "Dread Presence"
+        ],
+        "triggers": [
+          {
+            "name": "Dread Presence",
+            "hook": "aura",
+            "targets": "enemies within N hexes",
+            "range": 2,
+            "effects": [
+              {
+                "effect": "deal MAGIC damage",
+                "value": 2
+              }
+            ]
+          }
+        ]
+      },
+      "unit.diyu-gate": {
+        "drop": [
+          "Spectral Torrent",
+          "Death Resonance",
+          "Gate Pulse"
+        ],
+        "triggers": [
+          {
+            "name": "Spectral Torrent",
+            "hook": "aura",
+            "targets": "enemies within N hexes",
+            "range": 2,
+            "effects": [
+              {
+                "effect": "deal MAGIC damage",
+                "value": 2
+              }
+            ]
+          },
+          {
+            "name": "Death Resonance",
+            "hook": "aura",
+            "targets": "enemies within N hexes",
+            "range": 2,
+            "effects": [
+              {
+                "effect": "apply a status",
+                "status": "burn",
+                "value": 2
+              }
+            ]
+          },
+          {
+            "name": "Gate Pulse",
+            "hook": "aura",
+            "targets": "enemies within N hexes",
+            "range": 2,
+            "effects": [
+              {
+                "effect": "apply a status",
+                "status": "weak",
+                "value": 1
+              }
+            ]
+          }
+        ]
+      },
+      "unit.the-dragon-emperor": {
+        "drop": [
+          "Jade Roar"
+        ],
+        "triggers": [
+          {
+            "name": "Jade Roar",
+            "hook": "aura",
+            "targets": "enemies within N hexes",
+            "range": 3,
+            "effects": [
+              {
+                "effect": "deal MAGIC damage",
+                "value": 2
+              }
+            ]
+          }
+        ]
+      },
+      "unit.the-demon-king": {
+        "drop": [
+          "Throne's Aura"
+        ],
+        "triggers": [
+          {
+            "name": "Throne's Corruption",
+            "hook": "aura",
+            "targets": "enemies within N hexes",
+            "range": 3,
+            "effects": [
+              {
+                "effect": "deal MAGIC damage",
+                "value": 3
+              },
+              {
+                "effect": "apply a status",
+                "status": "burn",
+                "value": 2
+              }
+            ]
+          }
+        ]
+      },
+      "unit.werewolf-lord": {
+        "drop": [
+          "Fierce Call"
+        ],
+        "triggers": [
+          {
+            "name": "Fierce Call",
+            "hook": "aura",
+            "targets": "allies within N hexes",
+            "range": 2,
+            "effects": [
+              {
+                "effect": "grant a stat for the Battle",
+                "stat": "strength",
+                "value": 2
+              },
+              {
+                "effect": "grant a stat for the Battle",
+                "stat": "health",
+                "value": 2
+              }
+            ]
+          }
+        ]
+      },
+      "unit.sand-conjurer": {
+        "drop": [
+          "Empower Army",
+          "Shield Enchantment"
+        ],
+        "triggers": [
+          {
+            "name": "Empowered Army",
+            "hook": "aura",
+            "targets": "allies within N hexes",
+            "range": 2,
+            "effects": [
+              {
+                "effect": "grant a stat for the Battle",
+                "stat": "strength",
+                "value": 1
+              }
+            ]
+          },
+          {
+            "name": "Shielded Army",
+            "hook": "aura",
+            "targets": "allies within N hexes",
+            "range": 2,
+            "effects": [
+              {
+                "effect": "grant a stat for the Battle",
+                "stat": "armor",
+                "value": 1
+              }
+            ]
+          }
+        ]
+      },
+      "unit.the-sand-king": {
+        "drop": [
+          "Fortify"
+        ],
+        "triggers": [
+          {
+            "name": "Sand Fortress",
+            "hook": "aura",
+            "targets": "allies within N hexes",
+            "range": 3,
+            "effects": [
+              {
+                "effect": "grant a stat for the Battle",
+                "stat": "armor",
+                "value": 1
+              }
+            ]
+          }
+        ]
+      }
     }
   },
-
   "units": {
-    "unit.abyssal-spawn": { "why": "Soul Siphon takes something from you and keeps it.",
-      "attacks": { "Soul Siphon": [ { "effect": "heal", "value": 2, "target": "self" } ] } },
-
-    "unit.cursed-archer": { "why": "The arrow is cursed, not merely sharp.",
-      "attacks": { "Cursed Arrow": [ { "effect": "apply a status", "status": "weak", "value": 1 } ] } },
-
-    "unit.fallen-ranger": { "why": "A Piercing Shot that armour stops is not piercing anything.",
-      "attacks": { "Piercing Shot": [ { "effect": "deal TRUE damage", "value": 2 } ] } },
-
-    "unit.hellfire-channeler": { "why": "Hellfire burns. Chain Fire burns more things.",
+    "unit.abyssal-spawn": {
+      "why": "Soul Siphon takes something from you and keeps it.",
       "attacks": {
-        "Hellfire Bolt": [ { "effect": "apply a status", "status": "burn", "value": 2 } ],
-        "Chain Fire": [ { "effect": "apply a status", "status": "burn", "value": 1 } ] } },
-
-    "unit.infernal-marksman": { "why": "Hellfire Arrow — same reasoning.",
-      "attacks": { "Hellfire Arrow": [ { "effect": "apply a status", "status": "burn", "value": 2 } ] } },
-
-    "unit.sand-wyrm": { "why": "It burrows and it quakes. Both are movement words, and it had neither.",
+        "Soul Siphon": [
+          {
+            "effect": "heal",
+            "value": 2,
+            "target": "self"
+          }
+        ]
+      }
+    },
+    "unit.cursed-archer": {
+      "why": "The arrow is cursed, not merely sharp.",
       "attacks": {
-        "Burrow Strike": [ { "effect": "move WITHOUT provoking", "value": 2, "target": "self" } ],
-        "Quake": [ { "effect": "Knockback N", "value": 1 } ] } },
-
-    "unit.tomb-stalker": { "why": "Precision 16 and an ability called Death Strike. It is an executioner, so it gets the executioner's effect rather than a bigger number.",
-      "attacks": { "Death Strike": [ { "effect": "slayer bonus", "value": 3 } ] } },
-
-    "unit.bone-barricade": { "why": "A Wall with no attack at all — correctly, it is scenery. But it is scenery made of bone, and breaking it should cost something.",
-      "triggers": [ { "hook": "passive", "targets": "self", "effects": [ { "effect": "Thorns N", "value": 1 } ] } ] },
-
-    "unit.corrupted-cultist": { "why": "Magic Strike was dealing weapon damage.",
-      "attacks": { "Magic Strike": [ { "effect": "deal MAGIC damage", "value": 2 } ] } },
-
-    "unit.fallen-priest": { "why": "A priest, even a fallen one, is in the back keeping other things standing. Its whole point was missing.",
-      "triggers": [ { "hook": "aura", "targets": "allies within N hexes", "range": 2,
-        "effects": [ { "effect": "apply a status", "status": "regeneration", "value": 1 } ] } ] },
-
-    "unit.tomb-lich": { "why": "A rank-3 boss that arrived with two bolts and no reason to fear it. The threat is what it does to you, which is the whole reason its accuracy is only 91.",
+        "Cursed Arrow": [
+          {
+            "effect": "apply a status",
+            "status": "weak",
+            "value": 1
+          }
+        ]
+      }
+    },
+    "unit.fallen-ranger": {
+      "why": "A Piercing Shot that armour stops is not piercing anything.",
       "attacks": {
-        "Necrotic Bolt": [ { "effect": "apply a status", "status": "weak", "value": 2 } ],
-        "Death Gaze": [ { "effect": "apply a status", "status": "stun", "value": 1 } ] } },
-
-    "unit.tomb-sorcerer": { "why": "Chain Curse curses a chain of things.",
-      "attacks": { "Chain Curse": [ { "effect": "apply a status", "status": "weak", "value": 1 } ] } },
-
-    "unit.obsidian-hulk": { "why": "A Slam moves what it hits.",
-      "attacks": { "Obsidian Slam": [ { "effect": "Knockback N", "value": 1 } ] } },
-
-    "unit.possessed-abbot": { "why": "Grasp holds you; Possession takes you over.",
+        "Piercing Shot": [
+          {
+            "effect": "deal TRUE damage",
+            "value": 2
+          }
+        ]
+      }
+    },
+    "unit.hellfire-channeler": {
+      "why": "Hellfire burns. Chain Fire burns more things.",
       "attacks": {
-        "Demon's Grasp": [ { "effect": "apply a status", "status": "stun", "value": 1 } ],
-        "Possession Strike": [ { "effect": "apply a status", "status": "weak", "value": 2 } ] } },
-
-    "unit.bone-mantis": { "why": "Reaping Strike, precision 14. It opens you up.",
-      "attacks": { "Reaping Strike": [ { "effect": "apply a status", "status": "bleed", "value": 2 } ] } },
-
-    "unit.bone-weaver": { "why": "A lance of bone leaves a hole.",
-      "attacks": { "Bone Lance": [ { "effect": "apply a status", "status": "bleed", "value": 1 } ] } },
-
-    "unit.tomb-berserker": { "why": "Savage Blow.",
-      "attacks": { "Savage Blow": [ { "effect": "apply a status", "status": "bleed", "value": 2 } ] } },
-
-    "unit.vengeful-spirit": { "why": "A Wail is fear, and a spirit's touch does not care about armour.",
+        "Hellfire Bolt": [
+          {
+            "effect": "apply a status",
+            "status": "burn",
+            "value": 2
+          }
+        ],
+        "Chain Fire": [
+          {
+            "effect": "apply a status",
+            "status": "burn",
+            "value": 1
+          }
+        ]
+      }
+    },
+    "unit.infernal-marksman": {
+      "why": "Hellfire Arrow — same reasoning.",
       "attacks": {
-        "Spirit Touch": [ { "effect": "deal TRUE damage", "value": 2 } ],
-        "Wail": [ { "effect": "apply a status", "status": "weak", "value": 1 } ] } },
-
-    "unit.cursed-crow-soldier": { "why": "Feather Blade is a blade.",
-      "attacks": { "Feather Blade": [ { "effect": "apply a status", "status": "bleed", "value": 1 } ] } },
-
-    "unit.demon-gremlin-lord": { "why": "A rank-3 BOSS whose entire kit was the ability 'Attack'. It is a Lord — of gremlins — so it is worth fearing for what its swarm does while it is alive, not for its own swing.",
+        "Hellfire Arrow": [
+          {
+            "effect": "apply a status",
+            "status": "burn",
+            "value": 2
+          }
+        ]
+      }
+    },
+    "unit.sand-wyrm": {
+      "why": "It burrows and it quakes. Both are movement words, and it had neither.",
+      "attacks": {
+        "Burrow Strike": [
+          {
+            "effect": "move WITHOUT provoking",
+            "value": 2,
+            "target": "self"
+          }
+        ],
+        "Quake": [
+          {
+            "effect": "Knockback N",
+            "value": 1
+          }
+        ]
+      }
+    },
+    "unit.corrupted-cultist": {
+      "why": "Magic Strike was dealing weapon damage.",
+      "attacks": {
+        "Magic Strike": [
+          {
+            "effect": "deal MAGIC damage",
+            "value": 2
+          }
+        ]
+      }
+    },
+    "unit.tomb-lich": {
+      "why": "A rank-3 boss that arrived with two bolts and no reason to fear it. The threat is what it does to you, which is the whole reason its accuracy is only 91.",
+      "attacks": {
+        "Necrotic Bolt": [
+          {
+            "effect": "apply a status",
+            "status": "weak",
+            "value": 2
+          }
+        ],
+        "Death Gaze": [
+          {
+            "effect": "apply a status",
+            "status": "stun",
+            "value": 1
+          }
+        ]
+      }
+    },
+    "unit.tomb-sorcerer": {
+      "why": "Chain Curse curses a chain of things.",
+      "attacks": {
+        "Chain Curse": [
+          {
+            "effect": "apply a status",
+            "status": "weak",
+            "value": 1
+          }
+        ]
+      }
+    },
+    "unit.obsidian-hulk": {
+      "why": "A Slam moves what it hits.",
+      "attacks": {
+        "Obsidian Slam": [
+          {
+            "effect": "Knockback N",
+            "value": 1
+          }
+        ]
+      }
+    },
+    "unit.possessed-abbot": {
+      "why": "Grasp holds you; Possession takes you over.",
+      "attacks": {
+        "Demon's Grasp": [
+          {
+            "effect": "apply a status",
+            "status": "stun",
+            "value": 1
+          }
+        ],
+        "Possession Strike": [
+          {
+            "effect": "apply a status",
+            "status": "weak",
+            "value": 2
+          }
+        ]
+      }
+    },
+    "unit.bone-mantis": {
+      "why": "Reaping Strike, precision 14. It opens you up.",
+      "attacks": {
+        "Reaping Strike": [
+          {
+            "effect": "apply a status",
+            "status": "bleed",
+            "value": 2
+          }
+        ]
+      }
+    },
+    "unit.bone-weaver": {
+      "why": "A lance of bone leaves a hole.",
+      "attacks": {
+        "Bone Lance": [
+          {
+            "effect": "apply a status",
+            "status": "bleed",
+            "value": 1
+          }
+        ]
+      }
+    },
+    "unit.tomb-berserker": {
+      "why": "Savage Blow.",
+      "attacks": {
+        "Savage Blow": [
+          {
+            "effect": "apply a status",
+            "status": "bleed",
+            "value": 2
+          }
+        ]
+      }
+    },
+    "unit.vengeful-spirit": {
+      "why": "A Wail is fear, and a spirit's touch does not care about armour.",
+      "attacks": {
+        "Spirit Touch": [
+          {
+            "effect": "deal TRUE damage",
+            "value": 2
+          }
+        ],
+        "Wail": [
+          {
+            "effect": "apply a status",
+            "status": "weak",
+            "value": 1
+          }
+        ]
+      }
+    },
+    "unit.cursed-crow-soldier": {
+      "why": "Feather Blade is a blade.",
+      "attacks": {
+        "Feather Blade": [
+          {
+            "effect": "apply a status",
+            "status": "bleed",
+            "value": 1
+          }
+        ]
+      }
+    },
+    "unit.demon-gremlin-lord": {
+      "why": "A rank-3 BOSS whose entire kit was the ability 'Attack'. It is a Lord — of gremlins — so it is worth fearing for what its swarm does while it is alive, not for its own swing.",
       "triggers": [
-        { "hook": "aura", "targets": "allies within N hexes", "range": 2,
-          "effects": [ { "effect": "grant a stat for the Battle", "stat": "strength", "value": 1 } ] },
-        { "hook": "onKill", "targets": "self",
-          "effects": [ { "effect": "heal", "value": 3, "target": "self" } ] } ] },
-
-    "unit.flesh-stitcher": { "why": "A needle and a thread of agony.",
+        {
+          "hook": "aura",
+          "targets": "allies within N hexes",
+          "range": 2,
+          "effects": [
+            {
+              "effect": "grant a stat for the Battle",
+              "stat": "strength",
+              "value": 1
+            }
+          ]
+        },
+        {
+          "hook": "onKill",
+          "targets": "self",
+          "effects": [
+            {
+              "effect": "heal",
+              "value": 3,
+              "target": "self"
+            }
+          ]
+        }
+      ]
+    },
+    "unit.flesh-stitcher": {
+      "why": "A needle and a thread of agony.",
       "attacks": {
-        "Needle Strike": [ { "effect": "apply a status", "status": "poison", "value": 1 } ],
-        "Thread of Agony": [ { "effect": "apply a status", "status": "bleed", "value": 2 } ] } },
-
-    "unit.the-rakshasa": { "why": "Rank 3, 80 health, strength 0 and precision 0 — it has no physical attack at all, which is not a bug: Formless Pulse and Shapeless Dread are what it is. It needed the effects that make a body-less thing dangerous.",
+        "Needle Strike": [
+          {
+            "effect": "apply a status",
+            "status": "poison",
+            "value": 1
+          }
+        ],
+        "Thread of Agony": [
+          {
+            "effect": "apply a status",
+            "status": "bleed",
+            "value": 2
+          }
+        ]
+      }
+    },
+    "unit.the-rakshasa": {
+      "why": "Rank 3, 80 health, strength 0 and precision 0 — it has no physical attack at all, which is not a bug: Formless Pulse and Shapeless Dread are what it is. It needed the effects that make a body-less thing dangerous.",
       "attacks": {
-        "Formless Pulse": [ { "effect": "deal MAGIC damage", "value": 4 } ],
-        "Shapeless Dread": [ { "effect": "apply a status", "status": "weak", "value": 2 } ] } },
-
-    "unit.bloody-imp": { "why": "Rend.",
-      "attacks": { "Rend": [ { "effect": "apply a status", "status": "bleed", "value": 1 } ] } },
-
-    "unit.bone-mite": { "why": "It gnaws.",
-      "attacks": { "Swarm Attack": [ { "effect": "apply a status", "status": "bleed", "value": 1 } ] } },
-
-    "unit.explosive-mite": { "why": "It is called Explosive Mite and it did not explode. Killing it should be the dangerous part — the only creature here whose rider is on onDeath.",
-      "triggers": [ { "hook": "onDeath", "targets": "every enemy adjacent to you",
-        "effects": [ { "effect": "deal PHYSICAL damage", "value": 3 } ] } ] },
-
-    "unit.fire-mite": { "why": "Fire.",
-      "attacks": { "Attack": [ { "effect": "apply a status", "status": "burn", "value": 1 } ] } },
-
-    "unit.hellspawn-minion": { "why": "A Frenzied Lunge closes distance.",
-      "attacks": { "Frenzied Lunge": [ { "effect": "move WITHOUT provoking", "value": 2, "target": "self" } ] } },
-
-    "unit.lesser-demon": { "why": "A Pulse goes outward from it, not at one target.",
-      "attacks": { "Dark Pulse": [ { "effect": "deal MAGIC damage", "value": 2 } ] } },
-
-    "unit.plague-spawn": { "why": "Plague.",
-      "attacks": { "Attack": [ { "effect": "apply a status", "status": "poison", "value": 1 } ] } },
-
-    "unit.poison-mite": { "why": "Poison.",
-      "attacks": { "Attack": [ { "effect": "apply a status", "status": "poison", "value": 2 } ] } },
-
-    "unit.vampire-spawn": { "why": "Blood Frenzy — it feeds on what it kills.",
-      "attacks": { "Blood Frenzy": [ { "effect": "heal", "value": 3, "target": "self" } ] } },
-
-    "unit.weakness-mite": { "why": "Weakness.",
-      "attacks": { "Attack": [ { "effect": "apply a status", "status": "weak", "value": 1 } ] } },
-
-    "unit.doom-herald": { "why": "A Herald announces something worse. Dark Empower is the announcement.",
+        "Formless Pulse": [
+          {
+            "effect": "deal MAGIC damage",
+            "value": 4
+          }
+        ],
+        "Shapeless Dread": [
+          {
+            "effect": "apply a status",
+            "status": "weak",
+            "value": 2
+          }
+        ]
+      }
+    },
+    "unit.bone-mite": {
+      "why": "It gnaws.",
       "attacks": {
-        "Cursed Strike": [ { "effect": "apply a status", "status": "weak", "value": 1 } ],
-        "Dark Empower": [ { "effect": "grant a stat for the Battle", "stat": "strength", "value": 1 } ] } }
+        "Swarm Attack": [
+          {
+            "effect": "apply a status",
+            "status": "bleed",
+            "value": 1
+          }
+        ]
+      }
+    },
+    "unit.explosive-mite": {
+      "why": "Ruled: no such thing as damage to ADJACENT - the board speaks in hex radii. This one is a bomb and gets a 6-hex radius. The source aimed 14 at the attacker only; the value is soft and now covers a radius, so a sweep owns it.",
+      "triggers": [
+        {
+          "name": "Detonate",
+          "hook": "onDeath",
+          "targets": "enemies within N hexes",
+          "range": 6,
+          "effects": [
+            {
+              "effect": "deal PHYSICAL damage",
+              "value": 14
+            }
+          ]
+        }
+      ],
+      "dropPortedHooks": [
+        "onDeath"
+      ],
+      "dropPortedWhy": "the ruled 6-hex detonation IS the death effect - the source aimed the same 14 at the attacker alone"
+    },
+    "unit.fire-mite": {
+      "why": "Ruled: on attack burn 1, on taking damage burn 1. The source had onDeath burn 7 at the attacker; retaliation while it is ALIVE is the better read of a fire mite, and onTakingDamage is the hook for it.",
+      "attacks": {
+        "Attack": [
+          {
+            "effect": "apply a status",
+            "status": "burn",
+            "value": 1
+          }
+        ]
+      },
+      "triggers": [
+        {
+          "name": "Ember Backlash",
+          "hook": "onTakingDamage",
+          "targets": null,
+          "effects": [
+            {
+              "effect": "apply a status",
+              "status": "burn",
+              "value": 1,
+              "target": "the attacker"
+            }
+          ]
+        }
+      ],
+      "dropPortedHooks": [
+        "onDeath"
+      ],
+      "dropPortedWhy": "ruled as attack burn 1 + onTakingDamage burn 1; that is the whole mite, so the source onDeath burn 7 is superseded"
+    },
+    "unit.hellspawn-minion": {
+      "why": "A Frenzied Lunge closes distance.",
+      "attacks": {
+        "Frenzied Lunge": [
+          {
+            "effect": "move WITHOUT provoking",
+            "value": 2,
+            "target": "self"
+          }
+        ]
+      }
+    },
+    "unit.poison-mite": {
+      "why": "Ruled: on attack, poison too. Mirrors Fire Mite exactly - the mites are a family and read as one.",
+      "attacks": {
+        "Attack": [
+          {
+            "effect": "apply a status",
+            "status": "poison",
+            "value": 1
+          }
+        ]
+      },
+      "triggers": [
+        {
+          "name": "Venom Backlash",
+          "hook": "onTakingDamage",
+          "targets": null,
+          "effects": [
+            {
+              "effect": "apply a status",
+              "status": "poison",
+              "value": 1,
+              "target": "the attacker"
+            }
+          ]
+        }
+      ],
+      "dropPortedHooks": [
+        "onDeath"
+      ],
+      "dropPortedWhy": "same as Fire Mite - the family reads as one"
+    },
+    "unit.vampire-spawn": {
+      "why": "Blood Frenzy — it feeds on what it kills.",
+      "attacks": {
+        "Blood Frenzy": [
+          {
+            "effect": "heal",
+            "value": 3,
+            "target": "self"
+          }
+        ]
+      }
+    },
+    "unit.weakness-mite": {
+      "why": "Ruled: on attack weak 1, on death radius 3 weak 1. The death pulse is wider than the other mites because weakness spreads rather than burns.",
+      "attacks": {
+        "Attack": [
+          {
+            "effect": "apply a status",
+            "status": "weak",
+            "value": 1
+          }
+        ]
+      },
+      "triggers": [
+        {
+          "name": "Withering",
+          "hook": "onDeath",
+          "targets": "enemies within N hexes",
+          "range": 3,
+          "effects": [
+            {
+              "effect": "apply a status",
+              "status": "weak",
+              "value": 1
+            }
+          ]
+        }
+      ],
+      "dropPortedHooks": [
+        "onDeath"
+      ],
+      "dropPortedWhy": "ruled onDeath radius 3 weak 1, which replaces the source onDeath rather than stacking with it"
+    },
+    "unit.doom-herald": {
+      "why": "A Herald announces something worse. Dark Empower is the announcement.",
+      "attacks": {
+        "Cursed Strike": [
+          {
+            "effect": "apply a status",
+            "status": "weak",
+            "value": 1
+          }
+        ],
+        "Dark Empower": [
+          {
+            "effect": "grant a stat for the Battle",
+            "stat": "strength",
+            "value": 1
+          }
+        ]
+      }
+    }
+  },
+  "overrides": {
+    "note": "Patches to what the SOURCE gave a creature, where the source content is right but its shape or radius was not. Distinct from a rider (which adds) and from reauthored (which replaces): this edits a ported trigger in place. Ruled 2026-08-22.",
+    "units": {
+      "unit.fallen-priest": [
+        {
+          "hook": "onActivationEnd",
+          "why": "Ruled: heal allies 2 within 4. NOTE - regeneration and heal are NOT the same thing, so the aura of regeneration I had authored here was not a duplicate of this, it was a different mechanic. The source heal is what the priest does; my regeneration aura is dropped.",
+          "set": {
+            "targets": "allies within N hexes",
+            "range": 4
+          }
+        }
+      ],
+      "unit.bone-mite": [
+        {
+          "hook": "onDeath",
+          "why": "Ruled: +1 armor to ALL allies within radius 2, not to one ally. A mite that dies and hardens the swarm around it.",
+          "set": {
+            "targets": "allies within N hexes",
+            "range": 2
+          }
+        }
+      ]
+    }
   }
 }

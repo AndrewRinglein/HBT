@@ -21,14 +21,26 @@ const read = p => { try { return fs.readFileSync(p, 'utf8'); } catch { return ''
 
 // ---- category 2: everything the port could not say in the closed vocabulary
 const bestiaryGaps = read('gen/bestiary-gaps.txt').split('\n').filter(Boolean);
+// Group by REASON, so the report reads as "here are the things the engine cannot say" rather
+// than as a list of creatures. Two line shapes exist: "Who: verb — why" from a mapped action,
+// and "Who: prose — why" from a whole-card finding (transformation, onEnter). The first parser
+// only knew the former and dumped 43 real findings into an "unparsed" bucket, which is exactly
+// the kind of quiet miscategorisation that made CONTENT-GAPS worthless the first time.
 const byReason = new Map();
+const put = (key, who) => { if (!byReason.has(key)) byReason.set(key, []); byReason.get(key).push(who); };
 for (const line of bestiaryGaps) {
-  const m = line.match(/^(.*?): (\S+) — (.*)$/);
-  if (!m) { (byReason.get('unparsed') || byReason.set('unparsed', []).get('unparsed')).push(line); continue; }
-  const [, who, verb, why] = m;
-  const key = `${verb} — ${why}`;
-  if (!byReason.has(key)) byReason.set(key, []);
-  byReason.get(key).push(who);
+  const m = line.match(/^(.*?): (.*?) — (.*)$/);
+  if (!m) { put('could not be parsed — fix mkgaps.mjs', line); continue; }
+  const [, who, what, why] = m;
+  // Normalise the whole-card findings so eight identical transformations are one entry, not
+  // eight, and every dropped onEnter counts under the same heading.
+  let key;
+  if (/^transforms into/.test(what))        key = `transformation — ${why}`;
+  else if (/onEnter effect\(s\) dropped/.test(what)) key = `onEnter triggers — ${why}`;
+  else if (/^createAura inside a trigger/.test(what)) key = `createAura in a trigger — ${why}`;
+  else if (/^fastAttack/.test(what))        key = `fastAttack — ${why}`;
+  else key = `${what.split('/').pop()} — ${why}`;
+  put(key, who);
 }
 
 // ---- category 1: ids referenced by something that owns no row of their own

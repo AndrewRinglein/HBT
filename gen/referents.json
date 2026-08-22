@@ -1,0 +1,13 @@
+{
+  "note": "Two words that are NOT spatial shapes but are still legitimate targets, because a trigger already knows who the other party was. COMBAT-DESIGN's own hook notes establish the concept: onMiss fires 'on the ATTACKER', onDodge 'on the DEFENDER'. A shape answers 'which hexes'; a referent answers 'the one this event was already about', and no shape can say that. Declared here as data so that audit R27 can accept them without anyone inventing a third one in code. Ruled 2026-08-22.",
+  "referents": [
+    { "name": "the attacker",
+      "means": "whoever caused the damage that fired this trigger",
+      "legalOn": ["onTakingDamage", "onDodge", "onDeath"],
+      "why": "Hitting back at whoever hit you is what onTakingDamage is FOR. Ban 19 forbids reading the attacker's TAGS OR POSITION — conditioning on who they are — not striking them. Thorns N is the passive form of the same idea; this is the triggered form." },
+    { "name": "the unit this hit",
+      "means": "the target of the attack this effect is riding on",
+      "legalOn": ["onHit", "onCrit", "onDamage", "onAttack", "onKill"],
+      "why": "A rider on an attack acts on what the attack acted on. The source called this 'attacked'." }
+  ]
+}

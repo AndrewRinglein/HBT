@@ -682,6 +682,10 @@ if(D.bestiary && D.bestiary.length){
 // So: an effect must DO something, and every target it names must be a real shape.
 if(D.bestiary && D.bestiary.length){
   const SH=new Set(((D.functions||{}).shapes||[]).map(x=>typeof x==='string'?x:x.name));
+  // A referent is not a shape and never will be, but it IS a legal target: onTakingDamage
+  // exists so a thing can hit back at whoever hit it. gen/referents.json declares the two.
+  const REF=new Set((D.referents||[]).map(r=>r.name));
+  const legalTarget = v => SH.has(v) || REF.has(v);
   const carries = e => e.status!=null || e.stat!=null || e.value!=null || (e.multiple!=null);
   // verbs that are complete on their own — they need no status, stat or number
   const SELF_SUFFICIENT = new Set(['enter stealth','reveal / break stealth','grant Flight',
@@ -692,9 +696,9 @@ if(D.bestiary && D.bestiary.length){
       if(!SELF_SUFFICIENT.has(e.effect) && !carries(e))
         add('effect-does-nothing', u.name, where+': "'+e.effect+'" carries no status, stat or value — '+
             'if the payload was dropped in translation the mechanic went with it');
-      if(e.target!=null && !SH.has(e.target))
-        add('effect-target-is-not-a-shape', u.name, where+': target "'+e.target+'" is not one of the '+
-            SH.size+' shapes — a raw source string here reads BACKWARDS, since an enemy\'s "allEnemies" is its own side');
+      if(e.target!=null && !legalTarget(e.target))
+        add('effect-target-is-neither-shape-nor-referent', u.name, where+': target "'+e.target+'" is not one of the '+
+            SH.size+' shapes nor one of the '+REF.size+' declared referents — a raw source string here reads BACKWARDS, since an enemy'+String.fromCharCode(39)+'s "allEnemies" is its own side');
     }
   };
   for(const u of D.bestiary){

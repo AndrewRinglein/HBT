@@ -177,7 +177,13 @@ const TARGET = {
 // of view "allEnemies" means its own allies. Found 2026-08-21 reviewing what would force a new
 // mechanic. Two of those strings are not shapes at all but REFERENTS to the ability's own
 // target, so they resolve to null and inherit the ability's targeting.
-const EFFECT_TARGET = { ...TARGET, attacked:null, target:null };
+// `attacked` and `attacker` are REFERENTS, not shapes — gen/referents.json says why. The
+// source's `attacked` is the thing this attack hit; `attacker` is whoever hit us, and
+// striking back at them is the entire purpose of onTakingDamage.
+const REFERENTS = JSON.parse(fs.readFileSync('gen/referents.json','utf8')).referents;
+const VOCAB_REFERENTS = new Set(REFERENTS.map(r => r.name));
+const EFFECT_TARGET = { ...TARGET, attacked:'the unit this hit', target:null,
+                        attacker:'the attacker', lowestHealthHero:'one enemy within N hexes' };
 const portTarget = v => (v == null ? null : (v in EFFECT_TARGET ? EFFECT_TARGET[v] : v));
 
 // --------------------------------------------------------------- effect action -> vocabulary
@@ -265,6 +271,64 @@ for (const e of Object.values(ENEMY_CARDS)) {
   if ((e.abilities||[]).length && !attacks.some(a=>a.effects.length))
     notes.push('Every ability is a bare attack with no rider — a candidate for one.');
 
+  // ------------------------------------------------------- card.triggers and specialMechanics
+  // NEVER READ until 2026-08-22. The extractor opened `abilities` and nothing else, so 96 of
+  // the 219 creatures looked emptier than they are and 25 of them were called "bare" and given
+  // authored riders over the top of content that already existed. That is the duplication this
+  // whole pass exists to undo, committed by the tool doing the undoing.
+  //
+  // The hook names are translated, not invented. COMBAT-DESIGN ruled turnEnd -> onActivationEnd
+  // on 2026-08-15 and removed onEnter in the same edit, so onEnter content is DROPPED and
+  // reported rather than quietly rehomed onto a hook that means something else.
+  const HOOK_MAP = { onDeath:'onDeath', onAttack:'onAttack', onDamage:'onDamage',
+                     onTakingDamage:'onTakingDamage', onKill:'onKill',
+                     turnEnd:'onActivationEnd',   // sanctioned rename, 2026-08-15
+                     onEnter:null };              // removed from the hook list, 2026-08-15
+  let portedTriggerCount = 0;
+  for (const [rawHook, list] of Object.entries(e.triggers || {})) {
+    if (!Array.isArray(list) || !list.length) continue;
+    if (!(rawHook in HOOK_MAP)) { gaps.push(`${e.name}: trigger hook "${rawHook}" has no equivalent`); continue; }
+    const hook = HOOK_MAP[rawHook];
+    if (hook === null) {
+      gaps.push(`${e.name}: ${list.length} onEnter effect(s) dropped — onEnter was removed from the hook list 2026-08-15`);
+      continue;
+    }
+    const effects = [];
+    for (const x of list) {
+      if (x.action === 'transformEnemy') {
+        gaps.push(`${e.name}: transformEnemy — transformation CUT 2026-08-22, second forms may return as their own creatures`);
+        continue;
+      }
+      if (UNMAPPED[x.action]) { gaps.push(`${e.name}/${rawHook}: ${x.action} — ${UNMAPPED[x.action]}`); continue; }
+      const verb = ACTION[x.action];
+      if (!verb) { gaps.push(`${e.name}/${rawHook}: unknown action "${x.action}"`); continue; }
+      if (x.action === 'createAura') {
+        gaps.push(`${e.name}/${rawHook}: createAura inside a trigger — onEnter timing, cut with the other 14`);
+        continue;
+      }
+      const st = x.stat ? (PORT[x.stat] || x.stat) : null;
+      if (st && !VOCAB_STATS.has(st)) gaps.push(`${e.name}/${rawHook}: stat "${st}" is not in the vocabulary`);
+      effects.push({ effect:verb, status:STATUS[x.action] || null, stat:st,
+                     value:x.value ?? x.amount ?? null, target:portTarget(x.target), ported:true });
+    }
+    if (effects.length) { triggers.push({ name:rawHook, hook, targets:null, effects, ported:true }); portedTriggerCount += effects.length; }
+  }
+
+  // specialMechanics. Thorns is already in the vocabulary and 7 creatures carry it; the rest
+  // are hell-tcg board concepts and are reported rather than translated.
+  const SM = e.specialMechanics || {};
+  if (typeof SM.thorns === 'number') {
+    triggers.push({ name:'Thorns', hook:'passive', targets:'self',
+                    effects:[{ effect:'Thorns N', status:null, stat:null, value:SM.thorns, target:null, ported:true }],
+                    ported:true });
+    portedTriggerCount++;
+  }
+  if (SM.doubleAttackIfMelee) gaps.push(`${e.name}: doubleAttackIfMelee — re-author as an attack against "up to N enemies"`);
+  if (SM.fastAttack)          gaps.push(`${e.name}: fastAttack acts on arrival — onEnter, removed 2026-08-15`);
+  if (SM.attacksAllInRow)     gaps.push(`${e.name}: attacksAllInRow — ROWS do not exist on a hex board, needs re-authoring`);
+  if (e.transformedName)      gaps.push(`${e.name}: transforms into "${e.transformedName}" — transformation CUT 2026-08-22`);
+  if (e.attackOnEnter)        gaps.push(`${e.name}: attackOnEnter — onEnter, removed 2026-08-15`);
+
   const c = curated[e.uuid];
   rows.push({
     id:`unit.${slug(e.name)}`, uuid:e.uuid, name:e.name, rank:e.tier ?? null,
@@ -277,6 +341,7 @@ for (const e of Object.values(ENEMY_CARDS)) {
     campaign:c ? c.campaign : null,
     encounters:c ? (c.uses||[]) : [],
     curated:!!c,
+    sourceGaveTriggers: portedTriggerCount > 0,
     backstory:e.backstory || null, quote:e.quote || null,
     notes,
     source:'hell-tcg data/enemyCards.js, extracted 2026-08-21. Stats and abilities are ported, not authored.',
@@ -295,6 +360,13 @@ for (const e of Object.values(ENEMY_CARDS)) {
   for (const [uid, spec] of Object.entries(R.units)) {
     const u = byId.get(uid);
     if (!u) { problems.push(`riders: no such unit ${uid}`); continue; }
+    // A ruling can SUPERSEDE a ported trigger rather than stack on it: when the ruled
+    // behaviour occupies the same hook, keeping both would double the creature up.
+    for (const h of (spec.dropPortedHooks || [])) {
+      const before = u.triggers.length;
+      u.triggers = u.triggers.filter(x => !(x.ported && x.hook === h));
+      if (u.triggers.length === before) problems.push(`riders: ${uid} has no ported "${h}" to supersede`);
+    }
     for (const [atkName, effects] of Object.entries(spec.attacks || {})) {
       const a = u.attacks.find(x => x.name === atkName);
       if (!a) { problems.push(`riders: ${uid} has no attack named "${atkName}"`); continue; }
@@ -311,6 +383,8 @@ for (const e of Object.values(ENEMY_CARDS)) {
         if (!VOCAB_EFFECTS.has(e.effect)) problems.push(`riders: ${uid} trigger — effect "${e.effect}" is not in the vocabulary`);
         if (e.status && !VOCAB_STATUSES.has(e.status)) problems.push(`riders: ${uid} trigger — status "${e.status}" is not in the vocabulary`);
         if (e.stat && !VOCAB_STATS.has(e.stat)) problems.push(`riders: ${uid} trigger — stat "${e.stat}" is not in the vocabulary`);
+        if (e.target && !VOCAB_SHAPES.has(e.target) && !VOCAB_REFERENTS.has(e.target))
+          problems.push(`riders: ${uid} trigger — target "${e.target}" is neither a shape nor a declared referent`);
       }
       if (!VOCAB_HOOKS.has(t.hook)) problems.push(`riders: ${uid} trigger — hook "${t.hook}" is not in the vocabulary`);
       u.triggers.push({ ...t, authored:true });
@@ -318,6 +392,25 @@ for (const e of Object.values(ENEMY_CARDS)) {
     u.notes = (u.notes || []).filter(n => !/bare attack|NO ABILITIES/.test(n));
     u.notes.push('Rider authored 2026-08-21 from its own name: ' + spec.why);
   }
+  // Corrections to what the SOURCE gave a creature: the content is right, its shape or its
+  // radius was not. Applied before riders so a rider can still stack on a corrected trigger.
+  for (const [uid, list] of Object.entries(R.overrides?.units || {})) {
+    const u = byId.get(uid);
+    if (!u) { problems.push(`overrides: no such unit ${uid}`); continue; }
+    for (const o of list) {
+      const tr = (u.triggers || []).filter(x => x.hook === o.hook && x.ported);
+      if (!tr.length) { problems.push(`overrides: ${uid} has no ported "${o.hook}" trigger to correct`); continue; }
+      for (const x of tr) {
+        Object.assign(x, o.set || {});
+        x.corrected = true;
+        x.why = o.why;
+        for (const e of (x.effects || [])) if (o.set && o.set.targets) e.target = null;  // the trigger owns the shape now
+      }
+      if (o.set && o.set.targets && !VOCAB_SHAPES.has(o.set.targets))
+        problems.push(`overrides: ${uid} — shape "${o.set.targets}" is not in the vocabulary`);
+    }
+  }
+
   // Abilities whose SOURCE MECHANIC does not exist in HoBaT, re-authored as something that
   // does. Distinct from a rider: a rider adds to what the port produced, this replaces it,
   // and the attack row it came from is dropped.

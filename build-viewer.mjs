@@ -305,7 +305,9 @@ const TABS=[
      const d=u.derivedBase||{}, p=u.ported||{};
      const atk=(u.attacks||[]).map(function(a){return esc(a.name);}).join(' &middot; ');
      var trig=(u.triggers||[]).map(function(tr){
-       return '<span class="tag">['+esc(tr.hook)+(tr.targets?' '+esc(tr.targets):'')+'] '+
+       var rng=(tr.range!=null?' r'+tr.range:'');
+       var src=(tr.ported?' &middot; ported':(tr.reauthored?' &middot; re-authored':(tr.authored?' &middot; authored':'')));
+       return '<span class="tag">['+esc(tr.hook)+(tr.targets?' '+esc(tr.targets):'')+rng+src+'] '+
          (tr.effects||[]).map(function(e){
            return esc(e.effect)+(e.status?' '+esc(e.status):'')+(e.stat?' '+esc(e.stat):'')+
                   (e.value!=null?' '+e.value:''); }).join(' + ')+'</span>';

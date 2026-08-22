@@ -1,7 +1,7 @@
 {
  "_note": "All 412 enemies from hell-tcg data/enemyCards.js. Ruled 2026-08-21: all of them, not just the curated 144. `curated:true` marks the 144 that already had a campaign, art and an encounter list — that curation is real work and does not exist in enemyCards.js.",
  "_derived": "Enemies carry accuracy, movement and zero stamina. NO crit, luck or vision — enemies do not have Vision at all. Accuracy by rank is SOFT; a sweep owns it.",
- "_gaps": "47 translation gaps — see CONTENT-GAPS.md",
+ "_gaps": "118 translation gaps — see CONTENT-GAPS.md",
  "units": [
   {
    "id": "unit.imp",
@@ -58,7 +58,7 @@
        "status": "burn",
        "stat": null,
        "value": 3,
-       "target": null
+       "target": "the unit this hit"
       }
      ]
     }
@@ -82,6 +82,7 @@
     "hold-the-line"
    ],
    "curated": true,
+   "sourceGaveTriggers": false,
    "backstory": "Mischievous demon spawn that delight in tormenting mortals. These small, winged creatures hurl fireballs from afar before darting away with shrill laughter. Though weak individually, they swarm in packs and their reach makes them dangerous even from the back lines.",
    "quote": "Your suffering is our amusement!",
    "notes": [],
@@ -141,7 +142,7 @@
        "status": "weak",
        "stat": null,
        "value": 3,
-       "target": null
+       "target": "the unit this hit"
       }
      ]
     },
@@ -172,6 +173,7 @@
     "hold-the-line"
    ],
    "curated": true,
+   "sourceGaveTriggers": false,
    "backstory": "Once mortal defenders of the realm, these soldiers fell when Hell invaded. Now they fight for their new masters, clad in corrupted armor and wielding blades stained with innocent blood. Their training remains, making them disciplined and dangerous front-line combatants.",
    "quote": "We swore an oath... even death cannot release us.",
    "notes": [],
@@ -228,6 +230,7 @@
     "endless-horde"
    ],
    "curated": true,
+   "sourceGaveTriggers": false,
    "backstory": "Animated bones of the long dead, held together by dark magic. These simple constructs shamble forward with rusted weapons, driven by an insatiable hatred for the living.",
    "quote": "*rattling bones*",
    "notes": [
@@ -286,6 +289,7 @@
     "endless-horde"
    ],
    "curated": true,
+   "sourceGaveTriggers": false,
    "backstory": "Skeletal remains of fallen archers, still clutching their bows in bony fingers. They rain arrows from the back lines with eerie precision.",
    "quote": "*twang*",
    "notes": [
@@ -349,12 +353,29 @@
        "status": "poison",
        "stat": null,
        "value": 3,
-       "target": null
+       "target": "the unit this hit"
       }
      ]
     }
    ],
-   "triggers": [],
+   "triggers": [
+    {
+     "name": "onDamage",
+     "hook": "onDamage",
+     "targets": null,
+     "effects": [
+      {
+       "effect": "apply a status",
+       "status": "poison",
+       "stat": null,
+       "value": 1,
+       "target": "the unit this hit",
+       "ported": true
+      }
+     ],
+     "ported": true
+    }
+   ],
    "art": "assets/cards/enemies/poison-imp.png",
    "campaign": "eve",
    "encounters": [
@@ -363,6 +384,7 @@
     "demon-commander"
    ],
    "curated": true,
+   "sourceGaveTriggers": true,
    "backstory": "Sickly green imps that drip with venom. Their claws and teeth carry toxins that seep into wounds, causing victims to weaken and wither. They cackle as poison spreads through their enemies.",
    "quote": "Feel the rot spreading through your veins!",
    "notes": [],
@@ -423,12 +445,29 @@
        "status": "burn",
        "stat": null,
        "value": 4,
-       "target": null
+       "target": "the unit this hit"
       }
      ]
     }
    ],
-   "triggers": [],
+   "triggers": [
+    {
+     "name": "onDamage",
+     "hook": "onDamage",
+     "targets": null,
+     "effects": [
+      {
+       "effect": "apply a status",
+       "status": "burn",
+       "stat": null,
+       "value": 2,
+       "target": "the unit this hit",
+       "ported": true
+      }
+     ],
+     "ported": true
+    }
+   ],
    "art": "assets/cards/enemies/fire-imp.png",
    "campaign": "eve",
    "encounters": [
@@ -443,6 +482,7 @@
     "hold-the-line"
    ],
    "curated": true,
+   "sourceGaveTriggers": true,
    "backstory": "Wreathed in flames, these imps are born from hellfire itself. Their touch ignites flesh and their mere presence makes the air shimmer with heat. They leave trails of fire wherever they scurry.",
    "quote": "Burn! BURN! Everything must burn!",
    "notes": [],
@@ -496,19 +536,51 @@
      "targets": "one enemy in melee reach",
      "damageType": "physical",
      "damage": null,
+     "effects": []
+    }
+   ],
+   "triggers": [
+    {
+     "name": "onDamage",
+     "hook": "onDamage",
+     "targets": null,
      "effects": [
       {
        "effect": "apply a status",
-       "status": "bleed",
+       "status": "weak",
        "stat": null,
-       "value": 1,
-       "target": null,
-       "authored": true
+       "value": 2,
+       "target": "the unit this hit",
+       "ported": true
       }
-     ]
+     ],
+     "ported": true
+    },
+    {
+     "name": "onTakingDamage",
+     "hook": "onTakingDamage",
+     "targets": null,
+     "effects": [
+      {
+       "effect": "grant a stat for the Battle",
+       "status": null,
+       "stat": "strength",
+       "value": 2,
+       "target": "self",
+       "ported": true
+      },
+      {
+       "effect": "grant a stat for the Battle",
+       "status": null,
+       "stat": "precision",
+       "value": 2,
+       "target": "self",
+       "ported": true
+      }
+     ],
+     "ported": true
     }
    ],
-   "triggers": [],
    "art": "assets/cards/enemies/bloody-imp.png",
    "campaign": "eve",
    "encounters": [
@@ -518,10 +590,11 @@
     "tutorial-7"
    ],
    "curated": true,
+   "sourceGaveTriggers": true,
    "backstory": "Crimson-stained imps with razor-sharp claws that tear deep, ragged wounds. They feast on blood and grow stronger as it flows. Their victims bleed out slowly while the imps dance in delight.",
    "quote": "More blood! We hunger for more!",
    "notes": [
-    "Rider authored 2026-08-21 from its own name: Rend."
+    "Every ability is a bare attack with no rider — a candidate for one."
    ],
    "source": "hell-tcg data/enemyCards.js, extracted 2026-08-21. Stats and abilities are ported, not authored."
   },
@@ -579,18 +652,36 @@
        "status": "weak",
        "stat": null,
        "value": 2,
-       "target": null
+       "target": "the unit this hit"
       }
      ]
     }
    ],
-   "triggers": [],
+   "triggers": [
+    {
+     "name": "onDeath",
+     "hook": "onDeath",
+     "targets": null,
+     "effects": [
+      {
+       "effect": "deal damage (type from the weapon)",
+       "status": null,
+       "stat": null,
+       "value": 1,
+       "target": "enemies within N hexes",
+       "ported": true
+      }
+     ],
+     "ported": true
+    }
+   ],
    "art": "assets/cards/enemies/cultist.png",
    "campaign": "eve",
    "encounters": [
     "tutorial-5"
    ],
    "curated": true,
+   "sourceGaveTriggers": true,
    "backstory": "Former worshippers who welcomed the demon invasion with open arms. Dressed in tattered robes and wielding dark magic, they chant profane prayers while hurling curses at their enemies. Their faith in darkness sustains them.",
    "quote": "The old gods have abandoned you. Embrace the new lords!",
    "notes": [],
@@ -650,7 +741,7 @@
        "status": "weak",
        "stat": null,
        "value": 3,
-       "target": null
+       "target": "the unit this hit"
       }
      ]
     },
@@ -664,7 +755,24 @@
      "effects": []
     }
    ],
-   "triggers": [],
+   "triggers": [
+    {
+     "name": "onDamage",
+     "hook": "onDamage",
+     "targets": null,
+     "effects": [
+      {
+       "effect": "apply a status",
+       "status": "weak",
+       "stat": null,
+       "value": 2,
+       "target": "the unit this hit",
+       "ported": true
+      }
+     ],
+     "ported": true
+    }
+   ],
    "art": "assets/cards/enemies/zombie.png",
    "campaign": "eve",
    "encounters": [
@@ -675,6 +783,7 @@
     "tutorial-6"
    ],
    "curated": true,
+   "sourceGaveTriggers": true,
    "backstory": "Shambling corpses reanimated by dark necromancy. They hunger for living flesh, moving slowly but relentlessly forward. Their grip is cold and their bites spread necrotic infection that saps strength and speed.",
    "quote": "Braaains... Fleeeesh...",
    "notes": [],
@@ -765,6 +874,7 @@
     "tutorial-9"
    ],
    "curated": true,
+   "sourceGaveTriggers": false,
    "backstory": "Ethereal spirits of the slain who refused to pass on. They phase through solid matter and strike with spectral claws that chill the soul. Their otherworldly nature makes them difficult to hit as they flicker in and out of reality.",
    "quote": "Death is not an ending... it is a transformation.",
    "notes": [],
@@ -818,27 +928,60 @@
      "targets": "enemies within N hexes",
      "damageType": "magic",
      "damage": 2,
-     "effects": [
-      {
-       "effect": "deal MAGIC damage",
-       "status": null,
-       "stat": null,
-       "value": 2,
-       "target": null,
-       "authored": true
-      }
-     ]
+     "effects": []
     }
    ],
-   "triggers": [],
+   "triggers": [
+    {
+     "name": "onTakingDamage",
+     "hook": "onTakingDamage",
+     "targets": null,
+     "effects": [
+      {
+       "effect": "grant a stat for the Battle",
+       "status": null,
+       "stat": "strength",
+       "value": 1,
+       "target": "self",
+       "ported": true
+      },
+      {
+       "effect": "grant a stat for the Battle",
+       "status": null,
+       "stat": "precision",
+       "value": 1,
+       "target": "self",
+       "ported": true
+      }
+     ],
+     "ported": true
+    },
+    {
+     "name": "turnEnd",
+     "hook": "onActivationEnd",
+     "targets": null,
+     "effects": [
+      {
+       "effect": "deal damage (type from the weapon)",
+       "status": null,
+       "stat": null,
+       "value": 1,
+       "target": "enemies within N hexes",
+       "ported": true
+      }
+     ],
+     "ported": true
+    }
+   ],
    "art": "../assets/cards/enemies/lesser-demon.png?v=4",
    "campaign": null,
    "encounters": [],
    "curated": false,
+   "sourceGaveTriggers": true,
    "backstory": "Servants of greater demons, these infernal creatures radiate malevolent energy that saps the life force of nearby mortals. Their presence alone is enough to weaken heroes, and at the end of each turn their dark aura inflicts suffering on all who oppose them.",
    "quote": "Your pain feeds our masters. Submit or suffer.",
    "notes": [
-    "Rider authored 2026-08-21 from its own name: A Pulse goes outward from it, not at one target."
+    "Every ability is a bare attack with no rider — a candidate for one."
    ],
    "source": "hell-tcg data/enemyCards.js, extracted 2026-08-21. Stats and abilities are ported, not authored."
   },
@@ -902,13 +1045,31 @@
      ]
     }
    ],
-   "triggers": [],
+   "triggers": [
+    {
+     "name": "onDeath",
+     "hook": "onDeath",
+     "targets": null,
+     "effects": [
+      {
+       "effect": "apply a status",
+       "status": "poison",
+       "stat": null,
+       "value": 2,
+       "target": "enemies within N hexes",
+       "ported": true
+      }
+     ],
+     "ported": true
+    }
+   ],
    "art": "assets/cards/enemies/plague-bearer.png",
    "campaign": "eve",
    "encounters": [
     "tutorial-5"
    ],
    "curated": true,
+   "sourceGaveTriggers": true,
    "backstory": "Walking sources of contagion, these wretched creatures are bloated with disease and pestilence. Their rotting flesh oozes with infection, and when slain they burst in a cloud of toxic vapors that poison all nearby heroes.",
    "quote": "Come closer... share in my gift of decay.",
    "notes": [],
@@ -969,7 +1130,7 @@
        "status": "burn",
        "stat": null,
        "value": 2,
-       "target": null
+       "target": "the unit this hit"
       }
      ]
     }
@@ -991,6 +1152,7 @@
     "demon-commander"
    ],
    "curated": true,
+   "sourceGaveTriggers": false,
    "backstory": "Demonic beasts wreathed in hellfire, these hounds hunt in packs with terrifying speed. They leap into battle the moment they arrive. Their fiery bite leaves victims burning with infernal flames.",
    "quote": "GRRRAAAHHHH! Fresh meat for the burning!",
    "notes": [],
@@ -1051,7 +1213,7 @@
        "status": "weak",
        "stat": null,
        "value": 1,
-       "target": null
+       "target": "the unit this hit"
       }
      ]
     }
@@ -1066,6 +1228,7 @@
     "tutorial-8"
    ],
    "curated": true,
+   "sourceGaveTriggers": false,
    "backstory": "Feral wolves driven mad by hellish influence. They attack the moment they arrive, giving heroes no time to prepare. Though individually weak, they hunt in packs and their relentless assault can overwhelm even seasoned warriors.",
    "quote": "AWOOOO! The pack hungers!",
    "notes": [],
@@ -1145,7 +1308,24 @@
      ]
     }
    ],
-   "triggers": [],
+   "triggers": [
+    {
+     "name": "turnEnd",
+     "hook": "onActivationEnd",
+     "targets": null,
+     "effects": [
+      {
+       "effect": "apply a status",
+       "status": "regeneration",
+       "stat": null,
+       "value": 1,
+       "target": "self",
+       "ported": true
+      }
+     ],
+     "ported": true
+    }
+   ],
    "art": "assets/cards/enemies/werewolf.png",
    "campaign": "eve",
    "encounters": [
@@ -1163,6 +1343,7 @@
     "doom-patrol"
    ],
    "curated": true,
+   "sourceGaveTriggers": true,
    "backstory": "Cursed humans transformed into savage beasts under the full moon. Their supernatural healing makes them difficult to kill, as wounds close almost as quickly as they are inflicted. They hunt with primal fury and relentless determination.",
    "quote": "The hunt is eternal. You cannot escape the pack.",
    "notes": [],
@@ -1236,11 +1417,29 @@
      ]
     }
    ],
-   "triggers": [],
+   "triggers": [
+    {
+     "name": "onKill",
+     "hook": "onKill",
+     "targets": null,
+     "effects": [
+      {
+       "effect": "deal damage (type from the weapon)",
+       "status": null,
+       "stat": null,
+       "value": 2,
+       "target": "enemies within N hexes",
+       "ported": true
+      }
+     ],
+     "ported": true
+    }
+   ],
    "art": "../assets/cards/enemies/shadow-assassin.png?v=4",
    "campaign": null,
    "encounters": [],
    "curated": false,
+   "sourceGaveTriggers": true,
    "backstory": "Masters of stealth and murder who strike from the shadows without warning. The moment they appear on the battlefield, they target the weakest hero with a lethal strike. Their agility makes them nearly impossible to hit.",
    "quote": "I already know where you will die.",
    "notes": [],
@@ -1316,19 +1515,52 @@
        "status": "poison",
        "stat": null,
        "value": 3,
-       "target": null
+       "target": "the unit this hit"
       },
       {
        "effect": "apply a status",
        "status": "weak",
        "stat": null,
        "value": 2,
-       "target": null
+       "target": "the unit this hit"
       }
      ]
     }
    ],
-   "triggers": [],
+   "triggers": [
+    {
+     "name": "onAttack",
+     "hook": "onAttack",
+     "targets": null,
+     "effects": [
+      {
+       "effect": "apply a status",
+       "status": "poison",
+       "stat": null,
+       "value": 2,
+       "target": "the unit this hit",
+       "ported": true
+      }
+     ],
+     "ported": true
+    },
+    {
+     "name": "turnEnd",
+     "hook": "onActivationEnd",
+     "targets": null,
+     "effects": [
+      {
+       "effect": "heal",
+       "status": null,
+       "stat": null,
+       "value": 1,
+       "target": "allies within N hexes",
+       "ported": true
+      }
+     ],
+     "ported": true
+    }
+   ],
    "art": "assets/cards/enemies/dark-priest.png",
    "campaign": "eve",
    "encounters": [
@@ -1343,6 +1575,7 @@
     "doom-patrol"
    ],
    "curated": true,
+   "sourceGaveTriggers": true,
    "backstory": "Clerics who abandoned the light to serve dark powers. Their Dark Blessing aura heals allies as they enter the battlefield, and their profane prayers channel necrotic energy. Kill them quickly to remove their blessing.",
    "quote": "The darkness offers salvation. The light offers only lies.",
    "notes": [],
@@ -1402,7 +1635,7 @@
        "status": "burn",
        "stat": null,
        "value": 2,
-       "target": null
+       "target": "the unit this hit"
       }
      ]
     },
@@ -1423,7 +1656,48 @@
      ]
     }
    ],
-   "triggers": [],
+   "triggers": [
+    {
+     "name": "onAttack",
+     "hook": "onAttack",
+     "targets": null,
+     "effects": [
+      {
+       "effect": "apply a status",
+       "status": "burn",
+       "stat": null,
+       "value": 2,
+       "target": "the unit this hit",
+       "ported": true
+      },
+      {
+       "effect": "apply a status",
+       "status": "weak",
+       "stat": null,
+       "value": 3,
+       "target": "the unit this hit",
+       "ported": true
+      }
+     ],
+     "ported": true
+    },
+    {
+     "name": "onTakingDamage",
+     "hook": "onTakingDamage",
+     "targets": null,
+     "effects": [
+      {
+       "effect": "apply a status",
+       "status": "protection",
+       "stat": null,
+       "value": 4,
+       "target": "self",
+       "ported": true
+      }
+     ],
+     "ported": true
+    }
+   ],
    "art": "assets/cards/enemies/dark-mage.png",
    "campaign": "eve",
    "encounters": [
@@ -1434,6 +1708,7 @@
     "doom-patrol"
    ],
    "curated": true,
+   "sourceGaveTriggers": true,
    "backstory": "Sorcerers corrupted by forbidden knowledge who wield destructive magic from afar. Their spells ignite enemies in flames while simultaneously stunning them with concussive force. They revel in the suffering their dark arts inflict.",
    "quote": "Watch as your flesh burns and your will breaks!",
    "notes": [],
@@ -1515,11 +1790,29 @@
      ]
     }
    ],
-   "triggers": [],
+   "triggers": [
+    {
+     "name": "onTakingDamage",
+     "hook": "onTakingDamage",
+     "targets": null,
+     "effects": [
+      {
+       "effect": "heal",
+       "status": null,
+       "stat": null,
+       "value": 2,
+       "target": "allies within N hexes",
+       "ported": true
+      }
+     ],
+     "ported": true
+    }
+   ],
    "art": "../assets/cards/enemies/necromancer.png?v=4",
    "campaign": null,
    "encounters": [],
    "curated": false,
+   "sourceGaveTriggers": true,
    "backstory": "Masters of death magic who command legions of undead servants. These dark scholars have traded their mortality for eternal unlife and forbidden power. They orchestrate battles from the back lines, raising the fallen to serve in their armies.",
    "quote": "Death is merely the beginning of servitude.",
    "notes": [],
@@ -1579,7 +1872,7 @@
        "status": "weak",
        "stat": null,
        "value": 3,
-       "target": null
+       "target": "the unit this hit"
       }
      ]
     },
@@ -1600,7 +1893,48 @@
      ]
     }
    ],
-   "triggers": [],
+   "triggers": [
+    {
+     "name": "onDamage",
+     "hook": "onDamage",
+     "targets": null,
+     "effects": [
+      {
+       "effect": "apply a status",
+       "status": "weak",
+       "stat": null,
+       "value": 1,
+       "target": "the unit this hit",
+       "ported": true
+      }
+     ],
+     "ported": true
+    },
+    {
+     "name": "onTakingDamage",
+     "hook": "onTakingDamage",
+     "targets": null,
+     "effects": [
+      {
+       "effect": "grant a stat for the Battle",
+       "status": null,
+       "stat": "strength",
+       "value": -1,
+       "target": "the attacker",
+       "ported": true
+      },
+      {
+       "effect": "grant a stat for the Battle",
+       "status": null,
+       "stat": "precision",
+       "value": -1,
+       "target": "the attacker",
+       "ported": true
+      }
+     ],
+     "ported": true
+    }
+   ],
    "art": "assets/cards/enemies/frost-wraith.png",
    "campaign": "eve",
    "encounters": [
@@ -1615,6 +1949,7 @@
     "harsh-bone-dragon"
    ],
    "curated": true,
+   "sourceGaveTriggers": true,
    "backstory": "Spectral beings born from frozen despair, gliding through the air on chilling winds. Their touch drains warmth and vitality, leaving victims sluggish and numb. They fade in and out of sight, making them frustratingly difficult to strike.",
    "quote": "Feel the embrace of eternal winter...",
    "notes": [],
@@ -1675,16 +2010,34 @@
        "status": "weak",
        "stat": null,
        "value": 4,
-       "target": null
+       "target": "the unit this hit"
       }
      ]
     }
    ],
-   "triggers": [],
+   "triggers": [
+    {
+     "name": "onDamage",
+     "hook": "onDamage",
+     "targets": null,
+     "effects": [
+      {
+       "effect": "apply a status",
+       "status": "weak",
+       "stat": null,
+       "value": 1,
+       "target": "the unit this hit",
+       "ported": true
+      }
+     ],
+     "ported": true
+    }
+   ],
    "art": "../assets/cards/enemies/ice-demon.png?v=4",
    "campaign": null,
    "encounters": [],
    "curated": false,
+   "sourceGaveTriggers": true,
    "backstory": "Demons of living ice given form and malice, armored in glacial plates. Every blow they strike freezes blood and slows movement. Their hearts are chunks of eternal ice that never melts, even in the hottest flames.",
    "quote": "Your warmth will soon be mine.",
    "notes": [],
@@ -1750,13 +2103,31 @@
      ]
     }
    ],
-   "triggers": [],
+   "triggers": [
+    {
+     "name": "onDamage",
+     "hook": "onDamage",
+     "targets": null,
+     "effects": [
+      {
+       "effect": "apply a status",
+       "status": "burn",
+       "stat": null,
+       "value": 2,
+       "target": "the unit this hit",
+       "ported": true
+      }
+     ],
+     "ported": true
+    }
+   ],
    "art": "assets/cards/enemies/fire-demon.png",
    "campaign": "eve",
    "encounters": [
     "fire-demons"
    ],
    "curated": true,
+   "sourceGaveTriggers": true,
    "backstory": "Pure incarnations of flame and rage, these demons crackle with devastating heat. They ignite everything they touch, leaving enemies engulfed in searing flames. Simply standing near them is enough to scorch flesh and melt armor.",
    "quote": "ASH! All shall become ASH!",
    "notes": [],
@@ -1841,7 +2212,7 @@
        "status": "weak",
        "stat": null,
        "value": 4,
-       "target": null
+       "target": "the unit this hit"
       }
      ]
     },
@@ -1880,6 +2251,7 @@
     "tutorial-10"
    ],
    "curated": true,
+   "sourceGaveTriggers": false,
    "backstory": "Aristocratic undead who have perfected the art of blood magic over centuries. Each wound they inflict bleeds profusely, and they drain that blood to restore their own vitality. Their immortal cunning makes them formidable opponents.",
    "quote": "Your blood sings such a sweet song. Let me taste it.",
    "notes": [],
@@ -1975,7 +2347,24 @@
      "effects": []
     }
    ],
-   "triggers": [],
+   "triggers": [
+    {
+     "name": "turnEnd",
+     "hook": "onActivationEnd",
+     "targets": null,
+     "effects": [
+      {
+       "effect": "apply a status",
+       "status": "regeneration",
+       "stat": null,
+       "value": 2,
+       "target": "self",
+       "ported": true
+      }
+     ],
+     "ported": true
+    }
+   ],
    "art": "assets/cards/enemies/greater-werewolf.png",
    "campaign": "eve",
    "encounters": [
@@ -1990,6 +2379,7 @@
     "doom-patrol"
    ],
    "curated": true,
+   "sourceGaveTriggers": true,
    "backstory": "Alpha predators of the cursed pack, these massive lycanthropes tower over normal werewolves. Their regenerative abilities are legendary, and their thick hide provides formidable protection. They lead other werewolves in devastating hunts.",
    "quote": "I am the nightmare that hunts the hunters.",
    "notes": [],
@@ -2049,14 +2439,14 @@
        "status": null,
        "stat": "armor",
        "value": -2,
-       "target": null
+       "target": "the unit this hit"
       },
       {
        "effect": "grant a stat for the Battle",
        "status": null,
        "stat": "resist",
        "value": -2,
-       "target": null
+       "target": "the unit this hit"
       }
      ]
     },
@@ -2091,11 +2481,37 @@
      ]
     }
    ],
-   "triggers": [],
+   "triggers": [
+    {
+     "name": "onTakingDamage",
+     "hook": "onTakingDamage",
+     "targets": null,
+     "effects": [
+      {
+       "effect": "grant a stat for the Battle",
+       "status": null,
+       "stat": "armor",
+       "value": 4,
+       "target": "self",
+       "ported": true
+      },
+      {
+       "effect": "grant a stat for the Battle",
+       "status": null,
+       "stat": "resist",
+       "value": 4,
+       "target": "self",
+       "ported": true
+      }
+     ],
+     "ported": true
+    }
+   ],
    "art": "../assets/cards/enemies/demon-lieutenant.png?v=4",
    "campaign": null,
    "encounters": [],
    "curated": false,
+   "sourceGaveTriggers": true,
    "backstory": "Elite demon warriors who command lesser infernal forces in battle. These towering horrors charge into melee combat with devastating fury, attacking twice if they reach their prey. They are the iron fist of Hell's armies.",
    "quote": "Kneel before the might of the Abyss!",
    "notes": [],
@@ -2175,11 +2591,45 @@
      "effects": []
     }
    ],
-   "triggers": [],
+   "triggers": [
+    {
+     "name": "turnEnd",
+     "hook": "onActivationEnd",
+     "targets": null,
+     "effects": [
+      {
+       "effect": "heal",
+       "status": null,
+       "stat": null,
+       "value": 5,
+       "target": "self",
+       "ported": true
+      }
+     ],
+     "ported": true
+    },
+    {
+     "name": "Thorns",
+     "hook": "passive",
+     "targets": "self",
+     "effects": [
+      {
+       "effect": "Thorns N",
+       "status": null,
+       "stat": null,
+       "value": 1,
+       "target": null,
+       "ported": true
+      }
+     ],
+     "ported": true
+    }
+   ],
    "art": "../assets/cards/enemies/corrupted-knight.png?v=4",
    "campaign": null,
    "encounters": [],
    "curated": false,
+   "sourceGaveTriggers": true,
    "backstory": "Once noble champions who swore sacred oaths, now corrupted into demonic servants. Their cursed armor has fused to their bodies and reflects damage back at attackers. They march forward with relentless determination, bound by twisted versions of their original vows.",
    "quote": "Honor died with the world. Only duty remains.",
    "notes": [],
@@ -2240,14 +2690,14 @@
        "status": "weak",
        "stat": null,
        "value": 3,
-       "target": null
+       "target": "the unit this hit"
       },
       {
        "effect": "apply a status",
        "status": "poison",
        "stat": null,
        "value": 2,
-       "target": null
+       "target": "the unit this hit"
       }
      ]
     },
@@ -2264,7 +2714,7 @@
        "status": "poison",
        "stat": null,
        "value": 4,
-       "target": null
+       "target": "the unit this hit"
       }
      ]
     },
@@ -2278,7 +2728,40 @@
      "effects": []
     }
    ],
-   "triggers": [],
+   "triggers": [
+    {
+     "name": "onDeath",
+     "hook": "onDeath",
+     "targets": null,
+     "effects": [
+      {
+       "effect": "apply a status",
+       "status": "weak",
+       "stat": null,
+       "value": 1,
+       "target": "enemies within N hexes",
+       "ported": true
+      }
+     ],
+     "ported": true
+    },
+    {
+     "name": "onDamage",
+     "hook": "onDamage",
+     "targets": null,
+     "effects": [
+      {
+       "effect": "apply a status",
+       "status": "poison",
+       "stat": null,
+       "value": 3,
+       "target": "the unit this hit",
+       "ported": true
+      }
+     ],
+     "ported": true
+    }
+   ],
    "art": "assets/cards/enemies/succubus.png",
    "campaign": "eve",
    "encounters": [
@@ -2290,6 +2773,7 @@
     "bone-dragon-lair"
    ],
    "curated": true,
+   "sourceGaveTriggers": true,
    "backstory": "Seductive demons who corrupt and destroy through desire and temptation. Their venomous touch poisons both body and soul, and even in death they curse their killers with lingering weakness. They toy with mortals before delivering the killing blow.",
    "quote": "Come to me, darling. Let me show you pleasures beyond imagining...",
    "notes": [],
@@ -2366,7 +2850,7 @@
        "status": "weak",
        "stat": null,
        "value": 2,
-       "target": null
+       "target": "the unit this hit"
       }
      ]
     },
@@ -2388,13 +2872,31 @@
      ]
     }
    ],
-   "triggers": [],
+   "triggers": [
+    {
+     "name": "turnEnd",
+     "hook": "onActivationEnd",
+     "targets": null,
+     "effects": [
+      {
+       "effect": "grant a stat for the Battle",
+       "status": null,
+       "stat": null,
+       "value": 1,
+       "target": "self",
+       "ported": true
+      }
+     ],
+     "ported": true
+    }
+   ],
    "art": "assets/cards/enemies/spectral-knight.png",
    "campaign": "eve",
    "encounters": [
     "corrupted-dragon"
    ],
    "curated": true,
+   "sourceGaveTriggers": true,
    "backstory": "Ghostly warriors bound to their armor for eternity, wielding phantom blades that cut through flesh and spirit alike. Their ethereal nature grants them exceptional resistance to magic and physical attacks while their centuries of combat experience make them deadly fighters.",
    "quote": "Death freed me from weakness. Now I am perfection.",
    "notes": [],
@@ -2454,7 +2956,7 @@
        "status": "weak",
        "stat": null,
        "value": 3,
-       "target": null
+       "target": "the unit this hit"
       },
       {
        "effect": "heal",
@@ -2482,7 +2984,40 @@
      ]
     }
    ],
-   "triggers": [],
+   "triggers": [
+    {
+     "name": "onKill",
+     "hook": "onKill",
+     "targets": null,
+     "effects": [
+      {
+       "effect": "heal",
+       "status": null,
+       "stat": null,
+       "value": 6,
+       "target": "allies within N hexes",
+       "ported": true
+      }
+     ],
+     "ported": true
+    },
+    {
+     "name": "turnEnd",
+     "hook": "onActivationEnd",
+     "targets": null,
+     "effects": [
+      {
+       "effect": "apply a status",
+       "status": "regeneration",
+       "stat": null,
+       "value": 3,
+       "target": "self",
+       "ported": true
+      }
+     ],
+     "ported": true
+    }
+   ],
    "art": "assets/cards/enemies/death-knight.png",
    "campaign": "eve",
    "encounters": [
@@ -2495,6 +3030,7 @@
     "harsh-bone-dragon"
    ],
    "curated": true,
+   "sourceGaveTriggers": true,
    "backstory": "Champions of darkness who willingly sacrificed their souls for immortal power. These undead juggernauts regenerate constantly and rally their allies with dark energies when they claim a kill. They move slowly but are nearly impossible to bring down.",
    "quote": "I have slain thousands. You are merely the next.",
    "notes": [],
@@ -2572,12 +3108,37 @@
        "status": "weak",
        "stat": null,
        "value": 6,
-       "target": null
+       "target": "the unit this hit"
       }
      ]
     }
    ],
-   "triggers": [],
+   "triggers": [
+    {
+     "name": "onDamage",
+     "hook": "onDamage",
+     "targets": null,
+     "effects": [
+      {
+       "effect": "heal",
+       "status": null,
+       "stat": null,
+       "value": 6,
+       "target": "self",
+       "ported": true
+      },
+      {
+       "effect": "grant a stat for the Battle",
+       "status": null,
+       "stat": "strength",
+       "value": 2,
+       "target": "self",
+       "ported": true
+      }
+     ],
+     "ported": true
+    }
+   ],
    "art": "assets/cards/enemies/greater-vampire.png",
    "campaign": "eve",
    "encounters": [
@@ -2585,6 +3146,7 @@
     "doom-patrol"
    ],
    "curated": true,
+   "sourceGaveTriggers": true,
    "backstory": "Ancient vampire lords who have mastered both martial prowess and blood sorcery. Their reach extends beyond normal limits as they command blood itself to strike from afar. Each wound they inflict hemorrhages violently while restoring their own vitality.",
    "quote": "I have walked this earth for millennia. Your fleeting life means nothing.",
    "notes": [],
@@ -2681,7 +3243,24 @@
      ]
     }
    ],
-   "triggers": [],
+   "triggers": [
+    {
+     "name": "turnEnd",
+     "hook": "onActivationEnd",
+     "targets": null,
+     "effects": [
+      {
+       "effect": "apply a status",
+       "status": "protection",
+       "stat": null,
+       "value": 6,
+       "target": "self",
+       "ported": true
+      }
+     ],
+     "ported": true
+    }
+   ],
    "art": "assets/cards/enemies/bone-dragon.png",
    "campaign": "eve",
    "encounters": [
@@ -2694,6 +3273,7 @@
     "harsh-bone-dragon"
    ],
    "curated": true,
+   "sourceGaveTriggers": true,
    "backstory": "The reanimated skeleton of a once-mighty dragon, now serving as an undead war machine. Its breath weapon sweeps across entire rows of enemies, and its bone armor provides formidable protection. Though its flesh is gone, its fury remains eternal.",
    "quote": "I soared above kingdoms. Now I rule over graves.",
    "notes": [],
@@ -2829,13 +3409,47 @@
      ]
     }
    ],
-   "triggers": [],
+   "triggers": [
+    {
+     "name": "onAttack",
+     "hook": "onAttack",
+     "targets": null,
+     "effects": [
+      {
+       "effect": "deal damage (type from the weapon)",
+       "status": null,
+       "stat": null,
+       "value": 1,
+       "target": "enemies within N hexes",
+       "ported": true
+      }
+     ],
+     "ported": true
+    },
+    {
+     "name": "turnEnd",
+     "hook": "onActivationEnd",
+     "targets": null,
+     "effects": [
+      {
+       "effect": "deal damage (type from the weapon)",
+       "status": null,
+       "stat": null,
+       "value": 2,
+       "target": "enemies within N hexes",
+       "ported": true
+      }
+     ],
+     "ported": true
+    }
+   ],
    "art": "assets/cards/enemies/lich.png",
    "campaign": "eve",
    "encounters": [
     "doom-patrol"
    ],
    "curated": true,
+   "sourceGaveTriggers": true,
    "backstory": "An archlich of unfathomable power who transcended death itself through dark rituals. Its massive health pool reflects centuries of magical protections layered upon its phylactery. Each turn its malevolent aura drains the life from all heroes, and though it moves slowly, it is nearly indestructible. Its Death Shroud weakens all who enter its presence.",
    "quote": "Mortality is a prison. I broke free long ago.",
    "notes": [],
@@ -2919,6 +3533,7 @@
    "campaign": null,
    "encounters": [],
    "curated": false,
+   "sourceGaveTriggers": false,
    "backstory": "Once simple forest trolls, these creatures have been possessed by demonic spirits. Their regenerative abilities are corrupted, spreading rot and decay to anything they touch.",
    "quote": "CRUSH... INFECT... SPREAD...",
    "notes": [],
@@ -2971,18 +3586,36 @@
        "status": "burn",
        "stat": null,
        "value": 2,
-       "target": null
+       "target": "the unit this hit"
       }
      ]
     }
    ],
-   "triggers": [],
+   "triggers": [
+    {
+     "name": "onTakingDamage",
+     "hook": "onTakingDamage",
+     "targets": null,
+     "effects": [
+      {
+       "effect": "apply a status",
+       "status": "burn",
+       "stat": null,
+       "value": 1,
+       "target": "the attacker",
+       "ported": true
+      }
+     ],
+     "ported": true
+    }
+   ],
    "art": "assets/cards/enemies/fire-witch.png",
    "campaign": "eve",
    "encounters": [
     "fire-witch"
    ],
    "curated": true,
+   "sourceGaveTriggers": true,
    "backstory": "A witch who has bound herself to the flames of Hell. Fire obeys her will, and she draws power from the inferno that surrounds her.",
    "quote": "Let the flames consume all!",
    "notes": [],
@@ -3070,13 +3703,31 @@
      "effects": []
     }
    ],
-   "triggers": [],
+   "triggers": [
+    {
+     "name": "turnEnd",
+     "hook": "onActivationEnd",
+     "targets": null,
+     "effects": [
+      {
+       "effect": "heal",
+       "status": null,
+       "stat": null,
+       "value": 2,
+       "target": "self",
+       "ported": true
+      }
+     ],
+     "ported": true
+    }
+   ],
    "art": "assets/cards/enemies/nightmare-twin.png",
    "campaign": "eve",
    "encounters": [
     "nightmare-twins"
    ],
    "curated": true,
+   "sourceGaveTriggers": true,
    "backstory": "Twisted beings born from mortal nightmares. They appear as identical twins, multiplying endlessly as fear spreads. Each one feeds on terror, growing stronger with every scream.",
    "quote": "We are many. We are one. We are your fear.",
    "notes": [],
@@ -3129,7 +3780,7 @@
        "status": "poison",
        "stat": null,
        "value": 1,
-       "target": null
+       "target": "the unit this hit"
       }
      ]
     },
@@ -3173,11 +3824,45 @@
      ]
     }
    ],
-   "triggers": [],
+   "triggers": [
+    {
+     "name": "onTakingDamage",
+     "hook": "onTakingDamage",
+     "targets": null,
+     "effects": [
+      {
+       "effect": "grant a stat for the Battle",
+       "status": null,
+       "stat": "strength",
+       "value": -2,
+       "target": "self",
+       "ported": true
+      },
+      {
+       "effect": "grant a stat for the Battle",
+       "status": null,
+       "stat": "precision",
+       "value": -2,
+       "target": "self",
+       "ported": true
+      },
+      {
+       "effect": "grant a stat for the Battle",
+       "status": null,
+       "stat": "armor",
+       "value": -2,
+       "target": "self",
+       "ported": true
+      }
+     ],
+     "ported": true
+    }
+   ],
    "art": "../assets/cards/enemies/corrupted-dragon.png",
    "campaign": null,
    "encounters": [],
    "curated": false,
+   "sourceGaveTriggers": true,
    "backstory": "Once a noble dragon, now twisted by Hell's corruption. Its scales weep poison, and its very presence spreads decay. The corruption has made it vulnerable - each wound weakens it further.",
    "quote": "I was magnificent once... now I am ruin.",
    "notes": [],
@@ -3232,6 +3917,7 @@
     "demon-gremlins"
    ],
    "curated": true,
+   "sourceGaveTriggers": false,
    "backstory": "These twisted creatures feed on violence. Each wound they receive fuels their transformation into something far more dangerous.",
    "quote": "More... MORE!",
    "notes": [
@@ -3294,7 +3980,7 @@
        "status": "weak",
        "stat": null,
        "value": 3,
-       "target": null
+       "target": "the unit this hit"
       }
      ]
     },
@@ -3322,6 +4008,7 @@
     "golem-and-imps"
    ],
    "curated": true,
+   "sourceGaveTriggers": false,
    "backstory": "An ancient construct of enchanted stone, awakened by demonic corruption. Its movements are slow but devastating.",
    "quote": "CRUSH... INTRUDERS...",
    "notes": [],
@@ -3371,12 +4058,14 @@
    ],
    "triggers": [
     {
+     "name": "Detonate",
      "hook": "onDeath",
-     "targets": "every enemy adjacent to you",
+     "targets": "enemies within N hexes",
+     "range": 6,
      "effects": [
       {
        "effect": "deal PHYSICAL damage",
-       "value": 3
+       "value": 14
       }
      ],
      "authored": true
@@ -3388,10 +4077,11 @@
     "demon-mites"
    ],
    "curated": true,
+   "sourceGaveTriggers": true,
    "backstory": "Volatile creatures filled with unstable demonic energy. When killed, they explode violently.",
    "quote": "*tick tick tick*",
    "notes": [
-    "Rider authored 2026-08-21 from its own name: It is called Explosive Mite and it did not explode. Killing it should be the dangerous part — the only creature here whose rider is on onDeath."
+    "Rider authored 2026-08-21 from its own name: Ruled: no such thing as damage to ADJACENT - the board speaks in hex radii. This one is a bomb and gets a 6-hex radius. The source aimed 14 at the attacker only; the value is soft and now covers a radius, so a sweep owns it."
    ],
    "source": "hell-tcg data/enemyCards.js, extracted 2026-08-21. Stats and abilities are ported, not authored."
   },
@@ -3446,17 +4136,33 @@
      ]
     }
    ],
-   "triggers": [],
+   "triggers": [
+    {
+     "name": "Ember Backlash",
+     "hook": "onTakingDamage",
+     "targets": null,
+     "effects": [
+      {
+       "effect": "apply a status",
+       "status": "burn",
+       "value": 1,
+       "target": "the attacker"
+      }
+     ],
+     "authored": true
+    }
+   ],
    "art": "assets/cards/enemies/fire-mite.png",
    "campaign": "eve",
    "encounters": [
     "demon-mites"
    ],
    "curated": true,
+   "sourceGaveTriggers": true,
    "backstory": "Infernal parasites that carry hellfire within. Slaying them releases scorching flames.",
    "quote": "*crackle*",
    "notes": [
-    "Rider authored 2026-08-21 from its own name: Fire."
+    "Rider authored 2026-08-21 from its own name: Ruled: on attack burn 1, on taking damage burn 1. The source had onDeath burn 7 at the attacker; retaliation while it is ALIVE is the better read of a fire mite, and onTakingDamage is the hook for it."
    ],
    "source": "hell-tcg data/enemyCards.js, extracted 2026-08-21. Stats and abilities are ported, not authored."
   },
@@ -3504,24 +4210,40 @@
        "effect": "apply a status",
        "status": "poison",
        "stat": null,
-       "value": 2,
+       "value": 1,
        "target": null,
        "authored": true
       }
      ]
     }
    ],
-   "triggers": [],
+   "triggers": [
+    {
+     "name": "Venom Backlash",
+     "hook": "onTakingDamage",
+     "targets": null,
+     "effects": [
+      {
+       "effect": "apply a status",
+       "status": "poison",
+       "value": 1,
+       "target": "the attacker"
+      }
+     ],
+     "authored": true
+    }
+   ],
    "art": "assets/cards/enemies/poison-mite.png",
    "campaign": "eve",
    "encounters": [
     "demon-mites"
    ],
    "curated": true,
+   "sourceGaveTriggers": true,
    "backstory": "These putrid creatures carry virulent toxins. Their death releases a cloud of poison.",
    "quote": "*hiss*",
    "notes": [
-    "Rider authored 2026-08-21 from its own name: Poison."
+    "Rider authored 2026-08-21 from its own name: Ruled: on attack, poison too. Mirrors Fire Mite exactly - the mites are a family and read as one."
    ],
    "source": "hell-tcg data/enemyCards.js, extracted 2026-08-21. Stats and abilities are ported, not authored."
   },
@@ -3576,17 +4298,33 @@
      ]
     }
    ],
-   "triggers": [],
+   "triggers": [
+    {
+     "name": "Withering",
+     "hook": "onDeath",
+     "targets": "enemies within N hexes",
+     "range": 3,
+     "effects": [
+      {
+       "effect": "apply a status",
+       "status": "weak",
+       "value": 1
+      }
+     ],
+     "authored": true
+    }
+   ],
    "art": "assets/cards/enemies/weakness-mite.png",
    "campaign": "eve",
    "encounters": [
     "demon-mites"
    ],
    "curated": true,
+   "sourceGaveTriggers": true,
    "backstory": "Draining parasites that sap the strength from any who kill them.",
    "quote": "*screech*",
    "notes": [
-    "Rider authored 2026-08-21 from its own name: Weakness."
+    "Rider authored 2026-08-21 from its own name: Ruled: on attack weak 1, on death radius 3 weak 1. The death pulse is wider than the other mites because weakness spreads rather than burns."
    ],
    "source": "hell-tcg data/enemyCards.js, extracted 2026-08-21. Stats and abilities are ported, not authored."
   },
@@ -3650,13 +4388,39 @@
      "effects": []
     }
    ],
-   "triggers": [],
+   "triggers": [
+    {
+     "name": "turnEnd",
+     "hook": "onActivationEnd",
+     "targets": null,
+     "effects": [
+      {
+       "effect": "heal",
+       "status": null,
+       "stat": null,
+       "value": 2,
+       "target": "allies within N hexes",
+       "ported": true
+      },
+      {
+       "effect": "grant a stat for the Battle",
+       "status": null,
+       "stat": "precision",
+       "value": 1,
+       "target": "allies within N hexes",
+       "ported": true
+      }
+     ],
+     "ported": true
+    }
+   ],
    "art": "assets/cards/enemies/bone-weaver.png",
    "campaign": "eve",
    "encounters": [
     "bone-pit"
    ],
    "curated": true,
+   "sourceGaveTriggers": true,
    "backstory": "A necromancer who fused with the bones of the dead. It weaves skeletal constructs and empowers undead allies.",
    "quote": "The bones remember... and they hunger.",
    "notes": [
@@ -3731,6 +4495,7 @@
     "fallen-heroes"
    ],
    "curated": true,
+   "sourceGaveTriggers": false,
    "backstory": "A fallen warrior bound to fight eternally. His ghostly axe still seeks blood.",
    "quote": "In death, I found only more war.",
    "notes": [],
@@ -3811,6 +4576,7 @@
     "fallen-heroes"
    ],
    "curated": true,
+   "sourceGaveTriggers": false,
    "backstory": "An assassin who cheated death but lost to the darkness. Now she kills without purpose.",
    "quote": "Death comes swiftly... I should know.",
    "notes": [],
@@ -3892,6 +4658,7 @@
     "fallen-heroes"
    ],
    "curated": true,
+   "sourceGaveTriggers": false,
    "backstory": "Once the finest archer in the realm. Now she looses arrows from beyond the grave.",
    "quote": "My aim has only improved with death.",
    "notes": [
@@ -3943,17 +4710,23 @@
    ],
    "triggers": [
     {
-     "hook": "aura",
+     "name": "turnEnd",
+     "hook": "onActivationEnd",
      "targets": "allies within N hexes",
-     "range": 2,
      "effects": [
       {
-       "effect": "apply a status",
-       "status": "regeneration",
-       "value": 1
+       "effect": "heal",
+       "status": null,
+       "stat": null,
+       "value": 2,
+       "target": null,
+       "ported": true
       }
      ],
-     "authored": true
+     "ported": true,
+     "range": 4,
+     "corrected": true,
+     "why": "Ruled: heal allies 2 within 4. NOTE - regeneration and heal are NOT the same thing, so the aura of regeneration I had authored here was not a duplicate of this, it was a different mechanic. The source heal is what the priest does; my regeneration aura is dropped."
     }
    ],
    "art": "assets/cards/enemies/fallen-priest.png",
@@ -3962,10 +4735,11 @@
     "fallen-heroes"
    ],
    "curated": true,
+   "sourceGaveTriggers": true,
    "backstory": "A healer who turned to dark magic. His prayers now sustain the undead.",
    "quote": "Even in death, I serve.",
    "notes": [
-    "Rider authored 2026-08-21 from its own name: A priest, even a fallen one, is in the back keeping other things standing. Its whole point was missing."
+    "Every ability is a bare attack with no rider — a candidate for one."
    ],
    "source": "hell-tcg data/enemyCards.js, extracted 2026-08-21. Stats and abilities are ported, not authored."
   },
@@ -4023,7 +4797,7 @@
        "status": "weak",
        "stat": null,
        "value": 1,
-       "target": null
+       "target": "the unit this hit"
       }
      ]
     },
@@ -4063,6 +4837,7 @@
    "campaign": null,
    "encounters": [],
    "curated": false,
+   "sourceGaveTriggers": false,
    "backstory": "Leader of the pack, this massive wolf commands lesser beasts with terrifying authority. When wounded, it transforms into something far worse.",
    "quote": "AROOOOO! The hunt begins!",
    "notes": [],
@@ -4170,6 +4945,7 @@
     "demon-commander"
    ],
    "curated": true,
+   "sourceGaveTriggers": false,
    "backstory": "A cunning demon commander who leads from behind, empowering his minions rather than fighting directly. His tactical buffs can turn weak imps into terrifying threats.",
    "quote": "Serve me well, and you shall feast on their souls!",
    "notes": [],
@@ -4230,7 +5006,7 @@
        "status": "poison",
        "stat": null,
        "value": 2,
-       "target": null
+       "target": "the unit this hit"
       }
      ]
     },
@@ -4251,13 +5027,47 @@
      ]
     }
    ],
-   "triggers": [],
+   "triggers": [
+    {
+     "name": "turnEnd",
+     "hook": "onActivationEnd",
+     "targets": null,
+     "effects": [
+      {
+       "effect": "heal",
+       "status": null,
+       "stat": null,
+       "value": 5,
+       "target": "self",
+       "ported": true
+      }
+     ],
+     "ported": true
+    },
+    {
+     "name": "Thorns",
+     "hook": "passive",
+     "targets": "self",
+     "effects": [
+      {
+       "effect": "Thorns N",
+       "status": null,
+       "stat": null,
+       "value": 2,
+       "target": null,
+       "ported": true
+      }
+     ],
+     "ported": true
+    }
+   ],
    "art": "assets/cards/enemies/flesh-horror.png",
    "campaign": "eve",
    "encounters": [
     "flesh-pit"
    ],
    "curated": true,
+   "sourceGaveTriggers": true,
    "backstory": "A writhing mass of corrupted flesh and bone, spawned from a demonic rift. It absorbs the bodies of its victims, regenerating endlessly while dragging the living into its pulsating core.",
    "quote": "It... grows...",
    "notes": [],
@@ -4302,29 +5112,54 @@
      "targets": "one enemy in melee reach",
      "damageType": "physical",
      "damage": null,
+     "effects": []
+    }
+   ],
+   "triggers": [
+    {
+     "name": "onTakingDamage",
+     "hook": "onTakingDamage",
+     "targets": null,
      "effects": [
       {
        "effect": "apply a status",
        "status": "poison",
        "stat": null,
        "value": 1,
-       "target": null,
-       "authored": true
+       "target": "the attacker",
+       "ported": true
       }
-     ]
+     ],
+     "ported": true
+    },
+    {
+     "name": "turnEnd",
+     "hook": "onActivationEnd",
+     "targets": null,
+     "effects": [
+      {
+       "effect": "heal",
+       "status": null,
+       "stat": null,
+       "value": 1,
+       "target": "self",
+       "ported": true
+      }
+     ],
+     "ported": true
     }
    ],
-   "triggers": [],
    "art": "assets/cards/enemies/plague-spawn.png",
    "campaign": "eve",
    "encounters": [
     "flesh-pit"
    ],
    "curated": true,
+   "sourceGaveTriggers": true,
    "backstory": "Pustulent demonic growths that throb with corrupted life. Striking them ruptures their skin, spraying toxic ichor that burns through armor.",
    "quote": "...",
    "notes": [
-    "Rider authored 2026-08-21 from its own name: Plague."
+    "Every ability is a bare attack with no rider — a candidate for one."
    ],
    "source": "hell-tcg data/enemyCards.js, extracted 2026-08-21. Stats and abilities are ported, not authored."
   },
@@ -4363,15 +5198,20 @@
    "attacks": [],
    "triggers": [
     {
+     "name": "Thorns",
      "hook": "passive",
      "targets": "self",
      "effects": [
       {
        "effect": "Thorns N",
-       "value": 1
+       "status": null,
+       "stat": null,
+       "value": 1,
+       "target": null,
+       "ported": true
       }
      ],
-     "authored": true
+     "ported": true
     }
    ],
    "art": "assets/cards/enemies/bone-barricade.png",
@@ -4380,10 +5220,11 @@
     "flesh-pit"
    ],
    "curated": true,
+   "sourceGaveTriggers": true,
    "backstory": "A wall of fused bones and corrupted flesh, built from the horror's victims. Shards of bone jut outward, cutting anyone who tries to break through.",
    "quote": "...",
    "notes": [
-    "Rider authored 2026-08-21 from its own name: A Wall with no attack at all — correctly, it is scenery. But it is scenery made of bone, and breaking it should cost something."
+    "NO ABILITIES in the source — needs one assigning from its name."
    ],
    "source": "hell-tcg data/enemyCards.js, extracted 2026-08-21. Stats and abilities are ported, not authored."
   },
@@ -4483,11 +5324,45 @@
      ]
     }
    ],
-   "triggers": [],
+   "triggers": [
+    {
+     "name": "turnEnd",
+     "hook": "onActivationEnd",
+     "targets": null,
+     "effects": [
+      {
+       "effect": "deal damage (type from the weapon)",
+       "status": null,
+       "stat": null,
+       "value": 1,
+       "target": "enemies within N hexes",
+       "ported": true
+      }
+     ],
+     "ported": true
+    },
+    {
+     "name": "Thorns",
+     "hook": "passive",
+     "targets": "self",
+     "effects": [
+      {
+       "effect": "Thorns N",
+       "status": null,
+       "stat": null,
+       "value": 1,
+       "target": null,
+       "ported": true
+      }
+     ],
+     "ported": true
+    }
+   ],
    "art": "../assets/cards/enemies/the-tormented.png",
    "campaign": null,
    "encounters": [],
    "curated": false,
+   "sourceGaveTriggers": true,
    "backstory": "A soul so broken by suffering that it has become suffering itself. Each wound inflicted upon it only feeds its agony, which radiates outward to all who dare face it. It grows stronger with each passing moment, armoring itself in despair.",
    "quote": "Your pain... is nothing... compared to mine...",
    "notes": [],
@@ -4539,7 +5414,7 @@
        "status": "burn",
        "stat": null,
        "value": 1,
-       "target": null
+       "target": "the unit this hit"
       }
      ]
     },
@@ -4558,6 +5433,7 @@
    "campaign": null,
    "encounters": [],
    "curated": false,
+   "sourceGaveTriggers": false,
    "backstory": "Living embers that drift from the fires of the Abyss. Small and fragile, but their touch leaves burns that continue to smolder.",
    "quote": "...",
    "notes": [],
@@ -4627,7 +5503,7 @@
        "status": "weak",
        "stat": null,
        "value": 1,
-       "target": null
+       "target": "the unit this hit"
       }
      ]
     }
@@ -4642,6 +5518,7 @@
     "tutorial-8"
    ],
    "curated": true,
+   "sourceGaveTriggers": false,
    "backstory": "Demonic hounds bred for the hunt. They strike the moment they find prey, tearing and weakening their victims for the pack.",
    "quote": "...",
    "notes": [],
@@ -4732,6 +5609,7 @@
     "tutorial-9"
    ],
    "curated": true,
+   "sourceGaveTriggers": false,
    "backstory": "Fanatical cultists wielding ritual scythes. They dance between attacks, growing harder to hit with each strike.",
    "quote": "The harvest comes for all...",
    "notes": [],
@@ -4804,6 +5682,7 @@
     "cultists"
    ],
    "curated": true,
+   "sourceGaveTriggers": false,
    "backstory": "Cultists touched by abyssal corruption. Their flesh writhes with dark energy that they channel into deadly magic.",
    "quote": "The darkness... it speaks...",
    "notes": [
@@ -4865,7 +5744,7 @@
        "status": "weak",
        "stat": null,
        "value": 3,
-       "target": null
+       "target": "the unit this hit"
       }
      ]
     },
@@ -4914,6 +5793,7 @@
     "cultists"
    ],
    "curated": true,
+   "sourceGaveTriggers": false,
    "backstory": "The mystic leaders of the cult who channel forbidden rituals. Their magic strengthens their brethren while draining the souls of their enemies.",
    "quote": "Rise, my brothers! The ritual demands blood!",
    "notes": [],
@@ -5035,6 +5915,7 @@
     "menagerie"
    ],
    "curated": true,
+   "sourceGaveTriggers": false,
    "backstory": "An apprentice of the dark arts who commands lesser undead. While not as powerful as a true lich, their mastery of death magic makes them formidable.",
    "quote": "Death is merely the beginning...",
    "notes": [],
@@ -5133,6 +6014,7 @@
     "vampire-thrallmaster"
    ],
    "curated": true,
+   "sourceGaveTriggers": false,
    "backstory": "A vampire lord who commands legions of thralls. They sacrifice their servants without hesitation to fuel their dark power.",
    "quote": "Your blood will serve me... one way or another.",
    "notes": [],
@@ -5210,7 +6092,7 @@
        "status": "weak",
        "stat": null,
        "value": 3,
-       "target": null
+       "target": "the unit this hit"
       },
       {
        "effect": "deal damage (type from the weapon)",
@@ -5222,7 +6104,24 @@
      ]
     }
    ],
-   "triggers": [],
+   "triggers": [
+    {
+     "name": "onDeath",
+     "hook": "onDeath",
+     "targets": null,
+     "effects": [
+      {
+       "effect": "heal",
+       "status": null,
+       "stat": null,
+       "value": 3,
+       "target": "allies within N hexes",
+       "ported": true
+      }
+     ],
+     "ported": true
+    }
+   ],
    "art": "assets/cards/enemies/thrall.png",
    "campaign": "eve",
    "encounters": [
@@ -5232,6 +6131,7 @@
     "tutorial-10"
    ],
    "curated": true,
+   "sourceGaveTriggers": true,
    "backstory": "Mindless servants bound to their vampire master. Even in death, they serve - their life force returning to heal their allies.",
    "quote": "...",
    "notes": [],
@@ -5286,6 +6186,7 @@
     "A"
    ],
    "curated": true,
+   "sourceGaveTriggers": false,
    "backstory": "Once ordinary citizens, these shambling corpses were claimed by the undead horde when Hell invaded. They retain no memory of their former lives, driven only by an insatiable hunger for the living.",
    "quote": "Braaains...",
    "notes": [
@@ -5343,6 +6244,7 @@
     "B"
    ],
    "curated": true,
+   "sourceGaveTriggers": false,
    "backstory": "The weakest of demon-kind, these small creatures serve as scouts and harassers. What they lack in power they make up for in numbers and malicious cunning.",
    "quote": "Hee hee hee!",
    "notes": [
@@ -5405,7 +6307,7 @@
        "status": "weak",
        "stat": null,
        "value": 3,
-       "target": null
+       "target": "the unit this hit"
       }
      ]
     },
@@ -5426,6 +6328,7 @@
     "C"
    ],
    "curated": true,
+   "sourceGaveTriggers": false,
    "backstory": "Freshly risen soldiers still adjusting to their undead existence. Their training remains but their bodies have not yet fully adapted to combat.",
    "quote": "For... the realm...",
    "notes": [],
@@ -5526,6 +6429,7 @@
    "campaign": null,
    "encounters": [],
    "curated": false,
+   "sourceGaveTriggers": false,
    "backstory": "A dark sorcerer who commands legions of the dead. His power grows with each passing moment, turning the heroes' own magical energy against them while shielding his skeletal army.",
    "quote": "Your magic feeds my ambition.",
    "notes": [],
@@ -5605,6 +6509,7 @@
    "campaign": null,
    "encounters": [],
    "curated": false,
+   "sourceGaveTriggers": false,
    "backstory": "The lord of the gremlin swarm. Unassuming at first glance, but the first wound awakens something monstrous within.",
    "quote": "You shouldn't have done that.",
    "notes": [
@@ -5696,6 +6601,46 @@
    ],
    "triggers": [
     {
+     "name": "onAttack",
+     "hook": "onAttack",
+     "targets": null,
+     "effects": [
+      {
+       "effect": "grant a stat for the Battle",
+       "status": null,
+       "stat": "strength",
+       "value": 2,
+       "target": "self",
+       "ported": true
+      },
+      {
+       "effect": "grant a stat for the Battle",
+       "status": null,
+       "stat": "precision",
+       "value": 1,
+       "target": "self",
+       "ported": true
+      }
+     ],
+     "ported": true
+    },
+    {
+     "name": "turnEnd",
+     "hook": "onActivationEnd",
+     "targets": null,
+     "effects": [
+      {
+       "effect": "apply a status",
+       "status": "regeneration",
+       "stat": null,
+       "value": 2,
+       "target": "self",
+       "ported": true
+      }
+     ],
+     "ported": true
+    },
+    {
      "name": "Fierce Call",
      "hook": "aura",
      "targets": "allies within N hexes",
@@ -5720,6 +6665,7 @@
    "campaign": null,
    "encounters": [],
    "curated": false,
+   "sourceGaveTriggers": true,
    "backstory": "Alpha of all werewolves, his mere presence drives his pack into a frenzy. Each attack makes him stronger, and his regeneration makes him nearly impossible to bring down.",
    "quote": "The hunt never ends.",
    "notes": [
@@ -5831,6 +6777,7 @@
    "campaign": null,
    "encounters": [],
    "curated": false,
+   "sourceGaveTriggers": false,
    "backstory": "A lord of the infernal legions who commands fire itself. He empowers his minions to terrifying heights while burning everything in his path.",
    "quote": "This world will be ash.",
    "notes": [],
@@ -5924,11 +6871,37 @@
      ]
     }
    ],
-   "triggers": [],
+   "triggers": [
+    {
+     "name": "onDamage",
+     "hook": "onDamage",
+     "targets": null,
+     "effects": [
+      {
+       "effect": "grant a stat for the Battle",
+       "status": null,
+       "stat": null,
+       "value": -2,
+       "target": "the unit this hit",
+       "ported": true
+      },
+      {
+       "effect": "grant a stat for the Battle",
+       "status": null,
+       "stat": null,
+       "value": 4,
+       "target": "self",
+       "ported": true
+      }
+     ],
+     "ported": true
+    }
+   ],
    "art": "../assets/cards/enemies/vampire-grandmaster.png",
    "campaign": null,
    "encounters": [],
    "curated": false,
+   "sourceGaveTriggers": true,
    "backstory": "The eldest vampire, who has drained thousands across centuries. Each strike permanently weakens his victims while making him stronger. His reach is supernatural — no hero is safe from his grasp.",
    "quote": "I have all of eternity. You have moments.",
    "notes": [],
@@ -5997,7 +6970,7 @@
        "status": "weak",
        "stat": null,
        "value": 1,
-       "target": null
+       "target": "the unit this hit"
       }
      ]
     }
@@ -6010,6 +6983,7 @@
     "the-eternal-sandstorm"
    ],
    "curated": true,
+   "sourceGaveTriggers": false,
    "backstory": "Undead scavengers that claw their way from cursed sand without warning, striking with devastating speed before their prey can react. Their reach lets them lunge past defenders to strike vulnerable targets.",
    "quote": "The ground tears open... then it is too late.",
    "notes": [],
@@ -6069,7 +7043,7 @@
        "status": "weak",
        "stat": null,
        "value": 1,
-       "target": null
+       "target": "the unit this hit"
       }
      ]
     },
@@ -6100,6 +7074,7 @@
     "the-haunt"
    ],
    "curated": true,
+   "sourceGaveTriggers": false,
    "backstory": "Restless spirits of tomb robbers who perished in the ancient crypts. Now they guard the treasures they died trying to steal, phasing through walls and striking with spectral claws that bypass all physical defenses.",
    "quote": "You seek the treasures of the dead? Join us...",
    "notes": [],
@@ -6179,6 +7154,7 @@
     "the-eternal-sandstorm"
    ],
    "curated": true,
+   "sourceGaveTriggers": false,
    "backstory": "Nocturnal pack hunters that stalk the desert at twilight. Their coordinated attacks and rallying howls make them far more dangerous in groups. When their matriarch leads them, their ferocity multiplies tenfold.",
    "quote": "The pack hunts as one.",
    "notes": [],
@@ -6256,6 +7232,7 @@
    "campaign": null,
    "encounters": [],
    "curated": false,
+   "sourceGaveTriggers": false,
    "backstory": "Nocturnal pack hunters that stalk the desert at twilight. Their coordinated attacks and rallying howls make them far more dangerous in groups. When their matriarch leads them, their ferocity multiplies tenfold.",
    "quote": "The pack hunts as one.",
    "notes": [],
@@ -6333,6 +7310,7 @@
    "campaign": null,
    "encounters": [],
    "curated": false,
+   "sourceGaveTriggers": false,
    "backstory": "Nocturnal pack hunters that stalk the desert at twilight. Their coordinated attacks and rallying howls make them far more dangerous in groups. When their matriarch leads them, their ferocity multiplies tenfold.",
    "quote": "The pack hunts as one.",
    "notes": [],
@@ -6426,6 +7404,7 @@
    "campaign": null,
    "encounters": [],
    "curated": false,
+   "sourceGaveTriggers": false,
    "backstory": "The fearsome matriarch of a dusk hyena pack, twice the size of her children. She commands her brood with thunderous howls that bolster their ferocity and mend their wounds. When she finally wakes from her torpor, the desert shakes.",
    "quote": "My children feast tonight.",
    "notes": [],
@@ -6485,7 +7464,7 @@
        "status": "poison",
        "stat": null,
        "value": 2,
-       "target": null
+       "target": "the unit this hit"
       }
      ]
     }
@@ -6498,6 +7477,7 @@
     "the-eternal-sandstorm"
    ],
    "curated": true,
+   "sourceGaveTriggers": false,
    "backstory": "Twisted undead that crawl from cursed ground, driven by endless hunger. Their filthy claws carry tomb sickness, and their bites spread corruption that slowly shuts down the body. They pour from cracks in ancient stonework when the living draw near.",
    "quote": "The scratching grows louder...",
    "notes": [],
@@ -6557,7 +7537,7 @@
        "status": "weak",
        "stat": null,
        "value": 2,
-       "target": null
+       "target": "the unit this hit"
       }
      ]
     },
@@ -6578,6 +7558,7 @@
     "the-eternal-sandstorm"
    ],
    "curated": true,
+   "sourceGaveTriggers": false,
    "backstory": "An immense serpent assembled from the bones of a thousand dead. It coils in the deepest chambers, striking with magically-propelled bone shards that can reach across entire rooms. Its enormous frame absorbs punishment that would fell lesser creatures.",
    "quote": "The bones remember what the flesh forgot.",
    "notes": [],
@@ -6646,7 +7627,7 @@
        "status": "burn",
        "stat": null,
        "value": 3,
-       "target": null
+       "target": "the unit this hit"
       }
      ]
     },
@@ -6672,6 +7653,7 @@
    "campaign": null,
    "encounters": [],
    "curated": false,
+   "sourceGaveTriggers": false,
    "backstory": "An ancient elemental spirit bound to the corrupted oasis. It commands the sands themselves, conjuring devastating storms and armor of compressed desert. Its massive health pool and self-buffing armor make it a race against time to bring down.",
    "quote": "I am the storm that swallows kingdoms.",
    "notes": [],
@@ -6742,6 +7724,7 @@
     "oasis-of-corruption"
    ],
    "curated": true,
+   "sourceGaveTriggers": false,
    "backstory": "Lesser elementals summoned by the Djinn to shield it from attack. They form a living wall of animated sandstone, absorbing blows meant for their master while striking back with rocky fists.",
    "quote": "The Djinn commands. We obey.",
    "notes": [],
@@ -6810,12 +7793,29 @@
        "status": "burn",
        "stat": null,
        "value": 2,
-       "target": null
+       "target": "the unit this hit"
       }
      ]
     }
    ],
-   "triggers": [],
+   "triggers": [
+    {
+     "name": "onDeath",
+     "hook": "onDeath",
+     "targets": null,
+     "effects": [
+      {
+       "effect": "deal damage (type from the weapon)",
+       "status": null,
+       "stat": null,
+       "value": 2,
+       "target": "enemies within N hexes",
+       "ported": true
+      }
+     ],
+     "ported": true
+    }
+   ],
    "art": "assets/cards/enemies/tomb-echo.png",
    "campaign": "shadows",
    "encounters": [
@@ -6823,6 +7823,7 @@
     "the-eternal-sandstorm"
    ],
    "curated": true,
+   "sourceGaveTriggers": true,
    "backstory": "Spectral remnants of those entombed alive as punishment. Their death-wail reverberates through the tomb, dealing magical damage to all heroes when they are finally destroyed. Each kill is a double-edged sword.",
    "quote": "My death is your suffering.",
    "notes": [],
@@ -6910,6 +7911,7 @@
     "the-eternal-sandstorm"
    ],
    "curated": true,
+   "sourceGaveTriggers": false,
    "backstory": "Ancient priests mummified to serve their pharaoh eternally. Their dark rituals empower all undead nearby and escalate the Power counter, making every spell progressively more devastating. Kill them early or face an unstoppable tide.",
    "quote": "The rituals must not be interrupted.",
    "notes": [],
@@ -6970,7 +7972,7 @@
        "status": "weak",
        "stat": null,
        "value": 1,
-       "target": null
+       "target": "the unit this hit"
       }
      ]
     },
@@ -6998,6 +8000,7 @@
     "sand-wyrm-siege"
    ],
    "curated": true,
+   "sourceGaveTriggers": false,
    "backstory": "Disciplined warriors sworn to defend the desert kingdoms. Their spears and shields form an unyielding wall, and their rallying cries bolster their comrades. They hold the line while the Wyrm devastates from behind.",
    "quote": "For the kingdom that was, and the sand that remains.",
    "notes": [],
@@ -7087,6 +8090,7 @@
    "campaign": null,
    "encounters": [],
    "curated": false,
+   "sourceGaveTriggers": false,
    "backstory": "A colossal wyrm that dwells beneath the dunes, growing stronger with each passing moment. Its 60 HP and 4 armor make it functionally unkillable within the time limit. The question is not whether you can slay it -- but whether you can survive its escalating fury.",
    "quote": "The desert devours all. I am the desert.",
    "notes": [
@@ -7172,7 +8176,7 @@
        "status": "weak",
        "stat": null,
        "value": 2,
-       "target": null
+       "target": "the unit this hit"
       }
      ]
     }
@@ -7182,6 +8186,7 @@
    "campaign": null,
    "encounters": [],
    "curated": false,
+   "sourceGaveTriggers": false,
    "backstory": "The pharaoh's personal champion, entombed to guard the royal chambers for eternity. Its massive frame and ancient shields make it nearly impervious to damage. Heroes must find ways to bypass its armor or be ground down in a war of attrition.",
    "quote": "None shall pass. Not in life. Not in death.",
    "notes": [],
@@ -7268,6 +8273,7 @@
     "pharaohs-guard"
    ],
    "curated": true,
+   "sourceGaveTriggers": false,
    "backstory": "High priests of the ancient kingdom, mummified alongside their pharaoh to serve in the afterlife. They channel restorative magic to keep the shield-bearers fighting and empower ranged attacks with dark incantations.",
    "quote": "The pharaoh's will endures beyond death.",
    "notes": [],
@@ -7338,6 +8344,7 @@
     "pharaohs-guard"
    ],
    "curated": true,
+   "sourceGaveTriggers": false,
    "backstory": "Undead sentinels that guard the inner chambers of the pharaoh's tomb. Their heavy armor and shields make them difficult to cut through, and they fill the gaps left by fallen defenders.",
    "quote": "The tomb is sealed. Turn back.",
    "notes": [],
@@ -7417,6 +8424,7 @@
     "pharaohs-guard"
    ],
    "curated": true,
+   "sourceGaveTriggers": false,
    "backstory": "Elite undead warriors encased in layers of compressed sand. Their 5 base armor makes them nearly impervious to physical attacks. Only magic or heroes with type bonuses can reliably damage them.",
    "quote": "The sands harden around me. Your blows mean nothing.",
    "notes": [],
@@ -7473,13 +8481,50 @@
      ]
     }
    ],
-   "triggers": [],
+   "triggers": [
+    {
+     "name": "onDeath",
+     "hook": "onDeath",
+     "targets": "allies within N hexes",
+     "effects": [
+      {
+       "effect": "grant a stat for the Battle",
+       "status": null,
+       "stat": "armor",
+       "value": 1,
+       "target": null,
+       "ported": true
+      }
+     ],
+     "ported": true,
+     "range": 2,
+     "corrected": true,
+     "why": "Ruled: +1 armor to ALL allies within radius 2, not to one ally. A mite that dies and hardens the swarm around it."
+    },
+    {
+     "name": "turnEnd",
+     "hook": "onActivationEnd",
+     "targets": null,
+     "effects": [
+      {
+       "effect": "heal",
+       "status": null,
+       "stat": null,
+       "value": 1,
+       "target": "one ally within N hexes",
+       "ported": true
+      }
+     ],
+     "ported": true
+    }
+   ],
    "art": "assets/cards/enemies/bone-mite.png",
    "campaign": "shadows",
    "encounters": [
     "bone-swarm"
    ],
    "curated": true,
+   "sourceGaveTriggers": true,
    "backstory": "Tiny animated bone fragments, shards of the countless dead given terrible purpose by tomb curses. They swarm from disturbed graves in vast numbers, gnawing through armor and flesh alike.",
    "quote": "The bones themselves are crawling...",
    "notes": [
@@ -7560,6 +8605,7 @@
    "campaign": null,
    "encounters": [],
    "curated": false,
+   "sourceGaveTriggers": false,
    "backstory": "Ancient statues animated by the desert's primal magic. Their sandstone bodies absorb physical blows like a fortress wall. Only those who understand the desert's weaknesses — or wield magic — can crack their stony shells.",
    "quote": "The idols stare with empty eyes that see everything.",
    "notes": [],
@@ -7619,7 +8665,7 @@
        "status": "burn",
        "stat": null,
        "value": 1,
-       "target": null
+       "target": "the unit this hit"
       }
      ]
     },
@@ -7647,6 +8693,7 @@
     "infernal-skirmish"
    ],
    "curated": true,
+   "sourceGaveTriggers": false,
    "backstory": "Footsoldiers of the infernal legions, these demons wield blades wreathed in hellfire. They form the front line, absorbing blows while their burning strikes set heroes ablaze. Their war shouts embolden nearby demons.",
    "quote": "The legions of the Abyss are endless!",
    "notes": [],
@@ -7707,7 +8754,7 @@
        "status": "burn",
        "stat": null,
        "value": 2,
-       "target": null
+       "target": "the unit this hit"
       }
      ]
     },
@@ -7735,6 +8782,7 @@
     "infernal-skirmish"
    ],
    "curated": true,
+   "sourceGaveTriggers": false,
    "backstory": "Small, cackling demons wreathed in living flame. They hurl fire from deep in the back lines, their reach 3 letting them target heroes far from the front. Their signature Ignite ability stacks burn damage that accumulates into a deadly inferno.",
    "quote": "Dance in the flames! Dance!",
    "notes": [],
@@ -7819,6 +8867,7 @@
    "campaign": null,
    "encounters": [],
    "curated": false,
+   "sourceGaveTriggers": false,
    "backstory": "Undead sorcerers who channel dark rituals to raise the combat's Power counter. Their Shadow Bolt grows deadlier as Power rises, and their Dark Ward shields grow thicker. Kill them quickly or the ritual overwhelms you.",
    "quote": "The bones remember the old rites...",
    "notes": [],
@@ -7897,6 +8946,7 @@
    "campaign": null,
    "encounters": [],
    "curated": false,
+   "sourceGaveTriggers": false,
    "backstory": "A massive desert warlord who commands through sheer brutality. His melee 10 devastates the front hero every turn. The real challenge: the wardens and mystic behind him keep him alive with protection and healing. Do you focus the warlord or try to reach his support?",
    "quote": "I have conquered empires. You are nothing.",
    "notes": [],
@@ -7960,13 +9010,31 @@
      ]
     }
    ],
-   "triggers": [],
+   "triggers": [
+    {
+     "name": "turnEnd",
+     "hook": "onActivationEnd",
+     "targets": null,
+     "effects": [
+      {
+       "effect": "grant a stat for the Battle",
+       "status": null,
+       "stat": "armor",
+       "value": 1,
+       "target": "allies within N hexes",
+       "ported": true
+      }
+     ],
+     "ported": true
+    }
+   ],
    "art": "assets/cards/enemies/tomb-warden.png",
    "campaign": "shadows",
    "encounters": [
     "the-warlords-guard"
    ],
    "curated": true,
+   "sourceGaveTriggers": true,
    "backstory": "Fragile undead sentinels that protect greater threats. With only 3 HP, they die easily — but each turn they live grants +1 armor to all enemies and pulses protection. Kill them fast to strip the warlord's defenses.",
    "quote": "The tomb protects its own...",
    "notes": [],
@@ -8043,6 +9111,7 @@
    "campaign": null,
    "encounters": [],
    "curated": false,
+   "sourceGaveTriggers": false,
    "backstory": "A desert sorcerer who supports the warlord from the back lines. She heals 6 HP per turn to the most wounded ally, raises Power with dark rituals, and fires sand bolts that grow deadlier as Power accumulates. Reach her past the warlord if you can.",
    "quote": "The desert provides for those who serve it.",
    "notes": [],
@@ -8123,6 +9192,7 @@
     "doom-heralds"
    ],
    "curated": true,
+   "sourceGaveTriggers": false,
    "backstory": "Minor demons that are trivially easy to kill — 6 HP, no armor. But each death leaves a permanent curse: every hero entering play afterward takes 1 burn. With 16 Heralds in the encounter, the aura field becomes lethal. The threat is what happens AFTER they die.",
    "quote": "My death is your curse.",
    "notes": [
@@ -8197,13 +9267,39 @@
      ]
     }
    ],
-   "triggers": [],
+   "triggers": [
+    {
+     "name": "onDeath",
+     "hook": "onDeath",
+     "targets": null,
+     "effects": [
+      {
+       "effect": "heal",
+       "status": null,
+       "stat": null,
+       "value": 20,
+       "target": "one ally within N hexes",
+       "ported": true
+      },
+      {
+       "effect": "grant a stat for the Battle",
+       "status": null,
+       "stat": "strength",
+       "value": 2,
+       "target": "one ally within N hexes",
+       "ported": true
+      }
+     ],
+     "ported": true
+    }
+   ],
    "art": "assets/cards/enemies/tomb-sentry.png",
    "campaign": "shadows",
    "encounters": [
     "tomb-sentries"
    ],
    "curated": true,
+   "sourceGaveTriggers": true,
    "backstory": "Paired undead guardians bound by ancient tomb magic. Kill one and the survivor absorbs its power — healing to full and gaining permanent melee. The only way to win: weaken both to the brink, then destroy them together.",
    "quote": "We are one. Kill us both or kill neither.",
    "notes": [],
@@ -8283,6 +9379,7 @@
     "the-dark-convoy"
    ],
    "curated": true,
+   "sourceGaveTriggers": false,
    "backstory": "Elite undead warriors wielding heavy spears. They anchor the front line with high armor and devastating melee damage. Their Impale attack hits for melee+2 when in the foremost position, and Brace makes them progressively harder to kill.",
    "quote": "None shall pass the dark convoy.",
    "notes": [],
@@ -8342,7 +9439,7 @@
        "status": "weak",
        "stat": null,
        "value": 1,
-       "target": null
+       "target": "the unit this hit"
       }
      ]
     }
@@ -8354,6 +9451,7 @@
     "the-fallen-legion"
    ],
    "curated": true,
+   "sourceGaveTriggers": false,
    "backstory": "The fallen soldiers of a once-proud desert legion, raised from their graves by dark sorcery. They fight with the same discipline in death as in life, overwhelming foes with sheer numbers across two fronts.",
    "quote": "...the dead... march...",
    "notes": [],
@@ -8426,6 +9524,7 @@
     "the-fallen-legion"
    ],
    "curated": true,
+   "sourceGaveTriggers": false,
    "backstory": "Undead archers who fire from the back lines with tireless precision. Their cursed arrows hit a single target for 6, while Rain of Arrows deals 3 to every hero on the field. Combined with Cursed Legionnaires blocking the front, they create a deadly kill zone.",
    "quote": "...loose...",
    "notes": [
@@ -8496,12 +9595,28 @@
        "status": "weak",
        "stat": null,
        "value": 2,
-       "target": null
+       "target": "the unit this hit"
       }
      ]
     }
    ],
    "triggers": [
+    {
+     "name": "turnEnd",
+     "hook": "onActivationEnd",
+     "targets": null,
+     "effects": [
+      {
+       "effect": "grant a stat for the Battle",
+       "status": null,
+       "stat": null,
+       "value": 1,
+       "target": "self",
+       "ported": true
+      }
+     ],
+     "ported": true
+    },
     {
      "name": "Cursed Presence",
      "hook": "aura",
@@ -8521,6 +9636,7 @@
    "campaign": null,
    "encounters": [],
    "curated": false,
+   "sourceGaveTriggers": true,
    "backstory": "A terrifying spectral entity that grows stronger with every passing turn. Each turn end it gains dodge (becoming unhittable), raises Power (making Spirit Blast devastating), and creates another aura (punishing hero deployment). Three escalating threats from one source. Kill it fast or die slowly.",
    "quote": "You cannot kill what is already dead. You can only join us.",
    "notes": [
@@ -8593,6 +9709,7 @@
     "dune-wolves"
    ],
    "curated": true,
+   "sourceGaveTriggers": false,
    "backstory": "Lean, sun-scorched wolves that hunt the dunes in packs. They coordinate attacks with eerie precision, snarling to drive each other into a frenzy.",
    "quote": "The pack hunts as one.",
    "notes": [],
@@ -8670,6 +9787,7 @@
    "campaign": null,
    "encounters": [],
    "curated": false,
+   "sourceGaveTriggers": false,
    "backstory": "The massive alpha of a dune wolf pack, its bite carries a terrible curse. Those who survive its jaws find themselves changing under the next full moon.",
    "quote": "The curse runs deeper than the wound.",
    "notes": [],
@@ -8743,11 +9861,29 @@
      ]
     }
    ],
-   "triggers": [],
+   "triggers": [
+    {
+     "name": "Thorns",
+     "hook": "passive",
+     "targets": "self",
+     "effects": [
+      {
+       "effect": "Thorns N",
+       "status": null,
+       "stat": null,
+       "value": 2,
+       "target": null,
+       "ported": true
+      }
+     ],
+     "ported": true
+    }
+   ],
    "art": "../assets/cards/enemies/profane-idol.png",
    "campaign": null,
    "encounters": [],
    "curated": false,
+   "sourceGaveTriggers": true,
    "backstory": "A tomb idol corrupted by demonic energy, studded with the bones of sacrificial victims. Every strike shatters cursed bone shards back into the attacker.",
    "quote": "Strike me, and bleed.",
    "notes": [],
@@ -8818,6 +9954,7 @@
     "demon-shells"
    ],
    "curated": true,
+   "sourceGaveTriggers": false,
    "backstory": "A demon in hibernation, its shell thick with calcified armor. It looks almost harmless -- until you crack the shell and wake what sleeps inside.",
    "quote": "Do not... disturb...",
    "notes": [],
@@ -8888,6 +10025,7 @@
     "the-conjurers-army"
    ],
    "curated": true,
+   "sourceGaveTriggers": false,
    "backstory": "A warrior of light and sand, conjured into being by arcane power. Each one is stronger than the last, empowered by its creator's layered enchantments.",
    "quote": "I serve the Conjurer.",
    "notes": [],
@@ -8971,6 +10109,7 @@
    "campaign": null,
    "encounters": [],
    "curated": false,
+   "sourceGaveTriggers": false,
    "backstory": "A master of sand magic who conjures warriors from the desert itself. Each wave of soldiers is permanently stronger than the last, layered with enchantments.",
    "quote": "My army grows with every breath.",
    "notes": [
@@ -9032,7 +10171,7 @@
        "status": "weak",
        "stat": null,
        "value": 1,
-       "target": null
+       "target": "the unit this hit"
       }
      ]
     },
@@ -9060,6 +10199,7 @@
     "spectral-prison"
    ],
    "curated": true,
+   "sourceGaveTriggers": false,
    "backstory": "Wraiths bound to the tombs they once guarded. Their ethereal forms are difficult to hit, and their spectral claws bypass physical armor entirely.",
    "quote": "You trespass in our domain.",
    "notes": [],
@@ -9141,6 +10281,7 @@
     "spectral-prison"
    ],
    "curated": true,
+   "sourceGaveTriggers": false,
    "backstory": "Spirits consumed by rage, seeking vessels for their vengeance. Killing one releases its fury -- it possesses the nearest soul before dissipating.",
    "quote": "If I fall, you carry my burden.",
    "notes": [
@@ -9215,6 +10356,7 @@
     "blood-court"
    ],
    "curated": true,
+   "sourceGaveTriggers": false,
    "backstory": "Mindless thralls created by the Desert Vampire, driven by an insatiable hunger for blood. They throw themselves at enemies, serving as both soldiers and shields for their master.",
    "quote": "Blood... must feed...",
    "notes": [
@@ -9311,6 +10453,7 @@
    "campaign": null,
    "encounters": [],
    "curated": false,
+   "sourceGaveTriggers": false,
    "backstory": "An ancient vampire lord who has haunted the desert for centuries. It feeds from behind its spawn bodyguards, draining heroes at range. When its servants fall, it closes in with a cursed bite.",
    "quote": "Your blood calls to me across the sands.",
    "notes": [],
@@ -9388,6 +10531,7 @@
    "campaign": null,
    "encounters": [],
    "curated": false,
+   "sourceGaveTriggers": false,
    "backstory": "An ancient demon of unknowable origin, dormant beneath the sands for millennia. Its armored shell conceals something far worse. The first wound wakes it, and what emerges is beyond comprehension.",
    "quote": "...",
    "notes": [],
@@ -9447,7 +10591,7 @@
        "status": "weak",
        "stat": null,
        "value": 1,
-       "target": null
+       "target": "the unit this hit"
       }
      ]
     }
@@ -9459,6 +10603,7 @@
     "the-nameless-horror"
    ],
    "curated": true,
+   "sourceGaveTriggers": false,
    "backstory": "Pieces of the Horror's essence, shed like scales. Each fragment is a mindless but vicious extension of its creator, driven to protect the main body.",
    "quote": "*gurgling*",
    "notes": [],
@@ -9518,7 +10663,7 @@
        "status": "poison",
        "stat": null,
        "value": 1,
-       "target": null
+       "target": "the unit this hit"
       }
      ]
     }
@@ -9530,6 +10675,7 @@
     "the-plague-pit"
    ],
    "curated": true,
+   "sourceGaveTriggers": false,
    "backstory": "Plague-riddled corpses that stumble through the desert wastes, spreading infection with every touch. They feel no pain and never stop coming.",
    "quote": "*wet groaning*",
    "notes": [],
@@ -9589,7 +10735,7 @@
        "status": "poison",
        "stat": null,
        "value": 2,
-       "target": null
+       "target": "the unit this hit"
       }
      ]
     },
@@ -9617,6 +10763,7 @@
     "the-plague-pit"
    ],
    "curated": true,
+   "sourceGaveTriggers": false,
    "backstory": "The source of the plague, these bloated undead carry the worst of the infection. Their touch doesn't just poison -- it marks you with Rotting Flesh that persists beyond combat.",
    "quote": "The plague is a gift. Accept it.",
    "notes": [],
@@ -9686,12 +10833,28 @@
        "status": "weak",
        "stat": null,
        "value": 2,
-       "target": null
+       "target": "the unit this hit"
       }
      ]
     }
    ],
    "triggers": [
+    {
+     "name": "Thorns",
+     "hook": "passive",
+     "targets": "self",
+     "effects": [
+      {
+       "effect": "Thorns N",
+       "status": null,
+       "stat": null,
+       "value": 2,
+       "target": null,
+       "ported": true
+      }
+     ],
+     "ported": true
+    },
     {
      "name": "Sand Fortress",
      "hook": "aura",
@@ -9712,6 +10875,7 @@
    "campaign": null,
    "encounters": [],
    "curated": false,
+   "sourceGaveTriggers": true,
    "backstory": "An ancient sovereign of the desert, fused with the sand itself. Thorns of crystallized sand punish every attacker. Its Power grows each turn, feeding its devastating strikes. Its Fortify auras make each new guardian tankier than the last.",
    "quote": "I am the desert. Strike me, and the desert strikes back.",
    "notes": [
@@ -9784,6 +10948,7 @@
     "the-sand-king"
    ],
    "curated": true,
+   "sourceGaveTriggers": false,
    "backstory": "Soldiers of living sand, conjured to defend the Sand King. Their armor grows thicker with each enchantment the King lays upon the battlefield.",
    "quote": "The King commands, and we obey.",
    "notes": [],
@@ -9869,6 +11034,7 @@
    "campaign": null,
    "encounters": [],
    "curated": false,
+   "sourceGaveTriggers": false,
    "backstory": "Massive constructs of sand and stone, animated by the Obelisk's power. They stand between attackers and their creator, growing more impenetrable each turn as the Obelisk layers them with armor.",
    "quote": "The Obelisk must not fall.",
    "notes": [],
@@ -9945,6 +11111,7 @@
    "campaign": null,
    "encounters": [],
    "curated": false,
+   "sourceGaveTriggers": false,
    "backstory": "An ancient monolith of unknown origin, thrumming with arcane power. It never attacks directly, but every turn it heals its guardians, raises Power, layers permanent armor, and punishes hero deployment. Destroy it before its scaling becomes insurmountable.",
    "quote": "*thrumming intensifies*",
    "notes": [],
@@ -10030,6 +11197,7 @@
    "campaign": null,
    "encounters": [],
    "curated": false,
+   "sourceGaveTriggers": false,
    "backstory": "Massive undead guardians bound to cursed obelisks, channeling death energy into dark wards. They rarely fight directly, preferring to let their necromantic barriers shield their allies.",
    "quote": "The dead endure. So shall we.",
    "notes": [],
@@ -10109,6 +11277,7 @@
    "campaign": null,
    "encounters": [],
    "curated": false,
+   "sourceGaveTriggers": false,
    "backstory": "Undead sorcerers who command the death energy of cursed tombs. From the safety of the back line, they unleash devastating bolts of necrotic energy that arc between targets.",
    "quote": "Death answers to no mortal.",
    "notes": [
@@ -10170,18 +11339,36 @@
        "status": "poison",
        "stat": null,
        "value": 1,
-       "target": null
+       "target": "the unit this hit"
       }
      ]
     }
    ],
-   "triggers": [],
+   "triggers": [
+    {
+     "name": "turnEnd",
+     "hook": "onActivationEnd",
+     "targets": null,
+     "effects": [
+      {
+       "effect": "apply a status",
+       "status": "protection",
+       "stat": null,
+       "value": 3,
+       "target": "allies within N hexes",
+       "ported": true
+      }
+     ],
+     "ported": true
+    }
+   ],
    "art": "assets/cards/enemies/soul-wisp.png",
    "campaign": "shadows",
    "encounters": [
     "the-death-ward"
    ],
    "curated": true,
+   "sourceGaveTriggers": true,
    "backstory": "Spectral fragments of trapped souls orbiting cursed obelisks. Individually harmless, their protection pulses make allies nearly invulnerable when they swarm together.",
    "quote": "*spectral wailing*",
    "notes": [],
@@ -10261,13 +11448,31 @@
      ]
     }
    ],
-   "triggers": [],
+   "triggers": [
+    {
+     "name": "turnEnd",
+     "hook": "onActivationEnd",
+     "targets": null,
+     "effects": [
+      {
+       "effect": "heal",
+       "status": null,
+       "stat": null,
+       "value": 4,
+       "target": "allies within N hexes",
+       "ported": true
+      }
+     ],
+     "ported": true
+    }
+   ],
    "art": "assets/cards/enemies/tomb-mender.png",
    "campaign": "shadows",
    "encounters": [
     "the-death-ward"
    ],
    "curated": true,
+   "sourceGaveTriggers": true,
    "backstory": "Undead healers who draw upon death energy to mend the fallen. Their constant restoration makes nearby allies frustratingly durable, and their necrotic magic empowers attacks from the grave.",
    "quote": "Death carries renewal as well as ruin.",
    "notes": [],
@@ -10333,13 +11538,31 @@
      ]
     }
    ],
-   "triggers": [],
+   "triggers": [
+    {
+     "name": "onKill",
+     "hook": "onKill",
+     "targets": null,
+     "effects": [
+      {
+       "effect": "deal damage (type from the weapon)",
+       "status": null,
+       "stat": null,
+       "value": 40,
+       "target": "self",
+       "ported": true
+      }
+     ],
+     "ported": true
+    }
+   ],
    "art": "assets/cards/enemies/obsidian-hulk.png",
    "campaign": "shadows",
    "encounters": [
     "obsidian-cascade"
    ],
    "curated": true,
+   "sourceGaveTriggers": true,
    "backstory": "Living stone forged in volcanic fire, these hulks grow stronger as their kin fall. Each death leaves a permanent mark on the battlefield, empowering those that follow. The cascade of obsidian vengeance is inevitable.",
    "quote": "We are the mountain. Break one peak and another rises higher.",
    "notes": [
@@ -10416,11 +11639,29 @@
      ]
     }
    ],
-   "triggers": [],
+   "triggers": [
+    {
+     "name": "turnEnd",
+     "hook": "onActivationEnd",
+     "targets": null,
+     "effects": [
+      {
+       "effect": "heal",
+       "status": null,
+       "stat": null,
+       "value": 3,
+       "target": "self",
+       "ported": true
+      }
+     ],
+     "ported": true
+    }
+   ],
    "art": "../assets/cards/enemies/tomb-lich.png",
    "campaign": null,
    "encounters": [],
    "curated": false,
+   "sourceGaveTriggers": true,
    "backstory": "An ancient sorcerer who conquered death itself, ruling from the deepest sanctum of the desert tombs. Its power grows with each passing moment, and its necrotic magic devastates all who approach.",
    "quote": "I have defeated death. What hope do you have?",
    "notes": [
@@ -10493,6 +11734,7 @@
     "the-lichs-sanctum"
    ],
    "curated": true,
+   "sourceGaveTriggers": false,
    "backstory": "The spectral remains of knights who fell defending the tomb. Their ghostly blades still cut true, and their ethereal nature makes them difficult to strike.",
    "quote": "Our vigil is eternal.",
    "notes": [],
@@ -10561,6 +11803,7 @@
    "campaign": null,
    "encounters": [],
    "curated": false,
+   "sourceGaveTriggers": false,
    "backstory": "A massive demon that endlessly spawns lesser abyssal creatures. It barely fights, relying on the sheer volume of its brood. Killing it frees a slot for more spawn -- a trap for the unwary.",
    "quote": "My children are legion. You cannot stem the tide.",
    "notes": [],
@@ -10624,6 +11867,7 @@
     "abyssal-brood"
    ],
    "curated": true,
+   "sourceGaveTriggers": false,
    "backstory": "Tiny abyssal parasites birthed by the Broodmother. Fragile and weak, but their deaths feed dark energy back into the swarm. Each one killed makes the next wave more dangerous.",
    "quote": "*chittering screech*",
    "notes": [
@@ -10694,6 +11938,7 @@
    "campaign": null,
    "encounters": [],
    "curated": false,
+   "sourceGaveTriggers": false,
    "backstory": "A massive undead brute, fused from the bones of dozens of warriors. Its bulk blocks the entrance to the tomb while deadlier horrors lurk in the darkness behind it.",
    "quote": "*bones grinding*",
    "notes": [],
@@ -10738,29 +11983,38 @@
      "targets": "one enemy in melee reach",
      "damageType": "physical",
      "damage": null,
-     "effects": [
-      {
-       "effect": "slayer bonus",
-       "status": null,
-       "stat": null,
-       "value": 3,
-       "target": null,
-       "authored": true
-      }
-     ]
+     "effects": []
     }
    ],
-   "triggers": [],
+   "triggers": [
+    {
+     "name": "onDeath",
+     "hook": "onDeath",
+     "targets": null,
+     "effects": [
+      {
+       "effect": "apply a status",
+       "status": "poison",
+       "stat": null,
+       "value": 4,
+       "target": "one enemy within N hexes",
+       "ported": true
+      }
+     ],
+     "ported": true
+    }
+   ],
    "art": "assets/cards/enemies/tomb-stalker.png",
    "campaign": "shadows",
    "encounters": [
     "the-stalkers-tomb"
    ],
    "curated": true,
+   "sourceGaveTriggers": true,
    "backstory": "Skeletal hunters that emerge from tomb darkness with terrifying speed. Fragile but devastating -- their cursed claws deliver a death strike that can fell even hardened warriors. Kill them before they strike.",
    "quote": "*scraping in the darkness*",
    "notes": [
-    "Rider authored 2026-08-21 from its own name: Precision 16 and an ability called Death Strike. It is an executioner, so it gets the executioner's effect rather than a bigger number."
+    "Every ability is a bare attack with no rider — a candidate for one."
    ],
    "source": "hell-tcg data/enemyCards.js, extracted 2026-08-21. Stats and abilities are ported, not authored."
   },
@@ -10818,18 +12072,36 @@
        "status": "burn",
        "stat": null,
        "value": 1,
-       "target": null
+       "target": "the unit this hit"
       }
      ]
     }
    ],
-   "triggers": [],
+   "triggers": [
+    {
+     "name": "onDeath",
+     "hook": "onDeath",
+     "targets": null,
+     "effects": [
+      {
+       "effect": "apply a status",
+       "status": "burn",
+       "stat": null,
+       "value": 1,
+       "target": "enemies within N hexes",
+       "ported": true
+      }
+     ],
+     "ported": true
+    }
+   ],
    "art": "assets/cards/enemies/hellbound-legionnaire.png",
    "campaign": "shadows",
    "encounters": [
     "the-infernal-host"
    ],
    "curated": true,
+   "sourceGaveTriggers": true,
    "backstory": "Demon soldiers bound in hellfire, their bodies wreathed in eternal flame. Easy to kill, but each death scorches the entire party. The accumulation of burn stacks is the real threat.",
    "quote": "In death, we burn brighter.",
    "notes": [],
@@ -10914,6 +12186,7 @@
    "campaign": null,
    "encounters": [],
    "curated": false,
+   "sourceGaveTriggers": false,
    "backstory": "A demon lord who commands an army of hellbound soldiers. It hides behind its expendable legionnaires, hurling Possession curses and war cries from the safety of the back line.",
    "quote": "My legions are infinite. Your resolve is not.",
    "notes": [],
@@ -10986,6 +12259,7 @@
     "the-shifting-tomb"
    ],
    "curated": true,
+   "sourceGaveTriggers": false,
    "backstory": "Undead warriors driven by pure rage. Devastating in melee (M7, M10 spike), but nearly useless when stuck behind allies (R1). Their random placement means the board is a roll of the dice every turn.",
    "quote": "RAAAARGH!",
    "notes": [
@@ -11047,7 +12321,7 @@
        "status": "poison",
        "stat": null,
        "value": 2,
-       "target": null
+       "target": "the unit this hit"
       }
      ]
     }
@@ -11059,6 +12333,7 @@
     "the-shifting-tomb"
    ],
    "curated": true,
+   "sourceGaveTriggers": false,
    "backstory": "Skeletal archers who fire with uncanny accuracy from the back ranks. Deadly at range (R6, reach 3) but crippled if forced to the front (M1). Random placement makes them an unpredictable threat.",
    "quote": "*bones creak as the bow draws taut*",
    "notes": [],
@@ -11136,6 +12411,7 @@
     "the-shifting-tomb"
    ],
    "curated": true,
+   "sourceGaveTriggers": false,
    "backstory": "The elite guard of the tomb, equally deadly at any position. With M5/R5 and reach 2, the champion has no weakness -- unlike the berserkers and archers whose effectiveness depends entirely on placement.",
    "quote": "The tomb does not forgive. Neither do I.",
    "notes": [],
@@ -11208,11 +12484,29 @@
      ]
     }
    ],
-   "triggers": [],
+   "triggers": [
+    {
+     "name": "Thorns",
+     "hook": "passive",
+     "targets": "self",
+     "effects": [
+      {
+       "effect": "Thorns N",
+       "status": null,
+       "stat": null,
+       "value": 2,
+       "target": null,
+       "ported": true
+      }
+     ],
+     "ported": true
+    }
+   ],
    "art": "../assets/cards/enemies/cursed-brute.png",
    "campaign": null,
    "encounters": [],
    "curated": false,
+   "sourceGaveTriggers": true,
    "backstory": "A massive brute driven mad by dark curses. Its body radiates pain -- every blow struck against it rebounds as waves of agony. The smart play is to neutralize the healers first, but the brute's M7 punishes hesitation.",
    "quote": "HURT ME! HURT ME AND SUFFER!",
    "notes": [],
@@ -11290,6 +12584,7 @@
     "the-mad-congregation"
    ],
    "curated": true,
+   "sourceGaveTriggers": false,
    "backstory": "Followers of the Mad Preacher, these acolytes have lost their minds to dark rituals. They barely fight, but their constant healing of the Cursed Brute transforms a manageable threat into an endless grind.",
    "quote": "The master bleeds! Heal him! HEAL HIM!",
    "notes": [],
@@ -11381,6 +12676,7 @@
    "campaign": null,
    "encounters": [],
    "curated": false,
+   "sourceGaveTriggers": false,
    "backstory": "The leader of the mad congregation, this preacher commands from behind the brute. It buffs, heals, and occasionally throws Hex Bolts, making it the ideal second target after clearing the acolytes.",
    "quote": "Suffering is the path to enlightenment!",
    "notes": [],
@@ -11457,6 +12753,7 @@
    "campaign": null,
    "encounters": [],
    "curated": false,
+   "sourceGaveTriggers": false,
    "backstory": "Spirits bound to a ritual circle, endlessly channeling dark energy. Each phantom fights, heals, and empowers -- there are no roles, no specialists. Just four identical threats that grow stronger together.",
    "quote": "The circle binds us. The circle empowers us.",
    "notes": [],
@@ -11529,6 +12826,7 @@
    "campaign": null,
    "encounters": [],
    "curated": false,
+   "sourceGaveTriggers": false,
    "backstory": "An ancient undead horror that never attacks directly. Instead, it poisons the very battlefield -- every turn it exists, deploying new heroes becomes more painful. By late game, entering combat is itself a death sentence.",
    "quote": "I do not need to kill you. The battlefield will do that for me.",
    "notes": [
@@ -11599,7 +12897,7 @@
        "status": "weak",
        "stat": null,
        "value": 1,
-       "target": null
+       "target": "the unit this hit"
       }
      ]
     }
@@ -11612,6 +12910,7 @@
     "skyship-white-bone-demon"
    ],
    "curated": true,
+   "sourceGaveTriggers": false,
    "backstory": "Revenants of fallen warriors, bound in bone and fury. They serve as the Defiler's front line, dealing consistent damage while the Defiler poisons the battlefield behind them.",
    "quote": "We are the wall between you and survival.",
    "notes": [],
@@ -11697,6 +12996,7 @@
     "the-defilers-march"
    ],
    "curated": true,
+   "sourceGaveTriggers": false,
    "backstory": "Undead spellcasters who serve the Defiler, chanting dark rituals that poison the battlefield and heal their allies. They amplify the Defiler's aura engine while providing ranged support.",
    "quote": "The ritual must not be interrupted...",
    "notes": [
@@ -11759,7 +13059,7 @@
        "status": "burn",
        "stat": null,
        "value": 1,
-       "target": null
+       "target": "the unit this hit"
       }
      ]
     },
@@ -11778,6 +13078,7 @@
    "campaign": null,
    "encounters": [],
    "curated": false,
+   "sourceGaveTriggers": false,
    "backstory": "A grotesque cocoon of infernal flesh, pulsing with dark energy. Within, something terrible gestates — waiting for the shock of combat to trigger its emergence. Those who strike it may regret what hatches.",
    "quote": "The shell cracks... something stirs within...",
    "notes": [],
@@ -11849,6 +13150,7 @@
     "infernal-chrysalis"
    ],
    "curated": true,
+   "sourceGaveTriggers": false,
    "backstory": "Fanatical worshippers who tend the infernal chrysalides, feeding them dark energy and protecting them until they hatch. Their healing prayers sustain the cocoons through any assault.",
    "quote": "The transformation is sacred. You will not interfere.",
    "notes": [],
@@ -11908,18 +13210,44 @@
        "status": "poison",
        "stat": null,
        "value": 1,
-       "target": null
+       "target": "the unit this hit"
       }
      ]
     }
    ],
-   "triggers": [],
+   "triggers": [
+    {
+     "name": "onDeath",
+     "hook": "onDeath",
+     "targets": null,
+     "effects": [
+      {
+       "effect": "apply a status",
+       "status": "poison",
+       "stat": null,
+       "value": 2,
+       "target": "enemies within N hexes",
+       "ported": true
+      },
+      {
+       "effect": "apply a status",
+       "status": "protection",
+       "stat": null,
+       "value": 3,
+       "target": "allies within N hexes",
+       "ported": true
+      }
+     ],
+     "ported": true
+    }
+   ],
    "art": "assets/cards/enemies/damned-wretch.png",
    "campaign": "shadows",
    "encounters": [
     "the-condemned"
    ],
    "curated": true,
+   "sourceGaveTriggers": true,
    "backstory": "Souls condemned to eternal torment, their bodies wracked with poison and despair. Killing them releases their curse upon all who stand near — a final act of vengeance from beyond death.",
    "quote": "End me... and share my suffering...",
    "notes": [],
@@ -12005,6 +13333,7 @@
    "campaign": null,
    "encounters": [],
    "curated": false,
+   "sourceGaveTriggers": false,
    "backstory": "A fallen priest who embraced damnation willingly. Now he channels infernal power through profane invocations, healing his wretched flock while empowering the darkness that sustains them. Each prayer makes the next more devastating.",
    "quote": "I speak the words of the damned, and the damned answer.",
    "notes": [],
@@ -12065,7 +13394,7 @@
        "status": "burn",
        "stat": null,
        "value": 1,
-       "target": null
+       "target": "the unit this hit"
       }
      ]
     }
@@ -12077,6 +13406,7 @@
     "infernal-pyre"
    ],
    "curated": true,
+   "sourceGaveTriggers": false,
    "backstory": "The restless spirit of one who burned alive, forever wreathed in spectral flame. When destroyed, the fire does not go out — it lingers on the battlefield, burning all who dare enter its domain.",
    "quote": "The fire... it never stops...",
    "notes": [],
@@ -12137,7 +13467,7 @@
        "status": "burn",
        "stat": null,
        "value": 2,
-       "target": null
+       "target": "the unit this hit"
       }
      ]
     }
@@ -12149,6 +13479,7 @@
     "infernal-pyre"
    ],
    "curated": true,
+   "sourceGaveTriggers": false,
    "backstory": "An undead warrior that never stopped burning. Its charred body radiates intense heat, and its grip sears flesh on contact. It charges to the front line, daring heroes to come close.",
    "quote": "I burned once. Now you burn with me.",
    "notes": [],
@@ -12229,6 +13560,7 @@
     "profane-pyre"
    ],
    "curated": true,
+   "sourceGaveTriggers": false,
    "backstory": "A demon priest who tends the profane pyres of the underworld. In life, it ignites allies with infernal fury. In death, its embers persist — a permanent burning field that punishes any hero who dares enter the battle.",
    "quote": "My flames are eternal. Kill me, and they spread.",
    "notes": [],
@@ -12288,7 +13620,7 @@
        "status": "burn",
        "stat": null,
        "value": 1,
-       "target": null
+       "target": "the unit this hit"
       }
      ]
     }
@@ -12300,6 +13632,7 @@
     "profane-pyre"
    ],
    "curated": true,
+   "sourceGaveTriggers": false,
    "backstory": "Charred remnants of the dead, still smoldering from the pyres that consumed them. They shamble forward with mindless aggression, their touch leaving burns that refuse to heal.",
    "quote": "...",
    "notes": [],
@@ -12360,18 +13693,44 @@
        "status": "weak",
        "stat": null,
        "value": 1,
-       "target": null
+       "target": "the unit this hit"
       }
      ]
     }
    ],
-   "triggers": [],
+   "triggers": [
+    {
+     "name": "onDeath",
+     "hook": "onDeath",
+     "targets": null,
+     "effects": [
+      {
+       "effect": "deal damage (type from the weapon)",
+       "status": null,
+       "stat": null,
+       "value": 2,
+       "target": "enemies within N hexes",
+       "ported": true
+      },
+      {
+       "effect": "apply a status",
+       "status": "poison",
+       "stat": null,
+       "value": 1,
+       "target": "enemies within N hexes",
+       "ported": true
+      }
+     ],
+     "ported": true
+    }
+   ],
    "art": "assets/cards/enemies/damned-congregant.png",
    "campaign": "shadows",
    "encounters": [
     "the-condemner"
    ],
    "curated": true,
+   "sourceGaveTriggers": true,
    "backstory": "Once faithful worshippers, now damned to serve in undeath. Their deaths release a burst of profane energy and lingering poison — the final prayer of the condemned, a curse upon all who brought them low.",
    "quote": "We are already dead. What more can you take?",
    "notes": [],
@@ -12459,6 +13818,7 @@
     "the-condemner"
    ],
    "curated": true,
+   "sourceGaveTriggers": false,
    "backstory": "A priest whose faith rotted into something profane. He preaches damnation with every breath, healing his congregation of the dead while accumulating dark power. His sermons grow more devastating as the fight drags on.",
    "quote": "Kneel before the inevitable. Your condemnation is already written.",
    "notes": [],
@@ -12510,7 +13870,7 @@
        "status": null,
        "stat": "armor",
        "value": -1,
-       "target": null
+       "target": "the unit this hit"
       }
      ]
     },
@@ -12569,6 +13929,7 @@
     "skyship-cursed-blademaster-patrol"
    ],
    "curated": true,
+   "sourceGaveTriggers": false,
    "backstory": "Dishonored imperial swordsmen bound to eternal servitude by dark magic. Their cursed blades still cut with lethal precision, and centuries of bitterness fuel devastating overhead strikes that cleave through even hardened defenses.",
    "quote": "My shame is eternal. So is my blade.",
    "notes": [],
@@ -12649,6 +14010,7 @@
     "skyship-cursed-blademaster-patrol"
    ],
    "curated": true,
+   "sourceGaveTriggers": false,
    "backstory": "Spectral archers from a fallen army, their ghostly arrows phase through physical armor to strike the spirit directly. They flicker between planes, making them maddeningly difficult to hit with mundane weapons.",
    "quote": "My arrows find their mark across both worlds.",
    "notes": [],
@@ -12709,7 +14071,7 @@
        "status": "poison",
        "stat": null,
        "value": 2,
-       "target": null
+       "target": "the unit this hit"
       }
      ]
     },
@@ -12737,6 +14099,7 @@
     "skyship-hellwasp-swarm"
    ],
    "curated": true,
+   "sourceGaveTriggers": false,
    "backstory": "Chitinous horrors from the abyssal hives, these demon wasps swarm in coordinated waves. Each barbed stinger injects a venom that slowly shuts down the body while the swarm formation amplifies ranged attacks.",
    "quote": "The swarm hungers. The swarm feeds.",
    "notes": [],
@@ -12817,6 +14180,7 @@
     "skyship-jade-terracotta"
    ],
    "curated": true,
+   "sourceGaveTriggers": false,
    "backstory": "Cursed terracotta warriors animated by dark jade magic, silent sentinels from a defiled emperor's tomb. Their jade-reinforced armor makes them nearly impervious to physical attacks, and the cursed jade permanently hardens over time.",
    "quote": "The emperor commands. We endure.",
    "notes": [],
@@ -12896,6 +14260,7 @@
     "skyship-yaoguai-warpack"
    ],
    "curated": true,
+   "sourceGaveTriggers": false,
    "backstory": "Lesser yaoguai demons — hulking red-skinned ogres that fight with crude iron clubs. They snarl and rage in packs, each driving the others to greater ferocity. Individually manageable, but in numbers they overwhelm.",
    "quote": "Crush! Break! Eat!",
    "notes": [],
@@ -12982,6 +14347,7 @@
    "campaign": null,
    "encounters": [],
    "curated": false,
+   "sourceGaveTriggers": false,
    "backstory": "A massive horned yaoguai chieftain who commands the warpack through raw violence and dark magic. Its cursed bite carries the Lycanthropy affliction — heroes bitten in melee carry the beast within them long after the battle ends.",
    "quote": "Kneel before the warchief, or be devoured.",
    "notes": [],
@@ -13042,7 +14408,7 @@
        "status": "poison",
        "stat": null,
        "value": 2,
-       "target": null
+       "target": "the unit this hit"
       }
      ]
     },
@@ -13070,6 +14436,7 @@
     "skyship-infernal-crawlers"
    ],
    "curated": true,
+   "sourceGaveTriggers": false,
    "backstory": "Spider-like demons that scuttle from the darkest crevices of the abyss. Each one lashes out the instant it emerges, dealing burst damage before the heroes can react. Their venomous fangs and reach 2 make them dangerous at any range.",
    "quote": "From the dark we come. Into the dark you go.",
    "notes": [],
@@ -13140,6 +14507,7 @@
     "skyship-fiend-warren"
    ],
    "curated": true,
+   "sourceGaveTriggers": false,
    "backstory": "Demons sealed in cursed iron casings by ancient Eastern warlocks. The bindings contain their true power, but any breach shatters the seals — unleashing a frenzied fiend of terrible fury.",
    "quote": "The chains... are... breaking...",
    "notes": [],
@@ -13216,6 +14584,7 @@
    "campaign": null,
    "encounters": [],
    "curated": false,
+   "sourceGaveTriggers": false,
    "backstory": "A demon priest who maintains the iron bindings on its lesser kin — not to contain them, but to weaponize their eventual release. Its wards buy time for the sealed fiends, while its rituals steadily build toward catastrophe.",
    "quote": "Every chain I forge is a promise of ruin.",
    "notes": [],
@@ -13289,11 +14658,29 @@
      ]
     }
    ],
-   "triggers": [],
+   "triggers": [
+    {
+     "name": "Thorns",
+     "hook": "passive",
+     "targets": "self",
+     "effects": [
+      {
+       "effect": "Thorns N",
+       "status": null,
+       "stat": null,
+       "value": 3,
+       "target": null,
+       "ported": true
+      }
+     ],
+     "ported": true
+    }
+   ],
    "art": "../assets/cards/enemies/chainbound-fiend.png",
    "campaign": null,
    "encounters": [],
    "curated": false,
+   "sourceGaveTriggers": true,
    "backstory": "Demons bound together by infernal chains that glow white-hot. Every blow against them drives burning links into the attacker's flesh. The chains themselves are alive, tightening and hardening in response to threats.",
    "quote": "Strike me. The chains remember.",
    "notes": [],
@@ -13354,7 +14741,7 @@
        "status": "weak",
        "stat": null,
        "value": 1,
-       "target": null
+       "target": "the unit this hit"
       }
      ]
     },
@@ -13380,6 +14767,7 @@
    "campaign": null,
    "encounters": [],
    "curated": false,
+   "sourceGaveTriggers": false,
    "backstory": "Jade temple guardians carved centuries ago to protect a sacred shrine. Enchanted to awaken when desecration threatens, they fight with the unyielding patience of stone and the ferocity of living predators.",
    "quote": "The shrine endures.",
    "notes": [],
@@ -13440,7 +14828,7 @@
        "status": "weak",
        "stat": null,
        "value": 1,
-       "target": null
+       "target": "the unit this hit"
       }
      ]
     },
@@ -13466,6 +14854,7 @@
    "campaign": null,
    "encounters": [],
    "curated": false,
+   "sourceGaveTriggers": false,
    "backstory": "Jade temple guardians carved centuries ago to protect a sacred shrine. Enchanted to awaken when desecration threatens, they fight with the unyielding patience of stone and the ferocity of living predators.",
    "quote": "The shrine endures.",
    "notes": [],
@@ -13526,7 +14915,7 @@
        "status": "weak",
        "stat": null,
        "value": 1,
-       "target": null
+       "target": "the unit this hit"
       }
      ]
     },
@@ -13552,6 +14941,7 @@
    "campaign": null,
    "encounters": [],
    "curated": false,
+   "sourceGaveTriggers": false,
    "backstory": "Jade temple guardians carved centuries ago to protect a sacred shrine. Enchanted to awaken when desecration threatens, they fight with the unyielding patience of stone and the ferocity of living predators.",
    "quote": "The shrine endures.",
    "notes": [],
@@ -13653,6 +15043,7 @@
    "campaign": null,
    "encounters": [],
    "curated": false,
+   "sourceGaveTriggers": false,
    "backstory": "The supreme guardian of the jade shrine, carved in the likeness of an empress lioness. Larger and more ornate than her lesser kin, she channels the shrine's divine power to empower all guardians in her presence.",
    "quote": "The empress watches. The empress judges.",
    "notes": [],
@@ -13731,6 +15122,7 @@
    "campaign": null,
    "encounters": [],
    "curated": false,
+   "sourceGaveTriggers": false,
    "backstory": "A horrifying fusion of abyssal carapace and demonic muscle, this armored horror guards its den with relentless aggression. Its layered chitin can shrug off blows that would fell lesser creatures.",
    "quote": "You will not pass.",
    "notes": [],
@@ -13788,13 +15180,31 @@
      ]
     }
    ],
-   "triggers": [],
+   "triggers": [
+    {
+     "name": "onDeath",
+     "hook": "onDeath",
+     "targets": null,
+     "effects": [
+      {
+       "effect": "apply a status",
+       "status": "poison",
+       "stat": null,
+       "value": 3,
+       "target": "one enemy within N hexes",
+       "ported": true
+      }
+     ],
+     "ported": true
+    }
+   ],
    "art": "assets/cards/enemies/bone-mantis.png",
    "campaign": "skyship",
    "encounters": [
     "skyship-bone-mantis-den"
    ],
    "curated": true,
+   "sourceGaveTriggers": true,
    "backstory": "Skeletal insect predators from an abyssal rift, their blade-arms carve through flesh and bone with terrifying precision. Fragile but devastatingly powerful, their toxic ichor sprays when they die.",
    "quote": "One cut. That is all it takes.",
    "notes": [
@@ -13856,7 +15266,7 @@
        "status": "poison",
        "stat": null,
        "value": 1,
-       "target": null
+       "target": "the unit this hit"
       }
      ]
     },
@@ -13884,6 +15294,7 @@
     "skyship-hungry-dead"
    ],
    "curated": true,
+   "sourceGaveTriggers": false,
    "backstory": "Reanimated soldiers from a forgotten legion, their corroded armor still bearing the insignia of a damned army. They fight with the discipline of the living and the relentlessness of the dead.",
    "quote": "The legion does not rest.",
    "notes": [],
@@ -13944,7 +15355,7 @@
        "status": "burn",
        "stat": null,
        "value": 1,
-       "target": null
+       "target": "the unit this hit"
       }
      ]
     }
@@ -13956,6 +15367,7 @@
     "skyship-hungry-dead"
    ],
    "curated": true,
+   "sourceGaveTriggers": false,
    "backstory": "Spectral undead driven by an insatiable hunger for the living. They drift through walls and reach across the battlefield with ghostly tendrils that drain life force from any hero within their terrible reach.",
    "quote": "Hungry... so hungry...",
    "notes": [],
@@ -14036,6 +15448,7 @@
     "skyship-hungry-dead"
    ],
    "curated": true,
+   "sourceGaveTriggers": false,
    "backstory": "Once a cleric of the divine, now a rotting vessel for demonic corruption. The Rot Priest spreads the curse of undeath through its festering touch, marking heroes with Rotting Flesh that persists beyond combat.",
    "quote": "Join us. The rot is a gift.",
    "notes": [],
@@ -14113,6 +15526,7 @@
    "campaign": null,
    "encounters": [],
    "curated": false,
+   "sourceGaveTriggers": false,
    "backstory": "A massive crimson-skinned yaoguai bound to defend a profane shrine. Every blow it absorbs channels pain into the shrine's dark power, making its priestesses ever more dangerous. The more you hurt it, the stronger the shrine becomes.",
    "quote": "Hit me. Feed the shrine.",
    "notes": [],
@@ -14198,6 +15612,7 @@
    "campaign": null,
    "encounters": [],
    "curated": false,
+   "sourceGaveTriggers": false,
    "backstory": "Priestesses of a corrupted Taoist shrine, channeling dark spirit energy through blood rituals. Their crimson bolts grow deadlier as the shrine's Power rises, making every wound to the Yaoguai a gift to their dark gods.",
    "quote": "The spirits accept your offering of pain.",
    "notes": [],
@@ -14258,7 +15673,7 @@
        "status": "poison",
        "stat": null,
        "value": 2,
-       "target": null
+       "target": "the unit this hit"
       }
      ]
     },
@@ -14275,7 +15690,7 @@
        "status": "weak",
        "stat": null,
        "value": 2,
-       "target": null
+       "target": "the unit this hit"
       }
      ]
     },
@@ -14301,6 +15716,7 @@
    "campaign": null,
    "encounters": [],
    "curated": false,
+   "sourceGaveTriggers": false,
    "backstory": "An ice ghost empress of legend, the Frost Empress commands a court of frozen spirits in an eternal winter. Her presence drains warmth and hope alike, weakening all who oppose her while her power grows with each passing moment.",
    "quote": "The cold is patient. The cold is eternal.",
    "notes": [],
@@ -14360,7 +15776,7 @@
        "status": "weak",
        "stat": null,
        "value": 1,
-       "target": null
+       "target": "the unit this hit"
       }
      ]
     }
@@ -14372,6 +15788,7 @@
     "skyship-frost-empress-court"
    ],
    "curated": true,
+   "sourceGaveTriggers": false,
    "backstory": "Spectral servants of the Frost Empress, frozen in eternal servitude. Their icy claws numb and weaken any who dare approach their empress, forming a barrier of chilling cold between the living and the dead.",
    "quote": "Serve... the empress...",
    "notes": [],
@@ -14431,7 +15848,7 @@
        "status": "poison",
        "stat": null,
        "value": 2,
-       "target": null
+       "target": "the unit this hit"
       }
      ]
     }
@@ -14443,6 +15860,7 @@
     "skyship-abyssal-excavation"
    ],
    "curated": true,
+   "sourceGaveTriggers": false,
    "backstory": "Lesser demons that claw through the abyssal bedrock with obsidian talons. They flood tunnels in waves, their venomous bites leaving festering wounds that slow even the hardiest warriors.",
    "quote": "Dig. Dig. The master waits below.",
    "notes": [],
@@ -14503,7 +15921,7 @@
        "status": "weak",
        "stat": null,
        "value": 2,
-       "target": null
+       "target": "the unit this hit"
       }
      ]
     },
@@ -14538,6 +15956,7 @@
    "campaign": null,
    "encounters": [],
    "curated": false,
+   "sourceGaveTriggers": false,
    "backstory": "A massive worm-like demon anchored deep in the abyssal tunnels. Its segmented body channels magic at devastating range while Pit Diggers swarm the front. Killing it requires pushing through the digger wall or using reach to strike from afar.",
    "quote": "The tunnel is my body. You walk inside me.",
    "notes": [],
@@ -14627,6 +16046,7 @@
    "campaign": null,
    "encounters": [],
    "curated": false,
+   "sourceGaveTriggers": false,
    "backstory": "Once the serene head of a mountain temple, now a vessel for demonic rage. His martial mastery remains, but every strike carries the demon's curse. The other monks worship him still, shielding him with prayer even as he destroys those who come to save them.",
    "quote": "The temple prays for you. It prays for your end.",
    "notes": [
@@ -14692,13 +16112,31 @@
      ]
     }
    ],
-   "triggers": [],
+   "triggers": [
+    {
+     "name": "turnEnd",
+     "hook": "onActivationEnd",
+     "targets": null,
+     "effects": [
+      {
+       "effect": "grant a stat for the Battle",
+       "status": null,
+       "stat": "armor",
+       "value": 1,
+       "target": "allies within N hexes",
+       "ported": true
+      }
+     ],
+     "ported": true
+    }
+   ],
    "art": "assets/cards/enemies/temple-supplicant.png",
    "campaign": "skyship",
    "encounters": [
     "skyship-possessed-monks"
    ],
    "curated": true,
+   "sourceGaveTriggers": true,
    "backstory": "Frail monks who still kneel in prayer, unaware their chanting sustains the demon possessing their master. Their fragile bodies belie the powerful wards they weave. Kill them to strip the abbot bare.",
    "quote": "We pray... we pray... we pray...",
    "notes": [],
@@ -14791,6 +16229,7 @@
    "campaign": null,
    "encounters": [],
    "curated": false,
+   "sourceGaveTriggers": false,
    "backstory": "A chanter whose prayers have been twisted by demonic corruption. She heals the possessed abbot with corrupted mantras and empowers the temple's defenders with dark sutras. Her reach 2 lets her strike from safety while her healing keeps the front line alive.",
    "quote": "The sutra binds flesh and spirit alike.",
    "notes": [],
@@ -14850,7 +16289,7 @@
        "status": "weak",
        "stat": null,
        "value": 1,
-       "target": null
+       "target": "the unit this hit"
       }
      ]
     }
@@ -14862,6 +16301,7 @@
     "skyship-hellforged-legion"
    ],
    "curated": true,
+   "sourceGaveTriggers": false,
    "backstory": "Demon soldiers forged in hellfire, clad in obsidian plate. They fight with disciplined brutality, their shields trailing embers that sap the strength of those they strike. In formation, they are nearly unstoppable.",
    "quote": "The legion does not retreat. The legion does not tire.",
    "notes": [],
@@ -14934,6 +16374,7 @@
     "skyship-hellforged-legion"
    ],
    "curated": true,
+   "sourceGaveTriggers": false,
    "backstory": "Demonic archers who rain hellfire from the back ranks. Their reach 3 lets them target any hero on the field, and their barrage ability can devastate an entire party at once. Fragile alone, deadly behind a wall of legionnaires.",
    "quote": "The sky burns with our arrows.",
    "notes": [
@@ -15015,6 +16456,7 @@
     "skyship-iron-yaoguai-parade"
    ],
    "curated": true,
+   "sourceGaveTriggers": false,
    "backstory": "Iron-clad yaoguai demons that march in endless parades through the burning wastes. Their iron cudgels can shatter bone and armor alike. When one roars, the others answer with fury.",
    "quote": "YAOGUAI! YAOGUAI! YAOGUAI!",
    "notes": [],
@@ -15107,6 +16549,7 @@
    "campaign": null,
    "encounters": [],
    "curated": false,
+   "sourceGaveTriggers": false,
    "backstory": "A cursed drummer whose war cadence drives the yaoguai to superhuman fury. Behind walls of iron-clad yaoguai, the drummer is nearly unreachable — H30, Arm4, Resist 2. Every turn it lives, its beats make the entire parade deadlier.",
    "quote": "The drum never stops. The parade never ends.",
    "notes": [],
@@ -15175,6 +16618,22 @@
    ],
    "triggers": [
     {
+     "name": "turnEnd",
+     "hook": "onActivationEnd",
+     "targets": null,
+     "effects": [
+      {
+       "effect": "grant a stat for the Battle",
+       "status": null,
+       "stat": null,
+       "value": 1,
+       "target": "self",
+       "ported": true
+      }
+     ],
+     "ported": true
+    },
+    {
      "name": "Dread Presence",
      "hook": "aura",
      "targets": "enemies within N hexes",
@@ -15193,6 +16652,7 @@
    "campaign": null,
    "encounters": [],
    "curated": false,
+   "sourceGaveTriggers": true,
    "backstory": "A towering skeletal titan from ancient myth, corrupted by demonic influence. It grows stronger every moment — dodging more attacks, hitting harder, and making the very air lethal to new arrivals. Kill it fast or watch your options disappear.",
    "quote": "I am the mountain of bones. You are another stone.",
    "notes": [
@@ -15275,6 +16735,7 @@
     "skyship-flesh-weavers"
    ],
    "curated": true,
+   "sourceGaveTriggers": false,
    "backstory": "Minor demons that stitch flesh with bone needles empowered by accumulated suffering. Individually fragile, but each death leaves a permanent cursed thread that burns heroes who enter the battlefield. Kill enough of them and the aura field becomes unsurvivable.",
    "quote": "My death is your curse.",
    "notes": [
@@ -15363,6 +16824,7 @@
     "skyship-flesh-weavers"
    ],
    "curated": true,
+   "sourceGaveTriggers": false,
    "backstory": "An elite demon that weaves flesh and curse into devastating ranged attacks. From the back row, it fires flesh bolts scaled by Power. When forced to the front, its Blood Stitch applies Vampirism — punishing success at clearing the board.",
    "quote": "I stitch your fate into your skin.",
    "notes": [],
@@ -15431,18 +16893,36 @@
        "status": "burn",
        "stat": null,
        "value": 2,
-       "target": null
+       "target": "the unit this hit"
       }
      ]
     }
    ],
-   "triggers": [],
+   "triggers": [
+    {
+     "name": "onDeath",
+     "hook": "onDeath",
+     "targets": null,
+     "effects": [
+      {
+       "effect": "deal damage (type from the weapon)",
+       "status": null,
+       "stat": null,
+       "value": 3,
+       "target": "enemies within N hexes",
+       "ported": true
+      }
+     ],
+     "ported": true
+    }
+   ],
    "art": "assets/cards/enemies/jade-revenant.png",
    "campaign": "skyship",
    "encounters": [
     "skyship-the-jade-tomb"
    ],
    "curated": true,
+   "sourceGaveTriggers": true,
    "backstory": "Jade-infused undead that guard an ancient imperial tomb. The cursed jade embedded in their bones detonates on death, scorching everyone nearby with necrotic green fire.",
    "quote": "The jade remembers. The jade punishes.",
    "notes": [],
@@ -15529,6 +17009,7 @@
     "skyship-the-jade-tomb"
    ],
    "curated": true,
+   "sourceGaveTriggers": false,
    "backstory": "Ancient priests who channeled divine power through jade relics. In death, their connection to the cursed jade only deepened. They empower their undead brethren and mend shattered forms with green necrotic light.",
    "quote": "The jade feeds. The jade grows.",
    "notes": [],
@@ -15589,7 +17070,7 @@
        "status": "weak",
        "stat": null,
        "value": 2,
-       "target": null
+       "target": "the unit this hit"
       }
      ]
     },
@@ -15624,6 +17105,7 @@
    "campaign": null,
    "encounters": [],
    "curated": false,
+   "sourceGaveTriggers": false,
    "backstory": "A spider-demon from the eastern mountains, cloaked in silk and deception. It hides behind a wall of expendable broodlings, picking off heroes from maximum range. Its cursed fangs carry the Lycanthropy affliction — but it only bites when exposed at the front.",
    "quote": "Come closer, little fly. My web awaits.",
    "notes": [],
@@ -15684,7 +17166,7 @@
        "status": "poison",
        "stat": null,
        "value": 2,
-       "target": null
+       "target": "the unit this hit"
       }
      ]
     }
@@ -15696,6 +17178,7 @@
     "skyship-spider-demoness-web"
    ],
    "curated": true,
+   "sourceGaveTriggers": false,
    "backstory": "Expendable offspring of the spider demoness, flooding the web in waves. They are not trivial — at M9 they hit hard — but they exist to shield their mother from harm.",
    "quote": "*chittering*",
    "notes": [],
@@ -15781,6 +17264,7 @@
    "campaign": null,
    "encounters": [],
    "curated": false,
+   "sourceGaveTriggers": false,
    "backstory": "A demonic blacksmith who barely attacks — its purpose is to hammer the infernal anvil, raising Power for the entire forge. When it does swing at a hero, the force is devastating, though each blow cracks its own obsidian armor.",
    "quote": "The forge demands. The forge consumes.",
    "notes": [],
@@ -15869,6 +17353,7 @@
    "campaign": null,
    "encounters": [],
    "curated": false,
+   "sourceGaveTriggers": false,
    "backstory": "A glass cannon mage that rains forge-fire from behind the Tyrant's bulk. R10 magic at reach 3 is devastating, and Chain Fire hits the entire party. Fragile at 0 armor and 14 HP — kill it fast.",
    "quote": "Burn. Burn. BURN.",
    "notes": [
@@ -15930,18 +17415,36 @@
        "status": "poison",
        "stat": null,
        "value": 1,
-       "target": null
+       "target": "the unit this hit"
       }
      ]
     }
    ],
-   "triggers": [],
+   "triggers": [
+    {
+     "name": "turnEnd",
+     "hook": "onActivationEnd",
+     "targets": null,
+     "effects": [
+      {
+       "effect": "apply a status",
+       "status": "protection",
+       "stat": null,
+       "value": 4,
+       "target": "allies within N hexes",
+       "ported": true
+      }
+     ],
+     "ported": true
+    }
+   ],
    "art": "assets/cards/enemies/forge-imp.png",
    "campaign": "skyship",
    "encounters": [
     "skyship-demon-forge"
    ],
    "curated": true,
+   "sourceGaveTriggers": true,
    "backstory": "Tiny motes of infernal energy that scurry around the forge. Individually pathetic, their protection pulses make the entire forge nearly invulnerable when they swarm.",
    "quote": "*crackling hiss*",
    "notes": [],
@@ -16021,13 +17524,31 @@
      ]
     }
    ],
-   "triggers": [],
+   "triggers": [
+    {
+     "name": "turnEnd",
+     "hook": "onActivationEnd",
+     "targets": null,
+     "effects": [
+      {
+       "effect": "heal",
+       "status": null,
+       "stat": null,
+       "value": 5,
+       "target": "allies within N hexes",
+       "ported": true
+      }
+     ],
+     "ported": true
+    }
+   ],
    "art": "assets/cards/enemies/infernal-mender.png",
    "campaign": "skyship",
    "encounters": [
     "skyship-demon-forge"
    ],
    "curated": true,
+   "sourceGaveTriggers": true,
    "backstory": "Healers who draw upon the forge's heat to mend broken demons. Their constant restoration makes nearby allies frustratingly durable, and their bellows empower ranged attacks.",
    "quote": "The forge mends what the forge has broken.",
    "notes": [],
@@ -16101,13 +17622,39 @@
      ]
     }
    ],
-   "triggers": [],
+   "triggers": [
+    {
+     "name": "onDeath",
+     "hook": "onDeath",
+     "targets": null,
+     "effects": [
+      {
+       "effect": "heal",
+       "status": null,
+       "stat": null,
+       "value": 99,
+       "target": "one ally within N hexes",
+       "ported": true
+      },
+      {
+       "effect": "grant a stat for the Battle",
+       "status": null,
+       "stat": "strength",
+       "value": 3,
+       "target": "one ally within N hexes",
+       "ported": true
+      }
+     ],
+     "ported": true
+    }
+   ],
    "art": "assets/cards/enemies/crimson-lotus.png",
    "campaign": "skyship",
    "encounters": [
     "skyship-blood-lotus-garden"
    ],
    "curated": true,
+   "sourceGaveTriggers": true,
    "backstory": "Crimson lotus spirits connected by blood-red tendrils of chi. When one falls, the survivor absorbs its essence — healing to full and growing stronger. They must be killed simultaneously or the cycle of resurrection never ends.",
    "quote": "Cut one bloom, and another grows fiercer.",
    "notes": [],
@@ -16189,6 +17736,7 @@
     "skyship-blood-lotus-garden"
    ],
    "curated": true,
+   "sourceGaveTriggers": false,
    "backstory": "The eldest of the lotus spirits, blooming with stolen blood. Its Vampiric Bloom heals it with every strike, and its Blood Curse carries the Vampirism affliction — but only when it reaches the front line.",
    "quote": "Your blood feeds the garden eternal.",
    "notes": [],
@@ -16267,6 +17815,7 @@
    "campaign": null,
    "encounters": [],
    "curated": false,
+   "sourceGaveTriggers": false,
    "backstory": "A Rakshasa shapeshifter — an ancient demon of illusion and deceit. It begins as a formless, pulsating mass with enormous HP and zero offensive stats. Each unique spell drawn from the deck permanently reshapes its body. No two fights against the Rakshasa are alike.",
    "quote": "I am nothing. I am everything. I am what you fear most.",
    "notes": [
@@ -16341,6 +17890,7 @@
     "skyship-the-rakshasa"
    ],
    "curated": true,
+   "sourceGaveTriggers": false,
    "backstory": "Fragments of the Rakshasa's flesh, shaped into crude warriors. They exist to buy time while the master evolves. Each transformation spell also affects them — Claws makes them lethal, Hide makes them armored.",
    "quote": "We are its flesh. We serve.",
    "notes": [
@@ -16426,6 +17976,7 @@
    "campaign": null,
    "encounters": [],
    "curated": false,
+   "sourceGaveTriggers": false,
    "backstory": "A demonic crow demon perched atop the mountain's peak. R11+Power magic at reach 3 picks off heroes from maximum distance. As its crow-soldiers die, their blood feeds its Power — each kill makes the next Gale Bolt more devastating.",
    "quote": "Your deaths feed the mountain. The mountain feeds me.",
    "notes": [],
@@ -16501,7 +18052,7 @@
        "status": "weak",
        "stat": null,
        "value": 2,
-       "target": null
+       "target": "the unit this hit"
       }
      ]
     }
@@ -16511,6 +18062,7 @@
    "campaign": null,
    "encounters": [],
    "curated": false,
+   "sourceGaveTriggers": false,
    "backstory": "A lesser crow demon that commands the mountain storms. It heals the most wounded ally, weakens heroes with thunder, and provides steady R9 magic pressure. Less dangerous than the War-Master but crucial to the crow demon's sustain.",
    "quote": "The storm obeys. The mountain endures.",
    "notes": [],
@@ -16583,6 +18135,7 @@
     "skyship-crow-demon-mountain"
    ],
    "curated": true,
+   "sourceGaveTriggers": false,
    "backstory": "Cursed crow-warriors bound to the crow demon by a blood pact. Their deaths feed Power to their masters — every soldier killed makes the crow demon's ranged magic more devastating. A dilemma: kill them and face the escalation, or let them swarm.",
    "quote": "My death feeds the masters.",
    "notes": [
@@ -16670,7 +18223,7 @@
        "status": "weak",
        "stat": null,
        "value": 3,
-       "target": null
+       "target": "the unit this hit"
       }
      ]
     }
@@ -16682,6 +18235,7 @@
     "skyship-hellbound-caravan"
    ],
    "curated": true,
+   "sourceGaveTriggers": false,
    "backstory": "Towering giants assembled from a thousand corpses, compacted bone upon bone into a walking wall. They guard the hellbound caravans, crushing anything that dares approach the demon casters riding behind them.",
    "quote": "You are pebbles beneath my heel.",
    "notes": [],
@@ -16768,6 +18322,7 @@
     "skyship-hellbound-caravan"
    ],
    "curated": true,
+   "sourceGaveTriggers": false,
    "backstory": "Demon sorcerers who ride behind the bone giants, channeling infernal fire to heal and empower the caravan. Individually fragile, but devastating when protected by the giant wall in front.",
    "quote": "The convoy feeds on suffering. We merely direct the flame.",
    "notes": [],
@@ -16838,6 +18393,7 @@
     "skyship-hellbound-caravan"
    ],
    "curated": true,
+   "sourceGaveTriggers": false,
    "backstory": "Lesser demons bound to guard the infernal caravans. Their flame-wreathed blades and burning shields make them dangerous in their own right, not mere fodder.",
    "quote": "The caravan must reach its destination. You will not.",
    "notes": [],
@@ -16902,13 +18458,31 @@
      ]
     }
    ],
-   "triggers": [],
+   "triggers": [
+    {
+     "name": "onKill",
+     "hook": "onKill",
+     "targets": null,
+     "effects": [
+      {
+       "effect": "deal damage (type from the weapon)",
+       "status": null,
+       "stat": null,
+       "value": 50,
+       "target": "self",
+       "ported": true
+      }
+     ],
+     "ported": true
+    }
+   ],
    "art": "assets/cards/enemies/jiangshi-revenant.png",
    "campaign": "skyship",
    "encounters": [
     "skyship-jiangshi-crypt"
    ],
    "curated": true,
+   "sourceGaveTriggers": true,
    "backstory": "Hopping vampires sealed in a Chinese crypt for centuries. Each one destroyed releases its bound qi, empowering all undead that follow. Their self-destructive instinct prevents involuntary snowballing -- a jiangshi that kills a hero destroys itself.",
    "quote": "The crypt breathes. We are its breath.",
    "notes": [],
@@ -16995,6 +18569,7 @@
     "skyship-jiangshi-crypt"
    ],
    "curated": true,
+   "sourceGaveTriggers": false,
    "backstory": "An ancient jiangshi that has fed for a thousand years. Its blackened fangs carry the Rotting Flesh curse, and its authority over the lesser dead empowers every corpse in the crypt.",
    "quote": "I was old when the crypt was young.",
    "notes": [],
@@ -17080,6 +18655,7 @@
    "campaign": null,
    "encounters": [],
    "curated": false,
+   "sourceGaveTriggers": false,
    "backstory": "A six-armed asura demon sits in meditation at the center of a hellish shrine. In its dormant form it barely fights -- channeling dark energy, raising Power. The first strike awakens it into a whirlwind of blades and hellfire.",
    "quote": "...",
    "notes": [],
@@ -17150,6 +18726,7 @@
     "skyship-the-asura"
    ],
    "curated": true,
+   "sourceGaveTriggers": false,
    "backstory": "Lesser demons that tend the asura's shrine, offering blood sacrifices and channeling dark energy to fuel the master's meditation. Individually weak, they serve the asura's awakening.",
    "quote": "The master sleeps. Do not wake the master.",
    "notes": [],
@@ -17237,6 +18814,7 @@
    "campaign": null,
    "encounters": [],
    "curated": false,
+   "sourceGaveTriggers": false,
    "backstory": "The Gate to Diyu -- the underworld -- has cracked open. It never attacks directly, but its aura-creating abilities make hero deployment increasingly suicidal as the fight progresses.",
    "quote": "The gate does not close. The gate has never closed.",
    "notes": [
@@ -17318,6 +18896,7 @@
     "skyship-diyu-gate"
    ],
    "curated": true,
+   "sourceGaveTriggers": false,
    "backstory": "Massive yaoguai demons that guard the Diyu Gate. Armed with iron wolf-tooth clubs, they provide brutal melee pressure while the Gate itself poisons the battlefield with auras.",
    "quote": "You shall not pass the gate.",
    "notes": [],
@@ -17377,7 +18956,7 @@
        "status": "weak",
        "stat": null,
        "value": 1,
-       "target": null
+       "target": "the unit this hit"
       }
      ]
     }
@@ -17389,6 +18968,7 @@
     "skyship-diyu-gate"
    ],
    "curated": true,
+   "sourceGaveTriggers": false,
    "backstory": "Vengeful spirits pouring through the cracked gate of Diyu. Elusive with dodge 2 and magic damage, each one destroyed leaves a residual energy field that punishes new arrivals.",
    "quote": "We are the dead. We are coming.",
    "notes": [],
@@ -17473,6 +19053,7 @@
    "campaign": null,
    "encounters": [],
    "curated": false,
+   "sourceGaveTriggers": false,
    "backstory": "An enormous demon that presides over the infernal parliament. It barely fights, relying on the sheer volume of its delegates and the devastating power-scaled decrees they fuel with their deaths.",
    "quote": "Order. ORDER. The parliament will have order.",
    "notes": [],
@@ -17532,7 +19113,7 @@
        "status": "weak",
        "stat": null,
        "value": 1,
-       "target": null
+       "target": "the unit this hit"
       }
      ]
     }
@@ -17544,6 +19125,7 @@
     "skyship-infernal-parliament"
    ],
    "curated": true,
+   "sourceGaveTriggers": false,
    "backstory": "Lesser demons elected to the infernal parliament. Individually weak but flooding in at draw 4/turn. Each death fuels collective outrage, powering the devastating Parliamentary Decrees.",
    "quote": "I YIELD MY TIME TO THE GENTLEMAN FROM THE NINTH CIRCLE.",
    "notes": [],
@@ -17638,6 +19220,7 @@
    "campaign": null,
    "encounters": [],
    "curated": false,
+   "sourceGaveTriggers": false,
    "backstory": "A corrupted jade dragon emperor -- once a guardian of the celestial realm, now twisted by infernal corruption. It combines Power-scaled attacks, aura creation, and a devastating spell deck. The climactic boss of the Skyship campaign.",
    "quote": "I was a guardian once. Now I consume.",
    "notes": [
@@ -17726,6 +19309,7 @@
     "skyship-the-dragon-emperor"
    ],
    "curated": true,
+   "sourceGaveTriggers": false,
    "backstory": "Elite demon guards clad in enchanted jade armor. They form a living wall between attackers and the Dragon Emperor, and killing them is actually risky -- the Emperor becomes frontmost and uses Devouring Bite.",
    "quote": "The Emperor shall not fall.",
    "notes": [],
@@ -17820,6 +19404,7 @@
    "campaign": null,
    "encounters": [],
    "curated": false,
+   "sourceGaveTriggers": false,
    "backstory": "The Demon King sits upon its infernal throne, flanked by its most powerful lieutenants. It never attacks directly -- its threat is Power generation, aura creation, and its devastating spell deck. The final enemy of the entire game.",
    "quote": "I am the end of all things.",
    "notes": [
@@ -17901,6 +19486,7 @@
     "skyship-demon-kings-throne"
    ],
    "curated": true,
+   "sourceGaveTriggers": false,
    "backstory": "The Demon King's most trusted warriors. Their attacks scale with Power, growing more devastating as the King channels the throne's energy. Killing them is strategically important -- but the King's spell deck remains.",
    "quote": "For the King! For the Throne!",
    "notes": [],
@@ -17985,6 +19571,7 @@
    "campaign": null,
    "encounters": [],
    "curated": false,
+   "sourceGaveTriggers": false,
    "backstory": "Support demons that channel the throne's energy into protection and healing. They are the strategic weakness of the throne room -- without their protection and healing, the Lieutenant and King have no sustain.",
    "quote": "The throne provides. The throne protects.",
    "notes": [],
