@@ -3615,7 +3615,7 @@
    "level": 1,
    "gender": "male",
    "campaign": null,
-   "art": "New Art/general-kor-variants/general-kor-level1.png",
+   "art": "art/heroes/general-kor/card/l1.png",
    "ported": {
     "strength": 4,
     "precision": 2,
@@ -3689,7 +3689,19 @@
    "backstory": "A grizzled veteran of a hundred battles, his mere presence galvanizes troops into action. But if he falls, morale crumbles.",
    "passiveDescription": null,
    "additionalClasses": null,
-   "subtype": "General Kor"
+   "subtype": "General Kor",
+   "artSlug": "general-kor",
+   "levelArt": [
+    "art/heroes/general-kor/card/l1.png",
+    "art/heroes/general-kor/card/l2.png",
+    "art/heroes/general-kor/card/l3.png",
+    "art/heroes/general-kor/card/l4.png"
+   ],
+   "afflictionArt": {
+    "possession": "art/heroes/general-kor/card/possession.png",
+    "rotting-flesh": "art/heroes/general-kor/card/rotting-flesh.png",
+    "vampirism": "art/heroes/general-kor/card/vampirism.png"
+   }
   },
   {
    "id": "hero.fixed.beastmaster",
@@ -16573,7 +16585,7 @@
    "level": 1,
    "gender": "male",
    "campaign": "eve-of-ruin",
-   "art": "New Art/warrior-iron1.png",
+   "art": "art/heroes/warrior-iron/card/l1.png",
    "ported": {
     "strength": 4,
     "precision": 3,
@@ -16646,10 +16658,28 @@
     "Muradin"
    ],
    "levelArt": [
-    "New Art/warrior-iron1.png",
-    "New Art/warrior-iron2.png",
-    "New Art/warrior-iron3.png",
-    "New Art/warrior-iron4.png"
+    "art/heroes/warrior-iron/card/l1.png",
+    "art/heroes/warrior-iron/card/l2.png",
+    "art/heroes/warrior-iron/card/l3.png",
+    "art/heroes/warrior-iron/card/l4.png"
+   ],
+   "artSlug": "warrior-iron",
+   "afflictionArt": {
+    "lycanthropy": "art/heroes/warrior-iron/card/lycanthropy.png",
+    "possession": "art/heroes/warrior-iron/card/possession.png",
+    "rotting-flesh": "art/heroes/warrior-iron/card/rotting-flesh.png",
+    "vampirism": "art/heroes/warrior-iron/card/vampirism.png"
+   },
+   "anim": [
+    "art/heroes/warrior-iron/anim/l1.mp4",
+    "art/heroes/warrior-iron/anim/lycanthropy.mp4",
+    "art/heroes/warrior-iron/anim/possession.mp4",
+    "art/heroes/warrior-iron/anim/vampirism.mp4"
+   ],
+   "hexArt": [
+    "art/heroes/warrior-iron/hex/l1_1024.png",
+    "art/heroes/warrior-iron/hex/l1_256.png",
+    "art/heroes/warrior-iron/hex/l1_full.png"
    ]
   },
   {
@@ -16662,7 +16692,7 @@
    "level": 1,
    "gender": "male",
    "campaign": "eve-of-ruin",
-   "art": "New Art/warrior-fearsome1.png",
+   "art": "art/heroes/warrior-fearsome/card/l1.png",
    "ported": {
     "strength": 4,
     "precision": 3,
@@ -16735,10 +16765,28 @@
     "Muradin"
    ],
    "levelArt": [
-    "New Art/warrior-fearsome1.png",
-    "New Art/warrior-fearsome2.png",
-    "New Art/warrior-fearsome3.png",
-    "New Art/warrior-fearsome4.png"
+    "art/heroes/warrior-fearsome/card/l1.png",
+    "art/heroes/warrior-fearsome/card/l2.png",
+    "art/heroes/warrior-fearsome/card/l3.png",
+    "art/heroes/warrior-fearsome/card/l4.png"
+   ],
+   "artSlug": "warrior-fearsome",
+   "afflictionArt": {
+    "lycanthropy": "art/heroes/warrior-fearsome/card/lycanthropy.png",
+    "possession": "art/heroes/warrior-fearsome/card/possession.png",
+    "rotting-flesh": "art/heroes/warrior-fearsome/card/rotting-flesh.png",
+    "vampirism": "art/heroes/warrior-fearsome/card/vampirism.png"
+   },
+   "anim": [
+    "art/heroes/warrior-fearsome/anim/l1.mp4",
+    "art/heroes/warrior-fearsome/anim/lycanthropy.mp4",
+    "art/heroes/warrior-fearsome/anim/possession.mp4",
+    "art/heroes/warrior-fearsome/anim/vampirism.mp4"
+   ],
+   "hexArt": [
+    "art/heroes/warrior-fearsome/hex/l1_1024.png",
+    "art/heroes/warrior-fearsome/hex/l1_256.png",
+    "art/heroes/warrior-fearsome/hex/l1_full.png"
    ]
   },
   {
@@ -16751,7 +16799,7 @@
    "level": 1,
    "gender": "male",
    "campaign": "eve-of-ruin",
-   "art": "New Art/warrior-barbarian1.png",
+   "art": "art/heroes/warrior-barbarian/card/l1.png",
    "ported": {
     "strength": 4,
     "precision": 3,
@@ -16824,10 +16872,28 @@
     "Muradin"
    ],
    "levelArt": [
-    "New Art/warrior-barbarian1.png",
-    "New Art/warrior-barbarian2.png",
-    "New Art/warrior-barbarian3.png",
-    "New Art/warrior-barbarian4.png"
+    "art/heroes/warrior-barbarian/card/l1.png",
+    "art/heroes/warrior-barbarian/card/l2.png",
+    "art/heroes/warrior-barbarian/card/l3.png",
+    "art/heroes/warrior-barbarian/card/l4.png"
+   ],
+   "artSlug": "warrior-barbarian",
+   "afflictionArt": {
+    "lycanthropy": "art/heroes/warrior-barbarian/card/lycanthropy.png",
+    "possession": "art/heroes/warrior-barbarian/card/possession.png",
+    "rotting-flesh": "art/heroes/warrior-barbarian/card/rotting-flesh.png",
+    "vampirism": "art/heroes/warrior-barbarian/card/vampirism.png"
+   },
+   "anim": [
+    "art/heroes/warrior-barbarian/anim/l1.mp4",
+    "art/heroes/warrior-barbarian/anim/lycanthropy.mp4",
+    "art/heroes/warrior-barbarian/anim/possession.mp4",
+    "art/heroes/warrior-barbarian/anim/vampirism.mp4"
+   ],
+   "hexArt": [
+    "art/heroes/warrior-barbarian/hex/l1_1024.png",
+    "art/heroes/warrior-barbarian/hex/l1_256.png",
+    "art/heroes/warrior-barbarian/hex/l1_full.png"
    ]
   },
   {
@@ -16840,7 +16906,7 @@
    "level": 1,
    "gender": "male",
    "campaign": "eve-of-ruin",
-   "art": "New Art/warrior-brawler1.png",
+   "art": "art/heroes/warrior-brawler/card/l1.png",
    "ported": {
     "strength": 4,
     "precision": 4,
@@ -16913,10 +16979,28 @@
     "Muradin"
    ],
    "levelArt": [
-    "New Art/warrior-brawler1.png",
-    "New Art/warrior-brawler2.png",
-    "New Art/warrior-brawler3.png",
-    "New Art/warrior-brawler4.png"
+    "art/heroes/warrior-brawler/card/l1.png",
+    "art/heroes/warrior-brawler/card/l2.png",
+    "art/heroes/warrior-brawler/card/l3.png",
+    "art/heroes/warrior-brawler/card/l4.png"
+   ],
+   "artSlug": "warrior-brawler",
+   "afflictionArt": {
+    "lycanthropy": "art/heroes/warrior-brawler/card/lycanthropy.png",
+    "possession": "art/heroes/warrior-brawler/card/possession.png",
+    "rotting-flesh": "art/heroes/warrior-brawler/card/rotting-flesh.png",
+    "vampirism": "art/heroes/warrior-brawler/card/vampirism.png"
+   },
+   "anim": [
+    "art/heroes/warrior-brawler/anim/l1.mp4",
+    "art/heroes/warrior-brawler/anim/lycanthropy.mp4",
+    "art/heroes/warrior-brawler/anim/possession.mp4",
+    "art/heroes/warrior-brawler/anim/vampirism.mp4"
+   ],
+   "hexArt": [
+    "art/heroes/warrior-brawler/hex/l1_1024.png",
+    "art/heroes/warrior-brawler/hex/l1_256.png",
+    "art/heroes/warrior-brawler/hex/l1_full.png"
    ]
   },
   {
@@ -16929,7 +17013,7 @@
    "level": 1,
    "gender": "female",
    "campaign": "eve-of-ruin",
-   "art": "New Art/mage-fire1.png",
+   "art": "art/heroes/mage-fire/card/l1.png",
    "ported": {
     "strength": 2,
     "precision": 3,
@@ -17002,10 +17086,28 @@
     "Giselle"
    ],
    "levelArt": [
-    "New Art/mage-fire1.png",
-    "New Art/mage-fire2.png",
-    "New Art/mage-fire3.png",
-    "New Art/mage-fire4.png"
+    "art/heroes/mage-fire/card/l1.png",
+    "art/heroes/mage-fire/card/l2.png",
+    "art/heroes/mage-fire/card/l3.png",
+    "art/heroes/mage-fire/card/l4.png"
+   ],
+   "artSlug": "mage-fire",
+   "afflictionArt": {
+    "lycanthropy": "art/heroes/mage-fire/card/lycanthropy.png",
+    "possession": "art/heroes/mage-fire/card/possession.png",
+    "rotting-flesh": "art/heroes/mage-fire/card/rotting-flesh.png",
+    "vampirism": "art/heroes/mage-fire/card/vampirism.png"
+   },
+   "anim": [
+    "art/heroes/mage-fire/anim/l1.mp4",
+    "art/heroes/mage-fire/anim/lycanthropy.mp4",
+    "art/heroes/mage-fire/anim/possession.mp4",
+    "art/heroes/mage-fire/anim/vampirism.mp4"
+   ],
+   "hexArt": [
+    "art/heroes/mage-fire/hex/l1_1024.png",
+    "art/heroes/mage-fire/hex/l1_256.png",
+    "art/heroes/mage-fire/hex/l1_full.png"
    ]
   },
   {
@@ -17018,7 +17120,7 @@
    "level": 1,
    "gender": "female",
    "campaign": "eve-of-ruin",
-   "art": "New Art/mage-fireaura1.png",
+   "art": "art/heroes/mage-fireaura/card/l1.png",
    "ported": {
     "strength": 2,
     "precision": 3,
@@ -17091,10 +17193,28 @@
     "Giselle"
    ],
    "levelArt": [
-    "New Art/mage-fireaura1.png",
-    "New Art/mage-fireaura2.png",
-    "New Art/mage-fireaura3.png",
-    "New Art/mage-fireaura4.png"
+    "art/heroes/mage-fireaura/card/l1.png",
+    "art/heroes/mage-fireaura/card/l2.png",
+    "art/heroes/mage-fireaura/card/l3.png",
+    "art/heroes/mage-fireaura/card/l4.png"
+   ],
+   "artSlug": "mage-fireaura",
+   "afflictionArt": {
+    "lycanthropy": "art/heroes/mage-fireaura/card/lycanthropy.png",
+    "possession": "art/heroes/mage-fireaura/card/possession.png",
+    "rotting-flesh": "art/heroes/mage-fireaura/card/rotting-flesh.png",
+    "vampirism": "art/heroes/mage-fireaura/card/vampirism.png"
+   },
+   "anim": [
+    "art/heroes/mage-fireaura/anim/l1.mp4",
+    "art/heroes/mage-fireaura/anim/lycanthropy.mp4",
+    "art/heroes/mage-fireaura/anim/possession.mp4",
+    "art/heroes/mage-fireaura/anim/vampirism.mp4"
+   ],
+   "hexArt": [
+    "art/heroes/mage-fireaura/hex/l1_1024.png",
+    "art/heroes/mage-fireaura/hex/l1_256.png",
+    "art/heroes/mage-fireaura/hex/l1_full.png"
    ]
   },
   {
@@ -17107,7 +17227,7 @@
    "level": 1,
    "gender": "female",
    "campaign": "eve-of-ruin",
-   "art": "New Art/mage-thinking1.png",
+   "art": "art/heroes/mage-thinking/card/l1.png",
    "ported": {
     "strength": 2,
     "precision": 3,
@@ -17180,10 +17300,28 @@
     "Giselle"
    ],
    "levelArt": [
-    "New Art/mage-thinking1.png",
-    "New Art/mage-thinking2.png",
-    "New Art/mage-thinking3.png",
-    "New Art/mage-thinking4.png"
+    "art/heroes/mage-thinking/card/l1.png",
+    "art/heroes/mage-thinking/card/l2.png",
+    "art/heroes/mage-thinking/card/l3.png",
+    "art/heroes/mage-thinking/card/l4.png"
+   ],
+   "artSlug": "mage-thinking",
+   "afflictionArt": {
+    "lycanthropy": "art/heroes/mage-thinking/card/lycanthropy.png",
+    "possession": "art/heroes/mage-thinking/card/possession.png",
+    "rotting-flesh": "art/heroes/mage-thinking/card/rotting-flesh.png",
+    "vampirism": "art/heroes/mage-thinking/card/vampirism.png"
+   },
+   "anim": [
+    "art/heroes/mage-thinking/anim/l1.mp4",
+    "art/heroes/mage-thinking/anim/lycanthropy.mp4",
+    "art/heroes/mage-thinking/anim/possession.mp4",
+    "art/heroes/mage-thinking/anim/vampirism.mp4"
+   ],
+   "hexArt": [
+    "art/heroes/mage-thinking/hex/l1_1024.png",
+    "art/heroes/mage-thinking/hex/l1_256.png",
+    "art/heroes/mage-thinking/hex/l1_full.png"
    ]
   },
   {
@@ -17196,7 +17334,7 @@
    "level": 1,
    "gender": "female",
    "campaign": "eve-of-ruin",
-   "art": "New Art/mage-sexy1.png",
+   "art": "art/heroes/mage-sexy/card/l1.png",
    "ported": {
     "strength": 2,
     "precision": 5,
@@ -17272,10 +17410,28 @@
     "Giselle"
    ],
    "levelArt": [
-    "New Art/mage-sexy1.png",
-    "New Art/mage-sexy2.png",
-    "New Art/mage-sexy3.png",
-    "New Art/mage-sexy4.png"
+    "art/heroes/mage-sexy/card/l1.png",
+    "art/heroes/mage-sexy/card/l2.png",
+    "art/heroes/mage-sexy/card/l3.png",
+    "art/heroes/mage-sexy/card/l4.png"
+   ],
+   "artSlug": "mage-sexy",
+   "afflictionArt": {
+    "lycanthropy": "art/heroes/mage-sexy/card/lycanthropy.png",
+    "possession": "art/heroes/mage-sexy/card/possession.png",
+    "rotting-flesh": "art/heroes/mage-sexy/card/rotting-flesh.png",
+    "vampirism": "art/heroes/mage-sexy/card/vampirism.png"
+   },
+   "anim": [
+    "art/heroes/mage-sexy/anim/l1.mp4",
+    "art/heroes/mage-sexy/anim/lycanthropy.mp4",
+    "art/heroes/mage-sexy/anim/possession.mp4",
+    "art/heroes/mage-sexy/anim/vampirism.mp4"
+   ],
+   "hexArt": [
+    "art/heroes/mage-sexy/hex/l1_1024.png",
+    "art/heroes/mage-sexy/hex/l1_256.png",
+    "art/heroes/mage-sexy/hex/l1_full.png"
    ]
   },
   {
@@ -17288,7 +17444,7 @@
    "level": 1,
    "gender": "male",
    "campaign": "eve-of-ruin",
-   "art": "New Art/priest-armored1.png",
+   "art": "art/heroes/priest-armored/card/l1.png",
    "ported": {
     "strength": 2,
     "precision": 3,
@@ -17358,10 +17514,28 @@
     "Ignatius"
    ],
    "levelArt": [
-    "New Art/priest-armored1.png",
-    "New Art/priest-armored2.png",
-    "New Art/priest-armored3.png",
-    "New Art/priest-armored4.png"
+    "art/heroes/priest-armored/card/l1.png",
+    "art/heroes/priest-armored/card/l2.png",
+    "art/heroes/priest-armored/card/l3.png",
+    "art/heroes/priest-armored/card/l4.png"
+   ],
+   "artSlug": "priest-armored",
+   "afflictionArt": {
+    "lycanthropy": "art/heroes/priest-armored/card/lycanthropy.png",
+    "possession": "art/heroes/priest-armored/card/possession.png",
+    "rotting-flesh": "art/heroes/priest-armored/card/rotting-flesh.png",
+    "vampirism": "art/heroes/priest-armored/card/vampirism.png"
+   },
+   "anim": [
+    "art/heroes/priest-armored/anim/l1.mp4",
+    "art/heroes/priest-armored/anim/lycanthropy.mp4",
+    "art/heroes/priest-armored/anim/possession.mp4",
+    "art/heroes/priest-armored/anim/vampirism.mp4"
+   ],
+   "hexArt": [
+    "art/heroes/priest-armored/hex/l1_1024.png",
+    "art/heroes/priest-armored/hex/l1_256.png",
+    "art/heroes/priest-armored/hex/l1_full.png"
    ]
   },
   {
@@ -17374,7 +17548,7 @@
    "level": 1,
    "gender": "male",
    "campaign": "eve-of-ruin",
-   "art": "New Art/priest-pauper1.png",
+   "art": "art/heroes/priest-pauper/card/l1.png",
    "ported": {
     "strength": 2,
     "precision": 3,
@@ -17442,10 +17616,28 @@
     "Ignatius"
    ],
    "levelArt": [
-    "New Art/priest-pauper1.png",
-    "New Art/priest-pauper2.png",
-    "New Art/priest-pauper3.png",
-    "New Art/priest-pauper4.png"
+    "art/heroes/priest-pauper/card/l1.png",
+    "art/heroes/priest-pauper/card/l2.png",
+    "art/heroes/priest-pauper/card/l3.png",
+    "art/heroes/priest-pauper/card/l4.png"
+   ],
+   "artSlug": "priest-pauper",
+   "afflictionArt": {
+    "lycanthropy": "art/heroes/priest-pauper/card/lycanthropy.png",
+    "possession": "art/heroes/priest-pauper/card/possession.png",
+    "rotting-flesh": "art/heroes/priest-pauper/card/rotting-flesh.png",
+    "vampirism": "art/heroes/priest-pauper/card/vampirism.png"
+   },
+   "anim": [
+    "art/heroes/priest-pauper/anim/l1.mp4",
+    "art/heroes/priest-pauper/anim/lycanthropy.mp4",
+    "art/heroes/priest-pauper/anim/possession.mp4",
+    "art/heroes/priest-pauper/anim/vampirism.mp4"
+   ],
+   "hexArt": [
+    "art/heroes/priest-pauper/hex/l1_1024.png",
+    "art/heroes/priest-pauper/hex/l1_256.png",
+    "art/heroes/priest-pauper/hex/l1_full.png"
    ]
   },
   {
@@ -17458,7 +17650,7 @@
    "level": 1,
    "gender": "male",
    "campaign": "eve-of-ruin",
-   "art": "New Art/priest-robes1.png",
+   "art": "art/heroes/priest-robes/card/l1.png",
    "ported": {
     "strength": 2,
     "precision": 3,
@@ -17528,10 +17720,28 @@
     "Ignatius"
    ],
    "levelArt": [
-    "New Art/priest-robes1.png",
-    "New Art/priest-robes2.png",
-    "New Art/priest-robes3.png",
-    "New Art/priest-robes4.png"
+    "art/heroes/priest-robes/card/l1.png",
+    "art/heroes/priest-robes/card/l2.png",
+    "art/heroes/priest-robes/card/l3.png",
+    "art/heroes/priest-robes/card/l4.png"
+   ],
+   "artSlug": "priest-robes",
+   "afflictionArt": {
+    "lycanthropy": "art/heroes/priest-robes/card/lycanthropy.png",
+    "possession": "art/heroes/priest-robes/card/possession.png",
+    "rotting-flesh": "art/heroes/priest-robes/card/rotting-flesh.png",
+    "vampirism": "art/heroes/priest-robes/card/vampirism.png"
+   },
+   "anim": [
+    "art/heroes/priest-robes/anim/l1.mp4",
+    "art/heroes/priest-robes/anim/lycanthropy.mp4",
+    "art/heroes/priest-robes/anim/possession.mp4",
+    "art/heroes/priest-robes/anim/vampirism.mp4"
+   ],
+   "hexArt": [
+    "art/heroes/priest-robes/hex/l1_1024.png",
+    "art/heroes/priest-robes/hex/l1_256.png",
+    "art/heroes/priest-robes/hex/l1_full.png"
    ]
   },
   {
@@ -17544,7 +17754,7 @@
    "level": 1,
    "gender": "male",
    "campaign": "eve-of-ruin",
-   "art": "New Art/priest-scantily1.png",
+   "art": "art/heroes/priest-scantily/card/l1.png",
    "ported": {
     "strength": 2,
     "precision": 3,
@@ -17617,10 +17827,28 @@
     "Ignatius"
    ],
    "levelArt": [
-    "New Art/priest-scantily1.png",
-    "New Art/priest-scantily2.png",
-    "New Art/priest-scantily3.png",
-    "New Art/priest-scantily4.png"
+    "art/heroes/priest-scantily/card/l1.png",
+    "art/heroes/priest-scantily/card/l2.png",
+    "art/heroes/priest-scantily/card/l3.png",
+    "art/heroes/priest-scantily/card/l4.png"
+   ],
+   "artSlug": "priest-scantily",
+   "afflictionArt": {
+    "lycanthropy": "art/heroes/priest-scantily/card/lycanthropy.png",
+    "possession": "art/heroes/priest-scantily/card/possession.png",
+    "rotting-flesh": "art/heroes/priest-scantily/card/rotting-flesh.png",
+    "vampirism": "art/heroes/priest-scantily/card/vampirism.png"
+   },
+   "anim": [
+    "art/heroes/priest-scantily/anim/l1.mp4",
+    "art/heroes/priest-scantily/anim/lycanthropy.mp4",
+    "art/heroes/priest-scantily/anim/possession.mp4",
+    "art/heroes/priest-scantily/anim/vampirism.mp4"
+   ],
+   "hexArt": [
+    "art/heroes/priest-scantily/hex/l1_1024.png",
+    "art/heroes/priest-scantily/hex/l1_256.png",
+    "art/heroes/priest-scantily/hex/l1_full.png"
    ]
   },
   {
@@ -17633,7 +17861,7 @@
    "level": 1,
    "gender": "male",
    "campaign": "eve-of-ruin",
-   "art": "New Art/paladin-dark1.png",
+   "art": "art/heroes/paladin-dark/card/l1.png",
    "ported": {
     "strength": 4,
     "precision": 3,
@@ -17704,10 +17932,28 @@
     "Ignatius"
    ],
    "levelArt": [
-    "New Art/paladin-dark1.png",
-    "New Art/paladin-dark2.png",
-    "New Art/paladin-dark3.png",
-    "New Art/paladin-dark4.png"
+    "art/heroes/paladin-dark/card/l1.png",
+    "art/heroes/paladin-dark/card/l2.png",
+    "art/heroes/paladin-dark/card/l3.png",
+    "art/heroes/paladin-dark/card/l4.png"
+   ],
+   "artSlug": "paladin-dark",
+   "afflictionArt": {
+    "lycanthropy": "art/heroes/paladin-dark/card/lycanthropy.png",
+    "possession": "art/heroes/paladin-dark/card/possession.png",
+    "rotting-flesh": "art/heroes/paladin-dark/card/rotting-flesh.png",
+    "vampirism": "art/heroes/paladin-dark/card/vampirism.png"
+   },
+   "anim": [
+    "art/heroes/paladin-dark/anim/l1.mp4",
+    "art/heroes/paladin-dark/anim/lycanthropy.mp4",
+    "art/heroes/paladin-dark/anim/possession.mp4",
+    "art/heroes/paladin-dark/anim/vampirism.mp4"
+   ],
+   "hexArt": [
+    "art/heroes/paladin-dark/hex/l1_1024.png",
+    "art/heroes/paladin-dark/hex/l1_256.png",
+    "art/heroes/paladin-dark/hex/l1_full.png"
    ]
   },
   {
@@ -17720,7 +17966,7 @@
    "level": 1,
    "gender": "male",
    "campaign": "eve-of-ruin",
-   "art": "New Art/paladin-hunk1.png",
+   "art": "art/heroes/paladin-hunk/card/l1.png",
    "ported": {
     "strength": 4,
     "precision": 2,
@@ -17792,10 +18038,28 @@
     "Ignatius"
    ],
    "levelArt": [
-    "New Art/paladin-hunk1.png",
-    "New Art/paladin-hunk2.png",
-    "New Art/paladin-hunk3.png",
-    "New Art/paladin-hunk4.png"
+    "art/heroes/paladin-hunk/card/l1.png",
+    "art/heroes/paladin-hunk/card/l2.png",
+    "art/heroes/paladin-hunk/card/l3.png",
+    "art/heroes/paladin-hunk/card/l4.png"
+   ],
+   "artSlug": "paladin-hunk",
+   "afflictionArt": {
+    "lycanthropy": "art/heroes/paladin-hunk/card/lycanthropy.png",
+    "possession": "art/heroes/paladin-hunk/card/possession.png",
+    "rotting-flesh": "art/heroes/paladin-hunk/card/rotting-flesh.png",
+    "vampirism": "art/heroes/paladin-hunk/card/vampirism.png"
+   },
+   "anim": [
+    "art/heroes/paladin-hunk/anim/l1.mp4",
+    "art/heroes/paladin-hunk/anim/lycanthropy.mp4",
+    "art/heroes/paladin-hunk/anim/possession.mp4",
+    "art/heroes/paladin-hunk/anim/vampirism.mp4"
+   ],
+   "hexArt": [
+    "art/heroes/paladin-hunk/hex/l1_1024.png",
+    "art/heroes/paladin-hunk/hex/l1_256.png",
+    "art/heroes/paladin-hunk/hex/l1_full.png"
    ]
   },
   {
@@ -17808,7 +18072,7 @@
    "level": 1,
    "gender": "male",
    "campaign": "eve-of-ruin",
-   "art": "New Art/paladin-shiney1.png",
+   "art": "art/heroes/paladin-shiney/card/l1.png",
    "ported": {
     "strength": 4,
     "precision": 3,
@@ -17879,10 +18143,28 @@
     "Ignatius"
    ],
    "levelArt": [
-    "New Art/paladin-shiney1.png",
-    "New Art/paladin-shiney2.png",
-    "New Art/paladin-shiney3.png",
-    "New Art/paladin-shiney4.png"
+    "art/heroes/paladin-shiney/card/l1.png",
+    "art/heroes/paladin-shiney/card/l2.png",
+    "art/heroes/paladin-shiney/card/l3.png",
+    "art/heroes/paladin-shiney/card/l4.png"
+   ],
+   "artSlug": "paladin-shiney",
+   "afflictionArt": {
+    "lycanthropy": "art/heroes/paladin-shiney/card/lycanthropy.png",
+    "possession": "art/heroes/paladin-shiney/card/possession.png",
+    "rotting-flesh": "art/heroes/paladin-shiney/card/rotting-flesh.png",
+    "vampirism": "art/heroes/paladin-shiney/card/vampirism.png"
+   },
+   "anim": [
+    "art/heroes/paladin-shiney/anim/l1.mp4",
+    "art/heroes/paladin-shiney/anim/lycanthropy.mp4",
+    "art/heroes/paladin-shiney/anim/possession.mp4",
+    "art/heroes/paladin-shiney/anim/vampirism.mp4"
+   ],
+   "hexArt": [
+    "art/heroes/paladin-shiney/hex/l1_1024.png",
+    "art/heroes/paladin-shiney/hex/l1_256.png",
+    "art/heroes/paladin-shiney/hex/l1_full.png"
    ]
   },
   {
@@ -17895,7 +18177,7 @@
    "level": 1,
    "gender": "male",
    "campaign": "eve-of-ruin",
-   "art": "New Art/paladin-smug1.png",
+   "art": "art/heroes/paladin-smug/card/l1.png",
    "ported": {
     "strength": 4,
     "precision": 3,
@@ -17966,10 +18248,28 @@
     "Ignatius"
    ],
    "levelArt": [
-    "New Art/paladin-smug1.png",
-    "New Art/paladin-smug2.png",
-    "New Art/paladin-smug3.png",
-    "New Art/paladin-smug4.png"
+    "art/heroes/paladin-smug/card/l1.png",
+    "art/heroes/paladin-smug/card/l2.png",
+    "art/heroes/paladin-smug/card/l3.png",
+    "art/heroes/paladin-smug/card/l4.png"
+   ],
+   "artSlug": "paladin-smug",
+   "afflictionArt": {
+    "lycanthropy": "art/heroes/paladin-smug/card/lycanthropy.png",
+    "possession": "art/heroes/paladin-smug/card/possession.png",
+    "rotting-flesh": "art/heroes/paladin-smug/card/rotting-flesh.png",
+    "vampirism": "art/heroes/paladin-smug/card/vampirism.png"
+   },
+   "anim": [
+    "art/heroes/paladin-smug/anim/l1.mp4",
+    "art/heroes/paladin-smug/anim/lycanthropy.mp4",
+    "art/heroes/paladin-smug/anim/possession.mp4",
+    "art/heroes/paladin-smug/anim/vampirism.mp4"
+   ],
+   "hexArt": [
+    "art/heroes/paladin-smug/hex/l1_1024.png",
+    "art/heroes/paladin-smug/hex/l1_256.png",
+    "art/heroes/paladin-smug/hex/l1_full.png"
    ]
   },
   {
@@ -17982,7 +18282,7 @@
    "level": 1,
    "gender": "female",
    "campaign": "eve-of-ruin",
-   "art": "New Art/ranger-aggressive1.png",
+   "art": "art/heroes/ranger-aggressive/card/l1.png",
    "ported": {
     "strength": 2,
     "precision": 5,
@@ -18053,10 +18353,28 @@
     "Giselle"
    ],
    "levelArt": [
-    "New Art/ranger-aggressive1.png",
-    "New Art/ranger-aggressive2.png",
-    "New Art/ranger-aggressive3.png",
-    "New Art/ranger-aggressive4.png"
+    "art/heroes/ranger-aggressive/card/l1.png",
+    "art/heroes/ranger-aggressive/card/l2.png",
+    "art/heroes/ranger-aggressive/card/l3.png",
+    "art/heroes/ranger-aggressive/card/l4.png"
+   ],
+   "artSlug": "ranger-aggressive",
+   "afflictionArt": {
+    "lycanthropy": "art/heroes/ranger-aggressive/card/lycanthropy.png",
+    "possession": "art/heroes/ranger-aggressive/card/possession.png",
+    "rotting-flesh": "art/heroes/ranger-aggressive/card/rotting-flesh.png",
+    "vampirism": "art/heroes/ranger-aggressive/card/vampirism.png"
+   },
+   "anim": [
+    "art/heroes/ranger-aggressive/anim/l1.mp4",
+    "art/heroes/ranger-aggressive/anim/lycanthropy.mp4",
+    "art/heroes/ranger-aggressive/anim/possession.mp4",
+    "art/heroes/ranger-aggressive/anim/vampirism.mp4"
+   ],
+   "hexArt": [
+    "art/heroes/ranger-aggressive/hex/l1_1024.png",
+    "art/heroes/ranger-aggressive/hex/l1_256.png",
+    "art/heroes/ranger-aggressive/hex/l1_full.png"
    ]
   },
   {
@@ -18069,7 +18387,7 @@
    "level": 1,
    "gender": "female",
    "campaign": "eve-of-ruin",
-   "art": "New Art/ranger-nature1.png",
+   "art": "art/heroes/ranger-nature/card/l1.png",
    "ported": {
     "strength": 2,
     "precision": 4,
@@ -18146,10 +18464,28 @@
     "Giselle"
    ],
    "levelArt": [
-    "New Art/ranger-nature1.png",
-    "New Art/ranger-nature2.png",
-    "New Art/ranger-nature3.png",
-    "New Art/ranger-nature4.png"
+    "art/heroes/ranger-nature/card/l1.png",
+    "art/heroes/ranger-nature/card/l2.png",
+    "art/heroes/ranger-nature/card/l3.png",
+    "art/heroes/ranger-nature/card/l4.png"
+   ],
+   "artSlug": "ranger-nature",
+   "afflictionArt": {
+    "lycanthropy": "art/heroes/ranger-nature/card/lycanthropy.png",
+    "possession": "art/heroes/ranger-nature/card/possession.png",
+    "rotting-flesh": "art/heroes/ranger-nature/card/rotting-flesh.png",
+    "vampirism": "art/heroes/ranger-nature/card/vampirism.png"
+   },
+   "anim": [
+    "art/heroes/ranger-nature/anim/l1.mp4",
+    "art/heroes/ranger-nature/anim/lycanthropy.mp4",
+    "art/heroes/ranger-nature/anim/possession.mp4",
+    "art/heroes/ranger-nature/anim/vampirism.mp4"
+   ],
+   "hexArt": [
+    "art/heroes/ranger-nature/hex/l1_1024.png",
+    "art/heroes/ranger-nature/hex/l1_256.png",
+    "art/heroes/ranger-nature/hex/l1_full.png"
    ]
   },
   {
@@ -18162,7 +18498,7 @@
    "level": 1,
    "gender": "female",
    "campaign": "eve-of-ruin",
-   "art": "New Art/ranger-ranger1.png",
+   "art": "art/heroes/ranger-ranger/card/l1.png",
    "ported": {
     "strength": 2,
     "precision": 4,
@@ -18238,10 +18574,25 @@
     "Giselle"
    ],
    "levelArt": [
-    "New Art/ranger-ranger1.png",
-    "New Art/ranger-ranger2.png",
-    "New Art/ranger-ranger3.png",
-    "New Art/ranger-ranger4.png"
+    "art/heroes/ranger-ranger/card/l1.png",
+    "art/heroes/ranger-ranger/card/l2.png",
+    "art/heroes/ranger-ranger/card/l3.png",
+    "art/heroes/ranger-ranger/card/l4.png"
+   ],
+   "artSlug": "ranger-ranger",
+   "afflictionArt": {
+    "lycanthropy": "art/heroes/ranger-ranger/card/lycanthropy.png",
+    "possession": "art/heroes/ranger-ranger/card/possession.png",
+    "rotting-flesh": "art/heroes/ranger-ranger/card/rotting-flesh.png",
+    "vampirism": "art/heroes/ranger-ranger/card/vampirism.png"
+   },
+   "anim": [
+    "art/heroes/ranger-ranger/anim/l1.mp4"
+   ],
+   "hexArt": [
+    "art/heroes/ranger-ranger/hex/l1_1024.png",
+    "art/heroes/ranger-ranger/hex/l1_256.png",
+    "art/heroes/ranger-ranger/hex/l1_full.png"
    ]
   },
   {
@@ -18254,7 +18605,7 @@
    "level": 1,
    "gender": "female",
    "campaign": "eve-of-ruin",
-   "art": "New Art/ranger-scantily1.png",
+   "art": "art/heroes/ranger-scantily/card/l1.png",
    "ported": {
     "strength": 2,
     "precision": 5,
@@ -18327,10 +18678,25 @@
     "Giselle"
    ],
    "levelArt": [
-    "New Art/ranger-scantily1.png",
-    "New Art/ranger-scantily2.png",
-    "New Art/ranger-scantily3.png",
-    "New Art/ranger-scantily4.png"
+    "art/heroes/ranger-scantily/card/l1.png",
+    "art/heroes/ranger-scantily/card/l2.png",
+    "art/heroes/ranger-scantily/card/l3.png",
+    "art/heroes/ranger-scantily/card/l4.png"
+   ],
+   "artSlug": "ranger-scantily",
+   "afflictionArt": {
+    "lycanthropy": "art/heroes/ranger-scantily/card/lycanthropy.png",
+    "possession": "art/heroes/ranger-scantily/card/possession.png",
+    "rotting-flesh": "art/heroes/ranger-scantily/card/rotting-flesh.png",
+    "vampirism": "art/heroes/ranger-scantily/card/vampirism.png"
+   },
+   "anim": [
+    "art/heroes/ranger-scantily/anim/l1.mp4"
+   ],
+   "hexArt": [
+    "art/heroes/ranger-scantily/hex/l1_1024.png",
+    "art/heroes/ranger-scantily/hex/l1_256.png",
+    "art/heroes/ranger-scantily/hex/l1_full.png"
    ]
   },
   {
@@ -18343,7 +18709,7 @@
    "level": 1,
    "gender": "female",
    "campaign": "eve-of-ruin",
-   "art": "New Art/rogue-raven1.jpg",
+   "art": "art/heroes/rogue-raven/card/l1.jpg",
    "ported": {
     "strength": 6,
     "precision": 4,
@@ -18417,10 +18783,25 @@
     "Giselle"
    ],
    "levelArt": [
-    "New Art/rogue-raven1.jpg",
-    "New Art/rogue-raven2.jpg",
-    "New Art/rogue-raven3.jpg",
-    "New Art/rogue-raven4.jpg"
+    "art/heroes/rogue-raven/card/l1.jpg",
+    "art/heroes/rogue-raven/card/l2.jpg",
+    "art/heroes/rogue-raven/card/l3.jpg",
+    "art/heroes/rogue-raven/card/l4.jpg"
+   ],
+   "artSlug": "rogue-raven",
+   "afflictionArt": {
+    "lycanthropy": "art/heroes/rogue-raven/card/lycanthropy.jpg",
+    "possession": "art/heroes/rogue-raven/card/possession.jpg",
+    "rotting-flesh": "art/heroes/rogue-raven/card/rotting-flesh.jpg",
+    "vampirism": "art/heroes/rogue-raven/card/vampirism.jpg"
+   },
+   "anim": [
+    "art/heroes/rogue-raven/anim/l1.mp4"
+   ],
+   "hexArt": [
+    "art/heroes/rogue-raven/hex/l1_1024.png",
+    "art/heroes/rogue-raven/hex/l1_256.png",
+    "art/heroes/rogue-raven/hex/l1_full.png"
    ]
   },
   {
@@ -18433,7 +18814,7 @@
    "level": 1,
    "gender": "female",
    "campaign": "eve-of-ruin",
-   "art": "New Art/rogue-rose1.png",
+   "art": "art/heroes/rogue-rose/card/l1.png",
    "ported": {
     "strength": 4,
     "precision": 4,
@@ -18511,10 +18892,28 @@
     "Giselle"
    ],
    "levelArt": [
-    "New Art/rogue-rose1.png",
-    "New Art/rogue-rose2.png",
-    "New Art/rogue-rose3.png",
-    "New Art/rogue-rose4.png"
+    "art/heroes/rogue-rose/card/l1.png",
+    "art/heroes/rogue-rose/card/l2.png",
+    "art/heroes/rogue-rose/card/l3.png",
+    "art/heroes/rogue-rose/card/l4.png"
+   ],
+   "artSlug": "rogue-rose",
+   "afflictionArt": {
+    "lycanthropy": "art/heroes/rogue-rose/card/lycanthropy.png",
+    "possession": "art/heroes/rogue-rose/card/possession.png",
+    "rotting-flesh": "art/heroes/rogue-rose/card/rotting-flesh.png",
+    "vampirism": "art/heroes/rogue-rose/card/vampirism.png"
+   },
+   "anim": [
+    "art/heroes/rogue-rose/anim/l1.mp4",
+    "art/heroes/rogue-rose/anim/lycanthropy.mp4",
+    "art/heroes/rogue-rose/anim/possession.mp4",
+    "art/heroes/rogue-rose/anim/vampirism.mp4"
+   ],
+   "hexArt": [
+    "art/heroes/rogue-rose/hex/l1_1024.png",
+    "art/heroes/rogue-rose/hex/l1_256.png",
+    "art/heroes/rogue-rose/hex/l1_full.png"
    ]
   },
   {
@@ -18527,7 +18926,7 @@
    "level": 1,
    "gender": "female",
    "campaign": "eve-of-ruin",
-   "art": "New Art/rogue-skull1.png",
+   "art": "art/heroes/rogue-skull/card/l1.png",
    "ported": {
     "strength": 4,
     "precision": 5,
@@ -18601,10 +19000,28 @@
     "Giselle"
    ],
    "levelArt": [
-    "New Art/rogue-skull1.png",
-    "New Art/rogue-skull2.png",
-    "New Art/rogue-skull3.png",
-    "New Art/rogue-skull4.png"
+    "art/heroes/rogue-skull/card/l1.png",
+    "art/heroes/rogue-skull/card/l2.png",
+    "art/heroes/rogue-skull/card/l3.png",
+    "art/heroes/rogue-skull/card/l4.png"
+   ],
+   "artSlug": "rogue-skull",
+   "afflictionArt": {
+    "lycanthropy": "art/heroes/rogue-skull/card/lycanthropy.png",
+    "possession": "art/heroes/rogue-skull/card/possession.png",
+    "rotting-flesh": "art/heroes/rogue-skull/card/rotting-flesh.png",
+    "vampirism": "art/heroes/rogue-skull/card/vampirism.png"
+   },
+   "anim": [
+    "art/heroes/rogue-skull/anim/l1.mp4",
+    "art/heroes/rogue-skull/anim/lycanthropy.mp4",
+    "art/heroes/rogue-skull/anim/possession.mp4",
+    "art/heroes/rogue-skull/anim/vampirism.mp4"
+   ],
+   "hexArt": [
+    "art/heroes/rogue-skull/hex/l1_1024.png",
+    "art/heroes/rogue-skull/hex/l1_256.png",
+    "art/heroes/rogue-skull/hex/l1_full.png"
    ]
   },
   {
@@ -18617,7 +19034,7 @@
    "level": 1,
    "gender": "female",
    "campaign": "eve-of-ruin",
-   "art": "New Art/rogue-snake1.png",
+   "art": "art/heroes/rogue-snake/card/l1.png",
    "ported": {
     "strength": 4,
     "precision": 4,
@@ -18694,10 +19111,28 @@
     "Giselle"
    ],
    "levelArt": [
-    "New Art/rogue-snake1.png",
-    "New Art/rogue-snake2.png",
-    "New Art/rogue-snake3.png",
-    "New Art/rogue-snake4.png"
+    "art/heroes/rogue-snake/card/l1.png",
+    "art/heroes/rogue-snake/card/l2.png",
+    "art/heroes/rogue-snake/card/l3.png",
+    "art/heroes/rogue-snake/card/l4.png"
+   ],
+   "artSlug": "rogue-snake",
+   "afflictionArt": {
+    "lycanthropy": "art/heroes/rogue-snake/card/lycanthropy.png",
+    "possession": "art/heroes/rogue-snake/card/possession.png",
+    "rotting-flesh": "art/heroes/rogue-snake/card/rotting-flesh.png",
+    "vampirism": "art/heroes/rogue-snake/card/vampirism.png"
+   },
+   "anim": [
+    "art/heroes/rogue-snake/anim/l1.mp4",
+    "art/heroes/rogue-snake/anim/lycanthropy.mp4",
+    "art/heroes/rogue-snake/anim/possession.mp4",
+    "art/heroes/rogue-snake/anim/vampirism.mp4"
+   ],
+   "hexArt": [
+    "art/heroes/rogue-snake/hex/l1_1024.png",
+    "art/heroes/rogue-snake/hex/l1_256.png",
+    "art/heroes/rogue-snake/hex/l1_full.png"
    ]
   },
   {
@@ -19160,7 +19595,7 @@
    "level": 1,
    "gender": "female",
    "campaign": "eve-of-ruin",
-   "art": "New Art/druid-variants/druid-level1.png",
+   "art": "art/heroes/druid/card/l1.png",
    "ported": {
     "strength": 3,
     "precision": 3,
@@ -19207,13 +19642,20 @@
    "templateId": "template.special.druid",
    "templateName": "Druid",
    "levelArt": [
-    "New Art/druid-variants/druid-level1.png",
-    "New Art/druid-variants/druid-level2.png",
-    "New Art/druid-variants/druid-level3.png",
-    "New Art/druid-variants/druid-level4.png"
+    "art/heroes/druid/card/l1.png",
+    "art/heroes/druid/card/l2.png",
+    "art/heroes/druid/card/l3.png",
+    "art/heroes/druid/card/l4.png"
    ],
    "specialClassId": "druid",
-   "unlockXp": null
+   "unlockXp": null,
+   "artSlug": "druid",
+   "afflictionArt": {
+    "lycanthropy": "art/heroes/druid/card/lycanthropy.png",
+    "possession": "art/heroes/druid/card/possession.png",
+    "rotting-flesh": "art/heroes/druid/card/rotting-flesh.png",
+    "vampirism": "art/heroes/druid/card/vampirism.png"
+   }
   },
   {
    "id": "hero.special.knight",
@@ -19225,7 +19667,7 @@
    "level": 1,
    "gender": "male",
    "campaign": "eve-of-ruin",
-   "art": "New Art/knight-variants/knight-level1-v2.png",
+   "art": "art/heroes/knight/card/l1.png",
    "ported": {
     "strength": 5,
     "precision": 2,
@@ -19274,13 +19716,19 @@
    "templateId": "template.special.knight",
    "templateName": "Knight",
    "levelArt": [
-    "New Art/knight-variants/knight-level1.png",
-    "New Art/knight-variants/knight-level2.png",
-    "New Art/knight-variants/knight-level3.png",
-    "New Art/knight-variants/knight-level4.png"
+    "art/heroes/knight/card/l1.png",
+    "art/heroes/knight/card/l2.png",
+    "art/heroes/knight/card/l3.png",
+    "art/heroes/knight/card/l4.png"
    ],
    "specialClassId": "knight",
-   "unlockXp": null
+   "unlockXp": null,
+   "artSlug": "knight",
+   "afflictionArt": {
+    "possession": "art/heroes/knight/card/possession.png",
+    "rotting-flesh": "art/heroes/knight/card/rotting-flesh.png",
+    "vampirism": "art/heroes/knight/card/vampirism.png"
+   }
   },
   {
    "id": "hero.special.inquisitor",
@@ -19292,7 +19740,7 @@
    "level": 1,
    "gender": "male",
    "campaign": "eve-of-ruin",
-   "art": "New Art/inquisitor-variants/inquisitor-level1.png",
+   "art": "art/heroes/inquisitor/card/l1.png",
    "ported": {
     "strength": 4,
     "precision": 2,
@@ -19351,13 +19799,19 @@
    "templateId": "template.special.inquisitor",
    "templateName": "Inquisitor",
    "levelArt": [
-    "New Art/inquisitor-variants/inquisitor-level1.png",
-    "New Art/inquisitor-variants/inquisitor-level2.png",
-    "New Art/inquisitor-variants/inquisitor-level3.png",
-    "New Art/inquisitor-variants/inquisitor-level4.png"
+    "art/heroes/inquisitor/card/l1.png",
+    "art/heroes/inquisitor/card/l2.png",
+    "art/heroes/inquisitor/card/l3.png",
+    "art/heroes/inquisitor/card/l4.png"
    ],
    "specialClassId": "inquisitor",
-   "unlockXp": null
+   "unlockXp": null,
+   "artSlug": "inquisitor",
+   "afflictionArt": {
+    "possession": "art/heroes/inquisitor/card/possession.png",
+    "rotting-flesh": "art/heroes/inquisitor/card/rotting-flesh.png",
+    "vampirism": "art/heroes/inquisitor/card/vampirism.png"
+   }
   },
   {
    "id": "hero.special.barbarian",
@@ -19369,7 +19823,7 @@
    "level": 1,
    "gender": "male",
    "campaign": "eve-of-ruin",
-   "art": "New Art/barbarian-variants/barbarian-level1.png",
+   "art": "art/heroes/barbarian/card/l1.png",
    "ported": {
     "strength": 5,
     "precision": 5,
@@ -19416,13 +19870,19 @@
    "templateId": "template.special.barbarian",
    "templateName": "Barbarian",
    "levelArt": [
-    "New Art/barbarian-variants/barbarian-level1.png",
-    "New Art/barbarian-variants/barbarian-level2.png",
-    "New Art/barbarian-variants/barbarian-level3.png",
-    "New Art/barbarian-variants/barbarian-level4.png"
+    "art/heroes/barbarian/card/l1.png",
+    "art/heroes/barbarian/card/l2.png",
+    "art/heroes/barbarian/card/l3.png",
+    "art/heroes/barbarian/card/l4.png"
    ],
    "specialClassId": "barbarian",
-   "unlockXp": null
+   "unlockXp": null,
+   "artSlug": "barbarian",
+   "afflictionArt": {
+    "possession": "art/heroes/barbarian/card/possession.png",
+    "rotting-flesh": "art/heroes/barbarian/card/rotting-flesh.png",
+    "vampirism": "art/heroes/barbarian/card/vampirism.png"
+   }
   },
   {
    "id": "hero.special.shaman",
@@ -19434,7 +19894,7 @@
    "level": 1,
    "gender": "female",
    "campaign": "eve-of-ruin",
-   "art": "New Art/shaman-variants/shaman-level1.png",
+   "art": "art/heroes/shaman/card/l1.png",
    "ported": {
     "strength": 3,
     "precision": 2,
@@ -19481,13 +19941,20 @@
    "templateId": "template.special.shaman",
    "templateName": "Shaman",
    "levelArt": [
-    "New Art/shaman-variants/shaman-level1.png",
-    "New Art/shaman-variants/shaman-level2.png",
-    "New Art/shaman-variants/shaman-level3.png",
-    "New Art/shaman-variants/shaman-level4.png"
+    "art/heroes/shaman/card/l1.png",
+    "art/heroes/shaman/card/l2.png",
+    "art/heroes/shaman/card/l3.png",
+    "art/heroes/shaman/card/l4.png"
    ],
    "specialClassId": "shaman",
-   "unlockXp": null
+   "unlockXp": null,
+   "artSlug": "shaman",
+   "afflictionArt": {
+    "lycanthropy": "art/heroes/shaman/card/lycanthropy.png",
+    "possession": "art/heroes/shaman/card/possession.png",
+    "rotting-flesh": "art/heroes/shaman/card/rotting-flesh.png",
+    "vampirism": "art/heroes/shaman/card/vampirism.png"
+   }
   },
   {
    "id": "hero.special.martyr",
@@ -19499,7 +19966,7 @@
    "level": 1,
    "gender": "male",
    "campaign": "eve-of-ruin",
-   "art": "New Art/martyr-variants/martyr-level1.png",
+   "art": "art/heroes/martyr/card/l1.png",
    "ported": {
     "strength": 1,
     "precision": 1,
@@ -19604,13 +20071,19 @@
    "templateId": "template.special.martyr",
    "templateName": "Martyr",
    "levelArt": [
-    "New Art/martyr-variants/martyr-level1.png",
-    "New Art/martyr-variants/martyr-level2.png",
-    "New Art/martyr-variants/martyr-level3.png",
-    "New Art/martyr-variants/martyr-level4.png"
+    "art/heroes/martyr/card/l1.png",
+    "art/heroes/martyr/card/l2.png",
+    "art/heroes/martyr/card/l3.png",
+    "art/heroes/martyr/card/l4.png"
    ],
    "specialClassId": "martyr",
-   "unlockXp": null
+   "unlockXp": null,
+   "artSlug": "martyr",
+   "afflictionArt": {
+    "possession": "art/heroes/martyr/card/possession.png",
+    "rotting-flesh": "art/heroes/martyr/card/rotting-flesh.png",
+    "vampirism": "art/heroes/martyr/card/vampirism.png"
+   }
   },
   {
    "id": "hero.special.templar",
@@ -19622,7 +20095,7 @@
    "level": 1,
    "gender": "male",
    "campaign": "eve-of-ruin",
-   "art": "New Art/templar-variants/templar-level1-v2.png",
+   "art": "art/heroes/templar/card/l1.png",
    "ported": {
     "strength": 3,
     "precision": 2,
@@ -19670,13 +20143,19 @@
    "templateId": "template.special.templar",
    "templateName": "Templar",
    "levelArt": [
-    "New Art/templar-variants/templar-level1.png",
-    "New Art/templar-variants/templar-level2.png",
-    "New Art/templar-variants/templar-level3.png",
-    "New Art/templar-variants/templar-level4.png"
+    "art/heroes/templar/card/l1.png",
+    "art/heroes/templar/card/l2.png",
+    "art/heroes/templar/card/l3.png",
+    "art/heroes/templar/card/l4.png"
    ],
    "specialClassId": "templar",
-   "unlockXp": null
+   "unlockXp": null,
+   "artSlug": "templar",
+   "afflictionArt": {
+    "possession": "art/heroes/templar/card/possession.png",
+    "rotting-flesh": "art/heroes/templar/card/rotting-flesh.png",
+    "vampirism": "art/heroes/templar/card/vampirism.png"
+   }
   },
   {
    "id": "hero.special.demon-hunter",
@@ -19688,7 +20167,7 @@
    "level": 1,
    "gender": "female",
    "campaign": "eve-of-ruin",
-   "art": "New Art/demon-hunter-variants/demon-hunter-level1.png",
+   "art": "art/heroes/demon-hunter/card/l1.png",
    "ported": {
     "strength": 3,
     "precision": 3,
@@ -19735,13 +20214,19 @@
    "templateId": "template.special.demon-hunter",
    "templateName": "Demon Hunter",
    "levelArt": [
-    "New Art/demon-hunter-variants/demon-hunter-level1.png",
-    "New Art/demon-hunter-variants/demon-hunter-level2.png",
-    "New Art/demon-hunter-variants/demon-hunter-level3.png",
-    "New Art/demon-hunter-variants/demon-hunter-level4.png"
+    "art/heroes/demon-hunter/card/l1.png",
+    "art/heroes/demon-hunter/card/l2.png",
+    "art/heroes/demon-hunter/card/l3.png",
+    "art/heroes/demon-hunter/card/l4.png"
    ],
    "specialClassId": "demon-hunter",
-   "unlockXp": null
+   "unlockXp": null,
+   "artSlug": "demon-hunter",
+   "afflictionArt": {
+    "possession": "art/heroes/demon-hunter/card/possession.png",
+    "rotting-flesh": "art/heroes/demon-hunter/card/rotting-flesh.png",
+    "vampirism": "art/heroes/demon-hunter/card/vampirism.png"
+   }
   },
   {
    "id": "hero.special.ebony-mask",
@@ -19753,7 +20238,7 @@
    "level": 1,
    "gender": "female",
    "campaign": "eve-of-ruin",
-   "art": "New Art/ebony-mask-variants/ebony-mask-level1.png",
+   "art": "art/heroes/ebony-mask/card/l1.png",
    "ported": {
     "strength": 5,
     "precision": 2,
@@ -19813,13 +20298,19 @@
    "templateId": "template.special.ebony-mask",
    "templateName": "Ebony Mask",
    "levelArt": [
-    "New Art/ebony-mask-variants/ebony-mask-level1.png",
-    "New Art/ebony-mask-variants/ebony-mask-level2.png",
-    "New Art/ebony-mask-variants/ebony-mask-level3.png",
-    "New Art/ebony-mask-variants/ebony-mask-level4.png"
+    "art/heroes/ebony-mask/card/l1.png",
+    "art/heroes/ebony-mask/card/l2.png",
+    "art/heroes/ebony-mask/card/l3.png",
+    "art/heroes/ebony-mask/card/l4.png"
    ],
    "specialClassId": "ebony-mask",
-   "unlockXp": null
+   "unlockXp": null,
+   "artSlug": "ebony-mask",
+   "afflictionArt": {
+    "possession": "art/heroes/ebony-mask/card/possession.png",
+    "rotting-flesh": "art/heroes/ebony-mask/card/rotting-flesh.png",
+    "vampirism": "art/heroes/ebony-mask/card/vampirism.png"
+   }
   },
   {
    "id": "hero.special.warden",
@@ -19831,7 +20322,7 @@
    "level": 1,
    "gender": "female",
    "campaign": "eve-of-ruin",
-   "art": "New Art/warden-variants/warden-level1.png",
+   "art": "art/heroes/warden/card/l1.png",
    "ported": {
     "strength": 2,
     "precision": 3,
@@ -19879,13 +20370,19 @@
    "templateId": "template.special.warden",
    "templateName": "Warden",
    "levelArt": [
-    "New Art/warden-variants/warden-level1.png",
-    "New Art/warden-variants/warden-level2.png",
-    "New Art/warden-variants/warden-level3.png",
-    "New Art/warden-variants/warden-level4.png"
+    "art/heroes/warden/card/l1.png",
+    "art/heroes/warden/card/l2.png",
+    "art/heroes/warden/card/l3.png",
+    "art/heroes/warden/card/l4.png"
    ],
    "specialClassId": "warden",
-   "unlockXp": null
+   "unlockXp": null,
+   "artSlug": "warden",
+   "afflictionArt": {
+    "possession": "art/heroes/warden/card/possession.png",
+    "rotting-flesh": "art/heroes/warden/card/rotting-flesh.png",
+    "vampirism": "art/heroes/warden/card/vampirism.png"
+   }
   },
   {
    "id": "hero.special.prophet",
@@ -19897,7 +20394,7 @@
    "level": 1,
    "gender": "male",
    "campaign": "eve-of-ruin",
-   "art": "New Art/prophet-variants/prophet-level1.png",
+   "art": "art/heroes/prophet/card/l1.png",
    "ported": {
     "strength": 1,
     "precision": 2,
@@ -19952,13 +20449,19 @@
    "templateId": "template.special.prophet",
    "templateName": "Prophet",
    "levelArt": [
-    "New Art/prophet-variants/prophet-level1.png",
-    "New Art/prophet-variants/prophet-level2.png",
-    "New Art/prophet-variants/prophet-level3.png",
-    "New Art/prophet-variants/prophet-level4.png"
+    "art/heroes/prophet/card/l1.png",
+    "art/heroes/prophet/card/l2.png",
+    "art/heroes/prophet/card/l3.png",
+    "art/heroes/prophet/card/l4.png"
    ],
    "specialClassId": "prophet",
-   "unlockXp": null
+   "unlockXp": null,
+   "artSlug": "prophet",
+   "afflictionArt": {
+    "possession": "art/heroes/prophet/card/possession.png",
+    "rotting-flesh": "art/heroes/prophet/card/rotting-flesh.png",
+    "vampirism": "art/heroes/prophet/card/vampirism.png"
+   }
   },
   {
    "id": "hero.skyship.duelist.lantern-blade",

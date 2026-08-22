@@ -327,6 +327,59 @@ for(const h of heroes){
   if(!ID.test(h.id)) problems.push('bad id '+h.id);
   if(seen.has(h.id)) problems.push('DUPLICATE '+h.id); seen.add(h.id);
 }
+// ---------------------------------------------------------------- local art resolution
+// The art tree in this repo is art/heroes/<slug>/{card,hex,anim}/ with card/l1..l4 and
+// card/<affliction>. The SOURCE names the same pictures <slug>1..4 and <slug>l|p|r|v in a flat
+// folder inside hell-tcg. Content used to record the hell-tcg path, which resolves nowhere here.
+//
+// A path that does not resolve is worse than a missing one: it reads as present. Anything that
+// has been brought across is now recorded where it actually is, and anything that has not is
+// left pointing at the source AND counted, so the gap is a number rather than a surprise.
+{
+  const ART = '../art/heroes/';
+  const AFF = ['lycanthropy','possession','rotting-flesh','vampirism'];
+  const slugOf = p => {
+    if (!p) return null;
+    const dir = p.split('/').slice(0,-1).pop() || '';
+    const base = p.split('/').pop().replace(/\.[^.]+$/, '');
+    if (/-(variants|series)$/.test(dir)) return dir.replace(/-(variants|series)$/, '');
+    return base.replace(/-level[1-4].*$/, '').replace(/[1-4]$/, '');
+  };
+  let localised = 0, stillRemote = 0;
+  for (const h of heroes) {
+    const slug = slugOf(h.art);
+    const cardDir = slug && (ART + slug + '/card');
+    if (!slug || !fs.existsSync(cardDir)) { if (h.art) stillRemote++; continue; }
+    const files = fs.readdirSync(cardDir);
+    const pick = stem => { const hit = files.find(x => x.replace(/\.[^.]+$/, '') === stem);
+                           return hit ? 'art/heroes/' + slug + '/card/' + hit : null; };
+
+    const levels = [1,2,3,4].map(n => pick('l' + n)).filter(Boolean);
+    if (!levels.length) { stillRemote++; continue; }
+
+    h.artSlug   = slug;
+    h.art       = levels[0];
+    h.levelArt  = levels;
+    const affl = {};
+    for (const a of AFF) { const p = pick(a); if (p) affl[a] = p; }
+    if (Object.keys(affl).length) h.afflictionArt = affl;
+
+    const animDir = ART + slug + '/anim';
+    if (fs.existsSync(animDir)) {
+      const anims = fs.readdirSync(animDir).filter(x => /\.mp4$/i.test(x));
+      if (anims.length) h.anim = anims.map(x => 'art/heroes/' + slug + '/anim/' + x).sort();
+    }
+    const hexDir = ART + slug + '/hex';
+    if (fs.existsSync(hexDir)) {
+      const hex = fs.readdirSync(hexDir).filter(x => /\.(png|jpe?g)$/i.test(x));
+      if (hex.length) h.hexArt = hex.map(x => 'art/heroes/' + slug + '/hex/' + x).sort();
+    }
+    localised++;
+  }
+  console.log('local art: ' + localised + ' heroes now point at art/heroes/, ' +
+              stillRemote + ' still name a hell-tcg path that does not resolve here');
+}
+
 const out={derivation:DERIVATION, derivedBase:DERIVED_BASE, portMap:PORT, dodgeScale:DODGE_SCALE,
   rule:'ONE PIECE OF ART, ONE UNIQUE HERO. Ruled 2026-08-20. Every generative template owns four distinct designs and each is its own hero — so 12 Shadows subtypes are 48 heroes, not 12. What does NOT split is a hero\u2019s own level-and-status set: a folder of 1/2/3/4 plus l/p/r/v is one hero at four levels wearing four afflictions, which is why the 98 fixed cast stay 98.',
   paths:[

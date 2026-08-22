@@ -4,6 +4,30 @@
  "_howItIsUsed": "audit.mjs R22 collapses each hero's art filename to a CHARACTER STEM using the convention for its directory, then fails if two heroes land on the same stem. A directory with no entry here is itself a finding — a new art tree must declare what its suffixes mean before heroes can be built from it.",
  "conventions": [
   {
+   "match": "art/heroes/*/hex",
+   "subtree": false,
+   "variantSuffix": "none",
+   "note": "Same character-per-directory rule as card/. anim/ holds mp4, hex/ holds the board token at three sizes (_256, _1024, _full).",
+   "levels": "lN",
+   "afflictions": "lycanthropy|possession|rotting-flesh|vampirism"
+  },
+  {
+   "match": "art/heroes/*/anim",
+   "subtree": false,
+   "variantSuffix": "none",
+   "note": "Same character-per-directory rule as card/. anim/ holds mp4, hex/ holds the board token at three sizes (_256, _1024, _full).",
+   "levels": "lN",
+   "afflictions": "lycanthropy|possession|rotting-flesh|vampirism"
+  },
+  {
+   "match": "art/heroes/*/card",
+   "subtree": false,
+   "variantSuffix": "none",
+   "note": "THE LOCAL TREE, and the one content points at. Unlike the hell-tcg folders it is unambiguous by construction: one directory per character, `l1`..`l4` are that character at four levels, and the four afflictions are spelled out in full - lycanthropy, possession, rotting-flesh, vampirism. There are no retries and no -vN here, because a rejected retry never gets copied across. Added 2026-08-22 when content stopped naming hell-tcg paths.",
+   "levels": "lN",
+   "afflictions": "lycanthropy|possession|rotting-flesh|vampirism"
+  },
+  {
    "match": "New Art/avtair-approved",
    "variantSuffix": "design",
    "note": "-v1..-v4 are four DIFFERENT PEOPLE sharing one subtype. Priestess of Ire v1-v4 are Sand Wraith, Blood Offerer, Snake Handler and Scorpion Keeper — four women, four heroes. Do not collapse.",

@@ -796,6 +796,48 @@ if(D.bestiary && D.bestiary.length){
         'the 193 immediate-cast rows were cut 2026-08-22 — they were hollow (empty abilities arrays, effects hidden in triggers.onEnter) and the new game does not want them');
 }
 
+// R30 A DECLARED ART PATH MUST RESOLVE. Ruled 2026-08-22.
+//
+// Every art path in gen/heroes.json named a hell-tcg folder — 187 base paths and 140 levelArt
+// paths, and not one of them resolved in this repo. That is worse than a missing path, because
+// a populated levelArt array READS AS PRESENT: one session reported the level-ups were there,
+// another could not find them, and both were looking at the same correct-looking data. The art
+// itself was real and sitting in hell-tcg; nothing had ever been brought across.
+//
+// The rule is deliberately scoped to what has been migrated: IF a hero has a local art folder,
+// content must point INSIDE it, and every file it names must exist. Heroes whose art has not
+// been brought across yet are a counted gap in CONTENT-GAPS, not a lint failure — that is work
+// outstanding, not a contradiction.
+{
+  const local = p => typeof p === 'string' && p.startsWith('art/heroes/');
+  let unresolved = 0, remote = 0;
+  for(const h of ((D.heroes||{}).heroes||[])){
+    const paths = [h.art, ...(h.levelArt||[]), ...Object.values(h.afflictionArt||{}),
+                   ...(h.anim||[]), ...(h.hexArt||[])].filter(Boolean);
+    if(!paths.length) continue;
+
+    // a hero that has been migrated must be migrated COMPLETELY — no half-local rows
+    const anyLocal = paths.some(local);
+    if(anyLocal){
+      for(const p of paths){
+        if(!local(p)){
+          add('hero-art-is-half-migrated', h.name,
+              'names a local folder but also "'+p+'" — one hero, one art location');
+          continue;
+        }
+        if(!fs.existsSync('../'+p)){ unresolved++;
+          add('declared-art-file-does-not-exist', h.name, p); }
+      }
+      // and a migrated hero should carry its whole set
+      if((h.levelArt||[]).length && (h.levelArt||[]).length !== 4)
+        add('hero-has-a-partial-level-set', h.name,
+            (h.levelArt||[]).length+' of 4 levels — the convention is one hero at four levels');
+    } else remote++;
+  }
+  if(remote)
+    console.error('  (R30 note: '+remote+' heroes still name art outside this repo — counted in CONTENT-GAPS, not linted here)');
+}
+
 const by={}; F.forEach(f=>(by[f.rule]=by[f.rule]||[]).push(f));
 for(const [r,list] of Object.entries(by).sort((a,b)=>b[1].length-a[1].length)){
   console.log('\n### '+r+'  ('+list.length+')');
