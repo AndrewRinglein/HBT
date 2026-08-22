@@ -746,12 +746,54 @@ if(D.bestiary && D.bestiary.length){
 
   // (b) lane and row concepts
   for(const u of (D.bestiary||[])){
-    for(const k of Object.keys(LANES))
-      if(u[k]!==undefined && k!=='row') add('lane-concept-on-a-hex-board', u.name, k+' — '+LANES[k]);
+    for(const k of Object.keys(u))
+      if(/^(placement|row|lane)/i.test(k)) add('lane-concept-on-a-hex-board', u.name,
+        'field "'+k+'" — a hex board has no lanes; the useful half is `deploys`');
     const shapes = [...(u.attacks||[]).map(a=>a.targets), ...(u.triggers||[]).map(x=>x.targets)];
     for(const s of shapes) if(s && /\brow\b/i.test(s))
       add('lane-concept-on-a-hex-board', u.name, 'shape "'+s+'" names a row');
   }
+}
+
+// R29 A FIELD IS DECLINED, NOT FORGOTTEN. Ruled 2026-08-22.
+//
+// "We decided not to port this" and "nobody opened that field" produce the identical output —
+// nothing — and this extractor has now been caught by the second one three times: the aura
+// payload, card.triggers, and specialMechanics were all dropped silently rather than declined
+// deliberately, and between them they hid a whole mechanic, 96 creatures' worth of content and
+// 193 hollow spells. gen/not-ported.json is the difference: every field left behind is written
+// down with a reason and a date. Anything on that list is a decision. Anything NOT on it and
+// not in the output is a bug nobody has noticed yet.
+//
+// This rule enforces the near half — a declined field must actually stay out. The far half is
+// enforced by the extractor, which reports any source action it cannot map.
+{
+  const NP = D.notPorted || [];
+  if(!NP.length) add('not-ported-list-is-missing','gen/not-ported.json',
+    'the list of deliberately-declined source fields is not in the build — without it, a dropped field is indistinguishable from a decision');
+
+  const declined = new Set(NP.map(x => x.field));
+  const seen = new Map();
+  const walk = (o, where) => {
+    if(Array.isArray(o)) return o.forEach(x => walk(x, where));
+    if(!o || typeof o !== 'object') return;
+    for(const [k,v] of Object.entries(o)){
+      if(declined.has(k) && v != null && !(Array.isArray(v) && !v.length))
+        seen.set(k, (seen.get(k)||0) + 1);
+      walk(v, where);
+    }
+  };
+  walk(D.bestiary, 'bestiary');
+  for(const [k,n] of seen){
+    const row = NP.find(x => x.field === k);
+    add('declined-field-reached-the-output', k,
+        n+' occurrence(s) in the bestiary — declined '+(row?row.decided:'?')+': '+(row?row.why:'').slice(0,120));
+  }
+
+  // and the spells stay cut
+  if(D.enemySpells && D.enemySpells.length)
+    add('enemy-spells-are-back', D.enemySpells.length+' rows',
+        'the 193 immediate-cast rows were cut 2026-08-22 — they were hollow (empty abilities arrays, effects hidden in triggers.onEnter) and the new game does not want them');
 }
 
 const by={}; F.forEach(f=>(by[f.rule]=by[f.rule]||[]).push(f));

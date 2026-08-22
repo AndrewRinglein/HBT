@@ -80,6 +80,10 @@ if(fs.existsSync(G+'art-conventions.json')) out.artConventions=R('art-convention
 // this event was already about". audit R27 accepts them alongside the 24 shapes.
 if(fs.existsSync(G+'referents.json')) out.referents=R('referents.json').referents;
 
+// ---- fields DELIBERATELY not carried across from hell-tcg. audit R29 reads this: a declined
+// field is a decision with a date, a dropped one is a bug nobody has noticed yet.
+if(fs.existsSync(G+'not-ported.json')) out.notPorted=R('not-ported.json').fields;
+
 // ---- the function list: the complete vocabulary content is allowed to use
 if(fs.existsSync(G+'functions.json')) out.functions=R('functions.json');
 { const known=new Set(out.classes.map(c=>c.id)); const hid=new Set();
@@ -123,7 +127,8 @@ try{ out.bestiaryTest=R('bestiary-test.json'); }catch{ out.bestiaryTest=null; }
 // ---- the REAL bestiary. 219 creatures ported from hell-tcg data/enemyCards.js, plus the
 // 193 immediate-cast rows which are enemy SPELLS, not units (ruled 2026-08-21).
 try{ out.bestiary=R('bestiary.json').units; }catch{ out.bestiary=null; }
-try{ out.enemySpells=R('enemy-spells.json').spells; }catch{ out.enemySpells=null; }
+// Enemy spells CUT 2026-08-22 - the new game does not want them. They were also hollow: all
+// 193 had an empty abilities array because their effect lived in triggers.onEnter.
 fs.writeFileSync('hbt-content.json', JSON.stringify(out));
 console.log('TOTALS');
 for(const k of ['specialties','powers','items','attacks','enchants','tags','badges','classes']) console.log('  '+String(out[k].length).padStart(4), k);

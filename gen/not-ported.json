@@ -1,0 +1,41 @@
+{
+  "note": "Fields that exist in hell-tcg and are DELIBERATELY not carried across. Written down because 'we decided not to port this' and 'nobody noticed this field' look identical in the output, and this project has now been bitten by the second one three times — the aura payload, card.triggers, and specialMechanics were all silently dropped rather than deliberately declined. Anything in this list is a decision; anything NOT in this list and not in the output is a bug. audit R29 fails if one of these reaches the built content. Ruled 2026-08-22. NOTE: `art` was briefly on this list by mistake - it IS ported, via gen/bestiary-curation.json, and R29 caught the contradiction on its first run.",
+  "fields": [
+    {
+      "field": "condition",
+      "seenOn": "102 abilities, values melee | ranged",
+      "why": "It says 'only usable in melee' or 'only usable at range', which the TARGETING SHAPE already says — an ability aimed at 'one enemy in melee reach' is a melee ability by construction. Carrying it forward would give a compiler two sources for one fact and an opportunity to disagree with itself.",
+      "decided": "2026-08-22"
+    },
+    {
+      "field": "weight",
+      "seenOn": "all 578 abilities",
+      "why": "The weighted AI action table. HoBaT's AI modes live in engine/src/ai and choose their own way; a probability baked into content would compete with them.",
+      "decided": "2026-08-21"
+    },
+    {
+      "field": "auraName",
+      "seenOn": "14 createAura effects",
+      "why": "A display name for an aura whose TIMING was cut with onEnter. The 14 are re-authored as spatial auras with their own names in gen/bestiary-riders.json.",
+      "decided": "2026-08-21"
+    },
+    {
+      "field": "type",
+      "seenOn": "all 412 cards",
+      "why": "Always the literal string 'enemy' or 'enemy-spell' — it distinguishes the two files this extractor already writes separately, and carries nothing once they are split.",
+      "decided": "2026-08-22"
+    },
+    {
+      "field": "placement",
+      "seenOn": "all 412 cards, values foremost | backmost | random",
+      "why": "Lane placement in a three-column grid. A hex board has no lanes. The USEFUL half survives as `deploys: front | back | anywhere` - a Skeletal Archer really does want to start at the back - so the preference is kept and the lane is not.",
+      "decided": "2026-08-22"
+    },
+    {
+      "field": "description",
+      "seenOn": "527 abilities and 193 spell rows",
+      "why": "Prose restating what the effects already say. Two sources for one fact is how a compiler ends up disagreeing with itself, which is the same reason `condition` is declined.",
+      "decided": "2026-08-22"
+    }
+  ]
+}

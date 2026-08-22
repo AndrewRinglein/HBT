@@ -337,20 +337,6 @@ const TABS=[
    return head+strip+'<div class="md"><table><tr><th></th><th>Creature</th><th>Rank</th><th>HP</th><th>Str</th>'+
      '<th>Pre</th><th>Arm</th><th>Rch</th><th>Archetype</th><th>Acc</th><th>Mov</th><th>Abilities</th></tr>'+rows+'</table></div>';
  }},
- // The 193 immediate-cast rows: enemy SPELLS, not units. Ruled 2026-08-21.
- {id:'enemyspells',label:'Enemy Spells',n:(D.enemySpells||[]).length,render(){
-   const S=D.enemySpells||[]; if(!S.length) return '<div class="empty">none</div>';
-   const head='<p>'+S.length+' rows Hell-TCG filed as enemies which have an all-zero stat block and'+
-     ' placement immediate-cast. They are spells the enemy side casts, not creatures placed on the'+
-     ' board, so they carry no stats, no movement and no art.</p>';
-   const rows=S.slice().sort(function(a,b){return String(a.name).localeCompare(String(b.name));})
-    .map(function(s){
-     return '<tr><td><b>'+esc(s.name)+'</b></td><td>'+(s.rank!=null?s.rank:'-')+'</td>'+
-       '<td><small>'+esc((s.types||[]).join(' / '))+'</small></td>'+
-       '<td>'+((s.abilities||[]).map(function(a){return esc(a.name);}).join(' &middot; ')||'-')+'</td></tr>';
-    }).join('');
-   return head+'<div class="md"><table><tr><th>Spell</th><th>Rank</th><th>Types</th><th>Abilities</th></tr>'+rows+'</table></div>';
- }},
  {id:'overview',label:'Overview',n:null,render(){
    const s=[['heroes',D.heroes.heroes.length],['specialties',D.specialties.length],['powers',D.powers.length],
      ['items',D.items.length],['attacks',D.attacks.length],['enchantments',D.enchants.length],

@@ -216,17 +216,18 @@ const gaps = [], rows = [];
 // the extractor used to read it back out of its own output, so one bad run erased it.
 const curated = JSON.parse(fs.readFileSync('gen/bestiary-curation.json', 'utf8')).curation;
 
-// 193 of the 412 are placement:'immediate-cast' with an all-zero stat block — they are
-// SPELLS, not creatures (ruled 2026-08-21), and none is in the curated 144. They get their
-// own file: giving a spell a movement speed is nonsense.
-const spells = [];
+// 193 of the 412 are placement:'immediate-cast' with an all-zero stat block. They were called
+// SPELLS on 2026-08-21 and given their own file; on 2026-08-22 they were CUT ENTIRELY — the
+// new game does not want them.
+//
+// They were hollow anyway, which is worth recording rather than quietly forgetting. Every one
+// had an EMPTY `abilities` array: their actual effect lived in `triggers.onEnter`, the field
+// this extractor did not read until 2026-08-22. So all 193 shipped to the Codex as name, rank
+// and nothing else, and the Enemy Spells tab had been listing 193 empty rows. Cutting them
+// removes a hollow section rather than losing content.
+let spellsCut = 0;
 for (const e of Object.values(ENEMY_CARDS)) {
-  if (e.placement === 'immediate-cast') {
-    spells.push({ id:`enemyspell.${slug(e.name)}`, uuid:e.uuid, name:e.name, rank:e.tier ?? null,
-      types:e.types||[], abilities:e.abilities||[], backstory:e.backstory||null, quote:e.quote||null,
-      source:'hell-tcg data/enemyCards.js — placement immediate-cast, so a spell rather than a unit.' });
-    continue;
-  }
+  if (e.placement === 'immediate-cast') { spellsCut++; continue; }
   const bs = e.baseStats || {}, ported = {};
   for (const [from, to] of Object.entries(PORT)) if (typeof bs[from] === 'number') ported[to] = bs[from];
   ported.dodge = (bs.dodge || 0) * DODGE_SCALE;
@@ -239,6 +240,11 @@ for (const e of Object.values(ENEMY_CARDS)) {
     const row = { id:`attack.${slug(e.name)}.${slug(a.name)}`, name:a.name,
                   kind:a.type||'attack', targets:shape||null,
                   damageType:a.damageType||null, damage:a.damage===('auto')?null:a.damage,
+                  // damageModifier was being DROPPED on 112 abilities. `damage:'auto'` means
+                  // "the unit's own attack value", so for the 240 auto abilities this flat
+                  // adjustment was the ONLY damage number on the row, and losing it left Heavy
+                  // Strike and Rend indistinguishable from a plain swing. Found 2026-08-22.
+                  damageModifier:a.damageModifier ?? null,
                   effects:[] };
     for (const x of (a.effects || [])) {
       if (UNMAPPED[x.action]) { gaps.push(`${e.name}/${a.name}: ${x.action} — ${UNMAPPED[x.action]}`); continue; }
@@ -351,7 +357,6 @@ for (const e of Object.values(ENEMY_CARDS)) {
     // three-column grid; a hex board has no lanes, but 'starts near the front' is still a
     // real and useful preference, so the preference is kept and the lane is not.
     deploys: DEPLOYS[e.placement] || 'anywhere',
-    placementWas: e.placement || null,
     ported, derivedBase:{ accuracy:acc.accuracy, movement:mov.movement, ...ENEMY_DERIVED },
     archetype:archetypeOf(e).id,
     derivedWhy:{ accuracy:acc.why, movement:mov.why },
@@ -484,16 +489,12 @@ const out = { _note:'All 412 enemies from hell-tcg data/enemyCards.js. Ruled 202
   units: rows };
 fs.writeFileSync('gen/bestiary.json', JSON.stringify(out, null, 1) + '\n');
 fs.writeFileSync('gen/bestiary-gaps.txt', gaps.join('\n') + '\n');
-fs.writeFileSync('gen/enemy-spells.json', JSON.stringify({
-  _note:'The 193 enemyCards rows with placement immediate-cast and an all-zero stat block. They are SPELLS the enemy side casts, not units placed on the board — ruled 2026-08-21. None is in the curated 144.',
-  spells }, null, 1) + '\n');
-
 // A rider can live on a trigger as easily as on an attack — Explosive Mite's whole point is an
 // onDeath, and an aura hangs off nothing at all. Counting only attacks called those three bare.
 const hasRider = r => r.attacks.some(a => a.effects.length) || (r.triggers || []).length > 0;
 const withEff = rows.filter(hasRider).length;
 console.log(`gen/bestiary.json    — ${rows.length} creatures`);
-console.log(`gen/enemy-spells.json — ${spells.length} enemy spells`);
+console.log(`  enemy spells CUT           : ${spellsCut} (immediate-cast rows, removed 2026-08-22)`);
 console.log(`  curated (art + encounters): ${rows.filter(r=>r.curated).length}`);
 console.log(`  with at least one rider   : ${withEff}`);
 console.log(`  no abilities at all       : ${rows.filter(r=>!r.attacks.length&&!(r.triggers||[]).length).length}`);
