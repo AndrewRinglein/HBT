@@ -1,0 +1,1487 @@
+{
+ "hero.skyship.aeronissa-priest.v2": {
+  "thumb": "3420e88aeae4.webp",
+  "src": "New Art/aeronissa-concepts/aeronissa-priest-v2.png",
+  "how": "explicit path in heroData"
+ },
+ "hero.skyship.aeronissa-priest.v3": {
+  "thumb": "2d71f9159b70.webp",
+  "src": "New Art/aeronissa-concepts/aeronissa-priest-v3.png",
+  "how": "explicit path in heroData"
+ },
+ "hero.skyship.aeronissa-priest.v4": {
+  "thumb": "17bf16c49ca9.webp",
+  "src": "New Art/aeronissa-concepts/aeronissa-priest-v4.png",
+  "how": "explicit path in heroData"
+ },
+ "hero.skyship.aeronissa-priest.v1": {
+  "thumb": "c930b229d3f4.webp",
+  "src": "New Art/aeronissa-concepts/aeronissa-priest.png",
+  "how": "explicit path in heroData"
+ },
+ "hero.skyship.air-mage.v2": {
+  "thumb": "6fe922171abc.webp",
+  "src": "New Art/aeronissa-concepts/air-mage-v2.png",
+  "how": "explicit path in heroData"
+ },
+ "hero.skyship.air-mage.v3": {
+  "thumb": "b03f43a8e5f5.webp",
+  "src": "New Art/aeronissa-concepts/air-mage-v3.png",
+  "how": "explicit path in heroData"
+ },
+ "hero.skyship.air-mage.v4": {
+  "thumb": "acfa0ded6560.webp",
+  "src": "New Art/aeronissa-concepts/air-mage-v4.png",
+  "how": "explicit path in heroData"
+ },
+ "hero.fixed.air-mage": {
+  "thumb": "50e7dd3237a5.webp",
+  "src": "New Art/aeronissa-concepts/air-mage.png",
+  "how": "exact stem match"
+ },
+ "hero.skyship.air-mage.v1": {
+  "thumb": "50e7dd3237a5.webp",
+  "src": "New Art/aeronissa-concepts/air-mage.png",
+  "how": "explicit path in heroData"
+ },
+ "hero.skyship.brute.v2": {
+  "thumb": "25449014bf56.webp",
+  "src": "New Art/aeronissa-concepts/brute-v2.png",
+  "how": "explicit path in heroData"
+ },
+ "hero.skyship.brute.v3": {
+  "thumb": "67268c58415f.webp",
+  "src": "New Art/aeronissa-concepts/brute-v3.png",
+  "how": "explicit path in heroData"
+ },
+ "hero.skyship.brute.v4": {
+  "thumb": "32c8c33965ea.webp",
+  "src": "New Art/aeronissa-concepts/brute-v4.png",
+  "how": "explicit path in heroData"
+ },
+ "hero.skyship.brute.v1": {
+  "thumb": "5a755088127d.webp",
+  "src": "New Art/aeronissa-concepts/brute.png",
+  "how": "explicit path in heroData"
+ },
+ "hero.fixed.cargo-hold-crew": {
+  "thumb": "e6aa7999d7a1.webp",
+  "src": "New Art/aeronissa-concepts/cargo-hold-crew-v2.png",
+  "how": "explicit path in heroData"
+ },
+ "hero.fixed.catfolk-archer": {
+  "thumb": "b56cbeb4f662.webp",
+  "src": "New Art/aeronissa-concepts/catfolk/catfolk-archer.png",
+  "how": "explicit path in heroData"
+ },
+ "hero.fixed.catfolk-cabin-boy": {
+  "thumb": "c7bab03bfe5d.webp",
+  "src": "New Art/aeronissa-concepts/catfolk/catfolk-cabin-boy.png",
+  "how": "explicit path in heroData"
+ },
+ "hero.fixed.catfolk-cook": {
+  "thumb": "42a033bfa375.webp",
+  "src": "New Art/aeronissa-concepts/catfolk/catfolk-cook.png",
+  "how": "explicit path in heroData"
+ },
+ "hero.fixed.catfolk-crew": {
+  "thumb": "aa8de4a25be2.webp",
+  "src": "New Art/aeronissa-concepts/catfolk/catfolk-crew.png",
+  "how": "explicit path in heroData"
+ },
+ "hero.fixed.catfolk-mystic": {
+  "thumb": "5922c27a3fc2.webp",
+  "src": "New Art/aeronissa-concepts/catfolk/catfolk-mystic.png",
+  "how": "explicit path in heroData"
+ },
+ "hero.fixed.catfolk-navigator": {
+  "thumb": "b4e1c4a75acc.webp",
+  "src": "New Art/aeronissa-concepts/catfolk/catfolk-navigator.png",
+  "how": "explicit path in heroData"
+ },
+ "hero.fixed.catfolk-soldier": {
+  "thumb": "f4280f492973.webp",
+  "src": "New Art/aeronissa-concepts/catfolk/catfolk-soldier.png",
+  "how": "explicit path in heroData"
+ },
+ "hero.fixed.catfolk-whip-master": {
+  "thumb": "d2b4be8e2e82.webp",
+  "src": "New Art/aeronissa-concepts/catfolk/catfolk-whip-master.png",
+  "how": "explicit path in heroData"
+ },
+ "hero.fixed.cursed-passengers": {
+  "thumb": "879831323915.webp",
+  "src": "New Art/aeronissa-concepts/cursed-passengers-v3.png",
+  "how": "explicit path in heroData"
+ },
+ "hero.skyship.mirran-priest.v2": {
+  "thumb": "15c84b0038fd.webp",
+  "src": "New Art/aeronissa-concepts/mirran-priest-v2.png",
+  "how": "explicit path in heroData"
+ },
+ "hero.skyship.mirran-priest.v3": {
+  "thumb": "9daa0d8fbbdf.webp",
+  "src": "New Art/aeronissa-concepts/mirran-priest-v3.png",
+  "how": "explicit path in heroData"
+ },
+ "hero.skyship.mirran-priest.v4": {
+  "thumb": "23656238ca48.webp",
+  "src": "New Art/aeronissa-concepts/mirran-priest-v4.png",
+  "how": "explicit path in heroData"
+ },
+ "hero.skyship.mirran-priest.v1": {
+  "thumb": "c1e33b0da88a.webp",
+  "src": "New Art/aeronissa-concepts/mirran-priest.png",
+  "how": "explicit path in heroData"
+ },
+ "hero.skyship.open-hand.v2": {
+  "thumb": "e5f5d49daba4.webp",
+  "src": "New Art/aeronissa-concepts/open-hand-v2.png",
+  "how": "explicit path in heroData"
+ },
+ "hero.skyship.open-hand.v3": {
+  "thumb": "2db7059272ff.webp",
+  "src": "New Art/aeronissa-concepts/open-hand-v3.png",
+  "how": "explicit path in heroData"
+ },
+ "hero.skyship.open-hand.v4": {
+  "thumb": "d3d1604ba040.webp",
+  "src": "New Art/aeronissa-concepts/open-hand-v4.png",
+  "how": "explicit path in heroData"
+ },
+ "hero.skyship.open-hand.v1": {
+  "thumb": "bd07f9538824.webp",
+  "src": "New Art/aeronissa-concepts/open-hand.png",
+  "how": "explicit path in heroData"
+ },
+ "hero.skyship.phantom-striker.v2": {
+  "thumb": "23a08d78ef89.webp",
+  "src": "New Art/aeronissa-concepts/phantom-striker-v2.png",
+  "how": "explicit path in heroData"
+ },
+ "hero.skyship.phantom-striker.v3": {
+  "thumb": "c0f4716be7a6.webp",
+  "src": "New Art/aeronissa-concepts/phantom-striker-v3.png",
+  "how": "explicit path in heroData"
+ },
+ "hero.skyship.phantom-striker.v4": {
+  "thumb": "55995a977a8f.webp",
+  "src": "New Art/aeronissa-concepts/phantom-striker-v4.png",
+  "how": "explicit path in heroData"
+ },
+ "hero.skyship.phantom-striker.v1": {
+  "thumb": "c396b9db5008.webp",
+  "src": "New Art/aeronissa-concepts/phantom-striker.png",
+  "how": "explicit path in heroData"
+ },
+ "hero.fixed.ships-astrologer": {
+  "thumb": "a115eceee00b.webp",
+  "src": "New Art/aeronissa-concepts/ships-astrologer-v2.png",
+  "how": "explicit path in heroData"
+ },
+ "hero.skyship.sky-captain.v2": {
+  "thumb": "25676f3a4deb.webp",
+  "src": "New Art/aeronissa-concepts/sky-captain-v2.png",
+  "how": "explicit path in heroData"
+ },
+ "hero.skyship.sky-captain.v3": {
+  "thumb": "83b53a23ed30.webp",
+  "src": "New Art/aeronissa-concepts/sky-captain-v3.png",
+  "how": "explicit path in heroData"
+ },
+ "hero.skyship.sky-captain.v1": {
+  "thumb": "e2a44ea6961c.webp",
+  "src": "New Art/aeronissa-concepts/sky-captain.png",
+  "how": "explicit path in heroData"
+ },
+ "hero.skyship.sky-pirate.v2": {
+  "thumb": "bbb50ac47cd2.webp",
+  "src": "New Art/aeronissa-concepts/sky-pirate-v2.png",
+  "how": "explicit path in heroData"
+ },
+ "hero.skyship.sky-pirate.v3": {
+  "thumb": "3d1ec07930bd.webp",
+  "src": "New Art/aeronissa-concepts/sky-pirate-v3.png",
+  "how": "explicit path in heroData"
+ },
+ "hero.skyship.sky-pirate.v4": {
+  "thumb": "1bbe235ccf36.webp",
+  "src": "New Art/aeronissa-concepts/sky-pirate-v4.png",
+  "how": "explicit path in heroData"
+ },
+ "hero.skyship.sky-pirate.v1": {
+  "thumb": "dfae8082aadd.webp",
+  "src": "New Art/aeronissa-concepts/sky-pirate.png",
+  "how": "explicit path in heroData"
+ },
+ "hero.fixed.skyship-deckhands": {
+  "thumb": "6f5f3269d946.webp",
+  "src": "New Art/aeronissa-concepts/skyship-deckhands-v3.png",
+  "how": "explicit path in heroData"
+ },
+ "hero.skyship.spellblade.v2": {
+  "thumb": "94b99c1df860.webp",
+  "src": "New Art/aeronissa-concepts/spellblade-v2.png",
+  "how": "explicit path in heroData"
+ },
+ "hero.skyship.spellblade.v3": {
+  "thumb": "7d85ceedf146.webp",
+  "src": "New Art/aeronissa-concepts/spellblade-v3.png",
+  "how": "explicit path in heroData"
+ },
+ "hero.skyship.spellblade.v4": {
+  "thumb": "afcc5e857a3f.webp",
+  "src": "New Art/aeronissa-concepts/spellblade-v4.png",
+  "how": "explicit path in heroData"
+ },
+ "hero.fixed.spellblade": {
+  "thumb": "bd5ea59bbc0e.webp",
+  "src": "New Art/aeronissa-concepts/spellblade.png",
+  "how": "exact stem match"
+ },
+ "hero.skyship.spellblade.v1": {
+  "thumb": "bd5ea59bbc0e.webp",
+  "src": "New Art/aeronissa-concepts/spellblade.png",
+  "how": "explicit path in heroData"
+ },
+ "hero.fixed.stowaway-children": {
+  "thumb": "b2ec482addb2.webp",
+  "src": "New Art/aeronissa-concepts/stowaway-children-v3.png",
+  "how": "explicit path in heroData"
+ },
+ "hero.fixed.skyship-admiral": {
+  "thumb": "ff680e828c43.webp",
+  "src": "New Art/aeronissa-concepts/the-admiral.png",
+  "how": "explicit path in heroData"
+ },
+ "hero.fixed.skyship-tiefling": {
+  "thumb": "6f5355cb2786.webp",
+  "src": "New Art/aeronissa-concepts/tiefling.png",
+  "how": "explicit path in heroData"
+ },
+ "hero.skyship.troll-pirate.v2": {
+  "thumb": "cb668f30a0a5.webp",
+  "src": "New Art/aeronissa-concepts/troll-pirate-v2.png",
+  "how": "explicit path in heroData"
+ },
+ "hero.skyship.troll-pirate.v3": {
+  "thumb": "b8c01d667eab.webp",
+  "src": "New Art/aeronissa-concepts/troll-pirate-v3.png",
+  "how": "explicit path in heroData"
+ },
+ "hero.skyship.troll-pirate.v4": {
+  "thumb": "fb6d1dbc907c.webp",
+  "src": "New Art/aeronissa-concepts/troll-pirate-v4.png",
+  "how": "explicit path in heroData"
+ },
+ "hero.skyship.troll-pirate.v1": {
+  "thumb": "5ce77d067209.webp",
+  "src": "New Art/aeronissa-concepts/troll-pirate.png",
+  "how": "explicit path in heroData"
+ },
+ "hero.skyship.vigil-of-the-fallen.v2": {
+  "thumb": "501cca5b2626.webp",
+  "src": "New Art/aeronissa-concepts/vigil-of-the-fallen-v2.png",
+  "how": "explicit path in heroData"
+ },
+ "hero.skyship.vigil-of-the-fallen.v3": {
+  "thumb": "c4fa07b94bb9.webp",
+  "src": "New Art/aeronissa-concepts/vigil-of-the-fallen-v3.png",
+  "how": "explicit path in heroData"
+ },
+ "hero.skyship.vigil-of-the-fallen.v4": {
+  "thumb": "85d67139ff35.webp",
+  "src": "New Art/aeronissa-concepts/vigil-of-the-fallen-v4.png",
+  "how": "explicit path in heroData"
+ },
+ "hero.skyship.vigil-of-the-fallen.v1": {
+  "thumb": "379163108868.webp",
+  "src": "New Art/aeronissa-concepts/vigil-of-the-fallen.png",
+  "how": "explicit path in heroData"
+ },
+ "hero.skyship.windwalker.v2": {
+  "thumb": "a683c7b6ad36.webp",
+  "src": "New Art/aeronissa-concepts/windwalker-v2.png",
+  "how": "explicit path in heroData"
+ },
+ "hero.skyship.windwalker.v3": {
+  "thumb": "00af2c2f52c8.webp",
+  "src": "New Art/aeronissa-concepts/windwalker-v3.png",
+  "how": "explicit path in heroData"
+ },
+ "hero.skyship.windwalker.v4": {
+  "thumb": "edee842e4850.webp",
+  "src": "New Art/aeronissa-concepts/windwalker-v4.png",
+  "how": "explicit path in heroData"
+ },
+ "hero.skyship.windwalker.v1": {
+  "thumb": "b973be5ee5ec.webp",
+  "src": "New Art/aeronissa-concepts/windwalker.png",
+  "how": "explicit path in heroData"
+ },
+ "hero.shadows.bodani.v1": {
+  "thumb": "dcbe60fe8d12.webp",
+  "src": "New Art/avtair-approved/bodani-v1.png",
+  "how": "explicit path in heroData"
+ },
+ "hero.shadows.bodani.v2": {
+  "thumb": "8c518826d722.webp",
+  "src": "New Art/avtair-approved/bodani-v2.png",
+  "how": "explicit path in heroData"
+ },
+ "hero.shadows.bodani.v3": {
+  "thumb": "d1fd744b02d3.webp",
+  "src": "New Art/avtair-approved/bodani-v3.png",
+  "how": "explicit path in heroData"
+ },
+ "hero.shadows.bodani.v4": {
+  "thumb": "7c88216084e8.webp",
+  "src": "New Art/avtair-approved/bodani-v4.png",
+  "how": "explicit path in heroData"
+ },
+ "hero.fixed.death-mage": {
+  "thumb": "f3b86b9b788e.webp",
+  "src": "New Art/avtair-approved/death-mage.png",
+  "how": "explicit path in heroData"
+ },
+ "hero.shadows.dusk-hawk.v1": {
+  "thumb": "7576444ddd34.webp",
+  "src": "New Art/avtair-approved/dusk-hawk-v1.png",
+  "how": "explicit path in heroData"
+ },
+ "hero.shadows.dusk-hawk.v2": {
+  "thumb": "1fb4e12f5c54.webp",
+  "src": "New Art/avtair-approved/dusk-hawk-v2.png",
+  "how": "explicit path in heroData"
+ },
+ "hero.shadows.dusk-hawk.v3": {
+  "thumb": "e2222f8c3a95.webp",
+  "src": "New Art/avtair-approved/dusk-hawk-v3.png",
+  "how": "explicit path in heroData"
+ },
+ "hero.shadows.dusk-hawk.v4": {
+  "thumb": "5da4b3591f98.webp",
+  "src": "New Art/avtair-approved/dusk-hawk-v4.png",
+  "how": "explicit path in heroData"
+ },
+ "hero.shadows.nightblade.v1": {
+  "thumb": "b79b987a44d5.webp",
+  "src": "New Art/avtair-approved/nightblade-v1.png",
+  "how": "explicit path in heroData"
+ },
+ "hero.shadows.nightblade.v2": {
+  "thumb": "d51d33d38fe5.webp",
+  "src": "New Art/avtair-approved/nightblade-v2.png",
+  "how": "explicit path in heroData"
+ },
+ "hero.shadows.nightblade.v3": {
+  "thumb": "c254001c4c8f.webp",
+  "src": "New Art/avtair-approved/nightblade-v3.png",
+  "how": "explicit path in heroData"
+ },
+ "hero.shadows.nightblade.v4": {
+  "thumb": "8ab999630a04.webp",
+  "src": "New Art/avtair-approved/nightblade-v4.png",
+  "how": "explicit path in heroData"
+ },
+ "hero.shadows.oathblade.v1": {
+  "thumb": "31680c28b272.webp",
+  "src": "New Art/avtair-approved/oathblade-v1.png",
+  "how": "explicit path in heroData"
+ },
+ "hero.shadows.oathblade.v2": {
+  "thumb": "1f7f59b5f3d1.webp",
+  "src": "New Art/avtair-approved/oathblade-v2.png",
+  "how": "explicit path in heroData"
+ },
+ "hero.shadows.oathblade.v3": {
+  "thumb": "4aa07fa47334.webp",
+  "src": "New Art/avtair-approved/oathblade-v3.png",
+  "how": "explicit path in heroData"
+ },
+ "hero.shadows.oathblade.v4": {
+  "thumb": "a418f2b28e1f.webp",
+  "src": "New Art/avtair-approved/oathblade-v4.png",
+  "how": "explicit path in heroData"
+ },
+ "hero.shadows.priestess-of-ire.v1": {
+  "thumb": "b4fd92f8ca6c.webp",
+  "src": "New Art/avtair-approved/priestess-of-ire-v1.png",
+  "how": "explicit path in heroData"
+ },
+ "hero.shadows.priestess-of-ire.v2": {
+  "thumb": "c3e986da7d0b.webp",
+  "src": "New Art/avtair-approved/priestess-of-ire-v2.png",
+  "how": "explicit path in heroData"
+ },
+ "hero.shadows.priestess-of-ire.v3": {
+  "thumb": "6cae93052b92.webp",
+  "src": "New Art/avtair-approved/priestess-of-ire-v3.png",
+  "how": "explicit path in heroData"
+ },
+ "hero.shadows.priestess-of-ire.v4": {
+  "thumb": "ceea0035bb49.webp",
+  "src": "New Art/avtair-approved/priestess-of-ire-v4.png",
+  "how": "explicit path in heroData"
+ },
+ "hero.shadows.priestess-of-solace.v1": {
+  "thumb": "be1ab990de62.webp",
+  "src": "New Art/avtair-approved/priestess-of-solace-v1.png",
+  "how": "explicit path in heroData"
+ },
+ "hero.shadows.priestess-of-solace.v2": {
+  "thumb": "1663d49b0d7f.webp",
+  "src": "New Art/avtair-approved/priestess-of-solace-v2.png",
+  "how": "explicit path in heroData"
+ },
+ "hero.shadows.priestess-of-solace.v3": {
+  "thumb": "0adbe5262c67.webp",
+  "src": "New Art/avtair-approved/priestess-of-solace-v3.png",
+  "how": "explicit path in heroData"
+ },
+ "hero.shadows.priestess-of-solace.v4": {
+  "thumb": "ea127ebdc96f.webp",
+  "src": "New Art/avtair-approved/priestess-of-solace-v4.png",
+  "how": "explicit path in heroData"
+ },
+ "hero.shadows.rider-of-ire.v1": {
+  "thumb": "bb609cc57c02.webp",
+  "src": "New Art/avtair-approved/rider-of-ire-v1.png",
+  "how": "explicit path in heroData"
+ },
+ "hero.shadows.rider-of-ire.v2": {
+  "thumb": "44d7d5872ad2.webp",
+  "src": "New Art/avtair-approved/rider-of-ire-v2.png",
+  "how": "explicit path in heroData"
+ },
+ "hero.shadows.rider-of-ire.v3": {
+  "thumb": "6b2e4aad1c60.webp",
+  "src": "New Art/avtair-approved/rider-of-ire-v3.png",
+  "how": "explicit path in heroData"
+ },
+ "hero.shadows.rider-of-ire.v4": {
+  "thumb": "00aac4836ff1.webp",
+  "src": "New Art/avtair-approved/rider-of-ire-v4.png",
+  "how": "explicit path in heroData"
+ },
+ "hero.shadows.runebow.v1": {
+  "thumb": "5ac262733d40.webp",
+  "src": "New Art/avtair-approved/runebow-v1.png",
+  "how": "explicit path in heroData"
+ },
+ "hero.shadows.runebow.v2": {
+  "thumb": "c729ac373763.webp",
+  "src": "New Art/avtair-approved/runebow-v2.png",
+  "how": "explicit path in heroData"
+ },
+ "hero.shadows.runebow.v3": {
+  "thumb": "87e2e9bbc0d7.webp",
+  "src": "New Art/avtair-approved/runebow-v3.png",
+  "how": "explicit path in heroData"
+ },
+ "hero.shadows.runebow.v4": {
+  "thumb": "973aded2829a.webp",
+  "src": "New Art/avtair-approved/runebow-v4.png",
+  "how": "explicit path in heroData"
+ },
+ "hero.shadows.sand-knight.v1": {
+  "thumb": "d549c1bb4693.webp",
+  "src": "New Art/avtair-approved/sand-knight-v1.png",
+  "how": "explicit path in heroData"
+ },
+ "hero.shadows.sand-knight.v2": {
+  "thumb": "3892933f9f69.webp",
+  "src": "New Art/avtair-approved/sand-knight-v2.png",
+  "how": "explicit path in heroData"
+ },
+ "hero.shadows.sand-knight.v3": {
+  "thumb": "2d9dc1ed8ff0.webp",
+  "src": "New Art/avtair-approved/sand-knight-v3.png",
+  "how": "explicit path in heroData"
+ },
+ "hero.shadows.sand-knight.v4": {
+  "thumb": "a6d7f15e7a6b.webp",
+  "src": "New Art/avtair-approved/sand-knight-v4.png",
+  "how": "explicit path in heroData"
+ },
+ "hero.shadows.servant-of-omen.v1": {
+  "thumb": "5df9f801a451.webp",
+  "src": "New Art/avtair-approved/servant-of-omen-v1.png",
+  "how": "explicit path in heroData"
+ },
+ "hero.shadows.servant-of-omen.v2": {
+  "thumb": "7b1da35ec307.webp",
+  "src": "New Art/avtair-approved/servant-of-omen-v2.png",
+  "how": "explicit path in heroData"
+ },
+ "hero.shadows.servant-of-omen.v3": {
+  "thumb": "2d3e1446871f.webp",
+  "src": "New Art/avtair-approved/servant-of-omen-v3.png",
+  "how": "explicit path in heroData"
+ },
+ "hero.shadows.servant-of-omen.v4": {
+  "thumb": "1c4c5b2141c0.webp",
+  "src": "New Art/avtair-approved/servant-of-omen-v4.png",
+  "how": "explicit path in heroData"
+ },
+ "hero.shadows.shadow-sorceress.v1": {
+  "thumb": "fe9ce611e72d.webp",
+  "src": "New Art/avtair-approved/shadow-sorceress-v1.png",
+  "how": "explicit path in heroData"
+ },
+ "hero.shadows.shadow-sorceress.v2": {
+  "thumb": "5d0e854e566d.webp",
+  "src": "New Art/avtair-approved/shadow-sorceress-v2.png",
+  "how": "explicit path in heroData"
+ },
+ "hero.shadows.shadow-sorceress.v3": {
+  "thumb": "c9b3c52a1c06.webp",
+  "src": "New Art/avtair-approved/shadow-sorceress-v3.png",
+  "how": "explicit path in heroData"
+ },
+ "hero.shadows.shadow-sorceress.v4": {
+  "thumb": "7d3554602b1f.webp",
+  "src": "New Art/avtair-approved/shadow-sorceress-v4.png",
+  "how": "explicit path in heroData"
+ },
+ "hero.shadows.soul-reaver.v1": {
+  "thumb": "84f41309226d.webp",
+  "src": "New Art/avtair-approved/soul-reaver-v1.png",
+  "how": "explicit path in heroData"
+ },
+ "hero.shadows.soul-reaver.v2": {
+  "thumb": "f9eb1d4dbb82.webp",
+  "src": "New Art/avtair-approved/soul-reaver-v2.png",
+  "how": "explicit path in heroData"
+ },
+ "hero.shadows.soul-reaver.v3": {
+  "thumb": "18dae0c1e9b8.webp",
+  "src": "New Art/avtair-approved/soul-reaver-v3.png",
+  "how": "explicit path in heroData"
+ },
+ "hero.shadows.soul-reaver.v4": {
+  "thumb": "e9d5d2c6bee6.webp",
+  "src": "New Art/avtair-approved/soul-reaver-v4.png",
+  "how": "explicit path in heroData"
+ },
+ "hero.fixed.vibrant-mage": {
+  "thumb": "0990a22945de.webp",
+  "src": "New Art/avtair-approved/vibrant-mage.png",
+  "how": "explicit path in heroData"
+ },
+ "hero.fixed.badgered-soldier": {
+  "thumb": "8a8358fb3845.webp",
+  "src": "New Art/avtair-heroes-batch2/badgered-soldier.png",
+  "how": "explicit path in heroData"
+ },
+ "hero.fixed.captain": {
+  "thumb": "79719c18c112.webp",
+  "src": "New Art/avtair-heroes-batch2/captain.png",
+  "how": "explicit path in heroData"
+ },
+ "hero.fixed.caravan-master": {
+  "thumb": "8c7627c36336.webp",
+  "src": "New Art/avtair-heroes-batch2/caravan-master.png",
+  "how": "explicit path in heroData"
+ },
+ "hero.fixed.defenseless-women": {
+  "thumb": "1e6199844ad7.webp",
+  "src": "New Art/avtair-heroes-batch2/defenseless-women.png",
+  "how": "explicit path in heroData"
+ },
+ "hero.fixed.djinn-touched-child": {
+  "thumb": "519dda0c80ee.webp",
+  "src": "New Art/avtair-heroes-batch2/djinn-touched-child.png",
+  "how": "explicit path in heroData"
+ },
+ "hero.fixed.eternal-prince": {
+  "thumb": "3a5cdb7fde27.webp",
+  "src": "New Art/avtair-heroes-batch2/eternal-prince.png",
+  "how": "explicit path in heroData"
+ },
+ "hero.fixed.guard": {
+  "thumb": "d3bd3e594430.webp",
+  "src": "New Art/avtair-heroes-batch2/guard.png",
+  "how": "explicit path in heroData"
+ },
+ "hero.fixed.huge-group-of-refugees": {
+  "thumb": "807dd0de4d4a.webp",
+  "src": "New Art/avtair-heroes-batch2/huge-group-of-refugees.png",
+  "how": "explicit path in heroData"
+ },
+ "hero.fixed.lost-fishers": {
+  "thumb": "578c18224962.webp",
+  "src": "New Art/avtair-heroes-batch2/lost-fishers.png",
+  "how": "explicit path in heroData"
+ },
+ "hero.fixed.militia-commander": {
+  "thumb": "424d1b06d9d6.webp",
+  "src": "New Art/avtair-heroes-batch2/militia-commander.png",
+  "how": "explicit path in heroData"
+ },
+ "hero.fixed.militia": {
+  "thumb": "99cfc7e9b957.webp",
+  "src": "New Art/avtair-heroes-batch2/militia.png",
+  "how": "explicit path in heroData"
+ },
+ "hero.fixed.mirage-walker": {
+  "thumb": "c84bb3c2034f.webp",
+  "src": "New Art/avtair-heroes-batch2/mirage-walker.png",
+  "how": "explicit path in heroData"
+ },
+ "hero.fixed.refugee-children": {
+  "thumb": "bcc6623d7610.webp",
+  "src": "New Art/avtair-heroes-batch2/refugee-children.png",
+  "how": "explicit path in heroData"
+ },
+ "hero.fixed.refugees": {
+  "thumb": "ca0f9c76c363.webp",
+  "src": "New Art/avtair-heroes-batch2/refugees.png",
+  "how": "explicit path in heroData"
+ },
+ "hero.fixed.runesmith": {
+  "thumb": "c98a429b64d5.webp",
+  "src": "New Art/avtair-heroes-batch2/runesmith.png",
+  "how": "explicit path in heroData"
+ },
+ "hero.fixed.sailors": {
+  "thumb": "a1cf95c4fde4.webp",
+  "src": "New Art/avtair-heroes-batch2/sailors.png",
+  "how": "explicit path in heroData"
+ },
+ "hero.fixed.silk-merchant": {
+  "thumb": "55505835dbe1.webp",
+  "src": "New Art/avtair-heroes-batch2/silk-merchant.png",
+  "how": "explicit path in heroData"
+ },
+ "hero.fixed.the-outcast": {
+  "thumb": "ece45048fd6a.webp",
+  "src": "New Art/avtair-heroes-batch2/the-outcast.png",
+  "how": "explicit path in heroData"
+ },
+ "hero.fixed.young-sand-dragon": {
+  "thumb": "aeea2a34be6c.webp",
+  "src": "New Art/avtair-heroes-batch2/young-sand-dragon.png",
+  "how": "explicit path in heroData"
+ },
+ "hero.fixed.beastmaster": {
+  "thumb": "1556ba7ac5a9.webp",
+  "src": "New Art/beastmaster-variants/beastmaster-level1-v2.png",
+  "how": "variants folder"
+ },
+ "hero.fixed.desperate-villagers": {
+  "thumb": "3d2b6a206ef8.webp",
+  "src": "New Art/desperate-village-variants/desperate-village-level1-v2.png",
+  "how": "variants folder"
+ },
+ "hero.fixed.general-kor": {
+  "thumb": "01911f7b4e9d.webp",
+  "src": "New Art/general-kor-variants/general-kor-level1.png",
+  "how": "explicit path in heroData"
+ },
+ "hero.fixed.green-drake": {
+  "thumb": "0faea2d07b0e.webp",
+  "src": "New Art/green-drake-variants/green-drake-level1-v2.png",
+  "how": "variants folder"
+ },
+ "hero.fixed.julie-supply-master": {
+  "thumb": "8b7fa0836d19.webp",
+  "src": "New Art/julie-supply-master-variants/julie-supply-master-level1-v2.png",
+  "how": "variants folder"
+ },
+ "hero.tutorial.mage-fire.seraphina": {
+  "thumb": "e511a2d9e939.webp",
+  "src": "New Art/mage-fire1.png",
+  "how": "explicit path in heroData"
+ },
+ "hero.tutorial.mage-fire.elara": {
+  "thumb": "47f41e7a276e.webp",
+  "src": "New Art/mage-fire2.png",
+  "how": "explicit path in heroData"
+ },
+ "hero.tutorial.mage-fire.ignacia": {
+  "thumb": "a15ff4b2228f.webp",
+  "src": "New Art/mage-fire3.png",
+  "how": "explicit path in heroData"
+ },
+ "hero.tutorial.mage-fire.pyrra": {
+  "thumb": "adb1ca21e465.webp",
+  "src": "New Art/mage-fire4.png",
+  "how": "explicit path in heroData"
+ },
+ "hero.tutorial.mage-fireaura.elena": {
+  "thumb": "561ea46e30c4.webp",
+  "src": "New Art/mage-fireaura1.png",
+  "how": "explicit path in heroData"
+ },
+ "hero.tutorial.mage-fireaura.ember": {
+  "thumb": "e6c935703df4.webp",
+  "src": "New Art/mage-fireaura2.png",
+  "how": "explicit path in heroData"
+ },
+ "hero.tutorial.mage-fireaura.freya": {
+  "thumb": "e3f9e9f79139.webp",
+  "src": "New Art/mage-fireaura3.png",
+  "how": "explicit path in heroData"
+ },
+ "hero.tutorial.mage-fireaura.solara": {
+  "thumb": "22249a1018c1.webp",
+  "src": "New Art/mage-fireaura4.png",
+  "how": "explicit path in heroData"
+ },
+ "hero.tutorial.mage-sexy.vera": {
+  "thumb": "5951cd892bb0.webp",
+  "src": "New Art/mage-sexy1.png",
+  "how": "explicit path in heroData"
+ },
+ "hero.tutorial.mage-sexy.vesper": {
+  "thumb": "52f2ecaaf99a.webp",
+  "src": "New Art/mage-sexy2.png",
+  "how": "explicit path in heroData"
+ },
+ "hero.tutorial.mage-sexy.celeste": {
+  "thumb": "45aa6c36adbc.webp",
+  "src": "New Art/mage-sexy3.png",
+  "how": "explicit path in heroData"
+ },
+ "hero.tutorial.mage-sexy.starla": {
+  "thumb": "64dc49317c57.webp",
+  "src": "New Art/mage-sexy4.png",
+  "how": "explicit path in heroData"
+ },
+ "hero.tutorial.mage-thinking.cedra": {
+  "thumb": "25ad23794d90.webp",
+  "src": "New Art/mage-thinking1.png",
+  "how": "explicit path in heroData"
+ },
+ "hero.tutorial.mage-thinking.thessaly": {
+  "thumb": "b079a095e2c7.webp",
+  "src": "New Art/mage-thinking2.png",
+  "how": "explicit path in heroData"
+ },
+ "hero.tutorial.mage-thinking.benedicta": {
+  "thumb": "0d134b4eb0de.webp",
+  "src": "New Art/mage-thinking3.png",
+  "how": "explicit path in heroData"
+ },
+ "hero.tutorial.mage-thinking.minerva": {
+  "thumb": "f2bc3b013e80.webp",
+  "src": "New Art/mage-thinking4.png",
+  "how": "explicit path in heroData"
+ },
+ "hero.fixed.mr-black": {
+  "thumb": "4da33cd2e509.webp",
+  "src": "New Art/mr-black-variants/mr-black-level1.png",
+  "how": "variants folder"
+ },
+ "hero.fixed.void-dealer": {
+  "thumb": "e51bd98d2153.webp",
+  "src": "New Art/nightmare-series/void-dealer-1.png",
+  "how": "explicit path in heroData"
+ },
+ "hero.tutorial.paladin-dark.roland": {
+  "thumb": "244ce038fd2c.webp",
+  "src": "New Art/paladin-dark1.png",
+  "how": "explicit path in heroData"
+ },
+ "hero.tutorial.paladin-dark.malachar": {
+  "thumb": "297526699c18.webp",
+  "src": "New Art/paladin-dark2.png",
+  "how": "explicit path in heroData"
+ },
+ "hero.tutorial.paladin-dark.viktor": {
+  "thumb": "76347c5dc74c.webp",
+  "src": "New Art/paladin-dark3.png",
+  "how": "explicit path in heroData"
+ },
+ "hero.tutorial.paladin-dark.damien": {
+  "thumb": "c8976bb546b9.webp",
+  "src": "New Art/paladin-dark4.png",
+  "how": "explicit path in heroData"
+ },
+ "hero.tutorial.paladin-hunk.percival": {
+  "thumb": "665109cf9711.webp",
+  "src": "New Art/paladin-hunk1.png",
+  "how": "explicit path in heroData"
+ },
+ "hero.tutorial.paladin-hunk.galahad": {
+  "thumb": "3e366e2cce04.webp",
+  "src": "New Art/paladin-hunk2.png",
+  "how": "explicit path in heroData"
+ },
+ "hero.tutorial.paladin-hunk.dominic": {
+  "thumb": "d442706b0600.webp",
+  "src": "New Art/paladin-hunk3.png",
+  "how": "explicit path in heroData"
+ },
+ "hero.tutorial.paladin-hunk.adonis": {
+  "thumb": "553da7eb779b.webp",
+  "src": "New Art/paladin-hunk4.png",
+  "how": "explicit path in heroData"
+ },
+ "hero.tutorial.paladin-shiney.osric": {
+  "thumb": "1dfe067e3b5f.webp",
+  "src": "New Art/paladin-shiney1.png",
+  "how": "explicit path in heroData"
+ },
+ "hero.tutorial.paladin-shiney.lucian": {
+  "thumb": "46c3c2c9d4fc.webp",
+  "src": "New Art/paladin-shiney2.png",
+  "how": "explicit path in heroData"
+ },
+ "hero.tutorial.paladin-shiney.edmund": {
+  "thumb": "ba2cf2ad5506.webp",
+  "src": "New Art/paladin-shiney3.png",
+  "how": "explicit path in heroData"
+ },
+ "hero.tutorial.paladin-shiney.aurelius": {
+  "thumb": "02549f28063e.webp",
+  "src": "New Art/paladin-shiney4.png",
+  "how": "explicit path in heroData"
+ },
+ "hero.tutorial.paladin-smug.alaric": {
+  "thumb": "4862ec21842c.webp",
+  "src": "New Art/paladin-smug1.png",
+  "how": "explicit path in heroData"
+ },
+ "hero.tutorial.paladin-smug.constantine": {
+  "thumb": "71d4a55e5309.webp",
+  "src": "New Art/paladin-smug2.png",
+  "how": "explicit path in heroData"
+ },
+ "hero.tutorial.paladin-smug.felix": {
+  "thumb": "79b184bbaac3.webp",
+  "src": "New Art/paladin-smug3.png",
+  "how": "explicit path in heroData"
+ },
+ "hero.tutorial.paladin-smug.valerian": {
+  "thumb": "a6cae5951ca0.webp",
+  "src": "New Art/paladin-smug4.png",
+  "how": "explicit path in heroData"
+ },
+ "hero.tutorial.priest-armored.marcus": {
+  "thumb": "df360476e9ad.webp",
+  "src": "New Art/priest-armored1.png",
+  "how": "explicit path in heroData"
+ },
+ "hero.tutorial.priest-armored.aldous": {
+  "thumb": "2d1ca7b01c84.webp",
+  "src": "New Art/priest-armored2.png",
+  "how": "explicit path in heroData"
+ },
+ "hero.tutorial.priest-armored.conrad": {
+  "thumb": "7f4802e03142.webp",
+  "src": "New Art/priest-armored3.png",
+  "how": "explicit path in heroData"
+ },
+ "hero.tutorial.priest-armored.mordecai": {
+  "thumb": "43b588f717d3.webp",
+  "src": "New Art/priest-armored4.png",
+  "how": "explicit path in heroData"
+ },
+ "hero.tutorial.priest-pauper.silas": {
+  "thumb": "c13abdae9300.webp",
+  "src": "New Art/priest-pauper1.png",
+  "how": "explicit path in heroData"
+ },
+ "hero.tutorial.priest-pauper.matthias": {
+  "thumb": "011cf218b9f1.webp",
+  "src": "New Art/priest-pauper2.png",
+  "how": "explicit path in heroData"
+ },
+ "hero.tutorial.priest-pauper.yorick": {
+  "thumb": "96e26e6a799f.webp",
+  "src": "New Art/priest-pauper3.png",
+  "how": "explicit path in heroData"
+ },
+ "hero.tutorial.priest-pauper.ezekiel": {
+  "thumb": "9388bab30d9f.webp",
+  "src": "New Art/priest-pauper4.png",
+  "how": "explicit path in heroData"
+ },
+ "hero.tutorial.priest-robes.gregory": {
+  "thumb": "5200e4ea9dd2.webp",
+  "src": "New Art/priest-robes1.png",
+  "how": "explicit path in heroData"
+ },
+ "hero.tutorial.priest-robes.anselm": {
+  "thumb": "85d0249cac72.webp",
+  "src": "New Art/priest-robes2.png",
+  "how": "explicit path in heroData"
+ },
+ "hero.tutorial.priest-robes.lawrence": {
+  "thumb": "59d36bd6a7bc.webp",
+  "src": "New Art/priest-robes3.png",
+  "how": "explicit path in heroData"
+ },
+ "hero.tutorial.priest-robes.cornelius": {
+  "thumb": "ee31d94d76b2.webp",
+  "src": "New Art/priest-robes4.png",
+  "how": "explicit path in heroData"
+ },
+ "hero.tutorial.priest-scantily.lucius": {
+  "thumb": "ed6c6a924e77.webp",
+  "src": "New Art/priest-scantily1.png",
+  "how": "explicit path in heroData"
+ },
+ "hero.tutorial.priest-scantily.cassius": {
+  "thumb": "ecfa6a7fe4bd.webp",
+  "src": "New Art/priest-scantily2.png",
+  "how": "explicit path in heroData"
+ },
+ "hero.tutorial.priest-scantily.iris": {
+  "thumb": "27926afdecfc.webp",
+  "src": "New Art/priest-scantily3.png",
+  "how": "explicit path in heroData"
+ },
+ "hero.tutorial.priest-scantily.orion": {
+  "thumb": "62c249179bc3.webp",
+  "src": "New Art/priest-scantily4.png",
+  "how": "explicit path in heroData"
+ },
+ "hero.fixed.ragtag-soldiers": {
+  "thumb": "20b917c37602.webp",
+  "src": "New Art/ragtag-soldiers-variants/ragtag-soldiers-level1.png",
+  "how": "variants folder"
+ },
+ "hero.tutorial.ranger-aggressive.kira": {
+  "thumb": "cbd09034e8cc.webp",
+  "src": "New Art/ranger-aggressive1.png",
+  "how": "explicit path in heroData"
+ },
+ "hero.tutorial.ranger-aggressive.artemis": {
+  "thumb": "e77c553d2b68.webp",
+  "src": "New Art/ranger-aggressive2.png",
+  "how": "explicit path in heroData"
+ },
+ "hero.tutorial.ranger-aggressive.eryka": {
+  "thumb": "1edc38ffda17.webp",
+  "src": "New Art/ranger-aggressive3.png",
+  "how": "explicit path in heroData"
+ },
+ "hero.tutorial.ranger-aggressive.nemesis": {
+  "thumb": "6a2798fe7002.webp",
+  "src": "New Art/ranger-aggressive4.png",
+  "how": "explicit path in heroData"
+ },
+ "hero.tutorial.ranger-nature.wren": {
+  "thumb": "ee80757489d0.webp",
+  "src": "New Art/ranger-nature1.png",
+  "how": "explicit path in heroData"
+ },
+ "hero.tutorial.ranger-nature.fern": {
+  "thumb": "2665d2f91b28.webp",
+  "src": "New Art/ranger-nature2.png",
+  "how": "explicit path in heroData"
+ },
+ "hero.tutorial.ranger-nature.yara": {
+  "thumb": "2ad9394464f9.webp",
+  "src": "New Art/ranger-nature3.png",
+  "how": "explicit path in heroData"
+ },
+ "hero.tutorial.ranger-nature.willow": {
+  "thumb": "7300772abc1d.webp",
+  "src": "New Art/ranger-nature4.png",
+  "how": "explicit path in heroData"
+ },
+ "hero.tutorial.ranger-ranger.brenna": {
+  "thumb": "8b24f4a7f4ab.webp",
+  "src": "New Art/ranger-ranger1.png",
+  "how": "explicit path in heroData"
+ },
+ "hero.tutorial.ranger-ranger.scout": {
+  "thumb": "7f56ffb9f051.webp",
+  "src": "New Art/ranger-ranger2.png",
+  "how": "explicit path in heroData"
+ },
+ "hero.tutorial.ranger-ranger.ivana": {
+  "thumb": "e63d140d5d92.webp",
+  "src": "New Art/ranger-ranger3.png",
+  "how": "explicit path in heroData"
+ },
+ "hero.tutorial.ranger-ranger.huntress": {
+  "thumb": "6b5375dc7dfa.webp",
+  "src": "New Art/ranger-ranger4.png",
+  "how": "explicit path in heroData"
+ },
+ "hero.tutorial.ranger-scantily.mira": {
+  "thumb": "6b97f207b493.webp",
+  "src": "New Art/ranger-scantily1.png",
+  "how": "explicit path in heroData"
+ },
+ "hero.tutorial.ranger-scantily.zephyr": {
+  "thumb": "0f0c36dcd6a0.webp",
+  "src": "New Art/ranger-scantily2.png",
+  "how": "explicit path in heroData"
+ },
+ "hero.tutorial.ranger-scantily.kyla": {
+  "thumb": "c07ede5b1ff8.webp",
+  "src": "New Art/ranger-scantily3.png",
+  "how": "explicit path in heroData"
+ },
+ "hero.tutorial.ranger-scantily.swift": {
+  "thumb": "4e59d25da343.webp",
+  "src": "New Art/ranger-scantily4.png",
+  "how": "explicit path in heroData"
+ },
+ "hero.tutorial.rogue-raven.nadia": {
+  "thumb": "921c388a7e12.webp",
+  "src": "New Art/rogue-raven1.jpg",
+  "how": "explicit path in heroData"
+ },
+ "hero.tutorial.rogue-raven.raven": {
+  "thumb": "8b1c047b525f.webp",
+  "src": "New Art/rogue-raven2.jpg",
+  "how": "explicit path in heroData"
+ },
+ "hero.tutorial.rogue-raven.ophelia": {
+  "thumb": "6e31e9d968e3.webp",
+  "src": "New Art/rogue-raven3.jpg",
+  "how": "explicit path in heroData"
+ },
+ "hero.tutorial.rogue-raven.shade": {
+  "thumb": "dba8b00ad079.webp",
+  "src": "New Art/rogue-raven4.jpg",
+  "how": "explicit path in heroData"
+ },
+ "hero.tutorial.rogue-rose.rosa": {
+  "thumb": "33276d65d537.webp",
+  "src": "New Art/rogue-rose1.png",
+  "how": "explicit path in heroData"
+ },
+ "hero.tutorial.rogue-rose.scarlet": {
+  "thumb": "7c2d8c5e9798.webp",
+  "src": "New Art/rogue-rose2.png",
+  "how": "explicit path in heroData"
+ },
+ "hero.tutorial.rogue-rose.dahlia": {
+  "thumb": "ad2bd0cd91e2.webp",
+  "src": "New Art/rogue-rose3.png",
+  "how": "explicit path in heroData"
+ },
+ "hero.tutorial.rogue-rose.crimson": {
+  "thumb": "ee8f7c7bdd74.webp",
+  "src": "New Art/rogue-rose4.png",
+  "how": "explicit path in heroData"
+ },
+ "hero.tutorial.rogue-skull.zara": {
+  "thumb": "96d2f1cba937.webp",
+  "src": "New Art/rogue-skull1.png",
+  "how": "explicit path in heroData"
+ },
+ "hero.tutorial.rogue-skull.morticia": {
+  "thumb": "de913c4ba36b.webp",
+  "src": "New Art/rogue-skull2.png",
+  "how": "explicit path in heroData"
+ },
+ "hero.tutorial.rogue-skull.jasmine": {
+  "thumb": "ac09ec96866e.webp",
+  "src": "New Art/rogue-skull3.png",
+  "how": "explicit path in heroData"
+ },
+ "hero.tutorial.rogue-skull.bone": {
+  "thumb": "d157c8aeef16.webp",
+  "src": "New Art/rogue-skull4.png",
+  "how": "explicit path in heroData"
+ },
+ "hero.tutorial.rogue-snake.sela": {
+  "thumb": "17b4ccb0e2bf.webp",
+  "src": "New Art/rogue-snake1.png",
+  "how": "explicit path in heroData"
+ },
+ "hero.tutorial.rogue-snake.viper": {
+  "thumb": "e168a934e9c3.webp",
+  "src": "New Art/rogue-snake2.png",
+  "how": "explicit path in heroData"
+ },
+ "hero.tutorial.rogue-snake.xyla": {
+  "thumb": "7b10e237085a.webp",
+  "src": "New Art/rogue-snake3.png",
+  "how": "explicit path in heroData"
+ },
+ "hero.tutorial.rogue-snake.serpentina": {
+  "thumb": "f352390b2330.webp",
+  "src": "New Art/rogue-snake4.png",
+  "how": "explicit path in heroData"
+ },
+ "hero.fixed.shadows-general-rinad": {
+  "thumb": "bab927333e81.webp",
+  "src": "New Art/shadows-in-the-sand-concepts/general-renaud.png",
+  "how": "explicit path in heroData"
+ },
+ "hero.fixed.swashbuckler": {
+  "thumb": "2da94d2ec796.webp",
+  "src": "New Art/swashbuckler-variants/swashbuckler-concept-1-refined.png",
+  "how": "variants folder"
+ },
+ "hero.tutorial.warrior-barbarian.leif": {
+  "thumb": "adff79d01ebd.webp",
+  "src": "New Art/warrior-barbarian1.png",
+  "how": "explicit path in heroData"
+ },
+ "hero.tutorial.warrior-barbarian.magni": {
+  "thumb": "13e2517b2151.webp",
+  "src": "New Art/warrior-barbarian2.png",
+  "how": "explicit path in heroData"
+ },
+ "hero.tutorial.warrior-barbarian.harald": {
+  "thumb": "f185f4608ff8.webp",
+  "src": "New Art/warrior-barbarian3.png",
+  "how": "explicit path in heroData"
+ },
+ "hero.tutorial.warrior-barbarian.balin": {
+  "thumb": "5901b02e554d.webp",
+  "src": "New Art/warrior-barbarian4.png",
+  "how": "explicit path in heroData"
+ },
+ "hero.tutorial.warrior-brawler.finn": {
+  "thumb": "569bc2904a50.webp",
+  "src": "New Art/warrior-brawler1.png",
+  "how": "explicit path in heroData"
+ },
+ "hero.tutorial.warrior-brawler.nori": {
+  "thumb": "af468a14bbbb.webp",
+  "src": "New Art/warrior-brawler2.png",
+  "how": "explicit path in heroData"
+ },
+ "hero.tutorial.warrior-brawler.quinn": {
+  "thumb": "fbaea26465ec.webp",
+  "src": "New Art/warrior-brawler3.png",
+  "how": "explicit path in heroData"
+ },
+ "hero.tutorial.warrior-brawler.gloin": {
+  "thumb": "6ad6dcc89f22.webp",
+  "src": "New Art/warrior-brawler4.png",
+  "how": "explicit path in heroData"
+ },
+ "hero.tutorial.warrior-fearsome.theron": {
+  "thumb": "59ae968364af.webp",
+  "src": "New Art/warrior-fearsome1.png",
+  "how": "explicit path in heroData"
+ },
+ "hero.tutorial.warrior-fearsome.dolgrim": {
+  "thumb": "3e7a9e549312.webp",
+  "src": "New Art/warrior-fearsome2.png",
+  "how": "explicit path in heroData"
+ },
+ "hero.tutorial.warrior-fearsome.ulric": {
+  "thumb": "2b6e82d6959c.webp",
+  "src": "New Art/warrior-fearsome3.png",
+  "how": "explicit path in heroData"
+ },
+ "hero.tutorial.warrior-fearsome.hrothgar": {
+  "thumb": "16ce3b016d9a.webp",
+  "src": "New Art/warrior-fearsome4.png",
+  "how": "explicit path in heroData"
+ },
+ "hero.tutorial.warrior-iron.aldric": {
+  "thumb": "f8f49e40a793.webp",
+  "src": "New Art/warrior-iron1.png",
+  "how": "explicit path in heroData"
+ },
+ "hero.tutorial.warrior-iron.durin": {
+  "thumb": "f3897dcdf33b.webp",
+  "src": "New Art/warrior-iron2.png",
+  "how": "explicit path in heroData"
+ },
+ "hero.tutorial.warrior-iron.gareth": {
+  "thumb": "4434622d95bf.webp",
+  "src": "New Art/warrior-iron3.png",
+  "how": "explicit path in heroData"
+ },
+ "hero.tutorial.warrior-iron.thrain": {
+  "thumb": "d61f008df228.webp",
+  "src": "New Art/warrior-iron4.png",
+  "how": "explicit path in heroData"
+ },
+ "hero.aspiring.female-style-1": {
+  "thumb": "119c4b37e846.webp",
+  "src": "assets/cards/heroes/aspiring/female/style-1/1.png",
+  "how": "explicit path in heroData"
+ },
+ "hero.aspiring.female-style-2": {
+  "thumb": "4293c7088504.webp",
+  "src": "assets/cards/heroes/aspiring/female/style-2/1.png",
+  "how": "explicit path in heroData"
+ },
+ "hero.aspiring.female-style-3": {
+  "thumb": "289a8885fc07.webp",
+  "src": "assets/cards/heroes/aspiring/female/style-3/1.png",
+  "how": "explicit path in heroData"
+ },
+ "hero.aspiring.female-style-4": {
+  "thumb": "4fe2fa3d0861.webp",
+  "src": "assets/cards/heroes/aspiring/female/style-4/1.png",
+  "how": "explicit path in heroData"
+ },
+ "hero.aspiring.male-style-1": {
+  "thumb": "1a7522d00b07.webp",
+  "src": "assets/cards/heroes/aspiring/male/style-1/1.png",
+  "how": "explicit path in heroData"
+ },
+ "hero.aspiring.male-style-2": {
+  "thumb": "a3a7b53caeda.webp",
+  "src": "assets/cards/heroes/aspiring/male/style-2/1.png",
+  "how": "explicit path in heroData"
+ },
+ "hero.aspiring.male-style-3": {
+  "thumb": "086f4a73cec5.webp",
+  "src": "assets/cards/heroes/aspiring/male/style-3/1.png",
+  "how": "explicit path in heroData"
+ },
+ "hero.aspiring.male-style-4": {
+  "thumb": "c3ee3cbce2e3.webp",
+  "src": "assets/cards/heroes/aspiring/male/style-4/1.png",
+  "how": "explicit path in heroData"
+ },
+ "hero.fixed.blacksmith": {
+  "thumb": "13ede036d7b1.webp",
+  "src": "assets/cards/heroes/civilian/blacksmith-female-1.png",
+  "how": "prefix match"
+ },
+ "hero.fixed.caravan": {
+  "thumb": "9abd5e81c498.webp",
+  "src": "assets/cards/heroes/civilian/caravan-1.png",
+  "how": "direct file"
+ },
+ "hero.fixed.cook": {
+  "thumb": "17a90941c96d.webp",
+  "src": "assets/cards/heroes/civilian/cook-1.png",
+  "how": "direct file"
+ },
+ "hero.fixed.librarian": {
+  "thumb": "693c98172a99.webp",
+  "src": "assets/cards/heroes/civilian/librarian-1.png",
+  "how": "direct file"
+ },
+ "hero.fixed.maiden": {
+  "thumb": "657f76764de7.webp",
+  "src": "assets/cards/heroes/civilian/maiden-1.png",
+  "how": "direct file"
+ },
+ "hero.fixed.orphans": {
+  "thumb": "00b0a212f067.webp",
+  "src": "assets/cards/heroes/civilian/orphan-children-1.png",
+  "how": "direct file"
+ },
+ "hero.fixed.prince": {
+  "thumb": "9cb6fc219703.webp",
+  "src": "assets/cards/heroes/civilian/prince-1.png",
+  "how": "direct file"
+ },
+ "hero.fixed.survivors": {
+  "thumb": "841963f80263.webp",
+  "src": "assets/cards/heroes/civilian/ragtag-survivors-1.png",
+  "how": "direct file"
+ },
+ "hero.fixed.zombie-bride": {
+  "thumb": "a68afbde1a1c.webp",
+  "src": "assets/cards/heroes/civilian/zombie-bride-1.png",
+  "how": "direct file"
+ },
+ "hero.fixed.angel": {
+  "thumb": "e419d6927a3d.webp",
+  "src": "assets/cards/heroes/fixed/angel/1.png",
+  "how": "fixed folder"
+ },
+ "hero.fixed.bard": {
+  "thumb": "cfe8f93c1150.webp",
+  "src": "assets/cards/heroes/fixed/bard/1.png",
+  "how": "fixed folder"
+ },
+ "hero.fixed.big-caravan": {
+  "thumb": "89ce3c324c4f.webp",
+  "src": "assets/cards/heroes/fixed/big-caravan/1.png",
+  "how": "fixed folder"
+ },
+ "hero.fixed.catfolk-villager": {
+  "thumb": "96cd81c15e89.webp",
+  "src": "assets/cards/heroes/fixed/catfolk-villager/1.png",
+  "how": "fixed folder"
+ },
+ "hero.fixed.demonlord": {
+  "thumb": "a92e6cdcec74.webp",
+  "src": "assets/cards/heroes/fixed/demon-lord/1.png",
+  "how": "fixed folder"
+ },
+ "hero.fixed.ethereal-bard": {
+  "thumb": "1b87cea89196.webp",
+  "src": "assets/cards/heroes/fixed/ethereal-bard/1.png",
+  "how": "fixed folder"
+ },
+ "hero.fixed.fae-king": {
+  "thumb": "091f5850a794.webp",
+  "src": "assets/cards/heroes/fixed/fae-king/1.png",
+  "how": "fixed folder"
+ },
+ "hero.fixed.farmer": {
+  "thumb": "5dc22ff9edce.webp",
+  "src": "assets/cards/heroes/fixed/farmer/1.png",
+  "how": "fixed folder"
+ },
+ "hero.fixed.farming-family": {
+  "thumb": "cdd250ccd915.webp",
+  "src": "assets/cards/heroes/fixed/farming-family/1.png",
+  "how": "fixed folder"
+ },
+ "hero.fixed.fey-queen": {
+  "thumb": "f89424302258.webp",
+  "src": "assets/cards/heroes/fixed/fey-queen/1.png",
+  "how": "fixed folder"
+ },
+ "hero.fixed.fisherman": {
+  "thumb": "72230e3f1d43.webp",
+  "src": "assets/cards/heroes/fixed/fisherman/1.png",
+  "how": "fixed folder"
+ },
+ "hero.fixed.fishermans-wife": {
+  "thumb": "e711e2708ef0.webp",
+  "src": "assets/cards/heroes/fixed/fishermans-wife/1.png",
+  "how": "fixed folder"
+ },
+ "hero.fixed.gang-of-nuns": {
+  "thumb": "c3d5eea024d2.webp",
+  "src": "assets/cards/heroes/fixed/gang-of-nuns/1.png",
+  "how": "fixed folder"
+ },
+ "hero.fixed.group-of-farmers": {
+  "thumb": "bf90d79f7f16.webp",
+  "src": "assets/cards/heroes/fixed/group-of-farmers/1.png",
+  "how": "fixed folder"
+ },
+ "hero.fixed.imp": {
+  "thumb": "766fa6efd931.webp",
+  "src": "assets/cards/heroes/fixed/imp/1.png",
+  "how": "fixed folder"
+ },
+ "hero.fixed.living-ghost": {
+  "thumb": "1a36fb28aef0.webp",
+  "src": "assets/cards/heroes/fixed/living-ghost/1.png",
+  "how": "fixed folder"
+ },
+ "hero.fixed.lumberjack-and-wife": {
+  "thumb": "0525dac8d2bb.webp",
+  "src": "assets/cards/heroes/fixed/lumberjack-and-wife/1.png",
+  "how": "fixed folder"
+ },
+ "hero.fixed.magi-apprentice": {
+  "thumb": "d090420ceede.webp",
+  "src": "assets/cards/heroes/fixed/magi-apprentice/1.png",
+  "how": "fixed folder"
+ },
+ "hero.fixed.merchant-wagon": {
+  "thumb": "112641c11606.webp",
+  "src": "assets/cards/heroes/fixed/merchant-wagon/1.png",
+  "how": "fixed folder"
+ },
+ "hero.fixed.mirian": {
+  "thumb": "afb0fbca4660.webp",
+  "src": "assets/cards/heroes/fixed/mirian/1.png",
+  "how": "fixed folder"
+ },
+ "hero.fixed.old-wise-man": {
+  "thumb": "9eaa8b470b03.webp",
+  "src": "assets/cards/heroes/fixed/old-wise-man/1.png",
+  "how": "fixed folder"
+ },
+ "hero.fixed.one-armed-ogre": {
+  "thumb": "40067bc09bbc.webp",
+  "src": "assets/cards/heroes/fixed/one-armed-ogre/1.png",
+  "how": "fixed folder"
+ },
+ "hero.fixed.princess": {
+  "thumb": "b469e8add018.webp",
+  "src": "assets/cards/heroes/fixed/princess/1.png",
+  "how": "fixed folder"
+ },
+ "hero.fixed.royal-guard": {
+  "thumb": "76cd6f1cfbf5.webp",
+  "src": "assets/cards/heroes/fixed/royal-guard/1.png",
+  "how": "fixed folder"
+ },
+ "hero.fixed.scary-kid": {
+  "thumb": "ba7cbaa73c59.webp",
+  "src": "assets/cards/heroes/fixed/scary-kid/1.png",
+  "how": "fixed folder"
+ },
+ "hero.fixed.school-children": {
+  "thumb": "ed45fc38947d.webp",
+  "src": "assets/cards/heroes/fixed/school-children/1.png",
+  "how": "fixed folder"
+ },
+ "hero.fixed.school-teacher": {
+  "thumb": "6329263dcc95.webp",
+  "src": "assets/cards/heroes/fixed/school-teacher/1.png",
+  "how": "fixed folder"
+ },
+ "hero.fixed.shadow-hound-puppy": {
+  "thumb": "85997db4df78.webp",
+  "src": "assets/cards/heroes/fixed/shadow-hound-puppy/1.png",
+  "how": "fixed folder"
+ },
+ "hero.fixed.small-army": {
+  "thumb": "bcb26002bbf5.webp",
+  "src": "assets/cards/heroes/fixed/small-army/1.png",
+  "how": "fixed folder"
+ },
+ "hero.fixed.sorceress": {
+  "thumb": "2109d28704f1.webp",
+  "src": "assets/cards/heroes/fixed/sorceress/1.png",
+  "how": "fixed folder"
+ },
+ "hero.fixed.spirit-snake": {
+  "thumb": "8e4c8653351c.webp",
+  "src": "assets/cards/heroes/fixed/spirit-snake/1.png",
+  "how": "fixed folder"
+ },
+ "hero.fixed.thespian": {
+  "thumb": "186c6e679660.webp",
+  "src": "assets/cards/heroes/fixed/thespian/1.png",
+  "how": "explicit path in heroData"
+ },
+ "hero.fixed.tiempic-mage": {
+  "thumb": "3a8b7d82e538.webp",
+  "src": "assets/cards/heroes/fixed/tiempic-mage/1.png",
+  "how": "fixed folder"
+ },
+ "hero.fixed.troll-child": {
+  "thumb": "911e474f3249.webp",
+  "src": "assets/cards/heroes/fixed/troll-child/1.png",
+  "how": "fixed folder"
+ },
+ "hero.fixed.veiled-assassin": {
+  "thumb": "d2d97853e7cd.webp",
+  "src": "assets/cards/heroes/fixed/veiled-assassin/1.png",
+  "how": "fixed folder"
+ },
+ "hero.fixed.wandering-bard": {
+  "thumb": "d78b9852d9d6.webp",
+  "src": "assets/cards/heroes/fixed/wandering-bard/1.png",
+  "how": "explicit path in heroData"
+ },
+ "hero.fixed.warrior-nun": {
+  "thumb": "a37a73498734.webp",
+  "src": "assets/cards/heroes/fixed/warrior-nun/1.png",
+  "how": "fixed folder"
+ },
+ "hero.fixed.wayward-child": {
+  "thumb": "a64888b78377.webp",
+  "src": "assets/cards/heroes/fixed/wayward-child/1.png",
+  "how": "fixed folder"
+ },
+ "hero.fixed.wife3": {
+  "thumb": "a19243c4785c.webp",
+  "src": "assets/cards/heroes/fixed/wife-3/1.png",
+  "how": "fixed folder"
+ },
+ "hero.fixed.wife5": {
+  "thumb": "7d6962446c6b.webp",
+  "src": "assets/cards/heroes/fixed/wife-5/1.png",
+  "how": "fixed folder"
+ },
+ "hero.fixed.earth-mage": {
+  "thumb": "b4e7dea70168.webp",
+  "src": "assets/cards/heroes/new-concepts/earth-mage-v1.png",
+  "how": "prefix match"
+ }
+}

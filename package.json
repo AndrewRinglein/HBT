@@ -5,14 +5,15 @@
   "type": "module",
   "description": "Heroes of Blight and Tragic — content pipeline. Authored JSON in, a self-contained Codex out, with a linter that refuses to let the two disagree.",
   "scripts": {
-    "build": "node assemble.mjs && node functions.mjs && node assemble.mjs && node mklevelsmd.mjs && node build-viewer.mjs && node mkcodexmd.mjs && node mkgaps.mjs",
+    "build": "node assemble.mjs && node functions.mjs && node assemble.mjs && node mklevelsmd.mjs && node mkthumbs.mjs --write && node build-viewer.mjs && node mkcodexmd.mjs && node mkgaps.mjs",
     "audit": "node audit.mjs",
     "levels": "node checklevels.mjs",
     "verify": "node verify-codex.mjs",
     "check": "npm run build && npm run expect && npm run levels",
     "expect": "node expect.mjs",
     "ship": "node ship.mjs",
-    "ship:dry": "node ship.mjs --dry"
+    "ship:dry": "node ship.mjs --dry",
+    "thumbs": "node mkthumbs.mjs --write"
   },
   "devDependencies": {
     "playwright": "^1.40.0"

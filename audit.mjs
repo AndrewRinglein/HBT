@@ -890,6 +890,42 @@ if(D.bestiary && D.bestiary.length){
   }
 }
 
+// R32 ART THAT EXISTS MUST REACH THE CODEX. Ruled 2026-08-22.
+//
+// art/manifest.json is what the Codex actually draws from — not the art paths on the hero rows.
+// It had been generated ONCE and never regenerated, so it held 297 entries all pointing at
+// hell-tcg, ninety-six of them naming heroes that no longer existed, and NOT ONE entry for
+// hero.base.* — meaning the 24 Eve heroes, which own the most complete art in the repo, drew
+// nothing at all. The art was on disk, the paths were on the rows, and the Codex showed a gap.
+//
+// So: if a hero owns local art, the manifest must know, and every thumb it names must exist.
+if(D.heroes && D.heroes.heroes && fs.existsSync('art/manifest.json')){
+  const MAN = JSON.parse(fs.readFileSync('art/manifest.json','utf8'));
+  const live = new Set(D.heroes.heroes.map(h=>h.id));
+
+  for(const [id,row] of Object.entries(MAN)){
+    if(!live.has(id)) add('manifest-names-a-hero-that-does-not-exist', id,
+      'left over from a hero that was cut — a dead reference in the file the Codex draws from');
+    for(const v of (row.variants||[]))
+      if(!fs.existsSync('art/thumbs/'+v.thumb))
+        add('manifest-thumb-is-missing', id, v.label+' -> art/thumbs/'+v.thumb+' (renders as a blank box)');
+  }
+
+  for(const h of D.heroes.heroes){
+    const owns = (h.levelArt||[]).length + Object.keys(h.afflictionArt||{}).length + (h.hexArt||[]).length;
+    if(!owns) continue;
+    const row = MAN[h.id];
+    if(!row) { add('hero-has-art-but-no-manifest-entry', h.name,
+      owns+' local art files on the row and nothing in the manifest — it will draw nothing. Run npm run thumbs.'); continue; }
+    // the manifest must not be STALER than the row: art arriving later is exactly how this broke
+    const want = (h.levelArt||[]).length + Object.keys(h.afflictionArt||{}).length
+               + (h.hexArt||[]).filter(p=>/_256\./.test(p)).length;
+    if((row.variants||[]).length < want)
+      add('manifest-is-stale-for-this-hero', h.name,
+        (row.variants||[]).length+' variants in the manifest but '+want+' art files on the row — rerun npm run thumbs');
+  }
+}
+
 const by={}; F.forEach(f=>(by[f.rule]=by[f.rule]||[]).push(f));
 for(const [r,list] of Object.entries(by).sort((a,b)=>b[1].length-a[1].length)){
   console.log('\n### '+r+'  ('+list.length+')');

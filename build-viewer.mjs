@@ -2,12 +2,18 @@ import fs from 'fs';
 const DATA = fs.readFileSync('hbt-content.json','utf8');
 const GUIDE = fs.readFileSync('AUTHORING-GUIDE.md','utf8');
 // hero art: 146 unique thumbnails, base64-inlined so the codex stays one self-contained file
-let ART_IMG={}, ART_OF={};
+let ART_IMG={}, ART_OF={}, ART_VAR={};
 if(fs.existsSync('art/manifest.json')){
-  ART_OF=Object.fromEntries(Object.entries(JSON.parse(fs.readFileSync('art/manifest.json','utf8')))
-    .map(([id,v])=>[id,v.thumb]));
-  for(const f of new Set(Object.values(ART_OF)))
-    ART_IMG[f]='data:image/webp;base64,'+fs.readFileSync('art/thumbs/'+f).toString('base64');
+  const MAN=JSON.parse(fs.readFileSync('art/manifest.json','utf8'));
+  ART_OF=Object.fromEntries(Object.entries(MAN).map(([id,v])=>[id,v.thumb]));
+  // every VARIANT a hero owns — four levels, four afflictions, the hex cutouts. These were
+  // in the data and drawn nowhere, which is why the Eve heroes looked like they had one
+  // picture when they have sixteen.
+  ART_VAR=Object.fromEntries(Object.entries(MAN).map(([id,v])=>[id,(v.variants||[]).map(r=>({k:r.kind,l:r.label,t:r.thumb}))]));
+  const want=new Set(Object.values(ART_OF));
+  for(const rows of Object.values(ART_VAR)) for(const r of rows) want.add(r.t);
+  for(const f of want)
+    if(fs.existsSync('art/thumbs/'+f)) ART_IMG[f]='data:image/webp;base64,'+fs.readFileSync('art/thumbs/'+f).toString('base64');
   const bytes=Object.values(ART_IMG).reduce((n,s)=>n+s.length,0);
   console.log('  art:', Object.keys(ART_IMG).length, 'images inlined,', (bytes/1048576).toFixed(2), 'MB base64');
 }
@@ -122,6 +128,12 @@ input{width:240px}input:focus,select:focus{outline:none;border-color:var(--gold)
 .hero-artbox{position:relative;height:300px;overflow:hidden;background:#0d0a14;border-bottom:1px solid var(--border);background-size:cover;background-position:center}
 .hero-artbox::before{content:'';position:absolute;inset:-24px;background-image:inherit;background-size:cover;background-position:center;filter:blur(20px) brightness(.4) saturate(.7)}
 .hero-art{position:relative;display:block;width:100%;height:100%;object-fit:contain}
+.vstrip{display:flex;flex-wrap:wrap;gap:4px;padding:5px 6px;background:#0e1116;border-top:1px solid #1e242c}
+.vstrip.hex{background:#0b0e12}
+.vthumb{margin:0;width:52px;text-align:center}
+.vthumb img{width:100%;border-radius:3px;display:block;background:#161b22}
+.vstrip.hex .vthumb img{border-radius:50%}
+.vthumb figcaption{font-size:8.5px;color:#7d8590;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .noart{display:flex;align-items:center;justify-content:center;color:#4a4260;font-size:11px;font-style:italic;height:60px;background:#0d0a14;border-bottom:1px solid var(--border)}
 .hero-h{background:var(--panel2);padding:8px 11px;border-bottom:1px solid var(--border)}
 .hero-h h3{margin:0;font-size:14.5px;color:#f0e6d2;font-weight:600}
@@ -165,6 +177,7 @@ input{width:240px}input:focus,select:focus{outline:none;border-color:var(--gold)
 const D = ${DATA};
 const GUIDE_MD = ${JSON.stringify(GUIDE)};
 const ART_IMG = ${JSON.stringify(ART_IMG)};
+const ART_VAR = ${JSON.stringify(ART_VAR)};
 const ART_OF  = ${JSON.stringify(ART_OF)};
 const artOf = id => ART_IMG[ART_OF[id]] || null;
 function paintArt(root){ root.querySelectorAll('[data-a]').forEach(el=>{
@@ -513,9 +526,19 @@ const TABS=[
      const {v,src,hasTable}=statsAt(h,L);
      const db=20+5*(v.toughness||0);
      const key=ART_OF[h.id];
+     var vs=ART_VAR[h.id]||[];
+     var cardVs=vs.filter(function(r){return r.k!=='hex';});
+     var hexVs=vs.filter(function(r){return r.k==='hex';});
+     var strip=function(rows,cls){
+       if(rows.length<2) return '';
+       return '<div class="vstrip '+cls+'">'+rows.map(function(r){
+         return '<figure class="vthumb" title="'+esc(r.l)+'">'+
+                '<img data-a="'+r.t+'" alt="'+esc(r.l)+'" loading="lazy">'+
+                '<figcaption>'+esc(r.l)+'</figcaption></figure>'; }).join('')+'</div>'; };
      return '<div class="hero">'+
        (key?'<div class="hero-artbox" data-a="'+key+'"><img class="hero-art" data-a="'+key+'" alt="'+esc(h.name)+'" loading="lazy"></div>'
-           :'<div class="noart">no art matched</div>')+
+           :'<div class="noart">'+(h.artMissing?'art not brought across yet':'no art matched')+'</div>')+
+       strip(cardVs,'card')+strip(hexVs,'hex')+
        '<div class="hero-h"><h3>'+esc(h.name)+
        (h.variantsOf>1?'<span class="vchip">'+h.variant+' of '+h.variantsOf+'</span>':'')+
        '</h3><div class="sub">'+

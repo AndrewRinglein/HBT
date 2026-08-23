@@ -163,5 +163,940 @@
    "1024": "rogue-snake_1024.png",
    "256": "rogue-snake_256.png"
   }
+ },
+ "hero.tutorial.warrior-iron.durin": {
+  "hex": "f3897dcdf33b.webp",
+  "src": "New Art/warrior-iron2.png",
+  "slug": "warrior-iron-l2",
+  "scale": 1.0,
+  "tiers": {
+   "full": "warrior-iron-l2_full.png",
+   "1024": "warrior-iron-l2_1024.png",
+   "256": "warrior-iron-l2_256.png"
+  }
+ },
+ "hero.tutorial.warrior-iron.gareth": {
+  "hex": "4434622d95bf.webp",
+  "src": "New Art/warrior-iron3.png",
+  "slug": "warrior-iron-l3",
+  "scale": 1.0,
+  "tiers": {
+   "full": "warrior-iron-l3_full.png",
+   "1024": "warrior-iron-l3_1024.png",
+   "256": "warrior-iron-l3_256.png"
+  }
+ },
+ "hero.tutorial.warrior-iron.thrain": {
+  "hex": "d61f008df228.webp",
+  "src": "New Art/warrior-iron4.png",
+  "slug": "warrior-iron-l4",
+  "scale": 1.0,
+  "tiers": {
+   "full": "warrior-iron-l4_full.png",
+   "1024": "warrior-iron-l4_1024.png",
+   "256": "warrior-iron-l4_256.png"
+  }
+ },
+ "hero.tutorial.warrior-fearsome.dolgrim": {
+  "hex": "3e7a9e549312.webp",
+  "src": "New Art/warrior-fearsome2.png",
+  "slug": "warrior-fearsome-l2",
+  "scale": 1.0,
+  "tiers": {
+   "full": "warrior-fearsome-l2_full.png",
+   "1024": "warrior-fearsome-l2_1024.png",
+   "256": "warrior-fearsome-l2_256.png"
+  }
+ },
+ "hero.tutorial.warrior-fearsome.ulric": {
+  "hex": "2b6e82d6959c.webp",
+  "src": "New Art/warrior-fearsome3.png",
+  "slug": "warrior-fearsome-l3",
+  "scale": 1.0,
+  "tiers": {
+   "full": "warrior-fearsome-l3_full.png",
+   "1024": "warrior-fearsome-l3_1024.png",
+   "256": "warrior-fearsome-l3_256.png"
+  }
+ },
+ "hero.tutorial.warrior-fearsome.hrothgar": {
+  "hex": "16ce3b016d9a.webp",
+  "src": "New Art/warrior-fearsome4.png",
+  "slug": "warrior-fearsome-l4",
+  "scale": 1.0,
+  "tiers": {
+   "full": "warrior-fearsome-l4_full.png",
+   "1024": "warrior-fearsome-l4_1024.png",
+   "256": "warrior-fearsome-l4_256.png"
+  }
+ },
+ "hero.tutorial.warrior-barbarian.magni": {
+  "hex": "13e2517b2151.webp",
+  "src": "New Art/warrior-barbarian2.png",
+  "slug": "warrior-barbarian-l2",
+  "scale": 1.0,
+  "tiers": {
+   "full": "warrior-barbarian-l2_full.png",
+   "1024": "warrior-barbarian-l2_1024.png",
+   "256": "warrior-barbarian-l2_256.png"
+  }
+ },
+ "hero.tutorial.warrior-barbarian.harald": {
+  "hex": "f185f4608ff8.webp",
+  "src": "New Art/warrior-barbarian3.png",
+  "slug": "warrior-barbarian-l3",
+  "scale": 1.0,
+  "tiers": {
+   "full": "warrior-barbarian-l3_full.png",
+   "1024": "warrior-barbarian-l3_1024.png",
+   "256": "warrior-barbarian-l3_256.png"
+  }
+ },
+ "hero.tutorial.warrior-barbarian.balin": {
+  "hex": "5901b02e554d.webp",
+  "src": "New Art/warrior-barbarian4.png",
+  "slug": "warrior-barbarian-l4",
+  "scale": 1.0,
+  "tiers": {
+   "full": "warrior-barbarian-l4_full.png",
+   "1024": "warrior-barbarian-l4_1024.png",
+   "256": "warrior-barbarian-l4_256.png"
+  }
+ },
+ "hero.tutorial.warrior-brawler.nori": {
+  "hex": "af468a14bbbb.webp",
+  "src": "New Art/warrior-brawler2.png",
+  "slug": "warrior-brawler-l2",
+  "scale": 1.0,
+  "tiers": {
+   "full": "warrior-brawler-l2_full.png",
+   "1024": "warrior-brawler-l2_1024.png",
+   "256": "warrior-brawler-l2_256.png"
+  }
+ },
+ "hero.tutorial.warrior-brawler.quinn": {
+  "hex": "fbaea26465ec.webp",
+  "src": "New Art/warrior-brawler3.png",
+  "slug": "warrior-brawler-l3",
+  "scale": 1.0,
+  "tiers": {
+   "full": "warrior-brawler-l3_full.png",
+   "1024": "warrior-brawler-l3_1024.png",
+   "256": "warrior-brawler-l3_256.png"
+  }
+ },
+ "hero.tutorial.warrior-brawler.gloin": {
+  "hex": "6ad6dcc89f22.webp",
+  "src": "New Art/warrior-brawler4.png",
+  "slug": "warrior-brawler-l4",
+  "scale": 1.0,
+  "tiers": {
+   "full": "warrior-brawler-l4_full.png",
+   "1024": "warrior-brawler-l4_1024.png",
+   "256": "warrior-brawler-l4_256.png"
+  }
+ },
+ "hero.tutorial.mage-fire.elara": {
+  "hex": "47f41e7a276e.webp",
+  "src": "New Art/mage-fire2.png",
+  "slug": "mage-fire-l2",
+  "scale": 1.0,
+  "tiers": {
+   "full": "mage-fire-l2_full.png",
+   "1024": "mage-fire-l2_1024.png",
+   "256": "mage-fire-l2_256.png"
+  }
+ },
+ "hero.tutorial.mage-fire.ignacia": {
+  "hex": "a15ff4b2228f.webp",
+  "src": "New Art/mage-fire3.png",
+  "slug": "mage-fire-l3",
+  "scale": 1.0,
+  "tiers": {
+   "full": "mage-fire-l3_full.png",
+   "1024": "mage-fire-l3_1024.png",
+   "256": "mage-fire-l3_256.png"
+  }
+ },
+ "hero.tutorial.mage-fire.pyrra": {
+  "hex": "adb1ca21e465.webp",
+  "src": "New Art/mage-fire4.png",
+  "slug": "mage-fire-l4",
+  "scale": 1.0,
+  "tiers": {
+   "full": "mage-fire-l4_full.png",
+   "1024": "mage-fire-l4_1024.png",
+   "256": "mage-fire-l4_256.png"
+  }
+ },
+ "hero.tutorial.mage-fireaura.ember": {
+  "hex": "e6c935703df4.webp",
+  "src": "New Art/mage-fireaura2.png",
+  "slug": "mage-fireaura-l2",
+  "scale": 1.0,
+  "tiers": {
+   "full": "mage-fireaura-l2_full.png",
+   "1024": "mage-fireaura-l2_1024.png",
+   "256": "mage-fireaura-l2_256.png"
+  }
+ },
+ "hero.tutorial.mage-fireaura.freya": {
+  "hex": "e3f9e9f79139.webp",
+  "src": "New Art/mage-fireaura3.png",
+  "slug": "mage-fireaura-l3",
+  "scale": 1.0,
+  "tiers": {
+   "full": "mage-fireaura-l3_full.png",
+   "1024": "mage-fireaura-l3_1024.png",
+   "256": "mage-fireaura-l3_256.png"
+  }
+ },
+ "hero.tutorial.mage-fireaura.solara": {
+  "hex": "22249a1018c1.webp",
+  "src": "New Art/mage-fireaura4.png",
+  "slug": "mage-fireaura-l4",
+  "scale": 1.0,
+  "tiers": {
+   "full": "mage-fireaura-l4_full.png",
+   "1024": "mage-fireaura-l4_1024.png",
+   "256": "mage-fireaura-l4_256.png"
+  }
+ },
+ "hero.tutorial.mage-thinking.thessaly": {
+  "hex": "b079a095e2c7.webp",
+  "src": "New Art/mage-thinking2.png",
+  "slug": "mage-thinking-l2",
+  "scale": 1.0,
+  "tiers": {
+   "full": "mage-thinking-l2_full.png",
+   "1024": "mage-thinking-l2_1024.png",
+   "256": "mage-thinking-l2_256.png"
+  }
+ },
+ "hero.tutorial.mage-thinking.benedicta": {
+  "hex": "0d134b4eb0de.webp",
+  "src": "New Art/mage-thinking3.png",
+  "slug": "mage-thinking-l3",
+  "scale": 1.0,
+  "tiers": {
+   "full": "mage-thinking-l3_full.png",
+   "1024": "mage-thinking-l3_1024.png",
+   "256": "mage-thinking-l3_256.png"
+  }
+ },
+ "hero.tutorial.mage-thinking.minerva": {
+  "hex": "f2bc3b013e80.webp",
+  "src": "New Art/mage-thinking4.png",
+  "slug": "mage-thinking-l4",
+  "scale": 1.0,
+  "tiers": {
+   "full": "mage-thinking-l4_full.png",
+   "1024": "mage-thinking-l4_1024.png",
+   "256": "mage-thinking-l4_256.png"
+  }
+ },
+ "hero.tutorial.mage-sexy.vesper": {
+  "hex": "52f2ecaaf99a.webp",
+  "src": "New Art/mage-sexy2.png",
+  "slug": "mage-sexy-l2",
+  "scale": 1.0,
+  "tiers": {
+   "full": "mage-sexy-l2_full.png",
+   "1024": "mage-sexy-l2_1024.png",
+   "256": "mage-sexy-l2_256.png"
+  }
+ },
+ "hero.tutorial.mage-sexy.celeste": {
+  "hex": "45aa6c36adbc.webp",
+  "src": "New Art/mage-sexy3.png",
+  "slug": "mage-sexy-l3",
+  "scale": 1.0,
+  "tiers": {
+   "full": "mage-sexy-l3_full.png",
+   "1024": "mage-sexy-l3_1024.png",
+   "256": "mage-sexy-l3_256.png"
+  }
+ },
+ "hero.tutorial.mage-sexy.starla": {
+  "hex": "64dc49317c57.webp",
+  "src": "New Art/mage-sexy4.png",
+  "slug": "mage-sexy-l4",
+  "scale": 1.0,
+  "tiers": {
+   "full": "mage-sexy-l4_full.png",
+   "1024": "mage-sexy-l4_1024.png",
+   "256": "mage-sexy-l4_256.png"
+  }
+ },
+ "hero.tutorial.priest-armored.aldous": {
+  "hex": "2d1ca7b01c84.webp",
+  "src": "New Art/priest-armored2.png",
+  "slug": "priest-armored-l2",
+  "scale": 1.0,
+  "tiers": {
+   "full": "priest-armored-l2_full.png",
+   "1024": "priest-armored-l2_1024.png",
+   "256": "priest-armored-l2_256.png"
+  }
+ },
+ "hero.tutorial.priest-armored.conrad": {
+  "hex": "7f4802e03142.webp",
+  "src": "New Art/priest-armored3.png",
+  "slug": "priest-armored-l3",
+  "scale": 1.0,
+  "tiers": {
+   "full": "priest-armored-l3_full.png",
+   "1024": "priest-armored-l3_1024.png",
+   "256": "priest-armored-l3_256.png"
+  }
+ },
+ "hero.tutorial.priest-armored.mordecai": {
+  "hex": "43b588f717d3.webp",
+  "src": "New Art/priest-armored4.png",
+  "slug": "priest-armored-l4",
+  "scale": 1.0,
+  "tiers": {
+   "full": "priest-armored-l4_full.png",
+   "1024": "priest-armored-l4_1024.png",
+   "256": "priest-armored-l4_256.png"
+  }
+ },
+ "hero.tutorial.priest-pauper.matthias": {
+  "hex": "011cf218b9f1.webp",
+  "src": "New Art/priest-pauper2.png",
+  "slug": "priest-pauper-l2",
+  "scale": 1.0,
+  "tiers": {
+   "full": "priest-pauper-l2_full.png",
+   "1024": "priest-pauper-l2_1024.png",
+   "256": "priest-pauper-l2_256.png"
+  }
+ },
+ "hero.tutorial.priest-pauper.yorick": {
+  "hex": "96e26e6a799f.webp",
+  "src": "New Art/priest-pauper3.png",
+  "slug": "priest-pauper-l3",
+  "scale": 1.0,
+  "tiers": {
+   "full": "priest-pauper-l3_full.png",
+   "1024": "priest-pauper-l3_1024.png",
+   "256": "priest-pauper-l3_256.png"
+  }
+ },
+ "hero.tutorial.priest-pauper.ezekiel": {
+  "hex": "9388bab30d9f.webp",
+  "src": "New Art/priest-pauper4.png",
+  "slug": "priest-pauper-l4",
+  "scale": 1.0,
+  "tiers": {
+   "full": "priest-pauper-l4_full.png",
+   "1024": "priest-pauper-l4_1024.png",
+   "256": "priest-pauper-l4_256.png"
+  }
+ },
+ "hero.tutorial.priest-robes.anselm": {
+  "hex": "85d0249cac72.webp",
+  "src": "New Art/priest-robes2.png",
+  "slug": "priest-robes-l2",
+  "scale": 1.0,
+  "tiers": {
+   "full": "priest-robes-l2_full.png",
+   "1024": "priest-robes-l2_1024.png",
+   "256": "priest-robes-l2_256.png"
+  }
+ },
+ "hero.tutorial.priest-robes.lawrence": {
+  "hex": "59d36bd6a7bc.webp",
+  "src": "New Art/priest-robes3.png",
+  "slug": "priest-robes-l3",
+  "scale": 1.0,
+  "tiers": {
+   "full": "priest-robes-l3_full.png",
+   "1024": "priest-robes-l3_1024.png",
+   "256": "priest-robes-l3_256.png"
+  }
+ },
+ "hero.tutorial.priest-robes.cornelius": {
+  "hex": "ee31d94d76b2.webp",
+  "src": "New Art/priest-robes4.png",
+  "slug": "priest-robes-l4",
+  "scale": 1.0,
+  "tiers": {
+   "full": "priest-robes-l4_full.png",
+   "1024": "priest-robes-l4_1024.png",
+   "256": "priest-robes-l4_256.png"
+  }
+ },
+ "hero.tutorial.priest-scantily.cassius": {
+  "hex": "ecfa6a7fe4bd.webp",
+  "src": "New Art/priest-scantily2.png",
+  "slug": "priest-scantily-l2",
+  "scale": 1.0,
+  "tiers": {
+   "full": "priest-scantily-l2_full.png",
+   "1024": "priest-scantily-l2_1024.png",
+   "256": "priest-scantily-l2_256.png"
+  }
+ },
+ "hero.tutorial.priest-scantily.iris": {
+  "hex": "27926afdecfc.webp",
+  "src": "New Art/priest-scantily3.png",
+  "slug": "priest-scantily-l3",
+  "scale": 1.0,
+  "tiers": {
+   "full": "priest-scantily-l3_full.png",
+   "1024": "priest-scantily-l3_1024.png",
+   "256": "priest-scantily-l3_256.png"
+  }
+ },
+ "hero.tutorial.priest-scantily.orion": {
+  "hex": "62c249179bc3.webp",
+  "src": "New Art/priest-scantily4.png",
+  "slug": "priest-scantily-l4",
+  "scale": 1.0,
+  "tiers": {
+   "full": "priest-scantily-l4_full.png",
+   "1024": "priest-scantily-l4_1024.png",
+   "256": "priest-scantily-l4_256.png"
+  }
+ },
+ "hero.tutorial.paladin-dark.malachar": {
+  "hex": "297526699c18.webp",
+  "src": "New Art/paladin-dark2.png",
+  "slug": "paladin-dark-l2",
+  "scale": 1.0,
+  "tiers": {
+   "full": "paladin-dark-l2_full.png",
+   "1024": "paladin-dark-l2_1024.png",
+   "256": "paladin-dark-l2_256.png"
+  }
+ },
+ "hero.tutorial.paladin-dark.viktor": {
+  "hex": "76347c5dc74c.webp",
+  "src": "New Art/paladin-dark3.png",
+  "slug": "paladin-dark-l3",
+  "scale": 1.0,
+  "tiers": {
+   "full": "paladin-dark-l3_full.png",
+   "1024": "paladin-dark-l3_1024.png",
+   "256": "paladin-dark-l3_256.png"
+  }
+ },
+ "hero.tutorial.paladin-dark.damien": {
+  "hex": "c8976bb546b9.webp",
+  "src": "New Art/paladin-dark4.png",
+  "slug": "paladin-dark-l4",
+  "scale": 1.0,
+  "tiers": {
+   "full": "paladin-dark-l4_full.png",
+   "1024": "paladin-dark-l4_1024.png",
+   "256": "paladin-dark-l4_256.png"
+  }
+ },
+ "hero.tutorial.paladin-hunk.galahad": {
+  "hex": "3e366e2cce04.webp",
+  "src": "New Art/paladin-hunk2.png",
+  "slug": "paladin-hunk-l2",
+  "scale": 1.0,
+  "tiers": {
+   "full": "paladin-hunk-l2_full.png",
+   "1024": "paladin-hunk-l2_1024.png",
+   "256": "paladin-hunk-l2_256.png"
+  }
+ },
+ "hero.tutorial.paladin-hunk.dominic": {
+  "hex": "d442706b0600.webp",
+  "src": "New Art/paladin-hunk3.png",
+  "slug": "paladin-hunk-l3",
+  "scale": 1.0,
+  "tiers": {
+   "full": "paladin-hunk-l3_full.png",
+   "1024": "paladin-hunk-l3_1024.png",
+   "256": "paladin-hunk-l3_256.png"
+  }
+ },
+ "hero.tutorial.paladin-hunk.adonis": {
+  "hex": "553da7eb779b.webp",
+  "src": "New Art/paladin-hunk4.png",
+  "slug": "paladin-hunk-l4",
+  "scale": 1.0,
+  "tiers": {
+   "full": "paladin-hunk-l4_full.png",
+   "1024": "paladin-hunk-l4_1024.png",
+   "256": "paladin-hunk-l4_256.png"
+  }
+ },
+ "hero.tutorial.paladin-shiney.lucian": {
+  "hex": "46c3c2c9d4fc.webp",
+  "src": "New Art/paladin-shiney2.png",
+  "slug": "paladin-shiney-l2",
+  "scale": 1.0,
+  "tiers": {
+   "full": "paladin-shiney-l2_full.png",
+   "1024": "paladin-shiney-l2_1024.png",
+   "256": "paladin-shiney-l2_256.png"
+  }
+ },
+ "hero.tutorial.paladin-shiney.edmund": {
+  "hex": "ba2cf2ad5506.webp",
+  "src": "New Art/paladin-shiney3.png",
+  "slug": "paladin-shiney-l3",
+  "scale": 1.0,
+  "tiers": {
+   "full": "paladin-shiney-l3_full.png",
+   "1024": "paladin-shiney-l3_1024.png",
+   "256": "paladin-shiney-l3_256.png"
+  }
+ },
+ "hero.tutorial.paladin-shiney.aurelius": {
+  "hex": "02549f28063e.webp",
+  "src": "New Art/paladin-shiney4.png",
+  "slug": "paladin-shiney-l4",
+  "scale": 1.0,
+  "tiers": {
+   "full": "paladin-shiney-l4_full.png",
+   "1024": "paladin-shiney-l4_1024.png",
+   "256": "paladin-shiney-l4_256.png"
+  }
+ },
+ "hero.tutorial.paladin-smug.constantine": {
+  "hex": "71d4a55e5309.webp",
+  "src": "New Art/paladin-smug2.png",
+  "slug": "paladin-smug-l2",
+  "scale": 1.0,
+  "tiers": {
+   "full": "paladin-smug-l2_full.png",
+   "1024": "paladin-smug-l2_1024.png",
+   "256": "paladin-smug-l2_256.png"
+  }
+ },
+ "hero.tutorial.paladin-smug.felix": {
+  "hex": "79b184bbaac3.webp",
+  "src": "New Art/paladin-smug3.png",
+  "slug": "paladin-smug-l3",
+  "scale": 1.0,
+  "tiers": {
+   "full": "paladin-smug-l3_full.png",
+   "1024": "paladin-smug-l3_1024.png",
+   "256": "paladin-smug-l3_256.png"
+  }
+ },
+ "hero.tutorial.paladin-smug.valerian": {
+  "hex": "a6cae5951ca0.webp",
+  "src": "New Art/paladin-smug4.png",
+  "slug": "paladin-smug-l4",
+  "scale": 1.0,
+  "tiers": {
+   "full": "paladin-smug-l4_full.png",
+   "1024": "paladin-smug-l4_1024.png",
+   "256": "paladin-smug-l4_256.png"
+  }
+ },
+ "hero.tutorial.ranger-aggressive.artemis": {
+  "hex": "e77c553d2b68.webp",
+  "src": "New Art/ranger-aggressive2.png",
+  "slug": "ranger-aggressive-l2",
+  "scale": 1.0,
+  "tiers": {
+   "full": "ranger-aggressive-l2_full.png",
+   "1024": "ranger-aggressive-l2_1024.png",
+   "256": "ranger-aggressive-l2_256.png"
+  }
+ },
+ "hero.tutorial.ranger-aggressive.eryka": {
+  "hex": "1edc38ffda17.webp",
+  "src": "New Art/ranger-aggressive3.png",
+  "slug": "ranger-aggressive-l3",
+  "scale": 1.0,
+  "tiers": {
+   "full": "ranger-aggressive-l3_full.png",
+   "1024": "ranger-aggressive-l3_1024.png",
+   "256": "ranger-aggressive-l3_256.png"
+  }
+ },
+ "hero.tutorial.ranger-aggressive.nemesis": {
+  "hex": "6a2798fe7002.webp",
+  "src": "New Art/ranger-aggressive4.png",
+  "slug": "ranger-aggressive-l4",
+  "scale": 1.0,
+  "tiers": {
+   "full": "ranger-aggressive-l4_full.png",
+   "1024": "ranger-aggressive-l4_1024.png",
+   "256": "ranger-aggressive-l4_256.png"
+  }
+ },
+ "hero.tutorial.ranger-nature.fern": {
+  "hex": "2665d2f91b28.webp",
+  "src": "New Art/ranger-nature2.png",
+  "slug": "ranger-nature-l2",
+  "scale": 1.0,
+  "tiers": {
+   "full": "ranger-nature-l2_full.png",
+   "1024": "ranger-nature-l2_1024.png",
+   "256": "ranger-nature-l2_256.png"
+  }
+ },
+ "hero.tutorial.ranger-nature.yara": {
+  "hex": "2ad9394464f9.webp",
+  "src": "New Art/ranger-nature3.png",
+  "slug": "ranger-nature-l3",
+  "scale": 1.0,
+  "tiers": {
+   "full": "ranger-nature-l3_full.png",
+   "1024": "ranger-nature-l3_1024.png",
+   "256": "ranger-nature-l3_256.png"
+  }
+ },
+ "hero.tutorial.ranger-nature.willow": {
+  "hex": "7300772abc1d.webp",
+  "src": "New Art/ranger-nature4.png",
+  "slug": "ranger-nature-l4",
+  "scale": 1.0,
+  "tiers": {
+   "full": "ranger-nature-l4_full.png",
+   "1024": "ranger-nature-l4_1024.png",
+   "256": "ranger-nature-l4_256.png"
+  }
+ },
+ "hero.tutorial.ranger-ranger.scout": {
+  "hex": "7f56ffb9f051.webp",
+  "src": "New Art/ranger-ranger2.png",
+  "slug": "ranger-ranger-l2",
+  "scale": 1.0,
+  "tiers": {
+   "full": "ranger-ranger-l2_full.png",
+   "1024": "ranger-ranger-l2_1024.png",
+   "256": "ranger-ranger-l2_256.png"
+  }
+ },
+ "hero.tutorial.ranger-ranger.ivana": {
+  "hex": "e63d140d5d92.webp",
+  "src": "New Art/ranger-ranger3.png",
+  "slug": "ranger-ranger-l3",
+  "scale": 1.0,
+  "tiers": {
+   "full": "ranger-ranger-l3_full.png",
+   "1024": "ranger-ranger-l3_1024.png",
+   "256": "ranger-ranger-l3_256.png"
+  }
+ },
+ "hero.tutorial.ranger-ranger.huntress": {
+  "hex": "6b5375dc7dfa.webp",
+  "src": "New Art/ranger-ranger4.png",
+  "slug": "ranger-ranger-l4",
+  "scale": 1.0,
+  "tiers": {
+   "full": "ranger-ranger-l4_full.png",
+   "1024": "ranger-ranger-l4_1024.png",
+   "256": "ranger-ranger-l4_256.png"
+  }
+ },
+ "hero.tutorial.ranger-scantily.zephyr": {
+  "hex": "0f0c36dcd6a0.webp",
+  "src": "New Art/ranger-scantily2.png",
+  "slug": "ranger-scantily-l2",
+  "scale": 1.0,
+  "tiers": {
+   "full": "ranger-scantily-l2_full.png",
+   "1024": "ranger-scantily-l2_1024.png",
+   "256": "ranger-scantily-l2_256.png"
+  }
+ },
+ "hero.tutorial.ranger-scantily.kyla": {
+  "hex": "c07ede5b1ff8.webp",
+  "src": "New Art/ranger-scantily3.png",
+  "slug": "ranger-scantily-l3",
+  "scale": 1.0,
+  "tiers": {
+   "full": "ranger-scantily-l3_full.png",
+   "1024": "ranger-scantily-l3_1024.png",
+   "256": "ranger-scantily-l3_256.png"
+  }
+ },
+ "hero.tutorial.ranger-scantily.swift": {
+  "hex": "4e59d25da343.webp",
+  "src": "New Art/ranger-scantily4.png",
+  "slug": "ranger-scantily-l4",
+  "scale": 1.0,
+  "tiers": {
+   "full": "ranger-scantily-l4_full.png",
+   "1024": "ranger-scantily-l4_1024.png",
+   "256": "ranger-scantily-l4_256.png"
+  }
+ },
+ "hero.tutorial.rogue-raven.raven": {
+  "hex": "8b1c047b525f.webp",
+  "src": "New Art/rogue-raven2.jpg",
+  "slug": "rogue-raven-l2",
+  "scale": 1.0,
+  "tiers": {
+   "full": "rogue-raven-l2_full.png",
+   "1024": "rogue-raven-l2_1024.png",
+   "256": "rogue-raven-l2_256.png"
+  }
+ },
+ "hero.tutorial.rogue-raven.ophelia": {
+  "hex": "6e31e9d968e3.webp",
+  "src": "New Art/rogue-raven3.jpg",
+  "slug": "rogue-raven-l3",
+  "scale": 1.0,
+  "tiers": {
+   "full": "rogue-raven-l3_full.png",
+   "1024": "rogue-raven-l3_1024.png",
+   "256": "rogue-raven-l3_256.png"
+  }
+ },
+ "hero.tutorial.rogue-raven.shade": {
+  "hex": "dba8b00ad079.webp",
+  "src": "New Art/rogue-raven4.jpg",
+  "slug": "rogue-raven-l4",
+  "scale": 1.0,
+  "tiers": {
+   "full": "rogue-raven-l4_full.png",
+   "1024": "rogue-raven-l4_1024.png",
+   "256": "rogue-raven-l4_256.png"
+  }
+ },
+ "hero.tutorial.rogue-rose.scarlet": {
+  "hex": "7c2d8c5e9798.webp",
+  "src": "New Art/rogue-rose2.png",
+  "slug": "rogue-rose-l2",
+  "scale": 1.0,
+  "tiers": {
+   "full": "rogue-rose-l2_full.png",
+   "1024": "rogue-rose-l2_1024.png",
+   "256": "rogue-rose-l2_256.png"
+  }
+ },
+ "hero.tutorial.rogue-rose.dahlia": {
+  "hex": "ad2bd0cd91e2.webp",
+  "src": "New Art/rogue-rose3.png",
+  "slug": "rogue-rose-l3",
+  "scale": 1.0,
+  "tiers": {
+   "full": "rogue-rose-l3_full.png",
+   "1024": "rogue-rose-l3_1024.png",
+   "256": "rogue-rose-l3_256.png"
+  }
+ },
+ "hero.tutorial.rogue-rose.crimson": {
+  "hex": "ee8f7c7bdd74.webp",
+  "src": "New Art/rogue-rose4.png",
+  "slug": "rogue-rose-l4",
+  "scale": 1.0,
+  "tiers": {
+   "full": "rogue-rose-l4_full.png",
+   "1024": "rogue-rose-l4_1024.png",
+   "256": "rogue-rose-l4_256.png"
+  }
+ },
+ "hero.tutorial.rogue-skull.morticia": {
+  "hex": "de913c4ba36b.webp",
+  "src": "New Art/rogue-skull2.png",
+  "slug": "rogue-skull-l2",
+  "scale": 1.0,
+  "tiers": {
+   "full": "rogue-skull-l2_full.png",
+   "1024": "rogue-skull-l2_1024.png",
+   "256": "rogue-skull-l2_256.png"
+  }
+ },
+ "hero.tutorial.rogue-skull.jasmine": {
+  "hex": "ac09ec96866e.webp",
+  "src": "New Art/rogue-skull3.png",
+  "slug": "rogue-skull-l3",
+  "scale": 1.0,
+  "tiers": {
+   "full": "rogue-skull-l3_full.png",
+   "1024": "rogue-skull-l3_1024.png",
+   "256": "rogue-skull-l3_256.png"
+  }
+ },
+ "hero.tutorial.rogue-skull.bone": {
+  "hex": "d157c8aeef16.webp",
+  "src": "New Art/rogue-skull4.png",
+  "slug": "rogue-skull-l4",
+  "scale": 1.0,
+  "tiers": {
+   "full": "rogue-skull-l4_full.png",
+   "1024": "rogue-skull-l4_1024.png",
+   "256": "rogue-skull-l4_256.png"
+  }
+ },
+ "hero.tutorial.rogue-snake.viper": {
+  "hex": "e168a934e9c3.webp",
+  "src": "New Art/rogue-snake2.png",
+  "slug": "rogue-snake-l2",
+  "scale": 1.0,
+  "tiers": {
+   "full": "rogue-snake-l2_full.png",
+   "1024": "rogue-snake-l2_1024.png",
+   "256": "rogue-snake-l2_256.png"
+  }
+ },
+ "hero.tutorial.rogue-snake.xyla": {
+  "hex": "7b10e237085a.webp",
+  "src": "New Art/rogue-snake3.png",
+  "slug": "rogue-snake-l3",
+  "scale": 1.0,
+  "tiers": {
+   "full": "rogue-snake-l3_full.png",
+   "1024": "rogue-snake-l3_1024.png",
+   "256": "rogue-snake-l3_256.png"
+  }
+ },
+ "hero.tutorial.rogue-snake.serpentina": {
+  "hex": "f352390b2330.webp",
+  "src": "New Art/rogue-snake4.png",
+  "slug": "rogue-snake-l4",
+  "scale": 1.0,
+  "tiers": {
+   "full": "rogue-snake-l4_full.png",
+   "1024": "rogue-snake-l4_1024.png",
+   "256": "rogue-snake-l4_256.png"
+  }
+ },
+ "hero.tutorial.warrior-barbarian.leif": {
+  "hex": "adff79d01ebd.webp",
+  "src": "New Art/warrior-barbarian1.png",
+  "slug": "warrior-barbarian",
+  "scale": 1.0,
+  "tiers": {
+   "full": "warrior-barbarian_full.png",
+   "1024": "warrior-barbarian_1024.png",
+   "256": "warrior-barbarian_256.png"
+  }
+ },
+ "hero.tutorial.warrior-brawler.finn": {
+  "hex": "569bc2904a50.webp",
+  "src": "New Art/warrior-brawler1.png",
+  "slug": "warrior-brawler",
+  "scale": 1.0,
+  "tiers": {
+   "full": "warrior-brawler_full.png",
+   "1024": "warrior-brawler_1024.png",
+   "256": "warrior-brawler_256.png"
+  }
+ },
+ "hero.tutorial.mage-fire.seraphina": {
+  "hex": "e511a2d9e939.webp",
+  "src": "New Art/mage-fire1.png",
+  "slug": "mage-fire",
+  "scale": 1.0,
+  "tiers": {
+   "full": "mage-fire_full.png",
+   "1024": "mage-fire_1024.png",
+   "256": "mage-fire_256.png"
+  }
+ },
+ "hero.tutorial.mage-fireaura.elena": {
+  "hex": "561ea46e30c4.webp",
+  "src": "New Art/mage-fireaura1.png",
+  "slug": "mage-fireaura",
+  "scale": 1.0,
+  "tiers": {
+   "full": "mage-fireaura_full.png",
+   "1024": "mage-fireaura_1024.png",
+   "256": "mage-fireaura_256.png"
+  }
+ },
+ "hero.tutorial.mage-thinking.cedra": {
+  "hex": "25ad23794d90.webp",
+  "src": "New Art/mage-thinking1.png",
+  "slug": "mage-thinking",
+  "scale": 1.0,
+  "tiers": {
+   "full": "mage-thinking_full.png",
+   "1024": "mage-thinking_1024.png",
+   "256": "mage-thinking_256.png"
+  }
+ },
+ "hero.tutorial.priest-armored.marcus": {
+  "hex": "df360476e9ad.webp",
+  "src": "New Art/priest-armored1.png",
+  "slug": "priest-armored",
+  "scale": 1.0,
+  "tiers": {
+   "full": "priest-armored_full.png",
+   "1024": "priest-armored_1024.png",
+   "256": "priest-armored_256.png"
+  }
+ },
+ "hero.tutorial.priest-pauper.silas": {
+  "hex": "c13abdae9300.webp",
+  "src": "New Art/priest-pauper1.png",
+  "slug": "priest-pauper",
+  "scale": 1.0,
+  "tiers": {
+   "full": "priest-pauper_full.png",
+   "1024": "priest-pauper_1024.png",
+   "256": "priest-pauper_256.png"
+  }
+ },
+ "hero.tutorial.paladin-dark.roland": {
+  "hex": "244ce038fd2c.webp",
+  "src": "New Art/paladin-dark1.png",
+  "slug": "paladin-dark",
+  "scale": 1.0,
+  "tiers": {
+   "full": "paladin-dark_full.png",
+   "1024": "paladin-dark_1024.png",
+   "256": "paladin-dark_256.png"
+  }
+ },
+ "hero.tutorial.paladin-hunk.percival": {
+  "hex": "665109cf9711.webp",
+  "src": "New Art/paladin-hunk1.png",
+  "slug": "paladin-hunk",
+  "scale": 1.0,
+  "tiers": {
+   "full": "paladin-hunk_full.png",
+   "1024": "paladin-hunk_1024.png",
+   "256": "paladin-hunk_256.png"
+  }
+ },
+ "hero.tutorial.ranger-aggressive.kira": {
+  "hex": "cbd09034e8cc.webp",
+  "src": "New Art/ranger-aggressive1.png",
+  "slug": "ranger-aggressive",
+  "scale": 1.0,
+  "tiers": {
+   "full": "ranger-aggressive_full.png",
+   "1024": "ranger-aggressive_1024.png",
+   "256": "ranger-aggressive_256.png"
+  }
+ },
+ "hero.tutorial.ranger-nature.wren": {
+  "hex": "ee80757489d0.webp",
+  "src": "New Art/ranger-nature1.png",
+  "slug": "ranger-nature",
+  "scale": 1.0,
+  "tiers": {
+   "full": "ranger-nature_full.png",
+   "1024": "ranger-nature_1024.png",
+   "256": "ranger-nature_256.png"
+  }
+ },
+ "hero.tutorial.rogue-raven.nadia": {
+  "hex": "921c388a7e12.webp",
+  "src": "New Art/rogue-raven1.jpg",
+  "slug": "rogue-raven",
+  "scale": 1.0,
+  "tiers": {
+   "full": "rogue-raven_full.png",
+   "1024": "rogue-raven_1024.png",
+   "256": "rogue-raven_256.png"
+  }
+ },
+ "hero.tutorial.rogue-rose.rosa": {
+  "hex": "33276d65d537.webp",
+  "src": "New Art/rogue-rose1.png",
+  "slug": "rogue-rose",
+  "scale": 1.0,
+  "tiers": {
+   "full": "rogue-rose_full.png",
+   "1024": "rogue-rose_1024.png",
+   "256": "rogue-rose_256.png"
+  }
  }
 }
