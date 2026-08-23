@@ -1,0 +1,3034 @@
+{
+ "_note": "Removed from hero rows 2026-08-22. Cutting beats half-fitting. Add back as real definitions when there is something to add.",
+ "danglingArt": [
+  {
+   "hero": "Void Dealer",
+   "was": "New Art/nightmare-series/void-dealer-1.png"
+  },
+  {
+   "hero": "Death Mage",
+   "was": "New Art/avtair-approved/death-mage.png"
+  },
+  {
+   "hero": "Vibrant Mage",
+   "was": "New Art/avtair-approved/vibrant-mage.png"
+  },
+  {
+   "hero": "Silk Merchant",
+   "was": "New Art/avtair-heroes-batch2/silk-merchant.png"
+  },
+  {
+   "hero": "Runesmith",
+   "was": "New Art/avtair-heroes-batch2/runesmith.png"
+  },
+  {
+   "hero": "Guard",
+   "was": "New Art/avtair-heroes-batch2/guard.png"
+  },
+  {
+   "hero": "Captain",
+   "was": "New Art/avtair-heroes-batch2/captain.png"
+  },
+  {
+   "hero": "Mirage Walker",
+   "was": "New Art/avtair-heroes-batch2/mirage-walker.png"
+  },
+  {
+   "hero": "Young Sand Dragon",
+   "was": "New Art/avtair-heroes-batch2/young-sand-dragon.png"
+  },
+  {
+   "hero": "The Djinn-Touched Child",
+   "was": "New Art/avtair-heroes-batch2/djinn-touched-child.png"
+  },
+  {
+   "hero": "The Eternal Prince",
+   "was": "New Art/avtair-heroes-batch2/eternal-prince.png"
+  },
+  {
+   "hero": "The Outcast",
+   "was": "New Art/avtair-heroes-batch2/the-outcast.png"
+  },
+  {
+   "hero": "Refugee Children",
+   "was": "New Art/avtair-heroes-batch2/refugee-children.png"
+  },
+  {
+   "hero": "Lost Fishers",
+   "was": "New Art/avtair-heroes-batch2/lost-fishers.png"
+  },
+  {
+   "hero": "Sailors",
+   "was": "New Art/avtair-heroes-batch2/sailors.png"
+  },
+  {
+   "hero": "Refugees",
+   "was": "New Art/avtair-heroes-batch2/refugees.png"
+  },
+  {
+   "hero": "Huge Group of Refugees",
+   "was": "New Art/avtair-heroes-batch2/huge-group-of-refugees.png"
+  },
+  {
+   "hero": "Caravan Master",
+   "was": "New Art/avtair-heroes-batch2/caravan-master.png"
+  },
+  {
+   "hero": "Badgered Soldier",
+   "was": "New Art/avtair-heroes-batch2/badgered-soldier.png"
+  },
+  {
+   "hero": "Defenseless Women",
+   "was": "New Art/avtair-heroes-batch2/defenseless-women.png"
+  },
+  {
+   "hero": "Militia",
+   "was": "New Art/avtair-heroes-batch2/militia.png"
+  },
+  {
+   "hero": "Militia Commander",
+   "was": "New Art/avtair-heroes-batch2/militia-commander.png"
+  },
+  {
+   "hero": "General Rinad",
+   "was": "New Art/shadows-in-the-sand-concepts/general-renaud.png"
+  },
+  {
+   "hero": "Catfolk Crew",
+   "was": "New Art/aeronissa-concepts/catfolk/catfolk-crew.png"
+  },
+  {
+   "hero": "Catfolk Navigator",
+   "was": "New Art/aeronissa-concepts/catfolk/catfolk-navigator.png"
+  },
+  {
+   "hero": "Catfolk Cook",
+   "was": "New Art/aeronissa-concepts/catfolk/catfolk-cook.png"
+  },
+  {
+   "hero": "Catfolk Cabin Boy",
+   "was": "New Art/aeronissa-concepts/catfolk/catfolk-cabin-boy.png"
+  },
+  {
+   "hero": "Catfolk Soldier",
+   "was": "New Art/aeronissa-concepts/catfolk/catfolk-soldier.png"
+  },
+  {
+   "hero": "Catfolk Archer",
+   "was": "New Art/aeronissa-concepts/catfolk/catfolk-archer.png"
+  },
+  {
+   "hero": "Catfolk Mystic",
+   "was": "New Art/aeronissa-concepts/catfolk/catfolk-mystic.png"
+  },
+  {
+   "hero": "Catfolk Whip Master",
+   "was": "New Art/aeronissa-concepts/catfolk/catfolk-whip-master.png"
+  },
+  {
+   "hero": "Tiefling",
+   "was": "New Art/aeronissa-concepts/tiefling.png"
+  },
+  {
+   "hero": "The Admiral",
+   "was": "New Art/aeronissa-concepts/the-admiral.png"
+  },
+  {
+   "hero": "Cargo Hold Crew",
+   "was": "New Art/aeronissa-concepts/cargo-hold-crew-v2.png"
+  },
+  {
+   "hero": "Ship's Astrologer",
+   "was": "New Art/aeronissa-concepts/ships-astrologer-v2.png"
+  },
+  {
+   "hero": "Stowaway Children",
+   "was": "New Art/aeronissa-concepts/stowaway-children-v3.png"
+  },
+  {
+   "hero": "Cursed Passengers",
+   "was": "New Art/aeronissa-concepts/cursed-passengers-v3.png"
+  },
+  {
+   "hero": "Skyship Deckhands",
+   "was": "New Art/aeronissa-concepts/skyship-deckhands-v3.png"
+  },
+  {
+   "hero": "Wandering Bard",
+   "was": "assets/cards/heroes/fixed/wandering-bard/1.png"
+  },
+  {
+   "hero": "Thespian",
+   "was": "assets/cards/heroes/fixed/thespian/1.png"
+  },
+  {
+   "hero": "Sand Wraith",
+   "was": "New Art/avtair-approved/priestess-of-ire-v1.png"
+  },
+  {
+   "hero": "Blood Offerer",
+   "was": "New Art/avtair-approved/priestess-of-ire-v2.png"
+  },
+  {
+   "hero": "Snake Handler",
+   "was": "New Art/avtair-approved/priestess-of-ire-v3.png"
+  },
+  {
+   "hero": "Scorpion Keeper",
+   "was": "New Art/avtair-approved/priestess-of-ire-v4.png"
+  },
+  {
+   "hero": "Moon Bearer",
+   "was": "New Art/avtair-approved/priestess-of-solace-v1.png"
+  },
+  {
+   "hero": "Temple Kindler",
+   "was": "New Art/avtair-approved/priestess-of-solace-v2.png"
+  },
+  {
+   "hero": "Tide Walker",
+   "was": "New Art/avtair-approved/priestess-of-solace-v3.png"
+  },
+  {
+   "hero": "Crescent Warden",
+   "was": "New Art/avtair-approved/priestess-of-solace-v4.png"
+  },
+  {
+   "hero": "Dust Herald",
+   "was": "New Art/avtair-approved/servant-of-omen-v1.png"
+  },
+  {
+   "hero": "Star Oracle",
+   "was": "New Art/avtair-approved/servant-of-omen-v2.png"
+  },
+  {
+   "hero": "Velvet Mourner",
+   "was": "New Art/avtair-approved/servant-of-omen-v3.png"
+  },
+  {
+   "hero": "Ring Dancer",
+   "was": "New Art/avtair-approved/servant-of-omen-v4.png"
+  },
+  {
+   "hero": "Green Seer",
+   "was": "New Art/avtair-approved/shadow-sorceress-v1.png"
+  },
+  {
+   "hero": "Spark Caller",
+   "was": "New Art/avtair-approved/shadow-sorceress-v2.png"
+  },
+  {
+   "hero": "Horned Crawler",
+   "was": "New Art/avtair-approved/shadow-sorceress-v3.png"
+  },
+  {
+   "hero": "Candle Reader",
+   "was": "New Art/avtair-approved/shadow-sorceress-v4.png"
+  },
+  {
+   "hero": "Axe Warden",
+   "was": "New Art/avtair-approved/sand-knight-v1.png"
+  },
+  {
+   "hero": "Marble Sentinel",
+   "was": "New Art/avtair-approved/sand-knight-v2.png"
+  },
+  {
+   "hero": "Sun Shield",
+   "was": "New Art/avtair-approved/sand-knight-v3.png"
+  },
+  {
+   "hero": "Falcon Crest",
+   "was": "New Art/avtair-approved/sand-knight-v4.png"
+  },
+  {
+   "hero": "Warpaint Rider",
+   "was": "New Art/avtair-approved/rider-of-ire-v1.png"
+  },
+  {
+   "hero": "Sunset Courser",
+   "was": "New Art/avtair-approved/rider-of-ire-v2.png"
+  },
+  {
+   "hero": "Chestnut Outrider",
+   "was": "New Art/avtair-approved/rider-of-ire-v3.png"
+  },
+  {
+   "hero": "Veiled Raider",
+   "was": "New Art/avtair-approved/rider-of-ire-v4.png"
+  },
+  {
+   "hero": "Gilded Lancer",
+   "was": "New Art/avtair-approved/bodani-v1.png"
+  },
+  {
+   "hero": "Dune Leaper",
+   "was": "New Art/avtair-approved/bodani-v2.png"
+  },
+  {
+   "hero": "Ribbon Dancer",
+   "was": "New Art/avtair-approved/bodani-v3.png"
+  },
+  {
+   "hero": "Ember Skirmisher",
+   "was": "New Art/avtair-approved/bodani-v4.png"
+  },
+  {
+   "hero": "Veteran Greatsword",
+   "was": "New Art/avtair-approved/oathblade-v1.png"
+  },
+  {
+   "hero": "Headband Duelist",
+   "was": "New Art/avtair-approved/oathblade-v2.png"
+  },
+  {
+   "hero": "Wall Sentry",
+   "was": "New Art/avtair-approved/oathblade-v3.png"
+  },
+  {
+   "hero": "Blue Sash Captain",
+   "was": "New Art/avtair-approved/oathblade-v4.png"
+  },
+  {
+   "hero": "Blue Sickles",
+   "was": "New Art/avtair-approved/soul-reaver-v1.png"
+  },
+  {
+   "hero": "Violet Knife",
+   "was": "New Art/avtair-approved/soul-reaver-v2.png"
+  },
+  {
+   "hero": "Storm Dancer",
+   "was": "New Art/avtair-approved/soul-reaver-v3.png"
+  },
+  {
+   "hero": "Silver Mask",
+   "was": "New Art/avtair-approved/soul-reaver-v4.png"
+  },
+  {
+   "hero": "Twin Sabers",
+   "was": "New Art/avtair-approved/nightblade-v1.png"
+  },
+  {
+   "hero": "Rope Climber",
+   "was": "New Art/avtair-approved/nightblade-v2.png"
+  },
+  {
+   "hero": "Tattooed Axeman",
+   "was": "New Art/avtair-approved/nightblade-v3.png"
+  },
+  {
+   "hero": "Alley Prowler",
+   "was": "New Art/avtair-approved/nightblade-v4.png"
+  },
+  {
+   "hero": "Longbow Hunter",
+   "was": "New Art/avtair-approved/dusk-hawk-v1.png"
+  },
+  {
+   "hero": "Hooded Falconer",
+   "was": "New Art/avtair-approved/dusk-hawk-v2.png"
+  },
+  {
+   "hero": "Hawk Caller",
+   "was": "New Art/avtair-approved/dusk-hawk-v3.png"
+  },
+  {
+   "hero": "Grey Falconer",
+   "was": "New Art/avtair-approved/dusk-hawk-v4.png"
+  },
+  {
+   "hero": "Storm Archer",
+   "was": "New Art/avtair-approved/runebow-v1.png"
+  },
+  {
+   "hero": "Feather Archer",
+   "was": "New Art/avtair-approved/runebow-v2.png"
+  },
+  {
+   "hero": "Burning Bow",
+   "was": "New Art/avtair-approved/runebow-v3.png"
+  },
+  {
+   "hero": "Shade Fletcher",
+   "was": "New Art/avtair-approved/runebow-v4.png"
+  },
+  {
+   "hero": "Inked Crossbowman",
+   "was": "New Art/aeronissa-concepts/brute.png"
+  },
+  {
+   "hero": "Warpaint Bowman",
+   "was": "New Art/aeronissa-concepts/brute-v2.png"
+  },
+  {
+   "hero": "Skull Taker",
+   "was": "New Art/aeronissa-concepts/brute-v3.png"
+  },
+  {
+   "hero": "Frost Lancer",
+   "was": "New Art/aeronissa-concepts/brute-v4.png"
+  },
+  {
+   "hero": "Moon Hunter",
+   "was": "New Art/aeronissa-concepts/phantom-striker.png"
+  },
+  {
+   "hero": "Rooftop Assassin",
+   "was": "New Art/aeronissa-concepts/phantom-striker-v2.png"
+  },
+  {
+   "hero": "Leaping Archer",
+   "was": "New Art/aeronissa-concepts/phantom-striker-v3.png"
+  },
+  {
+   "hero": "Lightning Archer",
+   "was": "New Art/aeronissa-concepts/phantom-striker-v4.png"
+  },
+  {
+   "hero": "Blue Buccaneer",
+   "was": "New Art/aeronissa-concepts/troll-pirate.png"
+  },
+  {
+   "hero": "Horned Ronin",
+   "was": "New Art/aeronissa-concepts/troll-pirate-v2.png"
+  },
+  {
+   "hero": "Rigging Cutthroat",
+   "was": "New Art/aeronissa-concepts/troll-pirate-v3.png"
+  },
+  {
+   "hero": "Tusked Mauler",
+   "was": "New Art/aeronissa-concepts/troll-pirate-v4.png"
+  },
+  {
+   "hero": "Drunken Brawler",
+   "was": "New Art/aeronissa-concepts/open-hand.png"
+  },
+  {
+   "hero": "Blind Master",
+   "was": "New Art/aeronissa-concepts/open-hand-v2.png"
+  },
+  {
+   "hero": "Dancer",
+   "was": "New Art/aeronissa-concepts/open-hand-v3.png"
+  },
+  {
+   "hero": "Staff Master",
+   "was": "New Art/aeronissa-concepts/open-hand-v4.png"
+  },
+  {
+   "hero": "Crossbow Officer",
+   "was": "New Art/aeronissa-concepts/sky-captain.png"
+  },
+  {
+   "hero": "Spyglass Corsair",
+   "was": "New Art/aeronissa-concepts/sky-captain-v2.png"
+  },
+  {
+   "hero": "One-Eyed Duelist",
+   "was": "New Art/aeronissa-concepts/sky-captain-v3.png"
+  },
+  {
+   "hero": "Silk Fencer",
+   "was": "New Art/aeronissa-concepts/windwalker.png"
+  },
+  {
+   "hero": "Flame Archer",
+   "was": "New Art/aeronissa-concepts/windwalker-v2.png"
+  },
+  {
+   "hero": "Dusk Archer",
+   "was": "New Art/aeronissa-concepts/windwalker-v3.png"
+  },
+  {
+   "hero": "Chain Fighter",
+   "was": "New Art/aeronissa-concepts/windwalker-v4.png"
+  },
+  {
+   "hero": "Cloud Reaver",
+   "was": "New Art/aeronissa-concepts/sky-pirate.png"
+  },
+  {
+   "hero": "Boarding Raider",
+   "was": "New Art/aeronissa-concepts/sky-pirate-v2.png"
+  },
+  {
+   "hero": "Rope Runner",
+   "was": "New Art/aeronissa-concepts/sky-pirate-v3.png"
+  },
+  {
+   "hero": "Ship Burner",
+   "was": "New Art/aeronissa-concepts/sky-pirate-v4.png"
+  },
+  {
+   "hero": "Cloud Rider",
+   "was": "New Art/aeronissa-concepts/air-mage.png"
+  },
+  {
+   "hero": "Storm Caller",
+   "was": "New Art/aeronissa-concepts/air-mage-v2.png"
+  },
+  {
+   "hero": "Gilded Sorceress",
+   "was": "New Art/aeronissa-concepts/air-mage-v3.png"
+  },
+  {
+   "hero": "Cyclone Caster",
+   "was": "New Art/aeronissa-concepts/air-mage-v4.png"
+  },
+  {
+   "hero": "Jade Ambusher",
+   "was": "New Art/aeronissa-concepts/spellblade.png"
+  },
+  {
+   "hero": "Frost Duelist",
+   "was": "New Art/aeronissa-concepts/spellblade-v2.png"
+  },
+  {
+   "hero": "Lava Knight",
+   "was": "New Art/aeronissa-concepts/spellblade-v3.png"
+  },
+  {
+   "hero": "Whipblade",
+   "was": "New Art/aeronissa-concepts/spellblade-v4.png"
+  },
+  {
+   "hero": "White Pilgrim",
+   "was": "New Art/aeronissa-concepts/aeronissa-priest.png"
+  },
+  {
+   "hero": "Bead Whirler",
+   "was": "New Art/aeronissa-concepts/aeronissa-priest-v2.png"
+  },
+  {
+   "hero": "Thunder Hermit",
+   "was": "New Art/aeronissa-concepts/aeronissa-priest-v3.png"
+  },
+  {
+   "hero": "Candle Monk",
+   "was": "New Art/aeronissa-concepts/aeronissa-priest-v4.png"
+  },
+  {
+   "hero": "Talisman Bearer",
+   "was": "New Art/aeronissa-concepts/mirran-priest.png"
+  },
+  {
+   "hero": "Fang Wielder",
+   "was": "New Art/aeronissa-concepts/mirran-priest-v2.png"
+  },
+  {
+   "hero": "Storm Bringer",
+   "was": "New Art/aeronissa-concepts/mirran-priest-v3.png"
+  },
+  {
+   "hero": "Beacon Keeper",
+   "was": "New Art/aeronissa-concepts/mirran-priest-v4.png"
+  },
+  {
+   "hero": "Ash Sentinel",
+   "was": "New Art/aeronissa-concepts/vigil-of-the-fallen.png"
+  },
+  {
+   "hero": "Grave Warden",
+   "was": "New Art/aeronissa-concepts/vigil-of-the-fallen-v2.png"
+  },
+  {
+   "hero": "Shrine Guard",
+   "was": "New Art/aeronissa-concepts/vigil-of-the-fallen-v3.png"
+  },
+  {
+   "hero": "Hall Sentry",
+   "was": "New Art/aeronissa-concepts/vigil-of-the-fallen-v4.png"
+  },
+  {
+   "hero": "Woodcutter's Son",
+   "was": "assets/cards/heroes/aspiring/male/style-1/1.png"
+  },
+  {
+   "hero": "Wild Spark",
+   "was": "assets/cards/heroes/aspiring/male/style-2/1.png"
+  },
+  {
+   "hero": "Green Squire",
+   "was": "assets/cards/heroes/aspiring/male/style-3/1.png"
+  },
+  {
+   "hero": "Bamboo Novice",
+   "was": "assets/cards/heroes/aspiring/male/style-4/1.png"
+  },
+  {
+   "hero": "Forest Spear",
+   "was": "assets/cards/heroes/aspiring/female/style-1/1.png"
+  },
+  {
+   "hero": "Alley Knife",
+   "was": "assets/cards/heroes/aspiring/female/style-2/1.png"
+  },
+  {
+   "hero": "Dust Blade",
+   "was": "assets/cards/heroes/aspiring/female/style-3/1.png"
+  },
+  {
+   "hero": "Jade Staff",
+   "was": "assets/cards/heroes/aspiring/female/style-4/1.png"
+  },
+  {
+   "hero": "Lantern Blade",
+   "was": "New Art/aeronissa-concepts/duelist.png"
+  },
+  {
+   "hero": "Red Fencer",
+   "was": "New Art/aeronissa-concepts/duelist-v2.png"
+  },
+  {
+   "hero": "Rain Blade",
+   "was": "New Art/aeronissa-concepts/duelist-v3.png"
+  },
+  {
+   "hero": "Snowfall Blade",
+   "was": "New Art/aeronissa-concepts/duelist-v4.png"
+  },
+  {
+   "hero": "Storm Lash",
+   "was": "New Art/aeronissa-concepts/ward-of-aeronissa.png"
+  },
+  {
+   "hero": "Tide Guard",
+   "was": "New Art/aeronissa-concepts/ward-of-aeronissa-v2.png"
+  },
+  {
+   "hero": "Thunder Hammer",
+   "was": "New Art/aeronissa-concepts/ward-of-aeronissa-v3.png"
+  },
+  {
+   "hero": "Flame Swordsman",
+   "was": "New Art/aeronissa-concepts/ward-of-aeronissa-v4.png"
+  }
+ ],
+ "hellTcgTriggers": [
+  {
+   "hero": "Orphan Children",
+   "was": {
+    "onEnter": [
+     {
+      "action": "gainFaith",
+      "amount": 1
+     }
+    ],
+    "onDeath": [
+     {
+      "action": "loseFaith",
+      "amount": 2
+     }
+    ]
+   }
+  },
+  {
+   "hero": "Wife #3",
+   "was": {
+    "turnEnd": [
+     {
+      "action": "damage",
+      "target": "singleEnemy",
+      "playerTargeted": true,
+      "scaling": {
+       "stat": "magic",
+       "multiplier": 0.5
+      },
+      "damageType": "magic"
+     }
+    ]
+   }
+  },
+  {
+   "hero": "Maiden",
+   "was": {
+    "onDeath": [
+     {
+      "action": "loseFaith",
+      "amount": 1
+     }
+    ]
+   }
+  },
+  {
+   "hero": "Angel",
+   "was": {
+    "onEnter": [
+     {
+      "action": "grantDraws",
+      "amount": 2
+     },
+     {
+      "action": "grantActions",
+      "amount": 2
+     }
+    ]
+   }
+  },
+  {
+   "hero": "Wife #5",
+   "was": {
+    "onKill": [
+     {
+      "action": "damage",
+      "target": "lowestHealthEnemy",
+      "value": 40,
+      "damageType": "true"
+     }
+    ]
+   }
+  },
+  {
+   "hero": "The Veiled Assassin",
+   "was": {
+    "onDamage": [
+     {
+      "action": "applyBleed",
+      "target": "attacked",
+      "value": 1
+     }
+    ]
+   }
+  },
+  {
+   "hero": "Shadow Hound Puppy",
+   "was": {
+    "onEnter": [
+     {
+      "action": "applyDodge",
+      "target": "randomHero",
+      "value": 1
+     }
+    ],
+    "onTakingDamage": [
+     {
+      "action": "applyDodge",
+      "target": "self",
+      "value": 1
+     }
+    ]
+   }
+  },
+  {
+   "hero": "Old Wise Man",
+   "was": {
+    "onEnter": [
+     {
+      "action": "grantDraws",
+      "amount": 2
+     }
+    ]
+   }
+  },
+  {
+   "hero": "Scary Kid",
+   "was": {
+    "onAttack": [
+     {
+      "action": "applyWeak",
+      "target": "attacked",
+      "value": 1
+     }
+    ]
+   }
+  },
+  {
+   "hero": "Troll Child",
+   "was": {
+    "onEnter": [
+     {
+      "action": "applyRegen",
+      "target": "self",
+      "value": 1
+     }
+    ]
+   }
+  },
+  {
+   "hero": "Gang of Nuns",
+   "was": {
+    "onTakingDamage": [
+     {
+      "action": "healParty",
+      "scaling": {
+       "stat": "spirit",
+       "multiplier": 0.5
+      }
+     }
+    ]
+   }
+  },
+  {
+   "hero": "Magi Apprentice",
+   "was": {
+    "onDeath": [
+     {
+      "action": "applyBurn",
+      "target": "allHeroes",
+      "value": 2
+     },
+     {
+      "action": "applyBurn",
+      "target": "allEnemies",
+      "scaling": {
+       "stat": "magic",
+       "multiplier": 0.5
+      }
+     }
+    ]
+   }
+  },
+  {
+   "hero": "Living Ghost",
+   "was": {
+    "turnEnd": [
+     {
+      "action": "heal",
+      "target": "self",
+      "value": 10
+     }
+    ]
+   }
+  },
+  {
+   "hero": "Warrior Nun",
+   "was": {
+    "onDeath": [
+     {
+      "action": "modifyStatPermanent",
+      "target": "allHeroes",
+      "stat": "armor",
+      "value": -1
+     }
+    ],
+    "onTakingDamage": [
+     {
+      "action": "selfDamage",
+      "value": 1
+     },
+     {
+      "action": "gainFaith",
+      "value": 1
+     },
+     {
+      "action": "modifyMaxHealth",
+      "amount": -1
+     }
+    ],
+    "turnEnd": [
+     {
+      "action": "heal",
+      "target": "self",
+      "scaling": {
+       "stat": "spirit",
+       "multiplier": 1
+      }
+     }
+    ]
+   }
+  },
+  {
+   "hero": "Librarian",
+   "was": {
+    "onEnter": [
+     {
+      "action": "modifyStatPermanent",
+      "target": "allHeroes",
+      "stat": "itemSlots",
+      "value": 1,
+      "description": "All heroes gain +1 Item Slot"
+     },
+     {
+      "action": "modifyStatPermanent",
+      "target": "allHeroes",
+      "stat": "reach",
+      "value": 1,
+      "description": "All heroes gain +1 Reach"
+     }
+    ]
+   }
+  },
+  {
+   "hero": "Cook",
+   "was": {
+    "onEnter": [
+     {
+      "action": "healParty",
+      "value": 1
+     }
+    ],
+    "onKill": [
+     {
+      "action": "gainSupplies",
+      "amount": 2
+     }
+    ]
+   }
+  },
+  {
+   "hero": "Blacksmith",
+   "was": {
+    "onEnter": [
+     {
+      "action": "modifyStatPermanent",
+      "target": "allHeroes",
+      "stat": "armor",
+      "value": 1
+     },
+     {
+      "action": "modifyStatPermanent",
+      "target": "allHeroes",
+      "stat": "itemSlots",
+      "value": -1
+     }
+    ],
+    "onDamage": [
+     {
+      "action": "modifyStatPermanent",
+      "target": "randomHero",
+      "stat": "itemSlots",
+      "value": 1
+     }
+    ]
+   }
+  },
+  {
+   "hero": "Fisherman",
+   "was": {
+    "onAttack": [
+     {
+      "action": "applyWeak",
+      "target": "attacked",
+      "value": 2
+     }
+    ]
+   }
+  },
+  {
+   "hero": "Spirit Snake",
+   "was": {
+    "onDamage": [
+     {
+      "action": "applyPoison",
+      "target": "attacked",
+      "value": 4
+     }
+    ],
+    "onTakingDamage": [
+     {
+      "action": "applyPoison",
+      "target": "attacker",
+      "value": 4
+     }
+    ]
+   }
+  },
+  {
+   "hero": "Big Caravan",
+   "was": {
+    "onEnter": [
+     {
+      "action": "gainSupplies",
+      "amount": 1
+     }
+    ],
+    "onDeath": [
+     {
+      "action": "loseSupplies",
+      "amount": 5
+     }
+    ]
+   }
+  },
+  {
+   "hero": "One-Armed Ogre",
+   "was": {
+    "onEnter": [
+     {
+      "action": "applyStun",
+      "target": "self",
+      "value": 1
+     }
+    ],
+    "onAttack": [
+     {
+      "action": "applyStun",
+      "target": "self",
+      "value": 1
+     }
+    ]
+   }
+  },
+  {
+   "hero": "Fey Queen",
+   "was": {
+    "onEnter": [
+     {
+      "action": "modifyStatPermanent",
+      "target": "allHeroes",
+      "stat": "melee",
+      "amount": 2
+     },
+     {
+      "action": "modifyStatPermanent",
+      "target": "allHeroes",
+      "stat": "health",
+      "amount": 1
+     },
+     {
+      "action": "healParty",
+      "value": 2
+     }
+    ]
+   }
+  },
+  {
+   "hero": "Fae King",
+   "was": {
+    "onEnter": [
+     {
+      "action": "modifyStatPermanent",
+      "target": "allHeroes",
+      "stat": "health",
+      "amount": 1
+     }
+    ],
+    "turnEnd": [
+     {
+      "action": "applyDodge",
+      "target": "self",
+      "value": 1
+     }
+    ]
+   }
+  },
+  {
+   "hero": "Air Mage",
+   "was": {
+    "onEnter": [
+     {
+      "action": "modifyStatPermanent",
+      "target": "allEnemies",
+      "stat": "ranged",
+      "amount": -1
+     }
+    ]
+   }
+  },
+  {
+   "hero": "Swashbuckler",
+   "was": {
+    "onDamage": [
+     {
+      "action": "applyWeak",
+      "target": "attacked",
+      "value": 1
+     }
+    ]
+   }
+  },
+  {
+   "hero": "Earth Mage",
+   "was": {
+    "onAttack": [
+     {
+      "action": "applyProtection",
+      "target": "self",
+      "base": 2
+     }
+    ]
+   }
+  },
+  {
+   "hero": "Julie the Supply Master",
+   "was": {
+    "onEnter": [
+     {
+      "action": "gainSupplies",
+      "amount": 1
+     },
+     {
+      "action": "grantDraws",
+      "amount": 2
+     }
+    ]
+   }
+  },
+  {
+   "hero": "General Kor",
+   "was": {
+    "onDeath": [
+     {
+      "action": "applyWeak",
+      "target": "allHeroes",
+      "value": 2
+     }
+    ]
+   }
+  },
+  {
+   "hero": "Beastmaster",
+   "was": {
+    "onEnter": [
+     {
+      "action": "modifyStatPermanent",
+      "target": "allHeroes",
+      "stat": "ranged",
+      "amount": 1
+     },
+     {
+      "action": "modifyStatPermanent",
+      "target": "allHeroes",
+      "stat": "reach",
+      "amount": 1
+     }
+    ]
+   }
+  },
+  {
+   "hero": "Mr. Black",
+   "was": {
+    "onKill": [
+     {
+      "action": "damage",
+      "target": "allHeroes",
+      "amount": 4,
+      "damageType": "true"
+     }
+    ]
+   }
+  },
+  {
+   "hero": "Desperate Villagers",
+   "was": {
+    "onDeath": [
+     {
+      "action": "loseFaith",
+      "amount": 3
+     },
+     {
+      "action": "loseSupplies",
+      "amount": 3
+     }
+    ]
+   }
+  },
+  {
+   "hero": "Green Drake",
+   "was": {
+    "onAttack": [
+     {
+      "action": "applyBurn",
+      "target": "attacked",
+      "value": 2
+     }
+    ]
+   }
+  },
+  {
+   "hero": "Merchant Wagon",
+   "was": {
+    "onEnter": [
+     {
+      "action": "grantDraws",
+      "amount": 1
+     }
+    ],
+    "onDeath": [
+     {
+      "action": "loseSupplies",
+      "amount": 2
+     }
+    ]
+   }
+  },
+  {
+   "hero": "Ragtag Soldiers",
+   "was": {
+    "onEnter": [
+     {
+      "action": "applyWeak",
+      "target": "self",
+      "value": 4
+     }
+    ]
+   }
+  },
+  {
+   "hero": "Void Dealer",
+   "was": {
+    "turnEnd": [
+     {
+      "action": "applyPoison",
+      "target": "self",
+      "value": 2
+     },
+     {
+      "action": "applyPoison",
+      "target": "allEnemies",
+      "value": 1
+     }
+    ]
+   }
+  },
+  {
+   "hero": "Death Mage",
+   "was": {
+    "onAttack": [
+     {
+      "action": "applyPoison",
+      "target": "attacked",
+      "value": 1
+     }
+    ],
+    "onKill": [
+     {
+      "action": "gainFaith",
+      "value": 1
+     }
+    ]
+   }
+  },
+  {
+   "hero": "Vibrant Mage",
+   "was": {
+    "onAttack": [
+     {
+      "action": "applyProtection",
+      "target": "self",
+      "scaling": {
+       "stat": "magic",
+       "multiplier": 0.5
+      }
+     }
+    ]
+   }
+  },
+  {
+   "hero": "Silk Merchant",
+   "was": {
+    "onEnter": [
+     {
+      "action": "gainSupplies",
+      "value": 2
+     }
+    ]
+   }
+  },
+  {
+   "hero": "Captain",
+   "was": {
+    "onEnter": [
+     {
+      "action": "buffByType",
+      "typeTag": "Soldier",
+      "stat": "health",
+      "amount": 2
+     },
+     {
+      "action": "buffByType",
+      "typeTag": "Warrior",
+      "stat": "health",
+      "amount": 2
+     },
+     {
+      "action": "increaseActionRate",
+      "amount": 1
+     }
+    ]
+   }
+  },
+  {
+   "hero": "Young Sand Dragon",
+   "was": {
+    "onEnter": [
+     {
+      "action": "applyRegen",
+      "target": "self",
+      "value": 8
+     }
+    ],
+    "onKill": [
+     {
+      "action": "damage",
+      "target": "allHeroes",
+      "value": 1,
+      "damageType": "true"
+     }
+    ]
+   }
+  },
+  {
+   "hero": "The Eternal Prince",
+   "was": {
+    "onEnter": [
+     {
+      "action": "increaseActionRate",
+      "amount": 1
+     }
+    ]
+   }
+  },
+  {
+   "hero": "Refugee Children",
+   "was": {
+    "onEnter": [
+     {
+      "action": "gainFaith",
+      "value": 2
+     }
+    ]
+   }
+  },
+  {
+   "hero": "Lost Fishers",
+   "was": {
+    "onAttack": [
+     {
+      "action": "applyWeak",
+      "target": "attacked",
+      "value": 2
+     }
+    ]
+   }
+  },
+  {
+   "hero": "Refugees",
+   "was": {
+    "onEnter": [
+     {
+      "action": "gainFaith",
+      "value": 1
+     }
+    ]
+   }
+  },
+  {
+   "hero": "Caravan Master",
+   "was": {
+    "onEnter": [
+     {
+      "action": "gainSupplies",
+      "value": 2
+     },
+     {
+      "action": "increaseActionRate",
+      "amount": 1
+     }
+    ]
+   }
+  },
+  {
+   "hero": "General Rinad",
+   "was": {
+    "onEnter": [
+     {
+      "action": "modifyMaxHeroes",
+      "target": "self",
+      "amount": 2
+     }
+    ]
+   }
+  },
+  {
+   "hero": "Catfolk Navigator",
+   "was": {
+    "onEnter": [
+     {
+      "action": "increaseDrawRate",
+      "amount": 1
+     }
+    ]
+   }
+  },
+  {
+   "hero": "Catfolk Cook",
+   "was": {
+    "onKill": [
+     {
+      "action": "gainSupplies",
+      "amount": 1
+     }
+    ]
+   }
+  },
+  {
+   "hero": "Catfolk Mystic",
+   "was": {
+    "turnEnd": [
+     {
+      "action": "applyBurn",
+      "target": "singleEnemy",
+      "playerTargeted": true,
+      "scaling": {
+       "stat": "magic",
+       "multiplier": 0.5
+      }
+     }
+    ]
+   }
+  },
+  {
+   "hero": "Catfolk Whip Master",
+   "was": {
+    "onAttack": [
+     {
+      "action": "applyWeak",
+      "target": "attacked",
+      "value": 2
+     }
+    ]
+   }
+  },
+  {
+   "hero": "Tiefling",
+   "was": {
+    "onDamage": [
+     {
+      "action": "applyPoison",
+      "target": "attacked",
+      "value": 1
+     }
+    ]
+   }
+  },
+  {
+   "hero": "The Admiral",
+   "was": {
+    "onEnter": [
+     {
+      "action": "increaseActionRate",
+      "amount": 2
+     },
+     {
+      "action": "modifyMaxHeroes",
+      "amount": 1
+     }
+    ]
+   }
+  },
+  {
+   "hero": "Ship's Astrologer",
+   "was": {
+    "onEnter": [
+     {
+      "action": "grantDraws",
+      "amount": 2
+     }
+    ]
+   }
+  },
+  {
+   "hero": "Stowaway Children",
+   "was": {
+    "onEnter": [
+     {
+      "action": "gainFaith",
+      "value": 2
+     }
+    ]
+   }
+  },
+  {
+   "hero": "Cursed Passengers",
+   "was": {
+    "onEnter": [
+     {
+      "action": "gainFaith",
+      "value": 1
+     }
+    ]
+   }
+  },
+  {
+   "hero": "Bard",
+   "was": {
+    "onEnter": [
+     {
+      "action": "removeStatusEffects",
+      "target": "allHeroes",
+      "statuses": [
+       "weak"
+      ],
+      "amount": 1
+     }
+    ],
+    "onAttack": [
+     {
+      "action": "healParty",
+      "amount": 1
+     }
+    ]
+   }
+  },
+  {
+   "hero": "Ethereal Bard",
+   "was": {
+    "onAttack": [
+     {
+      "action": "applyWeak",
+      "target": "sameRowEnemies",
+      "value": 1
+     }
+    ]
+   }
+  },
+  {
+   "hero": "Small Army",
+   "was": {
+    "onEnter": [
+     {
+      "action": "applyWeak",
+      "target": "self",
+      "value": 5
+     }
+    ]
+   }
+  },
+  {
+   "hero": "Wandering Bard",
+   "was": {
+    "onEnter": [
+     {
+      "action": "modifyMaxHealth",
+      "target": "allHeroes",
+      "amount": 1
+     },
+     {
+      "action": "modifyStatPermanent",
+      "target": "allHeroes",
+      "stat": "itemSlots",
+      "amount": 1
+     }
+    ]
+   }
+  },
+  {
+   "hero": "Sand Wraith",
+   "was": {
+    "onKill": [
+     {
+      "action": "healParty",
+      "scaling": {
+       "stat": "spirit",
+       "multiplier": 0.5
+      }
+     }
+    ],
+    "turnEnd": [
+     {
+      "action": "applyBlight",
+      "target": "singleEnemy",
+      "playerTargeted": true,
+      "scaling": {
+       "stat": "spirit",
+       "multiplier": 0.33
+      }
+     }
+    ]
+   }
+  },
+  {
+   "hero": "Blood Offerer",
+   "was": {
+    "onKill": [
+     {
+      "action": "healParty",
+      "scaling": {
+       "stat": "spirit",
+       "multiplier": 0.5
+      }
+     }
+    ],
+    "turnEnd": [
+     {
+      "action": "applyBlight",
+      "target": "singleEnemy",
+      "playerTargeted": true,
+      "scaling": {
+       "stat": "spirit",
+       "multiplier": 0.33
+      }
+     }
+    ]
+   }
+  },
+  {
+   "hero": "Snake Handler",
+   "was": {
+    "onKill": [
+     {
+      "action": "healParty",
+      "scaling": {
+       "stat": "spirit",
+       "multiplier": 0.5
+      }
+     }
+    ],
+    "turnEnd": [
+     {
+      "action": "applyBlight",
+      "target": "singleEnemy",
+      "playerTargeted": true,
+      "scaling": {
+       "stat": "spirit",
+       "multiplier": 0.33
+      }
+     }
+    ]
+   }
+  },
+  {
+   "hero": "Scorpion Keeper",
+   "was": {
+    "onKill": [
+     {
+      "action": "healParty",
+      "scaling": {
+       "stat": "spirit",
+       "multiplier": 0.5
+      }
+     }
+    ],
+    "turnEnd": [
+     {
+      "action": "applyBlight",
+      "target": "singleEnemy",
+      "playerTargeted": true,
+      "scaling": {
+       "stat": "spirit",
+       "multiplier": 0.33
+      }
+     }
+    ]
+   }
+  },
+  {
+   "hero": "Moon Bearer",
+   "was": {
+    "turnEnd": [
+     {
+      "action": "applyProtection",
+      "target": "self",
+      "scaling": {
+       "stat": "spirit",
+       "multiplier": 1
+      }
+     }
+    ]
+   }
+  },
+  {
+   "hero": "Temple Kindler",
+   "was": {
+    "turnEnd": [
+     {
+      "action": "applyProtection",
+      "target": "self",
+      "scaling": {
+       "stat": "spirit",
+       "multiplier": 1
+      }
+     }
+    ]
+   }
+  },
+  {
+   "hero": "Tide Walker",
+   "was": {
+    "turnEnd": [
+     {
+      "action": "applyProtection",
+      "target": "self",
+      "scaling": {
+       "stat": "spirit",
+       "multiplier": 1
+      }
+     }
+    ]
+   }
+  },
+  {
+   "hero": "Crescent Warden",
+   "was": {
+    "turnEnd": [
+     {
+      "action": "applyProtection",
+      "target": "self",
+      "scaling": {
+       "stat": "spirit",
+       "multiplier": 1
+      }
+     }
+    ]
+   }
+  },
+  {
+   "hero": "Dust Herald",
+   "was": {
+    "onEnter": [
+     {
+      "action": "grantDraws",
+      "amount": 3
+     }
+    ],
+    "onDamage": [
+     {
+      "action": "grantActions",
+      "amount": 1
+     }
+    ]
+   }
+  },
+  {
+   "hero": "Star Oracle",
+   "was": {
+    "onEnter": [
+     {
+      "action": "grantDraws",
+      "amount": 3
+     }
+    ],
+    "onDamage": [
+     {
+      "action": "grantActions",
+      "amount": 1
+     }
+    ]
+   }
+  },
+  {
+   "hero": "Velvet Mourner",
+   "was": {
+    "onEnter": [
+     {
+      "action": "grantDraws",
+      "amount": 3
+     }
+    ],
+    "onDamage": [
+     {
+      "action": "grantActions",
+      "amount": 1
+     }
+    ]
+   }
+  },
+  {
+   "hero": "Ring Dancer",
+   "was": {
+    "onEnter": [
+     {
+      "action": "grantDraws",
+      "amount": 3
+     }
+    ],
+    "onDamage": [
+     {
+      "action": "grantActions",
+      "amount": 1
+     }
+    ]
+   }
+  },
+  {
+   "hero": "Green Seer",
+   "was": {
+    "turnEnd": [
+     {
+      "action": "applyShadow",
+      "target": "singleEnemy",
+      "playerTargeted": true,
+      "scaling": {
+       "stat": "magic",
+       "multiplier": 0.5
+      }
+     }
+    ]
+   }
+  },
+  {
+   "hero": "Spark Caller",
+   "was": {
+    "turnEnd": [
+     {
+      "action": "applyShadow",
+      "target": "singleEnemy",
+      "playerTargeted": true,
+      "scaling": {
+       "stat": "magic",
+       "multiplier": 0.5
+      }
+     }
+    ]
+   }
+  },
+  {
+   "hero": "Horned Crawler",
+   "was": {
+    "turnEnd": [
+     {
+      "action": "applyShadow",
+      "target": "singleEnemy",
+      "playerTargeted": true,
+      "scaling": {
+       "stat": "magic",
+       "multiplier": 0.5
+      }
+     }
+    ]
+   }
+  },
+  {
+   "hero": "Candle Reader",
+   "was": {
+    "turnEnd": [
+     {
+      "action": "applyShadow",
+      "target": "singleEnemy",
+      "playerTargeted": true,
+      "scaling": {
+       "stat": "magic",
+       "multiplier": 0.5
+      }
+     }
+    ]
+   }
+  },
+  {
+   "hero": "Axe Warden",
+   "was": {
+    "onTakingDamage": [
+     {
+      "action": "applyRegen",
+      "target": "self",
+      "value": 1
+     }
+    ]
+   }
+  },
+  {
+   "hero": "Marble Sentinel",
+   "was": {
+    "onTakingDamage": [
+     {
+      "action": "applyRegen",
+      "target": "self",
+      "value": 1
+     }
+    ]
+   }
+  },
+  {
+   "hero": "Sun Shield",
+   "was": {
+    "onTakingDamage": [
+     {
+      "action": "applyRegen",
+      "target": "self",
+      "value": 1
+     }
+    ]
+   }
+  },
+  {
+   "hero": "Falcon Crest",
+   "was": {
+    "onTakingDamage": [
+     {
+      "action": "applyRegen",
+      "target": "self",
+      "value": 1
+     }
+    ]
+   }
+  },
+  {
+   "hero": "Gilded Lancer",
+   "was": {
+    "onAttack": [
+     {
+      "action": "applyBlight",
+      "target": "attacked",
+      "value": 1
+     }
+    ]
+   }
+  },
+  {
+   "hero": "Dune Leaper",
+   "was": {
+    "onAttack": [
+     {
+      "action": "applyBlight",
+      "target": "attacked",
+      "value": 1
+     }
+    ]
+   }
+  },
+  {
+   "hero": "Ribbon Dancer",
+   "was": {
+    "onAttack": [
+     {
+      "action": "applyBlight",
+      "target": "attacked",
+      "value": 1
+     }
+    ]
+   }
+  },
+  {
+   "hero": "Ember Skirmisher",
+   "was": {
+    "onAttack": [
+     {
+      "action": "applyBlight",
+      "target": "attacked",
+      "value": 1
+     }
+    ]
+   }
+  },
+  {
+   "hero": "Veteran Greatsword",
+   "was": {
+    "onAttack": [
+     {
+      "action": "applyBleed",
+      "target": "attacked",
+      "value": 2
+     }
+    ]
+   }
+  },
+  {
+   "hero": "Headband Duelist",
+   "was": {
+    "onAttack": [
+     {
+      "action": "applyBleed",
+      "target": "attacked",
+      "value": 2
+     }
+    ]
+   }
+  },
+  {
+   "hero": "Wall Sentry",
+   "was": {
+    "onAttack": [
+     {
+      "action": "applyBleed",
+      "target": "attacked",
+      "value": 2
+     }
+    ]
+   }
+  },
+  {
+   "hero": "Blue Sash Captain",
+   "was": {
+    "onAttack": [
+     {
+      "action": "applyBleed",
+      "target": "attacked",
+      "value": 2
+     }
+    ]
+   }
+  },
+  {
+   "hero": "Blue Sickles",
+   "was": {
+    "onKill": [
+     {
+      "action": "modifyStatPermanent",
+      "target": "self",
+      "stat": "magic",
+      "amount": 1
+     }
+    ]
+   }
+  },
+  {
+   "hero": "Violet Knife",
+   "was": {
+    "onKill": [
+     {
+      "action": "modifyStatPermanent",
+      "target": "self",
+      "stat": "magic",
+      "amount": 1
+     }
+    ]
+   }
+  },
+  {
+   "hero": "Storm Dancer",
+   "was": {
+    "onKill": [
+     {
+      "action": "modifyStatPermanent",
+      "target": "self",
+      "stat": "magic",
+      "amount": 1
+     }
+    ]
+   }
+  },
+  {
+   "hero": "Silver Mask",
+   "was": {
+    "onKill": [
+     {
+      "action": "modifyStatPermanent",
+      "target": "self",
+      "stat": "magic",
+      "amount": 1
+     }
+    ]
+   }
+  },
+  {
+   "hero": "Twin Sabers",
+   "was": {
+    "onDamage": [
+     {
+      "action": "triggerShadowDamage",
+      "target": "attacked"
+     },
+     {
+      "action": "applyShadow",
+      "target": "attacked",
+      "value": 1
+     }
+    ]
+   }
+  },
+  {
+   "hero": "Rope Climber",
+   "was": {
+    "onDamage": [
+     {
+      "action": "triggerShadowDamage",
+      "target": "attacked"
+     },
+     {
+      "action": "applyShadow",
+      "target": "attacked",
+      "value": 1
+     }
+    ]
+   }
+  },
+  {
+   "hero": "Tattooed Axeman",
+   "was": {
+    "onDamage": [
+     {
+      "action": "triggerShadowDamage",
+      "target": "attacked"
+     },
+     {
+      "action": "applyShadow",
+      "target": "attacked",
+      "value": 1
+     }
+    ]
+   }
+  },
+  {
+   "hero": "Alley Prowler",
+   "was": {
+    "onDamage": [
+     {
+      "action": "triggerShadowDamage",
+      "target": "attacked"
+     },
+     {
+      "action": "applyShadow",
+      "target": "attacked",
+      "value": 1
+     }
+    ]
+   }
+  },
+  {
+   "hero": "Storm Archer",
+   "was": {
+    "onDamage": [
+     {
+      "action": "damage",
+      "target": "attacked",
+      "damageType": "magic",
+      "scaling": {
+       "stat": "magic",
+       "multiplier": 1
+      }
+     }
+    ]
+   }
+  },
+  {
+   "hero": "Feather Archer",
+   "was": {
+    "onDamage": [
+     {
+      "action": "damage",
+      "target": "attacked",
+      "damageType": "magic",
+      "scaling": {
+       "stat": "magic",
+       "multiplier": 1
+      }
+     }
+    ]
+   }
+  },
+  {
+   "hero": "Burning Bow",
+   "was": {
+    "onDamage": [
+     {
+      "action": "damage",
+      "target": "attacked",
+      "damageType": "magic",
+      "scaling": {
+       "stat": "magic",
+       "multiplier": 1
+      }
+     }
+    ]
+   }
+  },
+  {
+   "hero": "Shade Fletcher",
+   "was": {
+    "onDamage": [
+     {
+      "action": "damage",
+      "target": "attacked",
+      "damageType": "magic",
+      "scaling": {
+       "stat": "magic",
+       "multiplier": 1
+      }
+     }
+    ]
+   }
+  },
+  {
+   "hero": "Inked Crossbowman",
+   "was": {
+    "onDamage": [
+     {
+      "action": "applyStun",
+      "target": "attacked",
+      "value": 1
+     }
+    ]
+   }
+  },
+  {
+   "hero": "Warpaint Bowman",
+   "was": {
+    "onDamage": [
+     {
+      "action": "applyStun",
+      "target": "attacked",
+      "value": 1
+     }
+    ]
+   }
+  },
+  {
+   "hero": "Skull Taker",
+   "was": {
+    "onDamage": [
+     {
+      "action": "applyStun",
+      "target": "attacked",
+      "value": 1
+     }
+    ]
+   }
+  },
+  {
+   "hero": "Frost Lancer",
+   "was": {
+    "onDamage": [
+     {
+      "action": "applyStun",
+      "target": "attacked",
+      "value": 1
+     }
+    ]
+   }
+  },
+  {
+   "hero": "Moon Hunter",
+   "was": {
+    "onKill": [
+     {
+      "action": "grantActions",
+      "amount": 1
+     }
+    ]
+   }
+  },
+  {
+   "hero": "Rooftop Assassin",
+   "was": {
+    "onKill": [
+     {
+      "action": "grantActions",
+      "amount": 1
+     }
+    ]
+   }
+  },
+  {
+   "hero": "Leaping Archer",
+   "was": {
+    "onKill": [
+     {
+      "action": "grantActions",
+      "amount": 1
+     }
+    ]
+   }
+  },
+  {
+   "hero": "Lightning Archer",
+   "was": {
+    "onKill": [
+     {
+      "action": "grantActions",
+      "amount": 1
+     }
+    ]
+   }
+  },
+  {
+   "hero": "Blue Buccaneer",
+   "was": {
+    "onTakingDamage": [
+     {
+      "action": "modifyStatPermanent",
+      "target": "self",
+      "stat": "melee",
+      "amount": 1
+     }
+    ],
+    "turnEnd": [
+     {
+      "action": "heal",
+      "target": "self",
+      "amount": 2
+     }
+    ]
+   }
+  },
+  {
+   "hero": "Horned Ronin",
+   "was": {
+    "onTakingDamage": [
+     {
+      "action": "modifyStatPermanent",
+      "target": "self",
+      "stat": "melee",
+      "amount": 1
+     }
+    ],
+    "turnEnd": [
+     {
+      "action": "heal",
+      "target": "self",
+      "amount": 2
+     }
+    ]
+   }
+  },
+  {
+   "hero": "Rigging Cutthroat",
+   "was": {
+    "onTakingDamage": [
+     {
+      "action": "modifyStatPermanent",
+      "target": "self",
+      "stat": "melee",
+      "amount": 1
+     }
+    ],
+    "turnEnd": [
+     {
+      "action": "heal",
+      "target": "self",
+      "amount": 2
+     }
+    ]
+   }
+  },
+  {
+   "hero": "Tusked Mauler",
+   "was": {
+    "onTakingDamage": [
+     {
+      "action": "modifyStatPermanent",
+      "target": "self",
+      "stat": "melee",
+      "amount": 1
+     }
+    ],
+    "turnEnd": [
+     {
+      "action": "heal",
+      "target": "self",
+      "amount": 2
+     }
+    ]
+   }
+  },
+  {
+   "hero": "Drunken Brawler",
+   "was": {
+    "onDamage": [
+     {
+      "action": "bonusDamageFromWeak",
+      "target": "attacked"
+     },
+     {
+      "action": "applyWeak",
+      "target": "attacked",
+      "value": 2
+     }
+    ]
+   }
+  },
+  {
+   "hero": "Blind Master",
+   "was": {
+    "onDamage": [
+     {
+      "action": "bonusDamageFromWeak",
+      "target": "attacked"
+     },
+     {
+      "action": "applyWeak",
+      "target": "attacked",
+      "value": 2
+     }
+    ]
+   }
+  },
+  {
+   "hero": "Dancer",
+   "was": {
+    "onDamage": [
+     {
+      "action": "bonusDamageFromWeak",
+      "target": "attacked"
+     },
+     {
+      "action": "applyWeak",
+      "target": "attacked",
+      "value": 2
+     }
+    ]
+   }
+  },
+  {
+   "hero": "Staff Master",
+   "was": {
+    "onDamage": [
+     {
+      "action": "bonusDamageFromWeak",
+      "target": "attacked"
+     },
+     {
+      "action": "applyWeak",
+      "target": "attacked",
+      "value": 2
+     }
+    ]
+   }
+  },
+  {
+   "hero": "Crossbow Officer",
+   "was": {
+    "onEnter": [
+     {
+      "action": "increaseActionRate",
+      "amount": 2
+     }
+    ]
+   }
+  },
+  {
+   "hero": "Spyglass Corsair",
+   "was": {
+    "onEnter": [
+     {
+      "action": "increaseActionRate",
+      "amount": 2
+     }
+    ]
+   }
+  },
+  {
+   "hero": "One-Eyed Duelist",
+   "was": {
+    "onEnter": [
+     {
+      "action": "increaseActionRate",
+      "amount": 2
+     }
+    ]
+   }
+  },
+  {
+   "hero": "Silk Fencer",
+   "was": {
+    "onEnter": [
+     {
+      "action": "buffByType",
+      "typeTag": "Air",
+      "stat": "ranged",
+      "amount": 1
+     }
+    ]
+   }
+  },
+  {
+   "hero": "Flame Archer",
+   "was": {
+    "onEnter": [
+     {
+      "action": "buffByType",
+      "typeTag": "Air",
+      "stat": "ranged",
+      "amount": 1
+     }
+    ]
+   }
+  },
+  {
+   "hero": "Dusk Archer",
+   "was": {
+    "onEnter": [
+     {
+      "action": "buffByType",
+      "typeTag": "Air",
+      "stat": "ranged",
+      "amount": 1
+     }
+    ]
+   }
+  },
+  {
+   "hero": "Chain Fighter",
+   "was": {
+    "onEnter": [
+     {
+      "action": "buffByType",
+      "typeTag": "Air",
+      "stat": "ranged",
+      "amount": 1
+     }
+    ]
+   }
+  },
+  {
+   "hero": "Cloud Reaver",
+   "was": {
+    "onDamage": [
+     {
+      "action": "applyBleed",
+      "target": "attacked",
+      "value": 1
+     }
+    ],
+    "onKill": [
+     {
+      "action": "grantDraws",
+      "amount": 1
+     }
+    ]
+   }
+  },
+  {
+   "hero": "Boarding Raider",
+   "was": {
+    "onDamage": [
+     {
+      "action": "applyBleed",
+      "target": "attacked",
+      "value": 1
+     }
+    ],
+    "onKill": [
+     {
+      "action": "grantDraws",
+      "amount": 1
+     }
+    ]
+   }
+  },
+  {
+   "hero": "Rope Runner",
+   "was": {
+    "onDamage": [
+     {
+      "action": "applyBleed",
+      "target": "attacked",
+      "value": 1
+     }
+    ],
+    "onKill": [
+     {
+      "action": "grantDraws",
+      "amount": 1
+     }
+    ]
+   }
+  },
+  {
+   "hero": "Ship Burner",
+   "was": {
+    "onDamage": [
+     {
+      "action": "applyBleed",
+      "target": "attacked",
+      "value": 1
+     }
+    ],
+    "onKill": [
+     {
+      "action": "grantDraws",
+      "amount": 1
+     }
+    ]
+   }
+  },
+  {
+   "hero": "Jade Ambusher",
+   "was": {
+    "onDamage": [
+     {
+      "action": "damage",
+      "target": "attacked",
+      "damageType": "magic",
+      "scaling": {
+       "stat": "magic",
+       "multiplier": 1
+      }
+     }
+    ]
+   }
+  },
+  {
+   "hero": "Frost Duelist",
+   "was": {
+    "onDamage": [
+     {
+      "action": "damage",
+      "target": "attacked",
+      "damageType": "magic",
+      "scaling": {
+       "stat": "magic",
+       "multiplier": 1
+      }
+     }
+    ]
+   }
+  },
+  {
+   "hero": "Lava Knight",
+   "was": {
+    "onDamage": [
+     {
+      "action": "damage",
+      "target": "attacked",
+      "damageType": "magic",
+      "scaling": {
+       "stat": "magic",
+       "multiplier": 1
+      }
+     }
+    ]
+   }
+  },
+  {
+   "hero": "Whipblade",
+   "was": {
+    "onDamage": [
+     {
+      "action": "damage",
+      "target": "attacked",
+      "damageType": "magic",
+      "scaling": {
+       "stat": "magic",
+       "multiplier": 1
+      }
+     }
+    ]
+   }
+  },
+  {
+   "hero": "White Pilgrim",
+   "was": {
+    "onEnter": [
+     {
+      "action": "damageByType",
+      "typeTag": "Priest",
+      "value": 8,
+      "damageType": "true",
+      "excludeSelf": true
+     }
+    ],
+    "turnEnd": [
+     {
+      "action": "applyProtection",
+      "target": "singleHero",
+      "playerTargeted": true,
+      "scaling": {
+       "stat": "spirit",
+       "multiplier": 1
+      }
+     }
+    ]
+   }
+  },
+  {
+   "hero": "Bead Whirler",
+   "was": {
+    "onEnter": [
+     {
+      "action": "damageByType",
+      "typeTag": "Priest",
+      "value": 8,
+      "damageType": "true",
+      "excludeSelf": true
+     }
+    ],
+    "turnEnd": [
+     {
+      "action": "applyProtection",
+      "target": "singleHero",
+      "playerTargeted": true,
+      "scaling": {
+       "stat": "spirit",
+       "multiplier": 1
+      }
+     }
+    ]
+   }
+  },
+  {
+   "hero": "Thunder Hermit",
+   "was": {
+    "onEnter": [
+     {
+      "action": "damageByType",
+      "typeTag": "Priest",
+      "value": 8,
+      "damageType": "true",
+      "excludeSelf": true
+     }
+    ],
+    "turnEnd": [
+     {
+      "action": "applyProtection",
+      "target": "singleHero",
+      "playerTargeted": true,
+      "scaling": {
+       "stat": "spirit",
+       "multiplier": 1
+      }
+     }
+    ]
+   }
+  },
+  {
+   "hero": "Candle Monk",
+   "was": {
+    "onEnter": [
+     {
+      "action": "damageByType",
+      "typeTag": "Priest",
+      "value": 8,
+      "damageType": "true",
+      "excludeSelf": true
+     }
+    ],
+    "turnEnd": [
+     {
+      "action": "applyProtection",
+      "target": "singleHero",
+      "playerTargeted": true,
+      "scaling": {
+       "stat": "spirit",
+       "multiplier": 1
+      }
+     }
+    ]
+   }
+  },
+  {
+   "hero": "Talisman Bearer",
+   "was": {
+    "onEnter": [
+     {
+      "action": "modifyStatPermanent",
+      "target": "randomHero",
+      "stat": "ranged",
+      "amount": 2,
+      "description": "Randomly buffs heroes"
+     },
+     {
+      "action": "modifyStatPermanent",
+      "target": "randomHero",
+      "stat": "melee",
+      "amount": 2,
+      "_hideSpecial": true
+     },
+     {
+      "action": "modifyStatPermanent",
+      "target": "allHeroes",
+      "stat": "health",
+      "amount": 1,
+      "_hideSpecial": true
+     },
+     {
+      "action": "gainFaith",
+      "value": 1
+     }
+    ]
+   }
+  },
+  {
+   "hero": "Fang Wielder",
+   "was": {
+    "onEnter": [
+     {
+      "action": "modifyStatPermanent",
+      "target": "randomHero",
+      "stat": "ranged",
+      "amount": 2,
+      "description": "Randomly buffs heroes"
+     },
+     {
+      "action": "modifyStatPermanent",
+      "target": "randomHero",
+      "stat": "melee",
+      "amount": 2,
+      "_hideSpecial": true
+     },
+     {
+      "action": "modifyStatPermanent",
+      "target": "allHeroes",
+      "stat": "health",
+      "amount": 1,
+      "_hideSpecial": true
+     },
+     {
+      "action": "gainFaith",
+      "value": 1
+     }
+    ]
+   }
+  },
+  {
+   "hero": "Storm Bringer",
+   "was": {
+    "onEnter": [
+     {
+      "action": "modifyStatPermanent",
+      "target": "randomHero",
+      "stat": "ranged",
+      "amount": 2,
+      "description": "Randomly buffs heroes"
+     },
+     {
+      "action": "modifyStatPermanent",
+      "target": "randomHero",
+      "stat": "melee",
+      "amount": 2,
+      "_hideSpecial": true
+     },
+     {
+      "action": "modifyStatPermanent",
+      "target": "allHeroes",
+      "stat": "health",
+      "amount": 1,
+      "_hideSpecial": true
+     },
+     {
+      "action": "gainFaith",
+      "value": 1
+     }
+    ]
+   }
+  },
+  {
+   "hero": "Beacon Keeper",
+   "was": {
+    "onEnter": [
+     {
+      "action": "modifyStatPermanent",
+      "target": "randomHero",
+      "stat": "ranged",
+      "amount": 2,
+      "description": "Randomly buffs heroes"
+     },
+     {
+      "action": "modifyStatPermanent",
+      "target": "randomHero",
+      "stat": "melee",
+      "amount": 2,
+      "_hideSpecial": true
+     },
+     {
+      "action": "modifyStatPermanent",
+      "target": "allHeroes",
+      "stat": "health",
+      "amount": 1,
+      "_hideSpecial": true
+     },
+     {
+      "action": "gainFaith",
+      "value": 1
+     }
+    ]
+   }
+  },
+  {
+   "hero": "Ash Sentinel",
+   "was": {
+    "turnEnd": [
+     {
+      "action": "heal",
+      "target": "self",
+      "scaling": {
+       "stat": "spirit",
+       "multiplier": 0.25
+      }
+     }
+    ]
+   }
+  },
+  {
+   "hero": "Grave Warden",
+   "was": {
+    "turnEnd": [
+     {
+      "action": "heal",
+      "target": "self",
+      "scaling": {
+       "stat": "spirit",
+       "multiplier": 0.25
+      }
+     }
+    ]
+   }
+  },
+  {
+   "hero": "Shrine Guard",
+   "was": {
+    "turnEnd": [
+     {
+      "action": "heal",
+      "target": "self",
+      "scaling": {
+       "stat": "spirit",
+       "multiplier": 0.25
+      }
+     }
+    ]
+   }
+  },
+  {
+   "hero": "Hall Sentry",
+   "was": {
+    "turnEnd": [
+     {
+      "action": "heal",
+      "target": "self",
+      "scaling": {
+       "stat": "spirit",
+       "multiplier": 0.25
+      }
+     }
+    ]
+   }
+  },
+  {
+   "hero": "Inquisitor",
+   "was": {
+    "turnEnd": [
+     {
+      "action": "removeStatusEffects",
+      "target": "allHeroes",
+      "statuses": [
+       "weak"
+      ],
+      "value": 1
+     }
+    ]
+   }
+  },
+  {
+   "hero": "Martyr",
+   "was": {
+    "onDeath": [
+     {
+      "action": "healParty",
+      "value": 6
+     },
+     {
+      "action": "removeStatusEffects",
+      "target": "allHeroes",
+      "statuses": [
+       "burn"
+      ],
+      "value": 3
+     },
+     {
+      "action": "removeStatusEffects",
+      "target": "allHeroes",
+      "statuses": [
+       "poison"
+      ],
+      "value": 3
+     }
+    ],
+    "onAttack": [
+     {
+      "action": "removeStatusEffects",
+      "target": "allHeroes",
+      "statuses": [
+       "burn"
+      ],
+      "value": 1
+     },
+     {
+      "action": "removeStatusEffects",
+      "target": "allHeroes",
+      "statuses": [
+       "poison"
+      ],
+      "value": 1
+     },
+     {
+      "action": "removeStatusEffects",
+      "target": "allHeroes",
+      "statuses": [
+       "bleed"
+      ],
+      "value": 1
+     },
+     {
+      "action": "applyBurn",
+      "target": "self",
+      "value": 2
+     }
+    ],
+    "turnEnd": [
+     {
+      "action": "healParty",
+      "value": 1
+     }
+    ]
+   }
+  },
+  {
+   "hero": "Ebony Mask",
+   "was": {
+    "onAttack": [
+     {
+      "action": "applyPoison",
+      "target": "attacked",
+      "value": 1
+     }
+    ],
+    "onDeath": [
+     {
+      "action": "gainFaith",
+      "value": -2
+     }
+    ]
+   }
+  },
+  {
+   "hero": "Prophet",
+   "was": {
+    "turnEnd": [
+     {
+      "action": "healParty",
+      "scaling": {
+       "stat": "spirit",
+       "multiplier": 0.5
+      }
+     }
+    ]
+   }
+  }
+ ],
+ "undefinedBadges": {
+  "Child": 12,
+  "Wise": 4,
+  "Diverse Learner": 2,
+  "Quick Learner": 3,
+  "Old": 2,
+  "Ancient": 3,
+  "Immortal": 4,
+  "Relentless": 6,
+  "Secret": 3,
+  "Beautiful": 2,
+  "Noble": 3,
+  "Lithe": 4,
+  "Angry": 1,
+  "Physician": 1,
+  "Scavenger": 1,
+  "Crippled": 1,
+  "Outcast": 1,
+  "Scavenging": 1,
+  "Looting": 1,
+  "Brave": 3,
+  "Devil in Disguise": 1,
+  "DemonSlayer": 4,
+  "SandSlayer": 4,
+  "Scouting": 4,
+  "GhostSlayer": 4,
+  "HumanSlayer": 4,
+  "AirSlayer": 4,
+  "Stalwart": 1,
+  "Unwavering": 1,
+  "Brawler": 1,
+  "Tough": 2,
+  "UndeadSlayer": 4,
+  "Quick": 1,
+  "Cultist": 1,
+  "Agile": 1,
+  "Ignorant": 1,
+  "Retaliating": 1,
+  "Lucky": 1
+ },
+ "personalityTags": {
+  "Personality_Cheerful": 24,
+  "Personality_Grim": 16,
+  "Personality_Sardonic": 7,
+  "Personality_Sultry": 3,
+  "Personality_Cold": 14,
+  "Personality_Flirty": 4,
+  "Personality_Bloodthirsty": 7,
+  "Personality_Aspiring": 1,
+  "Personality_Brooding": 4,
+  "Personality_Fearful": 3,
+  "Personality_Dramatic": 2
+ }
+}

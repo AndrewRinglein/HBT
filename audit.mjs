@@ -846,6 +846,50 @@ if(D.bestiary && D.bestiary.length){
     console.error('  (R30 note: '+remote+' heroes still name art outside this repo — counted in CONTENT-GAPS, not linted here)');
 }
 
+// R31 NOTHING HALF-FITS, AND NOTHING POINTS AT HELL-TCG. Ruled 2026-08-22: cutting beats
+// half-fitting, and a broken reference is worse than an absence — an absence is obviously
+// missing, a broken reference reads as content. That is precisely how one session reported the
+// Eve level art present while another could not find it, and how 14 empty auras and 193 hollow
+// spells sat in the Codex looking fine.
+//
+// Four things were cut off the hero rows and this keeps them off:
+//   151 art paths into hell-tcg    · 146 unported hell-tcg trigger blocks
+//    98 undefined badge names      ·  85 Personality_ tags mis-filed as badges
+// All of it is parked in gen/cut-2026-08-22.json, so this rule is about REGROWTH, not loss.
+{
+  const H = (D.heroes||{}).heroes || [];
+  const known = new Set((D.badges||[]).map(b => String(b.name).toLowerCase()));
+
+  for(const h of H){
+    // (a) no path may name the source project, ever
+    const paths = [h.art, ...(h.levelArt||[]), ...Object.values(h.afflictionArt||{}),
+                   ...(h.anim||[]), ...(h.hexArt||[])].filter(Boolean);
+    for(const p of paths){
+      if(/^New Art\/|hell-tcg/i.test(p))
+        add('art-path-points-at-hell-tcg', h.name, p + ' — this repo cannot resolve it. Bring the file across or leave the field null.');
+      else if(!fs.existsSync('../'+p))
+        add('art-path-does-not-resolve', h.name, p);
+    }
+    // a hero with no art says so, rather than carrying a path to nowhere
+    if(!h.art && !h.artMissing && paths.length)
+      add('hero-has-level-art-but-no-base-art', h.name, 'levelArt without art is a half-row');
+
+    // (b) hell-tcg trigger objects. Hero triggers were NEVER ported: 30 foreign action names,
+    //     none of them a word this game has. The shape is the tell — ours are arrays.
+    if(h.triggers && !Array.isArray(h.triggers))
+      add('hero-carries-an-unported-trigger-object', h.name,
+          'hell-tcg shape (an object keyed by hook, holding foreign action names). Cut 2026-08-22.');
+
+    // (c) a badge NAME with no badge row is a promise nothing keeps
+    for(const n of (h.originBadges||[])){
+      if(/^Personality_/.test(n))
+        add('personality-tag-filed-as-a-badge', h.name, n + ' — personality tags are their own field, not badges');
+      else if(!known.has(String(n).toLowerCase()))
+        add('hero-wears-a-badge-that-does-not-exist', h.name, n);
+    }
+  }
+}
+
 const by={}; F.forEach(f=>(by[f.rule]=by[f.rule]||[]).push(f));
 for(const [r,list] of Object.entries(by).sort((a,b)=>b[1].length-a[1].length)){
   console.log('\n### '+r+'  ('+list.length+')');

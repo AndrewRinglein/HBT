@@ -451,6 +451,58 @@ for(const h of heroes){
               stillRemote + ' still name a hell-tcg path that does not resolve here');
 }
 
+
+// ------------------------------------------------------------------ THE CUT, 2026-08-22
+// Four kinds of garbage came across with the port and never got cleaned up. Ruled: cut them.
+// A broken reference is worse than an absence, because an absence is obviously missing and a
+// broken reference reads as content — that is exactly how one session reported the Eve level
+// art present while another could not find it.
+//
+// Everything removed here is recorded in gen/cut-2026-08-22.json. Nothing is destroyed; it is
+// parked, with counts, so it can be added back as real rows later.
+const CUT = { _note:'Removed from hero rows 2026-08-22. Cutting beats half-fitting. Add back as real definitions when there is something to add.',
+              danglingArt:[], hellTcgTriggers:[], undefinedBadges:{}, personalityTags:{} };
+{
+  const knownBadge = new Set(JSON.parse(fs.readFileSync('gen/badges.json','utf8')).badges.map(b => String(b.name).toLowerCase()));
+  let art = 0, trig = 0, badge = 0, pers = 0;
+
+  for (const h of heroes) {
+    // (a) an art path that does not resolve. Nulled, not repointed — there is nothing to point at.
+    if (h.art && !fs.existsSync('../' + h.art)) {
+      CUT.danglingArt.push({ hero:h.name, was:h.art });
+      h.art = null; h.levelArt = undefined; h.artMissing = true; art++;
+    }
+
+    // (b) hell-tcg trigger objects, never ported. 30 foreign action names — gainFaith,
+    //     grantDraws, increaseActionRate — none of which is a word this game has.
+    if (h.triggers && !Array.isArray(h.triggers)) {
+      const live = {};
+      for (const [k, v] of Object.entries(h.triggers)) if (Array.isArray(v) && v.length) live[k] = v;
+      if (Object.keys(live).length) { CUT.hellTcgTriggers.push({ hero:h.name, was:live }); trig++; }
+      delete h.triggers;
+    }
+
+    // (c) badge NAMES with no badge row behind them, and (d) Personality_ tags, which are not
+    //     badges at all — COMBAT-DESIGN calls them "invisible personality tags that story
+    //     events read", so they belong on their own field rather than in the badge list.
+    if (Array.isArray(h.originBadges)) {
+      const keep = [], personality = [];
+      for (const n of h.originBadges) {
+        if (/^Personality_/.test(n)) { personality.push(n.replace(/^Personality_/, '').toLowerCase());
+                                       CUT.personalityTags[n] = (CUT.personalityTags[n] || 0) + 1; pers++; continue; }
+        if (!knownBadge.has(String(n).toLowerCase())) { CUT.undefinedBadges[n] = (CUT.undefinedBadges[n] || 0) + 1; badge++; continue; }
+        keep.push(n);
+      }
+      h.originBadges = keep;
+      if (personality.length) h.personality = personality;
+    }
+  }
+  fs.writeFileSync('gen/cut-2026-08-22.json', JSON.stringify(CUT, null, 1) + '\n');
+  console.log('cut: ' + art + ' dangling art paths · ' + trig + ' hell-tcg trigger blocks · ' +
+              badge + ' undefined badge names · ' + pers + ' personality tags moved off originBadges');
+  console.log('     all recorded in gen/cut-2026-08-22.json');
+}
+
 const out={derivation:DERIVATION, derivedBase:DERIVED_BASE, portMap:PORT, dodgeScale:DODGE_SCALE,
   rule:'ONE PIECE OF ART, ONE UNIQUE HERO. Ruled 2026-08-20. Every generative template owns four distinct designs and each is its own hero — so 12 Shadows subtypes are 48 heroes, not 12. What does NOT split is a hero\u2019s own level-and-status set: a folder of 1/2/3/4 plus l/p/r/v is one hero at four levels wearing four afflictions, which is why the 98 fixed cast stay 98.',
   paths:[
