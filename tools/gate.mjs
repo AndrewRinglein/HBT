@@ -83,6 +83,25 @@ check('dependencies landed', () => {
   return { ok: missing.length === 0, note: missing.length ? `waiting on ${missing.join(', ')}` : '' }
 })
 
+flag('not already decided', () => {
+  // A rule you have to remember is not a mechanism. iron-gauntlet/SKILL.md has said
+  // "run decided.mjs before asking anyone" since it was written, as prose — and the
+  // multi-attack question was still settled, litigated, then re-asked as open. This
+  // makes the check happen whether or not anyone remembers it.
+  //
+  // A FLAG, never a gate. decided.mjs reports CANDIDATE rulings, not verdicts; blocking
+  // a landing on a keyword match would deadlock the loop on every coincidence. It lands
+  // loudly, and the run log records it, so recurrence is measurable.
+  const text = [item.spec, item.expect].filter(Boolean).join(' ')
+  if (!text) return { ok: true, note: 'no spec text to check' }
+  const r = tryRun(`node tools/decided.mjs ${JSON.stringify(text).replace(/`/g, '')}`)
+  if (!r.ok) return { ok: true, note: 'decided.mjs unavailable' }
+  const rulings = r.out.split('\n').filter((l) => l.trim().startsWith('RULING'))
+  if (!rulings.length) return { ok: true, note: 'no existing ruling matches' }
+  const where = rulings.slice(0, 2).map((l) => l.replace(/^\s*RULING\s*/, '').trim()).join(' · ')
+  return { ok: false, note: `${rulings.length} candidate ruling(s) — READ BEFORE ASKING: ${where}` }
+})
+
 check('typecheck', () => {
   const r = tryRun('npx tsc --noEmit')
   return { ok: r.ok, note: r.ok ? '' : r.out.split('\n').filter(Boolean).slice(0, 3).join(' | ') }
