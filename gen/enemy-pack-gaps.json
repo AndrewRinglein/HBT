@@ -135,6 +135,16 @@
    "unit": "unit.zombie-hound",
    "what": "attack.zombie-hound.bite onDamage: inflict an affliction",
    "needs": "capability.inflict-affliction"
+  },
+  {
+   "unit": "hero.base.warrior-iron",
+   "what": "kit is a random SPEC — the roll belongs to the draft; needs a dictated hero override",
+   "needs": "kit unresolved"
+  },
+  {
+   "unit": "hero.base.priest-armored",
+   "what": "kit is a oneOf SPEC — the roll belongs to the draft; needs a dictated hero override",
+   "needs": "kit unresolved"
   }
  ]
 }
