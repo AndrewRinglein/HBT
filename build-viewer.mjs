@@ -293,7 +293,8 @@ const TABS=[
    const RANK={0:'-',1:'Regular',2:'Elite',3:'Boss'};
    const acc=U.map(u=>(u.derivedBase||{}).accuracy).filter(n=>typeof n==='number');
    const mov=U.map(u=>(u.derivedBase||{}).movement).filter(n=>typeof n==='number');
-   const head='<p>'+U.length+' creatures, ported from Hell-TCG. '+U.filter(u=>u.curated).length+
+   var nAuth=U.filter(function(u){return u.authored;}).length;
+   const head='<p><b>'+nAuth+' AUTHORED enemies</b> (the real ones, landed 2026-08-25 from ENEMY-REVIEW.md; tier XP 2/5/15) and '+(U.length-nAuth)+' PLACEHOLDERS ported from Hell-TCG awaiting replacement. '+U.filter(u=>u.curated).length+
      ' are the curated roster with art and encounters. Accuracy runs '+Math.min.apply(null,acc)+'-'+Math.max.apply(null,acc)+
      ', movement '+Math.min.apply(null,mov)+'-'+Math.max.apply(null,mov)+
      ' - both DERIVED from the creature ARCHETYPE (what kind of thing it is), never from rank:'+
@@ -313,7 +314,7 @@ const TABS=[
        return '<tr><td><b>'+esc(k)+'</b></td><td>'+g.length+'</td><td>'+Math.min.apply(null,A)+'-'+Math.max.apply(null,A)+
          '</td><td>'+Math.min.apply(null,M)+'-'+Math.max.apply(null,M)+'</td><td><small>'+esc(why)+'</small></td></tr>';
      }).join('')+'</table></div>';
-   const rows=U.slice().sort(function(a,b){return (b.rank||0)-(a.rank||0)||String(a.name).localeCompare(String(b.name));})
+   const rows=U.slice().sort(function(a,b){return (b.authored?1:0)-(a.authored?1:0)||(b.rank||0)-(a.rank||0)||String(a.name).localeCompare(String(b.name));})
     .map(function(u){
      const d=u.derivedBase||{}, p=u.ported||{};
      const atk=(u.attacks||[]).map(function(a){return esc(a.name);}).join(' &middot; ');
@@ -332,7 +333,7 @@ const TABS=[
      return '<tr>'+
        '<td>'+(u.art?'<img class="thumb" src="'+esc(u.art)+'" alt="" loading="lazy">':'')+'</td>'+
        '<td><b>'+esc(u.name)+'</b><br><small>'+esc((u.types||[]).join(' / '))+'</small>'+
-         (u.curated?'':'<br><span class="tag warn">not in the curated 144</span>')+'</td>'+
+         (u.authored?'<br><span class="tag" style="background:#1d3a24;color:#7ee2a8">AUTHORED · '+esc(u.family||'')+'</span>':'<br><span class="tag warn">placeholder</span>')+'</td>'+
        '<td>'+(RANK[u.rank]||u.rank||'-')+'<br><small>'+esc(u.deploys||'')+'</small></td>'+
        '<td>'+(p.health!=null?p.health:'-')+'</td>'+
        '<td>'+(p.strength!=null?p.strength:'-')+'</td>'+

@@ -661,7 +661,8 @@ if(D.bestiary && D.bestiary.length){
 // otherwise "we have not got to it yet" and "this one is meant to be simple" look identical,
 // and the first quietly becomes the second.
 if(D.bestiary && D.bestiary.length){
-  const hasRider = u => (u.attacks||[]).some(a=>(a.effects||[]).length) || (u.triggers||[]).length>0;
+  const hasRider = u => (u.attacks||[]).some(a=>(a.effects||[]).length || (a.triggers||[]).length || a.sameAs || a.attackCount)
+    || (u.triggers||[]).length>0 || (u.moves||[]).length>0 || (u.immunity||[]).length>0;
   const bare = D.bestiary.filter(u=>!hasRider(u));
 
   for(const u of bare)
@@ -694,13 +695,15 @@ if(D.bestiary && D.bestiary.length){
   // exists so a thing can hit back at whoever hit it. gen/referents.json declares the two.
   const REF=new Set((D.referents||[]).map(r=>r.name));
   const legalTarget = v => SH.has(v) || REF.has(v);
-  const carries = e => e.status!=null || e.stat!=null || e.value!=null || (e.multiple!=null);
+  const carries = e => e.status!=null || e.stat!=null || e.value!=null || (e.multiple!=null)
+    || e.affliction!=null || e.layer!=null || e.needs!=null || e.sameAs!=null || e.powerScale!=null;
   // verbs that are complete on their own — they need no status, stat or number
   const SELF_SUFFICIENT = new Set(['enter stealth','reveal / break stealth','grant Flight',
     'move yourself','move WITHOUT provoking','stabilise a downed ally','deal damage (type from the weapon)']);
 
-  const walk = (u, where, list) => {
+  const walk = (u, where, list, needsAbove) => {
     for(const e of (list||[])){
+      if(needsAbove) continue;   // the row declared its capability; its payload shape is that capability's business
       if(!SELF_SUFFICIENT.has(e.effect) && !carries(e))
         add('effect-does-nothing', u.name, where+': "'+e.effect+'" carries no status, stat or value — '+
             'if the payload was dropped in translation the mechanic went with it');
@@ -711,12 +714,14 @@ if(D.bestiary && D.bestiary.length){
   };
   for(const u of D.bestiary){
     for(const a of (u.attacks||[])){
-      walk(u, a.name, a.effects);
-      if(a.targets!=null && !SH.has(a.targets))
+      if(a.sameAs) continue;
+      walk(u, a.name, a.effects, (a.needs||[]).length);
+      for(const tr of (a.triggers||[])) walk(u, a.name+'/'+(tr.name||tr.hook), tr.effects, (tr.needs||a.needs||[]).length);
+      if(a.targets!=null && !SH.has(a.targets) && !(a.needs||[]).includes('capability.line-shape'))
         add('attack-shape-is-not-in-the-vocabulary', u.name, a.name+': "'+a.targets+'"');
     }
     for(const tr of (u.triggers||[])){
-      walk(u, tr.name||tr.hook, tr.effects);
+      walk(u, tr.name||tr.hook, tr.effects, (tr.needs||[]).length);
       if(tr.targets!=null && !SH.has(tr.targets))
         add('trigger-shape-is-not-in-the-vocabulary', u.name, (tr.name||tr.hook)+': "'+tr.targets+'"');
     }
@@ -786,8 +791,10 @@ if(D.bestiary && D.bestiary.length){
     if(Array.isArray(o)) return o.forEach(x => walk(x, where));
     if(!o || typeof o !== 'object') return;
     for(const [k,v] of Object.entries(o)){
-      if(declined.has(k) && v != null && !(Array.isArray(v) && !v.length))
-        seen.set(k, (seen.get(k)||0) + 1);
+      if(declined.has(k) && v != null && !(Array.isArray(v) && !v.length)){
+        if(k==='condition' && typeof v==='string' && !/^(melee|ranged)$/.test(v)){ /* the vocabulary's condition, not hell-tcg's */ }
+        else seen.set(k, (seen.get(k)||0) + 1);
+      }
       walk(v, where);
     }
   };
@@ -924,6 +931,32 @@ if(D.heroes && D.heroes.heroes && fs.existsSync('art/manifest.json')){
       add('manifest-is-stale-for-this-hero', h.name,
         (row.variants||[]).length+' variants in the manifest but '+want+' art files on the row — rerun npm run thumbs');
   }
+}
+
+// R33 AN AUTHORED ENEMY NAMES WHAT IT NEEDS, AND A PLACEHOLDER SAYS SO. Ruled 2026-08-25,
+// landing the first 28 real enemies. Three invariants:
+//   (a) every `needs` entry anywhere on an authored row must name a capability DECLARED in
+//       the file's own capabilities block — an undeclared need is a typo pretending to be a plan;
+//   (b) every surviving ported row is marked placeholder:true, so nothing downstream mistakes
+//       the hell-tcg port for a real enemy;
+//   (c) xpByTier exists — tier is an XP price (2/5/15 ruled 2026-08-23), so a tierless or
+//       priceless bestiary cannot be scored.
+if(D.bestiary && D.bestiary.length){
+  const caps = new Set(Object.keys(D.bestiaryCapabilities||{}).filter(k=>k!=='_note'));
+  const collect = (o, bag) => { if(Array.isArray(o)) return o.forEach(x=>collect(x,bag));
+    if(!o||typeof o!=='object') return;
+    for(const [k,v] of Object.entries(o)){ if(k==='needs'&&Array.isArray(v)) v.forEach(n=>bag.push(n)); collect(v,bag); } };
+  for(const u of D.bestiary){
+    if(u.authored){
+      const needs=[]; collect(u, needs);
+      for(const n of needs) if(!caps.has(n))
+        add('authored-enemy-needs-an-undeclared-capability', u.name, '"'+n+'" is not in the capabilities block');
+      if(u.tier==null) add('authored-enemy-has-no-tier', u.name, 'tier is an XP price now');
+    } else if(!u.placeholder)
+      add('bestiary-row-is-neither-authored-nor-placeholder', u.name,
+          'every row is one or the other — an unmarked row reads as real');
+  }
+  if(!D.xpByTier) add('xp-by-tier-is-missing','bestiary','tier 1/2/3 = 2/5/15 XP, ruled 2026-08-23');
 }
 
 const by={}; F.forEach(f=>(by[f.rule]=by[f.rule]||[]).push(f));

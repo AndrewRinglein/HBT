@@ -126,7 +126,25 @@ for(const s of out.specialties) for(const pid of (s.powers||[])) if(!ids.has(pid
 try{ out.bestiaryTest=R('bestiary-test.json'); }catch{ out.bestiaryTest=null; }
 // ---- the REAL bestiary. 219 creatures ported from hell-tcg data/enemyCards.js, plus the
 // 193 immediate-cast rows which are enemy SPELLS, not units (ruled 2026-08-21).
-try{ out.bestiary=R('bestiary.json').units; }catch{ out.bestiary=null; }
+// ---- the bestiary: AUTHORED enemies first, placeholders behind them.
+// gen/enemies-authored.json holds the first real enemies (landed 2026-08-25 from
+// ENEMY-REVIEW.md). An authored row SUPERSEDES the same-id placeholder from the hell-tcg
+// port, and regenerating the placeholder file cannot touch an authored row — the two live
+// in different files and the merge always prefers authored. Every ported row that survives
+// is marked placeholder:true so nothing downstream mistakes it for a real enemy.
+try{
+  const AUTH=JSON.parse(fs.readFileSync(G+'enemies-authored.json','utf8'));
+  const authored=(AUTH.units||[]).map(u=>({...u, rank:u.tier, authored:true}));
+  const authoredIds=new Set(authored.map(u=>u.id));
+  let ported=[]; try{ ported=R('bestiary.json').units||[]; }catch{}
+  const kept=ported.filter(u=>!authoredIds.has(u.id)).map(u=>({...u, placeholder:true}));
+  out.bestiary=[...authored, ...kept];
+  out.bestiaryCapabilities=AUTH.capabilities||null;
+  out.xpByTier=AUTH.xpByTier||null;
+  out.enemyFamilyRules=AUTH.familyRules||null;
+  console.log('bestiary: '+authored.length+' authored + '+kept.length+' placeholders ('+(ported.length-kept.length)+' superseded)');
+}catch(e){ prob.push('enemies-authored.json failed to load: '+e.message); out.bestiary=null; }
+try{ out.encounters=R('encounters.json'); }catch{ out.encounters=null; }
 // Enemy spells CUT 2026-08-22 - the new game does not want them. They were also hollow: all
 // 193 had an empty abilities array because their effect lived in triggers.onEnter.
 fs.writeFileSync('hbt-content.json', JSON.stringify(out));

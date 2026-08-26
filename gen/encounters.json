@@ -1,0 +1,73 @@
+{
+  "_note": "ENCOUNTERS — the P11 format, shaped by slice ruling 4 (2026-08-23): combat is simulated and toggleable, so an encounter collapses to a difficulty-ranked row with an enemy list. The full scripted form exists ONLY for the prologue battles, which are fixed by design and precede the map. Authored 2026-08-25 from ENEMY-REVIEW.md. FORMAT IS PROPOSED, NOT RULED — this is the sketch for review.",
+
+  "format": {
+    "sliceRow": "id · difficulty (an integer rank the battle list is sorted by) · enemies (unit ids with counts) · powerSources (optional: the battle's external pool and any scheduled gains) · terrainHint (optional). Nothing else — ruling 4 means no maps, no scripting for slice battles.",
+    "prologueBattle": "The five fixed battles carry the full shape: setup (placed units by zone), schedule (phase-keyed spawns by edge), loseAfter, retreat, civilians, events. CLOCK RULING 2026-08-23: schedules count PHASES — the word turn never appears in encounter data. Zones: player-edge | mid | far-edge | left | right | behind-player | every-side.",
+    "powerSources": "kind: external (pool at battle start) | arrival (one-time +X when a unit enters, stays in the pool after its death) | clock (per-phase or conditional gains live on the unit rows themselves — the Lieutenant's EOT, the Vampire Lord's kills)."
+  },
+
+  "prologue": [
+    { "id": "battle.prologue-1", "name": "Two Zombies and a Child", "fixed": true, "retreat": false,
+      "setup": [
+        { "unit": "civilian.orphan-child", "zone": "mid", "objective": true },
+        { "unit": "unit.zombie", "count": 2, "zone": "mid" },
+        { "heroes": 1, "zone": "player-edge" } ],
+      "schedule": [ { "phase": 4, "spawn": [{ "unit": "unit.zombie", "count": 1, "zone": "one-of-left-or-right" }] } ],
+      "loseAfter": { "heroPhase": 10, "why": "taking too long" } },
+
+    { "id": "battle.prologue-2", "name": "Surrounded", "fixed": true, "retreat": false,
+      "retreatWhy": "no retreat — you are surrounded",
+      "setup": [
+        { "unit": "civilian.lumberjack", "zone": "mid", "objective": true },
+        { "unit": "civilian.farmer", "zone": "mid", "objective": true },
+        { "unit": "unit.zombie", "count": 4, "zone": "mid" } ],
+      "schedule": [
+        { "enemyPhase": 1, "spawn": [{ "unit": "unit.skeletal-archer", "count": 2, "zone": "right" }] },
+        { "enemyPhase": 3, "spawn": [{ "unit": "unit.skeletal-archer", "count": 1, "zone": "left" },
+                                      { "unit": "unit.skeletal-archer", "count": 1, "zone": "behind-player" }] },
+        { "phase": 4, "spawn": [{ "unit": "unit.fast-zombie", "count": 1, "zone": "every-side" }] },
+        { "phase": 5, "spawn": [{ "unit": "unit.necromancer", "count": 1, "zone": "far-edge" }] } ] },
+
+    { "id": "battle.prologue-3", "name": "The Schoolhouse", "fixed": true, "retreat": true,
+      "setup": [
+        { "unit": "civilian.school-teacher", "zone": "mid", "objective": true },
+        { "unit": "civilian.schoolchildren", "zone": "mid", "objective": true },
+        { "unit": "unit.imp", "count": 4, "zone": "far-edge" } ],
+      "schedule": [
+        { "phase": 3, "spawn": [{ "unit": "unit.imp", "count": 2, "zone": "far-edge" }] },
+        { "phase": 5, "spawn": [{ "unit": "unit.powerful-imp", "count": 1, "zone": "far-edge" },
+                                 { "unit": "unit.fire-imp", "count": 2, "zone": "far-edge" }] } ],
+      "loseAfter": { "phase": 12 } },
+
+    { "id": "battle.prologue-4", "name": "The Curse", "fixed": true, "retreat": true,
+      "setup": [
+        { "unit": "unit.bruiser-demon", "count": 2, "zone": "far-edge" },
+        { "unit": "unit.poison-imp", "count": 2, "zone": "far-edge" },
+        { "unit": "unit.powerful-imp", "count": 1, "zone": "far-edge" },
+        { "unit": "unit.lieutenant-demon", "count": 1, "zone": "far-edge" } ],
+      "schedule": [
+        { "phase": 2, "spawn": [{ "unit": "unit.imp", "count": 1, "zone": "left-mid" }, { "unit": "unit.imp", "count": 1, "zone": "right-mid" }] },
+        { "phase": 3, "spawn": [{ "unit": "unit.imp", "count": 1, "zone": "far-edge" }] },
+        { "phase": 4, "event": { "name": "The Curse",
+            "effects": [
+              { "effect": "set a ground layer", "layer": "cursed", "hexes": { "random": 10 }, "needs": ["capability.ground-layers"] },
+              { "effect": "apply a status", "status": "weak", "value": 1, "targets": "all heroes" } ] } },
+        { "phase": 5, "spawn": [{ "unit": "unit.imp", "count": 1, "zone": "left-mid" }, { "unit": "unit.imp", "count": 1, "zone": "right-mid" }] } ],
+      "loseAfter": { "phase": 15 } },
+
+    { "id": "battle.prologue-5", "name": "The Hunt", "fixed": true, "retreat": true,
+      "note": "The first battle drawn from the battle list under difficulty — and the first affliction-inflicters beyond rotting flesh.",
+      "setup": [
+        { "unit": "unit.bloodhound", "count": 4, "zone": "far-edge" },
+        { "unit": "unit.hellhound", "count": 2, "zone": "far-edge" } ],
+      "schedule": [
+        { "phase": 4, "spawn": [{ "unit": "unit.zombie-hound", "count": 8, "zone": "far-edge" }] },
+        { "phase": 6, "spawn": [{ "unit": "unit.werewolf", "count": 1, "zone": "far-edge" }] } ] }
+  ],
+
+  "battleList": {
+    "_note": "The difficulty-ranked slice rows, per ruling 4. NOT YET AUTHORED — battle 5 is the first drawn from here, and the list itself is authored once the P11 format above is approved. Shape: { id, difficulty, enemies: [{unit, count}], powerSources?: [{kind, value, phase?}] }.",
+    "rows": []
+  }
+}

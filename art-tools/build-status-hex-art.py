@@ -1,4 +1,12 @@
 #!/usr/bin/env python3
+
+# SUPERSEDED 2026-08-23. content/art/manifest.json was regenerated with a new schema:
+# heroes are now `hero.base.<slug>` carrying a `variants` array of
+# {kind: level|affliction|hex, label, thumb, src}, and it already indexes all 24 x 8 hex
+# tokens directly from art/heroes/<slug>/hex/*_256.png. That makes this script and its
+# hand-authored map redundant. It is left in place for reference only -- it keys on
+# `hero.tutorial.<slug>.<character>` ids that no longer exist, so running it does nothing
+# useful. Do not run it. Delete once you are sure nothing reads its manifest.
 """build-status-hex-art.py — hex battle-token art for the four affliction statuses.
 
 Sibling of build-hex-art.py, and follows it exactly: md5(src)[:12].webp keys, one
