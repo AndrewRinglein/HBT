@@ -422,6 +422,9 @@ export const FIRST_BATTLE = {
   // chore retires them (backlog test.fixture-migration).
   enemies: ['test-zombie', 'test-zombie', 'test-zombie', 'test-zombie-burning'] as const,
   defaultEnemyCount: 4,
-  heroRow: 11,
+  // Row 15 is the player edge, row 0 the enemy edge — ruled 2026-08-25 with the
+  // 16x16 board, and stated the same way in content/gen/encounters.json's
+  // format.placement. Was 11 when the board was 12 deep.
+  heroRow: 15,
   enemyRow: 0,
 }

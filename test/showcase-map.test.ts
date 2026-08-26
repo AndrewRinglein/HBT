@@ -18,8 +18,8 @@ describe('the board', () => {
     expect(t.filter((x) => x === TERRAIN.POISONED).length).toBe(8)
     expect(t.filter((x) => x === TERRAIN.HILLS).length).toBe(4)
     // both deployment rows are fully open — nobody spawns in a hazard
-    expect(t.slice(0, 12).every((x) => x === TERRAIN.OPEN)).toBe(true)
-    expect(t.slice(132).every((x) => x === TERRAIN.OPEN)).toBe(true)
+    expect(t.slice(0, 16).every((x) => x === TERRAIN.OPEN)).toBe(true)
+    expect(t.slice(240).every((x) => x === TERRAIN.OPEN)).toBe(true)
   })
 
   it('battles on it produce ember applies, blight applies AND river washes', () => {

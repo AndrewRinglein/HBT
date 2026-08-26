@@ -3,8 +3,19 @@
 
 export type HexId = number
 
-export const WIDTH = 12
-export const HEIGHT = 12
+// 16 × 16 = 256 hexes. Ruled 2026-08-25 ("we are settling on 16 by 16"), and the
+// content led — `content/gen/encounters.json` format.placement already places the
+// prologue battles by hex on a 16×16 board and notes that the engine constant was
+// the thing lagging.
+//
+// Was 12 × 12 = 144, written in the first commit (2a6516a) and never revisited.
+// `BASE-MAP-SPEC.md` calls HoMM3's 165 hexes "far too small for 8 heroes + 3
+// civilians + a 40-body tide" — so the board was smaller than the size the spec
+// had already rejected, and smaller than its own tutorial 14×10 preset.
+//
+// Row 0 is the enemy edge, row 15 the player edge (same ruling).
+export const WIDTH = 16
+export const HEIGHT = 16
 export const HEX_COUNT = WIDTH * HEIGHT
 
 export function hexId(col: number, row: number): HexId {

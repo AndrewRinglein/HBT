@@ -41,7 +41,7 @@ describe('terrain.kinds — the seven are recognised', () => {
   })
 
   it('every authored map still parses to a full board', () => {
-    for (const m of MAPS) expect(terrainOf(m.id).length).toBe(144)
+    for (const m of MAPS) expect(terrainOf(m.id).length).toBe(256)
   })
 
   it('map.field carries real MAP-01 terrain, not a collapse to open/hills', () => {
@@ -51,7 +51,7 @@ describe('terrain.kinds — the seven are recognised', () => {
   })
 
   it('an unknown glyph is still a loud failure, not a silent open hex', () => {
-    const bad = { id: 'map.bad', name: 'x', note: '', rows: Array(12).fill('Q'.repeat(12)) }
+    const bad = { id: 'map.bad', name: 'x', note: '', rows: Array(16).fill('Q'.repeat(16)) }
     ;(MAPS as unknown as object[]).push(bad)
     expect(() => terrainOf('map.bad')).toThrow(/unknown glyph/)
     ;(MAPS as unknown as object[]).pop()
@@ -219,7 +219,18 @@ describe('terrain.movecost — the log says what was paid for', () => {
     expect(moves.length).toBeGreaterThan(20)
     for (const m of moves) {
       expect(m['terrain'], 'a move with no terrain is a cost nobody can check').toMatch(/^terrain\./)
-      expect(m['cost']).toBe(moveCostOf(ctx.state.terrain[m['to'] as number]!))
+      // LAW 10 — 2026-08-25, exposed by the 16x16 board, wrong since movement.powers.
+      // This asserted cost === the hex's move cost for EVERY moved event. A
+      // SIDESTEP deliberately pays nothing ("the destination's terrain cost is
+      // irrelevant", GAME-DESIGN §4, ruled 2026-08-17) and calls moveUnit with
+      // cost 0, so the assertion was already false for any sidestep onto rough
+      // ground — it simply never happened on the smaller board. The rule being
+      // tested is "a PATH move pays the hex's cost", so the check now says that.
+      if (m.causeId === 'power.move') {
+        expect(m['cost']).toBe(moveCostOf(ctx.state.terrain[m['to'] as number]!))
+      } else {
+        expect(m['cost'], 'a half-step pays no movement points').toBe(0)
+      }
     }
   })
 
@@ -284,7 +295,7 @@ describe('terrain.passable — a wall is a wall', () => {
 
   it('deployment refuses to place a unit inside a wall, loudly', () => {
     const walled = { id: 'map.walled', name: 'x', note: '',
-      rows: ['xxxxxxxxxxxx', ...Array(11).fill('............')] }
+      rows: ['x'.repeat(16), ...Array(15).fill('.'.repeat(16))] }
     ;(MAPS as unknown as object[]).push(walled)
     expect(() => createBattle({ replicate: 0, mapId: 'map.walled' }))
       .toThrow(/no passable hex on the enemy deployment row/)

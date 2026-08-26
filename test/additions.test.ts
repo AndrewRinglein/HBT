@@ -36,7 +36,7 @@ describe('pass 1 — unit roles', () => {
 describe('pass 2 — hills', () => {
   it('gate 1 — every authored map parses to the right size, and hill counts differ', () => {
     const counts = MAPS.map(m => terrainOf(m.id).filter(t => t === TERRAIN.HILLS).length)
-    for (const m of MAPS) expect(terrainOf(m.id).length).toBe(144)
+    for (const m of MAPS) expect(terrainOf(m.id).length).toBe(256)
     expect(counts[0]).toBe(0)                    // open field is the control
     // The RULE is that no two maps are the same board. Hill COUNT was a proxy for
     // that, and it broke the moment two different maps happened to have 28 hills
@@ -222,7 +222,7 @@ describe('everything together', () => {
   it('state still round-trips through JSON with terrain and cooldowns', () => {
     const ctx = createBattle({ replicate: 2, mapId: 'map.highlands', enemyCount: 8 }); runBattle(ctx)
     expect(JSON.parse(JSON.stringify(ctx.state))).toEqual(ctx.state)
-    expect(ctx.state.terrain.length).toBe(144)
+    expect(ctx.state.terrain.length).toBe(256)
   })
   it('determinism holds on every map', () => {
     for (const mapId of MAPS_ALL) {

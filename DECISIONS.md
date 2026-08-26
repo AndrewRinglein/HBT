@@ -783,3 +783,41 @@ for her block.
 `engine/src/content/index.ts`. So this ruling could not be recorded in the Codex
 source and applied through the pipeline the way the 2026-08-20 beast rulings
 were. That is a content gap, not a preference.
+
+---
+
+## 2026-08-25 — the battle board is 16 × 16
+
+> "we are settling on 16 by 16"
+
+Supersedes both of the numbers that were live, which disagreed with each other
+and with the spec:
+
+- the **engine** ran **12 × 12 = 144 hexes**, written in the very first commit
+  (`2a6516a`, "baseline: engine, four passes, 83 tests") and never revisited.
+  `BASE-MAP-SPEC.md` calls HoMM3's 165 hexes *"far too small for 8 heroes + 3
+  civilians + a 40-body tide"* — so the engine was below the size the spec had
+  already rejected, and below even its own **tutorial 14 × 10** preset.
+- `BASE-MAP-SPEC.md` argued for **24 × 16**, and `VFX/GROUND-REQUIREMENTS.md`
+  §85 listed the ladder tutorial 14×10 · skirmish 18×12 · standard 24×16 ·
+  siege 30×20.
+- `VFX/BATTLE-SCREEN-V1.html` carried `COLS:12, ROWS:12` — the visual reference
+  had been conformed **down** to the engine's abbreviated board rather than the
+  engine being brought up to the spec, which is why the two looked consistent
+  while both were wrong.
+
+**16 × 16 = 256 hexes.** Between the skirmish and standard presets, and square,
+which keeps the nine deployment zones the prologue battles use
+(`player-edge · mid · far-edge · left · right · left-mid · right-mid ·
+behind-player · every-side`) meaningfully distinct — on 12 × 12 `left-mid` and
+`mid` were two or three hexes apart and `behind-player` barely existed.
+
+This moves every control-battle hash by construction. That is the point of the
+change, not a side effect: `changesBaseline: true`.
+
+**Owed with it:** `BASE-MAP-SPEC.md` still argues 24 × 16 and
+`GROUND-REQUIREMENTS.md` still lists the four presets; both now predate this
+ruling. The viewer side (`BATTLE-SCREEN-V1.html` `LAYOUT`, `PLAYBACK-DESIGN.md`
+§7.2's `1600 × 1188 board px` extent arithmetic) is owned by the battle-playback
+thread and must follow — `field-geometry.mts` derives from `hex.ts`, so the
+engine half propagates on its own.

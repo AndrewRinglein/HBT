@@ -9,7 +9,7 @@ describe('state and setup', () => {
     const enemies = ctx.state.units.filter(u => u.side === 'enemy')
     expect(heroes.length).toBe(6)
     expect(enemies.length).toBe(4)
-    for (const h of heroes) expect(rowOf(h.hex)).toBe(11)
+    for (const h of heroes) expect(rowOf(h.hex)).toBe(15)
     for (const e of enemies) expect(rowOf(e.hex)).toBe(0)
   })
 

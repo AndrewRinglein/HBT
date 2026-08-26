@@ -133,7 +133,7 @@ describe('the showcase build — engine-derived geometry, never the wrong painti
     expect(sh).toContain('"art":null')
     expect(sh).toContain('"terrain.burning"')
     expect(sh).toContain('"terrain.poisoned"')
-    expect((sh.match(/"px":/g) ?? []).length).toBe(144)   // 12×12 hexes, generated
+    expect((sh.match(/"px":/g) ?? []).length).toBe(256)   // 16×16 hexes, generated (board ruled 2026-08-25)
   })
   it('the legend carries the ground behaviour, derived from the engine tables', () => {
     expect(sh).toContain('end of activation')   // burning/poisoned applies note
