@@ -19,7 +19,8 @@
    "vision": 6,
    "movement": 5,
    "staminaMax": 5,
-   "staminaRegen": 1
+   "staminaRegen": 1,
+   "bleedOutTurns": 5
   },
   "class.ranger": {
    "accuracy": 80,
@@ -28,7 +29,8 @@
    "vision": 8,
    "movement": 5,
    "staminaMax": 5,
-   "staminaRegen": 1
+   "staminaRegen": 1,
+   "bleedOutTurns": 5
   },
   "class.rogue": {
    "accuracy": 78,
@@ -37,7 +39,8 @@
    "vision": 7,
    "movement": 5,
    "staminaMax": 5,
-   "staminaRegen": 1
+   "staminaRegen": 1,
+   "bleedOutTurns": 5
   },
   "class.mage": {
    "accuracy": 75,
@@ -46,7 +49,8 @@
    "vision": 7,
    "movement": 5,
    "staminaMax": 5,
-   "staminaRegen": 1
+   "staminaRegen": 1,
+   "bleedOutTurns": 5
   },
   "class.priest": {
    "accuracy": 80,
@@ -55,7 +59,8 @@
    "vision": 6,
    "movement": 5,
    "staminaMax": 5,
-   "staminaRegen": 1
+   "staminaRegen": 1,
+   "bleedOutTurns": 5
   },
   "class.paladin": {
    "accuracy": 72,
@@ -64,7 +69,8 @@
    "vision": 6,
    "movement": 5,
    "staminaMax": 5,
-   "staminaRegen": 1
+   "staminaRegen": 1,
+   "bleedOutTurns": 5
   },
   "class.civilian": {
    "accuracy": 70,
@@ -73,7 +79,8 @@
    "vision": 6,
    "movement": 5,
    "staminaMax": 0,
-   "staminaRegen": 0
+   "staminaRegen": 0,
+   "bleedOutTurns": 5
   },
   "class.beast": {
    "accuracy": 72,
@@ -82,7 +89,8 @@
    "vision": 7,
    "movement": 6,
    "staminaMax": 5,
-   "staminaRegen": 1
+   "staminaRegen": 1,
+   "bleedOutTurns": 5
   },
   "_unmapped": {
    "accuracy": 75,
@@ -170,7 +178,8 @@
     "vision": 6,
     "movement": 4,
     "staminaMax": 0,
-    "staminaRegen": 0
+    "staminaRegen": 0,
+    "bleedOutTurns": 5
    },
    "notes": [
     "Resolute +1 DROPPED — the stat was removed 2026-08-15 with no replacement.",
@@ -284,7 +293,8 @@
     "vision": 6,
     "movement": 5,
     "staminaMax": 0,
-    "staminaRegen": 0
+    "staminaRegen": 0,
+    "bleedOutTurns": 5
    },
    "notes": [
     "Toughness 3 is hell-tcg maxAfflictions, ported straight across — same meaning."
@@ -345,7 +355,8 @@
     "vision": 7,
     "movement": 5,
     "staminaMax": 5,
-    "staminaRegen": 1
+    "staminaRegen": 1,
+    "bleedOutTurns": 5
    },
    "notes": [
     "Toughness 2 is hell-tcg maxAfflictions, ported straight across — same meaning."
@@ -406,7 +417,8 @@
     "vision": 6,
     "movement": 5,
     "staminaMax": 0,
-    "staminaRegen": 0
+    "staminaRegen": 0,
+    "bleedOutTurns": 5
    },
    "notes": [
     "Toughness 2 is hell-tcg maxAfflictions, ported straight across — same meaning."
@@ -467,7 +479,8 @@
     "vision": 6,
     "movement": 5,
     "staminaMax": 0,
-    "staminaRegen": 0
+    "staminaRegen": 0,
+    "bleedOutTurns": 5
    },
    "notes": [
     "Toughness 2 is hell-tcg maxAfflictions, ported straight across — same meaning."
@@ -533,7 +546,8 @@
     "vision": 6,
     "movement": 5,
     "staminaMax": 0,
-    "staminaRegen": 0
+    "staminaRegen": 0,
+    "bleedOutTurns": 5
    },
    "notes": [
     "Toughness 5 is hell-tcg maxAfflictions, ported straight across — same meaning."
@@ -602,7 +616,8 @@
     "vision": 7,
     "movement": 5,
     "staminaMax": 5,
-    "staminaRegen": 1
+    "staminaRegen": 1,
+    "bleedOutTurns": 5
    },
    "notes": [
     "Dodge 1 scaled x5 to 5 — hell-tcg Dodge was a 0-3 integer, HoBaT Dodge is a flat to-hit penalty in points.",
@@ -671,7 +686,8 @@
     "vision": 7,
     "movement": 5,
     "staminaMax": 5,
-    "staminaRegen": 1
+    "staminaRegen": 1,
+    "bleedOutTurns": 5
    },
    "notes": [
     "Toughness 0 is hell-tcg maxAfflictions, ported straight across — same meaning."
@@ -732,7 +748,8 @@
     "vision": 6,
     "movement": 5,
     "staminaMax": 5,
-    "staminaRegen": 1
+    "staminaRegen": 1,
+    "bleedOutTurns": 5
    },
    "notes": [
     "Toughness 0 is hell-tcg maxAfflictions, ported straight across — same meaning."
@@ -800,7 +817,8 @@
     "vision": 6,
     "movement": 5,
     "staminaMax": 0,
-    "staminaRegen": 0
+    "staminaRegen": 0,
+    "bleedOutTurns": 5
    },
    "notes": [
     "Toughness 3 is hell-tcg maxAfflictions, ported straight across — same meaning."
@@ -866,7 +884,8 @@
     "vision": 7,
     "movement": 5,
     "staminaMax": 5,
-    "staminaRegen": 1
+    "staminaRegen": 1,
+    "bleedOutTurns": 5
    },
    "notes": [
     "Dodge 1 scaled x5 to 5 — hell-tcg Dodge was a 0-3 integer, HoBaT Dodge is a flat to-hit penalty in points.",
@@ -936,7 +955,8 @@
     "vision": 7,
     "movement": 6,
     "staminaMax": 5,
-    "staminaRegen": 1
+    "staminaRegen": 1,
+    "bleedOutTurns": 5
    },
    "notes": [
     "Toughness 1 is hell-tcg maxAfflictions, ported straight across — same meaning.",
@@ -1002,7 +1022,8 @@
     "vision": 6,
     "movement": 5,
     "staminaMax": 0,
-    "staminaRegen": 0
+    "staminaRegen": 0,
+    "bleedOutTurns": 5
    },
    "notes": [
     "Toughness 2 is hell-tcg maxAfflictions, ported straight across — same meaning."
@@ -1069,7 +1090,8 @@
     "vision": 6,
     "movement": 5,
     "staminaMax": 0,
-    "staminaRegen": 0
+    "staminaRegen": 0,
+    "bleedOutTurns": 5
    },
    "notes": [
     "Toughness 2 is hell-tcg maxAfflictions, ported straight across — same meaning.",
@@ -1145,7 +1167,8 @@
     "vision": 6,
     "movement": 5,
     "staminaMax": 0,
-    "staminaRegen": 0
+    "staminaRegen": 0,
+    "bleedOutTurns": 5
    },
    "notes": [
     "Toughness 4 is hell-tcg maxAfflictions, ported straight across — same meaning."
@@ -1212,7 +1235,8 @@
     "vision": 6,
     "movement": 5,
     "staminaMax": 5,
-    "staminaRegen": 1
+    "staminaRegen": 1,
+    "bleedOutTurns": 5
    },
    "notes": [
     "Toughness 2 is hell-tcg maxAfflictions, ported straight across — same meaning."
@@ -1278,7 +1302,8 @@
     "vision": 6,
     "movement": 5,
     "staminaMax": 5,
-    "staminaRegen": 1
+    "staminaRegen": 1,
+    "bleedOutTurns": 5
    },
    "notes": [
     "Toughness 2 is hell-tcg maxAfflictions, ported straight across — same meaning."
@@ -1344,7 +1369,8 @@
     "vision": 7,
     "movement": 5,
     "staminaMax": 5,
-    "staminaRegen": 1
+    "staminaRegen": 1,
+    "bleedOutTurns": 5
    },
    "notes": [
     "Toughness 2 is hell-tcg maxAfflictions, ported straight across — same meaning."
@@ -1409,14 +1435,17 @@
     "vision": 6,
     "movement": 5,
     "staminaMax": 0,
-    "staminaRegen": 0
+    "staminaRegen": 0,
+    "bleedOutTurns": 5
    },
    "notes": [
     "Toughness 0 is hell-tcg maxAfflictions, ported straight across — same meaning.",
     "2026-08-20: \"change the Spirit to just be a Civilian so that there are no outliers on classes.\" One hero is not a class."
    ],
    "specialty": null,
-   "originBadges": [],
+   "originBadges": [
+    "Immortal"
+   ],
    "classPowers": [],
    "namedSpecials": [
     {
@@ -1478,7 +1507,8 @@
     "vision": 6,
     "movement": 5,
     "staminaMax": 5,
-    "staminaRegen": 1
+    "staminaRegen": 1,
+    "bleedOutTurns": 5
    },
    "notes": [
     "Resolute +1 DROPPED — the stat was removed 2026-08-15 with no replacement.",
@@ -1547,7 +1577,8 @@
     "vision": 6,
     "movement": 5,
     "staminaMax": 0,
-    "staminaRegen": 0
+    "staminaRegen": 0,
+    "bleedOutTurns": 5
    },
    "notes": [
     "Toughness 2 is hell-tcg maxAfflictions, ported straight across — same meaning."
@@ -1615,7 +1646,8 @@
     "vision": 6,
     "movement": 5,
     "staminaMax": 0,
-    "staminaRegen": 0
+    "staminaRegen": 0,
+    "bleedOutTurns": 5
    },
    "notes": [
     "Toughness 1 is hell-tcg maxAfflictions, ported straight across — same meaning."
@@ -1683,7 +1715,8 @@
     "vision": 6,
     "movement": 5,
     "staminaMax": 0,
-    "staminaRegen": 0
+    "staminaRegen": 0,
+    "bleedOutTurns": 5
    },
    "notes": [
     "Toughness 2 is hell-tcg maxAfflictions, ported straight across — same meaning."
@@ -1751,7 +1784,8 @@
     "vision": 6,
     "movement": 5,
     "staminaMax": 0,
-    "staminaRegen": 0
+    "staminaRegen": 0,
+    "bleedOutTurns": 5
    },
    "notes": [
     "Resolute +4 DROPPED — the stat was removed 2026-08-15 with no replacement.",
@@ -1816,7 +1850,8 @@
     "vision": 6,
     "movement": 5,
     "staminaMax": 0,
-    "staminaRegen": 0
+    "staminaRegen": 0,
+    "bleedOutTurns": 5
    },
    "notes": [
     "Toughness 1 is hell-tcg maxAfflictions, ported straight across — same meaning."
@@ -1884,7 +1919,8 @@
     "vision": 6,
     "movement": 5,
     "staminaMax": 0,
-    "staminaRegen": 0
+    "staminaRegen": 0,
+    "bleedOutTurns": 5
    },
    "notes": [
     "Toughness 1 is hell-tcg maxAfflictions, ported straight across — same meaning."
@@ -1952,7 +1988,8 @@
     "vision": 6,
     "movement": 5,
     "staminaMax": 0,
-    "staminaRegen": 0
+    "staminaRegen": 0,
+    "bleedOutTurns": 5
    },
    "notes": [
     "Toughness 1 is hell-tcg maxAfflictions, ported straight across — same meaning.",
@@ -2036,7 +2073,8 @@
     "vision": 8,
     "movement": 5,
     "staminaMax": 5,
-    "staminaRegen": 1
+    "staminaRegen": 1,
+    "bleedOutTurns": 5
    },
    "notes": [
     "Resolute +2 DROPPED — the stat was removed 2026-08-15 with no replacement.",
@@ -2044,6 +2082,7 @@
    ],
    "specialty": null,
    "originBadges": [
+    "Beautiful",
     "Frail"
    ],
    "classPowers": [],
@@ -2100,7 +2139,8 @@
     "vision": 6,
     "movement": 5,
     "staminaMax": 0,
-    "staminaRegen": 0
+    "staminaRegen": 0,
+    "bleedOutTurns": 5
    },
    "notes": [
     "Toughness 1 is hell-tcg maxAfflictions, ported straight across — same meaning."
@@ -2161,7 +2201,8 @@
     "vision": 6,
     "movement": 5,
     "staminaMax": 5,
-    "staminaRegen": 1
+    "staminaRegen": 1,
+    "bleedOutTurns": 5
    },
    "notes": [
     "Toughness 1 is hell-tcg maxAfflictions, ported straight across — same meaning."
@@ -2224,7 +2265,8 @@
     "vision": 6,
     "movement": 5,
     "staminaMax": 5,
-    "staminaRegen": 1
+    "staminaRegen": 1,
+    "bleedOutTurns": 5
    },
    "notes": [
     "Resolute +1 DROPPED — the stat was removed 2026-08-15 with no replacement.",
@@ -2286,7 +2328,8 @@
     "vision": 6,
     "movement": 5,
     "staminaMax": 0,
-    "staminaRegen": 0
+    "staminaRegen": 0,
+    "bleedOutTurns": 5
    },
    "notes": [
     "Toughness 1 is hell-tcg maxAfflictions, ported straight across — same meaning.",
@@ -2367,14 +2410,17 @@
     "vision": 7,
     "movement": 6,
     "staminaMax": 5,
-    "staminaRegen": 1
+    "staminaRegen": 1,
+    "bleedOutTurns": 5
    },
    "notes": [
     "Toughness 0 is hell-tcg maxAfflictions, ported straight across — same meaning.",
     "2026-08-20: class.beast created for these four. They were the only heroes in the game with no class."
    ],
    "specialty": null,
-   "originBadges": [],
+   "originBadges": [
+    "Immortal"
+   ],
    "classPowers": [],
    "namedSpecials": [
     {
@@ -2434,7 +2480,8 @@
     "vision": 6,
     "movement": 5,
     "staminaMax": 0,
-    "staminaRegen": 0
+    "staminaRegen": 0,
+    "bleedOutTurns": 5
    },
    "notes": [
     "Toughness 3 is hell-tcg maxAfflictions, ported straight across — same meaning."
@@ -2500,7 +2547,8 @@
     "vision": 6,
     "movement": 5,
     "staminaMax": 5,
-    "staminaRegen": 1
+    "staminaRegen": 1,
+    "bleedOutTurns": 5
    },
    "notes": [
     "Toughness 3 is hell-tcg maxAfflictions, ported straight across — same meaning."
@@ -2571,7 +2619,8 @@
     "vision": 8,
     "movement": 5,
     "staminaMax": 5,
-    "staminaRegen": 1
+    "staminaRegen": 1,
+    "bleedOutTurns": 5
    },
    "notes": [
     "Dodge 1 scaled x5 to 5 — hell-tcg Dodge was a 0-3 integer, HoBaT Dodge is a flat to-hit penalty in points.",
@@ -2639,7 +2688,8 @@
     "vision": 8,
     "movement": 5,
     "staminaMax": 5,
-    "staminaRegen": 1
+    "staminaRegen": 1,
+    "bleedOutTurns": 5
    },
    "notes": [
     "Dodge 2 scaled x5 to 10 — hell-tcg Dodge was a 0-3 integer, HoBaT Dodge is a flat to-hit penalty in points.",
@@ -2708,7 +2758,8 @@
     "vision": 7,
     "movement": 5,
     "staminaMax": 5,
-    "staminaRegen": 1
+    "staminaRegen": 1,
+    "bleedOutTurns": 5
    },
    "notes": [
     "Resolute +2 DROPPED — the stat was removed 2026-08-15 with no replacement.",
@@ -2770,7 +2821,8 @@
     "vision": 7,
     "movement": 5,
     "staminaMax": 5,
-    "staminaRegen": 1
+    "staminaRegen": 1,
+    "bleedOutTurns": 5
    },
    "notes": [
     "Toughness 2 is hell-tcg maxAfflictions, ported straight across — same meaning."
@@ -2838,7 +2890,8 @@
     "vision": 7,
     "movement": 5,
     "staminaMax": 5,
-    "staminaRegen": 1
+    "staminaRegen": 1,
+    "bleedOutTurns": 5
    },
    "notes": [
     "Dodge 1 scaled x5 to 5 — hell-tcg Dodge was a 0-3 integer, HoBaT Dodge is a flat to-hit penalty in points.",
@@ -2902,7 +2955,8 @@
     "vision": 6,
     "movement": 5,
     "staminaMax": 5,
-    "staminaRegen": 1
+    "staminaRegen": 1,
+    "bleedOutTurns": 5
    },
    "notes": [
     "Dodge 1 scaled x5 to 5 — hell-tcg Dodge was a 0-3 integer, HoBaT Dodge is a flat to-hit penalty in points.",
@@ -2973,7 +3027,8 @@
     "vision": 7,
     "movement": 5,
     "staminaMax": 5,
-    "staminaRegen": 1
+    "staminaRegen": 1,
+    "bleedOutTurns": 5
    },
    "notes": [
     "Toughness 2 is hell-tcg maxAfflictions, ported straight across — same meaning."
@@ -3041,7 +3096,8 @@
     "vision": 6,
     "movement": 5,
     "staminaMax": 0,
-    "staminaRegen": 0
+    "staminaRegen": 0,
+    "bleedOutTurns": 5
    },
    "notes": [
     "Toughness 2 is hell-tcg maxAfflictions, ported straight across — same meaning."
@@ -3113,7 +3169,8 @@
     "vision": 6,
     "movement": 5,
     "staminaMax": 5,
-    "staminaRegen": 1
+    "staminaRegen": 1,
+    "bleedOutTurns": 5
    },
    "notes": [
     "Resolute +1 DROPPED — the stat was removed 2026-08-15 with no replacement.",
@@ -3196,7 +3253,8 @@
     "vision": 8,
     "movement": 5,
     "staminaMax": 5,
-    "staminaRegen": 1
+    "staminaRegen": 1,
+    "bleedOutTurns": 5
    },
    "notes": [
     "Toughness 2 is hell-tcg maxAfflictions, ported straight across — same meaning."
@@ -3264,7 +3322,8 @@
     "vision": 6,
     "movement": 5,
     "staminaMax": 5,
-    "staminaRegen": 1
+    "staminaRegen": 1,
+    "bleedOutTurns": 5
    },
    "notes": [
     "Toughness 2 is hell-tcg maxAfflictions, ported straight across — same meaning."
@@ -3332,7 +3391,8 @@
     "vision": 6,
     "movement": 5,
     "staminaMax": 0,
-    "staminaRegen": 0
+    "staminaRegen": 0,
+    "bleedOutTurns": 5
    },
    "notes": [
     "Toughness 2 is hell-tcg maxAfflictions, ported straight across — same meaning."
@@ -3398,7 +3458,8 @@
     "vision": 7,
     "movement": 6,
     "staminaMax": 5,
-    "staminaRegen": 1
+    "staminaRegen": 1,
+    "bleedOutTurns": 5
    },
    "notes": [
     "Toughness 1 is hell-tcg maxAfflictions, ported straight across — same meaning.",
@@ -3465,7 +3526,8 @@
     "vision": 6,
     "movement": 5,
     "staminaMax": 0,
-    "staminaRegen": 0
+    "staminaRegen": 0,
+    "bleedOutTurns": 5
    },
    "notes": [
     "Toughness 1 is hell-tcg maxAfflictions, ported straight across — same meaning."
@@ -3533,7 +3595,8 @@
     "vision": 6,
     "movement": 5,
     "staminaMax": 5,
-    "staminaRegen": 1
+    "staminaRegen": 1,
+    "bleedOutTurns": 5
    },
    "notes": [
     "Resolute -1 DROPPED — the stat was removed 2026-08-15 with no replacement.",
@@ -3600,7 +3663,8 @@
     "vision": 6,
     "movement": 5,
     "staminaMax": 0,
-    "staminaRegen": 0
+    "staminaRegen": 0,
+    "bleedOutTurns": 5
    },
    "notes": [
     "Dodge 1 scaled x5 to 5 — hell-tcg Dodge was a 0-3 integer, HoBaT Dodge is a flat to-hit penalty in points.",
@@ -3662,7 +3726,8 @@
     "vision": 7,
     "movement": 5,
     "staminaMax": 5,
-    "staminaRegen": 1
+    "staminaRegen": 1,
+    "bleedOutTurns": 5
    },
    "notes": [
     "Dodge 1 scaled x5 to 5 — hell-tcg Dodge was a 0-3 integer, HoBaT Dodge is a flat to-hit penalty in points.",
@@ -3733,7 +3798,8 @@
     "vision": 7,
     "movement": 5,
     "staminaMax": 5,
-    "staminaRegen": 1
+    "staminaRegen": 1,
+    "bleedOutTurns": 5
    },
    "notes": [
     "Resolute +4 DROPPED — the stat was removed 2026-08-15 with no replacement.",
@@ -3804,7 +3870,8 @@
     "vision": 6,
     "movement": 4,
     "staminaMax": 0,
-    "staminaRegen": 0
+    "staminaRegen": 0,
+    "bleedOutTurns": 5
    },
    "notes": [
     "Toughness 2 is hell-tcg maxAfflictions, ported straight across — same meaning.",
@@ -3914,7 +3981,8 @@
     "vision": 6,
     "movement": 5,
     "staminaMax": 0,
-    "staminaRegen": 0
+    "staminaRegen": 0,
+    "bleedOutTurns": 5
    },
    "notes": [
     "Toughness 2 is hell-tcg maxAfflictions, ported straight across — same meaning.",
@@ -4008,7 +4076,8 @@
     "vision": 7,
     "movement": 5,
     "staminaMax": 5,
-    "staminaRegen": 1
+    "staminaRegen": 1,
+    "bleedOutTurns": 5
    },
    "notes": [
     "Toughness 2 is hell-tcg maxAfflictions, ported straight across — same meaning."
@@ -4076,7 +4145,8 @@
     "vision": 7,
     "movement": 5,
     "staminaMax": 5,
-    "staminaRegen": 1
+    "staminaRegen": 1,
+    "bleedOutTurns": 5
    },
    "notes": [
     "Toughness 2 is hell-tcg maxAfflictions, ported straight across — same meaning."
@@ -4144,7 +4214,8 @@
     "vision": 6,
     "movement": 5,
     "staminaMax": 0,
-    "staminaRegen": 0
+    "staminaRegen": 0,
+    "bleedOutTurns": 5
    },
    "notes": [
     "Dodge 1 scaled x5 to 5 — hell-tcg Dodge was a 0-3 integer, HoBaT Dodge is a flat to-hit penalty in points.",
@@ -4214,7 +4285,8 @@
     "vision": 6,
     "movement": 5,
     "staminaMax": 0,
-    "staminaRegen": 0
+    "staminaRegen": 0,
+    "bleedOutTurns": 5
    },
    "notes": [
     "Toughness 2 is hell-tcg maxAfflictions, ported straight across — same meaning."
@@ -4280,7 +4352,8 @@
     "vision": 6,
     "movement": 5,
     "staminaMax": 0,
-    "staminaRegen": 0
+    "staminaRegen": 0,
+    "bleedOutTurns": 5
    },
    "notes": [
     "Toughness 2 is hell-tcg maxAfflictions, ported straight across — same meaning."
@@ -4344,7 +4417,8 @@
     "vision": 6,
     "movement": 5,
     "staminaMax": 5,
-    "staminaRegen": 1
+    "staminaRegen": 1,
+    "bleedOutTurns": 5
    },
    "notes": [
     "Resolute +1 DROPPED — the stat was removed 2026-08-15 with no replacement.",
@@ -4409,7 +4483,8 @@
     "vision": 7,
     "movement": 5,
     "staminaMax": 5,
-    "staminaRegen": 1
+    "staminaRegen": 1,
+    "bleedOutTurns": 5
    },
    "notes": [
     "Dodge 1 scaled x5 to 5 — hell-tcg Dodge was a 0-3 integer, HoBaT Dodge is a flat to-hit penalty in points.",
@@ -4478,7 +4553,8 @@
     "vision": 7,
     "movement": 6,
     "staminaMax": 5,
-    "staminaRegen": 1
+    "staminaRegen": 1,
+    "bleedOutTurns": 5
    },
    "notes": [
     "Toughness 0 is hell-tcg maxAfflictions, ported straight across — same meaning.",
@@ -4486,7 +4562,8 @@
    ],
    "specialty": null,
    "originBadges": [
-    "Survivor"
+    "Survivor",
+    "Immortal"
    ],
    "classPowers": [
     "beast-sand-blast"
@@ -4547,7 +4624,8 @@
     "vision": 6,
     "movement": 5,
     "staminaMax": 0,
-    "staminaRegen": 0
+    "staminaRegen": 0,
+    "bleedOutTurns": 5
    },
    "notes": [
     "Toughness 4 is hell-tcg maxAfflictions, ported straight across — same meaning."
@@ -4606,13 +4684,16 @@
     "vision": 6,
     "movement": 5,
     "staminaMax": 5,
-    "staminaRegen": 1
+    "staminaRegen": 1,
+    "bleedOutTurns": 5
    },
    "notes": [
     "Toughness 2 is hell-tcg maxAfflictions, ported straight across — same meaning."
    ],
    "specialty": null,
-   "originBadges": [],
+   "originBadges": [
+    "Immortal"
+   ],
    "classPowers": [],
    "namedSpecials": [
     {
@@ -4670,7 +4751,8 @@
     "vision": 6,
     "movement": 5,
     "staminaMax": 0,
-    "staminaRegen": 0
+    "staminaRegen": 0,
+    "bleedOutTurns": 5
    },
    "notes": [
     "Toughness 2 is hell-tcg maxAfflictions, ported straight across — same meaning."
@@ -4740,7 +4822,8 @@
     "vision": 6,
     "movement": 5,
     "staminaMax": 0,
-    "staminaRegen": 0
+    "staminaRegen": 0,
+    "bleedOutTurns": 5
    },
    "notes": [
     "Toughness 4 is hell-tcg maxAfflictions, ported straight across — same meaning."
@@ -4807,7 +4890,8 @@
     "vision": 6,
     "movement": 5,
     "staminaMax": 0,
-    "staminaRegen": 0
+    "staminaRegen": 0,
+    "bleedOutTurns": 5
    },
    "notes": [
     "Toughness 3 is hell-tcg maxAfflictions, ported straight across — same meaning."
@@ -4874,7 +4958,8 @@
     "vision": 6,
     "movement": 5,
     "staminaMax": 0,
-    "staminaRegen": 0
+    "staminaRegen": 0,
+    "bleedOutTurns": 5
    },
    "notes": [
     "Toughness 3 is hell-tcg maxAfflictions, ported straight across — same meaning."
@@ -4936,7 +5021,8 @@
     "vision": 6,
     "movement": 5,
     "staminaMax": 0,
-    "staminaRegen": 0
+    "staminaRegen": 0,
+    "bleedOutTurns": 5
    },
    "notes": [
     "Toughness 3 is hell-tcg maxAfflictions, ported straight across — same meaning."
@@ -5002,7 +5088,8 @@
     "vision": 6,
     "movement": 5,
     "staminaMax": 0,
-    "staminaRegen": 0
+    "staminaRegen": 0,
+    "bleedOutTurns": 5
    },
    "notes": [
     "Toughness 3 is hell-tcg maxAfflictions, ported straight across — same meaning."
@@ -5066,7 +5153,8 @@
     "vision": 6,
     "movement": 5,
     "staminaMax": 0,
-    "staminaRegen": 0
+    "staminaRegen": 0,
+    "bleedOutTurns": 5
    },
    "notes": [
     "Toughness 3 is hell-tcg maxAfflictions, ported straight across — same meaning."
@@ -5135,7 +5223,8 @@
     "vision": 6,
     "movement": 5,
     "staminaMax": 0,
-    "staminaRegen": 0
+    "staminaRegen": 0,
+    "bleedOutTurns": 5
    },
    "notes": [
     "Resolute +3 DROPPED — the stat was removed 2026-08-15 with no replacement.",
@@ -5144,7 +5233,6 @@
    "specialty": null,
    "originBadges": [
     "Survivor",
-    "Badly Wounded",
     "Veteran"
    ],
    "classPowers": [],
@@ -5202,7 +5290,8 @@
     "vision": 6,
     "movement": 5,
     "staminaMax": 0,
-    "staminaRegen": 0
+    "staminaRegen": 0,
+    "bleedOutTurns": 5
    },
    "notes": [
     "Toughness 3 is hell-tcg maxAfflictions, ported straight across — same meaning."
@@ -5268,7 +5357,8 @@
     "vision": 6,
     "movement": 5,
     "staminaMax": 0,
-    "staminaRegen": 0
+    "staminaRegen": 0,
+    "bleedOutTurns": 5
    },
    "notes": [
     "Toughness 3 is hell-tcg maxAfflictions, ported straight across — same meaning."
@@ -5327,7 +5417,8 @@
     "vision": 6,
     "movement": 5,
     "staminaMax": 0,
-    "staminaRegen": 0
+    "staminaRegen": 0,
+    "bleedOutTurns": 5
    },
    "notes": [
     "Toughness 3 is hell-tcg maxAfflictions, ported straight across — same meaning."
@@ -5397,7 +5488,8 @@
     "vision": 6,
     "movement": 5,
     "staminaMax": 5,
-    "staminaRegen": 1
+    "staminaRegen": 1,
+    "bleedOutTurns": 5
    },
    "notes": [
     "Resolute +2 DROPPED — the stat was removed 2026-08-15 with no replacement.",
@@ -5464,7 +5556,8 @@
     "vision": 6,
     "movement": 5,
     "staminaMax": 0,
-    "staminaRegen": 0
+    "staminaRegen": 0,
+    "bleedOutTurns": 5
    },
    "notes": [
     "Dodge 1 scaled x5 to 5 — hell-tcg Dodge was a 0-3 integer, HoBaT Dodge is a flat to-hit penalty in points.",
@@ -5537,7 +5630,8 @@
     "vision": 6,
     "movement": 5,
     "staminaMax": 0,
-    "staminaRegen": 0
+    "staminaRegen": 0,
+    "bleedOutTurns": 5
    },
    "notes": [
     "Toughness 3 is hell-tcg maxAfflictions, ported straight across — same meaning."
@@ -5607,7 +5701,8 @@
     "vision": 6,
     "movement": 5,
     "staminaMax": 0,
-    "staminaRegen": 0
+    "staminaRegen": 0,
+    "bleedOutTurns": 5
    },
    "notes": [
     "Toughness 3 is hell-tcg maxAfflictions, ported straight across — same meaning."
@@ -5679,7 +5774,8 @@
     "vision": 6,
     "movement": 5,
     "staminaMax": 0,
-    "staminaRegen": 0
+    "staminaRegen": 0,
+    "bleedOutTurns": 5
    },
    "notes": [
     "Dodge 1 scaled x5 to 5 — hell-tcg Dodge was a 0-3 integer, HoBaT Dodge is a flat to-hit penalty in points.",
@@ -5755,7 +5851,8 @@
     "vision": 6,
     "movement": 5,
     "staminaMax": 5,
-    "staminaRegen": 1
+    "staminaRegen": 1,
+    "bleedOutTurns": 5
    },
    "notes": [
     "Resolute +1 DROPPED — the stat was removed 2026-08-15 with no replacement.",
@@ -5826,7 +5923,8 @@
     "vision": 8,
     "movement": 5,
     "staminaMax": 5,
-    "staminaRegen": 1
+    "staminaRegen": 1,
+    "bleedOutTurns": 5
    },
    "notes": [
     "Toughness 3 is hell-tcg maxAfflictions, ported straight across — same meaning."
@@ -5898,7 +5996,8 @@
     "vision": 7,
     "movement": 5,
     "staminaMax": 5,
-    "staminaRegen": 1
+    "staminaRegen": 1,
+    "bleedOutTurns": 5
    },
    "notes": [
     "Toughness 1 is hell-tcg maxAfflictions, ported straight across — same meaning."
@@ -5968,7 +6067,8 @@
     "vision": 6,
     "movement": 5,
     "staminaMax": 0,
-    "staminaRegen": 0
+    "staminaRegen": 0,
+    "bleedOutTurns": 5
    },
    "notes": [
     "Toughness 2 is hell-tcg maxAfflictions, ported straight across — same meaning."
@@ -6038,7 +6138,8 @@
     "vision": 7,
     "movement": 5,
     "staminaMax": 5,
-    "staminaRegen": 1
+    "staminaRegen": 1,
+    "bleedOutTurns": 5
    },
    "notes": [
     "Toughness 2 is hell-tcg maxAfflictions, ported straight across — same meaning."
@@ -6106,7 +6207,8 @@
     "vision": 6,
     "movement": 5,
     "staminaMax": 5,
-    "staminaRegen": 1
+    "staminaRegen": 1,
+    "bleedOutTurns": 5
    },
    "notes": [
     "Toughness 2 is hell-tcg maxAfflictions, ported straight across — same meaning."
@@ -6174,7 +6276,8 @@
     "vision": 6,
     "movement": 5,
     "staminaMax": 0,
-    "staminaRegen": 0
+    "staminaRegen": 0,
+    "bleedOutTurns": 5
    },
    "notes": [
     "Toughness 2 is hell-tcg maxAfflictions, ported straight across — same meaning."
@@ -6237,7 +6340,8 @@
     "vision": 6,
     "movement": 5,
     "staminaMax": 0,
-    "staminaRegen": 0
+    "staminaRegen": 0,
+    "bleedOutTurns": 5
    },
    "notes": [
     "Toughness 2 is hell-tcg maxAfflictions, ported straight across — same meaning."
@@ -6306,7 +6410,8 @@
     "vision": 6,
     "movement": 5,
     "staminaMax": 0,
-    "staminaRegen": 0
+    "staminaRegen": 0,
+    "bleedOutTurns": 5
    },
    "notes": [
     "Toughness 4 is hell-tcg maxAfflictions, ported straight across — same meaning."
@@ -6374,7 +6479,8 @@
     "vision": 6,
     "movement": 5,
     "staminaMax": 0,
-    "staminaRegen": 0
+    "staminaRegen": 0,
+    "bleedOutTurns": 5
    },
    "notes": [
     "Toughness 3 is hell-tcg maxAfflictions, ported straight across — same meaning."
@@ -6436,7 +6542,8 @@
     "vision": 6,
     "movement": 5,
     "staminaMax": 0,
-    "staminaRegen": 0
+    "staminaRegen": 0,
+    "bleedOutTurns": 5
    },
    "notes": [
     "Toughness 3 is hell-tcg maxAfflictions, ported straight across — same meaning."
@@ -6499,7 +6606,8 @@
     "vision": 6,
     "movement": 5,
     "staminaMax": 0,
-    "staminaRegen": 0
+    "staminaRegen": 0,
+    "bleedOutTurns": 5
    },
    "notes": [
     "Toughness 3 is hell-tcg maxAfflictions, ported straight across — same meaning."
@@ -6565,7 +6673,8 @@
     "vision": 6,
     "movement": 5,
     "staminaMax": 0,
-    "staminaRegen": 0
+    "staminaRegen": 0,
+    "bleedOutTurns": 5
    },
    "notes": [
     "Toughness 3 is hell-tcg maxAfflictions, ported straight across — same meaning."
@@ -6633,7 +6742,8 @@
     "vision": 6,
     "movement": 5,
     "staminaMax": 0,
-    "staminaRegen": 0
+    "staminaRegen": 0,
+    "bleedOutTurns": 5
    },
    "notes": [
     "Resolute -1 DROPPED — the stat was removed 2026-08-15 with no replacement.",
@@ -6700,7 +6810,8 @@
     "vision": 6,
     "movement": 5,
     "staminaMax": 0,
-    "staminaRegen": 0
+    "staminaRegen": 0,
+    "bleedOutTurns": 5
    },
    "notes": [
     "Toughness 3 is hell-tcg maxAfflictions, ported straight across — same meaning."
@@ -6768,7 +6879,8 @@
     "vision": 8,
     "movement": 5,
     "staminaMax": 5,
-    "staminaRegen": 1
+    "staminaRegen": 1,
+    "bleedOutTurns": 5
    },
    "notes": [
     "Toughness 3 is hell-tcg maxAfflictions, ported straight across — same meaning."
@@ -6840,7 +6952,8 @@
     "vision": 7,
     "movement": 5,
     "staminaMax": 5,
-    "staminaRegen": 1
+    "staminaRegen": 1,
+    "bleedOutTurns": 5
    },
    "notes": [
     "Dodge 1 scaled x5 to 5 — hell-tcg Dodge was a 0-3 integer, HoBaT Dodge is a flat to-hit penalty in points.",
@@ -6913,7 +7026,8 @@
     "vision": 6,
     "movement": 5,
     "staminaMax": 5,
-    "staminaRegen": 1
+    "staminaRegen": 1,
+    "bleedOutTurns": 5
    },
    "notes": [
     "Toughness 3 is hell-tcg maxAfflictions, ported straight across — same meaning.",
@@ -6984,7 +7098,8 @@
     "vision": 6,
     "movement": 5,
     "staminaMax": 5,
-    "staminaRegen": 1
+    "staminaRegen": 1,
+    "bleedOutTurns": 5
    },
    "notes": [
     "Toughness 3 is hell-tcg maxAfflictions, ported straight across — same meaning.",
@@ -7055,7 +7170,8 @@
     "vision": 6,
     "movement": 5,
     "staminaMax": 5,
-    "staminaRegen": 1
+    "staminaRegen": 1,
+    "bleedOutTurns": 5
    },
    "notes": [
     "Toughness 3 is hell-tcg maxAfflictions, ported straight across — same meaning.",
@@ -7126,7 +7242,8 @@
     "vision": 6,
     "movement": 5,
     "staminaMax": 5,
-    "staminaRegen": 1
+    "staminaRegen": 1,
+    "bleedOutTurns": 5
    },
    "notes": [
     "Toughness 3 is hell-tcg maxAfflictions, ported straight across — same meaning.",
@@ -7197,7 +7314,8 @@
     "vision": 6,
     "movement": 5,
     "staminaMax": 5,
-    "staminaRegen": 1
+    "staminaRegen": 1,
+    "bleedOutTurns": 5
    },
    "notes": [
     "Toughness 1 is hell-tcg maxAfflictions, ported straight across — same meaning.",
@@ -7268,7 +7386,8 @@
     "vision": 6,
     "movement": 5,
     "staminaMax": 5,
-    "staminaRegen": 1
+    "staminaRegen": 1,
+    "bleedOutTurns": 5
    },
    "notes": [
     "Toughness 1 is hell-tcg maxAfflictions, ported straight across — same meaning.",
@@ -7339,7 +7458,8 @@
     "vision": 6,
     "movement": 5,
     "staminaMax": 5,
-    "staminaRegen": 1
+    "staminaRegen": 1,
+    "bleedOutTurns": 5
    },
    "notes": [
     "Toughness 1 is hell-tcg maxAfflictions, ported straight across — same meaning.",
@@ -7410,7 +7530,8 @@
     "vision": 6,
     "movement": 5,
     "staminaMax": 5,
-    "staminaRegen": 1
+    "staminaRegen": 1,
+    "bleedOutTurns": 5
    },
    "notes": [
     "Toughness 1 is hell-tcg maxAfflictions, ported straight across — same meaning.",
@@ -7481,7 +7602,8 @@
     "vision": 7,
     "movement": 5,
     "staminaMax": 5,
-    "staminaRegen": 1
+    "staminaRegen": 1,
+    "bleedOutTurns": 5
    },
    "notes": [
     "Dodge 1 scaled x5 to 5 — hell-tcg Dodge was a 0-3 integer, HoBaT Dodge is a flat to-hit penalty in points.",
@@ -7553,7 +7675,8 @@
     "vision": 7,
     "movement": 5,
     "staminaMax": 5,
-    "staminaRegen": 1
+    "staminaRegen": 1,
+    "bleedOutTurns": 5
    },
    "notes": [
     "Dodge 1 scaled x5 to 5 — hell-tcg Dodge was a 0-3 integer, HoBaT Dodge is a flat to-hit penalty in points.",
@@ -7625,7 +7748,8 @@
     "vision": 7,
     "movement": 5,
     "staminaMax": 5,
-    "staminaRegen": 1
+    "staminaRegen": 1,
+    "bleedOutTurns": 5
    },
    "notes": [
     "Dodge 1 scaled x5 to 5 — hell-tcg Dodge was a 0-3 integer, HoBaT Dodge is a flat to-hit penalty in points.",
@@ -7697,7 +7821,8 @@
     "vision": 7,
     "movement": 5,
     "staminaMax": 5,
-    "staminaRegen": 1
+    "staminaRegen": 1,
+    "bleedOutTurns": 5
    },
    "notes": [
     "Dodge 1 scaled x5 to 5 — hell-tcg Dodge was a 0-3 integer, HoBaT Dodge is a flat to-hit penalty in points.",
@@ -7769,7 +7894,8 @@
     "vision": 7,
     "movement": 5,
     "staminaMax": 5,
-    "staminaRegen": 1
+    "staminaRegen": 1,
+    "bleedOutTurns": 5
    },
    "notes": [
     "Toughness 2 is hell-tcg maxAfflictions, ported straight across — same meaning.",
@@ -7840,7 +7966,8 @@
     "vision": 7,
     "movement": 5,
     "staminaMax": 5,
-    "staminaRegen": 1
+    "staminaRegen": 1,
+    "bleedOutTurns": 5
    },
    "notes": [
     "Toughness 2 is hell-tcg maxAfflictions, ported straight across — same meaning.",
@@ -7911,7 +8038,8 @@
     "vision": 7,
     "movement": 5,
     "staminaMax": 5,
-    "staminaRegen": 1
+    "staminaRegen": 1,
+    "bleedOutTurns": 5
    },
    "notes": [
     "Toughness 2 is hell-tcg maxAfflictions, ported straight across — same meaning.",
@@ -7982,7 +8110,8 @@
     "vision": 7,
     "movement": 5,
     "staminaMax": 5,
-    "staminaRegen": 1
+    "staminaRegen": 1,
+    "bleedOutTurns": 5
    },
    "notes": [
     "Toughness 2 is hell-tcg maxAfflictions, ported straight across — same meaning.",
@@ -8053,7 +8182,8 @@
     "vision": 6,
     "movement": 5,
     "staminaMax": 5,
-    "staminaRegen": 1
+    "staminaRegen": 1,
+    "bleedOutTurns": 5
    },
    "notes": [
     "Toughness 2 is hell-tcg maxAfflictions, ported straight across — same meaning.",
@@ -8126,7 +8256,8 @@
     "vision": 6,
     "movement": 5,
     "staminaMax": 5,
-    "staminaRegen": 1
+    "staminaRegen": 1,
+    "bleedOutTurns": 5
    },
    "notes": [
     "Toughness 2 is hell-tcg maxAfflictions, ported straight across — same meaning.",
@@ -8199,7 +8330,8 @@
     "vision": 6,
     "movement": 5,
     "staminaMax": 5,
-    "staminaRegen": 1
+    "staminaRegen": 1,
+    "bleedOutTurns": 5
    },
    "notes": [
     "Toughness 2 is hell-tcg maxAfflictions, ported straight across — same meaning.",
@@ -8272,7 +8404,8 @@
     "vision": 6,
     "movement": 5,
     "staminaMax": 5,
-    "staminaRegen": 1
+    "staminaRegen": 1,
+    "bleedOutTurns": 5
    },
    "notes": [
     "Toughness 2 is hell-tcg maxAfflictions, ported straight across — same meaning.",
@@ -8345,7 +8478,8 @@
     "vision": 6,
     "movement": 5,
     "staminaMax": 5,
-    "staminaRegen": 1
+    "staminaRegen": 1,
+    "bleedOutTurns": 5
    },
    "notes": [
     "Toughness 2 is hell-tcg maxAfflictions, ported straight across — same meaning.",
@@ -8418,7 +8552,8 @@
     "vision": 6,
     "movement": 5,
     "staminaMax": 5,
-    "staminaRegen": 1
+    "staminaRegen": 1,
+    "bleedOutTurns": 5
    },
    "notes": [
     "Toughness 2 is hell-tcg maxAfflictions, ported straight across — same meaning.",
@@ -8491,7 +8626,8 @@
     "vision": 6,
     "movement": 5,
     "staminaMax": 5,
-    "staminaRegen": 1
+    "staminaRegen": 1,
+    "bleedOutTurns": 5
    },
    "notes": [
     "Toughness 2 is hell-tcg maxAfflictions, ported straight across — same meaning.",
@@ -8564,7 +8700,8 @@
     "vision": 6,
     "movement": 5,
     "staminaMax": 5,
-    "staminaRegen": 1
+    "staminaRegen": 1,
+    "bleedOutTurns": 5
    },
    "notes": [
     "Toughness 2 is hell-tcg maxAfflictions, ported straight across — same meaning.",
@@ -8637,7 +8774,8 @@
     "vision": 6,
     "movement": 5,
     "staminaMax": 5,
-    "staminaRegen": 1
+    "staminaRegen": 1,
+    "bleedOutTurns": 5
    },
    "notes": [
     "Dodge 1 scaled x5 to 5 — hell-tcg Dodge was a 0-3 integer, HoBaT Dodge is a flat to-hit penalty in points.",
@@ -8712,7 +8850,8 @@
     "vision": 6,
     "movement": 5,
     "staminaMax": 5,
-    "staminaRegen": 1
+    "staminaRegen": 1,
+    "bleedOutTurns": 5
    },
    "notes": [
     "Dodge 1 scaled x5 to 5 — hell-tcg Dodge was a 0-3 integer, HoBaT Dodge is a flat to-hit penalty in points.",
@@ -8787,7 +8926,8 @@
     "vision": 6,
     "movement": 5,
     "staminaMax": 5,
-    "staminaRegen": 1
+    "staminaRegen": 1,
+    "bleedOutTurns": 5
    },
    "notes": [
     "Dodge 1 scaled x5 to 5 — hell-tcg Dodge was a 0-3 integer, HoBaT Dodge is a flat to-hit penalty in points.",
@@ -8862,7 +9002,8 @@
     "vision": 6,
     "movement": 5,
     "staminaMax": 5,
-    "staminaRegen": 1
+    "staminaRegen": 1,
+    "bleedOutTurns": 5
    },
    "notes": [
     "Dodge 1 scaled x5 to 5 — hell-tcg Dodge was a 0-3 integer, HoBaT Dodge is a flat to-hit penalty in points.",
@@ -8937,7 +9078,8 @@
     "vision": 6,
     "movement": 5,
     "staminaMax": 5,
-    "staminaRegen": 1
+    "staminaRegen": 1,
+    "bleedOutTurns": 5
    },
    "notes": [
     "Toughness 2 is hell-tcg maxAfflictions, ported straight across — same meaning.",
@@ -9008,7 +9150,8 @@
     "vision": 6,
     "movement": 5,
     "staminaMax": 5,
-    "staminaRegen": 1
+    "staminaRegen": 1,
+    "bleedOutTurns": 5
    },
    "notes": [
     "Toughness 2 is hell-tcg maxAfflictions, ported straight across — same meaning.",
@@ -9079,7 +9222,8 @@
     "vision": 6,
     "movement": 5,
     "staminaMax": 5,
-    "staminaRegen": 1
+    "staminaRegen": 1,
+    "bleedOutTurns": 5
    },
    "notes": [
     "Toughness 2 is hell-tcg maxAfflictions, ported straight across — same meaning.",
@@ -9150,7 +9294,8 @@
     "vision": 6,
     "movement": 5,
     "staminaMax": 5,
-    "staminaRegen": 1
+    "staminaRegen": 1,
+    "bleedOutTurns": 5
    },
    "notes": [
     "Toughness 2 is hell-tcg maxAfflictions, ported straight across — same meaning.",
@@ -9221,7 +9366,8 @@
     "vision": 7,
     "movement": 5,
     "staminaMax": 5,
-    "staminaRegen": 1
+    "staminaRegen": 1,
+    "bleedOutTurns": 5
    },
    "notes": [
     "Dodge 2 scaled x5 to 10 — hell-tcg Dodge was a 0-3 integer, HoBaT Dodge is a flat to-hit penalty in points.",
@@ -9295,7 +9441,8 @@
     "vision": 7,
     "movement": 5,
     "staminaMax": 5,
-    "staminaRegen": 1
+    "staminaRegen": 1,
+    "bleedOutTurns": 5
    },
    "notes": [
     "Dodge 2 scaled x5 to 10 — hell-tcg Dodge was a 0-3 integer, HoBaT Dodge is a flat to-hit penalty in points.",
@@ -9369,7 +9516,8 @@
     "vision": 7,
     "movement": 5,
     "staminaMax": 5,
-    "staminaRegen": 1
+    "staminaRegen": 1,
+    "bleedOutTurns": 5
    },
    "notes": [
     "Dodge 2 scaled x5 to 10 — hell-tcg Dodge was a 0-3 integer, HoBaT Dodge is a flat to-hit penalty in points.",
@@ -9443,7 +9591,8 @@
     "vision": 7,
     "movement": 5,
     "staminaMax": 5,
-    "staminaRegen": 1
+    "staminaRegen": 1,
+    "bleedOutTurns": 5
    },
    "notes": [
     "Dodge 2 scaled x5 to 10 — hell-tcg Dodge was a 0-3 integer, HoBaT Dodge is a flat to-hit penalty in points.",
@@ -9517,7 +9666,8 @@
     "vision": 7,
     "movement": 5,
     "staminaMax": 5,
-    "staminaRegen": 1
+    "staminaRegen": 1,
+    "bleedOutTurns": 5
    },
    "notes": [
     "Dodge 1 scaled x5 to 5 — hell-tcg Dodge was a 0-3 integer, HoBaT Dodge is a flat to-hit penalty in points.",
@@ -9589,7 +9739,8 @@
     "vision": 7,
     "movement": 5,
     "staminaMax": 5,
-    "staminaRegen": 1
+    "staminaRegen": 1,
+    "bleedOutTurns": 5
    },
    "notes": [
     "Dodge 1 scaled x5 to 5 — hell-tcg Dodge was a 0-3 integer, HoBaT Dodge is a flat to-hit penalty in points.",
@@ -9661,7 +9812,8 @@
     "vision": 7,
     "movement": 5,
     "staminaMax": 5,
-    "staminaRegen": 1
+    "staminaRegen": 1,
+    "bleedOutTurns": 5
    },
    "notes": [
     "Dodge 1 scaled x5 to 5 — hell-tcg Dodge was a 0-3 integer, HoBaT Dodge is a flat to-hit penalty in points.",
@@ -9733,7 +9885,8 @@
     "vision": 7,
     "movement": 5,
     "staminaMax": 5,
-    "staminaRegen": 1
+    "staminaRegen": 1,
+    "bleedOutTurns": 5
    },
    "notes": [
     "Dodge 1 scaled x5 to 5 — hell-tcg Dodge was a 0-3 integer, HoBaT Dodge is a flat to-hit penalty in points.",
@@ -9805,7 +9958,8 @@
     "vision": 8,
     "movement": 5,
     "staminaMax": 5,
-    "staminaRegen": 1
+    "staminaRegen": 1,
+    "bleedOutTurns": 5
    },
    "notes": [
     "Dodge 1 scaled x5 to 5 — hell-tcg Dodge was a 0-3 integer, HoBaT Dodge is a flat to-hit penalty in points.",
@@ -9879,7 +10033,8 @@
     "vision": 8,
     "movement": 5,
     "staminaMax": 5,
-    "staminaRegen": 1
+    "staminaRegen": 1,
+    "bleedOutTurns": 5
    },
    "notes": [
     "Dodge 1 scaled x5 to 5 — hell-tcg Dodge was a 0-3 integer, HoBaT Dodge is a flat to-hit penalty in points.",
@@ -9953,7 +10108,8 @@
     "vision": 8,
     "movement": 5,
     "staminaMax": 5,
-    "staminaRegen": 1
+    "staminaRegen": 1,
+    "bleedOutTurns": 5
    },
    "notes": [
     "Dodge 1 scaled x5 to 5 — hell-tcg Dodge was a 0-3 integer, HoBaT Dodge is a flat to-hit penalty in points.",
@@ -10027,7 +10183,8 @@
     "vision": 8,
     "movement": 5,
     "staminaMax": 5,
-    "staminaRegen": 1
+    "staminaRegen": 1,
+    "bleedOutTurns": 5
    },
    "notes": [
     "Dodge 1 scaled x5 to 5 — hell-tcg Dodge was a 0-3 integer, HoBaT Dodge is a flat to-hit penalty in points.",
@@ -10101,7 +10258,8 @@
     "vision": 8,
     "movement": 5,
     "staminaMax": 5,
-    "staminaRegen": 1
+    "staminaRegen": 1,
+    "bleedOutTurns": 5
    },
    "notes": [
     "Dodge 1 scaled x5 to 5 — hell-tcg Dodge was a 0-3 integer, HoBaT Dodge is a flat to-hit penalty in points.",
@@ -10173,7 +10331,8 @@
     "vision": 8,
     "movement": 5,
     "staminaMax": 5,
-    "staminaRegen": 1
+    "staminaRegen": 1,
+    "bleedOutTurns": 5
    },
    "notes": [
     "Dodge 1 scaled x5 to 5 — hell-tcg Dodge was a 0-3 integer, HoBaT Dodge is a flat to-hit penalty in points.",
@@ -10245,7 +10404,8 @@
     "vision": 8,
     "movement": 5,
     "staminaMax": 5,
-    "staminaRegen": 1
+    "staminaRegen": 1,
+    "bleedOutTurns": 5
    },
    "notes": [
     "Dodge 1 scaled x5 to 5 — hell-tcg Dodge was a 0-3 integer, HoBaT Dodge is a flat to-hit penalty in points.",
@@ -10317,7 +10477,8 @@
     "vision": 8,
     "movement": 5,
     "staminaMax": 5,
-    "staminaRegen": 1
+    "staminaRegen": 1,
+    "bleedOutTurns": 5
    },
    "notes": [
     "Dodge 1 scaled x5 to 5 — hell-tcg Dodge was a 0-3 integer, HoBaT Dodge is a flat to-hit penalty in points.",
@@ -10389,7 +10550,8 @@
     "vision": 8,
     "movement": 5,
     "staminaMax": 5,
-    "staminaRegen": 1
+    "staminaRegen": 1,
+    "bleedOutTurns": 5
    },
    "notes": [
     "Toughness 2 is hell-tcg maxAfflictions, ported straight across — same meaning.",
@@ -10460,7 +10622,8 @@
     "vision": 8,
     "movement": 5,
     "staminaMax": 5,
-    "staminaRegen": 1
+    "staminaRegen": 1,
+    "bleedOutTurns": 5
    },
    "notes": [
     "Toughness 2 is hell-tcg maxAfflictions, ported straight across — same meaning.",
@@ -10531,7 +10694,8 @@
     "vision": 8,
     "movement": 5,
     "staminaMax": 5,
-    "staminaRegen": 1
+    "staminaRegen": 1,
+    "bleedOutTurns": 5
    },
    "notes": [
     "Toughness 2 is hell-tcg maxAfflictions, ported straight across — same meaning.",
@@ -10602,7 +10766,8 @@
     "vision": 8,
     "movement": 5,
     "staminaMax": 5,
-    "staminaRegen": 1
+    "staminaRegen": 1,
+    "bleedOutTurns": 5
    },
    "notes": [
     "Toughness 2 is hell-tcg maxAfflictions, ported straight across — same meaning.",
@@ -10673,7 +10838,8 @@
     "vision": 7,
     "movement": 5,
     "staminaMax": 5,
-    "staminaRegen": 1
+    "staminaRegen": 1,
+    "bleedOutTurns": 5
    },
    "notes": [
     "Dodge 3 scaled x5 to 15 — hell-tcg Dodge was a 0-3 integer, HoBaT Dodge is a flat to-hit penalty in points.",
@@ -10747,7 +10913,8 @@
     "vision": 7,
     "movement": 5,
     "staminaMax": 5,
-    "staminaRegen": 1
+    "staminaRegen": 1,
+    "bleedOutTurns": 5
    },
    "notes": [
     "Dodge 3 scaled x5 to 15 — hell-tcg Dodge was a 0-3 integer, HoBaT Dodge is a flat to-hit penalty in points.",
@@ -10821,7 +10988,8 @@
     "vision": 7,
     "movement": 5,
     "staminaMax": 5,
-    "staminaRegen": 1
+    "staminaRegen": 1,
+    "bleedOutTurns": 5
    },
    "notes": [
     "Dodge 3 scaled x5 to 15 — hell-tcg Dodge was a 0-3 integer, HoBaT Dodge is a flat to-hit penalty in points.",
@@ -10895,7 +11063,8 @@
     "vision": 7,
     "movement": 5,
     "staminaMax": 5,
-    "staminaRegen": 1
+    "staminaRegen": 1,
+    "bleedOutTurns": 5
    },
    "notes": [
     "Dodge 3 scaled x5 to 15 — hell-tcg Dodge was a 0-3 integer, HoBaT Dodge is a flat to-hit penalty in points.",
@@ -10969,7 +11138,8 @@
     "vision": 6,
     "movement": 5,
     "staminaMax": 5,
-    "staminaRegen": 1
+    "staminaRegen": 1,
+    "bleedOutTurns": 5
    },
    "notes": [
     "Toughness 2 is hell-tcg maxAfflictions, ported straight across — same meaning.",
@@ -11042,7 +11212,8 @@
     "vision": 6,
     "movement": 5,
     "staminaMax": 5,
-    "staminaRegen": 1
+    "staminaRegen": 1,
+    "bleedOutTurns": 5
    },
    "notes": [
     "Toughness 2 is hell-tcg maxAfflictions, ported straight across — same meaning.",
@@ -11115,7 +11286,8 @@
     "vision": 6,
     "movement": 5,
     "staminaMax": 5,
-    "staminaRegen": 1
+    "staminaRegen": 1,
+    "bleedOutTurns": 5
    },
    "notes": [
     "Toughness 2 is hell-tcg maxAfflictions, ported straight across — same meaning.",
@@ -11188,7 +11360,8 @@
     "vision": 6,
     "movement": 5,
     "staminaMax": 5,
-    "staminaRegen": 1
+    "staminaRegen": 1,
+    "bleedOutTurns": 5
    },
    "notes": [
     "Toughness 2 is hell-tcg maxAfflictions, ported straight across — same meaning.",
@@ -11261,7 +11434,8 @@
     "vision": 6,
     "movement": 5,
     "staminaMax": 5,
-    "staminaRegen": 1
+    "staminaRegen": 1,
+    "bleedOutTurns": 5
    },
    "notes": [
     "Toughness 1 is hell-tcg maxAfflictions, ported straight across — same meaning.",
@@ -11332,7 +11506,8 @@
     "vision": 6,
     "movement": 5,
     "staminaMax": 5,
-    "staminaRegen": 1
+    "staminaRegen": 1,
+    "bleedOutTurns": 5
    },
    "notes": [
     "Toughness 1 is hell-tcg maxAfflictions, ported straight across — same meaning.",
@@ -11403,7 +11578,8 @@
     "vision": 6,
     "movement": 5,
     "staminaMax": 5,
-    "staminaRegen": 1
+    "staminaRegen": 1,
+    "bleedOutTurns": 5
    },
    "notes": [
     "Toughness 1 is hell-tcg maxAfflictions, ported straight across — same meaning.",
@@ -11474,7 +11650,8 @@
     "vision": 6,
     "movement": 5,
     "staminaMax": 5,
-    "staminaRegen": 1
+    "staminaRegen": 1,
+    "bleedOutTurns": 5
    },
    "notes": [
     "Toughness 1 is hell-tcg maxAfflictions, ported straight across — same meaning.",
@@ -11547,7 +11724,8 @@
     "vision": 6,
     "movement": 5,
     "staminaMax": 5,
-    "staminaRegen": 1
+    "staminaRegen": 1,
+    "bleedOutTurns": 5
    },
    "notes": [
     "Resolute +1 DROPPED — the stat was removed 2026-08-15 with no replacement.",
@@ -11624,7 +11802,8 @@
     "vision": 6,
     "movement": 5,
     "staminaMax": 5,
-    "staminaRegen": 1
+    "staminaRegen": 1,
+    "bleedOutTurns": 5
    },
    "notes": [
     "Resolute +1 DROPPED — the stat was removed 2026-08-15 with no replacement.",
@@ -11701,7 +11880,8 @@
     "vision": 6,
     "movement": 5,
     "staminaMax": 5,
-    "staminaRegen": 1
+    "staminaRegen": 1,
+    "bleedOutTurns": 5
    },
    "notes": [
     "Resolute +1 DROPPED — the stat was removed 2026-08-15 with no replacement.",
@@ -11776,7 +11956,8 @@
     "vision": 8,
     "movement": 5,
     "staminaMax": 5,
-    "staminaRegen": 1
+    "staminaRegen": 1,
+    "bleedOutTurns": 5
    },
    "notes": [
     "Dodge 1 scaled x5 to 5 — hell-tcg Dodge was a 0-3 integer, HoBaT Dodge is a flat to-hit penalty in points.",
@@ -11852,7 +12033,8 @@
     "vision": 8,
     "movement": 5,
     "staminaMax": 5,
-    "staminaRegen": 1
+    "staminaRegen": 1,
+    "bleedOutTurns": 5
    },
    "notes": [
     "Dodge 1 scaled x5 to 5 — hell-tcg Dodge was a 0-3 integer, HoBaT Dodge is a flat to-hit penalty in points.",
@@ -11928,7 +12110,8 @@
     "vision": 8,
     "movement": 5,
     "staminaMax": 5,
-    "staminaRegen": 1
+    "staminaRegen": 1,
+    "bleedOutTurns": 5
    },
    "notes": [
     "Dodge 1 scaled x5 to 5 — hell-tcg Dodge was a 0-3 integer, HoBaT Dodge is a flat to-hit penalty in points.",
@@ -12004,7 +12187,8 @@
     "vision": 8,
     "movement": 5,
     "staminaMax": 5,
-    "staminaRegen": 1
+    "staminaRegen": 1,
+    "bleedOutTurns": 5
    },
    "notes": [
     "Dodge 1 scaled x5 to 5 — hell-tcg Dodge was a 0-3 integer, HoBaT Dodge is a flat to-hit penalty in points.",
@@ -12080,7 +12264,8 @@
     "vision": 7,
     "movement": 5,
     "staminaMax": 5,
-    "staminaRegen": 1
+    "staminaRegen": 1,
+    "bleedOutTurns": 5
    },
    "notes": [
     "Toughness 3 is hell-tcg maxAfflictions, ported straight across — same meaning.",
@@ -12151,7 +12336,8 @@
     "vision": 7,
     "movement": 5,
     "staminaMax": 5,
-    "staminaRegen": 1
+    "staminaRegen": 1,
+    "bleedOutTurns": 5
    },
    "notes": [
     "Toughness 3 is hell-tcg maxAfflictions, ported straight across — same meaning.",
@@ -12222,7 +12408,8 @@
     "vision": 7,
     "movement": 5,
     "staminaMax": 5,
-    "staminaRegen": 1
+    "staminaRegen": 1,
+    "bleedOutTurns": 5
    },
    "notes": [
     "Toughness 3 is hell-tcg maxAfflictions, ported straight across — same meaning.",
@@ -12293,7 +12480,8 @@
     "vision": 7,
     "movement": 5,
     "staminaMax": 5,
-    "staminaRegen": 1
+    "staminaRegen": 1,
+    "bleedOutTurns": 5
    },
    "notes": [
     "Toughness 3 is hell-tcg maxAfflictions, ported straight across — same meaning.",
@@ -12364,7 +12552,8 @@
     "vision": 7,
     "movement": 5,
     "staminaMax": 5,
-    "staminaRegen": 1
+    "staminaRegen": 1,
+    "bleedOutTurns": 5
    },
    "notes": [
     "Dodge 1 scaled x5 to 5 — hell-tcg Dodge was a 0-3 integer, HoBaT Dodge is a flat to-hit penalty in points.",
@@ -12439,7 +12628,8 @@
     "vision": 7,
     "movement": 5,
     "staminaMax": 5,
-    "staminaRegen": 1
+    "staminaRegen": 1,
+    "bleedOutTurns": 5
    },
    "notes": [
     "Dodge 1 scaled x5 to 5 — hell-tcg Dodge was a 0-3 integer, HoBaT Dodge is a flat to-hit penalty in points.",
@@ -12514,7 +12704,8 @@
     "vision": 7,
     "movement": 5,
     "staminaMax": 5,
-    "staminaRegen": 1
+    "staminaRegen": 1,
+    "bleedOutTurns": 5
    },
    "notes": [
     "Dodge 1 scaled x5 to 5 — hell-tcg Dodge was a 0-3 integer, HoBaT Dodge is a flat to-hit penalty in points.",
@@ -12589,7 +12780,8 @@
     "vision": 7,
     "movement": 5,
     "staminaMax": 5,
-    "staminaRegen": 1
+    "staminaRegen": 1,
+    "bleedOutTurns": 5
    },
    "notes": [
     "Dodge 1 scaled x5 to 5 — hell-tcg Dodge was a 0-3 integer, HoBaT Dodge is a flat to-hit penalty in points.",
@@ -12664,7 +12856,8 @@
     "vision": 7,
     "movement": 5,
     "staminaMax": 5,
-    "staminaRegen": 1
+    "staminaRegen": 1,
+    "bleedOutTurns": 5
    },
    "notes": [
     "Toughness 2 is hell-tcg maxAfflictions, ported straight across — same meaning.",
@@ -12737,7 +12930,8 @@
     "vision": 7,
     "movement": 5,
     "staminaMax": 5,
-    "staminaRegen": 1
+    "staminaRegen": 1,
+    "bleedOutTurns": 5
    },
    "notes": [
     "Toughness 2 is hell-tcg maxAfflictions, ported straight across — same meaning.",
@@ -12810,7 +13004,8 @@
     "vision": 7,
     "movement": 5,
     "staminaMax": 5,
-    "staminaRegen": 1
+    "staminaRegen": 1,
+    "bleedOutTurns": 5
    },
    "notes": [
     "Toughness 2 is hell-tcg maxAfflictions, ported straight across — same meaning.",
@@ -12883,7 +13078,8 @@
     "vision": 7,
     "movement": 5,
     "staminaMax": 5,
-    "staminaRegen": 1
+    "staminaRegen": 1,
+    "bleedOutTurns": 5
    },
    "notes": [
     "Toughness 2 is hell-tcg maxAfflictions, ported straight across — same meaning.",
@@ -12956,7 +13152,8 @@
     "vision": 6,
     "movement": 5,
     "staminaMax": 5,
-    "staminaRegen": 1
+    "staminaRegen": 1,
+    "bleedOutTurns": 5
    },
    "notes": [
     "Toughness 2 is hell-tcg maxAfflictions, ported straight across — same meaning.",
@@ -13027,7 +13224,8 @@
     "vision": 6,
     "movement": 5,
     "staminaMax": 5,
-    "staminaRegen": 1
+    "staminaRegen": 1,
+    "bleedOutTurns": 5
    },
    "notes": [
     "Toughness 2 is hell-tcg maxAfflictions, ported straight across — same meaning.",
@@ -13098,7 +13296,8 @@
     "vision": 6,
     "movement": 5,
     "staminaMax": 5,
-    "staminaRegen": 1
+    "staminaRegen": 1,
+    "bleedOutTurns": 5
    },
    "notes": [
     "Toughness 2 is hell-tcg maxAfflictions, ported straight across — same meaning.",
@@ -13169,7 +13368,8 @@
     "vision": 6,
     "movement": 5,
     "staminaMax": 5,
-    "staminaRegen": 1
+    "staminaRegen": 1,
+    "bleedOutTurns": 5
    },
    "notes": [
     "Toughness 2 is hell-tcg maxAfflictions, ported straight across — same meaning.",
@@ -13242,7 +13442,8 @@
     "vision": 6,
     "movement": 5,
     "staminaMax": 5,
-    "staminaRegen": 1
+    "staminaRegen": 1,
+    "bleedOutTurns": 5
    },
    "notes": [
     "Resolute +2 DROPPED — the stat was removed 2026-08-15 with no replacement.",
@@ -13316,7 +13517,8 @@
     "vision": 6,
     "movement": 5,
     "staminaMax": 5,
-    "staminaRegen": 1
+    "staminaRegen": 1,
+    "bleedOutTurns": 5
    },
    "notes": [
     "Resolute +2 DROPPED — the stat was removed 2026-08-15 with no replacement.",
@@ -13390,7 +13592,8 @@
     "vision": 6,
     "movement": 5,
     "staminaMax": 5,
-    "staminaRegen": 1
+    "staminaRegen": 1,
+    "bleedOutTurns": 5
    },
    "notes": [
     "Resolute +2 DROPPED — the stat was removed 2026-08-15 with no replacement.",
@@ -13464,7 +13667,8 @@
     "vision": 6,
     "movement": 5,
     "staminaMax": 5,
-    "staminaRegen": 1
+    "staminaRegen": 1,
+    "bleedOutTurns": 5
    },
    "notes": [
     "Resolute +2 DROPPED — the stat was removed 2026-08-15 with no replacement.",
@@ -13536,7 +13740,8 @@
     "vision": 6,
     "movement": 5,
     "staminaMax": 5,
-    "staminaRegen": 1
+    "staminaRegen": 1,
+    "bleedOutTurns": 5
    },
    "notes": [
     "Toughness 2 is hell-tcg maxAfflictions, ported straight across — same meaning.",
@@ -13609,7 +13814,8 @@
     "vision": 6,
     "movement": 5,
     "staminaMax": 5,
-    "staminaRegen": 1
+    "staminaRegen": 1,
+    "bleedOutTurns": 5
    },
    "notes": [
     "Toughness 2 is hell-tcg maxAfflictions, ported straight across — same meaning.",
@@ -13682,7 +13888,8 @@
     "vision": 6,
     "movement": 5,
     "staminaMax": 5,
-    "staminaRegen": 1
+    "staminaRegen": 1,
+    "bleedOutTurns": 5
    },
    "notes": [
     "Toughness 2 is hell-tcg maxAfflictions, ported straight across — same meaning.",
@@ -13755,7 +13962,8 @@
     "vision": 6,
     "movement": 5,
     "staminaMax": 5,
-    "staminaRegen": 1
+    "staminaRegen": 1,
+    "bleedOutTurns": 5
    },
    "notes": [
     "Toughness 2 is hell-tcg maxAfflictions, ported straight across — same meaning.",
@@ -13828,7 +14036,8 @@
     "vision": 6,
     "movement": 5,
     "staminaMax": 5,
-    "staminaRegen": 1
+    "staminaRegen": 1,
+    "bleedOutTurns": 5
    },
    "notes": [
     "Toughness 3 is hell-tcg maxAfflictions, ported straight across — same meaning.",
@@ -13957,7 +14166,8 @@
     "vision": 6,
     "movement": 5,
     "staminaMax": 5,
-    "staminaRegen": 1
+    "staminaRegen": 1,
+    "bleedOutTurns": 5
    },
    "notes": [
     "Toughness 3 is hell-tcg maxAfflictions, ported straight across — same meaning.",
@@ -14084,7 +14294,8 @@
     "vision": 6,
     "movement": 5,
     "staminaMax": 5,
-    "staminaRegen": 1
+    "staminaRegen": 1,
+    "bleedOutTurns": 5
    },
    "notes": [
     "Toughness 3 is hell-tcg maxAfflictions, ported straight across — same meaning.",
@@ -14215,7 +14426,8 @@
     "vision": 6,
     "movement": 5,
     "staminaMax": 5,
-    "staminaRegen": 1
+    "staminaRegen": 1,
+    "bleedOutTurns": 5
    },
    "notes": [
     "Toughness 3 is hell-tcg maxAfflictions, ported straight across — same meaning.",
@@ -14344,7 +14556,8 @@
     "vision": 7,
     "movement": 5,
     "staminaMax": 5,
-    "staminaRegen": 1
+    "staminaRegen": 1,
+    "bleedOutTurns": 5
    },
    "notes": [
     "Toughness 2 is hell-tcg maxAfflictions, ported straight across — same meaning.",
@@ -14471,7 +14684,8 @@
     "vision": 7,
     "movement": 5,
     "staminaMax": 5,
-    "staminaRegen": 1
+    "staminaRegen": 1,
+    "bleedOutTurns": 5
    },
    "notes": [
     "Toughness 2 is hell-tcg maxAfflictions, ported straight across — same meaning.",
@@ -14613,7 +14827,8 @@
     "vision": 7,
     "movement": 5,
     "staminaMax": 5,
-    "staminaRegen": 1
+    "staminaRegen": 1,
+    "bleedOutTurns": 5
    },
    "notes": [
     "Toughness 2 is hell-tcg maxAfflictions, ported straight across — same meaning.",
@@ -14742,7 +14957,8 @@
     "vision": 7,
     "movement": 5,
     "staminaMax": 5,
-    "staminaRegen": 1
+    "staminaRegen": 1,
+    "bleedOutTurns": 5
    },
    "notes": [
     "Resolute +1 DROPPED — the stat was removed 2026-08-15 with no replacement.",
@@ -14872,7 +15088,8 @@
     "vision": 6,
     "movement": 5,
     "staminaMax": 5,
-    "staminaRegen": 1
+    "staminaRegen": 1,
+    "bleedOutTurns": 5
    },
    "notes": [
     "Toughness 1 is hell-tcg maxAfflictions, ported straight across — same meaning.",
@@ -14998,7 +15215,8 @@
     "vision": 6,
     "movement": 5,
     "staminaMax": 5,
-    "staminaRegen": 1
+    "staminaRegen": 1,
+    "bleedOutTurns": 5
    },
    "notes": [
     "Toughness 1 is hell-tcg maxAfflictions, ported straight across — same meaning.",
@@ -15126,7 +15344,8 @@
     "vision": 6,
     "movement": 5,
     "staminaMax": 5,
-    "staminaRegen": 1
+    "staminaRegen": 1,
+    "bleedOutTurns": 5
    },
    "notes": [
     "Toughness 1 is hell-tcg maxAfflictions, ported straight across — same meaning.",
@@ -15254,7 +15473,8 @@
     "vision": 6,
     "movement": 5,
     "staminaMax": 5,
-    "staminaRegen": 1
+    "staminaRegen": 1,
+    "bleedOutTurns": 5
    },
    "notes": [
     "Resolute +1 DROPPED — the stat was removed 2026-08-15 with no replacement.",
@@ -15381,7 +15601,8 @@
     "vision": 6,
     "movement": 5,
     "staminaMax": 5,
-    "staminaRegen": 1
+    "staminaRegen": 1,
+    "bleedOutTurns": 5
    },
    "notes": [
     "Toughness 2 is hell-tcg maxAfflictions, ported straight across — same meaning.",
@@ -15521,7 +15742,8 @@
     "vision": 6,
     "movement": 4,
     "staminaMax": 5,
-    "staminaRegen": 1
+    "staminaRegen": 1,
+    "bleedOutTurns": 5
    },
    "notes": [
     "Toughness 2 is hell-tcg maxAfflictions, ported straight across — same meaning.",
@@ -15649,7 +15871,8 @@
     "vision": 6,
     "movement": 5,
     "staminaMax": 5,
-    "staminaRegen": 1
+    "staminaRegen": 1,
+    "bleedOutTurns": 5
    },
    "notes": [
     "Toughness 2 is hell-tcg maxAfflictions, ported straight across — same meaning.",
@@ -15789,6 +16012,7 @@
     "movement": 5,
     "staminaMax": 8,
     "staminaRegen": 1,
+    "bleedOutTurns": 5,
     "surge": -1
    },
    "notes": [
@@ -15918,7 +16142,8 @@
     "vision": 8,
     "movement": 5,
     "staminaMax": 5,
-    "staminaRegen": 1
+    "staminaRegen": 1,
+    "bleedOutTurns": 5
    },
    "notes": [
     "Toughness 2 is hell-tcg maxAfflictions, ported straight across — same meaning.",
@@ -16049,7 +16274,8 @@
     "vision": 8,
     "movement": 5,
     "staminaMax": 5,
-    "staminaRegen": 1
+    "staminaRegen": 1,
+    "bleedOutTurns": 5
    },
    "notes": [
     "Resolute +1 DROPPED — the stat was removed 2026-08-15 with no replacement.",
@@ -16060,6 +16286,7 @@
    ],
    "specialty": null,
    "originBadges": [
+    "Beautiful",
     "Frail",
     "Fey",
     "Forester"
@@ -16183,7 +16410,8 @@
     "vision": 8,
     "movement": 5,
     "staminaMax": 5,
-    "staminaRegen": 1
+    "staminaRegen": 1,
+    "bleedOutTurns": 5
    },
    "notes": [
     "Resolute +1 DROPPED — the stat was removed 2026-08-15 with no replacement.",
@@ -16194,6 +16422,7 @@
    ],
    "specialty": null,
    "originBadges": [
+    "Cultist",
     "Elf",
     "Mystic"
    ],
@@ -16311,7 +16540,8 @@
     "vision": 8,
     "movement": 5,
     "staminaMax": 5,
-    "staminaRegen": 1
+    "staminaRegen": 1,
+    "bleedOutTurns": 5
    },
    "notes": [
     "Toughness 2 is hell-tcg maxAfflictions, ported straight across — same meaning.",
@@ -16438,7 +16668,8 @@
     "vision": 7,
     "movement": 5,
     "staminaMax": 5,
-    "staminaRegen": 1
+    "staminaRegen": 1,
+    "bleedOutTurns": 5
    },
    "notes": [
     "Dodge 1 scaled x5 to 5 — hell-tcg Dodge was a 0-3 integer, HoBaT Dodge is a flat to-hit penalty in points.",
@@ -16564,7 +16795,8 @@
     "vision": 7,
     "movement": 5,
     "staminaMax": 5,
-    "staminaRegen": 1
+    "staminaRegen": 1,
+    "bleedOutTurns": 5
    },
    "notes": [
     "Dodge 1 scaled x5 to 5 — hell-tcg Dodge was a 0-3 integer, HoBaT Dodge is a flat to-hit penalty in points.",
@@ -16692,7 +16924,8 @@
     "vision": 7,
     "movement": 5,
     "staminaMax": 5,
-    "staminaRegen": 1
+    "staminaRegen": 1,
+    "bleedOutTurns": 5
    },
    "notes": [
     "Dodge 1 scaled x5 to 5 — hell-tcg Dodge was a 0-3 integer, HoBaT Dodge is a flat to-hit penalty in points.",
@@ -16823,7 +17056,8 @@
     "vision": 7,
     "movement": 5,
     "staminaMax": 5,
-    "staminaRegen": 1
+    "staminaRegen": 1,
+    "bleedOutTurns": 5
    },
    "notes": [
     "Dodge 1 scaled x5 to 5 — hell-tcg Dodge was a 0-3 integer, HoBaT Dodge is a flat to-hit penalty in points.",
@@ -16951,7 +17185,8 @@
     "vision": 6,
     "movement": 5,
     "staminaMax": 0,
-    "staminaRegen": 0
+    "staminaRegen": 0,
+    "bleedOutTurns": 5
    },
    "notes": [
     "One art template, one hero. Its folder holds 1/2/3/4 plus l/p/r/v — four levels and four statuses for THIS hero, not four designs, so it does not split the way Shadows and Skyship do.",
@@ -17008,7 +17243,8 @@
     "vision": 6,
     "movement": 5,
     "staminaMax": 0,
-    "staminaRegen": 0
+    "staminaRegen": 0,
+    "bleedOutTurns": 5
    },
    "notes": [
     "One art template, one hero. Its folder holds 1/2/3/4 plus l/p/r/v — four levels and four statuses for THIS hero, not four designs, so it does not split the way Shadows and Skyship do.",
@@ -17065,7 +17301,8 @@
     "vision": 6,
     "movement": 5,
     "staminaMax": 0,
-    "staminaRegen": 0
+    "staminaRegen": 0,
+    "bleedOutTurns": 5
    },
    "notes": [
     "One art template, one hero. Its folder holds 1/2/3/4 plus l/p/r/v — four levels and four statuses for THIS hero, not four designs, so it does not split the way Shadows and Skyship do.",
@@ -17123,7 +17360,8 @@
     "vision": 6,
     "movement": 5,
     "staminaMax": 0,
-    "staminaRegen": 0
+    "staminaRegen": 0,
+    "bleedOutTurns": 5
    },
    "notes": [
     "One art template, one hero. Its folder holds 1/2/3/4 plus l/p/r/v — four levels and four statuses for THIS hero, not four designs, so it does not split the way Shadows and Skyship do.",
@@ -17181,7 +17419,8 @@
     "vision": 6,
     "movement": 5,
     "staminaMax": 0,
-    "staminaRegen": 0
+    "staminaRegen": 0,
+    "bleedOutTurns": 5
    },
    "notes": [
     "One art template, one hero. Its folder holds 1/2/3/4 plus l/p/r/v — four levels and four statuses for THIS hero, not four designs, so it does not split the way Shadows and Skyship do.",
@@ -17238,7 +17477,8 @@
     "vision": 6,
     "movement": 5,
     "staminaMax": 0,
-    "staminaRegen": 0
+    "staminaRegen": 0,
+    "bleedOutTurns": 5
    },
    "notes": [
     "One art template, one hero. Its folder holds 1/2/3/4 plus l/p/r/v — four levels and four statuses for THIS hero, not four designs, so it does not split the way Shadows and Skyship do.",
@@ -17295,7 +17535,8 @@
     "vision": 6,
     "movement": 5,
     "staminaMax": 0,
-    "staminaRegen": 0
+    "staminaRegen": 0,
+    "bleedOutTurns": 5
    },
    "notes": [
     "One art template, one hero. Its folder holds 1/2/3/4 plus l/p/r/v — four levels and four statuses for THIS hero, not four designs, so it does not split the way Shadows and Skyship do.",
@@ -17352,7 +17593,8 @@
     "vision": 6,
     "movement": 5,
     "staminaMax": 0,
-    "staminaRegen": 0
+    "staminaRegen": 0,
+    "bleedOutTurns": 5
    },
    "notes": [
     "One art template, one hero. Its folder holds 1/2/3/4 plus l/p/r/v — four levels and four statuses for THIS hero, not four designs, so it does not split the way Shadows and Skyship do.",
@@ -17409,7 +17651,8 @@
     "vision": 7,
     "movement": 5,
     "staminaMax": 5,
-    "staminaRegen": 1
+    "staminaRegen": 1,
+    "bleedOutTurns": 5
    },
    "notes": [
     "Toughness 2 is hell-tcg maxAfflictions, ported straight across — same meaning.",
@@ -17482,7 +17725,8 @@
     "vision": 6,
     "movement": 5,
     "staminaMax": 5,
-    "staminaRegen": 1
+    "staminaRegen": 1,
+    "bleedOutTurns": 5
    },
    "notes": [
     "Resolute +1 DROPPED — the stat was removed 2026-08-15 with no replacement.",
@@ -17552,7 +17796,8 @@
     "vision": 6,
     "movement": 5,
     "staminaMax": 5,
-    "staminaRegen": 1
+    "staminaRegen": 1,
+    "bleedOutTurns": 5
    },
    "notes": [
     "Toughness 1 is hell-tcg maxAfflictions, ported straight across — same meaning.",
@@ -17623,7 +17868,8 @@
     "vision": 6,
     "movement": 5,
     "staminaMax": 5,
-    "staminaRegen": 1
+    "staminaRegen": 1,
+    "bleedOutTurns": 5
    },
    "notes": [
     "Toughness 1 is hell-tcg maxAfflictions, ported straight across — same meaning.",
@@ -17693,7 +17939,8 @@
     "vision": 7,
     "movement": 5,
     "staminaMax": 5,
-    "staminaRegen": 1
+    "staminaRegen": 1,
+    "bleedOutTurns": 5
    },
    "notes": [
     "Toughness 1 is hell-tcg maxAfflictions, ported straight across — same meaning.",
@@ -17764,7 +18011,8 @@
     "vision": 6,
     "movement": 5,
     "staminaMax": 5,
-    "staminaRegen": 1
+    "staminaRegen": 1,
+    "bleedOutTurns": 5
    },
    "notes": [
     "Toughness 4 is hell-tcg maxAfflictions, ported straight across — same meaning.",
@@ -17832,7 +18080,8 @@
     "vision": 6,
     "movement": 5,
     "staminaMax": 5,
-    "staminaRegen": 1
+    "staminaRegen": 1,
+    "bleedOutTurns": 5
    },
    "notes": [
     "Toughness 1 is hell-tcg maxAfflictions, ported straight across — same meaning.",
@@ -17903,7 +18152,8 @@
     "vision": 8,
     "movement": 5,
     "staminaMax": 5,
-    "staminaRegen": 1
+    "staminaRegen": 1,
+    "bleedOutTurns": 5
    },
    "notes": [
     "Toughness 1 is hell-tcg maxAfflictions, ported straight across — same meaning.",
@@ -17973,7 +18223,8 @@
     "vision": 7,
     "movement": 5,
     "staminaMax": 5,
-    "staminaRegen": 1
+    "staminaRegen": 1,
+    "bleedOutTurns": 5
    },
    "notes": [
     "Dodge 2 scaled x5 to 10 — hell-tcg Dodge was a 0-3 integer, HoBaT Dodge is a flat to-hit penalty in points.",
@@ -18044,7 +18295,8 @@
     "vision": 8,
     "movement": 5,
     "staminaMax": 5,
-    "staminaRegen": 1
+    "staminaRegen": 1,
+    "bleedOutTurns": 5
    },
    "notes": [
     "Resolute +1 DROPPED — the stat was removed 2026-08-15 with no replacement.",
@@ -18113,7 +18365,8 @@
     "vision": 6,
     "movement": 5,
     "staminaMax": 5,
-    "staminaRegen": 1
+    "staminaRegen": 1,
+    "bleedOutTurns": 5
    },
    "notes": [
     "Toughness 1 is hell-tcg maxAfflictions, ported straight across — same meaning.",
@@ -18181,7 +18434,8 @@
     "vision": 7,
     "movement": 5,
     "staminaMax": 5,
-    "staminaRegen": 1
+    "staminaRegen": 1,
+    "bleedOutTurns": 5
    },
    "notes": [
     "PROVISIONAL STATS - shaped on template.sky-pirate, not authored for this character. A sweep owns the numbers.",
@@ -18238,7 +18492,8 @@
     "vision": 7,
     "movement": 5,
     "staminaMax": 5,
-    "staminaRegen": 1
+    "staminaRegen": 1,
+    "bleedOutTurns": 5
    },
    "notes": [
     "PROVISIONAL STATS - shaped on template.sky-pirate, not authored for this character. A sweep owns the numbers.",
@@ -18295,7 +18550,8 @@
     "vision": 7,
     "movement": 5,
     "staminaMax": 5,
-    "staminaRegen": 1
+    "staminaRegen": 1,
+    "bleedOutTurns": 5
    },
    "notes": [
     "PROVISIONAL STATS - shaped on template.sky-pirate, not authored for this character. A sweep owns the numbers.",
@@ -18352,7 +18608,8 @@
     "vision": 7,
     "movement": 5,
     "staminaMax": 5,
-    "staminaRegen": 1
+    "staminaRegen": 1,
+    "bleedOutTurns": 5
    },
    "notes": [
     "PROVISIONAL STATS - shaped on template.sky-pirate, not authored for this character. A sweep owns the numbers.",
@@ -18409,7 +18666,8 @@
     "vision": 6,
     "movement": 5,
     "staminaMax": 5,
-    "staminaRegen": 1
+    "staminaRegen": 1,
+    "bleedOutTurns": 5
    },
    "notes": [
     "PROVISIONAL STATS - shaped on template.vigil-of-the-fallen, not authored for this character. A sweep owns the numbers.",
@@ -18466,7 +18724,8 @@
     "vision": 6,
     "movement": 5,
     "staminaMax": 5,
-    "staminaRegen": 1
+    "staminaRegen": 1,
+    "bleedOutTurns": 5
    },
    "notes": [
     "PROVISIONAL STATS - shaped on template.vigil-of-the-fallen, not authored for this character. A sweep owns the numbers.",
@@ -18523,7 +18782,8 @@
     "vision": 6,
     "movement": 5,
     "staminaMax": 5,
-    "staminaRegen": 1
+    "staminaRegen": 1,
+    "bleedOutTurns": 5
    },
    "notes": [
     "PROVISIONAL STATS - shaped on template.vigil-of-the-fallen, not authored for this character. A sweep owns the numbers.",
@@ -18580,7 +18840,8 @@
     "vision": 6,
     "movement": 5,
     "staminaMax": 5,
-    "staminaRegen": 1
+    "staminaRegen": 1,
+    "bleedOutTurns": 5
    },
    "notes": [
     "PROVISIONAL STATS - shaped on template.vigil-of-the-fallen, not authored for this character. A sweep owns the numbers.",
@@ -18637,7 +18898,8 @@
     "vision": 6,
     "movement": 5,
     "staminaMax": 0,
-    "staminaRegen": 0
+    "staminaRegen": 0,
+    "bleedOutTurns": 5
    },
    "notes": [
     "NEW UNIT ruled 2026-08-25: the school-child-solo art is its own character, separate from School Children. Stats cloned from School Children as a SOFT baseline — a sweep or ruling prices her."

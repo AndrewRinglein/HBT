@@ -31,39 +31,56 @@
    "rarity": "mage",
    "payload": "+1 Magic",
    "category": "CLASS-LOCKED",
-   "group": ""
+   "group": "",
+   "statModifiers": [
+    {
+     "stat": "resist",
+     "op": "add",
+     "value": 1
+    }
+   ],
+   "source": " | 2026-08-25 workbook review: mods"
   },
   {
    "id": "badge.aura-of-courage",
    "name": "Aura of Courage",
    "rarity": "paladin",
-   "payload": "**aura r3**: allies +5 Accuracy",
+   "payload": "**aura r3**: allies +1 resist, immune weak",
    "category": "CLASS-LOCKED",
-   "group": ""
-  },
-  {
-   "id": "badge.badly-wounded",
-   "name": "Badly Wounded",
-   "rarity": "",
-   "payload": "(prose only — not in a table)",
-   "category": "",
-   "group": ""
+   "group": "",
+   "statModifiers": [],
+   "source": " | 2026-08-25 workbook review: payload edited"
   },
   {
    "id": "badge.blessed",
    "name": "Blessed",
-   "rarity": "uncommon",
-   "payload": "+1 Favor",
+   "rarity": "rare",
+   "payload": "+1 Favor · Onsuvive: gain 1 faith",
    "category": "AWARDED",
-   "group": ""
+   "group": "",
+   "statModifiers": [
+    {
+     "stat": "resist",
+     "op": "add",
+     "value": 1
+    },
+    {
+     "stat": "staminaMax",
+     "op": "add",
+     "value": 1
+    }
+   ],
+   "source": " | 2026-08-25 workbook review: rarity->rare; mods; prose"
   },
   {
    "id": "badge.blood-in-the-eye",
    "name": "Blood in the Eye",
    "rarity": "berserker",
-   "payload": "+5 Crit, −5 Luck",
+   "payload": "+7 Crit, −5 Luck",
    "category": "SPECIALTY GRANTS",
-   "group": ""
+   "group": "",
+   "statModifiers": [],
+   "source": " | 2026-08-25 workbook review: payload edited"
   },
   {
    "id": "badge.born-archer",
@@ -91,41 +108,11 @@
    "group": ""
   },
   {
-   "id": "badge.brittle",
-   "name": "Brittle",
-   "rarity": "uncommon",
-   "payload": "−1 Armor, −1 Resist",
-   "category": "GENERATIVE — FLAWED",
-   "group": "",
-   "statModifiers": [
-    {
-     "stat": "armor",
-     "op": "add",
-     "value": -1
-    },
-    {
-     "stat": "resist",
-     "op": "add",
-     "value": -1
-    }
-   ],
-   "rollable": true,
-   "source": "2026-08-21: machine-readable fields merged from the Crucible. The prose was already byte-identical; only statModifiers/hook/rollable/blockers/engineStatGap were added."
-  },
-  {
    "id": "badge.captured",
    "name": "Captured",
    "rarity": "play",
    "payload": "**blocks deployment**; lifts on rescue",
    "category": "FATIGUE & CONDITION",
-   "group": ""
-  },
-  {
-   "id": "badge.carrying-voice",
-   "name": "Carrying Voice",
-   "rarity": "leader",
-   "payload": "all auras this hero grants gain +1 radius",
-   "category": "SPECIALTY GRANTS",
    "group": ""
   },
   {
@@ -206,9 +193,11 @@
    "id": "badge.devout",
    "name": "Devout",
    "rarity": "priest",
-   "payload": "+1 Spirit, +1 Favor",
+   "payload": "onsurvive +2 faith",
    "category": "CLASS-LOCKED",
-   "group": ""
+   "group": "",
+   "statModifiers": [],
+   "source": " | 2026-08-25 workbook review: payload edited"
   },
   {
    "id": "badge.dim-sighted",
@@ -251,18 +240,21 @@
    "id": "badge.dragon-slayer",
    "name": "Dragon Slayer",
    "rarity": "legendary",
-   "payload": "+2 Health",
+   "payload": "+2 Health, immunen to fire 1",
    "category": "AWARDED",
    "group": "",
-   "source": "2026-08-20: created. Earned by killing a dragon with a Dragon Slayer weapon. The first slayer badge in the set."
+   "source": "2026-08-20: created. Earned by killing a dragon with a Dragon Slayer weapon. The first slayer badge in the set. | 2026-08-25 workbook review: payload edited",
+   "statModifiers": []
   },
   {
    "id": "badge.drilled",
    "name": "Drilled",
    "rarity": "uncommon",
-   "payload": "+1 Surge",
+   "payload": "+3 Surge",
    "category": "AWARDED",
-   "group": ""
+   "group": "",
+   "statModifiers": [],
+   "source": " | 2026-08-25 workbook review: payload edited"
   },
   {
    "id": "badge.exhausted",
@@ -271,23 +263,6 @@
    "payload": "−2 Stamina Max, −1 Surge",
    "category": "FATIGUE & CONDITION",
    "group": ""
-  },
-  {
-   "id": "badge.fearful",
-   "name": "Fearful",
-   "rarity": "common",
-   "payload": "−1 Resist",
-   "category": "GENERATIVE — FLAWED",
-   "group": "",
-   "statModifiers": [
-    {
-     "stat": "resist",
-     "op": "add",
-     "value": -1
-    }
-   ],
-   "rollable": true,
-   "source": "2026-08-21: machine-readable fields merged from the Crucible. The prose was already byte-identical; only statModifiers/hook/rollable/blockers/engineStatGap were added."
   },
   {
    "id": "badge.feeble",
@@ -317,10 +292,12 @@
   {
    "id": "badge.first-in",
    "name": "First In",
-   "rarity": "leader",
-   "payload": "+1 Surge",
+   "rarity": "uncommon",
+   "payload": "Deploy +3",
    "category": "SPECIALTY GRANTS",
-   "group": ""
+   "group": "",
+   "statModifiers": [],
+   "source": " | 2026-08-25 workbook review: rarity->uncommon; payload edited"
   },
   {
    "id": "badge.footsore",
@@ -379,14 +356,14 @@
    "group": "",
    "statModifiers": [
     {
-     "stat": "itemSlots",
-     "op": "add",
-     "value": -1
-    },
-    {
-     "stat": "favor",
+     "stat": "corruption",
      "op": "add",
      "value": 1
+    },
+    {
+     "stat": "itemSlots",
+     "op": "add",
+     "value": 2
     }
    ],
    "engineStatGap": [
@@ -394,7 +371,7 @@
     "favor"
    ],
    "rollable": true,
-   "source": "2026-08-21: machine-readable fields merged from the Crucible. The prose was already byte-identical; only statModifiers/hook/rollable/blockers/engineStatGap were added."
+   "source": "2026-08-21: machine-readable fields merged from the Crucible. The prose was already byte-identical; only statModifiers/hook/rollable/blockers/engineStatGap were added. | 2026-08-25 workbook review: mods"
   },
   {
    "id": "badge.grieving",
@@ -423,11 +400,16 @@
     {
      "stat": "health",
      "op": "add",
-     "value": 2
+     "value": 1
+    },
+    {
+     "stat": "luck",
+     "op": "add",
+     "value": 5
     }
    ],
    "rollable": true,
-   "source": "2026-08-21: machine-readable fields merged from the Crucible. The prose was already byte-identical; only statModifiers/hook/rollable/blockers/engineStatGap were added."
+   "source": "2026-08-21: machine-readable fields merged from the Crucible. The prose was already byte-identical; only statModifiers/hook/rollable/blockers/engineStatGap were added. | 2026-08-25 workbook review: mods"
   },
   {
    "id": "badge.heavy-footed",
@@ -577,9 +559,11 @@
    "id": "badge.known-face",
    "name": "Known Face",
    "rarity": "leader",
-   "payload": "+1 Favor, +5 Deathbed Fighting to allies within 4",
+   "payload": "aura 4 +10 Deathbed Fighting to allies",
    "category": "SPECIALTY GRANTS",
-   "group": ""
+   "group": "",
+   "statModifiers": [],
+   "source": " | 2026-08-25 workbook review: payload edited"
   },
   {
    "id": "badge.laying-on-hands",
@@ -630,10 +614,11 @@
   {
    "id": "badge.lycanthropy",
    "name": "Lycanthropy",
-   "rarity": "legendary",
+   "rarity": "affliction",
    "payload": "+2 Str, +2 Move, +2 Stamina, −5 Crit, −1 Spirit · `startOfBattle`: regeneration 5 · `onAttack`: +1 Strength",
    "category": "SIGNATURE",
-   "group": ""
+   "group": "",
+   "source": " | 2026-08-25 workbook review: rarity->affliction"
   },
   {
    "id": "badge.many-pockets",
@@ -721,9 +706,11 @@
    "id": "badge.no-guard",
    "name": "No Guard",
    "rarity": "berserker",
-   "payload": "+2 Strength, −1 Armor",
+   "payload": "+2 Strength, −1 Armor +1 max stamina",
    "category": "SPECIALTY GRANTS",
-   "group": ""
+   "group": "",
+   "statModifiers": [],
+   "source": " | 2026-08-25 workbook review: payload edited"
   },
   {
    "id": "badge.oath-bound",
@@ -768,7 +755,7 @@
   {
    "id": "badge.possession",
    "name": "Possession",
-   "rarity": "legendary",
+   "rarity": "affliction",
    "payload": "+2 Magic, +1 Resist, +3 Vision · `startOfBattle`: −2 card draw",
    "category": "SIGNATURE",
    "group": ""
@@ -777,21 +764,21 @@
    "id": "badge.quick-study",
    "name": "Quick Study",
    "rarity": "rare",
-   "payload": "+1 Surge",
+   "payload": "+1 Surge · Draw turn 2 +1 (stub)",
    "category": "GENERATIVE — FAVOURABLE",
    "group": "Flat stat",
    "statModifiers": [
     {
      "stat": "surge",
      "op": "add",
-     "value": 1
+     "value": 3
     }
    ],
    "engineStatGap": [
     "surge"
    ],
    "rollable": true,
-   "source": "2026-08-21: machine-readable fields merged from the Crucible. The prose was already byte-identical; only statModifiers/hook/rollable/blockers/engineStatGap were added."
+   "source": "2026-08-21: machine-readable fields merged from the Crucible. The prose was already byte-identical; only statModifiers/hook/rollable/blockers/engineStatGap were added. | 2026-08-25 workbook review: mods; prose"
   },
   {
    "id": "badge.rage",
@@ -818,19 +805,19 @@
     {
      "stat": "crit",
      "op": "add",
-     "value": 10
+     "value": 15
     },
     {
      "stat": "dodge",
      "op": "add",
-     "value": -10
+     "value": -8
     }
    ],
    "engineStatGap": [
     "crit"
    ],
    "rollable": true,
-   "source": "2026-08-21: machine-readable fields merged from the Crucible. The prose was already byte-identical; only statModifiers/hook/rollable/blockers/engineStatGap were added."
+   "source": "2026-08-21: machine-readable fields merged from the Crucible. The prose was already byte-identical; only statModifiers/hook/rollable/blockers/engineStatGap were added. | 2026-08-25 workbook review: mods"
   },
   {
    "id": "badge.resolve",
@@ -872,10 +859,12 @@
   {
    "id": "badge.rotting-flesh",
    "name": "Rotting Flesh",
-   "rarity": "legendary",
-   "payload": "+4 Health, +2 Armor, −2 Movement, −10 Accuracy · immune to poison",
+   "rarity": "affliction",
+   "payload": "+8 Health, +1 Armor, −2 Movement, −10 Accuracy · immune to poison, start of battle take 5 true damage",
    "category": "SIGNATURE",
-   "group": ""
+   "group": "",
+   "statModifiers": [],
+   "source": " | 2026-08-25 workbook review: payload edited"
   },
   {
    "id": "badge.scarred-hide",
@@ -909,9 +898,11 @@
    "id": "badge.seen-the-other-side",
    "name": "Seen the Other Side",
    "rarity": "legendary",
-   "payload": "`startOfBattle`: protection 5 · cannot be crit",
+   "payload": "`startOfBattle`: protection 8 · lucky +25",
    "category": "AWARDED",
-   "group": ""
+   "group": "",
+   "statModifiers": [],
+   "source": " | 2026-08-25 workbook review: payload edited"
   },
   {
    "id": "badge.shaken",
@@ -925,17 +916,21 @@
    "id": "badge.shield-born",
    "name": "Shield-Born",
    "rarity": "warrior",
-   "payload": "+1 Armor, +1 Health",
+   "payload": "Health +5",
    "category": "CLASS-LOCKED",
-   "group": ""
+   "group": "",
+   "statModifiers": [],
+   "source": " | 2026-08-25 workbook review: payload edited"
   },
   {
    "id": "badge.shield-eye",
    "name": "Shield Eye",
    "rarity": "shieldbearer",
-   "payload": "`startOfBattle`: protection 3",
+   "payload": "`startOfBattle`: protection 3 to all heroes",
    "category": "SPECIALTY GRANTS",
-   "group": ""
+   "group": "",
+   "statModifiers": [],
+   "source": " | 2026-08-25 workbook review: payload edited"
   },
   {
    "id": "badge.slow",
@@ -983,17 +978,21 @@
    "id": "badge.standard-bearer",
    "name": "Standard Bearer",
    "rarity": "rare",
-   "payload": "**aura r4**: allies +1 Resist, +5 Deathbed Fighting",
+   "payload": "**aura r4**: allies +2 health, +15 Deathbed Fighting",
    "category": "AWARDED",
-   "group": ""
+   "group": "",
+   "statModifiers": [],
+   "source": " | 2026-08-25 workbook review: payload edited"
   },
   {
    "id": "badge.starving",
    "name": "Starving",
    "rarity": "Kingdom",
-   "payload": "−1 all stats; lifts on supply",
+   "payload": "−1 S, P, reach, H, -10 ACC; lifts on supply",
    "category": "FATIGUE & CONDITION",
-   "group": ""
+   "group": "",
+   "statModifiers": [],
+   "source": " | 2026-08-25 workbook review: payload edited"
   },
   {
    "id": "badge.strong",
@@ -1018,14 +1017,6 @@
    "source": "2026-08-21: machine-readable fields merged from the Crucible. The prose was already byte-identical; only statModifiers/hook/rollable/blockers/engineStatGap were added."
   },
   {
-   "id": "badge.survivor",
-   "name": "Survivor",
-   "rarity": "civilian",
-   "payload": "+1 Toughness, −1 Strength",
-   "category": "CLASS-LOCKED",
-   "group": ""
-  },
-  {
    "id": "badge.swimmer",
    "name": "Swimmer",
    "rarity": "common",
@@ -1044,10 +1035,11 @@
   {
    "id": "badge.the-lovers",
    "name": "The Lovers",
-   "rarity": "rare",
+   "rarity": "acquired",
    "payload": "if the paired hero is also deployed: both +2 Health, +5 Crit, +2 Stamina",
    "category": "SIGNATURE",
-   "group": ""
+   "group": "",
+   "source": " | 2026-08-25 workbook review: rarity->acquired"
   },
   {
    "id": "badge.thick-skinned",
@@ -1070,19 +1062,22 @@
    "id": "badge.thorned-hide",
    "name": "Thorned Hide",
    "rarity": "uncommon",
-   "payload": "Thorns 2",
+   "payload": "Thorns 1",
    "category": "GENERATIVE — FAVOURABLE",
    "group": "Trigger",
-   "source": "2026-08-20: Thorns should live in a badge as well as in armour. On taking damage, the attacker takes 2 true damage — at any range."
+   "source": "2026-08-20: Thorns should live in a badge as well as in armour. On taking damage, the attacker takes 2 true damage — at any range. | 2026-08-25 workbook review: payload edited",
+   "statModifiers": []
   },
   {
    "id": "badge.trailwise",
    "name": "Trailwise",
    "rarity": "ranger",
-   "payload": "+1 Vision; -1 Movement cost into Forest",
+   "payload": "+1 Vision; -1 Movement cost into Forest and Hills",
    "category": "CLASS-LOCKED",
    "group": "",
-   "needsCapability": "capability.read-terrain — a modifier conditioned on the terrain the unit occupies, reading BOTH the base terrain and any terrain modifier on that hex; a movement-cost modifier, since movement cost belongs to terrain rather than to the 21 stats"
+   "needsCapability": "capability.read-terrain — a modifier conditioned on the terrain the unit occupies, reading BOTH the base terrain and any terrain modifier on that hex; a movement-cost modifier, since movement cost belongs to terrain rather than to the 21 stats",
+   "statModifiers": [],
+   "source": " | 2026-08-25 workbook review: payload edited"
   },
   {
    "id": "badge.uncanny",
@@ -1164,10 +1159,11 @@
   {
    "id": "badge.vampirism",
    "name": "Vampirism",
-   "rarity": "legendary",
+   "rarity": "affliction",
    "payload": "+2 Strength · grants `power.vampirism.blood-drain` · `onDamage` (melee): heal 1",
    "category": "SIGNATURE",
-   "group": ""
+   "group": "",
+   "source": " | 2026-08-25 workbook review: rarity->affliction"
   },
   {
    "id": "badge.vengeful",
@@ -1184,40 +1180,14 @@
    "source": "2026-08-21: machine-readable fields merged from the Crucible. The prose was already byte-identical; only statModifiers/hook/rollable/blockers/engineStatGap were added."
   },
   {
-   "id": "badge.veteran",
-   "name": "Veteran",
-   "rarity": "uncommon",
-   "payload": "+10 Deathbed Fighting",
-   "category": "GENERATIVE — FAVOURABLE",
-   "group": "Flat stat",
-   "statModifiers": [
-    {
-     "stat": "deathbedFighting",
-     "op": "add",
-     "value": 10
-    }
-   ],
-   "engineStatGap": [
-    "deathbedFighting"
-   ],
-   "rollable": true,
-   "source": "2026-08-21: machine-readable fields merged from the Crucible. The prose was already byte-identical; only statModifiers/hook/rollable/blockers/engineStatGap were added."
-  },
-  {
-   "id": "badge.walking-wounded",
-   "name": "Walking Wounded",
-   "rarity": "",
-   "payload": "(prose only — not in a table)",
-   "category": "",
-   "group": ""
-  },
-  {
    "id": "badge.wall-veteran",
    "name": "Wall Veteran",
    "rarity": "uncommon",
-   "payload": "+1 Armor when defending",
+   "payload": "1 protection per EOA",
    "category": "AWARDED",
-   "group": ""
+   "group": "",
+   "statModifiers": [],
+   "source": " | 2026-08-25 workbook review: payload edited"
   },
   {
    "id": "badge.war-bred",
@@ -1409,23 +1379,17 @@
    "id": "origin.black-wings",
    "name": "Black Wings",
    "rarity": "rare",
-   "payload": "+1 Movement, **flight**",
+   "payload": "+1 Movement, **flight move action -2 move flights, 1 stamina**",
    "category": "SPECIAL ORIGINS",
-   "group": ""
+   "group": "",
+   "statModifiers": [],
+   "source": " | 2026-08-25 workbook review: payload edited"
   },
   {
    "id": "origin.dead-mans-luck",
    "name": "Dead Man's Luck",
    "rarity": "legendary",
    "payload": "+15 Luck, +20 Deathbed Fighting, −2 Health",
-   "category": "SPECIAL ORIGINS",
-   "group": ""
-  },
-  {
-   "id": "origin.deep-drinker",
-   "name": "Deep Drinker",
-   "rarity": "uncommon",
-   "payload": "`onActivationEnd`: −1 burn, −1 poison, −1 frost",
    "category": "SPECIAL ORIGINS",
    "group": ""
   },
@@ -1473,9 +1437,11 @@
    "id": "origin.pack-raised",
    "name": "Pack-Raised",
    "rarity": "uncommon",
-   "payload": "+1 Strength, +1 Movement, +1 Vision",
+   "payload": "+1 Strength, +1 Movement, forester badge",
    "category": "SPECIAL ORIGINS",
-   "group": ""
+   "group": "",
+   "statModifiers": [],
+   "source": " | 2026-08-25 workbook review: payload edited"
   },
   {
    "id": "origin.stonewrought",
@@ -1489,9 +1455,11 @@
    "id": "origin.temple-ward",
    "name": "Temple Ward",
    "rarity": "uncommon",
-   "payload": "+1 Resist, +1 Favor, `startOfBattle`: protection 3",
+   "payload": "+1 Resist, `startOfBattle`: protection7",
    "category": "SPECIAL ORIGINS",
-   "group": ""
+   "group": "",
+   "statModifiers": [],
+   "source": " | 2026-08-25 workbook review: payload edited"
   },
   {
    "id": "origin.wind-touched",
@@ -1557,20 +1525,10 @@
    "id": "badge.faithful",
    "name": "Faithful",
    "rarity": "common",
-   "statModifiers": [
-    {
-     "stat": "spirit",
-     "op": "add",
-     "value": 1
-    },
-    {
-     "stat": "deathbedFighting",
-     "op": "add",
-     "value": 10
-    }
-   ],
+   "statModifiers": [],
    "intent": "Certain enough of what comes next to be difficult to finish off. Named on heroes since the first import with no definition behind it; defined 2026-08-22.",
-   "source": "Authored 2026-08-22 to separate the 24 Eve base heroes, which shared stat blocks."
+   "source": "Authored 2026-08-22 to separate the 24 Eve base heroes, which shared stat blocks. | 2026-08-25 workbook review: prose",
+   "payload": "onsurvivecombat: gain 1 faith"
   },
   {
    "id": "badge.hillman",
@@ -1581,6 +1539,471 @@
    "intent": "Grew up looking down at people. Takes the high ground cheaply and reaches further from it.",
    "needsCapability": "capability.read-terrain — a modifier conditioned on the terrain the unit occupies, reading BOTH the base terrain and any terrain modifier on that hex; a movement-cost modifier, since movement cost belongs to terrain rather than to the 21 stats",
    "source": "Authored 2026-08-22. Takes the hills half that Climber used to hold before Climber moved to Rocky."
+  },
+  {
+   "id": "badge.resolute",
+   "name": "Resolute",
+   "rarity": "common",
+   "payload": "",
+   "statModifiers": [
+    {
+     "stat": "resist",
+     "op": "add",
+     "value": 1
+    }
+   ],
+   "rollable": true,
+   "source": "Authored in the 2026-08-25 badge workbook review."
+  },
+  {
+   "id": "badge.timid",
+   "name": "Timid",
+   "rarity": "common",
+   "payload": "OTD:gain 1 weak",
+   "statModifiers": [],
+   "rollable": true,
+   "source": "Authored in the 2026-08-25 badge workbook review."
+  },
+  {
+   "id": "badge.fearful",
+   "name": "Fearful",
+   "rarity": "uncommon",
+   "payload": "OTD:gain 2 weak",
+   "statModifiers": [],
+   "rollable": true,
+   "source": "Authored in the 2026-08-25 badge workbook review. Supersedes the earlier badge.fearful (−1 Resist).",
+   "note": "Coexists with a same-name concept elsewhere by ruling."
+  },
+  {
+   "id": "badge.easily-fatigued",
+   "name": "Easily Fatigued",
+   "rarity": "uncommon",
+   "payload": "OTD: lose 1 stamina",
+   "statModifiers": [],
+   "rollable": true,
+   "source": "Authored in the 2026-08-25 badge workbook review."
+  },
+  {
+   "id": "badge.juggernaut",
+   "name": "Juggernaut",
+   "rarity": "rare",
+   "payload": "Does not get slowed by AOO damage",
+   "statModifiers": [],
+   "rollable": true,
+   "source": "Authored in the 2026-08-25 badge workbook review."
+  },
+  {
+   "id": "badge.unsteady",
+   "name": "Unsteady",
+   "rarity": "uncommon",
+   "payload": "OTD: slow 1",
+   "statModifiers": [],
+   "rollable": true,
+   "source": "Authored in the 2026-08-25 badge workbook review."
+  },
+  {
+   "id": "badge.blessed-one",
+   "name": "Blessed One",
+   "rarity": "rare",
+   "payload": "Spirit +1, Magic -1",
+   "statModifiers": [],
+   "rollable": true,
+   "source": "Authored in the 2026-08-25 badge workbook review."
+  },
+  {
+   "id": "badge.tormented-one",
+   "name": "Tormented One",
+   "rarity": "rare",
+   "payload": "Magic +1, Spirit -1",
+   "statModifiers": [],
+   "rollable": true,
+   "source": "Authored in the 2026-08-25 badge workbook review."
+  },
+  {
+   "id": "badge.immortal",
+   "name": "Immortal",
+   "rarity": "legendary",
+   "payload": "Does not die.",
+   "statModifiers": [],
+   "rollable": true,
+   "source": "Authored in the 2026-08-25 badge workbook review.",
+   "needsCapability": "IMMORTAL STUB — resolved out of combat, likely the cemetery (ruled 2026-08-25)"
+  },
+  {
+   "id": "badge.prophesied-one",
+   "name": "Prophesied One",
+   "rarity": "rare",
+   "payload": "??",
+   "statModifiers": [],
+   "rollable": true,
+   "source": "Authored in the 2026-08-25 badge workbook review.",
+   "note": "Prose placeholder BY DESIGN — ruled 2026-08-25, meaning arrives later."
+  },
+  {
+   "id": "badge.death-seeker",
+   "name": "Death Seeker",
+   "rarity": "common",
+   "payload": "Lucky -10, Health -2, Turns to Bleed out -3.  Deathbed +40.   OTD: gain 2 stamina",
+   "statModifiers": [],
+   "rollable": true,
+   "source": "Authored in the 2026-08-25 badge workbook review.",
+   "needsCapability": "stat bleedOutTurns — new hero stat, base 5 (ruled 2026-08-25)"
+  },
+  {
+   "id": "badge.survivor",
+   "name": "Survivor",
+   "rarity": "common",
+   "payload": "3 extra turns to bleed out, deathbed +20, toughtness+2",
+   "statModifiers": [],
+   "rollable": true,
+   "source": "Authored in the 2026-08-25 badge workbook review. Supersedes the earlier badge.survivor (+1 Toughness, −1 Strength).",
+   "needsCapability": "stat bleedOutTurns — new hero stat, base 5 (ruled 2026-08-25)",
+   "note": "Coexists with a same-name concept elsewhere by ruling."
+  },
+  {
+   "id": "badge.thick-blooded",
+   "name": "Thick Blooded",
+   "rarity": "common",
+   "payload": "5 extra turns to bleed out",
+   "statModifiers": [],
+   "rollable": true,
+   "source": "Authored in the 2026-08-25 badge workbook review.",
+   "needsCapability": "stat bleedOutTurns — new hero stat, base 5 (ruled 2026-08-25)"
+  },
+  {
+   "id": "badge.stocky",
+   "name": "Stocky",
+   "rarity": "common",
+   "payload": "Dodge -7, Lucky +5 Crit +5 Health +1",
+   "statModifiers": [],
+   "rollable": true,
+   "source": "Authored in the 2026-08-25 badge workbook review."
+  },
+  {
+   "id": "badge.tall",
+   "name": "Tall",
+   "rarity": "common",
+   "payload": "Movement +1 Reach +1, Dodge -10",
+   "statModifiers": [],
+   "rollable": true,
+   "source": "Authored in the 2026-08-25 badge workbook review."
+  },
+  {
+   "id": "badge.short",
+   "name": "Short",
+   "rarity": "common",
+   "payload": "Movement -1, Dodge +10",
+   "statModifiers": [],
+   "rollable": true,
+   "source": "Authored in the 2026-08-25 badge workbook review."
+  },
+  {
+   "id": "badge.beautiful",
+   "name": "Beautiful",
+   "rarity": "common",
+   "payload": "ondeath: all heroes gain 20 surge and +1 health",
+   "statModifiers": [],
+   "rollable": true,
+   "source": "Authored in the 2026-08-25 badge workbook review."
+  },
+  {
+   "id": "badge.nobility",
+   "name": "Nobility",
+   "rarity": "rare",
+   "payload": "onsurvive: +2 supplies.  Surge pool +30",
+   "statModifiers": [],
+   "rollable": true,
+   "source": "Authored in the 2026-08-25 badge workbook review.",
+   "note": "Surge pool = Surge Chance (ruled 2026-08-25: already a stat under another name). Maps to the grant-Surge-Chance effect.",
+   "needsCapability": "battle-outcome reward"
+  },
+  {
+   "id": "badge.pacifist",
+   "name": "Pacifist",
+   "rarity": "rare",
+   "payload": "S-3 P -3.  Karma 4, Luck +20, Stamina Regen +1",
+   "statModifiers": [],
+   "rollable": true,
+   "source": "Authored in the 2026-08-25 badge workbook review."
+  },
+  {
+   "id": "badge.poor-vision",
+   "name": "Poor Vision",
+   "rarity": "common",
+   "payload": "Accuracy -5, reach -1, vision -2",
+   "statModifiers": [],
+   "rollable": true,
+   "source": "Authored in the 2026-08-25 badge workbook review."
+  },
+  {
+   "id": "badge.bowmaster",
+   "name": "BowMaster",
+   "rarity": "uncommon",
+   "payload": "Bows +15 accuracy",
+   "statModifiers": [],
+   "rollable": true,
+   "source": "Authored in the 2026-08-25 badge workbook review."
+  },
+  {
+   "id": "badge.quick-jump",
+   "name": "Quick Jump",
+   "rarity": "rare",
+   "payload": "oncombat start starting surge pool +80",
+   "statModifiers": [],
+   "rollable": true,
+   "source": "Authored in the 2026-08-25 badge workbook review.",
+   "note": "Surge pool = Surge Chance (ruled 2026-08-25: already a stat under another name). Maps to the grant-Surge-Chance effect."
+  },
+  {
+   "id": "badge.titan-blood",
+   "name": "Titan Blood",
+   "rarity": "uncommon",
+   "payload": "S+3, H+5, mv -2, onstart slow3, max stamina -2.",
+   "statModifiers": [],
+   "rollable": true,
+   "source": "Authored in the 2026-08-25 badge workbook review."
+  },
+  {
+   "id": "badge.flatfooted",
+   "name": "Flatfooted",
+   "rarity": "common",
+   "payload": "onstart  slow 5 weak 2",
+   "statModifiers": [],
+   "rollable": true,
+   "source": "Authored in the 2026-08-25 badge workbook review."
+  },
+  {
+   "id": "badge.lackluster",
+   "name": "Lackluster",
+   "rarity": "common",
+   "payload": "Surge -10",
+   "statModifiers": [],
+   "rollable": true,
+   "source": "Authored in the 2026-08-25 badge workbook review."
+  },
+  {
+   "id": "badge.void",
+   "name": "Void",
+   "rarity": "common",
+   "payload": "Magic -1, Health +2",
+   "statModifiers": [],
+   "rollable": true,
+   "source": "Authored in the 2026-08-25 badge workbook review."
+  },
+  {
+   "id": "badge.atheist",
+   "name": "Atheist",
+   "rarity": "common",
+   "payload": "Spirit -1 Health +2",
+   "statModifiers": [],
+   "rollable": true,
+   "source": "Authored in the 2026-08-25 badge workbook review."
+  },
+  {
+   "id": "badge.airwalker",
+   "name": "Airwalker",
+   "rarity": "rare",
+   "payload": "Airwalk ability",
+   "statModifiers": [],
+   "rollable": true,
+   "source": "Authored in the 2026-08-25 badge workbook review."
+  },
+  {
+   "id": "badge.9-lives",
+   "name": "9 Lives",
+   "rarity": "rare",
+   "payload": "Deathbed Fighting +15, Lucky +15, Health +1",
+   "statModifiers": [],
+   "rollable": true,
+   "source": "Authored in the 2026-08-25 badge workbook review."
+  },
+  {
+   "id": "badge.sword-master",
+   "name": "Sword Master",
+   "rarity": "rare",
+   "payload": "blade attacks +1 damage",
+   "statModifiers": [],
+   "rollable": true,
+   "source": "Authored in the 2026-08-25 badge workbook review."
+  },
+  {
+   "id": "badge.pugilist",
+   "name": "Pugilist",
+   "rarity": "rare",
+   "payload": "Brawl attacks +1 damage",
+   "statModifiers": [],
+   "rollable": true,
+   "source": "Authored in the 2026-08-25 badge workbook review."
+  },
+  {
+   "id": "badge.tireless",
+   "name": "Tireless",
+   "rarity": "uncommon",
+   "payload": "Max stamina +2",
+   "statModifiers": [],
+   "rollable": true,
+   "source": "Authored in the 2026-08-25 badge workbook review."
+  },
+  {
+   "id": "badge.karma-master",
+   "name": "Karma Master",
+   "rarity": "uncommon",
+   "payload": "Karma 2, Accuracy -10",
+   "statModifiers": [],
+   "rollable": true,
+   "source": "Authored in the 2026-08-25 badge workbook review."
+  },
+  {
+   "id": "badge.good-karma",
+   "name": "Good Karma",
+   "rarity": "common",
+   "payload": "Karma 1",
+   "statModifiers": [],
+   "rollable": true,
+   "source": "Authored in the 2026-08-25 badge workbook review."
+  },
+  {
+   "id": "badge.frost-resistant",
+   "name": "Frost Resistant",
+   "rarity": "rare",
+   "payload": "Immune Frost 1",
+   "statModifiers": [],
+   "rollable": true,
+   "source": "Authored in the 2026-08-25 badge workbook review."
+  },
+  {
+   "id": "badge.poison-resistant",
+   "name": "Poison Resistant",
+   "rarity": "rare",
+   "payload": "Immune poison 1",
+   "statModifiers": [],
+   "rollable": true,
+   "source": "Authored in the 2026-08-25 badge workbook review."
+  },
+  {
+   "id": "badge.curse-resistant",
+   "name": "Curse Resistant",
+   "rarity": "rare",
+   "payload": "Immune weak 1",
+   "statModifiers": [],
+   "rollable": true,
+   "source": "Authored in the 2026-08-25 badge workbook review."
+  },
+  {
+   "id": "badge.fire-resistant",
+   "name": "Fire Resistant",
+   "rarity": "rare",
+   "payload": "Immune fire 1",
+   "statModifiers": [],
+   "rollable": true,
+   "source": "Authored in the 2026-08-25 badge workbook review."
+  },
+  {
+   "id": "badge.troll-blood",
+   "name": "Troll Blood",
+   "rarity": "rare",
+   "payload": "EOA gain 1 regen",
+   "statModifiers": [],
+   "rollable": true,
+   "source": "Authored in the 2026-08-25 badge workbook review."
+  },
+  {
+   "id": "badge.young",
+   "name": "Young",
+   "rarity": "common",
+   "payload": "Surge 3, Lucky 5, Items -1",
+   "statModifiers": [],
+   "rollable": true,
+   "source": "Authored in the 2026-08-25 badge workbook review."
+  },
+  {
+   "id": "badge.veteran",
+   "name": "Veteran",
+   "rarity": "common",
+   "payload": "Items +1 Health +1",
+   "statModifiers": [],
+   "rollable": true,
+   "source": "Authored in the 2026-08-25 badge workbook review. Supersedes the earlier badge.veteran (+10 Deathbed Fighting).",
+   "note": "Coexists with a same-name concept elsewhere by ruling."
+  },
+  {
+   "id": "badge.small-hands",
+   "name": "Small Hands",
+   "rarity": "common",
+   "payload": "Items -1",
+   "statModifiers": [],
+   "rollable": true,
+   "source": "Authored in the 2026-08-25 badge workbook review."
+  },
+  {
+   "id": "badge.cultist",
+   "name": "Cultist",
+   "rarity": "common",
+   "payload": "onbattlestart: lose 1 faith,   +10 crit",
+   "statModifiers": [],
+   "rollable": true,
+   "source": "Authored in the 2026-08-25 badge workbook review.",
+   "needsCapability": "battle-outcome / kingdom purse"
+  },
+  {
+   "id": "badge.tower-defender",
+   "name": "Tower Defender",
+   "rarity": "uncommon",
+   "payload": "if on tower, +20 dodge",
+   "statModifiers": [],
+   "rollable": true,
+   "source": "Authored in the 2026-08-25 badge workbook review.",
+   "needsCapability": "capability.read-terrain"
+  },
+  {
+   "id": "badge.wall-defender",
+   "name": "Wall Defender",
+   "rarity": "uncommon",
+   "payload": "If on wall, +3 health",
+   "statModifiers": [],
+   "rollable": true,
+   "source": "Authored in the 2026-08-25 badge workbook review.",
+   "needsCapability": "capability.read-terrain"
+  },
+  {
+   "id": "badge.cursed-vengeance",
+   "name": "Cursed Vengeance",
+   "rarity": "rare",
+   "payload": "If on cuirsed Tile, Thorns 2",
+   "statModifiers": [],
+   "rollable": true,
+   "source": "Authored in the 2026-08-25 badge workbook review.",
+   "needsCapability": "capability.read-terrain"
+  },
+  {
+   "id": "badge.frozen-vengeance",
+   "name": "Frozen Vengeance",
+   "rarity": "rare",
+   "payload": "If on Frozen Tile, +1 armor, OTD: inflict 1 frozen",
+   "statModifiers": [],
+   "rollable": true,
+   "source": "Authored in the 2026-08-25 badge workbook review.",
+   "needsCapability": "capability.read-terrain"
+  },
+  {
+   "id": "badge.fiery-vengeance",
+   "name": "Fiery Vengeance",
+   "rarity": "rare",
+   "payload": "If on Burning Tile, +20 accuracy, +1 P +1 Str,",
+   "statModifiers": [],
+   "rollable": true,
+   "source": "Authored in the 2026-08-25 badge workbook review.",
+   "needsCapability": "capability.read-terrain"
+  },
+  {
+   "id": "badge.quick-start",
+   "name": "Quick Start",
+   "rarity": "uncommon",
+   "payload": "Deploy +5",
+   "statModifiers": [],
+   "rollable": true,
+   "source": "Authored in the 2026-08-25 badge workbook review.",
+   "needsCapability": "capability.deploy — Deploy N resolves at unit placement (ruled 2026-08-25)"
   }
  ],
  "_machineReadable": "43 of the 128 badges carry statModifiers, hook, rollable, blockers and engineStatGap, merged from the Crucible 2026-08-21. The other 85 are prose only and still need the machine-readable half. content/ owns badges (COMBAT-DESIGN.md §8: HoBaT authored its own; the 238-row Hell-TCG library is a reference, not a port).",
@@ -1601,5 +2024,113 @@
    "reason": "Used `op: set` to fix Accuracy/Crit/Luck so nothing could modify them. Stat overrides and floors are banned (FUNCTIONS.md) — modify a stat, never replace or clamp it. It was the only user of the mechanic. Cut 2026-08-21.",
    "cut": "2026-08-21"
   }
- ]
+ ],
+ "_cut2026_08_25": {
+  "note": "Removed in the 2026-08-25 workbook review (deep-drinker by ruling; four blanked in the sheet). Parked, not destroyed.",
+  "rows": [
+   {
+    "id": "origin.deep-drinker",
+    "name": "Deep Drinker",
+    "rarity": "uncommon",
+    "payload": "`onActivationEnd`: −1 burn, −1 poison, −1 frost",
+    "category": "SPECIAL ORIGINS",
+    "group": ""
+   },
+   {
+    "id": "badge.carrying-voice",
+    "name": "Carrying Voice",
+    "rarity": "leader",
+    "payload": "all auras this hero grants gain +1 radius",
+    "category": "SPECIALTY GRANTS",
+    "group": ""
+   },
+   {
+    "id": "badge.walking-wounded",
+    "name": "Walking Wounded",
+    "rarity": "",
+    "payload": "(prose only — not in a table)",
+    "category": "",
+    "group": ""
+   },
+   {
+    "id": "badge.brittle",
+    "name": "Brittle",
+    "rarity": "uncommon",
+    "payload": "−1 Armor, −1 Resist",
+    "category": "GENERATIVE — FLAWED",
+    "group": "",
+    "statModifiers": [
+     {
+      "stat": "armor",
+      "op": "add",
+      "value": -1
+     },
+     {
+      "stat": "resist",
+      "op": "add",
+      "value": -1
+     }
+    ],
+    "rollable": true,
+    "source": "2026-08-21: machine-readable fields merged from the Crucible. The prose was already byte-identical; only statModifiers/hook/rollable/blockers/engineStatGap were added."
+   },
+   {
+    "id": "badge.badly-wounded",
+    "name": "Badly Wounded",
+    "rarity": "",
+    "payload": "(prose only — not in a table)",
+    "category": "",
+    "group": ""
+   },
+   {
+    "id": "badge.fearful",
+    "name": "Fearful",
+    "rarity": "common",
+    "payload": "−1 Resist",
+    "category": "GENERATIVE — FLAWED",
+    "group": "",
+    "statModifiers": [
+     {
+      "stat": "resist",
+      "op": "add",
+      "value": -1
+     }
+    ],
+    "rollable": true,
+    "source": "2026-08-21: machine-readable fields merged from the Crucible. The prose was already byte-identical; only statModifiers/hook/rollable/blockers/engineStatGap were added.",
+    "_superseded": "replaced by the 2026-08-25 workbook redefinition — newer wins"
+   },
+   {
+    "id": "badge.survivor",
+    "name": "Survivor",
+    "rarity": "civilian",
+    "payload": "+1 Toughness, −1 Strength",
+    "category": "CLASS-LOCKED",
+    "group": "",
+    "_superseded": "replaced by the 2026-08-25 workbook redefinition — newer wins"
+   },
+   {
+    "id": "badge.veteran",
+    "name": "Veteran",
+    "rarity": "uncommon",
+    "payload": "+10 Deathbed Fighting",
+    "category": "GENERATIVE — FAVOURABLE",
+    "group": "Flat stat",
+    "statModifiers": [
+     {
+      "stat": "deathbedFighting",
+      "op": "add",
+      "value": 10
+     }
+    ],
+    "engineStatGap": [
+     "deathbedFighting"
+    ],
+    "rollable": true,
+    "source": "2026-08-21: machine-readable fields merged from the Crucible. The prose was already byte-identical; only statModifiers/hook/rollable/blockers/engineStatGap were added.",
+    "_superseded": "replaced by the 2026-08-25 workbook redefinition — newer wins"
+   }
+  ]
+ },
+ "_rarityTaxonomy": "Ruled 2026-08-25: rarities (common/uncommon/rare/legendary and the class-named ones) are what you can roll at GENERATION and in the Crucible. `acquired` badges are added in game and never rolled. `affliction` is the family of four (lycanthropy, vampirism, possession, rotting-flesh) — inflicted, never rolled."
 }

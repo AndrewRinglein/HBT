@@ -20,7 +20,8 @@
     "vision": 6,
     "movement": 5,
     "staminaMax": 5,
-    "staminaRegen": 1
+    "staminaRegen": 1,
+    "bleedOutTurns": 5
    }
   },
   {
@@ -42,7 +43,8 @@
     "vision": 8,
     "movement": 5,
     "staminaMax": 5,
-    "staminaRegen": 1
+    "staminaRegen": 1,
+    "bleedOutTurns": 5
    }
   },
   {
@@ -65,7 +67,8 @@
     "vision": 7,
     "movement": 5,
     "staminaMax": 5,
-    "staminaRegen": 1
+    "staminaRegen": 1,
+    "bleedOutTurns": 5
    }
   },
   {
@@ -87,7 +90,8 @@
     "vision": 7,
     "movement": 5,
     "staminaMax": 5,
-    "staminaRegen": 1
+    "staminaRegen": 1,
+    "bleedOutTurns": 5
    }
   },
   {
@@ -109,7 +113,8 @@
     "vision": 6,
     "movement": 5,
     "staminaMax": 5,
-    "staminaRegen": 1
+    "staminaRegen": 1,
+    "bleedOutTurns": 5
    }
   },
   {
@@ -132,7 +137,8 @@
     "vision": 6,
     "movement": 5,
     "staminaMax": 5,
-    "staminaRegen": 1
+    "staminaRegen": 1,
+    "bleedOutTurns": 5
    }
   },
   {
@@ -151,7 +157,8 @@
     "vision": 6,
     "movement": 5,
     "staminaMax": 0,
-    "staminaRegen": 0
+    "staminaRegen": 0,
+    "bleedOutTurns": 5
    }
   },
   {
@@ -174,7 +181,8 @@
     "vision": 7,
     "movement": 6,
     "staminaMax": 5,
-    "staminaRegen": 1
+    "staminaRegen": 1,
+    "bleedOutTurns": 5
    }
   }
  ],
@@ -278,6 +286,11 @@
    "name": "Item Slots",
    "does": "accessories beyond the two hands",
    "value": 0.67
+  },
+  {
+   "id": "bleedOutTurns",
+   "name": "Bleed-Out Turns",
+   "note": "RULED 2026-08-25: how many battlefield turns an unconscious hero has before becoming a corpse (the P4 death model). Base 5 for every class. Badges move it: Death Seeker -3, Survivor +3, Thick Blooded +5."
   }
  ],
  "art": {

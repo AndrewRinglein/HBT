@@ -29,7 +29,7 @@ const { ENEMY_CARDS } = await import(S + 'data/enemyCards.js');
 // the source and gets reported rather than silently written into the bestiary.
 const VOCAB_STATS = new Set(['health','resist','strength','dodge','movement','armor','accuracy',
   'precision','crit','magic','staminaMax','reach','luck','spirit','itemSlots','toughness',
-  'vision','corruption','surge','staminaRegen','deathbedFighting']);
+  'vision','corruption','surge','staminaRegen','deathbedFighting','bleedOutTurns']);
 // The rest of the closed vocabulary, read from the generated list rather than restated here —
 // if functions.json loses a word, the riders that use it stop building instead of drifting.
 // Its rows are {name, uses, ids}, because functions.json is a CENSUS OF USE, not a declaration.
