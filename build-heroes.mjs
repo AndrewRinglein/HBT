@@ -391,6 +391,7 @@ for(const h of heroes){
       const d = {};
       for (const k of Object.keys(base)) if ((h.derivedBase[k] ?? 0) !== base[k]) d[k] = h.derivedBase[k] - base[k];
       if (Object.keys(d).length) { h.derivedDeltas = d; h.derivedDeltaWhy = spec.why; } }
+    if(spec.addPowers) h.classPowers=[...new Set([...(h.classPowers||[]), ...spec.addPowers])];
     h.notes.push('Differentiated 2026-08-22: ' + spec.why);
     touched++;
   }

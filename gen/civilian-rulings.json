@@ -139,11 +139,11 @@
       "grantsTactics": [
         "Learned"
       ],
-      "grantsTacticsNote": "Dictated: add the Learned tactic. The tactic.* kind is NOT yet declared (STATE.md: slice tactics are blocked on declaring tactic.* before authoring), so this is recorded as a grant by NAME and becomes a real reference when tactics land.",
+      "grantsTacticsNote": "THE HAND (stub for now, ruled 2026-08-25): the Learned tactic grant, like Draw, waits on The Hand / tactic.* declaration. Recorded by name.",
       "startOfBattleDraw": {
         "value": 2,
         "phase": 1,
-        "needsCapability": "dictated \"on combat start +2 Draw on turn 1\". Draw is not a combat vocabulary word — it belongs to the War Council/tactics layer, and grant-draws was earlier ruled not relevant to units. Recorded verbatim; needs a ruling on what Draw means here when tactics land."
+        "needsCapability": "THE HAND (stub for now, ruled 2026-08-25): Draw belongs to The Hand — the card system beyond the slice (slice ruling 1 skips cards entirely). Recorded verbatim; wires up when The Hand exists."
       }
     },
     "hero.fixed.school-children": {

@@ -495,7 +495,7 @@
   },
   {
    "name": "allies within N hexes",
-   "uses": 31,
+   "uses": 32,
    "ids": [
     "item.holy-chalice",
     "item.banner-of-resolve",
@@ -527,7 +527,8 @@
     "power.remembrancer.take-down-the-name",
     "power.remembrancer.story-of-heroes",
     "power.remembrancer.close-the-ledger",
-    "power.priest-chain.benediction"
+    "power.priest-chain.benediction",
+    "power.eve.benediction"
    ]
   },
   {
@@ -892,7 +893,7 @@
   },
   {
    "name": "heal",
-   "uses": 86,
+   "uses": 87,
    "ids": [
     "item.death-blade",
     "item.wraith-touched-staff",

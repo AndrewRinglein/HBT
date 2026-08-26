@@ -736,6 +736,22 @@
    "description": "UNIVERSAL RULE, not a power you take. Every summoned unit is given a summon number when it arrives — the first thing summoned is 1, the second is 2, and so on, counted separately for each side. In its own Phase, summoned units activate FIRST, in summon-number order, BEFORE any unit that was already on the field. Summoned heroes go first in the Hero Phase; summoned enemies go first in the Enemy Phase.",
    "intent": "A summon that arrives and then waits behind everything else is a summon that did nothing. Going first is most of what you paid for.",
    "source": "2026-08-20. Written ahead of the summoning system itself, which does not exist yet — see engine/COMBAT-SEQUENCE.md #Summoning."
+  },
+  {
+   "id": "power.eve.benediction",
+   "name": "Benediction",
+   "specialty": null,
+   "stamina": 0,
+   "cooldown": 0,
+   "warmup": 0,
+   "free": true,
+   "targets": "allies within 4 hexes",
+   "tags": [
+    "heal"
+   ],
+   "hook": "onActivationEnd",
+   "description": "At the end of the priest’s Activation, heal every ally within 4 hexes for HALF the priest’s Spirit — rounded to the nearest whole number, 0.5 rounds up (RULED 2026-08-25, the same rounding as power). The four Eve priests share this, and sharing it is correct: it is the shared fire power on the mages that was wrong.",
+   "source": "dictated 2026-08-22 (“heal all heroes within range 4: half of your spirit”), blocked on Law 7 integers, unblocked by the rounding ruling 2026-08-25"
   }
  ],
  "items": [

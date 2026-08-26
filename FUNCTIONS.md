@@ -35,7 +35,7 @@ When a rule fires. Twelve, plus `aura` and `passive` which are standing properti
 | `one enemy in melee reach` | 104 |
 | `one enemy within N hexes` | 81 |
 | `one ally within N hexes` | 55 |
-| `allies within N hexes` | 31 |
+| `allies within N hexes` | 32 |
 | `enemies within N hexes` | 18 |
 | `a hex within N hexes and every hex adjacent to it` | 16 |
 | `you and allies within N hexes` | 15 |
@@ -74,7 +74,7 @@ What a rule may DO.
 |---|---:|
 | `grant a stat for the Battle` | 170 |
 | `apply a status` | 139 |
-| `heal` | 86 |
+| `heal` | 87 |
 | `deal TRUE damage` | 55 |
 | `grant a stat until end of next Turn` | 48 |
 | `remove N of a status` | 45 |
