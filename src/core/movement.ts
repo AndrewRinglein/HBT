@@ -6,7 +6,7 @@ import { distance, neighboursOf } from './hex.js'
 import type { HexId } from './hex.js'
 import type { Ctx, MoveDef, Unit } from './types.js'
 import { appliesOnEnterOf, isPassable, moveCostOf, stripsOnEnterOf, terrainIdOf } from '../content/maps.js'
-import { emit, markMoveUsed, moveUnit, spendStamina, unit } from './mutate.js'
+import { addStatMod, emit, gainStamina, loseMaxStamina, markMoveUsed, moveUnit, spendStamina, unit } from './mutate.js'
 import { applyStatus, reduceStatus } from './status.js'
 
 // MOVE_STAMINA_COST is gone (2026-08-21) — Angela: "It shouldn't be
@@ -192,13 +192,53 @@ export function executeMove(ctx: Ctx, unitId: number, path: HexId[], power: Move
  * only move with zero Steps.
  * Returns true if the unit moved.
  */
+/**
+ * A power's step range. Sidestep-shaped defaults to 1; Leap declares 2;
+ * Focus and Devotion declare 0 (2026-08-25, movement.bonus-actions).
+ */
+export function stepRangeOf(power: MoveDef): number {
+  return power.stepRange ?? 1
+}
+
+/**
+ * Apply a bonus move's riders, after the step resolved. Plain rows through the
+ * mutators — the mechanism knows the kinds, content supplies the values.
+ * `endOfTurn` = expiresAtTurn turn+1, matching modsFor's `turn < expiresAtTurn`.
+ */
+function applyMoveEffects(ctx: Ctx, unitId: number, power: MoveDef): void {
+  for (const ef of power.effects ?? []) {
+    if (ef.kind === 'gainStamina') gainStamina(ctx, unitId, ef.value, power.id)
+    else if (ef.kind === 'loseMaxStamina') loseMaxStamina(ctx, unitId, ef.value, power.id)
+    else if (ef.kind === 'statMod') {
+      addStatMod(ctx, unitId, {
+        stat: ef.stat, op: 'add', value: ef.value, source: power.id, scope: 'unit',
+        ...(ef.until === 'endOfTurn' ? { expiresAtTurn: ctx.state.turn + 1 } : {}),
+      }, power.id)
+    }
+  }
+}
+
 export function executeSidestep(ctx: Ctx, unitId: number, to: HexId, power: MoveDef): boolean {
   const u = unit(ctx, unitId)
   if (u.stamina < moveStaminaCost(u, power)) {
     emit(ctx, 'move.refused', power.id, { actor: unitId, reason: 'stamina' })
     return false
   }
-  if (distance(u.hex, to) !== 1) throw new Error(`sidestep must move exactly one hex (${u.hex} -> ${to})`)
+  const range = stepRangeOf(power)
+  if (range === 0) {
+    // "It moves you zero hexes on purpose" (Focus / Devotion). Still a bonus
+    // move: pays, spends the move slot, cooldowns, fires its riders. No Step
+    // occurs, so no ground entry beat — you never left your hex.
+    spendStamina(ctx, unitId, moveStaminaCost(u, power), power.id)
+    markMoveUsed(ctx, unitId)
+    setMoveCooldown(ctx, unitId, power)
+    emit(ctx, 'move.begin', power.id, { actor: unitId, from: u.hex, to: u.hex, hexes: 0 })
+    applyMoveEffects(ctx, unitId, power)
+    return true
+  }
+  if (distance(u.hex, to) !== range) {
+    throw new Error(`${power.id} must move exactly ${range} hex(es) (${u.hex} -> ${to})`)
+  }
   const terrainHere = ctx.state.terrain[to] ?? 0
   if (!isPassable(terrainHere) || occupancy(ctx).has(to)) {
     throw new Error(`sidestep destination ${to} is not open`)
@@ -210,6 +250,7 @@ export function executeSidestep(ctx: Ctx, unitId: number, to: HexId, power: Move
   moveUnit(ctx, unitId, to, 0, power.id, terrainIdOf(terrainHere))
   for (const sid of stripsOnEnterOf(terrainHere)) reduceStatus(ctx, unitId, sid, 1, terrainIdOf(terrainHere))
   for (const [sid, n] of appliesOnEnterOf(terrainHere)) applyStatus(ctx, unitId, sid, n, terrainIdOf(terrainHere))
+  applyMoveEffects(ctx, unitId, power)
   return true
 }
 

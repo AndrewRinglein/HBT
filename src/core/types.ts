@@ -34,6 +34,27 @@ export type AbilityDef = {
  * hard-coded. It should be content-driven." Rows live in content/moves.ts;
  * which unit grants which powers is unit data (UnitDef.moves).
  */
+/**
+ * What a movement power DOES beyond moving — the rider on a bonus move.
+ * Added 2026-08-25 (movement.bonus-actions): the S17 half-step split gave the
+ * cohort powers MoveDef could not say — Leap's "+2 Strength until the end of
+ * the Turn", Focus's "gain 1 Stamina", Devotion's "lose 1 Stamina Max for the
+ * rest of the Battle, and gain 2 Stamina". Plain data resolved through the
+ * mutators; the engine knows the KINDS, content supplies the rows. (Bastion's
+ * compiler failed on exactly these clauses — "no pattern" — which is what a
+ * missing capability looks like from the other side.)
+ */
+export type MoveEffect =
+  | { readonly kind: 'gainStamina'; readonly value: number }
+  | { readonly kind: 'loseMaxStamina'; readonly value: number }
+  | {
+      readonly kind: 'statMod'
+      readonly stat: import('./stats.js').StatName
+      readonly value: number
+      /** endOfTurn = expires when this Turn ends; battle = permanent this battle. */
+      readonly until: 'endOfTurn' | 'battle'
+    }
+
 export type MoveDef = {
   readonly id: string
   readonly name: string
@@ -44,6 +65,15 @@ export type MoveDef = {
    * §Movement keywords, rewritten 2026-08-20).
    */
   readonly shape: 'path' | 'sidestep' | 'flight'
+  /**
+   * Sidestep-shaped only: EXACTLY how many hexes the step moves. Absent = 1
+   * (the classic half-step). Leap is 2 ("move exactly 2 hexes"); Focus and
+   * Devotion are 0 ("it moves you zero hexes on purpose"). A 0-range bonus
+   * move still spends the move slot, still cooldowns, still fires its effects.
+   */
+  readonly stepRange?: number
+  /** Riders applied after the step resolves. See MoveEffect. */
+  readonly effects?: readonly MoveEffect[]
   readonly staminaCost: number
   /** Added to the unit's movement-point budget for this power. Move/Sidestep 0; flight-swift +1. */
   readonly budgetMod: number
@@ -232,6 +262,8 @@ export type Config = {
     critEnabled: boolean
     rangerPunchesWhenAdjacent: boolean
     moveCostPerHex: boolean
+    /** Does melee AI leap into adjacency for the rider? SWITCHES.md, 2026-08-25. */
+    aiLeapToAdjacent: boolean
   }
 }
 
@@ -241,6 +273,7 @@ export const DEFAULT_CONFIG: Config = {
     critEnabled: false,
     rangerPunchesWhenAdjacent: false,
     moveCostPerHex: false,
+    aiLeapToAdjacent: true,
   },
 }
 

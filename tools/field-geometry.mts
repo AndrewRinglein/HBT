@@ -18,12 +18,15 @@ if (!mapId) { console.error('usage: field-geometry <mapId>'); process.exit(2) }
 const m = MAPS.find((x) => x.id === mapId)
 if (!m) { console.error(`unknown map '${mapId}'`); process.exit(2) }
 
-const HEXW = 68.2, HEXH = 59.675, ROW = 44.8, BASE_Y = 30.2
+// BOARD SPACE, unsquashed (viewer.geometry, PLAYBACK-DESIGN §7.2) — the board
+// applies rotateX(TILT) once; 49.3° is ruled. Reapplied 2026-08-26 after the
+// restructure discarded the first uncommitted copy of this change.
+const HEXW = 128, HEXH = 132, COL = 128, ROW = 96, ODD = 64, TILT = 49.3
 const terrain = terrainOf(mapId)
 
 const hexes = [] as { c: number; r: number; px: number; py: number }[]
 for (let r = 0; r < HEIGHT; r++) for (let c = 0; c < WIDTH; c++) {
-  hexes.push({ c, r, px: HEXW / 2 + c * HEXW + (r % 2) * (HEXW / 2), py: BASE_Y + r * ROW })
+  hexes.push({ c, r, px: COL / 2 + c * COL + (r % 2) * ODD, py: HEXH / 2 + r * ROW })
 }
 
 const short = (id: string) => id.replace('status.', '')
@@ -48,8 +51,9 @@ const table = kinds.map((t) => ({
 }))
 
 console.log(JSON.stringify({
-  w: WIDTH * HEXW + HEXW / 2, h: BASE_Y + (HEIGHT - 1) * ROW + HEXH / 2,
+  w: WIDTH * COL + ODD, h: (HEIGHT - 1) * ROW + HEXH,
   hexW: HEXW, hexH: HEXH,
+  colStep: COL, rowStep: ROW, oddOffset: ODD, tilt: TILT,
   hexes, rows: m.rows,
   terrainIds: terrain.map(terrainIdOf),
   moveCost: terrain.map((t) => (moveCostOf(t) >= IMPASSABLE ? 99 : moveCostOf(t))),

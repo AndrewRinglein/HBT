@@ -27,7 +27,11 @@ const ACTED = new Set(['damage.applied','heal.applied','power.used','attack.decl
   // battles fought on it — loading onto the panel is the state it changes.
   // Widening ACTED is stricter, not looser: map items can now face gate 1
   // directly instead of hiding behind terrain probeIds.
-  'map.loaded'])
+  'map.loaded',
+  // movement.bonus-actions (2026-08-25): a bonus move's rider IS its state
+  // change — Focus moves zero hexes on purpose, so 'stamina.gained' is the only
+  // mark it leaves. Same widening-is-stricter argument as map.loaded above.
+  'stamina.gained', 'staminaMax.lost', 'statmod.added'])
 
 /**
  * A SCENARIO is probed by fielding it, not by sweeping the standard panel.
@@ -61,6 +65,15 @@ for (const make of battles) {
     acted++
     if (ACTED.has(e.type)) changed++
   }
+  // Early exit — 2026-08-25, and Law 0 demands the measurement: the verdict is
+  // MONOTONE (each counter only grows), so the moment all three are positive
+  // the answer cannot change; the remaining battles only inflate the counts.
+  // NEUTRAL mode never exits early — its claim is "changed NOTHING, anywhere",
+  // which only the full sweep can support. Measured need: the gate re-probes
+  // every variant after gate 1, and six full 600-battle sweeps at 16x16 put
+  // the whole gate beyond this environment's process ceiling — the gate was
+  // being killed mid-generalization on every attempt.
+  if (!NEUTRAL && mentions > 0 && acted > 0 && changed > 0) break
 }
 if (mentions === 0) { console.log(`'${id}' never appears in any log. It is not wired in — check the registry entry.`); process.exit(1) }
 if (NEUTRAL) {

@@ -24,6 +24,17 @@ describe('independent audit of logged battles', () => {
       const type = new Map<number, string>()
       const hex = new Map<number, number>()
       const stamina = new Map<number, number>()
+      // movement.bonus-actions (2026-08-25): Devotion moves the CEILING, so the
+      // auditor tracks live max per unit instead of trusting the static def.
+      const maxStam = new Map<number, number>()
+      // movement.bonus-actions (2026-08-25): riders add stored stat mods, and
+      // the event carries stat/value/expiry — so the auditor keeps its own mod
+      // ledger and recomputes the EFFECTIVE stat, exactly like the engine.
+      const statMods = new Map<number, { stat: string; value: number; expiresAtTurn?: number }[]>()
+      const modded = (actor: number, statName: string, base: number, turn: number) =>
+        base + (statMods.get(actor) ?? [])
+          .filter((m) => m.stat === statName && (m.expiresAtTurn === undefined || turn < m.expiresAtTurn))
+          .reduce((sum, m) => sum + m.value, 0)
       // Side and standing-ness, tracked only so the auditor can re-derive the
       // ranged adjacency penalty, which is a question about the SHOOTER's
       // surroundings rather than about the target's distance.
@@ -47,6 +58,7 @@ describe('independent audit of logged battles', () => {
             type.set(e.actor!, t)
             hex.set(e.actor!, e['hex'] as number)
             stamina.set(e.actor!, UNITS[t]!.maxStamina)
+            maxStam.set(e.actor!, UNITS[t]!.maxStamina)
             side.set(e.actor!, e['side'] as string)
             standing.add(e.actor!)
             break
@@ -72,8 +84,14 @@ describe('independent audit of logged battles', () => {
 
           case 'moved': {
             const t = UNITS[type.get(e.actor!)!]!
-            // one hex per point, and never more than the unit's movement
-            expect(distance(e['from'] as number, e['to'] as number), 'a step is one hex').toBe(1)
+            // one hex per point — except a bonus move, whose stepRange is the
+            // PUBLISHED size of its jump (Leap: "move exactly 2 hexes",
+            // movement.bonus-actions 2026-08-25). The auditor recomputes the
+            // allowed distance from the causing power's own row — widened to
+            // follow the rule, not loosened: a 3-hex leap would still fail.
+            const mp = MOVES[String(e.causeId)]
+            const allowed = mp && mp.shape === 'sidestep' ? Math.max(1, mp.stepRange ?? 1) : 1
+            expect(distance(e['from'] as number, e['to'] as number), 'a step is its power\'s size').toBeLessThanOrEqual(allowed)
             // The auditor learned the movement CHOICE 2026-08-21 (Law 10:
             // rule widened, not weakened): every moved event now names its
             // power as causeId, and a sidestep-shaped power ignores terrain
@@ -101,7 +119,36 @@ describe('independent audit of logged battles', () => {
           case 'stamina.regen': {
             const t = UNITS[type.get(e.actor!)!]!
             const before = stamina.get(e.actor!)!
-            expect(e['stamina']).toBe(Math.min(t.maxStamina, before + t.staminaRegen))
+            // Live max, not the def's: Devotion docks the ceiling mid-battle.
+            expect(e['stamina']).toBe(Math.min(maxStam.get(e.actor!)!, before + t.staminaRegen))
+            stamina.set(e.actor!, e['stamina'] as number)
+            break
+          }
+
+          // movement.bonus-actions (2026-08-25) — the auditor EXTENDED, not
+          // weakened: two new mutator events join the stamina ledger so the
+          // running model stays exact. Leaving them out made every later
+          // spend's arithmetic wrong, which is precisely the audit working.
+          case 'statmod.added': {
+            const list = statMods.get(e.actor!) ?? []
+            list.push({ stat: e['stat'] as string, value: e['value'] as number,
+              ...(e['expiresAtTurn'] !== undefined ? { expiresAtTurn: e['expiresAtTurn'] as number } : {}) })
+            statMods.set(e.actor!, list)
+            break
+          }
+          case 'stamina.gained': {
+            const before = stamina.get(e.actor!)!
+            expect(before + (e['amount'] as number), 'gain arithmetic').toBe(e['stamina'])
+            expect(e['stamina'] as number, 'gain may never overfill').toBeLessThanOrEqual(maxStam.get(e.actor!)!)
+            stamina.set(e.actor!, e['stamina'] as number)
+            break
+          }
+          case 'staminaMax.lost': {
+            const beforeMax = maxStam.get(e.actor!)!
+            expect(beforeMax - (e['amount'] as number), 'max arithmetic').toBe(e['maxStamina'])
+            expect(e['maxStamina'] as number, 'the wounds floor').toBeGreaterThanOrEqual(1)
+            maxStam.set(e.actor!, e['maxStamina'] as number)
+            expect(e['stamina'] as number, 'stamina clamped to the new ceiling').toBeLessThanOrEqual(e['maxStamina'] as number)
             stamina.set(e.actor!, e['stamina'] as number)
             break
           }
@@ -175,7 +222,8 @@ describe('independent audit of logged battles', () => {
               const at = UNITS[type.get(pendingPower.actor)!]!
               const tg = UNITS[type.get(pendingPower.target)!]!
               const ab = ABILITIES[pendingPower.abilityId]!
-              const stat = ab.stat === 'strength' ? at.strength : ab.stat === 'magic' ? at.magic : at.precision
+              const stat = modded(pendingPower.actor, ab.stat,
+              ab.stat === 'strength' ? at.strength : ab.stat === 'magic' ? at.magic : at.precision, e.turn)
               const mit = ab.damageType === 'physical' ? tg.armor : ab.damageType === 'magic' ? tg.resist : 0
               // The auditor learned PROTECTION with the status.protection
               // landing (2026-08-20): the event names what a pool absorbed, and
@@ -191,7 +239,8 @@ describe('independent audit of logged battles', () => {
             const at = UNITS[type.get(pending.actor)!]!
             const tg = UNITS[type.get(pending.target)!]!
             const a = ATTACKS[pending.attackId]!
-            const stat = a.stat === 'strength' ? at.strength : at.precision
+            const stat = modded(pending.actor, a.stat,
+              a.stat === 'strength' ? at.strength : at.precision, e.turn)
             const mit = a.damageType === 'physical' ? tg.armor : tg.resist
             const expected = Math.max(0, a.bonus + stat - penaltyOf(pending.actor)
               - ((e['absorbed'] as number) ?? 0) - mit)

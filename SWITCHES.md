@@ -198,3 +198,21 @@ block it. This reads the "terrain cost is irrelevant" clause as "points are
 not this power's currency". The other path (require 1 point) stays one line
 away in `executeSidestep` if a sweep or a ruling wants it. *(2026-08-21,
 landing movement.powers.)*
+
+## aiLeapToAdjacent
+
+**Question.** When a melee unit's leap lands adjacent to its target and it can
+still afford its preferred attack, should the AI leap instead of walking — is
+the rider (+2 Strength on the swing it enables) worth 2 Stamina?
+
+**Default: on.** Added 2026-08-25 with movement.bonus-actions; the switch
+exists because the trade is a number a sweep can measure, not a conviction.
+
+## leapCrossesIntermediateHex
+
+**Question.** Leap moves exactly 2 hexes. Does the hex between fire its entry
+ground beat (burning ground sears as you pass), or does the leap clear it?
+
+**Default: cleared** — the entry beat fires at the destination only, matching
+the Codex text's silence and the flight precedent ("only the destination needs
+to be viable"). The other reading costs a code path when a sweep wants it.

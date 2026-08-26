@@ -48,6 +48,38 @@ const RAW_MOVES: Readonly<Record<string, MoveDef>> = {
     // the shape is a mechanism, these two rows are pure data.
     id: 'power.side-roll', name: 'Side Roll', shape: 'sidestep', staminaCost: 1, budgetMod: 0, cooldown: 0,
   },
+  // ── the class bonus moves — Codex rows, S17 half-step split (settled.json
+  // powers, movementAction:true, 2026-08-25). Each is a sidestep-shaped power
+  // with a stepRange and riders; the MECHANISM is MoveDef.effects
+  // (movement.bonus-actions) and these three rows are pure data.
+  'power.leap': {
+    // Codex row verbatim: "Move exactly 2 hexes in any direction. It provokes
+    // nothing, and the destination's terrain cost is irrelevant. You gain +2
+    // Strength until the end of the Turn. It costs 2 Stamina and there is no
+    // cooldown. It is a bonus move, so it does NOT add your Movement stat.
+    // Warriors only." Entry ground beat fires at the DESTINATION only — see
+    // SWITCHES.md leapCrossesIntermediateHex.
+    id: 'power.leap', name: 'Leap', shape: 'sidestep', stepRange: 2,
+    staminaCost: 2, budgetMod: 0, cooldown: 0,
+    effects: [{ kind: 'statMod', stat: 'strength', value: 2, until: 'endOfTurn' }],
+  },
+  'power.focus': {
+    // Codex row verbatim: "Do not move at all. Gain 1 Stamina. It costs no
+    // Stamina and there is no cooldown. It is a bonus move... it moves you
+    // zero hexes on purpose. Mages only."
+    id: 'power.focus', name: 'Focus', shape: 'sidestep', stepRange: 0,
+    staminaCost: 0, budgetMod: 0, cooldown: 0,
+    effects: [{ kind: 'gainStamina', value: 1 }],
+  },
+  'power.devotion': {
+    // Codex row verbatim: "Do not move at all. Lose 1 Stamina Max for the rest
+    // of the Battle, and gain 2 Stamina. There is no cooldown... it moves you
+    // zero hexes on purpose. Priests only." Max floor 1 — the wounds precedent
+    // (3-UNITS-NOTES: "Wounds dock Max Stamina, never Regen (floor 1)").
+    id: 'power.devotion', name: 'Devotion', shape: 'sidestep', stepRange: 0,
+    staminaCost: 0, budgetMod: 0, cooldown: 0,
+    effects: [{ kind: 'loseMaxStamina', value: 1 }, { kind: 'gainStamina', value: 2 }],
+  },
   // ── the flight ladder — Codex rows, Angela 2026-08-20: "labored 2 stamina
   // and Movement -1, standard 1 stamina and full Movement, swift 0 stamina and
   // Movement +1." A targeted ATOMIC jump: over units and obstructions, no

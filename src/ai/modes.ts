@@ -4,7 +4,7 @@
 
 import { distance } from './../core/hex.js'
 import type { HexId } from './../core/hex.js'
-import { executeFlight, executeMove, executeSidestep, flightLandings, livingEnemies, movePowerOf, moveStaminaCost, nearestEnemy, occupancy, pathTo, reachable, usableMoves } from './../core/movement.js'
+import { executeFlight, executeMove, executeSidestep, flightLandings, livingEnemies, movePowerOf, moveStaminaCost, nearestEnemy, occupancy, pathTo, reachable, stepRangeOf, usableMoves } from './../core/movement.js'
 import type { Reach } from './../core/movement.js'
 import type { MoveDef } from './../core/types.js'
 import { isPassable } from './../content/maps.js'
@@ -76,17 +76,39 @@ function bestAttack(ctx: Ctx, attackerId: number, targetId: number): string | nu
 function sidestepToward(ctx: Ctx, u: Unit, dest: HexId): boolean {
   const power = movePowerOf(ctx, u, 'sidestep')
   if (!power) return false
+  const range = stepRangeOf(power)
+  // A zero-range bonus move (Focus, Devotion — 2026-08-25) cannot step toward
+  // anything; its "progress" is the rider. Using it while starved is exactly
+  // its design intent ("the cheap way to refill"), so a stamina-starved unit
+  // takes it rather than standing refused.
+  if (range === 0) return executeSidestep(ctx, u.id, u.hex, power)
   const occ = occupancy(ctx)
   const d0 = distance(u.hex, dest)
   let best: HexId | null = null
   let bestD = d0
-  for (const n of [...neighboursOf(u.hex)].sort((a, b) => a - b)) {
-    if (occ.has(n) || !isPassable(ctx.state.terrain[n] ?? 0)) continue
+  for (const n of stepCandidates(ctx, u, range, occ)) {
     const d = distance(n, dest)
     if (d < bestD) { bestD = d; best = n }
   }
   if (best === null) return false
   return executeSidestep(ctx, u.id, best, power)
+}
+
+/**
+ * Every hex a sidestep-shaped power of this range could land on: exactly
+ * `range` away, passable, free. Ascending HexId (Law 6). Board scan — 256
+ * hexes is microseconds, and Law 0 forbids being clever about it.
+ */
+function stepCandidates(ctx: Ctx, u: Unit, range: number, occ = occupancy(ctx)): HexId[] {
+  if (range === 1) return [...neighboursOf(u.hex)].sort((a, b) => a - b)
+    .filter((n) => !occ.has(n) && isPassable(ctx.state.terrain[n] ?? 0))
+  const out: HexId[] = []
+  for (let h = 0; h < ctx.state.terrain.length; h++) {
+    if (distance(u.hex, h) !== range) continue
+    if (occ.has(h) || !isPassable(ctx.state.terrain[h] ?? 0)) continue
+    out.push(h)
+  }
+  return out
 }
 
 function idle(ctx: Ctx, u: Unit, reason: string): void {
@@ -155,6 +177,33 @@ function dumbMelee(ctx: Ctx, u: Unit): void {
 function meleeAggressive(ctx: Ctx, u: Unit): void {
   const enemies = livingEnemies(ctx, u)
   if (enemies.length === 0) return
+
+  // Leap into the fray — SWITCHES.md aiLeapToAdjacent (2026-08-25). A leaping
+  // power carries its rider into the swing (+2 Strength on the very attack it
+  // enables), so when a leap lands adjacent to the weakest reachable enemy AND
+  // the unit can still afford its preferred attack afterwards, it beats the
+  // walk. Whether that trade is actually worth 2 Stamina is the sweep's
+  // question, which is why it is a switch and not a conviction.
+  if (ctx.cfg.switches.aiLeapToAdjacent && adjacentEnemies(ctx, u).length === 0) {
+    const step = movePowerOf(ctx, u, 'sidestep')
+    const range = step ? stepRangeOf(step) : 0
+    if (step && range > 1) {
+      const preferred = ctx.attacks[u.attacks[0] ?? '']
+      const afterLeap = u.stamina - moveStaminaCost(u, step)
+      if (preferred && afterLeap >= preferred.staminaCost) {
+        const targets = enemies.slice().sort((a, b) => a.hp - b.hp || a.id - b.id)
+        for (const t of targets) {
+          const hex = stepCandidates(ctx, u, range).find((h) => distance(h, t.hex) === 1)
+          if (hex !== undefined) {
+            executeSidestep(ctx, u.id, hex, step)
+            if (u.lifeState !== 'standing') return
+            if (!attackIfPossible(ctx, u, adjacentEnemies(ctx, u))) idle(ctx, u, 'leapt but could not strike')
+            return
+          }
+        }
+      }
+    }
+  }
 
   if (adjacentEnemies(ctx, u).length === 0) {
     const walk = movePowerOf(ctx, u, 'path')

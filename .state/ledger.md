@@ -3028,3 +3028,7 @@ index 2d925ba..37eff81 100644
  
 ```
 </details>
+
+## movement.bonus-actions — 2026-08-26 (HAND-LANDED: the gate decided, the sandbox reaped its commit machinery on every attempt — fourth occurrence)
+
+All twelve checks PASS across the gate check runs (/tmp/gate-drift.log) with the kill switch verified by hand: CF_DISABLE_IDS=power.leap,power.focus,power.devotion fails 8 of 12 touched tests, passes clean enabled. Gate 1 probes: leap 344 fired/172 changed, focus 852/426, devotion 1073/712. Generalization: all three variants live. Flags: test/audit.test.ts edited (auditor EXTENDED — stamina.gained, staminaMax.lost, statmod.added join its ledger; stat mods recomputed with expiry; step size read from the causing power). Golden re-blessed, declared. Seal NOT written: the field belongs to the gate.

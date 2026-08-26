@@ -49,6 +49,47 @@ export function spendStamina(ctx: Ctx, id: number, amount: number, causeId: stri
   emit(ctx, 'stamina.spent', causeId, { actor: id, amount, stamina: u.stamina })
 }
 
+/**
+ * Gain stamina from an effect (a bonus move's rider, later a potion). Caps at
+ * max — the same cap regenStamina applies, so a gain can never overfill. Its
+ * own event type: a rider gain and end-of-phase regen are different facts, and
+ * folding them together would make Focus indistinguishable from the clock.
+ */
+export function gainStamina(ctx: Ctx, id: number, amount: number, causeId: string): void {
+  if (amount === 0) return
+  const u = unit(ctx, id)
+  const before = u.stamina
+  u.stamina = Math.min(u.maxStamina, u.stamina + amount)
+  if (u.stamina !== before) {
+    emit(ctx, 'stamina.gained', causeId, { actor: id, amount: u.stamina - before, stamina: u.stamina })
+  }
+}
+
+/**
+ * Dock max stamina for the rest of the battle (Devotion's price). Floor 1 —
+ * the wounds precedent, 3-UNITS-NOTES: "Wounds dock Max Stamina, never Regen
+ * (floor 1)". Current stamina is clamped to the new ceiling.
+ */
+export function loseMaxStamina(ctx: Ctx, id: number, amount: number, causeId: string): void {
+  if (amount === 0) return
+  const u = unit(ctx, id)
+  const before = u.maxStamina
+  u.maxStamina = Math.max(1, u.maxStamina - amount)
+  if (u.maxStamina === before) return
+  if (u.stamina > u.maxStamina) u.stamina = u.maxStamina
+  emit(ctx, 'staminaMax.lost', causeId, { actor: id, amount: before - u.maxStamina, maxStamina: u.maxStamina, stamina: u.stamina })
+}
+
+/** Add a stored stat modifier. The one write path to u.mods (Law 3). */
+export function addStatMod(ctx: Ctx, id: number, mod: import('./stats.js').StatMod, causeId: string): void {
+  const u = unit(ctx, id)
+  u.mods.push(mod)
+  emit(ctx, 'statmod.added', causeId, {
+    actor: id, stat: mod.stat, op: mod.op, value: mod.value, source: mod.source,
+    ...(mod.expiresAtTurn !== undefined ? { expiresAtTurn: mod.expiresAtTurn } : {}),
+  })
+}
+
 export function regenStamina(ctx: Ctx, id: number, causeId: string): void {
   const u = unit(ctx, id)
   const before = u.stamina
