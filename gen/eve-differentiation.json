@@ -175,7 +175,7 @@
       },
       "why": "Shield and mace. He is the one wearing the fight.",
       "addPowers": [
-        "power.eve.benediction"
+        "power.eve.vespers"
       ]
     },
     "hero.base.priest-pauper": {
@@ -185,7 +185,7 @@
       ],
       "why": "The old priest with the bowl cut. Nothing to his name but the conviction.",
       "addPowers": [
-        "power.eve.benediction"
+        "power.eve.vespers"
       ]
     },
     "hero.base.priest-scantily": {
@@ -198,7 +198,7 @@
         "Faithful"
       ],
       "addPowers": [
-        "power.eve.benediction"
+        "power.eve.vespers"
       ]
     },
     "hero.base.priest-robes": {
@@ -209,7 +209,7 @@
       },
       "why": "Office rather than power - he trades the raw magic for the conviction behind it.",
       "addPowers": [
-        "power.eve.benediction"
+        "power.eve.vespers"
       ]
     },
     "hero.base.ranger-aggressive": {
@@ -403,8 +403,8 @@
   },
   "sharedPriestPower": {
     "note": "All four priests are meant to share one power, and sharing it is correct - what was wrong was the four mages sharing a fire-damage power, which is now cut. Ruled 2026-08-22.",
-    "id": "power.eve.benediction",
-    "name": "Benediction",
+    "id": "power.eve.vespers",
+    "name": "Vespers",
     "hook": "onActivationEnd",
     "targets": "allies within N hexes",
     "range": 4,
@@ -414,7 +414,7 @@
         "value": "half of your spirit"
       }
     ],
-    "ruled": "2026-08-25: half-Spirit rounds like power — nearest, 0.5 up. Landed as power.eve.benediction in settled.json; all four priests carry it via addPowers."
+    "ruled": "2026-08-25: half-Spirit rounds like power — nearest, 0.5 up. Landed as power.eve.vespers (renamed from Benediction after the audit caught the collision with the Priest Chain’s own Benediction — different design, same name)."
   },
   "droppedMagePower": {
     "note": "The four mages all carried the same base power dealing fire damage. Cut 2026-08-22 - it was the thing making them indistinguishable, and each now has its own trigger instead."

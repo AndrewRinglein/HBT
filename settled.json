@@ -738,8 +738,8 @@
    "source": "2026-08-20. Written ahead of the summoning system itself, which does not exist yet — see engine/COMBAT-SEQUENCE.md #Summoning."
   },
   {
-   "id": "power.eve.benediction",
-   "name": "Benediction",
+   "id": "power.eve.vespers",
+   "name": "Vespers",
    "specialty": null,
    "stamina": 0,
    "cooldown": 0,
@@ -750,7 +750,7 @@
     "heal"
    ],
    "hook": "onActivationEnd",
-   "description": "At the end of the priest’s Activation, heal every ally within 4 hexes for HALF the priest’s Spirit — rounded to the nearest whole number, 0.5 rounds up (RULED 2026-08-25, the same rounding as power). The four Eve priests share this, and sharing it is correct: it is the shared fire power on the mages that was wrong.",
+   "description": "At the end of the priest’s Activation, heal every ally within 4 hexes for HALF the priest’s Spirit — rounded nearest, 0.5 up (ruled 2026-08-25). The four Eve priests share this innate; it is DISTINCT from the Priest Chain’s Benediction, which is an active cast (stamina 2, range 6, 2 + half Spirit). The audit caught the name collision; renamed same day.",
    "source": "dictated 2026-08-22 (“heal all heroes within range 4: half of your spirit”), blocked on Law 7 integers, unblocked by the rounding ruling 2026-08-25"
   }
  ],
