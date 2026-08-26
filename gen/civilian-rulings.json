@@ -2,7 +2,8 @@
   "_note": "Civilian naming and art, ruled 2026-08-25 while reviewing the hero-art pairs. Applied by build-heroes.mjs — a rename lives here, never as a hand-patch on gen/heroes.json, because anything patched onto a generated file dies at the next rebuild. Ids never change; names do. ALL FIVE VARIANT PAIRS ARE RULED as of 2026-08-25: lumberjack v1 · orphan-child v1 · farmer-family v1 (Farmer) · farmer-group v2 (Farmer with a Hat) · school-child v1 (School Child (female), a NEW unit — the plural School Children remains its own).",
   "renames": {
     "hero.fixed.lumberjack-and-wife": "Lumberjack",
-    "hero.fixed.group-of-farmers": "Farmer with a Hat"
+    "hero.fixed.group-of-farmers": "Farmer with a Hat",
+    "hero.fixed.orphans": "Orphan Child"
   },
   "art": {
     "_note": "Only the SETTLED files are wired — single-version files with no v1/v2 ambiguity. The four pairs below stay unwired until each gets a variant ruling; per gen/art-conventions.json, picking a variant in an undeclared folder is a ruling, not a guess.",
@@ -48,6 +49,56 @@
     "hero.fixed.school-child-female": {
       "name": "School Child (female)",
       "cloneStatsOf": "hero.fixed.school-children"
+    }
+  },
+  "statBlocks": {
+    "_note": "Full civilian stat blocks, dictated 2026-08-25. Ported-stat keys and derived-stat keys are applied to their own bags; derived deviations from class.civilian are recorded as derivedDeltas so R23 reads them as declared decisions, not drift. Numbers SOFT.",
+    "hero.fixed.orphans": {
+      "why": "Orphan Child, dictated 2026-08-25. Tiny, absurdly lucky, and the whole party fights harder when she falls.",
+      "ported": {
+        "strength": 1,
+        "precision": 1,
+        "health": 3,
+        "resist": 1,
+        "itemSlots": 1
+      },
+      "derived": {
+        "movement": 4,
+        "crit": 20,
+        "luck": 10
+      },
+      "kit": [
+        "item.pile-of-rocks"
+      ],
+      "authoredTriggers": [
+        {
+          "hook": "onDeath",
+          "targets": "all heroes",
+          "name": "For Her",
+          "note": "ALL heroes, battle-wide as dictated — not a radius.",
+          "effects": [
+            {
+              "effect": "regain stamina",
+              "value": 2
+            },
+            {
+              "effect": "grant a stat for the Battle",
+              "stat": "staminaMax",
+              "value": 1
+            },
+            {
+              "effect": "grant a stat for the Battle",
+              "stat": "strength",
+              "value": 2
+            }
+          ]
+        }
+      ],
+      "survivalReward": {
+        "currency": "Faith",
+        "value": 2,
+        "needsCapability": "battle-outcome reward — surviving is not a combat hook; this pays from the encounter outcome into the kingdom purse. Faith is a live currency (KINGDOM-DESIGN: Pray, quest rewards)."
+      }
     }
   }
 }

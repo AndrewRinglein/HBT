@@ -420,6 +420,25 @@ for(const h of heroes){
       art:null, artSlug:undefined, artMissing:true, levelArt:undefined, afflictionArt:undefined, anim:undefined, hexArt:undefined,
       notes:['NEW UNIT ruled 2026-08-25: the school-child-solo art is its own character, separate from School Children. Stats cloned from '+src.name+' as a SOFT baseline — a sweep or ruling prices her.']});
   }
+  // Full dictated stat blocks for civilians. Ported keys and derived keys go to their own
+  // bags; every derived deviation from the class baseline lands in derivedDeltas with the
+  // block's why, so R23 reads a declared decision rather than drift.
+  for(const [id,sb] of Object.entries(CR.statBlocks||{})){
+    if(id.startsWith('_'))continue;
+    const h=heroes.find(x=>x.id===id);
+    if(!h){problems.push('civilian-rulings statBlocks: no hero '+id);continue;}
+    h.ported={...(h.ported||{}), ...(sb.ported||{})};
+    h.derivedBase={...(h.derivedBase||{})};
+    for(const [k,v] of Object.entries(sb.derived||{})) h.derivedBase[k]=v;
+    { const base=DERIVED_BASE[h.class]||{}; const d={};
+      for(const k of Object.keys(base)) if((h.derivedBase[k]??0)!==base[k]) d[k]=h.derivedBase[k]-base[k];
+      for(const k of Object.keys(sb.derived||{})) if(!(k in base)) d[k]=h.derivedBase[k];
+      if(Object.keys(d).length){ h.derivedDeltas=d; h.derivedDeltaWhy=sb.why; } }
+    if(sb.kit) h.kit=sb.kit;
+    if(sb.authoredTriggers) h.authoredTriggers=[...(h.authoredTriggers||[]), ...sb.authoredTriggers.map(x=>({...x,authored:true}))];
+    if(sb.survivalReward) h.survivalReward=sb.survivalReward;
+    h.notes.push('Stat block dictated 2026-08-25: '+sb.why);
+  }
   for(const [id,a] of Object.entries(CR.art||{})){
     if(id.startsWith('_'))continue;
     const h=heroes.find(x=>x.id===id);

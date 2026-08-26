@@ -138,7 +138,7 @@
  "heroes": [
   {
    "id": "hero.fixed.orphans",
-   "name": "Orphan Children",
+   "name": "Orphan Child",
    "path": "fixed",
    "sourceClass": "Civilian",
    "class": "class.civilian",
@@ -148,15 +148,15 @@
    "campaign": null,
    "art": "art/heroes/orphan-child/card/l1.png",
    "ported": {
-    "strength": 3,
-    "precision": 3,
+    "strength": 1,
+    "precision": 1,
     "armor": 0,
-    "health": 9,
+    "health": 3,
     "reach": 1,
     "magic": 0,
     "spirit": 0,
-    "resist": 0,
-    "itemSlots": 2,
+    "resist": 1,
+    "itemSlots": 1,
     "toughness": 3,
     "dodge": 0
    },
@@ -165,16 +165,18 @@
    },
    "derivedBase": {
     "accuracy": 70,
-    "crit": 3,
-    "luck": 0,
+    "crit": 20,
+    "luck": 10,
     "vision": 6,
-    "movement": 5,
+    "movement": 4,
     "staminaMax": 0,
     "staminaRegen": 0
    },
    "notes": [
     "Resolute +1 DROPPED — the stat was removed 2026-08-15 with no replacement.",
-    "Toughness 3 is hell-tcg maxAfflictions, ported straight across — same meaning."
+    "Toughness 3 is hell-tcg maxAfflictions, ported straight across — same meaning.",
+    "Renamed \"Orphan Children\" -> \"Orphan Child\", ruled 2026-08-25.",
+    "Stat block dictated 2026-08-25: Orphan Child, dictated 2026-08-25. Tiny, absurdly lucky, and the whole party fights harder when she falls."
    ],
    "specialty": null,
    "originBadges": [],
@@ -200,7 +202,46 @@
    "backstory": null,
    "passiveDescription": "On enter: +1 Faith. On death: -2 Faith",
    "additionalClasses": null,
-   "subtype": "Orphan Children",
+   "subtype": "Orphan Child",
+   "derivedDeltas": {
+    "crit": 17,
+    "luck": 10,
+    "movement": -1
+   },
+   "derivedDeltaWhy": "Orphan Child, dictated 2026-08-25. Tiny, absurdly lucky, and the whole party fights harder when she falls.",
+   "kit": [
+    "item.pile-of-rocks"
+   ],
+   "authoredTriggers": [
+    {
+     "hook": "onDeath",
+     "targets": "all heroes",
+     "name": "For Her",
+     "note": "ALL heroes, battle-wide as dictated — not a radius.",
+     "effects": [
+      {
+       "effect": "regain stamina",
+       "value": 2
+      },
+      {
+       "effect": "grant a stat for the Battle",
+       "stat": "staminaMax",
+       "value": 1
+      },
+      {
+       "effect": "grant a stat for the Battle",
+       "stat": "strength",
+       "value": 2
+      }
+     ],
+     "authored": true
+    }
+   ],
+   "survivalReward": {
+    "currency": "Faith",
+    "value": 2,
+    "needsCapability": "battle-outcome reward — surviving is not a combat hook; this pays from the encounter outcome into the kingdom purse. Faith is a live currency (KINGDOM-DESIGN: Pray, quest rewards)."
+   },
    "artSlug": "orphan-child",
    "personality": [
     "cheerful"

@@ -608,7 +608,7 @@
  ],
  "hellTcgTriggers": [
   {
-   "hero": "Orphan Children",
+   "hero": "Orphan Child",
    "was": {
     "onEnter": [
      {
