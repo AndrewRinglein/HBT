@@ -191,6 +191,50 @@
         "value": 2,
         "needsCapability": "battle-outcome reward — as the Orphan Child."
       }
+    },
+    "hero.fixed.farmer": {
+      "why": "Farmer, dictated 2026-08-25. A pitchfork and enough sense to use it pointy-end first. Movement 5 INFERRED (not dictated; as the other adult civilians).",
+      "ported": {
+        "strength": 3,
+        "precision": 2,
+        "health": 7,
+        "itemSlots": 2
+      },
+      "kit": [
+        "item.pitchfork"
+      ],
+      "survivalReward": {
+        "currency": "Supplies",
+        "value": 2,
+        "needsCapability": "battle-outcome reward — pays from the encounter outcome into the purse."
+      },
+      "derived": {
+        "movement": 5,
+        "crit": 3,
+        "luck": 2
+      }
+    },
+    "hero.fixed.group-of-farmers": {
+      "why": "Farmer with a Hat, dictated 2026-08-25: same stats as the Farmer but crit 5, luck 0 — the hat is confidence, not fortune. Movement 5, pitchfork and survival reward INFERRED as shared with the Farmer (dictated \"same stats but\").",
+      "ported": {
+        "strength": 3,
+        "precision": 2,
+        "health": 7,
+        "itemSlots": 2
+      },
+      "kit": [
+        "item.pitchfork"
+      ],
+      "survivalReward": {
+        "currency": "Supplies",
+        "value": 2,
+        "needsCapability": "battle-outcome reward — pays from the encounter outcome into the purse."
+      },
+      "derived": {
+        "movement": 5,
+        "crit": 5,
+        "luck": 0
+      }
     }
   }
 }

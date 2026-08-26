@@ -32,7 +32,7 @@
    {
     "kind": "hex",
     "label": "Level 1",
-    "thumb": "6cf5ad5c247e.webp",
+    "thumb": "1edc2cbfe44c.webp",
     "src": "art/heroes/lumberjack/hex/l1_256.png"
    }
   ]
@@ -51,7 +51,7 @@
    {
     "kind": "hex",
     "label": "Level 1",
-    "thumb": "e9622e7ba217.webp",
+    "thumb": "c208b2e6455f.webp",
     "src": "art/heroes/farmer/hex/l1_256.png"
    }
   ]
@@ -70,7 +70,7 @@
    {
     "kind": "hex",
     "label": "Level 1",
-    "thumb": "1f9b33e2f122.webp",
+    "thumb": "3a440cd90909.webp",
     "src": "art/heroes/farmer-with-hat/hex/l1_256.png"
    }
   ]
@@ -138,7 +138,7 @@
    {
     "kind": "hex",
     "label": "Level 1",
-    "thumb": "cc83da534f16.webp",
+    "thumb": "85258e78cafd.webp",
     "src": "art/heroes/school-children/hex/l1_256.png"
    }
   ]
@@ -157,7 +157,7 @@
    {
     "kind": "hex",
     "label": "Level 1",
-    "thumb": "b0bdc9d74f2b.webp",
+    "thumb": "8803e0b4ee6f.webp",
     "src": "art/heroes/schoolteacher/hex/l1_256.png"
    }
   ]
@@ -3199,7 +3199,7 @@
    {
     "kind": "hex",
     "label": "Level 1",
-    "thumb": "a20153df0122.webp",
+    "thumb": "534f7a94bbf9.webp",
     "src": "art/heroes/school-child-female/hex/l1_256.png"
    }
   ]

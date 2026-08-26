@@ -1932,15 +1932,15 @@
    "campaign": null,
    "art": "art/heroes/farmer/card/l1.png",
    "ported": {
-    "strength": 2,
+    "strength": 3,
     "precision": 2,
     "armor": 0,
-    "health": 6,
+    "health": 7,
     "reach": 1,
     "magic": 0,
     "spirit": 0,
     "resist": 0,
-    "itemSlots": 3,
+    "itemSlots": 2,
     "toughness": 1,
     "dodge": 0
    },
@@ -1948,14 +1948,15 @@
    "derivedBase": {
     "accuracy": 70,
     "crit": 3,
-    "luck": 0,
+    "luck": 2,
     "vision": 6,
     "movement": 5,
     "staminaMax": 0,
     "staminaRegen": 0
    },
    "notes": [
-    "Toughness 1 is hell-tcg maxAfflictions, ported straight across — same meaning."
+    "Toughness 1 is hell-tcg maxAfflictions, ported straight across — same meaning.",
+    "Stat block dictated 2026-08-25: Farmer, dictated 2026-08-25. A pitchfork and enough sense to use it pointy-end first. Movement 5 INFERRED (not dictated; as the other adult civilians)."
    ],
    "specialty": null,
    "originBadges": [
@@ -1979,6 +1980,18 @@
    "passiveDescription": null,
    "additionalClasses": null,
    "subtype": "Farmer",
+   "derivedDeltas": {
+    "luck": 2
+   },
+   "derivedDeltaWhy": "Farmer, dictated 2026-08-25. A pitchfork and enough sense to use it pointy-end first. Movement 5 INFERRED (not dictated; as the other adult civilians).",
+   "kit": [
+    "item.pitchfork"
+   ],
+   "survivalReward": {
+    "currency": "Supplies",
+    "value": 2,
+    "needsCapability": "battle-outcome reward — pays from the encounter outcome into the purse."
+   },
    "artSlug": "farmer",
    "hexArt": [
     "art/heroes/farmer/hex/l1_1024.png",
@@ -2253,10 +2266,10 @@
    "campaign": null,
    "art": "art/heroes/farmer-with-hat/card/l1.png",
    "ported": {
-    "strength": 4,
+    "strength": 3,
     "precision": 2,
     "armor": 0,
-    "health": 15,
+    "health": 7,
     "reach": 2,
     "magic": 0,
     "spirit": 0,
@@ -2268,7 +2281,7 @@
    "dropped": {},
    "derivedBase": {
     "accuracy": 70,
-    "crit": 3,
+    "crit": 5,
     "luck": 0,
     "vision": 6,
     "movement": 5,
@@ -2277,7 +2290,8 @@
    },
    "notes": [
     "Toughness 1 is hell-tcg maxAfflictions, ported straight across — same meaning.",
-    "Renamed \"Group of Farmers\" -> \"Farmer with a Hat\", ruled 2026-08-25."
+    "Renamed \"Group of Farmers\" -> \"Farmer with a Hat\", ruled 2026-08-25.",
+    "Stat block dictated 2026-08-25: Farmer with a Hat, dictated 2026-08-25: same stats as the Farmer but crit 5, luck 0 — the hat is confidence, not fortune. Movement 5, pitchfork and survival reward INFERRED as shared with the Farmer (dictated \"same stats but\")."
    ],
    "specialty": null,
    "originBadges": [],
@@ -2299,6 +2313,18 @@
    "passiveDescription": null,
    "additionalClasses": null,
    "subtype": "Farmer with a Hat",
+   "derivedDeltas": {
+    "crit": 2
+   },
+   "derivedDeltaWhy": "Farmer with a Hat, dictated 2026-08-25: same stats as the Farmer but crit 5, luck 0 — the hat is confidence, not fortune. Movement 5, pitchfork and survival reward INFERRED as shared with the Farmer (dictated \"same stats but\").",
+   "kit": [
+    "item.pitchfork"
+   ],
+   "survivalReward": {
+    "currency": "Supplies",
+    "value": 2,
+    "needsCapability": "battle-outcome reward — pays from the encounter outcome into the purse."
+   },
    "artSlug": "farmer-with-hat",
    "hexArt": [
     "art/heroes/farmer-with-hat/hex/l1_1024.png",
