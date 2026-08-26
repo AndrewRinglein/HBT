@@ -19,7 +19,8 @@ export function packUnits(): Readonly<Record<string, UnitDef>> {
   // authoredEnemies joined 2026-08-26 (content.enemy-pack): the prologue's
   // real enemies, keyed by their FULL Codex id (unit.zombie) so they can never
   // collide with the legacy bare-key fixtures ('zombie') awaiting migration.
-  for (const row of [...UNIT_PACK.heroes, ...UNIT_PACK.enemies, ...(UNIT_PACK as { authoredEnemies?: readonly unknown[] }).authoredEnemies ?? []]) {
+  for (const row of [...UNIT_PACK.heroes, ...UNIT_PACK.enemies, ...(UNIT_PACK as { authoredEnemies?: readonly unknown[] }).authoredEnemies ?? [],
+    ...(UNIT_PACK as { prologueParty?: readonly unknown[] }).prologueParty ?? []]) {
     const r = row as unknown as UnitDef & { typeId: string; copyOf?: string }
     for (const k of REQUIRED) {
       if ((r as Record<string, unknown>)[k] === undefined) {
@@ -29,8 +30,8 @@ export function packUnits(): Readonly<Record<string, UnitDef>> {
     // Two id families, both clearly differentiated (Angela 2026-08-20): the
     // cohort is test- prefixed; the authored bestiary carries its full Codex
     // id under the declared unit. kind. Anything else is a pipeline bug.
-    if (!r.typeId.startsWith('test-') && !r.typeId.startsWith('unit.')) {
-      throw new Error(`unit pack: '${r.typeId}' is neither test- nor unit.* — the pack must stay clearly differentiated (Angela 2026-08-20)`)
+    if (!r.typeId.startsWith('test-') && !r.typeId.startsWith('unit.') && !r.typeId.startsWith('hero.')) {
+      throw new Error(`unit pack: '${r.typeId}' is not test- / unit.* / hero.* — the pack must stay clearly differentiated (Angela 2026-08-20)`)
     }
     for (const t of r.triggers ?? []) validateTrigger(t)
     for (const m of r.moves) {

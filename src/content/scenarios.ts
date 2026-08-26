@@ -65,6 +65,18 @@ const RAW_SCENARIOS: Readonly<Record<string, ScenarioDef>> = {
     enemyHexes: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14],
     replicate: 0,
   },
+  'showcase.prologue-party': {
+    id: 'showcase.prologue-party',
+    note: 'Battle 1 in miniature: the Hunter against two authored zombies — '
+      + 'the content.hero-pack verify battle. Iron Dwarf and Battle Chaplain '
+      + 'join when their kits get dictated overrides (named gaps until then).',
+    mapId: 'map.open',
+    heroes: ['hero.base.ranger-aggressive'],
+    heroHexes: [247],
+    enemies: ['unit.zombie', 'unit.zombie'],
+    enemyHexes: [118, 122],
+    replicate: 0,
+  },
 }
 
 // The kill-switch seam (disable.ts): byte-identical object when nothing is

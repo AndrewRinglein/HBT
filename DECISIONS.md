@@ -836,3 +836,16 @@ do-nothing half was my invention and is dead. Civilians field as ordinary
 heroes WITH their Codex behaviour — stats, actions, AI like any hero. The
 `content.civilians` backlog row is respecified accordingly; their rows come
 from the Codex civilian class, not from a stripped-down stub.
+
+---
+
+## 2026-08-26 — the prologue party comes from the Eve-of-Ruin 24
+
+> "pick a ranger of the 24 Eve, then a warrior and a preist, all from 24 eve"
+
+Battle 1 fields the ranger; battle 2 fields all three. The specific picks were
+delegated ("pick") and constrained to the Eve-of-Ruin campaign roster; taken
+first-of-class at tier 0: Hunter (hero.base.ranger-aggressive), Iron Dwarf
+(hero.base.warrior-iron), Battle Chaplain (hero.base.priest-armored). The
+picks are mine under his constraint and are cheap to swap; the constraint is
+his and is not.

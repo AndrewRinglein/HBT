@@ -1292,7 +1292,12 @@
     "changesBaseline": false,
     "needs": [
       "fix.cohort-drift"
-    ]
+    ],
+    "probeIds": [
+      "showcase.prologue-party"
+    ],
+    "status": "done-needs-review",
+    "sha": "8c7125b"
   },
   {
     "id": "encounter.battle-1",

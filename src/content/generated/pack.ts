@@ -1220,6 +1220,64 @@ export const UNIT_PACK = {
       "stat": "strength",
       "reach": 1,
       "staminaCost": 0
+    },
+    "attack.longbow.shot": {
+      "id": "attack.longbow.shot",
+      "name": "Shot",
+      "kind": "ranged",
+      "damageType": "physical",
+      "bonus": 1,
+      "stat": "precision",
+      "reach": 6,
+      "staminaCost": 1
+    },
+    "attack.longbow.long-shot": {
+      "id": "attack.longbow.long-shot",
+      "name": "Long Shot",
+      "kind": "ranged",
+      "damageType": "physical",
+      "bonus": 2,
+      "stat": "precision",
+      "reach": 7,
+      "staminaCost": 2
     }
-  }
+  },
+  "prologueParty": [
+    {
+      "typeId": "hero.base.ranger-aggressive",
+      "name": "Hunter",
+      "side": "hero",
+      "maxHp": 6,
+      "armor": 0,
+      "resist": 0,
+      "accuracy": 80,
+      "dodge": 0,
+      "strength": 2,
+      "precision": 5,
+      "magic": 0,
+      "spirit": 0,
+      "role": "ranged",
+      "movement": 5,
+      "reach": 3,
+      "maxStamina": 5,
+      "staminaRegen": 1,
+      "ai": "ranged-kite",
+      "attacks": [
+        "attack.longbow.shot",
+        "attack.longbow.long-shot"
+      ],
+      "abilities": [],
+      "moves": [
+        "power.move",
+        "power.side-roll"
+      ],
+      "attributes": [
+        "hero-eve"
+      ],
+      "tags": [
+        "hero"
+      ],
+      "triggers": []
+    }
+  ]
 } as const

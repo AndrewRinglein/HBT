@@ -14,7 +14,9 @@ import { runBattle } from '../src/core/battle.js'
 describe('the pack — read from the data, clearly differentiated', () => {
   it('six heroes, one per class, all test- prefixed, all (TEST)-named, all Codex-traced', () => {
     const pack = packUnits()
-    const heroes = Object.values(pack).filter((u) => u.side === 'hero')
+    // The COHORT is six; the prologue party (hero.*) is a separate family
+    // and is counted by its own tests (2026-08-26, content.hero-pack).
+    const heroes = Object.values(pack).filter((u) => u.side === 'hero' && u.typeId.startsWith('test-'))
     expect(heroes.length).toBe(6)
     // LAW 10 — widened 2026-08-26 (content.enemy-pack): the pack now carries
     // TWO clearly-differentiated families, exactly as the loader enforces —
@@ -22,7 +24,7 @@ describe('the pack — read from the data, clearly differentiated', () => {
     // full unit.* Codex ids. The claim is still "nothing undifferentiated";
     // it was never "nothing but the cohort".
     for (const h of Object.values(pack)) {
-      if (h.typeId.startsWith('unit.')) continue // the authored bestiary family
+      if (h.typeId.startsWith('unit.') || h.typeId.startsWith('hero.')) continue // the authored bestiary + prologue party families
       expect(h.typeId.startsWith('test-'), h.typeId).toBe(true)
       expect(h.name, h.typeId).toContain('(TEST)')
     }
