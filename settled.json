@@ -1003,6 +1003,18 @@
         "value": 1
        },
        "source": "unit.test-oathblade"
+      },
+      {
+       "id": "test.oathblade.apply-bleed",
+       "hook": "onAttack",
+       "chance": 100,
+       "select": "target",
+       "effect": {
+        "kind": "status.apply",
+        "statusId": "status.bleed",
+        "value": 2
+       },
+       "source": "unit.test-oathblade"
       }
      ],
      "moves": [
@@ -1023,7 +1035,20 @@
       "attack.punch"
      ],
      "abilities": [],
-     "riders": [],
+     "riders": [
+      {
+       "id": "test.sky-pirate.apply-bleed",
+       "hook": "onDamage",
+       "chance": 100,
+       "select": "target",
+       "effect": {
+        "kind": "status.apply",
+        "statusId": "status.bleed",
+        "value": 1
+       },
+       "source": "unit.test-sky-pirate"
+      }
+     ],
      "moves": [
       "power.move",
       "power.side-roll"
