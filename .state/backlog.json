@@ -1216,7 +1216,9 @@
    "test.sky-pirate.apply-bleed",
    "test.oathblade.apply-bleed"
   ],
-  "attempts": 1
+  "attempts": 1,
+  "status": "done-needs-review",
+  "sha": "4767fa9"
  },
  {
   "id": "movement.bonus-actions",

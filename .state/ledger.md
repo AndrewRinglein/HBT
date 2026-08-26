@@ -2875,3 +2875,156 @@ index 0779c50..213f12c 100644
  })
 ```
 </details>
+
+## fix.cohort-drift — LANDED `4767fa9` **NEEDS REVIEW**
+2026-08-26 06:12
+
+  PASS  dependencies landed
+  WARN  not already decided — 5 candidate ruling(s) — READ BEFORE ASKING: ../CODEX.md:372 · ../CODEX.md:3158
+  PASS  typecheck
+  PASS  full test suite
+  PASS  gate 1 — the id appears in a real battle — test.sky-pirate.apply-bleed: 2892 log lines, 2892 fired, 964 changed state · test.oathblade.apply-bleed: 4947 log lines, 4947 fired, 1649 changed state
+  PASS  brought its own tests — test/movement-powers.test.ts, test/replay.test.ts, test/unit-pack.test.ts
+  WARN  existing tests untouched — DELETED LINES in test/movement-powers.test.ts (-8), test/replay.test.ts (-6), test/unit-pack.test.ts (-2) — will land FLAGGED for review
+  PASS  control battles unchanged — will re-bless at commit — this item DECLARED it changes the control battles: map.open 4a21cec5->fd8e67ad, map.ridge ae2e7170->b958eac6, map.flanks 6e10a9df->79803570, map.highlands 9a951ecc->e423d752, map.field f9e9ff12->cf14f55d, map.thicket 49bee8fa->eb9f87fb, test.map.embers c6894c10->a6694393, test.map.showcase 53e8141c->3a369c48
+  PASS  content has a published source — 23 ids without a published source (13 awaiting publication from earlier items — see audit)
+  PASS  hardcode scan — core knows mechanisms, never names
+  PASS  generalizes — the second instance costs zero engine code — shape 'plumbing' — not a mechanism, exempt
+  PASS  naming — new content ids use declared kinds
+  PASS  naming — no banned words invented
+  PASS  kill switch — the tests fail without the content — tests fail without test.sky-pirate.apply-bleed,test.oathblade.apply-bleed — they genuinely test it
+
+<details><summary>Existing tests were edited — review this diff</summary>
+
+```diff
+diff --git a/test/movement-powers.test.ts b/test/movement-powers.test.ts
+index ba97bda..68d7f9c 100644
+--- a/test/movement-powers.test.ts
++++ b/test/movement-powers.test.ts
+@@ -11,6 +11,9 @@
+ // movement power and pay no stamina — stamina is the hero throttle.
+ import { describe, expect, it } from 'vitest'
++import { readFileSync } from 'node:fs'
++import { join } from 'node:path'
+ import { createBattle, createCustomBattle } from '../src/core/setup.js'
+ import { runBattle } from '../src/core/battle.js'
++import { runActivation } from '../src/ai/modes.js'
+ import { beginActivation } from '../src/core/mutate.js'
+ import { executeSidestep, moveStaminaCost, usableMoves } from '../src/core/movement.js'
+@@ -31,10 +34,17 @@ describe('the rows are the Codex rows — data, not code', () => {
+   it('who grants what is unit data: class grants on the cohort, one power per enemy row', () => {
+     const pack = packUnits()
+-    // Sidestep to Warrior/Mage/Priest/Paladin; Side Roll to Rogue/Ranger (Codex 2026-08-21)
+-    for (const t of ['test-oathblade', 'test-air-mage', 'test-lucius', 'test-osric']) {
+-      expect(pack[t]!.moves, t).toEqual(['power.move', 'power.sidestep'])
+-    }
+-    for (const t of ['test-sky-pirate', 'test-dusk-hawk']) {
+-      expect(pack[t]!.moves, t).toEqual(['power.move', 'power.side-roll'])
++    // LAW 10 — rewritten 2026-08-25 as a RULE, not a frozen list. This asserted
++    // the 2026-08-21 grants (Sidestep to warrior/mage/priest/paladin) and went
++    // red the day the Codex split the half-step per class (S17: leap / focus /
++    // devotion / sidestep / side-roll). The claim under test was never "these
++    // ids", it was "grants are CONTENT the pack carries faithfully" — so the
++    // test now asserts pack ↔ settled.json agreement, which survives regrants
++    // and still dies loudly if the converter drops a grant.
++    const settled = JSON.parse(
++      readFileSync(join(__dirname, '..', '..', 'content', 'settled.json'), 'utf8'))
++    for (const clone of settled.testCohort.heroes) {
++      expect(pack[clone.typeId]!.moves, clone.typeId).toEqual(clone.engine.moves)
++      expect(pack[clone.typeId]!.moves[0], clone.typeId + ' walks first').toBe('power.move')
++      expect(pack[clone.typeId]!.moves, clone.typeId + ' one half-step').toHaveLength(2)
+     }
+     for (const t of ['test-zombie', 'test-zombie-burning']) {
+@@ -131,6 +141,15 @@ describe('the choice is ALIVE in the standard battles', () => {
+     // Disabling power.sidestep via CF_DISABLE_IDS kills the causeId and this
+     // test with it — the kill-switch check relies on that.
++    // LAW 10 — split 2026-08-25. Both variants used to fire in the sweep when
++    // Sidestep had four grantors; the S17 regrant leaves it Paladin-only and
++    // Osric never hits the fallback condition in 50 standard battles, so "both
++    // appear in the sweep" stopped being a fact about the mechanism and became
++    // a fact about stamina economics. The rule is two claims now:
++    // (1) sweep — the fallback is ALIVE: some granted sidestep-shaped power is
++    //     chosen by the AI in real battles;
++    // (2) scripted — the OTHER data variant is chosen too, proven by starving
++    //     its one grantor. Two variants, both AI-chosen, seed-independent.
+     const used = new Set<string>()
+-    for (let r = 0; r < 25 && used.size < 2; r++) {
++    for (let r = 0; r < 25 && used.size < 1; r++) {
+       for (const mapId of ['map.open', 'map.thicket']) {
+         const ctx = createBattle({ replicate: r, enemyCount: 8, mapId })
+@@ -141,5 +160,18 @@ describe('the choice is ALIVE in the standard battles', () => {
+       }
+     }
+-    expect([...used].sort()).toEqual(['power.side-roll', 'power.sidestep'])
++    expect(used.size, 'no sidestep-shaped power was ever AI-chosen').toBeGreaterThan(0)
++
++    // (2) starve Osric — the sole Sidestep grantor — and the AI must fall back to it.
++    const ctx = createCustomBattle(
++      [{ type: 'test-osric', hex: hexId(3, 8) }],
++      [{ type: 'test-zombie', hex: hexId(3, 12) }],
++    )
++    const os = ctx.state.units[0]!
++    os.stamina = 0 // the walk costs 1 — unaffordable; Sidestep is free
++    beginActivation(ctx, os.id, 'test')
++    runActivation(ctx, os.id)
++    const step = ctx.events.find((e) => e.type === 'moved')
++    expect(step, 'the starved paladin never moved').toBeDefined()
++    expect(step!.causeId, 'the fallback must be the granted Sidestep').toBe('power.sidestep')
+   })
+ 
+diff --git a/test/replay.test.ts b/test/replay.test.ts
+index f836e7a..3b1205e 100644
+--- a/test/replay.test.ts
++++ b/test/replay.test.ts
+@@ -30,9 +30,9 @@ let battle: { engineCommit: string; events: { type: string; causeId?: string }[]
+ 
+ beforeAll(() => {
+-  // Demo seed 21 → 1 → 0 across 2026-08-20 (Law 10, reasons written each
+-  // time): battle flow changes whenever the roster does — beasts, then the
+-  // Codex cohort. Seed 0 shows sear 4, heal 3, wash 2 under the six-hero
+-  // party. The CLAIMS under test are unchanged.
+-  execSync(`npx tsx tools/export-battle.mts 0 map.thicket 8 > "${BATTLE}"`)
++  // Demo seed 21 → 1 → 0 → 1 (Law 10, reasons written each time): battle flow
++  // changes whenever the roster or the board does. 2026-08-25: the 16x16 board
++  // plus the S17 regrants moved the fight — seed 0 now shows no river wash.
++  // Seed 1 shows sear 6, heal 1, wash 1. The CLAIMS under test are unchanged.
++  execSync(`npx tsx tools/export-battle.mts 1 map.thicket 8 > "${BATTLE}"`)
+   execSync(`node tools/build-replay.mjs "${BATTLE}" "${PAGE}"`)
+   html = readFileSync(PAGE, 'utf8')
+@@ -49,5 +49,5 @@ describe('the replay rig', () => {
+   it('the battle is a seed with its engine commit — a stale replay says so', () => {
+     expect(html).toContain(`"engineCommit":"${battle.engineCommit}"`)
+-    expect(html).toContain('"replicate":0')
++    expect(html).toContain('"replicate":1')
+     expect(html).toContain('"mapId":"map.thicket"')
+   })
+diff --git a/test/unit-pack.test.ts b/test/unit-pack.test.ts
+index 2d925ba..37eff81 100644
+--- a/test/unit-pack.test.ts
++++ b/test/unit-pack.test.ts
+@@ -34,6 +34,21 @@ describe('the pack — read from the data, clearly differentiated', () => {
+     expect(pack['test-dusk-hawk']!.copyOf).toBe('hero.shadows.dusk-hawk.v1')
+     expect(pack['test-air-mage']!.copyOf).toBe('hero.fixed.air-mage')
+-    expect(pack['test-lucius']!.copyOf).toBe('hero.tutorial.priest-scantily.lucius')
+-    expect(pack['test-osric']!.copyOf).toBe('hero.tutorial.paladin-shiney.osric')
++    // LAW 10 — 2026-08-25: S17 renamed the source ids (hero.tutorial.* -> hero.base.*).
++    // Same heroes — the scantily priest and the shiny paladin — new ids. The data leads.
++    expect(pack['test-lucius']!.copyOf).toBe('hero.base.priest-scantily')
++    expect(pack['test-osric']!.copyOf).toBe('hero.base.paladin-shiney')
++  })
++
++  it('the restored riders are LIVE through the seam — S17 cut them once already', () => {
++    // 2026-08-25: S17's hell-tcg cut orphaned both bleed riders (the Cutlass is
++    // Angela-ruled, 2026-08-20 'it's fine'); restored via engine.riders on the
++    // clones. Read through UNITS — the post-seam registry — so disabling the
++    // rider ids genuinely kills this test: the raw pack would not notice.
++    for (const [unit, id] of [['test-sky-pirate', 'test.sky-pirate.apply-bleed'],
++      ['test-oathblade', 'test.oathblade.apply-bleed']] as const) {
++      const t = (UNITS[unit]!.triggers ?? []).find((x) => x.id === id)
++      expect(t, `${id} missing from ${unit} through the seam`).toBeDefined()
++      expect(t!.effect).toMatchObject({ kind: 'status.apply', statusId: 'status.bleed' })
++    }
+   })
+ 
+```
+</details>
