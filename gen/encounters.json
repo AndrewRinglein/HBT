@@ -18,10 +18,10 @@
           "objective": true,
           "civilian": true,
           "at": {
-            "col": 5,
+            "col": 6,
             "row": 6
           },
-          "was": "mid"
+          "was": "mid — moved one right (5→6) on review, 2026-08-25"
         },
         {
           "unit": "unit.zombie",
