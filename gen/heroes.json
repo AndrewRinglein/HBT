@@ -146,7 +146,7 @@
    "level": 1,
    "gender": "neutral",
    "campaign": null,
-   "art": null,
+   "art": "art/heroes/orphan-child/card/l1.png",
    "ported": {
     "strength": 3,
     "precision": 3,
@@ -201,6 +201,7 @@
    "passiveDescription": "On enter: +1 Faith. On death: -2 Faith",
    "additionalClasses": null,
    "subtype": "Orphan Children",
+   "artSlug": "orphan-child",
    "personality": [
     "cheerful"
    ]
@@ -992,7 +993,7 @@
   },
   {
    "id": "hero.fixed.lumberjack-and-wife",
-   "name": "Lumberjack and Wife",
+   "name": "Lumberjack",
    "path": "fixed",
    "sourceClass": "Civilian",
    "class": "class.civilian",
@@ -1000,7 +1001,7 @@
    "level": 1,
    "gender": "neutral",
    "campaign": null,
-   "art": null,
+   "art": "art/heroes/lumberjack/card/l1.png",
    "ported": {
     "strength": 3,
     "precision": 2,
@@ -1025,7 +1026,8 @@
     "staminaRegen": 0
    },
    "notes": [
-    "Toughness 2 is hell-tcg maxAfflictions, ported straight across — same meaning."
+    "Toughness 2 is hell-tcg maxAfflictions, ported straight across — same meaning.",
+    "Renamed \"Lumberjack and Wife\" -> \"Lumberjack\", ruled 2026-08-25."
    ],
    "specialty": null,
    "originBadges": [],
@@ -1045,7 +1047,8 @@
    "backstory": "They fled the burning village together, grabbing every tool they could carry. United in survival, they fight as one.",
    "passiveDescription": null,
    "additionalClasses": null,
-   "subtype": "Lumberjack and Wife",
+   "subtype": "Lumberjack",
+   "artSlug": "lumberjack",
    "personality": [
     "cheerful"
    ]
@@ -1867,7 +1870,7 @@
    "level": 1,
    "gender": "male",
    "campaign": null,
-   "art": null,
+   "art": "art/heroes/farmer/card/l1.png",
    "ported": {
     "strength": 2,
     "precision": 2,
@@ -1916,6 +1919,7 @@
    "passiveDescription": null,
    "additionalClasses": null,
    "subtype": "Farmer",
+   "artSlug": "farmer",
    "personality": [
     "grim"
    ]
@@ -2174,7 +2178,7 @@
   },
   {
    "id": "hero.fixed.group-of-farmers",
-   "name": "Group of Farmers",
+   "name": "Farmer with a Hat",
    "path": "fixed",
    "sourceClass": "Civilian",
    "class": "class.civilian",
@@ -2182,7 +2186,7 @@
    "level": 1,
    "gender": "neutral",
    "campaign": null,
-   "art": null,
+   "art": "art/heroes/farmer-with-hat/card/l1.png",
    "ported": {
     "strength": 4,
     "precision": 2,
@@ -2207,7 +2211,8 @@
     "staminaRegen": 0
    },
    "notes": [
-    "Toughness 1 is hell-tcg maxAfflictions, ported straight across — same meaning."
+    "Toughness 1 is hell-tcg maxAfflictions, ported straight across — same meaning.",
+    "Renamed \"Group of Farmers\" -> \"Farmer with a Hat\", ruled 2026-08-25."
    ],
    "specialty": null,
    "originBadges": [],
@@ -2228,7 +2233,8 @@
    "backstory": null,
    "passiveDescription": null,
    "additionalClasses": null,
-   "subtype": "Group of Farmers",
+   "subtype": "Farmer with a Hat",
+   "artSlug": "farmer-with-hat",
    "personality": [
     "fearful"
    ]
@@ -3680,7 +3686,7 @@
    "level": 1,
    "gender": "neutral",
    "campaign": null,
-   "art": null,
+   "art": "art/heroes/school-children/card/l1.png",
    "ported": {
     "strength": 3,
     "precision": 3,
@@ -3726,6 +3732,7 @@
    "passiveDescription": null,
    "additionalClasses": null,
    "subtype": "School Children",
+   "artSlug": "school-children",
    "personality": [
     "cheerful"
    ]
@@ -3740,7 +3747,7 @@
    "level": 1,
    "gender": "female",
    "campaign": null,
-   "art": null,
+   "art": "art/heroes/schoolteacher/card/l1.png",
    "ported": {
     "strength": 1,
     "precision": 2,
@@ -3794,6 +3801,7 @@
    "passiveDescription": "Grants Knowledge spell and Knowledge tactic",
    "additionalClasses": null,
    "subtype": "School Teacher",
+   "artSlug": "schoolteacher",
    "personality": [
     "brooding"
    ]
@@ -18418,6 +18426,66 @@
    "templateName": "Ward of Aeronissa",
    "needsPricing": true,
    "artMissing": true
+  },
+  {
+   "id": "hero.fixed.school-child-female",
+   "name": "School Child (female)",
+   "path": "fixed",
+   "sourceClass": "Civilian",
+   "class": "class.civilian",
+   "tier": 0,
+   "level": 1,
+   "gender": "neutral",
+   "campaign": null,
+   "art": "art/heroes/school-child-female/card/l1.png",
+   "ported": {
+    "strength": 3,
+    "precision": 3,
+    "armor": 0,
+    "health": 8,
+    "reach": 2,
+    "magic": 0,
+    "spirit": 0,
+    "resist": 0,
+    "itemSlots": 1,
+    "toughness": 2,
+    "dodge": 0
+   },
+   "dropped": {},
+   "derivedBase": {
+    "accuracy": 70,
+    "crit": 3,
+    "luck": 0,
+    "vision": 6,
+    "movement": 5,
+    "staminaMax": 0,
+    "staminaRegen": 0
+   },
+   "notes": [
+    "NEW UNIT ruled 2026-08-25: the school-child-solo art is its own character, separate from School Children. Stats cloned from School Children as a SOFT baseline — a sweep or ruling prices her."
+   ],
+   "specialty": null,
+   "originBadges": [
+    "Frail"
+   ],
+   "classPowers": [],
+   "namedSpecials": [],
+   "levelBonuses": [],
+   "cost": {
+    "action": 1,
+    "faith": 0,
+    "discard": 0,
+    "supplies": 0
+   },
+   "quote": "\"Please... help us find our teacher!\"",
+   "backstory": "A group of terrified schoolchildren found hiding in the burning school. They cling to each other for comfort amidst the chaos.",
+   "passiveDescription": null,
+   "additionalClasses": null,
+   "subtype": "School Child (female)",
+   "artSlug": "school-child-female",
+   "personality": [
+    "cheerful"
+   ]
   }
  ]
 }

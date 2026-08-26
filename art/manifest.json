@@ -1,4 +1,56 @@
 {
+ "hero.fixed.orphans": {
+  "thumb": "425870a2bcf8.webp",
+  "src": "art/heroes/orphan-child/card/l1.png",
+  "how": "local art tree",
+  "variants": [
+   {
+    "kind": "level",
+    "label": "Level 1",
+    "thumb": "425870a2bcf8.webp",
+    "src": "art/heroes/orphan-child/card/l1.png"
+   }
+  ]
+ },
+ "hero.fixed.lumberjack-and-wife": {
+  "thumb": "4af78877b4eb.webp",
+  "src": "art/heroes/lumberjack/card/l1.png",
+  "how": "local art tree",
+  "variants": [
+   {
+    "kind": "level",
+    "label": "Level 1",
+    "thumb": "4af78877b4eb.webp",
+    "src": "art/heroes/lumberjack/card/l1.png"
+   }
+  ]
+ },
+ "hero.fixed.farmer": {
+  "thumb": "7084a2923a9c.webp",
+  "src": "art/heroes/farmer/card/l1.png",
+  "how": "local art tree",
+  "variants": [
+   {
+    "kind": "level",
+    "label": "Level 1",
+    "thumb": "7084a2923a9c.webp",
+    "src": "art/heroes/farmer/card/l1.png"
+   }
+  ]
+ },
+ "hero.fixed.group-of-farmers": {
+  "thumb": "e9d93d74d621.webp",
+  "src": "art/heroes/farmer-with-hat/card/l1.png",
+  "how": "local art tree",
+  "variants": [
+   {
+    "kind": "level",
+    "label": "Level 1",
+    "thumb": "e9d93d74d621.webp",
+    "src": "art/heroes/farmer-with-hat/card/l1.png"
+   }
+  ]
+ },
  "hero.fixed.general-kor": {
   "thumb": "98cd9846b99f.webp",
   "src": "art/heroes/general-kor/card/l1.png",
@@ -45,6 +97,32 @@
     "label": "vampirism",
     "thumb": "5d9aa65fa214.webp",
     "src": "art/heroes/general-kor/card/vampirism.png"
+   }
+  ]
+ },
+ "hero.fixed.school-children": {
+  "thumb": "8149145a2e61.webp",
+  "src": "art/heroes/school-children/card/l1.png",
+  "how": "local art tree",
+  "variants": [
+   {
+    "kind": "level",
+    "label": "Level 1",
+    "thumb": "8149145a2e61.webp",
+    "src": "art/heroes/school-children/card/l1.png"
+   }
+  ]
+ },
+ "hero.fixed.school-teacher": {
+  "thumb": "dbd8d4e6d47e.webp",
+  "src": "art/heroes/schoolteacher/card/l1.png",
+  "how": "local art tree",
+  "variants": [
+   {
+    "kind": "level",
+    "label": "Level 1",
+    "thumb": "dbd8d4e6d47e.webp",
+    "src": "art/heroes/schoolteacher/card/l1.png"
    }
   ]
  },
@@ -3071,6 +3149,19 @@
    }
   ]
  },
+ "hero.fixed.school-child-female": {
+  "thumb": "eb6108a5856a.webp",
+  "src": "art/heroes/school-child-female/card/l1.png",
+  "how": "local art tree",
+  "variants": [
+   {
+    "kind": "level",
+    "label": "Level 1",
+    "thumb": "eb6108a5856a.webp",
+    "src": "art/heroes/school-child-female/card/l1.png"
+   }
+  ]
+ },
  "hero.skyship.aeronissa-priest.v2": {
   "thumb": "3420e88aeae4.webp",
   "src": null,
@@ -5241,20 +5332,6 @@
    }
   ]
  },
- "hero.fixed.orphans": {
-  "thumb": "00b0a212f067.webp",
-  "src": null,
-  "how": "legacy thumbnail — its hell-tcg source was cut 2026-08-22, the picture survives",
-  "legacy": true,
-  "variants": [
-   {
-    "kind": "level",
-    "label": "Level 1",
-    "thumb": "00b0a212f067.webp",
-    "src": null
-   }
-  ]
- },
  "hero.fixed.prince": {
   "thumb": "9cb6fc219703.webp",
   "src": null,
@@ -5395,20 +5472,6 @@
    }
   ]
  },
- "hero.fixed.farmer": {
-  "thumb": "5dc22ff9edce.webp",
-  "src": null,
-  "how": "legacy thumbnail — its hell-tcg source was cut 2026-08-22, the picture survives",
-  "legacy": true,
-  "variants": [
-   {
-    "kind": "level",
-    "label": "Level 1",
-    "thumb": "5dc22ff9edce.webp",
-    "src": null
-   }
-  ]
- },
  "hero.fixed.farming-family": {
   "thumb": "cdd250ccd915.webp",
   "src": null,
@@ -5479,20 +5542,6 @@
    }
   ]
  },
- "hero.fixed.group-of-farmers": {
-  "thumb": "bf90d79f7f16.webp",
-  "src": null,
-  "how": "legacy thumbnail — its hell-tcg source was cut 2026-08-22, the picture survives",
-  "legacy": true,
-  "variants": [
-   {
-    "kind": "level",
-    "label": "Level 1",
-    "thumb": "bf90d79f7f16.webp",
-    "src": null
-   }
-  ]
- },
  "hero.fixed.imp": {
   "thumb": "766fa6efd931.webp",
   "src": null,
@@ -5517,20 +5566,6 @@
     "kind": "level",
     "label": "Level 1",
     "thumb": "1a36fb28aef0.webp",
-    "src": null
-   }
-  ]
- },
- "hero.fixed.lumberjack-and-wife": {
-  "thumb": "0525dac8d2bb.webp",
-  "src": null,
-  "how": "legacy thumbnail — its hell-tcg source was cut 2026-08-22, the picture survives",
-  "legacy": true,
-  "variants": [
-   {
-    "kind": "level",
-    "label": "Level 1",
-    "thumb": "0525dac8d2bb.webp",
     "src": null
    }
   ]
@@ -5643,34 +5678,6 @@
     "kind": "level",
     "label": "Level 1",
     "thumb": "ba7cbaa73c59.webp",
-    "src": null
-   }
-  ]
- },
- "hero.fixed.school-children": {
-  "thumb": "ed45fc38947d.webp",
-  "src": null,
-  "how": "legacy thumbnail — its hell-tcg source was cut 2026-08-22, the picture survives",
-  "legacy": true,
-  "variants": [
-   {
-    "kind": "level",
-    "label": "Level 1",
-    "thumb": "ed45fc38947d.webp",
-    "src": null
-   }
-  ]
- },
- "hero.fixed.school-teacher": {
-  "thumb": "6329263dcc95.webp",
-  "src": null,
-  "how": "legacy thumbnail — its hell-tcg source was cut 2026-08-22, the picture survives",
-  "legacy": true,
-  "variants": [
-   {
-    "kind": "level",
-    "label": "Level 1",
-    "thumb": "6329263dcc95.webp",
     "src": null
    }
   ]

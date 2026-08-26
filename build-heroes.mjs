@@ -398,6 +398,38 @@ for(const h of heroes){
               badgesAdded + ' badges attached · ' + deferred + ' deferred to CONTENT-GAPS');
 }
 
+// ------------------------------------------------------------ civilian rulings
+// Renames and settled art for the prologue civilians. Ruled 2026-08-25 reviewing the
+// hero-art pairs. A rename lives in gen/civilian-rulings.json and is applied HERE, in the
+// generator, because a rename hand-patched onto gen/heroes.json dies at the next rebuild.
+// Ids never change — encounters reference ids, so nothing dangles.
+{
+  const CR=JSON.parse(fs.readFileSync('gen/civilian-rulings.json','utf8'));
+  for(const [id,name] of Object.entries(CR.renames||{})){
+    const h=heroes.find(x=>x.id===id);
+    if(!h){problems.push('civilian-rulings: no hero '+id);continue;}
+    h.notes.push('Renamed '+JSON.stringify(h.name)+' -> '+JSON.stringify(name)+', ruled 2026-08-25.');
+    h.name=name;
+    h.subtype=name;   // a fixed hero's subtype IS its name (R19) — the rename carries it
+  }
+  for(const [id,spec] of Object.entries(CR.newUnits||{})){
+    if(id.startsWith('_'))continue;
+    const src=heroes.find(x=>x.id===spec.cloneStatsOf);
+    if(!src){problems.push('civilian-rulings newUnits: no clone source '+spec.cloneStatsOf);continue;}
+    heroes.push({...JSON.parse(JSON.stringify(src)), id, name:spec.name, subtype:spec.name,
+      art:null, artSlug:undefined, artMissing:true, levelArt:undefined, afflictionArt:undefined, anim:undefined, hexArt:undefined,
+      notes:['NEW UNIT ruled 2026-08-25: the school-child-solo art is its own character, separate from School Children. Stats cloned from '+src.name+' as a SOFT baseline — a sweep or ruling prices her.']});
+  }
+  for(const [id,a] of Object.entries(CR.art||{})){
+    if(id.startsWith('_'))continue;
+    const h=heroes.find(x=>x.id===id);
+    if(!h){problems.push('civilian-rulings: no hero '+id);continue;}
+    const p='art/heroes/'+a.slug+'/card/l1.png';
+    if(!fs.existsSync('../'+p)){problems.push('civilian-rulings: '+p+' not on disk');continue;}
+    h.art=p; h.artSlug=a.slug; h.artMissing=undefined;
+  }
+}
+
 // ---------------------------------------------------------------- local art resolution
 // The art tree in this repo is art/heroes/<slug>/{card,hex,anim}/ with card/l1..l4 and
 // card/<affliction>. The SOURCE names the same pictures <slug>1..4 and <slug>l|p|r|v in a flat
