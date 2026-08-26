@@ -2,8 +2,9 @@
   "_note": "ENCOUNTERS — the P11 format, shaped by slice ruling 4 (2026-08-23): combat is simulated and toggleable, so an encounter collapses to a difficulty-ranked row with an enemy list. The full scripted form exists ONLY for the prologue battles, which are fixed by design and precede the map. Authored 2026-08-25 from ENEMY-REVIEW.md. FORMAT IS PROPOSED, NOT RULED — this is the sketch for review.",
   "format": {
     "sliceRow": "id · difficulty (an integer rank the battle list is sorted by) · enemies (unit ids with counts) · powerSources (optional: the battle's external pool and any scheduled gains) · terrainHint (optional). Nothing else — ruling 4 means no maps, no scripting for slice battles.",
-    "prologueBattle": "The five fixed battles carry the full shape: setup (placed units by zone), schedule (phase-keyed spawns by edge), loseAfter, retreat, civilians, events. CLOCK RULING 2026-08-23: schedules count PHASES — the word turn never appears in encounter data. Zones: player-edge | mid | far-edge | left | right | behind-player | every-side.",
-    "powerSources": "kind: external (pool at battle start) | arrival (one-time +X when a unit enters, stays in the pool after its death) | clock (per-phase or conditional gains live on the unit rows themselves — the Lieutenant's EOT, the Vampire Lord's kills)."
+    "prologueBattle": "The five fixed battles carry the full shape: setup (placed units by zone), schedule (phase-keyed spawns by edge), loseAfter, retreat, civilians, events. CLOCK RULING 2026-08-23: schedules count PHASES — the word turn never appears in encounter data. Placement is by hex — see format.placement.",
+    "powerSources": "kind: external (pool at battle start) | arrival (one-time +X when a unit enters, stays in the pool after its death) | clock (per-phase or conditional gains live on the unit rows themselves — the Lieutenant's EOT, the Vampire Lord's kills).",
+    "placement": "HEX PLACEMENT, ruled 2026-08-25 (zones were vagueries): at:{col,row} places on that hex; at:{near:{col,row},range:N} deploys anywhere within N of it; at:{oneOf:[{col,row},...]} is a scripted either/or. Board: the engine’s 12×12 odd-r grid (engine/src/core/hex.ts), row 0 = enemy edge, row 11 = player edge. The old zone word is kept as `was` for provenance; the hex is authoritative. Multi-unit entries list one hex per unit in `hexes`."
   },
   "prologue": [
     {
@@ -14,18 +15,39 @@
       "setup": [
         {
           "unit": "hero.fixed.orphans",
-          "zone": "mid",
           "objective": true,
-          "civilian": true
+          "civilian": true,
+          "at": {
+            "col": 5,
+            "row": 6
+          },
+          "was": "mid"
         },
         {
           "unit": "unit.zombie",
           "count": 2,
-          "zone": "mid"
+          "hexes": [
+            {
+              "col": 4,
+              "row": 5
+            },
+            {
+              "col": 7,
+              "row": 5
+            }
+          ],
+          "was": "mid"
         },
         {
           "heroes": 1,
-          "zone": "player-edge"
+          "at": {
+            "near": {
+              "col": 5,
+              "row": 11
+            },
+            "range": 1
+          },
+          "was": "player-edge"
         }
       ],
       "schedule": [
@@ -35,7 +57,19 @@
             {
               "unit": "unit.zombie",
               "count": 1,
-              "zone": "one-of-left-or-right"
+              "at": {
+                "oneOf": [
+                  {
+                    "col": 0,
+                    "row": 6
+                  },
+                  {
+                    "col": 11,
+                    "row": 6
+                  }
+                ]
+              },
+              "was": "one-of-left-or-right"
             }
           ]
         }
@@ -43,6 +77,10 @@
       "loseAfter": {
         "heroPhase": 10,
         "why": "taking too long"
+      },
+      "board": {
+        "width": 12,
+        "height": 12
       }
     },
     {
@@ -54,20 +92,46 @@
       "setup": [
         {
           "unit": "hero.fixed.lumberjack-and-wife",
-          "zone": "mid",
           "objective": true,
-          "civilian": true
+          "civilian": true,
+          "at": {
+            "col": 5,
+            "row": 6
+          },
+          "was": "mid"
         },
         {
           "unit": "hero.fixed.farmer",
-          "zone": "mid",
           "objective": true,
-          "civilian": true
+          "civilian": true,
+          "at": {
+            "col": 6,
+            "row": 6
+          },
+          "was": "mid"
         },
         {
           "unit": "unit.zombie",
           "count": 4,
-          "zone": "mid"
+          "hexes": [
+            {
+              "col": 4,
+              "row": 4
+            },
+            {
+              "col": 7,
+              "row": 4
+            },
+            {
+              "col": 3,
+              "row": 7
+            },
+            {
+              "col": 8,
+              "row": 7
+            }
+          ],
+          "was": "mid"
         }
       ],
       "schedule": [
@@ -77,7 +141,17 @@
             {
               "unit": "unit.skeletal-archer",
               "count": 2,
-              "zone": "right"
+              "hexes": [
+                {
+                  "col": 11,
+                  "row": 4
+                },
+                {
+                  "col": 11,
+                  "row": 7
+                }
+              ],
+              "was": "right"
             }
           ]
         },
@@ -87,12 +161,20 @@
             {
               "unit": "unit.skeletal-archer",
               "count": 1,
-              "zone": "left"
+              "at": {
+                "col": 0,
+                "row": 6
+              },
+              "was": "left"
             },
             {
               "unit": "unit.skeletal-archer",
               "count": 1,
-              "zone": "behind-player"
+              "at": {
+                "col": 6,
+                "row": 11
+              },
+              "was": "behind-player"
             }
           ]
         },
@@ -101,8 +183,27 @@
           "spawn": [
             {
               "unit": "unit.fast-zombie",
-              "count": 1,
-              "zone": "every-side"
+              "count": 4,
+              "hexes": [
+                {
+                  "col": 5,
+                  "row": 0
+                },
+                {
+                  "col": 0,
+                  "row": 5
+                },
+                {
+                  "col": 11,
+                  "row": 6
+                },
+                {
+                  "col": 5,
+                  "row": 11
+                }
+              ],
+              "was": "every-side",
+              "note": "one Fast Zombie per side — four total; the old count:1 was per-side under the zone format"
             }
           ]
         },
@@ -112,11 +213,19 @@
             {
               "unit": "unit.necromancer",
               "count": 1,
-              "zone": "far-edge"
+              "at": {
+                "col": 6,
+                "row": 0
+              },
+              "was": "far-edge"
             }
           ]
         }
-      ]
+      ],
+      "board": {
+        "width": 12,
+        "height": 12
+      }
     },
     {
       "id": "battle.prologue-3",
@@ -126,20 +235,46 @@
       "setup": [
         {
           "unit": "hero.fixed.school-teacher",
-          "zone": "mid",
           "objective": true,
-          "civilian": true
+          "civilian": true,
+          "at": {
+            "col": 5,
+            "row": 6
+          },
+          "was": "mid"
         },
         {
           "unit": "hero.fixed.school-children",
-          "zone": "mid",
           "objective": true,
-          "civilian": true
+          "civilian": true,
+          "at": {
+            "col": 6,
+            "row": 6
+          },
+          "was": "mid"
         },
         {
           "unit": "unit.imp",
           "count": 4,
-          "zone": "far-edge"
+          "hexes": [
+            {
+              "col": 3,
+              "row": 0
+            },
+            {
+              "col": 5,
+              "row": 0
+            },
+            {
+              "col": 7,
+              "row": 0
+            },
+            {
+              "col": 9,
+              "row": 0
+            }
+          ],
+          "was": "far-edge"
         }
       ],
       "schedule": [
@@ -149,7 +284,17 @@
             {
               "unit": "unit.imp",
               "count": 2,
-              "zone": "far-edge"
+              "hexes": [
+                {
+                  "col": 4,
+                  "row": 0
+                },
+                {
+                  "col": 8,
+                  "row": 0
+                }
+              ],
+              "was": "far-edge"
             }
           ]
         },
@@ -159,18 +304,36 @@
             {
               "unit": "unit.powerful-imp",
               "count": 1,
-              "zone": "far-edge"
+              "at": {
+                "col": 6,
+                "row": 0
+              },
+              "was": "far-edge"
             },
             {
               "unit": "unit.fire-imp",
               "count": 2,
-              "zone": "far-edge"
+              "hexes": [
+                {
+                  "col": 2,
+                  "row": 0
+                },
+                {
+                  "col": 10,
+                  "row": 0
+                }
+              ],
+              "was": "far-edge"
             }
           ]
         }
       ],
       "loseAfter": {
         "phase": 12
+      },
+      "board": {
+        "width": 12,
+        "height": 12
       }
     },
     {
@@ -182,22 +345,50 @@
         {
           "unit": "unit.bruiser-demon",
           "count": 2,
-          "zone": "far-edge"
+          "hexes": [
+            {
+              "col": 4,
+              "row": 0
+            },
+            {
+              "col": 8,
+              "row": 0
+            }
+          ],
+          "was": "far-edge"
         },
         {
           "unit": "unit.poison-imp",
           "count": 2,
-          "zone": "far-edge"
+          "hexes": [
+            {
+              "col": 3,
+              "row": 0
+            },
+            {
+              "col": 9,
+              "row": 0
+            }
+          ],
+          "was": "far-edge"
         },
         {
           "unit": "unit.powerful-imp",
           "count": 1,
-          "zone": "far-edge"
+          "at": {
+            "col": 7,
+            "row": 0
+          },
+          "was": "far-edge"
         },
         {
           "unit": "unit.lieutenant-demon",
           "count": 1,
-          "zone": "far-edge"
+          "at": {
+            "col": 6,
+            "row": 0
+          },
+          "was": "far-edge"
         }
       ],
       "schedule": [
@@ -207,12 +398,20 @@
             {
               "unit": "unit.imp",
               "count": 1,
-              "zone": "left-mid"
+              "at": {
+                "col": 0,
+                "row": 5
+              },
+              "was": "left-mid"
             },
             {
               "unit": "unit.imp",
               "count": 1,
-              "zone": "right-mid"
+              "at": {
+                "col": 11,
+                "row": 5
+              },
+              "was": "right-mid"
             }
           ]
         },
@@ -222,7 +421,11 @@
             {
               "unit": "unit.imp",
               "count": 1,
-              "zone": "far-edge"
+              "at": {
+                "col": 5,
+                "row": 0
+              },
+              "was": "far-edge"
             }
           ]
         },
@@ -256,18 +459,30 @@
             {
               "unit": "unit.imp",
               "count": 1,
-              "zone": "left-mid"
+              "at": {
+                "col": 0,
+                "row": 7
+              },
+              "was": "left-mid"
             },
             {
               "unit": "unit.imp",
               "count": 1,
-              "zone": "right-mid"
+              "at": {
+                "col": 11,
+                "row": 7
+              },
+              "was": "right-mid"
             }
           ]
         }
       ],
       "loseAfter": {
         "phase": 15
+      },
+      "board": {
+        "width": 12,
+        "height": 12
       }
     },
     {
@@ -280,12 +495,40 @@
         {
           "unit": "unit.bloodhound",
           "count": 4,
-          "zone": "far-edge"
+          "hexes": [
+            {
+              "col": 2,
+              "row": 0
+            },
+            {
+              "col": 5,
+              "row": 0
+            },
+            {
+              "col": 7,
+              "row": 0
+            },
+            {
+              "col": 10,
+              "row": 0
+            }
+          ],
+          "was": "far-edge"
         },
         {
           "unit": "unit.hellhound",
           "count": 2,
-          "zone": "far-edge"
+          "hexes": [
+            {
+              "col": 4,
+              "row": 1
+            },
+            {
+              "col": 8,
+              "row": 1
+            }
+          ],
+          "was": "far-edge"
         }
       ],
       "schedule": [
@@ -295,7 +538,41 @@
             {
               "unit": "unit.zombie-hound",
               "count": 8,
-              "zone": "far-edge"
+              "hexes": [
+                {
+                  "col": 1,
+                  "row": 0
+                },
+                {
+                  "col": 3,
+                  "row": 0
+                },
+                {
+                  "col": 4,
+                  "row": 0
+                },
+                {
+                  "col": 6,
+                  "row": 0
+                },
+                {
+                  "col": 8,
+                  "row": 0
+                },
+                {
+                  "col": 9,
+                  "row": 0
+                },
+                {
+                  "col": 11,
+                  "row": 0
+                },
+                {
+                  "col": 6,
+                  "row": 1
+                }
+              ],
+              "was": "far-edge"
             }
           ]
         },
@@ -305,11 +582,19 @@
             {
               "unit": "unit.werewolf",
               "count": 1,
-              "zone": "far-edge"
+              "at": {
+                "col": 6,
+                "row": 0
+              },
+              "was": "far-edge"
             }
           ]
         }
-      ]
+      ],
+      "board": {
+        "width": 12,
+        "height": 12
+      }
     }
   ],
   "battleList": {

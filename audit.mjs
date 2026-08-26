@@ -969,6 +969,19 @@ if(D.encounters){
     const refs=[...(b.setup||[]), ...(b.schedule||[]).flatMap(s=>s.spawn||[])];
     for(const r of refs){ if(r.unit && !ids.has(r.unit))
       add('encounter-names-a-unit-that-does-not-exist', b.id, r.unit); if(r.heroes) continue; }
+    // hex placements, ruled 2026-08-25: in bounds on the battle board, counts match, and
+    // the zone vagueries are gone — a surviving `zone` is the old format leaking back.
+    { const W=(b.board||{}).width||12, H=(b.board||{}).height||12;
+      const chk=(who,h)=>{ if(h.col==null||h.row==null) return;
+        if(h.col<0||h.col>=W||h.row<0||h.row>=H) add('placement-off-the-board',b.id,who+' at '+h.col+','+h.row+' on a '+W+'x'+H+' board'); };
+      for(const r of refs){
+        if(r.zone) add('placement-is-still-a-zone',b.id,(r.unit||'heroes')+': "'+r.zone+'" — hex placement was ruled 2026-08-25');
+        if(r.at){ chk(r.unit||'heroes', r.at); if(r.at.near) chk(r.unit+' (near)', r.at.near);
+          for(const o of (r.at.oneOf||[])) chk(r.unit+' (oneOf)',o); }
+        for(const h of (r.hexes||[])) chk(r.unit,h);
+        if(r.hexes && r.count && r.hexes.length!==r.count)
+          add('placement-count-mismatch',b.id,r.unit+': count '+r.count+' but '+r.hexes.length+' hexes');
+      } }
     for(const s of (b.schedule||[])) if(s.phase==null && s.enemyPhase==null && !s.event)
       add('encounter-schedule-entry-has-no-clock', b.id, JSON.stringify(s).slice(0,60));
   }
