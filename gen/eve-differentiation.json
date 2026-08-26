@@ -205,7 +205,11 @@
       "addBadges": [
         "Vengeful"
       ],
-      "why": "The angry one, and the least elf-like. Vengeful already exists."
+      "why": "The angry one, and the least elf-like. Vengeful already exists.",
+      "startingItems": [
+        "item.longbow"
+      ],
+      "startingItemsWhy": "Dictated: the aggressive ranger gets a long bow. RECOVERED 2026-08-25."
     },
     "hero.base.ranger-ranger": {
       "name": "Ancient Elf",
@@ -213,7 +217,11 @@
         "Elf",
         "Mystic"
       ],
-      "why": "The wise silver-haired elf. Mystic already exists and already carries its +1 magic."
+      "why": "The wise silver-haired elf. Mystic already exists and already carries its +1 magic.",
+      "startingItems": [
+        "item.elfbow"
+      ],
+      "startingItemsWhy": "Dictated with the differentiation pass: the two elf rangers get elf bows. RECOVERED 2026-08-25 — dictated but never recorded."
     },
     "hero.base.ranger-scantily": {
       "name": "Forest Elf",
@@ -224,7 +232,11 @@
       "blockedBadges": [
         "Forester"
       ],
-      "why": "An elf at home in the trees. Forester is recorded but not built - see blocked."
+      "why": "An elf at home in the trees. Forester is recorded but not built - see blocked.",
+      "startingItems": [
+        "item.elfbow"
+      ],
+      "startingItemsWhy": "Dictated: elf bow. RECOVERED 2026-08-25."
     },
     "hero.base.ranger-nature": {
       "name": "Forest Fey",
@@ -235,13 +247,17 @@
       "blockedBadges": [
         "Forester"
       ],
-      "why": "The fey-looking one. Fey is new and built; Forester is not."
+      "why": "The fey-looking one. Fey is new and built; Forester is not.",
+      "startingItems": [
+        "item.shortbow"
+      ],
+      "startingItemsWhy": "Dictated: the fey gets a short bow. RECOVERED 2026-08-25."
     },
     "hero.base.paladin-dark": {
       "name": "Black Oath",
       "thorns": 1,
       "startingItems": [
-        "greatsword"
+        "item.greatsword"
       ],
       "why": "The dark paladin, and the one holding the two-handed sword. Thorns 1 is a passive - the vocabulary already has Thorns N."
     },
@@ -252,8 +268,8 @@
         "value": 2
       },
       "startingItems": [
-        "sword",
-        "shield"
+        "item.longsword",
+        "item.knight-shield"
       ],
       "why": "The bright one. Begins the battle already owed something."
     },
@@ -266,8 +282,8 @@
         "precision": -1
       },
       "startingItems": [
-        "sword",
-        "shield"
+        "item.longsword",
+        "item.knight-shield"
       ],
       "why": "The very armoured one. Everything he gains in protection he pays for in every other direction."
     },
@@ -282,8 +298,8 @@
         "luck"
       ],
       "startingItems": [
-        "sword",
-        "shield"
+        "item.longsword",
+        "item.knight-shield"
       ],
       "why": "Insufferable, and the dice know it. Ruled: rather than invent a negative floor that would eat later gains, his crit and luck are simply subtracted to zero at the start and his surge drops by 1. He gets the stamina to keep swinging instead."
     },
@@ -304,7 +320,7 @@
         }
       ],
       "startingItems": [
-        "magic-staff"
+        "RANDOM one of the five tier-1 mage staffs (fire/frost/earth/lightning/force) — a draft-time roll, not a fixed id"
       ],
       "why": "Burn on a magic hit."
     },
@@ -325,7 +341,7 @@
         }
       ],
       "startingItems": [
-        "magic-staff"
+        "RANDOM one of the five tier-1 mage staffs (fire/frost/earth/lightning/force) — a draft-time roll, not a fixed id"
       ],
       "why": "The second burner."
     },
@@ -346,7 +362,7 @@
         }
       ],
       "startingItems": [
-        "magic-staff"
+        "RANDOM one of the five tier-1 mage staffs (fire/frost/earth/lightning/force) — a draft-time roll, not a fixed id"
       ],
       "why": "The one in the library. Frost rather than fire - the only cold mage of the four."
     },
@@ -368,7 +384,7 @@
         }
       ],
       "startingItems": [
-        "magic-staff"
+        "RANDOM one of the five tier-1 mage staffs (fire/frost/earth/lightning/force) — a draft-time roll, not a fixed id"
       ],
       "why": "The aura is the point: she does not have to swing to burn you, she has to be hit."
     }
@@ -390,5 +406,6 @@
   },
   "droppedMagePower": {
     "note": "The four mages all carried the same base power dealing fire damage. Cut 2026-08-22 - it was the thing making them indistinguishable, and each now has its own trigger instead."
-  }
+  },
+  "kitNote": "ALL startingItems remain UNWIRED on hero rows — S12 (kits) is the mechanism. Every named item EXISTS (Elfbow/Shortbow/Longbow t1, Greatsword, Longsword, Knight Shield, five t1 mage staffs, Dagger t0 for the deferred rogue kit). Recorded 2026-08-25 so no ruling is lost while S12 waits."
 }
