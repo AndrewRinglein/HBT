@@ -1533,7 +1533,7 @@
    "tags": [
     "heal"
    ],
-   "description": "Heal every ally within 6 hexes for 2 + half your Spirit, rounded down.",
+   "description": "Heal every ally within 6 hexes for 2 + half your Spirit, rounded nearest, 0.5 up (aligned 2026-08-25 — the old 'rounded down' is superseded by the half-stat rounding ruling).",
    "source": "settled content | 2026-08-20 sweep: \"hero\" in a mechanical sentence — the word everywhere else is \"ally\", and an ally shape already exists. Same effect, one vocabulary.",
    "triggers": [],
    "intent": "Party-wide healing at half the scaling — breadth instead of depth."
