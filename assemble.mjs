@@ -80,6 +80,22 @@ if(fs.existsSync(G+'art-conventions.json')) out.artConventions=R('art-convention
 // this event was already about". audit R27 accepts them alongside the 24 shapes.
 if(fs.existsSync(G+'referents.json')) out.referents=R('referents.json').referents;
 
+// ---- S12: starting loadouts. Per-hero with a class backup (ruled 2026-08-25). The kit is
+// RESOLVED onto each hero row here — explicit ids, a random spec, or a one-of choice — so
+// every consumer reads one field, and the roll itself stays with the draft.
+if(fs.existsSync(G+'kits.json')){
+  const K=R('kits.json'); out.kits=K;
+  for(const h of out.heroes.heroes){
+    if(h.kit && h.kit.length) { h.kitSource='dictated'; continue; }        // civilians etc.
+    const override=K.heroKits[h.id];
+    if(override){ h.kit=override; h.kitSource='hero'; continue; }
+    const ck=K.classKits[h.class];
+    if(!ck) continue;
+    if(ck.items && ck.items.length){ h.kit=ck.items; h.kitSource='class'; h.kitProvisional=ck.provisional||undefined; }
+    else if(ck.pick){ h.kitPick=ck.pick; h.kitSource='class'; }
+  }
+}
+
 // ---- fields DELIBERATELY not carried across from hell-tcg. audit R29 reads this: a declined
 // field is a decision with a date, a dropped one is a bug nobody has noticed yet.
 if(fs.existsSync(G+'not-ported.json')) out.notPorted=R('not-ported.json').fields;

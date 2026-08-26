@@ -1,0 +1,36 @@
+{
+  "_note": "S12 — starting loadouts. Ruled 2026-08-25: KITS ARE PER-HERO, WITH A CLASS BACKUP. The class kit is the default every hero of that class starts with; a hero override replaces it entirely. Random picks are stored as SPECS, never rolled here — content is deterministic and the roll belongs to the draft (named stream, keyed by what the roll is). Every explicit id must exist and every random pool must be non-empty: audit R35.",
+
+  "classKits": {
+    "class.warrior": { "pick": { "random": 1, "from": { "itemClass": "weapon", "hands": 2, "tier": 1 } },
+      "why": "Ruled 2026-08-25: each warrior gets a random two-handed tier-1 weapon. Pool is 17 strong." },
+    "class.mage": { "pick": { "random": 1, "from": { "nameMatches": "Staff", "tier": 1 } },
+      "why": "Ruled 2026-08-25: a random tier-1 staff — fire, frost, earth, lightning or force." },
+    "class.priest": { "pick": { "oneOf": ["item.holy-symbol", "item.priest-chain"] },
+      "why": "Ruled 2026-08-25: one of the two holy symbols dictated in the past — 2-ACTIONS-NOTES already ruled 'Holy Symbol and Priest Chain → Priest', and both exist at tier 1." },
+    "class.rogue": { "items": ["item.dagger"], "provisional": true,
+      "why": "Ruled 2026-08-21 (S12 pre-ruling): the Rogue starts with daggers; the missing tier-1 / throwing dagger is deferred, and this kit is flagged provisional rather than blocking on it." },
+    "class.ranger": { "items": ["item.shortbow"], "provisional": true,
+      "why": "BACKUP ONLY — all four Eve rangers carry hero overrides (their bows were dictated). A generic ranger with no override gets a shortbow until ruled otherwise; flagged provisional because it was never dictated." },
+    "class.paladin": { "items": ["item.longsword", "item.knight-shield"], "provisional": true,
+      "why": "BACKUP ONLY — the four Eve paladins carry hero overrides. Sword and board as the class default mirrors three of the four dictations; flagged provisional because the class-level default itself was never dictated." },
+    "class.civilian": { "items": [],
+      "why": "Civilians have no class default — every fielded civilian carries a dictated per-hero kit via gen/civilian-rulings.json statBlocks (Pile of Rocks, Lumberjack's Axe, Pitchfork, or nothing)." },
+    "class.beast": { "items": [],
+      "why": "Beasts fight with what they are. Natural attacks, no items." }
+  },
+
+  "heroKits": {
+    "_note": "Per-hero overrides — dictated during the Eve differentiation pass, recorded in gen/eve-differentiation.json startingItems and mirrored here as the S12 registry. A hero listed here ignores its class kit.",
+    "hero.base.paladin-dark": ["item.greatsword"],
+    "hero.base.paladin-shiney": ["item.longsword", "item.knight-shield"],
+    "hero.base.paladin-hunk": ["item.longsword", "item.knight-shield"],
+    "hero.base.paladin-smug": ["item.longsword", "item.knight-shield"],
+    "hero.base.ranger-ranger": ["item.elfbow"],
+    "hero.base.ranger-scantily": ["item.elfbow"],
+    "hero.base.ranger-nature": ["item.shortbow"],
+    "hero.base.ranger-aggressive": ["item.longbow"]
+  },
+
+  "civilianKitsLiveIn": "gen/civilian-rulings.json statBlocks — same per-hero principle, dictated with their stat blocks."
+}

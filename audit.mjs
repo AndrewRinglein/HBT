@@ -976,6 +976,34 @@ if(D.encounters){
     add('encounter-says-turn', b.id, 'the schedule clock is PHASES — ruled 2026-08-23');
 }
 
+// R35 A KIT NAMES REAL ITEMS AND A RANDOM POOL IS NEVER EMPTY. S12, ruled 2026-08-25:
+// kits are per-hero with a class backup. Every explicit id must exist; every random spec
+// must match at least two items (a random pick from a pool of one is a lie); every class
+// has a kit entry; a kit never dictated is flagged provisional AS DATA.
+if(D.kits){
+  const itemById=new Map(D.items.map(i=>[i.id,i]));
+  const resolvePool=f=>D.items.filter(i=>
+    (!f.itemClass||i.itemClass===f.itemClass)&&(!f.hands||i.hands===f.hands)&&
+    (!f.tier&&f.tier!==0||i.tier===f.tier)&&(!f.nameMatches||new RegExp(f.nameMatches,'i').test(i.name)));
+  const checkPick=(who,pick)=>{
+    if(pick.oneOf) for(const id of pick.oneOf){ if(!itemById.has(id)) add('kit-names-a-missing-item',who,id); }
+    if(pick.random){ const pool=resolvePool(pick.from||{});
+      if(pool.length<2) add('kit-random-pool-too-small',who,JSON.stringify(pick.from)+' -> '+pool.length+' item(s)'); }
+  };
+  for(const [cls,k] of Object.entries(D.kits.classKits||{})){
+    for(const id of (k.items||[])) if(!itemById.has(id)) add('kit-names-a-missing-item',cls,id);
+    if(k.pick) checkPick(cls,k.pick);
+  }
+  for(const c of D.classes) if(!(D.kits.classKits||{})[c.id])
+    add('class-has-no-kit-entry',c.name,c.id+' — every class carries a kit entry, even an empty one');
+  const heroIds=new Set(D.heroes.heroes.map(h=>h.id));
+  for(const [hid,items] of Object.entries(D.kits.heroKits||{})){
+    if(hid.startsWith('_'))continue;
+    if(!heroIds.has(hid)) add('kit-names-a-missing-hero',hid,'hero override for a hero that does not exist');
+    for(const id of (items||[])) if(!itemById.has(id)) add('kit-names-a-missing-item',hid,id);
+  }
+}
+
 const by={}; F.forEach(f=>(by[f.rule]=by[f.rule]||[]).push(f));
 for(const [r,list] of Object.entries(by).sort((a,b)=>b[1].length-a[1].length)){
   console.log('\n### '+r+'  ('+list.length+')');
