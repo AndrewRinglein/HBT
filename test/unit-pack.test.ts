@@ -16,7 +16,13 @@ describe('the pack — read from the data, clearly differentiated', () => {
     const pack = packUnits()
     const heroes = Object.values(pack).filter((u) => u.side === 'hero')
     expect(heroes.length).toBe(6)
+    // LAW 10 — widened 2026-08-26 (content.enemy-pack): the pack now carries
+    // TWO clearly-differentiated families, exactly as the loader enforces —
+    // the test- cohort (with (TEST) names) and the authored bestiary under its
+    // full unit.* Codex ids. The claim is still "nothing undifferentiated";
+    // it was never "nothing but the cohort".
     for (const h of Object.values(pack)) {
+      if (h.typeId.startsWith('unit.')) continue // the authored bestiary family
       expect(h.typeId.startsWith('test-'), h.typeId).toBe(true)
       expect(h.name, h.typeId).toContain('(TEST)')
     }

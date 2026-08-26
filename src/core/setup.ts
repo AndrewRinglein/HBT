@@ -204,7 +204,10 @@ export function createBattle(opts: BattleOptions): Ctx {
   })
 
   for (const u of state.units) {
-    emit(ctx, 'unit.enter', `unit.${u.typeId}`, {
+    // A dotted typeId is already a full Codex id and names itself; bare
+    // typeIds keep the historic prefix. (2026-08-26 — keeps the prefix from
+    // doubling in every log line for pack units keyed by full id.)
+    emit(ctx, 'unit.enter', u.typeId.includes('.') ? u.typeId : `unit.${u.typeId}`, {
       actor: u.id, uid: u.uid, name: u.name, side: u.side, typeId: u.typeId,
       role: u.role, hex: u.hex, hp: u.hp, maxHp: u.maxHp,
       stamina: u.stamina, maxStamina: u.maxStamina, terrain: state.terrain[u.hex],
@@ -239,7 +242,10 @@ export function createCustomBattle(
   heroes.forEach((h, i) => { state.units.push(makeUnit(id, 100 + i, `H${i}`, UNITS[h.type]!, h.hex)); id++ })
   enemies.forEach((e, i) => { state.units.push(makeUnit(id, 200 + i, `E${i}`, UNITS[e.type]!, e.hex)); id++ })
   for (const u of state.units) {
-    emit(ctx, 'unit.enter', `unit.${u.typeId}`, {
+    // A dotted typeId is already a full Codex id and names itself; bare
+    // typeIds keep the historic prefix. (2026-08-26 — keeps the prefix from
+    // doubling in every log line for pack units keyed by full id.)
+    emit(ctx, 'unit.enter', u.typeId.includes('.') ? u.typeId : `unit.${u.typeId}`, {
       actor: u.id, uid: u.uid, name: u.name, side: u.side, typeId: u.typeId,
       role: u.role, hex: u.hex, hp: u.hp, maxHp: u.maxHp,
       stamina: u.stamina, maxStamina: u.maxStamina, terrain: state.terrain[u.hex],

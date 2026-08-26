@@ -4,7 +4,7 @@
 
 import type { AbilityDef, AttackDef, UnitDef } from '../core/types.js'
 import { omitDisabled, stripDisabledTriggers } from './disable.js'
-import { packUnits } from './pack.js'
+import { packAttacks, packUnits } from './pack.js'
 
 // ─────────────────────────────────────────────────────────────────────────────
 // PROVISIONAL CONTENT — NOT PUBLISHED, NOT DESIGN
@@ -394,7 +394,12 @@ const RAW_UNITS: Readonly<Record<string, UnitDef>> = {
 
 // The kill-switch seam (see disable.ts). With CF_DISABLE_IDS unset these are the
 // raw objects, byte for byte — the control baselines cannot tell the difference.
-export const ATTACKS = omitDisabled(RAW_ATTACKS)
+// Generated attack rows (the authored enemies') join the hand-authored ones
+// through the same seam. Collisions are loud, same rule as units below.
+for (const k of Object.keys(packAttacks())) {
+  if (k in RAW_ATTACKS) throw new Error(`attack '${k}' exists in BOTH content/index.ts and the generated pack — one owner only`)
+}
+export const ATTACKS = omitDisabled({ ...RAW_ATTACKS, ...packAttacks() })
 export const ABILITIES = omitDisabled(RAW_ABILITIES)
 // The generated pack (Codex-tracked test cohort) joins the hand-authored rows.
 // A collision is a LOUD failure: the pack owns test- ids, this file owns the

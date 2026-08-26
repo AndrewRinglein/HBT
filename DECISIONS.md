@@ -821,3 +821,18 @@ ruling. The viewer side (`BATTLE-SCREEN-V1.html` `LAYOUT`, `PLAYBACK-DESIGN.md`
 §7.2's `1600 × 1188 board px` extent arithmetic) is owned by the battle-playback
 thread and must follow — `field-geometry.mts` derives from `hex.ts`, so the
 engine half propagates on its own.
+
+---
+
+## 2026-08-26 — civilians act; they are not statues
+
+> "Orphans, lumberjack and wife and farmer, as ordinary heroes, and they don't
+> do anything. That doesn't make any sense now. We have a plan for a number of
+> initial civilians, and they do things. They're just like the other heroes."
+
+Corrects the reading I had taken from the G2 note ("civilians are ordinary hero
+definitions — identical stats"). The identical-definition half stands; the
+do-nothing half was my invention and is dead. Civilians field as ordinary
+heroes WITH their Codex behaviour — stats, actions, AI like any hero. The
+`content.civilians` backlog row is respecified accordingly; their rows come
+from the Codex civilian class, not from a stripped-down stub.

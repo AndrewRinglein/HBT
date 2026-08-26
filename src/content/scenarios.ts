@@ -49,6 +49,22 @@ const RAW_SCENARIOS: Readonly<Record<string, ScenarioDef>> = {
     enemyHexes: [40, 41],
     replicate: 0,
   },
+  'showcase.prologue-enemies': {
+    id: 'showcase.prologue-enemies',
+    note: 'Fields every authored enemy the five prologue battles use — the '
+      + 'content.enemy-pack verify battle. No standard battle can produce these '
+      + 'ids; this is what keeps them under gate 1 instead of exempt from it.',
+    mapId: 'map.open',
+    heroes: ['test-oathblade', 'test-sky-pirate', 'test-dusk-hawk',
+      'test-air-mage', 'test-lucius', 'test-osric'],
+    heroHexes: [244, 245, 246, 247, 248, 249],
+    enemies: ['unit.zombie', 'unit.fast-zombie', 'unit.skeletal-archer',
+      'unit.necromancer', 'unit.imp', 'unit.powerful-imp', 'unit.fire-imp',
+      'unit.poison-imp', 'unit.bruiser-demon', 'unit.lieutenant-demon',
+      'unit.bloodhound', 'unit.hellhound', 'unit.zombie-hound', 'unit.werewolf'],
+    enemyHexes: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14],
+    replicate: 0,
+  },
 }
 
 // The kill-switch seam (disable.ts): byte-identical object when nothing is

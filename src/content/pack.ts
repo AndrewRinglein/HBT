@@ -4,7 +4,7 @@
 // GENERATED (content/mkenginepack.mjs) and never hand-edited; this loader
 // validates it LOUDLY at import time (Law 9) and hands back plain UnitDefs.
 import { UNIT_PACK } from './generated/pack.js'
-import type { UnitDef } from '../core/types.js'
+import type { AttackDef, UnitDef } from '../core/types.js'
 import { validateTrigger } from '../core/trigger.js'
 
 const REQUIRED = ['typeId', 'name', 'side', 'maxHp', 'armor', 'resist', 'accuracy', 'dodge',
@@ -16,15 +16,21 @@ const REQUIRED = ['typeId', 'name', 'side', 'maxHp', 'armor', 'resist', 'accurac
 
 export function packUnits(): Readonly<Record<string, UnitDef>> {
   const out: Record<string, UnitDef> = {}
-  for (const row of [...UNIT_PACK.heroes, ...UNIT_PACK.enemies]) {
+  // authoredEnemies joined 2026-08-26 (content.enemy-pack): the prologue's
+  // real enemies, keyed by their FULL Codex id (unit.zombie) so they can never
+  // collide with the legacy bare-key fixtures ('zombie') awaiting migration.
+  for (const row of [...UNIT_PACK.heroes, ...UNIT_PACK.enemies, ...(UNIT_PACK as { authoredEnemies?: readonly unknown[] }).authoredEnemies ?? []]) {
     const r = row as unknown as UnitDef & { typeId: string; copyOf?: string }
     for (const k of REQUIRED) {
       if ((r as Record<string, unknown>)[k] === undefined) {
         throw new Error(`unit pack: '${r.typeId ?? '?'}' is missing '${k}' — regenerate the pack (content/mkenginepack.mjs), never patch it by hand`)
       }
     }
-    if (!r.typeId.startsWith('test-')) {
-      throw new Error(`unit pack: '${r.typeId}' is not test- prefixed — the cohort must stay clearly differentiated (Angela 2026-08-20)`)
+    // Two id families, both clearly differentiated (Angela 2026-08-20): the
+    // cohort is test- prefixed; the authored bestiary carries its full Codex
+    // id under the declared unit. kind. Anything else is a pipeline bug.
+    if (!r.typeId.startsWith('test-') && !r.typeId.startsWith('unit.')) {
+      throw new Error(`unit pack: '${r.typeId}' is neither test- nor unit.* — the pack must stay clearly differentiated (Angela 2026-08-20)`)
     }
     for (const t of r.triggers ?? []) validateTrigger(t)
     for (const m of r.moves) {
@@ -40,3 +46,15 @@ export function packUnits(): Readonly<Record<string, UnitDef>> {
 
 /** The pack's own note — surfaced so tooling can print WHY these units exist. */
 export const UNIT_PACK_NOTE = UNIT_PACK.note
+
+/** The authored enemies' attacks — generated rows, validated like the units. */
+export function packAttacks(): Readonly<Record<string, AttackDef>> {
+  const raw = (UNIT_PACK as { authoredAttacks?: Readonly<Record<string, AttackDef>> }).authoredAttacks ?? {}
+  for (const [k, a] of Object.entries(raw)) {
+    if (k !== a.id) throw new Error(`unit pack: attack key '${k}' names id '${a.id}'`)
+    if (!['melee', 'ranged'].includes(a.kind) || typeof a.reach !== 'number' || a.reach < 1) {
+      throw new Error(`unit pack: attack '${k}' has no usable kind/reach — regenerate the pack`)
+    }
+  }
+  return raw
+}

@@ -16,6 +16,7 @@ the default freezes and the baseline uses it. Without recording the answers,
 | `multiAttackRetargets` | If the target dies, does hit 2 retarget or fizzle? | **fizzle — answered by Angela 2026-08-15** | answered |
 | `multiAttackResolution` | Do the hits of a multi-attack resolve together or one at a time? | **fully, one at a time — answered 2026-08-15** | answered |
 | `powerRollsToHit` | Do class powers roll to hit (and so crit)? | no — auto-hit | **not implemented** |
+| `critChartSplit` | On a crit: plain damage bonus, or a chart effect — how often each, per side? | **heroes hit 75/25, enemies hit 50/50 — answered by Angela 2026-08-22** | answered |
 | `statusDecayRung` | Does a status decay at the tick rung, or at the later duration rung? | tick — act and decay in one pass | open |
 | `absorbSpendOrder` | Which absorbing status pays first when several are held? | id order | open |
 | `activationOrder` | Fixed by unit id, random, or best-first? | fixed | open |
@@ -216,3 +217,32 @@ ground beat (burning ground sears as you pass), or does the leap clear it?
 **Default: cleared** — the entry beat fires at the destination only, matching
 the Codex text's silence and the flight precedent ("only the destination needs
 to be viable"). The other reading costs a code path when a sweep wants it.
+
+## critChartSplit
+
+**Question.** When a crit lands, how often is it a plain damage bonus versus a
+roll on the effect chart? And is the split the same when a hero is hit as when
+an enemy is?
+
+**Answered by Angela, 2026-08-22 — and it is two numbers, not one.** Her words:
+"there is a switch, different on players and enemies. crits to heroes 75% 25%,
+Enemies 50/50, for the 50% damage increase vs the effects."
+
+- **Crits against heroes: 75% damage bonus / 25% chart effect.** Effects the
+  player suffers stay rare enough to stay frightening; the damage-only outcome
+  is the merciful one and does real work as a relief valve.
+- **Crits against enemies: 50% / 50%.** Effects the player inflicts are pure
+  tactical upside — enemies carry nothing past the battle — so the effect
+  slice is fat.
+
+Both splits keep their code path and stay sweepable (metrics: hero effect-crits
+per battle, and later take-home injuries per battle and bench occupancy, once
+the harness runs Weeks). Depends on `critEnabled`; the roll that picks
+damage-vs-effect is its own named stream, keyed by the crit, never by turn.
+
+**Related, NOT settled here:** the same 2026-08-22 discussion moved toward the
+hero-side effect chart being severity-ordered, with only its deepest results
+persisting into the curable injury track. That would overturn COMBAT-DESIGN
+Law 22 ("crits never mint permanence") and must land as a dated ruling in
+COMBAT-DESIGN.md, not hide in a switch. Until that ruling is written, all
+chart effects remain battle-scoped.

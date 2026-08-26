@@ -441,5 +441,785 @@ export const UNIT_PACK = {
       "side": "enemy",
       "copyOf": "engine unit 'zombie-burning' (published 6-BESTIARY 2026-08-20)"
     }
-  ]
+  ],
+  "authoredEnemies": [
+    {
+      "typeId": "unit.bloodhound",
+      "name": "Bloodhound",
+      "side": "enemy",
+      "maxHp": 4,
+      "armor": 0,
+      "resist": 0,
+      "accuracy": 90,
+      "dodge": 20,
+      "strength": 3,
+      "precision": 0,
+      "magic": 0,
+      "spirit": 0,
+      "role": "melee",
+      "movement": 9,
+      "reach": 0,
+      "maxStamina": 0,
+      "staminaRegen": 0,
+      "ai": "dumb-melee",
+      "attacks": [
+        "attack.bloodhound.bite"
+      ],
+      "abilities": [],
+      "moves": [
+        "power.move"
+      ],
+      "attributes": [
+        "beast"
+      ],
+      "tags": [
+        "beast"
+      ],
+      "triggers": []
+    },
+    {
+      "typeId": "unit.bruiser-demon",
+      "name": "Bruiser Demon",
+      "side": "enemy",
+      "maxHp": 20,
+      "armor": 4,
+      "resist": 1,
+      "accuracy": 75,
+      "dodge": 0,
+      "strength": 6,
+      "precision": 5,
+      "magic": 0,
+      "spirit": 0,
+      "role": "melee",
+      "movement": 4,
+      "reach": 0,
+      "maxStamina": 0,
+      "staminaRegen": 0,
+      "ai": "dumb-melee",
+      "attacks": [
+        "attack.bruiser-demon.bash"
+      ],
+      "abilities": [],
+      "moves": [
+        "power.move"
+      ],
+      "attributes": [
+        "demon"
+      ],
+      "tags": [
+        "demon"
+      ],
+      "triggers": []
+    },
+    {
+      "typeId": "unit.fast-zombie",
+      "name": "Fast Zombie",
+      "side": "enemy",
+      "maxHp": 5,
+      "armor": 0,
+      "resist": 0,
+      "accuracy": 75,
+      "dodge": 0,
+      "strength": 3,
+      "precision": 1,
+      "magic": 0,
+      "spirit": 0,
+      "role": "melee",
+      "movement": 6,
+      "reach": 0,
+      "maxStamina": 0,
+      "staminaRegen": 0,
+      "ai": "dumb-melee",
+      "attacks": [
+        "attack.zombie.claw"
+      ],
+      "abilities": [],
+      "moves": [
+        "power.move"
+      ],
+      "attributes": [
+        "undead"
+      ],
+      "tags": [
+        "undead"
+      ],
+      "triggers": [
+        {
+          "id": "trigger.fast-zombie.poison",
+          "hook": "onHit",
+          "chance": 20,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.poison",
+            "value": 2
+          },
+          "source": "unit.fast-zombie",
+          "onlyWithAttack": "attack.zombie.claw"
+        }
+      ]
+    },
+    {
+      "typeId": "unit.fire-imp",
+      "name": "Fire Imp",
+      "side": "enemy",
+      "maxHp": 9,
+      "armor": 0,
+      "resist": 0,
+      "accuracy": 80,
+      "dodge": 10,
+      "strength": 3,
+      "precision": 4,
+      "magic": 0,
+      "spirit": 0,
+      "role": "ranged",
+      "movement": 5,
+      "reach": 0,
+      "maxStamina": 0,
+      "staminaRegen": 0,
+      "ai": "ranged-kite",
+      "attacks": [
+        "attack.fire-imp.blast"
+      ],
+      "abilities": [],
+      "moves": [
+        "power.move"
+      ],
+      "attributes": [
+        "demon",
+        "fire"
+      ],
+      "tags": [
+        "demon",
+        "fire"
+      ],
+      "triggers": [
+        {
+          "id": "trigger.fire-imp.burn",
+          "hook": "onHit",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.burn",
+            "value": 3
+          },
+          "source": "unit.fire-imp",
+          "onlyWithAttack": "attack.fire-imp.blast"
+        }
+      ]
+    },
+    {
+      "typeId": "unit.hellhound",
+      "name": "Hellhound",
+      "side": "enemy",
+      "maxHp": 8,
+      "armor": 0,
+      "resist": 0,
+      "accuracy": 70,
+      "dodge": 10,
+      "strength": 4,
+      "precision": 0,
+      "magic": 0,
+      "spirit": 0,
+      "role": "melee",
+      "movement": 7,
+      "reach": 0,
+      "maxStamina": 0,
+      "staminaRegen": 0,
+      "ai": "dumb-melee",
+      "attacks": [
+        "attack.hellhound.bite"
+      ],
+      "abilities": [],
+      "moves": [
+        "power.move"
+      ],
+      "attributes": [
+        "demon",
+        "beast"
+      ],
+      "tags": [
+        "demon",
+        "beast"
+      ],
+      "triggers": [
+        {
+          "id": "trigger.hellhound.burn",
+          "hook": "onTakingDamage",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.burn",
+            "value": 1
+          },
+          "source": "unit.hellhound"
+        },
+        {
+          "id": "trigger.hellhound.burn",
+          "hook": "onHit",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.burn",
+            "value": 1
+          },
+          "source": "unit.hellhound",
+          "onlyWithAttack": "attack.hellhound.bite"
+        }
+      ]
+    },
+    {
+      "typeId": "unit.imp",
+      "name": "Imp",
+      "side": "enemy",
+      "maxHp": 7,
+      "armor": 0,
+      "resist": 0,
+      "accuracy": 80,
+      "dodge": 15,
+      "strength": 3,
+      "precision": 4,
+      "magic": 0,
+      "spirit": 0,
+      "role": "ranged",
+      "movement": 7,
+      "reach": 0,
+      "maxStamina": 0,
+      "staminaRegen": 0,
+      "ai": "ranged-kite",
+      "attacks": [
+        "attack.imp.blast",
+        "attack.imp.claw"
+      ],
+      "abilities": [],
+      "moves": [
+        "power.move"
+      ],
+      "attributes": [
+        "demon"
+      ],
+      "tags": [
+        "demon"
+      ],
+      "triggers": [
+        {
+          "id": "trigger.imp.burn",
+          "hook": "onHit",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.burn",
+            "value": 2
+          },
+          "source": "unit.imp",
+          "onlyWithAttack": "attack.imp.blast"
+        }
+      ]
+    },
+    {
+      "typeId": "unit.lieutenant-demon",
+      "name": "Lieutenant Demon",
+      "side": "enemy",
+      "maxHp": 15,
+      "armor": 2,
+      "resist": 0,
+      "accuracy": 60,
+      "dodge": 10,
+      "strength": 5,
+      "precision": 4,
+      "magic": 0,
+      "spirit": 0,
+      "role": "ranged",
+      "movement": 5,
+      "reach": 0,
+      "maxStamina": 0,
+      "staminaRegen": 0,
+      "ai": "ranged-kite",
+      "attacks": [
+        "attack.lieutenant-demon.ranged",
+        "attack.lieutenant-demon.melee"
+      ],
+      "abilities": [],
+      "moves": [
+        "power.move"
+      ],
+      "attributes": [
+        "demon"
+      ],
+      "tags": [
+        "demon"
+      ],
+      "triggers": []
+    },
+    {
+      "typeId": "unit.necromancer",
+      "name": "Necromancer",
+      "side": "enemy",
+      "maxHp": 11,
+      "armor": 0,
+      "resist": 1,
+      "accuracy": 90,
+      "dodge": 0,
+      "strength": 3,
+      "precision": 3,
+      "magic": 0,
+      "spirit": 0,
+      "role": "support",
+      "movement": 5,
+      "reach": 0,
+      "maxStamina": 0,
+      "staminaRegen": 0,
+      "ai": "ranged-kite",
+      "attacks": [
+        "attack.necromancer.necro-bolt",
+        "attack.necromancer.necro-strike"
+      ],
+      "abilities": [],
+      "moves": [
+        "power.move"
+      ],
+      "attributes": [
+        "human"
+      ],
+      "tags": [
+        "human"
+      ],
+      "triggers": [
+        {
+          "id": "trigger.necromancer.weak",
+          "hook": "onHit",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.weak",
+            "value": 2
+          },
+          "source": "unit.necromancer",
+          "onlyWithAttack": "attack.necromancer.necro-bolt"
+        }
+      ]
+    },
+    {
+      "typeId": "unit.poison-imp",
+      "name": "Poison Imp",
+      "side": "enemy",
+      "maxHp": 9,
+      "armor": 0,
+      "resist": 0,
+      "accuracy": 80,
+      "dodge": 10,
+      "strength": 3,
+      "precision": 4,
+      "magic": 0,
+      "spirit": 0,
+      "role": "ranged",
+      "movement": 5,
+      "reach": 0,
+      "maxStamina": 0,
+      "staminaRegen": 0,
+      "ai": "ranged-kite",
+      "attacks": [
+        "attack.poison-imp.blast"
+      ],
+      "abilities": [],
+      "moves": [
+        "power.move"
+      ],
+      "attributes": [
+        "demon",
+        "poison"
+      ],
+      "tags": [
+        "demon",
+        "poison"
+      ],
+      "triggers": [
+        {
+          "id": "trigger.poison-imp.poison",
+          "hook": "onHit",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.poison",
+            "value": 3
+          },
+          "source": "unit.poison-imp",
+          "onlyWithAttack": "attack.poison-imp.blast"
+        }
+      ]
+    },
+    {
+      "typeId": "unit.powerful-imp",
+      "name": "Powerful Imp",
+      "side": "enemy",
+      "maxHp": 11,
+      "armor": 0,
+      "resist": 0,
+      "accuracy": 90,
+      "dodge": 5,
+      "strength": 4,
+      "precision": 5,
+      "magic": 0,
+      "spirit": 0,
+      "role": "ranged",
+      "movement": 7,
+      "reach": 0,
+      "maxStamina": 0,
+      "staminaRegen": 0,
+      "ai": "ranged-kite",
+      "attacks": [
+        "attack.imp.blast",
+        "attack.imp.claw"
+      ],
+      "abilities": [],
+      "moves": [
+        "power.move"
+      ],
+      "attributes": [
+        "demon"
+      ],
+      "tags": [
+        "demon"
+      ],
+      "triggers": [
+        {
+          "id": "trigger.powerful-imp.burn",
+          "hook": "onHit",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.burn",
+            "value": 2
+          },
+          "source": "unit.powerful-imp",
+          "onlyWithAttack": "attack.imp.blast"
+        }
+      ]
+    },
+    {
+      "typeId": "unit.skeletal-archer",
+      "name": "Skeleton Archer",
+      "side": "enemy",
+      "maxHp": 5,
+      "armor": 1,
+      "resist": 0,
+      "accuracy": 75,
+      "dodge": 0,
+      "strength": 2,
+      "precision": 3,
+      "magic": 0,
+      "spirit": 0,
+      "role": "melee",
+      "movement": 4,
+      "reach": 0,
+      "maxStamina": 0,
+      "staminaRegen": 0,
+      "ai": "dumb-melee",
+      "attacks": [
+        "attack.skeleton.gut"
+      ],
+      "abilities": [],
+      "moves": [
+        "power.move"
+      ],
+      "attributes": [
+        "undead"
+      ],
+      "tags": [
+        "undead"
+      ],
+      "triggers": [
+        {
+          "id": "trigger.skeletal-archer.bleed",
+          "hook": "onHit",
+          "chance": 20,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.bleed",
+            "value": 2
+          },
+          "source": "unit.skeletal-archer",
+          "onlyWithAttack": "attack.skeleton.gut"
+        }
+      ]
+    },
+    {
+      "typeId": "unit.werewolf",
+      "name": "Werewolf",
+      "side": "enemy",
+      "maxHp": 13,
+      "armor": 1,
+      "resist": 0,
+      "accuracy": 90,
+      "dodge": 0,
+      "strength": 5,
+      "precision": 2,
+      "magic": 0,
+      "spirit": 0,
+      "role": "melee",
+      "movement": 6,
+      "reach": 0,
+      "maxStamina": 0,
+      "staminaRegen": 0,
+      "ai": "dumb-melee",
+      "attacks": [
+        "attack.werewolf.claw-frenzy"
+      ],
+      "abilities": [],
+      "moves": [
+        "power.move"
+      ],
+      "attributes": [
+        "beast"
+      ],
+      "tags": [
+        "beast"
+      ],
+      "triggers": []
+    },
+    {
+      "typeId": "unit.zombie",
+      "name": "Zombie",
+      "side": "enemy",
+      "maxHp": 5,
+      "armor": 0,
+      "resist": 0,
+      "accuracy": 65,
+      "dodge": 0,
+      "strength": 3,
+      "precision": 1,
+      "magic": 0,
+      "spirit": 0,
+      "role": "melee",
+      "movement": 4,
+      "reach": 0,
+      "maxStamina": 0,
+      "staminaRegen": 0,
+      "ai": "dumb-melee",
+      "attacks": [
+        "attack.zombie.claw"
+      ],
+      "abilities": [],
+      "moves": [
+        "power.move"
+      ],
+      "attributes": [
+        "undead"
+      ],
+      "tags": [
+        "undead"
+      ],
+      "triggers": [
+        {
+          "id": "trigger.zombie.poison",
+          "hook": "onHit",
+          "chance": 20,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.poison",
+            "value": 2
+          },
+          "source": "unit.zombie",
+          "onlyWithAttack": "attack.zombie.claw"
+        }
+      ]
+    },
+    {
+      "typeId": "unit.zombie-hound",
+      "name": "Zombie Hound",
+      "side": "enemy",
+      "maxHp": 5,
+      "armor": 0,
+      "resist": 0,
+      "accuracy": 75,
+      "dodge": 10,
+      "strength": 3,
+      "precision": 0,
+      "magic": 0,
+      "spirit": 0,
+      "role": "melee",
+      "movement": 6,
+      "reach": 0,
+      "maxStamina": 0,
+      "staminaRegen": 0,
+      "ai": "dumb-melee",
+      "attacks": [
+        "attack.zombie-hound.bite"
+      ],
+      "abilities": [],
+      "moves": [
+        "power.move"
+      ],
+      "attributes": [
+        "undead",
+        "beast"
+      ],
+      "tags": [
+        "undead",
+        "beast"
+      ],
+      "triggers": []
+    }
+  ],
+  "authoredAttacks": {
+    "attack.bloodhound.bite": {
+      "id": "attack.bloodhound.bite",
+      "name": "Bite",
+      "kind": "melee",
+      "damageType": "physical",
+      "bonus": 0,
+      "stat": "strength",
+      "reach": 1,
+      "staminaCost": 0
+    },
+    "attack.bruiser-demon.bash": {
+      "id": "attack.bruiser-demon.bash",
+      "name": "Bash",
+      "kind": "melee",
+      "damageType": "physical",
+      "bonus": 0,
+      "stat": "strength",
+      "reach": 1,
+      "staminaCost": 0
+    },
+    "attack.zombie.claw": {
+      "id": "attack.zombie.claw",
+      "name": "Claw",
+      "kind": "melee",
+      "damageType": "physical",
+      "bonus": 0,
+      "stat": "strength",
+      "reach": 1,
+      "staminaCost": 0
+    },
+    "attack.fire-imp.blast": {
+      "id": "attack.fire-imp.blast",
+      "name": "Fire Imp Blast",
+      "kind": "ranged",
+      "damageType": "physical",
+      "bonus": 0,
+      "stat": "precision",
+      "reach": 4,
+      "staminaCost": 0
+    },
+    "attack.hellhound.bite": {
+      "id": "attack.hellhound.bite",
+      "name": "Bite",
+      "kind": "melee",
+      "damageType": "physical",
+      "bonus": 0,
+      "stat": "strength",
+      "reach": 1,
+      "staminaCost": 0
+    },
+    "attack.imp.blast": {
+      "id": "attack.imp.blast",
+      "name": "Imp Blast",
+      "kind": "ranged",
+      "damageType": "physical",
+      "bonus": 0,
+      "stat": "precision",
+      "reach": 4,
+      "staminaCost": 0
+    },
+    "attack.imp.claw": {
+      "id": "attack.imp.claw",
+      "name": "Imp Claw",
+      "kind": "melee",
+      "damageType": "physical",
+      "bonus": 0,
+      "stat": "strength",
+      "reach": 1,
+      "staminaCost": 0
+    },
+    "attack.lieutenant-demon.ranged": {
+      "id": "attack.lieutenant-demon.ranged",
+      "name": "Hurl",
+      "kind": "ranged",
+      "damageType": "physical",
+      "bonus": 0,
+      "stat": "precision",
+      "reach": 7,
+      "staminaCost": 0
+    },
+    "attack.lieutenant-demon.melee": {
+      "id": "attack.lieutenant-demon.melee",
+      "name": "Strike",
+      "kind": "melee",
+      "damageType": "physical",
+      "bonus": 0,
+      "stat": "strength",
+      "reach": 1,
+      "staminaCost": 0
+    },
+    "attack.necromancer.necro-bolt": {
+      "id": "attack.necromancer.necro-bolt",
+      "name": "Necro Bolt",
+      "kind": "ranged",
+      "damageType": "physical",
+      "bonus": 0,
+      "stat": "precision",
+      "reach": 7,
+      "staminaCost": 0
+    },
+    "attack.necromancer.necro-strike": {
+      "id": "attack.necromancer.necro-strike",
+      "name": "Necro Strike",
+      "kind": "melee",
+      "damageType": "physical",
+      "bonus": 0,
+      "stat": "strength",
+      "reach": 1,
+      "staminaCost": 0
+    },
+    "attack.poison-imp.blast": {
+      "id": "attack.poison-imp.blast",
+      "name": "Poison Imp Blast",
+      "kind": "ranged",
+      "damageType": "physical",
+      "bonus": 0,
+      "stat": "precision",
+      "reach": 4,
+      "staminaCost": 0
+    },
+    "attack.skeleton.gut": {
+      "id": "attack.skeleton.gut",
+      "name": "Gut",
+      "kind": "melee",
+      "damageType": "physical",
+      "bonus": 0,
+      "stat": "strength",
+      "reach": 1,
+      "staminaCost": 0
+    },
+    "attack.werewolf.claw-frenzy": {
+      "id": "attack.werewolf.claw-frenzy",
+      "name": "Claw Frenzy",
+      "kind": "melee",
+      "damageType": "physical",
+      "bonus": 0,
+      "stat": "strength",
+      "reach": 1,
+      "staminaCost": 0
+    },
+    "attack.zombie-hound.bite": {
+      "id": "attack.zombie-hound.bite",
+      "name": "Bite",
+      "kind": "melee",
+      "damageType": "physical",
+      "bonus": 0,
+      "stat": "strength",
+      "reach": 1,
+      "staminaCost": 0
+    }
+  }
 } as const

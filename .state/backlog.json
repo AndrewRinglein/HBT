@@ -1253,14 +1253,19 @@
     "changesBaseline": false,
     "needs": [
       "fix.cohort-drift"
-    ]
+    ],
+    "probeIds": [
+      "showcase.prologue-enemies"
+    ],
+    "status": "done-needs-review",
+    "sha": "2b7a07c"
   },
   {
     "id": "content.civilians",
     "kind": "engine",
     "shape": "data",
-    "spec": "hero.fixed.orphans, hero.fixed.lumberjack-and-wife, hero.fixed.farmer as engine units. RULED (STATE.md G2): civilians are ORDINARY HERO DEFINITIONS — identical stat shape, no new kind. They do not attack and do not flee in the first model; they stand, take damage, and can go down. Stats come from the Codex civilian rows, not invented.",
-    "expect": "the three civilians field as hero-side units that never act, and killing one is visible in the log",
+    "spec": "hero.fixed.orphans, hero.fixed.lumberjack-and-wife, hero.fixed.farmer as engine units. RULED 2026-08-26: civilians ACT — they are ordinary heroes with their Codex behaviour, stats and actions, not do-nothing statues (the earlier do-nothing reading was wrong and is dead). Rows come from the Codex civilian class through the same conversion path as other units.",
+    "expect": "the three civilians field as hero-side units with their Codex stats and behave like heroes; killing one is visible in the log",
     "changesBaseline": false,
     "needs": [
       "content.enemy-pack"
