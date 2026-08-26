@@ -2,9 +2,8 @@
 // "Never hand-edit anything under generated/"). Source of truth: the Codex
 // pipeline (content/settled.json testCohort -> hbt-content.json).
 // Regenerate:  cd content && node assemble.mjs && node mkenginepack.mjs
-// Dropped (no engine meaning yet): test-sky-pirate: onKill/grantDraws -> no engine meaning yet | test-air-mage: onEnter/modifyStatPermanent -> no engine meaning yet
 export const UNIT_PACK = {
-  "note": "Angela 2026-08-20: the standard engine test party — six heroes, one per class, COPIED from live Codex heroes so they can be tweaked without touching the originals. Clearly differentiated: test- typeIds, (TEST) names, never ships. The engine reads these through the generated pack (mkenginepack.mjs) — nothing hand-typed engine-side. Testing-lane riders travel on the cohort and retire one by one as published sources land; the Sky Pirate's own Cutlass bleed already retires test.ranger.serrated-arrows. Movement powers granted 2026-08-21 per the Codex sidestep ruling: power.move universal; Sidestep to warrior/mage/priest/paladin clones, Side Roll to the rogue and ranger clones; enemy rows carry exactly one movement power.",
+  "note": "Ruled 2026-08-20: the standard engine test party — six heroes, one per class, COPIED from live Codex heroes so they can be tweaked without touching the originals. Clearly differentiated: test- typeIds, (TEST) names, never ships. The engine reads these through the generated pack (mkenginepack.mjs) — nothing hand-typed engine-side. Testing-lane riders travel on the cohort and retire one by one as published sources land; the Sky Pirate's own Cutlass bleed already retires test.ranger.serrated-arrows.",
   "heroes": [
     {
       "typeId": "test-oathblade",
@@ -34,24 +33,12 @@ export const UNIT_PACK = {
       "abilities": [],
       "moves": [
         "power.move",
-        "power.sidestep"
+        "power.leap"
       ],
       "attributes": [
         "hero-test"
       ],
       "triggers": [
-        {
-          "id": "test.oathblade.apply-bleed",
-          "hook": "onAttack",
-          "chance": 100,
-          "select": "target",
-          "effect": {
-            "kind": "status.apply",
-            "statusId": "status.bleed",
-            "value": 2
-          },
-          "source": "unit.test-oathblade"
-        },
         {
           "id": "test.warrior.second-wind",
           "hook": "onTakingDamage",
@@ -85,6 +72,18 @@ export const UNIT_PACK = {
             "kind": "status.apply",
             "statusId": "test.status.ward",
             "value": 1
+          },
+          "source": "unit.test-oathblade"
+        },
+        {
+          "id": "test.oathblade.apply-bleed",
+          "hook": "onAttack",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.bleed",
+            "value": 2
           },
           "source": "unit.test-oathblade"
         }
@@ -213,7 +212,7 @@ export const UNIT_PACK = {
       ],
       "moves": [
         "power.move",
-        "power.sidestep"
+        "power.focus"
       ],
       "attributes": [
         "hero-test"
@@ -249,13 +248,13 @@ export const UNIT_PACK = {
       "typeId": "test-lucius",
       "name": "Lucius (TEST)",
       "side": "hero",
-      "copyOf": "hero.tutorial.priest-scantily.lucius",
+      "copyOf": "hero.base.priest-scantily",
       "maxHp": 7,
       "armor": 0,
       "resist": 0,
       "accuracy": 80,
       "dodge": 0,
-      "strength": 2,
+      "strength": 3,
       "precision": 3,
       "magic": 0,
       "spirit": 2,
@@ -272,7 +271,7 @@ export const UNIT_PACK = {
       "abilities": [],
       "moves": [
         "power.move",
-        "power.sidestep"
+        "power.devotion"
       ],
       "attributes": [
         "hero-test"
@@ -283,7 +282,7 @@ export const UNIT_PACK = {
       "typeId": "test-osric",
       "name": "Osric (TEST)",
       "side": "hero",
-      "copyOf": "hero.tutorial.paladin-shiney.osric",
+      "copyOf": "hero.base.paladin-shiney",
       "maxHp": 9,
       "armor": 1,
       "resist": 0,

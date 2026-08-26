@@ -10,8 +10,11 @@
 // (1 Stamina, no cooldown, to Rogue/Ranger). Enemies carry exactly ONE
 // movement power and pay no stamina — stamina is the hero throttle.
 import { describe, expect, it } from 'vitest'
+import { readFileSync } from 'node:fs'
+import { join } from 'node:path'
 import { createBattle, createCustomBattle } from '../src/core/setup.js'
 import { runBattle } from '../src/core/battle.js'
+import { runActivation } from '../src/ai/modes.js'
 import { beginActivation } from '../src/core/mutate.js'
 import { executeSidestep, moveStaminaCost, usableMoves } from '../src/core/movement.js'
 import { MOVES } from '../src/content/moves.js'
@@ -30,12 +33,19 @@ describe('the rows are the Codex rows — data, not code', () => {
 
   it('who grants what is unit data: class grants on the cohort, one power per enemy row', () => {
     const pack = packUnits()
-    // Sidestep to Warrior/Mage/Priest/Paladin; Side Roll to Rogue/Ranger (Codex 2026-08-21)
-    for (const t of ['test-oathblade', 'test-air-mage', 'test-lucius', 'test-osric']) {
-      expect(pack[t]!.moves, t).toEqual(['power.move', 'power.sidestep'])
-    }
-    for (const t of ['test-sky-pirate', 'test-dusk-hawk']) {
-      expect(pack[t]!.moves, t).toEqual(['power.move', 'power.side-roll'])
+    // LAW 10 — rewritten 2026-08-25 as a RULE, not a frozen list. This asserted
+    // the 2026-08-21 grants (Sidestep to warrior/mage/priest/paladin) and went
+    // red the day the Codex split the half-step per class (S17: leap / focus /
+    // devotion / sidestep / side-roll). The claim under test was never "these
+    // ids", it was "grants are CONTENT the pack carries faithfully" — so the
+    // test now asserts pack ↔ settled.json agreement, which survives regrants
+    // and still dies loudly if the converter drops a grant.
+    const settled = JSON.parse(
+      readFileSync(join(__dirname, '..', '..', 'content', 'settled.json'), 'utf8'))
+    for (const clone of settled.testCohort.heroes) {
+      expect(pack[clone.typeId]!.moves, clone.typeId).toEqual(clone.engine.moves)
+      expect(pack[clone.typeId]!.moves[0], clone.typeId + ' walks first').toBe('power.move')
+      expect(pack[clone.typeId]!.moves, clone.typeId + ' one half-step').toHaveLength(2)
     }
     for (const t of ['test-zombie', 'test-zombie-burning']) {
       expect(pack[t]!.moves, t).toHaveLength(1)
@@ -130,8 +140,17 @@ describe('the choice is ALIVE in the standard battles', () => {
     // use it is a finding; that SOME do, across the sweep below, is the rule.
     // Disabling power.sidestep via CF_DISABLE_IDS kills the causeId and this
     // test with it — the kill-switch check relies on that.
+    // LAW 10 — split 2026-08-25. Both variants used to fire in the sweep when
+    // Sidestep had four grantors; the S17 regrant leaves it Paladin-only and
+    // Osric never hits the fallback condition in 50 standard battles, so "both
+    // appear in the sweep" stopped being a fact about the mechanism and became
+    // a fact about stamina economics. The rule is two claims now:
+    // (1) sweep — the fallback is ALIVE: some granted sidestep-shaped power is
+    //     chosen by the AI in real battles;
+    // (2) scripted — the OTHER data variant is chosen too, proven by starving
+    //     its one grantor. Two variants, both AI-chosen, seed-independent.
     const used = new Set<string>()
-    for (let r = 0; r < 25 && used.size < 2; r++) {
+    for (let r = 0; r < 25 && used.size < 1; r++) {
       for (const mapId of ['map.open', 'map.thicket']) {
         const ctx = createBattle({ replicate: r, enemyCount: 8, mapId })
         runBattle(ctx)
@@ -140,7 +159,20 @@ describe('the choice is ALIVE in the standard battles', () => {
         }
       }
     }
-    expect([...used].sort()).toEqual(['power.side-roll', 'power.sidestep'])
+    expect(used.size, 'no sidestep-shaped power was ever AI-chosen').toBeGreaterThan(0)
+
+    // (2) starve Osric — the sole Sidestep grantor — and the AI must fall back to it.
+    const ctx = createCustomBattle(
+      [{ type: 'test-osric', hex: hexId(3, 8) }],
+      [{ type: 'test-zombie', hex: hexId(3, 12) }],
+    )
+    const os = ctx.state.units[0]!
+    os.stamina = 0 // the walk costs 1 — unaffordable; Sidestep is free
+    beginActivation(ctx, os.id, 'test')
+    runActivation(ctx, os.id)
+    const step = ctx.events.find((e) => e.type === 'moved')
+    expect(step, 'the starved paladin never moved').toBeDefined()
+    expect(step!.causeId, 'the fallback must be the granted Sidestep').toBe('power.sidestep')
   })
 
   it('every moved event names its power — the log says which CHOICE moved the unit (Law 12)', () => {

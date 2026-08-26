@@ -1084,7 +1084,8 @@
   "expect": "a 12x12 board measures 1600 x 1188 board px and presents 1600 x 826 after tilt; cos(49.3) = 0.6521, so a 96px row step lands at 62.6px and a 132px hex face at 86.1px",
   "changesBaseline": false,
   "needs": [],
-  "note": "Prerequisite for viewer.board. Changes build output, never battle behaviour — the baseline hashes must not move."
+  "note": "Prerequisite for viewer.board. Changes build output, never battle behaviour — the baseline hashes must not move.",
+  "attempts": 1
  },
  {
   "id": "content.art-manifest",
@@ -1192,5 +1193,124 @@
   "note": "Not in content/settled.json at all — unlike the snake and drake this ruling could not go through the Codex pipeline, because the puppy exists only as a hand-typed def in engine/src/content/index.ts. That is a content gap.",
   "status": "done-needs-review",
   "sha": "3314213"
+ },
+ {
+  "id": "sim.coverage",
+  "kind": "engine",
+  "shape": "plumbing",
+  "spec": "A sweep reports WHAT IT NEVER TOUCHED. For a run, split the content the matchup could reach into exercised and never-used, and name the unused ids. The argument, from the Bastion audit 2026-08-21: 'a flat win rate looks exactly the same whether your change did nothing or was never tested.' This is the kill-switch argument applied to MEASUREMENT rather than to tests. Not hypothetical here: movement.flight landed with a green gate on 2026-08-21 and a 640-battle sweep showed power.flight firing ZERO times on every map, because its only grantor is benched. Nothing in the harness said so; it was found by hand-counting causes. Lives in src/sim/coverage.ts beside score.ts — a measurement read from the event log, never a rule, and it must not be reachable from src/core.",
+  "expect": "a run over the standard battle names power.mage.bolt-class content that was reachable and never used, reports a reachable-coverage percent, and reports zero unused when every reachable id fired; the battle itself is byte-identical with the report on or off",
+  "changesBaseline": false,
+  "needs": [],
+  "note": "Gate 1: coverage reads a finished log and emits nothing into one, so probe.mts cannot see it. Expect unreachable with a written reason, or a probeId naming content the report must classify."
+ },
+ {
+  "id": "fix.cohort-drift",
+  "kind": "engine",
+  "shape": "plumbing",
+  "spec": "Reconcile the engine with the S16a/S17 content restructure that left 6 tests red. THE DATA LEADS (standing rule, encounters.json format.placement). Three distinct drifts: (1) the half-step split — power.sidestep is now Paladin-only, side-roll Rogue/Ranger, and warrior/mage/priest clones grant power.leap/focus/devotion, which the engine registry does not have — those grants silently vanish in usableMoves. Tests asserting the old grants get rewritten to assert the pack. (2) copyOf renames (hero.tutorial.priest-scantily.lucius -> hero.base.priest-scantily) — follow the content. (3) the Sky Pirate Cutlass trigger is GONE from the pack: S16a moved authored triggers to their own field and mkenginepack.mjs may not read it yet — investigate the converter, do not fake the trigger engine-side. Tests that assert content VALUES become tests of the pack pipeline, not of frozen ids.",
+  "expect": "the full suite is green again with zero weakened assertions — every edit follows the pack, and the Cutlass rider either flows through the converter or its absence is a named finding in the content chat",
+  "changesBaseline": true,
+  "needs": [],
+  "probeIds": [
+   "test.sky-pirate.apply-bleed",
+   "test.oathblade.apply-bleed"
+  ],
+  "attempts": 1
+ },
+ {
+  "id": "movement.bonus-actions",
+  "kind": "engine",
+  "shape": "rule",
+  "spec": "The half-step family outgrew MoveDef. Codex rows (settled.json, movementAction:true): power.leap = move exactly 2 hexes, +2 Strength until end of Turn, 2 stamina, Warriors; power.focus = move ZERO hexes, gain 1 Stamina, Mages; power.devotion = move zero hexes, lose 1 Stamina Max for the Battle plus its grant, Priests. Three shapes MoveDef cannot say: a 2-hex step (executeSidestep throws unless distance is exactly 1), a stationary move, and RIDERS on a movement power (nowhere to put a stat or stamina effect). Independent corroboration: Bastion failed on exactly these clauses. Mechanism: MoveDef gains stepRange and an effects list resolved through existing mutators; the three rows are then pure data.",
+  "expect": "a warrior clone leaps 2 hexes and carries +2 Strength until end of Turn; a mage clone gains 1 stamina while moving nowhere; all three land as rows with zero bespoke core code beyond the mechanism",
+  "changesBaseline": true,
+  "needs": [
+   "fix.cohort-drift"
+  ],
+  "variants": [
+   "power.leap",
+   "power.focus",
+   "power.devotion"
+  ]
+ },
+ {
+  "id": "content.enemy-pack",
+  "kind": "engine",
+  "shape": "plumbing",
+  "spec": "A converter from content/gen/enemies-authored.json into the engine pack — the 14 units the five prologue battles field, of the 28 authored. Bastion-style discipline: a trigger clause whose capability the engine lacks (capability.inflict-affliction on the zombie, capability.power/corpses/target-stamina-loss on the necromancer) is DROPPED WITH A NAMED GAP recorded in the pack note and CONTENT-GAPS, never guessed at. Stats, attacks, and the trigger clauses that DO compile (skeletal-archer onHit, plain damage riders) come through whole. Regenerable: same input, byte-identical output.",
+  "expect": "unit.zombie, unit.fast-zombie, unit.skeletal-archer and unit.necromancer exist as engine units with their authored stats and compilable triggers, each dropped clause is named somewhere greppable, and the converter run twice is byte-identical",
+  "changesBaseline": false,
+  "needs": [
+   "fix.cohort-drift"
+  ]
+ },
+ {
+  "id": "content.civilians",
+  "kind": "engine",
+  "shape": "data",
+  "spec": "hero.fixed.orphans, hero.fixed.lumberjack-and-wife, hero.fixed.farmer as engine units. RULED (STATE.md G2): civilians are ORDINARY HERO DEFINITIONS — identical stat shape, no new kind. They do not attack and do not flee in the first model; they stand, take damage, and can go down. Stats come from the Codex civilian rows, not invented.",
+  "expect": "the three civilians field as hero-side units that never act, and killing one is visible in the log",
+  "changesBaseline": false,
+  "needs": [
+   "content.enemy-pack"
+  ]
+ },
+ {
+  "id": "encounter.runner",
+  "kind": "engine",
+  "shape": "rule",
+  "spec": "Scenarios grow into encounters — the P11 prologue shape from content/gen/encounters.json: hex placement at:{col,row} / near+range / oneOf (scenario.export landed the validation seam already), phase-keyed spawn SCHEDULE (clock ruling 2026-08-23: schedules count PHASES, the word turn never appears in encounter data), loseAfter (heroPhase N), objective/civilian flags, and victory: protect-the-objective — outcome enum gains objectiveMet and objectiveLost. Spawned units arrive per the schedule and their startOfBattle fires on arrival (COMBAT-SEQUENCE Start of Turn rung 1, currently not yet). NOTE the format is marked PROPOSED, NOT RULED — Andrew approving it is the gate for this item landing, per STATE.md.",
+  "expect": "battle.prologue-1 loads from encounters.json and runs end to end: zombies at (6,7)/(10,7), orphans at (8,8), the phase-4 spawn arrives on one of the two named hexes, the battle is lost if the orphans die or ten hero phases pass, won when the board clears",
+  "changesBaseline": false,
+  "needs": [
+   "content.enemy-pack",
+   "content.civilians"
+  ]
+ },
+ {
+  "id": "content.hero-pack",
+  "kind": "engine",
+  "shape": "plumbing",
+  "spec": "Real heroes for the prologue: battle 1 fields ONE hero, battle 2 fields THREE, drawn from the 24-hero roster. Heroes come through the Codex pipeline like the test cohort (copyOf resolution), with their class kit WEAPON as the attack source — the first crack in stats-first-weapons-next, scoped to exactly what the battles need: each fielded hero carries its kit weapon attacks instead of the provisional attack.* scaffolding rows. Which heroes field is content; ask, do not pick.",
+  "expect": "a named hero fields with its Codex stats and its kit weapon attacks, and the five provisional attacks are not referenced by any fielded prologue unit",
+  "changesBaseline": false,
+  "needs": [
+   "fix.cohort-drift"
+  ]
+ },
+ {
+  "id": "encounter.battle-1",
+  "kind": "engine",
+  "shape": "data",
+  "spec": "battle.prologue-1 Two Zombies and a Child as a landed, gated verify scenario AND the new standard smoke battle: 1 hero vs 2 zombies plus the phase-4 spawn, protecting the orphans. This is the retest target Andrew named.",
+  "expect": "runs deterministically, coverage report shows every fielded id exercised, and the battle is winnable and losable across seeds (both outcomes observed in a 100-seed sweep)",
+  "changesBaseline": false,
+  "needs": [
+   "encounter.runner",
+   "content.hero-pack"
+  ]
+ },
+ {
+  "id": "encounter.battle-2",
+  "kind": "engine",
+  "shape": "data",
+  "spec": "battle.prologue-2 Surrounded: 3 heroes, 2 civilians, 4 zombies, skeletal archers pE1/pE3, fast zombies p4, necromancer p5. The necromancer fields with its compilable behaviour; its power/corpse/stamina-drain clauses stay named gaps until their capability rows land — the battle runs honestly WITHOUT them rather than pretending.",
+  "expect": "runs end to end with all spawns arriving on schedule; the dropped necromancer clauses are visible as named gaps, not silent absences",
+  "changesBaseline": false,
+  "needs": [
+   "encounter.battle-1"
+  ]
+ },
+ {
+  "id": "capability.power-pool",
+  "kind": "engine",
+  "shape": "rule",
+  "spec": "The enemy power pool — 15 of 28 authored enemies need it, the largest single capability. Integer; fractions resolve nearest, 0.5 up; gained external/arrival/clock; consumers read it. Design-ruled in ENEMY-REVIEW.md 2026-08-23. Needed for the necromancer to act fully in battle 2, but battle 2 lands first without it.",
+  "expect": "a pool exists per side, arrival and clock gains emit events, and a consumer refuses when the pool is short",
+  "changesBaseline": false,
+  "needs": [
+   "encounter.battle-2"
+  ]
  }
 ]

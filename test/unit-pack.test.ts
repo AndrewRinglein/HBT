@@ -33,8 +33,23 @@ describe('the pack — read from the data, clearly differentiated', () => {
     expect(pack['test-sky-pirate']!.copyOf).toBe('hero.skyship.sky-pirate.v1')
     expect(pack['test-dusk-hawk']!.copyOf).toBe('hero.shadows.dusk-hawk.v1')
     expect(pack['test-air-mage']!.copyOf).toBe('hero.fixed.air-mage')
-    expect(pack['test-lucius']!.copyOf).toBe('hero.tutorial.priest-scantily.lucius')
-    expect(pack['test-osric']!.copyOf).toBe('hero.tutorial.paladin-shiney.osric')
+    // LAW 10 — 2026-08-25: S17 renamed the source ids (hero.tutorial.* -> hero.base.*).
+    // Same heroes — the scantily priest and the shiny paladin — new ids. The data leads.
+    expect(pack['test-lucius']!.copyOf).toBe('hero.base.priest-scantily')
+    expect(pack['test-osric']!.copyOf).toBe('hero.base.paladin-shiney')
+  })
+
+  it('the restored riders are LIVE through the seam — S17 cut them once already', () => {
+    // 2026-08-25: S17's hell-tcg cut orphaned both bleed riders (the Cutlass is
+    // Angela-ruled, 2026-08-20 'it's fine'); restored via engine.riders on the
+    // clones. Read through UNITS — the post-seam registry — so disabling the
+    // rider ids genuinely kills this test: the raw pack would not notice.
+    for (const [unit, id] of [['test-sky-pirate', 'test.sky-pirate.apply-bleed'],
+      ['test-oathblade', 'test.oathblade.apply-bleed']] as const) {
+      const t = (UNITS[unit]!.triggers ?? []).find((x) => x.id === id)
+      expect(t, `${id} missing from ${unit} through the seam`).toBeDefined()
+      expect(t!.effect).toMatchObject({ kind: 'status.apply', statusId: 'status.bleed' })
+    }
   })
 
   it('the Sky Pirate\'s Cutlass came through the converter, not through hand-typing', () => {

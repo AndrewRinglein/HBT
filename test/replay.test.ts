@@ -29,11 +29,11 @@ let html = ''
 let battle: { engineCommit: string; events: { type: string; causeId?: string }[] }
 
 beforeAll(() => {
-  // Demo seed 21 → 1 → 0 across 2026-08-20 (Law 10, reasons written each
-  // time): battle flow changes whenever the roster does — beasts, then the
-  // Codex cohort. Seed 0 shows sear 4, heal 3, wash 2 under the six-hero
-  // party. The CLAIMS under test are unchanged.
-  execSync(`npx tsx tools/export-battle.mts 0 map.thicket 8 > "${BATTLE}"`)
+  // Demo seed 21 → 1 → 0 → 1 (Law 10, reasons written each time): battle flow
+  // changes whenever the roster or the board does. 2026-08-25: the 16x16 board
+  // plus the S17 regrants moved the fight — seed 0 now shows no river wash.
+  // Seed 1 shows sear 6, heal 1, wash 1. The CLAIMS under test are unchanged.
+  execSync(`npx tsx tools/export-battle.mts 1 map.thicket 8 > "${BATTLE}"`)
   execSync(`node tools/build-replay.mjs "${BATTLE}" "${PAGE}"`)
   html = readFileSync(PAGE, 'utf8')
   battle = JSON.parse(readFileSync(BATTLE, 'utf8'))
@@ -48,7 +48,7 @@ describe('the replay rig', () => {
 
   it('the battle is a seed with its engine commit — a stale replay says so', () => {
     expect(html).toContain(`"engineCommit":"${battle.engineCommit}"`)
-    expect(html).toContain('"replicate":0')
+    expect(html).toContain('"replicate":1')
     expect(html).toContain('"mapId":"map.thicket"')
   })
 
