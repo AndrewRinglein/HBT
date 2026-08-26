@@ -2,7 +2,7 @@
  "hooks": [
   {
    "name": "onHit",
-   "uses": 76,
+   "uses": 77,
    "ids": [
     "item.hammer-of-justice",
     "item.runed-crossbow",
@@ -357,7 +357,7 @@
   },
   {
    "name": "one enemy in melee reach",
-   "uses": 102,
+   "uses": 104,
    "ids": [
     "attack.hand-axe.chop",
     "attack.sharpened-stake.jab",
@@ -691,6 +691,14 @@
    ]
   },
   {
+   "name": "an adjacent hex and one hex adjacent to both you and it",
+   "uses": 2,
+   "ids": [
+    "attack.glaive.sweep",
+    "attack.lumberjack-axe.cleave"
+   ]
+  },
+  {
    "name": "one enemy within N hexes and every enemy adjacent to it",
    "uses": 2,
    "ids": [
@@ -719,13 +727,6 @@
    "uses": 1,
    "ids": [
     "attack.hunting-spear.thrust"
-   ]
-  },
-  {
-   "name": "an adjacent hex and one hex adjacent to both you and it",
-   "uses": 1,
-   "ids": [
-    "attack.glaive.sweep"
    ]
   },
   {
@@ -845,7 +846,7 @@
   },
   {
    "name": "apply a status",
-   "uses": 138,
+   "uses": 139,
    "ids": [
     "item.bloody-axe",
     "item.runed-crossbow",
@@ -1541,7 +1542,7 @@
   },
   {
    "name": "bleed",
-   "uses": 63,
+   "uses": 64,
    "ids": [
     "item.bloody-axe",
     "item.twin-talon-bow",
@@ -1566,6 +1567,7 @@
     "attack.demon-whip.hellcoil",
     "attack.fangs.savage",
     "attack.claws.flense",
+    "attack.lumberjack-axe.chop",
     "power.reaver.rend",
     "power.reaver.cleave",
     "power.reaver.gore",
@@ -1581,8 +1583,7 @@
     "power.nightblade.silent-cut",
     "power.nightblade.fan-of-knives",
     "power.nightblade.exsanguinate",
-    "power.nightblade.long-knife",
-    "power.havoc.blade-dance"
+    "power.nightblade.long-knife"
    ]
   },
   {

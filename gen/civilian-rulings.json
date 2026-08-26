@@ -99,6 +99,98 @@
         "value": 2,
         "needsCapability": "battle-outcome reward — surviving is not a combat hook; this pays from the encounter outcome into the kingdom purse. Faith is a live currency (KINGDOM-DESIGN: Pray, quest rewards)."
       }
+    },
+    "hero.fixed.lumberjack-and-wife": {
+      "why": "Lumberjack, dictated 2026-08-25. The one civilian who is genuinely dangerous — a two-handed axe and the arms that use it all day.",
+      "ported": {
+        "strength": 4,
+        "precision": 1,
+        "health": 8,
+        "itemSlots": 1
+      },
+      "derived": {
+        "movement": 5,
+        "crit": 3
+      },
+      "kit": [
+        "item.lumberjack-axe"
+      ],
+      "survivalReward": {
+        "currency": "Supplies",
+        "value": 2,
+        "needsCapability": "battle-outcome reward — pays from the encounter outcome into the purse. Supplies is a live currency (KINGDOM-DESIGN: Farm)."
+      }
+    },
+    "hero.fixed.school-teacher": {
+      "why": "School Teacher, dictated 2026-08-25. Unarmed and unkillable-by-carelessness — luck, resist, and the sense to bring a plan instead of a weapon.",
+      "ported": {
+        "strength": 2,
+        "precision": 2,
+        "health": 5,
+        "resist": 1,
+        "itemSlots": 2
+      },
+      "derived": {
+        "movement": 5,
+        "crit": 8,
+        "luck": 7
+      },
+      "kit": [],
+      "grantsTactics": [
+        "Learned"
+      ],
+      "grantsTacticsNote": "Dictated: add the Learned tactic. The tactic.* kind is NOT yet declared (STATE.md: slice tactics are blocked on declaring tactic.* before authoring), so this is recorded as a grant by NAME and becomes a real reference when tactics land.",
+      "startOfBattleDraw": {
+        "value": 2,
+        "phase": 1,
+        "needsCapability": "dictated \"on combat start +2 Draw on turn 1\". Draw is not a combat vocabulary word — it belongs to the War Council/tactics layer, and grant-draws was earlier ruled not relevant to units. Recorded verbatim; needs a ruling on what Draw means here when tactics land."
+      }
+    },
+    "hero.fixed.school-children": {
+      "why": "School Children, dictated 2026-08-25. The plural unit (school-children-flux-v3 art). Braver than they should be, luckier than they know.",
+      "ported": {
+        "strength": 3,
+        "precision": 3,
+        "health": 8,
+        "itemSlots": 1
+      },
+      "derived": {
+        "movement": 4,
+        "crit": 4,
+        "luck": 10
+      },
+      "kit": [
+        "item.pile-of-rocks"
+      ],
+      "authoredTriggers": [
+        {
+          "hook": "onDeath",
+          "targets": "all heroes",
+          "name": "For Them",
+          "note": "ALL heroes, battle-wide as dictated — the same grief-as-fuel trigger as the Orphan Child.",
+          "effects": [
+            {
+              "effect": "regain stamina",
+              "value": 2
+            },
+            {
+              "effect": "grant a stat for the Battle",
+              "stat": "staminaMax",
+              "value": 1
+            },
+            {
+              "effect": "grant a stat for the Battle",
+              "stat": "strength",
+              "value": 2
+            }
+          ]
+        }
+      ],
+      "survivalReward": {
+        "currency": "Faith",
+        "value": 2,
+        "needsCapability": "battle-outcome reward — as the Orphan Child."
+      }
     }
   }
 }

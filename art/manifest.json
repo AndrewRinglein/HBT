@@ -9,6 +9,12 @@
     "label": "Level 1",
     "thumb": "425870a2bcf8.webp",
     "src": "art/heroes/orphan-child/card/l1.png"
+   },
+   {
+    "kind": "hex",
+    "label": "Level 1",
+    "thumb": "38126ec6b19b.webp",
+    "src": "art/heroes/orphan-child/hex/l1_256.png"
    }
   ]
  },
@@ -22,6 +28,12 @@
     "label": "Level 1",
     "thumb": "4af78877b4eb.webp",
     "src": "art/heroes/lumberjack/card/l1.png"
+   },
+   {
+    "kind": "hex",
+    "label": "Level 1",
+    "thumb": "6cf5ad5c247e.webp",
+    "src": "art/heroes/lumberjack/hex/l1_256.png"
    }
   ]
  },
@@ -35,6 +47,12 @@
     "label": "Level 1",
     "thumb": "7084a2923a9c.webp",
     "src": "art/heroes/farmer/card/l1.png"
+   },
+   {
+    "kind": "hex",
+    "label": "Level 1",
+    "thumb": "e9622e7ba217.webp",
+    "src": "art/heroes/farmer/hex/l1_256.png"
    }
   ]
  },
@@ -48,6 +66,12 @@
     "label": "Level 1",
     "thumb": "e9d93d74d621.webp",
     "src": "art/heroes/farmer-with-hat/card/l1.png"
+   },
+   {
+    "kind": "hex",
+    "label": "Level 1",
+    "thumb": "1f9b33e2f122.webp",
+    "src": "art/heroes/farmer-with-hat/hex/l1_256.png"
    }
   ]
  },
@@ -110,6 +134,12 @@
     "label": "Level 1",
     "thumb": "8149145a2e61.webp",
     "src": "art/heroes/school-children/card/l1.png"
+   },
+   {
+    "kind": "hex",
+    "label": "Level 1",
+    "thumb": "cc83da534f16.webp",
+    "src": "art/heroes/school-children/hex/l1_256.png"
    }
   ]
  },
@@ -123,6 +153,12 @@
     "label": "Level 1",
     "thumb": "dbd8d4e6d47e.webp",
     "src": "art/heroes/schoolteacher/card/l1.png"
+   },
+   {
+    "kind": "hex",
+    "label": "Level 1",
+    "thumb": "b0bdc9d74f2b.webp",
+    "src": "art/heroes/schoolteacher/hex/l1_256.png"
    }
   ]
  },
@@ -3159,6 +3195,12 @@
     "label": "Level 1",
     "thumb": "eb6108a5856a.webp",
     "src": "art/heroes/school-child-female/card/l1.png"
+   },
+   {
+    "kind": "hex",
+    "label": "Level 1",
+    "thumb": "a20153df0122.webp",
+    "src": "art/heroes/school-child-female/hex/l1_256.png"
    }
   ]
  },

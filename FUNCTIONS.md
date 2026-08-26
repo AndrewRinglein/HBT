@@ -11,7 +11,7 @@ When a rule fires. Twelve, plus `aura` and `passive` which are standing properti
 
 | Function | Uses | Notes |
 |---|---:|---|
-| `onHit` | 76 | after a hit lands, even if armour ate all of it |
+| `onHit` | 77 | after a hit lands, even if armour ate all of it |
 | `onKill` | 37 |  |
 | `startOfBattle` | 37 |  |
 | `onCrit` | 19 | after its own onHit, only if it crit |
@@ -32,7 +32,7 @@ When a rule fires. Twelve, plus `aura` and `passive` which are standing properti
 | Function | Uses |
 |---|---:|
 | `self` | 144 |
-| `one enemy in melee reach` | 102 |
+| `one enemy in melee reach` | 104 |
 | `one enemy within N hexes` | 81 |
 | `one ally within N hexes` | 55 |
 | `allies within N hexes` | 31 |
@@ -47,11 +47,11 @@ When a rule fires. Twelve, plus `aura` and `passive` which are standing properti
 | `one enemy within your Vision` | 4 |
 | `three hexes within N hexes` | 3 |
 | `an adjacent hex and the two hexes adjacent to both you and it` | 2 |
+| `an adjacent hex and one hex adjacent to both you and it` | 2 |
 | `one enemy within N hexes and every enemy adjacent to it` | 2 |
 | `up to N allies within N hexes` | 2 |
 | `your own hex` | 2 |
 | `one enemy in melee reach and the hex directly behind it` | 1 |
-| `an adjacent hex and one hex adjacent to both you and it` | 1 |
 | `one enemy within N hexes and the hex directly behind it` | 1 |
 | `up to N enemies within Reach` | 1 |
 | `a hex` | 1 |
@@ -73,7 +73,7 @@ What a rule may DO.
 | Function | Uses |
 |---|---:|
 | `grant a stat for the Battle` | 170 |
-| `apply a status` | 138 |
+| `apply a status` | 139 |
 | `heal` | 86 |
 | `deal TRUE damage` | 55 |
 | `grant a stat until end of next Turn` | 48 |
@@ -112,7 +112,7 @@ What a rule may DO.
 | Function | Uses |
 |---|---:|
 | `burn` | 79 |
-| `bleed` | 63 |
+| `bleed` | 64 |
 | `poison` | 52 |
 | `protection` | 40 |
 | `weak` | 38 |

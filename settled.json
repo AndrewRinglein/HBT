@@ -822,9 +822,99 @@
    "description": "Immunity to Frost 1. One point of Frost is removed BEFORE Frost resolves, so that point never gets to increase the physical damage you take. The ordinary -1 decay still follows, so Frost falls by 2 a Turn.",
    "intent": "One point of Immunity makes you substantially immune to the thing. That is the whole item.",
    "source": "Settled content, 2026-08-17 — rebuilt on the Immunity mechanic (was written as a plain End-of-Activation strip, which is half of it). | 2026-08-17 corrected: immunity resolves BEFORE the status does; it is not a second strip. The status still takes its own -1 afterwards."
+  },
+  {
+   "id": "item.lumberjack-axe",
+   "name": "Lumberjack's Axe",
+   "itemClass": "weapon",
+   "tier": 0,
+   "hands": 2,
+   "slots": 1,
+   "classRestriction": null,
+   "tags": [
+    "axe"
+   ],
+   "grants": [
+    "attack.lumberjack-axe.chop",
+    "attack.lumberjack-axe.cleave"
+   ],
+   "statModifiers": {},
+   "triggers": [],
+   "intent": "A working tool that has stopped asking what it is for. The first two-handed axe in the game, and it belongs to a civilian.",
+   "source": "dictated 2026-08-25"
   }
  ],
- "attacks": [],
+ "attacks": [
+  {
+   "id": "attack.punch",
+   "name": "Punch",
+   "range": "melee",
+   "stat": "strength",
+   "damage": -1,
+   "stamina": 1,
+   "accuracy": 0,
+   "crit": 0,
+   "hits": 1,
+   "targets": "one enemy in melee reach",
+   "damageType": "physical",
+   "tags": [
+    "brawl",
+    "melee"
+   ],
+   "triggers": [],
+   "slayer": null,
+   "universalToAllUnits": true,
+   "intent": "The attack EVERY PLAYER UNIT has — ruled 2026-08-25, confirming the 2026-08-22 Brawler ruling. Universal: no kit grants it and no row lists it, because a per-row flag would be a second source for one fact. Brawler reads its brawl tag. Damage soft.",
+   "source": "authored 2026-08-25 — the universal punch the Brawler ruling required"
+  },
+  {
+   "id": "attack.lumberjack-axe.chop",
+   "name": "Chop",
+   "range": "melee",
+   "stat": "strength",
+   "damage": 1,
+   "stamina": 1,
+   "accuracy": 0,
+   "crit": 0,
+   "hits": 1,
+   "targets": "one enemy in melee reach",
+   "damageType": "physical",
+   "tags": [
+    "axe",
+    "melee"
+   ],
+   "triggers": [
+    {
+     "hook": "onHit",
+     "chance": 20,
+     "effect": "apply 2 Bleed"
+    }
+   ],
+   "slayer": null,
+   "source": "dictated 2026-08-25 (Lumberjack)"
+  },
+  {
+   "id": "attack.lumberjack-axe.cleave",
+   "name": "Cleave",
+   "range": "melee",
+   "stat": "strength",
+   "damage": 2,
+   "stamina": 2,
+   "accuracy": 0,
+   "crit": 20,
+   "hits": 1,
+   "targets": "an adjacent hex and one hex adjacent to both you and it",
+   "damageType": "physical",
+   "tags": [
+    "axe",
+    "melee",
+    "area"
+   ],
+   "triggers": [],
+   "slayer": null,
+   "source": "dictated 2026-08-25 (Lumberjack) — attack 2 hexes; the two-hex sweep shape already exists"
+  }
+ ],
  "enchants": [],
  "specialties": [],
  "statuses": [

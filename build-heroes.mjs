@@ -437,6 +437,8 @@ for(const h of heroes){
     if(sb.kit) h.kit=sb.kit;
     if(sb.authoredTriggers) h.authoredTriggers=[...(h.authoredTriggers||[]), ...sb.authoredTriggers.map(x=>({...x,authored:true}))];
     if(sb.survivalReward) h.survivalReward=sb.survivalReward;
+    if(sb.grantsTactics){ h.grantsTactics=sb.grantsTactics; h.grantsTacticsNote=sb.grantsTacticsNote; }
+    if(sb.startOfBattleDraw) h.startOfBattleDraw=sb.startOfBattleDraw;
     h.notes.push('Stat block dictated 2026-08-25: '+sb.why);
   }
   for(const [id,a] of Object.entries(CR.art||{})){
@@ -446,6 +448,14 @@ for(const h of heroes){
     const p='art/heroes/'+a.slug+'/card/l1.png';
     if(!fs.existsSync('../'+p)){problems.push('civilian-rulings: '+p+' not on disk');continue;}
     h.art=p; h.artSlug=a.slug; h.artMissing=undefined;
+    // and everything else the slug folder holds — hex tokens and animations. Without this,
+    // 21 hex cutouts sat on disk while the manifest showed one card variant per civilian.
+    { const hx='../art/heroes/'+a.slug+'/hex';
+      if(fs.existsSync(hx)){ const f=fs.readdirSync(hx).filter(x=>/\.(png|jpe?g)$/i.test(x));
+        if(f.length) h.hexArt=f.map(x=>'art/heroes/'+a.slug+'/hex/'+x).sort(); }
+      const an='../art/heroes/'+a.slug+'/anim';
+      if(fs.existsSync(an)){ const f=fs.readdirSync(an).filter(x=>/\.mp4$/i.test(x));
+        if(f.length) h.anim=f.map(x=>'art/heroes/'+a.slug+'/anim/'+x).sort(); } }
   }
 }
 
