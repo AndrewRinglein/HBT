@@ -959,6 +959,23 @@ if(D.bestiary && D.bestiary.length){
   if(!D.xpByTier) add('xp-by-tier-is-missing','bestiary','tier 1/2/3 = 2/5/15 XP, ruled 2026-08-23');
 }
 
+// R34 AN ENCOUNTER NAMES ONLY UNITS THAT EXIST. Ruled 2026-08-25 with the prologue
+// battles: a spawn or setup id that resolves to nothing is the dangling-reference bug in a
+// new coat — it reads as content and produces an empty hex. Civilian objectives are hero
+// rows, enemies are bestiary rows; both are checked.
+if(D.encounters){
+  const ids=new Set([...(D.bestiary||[]).map(u=>u.id), ...((D.heroes||{}).heroes||[]).map(h=>h.id)]);
+  for(const b of (D.encounters.prologue||[])){
+    const refs=[...(b.setup||[]), ...(b.schedule||[]).flatMap(s=>s.spawn||[])];
+    for(const r of refs){ if(r.unit && !ids.has(r.unit))
+      add('encounter-names-a-unit-that-does-not-exist', b.id, r.unit); if(r.heroes) continue; }
+    for(const s of (b.schedule||[])) if(s.phase==null && s.enemyPhase==null && !s.event)
+      add('encounter-schedule-entry-has-no-clock', b.id, JSON.stringify(s).slice(0,60));
+  }
+  for(const b of (D.encounters.prologue||[])) if(JSON.stringify(b).match(/\"turn\"/i))
+    add('encounter-says-turn', b.id, 'the schedule clock is PHASES — ruled 2026-08-23');
+}
+
 const by={}; F.forEach(f=>(by[f.rule]=by[f.rule]||[]).push(f));
 for(const [r,list] of Object.entries(by).sort((a,b)=>b[1].length-a[1].length)){
   console.log('\n### '+r+'  ('+list.length+')');
