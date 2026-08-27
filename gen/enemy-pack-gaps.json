@@ -147,6 +147,51 @@
    "needs": "kit unresolved"
   },
   {
+   "unit": "alpha-oathblade",
+   "what": "attack.halberd.hack onDamage: \"push the target 1 hex directly away from you\"",
+   "needs": "trigger shape unparsed"
+  },
+  {
+   "unit": "alpha-oathblade",
+   "what": "attack.halberd.cleave targets 'an adjacent hex and the two hexes adjacent to both' — lands SINGLE-TARGET",
+   "needs": "area attack shape"
+  },
+  {
+   "unit": "alpha-sky-pirate",
+   "what": "attack.javelin.stab crit 3",
+   "needs": "attack field: crit (no AttackDef slot)"
+  },
+  {
+   "unit": "alpha-sky-pirate",
+   "what": "attack.dagger.stab crit 5",
+   "needs": "attack field: crit (no AttackDef slot)"
+  },
+  {
+   "unit": "alpha-dusk-hawk",
+   "what": "attack.shortbow.quick-shot crit 5",
+   "needs": "attack field: crit (no AttackDef slot)"
+  },
+  {
+   "unit": "alpha-air-mage",
+   "what": "item.lightning-staff grants power.lightning-staff.storm",
+   "needs": "item power — no AbilityDef conversion"
+  },
+  {
+   "unit": "alpha-lucius",
+   "what": "item.holy-symbol grants power.holy-symbol.heal",
+   "needs": "item power — no AbilityDef conversion"
+  },
+  {
+   "unit": "alpha-osric",
+   "what": "attack.longsword.stab crit 3",
+   "needs": "attack field: crit (no AttackDef slot)"
+  },
+  {
+   "unit": "alpha-osric",
+   "what": "item.knight-shield grants power.knight-shield.block",
+   "needs": "item power — no AbilityDef conversion"
+  },
+  {
    "unit": "hero.fixed.orphans",
    "what": "stat 'crit' 20",
    "needs": "stat: crit (no UnitDef field)"

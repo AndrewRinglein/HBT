@@ -1341,5 +1341,198 @@
   ],
   "_movesNote": "moves are derived from the class bonusMove in gen/classes.json, ruled 2026-08-21: Warrior Leap, Rogue/Ranger Side Roll, Paladin Sidestep, Mage Focus, Priest Devotion, Civilian/Beast none. Corrected 2026-08-21 - the cohort had been carrying the pre-rebuild assignment where nearly everyone got Sidestep. audit.mjs enforces the match, so restoring the old values will fail the build.",
   "_copyOfNote": "Lucius and Osric were tutorial heroes. The tutorial path was cut 2026-08-21 - its 96 rows were 24 heroes duplicated across their own level art - so they now copy the eve-base heroes that own those pictures. The cohort still covers six classes."
+ },
+ "alphaTeam": {
+  "note": "THE ALPHA TEAM, dictated 2026-08-27: \"take those heroes and make them the way they are supposed to actually be in content\" — the test cohort rebuilt on the real scaffolding. Same stat bodies (copied from testCohort, which copied live heroes 2026-08-20), one hero per class, but armed through kit -> authored items -> authored attack rows instead of the engine's six PROVISIONAL attacks. Test-only statuses translated into the vocabulary: ward->protection, hobble->slow, enfeeble->weak. Punch arrives via universalToAllUnits, never listed. Movement powers are derived from class by the converter. Clearly differentiated: alpha- typeIds, (ALPHA) names, never ships. Arcane Bolt is NOT carried over — the Air Mage's ability is now the Lightning Staff's, as a real item grant.",
+  "heroes": [
+   {
+    "typeId": "alpha-oathblade",
+    "name": "Oathblade (ALPHA)",
+    "copyOf": "hero.shadows.oathblade.v1",
+    "class": "class.warrior",
+    "ported": {},
+    "derivedBase": {},
+    "kit": [
+     "item.halberd"
+    ],
+    "ai": "melee-aggressive",
+    "triggers": [
+     {
+      "hook": "onTakingDamage",
+      "chance": 100,
+      "effects": [
+       {
+        "effect": "apply a status",
+        "status": "regeneration",
+        "value": 1,
+        "target": "self"
+       }
+      ],
+      "name": "Second Wind"
+     },
+     {
+      "hook": "onDamage",
+      "chance": 20,
+      "effects": [
+       {
+        "effect": "apply a status",
+        "status": "stun",
+        "value": 1,
+        "target": "target"
+       }
+      ],
+      "name": "Stagger"
+     },
+     {
+      "hook": "onTakingDamage",
+      "chance": 50,
+      "effects": [
+       {
+        "effect": "apply a status",
+        "status": "protection",
+        "value": 1,
+        "target": "self"
+       }
+      ],
+      "name": "Brace"
+     },
+     {
+      "hook": "onAttack",
+      "chance": 100,
+      "effects": [
+       {
+        "effect": "apply a status",
+        "status": "bleed",
+        "value": 2,
+        "target": "target"
+       }
+      ],
+      "name": "Oath of Blood"
+     }
+    ]
+   },
+   {
+    "typeId": "alpha-sky-pirate",
+    "name": "Sky Pirate (ALPHA)",
+    "copyOf": "hero.skyship.sky-pirate.v1",
+    "class": "class.rogue",
+    "ported": {},
+    "derivedBase": {},
+    "kit": [
+     "item.javelin",
+     "item.dagger"
+    ],
+    "ai": "melee-aggressive",
+    "triggers": [
+     {
+      "hook": "onDamage",
+      "chance": 100,
+      "effects": [
+       {
+        "effect": "apply a status",
+        "status": "bleed",
+        "value": 1,
+        "target": "target"
+       }
+      ],
+      "name": "Ragged Edge"
+     }
+    ]
+   },
+   {
+    "typeId": "alpha-dusk-hawk",
+    "name": "Dusk Hawk (ALPHA)",
+    "copyOf": "hero.shadows.dusk-hawk.v1",
+    "class": "class.ranger",
+    "ported": {},
+    "derivedBase": {},
+    "kit": [
+     "item.shortbow"
+    ],
+    "ai": "ranged-kite",
+    "triggers": [
+     {
+      "hook": "onHit",
+      "chance": 20,
+      "effects": [
+       {
+        "effect": "apply a status",
+        "status": "slow",
+        "value": 1,
+        "target": "target"
+       }
+      ],
+      "name": "Pin"
+     }
+    ]
+   },
+   {
+    "typeId": "alpha-air-mage",
+    "name": "Air Mage (ALPHA)",
+    "copyOf": "hero.fixed.air-mage",
+    "class": "class.mage",
+    "ported": {},
+    "derivedBase": {},
+    "kit": [
+     "item.lightning-staff"
+    ],
+    "ai": "ranged-kite",
+    "triggers": [
+     {
+      "hook": "onHit",
+      "chance": 20,
+      "effects": [
+       {
+        "effect": "apply a status",
+        "status": "weak",
+        "value": 1,
+        "target": "target"
+       }
+      ],
+      "name": "Dampen"
+     },
+     {
+      "hook": "onTakingDamage",
+      "chance": 100,
+      "effects": [
+       {
+        "effect": "apply a status",
+        "status": "protection",
+        "value": 3,
+        "target": "self"
+       }
+      ],
+      "name": "Arcane Ward"
+     }
+    ]
+   },
+   {
+    "typeId": "alpha-lucius",
+    "name": "Lucius (ALPHA)",
+    "copyOf": "hero.base.priest-scantily",
+    "class": "class.priest",
+    "ported": {},
+    "derivedBase": {},
+    "kit": [
+     "item.holy-symbol"
+    ],
+    "ai": "ranged-kite",
+    "triggers": []
+   },
+   {
+    "typeId": "alpha-osric",
+    "name": "Osric (ALPHA)",
+    "copyOf": "hero.base.paladin-shiney",
+    "class": "class.paladin",
+    "ported": {},
+    "derivedBase": {},
+    "kit": [
+     "item.longsword",
+     "item.knight-shield"
+    ],
+    "ai": "melee-aggressive",
+    "triggers": []
+   }
+  ]
  }
 }
