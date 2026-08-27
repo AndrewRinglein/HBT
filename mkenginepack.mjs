@@ -172,8 +172,13 @@ for (const id of [...fielded].sort()) {
 // I make here. Heroes PAY attack stamina (the hero throttle).
 const KITS = JSON.parse(fs.readFileSync('gen/kits.json', 'utf8'));
 const SITEMS = JSON.parse(fs.readFileSync('gen/settled-items.json', 'utf8'));
-const ITEM_BY_ID = new Map(SITEMS.items.map((i) => [i.id, i]));
-const SATTACK_BY_ID = new Map(SITEMS.attacks.map((a) => [a.id, a]));
+const SETTLED = JSON.parse(fs.readFileSync('settled.json', 'utf8'));
+// settled.json is the SECOND authored source of items and attacks (the Lumberjack's Axe
+// and its Chop/Cleave rows live there, with the universal Punch). The converter read only
+// settled-items.json and reported the axe as unauthored — a false gap, corrected 2026-08-27.
+// settled-items rows win on an id collision (they are the older, engine-facing shapes).
+const ITEM_BY_ID = new Map([...(SETTLED.items || []), ...SITEMS.items].map((i) => [i.id, i]));
+const SATTACK_BY_ID = new Map([...(SETTLED.attacks || []), ...SITEMS.attacks].map((a) => [a.id, a]));
 const PARTY = ['hero.base.ranger-aggressive', 'hero.base.warrior-iron', 'hero.base.priest-armored'];
 
 // The class half-step, read from the Codex movementAction rows — never hardcoded.
@@ -190,7 +195,6 @@ const movesForClass = (cls) => {
   walkP(SETTLED.powers);
   return [...new Set(out)];
 };
-const SETTLED = JSON.parse(fs.readFileSync('settled.json', 'utf8'));
 
 const allHeroes = [];
 (function wh(o) { if (Array.isArray(o)) o.forEach(wh); else if (o && typeof o === 'object') { if (o.id && String(o.id).startsWith('hero.') && o.ported) allHeroes.push(o); else Object.values(o).forEach(wh); } })(D.heroes);

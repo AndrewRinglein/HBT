@@ -162,11 +162,6 @@
    "needs": "stat: crit (no UnitDef field)"
   },
   {
-   "unit": "hero.fixed.lumberjack-and-wife",
-   "what": "kit item item.lumberjack-axe has no settled-items row",
-   "needs": "content: item unauthored"
-  },
-  {
    "unit": "hero.fixed.farmer",
    "what": "stat 'crit' 3",
    "needs": "stat: crit (no UnitDef field)"
