@@ -249,13 +249,14 @@ for (const id of PARTY) {
 }
 
 // ── THE CIVILIANS (content.civilians, 2026-08-26) ───────────────────────────
-// RULED: "we have a plan for a number of initial civilians, and they do
-// things. They're just like the other heroes." Ordinary hero rows, dictated
-// kits (civilian-rulings 2026-08-25). Civilians carry staminaMax 0 — they opt
-// out of the hero throttle like enemies do, so the pool-less rule zeroes
-// their attack stamina. The Lumberjack's axe grants attacks that exist only
-// as NAMES (no authored rows) — he fields weaponless with a named gap, the
-// shadow-hound-puppy precedent: a showcase shows what the game currently IS.
+// RULED (twice, 2026-08-26): "they do things. They're just like the other
+// heroes" — and, correcting this converter's first reading, "civilians are
+// EXACTLY like heroes." Stamina included: the rows' derived staminaMax 0 is
+// stale derivation, overridden by the documented level-1 hero baseline
+// (COMBAT-DESIGN.md:461, "Level-1 hero: Max 5, Regen 1" — copied, not
+// invented), and attacks cost what their rows author. The Lumberjack's axe
+// grants attacks that exist only as NAMES (no authored rows) — he fields
+// weaponless with a named gap, the shadow-hound-puppy precedent.
 const CIVILIANS = ['hero.fixed.orphans', 'hero.fixed.lumberjack-and-wife', 'hero.fixed.farmer'];
 for (const id of CIVILIANS) {
   const h = allHeroes.find((x) => x.id === id);
@@ -276,10 +277,9 @@ for (const id of CIVILIANS) {
         id: a.id, name: a.name, kind: ranged ? 'ranged' : 'melee',
         damageType: a.damageType || 'physical',
         bonus: a.damage ?? 0, stat: a.stat || 'strength',
-        // The pool-less rule: a unit with no stamina pool pays nothing — the
-        // same principle that keeps enemies swinging (stamina is the hero
-        // throttle). Civilians are authored at staminaMax 0.
-        reach: ranged ? a.range : 1, staminaCost: 0,
+        // Civilians are EXACTLY like heroes (ruled 2026-08-26): they pay
+        // what the attack row authors.
+        reach: ranged ? a.range : 1, staminaCost: a.stamina ?? 0,
       };
       attackIds.push(a.id);
     }
@@ -291,7 +291,9 @@ for (const id of CIVILIANS) {
     strength: p2.strength ?? 0, precision: p2.precision ?? 0, magic: p2.magic ?? 0, spirit: p2.spirit ?? 0,
     role: anyRanged ? 'ranged' : 'melee',
     movement: d2.movement, reach: p2.reach ?? 0,
-    maxStamina: 0, staminaRegen: 0,
+    // The level-1 hero baseline (COMBAT-DESIGN.md:461) — the rows' derived 0
+    // is stale and the ruling says exactly-like-heroes.
+    maxStamina: 5, staminaRegen: 1,
     ai: anyRanged ? 'ranged-kite' : 'melee-aggressive',
     attacks: attackIds, abilities: [],
     // "Beasts and Civilians get neither" half-step (Codex 2026-08-21).
