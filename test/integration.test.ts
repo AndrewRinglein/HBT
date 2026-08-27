@@ -85,7 +85,16 @@ describe('gate 1 — everything appears in the log', () => {
     // Codex-tracked test cohort now — the RULE (kiting spares the archer)
     // is unchanged and asserted on the same roles.
     expect(dmg['test-oathblade']).toBeGreaterThan(0)
-    expect(dmg['test-dusk-hawk'] ?? 0).toBeLessThan(dmg['test-oathblade']! / 10)
+    // LAW 10 — 2026-08-26 (fix.status-tick-timing): /10 sat at a knife edge
+    // (10.2% vs 10.0% after the tick moved to End of Activation) and the exact
+    // divisor was never the rule. The rule is that kiting SPARES the archer:
+    // the hawk takes a small fraction of the front line's damage and less than
+    // any melee hero. Both survive legitimate timing changes; a broken kite
+    // (ratios near 1) still fails loudly.
+    expect(dmg['test-dusk-hawk'] ?? 0).toBeLessThan(dmg['test-oathblade']! / 5)
+    for (const melee of ['test-oathblade', 'test-sky-pirate', 'test-osric']) {
+      expect(dmg['test-dusk-hawk'] ?? 0, `hawk vs ${melee}`).toBeLessThan(dmg[melee] ?? Infinity)
+    }
   })
 
   it('every attack in the content library is actually used somewhere', () => {

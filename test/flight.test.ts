@@ -117,8 +117,23 @@ describe('landing is real', () => {
     beginActivation(ctx, d.id, 'test')
     executeFlight(ctx, d.id, hexId(3, 4), MOVES['power.flight']!)   // land IN the band
     expect(valueOf(d, 'status.burn'), 'the touchdown itself is not an entry beat').toBe(0)
+    const hpBefore = d.hp
     endOfActivation(ctx, d.id)
-    expect(valueOf(d, 'status.burn'), 'standing there at End of Activation is').toBe(1)
+    // LAW 10 — 2026-08-26 (fix.status-tick-timing): the EoA ladder now ends
+    // with the unit's own status tick, so the landing burn catches (applies 1),
+    // COOKS (deals its damage this very activation — "catch before you cook"),
+    // and decays to 0 in the same ladder run. The claim under test is
+    // unchanged: the landing hex is a hex like any other and its EoA rung
+    // fires. The evidence moves from a lingering value to the event trail.
+    expect(ctx.events.some((e) => e.type === 'status.applied'
+      && e['statusId'] === 'status.burn' && e.causeId === 'terrain.burning'),
+      'the landing hex must apply its burn').toBe(true)
+    // The drake carries Resist 1, and the ruled tick-resist (2026-08-20) says
+    // per-tick damage = max(0, value − Resist) — so this 1-burn tick deals 0
+    // to THIS unit, correctly. A resisted status still runs its full clock:
+    // the tick happened (the value decayed), the damage was blanked by Resist.
+    expect(hpBefore - d.hp, 'Resist 1 blanks a 1-burn tick').toBe(0)
+    expect(valueOf(d, 'status.burn'), 'and it still decays on its own clock').toBe(0)
   })
 
   it('flight costs its stamina and one movement slot, and the point store never goes negative', () => {

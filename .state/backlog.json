@@ -1332,5 +1332,20 @@
     "needs": [
       "encounter.battle-2"
     ]
+  },
+  {
+    "id": "fix.status-tick-timing",
+    "kind": "engine",
+    "shape": "rule",
+    "spec": "RULED 2026-08-26 (DECISIONS.md, verbatim): statuses resolve at the end of each unit's ACTIVATION, not at End of Phase — damage, healing, decay, expiry. Seen in a replay: zombies crossed embers, and every burn tick queued up to fire one at a time at phase end instead of at each zombie's own activation end. The tick becomes an End-of-Activation rung, per unit, after the terrain strips/applies (the water promise holds per-activation); a unit can die at the end of its own activation; each unit still ticks once per Turn. Bleed-out is not a status and stays at End of Hero Phase (2026-08-15). Surge ordering (2026-08-21) re-affirmed: the ladder runs once, after the surge loop.",
+    "expect": "a zombie that crosses embers takes its burn at ITS activation end and can die there; the phase-end ladder no longer ticks statuses; the canonical 5-poison-vs-2-resist walk still reads 3,2,1,0,0 across five of that unit's activations",
+    "changesBaseline": true,
+    "needs": [],
+    "probeIds": [
+      "status.burn",
+      "status.poison"
+    ],
+    "status": "done-needs-review",
+    "sha": "3d902a9"
   }
 ]

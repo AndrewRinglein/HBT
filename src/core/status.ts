@@ -188,25 +188,38 @@ export function spendAbsorb(ctx: Ctx, unitId: number, amount: number, causeId: s
 }
 
 /**
- * The End of Phase status pass, for one side. ONE loop, not two.
- * Every status acts if it has an onPhaseEnd, then loses `decayPerPhase` (default 1).
- * Order is unit id then status id — never insertion order — so results never
- * depend on the order things happened to be applied.
+ * ONE unit's status pass — damage, healing, decay, expiry, in status-id order
+ * (Law 6: never insertion order).
+ *
+ * RULED 2026-08-26 (DECISIONS.md): this runs at the END OF THE UNIT'S OWN
+ * ACTIVATION, not at End of Phase. Seen in a replay: zombies crossed embers
+ * and every burn queued up to fire one at a time at phase end — "statuses are
+ * supposed to resolve at the end of each unit's activation... a unit can die
+ * at the end of its activation." The hooks keep their historical names
+ * (onPhaseEnd / decayPerPhase) for now — renaming the StatusDef surface is a
+ * follow-up, not smuggled into a timing fix.
+ */
+export function tickUnitStatuses(ctx: Ctx, unitId: number): void {
+  const u = unit(ctx, unitId)
+  if (u.lifeState !== 'standing' || u.statuses.length === 0) return
+  for (const s of [...u.statuses].sort((a, b) => (a.id < b.id ? -1 : 1))) {
+    const def = ctx.statuses[s.id]
+    if (!def) continue
+    if (u.lifeState !== 'standing') break
+    def.onPhaseEnd?.(ctx, unitId, s.value)
+    const decay = def.decayPerPhase ?? 1
+    if (decay > 0) reduceStatus(ctx, unitId, s.id, decay, s.id)
+  }
+}
+
+/**
+ * The old per-side End of Phase pass, kept ONLY as a helper over the per-unit
+ * tick (tests use it to advance a clock). The battle loop no longer calls it —
+ * the tick lives on the End of Activation ladder (ruled 2026-08-26).
  */
 export function tickStatuses(ctx: Ctx, side: Side): void {
   const ids = ctx.state.units
     .filter((u) => u.side === side && u.lifeState === 'standing' && u.statuses.length > 0)
     .map((u) => u.id).sort((a, b) => a - b)
-
-  for (const id of ids) {
-    const u = unit(ctx, id)
-    for (const s of [...u.statuses].sort((a, b) => (a.id < b.id ? -1 : 1))) {
-      const def = ctx.statuses[s.id]
-      if (!def) continue
-      if (u.lifeState !== 'standing') break
-      def.onPhaseEnd?.(ctx, id, s.value)
-      const decay = def.decayPerPhase ?? 1
-      if (decay > 0) reduceStatus(ctx, id, s.id, decay, s.id)
-    }
-  }
+  for (const id of ids) tickUnitStatuses(ctx, id)
 }

@@ -251,7 +251,12 @@ function rangedKite(ctx: Ctx, u: Unit): void {
   if (enemies.length === 0) return
 
   const bow = ctx.attacks[u.attacks[0]!]!
-  const RESERVE = 1 // keep one stamina for the shot — the shot is the point
+  // Keep one stamina for the shot — the shot is the point. But ONLY for units
+  // that run stamina at all: enemies carry maxStamina 0 (the hero throttle,
+  // 2026-08-21), and reserving 1 from a pool of 0 froze every ranged enemy on
+  // its deploy hex forever. Found 2026-08-26 by the first ranged enemies ever
+  // fielded (the imps and the necromancer stood on row 0 doing nothing).
+  const RESERVE = u.maxStamina > 0 ? 1 : 0
 
   // Reach if this unit were standing there. A shadow copy runs the real reachOf()
   // rather than the AI re-deriving terrain itself — Law 1, and it means a new

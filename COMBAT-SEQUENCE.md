@@ -101,8 +101,8 @@ The ladder is an **ordered list of named rungs supplied by config**, not six har
 |---|---|---|
 | 1 | Auras resolve their end-of-phase effects on heroes still inside them | *not yet* — there is no aura type |
 | 2 | Corpse effects for heroes standing on a corpse | *not yet* — nothing leaves a corpse |
-| 3 | Hero statuses tick — poison, burn, regeneration, weakness, stun → **settle** | **yes** *(only poison exists as content)* |
-| 4 | Hero durations tick down — protection, buffs, debuffs | **half** — `StatMod.expiresAtTurn` is filtered lazily on read; nothing counts down and no expiry is emitted |
+| 3 | ~~Hero statuses tick~~ — **MOVED to the End of Activation ladder.** RULED 2026-08-26 (DECISIONS.md, verbatim from a replay finding): *"statuses are supposed to resolve at the end of each unit's activation... a unit can die at the end of its activation."* The phase ladder no longer touches statuses | **removed** |
+| 4 | Hero durations tick down — travel with the per-activation status pass; `StatMod.expiresAtTurn` is filtered lazily on read | **half** |
 | 4b | **Bleed-out counters advance on downed heroes → settle** | **yes** — hero phase only |
 | 5 | Hero stamina regen | **yes** |
 | 6 | Victory check | **yes** |
@@ -216,8 +216,9 @@ movement-and-action cycle.
 
 | # | Rung | Built? |
 |---|---|---|
-| 1 | Standing on a hex carrying a terrain status → **gain a stack** | *not yet* — terrain layer 2 does not exist |
+| 1 | Standing on a hex carrying a terrain status → **gain a stack** (strips first, then applies) | **yes** — the two-beat rhythm since 2026-08-20 |
 | 2 | `onActivationEnd` triggers fire | *not yet* — **the hook exists and is never called.** `fireTriggers(ctx, 'onActivationEnd', …)` appears nowhere in `src/` |
+| 3 | **THE STATUS TICK** — damage, healing, decay, expiry, per unit → **settle** | **yes** — RULED 2026-08-26, moved here from End of Phase. Runs after the terrain rungs (reach water and Burn is shed before it deals this activation's damage; stand on embers and you catch before you cook). A unit can die at the end of its own activation. When Surge lands, the whole ladder waits for the surge loop (2026-08-21): a surged unit never ticks twice |
 
 Rung 1 is the second of the two applications: once on entering during movement, once here. Move through a fire hex and you took one stack. Move onto it and stop, and you took two. **"Stop" means where you finally stop** — a hero who surges and moves on has not stopped. The statuses themselves don't tick until End of Phase.
 

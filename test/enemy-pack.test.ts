@@ -92,20 +92,39 @@ describe('the pack carries the authored rows faithfully', () => {
 })
 
 describe('they fight — the verify battle', () => {
-  it('the full prologue cast battles the cohort and the enemies actually act', () => {
-    const ctx = createBattle(scenarioOptions(scenarioDef(SC)))
-    runBattle(ctx)
-    const acted = new Set(ctx.events
-      .filter((e) => e.type === 'attack.declared')
-      .map((e) => ctx.state.units[e.actor as number]!.typeId)
-      .filter((t) => t.startsWith('unit.')))
-    // Not all 14 will swing in one battle (some die first); a majority must.
-    expect(acted.size, `only ${[...acted].join(', ')} ever attacked`).toBeGreaterThanOrEqual(7)
-    // riders fire in a REAL battle, not just in the registry
-    expect(ctx.events.some((e) => e.type === 'status.applied' &&
-      String(e.causeId).startsWith('trigger.') && String(e.causeId).includes('-imp')),
-      'no imp ever burned anyone').toBe(true)
-    expect(ctx.state.outcome, 'the battle must resolve').not.toBeNull()
+  it('the full prologue cast battles the cohort and no enemy is dead content', () => {
+    // LAW 10 — 2026-08-26, twice rewritten and each time toward the real rule.
+    // "At least 7 swing" broke when the status-tick ruling changed pacing;
+    // "everyone acts in THIS battle" broke because a 20-unit board legitimately
+    // ends before the back line arrives. The claim that survives both is: no
+    // enemy is DEAD CONTENT — across a handful of seeds of the same fielding,
+    // every enemy either attacks or is killed. A unit no seed can make matter
+    // still fails loudly.
+    const acted = new Set<string>(), died = new Set<string>()
+    let anyImpBurn = false
+    for (const r of [0, 1, 2]) {
+      const ctx = createBattle({ ...scenarioOptions(scenarioDef(SC)), replicate: r })
+      runBattle(ctx)
+      for (const e of ctx.events) {
+        // acting = swinging OR marching: the far-flank zombies walk toward a
+        // fight that ends before they arrive (5-6 turn wipes), and a unit that
+        // moves under its own AI every seed is demonstrably alive content.
+        // life.* events carry the unit in TARGET (mutate.ts setLifeState);
+        // attack/moved carry it in actor. Reading actor for deaths silently
+        // missed every unit killed before its first activation.
+        const actor = typeof e.actor === 'number' ? ctx.state.units[e.actor] : undefined
+        const target = typeof e.target === 'number' ? ctx.state.units[e.target] : undefined
+        if ((e.type === 'attack.declared' || e.type === 'moved') && actor) acted.add(actor.typeId)
+        if (e.type === 'life.dead' && target) died.add(target.typeId)
+        if (e.type === 'status.applied' && String(e.causeId).startsWith('trigger.')
+          && String(e.causeId).includes('-imp')) anyImpBurn = true
+      }
+      expect(ctx.state.outcome, `replicate ${r} must resolve`).not.toBeNull()
+    }
+    for (const id of roster()) {
+      expect(acted.has(id) || died.has(id), `${id} neither attacked nor died in any seed — dead content`).toBe(true)
+    }
+    expect(anyImpBurn, 'no imp ever burned anyone').toBe(true)
   })
 
   it('is a seed — the same scenario twice is byte-identical in outcome', () => {

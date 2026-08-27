@@ -6,7 +6,7 @@ import { runActivation } from '../ai/modes.js'
 import { beginActivation, beginTurn, emit, endActivation, regenStamina, setOutcome, setPhase } from './mutate.js'
 import { appliesOnActivationEndOf, stripsOnActivationEndOf, terrainIdOf } from '../content/maps.js'
 import { advanceBleedOuts, checkVictory, settle } from './settle.js'
-import { applyStatus, isBlocked, reduceStatus, tickStatuses } from './status.js'
+import { applyStatus, isBlocked, reduceStatus, tickUnitStatuses } from './status.js'
 import type { Ctx, Phase, Side } from './types.js'
 
 function activationOrder(ctx: Ctx, side: Side): number[] {
@@ -70,7 +70,16 @@ export function endOfActivation(ctx: Ctx, unitId: number): void {
   for (const sid of strips) reduceStatus(ctx, unitId, sid, 1, terrainIdOf(t))
   const applies = appliesOnActivationEndOf(t)
   for (const [sid, n] of applies) applyStatus(ctx, unitId, sid, n, terrainIdOf(t))
-  if (strips.length === 0 && applies.length === 0) return
+  // Rung 3 — THE STATUS TICK, moved here from End of Phase (RULED 2026-08-26:
+  // "statuses are supposed to resolve at the end of each unit's activation...
+  // a unit can die at the end of its activation"). Runs AFTER the terrain
+  // rungs, so the water promise holds per-activation: reach the river and the
+  // Burn is shed before it deals this activation's damage — and stand on the
+  // embers and you catch before you cook. Each unit still ticks exactly once
+  // per Turn; the timing moved, not the frequency. When Surge lands, the
+  // whole ladder — this rung included — waits for the surge loop to finish
+  // (2026-08-21): a surged unit never ticks twice.
+  tickUnitStatuses(ctx, unitId)
   settle(ctx, terrainIdOf(t))
 }
 
@@ -79,11 +88,10 @@ function endOfPhase(ctx: Ctx, side: Side): void {
   emit(ctx, 'phase.end.begin', 'engine', { side })
 
   // 1. auras  2. corpses — none yet
-  // 3. status ticks
-  tickStatuses(ctx, side)
-  settle(ctx, 'status')
+  // 3. status ticks — MOVED to the End of Activation ladder (ruled 2026-08-26;
+  //    see endOfActivation above). The phase ladder no longer touches statuses.
   if (ctx.state.outcome) return
-  // 4. durations — folded into the single status pass above (see status.ts)
+  // 4. durations — travel with the per-activation status pass (see status.ts)
   // 4b. bleed-out. Angela 2026-08-15: the counter advances at End of Hero Phase,
   //     and only there — not at Start of Turn, and not on the enemy phase. So a
   //     downed hero's five ticks are five HERO phases, which is the window a

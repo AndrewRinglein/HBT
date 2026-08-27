@@ -849,3 +849,35 @@ first-of-class at tier 0: Hunter (hero.base.ranger-aggressive), Iron Dwarf
 (hero.base.warrior-iron), Battle Chaplain (hero.base.priest-armored). The
 picks are mine under his constraint and are cheap to swap; the constraint is
 his and is not.
+
+---
+
+## 2026-08-26 — statuses resolve at the end of each unit's ACTIVATION, not the phase
+
+> "In watching a replay, I have noticed that the end of the total phase is when
+> status damage is being applied, and it is supposed to be at the end of an
+> activation. What I see in one of these battle maps is a bunch of zombies
+> walking onto fiery terrain. I can see in the visual playback the application
+> of the burn. Then the enemy phase continues, and at the end of the enemy
+> phase, I'm seeing all the burn get applied to the zombies one at a time at
+> the end of the total phase (not at the end of their individual activation).
+> Statuses are supposed to resolve at the end of each unit's activation. This
+> means: end turn effects, healing effects, status damage, lowering of status,
+> application of immunity, things that are supposed to wear off by a time
+> clock. This is important because a unit can die at the end of its activation.
+> Also, Surge skips all of the other end-of-turn effects, healing effects, and
+> status effects. Surge is tested first because if you get a Surge, you get to
+> do more things, but you don't take damage from status twice."
+
+Supersedes the End-of-Phase ladder's rung 3 ("Hero statuses tick — poison,
+burn, regeneration... at End of Phase"), which was the design as written in
+COMBAT-SEQUENCE.md — the engine implemented the document faithfully and the
+document was wrong. The status tick (damage, healing/regeneration, decay,
+expiry) is a rung of the END OF ACTIVATION ladder, per unit, after the terrain
+strips/applies. Consequences: a unit can die at the end of its own activation
+(settle runs there); the water promise ("reach water and Burn is shed BEFORE
+it ticks") now holds per-activation; the Surge ordering already ruled on
+2026-08-21 (surge check BEFORE the EoA ladder, ladder runs ONCE) is re-affirmed
+— a surged unit never ticks twice. Each unit still ticks exactly once per Turn;
+the timing moves, not the frequency. Bleed-out is NOT a status and stays at
+End of Hero Phase per the 2026-08-15 ruling.
