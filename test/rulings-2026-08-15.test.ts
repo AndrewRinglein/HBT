@@ -55,8 +55,9 @@ describe('ranged attacks and adjacency (Angela 2026-08-15)', () => {
     const ctx = board(false)
     const acc = resolveAccuracy(ctx, ctx.state.units[0]!, ctx.state.units[1]!, ctx.attacks['attack.ranger.bow']!)
     expect(acc.ledger.some((r) => r.name === 'ADJACENT')).toBe(false)
-    // ranger 90, four hexes = −15, nothing else on open ground
-    expect(acc.value).toBe(75)
+    // ranger 90, four hexes = −5 under the 2026-08-26 grace window (Law 10:
+    // was −15 when the penalty started past the first hex)
+    expect(acc.value).toBe(85)
   })
 
   it('the penalty reads the SHOOTER\'s surroundings, not the target\'s distance', () => {
@@ -152,6 +153,24 @@ describe('bleed-out (Angela 2026-08-15)', () => {
       else if (e.type === 'life.dead' && e['reason'] === 'bledOut') {
         expect(ticksBefore.get(e.target!), `unit ${e.target} bled out on the wrong tick`).toBe(5)
       }
+    }
+  })
+})
+
+describe('range grace — ruled 2026-08-26', () => {
+  // "No ranged penalty up to 3 tiles away, and the range penalty starts at
+  // the 4th tile: -5, then -10, then -15." The ledger is the proof surface:
+  // at 2-3 tiles there must be NO RANGE row at all, not a zero-delta one.
+  it('the 4th tile costs -5, the 5th -10, the 6th -15 — and 2-3 are free', () => {
+    for (const [dist, delta] of [[2, 0], [3, 0], [4, -5], [5, -10], [6, -15]] as const) {
+      const ctx = createCustomBattle(
+        [{ type: 'test-dusk-hawk', hex: hexId(1, 8) }],
+        [{ type: 'test-zombie', hex: hexId(1 + dist, 8) }],
+      )
+      const pv = preview(ctx, 0, 1, 'attack.ranger.bow')
+      const row = pv.accLedger.find((r) => r.name === 'RANGE')
+      if (delta === 0) expect(row, `distance ${dist} is inside the grace window`).toBeUndefined()
+      else expect(row?.delta, `distance ${dist}`).toBe(delta)
     }
   })
 })

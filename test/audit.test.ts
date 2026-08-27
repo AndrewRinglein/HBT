@@ -178,7 +178,8 @@ describe('independent audit of logged battles', () => {
             // was always being paid by somebody.
             let acc = at.accuracy
             if (a.kind === 'ranged') {
-              acc -= (d - 1) * 5
+              // range grace of 3 tiles, ruled 2026-08-26 — penalty from the 4th
+              if (d > 3) acc -= (d - 3) * 5
               const me = hex.get(e.actor!)!
               const mySide = side.get(e.actor!)!
               const inMelee = [...standing].some(

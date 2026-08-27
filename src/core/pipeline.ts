@@ -111,7 +111,10 @@ export function resolveAccuracy(ctx: Ctx, attacker: Unit, target: Unit, a: Attac
   }
   v = acc.value
 
-  if (a.kind === 'ranged' && d > 1) v = step(ledger, ACC.RANGE, 'RANGE', a.id, v, v - (d - 1) * 5)
+  // RULED 2026-08-26: "no ranged penalty up to 3 tiles away, and the range
+  // penalty starts at the 4th tile" — 4th is −5, 5th is −10, 6th is −15.
+  // Was −5 per hex past the FIRST; the grace window is now three tiles.
+  if (a.kind === 'ranged' && d > 3) v = step(ledger, ACC.RANGE, 'RANGE', a.id, v, v - (d - 3) * 5)
   // The shooter's own surroundings, not the target's distance. See inMelee().
   if (a.kind === 'ranged' && inMelee(ctx, attacker)) {
     v = step(ledger, ACC.ADJACENT, 'ADJACENT', a.id, v, v - 20)

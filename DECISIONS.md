@@ -881,3 +881,17 @@ it ticks") now holds per-activation; the Surge ordering already ruled on
 — a surged unit never ticks twice. Each unit still ticks exactly once per Turn;
 the timing moves, not the frequency. Bleed-out is NOT a status and stays at
 End of Hero Phase per the 2026-08-15 ruling.
+
+---
+
+## 2026-08-26 — the range penalty starts at the FOURTH tile
+
+> "no ranged penalty up to 3 tiles away, and the range penalty starts at the
+> 4th tile. On the 4th tile, you get -5 accuracy. On the 5th tile, you get
+> -10. On the 6th tile, you get -15."
+
+Supersedes the original RANGE station rule (−5 per hex past the FIRST). The
+formula is −5 × (distance − 3), floor at distance 4 — so 2 and 3 tiles are
+free, 4 is −5, 5 is −10, 6 is −15, and so on linearly. Unchanged by this
+ruling: ranged cannot target an adjacent enemy at all (legality, 2026-08-15),
+and the −20 for firing while YOU are adjacent to an enemy is its own station.

@@ -1347,5 +1347,19 @@
     ],
     "status": "done-needs-review",
     "sha": "3d902a9"
+  },
+  {
+    "id": "fix.range-penalty-grace",
+    "kind": "engine",
+    "shape": "numbers",
+    "spec": "RULED 2026-08-26 (DECISIONS.md verbatim): no ranged penalty up to 3 tiles; from the 4th tile, -5 per tile (-5/-10/-15 at 4/5/6). Was -5 per hex past the first. Legality (no ranged at adjacent) and the shooter-adjacency -20 are separate rules and unchanged.",
+    "expect": "the accuracy ledger shows no RANGE row at distances 2-3, -5 at 4, -10 at 5; the independent auditor recomputes the same numbers across real battles",
+    "changesBaseline": true,
+    "needs": [],
+    "probeIds": [
+      "attack.longbow.shot"
+    ],
+    "status": "done-needs-review",
+    "sha": "bd32761"
   }
 ]

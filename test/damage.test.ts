@@ -80,11 +80,12 @@ describe('FIRST-BATTLE expected numbers', () => {
 })
 
 describe('accuracy stations', () => {
-  it('ranged loses 5 per hex past the first', () => {
+  it('ranged loses 5 per tile from the FOURTH — three tiles of grace (ruled 2026-08-26)', () => {
+    // LAW 10: was "-5 per hex past the first"; the ruling moved the window.
     for (let d = 1; d <= 6; d++) {
       const ctx = createCustomBattle([{ type: 'ranger', hex: hexId(2,5) }], [{ type: 'zombie', hex: hexId(2+d,5) }])
       const acc = resolveAccuracy(ctx, ctx.state.units[0]!, ctx.state.units[1]!, ATTACKS['attack.ranger.bow']!).value
-      expect(acc).toBe(d === 1 ? 90 - 20 : 90 - (d - 1) * 5)
+      expect(acc, `distance ${d}`).toBe(d === 1 ? 90 - 20 : 90 - Math.max(0, d - 3) * 5)
     }
   })
 
