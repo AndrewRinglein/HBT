@@ -199,10 +199,40 @@ const movesForClass = (cls) => {
 const allHeroes = [];
 (function wh(o) { if (Array.isArray(o)) o.forEach(wh); else if (o && typeof o === 'object') { if (o.id && String(o.id).startsWith('hero.') && o.ported) allHeroes.push(o); else Object.values(o).forEach(wh); } })(D.heroes);
 
+
+// Settled-item attack rows carry a THIRD trigger shape — a string effect like
+// "apply 2 Bleed" (Chop, dictated 2026-08-25). Constrained parse, never loose:
+// anything that is not exactly "apply <N> <KnownStatus>" is a named gap. Also
+// names the drops a settled attack row can carry: a crit field (no AttackDef
+// slot) and an area/arc targets clause (the engine attacks one target).
+function settledAttackExtras(a, unitId) {
+  const out = [];
+  for (const t of a.triggers || []) {
+    const m = typeof t.effect === 'string' && t.effect.match(/^apply (\d+) ([A-Za-z]+)$/);
+    const status = m && m[2].toLowerCase();
+    if (m && STATUS_OK.has(status) && TRIG_HOOKS.has(t.hook)) {
+      out.push({
+        id: `trigger.${a.id.replace(/^attack\./, '')}.${status}`,
+        hook: t.hook, chance: t.chance ?? 100, select: 'target',
+        effect: { kind: 'status.apply', statusId: 'status.' + status, value: parseInt(m[1], 10) },
+        source: unitId, onlyWithAttack: a.id,
+      });
+    } else {
+      gap(unitId, `${a.id} ${t.hook}: ${JSON.stringify(t.effect).slice(0, 60)}`, 'trigger shape unparsed');
+    }
+  }
+  if (a.crit) gap(unitId, `${a.id} crit ${a.crit}`, 'attack field: crit (no AttackDef slot)');
+  if ((a.tags || []).includes('area') || /adjacent to both/.test(a.targets || '')) {
+    gap(unitId, `${a.id} targets '${String(a.targets).slice(0, 50)}' — lands SINGLE-TARGET`, 'area attack shape');
+  }
+  return out;
+}
+
 const prologueParty = [];
 for (const id of PARTY) {
   const h = allHeroes.find((x) => x.id === id);
   if (!h) { gap(id, 'named for the prologue party, absent from the Codex', 'content'); continue; }
+  const kitTriggers = [];
   const kit = (KITS.heroKits ?? KITS.heroOverrides ?? {})[id] ?? null;
   const classKit = KITS.classKits[h.class] ?? null;
   let items = null;
@@ -227,7 +257,7 @@ for (const id of PARTY) {
         reach: a.range ?? 1, staminaCost: a.stamina ?? 0, // heroes pay
       };
       attackIds.push(a.id);
-      for (const t of a.triggers || []) authoredAttacks[a.id] && null; // weapon triggers: none on these rows today
+      kitTriggers.push(...settledAttackExtras(a, id));
     }
   }
   const p = h.ported, d = h.derivedBase;
@@ -248,7 +278,7 @@ for (const id of PARTY) {
     moves: movesForClass(h.class),
     attributes: ['hero-eve'],
     tags: ['hero'],
-    triggers: [],
+    triggers: kitTriggers,
   });
 }
 
@@ -268,6 +298,7 @@ for (const id of CIVILIANS) {
   const p2 = h.ported, d2 = h.derivedBase;
   for (const k of ['crit', 'luck']) if (d2[k]) gap(id, `stat '${k}' ${d2[k]}`, 'stat: ' + k + ' (no UnitDef field)');
   const attackIds = [];
+  const civTriggers = [];
   let anyRanged = false;
   for (const itemId of h.kit || []) {
     const it = ITEM_BY_ID.get(itemId);
@@ -286,6 +317,7 @@ for (const id of CIVILIANS) {
         reach: ranged ? a.range : 1, staminaCost: a.stamina ?? 0,
       };
       attackIds.push(a.id);
+      civTriggers.push(...settledAttackExtras(a, id));
     }
   }
   prologueParty.push({
@@ -304,7 +336,7 @@ for (const id of CIVILIANS) {
     moves: ['power.move'],
     attributes: ['civilian'],
     tags: ['hero', 'civilian'],
-    triggers: [],
+    triggers: civTriggers,
   });
 }
 

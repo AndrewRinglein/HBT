@@ -162,6 +162,16 @@
    "needs": "stat: crit (no UnitDef field)"
   },
   {
+   "unit": "hero.fixed.lumberjack-and-wife",
+   "what": "attack.lumberjack-axe.cleave crit 20",
+   "needs": "attack field: crit (no AttackDef slot)"
+  },
+  {
+   "unit": "hero.fixed.lumberjack-and-wife",
+   "what": "attack.lumberjack-axe.cleave targets 'an adjacent hex and one hex adjacent to both you a' — lands SINGLE-TARGET",
+   "needs": "area attack shape"
+  },
+  {
    "unit": "hero.fixed.farmer",
    "what": "stat 'crit' 3",
    "needs": "stat: crit (no UnitDef field)"
