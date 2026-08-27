@@ -325,7 +325,19 @@ const alphaTeam = [];
       }
     }
     for (const a of universals) if (!attackIds.includes(a.id)) takeAttack(a);
-    const p = h.ported, d = h.derivedBase;
+    // STAT BODIES VIA copyOf (fixed 2026-08-27). S31 wrote `ported: {}` and
+    // `derivedBase: {}` on every alphaTeam row and put the real source in
+    // `copyOf` — this block read the empty objects and emitted heroes with no
+    // maxHp/accuracy/movement/maxStamina and strength 0. Resolving copyOf
+    // through the Codex is compilation, not invention: the id names the
+    // source. Settled's own fields still win wherever they actually speak.
+    const base = allHeroes.find((x) => x.id === h.copyOf);
+    if (!base && !(h.ported && h.ported.health)) {
+      gap(id, `copyOf ${h.copyOf} not in the Codex and ported is empty — no stat body`, 'content');
+      continue;
+    }
+    const p = { ...(base?.ported || {}), ...(h.ported || {}) };
+    const d = { ...(base?.derivedBase || {}), ...(h.derivedBase || {}) };
     alphaTeam.push({
       typeId: id, name: h.name, side: 'hero',
       maxHp: p.health, armor: p.armor ?? 0, resist: p.resist ?? 0,
