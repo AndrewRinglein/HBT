@@ -145,6 +145,36 @@
    "unit": "hero.base.priest-armored",
    "what": "kit is a oneOf SPEC — the roll belongs to the draft; needs a dictated hero override",
    "needs": "kit unresolved"
+  },
+  {
+   "unit": "hero.fixed.orphans",
+   "what": "stat 'crit' 20",
+   "needs": "stat: crit (no UnitDef field)"
+  },
+  {
+   "unit": "hero.fixed.orphans",
+   "what": "stat 'luck' 10",
+   "needs": "stat: luck (no UnitDef field)"
+  },
+  {
+   "unit": "hero.fixed.lumberjack-and-wife",
+   "what": "stat 'crit' 3",
+   "needs": "stat: crit (no UnitDef field)"
+  },
+  {
+   "unit": "hero.fixed.lumberjack-and-wife",
+   "what": "kit item item.lumberjack-axe has no settled-items row",
+   "needs": "content: item unauthored"
+  },
+  {
+   "unit": "hero.fixed.farmer",
+   "what": "stat 'crit' 3",
+   "needs": "stat: crit (no UnitDef field)"
+  },
+  {
+   "unit": "hero.fixed.farmer",
+   "what": "stat 'luck' 2",
+   "needs": "stat: luck (no UnitDef field)"
   }
  ]
 }
