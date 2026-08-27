@@ -1251,6 +1251,26 @@ export const UNIT_PACK = {
       "reach": 3,
       "staminaCost": 0
     },
+    "attack.lumberjack-axe.chop": {
+      "id": "attack.lumberjack-axe.chop",
+      "name": "Chop",
+      "kind": "melee",
+      "damageType": "physical",
+      "bonus": 1,
+      "stat": "strength",
+      "reach": 1,
+      "staminaCost": 1
+    },
+    "attack.lumberjack-axe.cleave": {
+      "id": "attack.lumberjack-axe.cleave",
+      "name": "Cleave",
+      "kind": "melee",
+      "damageType": "physical",
+      "bonus": 2,
+      "stat": "strength",
+      "reach": 1,
+      "staminaCost": 2
+    },
     "attack.pitchfork.jab": {
       "id": "attack.pitchfork.jab",
       "name": "Jab",
@@ -1353,7 +1373,10 @@ export const UNIT_PACK = {
       "maxStamina": 5,
       "staminaRegen": 1,
       "ai": "melee-aggressive",
-      "attacks": [],
+      "attacks": [
+        "attack.lumberjack-axe.chop",
+        "attack.lumberjack-axe.cleave"
+      ],
       "abilities": [],
       "moves": [
         "power.move"
@@ -1365,7 +1388,21 @@ export const UNIT_PACK = {
         "hero",
         "civilian"
       ],
-      "triggers": []
+      "triggers": [
+        {
+          "id": "trigger.lumberjack-axe.chop.bleed",
+          "hook": "onHit",
+          "chance": 20,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.bleed",
+            "value": 2
+          },
+          "source": "hero.fixed.lumberjack-and-wife",
+          "onlyWithAttack": "attack.lumberjack-axe.chop"
+        }
+      ]
     },
     {
       "typeId": "hero.fixed.farmer",

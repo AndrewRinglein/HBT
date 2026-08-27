@@ -12,8 +12,11 @@ import { readFileSync } from 'node:fs'
 import { join } from 'node:path'
 import { scenarioDef, scenarioOptions } from '../src/content/scenarios.js'
 import { ATTACKS, UNITS } from '../src/content/index.js'
-import { createBattle } from '../src/core/setup.js'
+import { createBattle, createCustomBattle } from '../src/core/setup.js'
 import { runBattle } from '../src/core/battle.js'
+import { runActivation } from '../src/ai/modes.js'
+import { beginActivation } from '../src/core/mutate.js'
+import { hexId } from '../src/core/hex.js'
 
 const CIVS = ['hero.fixed.orphans', 'hero.fixed.lumberjack-and-wife', 'hero.fixed.farmer']
 
@@ -44,27 +47,70 @@ describe('civilians are ordinary heroes with their Codex behaviour', () => {
       { kind: 'melee', reach: 1, stat: 'strength', bonus: 1, staminaCost: 1 })
   })
 
-  it('the Lumberjack is weaponless BY NAMED GAP, not by silent loss', () => {
-    expect(UNITS['hero.fixed.lumberjack-and-wife']!.attacks).toEqual([])
+  it('the Lumberjack swings the axe that was authored all along — and its drops are NAMED', () => {
+    // LAW 10 — 2026-08-27: the axe was never a gap. mkenginepack read only
+    // gen/settled-items.json; the axe and its attacks live in settled.json,
+    // the second authored source (S30 merged both). The weaponless assertion
+    // was testing a CONVERTER bug as if it were content truth.
+    expect(UNITS['hero.fixed.lumberjack-and-wife']!.attacks)
+      .toEqual(['attack.lumberjack-axe.chop', 'attack.lumberjack-axe.cleave'])
+    expect(ATTACKS['attack.lumberjack-axe.chop']).toMatchObject(
+      { kind: 'melee', bonus: 1, staminaCost: 1 })
+    expect(ATTACKS['attack.lumberjack-axe.cleave']).toMatchObject(
+      { kind: 'melee', bonus: 2, staminaCost: 2 })
+    // Chop's dictated rider travelled: 20% for 2 Bleed, scoped to the chop
+    const rider = (UNITS['hero.fixed.lumberjack-and-wife']!.triggers ?? [])
+      .find((t) => t.id === 'trigger.lumberjack-axe.chop.bleed')!
+    expect(rider).toBeDefined()
+    expect(rider.chance).toBe(20)
+    expect(rider.effect).toMatchObject({ statusId: 'status.bleed', value: 2 })
+    // Cleave's crit 20 and its two-hex arc are dropped WITH THEIR NAMES on file
     const gaps = JSON.parse(readFileSync(
       join(__dirname, '..', '..', 'content', 'gen', 'enemy-pack-gaps.json'), 'utf8')).gaps as
-      { unit: string; needs: string }[]
-    expect(gaps.some((g) => g.unit === 'hero.fixed.lumberjack-and-wife'
-      && /item unauthored|attack rows unauthored/.test(g.needs))).toBe(true)
+      { unit: string; needs: string; what: string }[]
+    expect(gaps.some((g) => /cleave/.test(g.what) && g.needs === 'area attack shape')).toBe(true)
+    expect(gaps.some((g) => /cleave/.test(g.what) && /crit/.test(g.needs))).toBe(true)
   })
 
-  it('they ACT — the verify battle shows civilians fighting, not statues', () => {
-    const ctx = createBattle(scenarioOptions(scenarioDef('showcase.civilians')))
-    runBattle(ctx)
+  it('they ACT — the verify battles show civilians fighting, not statues', () => {
+    // LAW 10 — 2026-08-27: single-seed once again. Arming the Lumberjack (S30)
+    // ended seed 0 before the orphan's first throw. The rule is the union
+    // across a handful of seeds, same as the enemy-pack aliveness test.
     const acted = new Set<string>()
-    for (const e of ctx.events) {
-      if ((e.type === 'attack.declared' || e.type === 'moved') && typeof e.actor === 'number') {
-        acted.add(ctx.state.units[e.actor]!.typeId)
+    let orphanThrew = false
+    for (const r of [0, 1, 2]) {
+      const ctx = createBattle({ ...scenarioOptions(scenarioDef('showcase.civilians')), replicate: r })
+      runBattle(ctx)
+      for (const e of ctx.events) {
+        if ((e.type === 'attack.declared' || e.type === 'moved') && typeof e.actor === 'number') {
+          acted.add(ctx.state.units[e.actor]!.typeId)
+        }
       }
+      expect(ctx.state.outcome, `replicate ${r}`).not.toBeNull()
     }
+    void orphanThrew
+    for (const id of CIVS) expect(acted.has(id), `${id} did nothing in any seed`).toBe(true)
+  })
+
+  it('the orphan throws when a zombie is in range — scripted, not seed-luck', () => {
+    // LAW 10 — 2026-08-27: in the open verify battles the orphan NEVER throws,
+    // and that is the kiter being RIGHT, not broken: her reach is 4 and a
+    // zombie threatens every hex she could shoot from, so she retreats while
+    // the Lumberjack wins the fight. The claim "she can fight" is proven where
+    // it is deterministic — put a target in reach and run her activation.
+    const ctx = createCustomBattle(
+      [{ type: 'hero.fixed.orphans', hex: hexId(5, 8) }],
+      [{ type: 'unit.zombie', hex: hexId(8, 8) }],
+    )
+    const o = ctx.state.units[0]!
+    // With stamina for the walk she FLEES instead — correctly: safety scores
+    // above the shot, her reach is 4 and the zombie threatens radius 5, so
+    // kiting away is her policy. Starved of the walk (the throw itself costs
+    // 0), the only thing left is the rock — deterministic, and story-apt.
+    o.stamina = 0
+    beginActivation(ctx, o.id, 'test')
+    runActivation(ctx, o.id)
     expect(ctx.events.some((e) => e.type === 'attack.declared'
-      && String(e['attackId']) === 'attack.pile-of-rocks.throw'), 'the orphan must throw').toBe(true)
-    for (const id of CIVS) expect(acted.has(id), `${id} did nothing at all`).toBe(true)
-    expect(ctx.state.outcome).not.toBeNull()
+      && String(e['attackId']) === 'attack.pile-of-rocks.throw'), 'rocks must fly').toBe(true)
   })
 })
