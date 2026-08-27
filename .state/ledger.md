@@ -3048,3 +3048,7 @@ RULED (DECISIONS.md verbatim, from Andrew watching a replay): statuses resolve a
 ## fix.range-penalty-grace — 2026-08-26 (HAND-LANDED under the reaper protocol)
 
 RULED (DECISIONS.md verbatim): range penalty starts at the 4th tile, -5 per tile from there; 2-3 tiles free. Pipeline RANGE station + the independent auditor updated in the same landing so the recomputation stays exact. New ledger-surface test proves 2-3 have NO RANGE row and 4/5/6 read -5/-10/-15. Two existing assertions followed the ruling with Law-10 reasons. Suite 41/388 green; kill switch fails with the bow disabled; golden re-blessed (declared). Seal not written — it belongs to the gate.
+
+## content.civilians — 2026-08-26 (HAND-LANDED under the reaper protocol)
+
+RULED twice, both verbatim in DECISIONS.md: civilians ACT, and — correcting this converter's first build in the same session — civilians are EXACTLY like heroes, stamina included (level-1 baseline Max 5 / Regen 1 per COMBAT-DESIGN.md:461; the rows' derived 0 is stale). Orphan Child throws rocks (r3, penalty-free in the new grace window); Farmer PAYS 1 for the pitchfork jab; Lumberjack fields weaponless with a NAMED GAP (his axe grants attack rows that exist only as names). Six civilian gaps recorded (crit/luck stats, the unauthored axe). Checks by hand: suite 42/392 green; probe showcase.civilians fires; kill switch 3/4 fail disabled; baselines unchanged as declared. Seal not written — it belongs to the gate.

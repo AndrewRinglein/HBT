@@ -77,6 +77,20 @@ const RAW_SCENARIOS: Readonly<Record<string, ScenarioDef>> = {
     enemyHexes: [118, 122],
     replicate: 0,
   },
+  'showcase.civilians': {
+    id: 'showcase.civilians',
+    note: 'The three prologue civilians beside the Hunter against zombies — '
+      + 'the content.civilians verify battle. Civilians ACT (ruled 2026-08-26): '
+      + 'the orphan pelts rocks, the farmer jabs, and the weaponless Lumberjack '
+      + 'is a named gap standing in plain sight.',
+    mapId: 'map.open',
+    heroes: ['hero.base.ranger-aggressive', 'hero.fixed.orphans',
+      'hero.fixed.lumberjack-and-wife', 'hero.fixed.farmer'],
+    heroHexes: [247, 245, 246, 248],
+    enemies: ['unit.zombie', 'unit.zombie', 'unit.fast-zombie'],
+    enemyHexes: [118, 122, 120],
+    replicate: 0,
+  },
 }
 
 // The kill-switch seam (disable.ts): byte-identical object when nothing is

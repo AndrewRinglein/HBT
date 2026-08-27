@@ -895,3 +895,17 @@ formula is −5 × (distance − 3), floor at distance 4 — so 2 and 3 tiles ar
 free, 4 is −5, 5 is −10, 6 is −15, and so on linearly. Unchanged by this
 ruling: ranged cannot target an adjacent enemy at all (legality, 2026-08-15),
 and the −20 for firing while YOU are adjacent to an enemy is its own station.
+
+---
+
+## 2026-08-26 — civilians are EXACTLY like heroes (stamina included)
+
+> "This is not true. Civilians are exactly like heroes."
+
+Corrects my converter's reading in the same session: I had treated the
+civilian rows' `staminaMax: 0` as "civilians opt out of the hero throttle
+like enemies" and zeroed their attack costs. Wrong. Civilians run stamina like
+any hero; the 0 in their derived rows is stale derivation, not design. Applied
+as the documented level-1 hero baseline (COMBAT-DESIGN.md:461 — "Level-1 hero:
+Max 5, Regen 1") — copied, not invented — and their attacks cost what their
+rows author (the Farmer PAYS 1 for the pitchfork jab).

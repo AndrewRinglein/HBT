@@ -1240,6 +1240,26 @@ export const UNIT_PACK = {
       "stat": "precision",
       "reach": 7,
       "staminaCost": 2
+    },
+    "attack.pile-of-rocks.throw": {
+      "id": "attack.pile-of-rocks.throw",
+      "name": "Throw",
+      "kind": "ranged",
+      "damageType": "physical",
+      "bonus": -1,
+      "stat": "precision",
+      "reach": 3,
+      "staminaCost": 0
+    },
+    "attack.pitchfork.jab": {
+      "id": "attack.pitchfork.jab",
+      "name": "Jab",
+      "kind": "melee",
+      "damageType": "physical",
+      "bonus": 1,
+      "stat": "strength",
+      "reach": 1,
+      "staminaCost": 1
     }
   },
   "prologueParty": [
@@ -1276,6 +1296,109 @@ export const UNIT_PACK = {
       ],
       "tags": [
         "hero"
+      ],
+      "triggers": []
+    },
+    {
+      "typeId": "hero.fixed.orphans",
+      "name": "Orphan Child",
+      "side": "hero",
+      "maxHp": 7,
+      "armor": 0,
+      "resist": 1,
+      "accuracy": 70,
+      "dodge": 0,
+      "strength": 2,
+      "precision": 2,
+      "magic": 0,
+      "spirit": 0,
+      "role": "ranged",
+      "movement": 4,
+      "reach": 1,
+      "maxStamina": 5,
+      "staminaRegen": 1,
+      "ai": "ranged-kite",
+      "attacks": [
+        "attack.pile-of-rocks.throw"
+      ],
+      "abilities": [],
+      "moves": [
+        "power.move"
+      ],
+      "attributes": [
+        "civilian"
+      ],
+      "tags": [
+        "hero",
+        "civilian"
+      ],
+      "triggers": []
+    },
+    {
+      "typeId": "hero.fixed.lumberjack-and-wife",
+      "name": "Lumberjack",
+      "side": "hero",
+      "maxHp": 8,
+      "armor": 0,
+      "resist": 0,
+      "accuracy": 70,
+      "dodge": 0,
+      "strength": 4,
+      "precision": 1,
+      "magic": 0,
+      "spirit": 0,
+      "role": "melee",
+      "movement": 5,
+      "reach": 2,
+      "maxStamina": 5,
+      "staminaRegen": 1,
+      "ai": "melee-aggressive",
+      "attacks": [],
+      "abilities": [],
+      "moves": [
+        "power.move"
+      ],
+      "attributes": [
+        "civilian"
+      ],
+      "tags": [
+        "hero",
+        "civilian"
+      ],
+      "triggers": []
+    },
+    {
+      "typeId": "hero.fixed.farmer",
+      "name": "Farmer",
+      "side": "hero",
+      "maxHp": 7,
+      "armor": 0,
+      "resist": 0,
+      "accuracy": 70,
+      "dodge": 0,
+      "strength": 3,
+      "precision": 2,
+      "magic": 0,
+      "spirit": 0,
+      "role": "melee",
+      "movement": 5,
+      "reach": 1,
+      "maxStamina": 5,
+      "staminaRegen": 1,
+      "ai": "melee-aggressive",
+      "attacks": [
+        "attack.pitchfork.jab"
+      ],
+      "abilities": [],
+      "moves": [
+        "power.move"
+      ],
+      "attributes": [
+        "civilian"
+      ],
+      "tags": [
+        "hero",
+        "civilian"
       ],
       "triggers": []
     }
