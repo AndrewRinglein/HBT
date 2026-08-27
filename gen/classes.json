@@ -156,10 +156,11 @@
     "luck": 0,
     "vision": 6,
     "movement": 5,
-    "staminaMax": 0,
-    "staminaRegen": 0,
+    "staminaMax": 5,
+    "staminaRegen": 1,
     "bleedOutTurns": 5
-   }
+   },
+   "note": "RULED 2026-08-27: \"Civilians are exactly like heroes. They are another class of heroes. They shall all have 5 max stamina and 1 stamina regen. They need all of the same stats as heroes.\" The 0/0 baseline was wrong — struck."
   },
   {
    "id": "class.beast",

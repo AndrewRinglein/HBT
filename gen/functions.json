@@ -311,7 +311,7 @@
  "shapes": [
   {
    "name": "self",
-   "uses": 144,
+   "uses": 149,
    "ids": [
     "item.loaded-dice-of-mirran",
     "item.mug-of-endless-dregs",
@@ -333,6 +333,9 @@
     "item.dragons-blood",
     "item.knights-boon-water",
     "item.draining-elixir",
+    "item.healing-potion",
+    "item.restoration-potion",
+    "item.rage-potion",
     "power.berserker.fast-fury",
     "power.shieldbearer.unbreakable",
     "power.reaver.rend",
@@ -349,10 +352,7 @@
     "power.crusader.oathbound",
     "power.shieldbearer.bramble-guard",
     "power.bowmaster.careful-aim",
-    "power.bowmaster.sniper",
-    "power.winged-assassin.poisoning",
-    "power.wayfinder.quick-evasion",
-    "power.wayfinder.switch-to-melee"
+    "power.bowmaster.sniper"
    ]
   },
   {
@@ -449,13 +449,12 @@
   },
   {
    "name": "one ally within N hexes",
-   "uses": 55,
+   "uses": 54,
    "ids": [
     "item.saints-fingerbone",
     "item.medicine-belt",
     "item.astrolabe-of-the-threshold",
     "item.divine-ward",
-    "item.healing-potion",
     "item.cleanse-potion",
     "item.restorative-tonic",
     "item.trolls-blood",
@@ -490,7 +489,8 @@
     "power.holy-avenger.lay-on-hands",
     "power.sacred-shield.aegis",
     "power.sacred-shield.guardian-angel",
-    "power.sacred-shield.exemplify"
+    "power.sacred-shield.exemplify",
+    "power.grand-master.muster"
    ]
   },
   {
@@ -684,6 +684,15 @@
    ]
   },
   {
+   "name": "one unit within N",
+   "uses": 3,
+   "ids": [
+    "item.flaming-oil",
+    "item.holy-water",
+    "item.poison-dart"
+   ]
+  },
+  {
    "name": "an adjacent hex and the two hexes adjacent to both you and it",
    "uses": 2,
    "ids": [
@@ -721,6 +730,27 @@
    "ids": [
     "power.totem-master.ancestral-anchor",
     "power.porter.drop-the-pack"
+   ]
+  },
+  {
+   "name": "one forest hex within N",
+   "uses": 1,
+   "ids": [
+    "item.torch"
+   ]
+  },
+  {
+   "name": "one adjacent ally",
+   "uses": 1,
+   "ids": [
+    "item.bandages"
+   ]
+  },
+  {
+   "name": "one empty hex within N",
+   "uses": 1,
+   "ids": [
+    "item.bear-trap"
    ]
   },
   {
@@ -847,7 +877,7 @@
   },
   {
    "name": "apply a status",
-   "uses": 139,
+   "uses": 141,
    "ids": [
     "item.bloody-axe",
     "item.runed-crossbow",
@@ -875,6 +905,8 @@
     "item.scorpion-shield",
     "item.demon-hunters-brew",
     "item.inquisitors-scroll",
+    "item.flaming-oil",
+    "item.poison-dart",
     "attack.carpenters-mallet.bonk",
     "attack.fishing-net.cast",
     "attack.broken-bottle.jab",
@@ -886,14 +918,12 @@
     "attack.raiders-cutlass.boarding-swing",
     "attack.poison-stars.star",
     "attack.poison-stars.venom-spread",
-    "attack.shepherds-sling.whirl",
-    "attack.crippling-whip.lash",
-    "attack.crippling-whip.hamstring"
+    "attack.shepherds-sling.whirl"
    ]
   },
   {
    "name": "heal",
-   "uses": 87,
+   "uses": 88,
    "ids": [
     "item.death-blade",
     "item.wraith-touched-staff",
@@ -910,7 +940,6 @@
     "item.rune-berserker-blood",
     "item.rune-kairin",
     "item.blessing-of-the-hearthmother",
-    "item.healing-potion",
     "item.restorative-tonic",
     "item.trolls-blood",
     "item.water-of-divinity",
@@ -919,6 +948,8 @@
     "item.full-restoration",
     "item.knights-boon-water",
     "item.draining-elixir",
+    "item.healing-potion",
+    "item.restoration-potion",
     "attack.sword-of-the-fallen.remembrance",
     "attack.sword-of-the-fallen.honour-the-dead",
     "attack.death-blade.death-stroke",
@@ -933,8 +964,7 @@
     "power.feral.ignore-wounds",
     "power.beastward.conduct-life",
     "power.beastward.sacrifice",
-    "power.contractbound.paid-in-full",
-    "power.demonic-ward.consume-magic"
+    "power.contractbound.paid-in-full"
    ]
   },
   {
@@ -1031,7 +1061,7 @@
   },
   {
    "name": "remove N of a status",
-   "uses": 45,
+   "uses": 46,
    "ids": [
     "item.mug-of-endless-dregs",
     "item.saints-fingerbone",
@@ -1044,6 +1074,7 @@
     "item.full-restoration",
     "item.inquisitors-scroll",
     "item.draining-elixir",
+    "item.restoration-potion",
     "power.bloodrage.unstoppable",
     "power.guardian.stalwart",
     "power.wayfinder.quick-evasion",
@@ -1071,13 +1102,12 @@
     "power.exorcist.holy-shield",
     "power.apothecary.healing-potion",
     "power.archer.small-bandage",
-    "power.serpent.shed",
-    "power.drake.roost"
+    "power.serpent.shed"
    ]
   },
   {
    "name": "move yourself",
-   "uses": 29,
+   "uses": 30,
    "ids": [
     "item.burst-of-speed",
     "power.warchief.lead-from-front",
@@ -1107,6 +1137,7 @@
     "power.flight",
     "power.flight-swift",
     "power.flight-labored",
+    "power.charging-run",
     "specialty.shadowdancer"
    ]
   },
@@ -1222,7 +1253,7 @@
   },
   {
    "name": "place a trap",
-   "uses": 15,
+   "uses": 16,
    "ids": [
     "item.war-hammer",
     "item.cloudsteel-plate",
@@ -1231,6 +1262,7 @@
     "item.featherstep-boots",
     "item.shard-of-the-shattered-spire",
     "item.rune-bashing",
+    "item.bear-trap",
     "power.trapper.poison-trap",
     "power.trapper.bear-trap",
     "power.trapper.entangle",
@@ -1284,9 +1316,10 @@
   },
   {
    "name": "deal PHYSICAL damage",
-   "uses": 13,
+   "uses": 14,
    "ids": [
     "item.stormcallers-orb",
+    "item.bear-trap",
     "item.necklace-of-frost-immunity",
     "power.reaver.cleave",
     "power.bowmaster.rain-of-arrows",
@@ -1479,25 +1512,26 @@
    ]
   },
   {
+   "name": "slayer bonus",
+   "uses": 2,
+   "ids": [
+    "item.rune-perfect-hunter",
+    "item.holy-water"
+   ]
+  },
+  {
    "name": "grant Flight",
    "uses": 2,
    "ids": [
     "power.assassin.dodge-behind",
     "power.wyrmling.take-wing"
    ]
-  },
-  {
-   "name": "slayer bonus",
-   "uses": 1,
-   "ids": [
-    "item.rune-perfect-hunter"
-   ]
   }
  ],
  "statuses": [
   {
    "name": "burn",
-   "uses": 79,
+   "uses": 81,
    "ids": [
     "item.runed-crossbow",
     "item.book-of-exorcisms",
@@ -1517,6 +1551,8 @@
     "item.dragons-blood",
     "item.inquisitors-scroll",
     "item.draining-elixir",
+    "item.flaming-oil",
+    "item.restoration-potion",
     "item.necklace-of-fire-immunity",
     "attack.apprentice-wand.surge",
     "attack.stormforged-blade.thunder-strike",
@@ -1536,14 +1572,12 @@
     "power.fire-master.fireball",
     "power.fire-master.fire-shield",
     "power.totem-master.totem-of-wrath",
-    "power.war-priest.restoration",
-    "power.war-priest.holy-flames",
-    "power.shepherd.circle-of-healing"
+    "power.war-priest.restoration"
    ]
   },
   {
    "name": "bleed",
-   "uses": 64,
+   "uses": 65,
    "ids": [
     "item.bloody-axe",
     "item.twin-talon-bow",
@@ -1557,6 +1591,7 @@
     "item.scorpion-shield",
     "item.kals-mercy",
     "item.full-healing",
+    "item.restoration-potion",
     "attack.broken-bottle.jab",
     "attack.trappers-claws.rake",
     "attack.war-axe.hack",
@@ -1583,13 +1618,12 @@
     "power.contractbound.paid-in-full",
     "power.nightblade.silent-cut",
     "power.nightblade.fan-of-knives",
-    "power.nightblade.exsanguinate",
-    "power.nightblade.long-knife"
+    "power.nightblade.exsanguinate"
    ]
   },
   {
    "name": "poison",
-   "uses": 52,
+   "uses": 54,
    "ids": [
     "item.poison-throwing-knives",
     "item.scorpion-carapace",
@@ -1602,6 +1636,8 @@
     "item.full-healing",
     "item.inquisitors-scroll",
     "item.draining-elixir",
+    "item.poison-dart",
+    "item.restoration-potion",
     "item.necklace-of-poison-immunity",
     "attack.hand-crossbow.loaded-bolt",
     "attack.poison-stars.star",
@@ -1628,9 +1664,7 @@
     "power.war-priest.restoration",
     "power.divine-light.hallowed-ground",
     "power.redeemer.bear-the-flame",
-    "power.vigil.protect-and-shield",
-    "power.holy-avenger.succor-of-the-faithful",
-    "power.sacred-shield.exemplify"
+    "power.vigil.protect-and-shield"
    ]
   },
   {
@@ -2007,7 +2041,7 @@
   },
   {
    "name": "movement",
-   "uses": 48,
+   "uses": 49,
    "ids": [
     "item.siege-crossbow",
     "item.hooves",
@@ -2038,6 +2072,7 @@
     "item.mismatched-armor",
     "item.plated-armor",
     "item.reflective-armor",
+    "item.backpack",
     "item.rangers-worn-boots",
     "item.meditation-beads",
     "item.marching-orders",
@@ -2047,8 +2082,7 @@
     "enchant.eternal-ice",
     "enchant.ancient-ward",
     "enchant.divine-protection",
-    "specialty.winged-assassin",
-    "specialty.sentinel"
+    "specialty.winged-assassin"
    ]
   },
   {
@@ -2331,9 +2365,10 @@
   },
   {
    "name": "itemSlots",
-   "uses": 13,
+   "uses": 14,
    "ids": [
     "item.peddlers-vest",
+    "item.backpack",
     "item.marching-orders",
     "item.quartermasters-manifest",
     "specialty.berserker",
@@ -2364,9 +2399,10 @@
   },
   {
    "name": "vision",
-   "uses": 4,
+   "uses": 5,
    "ids": [
     "item.watchmans-coat",
+    "item.torch",
     "item.dusty-map-case",
     "item.trackers-eyeglass",
     "specialty.torchbearer"

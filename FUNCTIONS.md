@@ -31,10 +31,10 @@ When a rule fires. Twelve, plus `aura` and `passive` which are standing properti
 
 | Function | Uses |
 |---|---:|
-| `self` | 144 |
+| `self` | 149 |
 | `one enemy in melee reach` | 104 |
 | `one enemy within N hexes` | 81 |
-| `one ally within N hexes` | 55 |
+| `one ally within N hexes` | 54 |
 | `allies within N hexes` | 32 |
 | `enemies within N hexes` | 18 |
 | `a hex within N hexes and every hex adjacent to it` | 16 |
@@ -46,11 +46,15 @@ When a rule fires. Twelve, plus `aura` and `passive` which are standing properti
 | `every unit within N hexes` | 5 |
 | `one enemy within your Vision` | 4 |
 | `three hexes within N hexes` | 3 |
+| `one unit within N` | 3 |
 | `an adjacent hex and the two hexes adjacent to both you and it` | 2 |
 | `an adjacent hex and one hex adjacent to both you and it` | 2 |
 | `one enemy within N hexes and every enemy adjacent to it` | 2 |
 | `up to N allies within N hexes` | 2 |
 | `your own hex` | 2 |
+| `one forest hex within N` | 1 |
+| `one adjacent ally` | 1 |
+| `one empty hex within N` | 1 |
 | `one enemy in melee reach and the hex directly behind it` | 1 |
 | `one enemy within N hexes and the hex directly behind it` | 1 |
 | `up to N enemies within Reach` | 1 |
@@ -73,20 +77,20 @@ What a rule may DO.
 | Function | Uses |
 |---|---:|
 | `grant a stat for the Battle` | 170 |
-| `apply a status` | 139 |
-| `heal` | 87 |
+| `apply a status` | 141 |
+| `heal` | 88 |
 | `deal TRUE damage` | 55 |
 | `grant a stat until end of next Turn` | 48 |
-| `remove N of a status` | 45 |
-| `move yourself` | 29 |
+| `remove N of a status` | 46 |
+| `move yourself` | 30 |
 | `grant an aura` | 28 |
 | `read the party-wide sum` | 23 |
 | `deal MAGIC damage` | 18 |
 | `reveal / break stealth` | 17 |
-| `place a trap` | 15 |
+| `place a trap` | 16 |
 | `regain stamina` | 15 |
 | `deal damage (type from the weapon)` | 14 |
-| `deal PHYSICAL damage` | 13 |
+| `deal PHYSICAL damage` | 14 |
 | `move WITHOUT provoking` | 13 |
 | `Immunity N` | 12 |
 | `take damage yourself (a cost)` | 12 |
@@ -100,8 +104,8 @@ What a rule may DO.
 | `Knockback N` | 3 |
 | `change damage type` | 3 |
 | `raise the party-wide sum` | 3 |
+| `slayer bonus` | 2 |
 | `grant Flight` | 2 |
-| `slayer bonus` | 1 |
 
 ## 5 · Statuses
 
@@ -111,9 +115,9 @@ What a rule may DO.
 
 | Function | Uses |
 |---|---:|
-| `burn` | 79 |
-| `bleed` | 64 |
-| `poison` | 52 |
+| `burn` | 81 |
+| `bleed` | 65 |
+| `poison` | 54 |
 | `protection` | 40 |
 | `weak` | 38 |
 | `stun` | 22 |
@@ -130,7 +134,7 @@ What a rule may DO.
 | `resist` | 61 |
 | `strength` | 55 |
 | `dodge` | 54 |
-| `movement` | 48 |
+| `movement` | 49 |
 | `armor` | 43 |
 | `accuracy` | 32 |
 | `precision` | 30 |
@@ -140,9 +144,9 @@ What a rule may DO.
 | `reach` | 19 |
 | `luck` | 18 |
 | `spirit` | 17 |
-| `itemSlots` | 13 |
+| `itemSlots` | 14 |
 | `toughness` | 8 |
-| `vision` | 4 |
+| `vision` | 5 |
 | `corruption` | 2 |
 | `surge` | 2 |
 | `staminaRegen` | 1 |

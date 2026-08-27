@@ -514,6 +514,27 @@ for(const h of heroes){
 }
 
 
+// ------------------------------------------------------- BADGE COMPENSATIONS, 2026-08-25
+// gen/badges.json `compensations`: a badge whose penalties are added BACK to every wearer's
+// base stats. Ruled for Child ("every character we add this to, let's buff the stats the
+// same amount"): the badge carries the childhood; losing it later is the gain. Runs after
+// every other stat applier and before THE CUT. Clone-before-mutate — the bags are shared
+// object references off the class baseline (the 28-paladin lesson).
+{
+  const comps = JSON.parse(fs.readFileSync('gen/badges.json','utf8')).compensations || [];
+  for (const c of comps) {
+    let n = 0;
+    for (const h of heroes) {
+      if (!Array.isArray(h.originBadges) || !h.originBadges.includes(c.badgeName)) continue;
+      h.ported = { ...(h.ported || {}) };
+      for (const [stat, v] of Object.entries(c.buff)) h.ported[stat] = (h.ported[stat] || 0) + v;
+      h.notes = [...(h.notes || []), `Base stats +${Object.entries(c.buff).map(([s,v])=>`${v} ${s}`).join(', +')} — ${c.badgeName} compensation (ruled 2026-08-25).`];
+      n++;
+    }
+    console.log(`compensation: ${c.badgeName} offset applied to ${n} wearers`);
+  }
+}
+
 // ------------------------------------------------------------------ THE CUT, 2026-08-22
 // Four kinds of garbage came across with the port and never got cleaned up. Ruled: cut them.
 // A broken reference is worse than an absence, because an absence is obviously missing and a

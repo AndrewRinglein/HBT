@@ -2004,6 +2004,679 @@
    "rollable": true,
    "source": "Authored in the 2026-08-25 badge workbook review.",
    "needsCapability": "capability.deploy — Deploy N resolves at unit placement (ruled 2026-08-25)"
+  },
+  {
+   "id": "badge.child",
+   "name": "Child",
+   "rarity": "assigned",
+   "rollable": false,
+   "payload": "−1 S, −1 P, −4 Health",
+   "statModifiers": [
+    {
+     "stat": "strength",
+     "op": "add",
+     "value": -1
+    },
+    {
+     "stat": "precision",
+     "op": "add",
+     "value": -1
+    },
+    {
+     "stat": "health",
+     "op": "add",
+     "value": -4
+    }
+   ],
+   "note": "ASSIGNED, never rolled. Ruled 2026-08-25: every hero this is put on gets the same amounts added to their base stats — the badge carries the childhood, and growing out of it is the gain. See compensations below.",
+   "source": "Defined in the 2026-08-25 undefined-names sheet (second half — resolves the sheet)."
+  },
+  {
+   "id": "badge.relentless",
+   "name": "Relentless",
+   "rarity": "uncommon",
+   "payload": "If Deathbed Fighting triggers, gain 6 Health",
+   "needsCapability": "hook for a Deathbed Fighting success — not one of the 13 hooks",
+   "source": "Defined in the 2026-08-25 undefined-names sheet (second half — resolves the sheet)."
+  },
+  {
+   "id": "badge.wise",
+   "name": "Wise",
+   "rarity": "uncommon",
+   "payload": "+1 draw on turn 1 and on turn 3",
+   "needsCapability": "turn-indexed draw — startOfBattleDraw covers turn 1 only; turn 3 needs a clock",
+   "source": "Defined in the 2026-08-25 undefined-names sheet (second half — resolves the sheet)."
+  },
+  {
+   "id": "badge.lithe",
+   "name": "Lithe",
+   "rarity": "uncommon",
+   "payload": "−2 Health, +20 Dodge",
+   "statModifiers": [
+    {
+     "stat": "health",
+     "op": "add",
+     "value": -2
+    },
+    {
+     "stat": "dodge",
+     "op": "add",
+     "value": 20
+    }
+   ],
+   "source": "Defined in the 2026-08-25 undefined-names sheet (second half — resolves the sheet)."
+  },
+  {
+   "id": "badge.demon-slayer",
+   "name": "DemonSlayer",
+   "rarity": "uncommon",
+   "payload": "Damage +2 vs Demons",
+   "slayer": {
+    "demon": 2
+   },
+   "source": "Defined in the 2026-08-25 undefined-names sheet (second half — resolves the sheet)."
+  },
+  {
+   "id": "badge.undead-slayer",
+   "name": "UndeadSlayer",
+   "rarity": "uncommon",
+   "payload": "Damage +2 vs Undead",
+   "slayer": {
+    "undead": 2
+   },
+   "source": "Defined in the 2026-08-25 undefined-names sheet (second half — resolves the sheet)."
+  },
+  {
+   "id": "badge.beast-slayer",
+   "name": "BeastSlayer",
+   "rarity": "uncommon",
+   "payload": "Damage +2 vs Beasts",
+   "slayer": {
+    "beast": 2
+   },
+   "source": "Defined in the 2026-08-25 undefined-names sheet (second half — resolves the sheet)."
+  },
+  {
+   "id": "badge.human-slayer",
+   "name": "HumanSlayer",
+   "rarity": "uncommon",
+   "payload": "Damage +2 vs Humans",
+   "slayer": {
+    "human": 2
+   },
+   "source": "Defined in the 2026-08-25 undefined-names sheet (second half — resolves the sheet)."
+  },
+  {
+   "id": "badge.vampire-slayer",
+   "name": "VampireSlayer",
+   "rarity": "uncommon",
+   "payload": "Damage +2 vs Vampires",
+   "slayer": {
+    "vampire": 2
+   },
+   "source": "Defined in the 2026-08-25 undefined-names sheet (second half — resolves the sheet)."
+  },
+  {
+   "id": "badge.werewolf-slayer",
+   "name": "WerewolfSlayer",
+   "rarity": "uncommon",
+   "payload": "Damage +2 vs Werewolves",
+   "slayer": {
+    "werewolf": 2
+   },
+   "source": "Defined in the 2026-08-25 undefined-names sheet (second half — resolves the sheet)."
+  },
+  {
+   "id": "badge.scouting",
+   "name": "Scouting",
+   "rarity": "uncommon",
+   "payload": "Reveals stealthed enemies within 3; +3 Vision, +1 Reach",
+   "statModifiers": [
+    {
+     "stat": "vision",
+     "op": "add",
+     "value": 3
+    },
+    {
+     "stat": "reach",
+     "op": "add",
+     "value": 1
+    }
+   ],
+   "needsCapability": "Stealth is DESIGNED (COMBAT-DESIGN: stealth units cannot be targeted, broken by attacking/burning/reveal effects) — this badge needs only the reveal-within-3 conditional on that machinery. Earlier \"no stealth mechanic\" note was wrong.",
+   "source": "Defined in the 2026-08-25 undefined-names sheet (second half — resolves the sheet)."
+  },
+  {
+   "id": "badge.quick-learner",
+   "name": "Quick Learner",
+   "rarity": "uncommon",
+   "payload": "Gain 7 XP per combat",
+   "source": "Defined in the 2026-08-25 undefined-names sheet (second half — resolves the sheet)."
+  },
+  {
+   "id": "badge.ancient",
+   "name": "Ancient",
+   "rarity": "uncommon",
+   "payload": "Start with 30 XP",
+   "source": "Defined in the 2026-08-25 undefined-names sheet (second half — resolves the sheet)."
+  },
+  {
+   "id": "badge.secret",
+   "name": "Secret",
+   "rarity": "uncommon",
+   "payload": "Secret (stub)",
+   "note": "Stub BY DESIGN — 2026-08-25.",
+   "source": "Defined in the 2026-08-25 undefined-names sheet (second half — resolves the sheet)."
+  },
+  {
+   "id": "badge.brave",
+   "name": "Brave",
+   "rarity": "uncommon",
+   "payload": "+1 Resist; immune to Weak",
+   "statModifiers": [
+    {
+     "stat": "resist",
+     "op": "add",
+     "value": 1
+    }
+   ],
+   "source": "Defined in the 2026-08-25 undefined-names sheet (second half — resolves the sheet)."
+  },
+  {
+   "id": "badge.diverse-learner",
+   "name": "Diverse Learner",
+   "rarity": "common",
+   "payload": "Adds options during power gaining",
+   "needsCapability": "power-gain choice (extra options at level-up) — out of combat",
+   "source": "Defined in the 2026-08-25 undefined-names sheet (second half — resolves the sheet)."
+  },
+  {
+   "id": "badge.old",
+   "name": "Old",
+   "rarity": "uncommon",
+   "payload": "−1 Health, −1 Movement; +2 draw on turn 1; +2 Item slots",
+   "statModifiers": [
+    {
+     "stat": "health",
+     "op": "add",
+     "value": -1
+    },
+    {
+     "stat": "movement",
+     "op": "add",
+     "value": -1
+    },
+    {
+     "stat": "itemSlots",
+     "op": "add",
+     "value": 2
+    }
+   ],
+   "note": "The turn-1 draw maps to the existing startOfBattleDraw machinery (School Teacher precedent).",
+   "source": "Defined in the 2026-08-25 undefined-names sheet (second half — resolves the sheet)."
+  },
+  {
+   "id": "badge.angry",
+   "name": "Angry",
+   "rarity": "common",
+   "hook": "onHit",
+   "payload": "On hit: gain 3 Crit (for the Battle)",
+   "source": "Defined in the 2026-08-25 undefined-names sheet (second half — resolves the sheet)."
+  },
+  {
+   "id": "badge.physician",
+   "name": "Physician",
+   "rarity": "common",
+   "payload": "Gains a free action — Stabilize: pause an ally bleeding out. Costs 1 Stamina, cooldown 1.",
+   "needsCapability": "hero action grant (Stabilize) interacting with bleedOutTurns — battlefield bleed-out handling",
+   "source": "Defined in the 2026-08-25 undefined-names sheet (second half — resolves the sheet)."
+  },
+  {
+   "id": "badge.scavenger",
+   "name": "Scavenger",
+   "rarity": "common",
+   "payload": "Bonus on scavenging",
+   "needsCapability": "kingdom-layer scavenging — out of combat",
+   "source": "Defined in the 2026-08-25 undefined-names sheet (second half — resolves the sheet)."
+  },
+  {
+   "id": "badge.crippled",
+   "name": "Crippled",
+   "rarity": "uncommon",
+   "payload": "−2 S, −1 Movement",
+   "statModifiers": [
+    {
+     "stat": "strength",
+     "op": "add",
+     "value": -2
+    },
+    {
+     "stat": "movement",
+     "op": "add",
+     "value": -1
+    }
+   ],
+   "source": "Defined in the 2026-08-25 undefined-names sheet (second half — resolves the sheet)."
+  },
+  {
+   "id": "badge.outcast",
+   "name": "Outcast",
+   "rarity": "rare",
+   "hook": "startOfBattle",
+   "payload": "Start of combat: ALL heroes gain 2 Weak",
+   "note": "A NEGATIVE rare — rolls rare, hurts the whole party.",
+   "source": "Defined in the 2026-08-25 undefined-names sheet (second half — resolves the sheet)."
+  },
+  {
+   "id": "badge.looting",
+   "name": "Looting",
+   "rarity": "uncommon",
+   "payload": "On survival: gain 1 Supplies",
+   "needsCapability": "battle-outcome reward",
+   "source": "Defined in the 2026-08-25 undefined-names sheet (second half — resolves the sheet)."
+  },
+  {
+   "id": "badge.devil-in-disguise",
+   "name": "Devil in Disguise",
+   "rarity": "legendary",
+   "hook": "onHit",
+   "payload": "Counts as a Demon. All heroes lose 1 Resist and gain 3 Corruption; the wearer gains 3 Resist and onHit: Burn 1.",
+   "statModifiers": [
+    {
+     "stat": "resist",
+     "op": "add",
+     "value": 3
+    }
+   ],
+   "note": "The Demon tag means DemonSlayer and demon-scoped effects apply to the wearer. Party-wide −1 Resist / +3 Corruption is an aura-style passive on the party.",
+   "source": "Defined in the 2026-08-25 undefined-names sheet (second half — resolves the sheet)."
+  },
+  {
+   "id": "badge.stalwart",
+   "name": "Stalwart",
+   "rarity": "uncommon",
+   "payload": "+1 Stamina, +2 Health",
+   "statModifiers": [
+    {
+     "stat": "staminaMax",
+     "op": "add",
+     "value": 1
+    },
+    {
+     "stat": "health",
+     "op": "add",
+     "value": 2
+    }
+   ],
+   "source": "Defined in the 2026-08-25 undefined-names sheet (second half — resolves the sheet)."
+  },
+  {
+   "id": "badge.unwavering",
+   "name": "Unwavering",
+   "rarity": "uncommon",
+   "hook": "onTakingDamage",
+   "payload": "Immune to Weak; on taking damage: remove 1 Weak",
+   "source": "Defined in the 2026-08-25 undefined-names sheet (second half — resolves the sheet)."
+  },
+  {
+   "id": "badge.brawler",
+   "name": "Brawler",
+   "rarity": "rare",
+   "payload": "+2 damage on brawl-tagged attacks",
+   "appliesToTags": [
+    "brawl"
+   ],
+   "statModifiers": [
+    {
+     "stat": "strength",
+     "op": "add",
+     "value": 2
+    }
+   ],
+   "note": "Tag-scoped: the +2 applies ONLY to attacks carrying the brawl tag (universal Punch etc.) — the Bloodthirsty appliesToTags machinery, per the 2026-08-24 correction.",
+   "source": "Defined in the 2026-08-25 undefined-names sheet (second half — resolves the sheet)."
+  },
+  {
+   "id": "badge.quick",
+   "name": "Quick",
+   "rarity": "common",
+   "payload": "+1 Movement, +10 Surge Chance, Deploy +2",
+   "statModifiers": [
+    {
+     "stat": "movement",
+     "op": "add",
+     "value": 1
+    },
+    {
+     "stat": "surge",
+     "op": "add",
+     "value": 10
+    }
+   ],
+   "needsCapability": "capability.deploy — Deploy N resolves at unit placement (ruled 2026-08-25)",
+   "source": "Defined in the 2026-08-25 undefined-names sheet (second half — resolves the sheet)."
+  },
+  {
+   "id": "badge.evasion",
+   "name": "Evasion",
+   "rarity": "rare",
+   "payload": "+20 Dodge against attacks of opportunity",
+   "needsCapability": "AOO is DESIGNED (COMBAT-DESIGN, ruled 2026-08-20: provoked unit chooses a legal attack at -20) — this badge needs only a dodge-vs-AOO conditional on that machinery. Earlier \"not a concept yet\" note was wrong.",
+   "source": "Defined in the 2026-08-25 undefined-names sheet (second half — resolves the sheet)."
+  },
+  {
+   "id": "badge.agile",
+   "name": "Agile",
+   "rarity": "uncommon",
+   "payload": "Gains the Dodge and Roll movement power; +8 Dodge",
+   "statModifiers": [
+    {
+     "stat": "dodge",
+     "op": "add",
+     "value": 8
+    }
+   ],
+   "note": "Dodge and Roll does not exist yet as a movement power — a new INSTANCE of an existing kind, to be authored (instances are free; the kind exists).",
+   "source": "Defined in the 2026-08-25 undefined-names sheet (second half — resolves the sheet)."
+  },
+  {
+   "id": "badge.ignorant",
+   "name": "Ignorant",
+   "rarity": "common",
+   "payload": "−1 Magic, +10 Luck",
+   "statModifiers": [
+    {
+     "stat": "magic",
+     "op": "add",
+     "value": -1
+    },
+    {
+     "stat": "luck",
+     "op": "add",
+     "value": 10
+    }
+   ],
+   "source": "Defined in the 2026-08-25 undefined-names sheet (second half — resolves the sheet)."
+  },
+  {
+   "id": "badge.retaliating",
+   "name": "Retaliating",
+   "rarity": "uncommon",
+   "hook": "onTakingDamage",
+   "payload": "On taking damage: gain 40 Accuracy until the end of your next turn",
+   "source": "Defined in the 2026-08-25 undefined-names sheet (second half — resolves the sheet)."
+  },
+  {
+   "id": "badge.lucky",
+   "name": "Lucky",
+   "rarity": "common",
+   "payload": "+1 Luck, Deploy +1",
+   "statModifiers": [
+    {
+     "stat": "luck",
+     "op": "add",
+     "value": 1
+    }
+   ],
+   "needsCapability": "capability.deploy — Deploy N resolves at unit placement (ruled 2026-08-25)",
+   "source": "Defined in the 2026-08-25 undefined-names sheet (second half — resolves the sheet)."
+  },
+  {
+   "id": "badge.discouraged",
+   "name": "Discouraged",
+   "rarity": "common",
+   "hook": "onMiss",
+   "payload": "On miss: lose 1 Stamina",
+   "source": "Dictated in the 2026-08-25 badge riff."
+  },
+  {
+   "id": "badge.glass-jaw",
+   "name": "Glass Jaw",
+   "rarity": "common",
+   "payload": "−15 Luck",
+   "statModifiers": [
+    {
+     "stat": "luck",
+     "op": "add",
+     "value": -15
+    }
+   ],
+   "source": "Dictated in the 2026-08-25 badge riff."
+  },
+  {
+   "id": "badge.bleeder",
+   "name": "Bleeder",
+   "rarity": "uncommon",
+   "hook": "onTakingDamage",
+   "payload": "On taking damage: gain 1 Bleed",
+   "source": "Dictated in the 2026-08-25 badge riff."
+  },
+  {
+   "id": "badge.sickly",
+   "name": "Sickly",
+   "rarity": "rare",
+   "hook": "startOfBattle",
+   "payload": "Start of Battle: gain 2 Poison",
+   "note": "A NEGATIVE rare, like Outcast.",
+   "source": "Dictated in the 2026-08-25 badge riff."
+  },
+  {
+   "id": "badge.heavy-sleeper",
+   "name": "Heavy Sleeper",
+   "rarity": "common",
+   "hook": "startOfBattle",
+   "payload": "Start of Battle: lose 2 Stamina",
+   "source": "Dictated in the 2026-08-25 badge riff."
+  },
+  {
+   "id": "badge.coward",
+   "name": "Coward",
+   "rarity": "uncommon",
+   "hook": "startOfBattle",
+   "payload": "Start of Battle: gain 3 Weak",
+   "source": "Dictated in the 2026-08-25 badge riff."
+  },
+  {
+   "id": "badge.haunted",
+   "name": "Haunted",
+   "rarity": "uncommon",
+   "hook": "onTakingDamage",
+   "payload": "On taking damage: take 1 TRUE damage",
+   "source": "Dictated in the 2026-08-25 badge riff."
+  },
+  {
+   "id": "badge.feinting",
+   "name": "Feinting",
+   "rarity": "uncommon",
+   "hook": "onMiss",
+   "payload": "On miss: +20 Accuracy until the end of your next Turn",
+   "source": "Dictated in the 2026-08-25 badge riff.",
+   "note": "Dictated as \"on your next attack\" — reworded to the duration form per R28 (ruled 2026-08-20: nothing tracks which attack is next; use a duration). Same shape as Countering."
+  },
+  {
+   "id": "badge.butchering",
+   "name": "Butchering",
+   "rarity": "common",
+   "hook": "onKill",
+   "payload": "On kill: gain 3 Crit for the Battle",
+   "source": "Dictated in the 2026-08-25 badge riff."
+  },
+  {
+   "id": "badge.rallying",
+   "name": "Rallying",
+   "rarity": "uncommon",
+   "hook": "onKill",
+   "payload": "On kill: allies within 2 regain 1 Stamina",
+   "source": "Dictated in the 2026-08-25 badge riff."
+  },
+  {
+   "id": "badge.harrying",
+   "name": "Harrying",
+   "rarity": "uncommon",
+   "hook": "onHit",
+   "payload": "On hit: apply 1 Slow",
+   "source": "Dictated in the 2026-08-25 badge riff."
+  },
+  {
+   "id": "badge.inspiring",
+   "name": "Inspiring",
+   "rarity": "rare",
+   "hook": "aura",
+   "payload": "Aura: allies within 1 get +1 Resist",
+   "source": "Dictated in the 2026-08-25 badge riff."
+  },
+  {
+   "id": "badge.charging",
+   "name": "Charging",
+   "rarity": "rare",
+   "grants": [
+    "power.charging-run"
+   ],
+   "payload": "Gains the Charging Run move action: 2 Stamina, your move with +2 Movement, +3 Strength until end of Activation",
+   "source": "Dictated in the 2026-08-25 badge riff."
+  },
+  {
+   "id": "badge.countering",
+   "name": "Countering",
+   "rarity": "uncommon",
+   "hook": "onDodge",
+   "payload": "On dodge: gain +30 Accuracy until the end of your next turn",
+   "source": "Dictated in the 2026-08-25 badge riff."
+  },
+  {
+   "id": "badge.praying",
+   "name": "Praying",
+   "rarity": "uncommon",
+   "grants": [
+    "power.pray"
+   ],
+   "payload": "Gains the Pray bonus move: 1 Stamina, no movement, gain 1 Faith",
+   "needsCapability": "Faith gained IN combat — battle-outcome / kingdom purse plumbing",
+   "source": "Dictated in the 2026-08-25 badge riff."
+  },
+  {
+   "id": "badge.thick-hide",
+   "name": "Thick Hide",
+   "rarity": "common",
+   "payload": "+1 Toughness",
+   "statModifiers": [
+    {
+     "stat": "toughness",
+     "op": "add",
+     "value": 1
+    }
+   ],
+   "note": "Rarity defaulted common — SOFT, not dictated.",
+   "source": "Dictated in the 2026-08-25 badge riff."
+  },
+  {
+   "id": "badge.iron-skin",
+   "name": "Iron Skin",
+   "rarity": "common",
+   "payload": "+1 Armor",
+   "statModifiers": [
+    {
+     "stat": "armor",
+     "op": "add",
+     "value": 1
+    }
+   ],
+   "note": "Rarity defaulted common — SOFT, not dictated.",
+   "source": "Dictated in the 2026-08-25 badge riff."
+  },
+  {
+   "id": "badge.devoted",
+   "name": "Devoted",
+   "rarity": "common",
+   "payload": "+1 Spirit",
+   "statModifiers": [
+    {
+     "stat": "spirit",
+     "op": "add",
+     "value": 1
+    }
+   ],
+   "note": "Rarity defaulted common — SOFT, not dictated.",
+   "source": "Dictated in the 2026-08-25 badge riff."
+  },
+  {
+   "id": "badge.slow-burner",
+   "name": "Slow Burner",
+   "rarity": "common",
+   "payload": "+1 Stamina Regen, −1 Max Stamina, −1 Health, −5 Crit",
+   "statModifiers": [
+    {
+     "stat": "staminaRegen",
+     "op": "add",
+     "value": 1
+    },
+    {
+     "stat": "staminaMax",
+     "op": "add",
+     "value": -1
+    },
+    {
+     "stat": "health",
+     "op": "add",
+     "value": -1
+    },
+    {
+     "stat": "crit",
+     "op": "add",
+     "value": -5
+    }
+   ],
+   "note": "Dictated as \"Second Wind\" — renamed 2026-08-25 because the berserker class badge holds that name (ruled: rename the new one). NAME IS A PLACEHOLDER of mine, free to change. Rarity defaulted common — SOFT.",
+   "source": "Dictated in the 2026-08-25 badge riff."
+  },
+  {
+   "id": "badge.shielded",
+   "name": "Shielded",
+   "rarity": "uncommon",
+   "hook": "startOfBattle",
+   "payload": "Start of Battle: gain 5 Protection",
+   "note": "Rarity defaulted uncommon — SOFT, not dictated.",
+   "source": "Dictated in the 2026-08-25 badge riff."
+  },
+  {
+   "id": "badge.frostborn",
+   "name": "Frostborn",
+   "rarity": "uncommon",
+   "hook": "onHit",
+   "payload": "Immune to Frost; your attacks apply 1 Frost",
+   "note": "Rarity defaulted uncommon — SOFT, not dictated.",
+   "source": "Dictated in the 2026-08-25 badge riff."
+  },
+  {
+   "id": "badge.cruel",
+   "name": "Cruel",
+   "rarity": "uncommon",
+   "hook": "onCrit",
+   "payload": "On crit: apply 1 Bleed",
+   "source": "Dictated in the 2026-08-25 badge riff."
+  },
+  {
+   "id": "badge.assassin",
+   "name": "Assassin",
+   "rarity": "rare",
+   "hook": "onCrit",
+   "payload": "On crit: deal 6 TRUE damage; −5 Crit",
+   "statModifiers": [
+    {
+     "stat": "crit",
+     "op": "add",
+     "value": -5
+    }
+   ],
+   "source": "Dictated in the 2026-08-25 badge riff."
+  },
+  {
+   "id": "badge.karmic",
+   "name": "Karmic",
+   "rarity": "rare",
+   "hook": "onTakingDamage",
+   "payload": "On taking damage: gain 1 Karma",
+   "source": "Dictated in the 2026-08-25 badge riff."
   }
  ],
  "_machineReadable": "43 of the 128 badges carry statModifiers, hook, rollable, blockers and engineStatGap, merged from the Crucible 2026-08-21. The other 85 are prose only and still need the machine-readable half. content/ owns badges (COMBAT-DESIGN.md §8: HoBaT authored its own; the 238-row Hell-TCG library is a reference, not a port).",
@@ -2132,5 +2805,28 @@
    }
   ]
  },
- "_rarityTaxonomy": "Ruled 2026-08-25: rarities (common/uncommon/rare/legendary and the class-named ones) are what you can roll at GENERATION and in the Crucible. `acquired` badges are added in game and never rolled. `affliction` is the family of four (lycanthropy, vampirism, possession, rotting-flesh) — inflicted, never rolled."
+ "_rarityTaxonomy": "Ruled 2026-08-25: rarities (common/uncommon/rare/legendary and the class-named ones) are what you can roll at GENERATION and in the Crucible. `acquired` badges are added in game and never rolled. `affliction` is the family of four (lycanthropy, vampirism, possession, rotting-flesh) — inflicted, never rolled.",
+ "compensations": [
+  {
+   "badgeName": "Child",
+   "buff": {
+    "strength": 1,
+    "precision": 1,
+    "health": 4
+   },
+   "why": "Ruled 2026-08-25: every character Child is put on gets its penalties added back to base — the badge carries the childhood; losing it (growing up) is the gain."
+  }
+ ],
+ "_cutNames2026_08_25": {
+  "note": "RULED 2026-08-25: the badge-review sheet was exhaustive — any name NOT returned on it was CUT deliberately. These seven are therefore cut BY RULING, not forgotten. The build-heroes cut strips them from wearers; they need no rows and are not owed definitions.",
+  "names": {
+   "Noble": 3,
+   "SandSlayer": 4,
+   "GhostSlayer": 4,
+   "AirSlayer": 4,
+   "Tough": 2,
+   "Scavenging": 1,
+   "Badly Wounded": 1
+  }
+ }
 }

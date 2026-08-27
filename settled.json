@@ -752,6 +752,44 @@
    "hook": "onActivationEnd",
    "description": "At the end of the priest’s Activation, heal every ally within 4 hexes for HALF the priest’s Spirit — rounded nearest, 0.5 up (ruled 2026-08-25). The four Eve priests share this innate; it is DISTINCT from the Priest Chain’s Benediction, which is an active cast (stamina 2, range 6, 2 + half Spirit). The audit caught the name collision; renamed same day.",
    "source": "dictated 2026-08-22 (“heal all heroes within range 4: half of your spirit”), blocked on Law 7 integers, unblocked by the rounding ruling 2026-08-25"
+  },
+  {
+   "id": "power.pray",
+   "name": "Pray",
+   "specialty": null,
+   "class": null,
+   "stamina": 1,
+   "cooldown": 0,
+   "warmup": 0,
+   "free": false,
+   "movementAction": true,
+   "universal": false,
+   "universalToAllUnits": false,
+   "bonusMove": true,
+   "targets": "self",
+   "tags": [],
+   "description": "A bonus move: zero movement, costs 1 Stamina, gain 1 Faith. A bonus move IS your movement for the Activation (2026-08-21 family ruling: Focus/Devotion precedent), and it does not benefit from the Move stat.",
+   "intent": "Trade your feet for the purse. Faith in combat is the whole point and the whole gap.",
+   "source": "2026-08-25, dictated with badge Praying: \"gain movement power pray: costs 1 stamina, gain 1 faith\". Granted by badge.praying. Faith-in-combat is a recorded capability gap on the badge."
+  },
+  {
+   "id": "power.charging-run",
+   "name": "Charging Run",
+   "specialty": null,
+   "class": null,
+   "stamina": 2,
+   "cooldown": 0,
+   "warmup": 0,
+   "free": false,
+   "movementAction": true,
+   "universal": false,
+   "universalToAllUnits": false,
+   "bonusMove": false,
+   "targets": "self",
+   "tags": [],
+   "description": "A full movement action: move up to your Movement +2, and gain +3 Strength until the end of your Activation. Costs 2 Stamina. A full movement action reads the stat — the 2026-08-21 bonus-move ruling, applied in reverse.",
+   "intent": "Close the distance and arrive angrier.",
+   "source": "2026-08-25, dictated with badge Charging: \"gain move action: stamina 2, movement +2, gain +3 str until EOA\". Granted by badge.charging. NAMED Charging Run because power.charge already exists (the armor-granted one) — name is a proposal, free to change."
   }
  ],
  "items": [
@@ -940,7 +978,7 @@
    "shape": "pool",
    "effect": "While you carry Karma: every heal you receive is increased by your Karma, and every point of damage you deal is increased by HALF your Karma, rounded down.",
    "decay": "It does not tick down at End of Phase like the others. Karma is spent by KILLING: every unit in the game has, on kill, lose 1 Karma.",
-   "source": "2026-08-20. The only status that decays on an event rather than on the clock."
+   "source": "2026-08-20. The only status that decays on an event rather than on the clock. RE-RULED IDENTICALLY 2026-08-25, verbatim: \"Karma increases healing and increases damage by half of the Karma value. So it increases healing to the target that has karma by the amount of karma. And one half of the Karma value is added to all damage. Karma is lost whenever the unit kills another unit. So, every unit, during player attack, if there is a kill, there is a check to see if there is karma, and if there is, it goes down by one.\""
   },
   {
    "id": "status.slow",

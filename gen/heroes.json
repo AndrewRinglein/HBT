@@ -78,8 +78,8 @@
    "luck": 0,
    "vision": 6,
    "movement": 5,
-   "staminaMax": 0,
-   "staminaRegen": 0,
+   "staminaMax": 5,
+   "staminaRegen": 1,
    "bleedOutTurns": 5
   },
   "class.beast": {
@@ -156,10 +156,10 @@
    "campaign": null,
    "art": "art/heroes/orphan-child/card/l1.png",
    "ported": {
-    "strength": 1,
-    "precision": 1,
+    "strength": 2,
+    "precision": 2,
     "armor": 0,
-    "health": 3,
+    "health": 7,
     "reach": 1,
     "magic": 0,
     "spirit": 0,
@@ -177,18 +177,21 @@
     "luck": 10,
     "vision": 6,
     "movement": 4,
-    "staminaMax": 0,
-    "staminaRegen": 0,
+    "staminaMax": 5,
+    "staminaRegen": 1,
     "bleedOutTurns": 5
    },
    "notes": [
     "Resolute +1 DROPPED — the stat was removed 2026-08-15 with no replacement.",
     "Toughness 3 is hell-tcg maxAfflictions, ported straight across — same meaning.",
     "Renamed \"Orphan Children\" -> \"Orphan Child\", ruled 2026-08-25.",
-    "Stat block dictated 2026-08-25: Orphan Child, dictated 2026-08-25. Tiny, absurdly lucky, and the whole party fights harder when she falls."
+    "Stat block dictated 2026-08-25: Orphan Child, dictated 2026-08-25. Tiny, absurdly lucky, and the whole party fights harder when she falls.",
+    "Base stats +1 strength, +1 precision, +4 health — Child compensation (ruled 2026-08-25)."
    ],
    "specialty": null,
-   "originBadges": [],
+   "originBadges": [
+    "Child"
+   ],
    "classPowers": [],
    "namedSpecials": [
     {
@@ -292,8 +295,8 @@
     "luck": 0,
     "vision": 6,
     "movement": 5,
-    "staminaMax": 0,
-    "staminaRegen": 0,
+    "staminaMax": 5,
+    "staminaRegen": 1,
     "bleedOutTurns": 5
    },
    "notes": [
@@ -416,8 +419,8 @@
     "luck": 0,
     "vision": 6,
     "movement": 5,
-    "staminaMax": 0,
-    "staminaRegen": 0,
+    "staminaMax": 5,
+    "staminaRegen": 1,
     "bleedOutTurns": 5
    },
    "notes": [
@@ -478,8 +481,8 @@
     "luck": 0,
     "vision": 6,
     "movement": 5,
-    "staminaMax": 0,
-    "staminaRegen": 0,
+    "staminaMax": 5,
+    "staminaRegen": 1,
     "bleedOutTurns": 5
    },
    "notes": [
@@ -545,15 +548,19 @@
     "luck": 0,
     "vision": 6,
     "movement": 5,
-    "staminaMax": 0,
-    "staminaRegen": 0,
+    "staminaMax": 5,
+    "staminaRegen": 1,
     "bleedOutTurns": 5
    },
    "notes": [
     "Toughness 5 is hell-tcg maxAfflictions, ported straight across — same meaning."
    ],
    "specialty": null,
-   "originBadges": [],
+   "originBadges": [
+    "Wise",
+    "Diverse Learner",
+    "Quick Learner"
+   ],
    "classPowers": [
     "civilian-knowledge-is-power",
     "civilian-equip"
@@ -816,8 +823,8 @@
     "luck": 0,
     "vision": 6,
     "movement": 5,
-    "staminaMax": 0,
-    "staminaRegen": 0,
+    "staminaMax": 5,
+    "staminaRegen": 1,
     "bleedOutTurns": 5
    },
    "notes": [
@@ -935,10 +942,10 @@
    "campaign": null,
    "art": null,
    "ported": {
-    "strength": 6,
-    "precision": 2,
+    "strength": 7,
+    "precision": 3,
     "armor": 0,
-    "health": 12,
+    "health": 16,
     "reach": 1,
     "magic": 0,
     "spirit": 0,
@@ -960,10 +967,13 @@
    },
    "notes": [
     "Toughness 1 is hell-tcg maxAfflictions, ported straight across — same meaning.",
-    "2026-08-20: class.beast created for these four. They were the only heroes in the game with no class."
+    "2026-08-20: class.beast created for these four. They were the only heroes in the game with no class.",
+    "Base stats +1 strength, +1 precision, +4 health — Child compensation (ruled 2026-08-25)."
    ],
    "specialty": null,
-   "originBadges": [],
+   "originBadges": [
+    "Child"
+   ],
    "classPowers": [],
    "namedSpecials": [
     {
@@ -1021,8 +1031,8 @@
     "luck": 0,
     "vision": 6,
     "movement": 5,
-    "staminaMax": 0,
-    "staminaRegen": 0,
+    "staminaMax": 5,
+    "staminaRegen": 1,
     "bleedOutTurns": 5
    },
    "notes": [
@@ -1030,6 +1040,9 @@
    ],
    "specialty": null,
    "originBadges": [
+    "Old",
+    "Wise",
+    "Ancient",
     "Frail"
    ],
    "classPowers": [],
@@ -1089,8 +1102,8 @@
     "luck": 0,
     "vision": 6,
     "movement": 5,
-    "staminaMax": 0,
-    "staminaRegen": 0,
+    "staminaMax": 5,
+    "staminaRegen": 1,
     "bleedOutTurns": 5
    },
    "notes": [
@@ -1147,10 +1160,10 @@
    "campaign": null,
    "art": null,
    "ported": {
-    "strength": 3,
-    "precision": 4,
+    "strength": 4,
+    "precision": 5,
     "armor": 0,
-    "health": 7,
+    "health": 11,
     "reach": 2,
     "magic": 0,
     "spirit": 0,
@@ -1166,15 +1179,17 @@
     "luck": 0,
     "vision": 6,
     "movement": 5,
-    "staminaMax": 0,
-    "staminaRegen": 0,
+    "staminaMax": 5,
+    "staminaRegen": 1,
     "bleedOutTurns": 5
    },
    "notes": [
-    "Toughness 4 is hell-tcg maxAfflictions, ported straight across — same meaning."
+    "Toughness 4 is hell-tcg maxAfflictions, ported straight across — same meaning.",
+    "Base stats +1 strength, +1 precision, +4 health — Child compensation (ruled 2026-08-25)."
    ],
    "specialty": null,
    "originBadges": [
+    "Child",
     "Frail"
    ],
    "classPowers": [],
@@ -1215,10 +1230,10 @@
    "campaign": null,
    "art": null,
    "ported": {
-    "strength": 4,
-    "precision": 2,
+    "strength": 5,
+    "precision": 3,
     "armor": 1,
-    "health": 8,
+    "health": 12,
     "reach": 1,
     "magic": 0,
     "spirit": 0,
@@ -1239,10 +1254,13 @@
     "bleedOutTurns": 5
    },
    "notes": [
-    "Toughness 2 is hell-tcg maxAfflictions, ported straight across — same meaning."
+    "Toughness 2 is hell-tcg maxAfflictions, ported straight across — same meaning.",
+    "Base stats +1 strength, +1 precision, +4 health — Child compensation (ruled 2026-08-25)."
    ],
    "specialty": null,
-   "originBadges": [],
+   "originBadges": [
+    "Child"
+   ],
    "classPowers": [],
    "namedSpecials": [
     {
@@ -1434,8 +1452,8 @@
     "luck": 0,
     "vision": 6,
     "movement": 5,
-    "staminaMax": 0,
-    "staminaRegen": 0,
+    "staminaMax": 5,
+    "staminaRegen": 1,
     "bleedOutTurns": 5
    },
    "notes": [
@@ -1444,7 +1462,8 @@
    ],
    "specialty": null,
    "originBadges": [
-    "Immortal"
+    "Immortal",
+    "Relentless"
    ],
    "classPowers": [],
    "namedSpecials": [
@@ -1576,8 +1595,8 @@
     "luck": 0,
     "vision": 6,
     "movement": 5,
-    "staminaMax": 0,
-    "staminaRegen": 0,
+    "staminaMax": 5,
+    "staminaRegen": 1,
     "bleedOutTurns": 5
    },
    "notes": [
@@ -1645,8 +1664,8 @@
     "luck": 0,
     "vision": 6,
     "movement": 5,
-    "staminaMax": 0,
-    "staminaRegen": 0,
+    "staminaMax": 5,
+    "staminaRegen": 1,
     "bleedOutTurns": 5
    },
    "notes": [
@@ -1714,8 +1733,8 @@
     "luck": 0,
     "vision": 6,
     "movement": 5,
-    "staminaMax": 0,
-    "staminaRegen": 0,
+    "staminaMax": 5,
+    "staminaRegen": 1,
     "bleedOutTurns": 5
    },
    "notes": [
@@ -1783,8 +1802,8 @@
     "luck": 0,
     "vision": 6,
     "movement": 5,
-    "staminaMax": 0,
-    "staminaRegen": 0,
+    "staminaMax": 5,
+    "staminaRegen": 1,
     "bleedOutTurns": 5
    },
    "notes": [
@@ -1849,8 +1868,8 @@
     "luck": 0,
     "vision": 6,
     "movement": 5,
-    "staminaMax": 0,
-    "staminaRegen": 0,
+    "staminaMax": 5,
+    "staminaRegen": 1,
     "bleedOutTurns": 5
    },
    "notes": [
@@ -1918,8 +1937,8 @@
     "luck": 0,
     "vision": 6,
     "movement": 5,
-    "staminaMax": 0,
-    "staminaRegen": 0,
+    "staminaMax": 5,
+    "staminaRegen": 1,
     "bleedOutTurns": 5
    },
    "notes": [
@@ -1927,6 +1946,7 @@
    ],
    "specialty": null,
    "originBadges": [
+    "Secret",
     "Frail"
    ],
    "classPowers": [],
@@ -1987,8 +2007,8 @@
     "luck": 2,
     "vision": 6,
     "movement": 5,
-    "staminaMax": 0,
-    "staminaRegen": 0,
+    "staminaMax": 5,
+    "staminaRegen": 1,
     "bleedOutTurns": 5
    },
    "notes": [
@@ -2138,8 +2158,8 @@
     "luck": 0,
     "vision": 6,
     "movement": 5,
-    "staminaMax": 0,
-    "staminaRegen": 0,
+    "staminaMax": 5,
+    "staminaRegen": 1,
     "bleedOutTurns": 5
    },
    "notes": [
@@ -2327,8 +2347,8 @@
     "luck": 0,
     "vision": 6,
     "movement": 5,
-    "staminaMax": 0,
-    "staminaRegen": 0,
+    "staminaMax": 5,
+    "staminaRegen": 1,
     "bleedOutTurns": 5
    },
    "notes": [
@@ -2479,8 +2499,8 @@
     "luck": 0,
     "vision": 6,
     "movement": 5,
-    "staminaMax": 0,
-    "staminaRegen": 0,
+    "staminaMax": 5,
+    "staminaRegen": 1,
     "bleedOutTurns": 5
    },
    "notes": [
@@ -2555,6 +2575,7 @@
    ],
    "specialty": null,
    "originBadges": [
+    "Ancient",
     "Clumsy",
     "Unstoppable"
    ],
@@ -2766,7 +2787,11 @@
     "Toughness 4 is hell-tcg maxAfflictions, ported straight across — same meaning."
    ],
    "specialty": null,
-   "originBadges": [],
+   "originBadges": [
+    "Secret",
+    "Quick Learner",
+    "Diverse Learner"
+   ],
    "classPowers": [],
    "namedSpecials": [],
    "levelBonuses": [
@@ -3095,8 +3120,8 @@
     "luck": 0,
     "vision": 6,
     "movement": 5,
-    "staminaMax": 0,
-    "staminaRegen": 0,
+    "staminaMax": 5,
+    "staminaRegen": 1,
     "bleedOutTurns": 5
    },
    "notes": [
@@ -3390,8 +3415,8 @@
     "luck": 0,
     "vision": 6,
     "movement": 5,
-    "staminaMax": 0,
-    "staminaRegen": 0,
+    "staminaMax": 5,
+    "staminaRegen": 1,
     "bleedOutTurns": 5
    },
    "notes": [
@@ -3438,10 +3463,10 @@
    "campaign": null,
    "art": null,
    "ported": {
-    "strength": 5,
-    "precision": 4,
+    "strength": 6,
+    "precision": 5,
     "armor": 1,
-    "health": 12,
+    "health": 16,
     "reach": 2,
     "magic": 0,
     "spirit": 0,
@@ -3463,10 +3488,13 @@
    },
    "notes": [
     "Toughness 1 is hell-tcg maxAfflictions, ported straight across — same meaning.",
-    "2026-08-20: class.beast created for these four. They were the only heroes in the game with no class."
+    "2026-08-20: class.beast created for these four. They were the only heroes in the game with no class.",
+    "Base stats +1 strength, +1 precision, +4 health — Child compensation (ruled 2026-08-25)."
    ],
    "specialty": null,
-   "originBadges": [],
+   "originBadges": [
+    "Child"
+   ],
    "classPowers": [],
    "namedSpecials": [
     {
@@ -3525,8 +3553,8 @@
     "luck": 0,
     "vision": 6,
     "movement": 5,
-    "staminaMax": 0,
-    "staminaRegen": 0,
+    "staminaMax": 5,
+    "staminaRegen": 1,
     "bleedOutTurns": 5
    },
    "notes": [
@@ -3662,8 +3690,8 @@
     "luck": 0,
     "vision": 6,
     "movement": 5,
-    "staminaMax": 0,
-    "staminaRegen": 0,
+    "staminaMax": 5,
+    "staminaRegen": 1,
     "bleedOutTurns": 5
    },
    "notes": [
@@ -3671,7 +3699,9 @@
     "Toughness 3 is hell-tcg maxAfflictions, ported straight across — same meaning."
    ],
    "specialty": null,
-   "originBadges": [],
+   "originBadges": [
+    "Lithe"
+   ],
    "classPowers": [],
    "namedSpecials": [],
    "levelBonuses": [
@@ -3734,7 +3764,9 @@
     "Toughness 3 is hell-tcg maxAfflictions, ported straight across — same meaning."
    ],
    "specialty": null,
-   "originBadges": [],
+   "originBadges": [
+    "Lithe"
+   ],
    "classPowers": [
     "mage-arcane-strike"
    ],
@@ -3850,10 +3882,10 @@
    "campaign": null,
    "art": "art/heroes/school-children/card/l1.png",
    "ported": {
-    "strength": 3,
-    "precision": 3,
+    "strength": 4,
+    "precision": 4,
     "armor": 0,
-    "health": 8,
+    "health": 12,
     "reach": 2,
     "magic": 0,
     "spirit": 0,
@@ -3869,17 +3901,19 @@
     "luck": 10,
     "vision": 6,
     "movement": 4,
-    "staminaMax": 0,
-    "staminaRegen": 0,
+    "staminaMax": 5,
+    "staminaRegen": 1,
     "bleedOutTurns": 5
    },
    "notes": [
     "Toughness 2 is hell-tcg maxAfflictions, ported straight across — same meaning.",
     "maxRuneSlots 2 has no HoBaT stat; blood runes are items here.",
-    "Stat block dictated 2026-08-25: School Children, dictated 2026-08-25. The plural unit (school-children-flux-v3 art). Braver than they should be, luckier than they know."
+    "Stat block dictated 2026-08-25: School Children, dictated 2026-08-25. The plural unit (school-children-flux-v3 art). Braver than they should be, luckier than they know.",
+    "Base stats +1 strength, +1 precision, +4 health — Child compensation (ruled 2026-08-25)."
    ],
    "specialty": null,
    "originBadges": [
+    "Child",
     "Frail"
    ],
    "classPowers": [],
@@ -3980,8 +4014,8 @@
     "luck": 7,
     "vision": 6,
     "movement": 5,
-    "staminaMax": 0,
-    "staminaRegen": 0,
+    "staminaMax": 5,
+    "staminaRegen": 1,
     "bleedOutTurns": 5
    },
    "notes": [
@@ -3994,7 +4028,9 @@
     "description": "Years of teaching have given her patience and wisdom"
    },
    "originBadges": [
-    "Frail"
+    "Angry",
+    "Frail",
+    "Physician"
    ],
    "classPowers": [],
    "namedSpecials": [
@@ -4213,8 +4249,8 @@
     "luck": 0,
     "vision": 6,
     "movement": 5,
-    "staminaMax": 0,
-    "staminaRegen": 0,
+    "staminaMax": 5,
+    "staminaRegen": 1,
     "bleedOutTurns": 5
    },
    "notes": [
@@ -4223,7 +4259,8 @@
    ],
    "specialty": null,
    "originBadges": [
-    "Frail"
+    "Frail",
+    "Scavenger"
    ],
    "classPowers": [],
    "namedSpecials": [
@@ -4284,8 +4321,8 @@
     "luck": 0,
     "vision": 6,
     "movement": 5,
-    "staminaMax": 0,
-    "staminaRegen": 0,
+    "staminaMax": 5,
+    "staminaRegen": 1,
     "bleedOutTurns": 5
    },
    "notes": [
@@ -4351,8 +4388,8 @@
     "luck": 0,
     "vision": 6,
     "movement": 5,
-    "staminaMax": 0,
-    "staminaRegen": 0,
+    "staminaMax": 5,
+    "staminaRegen": 1,
     "bleedOutTurns": 5
    },
    "notes": [
@@ -4533,10 +4570,10 @@
    "campaign": "shadows",
    "art": null,
    "ported": {
-    "strength": 10,
-    "precision": 3,
+    "strength": 11,
+    "precision": 4,
     "armor": 3,
-    "health": 12,
+    "health": 16,
     "reach": 1,
     "magic": -1,
     "spirit": -1,
@@ -4558,12 +4595,15 @@
    },
    "notes": [
     "Toughness 0 is hell-tcg maxAfflictions, ported straight across — same meaning.",
-    "2026-08-20: class.beast created for these four. They were the only heroes in the game with no class."
+    "2026-08-20: class.beast created for these four. They were the only heroes in the game with no class.",
+    "Base stats +1 strength, +1 precision, +4 health — Child compensation (ruled 2026-08-25)."
    ],
    "specialty": null,
    "originBadges": [
     "Survivor",
-    "Immortal"
+    "Immortal",
+    "Child",
+    "Crippled"
    ],
    "classPowers": [
     "beast-sand-blast"
@@ -4604,10 +4644,10 @@
    "campaign": "shadows",
    "art": null,
    "ported": {
-    "strength": 3,
-    "precision": 3,
+    "strength": 4,
+    "precision": 4,
     "armor": 0,
-    "health": 8,
+    "health": 12,
     "reach": 3,
     "magic": 4,
     "spirit": 1,
@@ -4623,15 +4663,18 @@
     "luck": 0,
     "vision": 6,
     "movement": 5,
-    "staminaMax": 0,
-    "staminaRegen": 0,
+    "staminaMax": 5,
+    "staminaRegen": 1,
     "bleedOutTurns": 5
    },
    "notes": [
-    "Toughness 4 is hell-tcg maxAfflictions, ported straight across — same meaning."
+    "Toughness 4 is hell-tcg maxAfflictions, ported straight across — same meaning.",
+    "Base stats +1 strength, +1 precision, +4 health — Child compensation (ruled 2026-08-25)."
    ],
    "specialty": null,
-   "originBadges": [],
+   "originBadges": [
+    "Child"
+   ],
    "classPowers": [],
    "namedSpecials": [],
    "levelBonuses": [
@@ -4692,7 +4735,8 @@
    ],
    "specialty": null,
    "originBadges": [
-    "Immortal"
+    "Immortal",
+    "Relentless"
    ],
    "classPowers": [],
    "namedSpecials": [
@@ -4750,8 +4794,8 @@
     "luck": 0,
     "vision": 6,
     "movement": 5,
-    "staminaMax": 0,
-    "staminaRegen": 0,
+    "staminaMax": 5,
+    "staminaRegen": 1,
     "bleedOutTurns": 5
    },
    "notes": [
@@ -4759,6 +4803,7 @@
    ],
    "specialty": null,
    "originBadges": [
+    "Outcast",
     "Survivor",
     "Veteran"
    ],
@@ -4802,10 +4847,10 @@
    "campaign": "shadows",
    "art": null,
    "ported": {
-    "strength": 4,
-    "precision": 4,
+    "strength": 5,
+    "precision": 5,
     "armor": 0,
-    "health": 8,
+    "health": 12,
     "reach": 2,
     "magic": 0,
     "spirit": 0,
@@ -4821,15 +4866,18 @@
     "luck": 0,
     "vision": 6,
     "movement": 5,
-    "staminaMax": 0,
-    "staminaRegen": 0,
+    "staminaMax": 5,
+    "staminaRegen": 1,
     "bleedOutTurns": 5
    },
    "notes": [
-    "Toughness 4 is hell-tcg maxAfflictions, ported straight across — same meaning."
+    "Toughness 4 is hell-tcg maxAfflictions, ported straight across — same meaning.",
+    "Base stats +1 strength, +1 precision, +4 health — Child compensation (ruled 2026-08-25)."
    ],
    "specialty": null,
-   "originBadges": [],
+   "originBadges": [
+    "Child"
+   ],
    "classPowers": [],
    "namedSpecials": [
     {
@@ -4889,15 +4937,17 @@
     "luck": 0,
     "vision": 6,
     "movement": 5,
-    "staminaMax": 0,
-    "staminaRegen": 0,
+    "staminaMax": 5,
+    "staminaRegen": 1,
     "bleedOutTurns": 5
    },
    "notes": [
     "Toughness 3 is hell-tcg maxAfflictions, ported straight across — same meaning."
    ],
    "specialty": null,
-   "originBadges": [],
+   "originBadges": [
+    "Looting"
+   ],
    "classPowers": [],
    "namedSpecials": [
     {
@@ -4957,8 +5007,8 @@
     "luck": 0,
     "vision": 6,
     "movement": 5,
-    "staminaMax": 0,
-    "staminaRegen": 0,
+    "staminaMax": 5,
+    "staminaRegen": 1,
     "bleedOutTurns": 5
    },
    "notes": [
@@ -5020,8 +5070,8 @@
     "luck": 0,
     "vision": 6,
     "movement": 5,
-    "staminaMax": 0,
-    "staminaRegen": 0,
+    "staminaMax": 5,
+    "staminaRegen": 1,
     "bleedOutTurns": 5
    },
    "notes": [
@@ -5087,8 +5137,8 @@
     "luck": 0,
     "vision": 6,
     "movement": 5,
-    "staminaMax": 0,
-    "staminaRegen": 0,
+    "staminaMax": 5,
+    "staminaRegen": 1,
     "bleedOutTurns": 5
    },
    "notes": [
@@ -5152,8 +5202,8 @@
     "luck": 0,
     "vision": 6,
     "movement": 5,
-    "staminaMax": 0,
-    "staminaRegen": 0,
+    "staminaMax": 5,
+    "staminaRegen": 1,
     "bleedOutTurns": 5
    },
    "notes": [
@@ -5222,8 +5272,8 @@
     "luck": 0,
     "vision": 6,
     "movement": 5,
-    "staminaMax": 0,
-    "staminaRegen": 0,
+    "staminaMax": 5,
+    "staminaRegen": 1,
     "bleedOutTurns": 5
    },
    "notes": [
@@ -5233,6 +5283,7 @@
    "specialty": null,
    "originBadges": [
     "Survivor",
+    "Brave",
     "Veteran"
    ],
    "classPowers": [],
@@ -5289,8 +5340,8 @@
     "luck": 0,
     "vision": 6,
     "movement": 5,
-    "staminaMax": 0,
-    "staminaRegen": 0,
+    "staminaMax": 5,
+    "staminaRegen": 1,
     "bleedOutTurns": 5
    },
    "notes": [
@@ -5356,8 +5407,8 @@
     "luck": 0,
     "vision": 6,
     "movement": 5,
-    "staminaMax": 0,
-    "staminaRegen": 0,
+    "staminaMax": 5,
+    "staminaRegen": 1,
     "bleedOutTurns": 5
    },
    "notes": [
@@ -5416,8 +5467,8 @@
     "luck": 0,
     "vision": 6,
     "movement": 5,
-    "staminaMax": 0,
-    "staminaRegen": 0,
+    "staminaMax": 5,
+    "staminaRegen": 1,
     "bleedOutTurns": 5
    },
    "notes": [
@@ -5555,8 +5606,8 @@
     "luck": 0,
     "vision": 6,
     "movement": 5,
-    "staminaMax": 0,
-    "staminaRegen": 0,
+    "staminaMax": 5,
+    "staminaRegen": 1,
     "bleedOutTurns": 5
    },
    "notes": [
@@ -5629,8 +5680,8 @@
     "luck": 0,
     "vision": 6,
     "movement": 5,
-    "staminaMax": 0,
-    "staminaRegen": 0,
+    "staminaMax": 5,
+    "staminaRegen": 1,
     "bleedOutTurns": 5
    },
    "notes": [
@@ -5700,8 +5751,8 @@
     "luck": 0,
     "vision": 6,
     "movement": 5,
-    "staminaMax": 0,
-    "staminaRegen": 0,
+    "staminaMax": 5,
+    "staminaRegen": 1,
     "bleedOutTurns": 5
    },
    "notes": [
@@ -5752,10 +5803,10 @@
    "campaign": "skyship",
    "art": null,
    "ported": {
-    "strength": 3,
-    "precision": 3,
+    "strength": 4,
+    "precision": 4,
     "armor": 0,
-    "health": 9,
+    "health": 13,
     "reach": 2,
     "magic": 0,
     "spirit": 0,
@@ -5773,18 +5824,20 @@
     "luck": 0,
     "vision": 6,
     "movement": 5,
-    "staminaMax": 0,
-    "staminaRegen": 0,
+    "staminaMax": 5,
+    "staminaRegen": 1,
     "bleedOutTurns": 5
    },
    "notes": [
     "Dodge 1 scaled x5 to 5 — hell-tcg Dodge was a 0-3 integer, HoBaT Dodge is a flat to-hit penalty in points.",
     "Resolute +1 DROPPED — the stat was removed 2026-08-15 with no replacement.",
-    "Toughness 3 is hell-tcg maxAfflictions, ported straight across — same meaning."
+    "Toughness 3 is hell-tcg maxAfflictions, ported straight across — same meaning.",
+    "Base stats +1 strength, +1 precision, +4 health — Child compensation (ruled 2026-08-25)."
    ],
    "specialty": null,
    "originBadges": [
-    "Frail"
+    "Frail",
+    "Child"
    ],
    "classPowers": [
     "skyship-cabin-boy-escape"
@@ -6066,8 +6119,8 @@
     "luck": 0,
     "vision": 6,
     "movement": 5,
-    "staminaMax": 0,
-    "staminaRegen": 0,
+    "staminaMax": 5,
+    "staminaRegen": 1,
     "bleedOutTurns": 5
    },
    "notes": [
@@ -6145,7 +6198,9 @@
     "Toughness 2 is hell-tcg maxAfflictions, ported straight across — same meaning."
    ],
    "specialty": null,
-   "originBadges": [],
+   "originBadges": [
+    "Devil in Disguise"
+   ],
    "classPowers": [],
    "namedSpecials": [
     {
@@ -6214,7 +6269,9 @@
     "Toughness 2 is hell-tcg maxAfflictions, ported straight across — same meaning."
    ],
    "specialty": null,
-   "originBadges": [],
+   "originBadges": [
+    "Secret"
+   ],
    "classPowers": [],
    "namedSpecials": [
     {
@@ -6275,8 +6332,8 @@
     "luck": 0,
     "vision": 6,
     "movement": 5,
-    "staminaMax": 0,
-    "staminaRegen": 0,
+    "staminaMax": 5,
+    "staminaRegen": 1,
     "bleedOutTurns": 5
    },
    "notes": [
@@ -6339,8 +6396,8 @@
     "luck": 0,
     "vision": 6,
     "movement": 5,
-    "staminaMax": 0,
-    "staminaRegen": 0,
+    "staminaMax": 5,
+    "staminaRegen": 1,
     "bleedOutTurns": 5
    },
    "notes": [
@@ -6348,6 +6405,9 @@
    ],
    "specialty": null,
    "originBadges": [
+    "Old",
+    "Wise",
+    "Ancient",
     "Frail"
    ],
    "classPowers": [],
@@ -6390,10 +6450,10 @@
    "campaign": "skyship",
    "art": null,
    "ported": {
-    "strength": 4,
-    "precision": 4,
+    "strength": 5,
+    "precision": 5,
     "armor": 0,
-    "health": 8,
+    "health": 12,
     "reach": 2,
     "magic": 0,
     "spirit": 0,
@@ -6409,15 +6469,18 @@
     "luck": 0,
     "vision": 6,
     "movement": 5,
-    "staminaMax": 0,
-    "staminaRegen": 0,
+    "staminaMax": 5,
+    "staminaRegen": 1,
     "bleedOutTurns": 5
    },
    "notes": [
-    "Toughness 4 is hell-tcg maxAfflictions, ported straight across — same meaning."
+    "Toughness 4 is hell-tcg maxAfflictions, ported straight across — same meaning.",
+    "Base stats +1 strength, +1 precision, +4 health — Child compensation (ruled 2026-08-25)."
    ],
    "specialty": null,
-   "originBadges": [],
+   "originBadges": [
+    "Child"
+   ],
    "classPowers": [],
    "namedSpecials": [
     {
@@ -6478,8 +6541,8 @@
     "luck": 0,
     "vision": 6,
     "movement": 5,
-    "staminaMax": 0,
-    "staminaRegen": 0,
+    "staminaMax": 5,
+    "staminaRegen": 1,
     "bleedOutTurns": 5
    },
    "notes": [
@@ -6541,8 +6604,8 @@
     "luck": 0,
     "vision": 6,
     "movement": 5,
-    "staminaMax": 0,
-    "staminaRegen": 0,
+    "staminaMax": 5,
+    "staminaRegen": 1,
     "bleedOutTurns": 5
    },
    "notes": [
@@ -6605,8 +6668,8 @@
     "luck": 0,
     "vision": 6,
     "movement": 5,
-    "staminaMax": 0,
-    "staminaRegen": 0,
+    "staminaMax": 5,
+    "staminaRegen": 1,
     "bleedOutTurns": 5
    },
    "notes": [
@@ -6672,8 +6735,8 @@
     "luck": 0,
     "vision": 6,
     "movement": 5,
-    "staminaMax": 0,
-    "staminaRegen": 0,
+    "staminaMax": 5,
+    "staminaRegen": 1,
     "bleedOutTurns": 5
    },
    "notes": [
@@ -6741,8 +6804,8 @@
     "luck": 0,
     "vision": 6,
     "movement": 5,
-    "staminaMax": 0,
-    "staminaRegen": 0,
+    "staminaMax": 5,
+    "staminaRegen": 1,
     "bleedOutTurns": 5
    },
    "notes": [
@@ -6790,10 +6853,10 @@
    "campaign": null,
    "art": null,
    "ported": {
-    "strength": 2,
-    "precision": 2,
+    "strength": 3,
+    "precision": 3,
     "armor": 0,
-    "health": 6,
+    "health": 10,
     "reach": 1,
     "magic": 0,
     "spirit": 0,
@@ -6809,15 +6872,17 @@
     "luck": 0,
     "vision": 6,
     "movement": 5,
-    "staminaMax": 0,
-    "staminaRegen": 0,
+    "staminaMax": 5,
+    "staminaRegen": 1,
     "bleedOutTurns": 5
    },
    "notes": [
-    "Toughness 3 is hell-tcg maxAfflictions, ported straight across — same meaning."
+    "Toughness 3 is hell-tcg maxAfflictions, ported straight across — same meaning.",
+    "Base stats +1 strength, +1 precision, +4 health — Child compensation (ruled 2026-08-25)."
    ],
    "specialty": null,
    "originBadges": [
+    "Child",
     "Frail"
    ],
    "classPowers": [],
@@ -7035,7 +7100,9 @@
     "NAME IS A PLACEHOLDER — the template ships one name for all four. Numbering is mine."
    ],
    "specialty": null,
-   "originBadges": [],
+   "originBadges": [
+    "DemonSlayer"
+   ],
    "classPowers": [],
    "namedSpecials": [
     {
@@ -7107,7 +7174,9 @@
     "NAME IS A PLACEHOLDER — the template ships one name for all four. Numbering is mine."
    ],
    "specialty": null,
-   "originBadges": [],
+   "originBadges": [
+    "DemonSlayer"
+   ],
    "classPowers": [],
    "namedSpecials": [
     {
@@ -7179,7 +7248,9 @@
     "NAME IS A PLACEHOLDER — the template ships one name for all four. Numbering is mine."
    ],
    "specialty": null,
-   "originBadges": [],
+   "originBadges": [
+    "DemonSlayer"
+   ],
    "classPowers": [],
    "namedSpecials": [
     {
@@ -7251,7 +7322,9 @@
     "NAME IS A PLACEHOLDER — the template ships one name for all four. Numbering is mine."
    ],
    "specialty": null,
-   "originBadges": [],
+   "originBadges": [
+    "DemonSlayer"
+   ],
    "classPowers": [],
    "namedSpecials": [
     {
@@ -9968,7 +10041,9 @@
     "NAME IS A PLACEHOLDER — the template ships one name for all four. Numbering is mine."
    ],
    "specialty": null,
-   "originBadges": [],
+   "originBadges": [
+    "Scouting"
+   ],
    "classPowers": [
     "ranger-doubleshot"
    ],
@@ -10043,7 +10118,9 @@
     "NAME IS A PLACEHOLDER — the template ships one name for all four. Numbering is mine."
    ],
    "specialty": null,
-   "originBadges": [],
+   "originBadges": [
+    "Scouting"
+   ],
    "classPowers": [
     "ranger-doubleshot"
    ],
@@ -10118,7 +10195,9 @@
     "NAME IS A PLACEHOLDER — the template ships one name for all four. Numbering is mine."
    ],
    "specialty": null,
-   "originBadges": [],
+   "originBadges": [
+    "Scouting"
+   ],
    "classPowers": [
     "ranger-doubleshot"
    ],
@@ -10193,7 +10272,9 @@
     "NAME IS A PLACEHOLDER — the template ships one name for all four. Numbering is mine."
    ],
    "specialty": null,
-   "originBadges": [],
+   "originBadges": [
+    "Scouting"
+   ],
    "classPowers": [
     "ranger-doubleshot"
    ],
@@ -11148,7 +11229,8 @@
    ],
    "specialty": null,
    "originBadges": [
-    "Survivor"
+    "Survivor",
+    "Relentless"
    ],
    "classPowers": [],
    "namedSpecials": [
@@ -11222,7 +11304,8 @@
    ],
    "specialty": null,
    "originBadges": [
-    "Survivor"
+    "Survivor",
+    "Relentless"
    ],
    "classPowers": [],
    "namedSpecials": [
@@ -11296,7 +11379,8 @@
    ],
    "specialty": null,
    "originBadges": [
-    "Survivor"
+    "Survivor",
+    "Relentless"
    ],
    "classPowers": [],
    "namedSpecials": [
@@ -11370,7 +11454,8 @@
    ],
    "specialty": null,
    "originBadges": [
-    "Survivor"
+    "Survivor",
+    "Relentless"
    ],
    "classPowers": [],
    "namedSpecials": [
@@ -12273,7 +12358,9 @@
     "NAME IS A PLACEHOLDER — the template ships one name for all four. Numbering is mine."
    ],
    "specialty": null,
-   "originBadges": [],
+   "originBadges": [
+    "HumanSlayer"
+   ],
    "classPowers": [],
    "namedSpecials": [
     {
@@ -12345,7 +12432,9 @@
     "NAME IS A PLACEHOLDER — the template ships one name for all four. Numbering is mine."
    ],
    "specialty": null,
-   "originBadges": [],
+   "originBadges": [
+    "HumanSlayer"
+   ],
    "classPowers": [],
    "namedSpecials": [
     {
@@ -12417,7 +12506,9 @@
     "NAME IS A PLACEHOLDER — the template ships one name for all four. Numbering is mine."
    ],
    "specialty": null,
-   "originBadges": [],
+   "originBadges": [
+    "HumanSlayer"
+   ],
    "classPowers": [],
    "namedSpecials": [
     {
@@ -12489,7 +12580,9 @@
     "NAME IS A PLACEHOLDER — the template ships one name for all four. Numbering is mine."
    ],
    "specialty": null,
-   "originBadges": [],
+   "originBadges": [
+    "HumanSlayer"
+   ],
    "classPowers": [],
    "namedSpecials": [
     {
@@ -14047,6 +14140,7 @@
    ],
    "specialty": null,
    "originBadges": [
+    "Stalwart",
     "Dwarf"
    ],
    "classPowers": [],
@@ -14176,7 +14270,9 @@
     "Differentiated 2026-08-22: The one warrior who is NOT a dwarf, and pays for it in reach of arm rather than in badges."
    ],
    "specialty": null,
-   "originBadges": [],
+   "originBadges": [
+    "Brave"
+   ],
    "classPowers": [],
    "namedSpecials": [],
    "triggers": null,
@@ -14437,7 +14533,9 @@
    ],
    "specialty": null,
    "originBadges": [
-    "Dwarf"
+    "Unwavering",
+    "Dwarf",
+    "Brawler"
    ],
    "classPowers": [],
    "namedSpecials": [],
@@ -14694,7 +14792,9 @@
     "Differentiated 2026-08-22: The aura is the point: she does not have to swing to burn you, she has to be hit."
    ],
    "specialty": null,
-   "originBadges": [],
+   "originBadges": [
+    "Lithe"
+   ],
    "classPowers": [],
    "namedSpecials": [],
    "triggers": null,
@@ -14837,7 +14937,9 @@
     "Differentiated 2026-08-22: The one in the library. Frost rather than fire - the only cold mage of the four."
    ],
    "specialty": null,
-   "originBadges": [],
+   "originBadges": [
+    "Quick Learner"
+   ],
    "classPowers": [],
    "namedSpecials": [],
    "triggers": null,
@@ -15354,7 +15456,9 @@
     "Differentiated 2026-08-22: Office rather than power - he trades the raw magic for the conviction behind it."
    ],
    "specialty": null,
-   "originBadges": [],
+   "originBadges": [
+    "Wise"
+   ],
    "classPowers": [
     "power.eve.vespers"
    ],
@@ -15612,7 +15716,8 @@
    ],
    "specialty": null,
    "originBadges": [
-    "Vengeful"
+    "Vengeful",
+    "UndeadSlayer"
    ],
    "classPowers": [],
    "namedSpecials": [],
@@ -15752,7 +15857,9 @@
     "Differentiated 2026-08-22: The very armoured one. Everything he gains in protection he pays for in every other direction."
    ],
    "specialty": null,
-   "originBadges": [],
+   "originBadges": [
+    "UndeadSlayer"
+   ],
    "classPowers": [],
    "namedSpecials": [],
    "triggers": null,
@@ -15881,7 +15988,10 @@
     "Differentiated 2026-08-22: The bright one. Begins the battle already owed something."
    ],
    "specialty": null,
-   "originBadges": [],
+   "originBadges": [
+    "Quick",
+    "UndeadSlayer"
+   ],
    "classPowers": [],
    "namedSpecials": [],
    "triggers": null,
@@ -16022,7 +16132,10 @@
     "Differentiated 2026-08-22: Insufferable, and the dice know it. Ruled: rather than invent a negative floor that would eat later gains, his crit and luck are simply subtracted to zero at the start and his surge drops by 1. He gets the stamina to keep swinging instead."
    ],
    "specialty": null,
-   "originBadges": [],
+   "originBadges": [
+    "Brave",
+    "UndeadSlayer"
+   ],
    "classPowers": [],
    "namedSpecials": [],
    "triggers": null,
@@ -16551,6 +16664,7 @@
    ],
    "specialty": null,
    "originBadges": [
+    "Agile",
     "Elf",
     "Forester"
    ],
@@ -16678,7 +16792,9 @@
     "Hell-TCG shipped four alternative stat/personality rolls for this art set. Only the first is carried; the other three were cut as duplications of art."
    ],
    "specialty": null,
-   "originBadges": [],
+   "originBadges": [
+    "Lithe"
+   ],
    "classPowers": [],
    "namedSpecials": [],
    "triggers": null,
@@ -16806,7 +16922,10 @@
     "Hell-TCG shipped four alternative stat/personality rolls for this art set. Only the first is carried; the other three were cut as duplications of art."
    ],
    "specialty": null,
-   "originBadges": [],
+   "originBadges": [
+    "Ignorant",
+    "Retaliating"
+   ],
    "classPowers": [],
    "namedSpecials": [],
    "triggers": null,
@@ -17067,7 +17186,9 @@
     "Hell-TCG shipped four alternative stat/personality rolls for this art set. Only the first is carried; the other three were cut as duplications of art."
    ],
    "specialty": null,
-   "originBadges": [],
+   "originBadges": [
+    "Lucky"
+   ],
    "classPowers": [],
    "namedSpecials": [],
    "triggers": null,
@@ -17184,8 +17305,8 @@
     "luck": 0,
     "vision": 6,
     "movement": 5,
-    "staminaMax": 0,
-    "staminaRegen": 0,
+    "staminaMax": 5,
+    "staminaRegen": 1,
     "bleedOutTurns": 5
    },
    "notes": [
@@ -17242,8 +17363,8 @@
     "luck": 0,
     "vision": 6,
     "movement": 5,
-    "staminaMax": 0,
-    "staminaRegen": 0,
+    "staminaMax": 5,
+    "staminaRegen": 1,
     "bleedOutTurns": 5
    },
    "notes": [
@@ -17300,8 +17421,8 @@
     "luck": 0,
     "vision": 6,
     "movement": 5,
-    "staminaMax": 0,
-    "staminaRegen": 0,
+    "staminaMax": 5,
+    "staminaRegen": 1,
     "bleedOutTurns": 5
    },
    "notes": [
@@ -17359,8 +17480,8 @@
     "luck": 0,
     "vision": 6,
     "movement": 5,
-    "staminaMax": 0,
-    "staminaRegen": 0,
+    "staminaMax": 5,
+    "staminaRegen": 1,
     "bleedOutTurns": 5
    },
    "notes": [
@@ -17418,8 +17539,8 @@
     "luck": 0,
     "vision": 6,
     "movement": 5,
-    "staminaMax": 0,
-    "staminaRegen": 0,
+    "staminaMax": 5,
+    "staminaRegen": 1,
     "bleedOutTurns": 5
    },
    "notes": [
@@ -17476,8 +17597,8 @@
     "luck": 0,
     "vision": 6,
     "movement": 5,
-    "staminaMax": 0,
-    "staminaRegen": 0,
+    "staminaMax": 5,
+    "staminaRegen": 1,
     "bleedOutTurns": 5
    },
    "notes": [
@@ -17534,8 +17655,8 @@
     "luck": 0,
     "vision": 6,
     "movement": 5,
-    "staminaMax": 0,
-    "staminaRegen": 0,
+    "staminaMax": 5,
+    "staminaRegen": 1,
     "bleedOutTurns": 5
    },
    "notes": [
@@ -17592,8 +17713,8 @@
     "luck": 0,
     "vision": 6,
     "movement": 5,
-    "staminaMax": 0,
-    "staminaRegen": 0,
+    "staminaMax": 5,
+    "staminaRegen": 1,
     "bleedOutTurns": 5
    },
    "notes": [
@@ -18878,10 +18999,10 @@
    "campaign": null,
    "art": "art/heroes/school-child-female/card/l1.png",
    "ported": {
-    "strength": 3,
-    "precision": 3,
+    "strength": 4,
+    "precision": 4,
     "armor": 0,
-    "health": 8,
+    "health": 12,
     "reach": 2,
     "magic": 0,
     "spirit": 0,
@@ -18897,15 +19018,17 @@
     "luck": 0,
     "vision": 6,
     "movement": 5,
-    "staminaMax": 0,
-    "staminaRegen": 0,
+    "staminaMax": 5,
+    "staminaRegen": 1,
     "bleedOutTurns": 5
    },
    "notes": [
-    "NEW UNIT ruled 2026-08-25: the school-child-solo art is its own character, separate from School Children. Stats cloned from School Children as a SOFT baseline — a sweep or ruling prices her."
+    "NEW UNIT ruled 2026-08-25: the school-child-solo art is its own character, separate from School Children. Stats cloned from School Children as a SOFT baseline — a sweep or ruling prices her.",
+    "Base stats +1 strength, +1 precision, +4 health — Child compensation (ruled 2026-08-25)."
    ],
    "specialty": null,
    "originBadges": [
+    "Child",
     "Frail"
    ],
    "classPowers": [],
