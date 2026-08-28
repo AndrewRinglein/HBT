@@ -107,14 +107,39 @@
    "needs": "capability.inflict-affliction"
   },
   {
+   "unit": "hero.base.ranger-aggressive",
+   "what": "kit item item.thick-hide not in settled-items",
+   "needs": "content"
+  },
+  {
    "unit": "hero.base.warrior-iron",
-   "what": "kit is PINNED item.destroyed-mail — the class-draw remainder is a SPEC; the roll belongs to the draft",
-   "needs": "kit remainder unresolved"
+   "what": "item.tower-shield grants power.tower-shield.cover which has no attack row",
+   "needs": "content"
+  },
+  {
+   "unit": "hero.base.warrior-iron",
+   "what": "item.tower-shield grants power.tower-shield.stand-tall which has no attack row",
+   "needs": "content"
+  },
+  {
+   "unit": "hero.base.warrior-iron",
+   "what": "kit item item.war-axe not in settled-items",
+   "needs": "content"
   },
   {
    "unit": "hero.base.priest-armored",
-   "what": "kit is a random SPEC — the roll belongs to the draft; needs a dictated hero override",
-   "needs": "kit unresolved"
+   "what": "item.knight-shield grants power.knight-shield.block which has no attack row",
+   "needs": "content"
+  },
+  {
+   "unit": "hero.base.priest-armored",
+   "what": "kit item item.holy-texts not in settled-items",
+   "needs": "content"
+  },
+  {
+   "unit": "hero.base.priest-armored",
+   "what": "kit item item.pilgrims-habit not in settled-items",
+   "needs": "content"
   },
   {
    "unit": "alpha-air-mage",

@@ -77,46 +77,109 @@
   }
  },
  "heroKits": {
-  "_note": "Per-hero overrides — dictated during the Eve differentiation pass, recorded in gen/eve-differentiation.json startingItems and mirrored here as the S12 registry. A hero listed here ignores its class kit. | 2026-08-27, the override grammar ruled with the start-kit rework: a plain ARRAY is a full kit — no randomness, the draw never runs (both elf rangers pin the Elfbow this way). {pinned:[...]} guarantees those items and lets the CLASS DRAW complete the rest — a pinned one-hander on a warrior or paladin still rolls the second hand; a pinned two-hander, or any pin on a one-weapon class, ends it. No entry at all = the plain class draw. One grammar, three cases. | 2026-08-27: a pinned ARMOR item satisfies the hero’s tier-0 armor draw the way a pinned weapon satisfies hands — the other draw still runs.",
+  "_note": "Per-hero overrides — dictated during the Eve differentiation pass, recorded in gen/eve-differentiation.json startingItems and mirrored here as the S12 registry. A hero listed here ignores its class kit. | 2026-08-27, the override grammar ruled with the start-kit rework: a plain ARRAY is a full kit — no randomness, the draw never runs (both elf rangers pin the Elfbow this way). {pinned:[...]} guarantees those items and lets the CLASS DRAW complete the rest — a pinned one-hander on a warrior or paladin still rolls the second hand; a pinned two-hander, or any pin on a one-weapon class, ends it. No entry at all = the plain class draw. One grammar, three cases. | 2026-08-27: a pinned ARMOR item satisfies the hero’s tier-0 armor draw the way a pinned weapon satisfies hands — the other draw still runs. | 2026-08-27b: ALL 24 Eve heroes now carry FULL kits (weapons AND one tier-0 armor each), dictated in the hero workbook — no Eve hero rolls the class draw. The class draws remain for generative heroes. The Serpent's \"throwing dagger\" resolved to Throwing Knives (the Skull took the Daggers pair, so the names cannot mean the same item). This resolves the two battle-2 blockers: Iron Dwarf (War Axe + Tower Shield + Destroyed Mail) and Battle Chaplain (Holy Texts + Knight Shield + Pilgrim's Habit). | 2026-08-27c, ruled: the Dwarven Brawler starts with NO weapons — armor only (Ragged Hides). He has the Brawler badge: +2 on brawl attacks, and the universal Punch IS his weapon. The buckler and whip are struck.",
   "hero.base.paladin-dark": [
-   "item.greatsword"
+   "item.greatsword",
+   "item.rusted-plate"
   ],
   "hero.base.paladin-shiney": [
    "item.longsword",
-   "item.knight-shield"
+   "item.knight-shield",
+   "item.basic-armor"
   ],
   "hero.base.paladin-hunk": [
    "item.longsword",
-   "item.knight-shield"
+   "item.knight-shield",
+   "item.ragged-hides"
   ],
   "hero.base.paladin-smug": [
    "item.longsword",
-   "item.knight-shield"
+   "item.knight-shield",
+   "item.destroyed-mail"
   ],
   "hero.base.ranger-ranger": [
-   "item.elfbow"
+   "item.elfbow",
+   "item.flowing-cloak"
   ],
   "hero.base.ranger-scantily": [
-   "item.elfbow"
+   "item.elfbow",
+   "item.flowing-cloak"
   ],
   "hero.base.ranger-nature": [
-   "item.shortbow"
+   "item.shortbow",
+   "item.pilgrims-habit"
   ],
   "hero.base.ranger-aggressive": [
-   "item.longbow"
+   "item.longbow",
+   "item.thick-hide"
   ],
-  "hero.base.warrior-iron": {
-   "pinned": [
-    "item.destroyed-mail"
-   ],
-   "why": "Ruled 2026-08-27: the Iron Dwarf starts in the Destroyed Mail. A pinned ARMOR satisfies the armor draw; his weapon draw (two hands worth, warrior pool) still runs."
-  },
-  "hero.base.warrior-brawler": {
-   "pinned": [
-    "item.ragged-hides"
-   ],
-   "why": "Ruled 2026-08-27: the Dwarven Brawler starts in the Ragged Hides. Weapon draw unchanged."
-  }
+  "hero.base.warrior-iron": [
+   "item.destroyed-mail",
+   "item.tower-shield",
+   "item.war-axe"
+  ],
+  "hero.base.warrior-brawler": [
+   "item.ragged-hides"
+  ],
+  "hero.base.warrior-barbarian": [
+   "item.greatsword",
+   "item.thick-hide"
+  ],
+  "hero.base.warrior-fearsome": [
+   "item.halberd",
+   "item.basic-armor"
+  ],
+  "hero.base.mage-thinking": [
+   "item.frost-staff",
+   "item.watchmans-coat"
+  ],
+  "hero.base.mage-sexy": [
+   "item.fire-staff",
+   "item.tanners-apron"
+  ],
+  "hero.base.mage-fire": [
+   "item.fire-staff",
+   "item.basic-armor"
+  ],
+  "hero.base.mage-fireaura": [
+   "item.fire-staff",
+   "item.nice-robes"
+  ],
+  "hero.base.priest-pauper": [
+   "item.holy-texts",
+   "item.nice-robes"
+  ],
+  "hero.base.priest-armored": [
+   "item.knight-shield",
+   "item.holy-texts",
+   "item.pilgrims-habit"
+  ],
+  "hero.base.priest-robes": [
+   "item.holy-symbol",
+   "item.peddlers-vest"
+  ],
+  "hero.base.priest-scantily": [
+   "item.iron-mace",
+   "item.holy-symbol",
+   "item.borrowed-vestments"
+  ],
+  "hero.base.rogue-raven": [
+   "item.hand-crossbow",
+   "item.longsword",
+   "item.peddlers-vest"
+  ],
+  "hero.base.rogue-rose": [
+   "item.obsidian-fang-dagger",
+   "item.flowing-cloak"
+  ],
+  "hero.base.rogue-snake": [
+   "item.throwing-knives",
+   "item.basic-armor"
+  ],
+  "hero.base.rogue-skull": [
+   "item.daggers",
+   "item.watchmans-coat"
+  ]
  },
  "civilianKitsLiveIn": "gen/civilian-rulings.json statBlocks — same per-hero principle, dictated with their stat blocks.",
  "armorDraw": {
