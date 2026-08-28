@@ -331,13 +331,17 @@ for (const id of PARTY) {
     for (const aid of it.grants || []) {
       const a = SATTACK_BY_ID.get(aid);
       if (!a) { gap(id, `${itemId} grants ${aid} which has no attack row`, 'content'); continue; }
-      const ranged = (a.range ?? 1) > 1;
+      // gen/weapons.json (S37a's third source) writes range as the STRING
+      // "melee" — passing it into reach shipped `reach: "melee"` and the
+      // engine loader refused the whole pack, loudly and correctly (Law 9).
+      // Ranged means a NUMBER above 1, same as the alpha lane; melee is 1.
+      const ranged = typeof a.range === 'number' && a.range > 1;
       anyRanged = anyRanged || ranged;
       authoredAttacks[a.id] = {
         id: a.id, name: a.name, kind: ranged ? 'ranged' : 'melee',
         damageType: a.damageType || 'physical',
         bonus: a.damage ?? 0, stat: a.stat || 'strength',
-        reach: a.range ?? 1, staminaCost: a.stamina ?? 0, // heroes pay
+        reach: ranged ? a.range : 1, staminaCost: a.stamina ?? 0, // heroes pay
         ...(areaShapeOf(a) ? { area: areaShapeOf(a) } : {}), // capability.area-attack
         ...(a.crit ? { crit: a.crit } : {}), // station.crit 2026-08-27
       };
