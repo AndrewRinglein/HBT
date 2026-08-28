@@ -1010,10 +1010,14 @@ if(D.kits){
   for(const c of D.classes) if(!(D.kits.classKits||{})[c.id])
     add('class-has-no-kit-entry',c.name,c.id+' — every class carries a kit entry, even an empty one');
   const heroIds=new Set(D.heroes.heroes.map(h=>h.id));
-  for(const [hid,items] of Object.entries(D.kits.heroKits||{})){
+  // The kit grammar, ruled 2026-08-27: a plain ARRAY is the full kit; {pinned:[...]}
+  // guarantees items and the class draw completes the rest. Both forms name real items.
+  for(const [hid,kit] of Object.entries(D.kits.heroKits||{})){
     if(hid.startsWith('_'))continue;
     if(!heroIds.has(hid)) add('kit-names-a-missing-hero',hid,'hero override for a hero that does not exist');
-    for(const id of (items||[])) if(!itemById.has(id)) add('kit-names-a-missing-item',hid,id);
+    const items=Array.isArray(kit)?kit:(kit&&(kit.pinned||kit.items))||null;
+    if(!items){ add('kit-override-has-no-items',hid,'neither an array nor {pinned/items} — not a form the 2026-08-27 grammar names'); continue; }
+    for(const id of items) if(!itemById.has(id)) add('kit-names-a-missing-item',hid,id);
   }
 }
 
