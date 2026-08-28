@@ -246,3 +246,17 @@ persisting into the curable injury track. That would overturn COMBAT-DESIGN
 Law 22 ("crits never mint permanence") and must land as a dated ruling in
 COMBAT-DESIGN.md, not hide in a switch. Until that ruling is written, all
 chart effects remain battle-scoped.
+
+## areaHitsAllies — do area attacks strike allies in the shape?
+Added 2026-08-27 (capability.area-attack). Default **true**: Storm's authored
+text says "to every unit in the blast" — EVERY unit. The Cleave text names
+hexes, not sides, and the arc through a melee scrum will sooner or later catch
+a friend. Question for a sweep: does friendly fire on area attacks change hero
+win rates enough to matter, and does the game feel better with it on?
+
+## aiAreaThroughAllies — may the AI swing an area attack through its own allies?
+Added 2026-08-27 (capability.area-attack). Default **false**: the AI only
+swings wide when at least two enemies and NO ally stand in the shape. With
+areaHitsAllies on, turning this on makes the AI accept friendly-fire trades.
+Question for a sweep: does an AI willing to clip one ally for two enemies win
+more battles than one that never does?

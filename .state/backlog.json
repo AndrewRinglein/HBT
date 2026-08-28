@@ -1382,5 +1382,74 @@
   ],
   "status": "done-needs-review",
   "sha": "0cbbb9c"
+ },
+ {
+  "id": "capability.area-attack",
+  "kind": "engine",
+  "shape": "rule",
+  "spec": "An attack may declare an AREA: 'arc' (the target hex plus the two hexes adjacent to both attacker and target \u2014 attack.halberd.cleave, authored 'an adjacent hex and the two hexes adjacent to both you and it') or 'blast1' (a hex plus its six neighbors \u2014 the shape power.lightning-staff.storm will ride). Area attacks DO NOT ROLL TO HIT and therefore cannot crit (authored: 'It does not roll to hit, so it cannot crit') \u2014 no accuracy station, no miss, no dodge; mitigation and riders run per struck unit through the one damage function. The AI values an area attack by summing preview() over every unit it would strike (Law 2 \u2014 no second calculator).",
+  "expect": "the Oathblade cleaves when two enemies stand in the arc and the log carries one attack.declared plus a hit per struck unit, each naming attack.halberd.cleave as cause; a single-target cleave does strictly less total damage than hack and the AI prefers hack then",
+  "changesBaseline": false,
+  "needs": [
+   "content.alpha-team"
+  ],
+  "probeIds": [
+   "attack.halberd.cleave"
+  ],
+  "variants": [
+   "attack.halberd.cleave",
+   "attack.test-arc.sweep"
+  ],
+  "status": "done-needs-review",
+  "sha": "f16574e"
+ },
+ {
+  "id": "capability.knockback",
+  "kind": "engine",
+  "shape": "rule",
+  "spec": "Forced movement, Knockback only (CODEX bans pulls/pushes/swaps beyond it): attack.halberd.hack's authored onDamage rider 'push the target 1 hex directly away from you'. Directly-away = the hex continuing the attacker->target line. Undefined edges become SWITCHES, never guesses: destination blocked/occupied/off-board (default: the push fizzles, logged), and whether entering a hex by knockback triggers its ground status (default: yes \u2014 the hex does not care why you arrived).",
+  "expect": "a hacked zombie ends one hex further from the Oathblade along the push line, the log carries a knockback event naming the causing trigger, and a zombie against a wall is NOT displaced with the fizzle logged",
+  "changesBaseline": false,
+  "needs": [
+   "capability.area-attack"
+  ],
+  "probeIds": [
+   "trigger.halberd.hack.knockback"
+  ],
+  "variants": [
+   "trigger.halberd.hack.knockback",
+   "trigger.test-ram.knockback"
+  ]
+ },
+ {
+  "id": "capability.item-powers",
+  "kind": "engine",
+  "shape": "rule",
+  "spec": "AbilityDef generalizes beyond bolt-shaped blasts to speak the three authored item powers: power.holy-symbol.heal ('Heal the target for 1 + 2 x Spirit', one ally within 6), power.knight-shield.block ('Gain Protection equal to 4 + your Armor, and lose 5 Dodge for the rest of the Battle. Every use costs another 5 Dodge', self, cooldown 3), power.lightning-staff.storm ('Deal magic damage equal to your Magic + 1 to every unit in the blast', hex within 4 plus neighbors, no roll, cannot crit \u2014 rides capability.area-attack's blast1). Copied from the authored rows, never invented; anything the rows leave unstated is a switch.",
+  "expect": "Lucius heals a wounded ally and the heal amount is 1+2xSpirit in the log; Osric blocks and carries protection 4+armor plus a -5 dodge statmod that survives to battle end and stacks on reuse; the Air Mage storms a clump and every unit in the seven hexes takes magic damage equal to Magic+1",
+  "changesBaseline": false,
+  "needs": [
+   "capability.area-attack"
+  ],
+  "probeIds": [
+   "power.holy-symbol.heal",
+   "power.knight-shield.block",
+   "power.lightning-staff.storm"
+  ]
+ },
+ {
+  "id": "station.crit",
+  "kind": "engine",
+  "shape": "rule",
+  "spec": "Critical hits per COMBAT-DESIGN 158-214: Crit chance = 3 base + gear (the attack rows' crit field: dagger 5, javelin 3, quick-shot 5, longsword stab 3) + surplus final accuracy over 100; Luck resists; only attacks that ROLL can crit (area attacks exempt by the area rule); resolution consults the Critical Injury Chart, battle-only effects, never permanence (that is the Deathbed pipeline's). The critChartSplit switch (foreign, SWITCHES.md) is honored, not resolved here.",
+  "expect": "a point-blank high-accuracy attacker's surplus becomes crit chance in the audit's recomputation, the four authored crit fields raise it by their stated amounts, and a crit's chart effect appears in the log naming its cause and clears at battle end",
+  "changesBaseline": true,
+  "needs": [
+   "capability.area-attack",
+   "content.alpha-team"
+  ],
+  "probeIds": [
+   "attack.dagger.stab"
+  ]
  }
 ]

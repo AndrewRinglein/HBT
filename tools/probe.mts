@@ -50,10 +50,20 @@ const ACTED = new Set(['damage.applied','heal.applied','power.used','attack.decl
 const scenario = SCENARIOS[id]
 
 let mentions = 0, acted = 0, changed = 0
+// A non-scenario id is probed in the REGISTERED SCENARIOS FIRST, then the
+// standard panel (2026-08-27, capability.area-attack): scenario-only content
+// — the alpha kits, the beasts, the test variants — can be live in a fielding
+// no standard battle produces, and before this a variant that only a scenario
+// reaches probed as "never appears" however real it was. Monotone verdict, so
+// prepending battles only widens what can be found; a --neutral claim gets
+// STRICTER, which is the right direction for "changed nothing, anywhere".
 const battles: (() => ReturnType<typeof createBattle>)[] = scenario
   ? [() => createBattle(scenarioOptions(scenario))]
-  : MAP_PANEL.flatMap((mapId) => [4, 8, 12].flatMap((z) =>
-      Array.from({ length: 25 }, (_, r) => () => createBattle({ replicate: r, enemyCount: z, mapId, strict: true }))))
+  : [
+      ...Object.values(SCENARIOS).map((s) => () => createBattle(scenarioOptions(s))),
+      ...MAP_PANEL.flatMap((mapId) => [4, 8, 12].flatMap((z) =>
+        Array.from({ length: 25 }, (_, r) => () => createBattle({ replicate: r, enemyCount: z, mapId, strict: true })))),
+    ]
 
 for (const make of battles) {
   const ctx = make()

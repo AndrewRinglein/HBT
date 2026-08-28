@@ -115,16 +115,23 @@ describe('the pack carries the six alpha heroes with their real stat bodies', ()
     }
   })
 
-  it('the nine gaps are NAMED, never silently compiled', () => {
+  it('every clause the engine cannot express is NAMED, never silently compiled', () => {
+    // LAW 10 — rewritten 2026-08-27, same day it was written: the first
+    // version froze "nine gaps", and the very next item
+    // (capability.area-attack) closed one by teaching the engine the arc.
+    // A count is the wrong claim — the rule is that each REMAINING
+    // inexpressible clause is on the record, and a clause the engine has
+    // since learned is NOT.
     const gaps = JSON.parse(readFileSync(
       join(__dirname, '..', '..', 'content', 'gen', 'enemy-pack-gaps.json'), 'utf8')).gaps as
       { unit: string; needs: string }[]
     const alpha = gaps.filter((g) => String(g.unit).startsWith('alpha-'))
-    expect(alpha.length, 'the delivery named nine').toBe(9)
-    // the Halberd's push (an unparsed trigger shape) and Cleave's arc
+    // the Halberd's push — still an unparsed trigger shape (capability.knockback)
     expect(alpha.some((g) => g.unit === 'alpha-oathblade' && /trigger shape/.test(g.needs))).toBe(true)
-    expect(alpha.some((g) => g.unit === 'alpha-oathblade' && /area attack/.test(g.needs))).toBe(true)
-    // four crit fields, three item powers (Storm, Heal, Block)
+    // Cleave's arc COMPILES now (capability.area-attack) — its gap must be gone
+    expect(alpha.some((g) => /area attack/.test(g.needs))).toBe(false)
+    expect(ATTACKS['attack.halberd.cleave']!.area).toBe('arc')
+    // four crit fields, three item powers (Storm, Heal, Block) — still owed
     expect(alpha.filter((g) => /crit/.test(g.needs)).length).toBe(4)
     expect(alpha.filter((g) => /item power/.test(g.needs)).length).toBe(3)
   })

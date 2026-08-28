@@ -1259,7 +1259,8 @@ export const UNIT_PACK = {
       "bonus": 1,
       "stat": "strength",
       "reach": 1,
-      "staminaCost": 2
+      "staminaCost": 2,
+      "area": "arc"
     },
     "attack.punch": {
       "id": "attack.punch",

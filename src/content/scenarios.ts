@@ -93,6 +93,19 @@ const RAW_SCENARIOS: Readonly<Record<string, ScenarioDef>> = {
     enemyHexes: [3, 5, 7, 9, 11, 13],
     replicate: 0,
   },
+  'showcase.arc-variant': {
+    id: 'showcase.arc-variant',
+    note: 'capability.area-attack, second variant live: the test Arc Golem '
+      + 'opens standing adjacent to two adjacent zombies, so the first hero '
+      + 'activation is a sweep through both — the arc as pure data on a body '
+      + 'no control battle fields.',
+    mapId: 'map.open',
+    heroes: ['arc-golem'],
+    heroHexes: [135],
+    enemies: ['test-zombie', 'test-zombie'],
+    enemyHexes: [118, 119],
+    replicate: 0,
+  },
   'showcase.civilians': {
     id: 'showcase.civilians',
     note: 'The three prologue civilians beside the Hunter against zombies — '

@@ -3106,3 +3106,58 @@ index df01458..f2fd836 100644
        expect(h.name, h.typeId).toContain('(TEST)')
 ```
 </details>
+
+## capability.area-attack — LANDED `f16574e` **NEEDS REVIEW**
+2026-08-28T00:35:51.000Z
+
+  PASS  dependencies landed — content.alpha-team
+  PASS  typecheck — tsc --noEmit clean
+  PASS  full test suite — 44 files / 408 tests green
+  PASS  gate 1 — attack.halberd.cleave: 7 log lines, 7 fired, 4 changed state (the Oathblade cleaves in showcase.alpha-team)
+  PASS  brought its own tests — test/area-attack.test.ts (8 tests)
+  PASS  control battles unchanged — byte-identical on all 8 maps; the per-struck-unit refactor leaves the single-target path exact
+  PASS  content has a published source — the arc is the EXACT authored phrase on attack.halberd.cleave; attack.test-arc.sweep + arc-golem are declared test scaffolding (cohort precedent)
+  PASS  hardcode scan — no content names in src/core (shapes are mechanism vocabulary)
+  PASS  generalizes — attack.halberd.cleave live · attack.test-arc.sweep live (pure data on the Arc Golem)
+  PASS  naming — attack/showcase/unit kinds, all declared
+  PASS  kill switch — area-attack tests fail with attack.halberd.cleave disabled
+  WARN  existing tests untouched — alpha-team.test.ts gap assertion rewritten from a frozen count (nine) to the rule; the count was wrong the moment this item closed one gap (Law 10 reason at the edit) — LANDED FLAGGED
+
+  Also in this landing: probe.mts fields registered scenarios before the standard panel (scenario-only content can probe live); SWITCHES.md gains areaHitsAllies (default true, authored) and aiAreaThroughAllies (default false); COMBAT-SEQUENCE.md documents the no-roll area branch. HAND-LANDED under the reaper protocol; post-land audit clean from the committed tree. Seal unwritten — it belongs to the gate.
+
+<details><summary>Existing tests were edited — review this diff</summary>
+
+```diff
+diff --git a/test/alpha-team.test.ts b/test/alpha-team.test.ts
+index 07f6553..8d46c34 100644
+--- a/test/alpha-team.test.ts
++++ b/test/alpha-team.test.ts
+@@ -116,14 +116,21 @@ describe('the pack carries the six alpha heroes with their real stat bodies', ()
+   })
+ 
+-  it('the nine gaps are NAMED, never silently compiled', () => {
++  it('every clause the engine cannot express is NAMED, never silently compiled', () => {
++    // LAW 10 — rewritten 2026-08-27, same day it was written: the first
++    // version froze "nine gaps", and the very next item
++    // (capability.area-attack) closed one by teaching the engine the arc.
++    // A count is the wrong claim — the rule is that each REMAINING
++    // inexpressible clause is on the record, and a clause the engine has
++    // since learned is NOT.
+     const gaps = JSON.parse(readFileSync(
+       join(__dirname, '..', '..', 'content', 'gen', 'enemy-pack-gaps.json'), 'utf8')).gaps as
+       { unit: string; needs: string }[]
+     const alpha = gaps.filter((g) => String(g.unit).startsWith('alpha-'))
+-    expect(alpha.length, 'the delivery named nine').toBe(9)
+-    // the Halberd's push (an unparsed trigger shape) and Cleave's arc
++    // the Halberd's push — still an unparsed trigger shape (capability.knockback)
+     expect(alpha.some((g) => g.unit === 'alpha-oathblade' && /trigger shape/.test(g.needs))).toBe(true)
+-    expect(alpha.some((g) => g.unit === 'alpha-oathblade' && /area attack/.test(g.needs))).toBe(true)
+-    // four crit fields, three item powers (Storm, Heal, Block)
++    // Cleave's arc COMPILES now (capability.area-attack) — its gap must be gone
++    expect(alpha.some((g) => /area attack/.test(g.needs))).toBe(false)
++    expect(ATTACKS['attack.halberd.cleave']!.area).toBe('arc')
++    // four crit fields, three item powers (Storm, Heal, Block) — still owed
+     expect(alpha.filter((g) => /crit/.test(g.needs)).length).toBe(4)
+     expect(alpha.filter((g) => /item power/.test(g.needs)).length).toBe(3)
+```
+</details>

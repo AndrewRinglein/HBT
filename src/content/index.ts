@@ -98,6 +98,16 @@ const RAW_ATTACKS: Readonly<Record<string, AttackDef>> = {
     id: 'attack.drake.snap', name: 'Snap', kind: 'melee',
     damageType: 'physical', bonus: 0, stat: 'strength', reach: 1, staminaCost: 1,
   },
+  'attack.test-arc.sweep': {
+    // TEST SCAFFOLDING — capability.area-attack's second variant (2026-08-27):
+    // the same 'arc' shape as attack.halberd.cleave, pure data on a test unit,
+    // which is the generalization gate's whole question. Cost 0 so stamina can
+    // never bench the proof. Lives only on the Arc Golem, only in
+    // showcase.arc-variant — never in a control battle.
+    id: 'attack.test-arc.sweep', name: 'Sweep (TEST)', kind: 'melee',
+    damageType: 'physical', bonus: 1, stat: 'strength', reach: 1, staminaCost: 0,
+    area: 'arc',
+  },
 }
 
 const RAW_ABILITIES: Readonly<Record<string, AbilityDef>> = {
@@ -255,6 +265,26 @@ const RAW_UNITS: Readonly<Record<string, UnitDef>> = {
     abilities: [],
     moves: ['power.move'],
     attributes: ['beast'],
+  },
+  'arc-golem': {
+    // TEST SCAFFOLDING — capability.area-attack's second consumer (2026-08-27),
+    // the cohort precedent: an invented test body carrying a pure-data variant
+    // of a real mechanism. Wields ONLY the test sweep, fields ONLY in
+    // showcase.arc-variant. Accuracy is irrelevant on purpose: an area attack
+    // never rolls, and a 5-accuracy unit landing every sweep is itself part of
+    // the proof.
+    typeId: 'arc-golem', side: 'hero',
+    maxHp: 14, armor: 1, resist: 0,
+    accuracy: 5, dodge: 0, strength: 2, precision: 0, magic: 0, spirit: 0,
+    role: 'melee',
+    movement: 4, reach: 1,
+    maxStamina: 5, staminaRegen: 1,
+    triggers: [],
+    ai: 'melee-aggressive',
+    attacks: ['attack.test-arc.sweep'],
+    abilities: [],
+    moves: ['power.move'],
+    attributes: ['test'],
   },
   'green-drake': {
     // A PLAYER BEAST — Angela 2026-08-20, dictated block, recorded in the

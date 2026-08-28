@@ -246,7 +246,20 @@ An attack is a list of hits, resolved **one at a time**. Each hit runs the full 
 | 10 | **`onKill`**, if the target died — *the **killer's** hook* | **yes** |
 | 11 | **Settle** | **yes** |
 
-**An Attack is still exactly one Hit.** `AttackDef` has no `hits` field and `performAttack` resolves once, while the vocabulary table above defines an Attack as *"one or more Hits"* — and two switches (`multiAttackRetargets`, `recomputeStatsBetweenHits`) are already written against a loop that does not exist.
+**An Attack is still exactly one Hit** — against one unit. `AttackDef` has no `hits` field and `performAttack` resolves once per struck unit, while the vocabulary table above defines an Attack as *"one or more Hits"* — and two switches (`multiAttackRetargets`, `recomputeStatsBetweenHits`) are already written against a loop that does not exist.
+
+### Area attacks skip the roll (2026-08-27, capability.area-attack)
+
+An attack with an `area` shape (`'arc'` — the target hex plus the hexes
+adjacent to both attacker and target, authored on the halberd's Cleave;
+`'blast1'` — a hex and its six neighbours) **does not roll to hit**, so steps
+2–5 never run for it: no to-hit cup, no miss, no dodge, no crit — authored:
+*"It does not roll to hit, so it cannot crit."* Steps 6–10 run **once per
+struck unit**, target first then ascending id, each through the same damage
+stations as any single hit (Law 1); settle runs once after the whole swing,
+same as ever. Every standing unit in the shape is struck — allies included
+while `areaHitsAllies` holds its authored default ("to every unit in the
+blast"). The declaration event names the shape and every struck unit.
 
 ### `onDeath` is not in this list, on purpose
 

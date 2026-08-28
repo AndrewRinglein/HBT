@@ -128,6 +128,16 @@ export type AttackDef = {
   readonly staminaCost: number
   /** On hit, apply this status to the target. A rider, not a station. */
   readonly applies?: { readonly statusId: string; readonly value: number }
+  /**
+   * AREA attacks (capability.area-attack, 2026-08-27). Authored on
+   * attack.halberd.cleave: "an adjacent hex and the two hexes adjacent to
+   * both you and it" — that is 'arc'. 'blast1' is a hex plus its six
+   * neighbours (the shape power.lightning-staff.storm rides). An area attack
+   * DOES NOT ROLL TO HIT (authored: "It does not roll to hit, so it cannot
+   * crit") — no accuracy station, no miss, no dodge, no crit; mitigation and
+   * riders still run per struck unit through the one damage function.
+   */
+  readonly area?: 'arc' | 'blast1'
 }
 
 export type UnitDef = {
@@ -264,6 +274,10 @@ export type Config = {
     moveCostPerHex: boolean
     /** Does melee AI leap into adjacency for the rider? SWITCHES.md, 2026-08-25. */
     aiLeapToAdjacent: boolean
+    /** Do area attacks strike allies in the shape? SWITCHES.md, 2026-08-27. */
+    areaHitsAllies: boolean
+    /** May the AI swing an area attack through its own allies? SWITCHES.md, 2026-08-27. */
+    aiAreaThroughAllies: boolean
   }
 }
 
@@ -274,6 +288,11 @@ export const DEFAULT_CONFIG: Config = {
     rangerPunchesWhenAdjacent: false,
     moveCostPerHex: false,
     aiLeapToAdjacent: true,
+    // "Deal magic damage ... to every unit in the blast" (power.lightning-
+    // staff.storm) — EVERY unit, so the default is the authored reading.
+    areaHitsAllies: true,
+    // Conservative default: the AI never swings wide through a friend.
+    aiAreaThroughAllies: false,
   },
 }
 

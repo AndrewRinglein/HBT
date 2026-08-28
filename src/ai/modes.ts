@@ -9,7 +9,7 @@ import type { Reach } from './../core/movement.js'
 import type { MoveDef } from './../core/types.js'
 import { isPassable } from './../content/maps.js'
 import { neighboursOf } from './../core/hex.js'
-import { canAttack, performAttack, reachOf } from './../core/pipeline.js'
+import { areaUnitIdsOf, canAttack, performAttack, reachOf } from './../core/pipeline.js'
 import { canUsePower, previewPower, usePower } from './../core/ability.js'
 import { reachBonusOf } from './../content/maps.js'
 import { TERRAIN } from './../core/types.js'
@@ -115,10 +115,32 @@ function idle(ctx: Ctx, u: Unit, reason: string): void {
   emit(ctx, 'activation.idle', `ai.${u.ai}`, { actor: u.id, reason })
 }
 
+/**
+ * Swing wide when it is plainly better — capability.area-attack (2026-08-27).
+ * A RULE, not a score: if an affordable, legal AREA attack from where the unit
+ * stands would strike at least two enemies — and no ally, unless the
+ * aiAreaThroughAllies switch says friends are acceptable losses — take it over
+ * the preference-order pick. Everything it reads comes from areaUnitIdsOf and
+ * canAttack (Law 2 — no second calculator). First qualifying attack in the
+ * unit's declared order wins (Law 6).
+ */
+function areaSwing(ctx: Ctx, u: Unit, targetId: number): string | null {
+  for (const id of u.attacks) {
+    const a = ctx.attacks[id]
+    if (!a?.area) continue
+    if (!canAttack(ctx, u.id, targetId, id)) continue
+    const struck = areaUnitIdsOf(ctx, u.id, targetId, id)
+    const enemies = struck.filter((s) => unit(ctx, s).side !== u.side).length
+    const allies = struck.length - enemies
+    if (enemies >= 2 && (allies === 0 || ctx.cfg.switches.aiAreaThroughAllies)) return id
+  }
+  return null
+}
+
 function attackIfPossible(ctx: Ctx, u: Unit, candidates: Unit[]): boolean {
   const target = lowestHealth(candidates)
   if (!target) return false
-  const attackId = bestAttack(ctx, u.id, target.id)
+  const attackId = areaSwing(ctx, u, target.id) ?? bestAttack(ctx, u.id, target.id)
   if (!attackId) return false
   // Did stamina force a worse attack than the unit would have preferred?
   const preferred = u.attacks[0]
