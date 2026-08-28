@@ -147,11 +147,6 @@
    "needs": "kit unresolved"
   },
   {
-   "unit": "alpha-oathblade",
-   "what": "attack.halberd.hack onDamage: \"push the target 1 hex directly away from you\"",
-   "needs": "trigger shape unparsed"
-  },
-  {
    "unit": "alpha-sky-pirate",
    "what": "attack.javelin.stab crit 3",
    "needs": "attack field: crit (no AttackDef slot)"

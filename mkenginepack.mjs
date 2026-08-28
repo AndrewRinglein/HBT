@@ -213,7 +213,20 @@ function settledAttackExtras(a, unitId) {
     // one vocabulary effect "apply a status" — nothing looser parses.
     const m = typeof t.effect === 'string' && t.effect.match(/^(apply|gain) (\d+) ([A-Za-z]+)$/);
     const status = m && m[3].toLowerCase();
-    if (m && STATUS_OK.has(status) && TRIG_HOOKS.has(t.hook)) {
+    // "push the target N hex(es) directly away from you" — the halberd's Hack,
+    // compiled since capability.knockback (2026-08-27). EXACT phrase; any other
+    // forced-movement wording stays a gap (CODEX §12 bans everything beyond
+    // Knockback anyway).
+    const push = typeof t.effect === 'string'
+      && t.effect.match(/^push the target (\d+) hex(?:es)? directly away from you$/);
+    if (push && TRIG_HOOKS.has(t.hook)) {
+      out.push({
+        id: `trigger.${a.id.replace(/^attack\./, '')}.knockback`,
+        hook: t.hook, chance: t.chance ?? 100, select: 'target',
+        effect: { kind: 'knockback', value: parseInt(push[1], 10) },
+        source: unitId, onlyWithAttack: a.id,
+      });
+    } else if (m && STATUS_OK.has(status) && TRIG_HOOKS.has(t.hook)) {
       out.push({
         id: `trigger.${a.id.replace(/^attack\./, '')}.${status}`,
         hook: t.hook, chance: t.chance ?? 100, select: m[1] === 'gain' ? 'self' : 'target',
