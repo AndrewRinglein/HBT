@@ -260,3 +260,14 @@ swings wide when at least two enemies and NO ally stand in the shape. With
 areaHitsAllies on, turning this on makes the AI accept friendly-fire trades.
 Question for a sweep: does an AI willing to clip one ally for two enemies win
 more battles than one that never does?
+
+## knockbackBlocked — what happens when the push has nowhere to go?
+Added 2026-08-27 (capability.knockback). The authored text ("push the target
+1 hex directly away from you") says nothing about walls, the board edge,
+impassable terrain, or an occupied hex — 1-EFFECTS-NOTES.md flags exactly this
+("no rules for walls, impassable hexes, occupied hexes"). Default: **the push
+stops where it is blocked** — a partial push travels what it can, a fully
+blocked push fizzles in place with `knockback.blocked` logged and its reason
+named. The unexplored branch (collision damage, or damage-on-fizzle) is not
+built; if a sweep or a ruling wants slam-into-wall damage, that is a new
+effect, not a flip of this switch.

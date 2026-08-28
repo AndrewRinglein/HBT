@@ -2,11 +2,11 @@
 // (COMBAT-SEQUENCE.md) so that anything which happens mid-move — attacks of
 // opportunity, traps, terrain status — has a place to happen and can interrupt.
 
-import { distance, neighboursOf } from './hex.js'
+import { distance, neighboursOf, stepAwayFrom } from './hex.js'
 import type { HexId } from './hex.js'
 import type { Ctx, MoveDef, Unit } from './types.js'
 import { appliesOnEnterOf, isPassable, moveCostOf, stripsOnEnterOf, terrainIdOf } from '../content/maps.js'
-import { addStatMod, emit, gainStamina, loseMaxStamina, markMoveUsed, moveUnit, spendStamina, unit } from './mutate.js'
+import { addStatMod, emit, gainStamina, knockUnit, loseMaxStamina, markMoveUsed, moveUnit, spendStamina, unit } from './mutate.js'
 import { applyStatus, reduceStatus } from './status.js'
 
 // MOVE_STAMINA_COST is gone (2026-08-21) — Angela: "It shouldn't be
@@ -330,4 +330,43 @@ export function nearestEnemy(ctx: Ctx, u: Unit): Unit | null {
 
 export function livingEnemies(ctx: Ctx, u: Unit): Unit[] {
   return ctx.state.units.filter((o) => o.side !== u.side && o.lifeState === 'standing')
+}
+
+/**
+ * Knockback — capability.knockback (2026-08-27). Authored on the halberd's
+ * Hack: "push the target 1 hex directly away from you." CODEX §12 bans every
+ * other forced movement ("no pulls, pushes or swaps" beyond Knockback), so
+ * this is the whole of it.
+ *
+ * The line is pusher -> target, continued (stepAwayFrom); it is defined only
+ * from adjacency, which every melee push satisfies. Each hex is checked in
+ * turn: off the board, impassable, or occupied STOPS the push there — the
+ * knockbackBlocked switch question, defaulted to fizzle-in-place, recorded in
+ * SWITCHES.md. A stopped push with zero hexes taken logs knockback.blocked
+ * with its reason (Law 9: never silent). Ground statuses need no special
+ * case: the pushed unit STANDS on the new hex, and end-of-activation terrain
+ * strips/applies read where a unit stands, not how it got there.
+ */
+export function executeKnockback(ctx: Ctx, pusherId: number, targetId: number, hexes: number, causeId: string): number {
+  const pusher = unit(ctx, pusherId)
+  const tg = unit(ctx, targetId)
+  let at = tg.hex
+  let prev = pusher.hex
+  let taken = 0
+  let reason = ''
+  for (let i = 0; i < hexes; i++) {
+    const next = stepAwayFrom(prev, at)
+    if (next === null) { reason = prev === at ? 'no line' : distance(prev, at) !== 1 ? 'no straight line — pusher not adjacent' : 'edge of the board'; break }
+    if (!isPassable(ctx.state.terrain[next] ?? 0)) { reason = `impassable ${terrainIdOf(ctx.state.terrain[next] ?? 0)}`; break }
+    if (occupancy(ctx).has(next)) { reason = 'occupied'; break }
+    prev = at
+    at = next
+    taken++
+  }
+  if (taken === 0) {
+    emit(ctx, 'knockback.blocked', causeId, { actor: pusherId, target: targetId, at: tg.hex, reason: reason || 'nowhere to go' })
+    return 0
+  }
+  knockUnit(ctx, targetId, at, pusherId, causeId)
+  return taken
 }

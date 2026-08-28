@@ -1655,6 +1655,18 @@ export const UNIT_PACK = {
             "value": 2
           },
           "source": "alpha-oathblade"
+        },
+        {
+          "id": "trigger.halberd.hack.knockback",
+          "hook": "onDamage",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "knockback",
+            "value": 1
+          },
+          "source": "alpha-oathblade",
+          "onlyWithAttack": "attack.halberd.hack"
         }
       ]
     },

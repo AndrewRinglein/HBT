@@ -31,6 +31,7 @@ import { resolveTargets, validateTargeting } from './target.js'
 import { roll100 } from './rng.js'
 import { applyDamage, emit } from './mutate.js'
 import { applyStatus, removeStatus } from './status.js'
+import { executeKnockback } from './movement.js'
 
 /**
  * WHEN a trigger fires.
@@ -109,6 +110,13 @@ export type TriggerEffect =
   | { readonly kind: 'status.apply'; readonly statusId: string; readonly value: ValueSpec }
   | { readonly kind: 'status.remove'; readonly statusId: string }
   | { readonly kind: 'damage'; readonly amount: ValueSpec; readonly damageType: DamageType }
+  /**
+   * Forced movement, Knockback only (capability.knockback 2026-08-27; CODEX
+   * §12 bans pulls, pushes and swaps beyond it). `value` hexes directly away
+   * from the trigger's OWNER — the halberd's "push the target 1 hex directly
+   * away from you" made data.
+   */
+  | { readonly kind: 'knockback'; readonly value: ValueSpec }
 
 export type Trigger = {
   readonly id: string
@@ -356,6 +364,14 @@ function applyEffect(ctx: Ctx, t: Trigger, owner: Unit, targetId: number): void 
         actor: owner.id, target: targetId, effect: e.kind, amount: v, damageType: e.damageType,
       })
       if (v > 0) applyDamage(ctx, targetId, v, t.id, { actor: owner.id, damageType: e.damageType })
+      break
+    }
+    case 'knockback': {
+      const v = valueOf(ctx, owner, e.value)
+      emit(ctx, 'trigger.fired', t.id, {
+        actor: owner.id, target: targetId, effect: e.kind, value: v,
+      })
+      if (v > 0) executeKnockback(ctx, owner.id, targetId, v, t.id)
       break
     }
   }

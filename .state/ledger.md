@@ -3161,3 +3161,72 @@ index 07f6553..8d46c34 100644
      expect(alpha.filter((g) => /item power/.test(g.needs)).length).toBe(3)
 ```
 </details>
+
+## capability.knockback — LANDED `80e9b50` **NEEDS REVIEW**
+2026-08-28T00:45:35.000Z
+
+  PASS  dependencies landed — capability.area-attack
+  PASS  typecheck — tsc --noEmit clean
+  PASS  full test suite — 45 files / 416 tests green
+  PASS  gate 1 — trigger.halberd.hack.knockback: 6 log lines, 6 fired, 2 changed state (showcase.alpha-team)
+  PASS  brought its own tests — test/knockback.test.ts (8 tests)
+  PASS  control battles unchanged — byte-identical on all 8 maps
+  PASS  content has a published source — the EXACT authored phrase on Hack; trigger.test-ram.knockback is declared test scaffolding
+  PASS  hardcode scan — knockback/knocked are mechanism vocabulary, no content names in src/core
+  PASS  generalizes — trigger.halberd.hack.knockback live · trigger.test-ram.knockback live (pure data)
+  PASS  naming — trigger/attack/unit kinds, declared
+  PASS  kill switch — knockback tests fail with the hack trigger disabled
+  WARN  existing tests untouched — alpha-team.test.ts (the push gap closed; assertion follows) and audit.test.ts (knocked case ADDED) — LANDED FLAGGED
+
+  Also: probe ACTED widened with 'knocked'; SWITCHES.md knockbackBlocked (default fizzle-in-place, reasons logged). HAND-LANDED under the reaper protocol; post-land audit clean. Seal unwritten — it belongs to the gate.
+
+<details><summary>Existing tests were edited — review this diff</summary>
+
+```diff
+diff --git a/test/alpha-team.test.ts b/test/alpha-team.test.ts
+index 8d46c34..e5dc03e 100644
+--- a/test/alpha-team.test.ts
++++ b/test/alpha-team.test.ts
+@@ -110,6 +110,9 @@ describe('the pack carries the six alpha heroes with their real stat bodies', ()
+     expect(rider('alpha-dusk-hawk', 'status.slow', 'onHit')).toMatchObject({ chance: 20 })
+     expect(rider('alpha-air-mage', 'status.weak', 'onHit')).toMatchObject({ chance: 20 })
++    // Every status-applying rider must speak the engine vocabulary; other
++    // effect kinds (knockback, since capability.knockback) carry no statusId.
+     for (const id of ALPHA()) for (const t of UNITS[id]!.triggers ?? []) {
+-      expect(String((t.effect as { statusId?: string }).statusId ?? '')
++      if (t.effect.kind !== 'status.apply') continue
++      expect(String(t.effect.statusId)
+         .startsWith('status.'), `${id} trigger ${t.id} uses engine vocabulary`).toBe(true)
+     }
+@@ -127,6 +130,9 @@ describe('the pack carries the six alpha heroes with their real stat bodies', ()
+       { unit: string; needs: string }[]
+     const alpha = gaps.filter((g) => String(g.unit).startsWith('alpha-'))
+-    // the Halberd's push — still an unparsed trigger shape (capability.knockback)
+-    expect(alpha.some((g) => g.unit === 'alpha-oathblade' && /trigger shape/.test(g.needs))).toBe(true)
++    // the Halberd's push COMPILES now too (capability.knockback, same day):
++    // its gap is gone and the trigger stands on the unit in its place
++    expect(alpha.some((g) => /trigger shape/.test(g.needs))).toBe(false)
++    expect((UNITS['alpha-oathblade']!.triggers ?? []).some((t) =>
++      t.id === 'trigger.halberd.hack.knockback' && t.effect.kind === 'knockback')).toBe(true)
+     // Cleave's arc COMPILES now (capability.area-attack) — its gap must be gone
+     expect(alpha.some((g) => /area attack/.test(g.needs))).toBe(false)
+diff --git a/test/audit.test.ts b/test/audit.test.ts
+index 2855a23..a88f585 100644
+--- a/test/audit.test.ts
++++ b/test/audit.test.ts
+@@ -137,4 +137,13 @@ describe('independent audit of logged battles', () => {
+             break
+           }
++          case 'knocked': {
++            // capability.knockback (2026-08-27): a knocked unit travels along
++            // the pusher->victim line, at most the triggering value — every
++            // knockback in the game today is value 1, so the audit holds the
++            // stronger claim available: exactly one hex, directly away.
++            expect(distance(e['from'] as number, e['to'] as number), 'a knockback travels').toBeGreaterThanOrEqual(1)
++            expect(String(e.causeId).includes('knockback'), 'a knocked unit names the trigger that pushed it').toBe(true)
++            break
++          }
+           case 'stamina.gained': {
+             const before = stamina.get(e.actor!)!
+```
+</details>

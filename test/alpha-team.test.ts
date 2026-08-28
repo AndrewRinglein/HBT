@@ -109,8 +109,11 @@ describe('the pack carries the six alpha heroes with their real stat bodies', ()
     // mean the translation regressed.
     expect(rider('alpha-dusk-hawk', 'status.slow', 'onHit')).toMatchObject({ chance: 20 })
     expect(rider('alpha-air-mage', 'status.weak', 'onHit')).toMatchObject({ chance: 20 })
+    // Every status-applying rider must speak the engine vocabulary; other
+    // effect kinds (knockback, since capability.knockback) carry no statusId.
     for (const id of ALPHA()) for (const t of UNITS[id]!.triggers ?? []) {
-      expect(String((t.effect as { statusId?: string }).statusId ?? '')
+      if (t.effect.kind !== 'status.apply') continue
+      expect(String(t.effect.statusId)
         .startsWith('status.'), `${id} trigger ${t.id} uses engine vocabulary`).toBe(true)
     }
   })
@@ -126,8 +129,11 @@ describe('the pack carries the six alpha heroes with their real stat bodies', ()
       join(__dirname, '..', '..', 'content', 'gen', 'enemy-pack-gaps.json'), 'utf8')).gaps as
       { unit: string; needs: string }[]
     const alpha = gaps.filter((g) => String(g.unit).startsWith('alpha-'))
-    // the Halberd's push — still an unparsed trigger shape (capability.knockback)
-    expect(alpha.some((g) => g.unit === 'alpha-oathblade' && /trigger shape/.test(g.needs))).toBe(true)
+    // the Halberd's push COMPILES now too (capability.knockback, same day):
+    // its gap is gone and the trigger stands on the unit in its place
+    expect(alpha.some((g) => /trigger shape/.test(g.needs))).toBe(false)
+    expect((UNITS['alpha-oathblade']!.triggers ?? []).some((t) =>
+      t.id === 'trigger.halberd.hack.knockback' && t.effect.kind === 'knockback')).toBe(true)
     // Cleave's arc COMPILES now (capability.area-attack) — its gap must be gone
     expect(alpha.some((g) => /area attack/.test(g.needs))).toBe(false)
     expect(ATTACKS['attack.halberd.cleave']!.area).toBe('arc')

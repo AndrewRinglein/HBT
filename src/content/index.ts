@@ -279,7 +279,16 @@ const RAW_UNITS: Readonly<Record<string, UnitDef>> = {
     role: 'melee',
     movement: 4, reach: 1,
     maxStamina: 5, staminaRegen: 1,
-    triggers: [],
+    triggers: [{
+      // capability.knockback's second variant (2026-08-27) — the same
+      // mechanism as trigger.halberd.hack.knockback, pure data on the test
+      // body: every unit the golem's sweep damages is rammed a hex away.
+      id: 'trigger.test-ram.knockback', hook: 'onDamage', chance: 100,
+      select: 'target',
+      effect: { kind: 'knockback', value: 1 },
+      source: 'unit.arc-golem',
+      onlyWithAttack: 'attack.test-arc.sweep',
+    }],
     ai: 'melee-aggressive',
     attacks: ['attack.test-arc.sweep'],
     abilities: [],

@@ -41,6 +41,18 @@ export function moveUnit(ctx: Ctx, id: number, to: HexId, cost: number, causeId:
   })
 }
 
+/**
+ * Forced displacement — capability.knockback (2026-08-27). NOT a `moved`
+ * event: `moved` is audited against the causing MOVEMENT POWER's own range,
+ * and a knockback's cause is a trigger. Its own event keeps both audits exact.
+ */
+export function knockUnit(ctx: Ctx, id: number, to: HexId, by: number, causeId: string): void {
+  const u = unit(ctx, id)
+  const from = u.hex
+  u.hex = to
+  emit(ctx, 'knocked', causeId, { actor: by, target: id, from, to })
+}
+
 export function spendStamina(ctx: Ctx, id: number, amount: number, causeId: string): void {
   if (amount === 0) return
   const u = unit(ctx, id)

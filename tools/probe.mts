@@ -31,7 +31,12 @@ const ACTED = new Set(['damage.applied','heal.applied','power.used','attack.decl
   // movement.bonus-actions (2026-08-25): a bonus move's rider IS its state
   // change — Focus moves zero hexes on purpose, so 'stamina.gained' is the only
   // mark it leaves. Same widening-is-stricter argument as map.loaded above.
-  'stamina.gained', 'staminaMax.lost', 'statmod.added'])
+  'stamina.gained', 'staminaMax.lost', 'statmod.added',
+  // capability.knockback (2026-08-27): a knockback's state change is the hex
+  // itself — 'knocked' is displacement, and a fully blocked push that only
+  // logs knockback.blocked has genuinely changed nothing, so that one is
+  // deliberately NOT here. Same widening-is-stricter argument as above.
+  'knocked'])
 
 /**
  * A SCENARIO is probed by fielding it, not by sweeping the standard panel.

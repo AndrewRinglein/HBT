@@ -66,6 +66,26 @@ export function neighbours(h: HexId): HexId[] {
   return out
 }
 
+/**
+ * The hex one step beyond `through`, continuing the straight line from `from`
+ * (capability.knockback, 2026-08-27 — "push the target 1 hex directly away
+ * from you"). Defined ONLY when `from` and `through` are adjacent: a knockback
+ * line from further away is ambiguous on a hex grid, and guessing a direction
+ * is inventing a rule. Returns null off the board or when undefined.
+ */
+export function stepAwayFrom(from: HexId, through: HexId): HexId | null {
+  if (from === through) return null
+  const rf = rowOf(from)
+  const rt = rowOf(through)
+  const qf = axialQ(colOf(from), rf)
+  const qt = axialQ(colOf(through), rt)
+  const dq = qt - qf
+  const dr = rt - rf
+  if ((Math.abs(dq) + Math.abs(dr) + Math.abs(-dq - dr)) / 2 !== 1) return null
+  const [col2, row2] = offsetOf(qt + dq, rt + dr)
+  return inBounds(col2, row2) ? hexId(col2, row2) : null
+}
+
 /** Hex distance. Exact integer, no floats. */
 export function distance(a: HexId, b: HexId): number {
   const ra = rowOf(a)

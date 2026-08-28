@@ -136,6 +136,15 @@ describe('independent audit of logged battles', () => {
             statMods.set(e.actor!, list)
             break
           }
+          case 'knocked': {
+            // capability.knockback (2026-08-27): a knocked unit travels along
+            // the pusher->victim line, at most the triggering value — every
+            // knockback in the game today is value 1, so the audit holds the
+            // stronger claim available: exactly one hex, directly away.
+            expect(distance(e['from'] as number, e['to'] as number), 'a knockback travels').toBeGreaterThanOrEqual(1)
+            expect(String(e.causeId).includes('knockback'), 'a knocked unit names the trigger that pushed it').toBe(true)
+            break
+          }
           case 'stamina.gained': {
             const before = stamina.get(e.actor!)!
             expect(before + (e['amount'] as number), 'gain arithmetic').toBe(e['stamina'])

@@ -1419,7 +1419,9 @@
   "variants": [
    "trigger.halberd.hack.knockback",
    "trigger.test-ram.knockback"
-  ]
+  ],
+  "status": "done-needs-review",
+  "sha": "80e9b50"
  },
  {
   "id": "capability.item-powers",
