@@ -125,7 +125,8 @@ for (const id of [...fielded].sort()) {
   const u = AUTH.units.find((x) => x.id === id);
   if (!u) { gap(id, 'fielded by the prologue, absent from enemies-authored', 'content'); continue; }
   const st = u.stats || {};
-  for (const k of ['crit', 'luck']) if (st[k]) gap(id, `stat '${k}' ${st[k]}`, 'stat: ' + k + ' (no UnitDef field)');
+  // crit and luck COMPILE since station.crit (2026-08-27): per-unit crit is
+  // COMBAT-DESIGN's "Base Crit varies by enemy" axis, luck the resistance side.
   const unitTriggers = (u.triggers || []).flatMap((t) => compileTrigger(t, id, null));
   const attackIds = [];
   let anyRanged = false;
@@ -150,6 +151,7 @@ for (const id of [...fielded].sort()) {
     typeId: id, name: u.name, side: 'enemy',
     maxHp: st.health, armor: st.armor ?? 0, resist: st.resist ?? 0,
     accuracy: st.accuracy, dodge: st.dodge ?? 0,
+    ...(st.crit ? { crit: st.crit } : {}), ...(st.luck ? { luck: st.luck } : {}), // station.crit 2026-08-27
     strength: st.strength ?? 0, precision: st.precision ?? 0, magic: st.magic ?? 0, spirit: st.spirit ?? 0,
     // Mechanical mapping, not design: a unit with any ranged attack kites,
     // the rest close. The real enemy AI is future work (ai.mode.* backlog).
@@ -241,7 +243,9 @@ function settledAttackExtras(a, unitId) {
       gap(unitId, `${a.id} ${t.hook}: ${JSON.stringify(t.effect).slice(0, 60)}`, 'trigger shape unparsed');
     }
   }
-  if (a.crit) gap(unitId, `${a.id} crit ${a.crit}`, 'attack field: crit (no AttackDef slot)');
+  // The crit field COMPILES since station.crit (2026-08-27): AttackDef.crit
+  // is the weapon's flat addition to crit chance (COMBAT-DESIGN: "Crit from
+  // gear"). The gap it used to raise is closed in takeAttack below.
   if (((a.tags || []).includes('area') || /adjacent to both/.test(a.targets || '')) && !areaShapeOf(a)) {
     gap(unitId, `${a.id} targets '${String(a.targets).slice(0, 50)}' — lands SINGLE-TARGET`, 'area attack shape');
   }
@@ -376,6 +380,7 @@ const alphaTeam = [];
         bonus: a.damage ?? 0, stat: a.stat || 'strength',
         reach: ranged ? a.range : 1, staminaCost: a.stamina ?? 0, // heroes pay
         ...(area ? { area } : {}), // capability.area-attack, 2026-08-27
+        ...(a.crit ? { crit: a.crit } : {}), // station.crit, 2026-08-27
       };
       attackIds.push(a.id);
       kitTriggers.push(...settledAttackExtras(a, id));
@@ -417,6 +422,7 @@ const alphaTeam = [];
       typeId: id, name: h.name, side: 'hero',
       maxHp: p.health, armor: p.armor ?? 0, resist: p.resist ?? 0,
       accuracy: d.accuracy, dodge: p.dodge ?? 0,
+      ...(d.crit ?? p.crit ? { crit: d.crit ?? p.crit } : {}), ...(d.luck ?? p.luck ? { luck: d.luck ?? p.luck } : {}), // station.crit 2026-08-27
       strength: p.strength ?? 0, precision: p.precision ?? 0, magic: p.magic ?? 0, spirit: p.spirit ?? 0,
       role: anyRanged ? 'ranged' : 'melee',
       movement: d.movement, reach: p.reach ?? 0,
@@ -445,7 +451,7 @@ for (const id of CIVILIANS) {
   const h = allHeroes.find((x) => x.id === id);
   if (!h) { gap(id, 'named for the prologue, absent from the Codex', 'content'); continue; }
   const p2 = h.ported, d2 = h.derivedBase;
-  for (const k of ['crit', 'luck']) if (d2[k]) gap(id, `stat '${k}' ${d2[k]}`, 'stat: ' + k + ' (no UnitDef field)');
+  // crit/luck compile since station.crit (2026-08-27) — see the enemy block.
   const attackIds = [];
   const civTriggers = [];
   let anyRanged = false;
@@ -473,6 +479,7 @@ for (const id of CIVILIANS) {
     typeId: id, name: h.name, side: 'hero',
     maxHp: p2.health, armor: p2.armor ?? 0, resist: p2.resist ?? 0,
     accuracy: d2.accuracy, dodge: p2.dodge ?? 0,
+    ...(d2.crit ?? p2.crit ? { crit: d2.crit ?? p2.crit } : {}), ...(d2.luck ?? p2.luck ? { luck: d2.luck ?? p2.luck } : {}), // station.crit 2026-08-27
     strength: p2.strength ?? 0, precision: p2.precision ?? 0, magic: p2.magic ?? 0, spirit: p2.spirit ?? 0,
     role: anyRanged ? 'ranged' : 'melee',
     movement: d2.movement, reach: p2.reach ?? 0,
@@ -489,15 +496,69 @@ for (const id of CIVILIANS) {
   });
 }
 
+
+// The Critical Injury Chart rides along verbatim — ruled data, not a kind
+// (2026-08-27). The engine folds it from here; COMBAT-DESIGN.md is the design
+// authority and settled.json holds the one machine copy.
+// ── THE CRITICAL INJURY CHART (station.crit, 2026-08-27) ────────────────────
+// settled.json carries the DICTATED PROSE (one machine copy of the ruling);
+// the engine never parses prose at runtime, so the ten fixed strings compile
+// HERE into structured effects — compile-or-name-the-gap, like every row.
+// The two clauses the engine cannot express are dropped with named gaps:
+// Blinded's −4 Vision (no vision model — gap L-3a) and Knocked Sprawling's
+// −50 Surge (no surge quantity). The push LANDS — forced movement was built
+// today (capability.knockback), overtaking the row's own `needs` note.
+const STAT_WORD = { Accuracy: 'accuracy', Movement: 'movement', Strength: 'strength', Precision: 'precision', Armor: 'armor', Resist: 'resist', Dodge: 'dodge' };
+function compileCritChart(chart) {
+  const rows = [];
+  for (const r of chart.rows || []) {
+    const effects = [];
+    const floored = /minimum of 0/.test(r.effect);
+    for (const clause of r.effect.replace(/, (all )?to a minimum of 0/, '').split(/, | and /)) {
+      let m;
+      if ((m = clause.match(/^-(\d+) ([A-Za-z ]+)$/))) {
+        const statName = m[2].trim();
+        if (statName === 'Max Health') { effects.push({ kind: 'loseMaxHp', value: parseInt(m[1], 10) }); continue; }
+        const stat = STAT_WORD[statName];
+        if (!stat) { gap('critChart', `${r.key}: -${m[1]} ${statName}`, statName === 'Vision' ? 'no vision model (gap L-3a)' : statName === 'Surge' ? 'no surge quantity in the engine' : 'stat: ' + statName); continue; }
+        effects.push({ kind: 'statMod', stat, value: -parseInt(m[1], 10), ...(floored ? { floor: 0 } : {}) });
+      } else if ((m = clause.match(/^(\d+) turns?$/))) {
+        const prev = effects[effects.length - 1];
+        if (prev && prev.statusId === 'status.dazed' && prev.value === 0) prev.value = parseInt(m[1], 10);
+        else gap('critChart', `${r.key}: dangling duration '${clause}'`, 'unparsed chart clause');
+      } else if ((m = clause.match(/^gain (\d+) ([A-Za-z]+)$/)) || (m = clause.match(/^(\d+) ([A-Za-z]+)$/))) {
+        const status = m[2].toLowerCase();
+        if (!STATUS_OK.has(status) && status !== 'dazed') { gap('critChart', `${r.key}: ${clause}`, 'status: ' + status); continue; }
+        effects.push({ kind: 'status', statusId: 'status.' + status, value: parseInt(m[1], 10) });
+      } else if ((m = clause.match(/^pushed (\d+) hex(?:es)?$/))) {
+        effects.push({ kind: 'push', hexes: parseInt(m[1], 10) });
+      } else if ((m = clause.match(/^lose (\d+) Stamina$/))) {
+        effects.push({ kind: 'loseStamina', value: parseInt(m[1], 10) });
+      } else if ((m = clause.match(/^loses access to class powers$/))) {
+        // "loses access to class powers, 3 turns" — the duration arrives as
+        // the next clause; handled below.
+        effects.push({ kind: 'status', statusId: 'status.dazed', value: 0 });
+      } else {
+        gap('critChart', `${r.key}: '${clause}'`, 'unparsed chart clause');
+      }
+    }
+    if (effects.length === 0) { gap('critChart', `${r.key}: no clause compiled — row lands EMPTY`, 'unparsed chart row'); }
+    rows.push({ key: r.key, name: r.name, effects });
+  }
+  return { note: chart.note, rows };
+}
+
+const pack = { note: D.testCohort.note, heroes, enemies, authoredEnemies, authoredAttacks, authoredAbilities, prologueParty, alphaTeam, critChart: compileCritChart(SETTLED.critChart) };
+
+// Gaps are written AFTER the pack is fully constructed (moved 2026-08-27):
+// compileCritChart names gaps during pack construction, and writing the file
+// earlier silently dropped them — a gap that never reaches the file is the
+// exact failure the file exists to prevent.
 fs.writeFileSync('gen/enemy-pack-gaps.json', JSON.stringify({
   _note: 'GENERATED by mkenginepack.mjs — clauses the engine cannot yet express, dropped with their reason. Regenerate, never hand-edit.',
   gaps,
 }, null, 1) + '\n');
 
-// The Critical Injury Chart rides along verbatim — ruled data, not a kind
-// (2026-08-27). The engine folds it from here; COMBAT-DESIGN.md is the design
-// authority and settled.json holds the one machine copy.
-const pack = { note: D.testCohort.note, heroes, enemies, authoredEnemies, authoredAttacks, authoredAbilities, prologueParty, alphaTeam, critChart: SETTLED.critChart };
 const body = '// GENERATED by content/mkenginepack.mjs — NEVER HAND-EDIT (see engine CLAUDE.md,\n'
   + '// "Never hand-edit anything under generated/"). Source of truth: the Codex\n'
   + '// pipeline (content/settled.json testCohort -> hbt-content.json).\n'
