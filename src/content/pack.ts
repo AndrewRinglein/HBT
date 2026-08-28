@@ -20,18 +20,26 @@ export function packUnits(): Readonly<Record<string, UnitDef>> {
   // real enemies, keyed by their FULL Codex id (unit.zombie) so they can never
   // collide with the legacy bare-key fixtures ('zombie') awaiting migration.
   for (const row of [...UNIT_PACK.heroes, ...UNIT_PACK.enemies, ...(UNIT_PACK as { authoredEnemies?: readonly unknown[] }).authoredEnemies ?? [],
-    ...(UNIT_PACK as { prologueParty?: readonly unknown[] }).prologueParty ?? []]) {
+    ...(UNIT_PACK as { prologueParty?: readonly unknown[] }).prologueParty ?? [],
+    // alphaTeam joined 2026-08-27 (content.alpha-team): the test cohort rebuilt
+    // on real scaffolding — authored kits, authored attack rows, riders in the
+    // real vocabulary. Delivered from the content session (S31): "The Alpha
+    // Team is landed … I want to switch to using these heroes."
+    ...(UNIT_PACK as { alphaTeam?: readonly unknown[] }).alphaTeam ?? []]) {
     const r = row as unknown as UnitDef & { typeId: string; copyOf?: string }
     for (const k of REQUIRED) {
       if ((r as Record<string, unknown>)[k] === undefined) {
         throw new Error(`unit pack: '${r.typeId ?? '?'}' is missing '${k}' — regenerate the pack (content/mkenginepack.mjs), never patch it by hand`)
       }
     }
-    // Two id families, both clearly differentiated (Angela 2026-08-20): the
-    // cohort is test- prefixed; the authored bestiary carries its full Codex
-    // id under the declared unit. kind. Anything else is a pipeline bug.
-    if (!r.typeId.startsWith('test-') && !r.typeId.startsWith('unit.') && !r.typeId.startsWith('hero.')) {
-      throw new Error(`unit pack: '${r.typeId}' is not test- / unit.* / hero.* — the pack must stay clearly differentiated (Angela 2026-08-20)`)
+    // Id families, all clearly differentiated (Angela 2026-08-20): the cohort
+    // is test- prefixed; the authored bestiary carries its full Codex id under
+    // the declared unit. kind; the party and civilians are hero.*; and the
+    // alpha- family is the S31 Alpha Team (delivered 2026-08-27) — the cohort
+    // rebuilt the way heroes actually are. Anything else is a pipeline bug.
+    if (!r.typeId.startsWith('test-') && !r.typeId.startsWith('unit.') && !r.typeId.startsWith('hero.')
+      && !r.typeId.startsWith('alpha-')) {
+      throw new Error(`unit pack: '${r.typeId}' is not test- / unit.* / hero.* / alpha- — the pack must stay clearly differentiated (Angela 2026-08-20)`)
     }
     for (const t of r.triggers ?? []) validateTrigger(t)
     for (const m of r.moves) {

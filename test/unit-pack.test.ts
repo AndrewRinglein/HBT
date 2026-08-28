@@ -18,13 +18,19 @@ describe('the pack — read from the data, clearly differentiated', () => {
     // and is counted by its own tests (2026-08-26, content.hero-pack).
     const heroes = Object.values(pack).filter((u) => u.side === 'hero' && u.typeId.startsWith('test-'))
     expect(heroes.length).toBe(6)
-    // LAW 10 — widened 2026-08-26 (content.enemy-pack): the pack now carries
-    // TWO clearly-differentiated families, exactly as the loader enforces —
-    // the test- cohort (with (TEST) names) and the authored bestiary under its
-    // full unit.* Codex ids. The claim is still "nothing undifferentiated";
-    // it was never "nothing but the cohort".
+    // LAW 10 — widened 2026-08-26 (content.enemy-pack) and again 2026-08-27
+    // (content.alpha-team): the pack carries clearly-differentiated families,
+    // exactly as the loader enforces — the test- cohort (with (TEST) names),
+    // the authored bestiary under full unit.* Codex ids, the hero.* party and
+    // civilians, and the alpha- team delivered in S31 (with (ALPHA) names).
+    // The claim is still "nothing undifferentiated"; it was never "nothing
+    // but the cohort".
     for (const h of Object.values(pack)) {
       if (h.typeId.startsWith('unit.') || h.typeId.startsWith('hero.')) continue // the authored bestiary + prologue party families
+      if (h.typeId.startsWith('alpha-')) {
+        expect(h.name, h.typeId).toContain('(ALPHA)')
+        continue
+      }
       expect(h.typeId.startsWith('test-'), h.typeId).toBe(true)
       expect(h.name, h.typeId).toContain('(TEST)')
     }

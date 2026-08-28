@@ -311,7 +311,20 @@ check('generalizes — the second instance costs zero engine code', () => {
 
 // Naming: GLOSSARY.md is the authority; this is its teeth. Grammar violations
 // block; style smells flag the landing for review rather than deadlocking it.
-const KNOWN_KINDS = ['attack', 'power', 'status', 'unit', 'terrain', 'map', 'badge', 'item', 'enchant', 'specialty', 'origin', 'card', 'class', 'art', 'rule', 'engagement', 'trigger', 'ability', 'ai', 'baseline', 'test', 'hero']
+//
+// The kind list is the UNION of the engine's own kinds and the project-wide
+// ruling file tools/approved-kinds.json (fixed 2026-08-27): this list and that
+// file had drifted apart — 'showcase' was Andrew-approved there and unknown
+// here, unnoticed only because new files never hit addedLines. Two lists that
+// can disagree is the exact failure Law 13 exists to prevent; the ruling file
+// wins for everything it names.
+const ENGINE_KINDS = ['attack', 'power', 'status', 'unit', 'terrain', 'map', 'badge', 'item', 'enchant', 'specialty', 'origin', 'card', 'class', 'art', 'rule', 'engagement', 'trigger', 'ability', 'ai', 'baseline', 'test', 'hero']
+const KNOWN_KINDS = (() => {
+  try {
+    const approved = JSON.parse(readFileSync('../tools/approved-kinds.json', 'utf8')).kinds
+    return [...new Set([...ENGINE_KINDS, ...Object.keys(approved)])]
+  } catch { return ENGINE_KINDS } // engine checked out alone — its own kinds still hold
+})()
 check('naming — new content ids use declared kinds', () => {
   const ids = new Set()
   for (const l of addedLines('src/content')) {

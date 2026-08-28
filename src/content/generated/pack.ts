@@ -1241,6 +1241,136 @@ export const UNIT_PACK = {
       "reach": 7,
       "staminaCost": 2
     },
+    "attack.halberd.hack": {
+      "id": "attack.halberd.hack",
+      "name": "Hack",
+      "kind": "melee",
+      "damageType": "physical",
+      "bonus": 2,
+      "stat": "strength",
+      "reach": 1,
+      "staminaCost": 1
+    },
+    "attack.halberd.cleave": {
+      "id": "attack.halberd.cleave",
+      "name": "Cleave",
+      "kind": "melee",
+      "damageType": "physical",
+      "bonus": 1,
+      "stat": "strength",
+      "reach": 1,
+      "staminaCost": 2
+    },
+    "attack.punch": {
+      "id": "attack.punch",
+      "name": "Punch",
+      "kind": "melee",
+      "damageType": "physical",
+      "bonus": -1,
+      "stat": "strength",
+      "reach": 1,
+      "staminaCost": 1
+    },
+    "attack.javelin.throw": {
+      "id": "attack.javelin.throw",
+      "name": "Throw",
+      "kind": "ranged",
+      "damageType": "physical",
+      "bonus": 2,
+      "stat": "precision",
+      "reach": 4,
+      "staminaCost": 1
+    },
+    "attack.javelin.stab": {
+      "id": "attack.javelin.stab",
+      "name": "Stab",
+      "kind": "melee",
+      "damageType": "physical",
+      "bonus": 1,
+      "stat": "strength",
+      "reach": 1,
+      "staminaCost": 0
+    },
+    "attack.dagger.stab": {
+      "id": "attack.dagger.stab",
+      "name": "Stab",
+      "kind": "melee",
+      "damageType": "physical",
+      "bonus": -1,
+      "stat": "strength",
+      "reach": 1,
+      "staminaCost": 0
+    },
+    "attack.shortbow.short-shot": {
+      "id": "attack.shortbow.short-shot",
+      "name": "Short Shot",
+      "kind": "ranged",
+      "damageType": "physical",
+      "bonus": 1,
+      "stat": "precision",
+      "reach": 5,
+      "staminaCost": 1
+    },
+    "attack.shortbow.quick-shot": {
+      "id": "attack.shortbow.quick-shot",
+      "name": "Quick Shot",
+      "kind": "ranged",
+      "damageType": "physical",
+      "bonus": 0,
+      "stat": "precision",
+      "reach": 4,
+      "staminaCost": 0
+    },
+    "attack.lightning-staff.bolt": {
+      "id": "attack.lightning-staff.bolt",
+      "name": "Bolt",
+      "kind": "ranged",
+      "damageType": "magic",
+      "bonus": 3,
+      "stat": "precision",
+      "reach": 5,
+      "staminaCost": 2
+    },
+    "attack.holy-symbol.wrath": {
+      "id": "attack.holy-symbol.wrath",
+      "name": "Wrath",
+      "kind": "ranged",
+      "damageType": "true",
+      "bonus": 0,
+      "stat": "precision",
+      "reach": 5,
+      "staminaCost": 1
+    },
+    "attack.longsword.slash": {
+      "id": "attack.longsword.slash",
+      "name": "Slash",
+      "kind": "melee",
+      "damageType": "physical",
+      "bonus": 1,
+      "stat": "strength",
+      "reach": 1,
+      "staminaCost": 1
+    },
+    "attack.longsword.stab": {
+      "id": "attack.longsword.stab",
+      "name": "Stab",
+      "kind": "melee",
+      "damageType": "physical",
+      "bonus": 2,
+      "stat": "strength",
+      "reach": 1,
+      "staminaCost": 2
+    },
+    "attack.knight-shield.shield-slam": {
+      "id": "attack.knight-shield.shield-slam",
+      "name": "Shield Slam",
+      "kind": "melee",
+      "damageType": "physical",
+      "bonus": 0,
+      "stat": "strength",
+      "reach": 1,
+      "staminaCost": 2
+    },
     "attack.pile-of-rocks.throw": {
       "id": "attack.pile-of-rocks.throw",
       "name": "Throw",
@@ -1438,6 +1568,357 @@ export const UNIT_PACK = {
         "civilian"
       ],
       "triggers": []
+    }
+  ],
+  "alphaTeam": [
+    {
+      "typeId": "alpha-oathblade",
+      "name": "Oathblade (ALPHA)",
+      "side": "hero",
+      "maxHp": 15,
+      "armor": 0,
+      "resist": 0,
+      "accuracy": 75,
+      "dodge": 0,
+      "strength": 5,
+      "precision": 3,
+      "magic": 0,
+      "spirit": 1,
+      "role": "melee",
+      "movement": 5,
+      "reach": 1,
+      "maxStamina": 5,
+      "staminaRegen": 1,
+      "ai": "melee-aggressive",
+      "attacks": [
+        "attack.halberd.hack",
+        "attack.halberd.cleave",
+        "attack.punch"
+      ],
+      "abilities": [],
+      "moves": [
+        "power.move",
+        "power.leap"
+      ],
+      "attributes": [
+        "hero-alpha"
+      ],
+      "tags": [
+        "hero"
+      ],
+      "triggers": [
+        {
+          "id": "alpha-oathblade.second-wind",
+          "hook": "onTakingDamage",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.regeneration",
+            "value": 1
+          },
+          "source": "alpha-oathblade"
+        },
+        {
+          "id": "alpha-oathblade.stagger",
+          "hook": "onDamage",
+          "chance": 20,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.stun",
+            "value": 1
+          },
+          "source": "alpha-oathblade"
+        },
+        {
+          "id": "alpha-oathblade.brace",
+          "hook": "onTakingDamage",
+          "chance": 50,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.protection",
+            "value": 1
+          },
+          "source": "alpha-oathblade"
+        },
+        {
+          "id": "alpha-oathblade.oath-of-blood",
+          "hook": "onAttack",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.bleed",
+            "value": 2
+          },
+          "source": "alpha-oathblade"
+        }
+      ]
+    },
+    {
+      "typeId": "alpha-sky-pirate",
+      "name": "Sky Pirate (ALPHA)",
+      "side": "hero",
+      "maxHp": 10,
+      "armor": 0,
+      "resist": 0,
+      "accuracy": 78,
+      "dodge": 0,
+      "strength": 4,
+      "precision": 3,
+      "magic": 0,
+      "spirit": 0,
+      "role": "ranged",
+      "movement": 5,
+      "reach": 2,
+      "maxStamina": 5,
+      "staminaRegen": 1,
+      "ai": "melee-aggressive",
+      "attacks": [
+        "attack.javelin.throw",
+        "attack.javelin.stab",
+        "attack.dagger.stab",
+        "attack.punch"
+      ],
+      "abilities": [],
+      "moves": [
+        "power.move",
+        "power.side-roll"
+      ],
+      "attributes": [
+        "hero-alpha"
+      ],
+      "tags": [
+        "hero"
+      ],
+      "triggers": [
+        {
+          "id": "alpha-sky-pirate.ragged-edge",
+          "hook": "onDamage",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.bleed",
+            "value": 1
+          },
+          "source": "alpha-sky-pirate"
+        },
+        {
+          "id": "trigger.dagger.stab.protection",
+          "hook": "onAttack",
+          "chance": 100,
+          "select": "self",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.protection",
+            "value": 1
+          },
+          "source": "alpha-sky-pirate",
+          "onlyWithAttack": "attack.dagger.stab"
+        }
+      ]
+    },
+    {
+      "typeId": "alpha-dusk-hawk",
+      "name": "Dusk Hawk (ALPHA)",
+      "side": "hero",
+      "maxHp": 5,
+      "armor": 0,
+      "resist": 0,
+      "accuracy": 80,
+      "dodge": 5,
+      "strength": 3,
+      "precision": 4,
+      "magic": 0,
+      "spirit": 0,
+      "role": "ranged",
+      "movement": 5,
+      "reach": 4,
+      "maxStamina": 5,
+      "staminaRegen": 1,
+      "ai": "ranged-kite",
+      "attacks": [
+        "attack.shortbow.short-shot",
+        "attack.shortbow.quick-shot",
+        "attack.punch"
+      ],
+      "abilities": [],
+      "moves": [
+        "power.move",
+        "power.side-roll"
+      ],
+      "attributes": [
+        "hero-alpha"
+      ],
+      "tags": [
+        "hero"
+      ],
+      "triggers": [
+        {
+          "id": "alpha-dusk-hawk.pin",
+          "hook": "onHit",
+          "chance": 20,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.slow",
+            "value": 1
+          },
+          "source": "alpha-dusk-hawk"
+        }
+      ]
+    },
+    {
+      "typeId": "alpha-air-mage",
+      "name": "Air Mage (ALPHA)",
+      "side": "hero",
+      "maxHp": 6,
+      "armor": 0,
+      "resist": 0,
+      "accuracy": 75,
+      "dodge": 0,
+      "strength": 0,
+      "precision": 3,
+      "magic": 2,
+      "spirit": 0,
+      "role": "ranged",
+      "movement": 5,
+      "reach": 3,
+      "maxStamina": 5,
+      "staminaRegen": 1,
+      "ai": "ranged-kite",
+      "attacks": [
+        "attack.lightning-staff.bolt",
+        "attack.punch"
+      ],
+      "abilities": [],
+      "moves": [
+        "power.move",
+        "power.focus"
+      ],
+      "attributes": [
+        "hero-alpha"
+      ],
+      "tags": [
+        "hero"
+      ],
+      "triggers": [
+        {
+          "id": "alpha-air-mage.dampen",
+          "hook": "onHit",
+          "chance": 20,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.weak",
+            "value": 1
+          },
+          "source": "alpha-air-mage"
+        },
+        {
+          "id": "alpha-air-mage.arcane-ward",
+          "hook": "onTakingDamage",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.protection",
+            "value": 3
+          },
+          "source": "alpha-air-mage"
+        }
+      ]
+    },
+    {
+      "typeId": "alpha-lucius",
+      "name": "Lucius (ALPHA)",
+      "side": "hero",
+      "maxHp": 7,
+      "armor": 0,
+      "resist": 0,
+      "accuracy": 80,
+      "dodge": 0,
+      "strength": 3,
+      "precision": 3,
+      "magic": 0,
+      "spirit": 2,
+      "role": "ranged",
+      "movement": 5,
+      "reach": 2,
+      "maxStamina": 5,
+      "staminaRegen": 1,
+      "ai": "ranged-kite",
+      "attacks": [
+        "attack.holy-symbol.wrath",
+        "attack.punch"
+      ],
+      "abilities": [],
+      "moves": [
+        "power.move",
+        "power.devotion"
+      ],
+      "attributes": [
+        "hero-alpha"
+      ],
+      "tags": [
+        "hero"
+      ],
+      "triggers": []
+    },
+    {
+      "typeId": "alpha-osric",
+      "name": "Osric (ALPHA)",
+      "side": "hero",
+      "maxHp": 9,
+      "armor": 1,
+      "resist": 0,
+      "accuracy": 72,
+      "dodge": 0,
+      "strength": 4,
+      "precision": 3,
+      "magic": 0,
+      "spirit": 1,
+      "role": "melee",
+      "movement": 5,
+      "reach": 1,
+      "maxStamina": 5,
+      "staminaRegen": 1,
+      "ai": "melee-aggressive",
+      "attacks": [
+        "attack.longsword.slash",
+        "attack.longsword.stab",
+        "attack.knight-shield.shield-slam",
+        "attack.punch"
+      ],
+      "abilities": [],
+      "moves": [
+        "power.move",
+        "power.sidestep"
+      ],
+      "attributes": [
+        "hero-alpha"
+      ],
+      "tags": [
+        "hero"
+      ],
+      "triggers": [
+        {
+          "id": "trigger.knight-shield.shield-slam.stun",
+          "hook": "onDamage",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.stun",
+            "value": 1
+          },
+          "source": "alpha-osric",
+          "onlyWithAttack": "attack.knight-shield.shield-slam"
+        }
+      ]
     }
   ]
 } as const

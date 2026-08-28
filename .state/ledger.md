@@ -3056,3 +3056,53 @@ RULED twice, both verbatim in DECISIONS.md: civilians ACT, and — correcting th
 ## content.civilians ADDENDUM — 2026-08-27 (the axe was never a gap)
 
 The content chat found the real defect (S30): mkenginepack read items from gen/settled-items.json only, and the Lumberjack's Axe — fully authored since dictation — lives in settled.json, the second source. Converter now merges both; Chop and Cleave enter the pack; the two false unauthored gap rows are gone. Follow-through this side: Chop's dictated 20%-for-2-Bleed rider now travels (settledAttackExtras parses the settled trigger shape, constrained), and Cleave's crit 20 + two-hex arc are NAMED drops instead of a silent single-target reshape (gaps 34 -> 36, both honest). Tests updated with Law-10 reasons: the weaponless assertion was testing a converter bug as content truth; the orphan-throws proof moved to a scripted cornered-orphan activation because in open battles her fleeing IS the kiter being right (reach 4 vs threat radius 5). Suite 42/393 green; baselines unchanged.
+
+## content.alpha-team — LANDED `0cbbb9c` **NEEDS REVIEW**
+2026-08-28T00:12:46.000Z
+
+  PASS  dependencies landed — content.enemy-pack
+  PASS  typecheck — tsc --noEmit clean
+  PASS  full test suite — 43 files / 400 tests green (was 42/393)
+  PASS  gate 1 — showcase.alpha-team: 1 log lines, 1 fired, 1 changed state
+  PASS  brought its own tests — test/alpha-team.test.ts (7 tests)
+  PASS  control battles — DECLARED changesBaseline: 6 of 8 maps moved (open 90d4472c->4d68c38b, ridge, highlands, field, thicket, showcase; flanks + embers identical) — the provisional attack.punch (cost 0) superseded by the authored universal Punch (cost 1); goldens re-blessed at commit
+  PASS  content has a published source — settled.json alphaTeam (S31); stat bodies via copyOf (content 0b20516)
+  PASS  hardcode scan — no alpha ids in src/core
+  PASS  naming — all id kinds known after gate.mjs KNOWN_KINDS unions tools/approved-kinds.json (drift fix: showcase was approved there, unknown here)
+  PASS  kill switch — 6/7 fail with alpha-oathblade disabled; 5/7 fail with showcase.alpha-team disabled
+  WARN  existing tests untouched — unit-pack.test.ts family enumeration widened for the alpha- family (Law 10 reason at the edit) — LANDED FLAGGED
+
+  HAND-LANDED under the reaper protocol; every check verified piecewise; post-land audit re-ran the suite and baselines from the committed tree: clean. Seal unwritten — it belongs to the gate.
+
+<details><summary>Existing tests were edited — review this diff</summary>
+
+```diff
+diff --git a/test/unit-pack.test.ts b/test/unit-pack.test.ts
+index df01458..f2fd836 100644
+--- a/test/unit-pack.test.ts
++++ b/test/unit-pack.test.ts
+@@ -19,11 +19,17 @@ describe('the pack — read from the data, clearly differentiated', () => {
+     const heroes = Object.values(pack).filter((u) => u.side === 'hero' && u.typeId.startsWith('test-'))
+     expect(heroes.length).toBe(6)
+-    // LAW 10 — widened 2026-08-26 (content.enemy-pack): the pack now carries
+-    // TWO clearly-differentiated families, exactly as the loader enforces —
+-    // the test- cohort (with (TEST) names) and the authored bestiary under its
+-    // full unit.* Codex ids. The claim is still "nothing undifferentiated";
+-    // it was never "nothing but the cohort".
++    // LAW 10 — widened 2026-08-26 (content.enemy-pack) and again 2026-08-27
++    // (content.alpha-team): the pack carries clearly-differentiated families,
++    // exactly as the loader enforces — the test- cohort (with (TEST) names),
++    // the authored bestiary under full unit.* Codex ids, the hero.* party and
++    // civilians, and the alpha- team delivered in S31 (with (ALPHA) names).
++    // The claim is still "nothing undifferentiated"; it was never "nothing
++    // but the cohort".
+     for (const h of Object.values(pack)) {
+       if (h.typeId.startsWith('unit.') || h.typeId.startsWith('hero.')) continue // the authored bestiary + prologue party families
++      if (h.typeId.startsWith('alpha-')) {
++        expect(h.name, h.typeId).toContain('(ALPHA)')
++        continue
++      }
+       expect(h.typeId.startsWith('test-'), h.typeId).toBe(true)
+       expect(h.name, h.typeId).toContain('(TEST)')
+```
+</details>

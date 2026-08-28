@@ -909,3 +909,33 @@ any hero; the 0 in their derived rows is stale derivation, not design. Applied
 as the documented level-1 hero baseline (COMBAT-DESIGN.md:461 — "Level-1 hero:
 Max 5, Regen 1") — copied, not invented — and their attacks cost what their
 rows author (the Farmer PAYS 1 for the pitchfork jab).
+
+---
+
+## 2026-08-27 — the Alpha Team lands; switch to using these heroes
+
+> "The Alpha Team is landed (S31) — six heroes in settled.json alphaTeam,
+> exported into the engine pack as its own alphaTeam section: … Same stat
+> bodies as the test cohort (copied programmatically), test statuses translated
+> (ward→protection, hobble→slow, enfeeble→weak), movement powers derived from
+> class, and Punch arrives via the universalToAllUnits flag — the first
+> converter pass to honor it. Arcane Bolt is gone; the mage's power is the
+> staff's. Nine honest gaps where the engine can't yet express the rows: the
+> Halberd's push, Cleave landing single-target, four crit fields, and the three
+> item powers (Storm, Heal, Block — AbilityDef can only speak bolt-shaped
+> blasts). … I want to switch to using these heroes, so let's use the Iron
+> Gauntlet skill and update to read these heroes from where they should be, and
+> then we need to close the gap on what's missing."
+
+The full kit table (class, kit, attacks, riders per hero) is in the content
+repo, S31. Engine consequence: the pack loader reads the `alphaTeam` section
+and the `alpha-` id family joins test- / unit.* / hero.* as a declared family.
+NOTE recorded with the landing: S31's "copied programmatically" stat bodies
+did NOT travel — settled.json carried `ported: {}` / `derivedBase: {}` with
+the true source only in `copyOf`; fixed in the converter (content 0b20516) by
+resolving copyOf through the Codex. Compilation, not invention.
+
+"Switch to using these heroes" is sequenced: (A) they enter and verify
+(content.alpha-team), (B) the gaps close as engine capabilities, (C) the
+default cohort flips to the alpha six — a changesBaseline item, taken last so
+half-expressed kits are never baked into every control baseline.

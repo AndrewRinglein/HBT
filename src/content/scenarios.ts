@@ -77,6 +77,22 @@ const RAW_SCENARIOS: Readonly<Record<string, ScenarioDef>> = {
     enemyHexes: [118, 122],
     replicate: 0,
   },
+  'showcase.alpha-team': {
+    id: 'showcase.alpha-team',
+    note: 'The six Alpha Team heroes (S31, delivered 2026-08-27) against a '
+      + 'rider-heavy spread of authored enemies — the content.alpha-team '
+      + 'verify battle. Every alpha kit, rider, and the universal Punch is '
+      + 'reachable here; the nine named gaps (push, cleave arc, crit, item '
+      + 'powers) stand in the gaps file, not in these rows.',
+    mapId: 'map.open',
+    heroes: ['alpha-oathblade', 'alpha-sky-pirate', 'alpha-dusk-hawk',
+      'alpha-air-mage', 'alpha-lucius', 'alpha-osric'],
+    heroHexes: [244, 245, 246, 247, 248, 249],
+    enemies: ['unit.zombie', 'unit.fast-zombie', 'unit.skeletal-archer',
+      'unit.imp', 'unit.hellhound', 'unit.bruiser-demon'],
+    enemyHexes: [3, 5, 7, 9, 11, 13],
+    replicate: 0,
+  },
   'showcase.civilians': {
     id: 'showcase.civilians',
     note: 'The three prologue civilians beside the Hunter against zombies — '

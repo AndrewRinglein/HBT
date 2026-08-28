@@ -59,11 +59,12 @@ const RAW_ATTACKS: Readonly<Record<string, AttackDef>> = {
     id: 'attack.mage.strike', name: 'Staff (strike)', kind: 'melee',
     damageType: 'physical', bonus: 0, stat: 'strength', reach: 1, staminaCost: 1,
   },
-  'attack.punch': {
-    // PROVISIONAL — no published source
-    id: 'attack.punch', name: 'Punch', kind: 'melee',
-    damageType: 'physical', bonus: -1, stat: 'strength', reach: 1, staminaCost: 0,
-  },
+  // attack.punch left this file 2026-08-27 (content.alpha-team): it was
+  // PROVISIONAL here since the first baseline; S31 authored the real row
+  // (universalToAllUnits, staminaCost 1 vs the provisional 0) and the
+  // generated pack now owns the id. One owner only — the collision guard
+  // below is what caught the shadowing. Cost 0→1 is a declared baseline
+  // change: cohort punchers now pay.
   'attack.breath.hiss': {
     // PUBLISHED: 6-BESTIARY-SETTLED § attack.* (2026-08-20); Codex §5 Breath:
     // "Hiss | range 3 | magic | +0 | magic | onHit apply 2 Poison". Acc +5
