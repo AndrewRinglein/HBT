@@ -1534,5 +1534,68 @@
     "triggers": []
    }
   ]
+ },
+ "critChart": {
+  "note": "RULED DATA, NOT A CONTENT KIND (decided 2026-08-27, closing the question parked 2026-08-09). One copy, here; COMBAT-DESIGN.md crit section is the design authority and this block mirrors it. The chart never produces an injury.* badge — battle-only, cleared at battle end; permanence is the Deathbed pipeline alone. Resolution: normal damage always lands; cup.crit-branch flips a coin — heads +50% damage BEFORE Armor/Resist/Protection, tails cup.crit-effect rolls evenly among the rows. One chart for all damage types, fully symmetric. Entry point name fixed in GLOSSARY.md: rollCritEffect. Row keys exist so event-log lines can name their cause (Law 12) — keys, not content ids.",
+  "branch": {
+   "heads": "+50% damage, applied before Armor, Resist and Protection",
+   "tails": "roll evenly among the rows"
+  },
+  "rows": [
+   {
+    "key": "blinded",
+    "name": "Blinded",
+    "effect": "-4 Vision, -30 Accuracy"
+   },
+   {
+    "key": "leg-crippled",
+    "name": "Leg Crippled",
+    "effect": "-3 Movement"
+   },
+   {
+    "key": "arm-crippled",
+    "name": "Arm Crippled",
+    "effect": "-2 Strength, -2 Precision"
+   },
+   {
+    "key": "bleeding",
+    "name": "Bleeding",
+    "effect": "gain 5 Bleed"
+   },
+   {
+    "key": "dazed",
+    "name": "Dazed",
+    "effect": "loses access to class powers, 3 turns"
+   },
+   {
+    "key": "stunned",
+    "name": "Stunned",
+    "effect": "gain 1 Stun and 3 Weak"
+   },
+   {
+    "key": "knocked-sprawling",
+    "name": "Knocked Sprawling",
+    "effect": "pushed 1 hex, gain 2 Slow, -50 Surge",
+    "needs": [
+     "forced movement — same gap as the Halberd Hack push; land the row, gap the push"
+    ]
+   },
+   {
+    "key": "winded",
+    "name": "Winded",
+    "effect": "lose 4 Stamina, to a minimum of 0"
+   },
+   {
+    "key": "guard-broken",
+    "name": "Guard Broken",
+    "effect": "-2 Armor, -1 Resist, -10 Dodge, all to a minimum of 0"
+   },
+   {
+    "key": "nerve-struck",
+    "name": "Nerve Struck",
+    "effect": "-2 Max Health"
+   }
+  ],
+  "source": "Six rows 2026-08-09 (extracted from GAME-DESIGN §4); four added by ruling 2026-08-27 (Knocked Sprawling, Winded, Guard Broken, Nerve Struck) — every axis covered: stamina, mitigation, the body."
  }
 }
