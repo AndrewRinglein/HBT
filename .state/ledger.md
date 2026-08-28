@@ -3673,3 +3673,15 @@ index d92de4b..189c991 100644
  
 ```
 </details>
+
+## hero-pack addendum — LANDED `2736af8`
+2026-08-28T03:57:51.000Z
+
+The battle-2 party stands whole ("Battle Chaplain should be in there now" +
+the S36 full-kit dictation): Hunter, Iron Dwarf (war axe), Battle Chaplain
+(knight shield + holy texts; Mercy scales off SPIRIT — AttackDef learned the
+stat). Punch re-ruled per S37 (0 stamina, −5 crit; −5 accuracy a named gap).
+Converter fix (content ea28d39): the third item source's STRING range no
+longer ships into reach — the loader's refusal was the find. Baselines
+re-blessed (the Punch re-rule reaches the cohort). Suite 49/448; post-land
+audit clean. Hand-landed under the reaper protocol; seal unwritten.
