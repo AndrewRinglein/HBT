@@ -180,8 +180,13 @@ const SETTLED = JSON.parse(fs.readFileSync('settled.json', 'utf8'));
 // and its Chop/Cleave rows live there, with the universal Punch). The converter read only
 // settled-items.json and reported the axe as unauthored — a false gap, corrected 2026-08-27.
 // settled-items rows win on an id collision (they are the older, engine-facing shapes).
-const ITEM_BY_ID = new Map([...(SETTLED.items || []), ...SITEMS.items].map((i) => [i.id, i]));
-const SATTACK_BY_ID = new Map([...(SETTLED.attacks || []), ...SITEMS.attacks].map((a) => [a.id, a]));
+// THREE authored item/attack sources, not two — gen/weapons.json holds the weapon shelf
+// (Holy Texts, War Axe, the daggers…). Missing it made the Battle Chaplain field with a
+// shield and no scripture — the S30 lumberjack lesson, relearned 2026-08-27. Later
+// sources win on id collision (settled-items last, the engine-facing shapes).
+const WEAPONS = JSON.parse(fs.readFileSync('gen/weapons.json', 'utf8'));
+const ITEM_BY_ID = new Map([...(SETTLED.items || []), ...(WEAPONS.items || []), ...SITEMS.items].map((i) => [i.id, i]));
+const SATTACK_BY_ID = new Map([...(SETTLED.attacks || []), ...(WEAPONS.attacks || []), ...SITEMS.attacks].map((a) => [a.id, a]));
 const SPOWER_BY_ID = new Map(
   [...(Array.isArray(SETTLED.powers) ? SETTLED.powers : []), ...(SITEMS.powers || [])]
     .filter((p) => p && p.id).map((p) => [p.id, p]));
@@ -340,6 +345,21 @@ for (const id of PARTY) {
       kitTriggers.push(...settledAttackExtras(a, id));
     }
   }
+  // Universal attacks (Punch, re-ruled 2026-08-27: every classed hero of the six classes;
+  // S-1, 0 stamina, -5 accuracy, -5 crit, brawl+melee) — the flag on the row, honored here
+  // as the alpha pass already does.
+  for (const a of [...SATTACK_BY_ID.values()].filter((x) => x.universalToAllUnits)) {
+    if (attackIds.includes(a.id)) continue;
+    authoredAttacks[a.id] = {
+      id: a.id, name: a.name, kind: 'melee', damageType: a.damageType || 'physical',
+      bonus: a.damage ?? 0, stat: a.stat || 'strength', reach: 1, staminaCost: a.stamina ?? 0,
+      ...(a.crit ? { crit: a.crit } : {}),
+    };
+    attackIds.push(a.id);
+    kitTriggers.push(...settledAttackExtras(a, id));
+    if (a.accuracy) gap(id, `${a.id} accuracy ${a.accuracy}`, 'attack field: accuracy (no AttackDef slot)');
+  }
+
   // Fold kit-item stat modifiers into the row (the armor pins are the first kit items
   // whose whole payload IS the mods — without this the Destroyed Mail does nothing).
   const p = { ...h.ported }, d = { ...h.derivedBase };

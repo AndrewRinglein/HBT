@@ -112,6 +112,11 @@
    "needs": "content"
   },
   {
+   "unit": "hero.base.ranger-aggressive",
+   "what": "attack.punch accuracy -5",
+   "needs": "attack field: accuracy (no AttackDef slot)"
+  },
+  {
    "unit": "hero.base.warrior-iron",
    "what": "item.tower-shield grants power.tower-shield.cover which has no attack row",
    "needs": "content"
@@ -123,8 +128,8 @@
   },
   {
    "unit": "hero.base.warrior-iron",
-   "what": "kit item item.war-axe not in settled-items",
-   "needs": "content"
+   "what": "attack.punch accuracy -5",
+   "needs": "attack field: accuracy (no AttackDef slot)"
   },
   {
    "unit": "hero.base.priest-armored",
@@ -133,13 +138,13 @@
   },
   {
    "unit": "hero.base.priest-armored",
-   "what": "kit item item.holy-texts not in settled-items",
+   "what": "kit item item.pilgrims-habit not in settled-items",
    "needs": "content"
   },
   {
    "unit": "hero.base.priest-armored",
-   "what": "kit item item.pilgrims-habit not in settled-items",
-   "needs": "content"
+   "what": "attack.punch accuracy -5",
+   "needs": "attack field: accuracy (no AttackDef slot)"
   },
   {
    "unit": "alpha-air-mage",
