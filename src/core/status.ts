@@ -34,8 +34,16 @@ export type StatusDef = {
   readonly name: string
   readonly shape: StatusShape
   readonly stacking: Stacking
-  /** Ruled 2026-08-20: per-tick damage is reduced by the holder's Resist. Poison and Burn set it; Bleed never does. */
-  readonly tickMitigatedByResist?: boolean
+  /**
+   * What KIND of damage this status ticks — RULED 2026-08-27: "Status damage
+   * from poison and burn is magic damage... It gets reduced by resist. Bleed
+   * damage is true damage." The type IS the mitigation rule, exactly as it is
+   * for attacks: magic is resist-reduced, physical would be armor-reduced,
+   * true (and absent) is flat. Replaces the 2026-08-20 tickMitigatedByResist
+   * flag — same arithmetic for burn/poison/bleed, one vocabulary instead of
+   * a bespoke boolean.
+   */
+  readonly tickDamageType?: import('./types.js').DamageType
 
   // ── hooks: what reads and writes this status ──────────────────────────────
   /** End of Phase, before decay. */
@@ -150,16 +158,18 @@ export function heal(ctx: Ctx, unitId: number, amount: number, causeId: string):
  */
 export function statusDamage(ctx: Ctx, unitId: number, amount: number, causeId: string): void {
   const def = ctx.statuses[causeId]
+  const damageType = def?.tickDamageType ?? 'true'
   let resisted = 0
-  if (def?.tickMitigatedByResist) {
-    const resist = effective(ctx, unit(ctx, unitId), 'resist').value
-    resisted = Math.min(amount, Math.max(0, resist))
+  if (damageType === 'magic' || damageType === 'physical') {
+    const stat = damageType === 'magic' ? 'resist' as const : 'armor' as const
+    const mit = effective(ctx, unit(ctx, unitId), stat).value
+    resisted = Math.min(amount, Math.max(0, mit))
     amount -= resisted
   }
   applyDamage(ctx, unitId, amount, causeId,
     resisted > 0
-      ? { actor: null, statusId: causeId, damageType: 'true', resisted }
-      : { actor: null, statusId: causeId, damageType: 'true' })
+      ? { actor: null, statusId: causeId, damageType, resisted }
+      : { actor: null, statusId: causeId, damageType })
 }
 
 /** Healing from a status, not an action. Same mutator, different cause. */

@@ -16,7 +16,7 @@ const RAW_STATUSES: Readonly<Record<string, StatusDef>> = {
     // RULED 2026-08-20: counters accumulate and tick down; pool is reserved for
     // spent-when-consumed (protection). 1-EFFECTS-SETTLED amended with a CHANGED entry.
     id: 'status.poison', name: 'Poison', shape: 'counter', stacking: 'add',
-    tickMitigatedByResist: true,   // ruled 2026-08-20 — the 5-vs-2 table
+    tickDamageType: 'magic',   // RULED 2026-08-27: 'poison and burn is magic damage... reduced by resist' — same arithmetic as the 2026-08-20 flag, now typed
     onPhaseEnd: (ctx, unitId, value) => statusDamage(ctx, unitId, value, 'status.poison'),
   },
   'status.burn': {
@@ -26,7 +26,7 @@ const RAW_STATUSES: Readonly<Record<string, StatusDef>> = {
     // row already says "halved while status.burn is present"; the halving is
     // read by applyHealing from the halvesHealing flag, one code path.
     id: 'status.burn', name: 'Burn', shape: 'counter', stacking: 'add',
-    tickMitigatedByResist: true,
+    tickDamageType: 'magic',   // ruled 2026-08-27, see poison
     halvesHealing: true,
     onPhaseEnd: (ctx, unitId, value) => statusDamage(ctx, unitId, value, 'status.burn'),
   },
@@ -52,10 +52,12 @@ const RAW_STATUSES: Readonly<Record<string, StatusDef>> = {
     // PUBLISHED: 1-EFFECTS-SETTLED.md § status.* (row added 2026-08-20); Codex
     // census: bleed, 63 uses — "Bleed ticks a flat 2 and Resist never touches
     // it"; GAME-DESIGN §5: "flat 2 damage — its value is a turn counter, not a
-    // magnitude". tickMitigatedByResist is deliberately ABSENT — the exact seam
+    // magnitude". The tick is typed TRUE (ruled 2026-08-27: "Bleed damage is
+    // true damage") — the exact seam
     // statusDamage was built with (ruled 2026-08-20: burn/poison per tick,
     // "never bleed"). The tick amount is the constant 2, not the value.
     id: 'status.bleed', name: 'Bleed', shape: 'counter', stacking: 'add',
+    tickDamageType: 'true',   // explicit since 2026-08-27; flat as ever
     onPhaseEnd: (ctx, unitId, _value) => statusDamage(ctx, unitId, 2, 'status.bleed'),
   },
   'status.protection': {

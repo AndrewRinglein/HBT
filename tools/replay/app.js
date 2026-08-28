@@ -438,7 +438,9 @@ async function apply(e) {
         if (impact) { impact(); impact = null; }
         t.hp = e.hpAfter; t.shake = 22; t.flash = 0.55;
         const total = e.amount + (e.overkill || 0);
-        t.pops.push({ s:'-'+total, col: e.crit ? '#ffd257' : '#ff8f7d', t:0, big: !!e.crit || total >= 7 });
+        // Magic damage is BLUE — ruled 2026-08-27 ('poison and burn is magic
+        // damage. It should be blue'), and every magic hit shares the colour.
+        t.pops.push({ s:'-'+total, col: e.crit ? '#ffd257' : e.damageType === 'magic' ? '#7db4ff' : '#ff8f7d', t:0, big: !!e.crit || total >= 7 });
         if (e.resisted) t.pops.push({ s:`resist ${e.resisted}`, col:'#9fb6d9', t:-0.25 });
         drawRoster();
       }

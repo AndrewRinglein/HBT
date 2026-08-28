@@ -1501,5 +1501,23 @@
   ],
   "status": "done-needs-review",
   "sha": "8780794"
+ },
+ {
+  "id": "fix.status-damage-types",
+  "kind": "engine",
+  "shape": "rule",
+  "spec": "Ruled 2026-08-27: 'Status damage from poison and burn is magic damage. It should be blue. It gets reduced by resist. Bleed damage is true damage. Thorns damage that is dealt is true damage.' The tick's damage TYPE becomes a status-row field (tickDamageType) replacing the tickMitigatedByResist flag \u2014 one vocabulary: magic ticks are resist-reduced (the arithmetic burn and poison have had since 2026-08-20), true ticks are flat (bleed's existing behaviour), and the emitted damage.applied now carries the row's type so the viewer paints magic ticks blue. Thorns (retaliation damage triggers) are typed true \u2014 proven live by a test-lane thorns trigger.",
+  "expect": "a poison tick's damage.applied says damageType magic and is reduced by the holder's resist; a bleed tick says true and nothing reduces it; a thorns retaliation says true; the replay viewer colours magic damage pops blue",
+  "changesBaseline": true,
+  "needs": [
+   "station.crit"
+  ],
+  "probeIds": [
+   "status.poison"
+  ],
+  "variants": [
+   "status.poison",
+   "status.burn"
+  ]
  }
 ]

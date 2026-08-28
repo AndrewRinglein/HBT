@@ -308,6 +308,14 @@ const RAW_UNITS: Readonly<Record<string, UnitDef>> = {
       effect: { kind: 'knockback', value: 1 },
       source: 'unit.arc-golem',
       onlyWithAttack: 'attack.test-arc.sweep',
+    }, {
+      // THORNS, test lane (fix.status-damage-types 2026-08-27) — RULED:
+      // "Thorns damage that is dealt is true damage." The golem's stone hide
+      // deals 1 TRUE back to whoever hurts it; the typed retaliation, live.
+      id: 'trigger.test-thorns', hook: 'onTakingDamage', chance: 100,
+      select: 'target',
+      effect: { kind: 'damage', amount: 1, damageType: 'true' },
+      source: 'unit.arc-golem',
     }],
     ai: 'melee-aggressive',
     // Preference order: the overhead ("three criticals") when its stamina is

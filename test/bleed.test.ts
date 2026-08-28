@@ -22,10 +22,13 @@ function warriorWithResist(resist: number) {
 }
 
 describe('the data', () => {
-  it('bleed deliberately OMITS tickMitigatedByResist — the seam statusDamage was built with', () => {
+  it('bleed ticks TRUE damage — ruled 2026-08-27, the typed form of the old omitted flag', () => {
+    // LAW 10 — rewritten 2026-08-27 (fix.status-damage-types): the claim was
+    // "bleed omits tickMitigatedByResist"; the flag became tickDamageType and
+    // the same claim is now spelled 'true'. Same arithmetic, one vocabulary.
     const def = STATUSES['status.bleed']!
     expect(def).toBeDefined()
-    expect(def.tickMitigatedByResist).toBeUndefined()
+    expect(def.tickDamageType).toBe('true')
     expect(def.shape).toBe('counter')
     expect(def.halvesHealing).toBeUndefined()
   })

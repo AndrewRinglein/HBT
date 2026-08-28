@@ -1030,3 +1030,16 @@ Read as three rulings:
    (independently — with replacement, the multiCritReplacement switch, which
    is also item.bracer's open question). The engine capability is a crit
    count; the Codex powers that grant one land when their rows are authored.
+
+---
+
+## 2026-08-27 — status damage carries a damage type
+
+> "Status damage from poison and burn is magic damage. It should be blue. It
+> gets reduced by resist. Bleed damage is true damage. Thorns damage that is
+> dealt is true damage."
+
+Poison and burn ticks are MAGIC damage — resist reduces them, and the viewer
+paints them blue like any magic damage. Bleed's tick is TRUE damage — nothing
+reduces it. Thorns (retaliation damage a struck unit deals back) is TRUE
+damage. The tick's type is a STATUS ROW field, not a hardcoded name list.

@@ -39,10 +39,17 @@ describe('the Hunter is a real hero from the Codex', () => {
     const gaps = JSON.parse(readFileSync(
       join(__dirname, '..', '..', 'content', 'gen', 'enemy-pack-gaps.json'), 'utf8')).gaps as
       { unit: string; needs: string }[]
-    for (const id of ['hero.base.warrior-iron', 'hero.base.priest-armored']) {
-      expect(gaps.some((g) => g.unit === id && g.needs === 'kit unresolved'), id).toBe(true)
-      expect(UNITS[id], `${id} must NOT be fielded with an invented kit`).toBeUndefined()
-    }
+    // LAW 10 — rewritten 2026-08-27 (twice in one day, both toward the rule):
+    // S34a pinned the Iron Dwarf's ARMOR, so the converter now FIELDS him with
+    // exactly the pinned items and a 'kit remainder unresolved' gap — the
+    // weaponless-Lumberjack precedent: the unit stands, the gap stands beside
+    // it, and NOTHING was rolled in a converter. The Chaplain's kit is still
+    // fully unresolved, so he still does not field at all.
+    expect(gaps.some((g) => g.unit === 'hero.base.warrior-iron' && /kit.*unresolved/.test(g.needs))).toBe(true)
+    expect(UNITS['hero.base.warrior-iron'], 'the Dwarf fields in his pinned Destroyed Mail').toBeDefined()
+    expect(UNITS['hero.base.warrior-iron']!.attacks, 'his weapon draw stays unrolled — no invented attacks').toEqual([])
+    expect(gaps.some((g) => g.unit === 'hero.base.priest-armored' && /kit.*unresolved/.test(g.needs))).toBe(true)
+    expect(UNITS['hero.base.priest-armored'], 'the Chaplain must NOT field with an invented kit').toBeUndefined()
   })
 
   it('battle 1 in miniature runs: the Hunter shoots authored zombies', () => {

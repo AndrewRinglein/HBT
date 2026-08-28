@@ -1502,6 +1502,39 @@ export const UNIT_PACK = {
       "triggers": []
     },
     {
+      "typeId": "hero.base.warrior-iron",
+      "name": "Iron Dwarf",
+      "side": "hero",
+      "maxHp": 16,
+      "armor": 1,
+      "resist": 0,
+      "accuracy": 55,
+      "dodge": 0,
+      "strength": 4,
+      "precision": 3,
+      "magic": 0,
+      "spirit": 0,
+      "role": "melee",
+      "movement": 4,
+      "reach": 1,
+      "maxStamina": 4,
+      "staminaRegen": 1,
+      "ai": "melee-aggressive",
+      "attacks": [],
+      "abilities": [],
+      "moves": [
+        "power.move",
+        "power.leap"
+      ],
+      "attributes": [
+        "hero-eve"
+      ],
+      "tags": [
+        "hero"
+      ],
+      "triggers": []
+    },
+    {
       "typeId": "hero.fixed.orphans",
       "name": "Orphan Child",
       "side": "hero",

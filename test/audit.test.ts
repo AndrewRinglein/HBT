@@ -282,6 +282,11 @@ describe('independent audit of logged battles', () => {
             if (e.causeId.startsWith('status.')) {
               expect(e.actor, 'status damage has no attacker').toBeNull()
               expect(e['amount'] as number).toBeGreaterThanOrEqual(0)
+              // fix.status-damage-types (2026-08-27): the tick carries its
+              // row's type — magic ticks may show resist, true ticks never do.
+              const tickType = STATUSES[e.causeId]?.tickDamageType ?? 'true'
+              expect(e['damageType'], `${e.causeId} tick type`).toBe(tickType)
+              if (tickType === 'true') expect(e['resisted'], 'nothing reduces a true tick').toBeUndefined()
               pending = null; pendingPower = null
               break
             }
