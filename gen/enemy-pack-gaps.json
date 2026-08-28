@@ -152,11 +152,6 @@
    "needs": "trigger shape unparsed"
   },
   {
-   "unit": "alpha-oathblade",
-   "what": "attack.halberd.cleave targets 'an adjacent hex and the two hexes adjacent to both' — lands SINGLE-TARGET",
-   "needs": "area attack shape"
-  },
-  {
    "unit": "alpha-sky-pirate",
    "what": "attack.javelin.stab crit 3",
    "needs": "attack field: crit (no AttackDef slot)"

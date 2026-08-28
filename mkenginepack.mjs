@@ -225,10 +225,21 @@ function settledAttackExtras(a, unitId) {
     }
   }
   if (a.crit) gap(unitId, `${a.id} crit ${a.crit}`, 'attack field: crit (no AttackDef slot)');
-  if ((a.tags || []).includes('area') || /adjacent to both/.test(a.targets || '')) {
+  if (((a.tags || []).includes('area') || /adjacent to both/.test(a.targets || '')) && !areaShapeOf(a)) {
     gap(unitId, `${a.id} targets '${String(a.targets).slice(0, 50)}' — lands SINGLE-TARGET`, 'area attack shape');
   }
   return out;
+}
+
+// The area shapes the engine speaks (capability.area-attack, 2026-08-27).
+// EXACT authored phrases only — "the two hexes adjacent to both you and it"
+// is the halberd's full arc and compiles to 'arc'. The Lumberjack's "one hex
+// adjacent to both you and it" is a DIFFERENT shape (a chosen half-arc) the
+// engine does not yet express, so it stays a named gap rather than being
+// rounded up to the full arc. Compile-or-name-the-gap; never round.
+function areaShapeOf(a) {
+  if (/the two hexes adjacent to both you and it/.test(String(a.targets || ''))) return 'arc';
+  return null;
 }
 
 const prologueParty = [];
@@ -305,11 +316,13 @@ const alphaTeam = [];
     const takeAttack = (a) => {
       const ranged = (a.range ?? 1) > 1 && typeof a.range === 'number';
       anyRanged = anyRanged || ranged;
+      const area = areaShapeOf(a);
       authoredAttacks[a.id] = {
         id: a.id, name: a.name, kind: ranged ? 'ranged' : 'melee',
         damageType: a.damageType || 'physical',
         bonus: a.damage ?? 0, stat: a.stat || 'strength',
         reach: ranged ? a.range : 1, staminaCost: a.stamina ?? 0, // heroes pay
+        ...(area ? { area } : {}), // capability.area-attack, 2026-08-27
       };
       attackIds.push(a.id);
       kitTriggers.push(...settledAttackExtras(a, id));
