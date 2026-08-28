@@ -1461,5 +1461,41 @@
   ],
   "status": "done-needs-review",
   "sha": "d5c42f7"
+ },
+ {
+  "id": "fix.crit-branch-even",
+  "kind": "engine",
+  "shape": "rule",
+  "spec": "Ruled 2026-08-27: 'It should be a 50% chance of just a damage boost and a 50% chance of one of the effects' \u2014 both branch-share switches default 50 (the 2026-08-22 per-side 75/25 is HELD OFF, machinery kept sweepable). And 'we want all of the things being rolled and all of the effects to have an even chance': the crit-branch and crit-effect draws now key on (attacker uid, TARGET uid, ordinal) \u2014 the panel's 25-replicate dice universe was excluding Winded and Bleeding entirely under the narrower key.",
+  "expect": "crit.branch events carry chartShare 50 against both sides; over a few hundred synthetic draws every one of the ten chart keys appears; battles remain seeds",
+  "changesBaseline": true,
+  "needs": [
+   "station.crit"
+  ],
+  "probeIds": [
+   "status.dazed"
+  ],
+  "variants": [
+   "guard-broken",
+   "dazed"
+  ]
+ },
+ {
+  "id": "station.crit-count",
+  "kind": "engine",
+  "shape": "rule",
+  "spec": "Ruled 2026-08-27: 'there is also an ability to have more than one critical happen at once... Do two criticals or Do three criticals \u2014 account for that.' AttackDef gains critCount (default 1). A critting attack resolves critCount CRITICALS: each flips its own branch (own draw, keyed by its index); heads stack as +50% of pre-mitigation damage EACH (DMG.CRIT applies (2+heads)/2, truncating); each tails rolls its own chart row, independently \u2014 with replacement (multiCritReplacement switch, the same question item.bracer waits on). No authored row carries a count above 1 yet, so the consumers are declared test scaffolding: attack.test-ram.slam (critCount 2) and attack.test-ram.overhead (critCount 3) on the test golems in showcase.arc-variant.",
+  "expect": "a critCount-2 attack that crits emits two crit.branch events for one attack.hit; two heads read as +100% pre-mitigation in the ledger; two tails apply two chart rows; single-crit attacks are byte-identical to before this landing",
+  "changesBaseline": false,
+  "needs": [
+   "fix.crit-branch-even"
+  ],
+  "probeIds": [
+   "attack.test-ram.slam"
+  ],
+  "variants": [
+   "attack.test-ram.slam",
+   "attack.test-ram.overhead"
+  ]
  }
 ]

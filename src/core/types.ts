@@ -354,10 +354,11 @@ export const DEFAULT_CONFIG: Config = {
     // "one ally within 6 hexes" — whether the priest counts as his own ally
     // is unstated; the common reading says yes. SWITCHES.md, 2026-08-27.
     healIncludesSelf: true,
-    // station.crit (2026-08-27): "We want to implement crits." The chart share
-    // of the branch flip is critChartSplit, ANSWERED by Angela 2026-08-22 —
-    // "crits to heroes 75% 25%, Enemies 50/50" — two numbers, both sweepable.
-    critChartShareVsHeroes: 25,
+    // RULED 2026-08-27 (fix.crit-branch-even): "It should be a 50% chance of
+    // just a damage boost and a 50% chance of one of the effects." The
+    // 2026-08-22 per-side split (25/50) is HELD OFF — "that is a different
+    // concept" — so both sides default 50 and both stay sweepable.
+    critChartShareVsHeroes: 50,
     critChartShareVsEnemies: 50,
     // "Stat losses floor where the row says 'minimum 0'; nothing else floors"
     // read literally: Nerve Struck's −2 Max Health does NOT floor, and a unit

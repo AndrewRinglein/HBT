@@ -994,3 +994,39 @@ engine yet) are the named gaps of this pass, alongside item.bracer which is
 explicitly out of scope. "Nothing else floors" is read literally: Nerve
 Struck's −2 Max Health does not floor, and a unit whose Max Health reaches 0
 dies of it — kept sweepable as the critMaxHealthFloor switch.
+
+---
+
+## 2026-08-27 — the crit branch is 50/50, every row reachable, and criticals stack
+
+> "It doesn't need to literally be a coin. Let's hold off on the 25, 50,
+> 50/50. That is a different concept. I don't understand. We don't want a die
+> 10. We want all the things that are there, wounded and bleeding, to be
+> capable of being rolled. That's some kind of dice constraint. We want all of
+> the things being rolled and all of the effects to have an even chance. It
+> should be a 50% chance of just a damage boost and a 50% chance of one of the
+> effects. And you probably didn't realize this, but there is also an ability
+> to have more than one critical happen at once. There are some powers and
+> things that basically say, 'Do two criticals' or 'Do three criticals,' so
+> you need to account for that as well."
+
+Read as three rulings:
+
+1. **The branch flip is 50/50 for everyone.** The 2026-08-22 per-side split
+   (75/25 vs heroes) is HELD OFF — "that is a different concept" — not
+   overturned as a concept; both share switches stay sweepable and now default
+   50. The critChartSplit entry in SWITCHES.md records this supersession.
+2. **Every chart row must be genuinely capable of being rolled, evenly.** The
+   even d-N over the rows was already the code; what made Winded and Bleeding
+   unreachable was the dice-universe constraint — the crit-effect draw was
+   keyed (attacker uid, attack ordinal) only, and the 25-replicate panel
+   reuses those pairs, so a fixed hash excluded rows across the whole panel.
+   The roll now also carries the TARGET's uid: a more structural key (this
+   attacker's Nth critical against THIS victim), a wider universe, every row
+   reachable in play.
+3. **Multiple criticals at once are real** — "do two criticals" / "do three
+   criticals". Each critical flips its own branch and rolls its own effect:
+   heads stack as +50% each before mitigation; tails each roll a row
+   (independently — with replacement, the multiCritReplacement switch, which
+   is also item.bracer's open question). The engine capability is a crit
+   count; the Codex powers that grant one land when their rows are authored.

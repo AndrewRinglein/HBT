@@ -10,6 +10,7 @@
 import { describe, expect, it } from 'vitest'
 import { preview } from '../src/core/pipeline.js'
 import { rollCritEffect } from '../src/core/crit.js'
+import { rollBelow } from '../src/core/rng.js'
 import { effective } from '../src/core/stats.js'
 import { ATTACKS, CRIT_CHART, UNITS } from '../src/content/index.js'
 import { scenarioDef, scenarioOptions } from '../src/content/scenarios.js'
@@ -153,8 +154,10 @@ describe('the branch flip in real battles — Law 4 streams, weighted coin', () 
       const branches = ctx.events.filter((e) => e.type === 'crit.branch')
       crits += branches.length
       for (const b of branches) {
-        const share = ctx.state.units[b.target!]!.side === 'hero' ? 25 : 50
-        expect(b['chartShare'], 'the split follows the VICTIM side (Angela 2026-08-22)').toBe(share)
+        // RE-RULED 2026-08-27 (fix.crit-branch-even, Law 10 — the previous
+        // assertion carried the per-side 25/50, now HELD OFF): "a 50% chance
+        // of just a damage boost and a 50% chance of one of the effects."
+        expect(b['chartShare'], 'the flip is even for everyone').toBe(50)
         if (b['arm'] === 'chart') chartArms++
         else damageArms++
       }
@@ -174,6 +177,26 @@ describe('the branch flip in real battles — Law 4 streams, weighted coin', () 
     expect(crits, 'crits happen in real battles now — critEnabled is ON').toBeGreaterThan(0)
     expect(chartArms + damageArms).toBe(crits)
     expect(chartArms, 'the chart arm fires across eight seeds').toBeGreaterThan(0)
+  })
+
+  it('every chart row is genuinely reachable — the widened key covers the whole chart', () => {
+    // RULED 2026-08-27: "we want all of the things that are there, wounded and
+    // bleeding, to be capable of being rolled ... all of the effects to have
+    // an even chance." Under the old (attacker uid, ordinal) key the
+    // 25-replicate panel excluded Winded and Bleeding entirely. The draw now
+    // carries the target's uid too; over a modest synthetic universe of
+    // (attacker, target, ordinal) triples EVERY row index must appear —
+    // 10 x 0.9^400 leaves no room for luck.
+    const ctx = rig(['alpha-oathblade'], [135], ['unit.zombie'], [118])
+    const seen = new Set<number>()
+    for (let atUid = 100; atUid < 110; atUid++) {
+      for (let tgUid = 0; tgUid < 8; tgUid++) {
+        for (let ord = 1; ord <= 5; ord++) {
+          seen.add(rollBelow(ctx.rng, CRIT_CHART.length, 'crit-effect', atUid, tgUid, ord))
+        }
+      }
+    }
+    expect([...seen].sort((a, b) => a - b)).toEqual([0, 1, 2, 3, 4, 5, 6, 7, 8, 9])
   })
 
   it('is a seed — crits and all, the same battle twice is byte-identical', () => {

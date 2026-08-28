@@ -369,7 +369,11 @@ export function performAttack(ctx: Ctx, attackerId: number, targetId: number, at
     const chartShare = tg.side === 'hero'
       ? ctx.cfg.switches.critChartShareVsHeroes
       : ctx.cfg.switches.critChartShareVsEnemies
-    const branchRoll = roll100(ctx.rng, 'crit-branch', at.uid, ord)
+    // Keyed by attacker uid, TARGET uid and ordinal (widened 2026-08-27,
+    // fix.crit-branch-even): under (uid, ord) alone the 25-replicate panel
+    // reused so few draws that whole chart rows were unreachable in play —
+    // "we want all of the things being rolled ... to have an even chance."
+    const branchRoll = roll100(ctx.rng, 'crit-branch', at.uid, tg.uid, ord)
     chartArm = branchRoll <= chartShare
     emit(ctx, 'crit.branch', a.id, {
       actor: attackerId, target: targetId, roll: branchRoll, chartShare,

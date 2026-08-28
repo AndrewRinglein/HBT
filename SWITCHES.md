@@ -279,11 +279,12 @@ common reading. A sweep can ask whether self-healing priests outlive parties
 whose priest must be healed by someone else.
 
 ## critChartShareVsHeroes / critChartShareVsEnemies — the branch flip's weights
-Added 2026-08-27 (station.crit), carrying critChartSplit's ANSWER (Angela
-2026-08-22: "crits to heroes 75% 25%, Enemies 50/50") into Config as two
-sweepable numbers: the CHART share is 25 against heroes, 50 against enemies.
-The 2026-08-27 dictation's "literally a coin" is read as the enemy-side split;
-her dated two-number answer stands. Flagged in the landing report.
+Added 2026-08-27 (station.crit) carrying critChartSplit's 2026-08-22 per-side
+answer; RE-RULED the same day (fix.crit-branch-even): "It should be a 50%
+chance of just a damage boost and a 50% chance of one of the effects", and the
+per-side asymmetry is HELD OFF — "that is a different concept". Both default
+**50** now. The two switches stay so a sweep (or the revived per-side concept)
+can move them without an engine change.
 
 ## critMaxHealthFloorsAtOne — can Nerve Struck kill?
 Added 2026-08-27 (station.crit). The dictation: "Stat losses floor where the

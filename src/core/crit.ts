@@ -35,7 +35,8 @@ export function rollCritEffect(ctx: Ctx, attackerId: number, targetId: number, o
   const tg = unit(ctx, targetId)
   // Evenly among the rows — the d10. Keyed by the crit (attacker uid + attack
   // ordinal), never by turn (Law 4).
-  const i = rollBelow(ctx.rng, chart.length, 'crit-effect', at.uid, ord)
+  // Widened key (2026-08-27, fix.crit-branch-even) — see the branch flip.
+  const i = rollBelow(ctx.rng, chart.length, 'crit-effect', at.uid, tg.uid, ord)
   const row = chart[i]!
   emit(ctx, 'crit.effect', causeId, { actor: attackerId, target: targetId, key: row.key, name: row.name, roll: i })
 

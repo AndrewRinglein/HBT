@@ -210,7 +210,11 @@ describe('independent audit of logged battles', () => {
             // the TARGET was at distance 1 — the case that is now illegal. Both
             // halves were wrong at once, so the old assertion passed: the penalty
             // was always being paid by somebody.
-            let acc = at.accuracy
+            // The chart writes accuracy statmods now (Blinded −30, since
+            // station.crit / fix.crit-branch-even 2026-08-27) — the auditor's
+            // own mod ledger applies to accuracy exactly as the engine's stat
+            // pipeline does. EXTENDED, not weakened.
+            let acc = modded(e.actor!, 'accuracy', at.accuracy, e.turn)
             if (a.kind === 'ranged') {
               // range grace of 3 tiles, ruled 2026-08-26 — penalty from the 4th
               if (d > 3) acc -= (d - 3) * 5
@@ -226,7 +230,9 @@ describe('independent audit of logged battles', () => {
             // is flat off the hit chance, plus whatever the target's terrain
             // grants (forest +10).
             const tgDef = UNITS[type.get(e.target!)!]!
-            acc -= tgDef.dodge + dodgeBonusOf(terr[hex.get(e.target!)!] ?? 0)
+            // Guard Broken docks dodge (min 0 at application) — the target's
+            // dodge reads through the mod ledger too.
+            acc -= modded(e.target!, 'dodge', tgDef.dodge, e.turn) + dodgeBonusOf(terr[hex.get(e.target!)!] ?? 0)
             expect(e['hitChance'], `hit chance for ${a.id} at range ${d}`).toBe(Math.max(0, Math.min(100, acc)))
             checkedAcc++
 
