@@ -27,10 +27,12 @@ chart is the TAILS branch — ten battle-only rows, ruled data in settled.json
 critChart, never an injury.* badge. Landed as station.crit (d5c42f7). One
 reconciliation left open below.
 
-## OPEN — 'literally a coin' vs the 2026-08-22 critChartSplit answer (2026-08-27)
+## ANSWERED — the branch flip is 50/50 for everyone (2026-08-27)
 
-Today's dictation says the branch flip is 'literally a coin'; your dated
-2026-08-22 answer was two numbers — chart share 25 against heroes, 50 against
-enemies. The dated answer is what landed (both numbers are switches:
-critChartShareVsHeroes / critChartShareVsEnemies). If today's coin was meant
-to supersede it, say so and the switches move to 50/50.
+"It should be a 50% chance of just a damage boost and a 50% chance of one of
+the effects" — and the per-side 25/50 is HELD OFF ("that is a different
+concept"). Landed as fix.crit-branch-even (a0e811c); both share switches stay
+sweepable at 50. The same message ruled every chart row genuinely reachable
+(the dice keys widened — Winded fires in real battles now) and multiple
+criticals ("do two criticals" / "do three criticals"), landed as
+station.crit-count (8780794).
