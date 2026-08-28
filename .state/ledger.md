@@ -3500,3 +3500,96 @@ index 3b1205e..6062afb 100644
   WARN  existing tests untouched — crit.test.ts share assertion re-ruled (Law 10 note at the edit), audit accuracy/dodge recompute EXTENDED to the mod ledger — LANDED FLAGGED
 
   Winded fires 6x in the probe sweep under the widened key — the ruling's exact intent ("all of the things... capable of being rolled"). NOTE: the follow-up commit 63ecb86 undoes dd80326's accidental sweep of foreign wip. HAND-LANDED under the reaper protocol; post-land audit clean. Seal unwritten — it belongs to the gate.
+
+## station.crit-count — LANDED `8780794` **NEEDS REVIEW**
+2026-08-28T03:02:57.000Z
+
+  PASS  dependencies landed — fix.crit-branch-even
+  PASS  typecheck — tsc --noEmit clean
+  PASS  full test suite — 48 files / 443 tests green
+  PASS  gate 1 — attack.test-ram.slam: 27 fired, 9 changed state (showcase.arc-variant)
+  PASS  brought its own tests — test/crit-count.test.ts (6 tests: counts as data, numbered branch flips, stacking arithmetic 7/10/14, live firings, determinism)
+  PASS  control battles unchanged — byte-identical: heads fold through the same station, boolean callers keep meaning, first-critical dice keys and single-crit event shapes preserved (the enriched event moving every hash was caught and scoped to multi-criticals only)
+  PASS  content — ruling recorded verbatim; consumers are declared test scaffolding (no authored row carries a count above 1 yet)
+  PASS  hardcode scan — clean
+  PASS  generalizes — attack.test-ram.slam (2) live · attack.test-ram.overhead (3) live, both pure data
+  PASS  naming — attack/test kinds, declared
+  PASS  kill switch — 4/6 fail with the slam disabled
+  WARN  existing tests untouched — area-attack arithmetic follows the golem re-stat; alpha-team crit assertions rewritten to PIPELINE AGREEMENT after S34 moved the javelin crit (Law 10 notes at the edits) — LANDED FLAGGED
+
+  HAND-LANDED under the reaper protocol; post-land audit clean. Seal unwritten — it belongs to the gate.
+
+<details><summary>Existing tests were edited — review this diff</summary>
+
+```diff
+diff --git a/test/alpha-team.test.ts b/test/alpha-team.test.ts
+index eb3aaf0..75c63c1 100644
+--- a/test/alpha-team.test.ts
++++ b/test/alpha-team.test.ts
+@@ -138,11 +138,18 @@ describe('the pack carries the six alpha heroes with their real stat bodies', ()
+     expect(alpha.some((g) => /area attack/.test(g.needs))).toBe(false)
+     expect(ATTACKS['attack.halberd.cleave']!.area).toBe('arc')
+-    // the four crit fields COMPILE now (station.crit, same day) — their gaps
+-    // are gone and the fields stand on the attack rows
++    // the crit fields COMPILE now (station.crit, same day) — their gaps are
++    // gone. LAW 10, rewritten within hours of being written: the first
++    // version froze the four dictated numbers, and S34's gear review moved
++    // the javelin's crit under it. The claim is PIPELINE AGREEMENT — the
++    // pack's crit equals the settled row's crit, whatever it is today.
+     expect(alpha.filter((g) => /crit/.test(g.needs)).length).toBe(0)
+-    expect(ATTACKS['attack.dagger.stab']!.crit).toBe(5)
+-    expect(ATTACKS['attack.javelin.stab']!.crit).toBe(3)
+-    expect(ATTACKS['attack.shortbow.quick-shot']!.crit).toBe(5)
+-    expect(ATTACKS['attack.longsword.stab']!.crit).toBe(3)
++    const sItems = JSON.parse(readFileSync(
++      join(__dirname, '..', '..', 'content', 'gen', 'settled-items.json'), 'utf8'))
++    for (const id of ['attack.dagger.stab', 'attack.javelin.stab',
++      'attack.shortbow.quick-shot', 'attack.longsword.stab']) {
++      const row = (sItems.attacks as { id: string; crit?: number }[]).find((a) => a.id === id)!
++      expect(row.crit, `${id} carries an authored crit`).toBeGreaterThan(0)
++      expect(ATTACKS[id]!.crit, `${id} — pack agrees with the settled row`).toBe(row.crit)
++    }
+     // the three item powers COMPILE now (capability.item-powers) — their gaps
+     // are gone, the powers stand on their units, and Storm's arbitrary-hex
+diff --git a/test/area-attack.test.ts b/test/area-attack.test.ts
+index e305090..e3e851b 100644
+--- a/test/area-attack.test.ts
++++ b/test/area-attack.test.ts
+@@ -48,5 +48,5 @@ describe('no roll, no crit — the authored rule', () => {
+     expect(pv.critChance).toBe(0)
+     expect(pv.damageOnCrit).toBe(pv.damageOnHit)
+-    expect(pv.damageOnHit).toBe(3) // bonus 1 + strength 2, zombie armor 0
++    expect(pv.damageOnHit).toBe(6) // bonus 1 + strength 5 (golem re-statted 2026-08-27), zombie armor 0
+   })
+ 
+@@ -66,10 +66,12 @@ describe('the swing — one declaration, one hit per struck unit', () => {
+     const ctx = mk()
+     const golem = ctx.state.units.find((u) => u.typeId === 'arc-golem')!
+-    const zombies = ctx.state.units.filter((u) => u.typeId === 'test-zombie')
++    // The adjacent PAIR — the scenario's third zombie (hex 55, added for
++    // station.crit-count's single-target turns) stands outside the arc.
++    const zombies = ctx.state.units.filter((u) => u.typeId === 'test-zombie' && [118, 119].includes(u.hex))
+     beginActivation(ctx, golem.id, 'test')
+     const r = performAttack(ctx, golem.id, zombies[0]!.id, 'attack.test-arc.sweep')
+     expect(r.hit).toBe(true)
+     expect(r.crit).toBe(false)
+-    expect(r.damage).toBe(6) // 3 into each zombie
++    expect(r.damage).toBe(12) // 6 into each zombie (golem re-statted 2026-08-27)
+     const declared = ctx.events.find((e) => e.type === 'attack.declared' && e.causeId === 'attack.test-arc.sweep')!
+     expect(declared['area']).toBe('arc')
+@@ -77,5 +79,5 @@ describe('the swing — one declaration, one hit per struck unit', () => {
+     const hits = ctx.events.filter((e) => e.type === 'attack.hit' && e.causeId === 'attack.test-arc.sweep')
+     expect(hits.map((e) => e.target)).toEqual([zombies[0]!.id, zombies[1]!.id])
+-    for (const z of zombies) expect(z.hp).toBe(z.maxHp - 3)
++    for (const z of zombies) expect(z.hp).toBe(z.maxHp - 6)
+   })
+ 
+@@ -92,5 +94,5 @@ describe('the swing — one declaration, one hit per struck unit', () => {
+       beginActivation(ctx, a.id, 'test')
+       performAttack(ctx, a.id, z.id, 'attack.test-arc.sweep')
+-      expect(friend.hp, 'friendly fire is the authored default').toBe(friend.maxHp - 2) // 3 - armor 1
++      expect(friend.hp, 'friendly fire is the authored default').toBe(friend.maxHp - 4) // 6 - armor 2 (re-stat 2026-08-27)
+     }
+     {
+```
+</details>
