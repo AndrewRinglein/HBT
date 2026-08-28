@@ -77,7 +77,7 @@
   }
  },
  "heroKits": {
-  "_note": "Per-hero overrides — dictated during the Eve differentiation pass, recorded in gen/eve-differentiation.json startingItems and mirrored here as the S12 registry. A hero listed here ignores its class kit.",
+  "_note": "Per-hero overrides — dictated during the Eve differentiation pass, recorded in gen/eve-differentiation.json startingItems and mirrored here as the S12 registry. A hero listed here ignores its class kit. | 2026-08-27, the override grammar ruled with the start-kit rework: a plain ARRAY is a full kit — no randomness, the draw never runs (both elf rangers pin the Elfbow this way). {pinned:[...]} guarantees those items and lets the CLASS DRAW complete the rest — a pinned one-hander on a warrior or paladin still rolls the second hand; a pinned two-hander, or any pin on a one-weapon class, ends it. No entry at all = the plain class draw. One grammar, three cases.",
   "hero.base.paladin-dark": [
    "item.greatsword"
   ],
