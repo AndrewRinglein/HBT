@@ -6,7 +6,7 @@
    "itemClass": "armor",
    "tier": 0,
    "armorWeight": null,
-   "slots": 1,
+   "slots": 0,
    "hands": 0,
    "classRestriction": null,
    "tags": [
@@ -16,11 +16,12 @@
    "statModifiers": {
     "health": 3,
     "movement": -1,
-    "dodge": -5
+    "dodge": -10
    },
    "triggers": [],
    "intent": "Three fingers of untanned something, still faintly warm, and it will absolutely stop a knife once.",
-   "source": "Hell-TCG name reused (Thick Hide — rebuilt as the tier-0 hide that costs you your feet)"
+   "source": "Hell-TCG name reused (Thick Hide — rebuilt as the tier-0 hide that costs you your feet) | 2026-08-27: slots 0 — tier-0 armor never costs an item slot (dedicated armor slot, one armor per unit). startClasses is the start-draw pool; USE is universal across classes. | 2026-08-27 review: dodge -5 deepens to -10.",
+   "startClasses": "any"
   },
   {
    "id": "item.tanners-apron",
@@ -28,7 +29,7 @@
    "itemClass": "armor",
    "tier": 0,
    "armorWeight": null,
-   "slots": 1,
+   "slots": 0,
    "hands": 0,
    "classRestriction": null,
    "tags": [
@@ -38,11 +39,12 @@
    "statModifiers": {
     "resist": 1,
     "movement": -1,
-    "accuracy": -5
+    "accuracy": -10
    },
    "triggers": [],
    "intent": "Lye-stiff and shaped like a door; the one point of Resist is the only kind thing anyone has ever said about it.",
-   "source": "new (tier-0 armour that buys Resist instead of Health — nothing else at the tier does)"
+   "source": "new (tier-0 armour that buys Resist instead of Health — nothing else at the tier does) | 2026-08-27: slots 0 — tier-0 armor never costs an item slot (dedicated armor slot, one armor per unit). startClasses is the start-draw pool; USE is universal across classes. | 2026-08-27 review: accuracy -5 deepens to -10.",
+   "startClasses": "any"
   },
   {
    "id": "item.pilgrims-habit",
@@ -50,7 +52,7 @@
    "itemClass": "armor",
    "tier": 0,
    "armorWeight": null,
-   "slots": 1,
+   "slots": 0,
    "hands": 0,
    "classRestriction": null,
    "tags": [
@@ -64,7 +66,8 @@
    },
    "triggers": [],
    "intent": "It is cloth. It has walked four hundred miles and it will walk four hundred more, and it will not stop one arrow on the way.",
-   "source": "Hell-TCG name reused (Pilgrim's Warding Stone — name only; the Movement-for-Health trade is new)"
+   "source": "Hell-TCG name reused (Pilgrim's Warding Stone — name only; the Movement-for-Health trade is new) | 2026-08-27: slots 0 — tier-0 armor never costs an item slot (dedicated armor slot, one armor per unit). startClasses is the start-draw pool; USE is universal across classes.",
+   "startClasses": "any"
   },
   {
    "id": "item.watchmans-coat",
@@ -72,7 +75,7 @@
    "itemClass": "armor",
    "tier": 0,
    "armorWeight": null,
-   "slots": 1,
+   "slots": 0,
    "hands": 0,
    "classRestriction": null,
    "tags": [
@@ -80,12 +83,18 @@
    ],
    "grants": [],
    "statModifiers": {
-    "vision": 2,
-    "staminaMax": -1
+    "reach": 1,
+    "vision": 2
    },
    "triggers": [],
    "intent": "Oiled wool with a lantern hook sewn at the shoulder: you will see the thing that kills you from a long way off.",
-   "source": "new (tier-0 armour on the Vision axis; Vision is one of the seven stats with no Hell-TCG source)"
+   "source": "new (tier-0 armour on the Vision axis; Vision is one of the seven stats with no Hell-TCG source) | 2026-08-27: slots 0 — tier-0 armor never costs an item slot (dedicated armor slot, one armor per unit). startClasses is the start-draw pool; USE is universal across classes. | 2026-08-27 review: staminaMax -1 dropped, reach +1 added.",
+   "startClasses": [
+    "class.ranger",
+    "class.mage",
+    "class.priest",
+    "class.rogue"
+   ]
   },
   {
    "id": "item.peddlers-vest",
@@ -93,7 +102,7 @@
    "itemClass": "armor",
    "tier": 0,
    "armorWeight": null,
-   "slots": 1,
+   "slots": 0,
    "hands": 0,
    "classRestriction": null,
    "tags": [
@@ -108,7 +117,8 @@
    },
    "triggers": [],
    "intent": "Fourteen pockets and no armour whatsoever — you wear it for the pockets and you die in it for the pockets.",
-   "source": "new (tier-0 armour that buys an Item Slot; the guide prices slots above one point, so it pays for it)"
+   "source": "new (tier-0 armour that buys an Item Slot; the guide prices slots above one point, so it pays for it) | 2026-08-27: slots 0 — tier-0 armor never costs an item slot (dedicated armor slot, one armor per unit). startClasses is the start-draw pool; USE is universal across classes.",
+   "startClasses": "any"
   },
   {
    "id": "item.borrowed-vestments",
@@ -116,7 +126,7 @@
    "itemClass": "armor",
    "tier": 0,
    "armorWeight": null,
-   "slots": 1,
+   "slots": 0,
    "hands": 0,
    "classRestriction": null,
    "tags": [
@@ -125,11 +135,14 @@
    "grants": [],
    "statModifiers": {
     "spirit": 1,
-    "movement": -1
+    "staminaMax": -2
    },
    "triggers": [],
    "intent": "They are not yours, they do not fit, and every single person in the room can tell which of those is the problem.",
-   "source": "Hell-TCG name reused (Skypriest's Vestments / Stormweave Vestments — name shape only, dropped to tier 0)"
+   "source": "Hell-TCG name reused (Skypriest's Vestments / Stormweave Vestments — name shape only, dropped to tier 0) | 2026-08-27: slots 0 — tier-0 armor never costs an item slot (dedicated armor slot, one armor per unit). startClasses is the start-draw pool; USE is universal across classes. | 2026-08-27 review: movement -1 becomes staminaMax -2.",
+   "startClasses": [
+    "class.priest"
+   ]
   },
   {
    "id": "item.silkweave-armor",
@@ -1032,7 +1045,8 @@
     "dagger",
     "claw",
     "polearm",
-    "fang"
+    "fang",
+    "blade"
    ],
    "tier": 1,
    "statModifiers": {
@@ -1047,7 +1061,7 @@
    "slayer": null,
    "grants": [],
    "intent": "Bleed is never resisted, so this is the one rider that keeps working after everything else has stopped.",
-   "source": "Hell-TCG name reused (Bloody Strike / Bloody Axe — moved onto the crit) | 2026-08-20 self-check: +fang. The Beast’s Claws could take this and its Fangs could not, purely because `claw` predated `fang`. Same weapon, same body, same enchant."
+   "source": "Hell-TCG name reused (Bloody Strike / Bloody Axe — moved onto the crit) | 2026-08-20 self-check: +fang. The Beast’s Claws could take this and its Fangs could not, purely because `claw` predated `fang`. Same weapon, same body, same enchant. | 2026-08-27: sword renamed blade in the workbook review — appliesToTags follows the rename (sword kept for any straggler rows)."
   },
   {
    "id": "enchant.lightning",
@@ -1056,7 +1070,9 @@
     "melee",
     "ranged",
     "staff",
-    "breath"
+    "breath",
+    "wand",
+    "tome"
    ],
    "tier": 2,
    "statModifiers": {
@@ -1071,7 +1087,7 @@
    "slayer": null,
    "grants": [],
    "intent": "It only arcs on a crit, so it is worth exactly as much as the Accuracy you are carrying above 100.",
-   "source": "Hell-TCG name reused (Lightning Bracers / Chain Lightning) | 2026-08-20: reworded \"a second enemy\" to \"another enemy\" — it never meant the second occurrence, and the words invited the wrong reading. | 2026-08-20 self-check: +breath. Breath is the Beast’s magic-ranged form; the enchants that reach a staff reach it."
+   "source": "Hell-TCG name reused (Lightning Bracers / Chain Lightning) | 2026-08-20: reworded \"a second enemy\" to \"another enemy\" — it never meant the second occurrence, and the words invited the wrong reading. | 2026-08-20 self-check: +breath. Breath is the Beast’s magic-ranged form; the enchants that reach a staff reach it. | 2026-08-27: the wand and tome forms split off the staff tag in the review; they were staff-enchantable before the split, so the reach is preserved, not invented."
   },
   {
    "id": "enchant.holy-water",
@@ -1126,7 +1142,9 @@
    "appliesToTags": [
     "staff",
     "melee",
-    "breath"
+    "breath",
+    "wand",
+    "tome"
    ],
    "tier": 3,
    "statModifiers": {
@@ -1146,7 +1164,7 @@
    "slayer": null,
    "grants": [],
    "intent": "Two Frost strips the target's burn and opens it up for whoever swings next — this is a setup enchant wearing a damage enchant's coat.",
-   "source": "Hell-TCG name reused (Eternal Ice) | 2026-08-20 self-check: +breath. Breath is the Beast’s magic-ranged form; the enchants that reach a staff reach it."
+   "source": "Hell-TCG name reused (Eternal Ice) | 2026-08-20 self-check: +breath. Breath is the Beast’s magic-ranged form; the enchants that reach a staff reach it. | 2026-08-27: the wand and tome forms split off the staff tag in the review; they were staff-enchantable before the split, so the reach is preserved, not invented."
   },
   {
    "id": "enchant.gale-arrows",
@@ -1604,7 +1622,8 @@
     "sword",
     "claw",
     "thrown",
-    "fang"
+    "fang",
+    "blade"
    ],
    "tier": 2,
    "statModifiers": {},
@@ -1620,7 +1639,7 @@
    },
    "grants": [],
    "intent": "Silver does not hit harder. It hits past everything the thing was counting on.",
-   "source": "Hell-TCG name reused (Werewolf Bane) | 2026-08-20 self-check: +fang. The Beast’s Claws could take this and its Fangs could not, purely because `claw` predated `fang`. Same weapon, same body, same enchant."
+   "source": "Hell-TCG name reused (Werewolf Bane) | 2026-08-20 self-check: +fang. The Beast’s Claws could take this and its Fangs could not, purely because `claw` predated `fang`. Same weapon, same body, same enchant. | 2026-08-27: sword renamed blade in the workbook review — appliesToTags follows the rename (sword kept for any straggler rows)."
   },
   {
    "id": "enchant.cursed-skull",
@@ -1628,7 +1647,9 @@
    "appliesToTags": [
     "armor",
     "staff",
-    "breath"
+    "breath",
+    "wand",
+    "tome"
    ],
    "tier": 2,
    "statModifiers": {
@@ -1644,7 +1665,7 @@
    "slayer": null,
    "grants": [],
    "intent": "It talks. Everything it says is useful and none of it is free.",
-   "source": "Hell-TCG name reused (Martyr, Cursed Skull — the party heal rebuilt as a Spirit line with a tithe) | 2026-08-20 self-check: +breath. Breath is the Beast’s magic-ranged form; the enchants that reach a staff reach it."
+   "source": "Hell-TCG name reused (Martyr, Cursed Skull — the party heal rebuilt as a Spirit line with a tithe) | 2026-08-20 self-check: +breath. Breath is the Beast’s magic-ranged form; the enchants that reach a staff reach it. | 2026-08-27: the wand and tome forms split off the staff tag in the review; they were staff-enchantable before the split, so the reach is preserved, not invented."
   },
   {
    "id": "enchant.tainted-blood",

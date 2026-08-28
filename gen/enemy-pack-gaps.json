@@ -108,7 +108,7 @@
   },
   {
    "unit": "hero.base.warrior-iron",
-   "what": "kit is a random SPEC — the roll belongs to the draft; needs a dictated hero override",
+   "what": "kit is a oneOf SPEC — the roll belongs to the draft; needs a dictated hero override",
    "needs": "kit unresolved"
   },
   {

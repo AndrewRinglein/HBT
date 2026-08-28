@@ -2,7 +2,7 @@
  "hooks": [
   {
    "name": "onHit",
-   "uses": 77,
+   "uses": 79,
    "ids": [
     "item.hammer-of-justice",
     "item.runed-crossbow",
@@ -28,12 +28,13 @@
     "attack.raiders-cutlass.boarding-swing",
     "attack.poison-stars.star",
     "attack.poison-stars.venom-spread",
+    "attack.obsidian-fang-dagger.fang",
+    "attack.obsidian-fang-dagger.gut",
     "attack.crippling-whip.lash",
     "attack.crippling-whip.hamstring",
     "attack.iron-claws.eviscerate",
     "attack.apprentice-wand.surge",
     "attack.sword-of-the-fallen.remembrance",
-    "attack.buckler.deflect-and-cut",
     "attack.bloody-axe.butcher",
     "attack.holy-shield.aegis-slam",
     "attack.death-blade.death-stroke",
@@ -42,13 +43,12 @@
     "attack.wraith-touched-staff.grasp",
     "attack.mirage-dagger.two-places-at-once",
     "attack.demon-whip.hellcoil",
-    "attack.void-staff.unmaking",
-    "attack.orb-of-the-soul-stealer.soul-tap"
+    "attack.void-staff.unmaking"
    ]
   },
   {
    "name": "onKill",
-   "uses": 37,
+   "uses": 38,
    "ids": [
     "item.death-blade",
     "item.sniper-bow",
@@ -71,6 +71,7 @@
     "item.rune-avatar-of-war",
     "attack.sword-of-the-fallen.honour-the-dead",
     "attack.death-bow.the-last-arrow",
+    "attack.daggers.thrown-dagger",
     "power.champion.heroic-charge",
     "power.shadowdancer.assassination-strike",
     "rule.karma-decay",
@@ -134,7 +135,7 @@
   },
   {
    "name": "onCrit",
-   "uses": 19,
+   "uses": 20,
    "ids": [
     "item.war-hammer",
     "item.stormforged-blade",
@@ -146,6 +147,7 @@
     "attack.hand-axe.chop",
     "attack.carpenters-mallet.bonk",
     "attack.shepherds-sling.whirl",
+    "attack.bane-blade.banishing-blow",
     "attack.holy-shield.shield-bash",
     "attack.claws.flense",
     "enchant.frost",
@@ -260,6 +262,21 @@
    ]
   },
   {
+   "name": "onAttack",
+   "uses": 9,
+   "ids": [
+    "item.rapier",
+    "item.book-of-exorcisms",
+    "item.demon-whip",
+    "item.orb-of-the-soul-stealer",
+    "item.chains-of-the-faithful",
+    "attack.buckler.punch",
+    "attack.dagger.stab",
+    "power.berserker.bloody-strikes",
+    "enchant.werewolf-bane"
+   ]
+  },
+  {
    "name": "onDodge",
    "uses": 9,
    "ids": [
@@ -272,20 +289,6 @@
     "enchant.riposte",
     "enchant.scalding-ward",
     "specialty.trickster"
-   ]
-  },
-  {
-   "name": "onAttack",
-   "uses": 8,
-   "ids": [
-    "item.rapier",
-    "item.book-of-exorcisms",
-    "item.demon-whip",
-    "item.orb-of-the-soul-stealer",
-    "item.chains-of-the-faithful",
-    "attack.dagger.stab",
-    "power.berserker.bloody-strikes",
-    "enchant.werewolf-bane"
    ]
   },
   {
@@ -311,7 +314,7 @@
  "shapes": [
   {
    "name": "self",
-   "uses": 149,
+   "uses": 150,
    "ids": [
     "item.loaded-dice-of-mirran",
     "item.mug-of-endless-dregs",
@@ -390,7 +393,6 @@
     "attack.sword-of-the-fallen.remembrance",
     "attack.sword-of-the-fallen.honour-the-dead",
     "attack.buckler.punch",
-    "attack.buckler.deflect-and-cut",
     "attack.bloody-axe.cleave-open",
     "attack.bloody-axe.butcher",
     "attack.hammer-of-justice.judgment",
@@ -398,12 +400,13 @@
     "attack.holy-shield.shield-bash",
     "attack.holy-shield.aegis-slam",
     "attack.death-blade.reap",
-    "attack.death-blade.death-stroke"
+    "attack.death-blade.death-stroke",
+    "attack.shadow-dagger.shadow-cut"
    ]
   },
   {
    "name": "one enemy within N hexes",
-   "uses": 81,
+   "uses": 82,
    "ids": [
     "attack.fishing-net.cast",
     "attack.rusted-crossbow.bolt",
@@ -1015,7 +1018,7 @@
   },
   {
    "name": "grant a stat until end of next Turn",
-   "uses": 48,
+   "uses": 47,
    "ids": [
     "item.rapier",
     "item.mirage-dagger",
@@ -1028,7 +1031,6 @@
     "item.council-of-echoes",
     "item.eye-of-the-oracle",
     "item.rune-executioner",
-    "attack.buckler.deflect-and-cut",
     "power.reaver.rend",
     "power.champion.righteous-blow",
     "power.champion.prove-yourself",
@@ -1056,7 +1058,8 @@
     "power.torchbearer.hold-the-light",
     "power.torchbearer.burn-it-out",
     "power.militia.aim",
-    "power.remembrancer.read-the-field"
+    "power.remembrancer.read-the-field",
+    "power.porter.set-it-down"
    ]
   },
   {
@@ -1274,6 +1277,27 @@
    ]
   },
   {
+   "name": "deal damage (type from the weapon)",
+   "uses": 15,
+   "ids": [
+    "item.stormforged-blade",
+    "item.demonic-shiv",
+    "item.tandras-blood-vial",
+    "attack.bane-blade.banishing-blow",
+    "power.fire-master.fireball",
+    "power.soul-stealer.eldritch-sacrifice",
+    "power.martyred-saint.the-last-word",
+    "power.holy-avenger.strike-at-evil",
+    "power.exorcist.banish",
+    "power.witch-hunter.judgment",
+    "power.serpent.constrict",
+    "power.stalker.throat-hold",
+    "power.wyrmling.scorch",
+    "power.berserker.unleash",
+    "enchant.stormward"
+   ]
+  },
+  {
    "name": "regain stamina",
    "uses": 15,
    "ids": [
@@ -1292,26 +1316,6 @@
     "enchant.abundant-arrows",
     "enchant.bloodthirsty",
     "enchant.death"
-   ]
-  },
-  {
-   "name": "deal damage (type from the weapon)",
-   "uses": 14,
-   "ids": [
-    "item.stormforged-blade",
-    "item.demonic-shiv",
-    "item.tandras-blood-vial",
-    "power.fire-master.fireball",
-    "power.soul-stealer.eldritch-sacrifice",
-    "power.martyred-saint.the-last-word",
-    "power.holy-avenger.strike-at-evil",
-    "power.exorcist.banish",
-    "power.witch-hunter.judgment",
-    "power.serpent.constrict",
-    "power.stalker.throat-hold",
-    "power.wyrmling.scorch",
-    "power.berserker.unleash",
-    "enchant.stormward"
    ]
   },
   {
@@ -1903,9 +1907,8 @@
   },
   {
    "name": "resist",
-   "uses": 61,
+   "uses": 60,
    "ids": [
-    "item.ancient-tome",
     "item.holy-shield",
     "item.holy-avenger",
     "item.void-staff",
@@ -1944,7 +1947,8 @@
     "specialty.beastward",
     "specialty.poison-master",
     "specialty.demonic-ward",
-    "specialty.fire-master"
+    "specialty.fire-master",
+    "specialty.mystic"
    ]
   },
   {
@@ -1995,10 +1999,8 @@
   },
   {
    "name": "dodge",
-   "uses": 54,
+   "uses": 52,
    "ids": [
-    "item.rapier",
-    "item.buckler",
     "item.shadow-dagger",
     "item.mirage-dagger",
     "item.thick-hide",
@@ -2036,19 +2038,20 @@
     "item.eye-of-damnation",
     "item.crown-of-the-sand-king",
     "power.wayfinder.switch-to-melee",
-    "enchant.bloodthirsty"
+    "enchant.bloodthirsty",
+    "enchant.stormward",
+    "enchant.silkweave"
    ]
   },
   {
    "name": "movement",
-   "uses": 49,
+   "uses": 48,
    "ids": [
     "item.siege-crossbow",
     "item.hooves",
     "item.thick-hide",
     "item.tanners-apron",
     "item.pilgrims-habit",
-    "item.borrowed-vestments",
     "item.guardians-mail",
     "item.wind-blessed-leather",
     "item.gale-shroud",
@@ -2082,7 +2085,8 @@
     "enchant.eternal-ice",
     "enchant.ancient-ward",
     "enchant.divine-protection",
-    "specialty.winged-assassin"
+    "specialty.winged-assassin",
+    "specialty.sentinel"
    ]
   },
   {
@@ -2240,6 +2244,32 @@
    ]
   },
   {
+   "name": "reach",
+   "uses": 20,
+   "ids": [
+    "item.sniper-bow",
+    "item.wraith-touched-staff",
+    "item.seraph-bow",
+    "item.orb-of-the-soul-stealer",
+    "item.tail",
+    "item.watchmans-coat",
+    "item.reflective-armor",
+    "item.stormfeather-quiver",
+    "item.admirals-compass",
+    "item.rune-sharp-eyes",
+    "item.rune-perfect-hunter",
+    "power.wayfinder.switch-to-melee",
+    "enchant.gale-arrows",
+    "specialty.bowmaster",
+    "specialty.sentinel",
+    "specialty.trapper",
+    "specialty.fire-master",
+    "specialty.storm-caller",
+    "specialty.archer",
+    "specialty.drake"
+   ]
+  },
+  {
    "name": "magic",
    "uses": 20,
    "ids": [
@@ -2269,7 +2299,7 @@
    "name": "staminaMax",
    "uses": 20,
    "ids": [
-    "item.watchmans-coat",
+    "item.borrowed-vestments",
     "item.guardians-mail",
     "item.wind-blessed-leather",
     "item.qi-wraps",
@@ -2289,31 +2319,6 @@
     "enchant.enduring",
     "specialty.berserker",
     "specialty.diviner"
-   ]
-  },
-  {
-   "name": "reach",
-   "uses": 19,
-   "ids": [
-    "item.sniper-bow",
-    "item.wraith-touched-staff",
-    "item.seraph-bow",
-    "item.orb-of-the-soul-stealer",
-    "item.tail",
-    "item.reflective-armor",
-    "item.stormfeather-quiver",
-    "item.admirals-compass",
-    "item.rune-sharp-eyes",
-    "item.rune-perfect-hunter",
-    "power.wayfinder.switch-to-melee",
-    "enchant.gale-arrows",
-    "specialty.bowmaster",
-    "specialty.sentinel",
-    "specialty.trapper",
-    "specialty.fire-master",
-    "specialty.storm-caller",
-    "specialty.archer",
-    "specialty.drake"
    ]
   },
   {
@@ -2534,10 +2539,9 @@
   },
   {
    "name": "until the start of your next Turn",
-   "uses": 8,
+   "uses": 7,
    "ids": [
     "item.mirage-dagger",
-    "attack.buckler.deflect-and-cut",
     "power.sentinel.overwatch",
     "power.protector.take-the-blow",
     "power.magical-friend.share-senses",

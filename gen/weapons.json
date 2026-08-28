@@ -202,7 +202,8 @@
    "slots": 2,
    "classRestriction": null,
    "tags": [
-    "sword"
+    "blade",
+    "2-hander"
    ],
    "grants": [
     "attack.greatsword.hew",
@@ -220,7 +221,7 @@
    "tier": 1,
    "hands": 1,
    "slots": 1,
-   "classRestriction": null,
+   "classRestriction": "class.warrior",
    "tags": [
     "axe"
    ],
@@ -260,9 +261,10 @@
    "tier": 1,
    "hands": 2,
    "slots": 2,
-   "classRestriction": null,
+   "classRestriction": "class.warrior",
    "tags": [
-    "hammer"
+    "hammer",
+    "2-hander"
    ],
    "grants": [
     "attack.war-hammer.smash",
@@ -308,7 +310,8 @@
    "slots": 2,
    "classRestriction": null,
    "tags": [
-    "polearm"
+    "polearm",
+    "2-hander"
    ],
    "grants": [
     "attack.glaive.sweep",
@@ -368,15 +371,13 @@
    "slots": 1,
    "classRestriction": null,
    "tags": [
-    "sword"
+    "exotic"
    ],
    "grants": [
     "attack.rapier.thrust",
     "attack.rapier.pierce"
    ],
-   "statModifiers": {
-    "dodge": 5
-   },
+   "statModifiers": {},
    "triggers": [
     {
      "hook": "onAttack",
@@ -384,7 +385,7 @@
     }
    ],
    "intent": "It does not hit hard. It hits where you said it would, and it leaves you somewhere the answer is not.",
-   "source": "Hell-TCG name reused (Admiral's Rapier — rebuilt as the Accuracy-and-Crit sword) | 2026-08-20: attacking with it now buys a Turn of evasion — +10 Dodge until the end of your next Turn. That is an effect rather than a modifier on the attack, so the onAttack hook is doing real work here."
+   "source": "Hell-TCG name reused (Admiral's Rapier — rebuilt as the Accuracy-and-Crit sword) | 2026-08-20: attacking with it now buys a Turn of evasion — +10 Dodge until the end of your next Turn. That is an effect rather than a modifier on the attack, so the onAttack hook is doing real work here. | 2026-08-27 workbook review: dodge +5 removed."
   },
   {
    "id": "item.raiders-cutlass",
@@ -395,7 +396,7 @@
    "slots": 1,
    "classRestriction": null,
    "tags": [
-    "sword"
+    "blade"
    ],
    "grants": [
     "attack.raiders-cutlass.slash",
@@ -413,7 +414,7 @@
    "tier": 1,
    "hands": 1,
    "slots": 1,
-   "classRestriction": null,
+   "classRestriction": "class.rogue",
    "tags": [
     "thrown"
    ],
@@ -475,7 +476,7 @@
    "slots": 2,
    "classRestriction": null,
    "tags": [
-    "sword"
+    "blade"
    ],
    "grants": [
     "attack.duel-runeblades.twin-cut",
@@ -515,7 +516,7 @@
    "slots": 1,
    "classRestriction": null,
    "tags": [
-    "chain"
+    "exotic"
    ],
    "grants": [
     "attack.crippling-whip.lash",
@@ -544,7 +545,7 @@
    "statModifiers": {},
    "triggers": [],
    "intent": "Both hands committed to the same short ugly distance, and neither of them lets go.",
-   "source": "new (tier-1 claw; brawl-tagged, so brawl buffs read onto it)"
+   "source": "new (tier-1 claw; brawl-tagged, so brawl buffs read onto it) | 2026-08-27: brawl removed from its attacks by the same ruling as item.claws."
   },
   {
    "id": "item.grappling-harpoon",
@@ -576,7 +577,8 @@
    "slots": 1,
    "classRestriction": "class.mage",
    "tags": [
-    "staff"
+    "wand",
+    "magic"
    ],
    "grants": [
     "attack.apprentice-wand.spark",
@@ -596,18 +598,17 @@
    "slots": 1,
    "classRestriction": "class.mage",
    "tags": [
-    "staff"
+    "tome",
+    "magic"
    ],
    "grants": [
     "attack.ancient-tome.read-the-page",
     "attack.ancient-tome.long-passage"
    ],
-   "statModifiers": {
-    "resist": 1
-   },
+   "statModifiers": {},
    "triggers": [],
    "intent": "Held open in the off hand: one line at one throat, or the whole paragraph at everyone standing near it.",
-   "source": "Hell-TCG name reused (Mage, Ancient Tome — draw effects cut, rebuilt as an off-hand focus) | 2026-08-20: the ITEM dictates the damage type and the CLASS dictates the item, so a magic-damage weapon is a Mage weapon."
+   "source": "Hell-TCG name reused (Mage, Ancient Tome — draw effects cut, rebuilt as an off-hand focus) | 2026-08-20: the ITEM dictates the damage type and the CLASS dictates the item, so a magic-damage weapon is a Mage weapon. | 2026-08-27 workbook review: resist +1 removed."
   },
   {
    "id": "item.holy-texts",
@@ -618,7 +619,7 @@
    "slots": 1,
    "classRestriction": "class.priest",
    "tags": [
-    "staff"
+    "holy"
    ],
    "grants": [
     "attack.holy-texts.verse",
@@ -638,7 +639,7 @@
    "slots": 1,
    "classRestriction": "class.paladin",
    "tags": [
-    "sword"
+    "blade"
    ],
    "grants": [
     "attack.bane-blade.strike",
@@ -658,7 +659,8 @@
    "slots": 1,
    "classRestriction": "class.paladin",
    "tags": [
-    "sword"
+    "holy",
+    "blade"
    ],
    "grants": [
     "attack.sword-of-the-fallen.remembrance",
@@ -682,14 +684,12 @@
    ],
    "grants": [
     "attack.buckler.punch",
-    "attack.buckler.deflect-and-cut"
+    "power.buckler.block-and-dodge"
    ],
-   "statModifiers": {
-    "dodge": 5
-   },
+   "statModifiers": {},
    "triggers": [],
    "intent": "The small shield buys no armour at all; it buys the half-step that means the blow missed.",
-   "source": "new (the light pole of the shield family — Knight Shield and Tower Shield hold the heavy end)"
+   "source": "new (the light pole of the shield family — Knight Shield and Tower Shield hold the heavy end) | 2026-08-27 workbook review: dodge +5 removed."
   },
   {
    "id": "item.bloody-axe",
@@ -1507,7 +1507,8 @@
    "statModifiers": {},
    "triggers": [],
    "intent": "Not carried, not dropped, and it does not take a slot. It is part of you.",
-   "source": "new 2026-08-20 — natural weapons for class.beast. A Beast carries nothing (0 Item Slots at every level), so its attacks have to come from its own body. Slots 0, hands 0, restricted to the class."
+   "source": "new 2026-08-20 — natural weapons for class.beast. A Beast carries nothing (0 Item Slots at every level), so its attacks have to come from its own body. Slots 0, hands 0, restricted to the class. | 2026-08-27: removed from the tier-1 weapon list in the workbook review — a beast body part, not a weapon anyone starts with or buys. The row stays for the beasts that grant it.",
+   "natural": true
   },
   {
    "id": "item.claws",
@@ -1518,7 +1519,6 @@
    "slots": 0,
    "classRestriction": "class.beast",
    "tags": [
-    "brawl",
     "melee",
     "claw"
    ],
@@ -1529,7 +1529,7 @@
    "statModifiers": {},
    "triggers": [],
    "intent": "Not carried, not dropped, and it does not take a slot. It is part of you.",
-   "source": "new 2026-08-20 — natural weapons for class.beast. A Beast carries nothing (0 Item Slots at every level), so its attacks have to come from its own body. Slots 0, hands 0, restricted to the class."
+   "source": "new 2026-08-20 — natural weapons for class.beast. A Beast carries nothing (0 Item Slots at every level), so its attacks have to come from its own body. Slots 0, hands 0, restricted to the class. | 2026-08-27: brawl tag removed BY RULING — \"the claws are too powerful to be paired with the brawler.\" Kept on the weapon list."
   },
   {
    "id": "item.tail",
@@ -1552,7 +1552,8 @@
    },
    "triggers": [],
    "intent": "Not carried, not dropped, and it does not take a slot. It is part of you.",
-   "source": "new 2026-08-20 — natural weapons for class.beast. A Beast carries nothing (0 Item Slots at every level), so its attacks have to come from its own body. Slots 0, hands 0, restricted to the class. | 2026-08-20 self-check: dropped the private form tag. No rule read it and no enchantment applied to it, so it was vocabulary that did nothing. These carry `brawl` like the other body weapons."
+   "source": "new 2026-08-20 — natural weapons for class.beast. A Beast carries nothing (0 Item Slots at every level), so its attacks have to come from its own body. Slots 0, hands 0, restricted to the class. | 2026-08-20 self-check: dropped the private form tag. No rule read it and no enchantment applied to it, so it was vocabulary that did nothing. These carry `brawl` like the other body weapons. | 2026-08-27: removed from the tier-1 weapon list in the workbook review — a beast body part, not a weapon anyone starts with or buys. The row stays for the beasts that grant it.",
+   "natural": true
   },
   {
    "id": "item.horns",
@@ -1573,7 +1574,8 @@
    "statModifiers": {},
    "triggers": [],
    "intent": "Not carried, not dropped, and it does not take a slot. It is part of you.",
-   "source": "new 2026-08-20 — natural weapons for class.beast. A Beast carries nothing (0 Item Slots at every level), so its attacks have to come from its own body. Slots 0, hands 0, restricted to the class. | 2026-08-20 self-check: dropped the private form tag. No rule read it and no enchantment applied to it, so it was vocabulary that did nothing. These carry `brawl` like the other body weapons."
+   "source": "new 2026-08-20 — natural weapons for class.beast. A Beast carries nothing (0 Item Slots at every level), so its attacks have to come from its own body. Slots 0, hands 0, restricted to the class. | 2026-08-20 self-check: dropped the private form tag. No rule read it and no enchantment applied to it, so it was vocabulary that did nothing. These carry `brawl` like the other body weapons. | 2026-08-27: removed from the tier-1 weapon list in the workbook review — a beast body part, not a weapon anyone starts with or buys. The row stays for the beasts that grant it.",
+   "natural": true
   },
   {
    "id": "item.breath",
@@ -1618,7 +1620,28 @@
    },
    "triggers": [],
    "intent": "Not carried, not dropped, and it does not take a slot. It is part of you.",
-   "source": "new 2026-08-20 — natural weapons for class.beast. A Beast carries nothing (0 Item Slots at every level), so its attacks have to come from its own body. Slots 0, hands 0, restricted to the class. | 2026-08-20 self-check: dropped the private form tag. No rule read it and no enchantment applied to it, so it was vocabulary that did nothing. These carry `brawl` like the other body weapons."
+   "source": "new 2026-08-20 — natural weapons for class.beast. A Beast carries nothing (0 Item Slots at every level), so its attacks have to come from its own body. Slots 0, hands 0, restricted to the class. | 2026-08-20 self-check: dropped the private form tag. No rule read it and no enchantment applied to it, so it was vocabulary that did nothing. These carry `brawl` like the other body weapons. | 2026-08-27: removed from the tier-1 weapon list in the workbook review — a beast body part, not a weapon anyone starts with or buys. The row stays for the beasts that grant it.",
+   "natural": true
+  },
+  {
+   "id": "item.daggers",
+   "name": "Daggers",
+   "itemClass": "weapon",
+   "tier": 1,
+   "hands": 2,
+   "slots": 1,
+   "classRestriction": null,
+   "tags": [
+    "dagger"
+   ],
+   "grants": [
+    "attack.daggers.stab",
+    "attack.daggers.thrown-dagger"
+   ],
+   "statModifiers": {},
+   "triggers": [],
+   "intent": "A pair, and the pair is the weapon: one for the hand you can reach, one for the hand you cannot.",
+   "source": "Authored in the 2026-08-27 gear workbook review (new row added to the sheet)."
   }
  ],
  "attacks": [
@@ -1857,16 +1880,16 @@
    "damage": 2,
    "stamina": 2,
    "accuracy": 0,
-   "crit": 2,
+   "crit": 0,
    "hits": 1,
    "targets": "one enemy in melee reach",
    "damageType": "physical",
    "tags": [
-    "sword",
     "melee"
    ],
    "triggers": [],
-   "slayer": null
+   "slayer": null,
+   "source": "2026-08-27 review: crit +2 removed."
   },
   {
    "id": "attack.greatsword.great-cleave",
@@ -1881,9 +1904,7 @@
    "targets": "an adjacent hex and the two hexes adjacent to both you and it",
    "damageType": "physical",
    "tags": [
-    "sword",
-    "melee",
-    "area"
+    "melee"
    ],
    "triggers": [],
    "slayer": null,
@@ -1903,7 +1924,6 @@
    "targets": "one enemy in melee reach",
    "damageType": "physical",
    "tags": [
-    "axe",
     "melee"
    ],
    "triggers": [],
@@ -1922,7 +1942,6 @@
    "targets": "one enemy in melee reach",
    "damageType": "physical",
    "tags": [
-    "axe",
     "melee"
    ],
    "triggers": [
@@ -1946,7 +1965,6 @@
    "targets": "one enemy in melee reach",
    "damageType": "physical",
    "tags": [
-    "hammer",
     "melee"
    ],
    "triggers": [],
@@ -1965,7 +1983,6 @@
    "targets": "one enemy in melee reach",
    "damageType": "physical",
    "tags": [
-    "hammer",
     "melee"
    ],
    "triggers": [
@@ -1995,7 +2012,6 @@
    "targets": "one enemy in melee reach",
    "damageType": "physical",
    "tags": [
-    "hammer",
     "melee"
    ],
    "triggers": [],
@@ -2014,7 +2030,6 @@
    "targets": "one enemy in melee reach",
    "damageType": "physical",
    "tags": [
-    "hammer",
     "melee"
    ],
    "triggers": [
@@ -2041,7 +2056,6 @@
    "targets": "one enemy in melee reach and the hex directly behind it",
    "damageType": "physical",
    "tags": [
-    "spear",
     "melee"
    ],
    "triggers": [],
@@ -2062,8 +2076,6 @@
    "targets": "one enemy within 4 hexes",
    "damageType": "physical",
    "tags": [
-    "spear",
-    "thrown",
     "ranged"
    ],
    "triggers": [],
@@ -2084,9 +2096,7 @@
    "targets": "an adjacent hex and one hex adjacent to both you and it",
    "damageType": "physical",
    "tags": [
-    "polearm",
-    "melee",
-    "area"
+    "melee"
    ],
    "triggers": [],
    "slayer": null,
@@ -2096,7 +2106,7 @@
   {
    "id": "attack.glaive.impale",
    "name": "Impale",
-   "range": 2,
+   "range": "melee",
    "stat": "strength",
    "damage": 2,
    "stamina": 2,
@@ -2106,13 +2116,12 @@
    "targets": "one enemy within 2 hexes and the hex directly behind it",
    "damageType": "physical",
    "tags": [
-    "polearm",
     "melee"
    ],
    "triggers": [],
    "slayer": null,
    "description": "A blade on a pole reaches the row behind the row, and this is the attack that says so: the target and whatever is behind it.",
-   "source": " | 2026-08-20: now hits the hex behind the target as well."
+   "source": "2026-08-20: now hits the hex behind the target as well. | 2026-08-27: the sheet RANGED marking was a typo (ruled) — stays melee."
   },
   {
    "id": "attack.crossbow.bolt",
@@ -2127,7 +2136,6 @@
    "targets": "one enemy within 8 hexes",
    "damageType": "physical",
    "tags": [
-    "crossbow",
     "ranged"
    ],
    "triggers": [],
@@ -2146,7 +2154,6 @@
    "targets": "one enemy within 8 hexes",
    "damageType": "physical",
    "tags": [
-    "crossbow",
     "ranged"
    ],
    "triggers": [
@@ -2170,7 +2177,6 @@
    "targets": "one enemy within 5 hexes",
    "damageType": "physical",
    "tags": [
-    "crossbow",
     "ranged"
    ],
    "triggers": [],
@@ -2189,7 +2195,6 @@
    "targets": "one enemy within 5 hexes",
    "damageType": "physical",
    "tags": [
-    "crossbow",
     "ranged"
    ],
    "triggers": [
@@ -2213,7 +2218,6 @@
    "targets": "one enemy in melee reach",
    "damageType": "physical",
    "tags": [
-    "sword",
     "melee"
    ],
    "triggers": [],
@@ -2232,7 +2236,6 @@
    "targets": "one enemy in melee reach",
    "damageType": "physical",
    "tags": [
-    "sword",
     "melee"
    ],
    "triggers": [
@@ -2256,7 +2259,6 @@
    "targets": "one enemy in melee reach",
    "damageType": "physical",
    "tags": [
-    "sword",
     "melee"
    ],
    "triggers": [
@@ -2280,7 +2282,6 @@
    "targets": "one enemy in melee reach",
    "damageType": "physical",
    "tags": [
-    "sword",
     "melee"
    ],
    "triggers": [
@@ -2296,19 +2297,19 @@
    "name": "Flick",
    "range": 4,
    "stat": "precision",
-   "damage": 1,
-   "stamina": 1,
+   "damage": 0,
+   "stamina": 0,
    "accuracy": 5,
    "crit": 0,
    "hits": 1,
    "targets": "one enemy within 4 hexes",
    "damageType": "physical",
    "tags": [
-    "thrown",
     "ranged"
    ],
    "triggers": [],
-   "slayer": null
+   "slayer": null,
+   "source": "2026-08-27 review: damage +1 -> 0, stamina 1 -> 0."
   },
   {
    "id": "attack.throwing-knives.fan",
@@ -2319,15 +2320,15 @@
    "stamina": 2,
    "accuracy": -5,
    "crit": 0,
-   "hits": 3,
+   "hits": 2,
    "targets": "up to 3 enemies within 3 hexes",
    "damageType": "physical",
    "tags": [
-    "thrown",
     "ranged"
    ],
    "triggers": [],
-   "slayer": null
+   "slayer": null,
+   "source": "2026-08-27 review: 2 attacks (hits 2)."
   },
   {
    "id": "attack.poison-stars.star",
@@ -2342,7 +2343,6 @@
    "targets": "one enemy within 4 hexes",
    "damageType": "physical",
    "tags": [
-    "thrown",
     "ranged"
    ],
    "triggers": [
@@ -2366,7 +2366,6 @@
    "targets": "up to 2 enemies within 4 hexes",
    "damageType": "physical",
    "tags": [
-    "thrown",
     "ranged"
    ],
    "triggers": [
@@ -2382,39 +2381,50 @@
    "name": "Fang",
    "range": "melee",
    "stat": "strength",
-   "damage": 1,
+   "damage": 0,
    "stamina": 1,
    "accuracy": 5,
-   "crit": 5,
+   "crit": 0,
    "hits": 1,
    "targets": "one enemy in melee reach",
-   "damageType": "physical",
+   "damageType": "true",
    "tags": [
-    "dagger",
     "melee"
    ],
-   "triggers": [],
-   "slayer": null
+   "triggers": [
+    {
+     "hook": "onHit",
+     "chance": 20,
+     "effect": "target loses 1 Strength"
+    }
+   ],
+   "slayer": null,
+   "source": "2026-08-27 review: TRUE damage, +1 -> 0, crit removed, onHit 20%: target loses 1 Strength."
   },
   {
    "id": "attack.obsidian-fang-dagger.gut",
    "name": "Gut",
    "range": "melee",
    "stat": "strength",
-   "damage": 3,
+   "damage": 1,
    "stamina": 2,
    "accuracy": 5,
    "crit": 10,
    "hits": 1,
    "targets": "one enemy in melee reach",
-   "damageType": "physical",
+   "damageType": "true",
    "tags": [
-    "dagger",
     "melee"
    ],
-   "triggers": [],
+   "triggers": [
+    {
+     "hook": "onHit",
+     "chance": 20,
+     "effect": "target loses 1 Strength"
+    }
+   ],
    "slayer": null,
-   "source": " | 2026-08-20: \"if the target has not yet acted this Turn\" is cut — the only condition that read turn order. Folded in at half: +5 Accuracy, +5 Crit on the face."
+   "source": "2026-08-20: \"if the target has not yet acted this Turn\" is cut — the only condition that read turn order. Folded in at half: +5 Accuracy, +5 Crit on the face. | 2026-08-27 review: TRUE damage, +3 -> +1, onHit 20%: target loses 1 Strength."
   },
   {
    "id": "attack.duel-runeblades.twin-cut",
@@ -2429,7 +2439,6 @@
    "targets": "one enemy in melee reach",
    "damageType": "physical",
    "tags": [
-    "sword",
     "melee"
    ],
    "triggers": [],
@@ -2446,9 +2455,8 @@
    "crit": 3,
    "hits": 1,
    "targets": "one enemy in melee reach",
-   "damageType": "magic",
+   "damageType": "physical",
    "tags": [
-    "sword",
     "melee"
    ],
    "triggers": [],
@@ -2457,7 +2465,7 @@
    },
    "addsStat": "magic",
    "description": "The runes take light on the cross-cut: damage equals your Strength plus the party's Magic, and it lands as magic damage. Twin Cut is still the cheap physical option; this is the one a caster picks the weapon up for.",
-   "source": "2026-08-17 design pass: made the runeblade an actual spellblade — damage blends Strength with the party Magic and lands as magic damage, which gives a Mage a melee attack worth holding."
+   "source": "2026-08-17 design pass: made the runeblade an actual spellblade — damage blends Strength with the party Magic and lands as magic damage, which gives a Mage a melee attack worth holding. | 2026-08-27 review: magic -> physical."
   },
   {
    "id": "attack.shepherds-sling.stone",
@@ -2472,7 +2480,6 @@
    "targets": "one enemy within 5 hexes",
    "damageType": "physical",
    "tags": [
-    "sling",
     "ranged"
    ],
    "triggers": [],
@@ -2491,7 +2498,6 @@
    "targets": "one enemy within 7 hexes",
    "damageType": "physical",
    "tags": [
-    "sling",
     "ranged"
    ],
    "triggers": [
@@ -2505,7 +2511,7 @@
   {
    "id": "attack.crippling-whip.lash",
    "name": "Lash",
-   "range": 2,
+   "range": "melee",
    "stat": "strength",
    "damage": 0,
    "stamina": 1,
@@ -2515,7 +2521,6 @@
    "targets": "one enemy within 2 hexes",
    "damageType": "physical",
    "tags": [
-    "chain",
     "melee"
    ],
    "triggers": [
@@ -2524,12 +2529,13 @@
      "effect": "apply 2 Weak"
     }
    ],
-   "slayer": null
+   "slayer": null,
+   "source": "2026-08-27 review: re-kinded RANGED in the sheet, but N was never stated — range null, a named gap, never a number I picked. | 2026-08-27: the sheet RANGED marking was a typo (ruled) — stays melee."
   },
   {
    "id": "attack.crippling-whip.hamstring",
    "name": "Hamstring",
-   "range": 2,
+   "range": "melee",
    "stat": "strength",
    "damage": 1,
    "stamina": 2,
@@ -2539,7 +2545,6 @@
    "targets": "one enemy within 2 hexes",
    "damageType": "physical",
    "tags": [
-    "chain",
     "melee"
    ],
    "triggers": [
@@ -2549,7 +2554,7 @@
     }
    ],
    "slayer": null,
-   "source": "2026-08-20: \"clean up that movement stuff.\" A one-Turn Movement loss is now the Slow status — apply N Slow. Fourteen entries said this two different ways and every one of them needed the engine to remember whose next Turn it was. Amount unchanged."
+   "source": "2026-08-20: \"clean up that movement stuff.\" A one-Turn Movement loss is now the Slow status — apply N Slow. Fourteen entries said this two different ways and every one of them needed the engine to remember whose next Turn it was. Amount unchanged. | 2026-08-27: the sheet RANGED marking was a typo (ruled) — stays melee."
   },
   {
    "id": "attack.iron-claws.rake",
@@ -2564,8 +2569,6 @@
    "targets": "one enemy in melee reach",
    "damageType": "physical",
    "tags": [
-    "claw",
-    "brawl",
     "melee"
    ],
    "triggers": [],
@@ -2584,8 +2587,6 @@
    "targets": "one enemy in melee reach",
    "damageType": "physical",
    "tags": [
-    "claw",
-    "brawl",
     "melee"
    ],
    "triggers": [
@@ -2615,7 +2616,6 @@
    "targets": "one enemy in melee reach",
    "damageType": "physical",
    "tags": [
-    "spear",
     "melee"
    ],
    "triggers": [],
@@ -2634,7 +2634,6 @@
    "targets": "one enemy within 4 hexes",
    "damageType": "physical",
    "tags": [
-    "thrown",
     "ranged"
    ],
    "triggers": [],
@@ -2649,18 +2648,18 @@
    "range": 5,
    "stat": "magic",
    "damage": 1,
-   "stamina": 1,
+   "stamina": 0,
    "accuracy": 5,
    "crit": 0,
    "hits": 1,
    "targets": "one enemy within 5 hexes",
    "damageType": "magic",
    "tags": [
-    "staff",
     "ranged"
    ],
    "triggers": [],
-   "slayer": null
+   "slayer": null,
+   "source": "2026-08-27 review: stamina 1 -> 0."
   },
   {
    "id": "attack.apprentice-wand.surge",
@@ -2675,7 +2674,6 @@
    "targets": "one enemy within 5 hexes",
    "damageType": "magic",
    "tags": [
-    "staff",
     "ranged"
    ],
    "triggers": [
@@ -2696,8 +2694,8 @@
    "id": "attack.ancient-tome.read-the-page",
    "name": "Read the Page",
    "range": 4,
-   "stat": "magic",
-   "damage": 1,
+   "stat": "precision",
+   "damage": 0,
    "stamina": 1,
    "accuracy": 0,
    "crit": 0,
@@ -2705,11 +2703,12 @@
    "targets": "one enemy within 4 hexes",
    "damageType": "magic",
    "tags": [
-    "staff",
     "ranged"
    ],
    "triggers": [],
-   "slayer": null
+   "slayer": null,
+   "halfStatBonus": "magic",
+   "source": "2026-08-27 review: \"precision dmg + 1/2 magic\" — precision-stat attack whose bonus is HALF the attacker's Magic (rounds nearest, 0.5 up, per the 2026-08-25 rounding ruling). halfStatBonus is a new field; the engine lacks it — named gap."
   },
   {
    "id": "attack.ancient-tome.long-passage",
@@ -2724,9 +2723,7 @@
    "targets": "one enemy within 4 hexes and every enemy adjacent to it",
    "damageType": "magic",
    "tags": [
-    "staff",
-    "ranged",
-    "area"
+    "ranged"
    ],
    "triggers": [],
    "slayer": null
@@ -2744,7 +2741,6 @@
    "targets": "one enemy within 4 hexes",
    "damageType": "true",
    "tags": [
-    "staff",
     "ranged"
    ],
    "triggers": [],
@@ -2766,8 +2762,7 @@
    "targets": "one ally within 4 hexes",
    "damageType": "true",
    "tags": [
-    "staff",
-    "heal"
+    "ranged"
    ],
    "triggers": [],
    "slayer": null,
@@ -2786,7 +2781,6 @@
    "targets": "one enemy in melee reach",
    "damageType": "physical",
    "tags": [
-    "sword",
     "melee"
    ],
    "triggers": [],
@@ -2800,26 +2794,32 @@
    "damage": 2,
    "stamina": 2,
    "accuracy": 0,
-   "crit": 3,
+   "crit": 0,
    "hits": 1,
    "targets": "one enemy in melee reach",
    "damageType": "physical",
    "tags": [
-    "sword",
     "melee"
    ],
-   "triggers": [],
+   "triggers": [
+    {
+     "hook": "onCrit",
+     "chance": 100,
+     "effect": "deal 6 more damage"
+    }
+   ],
    "slayer": {
     "undead": 2,
     "demon": 2
-   }
+   },
+   "source": "2026-08-27 review: crit +3 replaced with onCrit: +6 damage."
   },
   {
    "id": "attack.sword-of-the-fallen.remembrance",
    "name": "Remembrance",
    "range": "melee",
    "stat": "strength",
-   "damage": 1,
+   "damage": 0,
    "stamina": 1,
    "accuracy": 0,
    "crit": 0,
@@ -2827,7 +2827,6 @@
    "targets": "one enemy in melee reach",
    "damageType": "physical",
    "tags": [
-    "sword",
     "melee"
    ],
    "triggers": [
@@ -2836,14 +2835,15 @@
      "effect": "heal 1"
     }
    ],
-   "slayer": null
+   "slayer": null,
+   "source": "2026-08-27 review: damage +1 -> 0."
   },
   {
    "id": "attack.sword-of-the-fallen.honour-the-dead",
    "name": "Honour the Dead",
    "range": "melee",
    "stat": "strength",
-   "damage": 2,
+   "damage": 1,
    "stamina": 2,
    "accuracy": 5,
    "crit": 0,
@@ -2851,16 +2851,17 @@
    "targets": "one enemy in melee reach",
    "damageType": "physical",
    "tags": [
-    "sword",
     "melee"
    ],
    "triggers": [
     {
      "hook": "onKill",
-     "effect": "heal 3, and every ally within 2 hexes heals 1"
+     "chance": 100,
+     "effect": "heal 3"
     }
    ],
-   "slayer": null
+   "slayer": null,
+   "source": "2026-08-27 review: damage +2 -> +1, the ally-heal clause removed — heal 3 self only."
   },
   {
    "id": "attack.buckler.punch",
@@ -2875,36 +2876,17 @@
    "targets": "one enemy in melee reach",
    "damageType": "physical",
    "tags": [
-    "shield",
-    "brawl",
-    "melee"
-   ],
-   "triggers": [],
-   "slayer": null
-  },
-  {
-   "id": "attack.buckler.deflect-and-cut",
-   "name": "Deflect and Cut",
-   "range": "melee",
-   "stat": "strength",
-   "damage": 1,
-   "stamina": 2,
-   "accuracy": 0,
-   "crit": 0,
-   "hits": 1,
-   "targets": "one enemy in melee reach",
-   "damageType": "physical",
-   "tags": [
-    "shield",
     "melee"
    ],
    "triggers": [
     {
-     "hook": "onHit",
-     "effect": "gain +5 Dodge until the start of your next Turn"
+     "hook": "onAttack",
+     "chance": 100,
+     "effect": "gain 7 Dodge until the end of your next Activation"
     }
    ],
-   "slayer": null
+   "slayer": null,
+   "source": "2026-08-27 review: gains the dodge rider."
   },
   {
    "id": "attack.bloody-axe.cleave-open",
@@ -4191,9 +4173,7 @@
    "targets": "one enemy in melee reach",
    "damageType": "physical",
    "tags": [
-    "brawl",
-    "melee",
-    "fang"
+    "melee"
    ],
    "triggers": [],
    "slayer": null,
@@ -4212,9 +4192,7 @@
    "targets": "one enemy in melee reach",
    "damageType": "physical",
    "tags": [
-    "brawl",
-    "melee",
-    "fang"
+    "melee"
    ],
    "triggers": [
     {
@@ -4238,9 +4216,7 @@
    "targets": "one enemy in melee reach",
    "damageType": "physical",
    "tags": [
-    "brawl",
-    "melee",
-    "claw"
+    "melee"
    ],
    "triggers": [],
    "slayer": null,
@@ -4259,9 +4235,7 @@
    "targets": "one enemy in melee reach",
    "damageType": "physical",
    "tags": [
-    "brawl",
-    "melee",
-    "claw"
+    "melee"
    ],
    "triggers": [
     {
@@ -4285,7 +4259,6 @@
    "targets": "one enemy in melee reach",
    "damageType": "physical",
    "tags": [
-    "brawl",
     "melee"
    ],
    "triggers": [
@@ -4310,7 +4283,6 @@
    "targets": "every enemy adjacent to you",
    "damageType": "physical",
    "tags": [
-    "brawl",
     "melee"
    ],
    "triggers": [],
@@ -4330,7 +4302,6 @@
    "targets": "one enemy in melee reach",
    "damageType": "physical",
    "tags": [
-    "brawl",
     "melee"
    ],
    "triggers": [
@@ -4355,7 +4326,6 @@
    "targets": "one enemy in melee reach",
    "damageType": "physical",
    "tags": [
-    "brawl",
     "melee"
    ],
    "triggers": [],
@@ -4427,7 +4397,6 @@
    "targets": "one enemy in melee reach",
    "damageType": "physical",
    "tags": [
-    "brawl",
     "melee"
    ],
    "triggers": [],
@@ -4447,12 +4416,57 @@
    "targets": "one enemy in melee reach",
    "damageType": "physical",
    "tags": [
-    "brawl",
     "melee"
    ],
    "triggers": [],
    "slayer": null,
    "source": "new 2026-08-20 — natural weapons for class.beast. A Beast carries nothing (0 Item Slots at every level), so its attacks have to come from its own body. Slots 0, hands 0, restricted to the class. | 2026-08-20 self-check: dropped the private form tag. No rule read it and no enchantment applied to it, so it was vocabulary that did nothing. These carry `brawl` like the other body weapons."
+  },
+  {
+   "id": "attack.daggers.stab",
+   "name": "Stab",
+   "range": "melee",
+   "stat": "strength",
+   "damage": 0,
+   "stamina": 0,
+   "accuracy": 0,
+   "crit": 15,
+   "hits": 1,
+   "targets": "one enemy in melee reach",
+   "damageType": "physical",
+   "tags": [
+    "dagger",
+    "melee"
+   ],
+   "triggers": [],
+   "slayer": null,
+   "source": "Edited in the 2026-08-27 gear workbook review."
+  },
+  {
+   "id": "attack.daggers.thrown-dagger",
+   "name": "Thrown Dagger",
+   "range": 4,
+   "stat": "precision",
+   "damage": 1,
+   "stamina": 1,
+   "accuracy": 0,
+   "crit": 0,
+   "hits": 1,
+   "targets": "one enemy within 4 hexes",
+   "damageType": "physical",
+   "tags": [
+    "dagger",
+    "ranged"
+   ],
+   "triggers": [
+    {
+     "hook": "onKill",
+     "chance": 100,
+     "effect": "gain 50 Surge"
+    }
+   ],
+   "slayer": null,
+   "source": "Edited in the 2026-08-27 gear workbook review."
   }
  ]
 }

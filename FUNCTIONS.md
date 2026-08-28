@@ -11,17 +11,17 @@ When a rule fires. Twelve, plus `aura` and `passive` which are standing properti
 
 | Function | Uses | Notes |
 |---|---:|---|
-| `onHit` | 77 | after a hit lands, even if armour ate all of it |
-| `onKill` | 37 |  |
+| `onHit` | 79 | after a hit lands, even if armour ate all of it |
+| `onKill` | 38 |  |
 | `startOfBattle` | 37 |  |
-| `onCrit` | 19 | after its own onHit, only if it crit |
+| `onCrit` | 20 | after its own onHit, only if it crit |
 | `passive` | 17 | always true |
 | `onTakingDamage` | 16 |  |
 | `onDamage` | 15 | only if damage actually landed |
 | `aura` | 14 | checked continuously |
 | `onActivationEnd` | 10 | a unit's go, not a Turn |
+| `onAttack` | 9 |  |
 | `onDodge` | 9 | on the DEFENDER, when its Dodge is why the attack missed |
-| `onAttack` | 8 |  |
 | `onMiss` | 5 | on the ATTACKER |
 | `onDeath` | 2 |  |
 
@@ -31,9 +31,9 @@ When a rule fires. Twelve, plus `aura` and `passive` which are standing properti
 
 | Function | Uses |
 |---|---:|
-| `self` | 149 |
+| `self` | 150 |
 | `one enemy in melee reach` | 104 |
-| `one enemy within N hexes` | 81 |
+| `one enemy within N hexes` | 82 |
 | `one ally within N hexes` | 54 |
 | `allies within N hexes` | 32 |
 | `enemies within N hexes` | 18 |
@@ -80,7 +80,7 @@ What a rule may DO.
 | `apply a status` | 141 |
 | `heal` | 88 |
 | `deal TRUE damage` | 55 |
-| `grant a stat until end of next Turn` | 48 |
+| `grant a stat until end of next Turn` | 47 |
 | `remove N of a status` | 46 |
 | `move yourself` | 30 |
 | `grant an aura` | 28 |
@@ -88,8 +88,8 @@ What a rule may DO.
 | `deal MAGIC damage` | 18 |
 | `reveal / break stealth` | 17 |
 | `place a trap` | 16 |
+| `deal damage (type from the weapon)` | 15 |
 | `regain stamina` | 15 |
-| `deal damage (type from the weapon)` | 14 |
 | `deal PHYSICAL damage` | 14 |
 | `move WITHOUT provoking` | 13 |
 | `Immunity N` | 12 |
@@ -131,17 +131,17 @@ What a rule may DO.
 | Function | Uses |
 |---|---:|
 | `health` | 97 |
-| `resist` | 61 |
+| `resist` | 60 |
 | `strength` | 55 |
-| `dodge` | 54 |
-| `movement` | 49 |
+| `dodge` | 52 |
+| `movement` | 48 |
 | `armor` | 43 |
 | `accuracy` | 32 |
 | `precision` | 30 |
 | `crit` | 28 |
+| `reach` | 20 |
 | `magic` | 20 |
 | `staminaMax` | 20 |
-| `reach` | 19 |
 | `luck` | 18 |
 | `spirit` | 17 |
 | `itemSlots` | 14 |
@@ -160,7 +160,7 @@ A stat modifier lasts the rest of the Battle unless the row says otherwise.
 |---|---:|
 | `rest of the Battle` | 170 |
 | `until the end of your next Turn` | 40 |
-| `until the start of your next Turn` | 8 |
+| `until the start of your next Turn` | 7 |
 | `until the end of the Turn` | 3 |
 
 ## What is explicitly NOT available

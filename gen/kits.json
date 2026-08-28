@@ -1,36 +1,114 @@
 {
-  "_note": "S12 — starting loadouts. Ruled 2026-08-25: KITS ARE PER-HERO, WITH A CLASS BACKUP. The class kit is the default every hero of that class starts with; a hero override replaces it entirely. Random picks are stored as SPECS, never rolled here — content is deterministic and the roll belongs to the draft (named stream, keyed by what the roll is). Every explicit id must exist and every random pool must be non-empty: audit R35.",
-
-  "classKits": {
-    "class.warrior": { "pick": { "random": 1, "from": { "itemClass": "weapon", "hands": 2, "tier": 1 } },
-      "why": "Ruled 2026-08-25: each warrior gets a random two-handed tier-1 weapon. Pool is 17 strong." },
-    "class.mage": { "pick": { "random": 1, "from": { "nameMatches": "Staff", "tier": 1 } },
-      "why": "Ruled 2026-08-25: a random tier-1 staff — fire, frost, earth, lightning or force." },
-    "class.priest": { "pick": { "oneOf": ["item.holy-symbol", "item.priest-chain"] },
-      "why": "Ruled 2026-08-25: one of the two holy symbols dictated in the past — 2-ACTIONS-NOTES already ruled 'Holy Symbol and Priest Chain → Priest', and both exist at tier 1." },
-    "class.rogue": { "items": ["item.dagger"], "provisional": true,
-      "why": "Ruled 2026-08-21 (S12 pre-ruling): the Rogue starts with daggers; the missing tier-1 / throwing dagger is deferred, and this kit is flagged provisional rather than blocking on it." },
-    "class.ranger": { "items": ["item.shortbow"], "provisional": true,
-      "why": "BACKUP ONLY — all four Eve rangers carry hero overrides (their bows were dictated). A generic ranger with no override gets a shortbow until ruled otherwise; flagged provisional because it was never dictated." },
-    "class.paladin": { "items": ["item.longsword", "item.knight-shield"], "provisional": true,
-      "why": "BACKUP ONLY — the four Eve paladins carry hero overrides. Sword and board as the class default mirrors three of the four dictations; flagged provisional because the class-level default itself was never dictated." },
-    "class.civilian": { "items": [],
-      "why": "Civilians have no class default — every fielded civilian carries a dictated per-hero kit via gen/civilian-rulings.json statBlocks (Pile of Rocks, Lumberjack's Axe, Pitchfork, or nothing)." },
-    "class.beast": { "items": [],
-      "why": "Beasts fight with what they are. Natural attacks, no items." }
+ "_note": "Starting loadouts. RE-RULED 2026-08-27 (gear workbook review), superseding the 2026-08-25 shapes: every class draws from its startPool (the workbook's Start column). WARRIORS AND PALADINS draw TWO HANDS' WORTH — if the first draw is one-handed, draw again (a one-hander or a shield), NEVER THE SAME ITEM TWICE; a two-hander ends the draw. MAGES, PRIESTS AND ROGUES draw ONE weapon regardless of hands. RANGERS draw one bow. Weapons with no start pool exist to be found in game, never rolled at start. ARMOR: every classed hero also draws ONE random tier-0 armor from the armors whose startClasses cover their class (civilians and beasts draw none). Tier-0 armor costs no item slot — a dedicated armor slot exists, exactly one armor per unit. Draws are SPECS — the roll belongs to the draft (named stream), content stays deterministic. heroKits overrides replace the class draw entirely (e.g. the elven ranger will be assigned the Elfbow directly). Audit: R35.",
+ "classKits": {
+  "class.warrior": {
+   "draw": "two-hands-worth",
+   "startPool": [
+    "item.greatsword",
+    "item.war-axe",
+    "item.glaive",
+    "item.buckler",
+    "item.tower-shield",
+    "item.halberd"
+   ],
+   "why": "Ruled 2026-08-27: two hands' worth — 1H first draw pulls a second 1H or shield, never the same twice."
   },
-
-  "heroKits": {
-    "_note": "Per-hero overrides — dictated during the Eve differentiation pass, recorded in gen/eve-differentiation.json startingItems and mirrored here as the S12 registry. A hero listed here ignores its class kit.",
-    "hero.base.paladin-dark": ["item.greatsword"],
-    "hero.base.paladin-shiney": ["item.longsword", "item.knight-shield"],
-    "hero.base.paladin-hunk": ["item.longsword", "item.knight-shield"],
-    "hero.base.paladin-smug": ["item.longsword", "item.knight-shield"],
-    "hero.base.ranger-ranger": ["item.elfbow"],
-    "hero.base.ranger-scantily": ["item.elfbow"],
-    "hero.base.ranger-nature": ["item.shortbow"],
-    "hero.base.ranger-aggressive": ["item.longbow"]
+  "class.paladin": {
+   "draw": "two-hands-worth",
+   "startPool": [
+    "item.iron-mace",
+    "item.war-hammer",
+    "item.longsword",
+    "item.knight-shield",
+    "item.bane-blade",
+    "item.sword-of-the-fallen"
+   ],
+   "why": "Ruled 2026-08-27: same two-hands'-worth draw as the warrior, from the paladin pool."
   },
-
-  "civilianKitsLiveIn": "gen/civilian-rulings.json statBlocks — same per-hero principle, dictated with their stat blocks."
+  "class.ranger": {
+   "draw": "one-weapon",
+   "startPool": [
+    "item.crossbow",
+    "item.shortbow",
+    "item.barbarian-bow",
+    "item.longbow"
+   ],
+   "why": "Ruled 2026-08-27: one weapon from the ranger pool — no special bow rule needed, the pool IS all bows (Longbow included by ruling)."
+  },
+  "class.rogue": {
+   "draw": "one-weapon",
+   "startPool": [
+    "item.throwing-knives",
+    "item.poison-stars",
+    "item.obsidian-fang-dagger",
+    "item.daggers"
+   ],
+   "why": "Ruled 2026-08-27: one weapon regardless of hands. Daggers (the new pair) included."
+  },
+  "class.mage": {
+   "draw": "one-weapon",
+   "startPool": [
+    "item.apprentice-wand",
+    "item.ancient-tome",
+    "item.fire-staff",
+    "item.frost-staff",
+    "item.earth-staff",
+    "item.lightning-staff",
+    "item.force-staff"
+   ],
+   "why": "Ruled 2026-08-27: one weapon regardless of hands — the wand, the tome, or a staff."
+  },
+  "class.priest": {
+   "draw": "one-weapon",
+   "startPool": [
+    "item.holy-texts",
+    "item.holy-symbol",
+    "item.priest-chain"
+   ],
+   "why": "Ruled 2026-08-27: one weapon — texts, symbol, or chain."
+  },
+  "class.civilian": {
+   "draw": "none",
+   "why": "Ruled 2026-08-27: civilians draw no starting weapon and no starting armor. Their gear is dictated per unit (statBlocks kits)."
+  },
+  "class.beast": {
+   "draw": "none",
+   "why": "Ruled 2026-08-27: beasts draw nothing — their weapons are their bodies (natural rows)."
+  }
+ },
+ "heroKits": {
+  "_note": "Per-hero overrides — dictated during the Eve differentiation pass, recorded in gen/eve-differentiation.json startingItems and mirrored here as the S12 registry. A hero listed here ignores its class kit.",
+  "hero.base.paladin-dark": [
+   "item.greatsword"
+  ],
+  "hero.base.paladin-shiney": [
+   "item.longsword",
+   "item.knight-shield"
+  ],
+  "hero.base.paladin-hunk": [
+   "item.longsword",
+   "item.knight-shield"
+  ],
+  "hero.base.paladin-smug": [
+   "item.longsword",
+   "item.knight-shield"
+  ],
+  "hero.base.ranger-ranger": [
+   "item.elfbow"
+  ],
+  "hero.base.ranger-scantily": [
+   "item.elfbow"
+  ],
+  "hero.base.ranger-nature": [
+   "item.shortbow"
+  ],
+  "hero.base.ranger-aggressive": [
+   "item.longbow"
+  ]
+ },
+ "civilianKitsLiveIn": "gen/civilian-rulings.json statBlocks — same per-hero principle, dictated with their stat blocks.",
+ "armorDraw": {
+  "rule": "one random tier-0 armor per classed hero, from the armors whose startClasses cover the class; civilians and beasts draw none",
+  "source": "Ruled 2026-08-27. The pools live on the armor rows as startClasses (\"any\" or a class list)."
+ }
 }

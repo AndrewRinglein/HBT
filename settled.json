@@ -209,6 +209,53 @@
    "id": "tag.breath",
    "group": "form",
    "source": "new 2026-08-20 — weapon-form tags for class.beast's natural weapons. Same kind of vocabulary as axe, spear and claw; `claw` already existed and is reused."
+  },
+  {
+   "id": "tag.blade",
+   "group": "form",
+   "source": "2026-08-27 gear workbook review"
+  },
+  {
+   "id": "tag.2-hander",
+   "group": "quality",
+   "source": "2026-08-27 gear workbook review",
+   "note": "Reclassified quality 2026-08-27: a property cross-cutting forms (handedness / rarity-of-form), not a weapon form — form rules (enchant reach) do not apply."
+  },
+  {
+   "id": "tag.exotic",
+   "group": "quality",
+   "source": "2026-08-27 gear workbook review",
+   "note": "Reclassified quality 2026-08-27: a property cross-cutting forms (handedness / rarity-of-form), not a weapon form — form rules (enchant reach) do not apply."
+  },
+  {
+   "id": "tag.wand",
+   "group": "form",
+   "source": "2026-08-27 gear workbook review"
+  },
+  {
+   "id": "tag.tome",
+   "group": "form",
+   "source": "2026-08-27 gear workbook review"
+  },
+  {
+   "id": "tag.magic",
+   "group": "quality",
+   "source": "2026-08-27 gear workbook review"
+  },
+  {
+   "id": "tag.holy",
+   "group": "quality",
+   "source": "2026-08-27 gear workbook review"
+  },
+  {
+   "id": "tag.stun",
+   "group": "quality",
+   "source": "2026-08-27 gear workbook review"
+  },
+  {
+   "id": "tag.defence-power",
+   "group": "quality",
+   "source": "2026-08-27 gear workbook review"
   }
  ],
  "powers": [
