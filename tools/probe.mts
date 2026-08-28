@@ -36,7 +36,9 @@ const ACTED = new Set(['damage.applied','heal.applied','power.used','attack.decl
   // itself — 'knocked' is displacement, and a fully blocked push that only
   // logs knockback.blocked has genuinely changed nothing, so that one is
   // deliberately NOT here. Same widening-is-stricter argument as above.
-  'knocked'])
+  'knocked',
+  // station.crit (2026-08-27): the chart's own state changes.
+  'stamina.drained', 'maxHp.lost'])
 
 /**
  * A SCENARIO is probed by fielding it, not by sweeping the standard panel.

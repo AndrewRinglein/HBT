@@ -48,7 +48,7 @@ describe('independent audit of logged battles', () => {
       const outPenalty = new Map<number, Map<string, number>>()
       const penaltyOf = (id: number) =>
         [...(outPenalty.get(id) ?? new Map()).values()].reduce((a, b) => a + b, 0)
-      let pending: { actor: number; target: number; attackId: string; dist: number } | null = null
+      let pending: { actor: number; target: number; attackId: string; dist: number; crit?: boolean } | null = null
       let pendingPower: { actor: number; target: number; abilityId: string } | null = null
 
       for (const e of ctx.events) {
@@ -142,7 +142,32 @@ describe('independent audit of logged battles', () => {
             // knockback in the game today is value 1, so the audit holds the
             // stronger claim available: exactly one hex, directly away.
             expect(distance(e['from'] as number, e['to'] as number), 'a knockback travels').toBeGreaterThanOrEqual(1)
-            expect(String(e.causeId).includes('knockback'), 'a knocked unit names the trigger that pushed it').toBe(true)
+            // A push is caused by a knockback trigger, OR — since station.crit
+            // (2026-08-27) — by the critting attack itself (Knocked Sprawling:
+            // the crit.effect event beside it names the row key). Extended.
+            expect(String(e.causeId).includes('knockback') || String(e.causeId).startsWith('attack.'),
+              'a knocked unit names what pushed it').toBe(true)
+            hex.set(e.target!, e['to'] as number) // the auditor's map must move too
+            break
+          }
+          // station.crit (2026-08-27) — the chart's two bespoke mutators join
+          // the ledgers, EXTENDED never weakened: a drain or a max-health loss
+          // left untracked would silently skew every later arithmetic check.
+          case 'stamina.drained': {
+            const before = stamina.get(e.target!)!
+            expect(e['stamina'], 'drain floors at zero').toBe(Math.max(0, before - (e['asked'] as number)))
+            expect(e['amount']).toBe(before - (e['stamina'] as number))
+            stamina.set(e.target!, e['stamina'] as number)
+            break
+          }
+          case 'maxHp.lost': {
+            expect(e['maxHp'] as number, 'nothing else floors — but never negative display').toBeGreaterThanOrEqual(0)
+            expect(e['hp'] as number).toBeLessThanOrEqual(e['maxHp'] as number)
+            break
+          }
+          case 'crit.effect': {
+            // Every rolled injury names a key the chart actually carries.
+            expect(typeof e['key']).toBe('string')
             break
           }
           case 'stamina.gained': {
@@ -209,6 +234,15 @@ describe('independent audit of logged battles', () => {
             break
           }
 
+          case 'attack.hit': {
+            // station.crit (2026-08-27): the hit event says whether the
+            // DAMAGE ARM fired (crit:true = the +50% pre-mitigation station).
+            // The chart arm lands normal damage, so its hits carry crit:false
+            // and the recompute below needs no change for them.
+            if (pending && e.actor === pending.actor) pending.crit = e['crit'] === true
+            break
+          }
+
           case 'power.used': {
             const at = UNITS[type.get(e.actor!)!]!
             const ab = ABILITIES[e['abilityId'] as string]!
@@ -271,7 +305,11 @@ describe('independent audit of logged battles', () => {
             const stat = modded(pending.actor, a.stat,
               a.stat === 'strength' ? at.strength : at.precision, e.turn)
             const mit = a.damageType === 'physical' ? tg.armor : tg.resist
-            const expected = Math.max(0, a.bonus + stat - penaltyOf(pending.actor)
+            // The damage-arm crit multiplies BEFORE Protection and Mitigation
+            // (DMG.CRIT at 450), truncating division — the one rounding rule.
+            const preMit = a.bonus + stat - penaltyOf(pending.actor)
+            const critted = pending.crit ? Math.trunc((preMit * 3) / 2) : preMit
+            const expected = Math.max(0, critted
               - ((e['absorbed'] as number) ?? 0) - mit)
             const total = (e['amount'] as number) + (e['overkill'] as number)
             expect(total, `${a.id} damage`).toBe(expected)

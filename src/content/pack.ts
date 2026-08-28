@@ -4,7 +4,7 @@
 // GENERATED (content/mkenginepack.mjs) and never hand-edited; this loader
 // validates it LOUDLY at import time (Law 9) and hands back plain UnitDefs.
 import { UNIT_PACK } from './generated/pack.js'
-import type { AbilityDef, AttackDef, UnitDef } from '../core/types.js'
+import type { AbilityDef, AttackDef, CritRow, UnitDef } from '../core/types.js'
 import { validateTrigger } from '../core/trigger.js'
 
 const REQUIRED = ['typeId', 'name', 'side', 'maxHp', 'armor', 'resist', 'accuracy', 'dodge',
@@ -70,6 +70,26 @@ export function packAbilities(): Readonly<Record<string, AbilityDef>> {
     }
     if (kind === 'heal' && a.heal === undefined) throw new Error(`unit pack: heal power '${k}' has no heal spec — regenerate the pack`)
     if (kind === 'selfGuard' && a.guard === undefined) throw new Error(`unit pack: selfGuard power '${k}' has no guard spec — regenerate the pack`)
+  }
+  return raw
+}
+
+/**
+ * The Critical Injury Chart — station.crit (2026-08-27). Ruled data, not a
+ * content kind: keys are stable log keys, never ids. Validated loudly.
+ */
+export function packCritChart(): readonly CritRow[] {
+  const raw = (UNIT_PACK as { critChart?: { rows?: readonly CritRow[] } }).critChart?.rows ?? []
+  const seen = new Set<string>()
+  for (const r of raw) {
+    if (!r.key || !/^[a-z][a-z-]*$/.test(r.key)) throw new Error(`crit chart: bad row key '${String(r.key)}' — keys are stable lowercase log keys`)
+    if (seen.has(r.key)) throw new Error(`crit chart: duplicate key '${r.key}'`)
+    seen.add(r.key)
+    for (const e of r.effects) {
+      if (!['statMod', 'status', 'push', 'loseStamina', 'loseMaxHp'].includes(e.kind)) {
+        throw new Error(`crit chart: row '${r.key}' carries unknown effect kind '${(e as { kind: string }).kind}' — regenerate the pack`)
+      }
+    }
   }
   return raw
 }

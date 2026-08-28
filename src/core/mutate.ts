@@ -102,6 +102,34 @@ export function addStatMod(ctx: Ctx, id: number, mod: import('./stats.js').StatM
   })
 }
 
+/**
+ * Stamina DRAIN — station.crit (2026-08-27), the chart's Winded row: "lose 4
+ * Stamina, to a minimum of 0." Not spendStamina, which throws on shortfall —
+ * a drain takes what is there and floors at zero, as dictated.
+ */
+export function drainStamina(ctx: Ctx, id: number, amount: number, causeId: string): void {
+  const u = unit(ctx, id)
+  const before = u.stamina
+  u.stamina = Math.max(0, u.stamina - amount)
+  emit(ctx, 'stamina.drained', causeId, { target: id, asked: amount, amount: before - u.stamina, stamina: u.stamina })
+}
+
+/**
+ * Max Health loss — station.crit (2026-08-27), the chart's Nerve Struck row:
+ * "−2 Max Health", and "nothing else floors" read literally — a unit whose
+ * Max Health reaches 0 dies of the strike. The merciful floor-at-1 path is
+ * the critMaxHealthFloorsAtOne switch. HP clamps to the new maximum; the
+ * caller's settle turns an hp of 0 into a death with this causeId.
+ */
+export function loseMaxHp(ctx: Ctx, id: number, amount: number, causeId: string): void {
+  const u = unit(ctx, id)
+  const before = u.maxHp
+  const floor = ctx.cfg.switches.critMaxHealthFloorsAtOne ? 1 : 0
+  u.maxHp = Math.max(floor, u.maxHp - amount)
+  if (u.hp > u.maxHp) u.hp = u.maxHp
+  emit(ctx, 'maxHp.lost', causeId, { target: id, amount: before - u.maxHp, maxHp: u.maxHp, hp: u.hp })
+}
+
 export function regenStamina(ctx: Ctx, id: number, causeId: string): void {
   const u = unit(ctx, id)
   const before = u.stamina

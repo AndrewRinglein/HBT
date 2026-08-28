@@ -277,3 +277,17 @@ Added 2026-08-27 (capability.item-powers). Heal targets "one ally within 6
 hexes"; whether that includes the caster is unstated. Default **true** — the
 common reading. A sweep can ask whether self-healing priests outlive parties
 whose priest must be healed by someone else.
+
+## critChartShareVsHeroes / critChartShareVsEnemies — the branch flip's weights
+Added 2026-08-27 (station.crit), carrying critChartSplit's ANSWER (Angela
+2026-08-22: "crits to heroes 75% 25%, Enemies 50/50") into Config as two
+sweepable numbers: the CHART share is 25 against heroes, 50 against enemies.
+The 2026-08-27 dictation's "literally a coin" is read as the enemy-side split;
+her dated two-number answer stands. Flagged in the landing report.
+
+## critMaxHealthFloorsAtOne — can Nerve Struck kill?
+Added 2026-08-27 (station.crit). The dictation: "Stat losses floor where the
+row says 'minimum 0'; nothing else floors." Read literally, Nerve Struck's
+−2 Max Health does not floor, and a unit whose Max Health reaches 0 dies of
+the strike. Default **false** (the literal reading); the merciful floor-at-1
+path is kept for a sweep — metric: deaths by nerve-strike per hundred battles.

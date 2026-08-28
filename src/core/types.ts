@@ -153,6 +153,31 @@ export type AttackDef = {
    * riders still run per struck unit through the one damage function.
    */
   readonly area?: 'arc' | 'blast1'
+  /**
+   * The weapon's flat addition to crit chance — station.crit (2026-08-27),
+   * COMBAT-DESIGN "Crit from gear": the Dagger's +5, the Javelin's +3.
+   */
+  readonly crit?: number
+}
+
+/**
+ * One Critical Injury Chart row — station.crit (2026-08-27). RULED DATA, not
+ * a content kind: rows arrive from the pack (settled.json critChart, compiled
+ * by mkenginepack.mjs), keys are stable log keys for Law 12, never ids. Every
+ * effect is battle-only; the chart never mints permanence (that is the
+ * Deathbed pipeline's alone).
+ */
+export type CritEffect =
+  | { readonly kind: 'statMod'; readonly stat: import('./stats.js').StatName; readonly value: number; readonly floor?: number }
+  | { readonly kind: 'status'; readonly statusId: string; readonly value: number }
+  | { readonly kind: 'push'; readonly hexes: number }
+  | { readonly kind: 'loseStamina'; readonly value: number }
+  | { readonly kind: 'loseMaxHp'; readonly value: number }
+
+export type CritRow = {
+  readonly key: string
+  readonly name: string
+  readonly effects: readonly CritEffect[]
 }
 
 export type UnitDef = {
@@ -163,6 +188,13 @@ export type UnitDef = {
   readonly resist: number
   readonly accuracy: number
   readonly dodge: number
+  /**
+   * Crit and Luck — station.crit (2026-08-27), COMBAT-DESIGN's two stats:
+   * crit adds to this unit's chance TO crit ("Base Crit varies by enemy");
+   * luck subtracts from an attacker's chance to crit THIS unit. Absent = 0.
+   */
+  readonly crit?: number
+  readonly luck?: number
   readonly triggers?: readonly import('./trigger.js').Trigger[]
   /**
    * What this unit IS, for targeting and for damage-vs-target modifiers:
@@ -223,6 +255,9 @@ export type Unit = {
   precision: number
   magic: number
   spirit: number
+  /** Crit and Luck — station.crit (2026-08-27). See UnitDef. */
+  crit: number
+  luck: number
   role: Role
   movement: number
   reach: number
@@ -295,13 +330,19 @@ export type Config = {
     healIncludesSelf: boolean
     /** May the AI swing an area attack through its own allies? SWITCHES.md, 2026-08-27. */
     aiAreaThroughAllies: boolean
+    /** Chart share of the crit branch flip, per victim side — critChartSplit, Angela 2026-08-22. */
+    critChartShareVsHeroes: number
+    critChartShareVsEnemies: number
+    /** Does Nerve Struck's Max Health loss floor at 1? SWITCHES.md, 2026-08-27. */
+    critMaxHealthFloorsAtOne: boolean
   }
 }
 
 export const DEFAULT_CONFIG: Config = {
   turnCap: 25,
   switches: {
-    critEnabled: false,
+    // ON since station.crit (2026-08-27): "We want to implement crits."
+    critEnabled: true,
     rangerPunchesWhenAdjacent: false,
     moveCostPerHex: false,
     aiLeapToAdjacent: true,
@@ -313,6 +354,16 @@ export const DEFAULT_CONFIG: Config = {
     // "one ally within 6 hexes" — whether the priest counts as his own ally
     // is unstated; the common reading says yes. SWITCHES.md, 2026-08-27.
     healIncludesSelf: true,
+    // station.crit (2026-08-27): "We want to implement crits." The chart share
+    // of the branch flip is critChartSplit, ANSWERED by Angela 2026-08-22 —
+    // "crits to heroes 75% 25%, Enemies 50/50" — two numbers, both sweepable.
+    critChartShareVsHeroes: 25,
+    critChartShareVsEnemies: 50,
+    // "Stat losses floor where the row says 'minimum 0'; nothing else floors"
+    // read literally: Nerve Struck's −2 Max Health does NOT floor, and a unit
+    // whose Max Health reaches 0 dies of it. The merciful reading (floor at 1)
+    // keeps its code path here. SWITCHES.md, 2026-08-27.
+    critMaxHealthFloorsAtOne: false,
   },
 }
 
@@ -325,5 +376,7 @@ export type Ctx = {
   attacks: Readonly<Record<string, AttackDef>>
   abilities: Readonly<Record<string, AbilityDef>>
   statuses: Readonly<Record<string, import('./status.js').StatusDef>>
+  /** The Critical Injury Chart — ruled data from the pack (station.crit 2026-08-27). */
+  critChart: readonly CritRow[]
   moves: Readonly<Record<string, MoveDef>>
 }

@@ -7,6 +7,10 @@
 export const STREAMS = [
   'to-hit',
   'crit',
+  // The branch flip — damage arm or chart arm (station.crit 2026-08-27,
+  // cup.crit-branch as dictated). Its own stream so the coin and the d10
+  // cannot correlate.
+  'crit-branch',
   'crit-effect',
   'deathbed',
   'schedule',

@@ -452,6 +452,7 @@ export const UNIT_PACK = {
       "resist": 0,
       "accuracy": 90,
       "dodge": 20,
+      "crit": 10,
       "strength": 3,
       "precision": 0,
       "magic": 0,
@@ -486,6 +487,7 @@ export const UNIT_PACK = {
       "resist": 1,
       "accuracy": 75,
       "dodge": 0,
+      "luck": 5,
       "strength": 6,
       "precision": 5,
       "magic": 0,
@@ -618,6 +620,7 @@ export const UNIT_PACK = {
       "resist": 0,
       "accuracy": 70,
       "dodge": 10,
+      "crit": 10,
       "strength": 4,
       "precision": 0,
       "magic": 0,
@@ -729,6 +732,7 @@ export const UNIT_PACK = {
       "resist": 0,
       "accuracy": 60,
       "dodge": 10,
+      "crit": 5,
       "strength": 5,
       "precision": 4,
       "magic": 0,
@@ -863,6 +867,7 @@ export const UNIT_PACK = {
       "resist": 0,
       "accuracy": 90,
       "dodge": 5,
+      "crit": 5,
       "strength": 4,
       "precision": 5,
       "magic": 0,
@@ -1042,6 +1047,7 @@ export const UNIT_PACK = {
       "resist": 0,
       "accuracy": 75,
       "dodge": 10,
+      "crit": 10,
       "strength": 3,
       "precision": 0,
       "magic": 0,
@@ -1290,7 +1296,8 @@ export const UNIT_PACK = {
       "bonus": 1,
       "stat": "strength",
       "reach": 1,
-      "staminaCost": 0
+      "staminaCost": 0,
+      "crit": 3
     },
     "attack.dagger.stab": {
       "id": "attack.dagger.stab",
@@ -1300,7 +1307,8 @@ export const UNIT_PACK = {
       "bonus": -1,
       "stat": "strength",
       "reach": 1,
-      "staminaCost": 0
+      "staminaCost": 0,
+      "crit": 5
     },
     "attack.shortbow.short-shot": {
       "id": "attack.shortbow.short-shot",
@@ -1320,7 +1328,8 @@ export const UNIT_PACK = {
       "bonus": 0,
       "stat": "precision",
       "reach": 4,
-      "staminaCost": 0
+      "staminaCost": 0,
+      "crit": 5
     },
     "attack.lightning-staff.bolt": {
       "id": "attack.lightning-staff.bolt",
@@ -1360,7 +1369,8 @@ export const UNIT_PACK = {
       "bonus": 2,
       "stat": "strength",
       "reach": 1,
-      "staminaCost": 2
+      "staminaCost": 2,
+      "crit": 3
     },
     "attack.knight-shield.shield-slam": {
       "id": "attack.knight-shield.shield-slam",
@@ -1400,7 +1410,8 @@ export const UNIT_PACK = {
       "bonus": 2,
       "stat": "strength",
       "reach": 1,
-      "staminaCost": 2
+      "staminaCost": 2,
+      "crit": 20
     },
     "attack.pitchfork.jab": {
       "id": "attack.pitchfork.jab",
@@ -1499,6 +1510,8 @@ export const UNIT_PACK = {
       "resist": 1,
       "accuracy": 70,
       "dodge": 0,
+      "crit": 20,
+      "luck": 10,
       "strength": 2,
       "precision": 2,
       "magic": 0,
@@ -1534,6 +1547,7 @@ export const UNIT_PACK = {
       "resist": 0,
       "accuracy": 70,
       "dodge": 0,
+      "crit": 3,
       "strength": 4,
       "precision": 1,
       "magic": 0,
@@ -1584,6 +1598,8 @@ export const UNIT_PACK = {
       "resist": 0,
       "accuracy": 70,
       "dodge": 0,
+      "crit": 3,
+      "luck": 2,
       "strength": 3,
       "precision": 2,
       "magic": 0,
@@ -1621,6 +1637,7 @@ export const UNIT_PACK = {
       "resist": 0,
       "accuracy": 75,
       "dodge": 0,
+      "crit": 3,
       "strength": 5,
       "precision": 3,
       "magic": 0,
@@ -1719,6 +1736,7 @@ export const UNIT_PACK = {
       "resist": 0,
       "accuracy": 78,
       "dodge": 0,
+      "crit": 5,
       "strength": 4,
       "precision": 3,
       "magic": 0,
@@ -1783,6 +1801,7 @@ export const UNIT_PACK = {
       "resist": 0,
       "accuracy": 80,
       "dodge": 5,
+      "crit": 3,
       "strength": 3,
       "precision": 4,
       "magic": 0,
@@ -1833,6 +1852,7 @@ export const UNIT_PACK = {
       "resist": 0,
       "accuracy": 75,
       "dodge": 0,
+      "crit": 3,
       "strength": 0,
       "precision": 3,
       "magic": 2,
@@ -1896,6 +1916,7 @@ export const UNIT_PACK = {
       "resist": 0,
       "accuracy": 80,
       "dodge": 0,
+      "crit": 3,
       "strength": 3,
       "precision": 3,
       "magic": 0,
@@ -1934,6 +1955,7 @@ export const UNIT_PACK = {
       "resist": 0,
       "accuracy": 72,
       "dodge": 0,
+      "crit": 3,
       "strength": 4,
       "precision": 3,
       "magic": 0,
@@ -1979,5 +2001,145 @@ export const UNIT_PACK = {
         }
       ]
     }
-  ]
+  ],
+  "critChart": {
+    "note": "RULED DATA, NOT A CONTENT KIND (decided 2026-08-27, closing the question parked 2026-08-09). One copy, here; COMBAT-DESIGN.md crit section is the design authority and this block mirrors it. The chart never produces an injury.* badge — battle-only, cleared at battle end; permanence is the Deathbed pipeline alone. Resolution: normal damage always lands; cup.crit-branch flips a coin — heads +50% damage BEFORE Armor/Resist/Protection, tails cup.crit-effect rolls evenly among the rows. One chart for all damage types, fully symmetric. Entry point name fixed in GLOSSARY.md: rollCritEffect. Row keys exist so event-log lines can name their cause (Law 12) — keys, not content ids.",
+    "rows": [
+      {
+        "key": "blinded",
+        "name": "Blinded",
+        "effects": [
+          {
+            "kind": "statMod",
+            "stat": "accuracy",
+            "value": -30
+          }
+        ]
+      },
+      {
+        "key": "leg-crippled",
+        "name": "Leg Crippled",
+        "effects": [
+          {
+            "kind": "statMod",
+            "stat": "movement",
+            "value": -3
+          }
+        ]
+      },
+      {
+        "key": "arm-crippled",
+        "name": "Arm Crippled",
+        "effects": [
+          {
+            "kind": "statMod",
+            "stat": "strength",
+            "value": -2
+          },
+          {
+            "kind": "statMod",
+            "stat": "precision",
+            "value": -2
+          }
+        ]
+      },
+      {
+        "key": "bleeding",
+        "name": "Bleeding",
+        "effects": [
+          {
+            "kind": "status",
+            "statusId": "status.bleed",
+            "value": 5
+          }
+        ]
+      },
+      {
+        "key": "dazed",
+        "name": "Dazed",
+        "effects": [
+          {
+            "kind": "status",
+            "statusId": "status.dazed",
+            "value": 3
+          }
+        ]
+      },
+      {
+        "key": "stunned",
+        "name": "Stunned",
+        "effects": [
+          {
+            "kind": "status",
+            "statusId": "status.stun",
+            "value": 1
+          },
+          {
+            "kind": "status",
+            "statusId": "status.weak",
+            "value": 3
+          }
+        ]
+      },
+      {
+        "key": "knocked-sprawling",
+        "name": "Knocked Sprawling",
+        "effects": [
+          {
+            "kind": "push",
+            "hexes": 1
+          },
+          {
+            "kind": "status",
+            "statusId": "status.slow",
+            "value": 2
+          }
+        ]
+      },
+      {
+        "key": "winded",
+        "name": "Winded",
+        "effects": [
+          {
+            "kind": "loseStamina",
+            "value": 4
+          }
+        ]
+      },
+      {
+        "key": "guard-broken",
+        "name": "Guard Broken",
+        "effects": [
+          {
+            "kind": "statMod",
+            "stat": "armor",
+            "value": -2,
+            "floor": 0
+          },
+          {
+            "kind": "statMod",
+            "stat": "resist",
+            "value": -1,
+            "floor": 0
+          },
+          {
+            "kind": "statMod",
+            "stat": "dodge",
+            "value": -10,
+            "floor": 0
+          }
+        ]
+      },
+      {
+        "key": "nerve-struck",
+        "name": "Nerve Struck",
+        "effects": [
+          {
+            "kind": "loseMaxHp",
+            "value": 2
+          }
+        ]
+      }
+    ]
+  }
 } as const

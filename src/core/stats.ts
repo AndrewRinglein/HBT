@@ -23,6 +23,9 @@ export type StatName =
   | 'armor' | 'resist'
   | 'movement' | 'reach'
   | 'maxHp' | 'maxStamina' | 'staminaRegen'
+  // station.crit (2026-08-27): the two crit-system stats, resolvable so
+  // badges and wounds can modify them like anything else.
+  | 'crit' | 'luck'
 
 /**
  * `add` sums. `set` overrides and wins outright (disarm, petrify).
@@ -65,6 +68,8 @@ const BASE: Record<StatName, (u: Unit) => number> = {
   maxHp: (u) => u.maxHp,
   maxStamina: (u) => u.maxStamina,
   staminaRegen: (u) => u.staminaRegen,
+  crit: (u) => u.crit,
+  luck: (u) => u.luck,
 }
 
 /**

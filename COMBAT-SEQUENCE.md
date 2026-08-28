@@ -237,7 +237,7 @@ An attack is a list of hits, resolved **one at a time**. Each hit runs the full 
 | 1 | **`onAttack`** — fires the second the swing begins. It has nothing to do with hitting or missing, so it cannot be bundled with the hooks that do | **yes** |
 | 2 | To-hit roll *(dice cup)* → hit or miss | **yes** |
 | 3 | On miss: `onMiss` → **settle** → done | **yes** |
-| 4 | Crit roll *(dice cup)*; on crit, `critBranch` *(damage or injury)* then `critInjury` *(which one)* — two cups, because the branch weights and the injury table are tuned independently | **half** — the roll exists behind the `critEnabled` switch. **The branch and the injury table do not**: a crit always takes the damage arm. The `crit-effect` cup has never been drawn |
+| 4 | Crit roll *(dice cup)*; on crit, `critBranch` *(damage or injury)* then `critInjury` *(which one)* — two cups, because the branch weights and the injury table are tuned independently | **yes** — station.crit 2026-08-27: `crit-branch` flips per victim side (critChartSplit, 25/50 chart share), `crit-effect` rolls evenly among the ten ruled chart rows (`rollCritEffect`), and `critEnabled` defaults ON |
 | 5 | **`onCrit`**, if it crit — fires the instant the crit is confirmed, before the damage stations. A crit is a thing that happened, not a size of number | **yes** |
 | 6 | Run the damage stations | **yes** — 7 of 10, see below |
 | 7 | `onHit` | **yes** |

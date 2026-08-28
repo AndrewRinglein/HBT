@@ -77,6 +77,16 @@ const RAW_STATUSES: Readonly<Record<string, StatusDef>> = {
     id: 'test.status.ward', name: 'Ward (testing)', shape: 'pool', stacking: 'add',
     reducesIncomingDamage: true,
   },
+  'status.dazed': {
+    // PUBLISHED: the Critical Injury Chart (settled.json critChart, dictated
+    // 2026-08-27) — "Dazed | loses access to class powers, 3 turns". A
+    // counter: locksPowers is read by canUsePower; standard decay 1 per own
+    // End of Activation, and one activation per Turn makes value 3 the
+    // dictated three turns. Attacks and movement are untouched — only the
+    // POWERS are gone.
+    id: 'status.dazed', name: 'Dazed', shape: 'counter', stacking: 'add',
+    locksPowers: true,
+  },
   'status.weak': {
     // PUBLISHED: 1-EFFECTS-SETTLED.md § status.* (row added 2026-08-20);
     // GAME-DESIGN §5 "Weakness | −1 damage per point. It reduces damage dealt,

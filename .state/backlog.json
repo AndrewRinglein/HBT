@@ -1445,15 +1445,21 @@
   "id": "station.crit",
   "kind": "engine",
   "shape": "rule",
-  "spec": "Critical hits per COMBAT-DESIGN 158-214: Crit chance = 3 base + gear (the attack rows' crit field: dagger 5, javelin 3, quick-shot 5, longsword stab 3) + surplus final accuracy over 100; Luck resists; only attacks that ROLL can crit (area attacks exempt by the area rule); resolution consults the Critical Injury Chart, battle-only effects, never permanence (that is the Deathbed pipeline's). The critChartSplit switch (foreign, SWITCHES.md) is honored, not resolved here.",
-  "expect": "a point-blank high-accuracy attacker's surplus becomes crit chance in the audit's recomputation, the four authored crit fields raise it by their stated amounts, and a crit's chart effect appears in the log naming its cause and clears at battle end",
+  "spec": "Critical hits per COMBAT-DESIGN and the full 2026-08-27 dictation (DECISIONS.md): chance = 3 base + unit Crit ('Base Crit varies by enemy') + weapon crit field + surplus final accuracy over 100 at 1 per 4, minus target Luck; two resolution rolls from named streams \u2014 cup.crit-branch (weighted per victim side by critChartSplit, Angela 2026-08-22: chart 25 vs heroes, 50 vs enemies) and cup.crit-effect (evenly among the ten chart rows). Normal damage always lands first; the damage arm is +50% before Armor/Resist/Protection (DMG.CRIT); the chart arm applies one battle-only injury row. The chart is RULED DATA in settled.json critChart, compiled by mkenginepack (prose parsed at export, never at runtime); Blinded's -4 Vision and Knocked Sprawling's -50 Surge are the pass's named gaps; item.bracer is out of scope. rollCritEffect is the GLOSSARY-fixed entry point. critEnabled defaults ON ('We want to implement crits').",
+  "expect": "crits fire in real battles with crit.branch and crit.effect events naming their causes; the four alpha crit fields and unit crit/luck stats raise/lower the chance by their stated amounts; each chart row does exactly what its dictated line says (floors only where dictated; Nerve Struck can kill under the literal no-floor reading, switchable); everything clears at battle end because units are battle state",
   "changesBaseline": true,
   "needs": [
    "capability.area-attack",
    "content.alpha-team"
   ],
   "probeIds": [
-   "attack.dagger.stab"
-  ]
+   "status.dazed"
+  ],
+  "variants": [
+   "guard-broken",
+   "dazed"
+  ],
+  "status": "done-needs-review",
+  "sha": "d5c42f7"
  }
 ]

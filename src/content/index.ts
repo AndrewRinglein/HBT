@@ -4,7 +4,7 @@
 
 import type { AbilityDef, AttackDef, UnitDef } from '../core/types.js'
 import { omitDisabled, stripDisabledTriggers } from './disable.js'
-import { packAbilities, packAttacks, packUnits } from './pack.js'
+import { packAbilities, packAttacks, packCritChart, packUnits } from './pack.js'
 
 // ─────────────────────────────────────────────────────────────────────────────
 // PROVISIONAL CONTENT — NOT PUBLISHED, NOT DESIGN
@@ -446,6 +446,10 @@ for (const k of Object.keys(packAbilities())) {
   if (k in RAW_ABILITIES) throw new Error(`ability '${k}' exists in BOTH content/index.ts and the generated pack — one owner only`)
 }
 export const ABILITIES = omitDisabled({ ...RAW_ABILITIES, ...packAbilities() })
+// The Critical Injury Chart — ruled data (station.crit 2026-08-27). Not under
+// omitDisabled: rows carry keys, not ids; the kill seam for crits is the
+// critEnabled switch itself.
+export const CRIT_CHART = packCritChart()
 // The generated pack (Codex-tracked test cohort) joins the hand-authored rows.
 // A collision is a LOUD failure: the pack owns test- ids, this file owns the
 // rest, and neither may quietly shadow the other.

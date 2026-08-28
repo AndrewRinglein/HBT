@@ -249,6 +249,7 @@ const STCOL = {
   'status.weak':'#b48ae0',          // drained violet
   'status.slow':'#6fb3df',          // ice blue
   'status.protection':'#e8c35a',    // shield gold
+  'status.dazed':'#c9a86b',         // concussed amber — station.crit 2026-08-27
   'test.status.daze':'#c4b25a', 'test.status.hobble':'#4f7f9f',
   'test.status.ward':'#a08840', 'test.status.enfeeble':'#7a5f96',
 };
@@ -258,7 +259,7 @@ const STCOL = {
 // weak/enfeeble as 'affliction' (the drain), protection/ward as 'weak' (the
 // white shield ring), bleed as itself.
 const STVFX_MAP = {
-  regeneration: 'regen', stun: 'shadow', daze: 'shadow', slow: 'frost',
+  regeneration: 'regen', stun: 'shadow', daze: 'shadow', dazed: 'shadow', slow: 'frost',
   hobble: 'frost', weak: 'affliction', enfeeble: 'affliction',
   protection: 'weak', ward: 'weak', bleed: 'bleed',
 };

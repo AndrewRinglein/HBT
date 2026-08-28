@@ -939,3 +939,58 @@ resolving copyOf through the Codex. Compilation, not invention.
 (content.alpha-team), (B) the gaps close as engine capabilities, (C) the
 default cohort flips to the alpha six — a changesBaseline item, taken last so
 half-expressed kits are never baked into every control baseline.
+
+---
+
+## 2026-08-27 — the Critical Injury Chart, complete specification
+
+> "Critical Injury Chart — complete specification and landing instructions
+> (rulings of 2026-08-20 through 2026-08-27; COMBAT-DESIGN.md to-hit/crit
+> section is the authority)
+> A crit resolves in two rolls, each from its own named stream per Law 4 —
+> propose cup.crit-branch and cup.crit-effect. The attack's normal damage
+> always lands first. Then the branch flip: on heads, an additional +50%
+> damage applied before Armor, Resist, and Protection; on tails, roll evenly
+> among the ten injuries below — normal damage still lands, plus the effect.
+> The intent is literally a coin and a d10. One chart for all damage types,
+> fully symmetric: enemies crit heroes and heroes crit enemies, and everything
+> can be crippled. Every chart effect is battle-only and clears when the fight
+> ends — permanence belongs exclusively to the Deathbed pipeline, and the
+> chart never produces an injury.* badge; that connection deliberately does
+> not exist. The entry-point function name is fixed in GLOSSARY.md as
+> rollCritEffect.
+> How to act on it: the chart is ruled data, not a content kind (decided
+> 2026-08-27) — it lands as a plain critChart block in content/settled.json
+> alongside testCohort/alphaTeam, is exported through mkenginepack.mjs into
+> the generated pack, and the engine folds it from there like everything else.
+> No chart.* ids, no registry, no §8 row. Each row carries a small stable key
+> so event-log lines can name their cause (Law 12) — keys, not content ids.
+> Engine work goes through the Iron Gauntlet as usual. Two known gaps to name
+> rather than solve inline: Knocked Sprawling's push is forced movement, the
+> same gap the Halberd's Hack sits in — drop the push with a named gap and
+> land the rest of the row if forced movement isn't built yet; and item.bracer
+> (multiplies chart rolls) needs a with/without-replacement rule before it can
+> land — not part of this pass. Stat losses floor where the row says 'minimum
+> 0'; nothing else floors.
+>
+> blinded / Blinded / −4 Vision, −30 Accuracy
+> leg-crippled / Leg Crippled / −3 Movement
+> arm-crippled / Arm Crippled / −2 Strength, −2 Precision
+> bleeding / Bleeding / gain 5 Bleed
+> dazed / Dazed / loses access to class powers, 3 turns
+> stunned / Stunned / gain 1 Stun and 3 Weak
+> knocked-sprawling / Knocked Sprawling / pushed 1 hex, gain 2 Slow, −50 Surge
+> winded / Winded / lose 4 Stamina, to a minimum of 0
+> guard-broken / Guard Broken / −2 Armor, −1 Resist, −10 Dodge, all to a minimum of 0
+> nerve-struck / Nerve Struck / −2 Max Health
+>
+> We want to implement crits. Use the Iron Gauntlet. Here's the crit chart."
+
+Landing note (this session): forced movement IS built as of today
+(capability.knockback, ef7e2b1) — Knocked Sprawling's push therefore LANDS
+rather than gapping. The −4 Vision half of Blinded (no vision model — gap
+L-3a) and the −50 Surge half of Knocked Sprawling (no surge quantity in the
+engine yet) are the named gaps of this pass, alongside item.bracer which is
+explicitly out of scope. "Nothing else floors" is read literally: Nerve
+Struck's −2 Max Health does not floor, and a unit whose Max Health reaches 0
+dies of it — kept sweepable as the critMaxHealthFloor switch.

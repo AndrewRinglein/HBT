@@ -2,7 +2,7 @@ import { WIDTH, hexId } from './hex.js'
 import { makeRng, rootSeedOf, sample } from './rng.js'
 import type { Ctx, Side, State, Unit, UnitDef, Config } from './types.js'
 import { DEFAULT_CONFIG } from './types.js'
-import { ATTACKS, ABILITIES, UNITS, FIRST_BATTLE } from '../content/index.js'
+import { ATTACKS, ABILITIES, CRIT_CHART, UNITS, FIRST_BATTLE } from '../content/index.js'
 import { terrainOf, terrainIdOf, isPassable } from '../content/maps.js'
 import { STATUSES } from '../content/statuses.js'
 import { MOVES } from '../content/moves.js'
@@ -15,6 +15,7 @@ function makeUnit(id: number, uid: number, name: string, def: UnitDef, hex: numb
     hp: def.maxHp, maxHp: def.maxHp,
     armor: def.armor, resist: def.resist,
     accuracy: def.accuracy, dodge: def.dodge, strength: def.strength, precision: def.precision, magic: def.magic, spirit: def.spirit,
+    crit: def.crit ?? 0, luck: def.luck ?? 0, // station.crit 2026-08-27
     role: def.role,
     movement: def.movement, reach: def.reach,
     stamina: def.maxStamina, maxStamina: def.maxStamina, staminaRegen: def.staminaRegen,
@@ -84,7 +85,7 @@ export function createBattle(opts: BattleOptions): Ctx {
 
   const mapId = opts.mapId ?? 'map.open'
   const state: State = { turn: 0, phase: 'hero', mapId, terrain: terrainOf(mapId), units: [], outcome: null, seq: 0 }
-  const ctx: Ctx = { state, events: [], rng, cfg, attacks: ATTACKS, abilities: ABILITIES, statuses: STATUSES, moves: MOVES }
+  const ctx: Ctx = { state, events: [], rng, cfg, attacks: ATTACKS, abilities: ABILITIES, statuses: STATUSES, moves: MOVES, critChart: CRIT_CHART }
 
   const def = (t: string): UnitDef => ({ ...UNITS[t]!, ...(opts.overrides?.[t] ?? {}) })
   const heroes = opts.heroes ?? FIRST_BATTLE.heroes
@@ -237,7 +238,7 @@ export function createCustomBattle(
   const rng = makeRng(rootSeedOf(99, 0, opts.replicate ?? 0), opts.strict ? { strict: true } : undefined)
   const mapId = opts.mapId ?? 'map.open'
   const state: State = { turn: 0, phase: 'hero', mapId, terrain: terrainOf(mapId), units: [], outcome: null, seq: 0 }
-  const ctx: Ctx = { state, events: [], rng, cfg, attacks: ATTACKS, abilities: ABILITIES, statuses: STATUSES, moves: MOVES }
+  const ctx: Ctx = { state, events: [], rng, cfg, attacks: ATTACKS, abilities: ABILITIES, statuses: STATUSES, moves: MOVES, critChart: CRIT_CHART }
   let id = 0
   heroes.forEach((h, i) => { state.units.push(makeUnit(id, 100 + i, `H${i}`, UNITS[h.type]!, h.hex)); id++ })
   enemies.forEach((e, i) => { state.units.push(makeUnit(id, 200 + i, `E${i}`, UNITS[e.type]!, e.hex)); id++ })

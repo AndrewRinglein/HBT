@@ -64,12 +64,16 @@ describe('civilians are ordinary heroes with their Codex behaviour', () => {
     expect(rider).toBeDefined()
     expect(rider.chance).toBe(20)
     expect(rider.effect).toMatchObject({ statusId: 'status.bleed', value: 2 })
-    // Cleave's crit 20 and its two-hex arc are dropped WITH THEIR NAMES on file
+    // Cleave's one-hex arc is still dropped WITH ITS NAME on file (a chosen
+    // half-arc the engine does not speak) — but its crit 20 COMPILES since
+    // station.crit (2026-08-27; Law 10, extended toward the rule the day the
+    // capability landed).
     const gaps = JSON.parse(readFileSync(
       join(__dirname, '..', '..', 'content', 'gen', 'enemy-pack-gaps.json'), 'utf8')).gaps as
       { unit: string; needs: string; what: string }[]
     expect(gaps.some((g) => /cleave/.test(g.what) && g.needs === 'area attack shape')).toBe(true)
-    expect(gaps.some((g) => /cleave/.test(g.what) && /crit/.test(g.needs))).toBe(true)
+    expect(gaps.some((g) => /cleave/.test(g.what) && /crit/.test(g.needs))).toBe(false)
+    expect(ATTACKS['attack.lumberjack-axe.cleave']!.crit).toBe(20)
   })
 
   it('they ACT — the verify battles show civilians fighting, not statues', () => {

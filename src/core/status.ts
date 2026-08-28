@@ -57,6 +57,11 @@ export type StatusDef = {
   readonly reducesMovement?: boolean
   /** Read by heal(): healing received is halved. */
   readonly halvesHealing?: boolean
+  /**
+   * Read by canUsePower — station.crit (2026-08-27), the chart's Dazed row:
+   * "loses access to class powers, 3 turns". Attacks and movement stay.
+   */
+  readonly locksPowers?: boolean
 }
 
 export function valueOf(u: Unit, id: string): number {

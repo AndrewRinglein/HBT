@@ -9,6 +9,7 @@ import { roll100 } from './rng.js'
 import type { AttackDef, Ctx, Unit } from './types.js'
 import { fireTriggers } from './trigger.js'
 import { applyStatus, incomingAbsorb, outgoingPenalty, spendAbsorb } from './status.js'
+import { rollCritEffect } from './crit.js'
 import { effective, stat } from './stats.js'
 import { applyDamage, emit, markPrimaryUsed, spendStamina, unit } from './mutate.js'
 
@@ -257,15 +258,23 @@ export function preview(ctx: Ctx, attackerId: number, targetId: number, attackId
     accLedger: acc.ledger,
     damageOnHit: resolveDamage(ctx, at, tg, a, false, outgoingPenalty(ctx, at), incomingAbsorb(ctx, tg)).value,
     damageOnCrit: resolveDamage(ctx, at, tg, a, true, outgoingPenalty(ctx, at), incomingAbsorb(ctx, tg)).value,
-    critChance: critChanceOf(ctx, at, tg, acc.value),
+    critChance: critChanceOf(ctx, at, tg, acc.value, a),
   }
 }
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-function critChanceOf(ctx: Ctx, attacker: Unit, target: Unit, finalAcc: number): number {
+/**
+ * Crit chance — station.crit (2026-08-27), COMBAT-DESIGN "Critical hits —
+ * where surplus Accuracy goes": 3 base for everyone, plus the unit's own Crit
+ * ("Base Crit varies by enemy"), plus the weapon's crit field ("Crit from
+ * gear"), plus surplus final accuracy over 100 at 1 per 4 — minus the
+ * TARGET's Luck ("your resistance to taking one"). Floor 0.
+ */
+function critChanceOf(ctx: Ctx, attacker: Unit, target: Unit, finalAcc: number, a?: AttackDef): number {
   if (!ctx.cfg.switches.critEnabled) return 0
   const surplus = finalAcc > 100 ? Math.trunc((finalAcc - 100) / 4) : 0
-  return Math.max(0, 3 + surplus)
+  const gear = a?.crit ?? 0
+  return Math.max(0, 3 + effective(ctx, attacker, 'crit').value + gear + surplus
+    - effective(ctx, target, 'luck').value)
 }
 
 /** One Hit. Damage resolves completely; triggers would fire after (none yet). */
@@ -347,10 +356,39 @@ export function performAttack(ctx: Ctx, attackerId: number, targetId: number, at
   // stations run — a crit is a thing that happened, not a size of number.
   if (crit) fireTriggers(ctx, 'onCrit', fc)
 
-  const damage = resolveHitOn(ctx, attackerId, targetId, a, crit, ord, {
-    expected: crit ? pv.damageOnCrit : pv.damageOnHit,
+  // THE BRANCH FLIP — station.crit (2026-08-27, dictated): "The attack's
+  // normal damage always lands first. Then the branch flip: on heads, an
+  // additional +50% damage applied before Armor, Resist, and Protection
+  // [= the DMG.CRIT station]; on tails, roll evenly among the ten injuries —
+  // normal damage still lands, plus the effect." The coin is weighted per
+  // victim side: critChartSplit, ANSWERED by Angela 2026-08-22 — "crits to
+  // heroes 75% 25%, Enemies 50/50". Its own named stream (cup.crit-branch),
+  // keyed by the crit, never by turn (Law 4).
+  let chartArm = false
+  if (crit) {
+    const chartShare = tg.side === 'hero'
+      ? ctx.cfg.switches.critChartShareVsHeroes
+      : ctx.cfg.switches.critChartShareVsEnemies
+    const branchRoll = roll100(ctx.rng, 'crit-branch', at.uid, ord)
+    chartArm = branchRoll <= chartShare
+    emit(ctx, 'crit.branch', a.id, {
+      actor: attackerId, target: targetId, roll: branchRoll, chartShare,
+      arm: chartArm ? 'chart' : 'damage',
+    })
+  }
+
+  const damageArm = crit && !chartArm
+  const damage = resolveHitOn(ctx, attackerId, targetId, a, damageArm, ord, {
+    expected: damageArm ? pv.damageOnCrit : pv.damageOnHit,
     rollInfo: { roll, hitChance: pv.hitChance },
   })
+
+  // The chart arm: normal damage has landed; now the d10 (rollCritEffect,
+  // GLOSSARY-fixed name). Skipped if the strike already killed — a corpse
+  // cannot be Dazed, and rolling a cup for a dead unit would burn a draw.
+  if (chartArm && unit(ctx, targetId).lifeState === 'standing') {
+    rollCritEffect(ctx, attackerId, targetId, ord, a.id)
+  }
 
   return {
     hit: true, crit, accuracy: pv.accuracy, roll,

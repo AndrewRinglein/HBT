@@ -62,6 +62,11 @@ export function canUsePower(ctx: Ctx, userId: number, targetId: number, abilityI
   if (!a) return false
   if (!u.abilities.includes(abilityId)) return false
   if (u.lifeState !== 'standing' || tg.lifeState !== 'standing') return false
+  // Dazed — station.crit (2026-08-27): "loses access to class powers".
+  // A status FLAG, not a hardcoded name: any status declaring locksPowers.
+  for (const s of u.statuses) {
+    if (s.value > 0 && ctx.statuses[s.id]?.locksPowers) return false
+  }
   switch (effectOf(a)) {
     case 'damage':
       if (u.side === tg.side) return false

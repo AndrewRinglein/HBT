@@ -3321,3 +3321,164 @@ index a88f585..c52c19b 100644
                expect((e['amount'] as number) + (e['overkill'] as number), `${ab.id} damage`).toBe(expected)
 ```
 </details>
+
+## station.crit — LANDED `d5c42f7` **NEEDS REVIEW**
+2026-08-28T02:14:04.000Z
+
+  PASS  dependencies landed — capability.area-attack, content.alpha-team
+  PASS  typecheck — tsc --noEmit clean
+  PASS  full test suite — 47 files / 436 tests green
+  PASS  gate 1 — status.dazed: 1 log lines, 1 fired, 1 changed state (an injury only a crit can mint, live in the sweep)
+  PASS  brought its own tests — test/crit.test.ts (11 tests: chart data, chance formula, every row scripted, branch flip in real battles, determinism)
+  PASS  control battles — DECLARED changesBaseline: critEnabled defaults ON and ALL 8 maps moved; goldens re-blessed at commit
+  PASS  content has a published source — the chart is settled.json critChart (S33), compiled prose->effects at export (content b3a4d4d, 661a064); crit/luck stats and the four weapon crit fields authored
+  PASS  hardcode scan — the chart is pack data; src/core knows effect kinds only
+  PASS  generalizes — guard-broken (statMod with dictated floor) live 11x · dazed (status + locksPowers) live — two effect shapes, both pure data
+  PASS  naming — status/attack kinds declared; chart keys are keys, not ids (ruled)
+  PASS  kill switch — crit tests fail 2/11 with status.dazed disabled
+  WARN  existing tests untouched — audit.test.ts EXTENDED (crit arm recompute, stamina.drained/maxHp.lost/crit.effect cases, knocked hex tracking), alpha-team + civilians (crit gaps CLOSED, assertions follow), replay demo seed 1->0 — LANDED FLAGGED
+
+  RECONCILIATION NOTE for Andrew: the dictation says "literally a coin"; critChartSplit was ANSWERED 2026-08-22 with two numbers (chart 25 vs heroes, 50 vs enemies). The dated answer stands, both numbers are switches, and this line is the flag if today superseded it.
+  FINDING: the 25-seed panel's shared dice never roll winded or bleeding across ~130 chart rolls — the d10 is uniform (verified 1000 draws) but the panel's (seed, uid, ordinal) universe is small. The sweep harness wants more replicates before any chart-balance conclusion.
+  HAND-LANDED under the reaper protocol; post-land audit clean. Seal unwritten — it belongs to the gate.
+
+<details><summary>Existing tests were edited — review this diff</summary>
+
+```diff
+diff --git a/test/alpha-team.test.ts b/test/alpha-team.test.ts
+index 67fec2e..eb3aaf0 100644
+--- a/test/alpha-team.test.ts
++++ b/test/alpha-team.test.ts
+@@ -138,6 +138,11 @@ describe('the pack carries the six alpha heroes with their real stat bodies', ()
+     expect(alpha.some((g) => /area attack/.test(g.needs))).toBe(false)
+     expect(ATTACKS['attack.halberd.cleave']!.area).toBe('arc')
+-    // four crit fields — still owed (station.crit)
+-    expect(alpha.filter((g) => /crit/.test(g.needs)).length).toBe(4)
++    // the four crit fields COMPILE now (station.crit, same day) — their gaps
++    // are gone and the fields stand on the attack rows
++    expect(alpha.filter((g) => /crit/.test(g.needs)).length).toBe(0)
++    expect(ATTACKS['attack.dagger.stab']!.crit).toBe(5)
++    expect(ATTACKS['attack.javelin.stab']!.crit).toBe(3)
++    expect(ATTACKS['attack.shortbow.quick-shot']!.crit).toBe(5)
++    expect(ATTACKS['attack.longsword.stab']!.crit).toBe(3)
+     // the three item powers COMPILE now (capability.item-powers) — their gaps
+     // are gone, the powers stand on their units, and Storm's arbitrary-hex
+diff --git a/test/audit.test.ts b/test/audit.test.ts
+index c52c19b..6c7d20e 100644
+--- a/test/audit.test.ts
++++ b/test/audit.test.ts
+@@ -49,5 +49,5 @@ describe('independent audit of logged battles', () => {
+       const penaltyOf = (id: number) =>
+         [...(outPenalty.get(id) ?? new Map()).values()].reduce((a, b) => a + b, 0)
+-      let pending: { actor: number; target: number; attackId: string; dist: number } | null = null
++      let pending: { actor: number; target: number; attackId: string; dist: number; crit?: boolean } | null = null
+       let pendingPower: { actor: number; target: number; abilityId: string } | null = null
+ 
+@@ -143,5 +143,30 @@ describe('independent audit of logged battles', () => {
+             // stronger claim available: exactly one hex, directly away.
+             expect(distance(e['from'] as number, e['to'] as number), 'a knockback travels').toBeGreaterThanOrEqual(1)
+-            expect(String(e.causeId).includes('knockback'), 'a knocked unit names the trigger that pushed it').toBe(true)
++            // A push is caused by a knockback trigger, OR — since station.crit
++            // (2026-08-27) — by the critting attack itself (Knocked Sprawling:
++            // the crit.effect event beside it names the row key). Extended.
++            expect(String(e.causeId).includes('knockback') || String(e.causeId).startsWith('attack.'),
++              'a knocked unit names what pushed it').toBe(true)
++            hex.set(e.target!, e['to'] as number) // the auditor's map must move too
++            break
++          }
++          // station.crit (2026-08-27) — the chart's two bespoke mutators join
++          // the ledgers, EXTENDED never weakened: a drain or a max-health loss
++          // left untracked would silently skew every later arithmetic check.
++          case 'stamina.drained': {
++            const before = stamina.get(e.target!)!
++            expect(e['stamina'], 'drain floors at zero').toBe(Math.max(0, before - (e['asked'] as number)))
++            expect(e['amount']).toBe(before - (e['stamina'] as number))
++            stamina.set(e.target!, e['stamina'] as number)
++            break
++          }
++          case 'maxHp.lost': {
++            expect(e['maxHp'] as number, 'nothing else floors — but never negative display').toBeGreaterThanOrEqual(0)
++            expect(e['hp'] as number).toBeLessThanOrEqual(e['maxHp'] as number)
++            break
++          }
++          case 'crit.effect': {
++            // Every rolled injury names a key the chart actually carries.
++            expect(typeof e['key']).toBe('string')
+             break
+           }
+@@ -210,4 +235,13 @@ describe('independent audit of logged battles', () => {
+           }
+ 
++          case 'attack.hit': {
++            // station.crit (2026-08-27): the hit event says whether the
++            // DAMAGE ARM fired (crit:true = the +50% pre-mitigation station).
++            // The chart arm lands normal damage, so its hits carry crit:false
++            // and the recompute below needs no change for them.
++            if (pending && e.actor === pending.actor) pending.crit = e['crit'] === true
++            break
++          }
++
+           case 'power.used': {
+             const at = UNITS[type.get(e.actor!)!]!
+@@ -272,5 +306,9 @@ describe('independent audit of logged battles', () => {
+               a.stat === 'strength' ? at.strength : at.precision, e.turn)
+             const mit = a.damageType === 'physical' ? tg.armor : tg.resist
+-            const expected = Math.max(0, a.bonus + stat - penaltyOf(pending.actor)
++            // The damage-arm crit multiplies BEFORE Protection and Mitigation
++            // (DMG.CRIT at 450), truncating division — the one rounding rule.
++            const preMit = a.bonus + stat - penaltyOf(pending.actor)
++            const critted = pending.crit ? Math.trunc((preMit * 3) / 2) : preMit
++            const expected = Math.max(0, critted
+               - ((e['absorbed'] as number) ?? 0) - mit)
+             const total = (e['amount'] as number) + (e['overkill'] as number)
+diff --git a/test/civilians.test.ts b/test/civilians.test.ts
+index 05be4dc..ecf21d2 100644
+--- a/test/civilians.test.ts
++++ b/test/civilians.test.ts
+@@ -65,10 +65,14 @@ describe('civilians are ordinary heroes with their Codex behaviour', () => {
+     expect(rider.chance).toBe(20)
+     expect(rider.effect).toMatchObject({ statusId: 'status.bleed', value: 2 })
+-    // Cleave's crit 20 and its two-hex arc are dropped WITH THEIR NAMES on file
++    // Cleave's one-hex arc is still dropped WITH ITS NAME on file (a chosen
++    // half-arc the engine does not speak) — but its crit 20 COMPILES since
++    // station.crit (2026-08-27; Law 10, extended toward the rule the day the
++    // capability landed).
+     const gaps = JSON.parse(readFileSync(
+       join(__dirname, '..', '..', 'content', 'gen', 'enemy-pack-gaps.json'), 'utf8')).gaps as
+       { unit: string; needs: string; what: string }[]
+     expect(gaps.some((g) => /cleave/.test(g.what) && g.needs === 'area attack shape')).toBe(true)
+-    expect(gaps.some((g) => /cleave/.test(g.what) && /crit/.test(g.needs))).toBe(true)
++    expect(gaps.some((g) => /cleave/.test(g.what) && /crit/.test(g.needs))).toBe(false)
++    expect(ATTACKS['attack.lumberjack-axe.cleave']!.crit).toBe(20)
+   })
+ 
+diff --git a/test/replay.test.ts b/test/replay.test.ts
+index 3b1205e..6062afb 100644
+--- a/test/replay.test.ts
++++ b/test/replay.test.ts
+@@ -30,9 +30,11 @@ let battle: { engineCommit: string; events: { type: string; causeId?: string }[]
+ 
+ beforeAll(() => {
+-  // Demo seed 21 → 1 → 0 → 1 (Law 10, reasons written each time): battle flow
+-  // changes whenever the roster or the board does. 2026-08-25: the 16x16 board
+-  // plus the S17 regrants moved the fight — seed 0 now shows no river wash.
+-  // Seed 1 shows sear 6, heal 1, wash 1. The CLAIMS under test are unchanged.
+-  execSync(`npx tsx tools/export-battle.mts 1 map.thicket 8 > "${BATTLE}"`)
++  // Demo seed 21 → 1 → 0 → 1 → 0 (Law 10, reasons written each time): battle
++  // flow changes whenever the roster or the board does. 2026-08-25: the 16x16
++  // board plus the S17 regrants moved the fight — seed 1 showed all three.
++  // 2026-08-27: station.crit turned crits ON, the fight moved again, and now
++  // seed 0 shows sear + heal + wash while seed 1 lost the wash. The CLAIMS
++  // under test are unchanged.
++  execSync(`npx tsx tools/export-battle.mts 0 map.thicket 8 > "${BATTLE}"`)
+   execSync(`node tools/build-replay.mjs "${BATTLE}" "${PAGE}"`)
+   html = readFileSync(PAGE, 'utf8')
+@@ -49,5 +51,5 @@ describe('the replay rig', () => {
+   it('the battle is a seed with its engine commit — a stale replay says so', () => {
+     expect(html).toContain(`"engineCommit":"${battle.engineCommit}"`)
+-    expect(html).toContain('"replicate":1')
++    expect(html).toContain('"replicate":0') // the demo seed — see beforeAll
+     expect(html).toContain('"mapId":"map.thicket"')
+   })
+```
+</details>

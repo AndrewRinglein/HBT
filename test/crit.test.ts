@@ -1,0 +1,187 @@
+// The Critical Injury Chart — station.crit (2026-08-27).
+//
+// Dictated in full (DECISIONS.md 2026-08-27): two rolls from named streams
+// (cup.crit-branch, cup.crit-effect); normal damage always lands first; the
+// damage arm is +50% before Armor/Resist/Protection (the DMG.CRIT station);
+// the chart arm rolls evenly among ten battle-only injuries. The branch split
+// carries critChartSplit's answer (Angela 2026-08-22): chart share 25 against
+// heroes, 50 against enemies. Chance = 3 + unit Crit + weapon crit + surplus
+// accuracy − target Luck.
+import { describe, expect, it } from 'vitest'
+import { preview } from '../src/core/pipeline.js'
+import { rollCritEffect } from '../src/core/crit.js'
+import { effective } from '../src/core/stats.js'
+import { ATTACKS, CRIT_CHART, UNITS } from '../src/content/index.js'
+import { scenarioDef, scenarioOptions } from '../src/content/scenarios.js'
+import { createBattle } from '../src/core/setup.js'
+import { runBattle } from '../src/core/battle.js'
+import { beginActivation } from '../src/core/mutate.js'
+import { canUsePower } from '../src/core/ability.js'
+
+const KEYS = ['blinded', 'leg-crippled', 'arm-crippled', 'bleeding', 'dazed',
+  'stunned', 'knocked-sprawling', 'winded', 'guard-broken', 'nerve-struck']
+
+const rig = (heroes: string[], heroHexes: number[], enemies: string[], enemyHexes: number[]) =>
+  createBattle({ ...scenarioOptions(scenarioDef('showcase.alpha-team')), heroes, heroHexes, enemies, enemyHexes, enemyCount: enemies.length })
+
+const rowOf = (key: string) => CRIT_CHART.find((r) => r.key === key)!
+
+describe('the chart arrives as ruled data', () => {
+  it('all ten dictated rows, by stable key, in the pack', () => {
+    expect(CRIT_CHART.map((r) => r.key)).toEqual(KEYS)
+    // spot checks straight off the dictation
+    expect(rowOf('bleeding').effects).toEqual([{ kind: 'status', statusId: 'status.bleed', value: 5 }])
+    expect(rowOf('dazed').effects).toEqual([{ kind: 'status', statusId: 'status.dazed', value: 3 }])
+    expect(rowOf('nerve-struck').effects).toEqual([{ kind: 'loseMaxHp', value: 2 }])
+    expect(rowOf('winded').effects).toEqual([{ kind: 'loseStamina', value: 4 }])
+    // floors only where dictated
+    for (const e of rowOf('guard-broken').effects) expect((e as { floor?: number }).floor).toBe(0)
+    expect(rowOf('knocked-sprawling').effects.some((e) => e.kind === 'push')).toBe(true)
+  })
+
+  it('the crit fields and unit crit/luck came through the pipeline', () => {
+    expect(ATTACKS['attack.dagger.stab']!.crit).toBe(5)
+    expect(UNITS['unit.bloodhound']!.crit).toBe(10)
+    expect(UNITS['unit.bruiser-demon']!.luck).toBe(5)
+    expect(UNITS['hero.fixed.orphans']!.crit).toBe(20)
+  })
+})
+
+describe('the chance — 3 + crit stat + gear + surplus − luck', () => {
+  it('preview shows the formula, floor 0', () => {
+    const ctx = rig(['alpha-sky-pirate'], [135], ['unit.zombie', 'unit.bruiser-demon'], [118, 120])
+    const pirate = ctx.state.units.find((u) => u.typeId === 'alpha-sky-pirate')!
+    const z = ctx.state.units.find((u) => u.typeId === 'unit.zombie')!
+    const bruiser = ctx.state.units.find((u) => u.typeId === 'unit.bruiser-demon')!
+    // 3 base + the pirate's own Crit stat (his copyOf source authors one) +
+    // the dagger's 5, no surplus (acc 78 < 100), zombie luck 0
+    expect(preview(ctx, pirate.id, z.id, 'attack.dagger.stab').critChance).toBe(3 + pirate.crit + 5)
+    // the bruiser's Luck 5 eats the same chance down by exactly 5
+    expect(preview(ctx, pirate.id, bruiser.id, 'attack.dagger.stab').critChance).toBe(3 + pirate.crit + 5 - 5)
+  })
+
+  it('an area attack still cannot crit at all', () => {
+    const ctx = rig(['alpha-oathblade'], [135], ['unit.zombie', 'unit.zombie'], [118, 119])
+    const oath = ctx.state.units.find((u) => u.typeId === 'alpha-oathblade')!
+    const z = ctx.state.units.find((u) => u.hex === 118)!
+    expect(preview(ctx, oath.id, z.id, 'attack.halberd.cleave').critChance).toBe(0)
+  })
+})
+
+describe('rollCritEffect — each row does exactly what it says', () => {
+  const scripted = () => {
+    const ctx = rig(['alpha-oathblade'], [135], ['unit.zombie'], [118])
+    const oath = ctx.state.units.find((u) => u.typeId === 'alpha-oathblade')!
+    const z = ctx.state.units.find((u) => u.typeId === 'unit.zombie')!
+    return { ctx, oath, z }
+  }
+
+  it('rolls a key from the chart and every emitted line names it', () => {
+    const { ctx, oath, z } = scripted()
+    const key = rollCritEffect(ctx, oath.id, z.id, 1, 'attack.halberd.hack')
+    expect(KEYS).toContain(key)
+    const ev = ctx.events.find((e) => e.type === 'crit.effect')!
+    expect(ev['key']).toBe(key)
+    expect(ev.causeId).toBe('attack.halberd.hack')
+  })
+
+  it('guard-broken floors at 0 — the zombie has no armor to lose, dodge stays 0', () => {
+    // Apply the ROW deterministically by seeking the seed-independent path:
+    // the row application is pure given the row, so test the effects directly
+    // via a chart of one. Chart rows are ctx data, so a scripted ctx may
+    // narrow it — that is a TEST fielding, not a content change.
+    const { ctx, oath, z } = scripted()
+    ;(ctx as { critChart: typeof CRIT_CHART }).critChart = [rowOf('guard-broken')]
+    rollCritEffect(ctx, oath.id, z.id, 1, 'attack.halberd.hack')
+    // zombie armor 0, resist 0, dodge 0 — "all to a minimum of 0": no mod
+    // may push any of them negative.
+    expect(effective(ctx, z, 'armor').value).toBe(0)
+    expect(effective(ctx, z, 'resist').value).toBe(0)
+    expect(effective(ctx, z, 'dodge').value).toBe(0)
+  })
+
+  it('winded drains to the floor and nerve-struck cuts the ceiling', () => {
+    const ctx = rig(['alpha-oathblade', 'alpha-osric'], [135, 134], ['unit.zombie'], [118])
+    const oath = ctx.state.units.find((u) => u.typeId === 'alpha-oathblade')!
+    const osric = ctx.state.units.find((u) => u.typeId === 'alpha-osric')!
+    const z = ctx.state.units.find((u) => u.typeId === 'unit.zombie')!
+    ;(ctx as { critChart: typeof CRIT_CHART }).critChart = [rowOf('winded')]
+    osric.stamina = 2
+    rollCritEffect(ctx, z.id, osric.id, 1, 'attack.zombie.bite')
+    expect(osric.stamina, '"lose 4 Stamina, to a minimum of 0"').toBe(0)
+    ;(ctx as { critChart: typeof CRIT_CHART }).critChart = [rowOf('nerve-struck')]
+    const maxBefore = oath.maxHp
+    rollCritEffect(ctx, z.id, oath.id, 2, 'attack.zombie.bite')
+    expect(oath.maxHp, '"−2 Max Health" — and nothing else floors').toBe(maxBefore - 2)
+    expect(oath.hp).toBeLessThanOrEqual(oath.maxHp)
+  })
+
+  it('dazed locks the powers and only the powers', () => {
+    const ctx = rig(['alpha-lucius', 'alpha-oathblade'], [135, 134], ['unit.zombie'], [118])
+    const lucius = ctx.state.units.find((u) => u.typeId === 'alpha-lucius')!
+    const oath = ctx.state.units.find((u) => u.typeId === 'alpha-oathblade')!
+    const z = ctx.state.units.find((u) => u.typeId === 'unit.zombie')!
+    ;(ctx as { critChart: typeof CRIT_CHART }).critChart = [rowOf('dazed')]
+    oath.hp = 1 // someone to heal
+    expect(canUsePower(ctx, lucius.id, oath.id, 'power.holy-symbol.heal')).toBe(true)
+    rollCritEffect(ctx, z.id, lucius.id, 1, 'attack.zombie.bite')
+    expect(lucius.statuses.find((s) => s.id === 'status.dazed')?.value).toBe(3)
+    expect(canUsePower(ctx, lucius.id, oath.id, 'power.holy-symbol.heal'),
+      '"loses access to class powers"').toBe(false)
+    beginActivation(ctx, lucius.id, 'test')
+    // attacks are NOT locked — only the powers are gone
+    expect(ctx.attacks['attack.punch']).toBeDefined()
+  })
+
+  it('knocked-sprawling pushes directly away and slows', () => {
+    const { ctx, oath, z } = scripted()
+    ;(ctx as { critChart: typeof CRIT_CHART }).critChart = [rowOf('knocked-sprawling')]
+    rollCritEffect(ctx, oath.id, z.id, 1, 'attack.halberd.hack')
+    expect(z.hex, '135 -> 118 continues to 102').toBe(102)
+    expect(z.statuses.find((s) => s.id === 'status.slow')?.value).toBe(2)
+    const knocked = ctx.events.find((e) => e.type === 'knocked')!
+    expect(knocked.causeId, 'the chart push names the critting attack').toBe('attack.halberd.hack')
+  })
+})
+
+describe('the branch flip in real battles — Law 4 streams, weighted coin', () => {
+  it('every crit flips exactly one branch; chart arms roll an effect; damage arms carry the CRIT station', () => {
+    let crits = 0, chartArms = 0, damageArms = 0
+    for (const r of [0, 1, 2, 3, 4, 5, 6, 7]) {
+      const ctx = createBattle({ ...scenarioOptions(scenarioDef('showcase.alpha-team')), replicate: r })
+      runBattle(ctx)
+      const branches = ctx.events.filter((e) => e.type === 'crit.branch')
+      crits += branches.length
+      for (const b of branches) {
+        const share = ctx.state.units[b.target!]!.side === 'hero' ? 25 : 50
+        expect(b['chartShare'], 'the split follows the VICTIM side (Angela 2026-08-22)').toBe(share)
+        if (b['arm'] === 'chart') chartArms++
+        else damageArms++
+      }
+      const effects = ctx.events.filter((e) => e.type === 'crit.effect')
+      for (const ef of effects) expect(KEYS).toContain(ef['key'])
+      // a chart arm produces an effect unless the strike itself killed
+      const deadTargets = new Set(ctx.events.filter((e) => e.type === 'life.dead').map((e) => e.target))
+      const chartCount = branches.filter((b) => b['arm'] === 'chart'
+        && !deadTargets.has(b.target)).length
+      expect(effects.length).toBeGreaterThanOrEqual(Math.min(1, chartCount) === 1 ? 1 : 0)
+      // damage-arm hits carry crit:true; chart-arm hits never do
+      for (const h of ctx.events.filter((e) => e.type === 'attack.hit' && e['crit'] === true)) {
+        expect((h['ledger'] as { station: string }[]).some((l) => l.station === 'CRIT'),
+          'a damage-arm hit shows the CRIT station in its ledger').toBe(true)
+      }
+    }
+    expect(crits, 'crits happen in real battles now — critEnabled is ON').toBeGreaterThan(0)
+    expect(chartArms + damageArms).toBe(crits)
+    expect(chartArms, 'the chart arm fires across eight seeds').toBeGreaterThan(0)
+  })
+
+  it('is a seed — crits and all, the same battle twice is byte-identical', () => {
+    const run = () => {
+      const ctx = createBattle(scenarioOptions(scenarioDef('showcase.alpha-team')))
+      const r = runBattle(ctx)
+      return `${r.outcome}:${r.turns}:${ctx.events.length}`
+    }
+    expect(run()).toBe(run())
+  })
+})

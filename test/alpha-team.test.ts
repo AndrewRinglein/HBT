@@ -137,8 +137,13 @@ describe('the pack carries the six alpha heroes with their real stat bodies', ()
     // Cleave's arc COMPILES now (capability.area-attack) — its gap must be gone
     expect(alpha.some((g) => /area attack/.test(g.needs))).toBe(false)
     expect(ATTACKS['attack.halberd.cleave']!.area).toBe('arc')
-    // four crit fields — still owed (station.crit)
-    expect(alpha.filter((g) => /crit/.test(g.needs)).length).toBe(4)
+    // the four crit fields COMPILE now (station.crit, same day) — their gaps
+    // are gone and the fields stand on the attack rows
+    expect(alpha.filter((g) => /crit/.test(g.needs)).length).toBe(0)
+    expect(ATTACKS['attack.dagger.stab']!.crit).toBe(5)
+    expect(ATTACKS['attack.javelin.stab']!.crit).toBe(3)
+    expect(ATTACKS['attack.shortbow.quick-shot']!.crit).toBe(5)
+    expect(ATTACKS['attack.longsword.stab']!.crit).toBe(3)
     // the three item powers COMPILE now (capability.item-powers) — their gaps
     // are gone, the powers stand on their units, and Storm's arbitrary-hex
     // targeting remainder is the one NAMED partial left behind
