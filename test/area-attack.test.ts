@@ -47,7 +47,7 @@ describe('no roll, no crit — the authored rule', () => {
     expect(pv.hitChance).toBe(100)
     expect(pv.critChance).toBe(0)
     expect(pv.damageOnCrit).toBe(pv.damageOnHit)
-    expect(pv.damageOnHit).toBe(3) // bonus 1 + strength 2, zombie armor 0
+    expect(pv.damageOnHit).toBe(6) // bonus 1 + strength 5 (golem re-statted 2026-08-27), zombie armor 0
   })
 
   it('a sweep never misses and never draws the to-hit cup: no attack.miss, every strike attack.hit', () => {
@@ -65,18 +65,20 @@ describe('the swing — one declaration, one hit per struck unit', () => {
   it('the opening sweep strikes both zombies from the scenario geometry', () => {
     const ctx = mk()
     const golem = ctx.state.units.find((u) => u.typeId === 'arc-golem')!
-    const zombies = ctx.state.units.filter((u) => u.typeId === 'test-zombie')
+    // The adjacent PAIR — the scenario's third zombie (hex 55, added for
+    // station.crit-count's single-target turns) stands outside the arc.
+    const zombies = ctx.state.units.filter((u) => u.typeId === 'test-zombie' && [118, 119].includes(u.hex))
     beginActivation(ctx, golem.id, 'test')
     const r = performAttack(ctx, golem.id, zombies[0]!.id, 'attack.test-arc.sweep')
     expect(r.hit).toBe(true)
     expect(r.crit).toBe(false)
-    expect(r.damage).toBe(6) // 3 into each zombie
+    expect(r.damage).toBe(12) // 6 into each zombie (golem re-statted 2026-08-27)
     const declared = ctx.events.find((e) => e.type === 'attack.declared' && e.causeId === 'attack.test-arc.sweep')!
     expect(declared['area']).toBe('arc')
     expect(declared['struck']).toEqual([zombies[0]!.id, zombies[1]!.id])
     const hits = ctx.events.filter((e) => e.type === 'attack.hit' && e.causeId === 'attack.test-arc.sweep')
     expect(hits.map((e) => e.target)).toEqual([zombies[0]!.id, zombies[1]!.id])
-    for (const z of zombies) expect(z.hp).toBe(z.maxHp - 3)
+    for (const z of zombies) expect(z.hp).toBe(z.maxHp - 6)
   })
 
   it('an ally in the arc is struck under the authored default, and spared with areaHitsAllies off', () => {
@@ -91,7 +93,7 @@ describe('the swing — one declaration, one hit per struck unit', () => {
       expect(areaUnitIdsOf(ctx, a.id, z.id, 'attack.test-arc.sweep')).toEqual([z.id, friend.id])
       beginActivation(ctx, a.id, 'test')
       performAttack(ctx, a.id, z.id, 'attack.test-arc.sweep')
-      expect(friend.hp, 'friendly fire is the authored default').toBe(friend.maxHp - 2) // 3 - armor 1
+      expect(friend.hp, 'friendly fire is the authored default').toBe(friend.maxHp - 4) // 6 - armor 2 (re-stat 2026-08-27)
     }
     {
       const ctx = createBattle(withAlly)

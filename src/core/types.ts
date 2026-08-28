@@ -158,6 +158,14 @@ export type AttackDef = {
    * COMBAT-DESIGN "Crit from gear": the Dagger's +5, the Javelin's +3.
    */
   readonly crit?: number
+  /**
+   * How many CRITICALS one critting hit resolves — station.crit-count
+   * (2026-08-27): "there is also an ability to have more than one critical
+   * happen at once ... 'Do two criticals' or 'Do three criticals'". Absent =
+   * 1. Each critical flips its own branch: heads stack +50% each before
+   * mitigation, each tails rolls its own chart row.
+   */
+  readonly critCount?: number
 }
 
 /**
@@ -335,6 +343,8 @@ export type Config = {
     critChartShareVsEnemies: number
     /** Does Nerve Struck's Max Health loss floor at 1? SWITCHES.md, 2026-08-27. */
     critMaxHealthFloorsAtOne: boolean
+    /** Do multiple tails-criticals roll chart rows WITH replacement? SWITCHES.md, 2026-08-27. */
+    multiCritWithReplacement: boolean
   }
 }
 
@@ -365,6 +375,10 @@ export const DEFAULT_CONFIG: Config = {
     // whose Max Health reaches 0 dies of it. The merciful reading (floor at 1)
     // keeps its code path here. SWITCHES.md, 2026-08-27.
     critMaxHealthFloorsAtOne: false,
+    // "Do two criticals" can land the same injury twice (stacking add) — the
+    // simplest reading, and item.bracer's open with/without-replacement
+    // question shares this switch's answer. SWITCHES.md, 2026-08-27.
+    multiCritWithReplacement: true,
   },
 }
 

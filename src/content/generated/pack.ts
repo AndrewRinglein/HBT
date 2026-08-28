@@ -1297,7 +1297,7 @@ export const UNIT_PACK = {
       "stat": "strength",
       "reach": 1,
       "staminaCost": 0,
-      "crit": 3
+      "crit": 6
     },
     "attack.dagger.stab": {
       "id": "attack.dagger.stab",

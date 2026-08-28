@@ -134,9 +134,13 @@ export function resolveAccuracy(ctx: Ctx, attacker: Unit, target: Unit, a: Attac
 export type DamageSource = Pick<AttackDef, 'id' | 'bonus' | 'stat' | 'damageType'>
 
 export function resolveDamage(
-  ctx: Ctx, attacker: Unit, target: Unit, a: DamageSource, crit: boolean,
+  ctx: Ctx, attacker: Unit, target: Unit, a: DamageSource, critHeads: number | boolean,
   outPenalty = 0, absorbAvailable = 0,
 ): Resolved {
+  // station.crit-count (2026-08-27): the CRIT station takes a HEADS COUNT —
+  // +50% each, stacking, before mitigation. `true` still reads as one heads
+  // so every existing caller and test keeps its meaning.
+  const heads = critHeads === true ? 1 : critHeads === false ? 0 : critHeads
   const ledger: LedgerRow[] = []
   let v = a.bonus
   ledger.push({ station: DMG.DECLARE, name: 'DECLARE', effectId: a.id, before: 0, after: v, delta: v })
@@ -145,9 +149,10 @@ export function resolveDamage(
   v = step(ledger, DMG.SOURCE_STAT, 'SOURCE_STAT', `unit.${attacker.typeId}`, v, v + src.value)
   if (outPenalty) v = step(ledger, DMG.SOURCE_STATUS, 'SOURCE_STATUS', 'status', v, v - outPenalty)
 
-  if (crit) {
-    // +50%, before all mitigation. One rounding rule: truncating integer division.
-    v = step(ledger, DMG.CRIT, 'CRIT', 'crit', v, Math.trunc((v * 3) / 2))
+  if (heads > 0) {
+    // +50% PER HEADS-CRITICAL, before all mitigation — "do two criticals"
+    // with two heads is +100%. One rounding rule: truncating integer division.
+    v = step(ledger, DMG.CRIT, 'CRIT', 'crit', v, Math.trunc((v * (2 + heads)) / 2))
   }
 
   // PROTECTION (550): absorbs, and is spent by what it absorbs. Pure here —
@@ -364,34 +369,59 @@ export function performAttack(ctx: Ctx, attackerId: number, targetId: number, at
   // victim side: critChartSplit, ANSWERED by Angela 2026-08-22 — "crits to
   // heroes 75% 25%, Enemies 50/50". Its own named stream (cup.crit-branch),
   // keyed by the crit, never by turn (Law 4).
-  let chartArm = false
+  // Each CRITICAL flips its own branch — station.crit-count (2026-08-27):
+  // "there is also an ability to have more than one critical happen at once."
+  // critCount is 1 unless the attack row says otherwise. The FIRST critical
+  // keeps the original key (single-crit battles stay byte-identical); each
+  // further critical salts the key with its index.
+  let heads = 0
+  const chartCriticals: number[] = []
   if (crit) {
+    const count = Math.max(1, a.critCount ?? 1)
     const chartShare = tg.side === 'hero'
       ? ctx.cfg.switches.critChartShareVsHeroes
       : ctx.cfg.switches.critChartShareVsEnemies
-    // Keyed by attacker uid, TARGET uid and ordinal (widened 2026-08-27,
-    // fix.crit-branch-even): under (uid, ord) alone the 25-replicate panel
-    // reused so few draws that whole chart rows were unreachable in play —
-    // "we want all of the things being rolled ... to have an even chance."
-    const branchRoll = roll100(ctx.rng, 'crit-branch', at.uid, tg.uid, ord)
-    chartArm = branchRoll <= chartShare
-    emit(ctx, 'crit.branch', a.id, {
-      actor: attackerId, target: targetId, roll: branchRoll, chartShare,
-      arm: chartArm ? 'chart' : 'damage',
-    })
+    for (let c = 0; c < count; c++) {
+      // Keyed by attacker uid, TARGET uid and ordinal (widened 2026-08-27,
+      // fix.crit-branch-even): under (uid, ord) alone the 25-replicate panel
+      // reused so few draws that whole chart rows were unreachable in play.
+      const branchRoll = c === 0
+        ? roll100(ctx.rng, 'crit-branch', at.uid, tg.uid, ord)
+        : roll100(ctx.rng, 'crit-branch', at.uid, tg.uid, ord, c)
+      const chartArm = branchRoll <= chartShare
+      emit(ctx, 'crit.branch', a.id, {
+        actor: attackerId, target: targetId, roll: branchRoll, chartShare,
+        arm: chartArm ? 'chart' : 'damage',
+        // The numbering rides only on genuine multi-criticals: a single crit's
+        // event keeps its exact station.crit shape, byte for byte — the
+        // control baselines hash event JSON, and "1 of 1" says nothing.
+        ...(count > 1 ? { critical: c + 1, of: count } : {}),
+      })
+      if (chartArm) chartCriticals.push(c)
+      else heads++
+    }
   }
 
-  const damageArm = crit && !chartArm
-  const damage = resolveHitOn(ctx, attackerId, targetId, a, damageArm, ord, {
-    expected: damageArm ? pv.damageOnCrit : pv.damageOnHit,
+  // heads 0/1 still guard against the PREVIEW (the original mismatch net);
+  // more heads than the preview can name recompute the expectation from the
+  // same pipeline at the same moment — the conservation check stays exact.
+  const expected = heads === 0 ? pv.damageOnHit
+    : heads === 1 ? pv.damageOnCrit
+    : resolveDamage(ctx, at, tg, a, heads, outgoingPenalty(ctx, at), incomingAbsorb(ctx, tg)).value
+  const damage = resolveHitOn(ctx, attackerId, targetId, a, heads, ord, {
+    expected,
     rollInfo: { roll, hitChance: pv.hitChance },
   })
 
-  // The chart arm: normal damage has landed; now the d10 (rollCritEffect,
-  // GLOSSARY-fixed name). Skipped if the strike already killed — a corpse
-  // cannot be Dazed, and rolling a cup for a dead unit would burn a draw.
-  if (chartArm && unit(ctx, targetId).lifeState === 'standing') {
-    rollCritEffect(ctx, attackerId, targetId, ord, a.id)
+  // The chart arm(s): normal damage has landed; now the even roll per tails
+  // critical (rollCritEffect, GLOSSARY-fixed name). Skipped once the target
+  // falls — a corpse cannot be Dazed, and a cup drawn for a dead unit would
+  // burn a draw.
+  const rolled = new Set<string>()
+  for (const c of chartCriticals) {
+    if (unit(ctx, targetId).lifeState !== 'standing') break
+    rolled.add(rollCritEffect(ctx, attackerId, targetId, ord, a.id, c,
+      ctx.cfg.switches.multiCritWithReplacement ? undefined : rolled))
   }
 
   return {
@@ -412,15 +442,17 @@ export function performAttack(ctx: Ctx, attackerId: number, targetId: number, at
  * mitigation (protection spent, statuses applied).
  */
 function resolveHitOn(
-  ctx: Ctx, attackerId: number, targetId: number, a: AttackDef, crit: boolean, ord: number,
+  ctx: Ctx, attackerId: number, targetId: number, a: AttackDef, crit: number | boolean, ord: number,
   opts: { expected?: number; rollInfo?: { roll: number; hitChance: number } } = {},
 ): number {
+  // station.crit-count (2026-08-27): a heads COUNT — booleans keep meaning.
+  const heads = crit === true ? 1 : crit === false ? 0 : crit
   const at = unit(ctx, attackerId)
   const tg = unit(ctx, targetId)
   const fc = { ownerId: attackerId, targetId, causeId: a.id, ordinal: ord }
 
   const expected = opts.expected ?? preview(ctx, attackerId, targetId, a.id).damageOnHit
-  const dmg = resolveDamage(ctx, at, tg, a, crit, outgoingPenalty(ctx, at), incomingAbsorb(ctx, tg))
+  const dmg = resolveDamage(ctx, at, tg, a, heads, outgoingPenalty(ctx, at), incomingAbsorb(ctx, tg))
 
   // Conservation: the ledger must fully explain the number (Law 1's sibling).
   const summed = dmg.ledger.reduce((s, r) => s + r.delta, 0)
@@ -434,7 +466,7 @@ function resolveHitOn(
   emit(ctx, 'attack.hit', a.id, {
     actor: attackerId, target: targetId,
     ...(opts.rollInfo ? { roll: opts.rollInfo.roll, hitChance: opts.rollInfo.hitChance } : { auto: true }),
-    crit,
+    crit: heads > 0, ...(heads > 1 ? { critHeads: heads } : {}),
     ledger: dmg.ledger.map((r) => ({ station: r.name, effectId: r.effectId, delta: r.delta })),
   })
 
@@ -447,8 +479,8 @@ function resolveHitOn(
   const hpBefore = tg.hp
   applyDamage(ctx, targetId, dmg.value, a.id,
     dmg.absorbed > 0
-      ? { actor: attackerId, attackId: a.id, crit, damageType: a.damageType, absorbed: dmg.absorbed }
-      : { actor: attackerId, attackId: a.id, crit, damageType: a.damageType })
+      ? { actor: attackerId, attackId: a.id, crit: heads > 0, damageType: a.damageType, absorbed: dmg.absorbed }
+      : { actor: attackerId, attackId: a.id, crit: heads > 0, damageType: a.damageType })
 
   // "At least 1 damage got through mitigation." applyDamage already computed
   // applied = min(amount, hpBefore), so absorbed-to-zero distinguishes itself.

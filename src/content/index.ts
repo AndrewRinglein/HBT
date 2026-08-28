@@ -98,6 +98,23 @@ const RAW_ATTACKS: Readonly<Record<string, AttackDef>> = {
     id: 'attack.drake.snap', name: 'Snap', kind: 'melee',
     damageType: 'physical', bonus: 0, stat: 'strength', reach: 1, staminaCost: 1,
   },
+  'attack.test-ram.slam': {
+    // TEST SCAFFOLDING — station.crit-count's first consumer (2026-08-27):
+    // "Do two criticals." crit 47 puts the golem's chance at 50, so multi-
+    // criticals actually resolve in the verify scenario instead of waiting on
+    // a 3% fluke. Pure data; no control battle fields the golem.
+    id: 'attack.test-ram.slam', name: 'Slam (TEST)', kind: 'melee',
+    damageType: 'physical', bonus: 2, stat: 'strength', reach: 1, staminaCost: 0,
+    crit: 47, critCount: 2,
+  },
+  'attack.test-ram.overhead': {
+    // TEST SCAFFOLDING — station.crit-count's second variant: "Do three
+    // criticals," pure data. Costs stamina so the golem alternates between
+    // this and the slam as its pool cycles — both variants live in one battle.
+    id: 'attack.test-ram.overhead', name: 'Overhead (TEST)', kind: 'melee',
+    damageType: 'physical', bonus: 1, stat: 'strength', reach: 1, staminaCost: 4,
+    crit: 47, critCount: 3,
+  },
   'attack.test-arc.sweep': {
     // TEST SCAFFOLDING — capability.area-attack's second variant (2026-08-27):
     // the same 'arc' shape as attack.halberd.cleave, pure data on a test unit,
@@ -274,8 +291,11 @@ const RAW_UNITS: Readonly<Record<string, UnitDef>> = {
     // never rolls, and a 5-accuracy unit landing every sweep is itself part of
     // the proof.
     typeId: 'arc-golem', side: 'hero',
-    maxHp: 14, armor: 1, resist: 0,
-    accuracy: 5, dodge: 0, strength: 2, precision: 0, magic: 0, spirit: 0,
+    // Re-statted 2026-08-27 (station.crit-count): the original 14hp body died
+    // to the zombie clump before the battle ever reached a single-target turn,
+    // so the slam and overhead could not fire live. Scaffolding, not design.
+    maxHp: 30, armor: 2, resist: 0,
+    accuracy: 5, dodge: 0, strength: 5, precision: 0, magic: 0, spirit: 0,
     role: 'melee',
     movement: 4, reach: 1,
     maxStamina: 5, staminaRegen: 1,
@@ -290,7 +310,11 @@ const RAW_UNITS: Readonly<Record<string, UnitDef>> = {
       onlyWithAttack: 'attack.test-arc.sweep',
     }],
     ai: 'melee-aggressive',
-    attacks: ['attack.test-arc.sweep'],
+    // Preference order: the overhead ("three criticals") when its stamina is
+    // there, the slam ("two criticals") otherwise; areaSwing still overrides
+    // with the sweep whenever two enemies stand in the arc. All three are
+    // station scaffolding on one body (station.crit-count, 2026-08-27).
+    attacks: ['attack.test-ram.overhead', 'attack.test-ram.slam', 'attack.test-arc.sweep'],
     abilities: [],
     moves: ['power.move'],
     attributes: ['test'],

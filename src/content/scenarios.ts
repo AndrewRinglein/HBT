@@ -102,8 +102,12 @@ const RAW_SCENARIOS: Readonly<Record<string, ScenarioDef>> = {
     mapId: 'map.open',
     heroes: ['arc-golem'],
     heroHexes: [135],
-    enemies: ['test-zombie', 'test-zombie'],
-    enemyHexes: [118, 119],
+    // The pair at 118/119 feeds the opening sweep; the third zombie starts
+    // five hexes out and arrives after the rams have scattered the pair, so
+    // the battle also has SINGLE-target turns — where the overhead and slam
+    // (station.crit-count) get their live firings.
+    enemies: ['test-zombie', 'test-zombie', 'test-zombie'],
+    enemyHexes: [118, 119, 55],
     replicate: 0,
   },
   'showcase.item-powers': {

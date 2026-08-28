@@ -292,3 +292,13 @@ row says 'minimum 0'; nothing else floors." Read literally, Nerve Struck's
 −2 Max Health does not floor, and a unit whose Max Health reaches 0 dies of
 the strike. Default **false** (the literal reading); the merciful floor-at-1
 path is kept for a sweep — metric: deaths by nerve-strike per hundred battles.
+
+## multiCritWithReplacement — can "do two criticals" land the same injury twice?
+Added 2026-08-27 (station.crit-count). Ruled the same day: "there is also an
+ability to have more than one critical happen at once... 'Do two criticals' or
+'Do three criticals'." When two or more of those criticals come up tails,
+each rolls the chart — WITH replacement by default (a doubled Bleeding simply
+stacks; the simplest reading). The without-replacement path re-draws repeats
+on a salted key and is fully built, because item.bracer ("multiplies chart
+rolls") was explicitly parked on this exact question — when Andrew answers it
+for the bracer, this switch is the one that moves.

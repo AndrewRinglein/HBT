@@ -28,7 +28,7 @@ import { executeKnockback } from './movement.js'
  * `causeId` is the attack that crit (Law 12 — the log names its cause); the
  * row key rides every emitted line so a reader can name the injury too.
  */
-export function rollCritEffect(ctx: Ctx, attackerId: number, targetId: number, ord: number, causeId: string): string {
+export function rollCritEffect(ctx: Ctx, attackerId: number, targetId: number, ord: number, causeId: string, critical = 0, exclude?: ReadonlySet<string>): string {
   const chart = ctx.critChart
   if (chart.length === 0) throw new Error('rollCritEffect with an empty chart — the pack carries no critChart rows (Law 9: never roll on nothing)')
   const at = unit(ctx, attackerId)
@@ -36,7 +36,22 @@ export function rollCritEffect(ctx: Ctx, attackerId: number, targetId: number, o
   // Evenly among the rows — the d10. Keyed by the crit (attacker uid + attack
   // ordinal), never by turn (Law 4).
   // Widened key (2026-08-27, fix.crit-branch-even) — see the branch flip.
-  const i = rollBelow(ctx.rng, chart.length, 'crit-effect', at.uid, tg.uid, ord)
+  // The first critical keeps the original key (byte-identity for every
+  // single-crit battle); further criticals salt it with their index
+  // (station.crit-count 2026-08-27).
+  let i = critical === 0
+    ? rollBelow(ctx.rng, chart.length, 'crit-effect', at.uid, tg.uid, ord)
+    : rollBelow(ctx.rng, chart.length, 'crit-effect', at.uid, tg.uid, ord, critical)
+  // WITHOUT replacement (multiCritWithReplacement false): a repeat re-draws on
+  // a salted key until a fresh row lands — bounded, and impossible to exhaust
+  // while the exclusion set is smaller than the chart.
+  if (exclude && exclude.size < chart.length) {
+    let salt = 0
+    while (exclude.has(chart[i]!.key)) {
+      salt++
+      i = rollBelow(ctx.rng, chart.length, 'crit-effect', at.uid, tg.uid, ord, critical, 1000 + salt)
+    }
+  }
   const row = chart[i]!
   emit(ctx, 'crit.effect', causeId, { actor: attackerId, target: targetId, key: row.key, name: row.name, roll: i })
 

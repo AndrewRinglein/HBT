@@ -137,13 +137,20 @@ describe('the pack carries the six alpha heroes with their real stat bodies', ()
     // Cleave's arc COMPILES now (capability.area-attack) — its gap must be gone
     expect(alpha.some((g) => /area attack/.test(g.needs))).toBe(false)
     expect(ATTACKS['attack.halberd.cleave']!.area).toBe('arc')
-    // the four crit fields COMPILE now (station.crit, same day) — their gaps
-    // are gone and the fields stand on the attack rows
+    // the crit fields COMPILE now (station.crit, same day) — their gaps are
+    // gone. LAW 10, rewritten within hours of being written: the first
+    // version froze the four dictated numbers, and S34's gear review moved
+    // the javelin's crit under it. The claim is PIPELINE AGREEMENT — the
+    // pack's crit equals the settled row's crit, whatever it is today.
     expect(alpha.filter((g) => /crit/.test(g.needs)).length).toBe(0)
-    expect(ATTACKS['attack.dagger.stab']!.crit).toBe(5)
-    expect(ATTACKS['attack.javelin.stab']!.crit).toBe(3)
-    expect(ATTACKS['attack.shortbow.quick-shot']!.crit).toBe(5)
-    expect(ATTACKS['attack.longsword.stab']!.crit).toBe(3)
+    const sItems = JSON.parse(readFileSync(
+      join(__dirname, '..', '..', 'content', 'gen', 'settled-items.json'), 'utf8'))
+    for (const id of ['attack.dagger.stab', 'attack.javelin.stab',
+      'attack.shortbow.quick-shot', 'attack.longsword.stab']) {
+      const row = (sItems.attacks as { id: string; crit?: number }[]).find((a) => a.id === id)!
+      expect(row.crit, `${id} carries an authored crit`).toBeGreaterThan(0)
+      expect(ATTACKS[id]!.crit, `${id} — pack agrees with the settled row`).toBe(row.crit)
+    }
     // the three item powers COMPILE now (capability.item-powers) — their gaps
     // are gone, the powers stand on their units, and Storm's arbitrary-hex
     // targeting remainder is the one NAMED partial left behind
