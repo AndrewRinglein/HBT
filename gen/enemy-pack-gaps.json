@@ -163,23 +163,13 @@
   },
   {
    "unit": "alpha-air-mage",
-   "what": "item.lightning-staff grants power.lightning-staff.storm",
-   "needs": "item power — no AbilityDef conversion"
-  },
-  {
-   "unit": "alpha-lucius",
-   "what": "item.holy-symbol grants power.holy-symbol.heal",
-   "needs": "item power — no AbilityDef conversion"
+   "what": "power.lightning-staff.storm targets 'a hex within 4' — engine centres the blast on a UNIT",
+   "needs": "power targeting: arbitrary hex"
   },
   {
    "unit": "alpha-osric",
    "what": "attack.longsword.stab crit 3",
    "needs": "attack field: crit (no AttackDef slot)"
-  },
-  {
-   "unit": "alpha-osric",
-   "what": "item.knight-shield grants power.knight-shield.block",
-   "needs": "item power — no AbilityDef conversion"
   },
   {
    "unit": "hero.fixed.orphans",

@@ -120,6 +120,7 @@ function compileTrigger(t, unitId, attackId) {
 
 const authoredEnemies = [];
 const authoredAttacks = {};
+const authoredAbilities = {}; // capability.item-powers, 2026-08-27
 for (const id of [...fielded].sort()) {
   const u = AUTH.units.find((x) => x.id === id);
   if (!u) { gap(id, 'fielded by the prologue, absent from enemies-authored', 'content'); continue; }
@@ -179,6 +180,9 @@ const SETTLED = JSON.parse(fs.readFileSync('settled.json', 'utf8'));
 // settled-items rows win on an id collision (they are the older, engine-facing shapes).
 const ITEM_BY_ID = new Map([...(SETTLED.items || []), ...SITEMS.items].map((i) => [i.id, i]));
 const SATTACK_BY_ID = new Map([...(SETTLED.attacks || []), ...SITEMS.attacks].map((a) => [a.id, a]));
+const SPOWER_BY_ID = new Map(
+  [...(Array.isArray(SETTLED.powers) ? SETTLED.powers : []), ...(SITEMS.powers || [])]
+    .filter((p) => p && p.id).map((p) => [p.id, p]));
 const PARTY = ['hero.base.ranger-aggressive', 'hero.base.warrior-iron', 'hero.base.priest-armored'];
 
 // The class half-step, read from the Codex movementAction rows — never hardcoded.
@@ -242,6 +246,42 @@ function settledAttackExtras(a, unitId) {
     gap(unitId, `${a.id} targets '${String(a.targets).slice(0, 50)}' — lands SINGLE-TARGET`, 'area attack shape');
   }
   return out;
+}
+
+// Item powers the engine speaks (capability.item-powers, 2026-08-27) — the
+// three authored S31 shapes, parsed from their EXACT settled text and never
+// invented. Anything else stays a named gap.
+//   Heal:  "Heal the target for B + M x Spirit." / "one ally within R hexes"
+//          -> effect 'heal', ValueSpec partySpirit (GAME-DESIGN §5's law:
+//          Spirit effects scale off the party-wide sum).
+//   Block: "Gain Protection equal to B + your Armor, and lose D Dodge for the
+//          rest of the Battle." / "self" -> effect 'selfGuard'.
+//   Storm: "Deal magic damage equal to your Magic + B to every unit in the
+//          blast." / "a hex within R hexes and every hex adjacent to it"
+//          -> a damage power with area 'blast1'. The engine centres the blast
+//          on a UNIT, not an arbitrary hex — that remainder is a named gap.
+function compiledPowerOf(p, unitId) {
+  const desc = String(p.description || '');
+  const tgt = String(p.targets || '');
+  const base = { id: p.id, name: p.name, staminaCost: p.stamina ?? 0, cooldown: p.cooldown ?? 0 };
+  let m, r;
+  if ((m = desc.match(/^Heal the target for (\d+) \+ (\d+) x Spirit\./))
+    && (r = tgt.match(/^one ally within (\d+) hexes$/))) {
+    return { ...base, range: parseInt(r[1], 10), effect: 'heal',
+      heal: { scale: 'partySpirit', base: parseInt(m[1], 10), mult: parseInt(m[2], 10) } };
+  }
+  if ((m = desc.match(/^Gain Protection equal to (\d+) \+ your Armor, and lose (\d+) Dodge for the rest of the Battle\./))
+    && tgt === 'self') {
+    return { ...base, range: 0, effect: 'selfGuard',
+      guard: { protectionBase: parseInt(m[1], 10), protectionPerArmor: 1, dodgeLoss: parseInt(m[2], 10) } };
+  }
+  if ((m = desc.match(/^Deal magic damage equal to your Magic \+ (\d+) to every unit in the blast\./))
+    && (r = tgt.match(/^a hex within (\d+) hexes and every hex adjacent to it$/))) {
+    gap(unitId, `${p.id} targets 'a hex within ${r[1]}' — engine centres the blast on a UNIT`, 'power targeting: arbitrary hex');
+    return { ...base, range: parseInt(r[1], 10), effect: 'damage',
+      stat: 'magic', bonus: parseInt(m[1], 10), damageType: 'magic', area: 'blast1' };
+  }
+  return null;
 }
 
 // The area shapes the engine speaks (capability.area-attack, 2026-08-27).
@@ -340,11 +380,20 @@ const alphaTeam = [];
       attackIds.push(a.id);
       kitTriggers.push(...settledAttackExtras(a, id));
     };
+    const abilityIds = [];
     for (const itemId of h.kit || []) {
       const it = ITEM_BY_ID.get(itemId);
       if (!it) { gap(id, `kit item ${itemId} has no authored row`, 'content'); continue; }
       for (const aid of it.grants || []) {
-        if (aid.startsWith('power.')) { gap(id, `${itemId} grants ${aid}`, 'item power — no AbilityDef conversion'); continue; }
+        if (aid.startsWith('power.')) {
+          // capability.item-powers (2026-08-27): the three authored shapes
+          // compile; anything else stays a named gap.
+          const pw = SPOWER_BY_ID.get(aid);
+          const row = pw && compiledPowerOf(pw, id);
+          if (row) { authoredAbilities[row.id] = row; abilityIds.push(row.id); }
+          else gap(id, `${itemId} grants ${aid}`, pw ? 'item power — shape unparsed' : 'item power — no authored row');
+          continue;
+        }
         const a = SATTACK_BY_ID.get(aid);
         if (!a) { gap(id, `${itemId} grants ${aid} which has no attack row`, 'content'); continue; }
         takeAttack(a);
@@ -373,7 +422,7 @@ const alphaTeam = [];
       movement: d.movement, reach: p.reach ?? 0,
       maxStamina: d.staminaMax, staminaRegen: d.staminaRegen ?? 1,
       ai: h.ai || (anyRanged ? 'ranged-kite' : 'melee-aggressive'),
-      attacks: attackIds, abilities: [],
+      attacks: attackIds, abilities: abilityIds,
       moves: movesForClass(h.class),
       attributes: ['hero-alpha'],
       tags: ['hero'],
@@ -445,7 +494,7 @@ fs.writeFileSync('gen/enemy-pack-gaps.json', JSON.stringify({
   gaps,
 }, null, 1) + '\n');
 
-const pack = { note: D.testCohort.note, heroes, enemies, authoredEnemies, authoredAttacks, prologueParty, alphaTeam };
+const pack = { note: D.testCohort.note, heroes, enemies, authoredEnemies, authoredAttacks, authoredAbilities, prologueParty, alphaTeam };
 const body = '// GENERATED by content/mkenginepack.mjs — NEVER HAND-EDIT (see engine CLAUDE.md,\n'
   + '// "Never hand-edit anything under generated/"). Source of truth: the Codex\n'
   + '// pipeline (content/settled.json testCohort -> hbt-content.json).\n'
