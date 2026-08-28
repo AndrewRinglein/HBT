@@ -3482,3 +3482,21 @@ index 3b1205e..6062afb 100644
    })
 ```
 </details>
+
+## fix.crit-branch-even — LANDED `a0e811c` **NEEDS REVIEW**
+2026-08-28T02:46:07.000Z
+
+  PASS  dependencies landed — station.crit
+  PASS  typecheck — tsc --noEmit clean
+  PASS  full test suite — 47 files / 437 tests green
+  PASS  gate 1 — status.dazed: 1/1/1
+  PASS  brought its own tests — crit.test.ts branch-share rewrite + the all-rows-reachable universe test (12 tests)
+  PASS  control battles — DECLARED: all 8 maps moved (50/50 weights + widened dice keys); re-blessed at commit
+  PASS  content — no content change; ruling recorded verbatim in DECISIONS.md
+  PASS  hardcode scan — clean
+  PASS  generalizes — guard-broken live · dazed live
+  PASS  naming — no new ids
+  PASS  kill switch — 2/12 fail with status.dazed disabled
+  WARN  existing tests untouched — crit.test.ts share assertion re-ruled (Law 10 note at the edit), audit accuracy/dodge recompute EXTENDED to the mod ledger — LANDED FLAGGED
+
+  Winded fires 6x in the probe sweep under the widened key — the ruling's exact intent ("all of the things... capable of being rolled"). NOTE: the follow-up commit 63ecb86 undoes dd80326's accidental sweep of foreign wip. HAND-LANDED under the reaper protocol; post-land audit clean. Seal unwritten — it belongs to the gate.

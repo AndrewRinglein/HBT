@@ -1478,7 +1478,9 @@
   "variants": [
    "guard-broken",
    "dazed"
-  ]
+  ],
+  "status": "done-needs-review",
+  "sha": "a0e811c"
  },
  {
   "id": "station.crit-count",
