@@ -11,12 +11,6 @@ and date. Tool tasks and engine chores go in the backlog, never here.
   runner gets built, then battles 1 and 2 land as real encounters with
   both-outcome sweeps. Everything else about the prologue waits behind this.
 
-- (2026-08-27) **The Iron Dwarf's weapon and the Battle Chaplain's kit.** The
-  Dwarf's Destroyed Mail is pinned (ruled today) but his weapon is still a
-  random class draw, and the Chaplain's whole kit is a random spec — "the
-  roll belongs to the draft." Either dictate what they drew, or rule that the
-  engine may roll the draw itself from a named stream when it fields them.
-
 - (2026-08-27) **Flip the standard battles to the Alpha Team?** The alphas are
   in and armed; the control battles still field the (TEST) cohort. Flipping is
   one landing that re-blesses every baseline. Say when.
