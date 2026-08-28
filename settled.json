@@ -952,9 +952,9 @@
    "range": "melee",
    "stat": "strength",
    "damage": -1,
-   "stamina": 1,
-   "accuracy": 0,
-   "crit": 0,
+   "stamina": 0,
+   "accuracy": -5,
+   "crit": -5,
    "hits": 1,
    "targets": "one enemy in melee reach",
    "damageType": "physical",
@@ -966,7 +966,7 @@
    "slayer": null,
    "universalToAllUnits": true,
    "intent": "The attack EVERY PLAYER UNIT has — ruled 2026-08-25, confirming the 2026-08-22 Brawler ruling. Universal: no kit grants it and no row lists it, because a per-row flag would be a second source for one fact. Brawler reads its brawl tag. Damage soft.",
-   "source": "authored 2026-08-25 — the universal punch the Brawler ruling required"
+   "source": "authored 2026-08-25 — the universal punch the Brawler ruling required | RE-RULED 2026-08-27, verbatim: \"Every single classed hero, the six classes, is supposed to have the attack punch. It does strength - 1 damage. Cost: 0 stamina. Has -5 to hit and -5 crit. It is a brawl attack and a melee attack.\" Stamina 1 -> 0, and the -5/-5 are new. Civilians keep Punch by their own dictated stat blocks; this ruling names the six classes."
   },
   {
    "id": "attack.lumberjack-axe.chop",
