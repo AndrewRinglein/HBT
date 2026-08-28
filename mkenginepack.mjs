@@ -326,6 +326,8 @@ for (const id of PARTY) {
         damageType: a.damageType || 'physical',
         bonus: a.damage ?? 0, stat: a.stat || 'strength',
         reach: a.range ?? 1, staminaCost: a.stamina ?? 0, // heroes pay
+        ...(areaShapeOf(a) ? { area: areaShapeOf(a) } : {}), // capability.area-attack
+        ...(a.crit ? { crit: a.crit } : {}), // station.crit 2026-08-27
       };
       attackIds.push(a.id);
       kitTriggers.push(...settledAttackExtras(a, id));
@@ -470,6 +472,8 @@ for (const id of CIVILIANS) {
         // Civilians are EXACTLY like heroes (ruled 2026-08-26): they pay
         // what the attack row authors.
         reach: ranged ? a.range : 1, staminaCost: a.stamina ?? 0,
+        ...(areaShapeOf(a) ? { area: areaShapeOf(a) } : {}), // capability.area-attack
+        ...(a.crit ? { crit: a.crit } : {}), // station.crit 2026-08-27
       };
       attackIds.push(a.id);
       civTriggers.push(...settledAttackExtras(a, id));
