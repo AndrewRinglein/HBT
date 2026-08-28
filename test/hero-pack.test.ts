@@ -28,28 +28,32 @@ describe('the Hunter is a real hero from the Codex', () => {
   })
 
   it('fights with the longbow the kit dictated — both attacks, stamina PAID', () => {
-    expect(UNITS[HUNTER]!.attacks).toEqual(['attack.longbow.shot', 'attack.longbow.long-shot'])
+    // Punch joined every classed hero with S37's re-rule (2026-08-27) — the
+    // universal flag, honored by the party lane since S37a.
+    expect(UNITS[HUNTER]!.attacks).toEqual(['attack.longbow.shot', 'attack.longbow.long-shot', 'attack.punch'])
     expect(ATTACKS['attack.longbow.shot']).toMatchObject(
       { kind: 'ranged', reach: 6, stat: 'precision', bonus: 1, staminaCost: 1 })
     expect(ATTACKS['attack.longbow.long-shot']).toMatchObject(
       { kind: 'ranged', reach: 7, bonus: 2, staminaCost: 2 })
   })
 
-  it('the two SPEC kits are named gaps, not rolls somebody made in a converter', () => {
+  it('the whole battle-2 party fields, fully armed — S36 dictated every kit', () => {
+    // LAW 10 — rewritten for the THIRD time today, each toward the day's
+    // truth: first "SPEC kits are named gaps" (they were), then "the Dwarf
+    // fields pinned-armor-only" (S34a), and now S36's full-kit dictation plus
+    // the confirmation "Battle Chaplain should be in there now" — all three
+    // stand armed, and no kit gap remains for any of them.
     const gaps = JSON.parse(readFileSync(
       join(__dirname, '..', '..', 'content', 'gen', 'enemy-pack-gaps.json'), 'utf8')).gaps as
       { unit: string; needs: string }[]
-    // LAW 10 — rewritten 2026-08-27 (twice in one day, both toward the rule):
-    // S34a pinned the Iron Dwarf's ARMOR, so the converter now FIELDS him with
-    // exactly the pinned items and a 'kit remainder unresolved' gap — the
-    // weaponless-Lumberjack precedent: the unit stands, the gap stands beside
-    // it, and NOTHING was rolled in a converter. The Chaplain's kit is still
-    // fully unresolved, so he still does not field at all.
-    expect(gaps.some((g) => g.unit === 'hero.base.warrior-iron' && /kit.*unresolved/.test(g.needs))).toBe(true)
-    expect(UNITS['hero.base.warrior-iron'], 'the Dwarf fields in his pinned Destroyed Mail').toBeDefined()
-    expect(UNITS['hero.base.warrior-iron']!.attacks, 'his weapon draw stays unrolled — no invented attacks').toEqual([])
-    expect(gaps.some((g) => g.unit === 'hero.base.priest-armored' && /kit.*unresolved/.test(g.needs))).toBe(true)
-    expect(UNITS['hero.base.priest-armored'], 'the Chaplain must NOT field with an invented kit').toBeUndefined()
+    for (const id of ['hero.base.warrior-iron', 'hero.base.priest-armored']) {
+      expect(gaps.some((g) => g.unit === id && /kit/.test(g.needs)), `${id} — no kit gap survives S36`).toBe(false)
+      expect(UNITS[id], `${id} fields`).toBeDefined()
+      expect(UNITS[id]!.attacks.length, `${id} is armed`).toBeGreaterThan(1)
+      expect(UNITS[id]!.attacks, `${id} carries the universal Punch`).toContain('attack.punch')
+    }
+    expect(UNITS['hero.base.warrior-iron']!.attacks).toContain('attack.war-axe.chop')
+    expect(UNITS['hero.base.priest-armored']!.attacks).toContain('attack.holy-texts.mercy')
   })
 
   it('battle 1 in miniature runs: the Hunter shoots authored zombies', () => {

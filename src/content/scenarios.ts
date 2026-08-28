@@ -67,14 +67,17 @@ const RAW_SCENARIOS: Readonly<Record<string, ScenarioDef>> = {
   },
   'showcase.prologue-party': {
     id: 'showcase.prologue-party',
-    note: 'Battle 1 in miniature: the Hunter against two authored zombies — '
-      + 'the content.hero-pack verify battle. Iron Dwarf and Battle Chaplain '
-      + 'join when their kits get dictated overrides (named gaps until then).',
+    note: 'The battle-2 party, whole — the content.hero-pack verify battle. '
+      + 'The Hunter with her dictated longbow; the Iron Dwarf armed by S36\'s '
+      + 'full-kit dictation (war axe, Destroyed Mail); the Battle Chaplain '
+      + 'confirmed 2026-08-27 ("Battle Chaplain should be in there now") with '
+      + 'knight shield and holy texts. All three carry the re-ruled Punch.',
     mapId: 'map.open',
-    heroes: ['hero.base.ranger-aggressive'],
-    heroHexes: [247],
-    enemies: ['unit.zombie', 'unit.zombie'],
-    enemyHexes: [118, 122],
+    heroes: ['hero.base.ranger-aggressive', 'hero.base.warrior-iron',
+      'hero.base.priest-armored'],
+    heroHexes: [247, 246, 248],
+    enemies: ['unit.zombie', 'unit.zombie', 'unit.fast-zombie'],
+    enemyHexes: [118, 122, 120],
     replicate: 0,
   },
   'showcase.alpha-team': {

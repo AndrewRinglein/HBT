@@ -77,14 +77,15 @@ describe('the pack carries the six alpha heroes with their real stat bodies', ()
 
   it('the kits are authored attack rows, and heroes PAY authored stamina', () => {
     const cost = (aid: string) => ATTACKS[aid]!.staminaCost
-    // The delivered table (S31): Hack 1, Cleave 2 — and the universal Punch
-    // costs 1 with its -1 bonus, weaker than any weapon by design.
+    // The delivered table (S31): Hack 1, Cleave 2. The universal Punch was
+    // RE-RULED in S37 (2026-08-27): strength −1, 0 stamina (was 1), −5 crit
+    // on the row, −5 accuracy as a named gap — Law 10, followed same-day.
     expect(ATTACKS['attack.halberd.hack']).toMatchObject({ bonus: 2, staminaCost: 1, kind: 'melee' })
     expect(ATTACKS['attack.halberd.cleave']).toMatchObject({ bonus: 1, staminaCost: 2 })
     expect(ATTACKS['attack.javelin.throw']).toMatchObject({ kind: 'ranged', reach: 4 })
     expect(ATTACKS['attack.shortbow.short-shot']).toMatchObject({ kind: 'ranged', reach: 5 })
     expect(ATTACKS['attack.shortbow.quick-shot']).toMatchObject({ kind: 'ranged', reach: 4 })
-    expect(ATTACKS['attack.punch']).toMatchObject({ bonus: -1, staminaCost: 1, kind: 'melee' })
+    expect(ATTACKS['attack.punch']).toMatchObject({ bonus: -1, staminaCost: 0, kind: 'melee', crit: -5 })
     for (const id of ALPHA()) {
       for (const aid of UNITS[id]!.attacks) expect(ATTACKS[aid], `${id} grants ${aid}`).toBeDefined()
       expect(UNITS[id]!.attacks, `${id} — Punch is universal (universalToAllUnits honored)`)

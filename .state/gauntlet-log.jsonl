@@ -83,3 +83,4 @@
 {"at": "2026-08-28T03:02:57.000Z", "id": "station.crit-count", "mode": "land", "disposition": "landed", "attempt": 1, "checks": [{"name": "all checks verified piecewise \u2014 see ledger", "ok": true, "warn": false}], "sha": "8780794", "seal": "unwritten \u2014 hand-landed under the reaper protocol", "handLanded": true}
 {"at":"2026-08-28T03:04:48.589Z","type":"batch-end","audit":"clean","label":"the crit corrections: 50/50 even reach, multi-criticals"}
 {"at": "2026-08-28T03:28:49.000Z", "id": "fix.status-damage-types", "mode": "land", "disposition": "landed", "attempt": 1, "checks": [{"name": "all checks verified piecewise \u2014 see ledger", "ok": true, "warn": false}], "sha": "c466319", "seal": "unwritten \u2014 hand-landed under the reaper protocol", "handLanded": true}
+{"at":"2026-08-28T03:30:38.194Z","type":"batch-end","audit":"clean","label":"typed status ticks — magic burns, true bleeds, true thorns"}

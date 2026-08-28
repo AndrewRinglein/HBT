@@ -1247,6 +1247,68 @@ export const UNIT_PACK = {
       "reach": 7,
       "staminaCost": 2
     },
+    "attack.punch": {
+      "id": "attack.punch",
+      "name": "Punch",
+      "kind": "melee",
+      "damageType": "physical",
+      "bonus": -1,
+      "stat": "strength",
+      "reach": 1,
+      "staminaCost": 0,
+      "crit": -5
+    },
+    "attack.war-axe.chop": {
+      "id": "attack.war-axe.chop",
+      "name": "Chop",
+      "kind": "melee",
+      "damageType": "physical",
+      "bonus": 1,
+      "stat": "strength",
+      "reach": 1,
+      "staminaCost": 1
+    },
+    "attack.war-axe.hack": {
+      "id": "attack.war-axe.hack",
+      "name": "Hack",
+      "kind": "melee",
+      "damageType": "physical",
+      "bonus": 2,
+      "stat": "strength",
+      "reach": 1,
+      "staminaCost": 2,
+      "crit": 5
+    },
+    "attack.knight-shield.shield-slam": {
+      "id": "attack.knight-shield.shield-slam",
+      "name": "Shield Slam",
+      "kind": "melee",
+      "damageType": "physical",
+      "bonus": 0,
+      "stat": "strength",
+      "reach": 1,
+      "staminaCost": 2
+    },
+    "attack.holy-texts.verse": {
+      "id": "attack.holy-texts.verse",
+      "name": "Verse",
+      "kind": "ranged",
+      "damageType": "true",
+      "bonus": 0,
+      "stat": "precision",
+      "reach": 4,
+      "staminaCost": 1
+    },
+    "attack.holy-texts.mercy": {
+      "id": "attack.holy-texts.mercy",
+      "name": "Mercy",
+      "kind": "ranged",
+      "damageType": "true",
+      "bonus": 2,
+      "stat": "spirit",
+      "reach": 4,
+      "staminaCost": 2
+    },
     "attack.halberd.hack": {
       "id": "attack.halberd.hack",
       "name": "Hack",
@@ -1267,16 +1329,6 @@ export const UNIT_PACK = {
       "reach": 1,
       "staminaCost": 2,
       "area": "arc"
-    },
-    "attack.punch": {
-      "id": "attack.punch",
-      "name": "Punch",
-      "kind": "melee",
-      "damageType": "physical",
-      "bonus": -1,
-      "stat": "strength",
-      "reach": 1,
-      "staminaCost": 1
     },
     "attack.javelin.throw": {
       "id": "attack.javelin.throw",
@@ -1371,16 +1423,6 @@ export const UNIT_PACK = {
       "reach": 1,
       "staminaCost": 2,
       "crit": 3
-    },
-    "attack.knight-shield.shield-slam": {
-      "id": "attack.knight-shield.shield-slam",
-      "name": "Shield Slam",
-      "kind": "melee",
-      "damageType": "physical",
-      "bonus": 0,
-      "stat": "strength",
-      "reach": 1,
-      "staminaCost": 2
     },
     "attack.pile-of-rocks.throw": {
       "id": "attack.pile-of-rocks.throw",
@@ -1486,7 +1528,8 @@ export const UNIT_PACK = {
       "ai": "ranged-kite",
       "attacks": [
         "attack.longbow.shot",
-        "attack.longbow.long-shot"
+        "attack.longbow.long-shot",
+        "attack.punch"
       ],
       "abilities": [],
       "moves": [
@@ -1520,7 +1563,11 @@ export const UNIT_PACK = {
       "maxStamina": 4,
       "staminaRegen": 1,
       "ai": "melee-aggressive",
-      "attacks": [],
+      "attacks": [
+        "attack.war-axe.chop",
+        "attack.war-axe.hack",
+        "attack.punch"
+      ],
       "abilities": [],
       "moves": [
         "power.move",
@@ -1532,7 +1579,73 @@ export const UNIT_PACK = {
       "tags": [
         "hero"
       ],
-      "triggers": []
+      "triggers": [
+        {
+          "id": "trigger.war-axe.hack.bleed",
+          "hook": "onHit",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.bleed",
+            "value": 2
+          },
+          "source": "hero.base.warrior-iron",
+          "onlyWithAttack": "attack.war-axe.hack"
+        }
+      ]
+    },
+    {
+      "typeId": "hero.base.priest-armored",
+      "name": "Battle Chaplain",
+      "side": "hero",
+      "maxHp": 7,
+      "armor": 2,
+      "resist": 0,
+      "accuracy": 80,
+      "dodge": 0,
+      "strength": 2,
+      "precision": 3,
+      "magic": 0,
+      "spirit": 2,
+      "role": "ranged",
+      "movement": 5,
+      "reach": 2,
+      "maxStamina": 5,
+      "staminaRegen": 1,
+      "ai": "ranged-kite",
+      "attacks": [
+        "attack.knight-shield.shield-slam",
+        "attack.holy-texts.verse",
+        "attack.holy-texts.mercy",
+        "attack.punch"
+      ],
+      "abilities": [],
+      "moves": [
+        "power.move",
+        "power.devotion"
+      ],
+      "attributes": [
+        "hero-eve"
+      ],
+      "tags": [
+        "hero"
+      ],
+      "triggers": [
+        {
+          "id": "trigger.knight-shield.shield-slam.stun",
+          "hook": "onDamage",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.stun",
+            "value": 1
+          },
+          "source": "hero.base.priest-armored",
+          "onlyWithAttack": "attack.knight-shield.shield-slam"
+        }
+      ]
     },
     {
       "typeId": "hero.fixed.orphans",

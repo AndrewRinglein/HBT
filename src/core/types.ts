@@ -19,7 +19,7 @@ export type AbilityDef = {
   readonly id: string
   readonly name: string
   /** Damage = this stat + bonus. Required on damage powers; absent on the rest. */
-  readonly stat?: 'strength' | 'precision' | 'magic'
+  readonly stat?: 'strength' | 'precision' | 'magic' | 'spirit'
   readonly bonus?: number
   readonly damageType?: DamageType
   readonly range: number
@@ -136,8 +136,13 @@ export type AttackDef = {
   readonly damageType: DamageType
   /** Added to the governing stat. Zombie basic = 0, Axe = +1, Punch = -1. */
   readonly bonus: number
-  /** Which stat carries the damage. */
-  readonly stat: 'strength' | 'precision' | 'magic'
+  /**
+   * Which stat carries the damage. Spirit joined 2026-08-27: the Chaplain's
+   * holy-texts Mercy is authored "stat": "spirit" — GAME-DESIGN §5 already
+   * says Spirit is "identical to Magic" as a scaling stat, and the stat
+   * pipeline resolves it like any other.
+   */
+  readonly stat: 'strength' | 'precision' | 'magic' | 'spirit'
   /** Weapon reach. Melee 1; the bow is 6. Hero Reach adds to ranged only. */
   readonly reach: number
   readonly staminaCost: number
