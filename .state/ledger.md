@@ -3593,3 +3593,83 @@ index e305090..e3e851b 100644
      {
 ```
 </details>
+
+## fix.status-damage-types — LANDED `c466319` **NEEDS REVIEW**
+2026-08-28T03:28:49.000Z
+
+  PASS  dependencies landed — station.crit
+  PASS  typecheck — tsc --noEmit clean
+  PASS  full test suite — 49 files / 448 tests green
+  PASS  gate 1 — status.poison: 18 fired, 13 changed state
+  PASS  brought its own tests — test/status-damage-types.test.ts (5 tests: typed rows, magic tick resist-reduced, true tick flat vs resist 99, live thorns, determinism)
+  PASS  control battles — DECLARED: tick events carry their type now (bytes move, arithmetic does not); re-blessed at commit
+  PASS  content — ruling recorded verbatim; the type is data on the status rows
+  PASS  hardcode scan — clean
+  PASS  generalizes — status.poison live 18x · status.burn live 8x, the same typed-tick mechanism on two rows
+  PASS  naming — no new ids beyond trigger.test-thorns (trigger kind, declared, test lane)
+  PASS  kill switch — 3/5 fail with status.poison disabled
+  WARN  existing tests untouched — bleed.test (flag -> typed form), audit (EXTENDED: tick type + no-resist-on-true), hero-pack (rewritten toward S34a pinned-armor fielding, twice) — LANDED FLAGGED
+
+  The viewer paints magic damage pops blue. HAND-LANDED under the reaper protocol; post-land audit clean. Seal unwritten — it belongs to the gate.
+
+<details><summary>Existing tests were edited — review this diff</summary>
+
+```diff
+diff --git a/test/audit.test.ts b/test/audit.test.ts
+index 6c43a38..ca62062 100644
+--- a/test/audit.test.ts
++++ b/test/audit.test.ts
+@@ -283,4 +283,9 @@ describe('independent audit of logged battles', () => {
+               expect(e.actor, 'status damage has no attacker').toBeNull()
+               expect(e['amount'] as number).toBeGreaterThanOrEqual(0)
++              // fix.status-damage-types (2026-08-27): the tick carries its
++              // row's type — magic ticks may show resist, true ticks never do.
++              const tickType = STATUSES[e.causeId]?.tickDamageType ?? 'true'
++              expect(e['damageType'], `${e.causeId} tick type`).toBe(tickType)
++              if (tickType === 'true') expect(e['resisted'], 'nothing reduces a true tick').toBeUndefined()
+               pending = null; pendingPower = null
+               break
+diff --git a/test/bleed.test.ts b/test/bleed.test.ts
+index a19e8b9..aefa970 100644
+--- a/test/bleed.test.ts
++++ b/test/bleed.test.ts
+@@ -23,8 +23,11 @@ function warriorWithResist(resist: number) {
+ 
+ describe('the data', () => {
+-  it('bleed deliberately OMITS tickMitigatedByResist — the seam statusDamage was built with', () => {
++  it('bleed ticks TRUE damage — ruled 2026-08-27, the typed form of the old omitted flag', () => {
++    // LAW 10 — rewritten 2026-08-27 (fix.status-damage-types): the claim was
++    // "bleed omits tickMitigatedByResist"; the flag became tickDamageType and
++    // the same claim is now spelled 'true'. Same arithmetic, one vocabulary.
+     const def = STATUSES['status.bleed']!
+     expect(def).toBeDefined()
+-    expect(def.tickMitigatedByResist).toBeUndefined()
++    expect(def.tickDamageType).toBe('true')
+     expect(def.shape).toBe('counter')
+     expect(def.halvesHealing).toBeUndefined()
+diff --git a/test/hero-pack.test.ts b/test/hero-pack.test.ts
+index d92de4b..189c991 100644
+--- a/test/hero-pack.test.ts
++++ b/test/hero-pack.test.ts
+@@ -40,8 +40,15 @@ describe('the Hunter is a real hero from the Codex', () => {
+       join(__dirname, '..', '..', 'content', 'gen', 'enemy-pack-gaps.json'), 'utf8')).gaps as
+       { unit: string; needs: string }[]
+-    for (const id of ['hero.base.warrior-iron', 'hero.base.priest-armored']) {
+-      expect(gaps.some((g) => g.unit === id && g.needs === 'kit unresolved'), id).toBe(true)
+-      expect(UNITS[id], `${id} must NOT be fielded with an invented kit`).toBeUndefined()
+-    }
++    // LAW 10 — rewritten 2026-08-27 (twice in one day, both toward the rule):
++    // S34a pinned the Iron Dwarf's ARMOR, so the converter now FIELDS him with
++    // exactly the pinned items and a 'kit remainder unresolved' gap — the
++    // weaponless-Lumberjack precedent: the unit stands, the gap stands beside
++    // it, and NOTHING was rolled in a converter. The Chaplain's kit is still
++    // fully unresolved, so he still does not field at all.
++    expect(gaps.some((g) => g.unit === 'hero.base.warrior-iron' && /kit.*unresolved/.test(g.needs))).toBe(true)
++    expect(UNITS['hero.base.warrior-iron'], 'the Dwarf fields in his pinned Destroyed Mail').toBeDefined()
++    expect(UNITS['hero.base.warrior-iron']!.attacks, 'his weapon draw stays unrolled — no invented attacks').toEqual([])
++    expect(gaps.some((g) => g.unit === 'hero.base.priest-armored' && /kit.*unresolved/.test(g.needs))).toBe(true)
++    expect(UNITS['hero.base.priest-armored'], 'the Chaplain must NOT field with an invented kit').toBeUndefined()
+   })
+ 
+```
+</details>
