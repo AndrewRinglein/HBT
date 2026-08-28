@@ -306,10 +306,17 @@ for (const id of PARTY) {
   const kitTriggers = [];
   const kit = (KITS.heroKits ?? KITS.heroOverrides ?? {})[id] ?? null;
   const classKit = KITS.classKits[h.class] ?? null;
+  // Kit grammar (ruled 2026-08-27): a plain ARRAY is the full kit; {pinned:[...]} guarantees
+  // those items and the class draw completes the rest — the pinned items convert, the
+  // remainder is still a SPEC and still a named gap until dictated.
   let items = null;
-  if (kit) items = kit;
+  if (Array.isArray(kit)) items = kit;
+  else if (kit?.pinned) {
+    items = kit.pinned;
+    gap(id, 'kit is PINNED ' + kit.pinned.join('+') + ' — the class-draw remainder is a SPEC; the roll belongs to the draft', 'kit remainder unresolved');
+  }
   else if (classKit?.items) items = classKit.items;
-  else { gap(id, `kit is a ${classKit?.pick?.random ? 'random' : 'oneOf'} SPEC — the roll belongs to the draft; needs a dictated hero override`, 'kit unresolved'); continue; }
+  else { gap(id, `kit is a ${classKit?.pick?.random || classKit?.draw ? 'random' : 'oneOf'} SPEC — the roll belongs to the draft; needs a dictated hero override`, 'kit unresolved'); continue; }
 
   const attackIds = [];
   let anyRanged = false;
@@ -333,7 +340,21 @@ for (const id of PARTY) {
       kitTriggers.push(...settledAttackExtras(a, id));
     }
   }
-  const p = h.ported, d = h.derivedBase;
+  // Fold kit-item stat modifiers into the row (the armor pins are the first kit items
+  // whose whole payload IS the mods — without this the Destroyed Mail does nothing).
+  const p = { ...h.ported }, d = { ...h.derivedBase };
+  const FOLD = { health: [p, 'health'], armor: [p, 'armor'], resist: [p, 'resist'], dodge: [p, 'dodge'],
+    strength: [p, 'strength'], precision: [p, 'precision'], magic: [p, 'magic'], spirit: [p, 'spirit'],
+    reach: [p, 'reach'], accuracy: [d, 'accuracy'], movement: [d, 'movement'],
+    staminaMax: [d, 'staminaMax'], staminaRegen: [d, 'staminaRegen'] };
+  for (const itemId of items) {
+    const it = ITEM_BY_ID.get(itemId);
+    for (const [stat, v] of Object.entries(it?.statModifiers || {})) {
+      const f = FOLD[stat];
+      if (f) f[0][f[1]] = (f[0][f[1]] || 0) + v;
+      else gap(id, `${itemId} statModifier '${stat}' ${v}`, 'stat: ' + stat + ' (no UnitDef field)');
+    }
+  }
   prologueParty.push({
     typeId: id, name: h.name, side: 'hero',
     maxHp: p.health, armor: p.armor ?? 0, resist: p.resist ?? 0,

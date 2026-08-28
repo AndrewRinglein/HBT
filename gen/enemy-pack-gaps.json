@@ -108,12 +108,12 @@
   },
   {
    "unit": "hero.base.warrior-iron",
-   "what": "kit is a oneOf SPEC — the roll belongs to the draft; needs a dictated hero override",
-   "needs": "kit unresolved"
+   "what": "kit is PINNED item.destroyed-mail — the class-draw remainder is a SPEC; the roll belongs to the draft",
+   "needs": "kit remainder unresolved"
   },
   {
    "unit": "hero.base.priest-armored",
-   "what": "kit is a oneOf SPEC — the roll belongs to the draft; needs a dictated hero override",
+   "what": "kit is a random SPEC — the roll belongs to the draft; needs a dictated hero override",
    "needs": "kit unresolved"
   },
   {
