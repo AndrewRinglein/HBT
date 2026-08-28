@@ -1413,6 +1413,46 @@ export const UNIT_PACK = {
       "staminaCost": 1
     }
   },
+  "authoredAbilities": {
+    "power.lightning-staff.storm": {
+      "id": "power.lightning-staff.storm",
+      "name": "Storm",
+      "staminaCost": 3,
+      "cooldown": 0,
+      "range": 4,
+      "effect": "damage",
+      "stat": "magic",
+      "bonus": 1,
+      "damageType": "magic",
+      "area": "blast1"
+    },
+    "power.holy-symbol.heal": {
+      "id": "power.holy-symbol.heal",
+      "name": "Heal",
+      "staminaCost": 1,
+      "cooldown": 0,
+      "range": 6,
+      "effect": "heal",
+      "heal": {
+        "scale": "partySpirit",
+        "base": 1,
+        "mult": 2
+      }
+    },
+    "power.knight-shield.block": {
+      "id": "power.knight-shield.block",
+      "name": "Block",
+      "staminaCost": 1,
+      "cooldown": 3,
+      "range": 0,
+      "effect": "selfGuard",
+      "guard": {
+        "protectionBase": 4,
+        "protectionPerArmor": 1,
+        "dodgeLoss": 5
+      }
+    }
+  },
   "prologueParty": [
     {
       "typeId": "hero.base.ranger-aggressive",
@@ -1807,7 +1847,9 @@ export const UNIT_PACK = {
         "attack.lightning-staff.bolt",
         "attack.punch"
       ],
-      "abilities": [],
+      "abilities": [
+        "power.lightning-staff.storm"
+      ],
       "moves": [
         "power.move",
         "power.focus"
@@ -1868,7 +1910,9 @@ export const UNIT_PACK = {
         "attack.holy-symbol.wrath",
         "attack.punch"
       ],
-      "abilities": [],
+      "abilities": [
+        "power.holy-symbol.heal"
+      ],
       "moves": [
         "power.move",
         "power.devotion"
@@ -1906,7 +1950,9 @@ export const UNIT_PACK = {
         "attack.knight-shield.shield-slam",
         "attack.punch"
       ],
-      "abilities": [],
+      "abilities": [
+        "power.knight-shield.block"
+      ],
       "moves": [
         "power.move",
         "power.sidestep"

@@ -3230,3 +3230,94 @@ index 2855a23..a88f585 100644
              const before = stamina.get(e.actor!)!
 ```
 </details>
+
+## capability.item-powers — LANDED `1e96226` **NEEDS REVIEW**
+2026-08-28T01:01:13.000Z
+
+  PASS  dependencies landed — capability.area-attack
+  PASS  typecheck — tsc --noEmit clean
+  PASS  full test suite — 46 files / 425 tests green
+  PASS  gate 1 — power.holy-symbol.heal 8 fired/4 changed · power.knight-shield.block 5/3 · power.lightning-staff.storm 7/3
+  PASS  brought its own tests — test/item-powers.test.ts (9 tests)
+  PASS  control battles unchanged — byte-identical; the single-target bolt path is byte-for-byte the original
+  PASS  content has a published source — all three parsed from EXACT settled text (content 880e535); Storm hex-targeting remainder is a NAMED gap
+  PASS  hardcode scan — heal/selfGuard are mechanism vocabulary; no content names in src/core
+  SKIP  generalizes — probeIds carry three ids, each a different effect shape compiled from data; no variants field (shape rule) — NOTE: three live consumers stand in for the two-variant form
+  PASS  naming — power/showcase/unit kinds, declared
+  PASS  kill switch — item-powers tests fail 9/9 with the three power ids disabled
+  WARN  existing tests untouched — alpha-team.test.ts (item-power gaps closed) and audit.test.ts (power audit extended) — LANDED FLAGGED
+
+  HAND-LANDED under the reaper protocol; post-land audit clean. Seal unwritten — it belongs to the gate.
+
+<details><summary>Existing tests were edited — review this diff</summary>
+
+```diff
+diff --git a/test/alpha-team.test.ts b/test/alpha-team.test.ts
+index e5dc03e..67fec2e 100644
+--- a/test/alpha-team.test.ts
++++ b/test/alpha-team.test.ts
+@@ -138,7 +138,14 @@ describe('the pack carries the six alpha heroes with their real stat bodies', ()
+     expect(alpha.some((g) => /area attack/.test(g.needs))).toBe(false)
+     expect(ATTACKS['attack.halberd.cleave']!.area).toBe('arc')
+-    // four crit fields, three item powers (Storm, Heal, Block) — still owed
++    // four crit fields — still owed (station.crit)
+     expect(alpha.filter((g) => /crit/.test(g.needs)).length).toBe(4)
+-    expect(alpha.filter((g) => /item power/.test(g.needs)).length).toBe(3)
++    // the three item powers COMPILE now (capability.item-powers) — their gaps
++    // are gone, the powers stand on their units, and Storm's arbitrary-hex
++    // targeting remainder is the one NAMED partial left behind
++    expect(alpha.filter((g) => /item power/.test(g.needs)).length).toBe(0)
++    expect(alpha.some((g) => /power targeting: arbitrary hex/.test(g.needs))).toBe(true)
++    expect(UNITS['alpha-air-mage']!.abilities).toEqual(['power.lightning-staff.storm'])
++    expect(UNITS['alpha-lucius']!.abilities).toEqual(['power.holy-symbol.heal'])
++    expect(UNITS['alpha-osric']!.abilities).toEqual(['power.knight-shield.block'])
+   })
+ })
+diff --git a/test/audit.test.ts b/test/audit.test.ts
+index a88f585..c52c19b 100644
+--- a/test/audit.test.ts
++++ b/test/audit.test.ts
+@@ -215,6 +215,23 @@ describe('independent audit of logged battles', () => {
+             const d = distance(hex.get(e.actor!)!, hex.get(e.target!)!)
+             expect(d, 'power was within range').toBeLessThanOrEqual(ab.range)
+-            expect(d).toBe(e['distance'])
+-            pendingPower = { actor: e.actor!, target: e.target!, abilityId: ab.id }
++            // capability.item-powers (2026-08-27): only ranged power events
++            // carry `distance`; a selfGuard is used at distance 0 on oneself.
++            if (e['distance'] !== undefined) expect(d).toBe(e['distance'])
++            // Only a single-target DAMAGE power arms the recompute below —
++            // heal carries `heal`, selfGuard carries `protection`, and an
++            // area power's per-victim numbers arrive on power.hit events with
++            // their own full ledgers. Extended, never weakened: the damage
++            // recompute is exactly as strict as before for exactly the events
++            // it always covered.
++            if ((ab.effect ?? 'damage') === 'damage' && !ab.area) {
++              pendingPower = { actor: e.actor!, target: e.target!, abilityId: ab.id }
++            } else {
++              if (ab.effect === 'heal') expect(e['heal'] as number, `${ab.id} heals a stated amount`).toBeGreaterThan(0)
++              if (ab.effect === 'selfGuard') {
++                expect(e.target, 'selfGuard lands on its caster').toBe(e.actor)
++                expect(e['protection'] as number, `${ab.id} states its protection`).toBeGreaterThan(0)
++              }
++              pendingPower = null
++            }
+             pending = null
+             break
+@@ -233,5 +250,7 @@ describe('independent audit of logged battles', () => {
+               const tg = UNITS[type.get(pendingPower.target)!]!
+               const ab = ABILITIES[pendingPower.abilityId]!
+-              const stat = modded(pendingPower.actor, ab.stat,
++              // pendingPower is only ever armed for single-target damage
++              // powers (see power.used above), so the row carries these.
++              const stat = modded(pendingPower.actor, ab.stat!,
+               ab.stat === 'strength' ? at.strength : ab.stat === 'magic' ? at.magic : at.precision, e.turn)
+               const mit = ab.damageType === 'physical' ? tg.armor : ab.damageType === 'magic' ? tg.resist : 0
+@@ -239,5 +258,5 @@ describe('independent audit of logged battles', () => {
+               // landing (2026-08-20): the event names what a pool absorbed, and
+               // the pipeline subtracts it before mitigation.
+-              const expected = Math.max(0, ab.bonus + stat - penaltyOf(pendingPower.actor)
++              const expected = Math.max(0, ab.bonus! + stat - penaltyOf(pendingPower.actor)
+                 - ((e['absorbed'] as number) ?? 0) - mit)
+               expect((e['amount'] as number) + (e['overkill'] as number), `${ab.id} damage`).toBe(expected)
+```
+</details>

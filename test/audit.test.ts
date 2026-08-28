@@ -214,8 +214,25 @@ describe('independent audit of logged battles', () => {
             const ab = ABILITIES[e['abilityId'] as string]!
             const d = distance(hex.get(e.actor!)!, hex.get(e.target!)!)
             expect(d, 'power was within range').toBeLessThanOrEqual(ab.range)
-            expect(d).toBe(e['distance'])
-            pendingPower = { actor: e.actor!, target: e.target!, abilityId: ab.id }
+            // capability.item-powers (2026-08-27): only ranged power events
+            // carry `distance`; a selfGuard is used at distance 0 on oneself.
+            if (e['distance'] !== undefined) expect(d).toBe(e['distance'])
+            // Only a single-target DAMAGE power arms the recompute below —
+            // heal carries `heal`, selfGuard carries `protection`, and an
+            // area power's per-victim numbers arrive on power.hit events with
+            // their own full ledgers. Extended, never weakened: the damage
+            // recompute is exactly as strict as before for exactly the events
+            // it always covered.
+            if ((ab.effect ?? 'damage') === 'damage' && !ab.area) {
+              pendingPower = { actor: e.actor!, target: e.target!, abilityId: ab.id }
+            } else {
+              if (ab.effect === 'heal') expect(e['heal'] as number, `${ab.id} heals a stated amount`).toBeGreaterThan(0)
+              if (ab.effect === 'selfGuard') {
+                expect(e.target, 'selfGuard lands on its caster').toBe(e.actor)
+                expect(e['protection'] as number, `${ab.id} states its protection`).toBeGreaterThan(0)
+              }
+              pendingPower = null
+            }
             pending = null
             break
           }
@@ -232,13 +249,15 @@ describe('independent audit of logged battles', () => {
               const at = UNITS[type.get(pendingPower.actor)!]!
               const tg = UNITS[type.get(pendingPower.target)!]!
               const ab = ABILITIES[pendingPower.abilityId]!
-              const stat = modded(pendingPower.actor, ab.stat,
+              // pendingPower is only ever armed for single-target damage
+              // powers (see power.used above), so the row carries these.
+              const stat = modded(pendingPower.actor, ab.stat!,
               ab.stat === 'strength' ? at.strength : ab.stat === 'magic' ? at.magic : at.precision, e.turn)
               const mit = ab.damageType === 'physical' ? tg.armor : ab.damageType === 'magic' ? tg.resist : 0
               // The auditor learned PROTECTION with the status.protection
               // landing (2026-08-20): the event names what a pool absorbed, and
               // the pipeline subtracts it before mitigation.
-              const expected = Math.max(0, ab.bonus + stat - penaltyOf(pendingPower.actor)
+              const expected = Math.max(0, ab.bonus! + stat - penaltyOf(pendingPower.actor)
                 - ((e['absorbed'] as number) ?? 0) - mit)
               expect((e['amount'] as number) + (e['overkill'] as number), `${ab.id} damage`).toBe(expected)
               checkedDamage++

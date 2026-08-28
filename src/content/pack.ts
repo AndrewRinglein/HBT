@@ -4,7 +4,7 @@
 // GENERATED (content/mkenginepack.mjs) and never hand-edited; this loader
 // validates it LOUDLY at import time (Law 9) and hands back plain UnitDefs.
 import { UNIT_PACK } from './generated/pack.js'
-import type { AttackDef, UnitDef } from '../core/types.js'
+import type { AbilityDef, AttackDef, UnitDef } from '../core/types.js'
 import { validateTrigger } from '../core/trigger.js'
 
 const REQUIRED = ['typeId', 'name', 'side', 'maxHp', 'armor', 'resist', 'accuracy', 'dodge',
@@ -55,6 +55,24 @@ export function packUnits(): Readonly<Record<string, UnitDef>> {
 
 /** The pack's own note — surfaced so tooling can print WHY these units exist. */
 export const UNIT_PACK_NOTE = UNIT_PACK.note
+
+/**
+ * The authored item powers — capability.item-powers (2026-08-27). Validated
+ * loudly at import: each row must speak exactly one of the three shapes.
+ */
+export function packAbilities(): Readonly<Record<string, AbilityDef>> {
+  const raw = (UNIT_PACK as { authoredAbilities?: Readonly<Record<string, AbilityDef>> }).authoredAbilities ?? {}
+  for (const [k, a] of Object.entries(raw)) {
+    if (k !== a.id) throw new Error(`unit pack: ability key '${k}' names id '${a.id}'`)
+    const kind = a.effect ?? 'damage'
+    if (kind === 'damage' && (a.stat === undefined || a.bonus === undefined || a.damageType === undefined)) {
+      throw new Error(`unit pack: damage power '${k}' is missing stat/bonus/damageType — regenerate the pack`)
+    }
+    if (kind === 'heal' && a.heal === undefined) throw new Error(`unit pack: heal power '${k}' has no heal spec — regenerate the pack`)
+    if (kind === 'selfGuard' && a.guard === undefined) throw new Error(`unit pack: selfGuard power '${k}' has no guard spec — regenerate the pack`)
+  }
+  return raw
+}
 
 /** The authored enemies' attacks — generated rows, validated like the units. */
 export function packAttacks(): Readonly<Record<string, AttackDef>> {

@@ -4,7 +4,7 @@
 
 import type { AbilityDef, AttackDef, UnitDef } from '../core/types.js'
 import { omitDisabled, stripDisabledTriggers } from './disable.js'
-import { packAttacks, packUnits } from './pack.js'
+import { packAbilities, packAttacks, packUnits } from './pack.js'
 
 // ─────────────────────────────────────────────────────────────────────────────
 // PROVISIONAL CONTENT — NOT PUBLISHED, NOT DESIGN
@@ -440,7 +440,12 @@ for (const k of Object.keys(packAttacks())) {
   if (k in RAW_ATTACKS) throw new Error(`attack '${k}' exists in BOTH content/index.ts and the generated pack — one owner only`)
 }
 export const ATTACKS = omitDisabled({ ...RAW_ATTACKS, ...packAttacks() })
-export const ABILITIES = omitDisabled(RAW_ABILITIES)
+// The authored item powers join the hand-authored abilities through the same
+// seam — capability.item-powers (2026-08-27). One owner per id, loudly.
+for (const k of Object.keys(packAbilities())) {
+  if (k in RAW_ABILITIES) throw new Error(`ability '${k}' exists in BOTH content/index.ts and the generated pack — one owner only`)
+}
+export const ABILITIES = omitDisabled({ ...RAW_ABILITIES, ...packAbilities() })
 // The generated pack (Codex-tracked test cohort) joins the hand-authored rows.
 // A collision is a LOUD failure: the pack owns test- ids, this file owns the
 // rest, and neither may quietly shadow the other.

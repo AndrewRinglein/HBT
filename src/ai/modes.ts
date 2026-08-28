@@ -10,7 +10,7 @@ import type { MoveDef } from './../core/types.js'
 import { isPassable } from './../content/maps.js'
 import { neighboursOf } from './../core/hex.js'
 import { areaUnitIdsOf, canAttack, performAttack, reachOf } from './../core/pipeline.js'
-import { canUsePower, previewPower, usePower } from './../core/ability.js'
+import { canUsePower, powerBlastIdsOf, previewPower, usePower } from './../core/ability.js'
 import { reachBonusOf } from './../content/maps.js'
 import { TERRAIN } from './../core/types.js'
 import { emit, unit } from './../core/mutate.js'
@@ -193,6 +193,54 @@ function dumbMelee(ctx: Ctx, u: Unit): void {
   }
 }
 
+/**
+ * Support powers — capability.item-powers (2026-08-27). RULES, not scores,
+ * every quantity from preview()/canUsePower (Law 2):
+ *
+ *   heal       when the most-wounded legal ally is missing at least HALF the
+ *              heal (at most half wasted) — most missing first, ties to the
+ *              lower id (Law 6). "One ally within 6 hexes."
+ *   selfGuard  when two or more enemies stand adjacent — the shield answers
+ *              real pressure, and its permanent Dodge price is not paid for
+ *              one zombie.
+ *
+ * Both spend the primary action, so a used support power IS the activation's
+ * action. Damage powers are not handled here — the kite's own power block
+ * already weighs those against the staff.
+ */
+function supportPower(ctx: Ctx, u: Unit): boolean {
+  for (const id of u.abilities) {
+    const a = ctx.abilities[id]
+    if (!a) continue
+    if (a.effect === 'heal') {
+      let best: Unit | null = null
+      for (const o of ctx.state.units) {
+        if (o.side !== u.side || o.lifeState !== 'standing') continue
+        if (!canUsePower(ctx, u.id, o.id, id)) continue
+        if (o.maxHp - o.hp <= 0) continue
+        if (!best || (o.maxHp - o.hp) > (best.maxHp - best.hp)
+          || ((o.maxHp - o.hp) === (best.maxHp - best.hp) && o.id < best.id)) best = o
+      }
+      if (best) {
+        const amount = previewPower(ctx, u.id, best.id, id).heal ?? 0
+        if (amount > 0 && (best.maxHp - best.hp) * 2 >= amount) {
+          usePower(ctx, u.id, best.id, id)
+          settle(ctx, id)
+          return true
+        }
+      }
+    }
+    if (a.effect === 'selfGuard' && canUsePower(ctx, u.id, u.id, id)) {
+      if (adjacentEnemies(ctx, u).length >= 2) {
+        usePower(ctx, u.id, u.id, id)
+        settle(ctx, id)
+        return true
+      }
+    }
+  }
+  return false
+}
+
 // ── melee-aggressive ─────────────────────────────────────────────────────────
 // Closes on the reachable enemy with the lowest health; falls back to closing on
 // the nearest. Hits with the biggest attack it can afford.
@@ -262,6 +310,7 @@ function meleeAggressive(ctx: Ctx, u: Unit): void {
     if (bestHex !== null) executeMove(ctx, u.id, pathTo(reach, u.hex, bestHex), walk)
   }
   if (u.lifeState !== 'standing') return
+  if (supportPower(ctx, u)) return
   if (!attackIfPossible(ctx, u, adjacentEnemies(ctx, u))) idle(ctx, u, 'could not reach an enemy')
 }
 
@@ -360,17 +409,39 @@ function rangedKite(ctx: Ctx, u: Unit): void {
     }
   }
   if (u.lifeState !== 'standing') return
+  if (supportPower(ctx, u)) return
 
   // A power beats a staff shot whenever it is available and hits harder.
   const power = u.abilities.find((id) => enemies.some((e) => canUsePower(ctx, u.id, e.id, id)))
   if (power) {
     const targets = enemies.filter((e) => canUsePower(ctx, u.id, e.id, power))
-    const t = lowestHealth(targets)
+    // An AREA power aims where it counts double — capability.item-powers
+    // (2026-08-27), the same rule as areaSwing: among legal targets, prefer
+    // the first (lowest health, then id) whose blast catches two or more
+    // enemies and no ally; otherwise the plain lowest-health pick.
+    const pa = ctx.abilities[power]
+    const areaPick = pa?.area
+      ? targets.slice().sort((a, b) => a.hp - b.hp || a.id - b.id).find((e) => {
+          const struck = powerBlastIdsOf(ctx, u.id, e.id, power)
+          const foes = struck.filter((s) => unit(ctx, s).side !== u.side).length
+          const allies = struck.length - foes
+          return foes >= 2 && (allies === 0 || ctx.cfg.switches.aiAreaThroughAllies)
+        })
+      : undefined
+    const t = areaPick ?? lowestHealth(targets)
     if (t) {
       const staff = bestAttack(ctx, u.id, t.id)
       const staffDmg = staff ? ctx.attacks[staff]!.bonus +
         (ctx.attacks[staff]!.stat === 'magic' ? u.magic : ctx.attacks[staff]!.stat === 'strength' ? u.strength : u.precision) : 0
-      if (previewPower(ctx, u.id, t.id, power).damage >= staffDmg) {
+      // An area power is worth its SUM over the enemies struck (the areaPick
+      // rule already refused shapes with a friend inside) — a Storm that does
+      // one less per head beats the staff the moment it catches two.
+      const powerDmg = pa?.area
+        ? powerBlastIdsOf(ctx, u.id, t.id, power)
+            .filter((s) => unit(ctx, s).side !== u.side)
+            .reduce((sum, s) => sum + previewPower(ctx, u.id, s, power).damage, 0)
+        : previewPower(ctx, u.id, t.id, power).damage
+      if (powerDmg >= staffDmg) {
         usePower(ctx, u.id, t.id, power)
         settle(ctx, power)
         return

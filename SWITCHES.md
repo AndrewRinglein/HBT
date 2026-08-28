@@ -271,3 +271,9 @@ blocked push fizzles in place with `knockback.blocked` logged and its reason
 named. The unexplored branch (collision damage, or damage-on-fizzle) is not
 built; if a sweep or a ruling wants slam-into-wall damage, that is a new
 effect, not a flip of this switch.
+
+## healIncludesSelf — is the priest his own ally?
+Added 2026-08-27 (capability.item-powers). Heal targets "one ally within 6
+hexes"; whether that includes the caster is unstated. Default **true** — the
+common reading. A sweep can ask whether self-healing priests outlive parties
+whose priest must be healed by someone else.

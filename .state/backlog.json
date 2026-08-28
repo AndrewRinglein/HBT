@@ -1437,7 +1437,9 @@
    "power.holy-symbol.heal",
    "power.knight-shield.block",
    "power.lightning-staff.storm"
-  ]
+  ],
+  "status": "done-needs-review",
+  "sha": "1e96226"
  },
  {
   "id": "station.crit",

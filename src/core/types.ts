@@ -18,14 +18,29 @@ export type Outcome = 'heroClear' | 'wipe' | 'capped'
 export type AbilityDef = {
   readonly id: string
   readonly name: string
-  /** Damage = this stat + bonus. */
-  readonly stat: 'strength' | 'precision' | 'magic'
-  readonly bonus: number
-  readonly damageType: DamageType
+  /** Damage = this stat + bonus. Required on damage powers; absent on the rest. */
+  readonly stat?: 'strength' | 'precision' | 'magic'
+  readonly bonus?: number
+  readonly damageType?: DamageType
   readonly range: number
   readonly staminaCost: number
   /** Turns before it can be used again. 0 = every turn. */
   readonly cooldown: number
+  /**
+   * What the power DOES — capability.item-powers (2026-08-27). Absent =
+   * 'damage', the original Arcane-Bolt shape, so every existing row is
+   * unchanged. 'heal' restores HP (amount in `heal` — a trigger ValueSpec, so
+   * Spirit scaling uses the party-wide sum per GAME-DESIGN §5's law).
+   * 'selfGuard' is the Knight Shield's Block: protection now, a permanent
+   * stat price each use (`guard`).
+   */
+  readonly effect?: 'damage' | 'heal' | 'selfGuard'
+  /** damage only: strike EVERY standing unit in the blast (areaHexesOf 'blast1'). */
+  readonly area?: 'blast1'
+  /** heal only. */
+  readonly heal?: import('./trigger.js').ValueSpec
+  /** selfGuard only: protection = base + perArmor x effective Armor; dodgeLoss applies each use, rest of Battle. */
+  readonly guard?: { readonly protectionBase: number; readonly protectionPerArmor: number; readonly dodgeLoss: number }
 }
 
 /**
@@ -276,6 +291,8 @@ export type Config = {
     aiLeapToAdjacent: boolean
     /** Do area attacks strike allies in the shape? SWITCHES.md, 2026-08-27. */
     areaHitsAllies: boolean
+    /** May a heal power target its own caster? SWITCHES.md, 2026-08-27. */
+    healIncludesSelf: boolean
     /** May the AI swing an area attack through its own allies? SWITCHES.md, 2026-08-27. */
     aiAreaThroughAllies: boolean
   }
@@ -293,6 +310,9 @@ export const DEFAULT_CONFIG: Config = {
     areaHitsAllies: true,
     // Conservative default: the AI never swings wide through a friend.
     aiAreaThroughAllies: false,
+    // "one ally within 6 hexes" — whether the priest counts as his own ally
+    // is unstated; the common reading says yes. SWITCHES.md, 2026-08-27.
+    healIncludesSelf: true,
   },
 }
 

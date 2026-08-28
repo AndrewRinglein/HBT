@@ -106,6 +106,26 @@ const RAW_SCENARIOS: Readonly<Record<string, ScenarioDef>> = {
     enemyHexes: [118, 119],
     replicate: 0,
   },
+  'showcase.item-powers': {
+    id: 'showcase.item-powers',
+    note: 'capability.item-powers verify fielding: the Air Mage stands boxed '
+      + 'by his own line with a zombie clump two hexes out — inside Storm\'s '
+      + 'range 4, outside the blast himself — so the opening activation is a '
+      + 'Storm through both. A kiting mage otherwise holds at bolt range, '
+      + 'beyond 4, and the power would probe as dead content however real.',
+    mapId: 'map.open',
+    // The mage activates FIRST and every neighbour (118 119 134 136 150 151)
+    // holds an ally, so he cannot kite away before his power block runs. The
+    // zombie pair at 85/86 is distance 3 — inside range 4, adjacent to each
+    // other, and their blasts contain no ally hex.
+    heroes: ['alpha-air-mage', 'alpha-oathblade', 'alpha-osric',
+      'alpha-sky-pirate', 'alpha-lucius', 'alpha-dusk-hawk',
+      'hero.base.ranger-aggressive'],
+    heroHexes: [135, 118, 119, 134, 136, 150, 151],
+    enemies: ['unit.zombie', 'unit.zombie', 'unit.fast-zombie'],
+    enemyHexes: [85, 86, 87],
+    replicate: 0,
+  },
   'showcase.civilians': {
     id: 'showcase.civilians',
     note: 'The three prologue civilians beside the Hunter against zombies — '
