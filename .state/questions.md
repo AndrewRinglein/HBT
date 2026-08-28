@@ -7,6 +7,39 @@ and date. Tool tasks and engine chores go in the backlog, never here.
 
 ## OPEN
 
+- (2026-08-27) **The P11 encounter format** — approve it and the encounter
+  runner gets built, then battles 1 and 2 land as real encounters with
+  both-outcome sweeps. Everything else about the prologue waits behind this.
+
+- (2026-08-27) **The Iron Dwarf's weapon and the Battle Chaplain's kit.** The
+  Dwarf's Destroyed Mail is pinned (ruled today) but his weapon is still a
+  random class draw, and the Chaplain's whole kit is a random spec — "the
+  roll belongs to the draft." Either dictate what they drew, or rule that the
+  engine may roll the draw itself from a named stream when it fields them.
+
+- (2026-08-27) **Flip the standard battles to the Alpha Team?** The alphas are
+  in and armed; the control battles still field the (TEST) cohort. Flipping is
+  one landing that re-blesses every baseline. Say when.
+
+- (2026-08-27) **Vision** — there is no vision model (gap L-3a). It blocks
+  Blinded's −4 Vision half, and the viewer thread's darkness/fog. Build the
+  Vision stat and concealment as designed, or keep it parked?
+
+- (2026-08-27) **Surge** — the Surge check is designed into the Activation
+  ladder but no Surge quantity exists in the engine. It blocks Knocked
+  Sprawling's −50 Surge half. Build it next?
+
+- (2026-08-27) **item.bracer's replacement rule** — your dictation parked it.
+  Multi-criticals currently roll the chart WITH replacement (a doubled row
+  stacks); the without-replacement path is built and waiting on your word.
+
+- (2026-08-27) **Two content kinds were never approved** — `battle.*` (5 rows)
+  and `move.*` (8 rows) exist in content and `node tools/kinds.mjs` fails on
+  them. Approve the kinds or have the content session rename them.
+
+- (2026-08-27) **19 flagged landings await your review** —
+  `node tools/report.mjs`, verdicts recorded in your words via review.mjs.
+
 ## ANSWERED
 
 - (2026-08-20) Water and regeneration — regeneration is NOT washed off by water. Water removes burning (on entry, and at end of activation) and poison (at end of activation) only. Fixed and landed (fix.water-regen).
