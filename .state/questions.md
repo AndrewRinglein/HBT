@@ -19,17 +19,18 @@ and date. Tool tasks and engine chores go in the backlog, never here.
 - (2026-08-20) Does flight from inside a ZoC provoke? — Yes, once, leaving the first hex only.
 - (2026-08-20) onDodge: any miss or dodge-caused? — Dodge-caused only; one roll, the dodge-sized band at the deep end.
 
-## OPEN — does the crit system switch ON, and what does a crit DO? (2026-08-27)
+## ANSWERED — the crit system (2026-08-27, same day)
 
-The last four Alpha Team gaps are the crit fields (dagger 5, javelin 3,
-quick-shot 5, longsword stab 3). The engine has half a crit system behind
-`critEnabled: false`: the roll exists, the surplus-accuracy formula exists,
-onCrit fires — but the damage arm is +50%, which CODEX §12 bans ("a crit is
-not a x2. Write onCrit: deal N crits"), COMBAT-DESIGN §183–199 wants the
-Critical Injury Chart instead, the chart's rows are not authored anywhere I
-can find, Luck has no UnitDef field, and `critChartSplit` (SWITCHES.md) is
-another thread's open question on the same ground. Three decisions only you
-can make: (1) does crit turn on for the prologue battles; (2) is the +50%
-damage arm dead on arrival, or a temporary stand-in until the chart is
-authored; (3) where do the chart rows get authored — a content session?
-`station.crit` sits ready in the backlog behind these.
+Answered by the full Critical Injury Chart dictation: crits are ON; the +50%
+damage arm is the HEADS branch (applied before Armor/Resist/Protection), the
+chart is the TAILS branch — ten battle-only rows, ruled data in settled.json
+critChart, never an injury.* badge. Landed as station.crit (d5c42f7). One
+reconciliation left open below.
+
+## OPEN — 'literally a coin' vs the 2026-08-22 critChartSplit answer (2026-08-27)
+
+Today's dictation says the branch flip is 'literally a coin'; your dated
+2026-08-22 answer was two numbers — chart share 25 against heroes, 50 against
+enemies. The dated answer is what landed (both numbers are switches:
+critChartShareVsHeroes / critChartShareVsEnemies). If today's coin was meant
+to supersede it, say so and the switches move to 50/50.
