@@ -2677,6 +2677,30 @@
    "hook": "onTakingDamage",
    "payload": "On taking damage: gain 1 Karma",
    "source": "Dictated in the 2026-08-25 badge riff."
+  },
+  {
+   "id": "badge.backstabber",
+   "name": "Backstabber",
+   "rarity": "rogue",
+   "payload": "When in stealth: +20 Accuracy, +20 Crit",
+   "category": "CLASS-LOCKED",
+   "group": "",
+   "source": " | Merged from the parallel content chat 2026-09-01; attribution de-named per the standing passive-voice ruling. Their branch carried no machine fields on any badge (all payload prose), so this arrives prose-only and joins the definition queue. | RE-RULED 2026-09-01, verbatim: \"When in stealth +20 Accuracy and +20 Crit\". The flanking reading is struck — flanking does not exist. Stealth IS one of the three legal conditions, so the badge lands live.",
+   "condition": "you are in stealth",
+   "statModifiers": [
+    {
+     "stat": "accuracy",
+     "op": "add",
+     "value": 20,
+     "condition": "you are in stealth"
+    },
+    {
+     "stat": "crit",
+     "op": "add",
+     "value": 20,
+     "condition": "you are in stealth"
+    }
+   ]
   }
  ],
  "_machineReadable": "43 of the 128 badges carry statModifiers, hook, rollable, blockers and engineStatGap, merged from the Crucible 2026-08-21. The other 85 are prose only and still need the machine-readable half. content/ owns badges (COMBAT-DESIGN.md §8: HoBaT authored its own; the 238-row Hell-TCG library is a reference, not a port).",
@@ -2831,17 +2855,8 @@
  },
  "_mergeNote2026_09_01": "The parallel chat’s branch stripped statModifiers/hook/rollable/blockers/engineStatGap from EVERY badge and deleted five (dwarf, elf, fey, faithful, hillman) that heroes on both sides still wear. Those are regressions against the 2026-08-25 workbook review, not rulings, so this file stands as the trunk’s. Only their two genuine additions were taken.",
  "_fromParallelChat2026_09_01": {
-  "note": "Two badges authored by the parallel content chat, NOT landed: each uses a mechanic this project has banned with an audit rule behind it. Backstabber reads a FLANKING position (flanking does not exist — R-flanking); The Unnamed uses op:set to override Accuracy/Crit/Luck (stat overrides are banned — nothing else in the game replaces a stat rather than modifying it). Parked, not destroyed: they are content ideas that need a legal shape or a ruling to lift the ban.",
+  "note": "One badge from the parallel content chat still parked: The Unnamed uses op:set to override Accuracy/Crit/Luck, and stat overrides are banned — nothing else in the game replaces a stat rather than modifying it. Backstabber was re-ruled onto the stealth condition 2026-09-01 and is live.",
   "rows": [
-   {
-    "id": "badge.backstabber",
-    "name": "Backstabber",
-    "rarity": "rogue",
-    "payload": "+10 Crit from a flanking position",
-    "category": "CLASS-LOCKED",
-    "group": "",
-    "source": " | Merged from the parallel content chat 2026-09-01; attribution de-named per the standing passive-voice ruling. Their branch carried no machine fields on any badge (all payload prose), so this arrives prose-only and joins the definition queue."
-   },
    {
     "id": "origin.the-unnamed",
     "name": "The Unnamed",
