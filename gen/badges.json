@@ -2828,5 +2828,29 @@
    "Scavenging": 1,
    "Badly Wounded": 1
   }
+ },
+ "_mergeNote2026_09_01": "The parallel chat’s branch stripped statModifiers/hook/rollable/blockers/engineStatGap from EVERY badge and deleted five (dwarf, elf, fey, faithful, hillman) that heroes on both sides still wear. Those are regressions against the 2026-08-25 workbook review, not rulings, so this file stands as the trunk’s. Only their two genuine additions were taken.",
+ "_fromParallelChat2026_09_01": {
+  "note": "Two badges authored by the parallel content chat, NOT landed: each uses a mechanic this project has banned with an audit rule behind it. Backstabber reads a FLANKING position (flanking does not exist — R-flanking); The Unnamed uses op:set to override Accuracy/Crit/Luck (stat overrides are banned — nothing else in the game replaces a stat rather than modifying it). Parked, not destroyed: they are content ideas that need a legal shape or a ruling to lift the ban.",
+  "rows": [
+   {
+    "id": "badge.backstabber",
+    "name": "Backstabber",
+    "rarity": "rogue",
+    "payload": "+10 Crit from a flanking position",
+    "category": "CLASS-LOCKED",
+    "group": "",
+    "source": " | Merged from the parallel content chat 2026-09-01; attribution de-named per the standing passive-voice ruling. Their branch carried no machine fields on any badge (all payload prose), so this arrives prose-only and joins the definition queue."
+   },
+   {
+    "id": "origin.the-unnamed",
+    "name": "The Unnamed",
+    "rarity": "legendary",
+    "payload": "`op: set` — Accuracy 100, Crit 3, Luck 0. Nothing modifies them again.",
+    "category": "SPECIAL ORIGINS",
+    "group": "",
+    "source": " | Merged from the parallel content chat 2026-09-01; attribution de-named per the standing passive-voice ruling. Their branch carried no machine fields on any badge (all payload prose), so this arrives prose-only and joins the definition queue."
+   }
+  ]
  }
 }

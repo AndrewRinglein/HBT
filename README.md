@@ -7,10 +7,8 @@ plus the viewer that makes it readable.
 
 Both live one level up, at the top of the project folder, so neither is buried in here:
 
-- **`../HBT-CODEX.html`** — self-contained, no server, no network. Double-click it. Twenty
-  tabs, hero art inlined, every tab reading data embedded at build time.
-- **`../CODEX.md`** — the same content as one markdown file, ~3,000 lines. No art and no
-  sorting, but you can search it, diff it between builds, and paste any section into a chat.
+- **`../HBT-CODEX.html`** — self-contained, no server, no network. Double-click it. Twenty tabs, hero art inlined, every tab reading data embedded at build time.
+- **`../CODEX.md`** — the same content as one markdown file, ~3,000 lines. No art and no sorting, but you can search it, diff it between builds, and paste any section into a chat.
 
 `content/hbt-codex.html` is the build output; `../HBT-CODEX.html` is the copy you open.
 `mkcodexmd.mjs` writes both root files, so they cannot drift from each other.
@@ -19,27 +17,24 @@ Both live one level up, at the top of the project folder, so neither is buried i
 
 ```
 hell-tcg (5 modules)
-      └─ node build-heroes.mjs  →    gen/heroes.json       extract + convert 230 heroes
+      └─ node build-heroes.mjs  → gen/heroes.json extract + convert 230 heroes
 hell-tcg art tree
       ├─ python art-tools/scan-variants.py
-      │                         →    art/variants.json     which art files each template owns
+      │                         → art/variants.json which art files each template owns
       └─ python art-tools/build-hero-art.py
-                                →    art/thumbs/*.webp     295 unique images, 280px
-                                →    art/manifest.json     heroId -> thumbnail
-
-gen/*.json  +  settled.json          the authored sources
+                                → art/thumbs/*.webp 295 unique images, 280px
+                                → art/manifest.json heroId -> thumbnail gen/*.json  + settled.json the authored sources
       │
-      ├─ node functions.mjs     →    gen/functions.json    the vocabulary, counted
-      ├─ node assemble.mjs      →    hbt-content.json      merge + validate
+      ├─ node functions.mjs     → gen/functions.json the vocabulary, counted
+      ├─ node assemble.mjs      → hbt-content.json merge + validate
       ├─ node mklevelsmd.mjs    →    LEVEL-TABLES.md
-      ├─ node build-viewer.mjs  →    hbt-codex.html        embed + render
-      ├─ node audit.mjs         →    findings on stdout    lint every ruling
-      ├─ node checklevels.mjs   →    per-row ladder prices
-      ├─ node novelty.mjs <id>  →    exit 0 / 1            did this content invent anything
-      ├─ node mkcodexmd.mjs     →    ../CODEX.md           the whole Codex as markdown
-      ├─ node mkgaps.mjs        →    ../CONTENT-GAPS.md    what the engine cannot yet say
-      │                         →    ../HBT-CODEX.html     copy of the browsable Codex
-      └─ node verify-codex.mjs  →    exit 0 / 1            did the codex actually get it
+      ├─ node build-viewer.mjs  → hbt-codex.html embed + render
+      ├─ node audit.mjs         → findings on stdout lint every ruling
+      ├─ node checklevels.mjs   → per-row ladder prices
+      ├─ node novelty.mjs <id>  → exit 0 / 1 did this content invent anything
+      ├─ node mkcodexmd.mjs     →    ../CODEX.md the whole Codex as markdown
+      │                         →    ../HBT-CODEX.html copy of the browsable Codex
+      └─ node verify-codex.mjs  → exit 0 / 1 did the codex actually get it
 ```
 
 **From a clean checkout, run `assemble` once first.** `functions.mjs` reads
@@ -67,7 +62,7 @@ new half uses and nothing else does.
 > when all four existing sources grant the power through the `grants` field; and three
 > weapon-form tags that no rule read and no enchantment applied to. None of those are
 > errors. They are second ways to say things the game already says, which is the thing
-> this whole pass has been spent removing.
+> has spent this whole pass removing.
 
 A flagged value is not automatically wrong — `spirit` shows up as novel for `class.priest`
 because the Priest is genuinely the only class whose attacks scale off it. The tool finds
@@ -176,7 +171,7 @@ can double-click with no image folder next to it.
 
 ## The rule that matters
 
-`audit.mjs` encodes every ruling made so far — no flanking, Protection never has a
+`audit.mjs` encodes every ruling has made — no flanking, Protection never has a
 duration, relics are objects with one good stat and one bad, no bespoke conditions, no
 tag that does not exist, no two things sharing a display name, and the level-table
 invariants. Add a rule there the moment a ruling lands; that is what stops the same

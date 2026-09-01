@@ -1021,6 +1021,60 @@ if(D.kits){
   }
 }
 
+
+// ── MERGED 2026-09-01 from the parallel content chat ─────────────────────────
+// Eight rules that exist only on that branch, each enforcing one of the four universal
+// rules merged into settled.json alongside them. Taken verbatim except for de-naming.
+
+// R34 every enemy states its attacks, and melee is the floor — ruled 2026-08-30.
+// "every enemy needs its attacks clearly defined. If it does not have a melee attack,
+// an enemy has a basic melee S+0 damage attack." See rule.enemy-attacks in settled.json.
+{
+  const ATK=new Map(D.attacks.map(a=>[a.id,a]));
+  const units=(D.bestiaryTest&&D.bestiaryTest.units)||[];
+  for(const u of units){
+    const ids=u.attacks||[];
+    if(!ids.length){ add('enemy-has-no-attacks',u.name,u.id+' — an enemy with nothing listed is unfinished content'); continue; }
+    let melee=false;
+    for(const id of ids){
+      const a=ATK.get(id);
+      if(!a){ add('enemy-attack-id-does-not-resolve',u.name,id+' — not defined anywhere in the content'); continue; }
+      if(a.range==='melee') melee=true;
+    }
+    if(!melee) add('enemy-has-no-melee-attack',u.name,ids.join(', ')+' — needs attack.basic.melee');
+  }
+  if(!ATK.has('attack.basic.melee')) add('basic-melee-attack-missing','settled.json','attack.basic.melee is the floor every enemy falls back to');
+  else { const b=ATK.get('attack.basic.melee');
+    if(b.range!=='melee'||b.stat!=='strength'||b.damage!==0)
+      add('basic-melee-attack-changed','attack.basic.melee','must stay melee, strength, +0 — got '+b.range+'/'+b.stat+'/+'+b.damage); }
+}
+
+// R35 nothing outlasts the Battle — ruled 2026-08-31. "There's no permanent past the end of
+// battle for anything." The longest duration is `rest of the Battle`; an action or a clause
+// that claims permanence beyond it does not exist. See rule.nothing-outlasts-the-battle.
+{
+  const PERM=/\b(permanent(ly)?|forever|for good|never (?:wears? off|expires?|ends?)|carries? (?:over |on )?(?:in)?to the next (?:battle|mission|encounter)|between battles|for the rest of the campaign)\b/i;
+  const ALLOW=/permanent(ly)? (?:apology|hole)/i;             // two flavour lines, ruled fine
+  for(const e of all){
+    if(e.id==='rule.nothing-outlasts-the-battle') continue;   // the rule may name the thing it bans
+    const t=txt(e);
+    if(PERM.test(t)&&!ALLOW.test(t)) add('claims-permanence-past-the-battle',e.name,(t.match(PERM)||[''])[0]+' — the ceiling is "rest of the Battle"');
+  }
+  const acts=new Set();
+  if(D.heroes) for(const h of D.heroes.heroes)
+    for(const arr of Object.values(h.triggers||{})) for(const g of (arr||[])){
+      if(g.action) acts.add(g.action);
+      if(g.description&&PERM.test(g.description)) add('claims-permanence-past-the-battle',h.name,g.description.slice(0,80));
+    }
+  for(const a of acts) if(/permanent/i.test(a)) add('permanent-action-name',a,'a trigger action may not be named permanent — rename it to ...ForBattle');
+}
+// R36 no damage-DEALT reduction — ruled 2026-09-01. one was written only because the game was thought to already have it; it does not. Mitigation sits on the receiving side: Armor, Resist,
+// Protection. Lowering what a unit deals is not a thing.
+{
+  const DEALT=/(?:lower|reduce|lowers|reduces)[^.]{0,40}\b(?:damage (?:dealt|they deal|it deals|hero damage))|hero damage by|damage dealt by[^.]{0,20}\bby \d/i;
+  for(const e of all){ const t=txt(e); if(DEALT.test(t)) add('reduces-damage-dealt',e.name,(t.match(DEALT)||[''])[0]+' — mitigation is Armor, Resist or Protection, on the receiving side'); }
+}
+
 const by={}; F.forEach(f=>(by[f.rule]=by[f.rule]||[]).push(f));
 for(const [r,list] of Object.entries(by).sort((a,b)=>b[1].length-a[1].length)){
   console.log('\n### '+r+'  ('+list.length+')');

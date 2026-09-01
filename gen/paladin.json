@@ -143,7 +143,7 @@
     "power.grand-master.grand-charge",
     "power.grand-master.unyielding"
    ],
-   "source": "Hell-TCG Templar/Grand Master ('armors the entire party on arrival' — onEnter has no meaning, so it is onBattleStart and radius-limited; the power pool is authored from nothing, the original had none) | 2026-08-17 trim: three stats, no negatives, one ability. Dropped stats: staminaMax -1; strength +1. Parked abilities: onAllyDamaged: once per Turn, an ally within 3 hexes reduces that damage by 1. | 2026-08-17: my trim ranked stats by rarity and dropped a class-PRIMARY stat to keep a rarer one. Restored; the cheapest stat on the ladder (Accuracy, then Dodge) was dropped instead."
+   "source": "Hell-TCG Templar/Grand Master ('armors the entire party on arrival' — onEnter has no meaning, so it is onBattleStart and radius-limited; the power pool is authored from nothing, the original had none) | 2026-08-17 trim: three stats, no negatives, one ability. Dropped stats: staminaMax -1; strength +1. Parked abilities: onAllyDamaged: once per Turn, an ally within 3 hexes reduces that damage by 1. | 2026-08-17: my trim ranked stats by rarity and dropped a class-PRIMARY stat to keep a rarer one. Restored; the cheapest stat on’s ladder (Accuracy, then Dodge) was dropped instead."
   },
   {
    "id": "specialty.purifier",
@@ -799,7 +799,7 @@
    ],
    "description": "You and every ally within 2 hexes gain Thorns 2 for the rest of the Battle.",
    "intent": "The whole line becomes expensive to touch at once.",
-   "source": "new 2026-08-20: the party-wide Thorns power. Ruled: Thorns should appear in several class powers."
+   "source": "new 2026-08-20: the party-wide Thorns power.: Thorns should appear in several class powers."
   }
  ]
 }

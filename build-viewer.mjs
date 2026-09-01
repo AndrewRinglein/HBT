@@ -2,18 +2,12 @@ import fs from 'fs';
 const DATA = fs.readFileSync('hbt-content.json','utf8');
 const GUIDE = fs.readFileSync('AUTHORING-GUIDE.md','utf8');
 // hero art: 146 unique thumbnails, base64-inlined so the codex stays one self-contained file
-let ART_IMG={}, ART_OF={}, ART_VAR={};
+let ART_IMG={}, ART_OF={};
 if(fs.existsSync('art/manifest.json')){
-  const MAN=JSON.parse(fs.readFileSync('art/manifest.json','utf8'));
-  ART_OF=Object.fromEntries(Object.entries(MAN).map(([id,v])=>[id,v.thumb]));
-  // every VARIANT a hero owns — four levels, four afflictions, the hex cutouts. These were
-  // in the data and drawn nowhere, which is why the Eve heroes looked like they had one
-  // picture when they have sixteen.
-  ART_VAR=Object.fromEntries(Object.entries(MAN).map(([id,v])=>[id,(v.variants||[]).map(r=>({k:r.kind,l:r.label,t:r.thumb}))]));
-  const want=new Set(Object.values(ART_OF));
-  for(const rows of Object.values(ART_VAR)) for(const r of rows) want.add(r.t);
-  for(const f of want)
-    if(fs.existsSync('art/thumbs/'+f)) ART_IMG[f]='data:image/webp;base64,'+fs.readFileSync('art/thumbs/'+f).toString('base64');
+  ART_OF=Object.fromEntries(Object.entries(JSON.parse(fs.readFileSync('art/manifest.json','utf8')))
+    .map(([id,v])=>[id,v.thumb]));
+  for(const f of new Set(Object.values(ART_OF)))
+    ART_IMG[f]='data:image/webp;base64,'+fs.readFileSync('art/thumbs/'+f).toString('base64');
   const bytes=Object.values(ART_IMG).reduce((n,s)=>n+s.length,0);
   console.log('  art:', Object.keys(ART_IMG).length, 'images inlined,', (bytes/1048576).toFixed(2), 'MB base64');
 }
@@ -128,12 +122,6 @@ input{width:240px}input:focus,select:focus{outline:none;border-color:var(--gold)
 .hero-artbox{position:relative;height:300px;overflow:hidden;background:#0d0a14;border-bottom:1px solid var(--border);background-size:cover;background-position:center}
 .hero-artbox::before{content:'';position:absolute;inset:-24px;background-image:inherit;background-size:cover;background-position:center;filter:blur(20px) brightness(.4) saturate(.7)}
 .hero-art{position:relative;display:block;width:100%;height:100%;object-fit:contain}
-.vstrip{display:flex;flex-wrap:wrap;gap:4px;padding:5px 6px;background:#0e1116;border-top:1px solid #1e242c}
-.vstrip.hex{background:#0b0e12}
-.vthumb{margin:0;width:52px;text-align:center}
-.vthumb img{width:100%;border-radius:3px;display:block;background:#161b22}
-.vstrip.hex .vthumb img{border-radius:50%}
-.vthumb figcaption{font-size:8.5px;color:#7d8590;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .noart{display:flex;align-items:center;justify-content:center;color:#4a4260;font-size:11px;font-style:italic;height:60px;background:#0d0a14;border-bottom:1px solid var(--border)}
 .hero-h{background:var(--panel2);padding:8px 11px;border-bottom:1px solid var(--border)}
 .hero-h h3{margin:0;font-size:14.5px;color:#f0e6d2;font-weight:600}
@@ -171,13 +159,12 @@ input{width:240px}input:focus,select:focus{outline:none;border-color:var(--gold)
 .atk-s{margin-bottom:4px;line-height:1.9}
 @media(max-width:900px){.wpn{grid-template-columns:1fr}.atk-rows{grid-template-columns:1fr}.wpn-head{border-right:none;border-bottom:1px solid var(--border)}}
 </style></head><body>
-<header><h1>The HoBaT Codex</h1><span class="sub">Heroes of Blight and Tragic &middot; content browser &middot; generated ${new Date().toISOString().slice(0,10)}</span></header>
+<header><h1>The HoBaT Codex</h1><span class="sub">Heroes of Blight and Tragic &middot; content browser &middot; generated 2026-08-17</span></header>
 <nav id="tabs"></nav><main id="main"></main>
 <script>
 const D = ${DATA};
 const GUIDE_MD = ${JSON.stringify(GUIDE)};
 const ART_IMG = ${JSON.stringify(ART_IMG)};
-const ART_VAR = ${JSON.stringify(ART_VAR)};
 const ART_OF  = ${JSON.stringify(ART_OF)};
 const artOf = id => ART_IMG[ART_OF[id]] || null;
 function paintArt(root){ root.querySelectorAll('[data-a]').forEach(el=>{
@@ -285,72 +272,6 @@ function wire(id, rows, render, opts){
 const uniq = (a,f)=>[...new Set(a.map(f).filter(x=>x!=null&&x!==''))].sort();
 
 const TABS=[
- // The bestiary. 219 creatures ported from hell-tcg data/enemyCards.js 2026-08-21 - the
- // stat blocks were never missing, they lived in a file the extractor did not read.
- // NOTE: no backticks anywhere in a tab. This whole script sits inside a String.raw template.
- {id:'bestiary',label:'Bestiary',n:(D.bestiary||[]).length,render(){
-   const U=D.bestiary||[]; if(!U.length) return '<div class="empty">no bestiary</div>';
-   const RANK={0:'-',1:'Regular',2:'Elite',3:'Boss'};
-   const acc=U.map(u=>(u.derivedBase||{}).accuracy).filter(n=>typeof n==='number');
-   const mov=U.map(u=>(u.derivedBase||{}).movement).filter(n=>typeof n==='number');
-   var nAuth=U.filter(function(u){return u.authored;}).length;
-   const head='<p><b>'+nAuth+' AUTHORED enemies</b> (the real ones, landed 2026-08-25 from ENEMY-REVIEW.md; tier XP 2/5/15) and '+(U.length-nAuth)+' PLACEHOLDERS ported from Hell-TCG awaiting replacement. '+U.filter(u=>u.curated).length+
-     ' are the curated roster with art and encounters. Accuracy runs '+Math.min.apply(null,acc)+'-'+Math.max.apply(null,acc)+
-     ', movement '+Math.min.apply(null,mov)+'-'+Math.max.apply(null,mov)+
-     ' - both DERIVED from the creature ARCHETYPE (what kind of thing it is), never from rank:'+
-     ' rank only sharpens whatever the archetype already does. Nothing sits above 115 unless its'+
-     ' reach is 4+, because hitting from outside your reach is the only thing that earns it.'+
-     ' All numbers soft until a sweep prices them.'+
-     ' Enemies carry no crit, no luck and no Vision.</p>';
-   var byA={}; U.forEach(function(u){ var k=u.archetype||'?'; (byA[k]=byA[k]||[]).push(u); });
-   var strip='<div class="md"><table><tr><th>Archetype</th><th>n</th><th>Accuracy</th><th>Move</th><th>Why</th></tr>'+
-     Object.keys(byA).sort(function(a,b){
-       var f1=byA[a].map(function(u){return (u.derivedBase||{}).accuracy;});
-       var f2=byA[b].map(function(u){return (u.derivedBase||{}).accuracy;});
-       return Math.max.apply(null,f2)-Math.max.apply(null,f1); }).map(function(k){
-       var g=byA[k], A=g.map(function(u){return (u.derivedBase||{}).accuracy;}),
-           M=g.map(function(u){return (u.derivedBase||{}).movement;});
-       var why=((g[0].derivedWhy||{}).movement||'').split(' - ').slice(1).join(' - ');
-       return '<tr><td><b>'+esc(k)+'</b></td><td>'+g.length+'</td><td>'+Math.min.apply(null,A)+'-'+Math.max.apply(null,A)+
-         '</td><td>'+Math.min.apply(null,M)+'-'+Math.max.apply(null,M)+'</td><td><small>'+esc(why)+'</small></td></tr>';
-     }).join('')+'</table></div>';
-   const rows=U.slice().sort(function(a,b){return (b.authored?1:0)-(a.authored?1:0)||(b.rank||0)-(a.rank||0)||String(a.name).localeCompare(String(b.name));})
-    .map(function(u){
-     const d=u.derivedBase||{}, p=u.ported||{};
-     const atk=(u.attacks||[]).map(function(a){return esc(a.name);}).join(' &middot; ');
-     var trig=(u.triggers||[]).map(function(tr){
-       var rng=(tr.range!=null?' r'+tr.range:'');
-       var src=(tr.ported?' &middot; ported':(tr.reauthored?' &middot; re-authored':(tr.authored?' &middot; authored':'')));
-       return '<span class="tag">['+esc(tr.hook)+(tr.targets?' '+esc(tr.targets):'')+rng+src+'] '+
-         (tr.effects||[]).map(function(e){
-           return esc(e.effect)+(e.status?' '+esc(e.status):'')+(e.stat?' '+esc(e.stat):'')+
-                  (e.value!=null?' '+e.value:''); }).join(' + ')+'</span>';
-     }).join(' ');
-     const riders=(u.attacks||[]).reduce(function(acc2,a){
-       (a.effects||[]).forEach(function(e){
-         acc2.push('<span class="tag">'+esc(a.name)+': '+esc(e.status||e.stat||e.effect)+(e.value!=null?' '+e.value:'')+'</span>');
-       }); return acc2; },[]).join(' ');
-     return '<tr>'+
-       '<td>'+(u.art?'<img class="thumb" src="'+esc(u.art)+'" alt="" loading="lazy">':'')+'</td>'+
-       '<td><b>'+esc(u.name)+'</b><br><small>'+esc((u.types||[]).join(' / '))+'</small>'+
-         (u.authored?'<br><span class="tag" style="background:#1d3a24;color:#7ee2a8">AUTHORED · '+esc(u.family||'')+'</span>':'<br><span class="tag warn">placeholder</span>')+'</td>'+
-       '<td>'+(RANK[u.rank]||u.rank||'-')+'<br><small>'+esc(u.deploys||'')+'</small></td>'+
-       '<td>'+(p.health!=null?p.health:'-')+'</td>'+
-       '<td>'+(p.strength!=null?p.strength:'-')+'</td>'+
-       '<td>'+(p.precision!=null?p.precision:'-')+'</td>'+
-       '<td>'+(p.armor!=null?p.armor:'-')+'</td>'+
-       '<td>'+(p.reach!=null?p.reach:'-')+'</td>'+
-       '<td><small>'+esc(u.archetype||'-')+'</small></td>'+
-       '<td><b>'+(d.accuracy!=null?d.accuracy:'-')+'</b></td>'+
-       '<td><b>'+(d.movement!=null?d.movement:'-')+'</b></td>'+
-       '<td>'+(atk||'<small>no attack — it is scenery</small>')+(riders?'<br>'+riders:'')+
-         (trig?'<br>'+trig:'')+
-         (u.baseline?'<br><span class="tag">bare on purpose — one of the five plain enemies</span>':'')+
-         '</td></tr>';
-    }).join('');
-   return head+strip+'<div class="md"><table><tr><th></th><th>Creature</th><th>Rank</th><th>HP</th><th>Str</th>'+
-     '<th>Pre</th><th>Arm</th><th>Rch</th><th>Archetype</th><th>Acc</th><th>Mov</th><th>Abilities</th></tr>'+rows+'</table></div>';
- }},
  {id:'overview',label:'Overview',n:null,render(){
    const s=[['heroes',D.heroes.heroes.length],['specialties',D.specialties.length],['powers',D.powers.length],
      ['items',D.items.length],['attacks',D.attacks.length],['enchantments',D.enchants.length],
@@ -527,19 +448,9 @@ const TABS=[
      const {v,src,hasTable}=statsAt(h,L);
      const db=20+5*(v.toughness||0);
      const key=ART_OF[h.id];
-     var vs=ART_VAR[h.id]||[];
-     var cardVs=vs.filter(function(r){return r.k!=='hex';});
-     var hexVs=vs.filter(function(r){return r.k==='hex';});
-     var strip=function(rows,cls){
-       if(rows.length<2) return '';
-       return '<div class="vstrip '+cls+'">'+rows.map(function(r){
-         return '<figure class="vthumb" title="'+esc(r.l)+'">'+
-                '<img data-a="'+r.t+'" alt="'+esc(r.l)+'" loading="lazy">'+
-                '<figcaption>'+esc(r.l)+'</figcaption></figure>'; }).join('')+'</div>'; };
      return '<div class="hero">'+
        (key?'<div class="hero-artbox" data-a="'+key+'"><img class="hero-art" data-a="'+key+'" alt="'+esc(h.name)+'" loading="lazy"></div>'
-           :'<div class="noart">'+(h.artMissing?'art not brought across yet':'no art matched')+'</div>')+
-       strip(cardVs,'card')+strip(hexVs,'hex')+
+           :'<div class="noart">no art matched</div>')+
        '<div class="hero-h"><h3>'+esc(h.name)+
        (h.variantsOf>1?'<span class="vchip">'+h.variant+' of '+h.variantsOf+'</span>':'')+
        '</h3><div class="sub">'+

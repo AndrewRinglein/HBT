@@ -54,53 +54,35 @@ Hell-TCG's `TYPE_REGISTRY` (38 entries, with a `category` field) is the preceden
 and validates the one-namespace design.
 
 ```
-FORM      — authored on the ATTACK. What is in your hands.
-            bow · crossbow · sword · dagger · axe · hammer · spear · polearm
-            staff · shield · thrown · sling · improvised · chain · claw
+FORM      — authored on the ATTACK. What is in your hands. bow · crossbow · sword · dagger · axe · hammer · spear · polearm staff · shield · thrown · sling · improvised · chain · claw
 
-MANNER    — authored on the ATTACK. How it behaves.
-            melee · ranged · brawl · area · heal · stance · aura
+MANNER    — authored on the ATTACK. How it behaves. melee · ranged · brawl · area · heal · stance · aura
 
-ANCESTRY  — unit, granted by origin.
-            elf · dwarf · human · catfolk · fae
+ANCESTRY  — unit, granted by origin. elf · dwarf · human · catfolk · fae
 
-ROLE      — unit, granted by specialty, badge or template.
-            soldier · scholar · noble · outcast
+ROLE      — unit, granted by specialty, badge or template. soldier · scholar · noble · outcast
 
-CREATURE  — unit, enemy side. VISIBLE TO THE PLAYER — these are read and planned
-            around, unlike attack tags which are meant to be invisible.
-            undead · demon · beast · construct · giant · dragon · horror ·
-            elemental · plant · nightmare · vampire · werewolf
+CREATURE  — unit, enemy side. VISIBLE TO THE PLAYER — these are read and planned around, unlike attack tags which are meant to be invisible. undead · demon · beast · construct · giant · dragon · horror · elemental · plant · nightmare · vampire · werewolf
 
-DERIVED   — never authored. Read off fields that already exist.
-            physical / magic / true    ← damageType
-            strength / precision / magic-scaling / spirit-scaling ← the stat field
+DERIVED   — never authored. Read off fields that already exist. physical / magic / true    ← damageType strength / precision / magic-scaling / spirit-scaling ← the stat field
 ```
 
 **Rules.**
-- **The punch is tagged `brawl` and `melee`.** Every hero has it. So "+3 to brawl"
-  is a buff to everyone's floor attack — price it knowing that.
-- **Tags overlap and stack additively.** A brawl attack is also melee, so "+2 melee"
-  and "+3 brawl" both land. Intended, but it is how a player assembles +15.
-- **A typo'd tag fails silently** — the modifier just never fires. One authored
-  list, validated at content load, exactly like ids.
-- **Damage type stays a FIELD, not a tag.** Mitigation is a three-way branch and an
-  attack must have exactly one. The tag is derived from the field.
+- **The punch is tagged `brawl` and `melee`.** Every hero has it. So "+3 to brawl" is a buff to everyone's floor attack — price it knowing that.
+- **Tags overlap and stack additively.** A brawl attack is also melee, so "+2 melee" and "+3 brawl" both land. Intended, but it is how a player assembles +15.
+- **A typo'd tag fails silently** — the modifier just never fires. One authored list, validated at content load, exactly like ids.
+- **Damage type stays a FIELD, not a tag.** Mitigation is a three-way branch and an attack must have exactly one. The tag is derived from the field.
 
 ---
 
 ## 3. The shapes
 
 ```
-item.<name>        itemClass · tier · slots · hands · classRestriction · grants[]
-                   statModifiers · triggers · equipCost · persists · armorWeight · tags[]
-attack.<weapon>.<name>
-                   range · stat · damage · stamina · accuracy · crit · targets
-                   hits · damageType · slayer · tags[] · triggers
-power.<owner>.<name>
-                   stamina · cooldown · warmup · free · targets · effects[] · tags[]
-enchant.<name>     appliesToTags[] · statModifiers · triggers · grants[]
-specialty.<name>   class · statModifiers · triggers · grants[] · powerPool[]
+item.<name> itemClass · tier · slots · hands · classRestriction · grants[] statModifiers · triggers · equipCost · persists · armorWeight · tags[]
+attack.<weapon>.<name> range · stat · damage · stamina · accuracy · crit · targets hits · damageType · slayer · tags[] · triggers
+power.<owner>.<name> stamina · cooldown · warmup · free · targets · effects[] · tags[]
+enchant.<name> appliesToTags[] · statModifiers · triggers · grants[]
+specialty.<name> class · statModifiers · triggers · grants[] · powerPool[]
 ```
 
 **Ids are lowercase, dot-separated, `^[a-z]+\.[a-z0-9.-]+$`.**
@@ -145,7 +127,7 @@ Magic and Spirit at 1.5.
 | **Accuracy · Crit · Luck · Vision** | **0.2** | all four are worth about the same |
 | **Surge** | **0.15** | the cheapest thing on the board. **Fine to modify** — it is not a sacred stat |
 
-**Nothing sits outside this table any more.** The last five were priced on
+**Nothing sits outside this table any more.** priced the last five on
 2026-08-20: Movement 0.7 · Stamina Max 0.3 · Stamina Regen 2.0 · Surge 0.15 ·
 Toughness 0.4. Only `deathbedFighting` has no entry, because it is derived rather
 than granted — `20 + 5 × Toughness`, which prices a Toughness point at 5 Deathbed.
@@ -157,11 +139,8 @@ give. Never hand one out as filler.
 
 **Two of these do not scale linearly, and it matters more than the numbers do.**
 
-- **Accuracy loses value as you accumulate it.** Past 100 the surplus only converts
-  to Crit at ÷4, so the hundredth point is worth a quarter of the first.
-- **Dodge gains value as you accumulate it.** Each point is a flat penalty on every
-  attacker, so it compounds. **+100 Accuracy would change little; +100 Dodge would
-  break the game.** Treat large Dodge grants with far more suspicion than large
+- **Accuracy loses value as you accumulate it.** Past 100 the surplus only converts to Crit at ÷4, so the hundredth point is worth a quarter of the first.
+- **Dodge gains value as you accumulate it.** Each point is a flat penalty on every attacker, so it compounds. **+100 Accuracy would change little; +100 Dodge would break the game.** Treat large Dodge grants with far more suspicion than large
   Accuracy grants.
 
 ### A stat is worth far less to a class that does not use it
@@ -221,16 +200,12 @@ has to feel like a relief.
 ## 5. Per-kind rules
 
 ### Weapons
-- **Tier 0 grants one attack. Tier 1+ grants two.** The two should be a *choice*,
-  not a strict upgrade: cheap-and-reliable versus expensive-and-heavy is the shape.
+- **Tier 0 grants one attack. Tier 1+ grants two.** The two should be a *choice*, not a strict upgrade: cheap-and-reliable versus expensive-and-heavy is the shape.
   Longsword: Slash (str +1, 1 stam) or Stab (str +2, 2 stam, +5 acc, +3 crit).
 - **Every attack carries form and manner tags.** A bow attack is `bow` + `ranged`.
-- **Damage type belongs to the attack, not the class.** Staves deal magic, priest
-  weapons deal true, everything else is physical.
-- Two-handed costs two slots. One-handed costs one. Hands are two extra slots that
-  only take weapons; there is no mechanical difference from inventory.
-- **Class restriction is a hard gate**, not a bonus. A multi-class hero satisfies it
-  if any of its classes match.
+- **Damage type belongs to the attack, not the class.** Staves deal magic, priest weapons deal true, everything else is physical.
+- Two-handed costs two slots. One-handed costs one. Hands are two extra slots that only take weapons; there is no mechanical difference from inventory.
+- **Class restriction is a hard gate**, not a bonus. A multi-class hero satisfies it if any of its classes match.
 
 ### Armor
 - **Nine base forms: three light, three medium, three heavy**, plus `item.basic-armor`.
@@ -240,18 +215,15 @@ has to feel like a relief.
 - Armor is a dedicated slot. Magic armor is a base plus an `enchant.*`.
 
 ### Trinkets
-- **No stat modifiers and no attacks by default.** The payload is an *activated
-  effect* or a triggered one. Unlimited per hero.
-- This is where the weird things live: an aura, a once-per-turn heal, a status
-  stripper, a crit multiplier.
+- **No stat modifiers and no attacks by default.** The payload is an *activated effect* or a triggered one. Unlimited per hero.
+- This is where the weird things live: an aura, a once-per-turn heal, a status stripper, a crit multiplier.
 
 ### Deathbed Fighting, downed, and stabilising
 
 ```
 A unit hits 0 Health
   → roll Deathbed Fighting
-      PASS  → it keeps fighting, takes the WOUNDED badge,
-              and returns to MAX Health
+      PASS  → it keeps fighting, takes the WOUNDED badge, and returns to MAX Health
       FAIL  → it is DOWNED
 ```
 
@@ -268,11 +240,9 @@ up. A stabilised hero is still on the ground and still out of the fight — they
 simply no longer on a clock.
 
 So content in this area does exactly one of three things:
-1. **Grants Deathbed Fighting** — makes the roll better. The strongest and most
-   common. A +20 converts a likely death into a second full health bar.
+1. **Grants Deathbed Fighting** — makes the roll better. The strongest and most common. A +20 converts a likely death into a second full health bar.
 2. **Stabilises** — removes the bleed-out counter from a downed ally.
-3. **Nothing else.** Do not write auto-passes, re-rolls, drop-to-1-Health, or
-   heals that revive. The roll is the only randomness the Consequence Stack allows.
+3. **Nothing else.** Do not write auto-passes, re-rolls, drop-to-1-Health, or heals that revive. The roll is the only randomness the Consequence Stack allows.
 
 **`[needs: carry]`** — picking a downed hero up and carrying them off the field does
 not exist yet. It is the standard companion to stabilising and there is no content
@@ -319,7 +289,7 @@ checks all three, plus that no class ends up with two and that Civilian and Beas
 with none.
 
 **Zero hexes is a legal distance, and it is the caster answer.** Focus and Devotion do not
-move you at all. Ruled 2026-08-21: *"it makes a much harsher penalty on mages and priests
+move you at all. 2026-08-21: *"it makes a much harsher penalty on mages and priests
 who get engaged in melee."* A caught Mage may Focus and catch its breath, but **it is still
 caught** — the choice each Activation is *reposition or refuel*, never both.
 
@@ -367,8 +337,7 @@ the whole protection, and it is narrower than it sounds:
 
 - **Area effects still hit it.** A fireball does not need to see you.
 - **Terrain still hits it.** Standing in fire while hidden still burns.
-- **Auras still work, in both directions.** You keep yours and you are still inside
-  theirs.
+- **Auras still work, in both directions.** You keep yours and you are still inside theirs.
 - **Stealth breaks the moment you use an attack or a power.** Not when you move.
 
 So stealth is a **repositioning tool, not a defence**. You slip across a field that
@@ -389,9 +358,9 @@ that adds a bigger number of the first. It also gives a class a reason to want a
 stat it would otherwise ignore.
 
 ```
-a heavy blade      damage = Strength + Armor        the slower you are, the harder you hit
-a mystic spellblade  your SWORD attacks add Magic   the whole point of a spellblade
-a priest's weapon  damage = Precision + Spirit
+a heavy blade damage = Strength + Armor the slower you are, the harder you hit
+a mystic spellblade your SWORD attacks add Magic the whole point of a spellblade
+a priest's weapon damage = Precision + Spirit
 ```
 This is the good version of the off-primary rule: rather than granting a Mage +2
 Strength and hoping, give them an attack that spends the Magic they already have.
@@ -402,7 +371,7 @@ A family worth using more than once, and it is what makes a status-heavy build p
 off twice. The attack adds **the status already on the target** to its damage:
 
 ```
-add the target's WEAK to any brawl attack        the martial artist
+add the target's WEAK to any brawl attack the martial artist
 add the target's BURN to any magic attack
 add the target's FROST to any magic attack
 add the target's BLEED to any physical attack
@@ -446,19 +415,14 @@ not in the game.
 
 ### Blood runes — **offensive**, one per hero, 3 mana crystals, re-paid on re-equip
 - Slayer bonuses vs creature tags, on-kill triggers, flat Accuracy. Hell-TCG's
-  `blood-runes.csv` already has `Required Class · Required Type · Adds Type` — the
-  tag system, shipped.
+  `blood-runes.csv` already has `Required Class · Required Type · Adds Type` — the tag system, shipped.
 
 ### Idols — **defensive**, one per hero, **1 Faith per battle**, do not persist
-- Because they are re-bought every fight, they should feel like insurance chosen
-  against a known threat, not a permanent stat stick.
+- Because they are re-bought every fight, they should feel like insurance chosen against a known threat, not a permanent stat stick.
 
 ### Relics — **one good thing, one bad thing.** No cost. One per hero. Three tiers.
-- Tier 3 ≈ double tier 1. The trade must be across *different* axes, or it is just
-  a smaller number: `+1 Strength / −2 Health` is a relic; `+2 Str / −1 Str` is not.
-- **A relic must be named as an OBJECT.** *Plague Survivor* and *Hunter's Instinct*
-  describe a person, not a thing you can pick up and hand to someone else — those
-  are `badge.*`. A relic is a censer, a torc, a lantern, a map case, a crown.
+- Tier 3 ≈ double tier 1. The trade must be across *different* axes, or it is just a smaller number: `+1 Strength / −2 Health` is a relic; `+2 Str / −1 Str` is not.
+- **A relic must be named as an OBJECT.** *Plague Survivor* and *Hunter's Instinct* describe a person, not a thing you can pick up and hand to someone else — those are `badge.*`. A relic is a censer, a torc, a lantern, a map case, a crown.
 - **Hell-TCG's `relics.csv` is a different object** — strategic modifiers
   (trailblazing, scouting, draw). Harvest the *names*, not the mechanics.
 
@@ -466,20 +430,16 @@ not in the game.
 
 ### Enchantments — bolt onto a base item. **Max two per item.**
 - `appliesToTags` is how they are scoped: `enchant.heavens-edge` applies to `melee`.
-- An enchant that can sit on any weapon cannot be a weapon row. That is why they
-  are their own kind.
+- An enchant that can sit on any weapon cannot be a weapon row. That is why they are their own kind.
 
 ### Powers
 - **Name and what it does are the important part.** Numbers are soft.
 - `cooldown N` = **skip N Turns.** CD 0 is usable again next Turn.
-- `warmup N` = **skip the first N Turns of the Battle.** Same timer — at battle
-  start, cooldown is set to warmup. Use it for abilities that should not be live
-  before contact, since engagement lands on Turns 2–4.
+- `warmup N` = **skip the first N Turns of the Battle.** Same timer — at battle start, cooldown is set to warmup. Use it for abilities that should not be live before contact, since engagement lands on Turns 2–4.
 - **Stamina: 1 for most, 2 for the powerful.** 0 for a stance you pay for once.
 - **A free power does not consume the primary action, and free powers are uncapped.**
   Three free powers may all fire in one Turn.
-- **A power's stat modifiers last the rest of the Battle** unless the row says
-  otherwise. That makes buffs stances and debuffs permanent — price accordingly.
+- **A power's stat modifiers last the rest of the Battle** unless the row says otherwise. That makes buffs stances and debuffs permanent — price accordingly.
 - Powers may carry tags and may modify by tag: *"+3 to all bow attacks"*,
   *"bow attacks gain onHit: burn 1"*.
 
@@ -513,32 +473,18 @@ event history — *"at or below half Health"*, *"after an ally has died this Bat
 no Nth hit, no per-Turn tally. No ignoring a status — **Immunity N** is the mechanic that
 does that. `audit.mjs` fails on every one of these.
 ### Specialties
-- **More than three per class.** Folding Hell-TCG's 20 classes into HoBaT's 7 gives
-  roughly 6–10 each.
+- **More than three per class.** Folding Hell-TCG's 20 classes into HoBaT's 7 gives roughly 6–10 each.
 - A specialty is a **branch, picked once at a level-up**. The hero *becomes* it.
-- It carries: a small stat block, zero or more triggers, and **a pool of powers
-  only it can offer**. Class gates which specialty lists you see; the specialty
-  determines every class power you can subsequently access.
-- **A specialty must play to its class's identity, not fight it.** A Ranger branch
-  that wants you stationary and armoured is a Warrior wearing the wrong label. The
-  Sentinel works as *−2 Movement / +4 Health / +2 Reach / +1 Precision* — slow, and
-  shooting from further out than anyone alive — because that expresses "hold still"
-  in the Ranger's own stats instead of borrowing the Warrior's.
+- It carries: a small stat block, zero or more triggers, and **a pool of powers only it can offer**. Class gates which specialty lists you see; the specialty determines every class power you can subsequently access.
+- **A specialty must play to its class's identity, not fight it.** A Ranger branch that wants you stationary and armoured is a Warrior wearing the wrong label. The
+  Sentinel works as *−2 Movement / +4 Health / +2 Reach / +1 Precision* — slow, and shooting from further out than anyone alive — because that expresses "hold still" in the Ranger's own stats instead of borrowing the Warrior's.
 - **A negative is allowed when it IS the identity.** Sentinel's −2 Movement and
-  Berserker's −10 Accuracy are the point of those branches, not a tax on them. What
-  the no-negatives rule forbids is the reflexive −5 Dodge stapled onto everything to
-  make the arithmetic look balanced.
-- **Three stat modifiers. One ability. No negatives.** Ruled 2026-08-17. Five stats
-  and two triggers is more than a player can hold in their head while choosing
-  between nine of them, and it makes every specialty read like every other one. The
-  settled trio — Berserker, Shieldbearer, Leader — are the exception and keep their
-  original blocks.
-- **Vision is thematically tempting and mechanically quiet.** It only bites in
-  darkness, fog and stealth-detection. Reach for **Surge, Crit and Luck** instead;
+  Berserker's −10 Accuracy are the point of those branches, not a tax on them. What the no-negatives rule forbids is the reflexive −5 Dodge stapled onto everything to make the arithmetic look balanced.
+- **Three stat modifiers. One ability. No negatives.** Ruled 2026-08-17. Five stats and two triggers is more than a player can hold in their head while choosing between nine of them, and it makes every specialty read like every other one. The settled trio — Berserker, Shieldbearer, Leader — are the exception and keep their original blocks.
+- **Vision is thematically tempting and mechanically quiet.** It only bites in darkness, fog and stealth-detection. Reach for **Surge, Crit and Luck** instead;
   Vision belongs to the one or two specialties whose whole point it is.
 - **A specialty should change how you play, not just what your numbers are.**
-  Berserker is +2 Strength and −2 Precision and −10 Accuracy *and* −1 Item Slot:
-  it is a commitment, not an upgrade.
+  Berserker is +2 Strength and −2 Precision and −10 Accuracy *and* −1 Item Slot: it is a commitment, not an upgrade.
 
 ---
 
@@ -564,8 +510,8 @@ so "your crits deal ×2.5 instead of ×2" is built on a number that does not exi
 write instead is an `onCrit` that **deals more crits**:
 
 ```
-onCrit: deal 2 crits            the strong version — item.tandras-blood-vial
-onCrit: deal 1 crit             the small version
+onCrit: deal 2 crits the strong version — item.tandras-blood-vial
+onCrit: deal 1 crit the small version
 ```
 
 ### `onDodge` — the defender's hook
@@ -645,45 +591,30 @@ priority.
 The vocabulary is in `FUNCTIONS.md`, generated from the content, and it is the whole of
 what a rule may say. Two habits keep breaking it:
 
-- **A cleanse has a size.** *"Remove all Burn"* is not a thing — write **remove N**. Thirty
-  entries said *all* and every one of them now names a number, because *all* is unbounded
-  and nothing else in the game is.
-- **One wording per idea.** *"It does NOT provoke an attack of opportunity"*, *"this does
-  not provoke attacks of opportunity"* and *"the movement provokes nothing"* were three
-  ways to write one function. It is **provokes nothing**, everywhere.
+- **A cleanse has a size.** *"Remove all Burn"* is not a thing — write **remove N**. Thirty entries said *all* and every one of them now names a number, because *all* is unbounded and nothing else in the game is.
+- **One wording per idea.** *"It does NOT provoke an attack of opportunity"*, *"this does not provoke attacks of opportunity"* and *"the movement provokes nothing"* were three ways to write one function. It is **provokes nothing**, everywhere.
 
 And two things that are NOT separate functions, however they read:
 
-- **Protection is a status.** There is no "grant Protection" — it is `apply a status`,
-  same as Burn.
-- **A kill is a HOOK, not a condition.** *"If it kills"* inside a description is `onKill`
-  written the long way. Put it on the hook.
+- **Protection is a status.** There is no "grant Protection" — it is `apply a status`, same as Burn.
+- **A kill is a HOOK, not a condition.** *"If it kills"* inside a description is `onKill` written the long way. Put it on the hook.
 
 - **Statuses are proper nouns.** *Burn, Poison, Bleed, Weak, Stun, Frost, Regeneration,
   Protection, Karma.* Forty-one entries wrote them lowercase — *"gain 2 protection"*,
-  *"apply weak 4"*, *"Immunity to burn 1"* — which reads as a description rather than a
-  reference to the named thing. The lowercase verb is fine (*"allies caught in it burn
-  too"*); the status is not. The **bleed-out counter** is deliberately lowercase: it is the
-  downed clock, not the Bleed status, and capitalising it would say the wrong thing.
-- **One duration wording.** *"for the Battle"* and *"for the rest of the Battle"* are the
-  same duration written two ways. It is **for the rest of the Battle**.
+  *"apply weak 4"*, *"Immunity to burn 1"* — which reads as a description rather than a reference to the named thing. The lowercase verb is fine (*"allies caught in it burn too"*); the status is not. The **bleed-out counter** is deliberately lowercase: it is the downed clock, not the Bleed status, and capitalising it would say the wrong thing.
+- **One duration wording.** *"for the Battle"* and *"for the rest of the Battle"* are the same duration written two ways. It is **for the rest of the Battle**.
 - **The word is "ally".** Not *hero*. There is an `ally` targeting shape and there is no
   `hero` one, so a rule that says *"every hero within 6 hexes"* cannot name its own shape.
   *Hero* is fine in the commentary sentence, where it means a player character.
-- **A hook goes in the triggers array.** *"Melee attack, strength +0, +30 Accuracy. onHit:
-  apply weak 4"* is a trigger typed into prose. The description says what happens; the
-  hook is a field.
-- **The targets field wins.** Five entries had a radius in the field and a different radius
-  in the sentence. If the sentence repeats the shape, it repeats the field's number — or,
-  better, it does not repeat the shape at all.
+- **A hook goes in the triggers array.** *"Melee attack, strength +0, +30 Accuracy. onHit: apply weak 4"* is a trigger typed into prose. The description says what happens; the hook is a field.
+- **The targets field wins.** Five entries had a radius in the field and a different radius in the sentence. If the sentence repeats the shape, it repeats the field's number — or, better, it does not repeat the shape at all.
 
 ### Ground layers are persistent, and a hex holds exactly one
 
 Ruled 2026-08-20. There are four: **burning**, **frost**, **poisoned** and **darkness**.
 
 - **No number.** A hex is burning or it is not. There is no *burning 2*.
-- **No clock.** It does not tick down, it does not expire, and nothing remembers when it
-  was lit. Once the ground is burning it stays burning.
+- **No clock.** It does not tick down, it does not expire, and nothing remembers when it was lit. Once the ground is burning it stays burning.
 - **One layer per hex.** Applying a different layer **replaces** the one already there.
 
 That third point is the whole reason Quench works: frost puts out a fire because it *takes
@@ -695,6 +626,119 @@ the first restates `rule.ground-layers`, the second contradicts it.
 word, two systems, and the capital letter is the only thing telling them apart. A status
 has a magnitude and decays at End of Phase; a layer has neither and does not.
 
+### Power is a stat, and it was already ruled
+
+Ruled **2026-08-23** in `ENEMY-REVIEW.md` — not open, and not mine to ask about again.
+**Power is an enemy stat**, close kin to Spirit and Magic: a pool the enemy side reads, and
+which a fair number of enemy attacks scale off.
+
+- **Power always resolves to an integer before it adds to anything**, rounded to nearest, 0.5 up. Half of 3 is 2; a third of 4 is 1.
+- It is gained in **exactly three ways**: the battle **starts** with N (a difficulty dial); a unit contributes a **one-time** amount on arrival, which stays in the pool when it dies; or a **clock or condition escalates** it (an end-of-turn +1, a +2 on a kill). Only the third kind can be shut off by counterplay, which is what makes killing a battery a decision.
+- Consumers read the pool; most contribute nothing back.
+
+So `Precision + Power`, `Strength + ½ Power` and `Protection ⅓ Power` are all sound as
+written. The engine has nothing yet; the design is closed.
+
+### Afflictions are badges, not statuses
+
+Ruled **2026-08-23** in `ENEMY-REVIEW.md`, and reconfirmed 2026-09-01. There are **exactly
+four**: **Possession · Vampirism · Lycanthropy · Rotting Flesh**. They are **badges that get
+added to a character**, not status effects — which is why `badge.possession` and
+`badge.lycanthropy` already exist and there is no collision to resolve. When an affliction
+badge lands on a hero, **the hero's art changes** to that affliction's portrait.
+
+### Forced movement is Knockback and Pull
+
+Ruled 2026-09-01, **reversing the 2026-08-20 cut**:
+
+> *"Yep, I'm adding pull back in. It's a reversal."*
+
+Two verbs, one axis: **Knockback** pushes directly away from the source, **Pull** draws
+directly toward it, each taking a number of hexes. There is still no third verb. See
+`rule.forced-movement`. Drive, and the zone-of-control clause on the Tower terrain, are
+**not** covered by this reversal and remain open.
+
+### Five more statuses, and a status is also a number
+
+Ruled 2026-09-01. **Taunt, Dazed, Confusion, Root and Shadow are status effects.** The closed
+list of ten becomes **fifteen**:
+
+> burn · bleed · poison · protection · weak · stun · slow · frost · regeneration · karma ·
+> **taunt · dazed · confusion · root · shadow**
+
+Three are defined and settled; **Root and Shadow are named but have no effect text yet**, so
+nothing may reference them until they do.
+
+- **Root** stops movement outright — not a reduction, a stop — for as long as it lasts.
+
+- **Taunt** cuts both ways by who applied it. A **hero** taunting an enemy makes that hero the enemy's priority target — it fixates. An **enemy** taunting a hero **takes the hero away from the player**: AI-driven, activates first, prioritises the taunter.
+- **Dazed** takes control the same way, with **no** priority target.
+- **Confusion** swaps an enemy's AI strategy for a different one.
+
+And the second half, which is the part that changes how content can be written:
+
+> *"All of them or status effects can also be used to change the scale of damage or effect."*
+
+**A status magnitude is a value.** `Strength + 2 x the target's Root` is legal, and so is
+scaling a heal, a duration or a chance off a status the target already carries. This holds for
+every status, not a named few. See `rule.status-as-a-value`.
+
+**Two things ruled out at the same time:**
+
+- **Reducing damage *dealt* does not exist.** Mitigation is Armor, Resist and Protection, on the receiving side. Audit rule `reduces-damage-dealt`.
+- **Invisibility is Stealth.** Not a second system.
+
+**Found while applying this:** the audit's closed status list had been **missing `slow`** ever
+since Slow was ruled a status on 2026-08-20, so a condition testing for Slow read as unknown
+vocabulary. Fixed.
+
+### Nothing outlasts the Battle
+
+Ruled 2026-08-31:
+
+> *"There's no permanent past the end of battle for anything."*
+
+The four durations already stop at `rest of the Battle`. This ruling says that ceiling is
+**absolute**, and it applies to every kind of effect, not just statuses: a stat change, a
+drain, a scar, a max-Health loss. There is no fifth duration above the fourth, and there is
+no "and it carries into the next Battle."
+
+*Permanent* may still be written inside an entry, but it can only ever mean **permanent
+within this Battle** — which is what `rest of the Battle` already says, so prefer that
+wording. The sweep that applied this ruling found the word doing real work in one place:
+**33 ported Hell-TCG hero triggers used an action literally named `modifyStatPermanent`**,
+now `modifyStatForBattle`. Three flavour lines said *forever* and were reworded (Siege
+Crossbow, Ancient Ward, White Steel).
+
+> **Engine note.** `modifyStatPermanent` was the ported action name. If the engine maps
+> trigger actions by string, it needs the same rename or those 33 triggers stop resolving.
+
+Two audit rules hold it: `claims-permanence-past-the-battle` and `permanent-action-name`.
+
+### Every enemy states its attacks, and melee is the floor
+
+Ruled 2026-08-30:
+
+> *"Every enemy needs its attacks clearly defined. If it does not have a melee attack, an
+> enemy has a basic melee S+0 damage attack."*
+
+Two halves, and the first is the one that bites. **An enemy with no attack listed is
+unfinished content**, not an enemy that cannot swing — so every enemy names its attacks by
+id, and every id must resolve to an attack that exists in `hbt-content.json`. Referencing a
+name the engine happens to know is not a definition; the sweep that applied this ruling found
+**seventeen of twenty-one test units pointing at five ids the content had never defined**
+(`attack.zombie.basic`, `attack.mage.staff`, `attack.mage.strike`, `attack.warrior.axe`,
+`attack.ranger.bow`).
+
+The second half is the backstop. **`attack.basic.melee`** — Strength +0, melee reach, 0
+stamina, no accuracy modifier, one target — is carried by any enemy with no melee attack of
+its own. A ranged enemy still has it, for when something closes. Nothing on the board is ever
+unable to act.
+
+Four audit rules hold it: `enemy-has-no-attacks`, `enemy-attack-id-does-not-resolve`,
+`enemy-has-no-melee-attack`, and `basic-melee-attack-changed` — the last pins the floor at
+melee / strength / +0 so it cannot drift.
+
 ### Toughness does not reduce damage
 
 Ruled 2026-08-20, after I got it wrong. **Toughness is injury capacity and the base for
@@ -704,8 +748,7 @@ Damage is reduced by exactly three things:
 
 - **Armor** — physical damage.
 - **Resist** — magic damage.
-- **Protection** — everything, from every source. It is the ONLY flat reducer, it is a
-  status, and it is spent as it absorbs.
+- **Protection** — everything, from every source. It is the ONLY flat reducer, it is a status, and it is spent as it absorbs.
 
 *"Take 1 less damage from every source"* is not a new mechanic to invent; it is Protection
 written the long way. True damage skips Armor and Resist and is stopped only by Protection.
@@ -768,40 +811,6 @@ top of the free stamina and the free go that the surge already hands out.
 something to scale with how much a hero did, that is a different hook — and probably a
 counter, which does not exist.
 
-### `onEnter` is not a hook, and mostly it is not a rule either
-
-Ruled 2026-08-21. Hell-TCG fired `onEnter` when a unit was played onto the board. HoBaT has
-no such moment — **the party is placed before Turn 1, so arriving is not an event.** The
-nearest thing is `startOfBattle`, and the difference matters: *"when this hero arrives"*
-becomes *"it is simply always true", and everything fires at once for the whole side.*
-
-`port/PORT-CONVERSION.md` §4.1 calls this the largest single blocker in the port — 34 badges
-plus 38 hero definitions, 72 objects on a hook with no equivalent. Most of them do not
-survive the translation, and that is the correct outcome rather than a loss.
-
-**What is still worth firing at battle start:**
-
-- gain or lose **Faith** · gain or lose **Supplies** · gain **mana crystals**
-- **Protection**
-- **applying a status**
-
-**What is not.** Named explicitly, because these three are the bulk of it:
-
-| Cut | Uses | Why |
-|---|---:|---|
-| `modifyStatPermanent` | 23 | a permanent stat edit that always fires is just the hero's stat line |
-| `grantDraws` | 9 | a one-shot on arrival, when everyone arrives at once |
-| `increaseActionRate` | 7 | same |
-
-Also gone for the same reason: `buffByType`, `damageByType`, `healParty`, `modifyMaxHeroes`,
-`grantActions`, `increaseDrawRate`, `modifyMaxHealth`. On a board where every unit is already
-standing there, these are either a flat opening bonus dressed up as a trigger, or nothing.
-
-> In the content today: **149 heroes carry an empty `onEnter` array** — inert noise from the
-> port — and **52 carry a real one**. Of those 52, **39 are the three cut actions above**.
-> **Do not author new `onEnter` content.** There is a separate battle-start hook and it
-> behaves differently; use that, and price it as the opening bonus it is.
-
 ### Vision does not go on a weapon
 
 Armour, relics and trinkets may grant Vision. **A weapon or a weapon enchant may not** —
@@ -851,8 +860,7 @@ is nothing to remember:
 
 - *"a dagger attack against each enemy whose hex you were adjacent to, to a maximum of three"*
   — a targeting shape, resolved and forgotten.
-- *"2 extra damage for each 2 true damage taken so far, to a maximum of 8"* — a formula
-  clamped when the attack resolves.
+- *"2 extra damage for each 2 true damage taken so far, to a maximum of 8"* — a formula clamped when the attack resolves.
 - *"+1 Resist for each enemy on the field with the demon or undead tag, to a maximum of +3"*
   — an aura recounted from the board every time it is read.
 
@@ -871,8 +879,8 @@ engine would have to remember something, or walk somebody else's neighbourhood.
 **`adjacent to self` is an authorized condition, in two forms.** Ruled 2026-08-20.
 
 ```
-adjacent-to-self: hero     an ALLY is adjacent to you
-adjacent-to-self: enemy    an ENEMY is adjacent to you
+adjacent-to-self: hero an ALLY is adjacent to you
+adjacent-to-self: enemy an ENEMY is adjacent to you
 ```
 
 Both are cheap: six hexes, checked against the unit that is acting. Everything already in
@@ -896,51 +904,28 @@ If yes it is a condition. If it needs a memory, a second unit's neighbourhood, o
 question the engine cannot currently answer, it is a mechanic — and a mechanic has to be
 worth building before anything is authored against it.
 
-## 6. The traps
-
-1. **Accuracy is not a hit-rate stat past 100.** Surplus becomes Crit at ÷4, so
+## 6. The traps 1. **Accuracy is not a hit-rate stat past 100.** Surplus becomes Crit at ÷4, so
    +20 Accuracy on an already-reliable hero is +5 Crit. Everything that *reduces*
    Accuracy eats crit before it eats reliability.
 2. **Reach only helps ranged.** A melee weapon granting Reach does nothing.
 3. **Stamina Regen is sacred.** It hard-caps around 3. Granting it is a tier-3+ move.
-4. **Magic and Spirit are party-wide sums** — but casters are rare, so a starting
-   party has Magic ≈ 2 and Spirit ≈ 2. Do not price them as if every hero has 3.
+4. **Magic and Spirit are party-wide sums** — but casters are rare, so a starting party has Magic ≈ 2 and Spirit ≈ 2. Do not price them as if every hero has 3.
 5. **Bleed is never resisted.** Burn and poison are, per tick, separately. Two
    Resist neutralises two burn *and* two poison at once.
-6. **Protection NEVER has a duration, and it STACKS with itself.** You grant a
-   number and that is all. It decays 1 at End of Phase *and* is spent by the damage
-   it absorbs, so five Protection is gone in five quiet Turns or one loud one.
-   Writing *"Protection 5 until the end of your next Turn"* is a mistake — the decay
-   already is the timer, and the clause makes it strictly worse than the same grant
-   written plainly. **A second grant ADDS to whatever is left**; it never replaces or
-   discards it. Ruled 2026-08-20 — `item.aether-crystal` claimed the opposite and was
-   wrong, and `audit.mjs` now fails on any entry that says Protection does not stack.
-7. **Karma is the only status that decays on an EVENT, not on the clock.** Ruled
-   2026-08-20. While you carry it, **every heal you receive is increased by your Karma**
-   and **every point of damage you deal is increased by half your Karma, rounded down**.
+6. **Protection NEVER has a duration, and it STACKS with itself.** You grant a number and that is all. It decays 1 at End of Phase *and* is spent by the damage it absorbs, so five Protection is gone in five quiet Turns or one loud one.
+   Writing *"Protection 5 until the end of your next Turn"* is a mistake — the decay already is the timer, and the clause makes it strictly worse than the same grant written plainly. **A second grant ADDS to whatever is left**; it never replaces or discards it. Ruled 2026-08-20 — `item.aether-crystal` claimed the opposite and was wrong, and `audit.mjs` now fails on any entry that says Protection does not stack.
+7. **Karma is the only status that decays on an EVENT, not on the clock.** Ruled 2026-08-20. While you carry it, **every heal you receive is increased by your Karma** and **every point of damage you deal is increased by half your Karma, rounded down**.
    It does not tick down at End of Phase like the others — it is spent by killing.
    **Every unit in the game has, on kill, lose 1 Karma** (`rule.karma-decay` in
-   `settled.json`, universal, not a power anyone takes). Nothing grants Karma yet, and
-   that is fine: the status exists so content can be written against it.
-8. **Frost cancels burn on application**, and amplifies incoming *physical* damage
-   by its value. It is the anti-fire and the armour-shredder in one.
+   `settled.json`, universal, not a power anyone takes). Nothing grants Karma yet, and that is fine: the status exists so content can be written against it.
+8. **Frost cancels burn on application**, and amplifies incoming *physical* damage by its value. It is the anti-fire and the armour-shredder in one.
 9. **Armor and Resist floor at zero.** Shred effects stop mattering at some point.
-9. **Only attacks crit.** If it rolls to hit, it can crit; if it does not roll, it
-   cannot. Area powers never crit.
-10. **`startOfBattle` fires when the two sides are still far apart.** Allies deploy
-    together, so *"every ally within 3 hexes gains +1 Armor"* at battle start is
-    fine. **An enemy radius at battle start hits nobody** — *"2 Bleed to every enemy
-    within 3 hexes"* is a trigger that never once fires. If an effect should reach
-    enemies by distance, it is an **aura** (checked continuously) or it hangs off
-    `onHit`. Same trap in a smaller form: a Vision snapshot taken at deployment
-    reveals almost nothing, and a condition like *"if no enemy is within 4 hexes"*
-    is trivially true at deployment and is therefore a free bonus, not a condition.
-11. **There is no flanking.** It appears in no current design document. Positional
-    advantage is expressed through **adjacency**, **zones of control and attacks of
-    opportunity**, **knockback**, **Reach**, and **terrain that costs extra
+9. **Only attacks crit.** If it rolls to hit, it can crit; if it does not roll, it cannot. Area powers never crit.
+10. **`startOfBattle` fires when the two sides are still far apart.** Allies deploy together, so *"every ally within 3 hexes gains +1 Armor"* at battle start is fine. **An enemy radius at battle start hits nobody** — *"2 Bleed to every enemy within 3 hexes"* is a trigger that never once fires. If an effect should reach enemies by distance, it is an **aura** (checked continuously) or it hangs off
+    `onHit`. Same trap in a smaller form: a Vision snapshot taken at deployment reveals almost nothing, and a condition like *"if no enemy is within 4 hexes"* is trivially true at deployment and is therefore a free bonus, not a condition.
+11. **There is no flanking.** It appears in no current design document. Positional advantage is expressed through **adjacency**, **zones of control and attacks of opportunity**, **knockback**, **Reach**, and **terrain that costs extra
     Movement** — all of which are real. Do not write "while flanking".
-12. **The 0-stamina punch means there is never a dead turn** — so an ability that
-   only matters when you have stamina is weaker than it reads.
+12. **The 0-stamina punch means there is never a dead turn** — so an ability that only matters when you have stamina is weaker than it reads.
 
 ---
 

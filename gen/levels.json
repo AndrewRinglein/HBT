@@ -8,8 +8,8 @@
   "regen": "Every class gains Stamina Regen exactly twice — once at L6, once at L10 — taking it 1 to 3. Civilian is the exception and gains it never.",
   "civilian": "Civilian has no stamina bar, so it is granted no Stamina Max and no Stamina Regen at any level. Its power comes from Item Slots and gear instead — it ends with more slots than any other class. Now that Stamina Regen prices at 2.0, that exemption costs the Civilian 4.9 points across the run and it is the whole reason it totals 30.5 against the Warrior's 39.2.",
   "budget": "Each row is priced on the stat ladder: Armor/Resist and Stamina Regen 2.0 · Magic/Spirit 1.5 · Strength/Precision 1.0 · Movement 0.7 · Item Slots 0.67 · Health/Reach 0.5 · Toughness 0.4 · Dodge 0.3 · Stamina Max 0.3 · Accuracy/Crit/Luck/Vision 0.2 · Surge 0.15. Rows run 2.2 to 6.5; the dictated Warrior's own ceiling is L7 at 6.40. Classes land 30 to 40 across the whole run.",
-  "offLadder": "Nothing is off the ladder any more. The last five were priced 2026-08-20: Movement 0.7, Stamina Max 0.3, Stamina Regen 2.0, Surge 0.15, Toughness 0.4. Stamina Regen at 2.0 is the one that reshapes these tables — it is as expensive as Armor, every class gets exactly two, and Civilian gets none.",
-  "movement": "Movement is granted sparingly and never to a Mage or a Priest. Warrior L4 · Rogue L3 and L6 · Ranger L6 · Civilian L9 · Paladin L10, because armour should be the last thing that learns to run. Ruled 2026-08-20. Beast L3 and L7 — two, like the Rogue, because a Beast that cannot close is not a Beast.",
+  "offLadder": "Nothing is off the ladder any more. priced the last five 2026-08-20: Movement 0.7, Stamina Max 0.3, Stamina Regen 2.0, Surge 0.15, Toughness 0.4. Stamina Regen at 2.0 is the one that reshapes these tables — it is as expensive as Armor, every class gets exactly two, and Civilian gets none.",
+  "movement": "Movement is granted sparingly and never to a Mage or a Priest. Warrior L4 · Rogue L3 and L6 · Ranger L6 · Civilian L9 · Paladin L10, because armour should be the last thing that learns to run. Ruled by 2026-08-20. Beast L3 and L7 — two, like the Rogue, because a Beast that cannot close is not a Beast.",
   "itemSlots": "Every class gains Item Slots across the run except the BEAST, which is granted none at any level. That is the branch: a Civilian is what it carries and a Beast is what it is. The ~4 ladder points the Beast forgoes in slots come back as Health, Strength and Reach."
  },
  "classes": [
@@ -664,7 +664,7 @@
   {
    "id": "class.paladin",
    "name": "Paladin",
-   "source": "AUTHORED · Luck added 2026-08-20",
+   "source": "AUTHORED · Luck added by 2026-08-20",
    "note": "Three Armor and two Resist — five points of mitigation against the Warrior's two, and the reason every row is short. Armor and Resist are the two most expensive things on the ladder at 2.0, so the Paladin buys them by going without breadth: two Item Slots, one Dodge grant, four Crit. Health at every level from 2 upward is the Paladin's answer to the Warrior's freebie. Movement: +1 at level 10. Luck at 5, 7 and 9 for +5 total — the anti-crit stat on the class that is built to be hit.",
    "rows": [
     {
@@ -919,8 +919,6 @@
   },
   {
    "id": "class.beast",
-      "source": "AUTHORED",
-      "note": "No Item Slots at any level — that is the branch, not a gap. The roughly four ladder points other classes spend on slots come back as Health, Strength and Reach, which is why the L5 choice list offers Reach where every other class offers a slot.",
    "name": "Beast",
    "rows": [
     {

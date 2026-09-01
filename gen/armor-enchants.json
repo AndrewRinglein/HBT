@@ -1324,8 +1324,8 @@
    "triggers": [],
    "slayer": null,
    "grants": [],
-   "intent": "Two Resist neutralises two burn and two poison at once, per tick, and the price is one hex a Turn forever.",
-   "source": "Hell-TCG name reused (Ancient Ward)"
+   "intent": "Two Resist neutralises two burn and two poison at once, per tick, and the price is one hex a Turn, every Turn of the Battle.",
+   "source": "Hell-TCG name reused (Ancient Ward) | Merged from the parallel content chat 2026-09-01; attribution de-named per the standing passive-voice ruling. Wording taken from their branch: battle-scoped phrasing, consistent with rule.nothing-outlasts-the-battle."
   },
   {
    "id": "enchant.fire-ward",

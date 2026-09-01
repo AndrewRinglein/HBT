@@ -25,9 +25,9 @@ under **Level Tables**. `content/audit.mjs` enforces every rule below.
 
 **Budget** — Each row is priced on the stat ladder: Armor/Resist and Stamina Regen 2.0 · Magic/Spirit 1.5 · Strength/Precision 1.0 · Movement 0.7 · Item Slots 0.67 · Health/Reach 0.5 · Toughness 0.4 · Dodge 0.3 · Stamina Max 0.3 · Accuracy/Crit/Luck/Vision 0.2 · Surge 0.15. Rows run 2.2 to 6.5; the dictated Warrior's own ceiling is L7 at 6.40. Classes land 30 to 40 across the whole run.
 
-**Off Ladder** — Nothing is off the ladder any more. The last five were priced 2026-08-20: Movement 0.7, Stamina Max 0.3, Stamina Regen 2.0, Surge 0.15, Toughness 0.4. Stamina Regen at 2.0 is the one that reshapes these tables — it is as expensive as Armor, every class gets exactly two, and Civilian gets none.
+**Off Ladder** — Nothing is off the ladder any more. priced the last five 2026-08-20: Movement 0.7, Stamina Max 0.3, Stamina Regen 2.0, Surge 0.15, Toughness 0.4. Stamina Regen at 2.0 is the one that reshapes these tables — it is as expensive as Armor, every class gets exactly two, and Civilian gets none.
 
-**Movement** — Movement is granted sparingly and never to a Mage or a Priest. Warrior L4 · Rogue L3 and L6 · Ranger L6 · Civilian L9 · Paladin L10, because armour should be the last thing that learns to run. Ruled 2026-08-20. Beast L3 and L7 — two, like the Rogue, because a Beast that cannot close is not a Beast.
+**Movement** — Movement is granted sparingly and never to a Mage or a Priest. Warrior L4 · Rogue L3 and L6 · Ranger L6 · Civilian L9 · Paladin L10, because armour should be the last thing that learns to run. Ruled by 2026-08-20. Beast L3 and L7 — two, like the Rogue, because a Beast that cannot close is not a Beast.
 
 **Item  Slots** — Every class gains Item Slots across the run except the BEAST, which is granted none at any level. That is the branch: a Civilian is what it carries and a Beast is what it is. The ~4 ladder points the Beast forgoes in slots come back as Health, Strength and Reach.
 
@@ -187,7 +187,7 @@ Ladder total across the run: **37.6**
 
 ## Paladin
 
-`class.paladin` · **AUTHORED · Luck added 2026-08-20**
+`class.paladin` · **AUTHORED · Luck added by 2026-08-20**
 
 > Three Armor and two Resist — five points of mitigation against the Warrior's two, and the reason every row is short. Armor and Resist are the two most expensive things on the ladder at 2.0, so the Paladin buys them by going without breadth: two Item Slots, one Dodge grant, four Crit. Health at every level from 2 upward is the Paladin's answer to the Warrior's freebie. Movement: +1 at level 10. Luck at 5, 7 and 9 for +5 total — the anti-crit stat on the class that is built to be hit.
 
@@ -247,9 +247,9 @@ Ladder total across the run: **31.2**
 
 ## Beast
 
-`class.beast` · **AUTHORED**
+`class.beast` · **undefined**
 
-> No Item Slots at any level — that is the branch, not a gap. The roughly four ladder points other classes spend on slots come back as Health, Strength and Reach, which is why the L5 choice list offers Reach where every other class offers a slot.
+> undefined
 
 | Lv | Grants | Ladder |
 |---|---|---|
@@ -278,13 +278,13 @@ Ladder total across the run: **40.1**
 ## What is still owed
 
 1. **Ranger 7–10, Rogue, Mage, Priest, Paladin and Civilian are authored, not dictated.**
-   They are built to the ladder and to the shape of the two dictated tables, but
-   nobody has said these numbers out loud. Every authored row is marked in the Codex.
+   They are built to the ladder and to the shape of the two tables gave, but
+ nobody has said these numbers out loud. Every authored row is marked in the Codex.
 2. **The Warrior L5 choice list had no magnitudes** — it was dictated as five bare stat
-   names. The magnitudes here are copied from the Ranger L5 list, which is the only
-   place any were given.
-3. **Sprint.** Ruled: a hero starts with two movement abilities, Move and
+ names. The magnitudes here are copied from the Ranger L5 list, which is the only
+ place any were given.
+3. **Sprint.** ruled that a hero starts with two movement abilities, Move and
    Sidestep. Sprint is still in `GAME-DESIGN.md` §4 with no source that grants it.
    Either it needs a grantor or it needs cutting.
 4. **Specialty counts.** Every class has nine specialties, so the L2 pick is a nine-way
-   choice for everyone. Whether that is right per class is not settled.
+ choice for everyone. Whether that is right per class is not settled.

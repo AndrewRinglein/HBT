@@ -1743,8 +1743,8 @@
    ],
    "slayer": null,
    "grants": [],
-   "intent": "Two protection every activation, forever; the decay is the only thing keeping it honest.",
-   "source": "settled content"
+   "intent": "Two protection every activation, for every Turn of the Battle; the decay is the only thing keeping it honest.",
+   "source": "settled content | 2026-09-01: reworded battle-scoped — caught by the merged claims-permanence-past-the-battle rule."
   },
   {
    "id": "enchant.charmed",

@@ -1,10 +1,10 @@
 {
- "note": "TEST BESTIARY — throwaway by design. Every id begins `test.`, every display name begins \"TEST — \", every row carries test:true. Delete this one file and nothing else in the project changes. To promote one to real content, copy the row, drop the test flag, and rename the id.",
- "source": "TEST CONTENT 2026-08-20 — \"we need to create a test bestiary… a series of different enemies that are somewhat simple… small versions of different features that we have in the game… clearly designated as tests so they can be thrown away later, or duplicated into real.\"",
+ "note": "TEST BESTIARY — throwaway by design. Every id begins `test.`, every display name begins \"TEST — \", every row carries test:true. Delete this one file and nothing else in the project changes. To promote one to real content, copy the row, drop the test flag, and rename the id.\n\n2026-08-30 — ruled: \"every enemy needs its attacks clearly defined. If it does not have a melee attack, an enemy has a basic melee S+0 damage attack.\" Every unit below now names attacks that exist in the content. The five ids this file used to reference — attack.zombie.basic, attack.mage.staff, attack.mage.strike, attack.warrior.axe, attack.ranger.bow — were engine-side names that the content pipeline never defined; they are gone. See rule.enemy-attacks and attack.basic.melee in settled.json.",
+ "source": "TEST CONTENT 2026-08-20 —: \"we need to create a test bestiary… a series of different enemies that are somewhat simple… small versions of different features that we have in the game… clearly designated as tests so they can be thrown away later, or duplicated into real.\"",
  "units": [
   {
    "test": true,
-   "source": "TEST CONTENT 2026-08-20 — \"we need to create a test bestiary… a series of different enemies that are somewhat simple… small versions of different features that we have in the game… clearly designated as tests so they can be thrown away later, or duplicated into real.\"",
+   "source": "TEST CONTENT 2026-08-20 —: \"we need to create a test bestiary… a series of different enemies that are somewhat simple… small versions of different features that we have in the game… clearly designated as tests so they can be thrown away later, or duplicated into real.\" | 2026-08-30 2026-08-30: attacks stated explicitly; ids resolved to defined attacks.",
    "id": "test.unit.rat",
    "name": "TEST — Rat",
    "art": "zombie",
@@ -35,7 +35,7 @@
   },
   {
    "test": true,
-   "source": "TEST CONTENT 2026-08-20 — \"we need to create a test bestiary… a series of different enemies that are somewhat simple… small versions of different features that we have in the game… clearly designated as tests so they can be thrown away later, or duplicated into real.\"",
+   "source": "TEST CONTENT 2026-08-20 —: \"we need to create a test bestiary… a series of different enemies that are somewhat simple… small versions of different features that we have in the game… clearly designated as tests so they can be thrown away later, or duplicated into real.\" | 2026-08-30 2026-08-30: attacks stated explicitly; ids resolved to defined attacks.",
    "id": "test.unit.bruteling",
    "name": "TEST — Bruteling",
    "art": "skeleton",
@@ -58,7 +58,7 @@
     "reach": 0
    },
    "attacks": [
-    "attack.zombie.basic"
+    "attack.basic.melee"
    ],
    "triggers": [],
    "runs": "today",
@@ -66,7 +66,7 @@
   },
   {
    "test": true,
-   "source": "TEST CONTENT 2026-08-20 — \"we need to create a test bestiary… a series of different enemies that are somewhat simple… small versions of different features that we have in the game… clearly designated as tests so they can be thrown away later, or duplicated into real.\"",
+   "source": "TEST CONTENT 2026-08-20 —: \"we need to create a test bestiary… a series of different enemies that are somewhat simple… small versions of different features that we have in the game… clearly designated as tests so they can be thrown away later, or duplicated into real.\" | 2026-08-30 2026-08-30: attacks stated explicitly; ids resolved to defined attacks.",
    "id": "test.unit.wardling",
    "name": "TEST — Wardling",
    "art": "cultist",
@@ -89,7 +89,7 @@
     "reach": 0
    },
    "attacks": [
-    "attack.zombie.basic"
+    "attack.basic.melee"
    ],
    "triggers": [],
    "runs": "today",
@@ -97,7 +97,7 @@
   },
   {
    "test": true,
-   "source": "TEST CONTENT 2026-08-20 — \"we need to create a test bestiary… a series of different enemies that are somewhat simple… small versions of different features that we have in the game… clearly designated as tests so they can be thrown away later, or duplicated into real.\"",
+   "source": "TEST CONTENT 2026-08-20 —: \"we need to create a test bestiary… a series of different enemies that are somewhat simple… small versions of different features that we have in the game… clearly designated as tests so they can be thrown away later, or duplicated into real.\" | 2026-08-30 2026-08-30: attacks stated explicitly; ids resolved to defined attacks.",
    "id": "test.unit.flicker",
    "name": "TEST — Flicker",
    "art": "imp",
@@ -128,7 +128,7 @@
   },
   {
    "test": true,
-   "source": "TEST CONTENT 2026-08-20 — \"we need to create a test bestiary… a series of different enemies that are somewhat simple… small versions of different features that we have in the game… clearly designated as tests so they can be thrown away later, or duplicated into real.\"",
+   "source": "TEST CONTENT 2026-08-20 —: \"we need to create a test bestiary… a series of different enemies that are somewhat simple… small versions of different features that we have in the game… clearly designated as tests so they can be thrown away later, or duplicated into real.\" | 2026-08-30 2026-08-30: attacks stated explicitly; basic melee added.",
    "id": "test.unit.truebearer",
    "name": "TEST — Truebearer",
    "art": "skeletal-archer",
@@ -151,7 +151,8 @@
     "reach": 5
    },
    "attacks": [
-    "attack.ranger.bow"
+    "attack.rusted-crossbow.bolt",
+    "attack.basic.melee"
    ],
    "triggers": [],
    "runs": "today",
@@ -159,7 +160,7 @@
   },
   {
    "test": true,
-   "source": "TEST CONTENT 2026-08-20 — \"we need to create a test bestiary… a series of different enemies that are somewhat simple… small versions of different features that we have in the game… clearly designated as tests so they can be thrown away later, or duplicated into real.\"",
+   "source": "TEST CONTENT 2026-08-20 —: \"we need to create a test bestiary… a series of different enemies that are somewhat simple… small versions of different features that we have in the game… clearly designated as tests so they can be thrown away later, or duplicated into real.\" | 2026-08-30 2026-08-30: attacks stated explicitly; ids resolved to defined attacks.",
    "id": "test.unit.swinger",
    "name": "TEST — Swinger",
    "art": "soldier",
@@ -182,7 +183,7 @@
     "reach": 0
    },
    "attacks": [
-    "attack.zombie.basic"
+    "attack.basic.melee"
    ],
    "runs": "today",
    "triggers": [
@@ -202,7 +203,7 @@
   },
   {
    "test": true,
-   "source": "TEST CONTENT 2026-08-20 — \"we need to create a test bestiary… a series of different enemies that are somewhat simple… small versions of different features that we have in the game… clearly designated as tests so they can be thrown away later, or duplicated into real.\"",
+   "source": "TEST CONTENT 2026-08-20 —: \"we need to create a test bestiary… a series of different enemies that are somewhat simple… small versions of different features that we have in the game… clearly designated as tests so they can be thrown away later, or duplicated into real.\" | 2026-08-30 2026-08-30: attacks stated explicitly; ids resolved to defined attacks.",
    "id": "test.unit.flailer",
    "name": "TEST — Flailer",
    "art": "zombie",
@@ -225,7 +226,7 @@
     "reach": 0
    },
    "attacks": [
-    "attack.zombie.basic"
+    "attack.basic.melee"
    ],
    "runs": "today",
    "triggers": [
@@ -245,7 +246,7 @@
   },
   {
    "test": true,
-   "source": "TEST CONTENT 2026-08-20 — \"we need to create a test bestiary… a series of different enemies that are somewhat simple… small versions of different features that we have in the game… clearly designated as tests so they can be thrown away later, or duplicated into real.\"",
+   "source": "TEST CONTENT 2026-08-20 —: \"we need to create a test bestiary… a series of different enemies that are somewhat simple… small versions of different features that we have in the game… clearly designated as tests so they can be thrown away later, or duplicated into real.\" | 2026-08-30 2026-08-30: attacks stated explicitly; ids resolved to defined attacks.",
    "id": "test.unit.critter",
    "name": "TEST — Critter",
    "art": "vampire",
@@ -289,7 +290,7 @@
   },
   {
    "test": true,
-   "source": "TEST CONTENT 2026-08-20 — \"we need to create a test bestiary… a series of different enemies that are somewhat simple… small versions of different features that we have in the game… clearly designated as tests so they can be thrown away later, or duplicated into real.\"",
+   "source": "TEST CONTENT 2026-08-20 —: \"we need to create a test bestiary… a series of different enemies that are somewhat simple… small versions of different features that we have in the game… clearly designated as tests so they can be thrown away later, or duplicated into real.\" | 2026-08-30 2026-08-30: attacks stated explicitly; ids resolved to defined attacks.",
    "id": "test.unit.devourer",
    "name": "TEST — Devourer",
    "art": "werewolf",
@@ -333,7 +334,7 @@
   },
   {
    "test": true,
-   "source": "TEST CONTENT 2026-08-20 — \"we need to create a test bestiary… a series of different enemies that are somewhat simple… small versions of different features that we have in the game… clearly designated as tests so they can be thrown away later, or duplicated into real.\"",
+   "source": "TEST CONTENT 2026-08-20 —: \"we need to create a test bestiary… a series of different enemies that are somewhat simple… small versions of different features that we have in the game… clearly designated as tests so they can be thrown away later, or duplicated into real.\" | 2026-08-30 2026-08-30: attacks stated explicitly; ids resolved to defined attacks.",
    "id": "test.unit.thornback",
    "name": "TEST — Thornback",
    "art": "bone-colossus",
@@ -357,7 +358,7 @@
     "reach": 0
    },
    "attacks": [
-    "attack.zombie.basic"
+    "attack.basic.melee"
    ],
    "runs": "today",
    "triggers": [
@@ -377,7 +378,7 @@
   },
   {
    "test": true,
-   "source": "TEST CONTENT 2026-08-20 — \"we need to create a test bestiary… a series of different enemies that are somewhat simple… small versions of different features that we have in the game… clearly designated as tests so they can be thrown away later, or duplicated into real.\"",
+   "source": "TEST CONTENT 2026-08-20 —: \"we need to create a test bestiary… a series of different enemies that are somewhat simple… small versions of different features that we have in the game… clearly designated as tests so they can be thrown away later, or duplicated into real.\" | 2026-08-30 2026-08-30: attacks stated explicitly; ids resolved to defined attacks.",
    "id": "test.unit.bloatling",
    "name": "TEST — Bloatling",
    "art": "zombie",
@@ -400,7 +401,7 @@
     "reach": 0
    },
    "attacks": [
-    "attack.zombie.basic"
+    "attack.basic.melee"
    ],
    "runs": "today",
    "triggers": [
@@ -425,7 +426,7 @@
   },
   {
    "test": true,
-   "source": "TEST CONTENT 2026-08-20 — \"we need to create a test bestiary… a series of different enemies that are somewhat simple… small versions of different features that we have in the game… clearly designated as tests so they can be thrown away later, or duplicated into real.\"",
+   "source": "TEST CONTENT 2026-08-20 —: \"we need to create a test bestiary… a series of different enemies that are somewhat simple… small versions of different features that we have in the game… clearly designated as tests so they can be thrown away later, or duplicated into real.\" | 2026-08-30 2026-08-30: attacks stated explicitly; ids resolved to defined attacks.",
    "id": "test.unit.pacer",
    "name": "TEST — Pacer",
    "art": "skeleton",
@@ -448,7 +449,7 @@
     "reach": 0
    },
    "attacks": [
-    "attack.zombie.basic"
+    "attack.basic.melee"
    ],
    "runs": "today",
    "triggers": [
@@ -468,7 +469,7 @@
   },
   {
    "test": true,
-   "source": "TEST CONTENT 2026-08-20 — \"we need to create a test bestiary… a series of different enemies that are somewhat simple… small versions of different features that we have in the game… clearly designated as tests so they can be thrown away later, or duplicated into real.\"",
+   "source": "TEST CONTENT 2026-08-20 —: \"we need to create a test bestiary… a series of different enemies that are somewhat simple… small versions of different features that we have in the game… clearly designated as tests so they can be thrown away later, or duplicated into real.\" | 2026-08-30 2026-08-30: attacks stated explicitly; ids resolved to defined attacks.",
    "id": "test.unit.gravecaller",
    "name": "TEST — Gravecaller",
    "art": "necromancer",
@@ -491,7 +492,7 @@
     "reach": 3
    },
    "attacks": [
-    "attack.mage.staff"
+    "attack.basic.melee"
    ],
    "runs": "today",
    "triggers": [
@@ -519,7 +520,7 @@
   },
   {
    "test": true,
-   "source": "TEST CONTENT 2026-08-20 — \"we need to create a test bestiary… a series of different enemies that are somewhat simple… small versions of different features that we have in the game… clearly designated as tests so they can be thrown away later, or duplicated into real.\"",
+   "source": "TEST CONTENT 2026-08-20 —: \"we need to create a test bestiary… a series of different enemies that are somewhat simple… small versions of different features that we have in the game… clearly designated as tests so they can be thrown away later, or duplicated into real.\" | 2026-08-30 2026-08-30: attacks stated explicitly; ids resolved to defined attacks.",
    "id": "test.unit.dreadbrand",
    "name": "TEST — Dreadbrand",
    "art": "cultist",
@@ -542,7 +543,7 @@
     "reach": 0
    },
    "attacks": [
-    "attack.zombie.basic"
+    "attack.basic.melee"
    ],
    "runs": "today",
    "triggers": [
@@ -567,7 +568,7 @@
   },
   {
    "test": true,
-   "source": "TEST CONTENT 2026-08-20 — \"we need to create a test bestiary… a series of different enemies that are somewhat simple… small versions of different features that we have in the game… clearly designated as tests so they can be thrown away later, or duplicated into real.\"",
+   "source": "TEST CONTENT 2026-08-20 —: \"we need to create a test bestiary… a series of different enemies that are somewhat simple… small versions of different features that we have in the game… clearly designated as tests so they can be thrown away later, or duplicated into real.\" | 2026-08-30 2026-08-30: attacks stated explicitly; ids resolved to defined attacks.",
    "id": "test.unit.hellsherald",
    "name": "TEST — Hell’s Herald",
    "art": "imp",
@@ -590,7 +591,7 @@
     "reach": 0
    },
    "attacks": [
-    "attack.zombie.basic"
+    "attack.basic.melee"
    ],
    "runs": "today",
    "triggers": [
@@ -615,7 +616,7 @@
   },
   {
    "test": true,
-   "source": "TEST CONTENT 2026-08-20 — \"we need to create a test bestiary… a series of different enemies that are somewhat simple… small versions of different features that we have in the game… clearly designated as tests so they can be thrown away later, or duplicated into real.\"",
+   "source": "TEST CONTENT 2026-08-20 —: \"we need to create a test bestiary… a series of different enemies that are somewhat simple… small versions of different features that we have in the game… clearly designated as tests so they can be thrown away later, or duplicated into real.\" | 2026-08-30 2026-08-30: attacks stated explicitly; ids resolved to defined attacks.",
    "id": "test.unit.plaguebell",
    "name": "TEST — Plague Bell",
    "art": "necromancer",
@@ -638,7 +639,7 @@
     "reach": 3
    },
    "attacks": [
-    "attack.mage.staff"
+    "attack.basic.melee"
    ],
    "runs": "today",
    "triggers": [
@@ -661,7 +662,7 @@
   },
   {
    "test": true,
-   "source": "TEST CONTENT 2026-08-20 — \"we need to create a test bestiary… a series of different enemies that are somewhat simple… small versions of different features that we have in the game… clearly designated as tests so they can be thrown away later, or duplicated into real.\"",
+   "source": "TEST CONTENT 2026-08-20 —: \"we need to create a test bestiary… a series of different enemies that are somewhat simple… small versions of different features that we have in the game… clearly designated as tests so they can be thrown away later, or duplicated into real.\" | 2026-08-30 2026-08-30: attacks stated explicitly; ids resolved to defined attacks.",
    "id": "test.unit.cleanser",
    "name": "TEST — Cleanser",
    "art": "priest-armored",
@@ -684,7 +685,7 @@
     "reach": 3
    },
    "attacks": [
-    "attack.mage.staff"
+    "attack.basic.melee"
    ],
    "runs": "today",
    "triggers": [
@@ -708,7 +709,7 @@
   },
   {
    "test": true,
-   "source": "TEST CONTENT 2026-08-20 — \"we need to create a test bestiary… a series of different enemies that are somewhat simple… small versions of different features that we have in the game… clearly designated as tests so they can be thrown away later, or duplicated into real.\"",
+   "source": "TEST CONTENT 2026-08-20 —: \"we need to create a test bestiary… a series of different enemies that are somewhat simple… small versions of different features that we have in the game… clearly designated as tests so they can be thrown away later, or duplicated into real.\" | 2026-08-30 2026-08-30: attacks stated explicitly; ids resolved to defined attacks.",
    "id": "test.unit.channeler",
    "name": "TEST — Channeler",
    "art": "mage-fire",
@@ -731,7 +732,7 @@
     "reach": 4
    },
    "attacks": [
-    "attack.mage.strike"
+    "attack.basic.melee"
    ],
    "runs": "today",
    "triggers": [
@@ -757,7 +758,7 @@
   },
   {
    "test": true,
-   "source": "TEST CONTENT 2026-08-20 — \"we need to create a test bestiary… a series of different enemies that are somewhat simple… small versions of different features that we have in the game… clearly designated as tests so they can be thrown away later, or duplicated into real.\"",
+   "source": "TEST CONTENT 2026-08-20 —: \"we need to create a test bestiary… a series of different enemies that are somewhat simple… small versions of different features that we have in the game… clearly designated as tests so they can be thrown away later, or duplicated into real.\" | 2026-08-30 2026-08-30: attacks stated explicitly; ids resolved to defined attacks.",
    "id": "test.unit.coinflip",
    "name": "TEST — Coinflip",
    "art": "imp",
@@ -780,7 +781,7 @@
     "reach": 0
    },
    "attacks": [
-    "attack.zombie.basic"
+    "attack.basic.melee"
    ],
    "runs": "today",
    "triggers": [
@@ -811,7 +812,7 @@
   },
   {
    "test": true,
-   "source": "TEST CONTENT 2026-08-20 — \"we need to create a test bestiary… a series of different enemies that are somewhat simple… small versions of different features that we have in the game… clearly designated as tests so they can be thrown away later, or duplicated into real.\"",
+   "source": "TEST CONTENT 2026-08-20 —: \"we need to create a test bestiary… a series of different enemies that are somewhat simple… small versions of different features that we have in the game… clearly designated as tests so they can be thrown away later, or duplicated into real.\" | 2026-08-30 2026-08-30: attacks stated explicitly; ids resolved to defined attacks.",
    "id": "test.unit.cleaver",
    "name": "TEST — Cleaver",
    "art": "soldier",
@@ -834,7 +835,7 @@
     "reach": 0
    },
    "attacks": [
-    "attack.warrior.axe"
+    "attack.basic.melee"
    ],
    "runs": "today",
    "triggers": [
@@ -859,7 +860,7 @@
   },
   {
    "test": true,
-   "source": "TEST CONTENT 2026-08-20 — \"we need to create a test bestiary… a series of different enemies that are somewhat simple… small versions of different features that we have in the game… clearly designated as tests so they can be thrown away later, or duplicated into real.\"",
+   "source": "TEST CONTENT 2026-08-20 —: \"we need to create a test bestiary… a series of different enemies that are somewhat simple… small versions of different features that we have in the game… clearly designated as tests so they can be thrown away later, or duplicated into real.\" | 2026-08-30 2026-08-30: attacks stated explicitly; ids resolved to defined attacks.",
    "id": "test.unit.hunter",
    "name": "TEST — Hunter",
    "art": "werewolf",

@@ -160,7 +160,7 @@
     "power.champion.heroic-charge",
     "power.champion.prove-yourself"
    ],
-   "source": "Hell-TCG Knight/Champion | 2026-08-17 trim: three stats, no negatives, one ability. Dropped stats: dodge -5; health +2. | 2026-08-17: my trim ranked stats by rarity and dropped a class-PRIMARY stat to keep a rarer one. Restored; the cheapest stat on the ladder (Accuracy, then Dodge) was dropped instead."
+   "source": "Hell-TCG Knight/Champion | 2026-08-17 trim: three stats, no negatives, one ability. Dropped stats: dodge -5; health +2. | 2026-08-17: my trim ranked stats by rarity and dropped a class-PRIMARY stat to keep a rarer one. Restored; the cheapest stat on’s ladder (Accuracy, then Dodge) was dropped instead."
   },
   {
    "id": "specialty.guardian",
@@ -208,7 +208,7 @@
     "power.crusader.oathbound",
     "power.crusader.holy-fire"
    ],
-   "source": "Hell-TCG Knight/Crusader | 2026-08-17 trim: three stats, no negatives, one ability. Dropped stats: dodge -5; health +2. | 2026-08-17: my trim ranked stats by rarity and dropped a class-PRIMARY stat to keep a rarer one. Restored; the cheapest stat on the ladder (Accuracy, then Dodge) was dropped instead."
+   "source": "Hell-TCG Knight/Crusader | 2026-08-17 trim: three stats, no negatives, one ability. Dropped stats: dodge -5; health +2. | 2026-08-17: my trim ranked stats by rarity and dropped a class-PRIMARY stat to keep a rarer one. Restored; the cheapest stat on’s ladder (Accuracy, then Dodge) was dropped instead."
   }
  ],
  "powers": [
@@ -686,7 +686,7 @@
    ],
    "description": "Stance: gain Thorns 4 for the rest of the Battle. Anything that damages you takes 4 true damage, at any range — the archer on the ridge included.",
    "intent": "You stop being something they can attack for free.",
-   "source": "new 2026-08-20: Thorns belongs in class powers, and the Shieldbearer is where being hit is the plan."
+   "source": "new 2026-08-20: wants Thorns in class powers, and the Shieldbearer is where being hit is the plan."
   }
  ]
 }

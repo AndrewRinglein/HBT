@@ -47,7 +47,7 @@
     "power.assassin.double-strike",
     "power.assassin.dodge-behind"
    ],
-   "source": "Hell-TCG Rogue/Assassin (name kept — no id collision with Ranger's specialty.winged-assassin, which Hell-TCG also ran alongside it; the onDamage hook rebuilt as flanking plus a stealth opener) | 2026-08-17 trim: three stats, no negatives, one ability. Dropped stats: health -3; armor -1; strength +1. Parked abilities: onHit: you are flanking when you and an ally are both adjacent to the target on two hexes that are not adjacent to each other; a flanking attack of yours gains +2 Strength || onHit: an attack made out of stealth gains +15 Crit; making it breaks stealth. | 2026-08-17: my trim ranked stats by rarity and dropped a class-PRIMARY stat to keep a rarer one. Restored; the cheapest stat on the ladder (Accuracy, then Dodge) was dropped instead. | 2026-08-17 design pass: stealth rewritten to the settled definition: it breaks on an attack OR a power, never on movement, and the invented \"breaks when you gain Burn\" clause is gone."
+   "source": "Hell-TCG Rogue/Assassin (name kept — no id collision with Ranger's specialty.winged-assassin, which Hell-TCG also ran alongside it; the onDamage hook rebuilt as flanking plus a stealth opener) | 2026-08-17 trim: three stats, no negatives, one ability. Dropped stats: health -3; armor -1; strength +1. Parked abilities: onHit: you are flanking when you and an ally are both adjacent to the target on two hexes that are not adjacent to each other; a flanking attack of yours gains +2 Strength || onHit: an attack made out of stealth gains +15 Crit; making it breaks stealth. | 2026-08-17: my trim ranked stats by rarity and dropped a class-PRIMARY stat to keep a rarer one. Restored; the cheapest stat on’s ladder (Accuracy, then Dodge) was dropped instead. | 2026-08-17 design pass: stealth rewritten to the settled definition: it breaks on an attack OR a power, never on movement, and the invented \"breaks when you gain Burn\" clause is gone."
   },
   {
    "id": "specialty.shadowdancer",
@@ -119,7 +119,7 @@
     "power.contractbound.collect-the-debt",
     "power.contractbound.paid-in-full"
    ],
-   "source": "Hell-TCG Ebony Mask/Contractbound (Faith was CUT — 'kills earn faith, death costs it' rebuilt as a named mark you bleed for until you close it) | 2026-08-17 trim: three stats, no negatives, one ability. Dropped stats: health -2; resist -1; strength +1. Parked abilities: onKill: if the unit killed was your mark, heal 5, the debt ends, and you may name a new mark at the start of your next Turn. | 2026-08-17: my trim ranked stats by rarity and dropped a class-PRIMARY stat to keep a rarer one. Restored; the cheapest stat on the ladder (Accuracy, then Dodge) was dropped instead. | 2026-08-20: the mark is cut. the named-enemy mark was a per-target designation system the engine does not have. The contract now simply runs on you: the bonus and the bill both apply from the start, no target to nominate."
+   "source": "Hell-TCG Ebony Mask/Contractbound (Faith was CUT — 'kills earn faith, death costs it' rebuilt as a named mark you bleed for until you close it) | 2026-08-17 trim: three stats, no negatives, one ability. Dropped stats: health -2; resist -1; strength +1. Parked abilities: onKill: if the unit killed was your mark, heal 5, the debt ends, and you may name a new mark at the start of your next Turn. | 2026-08-17: my trim ranked stats by rarity and dropped a class-PRIMARY stat to keep a rarer one. Restored; the cheapest stat on’s ladder (Accuracy, then Dodge) was dropped instead. | 2026-08-20: the mark is cut. the named-enemy mark was a per-target designation system the engine does not have. The contract now simply runs on you: the bonus and the bill both apply from the start, no target to nominate."
   },
   {
    "id": "specialty.nightblade",
@@ -143,7 +143,7 @@
     "power.nightblade.exsanguinate",
     "power.nightblade.long-knife"
    ],
-   "source": "Hell-TCG Ebony Mask/Nightblade ('every cut bleeds' kept literally; the Reach kept and paid for in Health, since Reach is the one stat that makes thrown daggers a build) | 2026-08-17 trim: three stats, no negatives, one ability. Dropped stats: health -3; armor -1; dodge -5; strength +1. Parked abilities: onActivationEnd: if no enemy is within 3 hexes of you, enter stealth. | 2026-08-17: my trim ranked stats by rarity and dropped a class-PRIMARY stat to keep a rarer one. Restored; the cheapest stat on the ladder (Accuracy, then Dodge) was dropped instead."
+   "source": "Hell-TCG Ebony Mask/Nightblade ('every cut bleeds' kept literally; the Reach kept and paid for in Health, since Reach is the one stat that makes thrown daggers a build) | 2026-08-17 trim: three stats, no negatives, one ability. Dropped stats: health -3; armor -1; dodge -5; strength +1. Parked abilities: onActivationEnd: if no enemy is within 3 hexes of you, enter stealth. | 2026-08-17: my trim ranked stats by rarity and dropped a class-PRIMARY stat to keep a rarer one. Restored; the cheapest stat on’s ladder (Accuracy, then Dodge) was dropped instead."
   },
   {
    "id": "specialty.havoc",
@@ -167,7 +167,7 @@
     "power.havoc.fel-fury",
     "power.havoc.momentum"
    ],
-   "source": "Hell-TCG Demon Hunter/Havoc (bleeding-on-attack kept; the row-wipe rebuilt as movement plus a slayer band on demon and undead) | 2026-08-17 trim: three stats, no negatives, one ability. Dropped stats: armor -1; health -1; accuracy -5; strength +1. Parked abilities: onKill: regain 1 Stamina and move up to 2 hexes immediately. | 2026-08-17: my trim ranked stats by rarity and dropped a class-PRIMARY stat to keep a rarer one. Restored; the cheapest stat on the ladder (Accuracy, then Dodge) was dropped instead."
+   "source": "Hell-TCG Demon Hunter/Havoc (bleeding-on-attack kept; the row-wipe rebuilt as movement plus a slayer band on demon and undead) | 2026-08-17 trim: three stats, no negatives, one ability. Dropped stats: armor -1; health -1; accuracy -5; strength +1. Parked abilities: onKill: regain 1 Stamina and move up to 2 hexes immediately. | 2026-08-17: my trim ranked stats by rarity and dropped a class-PRIMARY stat to keep a rarer one. Restored; the cheapest stat on’s ladder (Accuracy, then Dodge) was dropped instead."
   },
   {
    "id": "specialty.demonic-ward",
@@ -896,7 +896,7 @@
    ],
    "description": "Immediately enter stealth: you cannot be seen and cannot be targeted by an attack. It breaks the moment you attack, and area effects, terrain and auras reach you anyway.",
    "intent": "Not an escape — a question the enemy has to answer before it can do anything else.",
-   "source": "new 2026-08-20: more things should touch stealth. The cheap, repeatable entry into it."
+   "source": "new 2026-08-20: wants more things touching stealth. The cheap, repeatable entry into it."
   }
  ]
 }

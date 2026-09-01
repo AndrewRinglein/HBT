@@ -306,7 +306,7 @@
     "ranged"
    ],
    "description": "Make two ranged attacks at -10 Accuracy each.",
-   "source": "Hell-TCG name reused (Ranger/Bowmaster, Extra Shot — noTap became free, with a standoff gate) | 2026-08-17: was an attack in its own right, so it competed with the weapon in your hands and lost the moment you found a good one. Rebuilt as a next-attack modifier. | 2026-08-17: \"difficult terrain\" is not a thing in HoBaT — there are hexes that cost extra Movement. Reworded. | 2026-08-20: \"your next <form> attack\" is gone. Nothing tracks which attack is next or what form it is. Rewritten as a duration: until the end of your next Turn, your attacks carry it. The form qualifier is dropped with it. | 2026-08-20 sweep: \"may be made against anything not adjacent to you\" was a targeting predicate on the target's adjacency — the only one of its kind, and not one of the 22 shapes. Cutting it left the power with nothing but -1 Precision, all cost and no benefit. Rebuilt on the Rapid Fire pattern: two ranged attacks with your own weapon at -10 Accuracy each, which is what \"Extra Shot\" says on the tin.",
+   "source": "Hell-TCG name reused (Ranger/Bowmaster, Extra Shot — noTap became free, with a standoff gate) | 2026-08-17: was an attack in its own right, so it competed with the weapon in your hands and lost the moment you found a good one. Rebuilt as a next-attack modifier. | 2026-08-17: \"difficult terrain\" is not a thing in HoBaT — there are hexes that cost extra Movement. Reworded. | 2026-08-20: \"your next <form> attack\" is gone. Nothing tracks which attack is next or what form it is. Rewritten as a duration: until the end of your next Turn, your attacks carry it. The form qualifier is dropped with it.  | 2026-08-20 sweep: \"may be made against anything not adjacent to you\" was a targeting predicate on the target's adjacency — the only one of its kind, and not one of the 22 shapes. Cutting it left the power with nothing but -1 Precision, all cost and no benefit. Rebuilt on the Rapid Fire pattern: two ranged attacks with your own weapon at -10 Accuracy each, which is what \"Extra Shot\" says on the tin.",
    "modifies": null,
    "triggers": []
   },
@@ -500,7 +500,7 @@
     "stance"
    ],
    "description": "Plant yourself. Your ranged attacks gain +20 Accuracy until you next move.",
-   "source": "New, 2026-08-17 — replaces the \"if you did not move this Turn\" trigger, which is not a condition the engine has. The player chooses to stand still instead of the game checking whether they did. | 2026-08-17: \"difficult terrain\" is not a thing in HoBaT — there are hexes that cost extra Movement. Reworded.",
+   "source": "New 2026-08-17 — replaces the \"if you did not move this Turn\" trigger, which is not a condition the engine has. The player chooses to stand still instead of the game checking whether they did. | 2026-08-17: \"difficult terrain\" is not a thing in HoBaT — there are hexes that cost extra Movement. Reworded.",
    "modifies": {
     "tags": [
      "ranged"
@@ -890,7 +890,7 @@
    ],
    "description": "Every stealthed enemy within 4 hexes is revealed and its stealth breaks; each of them also gains 2 Bleed.",
    "intent": "They were counting on you not knowing. Now everyone knows, and they are bleeding.",
-   "source": "new 2026-08-20: stealth is a thing enemies engage with too — this is the answer to an enemy that hides."
+   "source": "new 2026-08-20: wants stealth to be a thing enemies engage with too — this is the answer to an enemy that hides."
   }
  ]
 }

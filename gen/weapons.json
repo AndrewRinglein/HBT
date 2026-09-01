@@ -1457,8 +1457,8 @@
      "effect": "ignore 3 of the target's Armor"
     }
    ],
-   "intent": "It is a wall weapon someone strapped a shoulder to; you give up a hex of movement forever and it goes through anything.",
-   "source": "Hell-TCG name reused (Ranger, Siege Crossbow — the -3 Health cost rebuilt as -1 Movement)"
+   "intent": "It is a wall weapon someone strapped a shoulder to; you give up a hex of movement for as long as you carry it and it goes through anything.",
+   "source": "Hell-TCG name reused (Ranger, Siege Crossbow — the -3 Health cost rebuilt as -1 Movement) | Merged from the parallel content chat 2026-09-01; attribution de-named per the standing passive-voice ruling. Wording taken from their branch: battle-scoped phrasing, consistent with rule.nothing-outlasts-the-battle."
   },
   {
    "id": "item.stormforged-halberd",

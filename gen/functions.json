@@ -314,7 +314,7 @@
  "shapes": [
   {
    "name": "self",
-   "uses": 150,
+   "uses": 154,
    "ids": [
     "item.loaded-dice-of-mirran",
     "item.mug-of-endless-dregs",
@@ -360,7 +360,7 @@
   },
   {
    "name": "one enemy in melee reach",
-   "uses": 104,
+   "uses": 105,
    "ids": [
     "attack.hand-axe.chop",
     "attack.sharpened-stake.jab",
@@ -926,7 +926,7 @@
   },
   {
    "name": "heal",
-   "uses": 88,
+   "uses": 89,
    "ids": [
     "item.death-blade",
     "item.wraith-touched-staff",
@@ -2447,7 +2447,7 @@
  "durations": [
   {
    "name": "rest of the Battle",
-   "uses": 170,
+   "uses": 171,
    "ids": [
     "item.hammer-of-justice",
     "item.death-blade",

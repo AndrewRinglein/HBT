@@ -1,14 +1,14 @@
 // novelty.mjs — "did I invent anything?"
 //
-//   node novelty.mjs class.beast
-//   node novelty.mjs specialty.trapper
-//   node novelty.mjs item.          (any id prefix works)
+// node novelty.mjs class.beast
+// node novelty.mjs specialty.trapper
+// node novelty.mjs item.          (any id prefix works)
 //
 // Splits the content in two — entries matching the filter, and everything else — then
 // compares the VOCABULARY each side uses: hooks, targeting shapes, ranges, damage types,
 // source stats, stat keys, tags, item classes, statuses, durations and effect verbs.
 // Anything that appears on the new side and NOWHERE else is a thing that was invented for
-// this content, which is exactly the question this tool exists to answer. Exits 1 if it finds any.
+// this content, which is exactly what keeps asking about. Exits 1 if it finds any.
 //
 // It caught three in the Beast class: range written as "ranged" when every other attack
 // states a number of hexes; flight asserted in prose when every other source grants the
@@ -20,27 +20,17 @@ const FILTER=process.argv[2]||'class.beast';
 const D=JSON.parse(fs.readFileSync('hbt-content.json','utf8'));
 const all=[...D.items,...D.enchants,...D.specialties,...D.attacks,...D.powers];
 const BEASTIDS=new Set();
-for(const e of all){
-  if(e.class===FILTER||e.classRestriction===FILTER||e.specialty===FILTER||String(e.id).startsWith(FILTER)) BEASTIDS.add(e.id);
+for(const e of all){ if(e.class===FILTER||e.classRestriction===FILTER||e.specialty===FILTER||String(e.id).startsWith(FILTER)) BEASTIDS.add(e.id);
 }
 // an item's attacks belong to the item — pull them in so a weapon and its swings are judged together
 const owned=D.items.filter(i=>BEASTIDS.has(i.id)).map(i=>i.id.replace(/^item\./,''));
 for(const a of D.attacks) if(owned.some(w=>String(a.id).startsWith('attack.'+w+'.'))) BEASTIDS.add(a.id);
 const isBeast=e=>BEASTIDS.has(e.id);
 const beast=all.filter(isBeast), rest=all.filter(e=>!isBeast(e));
-console.log('NOVELTY CHECK  filter='+FILTER+'\n'+beast.length+' matching entries, judged against the other '+rest.length+'\n');
-if(!beast.length){ console.error('nothing matched "'+FILTER+'"'); process.exit(1); }
-
-const mech=e=>[e.description,...(e.triggers||[]).map(g=>g.effect||g.description||'')].filter(Boolean).join(' | ');
+console.log('NOVELTY CHECK filter='+FILTER+'\n'+beast.length+' matching entries, judged against the other '+rest.length+'\n');
+if(!beast.length){ console.error('nothing matched "'+FILTER+'"'); process.exit(1); } const mech=e=>[e.description,...(e.triggers||[]).map(g=>g.effect||g.description||'')].filter(Boolean).join(' | ');
 const tally=(list,fn)=>{const m=new Map();for(const e of list)for(const k of fn(e)){if(!m.has(k))m.set(k,[]);m.get(k).push(e.id)}return m};
-const report=(label,fn)=>{
-  const B=tally(beast,fn), R=tally(rest,fn);
-  const novel=[...B.keys()].filter(k=>!R.has(k));
-  console.log('## '+label);
-  if(!novel.length){ console.log('   ok — every value already existed elsewhere ('+B.size+' distinct, all known)\n'); return 0; }
-  for(const k of novel) console.log('   NEW: '+JSON.stringify(k)+'   used by '+B.get(k).length+': '+B.get(k).slice(0,4).join(' '));
-  console.log('');
-  return novel.length;
+const report=(label,fn)=>{ const B=tally(beast,fn), R=tally(rest,fn); const novel=[...B.keys()].filter(k=>!R.has(k)); console.log('## '+label); if(!novel.length){ console.log(' ok — every value already existed elsewhere ('+B.size+' distinct, all known)\n'); return 0; } for(const k of novel) console.log('   NEW: '+JSON.stringify(k)+' used by '+B.get(k).length+': '+B.get(k).slice(0,4).join(' ')); console.log(''); return novel.length;
 };
 let n=0;
 n+=report('Trigger hooks / stations', e=>(e.triggers||[]).map(g=>g.hook));
@@ -54,8 +44,7 @@ n+=report('Item class', e=>e.itemClass?[e.itemClass]:[]);
 n+=report('Statuses named', e=>{const t=mech(e);return ['Burn','Poison','Bleed','Weak','Stun','Frost','Slow','Regeneration','Protection','Karma'].filter(s=>new RegExp('\\b'+s+'\\b').test(t))});
 n+=report('Durations', e=>{const t=mech(e);const D2=['for the rest of the Battle','until the end of your next Turn','until the start of your next Turn','until the end of the Turn'];return D2.filter(d=>t.includes(d))});
 // EFFECT VERBS — the sentence spine, normalised
-const VERB=t=>{const out=[];
-  const pats={
+const VERB=t=>{const out=[]; const pats={
    'deal N + STAT TYPE damage':/deal \d+ \+ \w+ (physical|magic|true) damage/i,
    'deal N TYPE damage':/deal \d+ (physical|magic|true) damage/i,
    'take N true damage':/take \d+ true damage/i,
@@ -82,9 +71,7 @@ const VERB=t=>{const out=[];
    'grant flight':/power\.flight/i,
    'stance':/^Stance:/i,
    'free':/^Free[.,]/i,
-  };
-  for(const [k,re] of Object.entries(pats)) if(re.test(t)) out.push(k);
-  return out};
+  }; for(const [k,re] of Object.entries(pats)) if(re.test(t)) out.push(k); return out};
 n+=report('Effect verbs', e=>VERB(mech(e)));
 console.log(n===0 ? '\n>>> NOTHING NEW — built entirely from vocabulary that already existed.'
                   : '\n>>> '+n+' NEW value(s). Each is something invented for this content. Justify it in the source note, or cut it.');
