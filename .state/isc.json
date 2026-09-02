@@ -558,6 +558,10 @@
    "hash": "15ec77fd86f7",
    "how": "feature absent",
    "tail": "       |                                                            ^ |      57|   }) |      58| })"
+  },
+  "closed": {
+   "at": "2026-09-02 09:43",
+   "sha": "9a3ba63"
   }
  },
  "047": {
@@ -567,6 +571,28 @@
    "hash": "3364a6daf27e",
    "how": "feature absent",
    "tail": "       | ^ |       9| import { QUESTS, questRowOf } from '../src/content/quests.js' |      10| import type { CampaignState } from '../src/core/campaign.js'"
+  },
+  "closed": {
+   "at": "2026-09-02 09:43",
+   "sha": "9a3ba63"
+  }
+ },
+ "048": {
+  "landed": {
+   "at": "2026-09-02 09:43",
+   "sha": "9a3ba63"
+  }
+ },
+ "049": {
+  "landed": {
+   "at": "2026-09-02 09:43",
+   "sha": "9a3ba63"
+  }
+ },
+ "050": {
+  "landed": {
+   "at": "2026-09-02 09:43",
+   "sha": "9a3ba63"
   }
  }
 }

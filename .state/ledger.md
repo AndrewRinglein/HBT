@@ -523,3 +523,26 @@ index 4fd4726..6669045 100644
 ISC-023: CLOSED at 44f4f68 · ISC-024: CLOSED at 44f4f68
 slice: 42 of 50 closed · 42 probed · 0 accepted
 IRON GAUNTLET: NOT PASSED — 3 FLAG(S) WARNED
+
+## screens.thin — LANDED `9a3ba63` **NEEDS REVIEW**
+2026-09-02 09:41 · engine @ 745922d
+
+  PASS  dependencies landed
+  WARN  not already decided — 3 candidate ruling(s) — READ BEFORE ASKING: ../STATE.md:20 · ../KINGDOM-DESIGN.md:227
+  PASS  typecheck
+  PASS  full test suite — 89 passed
+  PASS  gate 1 — every claimed criterion holds — ISC-046 holds · ISC-047 holds · ISC-048 — H, a person checks · ISC-049 — H, a person checks · ISC-050 — H, a person checks
+  PASS  brought its own tests — test/isc-010.test.ts, test/isc-046.test.ts, test/isc-047.test.ts
+  PASS  existing tests untouched
+  PASS  kill switch — every claimed probe has been seen red — ISC-046: red on record (2026-09-02 09:34 @ 23a07b3, probe 15ec77fd86f7) · ISC-047: red on record (2026-09-02 09:34 @ 23a07b3, probe 3364a6daf27e) ·   (no red demanded of an H criterion) ·   (no red demanded of an H criterion) ·   (no red demanded of an H criterion)
+  PASS  nothing regresses — every P-tier probe — 44 P-tier probe(s): 44 green, 0 red, 0 regression(s). 42 of 50 closed · 44 probed · 0 accepted
+  PASS  hardcode scan — core knows mechanisms, never names
+  PASS  generalizes — the second instance costs zero kingdom code — shape 'plumbing' — not a mechanism, exempt
+  PASS  naming — new ids use declared kinds
+  PASS  naming — no banned words invented
+  WARN  engine working tree clean — verified against a DIRTY engine tree (745922d + 3 uncommitted under src/test): M src/content/generated/pack.stamp.json, M src/content/generated/pack.ts, ?? src/sim/coverage.ts
+  PASS  one door to the engine
+
+ISC-046: CLOSED at 9a3ba63 · ISC-047: CLOSED at 9a3ba63
+slice: 44 of 50 closed · 44 probed · 0 accepted
+IRON GAUNTLET: NOT PASSED — 2 FLAG(S) WARNED
