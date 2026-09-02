@@ -124,7 +124,8 @@
   ],
   "needs": [
    "reckoning.apply"
-  ]
+  ],
+  "attempts": 1
  },
  {
   "id": "week.machine",

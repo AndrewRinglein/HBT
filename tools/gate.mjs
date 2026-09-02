@@ -26,6 +26,7 @@
 import { execSync } from 'node:child_process'
 import { readFileSync, writeFileSync, appendFileSync, existsSync, readdirSync, statSync } from 'node:fs'
 import { join } from 'node:path'
+import { tmpdir } from 'node:os'
 
 const id = process.argv[2]
 const MODE = process.argv.includes('--land') ? 'land'
@@ -135,13 +136,20 @@ check('typecheck', () => {
   return { ok: r.ok, note: r.ok ? '' : r.out.split('\n').filter(Boolean).slice(0, 3).join(' | ') }
 })
 
-check('full test suite', () => {
-  const r = tryRun('npm test -s -- --reporter=dot')
-  const m = r.out.match(/Tests\s+(?:(\d+) failed \| )?(\d+) passed/)
-  if (r.ok) return { ok: true, note: m ? `${m[2]} passed` : '' }
-  const names = [...r.out.matchAll(/(?:×|FAIL)\s+([^\n]+)/g)].map((x) => x[1].trim())
-  return { ok: false, note: `${m?.[1] ?? '?'} FAILED — ${[...new Set(names)].slice(0, 6).join(' · ') || 'see vitest output'}` }
-})
+// The suite runs ONCE, with the JSON reporter, and its per-file verdicts feed
+// the two probe checks below and the post-land audit (`--report`), so a landing
+// fits the sandbox's ~3-minute tool-call cap (2026-09-01). Same verdicts,
+// fewer spawns.
+const REPORT = join(tmpdir(), `kingdom-suite-${process.pid}.json`)
+function runSuite() {
+  const r = tryRun(`npm test -s -- --reporter=json --outputFile=${JSON.stringify(REPORT)}`, { env: { ...process.env, NO_COLOR: '1' } })
+  let rep = null
+  try { rep = JSON.parse(readFileSync(REPORT, 'utf8')) } catch {}
+  if (!rep) return { ok: false, note: 'vitest produced no report' }
+  const failedFiles = (rep.testResults ?? []).filter((t) => t.status !== 'passed').map((t) => String(t.name).replace(/\\/g, '/').split('/').slice(-1)[0])
+  return { ok: r.ok && rep.numFailedTests === 0 && failedFiles.length === 0, note: r.ok && failedFiles.length === 0 ? `${rep.numPassedTests} passed` : `${rep.numFailedTests} FAILED — ${failedFiles.slice(0, 6).join(' · ')}` }
+}
+check('full test suite', runSuite)
 
 // ── gate 1: every criterion this item claims holds ──────────────────────────
 const iscs = (item.isc ?? []).map(String)
@@ -152,14 +160,12 @@ check('gate 1 — every claimed criterion holds', () => {
     if (!item.unreachable) return { ok: false, note: 'the item claims no criterion (`isc: [...]`) and takes no `unreachable` reason — one or the other' }
     return exempt('gate 1 — closes no criterion', item.unreachable)
   }
-  const notes = []
-  for (const n of iscs) {
-    const r = tryRun(`node tools/slice-gate.mjs --isc ${n}`)
-    const line = r.out.trim().split('\n').pop() ?? ''
-    if (!r.ok) return { ok: false, note: `ISC-${n}: ${line}` }
-    notes.push(`ISC-${n} holds`)
-  }
-  return { ok: true, note: notes.join(' · ') }
+  // One call for all of them — the instrument batches the vitest probes into a
+  // single process (2026-09-01: a landing has to fit the sandbox's ~3-minute cap).
+  const r = tryRun(`node tools/slice-gate.mjs --isc ${iscs.join(',')} --report ${JSON.stringify(REPORT)}`)
+  const lines = r.out.trim().split('\n').filter((l) => /^ISC-\d+/.test(l))
+  if (!r.ok) return { ok: false, note: lines.filter((l) => /FAILS|not exist/.test(l)).join(' · ') || r.out.trim().split('\n').pop() }
+  return { ok: true, note: lines.map((l) => l.replace(/ — .*?: PASSES$/, ' holds').replace(/ — H-tier.*$/, ' — H, a person checks')).join(' · ') }
 })
 
 check('brought its own tests', () => {
@@ -194,7 +200,7 @@ check('kill switch — every claimed probe has been seen red', () => {
 
 // ── nothing regresses: the whole P set, not the one you touched ─────────────
 check('nothing regresses — every P-tier probe', () => {
-  const r = tryRun('node tools/slice-gate.mjs')
+  const r = tryRun(`node tools/slice-gate.mjs --report ${JSON.stringify(REPORT)}`)
   const summary = r.out.trim().split('\n').filter((l) => /P-tier probe\(s\)/.test(l)).pop() ?? ''
   return { ok: r.ok, note: summary }
 })
@@ -337,8 +343,8 @@ appendFileSync(LEDGER, `\n## ${id} — LANDED \`${sha}\`${needsReview ? ' **NEED
 // Post-land audit: the decisive checks FROM THE COMMITTED TREE. On failure the
 // landing is undone, loudly.
 {
-  const t = tryRun('npm test -s -- --reporter=dot')
-  const p = tryRun('node tools/slice-gate.mjs')
+  const t = runSuite()
+  const p = tryRun(`node tools/slice-gate.mjs --report ${JSON.stringify(REPORT)}`)
   if (!t.ok || !p.ok) {
     sh('git reset --hard HEAD~1')
     const why = !t.ok ? 'test suite fails on the committed tree' : 'a P-tier probe regresses on the committed tree'
@@ -356,7 +362,7 @@ appendFileSync(LEDGER, `\n## ${id} — LANDED \`${sha}\`${needsReview ? ' **NEED
 // any criterion without a red on record — the same rule the check above enforced.
 let closeNote = ''
 if (iscs.length) {
-  const r = tryRun(`node tools/slice-gate.mjs --close ${iscs.join(',')} --sha ${sha}`)
+  const r = tryRun(`node tools/slice-gate.mjs --close ${iscs.join(',')} --sha ${sha} --report ${JSON.stringify(REPORT)}`)
   closeNote = r.out.trim().split('\n').filter((l) => /CLOSED|FAILS|never|edited/.test(l)).join(' · ')
   if (!r.ok) { needsReview = true; closeNote = 'CLOSE REFUSED — ' + closeNote }
 }

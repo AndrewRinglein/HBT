@@ -37,8 +37,10 @@
 // OPEN. The doc's State: lines are a rendering of this file's facts.
 
 import { execSync } from 'node:child_process'
-import { readFileSync, writeFileSync, existsSync, mkdirSync } from 'node:fs'
+import { readFileSync, writeFileSync, existsSync, mkdirSync, unlinkSync } from 'node:fs'
 import { createHash } from 'node:crypto'
+import { tmpdir } from 'node:os'
+import { join } from 'node:path'
 
 const DOC = '../THIN-SLICE-IMPLEMENTATION.md'
 const STATE = '.state/isc.json'
@@ -46,6 +48,8 @@ const STATE = '.state/isc.json'
 const argv = process.argv.slice(2)
 const has = (f) => argv.includes(f)
 const val = (f) => { const i = argv.indexOf(f); return i >= 0 ? argv[i + 1] : undefined }
+/** A vitest JSON report the caller already produced — file probes read from it instead of re-running. */
+const REPORT = val('--report')
 
 const sh = (cmd, opts = {}) => execSync(cmd, { encoding: 'utf8', stdio: 'pipe', ...opts })
 const tryRun = (cmd, opts = {}) => { try { return { ok: true, out: sh(cmd, opts) } } catch (e) {
@@ -143,6 +147,47 @@ function runProbe(isc, { disabled = false } = {}) {
   return { ok: r.ok, tail: plain.trim().split('\n').filter((l) => l.trim() && !/^[⎯\s]+(\[\d+\/\d+\])?[⎯\s]*$/.test(l)).slice(-3).join(' | ').slice(0, 300) }
 }
 
+/**
+ * Many probes in one go. Every `npm test -- test/x.test.ts` probe is one
+ * vitest file, and vitest can run them all in ONE process with a per-file
+ * verdict (the JSON reporter) — a minute of spawns becomes ten seconds, which
+ * is what lets a landing fit the sandbox's ~3-minute tool-call cap
+ * (2026-09-01). Probes of any other shape run one at a time as before.
+ * Verdicts stay per criterion; only the spawning is shared.
+ */
+const VITEST_PROBE = /^npm test -- (test\/[\w./-]+\.test\.ts)$/
+function runProbes(iscs, { disabled = false } = {}) {
+  const results = new Map()
+  const batch = iscs.filter((i) => VITEST_PROBE.test(i.probe) && !(disabled && i.disable.length))
+  for (const isc of iscs.filter((i) => !batch.includes(i))) results.set(isc.n, runProbe(isc, { disabled }))
+  if (batch.length) {
+    let report = null
+    if (REPORT) {
+      // --report <vitest json>: the gate already ran the whole suite with the
+      // JSON reporter; the file probes' verdicts are in it, so read rather than
+      // re-run. The verdict per criterion is unchanged — only the spawn is saved.
+      try { report = JSON.parse(readFileSync(REPORT, 'utf8')) } catch (e) { throw new Error(`--report ${REPORT}: ${e.message}`) }
+    } else {
+      const files = batch.map((i) => i.probe.match(VITEST_PROBE)[1])
+      const out = join(tmpdir(), `slice-probes-${process.pid}.json`)
+      const env = { ...process.env, NO_COLOR: '1', FORCE_COLOR: '0' }
+      tryRun(`npm test -s -- ${files.join(' ')} --reporter=json --outputFile=${JSON.stringify(out)}`, { env, timeout: 10 * 60 * 1000 })
+      try { report = JSON.parse(readFileSync(out, 'utf8')); unlinkSync(out) } catch { /* no report: every batched probe is a failure below */ }
+    }
+    for (const isc of batch) {
+      const file = isc.probe.match(VITEST_PROBE)[1]
+      const tr = report?.testResults?.find((t) => String(t.name).replace(/\\/g, '/').endsWith(file))
+      if (!tr) { results.set(isc.n, { ok: false, tail: report ? `vitest produced no verdict for ${file}` : 'vitest produced no report' }); continue }
+      const failed = (tr.assertionResults ?? []).filter((a) => a.status === 'failed')
+      const tail = failed.length
+        ? failed.slice(0, 2).map((a) => `${a.title}: ${String(a.failureMessages?.[0] ?? '').split('\n')[0]}`).join(' | ').slice(0, 300)
+        : tr.status === 'passed' ? '' : String(tr.message ?? '').split('\n')[0].slice(0, 300)
+      results.set(isc.n, { ok: tr.status === 'passed', tail })
+    }
+  }
+  return results
+}
+
 // ── count and sync ──────────────────────────────────────────────────────────
 function count(list = readList(), state = readState()) {
   let closed = 0, probed = 0, accepted = 0
@@ -213,6 +258,8 @@ if (has('--close')) {
   const sha = val('--sha') ?? shaNow()
   const list = readList(); const state = readState()
   let ok = true
+  const runnable = ns.map((n) => list.get(n)).filter((i) => i && i.tierDoc !== 'H')
+  const verdicts = runProbes(runnable)
   for (const n of ns) {
     const isc = list.get(n)
     if (!isc) { console.error(`no ISC-${n}`); ok = false; continue }
@@ -226,13 +273,31 @@ if (has('--close')) {
     }
     if (!st.red) { console.error(`ISC-${n}: never seen red — run --isc ${n} --red before the feature exists`); ok = false; continue }
     if (st.red.hash !== probeHash(isc)) { console.error(`ISC-${n}: probe edited since its red (${st.red.hash} → ${probeHash(isc)}) — see it red again`); ok = false; continue }
-    const r = runProbe(isc)
+    const r = verdicts.get(n)
     if (!r.ok) { console.error(`ISC-${n}: probe FAILS — ${r.tail}`); ok = false; continue }
     state[n] = { ...st, closed: { at: stamp(), sha } }
     console.log(`ISC-${n}: CLOSED at ${sha}`)
   }
   writeState(state)
   if (ok) sync()
+  process.exit(ok ? 0 : 1)
+}
+
+if (has('--isc') && val('--isc').includes(',') && !has('--red') && !has('--check-red')) {
+  // several criteria at once — one vitest process for all the file probes
+  const ns = val('--isc').split(',').map((s) => s.trim()).filter(Boolean)
+  const list = readList(); const state = readState()
+  const iscs = ns.map((n) => { const i = list.get(n); if (!i) { console.error(`no ISC-${n}`); process.exit(2) } return i })
+  const missing = iscs.flatMap((i) => probeMissing(i).map((m) => `ISC-${i.n}: ${m}`))
+  if (missing.length) { console.log(`probes name files that do not exist yet — ${missing.join(', ')}`); process.exit(1) }
+  const verdicts = runProbes(iscs.filter((i) => i.tierDoc !== 'H'))
+  let ok = true
+  for (const isc of iscs) {
+    if (isc.tierDoc === 'H') { console.log(`ISC-${isc.n} — H-tier, ${stateOf(isc, state[isc.n])}: a person checks`); continue }
+    const r = verdicts.get(isc.n)
+    if (!r.ok) ok = false
+    console.log(`ISC-${isc.n} — ${isc.title}: ${r.ok ? 'PASSES' : 'FAILS'}${r.tail ? ' — ' + r.tail : ''}`)
+  }
   process.exit(ok ? 0 : 1)
 }
 
@@ -283,12 +348,13 @@ if (has('--isc')) {
   const list = readList(); const state = readState()
   let regressed = 0, ran = 0, green = 0
   console.log(`\nslice-gate — every P-tier probe\n`)
-  for (const isc of list.values()) {
+  const ps = [...list.values()].filter((isc) => tierOf(isc, state[isc.n]) === 'P')
+  const verdicts = runProbes(ps)
+  for (const isc of ps) {
     const st = state[isc.n]
-    if (tierOf(isc, st) !== 'P') continue
     ran++
     const before = stateOf(isc, st)
-    const r = runProbe(isc)
+    const r = verdicts.get(isc.n)
     if (r.ok) green++
     let note = ''
     if (before === 'CLOSED' && !r.ok) {
