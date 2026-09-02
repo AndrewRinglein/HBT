@@ -220,3 +220,26 @@ index 165683a..e0ee509 100644
 ISC-005: CLOSED at a46150c · ISC-006: CLOSED at a46150c · ISC-007: CLOSED at a46150c
 slice: 20 of 50 closed · 20 probed · 0 accepted
 IRON GAUNTLET: NOT PASSED — 3 FLAG(S) WARNED
+
+## map.four-territories — LANDED `cae0665` **NEEDS REVIEW**
+2026-09-02 05:23 · engine @ 745922d
+
+  PASS  dependencies landed
+  WARN  not already decided — 3 candidate ruling(s) — READ BEFORE ASKING: ../STATE.md:20 · ../CLAUDE-DOS-AND-DONTS.md:134
+  PASS  typecheck
+  PASS  full test suite — 46 passed
+  PASS  gate 1 — every claimed criterion holds — ISC-011 holds · ISC-012 holds · ISC-013 holds · ISC-035 holds
+  PASS  brought its own tests — test/isc-011.test.ts, test/isc-012.test.ts, test/isc-013.test.ts, test/isc-035.test.ts
+  PASS  existing tests untouched
+  PASS  kill switch — every claimed probe has been seen red — ISC-011: red on record (2026-09-02 05:20 @ 4d96068, probe da8ed3dbd63a) · ISC-012: red on record (2026-09-02 05:20 @ 4d96068, probe e97b83789f17) · ISC-013: red on record (2026-09-02 05:20 @ 4d96068, probe a829e985d844) · ISC-035: red on record (2026-09-02 05:20 @ 4d96068, probe 06f3bd851ee7)
+  PASS  nothing regresses — every P-tier probe — 24 P-tier probe(s): 24 green, 0 red, 0 regression(s). 20 of 50 closed · 24 probed · 0 accepted
+  PASS  hardcode scan — core knows mechanisms, never names
+  PASS  generalizes — the second instance costs zero kingdom code — territory.ruined-kingdom.ridge live · territory.ruined-kingdom.highlands live
+  PASS  naming — new ids use declared kinds
+  PASS  naming — no banned words invented
+  WARN  engine working tree clean — verified against a DIRTY engine tree (745922d + 3 uncommitted under src/test): M src/content/generated/pack.stamp.json, M src/content/generated/pack.ts, ?? src/sim/coverage.ts
+  PASS  one door to the engine
+
+ISC-011: CLOSED at cae0665 · ISC-012: CLOSED at cae0665 · ISC-013: CLOSED at cae0665 · ISC-035: CLOSED at cae0665
+slice: 24 of 50 closed · 24 probed · 0 accepted
+IRON GAUNTLET: NOT PASSED — 2 FLAG(S) WARNED

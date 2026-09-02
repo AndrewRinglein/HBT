@@ -158,7 +158,11 @@
   "variants": [
    "territory.ruined-kingdom.ridge",
    "territory.ruined-kingdom.highlands"
-  ]
+  ],
+  "status": "done-needs-review",
+  "sha": "cae0665",
+  "engineSha": "745922d",
+  "gauntlet": "not passed — 2 flag(s) warned"
  },
  {
   "id": "assignments.two-slots",
