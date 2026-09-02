@@ -13,7 +13,7 @@ The gate cannot gate itself. The first commit carries the package skeleton
 vocabulary (`src/core/events.ts`) and this state directory with the nine-item
 backlog. Everything after it lands through `node tools/gate.mjs <id> --land`.
 
-## seam.run-engagement — LANDED `3f9904b` **NEEDS REVIEW**
+## seam.run-engagement — LANDED `0f1db1a` **NEEDS REVIEW**
 2026-09-02 03:42 · engine @ 745922d
 
   PASS  dependencies landed
@@ -32,6 +32,14 @@ backlog. Everything after it lands through `node tools/gate.mjs <id> --land`.
   WARN  engine working tree clean — verified against a DIRTY engine tree (745922d + 3 uncommitted under src/test): M src/content/generated/pack.stamp.json, M src/content/generated/pack.ts, ?? src/sim/coverage.ts
   PASS  one door to the engine
 
-ISC-002: CLOSED at 3f9904b · ISC-003: CLOSED at 3f9904b
+ISC-002: CLOSED at 0f1db1a · ISC-003: CLOSED at 0f1db1a
 slice: 2 of 25 closed · 3 probed · 0 accepted
 IRON GAUNTLET: NOT PASSED — 2 FLAG(S) WARNED
+
+## correction — 2026-09-01, by hand
+
+The landing above was recorded as `3f9904b`; that sha was then amended away by
+the gate's own bookkeeping step and never existed in history. The landing is
+`0f1db1a` (seam + bookkeeping in one commit, as the amend left it). Every
+reference in this directory was corrected to `0f1db1a`, and the gate now makes
+its bookkeeping a second commit so a recorded sha is always one you can check out.

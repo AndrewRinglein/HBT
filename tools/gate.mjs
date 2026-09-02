@@ -368,10 +368,14 @@ item.gauntlet = gauntletPassed ? 'passed' : `not passed — ${gauntletNotes.join
   if (it) { it.gauntlet = item.gauntlet; it.status = needsReview ? 'done-needs-review' : 'done'; writeFileSync(BACKLOG, JSON.stringify(bl, null, 1)) }
   const countLine = tryRun('node tools/slice-gate.mjs --count').out.trim()
   appendFileSync(LEDGER, `\n${closeNote ? closeNote + '\n' : ''}slice: ${countLine}\nIRON GAUNTLET: ${gauntletPassed ? 'PASSED' : item.gauntlet.toUpperCase()}\n`)
-  sh('git add -A')
-  sh(`git -c user.email=a@b -c user.name=kingdom commit -q --amend --no-edit`)
 }
 logRun('landed', { sha, seal: gauntletPassed ? 'passed' : gauntletNotes.join('; '), closed: closeNote || undefined })
+// The bookkeeping is a SECOND commit, never an amend. Found on the first landing
+// (2026-09-01): amending after recording the sha left the backlog, the ledger and
+// isc.json all naming a commit that no longer existed. Two commits per landing,
+// and every sha written down is one you can check out.
+sh('git add -A')
+sh(`git -c user.email=a@b -c user.name=kingdom commit -q -m ${JSON.stringify(`bookkeeping for ${id} (${sha})`)}`)
 console.log(gauntletPassed
   ? `\n⛓  IRON GAUNTLET: PASSED — every check, no flags, no exemptions.`
   : `\n⛓  IRON GAUNTLET: NOT PASSED — ${gauntletNotes.join('; ')}. The landing stands; the seal is withheld.`)
