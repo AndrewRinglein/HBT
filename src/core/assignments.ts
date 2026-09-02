@@ -37,7 +37,7 @@ export function commitmentOf(campaign: CampaignState, heroId: HeroId, slot: Slot
   if (h.lifeState === 'dead') return 'dead'
   if (campaign.captured.includes(heroId)) return 'captured'
   if (h.wound >= WOUND_UNAVAILABLE) return 'wounded'
-  if (campaign.unavailable.includes(heroId)) return 'unavailable'
+  if (campaign.unavailable.some((a) => a.heroId === heroId)) return 'unavailable'
   const a = campaign.assignments[heroId]
   if (a?.field?.kind === 'quest' || a?.city?.kind === 'quest') return 'onQuest'
   if (a?.[slot]) return 'committed'

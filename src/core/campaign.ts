@@ -145,6 +145,8 @@ export type Territory = {
 }
 
 export type QuestInFlight = { id: string; heroes: HeroId[]; weeksLeft: number }
+/** One hero the Week's roll kept home, with the story line drawn for them. */
+export type Absence = { heroId: HeroId; story: string }
 
 export type CampaignState = {
   realm: string
@@ -163,8 +165,8 @@ export type CampaignState = {
   losses: number
   quests: Record<string, QuestInFlight>
   captured: HeroId[]
-  /** Who the Week's unavailability roll kept home (KINGDOM-DESIGN.md §3) — cleared at the Week boundary. */
-  unavailable: HeroId[]
+  /** Who the Week's unavailability roll kept home, and the story why (KINGDOM-DESIGN.md §3) — cleared at the Week boundary. */
+  unavailable: Absence[]
   /** Named streams' root seeds — every Campaign roll is keyed by what it is (Law 4). Never a counter. */
   cups: Record<string, number>
   /** Permanent death: a Campaign that ended, and why. GAME-ARCHITECTURE.md §2.5, §6 — the only path out of a wipe. */

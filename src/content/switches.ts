@@ -20,6 +20,10 @@ export const SWITCHES = {
   shopSupplies: 6,
   /** prologue.paysRenown — do the opening's battles tick the Charter's clock? STATE.md lists it open ("whether those battles pay Renown"). Yes by default: a won Engagement is a won Engagement. */
   prologuePaysRenown: true,
+  /** quest.faith — what the one authored quest pays. Quests pay Faith; the amount is unsaid. Soft. */
+  questFaith: 8,
+  /** quest.odds — the tutorial quest's chance of success, in whole percent. Unsaid; the slice's one quest always comes home. */
+  questOdds: 100,
   /** heal.faith — Field Surgery, "7 Faith to heal a wounded hero on the spot" (7-KINGDOM-NOTES.md:189, Andrew). */
   healFaith: 7,
   /** defend.chancePerTerritory — the weekly defend roll, per owned Territory. RULED 6% (THIN-SLICE-REVIEW.md §G2) — kept here only because the ruling itself says "Soft". */

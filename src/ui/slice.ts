@@ -39,6 +39,9 @@ import { PROLOGUE } from '../content/prologue.js'
 import { purchasesFreeOf, articleSlotsOf, articlesHeldOf, whyNotPurchase, performPurchase, hasUnlock } from '../core/charter.js'
 import { UNLOCKS, FIRST_ARTICLE_AT } from '../content/charter.js'
 import { UNITS } from '../engine.js'
+import { listQuestOffers, whyNotSendQuest, performSendQuest } from '../core/quests.js'
+import { questRowOf } from '../content/quests.js'
+import { absenceOf } from '../core/absence.js'
 
 declare const __FIXTURE_JSON__: string
 declare const __BUILD_SHA__: string
@@ -53,8 +56,14 @@ type App = {
   draftReckoning: Reckoning | null
   status: string
   error: boolean
+  /** In front of the Campaign: the title, then the mode-select (screen.title, screen.mode-select — stubs, THIN-SLICE-REVIEW.md §G2). */
+  front: 'title' | 'select'
+  /** Over the Week: the roster screen (screen.roster). */
+  roster: boolean
+  /** The Quest Stage's party being assembled, before Send. */
+  party: string[]
 }
-const app: App = { ctx: null, draft: null, draftReckoning: null, status: '', error: false }
+const app: App = { ctx: null, draft: null, draftReckoning: null, status: '', error: false, front: 'title', roster: false, party: [] }
 
 // ── persistence ─────────────────────────────────────────────────────────────
 function persist(): void {
@@ -95,20 +104,19 @@ const nameOf = (typeId: string) => UNITS[typeId]?.name ?? typeId
 function render(): void {
   const root = document.getElementById('app')!
   const c = app.ctx?.campaign ?? null
+  if (!c) { root.innerHTML = frontScreen(); wire(root); return }
   root.innerHTML = `
     <h1>Heroes of Blight and Tragic — the slice</h1>
     <p class="meta">load a save · Combat Prep · the battle, shown not fought · set what happened · the Reckoning. Built at kingdom ${esc(__BUILD_SHA__)}.</p>
     <div class="bar">
-      <button class="primary" data-act="new-campaign">New Campaign</button>
-      <button data-act="load-fixture">Load the fixture</button>
-      <label class="file">Load a save <input type="file" accept=".json,application/json" data-act="load-file"></label>
-      <button data-act="download" ${c ? '' : 'disabled'}>Download save</button>
-      <button class="quiet" data-act="forget">Forget browser save</button>
+      <button class="quiet" data-act="title">Title</button>
+      <button class="${app.roster ? 'primary' : ''}" data-act="roster">${app.roster ? 'Back' : 'Roster'}</button>
+      <button data-act="download">Download save</button>
       <span class="sp"></span>
       ${c ? `<span class="tag">week ${c.week}</span> <span class="tag">${esc(c.cursor.stage)}</span> <span class="tag">${esc(c.cursor.step)}${c.cursor.prepStep ? '/' + c.cursor.prepStep : ''}</span> <span class="tag">renown ${c.renown}</span> <span class="tag meta">seed ${c.seed}</span>` : ''}
     </div>
     <div class="status${app.error ? ' err' : ''}">${esc(app.status)}</div>
-    ${c ? screen(c) : `<div class="card"><p>No Campaign loaded. Load the fixture — a Campaign at Combat Prep, week 3, a Conquer on the Ridge — or a save you downloaded earlier.</p></div>`}
+    ${app.roster ? rosterScreen(c) : screen(c)}
   `
   wire(root)
 }
@@ -125,6 +133,42 @@ function screen(c: CampaignState): string {
     case 'open': return worldScreen(c)
     default: return `<div class="card"><p>The cursor is at <code>${esc(c.cursor.step)}</code> — a step the slice has no screen for yet.</p></div>`
   }
+}
+
+// ── in front of the Campaign ────────────────────────────────────────────────
+/** screen.title → screen.mode-select. Stubs: one mode opens; the others say they are locked, and say why. */
+function frontScreen(): string {
+  let saved: string | null = null
+  try { saved = localStorage.getItem(SAVE_KEY) } catch {}
+  if (app.front === 'title') {
+    return `<div class="title"><h1>Heroes of Blight and Tragic</h1><p class="meta">the slice · built at kingdom ${esc(__BUILD_SHA__)}</p>
+      <div class="bar"><span class="sp"></span><button class="primary big" data-act="start">Start Game</button><span class="sp"></span></div>
+      <div class="status${app.error ? ' err' : ''}">${esc(app.status)}</div></div>`
+  }
+  const locked = [['Crucible', 'the endless arena — not in the slice'], ['Skirmish', 'one battle, no Campaign — not in the slice'], ['Legacy', 'the tree between runs — a stub only']]
+  return `<div class="title"><h1>Heroes of Blight and Tragic</h1><p class="meta">choose a mode</p>
+    <div class="card"><h3>Campaign</h3>
+      <div class="bar">
+        ${saved ? '<button class="primary" data-act="continue">Continue the browser save</button>' : ''}
+        <button class="${saved ? '' : 'primary'}" data-act="new-campaign">New Campaign</button>
+        <button data-act="load-fixture">Load the fixture</button>
+        <label class="file">Load a save <input type="file" accept=".json,application/json" data-act="load-file"></label>
+        ${saved ? '<button class="quiet" data-act="forget">Forget browser save</button>' : ''}
+      </div>
+      <p class="meta">A new Campaign begins at the fire: the first draft, then the five battles of the opening. The fixture is a Campaign at Combat Prep, week 3, a Conquer on the Ridge.</p></div>
+    ${locked.map(([n, why]) => `<div class="card off"><h3>${esc(n!)} <span class="tag">locked</span></h3><p class="meta">${esc(why!)}</p></div>`).join('')}
+    <div class="bar"><button class="quiet" data-act="back-to-title">Back</button></div>
+    <div class="status${app.error ? ' err' : ''}">${esc(app.status)}</div></div>`
+}
+
+/** screen.roster — every hero, class, level, XP, wound, and what each slot holds this Week. */
+function rosterScreen(c: CampaignState): string {
+  const heroes = Object.values(c.roster).sort((a, b) => a.id.localeCompare(b.id))
+  const slot = (h: Hero, s: 'field' | 'city') => { const k = commitmentOf(c, h.id, s); const a = c.assignments[h.id]?.[s]; return k === 'committed' || k === 'onQuest' ? `${k} — ${esc(a!.kind)} ${esc(a!.target)}${a!.weeks > 1 ? `, ${a!.weeks} Weeks` : ''}` : k }
+  return `<h2>The roster — ${heroes.length} hero${heroes.length === 1 ? '' : 'es'}, Week ${c.week}</h2>
+    <div class="card"><table><tr><th>hero</th><th>class</th><th>level</th><th>xp</th><th>wound</th><th>field slot</th><th>city slot</th><th>this Week</th><th>carries</th></tr>
+    ${heroes.map((h) => `<tr class="${h.lifeState === 'dead' ? 'dead' : ''}"><td><b>${esc(h.name)}</b><br><span class="meta">${esc(h.id)}</span></td><td>${esc(h.classes.map((x) => x.replace('class.', '')).join(', '))}</td><td class="n">${h.level}</td><td class="n">${h.xp} / ${xpForLevel(h.level + 1)}</td><td>${h.lifeState === 'dead' ? '<span class="lost">dead</span>' : h.wound ? esc(woundNameOf(h.wound)) : '—'}</td><td>${slot(h, 'field')}</td><td>${slot(h, 'city')}</td><td class="meta">${esc(absenceOf(c, h.id) ?? '')}</td><td class="meta">${esc(h.equipped.map((i) => i.replace('item.', '')).join(', ') || '—')}</td></tr>`).join('')}</table></div>
+    <p class="meta">Two slots a Week: one in the field, one in the city; a quest takes both. The unavailability roll between Buy and Quest keeps some home with a story.</p>`
 }
 
 // ── the opening ─────────────────────────────────────────────────────────────
@@ -214,6 +258,16 @@ function worldScreen(c: CampaignState): string {
     const held = listBuildings(c).filter((b) => b.held)
     body = `<h3>Build — Salvage, node by node</h3>` + (held.length ? held.map((b) => `<h3>${esc(b.row.name)} <span class="meta">on ${esc(c.territories[b.territoryId]!.name)} · level ${b.building.level}${b.building.damaged ? ' · ruin' : ''}</span></h3>
       <div class="pick">${b.row.nodes.map((n) => { const why = whyNotBuild(c, b.territoryId, b.building.id, n.key); const built = b.building.nodes.includes(n.key); return `<div class="opt${built ? ' on' : why ? ' off' : ''}" ${why ? '' : `data-act="build" data-id="${esc(b.territoryId)}" data-building="${esc(b.building.id)}" data-key="${esc(n.key)}"`}><b>${esc(n.name)} ${built ? '✓' : ''}</b><small>${n.salvage} Salvage${n.parents.length ? ' · after ' + esc(n.parents.join(', ')) : ''}${n.gate ? ' · ' + esc(Object.entries(n.gate).map(([k, v]) => `${v} ${k}s`).join(', ')) + ' (waived)' : ''}${why && !built ? ' · ' + esc(why) : ''}</small></div>` }).join('')}</div>`).join('') : '<p class="meta">nothing you hold has a building on it — the Ridge carries the Forge</p>')
+  } else if (row.offers === 'quests') {
+    const free = listAvailable(c, row.id)
+    const inFlight = Object.values(c.quests).sort((a, b) => a.id.localeCompare(b.id))
+    const offers = listQuestOffers(c)
+    app.party = app.party.filter((h) => free.includes(h))
+    body = `<h3>Quest — a party leaves for N Weeks and resolves without you</h3>
+      ${offers.map((id) => { const q = questRowOf(id); const why = whyNotSendQuest(c, id, app.party); return `<div class="card" style="margin-bottom:8px"><b>${esc(q.name)}</b> <span class="meta">${esc(q.does)} · ${q.weeks} Weeks · needs ${esc(q.requires.map((r) => `${r.min} × ${r.accepts}`).join(', '))} · pays ${esc(Object.entries(q.reward).map(([k, v]) => `${v} ${k.replace('currency.', '')}`).join(', '))} · ${q.odds}% comes home</span>
+        <p>${free.map((h) => `<button class="${app.party.includes(h) ? 'primary' : 'quiet'}" data-act="party" data-id="${esc(h)}">${esc(c.roster[h]!.name)}</button>`).join(' ') || '<span class="meta">nobody is free</span>'}</p>
+        <div class="bar"><span class="meta">${why ? esc(why) : `${app.party.length} will go`}</span><span class="sp"></span><button class="primary" data-act="send-quest" data-id="${esc(id)}" ${why ? 'disabled' : ''}>Send</button></div></div>` }).join('') || '<p class="meta">no quest is posted — the one there is is in flight</p>'}
+      ${inFlight.length ? `<h3>In flight</h3><table>${inFlight.map((q) => `<tr><td><b>${esc(questRowOf(q.id).name)}</b></td><td>${esc(q.heroes.map((h) => c.roster[h]?.name ?? h).join(', '))}</td><td class="n">${q.weeksLeft} Week${q.weeksLeft === 1 ? '' : 's'} left</td></tr>`).join('')}</table>` : ''}`
   } else {
     body = `<h3>${esc(row.title)}</h3><p>${esc(row.does)}</p><p class="meta">Nothing to do here yet — this Stage's machinery lands in a later milestone. Pass through.</p>`
   }
@@ -228,6 +282,7 @@ function worldScreen(c: CampaignState): string {
       <div>
         <div class="card"><h3>The purse</h3><table>${Object.entries(c.purse).map(([k, v]) => `<tr><td>${esc(k.replace('currency.', ''))}</td><td class="n">${v}</td></tr>`).join('')}<tr><td>Renown</td><td class="n">${c.renown}</td></tr><tr><td>losses</td><td class="n">${c.losses}</td></tr><tr><td>difficulty</td><td class="n">${resolveDifficulty(c)}</td></tr></table></div>
         <div class="card" style="margin-top:12px"><h3>The map</h3><table>${territories.map((t) => `<tr><td>${esc(t.name)}${t.kingdom ? ' <span class="tag">kingdom</span>' : ''}</td><td>${t.owned ? '<span class="won">held</span>' : 'unclaimed'}</td><td class="meta">${esc(t.buildings.map((b) => b.id.replace('building.', '') + (b.damaged ? ' (ruin)' : '')).join(', '))}</td></tr>`).join('')}</table></div>
+        ${c.unavailable.length ? `<div class="card" style="margin-top:12px"><h3>Did not turn up this Week</h3><table>${c.unavailable.map((a) => `<tr><td><b>${esc(c.roster[a.heroId]?.name ?? a.heroId)}</b></td><td class="meta">${esc(a.story)}</td></tr>`).join('')}</table></div>` : ''}
         ${c.stash.length ? `<div class="card" style="margin-top:12px"><h3>The stash</h3><p class="meta">${esc(c.stash.map((i) => i.replace('item.', '')).join(' · '))}</p></div>` : ''}
         ${rosterPanel(c)}
         ${charterPanel(c)}
@@ -413,6 +468,13 @@ function wire(root: HTMLElement): void {
       const id = el.dataset['id']
       switch (actName) {
         case 'load-fixture': return loadJson(__FIXTURE_JSON__, 'the fixture')
+        case 'start': app.front = 'select'; return render()
+        case 'back-to-title': app.front = 'title'; return render()
+        case 'continue': { let saved: string | null = null; try { saved = localStorage.getItem(SAVE_KEY) } catch {} return saved ? loadJson(saved, 'the browser save') : (fail('no browser save'), render()) }
+        case 'title': app.ctx = null; app.roster = false; app.front = 'title'; note(''); return render()
+        case 'roster': app.roster = !app.roster; return render()
+        case 'party': app.party = app.party.includes(id!) ? app.party.filter((h) => h !== id) : [...app.party, id!]; return render()
+        case 'send-quest': return act(() => { performSendQuest(app.ctx!, id!, app.party, 'slice'); app.party = [] })
         // the one place chance enters from outside the rules: a new save's seed, chosen at the player's click
         // and written into the save, so every roll after it is keyed and reproducible (Law 4)
         case 'new-campaign': return loadJson(saveOf(makeNewCampaign(Math.floor(Math.random() * 1e9))), 'a new Campaign')
@@ -485,9 +547,5 @@ function wire(root: HTMLElement): void {
 }
 
 // ── boot ────────────────────────────────────────────────────────────────────
-;(() => {
-  let saved: string | null = null
-  try { saved = localStorage.getItem(SAVE_KEY) } catch {}
-  if (saved) loadJson(saved, 'the browser save')
-  else render()
-})()
+// the title stands in front of the Campaign: the browser save is offered at the mode-select, never auto-loaded
+render()

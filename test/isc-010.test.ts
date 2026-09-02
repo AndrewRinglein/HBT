@@ -11,7 +11,7 @@ const H = 'hero.fixed.air-mage'
 
 describe('ISC-010 — unavailable is a third value, answered in one place', () => {
   it("a hero the Week's roll kept home answers 'unavailable' in both slots and is offered nowhere", () => {
-    const ctx = loadFixture((c) => { c.unavailable = [H] })
+    const ctx = loadFixture((c) => { c.unavailable = [{ heroId: H, story: 'Went missing' }] })
     expect(commitmentOf(ctx.campaign, H, 'field')).toBe('unavailable')
     expect(commitmentOf(ctx.campaign, H, 'city')).toBe('unavailable')
     expect(listAvailable(ctx.campaign, 'stage.conquer')).not.toContain(H)
@@ -22,7 +22,7 @@ describe('ISC-010 — unavailable is a third value, answered in one place', () =
     expect(canDeploy(ctx.campaign, H)).toBe(false)
   })
   it('the answers are ordered: dead beats captured beats wounded beats unavailable beats a quest', () => {
-    const ctx = loadFixture((c) => { c.unavailable = [H]; c.captured = [H] })
+    const ctx = loadFixture((c) => { c.unavailable = [{ heroId: H, story: 'Went missing' }]; c.captured = [H] })
     expect(commitmentOf(ctx.campaign, H, 'field')).toBe('captured')
     ctx.campaign.roster[H]!.lifeState = 'dead'
     expect(commitmentOf(ctx.campaign, H, 'field')).toBe('dead')

@@ -27,6 +27,7 @@ import { listShopItems, canBuyItem, performBuyItem, canEquip, performEquip } fro
 import { listDraftOffers, performDraft } from '../core/opening.js'
 import { UNLOCKS } from '../content/charter.js'
 import { canPurchase, performPurchase } from '../core/charter.js'
+import { listQuestOffers, canSendQuest, performSendQuest } from '../core/quests.js'
 
 export type Decisions = {
   /** Which offered Territory to attack, or null to decline. Default: the first. */
@@ -49,6 +50,8 @@ export type Decisions = {
   draft: (campaign: CampaignState, offers: string[]) => string
   /** Which Charter purchase to make, of those purchasable, or null. Default: the first in row order. */
   purchase: (campaign: CampaignState, purchasable: string[]) => string | null
+  /** Which offered quest to send, and whom, or null. Default: the first quest, the last free hero — if four or more are free, so the field is not stripped. */
+  quest: (campaign: CampaignState, offers: string[], free: string[]) => { questId: string; heroIds: string[] } | null
 }
 
 export const DEFAULTS: Decisions = {
@@ -73,6 +76,7 @@ export const DEFAULTS: Decisions = {
   buy: (_c, shelf) => shelf[0] ?? null,
   draft: (_c, offers) => offers[0]!,
   purchase: (_c, purchasable) => purchasable[0] ?? null,
+  quest: (_c, offers, free) => (offers[0] && free.length >= 4 ? { questId: offers[0], heroIds: [free[free.length - 1]!] } : null),
 }
 
 /** Play the Engagement on the cursor through prep, the panel, the writer and out. */
@@ -130,6 +134,10 @@ export function playStage(ctx: Ctx, d: Decisions, causeId: string): void {
       const shelf = listShopItems(c).filter((r) => canBuyItem(c, r.id)).map((r) => r.id)
       const pick = shelf.length ? d.buy(c, shelf) : null
       if (pick) performBuyItem(ctx, pick, causeId)
+    }
+    if (stageOf(c).offers === 'quests') {
+      const pick = d.quest(c, listQuestOffers(c), listAvailable(c, c.cursor.stage))
+      if (pick && canSendQuest(c, pick.questId, pick.heroIds)) performSendQuest(ctx, pick.questId, pick.heroIds, causeId)
     }
     if (stageOf(c).offers === 'labours') {
       for (const [heroId, key] of d.labours(c, listAvailable(c, c.cursor.stage))) if (canAssignLabour(c, heroId, key)) performAssignLabour(ctx, heroId, key, causeId)

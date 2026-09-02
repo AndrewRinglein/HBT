@@ -6,7 +6,7 @@
 // Mirrors the engine's shape: the plain-data Campaign is the save; everything
 // unserializable — the event log — lives beside it in a Ctx.
 
-import type { CampaignState, Cursor, Assignment, Hero } from './campaign.js'
+import type { CampaignState, Cursor, Assignment, Hero, Absence, QuestInFlight } from './campaign.js'
 import type { KingdomEventType } from './events.js'
 import type { EngagementResult } from './seam.js'
 import type { Reckoning } from './reckoning.js'
@@ -61,6 +61,34 @@ export function setTactic(ctx: Ctx, tacticId: string | null, causeId: string): v
   const e = engagementOf(ctx.campaign)
   e.tactic = tacticId
   emit(ctx, 'council.taken', causeId, { engagementId: e.id, tacticId })
+}
+
+/** The Week's absences — the one write of campaign.unavailable. An empty list clears it. */
+export function setUnavailable(ctx: Ctx, absences: readonly Absence[], causeId: string): void {
+  ctx.campaign.unavailable = absences.map((a) => ({ ...a }))
+  if (absences.length) emit(ctx, 'absence.rolled', causeId, { week: ctx.campaign.week, absences: ctx.campaign.unavailable.map((a) => ({ ...a })) })
+  else emit(ctx, 'absence.cleared', causeId, { week: ctx.campaign.week })
+}
+
+/** A quest into flight — the one write of campaign.quests. */
+export function setQuestInFlight(ctx: Ctx, quest: QuestInFlight, causeId: string): void {
+  ctx.campaign.quests[quest.id] = { ...quest, heroes: [...quest.heroes] }
+  emit(ctx, 'quest.sent', causeId, { questId: quest.id, heroes: [...quest.heroes], weeks: quest.weeksLeft })
+}
+
+export function setQuestWeeksLeft(ctx: Ctx, questId: string, weeksLeft: number, causeId: string): void {
+  const q = ctx.campaign.quests[questId]
+  if (!q) throw new Error(`no quest '${questId}' in flight`)
+  q.weeksLeft = weeksLeft
+  emit(ctx, 'quest.ticked', causeId, { questId, weeksLeft })
+}
+
+/** A quest home, won or lost — what it paid is the caller's grants, before this. */
+export function setQuestResolved(ctx: Ctx, questId: string, won: boolean, causeId: string): void {
+  const q = ctx.campaign.quests[questId]
+  if (!q) throw new Error(`no quest '${questId}' in flight`)
+  delete ctx.campaign.quests[questId]
+  emit(ctx, 'quest.resolved', causeId, { questId, heroes: [...q.heroes], won })
 }
 
 /** An Assignment into a slot — the one write of campaign.assignments. */

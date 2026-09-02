@@ -22,13 +22,15 @@ export type StageRow = {
   readonly engagementKind?: string
   /** Where an `engagement` Stage's targets come from: the player picks an adjacent unclaimed Territory, or a roll picks one you hold. */
   readonly targets?: 'conquerable' | 'rolled'
+  /** KINGDOM-DESIGN.md §3: "in between the buy and the quest phase, there is an unavailability phase" — the Stage this precedes rolls it on entry. */
+  readonly absencesBefore?: boolean
   /** One line, from §3's table. */
   readonly does: string
 }
 
 const RAW_STAGES: readonly StageRow[] = [
   { id: 'stage.buy', title: 'Buy', spends: 'purse', offers: 'market', does: 'Buy goods and services inside buildings. Recruit — one hero per Week. Train.' },
-  { id: 'stage.quest', title: 'Quest', spends: 'assignments', offers: 'quests', does: 'Dispatch heroes on quests. They leave for N Weeks and resolve without you.' },
+  { id: 'stage.quest', title: 'Quest', spends: 'assignments', offers: 'quests', absencesBefore: true, does: 'Dispatch heroes on quests. They leave for N Weeks and resolve without you.' },
   { id: 'stage.defend', title: 'Defend', spends: 'assignments', offers: 'engagement', engagementKind: 'engagement.defend', targets: 'rolled', does: 'Fight a counterattack on one of your Territories. Does not fire every Week.' },
   { id: 'stage.conquer', title: 'Conquer', spends: 'assignments', offers: 'engagement', engagementKind: 'engagement.conquer', targets: 'conquerable', does: 'Attack an adjacent unclaimed Territory — with whoever is left. Always optional.' },
   { id: 'stage.build', title: 'Build', spends: 'purse', offers: 'build', does: 'Repair and upgrade buildings. Salvage.' },

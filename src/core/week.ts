@@ -16,7 +16,7 @@
 // Defend's weekly roll is M6's; until then the Stage offers nothing.
 
 import type { CampaignState, Engagement, TerritoryId } from './campaign.js'
-import { type Ctx, emit, setCursor } from './mutate.js'
+import { type Ctx, emit, setCursor, setUnavailable } from './mutate.js'
 import { rollOf } from './rng.js'
 import { STAGES, stageRowOf, type StageRow } from '../content/stages.js'
 import { CUP_IDS } from '../content/cups.js'
@@ -26,6 +26,8 @@ import { listConquerable, resolveThreat, performLose } from './map.js'
 import { tickAssignments } from './assignments.js'
 import { performResolveMend } from './mend.js'
 import { performAdvanceOpening } from './opening.js'
+import { performRollAbsences } from './absence.js'
+import { tickQuests } from './quests.js'
 export { listConquerable } from './map.js'
 
 // ── reading ─────────────────────────────────────────────────────────────────
@@ -62,6 +64,8 @@ export function beginStage(ctx: Ctx, stageId: string, causeId: string): void {
   const attack = row.targets === 'rolled' ? resolveThreat(ctx.campaign) : null
   setCursor(ctx, { stage: row.id, step: 'open', prepStep: null, engagement: null, attack, fought: 0, battle: null }, causeId)
   emit(ctx, 'stage.begun', causeId, { stageId: row.id, week: ctx.campaign.week, attack })
+  // "in between the buy and the quest phase, there is an unavailability phase" — the row says which Stage it precedes
+  if (row.absencesBefore) performRollAbsences(ctx, `${row.id}.week-${ctx.campaign.week}`)
 }
 
 export function endStage(ctx: Ctx, causeId: string): void {
@@ -85,9 +89,11 @@ export function beginWeek(ctx: Ctx, causeId: string): void {
   beginStage(ctx, first.id, causeId)
 }
 
-/** The Week boundary: what ticks between one Week and the next. Quests and wounds join here when they exist. */
+/** The Week boundary: what ticks between one Week and the next — Assignments, quests, the Week's absences. Wounds join when they exist. */
 export function tickWeek(ctx: Ctx, causeId: string): void {
   tickAssignments(ctx, causeId)
+  tickQuests(ctx, causeId)
+  if (ctx.campaign.unavailable.length) setUnavailable(ctx, [], causeId)
   setCursor(ctx, { week: ctx.campaign.week + 1, recruited: 0 }, causeId)
 }
 

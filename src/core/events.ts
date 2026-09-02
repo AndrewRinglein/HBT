@@ -46,6 +46,13 @@ export const KINGDOM_EVENTS = [
   'draft.offered', 'hero.drafted', 'hero.rescued',
   // Added 2026-09-01 with charter.renown, and to GLOSSARY.md the same commit.
   'unlock.purchased',
+  // Added 2026-09-02 with screens.thin, and to GLOSSARY.md the same commit: the
+  // unavailability roll between Buy and Quest (KINGDOM-DESIGN.md §3) and its
+  // clearing at the Week boundary. An absence is neither a wound nor an
+  // Assignment, so it takes its own noun.
+  'absence.rolled', 'absence.cleared',
+  // and a quest's Week ticking by — between sent and resolved, the clock is a state change too.
+  'quest.ticked',
 ] as const
 
 export type KingdomEventType = (typeof KINGDOM_EVENTS)[number]

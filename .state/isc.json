@@ -550,5 +550,23 @@
    "at": "2026-09-02 09:29",
    "sha": "44f4f68"
   }
+ },
+ "046": {
+  "red": {
+   "at": "2026-09-02 09:34",
+   "sha": "23a07b3",
+   "hash": "15ec77fd86f7",
+   "how": "feature absent",
+   "tail": "       |                                                            ^ |      57|   }) |      58| })"
+  }
+ },
+ "047": {
+  "red": {
+   "at": "2026-09-02 09:34",
+   "sha": "23a07b3",
+   "hash": "3364a6daf27e",
+   "how": "feature absent",
+   "tail": "       | ^ |       9| import { QUESTS, questRowOf } from '../src/content/quests.js' |      10| import type { CampaignState } from '../src/core/campaign.js'"
+  }
  }
 }
