@@ -22,7 +22,7 @@
   "kind": "kingdom",
   "shape": "plumbing",
   "milestone": "M1",
-  "spec": "CampaignState as plain data (Law 5b; GAME-ARCHITECTURE.md §1): week, cursor, purse (Record<CurrencyId, number>), renown, roster, assignments, territories, buildings, revealed, unlocks, threat, cups — plus the rows SKELETON-SETTLED.md:57-61 flags as owed: losses, quests in flight, captured; corruption stored. makeCampaign(seed, legacy, options). One mutator module and one emit; every state change goes through it (Law 3).",
+  "spec": "CampaignState as plain data (Law 5b; GAME-ARCHITECTURE.md §1): week, cursor, purse (Record<CurrencyId, number>), renown, roster, assignments, territories, buildings, revealed, unlocks, threat, cups — plus the rows SKELETON-SETTLED.md:57-61 flags as owed: losses, quests in flight, captured; corruption stored. makeCampaign(seed, legacy, options). One mutator module and one emit; every state change goes through it (Law 3). The item also ships a loadable fixture — fixtures/slice-prep.json — a Campaign positioned at Combat Prep (cursor.step reveal) with a small roster and an engagement.conquer on a Territory row, so the next items have something to load (ruling 2026-09-01: load state → decide what happened → exit).",
   "expect": "ISC-004: JSON.stringify/parse round-trips a fresh Campaign and a Campaign mid-Week to deep-equal values; no field holds a class, Map, Set or function.",
   "isc": [
    "004"
@@ -32,10 +32,72 @@
   ]
  },
  {
-  "id": "week.machine",
+  "id": "combat.prep",
   "kind": "kingdom",
   "shape": "machine",
   "milestone": "M2",
+  "spec": "Combat Prep as cursor transitions (GAME-ARCHITECTURE.md §4 Inside Combat Prep; SKELETON-SETTLED.md:127): reveal → council → deploy → equip, then battle. viewCombatPrep(campaign, engagement) lists the enemies and the condition at reveal; listCouncilOptions offers exactly three placeholder tactic rows under the reserved test.* kind (ruling 2026-09-01 — until tactic.* is declared) and performing one records it; canDeploy/performDeploy/performUndeploy under the base size limit 4 (§2.3 axis 1); equip is a step that exists and passes through (nothing priced yet). The four steps are rows the machine reads in order, not four hardcoded cases.",
+  "expect": "ISC-026: the cursor visits reveal, council, deploy, equip in that order. ISC-027: at reveal the view lists every enemy and no choice is recorded. ISC-028: three options, one taken, two gone. ISC-029: the fifth deploy is refused at limit 4.",
+  "isc": [
+   "026",
+   "027",
+   "028",
+   "029"
+  ],
+  "variants": [
+   "test.tactic.hold-the-line",
+   "test.tactic.forced-march"
+  ],
+  "needs": [
+   "campaign.state"
+  ]
+ },
+ {
+  "id": "battle.screen",
+  "kind": "kingdom",
+  "shape": "plumbing",
+  "milestone": "M3",
+  "spec": "The battle screen and the outcome panel, in SLICE.html (self-contained, built by tools/build-slice.mjs with esbuild from engine/node_modules — ruling 2026-09-01). The board and every unit come from the engine's own setup (createBattle at t=0 through the seam; nothing runs). The panel sets everything a battle could decide as an EngagementResult — outcome, per unit lifeState/downed/dead/damage/kills, phases — and validateResult accepts a panel-built result and a fold-built result alike. resolveReckoning(campaign, engagement, result) proposes XP per unit and a wound per hero; every proposal is editable before apply.",
+  "expect": "ISC-030 (H): the map with every deployed hero and every enemy, still. ISC-031: one result shape, one validator, applyBattleResult blind to the producer. ISC-032: proposals editable, written exactly.",
+  "isc": [
+   "030",
+   "031",
+   "032"
+  ],
+  "needs": [
+   "combat.prep"
+  ]
+ },
+ {
+  "id": "reckoning.apply",
+  "kind": "kingdom",
+  "shape": "rule",
+  "milestone": "M4",
+  "spec": "applyBattleResult(campaign, engagement, result) — the only writer (GAME-ARCHITECTURE.md §1 rule 2) — and the tail: wounds from downed/dead (a level on hero.wound; commitmentOf -> 'wounded' above the threshold), Renown +1 per Engagement won (KINGDOM-DESIGN.md §3A), the losses counter, Salvage only from a first Conquer (SKELETON-SETTLED.md:104,108), the reward draft 3-keep-1 (7-KINGDOM-SETTLED.md), the difficulty number Σ(hero levels, civilians ÷2 ⌊⌋) + 2×week − 5×losses + 3×corruption counting everyone alive (SKELETON-NOTES.md:675).",
+  "expect": "ISC-014..020 as written in THIN-SLICE-IMPLEMENTATION.md §6 — the scan finds one writer; a lost battle wounds and pays no Salvage; Renown rises exactly 1 per win; re-conquest pays Renown and never Salvage; a wounded hero is refused deployment; the draft offers 3 and keeps 1; the difficulty number matches the hand sum on three authored rosters. ISC-033: after apply the cursor is past the battle, the save round-trips, a second apply is refused.",
+  "isc": [
+   "014",
+   "015",
+   "016",
+   "017",
+   "018",
+   "019",
+   "020",
+   "033"
+  ],
+  "variants": [
+   "engagement.conquer",
+   "engagement.defend"
+  ],
+  "needs": [
+   "battle.screen"
+  ]
+ },
+ {
+  "id": "week.machine",
+  "kind": "kingdom",
+  "shape": "machine",
+  "milestone": "M5",
   "spec": "The Week: six Stage rows in src/content (stage.buy, stage.quest, stage.defend, stage.conquer, stage.build, stage.mend — KINGDOM-DESIGN.md §3, GLOSSARY.md) read in registry order by a machine in src/core that knows no Stage by name. beginWeek/endWeek/tickWeek, beginStage/endStage, canAdvance/performAdvance, weekOf/stageOf/cursorOf (GAME-ARCHITECTURE.md §2.6). Every Stage emits stage.begun and stage.ended even when it resolves to nothing (§2.1). The cursor holds week, stage, step, engagement, and the battle's SEED AND OPTIONS — never its state (§4.4).",
   "expect": "ISC-005: a Week visits the six ids in the ruled order, and disabling stage.mend (KINGDOM_DISABLE_IDS) makes the order test fail. ISC-006: stage.begun/stage.ended pairs appear for every Stage of an empty Week. ISC-007: at every cursor position, stringify/parse then advance gives the same event stream as advancing the original. tools/probe.mts lands with this item: it runs N Weeks and reports whether an id appears in the log.",
   "isc": [
@@ -48,14 +110,14 @@
    "stage.mend"
   ],
   "needs": [
-   "campaign.state"
+   "reckoning.apply"
   ]
  },
  {
   "id": "assignments.two-slots",
   "kind": "kingdom",
   "shape": "rule",
-  "milestone": "M3",
+  "milestone": "M6",
   "spec": "Assignments under amended Law 17 (SKELETON-SETTLED.md:102; GAME-ARCHITECTURE.md §2.3): campaign.assignments: Record<HeroId, {field?, city?}>; commitmentOf(campaign, heroId, slot) -> 'free' | 'onQuest' | 'committed' | 'wounded' | 'unavailable' | 'captured' | 'dead'; canCommit is the only legality check; a quest takes both slots; listAvailable(campaign, stageId) reads commitmentOf and nothing else has an opinion about availability.",
   "expect": "ISC-008: a second field or city commit in one Week is refused by canCommit. ISC-009: a hero on a quest is absent from listAvailable for every Stage. ISC-010: commitmentOf returns 'unavailable' for a hero the Week's roll kept home, and no other function in src/ inspects hero availability (a static scan).",
   "isc": [
@@ -72,7 +134,7 @@
   "id": "map.four-territories",
   "kind": "kingdom",
   "shape": "rule",
-  "milestone": "M4",
+  "milestone": "M7",
   "spec": "The slice map as content (GAME-ARCHITECTURE.md §2.4; THIN-SLICE-REVIEW.md §G2): four territory.<realm>.* rows — the Kingdom Territory plus three, the first conquest carrying a critical building — with adjacency and a map id each. canClaim/performClaim/performLose; the Kingdom Territory's row says it cannot be lost (SKELETON-SETTLED.md:80-81). stage.conquer produces an Engagement through the seam and a won one claims the Territory and any building on it (7-KINGDOM-SETTLED.md). The first vertical slice: Week -> Conquer -> battle -> result -> Week N+1.",
   "expect": "ISC-011: listTerritories returns four rows, one flagged kingdom, one carrying a building. ISC-012: a heroClear Conquer claims the Territory and its building; a wipe claims nothing. ISC-013: performLose on an owned non-kingdom Territory makes it conquerable again; on the Kingdom Territory it is refused and costs resources and wounds per its stakes row.",
   "isc": [
@@ -86,34 +148,10 @@
   "note": "variants: the four territory.<realm>.* ids, named from KINGDOM-DESIGN.md / the realm manifest when worked — never invented here."
  },
  {
-  "id": "reckoning.apply",
-  "kind": "kingdom",
-  "shape": "rule",
-  "milestone": "M5",
-  "spec": "applyBattleResult(campaign, engagement, result) — the only writer (GAME-ARCHITECTURE.md §1 rule 2) — and the tail: wounds from downed/dead (a level on hero.wound; commitmentOf -> 'wounded' above the threshold), Renown +1 per Engagement won (KINGDOM-DESIGN.md §3A), the losses counter, Salvage only from a first Conquer (SKELETON-SETTLED.md:104,108), the reward draft 3-keep-1 (7-KINGDOM-SETTLED.md), the difficulty number Σ(hero levels, civilians ÷2 ⌊⌋) + 2×week − 5×losses + 3×corruption counting everyone alive (SKELETON-NOTES.md:675).",
-  "expect": "ISC-014..020 as written in THIN-SLICE-IMPLEMENTATION.md §6 — the scan finds one writer; a lost battle wounds and pays no Salvage; Renown rises exactly 1 per win; re-conquest pays Renown and never Salvage; a wounded hero is refused deployment; the draft offers 3 and keeps 1; the difficulty number matches the hand sum on three authored rosters.",
-  "isc": [
-   "014",
-   "015",
-   "016",
-   "017",
-   "018",
-   "019",
-   "020"
-  ],
-  "variants": [
-   "engagement.conquer",
-   "engagement.defend"
-  ],
-  "needs": [
-   "map.four-territories"
-  ]
- },
- {
   "id": "purse.four-currencies",
   "kind": "kingdom",
   "shape": "rule",
-  "milestone": "M6",
+  "milestone": "M8",
   "spec": "The purse (Law 18; 7-KINGDOM-SETTLED.md Currencies): four currency.* rows in src/content; balanceOf/canAfford/applySpend/applyGrant with a causeId on every grant (GAME-ARCHITECTURE.md §2.6). Payouts are DATA — a table of which Stage grants which currency — so 'Salvage only from Conquer' is a row the machine reads, and deleting that row is what turns ISC-022 red. stage.buy spends the purse and nothing else.",
   "expect": "ISC-021: four ids exist and canAfford is false when the named currency is short whatever the others hold; disabling currency.salvage makes the test fail. ISC-022: across a simulated run every resource.gained event whose currency is Salvage has a Conquer Engagement as its cause.",
   "isc": [
@@ -125,14 +163,14 @@
    "currency.faith"
   ],
   "needs": [
-   "reckoning.apply"
+   "map.four-territories"
   ]
  },
  {
   "id": "charter.renown",
   "kind": "kingdom",
   "shape": "rule",
-  "milestone": "M9",
+  "milestone": "M10",
   "spec": "The Charter (KINGDOM-DESIGN.md §3A; SKELETON-SETTLED.md:106): Renown is the entire budget, one Renown one purchase, unlock.* rows in src/content; an Article slot opens at Renown 10 and every 5 after, 1-9 is the free spine. canPurchase/performPurchase; hasUnlock/listUnlocks.",
   "expect": "ISC-023: a purchase costs exactly one Renown and no currency can substitute. ISC-024: listArticleSlots is empty below 10, one at 10, two at 15, and a Provision is what 1-9 buys.",
   "isc": [
