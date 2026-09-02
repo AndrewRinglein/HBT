@@ -24,6 +24,10 @@ export const KINGDOM_EVENTS = [
   'engagement.offered', 'engagement.declined',
   'reward.offered', 'reward.taken',
   'legacy.unlocked',
+  // Added 2026-09-01 with campaign.state, and to GLOSSARY.md the same commit:
+  // the cursor is the one field a load restores to (§2.2), so every move of it
+  // is an event a save can be keyed to.
+  'cursor.moved',
 ] as const
 
 export type KingdomEventType = (typeof KINGDOM_EVENTS)[number]

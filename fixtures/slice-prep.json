@@ -1,0 +1,210 @@
+{
+ "realm": "realm.ruined-kingdom",
+ "seed": 1,
+ "week": 3,
+ "cursor": {
+  "week": 3,
+  "stage": "stage.conquer",
+  "step": "prep",
+  "prepStep": "reveal",
+  "engagement": {
+   "id": "engagement.conquer.ridge.week-3",
+   "kind": "engagement.conquer",
+   "territoryId": "territory.ruined-kingdom.ridge",
+   "mapId": "map.ridge",
+   "enemies": [
+    "unit.zombie",
+    "unit.zombie",
+    "unit.zombie-hound",
+    "unit.skeletal-archer"
+   ],
+   "condition": null,
+   "councilOffer": [],
+   "tactic": null,
+   "deployed": [],
+   "seed": 1
+  },
+  "battle": null
+ },
+ "purse": {
+  "currency.faith": 6,
+  "currency.mana": 4,
+  "currency.salvage": 0,
+  "currency.supplies": 12
+ },
+ "renown": 2,
+ "unlocks": [],
+ "revealed": [],
+ "roster": {
+  "hero.base.paladin-shiney": {
+   "id": "hero.base.paladin-shiney",
+   "name": "Osric",
+   "classes": [
+    "class.paladin"
+   ],
+   "level": 1,
+   "xp": 0,
+   "wound": 0,
+   "lifeState": "alive",
+   "badges": [],
+   "unitType": "alpha-osric",
+   "corruption": 0
+  },
+  "hero.base.priest-scantily": {
+   "id": "hero.base.priest-scantily",
+   "name": "Lucius",
+   "classes": [
+    "class.priest"
+   ],
+   "level": 1,
+   "xp": 0,
+   "wound": 0,
+   "lifeState": "alive",
+   "badges": [],
+   "unitType": "alpha-lucius",
+   "corruption": 0
+  },
+  "hero.fixed.air-mage": {
+   "id": "hero.fixed.air-mage",
+   "name": "Air Mage",
+   "classes": [
+    "class.mage"
+   ],
+   "level": 1,
+   "xp": 0,
+   "wound": 0,
+   "lifeState": "alive",
+   "badges": [],
+   "unitType": "alpha-air-mage",
+   "corruption": 0
+  },
+  "hero.fixed.orphans": {
+   "id": "hero.fixed.orphans",
+   "name": "Orphan Child",
+   "classes": [
+    "class.civilian"
+   ],
+   "level": 1,
+   "xp": 0,
+   "wound": 0,
+   "lifeState": "alive",
+   "badges": [],
+   "unitType": "hero.fixed.orphans",
+   "corruption": 0
+  },
+  "hero.shadows.dusk-hawk.v1": {
+   "id": "hero.shadows.dusk-hawk.v1",
+   "name": "Dusk Hawk",
+   "classes": [
+    "class.ranger"
+   ],
+   "level": 1,
+   "xp": 0,
+   "wound": 0,
+   "lifeState": "alive",
+   "badges": [],
+   "unitType": "alpha-dusk-hawk",
+   "corruption": 0
+  },
+  "hero.shadows.oathblade.v1": {
+   "id": "hero.shadows.oathblade.v1",
+   "name": "Oathblade",
+   "classes": [
+    "class.warrior"
+   ],
+   "level": 1,
+   "xp": 0,
+   "wound": 0,
+   "lifeState": "alive",
+   "badges": [],
+   "unitType": "alpha-oathblade",
+   "corruption": 0
+  },
+  "hero.skyship.sky-pirate.v1": {
+   "id": "hero.skyship.sky-pirate.v1",
+   "name": "Sky Pirate",
+   "classes": [
+    "class.rogue"
+   ],
+   "level": 1,
+   "xp": 0,
+   "wound": 0,
+   "lifeState": "alive",
+   "badges": [],
+   "unitType": "alpha-sky-pirate",
+   "corruption": 0
+  }
+ },
+ "assignments": {},
+ "stash": [],
+ "territories": {
+  "territory.ruined-kingdom.highlands": {
+   "id": "territory.ruined-kingdom.highlands",
+   "name": "The Highlands",
+   "mapId": "map.highlands",
+   "owned": false,
+   "kingdom": false,
+   "claimedOnce": false,
+   "buildings": [],
+   "adjacent": [
+    "territory.ruined-kingdom.sanctuary"
+   ]
+  },
+  "territory.ruined-kingdom.ridge": {
+   "id": "territory.ruined-kingdom.ridge",
+   "name": "The Ridge",
+   "mapId": "map.ridge",
+   "owned": false,
+   "kingdom": false,
+   "claimedOnce": false,
+   "buildings": [
+    {
+     "id": "building.forge",
+     "level": 0,
+     "damaged": true
+    }
+   ],
+   "adjacent": [
+    "territory.ruined-kingdom.sanctuary",
+    "territory.ruined-kingdom.thicket"
+   ]
+  },
+  "territory.ruined-kingdom.sanctuary": {
+   "id": "territory.ruined-kingdom.sanctuary",
+   "name": "Sanctuary",
+   "mapId": "map.open",
+   "owned": true,
+   "kingdom": true,
+   "claimedOnce": true,
+   "buildings": [],
+   "adjacent": [
+    "territory.ruined-kingdom.ridge",
+    "territory.ruined-kingdom.highlands"
+   ]
+  },
+  "territory.ruined-kingdom.thicket": {
+   "id": "territory.ruined-kingdom.thicket",
+   "name": "The Thicket",
+   "mapId": "map.thicket",
+   "owned": false,
+   "kingdom": false,
+   "claimedOnce": false,
+   "buildings": [],
+   "adjacent": [
+    "territory.ruined-kingdom.ridge"
+   ]
+  }
+ },
+ "threat": 0,
+ "losses": 0,
+ "quests": {},
+ "captured": [],
+ "cups": {
+  "cup.battle": 103521152,
+  "cup.council": 1142217377,
+  "cup.reveal": 892881295,
+  "cup.reward": 2645491317,
+  "cup.threat": 3019024446,
+  "cup.unavailability": 1862212042
+ }
+}

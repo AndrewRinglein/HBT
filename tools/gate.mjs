@@ -257,7 +257,9 @@ flag('naming — no banned words invented', () => {
     if (/\b(?:function|const|let)\s+(get|handle|process|do|update|check|calculate|compute|init|setup)[A-Z]\w*/.test(l)) smells.add('a banned function prefix (GLOSSARY.md) — xOf/listX/canX/performX/applyX/resolveX/makeX/beginX')
     if (/\b(proc|procs)\b/i.test(l)) smells.add("'proc' — say trigger")
     if (/\b(buff|debuff)s?\b/i.test(l)) smells.add("'buff/debuff' — say status")
-    if (/\bround\b/i.test(l) && !/round(ed|ing|trip|Up|Down)|Math\.round/.test(l)) smells.add("'round' — say Turn")
+    // "round" the unit of play — not rounding, round-trips, or Math.round
+    // (the root vocab-check's own exclusions, 2026-09-01).
+    if (/\bround\b/i.test(l) && !/round(ed|ing|-?trips?|Up|Down)|Math\.round/i.test(l)) smells.add("'round' — say Turn")
     if (/\bstrategic turns?\b/i.test(l)) smells.add("'strategic turn' — say Week")
     if (/\bprovinces?\b/i.test(l)) smells.add("'province' — say Territory")
   }
