@@ -314,7 +314,7 @@
  "shapes": [
   {
    "name": "self",
-   "uses": 154,
+   "uses": 156,
    "ids": [
     "item.loaded-dice-of-mirran",
     "item.mug-of-endless-dregs",
@@ -696,6 +696,14 @@
    ]
   },
   {
+   "name": "one forest hex within N",
+   "uses": 2,
+   "ids": [
+    "item.torch",
+    "power.torch.light"
+   ]
+  },
+  {
    "name": "an adjacent hex and the two hexes adjacent to both you and it",
    "uses": 2,
    "ids": [
@@ -733,13 +741,6 @@
    "ids": [
     "power.totem-master.ancestral-anchor",
     "power.porter.drop-the-pack"
-   ]
-  },
-  {
-   "name": "one forest hex within N",
-   "uses": 1,
-   "ids": [
-    "item.torch"
    ]
   },
   {
@@ -926,7 +927,7 @@
   },
   {
    "name": "heal",
-   "uses": 89,
+   "uses": 90,
    "ids": [
     "item.death-blade",
     "item.wraith-touched-staff",
@@ -1535,7 +1536,7 @@
  "statuses": [
   {
    "name": "burn",
-   "uses": 81,
+   "uses": 82,
    "ids": [
     "item.runed-crossbow",
     "item.book-of-exorcisms",
@@ -1837,23 +1838,25 @@
   },
   {
    "name": "regeneration",
-   "uses": 6,
+   "uses": 7,
    "ids": [
     "item.scepter-of-salvation",
     "item.troll-gut-vest",
     "item.wreath-of-natures-protection",
     "power.grove-keeper.grove-ward",
     "power.regen",
+    "rule.one-healing-function",
     "enchant.regeneration"
    ]
   },
   {
    "name": "karma",
-   "uses": 4,
+   "uses": 5,
    "ids": [
     "power.carrion.gorge",
     "power.carrion.pick-the-bones",
     "rule.karma-decay",
+    "rule.one-healing-function",
     "specialty.carrion"
    ]
   }
@@ -2075,13 +2078,13 @@
     "item.mismatched-armor",
     "item.plated-armor",
     "item.reflective-armor",
-    "item.backpack",
     "item.rangers-worn-boots",
     "item.meditation-beads",
     "item.marching-orders",
     "item.frostleaf-battle-standard",
     "item.throne-fragment-of-melandar",
     "item.crown-of-the-tempest",
+    "item.backpack",
     "enchant.eternal-ice",
     "enchant.ancient-ward",
     "enchant.divine-protection",
@@ -2373,9 +2376,9 @@
    "uses": 14,
    "ids": [
     "item.peddlers-vest",
-    "item.backpack",
     "item.marching-orders",
     "item.quartermasters-manifest",
+    "item.backpack",
     "specialty.berserker",
     "specialty.leader",
     "specialty.wayfinder",

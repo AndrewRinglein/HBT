@@ -906,9 +906,45 @@
    "targets": "self",
    "tags": [],
    "triggers": [],
-   "description": "UNIVERSAL RULE, not a power you take. There are exactly TWO forced-movement verbs: Knockback, which pushes a unit directly away from the source, and Pull, which draws it directly toward the source. Both take a number of hexes. No third verb — an effect that moves a unit any other way does not exist.",
+   "description": "UNIVERSAL RULE, not a power you take. There are exactly THREE forced-movement verbs: Knockback, which pushes a unit directly away from the source; Pull, which draws it directly toward the source; and DRIVE, which is a Knockback in which THE ATTACKER ALSO MOVES FORWARD — the target is pushed and the attacker advances into the hex it left. All three take a number of hexes and all three run on ONE axis: nothing moves sideways. No fourth verb.",
    "intent": "Two opposed verbs, one axis. The 2026-08-20 cut left only Knockback because Pull had arrived as a bespoke system for one power; reinstated 2026-09-01 as a first-class verb with a real roster behind it.",
-   "source": "2026-09-01: \"Yep, I'm adding pull back in. It's a reversal.\" Reverses the 2026-08-20 ruling \"the pull is cut. Knockback is the only forced movement in the game.\" | Merged onto the trunk 2026-09-01 from the parallel content chat; attribution de-named per the standing passive-voice ruling, wording and dates untouched."
+   "source": "2026-09-01: \"Yep, I'm adding pull back in. It's a reversal.\" Reverses the 2026-08-20 ruling \"the pull is cut. Knockback is the only forced movement in the game.\" | Merged onto the trunk 2026-09-01 from the parallel content chat; attribution de-named per the standing passive-voice ruling, wording and dates untouched. | 2026-09-01: the 'no third verb' clause is SUPERSEDED. Drive added, verbatim: 'Drive is knockback, but the attacker also moves forward.'"
+  },
+  {
+   "id": "rule.item-limits",
+   "name": "Limits stop stacking; options need no limit",
+   "specialty": null,
+   "class": null,
+   "stamina": 0,
+   "cooldown": 0,
+   "warmup": 0,
+   "free": false,
+   "universal": true,
+   "universalToAllUnits": true,
+   "targets": "self",
+   "tags": [],
+   "triggers": [],
+   "description": "UNIVERSAL RULE, not a power you take. The per-unit limits on Armor, Idols, Blood Runes and Relics exist for ONE reason: to stop every item slot being additive in the same direction. A hero may not wear five defensive things. Trinkets carry no such limit because a trinket gives an OPTION — a thing you can do — not a bigger number, so five of them buy five choices rather than five stacks. The authoring test is therefore: if it is additive it belongs in a limited category; if it is an option it can be a trinket. The one deliberate exception is a status IMMUNITY, which is additive but conditional: it is often worth nothing, so its value is the pre-battle question of who should carry it today. That is a War Council decision, not a stack, and immunities stay trinkets.",
+   "intent": "It makes item slots a COVERAGE budget rather than a power budget. Handing a hero another slot makes them more flexible, not stronger — which is why slots can grow generously without inflating anything.",
+   "source": "2026-09-02: \"The reason for the Idol, Blood Rune / Armor / Relic limits are to prevent EVERY item slot from being additive in any direction. So I can't just add 5 defensive things. Because the Trinkets mostly give options, they don't need that limit.\" And on the exception: \"I intentionally had immunities as an exception, because they are useless often, [I] want it in planning. OK, I can use my immunity — on whom? Is a good, non-permanent choice in battle prep.\" | Merged onto the trunk from the parallel chat 2026-09-02; attribution de-named per the standing passive-voice ruling."
+  },
+  {
+   "id": "rule.one-healing-function",
+   "name": "All healing comes from one function",
+   "specialty": null,
+   "class": null,
+   "stamina": 0,
+   "cooldown": 0,
+   "warmup": 0,
+   "free": false,
+   "universal": true,
+   "universalToAllUnits": true,
+   "targets": "self",
+   "tags": [],
+   "triggers": [],
+   "description": "UNIVERSAL RULE, not a power you take. There is ONE heal in the game and every source routes through it — a power, an item, a trigger, a lifesteal rider, and REGENERATION, which does not heal by a private path of its own but calls the same function at End of Phase. Anything that modifies healing therefore modifies all of it, once, in one place: Karma raises the amount, Burn halves it. Content never has to say which kinds of healing it means, because there is only one kind.",
+   "intent": "It turns three special cases into one pipeline. Karma boosting heals, Burn halving them and Regeneration ticking are not three rules that happen to touch health — they are stations on a single function, and a new modifier is written once instead of per source.",
+   "source": "2026-09-02: \"Regeneration should CAUSE healing, healing should all come from same function.\" Answers the open question from the healing-cures-Bleed decision: Regeneration IS healing received, so everything true of a heal is true of a Regeneration tick. | Merged onto the trunk from the parallel chat 2026-09-02; attribution de-named per the standing passive-voice ruling."
   }
  ],
  "items": [
@@ -1768,5 +1804,31 @@
    }
   ],
   "source": "Six rows 2026-08-09 (extracted from GAME-DESIGN §4); four added by ruling 2026-08-27 (Knocked Sprawling, Winded, Guard Broken, Nerve Struck) — every axis covered: stamina, mitigation, the body."
+ },
+ "durations": {
+  "note": "RULED 2026-09-01, verbatim: 'Until end of next activation, or 2 activations, is correct.' The four Turn-worded durations are SUPERSEDED. An Activation is the unit-specific window (the totality of one unit's doing of things); a Turn is not. Everything battle-scoped is written in Activations or in the Battle.",
+  "list": [
+   {
+    "id": "duration.end-of-activation",
+    "name": "until the end of your Activation",
+    "note": "the current one"
+   },
+   {
+    "id": "duration.end-of-next-activation",
+    "name": "until the end of your next Activation",
+    "note": "the default carry — survives the enemy phase and one more of yours"
+   },
+   {
+    "id": "duration.two-activations",
+    "name": "for 2 Activations",
+    "note": "the long one"
+   },
+   {
+    "id": "duration.rest-of-battle",
+    "name": "for the rest of the Battle",
+    "note": "the ceiling — rule.nothing-outlasts-the-battle"
+   }
+  ],
+  "source": "Ruled 2026-09-01, closing the duration question both handoffs left open."
  }
 }

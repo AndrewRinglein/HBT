@@ -625,10 +625,12 @@
     "vision": 3
    },
    "triggers": [],
-   "grants": [],
+   "grants": [
+    "power.torch.light"
+   ],
    "equipCost": {},
    "persists": true,
-   "source": "Dictated 2026-08-25, the Waystation shelf.",
+   "source": "Dictated 2026-08-25, the Waystation shelf. | 2026-09-02: the fire-lighting is now a real grant (power.torch.light), not prose.",
    "id": "item.torch",
    "name": "Torch",
    "tags": [],
@@ -637,27 +639,6 @@
    "targets": "one forest hex within 1",
    "description": "+3 Vision. Once per Battle, free: light a forest hex within 1 on fire — the hex gains the burning ground status.",
    "intent": "The cheap answer to darkness, and a match when you need one."
-  },
-  {
-   "itemClass": "trinket",
-   "tier": 1,
-   "slots": 1,
-   "hands": 0,
-   "classRestriction": null,
-   "statModifiers": {
-    "movement": -1,
-    "itemSlots": 2
-   },
-   "triggers": [],
-   "grants": [],
-   "equipCost": {},
-   "persists": true,
-   "source": "Dictated 2026-08-25, the Waystation shelf.",
-   "id": "item.backpack",
-   "name": "Backpack",
-   "tags": [],
-   "description": "−1 Movement, +2 Item slots.",
-   "intent": "Carry more, arrive later."
   }
  ],
  "relics": [
@@ -1300,6 +1281,27 @@
    "tags": [],
    "intent": "A cracked lens on a thong. You see one hex further and you have spent something to do it.",
    "source": "Replaces item.hunters-instinct, whose name described a trait rather than an object. Same numbers."
+  },
+  {
+   "itemClass": "relic",
+   "tier": 1,
+   "slots": 1,
+   "hands": 0,
+   "classRestriction": null,
+   "statModifiers": {
+    "movement": -1,
+    "itemSlots": 2
+   },
+   "triggers": [],
+   "grants": [],
+   "equipCost": {},
+   "persists": true,
+   "source": "Dictated 2026-08-25, the Waystation shelf. | RECATEGORISED 2026-09-02 by ruling: a pure stat swap (-1 Movement for +2 Item slots) is the relic shape (32 of 32 relics are stat swaps), not a trinket — trinkets buy OPTIONS. Caught by the merged R37 trinket-is-a-stat-stick.",
+   "id": "item.backpack",
+   "name": "Backpack",
+   "tags": [],
+   "description": "−1 Movement, +2 Item slots.",
+   "intent": "Carry more, arrive later."
   }
  ],
  "bloodrunes": [

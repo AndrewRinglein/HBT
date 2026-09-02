@@ -1576,6 +1576,22 @@
    "intent": "The small shield's whole philosophy: not being hit is the block.",
    "source": "2026-08-27 workbook review — Deflect and Cut (the damage-dealing attack) is superseded by this power, ruled: \"Block and Dodge is now a power.\"",
    "triggers": []
+  },
+  {
+   "id": "power.torch.light",
+   "name": "Light It",
+   "specialty": null,
+   "owner": "item.torch",
+   "stamina": 0,
+   "cooldown": 0,
+   "warmup": 0,
+   "free": true,
+   "targets": "one forest hex within 1",
+   "tags": [],
+   "description": "Once per Battle, free: set a forest hex within 1 alight — the hex gains the burning ground layer.",
+   "intent": "The cheap answer to a forest, and the reason a torch is not just a lamp.",
+   "source": "Authored 2026-09-02: the Torch's option was written in its description only, so the merged R37 (trinket-is-a-stat-stick) correctly read the item as pure stats. The option was always the design — this expresses it in data, where the rule can see it.",
+   "triggers": []
   }
  ],
  "enchants": [

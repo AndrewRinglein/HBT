@@ -110,9 +110,12 @@ for(const p of D.powers){
      !/(all |every |each |enemies within|hexes|adjacent enem|area|cannot crit|target hex|line|arc|trap|stealth|heal|move|true damage|magic damage instead|instead of physical|(?:gains?|applies|apply) \d+ (?:Slow|Stun|Weak|Burn|Poison|Bleed|Frost)|takes? \d+ Stun)/i.test(d))
     add('power-is-just-an-attack',p.name,d.slice(0,80));
 }
-// R6 relics named as attributes
+// R6 relics named as attributes. The word list enumerates OBJECT words and is not a closed
+// design list — 2026-09-02 it gained pack/bag/satchel/kit when the Backpack was recategorised
+// here by ruling. Completing the vocabulary is not weakening the rule: the rule is 'a relic is
+// a named object, never an attribute', and a pack is an object.
 for(const r of D.items.filter(i=>i.itemClass==='relic')){
-  if(!/\b(of|'s|charm|boots|beads|orders|tome|manifest|seal|banner|cradle|case|censer|torc|compass|crown|fragment|codex|quiver|gauntlets|furs|journal|standard|lantern|eyeglass|reliquary|vow|ring|amulet|pendant|idol|mask|key|coin|shard|horn|bell)\b/i.test(r.name))
+  if(!/\b(of|'s|charm|boots|beads|orders|tome|manifest|seal|banner|cradle|case|censer|torc|compass|crown|fragment|codex|quiver|gauntlets|furs|journal|standard|lantern|eyeglass|reliquary|vow|ring|amulet|pendant|idol|mask|key|coin|shard|horn|bell|backpack|pack|bag|satchel|kit)\b/i.test(r.name))
     add('relic-not-an-object',r.name,'');
   const k=Object.keys(r.statModifiers||{});
   if(k.length!==2) add('relic-not-one-good-one-bad',r.name,JSON.stringify(r.statModifiers));
@@ -1073,6 +1076,30 @@ if(D.kits){
 {
   const DEALT=/(?:lower|reduce|lowers|reduces)[^.]{0,40}\b(?:damage (?:dealt|they deal|it deals|hero damage))|hero damage by|damage dealt by[^.]{0,20}\bby \d/i;
   for(const e of all){ const t=txt(e); if(DEALT.test(t)) add('reduces-damage-dealt',e.name,(t.match(DEALT)||[''])[0]+' — mitigation is Armor, Resist or Protection, on the receiving side'); }
+}
+
+// R37 a trinket is an OPTION, not a stat stick — ruled 2026-09-02. The per-unit limits on
+// Armor, Idols, Blood Runes and Relics exist to stop every slot being additive in one
+// direction; trinkets carry no limit BECAUSE they give options. A trinket whose whole content
+// is statModifiers is a miscategorised armor piece and breaks the reason the limit is absent.
+// Deliberate exception: status IMMUNITIES are additive but conditional — often worth nothing,
+// so their value is the pre-battle question of who carries one today. They stay trinkets.
+// See rule.item-limits. NOTE: the mirror check (a limited item carrying nothing additive) was
+// written and REMOVED 2026-09-02 — additive weight lives in statModifiers, in the slayer{}
+// field AND in prose, so it produced 8 false positives (the slayer runes, the immunity and
+// Protection idols). A rule that cries wolf is worse than no rule.
+{
+  const IMMUNITY=/\bimmunit(y|ies)\b/i;
+  for(const it of D.items){
+    if(it.itemClass!=='trinket') continue;
+    const sm=Object.keys(it.statModifiers||{}).length;
+    const tg=(it.triggers||[]).length, gr=(it.grants||[]).length;
+    const prose=(it.description||'')+' '+(it.intent||'');
+    if(IMMUNITY.test(prose)) continue;                       // the ruled exception
+    if(sm>0 && tg===0 && gr===0)
+      add('trinket-is-a-stat-stick',it.name,
+          Object.keys(it.statModifiers).join(', ')+' — a trinket gives an option; put flat stats in a limited category');
+  }
 }
 
 const by={}; F.forEach(f=>(by[f.rule]=by[f.rule]||[]).push(f));

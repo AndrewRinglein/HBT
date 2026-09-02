@@ -2854,8 +2854,8 @@
   }
  },
  "_mergeNote2026_09_01": "The parallel chat’s branch stripped statModifiers/hook/rollable/blockers/engineStatGap from EVERY badge and deleted five (dwarf, elf, fey, faithful, hillman) that heroes on both sides still wear. Those are regressions against the 2026-08-25 workbook review, not rulings, so this file stands as the trunk’s. Only their two genuine additions were taken.",
- "_fromParallelChat2026_09_01": {
-  "note": "One badge from the parallel content chat still parked: The Unnamed uses op:set to override Accuracy/Crit/Luck, and stat overrides are banned — nothing else in the game replaces a stat rather than modifying it. Backstabber was re-ruled onto the stealth condition 2026-09-01 and is live.",
+ "_cut2026_09_01": {
+  "note": "CUT BY RULING 2026-09-01: 'remove unnamed.' origin.the-unnamed used op:set to freeze Accuracy 100 / Crit 3 / Luck 0 — a stat override, banned. Worn by nobody. Parked, not destroyed.",
   "rows": [
    {
     "id": "origin.the-unnamed",

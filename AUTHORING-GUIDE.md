@@ -685,7 +685,7 @@ every status, not a named few. See `rule.status-as-a-value`.
 
 **Two things ruled out at the same time:**
 
-- **Reducing damage *dealt* does not exist.** Mitigation is Armor, Resist and Protection, on the receiving side. Audit rule `reduces-damage-dealt`.
+- **Damage-*dealt* reduction exists only as the Weak status** — −1 damage per point, 35 uses. **No other content may do it**: mitigation is Armor, Resist and Protection, on the receiving side. Audit rule `reduces-damage-dealt` (which does not fire on Weak — checked). *Corrected 2026-09-02: this line previously read "reducing damage dealt does not exist," which is false with Weak in the game and would lead an author to conclude Weak is illegal. Saying where the mechanism lives is the better rule.*
 - **Invisibility is Stealth.** Not a second system.
 
 **Found while applying this:** the audit's closed status list had been **missing `slow`** ever
@@ -950,3 +950,76 @@ worth building before anything is authored against it.
 **No Hell-TCG equivalent exists for:** Accuracy · Crit · Luck · Vision · Movement ·
 Stamina (max and regen) · Surge. **Those seven are what make this a different
 game**, and every one of them has to be authored from nothing.
+
+### All healing comes from one function
+
+Ruled 2026-09-02:
+
+> *"Regeneration should CAUSE healing. Healing should all come from the same function."*
+
+There is **one heal**. A power, an item, a trigger, a lifesteal rider and **Regeneration** all
+call it — Regeneration is not a private path that happens to add health at End of Phase, it is
+a caller like any other. So everything already true of healing is automatically true of a
+Regeneration tick, and a new modifier is written **once** instead of once per source.
+
+The stations on that function, as ruled so far:
+
+| | |
+|---|---|
+| **Karma** raises the amount | *"every heal you receive is increased by your Karma"* |
+| **Burn** halves the amount | *"halves all healing received while held"* |
+| **Bleed removal** — pending §2.1b of `DESIGN-HANDOFF-2026-09-02.md` | healing received removes Bleed equal to half the healing |
+
+**What this buys.** Three interactions that used to be separate special cases fall out of one
+pipeline for free. A unit carrying Burn and Bleed that receives Regeneration 4 heals 2, not 4 —
+and therefore sheds 1 Bleed, not 2. Nobody had to write that down; it is what the function does.
+
+**What it costs.** The function needs a station ORDER, the way damage already has
+`SOURCE_STATUS (250)` and `PROTECTION (550)`. Karma before Burn or Burn before Karma is a real
+difference, and content will start to depend on it.
+
+**Authoring consequence:** never write "this healing is not affected by X". If a heal should
+behave differently, that is a change to the function or a new station on it — not an exception
+written into one entry.
+
+### Limits stop stacking; options need no limit
+
+Ruled 2026-09-02. The per-unit limits on **Armor, Idols, Blood Runes and Relics** exist for one
+reason, and it is not flavour:
+
+> *"to prevent EVERY item slot from being additive in any direction. So I can't just add 5
+> defensive things. Because the Trinkets mostly give options, they don't need that limit."*
+
+So the authoring test for a new item is one question:
+
+> **If it is additive, it belongs in a limited category. If it is an option, it can be a trinket.**
+
+The content already holds this line. Of the 30 trinkets, **not one is a pure stat modifier**:
+19 are usable actions (place traps, blink, heal an adjacent ally, enter stealth, reveal
+stealth, hand an ally a Move) and 11 carry conditional triggers or an aura. That is unusual —
+the category with no cap is normally where flat numbers accumulate.
+
+**The consequence worth knowing:** because trinkets buy options and options cost slots, **item
+slots are a coverage budget, not a power budget.** Another slot makes a hero more flexible, not
+stronger, so slots can grow generously without inflating anything.
+
+**The deliberate exception: status immunities.** Immunity to Burn 1, Poison 1, Weak 1, Frost 1
+and the Hearthmother's pair are additive — and they stay trinkets on purpose, because they are
+**conditional**:
+
+> *"I intentionally had immunities as an exception, because they are useless often. I want it
+> in planning. OK, I can use my immunity — on whom? Is a good, non-permanent choice in battle
+> prep."*
+
+An immunity is worth nothing most fights, so its value is not the number: it is the War Council
+question of who should carry it against *this* encounter. That is a prep decision, not a stack.
+
+Audit rule `trinket-is-a-stat-stick` enforces the test and exempts anything whose prose names
+an immunity.
+
+> **A rule that was written and removed the same day.** The mirror check — *a limited item that
+> carries nothing additive is equally miscategorised* — is true as design and unenforceable as
+> lint. Additive weight lives in `statModifiers`, in the `slayer{}` field, and in prose, so the
+> check produced 8 false positives on its first run: the three slayer runes, and the idols
+> whose weight is written as "Immunity to Burn 1" or "Protection equal to 2 + Spirit". It was
+> removed. A rule that cries wolf is worse than no rule.

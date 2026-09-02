@@ -31,7 +31,7 @@ When a rule fires. Twelve, plus `aura` and `passive` which are standing properti
 
 | Function | Uses |
 |---|---:|
-| `self` | 154 |
+| `self` | 156 |
 | `one enemy in melee reach` | 105 |
 | `one enemy within N hexes` | 82 |
 | `one ally within N hexes` | 54 |
@@ -47,12 +47,12 @@ When a rule fires. Twelve, plus `aura` and `passive` which are standing properti
 | `one enemy within your Vision` | 4 |
 | `three hexes within N hexes` | 3 |
 | `one unit within N` | 3 |
+| `one forest hex within N` | 2 |
 | `an adjacent hex and the two hexes adjacent to both you and it` | 2 |
 | `an adjacent hex and one hex adjacent to both you and it` | 2 |
 | `one enemy within N hexes and every enemy adjacent to it` | 2 |
 | `up to N allies within N hexes` | 2 |
 | `your own hex` | 2 |
-| `one forest hex within N` | 1 |
 | `one adjacent ally` | 1 |
 | `one empty hex within N` | 1 |
 | `one enemy in melee reach and the hex directly behind it` | 1 |
@@ -78,7 +78,7 @@ What a rule may DO.
 |---|---:|
 | `grant a stat for the Battle` | 170 |
 | `apply a status` | 141 |
-| `heal` | 89 |
+| `heal` | 90 |
 | `deal TRUE damage` | 55 |
 | `grant a stat until end of next Turn` | 47 |
 | `remove N of a status` | 46 |
@@ -115,7 +115,7 @@ What a rule may DO.
 
 | Function | Uses |
 |---|---:|
-| `burn` | 81 |
+| `burn` | 82 |
 | `bleed` | 65 |
 | `poison` | 54 |
 | `protection` | 40 |
@@ -123,8 +123,8 @@ What a rule may DO.
 | `stun` | 22 |
 | `slow` | 20 |
 | `frost` | 14 |
-| `regeneration` | 6 |
-| `karma` | 4 |
+| `regeneration` | 7 |
+| `karma` | 5 |
 
 ## 6 · Stats a modifier may name
 
