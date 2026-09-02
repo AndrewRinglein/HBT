@@ -69,12 +69,13 @@
   "expect": "ISC-030 (H): the map with every deployed hero and every enemy, still. ISC-031: one result shape, one validator, applyBattleResult blind to the producer. ISC-032: proposals editable, written exactly.",
   "isc": [
    "030",
-   "031",
-   "032"
+   "034"
   ],
   "needs": [
    "combat.prep"
-  ]
+  ],
+  "note": "ISC-031 and ISC-032 name the writer and land with reckoning.apply (2026-09-01); ISC-034 is the proposal half. SLICE.html stops at the tally until the writer lands.",
+  "attempts": 1
  },
  {
   "id": "reckoning.apply",
@@ -91,6 +92,8 @@
    "018",
    "019",
    "020",
+   "031",
+   "032",
    "033"
   ],
   "variants": [

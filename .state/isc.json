@@ -98,5 +98,14 @@
    "at": "2026-09-02 04:13",
    "sha": "25a215c"
   }
+ },
+ "034": {
+  "red": {
+   "at": "2026-09-02 04:18",
+   "sha": "e99c402",
+   "hash": "cddc95893147",
+   "how": "feature absent",
+   "tail": "       | ^ |      13| import { resolveReckoning } from '../src/core/reckoning.js' |      14| import { makeBattleState, resolveEngagement } from '../src/core/seam.j…"
+  }
  }
 }

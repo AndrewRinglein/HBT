@@ -11,6 +11,9 @@
 // Nothing in this file mutates. Mutation goes through src/core/mutate.ts and
 // emits (Law 3).
 
+import type { EngagementResult } from './seam.js'
+import type { Reckoning } from './reckoning.js'
+
 export type StageId = string
 export type CurrencyId = string
 export type HeroId = string
@@ -55,10 +58,12 @@ export type Cursor = {
   engagement: Engagement | null
   /**
    * §4.4 (THIN-SLICE-IMPLEMENTATION.md): the battle's seed and options, never
-   * its state. In the slice the battle is not played; this holds the result
-   * once it has been set and not yet applied, so a reload lands on the panel.
+   * its state. In the slice the battle is not played; this holds what the
+   * outcome panel SET — the result and the Reckoning proposed from it, both
+   * plain data — until the one writer applies them, so a reload lands back on
+   * the panel or the tally with nothing lost.
    */
-  battle: { resultSet: boolean } | null
+  battle: { resultSet: boolean; result?: EngagementResult; reckoning?: Reckoning } | null
 }
 
 export type Hero = {

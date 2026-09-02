@@ -20,6 +20,21 @@ const RAW_CUPS: readonly CupRow[] = [
   { id: 'cup.council', rolls: "the War Council's draw" },
   { id: 'cup.reward', rolls: 'the reward draft' },
   { id: 'cup.battle', rolls: "a Battle's seed" },
+  { id: 'cup.mvp', rolls: 'the MVP — weighted by XP earned (SKELETON-NOTES.md B7)' },
 ]
 
 export const CUPS: readonly CupRow[] = omitDisabled(RAW_CUPS)
+
+/**
+ * Purpose → cup id, so core can say WHICH roll it is making without spelling a
+ * content id: core knows the purpose, this file knows the name.
+ */
+export const CUP_IDS = {
+  threat: 'cup.threat',
+  unavailability: 'cup.unavailability',
+  reveal: 'cup.reveal',
+  council: 'cup.council',
+  reward: 'cup.reward',
+  battle: 'cup.battle',
+  mvp: 'cup.mvp',
+} as const

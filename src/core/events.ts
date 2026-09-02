@@ -32,6 +32,9 @@ export const KINGDOM_EVENTS = [
   // War Council's draw and its pick. Tactics are lent for one battle, so they
   // are neither rewards nor unlocks and take their own two words.
   'council.offered', 'council.taken',
+  // Added 2026-09-01 with battle.screen, and to GLOSSARY.md the same commit: in
+  // the slice a battle is DECIDED by the panel, not fought; the word says which.
+  'battle.decided',
 ] as const
 
 export type KingdomEventType = (typeof KINGDOM_EVENTS)[number]

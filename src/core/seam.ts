@@ -67,6 +67,27 @@ export type EngagementResult = {
   readonly events: number
 }
 
+/**
+ * GAME-ARCHITECTURE.md §4 — "where every strategic fact becomes a combat fact."
+ * The name is kept (the project cites it everywhere); what it produces is the
+ * campaign-free fielding, which battleOptionsOf turns into the engine's own
+ * options (§4.1 — the engine takes options, never a state). Roster → units by
+ * each deployed hero's unitType, in deployment order, so row i of the result is
+ * deployed[i]. Buildings → map features, threat → encounter, conditions →
+ * battle condition arrive here when those systems exist.
+ */
+export function makeBattleState(
+  roster: Readonly<Record<string, { unitType: string }>>,
+  engagement: { id: string; mapId: string; enemies: readonly string[]; deployed: readonly string[]; seed: number },
+): EngagementSpec {
+  const heroes = engagement.deployed.map((heroId) => {
+    const h = roster[heroId]
+    if (!h) throw new Error(`${engagement.id}: deployed hero '${heroId}' is not on the roster`)
+    return h.unitType
+  })
+  return { id: engagement.id, mapId: engagement.mapId, heroes, enemies: [...engagement.enemies], seed: engagement.seed }
+}
+
 /** The joint §4.1 names: a spec becomes the engine's own options, nothing more. */
 export function battleOptionsOf(spec: EngagementSpec): BattleOptions {
   return {

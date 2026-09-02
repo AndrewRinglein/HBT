@@ -217,6 +217,13 @@ if (has('--close')) {
     const isc = list.get(n)
     if (!isc) { console.error(`no ISC-${n}`); ok = false; continue }
     const st = state[n] ?? {}
+    if (isc.tierDoc === 'H') {
+      // An H criterion is not closed by a landing. The landing makes it
+      // checkable; Andrew's --accept is what moves it, in his words.
+      state[n] = { ...st, landed: { at: stamp(), sha } }
+      console.log(`ISC-${n}: H-tier — landed at ${sha}, awaits --accept ${n} "<Andrew's words>"`)
+      continue
+    }
     if (!st.red) { console.error(`ISC-${n}: never seen red — run --isc ${n} --red before the feature exists`); ok = false; continue }
     if (st.red.hash !== probeHash(isc)) { console.error(`ISC-${n}: probe edited since its red (${st.red.hash} → ${probeHash(isc)}) — see it red again`); ok = false; continue }
     const r = runProbe(isc)
@@ -234,7 +241,8 @@ if (has('--isc')) {
   const { isc, state } = need(n)
   const st = state[n] ?? {}
   if (isc.tierDoc === 'H') {
-    console.log(`ISC-${n} is H-tier: ${isc.probe}\n  ${stateOf(isc, st)} — closes to ACCEPTED with --accept ${n} "<Andrew's words>"`)
+    if (has('--red')) { console.log(`ISC-${n} is H-tier — a person sees it red or green; there is no probe to record`); process.exit(1) }
+    console.log(`ISC-${n} is H-tier: ${isc.probe}\n  ${stateOf(isc, st)} — closes to ACCEPTED with --accept ${n} "<Andrew's words>"${has('--check-red') ? '\n  (no red demanded of an H criterion)' : ''}`)
     process.exit(0)
   }
   const missing = probeMissing(isc)

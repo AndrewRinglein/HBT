@@ -8,6 +8,8 @@
 
 import type { CampaignState, Cursor } from './campaign.js'
 import type { KingdomEventType } from './events.js'
+import type { EngagementResult } from './seam.js'
+import type { Reckoning } from './reckoning.js'
 
 export type KingdomEvent = {
   seq: number
@@ -72,6 +74,17 @@ export function applyUndeploy(ctx: Ctx, heroId: string, causeId: string): void {
   const e = engagementOf(ctx.campaign)
   e.deployed = e.deployed.filter((h) => h !== heroId)
   emit(ctx, 'hero.released', causeId, { heroId, engagementId: e.id, slot: 'field' })
+}
+
+/**
+ * What the outcome panel SET — the result and the Reckoning proposed from it —
+ * written to the cursor as plain data so a reload lands on the tally. The
+ * writer (applyBattleResult) reads it from here and nowhere else.
+ */
+export function setBattleOutcome(ctx: Ctx, result: EngagementResult, reckoning: Reckoning, causeId: string): void {
+  if (ctx.campaign.cursor.step !== 'battle') throw new Error(`setBattleOutcome refused: the cursor is at step '${ctx.campaign.cursor.step}', not the battle`)
+  ctx.campaign.cursor.battle = { resultSet: true, result, reckoning }
+  emit(ctx, 'battle.decided', causeId, { engagementId: result.id, outcome: result.outcome })
 }
 
 /**
