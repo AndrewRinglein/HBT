@@ -39,6 +39,14 @@ node tools/scan.mjs only-writer     ISC-014's static scan
 npm test        npm run typecheck   (the engine's vitest and tsc)
 ```
 
+**The gate takes minutes, and the Cowork sandbox kills a tool call at ~3.**
+Every claimed probe is a vitest run, and "nothing regresses" runs every P probe
+again, then the post-land audit runs them all a third time. From the sandbox,
+run a landing detached and poll the log — `nohup node tools/gate.mjs <id> --land
+> /tmp/land.log 2>&1 &` — never in the foreground. (Found 2026-09-01: the
+reckoning.apply landing was killed after its commit and before its bookkeeping;
+the tail was finished by hand and the ledger says so.)
+
 **The gate decides whether an item passed, not you.** Never write `status` into
 `.state/backlog.json` or `state` into `.state/isc.json` by hand.
 

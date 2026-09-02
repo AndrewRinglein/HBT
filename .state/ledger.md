@@ -112,3 +112,71 @@ IRON GAUNTLET: NOT PASSED — 2 FLAG(S) WARNED
 ISC-034: CLOSED at 9ee8ea3
 slice: 8 of 34 closed · 9 probed · 0 accepted
 IRON GAUNTLET: NOT PASSED — 2 FLAG(S) WARNED
+
+## reckoning.apply — LANDED `123a501` **NEEDS REVIEW**
+2026-09-02 04:42 · engine @ 745922d
+
+  PASS  dependencies landed
+  WARN  not already decided — 4 candidate ruling(s) — READ BEFORE ASKING: ../STATE.md:20 · ../CLAUDE-DOS-AND-DONTS.md:134
+  PASS  typecheck
+  PASS  full test suite
+  PASS  gate 1 — every claimed criterion holds — ISC-014 holds · ISC-015 holds · ISC-016 holds · ISC-017 holds · ISC-018 holds · ISC-020 holds · ISC-031 holds · ISC-032 holds · ISC-033 holds
+  PASS  brought its own tests — test/isc-034.test.ts, test/isc-015.test.ts, test/isc-016.test.ts, test/isc-017.test.ts, test/isc-018.test.ts, test/isc-020.test.ts, test/isc-031.test.ts, test/isc-032.test.ts, test/isc-033.test.ts, test/walk.ts
+  WARN  existing tests untouched — DELETED LINES in test/isc-034.test.ts (-4) — will land FLAGGED for review
+  PASS  kill switch — every claimed probe has been seen red — ISC-014: red on record (2026-09-02 04:34 @ 4172743, probe 445e48318684) · ISC-015: red on record (2026-09-02 04:39 @ 4172743, probe 928f9fb03604) · ISC-016: red on record (2026-09-02 04:39 @ 4172743, probe 291d8c621504) · ISC-017: red on record (2026-09-02 04:40 @ 4172743, probe 07949da68a4f) · ISC-018: red on record (2026-09-02 04:40 @ 4172743, probe 961a1e24f3be) · ISC-020: red on record (2026-09-02 04:40 @ 4172743, probe 1aee6669c969) · ISC-031: red on record (2026-09-02 04:40 @ 4172743, probe 49f0a49be7f6) · ISC-032: red on record (2026-09-02 04:40 @ 4172743, probe 68d89c691986) · ISC-033: red on record (2026-09-02 04:40 @ 4172743, probe 042205630e9c)
+  PASS  nothing regresses — every P-tier probe — 17 P-tier probe(s): 17 green, 0 red, 0 regression(s). 8 of 34 closed · 17 probed · 0 accepted
+  PASS  hardcode scan — core knows mechanisms, never names
+  PASS  generalizes — the second instance costs zero kingdom code — engagement.conquer live · engagement.defend live
+  PASS  naming — new ids use declared kinds
+  PASS  naming — no banned words invented
+  WARN  engine working tree clean — verified against a DIRTY engine tree (745922d + 3 uncommitted under src/test): M src/content/generated/pack.stamp.json, M src/content/generated/pack.ts, ?? src/sim/coverage.ts
+  PASS  one door to the engine
+
+<details><summary>Existing tests were edited — review this diff</summary>
+
+```diff
+diff --git a/test/isc-034.test.ts b/test/isc-034.test.ts
+index e60abd5..c57e404 100644
+--- a/test/isc-034.test.ts
++++ b/test/isc-034.test.ts
+@@ -32,5 +32,5 @@ const rows = (ctx: ReturnType<typeof atBattle>) => {
+ 
+ describe('ISC-034 — the Reckoning is proposed and editable', () => {
+-  it('a won battle proposes XP per deployed hero, one MVP, +1 Renown, a claim and Salvage', () => {
++  it('a won battle proposes XP per deployed hero, one MVP, +1 Renown, a claim and a Salvage grant', () => {
+     const ctx = atBattle()
+     const e = ctx.campaign.cursor.engagement!
+@@ -52,5 +52,5 @@ describe('ISC-034 — the Reckoning is proposed and editable', () => {
+     expect(k.renown).toBe(1); expect(k.losses).toBe(0)
+     expect(k.claim).toBe(e.territoryId)
+-    expect(k.salvage).toBe(SWITCHES.salvagePerConquest)
++    expect(k.grants).toEqual([{ currency: 'currency.salvage', amount: SWITCHES.salvagePerConquest }])
+     assertPlainData(k, 'reckoning')
+   })
+@@ -66,5 +66,5 @@ describe('ISC-034 — the Reckoning is proposed and editable', () => {
+     const k = resolveReckoning(ctx.campaign, e, r)
+     expect(k.won).toBe(false); expect(k.renown).toBe(0); expect(k.losses).toBe(1)
+-    expect(k.claim).toBeNull(); expect(k.salvage).toBe(0)
++    expect(k.claim).toBeNull(); expect(k.grants).toEqual([])
+     expect(k.lose).toBeNull()                       // a lost Conquer costs nothing (the stakes row)
+     expect(k.heroes[0]).toMatchObject({ dead: true, xp: 0, mvp: false })
+@@ -93,5 +93,5 @@ describe('ISC-034 — the Reckoning is proposed and editable', () => {
+     enemies.forEach((_, i) => { r = withUnitFate(r, 'enemy', i, { lifeState: 'dead' }) })
+     const k = resolveReckoning(ctx.campaign, e, r)
+-    const edited = { ...k, heroes: k.heroes.map((h, i) => (i === 2 ? { ...h, xp: 42, wound: 3 } : h)), salvage: 7 }
++    const edited = { ...k, heroes: k.heroes.map((h, i) => (i === 2 ? { ...h, xp: 42, wound: 3 } : h)), grants: [{ currency: 'currency.salvage', amount: 7 }] }
+     setBattleOutcome(ctx, r, edited, 'test')
+     expect(ctx.campaign.cursor.battle).toEqual({ resultSet: true, result: r, reckoning: edited })
+```
+</details>
+
+ISC-014: CLOSED at 123a501 · ISC-015: CLOSED at 123a501 · ISC-016: CLOSED at 123a501 · ISC-017: CLOSED at 123a501 · ISC-018: CLOSED at 123a501 · ISC-020: CLOSED at 123a501 · ISC-031: CLOSED at 123a501 · ISC-032: CLOSED at 123a501 · ISC-033: CLOSED at 123a501
+slice: 17 of 34 closed · 17 probed · 0 accepted
+IRON GAUNTLET: NOT PASSED — 3 FLAG(S) WARNED (not already decided · existing tests edited: isc-034 moved from `salvage` to `grants`, re-seen red · dirty engine tree)
+
+*Tail finished by hand, 2026-09-01: the sandbox's ~3-minute tool-call cap killed
+the gate after its landing commit and before the post-land audit. The audit was
+then run by hand from the committed tree (suite 35/35; 17 P probes green, 0
+regressions) and the criteria closed with `slice-gate.mjs --close … --sha
+123a501`. kingdom/CLAUDE.md now says to run landings detached; the tools are
+being made to batch their vitest probes so a landing fits the cap.*

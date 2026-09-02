@@ -6,6 +6,10 @@
    "hash": "445e48318684",
    "how": "feature absent",
    "tail": "only-writer: FAIL — no applyBattleResult is defined anywhere under src/"
+  },
+  "closed": {
+   "at": "2026-09-02 04:52",
+   "sha": "123a501"
   }
  },
  "002": {
@@ -125,6 +129,10 @@
    "hash": "928f9fb03604",
    "how": "feature absent",
    "tail": "       |     ^ |      14|     for (const id of e.deployed) { const h = ctx.campaign.roster[id]!;… |      15|     expect(ctx.campaign.purse).toEqual(before)"
+  },
+  "closed": {
+   "at": "2026-09-02 04:52",
+   "sha": "123a501"
   }
  },
  "016": {
@@ -134,6 +142,10 @@
    "hash": "291d8c621504",
    "how": "feature absent",
    "tail": "       |     ^ |      23|     expect(ctx.campaign.renown).toBe(r0) |      24|     expect(ctx.events.filter((ev) => ev.type === 'renown.gained')).toE…"
+  },
+  "closed": {
+   "at": "2026-09-02 04:52",
+   "sha": "123a501"
   }
  },
  "017": {
@@ -143,6 +155,10 @@
    "hash": "07949da68a4f",
    "how": "feature absent",
    "tail": "       |     ^ |      14|     expect(first.campaign.purse['currency.salvage']!).toBeGreaterThan(… |      15|     expect(first.campaign.territories[e1.territoryId]!.claimedOnce).to…"
+  },
+  "closed": {
+   "at": "2026-09-02 04:52",
+   "sha": "123a501"
   }
  },
  "018": {
@@ -152,6 +168,10 @@
    "hash": "961a1e24f3be",
    "how": "feature absent",
    "tail": "       | ^ |       8| import { WOUND_UNAVAILABLE } from '../src/content/wounds.js' |       9|"
+  },
+  "closed": {
+   "at": "2026-09-02 04:53",
+   "sha": "123a501"
   }
  },
  "020": {
@@ -161,6 +181,10 @@
    "hash": "1aee6669c969",
    "how": "feature absent",
    "tail": "       |            ^ |      13| |      14|     // levelled, a civilian at 3 (→1), two losses, corruption 2 on one…"
+  },
+  "closed": {
+   "at": "2026-09-02 04:53",
+   "sha": "123a501"
   }
  },
  "031": {
@@ -170,6 +194,10 @@
    "hash": "49f0a49be7f6",
    "how": "feature absent",
    "tail": "       |                                                                     ^ |      39|     const wrongId = { ...good, id: 'engagement.conquer.elsewhere' } |      40|     expect(() => applyBattleResult(ctx, e, wrongId, reckoning)).toThro…"
+  },
+  "closed": {
+   "at": "2026-09-02 04:53",
+   "sha": "123a501"
   }
  },
  "032": {
@@ -179,6 +207,10 @@
    "hash": "68d89c691986",
    "how": "feature absent",
    "tail": "       |     ^ |      46|     for (const h of reckoning.heroes) { |      47|       expect(ctx.campaign.roster[h.heroId]!.xp).toBe(h.xp)"
+  },
+  "closed": {
+   "at": "2026-09-02 04:53",
+   "sha": "123a501"
   }
  },
  "033": {
@@ -188,6 +220,10 @@
    "hash": "042205630e9c",
    "how": "feature absent",
    "tail": "       |     ^ |      16|     expect(ctx.campaign.cursor.step).toBe('reckoning') |      17|     expect(ctx.campaign.cursor.battle).toBeNull()"
+  },
+  "closed": {
+   "at": "2026-09-02 04:53",
+   "sha": "123a501"
   }
  }
 }
