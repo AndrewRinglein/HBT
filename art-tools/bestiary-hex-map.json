@@ -13,5 +13,10 @@
   "slug": "bone-dragon",
   "size": "colossal",
   "render": "solid"
+ },
+ "enemy-werewolf": {
+  "slug": "werewolf",
+  "size": "large",
+  "render": "solid"
  }
 }

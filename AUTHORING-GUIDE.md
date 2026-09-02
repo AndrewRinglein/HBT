@@ -501,6 +501,29 @@ Then **`onCrit`, only if it crit** — so `onCrit` always fires *after* its own 
 an effect can hang on both. Then `onDamage`, only if damage actually landed; `onHit` fires
 even when armour absorbed all of it.
 
+### `onKill: destroy the corpse` — write it exactly this way
+
+Ruled 2026-08-30, and going onto **badges, weapons and powers** alike (2026-09-02). The
+mechanic is one line and the phrasing is fixed, because the effect vocabulary is a **census of
+use** — a synonym is a new verb, and a new verb is a gap nobody meant to open:
+
+```
+onKill: destroy the corpse — no corpse is made
+```
+
+Not "destroys the body", not "leaves nothing", not "corpse denied". One phrasing.
+
+**What it buys.** A destroyed corpse cannot be raised, summoned from, eaten or fed on — it
+stops zombies rising, it stops the Escalating Demon, and it stops anything else that reads a
+body. Denying corpses is the counter to the entire undead economy, which is why it is worth
+a badge slot, an enchant or a power rather than being free. See `rule.corpses` for all four
+denial routes, and note that **summons never leave a corpse** in the first place, so killing a
+raised zombie needs no help.
+
+**Carriers.** `badge.gravedigger` is the canonical one and fixed the wording. On a **weapon**
+it belongs on the attack's `triggers` or on an enchant's, not in the item's prose. On a
+**power**, it is an `onKill` trigger on the power row.
+
 **`onCrit` was ratified 2026-08-20** and it had been in use before it was written down —
 `enchant.bloodletting` is where it started. It matters more than a twelfth hook usually
 would, because it is the answer to a question that kept producing bad content:

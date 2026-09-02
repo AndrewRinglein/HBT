@@ -52,5 +52,23 @@
    "1024": "bone-dragon_1024.png",
    "256": "bone-dragon_256.png"
   }
+ },
+ "enemy-werewolf": {
+  "hex": "43b17d91572d.webp",
+  "src": "assets/cards/enemies/werewolf.png",
+  "slug": "werewolf",
+  "size": "large",
+  "stature": 1.5,
+  "scale": 1.214,
+  "footprintCapped": true,
+  "footprint": 0.72,
+  "render": "solid",
+  "aspect": 0.7851,
+  "hexWidthAtScale": 0.934,
+  "tiers": {
+   "full": "werewolf_full.png",
+   "1024": "werewolf_1024.png",
+   "256": "werewolf_256.png"
+  }
  }
 }
