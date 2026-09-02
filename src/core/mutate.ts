@@ -40,6 +40,40 @@ export function emit(ctx: Ctx, type: KingdomEventType, causeId: string, fields: 
   return e
 }
 
+/** The Engagement on the cursor, or a loud refusal (Law 9). */
+export function engagementOf(campaign: CampaignState) {
+  const e = campaign.cursor.engagement
+  if (!e) throw new Error(`no Engagement on the cursor at week ${campaign.week}, step ${campaign.cursor.step}`)
+  return e
+}
+
+/** The War Council's draw, written to the Engagement so a reload shows the same three. */
+export function setCouncilOffer(ctx: Ctx, offer: readonly string[], causeId: string): void {
+  const e = engagementOf(ctx.campaign)
+  e.councilOffer = [...offer]
+  emit(ctx, 'council.offered', causeId, { engagementId: e.id, offer: [...offer] })
+}
+
+/** The pick — one of the offer, or null for a skip. */
+export function setTactic(ctx: Ctx, tacticId: string | null, causeId: string): void {
+  const e = engagementOf(ctx.campaign)
+  e.tactic = tacticId
+  emit(ctx, 'council.taken', causeId, { engagementId: e.id, tacticId })
+}
+
+/** A hero into the field for this Engagement. */
+export function applyDeploy(ctx: Ctx, heroId: string, causeId: string): void {
+  const e = engagementOf(ctx.campaign)
+  e.deployed.push(heroId)
+  emit(ctx, 'hero.committed', causeId, { heroId, engagementId: e.id, slot: 'field' })
+}
+
+export function applyUndeploy(ctx: Ctx, heroId: string, causeId: string): void {
+  const e = engagementOf(ctx.campaign)
+  e.deployed = e.deployed.filter((h) => h !== heroId)
+  emit(ctx, 'hero.released', causeId, { heroId, engagementId: e.id, slot: 'field' })
+}
+
 /**
  * Move the cursor. One mutator for every cursor change, so a reload always
  * lands where an event says the save was (§2.2: the autosave writes on every

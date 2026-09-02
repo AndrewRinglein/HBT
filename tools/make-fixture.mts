@@ -18,6 +18,7 @@ import { writeFileSync, mkdirSync } from 'node:fs'
 import { makeCampaign, saveOf, type Hero, type Territory } from '../src/core/campaign.js'
 import { makeCtx, setCursor } from '../src/core/mutate.js'
 import { CURRENCIES } from '../src/content/currencies.js'
+import { CUPS } from '../src/content/cups.js'
 
 const hero = (id: string, name: string, cls: string, unitType: string, level = 1): Hero => ({
   id, name, classes: [cls], level, xp: 0, wound: 0, lifeState: 'alive', badges: [], unitType, corruption: 0,
@@ -48,7 +49,7 @@ const campaign = makeCampaign(1, {
   realm: 'realm.ruined-kingdom',
   stage: 'stage.conquer',
   currencies: CURRENCIES.map((c) => c.id),
-  cups: ['cup.threat', 'cup.unavailability', 'cup.reveal', 'cup.council', 'cup.reward', 'cup.battle'],
+  cups: CUPS.map((c) => c.id),
   territories,
   roster,
   week: 3,

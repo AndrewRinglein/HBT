@@ -46,5 +46,41 @@
    "at": "2026-09-02 04:03",
    "sha": "fb04ddf"
   }
+ },
+ "026": {
+  "red": {
+   "at": "2026-09-02 04:08",
+   "sha": "7c7a226",
+   "hash": "0af32c7c2034",
+   "how": "feature absent",
+   "tail": "       | ^ |      10| |      11| const load = () => makeCtx(campaignOf(readFileSync('fixtures/slice-pre…"
+  }
+ },
+ "027": {
+  "red": {
+   "at": "2026-09-02 04:08",
+   "sha": "7c7a226",
+   "hash": "40b5c5088882",
+   "how": "feature absent",
+   "tail": "       | ^ |      11| |      12| const load = () => makeCtx(campaignOf(readFileSync('fixtures/slice-pre…"
+  }
+ },
+ "028": {
+  "red": {
+   "at": "2026-09-02 04:08",
+   "sha": "7c7a226",
+   "hash": "eddec48bc555",
+   "how": "feature absent",
+   "tail": "       | ^ |      11| import { TACTICS } from '../src/content/tactics.js' |      12|"
+  }
+ },
+ "029": {
+  "red": {
+   "at": "2026-09-02 04:08",
+   "sha": "7c7a226",
+   "hash": "2c4eac3b9ab9",
+   "how": "feature absent",
+   "tail": "       | ^ |      10| |      11| const load = () => makeCtx(campaignOf(readFileSync('fixtures/slice-pre…"
+  }
  }
 }

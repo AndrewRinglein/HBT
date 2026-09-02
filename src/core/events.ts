@@ -28,6 +28,10 @@ export const KINGDOM_EVENTS = [
   // the cursor is the one field a load restores to (§2.2), so every move of it
   // is an event a save can be keyed to.
   'cursor.moved',
+  // Added 2026-09-01 with combat.prep, and to GLOSSARY.md the same commit: the
+  // War Council's draw and its pick. Tactics are lent for one battle, so they
+  // are neither rewards nor unlocks and take their own two words.
+  'council.offered', 'council.taken',
 ] as const
 
 export type KingdomEventType = (typeof KINGDOM_EVENTS)[number]

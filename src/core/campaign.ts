@@ -19,9 +19,8 @@ export type BuildingId = string
 
 /** GAME-ARCHITECTURE.md §2.2 — the coarse position within a Week. */
 export type CursorStep = 'open' | 'prep' | 'battle' | 'reckoning' | 'rewards' | 'levelUp'
-/** §4 "Inside Combat Prep — four ordered steps": information first, decisions against it. */
+/** §4 "Inside Combat Prep — four ordered steps". The ORDER is a row list in src/content/prep.ts, not here. */
 export type PrepStep = 'reveal' | 'council' | 'deploy' | 'equip'
-export const PREP_STEPS: readonly PrepStep[] = ['reveal', 'council', 'deploy', 'equip']
 
 /**
  * One Engagement — anything that becomes a Battle (§4). Campaign state until
