@@ -546,3 +546,5 @@ IRON GAUNTLET: NOT PASSED — 3 FLAG(S) WARNED
 ISC-046: CLOSED at 9a3ba63 · ISC-047: CLOSED at 9a3ba63
 slice: 44 of 50 closed · 44 probed · 0 accepted
 IRON GAUNTLET: NOT PASSED — 2 FLAG(S) WARNED
+
+Law 10 note (screens.thin): test/isc-010.test.ts was edited — `c.unavailable = [H]` became `[{ heroId: H, story: 'Went missing' }]` — because the state row grew the story (KINGDOM-DESIGN.md §3: "a story reason is drawn from a long list", and the screen has to show it on reload). The assertion is unchanged; only the fixture's shape moved. ISC-048/049/050 are H and stay open for Andrew; tools/smoke-slice.mjs walks the same screens headlessly and passes.
