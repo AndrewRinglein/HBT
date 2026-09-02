@@ -31,7 +31,7 @@ export type Decisions = {
   deploy: (campaign: CampaignState, deployable: string[]) => string[]
   /** What the battle decided. Default: won, every enemy dead, five turns. */
   outcome: (campaign: CampaignState, blank: EngagementResult) => EngagementResult
-  /** Who works what at Mend. Default: every free hero, round-robin over the labours that yield. */
+  /** Who works what at Mend. Default: every free hero, cycling through the labours that yield. */
   labours: (campaign: CampaignState, free: string[]) => [string, string][]
 }
 
