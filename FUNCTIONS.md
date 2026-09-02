@@ -60,6 +60,7 @@ When a rule fires. Twelve, plus `aura` and `passive` which are standing properti
 | `up to N enemies within Reach` | 1 |
 | `a hex` | 1 |
 | `any unit or hex` | 1 |
+| `any unit` | 1 |
 
 ## 3 · Conditions
 
@@ -68,7 +69,7 @@ When a rule fires. Twelve, plus `aura` and `passive` which are standing properti
 | Function | Uses |
 |---|---:|
 | `the target has tag X` | 15 |
-| `the target carries a status` | 9 |
+| `the target carries a status` | 10 |
 | `you are in stealth` | 2 |
 
 ## 4 · Effects
@@ -97,8 +98,8 @@ What a rule may DO.
 | `take damage yourself (a cost)` | 12 |
 | `set a ground layer` | 12 |
 | `Thorns N` | 11 |
+| `consume the target’s status` | 8 |
 | `grant Surge Chance` | 7 |
-| `consume the target’s status` | 7 |
 | `lose a stat (a cost)` | 6 |
 | `enter stealth` | 5 |
 | `stabilise a downed ally` | 5 |
@@ -117,7 +118,7 @@ What a rule may DO.
 | Function | Uses |
 |---|---:|
 | `burn` | 84 |
-| `bleed` | 65 |
+| `bleed` | 66 |
 | `poison` | 54 |
 | `protection` | 40 |
 | `weak` | 39 |

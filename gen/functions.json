@@ -791,6 +791,13 @@
    "ids": [
     "rule.burn-frost-cancel"
    ]
+  },
+  {
+   "name": "any unit",
+   "uses": 1,
+   "ids": [
+    "rule.corpses"
+   ]
   }
  ],
  "conditions": [
@@ -817,7 +824,7 @@
   },
   {
    "name": "the target carries a status",
-   "uses": 9,
+   "uses": 10,
    "ids": [
     "attack.iron-claws.eviscerate",
     "attack.apprentice-wand.surge",
@@ -827,7 +834,8 @@
     "attack.wraith-touched-staff.grasp",
     "attack.demon-whip.hellcoil",
     "attack.pharaohs-gauntlets.the-kings-hands",
-    "power.fire-master.fireball"
+    "power.fire-master.fireball",
+    "rule.corpses"
    ]
   },
   {
@@ -1437,6 +1445,20 @@
    ]
   },
   {
+   "name": "consume the target’s status",
+   "uses": 8,
+   "ids": [
+    "attack.bloody-axe.butcher",
+    "attack.poison-throwing-knives.venom-fan",
+    "attack.wraith-touched-staff.grasp",
+    "attack.demon-whip.hellcoil",
+    "attack.pharaohs-gauntlets.the-kings-hands",
+    "power.fire-master.fireball",
+    "power.wild-shaper.claw",
+    "rule.corpses"
+   ]
+  },
+  {
    "name": "grant Surge Chance",
    "uses": 7,
    "ids": [
@@ -1447,19 +1469,6 @@
     "power.diviner.quicken",
     "power.berserker.unleash",
     "power.leader.command"
-   ]
-  },
-  {
-   "name": "consume the target’s status",
-   "uses": 7,
-   "ids": [
-    "attack.bloody-axe.butcher",
-    "attack.poison-throwing-knives.venom-fan",
-    "attack.wraith-touched-staff.grasp",
-    "attack.demon-whip.hellcoil",
-    "attack.pharaohs-gauntlets.the-kings-hands",
-    "power.fire-master.fireball",
-    "power.wild-shaper.claw"
    ]
   },
   {
@@ -1589,7 +1598,7 @@
   },
   {
    "name": "bleed",
-   "uses": 65,
+   "uses": 66,
    "ids": [
     "item.bloody-axe",
     "item.twin-talon-bow",

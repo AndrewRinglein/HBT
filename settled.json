@@ -963,6 +963,24 @@
    "description": "UNIVERSAL RULE. Burn and Frost annihilate each other one for one, at the moment either is applied — a unit never carries both. Apply 2 Burn to a unit holding 1 Frost and it ends on 1 Burn; apply 1 Frost to that unit and it ends on 0. The same cancellation is the ONE exception to ground layers replacing each other (rule.ground-layers).",
    "intent": "Fire and ice are the only pair in the game that argue instead of taking turns.",
    "source": "Ruled 2026-09-02. Verbatim: \"Do you have a note that Frost and Burn counter each other. Add 2 burn to a target with 1 Frost, you end up with 1 Burn. Add a frost to that unit and you end up with 0.\""
+  },
+  {
+   "id": "rule.corpses",
+   "name": "Corpses",
+   "specialty": null,
+   "class": null,
+   "stamina": 0,
+   "cooldown": 0,
+   "warmup": 0,
+   "free": false,
+   "universal": true,
+   "universalToAllUnits": true,
+   "targets": "any unit",
+   "tags": [],
+   "triggers": [],
+   "description": "UNIVERSAL RULE. A CORPSE is a board object, and it is what every raise, summon, consume and feed in the game reads. Corpses are created when any enemy is DOWNED and when a hero actually DIES (the deathbed check fails, or the bleed-out clock runs out). FOUR THINGS DENY ONE, and denying a corpse is the counter to the whole undead economy: (1) DESTROY CORPSE — an on-kill effect, mostly a hero ability, that destroys the body as it falls; (2) SUMMONS NEVER LEAVE ONE, so a zombie raised from a corpse leaves nothing when it dies and the loop cannot feed itself; (3) OBLITERATION by Shadow reaching Max Health removes the unit with no corpse (status.shadow); (4) an effect that consumes corpses removes them outright. A denied corpse stops raising, stops summoning, stops the Escalating Demon, and stops anything else that feeds on bodies.",
+   "intent": "The undead do not have a damage problem, they have a supply problem. This is the supply.",
+   "source": "RULED: corpse creation 2026-08-25 ('Corpses are created by any enemy that gets downed and any hero that actually dies', with the bleed-out timer). DESTROY CORPSE and the summons clause were dictated 2026-08-30 (DESIGN-DUMP-CLEANED.md §9) and had never reached the pipeline — landed 2026-09-02 when it was asked for. Obliteration joins them from the same day's Shadow ruling. capability.corpses in gen/enemies-authored.json is the engine-side name for the board object."
   }
  ],
  "items": [
