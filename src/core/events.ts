@@ -4,7 +4,7 @@
 // It is DATA, declared once, for two readers: the mutator module (every state
 // change emits one of these, Law 3) and the landing gate's hardcode scan, which
 // lets src/core name an event and nothing else with a dot in it — `stage.begun`
-// is vocabulary, `stage.mend` is a row, and the scan tells them apart by this
+// is vocabulary, a Stage id is a row, and the scan tells them apart by this
 // list. Adding a name here is a glossary change and goes in the same commit.
 //
 // The engine's vocabulary (`battle.begin`, `unit.enter`, `life.dead`) is a

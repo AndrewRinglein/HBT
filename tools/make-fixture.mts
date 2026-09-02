@@ -35,14 +35,14 @@ const roster: Hero[] = [
 ]
 
 const territory = (id: string, name: string, mapId: string, extra: Partial<Territory> = {}): Territory => ({
-  id, name, mapId, owned: false, kingdom: false, claimedOnce: false, buildings: [], adjacent: [], ...extra,
+  id, name, mapId, owned: false, kingdom: false, claimedOnce: false, buildings: [], adjacent: [], enemies: [], ...extra,
 })
 
 const territories: Territory[] = [
-  territory('territory.ruined-kingdom.sanctuary', 'Sanctuary', 'map.open', { owned: true, kingdom: true, claimedOnce: true, adjacent: ['territory.ruined-kingdom.ridge', 'territory.ruined-kingdom.highlands'] }),
-  territory('territory.ruined-kingdom.ridge', 'The Ridge', 'map.ridge', { buildings: [{ id: 'building.forge', level: 0, damaged: true }], adjacent: ['territory.ruined-kingdom.sanctuary', 'territory.ruined-kingdom.thicket'] }),
-  territory('territory.ruined-kingdom.highlands', 'The Highlands', 'map.highlands', { adjacent: ['territory.ruined-kingdom.sanctuary'] }),
-  territory('territory.ruined-kingdom.thicket', 'The Thicket', 'map.thicket', { adjacent: ['territory.ruined-kingdom.ridge'] }),
+  territory('territory.ruined-kingdom.sanctuary', 'Sanctuary', 'map.open', { owned: true, kingdom: true, claimedOnce: true, adjacent: ['territory.ruined-kingdom.ridge', 'territory.ruined-kingdom.highlands'], enemies: ['unit.zombie', 'unit.zombie', 'unit.zombie', 'unit.fast-zombie'] }),
+  territory('territory.ruined-kingdom.ridge', 'The Ridge', 'map.ridge', { buildings: [{ id: 'building.forge', level: 0, damaged: true }], adjacent: ['territory.ruined-kingdom.sanctuary', 'territory.ruined-kingdom.thicket'], enemies: ['unit.zombie', 'unit.zombie', 'unit.zombie-hound', 'unit.skeletal-archer'] }),
+  territory('territory.ruined-kingdom.highlands', 'The Highlands', 'map.highlands', { adjacent: ['territory.ruined-kingdom.sanctuary'], enemies: ['unit.imp', 'unit.imp', 'unit.fire-imp', 'unit.poison-imp'] }),
+  territory('territory.ruined-kingdom.thicket', 'The Thicket', 'map.thicket', { adjacent: ['territory.ruined-kingdom.ridge'], enemies: ['unit.bloodhound', 'unit.bloodhound', 'unit.hellhound', 'unit.zombie-hound'] }),
 ]
 
 const campaign = makeCampaign(1, {

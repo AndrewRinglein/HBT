@@ -24,6 +24,9 @@ import { resolveReckoning, applyBattleResult, performExitBattle, resolveDifficul
 import { woundNameOf } from '../content/wounds.js'
 import type { EngagementResult, UnitTally } from '../core/seam.js'
 import { PREP_STEP_ROWS } from '../content/prep.js'
+import { STAGES } from '../content/stages.js'
+import { stageOf, canAdvance, performAdvance, listStageOffers, performChooseEngagement } from '../core/week.js'
+import { commitmentOf } from '../core/assignments.js'
 import { UNITS } from '../engine.js'
 
 declare const __FIXTURE_JSON__: string
@@ -103,9 +106,41 @@ function screen(c: CampaignState): string {
     case 'prep': return prepScreen(c)
     case 'battle': return c.cursor.battle?.resultSet ? tallyScreen(c) : battleScreen(c)
     case 'reckoning': return appliedScreen(c)
-    default: return `<div class="card"><p>The cursor is at <code>${esc(c.cursor.step)}</code>, week ${c.week}, ${esc(c.cursor.stage)}. The Engagement is done and written; the Week machine — the six Stages — lands next. Download the save to keep it.</p>
-      <p class="meta">Renown ${c.renown} · losses ${c.losses} · difficulty ${resolveDifficulty(c)} · ${Object.values(c.roster).filter((h) => h.lifeState === 'alive').length} alive</p></div>`
+    case 'open': return worldScreen(c)
+    default: return `<div class="card"><p>The cursor is at <code>${esc(c.cursor.step)}</code> — a step the slice has no screen for yet.</p></div>`
   }
+}
+
+// ── the Week ────────────────────────────────────────────────────────────────
+function worldScreen(c: CampaignState): string {
+  const row = stageOf(c)
+  const at = STAGES.findIndex((s) => s.id === row.id)
+  const chips = STAGES.map((s, i) => `<span class="${i === at ? 'on' : i < at ? 'done' : ''}">${esc(s.title)}</span>`).join('')
+  const offers = listStageOffers(c)
+  const territories = Object.values(c.territories).sort((a, b) => a.id.localeCompare(b.id))
+  const heroes = Object.values(c.roster).sort((a, b) => a.id.localeCompare(b.id))
+  let body: string
+  if (row.offers === 'engagement' && offers.length) {
+    body = `<h3>${esc(row.title)} — choose a Territory, or pass</h3><div class="pick">${offers.map((id) => { const t = c.territories[id]!; return `<div class="opt" data-act="choose" data-id="${esc(id)}"><b>${esc(t.name)}</b><small>${esc(t.mapId)} · held by ${t.enemies.length}: ${esc(t.enemies.map((e) => nameOf(e)).join(', '))}${t.buildings.length ? ' · ' + esc(t.buildings.map((b) => b.id).join(', ')) : ''}</small></div>` }).join('')}</div>`
+  } else if (row.offers === 'engagement') {
+    body = `<h3>${esc(row.title)}</h3><p class="meta">${row.targets === 'rolled' ? 'No attack this Week — the defend roll lands with the map (M6).' : 'Nothing adjacent is unclaimed.'}</p>`
+  } else {
+    body = `<h3>${esc(row.title)}</h3><p>${esc(row.does)}</p><p class="meta">Nothing to do here yet — this Stage's machinery lands in a later milestone. Pass through.</p>`
+  }
+  const next = STAGES[at + 1]
+  return `<h2>Week ${c.week} — ${esc(row.title)}</h2>
+    <div class="steps">${chips}</div>
+    <div class="cols">
+      <div>
+        <div class="card">${body}</div>
+        <div class="bar"><span class="sp"></span><button class="primary" data-act="advance" ${canAdvance(c) ? '' : 'disabled'}>${next ? 'Next — ' + esc(next.title) : 'End the Week'}</button></div>
+      </div>
+      <div>
+        <div class="card"><h3>The purse</h3><table>${Object.entries(c.purse).map(([k, v]) => `<tr><td>${esc(k.replace('currency.', ''))}</td><td class="n">${v}</td></tr>`).join('')}<tr><td>Renown</td><td class="n">${c.renown}</td></tr><tr><td>losses</td><td class="n">${c.losses}</td></tr><tr><td>difficulty</td><td class="n">${resolveDifficulty(c)}</td></tr></table></div>
+        <div class="card" style="margin-top:12px"><h3>The map</h3><table>${territories.map((t) => `<tr><td>${esc(t.name)}${t.kingdom ? ' <span class="tag">kingdom</span>' : ''}</td><td>${t.owned ? '<span class="won">held</span>' : 'unclaimed'}</td><td class="meta">${esc(t.buildings.map((b) => b.id.replace('building.', '') + (b.damaged ? ' (ruin)' : '')).join(', '))}</td></tr>`).join('')}</table></div>
+        <div class="card" style="margin-top:12px"><h3>The roster</h3><table>${heroes.map((h) => `<tr><td>${esc(h.name)}</td><td class="meta">${esc(h.classes.map((x) => x.replace('class.', '')).join(', '))} · L${h.level} · ${h.xp} xp</td><td>${h.lifeState === 'dead' ? '<span class="lost">dead</span>' : h.wound ? woundNameOf(h.wound) : ''} <span class="meta">${esc(commitmentOf(c, h.id, 'field'))}</span></td></tr>`).join('')}</table></div>
+      </div>
+    </div>`
 }
 
 // ── Combat Prep ─────────────────────────────────────────────────────────────
@@ -284,7 +319,8 @@ function wire(root: HTMLElement): void {
         case 'load-fixture': return loadJson(__FIXTURE_JSON__, 'the fixture')
         case 'download': return download()
         case 'forget': try { localStorage.removeItem(SAVE_KEY) } catch {} note('browser save forgotten'); return render()
-        case 'advance': return act(() => performAdvancePrep(app.ctx!, 'slice'))
+        case 'advance': return act(() => (app.ctx!.campaign.cursor.step === 'prep' ? performAdvancePrep(app.ctx!, 'slice') : performAdvance(app.ctx!, 'slice')))
+        case 'choose': return act(() => { performChooseEngagement(app.ctx!, id!, 'slice') })
         case 'council': return act(() => performCouncil(app.ctx!, viewCombatPrep(app.ctx!.campaign).tactic === id ? null : id!, 'slice'))
         case 'deploy': return act(() => performDeploy(app.ctx!, id!, 'slice'))
         case 'undeploy': return act(() => performUndeploy(app.ctx!, id!, 'slice'))

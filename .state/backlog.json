@@ -130,7 +130,8 @@
   "variants": [
    "stage.buy",
    "stage.mend"
-  ]
+  ],
+  "attempts": 2
  },
  {
   "id": "map.four-territories",

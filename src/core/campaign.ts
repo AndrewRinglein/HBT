@@ -100,6 +100,13 @@ export type Territory = {
   claimedOnce: boolean
   buildings: Building[]
   adjacent: TerritoryId[]
+  /**
+   * What holds it — the enemy unit typeIds a Conquer here fields. In the slice
+   * "encounters collapse to difficulty-ranked rows with enemy lists"
+   * (THIN-SLICE-REVIEW.md §G ruling 4); the ranked list is post-slice, so the
+   * Territory carries its own.
+   */
+  enemies: string[]
 }
 
 export type QuestInFlight = { id: string; heroes: HeroId[]; weeksLeft: number }
@@ -152,7 +159,7 @@ export function makeCampaign(seed: number, options: MakeCampaignOptions): Campai
   for (const h of [...options.roster].sort((a, b) => (a.id < b.id ? -1 : a.id > b.id ? 1 : 0))) roster[h.id] = { ...h, classes: [...h.classes], badges: [...h.badges] }
   const territories: Record<TerritoryId, Territory> = {}
   for (const t of [...options.territories].sort((a, b) => (a.id < b.id ? -1 : a.id > b.id ? 1 : 0))) {
-    territories[t.id] = { ...t, buildings: t.buildings.map((b) => ({ ...b })), adjacent: [...t.adjacent] }
+    territories[t.id] = { ...t, buildings: t.buildings.map((b) => ({ ...b })), adjacent: [...t.adjacent], enemies: [...t.enemies] }
   }
   return {
     realm: options.realm,

@@ -19,15 +19,28 @@ import { makeBlankResult, withUnitFate, validateResult } from '../src/core/resul
 import { resolveReckoning, applyBattleResult, performExitBattle } from '../src/core/reckoning.js'
 import { viewBattle } from '../src/view/battle.js'
 import { ENGAGEMENT_KINDS, engagementKindOf } from '../src/content/engagements.js'
+import { playWeeks } from '../src/sim/autoplay.js'
 
 const id = process.argv[2]
 if (!id) { console.error('usage: probe <id>'); process.exit(2) }
 
 /** Events that mean the id DID something, not merely appeared in an offer or a view. */
 const ACTED = new Set(['council.taken', 'hero.committed', 'hero.released', 'cursor.moved',
-  'battle.decided', 'engagement.resolved', 'territory.claimed', 'territory.lost', 'resource.gained', 'xp.gained', 'hero.wounded', 'hero.died', 'renown.gained'])
+  'battle.decided', 'engagement.resolved', 'territory.claimed', 'territory.lost', 'resource.gained', 'xp.gained', 'hero.wounded', 'hero.died', 'renown.gained',
+  'week.begun', 'week.ended', 'stage.begun', 'stage.ended', 'engagement.offered'])
 
 let mentions = 0, acted = 0, runs = 0
+const tally = (events: KingdomEvent[]) => { for (const ev of events) { if (!JSON.stringify(ev).includes(id)) continue; mentions++; if (ACTED.has(ev.type)) acted++ } }
+
+// (a) whole Weeks, autoplayed from the fixture — the Week machine and everything it offers
+{
+  const ctx = makeCtx(campaignOf(readFileSync('fixtures/slice-prep.json', 'utf8')))
+  playWeeks(ctx, 3, { tactic: (_c, offers) => offers.find((t) => t === id) ?? offers[0] ?? null }, 'probe')
+  runs++
+  tally(ctx.events)
+}
+
+// (b) every Engagement kind, won and lost, through prep, the panel and the writer
 for (const kind of ENGAGEMENT_KINDS) for (const won of [true, false]) for (let seed = 1; seed <= 4; seed++) {
   const ctx = makeCtx(campaignOf(readFileSync('fixtures/slice-prep.json', 'utf8')))
   const e = ctx.campaign.cursor.engagement!
@@ -55,11 +68,7 @@ for (const kind of ENGAGEMENT_KINDS) for (const won of [true, false]) for (let s
   applyBattleResult(ctx, e, r, k)
   performExitBattle(ctx, 'probe')
   runs++
-  for (const ev of ctx.events as KingdomEvent[]) {
-    if (!JSON.stringify(ev).includes(id)) continue
-    mentions++
-    if (ACTED.has(ev.type)) acted++
-  }
+  tally(ctx.events as KingdomEvent[])
 }
 
 if (mentions === 0) { console.log(`${id}: never appears in any run — not wired in`); process.exit(1) }

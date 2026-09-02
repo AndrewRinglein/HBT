@@ -148,6 +148,12 @@
    "buildings": [],
    "adjacent": [
     "territory.ruined-kingdom.sanctuary"
+   ],
+   "enemies": [
+    "unit.imp",
+    "unit.imp",
+    "unit.fire-imp",
+    "unit.poison-imp"
    ]
   },
   "territory.ruined-kingdom.ridge": {
@@ -167,6 +173,12 @@
    "adjacent": [
     "territory.ruined-kingdom.sanctuary",
     "territory.ruined-kingdom.thicket"
+   ],
+   "enemies": [
+    "unit.zombie",
+    "unit.zombie",
+    "unit.zombie-hound",
+    "unit.skeletal-archer"
    ]
   },
   "territory.ruined-kingdom.sanctuary": {
@@ -180,6 +192,12 @@
    "adjacent": [
     "territory.ruined-kingdom.ridge",
     "territory.ruined-kingdom.highlands"
+   ],
+   "enemies": [
+    "unit.zombie",
+    "unit.zombie",
+    "unit.zombie",
+    "unit.fast-zombie"
    ]
   },
   "territory.ruined-kingdom.thicket": {
@@ -192,6 +210,12 @@
    "buildings": [],
    "adjacent": [
     "territory.ruined-kingdom.ridge"
+   ],
+   "enemies": [
+    "unit.bloodhound",
+    "unit.bloodhound",
+    "unit.hellhound",
+    "unit.zombie-hound"
    ]
   }
  },
