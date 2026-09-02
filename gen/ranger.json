@@ -608,7 +608,7 @@
    "tags": [
     "area"
    ],
-   "description": "Lay three connected hexes of unseen briar traps. The first enemy to enter each hex gains 3 Bleed, which is never resisted.",
+   "description": "Lay three connected hexes of unseen briar traps. The first enemy to enter each hex gains 3 Bleed, which is TRUE damage.",
    "source": "Hell-TCG name reused (Druid/Wild Shaper, Wall of Thorns — party-wide Thorns rebuilt as an actual wall on the map) | 2026-08-17: CUT. terrain creation cut. | 2026-08-17 quality pass: was a battle-start radius of Bleed, which is a wall in name only. Rebuilt as three connected traps, so the enemy has to walk into it to learn it is there. | 2026-08-20: zone-of-control clause cut.",
    "triggers": []
   },

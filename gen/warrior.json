@@ -271,8 +271,8 @@
    "tags": [
     "melee"
    ],
-   "description": "Until the end of your next Turn, your attacks apply 4 Bleed on hit. Bleed is never reduced by Resist.",
-   "source": "Hell-TCG name reused (Barbarian/Reaver, Rend) | 2026-08-17: was an attack in its own right, so it competed with the weapon in your hands and lost the moment you found a good one. Rebuilt as a next-attack modifier. | 2026-08-17: \"difficult terrain\" is not a thing in HoBaT — there are hexes that cost extra Movement. Reworded. | 2026-08-20: \"your next MELEE attack\" asks the engine to hold a modifier against one future attack and to check its form when it happens. Neither is tracked. Rewritten as a duration: until the end of your next Turn your attacks apply 4 Bleed. Also dropped the \"which Resist does not stop\" clause — Resist never stops Bleed, so the sentence was restating a rule.",
+   "description": "Until the end of your next Turn, your attacks apply 3 Bleed on hit. Bleed is never reduced by Resist.",
+   "source": "Hell-TCG name reused (Barbarian/Reaver, Rend) | 2026-08-17: was an attack in its own right, so it competed with the weapon in your hands and lost the moment you found a good one. Rebuilt as a next-attack modifier. | 2026-08-17: \"difficult terrain\" is not a thing in HoBaT — there are hexes that cost extra Movement. Reworded. | 2026-08-20: \"your next MELEE attack\" asks the engine to hold a modifier against one future attack and to check its form when it happens. Neither is tracked. Rewritten as a duration: until the end of your next Turn your attacks apply 3 Bleed. Also dropped the \"which Resist does not stop\" clause — Resist never stops Bleed, so the sentence was restating a rule.",
    "modifies": {
     "tags": [
      "melee"

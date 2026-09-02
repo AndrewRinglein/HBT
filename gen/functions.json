@@ -784,6 +784,13 @@
    "ids": [
     "rule.ground-layers"
    ]
+  },
+  {
+   "name": "any unit or hex",
+   "uses": 1,
+   "ids": [
+    "rule.burn-frost-cancel"
+   ]
   }
  ],
  "conditions": [
@@ -881,7 +888,7 @@
   },
   {
    "name": "apply a status",
-   "uses": 141,
+   "uses": 142,
    "ids": [
     "item.bloody-axe",
     "item.runed-crossbow",
@@ -973,11 +980,12 @@
   },
   {
    "name": "deal TRUE damage",
-   "uses": 55,
+   "uses": 58,
    "ids": [
     "item.cursed-sand-blade",
     "item.demonic-shiv",
     "item.wraithform-cloak",
+    "item.saints-fingerbone",
     "item.vial-of-abyssal-essence",
     "item.shard-of-the-shattered-spire",
     "item.frenzy-potion",
@@ -989,6 +997,7 @@
     "power.guardian.stalwart",
     "power.crusader.holy-charge",
     "power.shieldbearer.bramble-guard",
+    "power.protector.wall-of-thorns",
     "power.protector.take-the-blow",
     "power.beastward.conduct-life",
     "power.beastward.sacrifice",
@@ -1012,9 +1021,7 @@
     "power.blessed-sufferer.power-of-the-divine",
     "power.martyred-saint.oblation",
     "power.martyred-saint.the-last-word",
-    "power.seer.inevitable",
-    "power.holy-avenger.succor-of-the-faithful",
-    "power.holy-champion.bound-by-the-flesh"
+    "power.seer.inevitable"
    ]
   },
   {
@@ -1536,7 +1543,7 @@
  "statuses": [
   {
    "name": "burn",
-   "uses": 82,
+   "uses": 84,
    "ids": [
     "item.runed-crossbow",
     "item.book-of-exorcisms",
@@ -1720,7 +1727,7 @@
   },
   {
    "name": "weak",
-   "uses": 38,
+   "uses": 39,
    "ids": [
     "item.pharaohs-gauntlets",
     "item.mug-of-endless-dregs",
@@ -1755,6 +1762,7 @@
     "power.warbeast.warcry",
     "power.shieldbearer.bash",
     "power.leader.battle-cry",
+    "rule.ground-layers",
     "enchant.damned",
     "specialty.champion",
     "specialty.mystic",
@@ -1818,7 +1826,7 @@
   },
   {
    "name": "frost",
-   "uses": 14,
+   "uses": 15,
    "ids": [
     "item.storm-bastion",
     "item.stormcallers-orb",
@@ -1830,6 +1838,7 @@
     "power.grove-keeper.quench",
     "power.frost-staff.frost-nova",
     "rule.ground-layers",
+    "rule.burn-frost-cancel",
     "enchant.frost",
     "enchant.eternal-ice",
     "specialty.storm-caller",

@@ -134,7 +134,7 @@
    "triggers": [
     {
      "hook": "onHit",
-     "effect": "your dagger and thrown attacks apply 2 Bleed. Bleed ticks a flat 2 and Resist never touches it"
+     "effect": "your dagger and thrown attacks apply 2 Bleed. Bleed is TRUE damage, so nothing mitigates it"
     }
    ],
    "powers": [
@@ -325,7 +325,7 @@
     "dagger",
     "melee"
    ],
-   "description": "Until the end of your next Turn, your attacks gain +5 Crit and apply 4 Bleed on hit, or 6 Bleed if you were in stealth.",
+   "description": "Until the end of your next Turn, your attacks gain +5 Crit and apply 3 Bleed on hit, or 6 Bleed if you were in stealth.",
    "source": "Hell-TCG name reused (Rogue/Assassin, Deep Cut) | 2026-08-17: was an attack in its own right, so it competed with the weapon in your hands and lost the moment you found a good one. Rebuilt as a next-attack modifier. | 2026-08-17: \"difficult terrain\" is not a thing in HoBaT — there are hexes that cost extra Movement. Reworded. | 2026-08-17: THERE IS NO FLANKING. It appears in no current design document — I carried it forward from a stale snapshot. Rebuilt on plain adjacency, which is real and checkable. | 2026-08-20: \"your next <form> attack\" is gone. Nothing tracks which attack is next or what form it is. Rewritten as a duration: until the end of your next Turn, your attacks carry it. The form qualifier is dropped with it. ",
    "modifies": {
     "tags": [
@@ -598,7 +598,7 @@
     "dagger",
     "melee"
    ],
-   "description": "Dagger attack at +10 Crit; on hit the target gains 4 Bleed, and if you were in stealth when you made it you do not break stealth.",
+   "description": "Dagger attack at +10 Crit; on hit the target gains 3 Bleed, and if you were in stealth when you made it you do not break stealth.",
    "source": "new (the Nightblade's opener — 'silent killer' taken at its word, so the knife does not give you away) | 2026-08-17: \"difficult terrain\" is not a thing in HoBaT — there are hexes that cost extra Movement. Reworded.",
    "triggers": []
   },

@@ -113,7 +113,7 @@
    "warmup": 0,
    "free": false,
    "targets": "one ally within 2 hexes",
-   "description": "Remove 1 Burn, 1 Poison and 1 Bleed from the target. Bleed is never resisted, so this is usually the only way it comes off at all.",
+   "description": "Remove 1 Burn, 1 Poison and 1 Bleed from the target. Bleed is TRUE damage and mitigation never touches it — but healing sheds it now, so this is the fast way off rather than the only one.",
    "intent": "A stripper that answers the one status Resist can never touch — which is the whole reason to carry it.",
    "source": "Hell-TCG name reused (Priest item, Saint's Fingerbone — the Faith grant is Kingdom-tier and was cut; rebuilt as a three-status strip)"
   },
@@ -1507,7 +1507,7 @@
    },
    "persists": true,
    "tags": [],
-   "intent": "Wounds from this bearer refuse to close — and bleed is never resisted, which makes three ticks on a crit the most reliable damage in the set.",
+   "intent": "Wounds from this bearer are slow to close — bleed is TRUE damage, which makes it the most reliable damage in the set, though a heal will now shed half its value.",
    "source": "Hell-TCG name reused (blood rune, Bleeding Strike — moved onto the crit, where the unresistable status belongs)"
   },
   {

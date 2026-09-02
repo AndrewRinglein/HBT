@@ -1060,7 +1060,7 @@
    ],
    "slayer": null,
    "grants": [],
-   "intent": "Bleed is never resisted, so this is the one rider that keeps working after everything else has stopped.",
+   "intent": "Bleed is TRUE damage, so this rider keeps working through any mitigation — healing is the answer to it now, not armour.",
    "source": "Hell-TCG name reused (Bloody Strike / Bloody Axe — moved onto the crit) | 2026-08-20 self-check: +fang. The Beast’s Claws could take this and its Fangs could not, purely because `claw` predated `fang`. Same weapon, same body, same enchant. | 2026-08-27: sword renamed blade in the workbook review — appliesToTags follows the rename (sword kept for any straggler rows)."
   },
   {
@@ -1579,7 +1579,7 @@
    "triggers": [
     {
      "hook": "onHit",
-     "effect": "if the target is a dragon, apply 4 Bleed"
+     "effect": "if the target is a dragon, apply 3 Bleed"
     }
    ],
    "slayer": {
@@ -1588,7 +1588,7 @@
    "grants": [
     "badge.dragon-slayer"
    ],
-   "intent": "Bleed is never resisted and a dragon is mostly Resist; the whole enchant is that one sentence.",
+   "intent": "Bleed is TRUE damage and a dragon is mostly Resist; the whole enchant is that one sentence.",
    "source": "Hell-TCG name reused (Dragon Slayer) | 2026-08-20: Bleed on hit raised 2 to 4, and the campaign Toughness grant became the Dragon Slayer badge, which is a thing that exists rather than a bespoke campaign rider. | 2026-08-20 sweep: the onKill line restated the grants field. The badge is awarded by grants: [badge.dragon-slayer]; saying it again in prose made it look like a bespoke in-battle award, which is the only one in the game."
   },
   {

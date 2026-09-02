@@ -762,9 +762,9 @@
    "targets": "a hex",
    "tags": [],
    "triggers": [],
-   "description": "UNIVERSAL RULE, not a power you take. There are four ground layers — burning, frost, poisoned and darkness. A layer is PERSISTENT: it carries no number and no clock, and once it is on a hex it stays there. A hex holds exactly ONE layer. Applying a different layer to a hex REPLACES the one already there.",
+   "description": "UNIVERSAL RULE. A hex carries AT MOST ONE status, and applying a new one REMOVES AND REPLACES whatever was there — curse a burning hex to 1 Weak and the hex flips from Burn to Weak, it does not hold both. The single exception is Burn and Frost, which cancel one for one instead of replacing (rule.burn-frost-cancel): frost laid on a burning hex subtracts from it rather than swapping it. Ground layers are persistent — they carry no clock of their own.",
    "intent": "The ground is a state, not a countdown. Frost put out a fire because it took the hex, not because it cancelled anything.",
-   "source": "2026-08-20: \"Status effects on terrain are just persistent. No turn tracking, just it is burning or it is frost. The only thing that should replace a ground layer effect is if a different one is applied, it replaces the previous one. The ground can only have one effect on it, and that effect stays.\" | Merged onto the trunk 2026-09-01 from the parallel content chat; attribution de-named per the standing passive-voice ruling, wording and dates untouched."
+   "source": "2026-08-20: \"Status effects on terrain are just persistent. No turn tracking, just it is burning or it is frost. The only thing that should replace a ground layer effect is if a different one is applied, it replaces the previous one. The ground can only have one effect on it, and that effect stays.\" | Merged onto the trunk 2026-09-01 from the parallel content chat; attribution de-named per the standing passive-voice ruling, wording and dates untouched. | Ruled 2026-09-02. Verbatim: \"All ground effects, remove and replace, except Burn and Frost which counter. So if i curse a ground to add 1 weak, but it had burn. It flips from Burn to Weak. So each ground tile can only have 1 status on it.\""
   },
   {
    "id": "rule.summon-order",
@@ -945,6 +945,24 @@
    "description": "UNIVERSAL RULE, not a power you take. There is ONE heal in the game and every source routes through it — a power, an item, a trigger, a lifesteal rider, and REGENERATION, which does not heal by a private path of its own but calls the same function at End of Phase. Anything that modifies healing therefore modifies all of it, once, in one place: Karma raises the amount, Burn halves it. Content never has to say which kinds of healing it means, because there is only one kind.",
    "intent": "It turns three special cases into one pipeline. Karma boosting heals, Burn halving them and Regeneration ticking are not three rules that happen to touch health — they are stations on a single function, and a new modifier is written once instead of per source.",
    "source": "2026-09-02: \"Regeneration should CAUSE healing, healing should all come from same function.\" Answers the open question from the healing-cures-Bleed decision: Regeneration IS healing received, so everything true of a heal is true of a Regeneration tick. | Merged onto the trunk from the parallel chat 2026-09-02; attribution de-named per the standing passive-voice ruling."
+  },
+  {
+   "id": "rule.burn-frost-cancel",
+   "name": "Burn and Frost cancel",
+   "specialty": null,
+   "class": null,
+   "stamina": 0,
+   "cooldown": 0,
+   "warmup": 0,
+   "free": false,
+   "universal": true,
+   "universalToAllUnits": true,
+   "targets": "any unit or hex",
+   "tags": [],
+   "triggers": [],
+   "description": "UNIVERSAL RULE. Burn and Frost annihilate each other one for one, at the moment either is applied — a unit never carries both. Apply 2 Burn to a unit holding 1 Frost and it ends on 1 Burn; apply 1 Frost to that unit and it ends on 0. The same cancellation is the ONE exception to ground layers replacing each other (rule.ground-layers).",
+   "intent": "Fire and ice are the only pair in the game that argue instead of taking turns.",
+   "source": "Ruled 2026-09-02. Verbatim: \"Do you have a note that Frost and Burn counter each other. Add 2 burn to a target with 1 Frost, you end up with 1 Burn. Add a frost to that unit and you end up with 0.\""
   }
  ],
  "items": [
@@ -1152,8 +1170,9 @@
    "name": "Karma",
    "shape": "pool",
    "effect": "While you carry Karma: every heal you receive is increased by your Karma, and every point of damage you deal is increased by HALF your Karma, rounded down.",
-   "decay": "It does not tick down at End of Phase like the others. Karma is spent by KILLING: every unit in the game has, on kill, lose 1 Karma.",
-   "source": "2026-08-20. The only status that decays on an event rather than on the clock. RE-RULED IDENTICALLY 2026-08-25, verbatim: \"Karma increases healing and increases damage by half of the Karma value. So it increases healing to the target that has karma by the amount of karma. And one half of the Karma value is added to all damage. Karma is lost whenever the unit kills another unit. So, every unit, during player attack, if there is a kill, there is a check to see if there is karma, and if there is, it goes down by one.\""
+   "decay": "NONE. Karma has no tick-down at End of Activation and there is no decrease-Karma stage in Settling at all. The −1 resolves inside the onKill settle that the killing damage starts. Because nothing decrements it on the clock, Karma has no ordering constraint in Settling — ruled 2026-09-02: \"its order doesn't matter.\"",
+   "source": "2026-08-20. The only status that decays on an event rather than on the clock. RE-RULED IDENTICALLY 2026-08-25, verbatim: \"Karma increases healing and increases damage by half of the Karma value. So it increases healing to the target that has karma by the amount of karma. And one half of the Karma value is added to all damage. Karma is lost whenever the unit kills another unit. So, every unit, during player attack, if there is a kill, there is a check to see if there is karma, and if there is, it goes down by one.\" | Ruled 2026-09-02. Verbatim: \"Karma does not tick down at end of activation, so ACTUALLY its order doesn't matter. There is no decrease Karma stage during settling. That should happen during the onKill settling from damage.\"",
+   "family": "magnitude"
   },
   {
    "id": "status.slow",
@@ -1194,6 +1213,36 @@
    "effect": "While you carry Root you CANNOT MOVE AT ALL — not a reduction, a stop. Movement actions and bonus moves alike are unavailable for as long as it lasts.",
    "decay": "-1 at End of Phase, like Burn, Poison, Bleed, Weak, Stun, Frost and Slow.",
    "source": "2026-09-01: \"Root means cannot move at all. For its duration. It takes down one per turn, like other statuses.\" Root also has a customer that scales off its magnitude (the Spider's Chomp), which rule.status-as-a-value makes legal. | Merged onto the trunk 2026-09-01 from the parallel content chat; attribution de-named per the standing passive-voice ruling, wording and dates untouched."
+  },
+  {
+   "id": "status.bleed",
+   "name": "Bleed",
+   "shape": "magnitude",
+   "family": "magnitude",
+   "damageType": "true",
+   "effect": "N TRUE damage at End of Phase, then −1. True damage, so neither Armor nor Resist touches it — that is what \"Bleed is never resisted\" always meant, now said in one word.",
+   "decay": "−1 at End of Phase, the shared clock.",
+   "curedBy": "Healing received removes Bleed equal to HALF the healing (rounded nearest, 0.5 up). Regeneration is healing (rule.one-healing-function), so a Regeneration tick strips Bleed too. Burn halves healing received first, so the Bleed removal is half of what actually landed — a burning unit sheds a quarter of what it otherwise would.",
+   "source": "Ruled 2026-09-02. Verbatim: \"Bleed is True Damage.\" and \"Bleed is being converted to magnitude damage. Also healing should cure bleed. Regen should be healing.\" SUPERSEDES the old flat model (N was a turn count, each tick a flat 2). This also closes the standing \"does Armor touch Bleed?\" question: it does not — nothing does."
+  },
+  {
+   "id": "status.frost",
+   "name": "Frost",
+   "shape": "magnitude",
+   "family": "magnitude",
+   "effect": "A unit carrying Frost N takes +N on EVERY physical hit it receives — all physical, melee and ranged alike, and PER HIT: a two-swing attack against Frost 3 takes +3 on each swing, +6 in total. Frost deals no damage of its own; it is the mirror of Armor, which subtracts from the same number. Bleed beats Resist by being true; Frost beats Armor by outgrowing it.",
+   "decay": "-1 at End of Phase, the shared clock. Frost carries no ordering constraint in Settling — ruled 2026-09-02 that its tick-down order does not matter, and it may go first.",
+   "application": "Applied like Burn. Burn and Frost annihilate one for one on application (rule.burn-frost-cancel) — a unit never carries both.",
+   "source": "RULED 2026-09-02, verbatim: 'Frost should ADD to physical damage. Then its order of ticking down in settling also doesn't matter, but it can go first.' and 'Frost is applied like Burn.' Direction (incoming), scope (all physical, not melee only) and per-hit application ruled the same day. Ends the two-week gap in which content referenced Frost with no definition."
+  },
+  {
+   "id": "status.shadow",
+   "name": "Shadow",
+   "shape": "magnitude",
+   "family": "magnitude",
+   "effect": "Shadow does nothing on its own. It TICKS UP — first of everything in Settling — and is then compared to the unit's Max Health. The moment Shadow is AT OR ABOVE Max Health the unit is OBLITERATED: killed, removed from the field, and NO CORPSE is left. It is the only effect in the game that denies a corpse, which is what makes it worth fearing rather than merely surviving.",
+   "decay": "NONE — it is the one status that grows. +1 per Settle, and it never falls on its own clock.",
+   "source": "RULED 2026-09-02, verbatim: 'Shadow, ticks UP during settling (first), then is compared to max health. If shadow = max health, unit is obliterated. (killed, removed from field, no corpse).' Tick size (+1) and the at-or-above threshold ruled the same day. Shadow was named 2026-09-01 with no effect anywhere — this is its first definition, and the last unshaped status is now shaped."
   }
  ],
  "testCohort": {
@@ -1767,7 +1816,7 @@
    {
     "key": "bleeding",
     "name": "Bleeding",
-    "effect": "gain 5 Bleed"
+    "effect": "gain 4 Bleed"
    },
    {
     "key": "dazed",
@@ -1830,5 +1879,27 @@
    }
   ],
   "source": "Ruled 2026-09-01, closing the duration question both handoffs left open."
+ },
+ "statusFamilies": {
+  "note": "Named 2026-09-02, and the Bleed conversion is what made the split clean. MAGNITUDE: N is how much. DURATION: N is how long — and that family is forced, because \"cannot move\" has no magnitude. Bleed was never an inconsistency; it was a magnitude status wearing a duration number, and it has been moved to the family it belonged in. rule.status-as-a-value reads a status's number either way — the family says what the number means.",
+  "magnitude": [
+   "burn",
+   "poison",
+   "bleed",
+   "frost",
+   "weak",
+   "slow",
+   "protection",
+   "regeneration",
+   "karma",
+   "shadow"
+  ],
+  "duration": [
+   "stun",
+   "root",
+   "taunt",
+   "dazed",
+   "confusion"
+  ]
  }
 }
