@@ -28,5 +28,216 @@
   "slug": "hellhound",
   "size": "small",
   "render": "solid"
+ },
+ "enemy-lich": {
+  "slug": "lich",
+  "size": "human",
+  "render": "solid"
+ },
+ "enemy-fire-demon": {
+  "slug": "fire-demon",
+  "size": "large",
+  "render": "solid"
+ },
+ "enemy-succubus": {
+  "slug": "succubus",
+  "size": "human",
+  "render": "solid"
+ },
+ "enemy-golem": {
+  "slug": "golem",
+  "size": "huge",
+  "render": "solid"
+ },
+ "enemy-frost-wraith": {
+  "slug": "frost-wraith",
+  "size": "human",
+  "render": "incorporeal"
+ },
+ "enemy-death-knight": {
+  "slug": "death-knight",
+  "size": "human",
+  "render": "solid"
+ },
+ "enemy-spectral-knight": {
+  "slug": "spectral-knight",
+  "size": "human",
+  "render": "incorporeal"
+ },
+ "enemy-dark-mage": {
+  "slug": "dark-mage",
+  "size": "human",
+  "render": "solid"
+ },
+ "enemy-flesh-horror": {
+  "slug": "flesh-horror",
+  "size": "large",
+  "render": "solid"
+ },
+ "enemy-eyeblight": {
+  "slug": "eyeblight",
+  "scale": 0.9,
+  "render": "solid",
+  "src": "assets/bestiary/hobat/eyeblight.png"
+ },
+ "enemy-strong-zombie": {
+  "slug": "strong-zombie",
+  "size": "human",
+  "render": "solid",
+  "src": "assets/bestiary/hobat/strong-zombie.png"
+ },
+ "enemy-fast-zombie": {
+  "slug": "fast-zombie",
+  "size": "human",
+  "render": "solid",
+  "src": "assets/bestiary/hobat/fast-zombie.png"
+ },
+ "enemy-strong-skeleton": {
+  "slug": "strong-skeleton",
+  "size": "human",
+  "render": "solid",
+  "src": "assets/bestiary/hobat/strong-skeleton.png"
+ },
+ "enemy-necromancer": {
+  "slug": "necromancer",
+  "size": "human",
+  "render": "solid",
+  "src": "assets/bestiary/hobat/necromancer.png"
+ },
+ "enemy-ghoul": {
+  "slug": "ghoul",
+  "size": "human",
+  "render": "solid",
+  "src": "assets/bestiary/hobat/ghoul.png"
+ },
+ "enemy-skeleton-spider": {
+  "slug": "skeleton-spider",
+  "size": "small",
+  "render": "solid",
+  "src": "assets/bestiary/hobat/skeleton-spider.png"
+ },
+ "enemy-powerful-imp": {
+  "slug": "powerful-imp",
+  "size": "lesser",
+  "render": "solid",
+  "src": "assets/bestiary/hobat/powerful-imp.png"
+ },
+ "enemy-terror-imp": {
+  "slug": "terror-imp",
+  "size": "lesser",
+  "render": "solid",
+  "src": "assets/bestiary/hobat/terror-imp.png"
+ },
+ "enemy-imp-master": {
+  "slug": "imp-master",
+  "size": "human",
+  "render": "solid",
+  "src": "assets/bestiary/hobat/imp-master.png"
+ },
+ "enemy-lieutenant-demon": {
+  "slug": "lieutenant-demon",
+  "size": "human",
+  "render": "solid",
+  "src": "assets/bestiary/hobat/lieutenant-demon.png"
+ },
+ "enemy-bruiser-demon": {
+  "slug": "bruiser-demon",
+  "size": "large",
+  "render": "solid",
+  "src": "assets/bestiary/hobat/bruiser-demon.png"
+ },
+ "enemy-balrog": {
+  "slug": "balrog",
+  "size": "large",
+  "render": "solid",
+  "src": "assets/bestiary/hobat/balrog.png"
+ },
+ "enemy-zombie-hound": {
+  "slug": "zombie-hound",
+  "size": "small",
+  "render": "solid",
+  "src": "assets/bestiary/hobat/zombie-hound.png"
+ },
+ "enemy-demon-hound": {
+  "slug": "demon-hound",
+  "size": "small",
+  "render": "solid",
+  "src": "assets/bestiary/hobat/demon-hound.png"
+ },
+ "enemy-vampire-lord": {
+  "slug": "vampire-lord",
+  "size": "human",
+  "render": "solid",
+  "src": "assets/bestiary/hobat/vampire-lord.png"
+ },
+ "enemy-doombringer": {
+  "slug": "doombringer",
+  "size": "huge",
+  "render": "solid",
+  "src": "assets/bestiary/hobat/doombringer.png"
+ },
+ "enemy-iron-colossus": {
+  "slug": "iron-colossus",
+  "size": "huge",
+  "render": "solid",
+  "src": "assets/bestiary/hobat/iron-colossus.png"
+ },
+ "enemy-dark-sniper": {
+  "slug": "dark-sniper",
+  "size": "human",
+  "render": "solid",
+  "src": "assets/bestiary/hobat/dark-sniper.png"
+ },
+ "enemy-nightstalker": {
+  "slug": "nightstalker",
+  "size": "human",
+  "render": "solid",
+  "src": "assets/bestiary/hobat/nightstalker.png"
+ },
+ "enemy-shadow-sorcerer": {
+  "slug": "shadow-sorcerer",
+  "size": "human",
+  "render": "solid",
+  "src": "assets/bestiary/hobat/shadow-sorcerer.png"
+ },
+ "enemy-imp": {
+  "slug": "imp",
+  "size": "lesser",
+  "render": "solid"
+ },
+ "enemy-zombie": {
+  "slug": "zombie",
+  "size": "human",
+  "render": "solid"
+ },
+ "enemy-skeletal-archer": {
+  "slug": "skeletal-archer",
+  "size": "human",
+  "render": "solid"
+ },
+ "enemy-vampire": {
+  "slug": "vampire",
+  "size": "human",
+  "render": "solid"
+ },
+ "enemy-bloodhound": {
+  "slug": "bloodhound",
+  "size": "small",
+  "render": "solid"
+ },
+ "enemy-fire-imp": {
+  "slug": "fire-imp",
+  "size": "lesser",
+  "render": "solid"
+ },
+ "enemy-poison-imp": {
+  "slug": "poison-imp",
+  "size": "lesser",
+  "render": "solid"
+ },
+ "enemy-skeleton": {
+  "slug": "skeleton",
+  "size": "human",
+  "render": "solid"
  }
 }

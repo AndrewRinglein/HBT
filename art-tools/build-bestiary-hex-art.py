@@ -76,12 +76,23 @@ def main():
     out, missing, wide = {}, [], []
     for uuid, ent in hexmap.items():
         slug = ent['slug']
-        if uuid not in bm:
-            missing.append((uuid, 'not in bestiary-manifest.json')); continue
-        srcs = bm[uuid].get('src') or []
-        if not srcs:
-            missing.append((uuid, 'no src art')); continue
-        src = srcs[0]                       # variant 0 is the token source
+        # `src` is used for exactly one thing below: md5'd to name the output webp. It
+        # normally comes from bestiary-manifest.json, which build-bestiary-art.py fills by
+        # copying art OUT OF hell-tcg. A creature whose art was made HERE can never appear
+        # there, so the map entry may name its own source path instead. Added 2026-09-02
+        # for unit.eyeblight, the first HoBaT-original enemy painting.
+        src = ent.get('src')
+        if src:
+            origin = 'hexmap'
+        elif uuid in bm:
+            origin = 'manifest'
+            srcs = bm[uuid].get('src') or []
+            if not srcs:
+                missing.append((uuid, 'no src art')); continue
+            src = srcs[0]                   # variant 0 is the token source
+        else:
+            missing.append((uuid, 'not in bestiary-manifest.json and no src in the hex map'))
+            continue
         full = os.path.join(UNITS, f'{slug}_full.png')
         if not os.path.exists(full):
             missing.append((uuid, f'no token at {slug}_full.png')); continue
@@ -121,6 +132,7 @@ def main():
             'footprintCapped': capped,
             'footprint': round(foot_per_scale * scale, 3),   # hex-widths of ground contact
             'render': ent.get('render', 'solid'),    # solid | incorporeal
+            'srcOrigin': origin,                     # manifest = ported | hexmap = HoBaT-original
             'aspect': round(aspect, 4),
             'hexWidthAtScale': round(width_at_scale, 3),
             'tiers': {t: f'{slug}_{t}.png' for t in ('full', '1024', '256')},

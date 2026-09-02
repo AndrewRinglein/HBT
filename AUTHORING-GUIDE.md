@@ -207,12 +207,40 @@ has to feel like a relief.
 - Two-handed costs two slots. One-handed costs one. Hands are two extra slots that only take weapons; there is no mechanical difference from inventory.
 - **Class restriction is a hard gate**, not a bonus. A multi-class hero satisfies it if any of its classes match.
 
-### Armor
+### Armor — the biggest upside in the game
+
+**Ruled 2026-09-02, and it corrects a reading that had got into the design notes:**
+
+> *"Armor is not a trade-off category. It is a massive upside category. It can have
+> trade-offs. It is the single greatest stat gain that you can have. Then Idols and Blood
+> Runes are also stat gains, but they are of a narrower dynamic and less than armor."*
+
+So the category ladder for **stat gain** is:
+
+```
+Armor            the largest gain available. May carry a trade-off; is not defined by one.
+Idols            a gain, narrower than armor, and less
+Blood Runes      a gain, narrower than armor, and less
+Relics           a SWAP — what it gives it takes back on another axis
+Trinkets         an OPTION, not a number (rule.item-limits)
+```
+
+- An armor with **no downside is not a fault.** It is the category doing its job. Do not
+  "fix" a clean armor by inventing a penalty for it, and do not read a missing negative as
+  an authoring miss. What *is* a fault is an armor whose gain is small for its tier — a
+  tier-2 heavy granting no Armor at all is the failure, not an armor granting Armor and
+  Health for free.
+- Trade-offs are a **tool for identity**, not a tax. Heavy paying Movement and Accuracy is
+  what makes heavy feel heavy; it is not the price of being allowed to grant anything.
 - **Nine base forms: three light, three medium, three heavy**, plus `item.basic-armor`.
-- **Every armor trades on a different axis. None is simply better.** Heavy buys
-  Armor and Health and pays in Movement, Dodge and Accuracy. Light buys Dodge,
-  Stamina and Luck and pays in Health.
-- Armor is a dedicated slot. Magic armor is a base plus an `enchant.*`.
+  Heavy leans Armor and Health, light leans Dodge, Stamina and Luck.
+- Armor is a dedicated slot and **costs no item slot** (ruled 2026-08-27) — one armor per
+  unit, which is the limit that lets the gain be this large.
+- Magic armor is a base plus an `enchant.*`.
+
+*Superseded: this section previously read "every armor trades on a different axis, none is
+simply better," which a 2026-09-02 review then used to flag four clean armors as broken.
+They were not. The ladder above is the authority.*
 
 ### Trinkets
 - **No stat modifiers and no attacks by default.** The payload is an *activated effect* or a triggered one. Unlimited per hero.

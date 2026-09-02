@@ -9,6 +9,7 @@
   "footprintCapped": false,
   "footprint": 0.184,
   "render": "solid",
+  "srcOrigin": "manifest",
   "aspect": 0.8649,
   "hexWidthAtScale": 0.381,
   "tiers": {
@@ -27,6 +28,7 @@
   "footprintCapped": false,
   "footprint": 0.456,
   "render": "incorporeal",
+  "srcOrigin": "manifest",
   "aspect": 0.4711,
   "hexWidthAtScale": 0.462,
   "tiers": {
@@ -45,6 +47,7 @@
   "footprintCapped": true,
   "footprint": 0.72,
   "render": "solid",
+  "srcOrigin": "manifest",
   "aspect": 1.7479,
   "hexWidthAtScale": 1.904,
   "tiers": {
@@ -63,6 +66,7 @@
   "footprintCapped": true,
   "footprint": 0.72,
   "render": "solid",
+  "srcOrigin": "manifest",
   "aspect": 0.7851,
   "hexWidthAtScale": 0.934,
   "tiers": {
@@ -81,6 +85,7 @@
   "footprintCapped": false,
   "footprint": 0.571,
   "render": "solid",
+  "srcOrigin": "manifest",
   "aspect": 0.4815,
   "hexWidthAtScale": 0.708,
   "tiers": {
@@ -99,12 +104,735 @@
   "footprintCapped": false,
   "footprint": 0.257,
   "render": "solid",
+  "srcOrigin": "manifest",
   "aspect": 0.6618,
   "hexWidthAtScale": 0.292,
   "tiers": {
    "full": "hellhound_full.png",
    "1024": "hellhound_1024.png",
    "256": "hellhound_256.png"
+  }
+ },
+ "enemy-lich": {
+  "hex": "9413911bc257.webp",
+  "src": "assets/cards/enemies/lich.png",
+  "slug": "lich",
+  "size": "human",
+  "stature": 1.0,
+  "scale": 1.0,
+  "footprintCapped": false,
+  "footprint": 0.642,
+  "render": "solid",
+  "srcOrigin": "manifest",
+  "aspect": 0.6581,
+  "hexWidthAtScale": 0.645,
+  "tiers": {
+   "full": "lich_full.png",
+   "1024": "lich_1024.png",
+   "256": "lich_256.png"
+  }
+ },
+ "enemy-fire-demon": {
+  "hex": "a149daa4c410.webp",
+  "src": "assets/cards/enemies/fire-demon.png",
+  "slug": "fire-demon",
+  "size": "large",
+  "stature": 1.5,
+  "scale": 1.5,
+  "footprintCapped": false,
+  "footprint": 0.586,
+  "render": "solid",
+  "srcOrigin": "manifest",
+  "aspect": 0.5709,
+  "hexWidthAtScale": 0.839,
+  "tiers": {
+   "full": "fire-demon_full.png",
+   "1024": "fire-demon_1024.png",
+   "256": "fire-demon_256.png"
+  }
+ },
+ "enemy-succubus": {
+  "hex": "eed9c4361101.webp",
+  "src": "assets/cards/enemies/succubus.png",
+  "slug": "succubus",
+  "size": "human",
+  "stature": 1.0,
+  "scale": 1.0,
+  "footprintCapped": false,
+  "footprint": 0.409,
+  "render": "solid",
+  "srcOrigin": "manifest",
+  "aspect": 0.566,
+  "hexWidthAtScale": 0.555,
+  "tiers": {
+   "full": "succubus_full.png",
+   "1024": "succubus_1024.png",
+   "256": "succubus_256.png"
+  }
+ },
+ "enemy-golem": {
+  "hex": "ee879a5457fc.webp",
+  "src": "assets/cards/enemies/golem.png",
+  "slug": "golem",
+  "size": "huge",
+  "stature": 2.2,
+  "scale": 1.255,
+  "footprintCapped": true,
+  "footprint": 0.72,
+  "render": "solid",
+  "srcOrigin": "manifest",
+  "aspect": 0.7073,
+  "hexWidthAtScale": 0.87,
+  "tiers": {
+   "full": "golem_full.png",
+   "1024": "golem_1024.png",
+   "256": "golem_256.png"
+  }
+ },
+ "enemy-frost-wraith": {
+  "hex": "e10cee72c3c9.webp",
+  "src": "assets/cards/enemies/frost-wraith.png",
+  "slug": "frost-wraith",
+  "size": "human",
+  "stature": 1.0,
+  "scale": 1.0,
+  "footprintCapped": false,
+  "footprint": 0.455,
+  "render": "incorporeal",
+  "srcOrigin": "manifest",
+  "aspect": 0.5546,
+  "hexWidthAtScale": 0.544,
+  "tiers": {
+   "full": "frost-wraith_full.png",
+   "1024": "frost-wraith_1024.png",
+   "256": "frost-wraith_256.png"
+  }
+ },
+ "enemy-death-knight": {
+  "hex": "5e12de2bd422.webp",
+  "src": "assets/cards/enemies/death-knight.png",
+  "slug": "death-knight",
+  "size": "human",
+  "stature": 1.0,
+  "scale": 1.0,
+  "footprintCapped": false,
+  "footprint": 0.339,
+  "render": "solid",
+  "srcOrigin": "manifest",
+  "aspect": 0.5709,
+  "hexWidthAtScale": 0.56,
+  "tiers": {
+   "full": "death-knight_full.png",
+   "1024": "death-knight_1024.png",
+   "256": "death-knight_256.png"
+  }
+ },
+ "enemy-spectral-knight": {
+  "hex": "37c5376be28b.webp",
+  "src": "assets/cards/enemies/spectral-knight.png",
+  "slug": "spectral-knight",
+  "size": "human",
+  "stature": 1.0,
+  "scale": 1.0,
+  "footprintCapped": false,
+  "footprint": 0.431,
+  "render": "incorporeal",
+  "srcOrigin": "manifest",
+  "aspect": 0.6386,
+  "hexWidthAtScale": 0.626,
+  "tiers": {
+   "full": "spectral-knight_full.png",
+   "1024": "spectral-knight_1024.png",
+   "256": "spectral-knight_256.png"
+  }
+ },
+ "enemy-dark-mage": {
+  "hex": "9087bb7b51f4.webp",
+  "src": "assets/cards/enemies/dark-mage.png",
+  "slug": "dark-mage",
+  "size": "human",
+  "stature": 1.0,
+  "scale": 1.0,
+  "footprintCapped": false,
+  "footprint": 0.4,
+  "render": "solid",
+  "srcOrigin": "manifest",
+  "aspect": 0.7653,
+  "hexWidthAtScale": 0.75,
+  "tiers": {
+   "full": "dark-mage_full.png",
+   "1024": "dark-mage_1024.png",
+   "256": "dark-mage_256.png"
+  }
+ },
+ "enemy-flesh-horror": {
+  "hex": "0e9da8f2467e.webp",
+  "src": "assets/cards/enemies/flesh-horror.png",
+  "slug": "flesh-horror",
+  "size": "large",
+  "stature": 1.5,
+  "scale": 1.5,
+  "footprintCapped": false,
+  "footprint": 0.674,
+  "render": "solid",
+  "srcOrigin": "manifest",
+  "aspect": 0.563,
+  "hexWidthAtScale": 0.828,
+  "tiers": {
+   "full": "flesh-horror_full.png",
+   "1024": "flesh-horror_1024.png",
+   "256": "flesh-horror_256.png"
+  }
+ },
+ "enemy-eyeblight": {
+  "hex": "7d64b5864d9b.webp",
+  "src": "assets/bestiary/hobat/eyeblight.png",
+  "slug": "eyeblight",
+  "size": "human",
+  "stature": 0.9,
+  "scale": 0.9,
+  "footprintCapped": false,
+  "footprint": 0.393,
+  "render": "solid",
+  "srcOrigin": "hexmap",
+  "aspect": 0.5947,
+  "hexWidthAtScale": 0.525,
+  "tiers": {
+   "full": "eyeblight_full.png",
+   "1024": "eyeblight_1024.png",
+   "256": "eyeblight_256.png"
+  }
+ },
+ "enemy-strong-zombie": {
+  "hex": "88399af07d3a.webp",
+  "src": "assets/bestiary/hobat/strong-zombie.png",
+  "slug": "strong-zombie",
+  "size": "human",
+  "stature": 1.0,
+  "scale": 1.0,
+  "footprintCapped": false,
+  "footprint": 0.369,
+  "render": "solid",
+  "srcOrigin": "hexmap",
+  "aspect": 0.5438,
+  "hexWidthAtScale": 0.533,
+  "tiers": {
+   "full": "strong-zombie_full.png",
+   "1024": "strong-zombie_1024.png",
+   "256": "strong-zombie_256.png"
+  }
+ },
+ "enemy-fast-zombie": {
+  "hex": "b020698bf748.webp",
+  "src": "assets/bestiary/hobat/fast-zombie.png",
+  "slug": "fast-zombie",
+  "size": "human",
+  "stature": 1.0,
+  "scale": 1.0,
+  "footprintCapped": false,
+  "footprint": 0.273,
+  "render": "solid",
+  "srcOrigin": "hexmap",
+  "aspect": 0.346,
+  "hexWidthAtScale": 0.339,
+  "tiers": {
+   "full": "fast-zombie_full.png",
+   "1024": "fast-zombie_1024.png",
+   "256": "fast-zombie_256.png"
+  }
+ },
+ "enemy-strong-skeleton": {
+  "hex": "4cc885cd50cb.webp",
+  "src": "assets/bestiary/hobat/strong-skeleton.png",
+  "slug": "strong-skeleton",
+  "size": "human",
+  "stature": 1.0,
+  "scale": 1.0,
+  "footprintCapped": false,
+  "footprint": 0.294,
+  "render": "solid",
+  "srcOrigin": "hexmap",
+  "aspect": 0.4727,
+  "hexWidthAtScale": 0.463,
+  "tiers": {
+   "full": "strong-skeleton_full.png",
+   "1024": "strong-skeleton_1024.png",
+   "256": "strong-skeleton_256.png"
+  }
+ },
+ "enemy-necromancer": {
+  "hex": "4462c48f62c8.webp",
+  "src": "assets/bestiary/hobat/necromancer.png",
+  "slug": "necromancer",
+  "size": "human",
+  "stature": 1.0,
+  "scale": 1.0,
+  "footprintCapped": false,
+  "footprint": 0.364,
+  "render": "solid",
+  "srcOrigin": "hexmap",
+  "aspect": 0.5618,
+  "hexWidthAtScale": 0.551,
+  "tiers": {
+   "full": "necromancer_full.png",
+   "1024": "necromancer_1024.png",
+   "256": "necromancer_256.png"
+  }
+ },
+ "enemy-ghoul": {
+  "hex": "99babd057d05.webp",
+  "src": "assets/bestiary/hobat/ghoul.png",
+  "slug": "ghoul",
+  "size": "human",
+  "stature": 1.0,
+  "scale": 1.0,
+  "footprintCapped": false,
+  "footprint": 0.338,
+  "render": "solid",
+  "srcOrigin": "hexmap",
+  "aspect": 0.3953,
+  "hexWidthAtScale": 0.387,
+  "tiers": {
+   "full": "ghoul_full.png",
+   "1024": "ghoul_1024.png",
+   "256": "ghoul_256.png"
+  }
+ },
+ "enemy-skeleton-spider": {
+  "hex": "1a2ffc5aa65d.webp",
+  "src": "assets/bestiary/hobat/skeleton-spider.png",
+  "slug": "skeleton-spider",
+  "size": "small",
+  "stature": 0.45,
+  "scale": 0.45,
+  "footprintCapped": false,
+  "footprint": 0.039,
+  "render": "solid",
+  "srcOrigin": "hexmap",
+  "aspect": 1.0565,
+  "hexWidthAtScale": 0.466,
+  "tiers": {
+   "full": "skeleton-spider_full.png",
+   "1024": "skeleton-spider_1024.png",
+   "256": "skeleton-spider_256.png"
+  }
+ },
+ "enemy-powerful-imp": {
+  "hex": "1291c511d1f1.webp",
+  "src": "assets/bestiary/hobat/powerful-imp.png",
+  "slug": "powerful-imp",
+  "size": "lesser",
+  "stature": 0.75,
+  "scale": 0.75,
+  "footprintCapped": false,
+  "footprint": 0.298,
+  "render": "solid",
+  "srcOrigin": "hexmap",
+  "aspect": 0.9285,
+  "hexWidthAtScale": 0.682,
+  "tiers": {
+   "full": "powerful-imp_full.png",
+   "1024": "powerful-imp_1024.png",
+   "256": "powerful-imp_256.png"
+  }
+ },
+ "enemy-terror-imp": {
+  "hex": "0df32f73e9ae.webp",
+  "src": "assets/bestiary/hobat/terror-imp.png",
+  "slug": "terror-imp",
+  "size": "lesser",
+  "stature": 0.75,
+  "scale": 0.75,
+  "footprintCapped": false,
+  "footprint": 0.251,
+  "render": "solid",
+  "srcOrigin": "hexmap",
+  "aspect": 0.6402,
+  "hexWidthAtScale": 0.471,
+  "tiers": {
+   "full": "terror-imp_full.png",
+   "1024": "terror-imp_1024.png",
+   "256": "terror-imp_256.png"
+  }
+ },
+ "enemy-imp-master": {
+  "hex": "d03a4310c58f.webp",
+  "src": "assets/bestiary/hobat/imp-master.png",
+  "slug": "imp-master",
+  "size": "human",
+  "stature": 1.0,
+  "scale": 1.0,
+  "footprintCapped": false,
+  "footprint": 0.333,
+  "render": "solid",
+  "srcOrigin": "hexmap",
+  "aspect": 0.6199,
+  "hexWidthAtScale": 0.608,
+  "tiers": {
+   "full": "imp-master_full.png",
+   "1024": "imp-master_1024.png",
+   "256": "imp-master_256.png"
+  }
+ },
+ "enemy-lieutenant-demon": {
+  "hex": "76b838dcfb00.webp",
+  "src": "assets/bestiary/hobat/lieutenant-demon.png",
+  "slug": "lieutenant-demon",
+  "size": "human",
+  "stature": 1.0,
+  "scale": 1.0,
+  "footprintCapped": false,
+  "footprint": 0.338,
+  "render": "solid",
+  "srcOrigin": "hexmap",
+  "aspect": 0.4748,
+  "hexWidthAtScale": 0.465,
+  "tiers": {
+   "full": "lieutenant-demon_full.png",
+   "1024": "lieutenant-demon_1024.png",
+   "256": "lieutenant-demon_256.png"
+  }
+ },
+ "enemy-bruiser-demon": {
+  "hex": "8b6b4c8c908a.webp",
+  "src": "assets/bestiary/hobat/bruiser-demon.png",
+  "slug": "bruiser-demon",
+  "size": "large",
+  "stature": 1.5,
+  "scale": 1.5,
+  "footprintCapped": false,
+  "footprint": 0.691,
+  "render": "solid",
+  "srcOrigin": "hexmap",
+  "aspect": 0.6215,
+  "hexWidthAtScale": 0.914,
+  "tiers": {
+   "full": "bruiser-demon_full.png",
+   "1024": "bruiser-demon_1024.png",
+   "256": "bruiser-demon_256.png"
+  }
+ },
+ "enemy-balrog": {
+  "hex": "ef2717048625.webp",
+  "src": "assets/bestiary/hobat/balrog.png",
+  "slug": "balrog",
+  "size": "large",
+  "stature": 1.5,
+  "scale": 1.5,
+  "footprintCapped": false,
+  "footprint": 0.692,
+  "render": "solid",
+  "srcOrigin": "hexmap",
+  "aspect": 0.5188,
+  "hexWidthAtScale": 0.763,
+  "tiers": {
+   "full": "balrog_full.png",
+   "1024": "balrog_1024.png",
+   "256": "balrog_256.png"
+  }
+ },
+ "enemy-zombie-hound": {
+  "hex": "df065cc15c8d.webp",
+  "src": "assets/bestiary/hobat/zombie-hound.png",
+  "slug": "zombie-hound",
+  "size": "small",
+  "stature": 0.45,
+  "scale": 0.45,
+  "footprintCapped": false,
+  "footprint": 0.135,
+  "render": "solid",
+  "srcOrigin": "hexmap",
+  "aspect": 0.9072,
+  "hexWidthAtScale": 0.4,
+  "tiers": {
+   "full": "zombie-hound_full.png",
+   "1024": "zombie-hound_1024.png",
+   "256": "zombie-hound_256.png"
+  }
+ },
+ "enemy-demon-hound": {
+  "hex": "691244ad4f40.webp",
+  "src": "assets/bestiary/hobat/demon-hound.png",
+  "slug": "demon-hound",
+  "size": "small",
+  "stature": 0.45,
+  "scale": 0.45,
+  "footprintCapped": false,
+  "footprint": 0.094,
+  "render": "solid",
+  "srcOrigin": "hexmap",
+  "aspect": 0.7183,
+  "hexWidthAtScale": 0.317,
+  "tiers": {
+   "full": "demon-hound_full.png",
+   "1024": "demon-hound_1024.png",
+   "256": "demon-hound_256.png"
+  }
+ },
+ "enemy-vampire-lord": {
+  "hex": "cea023339fd3.webp",
+  "src": "assets/bestiary/hobat/vampire-lord.png",
+  "slug": "vampire-lord",
+  "size": "human",
+  "stature": 1.0,
+  "scale": 1.0,
+  "footprintCapped": false,
+  "footprint": 0.568,
+  "render": "solid",
+  "srcOrigin": "hexmap",
+  "aspect": 0.5843,
+  "hexWidthAtScale": 0.573,
+  "tiers": {
+   "full": "vampire-lord_full.png",
+   "1024": "vampire-lord_1024.png",
+   "256": "vampire-lord_256.png"
+  }
+ },
+ "enemy-doombringer": {
+  "hex": "384db59fcf7b.webp",
+  "src": "assets/bestiary/hobat/doombringer.png",
+  "slug": "doombringer",
+  "size": "huge",
+  "stature": 2.2,
+  "scale": 1.881,
+  "footprintCapped": true,
+  "footprint": 0.72,
+  "render": "solid",
+  "srcOrigin": "hexmap",
+  "aspect": 0.7599,
+  "hexWidthAtScale": 1.401,
+  "tiers": {
+   "full": "doombringer_full.png",
+   "1024": "doombringer_1024.png",
+   "256": "doombringer_256.png"
+  }
+ },
+ "enemy-iron-colossus": {
+  "hex": "ca68d89f616d.webp",
+  "src": "assets/bestiary/hobat/iron-colossus.png",
+  "slug": "iron-colossus",
+  "size": "huge",
+  "stature": 2.2,
+  "scale": 1.755,
+  "footprintCapped": true,
+  "footprint": 0.72,
+  "render": "solid",
+  "srcOrigin": "hexmap",
+  "aspect": 0.6066,
+  "hexWidthAtScale": 1.044,
+  "tiers": {
+   "full": "iron-colossus_full.png",
+   "1024": "iron-colossus_1024.png",
+   "256": "iron-colossus_256.png"
+  }
+ },
+ "enemy-dark-sniper": {
+  "hex": "22e8859c1146.webp",
+  "src": "assets/bestiary/hobat/dark-sniper.png",
+  "slug": "dark-sniper",
+  "size": "human",
+  "stature": 1.0,
+  "scale": 1.0,
+  "footprintCapped": false,
+  "footprint": 0.27,
+  "render": "solid",
+  "srcOrigin": "hexmap",
+  "aspect": 0.6154,
+  "hexWidthAtScale": 0.603,
+  "tiers": {
+   "full": "dark-sniper_full.png",
+   "1024": "dark-sniper_1024.png",
+   "256": "dark-sniper_256.png"
+  }
+ },
+ "enemy-nightstalker": {
+  "hex": "1e56d26cd3fc.webp",
+  "src": "assets/bestiary/hobat/nightstalker.png",
+  "slug": "nightstalker",
+  "size": "human",
+  "stature": 1.0,
+  "scale": 1.0,
+  "footprintCapped": false,
+  "footprint": 0.695,
+  "render": "solid",
+  "srcOrigin": "hexmap",
+  "aspect": 0.7923,
+  "hexWidthAtScale": 0.776,
+  "tiers": {
+   "full": "nightstalker_full.png",
+   "1024": "nightstalker_1024.png",
+   "256": "nightstalker_256.png"
+  }
+ },
+ "enemy-shadow-sorcerer": {
+  "hex": "15787c63dfea.webp",
+  "src": "assets/bestiary/hobat/shadow-sorcerer.png",
+  "slug": "shadow-sorcerer",
+  "size": "human",
+  "stature": 1.0,
+  "scale": 1.0,
+  "footprintCapped": false,
+  "footprint": 0.647,
+  "render": "solid",
+  "srcOrigin": "hexmap",
+  "aspect": 0.6813,
+  "hexWidthAtScale": 0.668,
+  "tiers": {
+   "full": "shadow-sorcerer_full.png",
+   "1024": "shadow-sorcerer_1024.png",
+   "256": "shadow-sorcerer_256.png"
+  }
+ },
+ "enemy-imp": {
+  "hex": "ce96d24557ba.webp",
+  "src": "assets/cards/enemies/imp.png",
+  "slug": "imp",
+  "size": "lesser",
+  "stature": 0.75,
+  "scale": 0.75,
+  "footprintCapped": false,
+  "footprint": 0.271,
+  "render": "solid",
+  "srcOrigin": "manifest",
+  "aspect": 0.4236,
+  "hexWidthAtScale": 0.311,
+  "tiers": {
+   "full": "imp_full.png",
+   "1024": "imp_1024.png",
+   "256": "imp_256.png"
+  }
+ },
+ "enemy-zombie": {
+  "hex": "2c543ab27e53.webp",
+  "src": "assets/cards/enemies/zombie.png",
+  "slug": "zombie",
+  "size": "human",
+  "stature": 1.0,
+  "scale": 1.0,
+  "footprintCapped": false,
+  "footprint": 0.332,
+  "render": "solid",
+  "srcOrigin": "manifest",
+  "aspect": 0.38,
+  "hexWidthAtScale": 0.372,
+  "tiers": {
+   "full": "zombie_full.png",
+   "1024": "zombie_1024.png",
+   "256": "zombie_256.png"
+  }
+ },
+ "enemy-skeletal-archer": {
+  "hex": "0657774e1e91.webp",
+  "src": "assets/cards/enemies/skeletal-archer.png",
+  "slug": "skeletal-archer",
+  "size": "human",
+  "stature": 1.0,
+  "scale": 1.0,
+  "footprintCapped": false,
+  "footprint": 0.286,
+  "render": "solid",
+  "srcOrigin": "manifest",
+  "aspect": 0.5905,
+  "hexWidthAtScale": 0.579,
+  "tiers": {
+   "full": "skeletal-archer_full.png",
+   "1024": "skeletal-archer_1024.png",
+   "256": "skeletal-archer_256.png"
+  }
+ },
+ "enemy-vampire": {
+  "hex": "c3d001e02adc.webp",
+  "src": "assets/cards/enemies/vampire.png",
+  "slug": "vampire",
+  "size": "human",
+  "stature": 1.0,
+  "scale": 1.0,
+  "footprintCapped": false,
+  "footprint": 0.494,
+  "render": "solid",
+  "srcOrigin": "manifest",
+  "aspect": 0.5084,
+  "hexWidthAtScale": 0.498,
+  "tiers": {
+   "full": "vampire_full.png",
+   "1024": "vampire_1024.png",
+   "256": "vampire_256.png"
+  }
+ },
+ "enemy-bloodhound": {
+  "hex": "ff3e2e4a9719.webp",
+  "src": "assets/cards/enemies/bloodhound.png",
+  "slug": "bloodhound",
+  "size": "small",
+  "stature": 0.45,
+  "scale": 0.45,
+  "footprintCapped": false,
+  "footprint": 0.29,
+  "render": "solid",
+  "srcOrigin": "manifest",
+  "aspect": 0.782,
+  "hexWidthAtScale": 0.345,
+  "tiers": {
+   "full": "bloodhound_full.png",
+   "1024": "bloodhound_1024.png",
+   "256": "bloodhound_256.png"
+  }
+ },
+ "enemy-fire-imp": {
+  "hex": "c22a4068bbe2.webp",
+  "src": "assets/cards/enemies/fire-imp.png",
+  "slug": "fire-imp",
+  "size": "lesser",
+  "stature": 0.75,
+  "scale": 0.75,
+  "footprintCapped": false,
+  "footprint": 0.351,
+  "render": "solid",
+  "srcOrigin": "manifest",
+  "aspect": 0.681,
+  "hexWidthAtScale": 0.501,
+  "tiers": {
+   "full": "fire-imp_full.png",
+   "1024": "fire-imp_1024.png",
+   "256": "fire-imp_256.png"
+  }
+ },
+ "enemy-poison-imp": {
+  "hex": "65a458a81981.webp",
+  "src": "assets/cards/enemies/poison-imp.png",
+  "slug": "poison-imp",
+  "size": "lesser",
+  "stature": 0.75,
+  "scale": 0.75,
+  "footprintCapped": false,
+  "footprint": 0.343,
+  "render": "solid",
+  "srcOrigin": "manifest",
+  "aspect": 0.6966,
+  "hexWidthAtScale": 0.512,
+  "tiers": {
+   "full": "poison-imp_full.png",
+   "1024": "poison-imp_1024.png",
+   "256": "poison-imp_256.png"
+  }
+ },
+ "enemy-skeleton": {
+  "hex": "ea95b302c9e4.webp",
+  "src": "assets/cards/enemies/skeleton.png",
+  "slug": "skeleton",
+  "size": "human",
+  "stature": 1.0,
+  "scale": 1.0,
+  "footprintCapped": false,
+  "footprint": 0.505,
+  "render": "solid",
+  "srcOrigin": "manifest",
+  "aspect": 0.624,
+  "hexWidthAtScale": 0.612,
+  "tiers": {
+   "full": "skeleton_full.png",
+   "1024": "skeleton_1024.png",
+   "256": "skeleton_256.png"
   }
  }
 }
