@@ -6,7 +6,7 @@
 // Mirrors the engine's shape: the plain-data Campaign is the save; everything
 // unserializable — the event log — lives beside it in a Ctx.
 
-import type { CampaignState, Cursor } from './campaign.js'
+import type { CampaignState, Cursor, Assignment } from './campaign.js'
 import type { KingdomEventType } from './events.js'
 import type { EngagementResult } from './seam.js'
 import type { Reckoning } from './reckoning.js'
@@ -63,18 +63,35 @@ export function setTactic(ctx: Ctx, tacticId: string | null, causeId: string): v
   emit(ctx, 'council.taken', causeId, { engagementId: e.id, tacticId })
 }
 
-/** A hero into the field for this Engagement. */
+/** An Assignment into a slot — the one write of campaign.assignments. */
+export function applyCommit(ctx: Ctx, heroId: string, slot: 'field' | 'city', assignment: Assignment, causeId: string): void {
+  const a = (ctx.campaign.assignments[heroId] ??= {})
+  a[slot] = { ...assignment }
+  emit(ctx, 'hero.committed', causeId, { heroId, slot, kind: assignment.kind, target: assignment.target, weeks: assignment.weeks })
+}
+
+export function applyRelease(ctx: Ctx, heroId: string, slot: 'field' | 'city', causeId: string): void {
+  const a = ctx.campaign.assignments[heroId]
+  if (!a?.[slot]) return
+  const was = a[slot]!
+  delete a[slot]
+  if (!a.field && !a.city) delete ctx.campaign.assignments[heroId]
+  emit(ctx, 'hero.released', causeId, { heroId, slot, kind: was.kind, target: was.target })
+}
+
+/** A hero into the field for this Engagement — the field slot, for the Week. */
 export function applyDeploy(ctx: Ctx, heroId: string, causeId: string): void {
   const e = engagementOf(ctx.campaign)
   e.deployed.push(heroId)
-  emit(ctx, 'hero.committed', causeId, { heroId, engagementId: e.id, slot: 'field' })
+  applyCommit(ctx, heroId, 'field', { kind: 'engagement', target: e.id, weeks: 1 }, causeId)
 }
 
 export function applyUndeploy(ctx: Ctx, heroId: string, causeId: string): void {
   const e = engagementOf(ctx.campaign)
   e.deployed = e.deployed.filter((h) => h !== heroId)
-  emit(ctx, 'hero.released', causeId, { heroId, engagementId: e.id, slot: 'field' })
+  applyRelease(ctx, heroId, 'field', causeId)
 }
+
 
 /**
  * What the outcome panel SET — the result and the Reckoning proposed from it —

@@ -316,5 +316,32 @@
    "at": "2026-09-02 05:25",
    "sha": "cae0665"
   }
+ },
+ "008": {
+  "red": {
+   "at": "2026-09-02 05:27",
+   "sha": "9412a6f",
+   "hash": "c7bbee8ab48a",
+   "how": "feature absent",
+   "tail": " ❯ campaignOf src/core/campaign.ts:240:50 |  ❯ loadFixture test/walk.ts:14:13 |  ❯ test/isc-008.test.ts:33:17"
+  }
+ },
+ "009": {
+  "red": {
+   "at": "2026-09-02 05:27",
+   "sha": "9412a6f",
+   "hash": "517cc8b2e53c",
+   "how": "feature absent",
+   "tail": " ❯ campaignOf src/core/campaign.ts:240:50 |  ❯ loadFixture test/walk.ts:14:13 |  ❯ test/isc-009.test.ts:13:17"
+  }
+ },
+ "010": {
+  "red": {
+   "at": "2026-09-02 05:28",
+   "sha": "9412a6f",
+   "hash": "af871d626125",
+   "how": "feature absent",
+   "tail": " ❯ campaignOf src/core/campaign.ts:240:50 |  ❯ loadFixture test/walk.ts:14:13 |  ❯ test/isc-010.test.ts:25:17"
+  }
  }
 }

@@ -179,7 +179,11 @@
   "needs": [
    "map.four-territories"
   ],
-  "note": "variants: declare when worked — the two slots are values, not rows; the destinations (a Stage row, a labour row) may be the honest second instance, or generalizationExempt with the reason."
+  "note": "variants: the two Stage rows that spend the two slots — listAvailable reads which slot from the row (spends: assignments → field, city-assignments → city), so the second slot is data.",
+  "variants": [
+   "stage.conquer",
+   "stage.mend"
+  ]
  },
  {
   "id": "purse.mend-and-buy",

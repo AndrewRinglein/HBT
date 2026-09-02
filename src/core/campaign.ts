@@ -93,7 +93,13 @@ export type Hero = {
   corruption: number
 }
 
-export type Assignment = { kind: string; target: string; weeks: number }
+/**
+ * One hero, one thing, one slot (§2.3, amended Law 17). `kind` is the
+ * destination — an Engagement, a quest, a labour, a service, healing, rest —
+ * `target` what it is, `weeks` how long it holds. A quest is written to BOTH
+ * slots: "questing costs two actions, fighting costs one."
+ */
+export type Assignment = { kind: 'engagement' | 'quest' | 'labour' | 'service' | 'heal' | 'rest'; target: string; weeks: number }
 
 export type Building = { id: BuildingId; level: number; damaged: boolean }
 
@@ -136,6 +142,8 @@ export type CampaignState = {
   losses: number
   quests: Record<string, QuestInFlight>
   captured: HeroId[]
+  /** Who the Week's unavailability roll kept home (KINGDOM-DESIGN.md §3) — cleared at the Week boundary. */
+  unavailable: HeroId[]
   /** Named streams' root seeds — every Campaign roll is keyed by what it is (Law 4). Never a counter. */
   cups: Record<string, number>
 }
@@ -186,6 +194,7 @@ export function makeCampaign(seed: number, options: MakeCampaignOptions): Campai
     losses: 0,
     quests: {},
     captured: [],
+    unavailable: [],
     cups,
   }
 }
@@ -227,7 +236,7 @@ export function saveOf(campaign: CampaignState): string {
 export function campaignOf(json: string): CampaignState {
   const c = JSON.parse(json) as CampaignState
   assertPlainData(c)
-  const required: (keyof CampaignState)[] = ['realm', 'seed', 'week', 'cursor', 'purse', 'renown', 'unlocks', 'revealed', 'roster', 'assignments', 'stash', 'territories', 'threat', 'losses', 'quests', 'captured', 'cups']
+  const required: (keyof CampaignState)[] = ['realm', 'seed', 'week', 'cursor', 'purse', 'renown', 'unlocks', 'revealed', 'roster', 'assignments', 'stash', 'territories', 'threat', 'losses', 'quests', 'captured', 'unavailable', 'cups']
   for (const k of required) if (!(k in c)) throw new Error(`save is missing '${k}' — not a Campaign`)
   for (const k of ['week', 'stage', 'step', 'prepStep', 'engagement', 'attack', 'fought', 'battle'] as const) if (!(k in c.cursor)) throw new Error(`save's cursor is missing '${k}'`)
   return c

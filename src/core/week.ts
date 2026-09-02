@@ -23,6 +23,7 @@ import { CUP_IDS } from '../content/cups.js'
 import { SWITCHES } from '../content/switches.js'
 import { beginCombatPrep } from './prep.js'
 import { listConquerable, resolveThreat, performLose } from './map.js'
+import { tickAssignments } from './assignments.js'
 export { listConquerable } from './map.js'
 
 // ── reading ─────────────────────────────────────────────────────────────────
@@ -82,6 +83,7 @@ export function beginWeek(ctx: Ctx, causeId: string): void {
 
 /** The Week boundary: what ticks between one Week and the next. Quests and wounds join here when they exist. */
 export function tickWeek(ctx: Ctx, causeId: string): void {
+  tickAssignments(ctx, causeId)
   setCursor(ctx, { week: ctx.campaign.week + 1 }, causeId)
 }
 
