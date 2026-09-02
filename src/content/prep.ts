@@ -14,13 +14,15 @@ export type PrepStepRow = {
   readonly skippable: boolean
   /** A step that draws an offer on entry names the cup it draws from (Law 4). */
   readonly drawsFrom?: string
+  /** The step where items are fitted and swapped. */
+  readonly equips?: boolean
 }
 
 export const PREP_STEP_ROWS: readonly PrepStepRow[] = [
   { step: 'reveal', title: 'Reveal', does: 'the enemy, and possibly an environmental condition', skippable: true },
   { step: 'council', title: 'War Council', does: 'draft your own modifiers — tactics; pick 1 of 3, or skip', skippable: true, drawsFrom: 'cup.council' },
   { step: 'deploy', title: 'Deploy', does: 'choose the units, knowing 1 and 2', skippable: false },
-  { step: 'equip', title: 'Equip', does: 'fit and swap items, knowing 1 and 2', skippable: true },
+  { step: 'equip', title: 'Equip', does: 'fit and swap items, knowing 1 and 2', skippable: true, equips: true },
 ]
 
 /** "A base unit limit per Engagement — 4 at the start." GAME-ARCHITECTURE.md §2.3, axis 1. */

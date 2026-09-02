@@ -32,6 +32,8 @@ import { listLabours, yieldOf, canAssignLabour, performAssignLabour } from '../c
 import { performRelease } from '../core/assignments.js'
 import { listRewardOffers, performTakeReward, listLevelUps, performLevelUp, performLeaveLevelUp } from '../core/rewards.js'
 import { xpForLevel } from '../content/levels.js'
+import { listBuildings, whyNotBuild, performBuild } from '../core/build.js'
+import { isShopOpen, listShopItems, canBuyItem, performBuyItem, costOfItem, canEquip, performEquip } from '../core/shop.js'
 import { UNITS } from '../engine.js'
 
 declare const __FIXTURE_JSON__: string
@@ -156,6 +158,8 @@ function worldScreen(c: CampaignState): string {
     body = `<h3>The Beacon — recruit, one a Week · ${esc(fmt(rc))}</h3>
       <div class="pick">${listRecruitOffers(c).map((r) => `<div class="opt${canRecruit(c, r.id) ? '' : ' off'}" data-act="recruit" data-id="${esc(r.id)}"><b>${esc(r.name)}</b><small>${esc(r.classes.map((x) => x.replace('class.', '')).join(', '))} · ${esc(r.unitType)}</small></div>`).join('') || '<p class="meta">nobody answers the Beacon</p>'}</div>
       ${c.cursor.recruited ? '<p class="meta">recruited this Week — the Beacon is closed until next</p>' : ''}
+      <h3>The Forge's shelf${isShopOpen(c) ? ` · ${esc(fmt(costOfItem('')))} an item` : ' — closed until the Forge is repaired'}</h3>
+      <div class="pick">${listShopItems(c).map((r) => `<div class="opt${canBuyItem(c, r.id) ? '' : ' off'}" data-act="buy-item" data-id="${esc(r.id)}"><b>${esc(r.name)}</b><small>${esc(r.slot)} · tier ${r.tier}</small></div>`).join('')}</div>
       <h3>The Chapel — Field Surgery · ${esc(fmt(hc))} a hero</h3>
       <div class="pick">${wounded.map((h) => `<div class="opt${canHeal(c, h.id) ? '' : ' off'}" data-act="heal" data-id="${esc(h.id)}"><b>${esc(h.name)}</b><small>${esc(woundNameOf(h.wound))} → ${esc(woundNameOf(h.wound - 1))}</small></div>`).join('') || '<p class="meta">nobody is wounded</p>'}</div>`
   } else if (row.offers === 'labours') {
@@ -164,6 +168,10 @@ function worldScreen(c: CampaignState): string {
     body = `<h3>Mend — the city Stage. Each labour takes a hero's city slot; it pays as the Stage closes.</h3>
       <table><tr><th>labour</th><th>pays</th><th>send</th></tr>${listLabours().map((l) => { const y = yieldOf(c, l.key); return `<tr><td><b>${esc(l.name)}</b> <span class="meta">${esc(l.does)}</span></td><td>${y ? `${y.amount} ${esc(y.currency.replace('currency.', ''))}` : '—'}</td><td>${free.filter((h) => canAssignLabour(c, h, l.key)).map((h) => `<button class="quiet" data-act="labour" data-id="${esc(h)}" data-key="${esc(l.key)}">${esc(c.roster[h]!.name)}</button>`).join(' ') || '<span class="meta">nobody free</span>'}</td></tr>` }).join('')}</table>
       ${working.length ? `<h3>Working this Week</h3><p>${working.map((h) => `${esc(h.name)} — ${esc(c.assignments[h.id]!.city!.target)} <button class="quiet" data-act="release" data-id="${esc(h.id)}">undo</button>`).join(' · ')}</p>` : ''}`
+  } else if (row.offers === 'build') {
+    const held = listBuildings(c).filter((b) => b.held)
+    body = `<h3>Build — Salvage, node by node</h3>` + (held.length ? held.map((b) => `<h3>${esc(b.row.name)} <span class="meta">on ${esc(c.territories[b.territoryId]!.name)} · level ${b.building.level}${b.building.damaged ? ' · ruin' : ''}</span></h3>
+      <div class="pick">${b.row.nodes.map((n) => { const why = whyNotBuild(c, b.territoryId, b.building.id, n.key); const built = b.building.nodes.includes(n.key); return `<div class="opt${built ? ' on' : why ? ' off' : ''}" ${why ? '' : `data-act="build" data-id="${esc(b.territoryId)}" data-building="${esc(b.building.id)}" data-key="${esc(n.key)}"`}><b>${esc(n.name)} ${built ? '✓' : ''}</b><small>${n.salvage} Salvage${n.parents.length ? ' · after ' + esc(n.parents.join(', ')) : ''}${n.gate ? ' · ' + esc(Object.entries(n.gate).map(([k, v]) => `${v} ${k}s`).join(', ')) + ' (waived)' : ''}${why && !built ? ' · ' + esc(why) : ''}</small></div>` }).join('')}</div>`).join('') : '<p class="meta">nothing you hold has a building on it — the Ridge carries the Forge</p>')
   } else {
     body = `<h3>${esc(row.title)}</h3><p>${esc(row.does)}</p><p class="meta">Nothing to do here yet — this Stage's machinery lands in a later milestone. Pass through.</p>`
   }
@@ -200,7 +208,11 @@ function prepScreen(c: CampaignState): string {
     const heroes = Object.values(c.roster).sort((a, b) => a.id.localeCompare(b.id))
     body = `<h3>Deploy — ${v.deployed.length} of ${v.deployLimit}</h3><div class="roster">${heroes.map((h) => heroCard(c, h, v.deployed.includes(h.id))).join('')}</div>`
   } else {
-    body = `<h3>Equip</h3><p>Nothing is priced yet — the Forge's shelf arrives with the purse. The step exists so the order is the design; advance.</p>`
+    const stash = c.stash
+    body = `<h3>Equip — fit the stash onto the deployed</h3>
+      ${stash.length ? `<table><tr><th>item</th><th>onto</th></tr>${stash.map((item, i) => `<tr><td><code>${esc(item)}</code></td><td>${v.deployed.filter((h) => canEquip(c, h, item)).map((h) => `<button class="quiet" data-act="equip" data-id="${esc(h)}" data-item="${esc(item)}">${esc(c.roster[h]!.name)}</button>`).join(' ')}</td></tr>`).join('')}</table>` : '<p class="meta">the stash is empty — the Forge\'s shelf and the spoils fill it</p>'}
+      <p class="meta">${v.deployed.map((h) => `${esc(c.roster[h]!.name)}: ${esc(c.roster[h]!.equipped.map((x) => x.replace('item.', '')).join(', ') || 'nothing')}`).join(' · ')}</p>
+      <p class="meta">What is equipped is recorded on the hero; the engine still fields the unit row's own kit until content lands the item's effect.</p>`
   }
   return `<h2>Combat Prep — ${esc(v.stepTitle)}</h2>
     <p class="meta"><code>${esc(v.engagementId)}</code> · ${esc(v.kind)} · ${esc(v.territoryId)} · ${esc(v.mapId)}</p>
@@ -366,6 +378,9 @@ function wire(root: HTMLElement): void {
         case 'heal': return act(() => performHeal(app.ctx!, id!, 'slice'))
         case 'labour': return act(() => performAssignLabour(app.ctx!, id!, el.dataset['key']!, 'slice'))
         case 'release': return act(() => performRelease(app.ctx!, id!, 'city', 'slice'))
+        case 'build': return act(() => performBuild(app.ctx!, id!, el.dataset['building']!, el.dataset['key']!, 'slice'))
+        case 'buy-item': return act(() => performBuyItem(app.ctx!, id!, 'slice'))
+        case 'equip': return act(() => performEquip(app.ctx!, id!, el.dataset['item']!, 'slice'))
         case 'council': return act(() => performCouncil(app.ctx!, viewCombatPrep(app.ctx!.campaign).tactic === id ? null : id!, 'slice'))
         case 'deploy': return act(() => performDeploy(app.ctx!, id!, 'slice'))
         case 'undeploy': return act(() => performUndeploy(app.ctx!, id!, 'slice'))

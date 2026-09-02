@@ -37,12 +37,13 @@ const t = (id: string, name: string, mapId: string, extra: Partial<TerritoryRow>
 const RAW_TERRITORIES: readonly TerritoryRow[] = [
   t('territory.ruined-kingdom.sanctuary', 'Sanctuary', 'map.open', {
     owned: true, kingdom: true, claimedOnce: true, node: 'field',
+    buildings: [{ id: 'building.chapel', level: 1, damaged: false, nodes: ['standing'] }],
     adjacent: ['territory.ruined-kingdom.ridge', 'territory.ruined-kingdom.highlands'],
     enemies: ['unit.zombie', 'unit.zombie', 'unit.zombie', 'unit.fast-zombie'],
     lostDefenceCosts: { 'currency.supplies': SWITCHES.sanctuaryLostDefenceSupplies },
   }),
   t('territory.ruined-kingdom.ridge', 'The Ridge', 'map.ridge', {
-    buildings: [{ id: 'building.forge', level: 0, damaged: true }], node: 'mine',
+    buildings: [{ id: 'building.forge', level: 0, damaged: true, nodes: [] }], node: 'mine',
     adjacent: ['territory.ruined-kingdom.sanctuary', 'territory.ruined-kingdom.thicket'],
     enemies: ['unit.zombie', 'unit.zombie', 'unit.zombie-hound', 'unit.skeletal-archer'],
   }),

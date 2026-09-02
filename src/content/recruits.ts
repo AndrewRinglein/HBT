@@ -11,7 +11,7 @@ import { omitDisabled } from './disable.js'
 export type RecruitRow = Hero
 
 const recruit = (id: string, name: string, cls: string, unitType: string): RecruitRow => ({
-  id, name, classes: [cls], level: 1, xp: 0, wound: 0, lifeState: 'alive', badges: [], unitType, corruption: 0,
+  id, name, classes: [cls], level: 1, xp: 0, wound: 0, lifeState: 'alive', badges: [], unitType, corruption: 0, equipped: [],
 })
 
 const RAW_RECRUITS: readonly RecruitRow[] = [

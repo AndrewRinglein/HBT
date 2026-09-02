@@ -22,7 +22,7 @@ import { CUPS } from '../src/content/cups.js'
 import { TERRITORIES } from '../src/content/territories.js'
 
 const hero = (id: string, name: string, cls: string, unitType: string, level = 1): Hero => ({
-  id, name, classes: [cls], level, xp: 0, wound: 0, lifeState: 'alive', badges: [], unitType, corruption: 0,
+  id, name, classes: [cls], level, xp: 0, wound: 0, lifeState: 'alive', badges: [], unitType, corruption: 0, equipped: [],
 })
 
 const roster: Hero[] = [
@@ -46,7 +46,8 @@ const campaign = makeCampaign(1, {
   territories,
   roster,
   week: 3,
-  purse: { 'currency.supplies': 12, 'currency.faith': 6, 'currency.mana': 4 },
+  // 20 Salvage banked: the prologue's two conquests (the Sanctuary square and its approach), never spent — the Forge's repair is 10
+  purse: { 'currency.supplies': 12, 'currency.faith': 6, 'currency.mana': 4, 'currency.salvage': 20 },
   renown: 2,
 })
 

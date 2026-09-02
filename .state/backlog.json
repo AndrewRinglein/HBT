@@ -258,7 +258,8 @@
    "building.forge",
    "building.chapel"
   ],
-  "note": "building.chapel as the second instance: its root node only, to prove the tree machine is data — the full Chapel is out of the slice."
+  "note": "building.chapel as the second instance: its root node only, to prove the tree machine is data — the full Chapel is out of the slice.",
+  "attempts": 1
  },
  {
   "id": "opening.prologue",

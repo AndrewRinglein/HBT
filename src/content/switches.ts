@@ -14,6 +14,10 @@ export const SWITCHES = {
   battleMana: 3,
   /** recruit.faith — what a recruit costs. Faith recruits (Law 18); the amount is unsaid (a reroll is 10). Soft. */
   recruitFaith: 10,
+  /** gates.waived — building node gates (3 Mines, 1 Wellspring…) cannot be met on the four-Territory slice map; THIN-SLICE-REVIEW.md §G2: "waived or scaled". Waived. */
+  buildingGatesWaived: true,
+  /** shop.supplies — what one item on the Forge's shelf costs. Gear is unpriced (blocker 4); soft. */
+  shopSupplies: 6,
   /** heal.faith — Field Surgery, "7 Faith to heal a wounded hero on the spot" (7-KINGDOM-NOTES.md:189, Andrew). */
   healFaith: 7,
   /** defend.chancePerTerritory — the weekly defend roll, per owned Territory. RULED 6% (THIN-SLICE-REVIEW.md §G2) — kept here only because the ruling itself says "Soft". */

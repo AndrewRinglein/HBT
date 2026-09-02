@@ -22,6 +22,8 @@ import type { EngagementResult } from '../core/seam.js'
 import { listAvailable } from '../core/assignments.js'
 import { stageOf } from '../core/week.js'
 import { listLabours, canAssignLabour, performAssignLabour } from '../core/mend.js'
+import { listBuildings, whyNotBuild, performBuild } from '../core/build.js'
+import { listShopItems, canBuyItem, performBuyItem, canEquip, performEquip } from '../core/shop.js'
 
 export type Decisions = {
   /** Which offered Territory to attack, or null to decline. Default: the first. */
@@ -36,6 +38,10 @@ export type Decisions = {
   reward: (campaign: CampaignState, offers: string[]) => string
   /** Who works what at Mend. Default: every free hero, cycling through the labours that yield. */
   labours: (campaign: CampaignState, free: string[]) => [string, string][]
+  /** Which node to build, of those buildable, or null. Default: the cheapest. */
+  build: (campaign: CampaignState, buildable: { territoryId: string; buildingId: string; key: string; salvage: number }[]) => { territoryId: string; buildingId: string; key: string } | null
+  /** Which shelf item to buy, or null. Default: the first affordable. */
+  buy: (campaign: CampaignState, shelf: string[]) => string | null
 }
 
 export const DEFAULTS: Decisions = {
@@ -52,6 +58,12 @@ export const DEFAULTS: Decisions = {
     const keys = listLabours().filter((l) => l.currency).map((l) => l.key)
     return free.map((h, i) => [h, keys[i % keys.length]!] as [string, string])
   },
+  // spread the Salvage: the building with the fewest nodes bought first, then its cheapest
+  build: (c, buildable) => {
+    const bought = (id: string) => listBuildings(c).filter((b) => b.building.id === id).reduce((s, b) => s + b.building.nodes.filter((k) => (b.row.nodes.find((n) => n.key === k)?.salvage ?? 0) > 0).length, 0)
+    return [...buildable].sort((a, b) => bought(a.buildingId) - bought(b.buildingId) || a.salvage - b.salvage || a.key.localeCompare(b.key))[0] ?? null
+  },
+  buy: (_c, shelf) => shelf[0] ?? null,
 }
 
 /** Play the Engagement on the cursor through prep, the panel, the writer and out. */
@@ -62,6 +74,7 @@ export function playEngagement(ctx: Ctx, d: Decisions, causeId: string): void {
     const step = prepStepOf(c)
     if (step === 'council') performCouncil(ctx, d.tactic(c, listCouncilOptions(c).map((t) => t.id)), causeId)
     if (step === 'deploy') for (const h of d.deploy(c, listDeployable(c))) performDeploy(ctx, h, causeId)
+    if (step === 'equip') for (const item of [...c.stash]) { const h = c.cursor.engagement!.deployed.find((x) => canEquip(c, x, item)); if (h) performEquip(ctx, h, item, causeId) }
     if (!canAdvancePrep(c)) throw new Error(`playEngagement: stuck at prep step '${step}' — nothing deployed and the step is not skippable`)
     performAdvancePrep(ctx, causeId)
   }
@@ -86,6 +99,20 @@ export function playStage(ctx: Ctx, d: Decisions, causeId: string): void {
     const offers = listStageOffers(c)
     const pick = offers.length ? d.target(c, offers) : null
     if (pick) { performChooseEngagement(ctx, pick, causeId); playEngagement(ctx, d, causeId) }
+    if (stageOf(c).offers === 'build') {
+      // keep buying while something is buildable — one node a pass, cheapest first
+      for (let i = 0; i < 20; i++) {
+        const buildable = listBuildings(c).flatMap((b) => b.row.nodes.filter((n) => whyNotBuild(c, b.territoryId, b.building.id, n.key) === null).map((n) => ({ territoryId: b.territoryId, buildingId: b.building.id, key: n.key, salvage: n.salvage })))
+        const pick = buildable.length ? d.build(c, buildable) : null
+        if (!pick) break
+        performBuild(ctx, pick.territoryId, pick.buildingId, pick.key, causeId)
+      }
+    }
+    if (stageOf(c).offers === 'market') {
+      const shelf = listShopItems(c).filter((r) => canBuyItem(c, r.id)).map((r) => r.id)
+      const pick = shelf.length ? d.buy(c, shelf) : null
+      if (pick) performBuyItem(ctx, pick, causeId)
+    }
     if (stageOf(c).offers === 'labours') {
       for (const [heroId, key] of d.labours(c, listAvailable(c, c.cursor.stage))) if (canAssignLabour(c, heroId, key)) performAssignLabour(ctx, heroId, key, causeId)
     }

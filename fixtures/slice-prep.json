@@ -33,7 +33,7 @@
  "purse": {
   "currency.faith": 6,
   "currency.mana": 4,
-  "currency.salvage": 0,
+  "currency.salvage": 20,
   "currency.supplies": 12
  },
  "renown": 2,
@@ -52,7 +52,8 @@
    "lifeState": "alive",
    "badges": [],
    "unitType": "alpha-osric",
-   "corruption": 0
+   "corruption": 0,
+   "equipped": []
   },
   "hero.base.priest-scantily": {
    "id": "hero.base.priest-scantily",
@@ -66,7 +67,8 @@
    "lifeState": "alive",
    "badges": [],
    "unitType": "alpha-lucius",
-   "corruption": 0
+   "corruption": 0,
+   "equipped": []
   },
   "hero.fixed.air-mage": {
    "id": "hero.fixed.air-mage",
@@ -80,7 +82,8 @@
    "lifeState": "alive",
    "badges": [],
    "unitType": "alpha-air-mage",
-   "corruption": 0
+   "corruption": 0,
+   "equipped": []
   },
   "hero.fixed.orphans": {
    "id": "hero.fixed.orphans",
@@ -94,7 +97,8 @@
    "lifeState": "alive",
    "badges": [],
    "unitType": "hero.fixed.orphans",
-   "corruption": 0
+   "corruption": 0,
+   "equipped": []
   },
   "hero.shadows.dusk-hawk.v1": {
    "id": "hero.shadows.dusk-hawk.v1",
@@ -108,7 +112,8 @@
    "lifeState": "alive",
    "badges": [],
    "unitType": "alpha-dusk-hawk",
-   "corruption": 0
+   "corruption": 0,
+   "equipped": []
   },
   "hero.shadows.oathblade.v1": {
    "id": "hero.shadows.oathblade.v1",
@@ -122,7 +127,8 @@
    "lifeState": "alive",
    "badges": [],
    "unitType": "alpha-oathblade",
-   "corruption": 0
+   "corruption": 0,
+   "equipped": []
   },
   "hero.skyship.sky-pirate.v1": {
    "id": "hero.skyship.sky-pirate.v1",
@@ -136,7 +142,8 @@
    "lifeState": "alive",
    "badges": [],
    "unitType": "alpha-sky-pirate",
-   "corruption": 0
+   "corruption": 0,
+   "equipped": []
   }
  },
  "assignments": {},
@@ -172,7 +179,8 @@
     {
      "id": "building.forge",
      "level": 0,
-     "damaged": true
+     "damaged": true,
+     "nodes": []
     }
    ],
    "adjacent": [
@@ -194,7 +202,16 @@
    "owned": true,
    "kingdom": true,
    "claimedOnce": true,
-   "buildings": [],
+   "buildings": [
+    {
+     "id": "building.chapel",
+     "level": 1,
+     "damaged": false,
+     "nodes": [
+      "standing"
+     ]
+    }
+   ],
    "adjacent": [
     "territory.ruined-kingdom.ridge",
     "territory.ruined-kingdom.highlands"

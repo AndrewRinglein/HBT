@@ -446,5 +446,23 @@
    "at": "2026-09-02 05:54",
    "sha": "bd95fd7"
   }
+ },
+ "040": {
+  "red": {
+   "at": "2026-09-02 05:59",
+   "sha": "d32fd6f",
+   "hash": "a3102db73012",
+   "how": "disabled building.forge",
+   "tail": "       | ^ |      10| import { BUILDINGS, buildingRowOf } from '../src/content/buildings.js' |      11|"
+  }
+ },
+ "041": {
+  "red": {
+   "at": "2026-09-02 05:59",
+   "sha": "d32fd6f",
+   "hash": "eab3065def52",
+   "how": "feature absent",
+   "tail": "       | ^ |      10| import { isShopOpen, listShopItems, canBuyItem, performBuyItem, costOf… |      11| import { performAdvancePrep, performDeploy, listDeployable, prepStepOf…"
+  }
  }
 }

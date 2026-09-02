@@ -93,6 +93,8 @@ export type Hero = {
   badges: string[]
   /** The engine unit row this hero fields as, until the Crucible generates units. */
   unitType: string
+  /** Item ids worn, from the stash (GAME-ARCHITECTURE.md §1: `campaign.stash[] + hero.equipped`). */
+  equipped: string[]
   /** Per-hero corruption, STORED (SKELETON-SETTLED.md:117 derives the pool; the summand lives here). */
   corruption: number
 }
@@ -105,7 +107,8 @@ export type Hero = {
  */
 export type Assignment = { kind: 'engagement' | 'quest' | 'labour' | 'service' | 'heal' | 'rest'; target: string; weeks: number }
 
-export type Building = { id: BuildingId; level: number; damaged: boolean }
+/** A building on a Territory: which nodes of its tree are built; `level` is their count (the art's band keys to it). */
+export type Building = { id: BuildingId; level: number; damaged: boolean; nodes: string[] }
 
 export type Territory = {
   id: TerritoryId
@@ -178,10 +181,10 @@ export function makeCampaign(seed: number, options: MakeCampaignOptions): Campai
   // name — derived once, written down, never advanced.
   ;[...options.cups].sort().forEach((cup) => { cups[cup] = cupRootOf(seed, cup) })
   const roster: Record<HeroId, Hero> = {}
-  for (const h of [...options.roster].sort((a, b) => (a.id < b.id ? -1 : a.id > b.id ? 1 : 0))) roster[h.id] = { ...h, classes: [...h.classes], badges: [...h.badges] }
+  for (const h of [...options.roster].sort((a, b) => (a.id < b.id ? -1 : a.id > b.id ? 1 : 0))) roster[h.id] = { ...h, classes: [...h.classes], badges: [...h.badges], equipped: [...h.equipped] }
   const territories: Record<TerritoryId, Territory> = {}
   for (const t of [...options.territories].sort((a, b) => (a.id < b.id ? -1 : a.id > b.id ? 1 : 0))) {
-    territories[t.id] = { ...t, buildings: t.buildings.map((b) => ({ ...b })), adjacent: [...t.adjacent], enemies: [...t.enemies], node: t.node }
+    territories[t.id] = { ...t, buildings: t.buildings.map((b) => ({ ...b, nodes: [...b.nodes] })), adjacent: [...t.adjacent], enemies: [...t.enemies], node: t.node }
   }
   return {
     realm: options.realm,

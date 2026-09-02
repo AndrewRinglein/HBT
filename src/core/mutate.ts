@@ -130,6 +130,31 @@ export function applyLevel(ctx: Ctx, heroId: string, causeId: string): void {
   emit(ctx, 'hero.leveled', causeId, { heroId, level: h.level, xp: h.xp })
 }
 
+/** A node of a building's tree, bought — the one write of a Building's nodes. */
+export function applyBuildNode(ctx: Ctx, territoryId: string, buildingId: string, nodeKey: string, causeId: string): void {
+  const t = ctx.campaign.territories[territoryId]
+  const b = t?.buildings.find((x) => x.id === buildingId)
+  if (!b) throw new Error(`no building '${buildingId}' on '${territoryId}'`)
+  b.nodes.push(nodeKey)
+  b.level = b.nodes.length
+  b.damaged = false
+  emit(ctx, 'building.built', causeId, { territoryId, buildingId, node: nodeKey, level: b.level })
+}
+
+export function applyBuyItem(ctx: Ctx, itemId: string, cost: Record<string, number>, causeId: string): void {
+  ctx.campaign.stash.push(itemId)
+  emit(ctx, 'item.bought', causeId, { itemId, cost })
+}
+
+export function applyEquip(ctx: Ctx, heroId: string, itemId: string, causeId: string): void {
+  const h = heroOrThrow(ctx.campaign, heroId)
+  const at = ctx.campaign.stash.indexOf(itemId)
+  if (at < 0) throw new Error(`applyEquip refused: '${itemId}' is not in the stash`)
+  ctx.campaign.stash.splice(at, 1)
+  h.equipped.push(itemId)
+  emit(ctx, 'item.equipped', causeId, { heroId, itemId })
+}
+
 // ── what the one writer says as it writes ───────────────────────────────────
 
 function heroOrThrow(campaign: CampaignState, heroId: string) {
