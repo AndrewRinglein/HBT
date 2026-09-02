@@ -102,10 +102,10 @@ an attack; it grants `attack.longsword.slash` by id.
 | **4** | a handful only | signature | signature | breaks a rule on purpose |
 
 **One point ≈** +1 Strength or Precision · +2 Health · +2 Reach · +2.5 Toughness ·
-+3 Dodge · +1.5 Movement · +3 Stamina Max · +5 Accuracy, Crit, Luck or Vision ·
++6 Dodge · +6 Accuracy · +1.5 Movement · +3 Stamina Max · +5 Crit, Luck or Vision ·
 +6.7 Surge.
-**Worth more than one point:** Armor, Resist and Stamina Regen at 2.0 each;
-Magic and Spirit at 1.5.
+**Worth more than one point:** Stamina Regen at 2.0; Armor, Resist, Magic and Spirit at 1.5 each.
+*(Armor and Resist re-ruled from 2.0 to 1.5 on 2026-09-02.)*
 
 ### The stat value ladder — corrected again 2026-08-17
 
@@ -113,7 +113,7 @@ Magic and Spirit at 1.5.
 
 | Stat | Per point | Note |
 |---|---|---|
-| **Armor · Resist** | **2.0** | roughly twice a Strength. Stacking them is enormous, so they are hard to gain |
+| **Armor · Resist** | **1.5** | *(re-ruled 2026-09-02, down from 2.0)* half again a Strength. Stacking them is still enormous, so they stay hard to gain |
 | **Stamina Regen** | **2.0** | **the sacred stat, and now priced like one.** It hard-caps at 3, so there are only ever two of these to give |
 | **Magic · Spirit** | **1.5** | more than Strength or Precision — about 3 Health |
 | **Strength · Precision** | **1.0** | the unit |
@@ -122,9 +122,10 @@ Magic and Spirit at 1.5.
 | **Health** | **0.5** | 2 Health ≈ 1 Strength. **Not the cheapest thing in the game** |
 | **Reach** | **0.5** | about half a Precision |
 | **Toughness** | **0.4** | injury capacity, and every point is +5 Deathbed Fighting |
-| **Dodge** | **0.3** | 50% more than Accuracy per point |
+| **Dodge** | **0.167** | *(re-ruled 2026-09-02)* **6 Dodge = 1 point**, the same rate as Accuracy — the two are priced alike |
 | **Stamina Max** | **0.3** | cheap. Breadth, not power — it buys more small actions, not better ones |
-| **Accuracy · Crit · Luck · Vision** | **0.2** | all four are worth about the same |
+| **Accuracy** | **0.167** | *(re-ruled 2026-09-02)* **6 Accuracy = 1 point** |
+| **Crit · Luck · Vision** | **0.2** | not named in the 2026-09-02 ruling; unchanged pending one |
 | **Surge** | **0.15** | the cheapest thing on the board. **Fine to modify** — it is not a sacred stat |
 
 **Nothing sits outside this table any more.** priced the last five on

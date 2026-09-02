@@ -1,7 +1,12 @@
 import fs from 'fs';
 const L=JSON.parse(fs.readFileSync('gen/levels.json','utf8'));
-const V={strength:1,precision:1,accuracy:.2,crit:.2,luck:.2,reach:.5,dodge:.3,vision:.2,
-  armor:2,resist:2,health:.5,magic:1.5,spirit:1.5,itemSlots:.67,deathbedFighting:.1,
+// THE STAT VALUE LADDER. Re-ruled 2026-09-02: "Armor and resist are both worth 1.5.
+// Health is worth 0.5. Precision and strength are worth 1. And then 6 dodge or 6 accuracy
+// are both worth 1." So Armor/Resist fall 2.0 -> 1.5, and Dodge and Accuracy are both
+// 1/6 = 0.167 (Dodge was 0.3, Accuracy 0.2). Crit, Luck and Vision were not named in that
+// ruling and stay at 0.2 pending one.
+const V={strength:1,precision:1,accuracy:1/6,crit:.2,luck:.2,reach:.5,dodge:1/6,vision:.2,
+  armor:1.5,resist:1.5,health:.5,magic:1.5,spirit:1.5,itemSlots:.67,deathbedFighting:.1,
   movement:.7,staminaMax:.3,staminaRegen:2,surge:.15,toughness:.4};
 const OFF=new Set([]);
 const COUNT=['staminaMax','staminaRegen','toughness','movement'];
