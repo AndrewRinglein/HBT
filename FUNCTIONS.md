@@ -118,7 +118,7 @@ What a rule may DO.
 | Function | Uses |
 |---|---:|
 | `burn` | 84 |
-| `bleed` | 66 |
+| `bleed` | 67 |
 | `poison` | 54 |
 | `protection` | 40 |
 | `weak` | 39 |

@@ -953,6 +953,18 @@ game**, and every one of them has to be authored from nothing.
 
 ### All healing comes from one function
 
+**The stations run in this order — ruled 2026-09-02:**
+
+1. the **base heal**
+2. **all bonuses** to healing are added, **Karma included**
+3. **Burn halves** the result
+4. what remains is **applied to Health**, and **half the applied amount is removed from Bleed** (nearest, 0.5 up)
+
+Bonuses always land before the halving. Karma 3 on a Regeneration 4 tick, with Burn present,
+heals `(4 + 3) ÷ 2 = 4` — and sheds 2 Bleed. Regeneration calls this function like everything
+else, so a Regeneration tick is bonused, halved and Bleed-stripping exactly as a cast heal is.
+
+
 Ruled 2026-09-02:
 
 > *"Regeneration should CAUSE healing. Healing should all come from the same function."*

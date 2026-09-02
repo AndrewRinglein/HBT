@@ -1598,7 +1598,7 @@
   },
   {
    "name": "bleed",
-   "uses": 66,
+   "uses": 67,
    "ids": [
     "item.bloody-axe",
     "item.twin-talon-bow",
