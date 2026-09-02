@@ -20,8 +20,13 @@ export type HeroId = string
 export type TerritoryId = string
 export type BuildingId = string
 
-/** GAME-ARCHITECTURE.md §2.2 — the coarse position within a Week. */
-export type CursorStep = 'open' | 'prep' | 'battle' | 'reckoning' | 'rewards' | 'levelUp'
+/**
+ * GAME-ARCHITECTURE.md §2.2 — the coarse position within a Week. `draft` is
+ * the one value §2.2 did not list: "The draft — the player's FIRST act — has no
+ * screen and no cursor.step value" (THIN-SLICE-REVIEW.md §E); it is added for
+ * the opening, and flagged.
+ */
+export type CursorStep = 'open' | 'prep' | 'battle' | 'reckoning' | 'rewards' | 'levelUp' | 'draft'
 /** §4 "Inside Combat Prep — four ordered steps". The ORDER is a row list in src/content/prep.ts, not here. */
 export type PrepStep = 'reveal' | 'council' | 'deploy' | 'equip'
 
@@ -34,8 +39,11 @@ export type PrepStep = 'reveal' | 'council' | 'deploy' | 'equip'
 export type Engagement = {
   id: string
   kind: string
-  territoryId: TerritoryId
+  /** The ground at stake — null for a prologue battle that takes none (content/prologue.ts). */
+  territoryId: TerritoryId | null
   mapId: string
+  /** One of the opening's five (its number), or absent. Not a kind: a flag on an Engagement of an existing kind. */
+  prologue?: number
   /** Enemy unit typeIds, as the engine fields them. */
   enemies: string[]
   /** A condition.* id, or null when the Reveal shows none. */
@@ -68,6 +76,10 @@ export type Cursor = {
   recruited: number
   /** The reward draft on offer after a won battle — three item ids, keep one — while step === 'rewards'. */
   rewardOffer: string[] | null
+  /** The opening: the next prologue battle's number (1–5) while the opening runs; null once the Kingdom Territory is taken. */
+  prologue: number | null
+  /** The draft on offer — three hero ids, take one — while step === 'draft'. */
+  draftOffer: string[] | null
   /**
    * §4.4 (THIN-SLICE-IMPLEMENTATION.md): the battle's seed and options, never
    * its state. In the slice the battle is not played; this holds what the
@@ -155,6 +167,8 @@ export type CampaignState = {
   unavailable: HeroId[]
   /** Named streams' root seeds — every Campaign roll is keyed by what it is (Law 4). Never a counter. */
   cups: Record<string, number>
+  /** Permanent death: a Campaign that ended, and why. GAME-ARCHITECTURE.md §2.5, §6 — the only path out of a wipe. */
+  ended: { week: number; reason: string } | null
 }
 
 export type MakeCampaignOptions = {
@@ -190,7 +204,7 @@ export function makeCampaign(seed: number, options: MakeCampaignOptions): Campai
     realm: options.realm,
     seed,
     week: options.week ?? 1,
-    cursor: { week: options.week ?? 1, stage: options.stage, step: 'open', prepStep: null, engagement: null, attack: null, fought: 0, recruited: 0, rewardOffer: null, battle: null },
+    cursor: { week: options.week ?? 1, stage: options.stage, step: 'open', prepStep: null, engagement: null, attack: null, fought: 0, recruited: 0, rewardOffer: null, prologue: null, draftOffer: null, battle: null },
     purse,
     renown: options.renown ?? 0,
     unlocks: [],
@@ -205,6 +219,7 @@ export function makeCampaign(seed: number, options: MakeCampaignOptions): Campai
     captured: [],
     unavailable: [],
     cups,
+    ended: null,
   }
 }
 
@@ -245,8 +260,8 @@ export function saveOf(campaign: CampaignState): string {
 export function campaignOf(json: string): CampaignState {
   const c = JSON.parse(json) as CampaignState
   assertPlainData(c)
-  const required: (keyof CampaignState)[] = ['realm', 'seed', 'week', 'cursor', 'purse', 'renown', 'unlocks', 'revealed', 'roster', 'assignments', 'stash', 'territories', 'threat', 'losses', 'quests', 'captured', 'unavailable', 'cups']
+  const required: (keyof CampaignState)[] = ['realm', 'seed', 'week', 'cursor', 'purse', 'renown', 'unlocks', 'revealed', 'roster', 'assignments', 'stash', 'territories', 'threat', 'losses', 'quests', 'captured', 'unavailable', 'cups', 'ended']
   for (const k of required) if (!(k in c)) throw new Error(`save is missing '${k}' — not a Campaign`)
-  for (const k of ['week', 'stage', 'step', 'prepStep', 'engagement', 'attack', 'fought', 'recruited', 'rewardOffer', 'battle'] as const) if (!(k in c.cursor)) throw new Error(`save's cursor is missing '${k}'`)
+  for (const k of ['week', 'stage', 'step', 'prepStep', 'engagement', 'attack', 'fought', 'recruited', 'rewardOffer', 'prologue', 'draftOffer', 'battle'] as const) if (!(k in c.cursor)) throw new Error(`save's cursor is missing '${k}'`)
   return c
 }

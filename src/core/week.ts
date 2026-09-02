@@ -25,6 +25,7 @@ import { beginCombatPrep } from './prep.js'
 import { listConquerable, resolveThreat, performLose } from './map.js'
 import { tickAssignments } from './assignments.js'
 import { performResolveMend } from './mend.js'
+import { performAdvanceOpening } from './opening.js'
 export { listConquerable } from './map.js'
 
 // ── reading ─────────────────────────────────────────────────────────────────
@@ -99,6 +100,9 @@ export function endWeek(ctx: Ctx, causeId: string): void {
 /** Leave this Stage for the next row — or, after the last, for the next Week. */
 export function performAdvance(ctx: Ctx, causeId: string): void {
   if (!canAdvance(ctx.campaign)) throw new Error(`performAdvance refused: the cursor is at step '${ctx.campaign.cursor.step}' — finish the Engagement first`)
+  if (ctx.campaign.ended) throw new Error('performAdvance refused: the Campaign has ended')
+  // Week 0 is the opening's: no Stages, just drafts and the five battles, until the Kingdom Territory is taken
+  if (ctx.campaign.cursor.prologue !== null) { performAdvanceOpening(ctx, causeId); return }
   endStage(ctx, causeId)
   const at = STAGES.findIndex((s) => s.id === ctx.campaign.cursor.stage)
   const next = STAGES[at + 1]

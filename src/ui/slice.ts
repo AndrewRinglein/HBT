@@ -34,6 +34,8 @@ import { listRewardOffers, performTakeReward, listLevelUps, performLevelUp, perf
 import { xpForLevel } from '../content/levels.js'
 import { listBuildings, whyNotBuild, performBuild } from '../core/build.js'
 import { isShopOpen, listShopItems, canBuyItem, performBuyItem, costOfItem, canEquip, performEquip } from '../core/shop.js'
+import { makeNewCampaign, listDraftOffers, performDraft, performEndCampaign, draftsOwedOf, draftedCountOf } from '../core/opening.js'
+import { PROLOGUE } from '../content/prologue.js'
 import { UNITS } from '../engine.js'
 
 declare const __FIXTURE_JSON__: string
@@ -95,12 +97,13 @@ function render(): void {
     <h1>Heroes of Blight and Tragic — the slice</h1>
     <p class="meta">load a save · Combat Prep · the battle, shown not fought · set what happened · the Reckoning. Built at kingdom ${esc(__BUILD_SHA__)}.</p>
     <div class="bar">
+      <button class="primary" data-act="new-campaign">New Campaign</button>
       <button data-act="load-fixture">Load the fixture</button>
       <label class="file">Load a save <input type="file" accept=".json,application/json" data-act="load-file"></label>
       <button data-act="download" ${c ? '' : 'disabled'}>Download save</button>
       <button class="quiet" data-act="forget">Forget browser save</button>
       <span class="sp"></span>
-      ${c ? `<span class="tag">week ${c.week}</span> <span class="tag">${esc(c.cursor.stage)}</span> <span class="tag">${esc(c.cursor.step)}${c.cursor.prepStep ? '/' + c.cursor.prepStep : ''}</span> <span class="tag">renown ${c.renown}</span>` : ''}
+      ${c ? `<span class="tag">week ${c.week}</span> <span class="tag">${esc(c.cursor.stage)}</span> <span class="tag">${esc(c.cursor.step)}${c.cursor.prepStep ? '/' + c.cursor.prepStep : ''}</span> <span class="tag">renown ${c.renown}</span> <span class="tag meta">seed ${c.seed}</span>` : ''}
     </div>
     <div class="status${app.error ? ' err' : ''}">${esc(app.status)}</div>
     ${c ? screen(c) : `<div class="card"><p>No Campaign loaded. Load the fixture — a Campaign at Combat Prep, week 3, a Conquer on the Ridge — or a save you downloaded earlier.</p></div>`}
@@ -109,7 +112,9 @@ function render(): void {
 }
 
 function screen(c: CampaignState): string {
+  if (c.ended) return endedScreen(c)
   switch (c.cursor.step) {
+    case 'draft': return draftScreen(c)
     case 'prep': return prepScreen(c)
     case 'battle': return c.cursor.battle?.resultSet ? tallyScreen(c) : battleScreen(c)
     case 'reckoning': return appliedScreen(c)
@@ -118,6 +123,32 @@ function screen(c: CampaignState): string {
     case 'open': return worldScreen(c)
     default: return `<div class="card"><p>The cursor is at <code>${esc(c.cursor.step)}</code> — a step the slice has no screen for yet.</p></div>`
   }
+}
+
+// ── the opening ─────────────────────────────────────────────────────────────
+function draftScreen(c: CampaignState): string {
+  const offers = listDraftOffers(c)
+  const kit = (unitType: string) => (UNITS[unitType]?.attacks ?? []).map((a) => a.replace(/^attack\./, '').replace(/\./g, ' ')).join(', ')
+  return `<h2>The draft — ${draftedCountOf(c) === 0 ? 'your first hero' : `hero ${draftedCountOf(c) + 1} of six`}</h2>
+    <p class="meta">Three come to the fire. You see who they are — never their numbers. ${draftsOwedOf(c) > 1 ? `${draftsOwedOf(c)} to draft before the next battle.` : ''}</p>
+    <div class="card"><div class="pick">${offers.map((h) => `<div class="opt" data-act="draft" data-id="${esc(h.id)}"><b>${esc(h.name)}</b><small>${esc(h.classes.map((x) => x.replace('class.', '')).join(', '))} · carries ${esc(kit(h.unitType) || 'nothing yet')}</small></div>`).join('')}</div></div>`
+}
+function endedScreen(c: CampaignState): string {
+  return `<h2 class="lost">The run is over</h2>
+    <p class="meta">Week ${c.ended!.week} — ${esc(c.ended!.reason)}. "Losses before you've conquered the Kingdom tile are what will reset the game." There is no reload.</p>
+    <div class="bar"><span class="sp"></span><button class="primary" data-act="restart">Begin again</button></div>`
+}
+function openingBanner(c: CampaignState): string {
+  if (c.cursor.prologue === null) return ''
+  const n = c.cursor.prologue
+  const row = PROLOGUE.find((r) => r.n === n)
+  return `<div class="card" style="margin-bottom:12px"><p><b>The opening — Week 0.</b> ${row ? `Next: battle ${n}, <i>${esc(row.name)}</i>${row.territoryId ? ' — for ' + esc(c.territories[row.territoryId]!.name) : ''}.` : 'Every battle fought.'} Drafted ${draftedCountOf(c)} of six.${draftsOwedOf(c) ? ` ${draftsOwedOf(c)} draft(s) owed first.` : ''}</p>
+    <div class="bar"><span class="sp"></span><button class="primary" data-act="advance">${draftsOwedOf(c) ? 'Draft' : row ? 'To battle ' + n : 'Begin Week 1'}</button></div></div>`
+}
+
+function rosterPanel(c: CampaignState): string {
+  const heroes = Object.values(c.roster).sort((a, b) => a.id.localeCompare(b.id))
+  return `<div class="card" style="margin-top:12px"><h3>The roster</h3><table>${heroes.map((h) => `<tr><td>${esc(h.name)}</td><td class="meta">${esc(h.classes.map((x) => x.replace('class.', '')).join(', '))} · L${h.level} · ${h.xp} xp</td><td>${h.lifeState === 'dead' ? '<span class="lost">dead</span>' : h.wound ? woundNameOf(h.wound) : ''} <span class="meta">${esc(commitmentOf(c, h.id, 'field'))}</span></td></tr>`).join('') || '<tr><td class="meta">nobody yet</td></tr>'}</table></div>`
 }
 
 // ── rewards and level-up ────────────────────────────────────────────────────
@@ -137,6 +168,7 @@ function levelUpScreen(c: CampaignState): string {
 
 // ── the Week ────────────────────────────────────────────────────────────────
 function worldScreen(c: CampaignState): string {
+  if (c.cursor.prologue !== null) return openingBanner(c) + rosterPanel(c)
   const row = stageOf(c)
   const at = STAGES.findIndex((s) => s.id === row.id)
   const chips = STAGES.map((s, i) => `<span class="${i === at ? 'on' : i < at ? 'done' : ''}">${esc(s.title)}</span>`).join('')
@@ -187,7 +219,7 @@ function worldScreen(c: CampaignState): string {
         <div class="card"><h3>The purse</h3><table>${Object.entries(c.purse).map(([k, v]) => `<tr><td>${esc(k.replace('currency.', ''))}</td><td class="n">${v}</td></tr>`).join('')}<tr><td>Renown</td><td class="n">${c.renown}</td></tr><tr><td>losses</td><td class="n">${c.losses}</td></tr><tr><td>difficulty</td><td class="n">${resolveDifficulty(c)}</td></tr></table></div>
         <div class="card" style="margin-top:12px"><h3>The map</h3><table>${territories.map((t) => `<tr><td>${esc(t.name)}${t.kingdom ? ' <span class="tag">kingdom</span>' : ''}</td><td>${t.owned ? '<span class="won">held</span>' : 'unclaimed'}</td><td class="meta">${esc(t.buildings.map((b) => b.id.replace('building.', '') + (b.damaged ? ' (ruin)' : '')).join(', '))}</td></tr>`).join('')}</table></div>
         ${c.stash.length ? `<div class="card" style="margin-top:12px"><h3>The stash</h3><p class="meta">${esc(c.stash.map((i) => i.replace('item.', '')).join(' · '))}</p></div>` : ''}
-        <div class="card" style="margin-top:12px"><h3>The roster</h3><table>${heroes.map((h) => `<tr><td>${esc(h.name)}</td><td class="meta">${esc(h.classes.map((x) => x.replace('class.', '')).join(', '))} · L${h.level} · ${h.xp} xp</td><td>${h.lifeState === 'dead' ? '<span class="lost">dead</span>' : h.wound ? woundNameOf(h.wound) : ''} <span class="meta">${esc(commitmentOf(c, h.id, 'field'))}</span></td></tr>`).join('')}</table></div>
+        ${rosterPanel(c)}
       </div>
     </div>`
 }
@@ -215,7 +247,7 @@ function prepScreen(c: CampaignState): string {
       <p class="meta">What is equipped is recorded on the hero; the engine still fields the unit row's own kit until content lands the item's effect.</p>`
   }
   return `<h2>Combat Prep — ${esc(v.stepTitle)}</h2>
-    <p class="meta"><code>${esc(v.engagementId)}</code> · ${esc(v.kind)} · ${esc(v.territoryId)} · ${esc(v.mapId)}</p>
+    <p class="meta"><code>${esc(v.engagementId)}</code> · ${esc(v.kind)} · ${esc(v.territoryId ?? 'no ground at stake')} · ${esc(v.mapId)}</p>
     <div class="steps">${steps}</div>
     <div class="card">${body}</div>
     <div class="bar"><span class="sp"></span><button class="primary" data-act="advance" ${v.canAdvance ? '' : 'disabled'}>${at + 1 < PREP_STEP_ROWS.length ? 'Next — ' + esc(PREP_STEP_ROWS[at + 1]!.title) : 'To the battle'}</button></div>`
@@ -370,6 +402,11 @@ function wire(root: HTMLElement): void {
       const id = el.dataset['id']
       switch (actName) {
         case 'load-fixture': return loadJson(__FIXTURE_JSON__, 'the fixture')
+        // the one place chance enters from outside the rules: a new save's seed, chosen at the player's click
+        // and written into the save, so every roll after it is keyed and reproducible (Law 4)
+        case 'new-campaign': return loadJson(saveOf(makeNewCampaign(Math.floor(Math.random() * 1e9))), 'a new Campaign')
+        case 'draft': return act(() => performDraft(app.ctx!, id!, 'slice'))
+        case 'restart': return act(() => { app.ctx = makeCtx(performEndCampaign(app.ctx!, 'slice')) })
         case 'download': return download()
         case 'forget': try { localStorage.removeItem(SAVE_KEY) } catch {} note('browser save forgotten'); return render()
         case 'advance': return act(() => (app.ctx!.campaign.cursor.step === 'prep' ? performAdvancePrep(app.ctx!, 'slice') : performAdvance(app.ctx!, 'slice')))

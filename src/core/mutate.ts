@@ -155,6 +155,32 @@ export function applyEquip(ctx: Ctx, heroId: string, itemId: string, causeId: st
   emit(ctx, 'item.equipped', causeId, { heroId, itemId })
 }
 
+/** The opening's draft: offered as three, then one taken onto the roster. */
+export function setDraftOffer(ctx: Ctx, offer: readonly string[] | null, causeId: string): void {
+  ctx.campaign.cursor.draftOffer = offer ? [...offer] : null
+  if (offer) emit(ctx, 'draft.offered', causeId, { offer: [...offer] })
+}
+
+export function applyDraft(ctx: Ctx, hero: Hero, causeId: string): void {
+  if (ctx.campaign.roster[hero.id]) throw new Error(`applyDraft refused: '${hero.id}' is already on the roster`)
+  ctx.campaign.roster[hero.id] = { ...hero, classes: [...hero.classes], badges: [...hero.badges], equipped: [...hero.equipped] }
+  ctx.campaign.cursor.draftOffer = null
+  emit(ctx, 'hero.drafted', causeId, { heroId: hero.id, name: hero.name })
+}
+
+/** A civilian rescued into the roster — the same record as any hero (ruled 2026-08-23). */
+export function applyRescue(ctx: Ctx, hero: Hero, causeId: string): void {
+  if (ctx.campaign.roster[hero.id]) return
+  ctx.campaign.roster[hero.id] = { ...hero, classes: [...hero.classes], badges: [...hero.badges], equipped: [...hero.equipped] }
+  emit(ctx, 'hero.rescued', causeId, { heroId: hero.id, name: hero.name })
+}
+
+/** Permanent death — the Campaign is over. §6: "there is no branch, no reload." */
+export function setEnded(ctx: Ctx, reason: string, causeId: string): void {
+  ctx.campaign.ended = { week: ctx.campaign.week, reason }
+  emit(ctx, 'campaign.ended', causeId, { week: ctx.campaign.week, reason })
+}
+
 // ── what the one writer says as it writes ───────────────────────────────────
 
 function heroOrThrow(campaign: CampaignState, heroId: string) {

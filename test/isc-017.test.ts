@@ -12,10 +12,10 @@ describe('ISC-017 — re-conquest: Renown yes, Salvage no', () => {
     const d1 = decide(first, panelResult(first, true))
     applyBattleResult(first, e1, d1.result, d1.reckoning)
     expect(first.campaign.purse['currency.salvage']!).toBeGreaterThan(salvageBefore)
-    expect(first.campaign.territories[e1.territoryId]!.claimedOnce).toBe(true)
+    expect(first.campaign.territories[e1.territoryId!]!.claimedOnce).toBe(true)
 
     // the Ridge was held once and lost since: claimedOnce stays true, owned is false
-    const again = toBattle(loadFixture((c) => { const t = c.territories[c.cursor.engagement!.territoryId]!; t.claimedOnce = true; t.owned = false }))
+    const again = toBattle(loadFixture((c) => { const t = c.territories[c.cursor.engagement!.territoryId!]!; t.claimedOnce = true; t.owned = false }))
     const e2 = again.campaign.cursor.engagement!
     const salvage = again.campaign.purse['currency.salvage']!
     const renown = again.campaign.renown
@@ -27,7 +27,7 @@ describe('ISC-017 — re-conquest: Renown yes, Salvage no', () => {
     applyBattleResult(again, e2, d2.result, d2.reckoning)
     expect(again.campaign.renown).toBe(renown + 1)
     expect(again.campaign.purse['currency.salvage']).toBe(salvage)
-    expect(again.campaign.territories[e2.territoryId]!.owned).toBe(true)
+    expect(again.campaign.territories[e2.territoryId!]!.owned).toBe(true)
     expect(again.events.filter((ev) => ev.type === 'territory.claimed').map((ev) => ev['first'])).toEqual([false])
   })
 })

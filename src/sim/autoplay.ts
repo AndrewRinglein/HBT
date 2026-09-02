@@ -24,6 +24,7 @@ import { stageOf } from '../core/week.js'
 import { listLabours, canAssignLabour, performAssignLabour } from '../core/mend.js'
 import { listBuildings, whyNotBuild, performBuild } from '../core/build.js'
 import { listShopItems, canBuyItem, performBuyItem, canEquip, performEquip } from '../core/shop.js'
+import { listDraftOffers, performDraft } from '../core/opening.js'
 
 export type Decisions = {
   /** Which offered Territory to attack, or null to decline. Default: the first. */
@@ -42,6 +43,8 @@ export type Decisions = {
   build: (campaign: CampaignState, buildable: { territoryId: string; buildingId: string; key: string; salvage: number }[]) => { territoryId: string; buildingId: string; key: string } | null
   /** Which shelf item to buy, or null. Default: the first affordable. */
   buy: (campaign: CampaignState, shelf: string[]) => string | null
+  /** Which of the three draftees to take. Default: the first. */
+  draft: (campaign: CampaignState, offers: string[]) => string
 }
 
 export const DEFAULTS: Decisions = {
@@ -64,6 +67,7 @@ export const DEFAULTS: Decisions = {
     return [...buildable].sort((a, b) => bought(a.buildingId) - bought(b.buildingId) || a.salvage - b.salvage || a.key.localeCompare(b.key))[0] ?? null
   },
   buy: (_c, shelf) => shelf[0] ?? null,
+  draft: (_c, offers) => offers[0]!,
 }
 
 /** Play the Engagement on the cursor through prep, the panel, the writer and out. */
@@ -91,9 +95,11 @@ export function playEngagement(ctx: Ctx, d: Decisions, causeId: string): void {
   if (c.cursor.step === 'levelUp') { for (const h of listLevelUps(c)) performLevelUp(ctx, h, causeId); performLeaveLevelUp(ctx, causeId) }
 }
 
-/** Advance one Stage, taking what it offers first if the decisions say so. */
+/** Advance one Stage — or one step of the opening — taking what it offers first if the decisions say so. */
 export function playStage(ctx: Ctx, d: Decisions, causeId: string): void {
   const c = ctx.campaign
+  if (c.ended) throw new Error(`playStage: the Campaign ended in week ${c.ended.week} — ${c.ended.reason}`)
+  if (c.cursor.step === 'draft') performDraft(ctx, d.draft(c, listDraftOffers(c).map((h) => h.id)), causeId)
   if (c.cursor.step === 'prep') playEngagement(ctx, d, causeId)
   if (c.cursor.step === 'open') {
     const offers = listStageOffers(c)
@@ -117,8 +123,20 @@ export function playStage(ctx: Ctx, d: Decisions, causeId: string): void {
       for (const [heroId, key] of d.labours(c, listAvailable(c, c.cursor.stage))) if (canAssignLabour(c, heroId, key)) performAssignLabour(ctx, heroId, key, causeId)
     }
   }
+  if (c.ended) return
   if (!canAdvance(c)) throw new Error(`playStage: cannot advance from step '${c.cursor.step}'`)
   performAdvance(ctx, causeId)
+}
+
+/** Play the opening from a new Campaign until the Week machine takes over (or the run ends). */
+export function playOpening(ctx: Ctx, decisions: Partial<Decisions> = {}, causeId = 'autoplay'): Ctx {
+  const d: Decisions = { ...DEFAULTS, ...decisions }
+  let guard = 0
+  while (ctx.campaign.cursor.prologue !== null && !ctx.campaign.ended) {
+    playStage(ctx, d, causeId)
+    if (++guard > 60) throw new Error('playOpening: sixty steps and the opening has not finished')
+  }
+  return ctx
 }
 
 /** Play whole Weeks, from wherever the cursor is, until the Week number has advanced `weeks` times. */
@@ -126,7 +144,7 @@ export function playWeeks(ctx: Ctx, weeks: number, decisions: Partial<Decisions>
   const d: Decisions = { ...DEFAULTS, ...decisions }
   const target = ctx.campaign.week + weeks
   let guard = 0
-  while (ctx.campaign.week < target) {
+  while (ctx.campaign.week < target && !ctx.campaign.ended) {
     playStage(ctx, d, causeId)
     if (++guard > weeks * 12) throw new Error(`playWeeks: ${guard} Stages advanced and the Week did not reach ${target} — the machine is not moving`)
   }

@@ -28,6 +28,8 @@
   "fought": 0,
   "recruited": 0,
   "rewardOffer": null,
+  "prologue": null,
+  "draftOffer": null,
   "battle": null
  },
  "purse": {
@@ -260,5 +262,6 @@
   "cup.reward": 2645491317,
   "cup.threat": 3019024446,
   "cup.unavailability": 1862212042
- }
+ },
+ "ended": null
 }

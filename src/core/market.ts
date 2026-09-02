@@ -7,7 +7,7 @@
 import type { CampaignState, HeroId } from './campaign.js'
 import { type Ctx, applyRecruit, setWound, setCursor } from './mutate.js'
 import { canAfford, performSpend, type Cost } from './purse.js'
-import { RECRUITS, type RecruitRow } from '../content/recruits.js'
+import { RECRUITS, type RecruitRow } from '../content/heroes.js'
 import { SWITCHES } from '../content/switches.js'
 import { CURRENCY_IDS } from '../content/currencies.js'
 import { stageRowOf } from '../content/stages.js'

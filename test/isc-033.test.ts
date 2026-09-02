@@ -16,7 +16,7 @@ describe('ISC-033 — exit: past the battle, saved, and never applied twice', ()
     applyBattleResult(ctx, e, result, reckoning)
     expect(ctx.campaign.cursor.step).toBe('reckoning')
     expect(ctx.campaign.cursor.battle).toBeNull()
-    expect(ctx.campaign.territories[e.territoryId]!.owned).toBe(true)
+    expect(ctx.campaign.territories[e.territoryId!]!.owned).toBe(true)
 
     const reloaded = campaignOf(saveOf(ctx.campaign))
     expect(reloaded).toEqual(ctx.campaign)

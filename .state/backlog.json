@@ -282,10 +282,11 @@
    "build.forge"
   ],
   "variants": [
-   "engagement.prologue-1",
-   "engagement.prologue-2"
+   "engagement.conquer",
+   "hero.base.ranger-aggressive"
   ],
-  "note": "the prologue battles' ids and whether they pay Renown are the open label question in STATE.md — name them from ENEMY-REVIEW.md when worked, and ask."
+  "note": "variants: the prologue battles are engagement.conquer rows flagged prologue (no kind of their own — the open label question), and the ruled first draftee (engine/DECISIONS.md 2026-08-26) as a hero-pool row; both live in the autoplayed opening. Whether the prologue pays Renown is SWITCHES.md prologue.paysRenown.",
+  "attempts": 1
  },
  {
   "id": "charter.renown",

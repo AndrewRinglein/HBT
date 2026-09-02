@@ -41,6 +41,9 @@ export const KINGDOM_EVENTS = [
   // Renown is not a currency and takes no resource.* word; an Engagement is
   // resolved once, won or lost.
   'xp.gained', 'hero.died', 'renown.gained', 'engagement.resolved',
+  // Added 2026-09-01 with opening.prologue, and to GLOSSARY.md the same commit:
+  // the opening's draft and the civilians it rescues.
+  'draft.offered', 'hero.drafted', 'hero.rescued',
 ] as const
 
 export type KingdomEventType = (typeof KINGDOM_EVENTS)[number]

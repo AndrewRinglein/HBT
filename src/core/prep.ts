@@ -79,7 +79,7 @@ export type CombatPrepView = {
   stepTitle: string
   engagementId: string
   kind: string
-  territoryId: string
+  territoryId: string | null
   mapId: string
   /** What the Reveal shows: every enemy unit typeId, in the Engagement's order. */
   enemies: string[]

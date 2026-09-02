@@ -472,5 +472,41 @@
    "at": "2026-09-02 06:06",
    "sha": "2aa2ab0"
   }
+ },
+ "042": {
+  "red": {
+   "at": "2026-09-02 06:11",
+   "sha": "14fa112",
+   "hash": "e741b2c6af9a",
+   "how": "feature absent",
+   "tail": "       | ^ |       7| import { makeCtx } from '../src/core/mutate.js' |       8| import { campaignOf, saveOf } from '../src/core/campaign.js'"
+  }
+ },
+ "043": {
+  "red": {
+   "at": "2026-09-02 06:11",
+   "sha": "14fa112",
+   "hash": "a879e393bd20",
+   "how": "feature absent",
+   "tail": "       | ^ |       6| import { makeNewCampaign } from '../src/core/opening.js' |       7| import { makeCtx } from '../src/core/mutate.js'"
+  }
+ },
+ "044": {
+  "red": {
+   "at": "2026-09-02 06:11",
+   "sha": "14fa112",
+   "hash": "7bd17febfd0b",
+   "how": "feature absent",
+   "tail": "       | ^ |       6| import { makeCtx } from '../src/core/mutate.js' |       7| import { playOpening, playWeeks } from '../src/sim/autoplay.js'"
+  }
+ },
+ "045": {
+  "red": {
+   "at": "2026-09-02 06:11",
+   "sha": "14fa112",
+   "hash": "8e776cadf0f0",
+   "how": "feature absent",
+   "tail": "       | ^ |       6| import { makeCtx } from '../src/core/mutate.js' |       7| import { playOpening, playWeeks, playStage, DEFAULTS, type Decisions }…"
+  }
  }
 }

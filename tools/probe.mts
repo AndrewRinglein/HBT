@@ -19,7 +19,8 @@ import { makeBlankResult, withUnitFate, validateResult } from '../src/core/resul
 import { resolveReckoning, applyBattleResult, performExitBattle } from '../src/core/reckoning.js'
 import { viewBattle } from '../src/view/battle.js'
 import { ENGAGEMENT_KINDS, engagementKindOf } from '../src/content/engagements.js'
-import { playWeeks } from '../src/sim/autoplay.js'
+import { playWeeks, playOpening } from '../src/sim/autoplay.js'
+import { makeNewCampaign } from '../src/core/opening.js'
 
 const id = process.argv[2]
 if (!id) { console.error('usage: probe <id>'); process.exit(2) }
@@ -37,6 +38,15 @@ const tally = (events: KingdomEvent[]) => { for (const ev of events) { if (!JSON
 {
   const ctx = makeCtx(campaignOf(readFileSync('fixtures/slice-prep.json', 'utf8')))
   playWeeks(ctx, 8, { tactic: (_c, offers) => offers.find((t) => t === id) ?? offers[0] ?? null }, 'probe')
+  runs++
+  tally(ctx.events)
+}
+
+// (a2) a new Campaign's opening — the draft, the five prologue battles, into Week 1 and two more
+for (const seed of [1, 2]) {
+  const ctx = makeCtx(makeNewCampaign(seed))
+  playOpening(ctx, { draft: (_c, offers) => offers.find((h) => h === id) ?? offers[0]! }, 'probe')
+  if (!ctx.campaign.ended) playWeeks(ctx, 2, {}, 'probe')
   runs++
   tally(ctx.events)
 }

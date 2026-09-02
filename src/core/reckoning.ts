@@ -38,6 +38,7 @@ import {
 } from './mutate.js'
 import { performLose } from './map.js'
 import { resolveRewardDraw, performExitReckoning } from './rewards.js'
+import { performResolvePrologue } from './opening.js'
 import { engagementKindOf } from '../content/engagements.js'
 import { PAYOUTS } from '../content/payouts.js'
 import { SWITCHES } from '../content/switches.js'
@@ -102,18 +103,22 @@ export function resolveReckoning(campaign: CampaignState, engagement: Engagement
     for (const h of alive) { at -= h.xp + 1; if (at < 0) { h.mvp = true; h.xp += 10; break } }
   }
 
-  const territory = campaign.territories[engagement.territoryId]
-  if (!territory) throw new Error(`${engagement.id}: Territory '${engagement.territoryId}' is not on the map`)
-  const claim = won && kind.onWin === 'claim-territory' ? territory.id : null
+  // a prologue battle may take no ground (content/prologue.ts): no claim, no
+  // loss, and a first-claim payout has nothing to be first about
+  const territory = engagement.territoryId === null ? null : campaign.territories[engagement.territoryId]
+  if (engagement.territoryId !== null && !territory) throw new Error(`${engagement.id}: Territory '${engagement.territoryId}' is not on the map`)
+  const claim = won && kind.onWin === 'claim-territory' && territory ? territory.id : null
   // a lost defence names the Territory either way; the writer's performLose
   // knows the Kingdom Territory cannot be lost and charges its stakes instead
-  const lose = !won && kind.onLose === 'lose-territory' ? territory.id : null
+  const lose = !won && kind.onLose === 'lose-territory' && territory ? territory.id : null
   const grants: Grant[] = won
-    ? PAYOUTS.filter((p) => p.engagementKind === engagement.kind && !(p.firstClaimOnly && territory.claimedOnce))
+    ? PAYOUTS.filter((p) => p.engagementKind === engagement.kind && !(p.firstClaimOnly && (!territory || territory.claimedOnce)))
         .map((p) => ({ currency: p.currency, amount: p.amount }))
     : []
 
-  return { engagementId: engagement.id, won, heroes, renown: won ? 1 : 0, losses: won ? 0 : 1, claim, lose, grants }
+  // the prologue's battles pay Renown or not by a switch — STATE.md's open label question
+  const renown = won && (engagement.prologue === undefined || SWITCHES.prologuePaysRenown) ? 1 : 0
+  return { engagementId: engagement.id, won, heroes, renown, losses: won ? 0 : 1, claim, lose, grants }
 }
 
 /**
@@ -154,6 +159,8 @@ export function applyBattleResult(ctx: Ctx, engagement: Engagement, result: Enga
   // a won battle earns its draft — three drawn on cup.reward, keyed by the Engagement
   setRewardOffer(ctx, reckoning.won ? resolveRewardDraw(c, engagement.id) : null, cause)
   setCursor(ctx, { step: 'reckoning', prepStep: null, battle: null, fought: c.cursor.fought + 1 }, cause)
+  // the opening: the next battle is owed — or, lost before the Kingdom Territory, the run is over
+  if (engagement.prologue !== undefined) performResolvePrologue(ctx, reckoning.won, cause)
 }
 
 /**
