@@ -346,7 +346,7 @@
   "kind": "kingdom",
   "shape": "plumbing",
   "milestone": "M13",
-  "spec": "tools/slice-run.mjs: from a new save, with no human input (an authored default choice at every decision), the run advances Week by Week until the first Article threshold fires (THIN-SLICE-REVIEW.md §G ruling 1). --until article-1 --assert no-out-systems proves the terminus depends on none of §8's systems. BLOCKED on §9 item 1 (the P11 encounter format; battleList.rows is empty) for the eleven battles it needs — until then it runs the authored five and stops, red.",
+  "spec": "tools/slice-run.mjs: from a new save, with no human input (an authored default choice at every decision), the run advances Week by Week until the first Article threshold fires (THIN-SLICE-REVIEW.md §G ruling 1). --until article-1 --assert no-out-systems proves the terminus depends on none of §8's systems. BLOCKED on §9 item 1 (the P11 encounter format; battleList.rows is empty) for the eleven battles it needs — until then it runs the authored five and stops, red. — UNBLOCKED 2026-09-02: map.four-territories gave every Territory its own enemies row, so the battles past the authored five are Territory battles (Conquer, and the weekly defend roll); the P11 format is not needed for the slice.",
   "expect": "ISC-001: exit 0 with the Article threshold event in the log at battle 11. ISC-025: exit 0 with every §8 system absent or stubbed.",
   "isc": [
    "001",
@@ -354,6 +354,7 @@
   ],
   "needs": [
    "screens.thin"
-  ]
+  ],
+  "attempts": 1
  }
 ]

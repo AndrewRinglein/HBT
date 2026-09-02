@@ -594,5 +594,23 @@
    "at": "2026-09-02 09:43",
    "sha": "9a3ba63"
   }
+ },
+ "001": {
+  "red": {
+   "at": "2026-09-02 09:44",
+   "sha": "27f7c4e",
+   "hash": "9cb72d164699",
+   "how": "feature absent",
+   "tail": "  url: 'file:///sessions/brave-clever-fermat/mnt/Heroes%20of%20Blight%20and%20Tragic/kingdom/tools/slice-run.mts' | } | Node.js v22.23.2"
+  }
+ },
+ "025": {
+  "red": {
+   "at": "2026-09-02 09:44",
+   "sha": "27f7c4e",
+   "hash": "3249485b19cb",
+   "how": "feature absent",
+   "tail": "  url: 'file:///sessions/brave-clever-fermat/mnt/Heroes%20of%20Blight%20and%20Tragic/kingdom/tools/slice-run.mts' | } | Node.js v22.23.2"
+  }
  }
 }
