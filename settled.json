@@ -1322,50 +1322,56 @@
    "id": "status.karma",
    "name": "Karma",
    "shape": "pool",
-   "effect": "While you carry Karma: every heal you receive is increased by your Karma, and every point of damage you deal is increased by HALF your Karma, rounded down.",
-   "decay": "NONE. Karma has no tick-down at End of Activation and there is no decrease-Karma stage in Settling at all. The −1 resolves inside the onKill settle that the killing damage starts. Because nothing decrements it on the clock, Karma has no ordering constraint in Settling — ruled 2026-09-02: \"its order doesn't matter.\"",
-   "source": "2026-08-20. The only status that decays on an event rather than on the clock. RE-RULED IDENTICALLY 2026-08-25, verbatim: \"Karma increases healing and increases damage by half of the Karma value. So it increases healing to the target that has karma by the amount of karma. And one half of the Karma value is added to all damage. Karma is lost whenever the unit kills another unit. So, every unit, during player attack, if there is a kill, there is a check to see if there is karma, and if there is, it goes down by one.\" | Ruled 2026-09-02. Verbatim: \"Karma does not tick down at end of activation, so ACTUALLY its order doesn't matter. There is no decrease Karma stage during settling. That should happen during the onKill settling from damage.\"",
-   "family": "magnitude"
+   "effect": "Increases every heal the unit receives by its value, and every point of damage it deals by half its value.",
+   "decay": "No clock: -1 on a kill, and nothing else.",
+   "source": "2026-08-20. The only status that decays on an event rather than on the clock. RE-RULED IDENTICALLY 2026-08-25, verbatim: \"Karma increases healing and increases damage by half of the Karma value. So it increases healing to the target that has karma by the amount of karma. And one half of the Karma value is added to all damage. Karma is lost whenever the unit kills another unit. So, every unit, during player attack, if there is a kill, there is a check to see if there is karma, and if there is, it goes down by one.\" | Ruled 2026-09-02. Verbatim: \"Karma does not tick down at end of activation, so ACTUALLY its order doesn't matter. There is no decrease Karma stage during settling. That should happen during the onKill settling from damage.\" | 2026-09-02: cut to ONE SENTENCE, ruled — a status row teaches the status, it does not narrate what one item does with it. The previous multi-sentence text is kept as longEffect for the Codex, not as the definition.",
+   "family": "magnitude",
+   "longEffect": "While you carry Karma: every heal you receive is increased by your Karma, and every point of damage you deal is increased by HALF your Karma, rounded down."
   },
   {
    "id": "status.slow",
    "name": "Slow",
    "shape": "pool",
-   "effect": "While you carry Slow, your Movement is reduced by your Slow.",
-   "decay": "-1 at End of Phase, like Burn, Poison, Bleed, Weak, Stun and Frost.",
-   "source": "2026-08-20: \"clean up that movement stuff.\" Fourteen entries said \"the target loses N Movement on its next Turn\" — one meaning, two wordings, and the only per-target clock left in the game. It is a status now, so it decays on the same ladder as everything else and nothing has to remember whose next Turn it is. | Merged onto the trunk 2026-09-01 from the parallel content chat; attribution de-named per the standing passive-voice ruling, wording and dates untouched."
+   "effect": "Reduces the unit's Movement by its value.",
+   "decay": "-1 per Turn.",
+   "source": "2026-08-20: \"clean up that movement stuff.\" Fourteen entries said \"the target loses N Movement on its next Turn\" — one meaning, two wordings, and the only per-target clock left in the game. It is a status now, so it decays on the same ladder as everything else and nothing has to remember whose next Turn it is. | Merged onto the trunk 2026-09-01 from the parallel content chat; attribution de-named per the standing passive-voice ruling, wording and dates untouched. | 2026-09-02: cut to ONE SENTENCE, ruled — a status row teaches the status, it does not narrate what one item does with it. The previous multi-sentence text is kept as longEffect for the Codex, not as the definition.",
+   "longEffect": "While you carry Slow, your Movement is reduced by your Slow."
   },
   {
    "id": "status.taunt",
    "name": "Taunt",
    "shape": "pool",
-   "effect": "Cuts both ways by who applied it. A HERO taunting an enemy makes that hero the enemy's priority target in AI selection while the Taunt lasts — the enemy fixates. An ENEMY taunting a hero takes the hero away from the player: it becomes AI-driven, activates FIRST in the Hero Phase, prioritises the unit that taunted it, and the rest of the party acts afterwards.",
-   "decay": "-1 at End of Phase, like Burn, Poison, Bleed, Weak, Stun, Frost and Slow.",
-   "source": "2026-09-01: \"Taunt takes hero control away from the player when it's used by an enemy. Taunt, when used by a hero, makes the enemy fixate on the hero.\" | Merged onto the trunk 2026-09-01 from the parallel content chat; attribution de-named per the standing passive-voice ruling, wording and dates untouched."
+   "effect": "Forces the taunted unit to target whoever taunted it.",
+   "decay": "-1 per Turn.",
+   "source": "2026-09-01: \"Taunt takes hero control away from the player when it's used by an enemy. Taunt, when used by a hero, makes the enemy fixate on the hero.\" | Merged onto the trunk 2026-09-01 from the parallel content chat; attribution de-named per the standing passive-voice ruling, wording and dates untouched. | 2026-09-02: cut to ONE SENTENCE, ruled — a status row teaches the status, it does not narrate what one item does with it. The previous multi-sentence text is kept as longEffect for the Codex, not as the definition.",
+   "longEffect": "Cuts both ways by who applied it. A HERO taunting an enemy makes that hero the enemy's priority target in AI selection while the Taunt lasts — the enemy fixates. An ENEMY taunting a hero takes the hero away from the player: it becomes AI-driven, activates FIRST in the Hero Phase, prioritises the unit that taunted it, and the rest of the party acts afterwards."
   },
   {
    "id": "status.dazed",
    "name": "Dazed",
    "shape": "pool",
-   "effect": "The player loses control of the hero for as long as it lasts. Unlike Taunt there is no priority target — the unit simply behaves as the AI would drive its striker type.",
-   "decay": "-1 at End of Phase, like Burn, Poison, Bleed, Weak, Stun, Frost and Slow.",
-   "source": "2026-09-01: \"Dazed, used on a hero, causes the player to lose control of it, the same as a taunt, for a number of turns... it just means the player loses control and the unit is going to behave the way it would in the simulation with the AI for that striker type.\" | Merged onto the trunk 2026-09-01 from the parallel content chat; attribution de-named per the standing passive-voice ruling, wording and dates untouched."
+   "effect": "Takes the unit out of its owner's control and hands it to the AI.",
+   "decay": "-1 per Turn.",
+   "source": "2026-09-01: \"Dazed, used on a hero, causes the player to lose control of it, the same as a taunt, for a number of turns... it just means the player loses control and the unit is going to behave the way it would in the simulation with the AI for that striker type.\" | Merged onto the trunk 2026-09-01 from the parallel content chat; attribution de-named per the standing passive-voice ruling, wording and dates untouched. | 2026-09-02: cut to ONE SENTENCE, ruled — a status row teaches the status, it does not narrate what one item does with it. The previous multi-sentence text is kept as longEffect for the Codex, not as the definition.",
+   "longEffect": "The player loses control of the hero for as long as it lasts. Unlike Taunt there is no priority target — the unit simply behaves as the AI would drive its striker type."
   },
   {
    "id": "status.confusion",
    "name": "Confusion",
    "shape": "pool",
-   "effect": "Inflicted on an enemy, it swaps that enemy's AI strategy for a different one while it lasts.",
-   "decay": "-1 at End of Phase, like Burn, Poison, Bleed, Weak, Stun, Frost and Slow.",
-   "source": "2026-09-01: \"Confusion inflicted on an enemy causes it to use a different AI strategy.\" | Merged onto the trunk 2026-09-01 from the parallel content chat; attribution de-named per the standing passive-voice ruling, wording and dates untouched."
+   "effect": "Swaps the affected unit's AI strategy for a different one.",
+   "decay": "-1 per Turn.",
+   "source": "2026-09-01: \"Confusion inflicted on an enemy causes it to use a different AI strategy.\" | Merged onto the trunk 2026-09-01 from the parallel content chat; attribution de-named per the standing passive-voice ruling, wording and dates untouched. | 2026-09-02: cut to ONE SENTENCE, ruled — a status row teaches the status, it does not narrate what one item does with it. The previous multi-sentence text is kept as longEffect for the Codex, not as the definition.",
+   "longEffect": "Inflicted on an enemy, it swaps that enemy's AI strategy for a different one while it lasts."
   },
   {
    "id": "status.root",
    "name": "Root",
    "shape": "pool",
-   "effect": "While you carry Root you CANNOT MOVE AT ALL — not a reduction, a stop. Movement actions and bonus moves alike are unavailable for as long as it lasts.",
-   "decay": "-1 at End of Phase, like Burn, Poison, Bleed, Weak, Stun, Frost and Slow.",
-   "source": "2026-09-01: \"Root means cannot move at all. For its duration. It takes down one per turn, like other statuses.\" Root also has a customer that scales off its magnitude (the Spider's Chomp), which rule.status-as-a-value makes legal. | Merged onto the trunk 2026-09-01 from the parallel content chat; attribution de-named per the standing passive-voice ruling, wording and dates untouched."
+   "effect": "Stops the unit moving at all.",
+   "decay": "-1 per Turn.",
+   "source": "2026-09-01: \"Root means cannot move at all. For its duration. It takes down one per turn, like other statuses.\" Root also has a customer that scales off its magnitude (the Spider's Chomp), which rule.status-as-a-value makes legal. | Merged onto the trunk 2026-09-01 from the parallel content chat; attribution de-named per the standing passive-voice ruling, wording and dates untouched. | 2026-09-02: cut to ONE SENTENCE, ruled — a status row teaches the status, it does not narrate what one item does with it. The previous multi-sentence text is kept as longEffect for the Codex, not as the definition.",
+   "longEffect": "While you carry Root you CANNOT MOVE AT ALL — not a reduction, a stop. Movement actions and bonus moves alike are unavailable for as long as it lasts."
   },
   {
    "id": "status.bleed",
@@ -1373,29 +1379,32 @@
    "shape": "magnitude",
    "family": "magnitude",
    "damageType": "true",
-   "effect": "N TRUE damage at End of Phase, then −1. True damage, so neither Armor nor Resist touches it — that is what \"Bleed is never resisted\" always meant, now said in one word.",
-   "decay": "−1 at End of Phase, the shared clock.",
+   "effect": "Deals TRUE damage equal to its value each Turn, and healing removes half the amount healed.",
+   "decay": "-1 per Turn.",
    "curedBy": "Healing received removes Bleed equal to HALF the healing (rounded nearest, 0.5 up). Regeneration is healing (rule.one-healing-function), so a Regeneration tick strips Bleed too. Burn halves healing received first, so the Bleed removal is half of what actually landed — a burning unit sheds a quarter of what it otherwise would.",
-   "source": "Ruled 2026-09-02. Verbatim: \"Bleed is True Damage.\" and \"Bleed is being converted to magnitude damage. Also healing should cure bleed. Regen should be healing.\" SUPERSEDES the old flat model (N was a turn count, each tick a flat 2). This also closes the standing \"does Armor touch Bleed?\" question: it does not — nothing does."
+   "source": "Ruled 2026-09-02. Verbatim: \"Bleed is True Damage.\" and \"Bleed is being converted to magnitude damage. Also healing should cure bleed. Regen should be healing.\" SUPERSEDES the old flat model (N was a turn count, each tick a flat 2). This also closes the standing \"does Armor touch Bleed?\" question: it does not — nothing does. | 2026-09-02: cut to ONE SENTENCE, ruled — a status row teaches the status, it does not narrate what one item does with it. The previous multi-sentence text is kept as longEffect for the Codex, not as the definition.",
+   "longEffect": "N TRUE damage at End of Phase, then −1. True damage, so neither Armor nor Resist touches it — that is what \"Bleed is never resisted\" always meant, now said in one word."
   },
   {
    "id": "status.frost",
    "name": "Frost",
    "shape": "magnitude",
    "family": "magnitude",
-   "effect": "A unit carrying Frost N takes +N on EVERY physical hit it receives — all physical, melee and ranged alike, and PER HIT: a two-swing attack against Frost 3 takes +3 on each swing, +6 in total. Frost deals no damage of its own; it is the mirror of Armor, which subtracts from the same number. Bleed beats Resist by being true; Frost beats Armor by outgrowing it.",
-   "decay": "-1 at End of Phase, the shared clock. Frost carries no ordering constraint in Settling — ruled 2026-09-02 that its tick-down order does not matter, and it may go first.",
+   "effect": "Adds its value to every physical hit the unit receives, per hit.",
+   "decay": "-1 per Turn.",
    "application": "Applied like Burn. Burn and Frost annihilate one for one on application (rule.burn-frost-cancel) — a unit never carries both.",
-   "source": "RULED 2026-09-02, verbatim: 'Frost should ADD to physical damage. Then its order of ticking down in settling also doesn't matter, but it can go first.' and 'Frost is applied like Burn.' Direction (incoming), scope (all physical, not melee only) and per-hit application ruled the same day. Ends the two-week gap in which content referenced Frost with no definition."
+   "source": "RULED 2026-09-02, verbatim: 'Frost should ADD to physical damage. Then its order of ticking down in settling also doesn't matter, but it can go first.' and 'Frost is applied like Burn.' Direction (incoming), scope (all physical, not melee only) and per-hit application ruled the same day. Ends the two-week gap in which content referenced Frost with no definition. | 2026-09-02: cut to ONE SENTENCE, ruled — a status row teaches the status, it does not narrate what one item does with it. The previous multi-sentence text is kept as longEffect for the Codex, not as the definition.",
+   "longEffect": "A unit carrying Frost N takes +N on EVERY physical hit it receives — all physical, melee and ranged alike, and PER HIT: a two-swing attack against Frost 3 takes +3 on each swing, +6 in total. Frost deals no damage of its own; it is the mirror of Armor, which subtracts from the same number. Bleed beats Resist by being true; Frost beats Armor by outgrowing it."
   },
   {
    "id": "status.shadow",
    "name": "Shadow",
    "shape": "magnitude",
    "family": "magnitude",
-   "effect": "Shadow does nothing on its own. It TICKS UP — first of everything in Settling — and is then compared to the unit's Max Health. The moment Shadow is AT OR ABOVE Max Health the unit is OBLITERATED: killed, removed from the field, and NO CORPSE is left. It is the only effect in the game that denies a corpse, which is what makes it worth fearing rather than merely surviving.",
-   "decay": "NONE — it is the one status that grows. +1 per Settle, and it never falls on its own clock.",
-   "source": "RULED 2026-09-02, verbatim: 'Shadow, ticks UP during settling (first), then is compared to max health. If shadow = max health, unit is obliterated. (killed, removed from field, no corpse).' Tick size (+1) and the at-or-above threshold ruled the same day. Shadow was named 2026-09-01 with no effect anywhere — this is its first definition, and the last unshaped status is now shaped."
+   "effect": "Obliterates the unit — killed, removed, no corpse — once it reaches the unit's Max Health.",
+   "decay": "It GROWS: +1 per Turn, first of everything in Settling. It never decays.",
+   "source": "RULED 2026-09-02, verbatim: 'Shadow, ticks UP during settling (first), then is compared to max health. If shadow = max health, unit is obliterated. (killed, removed from field, no corpse).' Tick size (+1) and the at-or-above threshold ruled the same day. Shadow was named 2026-09-01 with no effect anywhere — this is its first definition, and the last unshaped status is now shaped. | 2026-09-02: cut to ONE SENTENCE, ruled — a status row teaches the status, it does not narrate what one item does with it. The previous multi-sentence text is kept as longEffect for the Codex, not as the definition.",
+   "longEffect": "Shadow does nothing on its own. It TICKS UP — first of everything in Settling — and is then compared to the unit's Max Health. The moment Shadow is AT OR ABOVE Max Health the unit is OBLITERATED: killed, removed from the field, and NO CORPSE is left. It is the only effect in the game that denies a corpse, which is what makes it worth fearing rather than merely surviving."
   },
   {
    "id": "status.protection",
@@ -1411,8 +1420,8 @@
    "name": "Burn",
    "shape": "counter",
    "family": "magnitude",
-   "effect": "Damage equal to its value each Turn, mitigated by Resist per tick. Halves all healing received.",
-   "decay": "-1 per Turn.",
+   "effect": "Deals damage equal to its value each Turn and halves all healing received.",
+   "decay": "-1 per Turn. Resist mitigates each tick.",
    "source": "Row written 2026-09-02 from the rules already published in 1-EFFECTS-SETTLED.md and AUTHORING-GUIDE.md. Trimmed to one line the same day: a core mechanic gets a sentence, not an essay."
   },
   {
@@ -1420,8 +1429,8 @@
    "name": "Poison",
    "shape": "counter",
    "family": "magnitude",
-   "effect": "Damage equal to its value each Turn, mitigated by Resist per tick.",
-   "decay": "-1 per Turn.",
+   "effect": "Deals damage equal to its value each Turn.",
+   "decay": "-1 per Turn. Resist mitigates each tick.",
    "source": "Row written 2026-09-02 from the rules already published in 1-EFFECTS-SETTLED.md and AUTHORING-GUIDE.md. Trimmed to one line the same day: a core mechanic gets a sentence, not an essay."
   },
   {
@@ -1429,7 +1438,7 @@
    "name": "Regeneration",
    "shape": "counter",
    "family": "magnitude",
-   "effect": "Heals equal to its value each Turn. It is a heal like any other, so Karma raises it and Burn halves it.",
+   "effect": "Heals the unit an amount equal to its value each Turn.",
    "decay": "-1 per Turn.",
    "source": "Row written 2026-09-02 from the rules already published in 1-EFFECTS-SETTLED.md and AUTHORING-GUIDE.md. Trimmed to one line the same day: a core mechanic gets a sentence, not an essay."
   },
@@ -1438,7 +1447,7 @@
    "name": "Weak",
    "shape": "modifier",
    "family": "magnitude",
-   "effect": "-1 damage dealt per point. The only damage-dealt reduction in the game.",
+   "effect": "Reduces the damage the unit deals by 1 per point.",
    "decay": "-1 per Turn.",
    "source": "Row written 2026-09-02 from the rules already published in 1-EFFECTS-SETTLED.md and AUTHORING-GUIDE.md. Trimmed to one line the same day: a core mechanic gets a sentence, not an essay."
   },
@@ -1447,8 +1456,8 @@
    "name": "Stun",
    "shape": "counter",
    "family": "duration",
-   "effect": "The unit cannot act. Its whole Activation is skipped.",
-   "decay": "-1 per Turn, so Stun N costs exactly N Activations.",
+   "effect": "Stops the unit acting — its whole Activation is skipped.",
+   "decay": "-1 per Turn, so Stun N costs N Activations.",
    "source": "Row written 2026-09-02 from the rules already published in 1-EFFECTS-SETTLED.md and AUTHORING-GUIDE.md. Trimmed to one line the same day: a core mechanic gets a sentence, not an essay."
   }
  ],
