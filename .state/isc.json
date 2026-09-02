@@ -233,6 +233,10 @@
    "hash": "d132089db7e2",
    "how": "disabled stage.mend",
    "tail": "       | ^ |       8| import { setCursor } from '../src/core/mutate.js' |       9|"
+  },
+  "closed": {
+   "at": "2026-09-02 05:17",
+   "sha": "a46150c"
   }
  },
  "006": {
@@ -242,6 +246,10 @@
    "hash": "b2b2090a7d3d",
    "how": "feature absent",
    "tail": "       | ^ |       7| import { setCursor } from '../src/core/mutate.js' |       8| import { beginWeek } from '../src/core/week.js'"
+  },
+  "closed": {
+   "at": "2026-09-02 05:17",
+   "sha": "a46150c"
   }
  },
  "007": {
@@ -251,6 +259,10 @@
    "hash": "2afcf79120ff",
    "how": "feature absent",
    "tail": "       | ^ |       9| import { playStage, DEFAULTS } from '../src/sim/autoplay.js' |      10|"
+  },
+  "closed": {
+   "at": "2026-09-02 05:17",
+   "sha": "a46150c"
   }
  }
 }

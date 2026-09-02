@@ -131,7 +131,11 @@
    "stage.buy",
    "stage.mend"
   ],
-  "attempts": 2
+  "attempts": 2,
+  "status": "done-needs-review",
+  "sha": "a46150c",
+  "engineSha": "745922d",
+  "gauntlet": "not passed — 3 flag(s) warned"
  },
  {
   "id": "map.four-territories",

@@ -180,3 +180,43 @@ then run by hand from the committed tree (suite 35/35; 17 P probes green, 0
 regressions) and the criteria closed with `slice-gate.mjs --close … --sha
 123a501`. kingdom/CLAUDE.md now says to run landings detached; the tools are
 being made to batch their vitest probes so a landing fits the cap.*
+
+## week.machine — LANDED `a46150c` **NEEDS REVIEW**
+2026-09-02 05:15 · engine @ 745922d
+
+  PASS  dependencies landed
+  WARN  not already decided — 2 candidate ruling(s) — READ BEFORE ASKING: ../STATE.md:20 · ../GLOSSARY.md:53
+  PASS  typecheck
+  PASS  full test suite — 38 passed
+  PASS  gate 1 — every claimed criterion holds — ISC-005 holds · ISC-006 holds · ISC-007 holds
+  PASS  brought its own tests — test/isc-004.test.ts, test/isc-005.test.ts, test/isc-006.test.ts, test/isc-007.test.ts
+  WARN  existing tests untouched — DELETED LINES in test/isc-004.test.ts (-1) — will land FLAGGED for review
+  PASS  kill switch — every claimed probe has been seen red — ISC-005: red on record (2026-09-02 05:12 @ 6c79bc3) and re-proven — fails without stage.mend · ISC-006: red on record (2026-09-02 05:12 @ 6c79bc3, probe b2b2090a7d3d) · ISC-007: red on record (2026-09-02 05:12 @ 6c79bc3, probe 2afcf79120ff)
+  PASS  nothing regresses — every P-tier probe — 20 P-tier probe(s): 20 green, 0 red, 0 regression(s). 17 of 50 closed · 20 probed · 0 accepted
+  PASS  hardcode scan — core knows mechanisms, never names
+  PASS  generalizes — the second instance costs zero kingdom code — stage.buy live · stage.mend live
+  PASS  naming — new ids use declared kinds
+  PASS  naming — no banned words invented
+  WARN  engine working tree clean — verified against a DIRTY engine tree (745922d + 3 uncommitted under src/test): M src/content/generated/pack.stamp.json, M src/content/generated/pack.ts, ?? src/sim/coverage.ts
+  PASS  one door to the engine
+
+<details><summary>Existing tests were edited — review this diff</summary>
+
+```diff
+diff --git a/test/isc-004.test.ts b/test/isc-004.test.ts
+index 165683a..e0ee509 100644
+--- a/test/isc-004.test.ts
++++ b/test/isc-004.test.ts
+@@ -13,5 +13,5 @@ const hero = (id: string, cls: string): Hero => ({
+ })
+ const territory = (id: string, kingdom = false): Territory => ({
+-  id, name: id, mapId: 'map.open', owned: kingdom, kingdom, claimedOnce: kingdom, buildings: [], adjacent: [],
++  id, name: id, mapId: 'map.open', owned: kingdom, kingdom, claimedOnce: kingdom, buildings: [], adjacent: [], enemies: ['unit.zombie'],
+ })
+ 
+```
+</details>
+
+ISC-005: CLOSED at a46150c · ISC-006: CLOSED at a46150c · ISC-007: CLOSED at a46150c
+slice: 20 of 50 closed · 20 probed · 0 accepted
+IRON GAUNTLET: NOT PASSED — 3 FLAG(S) WARNED
