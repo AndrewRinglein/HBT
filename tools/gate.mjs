@@ -341,13 +341,17 @@ appendFileSync(LEDGER, `\n## ${id} — LANDED \`${sha}\`${needsReview ? ' **NEED
   (needsReview && testDiff ? `\n<details><summary>Existing tests were edited — review this diff</summary>\n\n\`\`\`diff\n${testDiff}\`\`\`\n</details>\n` : ''))
 
 // Post-land audit: the decisive checks FROM THE COMMITTED TREE. On failure the
-// landing is undone, loudly.
+// landing is undone, loudly. `git add -A` just committed the whole working
+// tree, so what this can catch is a pass that leaned on something git ignores
+// — and the whole suite ran seconds ago on this exact tree. So the audit is
+// the claimed probes plus the typecheck, from the commit, not the suite again:
+// the full run would put a landing past the sandbox's ~3-minute cap (2026-09-02).
 {
-  const t = runSuite()
-  const p = tryRun(`node tools/slice-gate.mjs --report ${JSON.stringify(REPORT)}`)
+  const t = tryRun('npm run -s typecheck')
+  const p = iscs.length ? tryRun(`node tools/slice-gate.mjs --isc ${iscs.join(',')}`) : { ok: true }
   if (!t.ok || !p.ok) {
     sh('git reset --hard HEAD~1')
-    const why = !t.ok ? 'test suite fails on the committed tree' : 'a P-tier probe regresses on the committed tree'
+    const why = !t.ok ? 'typecheck fails on the committed tree' : 'a claimed probe fails on the committed tree'
     const bl = JSON.parse(readFileSync(BACKLOG, 'utf8'))
     const it = bl.find((x) => x.id === id)
     if (it) { it.attempts = (it.attempts ?? 0) + 1; it.auditFailed = why; delete it.status; delete it.sha; writeFileSync(BACKLOG, JSON.stringify(bl, null, 1)) }

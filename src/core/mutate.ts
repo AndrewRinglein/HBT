@@ -181,6 +181,13 @@ export function setEnded(ctx: Ctx, reason: string, causeId: string): void {
   emit(ctx, 'campaign.ended', causeId, { week: ctx.campaign.week, reason })
 }
 
+/** A Charter purchase — the one write of campaign.unlocks. */
+export function applyUnlock(ctx: Ctx, id: string, tier: string, causeId: string): void {
+  if (ctx.campaign.unlocks.includes(id)) throw new Error(`applyUnlock refused: '${id}' is already held`)
+  ctx.campaign.unlocks.push(id)
+  emit(ctx, 'unlock.purchased', causeId, { unlockId: id, tier, renown: ctx.campaign.renown, spent: ctx.campaign.unlocks.length })
+}
+
 // ── what the one writer says as it writes ───────────────────────────────────
 
 function heroOrThrow(campaign: CampaignState, heroId: string) {

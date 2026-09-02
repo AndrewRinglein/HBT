@@ -306,7 +306,11 @@
   "needs": [
    "opening.prologue"
   ],
-  "note": "variants: two unlock.* rows named from KINGDOM-DESIGN.md §3A when worked (GLOSSARY.md example shape: unlock.field-size.5)."
+  "note": "variants: an Article and a Provision, each with an effect the slice enacts (the field, the draw); both bought in the autoplayed run once Renown reaches ten.",
+  "variants": [
+   "unlock.field-size.5",
+   "unlock.spoils.1"
+  ]
  },
  {
   "id": "screens.thin",

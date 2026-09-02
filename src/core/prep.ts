@@ -13,7 +13,8 @@
 import type { CampaignState, HeroId, PrepStep } from './campaign.js'
 import { type Ctx, engagementOf, setCouncilOffer, setTactic, applyDeploy, applyUndeploy, setCursor } from './mutate.js'
 import { pickOf } from './rng.js'
-import { PREP_STEP_ROWS, BASE_DEPLOY_LIMIT, COUNCIL_OFFER_SIZE } from '../content/prep.js'
+import { PREP_STEP_ROWS, COUNCIL_OFFER_SIZE } from '../content/prep.js'
+import { deployLimitOf } from './charter.js'
 import { TACTICS, tacticOf, type TacticRow } from '../content/tactics.js'
 import { engagementKindOf } from '../content/engagements.js'
 import { commitmentOf } from './assignments.js'
@@ -27,10 +28,8 @@ export function prepStepOf(campaign: CampaignState): PrepStep {
   return campaign.cursor.prepStep
 }
 
-/** The base limit, until the Field Article and tactics move it (§2.3 axis 1). */
-export function deployLimitOf(_campaign: CampaignState): number {
-  return BASE_DEPLOY_LIMIT
-}
+/** 4, plus a slot per Field Article (§2.3 axis 1); tactics may move it later. */
+export { deployLimitOf } from './charter.js'
 
 /** Sorted by id — never insertion order (Law 6). */
 export function listCouncilOptions(campaign: CampaignState): TacticRow[] {

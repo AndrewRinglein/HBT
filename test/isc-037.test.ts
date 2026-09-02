@@ -42,13 +42,22 @@ describe('ISC-037 — recruiting costs Faith and adds a hero', () => {
     expect(() => performRecruit(ctx, pick.id, 'test')).toThrow(/short of Faith/)
     expect(ctx.campaign.roster[pick.id]).toBeUndefined()
   })
-  it('next Week the Beacon is open again', () => {
-    const ctx = atBuy((c) => { c.purse['currency.faith'] = 100 })
+  it('next Week the Beacon is open again — while the roster has room', () => {
+    // Law 10, rewritten 2026-09-02 toward the rule: the roster's base room is
+    // eight ("Roster 10 — hold two more heroes"), and the fixture's seven plus
+    // one recruit fills it. Two heroes fewer, and the Beacon reopens.
+    const ctx = atBuy((c) => { c.purse['currency.faith'] = 100; delete c.roster['hero.fixed.orphans']; delete c.roster['hero.base.priest-scantily'] })
     performRecruit(ctx, listRecruitOffers(ctx.campaign)[0]!.id, 'test')
     for (let i = 0; i < 6; i++) performAdvance(ctx, 'test')
     expect(ctx.campaign.week).toBe(4)
     expect(canRecruit(ctx.campaign, listRecruitOffers(ctx.campaign)[0]!.id)).toBe(true)
     beginStage(ctx, 'stage.build', 'test')
     expect(canRecruit(ctx.campaign, listRecruitOffers(ctx.campaign)[0]!.id)).toBe(false)
+  })
+  it('a full roster refuses a recruit until a Roster Article holds more', () => {
+    const ctx = atBuy((c) => { c.purse['currency.faith'] = 100; c.roster['hero.base.warrior-iron'] = { ...c.roster['hero.fixed.orphans']!, id: 'hero.base.warrior-iron', name: 'Iron Dwarf' } })   // eight alive
+    const pick = listRecruitOffers(ctx.campaign)[0]!
+    expect(canRecruit(ctx.campaign, pick.id)).toBe(false)
+    expect(() => performRecruit(ctx, pick.id, 'test')).toThrow(/roster is full at 8/)
   })
 })

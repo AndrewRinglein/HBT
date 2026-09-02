@@ -13,13 +13,14 @@
 import type { CampaignState, HeroId } from './campaign.js'
 import { type Ctx, setRewardOffer, applyTakeReward, applyLevel, setCursor } from './mutate.js'
 import { pickOf } from './rng.js'
-import { REWARDS, REWARD_DRAW, rewardOf, type RewardRow } from '../content/rewards.js'
+import { REWARDS, rewardOf, type RewardRow } from '../content/rewards.js'
+import { rewardDrawOf } from './charter.js'
 import { CUP_IDS } from '../content/cups.js'
 import { xpForLevel } from '../content/levels.js'
 
 /** The draw for an Engagement — pure, so the same battle always offers the same three. */
 export function resolveRewardDraw(campaign: CampaignState, engagementId: string): string[] {
-  return pickOf(campaign, CUP_IDS.reward, [engagementId], REWARDS, REWARD_DRAW).map((r) => r.id)
+  return pickOf(campaign, CUP_IDS.reward, [engagementId], REWARDS, rewardDrawOf(campaign)).map((r) => r.id)
 }
 
 export function listRewardOffers(campaign: CampaignState): RewardRow[] {

@@ -11,6 +11,7 @@ import { RECRUITS, type RecruitRow } from '../content/heroes.js'
 import { SWITCHES } from '../content/switches.js'
 import { CURRENCY_IDS } from '../content/currencies.js'
 import { stageRowOf } from '../content/stages.js'
+import { rosterCapOf } from './charter.js'
 
 /** Open only at the Stage whose row offers a market — core reads the row, not the name. */
 const atBuy = (campaign: CampaignState) => campaign.cursor.step === 'open' && stageRowOf(campaign.cursor.stage).offers === 'market'
@@ -26,6 +27,7 @@ export function listRecruitOffers(campaign: CampaignState): RecruitRow[] {
 export function canRecruit(campaign: CampaignState, recruitId: string): boolean {
   if (!atBuy(campaign)) return false
   if (campaign.cursor.recruited >= 1) return false
+  if (Object.values(campaign.roster).filter((h) => h.lifeState === 'alive').length >= rosterCapOf(campaign)) return false
   if (!listRecruitOffers(campaign).some((r) => r.id === recruitId)) return false
   return canAfford(campaign, costOfRecruit())
 }
@@ -33,7 +35,7 @@ export function canRecruit(campaign: CampaignState, recruitId: string): boolean 
 export function performRecruit(ctx: Ctx, recruitId: string, causeId: string): void {
   const c = ctx.campaign
   if (!canRecruit(c, recruitId)) {
-    const why = !atBuy(c) ? 'not at the Buy Stage' : c.cursor.recruited >= 1 ? 'one recruit a Week, already taken' : !listRecruitOffers(c).some((r) => r.id === recruitId) ? 'not offered' : 'short of Faith'
+    const why = !atBuy(c) ? 'not at the Buy Stage' : c.cursor.recruited >= 1 ? 'one recruit a Week, already taken' : Object.values(c.roster).filter((h) => h.lifeState === 'alive').length >= rosterCapOf(c) ? `the roster is full at ${rosterCapOf(c)} — a Roster Article holds more` : !listRecruitOffers(c).some((r) => r.id === recruitId) ? 'not offered' : 'short of Faith'
     throw new Error(`performRecruit refused for '${recruitId}': ${why}`)
   }
   performSpend(ctx, costOfRecruit(), causeId)

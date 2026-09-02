@@ -44,6 +44,8 @@ export const KINGDOM_EVENTS = [
   // Added 2026-09-01 with opening.prologue, and to GLOSSARY.md the same commit:
   // the opening's draft and the civilians it rescues.
   'draft.offered', 'hero.drafted', 'hero.rescued',
+  // Added 2026-09-01 with charter.renown, and to GLOSSARY.md the same commit.
+  'unlock.purchased',
 ] as const
 
 export type KingdomEventType = (typeof KINGDOM_EVENTS)[number]

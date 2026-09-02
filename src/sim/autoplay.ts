@@ -25,6 +25,8 @@ import { listLabours, canAssignLabour, performAssignLabour } from '../core/mend.
 import { listBuildings, whyNotBuild, performBuild } from '../core/build.js'
 import { listShopItems, canBuyItem, performBuyItem, canEquip, performEquip } from '../core/shop.js'
 import { listDraftOffers, performDraft } from '../core/opening.js'
+import { UNLOCKS } from '../content/charter.js'
+import { canPurchase, performPurchase } from '../core/charter.js'
 
 export type Decisions = {
   /** Which offered Territory to attack, or null to decline. Default: the first. */
@@ -45,6 +47,8 @@ export type Decisions = {
   buy: (campaign: CampaignState, shelf: string[]) => string | null
   /** Which of the three draftees to take. Default: the first. */
   draft: (campaign: CampaignState, offers: string[]) => string
+  /** Which Charter purchase to make, of those purchasable, or null. Default: the first in row order. */
+  purchase: (campaign: CampaignState, purchasable: string[]) => string | null
 }
 
 export const DEFAULTS: Decisions = {
@@ -68,6 +72,7 @@ export const DEFAULTS: Decisions = {
   },
   buy: (_c, shelf) => shelf[0] ?? null,
   draft: (_c, offers) => offers[0]!,
+  purchase: (_c, purchasable) => purchasable[0] ?? null,
 }
 
 /** Play the Engagement on the cursor through prep, the panel, the writer and out. */
@@ -113,6 +118,13 @@ export function playStage(ctx: Ctx, d: Decisions, causeId: string): void {
         if (!pick) break
         performBuild(ctx, pick.territoryId, pick.buildingId, pick.key, causeId)
       }
+    }
+    // the Charter: spend every Renown as it comes — Articles first when a slot is open, then Provisions, in row order
+    for (let i = 0; i < 10; i++) {
+      const purchasable = UNLOCKS.filter((u) => canPurchase(c, u.id)).map((u) => u.id)
+      const pick = purchasable.length ? d.purchase(c, purchasable) : null
+      if (!pick) break
+      performPurchase(ctx, pick, causeId)
     }
     if (stageOf(c).offers === 'market') {
       const shelf = listShopItems(c).filter((r) => canBuyItem(c, r.id)).map((r) => r.id)

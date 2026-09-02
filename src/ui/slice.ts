@@ -36,6 +36,8 @@ import { listBuildings, whyNotBuild, performBuild } from '../core/build.js'
 import { isShopOpen, listShopItems, canBuyItem, performBuyItem, costOfItem, canEquip, performEquip } from '../core/shop.js'
 import { makeNewCampaign, listDraftOffers, performDraft, performEndCampaign, draftsOwedOf, draftedCountOf } from '../core/opening.js'
 import { PROLOGUE } from '../content/prologue.js'
+import { purchasesFreeOf, articleSlotsOf, articlesHeldOf, whyNotPurchase, performPurchase, hasUnlock } from '../core/charter.js'
+import { UNLOCKS, FIRST_ARTICLE_AT } from '../content/charter.js'
 import { UNITS } from '../engine.js'
 
 declare const __FIXTURE_JSON__: string
@@ -146,6 +148,14 @@ function openingBanner(c: CampaignState): string {
     <div class="bar"><span class="sp"></span><button class="primary" data-act="advance">${draftsOwedOf(c) ? 'Draft' : row ? 'To battle ' + n : 'Begin Week 1'}</button></div></div>`
 }
 
+function charterPanel(c: CampaignState): string {
+  const free = purchasesFreeOf(c)
+  const tracks = [...new Set(UNLOCKS.map((u) => u.track))]
+  return `<div class="card" style="margin-top:12px"><h3>The Charter · Renown ${c.renown}</h3>
+    <p class="meta">${c.renown < FIRST_ARTICLE_AT ? `The free spine — the first purchase comes at Renown ${FIRST_ARTICLE_AT}.` : `${free} to spend · Article slots ${articlesHeldOf(c)} of ${articleSlotsOf(c)} used`}</p>
+    ${c.renown >= FIRST_ARTICLE_AT || c.unlocks.length ? `<table>${tracks.map((t) => { const rows = UNLOCKS.filter((u) => u.track === t); return `<tr><td><b>${esc(t)}</b> <span class="tag">${rows[0]!.tier}</span></td><td>${rows.map((u) => { const held = hasUnlock(c, u.id); const why = whyNotPurchase(c, u.id); return `<button class="${held ? 'primary' : 'quiet'}" ${held || why ? 'disabled' : ''} data-act="purchase" data-id="${esc(u.id)}" title="${esc(u.does + (why && !held ? ' — ' + why : ''))}">${esc(u.name)}${held ? ' ✓' : ''}</button>` }).join(' ')}</td></tr>` }).join('')}</table>` : ''}</div>`
+}
+
 function rosterPanel(c: CampaignState): string {
   const heroes = Object.values(c.roster).sort((a, b) => a.id.localeCompare(b.id))
   return `<div class="card" style="margin-top:12px"><h3>The roster</h3><table>${heroes.map((h) => `<tr><td>${esc(h.name)}</td><td class="meta">${esc(h.classes.map((x) => x.replace('class.', '')).join(', '))} · L${h.level} · ${h.xp} xp</td><td>${h.lifeState === 'dead' ? '<span class="lost">dead</span>' : h.wound ? woundNameOf(h.wound) : ''} <span class="meta">${esc(commitmentOf(c, h.id, 'field'))}</span></td></tr>`).join('') || '<tr><td class="meta">nobody yet</td></tr>'}</table></div>`
@@ -220,6 +230,7 @@ function worldScreen(c: CampaignState): string {
         <div class="card" style="margin-top:12px"><h3>The map</h3><table>${territories.map((t) => `<tr><td>${esc(t.name)}${t.kingdom ? ' <span class="tag">kingdom</span>' : ''}</td><td>${t.owned ? '<span class="won">held</span>' : 'unclaimed'}</td><td class="meta">${esc(t.buildings.map((b) => b.id.replace('building.', '') + (b.damaged ? ' (ruin)' : '')).join(', '))}</td></tr>`).join('')}</table></div>
         ${c.stash.length ? `<div class="card" style="margin-top:12px"><h3>The stash</h3><p class="meta">${esc(c.stash.map((i) => i.replace('item.', '')).join(' · '))}</p></div>` : ''}
         ${rosterPanel(c)}
+        ${charterPanel(c)}
       </div>
     </div>`
 }
@@ -407,6 +418,7 @@ function wire(root: HTMLElement): void {
         case 'new-campaign': return loadJson(saveOf(makeNewCampaign(Math.floor(Math.random() * 1e9))), 'a new Campaign')
         case 'draft': return act(() => performDraft(app.ctx!, id!, 'slice'))
         case 'restart': return act(() => { app.ctx = makeCtx(performEndCampaign(app.ctx!, 'slice')) })
+        case 'purchase': return act(() => performPurchase(app.ctx!, id!, 'slice'))
         case 'download': return download()
         case 'forget': try { localStorage.removeItem(SAVE_KEY) } catch {} note('browser save forgotten'); return render()
         case 'advance': return act(() => (app.ctx!.campaign.cursor.step === 'prep' ? performAdvancePrep(app.ctx!, 'slice') : performAdvance(app.ctx!, 'slice')))

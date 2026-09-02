@@ -524,5 +524,23 @@
    "at": "2026-09-02 06:19",
    "sha": "e78a8bd"
   }
+ },
+ "023": {
+  "red": {
+   "at": "2026-09-02 09:26",
+   "sha": "a21fb0b",
+   "hash": "cdfab8a0d334",
+   "how": "feature absent",
+   "tail": "     18| import { TACTICS, tacticOf, type TacticRow } from '../content/tactics.… |      19| import { engagementKindOf } from '../content/engagements.js' |  ❯ test/walk.ts:6:1"
+  }
+ },
+ "024": {
+  "red": {
+   "at": "2026-09-02 09:26",
+   "sha": "a21fb0b",
+   "hash": "e776c66a3985",
+   "how": "feature absent",
+   "tail": "     18| import { TACTICS, tacticOf, type TacticRow } from '../content/tactics.… |      19| import { engagementKindOf } from '../content/engagements.js' |  ❯ test/walk.ts:6:1"
+  }
  }
 }

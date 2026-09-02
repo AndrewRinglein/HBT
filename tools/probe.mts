@@ -29,7 +29,7 @@ if (!id) { console.error('usage: probe <id>'); process.exit(2) }
 const ACTED = new Set(['council.taken', 'hero.committed', 'hero.released', 'cursor.moved',
   'battle.decided', 'engagement.resolved', 'territory.claimed', 'territory.lost', 'resource.gained', 'xp.gained', 'hero.wounded', 'hero.died', 'renown.gained',
   'week.begun', 'week.ended', 'stage.begun', 'stage.ended', 'engagement.offered',
-  'building.built', 'item.bought', 'item.equipped', 'reward.taken', 'hero.leveled', 'hero.recruited'])
+  'building.built', 'item.bought', 'item.equipped', 'reward.taken', 'hero.leveled', 'hero.recruited', 'unlock.purchased', 'hero.drafted', 'hero.rescued'])
 
 let mentions = 0, acted = 0, runs = 0
 const tally = (events: KingdomEvent[]) => { for (const ev of events) { if (!JSON.stringify(ev).includes(id)) continue; mentions++; if (ACTED.has(ev.type)) acted++ } }
@@ -46,7 +46,8 @@ const tally = (events: KingdomEvent[]) => { for (const ev of events) { if (!JSON
 for (const seed of [1, 2]) {
   const ctx = makeCtx(makeNewCampaign(seed))
   playOpening(ctx, { draft: (_c, offers) => offers.find((h) => h === id) ?? offers[0]! }, 'probe')
-  if (!ctx.campaign.ended) playWeeks(ctx, 2, {}, 'probe')
+  // thirty Weeks: with four Territories taken, wins come from the defend roll alone (~24% a Week), and Renown 10 is ~battle 11
+  if (!ctx.campaign.ended) playWeeks(ctx, 30, { purchase: (_c, ids) => ids.find((u) => u === id) ?? ids[0] ?? null }, 'probe')
   runs++
   tally(ctx.events)
 }
