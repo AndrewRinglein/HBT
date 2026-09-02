@@ -972,7 +972,7 @@
    "name": "Stab",
    "range": "melee",
    "stat": "strength",
-   "damage": 1,
+   "damage": 0,
    "stamina": 0,
    "accuracy": 0,
    "crit": 6,
@@ -985,7 +985,7 @@
    "triggers": [],
    "slayer": null,
    "intent": "Free, and better than a punch — the reason you keep hold of it.",
-   "source": "settled content | 2026-08-27 review: crit 3 -> 6."
+   "source": "settled content | 2026-08-27 review: crit 3 -> 6. | 2026-09-02, from the weapon outlier review: damage lowered by 1 — a 0-stamina attack does not also carry positive damage. Ruled."
   },
   {
    "id": "attack.longsword.slash",

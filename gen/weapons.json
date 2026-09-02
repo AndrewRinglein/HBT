@@ -1629,7 +1629,7 @@
    "itemClass": "weapon",
    "tier": 1,
    "hands": 2,
-   "slots": 1,
+   "slots": 2,
    "classRestriction": null,
    "tags": [
     "dagger"
@@ -1641,7 +1641,7 @@
    "statModifiers": {},
    "triggers": [],
    "intent": "A pair, and the pair is the weapon: one for the hand you can reach, one for the hand you cannot.",
-   "source": "Authored in the 2026-08-27 gear workbook review (new row added to the sheet)."
+   "source": "Authored in the 2026-08-27 gear workbook review (new row added to the sheet). | 2026-09-02, from the weapon outlier review: two-handed, so it takes TWO slots. Ruled."
   }
  ],
  "attacks": [
@@ -2649,7 +2649,7 @@
    "name": "Spark",
    "range": 5,
    "stat": "magic",
-   "damage": 1,
+   "damage": 0,
    "stamina": 0,
    "accuracy": 5,
    "crit": 0,
@@ -2661,7 +2661,7 @@
    ],
    "triggers": [],
    "slayer": null,
-   "source": "2026-08-27 review: stamina 1 -> 0."
+   "source": "2026-08-27 review: stamina 1 -> 0. | 2026-09-02, from the weapon outlier review: damage lowered by 1 — a 0-stamina attack does not also carry positive damage. Ruled."
   },
   {
    "id": "attack.apprentice-wand.surge",

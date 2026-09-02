@@ -938,8 +938,9 @@
    "triggers": [],
    "description": "UNIVERSAL RULE, not a power you take. The per-unit limits on Armor, Idols, Blood Runes and Relics exist for ONE reason: to stop every item slot being additive in the same direction. A hero may not wear five defensive things. Trinkets carry no such limit because a trinket gives an OPTION — a thing you can do — not a bigger number, so five of them buy five choices rather than five stacks. The authoring test is therefore: if it is additive it belongs in a limited category; if it is an option it can be a trinket. The one deliberate exception is a status IMMUNITY, which is additive but conditional: it is often worth nothing, so its value is the pre-battle question of who should carry it today. That is a War Council decision, not a stack, and immunities stay trinkets. THE CATEGORY LADDER, ruled 2026-09-02: armor is the single greatest stat gain available and an armor with no downside is the category working, not a fault; idols and blood runes are narrower, smaller gains; relics swap; trinkets buy options. The limits exist so that a large gain is bounded by being ONE armor, ONE idol, ONE rune, ONE relic — not so that every category must hurt.",
    "intent": "It makes item slots a COVERAGE budget rather than a power budget. Handing a hero another slot makes them more flexible, not stronger — which is why slots can grow generously without inflating anything.",
-   "source": "2026-09-02: \"The reason for the Idol, Blood Rune / Armor / Relic limits are to prevent EVERY item slot from being additive in any direction. So I can't just add 5 defensive things. Because the Trinkets mostly give options, they don't need that limit.\" And on the exception: \"I intentionally had immunities as an exception, because they are useless often, [I] want it in planning. OK, I can use my immunity — on whom? Is a good, non-permanent choice in battle prep.\" | Merged onto the trunk from the parallel chat 2026-09-02; attribution de-named per the standing passive-voice ruling. | 2026-09-02, verbatim: 'Armor is not a trade-off category. It is a massive upside category. It can have trade-offs. It is the single greatest stat gain that you can have. Then idols and Bloodrune are also stat gains, but they are of a narrower dynamic and less than armor.'",
-   "categoryLadder": "Stat gain, largest to smallest: ARMOR (the biggest gain in the game; may carry a trade-off, is not defined by one) > IDOLS and BLOOD RUNES (gains, narrower and less than armor) > RELICS (swaps — the gain is paid for on another axis) > TRINKETS (options, not numbers). Ruled 2026-09-02."
+   "source": "2026-09-02: \"The reason for the Idol, Blood Rune / Armor / Relic limits are to prevent EVERY item slot from being additive in any direction. So I can't just add 5 defensive things. Because the Trinkets mostly give options, they don't need that limit.\" And on the exception: \"I intentionally had immunities as an exception, because they are useless often, [I] want it in planning. OK, I can use my immunity — on whom? Is a good, non-permanent choice in battle prep.\" | Merged onto the trunk from the parallel chat 2026-09-02; attribution de-named per the standing passive-voice ruling. | 2026-09-02, verbatim: 'Armor is not a trade-off category. It is a massive upside category. It can have trade-offs. It is the single greatest stat gain that you can have. Then idols and Bloodrune are also stat gains, but they are of a narrower dynamic and less than armor.' | 2026-09-02: the weapons-vs-blood-runes distinction added after a review priced a weapon rider against a rune rider.",
+   "categoryLadder": "Stat gain, largest to smallest: ARMOR (the biggest gain in the game; may carry a trade-off, is not defined by one) > IDOLS and BLOOD RUNES (gains, narrower and less than armor) > RELICS (swaps — the gain is paid for on another axis) > TRINKETS (options, not numbers). Ruled 2026-09-02.",
+   "weaponsVsRunes": "RULED 2026-09-02: 'Weapons are fundamentally different than Bloodrunes because Bloodrunes add on top.' A weapon's payload is what that weapon DOES INSTEAD of what another weapon would do — you carry one, and its riders are the reason to carry it rather than the alternative. A blood rune ADDS ITS PAYLOAD ON TOP of whatever weapon is already there, so the same number on a rune is strictly additional power while on a weapon it is a choice. THE TWO MAY NOT BE PRICED AGAINST EACH OTHER. A 2026-09-02 review compared the Daggers' 50 Surge on kill against rune.avatar-of-war's +20 and called the weapon overpowered; that comparison was invalid and the Daggers' rider stands."
   },
   {
    "id": "rule.one-healing-function",
@@ -1208,7 +1209,7 @@
    "itemClass": "weapon",
    "tier": 0,
    "hands": 2,
-   "slots": 1,
+   "slots": 2,
    "classRestriction": null,
    "tags": [
     "axe"
@@ -1220,7 +1221,7 @@
    "statModifiers": {},
    "triggers": [],
    "intent": "A working tool that has stopped asking what it is for. The first two-handed axe in the game, and it belongs to a civilian.",
-   "source": "dictated 2026-08-25"
+   "source": "dictated 2026-08-25 | 2026-09-02, from the weapon outlier review: two-handed, so it takes TWO slots. Ruled."
   }
  ],
  "attacks": [

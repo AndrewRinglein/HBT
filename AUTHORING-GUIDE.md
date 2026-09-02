@@ -79,7 +79,7 @@ DERIVED   — never authored. Read off fields that already exist. physical / mag
 
 ```
 item.<name> itemClass · tier · slots · hands · classRestriction · grants[] statModifiers · triggers · equipCost · persists · armorWeight · tags[]
-attack.<weapon>.<name> range · stat · damage · stamina · accuracy · crit · targets hits · damageType · slayer · tags[] · triggers
+attack.<weapon>.<name> range · stat · damage · stamina · accuracy · crit · targets hits · damageType · slayer · tags[] · triggers · cooldown
 power.<owner>.<name> stamina · cooldown · warmup · free · targets · effects[] · tags[]
 enchant.<name> appliesToTags[] · statModifiers · triggers · grants[]
 specialty.<name> class · statModifiers · triggers · grants[] · powerPool[]
@@ -486,6 +486,13 @@ not in the game.
 ### Powers
 - **Name and what it does are the important part.** Numbers are soft.
 - `cooldown N` = **skip N Turns.** CD 0 is usable again next Turn.
+- **An ATTACK may carry a cooldown too**, and the field was missing from the shape line above
+  until 2026-09-02 even though content was already using it. It is rare and it should be: an
+  attack is what a weapon is *for*, so putting it on a timer is a strong statement. Three enemy
+  attacks use it (Ghoul's Devour cd 3, Bone Dragon's Poison Line cd 3, Vampire Lord's Soul Rend
+  cd 2) and exactly one weapon attack does — `attack.knight-shield.shield-slam`, cd 10. If an
+  attack has no cooldown field it has no cooldown, which is the default and the right answer
+  for nearly every weapon.
 - `warmup N` = **skip the first N Turns of the Battle.** Same timer — at battle start, cooldown is set to warmup. Use it for abilities that should not be live before contact, since engagement lands on Turns 2–4.
 - **Stamina: 1 for most, 2 for the powerful.** 0 for a stance you pay for once.
 - **A free power does not consume the primary action, and free powers are uncapped.**
