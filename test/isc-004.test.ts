@@ -12,7 +12,7 @@ const hero = (id: string, cls: string): Hero => ({
   id, name: id, classes: [cls], level: 1, xp: 0, wound: 0, lifeState: 'alive', badges: [], unitType: 'alpha-osric', corruption: 0,
 })
 const territory = (id: string, kingdom = false): Territory => ({
-  id, name: id, mapId: 'map.open', owned: kingdom, kingdom, claimedOnce: kingdom, buildings: [], adjacent: [], enemies: ['unit.zombie'],
+  id, name: id, mapId: 'map.open', owned: kingdom, kingdom, claimedOnce: kingdom, buildings: [], adjacent: [], enemies: ['unit.zombie'], node: null,
 })
 
 function fresh() {

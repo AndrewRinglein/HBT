@@ -105,11 +105,11 @@
  },
  "034": {
   "red": {
-   "at": "2026-09-02 04:35",
-   "sha": "4172743",
-   "hash": "543be77719ba",
+   "at": "2026-09-02 05:33",
+   "sha": "64a6c7f",
+   "hash": "3db5bafd3915",
    "how": "feature absent",
-   "tail": "       |                                                  ^ |      69|     expect(k.lose).toBeNull()                       // a lost Conquer … |      70|     expect(k.heroes[0]).toMatchObject({ dead: true, xp: 0, mvp: false …"
+   "tail": "       |                                                                       ^ |      58|     expect(k.grants.map((g) => g.currency).sort()).toEqual(['currency.… |      59|     assertPlainData(k, 'reckoning')"
   },
   "closed": {
    "at": "2026-09-02 04:28",
@@ -150,11 +150,11 @@
  },
  "017": {
   "red": {
-   "at": "2026-09-02 04:40",
-   "sha": "4172743",
-   "hash": "07949da68a4f",
+   "at": "2026-09-02 05:34",
+   "sha": "64a6c7f",
+   "hash": "0b01b9ec2912",
    "how": "feature absent",
-   "tail": "       |     ^ |      14|     expect(first.campaign.purse['currency.salvage']!).toBeGreaterThan(… |      15|     expect(first.campaign.territories[e1.territoryId]!.claimedOnce).to…"
+   "tail": "       |                                                       ^ |      15|     expect(first.campaign.territories[e1.territoryId]!.claimedOnce).to… |      16|"
   },
   "closed": {
    "at": "2026-09-02 04:52",
@@ -354,6 +354,51 @@
   "closed": {
    "at": "2026-09-02 05:31",
    "sha": "f8f6d99"
+  }
+ },
+ "021": {
+  "red": {
+   "at": "2026-09-02 05:37",
+   "sha": "64a6c7f",
+   "hash": "e0252eb0e7ac",
+   "how": "disabled currency.salvage",
+   "tail": "       | ^ |       8| import { CURRENCIES } from '../src/content/currencies.js' |       9|"
+  }
+ },
+ "036": {
+  "red": {
+   "at": "2026-09-02 05:39",
+   "sha": "64a6c7f",
+   "hash": "e0a751cd478a",
+   "how": "feature absent",
+   "tail": "     28| export { listConquerable } from './map.js' |      29| |  ❯ test/isc-036.test.ts:8:1"
+  }
+ },
+ "037": {
+  "red": {
+   "at": "2026-09-02 05:38",
+   "sha": "64a6c7f",
+   "hash": "41b8ad9419f1",
+   "how": "feature absent",
+   "tail": "     28| export { listConquerable } from './map.js' |      29| |  ❯ test/isc-037.test.ts:7:1"
+  }
+ },
+ "038": {
+  "red": {
+   "at": "2026-09-02 05:38",
+   "sha": "64a6c7f",
+   "hash": "5b31367249bc",
+   "how": "feature absent",
+   "tail": "     28| export { listConquerable } from './map.js' |      29| |  ❯ test/isc-038.test.ts:7:1"
+  }
+ },
+ "022": {
+  "red": {
+   "at": "2026-09-02 05:38",
+   "sha": "64a6c7f",
+   "hash": "584a08e9c8a6",
+   "how": "feature absent",
+   "tail": "       |                            ^ |      20|     for (const g of salvage) expect(kindOf.get(g.causeId), `Salvage fr… |      21|     // the labours paid, and never in Salvage"
   }
  }
 }

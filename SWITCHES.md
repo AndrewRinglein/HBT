@@ -15,7 +15,10 @@ document names it, the row cites the document and this table never sees it.
 | `defend.chancePerTerritory` | The weekly defend roll — RULED 6% per owned Territory, one roll (THIN-SLICE-REVIEW.md §G2), and the ruling itself says "Soft." Here so a sweep can move it; the default IS the ruling. | `6` | ruled, soft |
 | `engagements.perStage` | After a Conquer is fought, may the same Stage offer another this Week? "A hero does exactly one thing per Week" (KINGDOM-DESIGN.md §3) and "at most one defense per Week" (§G2) both point at one; a second conquest with whoever is left is not literally ruled out. | `1` | open |
 | `sanctuary.lostDefenceSupplies` | A failed defence of the Kingdom Territory "costs resources and wounded heroes instead" (SKELETON-SETTLED.md:81). Which resources, how many — unsaid. | `5` Supplies | open — soft |
-| `salvage.perConquest` | How much Salvage does a first Conquer pay? Only Conquer pays it (SKELETON-SETTLED.md:104) and never twice (:108); no document names the amount. Building trees total 123–270 (7-KINGDOM-SETTLED.md). | `30` | open — soft |
+| `salvage.perConquest` | How much Salvage does a first Conquer pay? Only Conquer pays it (SKELETON-SETTLED.md:104) and never twice (:108). `THE-KINGDOM.html`'s worked Week models 10 against trees of 123–270. | `10` | open — soft |
+| `battle.supplies` · `battle.faith` · `battle.mana` | What a won Engagement of any kind pays in the three shop currencies (7-KINGDOM-SETTLED.md: "Quest, Defend and Conquer all pay Supplies · Faith · Mana"). `THE-KINGDOM.html`'s worked Week: 6 · 4 · 3. | `6 · 4 · 3` | open — soft |
+| `recruit.faith` | What one recruit costs. Faith recruits (Law 18); a recruit *reroll* is 10 (`THE-KINGDOM.html`); the recruit itself is unpriced. | `10` | open — soft |
+| `heal.faith` | Field Surgery at the Chapel — Andrew: "maybe 7 faith to heal your hero immediately" (7-KINGDOM-NOTES.md:189). Not a switch so much as a number waiting for a sweep. | `7` | ruled, soft |
 
 ## Notes
 

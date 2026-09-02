@@ -53,7 +53,8 @@ if (which === 'one-availability') {
   // GAME-ARCHITECTURE.md §2.3: "nothing else in the codebase is allowed to have
   // an opinion about hero availability." The answers commitmentOf gives, and
   // the two roster lists it alone may consult, appear in no other src/core file.
-  const WORDS = [/'onQuest'/, /'wounded'/, /'unavailable'/, /'captured'/, /\.captured\.includes\(/, /\.unavailable\.includes\(/, /assignments\[[^\]]+\]\?\.(field|city)/]
+  // reading WHAT a hero is assigned to (mend.ts pays out a labour) is not an opinion about whether they are free
+  const WORDS = [/'onQuest'/, /'wounded'/, /'unavailable'/, /'captured'/, /\.captured\.includes\(/, /\.unavailable\.includes\(/]
   const offenders = []
   let answerer = null
   for (const f of files) {

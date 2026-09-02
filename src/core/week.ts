@@ -24,6 +24,7 @@ import { SWITCHES } from '../content/switches.js'
 import { beginCombatPrep } from './prep.js'
 import { listConquerable, resolveThreat, performLose } from './map.js'
 import { tickAssignments } from './assignments.js'
+import { performResolveMend } from './mend.js'
 export { listConquerable } from './map.js'
 
 // ── reading ─────────────────────────────────────────────────────────────────
@@ -71,6 +72,8 @@ export function endStage(ctx: Ctx, causeId: string): void {
     performLose(ctx, attack, causeId)
     setCursor(ctx, { attack: null }, causeId)
   }
+  // the Stage whose row offers the labours pays them out as it closes
+  if (stageOf(ctx.campaign).offers === 'labours') performResolveMend(ctx, `${ctx.campaign.cursor.stage}.week-${ctx.campaign.week}`)
   emit(ctx, 'stage.ended', causeId, { stageId: ctx.campaign.cursor.stage, week: ctx.campaign.week })
 }
 
@@ -84,7 +87,7 @@ export function beginWeek(ctx: Ctx, causeId: string): void {
 /** The Week boundary: what ticks between one Week and the next. Quests and wounds join here when they exist. */
 export function tickWeek(ctx: Ctx, causeId: string): void {
   tickAssignments(ctx, causeId)
-  setCursor(ctx, { week: ctx.campaign.week + 1 }, causeId)
+  setCursor(ctx, { week: ctx.campaign.week + 1, recruited: 0 }, causeId)
 }
 
 export function endWeek(ctx: Ctx, causeId: string): void {

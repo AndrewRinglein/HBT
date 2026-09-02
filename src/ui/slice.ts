@@ -26,7 +26,10 @@ import type { EngagementResult, UnitTally } from '../core/seam.js'
 import { PREP_STEP_ROWS } from '../content/prep.js'
 import { STAGES } from '../content/stages.js'
 import { stageOf, canAdvance, performAdvance, listStageOffers, performChooseEngagement } from '../core/week.js'
-import { commitmentOf } from '../core/assignments.js'
+import { commitmentOf, listAvailable } from '../core/assignments.js'
+import { listRecruitOffers, canRecruit, performRecruit, costOfRecruit, canHeal, performHeal, costOfHeal } from '../core/market.js'
+import { listLabours, yieldOf, canAssignLabour, performAssignLabour } from '../core/mend.js'
+import { performRelease } from '../core/assignments.js'
 import { UNITS } from '../engine.js'
 
 declare const __FIXTURE_JSON__: string
@@ -127,6 +130,21 @@ function worldScreen(c: CampaignState): string {
     body = `<h3>${head}</h3><div class="pick">${offers.map((id) => { const t = c.territories[id]!; return `<div class="opt" data-act="choose" data-id="${esc(id)}"><b>${esc(t.name)}</b><small>${esc(t.mapId)} · held by ${t.enemies.length}: ${esc(t.enemies.map((e) => nameOf(e)).join(', '))}${t.buildings.length ? ' · ' + esc(t.buildings.map((b) => b.id).join(', ')) : ''}</small></div>` }).join('')}</div>`
   } else if (row.offers === 'engagement') {
     body = `<h3>${esc(row.title)}</h3><p class="meta">${c.cursor.fought ? 'Fought this Stage — nothing more is offered this Week.' : row.targets === 'rolled' ? 'No attack this Week.' : 'Nothing adjacent is unclaimed.'}</p>`
+  } else if (row.offers === 'market') {
+    const rc = costOfRecruit(), hc = costOfHeal()
+    const fmt = (cost: Record<string, number>) => Object.entries(cost).map(([k, v]) => `${v} ${k.replace('currency.', '')}`).join(' · ')
+    const wounded = heroes.filter((h) => h.lifeState === 'alive' && h.wound > 0)
+    body = `<h3>The Beacon — recruit, one a Week · ${esc(fmt(rc))}</h3>
+      <div class="pick">${listRecruitOffers(c).map((r) => `<div class="opt${canRecruit(c, r.id) ? '' : ' off'}" data-act="recruit" data-id="${esc(r.id)}"><b>${esc(r.name)}</b><small>${esc(r.classes.map((x) => x.replace('class.', '')).join(', '))} · ${esc(r.unitType)}</small></div>`).join('') || '<p class="meta">nobody answers the Beacon</p>'}</div>
+      ${c.cursor.recruited ? '<p class="meta">recruited this Week — the Beacon is closed until next</p>' : ''}
+      <h3>The Chapel — Field Surgery · ${esc(fmt(hc))} a hero</h3>
+      <div class="pick">${wounded.map((h) => `<div class="opt${canHeal(c, h.id) ? '' : ' off'}" data-act="heal" data-id="${esc(h.id)}"><b>${esc(h.name)}</b><small>${esc(woundNameOf(h.wound))} → ${esc(woundNameOf(h.wound - 1))}</small></div>`).join('') || '<p class="meta">nobody is wounded</p>'}</div>`
+  } else if (row.offers === 'labours') {
+    const free = listAvailable(c, row.id)
+    const working = heroes.filter((h) => c.assignments[h.id]?.city)
+    body = `<h3>Mend — the city Stage. Each labour takes a hero's city slot; it pays as the Stage closes.</h3>
+      <table><tr><th>labour</th><th>pays</th><th>send</th></tr>${listLabours().map((l) => { const y = yieldOf(c, l.key); return `<tr><td><b>${esc(l.name)}</b> <span class="meta">${esc(l.does)}</span></td><td>${y ? `${y.amount} ${esc(y.currency.replace('currency.', ''))}` : '—'}</td><td>${free.filter((h) => canAssignLabour(c, h, l.key)).map((h) => `<button class="quiet" data-act="labour" data-id="${esc(h)}" data-key="${esc(l.key)}">${esc(c.roster[h]!.name)}</button>`).join(' ') || '<span class="meta">nobody free</span>'}</td></tr>` }).join('')}</table>
+      ${working.length ? `<h3>Working this Week</h3><p>${working.map((h) => `${esc(h.name)} — ${esc(c.assignments[h.id]!.city!.target)} <button class="quiet" data-act="release" data-id="${esc(h.id)}">undo</button>`).join(' · ')}</p>` : ''}`
   } else {
     body = `<h3>${esc(row.title)}</h3><p>${esc(row.does)}</p><p class="meta">Nothing to do here yet — this Stage's machinery lands in a later milestone. Pass through.</p>`
   }
@@ -324,6 +342,10 @@ function wire(root: HTMLElement): void {
         case 'forget': try { localStorage.removeItem(SAVE_KEY) } catch {} note('browser save forgotten'); return render()
         case 'advance': return act(() => (app.ctx!.campaign.cursor.step === 'prep' ? performAdvancePrep(app.ctx!, 'slice') : performAdvance(app.ctx!, 'slice')))
         case 'choose': return act(() => { performChooseEngagement(app.ctx!, id!, 'slice') })
+        case 'recruit': return act(() => performRecruit(app.ctx!, id!, 'slice'))
+        case 'heal': return act(() => performHeal(app.ctx!, id!, 'slice'))
+        case 'labour': return act(() => performAssignLabour(app.ctx!, id!, el.dataset['key']!, 'slice'))
+        case 'release': return act(() => performRelease(app.ctx!, id!, 'city', 'slice'))
         case 'council': return act(() => performCouncil(app.ctx!, viewCombatPrep(app.ctx!.campaign).tactic === id ? null : id!, 'slice'))
         case 'deploy': return act(() => performDeploy(app.ctx!, id!, 'slice'))
         case 'undeploy': return act(() => performUndeploy(app.ctx!, id!, 'slice'))

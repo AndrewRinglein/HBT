@@ -11,6 +11,10 @@
 // lists" collapsed to one list per Territory until the ranked list exists —
 // drawn from the engine's pack rows.
 //
+// Nodes — one each, slice-tuned (7-KINGDOM-SETTLED.md: Mine ×8 · Field ×6 ·
+// Abbey ×5 · Wellspring ×4 on a full map): the Sanctuary's field, the Ridge's
+// mine (the Forge's), the Highlands' abbey, the Thicket's wellspring.
+//
 // A Territory's stakes are its own: the Kingdom Territory cannot be lost
 // (SKELETON-SETTLED.md:81) and a failed defence of it "costs resources and
 // wounded heroes instead" — `lostDefenceCosts`, a number that is a switch.
@@ -27,27 +31,27 @@ export type TerritoryRow = Territory & {
 }
 
 const t = (id: string, name: string, mapId: string, extra: Partial<TerritoryRow>): TerritoryRow => ({
-  id, name, mapId, owned: false, kingdom: false, claimedOnce: false, buildings: [], adjacent: [], enemies: [], ...extra,
+  id, name, mapId, owned: false, kingdom: false, claimedOnce: false, buildings: [], adjacent: [], enemies: [], node: null, ...extra,
 })
 
 const RAW_TERRITORIES: readonly TerritoryRow[] = [
   t('territory.ruined-kingdom.sanctuary', 'Sanctuary', 'map.open', {
-    owned: true, kingdom: true, claimedOnce: true,
+    owned: true, kingdom: true, claimedOnce: true, node: 'field',
     adjacent: ['territory.ruined-kingdom.ridge', 'territory.ruined-kingdom.highlands'],
     enemies: ['unit.zombie', 'unit.zombie', 'unit.zombie', 'unit.fast-zombie'],
     lostDefenceCosts: { 'currency.supplies': SWITCHES.sanctuaryLostDefenceSupplies },
   }),
   t('territory.ruined-kingdom.ridge', 'The Ridge', 'map.ridge', {
-    buildings: [{ id: 'building.forge', level: 0, damaged: true }],
+    buildings: [{ id: 'building.forge', level: 0, damaged: true }], node: 'mine',
     adjacent: ['territory.ruined-kingdom.sanctuary', 'territory.ruined-kingdom.thicket'],
     enemies: ['unit.zombie', 'unit.zombie', 'unit.zombie-hound', 'unit.skeletal-archer'],
   }),
   t('territory.ruined-kingdom.highlands', 'The Highlands', 'map.highlands', {
-    adjacent: ['territory.ruined-kingdom.sanctuary'],
+    adjacent: ['territory.ruined-kingdom.sanctuary'], node: 'abbey',
     enemies: ['unit.imp', 'unit.imp', 'unit.fire-imp', 'unit.poison-imp'],
   }),
   t('territory.ruined-kingdom.thicket', 'The Thicket', 'map.thicket', {
-    adjacent: ['territory.ruined-kingdom.ridge'],
+    adjacent: ['territory.ruined-kingdom.ridge'], node: 'wellspring',
     enemies: ['unit.bloodhound', 'unit.bloodhound', 'unit.hellhound', 'unit.zombie-hound'],
   }),
 ]

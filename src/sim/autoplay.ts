@@ -18,6 +18,9 @@ import { makeBlankResult, withUnitFate, validateResult } from '../core/result.js
 import { resolveReckoning, applyBattleResult, performExitBattle } from '../core/reckoning.js'
 import { viewBattle } from '../view/battle.js'
 import type { EngagementResult } from '../core/seam.js'
+import { listAvailable } from '../core/assignments.js'
+import { stageOf } from '../core/week.js'
+import { listLabours, canAssignLabour, performAssignLabour } from '../core/mend.js'
 
 export type Decisions = {
   /** Which offered Territory to attack, or null to decline. Default: the first. */
@@ -28,6 +31,8 @@ export type Decisions = {
   deploy: (campaign: CampaignState, deployable: string[]) => string[]
   /** What the battle decided. Default: won, every enemy dead, five turns. */
   outcome: (campaign: CampaignState, blank: EngagementResult) => EngagementResult
+  /** Who works what at Mend. Default: every free hero, round-robin over the labours that yield. */
+  labours: (campaign: CampaignState, free: string[]) => [string, string][]
 }
 
 export const DEFAULTS: Decisions = {
@@ -38,6 +43,10 @@ export const DEFAULTS: Decisions = {
     let r = blank
     blank.units.filter((u) => u.side === 'enemy').forEach((u) => { r = withUnitFate(r, 'enemy', u.index, { lifeState: 'dead' }) })
     return { ...r, outcome: 'heroClear', turns: 5, heroPhases: 5, enemyPhases: 4 }
+  },
+  labours: (_c, free) => {
+    const keys = listLabours().filter((l) => l.currency).map((l) => l.key)
+    return free.map((h, i) => [h, keys[i % keys.length]!] as [string, string])
   },
 }
 
@@ -71,6 +80,9 @@ export function playStage(ctx: Ctx, d: Decisions, causeId: string): void {
     const offers = listStageOffers(c)
     const pick = offers.length ? d.target(c, offers) : null
     if (pick) { performChooseEngagement(ctx, pick, causeId); playEngagement(ctx, d, causeId) }
+    if (stageOf(c).offers === 'labours') {
+      for (const [heroId, key] of d.labours(c, listAvailable(c, c.cursor.stage))) if (canAssignLabour(c, heroId, key)) performAssignLabour(ctx, heroId, key, causeId)
+    }
   }
   if (!canAdvance(c)) throw new Error(`playStage: cannot advance from step '${c.cursor.step}'`)
   performAdvance(ctx, causeId)

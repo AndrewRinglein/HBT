@@ -26,6 +26,7 @@
   },
   "attack": null,
   "fought": 0,
+  "recruited": 0,
   "battle": null
  },
  "purse": {
@@ -156,7 +157,8 @@
     "unit.imp",
     "unit.fire-imp",
     "unit.poison-imp"
-   ]
+   ],
+   "node": "abbey"
   },
   "territory.ruined-kingdom.ridge": {
    "id": "territory.ruined-kingdom.ridge",
@@ -181,7 +183,8 @@
     "unit.zombie",
     "unit.zombie-hound",
     "unit.skeletal-archer"
-   ]
+   ],
+   "node": "mine"
   },
   "territory.ruined-kingdom.sanctuary": {
    "id": "territory.ruined-kingdom.sanctuary",
@@ -201,6 +204,7 @@
     "unit.zombie",
     "unit.fast-zombie"
    ],
+   "node": "field",
    "lostDefenceCosts": {
     "currency.supplies": 5
    }
@@ -221,7 +225,8 @@
     "unit.bloodhound",
     "unit.hellhound",
     "unit.zombie-hound"
-   ]
+   ],
+   "node": "wellspring"
   }
  },
  "threat": 0,

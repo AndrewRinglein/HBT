@@ -64,6 +64,8 @@ export type Cursor = {
   attack: TerritoryId | null
   /** Engagements resolved in this Stage so far — the Stage offers no more past SWITCHES engagements.perStage. */
   fought: number
+  /** Recruits this Week — "one hero per Week" (KINGDOM-DESIGN.md §3). */
+  recruited: number
   /**
    * §4.4 (THIN-SLICE-IMPLEMENTATION.md): the battle's seed and options, never
    * its state. In the slice the battle is not played; this holds what the
@@ -121,6 +123,8 @@ export type Territory = {
    * Territory carries its own.
    */
   enemies: string[]
+  /** The node it carries — a Mine, a Field, an Abbey, a Wellspring — or none. Permissions, never payments (7-KINGDOM-SETTLED.md). */
+  node: 'mine' | 'field' | 'abbey' | 'wellspring' | null
 }
 
 export type QuestInFlight = { id: string; heroes: HeroId[]; weeksLeft: number }
@@ -175,13 +179,13 @@ export function makeCampaign(seed: number, options: MakeCampaignOptions): Campai
   for (const h of [...options.roster].sort((a, b) => (a.id < b.id ? -1 : a.id > b.id ? 1 : 0))) roster[h.id] = { ...h, classes: [...h.classes], badges: [...h.badges] }
   const territories: Record<TerritoryId, Territory> = {}
   for (const t of [...options.territories].sort((a, b) => (a.id < b.id ? -1 : a.id > b.id ? 1 : 0))) {
-    territories[t.id] = { ...t, buildings: t.buildings.map((b) => ({ ...b })), adjacent: [...t.adjacent], enemies: [...t.enemies] }
+    territories[t.id] = { ...t, buildings: t.buildings.map((b) => ({ ...b })), adjacent: [...t.adjacent], enemies: [...t.enemies], node: t.node }
   }
   return {
     realm: options.realm,
     seed,
     week: options.week ?? 1,
-    cursor: { week: options.week ?? 1, stage: options.stage, step: 'open', prepStep: null, engagement: null, attack: null, fought: 0, battle: null },
+    cursor: { week: options.week ?? 1, stage: options.stage, step: 'open', prepStep: null, engagement: null, attack: null, fought: 0, recruited: 0, battle: null },
     purse,
     renown: options.renown ?? 0,
     unlocks: [],
@@ -238,6 +242,6 @@ export function campaignOf(json: string): CampaignState {
   assertPlainData(c)
   const required: (keyof CampaignState)[] = ['realm', 'seed', 'week', 'cursor', 'purse', 'renown', 'unlocks', 'revealed', 'roster', 'assignments', 'stash', 'territories', 'threat', 'losses', 'quests', 'captured', 'unavailable', 'cups']
   for (const k of required) if (!(k in c)) throw new Error(`save is missing '${k}' — not a Campaign`)
-  for (const k of ['week', 'stage', 'step', 'prepStep', 'engagement', 'attack', 'fought', 'battle'] as const) if (!(k in c.cursor)) throw new Error(`save's cursor is missing '${k}'`)
+  for (const k of ['week', 'stage', 'step', 'prepStep', 'engagement', 'attack', 'fought', 'recruited', 'battle'] as const) if (!(k in c.cursor)) throw new Error(`save's cursor is missing '${k}'`)
   return c
 }

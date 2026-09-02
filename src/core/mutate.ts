@@ -6,7 +6,7 @@
 // Mirrors the engine's shape: the plain-data Campaign is the save; everything
 // unserializable — the event log — lives beside it in a Ctx.
 
-import type { CampaignState, Cursor, Assignment } from './campaign.js'
+import type { CampaignState, Cursor, Assignment, Hero } from './campaign.js'
 import type { KingdomEventType } from './events.js'
 import type { EngagementResult } from './seam.js'
 import type { Reckoning } from './reckoning.js'
@@ -102,6 +102,13 @@ export function setBattleOutcome(ctx: Ctx, result: EngagementResult, reckoning: 
   if (ctx.campaign.cursor.step !== 'battle') throw new Error(`setBattleOutcome refused: the cursor is at step '${ctx.campaign.cursor.step}', not the battle`)
   ctx.campaign.cursor.battle = { resultSet: true, result, reckoning }
   emit(ctx, 'battle.decided', causeId, { engagementId: result.id, outcome: result.outcome })
+}
+
+/** A recruit onto the roster — the one write of campaign.roster's keys. */
+export function applyRecruit(ctx: Ctx, hero: Hero, causeId: string, cost: Record<string, number>): void {
+  if (ctx.campaign.roster[hero.id]) throw new Error(`applyRecruit refused: '${hero.id}' is already on the roster`)
+  ctx.campaign.roster[hero.id] = { ...hero, classes: [...hero.classes], badges: [...hero.badges] }
+  emit(ctx, 'hero.recruited', causeId, { heroId: hero.id, name: hero.name, cost })
 }
 
 // ── what the one writer says as it writes ───────────────────────────────────

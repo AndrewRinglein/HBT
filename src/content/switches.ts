@@ -6,8 +6,16 @@
 export const SWITCHES = {
   /** wound.fromDowned — the wound level a hero who went down and lived carries out of the slice's battle. */
   woundFromDowned: 1,
-  /** salvage.perConquest — Salvage paid by a first Conquer. Unruled; soft. */
-  salvagePerConquest: 30,
+  /** salvage.perConquest — Salvage paid by a first Conquer. THE-KINGDOM.html's worked Week models 10; soft. */
+  salvagePerConquest: 10,
+  /** battle.supplies / battle.faith / battle.mana — what a won Engagement of any kind pays. THE-KINGDOM.html's worked Week: 6 · 4 · 3; soft. */
+  battleSupplies: 6,
+  battleFaith: 4,
+  battleMana: 3,
+  /** recruit.faith — what a recruit costs. Faith recruits (Law 18); the amount is unsaid (a reroll is 10). Soft. */
+  recruitFaith: 10,
+  /** heal.faith — Field Surgery, "7 Faith to heal a wounded hero on the spot" (7-KINGDOM-NOTES.md:189, Andrew). */
+  healFaith: 7,
   /** defend.chancePerTerritory — the weekly defend roll, per owned Territory. RULED 6% (THIN-SLICE-REVIEW.md §G2) — kept here only because the ruling itself says "Soft". */
   defendChancePerTerritory: 6,
   /** engagements.perStage — how many Engagements one Stage may put in front of you in a Week. "A hero does exactly one thing per Week" implies one; not literally ruled. */

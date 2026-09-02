@@ -20,3 +20,6 @@ const RAW_CURRENCIES: readonly CurrencyRow[] = [
 ]
 
 export const CURRENCIES: readonly CurrencyRow[] = omitDisabled(RAW_CURRENCIES)
+
+/** Purpose → currency id, so core can name a price without spelling a content id. */
+export const CURRENCY_IDS = { salvage: 'currency.salvage', supplies: 'currency.supplies', faith: 'currency.faith', mana: 'currency.mana' } as const

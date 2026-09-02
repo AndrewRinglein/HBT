@@ -51,7 +51,11 @@ describe('ISC-034 — the Reckoning is proposed and editable', () => {
     expect(k.heroes.filter((h) => h.mvp).length).toBe(1)
     expect(k.renown).toBe(1); expect(k.losses).toBe(0)
     expect(k.claim).toBe(e.territoryId)
-    expect(k.grants).toEqual([{ currency: 'currency.salvage', amount: SWITCHES.salvagePerConquest }])
+    // Law 10, rewritten 2026-09-01 toward the rule: a won battle pays the three
+    // shop currencies too (7-KINGDOM-SETTLED.md Payouts); Salvage is the one
+    // that only a first Conquer pays. The old line asserted Salvage ALONE.
+    expect(k.grants.filter((g) => g.currency === 'currency.salvage')).toEqual([{ currency: 'currency.salvage', amount: SWITCHES.salvagePerConquest }])
+    expect(k.grants.map((g) => g.currency).sort()).toEqual(['currency.faith', 'currency.mana', 'currency.salvage', 'currency.supplies'])
     assertPlainData(k, 'reckoning')
   })
 
