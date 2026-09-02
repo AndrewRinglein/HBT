@@ -2701,6 +2701,17 @@
      "condition": "you are in stealth"
     }
    ]
+  },
+  {
+   "id": "badge.gravedigger",
+   "name": "Gravedigger",
+   "rarity": "uncommon",
+   "hook": "onKill",
+   "payload": "On kill: destroy the corpse — no corpse is made",
+   "statModifiers": [],
+   "rollable": true,
+   "note": "THE CANONICAL CARRIER of the Destroy Corpse mechanic. The mechanic was dictated 2026-08-30 (DESIGN-DUMP-CLEANED.md §9) as 'mostly a hero ability' with no carrier ever named, so the verb had no user — and the effect vocabulary is a CENSUS OF USE, which is why nothing could author it. This badge is the first user and fixes the phrasing every later author copies: 'destroy the corpse'. NAME IS MINE, free to change.",
+   "source": "Authored 2026-09-02 to land the onKill destroy-corpse trigger asked for. Mechanic ruled 2026-08-30; see rule.corpses for all four denial routes."
   }
  ],
  "_machineReadable": "43 of the 128 badges carry statModifiers, hook, rollable, blockers and engineStatGap, merged from the Crucible 2026-08-21. The other 85 are prose only and still need the machine-readable half. content/ owns badges (COMBAT-DESIGN.md §8: HoBaT authored its own; the 238-row Hell-TCG library is a reference, not a port).",
