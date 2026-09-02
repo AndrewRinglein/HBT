@@ -243,3 +243,26 @@ IRON GAUNTLET: NOT PASSED — 3 FLAG(S) WARNED
 ISC-011: CLOSED at cae0665 · ISC-012: CLOSED at cae0665 · ISC-013: CLOSED at cae0665 · ISC-035: CLOSED at cae0665
 slice: 24 of 50 closed · 24 probed · 0 accepted
 IRON GAUNTLET: NOT PASSED — 2 FLAG(S) WARNED
+
+## assignments.two-slots — LANDED `f8f6d99` **NEEDS REVIEW**
+2026-09-02 05:30 · engine @ 745922d
+
+  PASS  dependencies landed
+  WARN  not already decided — 3 candidate ruling(s) — READ BEFORE ASKING: ../SKELETON-SETTLED.md:113 · ../STATE.md:20
+  PASS  typecheck
+  PASS  full test suite — 52 passed
+  PASS  gate 1 — every claimed criterion holds — ISC-008 holds · ISC-009 holds · ISC-010 holds
+  PASS  brought its own tests — test/isc-008.test.ts, test/isc-009.test.ts, test/isc-010.test.ts
+  PASS  existing tests untouched
+  PASS  kill switch — every claimed probe has been seen red — ISC-008: red on record (2026-09-02 05:27 @ 9412a6f, probe c7bbee8ab48a) · ISC-009: red on record (2026-09-02 05:27 @ 9412a6f, probe 517cc8b2e53c) · ISC-010: red on record (2026-09-02 05:28 @ 9412a6f, probe af871d626125)
+  PASS  nothing regresses — every P-tier probe — 27 P-tier probe(s): 27 green, 0 red, 0 regression(s). 24 of 50 closed · 27 probed · 0 accepted
+  PASS  hardcode scan — core knows mechanisms, never names
+  PASS  generalizes — the second instance costs zero kingdom code — stage.conquer live · stage.mend live
+  PASS  naming — new ids use declared kinds
+  PASS  naming — no banned words invented
+  WARN  engine working tree clean — verified against a DIRTY engine tree (745922d + 3 uncommitted under src/test): M src/content/generated/pack.stamp.json, M src/content/generated/pack.ts, ?? src/sim/coverage.ts
+  PASS  one door to the engine
+
+ISC-008: CLOSED at f8f6d99 · ISC-009: CLOSED at f8f6d99 · ISC-010: CLOSED at f8f6d99
+slice: 27 of 50 closed · 27 probed · 0 accepted
+IRON GAUNTLET: NOT PASSED — 2 FLAG(S) WARNED

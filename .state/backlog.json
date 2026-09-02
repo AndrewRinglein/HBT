@@ -183,7 +183,11 @@
   "variants": [
    "stage.conquer",
    "stage.mend"
-  ]
+  ],
+  "status": "done-needs-review",
+  "sha": "f8f6d99",
+  "engineSha": "745922d",
+  "gauntlet": "not passed — 2 flag(s) warned"
  },
  {
   "id": "purse.mend-and-buy",

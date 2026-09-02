@@ -324,6 +324,10 @@
    "hash": "c7bbee8ab48a",
    "how": "feature absent",
    "tail": " ❯ campaignOf src/core/campaign.ts:240:50 |  ❯ loadFixture test/walk.ts:14:13 |  ❯ test/isc-008.test.ts:33:17"
+  },
+  "closed": {
+   "at": "2026-09-02 05:31",
+   "sha": "f8f6d99"
   }
  },
  "009": {
@@ -333,6 +337,10 @@
    "hash": "517cc8b2e53c",
    "how": "feature absent",
    "tail": " ❯ campaignOf src/core/campaign.ts:240:50 |  ❯ loadFixture test/walk.ts:14:13 |  ❯ test/isc-009.test.ts:13:17"
+  },
+  "closed": {
+   "at": "2026-09-02 05:31",
+   "sha": "f8f6d99"
   }
  },
  "010": {
@@ -342,6 +350,10 @@
    "hash": "af871d626125",
    "how": "feature absent",
    "tail": " ❯ campaignOf src/core/campaign.ts:240:50 |  ❯ loadFixture test/walk.ts:14:13 |  ❯ test/isc-010.test.ts:25:17"
+  },
+  "closed": {
+   "at": "2026-09-02 05:31",
+   "sha": "f8f6d99"
   }
  }
 }
