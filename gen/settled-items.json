@@ -278,8 +278,8 @@
    ],
    "statModifiers": {},
    "triggers": [],
-   "intent": "One attack and no power at all — everything this staff has went into the single blast.",
-   "source": "settled content"
+   "intent": "One attack and no power at all — but the blast scales on Magic as well as Precision, so the staff pays a mage back for every point of it.",
+   "source": "settled content | 2026-09-02: Force Blast re-ruled to precision + half Magic at 1 stamina."
   },
   {
    "id": "item.holy-symbol",
@@ -1201,7 +1201,7 @@
    "range": 4,
    "stat": "precision",
    "damage": 0,
-   "stamina": 2,
+   "stamina": 1,
    "accuracy": 0,
    "crit": 0,
    "hits": 1,
@@ -1214,7 +1214,8 @@
    "slayer": null,
    "description": "Damage equals your Precision plus the party's Magic.",
    "intent": "Deliberately the only tier-1 weapon with one attack; the double scaling is what it bought.",
-   "source": "settled content"
+   "source": "settled content | RE-RULED 2026-09-02, verbatim: 'Change it to precision +1/2, magic, and stamina 1.' So: precision plus HALF the attacker's Magic, magic damage, one stamina — was precision+0 for two stamina, the worst damage-per-stamina in tier 1. Uses the same halfStatBonus field as the Ancient Tome's Read the Page (2026-08-27); the half rounds nearest, 0.5 up, per the standing rounding ruling, and the field is a named engine gap on both attacks.",
+   "halfStatBonus": "magic"
   },
   {
    "id": "attack.holy-symbol.wrath",
