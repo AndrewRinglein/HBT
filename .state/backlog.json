@@ -310,7 +310,11 @@
   "variants": [
    "unlock.field-size.5",
    "unlock.spoils.1"
-  ]
+  ],
+  "status": "done-needs-review",
+  "sha": "44f4f68",
+  "engineSha": "745922d",
+  "gauntlet": "not passed — 3 flag(s) warned"
  },
  {
   "id": "screens.thin",

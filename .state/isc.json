@@ -532,6 +532,10 @@
    "hash": "cdfab8a0d334",
    "how": "feature absent",
    "tail": "     18| import { TACTICS, tacticOf, type TacticRow } from '../content/tactics.… |      19| import { engagementKindOf } from '../content/engagements.js' |  ❯ test/walk.ts:6:1"
+  },
+  "closed": {
+   "at": "2026-09-02 09:29",
+   "sha": "44f4f68"
   }
  },
  "024": {
@@ -541,6 +545,10 @@
    "hash": "e776c66a3985",
    "how": "feature absent",
    "tail": "     18| import { TACTICS, tacticOf, type TacticRow } from '../content/tactics.… |      19| import { engagementKindOf } from '../content/engagements.js' |  ❯ test/walk.ts:6:1"
+  },
+  "closed": {
+   "at": "2026-09-02 09:29",
+   "sha": "44f4f68"
   }
  }
 }

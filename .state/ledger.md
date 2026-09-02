@@ -468,3 +468,58 @@ index c9149e0..3c289d6 100644
 ISC-042: CLOSED at e78a8bd · ISC-043: CLOSED at e78a8bd · ISC-044: CLOSED at e78a8bd · ISC-045: CLOSED at e78a8bd
 slice: 40 of 50 closed · 40 probed · 0 accepted
 IRON GAUNTLET: NOT PASSED — 3 FLAG(S) WARNED
+
+## charter.renown — LANDED `44f4f68` **NEEDS REVIEW**
+2026-09-02 09:27 · engine @ 745922d
+
+  PASS  dependencies landed
+  WARN  not already decided — 1 candidate ruling(s) — READ BEFORE ASKING: ../STATE.md:20
+  PASS  typecheck
+  PASS  full test suite — 82 passed
+  PASS  gate 1 — every claimed criterion holds — ISC-023 holds · ISC-024 holds
+  PASS  brought its own tests — test/isc-037.test.ts, test/isc-023.test.ts, test/isc-024.test.ts
+  WARN  existing tests untouched — DELETED LINES in test/isc-037.test.ts (-2) — will land FLAGGED for review
+  PASS  kill switch — every claimed probe has been seen red — ISC-023: red on record (2026-09-02 09:26 @ a21fb0b, probe cdfab8a0d334) · ISC-024: red on record (2026-09-02 09:26 @ a21fb0b, probe e776c66a3985)
+  PASS  nothing regresses — every P-tier probe — 42 P-tier probe(s): 42 green, 0 red, 0 regression(s). 40 of 50 closed · 42 probed · 0 accepted
+  PASS  hardcode scan — core knows mechanisms, never names
+  PASS  generalizes — the second instance costs zero kingdom code — unlock.field-size.5 live · unlock.spoils.1 live
+  PASS  naming — new ids use declared kinds
+  PASS  naming — no banned words invented
+  WARN  engine working tree clean — verified against a DIRTY engine tree (745922d + 3 uncommitted under src/test): M src/content/generated/pack.stamp.json, M src/content/generated/pack.ts, ?? src/sim/coverage.ts
+  PASS  one door to the engine
+
+<details><summary>Existing tests were edited — review this diff</summary>
+
+```diff
+diff --git a/test/isc-037.test.ts b/test/isc-037.test.ts
+index 4fd4726..6669045 100644
+--- a/test/isc-037.test.ts
++++ b/test/isc-037.test.ts
+@@ -43,6 +43,9 @@ describe('ISC-037 — recruiting costs Faith and adds a hero', () => {
+     expect(ctx.campaign.roster[pick.id]).toBeUndefined()
+   })
+-  it('next Week the Beacon is open again', () => {
+-    const ctx = atBuy((c) => { c.purse['currency.faith'] = 100 })
++  it('next Week the Beacon is open again — while the roster has room', () => {
++    // Law 10, rewritten 2026-09-02 toward the rule: the roster's base room is
++    // eight ("Roster 10 — hold two more heroes"), and the fixture's seven plus
++    // one recruit fills it. Two heroes fewer, and the Beacon reopens.
++    const ctx = atBuy((c) => { c.purse['currency.faith'] = 100; delete c.roster['hero.fixed.orphans']; delete c.roster['hero.base.priest-scantily'] })
+     performRecruit(ctx, listRecruitOffers(ctx.campaign)[0]!.id, 'test')
+     for (let i = 0; i < 6; i++) performAdvance(ctx, 'test')
+@@ -52,3 +55,9 @@ describe('ISC-037 — recruiting costs Faith and adds a hero', () => {
+     expect(canRecruit(ctx.campaign, listRecruitOffers(ctx.campaign)[0]!.id)).toBe(false)
+   })
++  it('a full roster refuses a recruit until a Roster Article holds more', () => {
++    const ctx = atBuy((c) => { c.purse['currency.faith'] = 100; c.roster['hero.base.warrior-iron'] = { ...c.roster['hero.fixed.orphans']!, id: 'hero.base.warrior-iron', name: 'Iron Dwarf' } })   // eight alive
++    const pick = listRecruitOffers(ctx.campaign)[0]!
++    expect(canRecruit(ctx.campaign, pick.id)).toBe(false)
++    expect(() => performRecruit(ctx, pick.id, 'test')).toThrow(/roster is full at 8/)
++  })
+ })
+```
+</details>
+
+ISC-023: CLOSED at 44f4f68 · ISC-024: CLOSED at 44f4f68
+slice: 42 of 50 closed · 42 probed · 0 accepted
+IRON GAUNTLET: NOT PASSED — 3 FLAG(S) WARNED
