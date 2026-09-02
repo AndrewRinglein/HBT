@@ -102,7 +102,7 @@ an attack; it grants `attack.longsword.slash` by id.
 | **4** | a handful only | signature | signature | breaks a rule on purpose |
 
 **One point ≈** +1 Strength or Precision · +2 Health · +2 Reach · +2.5 Toughness ·
-+6 Dodge · +6 Accuracy · +1.5 Movement · +3 Stamina Max · +5 Crit, Luck or Vision ·
++6 Dodge · +6 Accuracy · +1 Movement · +3 Stamina Max · +5 Crit, Luck or Vision ·
 +6.7 Surge.
 **Worth more than one point:** Stamina Regen at 2.0; Armor, Resist, Magic and Spirit at 1.5 each.
 *(Armor and Resist re-ruled from 2.0 to 1.5 on 2026-09-02.)*
@@ -113,11 +113,11 @@ an attack; it grants `attack.longsword.slash` by id.
 
 | Stat | Per point | Note |
 |---|---|---|
-| **Armor · Resist** | **1.5** | *(re-ruled 2026-09-02, down from 2.0)* half again a Strength. Stacking them is still enormous, so they stay hard to gain |
+| **Armor · Resist** | **1.5 and RISING** | *(re-ruled 2026-09-02, down from 2.0 — but see the escalation note below)* half again a Strength **at the first point**. Each further point is worth more than the last |
 | **Stamina Regen** | **2.0** | **the sacred stat, and now priced like one.** It hard-caps at 3, so there are only ever two of these to give |
 | **Magic · Spirit** | **1.5** | more than Strength or Precision — about 3 Health |
 | **Strength · Precision** | **1.0** | the unit |
-| **Movement** | **0.7** | more than an Item Slot. A Movement grant is a real grant |
+| **Movement** | **1.0** | *(re-ruled 2026-09-02, up from 0.7)* the same as a Strength. A Movement grant is a real grant, and −1 is a real cost |
 | **Item Slots** | **0.67** | about two-thirds of a Strength |
 | **Health** | **0.5** | 2 Health ≈ 1 Strength. **Not the cheapest thing in the game** |
 | **Reach** | **0.5** | about half a Precision |
@@ -127,6 +127,28 @@ an attack; it grants `attack.longsword.slash` by id.
 | **Accuracy** | **0.167** | *(re-ruled 2026-09-02)* **6 Accuracy = 1 point** |
 | **Crit · Luck · Vision** | **0.2** | not named in the 2026-09-02 ruling; unchanged pending one |
 | **Surge** | **0.15** | the cheapest thing on the board. **Fine to modify** — it is not a sacred stat |
+
+### Armor does not price linearly — the ladder number is a floor
+
+**Ruled 2026-09-02:** *"it's also worth more and more the higher it goes… Movement is also worth 1."*
+
+Armor and Resist are **flat mitigation**, so each point removes damage from *every* hit. Against
+a board of small hits their value approaches total negation, and the curve steepens: **Armor 3
+is worth considerably more than three times Armor 1.** The 1.5 in the table is the price of the
+*first* point and a floor for the rest. A linear sum will always understate a high-Armor item,
+and no amount of arithmetic will fix that — read the top of the armor curve by hand.
+
+**The worked case is `item.patrocoleas-armor`** (tier 3 heavy: Armor 3, Resist 1, and Health −4,
+Movement −2, Accuracy −10, Dodge −10). Summed linearly it prices below zero, and a review
+flagged it as broken. It is not:
+
+> *"Patroclus' armor has massive downside… it's only a tier 3, and it provides the highest
+> armor modifier you can get. So if you really care about armor, it's still a good way to go,
+> but it's not giving you a whole lot of bonus stats because of all the penalties."*
+
+That is the intended shape of the piece. It sells **the highest Armor in the game** and charges
+for it in everything else — a deliberate specialist, not a budget failure. An item may spend its
+entire budget on one escalating stat.
 
 **Nothing sits outside this table any more.** priced the last five on
 2026-08-20: Movement 0.7 · Stamina Max 0.3 · Stamina Regen 2.0 · Surge 0.15 ·
