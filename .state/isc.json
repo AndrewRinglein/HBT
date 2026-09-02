@@ -428,6 +428,10 @@
    "hash": "e438c06a6411",
    "how": "feature absent",
    "tail": "     41| import { engagementKindOf } from '../content/engagements.js' |      42| import { PAYOUTS } from '../content/payouts.js' |  ❯ test/walk.ts:8:1"
+  },
+  "closed": {
+   "at": "2026-09-02 05:54",
+   "sha": "bd95fd7"
   }
  },
  "039": {
@@ -437,6 +441,10 @@
    "hash": "4dfc8dfbcce2",
    "how": "feature absent",
    "tail": "     41| import { engagementKindOf } from '../content/engagements.js' |      42| import { PAYOUTS } from '../content/payouts.js' |  ❯ test/walk.ts:8:1"
+  },
+  "closed": {
+   "at": "2026-09-02 05:54",
+   "sha": "bd95fd7"
   }
  }
 }

@@ -343,3 +343,26 @@ index c57e404..f393b2d 100644
 ISC-021: CLOSED at 6936a71 · ISC-022: CLOSED at 6936a71 · ISC-036: CLOSED at 6936a71 · ISC-037: CLOSED at 6936a71 · ISC-038: CLOSED at 6936a71
 slice: 32 of 50 closed · 32 probed · 0 accepted
 IRON GAUNTLET: NOT PASSED — 4 FLAG(S) WARNED
+
+## rewards.and-levels — LANDED `bd95fd7` **NEEDS REVIEW**
+2026-09-02 05:51 · engine @ 745922d
+
+  PASS  dependencies landed
+  WARN  not already decided — 2 candidate ruling(s) — READ BEFORE ASKING: ../STATE.md:20 · ../CODEX.md:480
+  PASS  typecheck
+  PASS  full test suite — 66 passed
+  PASS  gate 1 — every claimed criterion holds — ISC-019 holds · ISC-039 holds
+  PASS  brought its own tests — test/isc-033.test.ts, test/isc-019.test.ts, test/isc-039.test.ts
+  PASS  existing tests untouched
+  PASS  kill switch — every claimed probe has been seen red — ISC-019: red on record (2026-09-02 05:48 @ 1fa11e9, probe e438c06a6411) · ISC-039: red on record (2026-09-02 05:48 @ 1fa11e9, probe 4dfc8dfbcce2)
+  PASS  nothing regresses — every P-tier probe — 34 P-tier probe(s): 34 green, 0 red, 0 regression(s). 32 of 50 closed · 34 probed · 0 accepted
+  PASS  hardcode scan — core knows mechanisms, never names
+  PASS  generalizes — the second instance costs zero kingdom code — item.halberd live · item.silkweave-armor live
+  PASS  naming — new ids use declared kinds
+  PASS  naming — no banned words invented
+  WARN  engine working tree clean — verified against a DIRTY engine tree (745922d + 3 uncommitted under src/test): M src/content/generated/pack.stamp.json, M src/content/generated/pack.ts, ?? src/sim/coverage.ts
+  PASS  one door to the engine
+
+ISC-019: CLOSED at bd95fd7 · ISC-039: CLOSED at bd95fd7
+slice: 34 of 50 closed · 34 probed · 0 accepted
+IRON GAUNTLET: NOT PASSED — 2 FLAG(S) WARNED

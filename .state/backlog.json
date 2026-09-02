@@ -234,7 +234,11 @@
    "item.halberd",
    "item.silkweave-armor"
   ],
-  "note": "variants: two reward rows of different slots — a weapon and an armor — drawn by the same draft."
+  "note": "variants: two reward rows of different slots — a weapon and an armor — drawn by the same draft.",
+  "status": "done-needs-review",
+  "sha": "bd95fd7",
+  "engineSha": "745922d",
+  "gauntlet": "not passed — 2 flag(s) warned"
  },
  {
   "id": "build.forge",
