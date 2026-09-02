@@ -259,7 +259,11 @@
    "building.chapel"
   ],
   "note": "building.chapel as the second instance: its root node only, to prove the tree machine is data — the full Chapel is out of the slice.",
-  "attempts": 1
+  "attempts": 1,
+  "status": "done-needs-review",
+  "sha": "2aa2ab0",
+  "engineSha": "745922d",
+  "gauntlet": "not passed — 3 flag(s) warned"
  },
  {
   "id": "opening.prologue",

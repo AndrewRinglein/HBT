@@ -454,6 +454,10 @@
    "hash": "a3102db73012",
    "how": "disabled building.forge",
    "tail": "       | ^ |      10| import { BUILDINGS, buildingRowOf } from '../src/content/buildings.js' |      11|"
+  },
+  "closed": {
+   "at": "2026-09-02 06:06",
+   "sha": "2aa2ab0"
   }
  },
  "041": {
@@ -463,6 +467,10 @@
    "hash": "eab3065def52",
    "how": "feature absent",
    "tail": "       | ^ |      10| import { isShopOpen, listShopItems, canBuyItem, performBuyItem, costOf… |      11| import { performAdvancePrep, performDeploy, listDeployable, prepStepOf…"
+  },
+  "closed": {
+   "at": "2026-09-02 06:06",
+   "sha": "2aa2ab0"
   }
  }
 }

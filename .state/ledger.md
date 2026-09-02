@@ -366,3 +366,43 @@ IRON GAUNTLET: NOT PASSED — 4 FLAG(S) WARNED
 ISC-019: CLOSED at bd95fd7 · ISC-039: CLOSED at bd95fd7
 slice: 34 of 50 closed · 34 probed · 0 accepted
 IRON GAUNTLET: NOT PASSED — 2 FLAG(S) WARNED
+
+## build.forge — LANDED `2aa2ab0` **NEEDS REVIEW**
+2026-09-02 06:03 · engine @ 745922d
+
+  PASS  dependencies landed
+  WARN  not already decided — 1 candidate ruling(s) — READ BEFORE ASKING: ../STATE.md:20
+  PASS  typecheck
+  PASS  full test suite — 71 passed
+  PASS  gate 1 — every claimed criterion holds — ISC-040 holds · ISC-041 holds
+  PASS  brought its own tests — test/isc-004.test.ts, test/isc-040.test.ts, test/isc-041.test.ts
+  WARN  existing tests untouched — DELETED LINES in test/isc-004.test.ts (-1) — will land FLAGGED for review
+  PASS  kill switch — every claimed probe has been seen red — ISC-040: red on record (2026-09-02 05:59 @ d32fd6f) and re-proven — fails without building.forge · ISC-041: red on record (2026-09-02 05:59 @ d32fd6f, probe eab3065def52)
+  PASS  nothing regresses — every P-tier probe — 36 P-tier probe(s): 36 green, 0 red, 0 regression(s). 34 of 50 closed · 36 probed · 0 accepted
+  PASS  hardcode scan — core knows mechanisms, never names
+  PASS  generalizes — the second instance costs zero kingdom code — building.forge live · building.chapel live
+  PASS  naming — new ids use declared kinds
+  PASS  naming — no banned words invented
+  WARN  engine working tree clean — verified against a DIRTY engine tree (745922d + 3 uncommitted under src/test): M src/content/generated/pack.stamp.json, M src/content/generated/pack.ts, ?? src/sim/coverage.ts
+  PASS  one door to the engine
+
+<details><summary>Existing tests were edited — review this diff</summary>
+
+```diff
+diff --git a/test/isc-004.test.ts b/test/isc-004.test.ts
+index fd0bc87..f217dad 100644
+--- a/test/isc-004.test.ts
++++ b/test/isc-004.test.ts
+@@ -10,5 +10,5 @@ import { CURRENCIES } from '../src/content/currencies.js'
+ 
+ const hero = (id: string, cls: string): Hero => ({
+-  id, name: id, classes: [cls], level: 1, xp: 0, wound: 0, lifeState: 'alive', badges: [], unitType: 'alpha-osric', corruption: 0,
++  id, name: id, classes: [cls], level: 1, xp: 0, wound: 0, lifeState: 'alive', badges: [], unitType: 'alpha-osric', corruption: 0, equipped: [],
+ })
+ const territory = (id: string, kingdom = false): Territory => ({
+```
+</details>
+
+ISC-040: CLOSED at 2aa2ab0 · ISC-041: CLOSED at 2aa2ab0
+slice: 36 of 50 closed · 36 probed · 0 accepted
+IRON GAUNTLET: NOT PASSED — 3 FLAG(S) WARNED
