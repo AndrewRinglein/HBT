@@ -122,6 +122,13 @@ export function applyGrant(ctx: Ctx, currencyId: string, amount: number, causeId
   emit(ctx, 'resource.gained', causeId, { currencyId, amount, balance: ctx.campaign.purse[currencyId] })
 }
 
+export function applySpend(ctx: Ctx, currencyId: string, amount: number, causeId: string): void {
+  if (!(currencyId in ctx.campaign.purse)) throw new Error(`no currency '${currencyId}' in the purse`)
+  if (amount > ctx.campaign.purse[currencyId]!) throw new Error(`applySpend refused: ${amount} ${currencyId} from a purse holding ${ctx.campaign.purse[currencyId]}`)
+  ctx.campaign.purse[currencyId]! -= amount
+  emit(ctx, 'resource.spent', causeId, { currencyId, amount, balance: ctx.campaign.purse[currencyId] })
+}
+
 export function applyRenown(ctx: Ctx, amount: number, causeId: string): void {
   ctx.campaign.renown += amount
   emit(ctx, 'renown.gained', causeId, { amount, renown: ctx.campaign.renown })

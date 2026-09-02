@@ -20,7 +20,10 @@ import { type Ctx, emit, setCursor } from './mutate.js'
 import { rollOf } from './rng.js'
 import { STAGES, stageRowOf, type StageRow } from '../content/stages.js'
 import { CUP_IDS } from '../content/cups.js'
+import { SWITCHES } from '../content/switches.js'
 import { beginCombatPrep } from './prep.js'
+import { listConquerable, resolveThreat, performLose } from './map.js'
+export { listConquerable } from './map.js'
 
 // ── reading ─────────────────────────────────────────────────────────────────
 
@@ -33,21 +36,14 @@ export function canAdvance(campaign: CampaignState): boolean {
   return campaign.cursor.step === 'open'
 }
 
-/** Unclaimed Territories adjacent to one you hold — what a Conquer may attack. Sorted by id (Law 6). */
-export function listConquerable(campaign: CampaignState): TerritoryId[] {
-  const owned = Object.values(campaign.territories).filter((t) => t.owned)
-  const out = new Set<TerritoryId>()
-  for (const t of owned) for (const a of t.adjacent) { const n = campaign.territories[a]; if (n && !n.owned) out.add(n.id) }
-  return [...out].sort()
-}
-
 /** What this Stage puts in front of the player right now — the row says where its targets come from. Pure. */
 export function listStageOffers(campaign: CampaignState): TerritoryId[] {
   const row = stageOf(campaign)
   if (row.offers !== 'engagement' || campaign.cursor.step !== 'open' || campaign.cursor.engagement) return []
+  if (campaign.cursor.fought >= SWITCHES.engagementsPerStage) return []
   if (row.targets === 'conquerable') return listConquerable(campaign)
-  // 'rolled' — the weekly defend roll — is M6's; until then the Stage offers nothing.
-  return []
+  // 'rolled' — the Week's attack, if the defend roll fired and it is still unanswered
+  return campaign.cursor.attack ? [campaign.cursor.attack] : []
 }
 
 export function canChooseEngagement(campaign: CampaignState, territoryId: TerritoryId): boolean {
@@ -58,12 +54,22 @@ export function canChooseEngagement(campaign: CampaignState, territoryId: Territ
 
 export function beginStage(ctx: Ctx, stageId: string, causeId: string): void {
   const row = stageRowOf(stageId)
-  setCursor(ctx, { stage: row.id, step: 'open', prepStep: null, engagement: null, battle: null }, causeId)
-  emit(ctx, 'stage.begun', causeId, { stageId: row.id, week: ctx.campaign.week })
+  // A Stage whose targets are rolled rolls on entry — once, keyed by the Week,
+  // so a reload lands on the same attack.
+  const attack = row.targets === 'rolled' ? resolveThreat(ctx.campaign) : null
+  setCursor(ctx, { stage: row.id, step: 'open', prepStep: null, engagement: null, attack, fought: 0, battle: null }, causeId)
+  emit(ctx, 'stage.begun', causeId, { stageId: row.id, week: ctx.campaign.week, attack })
 }
 
 export function endStage(ctx: Ctx, causeId: string): void {
   if (!canAdvance(ctx.campaign)) throw new Error(`endStage refused: the cursor is at step '${ctx.campaign.cursor.step}' of ${ctx.campaign.cursor.stage}`)
+  // An attack left unanswered at the end of the Stage is a Territory lost
+  // (SKELETON-SETTLED.md:80) — or, for the Kingdom Territory, its stakes cost.
+  const attack = ctx.campaign.cursor.attack
+  if (attack) {
+    performLose(ctx, attack, causeId)
+    setCursor(ctx, { attack: null }, causeId)
+  }
   emit(ctx, 'stage.ended', causeId, { stageId: ctx.campaign.cursor.stage, week: ctx.campaign.week })
 }
 
@@ -117,7 +123,8 @@ export function performChooseEngagement(ctx: Ctx, territoryId: TerritoryId, caus
     deployed: [],
     seed: rollOf(c, CUP_IDS.battle, [t.id, c.week]) % 1000,
   }
-  setCursor(ctx, { engagement: e }, causeId)
+  // taking the field against the Week's attack answers it — whatever the battle then decides
+  setCursor(ctx, { engagement: e, attack: null }, causeId)
   emit(ctx, 'engagement.offered', causeId, { engagementId: e.id, kind: e.kind, territoryId: t.id })
   beginCombatPrep(ctx, causeId)
   return e

@@ -46,6 +46,8 @@ for (const kind of ENGAGEMENT_KINDS) for (const won of [true, false]) for (let s
   const e = ctx.campaign.cursor.engagement!
   e.kind = kind.id
   e.id = `${e.id}.probe-${seed}`
+  // a defence is of ground you hold: the stakes row says a loss loses it, so the fixture's target is held for this run
+  if (engagementKindOf(kind.id).onLose === 'lose-territory') { const t = ctx.campaign.territories[e.territoryId]!; t.owned = true; t.claimedOnce = true }
   // a fixed-roster kind (a quest) was committed Weeks ago: the fixture stands in for that
   if (engagementKindOf(kind.id).rosterFixed) e.deployed = Object.keys(ctx.campaign.roster).sort().slice(0, 3)
   beginCombatPrep(ctx, 'probe')

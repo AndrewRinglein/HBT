@@ -24,6 +24,8 @@
    "deployed": [],
    "seed": 1
   },
+  "attack": null,
+  "fought": 0,
   "battle": null
  },
  "purse": {
@@ -198,7 +200,10 @@
     "unit.zombie",
     "unit.zombie",
     "unit.fast-zombie"
-   ]
+   ],
+   "lostDefenceCosts": {
+    "currency.supplies": 5
+   }
   },
   "territory.ruined-kingdom.thicket": {
    "id": "territory.ruined-kingdom.thicket",

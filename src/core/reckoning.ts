@@ -34,8 +34,9 @@ import { rollOf } from './rng.js'
 import { validateResult } from './result.js'
 import {
   type Ctx, applyXp, setWound, setHeroDead, applyGrant, applyRenown,
-  setEngagementResolved, applyClaim, applyLose, setCursor,
+  setEngagementResolved, applyClaim, setCursor,
 } from './mutate.js'
+import { performLose } from './map.js'
 import { engagementKindOf } from '../content/engagements.js'
 import { PAYOUTS } from '../content/payouts.js'
 import { SWITCHES } from '../content/switches.js'
@@ -103,7 +104,9 @@ export function resolveReckoning(campaign: CampaignState, engagement: Engagement
   const territory = campaign.territories[engagement.territoryId]
   if (!territory) throw new Error(`${engagement.id}: Territory '${engagement.territoryId}' is not on the map`)
   const claim = won && kind.onWin === 'claim-territory' ? territory.id : null
-  const lose = !won && kind.onLose === 'lose-territory' && !territory.kingdom ? territory.id : null
+  // a lost defence names the Territory either way; the writer's performLose
+  // knows the Kingdom Territory cannot be lost and charges its stakes instead
+  const lose = !won && kind.onLose === 'lose-territory' ? territory.id : null
   const grants: Grant[] = won
     ? PAYOUTS.filter((p) => p.engagementKind === engagement.kind && !(p.firstClaimOnly && territory.claimedOnce))
         .map((p) => ({ currency: p.currency, amount: p.amount }))
@@ -135,7 +138,6 @@ export function applyBattleResult(ctx: Ctx, engagement: Engagement, result: Enga
     if (!Number.isInteger(h.xp) || h.xp < 0 || !Number.isInteger(h.wound) || h.wound < 0 || h.wound > 3) throw new Error(`applyBattleResult refused: '${h.heroId}' xp ${h.xp}, wound ${h.wound}`)
   }
   for (const g of reckoning.grants) if (!(g.currency in c.purse) || !Number.isInteger(g.amount) || g.amount < 0) throw new Error(`applyBattleResult refused: grant ${g.amount} of '${g.currency}'`)
-  if (reckoning.lose && c.territories[reckoning.lose]?.kingdom) throw new Error(`applyBattleResult refused: the Kingdom Territory cannot be lost`)
 
   const cause = engagement.id
   for (const h of reckoning.heroes) {
@@ -146,7 +148,7 @@ export function applyBattleResult(ctx: Ctx, engagement: Engagement, result: Enga
   if (reckoning.renown > 0) applyRenown(ctx, reckoning.renown, cause)
   setEngagementResolved(ctx, engagement.id, reckoning.won, cause)
   if (reckoning.claim) applyClaim(ctx, reckoning.claim, cause)
-  if (reckoning.lose) applyLose(ctx, reckoning.lose, cause)
+  if (reckoning.lose) performLose(ctx, reckoning.lose, cause)
   for (const g of reckoning.grants) if (g.amount > 0) applyGrant(ctx, g.currency, g.amount, cause)
   setCursor(ctx, { step: 'reckoning', prepStep: null, battle: null }, cause)
 }
@@ -154,7 +156,7 @@ export function applyBattleResult(ctx: Ctx, engagement: Engagement, result: Enga
 /** Leave the tally: the Engagement is done, the cursor is back at the Week's open step. */
 export function performExitBattle(ctx: Ctx, causeId: string): void {
   if (ctx.campaign.cursor.step !== 'reckoning') throw new Error(`performExitBattle refused: the cursor is at '${ctx.campaign.cursor.step}', not the Reckoning`)
-  setCursor(ctx, { step: 'open', prepStep: null, engagement: null, battle: null }, causeId)
+  setCursor(ctx, { step: 'open', prepStep: null, engagement: null, battle: null, fought: ctx.campaign.cursor.fought + 1 }, causeId)
 }
 
 /**

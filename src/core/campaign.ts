@@ -57,6 +57,14 @@ export type Cursor = {
   prepStep: PrepStep | null
   engagement: Engagement | null
   /**
+   * The Territory the weekly defend roll picked, while stage.defend is open and
+   * the attack is unanswered — a counterattack you did not defend is a
+   * Territory lost (SKELETON-SETTLED.md:80). Null otherwise.
+   */
+  attack: TerritoryId | null
+  /** Engagements resolved in this Stage so far — the Stage offers no more past SWITCHES engagements.perStage. */
+  fought: number
+  /**
    * §4.4 (THIN-SLICE-IMPLEMENTATION.md): the battle's seed and options, never
    * its state. In the slice the battle is not played; this holds what the
    * outcome panel SET — the result and the Reckoning proposed from it, both
@@ -165,7 +173,7 @@ export function makeCampaign(seed: number, options: MakeCampaignOptions): Campai
     realm: options.realm,
     seed,
     week: options.week ?? 1,
-    cursor: { week: options.week ?? 1, stage: options.stage, step: 'open', prepStep: null, engagement: null, battle: null },
+    cursor: { week: options.week ?? 1, stage: options.stage, step: 'open', prepStep: null, engagement: null, attack: null, fought: 0, battle: null },
     purse,
     renown: options.renown ?? 0,
     unlocks: [],
@@ -221,6 +229,6 @@ export function campaignOf(json: string): CampaignState {
   assertPlainData(c)
   const required: (keyof CampaignState)[] = ['realm', 'seed', 'week', 'cursor', 'purse', 'renown', 'unlocks', 'revealed', 'roster', 'assignments', 'stash', 'territories', 'threat', 'losses', 'quests', 'captured', 'cups']
   for (const k of required) if (!(k in c)) throw new Error(`save is missing '${k}' — not a Campaign`)
-  for (const k of ['week', 'stage', 'step', 'prepStep', 'engagement', 'battle'] as const) if (!(k in c.cursor)) throw new Error(`save's cursor is missing '${k}'`)
+  for (const k of ['week', 'stage', 'step', 'prepStep', 'engagement', 'attack', 'fought', 'battle'] as const) if (!(k in c.cursor)) throw new Error(`save's cursor is missing '${k}'`)
   return c
 }

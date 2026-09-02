@@ -153,7 +153,12 @@
   "needs": [
    "week.machine"
   ],
-  "note": "variants: the four territory.<realm>.* ids, named from KINGDOM-DESIGN.md / the realm manifest when worked — never invented here."
+  "note": "variants named from src/content/territories.ts, the realm manifest — the Ridge (GLOSSARY.md's example) and the Highlands (an engine map name).",
+  "attempts": 1,
+  "variants": [
+   "territory.ruined-kingdom.ridge",
+   "territory.ruined-kingdom.highlands"
+  ]
  },
  {
   "id": "assignments.two-slots",

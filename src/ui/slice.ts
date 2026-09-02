@@ -121,9 +121,12 @@ function worldScreen(c: CampaignState): string {
   const heroes = Object.values(c.roster).sort((a, b) => a.id.localeCompare(b.id))
   let body: string
   if (row.offers === 'engagement' && offers.length) {
-    body = `<h3>${esc(row.title)} — choose a Territory, or pass</h3><div class="pick">${offers.map((id) => { const t = c.territories[id]!; return `<div class="opt" data-act="choose" data-id="${esc(id)}"><b>${esc(t.name)}</b><small>${esc(t.mapId)} · held by ${t.enemies.length}: ${esc(t.enemies.map((e) => nameOf(e)).join(', '))}${t.buildings.length ? ' · ' + esc(t.buildings.map((b) => b.id).join(', ')) : ''}</small></div>` }).join('')}</div>`
+    const head = row.targets === 'rolled'
+      ? `${esc(row.title)} — <span class="lost">attacked</span> at ${esc(c.territories[offers[0]!]!.name)}. Defend it, or pass and ${c.territories[offers[0]!]!.kingdom ? 'pay the cost' : 'lose it'}`
+      : `${esc(row.title)} — choose a Territory, or pass`
+    body = `<h3>${head}</h3><div class="pick">${offers.map((id) => { const t = c.territories[id]!; return `<div class="opt" data-act="choose" data-id="${esc(id)}"><b>${esc(t.name)}</b><small>${esc(t.mapId)} · held by ${t.enemies.length}: ${esc(t.enemies.map((e) => nameOf(e)).join(', '))}${t.buildings.length ? ' · ' + esc(t.buildings.map((b) => b.id).join(', ')) : ''}</small></div>` }).join('')}</div>`
   } else if (row.offers === 'engagement') {
-    body = `<h3>${esc(row.title)}</h3><p class="meta">${row.targets === 'rolled' ? 'No attack this Week — the defend roll lands with the map (M6).' : 'Nothing adjacent is unclaimed.'}</p>`
+    body = `<h3>${esc(row.title)}</h3><p class="meta">${c.cursor.fought ? 'Fought this Stage — nothing more is offered this Week.' : row.targets === 'rolled' ? 'No attack this Week.' : 'Nothing adjacent is unclaimed.'}</p>`
   } else {
     body = `<h3>${esc(row.title)}</h3><p>${esc(row.does)}</p><p class="meta">Nothing to do here yet — this Stage's machinery lands in a later milestone. Pass through.</p>`
   }
