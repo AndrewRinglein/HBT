@@ -59,3 +59,19 @@ td.n{text-align:right;font-variant-numeric:tabular-nums}
 .title .card.off{opacity:.55}
 button.big{font-size:1.3em;padding:12px 32px}
 tr.dead td{opacity:.5}
+/* the kingdom art */
+.picture{margin:6px 0 12px}
+.picture .steps span[data-act]{cursor:pointer}
+svg.world,svg.town{display:block;width:100%;height:auto;border:1px solid var(--line);border-radius:5px;background:#000}
+svg.world .tile polygon{fill:none;stroke:#6b5a3e;stroke-width:3;opacity:.7}
+svg.world .tile.held polygon{stroke:#d9b45a;opacity:.95}
+svg.world .tile.attacked polygon{stroke:#d9534f;stroke-width:5;opacity:1}
+svg.world .tile.unclaimed image:first-of-type{filter:saturate(.55) brightness(.8)}
+svg.world .tile.pick{cursor:pointer}
+svg.world .tile.pick:hover polygon{stroke:#fff;stroke-width:5;opacity:1}
+svg.world .tile text{fill:#f3e9d2;font:bold 22px Georgia,serif;paint-order:stroke;stroke:#000;stroke-width:5px}
+svg.world image.ruin{filter:grayscale(.9) brightness(.55)}
+.hall{position:relative;background-size:cover;background-position:center;border:1px solid var(--line);border-radius:5px;padding:12px 15px;margin:8px 0}
+.hall::before{content:"";position:absolute;inset:0;background:rgba(12,10,8,.72);border-radius:5px}
+.hall>*{position:relative}
+.hall .bcard{float:right;width:106px;margin:0 0 8px 12px;border:1px solid #6b5a3e;border-radius:4px}

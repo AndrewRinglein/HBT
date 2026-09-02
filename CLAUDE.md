@@ -33,6 +33,9 @@ node tools/slice-gate.mjs                    every P-tier criterion probe; exit 
 node tools/slice-gate.mjs --isc 002          one criterion's probe
 node tools/slice-gate.mjs --isc 002 --red    demand the probe FAILS now, and record the red
 node tools/slice-gate.mjs --count            "N of M closed · K probed · J accepted"
+python3 tools/prep-art.py [kingdom-art]      downscale the kingdom art into generated/art/ (Pillow; default ../../Autobattler/kingdom-art)
+node tools/build-slice.mjs                   SLICE.html, with generated/art/ inlined
+node tools/smoke-slice.mjs SLICE.html        drive the built page headlessly
 node tools/slice-gate.mjs --sync             write the count and every State: line into the doc
 
 node tools/scan.mjs only-writer     ISC-014's static scan

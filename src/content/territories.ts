@@ -28,30 +28,37 @@ export const REALM = 'realm.ruined-kingdom'
 export type TerritoryRow = Territory & {
   /** What a lost defence of an unlosable Territory costs, by currency. Absent on every other row. */
   readonly lostDefenceCosts?: Readonly<Record<string, number>>
+  /**
+   * Where it sits on the painted world map — axial (q, r) of a tile in
+   * kingdom-art/territories/index.json (USE-THIS-ART.md §2). Art placement
+   * only; the rules never read it. Provisional: the four were picked for
+   * contiguity around the keep at (−1, 0), not for matching terrain.
+   */
+  readonly hex: { readonly q: number; readonly r: number }
 }
 
-const t = (id: string, name: string, mapId: string, extra: Partial<TerritoryRow>): TerritoryRow => ({
-  id, name, mapId, owned: false, kingdom: false, claimedOnce: false, buildings: [], adjacent: [], enemies: [], node: null, ...extra,
+const t = (id: string, name: string, mapId: string, hex: [number, number], extra: Partial<TerritoryRow>): TerritoryRow => ({
+  id, name, mapId, owned: false, kingdom: false, claimedOnce: false, buildings: [], adjacent: [], enemies: [], node: null, hex: { q: hex[0], r: hex[1] }, ...extra,
 })
 
 const RAW_TERRITORIES: readonly TerritoryRow[] = [
-  t('territory.ruined-kingdom.sanctuary', 'Sanctuary', 'map.open', {
+  t('territory.ruined-kingdom.sanctuary', 'Sanctuary', 'map.open', [-1, 0], {
     owned: true, kingdom: true, claimedOnce: true, node: 'field',
     buildings: [{ id: 'building.chapel', level: 1, damaged: false, nodes: ['standing'] }],
     adjacent: ['territory.ruined-kingdom.ridge', 'territory.ruined-kingdom.highlands'],
     enemies: ['unit.zombie', 'unit.zombie', 'unit.zombie', 'unit.fast-zombie'],
     lostDefenceCosts: { 'currency.supplies': SWITCHES.sanctuaryLostDefenceSupplies },
   }),
-  t('territory.ruined-kingdom.ridge', 'The Ridge', 'map.ridge', {
+  t('territory.ruined-kingdom.ridge', 'The Ridge', 'map.ridge', [-1, -1], {
     buildings: [{ id: 'building.forge', level: 0, damaged: true, nodes: [] }], node: 'mine',
     adjacent: ['territory.ruined-kingdom.sanctuary', 'territory.ruined-kingdom.thicket'],
     enemies: ['unit.zombie', 'unit.zombie', 'unit.zombie-hound', 'unit.skeletal-archer'],
   }),
-  t('territory.ruined-kingdom.highlands', 'The Highlands', 'map.highlands', {
+  t('territory.ruined-kingdom.highlands', 'The Highlands', 'map.highlands', [0, -1], {
     adjacent: ['territory.ruined-kingdom.sanctuary'], node: 'abbey',
     enemies: ['unit.imp', 'unit.imp', 'unit.fire-imp', 'unit.poison-imp'],
   }),
-  t('territory.ruined-kingdom.thicket', 'The Thicket', 'map.thicket', {
+  t('territory.ruined-kingdom.thicket', 'The Thicket', 'map.thicket', [-1, -2], {
     adjacent: ['territory.ruined-kingdom.ridge'], node: 'wellspring',
     enemies: ['unit.bloodhound', 'unit.bloodhound', 'unit.hellhound', 'unit.zombie-hound'],
   }),

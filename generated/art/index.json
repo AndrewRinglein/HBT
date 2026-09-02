@@ -1,0 +1,391 @@
+{
+ "source": "Autobattler/kingdom-art \u2014 USE-THIS-ART.md",
+ "files": {
+  "map.jpg": {
+   "w": 788,
+   "h": 1053,
+   "bytes": 162789
+  },
+  "t_m01_p00.png": {
+   "w": 265,
+   "h": 397,
+   "bytes": 111947
+  },
+  "t_m01_m01.png": {
+   "w": 265,
+   "h": 397,
+   "bytes": 106223
+  },
+  "t_p00_m01.png": {
+   "w": 265,
+   "h": 397,
+   "bytes": 114749
+  },
+  "t_m01_m02.png": {
+   "w": 265,
+   "h": 397,
+   "bytes": 105636
+  },
+  "iso-forge.png": {
+   "w": 127,
+   "h": 144,
+   "bytes": 34801
+  },
+  "iso-chapel.png": {
+   "w": 127,
+   "h": 162,
+   "bytes": 37538
+  },
+  "iso-beacon.png": {
+   "w": 93,
+   "h": 167,
+   "bytes": 31294
+  },
+  "iso-memorial.png": {
+   "w": 127,
+   "h": 112,
+   "bytes": 28047
+  },
+  "iso-keep.png": {
+   "w": 127,
+   "h": 141,
+   "bytes": 32614
+  },
+  "town-plate.jpg": {
+   "w": 1280,
+   "h": 714,
+   "bytes": 148148
+  },
+  "band-forge-1-ruined.png": {
+   "w": 221,
+   "h": 426,
+   "bytes": 81013
+  },
+  "band-forge-2-working.png": {
+   "w": 221,
+   "h": 426,
+   "bytes": 82943
+  },
+  "band-forge-3-established.png": {
+   "w": 221,
+   "h": 426,
+   "bytes": 89197
+  },
+  "band-forge-4-masterwork.png": {
+   "w": 221,
+   "h": 426,
+   "bytes": 100762
+  },
+  "band-forge-5-ascendant.png": {
+   "w": 221,
+   "h": 426,
+   "bytes": 115914
+  },
+  "band-chapel-1-ruined.png": {
+   "w": 237,
+   "h": 505,
+   "bytes": 72691
+  },
+  "band-chapel-2-working.png": {
+   "w": 237,
+   "h": 505,
+   "bytes": 76152
+  },
+  "band-chapel-3-established.png": {
+   "w": 237,
+   "h": 505,
+   "bytes": 77573
+  },
+  "band-chapel-4-masterwork.png": {
+   "w": 237,
+   "h": 505,
+   "bytes": 120286
+  },
+  "band-chapel-5-ascendant.png": {
+   "w": 237,
+   "h": 505,
+   "bytes": 136094
+  },
+  "band-beacon-1-ruined.png": {
+   "w": 120,
+   "h": 303,
+   "bytes": 25202
+  },
+  "band-beacon-2-working.png": {
+   "w": 120,
+   "h": 303,
+   "bytes": 35928
+  },
+  "band-beacon-3-established.png": {
+   "w": 120,
+   "h": 303,
+   "bytes": 46942
+  },
+  "band-beacon-4-masterwork.png": {
+   "w": 120,
+   "h": 303,
+   "bytes": 49003
+  },
+  "band-beacon-5-ascendant.png": {
+   "w": 120,
+   "h": 303,
+   "bytes": 51673
+  },
+  "interior-forge.jpg": {
+   "w": 960,
+   "h": 536,
+   "bytes": 52489
+  },
+  "interior-chapel.jpg": {
+   "w": 960,
+   "h": 536,
+   "bytes": 50339
+  },
+  "interior-beacon.jpg": {
+   "w": 960,
+   "h": 536,
+   "bytes": 50252
+  },
+  "interior-memorial.jpg": {
+   "w": 960,
+   "h": 536,
+   "bytes": 51826
+  },
+  "card-forge.jpg": {
+   "w": 212,
+   "h": 316,
+   "bytes": 15373
+  },
+  "card-chapel.jpg": {
+   "w": 212,
+   "h": 316,
+   "bytes": 13659
+  },
+  "card-beacon.jpg": {
+   "w": 212,
+   "h": 316,
+   "bytes": 14466
+  },
+  "card-memorial.jpg": {
+   "w": 212,
+   "h": 316,
+   "bytes": 12931
+  }
+ },
+ "map": {
+  "w": 788,
+  "h": 1053,
+  "originX": 1195,
+  "originY": 288,
+  "nativeScale": 0.5172413793103449
+ },
+ "hex": {
+  "tileW": 264.83,
+  "tileH": 397.24,
+  "topVertex": 129.31,
+  "bottomVertex": 396.21,
+  "sides": [
+   197.59,
+   332.07
+  ],
+  "rowStep": 200.69,
+  "scale": 0.5172413793103449
+ },
+ "tiles": {
+  "t_m01_p00": {
+   "q": -1,
+   "r": 0,
+   "px": [
+    3200,
+    2088
+   ],
+   "terrain": "plains",
+   "file": "t_m01_p00.png"
+  },
+  "t_m01_m01": {
+   "q": -1,
+   "r": -1,
+   "px": [
+    2944,
+    1700
+   ],
+   "terrain": "rock",
+   "file": "t_m01_m01.png"
+  },
+  "t_p00_m01": {
+   "q": 0,
+   "r": -1,
+   "px": [
+    3456,
+    1700
+   ],
+   "terrain": "plains",
+   "file": "t_p00_m01.png"
+  },
+  "t_m01_m02": {
+   "q": -1,
+   "r": -2,
+   "px": [
+    2688,
+    1312
+   ],
+   "terrain": "rock",
+   "file": "t_m01_m02.png"
+  }
+ },
+ "overlays": {
+  "forge": {
+   "file": "iso-forge.png",
+   "w": 127,
+   "h": 144,
+   "anchorX": 47.07,
+   "anchorY": 143.28
+  },
+  "chapel": {
+   "file": "iso-chapel.png",
+   "w": 127,
+   "h": 162,
+   "anchorX": 51.21,
+   "anchorY": 161.9
+  },
+  "beacon": {
+   "file": "iso-beacon.png",
+   "w": 93,
+   "h": 167,
+   "anchorX": 45.52,
+   "anchorY": 166.55
+  },
+  "memorial": {
+   "file": "iso-memorial.png",
+   "w": 127,
+   "h": 112,
+   "anchorX": 56.9,
+   "anchorY": 111.72
+  },
+  "keep": {
+   "file": "iso-keep.png",
+   "w": 127,
+   "h": 141,
+   "anchorX": 58.97,
+   "anchorY": 140.17
+  }
+ },
+ "overlaySeat": 21.72,
+ "town": {
+  "w": 1280,
+  "h": 714,
+  "lots": {
+   "forge": {
+    "x": 167,
+    "y": 433,
+    "anchorX": 110,
+    "baselineY": 414,
+    "bands": [
+     {
+      "file": "band-forge-1-ruined.png",
+      "w": 221,
+      "h": 426
+     },
+     {
+      "file": "band-forge-2-working.png",
+      "w": 221,
+      "h": 426
+     },
+     {
+      "file": "band-forge-3-established.png",
+      "w": 221,
+      "h": 426
+     },
+     {
+      "file": "band-forge-4-masterwork.png",
+      "w": 221,
+      "h": 426
+     },
+     {
+      "file": "band-forge-5-ascendant.png",
+      "w": 221,
+      "h": 426
+     }
+    ]
+   },
+   "chapel": {
+    "x": 397,
+    "y": 390,
+    "anchorX": 133,
+    "baselineY": 491,
+    "bands": [
+     {
+      "file": "band-chapel-1-ruined.png",
+      "w": 237,
+      "h": 505
+     },
+     {
+      "file": "band-chapel-2-working.png",
+      "w": 237,
+      "h": 505
+     },
+     {
+      "file": "band-chapel-3-established.png",
+      "w": 237,
+      "h": 505
+     },
+     {
+      "file": "band-chapel-4-masterwork.png",
+      "w": 237,
+      "h": 505
+     },
+     {
+      "file": "band-chapel-5-ascendant.png",
+      "w": 237,
+      "h": 505
+     }
+    ]
+   },
+   "beacon": {
+    "x": 1063,
+    "y": 310,
+    "anchorX": 59,
+    "baselineY": 295,
+    "bands": [
+     {
+      "file": "band-beacon-1-ruined.png",
+      "w": 120,
+      "h": 303
+     },
+     {
+      "file": "band-beacon-2-working.png",
+      "w": 120,
+      "h": 303
+     },
+     {
+      "file": "band-beacon-3-established.png",
+      "w": 120,
+      "h": 303
+     },
+     {
+      "file": "band-beacon-4-masterwork.png",
+      "w": 120,
+      "h": 303
+     },
+     {
+      "file": "band-beacon-5-ascendant.png",
+      "w": 120,
+      "h": 303
+     }
+    ]
+   }
+  }
+ },
+ "interiors": {
+  "forge": "interior-forge.jpg",
+  "chapel": "interior-chapel.jpg",
+  "beacon": "interior-beacon.jpg",
+  "memorial": "interior-memorial.jpg"
+ },
+ "cards": {
+  "forge": "card-forge.jpg",
+  "chapel": "card-chapel.jpg",
+  "beacon": "card-beacon.jpg",
+  "memorial": "card-memorial.jpg"
+ }
+}

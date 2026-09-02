@@ -1,0 +1,5 @@
+{
+  "_": "What tools/prep-art.py prepares: the slice's four tiles (q,r — must match the Territory rows' hex) and the buildings the slice carries. Hand-edited; the only file under generated/ that is.",
+  "tiles": [[-1, 0], [-1, -1], [0, -1], [-1, -2]],
+  "buildings": ["forge", "chapel", "beacon", "memorial"]
+}

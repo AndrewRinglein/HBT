@@ -42,6 +42,7 @@ import { UNITS } from '../engine.js'
 import { listQuestOffers, whyNotSendQuest, performSendQuest } from '../core/quests.js'
 import { questRowOf } from '../content/quests.js'
 import { absenceOf } from '../core/absence.js'
+import { ART, worldMapSvg, townSvg, interiorOf, cardOf } from './art.js'
 
 declare const __FIXTURE_JSON__: string
 declare const __BUILD_SHA__: string
@@ -62,8 +63,10 @@ type App = {
   roster: boolean
   /** The Quest Stage's party being assembled, before Send. */
   party: string[]
+  /** The picture over the Week: the world map, or the Sanctuary. */
+  view: 'map' | 'town'
 }
-const app: App = { ctx: null, draft: null, draftReckoning: null, status: '', error: false, front: 'title', roster: false, party: [] }
+const app: App = { ctx: null, draft: null, draftReckoning: null, status: '', error: false, front: 'title', roster: false, party: [], view: 'map' }
 
 // ── persistence ─────────────────────────────────────────────────────────────
 function persist(): void {
@@ -256,8 +259,8 @@ function worldScreen(c: CampaignState): string {
       ${working.length ? `<h3>Working this Week</h3><p>${working.map((h) => `${esc(h.name)} — ${esc(c.assignments[h.id]!.city!.target)} <button class="quiet" data-act="release" data-id="${esc(h.id)}">undo</button>`).join(' · ')}</p>` : ''}`
   } else if (row.offers === 'build') {
     const held = listBuildings(c).filter((b) => b.held)
-    body = `<h3>Build — Salvage, node by node</h3>` + (held.length ? held.map((b) => `<h3>${esc(b.row.name)} <span class="meta">on ${esc(c.territories[b.territoryId]!.name)} · level ${b.building.level}${b.building.damaged ? ' · ruin' : ''}</span></h3>
-      <div class="pick">${b.row.nodes.map((n) => { const why = whyNotBuild(c, b.territoryId, b.building.id, n.key); const built = b.building.nodes.includes(n.key); return `<div class="opt${built ? ' on' : why ? ' off' : ''}" ${why ? '' : `data-act="build" data-id="${esc(b.territoryId)}" data-building="${esc(b.building.id)}" data-key="${esc(n.key)}"`}><b>${esc(n.name)} ${built ? '✓' : ''}</b><small>${n.salvage} Salvage${n.parents.length ? ' · after ' + esc(n.parents.join(', ')) : ''}${n.gate ? ' · ' + esc(Object.entries(n.gate).map(([k, v]) => `${v} ${k}s`).join(', ')) + ' (waived)' : ''}${why && !built ? ' · ' + esc(why) : ''}</small></div>` }).join('')}</div>`).join('') : '<p class="meta">nothing you hold has a building on it — the Ridge carries the Forge</p>')
+    body = `<h3>Build — Salvage, node by node</h3>` + (held.length ? held.map((b) => `<div class="hall" ${interiorOf(b.building.id) ? `style="background-image:url(${interiorOf(b.building.id)})"` : ''}>${cardOf(b.building.id) ? `<img class="bcard" src="${cardOf(b.building.id)}" alt="">` : ''}<h3>${esc(b.row.name)} <span class="meta">on ${esc(c.territories[b.territoryId]!.name)} · level ${b.building.level}${b.building.damaged ? ' · ruin' : ''}</span></h3>
+      <div class="pick">${b.row.nodes.map((n) => { const why = whyNotBuild(c, b.territoryId, b.building.id, n.key); const built = b.building.nodes.includes(n.key); return `<div class="opt${built ? ' on' : why ? ' off' : ''}" ${why ? '' : `data-act="build" data-id="${esc(b.territoryId)}" data-building="${esc(b.building.id)}" data-key="${esc(n.key)}"`}><b>${esc(n.name)} ${built ? '✓' : ''}</b><small>${n.salvage} Salvage${n.parents.length ? ' · after ' + esc(n.parents.join(', ')) : ''}${n.gate ? ' · ' + esc(Object.entries(n.gate).map(([k, v]) => `${v} ${k}s`).join(', ')) + ' (waived)' : ''}${why && !built ? ' · ' + esc(why) : ''}</small></div>` }).join('')}</div></div>`).join('') : '<p class="meta">nothing you hold has a building on it — the Ridge carries the Forge</p>')
   } else if (row.offers === 'quests') {
     const free = listAvailable(c, row.id)
     const inFlight = Object.values(c.quests).sort((a, b) => a.id.localeCompare(b.id))
@@ -272,8 +275,13 @@ function worldScreen(c: CampaignState): string {
     body = `<h3>${esc(row.title)}</h3><p>${esc(row.does)}</p><p class="meta">Nothing to do here yet — this Stage's machinery lands in a later milestone. Pass through.</p>`
   }
   const next = STAGES[at + 1]
+  const attacked = row.targets === 'rolled' && offers.length ? offers[0]! : null
+  const picture = ART
+    ? `<div class="picture"><div class="steps"><span class="${app.view === 'map' ? 'on' : ''}" data-act="view" data-id="map">The realm</span><span class="${app.view === 'town' ? 'on' : ''}" data-act="view" data-id="town">The Sanctuary</span><span class="meta">${app.view === 'map' ? (row.offers === 'engagement' && offers.length ? 'click a Territory to ' + (row.targets === 'rolled' ? 'defend it' : 'attack it') : 'held in gold · unclaimed dimmed') : 'a building stands here once its Territory is yours; its band is its level'}</span></div>${app.view === 'map' ? worldMapSvg(c, row.offers === 'engagement' ? offers : [], attacked) : townSvg(c)}</div>`
+    : ''
   return `<h2>Week ${c.week} — ${esc(row.title)}</h2>
     <div class="steps">${chips}</div>
+    ${picture}
     <div class="cols">
       <div>
         <div class="card">${body}</div>
@@ -473,6 +481,7 @@ function wire(root: HTMLElement): void {
         case 'continue': { let saved: string | null = null; try { saved = localStorage.getItem(SAVE_KEY) } catch {} return saved ? loadJson(saved, 'the browser save') : (fail('no browser save'), render()) }
         case 'title': app.ctx = null; app.roster = false; app.front = 'title'; note(''); return render()
         case 'roster': app.roster = !app.roster; return render()
+        case 'view': app.view = id as 'map' | 'town'; return render()
         case 'party': app.party = app.party.includes(id!) ? app.party.filter((h) => h !== id) : [...app.party, id!]; return render()
         case 'send-quest': return act(() => { performSendQuest(app.ctx!, id!, app.party, 'slice'); app.party = [] })
         // the one place chance enters from outside the rules: a new save's seed, chosen at the player's click

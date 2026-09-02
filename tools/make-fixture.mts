@@ -36,7 +36,7 @@ const roster: Hero[] = [
 ]
 
 // The map is content: the four rows come from the realm registry, not from here.
-const territories: Territory[] = TERRITORIES.map((t) => ({ ...t }))
+const territories: Territory[] = TERRITORIES.map(({ hex: _hex, ...t }) => ({ ...t }))
 
 const campaign = makeCampaign(1, {
   realm: 'realm.ruined-kingdom',

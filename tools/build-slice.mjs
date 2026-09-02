@@ -8,7 +8,7 @@
 //
 // Generated output. Never hand-edit SLICE.html — change src/ui and rebuild.
 
-import { readFileSync, writeFileSync } from 'node:fs'
+import { readFileSync, writeFileSync, existsSync } from 'node:fs'
 import { createRequire } from 'node:module'
 import { execSync } from 'node:child_process'
 
@@ -16,6 +16,20 @@ const require = createRequire(import.meta.url)
 const esbuild = require('../../engine/node_modules/esbuild')
 
 const fixture = readFileSync('fixtures/slice-prep.json', 'utf8')
+
+// The kingdom art — generated/art/ (tools/prep-art.py), every file inlined as a
+// data: URI so the page still works by double-click. Absent art is not an
+// error: the page draws its tables without it and says so.
+const art = (() => {
+  if (!existsSync('generated/art/index.json')) return null
+  const index = JSON.parse(readFileSync('generated/art/index.json', 'utf8'))
+  const data = {}
+  for (const name of Object.keys(index.files)) {
+    const mime = name.endsWith('.png') ? 'image/png' : 'image/jpeg'
+    data[name] = `data:${mime};base64,${readFileSync(`generated/art/${name}`).toString('base64')}`
+  }
+  return { ...index, data }
+})()
 const sha = (() => { try { return execSync('git rev-parse --short HEAD', { encoding: 'utf8' }).trim() } catch { return 'unknown' } })()
 
 const { outputFiles, warnings } = esbuild.buildSync({
@@ -27,7 +41,7 @@ const { outputFiles, warnings } = esbuild.buildSync({
   write: false,
   minify: false,
   legalComments: 'none',
-  define: { __FIXTURE_JSON__: JSON.stringify(fixture), __BUILD_SHA__: JSON.stringify(sha) },
+  define: { __FIXTURE_JSON__: JSON.stringify(fixture), __BUILD_SHA__: JSON.stringify(sha), __ART__: JSON.stringify(art) },
   logLevel: 'warning',
 })
 for (const w of warnings) console.warn(w.text)
@@ -54,4 +68,4 @@ ${js}
 </html>
 `
 writeFileSync('SLICE.html', html)
-console.log(`SLICE.html — ${(html.length / 1024).toFixed(0)} KB, kingdom ${sha}`)
+console.log(`SLICE.html — ${(html.length / 1024).toFixed(0)} KB, kingdom ${sha}${art ? `, ${Object.keys(art.files).length} art files` : ', no art'}`)

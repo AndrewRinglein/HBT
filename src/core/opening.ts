@@ -37,7 +37,8 @@ export function makeNewCampaign(seed: number): CampaignState {
     currencies: CURRENCIES.map((x) => x.id),
     cups: CUPS.map((x) => x.id),
     // the map is the realm's, but nothing is held yet — the opening takes the Kingdom Territory
-    territories: TERRITORIES.map((t) => ({ ...t, owned: false, claimedOnce: false, buildings: t.buildings.map((b) => ({ ...b, nodes: [...b.nodes] })) })),
+    // the row's art placement (hex) is the page's, not the state's
+    territories: TERRITORIES.map(({ hex: _hex, ...t }) => ({ ...t, owned: false, claimedOnce: false, buildings: t.buildings.map((b) => ({ ...b, nodes: [...b.nodes] })) })),
     roster: [],
     week: 0,
   })
