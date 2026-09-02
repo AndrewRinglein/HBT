@@ -1521,5 +1521,55 @@
   ],
   "status": "done-needs-review",
   "sha": "c466319"
+ },
+ {
+  "id": "content.field-eve-24",
+  "kind": "content",
+  "shape": "data",
+  "spec": "Field the rest of the Eve-of-Ruin 24 in the engine pack (content/mkenginepack.mjs currently fields the prologue three \u2014 Hunter, Iron Dwarf, Battle Chaplain \u2014 plus the three civilians). All 24 carry FULL kits in hbt-content.json heroKits (2026-08-27b), so every one resolves deterministically under the pack's own kit law; no draw is needed. Ruled 2026-09-02 (Andrew): the four alpha heroes \u2014 Air Mage, Oathblade, Sky Pirate, Dusk Hawk \u2014 are REMOVED from the kingdom's pool because no kit exists for them; the kingdom needs kitted Eve mages, paladins and rogues in the pack to draft six and to recruit at the Beacon. Lucius (hero.base.priest-scantily) and Osric (hero.base.paladin-shiney) are Eve rows still fielded as alpha-lucius / alpha-osric test units; fielding their real rows retires those too.",
+  "expect": "UNITS carries a hero.base.* row for each of the 24 with attacks and folded kit stats per the existing three; the kingdom's src/content/heroes.ts can then list them by id with no alpha-* unitType left",
+  "changesBaseline": false,
+  "needs": [],
+  "probeIds": [],
+  "variants": [
+   "hero.base.mage-fire",
+   "hero.base.rogue-skull"
+  ],
+  "note": "Filed from the kingdom session 2026-09-02; the kingdom reads the engine and never edits it. Until this lands the kingdom's pool is five heroes and the opening drafts what the pool holds."
+ },
+ {
+  "id": "pack.items",
+  "kind": "content",
+  "shape": "data",
+  "spec": "engine/ITEMS-PLAN.md \u00a73: content/mkenginepack.mjs emits ItemDef rows (id, name, itemClass, hands, slots, statModifiers in engine stat names, grants, abilities, compiled triggers with source = the item id) into src/content/generated/pack.ts \u2014 weapons and armor first, then every other class whose payload compiles; attacks widened to every attack any packed item grants; an ITEMS registry in src/content/index.ts beside UNITS and ATTACKS, on Ctx so CF_DISABLE_IDS reaches it. Compile or name the gap: vision, itemSlots, toughness, corruption and unparsed trigger prose go to gaps.json, never rounded.",
+  "expect": "every kit item in heroKits resolves to an ItemDef; every grants id is in ATTACKS; disabling an item id by kill-switch refuses loudly where it is referenced",
+  "changesBaseline": false,
+  "needs": [
+   "content.field-eve-24"
+  ],
+  "probeIds": [],
+  "variants": [
+   "item.longsword",
+   "item.thick-hide"
+  ],
+  "note": "Filed from the kingdom session 2026-09-02. Plan: engine/ITEMS-PLAN.md."
+ },
+ {
+  "id": "seam.items-per-unit",
+  "kind": "engine",
+  "shape": "plumbing",
+  "spec": "Ruled 2026-09-02 (Andrew): 'the items should go into battle \u2026 They define what attacks they have. They modify stats.' Today content/mkenginepack.mjs folds a hero's CONTENT kit into its unit row at pack time, so the battle never sees what the kingdom equipped. createBattle's options need a per-unit item list (item ids, the kingdom's hero.equipped) and the engine applies the item rows at fielding \u2014 attacks granted (`grants`), statModifiers folded \u2014 the same arithmetic the pack does statically, done at battle start from the ids handed over. Masterwork and enchanted items are their own rows (kingdom generates them from the tier-1 base; see 7-KINGDOM-SETTLED.md 2026-09-02), so the engine only ever sees an item id with its own stats. The pack's folded rows stay as the default when no list is handed over.",
+  "expect": "a unit fielded with ['item.longsword','item.basic-armor'] has the longsword's attacks and the armor's stat deltas in its BattleState, identical to the pack's folded numbers for the same kit; with no list, nothing changes",
+  "changesBaseline": false,
+  "needs": [
+   "content.field-eve-24",
+   "pack.items"
+  ],
+  "probeIds": [],
+  "variants": [
+   "item.longsword",
+   "item.longbow"
+  ],
+  "note": "Filed from the kingdom session 2026-09-02. The kingdom's seam (kingdom/src/core/seam.ts battleOptionsOf) will pass hero.equipped once this lands. Plan: engine/ITEMS-PLAN.md \u00a72, \u00a74, \u00a75."
  }
 ]
