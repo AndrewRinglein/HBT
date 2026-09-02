@@ -54,6 +54,10 @@
    "hash": "0af32c7c2034",
    "how": "feature absent",
    "tail": "       | ^ |      10| |      11| const load = () => makeCtx(campaignOf(readFileSync('fixtures/slice-pre…"
+  },
+  "closed": {
+   "at": "2026-09-02 04:12",
+   "sha": "25a215c"
   }
  },
  "027": {
@@ -63,6 +67,10 @@
    "hash": "40b5c5088882",
    "how": "feature absent",
    "tail": "       | ^ |      11| |      12| const load = () => makeCtx(campaignOf(readFileSync('fixtures/slice-pre…"
+  },
+  "closed": {
+   "at": "2026-09-02 04:12",
+   "sha": "25a215c"
   }
  },
  "028": {
@@ -72,6 +80,10 @@
    "hash": "eddec48bc555",
    "how": "feature absent",
    "tail": "       | ^ |      11| import { TACTICS } from '../src/content/tactics.js' |      12|"
+  },
+  "closed": {
+   "at": "2026-09-02 04:12",
+   "sha": "25a215c"
   }
  },
  "029": {
@@ -81,6 +93,10 @@
    "hash": "2c4eac3b9ab9",
    "how": "feature absent",
    "tail": "       | ^ |      10| |      11| const load = () => makeCtx(campaignOf(readFileSync('fixtures/slice-pre…"
+  },
+  "closed": {
+   "at": "2026-09-02 04:13",
+   "sha": "25a215c"
   }
  }
 }

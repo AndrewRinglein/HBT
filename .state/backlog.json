@@ -54,7 +54,11 @@
   ],
   "needs": [
    "campaign.state"
-  ]
+  ],
+  "status": "done-needs-review",
+  "sha": "25a215c",
+  "engineSha": "745922d",
+  "gauntlet": "not passed — 2 flag(s) warned"
  },
  {
   "id": "battle.screen",
