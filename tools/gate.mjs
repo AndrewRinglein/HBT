@@ -252,7 +252,11 @@ check('naming — new ids use declared kinds', () => {
 })
 flag('naming — no banned words invented', () => {
   const smells = new Set()
-  for (const l of [...addedLines('src'), ...addedLines('test'), ...addedLines('tools')]) {
+  // The file that DEFINES a ban necessarily contains the banned word (the root
+  // vocab-check makes the same exemption); this gate flagged its own regex
+  // line on the campaign.state landing.
+  const ownLines = new Set(readFileSync('tools/gate.mjs', 'utf8').split('\n'))
+  for (const l of [...addedLines('src'), ...addedLines('test'), ...addedLines('tools').filter((x) => !ownLines.has(x))]) {
     if (/(class|function|const|let)\s+\w*(Manager|Controller|Service|Handler)\b/.test(l)) smells.add('a *Manager/*Controller/*Service/*Handler — name the state slice and the functions separately')
     if (/\b(?:function|const|let)\s+(get|handle|process|do|update|check|calculate|compute|init|setup)[A-Z]\w*/.test(l)) smells.add('a banned function prefix (GLOSSARY.md) — xOf/listX/canX/performX/applyX/resolveX/makeX/beginX')
     if (/\b(proc|procs)\b/i.test(l)) smells.add("'proc' — say trigger")
