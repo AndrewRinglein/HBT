@@ -548,3 +548,26 @@ slice: 44 of 50 closed · 44 probed · 0 accepted
 IRON GAUNTLET: NOT PASSED — 2 FLAG(S) WARNED
 
 Law 10 note (screens.thin): test/isc-010.test.ts was edited — `c.unavailable = [H]` became `[{ heroId: H, story: 'Went missing' }]` — because the state row grew the story (KINGDOM-DESIGN.md §3: "a story reason is drawn from a long list", and the screen has to show it on reload). The assertion is unchanged; only the fixture's shape moved. ISC-048/049/050 are H and stay open for Andrew; tools/smoke-slice.mjs walks the same screens headlessly and passes.
+
+## run.cold-start — LANDED `e891836` **NEEDS REVIEW**
+2026-09-02 09:46 · engine @ 745922d
+
+  PASS  dependencies landed
+  WARN  not already decided — 1 candidate ruling(s) — READ BEFORE ASKING: ../STATE.md:20
+  PASS  typecheck
+  PASS  full test suite — 92 passed
+  PASS  gate 1 — every claimed criterion holds — ISC-001 — a cold-start run reaches the first Article: PASSES —   Week 13: no battle · renown 8 · purse faith 210 mana 152 salvage 2 supplies 165 |   Week 14: defend won · renown 9 · purse faith 232 mana 165 salvage 2 supplies 186 | seed 1: the first Article — unlock.roster.10 — at Week 15, after 10 battles (10 won), Renown 10 · ISC-025 — the terminus depends on none of them: PASSES —   Week 14: defend won · renown 9 · purse faith 232 mana 165 salvage 2 supplies 186 | seed 1: the first Article — unlock.roster.10 — at Week 15, after 10 battles (10 won), Renown 10 | seed 1: no OUT system was leaned on (1059 events, 44 words)
+  PASS  brought its own tests — test/cold-start.test.ts
+  PASS  existing tests untouched
+  PASS  kill switch — every claimed probe has been seen red — ISC-001: red on record (2026-09-02 09:44 @ 27f7c4e, probe 9cb72d164699) · ISC-025: red on record (2026-09-02 09:44 @ 27f7c4e, probe 3249485b19cb)
+  PASS  nothing regresses — every P-tier probe — 46 P-tier probe(s): 46 green, 0 red, 0 regression(s). 44 of 50 closed · 46 probed · 0 accepted
+  PASS  hardcode scan — core knows mechanisms, never names
+  PASS  generalizes — the second instance costs zero kingdom code — shape 'plumbing' — not a mechanism, exempt
+  PASS  naming — new ids use declared kinds
+  PASS  naming — no banned words invented
+  WARN  engine working tree clean — verified against a DIRTY engine tree (745922d + 3 uncommitted under src/test): M src/content/generated/pack.stamp.json, M src/content/generated/pack.ts, ?? src/sim/coverage.ts
+  PASS  one door to the engine
+
+ISC-001: CLOSED at e891836 · ISC-025: CLOSED at e891836
+slice: 46 of 50 closed · 46 probed · 0 accepted
+IRON GAUNTLET: NOT PASSED — 2 FLAG(S) WARNED
