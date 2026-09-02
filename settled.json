@@ -256,6 +256,12 @@
    "id": "tag.defence-power",
    "group": "quality",
    "source": "2026-08-27 gear workbook review"
+  },
+  {
+   "id": "tag.banner",
+   "group": "quality",
+   "source": "2026-09-02: the five banners are the first planted board objects and they are a form, like shield or staff.",
+   "note": "Grouped as a quality, not a form: a banner is not something you swing, so the form rules (an enchant must reach it, a rule must read 'banner attacks') do not apply. Same reclassification the 2-hander and exotic tags took 2026-08-27."
   }
  ],
  "powers": [
@@ -762,9 +768,15 @@
    "targets": "a hex",
    "tags": [],
    "triggers": [],
-   "description": "UNIVERSAL RULE. A hex carries AT MOST ONE status, and applying a new one REMOVES AND REPLACES whatever was there — curse a burning hex to 1 Weak and the hex flips from Burn to Weak, it does not hold both. The single exception is Burn and Frost, which cancel one for one instead of replacing (rule.burn-frost-cancel): frost laid on a burning hex subtracts from it rather than swapping it. Ground layers are persistent — they carry no clock of their own.",
+   "description": "UNIVERSAL RULE. A hex carries at most one status, and applying a new one removes and replaces whatever was there — curse a burning hex to 1 Weak and the hex flips from Burn to Weak, it does not hold both. The single exception is Burn and Frost, which cancel one for one instead of replacing (rule.burn-frost-cancel): frost laid on a burning hex subtracts from it rather than swapping it. Ground layers are persistent — they carry no clock of their own. The four layers are: burning · frost · poisoned · darkness. Darkness as a layer is the localised kind a unit paints on the board — distinct from Darkness the battlefield condition, which covers the whole map. The night family (2026-09-02) is what made the distinction load-bearing: those units paint darkness in radii around themselves.",
    "intent": "The ground is a state, not a countdown. Frost put out a fire because it took the hex, not because it cancelled anything.",
-   "source": "2026-08-20: \"Status effects on terrain are just persistent. No turn tracking, just it is burning or it is frost. The only thing that should replace a ground layer effect is if a different one is applied, it replaces the previous one. The ground can only have one effect on it, and that effect stays.\" | Merged onto the trunk 2026-09-01 from the parallel content chat; attribution de-named per the standing passive-voice ruling, wording and dates untouched. | Ruled 2026-09-02. Verbatim: \"All ground effects, remove and replace, except Burn and Frost which counter. So if i curse a ground to add 1 weak, but it had burn. It flips from Burn to Weak. So each ground tile can only have 1 status on it.\""
+   "source": "2026-08-20: \"Status effects on terrain are just persistent. No turn tracking, just it is burning or it is frost. The only thing that should replace a ground layer effect is if a different one is applied, it replaces the previous one. The ground can only have one effect on it, and that effect stays.\" | Merged onto the trunk 2026-09-01 from the parallel content chat; attribution de-named per the standing passive-voice ruling, wording and dates untouched. | Ruled 2026-09-02. Verbatim: \"All ground effects, remove and replace, except Burn and Frost which counter. So if i curse a ground to add 1 weak, but it had burn. It flips from Burn to Weak. So each ground tile can only have 1 status on it.\" | 2026-09-02: the four layers enumerated on the row, darkness included.",
+   "layers": [
+    "burning",
+    "frost",
+    "poisoned",
+    "darkness"
+   ]
   },
   {
    "id": "rule.summon-order",
@@ -982,6 +994,125 @@
    "description": "UNIVERSAL RULE. A CORPSE is a board object, and it is what every raise, summon, consume and feed in the game reads. Corpses are created when any enemy is DOWNED and when a hero actually DIES (the deathbed check fails, or the bleed-out clock runs out). FOUR THINGS DENY ONE, and denying a corpse is the counter to the whole undead economy: (1) DESTROY CORPSE — an on-kill effect, mostly a hero ability, that destroys the body as it falls; (2) SUMMONS NEVER LEAVE ONE, so a zombie raised from a corpse leaves nothing when it dies and the loop cannot feed itself; (3) OBLITERATION by Shadow reaching Max Health removes the unit with no corpse (status.shadow); (4) an effect that consumes corpses removes them outright. A denied corpse stops raising, stops summoning, stops the Escalating Demon, and stops anything else that feeds on bodies.",
    "intent": "The undead do not have a damage problem, they have a supply problem. This is the supply.",
    "source": "RULED: corpse creation 2026-08-25 ('Corpses are created by any enemy that gets downed and any hero that actually dies', with the bleed-out timer). DESTROY CORPSE and the summons clause were dictated 2026-08-30 (DESIGN-DUMP-CLEANED.md §9) and had never reached the pipeline — landed 2026-09-02 when it was asked for. Obliteration joins them from the same day's Shadow ruling. capability.corpses in gen/enemies-authored.json is the engine-side name for the board object."
+  },
+  {
+   "id": "power.banner-assassin.plant",
+   "name": "Plant the Assassin’s Banner",
+   "specialty": null,
+   "class": null,
+   "owner": "item.banner-assassin",
+   "stamina": 2,
+   "cooldown": 0,
+   "warmup": 0,
+   "free": false,
+   "targets": "the hex you occupy",
+   "tags": [
+    "banner"
+   ],
+   "description": "One use per Battle. Plant the banner on your hex. For the rest of the Battle it projects an aura of radius 1 from that hex — you may walk away and it stays. +20 Crit to allies in the aura. onCrit, for a unit in the aura: gain 1 Stamina.",
+   "intent": "The rogue plants it where the killing is going to happen, and then does the killing.",
+   "triggers": [],
+   "needsCapability": "capability.banner — a planted board object projecting an aura from its hex for the rest of the Battle. Nothing in the engine plants anything yet.",
+   "source": "Dictated 2026-09-02. Banners are planted on a hex, ruled at landing."
+  },
+  {
+   "id": "power.banner-mystic-power.plant",
+   "name": "Plant the Mystic Banner",
+   "specialty": null,
+   "class": null,
+   "owner": "item.banner-mystic-power",
+   "stamina": 1,
+   "cooldown": 0,
+   "warmup": 0,
+   "free": false,
+   "targets": "the hex you occupy",
+   "tags": [
+    "banner"
+   ],
+   "description": "One use per Battle. Plant the banner on your hex. For the rest of the Battle it projects an aura of radius 2 from that hex — you may walk away and it stays. Magic attacks made by allies in the aura deal +1 damage, and each magic attack grants its attacker 30 Surge Chance.",
+   "intent": "Two hexes of ground where casting is simply better, and where casting begets casting.",
+   "triggers": [],
+   "needsCapability": "capability.banner — a planted board object projecting an aura from its hex for the rest of the Battle. Nothing in the engine plants anything yet.",
+   "source": "Dictated 2026-09-02. Banners are planted on a hex, ruled at landing."
+  },
+  {
+   "id": "power.banner-vigil.plant",
+   "name": "Plant the Vigil Banner",
+   "specialty": null,
+   "class": null,
+   "owner": "item.banner-vigil",
+   "stamina": 2,
+   "cooldown": 0,
+   "warmup": 0,
+   "free": false,
+   "targets": "the hex you occupy",
+   "tags": [
+    "banner"
+   ],
+   "description": "One use per Battle. Plant the banner on your hex. For the rest of the Battle it projects an aura of radius 1 from that hex — you may walk away and it stays. At the End of Activation of any ally inside the aura, that ally heals an amount equal to its Spirit.",
+   "intent": "A small circle of ground that does not let you die in it.",
+   "triggers": [],
+   "needsCapability": "capability.banner — a planted board object projecting an aura from its hex for the rest of the Battle. Nothing in the engine plants anything yet.",
+   "source": "Dictated 2026-09-02. Banners are planted on a hex, ruled at landing. NAME IS MINE — the priest banner was dictated unnamed 2026-09-02."
+  },
+  {
+   "id": "power.banner-courage.plant",
+   "name": "Plant the Courage Banner",
+   "specialty": null,
+   "class": null,
+   "owner": "item.banner-courage",
+   "stamina": 3,
+   "cooldown": 0,
+   "warmup": 0,
+   "free": false,
+   "targets": "the hex you occupy",
+   "tags": [
+    "banner"
+   ],
+   "description": "One use per Battle. Plant the banner on your hex. For the rest of the Battle it projects an aura of radius 2 from that hex — you may walk away and it stays. +1 Resist to allies in the aura, and Immunity to Weak 2 while inside it. At the End of Activation of an ally inside, that ally gains 10 Surge Chance — added to the pool once, never added to the Surge stat.",
+   "intent": "Hold this ground and the fear does not land; hold it long enough and you go twice.",
+   "triggers": [],
+   "needsCapability": "capability.banner — a planted board object projecting an aura from its hex for the rest of the Battle. Nothing in the engine plants anything yet.",
+   "source": "Dictated 2026-09-02. Banners are planted on a hex, ruled at landing."
+  },
+  {
+   "id": "power.banner-heroism.plant",
+   "name": "Plant the Heroic Banner",
+   "specialty": null,
+   "class": null,
+   "owner": "item.banner-heroism",
+   "stamina": 4,
+   "cooldown": 0,
+   "warmup": 0,
+   "free": false,
+   "targets": "the hex you occupy",
+   "tags": [
+    "banner"
+   ],
+   "description": "One use per Battle. Plant the banner on your hex. For the rest of the Battle it projects an aura of radius 3 from that hex — you may walk away and it stays. +2 Strength and +2 Precision to allies in the aura. At the End of Activation of an ally inside, that ally heals 5. onMiss by any ally in the aura: EVERY ally in the aura gains 30 Surge Chance.",
+   "intent": "Three hexes where the party is simply better than it is, and where missing is not wasted.",
+   "triggers": [],
+   "needsCapability": "capability.banner — a planted board object projecting an aura from its hex for the rest of the Battle. Nothing in the engine plants anything yet.",
+   "source": "Dictated 2026-09-02. Banners are planted on a hex, ruled at landing."
+  },
+  {
+   "id": "rule.stealth-does-not-hold",
+   "name": "Stealth does not hold",
+   "specialty": null,
+   "class": null,
+   "stamina": 0,
+   "cooldown": 0,
+   "warmup": 0,
+   "free": false,
+   "universal": true,
+   "universalToAllUnits": true,
+   "targets": "one stealthed unit",
+   "tags": [],
+   "triggers": [],
+   "description": "UNIVERSAL RULE. At the End of every Phase, one random stealthed unit is revealed — either side, no condition. Stealth is therefore always temporary, and a battle in which nobody commits simply runs out of hidden things.",
+   "intent": "You cannot win by waiting, and you cannot hide for the rest of the Battle.",
+   "needsCapability": "capability.stealth — designed in COMBAT-DESIGN (a stealth unit cannot be targeted and does not appear on the map), not yet built.",
+   "source": "Dictated 2026-09-02. REFRAMED at landing. Dictated as \"if there are two full turns of no attack actions, one random stealth unit gets revealed\" — which counts turns of history, and content is banned from occurrence counting and event history (R25). Ruled: rethink it. This is the history-free shape with the same intent — a standing per-Phase reveal rather than a stall detector. It is strictly simpler and it also makes stealth a resource that burns. THE TRADE: it fires even in a busy battle, so stealth is temporary always rather than only when the battle stalls. Say so if the stall condition was the point."
   }
  ],
  "items": [

@@ -44,6 +44,7 @@ When a rule fires. Twelve, plus `aura` and `passive` which are standing properti
 | `every enemy adjacent to you` | 6 |
 | `one downed ally within N hexes` | 5 |
 | `every unit within N hexes` | 5 |
+| `the hex you occupy` | 5 |
 | `one enemy within your Vision` | 4 |
 | `three hexes within N hexes` | 3 |
 | `one unit within N` | 3 |
@@ -61,6 +62,7 @@ When a rule fires. Twelve, plus `aura` and `passive` which are standing properti
 | `a hex` | 1 |
 | `any unit or hex` | 1 |
 | `any unit` | 1 |
+| `one stealthed unit` | 1 |
 
 ## 3 · Conditions
 
@@ -78,28 +80,28 @@ What a rule may DO.
 
 | Function | Uses |
 |---|---:|
-| `grant a stat for the Battle` | 170 |
+| `grant a stat for the Battle` | 180 |
 | `apply a status` | 142 |
-| `heal` | 90 |
+| `heal` | 92 |
 | `deal TRUE damage` | 58 |
 | `grant a stat until end of next Turn` | 47 |
 | `remove N of a status` | 46 |
+| `grant an aura` | 38 |
 | `move yourself` | 30 |
-| `grant an aura` | 28 |
 | `read the party-wide sum` | 23 |
 | `deal MAGIC damage` | 18 |
-| `reveal / break stealth` | 17 |
+| `reveal / break stealth` | 18 |
 | `place a trap` | 16 |
+| `regain stamina` | 16 |
 | `deal damage (type from the weapon)` | 15 |
-| `regain stamina` | 15 |
 | `deal PHYSICAL damage` | 14 |
+| `Immunity N` | 13 |
 | `move WITHOUT provoking` | 13 |
-| `Immunity N` | 12 |
 | `take damage yourself (a cost)` | 12 |
 | `set a ground layer` | 12 |
 | `Thorns N` | 11 |
+| `grant Surge Chance` | 10 |
 | `consume the target’s status` | 8 |
-| `grant Surge Chance` | 7 |
 | `lose a stat (a cost)` | 6 |
 | `enter stealth` | 5 |
 | `stabilise a downed ally` | 5 |
@@ -120,8 +122,8 @@ What a rule may DO.
 | `burn` | 84 |
 | `bleed` | 67 |
 | `poison` | 54 |
+| `weak` | 40 |
 | `protection` | 40 |
-| `weak` | 39 |
 | `stun` | 22 |
 | `slow` | 20 |
 | `frost` | 15 |
@@ -160,7 +162,7 @@ A stat modifier lasts the rest of the Battle unless the row says otherwise.
 
 | Function | Uses |
 |---|---:|
-| `rest of the Battle` | 171 |
+| `rest of the Battle` | 181 |
 | `until the end of your next Turn` | 40 |
 | `until the start of your next Turn` | 7 |
 | `until the end of the Turn` | 3 |

@@ -1,340 +1,2610 @@
 {
-  "_note": "THE FIRST NON-PLACEHOLDER ENEMIES. Landed 2026-08-25 from ENEMY-REVIEW.md after full review — every stat and effect there was ruled or explicitly inferred-and-flagged. These rows SUPERSEDE same-id placeholders from the hell-tcg port at assemble time; a placeholder never overwrites an authored row, and regenerating the placeholder file cannot touch this one. Effects use the closed vocabulary; anything the engine cannot fire yet carries `needs` naming a capability below, following the pattern the terrain badges set. Numbers are real but SOFT — sweeps own pricing.",
-
-  "capabilities": {
-    "_note": "Everything a row below needs that the engine does not have. All design-ruled in ENEMY-REVIEW.md 2026-08-23; none is an open question. A row naming one of these is complete content waiting on engine work, not a gap in the content.",
-    "capability.power": "The power pool. Integer; fractions resolve nearest, 0.5 up. Gained three ways (external pool / one-time on arrival / escalating clock or condition); consumers read it and mostly do not feed it.",
-    "capability.inflict-affliction": "Apply an affliction badge (possession | vampirism | lycanthropy | rotting-flesh — the family of exactly four) to a hero in combat. The badge swaps the hero's art to the affliction portrait already in art/heroes/<slug>/card/.",
-    "capability.corpses": "Corpse tokens as board objects. Created when any enemy is downed and when a hero actually dies (deathbed check → unconscious → bleed-out timer → corpse). Raising a corpse is summoning. One universal corpse art for heroes.",
-    "capability.ground-layers": "Poison and cursed as ground layers alongside burning and frost (same ask as Creeping Blight's 'blighted').",
-    "capability.target-stamina-loss": "The existing stamina loss, aimed at a target instead of paid as a cost. Same loss, normal recovery — one mechanism, new direction.",
-    "capability.line-shape": "A line area shape, plus 'furthest target in range' as a selector. Granted 2026-08-23.",
-    "capability.enemy-action-cooldown": "Cooldown/warmup on enemy actions — the fields hero powers already carry, reused.",
-    "capability.giant-footprint": "3-hex footprint (one below, two above). No terrain movement costs; takes every affliction and trap on all tiles crossed. PARKED — not for a while."
+ "_note": "THE FIRST NON-PLACEHOLDER ENEMIES. Landed 2026-08-25 from ENEMY-REVIEW.md after full review — every stat and effect there was ruled or explicitly inferred-and-flagged. These rows SUPERSEDE same-id placeholders from the hell-tcg port at assemble time; a placeholder never overwrites an authored row, and regenerating the placeholder file cannot touch this one. Effects use the closed vocabulary; anything the engine cannot fire yet carries `needs` naming a capability below, following the pattern the terrain badges set. Numbers are real but SOFT — sweeps own pricing.",
+ "capabilities": {
+  "_note": "Everything a row below needs that the engine does not have. All design-ruled in ENEMY-REVIEW.md 2026-08-23; none is an open question. A row naming one of these is complete content waiting on engine work, not a gap in the content.",
+  "capability.power": "The power pool. Integer; fractions resolve nearest, 0.5 up. Gained three ways (external pool / one-time on arrival / escalating clock or condition); consumers read it and mostly do not feed it.",
+  "capability.inflict-affliction": "Apply an affliction badge (possession | vampirism | lycanthropy | rotting-flesh — the family of exactly four) to a hero in combat. The badge swaps the hero's art to the affliction portrait already in art/heroes/<slug>/card/.",
+  "capability.corpses": "Corpse tokens as board objects. Created when any enemy is downed and when a hero actually dies (deathbed check → unconscious → bleed-out timer → corpse). Raising a corpse is summoning. One universal corpse art for heroes.",
+  "capability.ground-layers": "Poison and cursed as ground layers alongside burning and frost (same ask as Creeping Blight's 'blighted').",
+  "capability.target-stamina-loss": "The existing stamina loss, aimed at a target instead of paid as a cost. Same loss, normal recovery — one mechanism, new direction.",
+  "capability.line-shape": "A line area shape, plus 'furthest target in range' as a selector. Granted 2026-08-23.",
+  "capability.enemy-action-cooldown": "Cooldown/warmup on enemy actions — the fields hero powers already carry, reused.",
+  "capability.giant-footprint": "3-hex footprint (one below, two above). No terrain movement costs; takes every affliction and trap on all tiles crossed. PARKED — not for a while.",
+  "capability.stealth": "A unit that cannot be targeted and does not appear on the map; moving onto its hex stops the move. Designed in COMBAT-DESIGN (Vision, darkness, fog and stealth) and never built. The Nightstalker re-enters it at End of Activation while standing on darkness, and rule.stealth-does-not-hold reveals one stealthed unit each Phase."
+ },
+ "xpByTier": {
+  "1": 2,
+  "2": 5,
+  "3": 15
+ },
+ "familyRules": [
+  {
+   "family": "imps",
+   "rule": "every Demon in the imp family has Immunity 1 (weak)",
+   "excludes": [
+    "unit.imp-master"
+   ],
+   "why": "the Imp Master is Human"
   },
-
-  "xpByTier": { "1": 2, "2": 5, "3": 15 },
-
-  "familyRules": [
-    { "family": "imps", "rule": "every Demon in the imp family has Immunity 1 (weak)", "excludes": ["unit.imp-master"], "why": "the Imp Master is Human" },
-    { "family": "hounds", "rule": "movement ignores ZOC (move-without-provoking, NOT Juggernaut) and the move action may be a Close Bite when starting adjacent" }
-  ],
-
-  "units": [
-    { "id": "unit.zombie", "name": "Zombie", "tier": 1, "types": ["Undead"], "family": "undead-army",
-      "stats": { "movement": 4, "strength": 3, "precision": 1, "accuracy": 65, "health": 5 },
-      "attacks": [
-        { "id": "attack.zombie.claw", "name": "Claw", "targets": "one enemy in melee reach", "damage": { "stat": "strength", "mod": 0 },
-          "triggers": [
-            { "hook": "onHit", "chance": 10, "effects": [{ "effect": "inflict an affliction", "affliction": "rotting-flesh" }], "needs": ["capability.inflict-affliction"] },
-            { "hook": "onHit", "chance": 20, "effects": [{ "effect": "apply a status", "status": "poison", "value": 2 }] } ] } ] },
-
-    { "id": "unit.strong-zombie", "name": "Strong Zombie", "tier": 1, "types": ["Undead"], "family": "undead-army",
-      "stats": { "movement": 4, "strength": 4, "precision": 2, "accuracy": 60, "health": 10, "armor": 1 },
-      "attacks": [{ "sameAs": "attack.zombie.claw" }] },
-
-    { "id": "unit.fast-zombie", "name": "Fast Zombie", "tier": 1, "types": ["Undead"], "family": "undead-army",
-      "stats": { "movement": 6, "strength": 3, "precision": 1, "accuracy": 75, "health": 5 },
-      "moves": [
-        { "id": "move.fast-zombie.charge", "name": "Charge", "hexes": 3, "attack": { "damage": { "stat": "strength", "mod": 1 }, "accuracyMod": 10 } } ],
-      "attacks": [{ "sameAs": "attack.zombie.claw" }] },
-
-    { "id": "unit.skeleton", "name": "Skeleton", "tier": 1, "types": ["Undead"], "family": "undead-army",
-      "stats": { "movement": 4, "strength": 3, "precision": 1, "accuracy": 55, "health": 5, "armor": 1 },
-      "attacks": [
-        { "id": "attack.skeleton.gut", "name": "Gut", "targets": "one enemy in melee reach", "damage": { "stat": "strength", "mod": 0 },
-          "triggers": [{ "hook": "onHit", "chance": 20, "effects": [{ "effect": "apply a status", "status": "bleed", "value": 2 }] }] } ] },
-
-    { "id": "unit.strong-skeleton", "name": "Strong Skeleton", "tier": 1, "types": ["Undead"], "family": "undead-army",
-      "stats": { "movement": 4, "strength": 4, "precision": 2, "accuracy": 70, "health": 9, "armor": 1 },
-      "attacks": [{ "sameAs": "attack.skeleton.gut" }] },
-
-    { "id": "unit.skeletal-archer", "name": "Skeleton Archer", "tier": 1, "types": ["Undead"], "family": "undead-army",
-      "stats": { "movement": 4, "strength": 2, "precision": 3, "accuracy": 75, "health": 5, "armor": 1 },
-      "attacks": [
-        { "sameAs": "attack.skeleton.gut" },
-        { "id": "attack.skeletal-archer.shoot", "name": "Shoot", "targets": "one enemy within N hexes", "range": null, "damage": { "stat": "precision", "mod": 0 },
-          "triggers": [{ "hook": "onHit", "chance": 20, "name": "Pin",
-            "effects": [{ "effect": "grant a stat until end of next Turn", "stat": "movement", "value": -3, "target": "the unit this hit" }] }] } ] },
-
-    { "id": "unit.necromancer", "name": "Necromancer", "tier": 2, "types": ["Human"], "family": "undead-army", "role": "support",
-      "stats": { "movement": 5, "strength": 3, "precision": 3, "accuracy": 90, "health": 11, "resist": 1 },
+  {
+   "family": "hounds",
+   "rule": "movement ignores ZOC (move-without-provoking, NOT Juggernaut) and the move action may be a Close Bite when starting adjacent"
+  }
+ ],
+ "units": [
+  {
+   "id": "unit.zombie",
+   "name": "Zombie",
+   "tier": 1,
+   "types": [
+    "Undead"
+   ],
+   "family": "undead-army",
+   "stats": {
+    "movement": 4,
+    "strength": 3,
+    "precision": 1,
+    "accuracy": 65,
+    "health": 5
+   },
+   "attacks": [
+    {
+     "id": "attack.zombie.claw",
+     "name": "Claw",
+     "targets": "one enemy in melee reach",
+     "damage": {
+      "stat": "strength",
+      "mod": 0
+     },
+     "triggers": [
+      {
+       "hook": "onHit",
+       "chance": 10,
+       "effects": [
+        {
+         "effect": "inflict an affliction",
+         "affliction": "rotting-flesh"
+        }
+       ],
+       "needs": [
+        "capability.inflict-affliction"
+       ]
+      },
+      {
+       "hook": "onHit",
+       "chance": 20,
+       "effects": [
+        {
+         "effect": "apply a status",
+         "status": "poison",
+         "value": 2
+        }
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "unit.strong-zombie",
+   "name": "Strong Zombie",
+   "tier": 1,
+   "types": [
+    "Undead"
+   ],
+   "family": "undead-army",
+   "stats": {
+    "movement": 4,
+    "strength": 4,
+    "precision": 2,
+    "accuracy": 60,
+    "health": 10,
+    "armor": 1
+   },
+   "attacks": [
+    {
+     "sameAs": "attack.zombie.claw"
+    }
+   ]
+  },
+  {
+   "id": "unit.fast-zombie",
+   "name": "Fast Zombie",
+   "tier": 1,
+   "types": [
+    "Undead"
+   ],
+   "family": "undead-army",
+   "stats": {
+    "movement": 6,
+    "strength": 3,
+    "precision": 1,
+    "accuracy": 75,
+    "health": 5
+   },
+   "moves": [
+    {
+     "id": "move.fast-zombie.charge",
+     "name": "Charge",
+     "hexes": 3,
+     "attack": {
+      "damage": {
+       "stat": "strength",
+       "mod": 1
+      },
+      "accuracyMod": 10
+     }
+    }
+   ],
+   "attacks": [
+    {
+     "sameAs": "attack.zombie.claw"
+    }
+   ]
+  },
+  {
+   "id": "unit.skeleton",
+   "name": "Skeleton",
+   "tier": 1,
+   "types": [
+    "Undead"
+   ],
+   "family": "undead-army",
+   "stats": {
+    "movement": 4,
+    "strength": 3,
+    "precision": 1,
+    "accuracy": 55,
+    "health": 5,
+    "armor": 1
+   },
+   "attacks": [
+    {
+     "id": "attack.skeleton.gut",
+     "name": "Gut",
+     "targets": "one enemy in melee reach",
+     "damage": {
+      "stat": "strength",
+      "mod": 0
+     },
+     "triggers": [
+      {
+       "hook": "onHit",
+       "chance": 20,
+       "effects": [
+        {
+         "effect": "apply a status",
+         "status": "bleed",
+         "value": 2
+        }
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "unit.strong-skeleton",
+   "name": "Strong Skeleton",
+   "tier": 1,
+   "types": [
+    "Undead"
+   ],
+   "family": "undead-army",
+   "stats": {
+    "movement": 4,
+    "strength": 4,
+    "precision": 2,
+    "accuracy": 70,
+    "health": 9,
+    "armor": 1
+   },
+   "attacks": [
+    {
+     "sameAs": "attack.skeleton.gut"
+    }
+   ]
+  },
+  {
+   "id": "unit.skeletal-archer",
+   "name": "Skeleton Archer",
+   "tier": 1,
+   "types": [
+    "Undead"
+   ],
+   "family": "undead-army",
+   "stats": {
+    "movement": 4,
+    "strength": 2,
+    "precision": 3,
+    "accuracy": 75,
+    "health": 5,
+    "armor": 1
+   },
+   "attacks": [
+    {
+     "sameAs": "attack.skeleton.gut"
+    },
+    {
+     "id": "attack.skeletal-archer.shoot",
+     "name": "Shoot",
+     "targets": "one enemy within N hexes",
+     "range": null,
+     "damage": {
+      "stat": "precision",
+      "mod": 0
+     },
+     "triggers": [
+      {
+       "hook": "onHit",
+       "chance": 20,
+       "name": "Pin",
+       "effects": [
+        {
+         "effect": "grant a stat until end of next Turn",
+         "stat": "movement",
+         "value": -3,
+         "target": "the unit this hit"
+        }
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "unit.necromancer",
+   "name": "Necromancer",
+   "tier": 2,
+   "types": [
+    "Human"
+   ],
+   "family": "undead-army",
+   "role": "support",
+   "stats": {
+    "movement": 5,
+    "strength": 3,
+    "precision": 3,
+    "accuracy": 90,
+    "health": 11,
+    "resist": 1
+   },
+   "triggers": [
+    {
+     "hook": "aura",
+     "targets": "allies within N hexes",
+     "range": 2,
+     "condition": "the target has tag Undead",
+     "effects": [
+      {
+       "effect": "grant a stat for the Battle",
+       "stat": "accuracy",
+       "value": 20
+      },
+      {
+       "effect": "grant a stat for the Battle",
+       "stat": "resist",
+       "value": 1
+      }
+     ]
+    },
+    {
+     "hook": "onActivationEnd",
+     "targets": "allies within N hexes",
+     "range": 2,
+     "condition": "the target has tag Undead",
+     "effects": [
+      {
+       "effect": "heal",
+       "value": 3
+      }
+     ]
+    },
+    {
+     "hook": "onActivationEnd",
+     "name": "Raise",
+     "effects": [
+      {
+       "effect": "raise a corpse as a Zombie"
+      }
+     ],
+     "needs": [
+      "capability.corpses"
+     ]
+    }
+   ],
+   "attacks": [
+    {
+     "id": "attack.necromancer.necro-bolt",
+     "name": "Necro Bolt",
+     "targets": "one enemy within N hexes",
+     "range": 7,
+     "damage": {
+      "stat": "precision",
+      "mod": 0,
+      "powerScale": 1
+     },
+     "accuracyMod": 10,
+     "needs": [
+      "capability.power"
+     ],
+     "triggers": [
+      {
+       "hook": "onHit",
+       "effects": [
+        {
+         "effect": "apply a status",
+         "status": "weak",
+         "value": 2
+        },
+        {
+         "effect": "target loses stamina",
+         "value": 1,
+         "needs": [
+          "capability.target-stamina-loss"
+         ]
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "id": "attack.necromancer.necro-strike",
+     "name": "Necro Strike",
+     "targets": "one enemy in melee reach",
+     "damage": {
+      "stat": "strength",
+      "mod": 0,
+      "powerScale": 0.5
+     },
+     "needs": [
+      "capability.power"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "unit.ghoul",
+   "name": "Ghoul",
+   "tier": 1,
+   "types": [
+    "Undead"
+   ],
+   "family": "undead-army",
+   "stats": {
+    "movement": 6,
+    "strength": 4,
+    "precision": 3,
+    "accuracy": 90,
+    "health": 9
+   },
+   "triggers": [
+    {
+     "hook": "startOfBattle",
+     "effects": [
+      {
+       "effect": "apply a status",
+       "status": "regeneration",
+       "value": 6,
+       "target": "self"
+      }
+     ]
+    }
+   ],
+   "attacks": [
+    {
+     "id": "attack.ghoul.eat-corpse",
+     "name": "Eat Corpse",
+     "kind": "self",
+     "needs": [
+      "capability.corpses"
+     ],
+     "effects": [
+      {
+       "effect": "heal",
+       "value": 5,
+       "target": "self"
+      },
+      {
+       "effect": "grant a stat for the Battle",
+       "stat": "strength",
+       "value": 1,
+       "target": "self"
+      },
+      {
+       "effect": "grant a stat for the Battle",
+       "stat": "precision",
+       "value": 1,
+       "target": "self"
+      },
+      {
+       "effect": "grant a stat for the Battle",
+       "stat": "health",
+       "value": 2,
+       "target": "self"
+      }
+     ]
+    },
+    {
+     "id": "attack.ghoul.rake",
+     "name": "Rake",
+     "targets": "one enemy in melee reach",
+     "attackCount": 2,
+     "damage": {
+      "stat": "strength",
+      "mod": -1
+     },
+     "note": "Two attacks at the SAME target, ruled 2026-08-23 — power.reaver.gore's shape. attackCount is the machine-readable count the 36 prose multi-attacks lack."
+    },
+    {
+     "id": "attack.ghoul.shriek",
+     "name": "Shriek",
+     "targets": "one enemy within N hexes",
+     "range": 4,
+     "damage": {
+      "stat": "precision",
+      "mod": 0
+     },
+     "triggers": [
+      {
+       "hook": "onHit",
+       "effects": [
+        {
+         "effect": "target loses stamina",
+         "value": 1,
+         "needs": [
+          "capability.target-stamina-loss"
+         ]
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "id": "attack.ghoul.devour",
+     "name": "Devour",
+     "targets": "one enemy in melee reach",
+     "damage": {
+      "stat": "strength",
+      "mod": 2
+     },
+     "cooldown": 3,
+     "needs": [
+      "capability.enemy-action-cooldown"
+     ],
+     "triggers": [
+      {
+       "hook": "onKill",
+       "effects": [
+        {
+         "effect": "grant a stat for the Battle",
+         "stat": "strength",
+         "value": 2,
+         "target": "self"
+        },
+        {
+         "effect": "grant a stat for the Battle",
+         "stat": "health",
+         "value": 4,
+         "target": "self"
+        }
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "unit.skeleton-spider",
+   "name": "Skeleton Spider",
+   "tier": 2,
+   "types": [
+    "Undead"
+   ],
+   "family": "undead-army",
+   "role": "support",
+   "stats": {
+    "movement": 4,
+    "strength": 5,
+    "precision": 5,
+    "accuracy": 90,
+    "health": 14,
+    "armor": 0,
+    "resist": 3
+   },
+   "triggers": [
+    {
+     "hook": "onActivationEnd",
+     "targets": "allies within N hexes",
+     "range": 4,
+     "condition": "the target has tag Undead",
+     "effects": [
+      {
+       "effect": "grant a stat for the Battle",
+       "stat": "armor",
+       "value": 1
+      }
+     ]
+    },
+    {
+     "hook": "onActivationEnd",
+     "name": "Consume the Fallen",
+     "needs": [
+      "capability.corpses"
+     ],
+     "effects": [
+      {
+       "effect": "remove all corpses within range; heal 3 per corpse",
+       "range": 4
+      }
+     ]
+    }
+   ],
+   "attacks": [
+    {
+     "id": "attack.skeleton-spider.bone-strike",
+     "name": "Bone Strike",
+     "targets": "one enemy within N hexes",
+     "range": 4,
+     "damage": {
+      "stat": "precision",
+      "mod": 0
+     },
+     "triggers": [
+      {
+       "hook": "onDamage",
+       "effects": [
+        {
+         "effect": "grant a stat for the Battle",
+         "stat": "movement",
+         "value": -1,
+         "target": "the unit this hit"
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "id": "attack.skeleton-spider.bone-slash",
+     "name": "Bone Slash",
+     "targets": "one enemy in melee reach",
+     "damage": {
+      "stat": "strength",
+      "mod": 0
+     },
+     "triggers": [
+      {
+       "hook": "onDamage",
+       "effects": [
+        {
+         "effect": "grant a stat for the Battle",
+         "stat": "armor",
+         "value": -1,
+         "target": "the unit this hit"
+        }
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "unit.bone-dragon",
+   "name": "Bone Dragon",
+   "tier": 3,
+   "types": [
+    "Undead",
+    "Dragon"
+   ],
+   "family": "undead-army",
+   "badges": [
+    "Giant"
+   ],
+   "needs": [
+    "capability.giant-footprint"
+   ],
+   "stats": {
+    "movement": 5,
+    "strength": 8,
+    "precision": 6,
+    "accuracy": 90,
+    "health": 25,
+    "armor": 5,
+    "resist": 2
+   },
+   "movePower": "flight",
+   "triggers": [
+    {
+     "hook": "aura",
+     "targets": "enemies within N hexes",
+     "range": 2,
+     "effects": [
+      {
+       "effect": "grant a stat for the Battle",
+       "stat": "strength",
+       "value": -1
+      },
+      {
+       "effect": "grant a stat for the Battle",
+       "stat": "precision",
+       "value": -1
+      },
+      {
+       "effect": "grant a stat for the Battle",
+       "stat": "accuracy",
+       "value": -10
+      }
+     ]
+    },
+    {
+     "hook": "aura",
+     "targets": "allies within N hexes",
+     "range": 2,
+     "condition": "the target has tag Undead",
+     "effects": [
+      {
+       "effect": "grant a stat for the Battle",
+       "stat": "strength",
+       "value": 1
+      },
+      {
+       "effect": "grant a stat for the Battle",
+       "stat": "precision",
+       "value": 1
+      },
+      {
+       "effect": "grant a stat for the Battle",
+       "stat": "accuracy",
+       "value": 10
+      }
+     ]
+    }
+   ],
+   "attacks": [
+    {
+     "id": "attack.bone-dragon.poison-line",
+     "name": "Poison Line",
+     "targets": "a line to the furthest target within N hexes",
+     "range": 10,
+     "damage": {
+      "stat": "precision",
+      "mod": -4,
+      "powerScale": 1
+     },
+     "damageType": "magic",
+     "cooldown": 3,
+     "needs": [
+      "capability.line-shape",
+      "capability.ground-layers",
+      "capability.power",
+      "capability.enemy-action-cooldown"
+     ],
+     "groundLayer": "poison",
+     "triggers": [
+      {
+       "hook": "onHit",
+       "effects": [
+        {
+         "effect": "apply a status",
+         "status": "poison",
+         "value": 4,
+         "powerScale": 1
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "id": "attack.bone-dragon.bite",
+     "name": "Bite",
+     "targets": "one enemy in melee reach",
+     "damage": {
+      "stat": "strength",
+      "mod": 0
+     },
+     "triggers": [
+      {
+       "hook": "onDamage",
+       "effects": [
+        {
+         "effect": "apply a status",
+         "status": "stun",
+         "value": 1
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "id": "attack.bone-dragon.wings",
+     "name": "Wings",
+     "targets": "every enemy adjacent to you",
+     "damage": {
+      "stat": "strength",
+      "mod": -2
+     },
+     "accuracyMod": -20
+    }
+   ]
+  },
+  {
+   "id": "unit.imp",
+   "name": "Imp",
+   "tier": 1,
+   "types": [
+    "Demon"
+   ],
+   "family": "imps",
+   "stats": {
+    "movement": 7,
+    "strength": 3,
+    "precision": 4,
+    "accuracy": 80,
+    "health": 7,
+    "dodge": 15
+   },
+   "movePower": "flight",
+   "immunity": [
+    {
+     "status": "weak",
+     "value": 1
+    },
+    {
+     "status": "burn",
+     "value": 1
+    }
+   ],
+   "attacks": [
+    {
+     "id": "attack.imp.blast",
+     "name": "Imp Blast",
+     "targets": "one enemy within N hexes",
+     "range": 4,
+     "damage": {
+      "stat": "precision",
+      "mod": 0
+     },
+     "triggers": [
+      {
+       "hook": "onHit",
+       "effects": [
+        {
+         "effect": "apply a status",
+         "status": "burn",
+         "value": 2
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "id": "attack.imp.claw",
+     "name": "Imp Claw",
+     "targets": "one enemy in melee reach",
+     "damage": {
+      "stat": "strength",
+      "mod": 0
+     }
+    }
+   ]
+  },
+  {
+   "id": "unit.powerful-imp",
+   "name": "Powerful Imp",
+   "tier": 1,
+   "types": [
+    "Demon"
+   ],
+   "family": "imps",
+   "stats": {
+    "movement": 7,
+    "strength": 4,
+    "precision": 5,
+    "accuracy": 90,
+    "health": 11,
+    "dodge": 5,
+    "crit": 5
+   },
+   "movePower": "flight",
+   "immunity": [
+    {
+     "status": "weak",
+     "value": 1
+    },
+    {
+     "status": "burn",
+     "value": 1
+    }
+   ],
+   "attacks": [
+    {
+     "sameAs": "attack.imp.blast"
+    },
+    {
+     "sameAs": "attack.imp.claw"
+    }
+   ]
+  },
+  {
+   "id": "unit.fire-imp",
+   "name": "Fire Imp",
+   "tier": 1,
+   "types": [
+    "Demon",
+    "Fire"
+   ],
+   "family": "imps",
+   "stats": {
+    "movement": 5,
+    "strength": 3,
+    "precision": 4,
+    "accuracy": 80,
+    "health": 9,
+    "dodge": 10
+   },
+   "inferred": {
+    "accuracy": "80, as the base Imp — flagged in ENEMY-REVIEW"
+   },
+   "immunity": [
+    {
+     "status": "weak",
+     "value": 1
+    },
+    {
+     "status": "burn",
+     "value": 2
+    }
+   ],
+   "triggers": [
+    {
+     "hook": "onActivationEnd",
+     "targets": "every unit within N hexes",
+     "range": 2,
+     "effects": [
+      {
+       "effect": "apply a status",
+       "status": "burn",
+       "value": 1
+      }
+     ]
+    }
+   ],
+   "attacks": [
+    {
+     "id": "attack.fire-imp.blast",
+     "name": "Fire Imp Blast",
+     "targets": "one enemy within N hexes",
+     "range": 4,
+     "damage": {
+      "stat": "precision",
+      "mod": 0
+     },
+     "triggers": [
+      {
+       "hook": "onHit",
+       "effects": [
+        {
+         "effect": "apply a status",
+         "status": "burn",
+         "value": 3
+        }
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "unit.poison-imp",
+   "name": "Poison Imp",
+   "tier": 1,
+   "types": [
+    "Demon",
+    "Poison"
+   ],
+   "family": "imps",
+   "note": "Ruled: same as Fire Imp with poison throughout.",
+   "stats": {
+    "movement": 5,
+    "strength": 3,
+    "precision": 4,
+    "accuracy": 80,
+    "health": 9,
+    "dodge": 10
+   },
+   "inferred": {
+    "accuracy": "80, as the base Imp"
+   },
+   "immunity": [
+    {
+     "status": "weak",
+     "value": 1
+    },
+    {
+     "status": "poison",
+     "value": 2
+    }
+   ],
+   "triggers": [
+    {
+     "hook": "onActivationEnd",
+     "targets": "every unit within N hexes",
+     "range": 2,
+     "effects": [
+      {
+       "effect": "apply a status",
+       "status": "poison",
+       "value": 1
+      }
+     ]
+    }
+   ],
+   "attacks": [
+    {
+     "id": "attack.poison-imp.blast",
+     "name": "Poison Imp Blast",
+     "targets": "one enemy within N hexes",
+     "range": 4,
+     "damage": {
+      "stat": "precision",
+      "mod": 0
+     },
+     "triggers": [
+      {
+       "hook": "onHit",
+       "effects": [
+        {
+         "effect": "apply a status",
+         "status": "poison",
+         "value": 3
+        }
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "unit.terror-imp",
+   "name": "Terror Imp",
+   "tier": 1,
+   "types": [
+    "Demon"
+   ],
+   "family": "imps",
+   "stats": {
+    "movement": 5,
+    "strength": 3,
+    "precision": 4,
+    "accuracy": 80,
+    "health": 9,
+    "dodge": 20
+   },
+   "inferred": {
+    "strength": "3, as the base Imp (ruled)",
+    "precision": "4, as the base Imp (ruled)",
+    "accuracy": "80, as the base Imp"
+   },
+   "movePower": "flight",
+   "immunity": [
+    {
+     "status": "weak",
+     "value": 1
+    }
+   ],
+   "triggers": [
+    {
+     "hook": "onTakingDamage",
+     "effects": [
+      {
+       "effect": "apply a status",
+       "status": "weak",
+       "value": 1,
+       "target": "the attacker"
+      }
+     ]
+    }
+   ],
+   "attacks": [
+    {
+     "id": "attack.terror-imp.fear",
+     "name": "Fear",
+     "targets": "one enemy within N hexes",
+     "range": 4,
+     "damage": {
+      "stat": "precision",
+      "mod": 0
+     },
+     "triggers": [
+      {
+       "hook": "onAttack",
+       "effects": [
+        {
+         "effect": "apply a status",
+         "status": "weak",
+         "value": 1,
+         "powerScale": 0.5
+        }
+       ],
+       "needs": [
+        "capability.power"
+       ]
+      }
+     ]
+    },
+    {
+     "sameAs": "attack.imp.claw"
+    }
+   ]
+  },
+  {
+   "id": "unit.imp-master",
+   "name": "Imp Master",
+   "tier": 1,
+   "types": [
+    "Human"
+   ],
+   "family": "imps",
+   "role": "support",
+   "stats": {
+    "movement": 5,
+    "strength": 4,
+    "precision": 4,
+    "accuracy": 70,
+    "health": 9,
+    "crit": 10
+   },
+   "triggers": [
+    {
+     "hook": "aura",
+     "targets": "allies within N hexes",
+     "range": null,
+     "condition": "the target has tag Demon",
+     "note": "range not dictated — left null for the sweep/ruling",
+     "effects": [
+      {
+       "effect": "grant a stat for the Battle",
+       "stat": "movement",
+       "value": 2
+      },
+      {
+       "effect": "grant a stat for the Battle",
+       "stat": "accuracy",
+       "value": 20
+      },
+      {
+       "effect": "grant a stat for the Battle",
+       "stat": "health",
+       "value": 5
+      }
+     ]
+    }
+   ],
+   "attacks": [
+    {
+     "id": "attack.imp-master.fire-bow",
+     "name": "Fire Bow",
+     "targets": "one enemy within N hexes",
+     "range": 6,
+     "damage": {
+      "stat": "precision",
+      "mod": 0
+     },
+     "triggers": [
+      {
+       "hook": "onHit",
+       "effects": [
+        {
+         "effect": "apply a status",
+         "status": "burn",
+         "value": 2
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "id": "attack.imp-master.fire-sword",
+     "name": "Fire Sword",
+     "targets": "one enemy in melee reach",
+     "damage": {
+      "stat": "strength",
+      "mod": 0
+     },
+     "triggers": [
+      {
+       "hook": "onHit",
+       "effects": [
+        {
+         "effect": "apply a status",
+         "status": "burn",
+         "value": 1
+        }
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "unit.lieutenant-demon",
+   "name": "Lieutenant Demon",
+   "tier": 2,
+   "types": [
+    "Demon"
+   ],
+   "family": "demons",
+   "inferred": {
+    "tier": "2 — the demon heavies around it are t2 (flagged in ENEMY-REVIEW)"
+   },
+   "stats": {
+    "movement": 5,
+    "strength": 5,
+    "precision": 4,
+    "accuracy": 60,
+    "health": 15,
+    "armor": 2,
+    "crit": 5,
+    "dodge": 10
+   },
+   "triggers": [
+    {
+     "hook": "aura",
+     "targets": "allies within N hexes",
+     "range": 4,
+     "condition": "the target has tag Demon",
+     "effects": [
+      {
+       "effect": "grant a stat for the Battle",
+       "stat": "accuracy",
+       "value": 20
+      },
+      {
+       "effect": "grant a stat for the Battle",
+       "stat": "health",
+       "value": 4
+      },
+      {
+       "effect": "Immunity N",
+       "status": "weak",
+       "value": 1
+      },
+      {
+       "effect": "Immunity N",
+       "status": "poison",
+       "value": 1
+      },
+      {
+       "effect": "Immunity N",
+       "status": "burn",
+       "value": 1
+      }
+     ]
+    },
+    {
+     "hook": "onActivationEnd",
+     "targets": "allies within N hexes",
+     "range": 4,
+     "condition": "the target has tag Demon",
+     "effects": [
+      {
+       "effect": "heal",
+       "value": 5
+      },
+      {
+       "effect": "grant a stat for the Battle",
+       "stat": "health",
+       "value": 1
+      }
+     ]
+    },
+    {
+     "hook": "onActivationEnd",
+     "name": "Gathering Doom",
+     "effects": [
+      {
+       "effect": "add power",
+       "value": 1
+      }
+     ],
+     "needs": [
+      "capability.power"
+     ],
+     "note": "power source, kind 3: the escalating clock. The battery counterplay exists to kill."
+    }
+   ],
+   "attacks": [
+    {
+     "id": "attack.lieutenant-demon.ranged",
+     "name": "Hurl",
+     "targets": "one enemy within N hexes",
+     "range": 7,
+     "damage": {
+      "stat": "precision",
+      "mod": 0,
+      "powerScale": 0.5
+     },
+     "needs": [
+      "capability.power"
+     ]
+    },
+    {
+     "id": "attack.lieutenant-demon.melee",
+     "name": "Strike",
+     "targets": "one enemy in melee reach",
+     "accuracyMod": 10,
+     "damage": {
+      "stat": "strength",
+      "mod": 0,
+      "powerScale": 0.5
+     },
+     "needs": [
+      "capability.power"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "unit.bruiser-demon",
+   "name": "Bruiser Demon",
+   "tier": 2,
+   "types": [
+    "Demon"
+   ],
+   "family": "demons",
+   "inferred": {
+    "tier": "2 — flagged in ENEMY-REVIEW",
+    "accuracy": "75, from the dictated Bash line"
+   },
+   "stats": {
+    "movement": 4,
+    "strength": 6,
+    "precision": 5,
+    "accuracy": 75,
+    "health": 20,
+    "armor": 4,
+    "resist": 1,
+    "luck": 5
+   },
+   "triggers": [
+    {
+     "hook": "onActivationEnd",
+     "effects": [
+      {
+       "effect": "apply a status",
+       "status": "protection",
+       "value": 0,
+       "powerScale": 0.334,
+       "target": "self"
+      }
+     ],
+     "needs": [
+      "capability.power"
+     ]
+    }
+   ],
+   "attacks": [
+    {
+     "id": "attack.bruiser-demon.bash",
+     "name": "Bash",
+     "targets": "one enemy in melee reach",
+     "damage": {
+      "stat": "strength",
+      "mod": 0
+     },
+     "crit": 10
+    }
+   ]
+  },
+  {
+   "id": "unit.balrog",
+   "name": "Balrog",
+   "tier": 2,
+   "types": [
+    "Demon"
+   ],
+   "family": "demons",
+   "stats": {
+    "movement": 4,
+    "strength": 6,
+    "precision": 5,
+    "accuracy": 100,
+    "health": 23,
+    "armor": 3,
+    "resist": 2
+   },
+   "triggers": [
+    {
+     "hook": "aura",
+     "name": "Imprisoning Aura",
+     "targets": "enemies within N hexes",
+     "range": 2,
+     "effects": [
+      {
+       "effect": "grant a stat for the Battle",
+       "stat": "movement",
+       "value": -5
+      }
+     ],
+     "note": "CONFIRMED as designed: shuts movement down. Get within 2 and you are not walking out."
+    },
+    {
+     "hook": "onTakingDamage",
+     "effects": [
+      {
+       "effect": "set a ground layer",
+       "layer": "burning",
+       "targets": "a hex within N hexes and every hex adjacent to it",
+       "range": 0
+      }
+     ]
+    },
+    {
+     "hook": "onActivationEnd",
+     "targets": "every unit within N hexes",
+     "range": 2,
+     "effects": [
+      {
+       "effect": "apply a status",
+       "status": "burn",
+       "value": 1
+      }
+     ]
+    }
+   ],
+   "attacks": [
+    {
+     "id": "attack.balrog.strike",
+     "name": "Strike",
+     "targets": "one enemy in melee reach",
+     "damage": {
+      "stat": "strength",
+      "mod": 0,
+      "powerScale": 1
+     },
+     "needs": [
+      "capability.power"
+     ]
+    },
+    {
+     "id": "attack.balrog.hurl",
+     "name": "Hurl Fire",
+     "targets": "one enemy within N hexes",
+     "range": 4,
+     "accuracyMod": -30,
+     "damage": {
+      "stat": "precision",
+      "mod": 0
+     },
+     "inferred": {
+      "damage": "Pre+0 assumed — stat not dictated"
+     }
+    }
+   ]
+  },
+  {
+   "id": "unit.bloodhound",
+   "name": "Bloodhound",
+   "tier": 1,
+   "types": [
+    "Beast"
+   ],
+   "family": "hounds",
+   "stats": {
+    "movement": 9,
+    "strength": 3,
+    "accuracy": 90,
+    "health": 4,
+    "dodge": 20,
+    "crit": 10
+   },
+   "evasion": 20,
+   "moveIgnoresZOC": true,
+   "ai": "hunter",
+   "moves": [
+    {
+     "id": "move.hound.close-bite",
+     "name": "Close Bite",
+     "whenStartingAdjacent": true,
+     "attack": {
+      "damage": {
+       "stat": "strength",
+       "mod": 0
+      },
+      "crit": 10
+     }
+    }
+   ],
+   "attacks": [
+    {
+     "id": "attack.bloodhound.bite",
+     "name": "Bite",
+     "targets": "one enemy in melee reach",
+     "damage": {
+      "stat": "strength",
+      "mod": 0
+     }
+    }
+   ]
+  },
+  {
+   "id": "unit.hellhound",
+   "name": "Hellhound",
+   "tier": 1,
+   "types": [
+    "Demon",
+    "Beast"
+   ],
+   "family": "hounds",
+   "stats": {
+    "movement": 7,
+    "strength": 4,
+    "accuracy": 70,
+    "health": 8,
+    "dodge": 10,
+    "crit": 10
+   },
+   "moveIgnoresZOC": true,
+   "triggers": [
+    {
+     "hook": "onTakingDamage",
+     "effects": [
+      {
+       "effect": "apply a status",
+       "status": "burn",
+       "value": 1,
+       "target": "the attacker"
+      }
+     ]
+    }
+   ],
+   "moves": [
+    {
+     "id": "move.hellhound.close-bite",
+     "name": "Close Bite",
+     "whenStartingAdjacent": true,
+     "attack": {
+      "damage": {
+       "stat": "strength",
+       "mod": 0
+      },
+      "crit": 10,
       "triggers": [
-        { "hook": "aura", "targets": "allies within N hexes", "range": 2, "condition": "the target has tag Undead",
-          "effects": [{ "effect": "grant a stat for the Battle", "stat": "accuracy", "value": 20 }, { "effect": "grant a stat for the Battle", "stat": "resist", "value": 1 }] },
-        { "hook": "onActivationEnd", "targets": "allies within N hexes", "range": 2, "condition": "the target has tag Undead",
-          "effects": [{ "effect": "heal", "value": 3 }] },
-        { "hook": "onActivationEnd", "name": "Raise", "effects": [{ "effect": "raise a corpse as a Zombie" }], "needs": ["capability.corpses"] } ],
-      "attacks": [
-        { "id": "attack.necromancer.necro-bolt", "name": "Necro Bolt", "targets": "one enemy within N hexes", "range": 7,
-          "damage": { "stat": "precision", "mod": 0, "powerScale": 1 }, "accuracyMod": 10, "needs": ["capability.power"],
-          "triggers": [{ "hook": "onHit", "effects": [
-            { "effect": "apply a status", "status": "weak", "value": 2 },
-            { "effect": "target loses stamina", "value": 1, "needs": ["capability.target-stamina-loss"] } ] }] },
-        { "id": "attack.necromancer.necro-strike", "name": "Necro Strike", "targets": "one enemy in melee reach",
-          "damage": { "stat": "strength", "mod": 0, "powerScale": 0.5 }, "needs": ["capability.power"] } ] },
-
-    { "id": "unit.ghoul", "name": "Ghoul", "tier": 1, "types": ["Undead"], "family": "undead-army",
-      "stats": { "movement": 6, "strength": 4, "precision": 3, "accuracy": 90, "health": 9 },
-      "triggers": [{ "hook": "startOfBattle", "effects": [{ "effect": "apply a status", "status": "regeneration", "value": 6, "target": "self" }] }],
-      "attacks": [
-        { "id": "attack.ghoul.eat-corpse", "name": "Eat Corpse", "kind": "self", "needs": ["capability.corpses"],
-          "effects": [{ "effect": "heal", "value": 5, "target": "self" },
-            { "effect": "grant a stat for the Battle", "stat": "strength", "value": 1, "target": "self" },
-            { "effect": "grant a stat for the Battle", "stat": "precision", "value": 1, "target": "self" },
-            { "effect": "grant a stat for the Battle", "stat": "health", "value": 2, "target": "self" }] },
-        { "id": "attack.ghoul.rake", "name": "Rake", "targets": "one enemy in melee reach", "attackCount": 2,
-          "damage": { "stat": "strength", "mod": -1 },
-          "note": "Two attacks at the SAME target, ruled 2026-08-23 — power.reaver.gore's shape. attackCount is the machine-readable count the 36 prose multi-attacks lack." },
-        { "id": "attack.ghoul.shriek", "name": "Shriek", "targets": "one enemy within N hexes", "range": 4, "damage": { "stat": "precision", "mod": 0 },
-          "triggers": [{ "hook": "onHit", "effects": [{ "effect": "target loses stamina", "value": 1, "needs": ["capability.target-stamina-loss"] }] }] },
-        { "id": "attack.ghoul.devour", "name": "Devour", "targets": "one enemy in melee reach", "damage": { "stat": "strength", "mod": 2 },
-          "cooldown": 3, "needs": ["capability.enemy-action-cooldown"],
-          "triggers": [{ "hook": "onKill", "effects": [
-            { "effect": "grant a stat for the Battle", "stat": "strength", "value": 2, "target": "self" },
-            { "effect": "grant a stat for the Battle", "stat": "health", "value": 4, "target": "self" }] }] } ] },
-
-    { "id": "unit.skeleton-spider", "name": "Skeleton Spider", "tier": 2, "types": ["Undead"], "family": "undead-army", "role": "support",
-      "stats": { "movement": 4, "strength": 5, "precision": 5, "accuracy": 90, "health": 14, "armor": 0, "resist": 3 },
+       {
+        "hook": "onHit",
+        "effects": [
+         {
+          "effect": "apply a status",
+          "status": "burn",
+          "value": 1
+         }
+        ]
+       }
+      ]
+     }
+    }
+   ],
+   "attacks": [
+    {
+     "id": "attack.hellhound.bite",
+     "name": "Bite",
+     "targets": "one enemy in melee reach",
+     "damage": {
+      "stat": "strength",
+      "mod": 0
+     },
+     "triggers": [
+      {
+       "hook": "onHit",
+       "effects": [
+        {
+         "effect": "apply a status",
+         "status": "burn",
+         "value": 1
+        }
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "unit.zombie-hound",
+   "name": "Zombie Hound",
+   "tier": 1,
+   "types": [
+    "Undead",
+    "Beast"
+   ],
+   "family": "hounds",
+   "stats": {
+    "movement": 6,
+    "strength": 3,
+    "accuracy": 75,
+    "health": 5,
+    "dodge": 10,
+    "crit": 10
+   },
+   "evasion": 20,
+   "inferred": {
+    "strength": "3, as the Bloodhound",
+    "accuracy": "75 — zombie-grade, between Hellhound 70 and Bloodhound 90"
+   },
+   "moveIgnoresZOC": true,
+   "ai": "hunter",
+   "moves": [
+    {
+     "id": "move.zombie-hound.close-bite",
+     "name": "Close Bite",
+     "whenStartingAdjacent": true,
+     "attack": {
+      "damage": {
+       "stat": "strength",
+       "mod": 0
+      },
+      "crit": 10,
       "triggers": [
-        { "hook": "onActivationEnd", "targets": "allies within N hexes", "range": 4, "condition": "the target has tag Undead",
-          "effects": [{ "effect": "grant a stat for the Battle", "stat": "armor", "value": 1 }] },
-        { "hook": "onActivationEnd", "name": "Consume the Fallen", "needs": ["capability.corpses"],
-          "effects": [{ "effect": "remove all corpses within range; heal 3 per corpse", "range": 4 }] } ],
-      "attacks": [
-        { "id": "attack.skeleton-spider.bone-strike", "name": "Bone Strike", "targets": "one enemy within N hexes", "range": 4, "damage": { "stat": "precision", "mod": 0 },
-          "triggers": [{ "hook": "onDamage", "effects": [{ "effect": "grant a stat for the Battle", "stat": "movement", "value": -1, "target": "the unit this hit" }] }] },
-        { "id": "attack.skeleton-spider.bone-slash", "name": "Bone Slash", "targets": "one enemy in melee reach", "damage": { "stat": "strength", "mod": 0 },
-          "triggers": [{ "hook": "onDamage", "effects": [{ "effect": "grant a stat for the Battle", "stat": "armor", "value": -1, "target": "the unit this hit" }] }] } ] },
-
-    { "id": "unit.bone-dragon", "name": "Bone Dragon", "tier": 3, "types": ["Undead", "Dragon"], "family": "undead-army",
-      "badges": ["Giant"], "needs": ["capability.giant-footprint"],
-      "stats": { "movement": 5, "strength": 8, "precision": 6, "accuracy": 90, "health": 25, "armor": 5, "resist": 2 },
-      "movePower": "flight",
-      "triggers": [
-        { "hook": "aura", "targets": "enemies within N hexes", "range": 2,
-          "effects": [{ "effect": "grant a stat for the Battle", "stat": "strength", "value": -1 }, { "effect": "grant a stat for the Battle", "stat": "precision", "value": -1 }, { "effect": "grant a stat for the Battle", "stat": "accuracy", "value": -10 }] },
-        { "hook": "aura", "targets": "allies within N hexes", "range": 2, "condition": "the target has tag Undead",
-          "effects": [{ "effect": "grant a stat for the Battle", "stat": "strength", "value": 1 }, { "effect": "grant a stat for the Battle", "stat": "precision", "value": 1 }, { "effect": "grant a stat for the Battle", "stat": "accuracy", "value": 10 }] } ],
-      "attacks": [
-        { "id": "attack.bone-dragon.poison-line", "name": "Poison Line", "targets": "a line to the furthest target within N hexes", "range": 10,
-          "damage": { "stat": "precision", "mod": -4, "powerScale": 1 }, "damageType": "magic", "cooldown": 3,
-          "needs": ["capability.line-shape", "capability.ground-layers", "capability.power", "capability.enemy-action-cooldown"],
-          "groundLayer": "poison",
-          "triggers": [{ "hook": "onHit", "effects": [{ "effect": "apply a status", "status": "poison", "value": 4, "powerScale": 1 }] }] },
-        { "id": "attack.bone-dragon.bite", "name": "Bite", "targets": "one enemy in melee reach", "damage": { "stat": "strength", "mod": 0 },
-          "triggers": [{ "hook": "onDamage", "effects": [{ "effect": "apply a status", "status": "stun", "value": 1 }] }] },
-        { "id": "attack.bone-dragon.wings", "name": "Wings", "targets": "every enemy adjacent to you", "damage": { "stat": "strength", "mod": -2 }, "accuracyMod": -20 } ] },
-
-    { "id": "unit.imp", "name": "Imp", "tier": 1, "types": ["Demon"], "family": "imps",
-      "stats": { "movement": 7, "strength": 3, "precision": 4, "accuracy": 80, "health": 7, "dodge": 15 },
-      "movePower": "flight", "immunity": [{ "status": "weak", "value": 1 }, { "status": "burn", "value": 1 }],
-      "attacks": [
-        { "id": "attack.imp.blast", "name": "Imp Blast", "targets": "one enemy within N hexes", "range": 4, "damage": { "stat": "precision", "mod": 0 },
-          "triggers": [{ "hook": "onHit", "effects": [{ "effect": "apply a status", "status": "burn", "value": 2 }] }] },
-        { "id": "attack.imp.claw", "name": "Imp Claw", "targets": "one enemy in melee reach", "damage": { "stat": "strength", "mod": 0 } } ] },
-
-    { "id": "unit.powerful-imp", "name": "Powerful Imp", "tier": 1, "types": ["Demon"], "family": "imps",
-      "stats": { "movement": 7, "strength": 4, "precision": 5, "accuracy": 90, "health": 11, "dodge": 5, "crit": 5 },
-      "movePower": "flight", "immunity": [{ "status": "weak", "value": 1 }, { "status": "burn", "value": 1 }],
-      "attacks": [{ "sameAs": "attack.imp.blast" }, { "sameAs": "attack.imp.claw" }] },
-
-    { "id": "unit.fire-imp", "name": "Fire Imp", "tier": 1, "types": ["Demon", "Fire"], "family": "imps",
-      "stats": { "movement": 5, "strength": 3, "precision": 4, "accuracy": 80, "health": 9, "dodge": 10 },
-      "inferred": { "accuracy": "80, as the base Imp — flagged in ENEMY-REVIEW" },
-      "immunity": [{ "status": "weak", "value": 1 }, { "status": "burn", "value": 2 }],
-      "triggers": [{ "hook": "onActivationEnd", "targets": "every unit within N hexes", "range": 2,
-        "effects": [{ "effect": "apply a status", "status": "burn", "value": 1 }] }],
-      "attacks": [
-        { "id": "attack.fire-imp.blast", "name": "Fire Imp Blast", "targets": "one enemy within N hexes", "range": 4, "damage": { "stat": "precision", "mod": 0 },
-          "triggers": [{ "hook": "onHit", "effects": [{ "effect": "apply a status", "status": "burn", "value": 3 }] }] } ] },
-
-    { "id": "unit.poison-imp", "name": "Poison Imp", "tier": 1, "types": ["Demon", "Poison"], "family": "imps",
-      "note": "Ruled: same as Fire Imp with poison throughout.",
-      "stats": { "movement": 5, "strength": 3, "precision": 4, "accuracy": 80, "health": 9, "dodge": 10 },
-      "inferred": { "accuracy": "80, as the base Imp" },
-      "immunity": [{ "status": "weak", "value": 1 }, { "status": "poison", "value": 2 }],
-      "triggers": [{ "hook": "onActivationEnd", "targets": "every unit within N hexes", "range": 2,
-        "effects": [{ "effect": "apply a status", "status": "poison", "value": 1 }] }],
-      "attacks": [
-        { "id": "attack.poison-imp.blast", "name": "Poison Imp Blast", "targets": "one enemy within N hexes", "range": 4, "damage": { "stat": "precision", "mod": 0 },
-          "triggers": [{ "hook": "onHit", "effects": [{ "effect": "apply a status", "status": "poison", "value": 3 }] }] } ] },
-
-    { "id": "unit.terror-imp", "name": "Terror Imp", "tier": 1, "types": ["Demon"], "family": "imps",
-      "stats": { "movement": 5, "strength": 3, "precision": 4, "accuracy": 80, "health": 9, "dodge": 20 },
-      "inferred": { "strength": "3, as the base Imp (ruled)", "precision": "4, as the base Imp (ruled)", "accuracy": "80, as the base Imp" },
-      "movePower": "flight", "immunity": [{ "status": "weak", "value": 1 }],
-      "triggers": [{ "hook": "onTakingDamage", "effects": [{ "effect": "apply a status", "status": "weak", "value": 1, "target": "the attacker" }] }],
-      "attacks": [
-        { "id": "attack.terror-imp.fear", "name": "Fear", "targets": "one enemy within N hexes", "range": 4, "damage": { "stat": "precision", "mod": 0 },
-          "triggers": [{ "hook": "onAttack", "effects": [{ "effect": "apply a status", "status": "weak", "value": 1, "powerScale": 0.5 }], "needs": ["capability.power"] }] },
-        { "sameAs": "attack.imp.claw" } ] },
-
-    { "id": "unit.imp-master", "name": "Imp Master", "tier": 1, "types": ["Human"], "family": "imps", "role": "support",
-      "stats": { "movement": 5, "strength": 4, "precision": 4, "accuracy": 70, "health": 9, "crit": 10 },
-      "triggers": [{ "hook": "aura", "targets": "allies within N hexes", "range": null, "condition": "the target has tag Demon",
-        "note": "range not dictated — left null for the sweep/ruling",
-        "effects": [{ "effect": "grant a stat for the Battle", "stat": "movement", "value": 2 },
-          { "effect": "grant a stat for the Battle", "stat": "accuracy", "value": 20 },
-          { "effect": "grant a stat for the Battle", "stat": "health", "value": 5 }] }],
-      "attacks": [
-        { "id": "attack.imp-master.fire-bow", "name": "Fire Bow", "targets": "one enemy within N hexes", "range": 6, "damage": { "stat": "precision", "mod": 0 },
-          "triggers": [{ "hook": "onHit", "effects": [{ "effect": "apply a status", "status": "burn", "value": 2 }] }] },
-        { "id": "attack.imp-master.fire-sword", "name": "Fire Sword", "targets": "one enemy in melee reach", "damage": { "stat": "strength", "mod": 0 },
-          "triggers": [{ "hook": "onHit", "effects": [{ "effect": "apply a status", "status": "burn", "value": 1 }] }] } ] },
-
-    { "id": "unit.lieutenant-demon", "name": "Lieutenant Demon", "tier": 2, "types": ["Demon"], "family": "demons",
-      "inferred": { "tier": "2 — the demon heavies around it are t2 (flagged in ENEMY-REVIEW)" },
-      "stats": { "movement": 5, "strength": 5, "precision": 4, "accuracy": 60, "health": 15, "armor": 2, "crit": 5, "dodge": 10 },
-      "triggers": [
-        { "hook": "aura", "targets": "allies within N hexes", "range": 4, "condition": "the target has tag Demon",
-          "effects": [{ "effect": "grant a stat for the Battle", "stat": "accuracy", "value": 20 },
-            { "effect": "grant a stat for the Battle", "stat": "health", "value": 4 },
-            { "effect": "Immunity N", "status": "weak", "value": 1 },
-            { "effect": "Immunity N", "status": "poison", "value": 1 },
-            { "effect": "Immunity N", "status": "burn", "value": 1 }] },
-        { "hook": "onActivationEnd", "targets": "allies within N hexes", "range": 4, "condition": "the target has tag Demon",
-          "effects": [{ "effect": "heal", "value": 5 }, { "effect": "grant a stat for the Battle", "stat": "health", "value": 1 }] },
-        { "hook": "onActivationEnd", "name": "Gathering Doom", "effects": [{ "effect": "add power", "value": 1 }], "needs": ["capability.power"],
-          "note": "power source, kind 3: the escalating clock. The battery counterplay exists to kill." } ],
-      "attacks": [
-        { "id": "attack.lieutenant-demon.ranged", "name": "Hurl", "targets": "one enemy within N hexes", "range": 7,
-          "damage": { "stat": "precision", "mod": 0, "powerScale": 0.5 }, "needs": ["capability.power"] },
-        { "id": "attack.lieutenant-demon.melee", "name": "Strike", "targets": "one enemy in melee reach", "accuracyMod": 10,
-          "damage": { "stat": "strength", "mod": 0, "powerScale": 0.5 }, "needs": ["capability.power"] } ] },
-
-    { "id": "unit.bruiser-demon", "name": "Bruiser Demon", "tier": 2, "types": ["Demon"], "family": "demons",
-      "inferred": { "tier": "2 — flagged in ENEMY-REVIEW", "accuracy": "75, from the dictated Bash line" },
-      "stats": { "movement": 4, "strength": 6, "precision": 5, "accuracy": 75, "health": 20, "armor": 4, "resist": 1, "luck": 5 },
-      "triggers": [{ "hook": "onActivationEnd", "effects": [{ "effect": "apply a status", "status": "protection", "value": 0, "powerScale": 0.334, "target": "self" }], "needs": ["capability.power"] }],
-      "attacks": [{ "id": "attack.bruiser-demon.bash", "name": "Bash", "targets": "one enemy in melee reach", "damage": { "stat": "strength", "mod": 0 }, "crit": 10 }] },
-
-    { "id": "unit.balrog", "name": "Balrog", "tier": 2, "types": ["Demon"], "family": "demons",
-      "stats": { "movement": 4, "strength": 6, "precision": 5, "accuracy": 100, "health": 23, "armor": 3, "resist": 2 },
-      "triggers": [
-        { "hook": "aura", "name": "Imprisoning Aura", "targets": "enemies within N hexes", "range": 2,
-          "effects": [{ "effect": "grant a stat for the Battle", "stat": "movement", "value": -5 }],
-          "note": "CONFIRMED as designed: shuts movement down. Get within 2 and you are not walking out." },
-        { "hook": "onTakingDamage", "effects": [{ "effect": "set a ground layer", "layer": "burning", "targets": "a hex within N hexes and every hex adjacent to it", "range": 0 }] },
-        { "hook": "onActivationEnd", "targets": "every unit within N hexes", "range": 2,
-          "effects": [{ "effect": "apply a status", "status": "burn", "value": 1 }] } ],
-      "attacks": [
-        { "id": "attack.balrog.strike", "name": "Strike", "targets": "one enemy in melee reach", "damage": { "stat": "strength", "mod": 0, "powerScale": 1 }, "needs": ["capability.power"] },
-        { "id": "attack.balrog.hurl", "name": "Hurl Fire", "targets": "one enemy within N hexes", "range": 4, "accuracyMod": -30,
-          "damage": { "stat": "precision", "mod": 0 }, "inferred": { "damage": "Pre+0 assumed — stat not dictated" } } ] },
-
-    { "id": "unit.bloodhound", "name": "Bloodhound", "tier": 1, "types": ["Beast"], "family": "hounds",
-      "stats": { "movement": 9, "strength": 3, "accuracy": 90, "health": 4, "dodge": 20, "crit": 10 }, "evasion": 20,
-      "moveIgnoresZOC": true, "ai": "hunter",
-      "moves": [{ "id": "move.hound.close-bite", "name": "Close Bite", "whenStartingAdjacent": true,
-        "attack": { "damage": { "stat": "strength", "mod": 0 }, "crit": 10 } }],
-      "attacks": [{ "id": "attack.bloodhound.bite", "name": "Bite", "targets": "one enemy in melee reach", "damage": { "stat": "strength", "mod": 0 } }] },
-
-    { "id": "unit.hellhound", "name": "Hellhound", "tier": 1, "types": ["Demon", "Beast"], "family": "hounds",
-      "stats": { "movement": 7, "strength": 4, "accuracy": 70, "health": 8, "dodge": 10, "crit": 10 },
-      "moveIgnoresZOC": true,
-      "triggers": [{ "hook": "onTakingDamage", "effects": [{ "effect": "apply a status", "status": "burn", "value": 1, "target": "the attacker" }] }],
-      "moves": [{ "id": "move.hellhound.close-bite", "name": "Close Bite", "whenStartingAdjacent": true,
-        "attack": { "damage": { "stat": "strength", "mod": 0 }, "crit": 10,
-          "triggers": [{ "hook": "onHit", "effects": [{ "effect": "apply a status", "status": "burn", "value": 1 }] }] } }],
-      "attacks": [{ "id": "attack.hellhound.bite", "name": "Bite", "targets": "one enemy in melee reach", "damage": { "stat": "strength", "mod": 0 },
-        "triggers": [{ "hook": "onHit", "effects": [{ "effect": "apply a status", "status": "burn", "value": 1 }] }] }] },
-
-    { "id": "unit.zombie-hound", "name": "Zombie Hound", "tier": 1, "types": ["Undead", "Beast"], "family": "hounds",
-      "stats": { "movement": 6, "strength": 3, "accuracy": 75, "health": 5, "dodge": 10, "crit": 10 }, "evasion": 20,
-      "inferred": { "strength": "3, as the Bloodhound", "accuracy": "75 — zombie-grade, between Hellhound 70 and Bloodhound 90" },
-      "moveIgnoresZOC": true, "ai": "hunter",
-      "moves": [{ "id": "move.zombie-hound.close-bite", "name": "Close Bite", "whenStartingAdjacent": true,
-        "attack": { "damage": { "stat": "strength", "mod": 0 }, "crit": 10,
-          "triggers": [{ "hook": "onDamage", "chance": 10, "effects": [{ "effect": "inflict an affliction", "affliction": "rotting-flesh" }], "needs": ["capability.inflict-affliction"] }] } }],
-      "attacks": [{ "id": "attack.zombie-hound.bite", "name": "Bite", "targets": "one enemy in melee reach", "damage": { "stat": "strength", "mod": 0 },
-        "triggers": [{ "hook": "onDamage", "chance": 10, "effects": [{ "effect": "inflict an affliction", "affliction": "rotting-flesh" }], "needs": ["capability.inflict-affliction"] }] }] },
-
-    { "id": "unit.demon-hound", "name": "Demon Hound", "tier": 1, "types": ["Demon", "Beast"], "family": "hounds",
-      "stats": { "movement": 6, "strength": 4, "accuracy": 80, "health": 10, "dodge": 20, "crit": 10 },
-      "moveIgnoresZOC": true,
-      "triggers": [
-        { "hook": "startOfBattle", "effects": [{ "effect": "apply a status", "status": "regeneration", "value": 3, "target": "self" }] },
-        { "hook": "onActivationEnd", "effects": [{ "effect": "apply a status", "status": "regeneration", "value": 1, "target": "self" }] },
-        { "hook": "onTakingDamage", "effects": [{ "effect": "apply a status", "status": "regeneration", "value": 1, "target": "self" }] } ],
-      "moves": [{ "id": "move.demon-hound.close-bite", "name": "Close Bite", "whenStartingAdjacent": true,
-        "attack": { "damage": { "stat": "strength", "mod": 0 }, "crit": 10 } }],
-      "attacks": [{ "id": "attack.demon-hound.bite", "name": "Bite", "targets": "one enemy in melee reach",
-        "damage": { "stat": "strength", "mod": 0, "powerScale": 0.334 }, "needs": ["capability.power"] }] },
-
-    { "id": "unit.werewolf", "name": "Werewolf", "tier": 2, "types": ["Beast"], "family": "werewolves",
-      "stats": { "movement": 6, "strength": 5, "precision": 2, "accuracy": 90, "health": 13, "armor": 1 },
-      "triggers": [{ "hook": "onActivationEnd", "effects": [{ "effect": "apply a status", "status": "regeneration", "value": 2, "target": "self" }] }],
-      "attacks": [{ "id": "attack.werewolf.claw-frenzy", "name": "Claw Frenzy", "targets": "one enemy in melee reach", "damage": { "stat": "strength", "mod": 0 },
-        "triggers": [
-          { "hook": "onAttack", "effects": [{ "effect": "grant a stat for the Battle", "stat": "strength", "value": 1, "target": "self" }],
-            "note": "the frenzy stacks — every swing leaves it a point stronger. Confirmed 2026-08-23." },
-          { "hook": "onDamage", "chance": 10, "effects": [{ "effect": "inflict an affliction", "affliction": "lycanthropy" }], "needs": ["capability.inflict-affliction"] } ] }] },
-
-    { "id": "unit.vampire", "name": "Vampire", "tier": 2, "types": ["Undead", "Vampire"], "family": "vampires",
-      "stats": { "movement": 5, "strength": 6, "precision": 4, "accuracy": 85, "health": 15, "dodge": 10, "crit": 7 },
-      "movePower": "flight",
-      "attacks": [
-        { "id": "attack.vampire.bite", "name": "Bite", "targets": "one enemy in melee reach", "damage": { "stat": "strength", "mod": 0 },
-          "triggers": [
-            { "hook": "onHit", "effects": [{ "effect": "heal", "value": 4, "target": "self" }] },
-            { "hook": "onKill", "effects": [{ "effect": "grant a stat for the Battle", "stat": "health", "value": 3, "target": "self" }] },
-            { "hook": "onDamage", "chance": 20, "effects": [{ "effect": "inflict an affliction", "affliction": "vampirism" }], "needs": ["capability.inflict-affliction"] } ] },
-        { "id": "attack.vampire.mesmerize", "name": "Mesmerize", "targets": "one enemy within N hexes", "range": 3, "accuracyMod": 15,
-          "damage": { "stat": "precision", "mod": -4, "powerScale": 1 }, "damageType": "magic", "needs": ["capability.power"],
-          "triggers": [{ "hook": "onHit", "effects": [
-            { "effect": "apply a status", "status": "stun", "value": 1 },
-            { "effect": "apply a status", "status": "weak", "value": 2 },
-            { "effect": "target loses stamina", "value": 1, "needs": ["capability.target-stamina-loss"] } ] }] } ] },
-
-    { "id": "unit.vampire-lord", "name": "Vampire Lord", "tier": 2, "types": ["Undead", "Vampire"], "family": "vampires",
-      "stats": { "movement": 5, "strength": 8, "precision": 6, "accuracy": 95, "health": 25, "armor": 1, "resist": 3, "dodge": 15, "crit": 12 },
-      "movePower": "flight",
-      "attacks": [
-        { "id": "attack.vampire-lord.bite", "name": "Bite", "targets": "one enemy in melee reach", "damage": { "stat": "strength", "mod": 0 },
-          "triggers": [
-            { "hook": "onHit", "effects": [{ "effect": "heal", "value": 6, "target": "self" }] },
-            { "hook": "onKill", "name": "Feed", "effects": [
-              { "effect": "grant a stat for the Battle", "stat": "health", "value": 5, "target": "self" },
-              { "effect": "grant a stat for the Battle", "stat": "strength", "value": 1, "target": "self" },
-              { "effect": "grant a stat for the Battle", "stat": "precision", "value": 1, "target": "self" },
-              { "effect": "add power", "value": 2, "needs": ["capability.power"] } ],
-              "note": "power source, kind 3: a kill-conditional escalation" },
-            { "hook": "onDamage", "chance": 30, "effects": [{ "effect": "inflict an affliction", "affliction": "vampirism" }], "needs": ["capability.inflict-affliction"] } ] },
-        { "sameAs": "attack.vampire.mesmerize" },
-        { "id": "attack.vampire-lord.soul-rend", "name": "Soul Rend", "targets": "one enemy within N hexes", "range": 2, "accuracyMod": -30,
-          "damage": { "stat": "precision", "mod": 0, "powerScale": 1 }, "damageType": "magic", "cooldown": 2,
-          "needs": ["capability.power", "capability.enemy-action-cooldown"],
-          "triggers": [{ "hook": "onKill", "sameAs": "Feed" }] } ] },
-
-    { "id": "unit.doombringer", "name": "Doombringer", "tier": 3, "types": ["Demon"], "family": "oddballs",
-      "badges": ["Giant", "Juggernaut"], "needs": ["capability.giant-footprint"],
-      "stats": { "movement": 3, "strength": 6, "precision": 0, "accuracy": 60, "health": 25, "armor": 2, "resist": 1, "crit": 25, "dodge": -20 },
-      "triggers": [
-        { "hook": "onTakingDamage", "effects": [{ "effect": "apply a status", "status": "protection", "value": 2, "powerScale": 0.334, "target": "self" }], "needs": ["capability.power"] },
-        { "hook": "onActivationEnd", "effects": [{ "effect": "apply a status", "status": "protection", "value": 1, "target": "self" }] } ],
-      "attacks": [
-        { "id": "attack.doombringer.hammer", "name": "Hammer", "targets": "one enemy in melee reach", "damage": { "stat": "strength", "mod": 0 },
-          "triggers": [{ "hook": "onDamage", "effects": [{ "effect": "Knockback N", "value": 1 }] }] },
-        { "id": "attack.doombringer.crush", "name": "Crush", "targets": "one enemy in melee reach", "damage": { "stat": "strength", "mod": -2 }, "accuracyMod": 30,
-          "triggers": [{ "hook": "onHit", "effects": [
-            { "effect": "target loses stamina", "value": 2, "needs": ["capability.target-stamina-loss"] },
-            { "effect": "grant a stat for the Battle", "stat": "armor", "value": -1, "target": "the unit this hit" } ] }] } ] },
-
-    { "id": "unit.iron-colossus", "name": "Iron Colossus", "tier": 3, "types": ["Construct"], "family": "oddballs",
-      "badges": ["Giant"], "needs": ["capability.giant-footprint"], "noPrimaryAction": true,
-      "stats": { "movement": 5, "strength": 10, "precision": 0, "accuracy": 80, "health": 30, "armor": 6, "resist": 0, "crit": 0, "dodge": -30 },
-      "moves": [
-        { "id": "move.iron-colossus.charge", "name": "Charge", "hexes": 2, "cooldown": 4, "needs": ["capability.enemy-action-cooldown"],
-          "attack": { "damage": { "stat": "strength", "mod": 1 }, "accuracyMod": -10 } },
-        { "id": "move.iron-colossus.clobber", "name": "Clobber",
-          "attack": { "damage": { "stat": "strength", "mod": 0 } } },
-        { "id": "move.iron-colossus.buff", "name": "Buff", "warmup": 5, "cooldown": 5, "ai": "use whenever available",
-          "needs": ["capability.enemy-action-cooldown", "capability.power"],
-          "effects": [
-            { "effect": "grant a stat for the Battle", "stat": "movement", "value": 1, "target": "self" },
-            { "effect": "grant a stat for the Battle", "stat": "accuracy", "value": 5, "target": "self" },
-            { "effect": "heal", "value": 5, "powerScale": 1, "target": "self" } ] } ],
-      "attacks": [] }
-  ]
+       {
+        "hook": "onDamage",
+        "chance": 10,
+        "effects": [
+         {
+          "effect": "inflict an affliction",
+          "affliction": "rotting-flesh"
+         }
+        ],
+        "needs": [
+         "capability.inflict-affliction"
+        ]
+       }
+      ]
+     }
+    }
+   ],
+   "attacks": [
+    {
+     "id": "attack.zombie-hound.bite",
+     "name": "Bite",
+     "targets": "one enemy in melee reach",
+     "damage": {
+      "stat": "strength",
+      "mod": 0
+     },
+     "triggers": [
+      {
+       "hook": "onDamage",
+       "chance": 10,
+       "effects": [
+        {
+         "effect": "inflict an affliction",
+         "affliction": "rotting-flesh"
+        }
+       ],
+       "needs": [
+        "capability.inflict-affliction"
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "unit.demon-hound",
+   "name": "Demon Hound",
+   "tier": 1,
+   "types": [
+    "Demon",
+    "Beast"
+   ],
+   "family": "hounds",
+   "stats": {
+    "movement": 6,
+    "strength": 4,
+    "accuracy": 80,
+    "health": 10,
+    "dodge": 20,
+    "crit": 10
+   },
+   "moveIgnoresZOC": true,
+   "triggers": [
+    {
+     "hook": "startOfBattle",
+     "effects": [
+      {
+       "effect": "apply a status",
+       "status": "regeneration",
+       "value": 3,
+       "target": "self"
+      }
+     ]
+    },
+    {
+     "hook": "onActivationEnd",
+     "effects": [
+      {
+       "effect": "apply a status",
+       "status": "regeneration",
+       "value": 1,
+       "target": "self"
+      }
+     ]
+    },
+    {
+     "hook": "onTakingDamage",
+     "effects": [
+      {
+       "effect": "apply a status",
+       "status": "regeneration",
+       "value": 1,
+       "target": "self"
+      }
+     ]
+    }
+   ],
+   "moves": [
+    {
+     "id": "move.demon-hound.close-bite",
+     "name": "Close Bite",
+     "whenStartingAdjacent": true,
+     "attack": {
+      "damage": {
+       "stat": "strength",
+       "mod": 0
+      },
+      "crit": 10
+     }
+    }
+   ],
+   "attacks": [
+    {
+     "id": "attack.demon-hound.bite",
+     "name": "Bite",
+     "targets": "one enemy in melee reach",
+     "damage": {
+      "stat": "strength",
+      "mod": 0,
+      "powerScale": 0.334
+     },
+     "needs": [
+      "capability.power"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "unit.werewolf",
+   "name": "Werewolf",
+   "tier": 2,
+   "types": [
+    "Beast"
+   ],
+   "family": "werewolves",
+   "stats": {
+    "movement": 6,
+    "strength": 5,
+    "precision": 2,
+    "accuracy": 90,
+    "health": 13,
+    "armor": 1
+   },
+   "triggers": [
+    {
+     "hook": "onActivationEnd",
+     "effects": [
+      {
+       "effect": "apply a status",
+       "status": "regeneration",
+       "value": 2,
+       "target": "self"
+      }
+     ]
+    }
+   ],
+   "attacks": [
+    {
+     "id": "attack.werewolf.claw-frenzy",
+     "name": "Claw Frenzy",
+     "targets": "one enemy in melee reach",
+     "damage": {
+      "stat": "strength",
+      "mod": 0
+     },
+     "triggers": [
+      {
+       "hook": "onAttack",
+       "effects": [
+        {
+         "effect": "grant a stat for the Battle",
+         "stat": "strength",
+         "value": 1,
+         "target": "self"
+        }
+       ],
+       "note": "the frenzy stacks — every swing leaves it a point stronger. Confirmed 2026-08-23."
+      },
+      {
+       "hook": "onDamage",
+       "chance": 10,
+       "effects": [
+        {
+         "effect": "inflict an affliction",
+         "affliction": "lycanthropy"
+        }
+       ],
+       "needs": [
+        "capability.inflict-affliction"
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "unit.vampire",
+   "name": "Vampire",
+   "tier": 2,
+   "types": [
+    "Undead",
+    "Vampire"
+   ],
+   "family": "vampires",
+   "stats": {
+    "movement": 5,
+    "strength": 6,
+    "precision": 4,
+    "accuracy": 85,
+    "health": 15,
+    "dodge": 10,
+    "crit": 7
+   },
+   "movePower": "flight",
+   "attacks": [
+    {
+     "id": "attack.vampire.bite",
+     "name": "Bite",
+     "targets": "one enemy in melee reach",
+     "damage": {
+      "stat": "strength",
+      "mod": 0
+     },
+     "triggers": [
+      {
+       "hook": "onHit",
+       "effects": [
+        {
+         "effect": "heal",
+         "value": 4,
+         "target": "self"
+        }
+       ]
+      },
+      {
+       "hook": "onKill",
+       "effects": [
+        {
+         "effect": "grant a stat for the Battle",
+         "stat": "health",
+         "value": 3,
+         "target": "self"
+        }
+       ]
+      },
+      {
+       "hook": "onDamage",
+       "chance": 20,
+       "effects": [
+        {
+         "effect": "inflict an affliction",
+         "affliction": "vampirism"
+        }
+       ],
+       "needs": [
+        "capability.inflict-affliction"
+       ]
+      }
+     ]
+    },
+    {
+     "id": "attack.vampire.mesmerize",
+     "name": "Mesmerize",
+     "targets": "one enemy within N hexes",
+     "range": 3,
+     "accuracyMod": 15,
+     "damage": {
+      "stat": "precision",
+      "mod": -4,
+      "powerScale": 1
+     },
+     "damageType": "magic",
+     "needs": [
+      "capability.power"
+     ],
+     "triggers": [
+      {
+       "hook": "onHit",
+       "effects": [
+        {
+         "effect": "apply a status",
+         "status": "stun",
+         "value": 1
+        },
+        {
+         "effect": "apply a status",
+         "status": "weak",
+         "value": 2
+        },
+        {
+         "effect": "target loses stamina",
+         "value": 1,
+         "needs": [
+          "capability.target-stamina-loss"
+         ]
+        }
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "unit.vampire-lord",
+   "name": "Vampire Lord",
+   "tier": 2,
+   "types": [
+    "Undead",
+    "Vampire"
+   ],
+   "family": "vampires",
+   "stats": {
+    "movement": 5,
+    "strength": 8,
+    "precision": 6,
+    "accuracy": 95,
+    "health": 25,
+    "armor": 1,
+    "resist": 3,
+    "dodge": 15,
+    "crit": 12
+   },
+   "movePower": "flight",
+   "attacks": [
+    {
+     "id": "attack.vampire-lord.bite",
+     "name": "Bite",
+     "targets": "one enemy in melee reach",
+     "damage": {
+      "stat": "strength",
+      "mod": 0
+     },
+     "triggers": [
+      {
+       "hook": "onHit",
+       "effects": [
+        {
+         "effect": "heal",
+         "value": 6,
+         "target": "self"
+        }
+       ]
+      },
+      {
+       "hook": "onKill",
+       "name": "Feed",
+       "effects": [
+        {
+         "effect": "grant a stat for the Battle",
+         "stat": "health",
+         "value": 5,
+         "target": "self"
+        },
+        {
+         "effect": "grant a stat for the Battle",
+         "stat": "strength",
+         "value": 1,
+         "target": "self"
+        },
+        {
+         "effect": "grant a stat for the Battle",
+         "stat": "precision",
+         "value": 1,
+         "target": "self"
+        },
+        {
+         "effect": "add power",
+         "value": 2,
+         "needs": [
+          "capability.power"
+         ]
+        }
+       ],
+       "note": "power source, kind 3: a kill-conditional escalation"
+      },
+      {
+       "hook": "onDamage",
+       "chance": 30,
+       "effects": [
+        {
+         "effect": "inflict an affliction",
+         "affliction": "vampirism"
+        }
+       ],
+       "needs": [
+        "capability.inflict-affliction"
+       ]
+      }
+     ]
+    },
+    {
+     "sameAs": "attack.vampire.mesmerize"
+    },
+    {
+     "id": "attack.vampire-lord.soul-rend",
+     "name": "Soul Rend",
+     "targets": "one enemy within N hexes",
+     "range": 2,
+     "accuracyMod": -30,
+     "damage": {
+      "stat": "precision",
+      "mod": 0,
+      "powerScale": 1
+     },
+     "damageType": "magic",
+     "cooldown": 2,
+     "needs": [
+      "capability.power",
+      "capability.enemy-action-cooldown"
+     ],
+     "triggers": [
+      {
+       "hook": "onKill",
+       "sameAs": "Feed"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "unit.doombringer",
+   "name": "Doombringer",
+   "tier": 3,
+   "types": [
+    "Demon"
+   ],
+   "family": "oddballs",
+   "badges": [
+    "Giant",
+    "Juggernaut"
+   ],
+   "needs": [
+    "capability.giant-footprint"
+   ],
+   "stats": {
+    "movement": 3,
+    "strength": 6,
+    "precision": 0,
+    "accuracy": 60,
+    "health": 25,
+    "armor": 2,
+    "resist": 1,
+    "crit": 25,
+    "dodge": -20
+   },
+   "triggers": [
+    {
+     "hook": "onTakingDamage",
+     "effects": [
+      {
+       "effect": "apply a status",
+       "status": "protection",
+       "value": 2,
+       "powerScale": 0.334,
+       "target": "self"
+      }
+     ],
+     "needs": [
+      "capability.power"
+     ]
+    },
+    {
+     "hook": "onActivationEnd",
+     "effects": [
+      {
+       "effect": "apply a status",
+       "status": "protection",
+       "value": 1,
+       "target": "self"
+      }
+     ]
+    }
+   ],
+   "attacks": [
+    {
+     "id": "attack.doombringer.hammer",
+     "name": "Hammer",
+     "targets": "one enemy in melee reach",
+     "damage": {
+      "stat": "strength",
+      "mod": 0
+     },
+     "triggers": [
+      {
+       "hook": "onDamage",
+       "effects": [
+        {
+         "effect": "Knockback N",
+         "value": 1
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "id": "attack.doombringer.crush",
+     "name": "Crush",
+     "targets": "one enemy in melee reach",
+     "damage": {
+      "stat": "strength",
+      "mod": -2
+     },
+     "accuracyMod": 30,
+     "triggers": [
+      {
+       "hook": "onHit",
+       "effects": [
+        {
+         "effect": "target loses stamina",
+         "value": 2,
+         "needs": [
+          "capability.target-stamina-loss"
+         ]
+        },
+        {
+         "effect": "grant a stat for the Battle",
+         "stat": "armor",
+         "value": -1,
+         "target": "the unit this hit"
+        }
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "unit.iron-colossus",
+   "name": "Iron Colossus",
+   "tier": 3,
+   "types": [
+    "Construct"
+   ],
+   "family": "oddballs",
+   "badges": [
+    "Giant"
+   ],
+   "needs": [
+    "capability.giant-footprint"
+   ],
+   "noPrimaryAction": true,
+   "stats": {
+    "movement": 5,
+    "strength": 10,
+    "precision": 0,
+    "accuracy": 80,
+    "health": 30,
+    "armor": 6,
+    "resist": 0,
+    "crit": 0,
+    "dodge": -30
+   },
+   "moves": [
+    {
+     "id": "move.iron-colossus.charge",
+     "name": "Charge",
+     "hexes": 2,
+     "cooldown": 4,
+     "needs": [
+      "capability.enemy-action-cooldown"
+     ],
+     "attack": {
+      "damage": {
+       "stat": "strength",
+       "mod": 1
+      },
+      "accuracyMod": -10
+     }
+    },
+    {
+     "id": "move.iron-colossus.clobber",
+     "name": "Clobber",
+     "attack": {
+      "damage": {
+       "stat": "strength",
+       "mod": 0
+      }
+     }
+    },
+    {
+     "id": "move.iron-colossus.buff",
+     "name": "Buff",
+     "warmup": 5,
+     "cooldown": 5,
+     "ai": "use whenever available",
+     "needs": [
+      "capability.enemy-action-cooldown",
+      "capability.power"
+     ],
+     "effects": [
+      {
+       "effect": "grant a stat for the Battle",
+       "stat": "movement",
+       "value": 1,
+       "target": "self"
+      },
+      {
+       "effect": "grant a stat for the Battle",
+       "stat": "accuracy",
+       "value": 5,
+       "target": "self"
+      },
+      {
+       "effect": "heal",
+       "value": 5,
+       "powerScale": 1,
+       "target": "self"
+      }
+     ]
+    }
+   ],
+   "attacks": []
+  },
+  {
+   "id": "unit.eyeblight",
+   "name": "Eyeblight",
+   "tier": 2,
+   "types": [
+    "Horror"
+   ],
+   "family": "night",
+   "stats": {
+    "movement": 5,
+    "crit": 0,
+    "luck": 50,
+    "strength": 2,
+    "precision": 1,
+    "accuracy": 110,
+    "armor": 1,
+    "resist": 2,
+    "health": 17
+   },
+   "triggers": [
+    {
+     "hook": "onDeath",
+     "name": "The Dark Rushes In",
+     "effects": [
+      {
+       "effect": "paint a ground layer",
+       "layer": "darkness",
+       "radius": 10,
+       "origin": "self",
+       "needs": [
+        "capability.ground-layers"
+       ]
+      }
+     ]
+    }
+   ],
+   "attacks": [
+    {
+     "id": "attack.eyeblight.gaze",
+     "name": "Eyeblight",
+     "targets": "one enemy within N hexes",
+     "range": 9,
+     "damage": {
+      "stat": "none",
+      "mod": 1
+     },
+     "damageType": "true",
+     "triggers": [
+      {
+       "hook": "onHit",
+       "name": "Blight the Eye",
+       "effects": [
+        {
+         "effect": "grant a stat for the Battle",
+         "stat": "vision",
+         "value": -2,
+         "target": "the unit this hit"
+        },
+        {
+         "effect": "grant a stat for the Battle",
+         "stat": "accuracy",
+         "value": -10,
+         "scope": "ranged attacks only",
+         "target": "the unit this hit"
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "id": "attack.eyeblight.claw",
+     "name": "Claw",
+     "targets": "one enemy in melee reach",
+     "range": "melee",
+     "damage": {
+      "stat": "strength",
+      "mod": 0
+     },
+     "triggers": [
+      {
+       "hook": "onHit",
+       "name": "Blight the Eye",
+       "effects": [
+        {
+         "effect": "grant a stat for the Battle",
+         "stat": "vision",
+         "value": -2,
+         "target": "the unit this hit"
+        },
+        {
+         "effect": "grant a stat for the Battle",
+         "stat": "accuracy",
+         "value": -10,
+         "scope": "ranged attacks only",
+         "target": "the unit this hit"
+        }
+       ]
+      }
+     ]
+    }
+   ],
+   "source": "Dictated 2026-09-02. Accuracy 110 is deliberate — surplus over 100 converts to Crit at ÷4, and this thing has Crit 0, so the surplus is its only crit. Luck 50 makes it near-impossible to crit back."
+  },
+  {
+   "id": "unit.dark-sniper",
+   "name": "Dark Sniper",
+   "tier": 2,
+   "types": [
+    "Horror"
+   ],
+   "family": "night",
+   "stats": {
+    "movement": 4,
+    "crit": 10,
+    "strength": 2,
+    "precision": 6,
+    "accuracy": 75,
+    "health": 19
+   },
+   "attacks": [
+    {
+     "id": "attack.dark-sniper.shot",
+     "name": "Shot",
+     "targets": "one enemy within N hexes",
+     "range": 7,
+     "damage": {
+      "stat": "precision",
+      "mod": 0
+     },
+     "triggers": [
+      {
+       "hook": "onHit",
+       "chance": 30,
+       "name": "Pin",
+       "effects": [
+        {
+         "effect": "apply a status",
+         "status": "root",
+         "value": 1,
+         "target": "the unit this hit"
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "id": "attack.dark-sniper.long-shot",
+     "name": "Long Shot",
+     "targets": "one enemy within N hexes",
+     "range": 10,
+     "damage": {
+      "stat": "precision",
+      "mod": -3
+     },
+     "triggers": [
+      {
+       "hook": "onHit",
+       "chance": 50,
+       "name": "Cripple",
+       "effects": [
+        {
+         "effect": "apply a status",
+         "status": "slow",
+         "value": 2,
+         "target": "the unit this hit"
+        }
+       ]
+      },
+      {
+       "hook": "onMiss",
+       "name": "The Shot That Misses",
+       "effects": [
+        {
+         "effect": "grant a stat for the Battle",
+         "stat": "dodge",
+         "value": -10,
+         "target": "the unit this missed"
+        },
+        {
+         "effect": "paint a ground layer",
+         "layer": "darkness",
+         "radius": 5,
+         "origin": "self",
+         "needs": [
+          "capability.ground-layers"
+         ]
+        }
+       ]
+      }
+     ]
+    }
+   ],
+   "source": "Dictated 2026-09-02. The miss is the interesting half: a missed Long Shot still strips Dodge and floods five hexes with darkness."
+  },
+  {
+   "id": "unit.nightstalker",
+   "name": "Nightstalker",
+   "tier": 2,
+   "types": [
+    "Horror"
+   ],
+   "family": "night",
+   "stats": {
+    "movement": 6,
+    "crit": 10,
+    "strength": 7,
+    "precision": 0,
+    "accuracy": 90,
+    "health": 7
+   },
+   "triggers": [
+    {
+     "hook": "onActivationEnd",
+     "name": "Back Into the Dark",
+     "condition": "you are standing on darkness",
+     "effects": [
+      {
+       "effect": "enter stealth"
+      }
+     ],
+     "needs": [
+      "capability.stealth"
+     ]
+    }
+   ],
+   "attacks": [
+    {
+     "id": "attack.nightstalker.rend",
+     "name": "Rend",
+     "targets": "one enemy in melee reach",
+     "range": "melee",
+     "damage": {
+      "stat": "strength",
+      "mod": 0
+     },
+     "triggers": [
+      {
+       "hook": "onAttack",
+       "name": "Out of the Dark",
+       "condition": "you are standing on darkness",
+       "effects": [
+        {
+         "effect": "grant a stat until end of your Activation",
+         "stat": "crit",
+         "value": 20,
+         "target": "self"
+        },
+        {
+         "effect": "deal 2 crits",
+         "value": 2,
+         "target": "the unit this hit"
+        }
+       ]
+      }
+     ]
+    }
+   ],
+   "source": "Dictated 2026-09-02. NAME IS MINE — dictated only as \"a dark stealth unit\". Seven Strength on seven Health: it kills a hero and dies to a stiff breeze, and the whole question is whether you can see it. \"2x crit\" is written as DEAL 2 CRITS, the legal form — there is no crit damage multiplier."
+  },
+  {
+   "id": "unit.shadow-sorcerer",
+   "name": "Shadow Sorcerer",
+   "tier": 3,
+   "types": [
+    "Horror"
+   ],
+   "family": "night",
+   "stats": {
+    "movement": 11,
+    "crit": 7,
+    "luck": 7,
+    "strength": 5,
+    "precision": 6,
+    "accuracy": 130,
+    "health": 22,
+    "resist": 2
+   },
+   "moves": [
+    "power.flight"
+   ],
+   "triggers": [
+    {
+     "hook": "startOfBattle",
+     "name": "Gathering Night",
+     "effects": [
+      {
+       "effect": "gain Power",
+       "value": 2,
+       "needs": [
+        "capability.power"
+       ]
+      }
+     ]
+    },
+    {
+     "hook": "onActivationEnd",
+     "name": "Drink the Dark",
+     "order": 1,
+     "condition": "you are standing on darkness",
+     "effects": [
+      {
+       "effect": "gain Power",
+       "value": 1,
+       "needs": [
+        "capability.power"
+       ]
+      }
+     ]
+    },
+    {
+     "hook": "onActivationEnd",
+     "name": "Nightfall",
+     "order": 2,
+     "effects": [
+      {
+       "effect": "paint a ground layer",
+       "layer": "darkness",
+       "radius": 7,
+       "origin": "self",
+       "needs": [
+        "capability.ground-layers"
+       ]
+      }
+     ]
+    }
+   ],
+   "attacks": [
+    {
+     "id": "attack.shadow-sorcerer.shadow-strike",
+     "name": "Shadow Strike",
+     "targets": "one enemy within N hexes",
+     "range": 8,
+     "damage": {
+      "stat": "precision",
+      "mod": 0,
+      "powerScale": 0.5
+     },
+     "damageType": "magic",
+     "triggers": [
+      {
+       "hook": "onHit",
+       "name": "Thrown Down",
+       "effects": [
+        {
+         "effect": "knockback",
+         "value": 4,
+         "chance": 70,
+         "target": "the unit this hit"
+        },
+        {
+         "effect": "paint a ground layer",
+         "layer": "darkness",
+         "radius": 3,
+         "origin": "the unit this hit",
+         "needs": [
+          "capability.ground-layers"
+         ]
+        },
+        {
+         "effect": "grant a stat for the Battle",
+         "stat": "vision",
+         "value": -1,
+         "target": "the unit this hit"
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "id": "attack.shadow-sorcerer.shadow-rend",
+     "name": "Shadow Rend",
+     "targets": "one enemy within N hexes",
+     "range": 10,
+     "damage": {
+      "stat": "precision",
+      "mod": -3,
+      "powerScale": 0.5
+     },
+     "damageType": "magic",
+     "triggers": [
+      {
+       "hook": "onHit",
+       "name": "Dragged Under",
+       "effects": [
+        {
+         "effect": "pull",
+         "value": 4,
+         "target": "the unit this hit"
+        },
+        {
+         "effect": "apply a status",
+         "status": "root",
+         "value": 1,
+         "chance": 50,
+         "target": "the unit this hit"
+        },
+        {
+         "effect": "paint a ground layer",
+         "layer": "darkness",
+         "radius": 3,
+         "origin": "the unit this hit",
+         "needs": [
+          "capability.ground-layers"
+         ]
+        },
+        {
+         "effect": "grant a stat for the Battle",
+         "stat": "vision",
+         "value": -1,
+         "target": "the unit this hit"
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "id": "attack.shadow-sorcerer.shadow-grasp",
+     "name": "Shadow Grasp",
+     "targets": "one enemy in melee reach",
+     "range": "melee",
+     "damage": {
+      "stat": "strength",
+      "mod": 0,
+      "powerScale": 0.5
+     },
+     "triggers": [
+      {
+       "hook": "onHit",
+       "name": "Cast Aside",
+       "effects": [
+        {
+         "effect": "knockback",
+         "value": 5,
+         "chance": 70,
+         "target": "the unit this hit"
+        },
+        {
+         "effect": "grant a stat for the Battle",
+         "stat": "vision",
+         "value": -1,
+         "target": "the unit this hit"
+        }
+       ]
+      }
+     ]
+    }
+   ],
+   "source": "Dictated 2026-09-02. Shadow Grasp NAME IS MINE — the melee attack was dictated unnamed. Movement 11 with Flight, Accuracy 130 and three attacks that all paint darkness and strip Vision: it makes the board dark faster than the party can cross it, and every hit it lands makes the next one likelier."
+  }
+ ]
 }

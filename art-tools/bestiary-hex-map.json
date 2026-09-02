@@ -18,5 +18,15 @@
   "slug": "werewolf",
   "size": "large",
   "render": "solid"
+ },
+ "enemy-greater-werewolf": {
+  "slug": "greater-werewolf",
+  "size": "large",
+  "render": "solid"
+ },
+ "enemy-hellhound": {
+  "slug": "hellhound",
+  "size": "small",
+  "render": "solid"
  }
 }

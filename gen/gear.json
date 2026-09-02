@@ -639,6 +639,116 @@
    "targets": "one forest hex within 1",
    "description": "+3 Vision. Once per Battle, free: light a forest hex within 1 on fire — the hex gains the burning ground status.",
    "intent": "The cheap answer to darkness, and a match when you need one."
+  },
+  {
+   "id": "item.banner-assassin",
+   "name": "Banner of the Assassin",
+   "itemClass": "trinket",
+   "tier": 1,
+   "slots": 1,
+   "hands": 0,
+   "classRestriction": "class.rogue",
+   "statModifiers": {},
+   "triggers": [],
+   "grants": [
+    "power.banner-assassin.plant"
+   ],
+   "equipCost": {},
+   "persists": true,
+   "tags": [
+    "banner"
+   ],
+   "description": "rogue only. One use: plant it, for 2 Stamina, and it holds a radius-1 aura on that hex for the rest of the Battle.",
+   "intent": "The rogue plants it where the killing is going to happen, and then does the killing.",
+   "source": "Dictated 2026-09-02."
+  },
+  {
+   "id": "item.banner-mystic-power",
+   "name": "Banner of Mystic Power",
+   "itemClass": "trinket",
+   "tier": 1,
+   "slots": 1,
+   "hands": 0,
+   "classRestriction": "class.mage",
+   "statModifiers": {},
+   "triggers": [],
+   "grants": [
+    "power.banner-mystic-power.plant"
+   ],
+   "equipCost": {},
+   "persists": true,
+   "tags": [
+    "banner"
+   ],
+   "description": "mage only. One use: plant it, for 1 Stamina, and it holds a radius-2 aura on that hex for the rest of the Battle.",
+   "intent": "Two hexes of ground where casting is simply better, and where casting begets casting.",
+   "source": "Dictated 2026-09-02."
+  },
+  {
+   "id": "item.banner-vigil",
+   "name": "Banner of the Vigil",
+   "itemClass": "trinket",
+   "tier": 1,
+   "slots": 1,
+   "hands": 0,
+   "classRestriction": "class.priest",
+   "statModifiers": {},
+   "triggers": [],
+   "grants": [
+    "power.banner-vigil.plant"
+   ],
+   "equipCost": {},
+   "persists": true,
+   "tags": [
+    "banner"
+   ],
+   "description": "priest only. One use: plant it, for 2 Stamina, and it holds a radius-1 aura on that hex for the rest of the Battle.",
+   "intent": "A small circle of ground that does not let you die in it.",
+   "source": "Dictated 2026-09-02. NAME IS MINE — the priest banner was dictated unnamed 2026-09-02."
+  },
+  {
+   "id": "item.banner-courage",
+   "name": "Banner of Courage",
+   "itemClass": "trinket",
+   "tier": 2,
+   "slots": 1,
+   "hands": 0,
+   "classRestriction": "class.warrior",
+   "statModifiers": {},
+   "triggers": [],
+   "grants": [
+    "power.banner-courage.plant"
+   ],
+   "equipCost": {},
+   "persists": true,
+   "tags": [
+    "banner"
+   ],
+   "description": "warrior only. One use: plant it, for 3 Stamina, and it holds a radius-2 aura on that hex for the rest of the Battle.",
+   "intent": "Hold this ground and the fear does not land; hold it long enough and you go twice.",
+   "source": "Dictated 2026-09-02."
+  },
+  {
+   "id": "item.banner-heroism",
+   "name": "Banner of Heroism",
+   "itemClass": "trinket",
+   "tier": 3,
+   "slots": 1,
+   "hands": 0,
+   "classRestriction": "class.paladin",
+   "statModifiers": {},
+   "triggers": [],
+   "grants": [
+    "power.banner-heroism.plant"
+   ],
+   "equipCost": {},
+   "persists": true,
+   "tags": [
+    "banner"
+   ],
+   "description": "paladin only. One use: plant it, for 4 Stamina, and it holds a radius-3 aura on that hex for the rest of the Battle.",
+   "intent": "Three hexes where the party is simply better than it is, and where missing is not wasted.",
+   "source": "Dictated 2026-09-02."
   }
  ],
  "relics": [

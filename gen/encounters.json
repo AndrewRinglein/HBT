@@ -1,623 +1,679 @@
 {
-  "_note": "ENCOUNTERS — the P11 format, shaped by slice ruling 4 (2026-08-23): combat is simulated and toggleable, so an encounter collapses to a difficulty-ranked row with an enemy list. The full scripted form exists ONLY for the prologue battles, which are fixed by design and precede the map. Authored 2026-08-25 from ENEMY-REVIEW.md. FORMAT IS PROPOSED, NOT RULED — this is the sketch for review.",
-  "format": {
-    "sliceRow": "id · difficulty (an integer rank the battle list is sorted by) · enemies (unit ids with counts) · powerSources (optional: the battle's external pool and any scheduled gains) · terrainHint (optional). Nothing else — ruling 4 means no maps, no scripting for slice battles.",
-    "prologueBattle": "The five fixed battles carry the full shape: setup (placed units by zone), schedule (phase-keyed spawns by edge), loseAfter, retreat, civilians, events. CLOCK RULING 2026-08-23: schedules count PHASES — the word turn never appears in encounter data. Placement is by hex — see format.placement.",
-    "powerSources": "kind: external (pool at battle start) | arrival (one-time +X when a unit enters, stays in the pool after its death) | clock (per-phase or conditional gains live on the unit rows themselves — the Lieutenant's EOT, the Vampire Lord's kills).",
-    "placement": "HEX PLACEMENT, ruled 2026-08-25 (zones were vagueries): at:{col,row} places on that hex; at:{near:{col,row},range:N} deploys anywhere within N of it; at:{oneOf:[{col,row},...]} is a scripted either/or. Board: 16×16, ruled 2026-08-25 — row 0 = enemy edge, row 15 = player edge. NOTE: engine/src/core/hex.ts still says WIDTH=HEIGHT=12; the engine constant needs updating by the engine session — the data leads. The old zone word is kept as `was` for provenance; the hex is authoritative. Multi-unit entries list one hex per unit in `hexes`."
-  },
-  "prologue": [
+ "_note": "ENCOUNTERS — the P11 format, shaped by slice ruling 4 (2026-08-23): combat is simulated and toggleable, so an encounter collapses to a difficulty-ranked row with an enemy list. The full scripted form exists ONLY for the prologue battles, which are fixed by design and precede the map. Authored 2026-08-25 from ENEMY-REVIEW.md. FORMAT IS PROPOSED, NOT RULED — this is the sketch for review.",
+ "format": {
+  "sliceRow": "id · difficulty (an integer rank the battle list is sorted by) · enemies (unit ids with counts) · powerSources (optional: the battle's external pool and any scheduled gains) · terrainHint (optional). Nothing else — ruling 4 means no maps, no scripting for slice battles.",
+  "prologueBattle": "The five fixed battles carry the full shape: setup (placed units by zone), schedule (phase-keyed spawns by edge), loseAfter, retreat, civilians, events. CLOCK RULING 2026-08-23: schedules count PHASES — the word turn never appears in encounter data. Placement is by hex — see format.placement.",
+  "powerSources": "kind: external (pool at battle start) | arrival (one-time +X when a unit enters, stays in the pool after its death) | clock (per-phase or conditional gains live on the unit rows themselves — the Lieutenant's EOT, the Vampire Lord's kills).",
+  "placement": "HEX PLACEMENT, ruled 2026-08-25 (zones were vagueries): at:{col,row} places on that hex; at:{near:{col,row},range:N} deploys anywhere within N of it; at:{oneOf:[{col,row},...]} is a scripted either/or. Board: 16×16, ruled 2026-08-25 — row 0 = enemy edge, row 15 = player edge. NOTE: engine/src/core/hex.ts still says WIDTH=HEIGHT=12; the engine constant needs updating by the engine session — the data leads. The old zone word is kept as `was` for provenance; the hex is authoritative. Multi-unit entries list one hex per unit in `hexes`.",
+  "scriptedEncounter": "id · name · setup (units on the board at the start) · schedule (waves by PHASE, each naming units, counts and where they enter). A THIRD kind, first written 2026-09-02: it has a phase script like a prologue battle but is not one of the five, and it carries no hex placements because none were dictated — the sides are named in prose until it gets a board."
+ },
+ "prologue": [
+  {
+   "id": "battle.prologue-1",
+   "name": "Two Zombies and a Child",
+   "fixed": true,
+   "retreat": false,
+   "setup": [
     {
-      "id": "battle.prologue-1",
-      "name": "Two Zombies and a Child",
-      "fixed": true,
-      "retreat": false,
-      "setup": [
-        {
-          "unit": "hero.fixed.orphans",
-          "objective": true,
-          "civilian": true,
-          "at": {
-            "col": 8,
-            "row": 8
-          },
-          "was": "mid — one right of centre, the 2026-08-25 nudge preserved on the 16x16 board"
-        },
-        {
-          "unit": "unit.zombie",
-          "count": 2,
-          "hexes": [
-            {
-              "col": 6,
-              "row": 7
-            },
-            {
-              "col": 10,
-              "row": 7
-            }
-          ],
-          "was": "mid"
-        },
-        {
-          "heroes": 1,
-          "at": {
-            "near": {
-              "col": 7,
-              "row": 15
-            },
-            "range": 2
-          },
-          "was": "player-edge"
-        }
-      ],
-      "schedule": [
-        {
-          "phase": 4,
-          "spawn": [
-            {
-              "unit": "unit.zombie",
-              "count": 1,
-              "at": {
-                "oneOf": [
-                  {
-                    "col": 0,
-                    "row": 8
-                  },
-                  {
-                    "col": 15,
-                    "row": 8
-                  }
-                ]
-              },
-              "was": "one-of-left-or-right"
-            }
-          ]
-        }
-      ],
-      "loseAfter": {
-        "heroPhase": 10,
-        "why": "taking too long"
+     "unit": "hero.fixed.orphans",
+     "objective": true,
+     "civilian": true,
+     "at": {
+      "col": 8,
+      "row": 8
+     },
+     "was": "mid — one right of centre, the 2026-08-25 nudge preserved on the 16x16 board"
+    },
+    {
+     "unit": "unit.zombie",
+     "count": 2,
+     "hexes": [
+      {
+       "col": 6,
+       "row": 7
       },
-      "board": {
-        "width": 16,
-        "height": 16
+      {
+       "col": 10,
+       "row": 7
       }
+     ],
+     "was": "mid"
     },
     {
-      "id": "battle.prologue-2",
-      "name": "Surrounded",
-      "fixed": true,
-      "retreat": false,
-      "retreatWhy": "no retreat — you are surrounded",
-      "setup": [
-        {
-          "unit": "hero.fixed.lumberjack-and-wife",
-          "objective": true,
-          "civilian": true,
-          "at": {
-            "col": 7,
-            "row": 8
-          },
-          "was": "mid"
-        },
-        {
-          "unit": "hero.fixed.farmer",
-          "objective": true,
-          "civilian": true,
-          "at": {
-            "col": 8,
-            "row": 8
-          },
-          "was": "mid"
-        },
-        {
-          "unit": "unit.zombie",
-          "count": 4,
-          "hexes": [
-            {
-              "col": 5,
-              "row": 6
-            },
-            {
-              "col": 10,
-              "row": 6
-            },
-            {
-              "col": 4,
-              "row": 10
-            },
-            {
-              "col": 11,
-              "row": 10
-            }
-          ],
-          "was": "mid"
-        }
-      ],
-      "schedule": [
-        {
-          "enemyPhase": 1,
-          "spawn": [
-            {
-              "unit": "unit.skeletal-archer",
-              "count": 2,
-              "hexes": [
-                {
-                  "col": 15,
-                  "row": 6
-                },
-                {
-                  "col": 15,
-                  "row": 10
-                }
-              ],
-              "was": "right"
-            }
-          ]
-        },
-        {
-          "enemyPhase": 3,
-          "spawn": [
-            {
-              "unit": "unit.skeletal-archer",
-              "count": 1,
-              "at": {
-                "col": 0,
-                "row": 8
-              },
-              "was": "left"
-            },
-            {
-              "unit": "unit.skeletal-archer",
-              "count": 1,
-              "at": {
-                "col": 8,
-                "row": 15
-              },
-              "was": "behind-player"
-            }
-          ]
-        },
-        {
-          "phase": 4,
-          "spawn": [
-            {
-              "unit": "unit.fast-zombie",
-              "count": 4,
-              "hexes": [
-                {
-                  "col": 7,
-                  "row": 0
-                },
-                {
-                  "col": 0,
-                  "row": 7
-                },
-                {
-                  "col": 15,
-                  "row": 8
-                },
-                {
-                  "col": 7,
-                  "row": 15
-                }
-              ],
-              "was": "every-side",
-              "note": "one Fast Zombie per side — four total; the old count:1 was per-side under the zone format"
-            }
-          ]
-        },
-        {
-          "phase": 5,
-          "spawn": [
-            {
-              "unit": "unit.necromancer",
-              "count": 1,
-              "at": {
-                "col": 8,
-                "row": 0
-              },
-              "was": "far-edge"
-            }
-          ]
-        }
-      ],
-      "board": {
-        "width": 16,
-        "height": 16
-      }
-    },
-    {
-      "id": "battle.prologue-3",
-      "name": "The Schoolhouse",
-      "fixed": true,
-      "retreat": true,
-      "setup": [
-        {
-          "unit": "hero.fixed.school-teacher",
-          "objective": true,
-          "civilian": true,
-          "at": {
-            "col": 7,
-            "row": 8
-          },
-          "was": "mid"
-        },
-        {
-          "unit": "hero.fixed.school-children",
-          "objective": true,
-          "civilian": true,
-          "at": {
-            "col": 8,
-            "row": 8
-          },
-          "was": "mid"
-        },
-        {
-          "unit": "unit.imp",
-          "count": 4,
-          "hexes": [
-            {
-              "col": 4,
-              "row": 0
-            },
-            {
-              "col": 7,
-              "row": 0
-            },
-            {
-              "col": 9,
-              "row": 0
-            },
-            {
-              "col": 12,
-              "row": 0
-            }
-          ],
-          "was": "far-edge"
-        }
-      ],
-      "schedule": [
-        {
-          "phase": 3,
-          "spawn": [
-            {
-              "unit": "unit.imp",
-              "count": 2,
-              "hexes": [
-                {
-                  "col": 5,
-                  "row": 0
-                },
-                {
-                  "col": 11,
-                  "row": 0
-                }
-              ],
-              "was": "far-edge"
-            }
-          ]
-        },
-        {
-          "phase": 5,
-          "spawn": [
-            {
-              "unit": "unit.powerful-imp",
-              "count": 1,
-              "at": {
-                "col": 8,
-                "row": 0
-              },
-              "was": "far-edge"
-            },
-            {
-              "unit": "unit.fire-imp",
-              "count": 2,
-              "hexes": [
-                {
-                  "col": 3,
-                  "row": 0
-                },
-                {
-                  "col": 13,
-                  "row": 0
-                }
-              ],
-              "was": "far-edge"
-            }
-          ]
-        }
-      ],
-      "loseAfter": {
-        "phase": 12
+     "heroes": 1,
+     "at": {
+      "near": {
+       "col": 7,
+       "row": 15
       },
-      "board": {
-        "width": 16,
-        "height": 16
-      }
-    },
-    {
-      "id": "battle.prologue-4",
-      "name": "The Curse",
-      "fixed": true,
-      "retreat": true,
-      "setup": [
-        {
-          "unit": "unit.bruiser-demon",
-          "count": 2,
-          "hexes": [
-            {
-              "col": 5,
-              "row": 0
-            },
-            {
-              "col": 11,
-              "row": 0
-            }
-          ],
-          "was": "far-edge"
-        },
-        {
-          "unit": "unit.poison-imp",
-          "count": 2,
-          "hexes": [
-            {
-              "col": 4,
-              "row": 0
-            },
-            {
-              "col": 12,
-              "row": 0
-            }
-          ],
-          "was": "far-edge"
-        },
-        {
-          "unit": "unit.powerful-imp",
-          "count": 1,
-          "at": {
-            "col": 9,
-            "row": 0
-          },
-          "was": "far-edge"
-        },
-        {
-          "unit": "unit.lieutenant-demon",
-          "count": 1,
-          "at": {
-            "col": 8,
-            "row": 0
-          },
-          "was": "far-edge"
-        }
-      ],
-      "schedule": [
-        {
-          "phase": 2,
-          "spawn": [
-            {
-              "unit": "unit.imp",
-              "count": 1,
-              "at": {
-                "col": 0,
-                "row": 7
-              },
-              "was": "left-mid"
-            },
-            {
-              "unit": "unit.imp",
-              "count": 1,
-              "at": {
-                "col": 15,
-                "row": 7
-              },
-              "was": "right-mid"
-            }
-          ]
-        },
-        {
-          "phase": 3,
-          "spawn": [
-            {
-              "unit": "unit.imp",
-              "count": 1,
-              "at": {
-                "col": 7,
-                "row": 0
-              },
-              "was": "far-edge"
-            }
-          ]
-        },
-        {
-          "phase": 4,
-          "event": {
-            "name": "The Curse",
-            "effects": [
-              {
-                "effect": "set a ground layer",
-                "layer": "cursed",
-                "hexes": {
-                  "random": 10
-                },
-                "needs": [
-                  "capability.ground-layers"
-                ]
-              },
-              {
-                "effect": "apply a status",
-                "status": "weak",
-                "value": 1,
-                "targets": "all heroes"
-              }
-            ]
-          }
-        },
-        {
-          "phase": 5,
-          "spawn": [
-            {
-              "unit": "unit.imp",
-              "count": 1,
-              "at": {
-                "col": 0,
-                "row": 9
-              },
-              "was": "left-mid"
-            },
-            {
-              "unit": "unit.imp",
-              "count": 1,
-              "at": {
-                "col": 15,
-                "row": 9
-              },
-              "was": "right-mid"
-            }
-          ]
-        }
-      ],
-      "loseAfter": {
-        "phase": 15
-      },
-      "board": {
-        "width": 16,
-        "height": 16
-      }
-    },
-    {
-      "id": "battle.prologue-5",
-      "name": "The Hunt",
-      "fixed": true,
-      "retreat": true,
-      "note": "The first battle drawn from the battle list under difficulty — and the first affliction-inflicters beyond rotting flesh.",
-      "setup": [
-        {
-          "unit": "unit.bloodhound",
-          "count": 4,
-          "hexes": [
-            {
-              "col": 3,
-              "row": 0
-            },
-            {
-              "col": 7,
-              "row": 0
-            },
-            {
-              "col": 9,
-              "row": 0
-            },
-            {
-              "col": 13,
-              "row": 0
-            }
-          ],
-          "was": "far-edge"
-        },
-        {
-          "unit": "unit.hellhound",
-          "count": 2,
-          "hexes": [
-            {
-              "col": 5,
-              "row": 1
-            },
-            {
-              "col": 11,
-              "row": 1
-            }
-          ],
-          "was": "far-edge"
-        }
-      ],
-      "schedule": [
-        {
-          "phase": 4,
-          "spawn": [
-            {
-              "unit": "unit.zombie-hound",
-              "count": 8,
-              "hexes": [
-                {
-                  "col": 1,
-                  "row": 0
-                },
-                {
-                  "col": 4,
-                  "row": 0
-                },
-                {
-                  "col": 6,
-                  "row": 0
-                },
-                {
-                  "col": 8,
-                  "row": 0
-                },
-                {
-                  "col": 10,
-                  "row": 0
-                },
-                {
-                  "col": 12,
-                  "row": 0
-                },
-                {
-                  "col": 15,
-                  "row": 0
-                },
-                {
-                  "col": 8,
-                  "row": 1
-                }
-              ],
-              "was": "far-edge"
-            }
-          ]
-        },
-        {
-          "phase": 6,
-          "spawn": [
-            {
-              "unit": "unit.werewolf",
-              "count": 1,
-              "at": {
-                "col": 8,
-                "row": 0
-              },
-              "was": "far-edge"
-            }
-          ]
-        }
-      ],
-      "board": {
-        "width": 16,
-        "height": 16
-      }
+      "range": 2
+     },
+     "was": "player-edge"
     }
-  ],
-  "battleList": {
-    "_note": "The difficulty-ranked slice rows, per ruling 4. NOT YET AUTHORED — battle 5 is the first drawn from here, and the list itself is authored once the P11 format above is approved. Shape: { id, difficulty, enemies: [{unit, count}], powerSources?: [{kind, value, phase?}] }.",
-    "rows": []
+   ],
+   "schedule": [
+    {
+     "phase": 4,
+     "spawn": [
+      {
+       "unit": "unit.zombie",
+       "count": 1,
+       "at": {
+        "oneOf": [
+         {
+          "col": 0,
+          "row": 8
+         },
+         {
+          "col": 15,
+          "row": 8
+         }
+        ]
+       },
+       "was": "one-of-left-or-right"
+      }
+     ]
+    }
+   ],
+   "loseAfter": {
+    "heroPhase": 10,
+    "why": "taking too long"
+   },
+   "board": {
+    "width": 16,
+    "height": 16
+   }
   },
-  "civilians": {
-    "_note": "Civilian objectives are FIXED HERO ROWS (class.civilian), referenced by id — no separate civilian unit type exists or is needed. Ruled 2026-08-25: Farmer, School Teacher and School Children are confirmed in place as civilian units. The dictated Lumberjack maps to hero.fixed.lumberjack-and-wife (the row that exists). ART: all six have legacy thumbnails in the Codex today; full art exists in hell-tcg New Art/hero-art/ as UNDECLARED v1/v2 pairs (farmer-family, farmer-group, lumberjack, orphan-child, school-child) plus settled schoolteacher and school-children files — picking v1 vs v2 is an art ruling per gen/art-conventions.json, not a guess, and local card/ folders for teacher/children are empty pending the art channel.",
-    "confirmed": [
-      "hero.fixed.farmer",
-      "hero.fixed.school-teacher",
-      "hero.fixed.school-children"
-    ],
-    "mapped": {
-      "lumberjack (dictated)": "hero.fixed.lumberjack-and-wife",
-      "orphan child (dictated)": "hero.fixed.orphans"
+  {
+   "id": "battle.prologue-2",
+   "name": "Surrounded",
+   "fixed": true,
+   "retreat": false,
+   "retreatWhy": "no retreat — you are surrounded",
+   "setup": [
+    {
+     "unit": "hero.fixed.lumberjack-and-wife",
+     "objective": true,
+     "civilian": true,
+     "at": {
+      "col": 7,
+      "row": 8
+     },
+     "was": "mid"
     },
-    "artPendingRuling": [
-      "farmer-family v1|v2",
-      "farmer-group v1|v2",
-      "lumberjack v1|v2",
-      "orphan-child v1|v2",
-      "school-child v1|v2"
-    ]
+    {
+     "unit": "hero.fixed.farmer",
+     "objective": true,
+     "civilian": true,
+     "at": {
+      "col": 8,
+      "row": 8
+     },
+     "was": "mid"
+    },
+    {
+     "unit": "unit.zombie",
+     "count": 4,
+     "hexes": [
+      {
+       "col": 5,
+       "row": 6
+      },
+      {
+       "col": 10,
+       "row": 6
+      },
+      {
+       "col": 4,
+       "row": 10
+      },
+      {
+       "col": 11,
+       "row": 10
+      }
+     ],
+     "was": "mid"
+    }
+   ],
+   "schedule": [
+    {
+     "enemyPhase": 1,
+     "spawn": [
+      {
+       "unit": "unit.skeletal-archer",
+       "count": 2,
+       "hexes": [
+        {
+         "col": 15,
+         "row": 6
+        },
+        {
+         "col": 15,
+         "row": 10
+        }
+       ],
+       "was": "right"
+      }
+     ]
+    },
+    {
+     "enemyPhase": 3,
+     "spawn": [
+      {
+       "unit": "unit.skeletal-archer",
+       "count": 1,
+       "at": {
+        "col": 0,
+        "row": 8
+       },
+       "was": "left"
+      },
+      {
+       "unit": "unit.skeletal-archer",
+       "count": 1,
+       "at": {
+        "col": 8,
+        "row": 15
+       },
+       "was": "behind-player"
+      }
+     ]
+    },
+    {
+     "phase": 4,
+     "spawn": [
+      {
+       "unit": "unit.fast-zombie",
+       "count": 4,
+       "hexes": [
+        {
+         "col": 7,
+         "row": 0
+        },
+        {
+         "col": 0,
+         "row": 7
+        },
+        {
+         "col": 15,
+         "row": 8
+        },
+        {
+         "col": 7,
+         "row": 15
+        }
+       ],
+       "was": "every-side",
+       "note": "one Fast Zombie per side — four total; the old count:1 was per-side under the zone format"
+      }
+     ]
+    },
+    {
+     "phase": 5,
+     "spawn": [
+      {
+       "unit": "unit.necromancer",
+       "count": 1,
+       "at": {
+        "col": 8,
+        "row": 0
+       },
+       "was": "far-edge"
+      }
+     ]
+    }
+   ],
+   "board": {
+    "width": 16,
+    "height": 16
+   }
+  },
+  {
+   "id": "battle.prologue-3",
+   "name": "The Schoolhouse",
+   "fixed": true,
+   "retreat": true,
+   "setup": [
+    {
+     "unit": "hero.fixed.school-teacher",
+     "objective": true,
+     "civilian": true,
+     "at": {
+      "col": 7,
+      "row": 8
+     },
+     "was": "mid"
+    },
+    {
+     "unit": "hero.fixed.school-children",
+     "objective": true,
+     "civilian": true,
+     "at": {
+      "col": 8,
+      "row": 8
+     },
+     "was": "mid"
+    },
+    {
+     "unit": "unit.imp",
+     "count": 4,
+     "hexes": [
+      {
+       "col": 4,
+       "row": 0
+      },
+      {
+       "col": 7,
+       "row": 0
+      },
+      {
+       "col": 9,
+       "row": 0
+      },
+      {
+       "col": 12,
+       "row": 0
+      }
+     ],
+     "was": "far-edge"
+    }
+   ],
+   "schedule": [
+    {
+     "phase": 3,
+     "spawn": [
+      {
+       "unit": "unit.imp",
+       "count": 2,
+       "hexes": [
+        {
+         "col": 5,
+         "row": 0
+        },
+        {
+         "col": 11,
+         "row": 0
+        }
+       ],
+       "was": "far-edge"
+      }
+     ]
+    },
+    {
+     "phase": 5,
+     "spawn": [
+      {
+       "unit": "unit.powerful-imp",
+       "count": 1,
+       "at": {
+        "col": 8,
+        "row": 0
+       },
+       "was": "far-edge"
+      },
+      {
+       "unit": "unit.fire-imp",
+       "count": 2,
+       "hexes": [
+        {
+         "col": 3,
+         "row": 0
+        },
+        {
+         "col": 13,
+         "row": 0
+        }
+       ],
+       "was": "far-edge"
+      }
+     ]
+    }
+   ],
+   "loseAfter": {
+    "phase": 12
+   },
+   "board": {
+    "width": 16,
+    "height": 16
+   }
+  },
+  {
+   "id": "battle.prologue-4",
+   "name": "The Curse",
+   "fixed": true,
+   "retreat": true,
+   "setup": [
+    {
+     "unit": "unit.bruiser-demon",
+     "count": 2,
+     "hexes": [
+      {
+       "col": 5,
+       "row": 0
+      },
+      {
+       "col": 11,
+       "row": 0
+      }
+     ],
+     "was": "far-edge"
+    },
+    {
+     "unit": "unit.poison-imp",
+     "count": 2,
+     "hexes": [
+      {
+       "col": 4,
+       "row": 0
+      },
+      {
+       "col": 12,
+       "row": 0
+      }
+     ],
+     "was": "far-edge"
+    },
+    {
+     "unit": "unit.powerful-imp",
+     "count": 1,
+     "at": {
+      "col": 9,
+      "row": 0
+     },
+     "was": "far-edge"
+    },
+    {
+     "unit": "unit.lieutenant-demon",
+     "count": 1,
+     "at": {
+      "col": 8,
+      "row": 0
+     },
+     "was": "far-edge"
+    }
+   ],
+   "schedule": [
+    {
+     "phase": 2,
+     "spawn": [
+      {
+       "unit": "unit.imp",
+       "count": 1,
+       "at": {
+        "col": 0,
+        "row": 7
+       },
+       "was": "left-mid"
+      },
+      {
+       "unit": "unit.imp",
+       "count": 1,
+       "at": {
+        "col": 15,
+        "row": 7
+       },
+       "was": "right-mid"
+      }
+     ]
+    },
+    {
+     "phase": 3,
+     "spawn": [
+      {
+       "unit": "unit.imp",
+       "count": 1,
+       "at": {
+        "col": 7,
+        "row": 0
+       },
+       "was": "far-edge"
+      }
+     ]
+    },
+    {
+     "phase": 4,
+     "event": {
+      "name": "The Curse",
+      "effects": [
+       {
+        "effect": "set a ground layer",
+        "layer": "cursed",
+        "hexes": {
+         "random": 10
+        },
+        "needs": [
+         "capability.ground-layers"
+        ]
+       },
+       {
+        "effect": "apply a status",
+        "status": "weak",
+        "value": 1,
+        "targets": "all heroes"
+       }
+      ]
+     }
+    },
+    {
+     "phase": 5,
+     "spawn": [
+      {
+       "unit": "unit.imp",
+       "count": 1,
+       "at": {
+        "col": 0,
+        "row": 9
+       },
+       "was": "left-mid"
+      },
+      {
+       "unit": "unit.imp",
+       "count": 1,
+       "at": {
+        "col": 15,
+        "row": 9
+       },
+       "was": "right-mid"
+      }
+     ]
+    }
+   ],
+   "loseAfter": {
+    "phase": 15
+   },
+   "board": {
+    "width": 16,
+    "height": 16
+   }
+  },
+  {
+   "id": "battle.prologue-5",
+   "name": "The Hunt",
+   "fixed": true,
+   "retreat": true,
+   "note": "The first battle drawn from the battle list under difficulty — and the first affliction-inflicters beyond rotting flesh.",
+   "setup": [
+    {
+     "unit": "unit.bloodhound",
+     "count": 4,
+     "hexes": [
+      {
+       "col": 3,
+       "row": 0
+      },
+      {
+       "col": 7,
+       "row": 0
+      },
+      {
+       "col": 9,
+       "row": 0
+      },
+      {
+       "col": 13,
+       "row": 0
+      }
+     ],
+     "was": "far-edge"
+    },
+    {
+     "unit": "unit.hellhound",
+     "count": 2,
+     "hexes": [
+      {
+       "col": 5,
+       "row": 1
+      },
+      {
+       "col": 11,
+       "row": 1
+      }
+     ],
+     "was": "far-edge"
+    }
+   ],
+   "schedule": [
+    {
+     "phase": 4,
+     "spawn": [
+      {
+       "unit": "unit.zombie-hound",
+       "count": 8,
+       "hexes": [
+        {
+         "col": 1,
+         "row": 0
+        },
+        {
+         "col": 4,
+         "row": 0
+        },
+        {
+         "col": 6,
+         "row": 0
+        },
+        {
+         "col": 8,
+         "row": 0
+        },
+        {
+         "col": 10,
+         "row": 0
+        },
+        {
+         "col": 12,
+         "row": 0
+        },
+        {
+         "col": 15,
+         "row": 0
+        },
+        {
+         "col": 8,
+         "row": 1
+        }
+       ],
+       "was": "far-edge"
+      }
+     ]
+    },
+    {
+     "phase": 6,
+     "spawn": [
+      {
+       "unit": "unit.werewolf",
+       "count": 1,
+       "at": {
+        "col": 8,
+        "row": 0
+       },
+       "was": "far-edge"
+      }
+     ]
+    }
+   ],
+   "board": {
+    "width": 16,
+    "height": 16
+   }
   }
+ ],
+ "battleList": {
+  "_note": "The difficulty-ranked slice rows, per ruling 4. NOT YET AUTHORED — battle 5 is the first drawn from here, and the list itself is authored once the P11 format above is approved. Shape: { id, difficulty, enemies: [{unit, count}], powerSources?: [{kind, value, phase?}] }.",
+  "rows": []
+ },
+ "civilians": {
+  "_note": "Civilian objectives are FIXED HERO ROWS (class.civilian), referenced by id — no separate civilian unit type exists or is needed. Ruled 2026-08-25: Farmer, School Teacher and School Children are confirmed in place as civilian units. The dictated Lumberjack maps to hero.fixed.lumberjack-and-wife (the row that exists). ART: all six have legacy thumbnails in the Codex today; full art exists in hell-tcg New Art/hero-art/ as UNDECLARED v1/v2 pairs (farmer-family, farmer-group, lumberjack, orphan-child, school-child) plus settled schoolteacher and school-children files — picking v1 vs v2 is an art ruling per gen/art-conventions.json, not a guess, and local card/ folders for teacher/children are empty pending the art channel.",
+  "confirmed": [
+   "hero.fixed.farmer",
+   "hero.fixed.school-teacher",
+   "hero.fixed.school-children"
+  ],
+  "mapped": {
+   "lumberjack (dictated)": "hero.fixed.lumberjack-and-wife",
+   "orphan child (dictated)": "hero.fixed.orphans"
+  },
+  "artPendingRuling": [
+   "farmer-family v1|v2",
+   "farmer-group v1|v2",
+   "lumberjack v1|v2",
+   "orphan-child v1|v2",
+   "school-child v1|v2"
+  ]
+ },
+ "scripted": [
+  {
+   "id": "battle.horrors-of-the-night",
+   "name": "Horrors of the Night",
+   "family": "night",
+   "setup": [
+    {
+     "unit": "unit.eyeblight",
+     "count": 4
+    }
+   ],
+   "schedule": [
+    {
+     "phase": 1,
+     "spawn": [
+      {
+       "unit": "unit.dark-sniper",
+       "count": 2
+      }
+     ]
+    },
+    {
+     "phase": 2,
+     "spawn": [],
+     "note": "nothing arrives — the quiet phase, and the one where the darkness the Eyeblights left does the work"
+    },
+    {
+     "phase": 3,
+     "spawn": [
+      {
+       "unit": "unit.nightstalker",
+       "count": 2
+      }
+     ]
+    },
+    {
+     "phase": 4,
+     "spawn": [
+      {
+       "unit": "unit.shadow-sorcerer",
+       "count": 1,
+       "from": "the opposite side"
+      },
+      {
+       "unit": "unit.eyeblight",
+       "count": 2,
+       "from": "the opposite side"
+      }
+     ]
+    }
+   ],
+   "intent": "The board goes dark faster than the party can cross it. Four Eyeblights strip Vision from range 9 and each one that dies floods ten hexes with darkness — then the things that live in darkness arrive.",
+   "source": "Dictated 2026-09-02. PHASE NUMBERING IS A READING: dictated as 'next phase ... in the second phase, or their first end phase, there is nothing ... the next one ... the next one', read as waves at the end of phases 1, 2 (empty), 3 and 4. Say so if the empty phase sits elsewhere. No hex placements were dictated beyond the last wave arriving from the opposite side."
+  }
+ ]
 }

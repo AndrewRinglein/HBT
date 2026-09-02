@@ -70,5 +70,41 @@
    "1024": "werewolf_1024.png",
    "256": "werewolf_256.png"
   }
+ },
+ "enemy-greater-werewolf": {
+  "hex": "f3f1b08532ba.webp",
+  "src": "assets/cards/enemies/greater-werewolf.png",
+  "slug": "greater-werewolf",
+  "size": "large",
+  "stature": 1.5,
+  "scale": 1.5,
+  "footprintCapped": false,
+  "footprint": 0.571,
+  "render": "solid",
+  "aspect": 0.4815,
+  "hexWidthAtScale": 0.708,
+  "tiers": {
+   "full": "greater-werewolf_full.png",
+   "1024": "greater-werewolf_1024.png",
+   "256": "greater-werewolf_256.png"
+  }
+ },
+ "enemy-hellhound": {
+  "hex": "cf69f307cb60.webp",
+  "src": "assets/cards/enemies/hellhound.png",
+  "slug": "hellhound",
+  "size": "small",
+  "stature": 0.45,
+  "scale": 0.45,
+  "footprintCapped": false,
+  "footprint": 0.257,
+  "render": "solid",
+  "aspect": 0.6618,
+  "hexWidthAtScale": 0.292,
+  "tiers": {
+   "full": "hellhound_full.png",
+   "1024": "hellhound_1024.png",
+   "256": "hellhound_256.png"
+  }
  }
 }
