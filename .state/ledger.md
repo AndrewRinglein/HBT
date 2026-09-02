@@ -406,3 +406,65 @@ index fd0bc87..f217dad 100644
 ISC-040: CLOSED at 2aa2ab0 · ISC-041: CLOSED at 2aa2ab0
 slice: 36 of 50 closed · 36 probed · 0 accepted
 IRON GAUNTLET: NOT PASSED — 3 FLAG(S) WARNED
+
+## opening.prologue — LANDED `e78a8bd` **NEEDS REVIEW**
+2026-09-02 06:17 · engine @ 745922d
+
+  PASS  dependencies landed
+  WARN  not already decided — 1 candidate ruling(s) — READ BEFORE ASKING: ../STATE.md:20
+  PASS  typecheck
+  PASS  full test suite — 77 passed
+  PASS  gate 1 — every claimed criterion holds — ISC-042 holds · ISC-043 holds · ISC-044 holds · ISC-045 holds
+  PASS  brought its own tests — test/isc-017.test.ts, test/isc-033.test.ts, test/isc-042.test.ts, test/isc-043.test.ts, test/isc-044.test.ts, test/isc-045.test.ts
+  WARN  existing tests untouched — DELETED LINES in test/isc-017.test.ts (-3), test/isc-033.test.ts (-1) — will land FLAGGED for review
+  PASS  kill switch — every claimed probe has been seen red — ISC-042: red on record (2026-09-02 06:11 @ 14fa112, probe e741b2c6af9a) · ISC-043: red on record (2026-09-02 06:11 @ 14fa112, probe a879e393bd20) · ISC-044: red on record (2026-09-02 06:11 @ 14fa112, probe 7bd17febfd0b) · ISC-045: red on record (2026-09-02 06:11 @ 14fa112, probe 8e776cadf0f0)
+  PASS  nothing regresses — every P-tier probe — 40 P-tier probe(s): 40 green, 0 red, 0 regression(s). 36 of 50 closed · 40 probed · 0 accepted
+  PASS  hardcode scan — core knows mechanisms, never names
+  PASS  generalizes — the second instance costs zero kingdom code — engagement.conquer live · hero.base.ranger-aggressive live
+  PASS  naming — new ids use declared kinds
+  PASS  naming — no banned words invented
+  WARN  engine working tree clean — verified against a DIRTY engine tree (745922d + 3 uncommitted under src/test): M src/content/generated/pack.stamp.json, M src/content/generated/pack.ts, ?? src/sim/coverage.ts
+  PASS  one door to the engine
+
+<details><summary>Existing tests were edited — review this diff</summary>
+
+```diff
+diff --git a/test/isc-017.test.ts b/test/isc-017.test.ts
+index 4550f5d..ac6d176 100644
+--- a/test/isc-017.test.ts
++++ b/test/isc-017.test.ts
+@@ -13,8 +13,8 @@ describe('ISC-017 — re-conquest: Renown yes, Salvage no', () => {
+     applyBattleResult(first, e1, d1.result, d1.reckoning)
+     expect(first.campaign.purse['currency.salvage']!).toBeGreaterThan(salvageBefore)
+-    expect(first.campaign.territories[e1.territoryId]!.claimedOnce).toBe(true)
++    expect(first.campaign.territories[e1.territoryId!]!.claimedOnce).toBe(true)
+ 
+     // the Ridge was held once and lost since: claimedOnce stays true, owned is false
+-    const again = toBattle(loadFixture((c) => { const t = c.territories[c.cursor.engagement!.territoryId]!; t.claimedOnce = true; t.owned = false }))
++    const again = toBattle(loadFixture((c) => { const t = c.territories[c.cursor.engagement!.territoryId!]!; t.claimedOnce = true; t.owned = false }))
+     const e2 = again.campaign.cursor.engagement!
+     const salvage = again.campaign.purse['currency.salvage']!
+@@ -28,5 +28,5 @@ describe('ISC-017 — re-conquest: Renown yes, Salvage no', () => {
+     expect(again.campaign.renown).toBe(renown + 1)
+     expect(again.campaign.purse['currency.salvage']).toBe(salvage)
+-    expect(again.campaign.territories[e2.territoryId]!.owned).toBe(true)
++    expect(again.campaign.territories[e2.territoryId!]!.owned).toBe(true)
+     expect(again.events.filter((ev) => ev.type === 'territory.claimed').map((ev) => ev['first'])).toEqual([false])
+   })
+diff --git a/test/isc-033.test.ts b/test/isc-033.test.ts
+index c9149e0..3c289d6 100644
+--- a/test/isc-033.test.ts
++++ b/test/isc-033.test.ts
+@@ -17,5 +17,5 @@ describe('ISC-033 — exit: past the battle, saved, and never applied twice', ()
+     expect(ctx.campaign.cursor.step).toBe('reckoning')
+     expect(ctx.campaign.cursor.battle).toBeNull()
+-    expect(ctx.campaign.territories[e.territoryId]!.owned).toBe(true)
++    expect(ctx.campaign.territories[e.territoryId!]!.owned).toBe(true)
+ 
+     const reloaded = campaignOf(saveOf(ctx.campaign))
+```
+</details>
+
+ISC-042: CLOSED at e78a8bd · ISC-043: CLOSED at e78a8bd · ISC-044: CLOSED at e78a8bd · ISC-045: CLOSED at e78a8bd
+slice: 40 of 50 closed · 40 probed · 0 accepted
+IRON GAUNTLET: NOT PASSED — 3 FLAG(S) WARNED

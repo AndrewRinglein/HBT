@@ -286,7 +286,11 @@
    "hero.base.ranger-aggressive"
   ],
   "note": "variants: the prologue battles are engagement.conquer rows flagged prologue (no kind of their own — the open label question), and the ruled first draftee (engine/DECISIONS.md 2026-08-26) as a hero-pool row; both live in the autoplayed opening. Whether the prologue pays Renown is SWITCHES.md prologue.paysRenown.",
-  "attempts": 1
+  "attempts": 1,
+  "status": "done-needs-review",
+  "sha": "e78a8bd",
+  "engineSha": "745922d",
+  "gauntlet": "not passed — 3 flag(s) warned"
  },
  {
   "id": "charter.renown",

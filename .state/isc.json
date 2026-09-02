@@ -480,6 +480,10 @@
    "hash": "e741b2c6af9a",
    "how": "feature absent",
    "tail": "       | ^ |       7| import { makeCtx } from '../src/core/mutate.js' |       8| import { campaignOf, saveOf } from '../src/core/campaign.js'"
+  },
+  "closed": {
+   "at": "2026-09-02 06:19",
+   "sha": "e78a8bd"
   }
  },
  "043": {
@@ -489,6 +493,10 @@
    "hash": "a879e393bd20",
    "how": "feature absent",
    "tail": "       | ^ |       6| import { makeNewCampaign } from '../src/core/opening.js' |       7| import { makeCtx } from '../src/core/mutate.js'"
+  },
+  "closed": {
+   "at": "2026-09-02 06:19",
+   "sha": "e78a8bd"
   }
  },
  "044": {
@@ -498,6 +506,10 @@
    "hash": "7bd17febfd0b",
    "how": "feature absent",
    "tail": "       | ^ |       6| import { makeCtx } from '../src/core/mutate.js' |       7| import { playOpening, playWeeks } from '../src/sim/autoplay.js'"
+  },
+  "closed": {
+   "at": "2026-09-02 06:19",
+   "sha": "e78a8bd"
   }
  },
  "045": {
@@ -507,6 +519,10 @@
    "hash": "8e776cadf0f0",
    "how": "feature absent",
    "tail": "       | ^ |       6| import { makeCtx } from '../src/core/mutate.js' |       7| import { playOpening, playWeeks, playStage, DEFAULTS, type Decisions }…"
+  },
+  "closed": {
+   "at": "2026-09-02 06:19",
+   "sha": "e78a8bd"
   }
  }
 }
