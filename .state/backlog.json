@@ -209,7 +209,11 @@
   "variants": [
    "currency.salvage",
    "currency.faith"
-  ]
+  ],
+  "status": "done-needs-review",
+  "sha": "6936a71",
+  "engineSha": "745922d",
+  "gauntlet": "not passed — 4 flag(s) warned"
  },
  {
   "id": "rewards.and-levels",

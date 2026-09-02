@@ -363,6 +363,10 @@
    "hash": "e0252eb0e7ac",
    "how": "disabled currency.salvage",
    "tail": "       | ^ |       8| import { CURRENCIES } from '../src/content/currencies.js' |       9|"
+  },
+  "closed": {
+   "at": "2026-09-02 05:43",
+   "sha": "6936a71"
   }
  },
  "036": {
@@ -372,6 +376,10 @@
    "hash": "e0a751cd478a",
    "how": "feature absent",
    "tail": "     28| export { listConquerable } from './map.js' |      29| |  ❯ test/isc-036.test.ts:8:1"
+  },
+  "closed": {
+   "at": "2026-09-02 05:43",
+   "sha": "6936a71"
   }
  },
  "037": {
@@ -381,6 +389,10 @@
    "hash": "41b8ad9419f1",
    "how": "feature absent",
    "tail": "     28| export { listConquerable } from './map.js' |      29| |  ❯ test/isc-037.test.ts:7:1"
+  },
+  "closed": {
+   "at": "2026-09-02 05:43",
+   "sha": "6936a71"
   }
  },
  "038": {
@@ -390,6 +402,10 @@
    "hash": "5b31367249bc",
    "how": "feature absent",
    "tail": "     28| export { listConquerable } from './map.js' |      29| |  ❯ test/isc-038.test.ts:7:1"
+  },
+  "closed": {
+   "at": "2026-09-02 05:43",
+   "sha": "6936a71"
   }
  },
  "022": {
@@ -399,6 +415,10 @@
    "hash": "584a08e9c8a6",
    "how": "feature absent",
    "tail": "       |                            ^ |      20|     for (const g of salvage) expect(kindOf.get(g.causeId), `Salvage fr… |      21|     // the labours paid, and never in Salvage"
+  },
+  "closed": {
+   "at": "2026-09-02 05:43",
+   "sha": "6936a71"
   }
  }
 }

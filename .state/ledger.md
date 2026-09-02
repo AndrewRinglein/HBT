@@ -266,3 +266,80 @@ IRON GAUNTLET: NOT PASSED — 2 FLAG(S) WARNED
 ISC-008: CLOSED at f8f6d99 · ISC-009: CLOSED at f8f6d99 · ISC-010: CLOSED at f8f6d99
 slice: 27 of 50 closed · 27 probed · 0 accepted
 IRON GAUNTLET: NOT PASSED — 2 FLAG(S) WARNED
+
+## purse.mend-and-buy — LANDED `6936a71` **NEEDS REVIEW**
+2026-09-02 05:41 · engine @ 745922d
+
+  PASS  dependencies landed
+  WARN  not already decided — 5 candidate ruling(s) — READ BEFORE ASKING: ../KINGDOM-DESIGN.md:115 · ../GAME-ARCHITECTURE.md:133
+  PASS  typecheck
+  PASS  full test suite — 62 passed
+  PASS  gate 1 — every claimed criterion holds — ISC-021 holds · ISC-022 holds · ISC-036 holds · ISC-037 holds · ISC-038 holds
+  PASS  brought its own tests — test/isc-004.test.ts, test/isc-017.test.ts, test/isc-034.test.ts, test/isc-021.test.ts, test/isc-022.test.ts, test/isc-036.test.ts, test/isc-037.test.ts, test/isc-038.test.ts
+  WARN  existing tests untouched — DELETED LINES in test/isc-004.test.ts (-1), test/isc-017.test.ts (-3), test/isc-034.test.ts (-1) — will land FLAGGED for review
+  PASS  kill switch — every claimed probe has been seen red — ISC-021: red on record (2026-09-02 05:37 @ 64a6c7f) and re-proven — fails without currency.salvage · ISC-022: red on record (2026-09-02 05:38 @ 64a6c7f, probe 584a08e9c8a6) · ISC-036: red on record (2026-09-02 05:39 @ 64a6c7f, probe e0a751cd478a) · ISC-037: red on record (2026-09-02 05:38 @ 64a6c7f, probe 41b8ad9419f1) · ISC-038: red on record (2026-09-02 05:38 @ 64a6c7f, probe 5b31367249bc)
+  PASS  nothing regresses — every P-tier probe — 32 P-tier probe(s): 32 green, 0 red, 0 regression(s). 27 of 50 closed · 32 probed · 0 accepted
+  PASS  hardcode scan — core knows mechanisms, never names
+  PASS  generalizes — the second instance costs zero kingdom code — currency.salvage live · currency.faith live
+  PASS  naming — new ids use declared kinds
+  WARN  naming — no banned words invented — 'round' — say Turn — will land FLAGGED
+  WARN  engine working tree clean — verified against a DIRTY engine tree (745922d + 3 uncommitted under src/test): M src/content/generated/pack.stamp.json, M src/content/generated/pack.ts, ?? src/sim/coverage.ts
+  PASS  one door to the engine
+
+<details><summary>Existing tests were edited — review this diff</summary>
+
+```diff
+diff --git a/test/isc-004.test.ts b/test/isc-004.test.ts
+index e0ee509..fd0bc87 100644
+--- a/test/isc-004.test.ts
++++ b/test/isc-004.test.ts
+@@ -13,5 +13,5 @@ const hero = (id: string, cls: string): Hero => ({
+ })
+ const territory = (id: string, kingdom = false): Territory => ({
+-  id, name: id, mapId: 'map.open', owned: kingdom, kingdom, claimedOnce: kingdom, buildings: [], adjacent: [], enemies: ['unit.zombie'],
++  id, name: id, mapId: 'map.open', owned: kingdom, kingdom, claimedOnce: kingdom, buildings: [], adjacent: [], enemies: ['unit.zombie'], node: null,
+ })
+ 
+diff --git a/test/isc-017.test.ts b/test/isc-017.test.ts
+index 08b72d9..4550f5d 100644
+--- a/test/isc-017.test.ts
++++ b/test/isc-017.test.ts
+@@ -18,11 +18,14 @@ describe('ISC-017 — re-conquest: Renown yes, Salvage no', () => {
+     const again = toBattle(loadFixture((c) => { const t = c.territories[c.cursor.engagement!.territoryId]!; t.claimedOnce = true; t.owned = false }))
+     const e2 = again.campaign.cursor.engagement!
+-    const purse = { ...again.campaign.purse }
++    const salvage = again.campaign.purse['currency.salvage']!
+     const renown = again.campaign.renown
+     const d2 = decide(again, panelResult(again, true))
+-    expect(d2.reckoning.grants).toEqual([])
++    // Law 10, rewritten 2026-09-01 toward the rule: the three shop currencies
++    // are paid on every win (7-KINGDOM-SETTLED.md); Salvage, and only Salvage,
++    // never fires twice. The old lines asserted an empty grant list.
++    expect(d2.reckoning.grants.some((g) => g.currency === 'currency.salvage')).toBe(false)
+     applyBattleResult(again, e2, d2.result, d2.reckoning)
+     expect(again.campaign.renown).toBe(renown + 1)
+-    expect(again.campaign.purse).toEqual(purse)
++    expect(again.campaign.purse['currency.salvage']).toBe(salvage)
+     expect(again.campaign.territories[e2.territoryId]!.owned).toBe(true)
+     expect(again.events.filter((ev) => ev.type === 'territory.claimed').map((ev) => ev['first'])).toEqual([false])
+diff --git a/test/isc-034.test.ts b/test/isc-034.test.ts
+index c57e404..f393b2d 100644
+--- a/test/isc-034.test.ts
++++ b/test/isc-034.test.ts
+@@ -52,5 +52,9 @@ describe('ISC-034 — the Reckoning is proposed and editable', () => {
+     expect(k.renown).toBe(1); expect(k.losses).toBe(0)
+     expect(k.claim).toBe(e.territoryId)
+-    expect(k.grants).toEqual([{ currency: 'currency.salvage', amount: SWITCHES.salvagePerConquest }])
++    // Law 10, rewritten 2026-09-01 toward the rule: a won battle pays the three
++    // shop currencies too (7-KINGDOM-SETTLED.md Payouts); Salvage is the one
++    // that only a first Conquer pays. The old line asserted Salvage ALONE.
++    expect(k.grants.filter((g) => g.currency === 'currency.salvage')).toEqual([{ currency: 'currency.salvage', amount: SWITCHES.salvagePerConquest }])
++    expect(k.grants.map((g) => g.currency).sort()).toEqual(['currency.faith', 'currency.mana', 'currency.salvage', 'currency.supplies'])
+     assertPlainData(k, 'reckoning')
+   })
+```
+</details>
+
+ISC-021: CLOSED at 6936a71 · ISC-022: CLOSED at 6936a71 · ISC-036: CLOSED at 6936a71 · ISC-037: CLOSED at 6936a71 · ISC-038: CLOSED at 6936a71
+slice: 32 of 50 closed · 32 probed · 0 accepted
+IRON GAUNTLET: NOT PASSED — 4 FLAG(S) WARNED
