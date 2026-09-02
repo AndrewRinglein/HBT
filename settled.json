@@ -1109,10 +1109,11 @@
    "targets": "one stealthed unit",
    "tags": [],
    "triggers": [],
-   "description": "UNIVERSAL RULE. At the End of every Phase, one random stealthed unit is revealed — either side, no condition. Stealth is therefore always temporary, and a battle in which nobody commits simply runs out of hidden things.",
-   "intent": "You cannot win by waiting, and you cannot hide for the rest of the Battle.",
+   "description": "UNIVERSAL RULE. At the End of every Phase there is a 25% chance that one random stealthed unit is revealed — either side, no condition. Stealth is therefore never safe and never certainly lost: it holds on average four Phases, and a battle in which nobody commits still runs out of hidden things.",
+   "intent": "You cannot win by waiting, and you cannot count on hiding.",
    "needsCapability": "capability.stealth — designed in COMBAT-DESIGN (a stealth unit cannot be targeted and does not appear on the map), not yet built.",
-   "source": "Dictated 2026-09-02. REFRAMED at landing. Dictated as \"if there are two full turns of no attack actions, one random stealth unit gets revealed\" — which counts turns of history, and content is banned from occurrence counting and event history (R25). Ruled: rethink it. This is the history-free shape with the same intent — a standing per-Phase reveal rather than a stall detector. It is strictly simpler and it also makes stealth a resource that burns. THE TRADE: it fires even in a busy battle, so stealth is temporary always rather than only when the battle stalls. Say so if the stall condition was the point."
+   "source": "Dictated 2026-09-02. REFRAMED at landing. Dictated as \"if there are two full turns of no attack actions, one random stealth unit gets revealed\" — which counts turns of history, and content is banned from occurrence counting and event history (R25). Ruled: rethink it. This is the history-free shape with the same intent — a per-Phase chance rather than a stall detector. It is strictly simpler and it also makes stealth a resource that burns. THE TRADE: it fires even in a busy battle, so stealth is temporary always rather than only when the battle stalls. Say so if the stall condition was the point. | 2026-09-02, softened by ruling: 'Give it a 25% chance that one random stealth unit is revealed at the end of every phase.' The certain per-Phase reveal was mine and too harsh — a 25% roll leaves stealth worth taking while still making it temporary. The roll needs its own named stream (Law 4), keyed by what the roll is.",
+   "chance": 25
   }
  ],
  "items": [
