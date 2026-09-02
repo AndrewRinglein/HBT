@@ -89,3 +89,26 @@ IRON GAUNTLET: NOT PASSED — 3 FLAG(S) WARNED
 ISC-026: CLOSED at 25a215c · ISC-027: CLOSED at 25a215c · ISC-028: CLOSED at 25a215c · ISC-029: CLOSED at 25a215c
 slice: 7 of 33 closed · 8 probed · 0 accepted
 IRON GAUNTLET: NOT PASSED — 2 FLAG(S) WARNED
+
+## battle.screen — LANDED `9ee8ea3` **NEEDS REVIEW**
+2026-09-02 04:26 · engine @ 745922d
+
+  PASS  dependencies landed
+  WARN  not already decided — 2 candidate ruling(s) — READ BEFORE ASKING: ../STATE.md:20 · ../CODEX.md:1819
+  PASS  typecheck
+  PASS  full test suite
+  PASS  gate 1 — every claimed criterion holds — ISC-030 holds · ISC-034 holds
+  PASS  brought its own tests — test/isc-034.test.ts
+  PASS  existing tests untouched
+  PASS  kill switch — every claimed probe has been seen red —   (no red demanded of an H criterion) · ISC-034: red on record (2026-09-02 04:18 @ e99c402, probe cddc95893147)
+  PASS  nothing regresses — every P-tier probe — 9 P-tier probe(s): 8 green, 1 red, 0 regression(s). 7 of 34 closed · 9 probed · 0 accepted
+  PASS  hardcode scan — core knows mechanisms, never names
+  PASS  generalizes — the second instance costs zero kingdom code — shape 'plumbing' — not a mechanism, exempt
+  PASS  naming — new ids use declared kinds
+  PASS  naming — no banned words invented
+  WARN  engine working tree clean — verified against a DIRTY engine tree (745922d + 3 uncommitted under src/test): M src/content/generated/pack.stamp.json, M src/content/generated/pack.ts, ?? src/sim/coverage.ts
+  PASS  one door to the engine
+
+ISC-034: CLOSED at 9ee8ea3
+slice: 8 of 34 closed · 9 probed · 0 accepted
+IRON GAUNTLET: NOT PASSED — 2 FLAG(S) WARNED

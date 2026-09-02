@@ -106,6 +106,16 @@
    "hash": "cddc95893147",
    "how": "feature absent",
    "tail": "       | ^ |      13| import { resolveReckoning } from '../src/core/reckoning.js' |      14| import { makeBattleState, resolveEngagement } from '../src/core/seam.j…"
+  },
+  "closed": {
+   "at": "2026-09-02 04:28",
+   "sha": "9ee8ea3"
+  }
+ },
+ "030": {
+  "landed": {
+   "at": "2026-09-02 04:28",
+   "sha": "9ee8ea3"
   }
  }
 }
