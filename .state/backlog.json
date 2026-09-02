@@ -94,7 +94,6 @@
    "016",
    "017",
    "018",
-   "019",
    "020",
    "031",
    "032",
@@ -106,6 +105,21 @@
   ],
   "needs": [
    "battle.screen"
+  ],
+  "note": "ISC-019 (the reward draft) moved to rewards.draft 2026-09-01 — it is the rewards screen, not the writer."
+ },
+ {
+  "id": "rewards.draft",
+  "kind": "kingdom",
+  "shape": "rule",
+  "milestone": "M4b",
+  "spec": "The reward draft — 3 drawn, keep 1 (7-KINGDOM-SETTLED.md; keep-2 was rejected: it dissolves the draft). listRewardOffers(campaign, result) draws three from the reward pool on cup.reward keyed by the Engagement; performTakeReward keeps one and burns the rest; the rewards step sits between reckoning and open. The pool is item rows the buildings stock — until building rows exist, the slice items the Forge ruling names (starting weapons, tier-1 armors) as content rows.",
+  "expect": "ISC-019: three offers, one kept into the stash, two gone, the same three on reload.",
+  "isc": [
+   "019"
+  ],
+  "needs": [
+   "reckoning.apply"
   ]
  },
  {

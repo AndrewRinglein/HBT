@@ -20,7 +20,8 @@ import {
 } from '../core/prep.js'
 import { viewBattle, type BattleView } from '../view/battle.js'
 import { makeBlankResult, withUnitFate, validateResult } from '../core/result.js'
-import { resolveReckoning, type Reckoning } from '../core/reckoning.js'
+import { resolveReckoning, applyBattleResult, performExitBattle, resolveDifficulty, type Reckoning } from '../core/reckoning.js'
+import { woundNameOf } from '../content/wounds.js'
 import type { EngagementResult, UnitTally } from '../core/seam.js'
 import { PREP_STEP_ROWS } from '../content/prep.js'
 import { UNITS } from '../engine.js'
@@ -101,7 +102,9 @@ function screen(c: CampaignState): string {
   switch (c.cursor.step) {
     case 'prep': return prepScreen(c)
     case 'battle': return c.cursor.battle?.resultSet ? tallyScreen(c) : battleScreen(c)
-    default: return `<div class="card"><p>The cursor is at <code>${esc(c.cursor.step)}</code>. The slice's screens cover Combat Prep, the battle and the tally; the Week machine lands later.</p></div>`
+    case 'reckoning': return appliedScreen(c)
+    default: return `<div class="card"><p>The cursor is at <code>${esc(c.cursor.step)}</code>, week ${c.week}, ${esc(c.cursor.stage)}. The Engagement is done and written; the Week machine — the six Stages — lands next. Download the save to keep it.</p>
+      <p class="meta">Renown ${c.renown} · losses ${c.losses} · difficulty ${resolveDifficulty(c)} · ${Object.values(c.roster).filter((h) => h.lifeState === 'alive').length} alive</p></div>`
   }
 }
 
@@ -218,7 +221,7 @@ function tallyScreen(c: CampaignState): string {
       <div class="card"><h3>Heroes</h3><table><tr><th>hero</th><th>xp</th><th>wound</th><th>dead</th><th>mvp</th></tr>
         ${k.heroes.map((h, i) => `<tr><td>${esc(hero(h.heroId))}</td>
           <td><input type="number" min="0" step="1" value="${h.xp}" data-reck="xp" data-i="${i}"></td>
-          <td><select data-reck="wound" data-i="${i}">${[0, 1, 2, 3].map((w) => `<option value="${w}"${h.wound === w ? ' selected' : ''}>${['none', 'Wounded', 'Badly Wounded', 'Severe'][w]}</option>`).join('')}</select></td>
+          <td><select data-reck="wound" data-i="${i}">${[0, 1, 2, 3].map((w) => `<option value="${w}"${h.wound === w ? ' selected' : ''}>${woundNameOf(w)}</option>`).join('')}</select></td>
           <td><input type="checkbox" data-reck="dead" data-i="${i}"${h.dead ? ' checked' : ''}></td>
           <td>${h.mvp ? '★' : ''}</td></tr>`).join('')}
       </table></div>
@@ -227,14 +230,40 @@ function tallyScreen(c: CampaignState): string {
         <tr><td>Losses</td><td class="n"><input type="number" min="0" step="1" value="${k.losses}" data-reck="losses"></td></tr>
         <tr><td>Claim</td><td class="n">${k.claim ? `<code>${esc(k.claim)}</code>` : '—'}</td></tr>
         <tr><td>Lose</td><td class="n">${k.lose ? `<code>${esc(k.lose)}</code>` : '—'}</td></tr>
-        <tr><td>Salvage</td><td class="n"><input type="number" min="0" step="1" value="${k.salvage}" data-reck="salvage"></td></tr>
+        ${k.grants.map((g, i) => `<tr><td>${esc(g.currency.replace('currency.', ''))}</td><td class="n"><input type="number" min="0" step="1" value="${g.amount}" data-reck="grant" data-i="${i}"></td></tr>`).join('')}
+        ${k.grants.length ? '' : '<tr><td colspan="2" class="meta">no payout — only a first Conquer pays Salvage</td></tr>'}
       </table></div>
     </div>
     <div class="bar"><button class="quiet" data-act="back-to-panel">← Back to the panel</button><span class="sp"></span>${applyButton()}</div>`
 }
-/** The writer lands with M4; until then the tally is where the slice stops. */
+/** The one writer, behind one button: applyBattleResult writes exactly the Reckoning shown. */
 function applyButton(): string {
-  return `<span class="meta">the one writer — applyBattleResult — lands next; until then this is as far as the slice goes</span>`
+  return `<button class="primary" data-act="apply">Apply — write it to the Campaign</button>`
+}
+
+// ── after the writer: what changed, and the way out ─────────────────────────
+function appliedScreen(c: CampaignState): string {
+  const e = c.cursor.engagement
+  const written = app.ctx!.events.filter((ev) => ev.causeId === e?.id && ev.type !== 'cursor.moved')
+  const hero = (id: unknown) => (typeof id === 'string' ? c.roster[id]?.name ?? id : '')
+  const line = (ev: (typeof written)[number]): string => {
+    switch (ev.type) {
+      case 'xp.gained': return `${hero(ev['heroId'])} +${ev['amount']} XP → ${ev['xp']}`
+      case 'hero.wounded': return `${hero(ev['heroId'])} ${woundNameOf(ev['from'] as number)} → ${woundNameOf(ev['to'] as number)}`
+      case 'hero.died': return `${hero(ev['heroId'])} died`
+      case 'renown.gained': return `Renown +${ev['amount']} → ${ev['renown']}`
+      case 'engagement.resolved': return `${ev['won'] ? 'won' : 'lost'} — losses ${ev['losses']}`
+      case 'territory.claimed': return `claimed ${ev['territoryId']}${(ev['buildings'] as string[]).length ? ' with ' + (ev['buildings'] as string[]).join(', ') : ''}`
+      case 'territory.lost': return `lost ${ev['territoryId']}`
+      case 'resource.gained': return `+${ev['amount']} ${String(ev['currencyId']).replace('currency.', '')} → ${ev['balance']}`
+      default: return ev.type
+    }
+  }
+  return `<h2>Written</h2>
+    <p class="meta"><code>${esc(e?.id ?? '')}</code> — every line below is an event the writer emitted; the save already holds it.</p>
+    <div class="card"><table>${written.map((ev) => `<tr><td><code>${esc(ev.type)}</code></td><td>${esc(line(ev))}</td></tr>`).join('') || '<tr><td class="meta">nothing was written this session (loaded after the apply)</td></tr>'}</table>
+      <p class="meta">difficulty now ${resolveDifficulty(c)} · Renown ${c.renown} · losses ${c.losses} · purse ${Object.entries(c.purse).map(([k, v]) => `${k.replace('currency.', '')} ${v}`).join(' · ')}</p></div>
+    <div class="bar"><span class="sp"></span><button class="primary" data-act="exit">Exit — back to the Week</button></div>`
 }
 
 // ── wiring ──────────────────────────────────────────────────────────────────
@@ -265,6 +294,8 @@ function wire(root: HTMLElement): void {
           const k = resolveReckoning(app.ctx!.campaign, e, r)
           setBattleOutcome(app.ctx!, r, k, 'slice')
         })
+        case 'apply': return act(() => { const b = app.ctx!.campaign.cursor.battle!; applyBattleResult(app.ctx!, app.ctx!.campaign.cursor.engagement!, b.result!, b.reckoning!); app.draft = null })
+        case 'exit': return act(() => performExitBattle(app.ctx!, 'slice'))
         case 'back-to-panel': return act(() => { app.draft = app.ctx!.campaign.cursor.battle?.result ?? app.draft; setCursor(app.ctx!, { battle: { resultSet: false } }, 'slice') })
       }
     })
@@ -292,12 +323,14 @@ function wire(root: HTMLElement): void {
       const k: Reckoning = JSON.parse(JSON.stringify(b.reckoning))
       const field = el.dataset['reck']!
       const i = el.dataset['i']
-      if (i !== undefined) {
+      const n = Math.max(0, Math.floor(Number(el.value) || 0))
+      if (field === 'grant') k.grants[Number(i)]!.amount = n
+      else if (i !== undefined) {
         const h = k.heroes[Number(i)]!
         if (field === 'dead') h.dead = (el as HTMLInputElement).checked
         else if (field === 'wound') h.wound = Number(el.value)
-        else if (field === 'xp') h.xp = Math.max(0, Math.floor(Number(el.value) || 0))
-      } else if (field === 'renown' || field === 'losses' || field === 'salvage') k[field] = Math.max(0, Math.floor(Number(el.value) || 0))
+        else if (field === 'xp') h.xp = n
+      } else if (field === 'renown' || field === 'losses') k[field] = n
       act(() => setBattleOutcome(app.ctx!, b.result!, k, 'slice-edit'))
     })
   })

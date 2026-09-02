@@ -1,9 +1,9 @@
 {
  "014": {
   "red": {
-   "at": "2026-09-02 03:36",
-   "sha": "1446df6",
-   "hash": "014538fede1c",
+   "at": "2026-09-02 04:34",
+   "sha": "4172743",
+   "hash": "445e48318684",
    "how": "feature absent",
    "tail": "only-writer: FAIL — no applyBattleResult is defined anywhere under src/"
   }
@@ -101,11 +101,11 @@
  },
  "034": {
   "red": {
-   "at": "2026-09-02 04:18",
-   "sha": "e99c402",
-   "hash": "cddc95893147",
+   "at": "2026-09-02 04:35",
+   "sha": "4172743",
+   "hash": "543be77719ba",
    "how": "feature absent",
-   "tail": "       | ^ |      13| import { resolveReckoning } from '../src/core/reckoning.js' |      14| import { makeBattleState, resolveEngagement } from '../src/core/seam.j…"
+   "tail": "       |                                                  ^ |      69|     expect(k.lose).toBeNull()                       // a lost Conquer … |      70|     expect(k.heroes[0]).toMatchObject({ dead: true, xp: 0, mvp: false …"
   },
   "closed": {
    "at": "2026-09-02 04:28",
@@ -116,6 +116,78 @@
   "landed": {
    "at": "2026-09-02 04:28",
    "sha": "9ee8ea3"
+  }
+ },
+ "015": {
+  "red": {
+   "at": "2026-09-02 04:39",
+   "sha": "4172743",
+   "hash": "928f9fb03604",
+   "how": "feature absent",
+   "tail": "       |     ^ |      14|     for (const id of e.deployed) { const h = ctx.campaign.roster[id]!;… |      15|     expect(ctx.campaign.purse).toEqual(before)"
+  }
+ },
+ "016": {
+  "red": {
+   "at": "2026-09-02 04:39",
+   "sha": "4172743",
+   "hash": "291d8c621504",
+   "how": "feature absent",
+   "tail": "       |     ^ |      23|     expect(ctx.campaign.renown).toBe(r0) |      24|     expect(ctx.events.filter((ev) => ev.type === 'renown.gained')).toE…"
+  }
+ },
+ "017": {
+  "red": {
+   "at": "2026-09-02 04:40",
+   "sha": "4172743",
+   "hash": "07949da68a4f",
+   "how": "feature absent",
+   "tail": "       |     ^ |      14|     expect(first.campaign.purse['currency.salvage']!).toBeGreaterThan(… |      15|     expect(first.campaign.territories[e1.territoryId]!.claimedOnce).to…"
+  }
+ },
+ "018": {
+  "red": {
+   "at": "2026-09-02 04:40",
+   "sha": "4172743",
+   "hash": "961a1e24f3be",
+   "how": "feature absent",
+   "tail": "       | ^ |       8| import { WOUND_UNAVAILABLE } from '../src/content/wounds.js' |       9|"
+  }
+ },
+ "020": {
+  "red": {
+   "at": "2026-09-02 04:40",
+   "sha": "4172743",
+   "hash": "1aee6669c969",
+   "how": "feature absent",
+   "tail": "       |            ^ |      13| |      14|     // levelled, a civilian at 3 (→1), two losses, corruption 2 on one…"
+  }
+ },
+ "031": {
+  "red": {
+   "at": "2026-09-02 04:40",
+   "sha": "4172743",
+   "hash": "49f0a49be7f6",
+   "how": "feature absent",
+   "tail": "       |                                                                     ^ |      39|     const wrongId = { ...good, id: 'engagement.conquer.elsewhere' } |      40|     expect(() => applyBattleResult(ctx, e, wrongId, reckoning)).toThro…"
+  }
+ },
+ "032": {
+  "red": {
+   "at": "2026-09-02 04:40",
+   "sha": "4172743",
+   "hash": "68d89c691986",
+   "how": "feature absent",
+   "tail": "       |     ^ |      46|     for (const h of reckoning.heroes) { |      47|       expect(ctx.campaign.roster[h.heroId]!.xp).toBe(h.xp)"
+  }
+ },
+ "033": {
+  "red": {
+   "at": "2026-09-02 04:40",
+   "sha": "4172743",
+   "hash": "042205630e9c",
+   "how": "feature absent",
+   "tail": "       |     ^ |      16|     expect(ctx.campaign.cursor.step).toBe('reckoning') |      17|     expect(ctx.campaign.cursor.battle).toBeNull()"
   }
  }
 }

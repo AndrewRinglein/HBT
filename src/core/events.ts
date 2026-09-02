@@ -35,6 +35,12 @@ export const KINGDOM_EVENTS = [
   // Added 2026-09-01 with battle.screen, and to GLOSSARY.md the same commit: in
   // the slice a battle is DECIDED by the panel, not fought; the word says which.
   'battle.decided',
+  // Added 2026-09-01 with reckoning.apply, and to GLOSSARY.md the same commit:
+  // what the one writer says as it writes. XP is its own noun (hero.leveled is
+  // the level, not the points); a hero's death at this altitude has no word yet;
+  // Renown is not a currency and takes no resource.* word; an Engagement is
+  // resolved once, won or lost.
+  'xp.gained', 'hero.died', 'renown.gained', 'engagement.resolved',
 ] as const
 
 export type KingdomEventType = (typeof KINGDOM_EVENTS)[number]

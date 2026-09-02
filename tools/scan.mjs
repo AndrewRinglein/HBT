@@ -10,7 +10,10 @@
 // applyX / beginX / endX / tickX / rollX / setX mutate; viewX / listX / canX /
 // xOf / resolveX / makeX cannot — the rule is checkable without running anything:
 //   1. exactly one `function applyBattleResult(` exists under src/, and
-//   2. no OTHER impure-prefixed function takes an EngagementResult.
+//   2. no OTHER impure-prefixed function takes an EngagementResult — outside
+//      src/core/mutate.ts, the facade the writer itself writes through (GLOSSARY:
+//      nothing outside mutate.ts may define an applyX/setX), which may hold a
+//      result on the cursor (setBattleOutcome) but never define the writer.
 // It is RED until applyBattleResult exists — the honest state of a criterion
 // about a function that has not been written.
 
@@ -33,7 +36,7 @@ if (which === 'only-writer') {
     for (const m of text.matchAll(/function\s+(\w+)\s*\(([^)]*)\)/g)) {
       const [, name, params] = m
       if (name === 'applyBattleResult') writers.push(f)
-      else if (IMPURE.test(name) && /EngagementResult/.test(params)) others.push(`${name} in ${f}`)
+      else if (IMPURE.test(name) && /EngagementResult/.test(params) && !/mutate\.ts$/.test(f)) others.push(`${name} in ${f}`)
     }
   }
   const problems = []

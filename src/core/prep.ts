@@ -16,6 +16,7 @@ import { pickOf } from './rng.js'
 import { PREP_STEP_ROWS, BASE_DEPLOY_LIMIT, COUNCIL_OFFER_SIZE } from '../content/prep.js'
 import { TACTICS, tacticOf, type TacticRow } from '../content/tactics.js'
 import { engagementKindOf } from '../content/engagements.js'
+import { commitmentOf } from './assignments.js'
 
 // ── reading ─────────────────────────────────────────────────────────────────
 
@@ -41,9 +42,9 @@ export function canDeploy(campaign: CampaignState, heroId: HeroId): boolean {
   if (campaign.cursor.step !== 'prep' || campaign.cursor.prepStep !== 'deploy') return false
   const e = engagementOf(campaign)
   if (engagementKindOf(e.kind).rosterFixed) return false
-  const hero = campaign.roster[heroId]
-  if (!hero || hero.lifeState !== 'alive') return false
-  if (e.deployed.includes(heroId)) return false
+  // The one availability question (§2.3): dead, captured, severely wounded,
+  // already committed — all answered there, never re-derived here.
+  if (!campaign.roster[heroId] || commitmentOf(campaign, heroId, 'field') !== 'free') return false
   return e.deployed.length < deployLimitOf(campaign)
 }
 
@@ -58,7 +59,7 @@ export function canUndeploy(campaign: CampaignState, heroId: HeroId): boolean {
 export function listDeployable(campaign: CampaignState): HeroId[] {
   const e = engagementOf(campaign)
   return Object.values(campaign.roster)
-    .filter((h) => h.lifeState === 'alive' && !e.deployed.includes(h.id))
+    .filter((h) => !e.deployed.includes(h.id) && commitmentOf(campaign, h.id, 'field') === 'free')
     .map((h) => h.id)
     .sort()
 }

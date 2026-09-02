@@ -1,14 +1,18 @@
 // The Reckoning — what the Campaign decides from a battle's result. Two halves:
 //
 //   resolveReckoning(campaign, engagement, result) → Reckoning     PURE — a proposal
-//   applyBattleResult(ctx, engagement, result, reckoning)          the one writer (M4)
+//   applyBattleResult(ctx, engagement, result, reckoning)          THE ONE WRITER
 //
 // GLOSSARY.md: resolveX computes a value and its ledger; the panel may edit
 // every proposed value before the writer runs ("Xp gain by unit. Wounded by
 // hero unit. Just set everything that could happen in battle" — 2026-09-01),
 // and the writer writes exactly what it is given (ISC-032). The engine path
 // gets the same proposal from the same function; nothing here knows which
-// hand made the result.
+// hand made the result (ISC-031).
+//
+// GAME-ARCHITECTURE.md §1 rule 2: "Combat touches the Campaign in exactly one
+// function — applyBattleResult." tools/scan.mjs only-writer is the teeth
+// (ISC-014). Everything it writes goes through src/core/mutate.ts and emits.
 //
 // Numbers are SOFT and every one has an owner or a switch:
 //   XP    15 − enemy phases (speed bonus, SKELETON-NOTES.md B6) + 3 per kill
@@ -19,16 +23,24 @@
 //         Deathbed is OUT of the slice (THIN-SLICE-IMPLEMENTATION.md §8), so
 //         "down-and-out resolves to plain wounds" — SWITCHES.md, wound.fromDowned.
 //   Renown +1 per Engagement won (KINGDOM-DESIGN.md §3A). Losses +1 per lost.
-//   Claim a won Conquer claims the Territory (7-KINGDOM-SETTLED.md); Salvage
-//         only then, and never twice (SKELETON-SETTLED.md:104,108) — the amount
-//         is unruled: SWITCHES.md, salvage.perConquest.
+//   Claim a won Conquer claims the Territory and any building on it
+//         (7-KINGDOM-SETTLED.md); a lost Defend loses it unless it is the
+//         Kingdom Territory (SKELETON-SETTLED.md:80-81) — both read from the
+//         Engagement kind's row. Grants come from src/content/payouts.ts.
 
 import type { CampaignState, Engagement, HeroId, TerritoryId } from './campaign.js'
 import type { EngagementResult } from './seam.js'
 import { rollOf } from './rng.js'
+import { validateResult } from './result.js'
+import {
+  type Ctx, applyXp, setWound, setHeroDead, applyGrant, applyRenown,
+  setEngagementResolved, applyClaim, applyLose, setCursor,
+} from './mutate.js'
 import { engagementKindOf } from '../content/engagements.js'
+import { PAYOUTS } from '../content/payouts.js'
 import { SWITCHES } from '../content/switches.js'
 import { CUP_IDS } from '../content/cups.js'
+import { groupOf } from '../content/classes.js'
 
 export type HeroReckoning = {
   heroId: HeroId
@@ -38,6 +50,8 @@ export type HeroReckoning = {
   dead: boolean
   mvp: boolean
 }
+
+export type Grant = { currency: string; amount: number }
 
 export type Reckoning = {
   engagementId: string
@@ -49,7 +63,8 @@ export type Reckoning = {
   claim: TerritoryId | null
   /** A Territory lost by this battle, or null. */
   lose: TerritoryId | null
-  salvage: number
+  /** What the purse receives — from the payout rows, so "only Conquer pays Salvage" is data. */
+  grants: Grant[]
 }
 
 export function resolveReckoning(campaign: CampaignState, engagement: Engagement, result: EngagementResult): Reckoning {
@@ -61,10 +76,15 @@ export function resolveReckoning(campaign: CampaignState, engagement: Engagement
     const heroId = engagement.deployed[u.index]
     if (!heroId) throw new Error(`${engagement.id}: result names hero row ${u.index} but only ${engagement.deployed.length} were deployed`)
     const dead = u.lifeState === 'dead'
+    const hero = campaign.roster[heroId]
+    if (!hero) throw new Error(`${engagement.id}: deployed hero '${heroId}' is not on the roster`)
+    // A wound is a level, REPLACED not accumulated (§4.2) — and a battle never
+    // heals one: the proposal is the worse of what they carried in and what
+    // this battle did.
     return {
       heroId,
       xp: dead ? 0 : speed + 3 * u.kills,
-      wound: dead ? 0 : u.downed ? SWITCHES.woundFromDowned : 0,
+      wound: dead ? 0 : Math.max(hero.wound, u.downed ? SWITCHES.woundFromDowned : 0),
       dead,
       mvp: false,
     }
@@ -84,7 +104,71 @@ export function resolveReckoning(campaign: CampaignState, engagement: Engagement
   if (!territory) throw new Error(`${engagement.id}: Territory '${engagement.territoryId}' is not on the map`)
   const claim = won && kind.onWin === 'claim-territory' ? territory.id : null
   const lose = !won && kind.onLose === 'lose-territory' && !territory.kingdom ? territory.id : null
-  const salvage = claim && !territory.claimedOnce ? SWITCHES.salvagePerConquest : 0
+  const grants: Grant[] = won
+    ? PAYOUTS.filter((p) => p.engagementKind === engagement.kind && !(p.firstClaimOnly && territory.claimedOnce))
+        .map((p) => ({ currency: p.currency, amount: p.amount }))
+    : []
 
-  return { engagementId: engagement.id, won, heroes, renown: won ? 1 : 0, losses: won ? 0 : 1, claim, lose, salvage }
+  return { engagementId: engagement.id, won, heroes, renown: won ? 1 : 0, losses: won ? 0 : 1, claim, lose, grants }
+}
+
+/**
+ * THE ONE WRITER. Refuses before it writes anything (Law 9): the cursor must
+ * be at the battle with a result set, the result must validate against the
+ * Engagement, and the Reckoning must be for this Engagement. Then it writes
+ * exactly the Reckoning it was given, through the mutators, and moves the
+ * cursor past the battle so a second apply is refused.
+ */
+export function applyBattleResult(ctx: Ctx, engagement: Engagement, result: EngagementResult, reckoning: Reckoning): void {
+  const c = ctx.campaign
+  const cursor = c.cursor
+  if (cursor.step !== 'battle' || !cursor.battle?.resultSet) {
+    throw new Error(`applyBattleResult refused: the cursor is at '${cursor.step}'${cursor.battle ? ' with no result set' : ''} — a result is applied once, from the battle step`)
+  }
+  if (cursor.engagement?.id !== engagement.id) throw new Error(`applyBattleResult refused: the cursor holds '${cursor.engagement?.id}', not '${engagement.id}'`)
+  validateResult(result, { heroes: engagement.deployed.length, enemies: engagement.enemies.length, id: engagement.id })
+  if (reckoning.engagementId !== engagement.id) throw new Error(`applyBattleResult refused: the Reckoning is for '${reckoning.engagementId}', not '${engagement.id}'`)
+  const named = new Set(reckoning.heroes.map((h) => h.heroId))
+  for (const heroId of engagement.deployed) if (!named.has(heroId)) throw new Error(`applyBattleResult refused: the Reckoning says nothing about deployed hero '${heroId}'`)
+  for (const h of reckoning.heroes) {
+    if (!engagement.deployed.includes(h.heroId)) throw new Error(`applyBattleResult refused: the Reckoning names '${h.heroId}', who was not deployed`)
+    if (!Number.isInteger(h.xp) || h.xp < 0 || !Number.isInteger(h.wound) || h.wound < 0 || h.wound > 3) throw new Error(`applyBattleResult refused: '${h.heroId}' xp ${h.xp}, wound ${h.wound}`)
+  }
+  for (const g of reckoning.grants) if (!(g.currency in c.purse) || !Number.isInteger(g.amount) || g.amount < 0) throw new Error(`applyBattleResult refused: grant ${g.amount} of '${g.currency}'`)
+  if (reckoning.lose && c.territories[reckoning.lose]?.kingdom) throw new Error(`applyBattleResult refused: the Kingdom Territory cannot be lost`)
+
+  const cause = engagement.id
+  for (const h of reckoning.heroes) {
+    if (h.dead) { setHeroDead(ctx, h.heroId, cause); continue }
+    if (h.xp > 0) applyXp(ctx, h.heroId, h.xp, cause)
+    if (h.wound !== c.roster[h.heroId]!.wound) setWound(ctx, h.heroId, h.wound, cause)
+  }
+  if (reckoning.renown > 0) applyRenown(ctx, reckoning.renown, cause)
+  setEngagementResolved(ctx, engagement.id, reckoning.won, cause)
+  if (reckoning.claim) applyClaim(ctx, reckoning.claim, cause)
+  if (reckoning.lose) applyLose(ctx, reckoning.lose, cause)
+  for (const g of reckoning.grants) if (g.amount > 0) applyGrant(ctx, g.currency, g.amount, cause)
+  setCursor(ctx, { step: 'reckoning', prepStep: null, battle: null }, cause)
+}
+
+/** Leave the tally: the Engagement is done, the cursor is back at the Week's open step. */
+export function performExitBattle(ctx: Ctx, causeId: string): void {
+  if (ctx.campaign.cursor.step !== 'reckoning') throw new Error(`performExitBattle refused: the cursor is at '${ctx.campaign.cursor.step}', not the Reckoning`)
+  setCursor(ctx, { step: 'open', prepStep: null, engagement: null, battle: null }, causeId)
+}
+
+/**
+ * The combat difficulty number — SKELETON-NOTES.md:675, Andrew 2026-08-23:
+ * Σ(hero levels, civilians ÷2 ⌊⌋) + 2×week − 5×losses + 3×corruption, counting
+ * everyone you own who is alive (SKELETON-SETTLED.md:117-118). Derived, never
+ * stored; losses and corruption are the stored summands. Integers only.
+ */
+export function resolveDifficulty(campaign: CampaignState): number {
+  let levels = 0, corruption = 0
+  for (const h of Object.values(campaign.roster)) {
+    if (h.lifeState !== 'alive') continue
+    levels += groupOf(h.classes) === 'civilian' ? Math.floor(h.level / 2) : h.level
+    corruption += h.corruption
+  }
+  return levels + 2 * campaign.week - 5 * campaign.losses + 3 * corruption
 }

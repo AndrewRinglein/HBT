@@ -87,6 +87,70 @@ export function setBattleOutcome(ctx: Ctx, result: EngagementResult, reckoning: 
   emit(ctx, 'battle.decided', causeId, { engagementId: result.id, outcome: result.outcome })
 }
 
+// ── what the one writer says as it writes ───────────────────────────────────
+
+function heroOrThrow(campaign: CampaignState, heroId: string) {
+  const h = campaign.roster[heroId]
+  if (!h) throw new Error(`no hero '${heroId}' on the roster`)
+  return h
+}
+
+export function applyXp(ctx: Ctx, heroId: string, amount: number, causeId: string): void {
+  const h = heroOrThrow(ctx.campaign, heroId)
+  h.xp += amount
+  emit(ctx, 'xp.gained', causeId, { heroId, amount, xp: h.xp })
+}
+
+/** A wound is a LEVEL, replaced not accumulated (GAME-ARCHITECTURE.md §4.2). */
+export function setWound(ctx: Ctx, heroId: string, level: number, causeId: string): void {
+  const h = heroOrThrow(ctx.campaign, heroId)
+  const from = h.wound
+  h.wound = level
+  emit(ctx, 'hero.wounded', causeId, { heroId, from, to: level })
+}
+
+export function setHeroDead(ctx: Ctx, heroId: string, causeId: string): void {
+  const h = heroOrThrow(ctx.campaign, heroId)
+  if (h.lifeState === 'dead') return
+  h.lifeState = 'dead'
+  emit(ctx, 'hero.died', causeId, { heroId })
+}
+
+export function applyGrant(ctx: Ctx, currencyId: string, amount: number, causeId: string): void {
+  if (!(currencyId in ctx.campaign.purse)) throw new Error(`no currency '${currencyId}' in the purse — currencies are named at makeCampaign: ${Object.keys(ctx.campaign.purse).join(', ')}`)
+  ctx.campaign.purse[currencyId]! += amount
+  emit(ctx, 'resource.gained', causeId, { currencyId, amount, balance: ctx.campaign.purse[currencyId] })
+}
+
+export function applyRenown(ctx: Ctx, amount: number, causeId: string): void {
+  ctx.campaign.renown += amount
+  emit(ctx, 'renown.gained', causeId, { amount, renown: ctx.campaign.renown })
+}
+
+/** The Engagement is over, won or lost; a loss counts (SKELETON-NOTES.md: −5 per loss). */
+export function setEngagementResolved(ctx: Ctx, engagementId: string, won: boolean, causeId: string): void {
+  if (!won) ctx.campaign.losses += 1
+  const kind = ctx.campaign.cursor.engagement?.id === engagementId ? ctx.campaign.cursor.engagement.kind : null
+  emit(ctx, 'engagement.resolved', causeId, { engagementId, kind, won, losses: ctx.campaign.losses })
+}
+
+export function applyClaim(ctx: Ctx, territoryId: string, causeId: string): void {
+  const t = ctx.campaign.territories[territoryId]
+  if (!t) throw new Error(`no Territory '${territoryId}' on the map`)
+  t.owned = true
+  const first = !t.claimedOnce
+  t.claimedOnce = true
+  emit(ctx, 'territory.claimed', causeId, { territoryId, first, buildings: t.buildings.map((b) => b.id) })
+}
+
+export function applyLose(ctx: Ctx, territoryId: string, causeId: string): void {
+  const t = ctx.campaign.territories[territoryId]
+  if (!t) throw new Error(`no Territory '${territoryId}' on the map`)
+  if (t.kingdom) throw new Error(`the Kingdom Territory '${territoryId}' cannot be lost (SKELETON-SETTLED.md:81)`)
+  t.owned = false
+  emit(ctx, 'territory.lost', causeId, { territoryId })
+}
+
 /**
  * Move the cursor. One mutator for every cursor change, so a reload always
  * lands where an event says the save was (§2.2: the autosave writes on every

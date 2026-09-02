@@ -31,7 +31,7 @@ const rows = (ctx: ReturnType<typeof atBattle>) => {
 }
 
 describe('ISC-034 — the Reckoning is proposed and editable', () => {
-  it('a won battle proposes XP per deployed hero, one MVP, +1 Renown, a claim and Salvage', () => {
+  it('a won battle proposes XP per deployed hero, one MVP, +1 Renown, a claim and a Salvage grant', () => {
     const ctx = atBattle()
     const e = ctx.campaign.cursor.engagement!
     const { heroes, enemies } = rows(ctx)
@@ -51,7 +51,7 @@ describe('ISC-034 — the Reckoning is proposed and editable', () => {
     expect(k.heroes.filter((h) => h.mvp).length).toBe(1)
     expect(k.renown).toBe(1); expect(k.losses).toBe(0)
     expect(k.claim).toBe(e.territoryId)
-    expect(k.salvage).toBe(SWITCHES.salvagePerConquest)
+    expect(k.grants).toEqual([{ currency: 'currency.salvage', amount: SWITCHES.salvagePerConquest }])
     assertPlainData(k, 'reckoning')
   })
 
@@ -65,7 +65,7 @@ describe('ISC-034 — the Reckoning is proposed and editable', () => {
     validateResult(r)
     const k = resolveReckoning(ctx.campaign, e, r)
     expect(k.won).toBe(false); expect(k.renown).toBe(0); expect(k.losses).toBe(1)
-    expect(k.claim).toBeNull(); expect(k.salvage).toBe(0)
+    expect(k.claim).toBeNull(); expect(k.grants).toEqual([])
     expect(k.lose).toBeNull()                       // a lost Conquer costs nothing (the stakes row)
     expect(k.heroes[0]).toMatchObject({ dead: true, xp: 0, mvp: false })
     for (const h of k.heroes.slice(1)) expect(h.wound).toBe(SWITCHES.woundFromDowned)
@@ -92,7 +92,7 @@ describe('ISC-034 — the Reckoning is proposed and editable', () => {
     let r = makeBlankResult(e.id, 'heroClear', heroes, enemies)
     enemies.forEach((_, i) => { r = withUnitFate(r, 'enemy', i, { lifeState: 'dead' }) })
     const k = resolveReckoning(ctx.campaign, e, r)
-    const edited = { ...k, heroes: k.heroes.map((h, i) => (i === 2 ? { ...h, xp: 42, wound: 3 } : h)), salvage: 7 }
+    const edited = { ...k, heroes: k.heroes.map((h, i) => (i === 2 ? { ...h, xp: 42, wound: 3 } : h)), grants: [{ currency: 'currency.salvage', amount: 7 }] }
     setBattleOutcome(ctx, r, edited, 'test')
     expect(ctx.campaign.cursor.battle).toEqual({ resultSet: true, result: r, reckoning: edited })
     expect(ctx.campaign.cursor.battle!.reckoning!.heroes[2]).toMatchObject({ xp: 42, wound: 3 })
