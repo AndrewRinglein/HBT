@@ -91,16 +91,16 @@ function slotHtml(realm: RealmRow, n: number, confirmEnd: boolean): string {
   const s = summarize(readSlot(realm.id, n))
   const id = `data-realm="${esc(realm.id)}" data-n="${n}"`
   if (!realm.playable) return `<div class="slot locked"><span class="lbl">Slot ${n}</span><span class="meta">${n === 1 ? 'Unlocks with the campaign' : ''}</span></div>`
-  if (s.state === 'empty') return `<div class="slot empty"><span class="lbl">———</span><span class="meta">Empty slot</span><span class="sp"></span>
-    <button class="primary" data-act="slot-new" ${id}>+ New Party</button>
+  if (s.state === 'empty') return `<div class="slot empty"><span class="lbl">———</span><span class="meta">Empty slot</span><div class="acts">
+    ${n === 1 ? `<button class="quiet" data-act="slot-fixture" ${id}>the fixture</button>` : ''}
     <label class="file quiet">Load a save <input type="file" accept=".json,application/json" data-act="slot-file" ${id}></label>
-    ${n === 1 ? `<button class="quiet" data-act="slot-fixture" ${id}>the fixture</button>` : ''}</div>`
-  if (s.state === 'broken') return `<div class="slot broken"><span class="lbl">Slot ${n}</span><span class="meta">a save this build cannot read — ${esc(s.why.slice(0, 80))}</span><span class="sp"></span><button class="danger" data-act="slot-clear" ${id}>Clear</button></div>`
-  if (s.state === 'ended') return `<div class="slot ended"><span class="lbl">Party ${n}</span>${partyHtml(s.campaign)}<span class="prog">${esc(s.progress)}</span><span class="sp"></span><span class="tick">✓</span>
-    <button data-act="slot-continue" ${id}>Load</button><button class="quiet" data-act="slot-clear" ${id}>Clear</button></div>`
-  return `<div class="slot live"><span class="lbl">${n === 1 ? 'Questing' : 'Party ' + n}</span>${partyHtml(s.campaign)}<span class="prog">${esc(s.progress)}</span><span class="sp"></span>
+    <button class="primary" data-act="slot-new" ${id}>+ New Party</button></div></div>`
+  if (s.state === 'broken') return `<div class="slot broken"><span class="lbl">Slot ${n}</span><span class="prog">a save this build cannot read — ${esc(s.why.slice(0, 80))}</span><div class="acts"><button class="danger" data-act="slot-clear" ${id}>Clear</button></div></div>`
+  if (s.state === 'ended') return `<div class="slot ended"><span class="lbl">Party ${n}</span>${partyHtml(s.campaign)}<span class="prog">${esc(s.progress)}</span><div class="acts"><span class="tick">✓</span>
+    <button data-act="slot-continue" ${id}>Load</button><button class="quiet" data-act="slot-clear" ${id}>Clear</button></div></div>`
+  return `<div class="slot live"><span class="lbl">${n === 1 ? 'Questing' : 'Party ' + n}</span>${partyHtml(s.campaign)}<span class="prog">${esc(s.progress)}</span><div class="acts">
     <button class="go" data-act="slot-continue" ${id}>Continue</button>
-    ${confirmEnd ? `<button class="danger" data-act="slot-clear" ${id}>Really end it</button><button class="quiet" data-act="slot-end-cancel" ${id}>Keep</button>` : `<button class="danger" data-act="slot-end" ${id}>End Game</button>`}</div>`
+    ${confirmEnd ? `<button class="danger" data-act="slot-clear" ${id}>Really end it</button><button class="quiet" data-act="slot-end-cancel" ${id}>Keep</button>` : `<button class="danger" data-act="slot-end" ${id}>End Game</button>`}</div></div>`
 }
 
 /** The whole screen. `confirmEnd` names the one slot whose End Game is awaiting a second click. */

@@ -112,6 +112,7 @@ const nameOf = (typeId: string) => UNITS[typeId]?.name ?? typeId
 function render(): void {
   const root = document.getElementById('app')!
   const c = app.ctx?.campaign ?? null
+  root.className = c ? '' : 'front'
   if (!c) { root.innerHTML = loadGameScreen(app.status, app.error, __BUILD_SHA__, app.confirmEnd); wire(root); return }
   root.innerHTML = `
     <h1>Heroes of Blight and Tragic — the slice</h1>

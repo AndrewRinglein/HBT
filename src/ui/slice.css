@@ -5,6 +5,8 @@
 *{box-sizing:border-box}
 body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.5 "Iowan Old Style","Palatino Linotype",Georgia,serif}
 #app{max-width:1180px;margin:0 auto;padding:22px 20px 80px}
+/* the front screen takes the whole width; the Campaign screens keep their reading column */
+#app.front{max-width:none;padding:14px 30px 40px}
 h1{font-size:24px;margin:0 0 2px}
 h2{font-size:19px;margin:24px 0 8px;padding-bottom:6px;border-bottom:1px solid var(--line)}
 h3{font-size:15px;margin:14px 0 6px;color:var(--dim);text-transform:uppercase;letter-spacing:.08em}
@@ -70,7 +72,7 @@ svg.world image.ruin{filter:grayscale(.9) brightness(.55)}
 .hall .bcard{float:right;width:106px;margin:0 0 8px 12px;border:1px solid #6b5a3e;border-radius:4px}
 /* the Load Game screen — research/mocks/Load Game.html, adapted to flow */
 :root{--lg-gold:#c9a227;--lg-gold2:#e8c84a;--lg-parch:#e8d59e;--lg-ink:#b8a88a}
-.lg{max-width:1500px;margin:0 auto;padding:6px 0 30px}
+.lg{width:100%;margin:0;padding:0}
 .lg .lghead{display:flex;align-items:flex-end;gap:16px;flex-wrap:wrap;margin-bottom:14px}
 .lg .lghead h1{margin:0;font:700 26px Cinzel,"Palatino Linotype",Georgia,serif;color:var(--lg-gold2);letter-spacing:1px;text-shadow:0 2px 8px rgba(0,0,0,.8)}
 .lg .strap{font:italic 15px "IM Fell English",Georgia,serif;color:rgba(200,180,120,.7)}
@@ -98,7 +100,9 @@ svg.world image.ruin{filter:grayscale(.9) brightness(.55)}
 .lg .cname{position:relative;font:700 28px Cinzel,"Palatino Linotype",Georgia,serif;letter-spacing:2px;text-transform:uppercase;color:#e8a878;text-shadow:0 2px 8px rgba(0,0,0,.9),0 0 15px rgba(0,0,0,.5);text-align:center}
 .lg .lockmsg{padding:8px 12px;border-radius:6px;background:rgba(20,15,10,.7);border:1px solid rgba(120,100,60,.3);color:#8a7a5a;font-size:12px}
 .lg .lockmsg b{color:#b09a6a;margin-right:6px}
-.lg .slot{display:flex;align-items:center;gap:10px;padding:8px 12px;border-radius:6px;min-height:50px;background:rgba(20,17,12,.75);border:1px solid rgba(120,100,60,.3);flex-wrap:wrap}
+.lg .slot{display:flex;align-items:center;gap:10px;padding:8px 12px;border-radius:6px;min-height:50px;background:rgba(20,17,12,.75);border:1px solid rgba(120,100,60,.3);min-width:0}
+.lg .acts{margin-left:auto;display:flex;gap:6px;flex-shrink:0;align-items:center}
+.lg .acts button{white-space:nowrap;padding:6px 14px}
 .lg .slot.live{background:rgba(30,25,12,.85);border-color:rgba(201,162,39,.5);animation:lgSlotGlow 2.5s ease-in-out infinite}
 .lg .slot.ended{background:rgba(20,25,12,.75);border-color:rgba(122,188,74,.35)}
 .lg .slot.locked,.lg .slot.empty{border-style:dashed;color:#6a5e4a}
@@ -106,8 +110,8 @@ svg.world image.ruin{filter:grayscale(.9) brightness(.55)}
 .lg .lbl{font-size:9px;text-transform:uppercase;letter-spacing:1.5px;min-width:64px;color:var(--lg-gold)}
 .lg .slot.ended .lbl{color:#7abc4a}
 .lg .slot.empty .lbl,.lg .slot.locked .lbl{color:#6a5e4a}
-.lg .prog{font-size:11px;color:#8a7a5a;white-space:nowrap}
-.lg .party{display:flex;gap:4px}
+.lg .prog{font-size:11px;color:#8a7a5a;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
+.lg .party{display:flex;gap:4px;flex-shrink:0}
 .lg .face{position:relative;width:32px;height:32px;border-radius:4px;border:1px solid #6b5a2e;background:#1a1612;color:#c9b27a;font:700 11px Cinzel,Georgia,serif;display:flex;align-items:center;justify-content:center}
 .lg .face.hurt{border-color:#8a3a5a;box-shadow:0 0 4px rgba(180,60,100,.4)}
 .lg .face.dead{border-color:#5a2a2a;color:#6a4a4a;filter:grayscale(1)}
@@ -120,3 +124,4 @@ svg.world image.ruin{filter:grayscale(.9) brightness(.55)}
 @keyframes lgSlotGlow{0%,100%{box-shadow:0 0 15px rgba(201,162,39,.1)}50%{box-shadow:0 0 25px rgba(201,162,39,.25)}}
 @media (prefers-reduced-motion:reduce){.lg .banner,.lg .slot.live{animation:none}}
 @media (max-width:1100px){.lg .boards,.lg .camps{grid-template-columns:1fr}}
+@media (max-width:1400px){.lg .cname{font-size:22px}}
