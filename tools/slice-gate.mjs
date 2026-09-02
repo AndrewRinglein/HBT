@@ -135,10 +135,12 @@ function stateOf(isc, st) {
 }
 
 function runProbe(isc, { disabled = false } = {}) {
-  const env = { ...process.env }
+  const env = { ...process.env, NO_COLOR: '1', FORCE_COLOR: '0' }
   if (disabled) env.KINGDOM_DISABLE_IDS = isc.disable.join(',')
   const r = tryRun(isc.probe, { env, timeout: 10 * 60 * 1000 })
-  return { ok: r.ok, tail: r.out.trim().split('\n').filter(Boolean).slice(-3).join(' | ').slice(0, 300) }
+  // eslint-disable-next-line no-control-regex
+  const plain = r.out.replace(/\x1b\[[0-9;]*m/g, '')
+  return { ok: r.ok, tail: plain.trim().split('\n').filter((l) => l.trim() && !/^[⎯\s]+(\[\d+\/\d+\])?[⎯\s]*$/.test(l)).slice(-3).join(' | ').slice(0, 300) }
 }
 
 // ── count and sync ──────────────────────────────────────────────────────────

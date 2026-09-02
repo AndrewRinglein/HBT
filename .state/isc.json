@@ -1,0 +1,37 @@
+{
+ "014": {
+  "red": {
+   "at": "2026-09-02 03:36",
+   "sha": "1446df6",
+   "hash": "014538fede1c",
+   "how": "feature absent",
+   "tail": "only-writer: FAIL — no applyBattleResult is defined anywhere under src/"
+  }
+ },
+ "002": {
+  "red": {
+   "at": "2026-09-02 03:38",
+   "sha": "1446df6",
+   "hash": "5d7eec2b9fc4",
+   "how": "feature absent",
+   "tail": "    \u001b[90m 11|\u001b[39m \u001b[35mimport\u001b[39m { createBattle\u001b[33m,\u001b[39m runBattle } \u001b[35mfrom\u001b[39m \u001b[32m'../src/engine.js'\u001b[39m |     \u001b[90m 12|\u001b[39m | \u001b[31m\u001b[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯\u001b[22m\u001b[39m"
+  },
+  "closed": {
+   "at": "2026-09-02 03:43",
+   "sha": "3f9904b"
+  }
+ },
+ "003": {
+  "red": {
+   "at": "2026-09-02 03:40",
+   "sha": "1446df6",
+   "hash": "e8da485534d8",
+   "how": "feature absent",
+   "tail": "       | ^ |      10| |      11| const SPEC: EngagementSpec = {"
+  },
+  "closed": {
+   "at": "2026-09-02 03:43",
+   "sha": "3f9904b"
+  }
+ }
+}

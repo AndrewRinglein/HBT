@@ -10,7 +10,12 @@
    "002",
    "003"
   ],
-  "needs": []
+  "needs": [],
+  "attempts": 1,
+  "status": "done-needs-review",
+  "sha": "3f9904b",
+  "engineSha": "745922d",
+  "gauntlet": "not passed — 2 flag(s) warned"
  },
  {
   "id": "campaign.state",

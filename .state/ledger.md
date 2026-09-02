@@ -12,3 +12,26 @@ The gate cannot gate itself. The first commit carries the package skeleton
 (`gate.mjs`, `slice-gate.mjs`, `next.mjs`, `report.mjs`, `scan.mjs`), the event
 vocabulary (`src/core/events.ts`) and this state directory with the nine-item
 backlog. Everything after it lands through `node tools/gate.mjs <id> --land`.
+
+## seam.run-engagement — LANDED `3f9904b` **NEEDS REVIEW**
+2026-09-02 03:42 · engine @ 745922d
+
+  PASS  dependencies landed
+  WARN  not already decided — 3 candidate ruling(s) — READ BEFORE ASKING: ../CODEX.md:3257 · ../CODEX.md:944
+  PASS  typecheck
+  PASS  full test suite
+  PASS  gate 1 — every claimed criterion holds — ISC-002 holds · ISC-003 holds
+  PASS  brought its own tests — test/isc-002.test.ts, test/isc-003.test.ts
+  PASS  existing tests untouched
+  PASS  kill switch — every claimed probe has been seen red — ISC-002: red on record (2026-09-02 03:38 @ 1446df6, probe 5d7eec2b9fc4) · ISC-003: red on record (2026-09-02 03:40 @ 1446df6, probe e8da485534d8)
+  PASS  nothing regresses — every P-tier probe — 3 P-tier probe(s): 2 green, 1 red, 0 regression(s). 0 of 25 closed · 3 probed · 0 accepted
+  PASS  hardcode scan — core knows mechanisms, never names
+  PASS  generalizes — the second instance costs zero kingdom code — shape 'plumbing' — not a mechanism, exempt
+  PASS  naming — new ids use declared kinds
+  PASS  naming — no banned words invented
+  WARN  engine working tree clean — verified against a DIRTY engine tree (745922d + 3 uncommitted under src/test): M src/content/generated/pack.stamp.json, M src/content/generated/pack.ts, ?? src/sim/coverage.ts
+  PASS  one door to the engine
+
+ISC-002: CLOSED at 3f9904b · ISC-003: CLOSED at 3f9904b
+slice: 2 of 25 closed · 3 probed · 0 accepted
+IRON GAUNTLET: NOT PASSED — 2 FLAG(S) WARNED

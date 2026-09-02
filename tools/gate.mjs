@@ -395,8 +395,16 @@ function knownKinds() {
   return kinds
 }
 function eventVocabulary() {
-  // src/core/events.ts declares the kingdom's event names, explicitly, as data.
+  // Two declared lists, both data: src/core/events.ts (what the kingdom SAYS)
+  // and ENGINE_EVENTS in src/engine.ts (what the kingdom READS of the engine's).
+  // Found on the first gate run (2026-09-01): the seam's fold switches on
+  // 'unit.enter' and 'life.dead', and the scan read them as content ids.
   const ev = new Set()
   try { for (const m of readFileSync('src/core/events.ts', 'utf8').matchAll(/'([a-z]+\.[a-z-]+)'/g)) ev.add(m[1]) } catch {}
+  try {
+    const door = readFileSync('src/engine.ts', 'utf8')
+    const block = door.match(/ENGINE_EVENTS\s*=\s*\[([\s\S]*?)\]/)
+    for (const m of (block?.[1] ?? '').matchAll(/'([a-z]+\.[a-z-]+)'/g)) ev.add(m[1])
+  } catch {}
   return ev
 }
