@@ -41,6 +41,10 @@
    "hash": "fb6132dc7ee3",
    "how": "feature absent",
    "tail": "       | ^ |       8| import { makeCtx, setCursor } from '../src/core/mutate.js' |       9| import { CURRENCIES } from '../src/content/currencies.js'"
+  },
+  "closed": {
+   "at": "2026-09-02 04:03",
+   "sha": "fb04ddf"
   }
  }
 }

@@ -43,3 +43,26 @@ the gate's own bookkeeping step and never existed in history. The landing is
 `0f1db1a` (seam + bookkeeping in one commit, as the amend left it). Every
 reference in this directory was corrected to `0f1db1a`, and the gate now makes
 its bookkeeping a second commit so a recorded sha is always one you can check out.
+
+## campaign.state — LANDED `fb04ddf` **NEEDS REVIEW**
+2026-09-02 04:02 · engine @ 745922d
+
+  PASS  dependencies landed
+  WARN  not already decided — 3 candidate ruling(s) — READ BEFORE ASKING: ../STATE.md:20 · COMBAT-FRAMEWORK.md:147
+  PASS  typecheck
+  PASS  full test suite
+  PASS  gate 1 — every claimed criterion holds — ISC-004 holds
+  PASS  brought its own tests — test/isc-004.test.ts
+  PASS  existing tests untouched
+  PASS  kill switch — every claimed probe has been seen red — ISC-004: red on record (2026-09-02 04:01 @ 443d2b4, probe fb6132dc7ee3)
+  PASS  nothing regresses — every P-tier probe — 4 P-tier probe(s): 3 green, 1 red, 0 regression(s). 2 of 33 closed · 4 probed · 0 accepted
+  PASS  hardcode scan — core knows mechanisms, never names
+  PASS  generalizes — the second instance costs zero kingdom code — shape 'plumbing' — not a mechanism, exempt
+  PASS  naming — new ids use declared kinds
+  WARN  naming — no banned words invented — 'round' — say Turn — will land FLAGGED
+  WARN  engine working tree clean — verified against a DIRTY engine tree (745922d + 3 uncommitted under src/test): M src/content/generated/pack.stamp.json, M src/content/generated/pack.ts, ?? src/sim/coverage.ts
+  PASS  one door to the engine
+
+ISC-004: CLOSED at fb04ddf
+slice: 3 of 33 closed · 4 probed · 0 accepted
+IRON GAUNTLET: NOT PASSED — 3 FLAG(S) WARNED
