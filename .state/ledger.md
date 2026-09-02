@@ -571,3 +571,25 @@ Law 10 note (screens.thin): test/isc-010.test.ts was edited — `c.unavailable =
 ISC-001: CLOSED at e891836 · ISC-025: CLOSED at e891836
 slice: 46 of 50 closed · 46 probed · 0 accepted
 IRON GAUNTLET: NOT PASSED — 2 FLAG(S) WARNED
+
+## screens.art — LANDED `7d954ed` **NEEDS REVIEW**
+2026-09-02 10:53 · engine @ 745922d
+
+  PASS  dependencies landed
+  WARN  not already decided — 2 candidate ruling(s) — READ BEFORE ASKING: ../STATE.md:20 · ../DOCS.md:82
+  PASS  typecheck
+  PASS  full test suite — 97 passed
+  PASS  gate 1 — every claimed criterion holds
+  PASS  brought its own tests — test/art.test.ts
+  PASS  existing tests untouched
+  PASS  kill switch — every claimed probe has been seen red — no criterion claimed — not applicable
+  PASS  nothing regresses — every P-tier probe — 46 P-tier probe(s): 46 green, 0 red, 0 regression(s). 46 of 50 closed · 46 probed · 0 accepted
+  PASS  hardcode scan — core knows mechanisms, never names
+  PASS  generalizes — the second instance costs zero kingdom code — shape 'plumbing' — not a mechanism, exempt
+  PASS  naming — new ids use declared kinds
+  PASS  naming — no banned words invented
+  WARN  engine working tree clean — verified against a DIRTY engine tree (745922d + 3 uncommitted under src/test): M src/content/generated/pack.stamp.json, M src/content/generated/pack.ts, ?? src/sim/coverage.ts
+  PASS  one door to the engine
+
+slice: 46 of 50 closed · 46 probed · 0 accepted
+IRON GAUNTLET: NOT PASSED — 2 FLAG(S) WARNED; 1 EXEMPTION(S) TAKEN
