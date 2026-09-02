@@ -2432,7 +2432,7 @@
    "range": "melee",
    "stat": "strength",
    "damage": 0,
-   "stamina": 1,
+   "stamina": 2,
    "accuracy": 0,
    "crit": 0,
    "hits": 2,
@@ -2442,7 +2442,8 @@
     "melee"
    ],
    "triggers": [],
-   "slayer": null
+   "slayer": null,
+   "source": " | 2026-09-02 ruled: a DOUBLE ATTACK COSTS AT LEAST 2 STAMINA. Swept here from the Iron Claws ruling — Twin Cut was the only other double attack in the game priced at 1 stamina. Its DAMAGE is untouched: the -1 cut was reasoned specifically about Iron Claws being two-handed for one less than a one-hander, and Duel Runeblades carries a demon slayer on its other attack. Say so if it should take the damage cut too."
   },
   {
    "id": "attack.duel-runeblades.rune-cross",
@@ -2561,8 +2562,8 @@
    "name": "Rake",
    "range": "melee",
    "stat": "strength",
-   "damage": 0,
-   "stamina": 1,
+   "damage": -1,
+   "stamina": 2,
    "accuracy": 5,
    "crit": 0,
    "hits": 2,
@@ -2572,7 +2573,8 @@
     "melee"
    ],
    "triggers": [],
-   "slayer": null
+   "slayer": null,
+   "source": " | 2026-09-02 ruled: a DOUBLE ATTACK COSTS AT LEAST 2 STAMINA. Iron Claws also had its damage cut by 1, verbatim: 'I think the Ironclaws probably have a damage that is one too high. It is already a two-handed weapon that does one less than a standard one-handed weapon... If you have a 4 strength and you are doing 1 less damage to something with 1 armor, you are doing 2 damage twice. So at 5 strength against 1 armor, it is gaining.' At Str 4 vs Armor 1 it now matches a longsword Slash exactly (4 vs 4) and only pulls ahead from Str 5 — the curve crosses where it should."
   },
   {
    "id": "attack.iron-claws.eviscerate",
