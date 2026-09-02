@@ -1396,6 +1396,64 @@
    "effect": "Shadow does nothing on its own. It TICKS UP — first of everything in Settling — and is then compared to the unit's Max Health. The moment Shadow is AT OR ABOVE Max Health the unit is OBLITERATED: killed, removed from the field, and NO CORPSE is left. It is the only effect in the game that denies a corpse, which is what makes it worth fearing rather than merely surviving.",
    "decay": "NONE — it is the one status that grows. +1 per Settle, and it never falls on its own clock.",
    "source": "RULED 2026-09-02, verbatim: 'Shadow, ticks UP during settling (first), then is compared to max health. If shadow = max health, unit is obliterated. (killed, removed from field, no corpse).' Tick size (+1) and the at-or-above threshold ruled the same day. Shadow was named 2026-09-01 with no effect anywhere — this is its first definition, and the last unshaped status is now shaped."
+  },
+  {
+   "id": "status.protection",
+   "name": "Protection",
+   "shape": "pool",
+   "family": "magnitude",
+   "effect": "Absorbs incoming damage at pipeline station PROTECTION (550) and is spent by what it absorbs. It is the ONLY damage-prevention mechanic in the game — the only flat reducer besides Armor and Resist, and the only thing that stops damage rather than shrinking it.",
+   "decay": "−1 at End of Phase, ON TOP of being spent — so it cannot be banked. Five Protection is gone in five quiet Turns even if nothing hits you.",
+   "stacking": "ADDITIVE. A second grant adds to whatever is left; it never replaces or discards it.",
+   "authoringNote": "Protection NEVER carries a duration. Writing \"Protection 5 until the end of your next Turn\" is a mistake — the decay already IS the timer, and the clause makes the grant strictly worse than the same number written plainly.",
+   "source": "Row written 2026-09-02. The substance was already published in 1-EFFECTS-SETTLED.md (the status.* table) and AUTHORING-GUIDE.md; only the machine-readable row was missing. Nothing here is a new ruling. 180 mentions across content and 44 items and powers grant it, which made the absence of a row the largest single gap in the status vocabulary."
+  },
+  {
+   "id": "status.burn",
+   "name": "Burn",
+   "shape": "counter",
+   "family": "magnitude",
+   "effect": "Damage equal to its value at End of Phase, mitigated by Resist per tick (ruled 2026-08-20), AND it halves all healing received while held.",
+   "decay": "−1 at End of Phase.",
+   "note": "The healing halver is magnitude-independent — Burn 1 halves healing exactly as Burn 10 does, so the first point is worth far more than the tenth against a healing party. Flagged 2026-09-02, not yet ruled. Burn and Frost annihilate one for one on application (rule.burn-frost-cancel).",
+   "source": "Row written 2026-09-02. The substance was already published in 1-EFFECTS-SETTLED.md (the status.* table) and AUTHORING-GUIDE.md; only the machine-readable row was missing. Nothing here is a new ruling."
+  },
+  {
+   "id": "status.poison",
+   "name": "Poison",
+   "shape": "counter",
+   "family": "magnitude",
+   "effect": "Damage equal to its value at End of Phase, mitigated by Resist per tick.",
+   "decay": "−1 at End of Phase. The attrition clock that hurts most the Turn you get it.",
+   "source": "Row written 2026-09-02. The substance was already published in 1-EFFECTS-SETTLED.md (the status.* table) and AUTHORING-GUIDE.md; only the machine-readable row was missing. Nothing here is a new ruling."
+  },
+  {
+   "id": "status.regeneration",
+   "name": "Regeneration",
+   "shape": "counter",
+   "family": "magnitude",
+   "effect": "Heals equal to its value at End of Phase — poison's mirror, so one number reads both directions. A Regeneration tick IS a heal (rule.one-healing-function), so it is bonused by Karma, halved by Burn, and strips Bleed equal to half of what it actually heals.",
+   "decay": "−1 at End of Phase.",
+   "source": "Row written 2026-09-02. The substance was already published in 1-EFFECTS-SETTLED.md (the status.* table) and AUTHORING-GUIDE.md; only the machine-readable row was missing. Nothing here is a new ruling."
+  },
+  {
+   "id": "status.weak",
+   "name": "Weak",
+   "shape": "modifier",
+   "family": "magnitude",
+   "effect": "−1 damage DEALT per point, read at pipeline station SOURCE_STATUS (250). It reduces the damage the unit deals; it never touches the Strength or Precision stats.",
+   "decay": "−1 at End of Phase.",
+   "note": "Weak is the ONLY legal damage-dealt reduction in the game — no other content may do it (corrected in the Authoring Guide 2026-09-02).",
+   "source": "Row written 2026-09-02. The substance was already published in 1-EFFECTS-SETTLED.md (the status.* table) and AUTHORING-GUIDE.md; only the machine-readable row was missing. Nothing here is a new ruling."
+  },
+  {
+   "id": "status.stun",
+   "name": "Stun",
+   "shape": "counter",
+   "family": "duration",
+   "effect": "The unit cannot act — its whole Activation, movement and primary alike, is skipped. The End of Activation ladder still runs.",
+   "decay": "−1 at End of Phase, so Stun N is exactly N lost Activations.",
+   "source": "Row written 2026-09-02. The substance was already published in 1-EFFECTS-SETTLED.md (the status.* table) and AUTHORING-GUIDE.md; only the machine-readable row was missing. Nothing here is a new ruling."
   }
  ],
  "testCohort": {

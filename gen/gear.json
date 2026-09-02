@@ -91,8 +91,8 @@
    "free": false,
    "targets": "self",
    "description": "Gain 4 Protection. Protection is spent before Health and STACKS with itself — using this again adds to whatever is left.",
-   "intent": "Four points of somebody else's problem, held one Turn ahead of when you need it.",
-   "source": "Hell-TCG name reused (Mage item, Aether Crystal — the flat +2 Health was too plain for a trinket, so the payload became an activated Protection bubble) | 2026-08-20: Protection STACKS with itself. The old line said it did not and that a second use discarded the remainder, which was simply wrong."
+   "intent": "Four points of somebody else's problem — but it drains a point a Phase whether or not anything hits you, so timing it is the whole item.",
+   "source": "Hell-TCG name reused (Mage item, Aether Crystal — the flat +2 Health was too plain for a trinket, so the payload became an activated Protection bubble) | 2026-08-20: Protection STACKS with itself. The old line said it did not and that a second use discarded the remainder, which was simply wrong. | 2026-09-02: the intent line said the Protection was 'held one Turn ahead of when you need it', which reads as a duration. Protection has no duration — it decays 1 at End of Phase AND is spent by what it absorbs. Reworded; the item never had a special ruling."
   },
   {
    "id": "item.saints-fingerbone",
