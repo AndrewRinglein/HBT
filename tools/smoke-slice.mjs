@@ -16,23 +16,27 @@ class El {
   addEventListener(t, f) { this.handlers[t] = f }
 }
 const root = new El()
-globalThis.document = { getElementById: () => root, createElement: () => new El() }
+globalThis.document = { getElementById: () => root, createElement: () => new El(), head: { appendChild() {} } }
 globalThis.URL = { createObjectURL: () => '', revokeObjectURL: () => {} }
 globalThis.Blob = class {}
 new Function(script)()
 const text = () => root.innerHTML.replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ')
 const click = (act, id) => { const e = root.els.find((x) => x.dataset.act === act && (id === undefined || x.dataset.id === id)); if (!e) throw new Error(`no [data-act=${act}${id ? ' id=' + id : ''}] on screen: ${text().slice(0, 300)}`); if (e.disabled) throw new Error(`${act} is disabled`); e.handlers.click() }
 const has = (s) => { if (!text().includes(s)) throw new Error(`expected "${s}" on screen; got: ${text().slice(0, 400)}`) }
-// ISC-050 — title, mode-select, Start Game reaches the draft
-has('Heroes of Blight and Tragic'); click('start'); has('choose a mode'); has('locked'); click('new-campaign'); has('The opening'); click('advance'); has('The draft'); has('Three come to the fire')
+// the front: the Load Game screen (the mock, 2026-09-02) — three campaigns, two locked, three slots; + New Party reaches the draft
+has('Heroes of Blight and Tragic'); has('Choose a campaign'); has('Peasants'); has('Locked'); has('Empty slot')
+click('slot-new'); has('The opening'); click('advance'); has('The draft'); has('Three come to the fire')
+// back out: the slot now holds the run and offers Continue / End Game
+click('title'); has('Questing'); has('Continue'); has('End Game'); click('slot-end'); has('Really end it'); click('slot-end-cancel'); has('End Game')
+click('slot-continue'); has('The draft'); click('title'); click('slot-end'); click('slot-clear'); has('Empty slot')
 // ISC-049 — roster from the Week; ISC-048 — four Territories, the Stage, the purse
-click('title'); click('start'); click('load-fixture'); has('Reveal')
+click('slot-fixture'); has('Reveal')
 // walk prep to the Week: advance × 4 needs deploys… use the roster button from prep instead
 click('roster'); has('The roster'); has('field slot'); click('roster')
-console.log('smoke: title → mode-select → draft; fixture → prep → roster: OK')
+console.log('smoke: Load Game → new party → draft; end game; fixture → prep → roster: OK')
 console.log(text().slice(0, 200))
 // the fixture's Week: to the world screen at Quest, absences on screen, a quest sent
-click('title'); click('start'); click('load-fixture')
+click('title'); click('slot-end'); click('slot-clear'); click('slot-fixture')
 click('advance'); click('advance')   // reveal → council → deploy
 for (const e of root.els.filter((x) => x.dataset.act === 'deploy').slice(0, 2)) e.handlers.click()
 click('advance'); click('advance')   // → equip → battle

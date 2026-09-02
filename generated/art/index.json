@@ -170,6 +170,24 @@
    "w": 212,
    "h": 316,
    "bytes": 12931
+  },
+  "banner-eve-of-ruin.jpg": {
+   "bytes": 49128
+  },
+  "banner-shadows-in-the-sand.jpg": {
+   "bytes": 30508
+  },
+  "banner-skyship.jpg": {
+   "bytes": 38240
+  },
+  "font-cinzel-normal.woff2": {
+   "bytes": 25904
+  },
+  "font-im-fell-english-italic.woff2": {
+   "bytes": 57808
+  },
+  "font-im-fell-english-normal.woff2": {
+   "bytes": 59880
   }
  },
  "map": {
@@ -387,5 +405,24 @@
   "chapel": "card-chapel.jpg",
   "beacon": "card-beacon.jpg",
   "memorial": "card-memorial.jpg"
+ },
+ "banners": {
+  "eve-of-ruin": "banner-eve-of-ruin.jpg",
+  "shadows-in-the-sand": "banner-shadows-in-the-sand.jpg",
+  "skyship": "banner-skyship.jpg"
+ },
+ "fonts": {
+  "font-cinzel-normal.woff2": {
+   "family": "Cinzel",
+   "style": "normal"
+  },
+  "font-im-fell-english-italic.woff2": {
+   "family": "IM Fell English",
+   "style": "italic"
+  },
+  "font-im-fell-english-normal.woff2": {
+   "family": "IM Fell English",
+   "style": "normal"
+  }
  }
 }

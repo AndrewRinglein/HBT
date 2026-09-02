@@ -25,7 +25,7 @@ const art = (() => {
   const index = JSON.parse(readFileSync('generated/art/index.json', 'utf8'))
   const data = {}
   for (const name of Object.keys(index.files)) {
-    const mime = name.endsWith('.png') ? 'image/png' : 'image/jpeg'
+    const mime = name.endsWith('.png') ? 'image/png' : name.endsWith('.woff2') ? 'font/woff2' : 'image/jpeg'
     data[name] = `data:${mime};base64,${readFileSync(`generated/art/${name}`).toString('base64')}`
   }
   return { ...index, data }

@@ -42,12 +42,13 @@ import { UNITS } from '../engine.js'
 import { listQuestOffers, whyNotSendQuest, performSendQuest } from '../core/quests.js'
 import { questRowOf } from '../content/quests.js'
 import { absenceOf } from '../core/absence.js'
-import { ART, worldMapSvg, townSvg, interiorOf, cardOf } from './art.js'
+import { ART, worldMapSvg, townSvg, interiorOf, cardOf, fontFaces } from './art.js'
+import { loadGameScreen, readSlot, writeSlot, clearSlot, migrateLegacySave } from './loadgame.js'
+import { REALMS } from '../content/realms.js'
 
 declare const __FIXTURE_JSON__: string
 declare const __BUILD_SHA__: string
 
-const SAVE_KEY = 'hobat-kingdom-save'
 
 type App = {
   ctx: Ctx | null
@@ -57,8 +58,10 @@ type App = {
   draftReckoning: Reckoning | null
   status: string
   error: boolean
-  /** In front of the Campaign: the title, then the mode-select (screen.title, screen.mode-select — stubs, THIN-SLICE-REVIEW.md §G2). */
-  front: 'title' | 'select'
+  /** The slot the loaded Campaign lives in — its autosave goes there. Null while nothing is loaded. */
+  slot: { realm: string; n: number } | null
+  /** The slot whose End Game awaits its second click. */
+  confirmEnd: { realm: string; n: number } | null
   /** Over the Week: the roster screen (screen.roster). */
   roster: boolean
   /** The Quest Stage's party being assembled, before Send. */
@@ -66,16 +69,18 @@ type App = {
   /** The picture over the Week: the world map, or the Sanctuary. */
   view: 'map' | 'town'
 }
-const app: App = { ctx: null, draft: null, draftReckoning: null, status: '', error: false, front: 'title', roster: false, party: [], view: 'map' }
+const app: App = { ctx: null, draft: null, draftReckoning: null, status: '', error: false, slot: null, confirmEnd: null, roster: false, party: [], view: 'map' }
 
 // ── persistence ─────────────────────────────────────────────────────────────
 function persist(): void {
-  if (!app.ctx) return
-  try { localStorage.setItem(SAVE_KEY, saveOf(app.ctx.campaign)) } catch { /* a private window; the download still works */ }
+  if (!app.ctx || !app.slot) return
+  writeSlot(app.slot.realm, app.slot.n, saveOf(app.ctx.campaign))
 }
-function loadJson(json: string, from: string): void {
+/** Load a Campaign into a slot; the slot is where it autosaves from now on. */
+function loadJson(json: string, from: string, slot: { realm: string; n: number }): void {
   try {
     app.ctx = makeCtx(campaignOf(json))
+    app.slot = slot
     app.draft = null; app.draftReckoning = null
     if (app.ctx.campaign.cursor.step === 'prep' && app.ctx.campaign.cursor.prepStep === null) beginCombatPrep(app.ctx, 'slice-load')
     note(`loaded ${from} — week ${app.ctx.campaign.week}, ${app.ctx.campaign.cursor.step}${app.ctx.campaign.cursor.prepStep ? '/' + app.ctx.campaign.cursor.prepStep : ''}`)
@@ -107,7 +112,7 @@ const nameOf = (typeId: string) => UNITS[typeId]?.name ?? typeId
 function render(): void {
   const root = document.getElementById('app')!
   const c = app.ctx?.campaign ?? null
-  if (!c) { root.innerHTML = frontScreen(); wire(root); return }
+  if (!c) { root.innerHTML = loadGameScreen(app.status, app.error, __BUILD_SHA__, app.confirmEnd); wire(root); return }
   root.innerHTML = `
     <h1>Heroes of Blight and Tragic — the slice</h1>
     <p class="meta">load a save · Combat Prep · the battle, shown not fought · set what happened · the Reckoning. Built at kingdom ${esc(__BUILD_SHA__)}.</p>
@@ -116,7 +121,7 @@ function render(): void {
       <button class="${app.roster ? 'primary' : ''}" data-act="roster">${app.roster ? 'Back' : 'Roster'}</button>
       <button data-act="download">Download save</button>
       <span class="sp"></span>
-      ${c ? `<span class="tag">week ${c.week}</span> <span class="tag">${esc(c.cursor.stage)}</span> <span class="tag">${esc(c.cursor.step)}${c.cursor.prepStep ? '/' + c.cursor.prepStep : ''}</span> <span class="tag">renown ${c.renown}</span> <span class="tag meta">seed ${c.seed}</span>` : ''}
+      ${c ? `<span class="tag">${esc(REALMS.find((r) => r.id === app.slot?.realm)?.name ?? c.realm)} · slot ${app.slot?.n ?? '?'}</span> <span class="tag">week ${c.week}</span> <span class="tag">${esc(c.cursor.stage)}</span> <span class="tag">${esc(c.cursor.step)}${c.cursor.prepStep ? '/' + c.cursor.prepStep : ''}</span> <span class="tag">renown ${c.renown}</span> <span class="tag meta">seed ${c.seed}</span>` : ''}
     </div>
     <div class="status${app.error ? ' err' : ''}">${esc(app.status)}</div>
     ${app.roster ? rosterScreen(c) : screen(c)}
@@ -138,31 +143,7 @@ function screen(c: CampaignState): string {
   }
 }
 
-// ── in front of the Campaign ────────────────────────────────────────────────
-/** screen.title → screen.mode-select. Stubs: one mode opens; the others say they are locked, and say why. */
-function frontScreen(): string {
-  let saved: string | null = null
-  try { saved = localStorage.getItem(SAVE_KEY) } catch {}
-  if (app.front === 'title') {
-    return `<div class="title"><h1>Heroes of Blight and Tragic</h1><p class="meta">the slice · built at kingdom ${esc(__BUILD_SHA__)}</p>
-      <div class="bar"><span class="sp"></span><button class="primary big" data-act="start">Start Game</button><span class="sp"></span></div>
-      <div class="status${app.error ? ' err' : ''}">${esc(app.status)}</div></div>`
-  }
-  const locked = [['Crucible', 'the endless arena — not in the slice'], ['Skirmish', 'one battle, no Campaign — not in the slice'], ['Legacy', 'the tree between runs — a stub only']]
-  return `<div class="title"><h1>Heroes of Blight and Tragic</h1><p class="meta">choose a mode</p>
-    <div class="card"><h3>Campaign</h3>
-      <div class="bar">
-        ${saved ? '<button class="primary" data-act="continue">Continue the browser save</button>' : ''}
-        <button class="${saved ? '' : 'primary'}" data-act="new-campaign">New Campaign</button>
-        <button data-act="load-fixture">Load the fixture</button>
-        <label class="file">Load a save <input type="file" accept=".json,application/json" data-act="load-file"></label>
-        ${saved ? '<button class="quiet" data-act="forget">Forget browser save</button>' : ''}
-      </div>
-      <p class="meta">A new Campaign begins at the fire: the first draft, then the five battles of the opening. The fixture is a Campaign at Combat Prep, week 3, a Conquer on the Ridge.</p></div>
-    ${locked.map(([n, why]) => `<div class="card off"><h3>${esc(n!)} <span class="tag">locked</span></h3><p class="meta">${esc(why!)}</p></div>`).join('')}
-    <div class="bar"><button class="quiet" data-act="back-to-title">Back</button></div>
-    <div class="status${app.error ? ' err' : ''}">${esc(app.status)}</div></div>`
-}
+// ── in front of the Campaign: src/ui/loadgame.ts ───────────────────────────
 
 /** screen.roster — every hero, class, level, XP, wound, and what each slot holds this Week. */
 function rosterScreen(c: CampaignState): string {
@@ -464,34 +445,35 @@ function appliedScreen(c: CampaignState): string {
 function wire(root: HTMLElement): void {
   root.querySelectorAll<HTMLElement>('[data-act]').forEach((el) => {
     const actName = el.dataset['act']!
-    if (actName === 'load-file') {
+    if (actName === 'slot-file') {
       el.addEventListener('change', () => {
         const f = (el as HTMLInputElement).files?.[0]
         if (!f) return
-        f.text().then((t) => loadJson(t, f.name))
+        f.text().then((t) => loadJson(t, f.name, { realm: el.dataset['realm']!, n: Number(el.dataset['n']) }))
       })
       return
     }
     el.addEventListener('click', () => {
       const id = el.dataset['id']
+      const slotOf = () => ({ realm: el.dataset['realm']!, n: Number(el.dataset['n']) })
       switch (actName) {
-        case 'load-fixture': return loadJson(__FIXTURE_JSON__, 'the fixture')
-        case 'start': app.front = 'select'; return render()
-        case 'back-to-title': app.front = 'title'; return render()
-        case 'continue': { let saved: string | null = null; try { saved = localStorage.getItem(SAVE_KEY) } catch {} return saved ? loadJson(saved, 'the browser save') : (fail('no browser save'), render()) }
-        case 'title': app.ctx = null; app.roster = false; app.front = 'title'; note(''); return render()
+        case 'slot-fixture': return loadJson(__FIXTURE_JSON__, 'the fixture', slotOf())
+        // the one place chance enters from outside the rules: a new save's seed, chosen at the player's click
+        // and written into the save, so every roll after it is keyed and reproducible (Law 4)
+        case 'slot-new': return loadJson(saveOf(makeNewCampaign(Math.floor(Math.random() * 1e9))), 'a new Campaign', slotOf())
+        case 'slot-continue': { const saved = readSlot(el.dataset['realm']!, Number(el.dataset['n'])); return saved ? loadJson(saved, `slot ${el.dataset['n']}`, slotOf()) : (fail('that slot is empty'), render()) }
+        case 'slot-end': app.confirmEnd = slotOf(); return render()
+        case 'slot-end-cancel': app.confirmEnd = null; return render()
+        case 'slot-clear': clearSlot(slotOf().realm, slotOf().n); app.confirmEnd = null; note(`slot ${slotOf().n} cleared — that run is over`); return render()
+        case 'title': persist(); app.ctx = null; app.slot = null; app.roster = false; note(''); return render()
         case 'roster': app.roster = !app.roster; return render()
         case 'view': app.view = id as 'map' | 'town'; return render()
         case 'party': app.party = app.party.includes(id!) ? app.party.filter((h) => h !== id) : [...app.party, id!]; return render()
         case 'send-quest': return act(() => { performSendQuest(app.ctx!, id!, app.party, 'slice'); app.party = [] })
-        // the one place chance enters from outside the rules: a new save's seed, chosen at the player's click
-        // and written into the save, so every roll after it is keyed and reproducible (Law 4)
-        case 'new-campaign': return loadJson(saveOf(makeNewCampaign(Math.floor(Math.random() * 1e9))), 'a new Campaign')
         case 'draft': return act(() => performDraft(app.ctx!, id!, 'slice'))
-        case 'restart': return act(() => { app.ctx = makeCtx(performEndCampaign(app.ctx!, 'slice')) })
+        case 'restart': return act(() => { app.ctx = makeCtx(performEndCampaign(app.ctx!, 'slice')) })   // a fresh Campaign in the same slot
         case 'purchase': return act(() => performPurchase(app.ctx!, id!, 'slice'))
         case 'download': return download()
-        case 'forget': try { localStorage.removeItem(SAVE_KEY) } catch {} note('browser save forgotten'); return render()
         case 'advance': return act(() => (app.ctx!.campaign.cursor.step === 'prep' ? performAdvancePrep(app.ctx!, 'slice') : performAdvance(app.ctx!, 'slice')))
         case 'choose': return act(() => { performChooseEngagement(app.ctx!, id!, 'slice') })
         case 'recruit': return act(() => performRecruit(app.ctx!, id!, 'slice'))
@@ -556,5 +538,7 @@ function wire(root: HTMLElement): void {
 }
 
 // ── boot ────────────────────────────────────────────────────────────────────
-// the title stands in front of the Campaign: the browser save is offered at the mode-select, never auto-loaded
+// the Load Game screen stands in front of the Campaign: slots are offered, never auto-loaded
+migrateLegacySave()
+;(() => { const ff = fontFaces(); if (ff) { const st = document.createElement('style'); st.textContent = ff; document.head.appendChild(st) } })()
 render()

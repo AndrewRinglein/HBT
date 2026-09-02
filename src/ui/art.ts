@@ -20,6 +20,9 @@ export type ArtIndex = {
   town: { w: number; h: number; lots: Record<string, { x: number; y: number; anchorX: number; baselineY: number; bands: { file: string; w: number; h: number }[] }> }
   interiors: Record<string, string>
   cards: Record<string, string>
+  /** From the Load Game mock (tools/prep-mock.py): campaign banners by realm banner slug, and the two faces. */
+  banners?: Record<string, string>
+  fonts?: Record<string, { family: string; style: string }>
   data: Record<string, string>
 } | null
 
@@ -112,3 +115,10 @@ export function townSvg(c: CampaignState): string {
 
 export const interiorOf = (buildingId: string): string | null => ART?.data[ART.interiors[slugOf(buildingId)] ?? ''] ?? null
 export const cardOf = (buildingId: string): string | null => ART?.data[ART.cards[slugOf(buildingId)] ?? ''] ?? null
+export const bannerOf = (slug: string): string | null => ART?.data[ART.banners?.[slug] ?? ''] ?? null
+
+/** @font-face rules for the inlined faces, or nothing — the stylesheet's fallback stack then stands. */
+export function fontFaces(): string {
+  if (!ART?.fonts) return ''
+  return Object.entries(ART.fonts).map(([file, f]) => `@font-face{font-family:'${f.family}';font-style:${f.style};font-weight:400 700;font-display:swap;src:url(${ART!.data[file]}) format('woff2')}`).join('\n')
+}

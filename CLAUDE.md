@@ -34,6 +34,7 @@ node tools/slice-gate.mjs --isc 002          one criterion's probe
 node tools/slice-gate.mjs --isc 002 --red    demand the probe FAILS now, and record the red
 node tools/slice-gate.mjs --count            "N of M closed · K probed · J accepted"
 python3 tools/prep-art.py [kingdom-art]      downscale the kingdom art into generated/art/ (Pillow; default ../../Autobattler/kingdom-art)
+python3 tools/prep-mock.py [mock]           pull the Load Game mock's banners and faces into generated/art/ (after prep-art)
 node tools/build-slice.mjs                   SLICE.html, with generated/art/ inlined
 node tools/smoke-slice.mjs SLICE.html        drive the built page headlessly
 node tools/slice-gate.mjs --sync             write the count and every State: line into the doc
