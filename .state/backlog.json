@@ -228,7 +228,13 @@
   ],
   "needs": [
    "purse.mend-and-buy"
-  ]
+  ],
+  "attempts": 1,
+  "variants": [
+   "item.halberd",
+   "item.silkweave-armor"
+  ],
+  "note": "variants: two reward rows of different slots — a weapon and an armor — drawn by the same draft."
  },
  {
   "id": "build.forge",

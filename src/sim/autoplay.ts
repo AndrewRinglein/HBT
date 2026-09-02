@@ -16,6 +16,7 @@ import { performAdvance, listStageOffers, performChooseEngagement, canAdvance } 
 import { prepStepOf, performAdvancePrep, listCouncilOptions, performCouncil, listDeployable, performDeploy, canAdvancePrep } from '../core/prep.js'
 import { makeBlankResult, withUnitFate, validateResult } from '../core/result.js'
 import { resolveReckoning, applyBattleResult, performExitBattle } from '../core/reckoning.js'
+import { listRewardOffers, performTakeReward, listLevelUps, performLevelUp, performLeaveLevelUp } from '../core/rewards.js'
 import { viewBattle } from '../view/battle.js'
 import type { EngagementResult } from '../core/seam.js'
 import { listAvailable } from '../core/assignments.js'
@@ -31,6 +32,8 @@ export type Decisions = {
   deploy: (campaign: CampaignState, deployable: string[]) => string[]
   /** What the battle decided. Default: won, every enemy dead, five turns. */
   outcome: (campaign: CampaignState, blank: EngagementResult) => EngagementResult
+  /** Which of the three rewards to keep. Default: the first. */
+  reward: (campaign: CampaignState, offers: string[]) => string
   /** Who works what at Mend. Default: every free hero, cycling through the labours that yield. */
   labours: (campaign: CampaignState, free: string[]) => [string, string][]
 }
@@ -44,6 +47,7 @@ export const DEFAULTS: Decisions = {
     blank.units.filter((u) => u.side === 'enemy').forEach((u) => { r = withUnitFate(r, 'enemy', u.index, { lifeState: 'dead' }) })
     return { ...r, outcome: 'heroClear', turns: 5, heroPhases: 5, enemyPhases: 4 }
   },
+  reward: (_c, offers) => offers[0]!,
   labours: (_c, free) => {
     const keys = listLabours().filter((l) => l.currency).map((l) => l.key)
     return free.map((h, i) => [h, keys[i % keys.length]!] as [string, string])
@@ -70,6 +74,8 @@ export function playEngagement(ctx: Ctx, d: Decisions, causeId: string): void {
   setBattleOutcome(ctx, result, reckoning, causeId)
   applyBattleResult(ctx, e, result, reckoning)
   performExitBattle(ctx, causeId)
+  if (c.cursor.step === 'rewards') performTakeReward(ctx, d.reward(c, listRewardOffers(c).map((r) => r.id)), causeId)
+  if (c.cursor.step === 'levelUp') { for (const h of listLevelUps(c)) performLevelUp(ctx, h, causeId); performLeaveLevelUp(ctx, causeId) }
 }
 
 /** Advance one Stage, taking what it offers first if the decisions say so. */

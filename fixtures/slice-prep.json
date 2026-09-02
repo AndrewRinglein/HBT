@@ -27,6 +27,7 @@
   "attack": null,
   "fought": 0,
   "recruited": 0,
+  "rewardOffer": null,
   "battle": null
  },
  "purse": {

@@ -215,11 +215,11 @@
  },
  "033": {
   "red": {
-   "at": "2026-09-02 04:40",
-   "sha": "4172743",
-   "hash": "042205630e9c",
+   "at": "2026-09-02 05:48",
+   "sha": "1fa11e9",
+   "hash": "77a52d253f59",
    "how": "feature absent",
-   "tail": "       |     ^ |      16|     expect(ctx.campaign.cursor.step).toBe('reckoning') |      17|     expect(ctx.campaign.cursor.battle).toBeNull()"
+   "tail": "     41| import { engagementKindOf } from '../content/engagements.js' |      42| import { PAYOUTS } from '../content/payouts.js' |  ❯ test/walk.ts:8:1"
   },
   "closed": {
    "at": "2026-09-02 04:53",
@@ -419,6 +419,24 @@
   "closed": {
    "at": "2026-09-02 05:43",
    "sha": "6936a71"
+  }
+ },
+ "019": {
+  "red": {
+   "at": "2026-09-02 05:48",
+   "sha": "1fa11e9",
+   "hash": "e438c06a6411",
+   "how": "feature absent",
+   "tail": "     41| import { engagementKindOf } from '../content/engagements.js' |      42| import { PAYOUTS } from '../content/payouts.js' |  ❯ test/walk.ts:8:1"
+  }
+ },
+ "039": {
+  "red": {
+   "at": "2026-09-02 05:48",
+   "sha": "1fa11e9",
+   "hash": "4dfc8dfbcce2",
+   "how": "feature absent",
+   "tail": "     41| import { engagementKindOf } from '../content/engagements.js' |      42| import { PAYOUTS } from '../content/payouts.js' |  ❯ test/walk.ts:8:1"
   }
  }
 }

@@ -30,6 +30,8 @@ import { commitmentOf, listAvailable } from '../core/assignments.js'
 import { listRecruitOffers, canRecruit, performRecruit, costOfRecruit, canHeal, performHeal, costOfHeal } from '../core/market.js'
 import { listLabours, yieldOf, canAssignLabour, performAssignLabour } from '../core/mend.js'
 import { performRelease } from '../core/assignments.js'
+import { listRewardOffers, performTakeReward, listLevelUps, performLevelUp, performLeaveLevelUp } from '../core/rewards.js'
+import { xpForLevel } from '../content/levels.js'
 import { UNITS } from '../engine.js'
 
 declare const __FIXTURE_JSON__: string
@@ -109,9 +111,26 @@ function screen(c: CampaignState): string {
     case 'prep': return prepScreen(c)
     case 'battle': return c.cursor.battle?.resultSet ? tallyScreen(c) : battleScreen(c)
     case 'reckoning': return appliedScreen(c)
+    case 'rewards': return rewardsScreen(c)
+    case 'levelUp': return levelUpScreen(c)
     case 'open': return worldScreen(c)
     default: return `<div class="card"><p>The cursor is at <code>${esc(c.cursor.step)}</code> — a step the slice has no screen for yet.</p></div>`
   }
+}
+
+// ── rewards and level-up ────────────────────────────────────────────────────
+function rewardsScreen(c: CampaignState): string {
+  const offers = listRewardOffers(c)
+  return `<h2>The spoils — three drawn, keep one</h2>
+    <p class="meta"><code>${esc(c.cursor.engagement?.id ?? '')}</code> · the two you leave are burned.</p>
+    <div class="card"><div class="pick">${offers.map((r) => `<div class="opt" data-act="take-reward" data-id="${esc(r.id)}"><b>${esc(r.name)}</b><small>${esc(r.slot)} · tier ${r.tier} · <code>${esc(r.id)}</code></small></div>`).join('')}</div></div>`
+}
+function levelUpScreen(c: CampaignState): string {
+  const ready = listLevelUps(c)
+  return `<h2>Level up</h2>
+    <p class="meta">A level is +1 and nothing else until specialties arrive. XP is never lost — a level not taken waits.</p>
+    <div class="card"><div class="pick">${ready.map((id) => { const h = c.roster[id]!; return `<div class="opt" data-act="level-up" data-id="${esc(id)}"><b>${esc(h.name)}</b><small>L${h.level} → L${h.level + 1} · ${h.xp} xp (needs ${xpForLevel(h.level + 1)})</small></div>` }).join('') || '<p class="meta">nobody is ready</p>'}</div></div>
+    <div class="bar"><span class="sp"></span><button class="primary" data-act="leave-level-up">${ready.length ? 'Leave the rest for later' : 'Back to the Week'}</button></div>`
 }
 
 // ── the Week ────────────────────────────────────────────────────────────────
@@ -159,6 +178,7 @@ function worldScreen(c: CampaignState): string {
       <div>
         <div class="card"><h3>The purse</h3><table>${Object.entries(c.purse).map(([k, v]) => `<tr><td>${esc(k.replace('currency.', ''))}</td><td class="n">${v}</td></tr>`).join('')}<tr><td>Renown</td><td class="n">${c.renown}</td></tr><tr><td>losses</td><td class="n">${c.losses}</td></tr><tr><td>difficulty</td><td class="n">${resolveDifficulty(c)}</td></tr></table></div>
         <div class="card" style="margin-top:12px"><h3>The map</h3><table>${territories.map((t) => `<tr><td>${esc(t.name)}${t.kingdom ? ' <span class="tag">kingdom</span>' : ''}</td><td>${t.owned ? '<span class="won">held</span>' : 'unclaimed'}</td><td class="meta">${esc(t.buildings.map((b) => b.id.replace('building.', '') + (b.damaged ? ' (ruin)' : '')).join(', '))}</td></tr>`).join('')}</table></div>
+        ${c.stash.length ? `<div class="card" style="margin-top:12px"><h3>The stash</h3><p class="meta">${esc(c.stash.map((i) => i.replace('item.', '')).join(' · '))}</p></div>` : ''}
         <div class="card" style="margin-top:12px"><h3>The roster</h3><table>${heroes.map((h) => `<tr><td>${esc(h.name)}</td><td class="meta">${esc(h.classes.map((x) => x.replace('class.', '')).join(', '))} · L${h.level} · ${h.xp} xp</td><td>${h.lifeState === 'dead' ? '<span class="lost">dead</span>' : h.wound ? woundNameOf(h.wound) : ''} <span class="meta">${esc(commitmentOf(c, h.id, 'field'))}</span></td></tr>`).join('')}</table></div>
       </div>
     </div>`
@@ -319,7 +339,7 @@ function appliedScreen(c: CampaignState): string {
     <p class="meta"><code>${esc(e?.id ?? '')}</code> — every line below is an event the writer emitted; the save already holds it.</p>
     <div class="card"><table>${written.map((ev) => `<tr><td><code>${esc(ev.type)}</code></td><td>${esc(line(ev))}</td></tr>`).join('') || '<tr><td class="meta">nothing was written this session (loaded after the apply)</td></tr>'}</table>
       <p class="meta">difficulty now ${resolveDifficulty(c)} · Renown ${c.renown} · losses ${c.losses} · purse ${Object.entries(c.purse).map(([k, v]) => `${k.replace('currency.', '')} ${v}`).join(' · ')}</p></div>
-    <div class="bar"><span class="sp"></span><button class="primary" data-act="exit">Exit — back to the Week</button></div>`
+    <div class="bar"><span class="sp"></span><button class="primary" data-act="exit">${c.cursor.rewardOffer ? 'On to the spoils →' : 'Exit — back to the Week'}</button></div>`
 }
 
 // ── wiring ──────────────────────────────────────────────────────────────────
@@ -357,6 +377,9 @@ function wire(root: HTMLElement): void {
         })
         case 'apply': return act(() => { const b = app.ctx!.campaign.cursor.battle!; applyBattleResult(app.ctx!, app.ctx!.campaign.cursor.engagement!, b.result!, b.reckoning!); app.draft = null })
         case 'exit': return act(() => performExitBattle(app.ctx!, 'slice'))
+        case 'take-reward': return act(() => performTakeReward(app.ctx!, id!, 'slice'))
+        case 'level-up': return act(() => performLevelUp(app.ctx!, id!, 'slice'))
+        case 'leave-level-up': return act(() => performLeaveLevelUp(app.ctx!, 'slice'))
         case 'back-to-panel': return act(() => { app.draft = app.ctx!.campaign.cursor.battle?.result ?? app.draft; setCursor(app.ctx!, { battle: { resultSet: false } }, 'slice') })
       }
     })

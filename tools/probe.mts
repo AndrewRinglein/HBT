@@ -35,7 +35,7 @@ const tally = (events: KingdomEvent[]) => { for (const ev of events) { if (!JSON
 // (a) whole Weeks, autoplayed from the fixture — the Week machine and everything it offers
 {
   const ctx = makeCtx(campaignOf(readFileSync('fixtures/slice-prep.json', 'utf8')))
-  playWeeks(ctx, 3, { tactic: (_c, offers) => offers.find((t) => t === id) ?? offers[0] ?? null }, 'probe')
+  playWeeks(ctx, 8, { tactic: (_c, offers) => offers.find((t) => t === id) ?? offers[0] ?? null }, 'probe')
   runs++
   tally(ctx.events)
 }
@@ -45,7 +45,7 @@ for (const kind of ENGAGEMENT_KINDS) for (const won of [true, false]) for (let s
   const ctx = makeCtx(campaignOf(readFileSync('fixtures/slice-prep.json', 'utf8')))
   const e = ctx.campaign.cursor.engagement!
   e.kind = kind.id
-  e.id = `${e.id}.probe-${seed}`
+  e.id = `${e.id}.${kind.id.split(".").pop()}.probe-${seed}`
   // a defence is of ground you hold: the stakes row says a loss loses it, so the fixture's target is held for this run
   if (engagementKindOf(kind.id).onLose === 'lose-territory') { const t = ctx.campaign.territories[e.territoryId]!; t.owned = true; t.claimedOnce = true }
   // a fixed-roster kind (a quest) was committed Weeks ago: the fixture stands in for that

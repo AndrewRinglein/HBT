@@ -66,6 +66,8 @@ export type Cursor = {
   fought: number
   /** Recruits this Week — "one hero per Week" (KINGDOM-DESIGN.md §3). */
   recruited: number
+  /** The reward draft on offer after a won battle — three item ids, keep one — while step === 'rewards'. */
+  rewardOffer: string[] | null
   /**
    * §4.4 (THIN-SLICE-IMPLEMENTATION.md): the battle's seed and options, never
    * its state. In the slice the battle is not played; this holds what the
@@ -185,7 +187,7 @@ export function makeCampaign(seed: number, options: MakeCampaignOptions): Campai
     realm: options.realm,
     seed,
     week: options.week ?? 1,
-    cursor: { week: options.week ?? 1, stage: options.stage, step: 'open', prepStep: null, engagement: null, attack: null, fought: 0, recruited: 0, battle: null },
+    cursor: { week: options.week ?? 1, stage: options.stage, step: 'open', prepStep: null, engagement: null, attack: null, fought: 0, recruited: 0, rewardOffer: null, battle: null },
     purse,
     renown: options.renown ?? 0,
     unlocks: [],
@@ -242,6 +244,6 @@ export function campaignOf(json: string): CampaignState {
   assertPlainData(c)
   const required: (keyof CampaignState)[] = ['realm', 'seed', 'week', 'cursor', 'purse', 'renown', 'unlocks', 'revealed', 'roster', 'assignments', 'stash', 'territories', 'threat', 'losses', 'quests', 'captured', 'unavailable', 'cups']
   for (const k of required) if (!(k in c)) throw new Error(`save is missing '${k}' — not a Campaign`)
-  for (const k of ['week', 'stage', 'step', 'prepStep', 'engagement', 'attack', 'fought', 'recruited', 'battle'] as const) if (!(k in c.cursor)) throw new Error(`save's cursor is missing '${k}'`)
+  for (const k of ['week', 'stage', 'step', 'prepStep', 'engagement', 'attack', 'fought', 'recruited', 'rewardOffer', 'battle'] as const) if (!(k in c.cursor)) throw new Error(`save's cursor is missing '${k}'`)
   return c
 }

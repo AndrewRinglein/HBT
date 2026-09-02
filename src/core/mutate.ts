@@ -111,6 +111,25 @@ export function applyRecruit(ctx: Ctx, hero: Hero, causeId: string, cost: Record
   emit(ctx, 'hero.recruited', causeId, { heroId: hero.id, name: hero.name, cost })
 }
 
+/** The reward draft: offered as three, then one taken into the stash and the rest burned. */
+export function setRewardOffer(ctx: Ctx, offer: readonly string[] | null, causeId: string): void {
+  ctx.campaign.cursor.rewardOffer = offer ? [...offer] : null
+  if (offer) emit(ctx, 'reward.offered', causeId, { offer: [...offer] })
+}
+
+export function applyTakeReward(ctx: Ctx, itemId: string, causeId: string): void {
+  const offer = ctx.campaign.cursor.rewardOffer ?? []
+  ctx.campaign.stash.push(itemId)
+  ctx.campaign.cursor.rewardOffer = null
+  emit(ctx, 'reward.taken', causeId, { itemId, burned: offer.filter((i) => i !== itemId) })
+}
+
+export function applyLevel(ctx: Ctx, heroId: string, causeId: string): void {
+  const h = heroOrThrow(ctx.campaign, heroId)
+  h.level += 1
+  emit(ctx, 'hero.leveled', causeId, { heroId, level: h.level, xp: h.xp })
+}
+
 // ── what the one writer says as it writes ───────────────────────────────────
 
 function heroOrThrow(campaign: CampaignState, heroId: string) {

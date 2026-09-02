@@ -5,6 +5,7 @@
 import { describe, it, expect } from 'vitest'
 import { loadFixture, toBattle, panelResult, decide } from './walk.js'
 import { applyBattleResult, performExitBattle } from '../src/core/reckoning.js'
+import { listRewardOffers, performTakeReward, listLevelUps, performLeaveLevelUp } from '../src/core/rewards.js'
 import { saveOf, campaignOf } from '../src/core/campaign.js'
 
 describe('ISC-033 — exit: past the battle, saved, and never applied twice', () => {
@@ -25,6 +26,13 @@ describe('ISC-033 — exit: past the battle, saved, and never applied twice', ()
     expect(ctx.campaign.renown).toBe(renown)
 
     performExitBattle(ctx, 'test')
+    // Law 10, rewritten 2026-09-01 toward the flow GAME-ARCHITECTURE.md §7 rules:
+    // reckoning → rewards → level-up → the Week. A won battle offers its draft
+    // first; the old line expected the Week straight away.
+    expect(ctx.campaign.cursor.step).toBe('rewards')
+    expect(campaignOf(saveOf(ctx.campaign))).toEqual(ctx.campaign)
+    performTakeReward(ctx, listRewardOffers(ctx.campaign)[0]!.id, 'test')
+    if (ctx.campaign.cursor.step === 'levelUp') { expect(listLevelUps(ctx.campaign).length).toBeGreaterThan(0); performLeaveLevelUp(ctx, 'test') }
     expect(ctx.campaign.cursor).toMatchObject({ step: 'open', prepStep: null, engagement: null, battle: null })
     expect(campaignOf(saveOf(ctx.campaign))).toEqual(ctx.campaign)
     expect(() => performExitBattle(ctx, 'test')).toThrow(/refused/)

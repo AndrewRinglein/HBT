@@ -34,9 +34,10 @@ import { rollOf } from './rng.js'
 import { validateResult } from './result.js'
 import {
   type Ctx, applyXp, setWound, setHeroDead, applyGrant, applyRenown,
-  setEngagementResolved, applyClaim, setCursor,
+  setEngagementResolved, applyClaim, setCursor, setRewardOffer,
 } from './mutate.js'
 import { performLose } from './map.js'
+import { resolveRewardDraw, performExitReckoning } from './rewards.js'
 import { engagementKindOf } from '../content/engagements.js'
 import { PAYOUTS } from '../content/payouts.js'
 import { SWITCHES } from '../content/switches.js'
@@ -150,13 +151,19 @@ export function applyBattleResult(ctx: Ctx, engagement: Engagement, result: Enga
   if (reckoning.claim) applyClaim(ctx, reckoning.claim, cause)
   if (reckoning.lose) performLose(ctx, reckoning.lose, cause)
   for (const g of reckoning.grants) if (g.amount > 0) applyGrant(ctx, g.currency, g.amount, cause)
-  setCursor(ctx, { step: 'reckoning', prepStep: null, battle: null }, cause)
+  // a won battle earns its draft — three drawn on cup.reward, keyed by the Engagement
+  setRewardOffer(ctx, reckoning.won ? resolveRewardDraw(c, engagement.id) : null, cause)
+  setCursor(ctx, { step: 'reckoning', prepStep: null, battle: null, fought: c.cursor.fought + 1 }, cause)
 }
 
-/** Leave the tally: the Engagement is done, the cursor is back at the Week's open step. */
+/**
+ * Leave the tally. The Engagement is done; what follows is the reward draft
+ * (won) and whoever can level (rewards.ts), then the Week's open step — the
+ * cursor keeps the Engagement until then so the screens can name it.
+ */
 export function performExitBattle(ctx: Ctx, causeId: string): void {
-  if (ctx.campaign.cursor.step !== 'reckoning') throw new Error(`performExitBattle refused: the cursor is at '${ctx.campaign.cursor.step}', not the Reckoning`)
-  setCursor(ctx, { step: 'open', prepStep: null, engagement: null, battle: null, fought: ctx.campaign.cursor.fought + 1 }, causeId)
+  performExitReckoning(ctx, causeId)
+  if (ctx.campaign.cursor.step === 'open') setCursor(ctx, { engagement: null, battle: null }, causeId)
 }
 
 /**
