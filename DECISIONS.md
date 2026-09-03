@@ -1072,3 +1072,40 @@ one of each class" — the Alpha Team IS six heroes, one of each class, and the
 test cohort were clones of exactly these six. The enemy side of the standard
 battle (three test-zombies and a burning one) is NOT flipped by this ruling;
 it is the next question, not this one. Steps two and three stay open.
+
+---
+
+## 2026-09-02 — step two: the Codex owns the status rows; Dazed is two things
+
+Asked, in plain English, before any step-two code: *"Step 2 makes the engine
+read its 15 status rows from the Codex instead of its own hand-typed list. But
+the rulebook file (tools/approved-kinds.json) currently says statuses BELONG TO
+THE ENGINE… May I change that line so the RULE is: the Codex owns the status
+rows (the words and numbers), the engine owns only the behaviour code that
+reads them?"*
+
+> "Yes — Codex owns the rows"
+
+Consequence: `tools/approved-kinds.json` `status` moves from family `engine`
+to family `content`, note "rows are content; behaviour is engine". A status
+edit in the Codex reaches every battle through the pack, the way heroes and
+attacks already do. `engine/src/content/statuses.ts` keeps only the `test.*`
+rows and the hook code.
+
+Asked: *"'Dazed' has two different meanings, both in your words. Your crit
+chart (Aug 27) says: 'dazed — loses access to class powers, 3 turns.' The
+Codex status row (Sep 1) says: 'Takes the unit out of its owner's control and
+hands it to the AI.' … Which is Dazed?"*
+
+> "This is a problem with just ambiguity. It does two different things: there
+> is a critical effect, and then there is a status effect. Do we need to
+> disambiguate this right now, or can you account for that?"
+
+Accounted for without a ruling — two ids. `status.dazed` keeps the Codex
+meaning (control handed to the AI; in the simulator every unit is AI-driven
+already, so the engine carries it as a recorded status with no behaviour of
+its own). The chart's Dazed row applies a SEPARATE status for "loses access to
+class powers, 3 turns" — placeholder id `status.powers-locked`, a plain
+descriptive name chosen so nothing is invented; it is renameable in one place
+(the Codex row and the chart compile) whenever Andrew names it. The chart row
+itself keeps its dictated key, name and text.
