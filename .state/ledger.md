@@ -755,3 +755,26 @@ IRON GAUNTLET: NOT PASSED — 2 FLAG(S) WARNED; 1 EXEMPTION(S) TAKEN
 ISC-056: CLOSED at abe219b
 slice: 52 of 68 closed · 52 probed · 0 accepted
 IRON GAUNTLET: NOT PASSED — 2 FLAG(S) WARNED; 1 EXEMPTION(S) TAKEN
+
+## forge.shelf — LANDED `d74a0bc` **NEEDS REVIEW**
+2026-09-03 04:32 · engine @ 8de1620
+
+  PASS  dependencies landed
+  WARN  not already decided — 3 candidate ruling(s) — READ BEFORE ASKING: ../STATE.md:20 · ../STATE.md:21
+  PASS  typecheck
+  PASS  full test suite — 128 passed
+  PASS  gate 1 — every claimed criterion holds — ISC-057 holds · ISC-058 holds · ISC-059 holds
+  PASS  brought its own tests — test/isc-041.test.ts, test/isc-057.test.ts, test/isc-058.test.ts, test/isc-059.test.ts
+  PASS  existing tests untouched
+  PASS  kill switch — every claimed probe has been seen red — ISC-057: red on record (2026-09-03 04:32 @ af77cc3, probe b878b92204bf) · ISC-058: red on record (2026-09-03 04:32 @ af77cc3, probe d8798318db1e) · ISC-059: red on record (2026-09-03 04:32 @ af77cc3, probe 0768dde44253)
+  PASS  nothing regresses — every P-tier probe — 55 P-tier probe(s): 55 green, 0 red, 0 regression(s). 52 of 68 closed · 55 probed · 0 accepted
+  PASS  hardcode scan — core knows mechanisms, never names
+  PASS  generalizes — the second instance costs zero kingdom code
+  PASS  naming — new ids use declared kinds
+  PASS  naming — no banned words invented
+  WARN  engine working tree clean — verified against a DIRTY engine tree (8de1620 + 10 uncommitted under src/test): M src/content/generated/pack.ts, M src/content/index.ts, M src/content/pack.ts
+  PASS  one door to the engine
+
+ISC-057: CLOSED at d74a0bc · ISC-058: CLOSED at d74a0bc · ISC-059: CLOSED at d74a0bc
+slice: 55 of 68 closed · 55 probed · 0 accepted
+IRON GAUNTLET: NOT PASSED — 2 FLAG(S) WARNED; 1 EXEMPTION(S) TAKEN
