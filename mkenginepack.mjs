@@ -297,12 +297,23 @@ const SITEMS = JSON.parse(fs.readFileSync('gen/settled-items.json', 'utf8'));
 // shield and no scripture — the S30 lumberjack lesson, relearned 2026-08-27. Later
 // sources win on id collision (settled-items last, the engine-facing shapes).
 const WEAPONS = JSON.parse(fs.readFileSync('gen/weapons.json', 'utf8'));
-const ITEM_BY_ID = new Map([...(SETTLED.items || []), ...(WEAPONS.items || []), ...SITEMS.items].map((i) => [i.id, i]));
+// The Codex's own item rows (hbt-content.json, 276 across seven classes) are
+// the FIRST source since content.field-eve-24 (2026-09-02): the tier-0 armors
+// the 24 Eve kits pin (Thick Hide, Pilgrim's Habit, Watchman's Coat…) live
+// only there, and without them eight heroes fielded with their armor's whole
+// payload silently missing. Later sources still win on id collision.
+const CODEX_ITEMS = [];
+(function wi(o) { if (Array.isArray(o)) o.forEach(wi); else if (o && typeof o === 'object') { if (o.id && String(o.id).startsWith('item.') && o.itemClass) CODEX_ITEMS.push(o); else Object.values(o).forEach(wi); } })(D);
+const ITEM_BY_ID = new Map([...CODEX_ITEMS, ...(SETTLED.items || []), ...(WEAPONS.items || []), ...SITEMS.items].map((i) => [i.id, i]));
 const SATTACK_BY_ID = new Map([...(SETTLED.attacks || []), ...(WEAPONS.attacks || []), ...SITEMS.attacks].map((a) => [a.id, a]));
 const SPOWER_BY_ID = new Map(
   [...(Array.isArray(SETTLED.powers) ? SETTLED.powers : []), ...(SITEMS.powers || [])]
     .filter((p) => p && p.id).map((p) => [p.id, p]));
-const PARTY = ['hero.base.ranger-aggressive', 'hero.base.warrior-iron', 'hero.base.priest-armored'];
+// content.field-eve-24 (2026-09-02): EVERY Eve hero with a dictated full kit
+// fields — the 24 heroKits rows (2026-08-27b: "ALL 24 Eve heroes now carry
+// FULL kits"), not the prologue three alone. Same lane, same kit law; the
+// list is read off the kits registry, never typed here.
+const PARTY = Object.keys(KITS.heroKits ?? KITS.heroOverrides ?? {}).filter((k) => k.startsWith('hero.'));
 
 // The class half-step, read from the Codex movementAction rows — never hardcoded.
 const movesForClass = (cls) => {
@@ -436,11 +447,23 @@ for (const id of PARTY) {
   else { gap(id, `kit is a ${classKit?.pick?.random || classKit?.draw ? 'random' : 'oneOf'} SPEC — the roll belongs to the draft; needs a dictated hero override`, 'kit unresolved'); continue; }
 
   const attackIds = [];
+  const abilityIds = [];
   let anyRanged = false;
   for (const itemId of items) {
     const it = ITEM_BY_ID.get(itemId);
     if (!it) { gap(id, `kit item ${itemId} not in settled-items`, 'content'); continue; }
     for (const aid of it.grants || []) {
+      if (aid.startsWith('power.')) {
+        // Item POWERS compile exactly as the alpha lane does (capability.
+        // item-powers, 2026-08-27): the three authored shapes, else a gap.
+        // Extended to the party lane with content.field-eve-24 — the 24
+        // carry knight shields, holy symbols and staffs.
+        const pw = SPOWER_BY_ID.get(aid);
+        const row = pw && compiledPowerOf(pw, id);
+        if (row) { authoredAbilities[row.id] = row; abilityIds.push(row.id); }
+        else gap(id, `${itemId} grants ${aid}`, pw ? 'item power — shape unparsed' : 'item power — no authored row');
+        continue;
+      }
       const a = SATTACK_BY_ID.get(aid);
       if (!a) { gap(id, `${itemId} grants ${aid} which has no attack row`, 'content'); continue; }
       // gen/weapons.json (S37a's third source) writes range as the STRING
@@ -482,7 +505,10 @@ for (const id of PARTY) {
   const FOLD = { health: [p, 'health'], armor: [p, 'armor'], resist: [p, 'resist'], dodge: [p, 'dodge'],
     strength: [p, 'strength'], precision: [p, 'precision'], magic: [p, 'magic'], spirit: [p, 'spirit'],
     reach: [p, 'reach'], accuracy: [d, 'accuracy'], movement: [d, 'movement'],
-    staminaMax: [d, 'staminaMax'], staminaRegen: [d, 'staminaRegen'] };
+    staminaMax: [d, 'staminaMax'], staminaRegen: [d, 'staminaRegen'],
+    // crit and luck are UnitDef fields since station.crit (2026-08-27); the
+    // party lane learned to carry and fold them with content.field-eve-24.
+    crit: [p, 'crit'], luck: [p, 'luck'] };
   for (const itemId of items) {
     const it = ITEM_BY_ID.get(itemId);
     for (const [stat, v] of Object.entries(it?.statModifiers || {})) {
@@ -495,6 +521,7 @@ for (const id of PARTY) {
     typeId: id, name: h.name, side: 'hero',
     maxHp: p.health, armor: p.armor ?? 0, resist: p.resist ?? 0,
     accuracy: d.accuracy, dodge: p.dodge ?? 0,
+    ...((d.crit ?? p.crit) ? { crit: d.crit ?? p.crit } : {}), ...((d.luck ?? p.luck) ? { luck: d.luck ?? p.luck } : {}), // station.crit
     strength: p.strength ?? 0, precision: p.precision ?? 0, magic: p.magic ?? 0, spirit: p.spirit ?? 0,
     role: anyRanged ? 'ranged' : 'melee',
     movement: d.movement,
@@ -504,7 +531,7 @@ for (const id of PARTY) {
     reach: p.reach ?? 0,
     maxStamina: d.staminaMax, staminaRegen: d.staminaRegen ?? 1,
     ai: anyRanged ? 'ranged-kite' : 'melee-aggressive',
-    attacks: attackIds, abilities: [],
+    attacks: attackIds, abilities: abilityIds,
     moves: movesForClass(h.class),
     attributes: ['hero-eve'],
     tags: ['hero'],
