@@ -15,40 +15,43 @@ import { whyNotFit } from './loadout.js'
 import { isEquipOpen, equipWhere, openEquipSession, closeEquipSession, whyNotPay, paySession, refundSession } from './equip-session.js'
 import { canAfford, performSpend, type Cost } from './purse.js'
 import { listBuildings } from './build.js'
-import { REWARDS, type RewardRow } from '../content/rewards.js'
+import { slotOf, type RewardRow } from '../content/rewards.js'
+import { itemOf } from '../content/items.js'
+import { resolveShelf, forgeLevelOf, costOfItem } from './forge.js'
 import { CURRENCY_IDS } from '../content/currencies.js'
 import { SWITCHES } from '../content/switches.js'
 import { stageRowOf } from '../content/stages.js'
 import { PREP_STEP_ROWS } from '../content/prep.js'
 
-/** The shelf is open when a held building whose first node is built stands anywhere — the Forge, repaired. */
+/** The shelf is open when the Forge stands on ground you hold and has reached its first band (Repaired). */
 export function isShopOpen(campaign: CampaignState): boolean {
-  return listBuildings(campaign).some((b) => b.held && b.row.stands === 'territory' && b.building.nodes.length > 0)
+  return forgeLevelOf(campaign) >= 1
 }
 
-/** Starting weapons and tier-1 armors — the slice's items. Sorted by id (Law 6). */
+/** The Week's shelf (src/core/forge.ts), as reward-shaped rows for the page. In the shelf's drawn order. */
 export function listShopItems(campaign: CampaignState): RewardRow[] {
   if (!isShopOpen(campaign)) return []
-  return REWARDS.filter((r) => r.tier <= 1).sort((a, b) => (a.id < b.id ? -1 : a.id > b.id ? 1 : 0))
+  return resolveShelf(campaign).map((id) => { const r = itemOf(id); return { id: r.id, name: r.name, tier: r.tier, slot: slotOf(r) } })
 }
 
-export const costOfItem = (_itemId: string): Cost => ({ [CURRENCY_IDS.supplies]: SWITCHES.shopSupplies })
+export { costOfItem, forgeLevelOf, forgeBandName, shelfSpecOf, whyNotTradeIn, canTradeIn, performTradeIn, poolOf, tradeCategoryOf } from './forge.js'
 
 const atBuy = (campaign: CampaignState) => campaign.cursor.step === 'open' && stageRowOf(campaign.cursor.stage).offers === 'market'
 
 export function canBuyItem(campaign: CampaignState, itemId: string): boolean {
   if (!atBuy(campaign)) return false
   if (!listShopItems(campaign).some((r) => r.id === itemId)) return false
-  return canAfford(campaign, costOfItem(itemId))
+  return canAfford(campaign, costOfItem(campaign, itemId))
 }
 
 export function performBuyItem(ctx: Ctx, itemId: string, causeId: string): void {
   if (!canBuyItem(ctx.campaign, itemId)) {
-    const why = !atBuy(ctx.campaign) ? 'not the Buy Stage' : !isShopOpen(ctx.campaign) ? 'the Forge is not repaired' : !listShopItems(ctx.campaign).some((r) => r.id === itemId) ? 'not on the shelf' : 'short of Supplies'
+    const why = !atBuy(ctx.campaign) ? 'not the Buy Stage' : !isShopOpen(ctx.campaign) ? 'the Forge is not repaired' : !listShopItems(ctx.campaign).some((r) => r.id === itemId) ? 'not on the shelf this Week' : `short of ${Object.entries(costOfItem(ctx.campaign, itemId)).filter(([c, n]) => (ctx.campaign.purse[c] ?? 0) < n).map(([c]) => c.replace('currency.', '')).map((c) => c[0]!.toUpperCase() + c.slice(1)).join(', ')}`
     throw new Error(`performBuyItem refused for '${itemId}': ${why}`)
   }
-  performSpend(ctx, costOfItem(itemId), causeId)
-  applyBuyItem(ctx, itemId, costOfItem(itemId), causeId)
+  const cost = costOfItem(ctx.campaign, itemId)
+  performSpend(ctx, cost, causeId)
+  applyBuyItem(ctx, itemId, cost, causeId)
 }
 
 /** Equipping happens inside an equip session (G5): the prep step whose row equips opens one; the roster between battles may open one too. */

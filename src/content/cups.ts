@@ -22,6 +22,7 @@ const RAW_CUPS: readonly CupRow[] = [
   { id: 'cup.battle', rolls: "a Battle's seed" },
   { id: 'cup.mvp', rolls: 'the MVP — weighted by XP earned (SKELETON-NOTES.md B7)' },
   { id: 'cup.quest', rolls: 'whether a quest comes home — resolveQuestOdds, GAME-ARCHITECTURE.md §2.6' },
+  { id: 'cup.forge', rolls: "the Forge's shelf each Week, an item's price, an enchant, a trade-in's result (GEAR-DESIGN.md §3)" },
 ]
 
 export const CUPS: readonly CupRow[] = omitDisabled(RAW_CUPS)
@@ -39,4 +40,5 @@ export const CUP_IDS = {
   battle: 'cup.battle',
   mvp: 'cup.mvp',
   quest: 'cup.quest',
+  forge: 'cup.forge',
 } as const

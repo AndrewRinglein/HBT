@@ -74,6 +74,8 @@ export type Cursor = {
   fought: number
   /** Recruits this Week — "one hero per Week" (KINGDOM-DESIGN.md §3). */
   recruited: number
+  /** Bought off the Forge's shelf this Week — the shelf is rolled by the Week, and a sold item leaves it until the reroll. */
+  sold: string[]
   /** The reward draft on offer after a won battle — three item ids, keep one — while step === 'rewards'. */
   rewardOffer: string[] | null
   /** The opening: the next prologue battle's number (1–5) while the opening runs; null once the Kingdom Territory is taken. */
@@ -215,7 +217,7 @@ export function makeCampaign(seed: number, options: MakeCampaignOptions): Campai
     realm: options.realm,
     seed,
     week: options.week ?? 1,
-    cursor: { week: options.week ?? 1, stage: options.stage, step: 'open', prepStep: null, engagement: null, attack: null, fought: 0, recruited: 0, rewardOffer: null, prologue: null, draftOffer: null, battle: null, equipSession: null },
+    cursor: { week: options.week ?? 1, stage: options.stage, step: 'open', prepStep: null, engagement: null, attack: null, fought: 0, recruited: 0, sold: [], rewardOffer: null, prologue: null, draftOffer: null, battle: null, equipSession: null },
     purse,
     renown: options.renown ?? 0,
     unlocks: [],
@@ -273,6 +275,6 @@ export function campaignOf(json: string): CampaignState {
   assertPlainData(c)
   const required: (keyof CampaignState)[] = ['realm', 'seed', 'week', 'cursor', 'purse', 'renown', 'unlocks', 'revealed', 'roster', 'assignments', 'stash', 'territories', 'threat', 'losses', 'quests', 'captured', 'unavailable', 'cups', 'ended']
   for (const k of required) if (!(k in c)) throw new Error(`save is missing '${k}' — not a Campaign`)
-  for (const k of ['week', 'stage', 'step', 'prepStep', 'engagement', 'attack', 'fought', 'recruited', 'rewardOffer', 'prologue', 'draftOffer', 'battle', 'equipSession'] as const) if (!(k in c.cursor)) throw new Error(`save's cursor is missing '${k}'`)
+  for (const k of ['week', 'stage', 'step', 'prepStep', 'engagement', 'attack', 'fought', 'recruited', 'rewardOffer', 'prologue', 'draftOffer', 'battle', 'equipSession', 'sold'] as const) if (!(k in c.cursor)) throw new Error(`save's cursor is missing '${k}'`)
   return c
 }

@@ -698,5 +698,32 @@
    "at": "2026-09-03 04:19",
    "sha": "abe219b"
   }
+ },
+ "057": {
+  "red": {
+   "at": "2026-09-03 04:32",
+   "sha": "af77cc3",
+   "hash": "b878b92204bf",
+   "how": "feature absent",
+   "tail": "       |                                                            ^ |      52|     const first = listShopItems(a.campaign)[0]!.id |      53|     performBuyItem(a, first, 'test')"
+  }
+ },
+ "058": {
+  "red": {
+   "at": "2026-09-03 04:32",
+   "sha": "af77cc3",
+   "hash": "d8798318db1e",
+   "how": "feature absent",
+   "tail": "       |                                           ^ |      29|         expect(cost['currency.supplies']).toBeLessThanOrEqual(SWITCHES… |      30|         expect(cost['currency.mana']).toBeUndefined()"
+  }
+ },
+ "059": {
+  "red": {
+   "at": "2026-09-03 04:32",
+   "sha": "af77cc3",
+   "hash": "0768dde44253",
+   "how": "feature absent",
+   "tail": "       |            ^ |      41|     const mixed = [three[0]!, three[1]!, 'item.dagger'] |      42|     expect(whyNotTradeIn(loadFixture(forgeAt(ALL, mixed)).campaign, mi…"
+  }
  }
 }

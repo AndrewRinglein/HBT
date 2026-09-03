@@ -60,6 +60,9 @@ export const KINGDOM_EVENTS = [
   // equip session — open at prep's Equip step or from the roster; what it pays refunds
   // until it closes.
   'equip.opened', 'equip.closed', 'equip.paid', 'equip.refunded',
+  // Added 2026-09-02 with forge.shelf (G6), and to GLOSSARY.md the same commit: three
+  // burned for one a tier up.
+  'item.traded',
 ] as const
 
 export type KingdomEventType = (typeof KINGDOM_EVENTS)[number]

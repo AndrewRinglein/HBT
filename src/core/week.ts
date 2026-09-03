@@ -95,7 +95,7 @@ export function tickWeek(ctx: Ctx, causeId: string): void {
   tickAssignments(ctx, causeId)
   tickQuests(ctx, causeId)
   if (ctx.campaign.unavailable.length) setUnavailable(ctx, [], causeId)
-  setCursor(ctx, { week: ctx.campaign.week + 1, recruited: 0 }, causeId)
+  setCursor(ctx, { week: ctx.campaign.week + 1, recruited: 0, sold: [] }, causeId)
 }
 
 export function endWeek(ctx: Ctx, causeId: string): void {

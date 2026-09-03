@@ -33,7 +33,7 @@ import { performRelease } from '../core/assignments.js'
 import { listRewardOffers, performTakeReward, listLevelUps, performLevelUp, performLeaveLevelUp } from '../core/rewards.js'
 import { xpForLevel } from '../content/levels.js'
 import { listBuildings, whyNotBuild, performBuild } from '../core/build.js'
-import { isShopOpen, listShopItems, canBuyItem, performBuyItem, costOfItem, canEquip, whyNotEquip, performEquip, canUnequip, performUnequip, loadoutOf, equipCostOf, isEquipOpen, equipWhere, performOpenEquip, performCloseEquip } from '../core/shop.js'
+import { isShopOpen, listShopItems, canBuyItem, performBuyItem, costOfItem, canEquip, whyNotEquip, performEquip, canUnequip, performUnequip, loadoutOf, equipCostOf, isEquipOpen, equipWhere, performOpenEquip, performCloseEquip, forgeBandName, shelfSpecOf, whyNotTradeIn, performTradeIn, tradeCategoryOf } from '../core/shop.js'
 import { itemOf } from '../content/items.js'
 import { makeNewCampaign, listDraftOffers, performDraft, performEndCampaign, draftsOwedOf, draftedCountOf } from '../core/opening.js'
 import { PROLOGUE } from '../content/prologue.js'
@@ -231,8 +231,10 @@ function worldScreen(c: CampaignState): string {
     body = `<h3>The Beacon — recruit, one a Week · ${esc(fmt(rc))}</h3>
       <div class="pick">${listRecruitOffers(c).map((r) => `<div class="opt${canRecruit(c, r.id) ? '' : ' off'}" data-act="recruit" data-id="${esc(r.id)}"><b>${esc(r.name)}</b><small>${esc(r.classes.map((x) => x.replace('class.', '')).join(', '))} · ${esc(r.unitType)}</small></div>`).join('') || '<p class="meta">nobody answers the Beacon</p>'}</div>
       ${c.cursor.recruited ? '<p class="meta">recruited this Week — the Beacon is closed until next</p>' : ''}
-      <h3>The Forge's shelf${isShopOpen(c) ? ` · ${esc(fmt(costOfItem('')))} an item` : ' — closed until the Forge is repaired'}</h3>
-      <div class="pick">${listShopItems(c).map((r) => `<div class="opt${canBuyItem(c, r.id) ? '' : ' off'}" data-act="buy-item" data-id="${esc(r.id)}"><b>${esc(r.name)}</b><small>${esc(r.slot)} · tier ${r.tier}</small></div>`).join('')}</div>
+      <h3>The Forge's shelf${isShopOpen(c) ? ` · ${esc(forgeBandName(c) ?? '')} · rerolled each Week` : ' — closed until the Forge is repaired'}</h3>
+      <div class="pick">${listShopItems(c).map((r) => `<div class="opt${canBuyItem(c, r.id) ? '' : ' off'}" data-act="buy-item" data-id="${esc(r.id)}"><b>${esc(r.name)}</b><small>${esc(r.slot)} · tier ${r.tier} · ${esc(fmt(costOfItem(c, r.id)))}</small></div>`).join('') || (isShopOpen(c) ? '<p class="meta">sold out for the Week</p>' : '')}</div>
+      ${isShopOpen(c) && shelfSpecOf(c).enchanted > 0 && listShopItems(c).every((r) => itemOf(r.id).source !== 'enchanted') ? '<p class="meta">the Enchanted band would show enchanted items; the codex has no buyable enchants yet</p>' : ''}
+      ${shelfSpecOf(c).tradeIn ? tradeInPanel(c) : ''}
       <h3>The Chapel — Field Surgery · ${esc(fmt(hc))} a hero</h3>
       <div class="pick">${wounded.map((h) => `<div class="opt${canHeal(c, h.id) ? '' : ' off'}" data-act="heal" data-id="${esc(h.id)}"><b>${esc(h.name)}</b><small>${esc(woundNameOf(h.wound))} → ${esc(woundNameOf(h.wound - 1))}</small></div>`).join('') || '<p class="meta">nobody is wounded</p>'}</div>`
   } else if (row.offers === 'labours') {
@@ -282,6 +284,14 @@ function worldScreen(c: CampaignState): string {
     </div>`
 }
 
+
+/** The trade-in: three of one category and tier in the stash → one a tier up. Groups the stash and offers each group of three. */
+function tradeInPanel(c: CampaignState): string {
+  const groups = new Map<string, string[]>()
+  for (const id of c.stash) { const r = itemOf(id); const k = `${tradeCategoryOf(r)}·${r.tier}`; groups.set(k, [...(groups.get(k) ?? []), id]) }
+  const offers = [...groups.entries()].filter(([, ids]) => ids.length >= 3).map(([k, ids]) => { const three = ids.slice(0, 3); const why = whyNotTradeIn(c, three); return `<div class="opt${why ? ' off' : ''}" ${why ? `title="${esc(why)}"` : `data-act="trade-in" data-id="${esc(three.join(','))}"`}><b>three ${esc(k.replace('·', ' tier '))} → one tier ${Number(k.split('·')[1]) + 1}</b><small>${esc(three.map((id) => itemOf(id).name).join(' · '))}${why ? ' · ' + esc(why) : ''}</small></div>` })
+  return `<h3>The trade-in — three for one, a tier up</h3><div class="pick">${offers.join('') || '<p class="meta">nothing in the stash comes in threes of one category and tier</p>'}</div>`
+}
 
 /** The equip panel — hands / armor / slots per hero, the stash beside, take-off and swap. Shared by prep's Equip step and the roster's session. */
 function equipPanel(c: CampaignState, heroIds: readonly string[]): string {
@@ -506,6 +516,7 @@ function wire(root: HTMLElement): void {
         case 'release': return act(() => performRelease(app.ctx!, id!, 'city', 'slice'))
         case 'build': return act(() => performBuild(app.ctx!, id!, el.dataset['building']!, el.dataset['key']!, 'slice'))
         case 'buy-item': return act(() => performBuyItem(app.ctx!, id!, 'slice'))
+        case 'trade-in': return act(() => { const got = performTradeIn(app.ctx!, id!.split(','), 'slice'); note(`traded in — ${itemOf(got).name}`) })
         case 'equip': return act(() => performEquip(app.ctx!, id!, el.dataset['item']!, 'slice', el.dataset['displace']))
         case 'unequip': return act(() => performUnequip(app.ctx!, id!, el.dataset['item']!, 'slice'))
         case 'open-equip': return act(() => performOpenEquip(app.ctx!, 'slice'))

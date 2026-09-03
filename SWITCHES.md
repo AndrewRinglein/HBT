@@ -19,7 +19,10 @@ document names it, the row cites the document and this table never sees it.
 | `battle.supplies` · `battle.faith` · `battle.mana` | What a won Engagement of any kind pays in the three shop currencies (7-KINGDOM-SETTLED.md: "Quest, Defend and Conquer all pay Supplies · Faith · Mana"). `THE-KINGDOM.html`'s worked Week: 6 · 4 · 3. | `6 · 4 · 3` | open — soft |
 | `recruit.faith` | What one recruit costs. Faith recruits (Law 18); a recruit *reroll* is 10 (`THE-KINGDOM.html`); the recruit itself is unpriced. | `10` | open — soft |
 | `gates.waived` | Building node gates name Territory nodes the four-Territory slice map cannot supply (the Forge's 3 Mines against one). THIN-SLICE-REVIEW.md §G2: "waived or scaled." Waived; the rows keep the real gates. | `true` | ruled — slice only |
-| `shop.supplies` | What one item on the Forge's shelf costs in Supplies. Gear is unpriced (THIN-SLICE-IMPLEMENTATION.md §9 blocker 4). | `6` | open — soft |
+| ~~`shop.supplies`~~ → `shop.suppliesMin` · `shop.suppliesMax` | A shelf item's Supplies, rolled once per item on `cup.forge`. "Weapons and armor cost between 10 and 20 supplies" (Andrew 2026-09-02); the flat 6 is retired. | `10` · `20` | open — soft |
+| `forge.tradein.result` | The trade-in's tier-up: drawn on `cup.forge` from every row a tier up, or chosen. Unsaid. | `drawn` | open |
+| `forge.tradein.sameTier` | Must the three burned share a tier, or does any tier below the target count? Unsaid. | `true` | open |
+| `shop.supplies` (retired) | What one item on the Forge's shelf costs in Supplies. Gear is unpriced (THIN-SLICE-IMPLEMENTATION.md §9 blocker 4). | `6` | open — soft |
 | `prologue.paysRenown` | Do the opening's five battles pay Renown? `STATE.md` lists it open ("whether those battles pay Renown"); the Charter's clock is +1 per Engagement won with no exception written. | `true` | open |
 | `quest.faith` · `quest.odds` | The one authored quest's pay and its chance of coming home. Quests pay Faith (7-KINGDOM-SETTLED.md); `resolveQuestOdds` is "the % on screen" (GAME-ARCHITECTURE.md §2.6); neither number is written anywhere. | `8` · `100` | open — soft |
 | `heal.faith` | Field Surgery at the Chapel — Andrew: "maybe 7 faith to heal your hero immediately" (7-KINGDOM-NOTES.md:189). Not a switch so much as a number waiting for a sweep. | `7` | ruled, soft |

@@ -16,8 +16,13 @@ export const SWITCHES = {
   recruitFaith: 10,
   /** gates.waived — building node gates (3 Mines, 1 Wellspring…) cannot be met on the four-Territory slice map; THIN-SLICE-REVIEW.md §G2: "waived or scaled". Waived. */
   buildingGatesWaived: true,
-  /** shop.supplies — what one item on the Forge's shelf costs. Gear is unpriced (blocker 4); soft. */
-  shopSupplies: 6,
+  /** shop.suppliesMin / shop.suppliesMax — a shelf item's Supplies, rolled once per item on cup.forge: "weapons and armor cost between 10 and 20 supplies" (2026-09-02). Soft. */
+  shopSuppliesMin: 10,
+  shopSuppliesMax: 20,
+  /** forge.tradein.result — the tier-up is drawn on cup.forge, or chosen from the tier above. Unsaid. */
+  tradeInResult: 'drawn' as 'drawn' | 'chosen',
+  /** forge.tradein.sameTier — the three must share a tier (true), or any tier below the target counts. Unsaid. */
+  tradeInSameTier: true,
   /** prologue.paysRenown — do the opening's battles tick the Charter's clock? STATE.md lists it open ("whether those battles pay Renown"). Yes by default: a won Engagement is a won Engagement. */
   prologuePaysRenown: true,
   /** quest.faith — what the one authored quest pays. Quests pay Faith; the amount is unsaid. Soft. */

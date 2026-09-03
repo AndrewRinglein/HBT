@@ -183,7 +183,19 @@ export function applyBuildNode(ctx: Ctx, territoryId: string, buildingId: string
 
 export function applyBuyItem(ctx: Ctx, itemId: string, cost: Record<string, number>, causeId: string): void {
   ctx.campaign.stash.push(itemId)
+  ctx.campaign.cursor.sold.push(itemId)
   emit(ctx, 'item.bought', causeId, { itemId, cost })
+}
+
+/** The trade-in: three burned from the stash, one gained — one write, one word. */
+export function applyTradeIn(ctx: Ctx, burned: readonly string[], itemId: string, causeId: string): void {
+  for (const id of burned) {
+    const at = ctx.campaign.stash.indexOf(id)
+    if (at < 0) throw new Error(`applyTradeIn refused: '${id}' is not in the stash`)
+    ctx.campaign.stash.splice(at, 1)
+  }
+  ctx.campaign.stash.push(itemId)
+  emit(ctx, 'item.traded', causeId, { burned: [...burned], itemId })
 }
 
 /** Off the hero, into the shared stash — the one write that removes from `equipped`. */

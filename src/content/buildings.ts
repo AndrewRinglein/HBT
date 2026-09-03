@@ -36,6 +36,18 @@ export type BuildingRow = {
   /** Where it stands: a Territory conquered with it, or the Sanctuary from the start. */
   readonly stands: 'territory' | 'sanctuary'
   readonly nodes: readonly BuildingNode[]
+  /**
+   * The building's bands, in order — the level its art shows and its services read
+   * (ART-NOTES.md: "bands key to a building's level"). A band is reached when ANY of
+   * its `at` nodes is built. Absent: the level is the node count, as before.
+   */
+  readonly bands?: readonly { readonly name: string; readonly at: readonly string[] }[]
+  /**
+   * The Forge's shelf by band (GEAR-DESIGN.md §3, ruled 2026-09-02): base items on
+   * the shelf, masterworks and enchanted added, and whether the trade-in is open.
+   * Cumulative: the highest band reached says how many of each.
+   */
+  readonly shelf?: readonly { readonly band: number; readonly base?: number; readonly masterwork?: number; readonly enchanted?: number; readonly tradeIn?: boolean }[]
 }
 
 const RAW_BUILDINGS: readonly BuildingRow[] = [
@@ -52,6 +64,20 @@ const RAW_BUILDINGS: readonly BuildingRow[] = [
       { key: 'plate', name: 'Plate', salvage: 18, parents: ['light', 'mail'], gate: { mine: 3 } },
       { key: 'masterworks', name: 'Masterworks', salvage: 40, parents: ['exotic-arms', 'plate'] },
       { key: 'enchanted', name: 'Enchanted', salvage: 60, parents: ['masterworks'], gate: { wellspring: 1 }, note: 'lvl 1 enchants' },
+    ],
+    // Repaired · Equipped · Masterwork · Enchanted — the four bands the art was painted for (kingdom-art forge--*)
+    bands: [
+      { name: 'Repaired', at: ['repair'] },
+      { name: 'Equipped', at: ['blades', 'bows', 'shields', 'light', 'mail'] },
+      { name: 'Masterwork', at: ['masterworks'] },
+      { name: 'Enchanted', at: ['enchanted'] },
+    ],
+    // "Repaired sells two items, Equipped four. Masterwork gives you two masterwork items. Enchanted two enchanted items." · "Let's just do it in Forge. It unlocks at the highest tier."
+    shelf: [
+      { band: 1, base: 2 },
+      { band: 2, base: 4 },
+      { band: 3, masterwork: 2 },
+      { band: 4, enchanted: 2, tradeIn: true },
     ],
   },
   {
