@@ -5182,3 +5182,98 @@ effect of bleedout.accelerated — 25 paired battles per map, WITH vs WITHOUT
   test.map.showcase: heroWins 25->25 (+0)  meanTurns 3.8->3.8
 NO MEASURABLE EFFECT at this sample size — consequence clause caught state changes, but outcomes did not move. Consider a sweep with more replicates before drawing balance conclusions.
 ```
+
+## ability.effects — LANDED `03b97e2` **NEEDS REVIEW**
+2026-09-03 08:50
+
+  PASS  dependencies landed
+  WARN  not already decided — 4 candidate ruling(s) — READ BEFORE ASKING: ../CODEX.md:980 · CONTENT-AUDIT.md:206
+  PASS  typecheck
+  PASS  full test suite
+  PASS  gate 1 — the id appears in a real battle — power.sacred-shield.aegis: 4 log lines, 4 fired, 2 changed state · power.fire-master.fireball: 15 log lines, 15 fired, 9 changed state
+  PASS  brought its own tests — test/items-per-unit.test.ts, test/pack-items.test.ts, test/rulings-2026-08-15.test.ts, test/ability-effects.test.ts, test/hero-assembly.test.ts
+  WARN  existing tests untouched — DELETED LINES in test/items-per-unit.test.ts (-1), test/pack-items.test.ts (-1), test/rulings-2026-08-15.test.ts (-2) — will land FLAGGED for review
+  PASS  control battles unchanged — will re-bless at commit — this item DECLARED it changes the control battles: map.open 1b24d971->f98463dc, map.ridge a9704f9b->daaaf735, map.flanks 3d3c7322->e88f5685, map.highlands db85ee58->0effa39d, map.field 4f7fafbb->f81ed997, map.thicket 04293116->55273805, test.map.embers 65de4c74->be95bac7, test.map.showcase 46d36849->b41ff62b
+  PASS  content has a published source — 14 ids without a published source (4 awaiting publication from earlier items — see audit)
+  PASS  hardcode scan — core knows mechanisms, never names
+  PASS  generalizes — the second instance costs zero engine code — power.sacred-shield.aegis live · power.shepherd.circle-of-healing live · power.fire-master.fireball live · power.fire-master.eldritch-might live
+  PASS  naming — new content ids use declared kinds
+  PASS  naming — no banned words invented
+  PASS  kill switch — the tests fail without the content — tests fail without power.sacred-shield.aegis,power.fire-master.fireball — they genuinely test it
+
+<details><summary>Existing tests were edited — review this diff</summary>
+
+```diff
+diff --git a/test/items-per-unit.test.ts b/test/items-per-unit.test.ts
+index 5777593..69da2a1 100644
+--- a/test/items-per-unit.test.ts
++++ b/test/items-per-unit.test.ts
+@@ -34,5 +34,8 @@ describe('the invariant — no heroItems means the hero the converter used to fo
+       // fix.unit-tags (2026-09-03): the oracle predates the collapse of
+       // `attributes` into `tags` (Law 11); the field no longer exists.
+-      const keys = [...new Set([...Object.keys(f), ...Object.keys(r)])].filter((k) => k !== 'attributes' && JSON.stringify(f[k]) !== JSON.stringify(r[k]))
++      // Hero assembly (2026-09-03): rows carry their class on `tags` now
++      // (class.warrior …) so fieldedDef can find the level table; the oracle
++      // predates that too.
++      const keys = [...new Set([...Object.keys(f), ...Object.keys(r)])].filter((k) => k !== 'attributes' && k !== 'tags' && JSON.stringify(f[k]) !== JSON.stringify(r[k]))
+       if (keys.length) differ[id] = keys
+     }
+diff --git a/test/pack-items.test.ts b/test/pack-items.test.ts
+index ad4d9ad..d8ddf3a 100644
+--- a/test/pack-items.test.ts
++++ b/test/pack-items.test.ts
+@@ -44,5 +44,9 @@ describe('every Codex item is an ItemDef, and says exactly what it can and canno
+     // is agreement, read off the Codex each run.
+     const codex = codexItems()
+-    expect(Object.keys(ITEMS).length).toBe(codex.size)
++    // Hero assembly (2026-09-03): ITEMS also carries the generated tier-3
++    // enchanted rows (ITEMS-PLAN.md §6, base + enchant); the Codex rows are
++    // exactly the ones with no `enchant` provenance. Agreement, not a count.
++    const codexOnly = Object.values(ITEMS).filter((it) => !(it as { enchant?: string }).enchant)
++    expect(codexOnly.length).toBe(codex.size)
+     for (const [id, c] of codex) {
+       const it = ITEMS[id]!
+diff --git a/test/rulings-2026-08-15.test.ts b/test/rulings-2026-08-15.test.ts
+index 446f30a..d406c99 100644
+--- a/test/rulings-2026-08-15.test.ts
++++ b/test/rulings-2026-08-15.test.ts
+@@ -110,12 +110,20 @@ describe('bleed-out (Angela 2026-08-15)', () => {
+ // (TEST_COHORT.enemies). Claims unchanged; the fielding says where the
+ // pressure comes from.
++  // 2026-09-03 (ability.effects): fourteen zombies no longer down a hero on
++  // every seed once the Air Mage's Storm is actually reachable (the kite now
++  // closes to a power's range) and the weapons hit at authored accuracies.
++  // The CLAIM is per drop — "set to five, every time" — so the fielding is
++  // sixteen (the ruled pressure ceiling) and the test demands at least one
++  // drop across the sample, not one per seed. Same rule, honest fielding.
+   it('a hero who drops is set to five, every time', () => {
++    let drops = 0
+     for (let r = 0; r < 8; r++) {
+-      const ctx = createBattle({ replicate: r, enemyCount: 14, mapId: 'map.open' })
++      const ctx = createBattle({ replicate: r, enemyCount: 16, mapId: 'map.open' })
+       runBattle(ctx)
+       const set = ctx.events.filter((e) => e.type === 'bleedout.set')
+-      expect(set.length, `replicate ${r} put nobody down`).toBeGreaterThan(0)
++      drops += set.length
+       for (const e of set) expect(e['bleedOut']).toBe(5)
+     }
++    expect(drops, 'eight seeds at sixteen zombies put nobody down — the sample proved nothing').toBeGreaterThan(0)
+   })
+ 
+```
+</details>
+
+IRON GAUNTLET: NOT PASSED — 2 FLAG(S) WARNED
+
+```
+effect of power.sacred-shield.aegis,power.fire-master.fireball — 25 paired battles per map, WITH vs WITHOUT
+  map.open: heroWins 25->25 (+0)  meanTurns 4.0->4.0
+  map.ridge: heroWins 25->25 (+0)  meanTurns 4.4->4.4
+  map.flanks: heroWins 25->25 (+0)  meanTurns 4.1->4.1
+  map.highlands: heroWins 25->25 (+0)  meanTurns 5.1->5.1
+  map.field: heroWins 25->25 (+0)  meanTurns 5.5->5.5
+  map.thicket: heroWins 25->25 (+0)  meanTurns 5.4->5.4
+  test.map.embers: heroWins 25->25 (+0)  meanTurns 2.9->2.9
+  test.map.showcase: heroWins 25->25 (+0)  meanTurns 3.7->3.7
+NO MEASURABLE EFFECT at this sample size — consequence clause caught state changes, but outcomes did not move. Consider a sweep with more replicates before drawing balance conclusions.
+```

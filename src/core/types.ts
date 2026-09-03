@@ -15,6 +15,38 @@ export type Phase = 'hero' | 'enemy'
 
 export type Outcome = 'heroClear' | 'wipe' | 'capped'
 
+/**
+ * What a power DOES, one effect at a time — ability.effects (2026-09-03).
+ * The trigger effect vocabulary (status.apply / status.remove / damage /
+ * knockback) plus what class powers say and triggers never do: heal, a stat
+ * modifier with a lifetime, and damage the caster takes. Each effect lands on
+ * the power's resolved targets (`AbilityDef.target`), or on the caster when
+ * `who: 'self'`. Plain data, compiled by the converter from the Codex's exact
+ * sentences; a clause it cannot compile is a named gap on the row.
+ */
+export type AbilityEffect =
+  | {
+      readonly kind: 'damage'
+      readonly stat: 'strength' | 'precision' | 'magic' | 'spirit'
+      readonly bonus: number
+      readonly damageType: DamageType
+      /** 'always' strikes allies whatever the areaHitsAllies switch says (the row said "ally or enemy"). */
+      readonly allies?: 'always' | 'never'
+    }
+  | { readonly kind: 'heal'; readonly amount: import('./trigger.js').ValueSpec }
+  | { readonly kind: 'status.apply'; readonly statusId: string; readonly value: import('./trigger.js').ValueSpec }
+  | { readonly kind: 'status.remove'; readonly statusId: string; readonly value?: number }
+  | {
+      readonly kind: 'statMod'
+      readonly stat: import('./stats.js').StatName
+      readonly value: number
+      /** endOfTurn = this Turn; endOfNextTurn = "until the end of your next Turn"; battle = the rest of the Battle. */
+      readonly until: 'endOfTurn' | 'endOfNextTurn' | 'battle'
+      readonly who?: 'self' | 'target'
+    }
+  | { readonly kind: 'selfDamage'; readonly amount: number; readonly damageType: DamageType }
+  | { readonly kind: 'knockback'; readonly value: import('./trigger.js').ValueSpec }
+
 export type AbilityDef = {
   readonly id: string
   readonly name: string
@@ -41,6 +73,20 @@ export type AbilityDef = {
   readonly heal?: import('./trigger.js').ValueSpec
   /** selfGuard only: protection = base + perArmor x effective Armor; dodgeLoss applies each use, rest of Battle. */
   readonly guard?: { readonly protectionBase: number; readonly protectionPerArmor: number; readonly dodgeLoss: number }
+  /**
+   * ability.effects (2026-09-03): the effect list and the ONE targeting
+   * vocabulary (target.ts). When `effects` is present the three legacy shapes
+   * above are not consulted. `range` still gates how far the aimed unit may
+   * be; an area with origin 'self' ignores the aim.
+   */
+  readonly effects?: readonly AbilityEffect[]
+  readonly target?: import('./target.js').Targeting
+  /** "It does not use your primary action" — the power spends stamina and cooldown only. */
+  readonly free?: boolean
+  /** Turns before the first use: cooldowns[id] starts at warmup + 1 at fielding. */
+  readonly warmup?: number
+  /** What the Codex row says that the engine cannot do. Never silently half-real. */
+  readonly gaps?: readonly string[]
 }
 
 /**
@@ -127,6 +173,14 @@ export type ScenarioDef = {
   readonly enemyHexes: readonly number[]
   /** The RNG replicate, so a scenario is still a seed rather than a recording. */
   readonly replicate: number
+  /**
+   * Hero assembly (2026-09-03): what each hero carries and how far it has
+   * come — a FIELDING, not an override (items and levels are content; a
+   * scenario naming them is naming rows). Parallel to `heroes`; absent = the
+   * Codex default kit and the bare row.
+   */
+  readonly heroItems?: readonly (readonly string[] | undefined)[]
+  readonly heroProgress?: readonly (HeroProgress | undefined)[]
 }
 
 export type AttackDef = {
@@ -223,6 +277,20 @@ export type ItemDef = {
   readonly abilities: readonly string[]
   readonly triggers: readonly import('./trigger.js').Trigger[]
   readonly gaps?: readonly string[]
+}
+
+/**
+ * A hero's campaign state as the battle needs it — hero assembly (2026-09-03).
+ * Level, the specialty chosen at the first level-up, the level-5 pick, and the
+ * powers drafted. Folded onto the bare row by fieldedDef() before the items,
+ * so the kingdom's Equip screen and the battle read one function.
+ */
+export type HeroProgress = {
+  readonly level: number
+  readonly specialtyId?: string
+  /** One of the class's level-5 choice options, verbatim. */
+  readonly levelFivePick?: Readonly<Record<string, number>>
+  readonly powers?: readonly string[]
 }
 
 export type UnitDef = {
@@ -412,6 +480,8 @@ export type Config = {
      * enemy is in reach, or whenever one is (the finisher). SWITCHES.md.
      */
     aiAttacksDowned: 'never' | 'whenNoStanding' | 'always'
+    /** Does a kiter hold at a ready power's range when that is shorter than its weapon's? SWITCHES.md, 2026-09-03. */
+    aiKiteHoldsAtPowerRange: boolean
   }
 }
 
@@ -455,6 +525,9 @@ export const DEFAULT_CONFIG: Config = {
     // The downed are a finisher's target, not a preference: only when nothing
     // standing is in reach. SWITCHES.md, 2026-09-03.
     aiAttacksDowned: 'whenNoStanding',
+    // A power that can never be in range is dead content; the kite closes to
+    // it. SWITCHES.md, 2026-09-03 (ability.effects).
+    aiKiteHoldsAtPowerRange: true,
   },
 }
 

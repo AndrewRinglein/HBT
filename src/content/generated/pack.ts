@@ -32,7 +32,8 @@ export const UNIT_PACK = {
       ],
       "abilities": [],
       "tags": [
-        "hero"
+        "hero",
+        "class.warrior"
       ],
       "moves": [
         "power.move",
@@ -115,7 +116,8 @@ export const UNIT_PACK = {
       ],
       "abilities": [],
       "tags": [
-        "hero"
+        "hero",
+        "class.rogue"
       ],
       "moves": [
         "power.move",
@@ -162,7 +164,8 @@ export const UNIT_PACK = {
       ],
       "abilities": [],
       "tags": [
-        "hero"
+        "hero",
+        "class.ranger"
       ],
       "moves": [
         "power.move",
@@ -211,7 +214,8 @@ export const UNIT_PACK = {
         "power.test-mage.bolt"
       ],
       "tags": [
-        "hero"
+        "hero",
+        "class.mage"
       ],
       "moves": [
         "power.move",
@@ -270,7 +274,8 @@ export const UNIT_PACK = {
       ],
       "abilities": [],
       "tags": [
-        "hero"
+        "hero",
+        "class.priest"
       ],
       "moves": [
         "power.move",
@@ -304,7 +309,8 @@ export const UNIT_PACK = {
       ],
       "abilities": [],
       "tags": [
-        "hero"
+        "hero",
+        "class.paladin"
       ],
       "moves": [
         "power.move",
@@ -4103,7 +4109,8 @@ export const UNIT_PACK = {
         "power.sidestep"
       ],
       "tags": [
-        "hero"
+        "hero",
+        "class.paladin"
       ],
       "triggers": [],
       "defaultItems": [
@@ -4140,7 +4147,8 @@ export const UNIT_PACK = {
         "power.sidestep"
       ],
       "tags": [
-        "hero"
+        "hero",
+        "class.paladin"
       ],
       "triggers": [],
       "defaultItems": [
@@ -4178,7 +4186,8 @@ export const UNIT_PACK = {
         "power.sidestep"
       ],
       "tags": [
-        "hero"
+        "hero",
+        "class.paladin"
       ],
       "triggers": [],
       "defaultItems": [
@@ -4215,7 +4224,8 @@ export const UNIT_PACK = {
         "power.sidestep"
       ],
       "tags": [
-        "hero"
+        "hero",
+        "class.paladin"
       ],
       "triggers": [],
       "defaultItems": [
@@ -4253,7 +4263,8 @@ export const UNIT_PACK = {
         "power.side-roll"
       ],
       "tags": [
-        "hero"
+        "hero",
+        "class.ranger"
       ],
       "triggers": [],
       "defaultItems": [
@@ -4290,7 +4301,8 @@ export const UNIT_PACK = {
         "power.side-roll"
       ],
       "tags": [
-        "hero"
+        "hero",
+        "class.ranger"
       ],
       "triggers": [],
       "defaultItems": [
@@ -4327,7 +4339,8 @@ export const UNIT_PACK = {
         "power.side-roll"
       ],
       "tags": [
-        "hero"
+        "hero",
+        "class.ranger"
       ],
       "triggers": [],
       "defaultItems": [
@@ -4364,7 +4377,8 @@ export const UNIT_PACK = {
         "power.side-roll"
       ],
       "tags": [
-        "hero"
+        "hero",
+        "class.ranger"
       ],
       "triggers": [],
       "defaultItems": [
@@ -4401,7 +4415,8 @@ export const UNIT_PACK = {
         "power.leap"
       ],
       "tags": [
-        "hero"
+        "hero",
+        "class.warrior"
       ],
       "triggers": [],
       "defaultItems": [
@@ -4439,7 +4454,8 @@ export const UNIT_PACK = {
         "power.leap"
       ],
       "tags": [
-        "hero"
+        "hero",
+        "class.warrior"
       ],
       "triggers": [],
       "defaultItems": [
@@ -4475,7 +4491,8 @@ export const UNIT_PACK = {
         "power.leap"
       ],
       "tags": [
-        "hero"
+        "hero",
+        "class.warrior"
       ],
       "triggers": [],
       "defaultItems": [
@@ -4512,7 +4529,8 @@ export const UNIT_PACK = {
         "power.leap"
       ],
       "tags": [
-        "hero"
+        "hero",
+        "class.warrior"
       ],
       "triggers": [],
       "defaultItems": [
@@ -4549,7 +4567,8 @@ export const UNIT_PACK = {
         "power.focus"
       ],
       "tags": [
-        "hero"
+        "hero",
+        "class.mage"
       ],
       "triggers": [],
       "defaultItems": [
@@ -4586,7 +4605,8 @@ export const UNIT_PACK = {
         "power.focus"
       ],
       "tags": [
-        "hero"
+        "hero",
+        "class.mage"
       ],
       "triggers": [],
       "defaultItems": [
@@ -4623,7 +4643,8 @@ export const UNIT_PACK = {
         "power.focus"
       ],
       "tags": [
-        "hero"
+        "hero",
+        "class.mage"
       ],
       "triggers": [],
       "defaultItems": [
@@ -4660,7 +4681,8 @@ export const UNIT_PACK = {
         "power.focus"
       ],
       "tags": [
-        "hero"
+        "hero",
+        "class.mage"
       ],
       "triggers": [],
       "defaultItems": [
@@ -4697,7 +4719,8 @@ export const UNIT_PACK = {
         "power.devotion"
       ],
       "tags": [
-        "hero"
+        "hero",
+        "class.priest"
       ],
       "triggers": [],
       "defaultItems": [
@@ -4734,7 +4757,8 @@ export const UNIT_PACK = {
         "power.devotion"
       ],
       "tags": [
-        "hero"
+        "hero",
+        "class.priest"
       ],
       "triggers": [],
       "defaultItems": [
@@ -4772,7 +4796,8 @@ export const UNIT_PACK = {
         "power.devotion"
       ],
       "tags": [
-        "hero"
+        "hero",
+        "class.priest"
       ],
       "triggers": [],
       "defaultItems": [
@@ -4809,7 +4834,8 @@ export const UNIT_PACK = {
         "power.devotion"
       ],
       "tags": [
-        "hero"
+        "hero",
+        "class.priest"
       ],
       "triggers": [],
       "defaultItems": [
@@ -4847,7 +4873,8 @@ export const UNIT_PACK = {
         "power.side-roll"
       ],
       "tags": [
-        "hero"
+        "hero",
+        "class.rogue"
       ],
       "triggers": [],
       "defaultItems": [
@@ -4885,7 +4912,8 @@ export const UNIT_PACK = {
         "power.side-roll"
       ],
       "tags": [
-        "hero"
+        "hero",
+        "class.rogue"
       ],
       "triggers": [],
       "defaultItems": [
@@ -4922,7 +4950,8 @@ export const UNIT_PACK = {
         "power.side-roll"
       ],
       "tags": [
-        "hero"
+        "hero",
+        "class.rogue"
       ],
       "triggers": [],
       "defaultItems": [
@@ -4959,7 +4988,8 @@ export const UNIT_PACK = {
         "power.side-roll"
       ],
       "tags": [
-        "hero"
+        "hero",
+        "class.rogue"
       ],
       "triggers": [],
       "defaultItems": [
@@ -4995,7 +5025,8 @@ export const UNIT_PACK = {
       ],
       "tags": [
         "hero",
-        "civilian"
+        "civilian",
+        "class.civilian"
       ],
       "triggers": [],
       "defaultItems": [
@@ -5029,7 +5060,8 @@ export const UNIT_PACK = {
       ],
       "tags": [
         "hero",
-        "civilian"
+        "civilian",
+        "class.civilian"
       ],
       "triggers": [],
       "defaultItems": [
@@ -5064,7 +5096,8 @@ export const UNIT_PACK = {
       ],
       "tags": [
         "hero",
-        "civilian"
+        "civilian",
+        "class.civilian"
       ],
       "triggers": [],
       "defaultItems": [
@@ -5103,7 +5136,8 @@ export const UNIT_PACK = {
         "power.leap"
       ],
       "tags": [
-        "hero"
+        "hero",
+        "class.warrior"
       ],
       "triggers": [
         {
@@ -5189,7 +5223,8 @@ export const UNIT_PACK = {
         "power.side-roll"
       ],
       "tags": [
-        "hero"
+        "hero",
+        "class.rogue"
       ],
       "triggers": [
         {
@@ -5240,7 +5275,8 @@ export const UNIT_PACK = {
         "power.side-roll"
       ],
       "tags": [
-        "hero"
+        "hero",
+        "class.ranger"
       ],
       "triggers": [
         {
@@ -5290,7 +5326,8 @@ export const UNIT_PACK = {
         "power.focus"
       ],
       "tags": [
-        "hero"
+        "hero",
+        "class.mage"
       ],
       "triggers": [
         {
@@ -5352,7 +5389,8 @@ export const UNIT_PACK = {
         "power.devotion"
       ],
       "tags": [
-        "hero"
+        "hero",
+        "class.priest"
       ],
       "triggers": [],
       "defaultItems": [
@@ -5389,7 +5427,8 @@ export const UNIT_PACK = {
         "power.sidestep"
       ],
       "tags": [
-        "hero"
+        "hero",
+        "class.paladin"
       ],
       "triggers": [],
       "defaultItems": [
@@ -11383,6 +11422,12075 @@ export const UNIT_PACK = {
         "blocksAction": true,
         "stacking": "add"
       }
+    }
+  },
+  "classPowers": {
+    "power.berserker.fast-fury": {
+      "id": "power.berserker.fast-fury",
+      "name": "Fast Fury",
+      "staminaCost": 0,
+      "cooldown": 2,
+      "free": true,
+      "range": 0,
+      "target": {
+        "select": "self",
+        "side": "any"
+      },
+      "effects": [
+        {
+          "kind": "selfDamage",
+          "amount": 2,
+          "damageType": "true"
+        },
+        {
+          "kind": "statMod",
+          "stat": "strength",
+          "value": 1,
+          "until": "battle",
+          "who": "self"
+        }
+      ],
+      "gaps": [
+        "unparsed: the bonus stacks each time you use it"
+      ]
+    },
+    "power.shieldbearer.unbreakable": {
+      "id": "power.shieldbearer.unbreakable",
+      "name": "Unbreakable",
+      "staminaCost": 1,
+      "cooldown": 6,
+      "warmup": 6,
+      "range": 0,
+      "target": {
+        "select": "self",
+        "side": "any"
+      },
+      "effects": [],
+      "gaps": [
+        "unparsed: Lose 3 Movement for the rest of the Battle and gain Protection equal to 4 + thre",
+        "unparsed: Using it IS the choice — there is no second option to weigh, only the question o",
+        "no effect compiled — the power is inert"
+      ]
+    },
+    "power.leader.titans-inspiration": {
+      "id": "power.leader.titans-inspiration",
+      "name": "Titan's Inspiration",
+      "staminaCost": 2,
+      "cooldown": 4,
+      "range": 1,
+      "target": {
+        "select": "unit",
+        "side": "enemy"
+      },
+      "effects": [],
+      "gaps": [
+        "unparsed: Melee attack at +1 Strength",
+        "unparsed: If it hits, every ally within 3 hexes gains +1 Strength for the rest of the Batt",
+        "no effect compiled — the power is inert"
+      ]
+    },
+    "power.reaver.rend": {
+      "id": "power.reaver.rend",
+      "name": "Rend",
+      "staminaCost": 1,
+      "cooldown": 2,
+      "range": 0,
+      "target": {
+        "select": "self",
+        "side": "any"
+      },
+      "effects": [],
+      "gaps": [
+        "unparsed: Bleed is never reduced by Resist",
+        "modifies only melee attacks — engine applies it to the unit",
+        "no effect compiled — the power is inert"
+      ]
+    },
+    "power.reaver.cleave": {
+      "id": "power.reaver.cleave",
+      "name": "Red Harvest",
+      "staminaCost": 2,
+      "cooldown": 3,
+      "warmup": 1,
+      "range": 0,
+      "target": {
+        "select": "area",
+        "side": "enemy",
+        "radius": 1,
+        "origin": "self"
+      },
+      "effects": [],
+      "gaps": [
+        "unparsed: Deal Strength physical damage to every enemy adjacent to you and give each 1 Ble",
+        "no effect compiled — the power is inert"
+      ]
+    },
+    "power.reaver.gore": {
+      "id": "power.reaver.gore",
+      "name": "Gore",
+      "staminaCost": 2,
+      "cooldown": 4,
+      "warmup": 1,
+      "range": 1,
+      "target": {
+        "select": "unit",
+        "side": "enemy"
+      },
+      "effects": [],
+      "gaps": [
+        "unparsed: Make two melee attacks against the same enemy at -10 Accuracy each",
+        "unparsed: you gain 2 Bleed whether or not they land",
+        "no effect compiled — the power is inert"
+      ]
+    },
+    "power.reaver.blood-price": {
+      "id": "power.reaver.blood-price",
+      "name": "Blood Price",
+      "staminaCost": 0,
+      "cooldown": 1,
+      "free": true,
+      "range": 0,
+      "target": {
+        "select": "self",
+        "side": "any"
+      },
+      "effects": [],
+      "gaps": [
+        "unparsed: Take 4 true damage to immediately regain 2 Stamina",
+        "no effect compiled — the power is inert"
+      ]
+    },
+    "power.warchief.war-cry": {
+      "id": "power.warchief.war-cry",
+      "name": "War Cry",
+      "staminaCost": 2,
+      "cooldown": 4,
+      "warmup": 1,
+      "range": 0,
+      "target": {
+        "select": "area",
+        "side": "any",
+        "radius": 3,
+        "origin": "self"
+      },
+      "effects": [],
+      "gaps": [
+        "unparsed: Apply 2 Weak to every enemy within 3 hexes",
+        "unparsed: every ally within 3 hexes gains +1 Strength for the rest of the Battle",
+        "no effect compiled — the power is inert"
+      ]
+    },
+    "power.warchief.intimidate": {
+      "id": "power.warchief.intimidate",
+      "name": "Intimidate",
+      "staminaCost": 2,
+      "cooldown": 5,
+      "warmup": 2,
+      "range": 0,
+      "target": {
+        "select": "area",
+        "side": "enemy",
+        "radius": 4,
+        "origin": "self"
+      },
+      "effects": [],
+      "gaps": [
+        "unparsed: Every enemy within 4 hexes takes -10 Accuracy for the rest of the Battle and gai",
+        "no effect compiled — the power is inert"
+      ]
+    },
+    "power.warchief.blood-oath": {
+      "id": "power.warchief.blood-oath",
+      "name": "Blood Oath",
+      "staminaCost": 2,
+      "cooldown": 6,
+      "warmup": 2,
+      "range": 0,
+      "target": {
+        "select": "area",
+        "side": "ally",
+        "radius": 3,
+        "origin": "self"
+      },
+      "effects": [],
+      "gaps": [
+        "unparsed: You and every ally within 3 hexes gain +2 Strength for the rest of the Battle an",
+        "no effect compiled — the power is inert"
+      ]
+    },
+    "power.warchief.lead-from-front": {
+      "id": "power.warchief.lead-from-front",
+      "name": "Lead From Front",
+      "staminaCost": 2,
+      "cooldown": 4,
+      "warmup": 1,
+      "range": 1,
+      "target": {
+        "select": "unit",
+        "side": "enemy"
+      },
+      "effects": [],
+      "gaps": [
+        "unparsed: Move up to 3 hexes and make a melee attack at +1 Strength",
+        "unparsed: Every ally adjacent to you afterwards gains +1 Surge for the rest of the Battle",
+        "no effect compiled — the power is inert"
+      ]
+    },
+    "power.bloodrage.frenzy": {
+      "id": "power.bloodrage.frenzy",
+      "name": "Frenzy",
+      "staminaCost": 2,
+      "cooldown": 4,
+      "warmup": 2,
+      "range": 0,
+      "effects": [],
+      "target": {
+        "select": "self",
+        "side": "any"
+      },
+      "gaps": [
+        "targets 'up to 3 enemies within 3 hexes' unparsed — the power is inert"
+      ]
+    },
+    "power.bloodrage.bloodlust": {
+      "id": "power.bloodrage.bloodlust",
+      "name": "Bloodlust",
+      "staminaCost": 0,
+      "cooldown": 5,
+      "range": 0,
+      "target": {
+        "select": "self",
+        "side": "any"
+      },
+      "effects": [
+        {
+          "kind": "statMod",
+          "stat": "strength",
+          "value": 3,
+          "until": "battle",
+          "who": "self"
+        },
+        {
+          "kind": "statMod",
+          "stat": "accuracy",
+          "value": -10,
+          "until": "battle",
+          "who": "self"
+        }
+      ],
+      "gaps": [
+        "stance rider: take 1 true damage at the start of each of your Turns"
+      ]
+    },
+    "power.bloodrage.unstoppable": {
+      "id": "power.bloodrage.unstoppable",
+      "name": "Unstoppable",
+      "staminaCost": 1,
+      "cooldown": 6,
+      "warmup": 3,
+      "range": 0,
+      "target": {
+        "select": "self",
+        "side": "any"
+      },
+      "effects": [
+        {
+          "kind": "status.remove",
+          "statusId": "status.stun",
+          "value": 5
+        },
+        {
+          "kind": "status.remove",
+          "statusId": "status.weak",
+          "value": 5
+        },
+        {
+          "kind": "heal",
+          "amount": 4
+        }
+      ]
+    },
+    "power.bloodrage.death-feeds": {
+      "id": "power.bloodrage.death-feeds",
+      "name": "Death Feeds the Rage",
+      "staminaCost": 0,
+      "cooldown": 4,
+      "free": true,
+      "range": 1,
+      "target": {
+        "select": "unit",
+        "side": "enemy"
+      },
+      "effects": [],
+      "gaps": [
+        "unparsed: Make a melee attack at +5 Accuracy",
+        "unparsed: On kill, heal 4 and gain +1 Strength for the rest of the Battle",
+        "no effect compiled — the power is inert"
+      ]
+    },
+    "power.champion.challenge": {
+      "id": "power.champion.challenge",
+      "name": "Challenge",
+      "staminaCost": 1,
+      "cooldown": 5,
+      "warmup": 1,
+      "range": 0,
+      "target": {
+        "select": "self",
+        "side": "any"
+      },
+      "effects": [],
+      "gaps": [
+        "unparsed: For the rest of the Battle you have +2 Strength and +10 Accuracy, and -5 Dodge",
+        "no effect compiled — the power is inert"
+      ]
+    },
+    "power.champion.righteous-blow": {
+      "id": "power.champion.righteous-blow",
+      "name": "Righteous Blow",
+      "staminaCost": 2,
+      "cooldown": 2,
+      "range": 0,
+      "target": {
+        "select": "self",
+        "side": "any"
+      },
+      "effects": [
+        {
+          "kind": "statMod",
+          "stat": "crit",
+          "value": 5,
+          "until": "endOfNextTurn",
+          "who": "self"
+        }
+      ],
+      "gaps": [
+        "modifies only melee attacks — engine applies it to the unit"
+      ]
+    },
+    "power.champion.heroic-charge": {
+      "id": "power.champion.heroic-charge",
+      "name": "Heroic Charge",
+      "staminaCost": 2,
+      "cooldown": 3,
+      "warmup": 1,
+      "range": 1,
+      "target": {
+        "select": "unit",
+        "side": "enemy"
+      },
+      "effects": [],
+      "gaps": [
+        "unparsed: Move up to your Movement in a straight line and make a melee attack at +2 Streng",
+        "no effect compiled — the power is inert"
+      ]
+    },
+    "power.champion.prove-yourself": {
+      "id": "power.champion.prove-yourself",
+      "name": "Prove Yourself",
+      "staminaCost": 0,
+      "cooldown": 4,
+      "free": true,
+      "range": 0,
+      "target": {
+        "select": "self",
+        "side": "any"
+      },
+      "effects": [],
+      "gaps": [
+        "unparsed: Until the end of your next Turn, you have: on kill, gain +2 Strength, +2 Precisi",
+        "no effect compiled — the power is inert"
+      ]
+    },
+    "power.guardian.iron-wall": {
+      "id": "power.guardian.iron-wall",
+      "name": "Iron Wall",
+      "staminaCost": 0,
+      "cooldown": 6,
+      "warmup": 2,
+      "range": 0,
+      "target": {
+        "select": "self",
+        "side": "any"
+      },
+      "effects": [
+        {
+          "kind": "statMod",
+          "stat": "armor",
+          "value": 2,
+          "until": "battle",
+          "who": "self"
+        },
+        {
+          "kind": "statMod",
+          "stat": "movement",
+          "value": -2,
+          "until": "battle",
+          "who": "self"
+        }
+      ]
+    },
+    "power.guardian.hold-the-line": {
+      "id": "power.guardian.hold-the-line",
+      "name": "Hold the Line",
+      "staminaCost": 1,
+      "cooldown": 4,
+      "warmup": 1,
+      "range": 0,
+      "target": {
+        "select": "self",
+        "side": "any"
+      },
+      "effects": [],
+      "gaps": [
+        "unparsed: Stance: for the rest of the Battle, your attacks of opportunity gain +30 Accurac",
+        "no effect compiled — the power is inert"
+      ]
+    },
+    "power.guardian.stalwart": {
+      "id": "power.guardian.stalwart",
+      "name": "Stalwart",
+      "staminaCost": 0,
+      "cooldown": 3,
+      "free": true,
+      "range": 0,
+      "target": {
+        "select": "self",
+        "side": "any"
+      },
+      "effects": [],
+      "gaps": [
+        "unparsed: Take 3 true damage, remove 1 Stun from yourself, and gain +2 Resist for the rest",
+        "no effect compiled — the power is inert"
+      ]
+    },
+    "power.guardian.no-way-past": {
+      "id": "power.guardian.no-way-past",
+      "name": "No Way Past",
+      "staminaCost": 2,
+      "cooldown": 5,
+      "warmup": 2,
+      "range": 0,
+      "target": {
+        "select": "area",
+        "side": "enemy",
+        "radius": 1,
+        "origin": "self"
+      },
+      "effects": [],
+      "gaps": [
+        "unparsed: For the rest of the Battle, any enemy that begins its Turn adjacent to you takes",
+        "no effect compiled — the power is inert"
+      ]
+    },
+    "power.crusader.holy-charge": {
+      "id": "power.crusader.holy-charge",
+      "name": "Holy Charge",
+      "staminaCost": 2,
+      "cooldown": 3,
+      "warmup": 2,
+      "range": 1,
+      "target": {
+        "select": "unit",
+        "side": "enemy"
+      },
+      "effects": [],
+      "gaps": [
+        "unparsed: Move up to 4 hexes and make a melee attack at +2 Strength dealing true damage",
+        "unparsed: It provokes nothing — you are not leaving the line, you are extending it",
+        "no effect compiled — the power is inert"
+      ]
+    },
+    "power.crusader.flaming-smite": {
+      "id": "power.crusader.flaming-smite",
+      "name": "Flaming Smite",
+      "staminaCost": 1,
+      "cooldown": 2,
+      "range": 0,
+      "target": {
+        "select": "self",
+        "side": "any"
+      },
+      "effects": [],
+      "gaps": [
+        "modifies only melee attacks — engine applies it to the unit",
+        "no effect compiled — the power is inert"
+      ]
+    },
+    "power.crusader.oathbound": {
+      "id": "power.crusader.oathbound",
+      "name": "Oathbound",
+      "staminaCost": 0,
+      "cooldown": 5,
+      "range": 0,
+      "target": {
+        "select": "self",
+        "side": "any"
+      },
+      "effects": [],
+      "gaps": [
+        "unparsed: Stance: for the rest of the Battle gain +2 Strength and +2 Resist against undead",
+        "no effect compiled — the power is inert"
+      ]
+    },
+    "power.crusader.holy-fire": {
+      "id": "power.crusader.holy-fire",
+      "name": "Holy Fire",
+      "staminaCost": 2,
+      "cooldown": 5,
+      "warmup": 2,
+      "range": 0,
+      "target": {
+        "select": "area",
+        "side": "enemy",
+        "radius": 2,
+        "origin": "self"
+      },
+      "effects": [],
+      "gaps": [
+        "unparsed: Every enemy within 2 hexes gains 3 Burn, or 5 Burn if undead, demon or horror",
+        "no effect compiled — the power is inert"
+      ]
+    },
+    "power.shieldbearer.bramble-guard": {
+      "id": "power.shieldbearer.bramble-guard",
+      "name": "Bramble Guard",
+      "staminaCost": 2,
+      "cooldown": 4,
+      "warmup": 1,
+      "range": 0,
+      "target": {
+        "select": "self",
+        "side": "any"
+      },
+      "effects": [],
+      "gaps": [
+        "unparsed: Stance: gain Thorns 4 for the rest of the Battle",
+        "unparsed: Anything that damages you takes 4 true damage, at any range — the archer on the ",
+        "no effect compiled — the power is inert"
+      ]
+    },
+    "power.bowmaster.careful-aim": {
+      "id": "power.bowmaster.careful-aim",
+      "name": "Careful Aim",
+      "staminaCost": 1,
+      "cooldown": 5,
+      "range": 0,
+      "target": {
+        "select": "self",
+        "side": "any"
+      },
+      "effects": [
+        {
+          "kind": "statMod",
+          "stat": "precision",
+          "value": 3,
+          "until": "endOfNextTurn",
+          "who": "self"
+        },
+        {
+          "kind": "statMod",
+          "stat": "reach",
+          "value": 2,
+          "until": "endOfNextTurn",
+          "who": "self"
+        },
+        {
+          "kind": "statMod",
+          "stat": "accuracy",
+          "value": 20,
+          "until": "endOfNextTurn",
+          "who": "self"
+        }
+      ],
+      "gaps": [
+        "modifies only bow/crossbow attacks — engine applies it to the unit"
+      ]
+    },
+    "power.bowmaster.sniper": {
+      "id": "power.bowmaster.sniper",
+      "name": "Sniper",
+      "staminaCost": 2,
+      "cooldown": 2,
+      "range": 0,
+      "target": {
+        "select": "self",
+        "side": "any"
+      },
+      "effects": [
+        {
+          "kind": "statMod",
+          "stat": "precision",
+          "value": 4,
+          "until": "endOfNextTurn",
+          "who": "self"
+        },
+        {
+          "kind": "statMod",
+          "stat": "accuracy",
+          "value": 20,
+          "until": "endOfNextTurn",
+          "who": "self"
+        },
+        {
+          "kind": "statMod",
+          "stat": "reach",
+          "value": 2,
+          "until": "endOfNextTurn",
+          "who": "self"
+        }
+      ],
+      "gaps": [
+        "modifies only bow/ranged attacks — engine applies it to the unit"
+      ]
+    },
+    "power.bowmaster.rain-of-arrows": {
+      "id": "power.bowmaster.rain-of-arrows",
+      "name": "Rain of Arrows",
+      "staminaCost": 2,
+      "cooldown": 4,
+      "warmup": 1,
+      "range": 4,
+      "target": {
+        "select": "area",
+        "side": "any",
+        "radius": 1,
+        "origin": "target"
+      },
+      "effects": [
+        {
+          "kind": "damage",
+          "stat": "precision",
+          "bonus": -1,
+          "damageType": "physical",
+          "allies": "always"
+        }
+      ],
+      "gaps": [
+        "targets 'a hex within 4' — engine centres the blast on a UNIT"
+      ]
+    },
+    "power.bowmaster.extra-shot": {
+      "id": "power.bowmaster.extra-shot",
+      "name": "Extra Shot",
+      "staminaCost": 1,
+      "cooldown": 3,
+      "range": 0,
+      "effects": [],
+      "target": {
+        "select": "self",
+        "side": "any"
+      },
+      "gaps": [
+        "targets 'up to 2 enemies within Reach' unparsed — the power is inert"
+      ]
+    },
+    "power.winged-assassin.poison-shot": {
+      "id": "power.winged-assassin.poison-shot",
+      "name": "Poison Shot",
+      "staminaCost": 1,
+      "cooldown": 2,
+      "range": 1,
+      "target": {
+        "select": "unit",
+        "side": "enemy"
+      },
+      "effects": [],
+      "gaps": [
+        "unparsed: Ranged attack",
+        "unparsed: on hit the target gains 4 Poison, each tick of which its Resist reduces separate",
+        "no effect compiled — the power is inert"
+      ]
+    },
+    "power.winged-assassin.rapid-fire": {
+      "id": "power.winged-assassin.rapid-fire",
+      "name": "Rapid Fire",
+      "staminaCost": 2,
+      "cooldown": 3,
+      "warmup": 1,
+      "range": 0,
+      "effects": [],
+      "target": {
+        "select": "self",
+        "side": "any"
+      },
+      "gaps": [
+        "targets 'up to 2 enemies within 3 hexes' unparsed — the power is inert"
+      ]
+    },
+    "power.winged-assassin.leaping-shot": {
+      "id": "power.winged-assassin.leaping-shot",
+      "name": "Leaping Shot",
+      "staminaCost": 1,
+      "cooldown": 3,
+      "range": 1,
+      "target": {
+        "select": "unit",
+        "side": "enemy"
+      },
+      "effects": [],
+      "gaps": [
+        "unparsed: Fly up to 3 hexes — 1 Movement per hex, over units and obstructions, taking noth",
+        "no effect compiled — the power is inert"
+      ]
+    },
+    "power.winged-assassin.poisoning": {
+      "id": "power.winged-assassin.poisoning",
+      "name": "Poisoning",
+      "staminaCost": 0,
+      "cooldown": 6,
+      "range": 0,
+      "target": {
+        "select": "self",
+        "side": "any"
+      },
+      "effects": [],
+      "gaps": [
+        "unparsed: Stance: for the rest of the Battle your ranged attacks apply 1 Poison on hit, an",
+        "no effect compiled — the power is inert"
+      ]
+    },
+    "power.wayfinder.stunning-arrow": {
+      "id": "power.wayfinder.stunning-arrow",
+      "name": "Stunning Arrow",
+      "staminaCost": 2,
+      "cooldown": 3,
+      "range": 1,
+      "target": {
+        "select": "unit",
+        "side": "enemy"
+      },
+      "effects": [],
+      "gaps": [
+        "unparsed: Ranged attack",
+        "unparsed: on hit the target takes 1 Stun and gains 2 Slow",
+        "no effect compiled — the power is inert"
+      ]
+    },
+    "power.wayfinder.quick-evasion": {
+      "id": "power.wayfinder.quick-evasion",
+      "name": "Quick Evasion",
+      "staminaCost": 1,
+      "cooldown": 3,
+      "free": true,
+      "range": 0,
+      "target": {
+        "select": "self",
+        "side": "any"
+      },
+      "effects": [],
+      "gaps": [
+        "unparsed: Move up to 3 hexes, paying no extra Movement for terrain, and remove 5 Burn and ",
+        "no effect compiled — the power is inert"
+      ]
+    },
+    "power.wayfinder.switch-to-melee": {
+      "id": "power.wayfinder.switch-to-melee",
+      "name": "Switch to Melee",
+      "staminaCost": 0,
+      "cooldown": 5,
+      "range": 0,
+      "target": {
+        "select": "self",
+        "side": "any"
+      },
+      "effects": [],
+      "gaps": [
+        "unparsed: Stance: for the rest of the Battle your MELEE attacks add your Precision to thei",
+        "unparsed: The Precision you give up comes straight off the melee damage you just bought, w",
+        "modifies only melee attacks — engine applies it to the unit",
+        "no effect compiled — the power is inert"
+      ]
+    },
+    "power.wayfinder.guide-the-party": {
+      "id": "power.wayfinder.guide-the-party",
+      "name": "Guide the Party",
+      "staminaCost": 2,
+      "cooldown": 6,
+      "warmup": 1,
+      "range": 0,
+      "target": {
+        "select": "area",
+        "side": "ally",
+        "radius": 3,
+        "origin": "self"
+      },
+      "effects": [],
+      "gaps": [
+        "unparsed: Every ally within 3 hexes gains +1 Movement for the rest of the Battle",
+        "unparsed: you take -1 Precision for the rest of the Battle",
+        "no effect compiled — the power is inert"
+      ]
+    },
+    "power.sentinel.overwatch": {
+      "id": "power.sentinel.overwatch",
+      "name": "Overwatch",
+      "staminaCost": 1,
+      "cooldown": 3,
+      "range": 0,
+      "target": {
+        "select": "self",
+        "side": "any"
+      },
+      "effects": [],
+      "gaps": [
+        "unparsed: Until the start of your next Turn, an enemy that moves within both your Vision a",
+        "unparsed: The watch is spent once it fires",
+        "no effect compiled — the power is inert"
+      ]
+    },
+    "power.sentinel.sting-of-the-watch": {
+      "id": "power.sentinel.sting-of-the-watch",
+      "name": "Sting of the Watch",
+      "staminaCost": 0,
+      "cooldown": 5,
+      "range": 0,
+      "target": {
+        "select": "self",
+        "side": "any"
+      },
+      "effects": [],
+      "gaps": [
+        "unparsed: Stance: for the rest of the Battle, any enemy that hits you in melee gains 2 Poi",
+        "no effect compiled — the power is inert"
+      ]
+    },
+    "power.sentinel.take-root": {
+      "id": "power.sentinel.take-root",
+      "name": "Take Root",
+      "staminaCost": 1,
+      "cooldown": 0,
+      "free": true,
+      "range": 0,
+      "target": {
+        "select": "self",
+        "side": "any"
+      },
+      "effects": [],
+      "gaps": [
+        "unparsed: Plant yourself",
+        "unparsed: Your ranged attacks gain +20 Accuracy until you next move",
+        "modifies scope 'until-you-move' unparsed",
+        "modifies only ranged attacks — engine applies it to the unit",
+        "no effect compiled — the power is inert"
+      ]
+    },
+    "power.sentinel.far-watch": {
+      "id": "power.sentinel.far-watch",
+      "name": "Range the Field",
+      "staminaCost": 2,
+      "cooldown": 6,
+      "range": 0,
+      "target": {
+        "select": "area",
+        "side": "ally",
+        "radius": 3,
+        "origin": "self"
+      },
+      "effects": [
+        {
+          "kind": "statMod",
+          "stat": "reach",
+          "value": 1,
+          "until": "battle",
+          "who": "self"
+        }
+      ],
+      "gaps": [
+        "unparsed: For the rest of the Battle your ranged attacks gain +1 Reach, and every ally wit",
+        "modifies only ranged attacks — engine applies it to the unit"
+      ]
+    },
+    "power.trapper.poison-trap": {
+      "id": "power.trapper.poison-trap",
+      "name": "Poison Trap",
+      "staminaCost": 1,
+      "cooldown": 3,
+      "range": 0,
+      "effects": [],
+      "target": {
+        "select": "self",
+        "side": "any"
+      },
+      "gaps": [
+        "targets 'a hex within 3 hexes' unparsed — the power is inert"
+      ]
+    },
+    "power.trapper.bear-trap": {
+      "id": "power.trapper.bear-trap",
+      "name": "Bear Trap",
+      "staminaCost": 1,
+      "cooldown": 4,
+      "range": 0,
+      "effects": [],
+      "target": {
+        "select": "self",
+        "side": "any"
+      },
+      "gaps": [
+        "targets 'a hex within 3 hexes' unparsed — the power is inert"
+      ]
+    },
+    "power.trapper.entangle": {
+      "id": "power.trapper.entangle",
+      "name": "Entangle",
+      "staminaCost": 2,
+      "cooldown": 4,
+      "warmup": 1,
+      "range": 4,
+      "target": {
+        "select": "area",
+        "side": "any",
+        "radius": 1,
+        "origin": "target"
+      },
+      "effects": [],
+      "gaps": [
+        "targets 'a hex within 4' — engine centres the blast on a UNIT",
+        "unparsed: Set a snare across that hex and the six around it: seven unseen traps, one per h",
+        "unparsed: The first enemy to enter a snared hex gains 4 Slow",
+        "unparsed: Springing one does not reveal the other six",
+        "no effect compiled — the power is inert"
+      ]
+    },
+    "power.trapper.spring-the-trap": {
+      "id": "power.trapper.spring-the-trap",
+      "name": "Spring the Trap",
+      "staminaCost": 0,
+      "cooldown": 2,
+      "free": true,
+      "range": 0,
+      "effects": [],
+      "target": {
+        "select": "self",
+        "side": "any"
+      },
+      "gaps": [
+        "targets 'a hex within 4 hexes' unparsed — the power is inert"
+      ]
+    },
+    "power.protector.wall-of-thorns": {
+      "id": "power.protector.wall-of-thorns",
+      "name": "Wall of Thorns",
+      "staminaCost": 2,
+      "cooldown": 5,
+      "warmup": 1,
+      "range": 0,
+      "effects": [],
+      "target": {
+        "select": "self",
+        "side": "any"
+      },
+      "gaps": [
+        "targets 'three hexes within 3 hexes' unparsed — the power is inert"
+      ]
+    },
+    "power.protector.sanctuary": {
+      "id": "power.protector.sanctuary",
+      "name": "Sanctuary",
+      "staminaCost": 2,
+      "cooldown": 5,
+      "warmup": 1,
+      "range": 0,
+      "target": {
+        "select": "area",
+        "side": "ally",
+        "radius": 2,
+        "origin": "self"
+      },
+      "effects": [],
+      "gaps": [
+        "unparsed: Aura: you and every ally within 2 hexes gain +1 Resist for the rest of the Battl",
+        "no effect compiled — the power is inert"
+      ]
+    },
+    "power.protector.take-the-blow": {
+      "id": "power.protector.take-the-blow",
+      "name": "Take the Blow",
+      "staminaCost": 1,
+      "cooldown": 3,
+      "range": 3,
+      "target": {
+        "select": "unit",
+        "side": "ally"
+      },
+      "effects": [],
+      "gaps": [
+        "unparsed: Until the start of your next Turn, all damage dealt to that ally is reduced by 2",
+        "no effect compiled — the power is inert"
+      ]
+    },
+    "power.protector.harmony": {
+      "id": "power.protector.harmony",
+      "name": "Harmony",
+      "staminaCost": 1,
+      "cooldown": 4,
+      "range": 0,
+      "target": {
+        "select": "area",
+        "side": "ally",
+        "radius": 3,
+        "origin": "self"
+      },
+      "effects": [],
+      "gaps": [
+        "unparsed: remove 5 Burn and Poison from every ally within 3 hexes",
+        "unparsed: each of them heals 2",
+        "no effect compiled — the power is inert"
+      ]
+    },
+    "power.magical-friend.succor": {
+      "id": "power.magical-friend.succor",
+      "name": "Succor",
+      "staminaCost": 1,
+      "cooldown": 3,
+      "range": 2,
+      "target": {
+        "select": "unit",
+        "side": "ally"
+      },
+      "effects": [],
+      "gaps": [
+        "unparsed: Heal that ally for 2 + Spirit",
+        "unparsed: your companion may move up to 3 hexes first",
+        "no effect compiled — the power is inert"
+      ]
+    },
+    "power.magical-friend.cuddle": {
+      "id": "power.magical-friend.cuddle",
+      "name": "Cuddle",
+      "staminaCost": 1,
+      "cooldown": 4,
+      "range": 1,
+      "target": {
+        "select": "unit",
+        "side": "ally"
+      },
+      "effects": [],
+      "gaps": [
+        "unparsed: remove 5 Burn and Poison from that ally and give it +1 Resist for the rest of th",
+        "no effect compiled — the power is inert"
+      ]
+    },
+    "power.magical-friend.mystic-wrath": {
+      "id": "power.magical-friend.mystic-wrath",
+      "name": "Mystic Wrath",
+      "staminaCost": 2,
+      "cooldown": 3,
+      "warmup": 2,
+      "range": 3,
+      "target": {
+        "select": "unit",
+        "side": "enemy"
+      },
+      "effects": [],
+      "gaps": [
+        "unparsed: Deal Magic + 2 magic damage to that enemy",
+        "unparsed: it does not roll to hit and so cannot crit",
+        "no effect compiled — the power is inert"
+      ]
+    },
+    "power.magical-friend.share-senses": {
+      "id": "power.magical-friend.share-senses",
+      "name": "Share Senses",
+      "staminaCost": 0,
+      "cooldown": 3,
+      "free": true,
+      "range": 0,
+      "target": {
+        "select": "self",
+        "side": "any"
+      },
+      "effects": [],
+      "gaps": [
+        "unparsed: Until the start of your next Turn, your Vision is measured from your companion's",
+        "no effect compiled — the power is inert"
+      ]
+    },
+    "power.feral.pounce": {
+      "id": "power.feral.pounce",
+      "name": "Pounce",
+      "staminaCost": 2,
+      "cooldown": 3,
+      "range": 1,
+      "target": {
+        "select": "unit",
+        "side": "enemy"
+      },
+      "effects": [],
+      "gaps": [
+        "unparsed: Move up to your Movement + 2 in a straight line and make a claw attack at +2 Str",
+        "no effect compiled — the power is inert"
+      ]
+    },
+    "power.feral.ravage": {
+      "id": "power.feral.ravage",
+      "name": "Ravage",
+      "staminaCost": 2,
+      "cooldown": 3,
+      "range": 1,
+      "target": {
+        "select": "unit",
+        "side": "enemy"
+      },
+      "effects": [],
+      "gaps": [
+        "unparsed: Make two claw attacks at -5 Accuracy each against the same enemy",
+        "unparsed: each hit applies 2 Bleed",
+        "no effect compiled — the power is inert"
+      ]
+    },
+    "power.feral.ignore-wounds": {
+      "id": "power.feral.ignore-wounds",
+      "name": "Ignore Wounds",
+      "staminaCost": 1,
+      "cooldown": 5,
+      "warmup": 2,
+      "range": 0,
+      "target": {
+        "select": "self",
+        "side": "any"
+      },
+      "effects": [],
+      "gaps": [
+        "unparsed: Heal 4, remove 5 Bleed from yourself, and gain +1 Armor for the rest of the Batt",
+        "no effect compiled — the power is inert"
+      ]
+    },
+    "power.feral.run-down": {
+      "id": "power.feral.run-down",
+      "name": "Run Down",
+      "staminaCost": 0,
+      "cooldown": 3,
+      "free": true,
+      "range": 0,
+      "target": {
+        "select": "self",
+        "side": "any"
+      },
+      "effects": [],
+      "gaps": [
+        "unparsed: Move up to 3 hexes toward the nearest enemy, paying no extra Movement for terrai",
+        "no effect compiled — the power is inert"
+      ]
+    },
+    "power.beastward.protect": {
+      "id": "power.beastward.protect",
+      "name": "Protect",
+      "staminaCost": 1,
+      "cooldown": 3,
+      "range": 3,
+      "target": {
+        "select": "unit",
+        "side": "ally"
+      },
+      "effects": [],
+      "gaps": [
+        "unparsed: That ally gains +1 Armor and +1 Resist for the rest of the Battle",
+        "unparsed: you take -5 Accuracy for the rest of the Battle each time you use it",
+        "no effect compiled — the power is inert"
+      ]
+    },
+    "power.beastward.conduct-life": {
+      "id": "power.beastward.conduct-life",
+      "name": "Conduct Life",
+      "staminaCost": 1,
+      "cooldown": 3,
+      "range": 2,
+      "target": {
+        "select": "unit",
+        "side": "ally"
+      },
+      "effects": [
+        {
+          "kind": "selfDamage",
+          "amount": 3,
+          "damageType": "true"
+        }
+      ],
+      "gaps": [
+        "unparsed: Heal that ally for 4 and remove 1 Bleed from it"
+      ]
+    },
+    "power.beastward.sacrifice": {
+      "id": "power.beastward.sacrifice",
+      "name": "Sacrifice",
+      "staminaCost": 2,
+      "cooldown": 6,
+      "warmup": 2,
+      "range": 0,
+      "target": {
+        "select": "area",
+        "side": "ally",
+        "radius": 3,
+        "origin": "self"
+      },
+      "effects": [
+        {
+          "kind": "heal",
+          "amount": {
+            "scale": "partySpirit",
+            "base": 4,
+            "mult": 1
+          }
+        },
+        {
+          "kind": "selfDamage",
+          "amount": 8,
+          "damageType": "true"
+        }
+      ]
+    },
+    "power.beastward.usher-away": {
+      "id": "power.beastward.usher-away",
+      "name": "Usher Away",
+      "staminaCost": 1,
+      "cooldown": 4,
+      "free": true,
+      "range": 3,
+      "target": {
+        "select": "unit",
+        "side": "ally"
+      },
+      "effects": [],
+      "gaps": [
+        "unparsed: That ally immediately moves up to its Movement directly away from the nearest en",
+        "no effect compiled — the power is inert"
+      ]
+    },
+    "power.bowmaster.long-shot": {
+      "id": "power.bowmaster.long-shot",
+      "name": "Range Finder",
+      "staminaCost": 2,
+      "cooldown": 8,
+      "warmup": 3,
+      "range": 0,
+      "target": {
+        "select": "self",
+        "side": "any"
+      },
+      "effects": [
+        {
+          "kind": "statMod",
+          "stat": "reach",
+          "value": 1,
+          "until": "battle",
+          "who": "self"
+        },
+        {
+          "kind": "statMod",
+          "stat": "precision",
+          "value": 1,
+          "until": "battle",
+          "who": "self"
+        }
+      ],
+      "gaps": [
+        "unparsed: For the rest of the Battle your ranged attacks gain +1 Reach and +1 Precision, a",
+        "modifies only ranged attacks — engine applies it to the unit"
+      ]
+    },
+    "power.sentinel.flush-them-out": {
+      "id": "power.sentinel.flush-them-out",
+      "name": "Flush Them Out",
+      "staminaCost": 1,
+      "cooldown": 3,
+      "range": 0,
+      "target": {
+        "select": "area",
+        "side": "enemy",
+        "radius": 4,
+        "origin": "self"
+      },
+      "effects": [],
+      "gaps": [
+        "unparsed: Every stealthed enemy within 4 hexes is revealed and its stealth breaks",
+        "unparsed: each of them also gains 2 Bleed",
+        "no effect compiled — the power is inert"
+      ]
+    },
+    "power.poison-master.poison-cloud": {
+      "id": "power.poison-master.poison-cloud",
+      "name": "Poison Cloud",
+      "staminaCost": 2,
+      "cooldown": 4,
+      "warmup": 1,
+      "range": 4,
+      "target": {
+        "select": "area",
+        "side": "any",
+        "radius": 1,
+        "origin": "target"
+      },
+      "effects": [],
+      "gaps": [
+        "targets 'a hex within 4' — engine centres the blast on a UNIT",
+        "unparsed: Every enemy in those hexes gains 3 Poison, each tick reduced separately by its R",
+        "unparsed: the hexes stay clouded for the rest of the Battle and any enemy ending its Turn ",
+        "unparsed: As an area effect it cannot crit",
+        "no effect compiled — the power is inert"
+      ]
+    },
+    "power.poison-master.hail-of-poison-knives": {
+      "id": "power.poison-master.hail-of-poison-knives",
+      "name": "Hail of Poison Knives",
+      "staminaCost": 2,
+      "cooldown": 3,
+      "range": 0,
+      "effects": [],
+      "target": {
+        "select": "self",
+        "side": "any"
+      },
+      "gaps": [
+        "targets 'up to 3 enemies within 3 hexes' unparsed — the power is inert"
+      ]
+    },
+    "power.poison-master.antidote": {
+      "id": "power.poison-master.antidote",
+      "name": "Antidote",
+      "staminaCost": 1,
+      "cooldown": 3,
+      "range": 0,
+      "target": {
+        "select": "area",
+        "side": "ally",
+        "radius": 3,
+        "origin": "self"
+      },
+      "effects": [],
+      "gaps": [
+        "unparsed: remove 5 Poison from every ally within 3 hexes",
+        "unparsed: each of them gains +1 Resist for the rest of the Battle",
+        "no effect compiled — the power is inert"
+      ]
+    },
+    "power.poison-master.creeping-dose": {
+      "id": "power.poison-master.creeping-dose",
+      "name": "Creeping Dose",
+      "staminaCost": 1,
+      "cooldown": 5,
+      "warmup": 1,
+      "range": 4,
+      "target": {
+        "select": "unit",
+        "side": "enemy"
+      },
+      "effects": [],
+      "gaps": [
+        "unparsed: For the rest of the Battle that enemy's Poison ticks twice each Turn, at the sta",
+        "unparsed: each tick is still reduced separately by its Resist, so this is worth nothing ag",
+        "no effect compiled — the power is inert"
+      ]
+    },
+    "power.assassin.knife-in-the-back": {
+      "id": "power.assassin.knife-in-the-back",
+      "name": "Knife in the Back",
+      "staminaCost": 2,
+      "cooldown": 4,
+      "warmup": 1,
+      "range": 0,
+      "target": {
+        "select": "self",
+        "side": "any"
+      },
+      "effects": [
+        {
+          "kind": "statMod",
+          "stat": "accuracy",
+          "value": 20,
+          "until": "endOfNextTurn",
+          "who": "self"
+        },
+        {
+          "kind": "statMod",
+          "stat": "strength",
+          "value": 5,
+          "until": "endOfNextTurn",
+          "who": "self"
+        }
+      ],
+      "gaps": [
+        "modifies only melee attacks — engine applies it to the unit"
+      ]
+    },
+    "power.assassin.deep-cut": {
+      "id": "power.assassin.deep-cut",
+      "name": "Deep Cut",
+      "staminaCost": 1,
+      "cooldown": 2,
+      "range": 0,
+      "target": {
+        "select": "self",
+        "side": "any"
+      },
+      "effects": [
+        {
+          "kind": "statMod",
+          "stat": "crit",
+          "value": 5,
+          "until": "endOfNextTurn",
+          "who": "self"
+        }
+      ],
+      "gaps": [
+        "modifies only dagger attacks — engine applies it to the unit"
+      ]
+    },
+    "power.assassin.double-strike": {
+      "id": "power.assassin.double-strike",
+      "name": "Double Strike",
+      "staminaCost": 2,
+      "cooldown": 2,
+      "range": 1,
+      "target": {
+        "select": "unit",
+        "side": "enemy"
+      },
+      "effects": [],
+      "gaps": [
+        "unparsed: Make two dagger attacks at -5 Accuracy each",
+        "no effect compiled — the power is inert"
+      ]
+    },
+    "power.assassin.dodge-behind": {
+      "id": "power.assassin.dodge-behind",
+      "name": "Dodge Behind",
+      "staminaCost": 0,
+      "cooldown": 3,
+      "free": true,
+      "range": 0,
+      "target": {
+        "select": "self",
+        "side": "any"
+      },
+      "effects": [],
+      "gaps": [
+        "unparsed: Move 2 hexes as FLIGHT: 1 Movement per hex, over units and obstructions, taking ",
+        "unparsed: The hex you land on must be legal like any other",
+        "no effect compiled — the power is inert"
+      ]
+    },
+    "power.shadowdancer.vanish-in-shadow": {
+      "id": "power.shadowdancer.vanish-in-shadow",
+      "name": "Vanish in Shadow",
+      "staminaCost": 1,
+      "cooldown": 4,
+      "free": true,
+      "range": 0,
+      "target": {
+        "select": "self",
+        "side": "any"
+      },
+      "effects": [],
+      "gaps": [
+        "unparsed: Immediately enter stealth: you cannot be seen and cannot be targeted by an attac",
+        "unparsed: Area effects, terrain and auras still reach you",
+        "unparsed: It breaks the moment you use an attack or another power — not when you move — an",
+        "no effect compiled — the power is inert"
+      ]
+    },
+    "power.shadowdancer.blink": {
+      "id": "power.shadowdancer.blink",
+      "name": "Blink",
+      "staminaCost": 1,
+      "cooldown": 3,
+      "warmup": 1,
+      "free": true,
+      "range": 0,
+      "target": {
+        "select": "self",
+        "side": "any"
+      },
+      "effects": [],
+      "gaps": [
+        "unparsed: Move up to 4 hexes",
+        "unparsed: It provokes nothing",
+        "no effect compiled — the power is inert"
+      ]
+    },
+    "power.shadowdancer.assassination-strike": {
+      "id": "power.shadowdancer.assassination-strike",
+      "name": "Assassination Strike",
+      "staminaCost": 2,
+      "cooldown": 4,
+      "warmup": 1,
+      "range": 1,
+      "target": {
+        "select": "unit",
+        "side": "enemy"
+      },
+      "effects": [],
+      "gaps": [
+        "unparsed: Dagger attack at +2 Strength and +10 Crit",
+        "no effect compiled — the power is inert"
+      ]
+    },
+    "power.shadowdancer.shadow-dance": {
+      "id": "power.shadowdancer.shadow-dance",
+      "name": "Shadow Dance",
+      "staminaCost": 2,
+      "cooldown": 5,
+      "warmup": 2,
+      "range": 0,
+      "effects": [],
+      "target": {
+        "select": "self",
+        "side": "any"
+      },
+      "gaps": [
+        "targets 'up to 3 enemies within 3 hexes' unparsed — the power is inert"
+      ]
+    },
+    "power.shadowbound.shadow-step": {
+      "id": "power.shadowbound.shadow-step",
+      "name": "Shadow Step",
+      "staminaCost": 1,
+      "cooldown": 3,
+      "free": true,
+      "range": 0,
+      "effects": [],
+      "target": {
+        "select": "self",
+        "side": "any"
+      },
+      "gaps": [
+        "targets 'a hex within 6 hexes' unparsed — the power is inert"
+      ]
+    },
+    "power.shadowbound.dark-veil": {
+      "id": "power.shadowbound.dark-veil",
+      "name": "Dark Veil",
+      "staminaCost": 2,
+      "cooldown": 4,
+      "warmup": 1,
+      "range": 0,
+      "target": {
+        "select": "area",
+        "side": "enemy",
+        "radius": 3,
+        "origin": "self"
+      },
+      "effects": [],
+      "gaps": [
+        "unparsed: Every enemy within 3 hexes gains 2 Weak for the rest of the Battle",
+        "no effect compiled — the power is inert"
+      ]
+    },
+    "power.shadowbound.void-strike": {
+      "id": "power.shadowbound.void-strike",
+      "name": "Void Strike",
+      "staminaCost": 2,
+      "cooldown": 3,
+      "warmup": 1,
+      "range": 0,
+      "target": {
+        "select": "self",
+        "side": "any"
+      },
+      "effects": [
+        {
+          "kind": "statMod",
+          "stat": "strength",
+          "value": 1,
+          "until": "endOfNextTurn",
+          "who": "self"
+        }
+      ],
+      "gaps": [
+        "modifies only dagger attacks — engine applies it to the unit"
+      ]
+    },
+    "power.shadowbound.gathering-dark": {
+      "id": "power.shadowbound.gathering-dark",
+      "name": "Gathering Dark",
+      "staminaCost": 2,
+      "cooldown": 6,
+      "warmup": 2,
+      "range": 0,
+      "effects": [],
+      "target": {
+        "select": "self",
+        "side": "any"
+      },
+      "gaps": [
+        "targets 'a hex within 4 hexes' unparsed — the power is inert"
+      ]
+    },
+    "power.contractbound.blood-contract": {
+      "id": "power.contractbound.blood-contract",
+      "name": "Blood Contract",
+      "staminaCost": 2,
+      "cooldown": 3,
+      "warmup": 1,
+      "range": 0,
+      "target": {
+        "select": "self",
+        "side": "any"
+      },
+      "effects": [
+        {
+          "kind": "statMod",
+          "stat": "strength",
+          "value": 4,
+          "until": "endOfNextTurn",
+          "who": "self"
+        },
+        {
+          "kind": "statMod",
+          "stat": "accuracy",
+          "value": 10,
+          "until": "endOfNextTurn",
+          "who": "self"
+        }
+      ],
+      "gaps": [
+        "unparsed: You take 4 true damage when you use this, whether or not anything lands",
+        "modifies only dagger attacks — engine applies it to the unit"
+      ]
+    },
+    "power.contractbound.infernal-bargain": {
+      "id": "power.contractbound.infernal-bargain",
+      "name": "Infernal Bargain",
+      "staminaCost": 1,
+      "cooldown": 6,
+      "warmup": 2,
+      "range": 0,
+      "target": {
+        "select": "self",
+        "side": "any"
+      },
+      "effects": [],
+      "gaps": [
+        "unparsed: Stance: gain +2 Strength, +10 Accuracy and +5 Crit for the rest of the Battle, a",
+        "unparsed: It cannot be ended",
+        "no effect compiled — the power is inert"
+      ]
+    },
+    "power.contractbound.collect-the-debt": {
+      "id": "power.contractbound.collect-the-debt",
+      "name": "Collect the Debt",
+      "staminaCost": 1,
+      "cooldown": 4,
+      "range": 1,
+      "target": {
+        "select": "unit",
+        "side": "enemy"
+      },
+      "effects": [],
+      "gaps": [
+        "unparsed: Dagger attack at +5 Crit that deals TRUE damage instead of physical, and you tak",
+        "no effect compiled — the power is inert"
+      ]
+    },
+    "power.contractbound.paid-in-full": {
+      "id": "power.contractbound.paid-in-full",
+      "name": "Paid in Full",
+      "staminaCost": 0,
+      "cooldown": 5,
+      "free": true,
+      "range": 0,
+      "target": {
+        "select": "self",
+        "side": "any"
+      },
+      "effects": [],
+      "gaps": [
+        "unparsed: Heal 6, remove 5 Bleed and Poison from yourself, and gain +1 Item Slot for the r",
+        "no effect compiled — the power is inert"
+      ]
+    },
+    "power.nightblade.silent-cut": {
+      "id": "power.nightblade.silent-cut",
+      "name": "Silent Cut",
+      "staminaCost": 1,
+      "cooldown": 3,
+      "range": 1,
+      "target": {
+        "select": "unit",
+        "side": "enemy"
+      },
+      "effects": [],
+      "gaps": [
+        "unparsed: Dagger attack at +10 Crit",
+        "unparsed: on hit the target gains 3 Bleed, and if you were in stealth when you made it you",
+        "no effect compiled — the power is inert"
+      ]
+    },
+    "power.nightblade.fan-of-knives": {
+      "id": "power.nightblade.fan-of-knives",
+      "name": "Fan of Knives",
+      "staminaCost": 2,
+      "cooldown": 3,
+      "warmup": 1,
+      "range": 0,
+      "target": {
+        "select": "area",
+        "side": "enemy",
+        "radius": 2,
+        "origin": "self"
+      },
+      "effects": [],
+      "gaps": [
+        "unparsed: Every enemy within 2 hexes takes Precision physical damage and gains 2 Bleed",
+        "no effect compiled — the power is inert"
+      ]
+    },
+    "power.nightblade.exsanguinate": {
+      "id": "power.nightblade.exsanguinate",
+      "name": "Exsanguinate",
+      "staminaCost": 2,
+      "cooldown": 5,
+      "warmup": 2,
+      "range": 1,
+      "target": {
+        "select": "unit",
+        "side": "enemy"
+      },
+      "effects": [],
+      "gaps": [
+        "unparsed: All Bleed on that enemy ticks immediately and none of it is reduced by Resist",
+        "unparsed: The Bleed is spent afterwards",
+        "no effect compiled — the power is inert"
+      ]
+    },
+    "power.nightblade.long-knife": {
+      "id": "power.nightblade.long-knife",
+      "name": "Long Knife",
+      "staminaCost": 1,
+      "cooldown": 2,
+      "range": 1,
+      "target": {
+        "select": "unit",
+        "side": "enemy"
+      },
+      "effects": [],
+      "gaps": [
+        "unparsed: Thrown dagger at +1 Precision and +5 Crit",
+        "unparsed: against a target more than 3 hexes away it gains a further +5 Crit, and on hit t",
+        "no effect compiled — the power is inert"
+      ]
+    },
+    "power.havoc.blade-dance": {
+      "id": "power.havoc.blade-dance",
+      "name": "Blade Dance",
+      "staminaCost": 2,
+      "cooldown": 3,
+      "warmup": 1,
+      "range": 0,
+      "effects": [],
+      "target": {
+        "select": "self",
+        "side": "any"
+      },
+      "gaps": [
+        "targets 'up to 3 enemies within 3 hexes' unparsed — the power is inert"
+      ]
+    },
+    "power.havoc.fel-rush": {
+      "id": "power.havoc.fel-rush",
+      "name": "Fel Rush",
+      "staminaCost": 2,
+      "cooldown": 4,
+      "warmup": 2,
+      "range": 0,
+      "target": {
+        "select": "area",
+        "side": "any",
+        "radius": 3,
+        "origin": "self"
+      },
+      "effects": [],
+      "gaps": [
+        "unparsed: Move up to 5 hexes in a straight line, passing through occupied hexes",
+        "unparsed: every enemy whose hex you passed through or beside takes 4 magic damage, or 6 if",
+        "unparsed: As an area effect it cannot crit",
+        "no effect compiled — the power is inert"
+      ]
+    },
+    "power.havoc.fel-fury": {
+      "id": "power.havoc.fel-fury",
+      "name": "Fel Fury",
+      "staminaCost": 1,
+      "cooldown": 4,
+      "range": 3,
+      "target": {
+        "select": "unit",
+        "side": "enemy"
+      },
+      "effects": [],
+      "gaps": [
+        "unparsed: Gain +4 Strength and +4 Precision until the end of your next Turn",
+        "no effect compiled — the power is inert"
+      ]
+    },
+    "power.havoc.momentum": {
+      "id": "power.havoc.momentum",
+      "name": "Momentum",
+      "staminaCost": 0,
+      "cooldown": 3,
+      "free": true,
+      "range": 1,
+      "target": {
+        "select": "unit",
+        "side": "enemy"
+      },
+      "effects": [
+        {
+          "kind": "statMod",
+          "stat": "strength",
+          "value": 1,
+          "until": "endOfNextTurn",
+          "who": "self"
+        },
+        {
+          "kind": "statMod",
+          "stat": "crit",
+          "value": 5,
+          "until": "endOfNextTurn",
+          "who": "self"
+        }
+      ],
+      "gaps": [
+        "unparsed: Havoc does not want a bigger swing, it wants another Activation, and this is how",
+        "modifies only dagger/melee attacks — engine applies it to the unit"
+      ]
+    },
+    "power.demonic-ward.soul-barrier": {
+      "id": "power.demonic-ward.soul-barrier",
+      "name": "Soul Barrier",
+      "staminaCost": 1,
+      "cooldown": 4,
+      "warmup": 1,
+      "range": 0,
+      "target": {
+        "select": "self",
+        "side": "any"
+      },
+      "effects": [],
+      "gaps": [
+        "unparsed: Take 4 true damage to raise the ward properly: Protection equal to 3 + twice you",
+        "unparsed: Decline the damage and the ward is only Protection equal to your Resist",
+        "unparsed: The barrier is paid for in the currency it protects",
+        "no effect compiled — the power is inert"
+      ]
+    },
+    "power.demonic-ward.spectral-sight": {
+      "id": "power.demonic-ward.spectral-sight",
+      "name": "Spectral Sight",
+      "staminaCost": 1,
+      "cooldown": 3,
+      "range": 0,
+      "target": {
+        "select": "self",
+        "side": "any"
+      },
+      "effects": [],
+      "gaps": [
+        "unparsed: Reveal every unit in stealth within your Vision and break its stealth",
+        "unparsed: For the rest of the Battle, darkness and fog do not reduce your Vision",
+        "no effect compiled — the power is inert"
+      ]
+    },
+    "power.demonic-ward.consume-magic": {
+      "id": "power.demonic-ward.consume-magic",
+      "name": "Consume Magic",
+      "staminaCost": 1,
+      "cooldown": 3,
+      "free": true,
+      "range": 2,
+      "target": {
+        "select": "unit",
+        "side": "ally"
+      },
+      "effects": [],
+      "gaps": [
+        "unparsed: remove 5 Burn and Poison from the target and heal it 4",
+        "no effect compiled — the power is inert"
+      ]
+    },
+    "power.demonic-ward.warded-ground": {
+      "id": "power.demonic-ward.warded-ground",
+      "name": "Warded Ground",
+      "staminaCost": 2,
+      "cooldown": 6,
+      "warmup": 2,
+      "range": 0,
+      "target": {
+        "select": "area",
+        "side": "ally",
+        "radius": 2,
+        "origin": "self"
+      },
+      "effects": [],
+      "gaps": [
+        "unparsed: Aura 2, centred on you, for the rest of the Battle: every enemy inside gains 2 B",
+        "no effect compiled — the power is inert"
+      ]
+    },
+    "power.vengeance.crossbow-shot": {
+      "id": "power.vengeance.crossbow-shot",
+      "name": "Crossbow Shot",
+      "staminaCost": 1,
+      "cooldown": 2,
+      "range": 0,
+      "target": {
+        "select": "self",
+        "side": "any"
+      },
+      "effects": [
+        {
+          "kind": "statMod",
+          "stat": "crit",
+          "value": 5,
+          "until": "endOfNextTurn",
+          "who": "self"
+        }
+      ],
+      "gaps": [
+        "modifies only crossbow attacks — engine applies it to the unit"
+      ]
+    },
+    "power.vengeance.demon-hunting": {
+      "id": "power.vengeance.demon-hunting",
+      "name": "Demon Hunting",
+      "staminaCost": 0,
+      "cooldown": 5,
+      "range": 0,
+      "target": {
+        "select": "self",
+        "side": "any"
+      },
+      "effects": [],
+      "gaps": [
+        "unparsed: Stance: for the rest of the Battle you have +2 Strength and +2 Precision against",
+        "unparsed: remove 5 Burn from yourself now",
+        "no effect compiled — the power is inert"
+      ]
+    },
+    "power.vengeance.repay-in-kind": {
+      "id": "power.vengeance.repay-in-kind",
+      "name": "Repay in Kind",
+      "staminaCost": 0,
+      "cooldown": 3,
+      "free": true,
+      "range": 0,
+      "target": {
+        "select": "self",
+        "side": "any"
+      },
+      "effects": [],
+      "gaps": [
+        "modifies only crossbow attacks — engine applies it to the unit",
+        "no effect compiled — the power is inert"
+      ]
+    },
+    "power.vengeance.every-wound-remembered": {
+      "id": "power.vengeance.every-wound-remembered",
+      "name": "Every Wound Remembered",
+      "staminaCost": 2,
+      "cooldown": 6,
+      "warmup": 2,
+      "range": 0,
+      "target": {
+        "select": "self",
+        "side": "any"
+      },
+      "effects": [],
+      "gaps": [
+        "unparsed: Gain +5 Crit and +10 Accuracy for the rest of the Battle, and heal 4",
+        "no effect compiled — the power is inert"
+      ]
+    },
+    "power.shadowdancer.slip-away": {
+      "id": "power.shadowdancer.slip-away",
+      "name": "Slip Away",
+      "staminaCost": 1,
+      "cooldown": 3,
+      "range": 0,
+      "target": {
+        "select": "self",
+        "side": "any"
+      },
+      "effects": [],
+      "gaps": [
+        "unparsed: Immediately enter stealth: you cannot be seen and cannot be targeted by an attac",
+        "unparsed: It breaks the moment you attack, and area effects, terrain and auras reach you a",
+        "no effect compiled — the power is inert"
+      ]
+    },
+    "power.fire-master.fireball": {
+      "id": "power.fire-master.fireball",
+      "name": "Fireball",
+      "staminaCost": 2,
+      "cooldown": 3,
+      "warmup": 1,
+      "range": 6,
+      "target": {
+        "select": "area",
+        "side": "any",
+        "radius": 1,
+        "origin": "target"
+      },
+      "effects": [
+        {
+          "kind": "damage",
+          "stat": "magic",
+          "bonus": 2,
+          "damageType": "magic"
+        }
+      ],
+      "gaps": [
+        "targets 'a hex within 6' — engine centres the blast on a UNIT",
+        "rider: plus every stack of Burn that unit is already carrying — the blast CONSUMES that Burn — and then those seven hexes become burning",
+        "unparsed: Resist reduces both the hit and each Burn tick, and allies caught in it burn too"
+      ]
+    },
+    "power.fire-master.fire-shield": {
+      "id": "power.fire-master.fire-shield",
+      "name": "Fire Shield",
+      "staminaCost": 1,
+      "cooldown": 4,
+      "range": 4,
+      "target": {
+        "select": "unit",
+        "side": "ally"
+      },
+      "effects": [],
+      "gaps": [
+        "unparsed: For the rest of the Battle, any enemy that hits the target with a melee attack g",
+        "no effect compiled — the power is inert"
+      ]
+    },
+    "power.fire-master.eldritch-might": {
+      "id": "power.fire-master.eldritch-might",
+      "name": "Eldritch Might",
+      "staminaCost": 1,
+      "cooldown": 5,
+      "range": 0,
+      "target": {
+        "select": "self",
+        "side": "any"
+      },
+      "effects": [
+        {
+          "kind": "selfDamage",
+          "amount": 3,
+          "damageType": "true"
+        },
+        {
+          "kind": "statMod",
+          "stat": "magic",
+          "value": 1,
+          "until": "battle",
+          "who": "self"
+        }
+      ]
+    },
+    "power.fire-master.wake-of-cinders": {
+      "id": "power.fire-master.wake-of-cinders",
+      "name": "Wake of Cinders",
+      "staminaCost": 1,
+      "cooldown": 3,
+      "free": true,
+      "range": 3,
+      "target": {
+        "select": "area",
+        "side": "any",
+        "radius": 1,
+        "origin": "target"
+      },
+      "effects": [],
+      "gaps": [
+        "targets 'a hex within 3' — engine centres the blast on a UNIT",
+        "unparsed: Those seven hexes become burning",
+        "unparsed: Burning ground ticks damage and reveals whatever stands there in darkness — used",
+        "unparsed: It cannot crit, and it will happily catch a pursuing ally",
+        "no effect compiled — the power is inert"
+      ]
+    },
+    "power.soul-stealer.dark-bolt": {
+      "id": "power.soul-stealer.dark-bolt",
+      "name": "Dark Bolt",
+      "staminaCost": 1,
+      "cooldown": 2,
+      "range": 6,
+      "target": {
+        "select": "unit",
+        "side": "enemy"
+      },
+      "effects": [],
+      "gaps": [
+        "unparsed: Ranged magic attack at +2 Precision",
+        "unparsed: It rolls to hit, so it can crit",
+        "unparsed: On hit the target gains 3 Bleed — Resist never stops Bleed — and you heal 2",
+        "no effect compiled — the power is inert"
+      ]
+    },
+    "power.soul-stealer.life-drain": {
+      "id": "power.soul-stealer.life-drain",
+      "name": "Life Drain",
+      "staminaCost": 2,
+      "cooldown": 3,
+      "range": 5,
+      "target": {
+        "select": "unit",
+        "side": "enemy"
+      },
+      "effects": [],
+      "gaps": [
+        "unparsed: Staff attack dealing Magic magic damage",
+        "unparsed: heal yourself half of what it deals",
+        "no effect compiled — the power is inert"
+      ]
+    },
+    "power.soul-stealer.soul-thief": {
+      "id": "power.soul-stealer.soul-thief",
+      "name": "Soul Thief",
+      "staminaCost": 0,
+      "cooldown": 6,
+      "warmup": 1,
+      "range": 0,
+      "target": {
+        "select": "self",
+        "side": "any"
+      },
+      "effects": [],
+      "gaps": [
+        "unparsed: Stance: for the rest of the Battle your staff attacks deal +2 damage and no ally",
+        "unparsed: Every kill still pays out through the specialty",
+        "no effect compiled — the power is inert"
+      ]
+    },
+    "power.soul-stealer.eldritch-sacrifice": {
+      "id": "power.soul-stealer.eldritch-sacrifice",
+      "name": "Eldritch Sacrifice",
+      "staminaCost": 2,
+      "cooldown": 6,
+      "warmup": 3,
+      "range": 0,
+      "target": {
+        "select": "area",
+        "side": "enemy",
+        "radius": 3,
+        "origin": "self"
+      },
+      "effects": [],
+      "gaps": [
+        "unparsed: Take 8 true damage, then deal 4 + twice your Magic magic damage to every enemy w",
+        "unparsed: Area — it does not roll and cannot crit, and Resist eats a flat point off every ",
+        "unparsed: At party Magic 2 that is 8",
+        "unparsed: at party Magic 5 it is the biggest number a mage owns",
+        "no effect compiled — the power is inert"
+      ]
+    },
+    "power.mystic.divination": {
+      "id": "power.mystic.divination",
+      "name": "Divination",
+      "staminaCost": 1,
+      "cooldown": 3,
+      "range": 0,
+      "effects": [],
+      "target": {
+        "select": "self",
+        "side": "any"
+      },
+      "gaps": [
+        "targets 'up to 2 allies within 4 hexes' unparsed — the power is inert"
+      ]
+    },
+    "power.mystic.guidance": {
+      "id": "power.mystic.guidance",
+      "name": "Guidance",
+      "staminaCost": 1,
+      "cooldown": 4,
+      "range": 4,
+      "target": {
+        "select": "unit",
+        "side": "ally"
+      },
+      "effects": [],
+      "gaps": [
+        "unparsed: For the rest of the Battle that ally's SWORD attacks add the party's Magic to th",
+        "unparsed: You do not lend them strength, you lend them the spell: a Warrior with a longswo",
+        "modifies only sword attacks — engine applies it to the unit",
+        "no effect compiled — the power is inert"
+      ]
+    },
+    "power.mystic.second-sight": {
+      "id": "power.mystic.second-sight",
+      "name": "Second Sight",
+      "staminaCost": 1,
+      "cooldown": 4,
+      "range": 0,
+      "target": {
+        "select": "self",
+        "side": "any"
+      },
+      "effects": [
+        {
+          "kind": "selfDamage",
+          "amount": 4,
+          "damageType": "true"
+        },
+        {
+          "kind": "statMod",
+          "stat": "accuracy",
+          "value": 10,
+          "until": "battle",
+          "who": "self"
+        }
+      ],
+      "gaps": [
+        "unparsed: It reveals stealthed units within your Vision as you cast it — their stealth bre",
+        "unparsed: The gamble is the map: in darkness, fog or against a hidden enemy the sight is t",
+        "modifies only staff/ranged attacks — engine applies it to the unit"
+      ]
+    },
+    "power.mystic.hex": {
+      "id": "power.mystic.hex",
+      "name": "Hex",
+      "staminaCost": 2,
+      "cooldown": 4,
+      "warmup": 1,
+      "range": 6,
+      "target": {
+        "select": "unit",
+        "side": "enemy"
+      },
+      "effects": [],
+      "gaps": [
+        "unparsed: The target gains 1 Stun and takes -10 Accuracy for the rest of the Battle",
+        "unparsed: Against something already reliable the Accuracy loss eats its Crit before it eat",
+        "no effect compiled — the power is inert"
+      ]
+    },
+    "power.storm-caller.lightning-bolt": {
+      "id": "power.storm-caller.lightning-bolt",
+      "name": "Lightning Bolt",
+      "staminaCost": 1,
+      "cooldown": 2,
+      "range": 6,
+      "target": {
+        "select": "unit",
+        "side": "enemy"
+      },
+      "effects": [],
+      "gaps": [
+        "unparsed: Ranged magic attack at +1 Precision",
+        "unparsed: It rolls, so it can crit",
+        "unparsed: On hit it also deals Magic magic damage to one enemy adjacent to the target",
+        "unparsed: that splash does not roll and cannot crit",
+        "no effect compiled — the power is inert"
+      ]
+    },
+    "power.storm-caller.chain-lightning": {
+      "id": "power.storm-caller.chain-lightning",
+      "name": "Chain Lightning",
+      "staminaCost": 2,
+      "cooldown": 4,
+      "warmup": 1,
+      "range": 0,
+      "effects": [],
+      "target": {
+        "select": "self",
+        "side": "any"
+      },
+      "gaps": [
+        "targets 'up to 2 enemies within 6 hexes' unparsed — the power is inert"
+      ]
+    },
+    "power.storm-caller.storm-surge": {
+      "id": "power.storm-caller.storm-surge",
+      "name": "Storm Surge",
+      "staminaCost": 2,
+      "cooldown": 5,
+      "warmup": 2,
+      "range": 0,
+      "target": {
+        "select": "area",
+        "side": "enemy",
+        "radius": 3,
+        "origin": "self"
+      },
+      "effects": [],
+      "gaps": [
+        "unparsed: Every enemy within 3 hexes takes 2 + Magic magic damage plus the Frost it is alr",
+        "unparsed: It READS the Frost and leaves it in place, so the physical amplification survive",
+        "unparsed: Area — no roll, no crit, Resist applies to the damage",
+        "no effect compiled — the power is inert"
+      ]
+    },
+    "power.storm-caller.ethereal-form": {
+      "id": "power.storm-caller.ethereal-form",
+      "name": "Ethereal Form",
+      "staminaCost": 1,
+      "cooldown": 4,
+      "range": 0,
+      "target": {
+        "select": "self",
+        "side": "any"
+      },
+      "effects": [],
+      "gaps": [
+        "unparsed: Stance: gain +10 Dodge and +2 Resist and lose your remaining Armor for the rest ",
+        "unparsed: Armor floors at zero, so on a Storm Caller who already sits at -1 this is pure u",
+        "no effect compiled — the power is inert"
+      ]
+    },
+    "power.totem-master.totem-of-healing": {
+      "id": "power.totem-master.totem-of-healing",
+      "name": "Totem of Healing",
+      "staminaCost": 1,
+      "cooldown": 4,
+      "range": 0,
+      "target": {
+        "select": "area",
+        "side": "ally",
+        "radius": 2,
+        "origin": "self"
+      },
+      "effects": [],
+      "gaps": [
+        "unparsed: Aura 2, centred on you, for the rest of the Battle: at the end of your Turn ever",
+        "no effect compiled — the power is inert"
+      ]
+    },
+    "power.totem-master.totem-of-wrath": {
+      "id": "power.totem-master.totem-of-wrath",
+      "name": "Totem of Wrath",
+      "staminaCost": 2,
+      "cooldown": 4,
+      "warmup": 1,
+      "range": 0,
+      "target": {
+        "select": "area",
+        "side": "enemy",
+        "radius": 2,
+        "origin": "self"
+      },
+      "effects": [],
+      "gaps": [
+        "unparsed: Aura 2, centred on you, for the rest of the Battle: at the end of your Turn ever",
+        "unparsed: each tick is reduced by that enemy’s Resist",
+        "no effect compiled — the power is inert"
+      ]
+    },
+    "power.totem-master.totem-of-protection": {
+      "id": "power.totem-master.totem-of-protection",
+      "name": "Totem of Protection",
+      "staminaCost": 2,
+      "cooldown": 5,
+      "warmup": 2,
+      "range": 0,
+      "target": {
+        "select": "area",
+        "side": "ally",
+        "radius": 2,
+        "origin": "self"
+      },
+      "effects": [],
+      "gaps": [
+        "unparsed: Aura 2, centred on you, for the rest of the Battle: allies gain +1 Armor and +1 ",
+        "no effect compiled — the power is inert"
+      ]
+    },
+    "power.totem-master.ancestral-anchor": {
+      "id": "power.totem-master.ancestral-anchor",
+      "name": "Ancestral Anchor",
+      "staminaCost": 2,
+      "cooldown": 6,
+      "warmup": 2,
+      "range": 0,
+      "effects": [],
+      "target": {
+        "select": "self",
+        "side": "any"
+      },
+      "gaps": [
+        "targets 'your own hex' unparsed — the power is inert"
+      ]
+    },
+    "power.spirit-walker.spirit-link": {
+      "id": "power.spirit-walker.spirit-link",
+      "name": "Spirit Link",
+      "staminaCost": 2,
+      "cooldown": 4,
+      "range": 0,
+      "effects": [],
+      "target": {
+        "select": "self",
+        "side": "any"
+      },
+      "gaps": [
+        "targets 'up to 2 allies within 4 hexes' unparsed — the power is inert"
+      ]
+    },
+    "power.spirit-walker.ancestors-call": {
+      "id": "power.spirit-walker.ancestors-call",
+      "name": "Ancestor's Call",
+      "staminaCost": 2,
+      "cooldown": 6,
+      "warmup": 2,
+      "range": 0,
+      "target": {
+        "select": "area",
+        "side": "ally",
+        "radius": 4,
+        "origin": "self"
+      },
+      "effects": [],
+      "gaps": [
+        "unparsed: Every ally within 4 hexes heals 2 + Spirit and loses 1 Stun",
+        "unparsed: Spirit is the party-wide sum and a starting party has about 2 of it, so read thi",
+        "no effect compiled — the power is inert"
+      ]
+    },
+    "power.spirit-walker.ghost-walk": {
+      "id": "power.spirit-walker.ghost-walk",
+      "name": "Ghost Walk",
+      "staminaCost": 1,
+      "cooldown": 4,
+      "free": true,
+      "range": 0,
+      "target": {
+        "select": "self",
+        "side": "any"
+      },
+      "effects": [],
+      "gaps": [
+        "unparsed: Move up to your Movement, passing through units and taking no effect from any he",
+        "unparsed: It is a free power, so it stacks with whatever else you were going to do",
+        "no effect compiled — the power is inert"
+      ]
+    },
+    "power.spirit-walker.mend-the-thread": {
+      "id": "power.spirit-walker.mend-the-thread",
+      "name": "Mend the Thread",
+      "staminaCost": 1,
+      "cooldown": 3,
+      "range": 6,
+      "target": {
+        "select": "unit",
+        "side": "ally"
+      },
+      "effects": [],
+      "gaps": [
+        "unparsed: One ally heals 3 + Spirit and loses all Bleed",
+        "unparsed: Bleed is the one status Resist never touches, so this is often the only answer t",
+        "no effect compiled — the power is inert"
+      ]
+    },
+    "power.blightcaller.poison-roots": {
+      "id": "power.blightcaller.poison-roots",
+      "name": "Poison Roots",
+      "staminaCost": 2,
+      "cooldown": 3,
+      "warmup": 1,
+      "range": 5,
+      "target": {
+        "select": "unit",
+        "side": "enemy"
+      },
+      "effects": [],
+      "gaps": [
+        "unparsed: The target takes 2 true damage, gains 4 Poison and gains 2 Slow",
+        "unparsed: Resist eats a point off each Poison tick but not off the true damage",
+        "no effect compiled — the power is inert"
+      ]
+    },
+    "power.blightcaller.wither": {
+      "id": "power.blightcaller.wither",
+      "name": "Wither",
+      "staminaCost": 1,
+      "cooldown": 2,
+      "range": 5,
+      "target": {
+        "select": "unit",
+        "side": "enemy"
+      },
+      "effects": [],
+      "gaps": [
+        "unparsed: The target gains 3 Weak and loses 1 Armor and 1 Resist for the rest of the Battl",
+        "unparsed: Both floor at zero, so the second cast on the same target is usually wasted — sp",
+        "no effect compiled — the power is inert"
+      ]
+    },
+    "power.blightcaller.regrowth": {
+      "id": "power.blightcaller.regrowth",
+      "name": "Regrowth",
+      "staminaCost": 1,
+      "cooldown": 4,
+      "range": 4,
+      "target": {
+        "select": "unit",
+        "side": "ally"
+      },
+      "effects": [],
+      "gaps": [
+        "unparsed: The target gains Regen 3: it heals 3 at the end of each of its next three Turns",
+        "no effect compiled — the power is inert"
+      ]
+    },
+    "power.blightcaller.creeping-blight": {
+      "id": "power.blightcaller.creeping-blight",
+      "name": "Creeping Blight",
+      "staminaCost": 2,
+      "cooldown": 5,
+      "warmup": 2,
+      "range": 5,
+      "target": {
+        "select": "area",
+        "side": "any",
+        "radius": 1,
+        "origin": "target"
+      },
+      "effects": [],
+      "gaps": [
+        "targets 'a hex within 5' — engine centres the blast on a UNIT",
+        "unparsed: Those seven hexes become poisoned",
+        "unparsed: Any unit that begins its Turn on poisoned ground gains 2 Poison and 1 Weak — all",
+        "needs capability: a third terrain status alongside burning and frost — 'blighted', which applies statuses on turn-start rather than ticking damage",
+        "no effect compiled — the power is inert"
+      ]
+    },
+    "power.wild-shaper.wild-growth": {
+      "id": "power.wild-shaper.wild-growth",
+      "name": "Wild Growth",
+      "staminaCost": 1,
+      "cooldown": 3,
+      "range": 0,
+      "target": {
+        "select": "self",
+        "side": "any"
+      },
+      "effects": [
+        {
+          "kind": "statMod",
+          "stat": "strength",
+          "value": 1,
+          "until": "battle",
+          "who": "self"
+        }
+      ],
+      "gaps": [
+        "unparsed: Roots come up through you",
+        "unparsed: Heal 3, and for the rest of the Battle your claw and melee attacks gain +1 Stren",
+        "modifies only claw/melee attacks — engine applies it to the unit"
+      ]
+    },
+    "power.wild-shaper.primal-roar": {
+      "id": "power.wild-shaper.primal-roar",
+      "name": "Primal Roar",
+      "staminaCost": 2,
+      "cooldown": 4,
+      "warmup": 2,
+      "range": 0,
+      "target": {
+        "select": "area",
+        "side": "enemy",
+        "radius": 3,
+        "origin": "self"
+      },
+      "effects": [],
+      "gaps": [
+        "unparsed: Every enemy within 3 hexes gains 2 Weak and gains 1 Slow",
+        "unparsed: Area — no roll, no crit",
+        "no effect compiled — the power is inert"
+      ]
+    },
+    "power.wild-shaper.claw": {
+      "id": "power.wild-shaper.claw",
+      "name": "Claw",
+      "staminaCost": 1,
+      "cooldown": 2,
+      "range": 0,
+      "target": {
+        "select": "self",
+        "side": "any"
+      },
+      "effects": [
+        {
+          "kind": "statMod",
+          "stat": "strength",
+          "value": 2,
+          "until": "endOfNextTurn",
+          "who": "self"
+        }
+      ],
+      "gaps": [
+        "unparsed: They CONSUME the target’s Weak: add it to the damage and remove 5 stacks",
+        "modifies only brawl attacks — engine applies it to the unit"
+      ]
+    },
+    "power.grove-keeper.life-bloom": {
+      "id": "power.grove-keeper.life-bloom",
+      "name": "Life Bloom",
+      "staminaCost": 1,
+      "cooldown": 3,
+      "range": 5,
+      "target": {
+        "select": "unit",
+        "side": "ally"
+      },
+      "effects": [],
+      "gaps": [
+        "unparsed: One ally heals 2 + Magic and gains +2 Health for the rest of the Battle",
+        "no effect compiled — the power is inert"
+      ]
+    },
+    "power.grove-keeper.rejuvenation": {
+      "id": "power.grove-keeper.rejuvenation",
+      "name": "Rejuvenation",
+      "staminaCost": 2,
+      "cooldown": 6,
+      "warmup": 3,
+      "range": 0,
+      "target": {
+        "select": "area",
+        "side": "ally",
+        "radius": 4,
+        "origin": "self"
+      },
+      "effects": [],
+      "gaps": [
+        "unparsed: Every ally within 4 hexes heals 2 + Spirit and loses all Poison",
+        "unparsed: Spirit is the party-wide sum, so with one caster in the party this is about a 4-",
+        "unparsed: Anyone still standing in fire gets half of it — Quench first, then cast this",
+        "no effect compiled — the power is inert"
+      ]
+    },
+    "power.grove-keeper.quench": {
+      "id": "power.grove-keeper.quench",
+      "name": "Quench",
+      "staminaCost": 1,
+      "cooldown": 3,
+      "range": 4,
+      "target": {
+        "select": "area",
+        "side": "any",
+        "radius": 1,
+        "origin": "target"
+      },
+      "effects": [],
+      "gaps": [
+        "targets 'a hex within 4' — engine centres the blast on a UNIT",
+        "unparsed: Those seven hexes become frost",
+        "unparsed: Frost ground deals no damage, but every unit standing in it takes 2 extra physic",
+        "unparsed: Use it to put out a Fire-master’s mess or to soften a knot of enemies for the me",
+        "no effect compiled — the power is inert"
+      ]
+    },
+    "power.grove-keeper.grove-ward": {
+      "id": "power.grove-keeper.grove-ward",
+      "name": "Grove Ward",
+      "staminaCost": 2,
+      "cooldown": 5,
+      "warmup": 2,
+      "range": 0,
+      "target": {
+        "select": "area",
+        "side": "ally",
+        "radius": 2,
+        "origin": "self"
+      },
+      "effects": [],
+      "gaps": [
+        "unparsed: Aura 2, centred on you: allies inside gain +1 Resist and 2 Regeneration",
+        "no effect compiled — the power is inert"
+      ]
+    },
+    "power.war-priest.restoration": {
+      "id": "power.war-priest.restoration",
+      "name": "Restoration",
+      "staminaCost": 1,
+      "cooldown": 2,
+      "range": 3,
+      "target": {
+        "select": "unit",
+        "side": "ally"
+      },
+      "effects": [
+        {
+          "kind": "status.remove",
+          "statusId": "status.poison",
+          "value": 5
+        },
+        {
+          "kind": "status.remove",
+          "statusId": "status.burn",
+          "value": 1
+        },
+        {
+          "kind": "heal",
+          "amount": {
+            "scale": "partySpirit",
+            "base": 2,
+            "mult": 1
+          }
+        }
+      ],
+      "gaps": [
+        "unparsed: the order matters, because Burn halves what a heal is worth"
+      ]
+    },
+    "power.war-priest.holy-flames": {
+      "id": "power.war-priest.holy-flames",
+      "name": "Holy Flames",
+      "staminaCost": 1,
+      "cooldown": 2,
+      "range": 0,
+      "target": {
+        "select": "self",
+        "side": "any"
+      },
+      "effects": [
+        {
+          "kind": "statMod",
+          "stat": "spirit",
+          "value": 2,
+          "until": "endOfNextTurn",
+          "who": "self"
+        }
+      ],
+      "gaps": [
+        "modifies only ranged attacks — engine applies it to the unit"
+      ]
+    },
+    "power.war-priest.smite-evil": {
+      "id": "power.war-priest.smite-evil",
+      "name": "Smite Evil",
+      "staminaCost": 2,
+      "cooldown": 3,
+      "warmup": 1,
+      "range": 0,
+      "target": {
+        "select": "self",
+        "side": "any"
+      },
+      "effects": [],
+      "gaps": [
+        "modifies only melee attacks — engine applies it to the unit",
+        "no effect compiled — the power is inert"
+      ]
+    },
+    "power.war-priest.shield-of-faith": {
+      "id": "power.war-priest.shield-of-faith",
+      "name": "Shield of Faith",
+      "staminaCost": 1,
+      "cooldown": 4,
+      "warmup": 1,
+      "range": 0,
+      "effects": [],
+      "target": {
+        "select": "self",
+        "side": "any"
+      },
+      "gaps": [
+        "targets 'you and allies within 1 hex' unparsed — the power is inert"
+      ]
+    },
+    "power.shepherd.circle-of-healing": {
+      "id": "power.shepherd.circle-of-healing",
+      "name": "Circle of Healing",
+      "staminaCost": 2,
+      "cooldown": 3,
+      "warmup": 1,
+      "range": 0,
+      "target": {
+        "select": "area",
+        "side": "ally",
+        "radius": 3,
+        "origin": "self"
+      },
+      "effects": [
+        {
+          "kind": "heal",
+          "amount": {
+            "scale": "partySpirit",
+            "base": 1,
+            "mult": 1
+          }
+        }
+      ]
+    },
+    "power.shepherd.close-wounds": {
+      "id": "power.shepherd.close-wounds",
+      "name": "Close Wounds",
+      "staminaCost": 1,
+      "cooldown": 1,
+      "range": 3,
+      "target": {
+        "select": "unit",
+        "side": "ally"
+      },
+      "effects": [
+        {
+          "kind": "status.remove",
+          "statusId": "status.burn",
+          "value": 5
+        },
+        {
+          "kind": "heal",
+          "amount": {
+            "scale": "partySpirit",
+            "base": 2,
+            "mult": 1
+          }
+        }
+      ]
+    },
+    "power.shepherd.prayer": {
+      "id": "power.shepherd.prayer",
+      "name": "Prayer",
+      "staminaCost": 0,
+      "cooldown": 3,
+      "free": true,
+      "range": 4,
+      "target": {
+        "select": "unit",
+        "side": "ally"
+      },
+      "effects": [
+        {
+          "kind": "heal",
+          "amount": 2
+        }
+      ]
+    },
+    "power.shepherd.call-them-back": {
+      "id": "power.shepherd.call-them-back",
+      "name": "Call Them Back",
+      "staminaCost": 2,
+      "cooldown": 5,
+      "warmup": 1,
+      "range": 0,
+      "effects": [],
+      "target": {
+        "select": "self",
+        "side": "any"
+      },
+      "gaps": [
+        "targets 'one downed ally within 4 hexes' unparsed — the power is inert"
+      ]
+    },
+    "power.divine-light.total-healing": {
+      "id": "power.divine-light.total-healing",
+      "name": "Total Healing",
+      "staminaCost": 2,
+      "cooldown": 5,
+      "warmup": 2,
+      "range": 0,
+      "target": {
+        "select": "area",
+        "side": "ally",
+        "radius": 4,
+        "origin": "self"
+      },
+      "effects": [],
+      "gaps": [
+        "unparsed: Remove 2 Burn from every ally within 4 hexes, then heal each of them for 2 + Spi",
+        "unparsed: Your one big button",
+        "unparsed: it is a Turn 3 button, not a Turn 1 one",
+        "no effect compiled — the power is inert"
+      ]
+    },
+    "power.divine-light.hallowed-ground": {
+      "id": "power.divine-light.hallowed-ground",
+      "name": "Hallowed Ground",
+      "staminaCost": 2,
+      "cooldown": 5,
+      "warmup": 1,
+      "range": 4,
+      "target": {
+        "select": "area",
+        "side": "any",
+        "radius": 1,
+        "origin": "target"
+      },
+      "effects": [],
+      "gaps": [
+        "targets 'a hex within 4' — engine centres the blast on a UNIT",
+        "unparsed: Consecrate seven hexes for the rest of the Battle: allies standing in them lose ",
+        "no effect compiled — the power is inert"
+      ]
+    },
+    "power.divine-light.beacon": {
+      "id": "power.divine-light.beacon",
+      "name": "Beacon",
+      "staminaCost": 0,
+      "cooldown": 6,
+      "warmup": 1,
+      "range": 0,
+      "target": {
+        "select": "self",
+        "side": "any"
+      },
+      "effects": [
+        {
+          "kind": "statMod",
+          "value": 3,
+          "until": "battle",
+          "who": "self"
+        }
+      ],
+      "gaps": [
+        "stance rider: every ally within 3 hexes ignores darkness and fog and gains +5 Accuracy"
+      ]
+    },
+    "power.divine-light.searing-light": {
+      "id": "power.divine-light.searing-light",
+      "name": "Searing Light",
+      "staminaCost": 2,
+      "cooldown": 4,
+      "warmup": 2,
+      "range": 0,
+      "target": {
+        "select": "area",
+        "side": "enemy",
+        "radius": 3,
+        "origin": "self"
+      },
+      "effects": [],
+      "gaps": [
+        "unparsed: Every enemy within 3 hexes takes 2 + Spirit true damage, doubled against undead",
+        "unparsed: As an area effect it cannot crit — but true damage means neither Armor nor Resis",
+        "no effect compiled — the power is inert"
+      ]
+    },
+    "power.redeemer.true-sacrifice": {
+      "id": "power.redeemer.true-sacrifice",
+      "name": "True Sacrifice",
+      "staminaCost": 2,
+      "cooldown": 6,
+      "warmup": 3,
+      "range": 3,
+      "target": {
+        "select": "unit",
+        "side": "enemy"
+      },
+      "effects": [],
+      "gaps": [
+        "unparsed: The target gains 10 Burn and you gain 6 Burn",
+        "no effect compiled — the power is inert"
+      ]
+    },
+    "power.redeemer.holy-retribution": {
+      "id": "power.redeemer.holy-retribution",
+      "name": "Holy Retribution",
+      "staminaCost": 1,
+      "cooldown": 3,
+      "range": 0,
+      "target": {
+        "select": "self",
+        "side": "any"
+      },
+      "effects": [],
+      "gaps": [
+        "unparsed: Stance: for the rest of the Battle anything that hits you in melee takes 2 true ",
+        "unparsed: You gain 2 Burn now",
+        "no effect compiled — the power is inert"
+      ]
+    },
+    "power.redeemer.uncorrupted": {
+      "id": "power.redeemer.uncorrupted",
+      "name": "Uncorrupted",
+      "staminaCost": 2,
+      "cooldown": 5,
+      "warmup": 2,
+      "range": 0,
+      "target": {
+        "select": "area",
+        "side": "ally",
+        "radius": 3,
+        "origin": "self"
+      },
+      "effects": [],
+      "gaps": [
+        "unparsed: Remove 5 Burn from every ally within 3 hexes and heal each of them 2",
+        "unparsed: You gain 5 Burn",
+        "no effect compiled — the power is inert"
+      ]
+    },
+    "power.redeemer.bear-the-flame": {
+      "id": "power.redeemer.bear-the-flame",
+      "name": "Bear the Flame",
+      "staminaCost": 0,
+      "cooldown": 3,
+      "free": true,
+      "range": 3,
+      "target": {
+        "select": "unit",
+        "side": "ally"
+      },
+      "effects": [],
+      "gaps": [
+        "unparsed: Move every stack of Burn and Poison from one ally onto yourself",
+        "unparsed: Free, and you will want it more often than the cooldown lets you have it",
+        "no effect compiled — the power is inert"
+      ]
+    },
+    "power.blessed-sufferer.unbent": {
+      "id": "power.blessed-sufferer.unbent",
+      "name": "Unbent",
+      "staminaCost": 1,
+      "cooldown": 5,
+      "warmup": 3,
+      "range": 0,
+      "target": {
+        "select": "self",
+        "side": "any"
+      },
+      "effects": [],
+      "gaps": [
+        "unparsed: Take 5 true damage to remove 5 Stun from yourself and gain +2 Resist and +4 Heal",
+        "unparsed: The whole bargain of the branch in one power: you buy the ability to keep standi",
+        "no effect compiled — the power is inert"
+      ]
+    },
+    "power.blessed-sufferer.instant-healing": {
+      "id": "power.blessed-sufferer.instant-healing",
+      "name": "Instant Healing",
+      "staminaCost": 1,
+      "cooldown": 2,
+      "range": 2,
+      "target": {
+        "select": "unit",
+        "side": "ally"
+      },
+      "effects": [],
+      "gaps": [
+        "unparsed: Heal the target for 1 + Spirit and take 2 true damage yourself",
+        "unparsed: You have the Toughness to keep paying this",
+        "unparsed: nobody else does",
+        "no effect compiled — the power is inert"
+      ]
+    },
+    "power.blessed-sufferer.shield-of-flesh": {
+      "id": "power.blessed-sufferer.shield-of-flesh",
+      "name": "Shield of Flesh",
+      "staminaCost": 1,
+      "cooldown": 3,
+      "warmup": 1,
+      "range": 2,
+      "target": {
+        "select": "unit",
+        "side": "ally"
+      },
+      "effects": [
+        {
+          "kind": "selfDamage",
+          "amount": 5,
+          "damageType": "true"
+        }
+      ],
+      "gaps": [
+        "unparsed: the target gains Protection equal to 5 + Spirit, which decays 1 a Phase like any"
+      ]
+    },
+    "power.blessed-sufferer.power-of-the-divine": {
+      "id": "power.blessed-sufferer.power-of-the-divine",
+      "name": "Power of the Divine",
+      "staminaCost": 0,
+      "cooldown": 5,
+      "warmup": 1,
+      "free": true,
+      "range": 0,
+      "target": {
+        "select": "self",
+        "side": "any"
+      },
+      "effects": [],
+      "gaps": [
+        "unparsed: Take 5 true damage to immediately regain 3 Stamina",
+        "unparsed: This is a one-off refill and does not touch Stamina Regen",
+        "no effect compiled — the power is inert"
+      ]
+    },
+    "power.martyred-saint.inner-light": {
+      "id": "power.martyred-saint.inner-light",
+      "name": "Inner Light",
+      "staminaCost": 2,
+      "cooldown": 5,
+      "warmup": 2,
+      "range": 0,
+      "target": {
+        "select": "area",
+        "side": "ally",
+        "radius": 3,
+        "origin": "self"
+      },
+      "effects": [],
+      "gaps": [
+        "unparsed: Heal yourself 6 and every ally within 3 hexes for 1 + Spirit",
+        "unparsed: You are the reason you are still standing, and standing is the point",
+        "no effect compiled — the power is inert"
+      ]
+    },
+    "power.martyred-saint.oblation": {
+      "id": "power.martyred-saint.oblation",
+      "name": "Oblation",
+      "staminaCost": 1,
+      "cooldown": 3,
+      "range": 0,
+      "target": {
+        "select": "area",
+        "side": "ally",
+        "radius": 3,
+        "origin": "self"
+      },
+      "effects": [],
+      "gaps": [
+        "unparsed: Heal every ally within 3 hexes for 2 + Spirit and take 4 true damage",
+        "no effect compiled — the power is inert"
+      ]
+    },
+    "power.martyred-saint.last-rites": {
+      "id": "power.martyred-saint.last-rites",
+      "name": "Last Rites",
+      "staminaCost": 2,
+      "cooldown": 6,
+      "warmup": 2,
+      "range": 3,
+      "target": {
+        "select": "unit",
+        "side": "ally"
+      },
+      "effects": [],
+      "gaps": [
+        "unparsed: Bless one ally for the rest of the Battle: +25 Deathbed Fighting",
+        "unparsed: It does not stop them falling — it makes it much less likely",
+        "no effect compiled — the power is inert"
+      ]
+    },
+    "power.martyred-saint.the-last-word": {
+      "id": "power.martyred-saint.the-last-word",
+      "name": "The Last Word",
+      "staminaCost": 0,
+      "cooldown": 8,
+      "warmup": 3,
+      "free": true,
+      "range": 0,
+      "target": {
+        "select": "self",
+        "side": "any"
+      },
+      "effects": [
+        {
+          "kind": "selfDamage",
+          "amount": 8,
+          "damageType": "true"
+        }
+      ],
+      "gaps": [
+        "unparsed: Every enemy within 3 hexes takes 6 damage",
+        "unparsed: Area — it does not roll and cannot crit"
+      ]
+    },
+    "power.oracle.prophecy-of-light": {
+      "id": "power.oracle.prophecy-of-light",
+      "name": "Prophecy of Light",
+      "staminaCost": 2,
+      "cooldown": 5,
+      "warmup": 1,
+      "range": 0,
+      "target": {
+        "select": "area",
+        "side": "ally",
+        "radius": 4,
+        "origin": "self"
+      },
+      "effects": [
+        {
+          "kind": "statMod",
+          "stat": "accuracy",
+          "value": 10,
+          "until": "battle"
+        }
+      ],
+      "gaps": [
+        "unparsed: On a hero already past 100 the surplus turns into Crit at a quarter, so it is ne"
+      ]
+    },
+    "power.oracle.predict": {
+      "id": "power.oracle.predict",
+      "name": "Predict",
+      "staminaCost": 1,
+      "cooldown": 3,
+      "range": 4,
+      "target": {
+        "select": "unit",
+        "side": "ally"
+      },
+      "effects": [],
+      "gaps": [
+        "unparsed: Heal the target 2 and give it +10 Dodge until the end of its next Turn — you saw",
+        "no effect compiled — the power is inert"
+      ]
+    },
+    "power.oracle.read-the-signs": {
+      "id": "power.oracle.read-the-signs",
+      "name": "Read the Signs",
+      "staminaCost": 1,
+      "cooldown": 4,
+      "range": 0,
+      "target": {
+        "select": "self",
+        "side": "any"
+      },
+      "effects": [],
+      "gaps": [
+        "unparsed: Stance: gain +3 Vision for the rest of the Battle and reveal every stealthed or ",
+        "no effect compiled — the power is inert"
+      ]
+    },
+    "power.oracle.the-hour-of-your-death": {
+      "id": "power.oracle.the-hour-of-your-death",
+      "name": "The Hour of Your Death",
+      "staminaCost": 2,
+      "cooldown": 6,
+      "warmup": 2,
+      "range": 0,
+      "target": {
+        "select": "self",
+        "side": "any"
+      },
+      "effects": [],
+      "gaps": [
+        "unparsed: Every attack your party makes deals +2 damage for the rest of the Battle, and yo",
+        "no effect compiled — the power is inert"
+      ]
+    },
+    "power.seer.foresee-the-blow": {
+      "id": "power.seer.foresee-the-blow",
+      "name": "Foresee the Blow",
+      "staminaCost": 0,
+      "cooldown": 3,
+      "free": true,
+      "range": 3,
+      "target": {
+        "select": "unit",
+        "side": "ally"
+      },
+      "effects": [],
+      "gaps": [
+        "unparsed: The next attack made against the target this Turn takes -15 Accuracy",
+        "unparsed: It is free, so you can call it after you have seen who moved",
+        "no effect compiled — the power is inert"
+      ]
+    },
+    "power.seer.study-weakness": {
+      "id": "power.seer.study-weakness",
+      "name": "Study Weakness",
+      "staminaCost": 1,
+      "cooldown": 3,
+      "warmup": 1,
+      "range": 0,
+      "effects": [],
+      "target": {
+        "select": "self",
+        "side": "any"
+      },
+      "gaps": [
+        "targets 'one enemy within your Vision' unparsed — the power is inert"
+      ]
+    },
+    "power.seer.certainty": {
+      "id": "power.seer.certainty",
+      "name": "Certainty",
+      "staminaCost": 1,
+      "cooldown": 4,
+      "warmup": 1,
+      "range": 0,
+      "target": {
+        "select": "self",
+        "side": "any"
+      },
+      "effects": [],
+      "gaps": [
+        "unparsed: Stance: gain +25 Accuracy and lose 1 Movement for the rest of the Battle",
+        "no effect compiled — the power is inert"
+      ]
+    },
+    "power.seer.inevitable": {
+      "id": "power.seer.inevitable",
+      "name": "Inevitable",
+      "staminaCost": 2,
+      "cooldown": 5,
+      "warmup": 2,
+      "range": 4,
+      "target": {
+        "select": "unit",
+        "side": "enemy"
+      },
+      "effects": [],
+      "gaps": [
+        "unparsed: Ranged attack at +15 Accuracy for 3 + Spirit true damage",
+        "no effect compiled — the power is inert"
+      ]
+    },
+    "power.diviner.the-path": {
+      "id": "power.diviner.the-path",
+      "name": "The Path",
+      "staminaCost": 1,
+      "cooldown": 3,
+      "range": 4,
+      "target": {
+        "select": "unit",
+        "side": "ally"
+      },
+      "effects": [],
+      "gaps": [
+        "unparsed: The target immediately moves up to its Movement, ignoring the extra cost of roug",
+        "no effect compiled — the power is inert"
+      ]
+    },
+    "power.diviner.quicken": {
+      "id": "power.diviner.quicken",
+      "name": "Quicken",
+      "staminaCost": 0,
+      "cooldown": 5,
+      "warmup": 1,
+      "free": true,
+      "range": 4,
+      "target": {
+        "select": "unit",
+        "side": "ally"
+      },
+      "effects": [],
+      "gaps": [
+        "unparsed: That ally's Surge Chance rises by 40 for this Turn",
+        "unparsed: On a hit it takes a whole extra Activation and gets Stamina Regen + 1 stamina ba",
+        "no effect compiled — the power is inert"
+      ]
+    },
+    "power.diviner.last-vision": {
+      "id": "power.diviner.last-vision",
+      "name": "Last Vision",
+      "staminaCost": 0,
+      "cooldown": 6,
+      "range": 0,
+      "target": {
+        "select": "area",
+        "side": "ally",
+        "radius": 4,
+        "origin": "self"
+      },
+      "effects": [],
+      "gaps": [
+        "unparsed: When you die, every ally within 4 hexes gains +10 Accuracy and +1 Movement for t",
+        "no effect compiled — the power is inert"
+      ]
+    },
+    "power.diviner.act-now": {
+      "id": "power.diviner.act-now",
+      "name": "Act Now",
+      "staminaCost": 2,
+      "cooldown": 4,
+      "range": 0,
+      "target": {
+        "select": "area",
+        "side": "ally",
+        "radius": 3,
+        "origin": "self"
+      },
+      "effects": [],
+      "gaps": [
+        "unparsed: Every ally within 3 hexes gains +1 Movement and +5 Accuracy until the end of the",
+        "no effect compiled — the power is inert"
+      ]
+    },
+    "power.vigil.holy-protection": {
+      "id": "power.vigil.holy-protection",
+      "name": "Holy Protection",
+      "staminaCost": 1,
+      "cooldown": 4,
+      "warmup": 1,
+      "range": 0,
+      "target": {
+        "select": "self",
+        "side": "any"
+      },
+      "effects": [],
+      "gaps": [
+        "unparsed: Stance: gain +1 Armor and +1 Resist for the rest of the Battle and lose 2 Health",
+        "no effect compiled — the power is inert"
+      ]
+    },
+    "power.vigil.bravery": {
+      "id": "power.vigil.bravery",
+      "name": "Bravery",
+      "staminaCost": 1,
+      "cooldown": 4,
+      "warmup": 1,
+      "range": 0,
+      "target": {
+        "select": "area",
+        "side": "ally",
+        "radius": 3,
+        "origin": "self"
+      },
+      "effects": [],
+      "gaps": [
+        "unparsed: Every ally within 3 hexes gains +1 Resist for the rest of the Battle and loses 2",
+        "no effect compiled — the power is inert"
+      ]
+    },
+    "power.vigil.protect-and-shield": {
+      "id": "power.vigil.protect-and-shield",
+      "name": "Protect and Shield",
+      "staminaCost": 2,
+      "cooldown": 4,
+      "warmup": 1,
+      "range": 3,
+      "target": {
+        "select": "unit",
+        "side": "ally"
+      },
+      "effects": [],
+      "gaps": [
+        "unparsed: Remove 5 Burn, 5 Bleed and 5 Poison from the target and give it 4 Protection",
+        "unparsed: Bleed is not resisted by anything else, so this is often the only answer to it",
+        "no effect compiled — the power is inert"
+      ]
+    },
+    "power.vigil.keep-the-watch": {
+      "id": "power.vigil.keep-the-watch",
+      "name": "Keep the Watch",
+      "staminaCost": 0,
+      "cooldown": 5,
+      "free": true,
+      "range": 0,
+      "effects": [],
+      "target": {
+        "select": "self",
+        "side": "any"
+      },
+      "gaps": [
+        "targets 'one downed ally within 2 hexes' unparsed — the power is inert"
+      ]
+    },
+    "power.deathknight.righteous-fury": {
+      "id": "power.deathknight.righteous-fury",
+      "name": "Righteous Fury",
+      "staminaCost": 1,
+      "cooldown": 4,
+      "warmup": 1,
+      "range": 0,
+      "target": {
+        "select": "self",
+        "side": "any"
+      },
+      "effects": [],
+      "gaps": [
+        "unparsed: Stance: for the rest of the Battle every melee attack you land reduces the targe",
+        "unparsed: Armor floors at zero, so the fourth hit on a knight is worth less than the first",
+        "no effect compiled — the power is inert"
+      ]
+    },
+    "power.deathknight.unholy-shield": {
+      "id": "power.deathknight.unholy-shield",
+      "name": "Unholy Shield",
+      "staminaCost": 1,
+      "cooldown": 4,
+      "warmup": 1,
+      "range": 0,
+      "target": {
+        "select": "self",
+        "side": "any"
+      },
+      "effects": [],
+      "gaps": [
+        "unparsed: Stance: for the rest of the Battle anything that hits you gains 2 Burn",
+        "unparsed: Each tick is still reduced by the holder's Resist, so it does most for you again",
+        "no effect compiled — the power is inert"
+      ]
+    },
+    "power.deathknight.unholy-wrath": {
+      "id": "power.deathknight.unholy-wrath",
+      "name": "Unholy Wrath",
+      "staminaCost": 2,
+      "cooldown": 5,
+      "warmup": 2,
+      "range": 1,
+      "target": {
+        "select": "unit",
+        "side": "enemy"
+      },
+      "effects": [],
+      "gaps": [
+        "unparsed: Melee attack at +3 Strength dealing magic damage instead of physical, and every ",
+        "no effect compiled — the power is inert"
+      ]
+    },
+    "power.deathknight.consume-the-living": {
+      "id": "power.deathknight.consume-the-living",
+      "name": "Consume the Living",
+      "staminaCost": 0,
+      "cooldown": 5,
+      "warmup": 1,
+      "range": 0,
+      "target": {
+        "select": "self",
+        "side": "any"
+      },
+      "effects": [],
+      "gaps": [
+        "unparsed: Stance: for the rest of the Battle you have +2 Strength against beast, giant, dr",
+        "unparsed: You are the one paladin the graveyard is not afraid of",
+        "no effect compiled — the power is inert"
+      ]
+    },
+    "power.holy-avenger.strike-at-evil": {
+      "id": "power.holy-avenger.strike-at-evil",
+      "name": "Strike at Evil",
+      "staminaCost": 1,
+      "cooldown": 2,
+      "range": 0,
+      "target": {
+        "select": "self",
+        "side": "any"
+      },
+      "effects": [],
+      "gaps": [
+        "modifies only melee attacks — engine applies it to the unit",
+        "no effect compiled — the power is inert"
+      ]
+    },
+    "power.holy-avenger.lay-on-hands": {
+      "id": "power.holy-avenger.lay-on-hands",
+      "name": "Lay on Hands",
+      "staminaCost": 1,
+      "cooldown": 3,
+      "range": 1,
+      "target": {
+        "select": "unit",
+        "side": "ally"
+      },
+      "effects": [
+        {
+          "kind": "heal",
+          "amount": 4
+        }
+      ],
+      "gaps": [
+        "unparsed: You are not a priest",
+        "unparsed: you get one heal and it is short-ranged"
+      ]
+    },
+    "power.holy-avenger.succor-of-the-faithful": {
+      "id": "power.holy-avenger.succor-of-the-faithful",
+      "name": "Succor of the Faithful",
+      "staminaCost": 0,
+      "cooldown": 3,
+      "free": true,
+      "range": 0,
+      "target": {
+        "select": "self",
+        "side": "any"
+      },
+      "effects": [],
+      "gaps": [
+        "unparsed: remove 5 Burn and 5 Poison from yourself and gain Protection equal to your Spiri",
+        "unparsed: Cleansing one tick is free insurance",
+        "unparsed: Cleansing eight is a decision about which of the two things kills you",
+        "no effect compiled — the power is inert"
+      ]
+    },
+    "power.holy-avenger.reckoning": {
+      "id": "power.holy-avenger.reckoning",
+      "name": "Reckoning",
+      "staminaCost": 2,
+      "cooldown": 5,
+      "warmup": 2,
+      "range": 0,
+      "target": {
+        "select": "self",
+        "side": "any"
+      },
+      "effects": [
+        {
+          "kind": "statMod",
+          "stat": "strength",
+          "value": 2,
+          "until": "endOfNextTurn",
+          "who": "self"
+        },
+        {
+          "kind": "statMod",
+          "stat": "crit",
+          "value": 5,
+          "until": "endOfNextTurn",
+          "who": "self"
+        }
+      ],
+      "gaps": [
+        "modifies only melee attacks — engine applies it to the unit"
+      ]
+    },
+    "power.holy-champion.holy-radiance": {
+      "id": "power.holy-champion.holy-radiance",
+      "name": "Holy Radiance",
+      "staminaCost": 2,
+      "cooldown": 4,
+      "warmup": 1,
+      "range": 0,
+      "target": {
+        "select": "area",
+        "side": "any",
+        "radius": 2,
+        "origin": "self"
+      },
+      "effects": [],
+      "gaps": [
+        "unparsed: Heal every ally within 2 hexes for 3 and give every enemy within 2 hexes 2 Burn",
+        "unparsed: As an area effect it cannot crit",
+        "no effect compiled — the power is inert"
+      ]
+    },
+    "power.holy-champion.fervor": {
+      "id": "power.holy-champion.fervor",
+      "name": "Fervor",
+      "staminaCost": 0,
+      "cooldown": 5,
+      "warmup": 2,
+      "range": 0,
+      "target": {
+        "select": "self",
+        "side": "any"
+      },
+      "effects": [],
+      "gaps": [
+        "unparsed: Stance: gain +2 Strength and +1 Armor for the rest of the Battle and lose 5 Dodg",
+        "no effect compiled — the power is inert"
+      ]
+    },
+    "power.holy-champion.sacred-flame": {
+      "id": "power.holy-champion.sacred-flame",
+      "name": "Sacred Flame",
+      "staminaCost": 1,
+      "cooldown": 2,
+      "range": 3,
+      "target": {
+        "select": "unit",
+        "side": "enemy"
+      },
+      "effects": [],
+      "gaps": [
+        "unparsed: The target gains 3 Burn, or 5 Burn if it is undead or demon",
+        "unparsed: Each tick is reduced by its Resist, so it is a wound-opener, not a finisher",
+        "no effect compiled — the power is inert"
+      ]
+    },
+    "power.holy-champion.bound-by-the-flesh": {
+      "id": "power.holy-champion.bound-by-the-flesh",
+      "name": "Bound by the Flesh",
+      "staminaCost": 1,
+      "cooldown": 5,
+      "warmup": 2,
+      "range": 0,
+      "target": {
+        "select": "area",
+        "side": "ally",
+        "radius": 3,
+        "origin": "self"
+      },
+      "effects": [
+        {
+          "kind": "selfDamage",
+          "amount": 6,
+          "damageType": "true"
+        }
+      ],
+      "gaps": [
+        "unparsed: every ally within 3 hexes gains 4 Protection",
+        "unparsed: Protection decays 1 a Phase, so hand it out on the Turn contact lands"
+      ]
+    },
+    "power.sacred-shield.aegis": {
+      "id": "power.sacred-shield.aegis",
+      "name": "Aegis",
+      "staminaCost": 1,
+      "cooldown": 2,
+      "range": 3,
+      "target": {
+        "select": "unit",
+        "side": "ally"
+      },
+      "effects": [
+        {
+          "kind": "status.apply",
+          "statusId": "status.protection",
+          "value": {
+            "scale": "partySpirit",
+            "base": 3,
+            "mult": 1
+          }
+        }
+      ]
+    },
+    "power.sacred-shield.fortify": {
+      "id": "power.sacred-shield.fortify",
+      "name": "Fortify",
+      "staminaCost": 2,
+      "cooldown": 5,
+      "warmup": 3,
+      "range": 0,
+      "target": {
+        "select": "area",
+        "side": "ally",
+        "radius": 3,
+        "origin": "self"
+      },
+      "effects": [
+        {
+          "kind": "statMod",
+          "stat": "armor",
+          "value": 1,
+          "until": "battle"
+        },
+        {
+          "kind": "statMod",
+          "stat": "maxHp",
+          "value": 3,
+          "until": "battle",
+          "who": "self"
+        }
+      ]
+    },
+    "power.sacred-shield.guardian-angel": {
+      "id": "power.sacred-shield.guardian-angel",
+      "name": "Guardian Angel",
+      "staminaCost": 2,
+      "cooldown": 5,
+      "warmup": 1,
+      "range": 3,
+      "target": {
+        "select": "unit",
+        "side": "ally"
+      },
+      "effects": [
+        {
+          "kind": "status.apply",
+          "statusId": "status.protection",
+          "value": 4
+        }
+      ]
+    },
+    "power.sacred-shield.exemplify": {
+      "id": "power.sacred-shield.exemplify",
+      "name": "Exemplify",
+      "staminaCost": 1,
+      "cooldown": 3,
+      "range": 3,
+      "target": {
+        "select": "unit",
+        "side": "ally"
+      },
+      "effects": [],
+      "gaps": [
+        "unparsed: remove 5 Poison from the target and give it +1 Armor for the rest of the Battle",
+        "no effect compiled — the power is inert"
+      ]
+    },
+    "power.grand-master.close-ranks": {
+      "id": "power.grand-master.close-ranks",
+      "name": "Close Ranks",
+      "staminaCost": 2,
+      "cooldown": 5,
+      "warmup": 1,
+      "range": 0,
+      "target": {
+        "select": "area",
+        "side": "ally",
+        "radius": 2,
+        "origin": "self"
+      },
+      "effects": [],
+      "gaps": [
+        "unparsed: Aura: for the rest of the Battle, any ally within 2 hexes of you that is also ad",
+        "unparsed: It rewards a formation and it lapses the moment the line scatters",
+        "no effect compiled — the power is inert"
+      ]
+    },
+    "power.grand-master.muster": {
+      "id": "power.grand-master.muster",
+      "name": "Muster",
+      "staminaCost": 0,
+      "cooldown": 3,
+      "free": true,
+      "range": 4,
+      "target": {
+        "select": "unit",
+        "side": "ally"
+      },
+      "effects": [],
+      "gaps": [
+        "unparsed: The target gains 3 Protection",
+        "unparsed: Free, and Protection decays 1 a Phase, so spend it on the hero about to be hit r",
+        "no effect compiled — the power is inert"
+      ]
+    },
+    "power.grand-master.grand-charge": {
+      "id": "power.grand-master.grand-charge",
+      "name": "Grand Charge",
+      "staminaCost": 2,
+      "cooldown": 4,
+      "warmup": 2,
+      "range": 1,
+      "target": {
+        "select": "unit",
+        "side": "enemy"
+      },
+      "effects": [],
+      "gaps": [
+        "unparsed: Move up to 4 hexes and make a melee attack at +2 Strength",
+        "unparsed: Every ally within 2 hexes may immediately move up to 2 hexes",
+        "unparsed: it provokes nothing",
+        "no effect compiled — the power is inert"
+      ]
+    },
+    "power.grand-master.unyielding": {
+      "id": "power.grand-master.unyielding",
+      "name": "Unyielding",
+      "staminaCost": 1,
+      "cooldown": 4,
+      "warmup": 1,
+      "range": 0,
+      "target": {
+        "select": "area",
+        "side": "ally",
+        "radius": 2,
+        "origin": "self"
+      },
+      "effects": [],
+      "gaps": [
+        "unparsed: remove 5 Stun and 5 Weak from yourself and every ally within 2 hexes",
+        "no effect compiled — the power is inert"
+      ]
+    },
+    "power.purifier.purify": {
+      "id": "power.purifier.purify",
+      "name": "Purify",
+      "staminaCost": 1,
+      "cooldown": 2,
+      "range": 3,
+      "target": {
+        "select": "unit",
+        "side": "ally"
+      },
+      "effects": [
+        {
+          "kind": "status.remove",
+          "statusId": "status.burn",
+          "value": 5
+        },
+        {
+          "kind": "status.remove",
+          "statusId": "status.poison",
+          "value": 5
+        }
+      ],
+      "gaps": [
+        "unparsed: Burn halves every heal it receives, so stripping it is usually worth more than t"
+      ]
+    },
+    "power.purifier.cleanse": {
+      "id": "power.purifier.cleanse",
+      "name": "Cleanse",
+      "staminaCost": 2,
+      "cooldown": 5,
+      "warmup": 2,
+      "range": 0,
+      "target": {
+        "select": "area",
+        "side": "ally",
+        "radius": 3,
+        "origin": "self"
+      },
+      "effects": [],
+      "gaps": [
+        "unparsed: remove 3 of every status, including Bleed, from every ally within 3 hexes, and t",
+        "no effect compiled — the power is inert"
+      ]
+    },
+    "power.purifier.blessing": {
+      "id": "power.purifier.blessing",
+      "name": "Blessing",
+      "staminaCost": 1,
+      "cooldown": 3,
+      "warmup": 1,
+      "range": 3,
+      "target": {
+        "select": "unit",
+        "side": "ally"
+      },
+      "effects": [],
+      "gaps": [
+        "unparsed: Heal the target for 3 + Spirit and give it +1 Resist for the rest of the Battle",
+        "no effect compiled — the power is inert"
+      ]
+    },
+    "power.purifier.sanctified-ward": {
+      "id": "power.purifier.sanctified-ward",
+      "name": "Sanctified Ward",
+      "staminaCost": 2,
+      "cooldown": 4,
+      "warmup": 1,
+      "range": 3,
+      "target": {
+        "select": "unit",
+        "side": "ally"
+      },
+      "effects": [
+        {
+          "kind": "status.apply",
+          "statusId": "status.protection",
+          "value": {
+            "scale": "partySpirit",
+            "base": 4,
+            "mult": 1
+          }
+        }
+      ]
+    },
+    "power.exorcist.banish": {
+      "id": "power.exorcist.banish",
+      "name": "Banish",
+      "staminaCost": 2,
+      "cooldown": 6,
+      "warmup": 3,
+      "range": 3,
+      "target": {
+        "select": "unit",
+        "side": "enemy"
+      },
+      "effects": [],
+      "gaps": [
+        "unparsed: Deal 12 true damage to the target and take 4 true damage yourself",
+        "unparsed: against demon, nightmare or horror you take none",
+        "no effect compiled — the power is inert"
+      ]
+    },
+    "power.exorcist.holy-shield": {
+      "id": "power.exorcist.holy-shield",
+      "name": "Name the Enemy",
+      "staminaCost": 1,
+      "cooldown": 3,
+      "warmup": 1,
+      "range": 0,
+      "target": {
+        "select": "self",
+        "side": "any"
+      },
+      "effects": [],
+      "gaps": [
+        "unparsed: Gain Protection equal to 3 + twice the party’s Spirit, and remove 1 Stun from yo",
+        "unparsed: Spirit is the party-wide sum, so with no Priest in the party this is a small bub",
+        "no effect compiled — the power is inert"
+      ]
+    },
+    "power.exorcist.exorcism": {
+      "id": "power.exorcist.exorcism",
+      "name": "Exorcism",
+      "staminaCost": 2,
+      "cooldown": 5,
+      "warmup": 3,
+      "range": 0,
+      "target": {
+        "select": "area",
+        "side": "enemy",
+        "radius": 2,
+        "origin": "self"
+      },
+      "effects": [],
+      "gaps": [
+        "unparsed: Every enemy within 2 hexes takes 4 true damage and you take 3",
+        "unparsed: As an area effect it cannot crit — but nothing mitigates it either",
+        "no effect compiled — the power is inert"
+      ]
+    },
+    "power.exorcist.sever-the-channel": {
+      "id": "power.exorcist.sever-the-channel",
+      "name": "Sever the Channel",
+      "staminaCost": 1,
+      "cooldown": 4,
+      "warmup": 1,
+      "range": 4,
+      "target": {
+        "select": "unit",
+        "side": "enemy"
+      },
+      "effects": [],
+      "gaps": [
+        "unparsed: For the rest of the Battle the target's magic damage is reduced by 3 and it cann",
+        "no effect compiled — the power is inert"
+      ]
+    },
+    "power.witch-hunter.hunt": {
+      "id": "power.witch-hunter.hunt",
+      "name": "Hunt",
+      "staminaCost": 1,
+      "cooldown": 3,
+      "range": 0,
+      "effects": [],
+      "target": {
+        "select": "self",
+        "side": "any"
+      },
+      "gaps": [
+        "targets 'one enemy within your Vision' unparsed — the power is inert"
+      ]
+    },
+    "power.witch-hunter.judgment": {
+      "id": "power.witch-hunter.judgment",
+      "name": "The Verdict",
+      "staminaCost": 2,
+      "cooldown": 4,
+      "warmup": 2,
+      "range": 4,
+      "target": {
+        "select": "unit",
+        "side": "enemy"
+      },
+      "effects": [],
+      "gaps": [
+        "unparsed: Deal 8 true damage to the target",
+        "unparsed: It skips Armor and it skips Resist",
+        "unparsed: the only defence is not being seen",
+        "no effect compiled — the power is inert"
+      ]
+    },
+    "power.witch-hunter.iron-and-salt": {
+      "id": "power.witch-hunter.iron-and-salt",
+      "name": "Iron and Salt",
+      "staminaCost": 1,
+      "cooldown": 4,
+      "warmup": 1,
+      "range": 3,
+      "target": {
+        "select": "unit",
+        "side": "enemy"
+      },
+      "effects": [],
+      "gaps": [
+        "unparsed: The target loses 2 Resist for the rest of the Battle and cannot gain Protection",
+        "unparsed: Resist floors at zero",
+        "no effect compiled — the power is inert"
+      ]
+    },
+    "power.witch-hunter.burn-the-guilty": {
+      "id": "power.witch-hunter.burn-the-guilty",
+      "name": "Burn the Guilty",
+      "staminaCost": 2,
+      "cooldown": 5,
+      "warmup": 2,
+      "range": 0,
+      "target": {
+        "select": "area",
+        "side": "enemy",
+        "radius": 2,
+        "origin": "self"
+      },
+      "effects": [],
+      "gaps": [
+        "unparsed: Every enemy within 2 hexes gains 4 Burn, or 6 if it is undead, demon or horror",
+        "unparsed: Each tick is reduced by its Resist, and as an area effect it cannot crit",
+        "no effect compiled — the power is inert"
+      ]
+    },
+    "power.sacred-shield.crown-of-thorns": {
+      "id": "power.sacred-shield.crown-of-thorns",
+      "name": "Crown of Thorns",
+      "staminaCost": 2,
+      "cooldown": 5,
+      "warmup": 2,
+      "range": 0,
+      "target": {
+        "select": "area",
+        "side": "ally",
+        "radius": 2,
+        "origin": "self"
+      },
+      "effects": [],
+      "gaps": [
+        "unparsed: You and every ally within 2 hexes gain Thorns 2 for the rest of the Battle",
+        "no effect compiled — the power is inert"
+      ]
+    }
+  },
+  "specialties": {
+    "specialty.berserker": {
+      "id": "specialty.berserker",
+      "name": "Berserker",
+      "class": "class.warrior",
+      "statModifiers": {
+        "strength": 2,
+        "maxStamina": 1,
+        "maxHp": 3,
+        "precision": -2,
+        "accuracy": -10
+      },
+      "gaps": [
+        "itemSlots -1: no engine stat"
+      ]
+    },
+    "specialty.shieldbearer": {
+      "id": "specialty.shieldbearer",
+      "name": "Shieldbearer",
+      "class": "class.warrior",
+      "statModifiers": {
+        "armor": 1,
+        "maxHp": 4
+      }
+    },
+    "specialty.leader": {
+      "id": "specialty.leader",
+      "name": "Leader",
+      "class": "class.warrior",
+      "statModifiers": {
+        "accuracy": 10,
+        "crit": 5
+      },
+      "gaps": [
+        "itemSlots 2: no engine stat"
+      ]
+    },
+    "specialty.reaver": {
+      "id": "specialty.reaver",
+      "name": "Reaver",
+      "class": "class.warrior",
+      "statModifiers": {
+        "strength": 2,
+        "maxHp": 3
+      },
+      "gaps": [
+        "surge 1: no engine stat"
+      ]
+    },
+    "specialty.warchief": {
+      "id": "specialty.warchief",
+      "name": "Warchief",
+      "class": "class.warrior",
+      "statModifiers": {
+        "strength": 1,
+        "maxHp": 3,
+        "resist": 1
+      }
+    },
+    "specialty.bloodrage": {
+      "id": "specialty.bloodrage",
+      "name": "Bloodrage",
+      "class": "class.warrior",
+      "statModifiers": {
+        "strength": 2,
+        "crit": 3
+      },
+      "gaps": [
+        "surge 1: no engine stat"
+      ]
+    },
+    "specialty.champion": {
+      "id": "specialty.champion",
+      "name": "Champion",
+      "class": "class.warrior",
+      "statModifiers": {
+        "crit": 3,
+        "strength": 1,
+        "maxHp": 2
+      }
+    },
+    "specialty.guardian": {
+      "id": "specialty.guardian",
+      "name": "Guardian",
+      "class": "class.warrior",
+      "statModifiers": {
+        "maxHp": 3,
+        "resist": 1,
+        "luck": 5
+      }
+    },
+    "specialty.crusader": {
+      "id": "specialty.crusader",
+      "name": "Crusader",
+      "class": "class.warrior",
+      "statModifiers": {
+        "resist": 1,
+        "strength": 1,
+        "maxHp": 2
+      }
+    },
+    "specialty.bowmaster": {
+      "id": "specialty.bowmaster",
+      "name": "Bowmaster",
+      "class": "class.ranger",
+      "statModifiers": {
+        "precision": 2,
+        "reach": 1,
+        "accuracy": 5
+      }
+    },
+    "specialty.winged-assassin": {
+      "id": "specialty.winged-assassin",
+      "name": "Winged Assassin",
+      "class": "class.ranger",
+      "statModifiers": {
+        "crit": 3,
+        "precision": 1,
+        "movement": 1
+      }
+    },
+    "specialty.wayfinder": {
+      "id": "specialty.wayfinder",
+      "name": "Wayfinder",
+      "class": "class.ranger",
+      "statModifiers": {
+        "strength": 2,
+        "maxHp": 3
+      },
+      "gaps": [
+        "itemSlots 2: no engine stat"
+      ]
+    },
+    "specialty.sentinel": {
+      "id": "specialty.sentinel",
+      "name": "Sentinel",
+      "class": "class.ranger",
+      "statModifiers": {
+        "movement": -2,
+        "maxHp": 4,
+        "reach": 2,
+        "precision": 1
+      }
+    },
+    "specialty.trapper": {
+      "id": "specialty.trapper",
+      "name": "Trapper",
+      "class": "class.ranger",
+      "statModifiers": {
+        "reach": 1,
+        "precision": 1,
+        "dodge": 5
+      }
+    },
+    "specialty.protector": {
+      "id": "specialty.protector",
+      "name": "Protector",
+      "class": "class.ranger",
+      "statModifiers": {
+        "armor": 1,
+        "resist": 1,
+        "maxHp": 3
+      }
+    },
+    "specialty.magical-friend": {
+      "id": "specialty.magical-friend",
+      "name": "Magical Friend",
+      "class": "class.ranger",
+      "statModifiers": {
+        "magic": 2,
+        "precision": 1
+      },
+      "gaps": [
+        "itemSlots 1: no engine stat"
+      ]
+    },
+    "specialty.feral": {
+      "id": "specialty.feral",
+      "name": "Feral",
+      "class": "class.ranger",
+      "statModifiers": {
+        "crit": 3,
+        "movement": 1,
+        "strength": 2
+      }
+    },
+    "specialty.beastward": {
+      "id": "specialty.beastward",
+      "name": "Beastward",
+      "class": "class.ranger",
+      "statModifiers": {
+        "maxHp": 4,
+        "armor": 1,
+        "resist": 1
+      }
+    },
+    "specialty.poison-master": {
+      "id": "specialty.poison-master",
+      "name": "Poison Master",
+      "class": "class.rogue",
+      "statModifiers": {
+        "crit": 3,
+        "precision": 1,
+        "resist": 2
+      }
+    },
+    "specialty.assassin": {
+      "id": "specialty.assassin",
+      "name": "Assassin",
+      "class": "class.rogue",
+      "statModifiers": {
+        "crit": 5,
+        "dodge": 5,
+        "strength": 1
+      }
+    },
+    "specialty.shadowdancer": {
+      "id": "specialty.shadowdancer",
+      "name": "Shadowdancer",
+      "class": "class.rogue",
+      "statModifiers": {
+        "dodge": 15,
+        "movement": 1,
+        "crit": 3
+      }
+    },
+    "specialty.shadowbound": {
+      "id": "specialty.shadowbound",
+      "name": "Shadowbound",
+      "class": "class.rogue",
+      "statModifiers": {
+        "magic": 2,
+        "dodge": 10
+      },
+      "gaps": [
+        "itemSlots 1: no engine stat"
+      ]
+    },
+    "specialty.contractbound": {
+      "id": "specialty.contractbound",
+      "name": "Contractbound",
+      "class": "class.rogue",
+      "statModifiers": {
+        "crit": 3,
+        "strength": 1
+      },
+      "gaps": [
+        "itemSlots 1: no engine stat"
+      ]
+    },
+    "specialty.nightblade": {
+      "id": "specialty.nightblade",
+      "name": "Nightblade",
+      "class": "class.rogue",
+      "statModifiers": {
+        "crit": 3,
+        "precision": 1,
+        "strength": 1
+      }
+    },
+    "specialty.havoc": {
+      "id": "specialty.havoc",
+      "name": "Havoc",
+      "class": "class.rogue",
+      "statModifiers": {
+        "crit": 3,
+        "movement": 1,
+        "strength": 2
+      }
+    },
+    "specialty.demonic-ward": {
+      "id": "specialty.demonic-ward",
+      "name": "Demonic Ward",
+      "class": "class.rogue",
+      "statModifiers": {
+        "armor": 1,
+        "resist": 2,
+        "maxHp": 2
+      }
+    },
+    "specialty.vengeance": {
+      "id": "specialty.vengeance",
+      "name": "Vengeance",
+      "class": "class.rogue",
+      "statModifiers": {
+        "crit": 3,
+        "precision": 1,
+        "armor": 1
+      }
+    },
+    "specialty.fire-master": {
+      "id": "specialty.fire-master",
+      "name": "Fire-master",
+      "class": "class.mage",
+      "statModifiers": {
+        "magic": 1,
+        "reach": 1,
+        "resist": 1
+      }
+    },
+    "specialty.soul-stealer": {
+      "id": "specialty.soul-stealer",
+      "name": "Soul Stealer",
+      "class": "class.mage",
+      "statModifiers": {
+        "precision": 2,
+        "magic": 1,
+        "crit": 3
+      }
+    },
+    "specialty.mystic": {
+      "id": "specialty.mystic",
+      "name": "Mystic",
+      "class": "class.mage",
+      "statModifiers": {
+        "magic": 2,
+        "resist": 1,
+        "dodge": 5
+      }
+    },
+    "specialty.storm-caller": {
+      "id": "specialty.storm-caller",
+      "name": "Storm Caller",
+      "class": "class.mage",
+      "statModifiers": {
+        "magic": 1,
+        "precision": 1,
+        "reach": 1
+      }
+    },
+    "specialty.totem-master": {
+      "id": "specialty.totem-master",
+      "name": "Totem Master",
+      "class": "class.mage",
+      "statModifiers": {
+        "magic": 1,
+        "resist": 1,
+        "maxHp": 3
+      }
+    },
+    "specialty.spirit-walker": {
+      "id": "specialty.spirit-walker",
+      "name": "Spirit Walker",
+      "class": "class.mage",
+      "statModifiers": {
+        "spirit": 2,
+        "movement": 1,
+        "resist": 1
+      }
+    },
+    "specialty.blightcaller": {
+      "id": "specialty.blightcaller",
+      "name": "Blightcaller",
+      "class": "class.mage",
+      "statModifiers": {
+        "magic": 2,
+        "resist": 1,
+        "maxHp": 2
+      }
+    },
+    "specialty.wild-shaper": {
+      "id": "specialty.wild-shaper",
+      "name": "Wild Shaper",
+      "class": "class.mage",
+      "statModifiers": {
+        "strength": 2,
+        "maxHp": 4,
+        "dodge": 5
+      }
+    },
+    "specialty.grove-keeper": {
+      "id": "specialty.grove-keeper",
+      "name": "Grove Keeper",
+      "class": "class.mage",
+      "statModifiers": {
+        "spirit": 2,
+        "magic": 1,
+        "maxHp": 2
+      }
+    },
+    "specialty.war-priest": {
+      "id": "specialty.war-priest",
+      "name": "War Priest",
+      "class": "class.priest",
+      "statModifiers": {
+        "strength": 2,
+        "armor": 1,
+        "maxHp": 3
+      }
+    },
+    "specialty.shepherd": {
+      "id": "specialty.shepherd",
+      "name": "Shepherd",
+      "class": "class.priest",
+      "statModifiers": {
+        "spirit": 1,
+        "maxHp": 1,
+        "resist": 1
+      }
+    },
+    "specialty.divine-light": {
+      "id": "specialty.divine-light",
+      "name": "Divine Light",
+      "class": "class.priest",
+      "statModifiers": {
+        "resist": 2,
+        "spirit": 1,
+        "maxHp": 1
+      }
+    },
+    "specialty.redeemer": {
+      "id": "specialty.redeemer",
+      "name": "Redeemer",
+      "class": "class.priest",
+      "statModifiers": {
+        "spirit": 1,
+        "maxHp": 2,
+        "resist": 1
+      }
+    },
+    "specialty.blessed-sufferer": {
+      "id": "specialty.blessed-sufferer",
+      "name": "Blessed Sufferer",
+      "class": "class.priest",
+      "statModifiers": {
+        "maxHp": 2,
+        "dodge": 5
+      },
+      "gaps": [
+        "toughness 1: no engine stat"
+      ]
+    },
+    "specialty.martyred-saint": {
+      "id": "specialty.martyred-saint",
+      "name": "Martyred Saint",
+      "class": "class.priest",
+      "statModifiers": {
+        "maxHp": 3,
+        "spirit": 1,
+        "resist": 1
+      }
+    },
+    "specialty.oracle": {
+      "id": "specialty.oracle",
+      "name": "Oracle",
+      "class": "class.priest",
+      "statModifiers": {
+        "spirit": 1,
+        "accuracy": 5,
+        "luck": 5
+      }
+    },
+    "specialty.seer": {
+      "id": "specialty.seer",
+      "name": "Seer",
+      "class": "class.priest",
+      "statModifiers": {
+        "spirit": 1,
+        "crit": 5,
+        "accuracy": 5
+      }
+    },
+    "specialty.diviner": {
+      "id": "specialty.diviner",
+      "name": "Diviner",
+      "class": "class.priest",
+      "statModifiers": {
+        "maxStamina": 1,
+        "spirit": 1,
+        "movement": 1
+      }
+    },
+    "specialty.vigil": {
+      "id": "specialty.vigil",
+      "name": "Vigil",
+      "class": "class.paladin",
+      "statModifiers": {
+        "resist": 2,
+        "luck": 5
+      },
+      "gaps": [
+        "toughness 1: no engine stat"
+      ]
+    },
+    "specialty.deathknight": {
+      "id": "specialty.deathknight",
+      "name": "DeathKnight",
+      "class": "class.paladin",
+      "statModifiers": {
+        "strength": 1,
+        "armor": 1,
+        "maxHp": 2
+      }
+    },
+    "specialty.holy-avenger": {
+      "id": "specialty.holy-avenger",
+      "name": "Avenger",
+      "class": "class.paladin",
+      "statModifiers": {
+        "strength": 2,
+        "maxHp": 2,
+        "crit": 3
+      }
+    },
+    "specialty.holy-champion": {
+      "id": "specialty.holy-champion",
+      "name": "Holy Champion",
+      "class": "class.paladin",
+      "statModifiers": {
+        "armor": 1,
+        "strength": 1,
+        "accuracy": 5
+      }
+    },
+    "specialty.sacred-shield": {
+      "id": "specialty.sacred-shield",
+      "name": "Sacred Shield",
+      "class": "class.paladin",
+      "statModifiers": {
+        "resist": 2,
+        "armor": 1,
+        "maxHp": 1
+      }
+    },
+    "specialty.grand-master": {
+      "id": "specialty.grand-master",
+      "name": "Grand Master",
+      "class": "class.paladin",
+      "statModifiers": {
+        "armor": 1,
+        "strength": 1
+      },
+      "gaps": [
+        "itemSlots 1: no engine stat"
+      ]
+    },
+    "specialty.purifier": {
+      "id": "specialty.purifier",
+      "name": "Purifier",
+      "class": "class.paladin",
+      "statModifiers": {
+        "strength": 1,
+        "maxHp": 3,
+        "resist": 1
+      }
+    },
+    "specialty.exorcist": {
+      "id": "specialty.exorcist",
+      "name": "Exorcist",
+      "class": "class.paladin",
+      "statModifiers": {
+        "resist": 2,
+        "maxHp": 1,
+        "accuracy": 5
+      }
+    },
+    "specialty.witch-hunter": {
+      "id": "specialty.witch-hunter",
+      "name": "Witch Hunter",
+      "class": "class.paladin",
+      "statModifiers": {
+        "precision": 2,
+        "crit": 3,
+        "resist": 1
+      }
+    }
+  },
+  "levels": {
+    "class.warrior": {
+      "id": "class.warrior",
+      "rows": [
+        {
+          "level": 1,
+          "grants": {
+            "maxHp": 1
+          }
+        },
+        {
+          "level": 2,
+          "grants": {
+            "maxHp": 2,
+            "maxStamina": 1,
+            "itemSlots": 1,
+            "accuracy": 5
+          }
+        },
+        {
+          "level": 3,
+          "grants": {
+            "maxHp": 2,
+            "strength": 1,
+            "itemSlots": 1,
+            "crit": 2
+          }
+        },
+        {
+          "level": 4,
+          "grants": {
+            "maxHp": 2,
+            "precision": 1,
+            "reach": 1,
+            "maxStamina": 1,
+            "resist": 1,
+            "dodge": 5,
+            "movement": 1
+          }
+        },
+        {
+          "level": 5,
+          "grants": {
+            "maxHp": 2
+          },
+          "choice": [
+            {
+              "strength": 2
+            },
+            {
+              "maxHp": 5
+            },
+            {
+              "accuracy": 15
+            },
+            {
+              "resist": 1
+            },
+            {
+              "armor": 1
+            }
+          ]
+        },
+        {
+          "level": 6,
+          "grants": {
+            "maxHp": 2,
+            "staminaRegen": 1,
+            "itemSlots": 1,
+            "accuracy": 5,
+            "luck": 2
+          }
+        },
+        {
+          "level": 7,
+          "grants": {
+            "maxHp": 2,
+            "strength": 1,
+            "precision": 1,
+            "armor": 1,
+            "maxStamina": 1,
+            "crit": 2,
+            "dodge": 5
+          }
+        },
+        {
+          "level": 8,
+          "grants": {
+            "maxHp": 2,
+            "strength": 1,
+            "itemSlots": 1,
+            "accuracy": 4,
+            "crit": 1,
+            "dodge": 2
+          }
+        },
+        {
+          "level": 9,
+          "grants": {
+            "maxHp": 2,
+            "precision": 1,
+            "reach": 1,
+            "maxStamina": 1,
+            "dodge": 5,
+            "luck": 2
+          }
+        },
+        {
+          "level": 10,
+          "grants": {
+            "maxHp": 2,
+            "strength": 1,
+            "staminaRegen": 1,
+            "itemSlots": 1,
+            "accuracy": 5,
+            "crit": 2
+          }
+        }
+      ]
+    },
+    "class.ranger": {
+      "id": "class.ranger",
+      "rows": [
+        {
+          "level": 1,
+          "grants": {}
+        },
+        {
+          "level": 2,
+          "grants": {
+            "precision": 1,
+            "resist": 1,
+            "accuracy": 5,
+            "dodge": 3
+          }
+        },
+        {
+          "level": 3,
+          "grants": {
+            "strength": 1,
+            "reach": 1,
+            "maxHp": 1,
+            "maxStamina": 1,
+            "resist": 1,
+            "itemSlots": 1,
+            "crit": 3
+          }
+        },
+        {
+          "level": 4,
+          "grants": {
+            "precision": 1,
+            "maxHp": 1,
+            "accuracy": 7,
+            "dodge": 2,
+            "luck": 1
+          }
+        },
+        {
+          "level": 5,
+          "grants": {
+            "maxStamina": 1,
+            "accuracy": 2,
+            "crit": 1,
+            "dodge": 1,
+            "luck": 1
+          },
+          "choice": [
+            {
+              "precision": 2
+            },
+            {
+              "maxHp": 5
+            },
+            {
+              "accuracy": 15
+            },
+            {
+              "armor": 1
+            },
+            {
+              "resist": 1
+            },
+            {
+              "magic": 2
+            },
+            {
+              "crit": 8
+            }
+          ]
+        },
+        {
+          "level": 6,
+          "grants": {
+            "strength": 1,
+            "reach": 1,
+            "staminaRegen": 1,
+            "dodge": 5,
+            "movement": 1
+          }
+        },
+        {
+          "level": 7,
+          "grants": {
+            "precision": 1,
+            "reach": 1,
+            "accuracy": 5,
+            "dodge": 3
+          },
+          "gaps": [
+            "vision 1: no engine stat"
+          ]
+        },
+        {
+          "level": 8,
+          "grants": {
+            "strength": 1,
+            "itemSlots": 1,
+            "maxStamina": 1,
+            "crit": 3,
+            "dodge": 2
+          }
+        },
+        {
+          "level": 9,
+          "grants": {
+            "precision": 1,
+            "maxHp": 1,
+            "accuracy": 5,
+            "dodge": 2,
+            "luck": 1
+          },
+          "gaps": [
+            "vision 1: no engine stat"
+          ]
+        },
+        {
+          "level": 10,
+          "grants": {
+            "precision": 1,
+            "reach": 1,
+            "staminaRegen": 1,
+            "itemSlots": 1,
+            "dodge": 5,
+            "crit": 2
+          }
+        }
+      ]
+    },
+    "class.rogue": {
+      "id": "class.rogue",
+      "rows": [
+        {
+          "level": 1,
+          "grants": {}
+        },
+        {
+          "level": 2,
+          "grants": {
+            "precision": 1,
+            "maxStamina": 1,
+            "accuracy": 5,
+            "dodge": 3,
+            "crit": 2
+          }
+        },
+        {
+          "level": 3,
+          "grants": {
+            "strength": 1,
+            "itemSlots": 1,
+            "maxHp": 1,
+            "crit": 3,
+            "dodge": 3,
+            "movement": 1
+          }
+        },
+        {
+          "level": 4,
+          "grants": {
+            "precision": 1,
+            "maxStamina": 1,
+            "accuracy": 5,
+            "crit": 4,
+            "luck": 2
+          }
+        },
+        {
+          "level": 5,
+          "grants": {
+            "itemSlots": 1,
+            "accuracy": 2,
+            "crit": 2
+          },
+          "choice": [
+            {
+              "precision": 2
+            },
+            {
+              "strength": 2
+            },
+            {
+              "crit": 10
+            },
+            {
+              "dodge": 10
+            },
+            {
+              "maxHp": 5
+            },
+            {
+              "resist": 1
+            },
+            {
+              "accuracy": 15
+            }
+          ]
+        },
+        {
+          "level": 6,
+          "grants": {
+            "precision": 1,
+            "staminaRegen": 1,
+            "dodge": 5,
+            "crit": 3,
+            "movement": 1
+          }
+        },
+        {
+          "level": 7,
+          "grants": {
+            "strength": 1,
+            "precision": 1,
+            "itemSlots": 1,
+            "accuracy": 5,
+            "crit": 3
+          }
+        },
+        {
+          "level": 8,
+          "grants": {
+            "precision": 1,
+            "maxStamina": 1,
+            "dodge": 5,
+            "luck": 2
+          },
+          "gaps": [
+            "vision 1: no engine stat"
+          ]
+        },
+        {
+          "level": 9,
+          "grants": {
+            "strength": 1,
+            "maxHp": 1,
+            "itemSlots": 1,
+            "accuracy": 5,
+            "crit": 4,
+            "dodge": 2
+          }
+        },
+        {
+          "level": 10,
+          "grants": {
+            "precision": 1,
+            "staminaRegen": 1,
+            "resist": 1,
+            "dodge": 3,
+            "crit": 3
+          }
+        }
+      ]
+    },
+    "class.mage": {
+      "id": "class.mage",
+      "rows": [
+        {
+          "level": 1,
+          "grants": {}
+        },
+        {
+          "level": 2,
+          "grants": {
+            "magic": 1,
+            "maxStamina": 1,
+            "accuracy": 5
+          },
+          "gaps": [
+            "vision 1: no engine stat"
+          ]
+        },
+        {
+          "level": 3,
+          "grants": {
+            "precision": 1,
+            "maxHp": 1,
+            "resist": 1,
+            "itemSlots": 1,
+            "crit": 2
+          }
+        },
+        {
+          "level": 4,
+          "grants": {
+            "magic": 1,
+            "maxStamina": 1,
+            "accuracy": 5,
+            "dodge": 3
+          }
+        },
+        {
+          "level": 5,
+          "grants": {
+            "itemSlots": 1,
+            "accuracy": 2,
+            "dodge": 1
+          },
+          "choice": [
+            {
+              "magic": 2
+            },
+            {
+              "precision": 2
+            },
+            {
+              "maxHp": 5
+            },
+            {
+              "accuracy": 15
+            },
+            {
+              "armor": 1
+            },
+            {
+              "resist": 1
+            },
+            {}
+          ],
+          "gaps": [
+            "choice vision: no engine stat"
+          ]
+        },
+        {
+          "level": 6,
+          "grants": {
+            "precision": 1,
+            "staminaRegen": 1,
+            "accuracy": 5
+          },
+          "gaps": [
+            "vision 1: no engine stat"
+          ]
+        },
+        {
+          "level": 7,
+          "grants": {
+            "magic": 1,
+            "resist": 1,
+            "maxStamina": 1,
+            "crit": 2
+          }
+        },
+        {
+          "level": 8,
+          "grants": {
+            "precision": 1,
+            "maxHp": 1,
+            "itemSlots": 1,
+            "accuracy": 5,
+            "dodge": 3
+          }
+        },
+        {
+          "level": 9,
+          "grants": {
+            "precision": 1,
+            "accuracy": 5,
+            "crit": 2,
+            "dodge": 2
+          },
+          "gaps": [
+            "vision 1: no engine stat"
+          ]
+        },
+        {
+          "level": 10,
+          "grants": {
+            "magic": 1,
+            "staminaRegen": 1,
+            "precision": 1,
+            "itemSlots": 1,
+            "accuracy": 5
+          }
+        }
+      ]
+    },
+    "class.priest": {
+      "id": "class.priest",
+      "rows": [
+        {
+          "level": 1,
+          "grants": {}
+        },
+        {
+          "level": 2,
+          "grants": {
+            "spirit": 1,
+            "maxHp": 1,
+            "maxStamina": 1,
+            "accuracy": 5
+          }
+        },
+        {
+          "level": 3,
+          "grants": {
+            "precision": 1,
+            "resist": 1,
+            "itemSlots": 1,
+            "maxHp": 1,
+            "accuracy": 3
+          }
+        },
+        {
+          "level": 4,
+          "grants": {
+            "spirit": 1,
+            "maxStamina": 1,
+            "accuracy": 5
+          },
+          "gaps": [
+            "toughness 1: no engine stat"
+          ]
+        },
+        {
+          "level": 5,
+          "grants": {
+            "itemSlots": 1,
+            "accuracy": 3,
+            "dodge": 1
+          },
+          "choice": [
+            {
+              "spirit": 2
+            },
+            {
+              "precision": 2
+            },
+            {
+              "maxHp": 5
+            },
+            {
+              "accuracy": 15
+            },
+            {
+              "armor": 1
+            },
+            {
+              "resist": 1
+            },
+            {}
+          ],
+          "gaps": [
+            "choice deathbedFighting: no engine stat"
+          ]
+        },
+        {
+          "level": 6,
+          "grants": {
+            "precision": 1,
+            "staminaRegen": 1,
+            "maxHp": 1,
+            "accuracy": 5
+          }
+        },
+        {
+          "level": 7,
+          "grants": {
+            "spirit": 1,
+            "resist": 1,
+            "maxStamina": 1,
+            "crit": 2
+          }
+        },
+        {
+          "level": 8,
+          "grants": {
+            "precision": 1,
+            "maxHp": 1,
+            "itemSlots": 1,
+            "accuracy": 5,
+            "dodge": 2
+          }
+        },
+        {
+          "level": 9,
+          "grants": {
+            "spirit": 1,
+            "accuracy": 5,
+            "dodge": 2,
+            "luck": 1
+          },
+          "gaps": [
+            "toughness 1: no engine stat"
+          ]
+        },
+        {
+          "level": 10,
+          "grants": {
+            "precision": 1,
+            "staminaRegen": 1,
+            "maxHp": 1,
+            "itemSlots": 1,
+            "accuracy": 5,
+            "crit": 2
+          }
+        }
+      ]
+    },
+    "class.paladin": {
+      "id": "class.paladin",
+      "rows": [
+        {
+          "level": 1,
+          "grants": {}
+        },
+        {
+          "level": 2,
+          "grants": {
+            "armor": 1,
+            "maxHp": 1,
+            "accuracy": 5
+          }
+        },
+        {
+          "level": 3,
+          "grants": {
+            "strength": 1,
+            "maxHp": 1,
+            "maxStamina": 1,
+            "itemSlots": 1,
+            "crit": 2
+          }
+        },
+        {
+          "level": 4,
+          "grants": {
+            "resist": 1,
+            "maxHp": 1,
+            "accuracy": 3
+          },
+          "gaps": [
+            "toughness 1: no engine stat"
+          ]
+        },
+        {
+          "level": 5,
+          "grants": {
+            "maxHp": 1,
+            "maxStamina": 1,
+            "accuracy": 2,
+            "luck": 2
+          },
+          "choice": [
+            {
+              "strength": 2
+            },
+            {
+              "armor": 1
+            },
+            {
+              "resist": 1
+            },
+            {
+              "maxHp": 5
+            },
+            {
+              "spirit": 2
+            },
+            {
+              "accuracy": 15
+            }
+          ]
+        },
+        {
+          "level": 6,
+          "grants": {
+            "strength": 1,
+            "staminaRegen": 1,
+            "maxHp": 1,
+            "accuracy": 3
+          },
+          "gaps": [
+            "toughness 1: no engine stat"
+          ]
+        },
+        {
+          "level": 7,
+          "grants": {
+            "armor": 1,
+            "maxHp": 1,
+            "maxStamina": 1,
+            "crit": 2,
+            "luck": 2
+          }
+        },
+        {
+          "level": 8,
+          "grants": {
+            "strength": 1,
+            "maxHp": 1,
+            "itemSlots": 1,
+            "accuracy": 5
+          },
+          "gaps": [
+            "toughness 1: no engine stat"
+          ]
+        },
+        {
+          "level": 9,
+          "grants": {
+            "resist": 1,
+            "maxHp": 1,
+            "accuracy": 3,
+            "dodge": 2,
+            "luck": 1
+          }
+        },
+        {
+          "level": 10,
+          "grants": {
+            "strength": 1,
+            "staminaRegen": 1,
+            "armor": 1,
+            "maxHp": 1,
+            "accuracy": 1,
+            "movement": 1
+          }
+        }
+      ]
+    },
+    "class.civilian": {
+      "id": "class.civilian",
+      "rows": [
+        {
+          "level": 1,
+          "grants": {}
+        },
+        {
+          "level": 2,
+          "grants": {
+            "maxHp": 1,
+            "itemSlots": 1,
+            "accuracy": 5
+          }
+        },
+        {
+          "level": 3,
+          "grants": {
+            "strength": 1,
+            "maxHp": 1,
+            "itemSlots": 1,
+            "accuracy": 3
+          }
+        },
+        {
+          "level": 4,
+          "grants": {
+            "precision": 1,
+            "maxHp": 1,
+            "resist": 1,
+            "dodge": 3
+          }
+        },
+        {
+          "level": 5,
+          "grants": {
+            "itemSlots": 1,
+            "accuracy": 3,
+            "luck": 1
+          },
+          "choice": [
+            {
+              "strength": 2
+            },
+            {
+              "precision": 2
+            },
+            {
+              "maxHp": 5
+            },
+            {
+              "accuracy": 15
+            },
+            {
+              "armor": 1
+            },
+            {
+              "resist": 1
+            },
+            {
+              "magic": 2
+            },
+            {
+              "spirit": 2
+            },
+            {
+              "dodge": 10
+            },
+            {
+              "crit": 8
+            }
+          ]
+        },
+        {
+          "level": 6,
+          "grants": {
+            "maxHp": 1,
+            "itemSlots": 1,
+            "accuracy": 5,
+            "crit": 2
+          },
+          "gaps": [
+            "vision 1: no engine stat"
+          ]
+        },
+        {
+          "level": 7,
+          "grants": {
+            "strength": 1,
+            "precision": 1,
+            "maxHp": 1,
+            "dodge": 3
+          }
+        },
+        {
+          "level": 8,
+          "grants": {
+            "armor": 1,
+            "itemSlots": 1,
+            "accuracy": 3,
+            "luck": 1
+          }
+        },
+        {
+          "level": 9,
+          "grants": {
+            "maxHp": 1,
+            "accuracy": 5,
+            "crit": 2,
+            "dodge": 2,
+            "movement": 1
+          },
+          "gaps": [
+            "toughness 1: no engine stat"
+          ]
+        },
+        {
+          "level": 10,
+          "grants": {
+            "strength": 1,
+            "precision": 1,
+            "itemSlots": 1,
+            "maxHp": 1,
+            "accuracy": 5
+          }
+        }
+      ]
+    },
+    "class.beast": {
+      "id": "class.beast",
+      "rows": [
+        {
+          "level": 1,
+          "grants": {}
+        },
+        {
+          "level": 2,
+          "grants": {
+            "maxHp": 2,
+            "strength": 1,
+            "maxStamina": 1,
+            "accuracy": 5
+          }
+        },
+        {
+          "level": 3,
+          "grants": {
+            "maxHp": 2,
+            "movement": 1,
+            "crit": 3
+          },
+          "gaps": [
+            "toughness 1: no engine stat"
+          ]
+        },
+        {
+          "level": 4,
+          "grants": {
+            "maxHp": 2,
+            "strength": 1,
+            "armor": 1,
+            "dodge": 5
+          }
+        },
+        {
+          "level": 5,
+          "grants": {
+            "maxHp": 2
+          },
+          "choice": [
+            {
+              "strength": 2
+            },
+            {
+              "maxHp": 6
+            },
+            {
+              "armor": 1
+            },
+            {
+              "resist": 1
+            },
+            {
+              "reach": 1
+            },
+            {
+              "dodge": 15
+            }
+          ]
+        },
+        {
+          "level": 6,
+          "grants": {
+            "maxHp": 2,
+            "staminaRegen": 1,
+            "reach": 1,
+            "accuracy": 5
+          }
+        },
+        {
+          "level": 7,
+          "grants": {
+            "maxHp": 2,
+            "strength": 1,
+            "movement": 1,
+            "crit": 3
+          },
+          "gaps": [
+            "toughness 1: no engine stat"
+          ]
+        },
+        {
+          "level": 8,
+          "grants": {
+            "maxHp": 2,
+            "precision": 1,
+            "resist": 1,
+            "dodge": 5
+          }
+        },
+        {
+          "level": 9,
+          "grants": {
+            "maxHp": 2,
+            "strength": 1,
+            "reach": 1,
+            "maxStamina": 1,
+            "luck": 3
+          }
+        },
+        {
+          "level": 10,
+          "grants": {
+            "maxHp": 2,
+            "staminaRegen": 1,
+            "armor": 1,
+            "accuracy": 5
+          }
+        }
+      ]
+    }
+  },
+  "enchanted": {
+    "item.greatsword.bloodletting": {
+      "id": "item.greatsword.bloodletting",
+      "name": "Bloodletting Greatsword",
+      "itemClass": "weapon",
+      "tier": 3,
+      "hands": 2,
+      "slots": 2,
+      "statModifiers": {
+        "crit": 3
+      },
+      "grants": [
+        "attack.greatsword.hew",
+        "attack.greatsword.great-cleave"
+      ],
+      "abilities": [],
+      "triggers": [
+        {
+          "id": "trigger.greatsword.bloodletting.bleed-crit",
+          "hook": "onCrit",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.bleed",
+            "value": 2
+          },
+          "source": "item.greatsword.bloodletting"
+        }
+      ],
+      "base": "item.greatsword",
+      "enchant": "enchant.bloodletting"
+    },
+    "item.greatsword.soul-reaper": {
+      "id": "item.greatsword.soul-reaper",
+      "name": "Greatsword of the Soul Reaper",
+      "itemClass": "weapon",
+      "tier": 3,
+      "hands": 2,
+      "slots": 2,
+      "statModifiers": {
+        "strength": 1
+      },
+      "grants": [
+        "attack.greatsword.hew",
+        "attack.greatsword.great-cleave"
+      ],
+      "abilities": [],
+      "triggers": [],
+      "base": "item.greatsword",
+      "enchant": "enchant.soul-reaper",
+      "gaps": [
+        "enchant onKill: heal 3 and gain +1 Strength for the rest of the Ba — trigger shape unparsed"
+      ]
+    },
+    "item.greatsword.sacrifice": {
+      "id": "item.greatsword.sacrifice",
+      "name": "Greatsword of Sacrifice",
+      "itemClass": "weapon",
+      "tier": 3,
+      "hands": 2,
+      "slots": 2,
+      "statModifiers": {
+        "strength": 2,
+        "precision": 2,
+        "maxHp": -4,
+        "dodge": -10
+      },
+      "grants": [
+        "attack.greatsword.hew",
+        "attack.greatsword.great-cleave"
+      ],
+      "abilities": [],
+      "triggers": [],
+      "base": "item.greatsword",
+      "enchant": "enchant.sacrifice"
+    },
+    "item.greatsword.demon-slayer": {
+      "id": "item.greatsword.demon-slayer",
+      "name": "Greatsword of Demon-Slaying",
+      "itemClass": "weapon",
+      "tier": 3,
+      "hands": 2,
+      "slots": 2,
+      "statModifiers": {
+        "resist": 1
+      },
+      "grants": [
+        "attack.greatsword.hew",
+        "attack.greatsword.great-cleave"
+      ],
+      "abilities": [],
+      "triggers": [],
+      "base": "item.greatsword",
+      "enchant": "enchant.demon-slayer",
+      "gaps": [
+        "slayer {\"demon\":3} — no VS_TARGET station"
+      ]
+    },
+    "item.greatsword.destroying": {
+      "id": "item.greatsword.destroying",
+      "name": "Greatsword of Destroying",
+      "itemClass": "weapon",
+      "tier": 3,
+      "hands": 2,
+      "slots": 2,
+      "statModifiers": {},
+      "grants": [
+        "attack.greatsword.hew",
+        "attack.greatsword.great-cleave"
+      ],
+      "abilities": [],
+      "triggers": [],
+      "base": "item.greatsword",
+      "enchant": "enchant.destroying",
+      "gaps": [
+        "enchant onKill: the corpse is destroyed — trigger shape unparsed"
+      ]
+    },
+    "item.greatsword.the-master": {
+      "id": "item.greatsword.the-master",
+      "name": "Greatsword of the Master",
+      "itemClass": "weapon",
+      "tier": 3,
+      "hands": 2,
+      "slots": 2,
+      "statModifiers": {},
+      "grants": [
+        "attack.greatsword.hew",
+        "attack.greatsword.great-cleave"
+      ],
+      "abilities": [],
+      "triggers": [],
+      "base": "item.greatsword",
+      "enchant": "enchant.the-master",
+      "gaps": [
+        "enchant onHit: gain +10 Accuracy and +1 Crit — trigger shape unparsed",
+        "enchant onMiss: gain -20 Accuracy — trigger shape unparsed"
+      ]
+    },
+    "item.war-axe.bloodletting": {
+      "id": "item.war-axe.bloodletting",
+      "name": "Bloodletting War Axe",
+      "itemClass": "weapon",
+      "tier": 3,
+      "hands": 1,
+      "slots": 1,
+      "classRestriction": "class.warrior",
+      "statModifiers": {
+        "crit": 3
+      },
+      "grants": [
+        "attack.war-axe.chop",
+        "attack.war-axe.hack"
+      ],
+      "abilities": [],
+      "triggers": [
+        {
+          "id": "trigger.war-axe.hack.bleed",
+          "hook": "onHit",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.bleed",
+            "value": 2
+          },
+          "source": "item.war-axe",
+          "onlyWithAttack": "attack.war-axe.hack"
+        },
+        {
+          "id": "trigger.war-axe.bloodletting.bleed-crit",
+          "hook": "onCrit",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.bleed",
+            "value": 2
+          },
+          "source": "item.war-axe.bloodletting"
+        }
+      ],
+      "base": "item.war-axe",
+      "enchant": "enchant.bloodletting"
+    },
+    "item.war-axe.ironbane": {
+      "id": "item.war-axe.ironbane",
+      "name": "Ironbane War Axe",
+      "itemClass": "weapon",
+      "tier": 3,
+      "hands": 1,
+      "slots": 1,
+      "classRestriction": "class.warrior",
+      "statModifiers": {},
+      "grants": [
+        "attack.war-axe.chop",
+        "attack.war-axe.hack"
+      ],
+      "abilities": [],
+      "triggers": [
+        {
+          "id": "trigger.war-axe.hack.bleed",
+          "hook": "onHit",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.bleed",
+            "value": 2
+          },
+          "source": "item.war-axe",
+          "onlyWithAttack": "attack.war-axe.hack"
+        }
+      ],
+      "base": "item.war-axe",
+      "enchant": "enchant.ironbane",
+      "gaps": [
+        "enchant onHit: if the target is a construct, it loses 1 Armor for — trigger shape unparsed",
+        "enchant onCrit: Knockback 2 — the target is moved 2 hexes directly — trigger shape unparsed",
+        "slayer {\"construct\":2} — no VS_TARGET station"
+      ]
+    },
+    "item.war-axe.bloodthirsty": {
+      "id": "item.war-axe.bloodthirsty",
+      "name": "Bloodthirsty War Axe",
+      "itemClass": "weapon",
+      "tier": 3,
+      "hands": 1,
+      "slots": 1,
+      "classRestriction": "class.warrior",
+      "statModifiers": {
+        "strength": 1,
+        "dodge": -5
+      },
+      "grants": [
+        "attack.war-axe.chop",
+        "attack.war-axe.hack"
+      ],
+      "abilities": [],
+      "triggers": [
+        {
+          "id": "trigger.war-axe.hack.bleed",
+          "hook": "onHit",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.bleed",
+            "value": 2
+          },
+          "source": "item.war-axe",
+          "onlyWithAttack": "attack.war-axe.hack"
+        }
+      ],
+      "base": "item.war-axe",
+      "enchant": "enchant.bloodthirsty",
+      "gaps": [
+        "enchant onKill: regain 1 Stamina — trigger shape unparsed"
+      ]
+    },
+    "item.war-axe.death": {
+      "id": "item.war-axe.death",
+      "name": "War Axe of Death",
+      "itemClass": "weapon",
+      "tier": 3,
+      "hands": 1,
+      "slots": 1,
+      "classRestriction": "class.warrior",
+      "statModifiers": {},
+      "grants": [
+        "attack.war-axe.chop",
+        "attack.war-axe.hack"
+      ],
+      "abilities": [],
+      "triggers": [
+        {
+          "id": "trigger.war-axe.hack.bleed",
+          "hook": "onHit",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.bleed",
+            "value": 2
+          },
+          "source": "item.war-axe",
+          "onlyWithAttack": "attack.war-axe.hack"
+        }
+      ],
+      "base": "item.war-axe",
+      "enchant": "enchant.death",
+      "gaps": [
+        "enchant onKill: gain 2 Stamina — trigger shape unparsed"
+      ]
+    },
+    "item.war-axe.taunting": {
+      "id": "item.war-axe.taunting",
+      "name": "Taunting War Axe",
+      "itemClass": "weapon",
+      "tier": 3,
+      "hands": 1,
+      "slots": 1,
+      "classRestriction": "class.warrior",
+      "statModifiers": {},
+      "grants": [
+        "attack.war-axe.chop",
+        "attack.war-axe.hack"
+      ],
+      "abilities": [],
+      "triggers": [
+        {
+          "id": "trigger.war-axe.hack.bleed",
+          "hook": "onHit",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.bleed",
+            "value": 2
+          },
+          "source": "item.war-axe",
+          "onlyWithAttack": "attack.war-axe.hack"
+        }
+      ],
+      "base": "item.war-axe",
+      "enchant": "enchant.taunting",
+      "gaps": [
+        "enchant onHit: apply 2 Taunt — trigger shape unparsed"
+      ]
+    },
+    "item.iron-mace.ironbane": {
+      "id": "item.iron-mace.ironbane",
+      "name": "Ironbane Iron Mace",
+      "itemClass": "weapon",
+      "tier": 3,
+      "hands": 1,
+      "slots": 1,
+      "statModifiers": {},
+      "grants": [
+        "attack.iron-mace.swing",
+        "attack.iron-mace.crush"
+      ],
+      "abilities": [],
+      "triggers": [],
+      "base": "item.iron-mace",
+      "enchant": "enchant.ironbane",
+      "gaps": [
+        "enchant onHit: if the target is a construct, it loses 1 Armor for — trigger shape unparsed",
+        "enchant onCrit: Knockback 2 — the target is moved 2 hexes directly — trigger shape unparsed",
+        "slayer {\"construct\":2} — no VS_TARGET station"
+      ]
+    },
+    "item.iron-mace.holy-water": {
+      "id": "item.iron-mace.holy-water",
+      "name": "Iron Mace of Holy Water",
+      "itemClass": "weapon",
+      "tier": 3,
+      "hands": 1,
+      "slots": 1,
+      "statModifiers": {},
+      "grants": [
+        "attack.iron-mace.swing",
+        "attack.iron-mace.crush"
+      ],
+      "abilities": [],
+      "triggers": [],
+      "base": "item.iron-mace",
+      "enchant": "enchant.holy-water",
+      "gaps": [
+        "enchant onHit: if the target is undead, demon or vampire, apply 2 — trigger shape unparsed",
+        "slayer {\"undead\":1,\"demon\":1,\"vampire\":1} — no VS_TARGET station"
+      ]
+    },
+    "item.iron-mace.undead-slayer": {
+      "id": "item.iron-mace.undead-slayer",
+      "name": "Iron Mace of Undead-Slaying",
+      "itemClass": "weapon",
+      "tier": 3,
+      "hands": 1,
+      "slots": 1,
+      "statModifiers": {},
+      "grants": [
+        "attack.iron-mace.swing",
+        "attack.iron-mace.crush"
+      ],
+      "abilities": [],
+      "triggers": [],
+      "base": "item.iron-mace",
+      "enchant": "enchant.undead-slayer",
+      "gaps": [
+        "enchant onKill: if the target was undead, heal 2 — trigger shape unparsed",
+        "slayer {\"undead\":3} — no VS_TARGET station"
+      ]
+    },
+    "item.iron-mace.heavens-edge": {
+      "id": "item.iron-mace.heavens-edge",
+      "name": "Iron Mace of Heaven's Edge",
+      "itemClass": "weapon",
+      "tier": 3,
+      "hands": 1,
+      "slots": 1,
+      "statModifiers": {},
+      "grants": [
+        "attack.iron-mace.swing",
+        "attack.iron-mace.crush"
+      ],
+      "abilities": [],
+      "triggers": [],
+      "base": "item.iron-mace",
+      "enchant": "enchant.heavens-edge",
+      "gaps": [
+        "enchant onDamage: heal for half your Spirit, rounded down — trigger shape unparsed"
+      ]
+    },
+    "item.war-hammer.ironbane": {
+      "id": "item.war-hammer.ironbane",
+      "name": "Ironbane War Hammer",
+      "itemClass": "weapon",
+      "tier": 3,
+      "hands": 2,
+      "slots": 2,
+      "classRestriction": "class.warrior",
+      "statModifiers": {},
+      "grants": [
+        "attack.war-hammer.smash",
+        "attack.war-hammer.skullsplitter"
+      ],
+      "abilities": [],
+      "triggers": [
+        {
+          "id": "trigger.war-hammer.skullsplitter.stun",
+          "hook": "onHit",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.stun",
+            "value": 1
+          },
+          "source": "item.war-hammer",
+          "onlyWithAttack": "attack.war-hammer.skullsplitter"
+        }
+      ],
+      "gaps": [
+        "onCrit: Knockback 1 — the target is moved 1 hex directly a — trigger shape unparsed",
+        "enchant onHit: if the target is a construct, it loses 1 Armor for — trigger shape unparsed",
+        "enchant onCrit: Knockback 2 — the target is moved 2 hexes directly — trigger shape unparsed",
+        "slayer {\"construct\":2} — no VS_TARGET station"
+      ],
+      "base": "item.war-hammer",
+      "enchant": "enchant.ironbane"
+    },
+    "item.war-hammer.frost": {
+      "id": "item.war-hammer.frost",
+      "name": "Frost War Hammer",
+      "itemClass": "weapon",
+      "tier": 3,
+      "hands": 2,
+      "slots": 2,
+      "classRestriction": "class.warrior",
+      "statModifiers": {},
+      "grants": [
+        "attack.war-hammer.smash",
+        "attack.war-hammer.skullsplitter"
+      ],
+      "abilities": [],
+      "triggers": [
+        {
+          "id": "trigger.war-hammer.skullsplitter.stun",
+          "hook": "onHit",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.stun",
+            "value": 1
+          },
+          "source": "item.war-hammer",
+          "onlyWithAttack": "attack.war-hammer.skullsplitter"
+        }
+      ],
+      "gaps": [
+        "onCrit: Knockback 1 — the target is moved 1 hex directly a — trigger shape unparsed",
+        "enchant onHit: apply 1 Frost — trigger shape unparsed",
+        "enchant onCrit: apply 2 more Frost — trigger shape unparsed"
+      ],
+      "base": "item.war-hammer",
+      "enchant": "enchant.frost"
+    },
+    "item.war-hammer.recklessness": {
+      "id": "item.war-hammer.recklessness",
+      "name": "War Hammer of Recklessness",
+      "itemClass": "weapon",
+      "tier": 3,
+      "hands": 2,
+      "slots": 2,
+      "classRestriction": "class.warrior",
+      "statModifiers": {},
+      "grants": [
+        "attack.war-hammer.smash",
+        "attack.war-hammer.skullsplitter"
+      ],
+      "abilities": [],
+      "triggers": [
+        {
+          "id": "trigger.war-hammer.skullsplitter.stun",
+          "hook": "onHit",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.stun",
+            "value": 1
+          },
+          "source": "item.war-hammer",
+          "onlyWithAttack": "attack.war-hammer.skullsplitter"
+        }
+      ],
+      "gaps": [
+        "onCrit: Knockback 1 — the target is moved 1 hex directly a — trigger shape unparsed",
+        "enchant onMiss: gain +20 Accuracy and +10 Crit until the end of yo — trigger shape unparsed"
+      ],
+      "base": "item.war-hammer",
+      "enchant": "enchant.recklessness"
+    },
+    "item.war-hammer.destroying": {
+      "id": "item.war-hammer.destroying",
+      "name": "War Hammer of Destroying",
+      "itemClass": "weapon",
+      "tier": 3,
+      "hands": 2,
+      "slots": 2,
+      "classRestriction": "class.warrior",
+      "statModifiers": {},
+      "grants": [
+        "attack.war-hammer.smash",
+        "attack.war-hammer.skullsplitter"
+      ],
+      "abilities": [],
+      "triggers": [
+        {
+          "id": "trigger.war-hammer.skullsplitter.stun",
+          "hook": "onHit",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.stun",
+            "value": 1
+          },
+          "source": "item.war-hammer",
+          "onlyWithAttack": "attack.war-hammer.skullsplitter"
+        }
+      ],
+      "gaps": [
+        "onCrit: Knockback 1 — the target is moved 1 hex directly a — trigger shape unparsed",
+        "enchant onKill: the corpse is destroyed — trigger shape unparsed"
+      ],
+      "base": "item.war-hammer",
+      "enchant": "enchant.destroying"
+    },
+    "item.war-hammer.taunting": {
+      "id": "item.war-hammer.taunting",
+      "name": "Taunting War Hammer",
+      "itemClass": "weapon",
+      "tier": 3,
+      "hands": 2,
+      "slots": 2,
+      "classRestriction": "class.warrior",
+      "statModifiers": {},
+      "grants": [
+        "attack.war-hammer.smash",
+        "attack.war-hammer.skullsplitter"
+      ],
+      "abilities": [],
+      "triggers": [
+        {
+          "id": "trigger.war-hammer.skullsplitter.stun",
+          "hook": "onHit",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.stun",
+            "value": 1
+          },
+          "source": "item.war-hammer",
+          "onlyWithAttack": "attack.war-hammer.skullsplitter"
+        }
+      ],
+      "gaps": [
+        "onCrit: Knockback 1 — the target is moved 1 hex directly a — trigger shape unparsed",
+        "enchant onHit: apply 2 Taunt — trigger shape unparsed"
+      ],
+      "base": "item.war-hammer",
+      "enchant": "enchant.taunting"
+    },
+    "item.hunting-spear.hunting": {
+      "id": "item.hunting-spear.hunting",
+      "name": "Hunting Hunting Spear",
+      "itemClass": "weapon",
+      "tier": 3,
+      "hands": 1,
+      "slots": 1,
+      "statModifiers": {
+        "precision": 1
+      },
+      "grants": [
+        "attack.hunting-spear.thrust",
+        "attack.hunting-spear.hurl"
+      ],
+      "abilities": [],
+      "triggers": [],
+      "base": "item.hunting-spear",
+      "enchant": "enchant.hunting",
+      "gaps": [
+        "slayer {\"beast\":2} — no VS_TARGET station"
+      ]
+    },
+    "item.hunting-spear.giant-slayer": {
+      "id": "item.hunting-spear.giant-slayer",
+      "name": "Hunting Spear of Giant-Slaying",
+      "itemClass": "weapon",
+      "tier": 3,
+      "hands": 1,
+      "slots": 1,
+      "statModifiers": {},
+      "grants": [
+        "attack.hunting-spear.thrust",
+        "attack.hunting-spear.hurl"
+      ],
+      "abilities": [],
+      "triggers": [],
+      "base": "item.hunting-spear",
+      "enchant": "enchant.giant-slayer",
+      "gaps": [
+        "enchant onHit: if the target is a giant, it gains 1 Slow — trigger shape unparsed",
+        "slayer {\"giant\":3} — no VS_TARGET station"
+      ]
+    },
+    "item.hunting-spear.dragon-slayer": {
+      "id": "item.hunting-spear.dragon-slayer",
+      "name": "Hunting Spear of Dragon-Slaying",
+      "itemClass": "weapon",
+      "tier": 3,
+      "hands": 1,
+      "slots": 1,
+      "statModifiers": {
+        "resist": 1
+      },
+      "grants": [
+        "attack.hunting-spear.thrust",
+        "attack.hunting-spear.hurl"
+      ],
+      "abilities": [],
+      "triggers": [],
+      "base": "item.hunting-spear",
+      "enchant": "enchant.dragon-slayer",
+      "gaps": [
+        "enchant onHit: if the target is a dragon, apply 3 Bleed — trigger shape unparsed",
+        "slayer {\"dragon\":4} — no VS_TARGET station"
+      ]
+    },
+    "item.hunting-spear.venomous": {
+      "id": "item.hunting-spear.venomous",
+      "name": "Venomous Hunting Spear",
+      "itemClass": "weapon",
+      "tier": 3,
+      "hands": 1,
+      "slots": 1,
+      "statModifiers": {},
+      "grants": [
+        "attack.hunting-spear.thrust",
+        "attack.hunting-spear.hurl"
+      ],
+      "abilities": [],
+      "triggers": [
+        {
+          "id": "trigger.hunting-spear.venomous.poison",
+          "hook": "onDamage",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.poison",
+            "value": 1
+          },
+          "source": "item.hunting-spear.venomous"
+        },
+        {
+          "id": "trigger.hunting-spear.venomous.poison-crit",
+          "hook": "onCrit",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.poison",
+            "value": 2
+          },
+          "source": "item.hunting-spear.venomous"
+        }
+      ],
+      "base": "item.hunting-spear",
+      "enchant": "enchant.venomous"
+    },
+    "item.glaive.bloodletting": {
+      "id": "item.glaive.bloodletting",
+      "name": "Bloodletting Glaive",
+      "itemClass": "weapon",
+      "tier": 3,
+      "hands": 2,
+      "slots": 2,
+      "statModifiers": {
+        "crit": 3
+      },
+      "grants": [
+        "attack.glaive.sweep",
+        "attack.glaive.impale"
+      ],
+      "abilities": [],
+      "triggers": [
+        {
+          "id": "trigger.glaive.bloodletting.bleed-crit",
+          "hook": "onCrit",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.bleed",
+            "value": 2
+          },
+          "source": "item.glaive.bloodletting"
+        }
+      ],
+      "base": "item.glaive",
+      "enchant": "enchant.bloodletting"
+    },
+    "item.glaive.giant-slayer": {
+      "id": "item.glaive.giant-slayer",
+      "name": "Glaive of Giant-Slaying",
+      "itemClass": "weapon",
+      "tier": 3,
+      "hands": 2,
+      "slots": 2,
+      "statModifiers": {},
+      "grants": [
+        "attack.glaive.sweep",
+        "attack.glaive.impale"
+      ],
+      "abilities": [],
+      "triggers": [],
+      "base": "item.glaive",
+      "enchant": "enchant.giant-slayer",
+      "gaps": [
+        "enchant onHit: if the target is a giant, it gains 1 Slow — trigger shape unparsed",
+        "slayer {\"giant\":3} — no VS_TARGET station"
+      ]
+    },
+    "item.glaive.dragon-slayer": {
+      "id": "item.glaive.dragon-slayer",
+      "name": "Glaive of Dragon-Slaying",
+      "itemClass": "weapon",
+      "tier": 3,
+      "hands": 2,
+      "slots": 2,
+      "statModifiers": {
+        "resist": 1
+      },
+      "grants": [
+        "attack.glaive.sweep",
+        "attack.glaive.impale"
+      ],
+      "abilities": [],
+      "triggers": [],
+      "base": "item.glaive",
+      "enchant": "enchant.dragon-slayer",
+      "gaps": [
+        "enchant onHit: if the target is a dragon, apply 3 Bleed — trigger shape unparsed",
+        "slayer {\"dragon\":4} — no VS_TARGET station"
+      ]
+    },
+    "item.glaive.death": {
+      "id": "item.glaive.death",
+      "name": "Glaive of Death",
+      "itemClass": "weapon",
+      "tier": 3,
+      "hands": 2,
+      "slots": 2,
+      "statModifiers": {},
+      "grants": [
+        "attack.glaive.sweep",
+        "attack.glaive.impale"
+      ],
+      "abilities": [],
+      "triggers": [],
+      "base": "item.glaive",
+      "enchant": "enchant.death",
+      "gaps": [
+        "enchant onKill: gain 2 Stamina — trigger shape unparsed"
+      ]
+    },
+    "item.glaive.taunting": {
+      "id": "item.glaive.taunting",
+      "name": "Taunting Glaive",
+      "itemClass": "weapon",
+      "tier": 3,
+      "hands": 2,
+      "slots": 2,
+      "statModifiers": {},
+      "grants": [
+        "attack.glaive.sweep",
+        "attack.glaive.impale"
+      ],
+      "abilities": [],
+      "triggers": [],
+      "base": "item.glaive",
+      "enchant": "enchant.taunting",
+      "gaps": [
+        "enchant onHit: apply 2 Taunt — trigger shape unparsed"
+      ]
+    },
+    "item.crossbow.venomous": {
+      "id": "item.crossbow.venomous",
+      "name": "Venomous Crossbow",
+      "itemClass": "weapon",
+      "tier": 3,
+      "hands": 2,
+      "slots": 2,
+      "statModifiers": {},
+      "grants": [
+        "attack.crossbow.bolt",
+        "attack.crossbow.punch-through"
+      ],
+      "abilities": [],
+      "triggers": [
+        {
+          "id": "trigger.crossbow.venomous.poison",
+          "hook": "onDamage",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.poison",
+            "value": 1
+          },
+          "source": "item.crossbow.venomous"
+        },
+        {
+          "id": "trigger.crossbow.venomous.poison-crit",
+          "hook": "onCrit",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.poison",
+            "value": 2
+          },
+          "source": "item.crossbow.venomous"
+        }
+      ],
+      "base": "item.crossbow",
+      "enchant": "enchant.venomous"
+    },
+    "item.crossbow.gale": {
+      "id": "item.crossbow.gale",
+      "name": "Gale Crossbow",
+      "itemClass": "weapon",
+      "tier": 3,
+      "hands": 2,
+      "slots": 2,
+      "statModifiers": {
+        "accuracy": 20,
+        "reach": 1
+      },
+      "grants": [
+        "attack.crossbow.bolt",
+        "attack.crossbow.punch-through"
+      ],
+      "abilities": [],
+      "triggers": [],
+      "base": "item.crossbow",
+      "enchant": "enchant.gale",
+      "gaps": [
+        "enchant onCrit: gain +1 Reach for the rest of the Battle — trigger shape unparsed"
+      ]
+    },
+    "item.crossbow.hunting": {
+      "id": "item.crossbow.hunting",
+      "name": "Hunting Crossbow",
+      "itemClass": "weapon",
+      "tier": 3,
+      "hands": 2,
+      "slots": 2,
+      "statModifiers": {
+        "precision": 1
+      },
+      "grants": [
+        "attack.crossbow.bolt",
+        "attack.crossbow.punch-through"
+      ],
+      "abilities": [],
+      "triggers": [],
+      "base": "item.crossbow",
+      "enchant": "enchant.hunting",
+      "gaps": [
+        "slayer {\"beast\":2} — no VS_TARGET station"
+      ]
+    },
+    "item.crossbow.abundant": {
+      "id": "item.crossbow.abundant",
+      "name": "Abundant Crossbow",
+      "itemClass": "weapon",
+      "tier": 3,
+      "hands": 2,
+      "slots": 2,
+      "statModifiers": {},
+      "grants": [
+        "attack.crossbow.bolt",
+        "attack.crossbow.punch-through"
+      ],
+      "abilities": [],
+      "triggers": [],
+      "base": "item.crossbow",
+      "enchant": "enchant.abundant",
+      "gaps": [
+        "enchant onMiss: regain 1 Stamina — trigger shape unparsed"
+      ]
+    },
+    "item.crossbow.magic": {
+      "id": "item.crossbow.magic",
+      "name": "Magic Crossbow",
+      "itemClass": "weapon",
+      "tier": 3,
+      "hands": 2,
+      "slots": 2,
+      "statModifiers": {
+        "precision": 1
+      },
+      "grants": [
+        "attack.crossbow.bolt",
+        "attack.crossbow.punch-through"
+      ],
+      "abilities": [],
+      "triggers": [],
+      "base": "item.crossbow",
+      "enchant": "enchant.magic"
+    },
+    "item.crossbow.goading": {
+      "id": "item.crossbow.goading",
+      "name": "Goading Crossbow",
+      "itemClass": "weapon",
+      "tier": 3,
+      "hands": 2,
+      "slots": 2,
+      "statModifiers": {},
+      "grants": [
+        "attack.crossbow.bolt",
+        "attack.crossbow.punch-through"
+      ],
+      "abilities": [],
+      "triggers": [],
+      "base": "item.crossbow",
+      "enchant": "enchant.goading",
+      "gaps": [
+        "enchant onDamage: apply 1 Taunt — trigger shape unparsed"
+      ]
+    },
+    "item.crossbow.giant-slayer": {
+      "id": "item.crossbow.giant-slayer",
+      "name": "Crossbow of Giant-Slaying",
+      "itemClass": "weapon",
+      "tier": 3,
+      "hands": 2,
+      "slots": 2,
+      "statModifiers": {},
+      "grants": [
+        "attack.crossbow.bolt",
+        "attack.crossbow.punch-through"
+      ],
+      "abilities": [],
+      "triggers": [],
+      "base": "item.crossbow",
+      "enchant": "enchant.giant-slayer",
+      "gaps": [
+        "enchant onHit: if the target is a giant, it gains 1 Slow — trigger shape unparsed",
+        "slayer {\"giant\":3} — no VS_TARGET station"
+      ]
+    },
+    "item.hand-crossbow.venomous": {
+      "id": "item.hand-crossbow.venomous",
+      "name": "Venomous Hand Crossbow",
+      "itemClass": "weapon",
+      "tier": 3,
+      "hands": 1,
+      "slots": 1,
+      "statModifiers": {},
+      "grants": [
+        "attack.hand-crossbow.snapshot",
+        "attack.hand-crossbow.loaded-bolt"
+      ],
+      "abilities": [],
+      "triggers": [
+        {
+          "id": "trigger.hand-crossbow.loaded-bolt.poison",
+          "hook": "onHit",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.poison",
+            "value": 2
+          },
+          "source": "item.hand-crossbow",
+          "onlyWithAttack": "attack.hand-crossbow.loaded-bolt"
+        },
+        {
+          "id": "trigger.hand-crossbow.venomous.poison",
+          "hook": "onDamage",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.poison",
+            "value": 1
+          },
+          "source": "item.hand-crossbow.venomous"
+        },
+        {
+          "id": "trigger.hand-crossbow.venomous.poison-crit",
+          "hook": "onCrit",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.poison",
+            "value": 2
+          },
+          "source": "item.hand-crossbow.venomous"
+        }
+      ],
+      "base": "item.hand-crossbow",
+      "enchant": "enchant.venomous"
+    },
+    "item.hand-crossbow.hunting": {
+      "id": "item.hand-crossbow.hunting",
+      "name": "Hunting Hand Crossbow",
+      "itemClass": "weapon",
+      "tier": 3,
+      "hands": 1,
+      "slots": 1,
+      "statModifiers": {
+        "precision": 1
+      },
+      "grants": [
+        "attack.hand-crossbow.snapshot",
+        "attack.hand-crossbow.loaded-bolt"
+      ],
+      "abilities": [],
+      "triggers": [
+        {
+          "id": "trigger.hand-crossbow.loaded-bolt.poison",
+          "hook": "onHit",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.poison",
+            "value": 2
+          },
+          "source": "item.hand-crossbow",
+          "onlyWithAttack": "attack.hand-crossbow.loaded-bolt"
+        }
+      ],
+      "base": "item.hand-crossbow",
+      "enchant": "enchant.hunting",
+      "gaps": [
+        "slayer {\"beast\":2} — no VS_TARGET station"
+      ]
+    },
+    "item.hand-crossbow.magic": {
+      "id": "item.hand-crossbow.magic",
+      "name": "Magic Hand Crossbow",
+      "itemClass": "weapon",
+      "tier": 3,
+      "hands": 1,
+      "slots": 1,
+      "statModifiers": {
+        "precision": 1
+      },
+      "grants": [
+        "attack.hand-crossbow.snapshot",
+        "attack.hand-crossbow.loaded-bolt"
+      ],
+      "abilities": [],
+      "triggers": [
+        {
+          "id": "trigger.hand-crossbow.loaded-bolt.poison",
+          "hook": "onHit",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.poison",
+            "value": 2
+          },
+          "source": "item.hand-crossbow",
+          "onlyWithAttack": "attack.hand-crossbow.loaded-bolt"
+        }
+      ],
+      "base": "item.hand-crossbow",
+      "enchant": "enchant.magic"
+    },
+    "item.hand-crossbow.abundant": {
+      "id": "item.hand-crossbow.abundant",
+      "name": "Abundant Hand Crossbow",
+      "itemClass": "weapon",
+      "tier": 3,
+      "hands": 1,
+      "slots": 1,
+      "statModifiers": {},
+      "grants": [
+        "attack.hand-crossbow.snapshot",
+        "attack.hand-crossbow.loaded-bolt"
+      ],
+      "abilities": [],
+      "triggers": [
+        {
+          "id": "trigger.hand-crossbow.loaded-bolt.poison",
+          "hook": "onHit",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.poison",
+            "value": 2
+          },
+          "source": "item.hand-crossbow",
+          "onlyWithAttack": "attack.hand-crossbow.loaded-bolt"
+        }
+      ],
+      "base": "item.hand-crossbow",
+      "enchant": "enchant.abundant",
+      "gaps": [
+        "enchant onMiss: regain 1 Stamina — trigger shape unparsed"
+      ]
+    },
+    "item.rapier.shadow-touched": {
+      "id": "item.rapier.shadow-touched",
+      "name": "Shadow-Touched Duelist's Rapier",
+      "itemClass": "weapon",
+      "tier": 3,
+      "hands": 1,
+      "slots": 1,
+      "statModifiers": {
+        "crit": 3
+      },
+      "grants": [
+        "attack.rapier.thrust",
+        "attack.rapier.pierce"
+      ],
+      "abilities": [],
+      "triggers": [],
+      "gaps": [
+        "onAttack: gain +10 Dodge until the end of your next Turn — trigger shape unparsed",
+        "enchant onHit: the target has −10 Accuracy until the end of its n — trigger shape unparsed"
+      ],
+      "base": "item.rapier",
+      "enchant": "enchant.shadow-touched"
+    },
+    "item.rapier.the-master": {
+      "id": "item.rapier.the-master",
+      "name": "Duelist's Rapier of the Master",
+      "itemClass": "weapon",
+      "tier": 3,
+      "hands": 1,
+      "slots": 1,
+      "statModifiers": {},
+      "grants": [
+        "attack.rapier.thrust",
+        "attack.rapier.pierce"
+      ],
+      "abilities": [],
+      "triggers": [],
+      "gaps": [
+        "onAttack: gain +10 Dodge until the end of your next Turn — trigger shape unparsed",
+        "enchant onHit: gain +10 Accuracy and +1 Crit — trigger shape unparsed",
+        "enchant onMiss: gain -20 Accuracy — trigger shape unparsed"
+      ],
+      "base": "item.rapier",
+      "enchant": "enchant.the-master"
+    },
+    "item.rapier.frost": {
+      "id": "item.rapier.frost",
+      "name": "Frost Duelist's Rapier",
+      "itemClass": "weapon",
+      "tier": 3,
+      "hands": 1,
+      "slots": 1,
+      "statModifiers": {},
+      "grants": [
+        "attack.rapier.thrust",
+        "attack.rapier.pierce"
+      ],
+      "abilities": [],
+      "triggers": [],
+      "gaps": [
+        "onAttack: gain +10 Dodge until the end of your next Turn — trigger shape unparsed",
+        "enchant onHit: apply 1 Frost — trigger shape unparsed",
+        "enchant onCrit: apply 2 more Frost — trigger shape unparsed"
+      ],
+      "base": "item.rapier",
+      "enchant": "enchant.frost"
+    },
+    "item.rapier.death": {
+      "id": "item.rapier.death",
+      "name": "Duelist's Rapier of Death",
+      "itemClass": "weapon",
+      "tier": 3,
+      "hands": 1,
+      "slots": 1,
+      "statModifiers": {},
+      "grants": [
+        "attack.rapier.thrust",
+        "attack.rapier.pierce"
+      ],
+      "abilities": [],
+      "triggers": [],
+      "gaps": [
+        "onAttack: gain +10 Dodge until the end of your next Turn — trigger shape unparsed",
+        "enchant onKill: gain 2 Stamina — trigger shape unparsed"
+      ],
+      "base": "item.rapier",
+      "enchant": "enchant.death"
+    },
+    "item.raiders-cutlass.bloodletting": {
+      "id": "item.raiders-cutlass.bloodletting",
+      "name": "Bloodletting Raider's Cutlass",
+      "itemClass": "weapon",
+      "tier": 3,
+      "hands": 1,
+      "slots": 1,
+      "statModifiers": {
+        "crit": 3
+      },
+      "grants": [
+        "attack.raiders-cutlass.slash",
+        "attack.raiders-cutlass.boarding-swing"
+      ],
+      "abilities": [],
+      "triggers": [
+        {
+          "id": "trigger.raiders-cutlass.slash.bleed",
+          "hook": "onHit",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.bleed",
+            "value": 1
+          },
+          "source": "item.raiders-cutlass",
+          "onlyWithAttack": "attack.raiders-cutlass.slash"
+        },
+        {
+          "id": "trigger.raiders-cutlass.boarding-swing.bleed",
+          "hook": "onHit",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.bleed",
+            "value": 2
+          },
+          "source": "item.raiders-cutlass",
+          "onlyWithAttack": "attack.raiders-cutlass.boarding-swing"
+        },
+        {
+          "id": "trigger.raiders-cutlass.bloodletting.bleed-crit",
+          "hook": "onCrit",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.bleed",
+            "value": 2
+          },
+          "source": "item.raiders-cutlass.bloodletting"
+        }
+      ],
+      "base": "item.raiders-cutlass",
+      "enchant": "enchant.bloodletting"
+    },
+    "item.raiders-cutlass.werewolf-bane": {
+      "id": "item.raiders-cutlass.werewolf-bane",
+      "name": "Werewolf-Bane Raider's Cutlass",
+      "itemClass": "weapon",
+      "tier": 3,
+      "hands": 1,
+      "slots": 1,
+      "statModifiers": {},
+      "grants": [
+        "attack.raiders-cutlass.slash",
+        "attack.raiders-cutlass.boarding-swing"
+      ],
+      "abilities": [],
+      "triggers": [
+        {
+          "id": "trigger.raiders-cutlass.slash.bleed",
+          "hook": "onHit",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.bleed",
+            "value": 1
+          },
+          "source": "item.raiders-cutlass",
+          "onlyWithAttack": "attack.raiders-cutlass.slash"
+        },
+        {
+          "id": "trigger.raiders-cutlass.boarding-swing.bleed",
+          "hook": "onHit",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.bleed",
+            "value": 2
+          },
+          "source": "item.raiders-cutlass",
+          "onlyWithAttack": "attack.raiders-cutlass.boarding-swing"
+        }
+      ],
+      "base": "item.raiders-cutlass",
+      "enchant": "enchant.werewolf-bane",
+      "gaps": [
+        "slayer {\"werewolf\":4,\"beast\":1} — no VS_TARGET station"
+      ]
+    },
+    "item.raiders-cutlass.bloodthirsty": {
+      "id": "item.raiders-cutlass.bloodthirsty",
+      "name": "Bloodthirsty Raider's Cutlass",
+      "itemClass": "weapon",
+      "tier": 3,
+      "hands": 1,
+      "slots": 1,
+      "statModifiers": {
+        "strength": 1,
+        "dodge": -5
+      },
+      "grants": [
+        "attack.raiders-cutlass.slash",
+        "attack.raiders-cutlass.boarding-swing"
+      ],
+      "abilities": [],
+      "triggers": [
+        {
+          "id": "trigger.raiders-cutlass.slash.bleed",
+          "hook": "onHit",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.bleed",
+            "value": 1
+          },
+          "source": "item.raiders-cutlass",
+          "onlyWithAttack": "attack.raiders-cutlass.slash"
+        },
+        {
+          "id": "trigger.raiders-cutlass.boarding-swing.bleed",
+          "hook": "onHit",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.bleed",
+            "value": 2
+          },
+          "source": "item.raiders-cutlass",
+          "onlyWithAttack": "attack.raiders-cutlass.boarding-swing"
+        }
+      ],
+      "base": "item.raiders-cutlass",
+      "enchant": "enchant.bloodthirsty",
+      "gaps": [
+        "enchant onKill: regain 1 Stamina — trigger shape unparsed"
+      ]
+    },
+    "item.raiders-cutlass.death": {
+      "id": "item.raiders-cutlass.death",
+      "name": "Raider's Cutlass of Death",
+      "itemClass": "weapon",
+      "tier": 3,
+      "hands": 1,
+      "slots": 1,
+      "statModifiers": {},
+      "grants": [
+        "attack.raiders-cutlass.slash",
+        "attack.raiders-cutlass.boarding-swing"
+      ],
+      "abilities": [],
+      "triggers": [
+        {
+          "id": "trigger.raiders-cutlass.slash.bleed",
+          "hook": "onHit",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.bleed",
+            "value": 1
+          },
+          "source": "item.raiders-cutlass",
+          "onlyWithAttack": "attack.raiders-cutlass.slash"
+        },
+        {
+          "id": "trigger.raiders-cutlass.boarding-swing.bleed",
+          "hook": "onHit",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.bleed",
+            "value": 2
+          },
+          "source": "item.raiders-cutlass",
+          "onlyWithAttack": "attack.raiders-cutlass.boarding-swing"
+        }
+      ],
+      "base": "item.raiders-cutlass",
+      "enchant": "enchant.death",
+      "gaps": [
+        "enchant onKill: gain 2 Stamina — trigger shape unparsed"
+      ]
+    },
+    "item.throwing-knives.venomous": {
+      "id": "item.throwing-knives.venomous",
+      "name": "Venomous Throwing Knives",
+      "itemClass": "weapon",
+      "tier": 3,
+      "hands": 1,
+      "slots": 1,
+      "classRestriction": "class.rogue",
+      "statModifiers": {},
+      "grants": [
+        "attack.throwing-knives.flick",
+        "attack.throwing-knives.fan"
+      ],
+      "abilities": [],
+      "triggers": [
+        {
+          "id": "trigger.throwing-knives.venomous.poison",
+          "hook": "onDamage",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.poison",
+            "value": 1
+          },
+          "source": "item.throwing-knives.venomous"
+        },
+        {
+          "id": "trigger.throwing-knives.venomous.poison-crit",
+          "hook": "onCrit",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.poison",
+            "value": 2
+          },
+          "source": "item.throwing-knives.venomous"
+        }
+      ],
+      "base": "item.throwing-knives",
+      "enchant": "enchant.venomous"
+    },
+    "item.throwing-knives.hunting": {
+      "id": "item.throwing-knives.hunting",
+      "name": "Hunting Throwing Knives",
+      "itemClass": "weapon",
+      "tier": 3,
+      "hands": 1,
+      "slots": 1,
+      "classRestriction": "class.rogue",
+      "statModifiers": {
+        "precision": 1
+      },
+      "grants": [
+        "attack.throwing-knives.flick",
+        "attack.throwing-knives.fan"
+      ],
+      "abilities": [],
+      "triggers": [],
+      "base": "item.throwing-knives",
+      "enchant": "enchant.hunting",
+      "gaps": [
+        "slayer {\"beast\":2} — no VS_TARGET station"
+      ]
+    },
+    "item.throwing-knives.gale": {
+      "id": "item.throwing-knives.gale",
+      "name": "Gale Throwing Knives",
+      "itemClass": "weapon",
+      "tier": 3,
+      "hands": 1,
+      "slots": 1,
+      "classRestriction": "class.rogue",
+      "statModifiers": {
+        "accuracy": 20,
+        "reach": 1
+      },
+      "grants": [
+        "attack.throwing-knives.flick",
+        "attack.throwing-knives.fan"
+      ],
+      "abilities": [],
+      "triggers": [],
+      "base": "item.throwing-knives",
+      "enchant": "enchant.gale",
+      "gaps": [
+        "enchant onCrit: gain +1 Reach for the rest of the Battle — trigger shape unparsed"
+      ]
+    },
+    "item.throwing-knives.werewolf-bane": {
+      "id": "item.throwing-knives.werewolf-bane",
+      "name": "Werewolf-Bane Throwing Knives",
+      "itemClass": "weapon",
+      "tier": 3,
+      "hands": 1,
+      "slots": 1,
+      "classRestriction": "class.rogue",
+      "statModifiers": {},
+      "grants": [
+        "attack.throwing-knives.flick",
+        "attack.throwing-knives.fan"
+      ],
+      "abilities": [],
+      "triggers": [],
+      "base": "item.throwing-knives",
+      "enchant": "enchant.werewolf-bane",
+      "gaps": [
+        "slayer {\"werewolf\":4,\"beast\":1} — no VS_TARGET station"
+      ]
+    },
+    "item.poison-stars.venomous": {
+      "id": "item.poison-stars.venomous",
+      "name": "Venomous Poison Stars",
+      "itemClass": "weapon",
+      "tier": 3,
+      "hands": 1,
+      "slots": 1,
+      "classRestriction": "class.rogue",
+      "statModifiers": {},
+      "grants": [
+        "attack.poison-stars.star",
+        "attack.poison-stars.venom-spread"
+      ],
+      "abilities": [],
+      "triggers": [
+        {
+          "id": "trigger.poison-stars.star.poison",
+          "hook": "onHit",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.poison",
+            "value": 2
+          },
+          "source": "item.poison-stars",
+          "onlyWithAttack": "attack.poison-stars.star"
+        },
+        {
+          "id": "trigger.poison-stars.venomous.poison",
+          "hook": "onDamage",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.poison",
+            "value": 1
+          },
+          "source": "item.poison-stars.venomous"
+        },
+        {
+          "id": "trigger.poison-stars.venomous.poison-crit",
+          "hook": "onCrit",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.poison",
+            "value": 2
+          },
+          "source": "item.poison-stars.venomous"
+        }
+      ],
+      "base": "item.poison-stars",
+      "enchant": "enchant.venomous"
+    },
+    "item.poison-stars.hunting": {
+      "id": "item.poison-stars.hunting",
+      "name": "Hunting Poison Stars",
+      "itemClass": "weapon",
+      "tier": 3,
+      "hands": 1,
+      "slots": 1,
+      "classRestriction": "class.rogue",
+      "statModifiers": {
+        "precision": 1
+      },
+      "grants": [
+        "attack.poison-stars.star",
+        "attack.poison-stars.venom-spread"
+      ],
+      "abilities": [],
+      "triggers": [
+        {
+          "id": "trigger.poison-stars.star.poison",
+          "hook": "onHit",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.poison",
+            "value": 2
+          },
+          "source": "item.poison-stars",
+          "onlyWithAttack": "attack.poison-stars.star"
+        }
+      ],
+      "base": "item.poison-stars",
+      "enchant": "enchant.hunting",
+      "gaps": [
+        "slayer {\"beast\":2} — no VS_TARGET station"
+      ]
+    },
+    "item.poison-stars.frost": {
+      "id": "item.poison-stars.frost",
+      "name": "Frost Poison Stars",
+      "itemClass": "weapon",
+      "tier": 3,
+      "hands": 1,
+      "slots": 1,
+      "classRestriction": "class.rogue",
+      "statModifiers": {},
+      "grants": [
+        "attack.poison-stars.star",
+        "attack.poison-stars.venom-spread"
+      ],
+      "abilities": [],
+      "triggers": [
+        {
+          "id": "trigger.poison-stars.star.poison",
+          "hook": "onHit",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.poison",
+            "value": 2
+          },
+          "source": "item.poison-stars",
+          "onlyWithAttack": "attack.poison-stars.star"
+        }
+      ],
+      "base": "item.poison-stars",
+      "enchant": "enchant.frost",
+      "gaps": [
+        "enchant onHit: apply 1 Frost — trigger shape unparsed",
+        "enchant onCrit: apply 2 more Frost — trigger shape unparsed"
+      ]
+    },
+    "item.obsidian-fang-dagger.venomous": {
+      "id": "item.obsidian-fang-dagger.venomous",
+      "name": "Venomous Obsidian Fang Dagger",
+      "itemClass": "weapon",
+      "tier": 3,
+      "hands": 1,
+      "slots": 1,
+      "classRestriction": "class.rogue",
+      "statModifiers": {},
+      "grants": [
+        "attack.obsidian-fang-dagger.fang",
+        "attack.obsidian-fang-dagger.gut"
+      ],
+      "abilities": [],
+      "triggers": [
+        {
+          "id": "trigger.obsidian-fang-dagger.venomous.poison",
+          "hook": "onDamage",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.poison",
+            "value": 1
+          },
+          "source": "item.obsidian-fang-dagger.venomous"
+        },
+        {
+          "id": "trigger.obsidian-fang-dagger.venomous.poison-crit",
+          "hook": "onCrit",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.poison",
+            "value": 2
+          },
+          "source": "item.obsidian-fang-dagger.venomous"
+        }
+      ],
+      "base": "item.obsidian-fang-dagger",
+      "enchant": "enchant.venomous"
+    },
+    "item.obsidian-fang-dagger.bloodletting": {
+      "id": "item.obsidian-fang-dagger.bloodletting",
+      "name": "Bloodletting Obsidian Fang Dagger",
+      "itemClass": "weapon",
+      "tier": 3,
+      "hands": 1,
+      "slots": 1,
+      "classRestriction": "class.rogue",
+      "statModifiers": {
+        "crit": 3
+      },
+      "grants": [
+        "attack.obsidian-fang-dagger.fang",
+        "attack.obsidian-fang-dagger.gut"
+      ],
+      "abilities": [],
+      "triggers": [
+        {
+          "id": "trigger.obsidian-fang-dagger.bloodletting.bleed-crit",
+          "hook": "onCrit",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.bleed",
+            "value": 2
+          },
+          "source": "item.obsidian-fang-dagger.bloodletting"
+        }
+      ],
+      "base": "item.obsidian-fang-dagger",
+      "enchant": "enchant.bloodletting"
+    },
+    "item.obsidian-fang-dagger.shadow-touched": {
+      "id": "item.obsidian-fang-dagger.shadow-touched",
+      "name": "Shadow-Touched Obsidian Fang Dagger",
+      "itemClass": "weapon",
+      "tier": 3,
+      "hands": 1,
+      "slots": 1,
+      "classRestriction": "class.rogue",
+      "statModifiers": {
+        "crit": 3
+      },
+      "grants": [
+        "attack.obsidian-fang-dagger.fang",
+        "attack.obsidian-fang-dagger.gut"
+      ],
+      "abilities": [],
+      "triggers": [],
+      "base": "item.obsidian-fang-dagger",
+      "enchant": "enchant.shadow-touched",
+      "gaps": [
+        "enchant onHit: the target has −10 Accuracy until the end of its n — trigger shape unparsed"
+      ]
+    },
+    "item.obsidian-fang-dagger.addling": {
+      "id": "item.obsidian-fang-dagger.addling",
+      "name": "Addling Obsidian Fang Dagger",
+      "itemClass": "weapon",
+      "tier": 3,
+      "hands": 1,
+      "slots": 1,
+      "classRestriction": "class.rogue",
+      "statModifiers": {},
+      "grants": [
+        "attack.obsidian-fang-dagger.fang",
+        "attack.obsidian-fang-dagger.gut"
+      ],
+      "abilities": [],
+      "triggers": [],
+      "base": "item.obsidian-fang-dagger",
+      "enchant": "enchant.addling",
+      "gaps": [
+        "enchant onHit: apply 1 Confusion — trigger shape unparsed"
+      ]
+    },
+    "item.obsidian-fang-dagger.hobbling": {
+      "id": "item.obsidian-fang-dagger.hobbling",
+      "name": "Hobbling Obsidian Fang Dagger",
+      "itemClass": "weapon",
+      "tier": 3,
+      "hands": 1,
+      "slots": 1,
+      "classRestriction": "class.rogue",
+      "statModifiers": {},
+      "grants": [
+        "attack.obsidian-fang-dagger.fang",
+        "attack.obsidian-fang-dagger.gut"
+      ],
+      "abilities": [],
+      "triggers": [
+        {
+          "id": "trigger.obsidian-fang-dagger.hobbling.slow",
+          "hook": "onDamage",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.slow",
+            "value": 2
+          },
+          "source": "item.obsidian-fang-dagger.hobbling"
+        }
+      ],
+      "base": "item.obsidian-fang-dagger",
+      "enchant": "enchant.hobbling"
+    },
+    "item.obsidian-fang-dagger.werewolf-bane": {
+      "id": "item.obsidian-fang-dagger.werewolf-bane",
+      "name": "Werewolf-Bane Obsidian Fang Dagger",
+      "itemClass": "weapon",
+      "tier": 3,
+      "hands": 1,
+      "slots": 1,
+      "classRestriction": "class.rogue",
+      "statModifiers": {},
+      "grants": [
+        "attack.obsidian-fang-dagger.fang",
+        "attack.obsidian-fang-dagger.gut"
+      ],
+      "abilities": [],
+      "triggers": [],
+      "base": "item.obsidian-fang-dagger",
+      "enchant": "enchant.werewolf-bane",
+      "gaps": [
+        "slayer {\"werewolf\":4,\"beast\":1} — no VS_TARGET station"
+      ]
+    },
+    "item.duel-runeblades.bloodletting": {
+      "id": "item.duel-runeblades.bloodletting",
+      "name": "Bloodletting Duel Runeblades",
+      "itemClass": "weapon",
+      "tier": 3,
+      "hands": 2,
+      "slots": 2,
+      "statModifiers": {
+        "crit": 3
+      },
+      "grants": [
+        "attack.duel-runeblades.twin-cut",
+        "attack.duel-runeblades.rune-cross"
+      ],
+      "abilities": [],
+      "triggers": [
+        {
+          "id": "trigger.duel-runeblades.bloodletting.bleed-crit",
+          "hook": "onCrit",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.bleed",
+            "value": 2
+          },
+          "source": "item.duel-runeblades.bloodletting"
+        }
+      ],
+      "base": "item.duel-runeblades",
+      "enchant": "enchant.bloodletting"
+    },
+    "item.duel-runeblades.lightning": {
+      "id": "item.duel-runeblades.lightning",
+      "name": "Lightning Duel Runeblades",
+      "itemClass": "weapon",
+      "tier": 3,
+      "hands": 2,
+      "slots": 2,
+      "statModifiers": {
+        "accuracy": 5
+      },
+      "grants": [
+        "attack.duel-runeblades.twin-cut",
+        "attack.duel-runeblades.rune-cross"
+      ],
+      "abilities": [],
+      "triggers": [],
+      "base": "item.duel-runeblades",
+      "enchant": "enchant.lightning",
+      "gaps": [
+        "enchant onCrit: 2 magic damage arcs to another enemy within 2 hexe — trigger shape unparsed"
+      ]
+    },
+    "item.duel-runeblades.frost": {
+      "id": "item.duel-runeblades.frost",
+      "name": "Frost Duel Runeblades",
+      "itemClass": "weapon",
+      "tier": 3,
+      "hands": 2,
+      "slots": 2,
+      "statModifiers": {},
+      "grants": [
+        "attack.duel-runeblades.twin-cut",
+        "attack.duel-runeblades.rune-cross"
+      ],
+      "abilities": [],
+      "triggers": [],
+      "base": "item.duel-runeblades",
+      "enchant": "enchant.frost",
+      "gaps": [
+        "enchant onHit: apply 1 Frost — trigger shape unparsed",
+        "enchant onCrit: apply 2 more Frost — trigger shape unparsed"
+      ]
+    },
+    "item.duel-runeblades.sacrifice": {
+      "id": "item.duel-runeblades.sacrifice",
+      "name": "Duel Runeblades of Sacrifice",
+      "itemClass": "weapon",
+      "tier": 3,
+      "hands": 2,
+      "slots": 2,
+      "statModifiers": {
+        "strength": 2,
+        "precision": 2,
+        "maxHp": -4,
+        "dodge": -10
+      },
+      "grants": [
+        "attack.duel-runeblades.twin-cut",
+        "attack.duel-runeblades.rune-cross"
+      ],
+      "abilities": [],
+      "triggers": [],
+      "base": "item.duel-runeblades",
+      "enchant": "enchant.sacrifice"
+    },
+    "item.shepherds-sling.venomous": {
+      "id": "item.shepherds-sling.venomous",
+      "name": "Venomous Shepherd's Sling",
+      "itemClass": "weapon",
+      "tier": 3,
+      "hands": 1,
+      "slots": 1,
+      "statModifiers": {},
+      "grants": [
+        "attack.shepherds-sling.stone",
+        "attack.shepherds-sling.whirl"
+      ],
+      "abilities": [],
+      "triggers": [
+        {
+          "id": "trigger.shepherds-sling.whirl.stun",
+          "hook": "onCrit",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.stun",
+            "value": 1
+          },
+          "source": "item.shepherds-sling",
+          "onlyWithAttack": "attack.shepherds-sling.whirl"
+        },
+        {
+          "id": "trigger.shepherds-sling.venomous.poison",
+          "hook": "onDamage",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.poison",
+            "value": 1
+          },
+          "source": "item.shepherds-sling.venomous"
+        },
+        {
+          "id": "trigger.shepherds-sling.venomous.poison-crit",
+          "hook": "onCrit",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.poison",
+            "value": 2
+          },
+          "source": "item.shepherds-sling.venomous"
+        }
+      ],
+      "base": "item.shepherds-sling",
+      "enchant": "enchant.venomous"
+    },
+    "item.shepherds-sling.hunting": {
+      "id": "item.shepherds-sling.hunting",
+      "name": "Hunting Shepherd's Sling",
+      "itemClass": "weapon",
+      "tier": 3,
+      "hands": 1,
+      "slots": 1,
+      "statModifiers": {
+        "precision": 1
+      },
+      "grants": [
+        "attack.shepherds-sling.stone",
+        "attack.shepherds-sling.whirl"
+      ],
+      "abilities": [],
+      "triggers": [
+        {
+          "id": "trigger.shepherds-sling.whirl.stun",
+          "hook": "onCrit",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.stun",
+            "value": 1
+          },
+          "source": "item.shepherds-sling",
+          "onlyWithAttack": "attack.shepherds-sling.whirl"
+        }
+      ],
+      "base": "item.shepherds-sling",
+      "enchant": "enchant.hunting",
+      "gaps": [
+        "slayer {\"beast\":2} — no VS_TARGET station"
+      ]
+    },
+    "item.shepherds-sling.abundant": {
+      "id": "item.shepherds-sling.abundant",
+      "name": "Abundant Shepherd's Sling",
+      "itemClass": "weapon",
+      "tier": 3,
+      "hands": 1,
+      "slots": 1,
+      "statModifiers": {},
+      "grants": [
+        "attack.shepherds-sling.stone",
+        "attack.shepherds-sling.whirl"
+      ],
+      "abilities": [],
+      "triggers": [
+        {
+          "id": "trigger.shepherds-sling.whirl.stun",
+          "hook": "onCrit",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.stun",
+            "value": 1
+          },
+          "source": "item.shepherds-sling",
+          "onlyWithAttack": "attack.shepherds-sling.whirl"
+        }
+      ],
+      "base": "item.shepherds-sling",
+      "enchant": "enchant.abundant",
+      "gaps": [
+        "enchant onMiss: regain 1 Stamina — trigger shape unparsed"
+      ]
+    },
+    "item.shepherds-sling.magic": {
+      "id": "item.shepherds-sling.magic",
+      "name": "Magic Shepherd's Sling",
+      "itemClass": "weapon",
+      "tier": 3,
+      "hands": 1,
+      "slots": 1,
+      "statModifiers": {
+        "precision": 1
+      },
+      "grants": [
+        "attack.shepherds-sling.stone",
+        "attack.shepherds-sling.whirl"
+      ],
+      "abilities": [],
+      "triggers": [
+        {
+          "id": "trigger.shepherds-sling.whirl.stun",
+          "hook": "onCrit",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.stun",
+            "value": 1
+          },
+          "source": "item.shepherds-sling",
+          "onlyWithAttack": "attack.shepherds-sling.whirl"
+        }
+      ],
+      "base": "item.shepherds-sling",
+      "enchant": "enchant.magic"
+    },
+    "item.shepherds-sling.gale": {
+      "id": "item.shepherds-sling.gale",
+      "name": "Gale Shepherd's Sling",
+      "itemClass": "weapon",
+      "tier": 3,
+      "hands": 1,
+      "slots": 1,
+      "statModifiers": {
+        "accuracy": 20,
+        "reach": 1
+      },
+      "grants": [
+        "attack.shepherds-sling.stone",
+        "attack.shepherds-sling.whirl"
+      ],
+      "abilities": [],
+      "triggers": [
+        {
+          "id": "trigger.shepherds-sling.whirl.stun",
+          "hook": "onCrit",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.stun",
+            "value": 1
+          },
+          "source": "item.shepherds-sling",
+          "onlyWithAttack": "attack.shepherds-sling.whirl"
+        }
+      ],
+      "base": "item.shepherds-sling",
+      "enchant": "enchant.gale",
+      "gaps": [
+        "enchant onCrit: gain +1 Reach for the rest of the Battle — trigger shape unparsed"
+      ]
+    },
+    "item.crippling-whip.frost": {
+      "id": "item.crippling-whip.frost",
+      "name": "Frost Crippling Whip",
+      "itemClass": "weapon",
+      "tier": 3,
+      "hands": 1,
+      "slots": 1,
+      "statModifiers": {},
+      "grants": [
+        "attack.crippling-whip.lash",
+        "attack.crippling-whip.hamstring"
+      ],
+      "abilities": [],
+      "triggers": [
+        {
+          "id": "trigger.crippling-whip.lash.weak",
+          "hook": "onHit",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.weak",
+            "value": 2
+          },
+          "source": "item.crippling-whip",
+          "onlyWithAttack": "attack.crippling-whip.lash"
+        }
+      ],
+      "base": "item.crippling-whip",
+      "enchant": "enchant.frost",
+      "gaps": [
+        "enchant onHit: apply 1 Frost — trigger shape unparsed",
+        "enchant onCrit: apply 2 more Frost — trigger shape unparsed"
+      ]
+    },
+    "item.crippling-whip.shadow-touched": {
+      "id": "item.crippling-whip.shadow-touched",
+      "name": "Shadow-Touched Crippling Whip",
+      "itemClass": "weapon",
+      "tier": 3,
+      "hands": 1,
+      "slots": 1,
+      "statModifiers": {
+        "crit": 3
+      },
+      "grants": [
+        "attack.crippling-whip.lash",
+        "attack.crippling-whip.hamstring"
+      ],
+      "abilities": [],
+      "triggers": [
+        {
+          "id": "trigger.crippling-whip.lash.weak",
+          "hook": "onHit",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.weak",
+            "value": 2
+          },
+          "source": "item.crippling-whip",
+          "onlyWithAttack": "attack.crippling-whip.lash"
+        }
+      ],
+      "base": "item.crippling-whip",
+      "enchant": "enchant.shadow-touched",
+      "gaps": [
+        "enchant onHit: the target has −10 Accuracy until the end of its n — trigger shape unparsed"
+      ]
+    },
+    "item.crippling-whip.death": {
+      "id": "item.crippling-whip.death",
+      "name": "Crippling Whip of Death",
+      "itemClass": "weapon",
+      "tier": 3,
+      "hands": 1,
+      "slots": 1,
+      "statModifiers": {},
+      "grants": [
+        "attack.crippling-whip.lash",
+        "attack.crippling-whip.hamstring"
+      ],
+      "abilities": [],
+      "triggers": [
+        {
+          "id": "trigger.crippling-whip.lash.weak",
+          "hook": "onHit",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.weak",
+            "value": 2
+          },
+          "source": "item.crippling-whip",
+          "onlyWithAttack": "attack.crippling-whip.lash"
+        }
+      ],
+      "base": "item.crippling-whip",
+      "enchant": "enchant.death",
+      "gaps": [
+        "enchant onKill: gain 2 Stamina — trigger shape unparsed"
+      ]
+    },
+    "item.iron-claws.venomous": {
+      "id": "item.iron-claws.venomous",
+      "name": "Venomous Iron Claws",
+      "itemClass": "weapon",
+      "tier": 3,
+      "hands": 2,
+      "slots": 2,
+      "statModifiers": {},
+      "grants": [
+        "attack.iron-claws.rake",
+        "attack.iron-claws.eviscerate"
+      ],
+      "abilities": [],
+      "triggers": [
+        {
+          "id": "trigger.iron-claws.eviscerate.bleed",
+          "hook": "onHit",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.bleed",
+            "value": 3
+          },
+          "source": "item.iron-claws",
+          "onlyWithAttack": "attack.iron-claws.eviscerate"
+        },
+        {
+          "id": "trigger.iron-claws.venomous.poison",
+          "hook": "onDamage",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.poison",
+            "value": 1
+          },
+          "source": "item.iron-claws.venomous"
+        },
+        {
+          "id": "trigger.iron-claws.venomous.poison-crit",
+          "hook": "onCrit",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.poison",
+            "value": 2
+          },
+          "source": "item.iron-claws.venomous"
+        }
+      ],
+      "base": "item.iron-claws",
+      "enchant": "enchant.venomous"
+    },
+    "item.iron-claws.bloodletting": {
+      "id": "item.iron-claws.bloodletting",
+      "name": "Bloodletting Iron Claws",
+      "itemClass": "weapon",
+      "tier": 3,
+      "hands": 2,
+      "slots": 2,
+      "statModifiers": {
+        "crit": 3
+      },
+      "grants": [
+        "attack.iron-claws.rake",
+        "attack.iron-claws.eviscerate"
+      ],
+      "abilities": [],
+      "triggers": [
+        {
+          "id": "trigger.iron-claws.eviscerate.bleed",
+          "hook": "onHit",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.bleed",
+            "value": 3
+          },
+          "source": "item.iron-claws",
+          "onlyWithAttack": "attack.iron-claws.eviscerate"
+        },
+        {
+          "id": "trigger.iron-claws.bloodletting.bleed-crit",
+          "hook": "onCrit",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.bleed",
+            "value": 2
+          },
+          "source": "item.iron-claws.bloodletting"
+        }
+      ],
+      "base": "item.iron-claws",
+      "enchant": "enchant.bloodletting"
+    },
+    "item.iron-claws.werewolf-bane": {
+      "id": "item.iron-claws.werewolf-bane",
+      "name": "Werewolf-Bane Iron Claws",
+      "itemClass": "weapon",
+      "tier": 3,
+      "hands": 2,
+      "slots": 2,
+      "statModifiers": {},
+      "grants": [
+        "attack.iron-claws.rake",
+        "attack.iron-claws.eviscerate"
+      ],
+      "abilities": [],
+      "triggers": [
+        {
+          "id": "trigger.iron-claws.eviscerate.bleed",
+          "hook": "onHit",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.bleed",
+            "value": 3
+          },
+          "source": "item.iron-claws",
+          "onlyWithAttack": "attack.iron-claws.eviscerate"
+        }
+      ],
+      "base": "item.iron-claws",
+      "enchant": "enchant.werewolf-bane",
+      "gaps": [
+        "slayer {\"werewolf\":4,\"beast\":1} — no VS_TARGET station"
+      ]
+    },
+    "item.iron-claws.bloodthirsty": {
+      "id": "item.iron-claws.bloodthirsty",
+      "name": "Bloodthirsty Iron Claws",
+      "itemClass": "weapon",
+      "tier": 3,
+      "hands": 2,
+      "slots": 2,
+      "statModifiers": {
+        "strength": 1,
+        "dodge": -5
+      },
+      "grants": [
+        "attack.iron-claws.rake",
+        "attack.iron-claws.eviscerate"
+      ],
+      "abilities": [],
+      "triggers": [
+        {
+          "id": "trigger.iron-claws.eviscerate.bleed",
+          "hook": "onHit",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.bleed",
+            "value": 3
+          },
+          "source": "item.iron-claws",
+          "onlyWithAttack": "attack.iron-claws.eviscerate"
+        }
+      ],
+      "base": "item.iron-claws",
+      "enchant": "enchant.bloodthirsty",
+      "gaps": [
+        "enchant onKill: regain 1 Stamina — trigger shape unparsed"
+      ]
+    },
+    "item.grappling-harpoon.giant-slayer": {
+      "id": "item.grappling-harpoon.giant-slayer",
+      "name": "Grappling Harpoon of Giant-Slaying",
+      "itemClass": "weapon",
+      "tier": 3,
+      "hands": 2,
+      "slots": 2,
+      "statModifiers": {},
+      "grants": [
+        "attack.grappling-harpoon.brace",
+        "attack.grappling-harpoon.hurl"
+      ],
+      "abilities": [],
+      "triggers": [],
+      "base": "item.grappling-harpoon",
+      "enchant": "enchant.giant-slayer",
+      "gaps": [
+        "enchant onHit: if the target is a giant, it gains 1 Slow — trigger shape unparsed",
+        "slayer {\"giant\":3} — no VS_TARGET station"
+      ]
+    },
+    "item.grappling-harpoon.dragon-slayer": {
+      "id": "item.grappling-harpoon.dragon-slayer",
+      "name": "Grappling Harpoon of Dragon-Slaying",
+      "itemClass": "weapon",
+      "tier": 3,
+      "hands": 2,
+      "slots": 2,
+      "statModifiers": {
+        "resist": 1
+      },
+      "grants": [
+        "attack.grappling-harpoon.brace",
+        "attack.grappling-harpoon.hurl"
+      ],
+      "abilities": [],
+      "triggers": [],
+      "base": "item.grappling-harpoon",
+      "enchant": "enchant.dragon-slayer",
+      "gaps": [
+        "enchant onHit: if the target is a dragon, apply 3 Bleed — trigger shape unparsed",
+        "slayer {\"dragon\":4} — no VS_TARGET station"
+      ]
+    },
+    "item.grappling-harpoon.hunting": {
+      "id": "item.grappling-harpoon.hunting",
+      "name": "Hunting Grappling Harpoon",
+      "itemClass": "weapon",
+      "tier": 3,
+      "hands": 2,
+      "slots": 2,
+      "statModifiers": {
+        "precision": 1
+      },
+      "grants": [
+        "attack.grappling-harpoon.brace",
+        "attack.grappling-harpoon.hurl"
+      ],
+      "abilities": [],
+      "triggers": [],
+      "base": "item.grappling-harpoon",
+      "enchant": "enchant.hunting",
+      "gaps": [
+        "slayer {\"beast\":2} — no VS_TARGET station"
+      ]
+    },
+    "item.grappling-harpoon.frost": {
+      "id": "item.grappling-harpoon.frost",
+      "name": "Frost Grappling Harpoon",
+      "itemClass": "weapon",
+      "tier": 3,
+      "hands": 2,
+      "slots": 2,
+      "statModifiers": {},
+      "grants": [
+        "attack.grappling-harpoon.brace",
+        "attack.grappling-harpoon.hurl"
+      ],
+      "abilities": [],
+      "triggers": [],
+      "base": "item.grappling-harpoon",
+      "enchant": "enchant.frost",
+      "gaps": [
+        "enchant onHit: apply 1 Frost — trigger shape unparsed",
+        "enchant onCrit: apply 2 more Frost — trigger shape unparsed"
+      ]
+    },
+    "item.apprentice-wand.lightning": {
+      "id": "item.apprentice-wand.lightning",
+      "name": "Lightning Apprentice Wand",
+      "itemClass": "weapon",
+      "tier": 3,
+      "hands": 1,
+      "slots": 1,
+      "classRestriction": "class.mage",
+      "statModifiers": {
+        "accuracy": 5
+      },
+      "grants": [
+        "attack.apprentice-wand.spark",
+        "attack.apprentice-wand.surge"
+      ],
+      "abilities": [],
+      "triggers": [
+        {
+          "id": "trigger.apprentice-wand.surge.burn",
+          "hook": "onHit",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.burn",
+            "value": 1
+          },
+          "source": "item.apprentice-wand",
+          "onlyWithAttack": "attack.apprentice-wand.surge"
+        }
+      ],
+      "base": "item.apprentice-wand",
+      "enchant": "enchant.lightning",
+      "gaps": [
+        "enchant onCrit: 2 magic damage arcs to another enemy within 2 hexe — trigger shape unparsed"
+      ]
+    },
+    "item.apprentice-wand.eternal-ice": {
+      "id": "item.apprentice-wand.eternal-ice",
+      "name": "Apprentice Wand of Eternal Ice",
+      "itemClass": "weapon",
+      "tier": 3,
+      "hands": 1,
+      "slots": 1,
+      "classRestriction": "class.mage",
+      "statModifiers": {
+        "magic": 1,
+        "movement": -1
+      },
+      "grants": [
+        "attack.apprentice-wand.spark",
+        "attack.apprentice-wand.surge"
+      ],
+      "abilities": [],
+      "triggers": [
+        {
+          "id": "trigger.apprentice-wand.surge.burn",
+          "hook": "onHit",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.burn",
+            "value": 1
+          },
+          "source": "item.apprentice-wand",
+          "onlyWithAttack": "attack.apprentice-wand.surge"
+        }
+      ],
+      "base": "item.apprentice-wand",
+      "enchant": "enchant.eternal-ice",
+      "gaps": [
+        "enchant onHit: apply 2 Frost — trigger shape unparsed",
+        "enchant onKill: every enemy within 2 hexes of the target gains 1 F — trigger shape unparsed"
+      ]
+    },
+    "item.apprentice-wand.cursed-skull": {
+      "id": "item.apprentice-wand.cursed-skull",
+      "name": "Apprentice Wand of the Cursed Skull",
+      "itemClass": "weapon",
+      "tier": 3,
+      "hands": 1,
+      "slots": 1,
+      "classRestriction": "class.mage",
+      "statModifiers": {
+        "spirit": 1,
+        "maxHp": 4
+      },
+      "grants": [
+        "attack.apprentice-wand.spark",
+        "attack.apprentice-wand.surge"
+      ],
+      "abilities": [],
+      "triggers": [
+        {
+          "id": "trigger.apprentice-wand.surge.burn",
+          "hook": "onHit",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.burn",
+            "value": 1
+          },
+          "source": "item.apprentice-wand",
+          "onlyWithAttack": "attack.apprentice-wand.surge"
+        }
+      ],
+      "base": "item.apprentice-wand",
+      "enchant": "enchant.cursed-skull",
+      "gaps": [
+        "enchant onActivationEnd: you take 1 true damage — trigger shape unparsed"
+      ]
+    },
+    "item.ancient-tome.lightning": {
+      "id": "item.ancient-tome.lightning",
+      "name": "Lightning Ancient Tome",
+      "itemClass": "weapon",
+      "tier": 3,
+      "hands": 1,
+      "slots": 1,
+      "classRestriction": "class.mage",
+      "statModifiers": {
+        "accuracy": 5
+      },
+      "grants": [
+        "attack.ancient-tome.read-the-page",
+        "attack.ancient-tome.long-passage"
+      ],
+      "abilities": [],
+      "triggers": [],
+      "base": "item.ancient-tome",
+      "enchant": "enchant.lightning",
+      "gaps": [
+        "enchant onCrit: 2 magic damage arcs to another enemy within 2 hexe — trigger shape unparsed"
+      ]
+    },
+    "item.ancient-tome.eternal-ice": {
+      "id": "item.ancient-tome.eternal-ice",
+      "name": "Ancient Tome of Eternal Ice",
+      "itemClass": "weapon",
+      "tier": 3,
+      "hands": 1,
+      "slots": 1,
+      "classRestriction": "class.mage",
+      "statModifiers": {
+        "magic": 1,
+        "movement": -1
+      },
+      "grants": [
+        "attack.ancient-tome.read-the-page",
+        "attack.ancient-tome.long-passage"
+      ],
+      "abilities": [],
+      "triggers": [],
+      "base": "item.ancient-tome",
+      "enchant": "enchant.eternal-ice",
+      "gaps": [
+        "enchant onHit: apply 2 Frost — trigger shape unparsed",
+        "enchant onKill: every enemy within 2 hexes of the target gains 1 F — trigger shape unparsed"
+      ]
+    },
+    "item.ancient-tome.cursed-skull": {
+      "id": "item.ancient-tome.cursed-skull",
+      "name": "Ancient Tome of the Cursed Skull",
+      "itemClass": "weapon",
+      "tier": 3,
+      "hands": 1,
+      "slots": 1,
+      "classRestriction": "class.mage",
+      "statModifiers": {
+        "spirit": 1,
+        "maxHp": 4
+      },
+      "grants": [
+        "attack.ancient-tome.read-the-page",
+        "attack.ancient-tome.long-passage"
+      ],
+      "abilities": [],
+      "triggers": [],
+      "base": "item.ancient-tome",
+      "enchant": "enchant.cursed-skull",
+      "gaps": [
+        "enchant onActivationEnd: you take 1 true damage — trigger shape unparsed"
+      ]
+    },
+    "item.holy-texts.holy-water": {
+      "id": "item.holy-texts.holy-water",
+      "name": "Holy Texts of Holy Water",
+      "itemClass": "weapon",
+      "tier": 3,
+      "hands": 1,
+      "slots": 1,
+      "classRestriction": "class.priest",
+      "statModifiers": {},
+      "grants": [
+        "attack.holy-texts.verse"
+      ],
+      "abilities": [],
+      "triggers": [],
+      "gaps": [
+        "grants power.holy-texts.mercy — item power — shape unparsed",
+        "enchant onHit: if the target is undead, demon or vampire, apply 2 — trigger shape unparsed",
+        "slayer {\"undead\":1,\"demon\":1,\"vampire\":1} — no VS_TARGET station"
+      ],
+      "base": "item.holy-texts",
+      "enchant": "enchant.holy-water"
+    },
+    "item.holy-texts.undead-slayer": {
+      "id": "item.holy-texts.undead-slayer",
+      "name": "Holy Texts of Undead-Slaying",
+      "itemClass": "weapon",
+      "tier": 3,
+      "hands": 1,
+      "slots": 1,
+      "classRestriction": "class.priest",
+      "statModifiers": {},
+      "grants": [
+        "attack.holy-texts.verse"
+      ],
+      "abilities": [],
+      "triggers": [],
+      "gaps": [
+        "grants power.holy-texts.mercy — item power — shape unparsed",
+        "enchant onKill: if the target was undead, heal 2 — trigger shape unparsed",
+        "slayer {\"undead\":3} — no VS_TARGET station"
+      ],
+      "base": "item.holy-texts",
+      "enchant": "enchant.undead-slayer"
+    },
+    "item.holy-texts.heavens-edge": {
+      "id": "item.holy-texts.heavens-edge",
+      "name": "Holy Texts of Heaven's Edge",
+      "itemClass": "weapon",
+      "tier": 3,
+      "hands": 1,
+      "slots": 1,
+      "classRestriction": "class.priest",
+      "statModifiers": {},
+      "grants": [
+        "attack.holy-texts.verse"
+      ],
+      "abilities": [],
+      "triggers": [],
+      "gaps": [
+        "grants power.holy-texts.mercy — item power — shape unparsed",
+        "enchant onDamage: heal for half your Spirit, rounded down — trigger shape unparsed"
+      ],
+      "base": "item.holy-texts",
+      "enchant": "enchant.heavens-edge"
+    },
+    "item.holy-texts.demon-slayer": {
+      "id": "item.holy-texts.demon-slayer",
+      "name": "Holy Texts of Demon-Slaying",
+      "itemClass": "weapon",
+      "tier": 3,
+      "hands": 1,
+      "slots": 1,
+      "classRestriction": "class.priest",
+      "statModifiers": {
+        "resist": 1
+      },
+      "grants": [
+        "attack.holy-texts.verse"
+      ],
+      "abilities": [],
+      "triggers": [],
+      "gaps": [
+        "grants power.holy-texts.mercy — item power — shape unparsed",
+        "slayer {\"demon\":3} — no VS_TARGET station"
+      ],
+      "base": "item.holy-texts",
+      "enchant": "enchant.demon-slayer"
+    },
+    "item.bane-blade.demon-slayer": {
+      "id": "item.bane-blade.demon-slayer",
+      "name": "Bane Blade of Demon-Slaying",
+      "itemClass": "weapon",
+      "tier": 3,
+      "hands": 1,
+      "slots": 1,
+      "classRestriction": "class.paladin",
+      "statModifiers": {
+        "resist": 1
+      },
+      "grants": [
+        "attack.bane-blade.strike",
+        "attack.bane-blade.banishing-blow"
+      ],
+      "abilities": [],
+      "triggers": [],
+      "base": "item.bane-blade",
+      "enchant": "enchant.demon-slayer",
+      "gaps": [
+        "slayer {\"demon\":3} — no VS_TARGET station"
+      ]
+    },
+    "item.bane-blade.holy-water": {
+      "id": "item.bane-blade.holy-water",
+      "name": "Bane Blade of Holy Water",
+      "itemClass": "weapon",
+      "tier": 3,
+      "hands": 1,
+      "slots": 1,
+      "classRestriction": "class.paladin",
+      "statModifiers": {},
+      "grants": [
+        "attack.bane-blade.strike",
+        "attack.bane-blade.banishing-blow"
+      ],
+      "abilities": [],
+      "triggers": [],
+      "base": "item.bane-blade",
+      "enchant": "enchant.holy-water",
+      "gaps": [
+        "enchant onHit: if the target is undead, demon or vampire, apply 2 — trigger shape unparsed",
+        "slayer {\"undead\":1,\"demon\":1,\"vampire\":1} — no VS_TARGET station"
+      ]
+    },
+    "item.bane-blade.undead-slayer": {
+      "id": "item.bane-blade.undead-slayer",
+      "name": "Bane Blade of Undead-Slaying",
+      "itemClass": "weapon",
+      "tier": 3,
+      "hands": 1,
+      "slots": 1,
+      "classRestriction": "class.paladin",
+      "statModifiers": {},
+      "grants": [
+        "attack.bane-blade.strike",
+        "attack.bane-blade.banishing-blow"
+      ],
+      "abilities": [],
+      "triggers": [],
+      "base": "item.bane-blade",
+      "enchant": "enchant.undead-slayer",
+      "gaps": [
+        "enchant onKill: if the target was undead, heal 2 — trigger shape unparsed",
+        "slayer {\"undead\":3} — no VS_TARGET station"
+      ]
+    },
+    "item.bane-blade.sacrifice": {
+      "id": "item.bane-blade.sacrifice",
+      "name": "Bane Blade of Sacrifice",
+      "itemClass": "weapon",
+      "tier": 3,
+      "hands": 1,
+      "slots": 1,
+      "classRestriction": "class.paladin",
+      "statModifiers": {
+        "strength": 2,
+        "precision": 2,
+        "maxHp": -4,
+        "dodge": -10
+      },
+      "grants": [
+        "attack.bane-blade.strike",
+        "attack.bane-blade.banishing-blow"
+      ],
+      "abilities": [],
+      "triggers": [],
+      "base": "item.bane-blade",
+      "enchant": "enchant.sacrifice"
+    },
+    "item.sword-of-the-fallen.undead-slayer": {
+      "id": "item.sword-of-the-fallen.undead-slayer",
+      "name": "Sword of the Fallen of Undead-Slaying",
+      "itemClass": "weapon",
+      "tier": 3,
+      "hands": 1,
+      "slots": 1,
+      "classRestriction": "class.paladin",
+      "statModifiers": {},
+      "grants": [
+        "attack.sword-of-the-fallen.remembrance",
+        "attack.sword-of-the-fallen.honour-the-dead"
+      ],
+      "abilities": [],
+      "triggers": [],
+      "base": "item.sword-of-the-fallen",
+      "enchant": "enchant.undead-slayer",
+      "gaps": [
+        "enchant onKill: if the target was undead, heal 2 — trigger shape unparsed",
+        "slayer {\"undead\":3} — no VS_TARGET station"
+      ]
+    },
+    "item.sword-of-the-fallen.heavens-edge": {
+      "id": "item.sword-of-the-fallen.heavens-edge",
+      "name": "Sword of the Fallen of Heaven's Edge",
+      "itemClass": "weapon",
+      "tier": 3,
+      "hands": 1,
+      "slots": 1,
+      "classRestriction": "class.paladin",
+      "statModifiers": {},
+      "grants": [
+        "attack.sword-of-the-fallen.remembrance",
+        "attack.sword-of-the-fallen.honour-the-dead"
+      ],
+      "abilities": [],
+      "triggers": [],
+      "base": "item.sword-of-the-fallen",
+      "enchant": "enchant.heavens-edge",
+      "gaps": [
+        "enchant onDamage: heal for half your Spirit, rounded down — trigger shape unparsed"
+      ]
+    },
+    "item.sword-of-the-fallen.holy-water": {
+      "id": "item.sword-of-the-fallen.holy-water",
+      "name": "Sword of the Fallen of Holy Water",
+      "itemClass": "weapon",
+      "tier": 3,
+      "hands": 1,
+      "slots": 1,
+      "classRestriction": "class.paladin",
+      "statModifiers": {},
+      "grants": [
+        "attack.sword-of-the-fallen.remembrance",
+        "attack.sword-of-the-fallen.honour-the-dead"
+      ],
+      "abilities": [],
+      "triggers": [],
+      "base": "item.sword-of-the-fallen",
+      "enchant": "enchant.holy-water",
+      "gaps": [
+        "enchant onHit: if the target is undead, demon or vampire, apply 2 — trigger shape unparsed",
+        "slayer {\"undead\":1,\"demon\":1,\"vampire\":1} — no VS_TARGET station"
+      ]
+    },
+    "item.sword-of-the-fallen.soul-reaper": {
+      "id": "item.sword-of-the-fallen.soul-reaper",
+      "name": "Sword of the Fallen of the Soul Reaper",
+      "itemClass": "weapon",
+      "tier": 3,
+      "hands": 1,
+      "slots": 1,
+      "classRestriction": "class.paladin",
+      "statModifiers": {
+        "strength": 1
+      },
+      "grants": [
+        "attack.sword-of-the-fallen.remembrance",
+        "attack.sword-of-the-fallen.honour-the-dead"
+      ],
+      "abilities": [],
+      "triggers": [],
+      "base": "item.sword-of-the-fallen",
+      "enchant": "enchant.soul-reaper",
+      "gaps": [
+        "enchant onKill: heal 3 and gain +1 Strength for the rest of the Ba — trigger shape unparsed"
+      ]
+    },
+    "item.daggers.venomous": {
+      "id": "item.daggers.venomous",
+      "name": "Venomous Daggers",
+      "itemClass": "weapon",
+      "tier": 3,
+      "hands": 2,
+      "slots": 2,
+      "statModifiers": {},
+      "grants": [
+        "attack.daggers.stab",
+        "attack.daggers.thrown-dagger"
+      ],
+      "abilities": [],
+      "triggers": [
+        {
+          "id": "trigger.daggers.venomous.poison",
+          "hook": "onDamage",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.poison",
+            "value": 1
+          },
+          "source": "item.daggers.venomous"
+        },
+        {
+          "id": "trigger.daggers.venomous.poison-crit",
+          "hook": "onCrit",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.poison",
+            "value": 2
+          },
+          "source": "item.daggers.venomous"
+        }
+      ],
+      "base": "item.daggers",
+      "enchant": "enchant.venomous"
+    },
+    "item.daggers.shadow-touched": {
+      "id": "item.daggers.shadow-touched",
+      "name": "Shadow-Touched Daggers",
+      "itemClass": "weapon",
+      "tier": 3,
+      "hands": 2,
+      "slots": 2,
+      "statModifiers": {
+        "crit": 3
+      },
+      "grants": [
+        "attack.daggers.stab",
+        "attack.daggers.thrown-dagger"
+      ],
+      "abilities": [],
+      "triggers": [],
+      "base": "item.daggers",
+      "enchant": "enchant.shadow-touched",
+      "gaps": [
+        "enchant onHit: the target has −10 Accuracy until the end of its n — trigger shape unparsed"
+      ]
+    },
+    "item.daggers.addling": {
+      "id": "item.daggers.addling",
+      "name": "Addling Daggers",
+      "itemClass": "weapon",
+      "tier": 3,
+      "hands": 2,
+      "slots": 2,
+      "statModifiers": {},
+      "grants": [
+        "attack.daggers.stab",
+        "attack.daggers.thrown-dagger"
+      ],
+      "abilities": [],
+      "triggers": [],
+      "base": "item.daggers",
+      "enchant": "enchant.addling",
+      "gaps": [
+        "enchant onHit: apply 1 Confusion — trigger shape unparsed"
+      ]
+    },
+    "item.daggers.hobbling": {
+      "id": "item.daggers.hobbling",
+      "name": "Hobbling Daggers",
+      "itemClass": "weapon",
+      "tier": 3,
+      "hands": 2,
+      "slots": 2,
+      "statModifiers": {},
+      "grants": [
+        "attack.daggers.stab",
+        "attack.daggers.thrown-dagger"
+      ],
+      "abilities": [],
+      "triggers": [
+        {
+          "id": "trigger.daggers.hobbling.slow",
+          "hook": "onDamage",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.slow",
+            "value": 2
+          },
+          "source": "item.daggers.hobbling"
+        }
+      ],
+      "base": "item.daggers",
+      "enchant": "enchant.hobbling"
+    },
+    "item.daggers.bloodletting": {
+      "id": "item.daggers.bloodletting",
+      "name": "Bloodletting Daggers",
+      "itemClass": "weapon",
+      "tier": 3,
+      "hands": 2,
+      "slots": 2,
+      "statModifiers": {
+        "crit": 3
+      },
+      "grants": [
+        "attack.daggers.stab",
+        "attack.daggers.thrown-dagger"
+      ],
+      "abilities": [],
+      "triggers": [
+        {
+          "id": "trigger.daggers.bloodletting.bleed-crit",
+          "hook": "onCrit",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.bleed",
+            "value": 2
+          },
+          "source": "item.daggers.bloodletting"
+        }
+      ],
+      "base": "item.daggers",
+      "enchant": "enchant.bloodletting"
+    },
+    "item.daggers.death": {
+      "id": "item.daggers.death",
+      "name": "Daggers of Death",
+      "itemClass": "weapon",
+      "tier": 3,
+      "hands": 2,
+      "slots": 2,
+      "statModifiers": {},
+      "grants": [
+        "attack.daggers.stab",
+        "attack.daggers.thrown-dagger"
+      ],
+      "abilities": [],
+      "triggers": [],
+      "base": "item.daggers",
+      "enchant": "enchant.death",
+      "gaps": [
+        "enchant onKill: gain 2 Stamina — trigger shape unparsed"
+      ]
+    },
+    "item.longbow.rooting": {
+      "id": "item.longbow.rooting",
+      "name": "Longbow of Rooting",
+      "itemClass": "weapon",
+      "tier": 3,
+      "hands": 2,
+      "slots": 2,
+      "classRestriction": "class.ranger",
+      "statModifiers": {},
+      "grants": [
+        "attack.longbow.shot",
+        "attack.longbow.long-shot"
+      ],
+      "abilities": [],
+      "triggers": [],
+      "base": "item.longbow",
+      "enchant": "enchant.rooting",
+      "gaps": [
+        "enchant onDamage: apply 1 Root — trigger shape unparsed"
+      ]
+    },
+    "item.longbow.gale": {
+      "id": "item.longbow.gale",
+      "name": "Gale Longbow",
+      "itemClass": "weapon",
+      "tier": 3,
+      "hands": 2,
+      "slots": 2,
+      "classRestriction": "class.ranger",
+      "statModifiers": {
+        "accuracy": 20,
+        "reach": 1
+      },
+      "grants": [
+        "attack.longbow.shot",
+        "attack.longbow.long-shot"
+      ],
+      "abilities": [],
+      "triggers": [],
+      "base": "item.longbow",
+      "enchant": "enchant.gale",
+      "gaps": [
+        "enchant onCrit: gain +1 Reach for the rest of the Battle — trigger shape unparsed"
+      ]
+    },
+    "item.longbow.hunting": {
+      "id": "item.longbow.hunting",
+      "name": "Hunting Longbow",
+      "itemClass": "weapon",
+      "tier": 3,
+      "hands": 2,
+      "slots": 2,
+      "classRestriction": "class.ranger",
+      "statModifiers": {
+        "precision": 1
+      },
+      "grants": [
+        "attack.longbow.shot",
+        "attack.longbow.long-shot"
+      ],
+      "abilities": [],
+      "triggers": [],
+      "base": "item.longbow",
+      "enchant": "enchant.hunting",
+      "gaps": [
+        "slayer {\"beast\":2} — no VS_TARGET station"
+      ]
+    },
+    "item.longbow.venomous": {
+      "id": "item.longbow.venomous",
+      "name": "Venomous Longbow",
+      "itemClass": "weapon",
+      "tier": 3,
+      "hands": 2,
+      "slots": 2,
+      "classRestriction": "class.ranger",
+      "statModifiers": {},
+      "grants": [
+        "attack.longbow.shot",
+        "attack.longbow.long-shot"
+      ],
+      "abilities": [],
+      "triggers": [
+        {
+          "id": "trigger.longbow.venomous.poison",
+          "hook": "onDamage",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.poison",
+            "value": 1
+          },
+          "source": "item.longbow.venomous"
+        },
+        {
+          "id": "trigger.longbow.venomous.poison-crit",
+          "hook": "onCrit",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.poison",
+            "value": 2
+          },
+          "source": "item.longbow.venomous"
+        }
+      ],
+      "base": "item.longbow",
+      "enchant": "enchant.venomous"
+    },
+    "item.longbow.magic": {
+      "id": "item.longbow.magic",
+      "name": "Magic Longbow",
+      "itemClass": "weapon",
+      "tier": 3,
+      "hands": 2,
+      "slots": 2,
+      "classRestriction": "class.ranger",
+      "statModifiers": {
+        "precision": 1
+      },
+      "grants": [
+        "attack.longbow.shot",
+        "attack.longbow.long-shot"
+      ],
+      "abilities": [],
+      "triggers": [],
+      "base": "item.longbow",
+      "enchant": "enchant.magic"
+    },
+    "item.longbow.goading": {
+      "id": "item.longbow.goading",
+      "name": "Goading Longbow",
+      "itemClass": "weapon",
+      "tier": 3,
+      "hands": 2,
+      "slots": 2,
+      "classRestriction": "class.ranger",
+      "statModifiers": {},
+      "grants": [
+        "attack.longbow.shot",
+        "attack.longbow.long-shot"
+      ],
+      "abilities": [],
+      "triggers": [],
+      "base": "item.longbow",
+      "enchant": "enchant.goading",
+      "gaps": [
+        "enchant onDamage: apply 1 Taunt — trigger shape unparsed"
+      ]
+    },
+    "item.longbow.dragon-slayer": {
+      "id": "item.longbow.dragon-slayer",
+      "name": "Longbow of Dragon-Slaying",
+      "itemClass": "weapon",
+      "tier": 3,
+      "hands": 2,
+      "slots": 2,
+      "classRestriction": "class.ranger",
+      "statModifiers": {
+        "resist": 1
+      },
+      "grants": [
+        "attack.longbow.shot",
+        "attack.longbow.long-shot"
+      ],
+      "abilities": [],
+      "triggers": [],
+      "base": "item.longbow",
+      "enchant": "enchant.dragon-slayer",
+      "gaps": [
+        "enchant onHit: if the target is a dragon, apply 3 Bleed — trigger shape unparsed",
+        "slayer {\"dragon\":4} — no VS_TARGET station"
+      ]
+    },
+    "item.longbow.frost": {
+      "id": "item.longbow.frost",
+      "name": "Frost Longbow",
+      "itemClass": "weapon",
+      "tier": 3,
+      "hands": 2,
+      "slots": 2,
+      "classRestriction": "class.ranger",
+      "statModifiers": {},
+      "grants": [
+        "attack.longbow.shot",
+        "attack.longbow.long-shot"
+      ],
+      "abilities": [],
+      "triggers": [],
+      "base": "item.longbow",
+      "enchant": "enchant.frost",
+      "gaps": [
+        "enchant onHit: apply 1 Frost — trigger shape unparsed",
+        "enchant onCrit: apply 2 more Frost — trigger shape unparsed"
+      ]
+    },
+    "item.shortbow.rooting": {
+      "id": "item.shortbow.rooting",
+      "name": "Shortbow of Rooting",
+      "itemClass": "weapon",
+      "tier": 3,
+      "hands": 2,
+      "slots": 2,
+      "statModifiers": {},
+      "grants": [
+        "attack.shortbow.short-shot",
+        "attack.shortbow.quick-shot"
+      ],
+      "abilities": [],
+      "triggers": [],
+      "base": "item.shortbow",
+      "enchant": "enchant.rooting",
+      "gaps": [
+        "enchant onDamage: apply 1 Root — trigger shape unparsed"
+      ]
+    },
+    "item.shortbow.abundant": {
+      "id": "item.shortbow.abundant",
+      "name": "Abundant Shortbow",
+      "itemClass": "weapon",
+      "tier": 3,
+      "hands": 2,
+      "slots": 2,
+      "statModifiers": {},
+      "grants": [
+        "attack.shortbow.short-shot",
+        "attack.shortbow.quick-shot"
+      ],
+      "abilities": [],
+      "triggers": [],
+      "base": "item.shortbow",
+      "enchant": "enchant.abundant",
+      "gaps": [
+        "enchant onMiss: regain 1 Stamina — trigger shape unparsed"
+      ]
+    },
+    "item.shortbow.venomous": {
+      "id": "item.shortbow.venomous",
+      "name": "Venomous Shortbow",
+      "itemClass": "weapon",
+      "tier": 3,
+      "hands": 2,
+      "slots": 2,
+      "statModifiers": {},
+      "grants": [
+        "attack.shortbow.short-shot",
+        "attack.shortbow.quick-shot"
+      ],
+      "abilities": [],
+      "triggers": [
+        {
+          "id": "trigger.shortbow.venomous.poison",
+          "hook": "onDamage",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.poison",
+            "value": 1
+          },
+          "source": "item.shortbow.venomous"
+        },
+        {
+          "id": "trigger.shortbow.venomous.poison-crit",
+          "hook": "onCrit",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.poison",
+            "value": 2
+          },
+          "source": "item.shortbow.venomous"
+        }
+      ],
+      "base": "item.shortbow",
+      "enchant": "enchant.venomous"
+    },
+    "item.shortbow.goading": {
+      "id": "item.shortbow.goading",
+      "name": "Goading Shortbow",
+      "itemClass": "weapon",
+      "tier": 3,
+      "hands": 2,
+      "slots": 2,
+      "statModifiers": {},
+      "grants": [
+        "attack.shortbow.short-shot",
+        "attack.shortbow.quick-shot"
+      ],
+      "abilities": [],
+      "triggers": [],
+      "base": "item.shortbow",
+      "enchant": "enchant.goading",
+      "gaps": [
+        "enchant onDamage: apply 1 Taunt — trigger shape unparsed"
+      ]
+    },
+    "item.shortbow.hunting": {
+      "id": "item.shortbow.hunting",
+      "name": "Hunting Shortbow",
+      "itemClass": "weapon",
+      "tier": 3,
+      "hands": 2,
+      "slots": 2,
+      "statModifiers": {
+        "precision": 1
+      },
+      "grants": [
+        "attack.shortbow.short-shot",
+        "attack.shortbow.quick-shot"
+      ],
+      "abilities": [],
+      "triggers": [],
+      "base": "item.shortbow",
+      "enchant": "enchant.hunting",
+      "gaps": [
+        "slayer {\"beast\":2} — no VS_TARGET station"
+      ]
+    },
+    "item.shortbow.fire": {
+      "id": "item.shortbow.fire",
+      "name": "Fire Shortbow",
+      "itemClass": "weapon",
+      "tier": 3,
+      "hands": 2,
+      "slots": 2,
+      "statModifiers": {},
+      "grants": [
+        "attack.shortbow.short-shot",
+        "attack.shortbow.quick-shot"
+      ],
+      "abilities": [],
+      "triggers": [
+        {
+          "id": "trigger.shortbow.fire.burn",
+          "hook": "onHit",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.burn",
+            "value": 1
+          },
+          "source": "item.shortbow.fire"
+        },
+        {
+          "id": "trigger.shortbow.fire.burn-crit",
+          "hook": "onCrit",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.burn",
+            "value": 2
+          },
+          "source": "item.shortbow.fire"
+        }
+      ],
+      "base": "item.shortbow",
+      "enchant": "enchant.fire"
+    },
+    "item.elfbow.gale": {
+      "id": "item.elfbow.gale",
+      "name": "Gale Elfbow",
+      "itemClass": "weapon",
+      "tier": 3,
+      "hands": 2,
+      "slots": 2,
+      "classRestriction": "class.ranger",
+      "statModifiers": {
+        "accuracy": 20,
+        "reach": 1
+      },
+      "grants": [
+        "attack.elfbow.elf-shot",
+        "attack.elfbow.double-shot"
+      ],
+      "abilities": [],
+      "triggers": [],
+      "base": "item.elfbow",
+      "enchant": "enchant.gale",
+      "gaps": [
+        "enchant onCrit: gain +1 Reach for the rest of the Battle — trigger shape unparsed"
+      ]
+    },
+    "item.elfbow.magic": {
+      "id": "item.elfbow.magic",
+      "name": "Magic Elfbow",
+      "itemClass": "weapon",
+      "tier": 3,
+      "hands": 2,
+      "slots": 2,
+      "classRestriction": "class.ranger",
+      "statModifiers": {
+        "precision": 1
+      },
+      "grants": [
+        "attack.elfbow.elf-shot",
+        "attack.elfbow.double-shot"
+      ],
+      "abilities": [],
+      "triggers": [],
+      "base": "item.elfbow",
+      "enchant": "enchant.magic"
+    },
+    "item.elfbow.shadow-touched": {
+      "id": "item.elfbow.shadow-touched",
+      "name": "Shadow-Touched Elfbow",
+      "itemClass": "weapon",
+      "tier": 3,
+      "hands": 2,
+      "slots": 2,
+      "classRestriction": "class.ranger",
+      "statModifiers": {
+        "crit": 3
+      },
+      "grants": [
+        "attack.elfbow.elf-shot",
+        "attack.elfbow.double-shot"
+      ],
+      "abilities": [],
+      "triggers": [],
+      "base": "item.elfbow",
+      "enchant": "enchant.shadow-touched",
+      "gaps": [
+        "enchant onHit: the target has −10 Accuracy until the end of its n — trigger shape unparsed"
+      ]
+    },
+    "item.elfbow.rooting": {
+      "id": "item.elfbow.rooting",
+      "name": "Elfbow of Rooting",
+      "itemClass": "weapon",
+      "tier": 3,
+      "hands": 2,
+      "slots": 2,
+      "classRestriction": "class.ranger",
+      "statModifiers": {},
+      "grants": [
+        "attack.elfbow.elf-shot",
+        "attack.elfbow.double-shot"
+      ],
+      "abilities": [],
+      "triggers": [],
+      "base": "item.elfbow",
+      "enchant": "enchant.rooting",
+      "gaps": [
+        "enchant onDamage: apply 1 Root — trigger shape unparsed"
+      ]
+    },
+    "item.elfbow.fire": {
+      "id": "item.elfbow.fire",
+      "name": "Fire Elfbow",
+      "itemClass": "weapon",
+      "tier": 3,
+      "hands": 2,
+      "slots": 2,
+      "classRestriction": "class.ranger",
+      "statModifiers": {},
+      "grants": [
+        "attack.elfbow.elf-shot",
+        "attack.elfbow.double-shot"
+      ],
+      "abilities": [],
+      "triggers": [
+        {
+          "id": "trigger.elfbow.fire.burn",
+          "hook": "onHit",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.burn",
+            "value": 1
+          },
+          "source": "item.elfbow.fire"
+        },
+        {
+          "id": "trigger.elfbow.fire.burn-crit",
+          "hook": "onCrit",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.burn",
+            "value": 2
+          },
+          "source": "item.elfbow.fire"
+        }
+      ],
+      "base": "item.elfbow",
+      "enchant": "enchant.fire"
+    },
+    "item.barbarian-bow.hunting": {
+      "id": "item.barbarian-bow.hunting",
+      "name": "Hunting Barbarian Bow",
+      "itemClass": "weapon",
+      "tier": 3,
+      "hands": 2,
+      "slots": 2,
+      "statModifiers": {
+        "precision": 1
+      },
+      "grants": [
+        "attack.barbarian-bow.power-shot",
+        "attack.barbarian-bow.crippling-shot"
+      ],
+      "abilities": [],
+      "triggers": [
+        {
+          "id": "trigger.barbarian-bow.power-shot.knockback",
+          "hook": "onDamage",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "knockback",
+            "value": 1
+          },
+          "source": "item.barbarian-bow",
+          "onlyWithAttack": "attack.barbarian-bow.power-shot"
+        },
+        {
+          "id": "trigger.barbarian-bow.crippling-shot.weak",
+          "hook": "onDamage",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.weak",
+            "value": 2
+          },
+          "source": "item.barbarian-bow",
+          "onlyWithAttack": "attack.barbarian-bow.crippling-shot"
+        }
+      ],
+      "base": "item.barbarian-bow",
+      "enchant": "enchant.hunting",
+      "gaps": [
+        "slayer {\"beast\":2} — no VS_TARGET station"
+      ]
+    },
+    "item.barbarian-bow.giant-slayer": {
+      "id": "item.barbarian-bow.giant-slayer",
+      "name": "Barbarian Bow of Giant-Slaying",
+      "itemClass": "weapon",
+      "tier": 3,
+      "hands": 2,
+      "slots": 2,
+      "statModifiers": {},
+      "grants": [
+        "attack.barbarian-bow.power-shot",
+        "attack.barbarian-bow.crippling-shot"
+      ],
+      "abilities": [],
+      "triggers": [
+        {
+          "id": "trigger.barbarian-bow.power-shot.knockback",
+          "hook": "onDamage",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "knockback",
+            "value": 1
+          },
+          "source": "item.barbarian-bow",
+          "onlyWithAttack": "attack.barbarian-bow.power-shot"
+        },
+        {
+          "id": "trigger.barbarian-bow.crippling-shot.weak",
+          "hook": "onDamage",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.weak",
+            "value": 2
+          },
+          "source": "item.barbarian-bow",
+          "onlyWithAttack": "attack.barbarian-bow.crippling-shot"
+        }
+      ],
+      "base": "item.barbarian-bow",
+      "enchant": "enchant.giant-slayer",
+      "gaps": [
+        "enchant onHit: if the target is a giant, it gains 1 Slow — trigger shape unparsed",
+        "slayer {\"giant\":3} — no VS_TARGET station"
+      ]
+    },
+    "item.barbarian-bow.fire": {
+      "id": "item.barbarian-bow.fire",
+      "name": "Fire Barbarian Bow",
+      "itemClass": "weapon",
+      "tier": 3,
+      "hands": 2,
+      "slots": 2,
+      "statModifiers": {},
+      "grants": [
+        "attack.barbarian-bow.power-shot",
+        "attack.barbarian-bow.crippling-shot"
+      ],
+      "abilities": [],
+      "triggers": [
+        {
+          "id": "trigger.barbarian-bow.power-shot.knockback",
+          "hook": "onDamage",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "knockback",
+            "value": 1
+          },
+          "source": "item.barbarian-bow",
+          "onlyWithAttack": "attack.barbarian-bow.power-shot"
+        },
+        {
+          "id": "trigger.barbarian-bow.crippling-shot.weak",
+          "hook": "onDamage",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.weak",
+            "value": 2
+          },
+          "source": "item.barbarian-bow",
+          "onlyWithAttack": "attack.barbarian-bow.crippling-shot"
+        },
+        {
+          "id": "trigger.barbarian-bow.fire.burn",
+          "hook": "onHit",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.burn",
+            "value": 1
+          },
+          "source": "item.barbarian-bow.fire"
+        },
+        {
+          "id": "trigger.barbarian-bow.fire.burn-crit",
+          "hook": "onCrit",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.burn",
+            "value": 2
+          },
+          "source": "item.barbarian-bow.fire"
+        }
+      ],
+      "base": "item.barbarian-bow",
+      "enchant": "enchant.fire"
+    },
+    "item.barbarian-bow.recklessness": {
+      "id": "item.barbarian-bow.recklessness",
+      "name": "Barbarian Bow of Recklessness",
+      "itemClass": "weapon",
+      "tier": 3,
+      "hands": 2,
+      "slots": 2,
+      "statModifiers": {},
+      "grants": [
+        "attack.barbarian-bow.power-shot",
+        "attack.barbarian-bow.crippling-shot"
+      ],
+      "abilities": [],
+      "triggers": [
+        {
+          "id": "trigger.barbarian-bow.power-shot.knockback",
+          "hook": "onDamage",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "knockback",
+            "value": 1
+          },
+          "source": "item.barbarian-bow",
+          "onlyWithAttack": "attack.barbarian-bow.power-shot"
+        },
+        {
+          "id": "trigger.barbarian-bow.crippling-shot.weak",
+          "hook": "onDamage",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.weak",
+            "value": 2
+          },
+          "source": "item.barbarian-bow",
+          "onlyWithAttack": "attack.barbarian-bow.crippling-shot"
+        }
+      ],
+      "base": "item.barbarian-bow",
+      "enchant": "enchant.recklessness",
+      "gaps": [
+        "enchant onMiss: gain +20 Accuracy and +10 Crit until the end of yo — trigger shape unparsed"
+      ]
+    },
+    "item.barbarian-bow.rooting": {
+      "id": "item.barbarian-bow.rooting",
+      "name": "Barbarian Bow of Rooting",
+      "itemClass": "weapon",
+      "tier": 3,
+      "hands": 2,
+      "slots": 2,
+      "statModifiers": {},
+      "grants": [
+        "attack.barbarian-bow.power-shot",
+        "attack.barbarian-bow.crippling-shot"
+      ],
+      "abilities": [],
+      "triggers": [
+        {
+          "id": "trigger.barbarian-bow.power-shot.knockback",
+          "hook": "onDamage",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "knockback",
+            "value": 1
+          },
+          "source": "item.barbarian-bow",
+          "onlyWithAttack": "attack.barbarian-bow.power-shot"
+        },
+        {
+          "id": "trigger.barbarian-bow.crippling-shot.weak",
+          "hook": "onDamage",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.weak",
+            "value": 2
+          },
+          "source": "item.barbarian-bow",
+          "onlyWithAttack": "attack.barbarian-bow.crippling-shot"
+        }
+      ],
+      "base": "item.barbarian-bow",
+      "enchant": "enchant.rooting",
+      "gaps": [
+        "enchant onDamage: apply 1 Root — trigger shape unparsed"
+      ]
+    },
+    "item.javelin.giant-slayer": {
+      "id": "item.javelin.giant-slayer",
+      "name": "Javelin of Giant-Slaying",
+      "itemClass": "weapon",
+      "tier": 3,
+      "hands": 1,
+      "slots": 1,
+      "statModifiers": {},
+      "grants": [
+        "attack.javelin.throw",
+        "attack.javelin.stab"
+      ],
+      "abilities": [],
+      "triggers": [],
+      "base": "item.javelin",
+      "enchant": "enchant.giant-slayer",
+      "gaps": [
+        "enchant onHit: if the target is a giant, it gains 1 Slow — trigger shape unparsed",
+        "slayer {\"giant\":3} — no VS_TARGET station"
+      ]
+    },
+    "item.javelin.hunting": {
+      "id": "item.javelin.hunting",
+      "name": "Hunting Javelin",
+      "itemClass": "weapon",
+      "tier": 3,
+      "hands": 1,
+      "slots": 1,
+      "statModifiers": {
+        "precision": 1
+      },
+      "grants": [
+        "attack.javelin.throw",
+        "attack.javelin.stab"
+      ],
+      "abilities": [],
+      "triggers": [],
+      "base": "item.javelin",
+      "enchant": "enchant.hunting",
+      "gaps": [
+        "slayer {\"beast\":2} — no VS_TARGET station"
+      ]
+    },
+    "item.javelin.venomous": {
+      "id": "item.javelin.venomous",
+      "name": "Venomous Javelin",
+      "itemClass": "weapon",
+      "tier": 3,
+      "hands": 1,
+      "slots": 1,
+      "statModifiers": {},
+      "grants": [
+        "attack.javelin.throw",
+        "attack.javelin.stab"
+      ],
+      "abilities": [],
+      "triggers": [
+        {
+          "id": "trigger.javelin.venomous.poison",
+          "hook": "onDamage",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.poison",
+            "value": 1
+          },
+          "source": "item.javelin.venomous"
+        },
+        {
+          "id": "trigger.javelin.venomous.poison-crit",
+          "hook": "onCrit",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.poison",
+            "value": 2
+          },
+          "source": "item.javelin.venomous"
+        }
+      ],
+      "base": "item.javelin",
+      "enchant": "enchant.venomous"
+    },
+    "item.javelin.frost": {
+      "id": "item.javelin.frost",
+      "name": "Frost Javelin",
+      "itemClass": "weapon",
+      "tier": 3,
+      "hands": 1,
+      "slots": 1,
+      "statModifiers": {},
+      "grants": [
+        "attack.javelin.throw",
+        "attack.javelin.stab"
+      ],
+      "abilities": [],
+      "triggers": [],
+      "base": "item.javelin",
+      "enchant": "enchant.frost",
+      "gaps": [
+        "enchant onHit: apply 1 Frost — trigger shape unparsed",
+        "enchant onCrit: apply 2 more Frost — trigger shape unparsed"
+      ]
+    },
+    "item.longsword.bloodletting": {
+      "id": "item.longsword.bloodletting",
+      "name": "Bloodletting Longsword",
+      "itemClass": "weapon",
+      "tier": 3,
+      "hands": 1,
+      "slots": 1,
+      "statModifiers": {
+        "crit": 3
+      },
+      "grants": [
+        "attack.longsword.slash",
+        "attack.longsword.stab"
+      ],
+      "abilities": [],
+      "triggers": [
+        {
+          "id": "trigger.longsword.bloodletting.bleed-crit",
+          "hook": "onCrit",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.bleed",
+            "value": 2
+          },
+          "source": "item.longsword.bloodletting"
+        }
+      ],
+      "base": "item.longsword",
+      "enchant": "enchant.bloodletting"
+    },
+    "item.longsword.the-master": {
+      "id": "item.longsword.the-master",
+      "name": "Longsword of the Master",
+      "itemClass": "weapon",
+      "tier": 3,
+      "hands": 1,
+      "slots": 1,
+      "statModifiers": {},
+      "grants": [
+        "attack.longsword.slash",
+        "attack.longsword.stab"
+      ],
+      "abilities": [],
+      "triggers": [],
+      "base": "item.longsword",
+      "enchant": "enchant.the-master",
+      "gaps": [
+        "enchant onHit: gain +10 Accuracy and +1 Crit — trigger shape unparsed",
+        "enchant onMiss: gain -20 Accuracy — trigger shape unparsed"
+      ]
+    },
+    "item.longsword.demon-slayer": {
+      "id": "item.longsword.demon-slayer",
+      "name": "Longsword of Demon-Slaying",
+      "itemClass": "weapon",
+      "tier": 3,
+      "hands": 1,
+      "slots": 1,
+      "statModifiers": {
+        "resist": 1
+      },
+      "grants": [
+        "attack.longsword.slash",
+        "attack.longsword.stab"
+      ],
+      "abilities": [],
+      "triggers": [],
+      "base": "item.longsword",
+      "enchant": "enchant.demon-slayer",
+      "gaps": [
+        "slayer {\"demon\":3} — no VS_TARGET station"
+      ]
+    },
+    "item.longsword.undead-slayer": {
+      "id": "item.longsword.undead-slayer",
+      "name": "Longsword of Undead-Slaying",
+      "itemClass": "weapon",
+      "tier": 3,
+      "hands": 1,
+      "slots": 1,
+      "statModifiers": {},
+      "grants": [
+        "attack.longsword.slash",
+        "attack.longsword.stab"
+      ],
+      "abilities": [],
+      "triggers": [],
+      "base": "item.longsword",
+      "enchant": "enchant.undead-slayer",
+      "gaps": [
+        "enchant onKill: if the target was undead, heal 2 — trigger shape unparsed",
+        "slayer {\"undead\":3} — no VS_TARGET station"
+      ]
+    },
+    "item.longsword.werewolf-bane": {
+      "id": "item.longsword.werewolf-bane",
+      "name": "Werewolf-Bane Longsword",
+      "itemClass": "weapon",
+      "tier": 3,
+      "hands": 1,
+      "slots": 1,
+      "statModifiers": {},
+      "grants": [
+        "attack.longsword.slash",
+        "attack.longsword.stab"
+      ],
+      "abilities": [],
+      "triggers": [],
+      "base": "item.longsword",
+      "enchant": "enchant.werewolf-bane",
+      "gaps": [
+        "slayer {\"werewolf\":4,\"beast\":1} — no VS_TARGET station"
+      ]
+    },
+    "item.longsword.taunting": {
+      "id": "item.longsword.taunting",
+      "name": "Taunting Longsword",
+      "itemClass": "weapon",
+      "tier": 3,
+      "hands": 1,
+      "slots": 1,
+      "statModifiers": {},
+      "grants": [
+        "attack.longsword.slash",
+        "attack.longsword.stab"
+      ],
+      "abilities": [],
+      "triggers": [],
+      "base": "item.longsword",
+      "enchant": "enchant.taunting",
+      "gaps": [
+        "enchant onHit: apply 2 Taunt — trigger shape unparsed"
+      ]
+    },
+    "item.longsword.destroying": {
+      "id": "item.longsword.destroying",
+      "name": "Longsword of Destroying",
+      "itemClass": "weapon",
+      "tier": 3,
+      "hands": 1,
+      "slots": 1,
+      "statModifiers": {},
+      "grants": [
+        "attack.longsword.slash",
+        "attack.longsword.stab"
+      ],
+      "abilities": [],
+      "triggers": [],
+      "base": "item.longsword",
+      "enchant": "enchant.destroying",
+      "gaps": [
+        "enchant onKill: the corpse is destroyed — trigger shape unparsed"
+      ]
+    },
+    "item.halberd.giant-slayer": {
+      "id": "item.halberd.giant-slayer",
+      "name": "Halberd of Giant-Slaying",
+      "itemClass": "weapon",
+      "tier": 3,
+      "hands": 2,
+      "slots": 2,
+      "classRestriction": "class.warrior",
+      "statModifiers": {},
+      "grants": [
+        "attack.halberd.hack",
+        "attack.halberd.cleave"
+      ],
+      "abilities": [],
+      "triggers": [
+        {
+          "id": "trigger.halberd.hack.knockback",
+          "hook": "onDamage",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "knockback",
+            "value": 1
+          },
+          "source": "item.halberd",
+          "onlyWithAttack": "attack.halberd.hack"
+        }
+      ],
+      "base": "item.halberd",
+      "enchant": "enchant.giant-slayer",
+      "gaps": [
+        "enchant onHit: if the target is a giant, it gains 1 Slow — trigger shape unparsed",
+        "slayer {\"giant\":3} — no VS_TARGET station"
+      ]
+    },
+    "item.halberd.bloodletting": {
+      "id": "item.halberd.bloodletting",
+      "name": "Bloodletting Halberd",
+      "itemClass": "weapon",
+      "tier": 3,
+      "hands": 2,
+      "slots": 2,
+      "classRestriction": "class.warrior",
+      "statModifiers": {
+        "crit": 3
+      },
+      "grants": [
+        "attack.halberd.hack",
+        "attack.halberd.cleave"
+      ],
+      "abilities": [],
+      "triggers": [
+        {
+          "id": "trigger.halberd.hack.knockback",
+          "hook": "onDamage",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "knockback",
+            "value": 1
+          },
+          "source": "item.halberd",
+          "onlyWithAttack": "attack.halberd.hack"
+        },
+        {
+          "id": "trigger.halberd.bloodletting.bleed-crit",
+          "hook": "onCrit",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.bleed",
+            "value": 2
+          },
+          "source": "item.halberd.bloodletting"
+        }
+      ],
+      "base": "item.halberd",
+      "enchant": "enchant.bloodletting"
+    },
+    "item.halberd.death": {
+      "id": "item.halberd.death",
+      "name": "Halberd of Death",
+      "itemClass": "weapon",
+      "tier": 3,
+      "hands": 2,
+      "slots": 2,
+      "classRestriction": "class.warrior",
+      "statModifiers": {},
+      "grants": [
+        "attack.halberd.hack",
+        "attack.halberd.cleave"
+      ],
+      "abilities": [],
+      "triggers": [
+        {
+          "id": "trigger.halberd.hack.knockback",
+          "hook": "onDamage",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "knockback",
+            "value": 1
+          },
+          "source": "item.halberd",
+          "onlyWithAttack": "attack.halberd.hack"
+        }
+      ],
+      "base": "item.halberd",
+      "enchant": "enchant.death",
+      "gaps": [
+        "enchant onKill: gain 2 Stamina — trigger shape unparsed"
+      ]
+    },
+    "item.halberd.taunting": {
+      "id": "item.halberd.taunting",
+      "name": "Taunting Halberd",
+      "itemClass": "weapon",
+      "tier": 3,
+      "hands": 2,
+      "slots": 2,
+      "classRestriction": "class.warrior",
+      "statModifiers": {},
+      "grants": [
+        "attack.halberd.hack",
+        "attack.halberd.cleave"
+      ],
+      "abilities": [],
+      "triggers": [
+        {
+          "id": "trigger.halberd.hack.knockback",
+          "hook": "onDamage",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "knockback",
+            "value": 1
+          },
+          "source": "item.halberd",
+          "onlyWithAttack": "attack.halberd.hack"
+        }
+      ],
+      "base": "item.halberd",
+      "enchant": "enchant.taunting",
+      "gaps": [
+        "enchant onHit: apply 2 Taunt — trigger shape unparsed"
+      ]
+    },
+    "item.halberd.destroying": {
+      "id": "item.halberd.destroying",
+      "name": "Halberd of Destroying",
+      "itemClass": "weapon",
+      "tier": 3,
+      "hands": 2,
+      "slots": 2,
+      "classRestriction": "class.warrior",
+      "statModifiers": {},
+      "grants": [
+        "attack.halberd.hack",
+        "attack.halberd.cleave"
+      ],
+      "abilities": [],
+      "triggers": [
+        {
+          "id": "trigger.halberd.hack.knockback",
+          "hook": "onDamage",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "knockback",
+            "value": 1
+          },
+          "source": "item.halberd",
+          "onlyWithAttack": "attack.halberd.hack"
+        }
+      ],
+      "base": "item.halberd",
+      "enchant": "enchant.destroying",
+      "gaps": [
+        "enchant onKill: the corpse is destroyed — trigger shape unparsed"
+      ]
+    },
+    "item.fire-staff.cursed-skull": {
+      "id": "item.fire-staff.cursed-skull",
+      "name": "Fire Staff of the Cursed Skull",
+      "itemClass": "weapon",
+      "tier": 3,
+      "hands": 2,
+      "slots": 2,
+      "classRestriction": "class.mage",
+      "statModifiers": {
+        "spirit": 1,
+        "maxHp": 4
+      },
+      "grants": [
+        "attack.fire-staff.fire-blast"
+      ],
+      "abilities": [],
+      "triggers": [
+        {
+          "id": "trigger.fire-staff.fire-blast.burn",
+          "hook": "onHit",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.burn",
+            "value": 1
+          },
+          "source": "item.fire-staff",
+          "onlyWithAttack": "attack.fire-staff.fire-blast"
+        }
+      ],
+      "gaps": [
+        "grants power.fire-staff.fireball — item power — shape unparsed",
+        "enchant onActivationEnd: you take 1 true damage — trigger shape unparsed"
+      ],
+      "base": "item.fire-staff",
+      "enchant": "enchant.cursed-skull"
+    },
+    "item.fire-staff.maddening": {
+      "id": "item.fire-staff.maddening",
+      "name": "Maddening Fire Staff",
+      "itemClass": "weapon",
+      "tier": 3,
+      "hands": 2,
+      "slots": 2,
+      "classRestriction": "class.mage",
+      "statModifiers": {},
+      "grants": [
+        "attack.fire-staff.fire-blast"
+      ],
+      "abilities": [],
+      "triggers": [
+        {
+          "id": "trigger.fire-staff.fire-blast.burn",
+          "hook": "onHit",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.burn",
+            "value": 1
+          },
+          "source": "item.fire-staff",
+          "onlyWithAttack": "attack.fire-staff.fire-blast"
+        }
+      ],
+      "gaps": [
+        "grants power.fire-staff.fireball — item power — shape unparsed",
+        "enchant onDamage: apply 4 Confusion — trigger shape unparsed"
+      ],
+      "base": "item.fire-staff",
+      "enchant": "enchant.maddening"
+    },
+    "item.fire-staff.bewildering": {
+      "id": "item.fire-staff.bewildering",
+      "name": "Bewildering Fire Staff",
+      "itemClass": "weapon",
+      "tier": 3,
+      "hands": 2,
+      "slots": 2,
+      "classRestriction": "class.mage",
+      "statModifiers": {},
+      "grants": [
+        "attack.fire-staff.fire-blast"
+      ],
+      "abilities": [],
+      "triggers": [
+        {
+          "id": "trigger.fire-staff.fire-blast.burn",
+          "hook": "onHit",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.burn",
+            "value": 1
+          },
+          "source": "item.fire-staff",
+          "onlyWithAttack": "attack.fire-staff.fire-blast"
+        }
+      ],
+      "gaps": [
+        "grants power.fire-staff.fireball — item power — shape unparsed",
+        "enchant onDamage: apply 1 Confusion — trigger shape unparsed"
+      ],
+      "base": "item.fire-staff",
+      "enchant": "enchant.bewildering"
+    },
+    "item.fire-staff.lightning": {
+      "id": "item.fire-staff.lightning",
+      "name": "Lightning Fire Staff",
+      "itemClass": "weapon",
+      "tier": 3,
+      "hands": 2,
+      "slots": 2,
+      "classRestriction": "class.mage",
+      "statModifiers": {
+        "accuracy": 5
+      },
+      "grants": [
+        "attack.fire-staff.fire-blast"
+      ],
+      "abilities": [],
+      "triggers": [
+        {
+          "id": "trigger.fire-staff.fire-blast.burn",
+          "hook": "onHit",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.burn",
+            "value": 1
+          },
+          "source": "item.fire-staff",
+          "onlyWithAttack": "attack.fire-staff.fire-blast"
+        }
+      ],
+      "gaps": [
+        "grants power.fire-staff.fireball — item power — shape unparsed",
+        "enchant onCrit: 2 magic damage arcs to another enemy within 2 hexe — trigger shape unparsed"
+      ],
+      "base": "item.fire-staff",
+      "enchant": "enchant.lightning"
+    },
+    "item.frost-staff.eternal-ice": {
+      "id": "item.frost-staff.eternal-ice",
+      "name": "Frost Staff of Eternal Ice",
+      "itemClass": "weapon",
+      "tier": 3,
+      "hands": 2,
+      "slots": 2,
+      "classRestriction": "class.mage",
+      "statModifiers": {
+        "magic": 1,
+        "movement": -1
+      },
+      "grants": [
+        "attack.frost-staff.frost-blast"
+      ],
+      "abilities": [],
+      "triggers": [],
+      "gaps": [
+        "grants power.frost-staff.frost-nova — item power — shape unparsed",
+        "enchant onHit: apply 2 Frost — trigger shape unparsed",
+        "enchant onKill: every enemy within 2 hexes of the target gains 1 F — trigger shape unparsed"
+      ],
+      "base": "item.frost-staff",
+      "enchant": "enchant.eternal-ice"
+    },
+    "item.frost-staff.bewildering": {
+      "id": "item.frost-staff.bewildering",
+      "name": "Bewildering Frost Staff",
+      "itemClass": "weapon",
+      "tier": 3,
+      "hands": 2,
+      "slots": 2,
+      "classRestriction": "class.mage",
+      "statModifiers": {},
+      "grants": [
+        "attack.frost-staff.frost-blast"
+      ],
+      "abilities": [],
+      "triggers": [],
+      "gaps": [
+        "grants power.frost-staff.frost-nova — item power — shape unparsed",
+        "enchant onDamage: apply 1 Confusion — trigger shape unparsed"
+      ],
+      "base": "item.frost-staff",
+      "enchant": "enchant.bewildering"
+    },
+    "item.frost-staff.cursed-skull": {
+      "id": "item.frost-staff.cursed-skull",
+      "name": "Frost Staff of the Cursed Skull",
+      "itemClass": "weapon",
+      "tier": 3,
+      "hands": 2,
+      "slots": 2,
+      "classRestriction": "class.mage",
+      "statModifiers": {
+        "spirit": 1,
+        "maxHp": 4
+      },
+      "grants": [
+        "attack.frost-staff.frost-blast"
+      ],
+      "abilities": [],
+      "triggers": [],
+      "gaps": [
+        "grants power.frost-staff.frost-nova — item power — shape unparsed",
+        "enchant onActivationEnd: you take 1 true damage — trigger shape unparsed"
+      ],
+      "base": "item.frost-staff",
+      "enchant": "enchant.cursed-skull"
+    },
+    "item.earth-staff.cursed-skull": {
+      "id": "item.earth-staff.cursed-skull",
+      "name": "Earth Staff of the Cursed Skull",
+      "itemClass": "weapon",
+      "tier": 3,
+      "hands": 2,
+      "slots": 2,
+      "classRestriction": "class.mage",
+      "statModifiers": {
+        "spirit": 1,
+        "maxHp": 4
+      },
+      "grants": [
+        "attack.earth-staff.earth-blast"
+      ],
+      "abilities": [],
+      "triggers": [
+        {
+          "id": "trigger.earth-staff.earth-blast.knockback",
+          "hook": "onDamage",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "knockback",
+            "value": 1
+          },
+          "source": "item.earth-staff",
+          "onlyWithAttack": "attack.earth-staff.earth-blast"
+        }
+      ],
+      "gaps": [
+        "grants power.earth-staff.earth-shield — item power — shape unparsed",
+        "enchant onActivationEnd: you take 1 true damage — trigger shape unparsed"
+      ],
+      "base": "item.earth-staff",
+      "enchant": "enchant.cursed-skull"
+    },
+    "item.earth-staff.maddening": {
+      "id": "item.earth-staff.maddening",
+      "name": "Maddening Earth Staff",
+      "itemClass": "weapon",
+      "tier": 3,
+      "hands": 2,
+      "slots": 2,
+      "classRestriction": "class.mage",
+      "statModifiers": {},
+      "grants": [
+        "attack.earth-staff.earth-blast"
+      ],
+      "abilities": [],
+      "triggers": [
+        {
+          "id": "trigger.earth-staff.earth-blast.knockback",
+          "hook": "onDamage",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "knockback",
+            "value": 1
+          },
+          "source": "item.earth-staff",
+          "onlyWithAttack": "attack.earth-staff.earth-blast"
+        }
+      ],
+      "gaps": [
+        "grants power.earth-staff.earth-shield — item power — shape unparsed",
+        "enchant onDamage: apply 4 Confusion — trigger shape unparsed"
+      ],
+      "base": "item.earth-staff",
+      "enchant": "enchant.maddening"
+    },
+    "item.earth-staff.eternal-ice": {
+      "id": "item.earth-staff.eternal-ice",
+      "name": "Earth Staff of Eternal Ice",
+      "itemClass": "weapon",
+      "tier": 3,
+      "hands": 2,
+      "slots": 2,
+      "classRestriction": "class.mage",
+      "statModifiers": {
+        "magic": 1,
+        "movement": -1
+      },
+      "grants": [
+        "attack.earth-staff.earth-blast"
+      ],
+      "abilities": [],
+      "triggers": [
+        {
+          "id": "trigger.earth-staff.earth-blast.knockback",
+          "hook": "onDamage",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "knockback",
+            "value": 1
+          },
+          "source": "item.earth-staff",
+          "onlyWithAttack": "attack.earth-staff.earth-blast"
+        }
+      ],
+      "gaps": [
+        "grants power.earth-staff.earth-shield — item power — shape unparsed",
+        "enchant onHit: apply 2 Frost — trigger shape unparsed",
+        "enchant onKill: every enemy within 2 hexes of the target gains 1 F — trigger shape unparsed"
+      ],
+      "base": "item.earth-staff",
+      "enchant": "enchant.eternal-ice"
+    },
+    "item.lightning-staff.lightning": {
+      "id": "item.lightning-staff.lightning",
+      "name": "Lightning Lightning Staff",
+      "itemClass": "weapon",
+      "tier": 3,
+      "hands": 2,
+      "slots": 2,
+      "classRestriction": "class.mage",
+      "statModifiers": {
+        "accuracy": 5
+      },
+      "grants": [
+        "attack.lightning-staff.bolt"
+      ],
+      "abilities": [
+        "power.lightning-staff.storm"
+      ],
+      "triggers": [],
+      "base": "item.lightning-staff",
+      "enchant": "enchant.lightning",
+      "gaps": [
+        "enchant onCrit: 2 magic damage arcs to another enemy within 2 hexe — trigger shape unparsed"
+      ]
+    },
+    "item.lightning-staff.bewildering": {
+      "id": "item.lightning-staff.bewildering",
+      "name": "Bewildering Lightning Staff",
+      "itemClass": "weapon",
+      "tier": 3,
+      "hands": 2,
+      "slots": 2,
+      "classRestriction": "class.mage",
+      "statModifiers": {},
+      "grants": [
+        "attack.lightning-staff.bolt"
+      ],
+      "abilities": [
+        "power.lightning-staff.storm"
+      ],
+      "triggers": [],
+      "base": "item.lightning-staff",
+      "enchant": "enchant.bewildering",
+      "gaps": [
+        "enchant onDamage: apply 1 Confusion — trigger shape unparsed"
+      ]
+    },
+    "item.lightning-staff.maddening": {
+      "id": "item.lightning-staff.maddening",
+      "name": "Maddening Lightning Staff",
+      "itemClass": "weapon",
+      "tier": 3,
+      "hands": 2,
+      "slots": 2,
+      "classRestriction": "class.mage",
+      "statModifiers": {},
+      "grants": [
+        "attack.lightning-staff.bolt"
+      ],
+      "abilities": [
+        "power.lightning-staff.storm"
+      ],
+      "triggers": [],
+      "base": "item.lightning-staff",
+      "enchant": "enchant.maddening",
+      "gaps": [
+        "enchant onDamage: apply 4 Confusion — trigger shape unparsed"
+      ]
+    },
+    "item.force-staff.eternal-ice": {
+      "id": "item.force-staff.eternal-ice",
+      "name": "Force Staff of Eternal Ice",
+      "itemClass": "weapon",
+      "tier": 3,
+      "hands": 2,
+      "slots": 2,
+      "classRestriction": "class.mage",
+      "statModifiers": {
+        "magic": 1,
+        "movement": -1
+      },
+      "grants": [
+        "attack.force-staff.force-blast"
+      ],
+      "abilities": [],
+      "triggers": [],
+      "base": "item.force-staff",
+      "enchant": "enchant.eternal-ice",
+      "gaps": [
+        "enchant onHit: apply 2 Frost — trigger shape unparsed",
+        "enchant onKill: every enemy within 2 hexes of the target gains 1 F — trigger shape unparsed"
+      ]
+    },
+    "item.force-staff.lightning": {
+      "id": "item.force-staff.lightning",
+      "name": "Lightning Force Staff",
+      "itemClass": "weapon",
+      "tier": 3,
+      "hands": 2,
+      "slots": 2,
+      "classRestriction": "class.mage",
+      "statModifiers": {
+        "accuracy": 5
+      },
+      "grants": [
+        "attack.force-staff.force-blast"
+      ],
+      "abilities": [],
+      "triggers": [],
+      "base": "item.force-staff",
+      "enchant": "enchant.lightning",
+      "gaps": [
+        "enchant onCrit: 2 magic damage arcs to another enemy within 2 hexe — trigger shape unparsed"
+      ]
+    },
+    "item.force-staff.cursed-skull": {
+      "id": "item.force-staff.cursed-skull",
+      "name": "Force Staff of the Cursed Skull",
+      "itemClass": "weapon",
+      "tier": 3,
+      "hands": 2,
+      "slots": 2,
+      "classRestriction": "class.mage",
+      "statModifiers": {
+        "spirit": 1,
+        "maxHp": 4
+      },
+      "grants": [
+        "attack.force-staff.force-blast"
+      ],
+      "abilities": [],
+      "triggers": [],
+      "base": "item.force-staff",
+      "enchant": "enchant.cursed-skull",
+      "gaps": [
+        "enchant onActivationEnd: you take 1 true damage — trigger shape unparsed"
+      ]
+    },
+    "item.force-staff.bewildering": {
+      "id": "item.force-staff.bewildering",
+      "name": "Bewildering Force Staff",
+      "itemClass": "weapon",
+      "tier": 3,
+      "hands": 2,
+      "slots": 2,
+      "classRestriction": "class.mage",
+      "statModifiers": {},
+      "grants": [
+        "attack.force-staff.force-blast"
+      ],
+      "abilities": [],
+      "triggers": [],
+      "base": "item.force-staff",
+      "enchant": "enchant.bewildering",
+      "gaps": [
+        "enchant onDamage: apply 1 Confusion — trigger shape unparsed"
+      ]
+    },
+    "item.holy-symbol.holy-water": {
+      "id": "item.holy-symbol.holy-water",
+      "name": "Holy Symbol of Holy Water",
+      "itemClass": "weapon",
+      "tier": 3,
+      "hands": 1,
+      "slots": 1,
+      "classRestriction": "class.priest",
+      "statModifiers": {},
+      "grants": [
+        "attack.holy-symbol.wrath"
+      ],
+      "abilities": [
+        "power.holy-symbol.heal"
+      ],
+      "triggers": [],
+      "base": "item.holy-symbol",
+      "enchant": "enchant.holy-water",
+      "gaps": [
+        "enchant onHit: if the target is undead, demon or vampire, apply 2 — trigger shape unparsed",
+        "slayer {\"undead\":1,\"demon\":1,\"vampire\":1} — no VS_TARGET station"
+      ]
+    },
+    "item.holy-symbol.undead-slayer": {
+      "id": "item.holy-symbol.undead-slayer",
+      "name": "Holy Symbol of Undead-Slaying",
+      "itemClass": "weapon",
+      "tier": 3,
+      "hands": 1,
+      "slots": 1,
+      "classRestriction": "class.priest",
+      "statModifiers": {},
+      "grants": [
+        "attack.holy-symbol.wrath"
+      ],
+      "abilities": [
+        "power.holy-symbol.heal"
+      ],
+      "triggers": [],
+      "base": "item.holy-symbol",
+      "enchant": "enchant.undead-slayer",
+      "gaps": [
+        "enchant onKill: if the target was undead, heal 2 — trigger shape unparsed",
+        "slayer {\"undead\":3} — no VS_TARGET station"
+      ]
+    },
+    "item.holy-symbol.bewildering": {
+      "id": "item.holy-symbol.bewildering",
+      "name": "Bewildering Holy Symbol",
+      "itemClass": "weapon",
+      "tier": 3,
+      "hands": 1,
+      "slots": 1,
+      "classRestriction": "class.priest",
+      "statModifiers": {},
+      "grants": [
+        "attack.holy-symbol.wrath"
+      ],
+      "abilities": [
+        "power.holy-symbol.heal"
+      ],
+      "triggers": [],
+      "base": "item.holy-symbol",
+      "enchant": "enchant.bewildering",
+      "gaps": [
+        "enchant onDamage: apply 1 Confusion — trigger shape unparsed"
+      ]
+    },
+    "item.holy-symbol.cursed-skull": {
+      "id": "item.holy-symbol.cursed-skull",
+      "name": "Holy Symbol of the Cursed Skull",
+      "itemClass": "weapon",
+      "tier": 3,
+      "hands": 1,
+      "slots": 1,
+      "classRestriction": "class.priest",
+      "statModifiers": {
+        "spirit": 1,
+        "maxHp": 4
+      },
+      "grants": [
+        "attack.holy-symbol.wrath"
+      ],
+      "abilities": [
+        "power.holy-symbol.heal"
+      ],
+      "triggers": [],
+      "base": "item.holy-symbol",
+      "enchant": "enchant.cursed-skull",
+      "gaps": [
+        "enchant onActivationEnd: you take 1 true damage — trigger shape unparsed"
+      ]
+    },
+    "item.priest-chain.holy-water": {
+      "id": "item.priest-chain.holy-water",
+      "name": "Priest Chain of Holy Water",
+      "itemClass": "weapon",
+      "tier": 3,
+      "hands": 1,
+      "slots": 1,
+      "classRestriction": "class.priest",
+      "statModifiers": {},
+      "grants": [
+        "attack.priest-chain.smite"
+      ],
+      "abilities": [],
+      "triggers": [],
+      "gaps": [
+        "grants power.priest-chain.benediction — item power — shape unparsed",
+        "enchant onHit: if the target is undead, demon or vampire, apply 2 — trigger shape unparsed",
+        "slayer {\"undead\":1,\"demon\":1,\"vampire\":1} — no VS_TARGET station"
+      ],
+      "base": "item.priest-chain",
+      "enchant": "enchant.holy-water"
+    },
+    "item.priest-chain.undead-slayer": {
+      "id": "item.priest-chain.undead-slayer",
+      "name": "Priest Chain of Undead-Slaying",
+      "itemClass": "weapon",
+      "tier": 3,
+      "hands": 1,
+      "slots": 1,
+      "classRestriction": "class.priest",
+      "statModifiers": {},
+      "grants": [
+        "attack.priest-chain.smite"
+      ],
+      "abilities": [],
+      "triggers": [],
+      "gaps": [
+        "grants power.priest-chain.benediction — item power — shape unparsed",
+        "enchant onKill: if the target was undead, heal 2 — trigger shape unparsed",
+        "slayer {\"undead\":3} — no VS_TARGET station"
+      ],
+      "base": "item.priest-chain",
+      "enchant": "enchant.undead-slayer"
+    },
+    "item.priest-chain.heavens-edge": {
+      "id": "item.priest-chain.heavens-edge",
+      "name": "Priest Chain of Heaven's Edge",
+      "itemClass": "weapon",
+      "tier": 3,
+      "hands": 1,
+      "slots": 1,
+      "classRestriction": "class.priest",
+      "statModifiers": {},
+      "grants": [
+        "attack.priest-chain.smite"
+      ],
+      "abilities": [],
+      "triggers": [],
+      "gaps": [
+        "grants power.priest-chain.benediction — item power — shape unparsed",
+        "enchant onDamage: heal for half your Spirit, rounded down — trigger shape unparsed"
+      ],
+      "base": "item.priest-chain",
+      "enchant": "enchant.heavens-edge"
+    },
+    "item.priest-chain.demon-slayer": {
+      "id": "item.priest-chain.demon-slayer",
+      "name": "Priest Chain of Demon-Slaying",
+      "itemClass": "weapon",
+      "tier": 3,
+      "hands": 1,
+      "slots": 1,
+      "classRestriction": "class.priest",
+      "statModifiers": {
+        "resist": 1
+      },
+      "grants": [
+        "attack.priest-chain.smite"
+      ],
+      "abilities": [],
+      "triggers": [],
+      "gaps": [
+        "grants power.priest-chain.benediction — item power — shape unparsed",
+        "slayer {\"demon\":3} — no VS_TARGET station"
+      ],
+      "base": "item.priest-chain",
+      "enchant": "enchant.demon-slayer"
+    },
+    "item.buckler.riposte": {
+      "id": "item.buckler.riposte",
+      "name": "Buckler of Riposte",
+      "itemClass": "weapon",
+      "tier": 3,
+      "hands": 1,
+      "slots": 1,
+      "statModifiers": {},
+      "grants": [
+        "attack.buckler.punch"
+      ],
+      "abilities": [],
+      "triggers": [],
+      "gaps": [
+        "grants power.buckler.block-and-dodge — item power — shape unparsed",
+        "enchant onDodge: the attacker takes 5 true damage — trigger shape unparsed"
+      ],
+      "base": "item.buckler",
+      "enchant": "enchant.riposte"
+    },
+    "item.knight-shield.riposte": {
+      "id": "item.knight-shield.riposte",
+      "name": "Knight Shield of Riposte",
+      "itemClass": "weapon",
+      "tier": 3,
+      "hands": 1,
+      "slots": 1,
+      "statModifiers": {},
+      "grants": [
+        "attack.knight-shield.shield-slam"
+      ],
+      "abilities": [
+        "power.knight-shield.block"
+      ],
+      "triggers": [
+        {
+          "id": "trigger.knight-shield.shield-slam.stun",
+          "hook": "onDamage",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.stun",
+            "value": 1
+          },
+          "source": "item.knight-shield",
+          "onlyWithAttack": "attack.knight-shield.shield-slam"
+        }
+      ],
+      "base": "item.knight-shield",
+      "enchant": "enchant.riposte",
+      "gaps": [
+        "enchant onDodge: the attacker takes 5 true damage — trigger shape unparsed"
+      ]
+    },
+    "item.tower-shield.riposte": {
+      "id": "item.tower-shield.riposte",
+      "name": "Tower Shield of Riposte",
+      "itemClass": "weapon",
+      "tier": 3,
+      "hands": 1,
+      "slots": 1,
+      "statModifiers": {},
+      "grants": [],
+      "abilities": [],
+      "triggers": [],
+      "gaps": [
+        "grants power.tower-shield.cover — item power — shape unparsed",
+        "grants power.tower-shield.stand-tall — item power — shape unparsed",
+        "enchant onDodge: the attacker takes 5 true damage — trigger shape unparsed"
+      ],
+      "base": "item.tower-shield",
+      "enchant": "enchant.riposte"
+    },
+    "item.silkweave-armor.stormward": {
+      "id": "item.silkweave-armor.stormward",
+      "name": "Stormward Silkweave Armor",
+      "itemClass": "armor",
+      "tier": 3,
+      "hands": 0,
+      "slots": 1,
+      "statModifiers": {
+        "armor": 1,
+        "dodge": 20,
+        "maxHp": -2
+      },
+      "grants": [],
+      "abilities": [],
+      "triggers": [],
+      "base": "item.silkweave-armor",
+      "enchant": "enchant.stormward",
+      "gaps": [
+        "enchant onTakingDamage: gain +20 Dodge until the end of your next Activati — trigger shape unparsed"
+      ]
+    },
+    "item.silkweave-armor.blessed": {
+      "id": "item.silkweave-armor.blessed",
+      "name": "Blessed Silkweave Armor",
+      "itemClass": "armor",
+      "tier": 3,
+      "hands": 0,
+      "slots": 1,
+      "statModifiers": {
+        "armor": 1,
+        "dodge": 5,
+        "maxHp": 0,
+        "luck": 6
+      },
+      "grants": [],
+      "abilities": [],
+      "triggers": [],
+      "base": "item.silkweave-armor",
+      "enchant": "enchant.blessed"
+    },
+    "item.silkweave-armor.charmed": {
+      "id": "item.silkweave-armor.charmed",
+      "name": "Charmed Silkweave Armor",
+      "itemClass": "armor",
+      "tier": 3,
+      "hands": 0,
+      "slots": 1,
+      "statModifiers": {
+        "armor": 1,
+        "dodge": 5,
+        "maxHp": 0,
+        "luck": 5
+      },
+      "grants": [],
+      "abilities": [],
+      "triggers": [],
+      "base": "item.silkweave-armor",
+      "enchant": "enchant.charmed"
+    },
+    "item.silkweave-armor.scalding-ward": {
+      "id": "item.silkweave-armor.scalding-ward",
+      "name": "Scalding Silkweave Armor",
+      "itemClass": "armor",
+      "tier": 3,
+      "hands": 0,
+      "slots": 1,
+      "statModifiers": {
+        "armor": 1,
+        "dodge": 5,
+        "maxHp": -2
+      },
+      "grants": [],
+      "abilities": [],
+      "triggers": [],
+      "base": "item.silkweave-armor",
+      "enchant": "enchant.scalding-ward",
+      "gaps": [
+        "enchant onDodge: the attacker gains 3 Burn — trigger shape unparsed"
+      ]
+    },
+    "item.silkweave-armor.fire-ward": {
+      "id": "item.silkweave-armor.fire-ward",
+      "name": "Fire-Warded Silkweave Armor",
+      "itemClass": "armor",
+      "tier": 3,
+      "hands": 0,
+      "slots": 1,
+      "statModifiers": {
+        "armor": 1,
+        "dodge": 5,
+        "maxHp": -2,
+        "resist": 1
+      },
+      "grants": [],
+      "abilities": [],
+      "triggers": [],
+      "base": "item.silkweave-armor",
+      "enchant": "enchant.fire-ward"
+    },
+    "item.barbarian-hide.silkweave": {
+      "id": "item.barbarian-hide.silkweave",
+      "name": "Silkweave Barbarian Hide",
+      "itemClass": "armor",
+      "tier": 3,
+      "hands": 0,
+      "slots": 1,
+      "statModifiers": {
+        "maxStamina": 2,
+        "luck": 3,
+        "dodge": 5,
+        "maxHp": -2
+      },
+      "grants": [],
+      "abilities": [],
+      "triggers": [],
+      "base": "item.barbarian-hide",
+      "enchant": "enchant.silkweave"
+    },
+    "item.barbarian-hide.stormward": {
+      "id": "item.barbarian-hide.stormward",
+      "name": "Stormward Barbarian Hide",
+      "itemClass": "armor",
+      "tier": 3,
+      "hands": 0,
+      "slots": 1,
+      "statModifiers": {
+        "maxStamina": 1,
+        "luck": 3,
+        "dodge": 15
+      },
+      "grants": [],
+      "abilities": [],
+      "triggers": [],
+      "base": "item.barbarian-hide",
+      "enchant": "enchant.stormward",
+      "gaps": [
+        "enchant onTakingDamage: gain +20 Dodge until the end of your next Activati — trigger shape unparsed"
+      ]
+    },
+    "item.barbarian-hide.thorned": {
+      "id": "item.barbarian-hide.thorned",
+      "name": "Thorned Barbarian Hide",
+      "itemClass": "armor",
+      "tier": 3,
+      "hands": 0,
+      "slots": 1,
+      "statModifiers": {
+        "maxStamina": 1,
+        "luck": 3
+      },
+      "grants": [],
+      "abilities": [],
+      "triggers": [],
+      "base": "item.barbarian-hide",
+      "enchant": "enchant.thorned",
+      "gaps": [
+        "enchant onTakingDamage: Thorns 2 — trigger shape unparsed"
+      ]
+    },
+    "item.barbarian-hide.tainted-blood": {
+      "id": "item.barbarian-hide.tainted-blood",
+      "name": "Barbarian Hide of Tainted Blood",
+      "itemClass": "armor",
+      "tier": 3,
+      "hands": 0,
+      "slots": 1,
+      "statModifiers": {
+        "maxStamina": 1,
+        "luck": 0,
+        "maxHp": 6,
+        "strength": 1
+      },
+      "grants": [],
+      "abilities": [],
+      "triggers": [],
+      "base": "item.barbarian-hide",
+      "enchant": "enchant.tainted-blood",
+      "gaps": [
+        "enchant onTakingDamage: Bleed on you ticks twice — trigger shape unparsed"
+      ]
+    },
+    "item.barbarian-hide.regeneration": {
+      "id": "item.barbarian-hide.regeneration",
+      "name": "Barbarian Hide of Regeneration",
+      "itemClass": "armor",
+      "tier": 3,
+      "hands": 0,
+      "slots": 1,
+      "statModifiers": {
+        "maxStamina": 1,
+        "luck": 3
+      },
+      "grants": [],
+      "abilities": [],
+      "triggers": [
+        {
+          "id": "trigger.barbarian-hide.regeneration.regeneration",
+          "hook": "onTakingDamage",
+          "chance": 100,
+          "select": "self",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.regeneration",
+            "value": 1
+          },
+          "source": "item.barbarian-hide.regeneration"
+        }
+      ],
+      "base": "item.barbarian-hide",
+      "enchant": "enchant.regeneration"
+    },
+    "item.studded-leather.silkweave": {
+      "id": "item.studded-leather.silkweave",
+      "name": "Silkweave Studded Leather",
+      "itemClass": "armor",
+      "tier": 3,
+      "hands": 0,
+      "slots": 1,
+      "statModifiers": {
+        "maxHp": 0,
+        "dodge": 5,
+        "maxStamina": 1
+      },
+      "grants": [],
+      "abilities": [],
+      "triggers": [],
+      "base": "item.studded-leather",
+      "enchant": "enchant.silkweave"
+    },
+    "item.studded-leather.stormward": {
+      "id": "item.studded-leather.stormward",
+      "name": "Stormward Studded Leather",
+      "itemClass": "armor",
+      "tier": 3,
+      "hands": 0,
+      "slots": 1,
+      "statModifiers": {
+        "maxHp": 2,
+        "dodge": 15
+      },
+      "grants": [],
+      "abilities": [],
+      "triggers": [],
+      "base": "item.studded-leather",
+      "enchant": "enchant.stormward",
+      "gaps": [
+        "enchant onTakingDamage: gain +20 Dodge until the end of your next Activati — trigger shape unparsed"
+      ]
+    },
+    "item.studded-leather.blessed": {
+      "id": "item.studded-leather.blessed",
+      "name": "Blessed Studded Leather",
+      "itemClass": "armor",
+      "tier": 3,
+      "hands": 0,
+      "slots": 1,
+      "statModifiers": {
+        "maxHp": 4,
+        "luck": 6
+      },
+      "grants": [],
+      "abilities": [],
+      "triggers": [],
+      "base": "item.studded-leather",
+      "enchant": "enchant.blessed"
+    },
+    "item.studded-leather.charmed": {
+      "id": "item.studded-leather.charmed",
+      "name": "Charmed Studded Leather",
+      "itemClass": "armor",
+      "tier": 3,
+      "hands": 0,
+      "slots": 1,
+      "statModifiers": {
+        "maxHp": 4,
+        "luck": 5
+      },
+      "grants": [],
+      "abilities": [],
+      "triggers": [],
+      "base": "item.studded-leather",
+      "enchant": "enchant.charmed"
+    },
+    "item.studded-leather.scalding-ward": {
+      "id": "item.studded-leather.scalding-ward",
+      "name": "Scalding Studded Leather",
+      "itemClass": "armor",
+      "tier": 3,
+      "hands": 0,
+      "slots": 1,
+      "statModifiers": {
+        "maxHp": 2
+      },
+      "grants": [],
+      "abilities": [],
+      "triggers": [],
+      "base": "item.studded-leather",
+      "enchant": "enchant.scalding-ward",
+      "gaps": [
+        "enchant onDodge: the attacker gains 3 Burn — trigger shape unparsed"
+      ]
+    },
+    "item.heavy-leather.silkweave": {
+      "id": "item.heavy-leather.silkweave",
+      "name": "Silkweave Heavy Leather",
+      "itemClass": "armor",
+      "tier": 3,
+      "hands": 0,
+      "slots": 1,
+      "statModifiers": {
+        "maxHp": 2,
+        "maxStamina": 0,
+        "dodge": 0
+      },
+      "grants": [],
+      "abilities": [],
+      "triggers": [],
+      "base": "item.heavy-leather",
+      "enchant": "enchant.silkweave"
+    },
+    "item.heavy-leather.warded": {
+      "id": "item.heavy-leather.warded",
+      "name": "Warded Heavy Leather",
+      "itemClass": "armor",
+      "tier": 3,
+      "hands": 0,
+      "slots": 1,
+      "statModifiers": {
+        "maxHp": 4,
+        "maxStamina": -1,
+        "dodge": -5,
+        "resist": 2
+      },
+      "grants": [],
+      "abilities": [],
+      "triggers": [],
+      "base": "item.heavy-leather",
+      "enchant": "enchant.warded"
+    },
+    "item.heavy-leather.thorned": {
+      "id": "item.heavy-leather.thorned",
+      "name": "Thorned Heavy Leather",
+      "itemClass": "armor",
+      "tier": 3,
+      "hands": 0,
+      "slots": 1,
+      "statModifiers": {
+        "maxHp": 4,
+        "maxStamina": -1,
+        "dodge": -5
+      },
+      "grants": [],
+      "abilities": [],
+      "triggers": [],
+      "base": "item.heavy-leather",
+      "enchant": "enchant.thorned",
+      "gaps": [
+        "enchant onTakingDamage: Thorns 2 — trigger shape unparsed"
+      ]
+    },
+    "item.heavy-leather.durable": {
+      "id": "item.heavy-leather.durable",
+      "name": "Durable Heavy Leather",
+      "itemClass": "armor",
+      "tier": 3,
+      "hands": 0,
+      "slots": 1,
+      "statModifiers": {
+        "maxHp": 4,
+        "maxStamina": -1,
+        "dodge": -5,
+        "armor": 1,
+        "resist": 1
+      },
+      "grants": [],
+      "abilities": [],
+      "triggers": [],
+      "base": "item.heavy-leather",
+      "enchant": "enchant.durable"
+    },
+    "item.heavy-leather.fire-ward": {
+      "id": "item.heavy-leather.fire-ward",
+      "name": "Fire-Warded Heavy Leather",
+      "itemClass": "armor",
+      "tier": 3,
+      "hands": 0,
+      "slots": 1,
+      "statModifiers": {
+        "maxHp": 4,
+        "maxStamina": -1,
+        "dodge": -5,
+        "resist": 1
+      },
+      "grants": [],
+      "abilities": [],
+      "triggers": [],
+      "base": "item.heavy-leather",
+      "enchant": "enchant.fire-ward"
+    },
+    "item.brutes-harness.thorned": {
+      "id": "item.brutes-harness.thorned",
+      "name": "Thorned Brute's Harness",
+      "itemClass": "armor",
+      "tier": 3,
+      "hands": 0,
+      "slots": 1,
+      "statModifiers": {
+        "maxHp": 4,
+        "strength": 1,
+        "dodge": -5,
+        "accuracy": -5
+      },
+      "grants": [],
+      "abilities": [],
+      "triggers": [],
+      "base": "item.brutes-harness",
+      "enchant": "enchant.thorned",
+      "gaps": [
+        "enchant onTakingDamage: Thorns 2 — trigger shape unparsed"
+      ]
+    },
+    "item.brutes-harness.tainted-blood": {
+      "id": "item.brutes-harness.tainted-blood",
+      "name": "Brute's Harness of Tainted Blood",
+      "itemClass": "armor",
+      "tier": 3,
+      "hands": 0,
+      "slots": 1,
+      "statModifiers": {
+        "maxHp": 10,
+        "strength": 2,
+        "dodge": -5,
+        "accuracy": -5,
+        "luck": -3
+      },
+      "grants": [],
+      "abilities": [],
+      "triggers": [],
+      "base": "item.brutes-harness",
+      "enchant": "enchant.tainted-blood",
+      "gaps": [
+        "enchant onTakingDamage: Bleed on you ticks twice — trigger shape unparsed"
+      ]
+    },
+    "item.brutes-harness.might": {
+      "id": "item.brutes-harness.might",
+      "name": "Brute's Harness of Might",
+      "itemClass": "armor",
+      "tier": 3,
+      "hands": 0,
+      "slots": 1,
+      "statModifiers": {
+        "maxHp": 6,
+        "strength": 2,
+        "dodge": -5,
+        "accuracy": -5,
+        "resist": 1
+      },
+      "grants": [],
+      "abilities": [],
+      "triggers": [],
+      "base": "item.brutes-harness",
+      "enchant": "enchant.might"
+    },
+    "item.brutes-harness.regeneration": {
+      "id": "item.brutes-harness.regeneration",
+      "name": "Brute's Harness of Regeneration",
+      "itemClass": "armor",
+      "tier": 3,
+      "hands": 0,
+      "slots": 1,
+      "statModifiers": {
+        "maxHp": 4,
+        "strength": 1,
+        "dodge": -5,
+        "accuracy": -5
+      },
+      "grants": [],
+      "abilities": [],
+      "triggers": [
+        {
+          "id": "trigger.brutes-harness.regeneration.regeneration",
+          "hook": "onTakingDamage",
+          "chance": 100,
+          "select": "self",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.regeneration",
+            "value": 1
+          },
+          "source": "item.brutes-harness.regeneration"
+        }
+      ],
+      "base": "item.brutes-harness",
+      "enchant": "enchant.regeneration"
+    },
+    "item.brutes-harness.stormward": {
+      "id": "item.brutes-harness.stormward",
+      "name": "Stormward Brute's Harness",
+      "itemClass": "armor",
+      "tier": 3,
+      "hands": 0,
+      "slots": 1,
+      "statModifiers": {
+        "maxHp": 4,
+        "strength": 1,
+        "dodge": 10,
+        "accuracy": -5
+      },
+      "grants": [],
+      "abilities": [],
+      "triggers": [],
+      "base": "item.brutes-harness",
+      "enchant": "enchant.stormward",
+      "gaps": [
+        "enchant onTakingDamage: gain +20 Dodge until the end of your next Activati — trigger shape unparsed"
+      ]
+    },
+    "item.heavy-chain.warded": {
+      "id": "item.heavy-chain.warded",
+      "name": "Warded Heavy Chain",
+      "itemClass": "armor",
+      "tier": 3,
+      "hands": 0,
+      "slots": 1,
+      "statModifiers": {
+        "armor": 1,
+        "movement": -1,
+        "resist": 2
+      },
+      "grants": [],
+      "abilities": [],
+      "triggers": [],
+      "base": "item.heavy-chain",
+      "enchant": "enchant.warded"
+    },
+    "item.heavy-chain.durable": {
+      "id": "item.heavy-chain.durable",
+      "name": "Durable Heavy Chain",
+      "itemClass": "armor",
+      "tier": 3,
+      "hands": 0,
+      "slots": 1,
+      "statModifiers": {
+        "armor": 2,
+        "movement": -1,
+        "resist": 1
+      },
+      "grants": [],
+      "abilities": [],
+      "triggers": [],
+      "base": "item.heavy-chain",
+      "enchant": "enchant.durable"
+    },
+    "item.heavy-chain.enduring": {
+      "id": "item.heavy-chain.enduring",
+      "name": "Enduring Heavy Chain",
+      "itemClass": "armor",
+      "tier": 3,
+      "hands": 0,
+      "slots": 1,
+      "statModifiers": {
+        "armor": 1,
+        "movement": -1,
+        "maxStamina": 2,
+        "maxHp": 4
+      },
+      "grants": [],
+      "abilities": [],
+      "triggers": [],
+      "base": "item.heavy-chain",
+      "enchant": "enchant.enduring",
+      "gaps": [
+        "enchant stat deathbedFighting 10: no engine stat"
+      ]
+    },
+    "item.heavy-chain.might": {
+      "id": "item.heavy-chain.might",
+      "name": "Heavy Chain of Might",
+      "itemClass": "armor",
+      "tier": 3,
+      "hands": 0,
+      "slots": 1,
+      "statModifiers": {
+        "armor": 1,
+        "movement": -1,
+        "strength": 1,
+        "maxHp": 2,
+        "resist": 1
+      },
+      "grants": [],
+      "abilities": [],
+      "triggers": [],
+      "base": "item.heavy-chain",
+      "enchant": "enchant.might"
+    },
+    "item.heavy-chain.runed": {
+      "id": "item.heavy-chain.runed",
+      "name": "Runed Heavy Chain",
+      "itemClass": "armor",
+      "tier": 3,
+      "hands": 0,
+      "slots": 1,
+      "statModifiers": {
+        "armor": 2,
+        "movement": -1,
+        "resist": 1,
+        "accuracy": -20
+      },
+      "grants": [],
+      "abilities": [],
+      "triggers": [],
+      "base": "item.heavy-chain",
+      "enchant": "enchant.runed"
+    },
+    "item.mismatched-armor.thorned": {
+      "id": "item.mismatched-armor.thorned",
+      "name": "Thorned Mismatched Armor",
+      "itemClass": "armor",
+      "tier": 3,
+      "hands": 0,
+      "slots": 1,
+      "statModifiers": {
+        "maxHp": 4,
+        "movement": -1
+      },
+      "grants": [],
+      "abilities": [],
+      "triggers": [],
+      "base": "item.mismatched-armor",
+      "enchant": "enchant.thorned",
+      "gaps": [
+        "enchant onTakingDamage: Thorns 2 — trigger shape unparsed"
+      ]
+    },
+    "item.mismatched-armor.tainted-blood": {
+      "id": "item.mismatched-armor.tainted-blood",
+      "name": "Mismatched Armor of Tainted Blood",
+      "itemClass": "armor",
+      "tier": 3,
+      "hands": 0,
+      "slots": 1,
+      "statModifiers": {
+        "maxHp": 10,
+        "movement": -1,
+        "strength": 1,
+        "luck": -3
+      },
+      "grants": [],
+      "abilities": [],
+      "triggers": [],
+      "base": "item.mismatched-armor",
+      "enchant": "enchant.tainted-blood",
+      "gaps": [
+        "enchant onTakingDamage: Bleed on you ticks twice — trigger shape unparsed"
+      ]
+    },
+    "item.mismatched-armor.damned": {
+      "id": "item.mismatched-armor.damned",
+      "name": "Damned Mismatched Armor",
+      "itemClass": "armor",
+      "tier": 3,
+      "hands": 0,
+      "slots": 1,
+      "statModifiers": {
+        "maxHp": 4,
+        "movement": -1
+      },
+      "grants": [],
+      "abilities": [],
+      "triggers": [],
+      "base": "item.mismatched-armor",
+      "enchant": "enchant.damned",
+      "gaps": [
+        "enchant stat corruption 1: no engine stat",
+        "enchant onActivationEnd: remove 1 Weak and 1 Poison from yourself — trigger shape unparsed"
+      ]
+    },
+    "item.mismatched-armor.durable": {
+      "id": "item.mismatched-armor.durable",
+      "name": "Durable Mismatched Armor",
+      "itemClass": "armor",
+      "tier": 3,
+      "hands": 0,
+      "slots": 1,
+      "statModifiers": {
+        "maxHp": 4,
+        "movement": -1,
+        "armor": 1,
+        "resist": 1
+      },
+      "grants": [],
+      "abilities": [],
+      "triggers": [],
+      "base": "item.mismatched-armor",
+      "enchant": "enchant.durable"
+    },
+    "item.mismatched-armor.regeneration": {
+      "id": "item.mismatched-armor.regeneration",
+      "name": "Mismatched Armor of Regeneration",
+      "itemClass": "armor",
+      "tier": 3,
+      "hands": 0,
+      "slots": 1,
+      "statModifiers": {
+        "maxHp": 4,
+        "movement": -1
+      },
+      "grants": [],
+      "abilities": [],
+      "triggers": [
+        {
+          "id": "trigger.mismatched-armor.regeneration.regeneration",
+          "hook": "onTakingDamage",
+          "chance": 100,
+          "select": "self",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.regeneration",
+            "value": 1
+          },
+          "source": "item.mismatched-armor.regeneration"
+        }
+      ],
+      "base": "item.mismatched-armor",
+      "enchant": "enchant.regeneration"
+    },
+    "item.creature-hide.tainted-blood": {
+      "id": "item.creature-hide.tainted-blood",
+      "name": "Creature Hide of Tainted Blood",
+      "itemClass": "armor",
+      "tier": 3,
+      "hands": 0,
+      "slots": 1,
+      "statModifiers": {
+        "luck": 2,
+        "dodge": 5,
+        "maxHp": 7,
+        "strength": 1
+      },
+      "grants": [],
+      "abilities": [],
+      "triggers": [],
+      "base": "item.creature-hide",
+      "enchant": "enchant.tainted-blood",
+      "gaps": [
+        "enchant onTakingDamage: Bleed on you ticks twice — trigger shape unparsed"
+      ]
+    },
+    "item.creature-hide.regeneration": {
+      "id": "item.creature-hide.regeneration",
+      "name": "Creature Hide of Regeneration",
+      "itemClass": "armor",
+      "tier": 3,
+      "hands": 0,
+      "slots": 1,
+      "statModifiers": {
+        "luck": 5,
+        "dodge": 5,
+        "maxHp": 1
+      },
+      "grants": [],
+      "abilities": [],
+      "triggers": [
+        {
+          "id": "trigger.creature-hide.regeneration.regeneration",
+          "hook": "onTakingDamage",
+          "chance": 100,
+          "select": "self",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.regeneration",
+            "value": 1
+          },
+          "source": "item.creature-hide.regeneration"
+        }
+      ],
+      "base": "item.creature-hide",
+      "enchant": "enchant.regeneration"
+    },
+    "item.creature-hide.stormward": {
+      "id": "item.creature-hide.stormward",
+      "name": "Stormward Creature Hide",
+      "itemClass": "armor",
+      "tier": 3,
+      "hands": 0,
+      "slots": 1,
+      "statModifiers": {
+        "luck": 5,
+        "dodge": 20,
+        "maxHp": 1
+      },
+      "grants": [],
+      "abilities": [],
+      "triggers": [],
+      "base": "item.creature-hide",
+      "enchant": "enchant.stormward",
+      "gaps": [
+        "enchant onTakingDamage: gain +20 Dodge until the end of your next Activati — trigger shape unparsed"
+      ]
+    },
+    "item.creature-hide.scalding-ward": {
+      "id": "item.creature-hide.scalding-ward",
+      "name": "Scalding Creature Hide",
+      "itemClass": "armor",
+      "tier": 3,
+      "hands": 0,
+      "slots": 1,
+      "statModifiers": {
+        "luck": 5,
+        "dodge": 5,
+        "maxHp": 1
+      },
+      "grants": [],
+      "abilities": [],
+      "triggers": [],
+      "base": "item.creature-hide",
+      "enchant": "enchant.scalding-ward",
+      "gaps": [
+        "enchant onDodge: the attacker gains 3 Burn — trigger shape unparsed"
+      ]
+    },
+    "item.creature-hide.enduring": {
+      "id": "item.creature-hide.enduring",
+      "name": "Enduring Creature Hide",
+      "itemClass": "armor",
+      "tier": 3,
+      "hands": 0,
+      "slots": 1,
+      "statModifiers": {
+        "luck": 5,
+        "dodge": 5,
+        "maxHp": 5,
+        "maxStamina": 2
+      },
+      "grants": [],
+      "abilities": [],
+      "triggers": [],
+      "base": "item.creature-hide",
+      "enchant": "enchant.enduring",
+      "gaps": [
+        "enchant stat deathbedFighting 10: no engine stat"
+      ]
+    },
+    "item.guardians-mail.runed": {
+      "id": "item.guardians-mail.runed",
+      "name": "Runed Guardian's Mail",
+      "itemClass": "armor",
+      "tier": 3,
+      "hands": 0,
+      "slots": 1,
+      "statModifiers": {
+        "armor": 2,
+        "resist": 2,
+        "movement": -1,
+        "maxStamina": -1,
+        "accuracy": -20
+      },
+      "grants": [],
+      "abilities": [],
+      "triggers": [],
+      "base": "item.guardians-mail",
+      "enchant": "enchant.runed"
+    },
+    "item.guardians-mail.ancient-ward": {
+      "id": "item.guardians-mail.ancient-ward",
+      "name": "Guardian's Mail of the Ancient Ward",
+      "itemClass": "armor",
+      "tier": 3,
+      "hands": 0,
+      "slots": 1,
+      "statModifiers": {
+        "armor": 2,
+        "resist": 3,
+        "movement": -2,
+        "maxStamina": -1
+      },
+      "grants": [],
+      "abilities": [],
+      "triggers": [],
+      "base": "item.guardians-mail",
+      "enchant": "enchant.ancient-ward"
+    },
+    "item.guardians-mail.divine-protection": {
+      "id": "item.guardians-mail.divine-protection",
+      "name": "Guardian's Mail of Divine Protection",
+      "itemClass": "armor",
+      "tier": 3,
+      "hands": 0,
+      "slots": 1,
+      "statModifiers": {
+        "armor": 2,
+        "resist": 2,
+        "movement": -2,
+        "maxStamina": -1
+      },
+      "grants": [],
+      "abilities": [],
+      "triggers": [],
+      "base": "item.guardians-mail",
+      "enchant": "enchant.divine-protection",
+      "gaps": [
+        "enchant startOfBattle: gain Protection equal to 2 plus the party's Spirit — trigger shape unparsed"
+      ]
+    },
+    "item.guardians-mail.durable": {
+      "id": "item.guardians-mail.durable",
+      "name": "Durable Guardian's Mail",
+      "itemClass": "armor",
+      "tier": 3,
+      "hands": 0,
+      "slots": 1,
+      "statModifiers": {
+        "armor": 2,
+        "resist": 2,
+        "movement": -1,
+        "maxStamina": -1
+      },
+      "grants": [],
+      "abilities": [],
+      "triggers": [],
+      "base": "item.guardians-mail",
+      "enchant": "enchant.durable"
+    },
+    "item.guardians-mail.white-steel": {
+      "id": "item.guardians-mail.white-steel",
+      "name": "White-Steel Guardian's Mail",
+      "itemClass": "armor",
+      "tier": 3,
+      "hands": 0,
+      "slots": 1,
+      "statModifiers": {
+        "armor": 1,
+        "resist": 1,
+        "movement": -1,
+        "maxStamina": -1
+      },
+      "grants": [],
+      "abilities": [],
+      "triggers": [
+        {
+          "id": "trigger.guardians-mail.white-steel.protection",
+          "hook": "onActivationEnd",
+          "chance": 100,
+          "select": "self",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.protection",
+            "value": 2
+          },
+          "source": "item.guardians-mail.white-steel"
+        }
+      ],
+      "base": "item.guardians-mail",
+      "enchant": "enchant.white-steel"
+    },
+    "item.guardians-mail.enduring": {
+      "id": "item.guardians-mail.enduring",
+      "name": "Enduring Guardian's Mail",
+      "itemClass": "armor",
+      "tier": 3,
+      "hands": 0,
+      "slots": 1,
+      "statModifiers": {
+        "armor": 1,
+        "resist": 1,
+        "movement": -1,
+        "maxStamina": 1,
+        "maxHp": 4
+      },
+      "grants": [],
+      "abilities": [],
+      "triggers": [],
+      "base": "item.guardians-mail",
+      "enchant": "enchant.enduring",
+      "gaps": [
+        "enchant stat deathbedFighting 10: no engine stat"
+      ]
+    },
+    "item.plated-armor.runed": {
+      "id": "item.plated-armor.runed",
+      "name": "Runed Plated Armor",
+      "itemClass": "armor",
+      "tier": 3,
+      "hands": 0,
+      "slots": 1,
+      "statModifiers": {
+        "armor": 3,
+        "maxHp": 4,
+        "luck": 3,
+        "movement": -2,
+        "maxStamina": -2,
+        "dodge": -10,
+        "accuracy": -30,
+        "resist": 1
+      },
+      "grants": [],
+      "abilities": [],
+      "triggers": [],
+      "base": "item.plated-armor",
+      "enchant": "enchant.runed"
+    },
+    "item.plated-armor.ancient-ward": {
+      "id": "item.plated-armor.ancient-ward",
+      "name": "Plated Armor of the Ancient Ward",
+      "itemClass": "armor",
+      "tier": 3,
+      "hands": 0,
+      "slots": 1,
+      "statModifiers": {
+        "armor": 3,
+        "maxHp": 4,
+        "luck": 3,
+        "movement": -3,
+        "maxStamina": -2,
+        "dodge": -10,
+        "accuracy": -10,
+        "resist": 2
+      },
+      "grants": [],
+      "abilities": [],
+      "triggers": [],
+      "base": "item.plated-armor",
+      "enchant": "enchant.ancient-ward"
+    },
+    "item.plated-armor.might": {
+      "id": "item.plated-armor.might",
+      "name": "Plated Armor of Might",
+      "itemClass": "armor",
+      "tier": 3,
+      "hands": 0,
+      "slots": 1,
+      "statModifiers": {
+        "armor": 2,
+        "maxHp": 6,
+        "luck": 3,
+        "movement": -2,
+        "maxStamina": -2,
+        "dodge": -10,
+        "accuracy": -10,
+        "strength": 1,
+        "resist": 1
+      },
+      "grants": [],
+      "abilities": [],
+      "triggers": [],
+      "base": "item.plated-armor",
+      "enchant": "enchant.might"
+    },
+    "item.plated-armor.thorned": {
+      "id": "item.plated-armor.thorned",
+      "name": "Thorned Plated Armor",
+      "itemClass": "armor",
+      "tier": 3,
+      "hands": 0,
+      "slots": 1,
+      "statModifiers": {
+        "armor": 2,
+        "maxHp": 4,
+        "luck": 3,
+        "movement": -2,
+        "maxStamina": -2,
+        "dodge": -10,
+        "accuracy": -10
+      },
+      "grants": [],
+      "abilities": [],
+      "triggers": [],
+      "base": "item.plated-armor",
+      "enchant": "enchant.thorned",
+      "gaps": [
+        "enchant onTakingDamage: Thorns 2 — trigger shape unparsed"
+      ]
+    },
+    "item.plated-armor.durable": {
+      "id": "item.plated-armor.durable",
+      "name": "Durable Plated Armor",
+      "itemClass": "armor",
+      "tier": 3,
+      "hands": 0,
+      "slots": 1,
+      "statModifiers": {
+        "armor": 3,
+        "maxHp": 4,
+        "luck": 3,
+        "movement": -2,
+        "maxStamina": -2,
+        "dodge": -10,
+        "accuracy": -10,
+        "resist": 1
+      },
+      "grants": [],
+      "abilities": [],
+      "triggers": [],
+      "base": "item.plated-armor",
+      "enchant": "enchant.durable"
+    },
+    "item.plated-armor.white-steel": {
+      "id": "item.plated-armor.white-steel",
+      "name": "White-Steel Plated Armor",
+      "itemClass": "armor",
+      "tier": 3,
+      "hands": 0,
+      "slots": 1,
+      "statModifiers": {
+        "armor": 2,
+        "maxHp": 4,
+        "luck": 3,
+        "movement": -2,
+        "maxStamina": -2,
+        "dodge": -10,
+        "accuracy": -10
+      },
+      "grants": [],
+      "abilities": [],
+      "triggers": [
+        {
+          "id": "trigger.plated-armor.white-steel.protection",
+          "hook": "onActivationEnd",
+          "chance": 100,
+          "select": "self",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.protection",
+            "value": 2
+          },
+          "source": "item.plated-armor.white-steel"
+        }
+      ],
+      "base": "item.plated-armor",
+      "enchant": "enchant.white-steel"
+    },
+    "item.reflective-armor.warded": {
+      "id": "item.reflective-armor.warded",
+      "name": "Warded Reflective Armor",
+      "itemClass": "armor",
+      "tier": 3,
+      "hands": 0,
+      "slots": 1,
+      "statModifiers": {
+        "armor": 1,
+        "resist": 4,
+        "movement": -3,
+        "accuracy": -15,
+        "reach": -1
+      },
+      "grants": [],
+      "abilities": [],
+      "triggers": [],
+      "base": "item.reflective-armor",
+      "enchant": "enchant.warded"
+    },
+    "item.reflective-armor.fire-ward": {
+      "id": "item.reflective-armor.fire-ward",
+      "name": "Fire-Warded Reflective Armor",
+      "itemClass": "armor",
+      "tier": 3,
+      "hands": 0,
+      "slots": 1,
+      "statModifiers": {
+        "armor": 1,
+        "resist": 3,
+        "movement": -3,
+        "accuracy": -15,
+        "reach": -1
+      },
+      "grants": [],
+      "abilities": [],
+      "triggers": [],
+      "base": "item.reflective-armor",
+      "enchant": "enchant.fire-ward"
+    },
+    "item.reflective-armor.divine-protection": {
+      "id": "item.reflective-armor.divine-protection",
+      "name": "Reflective Armor of Divine Protection",
+      "itemClass": "armor",
+      "tier": 3,
+      "hands": 0,
+      "slots": 1,
+      "statModifiers": {
+        "armor": 2,
+        "resist": 3,
+        "movement": -4,
+        "accuracy": -15,
+        "reach": -1
+      },
+      "grants": [],
+      "abilities": [],
+      "triggers": [],
+      "base": "item.reflective-armor",
+      "enchant": "enchant.divine-protection",
+      "gaps": [
+        "enchant startOfBattle: gain Protection equal to 2 plus the party's Spirit — trigger shape unparsed"
+      ]
+    },
+    "item.reflective-armor.cursed-skull": {
+      "id": "item.reflective-armor.cursed-skull",
+      "name": "Reflective Armor of the Cursed Skull",
+      "itemClass": "armor",
+      "tier": 3,
+      "hands": 0,
+      "slots": 1,
+      "statModifiers": {
+        "armor": 1,
+        "resist": 2,
+        "movement": -3,
+        "accuracy": -15,
+        "reach": -1,
+        "spirit": 1,
+        "maxHp": 4
+      },
+      "grants": [],
+      "abilities": [],
+      "triggers": [],
+      "base": "item.reflective-armor",
+      "enchant": "enchant.cursed-skull",
+      "gaps": [
+        "enchant onActivationEnd: you take 1 true damage — trigger shape unparsed"
+      ]
+    },
+    "item.reflective-armor.damned": {
+      "id": "item.reflective-armor.damned",
+      "name": "Damned Reflective Armor",
+      "itemClass": "armor",
+      "tier": 3,
+      "hands": 0,
+      "slots": 1,
+      "statModifiers": {
+        "armor": 1,
+        "resist": 2,
+        "movement": -3,
+        "accuracy": -15,
+        "reach": -1
+      },
+      "grants": [],
+      "abilities": [],
+      "triggers": [],
+      "base": "item.reflective-armor",
+      "enchant": "enchant.damned",
+      "gaps": [
+        "enchant stat corruption 1: no engine stat",
+        "enchant onActivationEnd: remove 1 Weak and 1 Poison from yourself — trigger shape unparsed"
+      ]
+    },
+    "item.soaked-plate.runed": {
+      "id": "item.soaked-plate.runed",
+      "name": "Runed Soaked Plate",
+      "itemClass": "armor",
+      "tier": 3,
+      "hands": 0,
+      "slots": 1,
+      "statModifiers": {
+        "armor": 2,
+        "maxHp": 3,
+        "resist": 1,
+        "accuracy": -20
+      },
+      "grants": [],
+      "abilities": [],
+      "triggers": [],
+      "base": "item.soaked-plate",
+      "enchant": "enchant.runed"
+    },
+    "item.soaked-plate.ancient-ward": {
+      "id": "item.soaked-plate.ancient-ward",
+      "name": "Soaked Plate of the Ancient Ward",
+      "itemClass": "armor",
+      "tier": 3,
+      "hands": 0,
+      "slots": 1,
+      "statModifiers": {
+        "armor": 2,
+        "maxHp": 3,
+        "resist": 2,
+        "movement": -1
+      },
+      "grants": [],
+      "abilities": [],
+      "triggers": [],
+      "base": "item.soaked-plate",
+      "enchant": "enchant.ancient-ward"
+    },
+    "item.soaked-plate.enduring": {
+      "id": "item.soaked-plate.enduring",
+      "name": "Enduring Soaked Plate",
+      "itemClass": "armor",
+      "tier": 3,
+      "hands": 0,
+      "slots": 1,
+      "statModifiers": {
+        "armor": 1,
+        "maxHp": 7,
+        "maxStamina": 2
+      },
+      "grants": [],
+      "abilities": [],
+      "triggers": [],
+      "base": "item.soaked-plate",
+      "enchant": "enchant.enduring",
+      "gaps": [
+        "enchant stat deathbedFighting 10: no engine stat"
+      ]
+    },
+    "item.soaked-plate.might": {
+      "id": "item.soaked-plate.might",
+      "name": "Soaked Plate of Might",
+      "itemClass": "armor",
+      "tier": 3,
+      "hands": 0,
+      "slots": 1,
+      "statModifiers": {
+        "armor": 1,
+        "maxHp": 5,
+        "strength": 1,
+        "resist": 1
+      },
+      "grants": [],
+      "abilities": [],
+      "triggers": [],
+      "base": "item.soaked-plate",
+      "enchant": "enchant.might"
+    },
+    "item.soaked-plate.damned": {
+      "id": "item.soaked-plate.damned",
+      "name": "Damned Soaked Plate",
+      "itemClass": "armor",
+      "tier": 3,
+      "hands": 0,
+      "slots": 1,
+      "statModifiers": {
+        "armor": 1,
+        "maxHp": 3
+      },
+      "grants": [],
+      "abilities": [],
+      "triggers": [],
+      "base": "item.soaked-plate",
+      "enchant": "enchant.damned",
+      "gaps": [
+        "enchant stat corruption 1: no engine stat",
+        "enchant onActivationEnd: remove 1 Weak and 1 Poison from yourself — trigger shape unparsed"
+      ]
+    },
+    "item.soaked-plate.white-steel": {
+      "id": "item.soaked-plate.white-steel",
+      "name": "White-Steel Soaked Plate",
+      "itemClass": "armor",
+      "tier": 3,
+      "hands": 0,
+      "slots": 1,
+      "statModifiers": {
+        "armor": 1,
+        "maxHp": 3
+      },
+      "grants": [],
+      "abilities": [],
+      "triggers": [
+        {
+          "id": "trigger.soaked-plate.white-steel.protection",
+          "hook": "onActivationEnd",
+          "chance": 100,
+          "select": "self",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.protection",
+            "value": 2
+          },
+          "source": "item.soaked-plate.white-steel"
+        }
+      ],
+      "base": "item.soaked-plate",
+      "enchant": "enchant.white-steel"
     }
   }
 } as const

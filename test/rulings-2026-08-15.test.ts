@@ -109,14 +109,22 @@ describe('bleed-out (Angela 2026-08-15)', () => {
 // downs per 100), and the test-lane enemy riders are fielded explicitly
 // (TEST_COHORT.enemies). Claims unchanged; the fielding says where the
 // pressure comes from.
+  // 2026-09-03 (ability.effects): fourteen zombies no longer down a hero on
+  // every seed once the Air Mage's Storm is actually reachable (the kite now
+  // closes to a power's range) and the weapons hit at authored accuracies.
+  // The CLAIM is per drop — "set to five, every time" — so the fielding is
+  // sixteen (the ruled pressure ceiling) and the test demands at least one
+  // drop across the sample, not one per seed. Same rule, honest fielding.
   it('a hero who drops is set to five, every time', () => {
+    let drops = 0
     for (let r = 0; r < 8; r++) {
-      const ctx = createBattle({ replicate: r, enemyCount: 14, mapId: 'map.open' })
+      const ctx = createBattle({ replicate: r, enemyCount: 16, mapId: 'map.open' })
       runBattle(ctx)
       const set = ctx.events.filter((e) => e.type === 'bleedout.set')
-      expect(set.length, `replicate ${r} put nobody down`).toBeGreaterThan(0)
+      drops += set.length
       for (const e of set) expect(e['bleedOut']).toBe(5)
     }
+    expect(drops, 'eight seeds at sixteen zombies put nobody down — the sample proved nothing').toBeGreaterThan(0)
   })
 
   it('it advances ONLY inside the End of Hero Phase ladder', () => {

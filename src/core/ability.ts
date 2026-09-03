@@ -18,8 +18,10 @@
 //               costs another 5 Dodge")
 
 import { distance } from './hex.js'
-import type { AbilityDef, Ctx, Unit } from './types.js'
-import { addStatMod, applyDamage, applyHealing, emit, markPrimaryUsed, spendStamina, unit } from './mutate.js'
+import type { AbilityDef, AbilityEffect, Ctx, Unit } from './types.js'
+import { addStatMod, applyDamage, applyHealing, emit, gainMaxHp, loseMaxHp, markPrimaryUsed, removeStatus, reduceStatus, spendStamina, unit } from './mutate.js'
+import { resolveTargets, hasAnyTarget } from './target.js'
+import { executeKnockback } from './movement.js'
 import { areaHexesOf, resolveDamage } from './pipeline.js'
 import type { DamageSource } from './pipeline.js'
 import { applyStatus, incomingAbsorb, outgoingPenalty, spendAbsorb } from './status.js'
@@ -66,6 +68,28 @@ export function canUsePower(ctx: Ctx, userId: number, targetId: number, abilityI
   // A status FLAG, not a hardcoded name: any status declaring locksPowers.
   for (const s of u.statuses) {
     if (s.value > 0 && ctx.statuses[s.id]?.locksPowers) return false
+  }
+  if (a.effects) {
+    // ability.effects (2026-09-03): legality is the ONE targeting vocabulary.
+    const t = a.target ?? { select: 'self', side: 'any' as const }
+    if (t.select === 'self') { if (targetId !== userId) return false }
+    else if (t.select === 'unit') {
+      if (t.side === 'ally' && u.side !== tg.side) return false
+      if (t.side === 'enemy' && u.side === tg.side) return false
+      if (!hasAnyTarget(ctx, u, t, a.range) || resolveTargets(ctx, u, t, targetId).length === 0) return false
+    } else {
+      // an area measures from its origin — self needs nobody aimed at; target does
+      if ((t.origin ?? 'self') === 'target') {
+        if (t.side === 'ally' && u.side !== tg.side) return false
+        if (t.side === 'enemy' && u.side === tg.side) return false
+      }
+      const aim = (t.origin ?? 'self') === 'target' ? targetId : userId
+      if (resolveTargets(ctx, u, t, aim).length === 0) return false
+    }
+    if (!a.free && u.primaryUsed) return false
+    if (u.stamina < a.staminaCost) return false
+    if (!isReady(ctx, u, abilityId)) return false
+    return (t.select === 'self' || (t.select === 'area' && (t.origin ?? 'self') === 'self')) ? true : distance(u.hex, tg.hex) <= a.range
   }
   switch (effectOf(a)) {
     case 'damage':
@@ -134,6 +158,16 @@ export function previewPower(ctx: Ctx, userId: number, targetId: number, ability
   const a = abilityDef(ctx, abilityId)
   const u = unit(ctx, userId)
   const tg = unit(ctx, targetId)
+  if (a.effects) {
+    let damage = 0, heal = 0
+    for (const e of a.effects) {
+      if (e.kind === 'damage' && tg.side !== u.side) {
+        damage += resolveDamage(ctx, u, tg, { id: a.id, stat: e.stat, bonus: e.bonus, damageType: e.damageType }, false, outgoingPenalty(ctx, u), incomingAbsorb(ctx, tg)).value
+      }
+      if (e.kind === 'heal') heal += valueOf(ctx, u, e.amount)
+    }
+    return { damage, heal, hitChance: 100 }
+  }
   switch (effectOf(a)) {
     case 'heal':
       return { damage: 0, heal: resolveHealAmount(ctx, u, a), hitChance: 100 }
@@ -157,9 +191,16 @@ export function usePower(ctx: Ctx, userId: number, targetId: number, abilityId: 
   }
 
   spendStamina(ctx, userId, a.staminaCost, a.id)
-  markPrimaryUsed(ctx, userId)
+  if (!a.free) markPrimaryUsed(ctx, userId)
 
   let total = 0
+  if (a.effects) {
+    total = performEffects(ctx, userId, targetId, a)
+    const readyAgain = ctx.state.turn + a.cooldown
+    u.cooldowns[abilityId] = readyAgain
+    emit(ctx, 'cooldown.set', a.id, { actor: userId, abilityId, readyOnTurn: readyAgain })
+    return { damage: total }
+  }
   switch (effectOf(a)) {
     case 'heal': {
       const amount = resolveHealAmount(ctx, u, a)
@@ -239,4 +280,99 @@ export function usePower(ctx: Ctx, userId: number, targetId: number, abilityId: 
   u.cooldowns[abilityId] = readyAgain
   emit(ctx, 'cooldown.set', a.id, { actor: userId, abilityId, readyOnTurn: readyAgain })
   return { damage: total }
+}
+
+
+// ── ability.effects (2026-09-03) ────────────────────────────────────────────
+// The effect list, applied in row order to the power's resolved targets. Every
+// number comes from the same functions the rest of the engine uses: damage
+// through resolveDamage (Law 1), healing through applyHealing, statuses through
+// applyStatus/reduceStatus, stat modifiers through addStatMod with a stated
+// lifetime. `who: 'self'` lands an effect on the caster whatever the targeting
+// says (Fortify: "every ally within 3 gains +1 Armor; YOU gain +3 Health").
+
+/** The units a power's targeting resolves to, given what it was aimed at. */
+export function powerTargetsOf(ctx: Ctx, userId: number, targetId: number, a: AbilityDef): number[] {
+  const u = unit(ctx, userId)
+  const t = a.target ?? { select: 'self', side: 'any' as const }
+  const aim = t.select === 'area' && (t.origin ?? 'self') === 'self' ? userId : targetId
+  return resolveTargets(ctx, u, t, aim)
+}
+
+function expiresAtOf(ctx: Ctx, until: 'endOfTurn' | 'endOfNextTurn' | 'battle'): number | undefined {
+  // `endOfTurn` = expiresAtTurn turn+1, matching modsFor's `turn < expiresAtTurn`
+  // (movement.ts, 2026-08-25). endOfNextTurn is one further.
+  return until === 'endOfTurn' ? ctx.state.turn + 1 : until === 'endOfNextTurn' ? ctx.state.turn + 2 : undefined
+}
+
+function performEffects(ctx: Ctx, userId: number, targetId: number, a: AbilityDef): number {
+  const u = unit(ctx, userId)
+  const targets = powerTargetsOf(ctx, userId, targetId, a)
+  emit(ctx, 'power.used', a.id, {
+    actor: userId, target: targetId, abilityId: a.id, name: a.name,
+    distance: distance(u.hex, unit(ctx, targetId).hex), targets, ...(a.free ? { free: true } : {}),
+  })
+  let total = 0
+  for (const e of a.effects!) {
+    const onSelf = e.kind === 'selfDamage' || (e.kind === 'statMod' && e.who === 'self')
+    const ids = onSelf ? [userId] : targets
+    for (const id of ids) total += applyOne(ctx, userId, id, a, e)
+  }
+  return total
+}
+
+function applyOne(ctx: Ctx, userId: number, id: number, a: AbilityDef, e: AbilityEffect): number {
+  const u = unit(ctx, userId)
+  const tg = unit(ctx, id)
+  if (tg.lifeState !== 'standing') return 0
+  switch (e.kind) {
+    case 'damage': {
+      if (tg.side === u.side) {
+        const allies = e.allies ?? (ctx.cfg.switches.areaHitsAllies ? 'always' : 'never')
+        if (allies === 'never') return 0
+      }
+      const dmg = resolveDamage(ctx, u, tg, { id: a.id, stat: e.stat, bonus: e.bonus, damageType: e.damageType }, false, outgoingPenalty(ctx, u), incomingAbsorb(ctx, tg))
+      const summed = dmg.ledger.reduce((s, r) => s + r.delta, 0)
+      if (summed !== dmg.value) throw new Error(`power ledger does not reconcile: ${summed} vs ${dmg.value}`)
+      emit(ctx, 'power.hit', a.id, { actor: userId, target: id, ledger: dmg.ledger.map((r) => ({ station: r.name, effectId: r.effectId, delta: r.delta })) })
+      if (dmg.absorbed > 0) spendAbsorb(ctx, id, dmg.absorbed, a.id)
+      applyDamage(ctx, id, dmg.value, a.id, dmg.absorbed > 0
+        ? { actor: userId, abilityId: a.id, damageType: e.damageType, absorbed: dmg.absorbed }
+        : { actor: userId, abilityId: a.id, damageType: e.damageType })
+      return dmg.value
+    }
+    case 'heal': {
+      applyHealing(ctx, id, valueOf(ctx, u, e.amount), a.id)
+      return 0
+    }
+    case 'status.apply': {
+      const v = valueOf(ctx, u, e.value)
+      if (v > 0) applyStatus(ctx, id, e.statusId, v, a.id)
+      return 0
+    }
+    case 'status.remove': {
+      if (e.value === undefined) removeStatus(ctx, id, e.statusId, a.id)
+      else reduceStatus(ctx, id, e.statusId, e.value, a.id)
+      return 0
+    }
+    case 'statMod': {
+      // Max Health is the one stat the pipeline does not resolve (u.maxHp is
+      // read raw by the healing cap and the crit chart) — it moves by mutator,
+      // battle-long, like its loss does.
+      if (e.stat === 'maxHp') { if (e.value > 0) gainMaxHp(ctx, id, e.value, a.id); else loseMaxHp(ctx, id, -e.value, a.id); return 0 }
+      const expiresAtTurn = expiresAtOf(ctx, e.until)
+      addStatMod(ctx, id, { stat: e.stat, op: 'add', value: e.value, source: a.id, scope: 'unit',
+        ...(expiresAtTurn !== undefined ? { expiresAtTurn } : {}) }, a.id)
+      return 0
+    }
+    case 'selfDamage': {
+      applyDamage(ctx, id, e.amount, a.id, { actor: userId, abilityId: a.id, damageType: e.damageType })
+      return 0
+    }
+    case 'knockback': {
+      const v = valueOf(ctx, u, e.value)
+      if (v > 0) executeKnockback(ctx, userId, id, v, a.id)
+      return 0
+    }
+  }
 }

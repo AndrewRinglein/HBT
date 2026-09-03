@@ -79,3 +79,74 @@ export function applyItems(
   }
   return { def, worn }
 }
+
+// ── HERO PROGRESS (hero assembly, 2026-09-03) ────────────────────────────────
+// Level grants, the specialty's modifiers and the level-5 pick fold onto the
+// bare row additively — the same arithmetic progression/build-schedule.mjs
+// does, moved to fielding so the engine assembles the hero itself (Angela,
+// 2026-09-03: "so we know that the way that we're getting things into the
+// units is still correct"). Drafted powers join the row's abilities. Loud on
+// anything unknown: a level past the table, a specialty of another class, a
+// pick that is not one of the options, a power that is not in the registry.
+
+export type LevelTableLike = { readonly id: string; readonly rows: readonly { readonly level: number; readonly grants: Readonly<Record<string, number>>; readonly choice?: readonly Readonly<Record<string, number>>[] }[] }
+export type SpecialtyLike = { readonly id: string; readonly class: string; readonly statModifiers: Readonly<Record<string, number>> }
+
+export function applyProgress(
+  base: UnitDef,
+  progress: import('./types.js').HeroProgress,
+  classId: string,
+  levels: Readonly<Record<string, LevelTableLike>>,
+  specialties: Readonly<Record<string, SpecialtyLike>>,
+  abilities: Readonly<Record<string, unknown>>,
+  where: string,
+): UnitDef {
+  const table = levels[classId]
+  if (!table) throw new Error(`${where}: ${base.typeId} is a ${classId}, which has no level table`)
+  const stats: Record<string, number> = {}
+  for (const k of FOLDABLE) stats[k] = (base as unknown as Record<string, number | undefined>)[k] ?? 0
+  const add = (k: string, v: number, src: string) => {
+    if (!(FOLDABLE as readonly string[]).includes(k)) {
+      // itemSlots and surge are campaign quantities the engine does not fold; anything else is an error
+      if (k === 'itemSlots' || k === 'surge') return
+      throw new Error(`${where}: ${src} grants '${k}', which the engine cannot fold`)
+    }
+    stats[k] = (stats[k] ?? 0) + v
+  }
+  if (!Number.isInteger(progress.level) || progress.level < 1) throw new Error(`${where}: ${base.typeId} level ${progress.level} is not a level`)
+  const maxLevel = table.rows.reduce((m, r) => Math.max(m, r.level), 1)
+  if (progress.level > maxLevel) throw new Error(`${where}: ${base.typeId} level ${progress.level} is past ${classId}'s table (${maxLevel})`)
+  let pickTaken = false
+  for (const row of table.rows) {
+    if (row.level < 2 || row.level > progress.level) continue
+    for (const [k, v] of Object.entries(row.grants)) add(k, v, `${classId} level ${row.level}`)
+    if (row.choice) {
+      const pick = progress.levelFivePick
+      if (!pick) throw new Error(`${where}: ${base.typeId} is level ${progress.level} but names no level-${row.level} pick`)
+      const same = (a: Readonly<Record<string, number>>, b: Readonly<Record<string, number>>) =>
+        Object.keys(a).length === Object.keys(b).length && Object.entries(a).every(([k, v]) => b[k] === v)
+      if (!row.choice.some((o) => same(o, pick))) throw new Error(`${where}: ${base.typeId}'s level-${row.level} pick ${JSON.stringify(pick)} is not one of ${classId}'s options`)
+      for (const [k, v] of Object.entries(pick)) add(k, v, `level-${row.level} pick`)
+      pickTaken = true
+    }
+  }
+  if (progress.levelFivePick && !pickTaken) throw new Error(`${where}: ${base.typeId} names a level-5 pick at level ${progress.level}`)
+  if (progress.level >= 2) {
+    if (!progress.specialtyId) throw new Error(`${where}: ${base.typeId} is level ${progress.level} and has no specialty — it is chosen at the first level-up`)
+    const sp = specialties[progress.specialtyId]
+    if (!sp) throw new Error(`${where}: ${base.typeId} names specialty '${progress.specialtyId}', which is not in the registry`)
+    if (sp.class !== classId) throw new Error(`${where}: ${base.typeId} (${classId}) cannot hold ${sp.id}, a ${sp.class} specialty`)
+    for (const [k, v] of Object.entries(sp.statModifiers)) add(k, v, sp.id)
+  } else if (progress.specialtyId) throw new Error(`${where}: ${base.typeId} is level 1 and names a specialty`)
+  const powers = [...(progress.powers ?? [])]
+  for (const p of powers) if (!abilities[p]) throw new Error(`${where}: ${base.typeId} drafted '${p}', which is not a power in the registry`)
+  return {
+    ...base,
+    maxHp: stats['maxHp']!, armor: stats['armor']!, resist: stats['resist']!, dodge: stats['dodge']!,
+    strength: stats['strength']!, precision: stats['precision']!, magic: stats['magic']!, spirit: stats['spirit']!,
+    reach: stats['reach']!, accuracy: stats['accuracy']!, movement: stats['movement']!,
+    maxStamina: stats['maxStamina']!, staminaRegen: stats['staminaRegen']!,
+    ...(stats['crit'] ? { crit: stats['crit'] } : {}), ...(stats['luck'] ? { luck: stats['luck'] } : {}),
+    abilities: [...base.abilities, ...powers.filter((p) => !base.abilities.includes(p))],
+  }
+}

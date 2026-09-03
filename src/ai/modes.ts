@@ -10,7 +10,7 @@ import type { MoveDef } from './../core/types.js'
 import { isPassable } from './../content/maps.js'
 import { neighboursOf } from './../core/hex.js'
 import { areaUnitIdsOf, canAttack, performAttack, reachOf } from './../core/pipeline.js'
-import { canUsePower, powerBlastIdsOf, previewPower, usePower } from './../core/ability.js'
+import { canUsePower, isReady, powerBlastIdsOf, powerTargetsOf, previewPower, usePower } from './../core/ability.js'
 import { reachBonusOf } from './../content/maps.js'
 import { TERRAIN } from './../core/types.js'
 import { emit, unit } from './../core/mutate.js'
@@ -258,6 +258,78 @@ function supportPower(ctx: Ctx, u: Unit): boolean {
   return false
 }
 
+/**
+ * Effect-list powers — ability.effects (2026-09-03). RULES, not scores, every
+ * quantity from canUsePower/previewPower (Law 2), inspectable by eye:
+ *
+ *   heal (any effect list with a heal)   as supportPower's heal: the ally
+ *                                        missing the most, when at most half
+ *                                        is wasted
+ *   ally status/statMod (on a unit or     the lowest-health legal ally, or the
+ *   unit or an area of allies)           caster's own area — whenever ready
+ *   self (statMod / status on self)      whenever ready, IF an enemy is within
+ *                                        movement + 1 (it is a fight) and any
+ *                                        self-damage is below half of hp
+ *   enemy damage                         the kite's own power block already
+ *                                        weighs those against the weapon
+ *
+ * `when` is 'free' (powers that do not spend the primary — used first, always)
+ * or 'primary' (used only when the unit is not about to attack: called after
+ * the attack step fails, so a stance never displaces a swing). Cheapest honest
+ * policy; the AI modes backlog is where a better one goes.
+ */
+function effectsPower(ctx: Ctx, u: Unit, when: 'free' | 'primary' | 'opening'): boolean {
+  for (const id of u.abilities) {
+    const a = ctx.abilities[id]
+    if (!a?.effects || a.effects.length === 0) continue
+    if (when === 'opening') {
+      // the OPENING stance: on a unit's first activation a battle-long self
+      // power (Bloodlust, Eldritch Might) is worth the primary even when a
+      // swing is available — it pays for the whole battle
+      if (u.activationOrdinal !== 1 || a.free) continue
+      const t0 = a.target ?? { select: 'self' as const }
+      if (t0.select !== 'self' || !a.effects.some((e) => e.kind === 'statMod' && e.until === 'battle')) continue
+      if (!a.effects.every((e) => e.kind !== 'statMod' || e.until === 'battle')) continue
+    } else if ((when === 'free') !== !!a.free) continue
+    const kinds = new Set(a.effects.map((e) => e.kind))
+    const t = a.target ?? { select: 'self' as const, side: 'any' as const }
+    const selfDamage = a.effects.reduce((n, e) => n + (e.kind === 'selfDamage' ? e.amount : 0), 0)
+    if (selfDamage > 0 && u.hp <= selfDamage * 2) continue
+    if (kinds.has('damage') && t.side === 'enemy') continue   // the damage block's job
+    if (kinds.has('damage') && t.select === 'area' && (t.origin ?? 'self') === 'target') continue
+    const legal = (o: Unit) => canUsePower(ctx, u.id, o.id, id)
+    if (t.select === 'self' || (t.select === 'area' && (t.origin ?? 'self') === 'self' && t.side !== 'enemy')) {
+      if (!legal(u)) continue
+      if (kinds.has('heal')) {
+        // the caster's circle: cast when someone in it is missing at least half the heal
+        const amount = previewPower(ctx, u.id, u.id, id).heal ?? 0
+        const inCircle = powerTargetsOf(ctx, u.id, u.id, a).map((i) => unit(ctx, i))
+        if (!inCircle.some((o) => (o.maxHp - o.hp) * 2 >= amount && o.maxHp - o.hp > 0)) continue
+      } else if (t.select === 'self') {
+        // a battle-long stance is worth taking on the first idle activation;
+        // a "until the end of your next Turn" edge wants a fight within reach
+        const lasting = a.effects.every((e) => e.kind !== 'statMod' || e.until === 'battle')
+        if (!lasting && !livingEnemies(ctx, u).some((e) => distance(u.hex, e.hex) <= u.movement + 1)) continue
+      }
+      usePower(ctx, u.id, u.id, id); settle(ctx, id); return true
+    }
+    if (t.select === 'unit' && t.side === 'ally') {
+      const allies = ctx.state.units.filter((o) => o.side === u.side && o.lifeState === 'standing' && legal(o))
+      if (!allies.length) continue
+      if (kinds.has('heal')) {
+        const best = allies.filter((o) => o.maxHp - o.hp > 0).sort((x, y) => (y.maxHp - y.hp) - (x.maxHp - x.hp) || x.id - y.id)[0]
+        if (!best) continue
+        const amount = previewPower(ctx, u.id, best.id, id).heal ?? 0
+        if (!(amount > 0 && (best.maxHp - best.hp) * 2 >= amount)) continue
+        usePower(ctx, u.id, best.id, id); settle(ctx, id); return true
+      }
+      const best = lowestHealth(allies)!
+      usePower(ctx, u.id, best.id, id); settle(ctx, id); return true
+    }
+  }
+  return false
+}
+
 // ── melee-aggressive ─────────────────────────────────────────────────────────
 // Closes on the reachable enemy with the lowest health; falls back to closing on
 // the nearest. Hits with the biggest attack it can afford.
@@ -327,8 +399,12 @@ function meleeAggressive(ctx: Ctx, u: Unit): void {
     if (bestHex !== null) executeMove(ctx, u.id, pathTo(reach, u.hex, bestHex), walk)
   }
   if (u.lifeState !== 'standing') return
+  effectsPower(ctx, u, 'free')
+  if (effectsPower(ctx, u, 'opening')) return
   if (supportPower(ctx, u)) return
-  if (!attackIfPossible(ctx, u, adjacentEnemies(ctx, u))) idle(ctx, u, 'could not reach an enemy')
+  if (!attackIfPossible(ctx, u, adjacentEnemies(ctx, u))) {
+    if (!effectsPower(ctx, u, 'primary')) idle(ctx, u, 'could not reach an enemy')
+  }
 }
 
 // ── ranged-kite ──────────────────────────────────────────────────────────────
@@ -349,7 +425,24 @@ function rangedKite(ctx: Ctx, u: Unit): void {
   // Reach if this unit were standing there. A shadow copy runs the real reachOf()
   // rather than the AI re-deriving terrain itself — Law 1, and it means a new
   // Reach modifier is visible to the AI the day it exists.
-  const reachAt = (hex: HexId) => reachOf(ctx, { ...u, hex }, bow)
+  const weaponReachAt = (hex: HexId) => reachOf(ctx, { ...u, hex }, bow)
+  // Hold at the POWER's range when a ready enemy-aimed power outranges nothing
+  // — ability.effects (2026-09-03), found on the progression roster: the
+  // Emberwright's Reach put her staff at 7 and Fireball (range 6) was never
+  // legal, because the kite held at weapon reach. SWITCHES.md
+  // aiKiteHoldsAtPowerRange: the hold distance is the shorter of the two while
+  // such a power is ready and affordable; off = weapon reach, as before.
+  const powerRange = ctx.cfg.switches.aiKiteHoldsAtPowerRange
+    ? u.abilities.map((id) => ctx.abilities[id]).filter((a): a is NonNullable<typeof a> => !!a
+        && (a.effects ? (a.target?.side !== 'ally' && a.target?.select !== 'self') : (a.effect ?? 'damage') === 'damage')
+        && isReady(ctx, u, a.id) && u.stamina >= a.staminaCost)
+      .reduce((m, a) => Math.min(m, a.range), Infinity)
+    : Infinity
+  // The SHOT is always the weapon's reach; only the ideal SPACING moves in to
+  // the power's range — a kiter that refused to shoot at 6 while walking to 4
+  // idled through the whole standard battle (found landing this).
+  const reachAt = weaponReachAt
+  const holdAt = (hex: HexId) => Math.min(weaponReachAt(hex), powerRange)
 
   // What a hex is worth, in strict priority order. Lexicographic so the rules
   // stay readable: safety first, then a shot, then height, then ideal spacing.
@@ -361,7 +454,7 @@ function rangedKite(ctx: Ctx, u: Unit): void {
     const safe = meleeThreatens(ctx, u, hex) ? 0 : 1
     const onHill = terr === TERRAIN.HILLS ? 1 : 0
     // Hills are only worth taking if they buy a shot; never worth walking into reach.
-    return [safe, canShoot, safe && canShoot ? onHill : 0, -Math.abs(nearestD - reachHere)]
+    return [safe, canShoot, safe && canShoot ? onHill : 0, -Math.abs(nearestD - holdAt(hex))]
   }
   const better = (a: number[], b: number[]) => {
     for (let i = 0; i < a.length; i++) if (a[i]! !== b[i]!) return a[i]! > b[i]!
@@ -426,6 +519,8 @@ function rangedKite(ctx: Ctx, u: Unit): void {
     }
   }
   if (u.lifeState !== 'standing') return
+  effectsPower(ctx, u, 'free')
+  if (effectsPower(ctx, u, 'opening')) return
   if (supportPower(ctx, u)) return
 
   // A power beats a staff shot whenever it is available and hits harder.
@@ -437,9 +532,14 @@ function rangedKite(ctx: Ctx, u: Unit): void {
     // the first (lowest health, then id) whose blast catches two or more
     // enemies and no ally; otherwise the plain lowest-health pick.
     const pa = ctx.abilities[power]
-    const areaPick = pa?.area
+    // ability.effects (2026-09-03): an effect-list power with area targeting
+    // is an area power too — its blast is what the one targeting vocabulary
+    // resolves, not the legacy `area` field.
+    const isArea = !!pa?.area || (!!pa?.effects && pa.target?.select === 'area')
+    const blastOf = (e: Unit) => pa?.area ? powerBlastIdsOf(ctx, u.id, e.id, power) : pa?.effects ? powerTargetsOf(ctx, u.id, e.id, pa) : [e.id]
+    const areaPick = isArea
       ? targets.slice().sort((a, b) => a.hp - b.hp || a.id - b.id).find((e) => {
-          const struck = powerBlastIdsOf(ctx, u.id, e.id, power)
+          const struck = blastOf(e)
           const foes = struck.filter((s) => unit(ctx, s).side !== u.side).length
           const allies = struck.length - foes
           return foes >= 2 && (allies === 0 || ctx.cfg.switches.aiAreaThroughAllies)
@@ -453,8 +553,8 @@ function rangedKite(ctx: Ctx, u: Unit): void {
       // An area power is worth its SUM over the enemies struck (the areaPick
       // rule already refused shapes with a friend inside) — a Storm that does
       // one less per head beats the staff the moment it catches two.
-      const powerDmg = pa?.area
-        ? powerBlastIdsOf(ctx, u.id, t.id, power)
+      const powerDmg = isArea
+        ? blastOf(t)
             .filter((s) => unit(ctx, s).side !== u.side)
             .reduce((sum, s) => sum + previewPower(ctx, u.id, s, power).damage, 0)
         : previewPower(ctx, u.id, t.id, power).damage
@@ -470,7 +570,7 @@ function rangedKite(ctx: Ctx, u: Unit): void {
   const inRange = enemies.filter((e) => distance(u.hex, e.hex) <= reachNow)
   if (!attackIfPossible(ctx, u, inRange)) {
     if (!attackIfPossible(ctx, u, adjacentEnemies(ctx, u))) {
-      idle(ctx, u, u.stamina < 1 ? 'out of stamina' : 'no target in range')
+      if (!effectsPower(ctx, u, 'primary')) idle(ctx, u, u.stamina < 1 ? 'out of stamina' : 'no target in range')
     }
   }
 }

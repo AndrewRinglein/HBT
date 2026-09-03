@@ -4,7 +4,7 @@
 
 import type { AbilityDef, AttackDef, UnitDef } from '../core/types.js'
 import { omitDisabled, stripDisabledTriggers } from './disable.js'
-import { packAbilities, packAttacks, packCritChart, packItems, packTestAbilities, packTestAttacks, packUnits } from './pack.js'
+import { packAbilities, packAttacks, packCritChart, packItems, packTestAbilities, packTestAttacks, packUnits, packClassPowers, packEnchanted, packLevels, packSpecialties } from './pack.js'
 
 // ─────────────────────────────────────────────────────────────────────────────
 // PROVISIONAL CONTENT — NOT PUBLISHED, NOT DESIGN
@@ -201,7 +201,11 @@ for (const k of Object.keys(packAbilities())) {
 for (const k of Object.keys(packTestAbilities())) {
   if (k in RAW_ABILITIES || k in packAbilities()) throw new Error(`ability '${k}' exists in the test receptacle AND elsewhere — one owner only`)
 }
-export const ABILITIES = omitDisabled({ ...RAW_ABILITIES, ...packAbilities(), ...packTestAbilities() })
+// The class powers (hero assembly, 2026-09-03) join through the same seam.
+for (const k of Object.keys(packClassPowers())) {
+  if (k in RAW_ABILITIES || k in packAbilities() || k in packTestAbilities()) throw new Error(`class power '${k}' exists elsewhere too — one owner only`)
+}
+export const ABILITIES = omitDisabled({ ...RAW_ABILITIES, ...packAbilities(), ...packTestAbilities(), ...packClassPowers() })
 // The Critical Injury Chart — ruled data (station.crit 2026-08-27). Not under
 // omitDisabled: rows carry keys, not ids; the kill seam for crits is the
 // critEnabled switch itself.
@@ -209,7 +213,15 @@ export const CRIT_CHART = packCritChart()
 // The item registry — pack.items (2026-09-02). Every Codex item row, validated
 // against the attacks and abilities it grants. On Ctx so the kill-switch seam
 // (CF_DISABLE_IDS) reaches an item id like any other.
-export const ITEMS = omitDisabled(packItems(ATTACKS, ABILITIES))
+// The enchanted tier-3 rows (hero assembly, 2026-09-03; ITEMS-PLAN.md §6)
+// join the Codex items — one registry, one owner per id.
+for (const k of Object.keys(packEnchanted(ATTACKS, ABILITIES))) {
+  if (k in packItems(ATTACKS, ABILITIES)) throw new Error(`enchanted row '${k}' collides with a Codex item — one owner only`)
+}
+export const ITEMS = omitDisabled({ ...packItems(ATTACKS, ABILITIES), ...packEnchanted(ATTACKS, ABILITIES) })
+/** Level tables and specialties — read by fieldedDef() (hero assembly, 2026-09-03). */
+export const LEVELS = packLevels()
+export const SPECIALTIES = omitDisabled(packSpecialties())
 // The generated pack (Codex-tracked test cohort) joins the hand-authored rows.
 // A collision is a LOUD failure: the pack owns test- ids, this file owns the
 // rest, and neither may quietly shadow the other.

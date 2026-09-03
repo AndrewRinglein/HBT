@@ -229,3 +229,65 @@ export function packAttacks(): Readonly<Record<string, AttackDef>> {
   }
   return raw
 }
+
+// ── HERO ASSEMBLY (2026-09-03) ───────────────────────────────────────────────
+// Ruled 2026-09-03 (Angela): "I would rather we are actually assembling the
+// units so that we know that the way that we're getting things into the units
+// is still correct ... it has to also have the abilities in it." Four generated
+// registries: the class powers (ability.effects), the level tables, the
+// specialties, and the enchanted tier-3 rows. Each validated loudly here.
+
+const EFFECT_KINDS = ['damage', 'heal', 'status.apply', 'status.remove', 'statMod', 'selfDamage', 'knockback']
+
+/** Every class power as an ability — compiled effects, or a row that names its gaps and is inert. */
+export function packClassPowers(): Readonly<Record<string, AbilityDef>> {
+  const raw = (UNIT_PACK as unknown as { classPowers?: Readonly<Record<string, AbilityDef>> }).classPowers ?? {}
+  for (const [k, a] of Object.entries(raw)) {
+    if (k !== a.id) throw new Error(`class powers: key '${k}' names id '${a.id}'`)
+    if (!k.startsWith('power.')) throw new Error(`class powers: '${k}' is not a power.* id`)
+    if (!Array.isArray(a.effects)) throw new Error(`class powers: '${k}' carries no effects list — regenerate the pack`)
+    for (const e of a.effects) if (!EFFECT_KINDS.includes(e.kind)) throw new Error(`class powers: '${k}' has an effect of kind '${String((e as { kind: string }).kind)}'`)
+    if (!a.target) throw new Error(`class powers: '${k}' has no targeting`)
+    if (a.effects.length === 0 && !(a.gaps && a.gaps.length)) throw new Error(`class powers: '${k}' compiled nothing and names no gap — the converter must say why`)
+  }
+  return raw
+}
+
+export type SpecialtyDef = { readonly id: string; readonly name: string; readonly class: string; readonly statModifiers: Readonly<Record<string, number>>; readonly gaps?: readonly string[] }
+export function packSpecialties(): Readonly<Record<string, SpecialtyDef>> {
+  const raw = (UNIT_PACK as unknown as { specialties?: Readonly<Record<string, SpecialtyDef>> }).specialties ?? {}
+  for (const [k, sp] of Object.entries(raw)) {
+    if (k !== sp.id || !k.startsWith('specialty.')) throw new Error(`specialties: bad key '${k}'`)
+    for (const v of Object.values(sp.statModifiers)) if (typeof v !== 'number') throw new Error(`specialties: '${k}' has a non-numeric modifier`)
+  }
+  return raw
+}
+
+export type LevelRow = { readonly level: number; readonly grants: Readonly<Record<string, number>>; readonly choice?: readonly Readonly<Record<string, number>>[]; readonly power?: boolean; readonly gaps?: readonly string[] }
+export type LevelTable = { readonly id: string; readonly rows: readonly LevelRow[] }
+export function packLevels(): Readonly<Record<string, LevelTable>> {
+  const raw = (UNIT_PACK as unknown as { levels?: Readonly<Record<string, LevelTable>> }).levels ?? {}
+  for (const [k, t] of Object.entries(raw)) {
+    if (k !== t.id || !k.startsWith('class.')) throw new Error(`levels: bad key '${k}'`)
+    let last = 0
+    for (const r of t.rows) { if (r.level <= last) throw new Error(`levels: '${k}' rows are not ascending at ${r.level}`); last = r.level }
+  }
+  return raw
+}
+
+/** The enchanted tier-3 rows — ITEMS-PLAN.md §6: generated, base + enchant, never hand-edited. Validated like items. */
+export function packEnchanted(attacks: Readonly<Record<string, AttackDef>>, abilities: Readonly<Record<string, AbilityDef>>): Readonly<Record<string, ItemDef>> {
+  const raw = (UNIT_PACK as unknown as { enchanted?: Readonly<Record<string, ItemDef & { base: string; enchant: string }>> }).enchanted ?? {}
+  const STATS = ['maxHp', 'armor', 'resist', 'dodge', 'strength', 'precision', 'magic', 'spirit', 'reach', 'accuracy', 'movement', 'maxStamina', 'staminaRegen', 'crit', 'luck']
+  for (const [k, it] of Object.entries(raw)) {
+    if (k !== it.id || !k.startsWith('item.')) throw new Error(`enchanted: bad key '${k}'`)
+    if (typeof it.base !== 'string' || typeof it.enchant !== 'string') throw new Error(`enchanted: '${k}' does not name its base and enchant`)
+    for (const [s, v] of Object.entries(it.statModifiers)) {
+      if (!STATS.includes(s) || typeof v !== 'number') throw new Error(`enchanted: '${k}' modifies '${s}' — not an engine stat`)
+    }
+    for (const a of it.grants) if (!attacks[a]) throw new Error(`enchanted: '${k}' grants '${a}', not a pack attack`)
+    for (const a of it.abilities) if (!abilities[a]) throw new Error(`enchanted: '${k}' grants power '${a}', not a pack ability`)
+    for (const t of it.triggers) { validateTrigger(t); if (t.source !== k && t.source !== it.base) throw new Error(`enchanted: '${k}' carries a trigger sourced '${t.source}'`) }
+  }
+  return raw
+}

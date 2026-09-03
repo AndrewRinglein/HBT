@@ -33,7 +33,10 @@ describe('the invariant — no heroItems means the hero the converter used to fo
       const r = shape(row)
       // fix.unit-tags (2026-09-03): the oracle predates the collapse of
       // `attributes` into `tags` (Law 11); the field no longer exists.
-      const keys = [...new Set([...Object.keys(f), ...Object.keys(r)])].filter((k) => k !== 'attributes' && JSON.stringify(f[k]) !== JSON.stringify(r[k]))
+      // Hero assembly (2026-09-03): rows carry their class on `tags` now
+      // (class.warrior …) so fieldedDef can find the level table; the oracle
+      // predates that too.
+      const keys = [...new Set([...Object.keys(f), ...Object.keys(r)])].filter((k) => k !== 'attributes' && k !== 'tags' && JSON.stringify(f[k]) !== JSON.stringify(r[k]))
       if (keys.length) differ[id] = keys
     }
     // FINDING: the converter folded item crit/luck into `ported`, then wrote

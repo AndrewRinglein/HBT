@@ -43,7 +43,11 @@ describe('every Codex item is an ItemDef, and says exactly what it can and canno
     // the Waystation rows added while this landed, 268 rows now) — the claim
     // is agreement, read off the Codex each run.
     const codex = codexItems()
-    expect(Object.keys(ITEMS).length).toBe(codex.size)
+    // Hero assembly (2026-09-03): ITEMS also carries the generated tier-3
+    // enchanted rows (ITEMS-PLAN.md §6, base + enchant); the Codex rows are
+    // exactly the ones with no `enchant` provenance. Agreement, not a count.
+    const codexOnly = Object.values(ITEMS).filter((it) => !(it as { enchant?: string }).enchant)
+    expect(codexOnly.length).toBe(codex.size)
     for (const [id, c] of codex) {
       const it = ITEMS[id]!
       expect(it, id).toBeDefined()

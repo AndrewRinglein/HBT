@@ -121,6 +121,20 @@ export function drainStamina(ctx: Ctx, id: number, amount: number, causeId: stri
  * the critMaxHealthFloorsAtOne switch. HP clamps to the new maximum; the
  * caller's settle turns an hp of 0 into a death with this causeId.
  */
+/**
+ * Max Health GAINED — ability.effects (2026-09-03), Fortify's "+3 Health" for
+ * the rest of the Battle. The mirror of loseMaxHp: the cap rises and the bar
+ * rises with it, so the gain is felt now. u.maxHp is the field the healing
+ * cap and the crit chart read; it is not resolved through the stat pipeline.
+ */
+export function gainMaxHp(ctx: Ctx, id: number, amount: number, causeId: string): void {
+  const u = unit(ctx, id)
+  if (amount <= 0) return
+  u.maxHp += amount
+  u.hp += amount
+  emit(ctx, 'maxHp.gained', causeId, { target: id, amount, maxHp: u.maxHp, hp: u.hp })
+}
+
 export function loseMaxHp(ctx: Ctx, id: number, amount: number, causeId: string): void {
   const u = unit(ctx, id)
   const before = u.maxHp

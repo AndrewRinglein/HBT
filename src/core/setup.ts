@@ -1,9 +1,9 @@
 import { WIDTH, hexId } from './hex.js'
 import { makeRng, rootSeedOf, sample } from './rng.js'
-import type { Ctx, Side, State, Unit, UnitDef, Config } from './types.js'
+import type { Ctx, HeroProgress, Side, State, Unit, UnitDef, Config } from './types.js'
 import { DEFAULT_CONFIG } from './types.js'
-import { ATTACKS, ABILITIES, CRIT_CHART, ITEMS, UNITS, FIRST_BATTLE } from '../content/index.js'
-import { applyItems, type Applied } from './items.js'
+import { ATTACKS, ABILITIES, CRIT_CHART, ITEMS, LEVELS, SPECIALTIES, UNITS, FIRST_BATTLE } from '../content/index.js'
+import { applyItems, applyProgress, type Applied } from './items.js'
 import { terrainOf, terrainIdOf, isPassable } from '../content/maps.js'
 import { STATUSES } from '../content/statuses.js'
 import { MOVES } from '../content/moves.js'
@@ -25,7 +25,9 @@ function makeUnit(id: number, uid: number, name: string, def: UnitDef, hex: numb
     attacks: [...def.attacks],
     abilities: [...def.abilities],
     moves: [...def.moves],
-    cooldowns: {},
+    // warmup (hero assembly, 2026-09-03): a power with warmup W is first
+    // usable on Turn W+1 — isReady is `turn >= cooldowns[id]`.
+    cooldowns: Object.fromEntries(def.abilities.flatMap((a) => { const w = ABILITIES[a]?.warmup; return w ? [[a, w + 1]] : [] })),
     statuses: [],
     mods: [],
     triggers: triggersFrom(def.triggers ?? []),
@@ -67,6 +69,12 @@ export type BattleOptions = {
    * Enemies carry no items; their rows are authored whole.
    */
   heroItems?: readonly (readonly string[] | undefined)[]
+  /**
+   * Hero assembly (2026-09-03): each fielded hero's level, specialty, pick and
+   * drafted powers, in `heroes` order, parallel to heroItems. Absent = the
+   * bare row. Folded by the one function, fieldedDef().
+   */
+  heroProgress?: readonly (HeroProgress | undefined)[]
 }
 
 /**
@@ -89,10 +97,21 @@ export function terrainCensus(terrain: readonly number[]): Record<string, number
  * is the one function a preview (the kingdom's Equip screen, a tooltip) and
  * the battle both read, so they cannot disagree about what a hero carries.
  */
-export function fieldedDef(typeId: string, items?: readonly string[]): UnitDef {
+export function fieldedDef(typeId: string, items?: readonly string[], progress?: HeroProgress): UnitDef {
   const bare = UNITS[typeId]
   if (!bare) throw new Error(`fieldedDef: unknown unit '${typeId}'`)
-  return applyItems(bare, items ?? bare.defaultItems ?? [], ITEMS, ATTACKS, `fieldedDef(${typeId})`).def
+  // Hero assembly (2026-09-03): level, specialty and drafted powers fold on
+  // BEFORE the items, so the kit sees the grown hero. No progress = the bare
+  // row, so every fielding that says nothing is unchanged.
+  const grown = progress ? applyProgress(bare, progress, classOf(bare), LEVELS, SPECIALTIES, ABILITIES, `fieldedDef(${typeId})`) : bare
+  return applyItems(grown, items ?? bare.defaultItems ?? [], ITEMS, ATTACKS, `fieldedDef(${typeId})`).def
+}
+
+/** The class a hero row belongs to, read off its tags (`class.<x>`) — hero assembly. */
+export function classOf(def: UnitDef): string {
+  const tag = (def.tags ?? []).find((t) => t.startsWith('class.'))
+  if (!tag) throw new Error(`${def.typeId} carries no class.* tag, so its level table cannot be found`)
+  return tag
 }
 
 export function createBattle(opts: BattleOptions): Ctx {
@@ -110,6 +129,9 @@ export function createBattle(opts: BattleOptions): Ctx {
 
   const def = (t: string): UnitDef => ({ ...UNITS[t]!, ...(opts.overrides?.[t] ?? {}) })
   const heroes = opts.heroes ?? FIRST_BATTLE.heroes
+  if (opts.heroProgress && opts.heroProgress.length !== heroes.length) {
+    throw new Error(`${opts.scenarioId ? `scenario '${opts.scenarioId}'` : 'battle options'}: ${heroes.length} heroes but ${opts.heroProgress.length} progress records — they must correspond`)
+  }
   if (opts.heroItems && opts.heroItems.length !== heroes.length) {
     throw new Error(`${opts.scenarioId ? `scenario '${opts.scenarioId}'` : 'battle options'}: ${heroes.length} heroes but ${opts.heroItems.length} item lists — they must correspond`)
   }
@@ -215,7 +237,9 @@ export function createBattle(opts: BattleOptions): Ctx {
     // hero, else the row's Codex default kit, else nothing — applied by the
     // one function before the unit is made. Enemies never take this path.
     const itemIds = opts.heroItems?.[i] ?? bare.defaultItems ?? []
-    const { def: d, worn } = applyItems(bare, itemIds, ITEMS, ATTACKS, where)
+    const progress = opts.heroProgress?.[i]
+    const grown = progress ? applyProgress(bare, progress, classOf(bare), LEVELS, SPECIALTIES, ABILITIES, where) : bare
+    const { def: d, worn } = applyItems(grown, itemIds, ITEMS, ATTACKS, where)
     seen[t] = (seen[t] ?? 0)
     const nm = `${d.name ?? label(t)} ${LETTERS[seen[t]!] ?? seen[t]! + 1}`
     seen[t]!++

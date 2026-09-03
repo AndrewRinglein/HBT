@@ -189,6 +189,29 @@ const RAW_SCENARIOS: Readonly<Record<string, ScenarioDef>> = {
     enemyHexes: [117, 119, 121, 123, 118, 122],
     replicate: 0,
   },
+  'showcase.assembled-party': {
+    id: 'showcase.assembled-party',
+    note: 'Hero assembly (2026-09-03): the progression party at its battle-20 '
+      + 'state — levels, specialties, the level-5 picks and the drafted class '
+      + 'powers — on the Codex default kits. Every class power here reaches the '
+      + 'engine through ability.effects; this is the fielding the probe reads '
+      + 'them in. Twelve zombies so the powers have something to answer.',
+    mapId: 'map.open',
+    heroes: ['hero.base.warrior-iron', 'hero.base.ranger-aggressive', 'hero.base.mage-fire',
+      'hero.base.priest-armored', 'hero.base.paladin-hunk', 'hero.base.rogue-raven'],
+    heroHexes: [244, 245, 246, 247, 248, 249],
+    heroProgress: [
+      { level: 5, specialtyId: 'specialty.bloodrage', levelFivePick: { maxHp: 5 }, powers: ['power.bloodrage.frenzy', 'power.bloodrage.bloodlust', 'power.bloodrage.unstoppable'] },
+      { level: 5, specialtyId: 'specialty.bowmaster', levelFivePick: { crit: 8 }, powers: ['power.bowmaster.careful-aim', 'power.bowmaster.sniper', 'power.bowmaster.rain-of-arrows'] },
+      { level: 5, specialtyId: 'specialty.fire-master', levelFivePick: { magic: 2 }, powers: ['power.fire-master.fireball', 'power.fire-master.fire-shield', 'power.fire-master.eldritch-might'] },
+      { level: 5, specialtyId: 'specialty.shepherd', levelFivePick: { maxHp: 5 }, powers: ['power.shepherd.circle-of-healing', 'power.shepherd.close-wounds', 'power.shepherd.prayer'] },
+      { level: 5, specialtyId: 'specialty.sacred-shield', levelFivePick: { maxHp: 5 }, powers: ['power.sacred-shield.aegis', 'power.sacred-shield.fortify', 'power.sacred-shield.guardian-angel'] },
+      { level: 4, specialtyId: 'specialty.assassin', powers: ['power.assassin.knife-in-the-back', 'power.assassin.deep-cut'] },
+    ],
+    enemies: Array.from({ length: 12 }, () => 'unit.zombie'),
+    enemyHexes: [64, 66, 68, 70, 72, 74, 80, 82, 84, 86, 88, 90],
+    replicate: 0,
+  },
 }
 
 // The kill-switch seam (disable.ts): byte-identical object when nothing is
@@ -211,6 +234,8 @@ export function scenarioOptions(s: ScenarioDef) {
     enemies: s.enemies,
     enemyHexes: [...s.enemyHexes],
     enemyCount: s.enemies.length,
+    ...(s.heroItems ? { heroItems: s.heroItems } : {}),
+    ...(s.heroProgress ? { heroProgress: s.heroProgress } : {}),
   }
 }
 

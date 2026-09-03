@@ -434,7 +434,23 @@
   "expect": "an ability can heal an ally, and an ability can grant its user a trigger",
   "needs": [
    "target.model"
-  ]
+  ],
+  "probeIds": [
+   "power.sacred-shield.aegis",
+   "power.fire-master.fireball"
+  ],
+  "variants": [
+   "power.sacred-shield.aegis",
+   "power.shepherd.circle-of-healing",
+   "power.fire-master.fireball",
+   "power.fire-master.eldritch-might"
+  ],
+  "changesBaseline": true,
+  "note": " | 2026-09-03: lands WITH hero assembly (ruled the same day — levels, specialties, enchanted tier-3 rows, HeroProgress at fielding, the progression loader in src/sim/progression.ts) because the class powers are what assembly must carry. changesBaseline: the kite now holds at a ready power's range (SWITCHES.md aiKiteHoldsAtPowerRange) and the Alpha Team's mage reaches her Storm.",
+  "attempts": 2,
+  "status": "done-needs-review",
+  "sha": "03b97e2",
+  "gauntlet": "not passed — 2 flag(s) warned"
  },
  {
   "id": "move.actions",

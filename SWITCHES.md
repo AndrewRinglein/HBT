@@ -339,3 +339,12 @@ when nothing standing is in reach) · `always` (the finisher: a downed hero in
 reach is struck before anyone standing, which is what "the zombies swarm the
 fallen" would mean). Default chosen for the mildest change to the control
 battles; a sweep on hero deaths per battle is the measurement.
+
+## aiKiteHoldsAtPowerRange — does the kite close to a power's range?
+Added 2026-09-03 (ability.effects), found on the progression roster: the
+Emberwright's +3 Reach put her staff at 7 hexes and the kite held there, so
+Fireball (range 6) was never once legal across twenty battles — dead content
+by positioning. Default **on**: while an enemy-aimed power is ready and
+affordable, the hold distance is the shorter of weapon reach and that power's
+range. Off = weapon reach, the old rule. Whether closing three hexes to throw
+a fireball is worth the melee exposure is a sweep's question.
