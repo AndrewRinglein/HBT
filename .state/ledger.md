@@ -4107,7 +4107,7 @@ fieldings (a reserved kind). Three flags. Seal withheld.
 
 IRON GAUNTLET: NOT PASSED — 3 FLAG(S) WARNED
 
-## pack.items — LANDED `2fce79c` **NEEDS REVIEW**
+## pack.items — LANDED `058e75e` (gate recorded 2fce79c, the pre-amend sha) **NEEDS REVIEW**
 2026-09-03 05:17
 
   PASS  dependencies landed
