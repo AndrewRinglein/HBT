@@ -7,7 +7,9 @@ own nested git repository** (ruled 2026-09-02, `THREE-PACKAGES-PLAN.md`). It
 imports the engine through one door and never edits it.
 
 **Read first, in this order:** the root `STATE.md` · the root `CLAUDE.md` (laws,
-vocabulary) · `GLOSSARY.md` (the naming authority) · **`VIEWER-CONSTITUTION.md`**
+vocabulary) · `GLOSSARY.md` (the naming authority) · **`HANDOFF-2026-09-03.md`**
+(what is built, what is open, how to work here — start there if you are new) ·
+**`VIEWER-CONSTITUTION.md`**
 (this package's seven laws, each with its catch) · `THREE-PACKAGES-PLAN.md`
 (the seams, the stages, what not to do) · then the look, which is ruled in
 `VFX/PLAYBACK-DESIGN.md`, `VFX/UI-BUILD-NOTES-2026-09-02.md` and the work list
