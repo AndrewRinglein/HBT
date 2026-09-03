@@ -25,7 +25,7 @@
 
 import type { EncounterDef, ScenarioDef } from '../core/types.js'
 import { omitDisabled } from './disable.js'
-import { ENCOUNTERS } from './index.js'
+import { ENCOUNTERS, UNITS } from './index.js'
 
 const RAW_SCENARIOS: Readonly<Record<string, ScenarioDef>> = {
   'showcase.beasts': {
@@ -279,6 +279,26 @@ const RAW_SCENARIOS: Readonly<Record<string, ScenarioDef>> = {
     enemies: [],
     enemyHexes: [],
     encounterId: 'encounter.horrors-of-the-night',
+    replicate: 0,
+  },
+  'showcase.waystation': {
+    id: 'showcase.waystation',
+    note: 'capability.charges (2026-09-03): the four opening heroes on their Codex '
+      + 'kits plus the Waystation\'s consumables — a Healing Potion and Rations '
+      + 'each, a Poison Flask on the ranger, a Strength Potion on the warrior. '
+      + 'Twelve zombies so the potions get drunk. The fielding the probe reads a '
+      + 'charge being spent in.',
+    mapId: 'map.open',
+    heroes: ['hero.base.warrior-iron', 'hero.base.ranger-aggressive', 'hero.base.mage-fire', 'hero.base.priest-armored'],
+    heroHexes: [244, 245, 246, 247],
+    heroItems: [
+      [...(UNITS['hero.base.warrior-iron']?.defaultItems ?? []), 'item.healing-potion', 'item.rations', 'item.strength-potion'],
+      [...(UNITS['hero.base.ranger-aggressive']?.defaultItems ?? []), 'item.healing-potion', 'item.rations', 'item.poison-flask'],
+      [...(UNITS['hero.base.mage-fire']?.defaultItems ?? []), 'item.healing-potion', 'item.rations'],
+      [...(UNITS['hero.base.priest-armored']?.defaultItems ?? []), 'item.healing-potion', 'item.rations'],
+    ],
+    enemies: Array.from({ length: 12 }, () => 'unit.zombie'),
+    enemyHexes: [64, 66, 68, 70, 72, 74, 80, 82, 84, 86, 88, 90],
     replicate: 0,
   },
   'showcase.assembled-party': {

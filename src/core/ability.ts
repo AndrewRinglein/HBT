@@ -19,7 +19,7 @@
 
 import { distance } from './hex.js'
 import type { AbilityDef, AbilityEffect, Ctx, Unit } from './types.js'
-import { addStatMod, applyDamage, applyHealing, corpsesNear, emit, gainMaxHp, loseMaxHp, markPrimaryUsed, removeCorpse, removeStatus, reduceStatus, spendStamina, unit } from './mutate.js'
+import { addStatMod, applyDamage, applyHealing, corpsesNear, emit, gainMaxHp, gainStamina, loseMaxHp, markPrimaryUsed, removeCorpse, removeStatus, reduceStatus, spendStamina, unit } from './mutate.js'
 import { resolveTargets, hasAnyTarget } from './target.js'
 import { executeKnockback } from './movement.js'
 import { areaHexesOf, resolveDamage } from './pipeline.js'
@@ -72,6 +72,8 @@ export function canUsePower(ctx: Ctx, userId: number, targetId: number, abilityI
   }
   // capability.vision: an enemy you cannot see is not a target
   if (tg.side !== u.side && !ctx.cfg.switches.targetUnseen && !canSee(ctx, u, tg)) return false
+  // capability.charges: no uses left, no power (it has already left the list; belt and braces)
+  if (a.uses && (u.usesLeft[abilityId] ?? 0) <= 0) return false
   if (a.effects) {
     // capability.corpses: a power that eats needs a body in reach — legality, not a fizzle
     for (const e of a.effects) if (e.kind === 'corpse.eat' && corpsesNear(ctx, u.hex, e.radius).length === 0) return false
@@ -201,9 +203,12 @@ export function usePower(ctx: Ctx, userId: number, targetId: number, abilityId: 
   let total = 0
   if (a.effects) {
     total = performEffects(ctx, userId, targetId, a)
-    const readyAgain = ctx.state.turn + a.cooldown
-    u.cooldowns[abilityId] = readyAgain
-    emit(ctx, 'cooldown.set', a.id, { actor: userId, abilityId, readyOnTurn: readyAgain })
+    if (a.cooldown) {
+      const readyAgain = ctx.state.turn + a.cooldown
+      u.cooldowns[abilityId] = readyAgain
+      emit(ctx, 'cooldown.set', a.id, { actor: userId, abilityId, readyOnTurn: readyAgain })
+    }
+    if (a.uses) spendUse(ctx, userId, abilityId)
     return { damage: total }
   }
   switch (effectOf(a)) {
@@ -374,6 +379,10 @@ function applyOne(ctx: Ctx, userId: number, id: number, a: AbilityDef, e: Abilit
       applyDamage(ctx, id, e.amount, a.id, { actor: userId, abilityId: a.id, damageType: e.damageType })
       return 0
     }
+    case 'stamina.gain': {
+      gainStamina(ctx, id, e.value, a.id)
+      return 0
+    }
     case 'knockback': {
       const v = valueOf(ctx, u, e.value)
       if (v > 0) executeKnockback(ctx, userId, id, v, a.id)
@@ -390,5 +399,23 @@ function applyOne(ctx: Ctx, userId: number, id: number, a: AbilityDef, e: Abilit
       if (e.maxHp) gainMaxHp(ctx, userId, e.maxHp, a.id)
       return 0
     }
+  }
+}
+
+/**
+ * capability.charges (2026-09-03): a use is spent; at zero the power leaves
+ * the unit's list for the rest of the Battle — "they should vanish from the
+ * list of things available to a hero in the powers list, because there's no
+ * cooldown" (Andrew 2026-09-02). The spend is remembered for the BattleResult.
+ */
+function spendUse(ctx: Ctx, userId: number, abilityId: string): void {
+  const u = unit(ctx, userId)
+  const left = (u.usesLeft[abilityId] ?? 0) - 1
+  u.usesLeft[abilityId] = left
+  u.usesSpentThisBattle = { ...(u.usesSpentThisBattle ?? {}), [abilityId]: (u.usesSpentThisBattle?.[abilityId] ?? 0) + 1 }
+  emit(ctx, 'charge.spent', abilityId, { actor: userId, abilityId, left })
+  if (left <= 0) {
+    u.abilities = u.abilities.filter((id) => id !== abilityId)
+    emit(ctx, 'power.exhausted', abilityId, { actor: userId, abilityId })
   }
 }

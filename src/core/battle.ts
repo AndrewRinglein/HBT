@@ -167,6 +167,8 @@ function endOfPhase(ctx: Ctx, side: Side): void {
 export type BattleResult = {
   outcome: import('./types.js').Outcome
   turns: number
+  /** capability.charges: every use spent this Battle, so the kingdom can restock — unit, power, and how many. */
+  usesSpent: { unit: number; power: string; spent: number }[]
 }
 
 export function runBattle(ctx: Ctx): BattleResult {
@@ -210,5 +212,7 @@ export function runBattle(ctx: Ctx): BattleResult {
     emit(ctx, 'turn.end', 'engine', { turn: ctx.state.turn })
   }
 
-  return { outcome: ctx.state.outcome ?? 'capped', turns: ctx.state.turn }
+  const usesSpent: BattleResult['usesSpent'] = []
+  for (const u of ctx.state.units) for (const [power, spent] of Object.entries(u.usesSpentThisBattle ?? {})) usesSpent.push({ unit: u.id, power, spent })
+  return { outcome: ctx.state.outcome ?? 'capped', turns: ctx.state.turn, usesSpent }
 }

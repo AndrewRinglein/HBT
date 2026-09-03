@@ -65,7 +65,9 @@ const ACTED = new Set(['damage.applied','heal.applied','power.used','attack.decl
   // capability.ground-layers (2026-09-03): a stroke on the board
   'layer.painted', 'layer.cancelled', 'band.advanced',
   // capability.vision (2026-09-03)
-  'night.fell', 'light.cast'])
+  'night.fell', 'light.cast',
+  // capability.charges (2026-09-03): a use spent is a thing that cannot be undone this Battle
+  'charge.spent', 'power.exhausted'])
 
 /**
  * A SCENARIO is probed by fielding it, not by sweeping the standard panel.

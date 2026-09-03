@@ -27,6 +27,7 @@ export function makeUnit(id: number, uid: number, name: string, def: UnitDef, he
     vision: def.vision ?? 0,
     auras: (def.auras ?? []).map((a) => ({ ...a })),
     summoned: false,
+    usesLeft: Object.fromEntries(def.abilities.flatMap((a) => { const n = ABILITIES[a]?.uses; return n ? [[a, n]] : [] })),
     ai: def.ai,
     attacks: [...def.attacks],
     abilities: [...def.abilities],

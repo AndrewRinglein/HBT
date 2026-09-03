@@ -4808,6 +4808,464 @@ export const UNIT_PACK = {
       "bonus": 1,
       "damageType": "magic",
       "area": "blast1"
+    },
+    "power.loaded-dice-of-mirran.use": {
+      "id": "power.loaded-dice-of-mirran.use",
+      "name": "Loaded Dice of Mirran",
+      "staminaCost": 1,
+      "cooldown": 3,
+      "free": true,
+      "range": 0,
+      "target": {
+        "select": "self",
+        "side": "any"
+      },
+      "effects": [
+        {
+          "kind": "statMod",
+          "stat": "accuracy",
+          "value": 15,
+          "until": "endOfNextTurn",
+          "who": "self"
+        }
+      ]
+    },
+    "power.mug-of-endless-dregs.use": {
+      "id": "power.mug-of-endless-dregs.use",
+      "name": "Mug of Endless Dregs",
+      "staminaCost": 0,
+      "cooldown": 4,
+      "free": true,
+      "range": 0,
+      "target": {
+        "select": "self",
+        "side": "any"
+      },
+      "effects": [
+        {
+          "kind": "heal",
+          "amount": 3
+        },
+        {
+          "kind": "status.remove",
+          "statusId": "status.weak",
+          "value": 1
+        },
+        {
+          "kind": "statMod",
+          "stat": "accuracy",
+          "value": -5,
+          "until": "endOfNextTurn",
+          "who": "self"
+        }
+      ]
+    },
+    "power.aether-crystal.use": {
+      "id": "power.aether-crystal.use",
+      "name": "Aether Crystal",
+      "staminaCost": 1,
+      "cooldown": 3,
+      "range": 0,
+      "target": {
+        "select": "self",
+        "side": "any"
+      },
+      "effects": [
+        {
+          "kind": "status.apply",
+          "statusId": "status.protection",
+          "value": 4
+        }
+      ]
+    },
+    "power.saints-fingerbone.use": {
+      "id": "power.saints-fingerbone.use",
+      "name": "Saint's Fingerbone",
+      "staminaCost": 1,
+      "cooldown": 4,
+      "range": 2,
+      "target": {
+        "select": "unit",
+        "side": "ally"
+      },
+      "effects": [
+        {
+          "kind": "status.remove",
+          "statusId": "status.burn",
+          "value": 1
+        },
+        {
+          "kind": "status.remove",
+          "statusId": "status.poison",
+          "value": 1
+        },
+        {
+          "kind": "status.remove",
+          "statusId": "status.bleed",
+          "value": 1
+        }
+      ]
+    },
+    "power.medicine-belt.use": {
+      "id": "power.medicine-belt.use",
+      "name": "Medicine Belt",
+      "staminaCost": 2,
+      "cooldown": 3,
+      "range": 1,
+      "target": {
+        "select": "unit",
+        "side": "ally"
+      },
+      "effects": [
+        {
+          "kind": "heal",
+          "amount": 4
+        },
+        {
+          "kind": "status.remove",
+          "statusId": "status.bleed",
+          "value": 2
+        }
+      ]
+    },
+    "power.holy-chalice.use": {
+      "id": "power.holy-chalice.use",
+      "name": "Holy Chalice",
+      "staminaCost": 2,
+      "cooldown": 4,
+      "range": 0,
+      "target": {
+        "select": "area",
+        "side": "ally",
+        "radius": 3,
+        "origin": "self"
+      },
+      "effects": [
+        {
+          "kind": "heal",
+          "amount": {
+            "scale": "partySpirit",
+            "base": 2,
+            "mult": 1
+          }
+        }
+      ]
+    },
+    "power.eye-of-the-oracle.use": {
+      "id": "power.eye-of-the-oracle.use",
+      "name": "Eye of the Oracle",
+      "staminaCost": 1,
+      "cooldown": 6,
+      "free": true,
+      "range": 0,
+      "target": {
+        "select": "self",
+        "side": "any"
+      },
+      "effects": [
+        {
+          "kind": "statMod",
+          "stat": "dodge",
+          "value": 20,
+          "until": "endOfNextTurn",
+          "who": "self"
+        },
+        {
+          "kind": "statMod",
+          "stat": "luck",
+          "value": 20,
+          "until": "endOfNextTurn",
+          "who": "self"
+        }
+      ]
+    },
+    "power.cure-poison.use": {
+      "id": "power.cure-poison.use",
+      "name": "Cure Poison",
+      "staminaCost": 0,
+      "cooldown": 0,
+      "uses": 1,
+      "free": true,
+      "range": 1,
+      "target": {
+        "select": "unit",
+        "side": "ally"
+      },
+      "effects": [
+        {
+          "kind": "status.remove",
+          "statusId": "status.poison",
+          "value": 2
+        }
+      ]
+    },
+    "power.rations.use": {
+      "id": "power.rations.use",
+      "name": "Rations",
+      "staminaCost": 0,
+      "cooldown": 0,
+      "uses": 1,
+      "range": 0,
+      "target": {
+        "select": "self",
+        "side": "any"
+      },
+      "effects": [
+        {
+          "kind": "stamina.gain",
+          "value": 2
+        }
+      ]
+    },
+    "power.healing-potion.use": {
+      "id": "power.healing-potion.use",
+      "name": "Healing Potion",
+      "staminaCost": 0,
+      "cooldown": 0,
+      "uses": 1,
+      "free": true,
+      "range": 1,
+      "target": {
+        "select": "unit",
+        "side": "ally"
+      },
+      "effects": [
+        {
+          "kind": "heal",
+          "amount": 3
+        }
+      ]
+    },
+    "power.poison-flask.use": {
+      "id": "power.poison-flask.use",
+      "name": "Poison Flask",
+      "staminaCost": 1,
+      "cooldown": 0,
+      "uses": 1,
+      "range": 4,
+      "target": {
+        "select": "unit",
+        "side": "enemy"
+      },
+      "effects": [
+        {
+          "kind": "status.apply",
+          "statusId": "status.poison",
+          "value": 2
+        }
+      ]
+    },
+    "power.burning-oil.use": {
+      "id": "power.burning-oil.use",
+      "name": "Burning Oil",
+      "staminaCost": 1,
+      "cooldown": 0,
+      "uses": 1,
+      "range": 3,
+      "target": {
+        "select": "unit",
+        "side": "enemy"
+      },
+      "effects": [
+        {
+          "kind": "status.apply",
+          "statusId": "status.burn",
+          "value": 2
+        }
+      ],
+      "gaps": [
+        "and the hex it stands on gains Burning — a painted layer from a power (not yet an ability effect)"
+      ]
+    },
+    "power.greater-healing-potion.use": {
+      "id": "power.greater-healing-potion.use",
+      "name": "Greater Healing Potion",
+      "staminaCost": 1,
+      "cooldown": 0,
+      "uses": 1,
+      "range": 1,
+      "target": {
+        "select": "unit",
+        "side": "ally"
+      },
+      "effects": [
+        {
+          "kind": "heal",
+          "amount": 6
+        }
+      ]
+    },
+    "power.frenzy-potion.use": {
+      "id": "power.frenzy-potion.use",
+      "name": "Frenzy Potion",
+      "staminaCost": 0,
+      "cooldown": 0,
+      "uses": 1,
+      "free": true,
+      "range": 0,
+      "target": {
+        "select": "self",
+        "side": "any"
+      },
+      "effects": [
+        {
+          "kind": "statMod",
+          "stat": "strength",
+          "value": 2,
+          "until": "endOfTurn",
+          "who": "self"
+        },
+        {
+          "kind": "statMod",
+          "stat": "crit",
+          "value": 20,
+          "until": "endOfTurn",
+          "who": "self"
+        },
+        {
+          "kind": "statMod",
+          "stat": "accuracy",
+          "value": -20,
+          "until": "endOfTurn",
+          "who": "self"
+        }
+      ],
+      "gaps": [
+        "\"until the end of your Activation\" is read as until the end of the Turn"
+      ]
+    },
+    "power.strength-potion.use": {
+      "id": "power.strength-potion.use",
+      "name": "Strength Potion",
+      "staminaCost": 2,
+      "cooldown": 0,
+      "uses": 1,
+      "range": 0,
+      "target": {
+        "select": "self",
+        "side": "any"
+      },
+      "effects": [
+        {
+          "kind": "statMod",
+          "stat": "strength",
+          "value": 1,
+          "until": "battle",
+          "who": "self"
+        },
+        {
+          "kind": "statMod",
+          "stat": "accuracy",
+          "value": -5,
+          "until": "battle",
+          "who": "self"
+        }
+      ]
+    },
+    "power.free-movement-potion.use": {
+      "id": "power.free-movement-potion.use",
+      "name": "Potion of Free Movement",
+      "staminaCost": 1,
+      "cooldown": 0,
+      "uses": 1,
+      "range": 1,
+      "target": {
+        "select": "unit",
+        "side": "ally"
+      },
+      "effects": [
+        {
+          "kind": "statMod",
+          "stat": "movement",
+          "value": 1,
+          "until": "battle"
+        },
+        {
+          "kind": "status.remove",
+          "statusId": "status.root",
+          "value": 2
+        },
+        {
+          "kind": "status.remove",
+          "statusId": "status.slow",
+          "value": 2
+        }
+      ]
+    },
+    "power.divine-ward.use": {
+      "id": "power.divine-ward.use",
+      "name": "Divine Ward",
+      "staminaCost": 1,
+      "cooldown": 3,
+      "range": 2,
+      "target": {
+        "select": "unit",
+        "side": "ally"
+      },
+      "effects": [
+        {
+          "kind": "status.apply",
+          "statusId": "status.protection",
+          "value": {
+            "scale": "partySpirit",
+            "base": 2,
+            "mult": 1
+          }
+        }
+      ]
+    },
+    "power.bracer-of-courage.use": {
+      "id": "power.bracer-of-courage.use",
+      "name": "Bracer of Courage",
+      "staminaCost": 1,
+      "cooldown": 4,
+      "free": true,
+      "range": 0,
+      "target": {
+        "select": "self",
+        "side": "any"
+      },
+      "effects": [
+        {
+          "kind": "status.remove",
+          "statusId": "status.stun",
+          "value": 5
+        },
+        {
+          "kind": "status.remove",
+          "statusId": "status.weak",
+          "value": 5
+        }
+      ]
+    },
+    "power.banner-of-resolve.use": {
+      "id": "power.banner-of-resolve.use",
+      "name": "Banner of Resolve",
+      "staminaCost": 2,
+      "cooldown": 5,
+      "range": 0,
+      "target": {
+        "select": "area",
+        "side": "ally",
+        "radius": 3,
+        "origin": "self"
+      },
+      "effects": [
+        {
+          "kind": "status.remove",
+          "statusId": "status.stun"
+        },
+        {
+          "kind": "status.remove",
+          "statusId": "status.weak"
+        },
+        {
+          "kind": "statMod",
+          "stat": "resist",
+          "value": 2,
+          "until": "battle"
+        }
+      ]
     }
   },
   "prologueParty": [
@@ -8603,7 +9061,8 @@ export const UNIT_PACK = {
         }
       ],
       "gaps": [
-        "uses: 1 — charges spent in battle — capability.consumables"
+        "active:  — an ability with charges/targets — capability.consumables",
+        "uses: 1 — no active compiled to carry the charge — charges spent in battle — capability.consumables"
       ]
     },
     "item.thick-hide": {
@@ -10213,11 +10672,10 @@ export const UNIT_PACK = {
       "slots": 1,
       "statModifiers": {},
       "grants": [],
-      "abilities": [],
-      "triggers": [],
-      "gaps": [
-        "active: Free. Until the end of your next Turn, your attack — an ability with charges/targets — capability.consumables"
-      ]
+      "abilities": [
+        "power.loaded-dice-of-mirran.use"
+      ],
+      "triggers": []
     },
     "item.crows-eye-pendant": {
       "id": "item.crows-eye-pendant",
@@ -10243,11 +10701,10 @@ export const UNIT_PACK = {
       "slots": 1,
       "statModifiers": {},
       "grants": [],
-      "abilities": [],
-      "triggers": [],
-      "gaps": [
-        "active: Free. Heal 3 and remove 1 Weak. You take -5 Accura — an ability with charges/targets — capability.consumables"
-      ]
+      "abilities": [
+        "power.mug-of-endless-dregs.use"
+      ],
+      "triggers": []
     },
     "item.aether-crystal": {
       "id": "item.aether-crystal",
@@ -10258,11 +10715,10 @@ export const UNIT_PACK = {
       "slots": 1,
       "statModifiers": {},
       "grants": [],
-      "abilities": [],
-      "triggers": [],
-      "gaps": [
-        "active: Gain 4 Protection. Protection is spent before Heal — an ability with charges/targets — capability.consumables"
-      ]
+      "abilities": [
+        "power.aether-crystal.use"
+      ],
+      "triggers": []
     },
     "item.saints-fingerbone": {
       "id": "item.saints-fingerbone",
@@ -10273,11 +10729,10 @@ export const UNIT_PACK = {
       "slots": 1,
       "statModifiers": {},
       "grants": [],
-      "abilities": [],
-      "triggers": [],
-      "gaps": [
-        "active: Remove 1 Burn, 1 Poison and 1 Bleed from the targe — an ability with charges/targets — capability.consumables"
-      ]
+      "abilities": [
+        "power.saints-fingerbone.use"
+      ],
+      "triggers": []
     },
     "item.poison-caltrops": {
       "id": "item.poison-caltrops",
@@ -10319,11 +10774,10 @@ export const UNIT_PACK = {
       "slots": 1,
       "statModifiers": {},
       "grants": [],
-      "abilities": [],
-      "triggers": [],
-      "gaps": [
-        "active: Heal 4 and remove 2 Bleed. You must be adjacent —  — an ability with charges/targets — capability.consumables"
-      ]
+      "abilities": [
+        "power.medicine-belt.use"
+      ],
+      "triggers": []
     },
     "item.wayfinders-compass": {
       "id": "item.wayfinders-compass",
@@ -10439,11 +10893,10 @@ export const UNIT_PACK = {
       "slots": 1,
       "statModifiers": {},
       "grants": [],
-      "abilities": [],
-      "triggers": [],
-      "gaps": [
-        "active: Each ally within 3 hexes, including you, heals 2 + — an ability with charges/targets — capability.consumables"
-      ]
+      "abilities": [
+        "power.holy-chalice.use"
+      ],
+      "triggers": []
     },
     "item.wreath-of-natures-protection": {
       "id": "item.wreath-of-natures-protection",
@@ -10539,11 +10992,10 @@ export const UNIT_PACK = {
       "slots": 1,
       "statModifiers": {},
       "grants": [],
-      "abilities": [],
-      "triggers": [],
-      "gaps": [
-        "active: Free. Until the end of your next Turn you gain +20 — an ability with charges/targets — capability.consumables"
-      ]
+      "abilities": [
+        "power.eye-of-the-oracle.use"
+      ],
+      "triggers": []
     },
     "item.heart-of-vyrmothax": {
       "id": "item.heart-of-vyrmothax",
@@ -10725,12 +11177,10 @@ export const UNIT_PACK = {
       "slots": 1,
       "statModifiers": {},
       "grants": [],
-      "abilities": [],
-      "triggers": [],
-      "gaps": [
-        "active: Free, 0 Stamina: remove 2 Poison. — an ability with charges/targets — capability.consumables",
-        "uses: 1 — charges spent in battle — capability.consumables"
-      ]
+      "abilities": [
+        "power.cure-poison.use"
+      ],
+      "triggers": []
     },
     "item.rations": {
       "id": "item.rations",
@@ -10741,12 +11191,10 @@ export const UNIT_PACK = {
       "slots": 1,
       "statModifiers": {},
       "grants": [],
-      "abilities": [],
-      "triggers": [],
-      "gaps": [
-        "active: Costs your primary action, 0 Stamina: regain 2 Sta — an ability with charges/targets — capability.consumables",
-        "uses: 1 — charges spent in battle — capability.consumables"
-      ]
+      "abilities": [
+        "power.rations.use"
+      ],
+      "triggers": []
     },
     "item.healing-potion": {
       "id": "item.healing-potion",
@@ -10757,12 +11205,10 @@ export const UNIT_PACK = {
       "slots": 1,
       "statModifiers": {},
       "grants": [],
-      "abilities": [],
-      "triggers": [],
-      "gaps": [
-        "active: Free, 0 Stamina: heal 3. — an ability with charges/targets — capability.consumables",
-        "uses: 1 — charges spent in battle — capability.consumables"
-      ]
+      "abilities": [
+        "power.healing-potion.use"
+      ],
+      "triggers": []
     },
     "item.bandages": {
       "id": "item.bandages",
@@ -10777,7 +11223,7 @@ export const UNIT_PACK = {
       "triggers": [],
       "gaps": [
         "active: Free, 0 Stamina: stabilize a downed ally — their b — an ability with charges/targets — capability.consumables",
-        "uses: 1 — charges spent in battle — capability.consumables"
+        "uses: 1 — no active compiled to carry the charge — charges spent in battle — capability.consumables"
       ]
     },
     "item.backpack": {
@@ -10807,12 +11253,10 @@ export const UNIT_PACK = {
       "slots": 1,
       "statModifiers": {},
       "grants": [],
-      "abilities": [],
-      "triggers": [],
-      "gaps": [
-        "active: Once per Battle: apply 2 Poison to a target within — an ability with charges/targets — capability.consumables",
-        "uses: 1 — charges spent in battle — capability.consumables"
-      ]
+      "abilities": [
+        "power.poison-flask.use"
+      ],
+      "triggers": []
     },
     "item.burning-oil": {
       "id": "item.burning-oil",
@@ -10823,11 +11267,12 @@ export const UNIT_PACK = {
       "slots": 1,
       "statModifiers": {},
       "grants": [],
-      "abilities": [],
+      "abilities": [
+        "power.burning-oil.use"
+      ],
       "triggers": [],
       "gaps": [
-        "active: Once per Battle: apply 2 Burn to a target within 3 — an ability with charges/targets — capability.consumables",
-        "uses: 1 — charges spent in battle — capability.consumables"
+        "power.burning-oil.use: and the hex it stands on gains Burning — a painted layer from a power (not yet an ability effect) — item active clause"
       ]
     },
     "item.greater-healing-potion": {
@@ -10839,12 +11284,10 @@ export const UNIT_PACK = {
       "slots": 1,
       "statModifiers": {},
       "grants": [],
-      "abilities": [],
-      "triggers": [],
-      "gaps": [
-        "active: Once per Battle, costs your primary action and 1 S — an ability with charges/targets — capability.consumables",
-        "uses: 1 — charges spent in battle — capability.consumables"
-      ]
+      "abilities": [
+        "power.greater-healing-potion.use"
+      ],
+      "triggers": []
     },
     "item.frenzy-potion": {
       "id": "item.frenzy-potion",
@@ -10855,11 +11298,12 @@ export const UNIT_PACK = {
       "slots": 1,
       "statModifiers": {},
       "grants": [],
-      "abilities": [],
+      "abilities": [
+        "power.frenzy-potion.use"
+      ],
       "triggers": [],
       "gaps": [
-        "active: Free: until the end of your Activation, gain +2 St — an ability with charges/targets — capability.consumables",
-        "uses: 1 — charges spent in battle — capability.consumables"
+        "power.frenzy-potion.use: \"until the end of your Activation\" is read as until the end of the Turn — item active clause"
       ]
     },
     "item.strength-potion": {
@@ -10871,12 +11315,10 @@ export const UNIT_PACK = {
       "slots": 1,
       "statModifiers": {},
       "grants": [],
-      "abilities": [],
-      "triggers": [],
-      "gaps": [
-        "active: Once per Battle, 2 Stamina: gain +1 Strength and l — an ability with charges/targets — capability.consumables",
-        "uses: 1 — charges spent in battle — capability.consumables"
-      ]
+      "abilities": [
+        "power.strength-potion.use"
+      ],
+      "triggers": []
     },
     "item.poison-coating": {
       "id": "item.poison-coating",
@@ -10891,7 +11333,7 @@ export const UNIT_PACK = {
       "triggers": [],
       "gaps": [
         "active: Once per Battle, 1 Stamina: for the rest of the Ba — an ability with charges/targets — capability.consumables",
-        "uses: 1 — charges spent in battle — capability.consumables"
+        "uses: 1 — no active compiled to carry the charge — charges spent in battle — capability.consumables"
       ]
     },
     "item.winter-cloak": {
@@ -10907,7 +11349,7 @@ export const UNIT_PACK = {
       "triggers": [],
       "gaps": [
         "active: Once per Battle, 1 Stamina: gain Immunity to Frost — an ability with charges/targets — capability.consumables",
-        "uses: 1 — charges spent in battle — capability.consumables"
+        "uses: 1 — no active compiled to carry the charge — charges spent in battle — capability.consumables"
       ]
     },
     "item.brilliant-torch": {
@@ -10925,7 +11367,7 @@ export const UNIT_PACK = {
       "triggers": [],
       "gaps": [
         "active: +5 Vision. Once per Battle, 1 Stamina: reveal ever — an ability with charges/targets — capability.consumables",
-        "uses: 1 — charges spent in battle — capability.consumables"
+        "uses: 1 — no active compiled to carry the charge — charges spent in battle — capability.consumables"
       ]
     },
     "item.bear-trap": {
@@ -10941,7 +11383,7 @@ export const UNIT_PACK = {
       "triggers": [],
       "gaps": [
         "active: Once per Battle: place two traps on empty hexes wi — an ability with charges/targets — capability.consumables",
-        "uses: 1 — charges spent in battle — capability.consumables"
+        "uses: 1 — no active compiled to carry the charge — charges spent in battle — capability.consumables"
       ]
     },
     "item.magic-trap": {
@@ -10957,7 +11399,7 @@ export const UNIT_PACK = {
       "triggers": [],
       "gaps": [
         "active: Once per Battle: place two traps on empty hexes wi — an ability with charges/targets — capability.consumables",
-        "uses: 1 — charges spent in battle — capability.consumables"
+        "uses: 1 — no active compiled to carry the charge — charges spent in battle — capability.consumables"
       ]
     },
     "item.fire-trap": {
@@ -10973,7 +11415,7 @@ export const UNIT_PACK = {
       "triggers": [],
       "gaps": [
         "active: Once per Battle: place two traps on empty hexes wi — an ability with charges/targets — capability.consumables",
-        "uses: 1 — charges spent in battle — capability.consumables"
+        "uses: 1 — no active compiled to carry the charge — charges spent in battle — capability.consumables"
       ]
     },
     "item.explosive-trap": {
@@ -10989,7 +11431,7 @@ export const UNIT_PACK = {
       "triggers": [],
       "gaps": [
         "active: Once per Battle: place one trap on an empty hex wi — an ability with charges/targets — capability.consumables",
-        "uses: 1 — charges spent in battle — capability.consumables"
+        "uses: 1 — no active compiled to carry the charge — charges spent in battle — capability.consumables"
       ]
     },
     "item.free-movement-potion": {
@@ -11001,12 +11443,10 @@ export const UNIT_PACK = {
       "slots": 1,
       "statModifiers": {},
       "grants": [],
-      "abilities": [],
-      "triggers": [],
-      "gaps": [
-        "active: Once per Battle, 1 Stamina: the target gains +1 Mo — an ability with charges/targets — capability.consumables",
-        "uses: 1 — charges spent in battle — capability.consumables"
-      ]
+      "abilities": [
+        "power.free-movement-potion.use"
+      ],
+      "triggers": []
     },
     "item.bloodbound-gauntlets": {
       "id": "item.bloodbound-gauntlets",
@@ -11980,11 +12420,10 @@ export const UNIT_PACK = {
       "slots": 1,
       "statModifiers": {},
       "grants": [],
-      "abilities": [],
-      "triggers": [],
-      "gaps": [
-        "active: The target gains Protection equal to 2 + Spirit. S — an ability with charges/targets — capability.consumables"
-      ]
+      "abilities": [
+        "power.divine-ward.use"
+      ],
+      "triggers": []
     },
     "item.bracer-of-courage": {
       "id": "item.bracer-of-courage",
@@ -11995,11 +12434,10 @@ export const UNIT_PACK = {
       "slots": 1,
       "statModifiers": {},
       "grants": [],
-      "abilities": [],
-      "triggers": [],
-      "gaps": [
-        "active: Free. remove 5 Stun and 5 Weak from yourself. — an ability with charges/targets — capability.consumables"
-      ]
+      "abilities": [
+        "power.bracer-of-courage.use"
+      ],
+      "triggers": []
     },
     "item.scorpion-shield": {
       "id": "item.scorpion-shield",
@@ -12101,11 +12539,10 @@ export const UNIT_PACK = {
       "slots": 1,
       "statModifiers": {},
       "grants": [],
-      "abilities": [],
-      "triggers": [],
-      "gaps": [
-        "active: Each ally within 3 hexes, including you, removes a — an ability with charges/targets — capability.consumables"
-      ]
+      "abilities": [
+        "power.banner-of-resolve.use"
+      ],
+      "triggers": []
     },
     "item.necklace-of-fire-immunity": {
       "id": "item.necklace-of-fire-immunity",

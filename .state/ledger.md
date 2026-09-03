@@ -6421,3 +6421,50 @@ effect of layer.frost — 25 paired battles per map, WITH vs WITHOUT
   test.map.showcase: heroWins 25->25 (+0)  meanTurns 3.9->3.9
 NO MEASURABLE EFFECT at this sample size — consequence clause caught state changes, but outcomes did not move. Consider a sweep with more replicates before drawing balance conclusions.
 ```
+
+## capability.charges — LANDED `1beed08` **NEEDS REVIEW**
+2026-09-03 21:22
+
+  PASS  dependencies landed
+  WARN  not already decided — 3 candidate ruling(s) — READ BEFORE ASKING: ../STATE.md:20 · ../CODEX.md:1829
+  PASS  typecheck
+  PASS  full test suite
+  PASS  gate 1 — the id appears in a real battle — power.healing-potion.use: 16 log lines, 16 fired, 16 changed state
+  PASS  brought its own tests — test/pack-items.test.ts, test/charges.test.ts
+  WARN  existing tests untouched — DELETED LINES in test/pack-items.test.ts (-2) — will land FLAGGED for review
+  PASS  control battles unchanged
+  PASS  content has a published source — 21 ids without a published source — 1 NEW from THIS item, seal withheld until published
+  PASS  hardcode scan — core knows mechanisms, never names
+  PASS  generalizes — the second instance costs zero engine code — power.healing-potion.use live · power.rations.use live · power.strength-potion.use live
+  PASS  naming — new content ids use declared kinds
+  PASS  naming — no banned words invented
+  PASS  kill switch — the tests fail without the content — tests fail without power.healing-potion.use — they genuinely test it
+
+<details><summary>Existing tests were edited — review this diff</summary>
+
+```diff
+diff --git a/test/pack-items.test.ts b/test/pack-items.test.ts
+index d8ddf3a..b2bf98b 100644
+--- a/test/pack-items.test.ts
++++ b/test/pack-items.test.ts
+@@ -84,6 +84,14 @@ describe('every Codex item is an ItemDef, and says exactly what it can and canno
+       }
+       for (const t of it.triggers) expect(t.source).toBe(id)
+-      // an activated item (stamina/targets) is an ability with charges the engine lacks — always a gap
+-      if (c.stamina !== undefined || c.targets) expect(it.gaps?.some((x) => x.startsWith('active:')), `${id} is activated`).toBe(true)
++      // Law 10 rewrite, capability.charges (2026-09-03): an activated item is
++      // EITHER a compiled power in its `abilities` (with `uses` where the row
++      // has them) OR a named gap — never silent, never both missing.
++      const cu = (c as unknown as { uses?: unknown }).uses
++      if (c.stamina !== undefined || c.targets || cu !== undefined) {
++        const compiled = it.abilities.some((a) => ABILITIES[a]?.effects !== undefined)
++        const gapped = it.gaps?.some((x) => x.startsWith('active:') || x.startsWith('uses:'))
++        expect(compiled || gapped, `${id} is activated: compiled or gapped`).toBe(true)
++        if (compiled && cu !== undefined) expect(it.abilities.some((a) => (ABILITIES[a]?.uses ?? 0) > 0), `${id} carries its uses`).toBe(true)
++      }
+     }
+   })
+```
+</details>
+
+IRON GAUNTLET: NOT PASSED — 3 FLAG(S) WARNED

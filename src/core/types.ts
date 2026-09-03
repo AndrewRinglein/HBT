@@ -112,6 +112,8 @@ export type AbilityEffect =
       readonly who?: 'self' | 'target'
     }
   | { readonly kind: 'selfDamage'; readonly amount: number; readonly damageType: DamageType }
+  /** capability.charges (2026-09-03): "regain N Stamina" — the Rations. */
+  | { readonly kind: 'stamina.gain'; readonly value: number }
   | { readonly kind: 'knockback'; readonly value: import('./trigger.js').ValueSpec }
   /** capability.corpses: eat one corpse within `radius` — heal and battle-long stat gains to the eater. Refused (canUsePower) when none is in reach. */
   | { readonly kind: 'corpse.eat'; readonly radius: number; readonly heal: number; readonly mods: Readonly<Partial<Record<import('./stats.js').StatName, number>>>; readonly maxHp?: number }
@@ -154,6 +156,13 @@ export type AbilityDef = {
   readonly free?: boolean
   /** Turns before the first use: cooldowns[id] starts at warmup + 1 at fielding. */
   readonly warmup?: number
+  /**
+   * capability.charges (2026-09-03), GEAR-DESIGN §4: uses per Battle. A spent
+   * use counts down; at 0 the power leaves the unit's list for the rest of the
+   * Battle — "they should vanish from the list of things available to a hero"
+   * (Andrew 2026-09-02). Absent = unlimited (cooldown governs).
+   */
+  readonly uses?: number
   /** What the Codex row says that the engine cannot do. Never silently half-real. */
   readonly gaps?: readonly string[]
 }
@@ -547,6 +556,10 @@ export type Unit = {
   summoned: boolean
   /** ai.mode.hunter (2026-09-03): the quarry, until it falls. */
   huntTarget?: number
+  /** capability.charges: uses left this Battle, by power id. Only powers with `uses` appear. */
+  usesLeft: Record<string, number>
+  /** capability.charges: what was spent, for the BattleResult. */
+  usesSpentThisBattle?: Record<string, number>
   ai: string
   attacks: string[]
   abilities: string[]

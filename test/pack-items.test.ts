@@ -83,8 +83,16 @@ describe('every Codex item is an ItemDef, and says exactly what it can and canno
         }
       }
       for (const t of it.triggers) expect(t.source).toBe(id)
-      // an activated item (stamina/targets) is an ability with charges the engine lacks — always a gap
-      if (c.stamina !== undefined || c.targets) expect(it.gaps?.some((x) => x.startsWith('active:')), `${id} is activated`).toBe(true)
+      // Law 10 rewrite, capability.charges (2026-09-03): an activated item is
+      // EITHER a compiled power in its `abilities` (with `uses` where the row
+      // has them) OR a named gap — never silent, never both missing.
+      const cu = (c as unknown as { uses?: unknown }).uses
+      if (c.stamina !== undefined || c.targets || cu !== undefined) {
+        const compiled = it.abilities.some((a) => ABILITIES[a]?.effects !== undefined)
+        const gapped = it.gaps?.some((x) => x.startsWith('active:') || x.startsWith('uses:'))
+        expect(compiled || gapped, `${id} is activated: compiled or gapped`).toBe(true)
+        if (compiled && cu !== undefined) expect(it.abilities.some((a) => (ABILITIES[a]?.uses ?? 0) > 0), `${id} carries its uses`).toBe(true)
+      }
     }
   })
 

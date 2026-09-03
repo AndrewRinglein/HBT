@@ -1792,12 +1792,18 @@
   "needs": [
    "pack.items"
   ],
-  "probeIds": [],
-  "variants": [
-   "item.healing-potion",
-   "item.bear-trap"
+  "probeIds": [
+   "power.healing-potion.use"
   ],
-  "note": "Filed from the kingdom session 2026-09-02. Target grammar, Root/Confusion/Taunt/Frost and trap placement are separate gaps the rows will name."
+  "variants": [
+   "power.healing-potion.use",
+   "power.rations.use",
+   "power.strength-potion.use"
+  ],
+  "note": "Filed from the kingdom session 2026-09-02. Target grammar, Root/Confusion/Taunt/Frost and trap placement are separate gaps the rows will name. | 2026-09-03: 19 of the 37 active items compile by exact sentence into power.<item>.use rows (uses, free, cooldown through the effect vocabulary); the rest name their gap. Traps, stealth, reveal, blink, airwalk and stabilise stay gaps.",
+  "status": "done-needs-review",
+  "sha": "1beed08",
+  "gauntlet": "not passed — 3 flag(s) warned"
  },
  {
   "id": "ai.attack-choice",
