@@ -25295,8 +25295,8 @@ export const UNIT_PACK = {
     }
   },
   "encounters": {
-    "battle.prologue-1": {
-      "id": "battle.prologue-1",
+    "encounter.prologue-1": {
+      "id": "encounter.prologue-1",
       "name": "Two Zombies and a Child",
       "setup": [
         {
@@ -25360,8 +25360,8 @@ export const UNIT_PACK = {
         }
       }
     },
-    "battle.prologue-2": {
-      "id": "battle.prologue-2",
+    "encounter.prologue-2": {
+      "id": "encounter.prologue-2",
       "name": "Surrounded",
       "setup": [
         {
@@ -25488,8 +25488,8 @@ export const UNIT_PACK = {
         }
       ]
     },
-    "battle.prologue-3": {
-      "id": "battle.prologue-3",
+    "encounter.prologue-3": {
+      "id": "encounter.prologue-3",
       "name": "The Schoolhouse",
       "setup": [
         {
@@ -25588,8 +25588,8 @@ export const UNIT_PACK = {
         "retreat allowed — skipped by ruling 2026-09-03"
       ]
     },
-    "battle.prologue-4": {
-      "id": "battle.prologue-4",
+    "encounter.prologue-4": {
+      "id": "encounter.prologue-4",
       "name": "The Curse",
       "setup": [
         {
@@ -25706,8 +25706,8 @@ export const UNIT_PACK = {
         "retreat allowed — skipped by ruling 2026-09-03"
       ]
     },
-    "battle.prologue-5": {
-      "id": "battle.prologue-5",
+    "encounter.prologue-5": {
+      "id": "encounter.prologue-5",
       "name": "The Hunt",
       "setup": [
         {
@@ -25809,8 +25809,8 @@ export const UNIT_PACK = {
         "retreat allowed — skipped by ruling 2026-09-03"
       ]
     },
-    "battle.horrors-of-the-night": {
-      "id": "battle.horrors-of-the-night",
+    "encounter.horrors-of-the-night": {
+      "id": "encounter.horrors-of-the-night",
       "name": "Horrors of the Night",
       "setup": [
         {

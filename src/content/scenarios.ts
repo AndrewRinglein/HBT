@@ -192,7 +192,7 @@ const RAW_SCENARIOS: Readonly<Record<string, ScenarioDef>> = {
   },
   'showcase.surrounded': {
     id: 'showcase.surrounded',
-    note: 'encounter.runner (2026-09-03): battle.prologue-2, Surrounded, run as '
+    note: 'encounter.runner (2026-09-03): encounter.prologue-2, Surrounded, run as '
       + 'an ENCOUNTER — four zombies and two civilian objectives at setup, the '
       + 'skeletal archers at enemy phase 1 and 3, the fast zombies at 4, the '
       + 'necromancer at 5. The battle-2 party on its Codex kits. This is the '
@@ -202,12 +202,12 @@ const RAW_SCENARIOS: Readonly<Record<string, ScenarioDef>> = {
     heroHexes: [],
     enemies: [],
     enemyHexes: [],
-    encounterId: 'battle.prologue-2',
+    encounterId: 'encounter.prologue-2',
     replicate: 0,
   },
   'showcase.two-zombies-and-a-child': {
     id: 'showcase.two-zombies-and-a-child',
-    note: 'encounter.runner (2026-09-03): battle.prologue-1 as an encounter — '
+    note: 'encounter.runner (2026-09-03): encounter.prologue-1 as an encounter — '
       + 'the Orphans as the objective, two zombies, a third rolled onto one of two '
       + 'edges at Turn 4 (the wave cup), the loss timer at ten. One hero, as the '
       + 'row asks (heroes: 1, deployed near the player edge). The second encounter '
@@ -217,7 +217,7 @@ const RAW_SCENARIOS: Readonly<Record<string, ScenarioDef>> = {
     heroHexes: [],
     enemies: [],
     enemyHexes: [],
-    encounterId: 'battle.prologue-1',
+    encounterId: 'encounter.prologue-1',
     replicate: 0,
   },
   'showcase.supper': {
@@ -268,7 +268,7 @@ const RAW_SCENARIOS: Readonly<Record<string, ScenarioDef>> = {
   },
   'showcase.horrors': {
     id: 'showcase.horrors',
-    note: 'battle.horrors-of-the-night as an encounter (capability.vision, 2026-09-03): '
+    note: 'encounter.horrors-of-the-night as an encounter (capability.vision, 2026-09-03): '
       + 'the board starts dark, the four eyeblights, the dark snipers at Turn 1, the '
       + 'nightstalkers at 3, the shadow sorcerer at 4 — the light is a tug of war. '
       + 'Six heroes on Codex kits. The fielding the probe reads Nightfall and The '
@@ -278,7 +278,7 @@ const RAW_SCENARIOS: Readonly<Record<string, ScenarioDef>> = {
     heroHexes: [],
     enemies: [],
     enemyHexes: [],
-    encounterId: 'battle.horrors-of-the-night',
+    encounterId: 'encounter.horrors-of-the-night',
     replicate: 0,
   },
   'showcase.assembled-party': {

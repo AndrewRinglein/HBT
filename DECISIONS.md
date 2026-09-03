@@ -1297,3 +1297,88 @@ bleed-out counter. It never kills"), and ruled:
 Consequence: the landing stands as built; `aiAttacksDowned` keeps its default
 (the downed are a finisher's target only when nothing stands in reach) and
 stays sweepable; COMBAT-DESIGN §13 is confirmed, not amended.
+
+## 2026-09-03 — the retroactive questions, answered
+
+Asked after the run for the assumptions made under "don't pause to ask".
+Angela, verbatim:
+
+> "Battle ends when there are no enemies remaining, so victory can be
+> achieved early."
+
+Consequence: `boardClearWaitsForSchedule` defaults to **off**. A cleared
+board is a win whatever the schedule still owes. The switch stays for sweeps.
+
+> "3. Correct. Frost is added first because it adds to the damage total."
+
+Consequence: `frostBeforeProtection` stays on; the reason is recorded.
+
+> "5 is reasonable. It's also one of the reasons for warm-up. It's very
+> common that the first turn doesn't have action, so it kind of becomes a
+> free use if you've got a battle of long power, but if you add a warm-up 3,
+> now you have to make a decision while you're actually engaged. That's just
+> one of the reasons for warm-up."
+
+Consequence: the opening-stance rule stands; warmup is the designer's lever.
+
+> "Frost Ground is supposed to behave like Burning Ground. When you step on
+> it, you gain a frost, and if you're there at the end of the turn, you gain
+> a frost. The same as all of the statuses that are on the ground are
+> supposed to be the same: weak, burning, frost, and poison. They all do the
+> same thing: when you step on them, you gain one, and if you're there at the
+> end of activation, you gain one. The rationale is that walking across it
+> gives you one, but you also don't want to hang out on it. You have to keep
+> moving."
+
+Consequence: ONE shape for every ground status — +1 on entry, +1 at End of
+Activation. Frost ground gains its entry beat; poisoned ground becomes
+1 Poison / 1 Poison (it was 2 Poison + 1 Weak at End of Activation from the
+Creeping Blight row — `5-GROUND-SETTLED.md` `terrain.poisoned` is superseded
+by this ruling and the content chat should bring the row current); a `weak`
+ground layer joins burning, frost, poisoned and darkness (a new INSTANCE of
+the approved `layer` kind — `layer.weak`).
+
+> "Not quite sure what you mean by 'nine surrounded heroes.' 'You are
+> surrounded' is flavor text for why you can't retreat."
+
+Consequence: no deployment zone is implied by the name; the row stays as it
+is. The civilians dying on every seed is a finding about the row, not a bug.
+
+> "The reason Prologue 1 reads Heroes 1 is some kind of error, but the idea
+> in the actual game is that when you're in Prologue 1, you have one hero.
+> That's kind of irrelevant from your standpoint. That's just what should be
+> being fed in an actual game."
+
+Consequence: the runner keeps reading `heroes: N` as a deployment zone only;
+the count is the kingdom's to feed.
+
+> "We do need to unify on battle or encounter, or it'll create problems
+> later."
+
+Consequence: unified on **`encounter.*`** — the GLOSSARY's word
+(`encounter.bandits.raid` is its own example). The six `battle.*` rows are
+renamed (`encounter.prologue-1` … `-5`, `encounter.horrors-of-the-night`);
+`battle` leaves `tools/approved-kinds.json`.
+
+> "A player unit that would go down but makes their deathbed standing roll is
+> supposed to gain the Wounded badge. The wounded badge should already be
+> there. Gives a number of penalties."
+
+Consequence: the in-battle wound level IS the Wounded badge's penalties
+applied in the battle (COMBAT-DESIGN §13's numbers). The badge itself is
+minted by the kingdom from the `deathbed.stood` line — badges are not an
+engine type yet. When they are, the wound level should be read off the badge.
+
+> "for number 16, I don't know how you're assigning order. It's fine to keep
+> the order in this case. This is a change for later."
+
+Consequence: a taunted hero acts in normal activation order for now;
+"activates first" is deferred.
+
+> "There is something similar to the ghoul corpse eat because it removes a
+> corpse and then does something. The shade, which is animating a corpse,
+> also destroys the corpse. At least it should."
+
+Consequence: `corpse.eat`, `corpse.raise` and `corpse.consume` are one family
+— remove a corpse, then do something. Embody (the Shade, an owed row) joins
+it and must remove the corpse it animates.

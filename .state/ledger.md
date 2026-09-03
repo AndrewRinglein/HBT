@@ -6206,3 +6206,218 @@ effect of fix.post-end-ladder — 25 paired battles per map, WITH vs WITHOUT
   test.map.showcase: heroWins 25->25 (+0)  meanTurns 3.9->3.9
 NO MEASURABLE EFFECT at this sample size — consequence clause caught state changes, but outcomes did not move. Consider a sweep with more replicates before drawing balance conclusions.
 ```
+
+## fix.rulings-2026-09-03-evening — LANDED `b88076d` **NEEDS REVIEW**
+2026-09-03 20:39
+
+  PASS  dependencies landed
+  WARN  not already decided — 4 candidate ruling(s) — READ BEFORE ASKING: ../STATE.md:20 · ../STATE.md:21
+  PASS  typecheck
+  PASS  full test suite
+  PASS  gate 1 — the id appears in a real battle — layer.frost: 26 log lines, 26 fired, 26 changed state
+  PASS  brought its own tests — test/burning-ground.test.ts, test/encounter-runner.test.ts, test/prologue-battles.test.ts, test/surrounded.test.ts, test/vision.test.ts, test/ground-shape.test.ts
+  WARN  existing tests untouched — DELETED LINES in test/burning-ground.test.ts (-4), test/encounter-runner.test.ts (-10), test/prologue-battles.test.ts (-9), test/surrounded.test.ts (-4), test/vision.test.ts (-1) — will land FLAGGED for review
+  PASS  control battles unchanged — will re-bless at commit — this item DECLARED it changes the control battles: test.map.embers 6c6b7e90->e31812c5, test.map.showcase 43c0fbab->2cf45430
+  PASS  content has a published source — 20 ids without a published source (10 awaiting publication from earlier items — see audit)
+  PASS  hardcode scan — core knows mechanisms, never names
+  PASS  generalizes — the second instance costs zero engine code — layer.frost live · layer.burning live
+  PASS  naming — new content ids use declared kinds
+  PASS  naming — no banned words invented
+  PASS  kill switch — the tests fail without the content — tests fail without layer.frost — they genuinely test it
+
+<details><summary>Existing tests were edited — review this diff</summary>
+
+```diff
+diff --git a/test/burning-ground.test.ts b/test/burning-ground.test.ts
+index abafa27..8bb411f 100644
+--- a/test/burning-ground.test.ts
++++ b/test/burning-ground.test.ts
+@@ -26,7 +26,13 @@ describe('the data — one mechanism, two pure-data instances', () => {
+     expect(appliesOnActivationEndOf(TERRAIN.BURNING)).toEqual([['status.burn', 1]])
+   })
+-  it('poisoned: NOTHING on enter (no entry clause is published), 2 Poison + 1 Weak at End of Activation', () => {
+-    expect(appliesOnEnterOf(TERRAIN.POISONED)).toEqual([])
+-    expect(appliesOnActivationEndOf(TERRAIN.POISONED)).toEqual([['status.poison', 2], ['status.weak', 1]])
++  // Law 10 rewrite, RULED 2026-09-03 (Angela, DECISIONS.md): "all of the
++  // statuses that are on the ground are supposed to be the same ... when you
++  // step on them, you gain one, and if you're there at the end of activation,
++  // you gain one." The 2 Poison + 1 Weak of 5-GROUND-SETTLED is superseded.
++  it('poisoned: the one ground shape — 1 Poison on enter, 1 Poison at End of Activation, exactly as burning', () => {
++    expect(appliesOnEnterOf(TERRAIN.POISONED)).toEqual([['status.poison', 1]])
++    expect(appliesOnActivationEndOf(TERRAIN.POISONED)).toEqual([['status.poison', 1]])
++    expect(appliesOnEnterOf(TERRAIN.BURNING)).toEqual([['status.burn', 1]])
++    expect(appliesOnActivationEndOf(TERRAIN.BURNING)).toEqual([['status.burn', 1]])
+   })
+   it('every other terrain applies nothing — and burning strips nothing', () => {
+@@ -94,5 +100,5 @@ describe('standing costs 2 — the End of Activation beat, in the real loop', ()
+     expect(burnApplied).toBeGreaterThan(0)
+     expect(poisonApplied).toBeGreaterThan(0)
+-    expect(weakApplied).toBeGreaterThan(0)
++    void weakApplied   // Weak left poisoned ground on 2026-09-03 (the one ground shape); it is a layer of its own now
+   })
+ 
+diff --git a/test/encounter-runner.test.ts b/test/encounter-runner.test.ts
+index 28b0cde..32b58a4 100644
+--- a/test/encounter-runner.test.ts
++++ b/test/encounter-runner.test.ts
+@@ -21,10 +21,10 @@ import { setBleedOut, setLifeState } from '../src/core/mutate.js'
+ import type { EncounterDef } from '../src/core/types.js'
+ 
+-const SURROUNDED = 'battle.prologue-2'
++const SURROUNDED = 'encounter.prologue-2'
+ const party = () => scenarioOptions(scenarioDef('showcase.surrounded'))
+ 
+ describe('the pack carries the encounters', () => {
+   it('every prologue battle and the scripted one are EncounterDefs, every unit they name is a row, every refusal is a named gap', () => {
+-    for (const id of ['battle.prologue-1', 'battle.prologue-2', 'battle.prologue-3', 'battle.prologue-4', 'battle.prologue-5', 'battle.horrors-of-the-night']) {
++    for (const id of ['encounter.prologue-1', 'encounter.prologue-2', 'encounter.prologue-3', 'encounter.prologue-4', 'encounter.prologue-5', 'encounter.horrors-of-the-night']) {
+       const e = ENCOUNTERS[id]
+       expect(e, id).toBeDefined()
+@@ -33,7 +33,7 @@ describe('the pack carries the encounters', () => {
+     }
+     // retreat was skipped by ruling; the rows that allow it say so
+-    for (const id of ['battle.prologue-3', 'battle.prologue-4', 'battle.prologue-5']) expect(ENCOUNTERS[id]!.gaps!.some((g) => /retreat/.test(g)), `${id} names retreat as a gap`).toBe(true)
++    for (const id of ['encounter.prologue-3', 'encounter.prologue-4', 'encounter.prologue-5']) expect(ENCOUNTERS[id]!.gaps!.some((g) => /retreat/.test(g)), `${id} names retreat as a gap`).toBe(true)
+     // Horrors' standing rules are gaps until vision lands
+-    expect(ENCOUNTERS['battle.horrors-of-the-night']!.gaps!.some((g) => /standing rule/.test(g))).toBe(true)
++    expect(ENCOUNTERS['encounter.horrors-of-the-night']!.gaps!.some((g) => /standing rule/.test(g))).toBe(true)
+   })
+ })
+@@ -47,4 +47,5 @@ describe('the schedule fires on the Turn it names, before the hero phase', () =>
+     runBattle(ctx)
+     const waves = ctx.events.filter((e) => e.type === 'encounter.wave')
++    expect(waves.length).toBeGreaterThan(0)
+     // every row fired at most once, and on its own Turn
+     for (const w of waves) {
+@@ -130,15 +131,18 @@ describe('objectives', () => {
+   })
+ 
+-  it('a cleared board is not a win while the schedule owes a wave (switch on); it is with the switch off', () => {
++  // RULED 2026-09-03 (Angela): "Battle ends when there are no enemies
++  // remaining, so victory can be achieved early." The default is now OFF.
++  it('a cleared board is a win even while the schedule owes a wave (default); the waiting path stays sweepable', () => {
+     const enc: EncounterDef = { id: 'test.encounter.wait', name: 'wait', gaps: ['test-only'], setup: [{ unit: 'unit.zombie', at: { col: 8, row: 14 } }], schedule: [{ phase: 6, spawn: [{ unit: 'unit.zombie', at: { col: 8, row: 0 } }] }] }
++    const dflt = createBattle({ ...party(), encounter: enc })
++    expect(dflt.cfg.switches.boardClearWaitsForSchedule).toBe(false)
++    const b = runBattle(dflt)
++    expect(b.outcome).toBe('heroClear')
++    expect(b.turns).toBeLessThan(6)
+     const on = createBattle({ ...party(), encounter: enc })
++    on.cfg.switches.boardClearWaitsForSchedule = true
+     const a = runBattle(on)
+     expect(a.turns).toBeGreaterThanOrEqual(6)
+     expect(on.events.filter((e) => e.type === 'encounter.wave').length).toBe(1)
+-    const off = createBattle({ ...party(), encounter: enc })
+-    off.cfg.switches.boardClearWaitsForSchedule = false
+-    const b = runBattle(off)
+-    expect(b.outcome).toBe('heroClear')
+-    expect(b.turns).toBeLessThan(6)
+   })
+ })
+diff --git a/test/prologue-battles.test.ts b/test/prologue-battles.test.ts
+index c53cb25..d2ee498 100644
+--- a/test/prologue-battles.test.ts
++++ b/test/prologue-battles.test.ts
+@@ -2,8 +2,8 @@
+ // prologue battles as gated encounters, run through showcase scenarios.
+ //
+-// battle.prologue-1, Two Zombies and a Child: one hero, two zombies, a third
++// encounter.prologue-1, Two Zombies and a Child: one hero, two zombies, a third
+ // rolled onto an edge at Turn 4, the Orphans to protect, ten Turns. The
+ // backlog's expect: winnable AND losable across seeds.
+-// battle.prologue-2, Surrounded: every spawn on schedule; the necromancer's
++// encounter.prologue-2, Surrounded: every spawn on schedule; the necromancer's
+ // unexpressed clauses are NAMED gaps, never silent.
+ import { describe, expect, it } from 'vitest'
+@@ -15,5 +15,5 @@ import { ENCOUNTERS, UNITS } from '../src/content/index.js'
+ import { scenarioDef, scenarioOptions } from '../src/content/scenarios.js'
+ 
+-describe('battle.prologue-1 — Two Zombies and a Child', () => {
++describe('encounter.prologue-1 — Two Zombies and a Child', () => {
+   it('is deterministic: the same seed twice is the same log', () => {
+     const a = createBattle(scenarioOptions(scenarioDef('showcase.two-zombies-and-a-child'))); runBattle(a)
+@@ -27,5 +27,5 @@ describe('battle.prologue-1 — Two Zombies and a Child', () => {
+     expect(ctx.events.some((e) => e.type === 'unit.enter' && e['typeId'] === 'hero.fixed.orphans')).toBe(true)
+     expect(ctx.events.some((e) => e.type === 'encounter.objective')).toBe(true)
+-    const enc = ENCOUNTERS['battle.prologue-1']!
++    const enc = ENCOUNTERS['encounter.prologue-1']!
+     const turns = ctx.state.turn
+     if (turns >= 4) {
+@@ -48,13 +48,14 @@ describe('battle.prologue-1 — Two Zombies and a Child', () => {
+ })
+ 
+-describe('battle.prologue-2 — Surrounded', () => {
++describe('encounter.prologue-2 — Surrounded', () => {
+   it('runs end to end with every spawn arriving on schedule', () => {
+     const ctx = createBattle(scenarioOptions(scenarioDef('showcase.surrounded')))
+-    const enc = ENCOUNTERS['battle.prologue-2']!
++    const enc = ENCOUNTERS['encounter.prologue-2']!
+     const o = runBattle(ctx)
+     expect(o.outcome).not.toBeNull()
+     const waves = ctx.events.filter((e) => e.type === 'encounter.wave')
+-    const due = enc.schedule.filter((r) => (r.phase ?? r.enemyPhase!) <= ctx.state.turn)
+-    expect(waves.length).toBe(due.length)
++    // a battle can end early now (ruled 2026-09-03): every row due before the ending Turn fired
++    const due = enc.schedule.filter((r) => (r.phase ?? r.enemyPhase!) < ctx.state.turn)
++    expect(waves.length).toBeGreaterThanOrEqual(due.length)
+     const archers = ctx.events.filter((e) => e.type === 'unit.enter' && e['typeId'] === 'unit.skeletal-archer')
+     if (ctx.state.turn >= 3) expect(archers.length).toBe(4)
+@@ -77,5 +78,5 @@ describe('battle.prologue-2 — Surrounded', () => {
+     const seen: Record<string, number> = {}
+     for (let r = 0; r < 10; r++) { const o = runBattle(createBattle({ ...scenarioOptions(scenarioDef('showcase.surrounded')), replicate: r })); seen[o.outcome] = (seen[o.outcome] ?? 0) + 1 }
+-    expect(ENCOUNTERS['battle.prologue-2']!.heroZone).toBeUndefined()
++    expect(ENCOUNTERS['encounter.prologue-2']!.heroZone).toBeUndefined()
+     console.log('SURROUNDED x10 from the player edge:', JSON.stringify(seen))
+   })
+diff --git a/test/surrounded.test.ts b/test/surrounded.test.ts
+index 5d6c7cc..25b2416 100644
+--- a/test/surrounded.test.ts
++++ b/test/surrounded.test.ts
+@@ -7,13 +7,15 @@ import { ENCOUNTERS } from '../src/content/index.js'
+ import { scenarioDef, scenarioOptions } from '../src/content/scenarios.js'
+ 
+-describe('battle.prologue-2 across seeds', () => {
++describe('encounter.prologue-2 across seeds', () => {
+   it('the schedule is honoured on every seed, and the fast zombies come from every side', () => {
+-    const enc = ENCOUNTERS['battle.prologue-2']!
++    const enc = ENCOUNTERS['encounter.prologue-2']!
+     for (let r = 0; r < 12; r++) {
+       const ctx = createBattle({ ...scenarioOptions(scenarioDef('showcase.surrounded')), replicate: r })
+       runBattle(ctx)
+       const waves = ctx.events.filter((e) => e.type === 'encounter.wave')
+-      const due = enc.schedule.filter((row) => (row.phase ?? row.enemyPhase!) <= ctx.state.turn)
+-      expect(waves.length, `seed ${r}`).toBe(due.length)
++      // a battle can end early now (ruled 2026-09-03): every wave that fired
++      // was due, and every row due BEFORE the ending Turn fired
++      const due = enc.schedule.filter((row) => (row.phase ?? row.enemyPhase!) < ctx.state.turn)
++      expect(waves.length, `seed ${r}`).toBeGreaterThanOrEqual(due.length)
+       for (const w of waves) expect(w['turn']).toBe(enc.schedule[w['row'] as number]!.phase ?? enc.schedule[w['row'] as number]!.enemyPhase)
+       if (ctx.state.turn >= 4) {
+diff --git a/test/vision.test.ts b/test/vision.test.ts
+index 2463c39..94063e3 100644
+--- a/test/vision.test.ts
++++ b/test/vision.test.ts
+@@ -56,5 +56,5 @@ describe('darkness', () => {
+ 
+   it('Horrors of the Night: the board starts dark, the heroes light, the night family repaints — the tug of war is in the log', () => {
+-    const enc = ENCOUNTERS['battle.horrors-of-the-night']!
++    const enc = ENCOUNTERS['encounter.horrors-of-the-night']!
+     expect(enc.condition).toBe('darkness')
+     const nightfall = UNITS['unit.shadow-sorcerer']!.triggers!.find((t) => t.effect.kind === 'layer.paint')!
+```
+</details>
+
+IRON GAUNTLET: NOT PASSED — 2 FLAG(S) WARNED
+
+```
+effect of layer.frost — 25 paired battles per map, WITH vs WITHOUT
+  map.open: heroWins 25->25 (+0)  meanTurns 4.0->4.0
+  map.ridge: heroWins 25->25 (+0)  meanTurns 4.5->4.5
+  map.flanks: heroWins 25->25 (+0)  meanTurns 4.0->4.0
+  map.highlands: heroWins 25->25 (+0)  meanTurns 4.9->4.9
+  map.field: heroWins 25->25 (+0)  meanTurns 6.1->6.1
+  map.thicket: heroWins 25->25 (+0)  meanTurns 5.3->5.3
+  test.map.embers: heroWins 25->25 (+0)  meanTurns 2.8->2.8
+  test.map.showcase: heroWins 25->25 (+0)  meanTurns 3.9->3.9
+NO MEASURABLE EFFECT at this sample size — consequence clause caught state changes, but outcomes did not move. Consider a sweep with more replicates before drawing balance conclusions.
+```

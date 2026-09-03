@@ -25,9 +25,15 @@ describe('the data — one mechanism, two pure-data instances', () => {
     expect(appliesOnEnterOf(TERRAIN.BURNING)).toEqual([['status.burn', 1]])
     expect(appliesOnActivationEndOf(TERRAIN.BURNING)).toEqual([['status.burn', 1]])
   })
-  it('poisoned: NOTHING on enter (no entry clause is published), 2 Poison + 1 Weak at End of Activation', () => {
-    expect(appliesOnEnterOf(TERRAIN.POISONED)).toEqual([])
-    expect(appliesOnActivationEndOf(TERRAIN.POISONED)).toEqual([['status.poison', 2], ['status.weak', 1]])
+  // Law 10 rewrite, RULED 2026-09-03 (Angela, DECISIONS.md): "all of the
+  // statuses that are on the ground are supposed to be the same ... when you
+  // step on them, you gain one, and if you're there at the end of activation,
+  // you gain one." The 2 Poison + 1 Weak of 5-GROUND-SETTLED is superseded.
+  it('poisoned: the one ground shape — 1 Poison on enter, 1 Poison at End of Activation, exactly as burning', () => {
+    expect(appliesOnEnterOf(TERRAIN.POISONED)).toEqual([['status.poison', 1]])
+    expect(appliesOnActivationEndOf(TERRAIN.POISONED)).toEqual([['status.poison', 1]])
+    expect(appliesOnEnterOf(TERRAIN.BURNING)).toEqual([['status.burn', 1]])
+    expect(appliesOnActivationEndOf(TERRAIN.BURNING)).toEqual([['status.burn', 1]])
   })
   it('every other terrain applies nothing — and burning strips nothing', () => {
     for (const t of [TERRAIN.OPEN, TERRAIN.HILLS, TERRAIN.FOREST, TERRAIN.WATER]) {
@@ -93,7 +99,7 @@ describe('standing costs 2 — the End of Activation beat, in the real loop', ()
     }
     expect(burnApplied).toBeGreaterThan(0)
     expect(poisonApplied).toBeGreaterThan(0)
-    expect(weakApplied).toBeGreaterThan(0)
+    void weakApplied   // Weak left poisoned ground on 2026-09-03 (the one ground shape); it is a layer of its own now
   })
 
   it('the six real maps are untouched — no applies fire anywhere on them', () => {

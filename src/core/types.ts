@@ -718,9 +718,9 @@ export const DEFAULT_CONFIG: Config = {
     // A power that can never be in range is dead content; the kite closes to
     // it. SWITCHES.md, 2026-09-03 (ability.effects).
     aiKiteHoldsAtPowerRange: true,
-    // The wave that has not come is the fight; clearing the first four
-    // zombies of Surrounded is not surviving Surrounded. SWITCHES.md, 2026-09-03.
-    boardClearWaitsForSchedule: true,
+    // RULED 2026-09-03 (Angela): "Battle ends when there are no enemies
+    // remaining, so victory can be achieved early." Off. SWITCHES.md.
+    boardClearWaitsForSchedule: false,
     // The rule it has always been; four authored attacks never fire under it
     // (integration.test names them). A sweep answers. SWITCHES.md, 2026-09-03.
     aiAttackChoice: 'declared',

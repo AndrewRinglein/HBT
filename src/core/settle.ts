@@ -97,7 +97,11 @@ export function checkVictory(ctx: Ctx, causeId: string): boolean {
   const owed = ctx.cfg.switches.boardClearWaitsForSchedule && ctx.encounter
     ? ctx.encounter.schedule.some((_, i) => !(ctx.state.encounter?.fired ?? []).includes(i))
     : false
-  if (!enemiesLeft && !owed) { setOutcome(ctx, 'heroClear', causeId); return true }
+  // RULED 2026-09-03: "Battle ends when there are no enemies remaining" — a
+  // board that never HAD an enemy (an encounter whose first wave is still to
+  // come) is not a cleared board; the clear needs an enemy to have entered.
+  const everHadEnemy = ctx.state.units.some((u) => u.side === 'enemy')
+  if (!enemiesLeft && everHadEnemy && !owed) { setOutcome(ctx, 'heroClear', causeId); return true }
   if (!heroesLeft) { setOutcome(ctx, 'wipe', causeId); return true }
   return false
 }

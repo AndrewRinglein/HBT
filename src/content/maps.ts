@@ -217,13 +217,15 @@ export const TRAIT: Readonly<Record<Trait, Mods>> = {
     appliesOnEnter: [['status.burn', 1]],
     appliesOnActivationEnd: [['status.burn', 1]] },
   poisoned: { moveCost: 0,
-    // PUBLISHED: 5-GROUND-SETTLED § terrain.* (2026-08-20); Codex, Creeping
-    // Blight: "Any unit that begins its Turn on poisoned ground gains 2 Poison
-    // and 1 Weak — allies included. No roll, no crit." No entry clause is
-    // published, so there is none (unlike burning). Timing is SWITCHES.md
-    // poisonedGroundTiming, default End of Activation — the one tile-effects
-    // rung Airwalk will gate.
-    appliesOnActivationEnd: [['status.poison', 2], ['status.weak', 1]] },
+    // RULED 2026-09-03 (Angela, DECISIONS.md): "all of the statuses that are
+    // on the ground are supposed to be the same: weak, burning, frost, and
+    // poison. When you step on them, you gain one, and if you're there at
+    // the end of activation, you gain one." ONE shape. This supersedes
+    // 5-GROUND-SETTLED § terrain.poisoned (2026-08-20: 2 Poison + 1 Weak at
+    // End of Activation, from Creeping Blight) — the content chat owes the
+    // row a rewrite. Was that until 2026-09-03.
+    appliesOnEnter: [['status.poison', 1]],
+    appliesOnActivationEnd: [['status.poison', 1]] },
 }
 
 /** What each terrain is made of. */
@@ -315,21 +317,24 @@ export function resistBonusOf(terrain: number): number { return statOf(terrain, 
 // burning hex sears exactly as authored burning terrain does. Frost paints
 // what the row says of the status (Frost 1 at End of Activation — SWITCHES.md
 // frostLayerStack); darkness is vision's (capability.vision) and applies nothing.
-export const LAYER = { NONE: 0, BURNING: 1, FROST: 2, POISONED: 3, DARKNESS: 4 } as const
+export const LAYER = { NONE: 0, BURNING: 1, FROST: 2, POISONED: 3, DARKNESS: 4, WEAK: 5 } as const   // weak: ruled 2026-09-03
 export type LayerId = (typeof LAYER)[keyof typeof LAYER]
 export const LAYER_IDS: Readonly<Record<number, string>> = {
   [LAYER.BURNING]: 'layer.burning', [LAYER.FROST]: 'layer.frost', [LAYER.POISONED]: 'layer.poisoned', [LAYER.DARKNESS]: 'layer.darkness',
+  [LAYER.WEAK]: 'layer.weak',
 }
 export function layerIdOf(layer: number): string { return LAYER_IDS[layer] ?? 'layer.none' }
 export function layerOfId(id: string): number {
   const k = Object.entries(LAYER_IDS).find(([, v]) => v === id)
-  if (!k) throw new Error(`unknown ground layer '${id}' — the four are ${Object.values(LAYER_IDS).join(', ')}`)
+  if (!k) throw new Error(`unknown ground layer '${id}' — the five are ${Object.values(LAYER_IDS).join(', ')}`)
   return +k[0]
 }
 const LAYER_TRAITS: Readonly<Record<number, Mods>> = {
   [LAYER.BURNING]: TRAIT['burning']!,
   [LAYER.POISONED]: TRAIT['poisoned']!,
-  [LAYER.FROST]: { moveCost: 0, appliesOnActivationEnd: [['status.frost', 1]] },
+  // RULED 2026-09-03: every ground status is the one shape — +1 on entry, +1 at End of Activation
+  [LAYER.FROST]: { moveCost: 0, appliesOnEnter: [['status.frost', 1]], appliesOnActivationEnd: [['status.frost', 1]] },
+  [LAYER.WEAK]: { moveCost: 0, appliesOnEnter: [['status.weak', 1]], appliesOnActivationEnd: [['status.weak', 1]] },
   [LAYER.DARKNESS]: { moveCost: 0 },
 }
 /** What a layer applies on entry / at End of Activation — the same shapes terrain has. */

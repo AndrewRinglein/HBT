@@ -2195,5 +2195,25 @@
   "unreachable": "a REMOVAL: the fix is that the ladder no longer runs after battle.end — there is no event it adds, only lines it stops; the test asserts the absence across the panel",
   "sha": "c5bf0b8",
   "gauntlet": "not passed — 1 flag(s) warned; 3 exemption(s) taken"
+ },
+ {
+  "id": "fix.rulings-2026-09-03-evening",
+  "kind": "engine",
+  "shape": "rule",
+  "spec": "Angela's answers to the run's retroactive questions (DECISIONS.md, 2026-09-03 evening), applied: victory can be achieved early (boardClearWaitsForSchedule defaults off; a board that never had an enemy is not cleared); every ground status is ONE shape, +1 on entry and +1 at End of Activation — frost gains its entry beat, poisoned becomes 1/1 (5-GROUND-SETTLED superseded), layer.weak joins; one kind — the six battle.* rows are encounter.* and battle leaves approved-kinds.",
+  "expect": "a cleared board wins with waves still owed; frost ground gives one crossing and one stopping; poisoned ground equals burning in shape; ENCOUNTERS holds only encounter.* ids",
+  "changesBaseline": true,
+  "probeIds": [
+   "layer.frost"
+  ],
+  "variants": [
+   "layer.frost",
+   "layer.burning"
+  ],
+  "status": "done-needs-review",
+  "note": "changesBaseline: the showcase maps with poisoned ground (embers) now apply 1 Poison on entry and 1 at End of Activation instead of 2 + 1 Weak.",
+  "attempts": 1,
+  "sha": "b88076d",
+  "gauntlet": "not passed — 2 flag(s) warned"
  }
 ]

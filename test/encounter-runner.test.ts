@@ -20,21 +20,21 @@ import { hexId } from '../src/core/hex.js'
 import { setBleedOut, setLifeState } from '../src/core/mutate.js'
 import type { EncounterDef } from '../src/core/types.js'
 
-const SURROUNDED = 'battle.prologue-2'
+const SURROUNDED = 'encounter.prologue-2'
 const party = () => scenarioOptions(scenarioDef('showcase.surrounded'))
 
 describe('the pack carries the encounters', () => {
   it('every prologue battle and the scripted one are EncounterDefs, every unit they name is a row, every refusal is a named gap', () => {
-    for (const id of ['battle.prologue-1', 'battle.prologue-2', 'battle.prologue-3', 'battle.prologue-4', 'battle.prologue-5', 'battle.horrors-of-the-night']) {
+    for (const id of ['encounter.prologue-1', 'encounter.prologue-2', 'encounter.prologue-3', 'encounter.prologue-4', 'encounter.prologue-5', 'encounter.horrors-of-the-night']) {
       const e = ENCOUNTERS[id]
       expect(e, id).toBeDefined()
       for (const p of e!.setup) expect(UNITS[p.unit], `${id} setup ${p.unit}`).toBeDefined()
       for (const r of e!.schedule) for (const p of r.spawn) expect(UNITS[p.unit], `${id} spawn ${p.unit}`).toBeDefined()
     }
     // retreat was skipped by ruling; the rows that allow it say so
-    for (const id of ['battle.prologue-3', 'battle.prologue-4', 'battle.prologue-5']) expect(ENCOUNTERS[id]!.gaps!.some((g) => /retreat/.test(g)), `${id} names retreat as a gap`).toBe(true)
+    for (const id of ['encounter.prologue-3', 'encounter.prologue-4', 'encounter.prologue-5']) expect(ENCOUNTERS[id]!.gaps!.some((g) => /retreat/.test(g)), `${id} names retreat as a gap`).toBe(true)
     // Horrors' standing rules are gaps until vision lands
-    expect(ENCOUNTERS['battle.horrors-of-the-night']!.gaps!.some((g) => /standing rule/.test(g))).toBe(true)
+    expect(ENCOUNTERS['encounter.horrors-of-the-night']!.gaps!.some((g) => /standing rule/.test(g))).toBe(true)
   })
 })
 
@@ -46,6 +46,7 @@ describe('the schedule fires on the Turn it names, before the hero phase', () =>
     expect(ctx.state.units.filter((u) => u.uid >= 300).length).toBe(setupCount)
     runBattle(ctx)
     const waves = ctx.events.filter((e) => e.type === 'encounter.wave')
+    expect(waves.length).toBeGreaterThan(0)
     // every row fired at most once, and on its own Turn
     for (const w of waves) {
       const row = enc.schedule[w['row'] as number]!
@@ -129,16 +130,19 @@ describe('objectives', () => {
     if (out.outcome === 'objectiveMet') expect(out.turns).toBe(3)
   })
 
-  it('a cleared board is not a win while the schedule owes a wave (switch on); it is with the switch off', () => {
+  // RULED 2026-09-03 (Angela): "Battle ends when there are no enemies
+  // remaining, so victory can be achieved early." The default is now OFF.
+  it('a cleared board is a win even while the schedule owes a wave (default); the waiting path stays sweepable', () => {
     const enc: EncounterDef = { id: 'test.encounter.wait', name: 'wait', gaps: ['test-only'], setup: [{ unit: 'unit.zombie', at: { col: 8, row: 14 } }], schedule: [{ phase: 6, spawn: [{ unit: 'unit.zombie', at: { col: 8, row: 0 } }] }] }
+    const dflt = createBattle({ ...party(), encounter: enc })
+    expect(dflt.cfg.switches.boardClearWaitsForSchedule).toBe(false)
+    const b = runBattle(dflt)
+    expect(b.outcome).toBe('heroClear')
+    expect(b.turns).toBeLessThan(6)
     const on = createBattle({ ...party(), encounter: enc })
+    on.cfg.switches.boardClearWaitsForSchedule = true
     const a = runBattle(on)
     expect(a.turns).toBeGreaterThanOrEqual(6)
     expect(on.events.filter((e) => e.type === 'encounter.wave').length).toBe(1)
-    const off = createBattle({ ...party(), encounter: enc })
-    off.cfg.switches.boardClearWaitsForSchedule = false
-    const b = runBattle(off)
-    expect(b.outcome).toBe('heroClear')
-    expect(b.turns).toBeLessThan(6)
   })
 })

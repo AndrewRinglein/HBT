@@ -55,7 +55,7 @@ describe('darkness', () => {
   })
 
   it('Horrors of the Night: the board starts dark, the heroes light, the night family repaints — the tug of war is in the log', () => {
-    const enc = ENCOUNTERS['battle.horrors-of-the-night']!
+    const enc = ENCOUNTERS['encounter.horrors-of-the-night']!
     expect(enc.condition).toBe('darkness')
     const nightfall = UNITS['unit.shadow-sorcerer']!.triggers!.find((t) => t.effect.kind === 'layer.paint')!
     expect(nightfall, 'Nightfall is on the sorcerer').toBeDefined()

@@ -12,8 +12,8 @@ const schedule = JSON.parse(readFileSync('../progression/PROGRESSION-SCHEDULE.js
 const SEEDS = +(process.argv[2] ?? 20)
 // campaign position per encounter: the prologue five are battles 1–5; the rest by the entry's era
 const POSITION: Record<string, number> = {
-  'battle.prologue-1': 1, 'battle.prologue-2': 2, 'battle.prologue-3': 3, 'battle.prologue-4': 4, 'battle.prologue-5': 5,
-  'encounter.supper': 3, 'encounter.kiln': 9, 'battle.horrors-of-the-night': 12, 'encounter.last-company': 14, 'encounter.rime': 20,
+  'encounter.prologue-1': 1, 'encounter.prologue-2': 2, 'encounter.prologue-3': 3, 'encounter.prologue-4': 4, 'encounter.prologue-5': 5,
+  'encounter.supper': 3, 'encounter.kiln': 9, 'encounter.horrors-of-the-night': 12, 'encounter.last-company': 14, 'encounter.rime': 20,
 }
 const rows: Record<string, unknown>[] = []
 for (const [id, enc] of Object.entries(ENCOUNTERS)) {
