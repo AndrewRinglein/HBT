@@ -388,6 +388,22 @@ if (DUR) for (const t of Object.keys(DUR)) check(FOLDED_TYPES.includes(t) || IGN
   }
 }
 
+/* ── the footprint follows the stature (Angela 2026-09-03: the dwarf's elevation) ── */
+{
+  load(0); const v = H.viewer; v.pause(); v.render(); const V = v._V
+  const rings = []
+  for (const u of Object.values(v.state.U)) { if (u.life !== 'standing') continue
+    const E = V.layers.UEL.get(u.id); const a = LIB.art.artmap[u.typeId] || LIB.art.artmap._pending
+    rings.push({ h: a.height || 1.55, ring: parseFloat(E.fring.style.width), shadow: parseFloat(E.shadow.style.width) }) }
+  const tall = rings.find(r => r.h >= 1.5), short = rings.find(r => r.h <= 1.0)
+  if (!short) { for (let i = 1; i < LIB.battles.length && !rings.some(r => r.h <= 1.0); i++) { load(i); H.viewer.pause(); H.viewer.render()
+    for (const u of Object.values(H.viewer.state.U)) { const a = LIB.art.artmap[u.typeId] || LIB.art.artmap._pending; const E = H.viewer._V.layers.UEL.get(u.id); if (u.life === 'standing' && E) rings.push({ h: a.height || 1.55, ring: parseFloat(E.fring.style.width), shadow: parseFloat(E.shadow.style.width) }) } } }
+  const t2 = rings.find(r => r.h >= 1.5), s2 = rings.find(r => r.h <= 1.0)
+  check(t2 && s2, 'footprint: no short and tall standing units in the library to compare')
+  if (t2 && s2) { check(s2.ring < t2.ring && s2.shadow < t2.shadow, `footprint: a ${s2.h}-high unit's ring/shadow (${s2.ring}/${s2.shadow}) is not smaller than a ${t2.h}-high unit's (${t2.ring}/${t2.shadow})`)
+    check(Math.abs(s2.ring / t2.ring - Math.max(0.55, s2.h / t2.h)) < 0.08, `footprint: ring ratio ${(s2.ring / t2.ring).toFixed(2)} does not follow the stature ratio ${(s2.h / t2.h).toFixed(2)}`) }
+}
+
 /* ── 2026-09-03: the engine's feature run, one check per beat ──────────── */
 {
   const CTX = { UD: LIB.static.units, SN: LIB.static.statuses }

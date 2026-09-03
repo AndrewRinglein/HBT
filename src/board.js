@@ -640,6 +640,15 @@ export function syncUnits(V) {
     E.fring.style.display = (bare || down) ? 'none' : ''
     /* an encounter OBJECTIVE (a civilian whose death loses) wears a dashed ring */
     E.fring.style.borderStyle = u.objective ? 'dashed' : 'solid'
+    /* THE FOOTPRINT FOLLOWS THE STATURE (Angela 2026-09-03: the dwarf, once
+       short, stood "at the wrong elevation" — a human-sized ring and shadow
+       under an 81px figure read as a platform he hovers on). The ring, the
+       shadow, the act rings and the select ring scale with the token's height
+       against the human 132px, clamped so a mite keeps a readable ring and a
+       dragon's does not swallow its neighbours. */
+    const fp = Math.min(1.4, Math.max(0.55, hpx / 132))
+    const R = (elm, l, t, wd, ht) => { elm.style.left = Math.round(l * fp) + 'px'; elm.style.top = Math.round(t * fp) + 'px'; elm.style.width = Math.round(wd * fp) + 'px'; elm.style.height = Math.round(ht * fp) + 'px' }
+    R(E.fring, -46, -30, 92, 60); R(E.actA, -68, -45, 136, 90); R(E.actB, -58, -38, 116, 76); R(E.selR, -48, -31, 96, 62); R(E.downR, -58, -38, 116, 76)
     /* THE WOUND (Angela 2026-09-03): a little dripping blood on the token
        while the unit carries a Deathbed wound level; more drips when Badly */
     if (u.wound > 0 && !down) {
@@ -655,7 +664,7 @@ export function syncUnits(V) {
         'background:radial-gradient(ellipse,rgba(4,4,3,.9),rgba(4,4,3,0) 72%)'
     } else {
       E.shadow.style.display = bare ? 'none' : ''
-      if (!bare && !down) E.shadow.style.cssText = 'left:-44px;top:-24px;width:88px;height:44px;' +
+      if (!bare && !down) E.shadow.style.cssText = `left:${Math.round(-44 * fp)}px;top:${Math.round(-24 * fp)}px;width:${Math.round(88 * fp)}px;height:${Math.round(44 * fp)}px;` +
         'transform:rotate(-16deg) scale(1.05,.8);opacity:.58'
     }
     E.bb.style.transform = down ? 'rotateX(calc(var(--anti) * 0.68))' : 'rotateX(var(--anti))'
