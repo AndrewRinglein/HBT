@@ -1857,5 +1857,23 @@
   "status": "done-needs-review",
   "sha": "01d871a",
   "gauntlet": "not passed — 2 flag(s) warned"
+ },
+ {
+  "id": "fix.enemy-ai-role",
+  "kind": "engine",
+  "shape": "rule",
+  "spec": "FOUND running Supper (2026-09-03): the converter gave any unit with ANY ranged attack the ranged-kite AI, and the kite used the FIRST listed attack as its bow — so the Ghoul (Rake, Shriek, Devour, Eat Corpse) kited from the whole fight and, wanting distance 1 and safety at once, stood six hexes off for 25 Turns. Two rules: a unit kites when its ranged attacks are at least as many as its melee ones; the kite's bow is its longest-reaching attack. Also lands the Skeletal Archer's ruled range 5 (ENCOUNTERS-ENGINE-HANDOFF §5.2) — battle.prologue-2's ranged chaff finally exists.",
+  "expect": "the Ghoul is dumb-melee and bites; the Skeletal Archer is ranged-kite and shoots at 5; no kiter idles on a hex it cannot shoot from for want of the right bow",
+  "changesBaseline": false,
+  "probeIds": [
+   "attack.skeletal-archer.shoot"
+  ],
+  "variants": [
+   "attack.skeletal-archer.shoot",
+   "attack.necromancer.necro-bolt"
+  ],
+  "status": "done-needs-review",
+  "sha": "32c244e",
+  "gauntlet": "not passed — 2 flag(s) warned"
  }
 ]

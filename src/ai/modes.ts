@@ -414,7 +414,13 @@ function rangedKite(ctx: Ctx, u: Unit): void {
   const enemies = livingEnemies(ctx, u)
   if (enemies.length === 0) return
 
-  const bow = ctx.attacks[u.attacks[0] ?? '']
+  // The BOW is the longest-reaching attack the unit carries, not the first
+  // listed (fix.enemy-ai-role, 2026-09-03): a Ghoul lists Rake before Shriek,
+  // and a kiter whose "bow" reaches 1 wants to stand adjacent and safe at
+  // once — it stood six hexes off for twenty-five Turns. Ties to the earlier
+  // listing (Law 6).
+  const bow = u.attacks.map((id) => ctx.attacks[id]).filter((a): a is NonNullable<typeof a> => !!a)
+    .reduce<typeof ctx.attacks[string] | undefined>((best, a) => (!best || reachOf(ctx, u, a) > reachOf(ctx, u, best) ? a : best), undefined)
   if (!bow) {
     // UNARMED (encounter.runner, 2026-09-03): the Orphans field with a kit
     // whose attack rows are unauthored — a named gap — and a kiter with no

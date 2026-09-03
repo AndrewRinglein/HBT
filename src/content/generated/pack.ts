@@ -526,12 +526,12 @@ export const UNIT_PACK = {
       "precision": 6,
       "magic": 0,
       "spirit": 0,
-      "role": "ranged",
+      "role": "melee",
       "movement": 5,
       "reach": 0,
       "maxStamina": 0,
       "staminaRegen": 0,
-      "ai": "ranged-kite",
+      "ai": "dumb-melee",
       "attacks": [
         "attack.bone-dragon.poison-line",
         "attack.bone-dragon.bite",
@@ -879,12 +879,12 @@ export const UNIT_PACK = {
       "precision": 3,
       "magic": 0,
       "spirit": 0,
-      "role": "ranged",
+      "role": "melee",
       "movement": 6,
       "reach": 0,
       "maxStamina": 0,
       "staminaRegen": 0,
-      "ai": "ranged-kite",
+      "ai": "dumb-melee",
       "attacks": [
         "attack.ghoul.eat-corpse",
         "attack.ghoul.rake",
@@ -1346,14 +1346,15 @@ export const UNIT_PACK = {
       "precision": 3,
       "magic": 0,
       "spirit": 0,
-      "role": "melee",
+      "role": "ranged",
       "movement": 4,
       "reach": 0,
       "maxStamina": 0,
       "staminaRegen": 0,
-      "ai": "dumb-melee",
+      "ai": "ranged-kite",
       "attacks": [
-        "attack.skeleton.gut"
+        "attack.skeleton.gut",
+        "attack.skeletal-archer.shoot"
       ],
       "abilities": [],
       "moves": [
@@ -2205,6 +2206,16 @@ export const UNIT_PACK = {
       "bonus": 0,
       "stat": "strength",
       "reach": 1,
+      "staminaCost": 0
+    },
+    "attack.skeletal-archer.shoot": {
+      "id": "attack.skeletal-archer.shoot",
+      "name": "Shoot",
+      "kind": "ranged",
+      "damageType": "physical",
+      "bonus": 0,
+      "stat": "precision",
+      "reach": 5,
       "staminaCost": 0
     },
     "attack.skeleton-spider.bone-strike": {
@@ -5173,6 +5184,305 @@ export const UNIT_PACK = {
       "defaultItems": [
         "item.pile-of-rocks"
       ]
+    },
+    {
+      "typeId": "hero.fixed.librarian",
+      "name": "Librarian",
+      "side": "hero",
+      "maxHp": 4,
+      "armor": 0,
+      "resist": 0,
+      "accuracy": 70,
+      "dodge": 0,
+      "crit": 3,
+      "strength": 0,
+      "precision": 0,
+      "magic": 0,
+      "spirit": 0,
+      "role": "melee",
+      "movement": 5,
+      "reach": 2,
+      "maxStamina": 5,
+      "staminaRegen": 1,
+      "ai": "melee-aggressive",
+      "attacks": [],
+      "abilities": [],
+      "moves": [
+        "power.move"
+      ],
+      "tags": [
+        "hero",
+        "civilian",
+        "class.civilian"
+      ],
+      "triggers": [],
+      "defaultItems": []
+    },
+    {
+      "typeId": "hero.fixed.cook",
+      "name": "Cook",
+      "side": "hero",
+      "maxHp": 5,
+      "armor": 1,
+      "resist": 0,
+      "accuracy": 70,
+      "dodge": 0,
+      "crit": 3,
+      "strength": 2,
+      "precision": 2,
+      "magic": 0,
+      "spirit": 0,
+      "role": "melee",
+      "movement": 5,
+      "reach": 1,
+      "maxStamina": 5,
+      "staminaRegen": 1,
+      "ai": "melee-aggressive",
+      "attacks": [],
+      "abilities": [],
+      "moves": [
+        "power.move"
+      ],
+      "tags": [
+        "hero",
+        "civilian",
+        "class.civilian"
+      ],
+      "triggers": [],
+      "defaultItems": []
+    },
+    {
+      "typeId": "hero.fixed.fishermans-wife",
+      "name": "Fishermans Wife",
+      "side": "hero",
+      "maxHp": 5,
+      "armor": 0,
+      "resist": 0,
+      "accuracy": 70,
+      "dodge": 0,
+      "crit": 3,
+      "strength": 1,
+      "precision": 2,
+      "magic": 0,
+      "spirit": 0,
+      "role": "melee",
+      "movement": 5,
+      "reach": 2,
+      "maxStamina": 5,
+      "staminaRegen": 1,
+      "ai": "melee-aggressive",
+      "attacks": [],
+      "abilities": [],
+      "moves": [
+        "power.move"
+      ],
+      "tags": [
+        "hero",
+        "civilian",
+        "class.civilian"
+      ],
+      "triggers": [],
+      "defaultItems": []
+    },
+    {
+      "typeId": "hero.fixed.fisherman",
+      "name": "Fisherman",
+      "side": "hero",
+      "maxHp": 6,
+      "armor": 0,
+      "resist": 0,
+      "accuracy": 70,
+      "dodge": 0,
+      "crit": 3,
+      "strength": 1,
+      "precision": 3,
+      "magic": 0,
+      "spirit": 0,
+      "role": "melee",
+      "movement": 5,
+      "reach": 3,
+      "maxStamina": 5,
+      "staminaRegen": 1,
+      "ai": "melee-aggressive",
+      "attacks": [],
+      "abilities": [],
+      "moves": [
+        "power.move"
+      ],
+      "tags": [
+        "hero",
+        "civilian",
+        "class.civilian"
+      ],
+      "triggers": [],
+      "defaultItems": []
+    },
+    {
+      "typeId": "hero.fixed.old-wise-man",
+      "name": "Old Wise Man",
+      "side": "hero",
+      "maxHp": 6,
+      "armor": 0,
+      "resist": 0,
+      "accuracy": 70,
+      "dodge": 0,
+      "crit": 3,
+      "strength": 2,
+      "precision": 2,
+      "magic": 0,
+      "spirit": 0,
+      "role": "melee",
+      "movement": 5,
+      "reach": 1,
+      "maxStamina": 5,
+      "staminaRegen": 1,
+      "ai": "melee-aggressive",
+      "attacks": [],
+      "abilities": [],
+      "moves": [
+        "power.move"
+      ],
+      "tags": [
+        "hero",
+        "civilian",
+        "class.civilian"
+      ],
+      "triggers": [],
+      "defaultItems": []
+    },
+    {
+      "typeId": "hero.fixed.blacksmith",
+      "name": "Blacksmith",
+      "side": "hero",
+      "maxHp": 6,
+      "armor": 1,
+      "resist": 0,
+      "accuracy": 70,
+      "dodge": 0,
+      "crit": 3,
+      "strength": 4,
+      "precision": 2,
+      "magic": 0,
+      "spirit": 0,
+      "role": "melee",
+      "movement": 5,
+      "reach": 2,
+      "maxStamina": 5,
+      "staminaRegen": 1,
+      "ai": "melee-aggressive",
+      "attacks": [],
+      "abilities": [],
+      "moves": [
+        "power.move"
+      ],
+      "tags": [
+        "hero",
+        "civilian",
+        "class.civilian"
+      ],
+      "triggers": [],
+      "defaultItems": []
+    },
+    {
+      "typeId": "hero.fixed.group-of-farmers",
+      "name": "Farmer with a Hat",
+      "side": "hero",
+      "maxHp": 7,
+      "armor": 0,
+      "resist": 0,
+      "accuracy": 70,
+      "dodge": 0,
+      "crit": 5,
+      "strength": 3,
+      "precision": 2,
+      "magic": 0,
+      "spirit": 0,
+      "role": "melee",
+      "movement": 5,
+      "reach": 2,
+      "maxStamina": 5,
+      "staminaRegen": 1,
+      "ai": "melee-aggressive",
+      "attacks": [],
+      "abilities": [],
+      "moves": [
+        "power.move"
+      ],
+      "tags": [
+        "hero",
+        "civilian",
+        "class.civilian"
+      ],
+      "triggers": [],
+      "defaultItems": [
+        "item.pitchfork"
+      ]
+    },
+    {
+      "typeId": "hero.fixed.farming-family",
+      "name": "Farming Family",
+      "side": "hero",
+      "maxHp": 11,
+      "armor": 0,
+      "resist": 0,
+      "accuracy": 70,
+      "dodge": 0,
+      "crit": 3,
+      "strength": 3,
+      "precision": 3,
+      "magic": 0,
+      "spirit": 0,
+      "role": "melee",
+      "movement": 5,
+      "reach": 2,
+      "maxStamina": 5,
+      "staminaRegen": 1,
+      "ai": "melee-aggressive",
+      "attacks": [],
+      "abilities": [],
+      "moves": [
+        "power.move"
+      ],
+      "tags": [
+        "hero",
+        "civilian",
+        "class.civilian"
+      ],
+      "triggers": [],
+      "defaultItems": []
+    },
+    {
+      "typeId": "hero.fixed.scary-kid",
+      "name": "Scary Kid",
+      "side": "hero",
+      "maxHp": 11,
+      "armor": 0,
+      "resist": 0,
+      "accuracy": 70,
+      "dodge": 0,
+      "crit": 3,
+      "strength": 4,
+      "precision": 5,
+      "magic": 0,
+      "spirit": 0,
+      "role": "melee",
+      "movement": 5,
+      "reach": 2,
+      "maxStamina": 5,
+      "staminaRegen": 1,
+      "ai": "melee-aggressive",
+      "attacks": [],
+      "abilities": [],
+      "moves": [
+        "power.move"
+      ],
+      "tags": [
+        "hero",
+        "civilian",
+        "class.civilian"
+      ],
+      "triggers": [],
+      "defaultItems": []
     }
   ],
   "alphaTeam": [
@@ -24179,8 +24489,568 @@ export const UNIT_PACK = {
         }
       ],
       "gaps": [
-        "standing rule: THE BOARD STARTS DARK, AND LIGHT IS A TUG OF WAR",
-        "standing rule: VISION: BATTLEFIELD +6, STAT 0, FLOOR 1"
+        "standing rule: THE BOARD STARTS DARK, AND LIGHT IS A TUG OF WAR — needs capability.vision-and-darkness, capability.ground-layers",
+        "standing rule: VISION: BATTLEFIELD +6, STAT 0, FLOOR 1 — needs capability.vision-and-darkness"
+      ]
+    },
+    "encounter.supper": {
+      "id": "encounter.supper",
+      "name": "Supper",
+      "setup": [
+        {
+          "unit": "hero.fixed.librarian",
+          "civilian": true,
+          "at": {
+            "col": 10,
+            "row": 7
+          }
+        },
+        {
+          "unit": "hero.fixed.cook",
+          "civilian": true,
+          "at": {
+            "col": 6,
+            "row": 7
+          }
+        },
+        {
+          "unit": "hero.fixed.fishermans-wife",
+          "civilian": true,
+          "at": {
+            "col": 8,
+            "row": 7
+          }
+        },
+        {
+          "unit": "hero.fixed.fisherman",
+          "civilian": true,
+          "at": {
+            "col": 10,
+            "row": 8
+          }
+        },
+        {
+          "unit": "hero.fixed.old-wise-man",
+          "civilian": true,
+          "at": {
+            "col": 8,
+            "row": 8
+          }
+        },
+        {
+          "unit": "hero.fixed.blacksmith",
+          "civilian": true,
+          "at": {
+            "col": 8,
+            "row": 9
+          }
+        },
+        {
+          "unit": "hero.fixed.farmer",
+          "civilian": true,
+          "at": {
+            "col": 6,
+            "row": 8
+          }
+        },
+        {
+          "unit": "hero.fixed.group-of-farmers",
+          "civilian": true,
+          "at": {
+            "col": 6,
+            "row": 9
+          }
+        },
+        {
+          "unit": "hero.fixed.farming-family",
+          "civilian": true,
+          "at": {
+            "col": 10,
+            "row": 9
+          }
+        },
+        {
+          "unit": "hero.fixed.scary-kid",
+          "civilian": true,
+          "at": {
+            "col": 8,
+            "row": 10
+          }
+        },
+        {
+          "unit": "unit.zombie",
+          "count": 8,
+          "hexes": [
+            {
+              "col": 6,
+              "row": 6
+            },
+            {
+              "col": 8,
+              "row": 6
+            },
+            {
+              "col": 10,
+              "row": 6
+            },
+            {
+              "col": 5,
+              "row": 8
+            },
+            {
+              "col": 11,
+              "row": 8
+            },
+            {
+              "col": 6,
+              "row": 10
+            },
+            {
+              "col": 10,
+              "row": 10
+            },
+            {
+              "col": 8,
+              "row": 11
+            }
+          ]
+        },
+        {
+          "unit": "unit.ghoul",
+          "count": 4,
+          "hexes": [
+            {
+              "col": 4,
+              "row": 0
+            },
+            {
+              "col": 7,
+              "row": 0
+            },
+            {
+              "col": 9,
+              "row": 0
+            },
+            {
+              "col": 12,
+              "row": 0
+            }
+          ]
+        }
+      ],
+      "schedule": [
+        {
+          "phase": 3,
+          "spawn": [
+            {
+              "unit": "unit.ghoul",
+              "count": 2,
+              "hexes": [
+                {
+                  "col": 0,
+                  "row": 8
+                },
+                {
+                  "col": 15,
+                  "row": 8
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "phase": 5,
+          "spawn": [
+            {
+              "unit": "unit.necromancer",
+              "count": 1,
+              "at": {
+                "col": 8,
+                "row": 3
+              }
+            }
+          ]
+        },
+        {
+          "phase": 7,
+          "spawn": [
+            {
+              "unit": "unit.zombie",
+              "count": 4,
+              "hexes": [
+                {
+                  "col": 5,
+                  "row": 15
+                },
+                {
+                  "col": 7,
+                  "row": 15
+                },
+                {
+                  "col": 9,
+                  "row": 15
+                },
+                {
+                  "col": 11,
+                  "row": 15
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "heroZone": {
+        "count": 4,
+        "at": {
+          "near": {
+            "col": 8,
+            "row": 14
+          },
+          "range": 3
+        }
+      },
+      "gaps": [
+        "hero.fixed.librarian is a RESCUE (2 resources alive at the end) — the reward is the kingdom's; fielded as a civilian",
+        "hero.fixed.cook is a RESCUE (2 resources alive at the end) — the reward is the kingdom's; fielded as a civilian",
+        "hero.fixed.fishermans-wife is a RESCUE (2 resources alive at the end) — the reward is the kingdom's; fielded as a civilian",
+        "hero.fixed.fisherman is a RESCUE (2 resources alive at the end) — the reward is the kingdom's; fielded as a civilian",
+        "hero.fixed.old-wise-man is a RESCUE (2 resources alive at the end) — the reward is the kingdom's; fielded as a civilian",
+        "hero.fixed.blacksmith is a RESCUE (2 resources alive at the end) — the reward is the kingdom's; fielded as a civilian",
+        "hero.fixed.farmer is a RESCUE (2 resources alive at the end) — the reward is the kingdom's; fielded as a civilian",
+        "hero.fixed.group-of-farmers is a RESCUE (2 resources alive at the end) — the reward is the kingdom's; fielded as a civilian",
+        "hero.fixed.farming-family is a RESCUE (2 resources alive at the end) — the reward is the kingdom's; fielded as a civilian",
+        "hero.fixed.scary-kid is a RESCUE (2 resources alive at the end) — the reward is the kingdom's; fielded as a civilian",
+        "retreat allowed — skipped by ruling 2026-09-03",
+        "needs: capability.corpses (Eat Corpse, the Necromancer's raise)",
+        "needs: capability.enemy-action-cooldown (Devour CD 3)",
+        "needs: capability.target-stamina-loss (Shriek, Necro Bolt)",
+        "needs: capability.inflict-affliction (Claw's 10% rotting flesh)",
+        "needs: a civilian flee behaviour and attach mode",
+        "needs: the rescue reward: 2 resources per villager alive at the end (the kingdom seam)"
+      ]
+    },
+    "encounter.kiln": {
+      "id": "encounter.kiln",
+      "name": "The Kiln",
+      "setup": [
+        {
+          "unit": "unit.fire-imp",
+          "count": 4,
+          "hexes": [
+            {
+              "col": 5,
+              "row": 2
+            },
+            {
+              "col": 7,
+              "row": 2
+            },
+            {
+              "col": 9,
+              "row": 2
+            },
+            {
+              "col": 11,
+              "row": 2
+            }
+          ]
+        },
+        {
+          "unit": "unit.hellhound",
+          "count": 3,
+          "hexes": [
+            {
+              "col": 4,
+              "row": 3
+            },
+            {
+              "col": 8,
+              "row": 3
+            },
+            {
+              "col": 12,
+              "row": 3
+            }
+          ]
+        },
+        {
+          "unit": "unit.imp-master",
+          "count": 1,
+          "at": {
+            "col": 8,
+            "row": 1
+          }
+        }
+      ],
+      "schedule": [
+        {
+          "phase": 2,
+          "spawn": [
+            {
+              "unit": "unit.imp",
+              "count": 2,
+              "hexes": [
+                {
+                  "col": 0,
+                  "row": 6
+                },
+                {
+                  "col": 0,
+                  "row": 8
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "phase": 4,
+          "spawn": [
+            {
+              "unit": "unit.poison-imp",
+              "count": 2,
+              "hexes": [
+                {
+                  "col": 15,
+                  "row": 6
+                },
+                {
+                  "col": 15,
+                  "row": 8
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "phase": 6,
+          "spawn": [
+            {
+              "unit": "unit.balrog",
+              "count": 1,
+              "at": {
+                "col": 8,
+                "row": 0
+              }
+            }
+          ]
+        }
+      ],
+      "heroZone": {
+        "count": 5,
+        "at": {
+          "near": {
+            "col": 8,
+            "row": 14
+          },
+          "range": 3
+        }
+      },
+      "gaps": [
+        "retreat allowed — skipped by ruling 2026-09-03",
+        "salvation — skipped by ruling 2026-09-03",
+        "standing rule: THE KILN — needs capability.ground-layers (the Band shape)",
+        "needs: capability.ground-layers (the advancing burning band; water pockets)",
+        "needs: the salvation card at phase 8"
+      ]
+    },
+    "encounter.last-company": {
+      "id": "encounter.last-company",
+      "name": "The Last Company",
+      "setup": [],
+      "schedule": [
+        {
+          "phase": 3,
+          "spawn": []
+        },
+        {
+          "phase": 5,
+          "spawn": [
+            {
+              "unit": "unit.necromancer",
+              "count": 1,
+              "at": {
+                "col": 8,
+                "row": 1
+              }
+            }
+          ]
+        },
+        {
+          "phase": 7,
+          "spawn": [
+            {
+              "unit": "unit.ghoul",
+              "count": 2,
+              "hexes": [
+                {
+                  "col": 4,
+                  "row": 1
+                },
+                {
+                  "col": 12,
+                  "row": 1
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "heroZone": {
+        "count": 6,
+        "at": {
+          "near": {
+            "col": 8,
+            "row": 14
+          },
+          "range": 3
+        }
+      },
+      "gaps": [
+        "setup: 5 corpses — the near company: Wall Sentry, Longbow Hunter, Moon Bearer, Star Oracle, Violet Knife — hero rows as CORPSES (capability.corpses)",
+        "setup: 5 × unit.shade — no such row in the pack, NOT fielded",
+        "setup: 5 corpses — the mid company: Blue Buccaneer, Storm Archer, Talisman Bearer, Frost Duelist, Twin Sabers",
+        "schedule 3: 5 × unit.shade — no such row in the pack, NOT fielded",
+        "retreat allowed — skipped by ruling 2026-09-03",
+        "salvation — skipped by ruling 2026-09-03",
+        "needs: capability.corpses (the ten bodies; the Necromancer's raise)",
+        "needs: rule.summon-order and Embody (a Shade leaves play and the corpse's hero row fields enemy-side)",
+        "needs: unit.shade (Dodge 60, flies 9) — an owed row",
+        "needs: the salvation card at phase 8"
+      ]
+    },
+    "encounter.rime": {
+      "id": "encounter.rime",
+      "name": "Rime",
+      "setup": [
+        {
+          "unit": "unit.strong-skeleton",
+          "count": 4,
+          "hexes": [
+            {
+              "col": 3,
+              "row": 10
+            },
+            {
+              "col": 7,
+              "row": 10
+            },
+            {
+              "col": 13,
+              "row": 10
+            },
+            {
+              "col": 8,
+              "row": 11
+            }
+          ]
+        },
+        {
+          "unit": "unit.skeletal-archer",
+          "count": 3,
+          "hexes": [
+            {
+              "col": 7,
+              "row": 3
+            },
+            {
+              "col": 9,
+              "row": 3
+            },
+            {
+              "col": 8,
+              "row": 4
+            }
+          ]
+        }
+      ],
+      "schedule": [
+        {
+          "phase": 3,
+          "spawn": []
+        },
+        {
+          "phase": 4,
+          "spawn": [
+            {
+              "unit": "unit.skeleton-spider",
+              "count": 1,
+              "at": {
+                "col": 8,
+                "row": 2
+              }
+            }
+          ]
+        },
+        {
+          "phase": 6,
+          "spawn": [
+            {
+              "unit": "unit.zombie",
+              "count": 6,
+              "hexes": [
+                {
+                  "col": 3,
+                  "row": 15
+                },
+                {
+                  "col": 5,
+                  "row": 15
+                },
+                {
+                  "col": 7,
+                  "row": 15
+                },
+                {
+                  "col": 9,
+                  "row": 15
+                },
+                {
+                  "col": 11,
+                  "row": 15
+                },
+                {
+                  "col": 13,
+                  "row": 15
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "phase": 9,
+          "spawn": [
+            {
+              "unit": "unit.bone-dragon",
+              "count": 1,
+              "at": {
+                "col": 8,
+                "row": 0
+              }
+            }
+          ]
+        }
+      ],
+      "heroZone": {
+        "count": 6,
+        "at": {
+          "near": {
+            "col": 8,
+            "row": 14
+          },
+          "range": 3
+        }
+      },
+      "gaps": [
+        "setup: 8 × unit.frozen-skeleton — no such row in the pack, NOT fielded",
+        "setup: 2 × unit.hoarfrost-wight — no such row in the pack, NOT fielded",
+        "schedule 3: 6 × unit.frozen-skeleton — no such row in the pack, NOT fielded",
+        "retreat allowed — skipped by ruling 2026-09-03",
+        "salvation — skipped by ruling 2026-09-03",
+        "standing rule: THE FROST BAND — needs capability.ground-layers (frost), a map with those hills",
+        "needs: status.frost added BEFORE Armor (ruled 2026-09-03)",
+        "needs: unit.frozen-skeleton and unit.hoarfrost-wight — owed rows",
+        "needs: capability.ground-layers (the band)",
+        "needs: the salvation card at phase 8 (Purify)"
       ]
     }
   }

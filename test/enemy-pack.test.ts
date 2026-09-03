@@ -78,9 +78,15 @@ describe('the pack carries the authored rows faithfully', () => {
     const gaps = JSON.parse(readFileSync(
       join(__dirname, '..', '..', 'content', 'gen', 'enemy-pack-gaps.json'), 'utf8')).gaps as
       { unit: string; needs: string }[]
-    // the archer's null range is a gap, and the shoot must NOT exist as an attack
-    expect(gaps.some((g) => g.unit === 'unit.skeletal-archer' && /range unstated/.test(g.needs))).toBe(true)
-    expect(ATTACKS['attack.skeletal-archer.shoot']).toBeUndefined()
+    // Law 10 rewrite, 2026-09-03: the archer's range WAS a gap (null) and the
+    // shoot did not exist — then it was ruled 5 (ENCOUNTERS-ENGINE-HANDOFF
+    // §5.2) and the row carries it. The RULE the old assertion protected is
+    // that a null range never compiles into a bow: so no attack in the pack
+    // may carry a non-number reach, and the archer's Shoot, now authored,
+    // reaches exactly what its row says.
+    for (const a of Object.values(ATTACKS)) expect(typeof a.reach, `${a.id} reach`).toBe('number')
+    expect(ATTACKS['attack.skeletal-archer.shoot']?.reach).toBe(5)
+    expect(gaps.some((g) => g.unit === 'unit.skeletal-archer' && /range unstated/.test(g.needs))).toBe(false)
     // afflictions and the power pool are named, not guessed
     expect(gaps.some((g) => g.needs.includes('capability.inflict-affliction'))).toBe(true)
     expect(gaps.some((g) => g.needs.includes('capability.power'))).toBe(true)

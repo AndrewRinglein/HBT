@@ -5358,3 +5358,50 @@ index 213f12c..09b9952 100644
 </details>
 
 IRON GAUNTLET: NOT PASSED — 2 FLAG(S) WARNED
+
+## fix.enemy-ai-role — LANDED `32c244e` **NEEDS REVIEW**
+2026-09-03 09:12
+
+  PASS  dependencies landed
+  WARN  not already decided — 4 candidate ruling(s) — READ BEFORE ASKING: ../COMBAT-DESIGN.md:273 · ../STATE.md:18
+  PASS  typecheck
+  PASS  full test suite
+  PASS  gate 1 — the id appears in a real battle — attack.skeletal-archer.shoot: 3 log lines, 3 fired, 2 changed state
+  PASS  brought its own tests — test/enemy-pack.test.ts, test/enemy-ai-role.test.ts
+  WARN  existing tests untouched — DELETED LINES in test/enemy-pack.test.ts (-3) — will land FLAGGED for review
+  PASS  control battles unchanged
+  PASS  content has a published source — 16 ids without a published source (6 awaiting publication from earlier items — see audit)
+  PASS  hardcode scan — core knows mechanisms, never names
+  PASS  generalizes — the second instance costs zero engine code — attack.skeletal-archer.shoot live · attack.necromancer.necro-bolt live
+  PASS  naming — new content ids use declared kinds
+  PASS  naming — no banned words invented
+  PASS  kill switch — the tests fail without the content — tests fail without attack.skeletal-archer.shoot — they genuinely test it
+
+<details><summary>Existing tests were edited — review this diff</summary>
+
+```diff
+diff --git a/test/enemy-pack.test.ts b/test/enemy-pack.test.ts
+index ccfc949..b1a18b5 100644
+--- a/test/enemy-pack.test.ts
++++ b/test/enemy-pack.test.ts
+@@ -79,7 +79,13 @@ describe('the pack carries the authored rows faithfully', () => {
+       join(__dirname, '..', '..', 'content', 'gen', 'enemy-pack-gaps.json'), 'utf8')).gaps as
+       { unit: string; needs: string }[]
+-    // the archer's null range is a gap, and the shoot must NOT exist as an attack
+-    expect(gaps.some((g) => g.unit === 'unit.skeletal-archer' && /range unstated/.test(g.needs))).toBe(true)
+-    expect(ATTACKS['attack.skeletal-archer.shoot']).toBeUndefined()
++    // Law 10 rewrite, 2026-09-03: the archer's range WAS a gap (null) and the
++    // shoot did not exist — then it was ruled 5 (ENCOUNTERS-ENGINE-HANDOFF
++    // §5.2) and the row carries it. The RULE the old assertion protected is
++    // that a null range never compiles into a bow: so no attack in the pack
++    // may carry a non-number reach, and the archer's Shoot, now authored,
++    // reaches exactly what its row says.
++    for (const a of Object.values(ATTACKS)) expect(typeof a.reach, `${a.id} reach`).toBe('number')
++    expect(ATTACKS['attack.skeletal-archer.shoot']?.reach).toBe(5)
++    expect(gaps.some((g) => g.unit === 'unit.skeletal-archer' && /range unstated/.test(g.needs))).toBe(false)
+     // afflictions and the power pool are named, not guessed
+     expect(gaps.some((g) => g.needs.includes('capability.inflict-affliction'))).toBe(true)
+```
+</details>
+
+IRON GAUNTLET: NOT PASSED — 2 FLAG(S) WARNED
