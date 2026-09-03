@@ -1345,7 +1345,7 @@ export const UNIT_PACK = {
       "name": "Stab",
       "kind": "melee",
       "damageType": "physical",
-      "bonus": 1,
+      "bonus": 0,
       "stat": "strength",
       "reach": 1,
       "staminaCost": 0,
@@ -2196,7 +2196,7 @@ export const UNIT_PACK = {
           {
             "kind": "status",
             "statusId": "status.bleed",
-            "value": 5
+            "value": 4
           }
         ]
       },

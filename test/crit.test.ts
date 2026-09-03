@@ -31,7 +31,14 @@ describe('the chart arrives as ruled data', () => {
   it('all ten dictated rows, by stable key, in the pack', () => {
     expect(CRIT_CHART.map((r) => r.key)).toEqual(KEYS)
     // spot checks straight off the dictation
-    expect(rowOf('bleeding').effects).toEqual([{ kind: 'status', statusId: 'status.bleed', value: 5 }])
+    // Law 10 rewrite 2026-09-02: the dictation said "gain 5 Bleed" while Bleed
+    // was a duration; content S41 (adb627b, ruled verbatim "Bleed is being
+    // converted to magnitude damage") re-mapped every Bleed magnitude, and the
+    // chart row became "gain 4 Bleed" in settled.json. The Codex owns that
+    // number, so the test asserts the SHAPE (a Bleed status with a positive
+    // magnitude) and lets the pack carry whatever the Codex says.
+    expect(rowOf('bleeding').effects).toEqual([{ kind: 'status', statusId: 'status.bleed', value: expect.any(Number) }])
+    expect((rowOf('bleeding').effects[0] as { value: number }).value).toBeGreaterThan(0)
     expect(rowOf('dazed').effects).toEqual([{ kind: 'status', statusId: 'status.dazed', value: 3 }])
     expect(rowOf('nerve-struck').effects).toEqual([{ kind: 'loseMaxHp', value: 2 }])
     expect(rowOf('winded').effects).toEqual([{ kind: 'loseStamina', value: 4 }])

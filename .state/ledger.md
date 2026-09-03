@@ -3685,3 +3685,17 @@ Converter fix (content ea28d39): the third item source's STRING range no
 longer ships into reach — the loader's refusal was the find. Baselines
 re-blessed (the Punch re-rule reaches the cohort). Suite 49/448; post-land
 audit clean. Hand-landed under the reaper protocol; seal unwritten.
+
+## pack re-bless (content 129088b) — RE-BLESSED
+2026-09-03T03:05:00.000Z
+
+Not a backlog item: the content chat's S49 ("Javelin/Stab … drop 1 damage to
++0") and S41 ("Bleed is being converted to magnitude damage" — the chart's
+Bleeding row 5→4) reached the engine through `ship.mjs` at content 129088b
+(stamp 799f490d43da). One control battle moved (map.highlands a73af67e →
+619a236c; the other seven unchanged). Law 10 rewrite in `test/crit.test.ts`:
+the Bleeding row asserted the dictated 5 while the Codex now owns the
+magnitude — rewritten toward the SHAPE (a Bleed status with a positive
+magnitude), reason at the edit. Suite 49/448 after. Blessed on its own so the
+alpha flip that follows is measured against the shipped content, not against
+a stale pack.
