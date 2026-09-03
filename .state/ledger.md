@@ -880,3 +880,25 @@ Note (seam.loadout, 2026-09-03): the first --land attempt at 10:45 ran before th
 ISC-065: CLOSED at 26c25b5
 slice: 60 of 68 closed · 61 probed · 0 accepted
 IRON GAUNTLET: NOT PASSED — 2 FLAG(S) WARNED; 1 EXEMPTION(S) TAKEN
+
+## screens.equip — LANDED `77e66a4` **NEEDS REVIEW**
+2026-09-03 20:19 · engine @ fc72b9a
+
+  PASS  dependencies landed
+  WARN  not already decided — 2 candidate ruling(s) — READ BEFORE ASKING: ../STATE.md:20 · ../CODEX.md:1829
+  PASS  typecheck
+  PASS  full test suite — 149 passed
+  PASS  gate 1 — every claimed criterion holds — ISC-066 is H-tier: H — open SLICE.html at Deploy → Equip; swap a weapon, equip an idol and remove it, leave; the set line appears; anything missing is a no.
+  PASS  brought its own tests — test/equip-screen.test.ts
+  PASS  existing tests untouched
+  PASS  kill switch — every claimed probe has been seen red —   (no red demanded of an H criterion)
+  PASS  nothing regresses — every P-tier probe — 61 P-tier probe(s): 61 green, 0 red, 0 regression(s). 60 of 68 closed · 61 probed · 0 accepted
+  PASS  hardcode scan — core knows mechanisms, never names
+  PASS  generalizes — the second instance costs zero kingdom code — shape 'plumbing' — not a mechanism, exempt
+  PASS  naming — new ids use declared kinds
+  PASS  naming — no banned words invented
+  WARN  engine working tree clean — verified against a DIRTY engine tree (fc72b9a + 1 uncommitted under src/test): ?? src/sim/coverage.ts
+  PASS  one door to the engine
+
+slice: 60 of 68 closed · 61 probed · 0 accepted
+IRON GAUNTLET: NOT PASSED — 2 FLAG(S) WARNED

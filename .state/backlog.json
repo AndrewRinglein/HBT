@@ -650,7 +650,11 @@
    "equip.costs",
    "sets.resolve"
   ],
-  "generalizationExempt": "plumbing: a screen over viewX/performX, not a mechanism"
+  "generalizationExempt": "plumbing: a screen over viewX/performX, not a mechanism",
+  "status": "done-needs-review",
+  "sha": "77e66a4",
+  "engineSha": "fc72b9a",
+  "gauntlet": "not passed — 2 flag(s) warned"
  },
  {
   "id": "screens.after-battle",
