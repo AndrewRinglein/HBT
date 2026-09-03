@@ -1047,11 +1047,15 @@
   "id": "test.fixture-migration",
   "kind": "engine",
   "shape": "plumbing",
-  "spec": "CHORE (born with content.test-cohort): ~25 test files still build custom battles from the old dictated defs (warrior/ranger/mage/zombie/zombie-burning), which survive in index.ts as unfielded fixtures. Migrate the custom battles to the cohort units (or a scripted fixture pack), then DELETE the dictated rows — the last hand-typed units in the engine.",
+  "spec": "CHORE (born with content.test-cohort): ~25 test files still build custom battles from the old dictated defs (warrior/ranger/mage/zombie/zombie-burning), which survive in index.ts as unfielded fixtures. Migrate the custom battles to the cohort units (or a scripted fixture pack), then DELETE the dictated rows — the last hand-typed units in the engine. LANDED 2026-09-02 through the receptacle: the fixtures are content/test/ rows under the test family (test-warrior / test-ranger / test-mage as complete bodies kept exactly; the zombies were the cohort's rows already; test-gash-zombie a delta over test-zombie), the six provisional attacks and the Arcane Bolt renamed into the test family (attack.test-*, power.test-mage.bolt) in content/test/ and in settled.json's testCohort; ~30 test files re-pointed by name. index.ts types no unit but the three dictated beasts (content.beasts is theirs).",
   "expect": "no unit def in index.ts except registries that read from data; the suite green throughout",
   "status": "done-needs-review",
   "sha": "8962c36",
-  "gauntlet": "not passed — 2 flag(s) warned"
+  "gauntlet": "not passed — 2 flag(s) warned",
+  "probeIds": [
+   "attack.test-warrior.axe",
+   "attack.test-zombie.bite"
+  ]
  },
  {
   "id": "viewer.hexvfx-path",
