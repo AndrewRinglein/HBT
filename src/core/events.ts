@@ -53,6 +53,9 @@ export const KINGDOM_EVENTS = [
   'absence.rolled', 'absence.cleared',
   // and a quest's Week ticking by — between sent and resolved, the clock is a state change too.
   'quest.ticked',
+  // Added 2026-09-02 with equip.slots (G4), and to GLOSSARY.md the same commit: the
+  // swap's first half — an item off a hero and into the stash.
+  'item.unequipped',
 ] as const
 
 export type KingdomEventType = (typeof KINGDOM_EVENTS)[number]

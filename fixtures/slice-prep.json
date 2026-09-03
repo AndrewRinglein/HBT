@@ -59,7 +59,8 @@
     "item.longsword",
     "item.knight-shield",
     "item.basic-armor"
-   ]
+   ],
+   "itemSlots": 2
   },
   "hero.base.priest-armored": {
    "id": "hero.base.priest-armored",
@@ -78,7 +79,8 @@
     "item.knight-shield",
     "item.holy-texts",
     "item.pilgrims-habit"
-   ]
+   ],
+   "itemSlots": 1
   },
   "hero.base.priest-scantily": {
    "id": "hero.base.priest-scantily",
@@ -97,7 +99,8 @@
     "item.iron-mace",
     "item.holy-symbol",
     "item.borrowed-vestments"
-   ]
+   ],
+   "itemSlots": 1
   },
   "hero.base.ranger-aggressive": {
    "id": "hero.base.ranger-aggressive",
@@ -115,7 +118,8 @@
    "equipped": [
     "item.longbow",
     "item.thick-hide"
-   ]
+   ],
+   "itemSlots": 1
   },
   "hero.base.warrior-iron": {
    "id": "hero.base.warrior-iron",
@@ -134,7 +138,8 @@
     "item.destroyed-mail",
     "item.tower-shield",
     "item.war-axe"
-   ]
+   ],
+   "itemSlots": 2
   },
   "hero.fixed.orphans": {
    "id": "hero.fixed.orphans",
@@ -151,7 +156,8 @@
    "corruption": 0,
    "equipped": [
     "item.pile-of-rocks"
-   ]
+   ],
+   "itemSlots": 1
   }
  },
  "assignments": {},

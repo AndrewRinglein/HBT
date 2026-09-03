@@ -46,3 +46,12 @@ export function decide(ctx: Ctx, r: EngagementResult, edit?: (k: Reckoning) => R
   setBattleOutcome(ctx, r, k, 'test')
   return { result: r, reckoning: k }
 }
+
+/** Walk prep to the Equip step with `n` heroes deployed (reveal → council → deploy → equip). */
+export function toEquip(ctx: Ctx, who: number | readonly string[] = 4): Ctx {
+  beginCombatPrep(ctx, 'test'); performAdvancePrep(ctx, 'test'); performAdvancePrep(ctx, 'test')
+  const picks = typeof who === 'number' ? listDeployable(ctx.campaign).slice(0, who) : who
+  for (const h of picks) performDeploy(ctx, h, 'test')
+  performAdvancePrep(ctx, 'test')
+  return ctx
+}

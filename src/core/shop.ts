@@ -10,7 +10,8 @@
 // the item's effect in battle is content's to land, not the kingdom's to fake.
 
 import type { CampaignState, HeroId } from './campaign.js'
-import { type Ctx, applyBuyItem, applyEquip } from './mutate.js'
+import { type Ctx, applyBuyItem, applyEquip, applyUnequip } from './mutate.js'
+import { whyNotFit } from './loadout.js'
 import { canAfford, performSpend, type Cost } from './purse.js'
 import { listBuildings } from './build.js'
 import { REWARDS, type RewardRow } from '../content/rewards.js'
@@ -52,16 +53,48 @@ export function performBuyItem(ctx: Ctx, itemId: string, causeId: string): void 
 /** The prep step whose row says it equips — core reads the row, not the name. */
 const atEquip = (campaign: CampaignState) => campaign.cursor.step === 'prep' && campaign.cursor.prepStep === PREP_STEP_ROWS.find((r) => r.equips)?.step
 
-export function canEquip(campaign: CampaignState, heroId: HeroId, itemId: string): boolean {
-  if (!atEquip(campaign)) return false
-  if (!campaign.cursor.engagement?.deployed.includes(heroId)) return false
-  return campaign.stash.includes(itemId)
+/**
+ * Why this hero cannot put on this item now — or null. `displace` names an item the
+ * hero is wearing that comes off first (a drop onto a full slot: "you replace it, the
+ * other thing bounces back out"), so the fit is judged on the list after the swap.
+ */
+export function whyNotEquip(campaign: CampaignState, heroId: HeroId, itemId: string, displace?: string): string | null {
+  if (!atEquip(campaign)) return 'not the equip step'
+  if (!campaign.cursor.engagement?.deployed.includes(heroId)) return 'not deployed'
+  const h = campaign.roster[heroId]
+  if (!h) return `no hero '${heroId}'`
+  if (!campaign.stash.includes(itemId)) return `'${itemId}' is not in the stash`
+  if (displace !== undefined && !h.equipped.includes(displace)) return `'${displace}' is not worn by ${h.name}`
+  const after = displace === undefined ? [...h.equipped, itemId] : [...h.equipped.filter((id) => id !== displace), itemId]
+  return whyNotFit(campaign, heroId, after)
 }
 
-export function performEquip(ctx: Ctx, heroId: HeroId, itemId: string, causeId: string): void {
-  if (!canEquip(ctx.campaign, heroId, itemId)) {
-    const why = !atEquip(ctx.campaign) ? 'not the equip step' : !ctx.campaign.cursor.engagement?.deployed.includes(heroId) ? 'not deployed' : 'not in the stash'
-    throw new Error(`performEquip refused (${heroId} ← ${itemId}): ${why}`)
-  }
+export const canEquip = (campaign: CampaignState, heroId: HeroId, itemId: string, displace?: string): boolean => whyNotEquip(campaign, heroId, itemId, displace) === null
+
+export function performEquip(ctx: Ctx, heroId: HeroId, itemId: string, causeId: string, displace?: string): void {
+  const why = whyNotEquip(ctx.campaign, heroId, itemId, displace)
+  if (why) throw new Error(`performEquip refused (${heroId} ← ${itemId}): ${why}`)
+  if (displace !== undefined) applyUnequip(ctx, heroId, displace, causeId)
   applyEquip(ctx, heroId, itemId, causeId)
 }
+
+export function whyNotUnequip(campaign: CampaignState, heroId: HeroId, itemId: string): string | null {
+  if (!atEquip(campaign)) return 'not the equip step'
+  if (!campaign.cursor.engagement?.deployed.includes(heroId)) return 'not deployed'
+  const h = campaign.roster[heroId]
+  if (!h) return `no hero '${heroId}'`
+  if (!h.equipped.includes(itemId)) return `'${itemId}' is not worn by ${h.name}`
+  // taking something off can only free room — except a Backpack whose slots are in use
+  return whyNotFit(campaign, heroId, h.equipped.filter((id) => id !== itemId))
+}
+
+export const canUnequip = (campaign: CampaignState, heroId: HeroId, itemId: string): boolean => whyNotUnequip(campaign, heroId, itemId) === null
+
+/** Off, and into the shared stash — a starting item included ("they are their own thing and can be removed"). */
+export function performUnequip(ctx: Ctx, heroId: HeroId, itemId: string, causeId: string): void {
+  const why = whyNotUnequip(ctx.campaign, heroId, itemId)
+  if (why) throw new Error(`performUnequip refused (${heroId} → ${itemId}): ${why}`)
+  applyUnequip(ctx, heroId, itemId, causeId)
+}
+
+export { loadoutOf, itemSlotsOf, slotCostOf } from './loadout.js'

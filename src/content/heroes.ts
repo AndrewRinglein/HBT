@@ -14,7 +14,7 @@
 
 import type { Hero } from '../core/campaign.js'
 import { omitDisabled } from './disable.js'
-import { HERO_KITS, KIT_SPECS } from './generated/kits.js'
+import { HERO_KITS, KIT_SPECS, HERO_ITEM_SLOTS } from './generated/kits.js'
 
 export type HeroRow = Hero
 
@@ -30,9 +30,11 @@ export function assertKitted(id: string): void {
 
 // A row enters WEARING its kit: `equipped` at entry is the codex's list, verbatim
 // (GEAR-DESIGN.md §1, "starting weapons and starting armor … are their own thing").
-const hero = (id: string, name: string, cls: string, unitType: string): HeroRow => ({
-  id, name, classes: [cls], level: 1, xp: 0, wound: 0, lifeState: 'alive', badges: [], unitType, corruption: 0, equipped: [...(heroKitOf(id) ?? [])],
-})
+const hero = (id: string, name: string, cls: string, unitType: string): HeroRow => {
+  const itemSlots = HERO_ITEM_SLOTS[id]
+  if (itemSlots === undefined) throw new Error(`hero '${id}' has no itemSlots in the codex (heroes[].ported.itemSlots) — the slot model needs it`)
+  return { id, name, classes: [cls], level: 1, xp: 0, wound: 0, lifeState: 'alive', badges: [], unitType, corruption: 0, equipped: [...(heroKitOf(id) ?? [])], itemSlots }
+}
 
 const RAW_HEROES: readonly HeroRow[] = [
   hero('hero.base.ranger-aggressive', 'Hunter', 'class.ranger', 'hero.base.ranger-aggressive'),

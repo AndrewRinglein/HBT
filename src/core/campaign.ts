@@ -105,8 +105,10 @@ export type Hero = {
   badges: string[]
   /** The engine unit row this hero fields as, until the Crucible generates units. */
   unitType: string
-  /** Item ids worn, from the stash (GAME-ARCHITECTURE.md §1: `campaign.stash[] + hero.equipped`). */
+  /** Item ids worn, from the stash (GAME-ARCHITECTURE.md §1: `campaign.stash[] + hero.equipped`). ORDER IS PLACEMENT (src/core/loadout.ts). */
   equipped: string[]
+  /** General item slots, from the codex hero row (`itemSlots`, 0–3). Hands and the armor slot are not counted here. */
+  itemSlots: number
   /** Per-hero corruption, STORED (SKELETON-SETTLED.md:117 derives the pool; the summand lives here). */
   corruption: number
 }

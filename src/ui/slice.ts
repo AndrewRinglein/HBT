@@ -33,7 +33,8 @@ import { performRelease } from '../core/assignments.js'
 import { listRewardOffers, performTakeReward, listLevelUps, performLevelUp, performLeaveLevelUp } from '../core/rewards.js'
 import { xpForLevel } from '../content/levels.js'
 import { listBuildings, whyNotBuild, performBuild } from '../core/build.js'
-import { isShopOpen, listShopItems, canBuyItem, performBuyItem, costOfItem, canEquip, performEquip } from '../core/shop.js'
+import { isShopOpen, listShopItems, canBuyItem, performBuyItem, costOfItem, canEquip, whyNotEquip, performEquip, canUnequip, performUnequip, loadoutOf } from '../core/shop.js'
+import { itemOf } from '../content/items.js'
 import { makeNewCampaign, listDraftOffers, performDraft, performEndCampaign, draftsOwedOf, draftedCountOf } from '../core/opening.js'
 import { PROLOGUE } from '../content/prologue.js'
 import { purchasesFreeOf, articleSlotsOf, articlesHeldOf, whyNotPurchase, performPurchase, hasUnlock } from '../core/charter.js'
@@ -297,10 +298,23 @@ function prepScreen(c: CampaignState): string {
     body = `<h3>Deploy — ${v.deployed.length} of ${v.deployLimit}</h3><div class="roster">${heroes.map((h) => heroCard(c, h, v.deployed.includes(h.id))).join('')}</div>`
   } else {
     const stash = c.stash
+    const nm = (id: string) => itemOf(id).name
+    const worn = (h: string) => {
+      const l = loadoutOf(c, h)
+      const off = (id: string) => canUnequip(c, h, id) ? ` <button class="quiet" data-act="unequip" data-id="${esc(h)}" data-item="${esc(id)}" title="off, into the stash">×</button>` : ''
+      const slot = (label: string, ids: string[], empty: string) => `<tr><td class="meta">${label}</td><td>${ids.length ? ids.map((id) => `${esc(nm(id))}${off(id)}`).join(' · ') : `<span class="meta">${empty}</span>`}</td></tr>`
+      return `<div class="card" style="margin-bottom:8px"><b>${esc(c.roster[h]!.name)}</b><table>${slot('hands', l.hands, 'empty')}${slot('armor', l.armor ? [l.armor] : [], 'none')}${slot(`slots ${l.itemSlots.used}/${l.itemSlots.max}`, l.items, 'empty')}</table></div>`
+    }
+    // onto a full slot: the swap — the first thing worn that the new item would displace, by class or by hand
+    const swapFor = (h: string, item: string): string | undefined => {
+      const row = itemOf(item); const l = loadoutOf(c, h)
+      const candidates = row.itemClass === 'armor' ? (l.armor ? [l.armor] : []) : row.itemClass === 'weapon' ? l.hands : c.roster[h]!.equipped.filter((id) => itemOf(id).itemClass === row.itemClass)
+      return candidates.find((d) => canEquip(c, h, item, d))
+    }
     body = `<h3>Equip — fit the stash onto the deployed</h3>
-      ${stash.length ? `<table><tr><th>item</th><th>onto</th></tr>${stash.map((item, i) => `<tr><td><code>${esc(item)}</code></td><td>${v.deployed.filter((h) => canEquip(c, h, item)).map((h) => `<button class="quiet" data-act="equip" data-id="${esc(h)}" data-item="${esc(item)}">${esc(c.roster[h]!.name)}</button>`).join(' ')}</td></tr>`).join('')}</table>` : '<p class="meta">the stash is empty — the Forge\'s shelf and the spoils fill it</p>'}
-      <p class="meta">${v.deployed.map((h) => `${esc(c.roster[h]!.name)}: ${esc(c.roster[h]!.equipped.map((x) => x.replace('item.', '')).join(', ') || 'nothing')}`).join(' · ')}</p>
-      <p class="meta">What is equipped is recorded on the hero; the engine still fields the unit row's own kit until content lands the item's effect.</p>`
+      <div class="cols">${v.deployed.map(worn).join('')}</div>
+      ${stash.length ? `<table><tr><th>stash</th><th>onto</th></tr>${stash.map((item) => `<tr><td>${esc(nm(item))} <span class="meta">${esc(itemOf(item).itemClass)} · t${itemOf(item).tier}</span></td><td>${v.deployed.map((h) => { if (canEquip(c, h, item)) return `<button class="quiet" data-act="equip" data-id="${esc(h)}" data-item="${esc(item)}">${esc(c.roster[h]!.name)}</button>`; const d = swapFor(h, item); if (d) return `<button class="quiet" data-act="equip" data-id="${esc(h)}" data-item="${esc(item)}" data-displace="${esc(d)}" title="${esc('swap out ' + nm(d))}">${esc(c.roster[h]!.name)} ⇄ ${esc(nm(d))}</button>`; return `<span class="meta" title="${esc(whyNotEquip(c, h, item) ?? '')}">${esc(c.roster[h]!.name)} —</span>` }).join(' ')}</td></tr>`).join('')}</table>` : '<p class="meta">the stash is empty — the Forge\'s shelf, the spoils, and anything taken off fill it</p>'}
+      <p class="meta">What is equipped is recorded on the hero; the engine still fields the unit row's own kit until the seam lands (engine/ITEMS-PLAN.md).</p>`
   }
   return `<h2>Combat Prep — ${esc(v.stepTitle)}</h2>
     <p class="meta"><code>${esc(v.engagementId)}</code> · ${esc(v.kind)} · ${esc(v.territoryId ?? 'no ground at stake')} · ${esc(v.mapId)}</p>
@@ -483,7 +497,8 @@ function wire(root: HTMLElement): void {
         case 'release': return act(() => performRelease(app.ctx!, id!, 'city', 'slice'))
         case 'build': return act(() => performBuild(app.ctx!, id!, el.dataset['building']!, el.dataset['key']!, 'slice'))
         case 'buy-item': return act(() => performBuyItem(app.ctx!, id!, 'slice'))
-        case 'equip': return act(() => performEquip(app.ctx!, id!, el.dataset['item']!, 'slice'))
+        case 'equip': return act(() => performEquip(app.ctx!, id!, el.dataset['item']!, 'slice', el.dataset['displace']))
+        case 'unequip': return act(() => performUnequip(app.ctx!, id!, el.dataset['item']!, 'slice'))
         case 'council': return act(() => performCouncil(app.ctx!, viewCombatPrep(app.ctx!.campaign).tactic === id ? null : id!, 'slice'))
         case 'deploy': return act(() => performDeploy(app.ctx!, id!, 'slice'))
         case 'undeploy': return act(() => performUndeploy(app.ctx!, id!, 'slice'))

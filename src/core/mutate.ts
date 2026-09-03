@@ -180,6 +180,16 @@ export function applyBuyItem(ctx: Ctx, itemId: string, cost: Record<string, numb
   emit(ctx, 'item.bought', causeId, { itemId, cost })
 }
 
+/** Off the hero, into the shared stash — the one write that removes from `equipped`. */
+export function applyUnequip(ctx: Ctx, heroId: string, itemId: string, causeId: string): void {
+  const h = heroOrThrow(ctx.campaign, heroId)
+  const at = h.equipped.indexOf(itemId)
+  if (at < 0) throw new Error(`applyUnequip refused: '${itemId}' is not worn by ${heroId}`)
+  h.equipped.splice(at, 1)
+  ctx.campaign.stash.push(itemId)
+  emit(ctx, 'item.unequipped', causeId, { heroId, itemId })
+}
+
 export function applyEquip(ctx: Ctx, heroId: string, itemId: string, causeId: string): void {
   const h = heroOrThrow(ctx.campaign, heroId)
   const at = ctx.campaign.stash.indexOf(itemId)

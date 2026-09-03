@@ -171,6 +171,11 @@ ${kitLines}
 
 /** Heroes whose kit is only partly pinned — the remainder is a class draw the kingdom does not roll. */
 export const KIT_SPECS: readonly { readonly id: string; readonly pinned: readonly string[] }[] = ${JSON.stringify(kitSpecs.map(({ id, pinned }) => ({ id, pinned })))}
+
+/** General item slots per codex hero (heroes[].ported.itemSlots) — hands and the armor slot are not counted. */
+export const HERO_ITEM_SLOTS: Readonly<Record<string, number>> = {
+${codex.heroes.heroes.filter((h) => Number.isInteger(h.ported?.itemSlots)).map((h) => `  ${JSON.stringify(h.id)}: ${h.ported.itemSlots},`).join('\n')}
+}
 `)
 console.log(`src/content/generated/kits.ts — ${Object.keys(kits).length} kits, ${kitSpecs.length} pinned specs`)
 if (gaps.length) console.log(`${gaps.length} combination(s) wait on enchants the codex does not have yet — src/content/generated/items-gaps.json`)
