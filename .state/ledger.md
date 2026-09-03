@@ -659,3 +659,5 @@ IRON GAUNTLET: NOT PASSED — 2 FLAG(S) WARNED; 1 EXEMPTION(S) TAKEN
 
 slice: 46 of 68 closed · 46 probed · 0 accepted
 IRON GAUNTLET: NOT PASSED — 2 FLAG(S) WARNED; 1 EXEMPTION(S) TAKEN
+
+Law 10 notes (heroes.cut-alpha): seven probes re-pointed from the removed ids to Eve rows; three numbers moved WITH the roster, none against a rule — isc-020's hand sums (five heroes, not six; four living of five in the dead case), isc-036's id-order expectation (paladin < ranger < warrior; the rule "heroes resolve in id order" is unchanged), isc-044's cadence clipped at the pool (the rule is the cadence; the pool is five until content.field-eve-24). isc-037's "full roster" case now adds two synthetic orphans to reach eight.
