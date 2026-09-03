@@ -5103,6 +5103,76 @@ export const UNIT_PACK = {
       "defaultItems": [
         "item.pitchfork"
       ]
+    },
+    {
+      "typeId": "hero.fixed.school-teacher",
+      "name": "School Teacher",
+      "side": "hero",
+      "maxHp": 5,
+      "armor": 0,
+      "resist": 1,
+      "accuracy": 70,
+      "dodge": 0,
+      "crit": 8,
+      "luck": 7,
+      "strength": 2,
+      "precision": 2,
+      "magic": 0,
+      "spirit": 0,
+      "role": "melee",
+      "movement": 5,
+      "reach": 2,
+      "maxStamina": 5,
+      "staminaRegen": 1,
+      "ai": "melee-aggressive",
+      "attacks": [],
+      "abilities": [],
+      "moves": [
+        "power.move"
+      ],
+      "tags": [
+        "hero",
+        "civilian",
+        "class.civilian"
+      ],
+      "triggers": [],
+      "defaultItems": []
+    },
+    {
+      "typeId": "hero.fixed.school-children",
+      "name": "School Children",
+      "side": "hero",
+      "maxHp": 12,
+      "armor": 0,
+      "resist": 0,
+      "accuracy": 70,
+      "dodge": 0,
+      "crit": 4,
+      "luck": 10,
+      "strength": 4,
+      "precision": 4,
+      "magic": 0,
+      "spirit": 0,
+      "role": "ranged",
+      "movement": 4,
+      "reach": 2,
+      "maxStamina": 5,
+      "staminaRegen": 1,
+      "ai": "ranged-kite",
+      "attacks": [],
+      "abilities": [],
+      "moves": [
+        "power.move"
+      ],
+      "tags": [
+        "hero",
+        "civilian",
+        "class.civilian"
+      ],
+      "triggers": [],
+      "defaultItems": [
+        "item.pile-of-rocks"
+      ]
     }
   ],
   "alphaTeam": [
@@ -23491,6 +23561,627 @@ export const UNIT_PACK = {
       ],
       "base": "item.soaked-plate",
       "enchant": "enchant.white-steel"
+    }
+  },
+  "encounters": {
+    "battle.prologue-1": {
+      "id": "battle.prologue-1",
+      "name": "Two Zombies and a Child",
+      "setup": [
+        {
+          "unit": "hero.fixed.orphans",
+          "objective": true,
+          "civilian": true,
+          "at": {
+            "col": 8,
+            "row": 8
+          }
+        },
+        {
+          "unit": "unit.zombie",
+          "count": 2,
+          "hexes": [
+            {
+              "col": 6,
+              "row": 7
+            },
+            {
+              "col": 10,
+              "row": 7
+            }
+          ]
+        }
+      ],
+      "schedule": [
+        {
+          "phase": 4,
+          "spawn": [
+            {
+              "unit": "unit.zombie",
+              "count": 1,
+              "at": {
+                "oneOf": [
+                  {
+                    "col": 0,
+                    "row": 8
+                  },
+                  {
+                    "col": 15,
+                    "row": 8
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      ],
+      "loseAfter": {
+        "heroPhase": 10
+      },
+      "heroZone": {
+        "count": 1,
+        "at": {
+          "near": {
+            "col": 7,
+            "row": 15
+          },
+          "range": 2
+        }
+      }
+    },
+    "battle.prologue-2": {
+      "id": "battle.prologue-2",
+      "name": "Surrounded",
+      "setup": [
+        {
+          "unit": "hero.fixed.lumberjack-and-wife",
+          "objective": true,
+          "civilian": true,
+          "at": {
+            "col": 7,
+            "row": 8
+          }
+        },
+        {
+          "unit": "hero.fixed.farmer",
+          "objective": true,
+          "civilian": true,
+          "at": {
+            "col": 8,
+            "row": 8
+          }
+        },
+        {
+          "unit": "unit.zombie",
+          "count": 4,
+          "hexes": [
+            {
+              "col": 5,
+              "row": 6
+            },
+            {
+              "col": 10,
+              "row": 6
+            },
+            {
+              "col": 4,
+              "row": 10
+            },
+            {
+              "col": 11,
+              "row": 10
+            }
+          ]
+        }
+      ],
+      "schedule": [
+        {
+          "enemyPhase": 1,
+          "spawn": [
+            {
+              "unit": "unit.skeletal-archer",
+              "count": 2,
+              "hexes": [
+                {
+                  "col": 15,
+                  "row": 6
+                },
+                {
+                  "col": 15,
+                  "row": 10
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "enemyPhase": 3,
+          "spawn": [
+            {
+              "unit": "unit.skeletal-archer",
+              "count": 1,
+              "at": {
+                "col": 0,
+                "row": 8
+              }
+            },
+            {
+              "unit": "unit.skeletal-archer",
+              "count": 1,
+              "at": {
+                "col": 8,
+                "row": 15
+              }
+            }
+          ]
+        },
+        {
+          "phase": 4,
+          "spawn": [
+            {
+              "unit": "unit.fast-zombie",
+              "count": 4,
+              "hexes": [
+                {
+                  "col": 7,
+                  "row": 0
+                },
+                {
+                  "col": 0,
+                  "row": 7
+                },
+                {
+                  "col": 15,
+                  "row": 8
+                },
+                {
+                  "col": 7,
+                  "row": 15
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "phase": 5,
+          "spawn": [
+            {
+              "unit": "unit.necromancer",
+              "count": 1,
+              "at": {
+                "col": 8,
+                "row": 0
+              }
+            }
+          ]
+        }
+      ]
+    },
+    "battle.prologue-3": {
+      "id": "battle.prologue-3",
+      "name": "The Schoolhouse",
+      "setup": [
+        {
+          "unit": "hero.fixed.school-teacher",
+          "objective": true,
+          "civilian": true,
+          "at": {
+            "col": 7,
+            "row": 8
+          }
+        },
+        {
+          "unit": "hero.fixed.school-children",
+          "objective": true,
+          "civilian": true,
+          "at": {
+            "col": 8,
+            "row": 8
+          }
+        },
+        {
+          "unit": "unit.imp",
+          "count": 4,
+          "hexes": [
+            {
+              "col": 4,
+              "row": 0
+            },
+            {
+              "col": 7,
+              "row": 0
+            },
+            {
+              "col": 9,
+              "row": 0
+            },
+            {
+              "col": 12,
+              "row": 0
+            }
+          ]
+        }
+      ],
+      "schedule": [
+        {
+          "phase": 3,
+          "spawn": [
+            {
+              "unit": "unit.imp",
+              "count": 2,
+              "hexes": [
+                {
+                  "col": 5,
+                  "row": 0
+                },
+                {
+                  "col": 11,
+                  "row": 0
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "phase": 5,
+          "spawn": [
+            {
+              "unit": "unit.powerful-imp",
+              "count": 1,
+              "at": {
+                "col": 8,
+                "row": 0
+              }
+            },
+            {
+              "unit": "unit.fire-imp",
+              "count": 2,
+              "hexes": [
+                {
+                  "col": 3,
+                  "row": 0
+                },
+                {
+                  "col": 13,
+                  "row": 0
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "loseAfter": {
+        "phase": 12
+      },
+      "gaps": [
+        "retreat allowed — skipped by ruling 2026-09-03"
+      ]
+    },
+    "battle.prologue-4": {
+      "id": "battle.prologue-4",
+      "name": "The Curse",
+      "setup": [
+        {
+          "unit": "unit.bruiser-demon",
+          "count": 2,
+          "hexes": [
+            {
+              "col": 5,
+              "row": 0
+            },
+            {
+              "col": 11,
+              "row": 0
+            }
+          ]
+        },
+        {
+          "unit": "unit.poison-imp",
+          "count": 2,
+          "hexes": [
+            {
+              "col": 4,
+              "row": 0
+            },
+            {
+              "col": 12,
+              "row": 0
+            }
+          ]
+        },
+        {
+          "unit": "unit.powerful-imp",
+          "count": 1,
+          "at": {
+            "col": 9,
+            "row": 0
+          }
+        },
+        {
+          "unit": "unit.lieutenant-demon",
+          "count": 1,
+          "at": {
+            "col": 8,
+            "row": 0
+          }
+        }
+      ],
+      "schedule": [
+        {
+          "phase": 2,
+          "spawn": [
+            {
+              "unit": "unit.imp",
+              "count": 1,
+              "at": {
+                "col": 0,
+                "row": 7
+              }
+            },
+            {
+              "unit": "unit.imp",
+              "count": 1,
+              "at": {
+                "col": 15,
+                "row": 7
+              }
+            }
+          ]
+        },
+        {
+          "phase": 3,
+          "spawn": [
+            {
+              "unit": "unit.imp",
+              "count": 1,
+              "at": {
+                "col": 7,
+                "row": 0
+              }
+            }
+          ]
+        },
+        {
+          "phase": 4,
+          "spawn": []
+        },
+        {
+          "phase": 5,
+          "spawn": [
+            {
+              "unit": "unit.imp",
+              "count": 1,
+              "at": {
+                "col": 0,
+                "row": 9
+              }
+            },
+            {
+              "unit": "unit.imp",
+              "count": 1,
+              "at": {
+                "col": 15,
+                "row": 9
+              }
+            }
+          ]
+        }
+      ],
+      "loseAfter": {
+        "phase": 15
+      },
+      "gaps": [
+        "schedule event 'The Curse': capability.ground-layers; apply a status",
+        "retreat allowed — skipped by ruling 2026-09-03"
+      ]
+    },
+    "battle.prologue-5": {
+      "id": "battle.prologue-5",
+      "name": "The Hunt",
+      "setup": [
+        {
+          "unit": "unit.bloodhound",
+          "count": 4,
+          "hexes": [
+            {
+              "col": 3,
+              "row": 0
+            },
+            {
+              "col": 7,
+              "row": 0
+            },
+            {
+              "col": 9,
+              "row": 0
+            },
+            {
+              "col": 13,
+              "row": 0
+            }
+          ]
+        },
+        {
+          "unit": "unit.hellhound",
+          "count": 2,
+          "hexes": [
+            {
+              "col": 5,
+              "row": 1
+            },
+            {
+              "col": 11,
+              "row": 1
+            }
+          ]
+        }
+      ],
+      "schedule": [
+        {
+          "phase": 4,
+          "spawn": [
+            {
+              "unit": "unit.zombie-hound",
+              "count": 8,
+              "hexes": [
+                {
+                  "col": 1,
+                  "row": 0
+                },
+                {
+                  "col": 4,
+                  "row": 0
+                },
+                {
+                  "col": 6,
+                  "row": 0
+                },
+                {
+                  "col": 8,
+                  "row": 0
+                },
+                {
+                  "col": 10,
+                  "row": 0
+                },
+                {
+                  "col": 12,
+                  "row": 0
+                },
+                {
+                  "col": 15,
+                  "row": 0
+                },
+                {
+                  "col": 8,
+                  "row": 1
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "phase": 6,
+          "spawn": [
+            {
+              "unit": "unit.werewolf",
+              "count": 1,
+              "at": {
+                "col": 8,
+                "row": 0
+              }
+            }
+          ]
+        }
+      ],
+      "gaps": [
+        "retreat allowed — skipped by ruling 2026-09-03"
+      ]
+    },
+    "battle.horrors-of-the-night": {
+      "id": "battle.horrors-of-the-night",
+      "name": "Horrors of the Night",
+      "setup": [
+        {
+          "unit": "unit.eyeblight",
+          "count": 4,
+          "hexes": [
+            {
+              "col": 4,
+              "row": 0
+            },
+            {
+              "col": 7,
+              "row": 0
+            },
+            {
+              "col": 9,
+              "row": 0
+            },
+            {
+              "col": 12,
+              "row": 0
+            }
+          ]
+        }
+      ],
+      "schedule": [
+        {
+          "phase": 1,
+          "spawn": [
+            {
+              "unit": "unit.dark-sniper",
+              "count": 2,
+              "hexes": [
+                {
+                  "col": 6,
+                  "row": 0
+                },
+                {
+                  "col": 10,
+                  "row": 0
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "phase": 2,
+          "spawn": []
+        },
+        {
+          "phase": 3,
+          "spawn": [
+            {
+              "unit": "unit.nightstalker",
+              "count": 2,
+              "hexes": [
+                {
+                  "col": 7,
+                  "row": 1
+                },
+                {
+                  "col": 9,
+                  "row": 1
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "phase": 4,
+          "spawn": [
+            {
+              "unit": "unit.shadow-sorcerer",
+              "count": 1,
+              "from": "the opposite side",
+              "at": {
+                "col": 8,
+                "row": 0
+              }
+            },
+            {
+              "unit": "unit.eyeblight",
+              "count": 2,
+              "from": "the opposite side",
+              "hexes": [
+                {
+                  "col": 3,
+                  "row": 0
+                },
+                {
+                  "col": 13,
+                  "row": 0
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "gaps": [
+        "standing rule: THE BOARD STARTS DARK, AND LIGHT IS A TUG OF WAR",
+        "standing rule: VISION: BATTLEFIELD +6, STAT 0, FLOOR 1"
+      ]
     }
   }
 } as const

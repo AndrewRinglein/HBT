@@ -13,7 +13,56 @@ export type LifeState = 'standing' | 'downed' | 'dead'
 export type DamageType = 'physical' | 'magic' | 'true'
 export type Phase = 'hero' | 'enemy'
 
-export type Outcome = 'heroClear' | 'wipe' | 'capped'
+/**
+ * COMBAT-SEQUENCE: `heroClear · objectiveMet · wipe · retreat · capped`
+ * (fix.outcome-enum, 2026-09-03 — the type finally matches the document).
+ * `objectiveFailed` is the sixth, added the same day for the authored loss
+ * timers (`loseAfter`, encounters.json, ruled 2026-08-23) and objective
+ * civilians: the heroes did not lose their bodies, they lost the battle.
+ * `retreat` is UNREACHABLE today — retreat was skipped by ruling 2026-09-03
+ * ("We can skip retreat") — and stays in the enum so the document and the
+ * type agree; nothing sets it.
+ */
+export type Outcome = 'heroClear' | 'objectiveMet' | 'wipe' | 'retreat' | 'capped' | 'objectiveFailed'
+
+/**
+ * An ENCOUNTER as the engine consumes it — encounter.runner (2026-09-03),
+ * P11 approved as written that day. Data, never code (Design Law 9). Phases
+ * in the schedule are TURNS — COMBAT-SEQUENCE: "the wave schedule currently
+ * calls a full round a 'phase'"; `phase: N` fires at Start of Turn N before
+ * the hero phase (Angela 2026-09-03: "Enemies spawn first. Then heroes spawn
+ * and heroes act"); `enemyPhase: N` fires as the enemy phase of Turn N
+ * begins. Two units authored onto one hex: the later is SHUNTED to the
+ * nearest free hex by the Law 6 tiebreaker and the log says so (default,
+ * 2026-09-03). What the engine cannot honour — a map series, salvation,
+ * retreat, standing rules — is refused or ignored LOUDLY as `gaps` on the row.
+ */
+export type EncounterPlacement = {
+  readonly unit: string
+  readonly count?: number
+  readonly at?: { readonly col: number; readonly row: number }
+    | { readonly near: { readonly col: number; readonly row: number }; readonly range: number }
+    /** A scripted either/or — rolled on the `wave` cup, keyed by the schedule row and spawn index (Law 4). */
+    | { readonly oneOf: readonly { readonly col: number; readonly row: number }[] }
+  readonly hexes?: readonly { readonly col: number; readonly row: number }[]
+  /** A civilian whose death loses the battle (objectiveFailed). */
+  readonly objective?: boolean
+  readonly civilian?: boolean
+}
+export type EncounterDef = {
+  readonly id: string
+  readonly name: string
+  readonly mapId?: string
+  readonly setup: readonly EncounterPlacement[]
+  readonly schedule: readonly { readonly phase?: number; readonly enemyPhase?: number; readonly spawn: readonly EncounterPlacement[] }[]
+  /** After this many Turns (heroPhase and phase both count Turns) the battle is lost. */
+  readonly loseAfter?: { readonly phase?: number; readonly heroPhase?: number }
+  /** Absent = board clear. */
+  readonly win?: { readonly surviveTo: number }
+  /** Where the heroes deploy (prologue-1's `heroes: 1, at: {near, range}`); absent = the player edge. */
+  readonly heroZone?: { readonly count: number; readonly at: { readonly near: { readonly col: number; readonly row: number }; readonly range: number } }
+  readonly gaps?: readonly string[]
+}
 
 /**
  * What a power DOES, one effect at a time — ability.effects (2026-09-03).
@@ -181,6 +230,12 @@ export type ScenarioDef = {
    */
   readonly heroItems?: readonly (readonly string[] | undefined)[]
   readonly heroProgress?: readonly (HeroProgress | undefined)[]
+  /**
+   * encounter.runner (2026-09-03): the encounter this scenario runs. Its
+   * setup and schedule supply the enemy side, so `enemies` is empty and the
+   * heroes deploy where the encounter says (or the player edge).
+   */
+  readonly encounterId?: string
 }
 
 export type AttackDef = {
@@ -422,6 +477,8 @@ export type State = {
   turn: number
   phase: Phase
   mapId: string
+  /** encounter.runner: which schedule rows have fired (by index), plain data. */
+  encounter?: { id: string; fired: number[]; objectives: number[] }
   /** One entry per HexId. Plain array so State stays JSON-round-trippable (Law 5b). */
   terrain: number[]
   units: Unit[]
@@ -482,6 +539,8 @@ export type Config = {
     aiAttacksDowned: 'never' | 'whenNoStanding' | 'always'
     /** Does a kiter hold at a ready power's range when that is shorter than its weapon's? SWITCHES.md, 2026-09-03. */
     aiKiteHoldsAtPowerRange: boolean
+    /** Is a cleared board a win while the encounter's schedule still owes arrivals? SWITCHES.md, 2026-09-03. */
+    boardClearWaitsForSchedule: boolean
   }
 }
 
@@ -528,6 +587,9 @@ export const DEFAULT_CONFIG: Config = {
     // A power that can never be in range is dead content; the kite closes to
     // it. SWITCHES.md, 2026-09-03 (ability.effects).
     aiKiteHoldsAtPowerRange: true,
+    // The wave that has not come is the fight; clearing the first four
+    // zombies of Surrounded is not surviving Surrounded. SWITCHES.md, 2026-09-03.
+    boardClearWaitsForSchedule: true,
   },
 }
 
@@ -545,4 +607,8 @@ export type Ctx = {
   moves: Readonly<Record<string, MoveDef>>
   /** The item registry — pack.items (2026-09-02). Read by nothing until seam.items-per-unit. */
   items: Readonly<Record<string, ItemDef>>
+  /** The encounter being run, if any — plain data (encounter.runner, 2026-09-03). */
+  encounter?: EncounterDef
+  /** The unit registry, so the runner can field a spawn mid-battle. */
+  units?: Readonly<Record<string, UnitDef>>
 }

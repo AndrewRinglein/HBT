@@ -6,6 +6,7 @@ import { runActivation } from '../ai/modes.js'
 import { beginActivation, beginTurn, emit, endActivation, regenStamina, setOutcome, setPhase } from './mutate.js'
 import { appliesOnActivationEndOf, stripsOnActivationEndOf, terrainIdOf } from '../content/maps.js'
 import { advanceBleedOuts, checkVictory, settle } from './settle.js'
+import { fireSchedule, startOfTurn } from './encounter.js'
 import { applyStatus, isBlocked, reduceStatus, tickUnitStatuses } from './status.js'
 import { HOOKS, fireTriggers } from './trigger.js'
 import type { Ctx, Phase, Side } from './types.js'
@@ -126,12 +127,16 @@ function endOfPhase(ctx: Ctx, side: Side): void {
 }
 
 export type BattleResult = {
-  outcome: 'heroClear' | 'wipe' | 'capped'
+  outcome: import('./types.js').Outcome
   turns: number
 }
 
 export function runBattle(ctx: Ctx): BattleResult {
   emit(ctx, 'battle.begin', 'engine', {})
+  // startOfBattle (hook.on-enter, 2026-09-03; COMBAT-SEQUENCE: "a spawn's
+  // battle starts when it arrives; onEnter is retired"): every unit on the
+  // board at the start fires it once, then settle.
+  for (const u of ctx.state.units) fireTriggers(ctx, 'startOfBattle', { ownerId: u.id, targetId: null, causeId: 'battle.begin', ordinal: 0, keyTag: HOOKS.indexOf('startOfBattle') })
   settle(ctx, 'engine') // in case a scenario starts in a decided position
 
   while (!ctx.state.outcome) {
@@ -141,12 +146,22 @@ export function runBattle(ctx: Ctx): BattleResult {
     }
     beginTurn(ctx, 'engine')
 
-    // Start of Turn: the wave schedule fires here when it exists. Bleed-out used
-    // to advance here and no longer does — see rung 4b of endOfPhase.
+    // Start of Turn (encounter.runner, 2026-09-03):
+    //   1. the wave schedule fires — this Turn's spawns arrive, their
+    //      startOfBattle fires, settle ("Enemies spawn first")
+    //   2. the victory check — objectives: survive-to and the loss timers
+    //      (fix.start-of-turn-victory: a battle decided between phases ends
+    //      here, not mid-activation)
+    // Bleed-out used to advance here and no longer does — see rung 4b of endOfPhase.
+    startOfTurn(ctx)
+    if (ctx.state.outcome) break
 
     runPhase(ctx, 'hero')
     if (ctx.state.outcome) break
 
+    // enemyPhase: N spawns arrive as the enemy phase of Turn N begins
+    fireSchedule(ctx, 'enemyPhase')
+    if (ctx.state.outcome) break
     runPhase(ctx, 'enemy')
     if (ctx.state.outcome) break
 

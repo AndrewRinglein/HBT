@@ -414,7 +414,27 @@ function rangedKite(ctx: Ctx, u: Unit): void {
   const enemies = livingEnemies(ctx, u)
   if (enemies.length === 0) return
 
-  const bow = ctx.attacks[u.attacks[0]!]!
+  const bow = ctx.attacks[u.attacks[0] ?? '']
+  if (!bow) {
+    // UNARMED (encounter.runner, 2026-09-03): the Orphans field with a kit
+    // whose attack rows are unauthored — a named gap — and a kiter with no
+    // weapon used to crash the battle. It keeps its distance instead: the
+    // reachable hex farthest from the nearest enemy, ties to the lower id,
+    // then idles saying so. "A civilian flees the nearest enemy" proper is
+    // still a needs (8-ENCOUNTERS: attach mode); this is the unarmed floor.
+    const walk = movePowerOf(ctx, u, 'path')
+    if (walk) {
+      const reach = reachable(ctx, u, walk.budgetMod)
+      let best: HexId | null = null, bestD = Math.min(...enemies.map((e) => distance(u.hex, e.hex)))
+      for (const [hex] of [...reach].sort((a, b) => a[0] - b[0])) {
+        const d = Math.min(...enemies.map((e) => distance(hex, e.hex)))
+        if (d > bestD) { bestD = d; best = hex }
+      }
+      if (best !== null) executeMove(ctx, u.id, pathTo(reach, u.hex, best), walk)
+    }
+    idle(ctx, u, 'unarmed')
+    return
+  }
   // Keep one stamina for the shot — the shot is the point. But ONLY for units
   // that run stamina at all: enemies carry maxStamina 0 (the hero throttle,
   // 2026-08-21), and reserving 1 from a pool of 0 froze every ranged enemy on

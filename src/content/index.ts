@@ -4,7 +4,7 @@
 
 import type { AbilityDef, AttackDef, UnitDef } from '../core/types.js'
 import { omitDisabled, stripDisabledTriggers } from './disable.js'
-import { packAbilities, packAttacks, packCritChart, packItems, packTestAbilities, packTestAttacks, packUnits, packClassPowers, packEnchanted, packLevels, packSpecialties } from './pack.js'
+import { packAbilities, packAttacks, packCritChart, packItems, packTestAbilities, packTestAttacks, packUnits, packClassPowers, packEnchanted, packEncounters, packLevels, packSpecialties } from './pack.js'
 
 // ─────────────────────────────────────────────────────────────────────────────
 // PROVISIONAL CONTENT — NOT PUBLISHED, NOT DESIGN
@@ -276,3 +276,5 @@ export const TEST_COHORT = {
   // ride these, fielded explicitly by the tests that prove them
   enemies: ['test-zombie', 'test-zombie', 'test-zombie', 'test-zombie-burning'] as const,
 }
+/** The encounters — encounter.runner (2026-09-03). Under the kill-switch seam like any content. */
+export const ENCOUNTERS = omitDisabled(packEncounters(UNITS))

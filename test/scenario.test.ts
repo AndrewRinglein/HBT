@@ -5,6 +5,7 @@
 // 640 battles on all 8 maps at two army sizes, the whole flight ladder and all
 // four beast attacks fired zero times, because their only grantors are benched.
 import { describe, expect, it } from 'vitest'
+import { ENCOUNTERS } from '../src/content/index.js'
 import { SCENARIOS, scenarioDef, scenarioOptions } from '../src/content/scenarios.js'
 import { createBattle } from '../src/core/setup.js'
 import { runBattle } from '../src/core/battle.js'
@@ -39,6 +40,15 @@ describe('the scenario registry', () => {
   it('every scenario names one passable in-range hex per unit', () => {
     for (const [id, s] of Object.entries(SCENARIOS)) {
       const terrain = terrainOf(s.mapId)
+      // encounter.runner (2026-09-03): an encounter scenario leaves the hero
+      // hexes to the encounter (its zone or the player edge) — the rule for
+      // it is that it names NO hexes and NO enemies, and the encounter exists.
+      if (s.encounterId) {
+        expect(s.heroHexes.length, `${id} leaves deployment to the encounter`).toBe(0)
+        expect(s.enemies.length, `${id} leaves the enemy side to the encounter`).toBe(0)
+        expect(ENCOUNTERS[s.encounterId], `${id} names a real encounter`).toBeDefined()
+        continue
+      }
       expect(s.heroHexes.length, `${id} heroes`).toBe(s.heroes.length)
       expect(s.enemyHexes.length, `${id} enemies`).toBe(s.enemies.length)
       const all = [...s.heroHexes, ...s.enemyHexes]
@@ -144,8 +154,10 @@ describe('positions are validated at load, loudly (Law 9)', () => {
    * these tests used a two-hero literal and broke the moment the roster grew to
    * three, failing on the length check before reaching the thing under test.
    */
+  // (heroHexes is optional on the options since encounter scenarios, 2026-09-03;
+  // the beasts scenario always names its hexes)
   const heroHexesWith = (i: number, hex: number) => {
-    const h = [...base().heroHexes]
+    const h = [...base().heroHexes!]
     h[i] = hex
     return h
   }
@@ -164,13 +176,13 @@ describe('positions are validated at load, loudly (Law 9)', () => {
   })
 
   it('two units on one hex throws, naming both', () => {
-    const dup = base().heroHexes[0]!
+    const dup = base().heroHexes![0]!
     expect(() => createBattle({ ...base(), heroHexes: heroHexesWith(1, dup) }))
       .toThrow(new RegExp(`both placed on hex ${dup}`))
   })
 
   it('a hex count that does not match the roster throws', () => {
-    expect(() => createBattle({ ...base(), heroHexes: base().heroHexes.slice(0, -1) }))
+    expect(() => createBattle({ ...base(), heroHexes: base().heroHexes!.slice(0, -1) }))
       .toThrow(/must correspond/)
   })
 
@@ -194,7 +206,7 @@ describe('positions are validated at load, loudly (Law 9)', () => {
   })
 
   it('the error names the scenario when there is one', () => {
-    const dup = base().heroHexes[0]!
+    const dup = base().heroHexes![0]!
     expect(() => createBattle({ ...base(), heroHexes: heroHexesWith(1, dup) })).toThrow(/showcase\.beasts/)
   })
 })

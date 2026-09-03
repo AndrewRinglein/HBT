@@ -58,10 +58,17 @@ export type Hook =
    */
   | 'onDeath'
   | 'onActivationEnd'
+  /**
+   * The unit's battle begins — at battle.begin for everyone fielded, and at
+   * ARRIVAL for a spawn (hook.on-enter, 2026-09-03; COMBAT-SEQUENCE Start of
+   * Turn rung 1: "a spawn's battle starts when it arrives; onEnter is retired").
+   * The Ghoul's Regeneration 6 is the first content on it.
+   */
+  | 'startOfBattle'
 
 export const HOOKS: readonly Hook[] = [
   'onAttack', 'onMiss', 'onHit', 'onCrit', 'onDamage', 'onKill', 'onTakingDamage',
-  'onDeath', 'onActivationEnd',
+  'onDeath', 'onActivationEnd', 'startOfBattle',
 ] as const
 
 /** Hooks that have a natural target. Authoring `target` on any other is a load error. */

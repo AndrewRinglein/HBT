@@ -4,7 +4,7 @@
 // GENERATED (content/mkenginepack.mjs) and never hand-edited; this loader
 // validates it LOUDLY at import time (Law 9) and hands back plain UnitDefs.
 import { UNIT_PACK } from './generated/pack.js'
-import type { AbilityDef, AttackDef, CritRow, ItemDef, MoveDef, UnitDef } from '../core/types.js'
+import type { AbilityDef, AttackDef, CritRow, EncounterDef, ItemDef, MoveDef, UnitDef } from '../core/types.js'
 import { validateTrigger } from '../core/trigger.js'
 import type { StatusDef } from '../core/status.js'
 import { statusDamage, statusHeal } from '../core/status.js'
@@ -288,6 +288,18 @@ export function packEnchanted(attacks: Readonly<Record<string, AttackDef>>, abil
     for (const a of it.grants) if (!attacks[a]) throw new Error(`enchanted: '${k}' grants '${a}', not a pack attack`)
     for (const a of it.abilities) if (!abilities[a]) throw new Error(`enchanted: '${k}' grants power '${a}', not a pack ability`)
     for (const t of it.triggers) { validateTrigger(t); if (t.source !== k && t.source !== it.base) throw new Error(`enchanted: '${k}' carries a trigger sourced '${t.source}'`) }
+  }
+  return raw
+}
+
+/** The encounters — encounter.runner (2026-09-03). Validated loudly: every unit named must be in the pack. */
+export function packEncounters(units: Readonly<Record<string, UnitDef>>): Readonly<Record<string, EncounterDef>> {
+  const raw = (UNIT_PACK as unknown as { encounters?: Readonly<Record<string, EncounterDef>> }).encounters ?? {}
+  for (const [k, e] of Object.entries(raw)) {
+    if (k !== e.id) throw new Error(`encounters: key '${k}' names id '${e.id}'`)
+    const check = (p: { unit: string }, where: string) => { if (!units[p.unit]) throw new Error(`encounters: '${k}' ${where} names '${p.unit}', which is not a unit in the pack`) }
+    for (const p of e.setup) check(p, 'setup')
+    for (const r of e.schedule) { if (r.phase === undefined && r.enemyPhase === undefined) throw new Error(`encounters: '${k}' has a schedule row with no phase`); for (const p of r.spawn) check(p, 'schedule') }
   }
   return raw
 }

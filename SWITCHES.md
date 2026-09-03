@@ -348,3 +348,11 @@ by positioning. Default **on**: while an enemy-aimed power is ready and
 affordable, the hold distance is the shorter of weapon reach and that power's
 range. Off = weapon reach, the old rule. Whether closing three hexes to throw
 a fireball is worth the melee exposure is a sweep's question.
+
+## boardClearWaitsForSchedule — is an empty board a win before the last wave?
+Added 2026-09-03 (encounter.runner). Surrounded (battle.prologue-2) opens with
+four zombies and owes four more waves through Turn 5; on one seed the party
+killed the four by Turn 2 and the board was "clear". Default **on**: heroClear
+waits until every schedule row has fired. Off: the old rule, a cleared board
+is a cleared board. The wipe check is unaffected either way. A sweep on
+prologue outcomes decides whether the waiting changes anything but the label.

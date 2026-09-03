@@ -23,8 +23,9 @@
 // **No `overrides`, ever.** Ruled: a scenario names units and positions;
 // statistics belong to sweeps. Enforced by `ScenarioDef` having no such field.
 
-import type { ScenarioDef } from '../core/types.js'
+import type { EncounterDef, ScenarioDef } from '../core/types.js'
 import { omitDisabled } from './disable.js'
+import { ENCOUNTERS } from './index.js'
 
 const RAW_SCENARIOS: Readonly<Record<string, ScenarioDef>> = {
   'showcase.beasts': {
@@ -189,6 +190,36 @@ const RAW_SCENARIOS: Readonly<Record<string, ScenarioDef>> = {
     enemyHexes: [117, 119, 121, 123, 118, 122],
     replicate: 0,
   },
+  'showcase.surrounded': {
+    id: 'showcase.surrounded',
+    note: 'encounter.runner (2026-09-03): battle.prologue-2, Surrounded, run as '
+      + 'an ENCOUNTER — four zombies and two civilian objectives at setup, the '
+      + 'skeletal archers at enemy phase 1 and 3, the fast zombies at 4, the '
+      + 'necromancer at 5. The battle-2 party on its Codex kits. This is the '
+      + 'fielding the probe reads the schedule, the shunt and the objectives in.',
+    mapId: 'map.open',
+    heroes: ['hero.base.ranger-aggressive', 'hero.base.warrior-iron', 'hero.base.mage-fire', 'hero.base.priest-armored'],
+    heroHexes: [],
+    enemies: [],
+    enemyHexes: [],
+    encounterId: 'battle.prologue-2',
+    replicate: 0,
+  },
+  'showcase.two-zombies-and-a-child': {
+    id: 'showcase.two-zombies-and-a-child',
+    note: 'encounter.runner (2026-09-03): battle.prologue-1 as an encounter — '
+      + 'the Orphans as the objective, two zombies, a third rolled onto one of two '
+      + 'edges at Turn 4 (the wave cup), the loss timer at ten. One hero, as the '
+      + 'row asks (heroes: 1, deployed near the player edge). The second encounter '
+      + 'variant: the same runner, different data.',
+    mapId: 'map.open',
+    heroes: ['hero.base.ranger-aggressive'],
+    heroHexes: [],
+    enemies: [],
+    enemyHexes: [],
+    encounterId: 'battle.prologue-1',
+    replicate: 0,
+  },
   'showcase.assembled-party': {
     id: 'showcase.assembled-party',
     note: 'Hero assembly (2026-09-03): the progression party at its battle-20 '
@@ -230,13 +261,23 @@ export function scenarioOptions(s: ScenarioDef) {
     replicate: s.replicate,
     mapId: s.mapId,
     heroes: s.heroes,
-    heroHexes: [...s.heroHexes],
+    // an encounter scenario leaves the hero hexes to the encounter (its zone
+    // or the player edge) — an empty list means "not named", not "zero"
+    ...(s.heroHexes.length ? { heroHexes: [...s.heroHexes] } : {}),
     enemies: s.enemies,
     enemyHexes: [...s.enemyHexes],
     enemyCount: s.enemies.length,
     ...(s.heroItems ? { heroItems: s.heroItems } : {}),
     ...(s.heroProgress ? { heroProgress: s.heroProgress } : {}),
+    ...(s.encounterId ? { encounter: encounterDef(s.encounterId) } : {}),
   }
+}
+
+/** An encounter by id, loudly (encounter.runner, 2026-09-03). */
+export function encounterDef(id: string): EncounterDef {
+  const e = ENCOUNTERS[id]
+  if (!e) throw new Error(`unknown encounter '${id}' — known: ${Object.keys(ENCOUNTERS).join(', ') || '(none)'}`)
+  return e
 }
 
 export function scenarioDef(id: string): ScenarioDef {

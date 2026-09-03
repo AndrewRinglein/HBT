@@ -73,10 +73,26 @@ export function settle(ctx: Ctx, causeId: string): void {
 
 export function checkVictory(ctx: Ctx, causeId: string): boolean {
   if (ctx.state.outcome) return true
+  // encounter.runner (2026-09-03): a dead objective civilian loses, wherever the death happened
+  if (ctx.state.encounter) {
+    for (const id of ctx.state.encounter.objectives) {
+      if (ctx.state.units[id]!.lifeState === 'dead') {
+        setOutcome(ctx, 'objectiveFailed', causeId)
+        emit(ctx, 'encounter.lost', ctx.state.encounter.id, { reason: 'objective dead', actor: id })
+        return true
+      }
+    }
+  }
   const enemiesLeft = ctx.state.units.some((u) => u.side === 'enemy' && u.lifeState === 'standing')
   const heroesLeft = ctx.state.units.some((u) => u.side === 'hero' && u.lifeState === 'standing')
 
-  if (!enemiesLeft) { setOutcome(ctx, 'heroClear', causeId); return true }
+  // encounter.runner (2026-09-03): a board is not CLEAR while the schedule
+  // still owes arrivals — the wave that has not come yet is the fight
+  // (SWITCHES.md boardClearWaitsForSchedule). The wipe check is untouched.
+  const owed = ctx.cfg.switches.boardClearWaitsForSchedule && ctx.encounter
+    ? ctx.encounter.schedule.some((_, i) => !(ctx.state.encounter?.fired ?? []).includes(i))
+    : false
+  if (!enemiesLeft && !owed) { setOutcome(ctx, 'heroClear', causeId); return true }
   if (!heroesLeft) { setOutcome(ctx, 'wipe', causeId); return true }
   return false
 }

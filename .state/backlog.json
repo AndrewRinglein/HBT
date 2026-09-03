@@ -1345,7 +1345,20 @@
   "needs": [
    "content.enemy-pack",
    "content.civilians"
-  ]
+  ],
+  "probeIds": [
+   "battle.prologue-2",
+   "unit.shunted"
+  ],
+  "variants": [
+   "battle.prologue-2",
+   "battle.prologue-1"
+  ],
+  "note": " | 2026-09-03: P11 approved as written (Angela). Carries fix.outcome-enum (the six arms), fix.start-of-turn-victory (Start of Turn rungs 1-2) and hook.on-enter (startOfBattle at arrival) because they are the runner's own rungs; each has its assertion in test/encounter-runner.test.ts.",
+  "attempts": 1,
+  "status": "done-needs-review",
+  "sha": "9c9ac77",
+  "gauntlet": "not passed — 2 flag(s) warned"
  },
  {
   "id": "content.hero-pack",

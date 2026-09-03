@@ -46,7 +46,11 @@ const ACTED = new Set(['damage.applied','heal.applied','power.used','attack.decl
   'stamina.drained', 'maxHp.lost',
   // fix.downed-targetable (2026-09-03): a hit on the downed moves the counter,
   // and this is the line that says so. Widening, stricter, as above.
-  'bleedout.accelerated'])
+  'bleedout.accelerated',
+  // encounter.runner (2026-09-03): an arrival is a unit that was not there
+  // (unit.enter already counts); a shunt moved it; an objective outcome ended
+  // the battle. Widening, stricter, as above.
+  'unit.shunted', 'encounter.won', 'encounter.lost'])
 
 /**
  * A SCENARIO is probed by fielding it, not by sweeping the standard panel.

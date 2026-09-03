@@ -5277,3 +5277,84 @@ effect of power.sacred-shield.aegis,power.fire-master.fireball — 25 paired bat
   test.map.showcase: heroWins 25->25 (+0)  meanTurns 3.7->3.7
 NO MEASURABLE EFFECT at this sample size — consequence clause caught state changes, but outcomes did not move. Consider a sweep with more replicates before drawing balance conclusions.
 ```
+
+## encounter.runner — LANDED `9c9ac77` **NEEDS REVIEW**
+2026-09-03 09:04
+
+  PASS  dependencies landed
+  WARN  not already decided — 4 candidate ruling(s) — READ BEFORE ASKING: ../STATE.md:18 · ../STATE.md:20
+  PASS  typecheck
+  PASS  full test suite
+  PASS  gate 1 — the id appears in a real battle — battle.prologue-2: 22 log lines, 22 fired, 15 changed state · unit.shunted: 1 log lines, 1 fired, 1 changed state
+  PASS  brought its own tests — test/scenario.test.ts, test/encounter-runner.test.ts
+  WARN  existing tests untouched — DELETED LINES in test/scenario.test.ts (-4) — will land FLAGGED for review
+  PASS  control battles unchanged
+  PASS  content has a published source — 16 ids without a published source (6 awaiting publication from earlier items — see audit)
+  PASS  hardcode scan — core knows mechanisms, never names
+  PASS  generalizes — the second instance costs zero engine code — battle.prologue-2 live · battle.prologue-1 live
+  PASS  naming — new content ids use declared kinds
+  PASS  naming — no banned words invented
+  PASS  kill switch — the tests fail without the content — tests fail without battle.prologue-2,unit.shunted — they genuinely test it
+
+<details><summary>Existing tests were edited — review this diff</summary>
+
+```diff
+diff --git a/test/scenario.test.ts b/test/scenario.test.ts
+index 213f12c..09b9952 100644
+--- a/test/scenario.test.ts
++++ b/test/scenario.test.ts
+@@ -6,4 +6,5 @@
+ // four beast attacks fired zero times, because their only grantors are benched.
+ import { describe, expect, it } from 'vitest'
++import { ENCOUNTERS } from '../src/content/index.js'
+ import { SCENARIOS, scenarioDef, scenarioOptions } from '../src/content/scenarios.js'
+ import { createBattle } from '../src/core/setup.js'
+@@ -40,4 +41,13 @@ describe('the scenario registry', () => {
+     for (const [id, s] of Object.entries(SCENARIOS)) {
+       const terrain = terrainOf(s.mapId)
++      // encounter.runner (2026-09-03): an encounter scenario leaves the hero
++      // hexes to the encounter (its zone or the player edge) — the rule for
++      // it is that it names NO hexes and NO enemies, and the encounter exists.
++      if (s.encounterId) {
++        expect(s.heroHexes.length, `${id} leaves deployment to the encounter`).toBe(0)
++        expect(s.enemies.length, `${id} leaves the enemy side to the encounter`).toBe(0)
++        expect(ENCOUNTERS[s.encounterId], `${id} names a real encounter`).toBeDefined()
++        continue
++      }
+       expect(s.heroHexes.length, `${id} heroes`).toBe(s.heroes.length)
+       expect(s.enemyHexes.length, `${id} enemies`).toBe(s.enemies.length)
+@@ -145,6 +155,8 @@ describe('positions are validated at load, loudly (Law 9)', () => {
+    * three, failing on the length check before reaching the thing under test.
+    */
++  // (heroHexes is optional on the options since encounter scenarios, 2026-09-03;
++  // the beasts scenario always names its hexes)
+   const heroHexesWith = (i: number, hex: number) => {
+-    const h = [...base().heroHexes]
++    const h = [...base().heroHexes!]
+     h[i] = hex
+     return h
+@@ -165,5 +177,5 @@ describe('positions are validated at load, loudly (Law 9)', () => {
+ 
+   it('two units on one hex throws, naming both', () => {
+-    const dup = base().heroHexes[0]!
++    const dup = base().heroHexes![0]!
+     expect(() => createBattle({ ...base(), heroHexes: heroHexesWith(1, dup) }))
+       .toThrow(new RegExp(`both placed on hex ${dup}`))
+@@ -171,5 +183,5 @@ describe('positions are validated at load, loudly (Law 9)', () => {
+ 
+   it('a hex count that does not match the roster throws', () => {
+-    expect(() => createBattle({ ...base(), heroHexes: base().heroHexes.slice(0, -1) }))
++    expect(() => createBattle({ ...base(), heroHexes: base().heroHexes!.slice(0, -1) }))
+       .toThrow(/must correspond/)
+   })
+@@ -195,5 +207,5 @@ describe('positions are validated at load, loudly (Law 9)', () => {
+ 
+   it('the error names the scenario when there is one', () => {
+-    const dup = base().heroHexes[0]!
++    const dup = base().heroHexes![0]!
+     expect(() => createBattle({ ...base(), heroHexes: heroHexesWith(1, dup) })).toThrow(/showcase\.beasts/)
+   })
+```
+</details>
+
+IRON GAUNTLET: NOT PASSED — 2 FLAG(S) WARNED

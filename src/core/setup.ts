@@ -1,6 +1,6 @@
 import { WIDTH, hexId } from './hex.js'
 import { makeRng, rootSeedOf, sample } from './rng.js'
-import type { Ctx, HeroProgress, Side, State, Unit, UnitDef, Config } from './types.js'
+import type { Ctx, EncounterDef, HeroProgress, Side, State, Unit, UnitDef, Config } from './types.js'
 import { DEFAULT_CONFIG } from './types.js'
 import { ATTACKS, ABILITIES, CRIT_CHART, ITEMS, LEVELS, SPECIALTIES, UNITS, FIRST_BATTLE } from '../content/index.js'
 import { applyItems, applyProgress, type Applied } from './items.js'
@@ -9,8 +9,9 @@ import { STATUSES } from '../content/statuses.js'
 import { MOVES } from '../content/moves.js'
 import { triggersFrom } from './trigger.js'
 import { emit } from './mutate.js'
+import { heroDeployHexes, placeSetup } from './encounter.js'
 
-function makeUnit(id: number, uid: number, name: string, def: UnitDef, hex: number): Unit {
+export function makeUnit(id: number, uid: number, name: string, def: UnitDef, hex: number): Unit {
   return {
     id, uid, name, typeId: def.typeId, side: def.side, hex,
     hp: def.maxHp, maxHp: def.maxHp,
@@ -75,6 +76,15 @@ export type BattleOptions = {
    * bare row. Folded by the one function, fieldedDef().
    */
   heroProgress?: readonly (HeroProgress | undefined)[]
+  /**
+   * encounter.runner (2026-09-03): the encounter to run. Its setup units are
+   * fielded after the heroes; its schedule fires at Start of Turn. `enemies`
+   * defaults to NONE when an encounter is named — the encounter owns the
+   * enemy side. Heroes still come from `heroes` (an encounter never carries a
+   * hero count, ruled 2026-09-03) and deploy on the player edge unless
+   * `heroHexes` says otherwise.
+   */
+  encounter?: EncounterDef
 }
 
 /**
@@ -123,9 +133,10 @@ export function createBattle(opts: BattleOptions): Ctx {
   const rootSeed = rootSeedOf(FIRST_BATTLE.scenarioId, opts.variantId ?? 0, opts.replicate)
   const rng = makeRng(rootSeed, opts.strict ? { strict: true } : undefined)
 
-  const mapId = opts.mapId ?? 'map.open'
+  const mapId = opts.mapId ?? opts.encounter?.mapId ?? 'map.open'
   const state: State = { turn: 0, phase: 'hero', mapId, terrain: terrainOf(mapId), units: [], outcome: null, seq: 0 }
-  const ctx: Ctx = { state, events: [], rng, cfg, attacks: ATTACKS, abilities: ABILITIES, statuses: STATUSES, moves: MOVES, critChart: CRIT_CHART, items: ITEMS }
+  const ctx: Ctx = { state, events: [], rng, cfg, attacks: ATTACKS, abilities: ABILITIES, statuses: STATUSES, moves: MOVES, critChart: CRIT_CHART, items: ITEMS,
+    ...(opts.encounter ? { encounter: opts.encounter, units: UNITS } : {}) }
 
   const def = (t: string): UnitDef => ({ ...UNITS[t]!, ...(opts.overrides?.[t] ?? {}) })
   const heroes = opts.heroes ?? FIRST_BATTLE.heroes
@@ -144,6 +155,7 @@ export function createBattle(opts: BattleOptions): Ctx {
   // (one burning zombie per four) comes from the data, where it belongs.
   const enemies = opts.enemies
     ? [...opts.enemies]
+    : opts.encounter ? []
     : Array.from({ length: enemyCount }, (_, i) => FIRST_BATTLE.enemies[i % FIRST_BATTLE.enemies.length]!)
 
   /**
@@ -230,8 +242,10 @@ export function createBattle(opts: BattleOptions): Ctx {
   const label = (t: string) => t.split('-').map((w) => (w[0] ?? '').toUpperCase() + w.slice(1)).join(' ')
   const LETTERS = 'ABCDEFGH'
   const seen: Record<string, number> = {}
+  // encounter.runner: an encounter may name where the heroes deploy
+  const zoneHexes = opts.encounter && !opts.heroHexes ? heroDeployHexes(ctx, opts.encounter, heroes.length) : null
   heroes.forEach((t, i) => {
-    const hex = opts.heroHexes?.[i] ?? hexId(heroCols[i]!, FIRST_BATTLE.heroRow)
+    const hex = opts.heroHexes?.[i] ?? zoneHexes?.[i] ?? hexId(heroCols[i]!, FIRST_BATTLE.heroRow)
     const bare = def(t)
     // Items at fielding (seam.items-per-unit): what the options hand this
     // hero, else the row's Codex default kit, else nothing — applied by the
@@ -274,6 +288,13 @@ export function createBattle(opts: BattleOptions): Ctx {
     for (const w of equipped.find((e) => e.unitId === u.id)?.worn ?? []) {
       emit(ctx, 'unit.equipped', w.itemId, { actor: u.id, itemId: w.itemId, grants: w.grants, abilities: w.abilities, mods: w.mods, ...(w.gaps ? { gaps: w.gaps } : {}) })
     }
+  }
+  // The encounter's own units — after the heroes, so a hero already standing
+  // where an authored unit wants to be is the one that stays and the arrival
+  // is shunted (encounter.runner, 2026-09-03).
+  if (opts.encounter) {
+    emit(ctx, 'encounter.begin', opts.encounter.id, { name: opts.encounter.name, ...(opts.encounter.gaps?.length ? { gaps: opts.encounter.gaps } : {}) })
+    placeSetup(ctx, opts.encounter, {})
   }
   // A battle fielded by a scenario says so IN THE LOG, not only in the export
   // envelope (Law 12: every line names its cause). The replay is built from the
