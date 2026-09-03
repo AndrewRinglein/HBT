@@ -30,6 +30,8 @@ export type ItemRow = {
   /** What equipping costs, by currency id: idols Faith, Bloodrunes Mana, nothing else. */
   readonly equipCost: Readonly<Record<string, number>>
   readonly statModifiers: Readonly<Record<string, number>>
+  /** Modifiers to THIS item's own attacks (an enchant's +1 Damage) — the engine's to apply; the kingdom only carries them. */
+  readonly attackModifiers: Readonly<Record<string, number>>
   /** Attack ids the item grants — the engine reads these; the kingdom only carries them. */
   readonly grants: readonly string[]
   /** For a derived row: the tier-1 base and the enchant it carries. */

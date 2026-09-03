@@ -57,7 +57,7 @@ function rowOfCodex(i) {
     hands: i.hands ?? 0, slots: i.slots ?? 0, classRestriction: i.classRestriction ?? null,
     tags: [...(i.tags ?? [])].sort(), sets: [...(i.sets ?? [])].sort(),
     uses: i.uses ?? null, equipCost: sorted(costOf(i.equipCost)),
-    statModifiers: sorted(i.statModifiers ?? {}), grants: [...(i.grants ?? [])],
+    statModifiers: sorted(i.statModifiers ?? {}), attackModifiers: sorted(i.attackModifiers ?? {}), grants: [...(i.grants ?? [])],
     base: null, enchant: null, source: 'codex',
   }
 }
@@ -101,7 +101,7 @@ for (const i of codex.items) {
     const word = e.name ?? e.id.replace(/^enchant\./, '')
     rows.push({
       ...base, id: `${base.id}.${e.id.replace(/^enchant\./, '')}`, name: `${word} ${base.name}`, tier: 2,
-      statModifiers: sorted(sum(base.statModifiers, e.statModifiers)), grants: [...base.grants, ...(e.grants ?? [])],
+      statModifiers: sorted(sum(base.statModifiers, e.statModifiers)), attackModifiers: sorted(sum(base.attackModifiers, e.attackModifiers)), grants: [...base.grants, ...(e.grants ?? [])],
       base: base.id, enchant: e.id, source: 'enchanted',
     })
   }
@@ -121,7 +121,7 @@ for (const c of combos) {
   const base = rowOfCodex(b)
   rows.push({
     ...base, id: c.id, name: c.name, tier: 3,
-    statModifiers: sorted(sum(base.statModifiers, e.statModifiers)), grants: [...base.grants, ...(e.grants ?? [])],
+    statModifiers: sorted(sum(base.statModifiers, e.statModifiers)), attackModifiers: sorted(sum(base.attackModifiers, e.attackModifiers)), grants: [...base.grants, ...(e.grants ?? [])],
     base: base.id, enchant: e.id, source: 'combination',
   })
 }
