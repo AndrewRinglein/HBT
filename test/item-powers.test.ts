@@ -153,7 +153,12 @@ describe('Storm — Magic + 1 to every unit in the blast, no roll, no crit', () 
 describe('they run — no power is dead content in a real battle', () => {
   it('heal and block fire across seeds of showcase.alpha-team', () => {
     const used = new Set<string>()
-    for (const r of [0, 1, 2, 3, 4]) {
+    // Widened 0..4 -> 0..19 on 2026-09-03 (station.accuracy-field): once the
+    // Alpha Team's weapons hit at their authored accuracies the fights got
+    // shorter, and Osric's first Block moved from seed <5 to seed 13. The
+    // claim (both powers are live) is unchanged; the search is wider. Early
+    // exit once both are seen.
+    for (let r = 0; r < 20 && used.size < 2; r++) {
       const ctx = createBattle({ ...scenarioOptions(scenarioDef(SC)), replicate: r })
       runBattle(ctx)
       for (const e of ctx.events) {

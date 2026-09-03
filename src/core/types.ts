@@ -164,6 +164,13 @@ export type AttackDef = {
    */
   readonly crit?: number
   /**
+   * The attack's own Accuracy modifier — station.accuracy-field (2026-09-03).
+   * Applied at ACC.SITUATIONAL (700). Punch's −5 (ruled 2026-08-27); the
+   * station every later per-attack modifier lands on — the attack of
+   * opportunity's −20, flight's −30. Absent = 0.
+   */
+  readonly accuracy?: number
+  /**
    * How many CRITICALS one critting hit resolves — station.crit-count
    * (2026-08-27): "there is also an ability to have more than one critical
    * happen at once ... 'Do two criticals' or 'Do three criticals'". Absent =

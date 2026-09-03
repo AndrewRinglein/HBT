@@ -145,9 +145,15 @@ describe('the zero-hex bonus moves — you stand still on purpose', () => {
 describe('alive in the standard battles — dead content is the failure mode', () => {
   it('all three variants fire across a sweep of standard battles', () => {
     const seen = new Set<string>()
+    // Widened 2026-09-03 (station.accuracy-field): at eight zombies the
+    // Alpha Team, now hitting at authored accuracies, ends the fight before a
+    // starved priest ever needs Devotion; at twelve it does. Same claim, more
+    // pressure — "tests needing pressure field twelve to sixteen" (ruled
+    // 2026-09-02, keep the zombies).
     for (let r = 0; r < 40 && seen.size < 3; r++) {
-      for (const mapId of ['map.open', 'map.thicket']) {
-        const ctx = createBattle({ replicate: r, enemyCount: 8, mapId })
+      for (const mapId of ['map.open', 'map.thicket']) for (const enemyCount of [8, 12]) {
+        if (seen.size === 3) break
+        const ctx = createBattle({ replicate: r, enemyCount, mapId })
         runBattle(ctx)
         for (const e of ctx.events) {
           if (typeof e.causeId === 'string' && ['power.leap', 'power.focus', 'power.devotion'].includes(e.causeId)) {

@@ -600,7 +600,22 @@
   "shape": "rule",
   "spec": "AttackDef gains an optional `accuracy` modifier applied at ACC.SITUATIONAL (700), which is reserved and empty. This is the station every later accuracy modifier needs: the attack-of-opportunity -20, flight -30, a per-attack plus or minus.",
   "expect": "an attack declaring accuracy:-10 shows 10 less hit chance in preview and in resolution, with a SITUATIONAL ledger row",
-  "changesBaseline": false
+  "changesBaseline": true,
+  "probeIds": [
+   "attack.punch",
+   "attack.test-ram.overhead"
+  ],
+  "variants": [
+   "attack.punch",
+   "attack.war-axe.hack",
+   "attack.longbow.long-shot",
+   "attack.test-ram.overhead"
+  ],
+  "attempts": 2,
+  "note": "2026-09-03: changesBaseline flipped TRUE at landing — 90 authored attacks carry an accuracy field (Punch −5, Hack −5, Long Shot +10 …) that the converter silently dropped for want of a slot; every control battle moves because the Alpha Team's own weapons now hit at their authored numbers. That is the finding, not a leak.",
+  "status": "done-needs-review",
+  "sha": "e60de25",
+  "gauntlet": "not passed — 2 flag(s) warned"
  },
  {
   "id": "crit.branch-and-injuries",

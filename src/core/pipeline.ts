@@ -120,7 +120,9 @@ export function resolveAccuracy(ctx: Ctx, attacker: Unit, target: Unit, a: Attac
   if (a.kind === 'ranged' && inMelee(ctx, attacker)) {
     v = step(ledger, ACC.ADJACENT, 'ADJACENT', a.id, v, v - 20)
   }
-  // CONDITION, SITUATIONAL: nothing live yet.
+  // CONDITION: nothing live yet.
+  // SITUATIONAL — the attack's own modifier (station.accuracy-field, 2026-09-03).
+  if (a.accuracy) v = step(ledger, ACC.SITUATIONAL, 'SITUATIONAL', a.id, v, v + a.accuracy)
   const dodge = effective(ctx, target, 'dodge')
   v = step(ledger, ACC.TARGET_DODGE, 'TARGET_DODGE', `unit.${target.typeId}`, v, v - dodge.value)
   return { value: v, ledger, absorbed: 0 }

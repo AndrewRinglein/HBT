@@ -5055,3 +5055,91 @@ index dd79f6c..6c43d97 100644
 </details>
 
 IRON GAUNTLET: NOT PASSED — 2 FLAG(S) WARNED
+
+## station.accuracy-field — LANDED `e60de25` **NEEDS REVIEW**
+2026-09-03 08:26
+
+  PASS  dependencies landed
+  WARN  not already decided — 5 candidate ruling(s) — READ BEFORE ASKING: COMBAT-SEQUENCE.md:383 · MECHANICS-GAP.md:205
+  PASS  typecheck
+  PASS  full test suite
+  PASS  gate 1 — the id appears in a real battle — attack.punch: 4 log lines, 4 fired, 3 changed state · attack.test-ram.overhead: 27 log lines, 27 fired, 5 changed state
+  PASS  brought its own tests — test/audit.test.ts, test/item-powers.test.ts, test/movement-bonus.test.ts, test/accuracy-field.test.ts
+  WARN  existing tests untouched — DELETED LINES in test/item-powers.test.ts (-1), test/movement-bonus.test.ts (-2) — will land FLAGGED for review
+  PASS  control battles unchanged — will re-bless at commit — this item DECLARED it changes the control battles: map.open 195d6744->1b24d971, map.ridge 82adf819->a9704f9b, map.flanks 09ff3798->3d3c7322, map.highlands 46832ec9->689bcd63, map.field d573156b->4037c76a, map.thicket dca70791->c3c49fee, test.map.embers eaee0539->65de4c74, test.map.showcase 9d00acfb->46d36849
+  PASS  content has a published source — 13 ids without a published source (3 awaiting publication from earlier items — see audit)
+  PASS  hardcode scan — core knows mechanisms, never names
+  PASS  generalizes — the second instance costs zero engine code — attack.punch live · attack.war-axe.hack live · attack.longbow.long-shot live · attack.test-ram.overhead live
+  PASS  naming — new content ids use declared kinds
+  PASS  naming — no banned words invented
+  PASS  kill switch — the tests fail without the content — tests fail without attack.punch,attack.test-ram.overhead — they genuinely test it
+
+<details><summary>Existing tests were edited — review this diff</summary>
+
+```diff
+diff --git a/test/audit.test.ts b/test/audit.test.ts
+index c063783..a814758 100644
+--- a/test/audit.test.ts
++++ b/test/audit.test.ts
+@@ -226,4 +226,8 @@ describe('independent audit of logged battles', () => {
+             }
+             acc += accuracyBonusOf(myTerr)
++            // The auditor learned the attack's OWN modifier on 2026-09-03
++            // (station.accuracy-field): the row's `accuracy` — Punch −5, the
++            // war-axe's Hack −5, the longbow's +10 — lands at SITUATIONAL.
++            acc += a.accuracy ?? 0
+             // The auditor learned TARGET_DODGE on 2026-08-20 — the Codex
+             // cohort brought the first nonzero dodge (Dusk Hawk 5), and dodge
+diff --git a/test/item-powers.test.ts b/test/item-powers.test.ts
+index 6e2e73e..954e9d1 100644
+--- a/test/item-powers.test.ts
++++ b/test/item-powers.test.ts
+@@ -154,5 +154,10 @@ describe('they run — no power is dead content in a real battle', () => {
+   it('heal and block fire across seeds of showcase.alpha-team', () => {
+     const used = new Set<string>()
+-    for (const r of [0, 1, 2, 3, 4]) {
++    // Widened 0..4 -> 0..19 on 2026-09-03 (station.accuracy-field): once the
++    // Alpha Team's weapons hit at their authored accuracies the fights got
++    // shorter, and Osric's first Block moved from seed <5 to seed 13. The
++    // claim (both powers are live) is unchanged; the search is wider. Early
++    // exit once both are seen.
++    for (let r = 0; r < 20 && used.size < 2; r++) {
+       const ctx = createBattle({ ...scenarioOptions(scenarioDef(SC)), replicate: r })
+       runBattle(ctx)
+diff --git a/test/movement-bonus.test.ts b/test/movement-bonus.test.ts
+index 3297654..5208685 100644
+--- a/test/movement-bonus.test.ts
++++ b/test/movement-bonus.test.ts
+@@ -146,7 +146,13 @@ describe('alive in the standard battles — dead content is the failure mode', (
+   it('all three variants fire across a sweep of standard battles', () => {
+     const seen = new Set<string>()
++    // Widened 2026-09-03 (station.accuracy-field): at eight zombies the
++    // Alpha Team, now hitting at authored accuracies, ends the fight before a
++    // starved priest ever needs Devotion; at twelve it does. Same claim, more
++    // pressure — "tests needing pressure field twelve to sixteen" (ruled
++    // 2026-09-02, keep the zombies).
+     for (let r = 0; r < 40 && seen.size < 3; r++) {
+-      for (const mapId of ['map.open', 'map.thicket']) {
+-        const ctx = createBattle({ replicate: r, enemyCount: 8, mapId })
++      for (const mapId of ['map.open', 'map.thicket']) for (const enemyCount of [8, 12]) {
++        if (seen.size === 3) break
++        const ctx = createBattle({ replicate: r, enemyCount, mapId })
+         runBattle(ctx)
+         for (const e of ctx.events) {
+```
+</details>
+
+IRON GAUNTLET: NOT PASSED — 2 FLAG(S) WARNED
+
+```
+effect of attack.punch,attack.test-ram.overhead — 25 paired battles per map, WITH vs WITHOUT
+  map.open: heroWins 25->25 (+0)  meanTurns 4.0->4.0
+  map.ridge: heroWins 25->25 (+0)  meanTurns 4.5->4.5
+  map.flanks: heroWins 25->25 (+0)  meanTurns 4.1->4.1
+  map.highlands: heroWins 25->25 (+0)  meanTurns 5.4->5.4
+  map.field: heroWins 25->25 (+0)  meanTurns 5.6->5.5
+  map.thicket: heroWins 25->25 (+0)  meanTurns 5.4->5.4
+  test.map.embers: heroWins 25->25 (+0)  meanTurns 2.9->2.9
+  test.map.showcase: heroWins 25->25 (+0)  meanTurns 3.8->3.8
+MEASURABLE
+```

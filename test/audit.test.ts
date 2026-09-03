@@ -225,6 +225,10 @@ describe('independent audit of logged battles', () => {
               if (inMelee) acc -= 20
             }
             acc += accuracyBonusOf(myTerr)
+            // The auditor learned the attack's OWN modifier on 2026-09-03
+            // (station.accuracy-field): the row's `accuracy` — Punch −5, the
+            // war-axe's Hack −5, the longbow's +10 — lands at SITUATIONAL.
+            acc += a.accuracy ?? 0
             // The auditor learned TARGET_DODGE on 2026-08-20 — the Codex
             // cohort brought the first nonzero dodge (Dusk Hawk 5), and dodge
             // is flat off the hit chance, plus whatever the target's terrain
