@@ -1303,9 +1303,12 @@ function compileEncounter(row) {
   // capability.power-pool (2026-09-03): the external pool ships; arrival and clock live on unit rows
   const powerSources = (row.powerSources || []).filter((ps) => ps.kind === 'external' && typeof ps.value === 'number').map((ps) => ({ kind: 'external', value: ps.value }));
   for (const ps of row.powerSources || []) if (ps.kind !== 'external') gaps.push(`powerSource ${ps.kind}: ${JSON.stringify(ps).slice(0, 60)} — only external ships on the row`);
+  // capability.ground-layers (2026-09-03): the band and the setup paint ship as data
+  const band = row.band ? { layer: row.band.layer, fromPhase: row.band.fromPhase, startRow: row.band.startRow, direction: row.band.direction, ...(row.band.spare ? { spare: row.band.spare } : {}) } : undefined;
+  const paint = row.paint ? row.paint.map((p) => ({ layer: p.layer, hexes: p.hexes })) : undefined;
   return { id: row.id, name: row.name, ...(typeof row.map === 'string' && row.map !== 'none' ? { mapId: row.map } : {}),
     setup, schedule, ...(loseAfter ? { loseAfter } : {}), ...(win ? { win } : {}), ...(heroZone ? { heroZone } : {}),
-    ...(powerSources.length ? { powerSources } : {}), ...(gaps.length ? { gaps } : {}) };
+    ...(powerSources.length ? { powerSources } : {}), ...(band ? { band } : {}), ...(paint ? { paint } : {}), ...(gaps.length ? { gaps } : {}) };
 }
 const encounters = {};
 for (const row of [...(ENC.prologue || []), ...(ENC.scripted || []), ...(ENC.authored || [])]) encounters[row.id] = compileEncounter(row);

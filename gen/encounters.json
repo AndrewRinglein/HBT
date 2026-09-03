@@ -1022,9 +1022,9 @@
    "standing": [
     {
      "rule": "THE KILN",
-     "effect": "At the end of each enemy phase from phase 2, one more row burns, from row 0 upward (row 0 at phase 2, row 1 at 3 … one further row each phase for as long as the battle runs). Five water pockets stay cold (the mapHint).",
+     "effect": "At the end of each enemy phase from phase 2, one more row burns, from row 0 upward. Five water pockets stay cold (the mapHint).",
      "needs": [
-      "capability.ground-layers (the Band shape)"
+      "a map with the five water pockets"
      ]
     }
    ],
@@ -1134,7 +1134,14 @@
    "needs": [
     "capability.ground-layers (the advancing burning band; water pockets)",
     "the salvation card at phase 8"
-   ]
+   ],
+   "band": {
+    "layer": "layer.burning",
+    "fromPhase": 2,
+    "startRow": 0,
+    "direction": 1,
+    "note": "THE KILN as data (capability.ground-layers, 2026-09-03): row 0 lights as enemy phase 2 ends, one further row each phase. The five water pockets are the mapHint's and stay a gap until a map carries them (spare: none yet)."
+   }
   },
   {
    "id": "encounter.last-company",
@@ -1335,9 +1342,8 @@
    "standing": [
     {
      "rule": "THE FROST BAND",
-     "effect": "Rows 6–8, all columns, carry frost ground; hills at rows 3–4, cols 6–10.",
+     "effect": "Hills at rows 3–4, cols 6–10.",
      "needs": [
-      "capability.ground-layers (frost)",
       "a map with those hills"
      ]
     }
@@ -1540,6 +1546,62 @@
     "unit.frozen-skeleton and unit.hoarfrost-wight — owed rows",
     "capability.ground-layers (the band)",
     "the salvation card at phase 8 (Purify)"
+   ],
+   "paint": [
+    {
+     "layer": "layer.frost",
+     "hexes": [
+      96,
+      97,
+      98,
+      99,
+      100,
+      101,
+      102,
+      103,
+      104,
+      105,
+      106,
+      107,
+      108,
+      109,
+      110,
+      111,
+      112,
+      113,
+      114,
+      115,
+      116,
+      117,
+      118,
+      119,
+      120,
+      121,
+      122,
+      123,
+      124,
+      125,
+      126,
+      127,
+      128,
+      129,
+      130,
+      131,
+      132,
+      133,
+      134,
+      135,
+      136,
+      137,
+      138,
+      139,
+      140,
+      141,
+      142,
+      143
+     ],
+     "note": "THE FROST BAND as data (capability.ground-layers, 2026-09-03): rows 6–8, all columns, frost ground."
+    }
    ]
   }
  ],
