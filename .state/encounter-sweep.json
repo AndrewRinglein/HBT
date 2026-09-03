@@ -1,0 +1,161 @@
+{
+ "at": "2026-09-03T18:16:03.892Z",
+ "seeds": 20,
+ "rows": [
+  {
+   "encounter": "battle.prologue-1",
+   "battle": 1,
+   "heroes": 4,
+   "seeds": 20,
+   "outcomes": {
+    "heroClear": 20
+   },
+   "avgTurns": 4.2,
+   "downsPerBattle": 0,
+   "heroDeaths": 0,
+   "civiliansDead": 0,
+   "standsPerBattle": 0,
+   "gaps": 0
+  },
+  {
+   "encounter": "battle.prologue-2",
+   "battle": 2,
+   "heroes": 4,
+   "seeds": 20,
+   "outcomes": {
+    "objectiveFailed": 17,
+    "heroClear": 3
+   },
+   "avgTurns": 8.2,
+   "downsPerBattle": 3.05,
+   "heroDeaths": 11,
+   "civiliansDead": 19,
+   "standsPerBattle": 0.35,
+   "gaps": 0
+  },
+  {
+   "encounter": "battle.prologue-3",
+   "battle": 3,
+   "heroes": 4,
+   "seeds": 20,
+   "outcomes": {
+    "objectiveFailed": 19,
+    "heroClear": 1
+   },
+   "avgTurns": 9.2,
+   "downsPerBattle": 3.8,
+   "heroDeaths": 30,
+   "civiliansDead": 19,
+   "standsPerBattle": 1,
+   "gaps": 1
+  },
+  {
+   "encounter": "battle.prologue-4",
+   "battle": 4,
+   "heroes": 4,
+   "seeds": 20,
+   "outcomes": {
+    "wipe": 20
+   },
+   "avgTurns": 6.7,
+   "downsPerBattle": 4,
+   "heroDeaths": 17,
+   "civiliansDead": 0,
+   "standsPerBattle": 1.35,
+   "gaps": 2
+  },
+  {
+   "encounter": "battle.prologue-5",
+   "battle": 5,
+   "heroes": 5,
+   "seeds": 20,
+   "outcomes": {
+    "heroClear": 20
+   },
+   "avgTurns": 10.8,
+   "downsPerBattle": 0.95,
+   "heroDeaths": 11,
+   "civiliansDead": 0,
+   "standsPerBattle": 0.25,
+   "gaps": 1
+  },
+  {
+   "encounter": "battle.horrors-of-the-night",
+   "battle": 12,
+   "heroes": 6,
+   "seeds": 20,
+   "outcomes": {
+    "wipe": 1,
+    "heroClear": 8,
+    "capped": 11
+   },
+   "avgTurns": 22.4,
+   "downsPerBattle": 2.05,
+   "heroDeaths": 33,
+   "civiliansDead": 0,
+   "standsPerBattle": 0.7,
+   "gaps": 1
+  },
+  {
+   "encounter": "encounter.supper",
+   "battle": 3,
+   "heroes": 4,
+   "seeds": 20,
+   "outcomes": {
+    "wipe": 19,
+    "heroClear": 1
+   },
+   "avgTurns": 11.6,
+   "downsPerBattle": 13.85,
+   "heroDeaths": 19,
+   "civiliansDead": 195,
+   "standsPerBattle": 1.35,
+   "gaps": 17
+  },
+  {
+   "encounter": "encounter.kiln",
+   "battle": 9,
+   "heroes": 5,
+   "seeds": 20,
+   "outcomes": {
+    "heroClear": 20
+   },
+   "avgTurns": 7,
+   "downsPerBattle": 1.15,
+   "heroDeaths": 4,
+   "civiliansDead": 0,
+   "standsPerBattle": 0.6,
+   "gaps": 5
+  },
+  {
+   "encounter": "encounter.last-company",
+   "battle": 14,
+   "heroes": 6,
+   "seeds": 20,
+   "outcomes": {
+    "heroClear": 20
+   },
+   "avgTurns": 8.2,
+   "downsPerBattle": 0,
+   "heroDeaths": 0,
+   "civiliansDead": 0,
+   "standsPerBattle": 0,
+   "gaps": 10
+  },
+  {
+   "encounter": "encounter.rime",
+   "battle": 20,
+   "heroes": 6,
+   "seeds": 20,
+   "outcomes": {
+    "heroClear": 20
+   },
+   "avgTurns": 11.2,
+   "downsPerBattle": 0.95,
+   "heroDeaths": 11,
+   "civiliansDead": 0,
+   "standsPerBattle": 0.3,
+   "gaps": 10
+  }
+ ]
+}
