@@ -275,12 +275,26 @@ export function saveOf(campaign: CampaignState): string {
   return JSON.stringify(campaign)
 }
 
-/** The load: parse, then refuse anything that is not a Campaign (Law 9). */
+/**
+ * Cursor fields added after the first saves were written, with the value a save
+ * from before them holds by construction — nothing was sold, spent or being fitted
+ * when the field did not exist. A load fills them in (save.migrate, 2026-09-03);
+ * a field with no such empty value is not listed here and a save without it is
+ * refused as before. Additive only: nothing is ever dropped or reinterpreted.
+ */
+const CURSOR_ADDED: Readonly<Record<string, () => unknown>> = {
+  sold: () => [],            // forge.shelf, G6
+  spent: () => [],           // waystation.catalog, G7
+  equipSession: () => null,  // equip.costs, G5
+}
+
+/** The load: parse, bring an older save forward where that is lossless, then refuse anything that is not a Campaign (Law 9). */
 export function campaignOf(json: string): CampaignState {
   const c = JSON.parse(json) as CampaignState
   assertPlainData(c)
   const required: (keyof CampaignState)[] = ['realm', 'seed', 'week', 'cursor', 'purse', 'renown', 'unlocks', 'revealed', 'roster', 'assignments', 'stash', 'territories', 'threat', 'losses', 'quests', 'captured', 'unavailable', 'cups', 'ended']
   for (const k of required) if (!(k in c)) throw new Error(`save is missing '${k}' — not a Campaign`)
+  if (c.cursor && typeof c.cursor === 'object') for (const [k, make] of Object.entries(CURSOR_ADDED)) if (!(k in c.cursor)) (c.cursor as unknown as Record<string, unknown>)[k] = make()
   for (const k of ['week', 'stage', 'step', 'prepStep', 'engagement', 'attack', 'fought', 'recruited', 'rewardOffer', 'prologue', 'draftOffer', 'battle', 'equipSession', 'sold', 'spent'] as const) if (!(k in c.cursor)) throw new Error(`save's cursor is missing '${k}'`)
   return c
 }

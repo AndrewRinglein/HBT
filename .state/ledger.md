@@ -974,3 +974,5 @@ index 8c13ae4..1d31b48 100644
 
 slice: 60 of 68 closed · 61 probed · 0 accepted
 IRON GAUNTLET: NOT PASSED — 3 FLAG(S) WARNED; 1 EXEMPTION(S) TAKEN
+
+Law 10 note (screens.equip-stats): test/equip-screen.test.ts asserted the set's +2 Precision as a `delta won` chip on the hero card; the card now carries the viewer's stat block instead (Andrew's note, 2026-09-03), so the same +2 is asserted on the Precision row of that block. The rule under test — a triggered set shows its number on the card — is unchanged.
