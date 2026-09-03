@@ -42,7 +42,12 @@ import { createHash } from 'node:crypto'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 
-const DOC = '../THIN-SLICE-IMPLEMENTATION.md'
+// The criteria documents. One list, two files: THIN-SLICE-IMPLEMENTATION.md (ISC-001…050,
+// the slice) and GEAR-IMPLEMENTATION.md (ISC-051…, the gear plan; G0, 2026-09-02). ISC
+// numbers are unique across both; each file carries its own header count line, written
+// by --sync, over the criteria it holds.
+const DOCS = ['../THIN-SLICE-IMPLEMENTATION.md', '../GEAR-IMPLEMENTATION.md'].filter(existsSync)
+const DOC = DOCS.join(' + ')
 const STATE = '.state/isc.json'
 
 const argv = process.argv.slice(2)
@@ -59,9 +64,15 @@ const stamp = () => new Date().toISOString().slice(0, 16).replace('T', ' ')
 
 // ── the list ────────────────────────────────────────────────────────────────
 /** Parse the document: heading outside a fence, then the first fenced block. */
-function readList(text = readFileSync(DOC, 'utf8')) {
-  const lines = text.split('\n')
+function readList() {
   const iscs = new Map()
+  for (const doc of DOCS) readDoc(doc, iscs)
+  if (iscs.size === 0) throw new Error(`no ISC blocks found in ${DOC}`)
+  return iscs
+}
+function readDoc(doc, iscs) {
+  const text = readFileSync(doc, 'utf8')
+  const lines = text.split('\n')
   let inFence = false
   for (let i = 0; i < lines.length; i++) {
     const line = lines[i]
@@ -70,7 +81,7 @@ function readList(text = readFileSync(DOC, 'utf8')) {
     const m = line.match(/^### ISC-(\d{3}) — (.+)$/)
     if (!m) continue
     const n = m[1]
-    if (iscs.has(n)) throw new Error(`ISC-${n} appears twice in ${DOC} (line ${i + 1})`)
+    if (iscs.has(n)) throw new Error(`ISC-${n} appears twice (${iscs.get(n).doc} and ${doc} line ${i + 1})`)
     // the block: skip blank lines, expect a fence
     let j = i + 1
     while (j < lines.length && lines[j].trim() === '') j++
@@ -96,12 +107,10 @@ function readList(text = readFileSync(DOC, 'utf8')) {
     iscs.set(n, {
       n, title: m[2].trim(), tierDoc, truth: field('Truth') ?? '', probe, source,
       disable: (field('Disable') ?? '').split(',').map((s) => s.trim()).filter(Boolean),
-      headingLine: i, stateLine: start + stateLine,
+      headingLine: i, stateLine: start + stateLine, doc,
     })
     i = k
   }
-  if (iscs.size === 0) throw new Error(`no ISC blocks found in ${DOC}`)
-  return iscs
 }
 
 // ── the state ───────────────────────────────────────────────────────────────
@@ -204,19 +213,22 @@ function count(list = readList(), state = readState()) {
 function sync() {
   const list = readList()
   const state = readState()
-  const text = readFileSync(DOC, 'utf8')
-  const lines = text.split('\n')
-  const c = count(list, state)
-  const headerAt = lines.findIndex((l) => /^\*\*`\d+ of \d+ closed · \d+ probed · \d+ accepted`\*\*/.test(l))
-  if (headerAt < 0) throw new Error(`${DOC}: no header count line to rewrite`)
-  lines[headerAt] = lines[headerAt].replace(/`\d+ of \d+ closed · \d+ probed · \d+ accepted`/, '`' + c.line + '`')
-  for (const isc of list.values()) {
-    const st = state[isc.n]
-    lines[isc.stateLine] = `State:  ${stateOf(isc, st).padEnd(8)} Tier: ${tierOf(isc, st)}`
+  for (const doc of DOCS) {
+    const own = new Map([...list].filter(([, isc]) => isc.doc === doc))
+    const text = readFileSync(doc, 'utf8')
+    const lines = text.split('\n')
+    const c = count(own, state)
+    const headerAt = lines.findIndex((l) => /^\*\*`\d+ of \d+ closed · \d+ probed · \d+ accepted`\*\*/.test(l))
+    if (headerAt < 0) throw new Error(`${doc}: no header count line to rewrite — add a line of the form **\`0 of 0 closed · 0 probed · 0 accepted\`**`)
+    lines[headerAt] = lines[headerAt].replace(/`\d+ of \d+ closed · \d+ probed · \d+ accepted`/, '`' + c.line + '`')
+    for (const isc of own.values()) {
+      const st = state[isc.n]
+      lines[isc.stateLine] = `State:  ${stateOf(isc, st).padEnd(8)} Tier: ${tierOf(isc, st)}`
+    }
+    const out = lines.join('\n')
+    if (out !== text) { writeFileSync(doc, out); console.log(`synced ${doc}: ${c.line}`) }
+    else console.log(`${doc} already in sync: ${c.line}`)
   }
-  const out = lines.join('\n')
-  if (out !== text) { writeFileSync(DOC, out); console.log(`synced ${DOC}: ${c.line}`) }
-  else console.log(`${DOC} already in sync: ${c.line}`)
 }
 
 // ── modes ───────────────────────────────────────────────────────────────────
