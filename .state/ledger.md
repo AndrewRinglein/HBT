@@ -732,3 +732,26 @@ Law 10 note (heroes.kits): test/isc-041.test.ts asserted `equipped` equals ['ite
 ISC-054: CLOSED at a3e9d82 · ISC-055: CLOSED at a3e9d82
 slice: 51 of 68 closed · 51 probed · 0 accepted
 IRON GAUNTLET: NOT PASSED — 2 FLAG(S) WARNED; 1 EXEMPTION(S) TAKEN
+
+## equip.costs — LANDED `abe219b` **NEEDS REVIEW**
+2026-09-03 04:17 · engine @ 2dd4781
+
+  PASS  dependencies landed
+  WARN  not already decided — 3 candidate ruling(s) — READ BEFORE ASKING: ../STATE.md:20 · ../STATE.md:21
+  PASS  typecheck
+  PASS  full test suite — 121 passed
+  PASS  gate 1 — every claimed criterion holds — ISC-056 — idols and Bloodrunes cost, and refund inside the session
+  PASS  brought its own tests — test/isc-056.test.ts
+  PASS  existing tests untouched
+  PASS  kill switch — every claimed probe has been seen red — ISC-056: red on record (2026-09-03 04:17 @ e93a811, probe 66e707756327)
+  PASS  nothing regresses — every P-tier probe — 52 P-tier probe(s): 52 green, 0 red, 0 regression(s). 51 of 68 closed · 52 probed · 0 accepted
+  PASS  hardcode scan — core knows mechanisms, never names
+  PASS  generalizes — the second instance costs zero kingdom code
+  PASS  naming — new ids use declared kinds
+  PASS  naming — no banned words invented
+  WARN  engine working tree clean — verified against a DIRTY engine tree (2dd4781 + 5 uncommitted under src/test): M src/content/generated/pack.stamp.json, M src/content/generated/pack.ts, M src/content/moves.ts
+  PASS  one door to the engine
+
+ISC-056: CLOSED at abe219b
+slice: 52 of 68 closed · 52 probed · 0 accepted
+IRON GAUNTLET: NOT PASSED — 2 FLAG(S) WARNED; 1 EXEMPTION(S) TAKEN

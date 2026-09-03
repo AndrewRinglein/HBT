@@ -693,6 +693,10 @@
    "hash": "66e707756327",
    "how": "feature absent",
    "tail": "       |            ^ |      47|     expect(() => performEquip(ctx, HUNTER, RUNE, 'test')).toThrow(/ref… |      48|     performOpenEquip(ctx, 'test')"
+  },
+  "closed": {
+   "at": "2026-09-03 04:19",
+   "sha": "abe219b"
   }
  }
 }
