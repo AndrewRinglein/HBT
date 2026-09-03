@@ -59,7 +59,9 @@ const ACTED = new Set(['damage.applied','heal.applied','power.used','attack.decl
   // capability.deathbed (2026-09-03): the roll's two outcomes both change the unit
   'deathbed.stood', 'deathbed.fell',
   // capability.surge (2026-09-03): a surge is another move and action
-  'surge.hit'])
+  'surge.hit',
+  // capability.corpses (2026-09-03): a body on the board, and what became of it
+  'corpse.created', 'corpse.removed', 'unit.raised', 'corpse.eaten'])
 
 /**
  * A SCENARIO is probed by fielding it, not by sweeping the standard panel.

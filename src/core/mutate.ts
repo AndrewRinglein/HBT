@@ -4,6 +4,7 @@
 
 import type { Ctx, Event, LifeState, Unit } from './types.js'
 import type { HexId } from './hex.js'
+import { distance as hexDistance } from './hex.js'
 import { effective } from './stats.js'
 
 export function emit(ctx: Ctx, type: string, causeId: string, fields: Record<string, unknown> = {}): Event {
@@ -340,4 +341,26 @@ export function gainPower(ctx: Ctx, amount: number, causeId: string, extra: Reco
   const before = ctx.state.power ?? 0
   ctx.state.power = before + amount
   emit(ctx, 'power.gained', causeId, { amount, before, after: ctx.state.power, ...extra })
+}
+
+// ── CORPSES — capability.corpses (2026-09-03) ────────────────────────────────
+// ENEMY-REVIEW P4: created when any enemy dies and when a hero actually dies;
+// summons leave none. Board objects on the state, plain data, ids by count.
+export function createCorpse(ctx: Ctx, u: Unit, causeId: string): void {
+  const list = ctx.state.corpses ?? (ctx.state.corpses = [])
+  const id = list.length ? Math.max(...list.map((c) => c.id)) + 1 : 1
+  list.push({ id, hex: u.hex, typeId: u.typeId, side: u.side, uid: u.uid })
+  emit(ctx, 'corpse.created', causeId, { corpse: id, hex: u.hex, of: u.id, typeId: u.typeId, side: u.side })
+}
+export function removeCorpse(ctx: Ctx, corpseId: number, causeId: string, how: 'raised' | 'eaten' | 'consumed' | 'destroyed', actor: number): void {
+  const list = ctx.state.corpses ?? []
+  const i = list.findIndex((c) => c.id === corpseId)
+  if (i < 0) throw new Error(`corpse ${corpseId} is not on the board`)
+  const [c] = list.splice(i, 1)
+  emit(ctx, 'corpse.removed', causeId, { corpse: corpseId, hex: c!.hex, how, actor, typeId: c!.typeId })
+}
+/** Corpses within `radius` of a hex, nearest first, lowest id first (Law 6). */
+export function corpsesNear(ctx: Ctx, hex: HexId, radius: number): { id: number; hex: number; typeId: string; side: 'hero' | 'enemy'; uid: number }[] {
+  return (ctx.state.corpses ?? []).filter((c) => hexDistance(c.hex, hex) <= radius)
+    .sort((a, b) => hexDistance(a.hex, hex) - hexDistance(b.hex, hex) || a.id - b.id)
 }

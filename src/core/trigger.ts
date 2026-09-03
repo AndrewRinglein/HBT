@@ -29,7 +29,7 @@ import { distance } from './hex.js'
 import type { Targeting } from './target.js'
 import { resolveTargets, validateTargeting } from './target.js'
 import { roll100 } from './rng.js'
-import { applyDamage, applyHealing, emit, gainPower } from './mutate.js'
+import { applyDamage, applyHealing, corpsesNear, emit, gainPower, removeCorpse } from './mutate.js'
 import { applyStatus, removeStatus } from './status.js'
 import { executeKnockback } from './movement.js'
 
@@ -129,6 +129,15 @@ export type TriggerEffect =
   | { readonly kind: 'power.gain'; readonly value: ValueSpec }
   /** capability.auras (2026-09-03): the End-of-Activation pulse — the Necromancer's "heal 3" to allies within 2. */
   | { readonly kind: 'heal'; readonly amount: ValueSpec }
+  /**
+   * capability.corpses (2026-09-03): raise ONE corpse within `radius` as `unit`
+   * (the Necromancer: "raise one corpse as a Zombie" — radius assumed its aura's
+   * 2, the encounter session's reading, SWITCHES.md corpseRaiseRadius). The
+   * raised unit is a SUMMON and leaves no corpse. Nearest corpse first.
+   */
+  | { readonly kind: 'corpse.raise'; readonly unit: string; readonly radius: number }
+  /** capability.corpses: remove every corpse within `radius`, healing the owner `healPer` each (the Spider's Consume the Fallen). */
+  | { readonly kind: 'corpse.consume'; readonly radius: number; readonly healPer: number }
 
 export type Trigger = {
   readonly id: string
@@ -407,6 +416,27 @@ function applyEffect(ctx: Ctx, t: Trigger, owner: Unit, targetId: number): void 
       const v = valueOf(ctx, owner, e.amount)
       emit(ctx, 'trigger.fired', t.id, { actor: owner.id, target: targetId, effect: e.kind, amount: v })
       if (v > 0) applyHealing(ctx, targetId, v, t.id)
+      break
+    }
+    case 'corpse.raise': {
+      const near = corpsesNear(ctx, owner.hex, e.radius)
+      emit(ctx, 'trigger.fired', t.id, { actor: owner.id, target: targetId, effect: e.kind, corpsesInReach: near.length })
+      const c = near[0]
+      if (!c) break
+      const def = ctx.units?.[e.unit]
+      if (!def) throw new Error(`trigger '${t.id}' raises '${e.unit}', which is not a unit in the registry`)
+      if (!ctx.arrive) throw new Error(`trigger '${t.id}' raises a corpse but this battle cannot field arrivals (no ctx.arrive)`)
+      removeCorpse(ctx, c.id, t.id, 'raised', owner.id)
+      const raised = ctx.arrive(ctx, def, c.hex, t.id)
+      raised.summoned = true
+      emit(ctx, 'unit.raised', t.id, { actor: owner.id, raised: raised.id, from: c.typeId, hex: raised.hex })
+      break
+    }
+    case 'corpse.consume': {
+      const near = corpsesNear(ctx, owner.hex, e.radius)
+      emit(ctx, 'trigger.fired', t.id, { actor: owner.id, target: targetId, effect: e.kind, corpses: near.length })
+      for (const c of near) removeCorpse(ctx, c.id, t.id, 'consumed', owner.id)
+      if (near.length) applyHealing(ctx, owner.id, near.length * e.healPer, t.id)
       break
     }
     case 'power.gain': {

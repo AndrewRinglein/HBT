@@ -1016,7 +1016,9 @@ export const UNIT_PACK = {
         "attack.ghoul.shriek",
         "attack.ghoul.devour"
       ],
-      "abilities": [],
+      "abilities": [
+        "power.ghoul.eat-corpse"
+      ],
       "moves": [
         "power.move"
       ],
@@ -1349,6 +1351,18 @@ export const UNIT_PACK = {
           "effect": {
             "kind": "heal",
             "amount": 3
+          },
+          "source": "unit.necromancer"
+        },
+        {
+          "id": "trigger.necromancer.raise",
+          "hook": "onActivationEnd",
+          "chance": 100,
+          "select": "self",
+          "effect": {
+            "kind": "corpse.raise",
+            "unit": "unit.zombie",
+            "radius": 2
           },
           "source": "unit.necromancer"
         },
@@ -1693,7 +1707,20 @@ export const UNIT_PACK = {
       "tags": [
         "undead"
       ],
-      "triggers": []
+      "triggers": [
+        {
+          "id": "trigger.skeleton-spider.consume-the-fallen",
+          "hook": "onActivationEnd",
+          "chance": 100,
+          "select": "self",
+          "effect": {
+            "kind": "corpse.consume",
+            "radius": 4,
+            "healPer": 3
+          },
+          "source": "unit.skeleton-spider"
+        }
+      ]
     },
     {
       "typeId": "unit.strong-skeleton",
@@ -4362,6 +4389,29 @@ export const UNIT_PACK = {
     }
   },
   "authoredAbilities": {
+    "power.ghoul.eat-corpse": {
+      "id": "power.ghoul.eat-corpse",
+      "name": "Eat Corpse",
+      "staminaCost": 0,
+      "cooldown": 0,
+      "range": 0,
+      "target": {
+        "select": "self",
+        "side": "any"
+      },
+      "effects": [
+        {
+          "kind": "corpse.eat",
+          "radius": 1,
+          "heal": 5,
+          "mods": {
+            "strength": 1,
+            "precision": 1
+          },
+          "maxHp": 2
+        }
+      ]
+    },
     "power.knight-shield.block": {
       "id": "power.knight-shield.block",
       "name": "Block",
@@ -11898,6 +11948,18 @@ export const UNIT_PACK = {
               "value": 2
             },
             "onlyWithAttack": "attack.test-arc.sweep",
+            "source": "unit.test-arc-golem"
+          },
+          {
+            "id": "trigger.test-carrion.consume",
+            "hook": "onActivationEnd",
+            "chance": 100,
+            "select": "self",
+            "effect": {
+              "kind": "corpse.consume",
+              "radius": 2,
+              "healPer": 1
+            },
             "source": "unit.test-arc-golem"
           }
         ],

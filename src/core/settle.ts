@@ -3,7 +3,7 @@
 // Never reentrant: damage caused during a settle is absorbed by the running settle.
 
 import type { Ctx } from './types.js'
-import { addStatMod, emit, loseMaxHp, loseMaxStamina, setBleedOut, setLifeState, setOutcome, tickBleedOut } from './mutate.js'
+import { addStatMod, createCorpse, emit, loseMaxHp, loseMaxStamina, setBleedOut, setLifeState, setOutcome, tickBleedOut } from './mutate.js'
 import { roll100 } from './rng.js'
 import { fireTriggers } from './trigger.js'
 
@@ -37,6 +37,7 @@ export function settle(ctx: Ctx, causeId: string): void {
         if (u.lifeState === 'standing' && u.hp <= 0) {
           if (u.side === 'enemy') {
             setLifeState(ctx, u.id, 'dead', causeId, { reason: 'hp0' })
+            if (!u.summoned) createCorpse(ctx, u, causeId)   // capability.corpses: summons leave none
             died.push(u.id)
           } else if (deathbed(ctx, u.id, causeId)) {
             // STOOD — capability.deathbed (2026-09-03): a fresh bar at the next wound level
@@ -49,6 +50,7 @@ export function settle(ctx: Ctx, causeId: string): void {
         // A downed hero whose counter has run out.
         if (u.lifeState === 'downed' && u.bleedOut <= 0) {
           setLifeState(ctx, u.id, 'dead', causeId, { reason: 'bledOut' })
+          if (!u.summoned) createCorpse(ctx, u, causeId)   // "when a hero actually dies" — the clock ran out
           died.push(u.id)
           changed = true
         }

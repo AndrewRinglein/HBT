@@ -219,6 +219,7 @@ function dumbMelee(ctx: Ctx, u: Unit): void {
     }
   }
   if (u.lifeState !== 'standing') return
+  if (effectsPower(ctx, u, 'feast')) return
   // Swing at whatever is IN REACH, not merely adjacent (found landing
   // unit.green-drake, 2026-08-20). For reach-1 units — every zombie — the
   // candidate set and the idle text are both byte-identical to the old
@@ -297,10 +298,17 @@ function supportPower(ctx: Ctx, u: Unit): boolean {
  * the attack step fails, so a stance never displaces a swing). Cheapest honest
  * policy; the AI modes backlog is where a better one goes.
  */
-function effectsPower(ctx: Ctx, u: Unit, when: 'free' | 'primary' | 'opening'): boolean {
+function effectsPower(ctx: Ctx, u: Unit, when: 'free' | 'primary' | 'opening' | 'feast'): boolean {
   for (const id of u.abilities) {
     const a = ctx.abilities[id]
     if (!a?.effects || a.effects.length === 0) continue
+    if (when === 'feast') {
+      // capability.corpses (2026-09-03): a body in reach is eaten BEFORE the
+      // swing — the Ghoul economy runs on it (SWITCHES.md aiEatsBeforeBiting).
+      if (!ctx.cfg.switches.aiEatsBeforeBiting || !a.effects.some((e) => e.kind === 'corpse.eat')) continue
+      if (!canUsePower(ctx, u.id, u.id, id)) continue
+      usePower(ctx, u.id, u.id, id); settle(ctx, id); return true
+    }
     if (when === 'opening') {
       // the OPENING stance: on a unit's first activation a battle-long self
       // power (Bloodlust, Eldritch Might) is worth the primary even when a
@@ -419,6 +427,7 @@ function meleeAggressive(ctx: Ctx, u: Unit): void {
   }
   if (u.lifeState !== 'standing') return
   effectsPower(ctx, u, 'free')
+  if (effectsPower(ctx, u, 'feast')) return
   if (effectsPower(ctx, u, 'opening')) return
   if (supportPower(ctx, u)) return
   if (!attackIfPossible(ctx, u, adjacentEnemies(ctx, u))) {

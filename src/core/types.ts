@@ -97,6 +97,8 @@ export type AbilityEffect =
     }
   | { readonly kind: 'selfDamage'; readonly amount: number; readonly damageType: DamageType }
   | { readonly kind: 'knockback'; readonly value: import('./trigger.js').ValueSpec }
+  /** capability.corpses: eat one corpse within `radius` — heal and battle-long stat gains to the eater. Refused (canUsePower) when none is in reach. */
+  | { readonly kind: 'corpse.eat'; readonly radius: number; readonly heal: number; readonly mods: Readonly<Partial<Record<import('./stats.js').StatName, number>>>; readonly maxHp?: number }
 
 export type AbilityDef = {
   readonly id: string
@@ -521,6 +523,8 @@ export type Unit = {
   surgeChance: number
   /** capability.auras: this unit's auras, own frozen copies (plain data). */
   auras: AuraDef[]
+  /** capability.corpses: a raised or summoned unit leaves no corpse. */
+  summoned: boolean
   ai: string
   attacks: string[]
   abilities: string[]
@@ -553,6 +557,13 @@ export type State = {
   mapId: string
   /** encounter.runner: which schedule rows have fired (by index), plain data. */
   encounter?: { id: string; fired: number[]; objectives: number[] }
+  /**
+   * capability.corpses (2026-09-03), ENEMY-REVIEW P4 (ruled 2026-08-23): board
+   * objects, created when any enemy dies and when a hero actually dies. A
+   * SUMMON leaves none; Shadow's obliteration leaves none. Raised, eaten or
+   * consumed, a corpse is removed. Plain data: id, hex, whose body it was.
+   */
+  corpses?: { id: number; hex: number; typeId: string; side: Side; uid: number }[]
   /**
    * THE POWER POOL — capability.power-pool (2026-09-03), ENEMY-REVIEW.md P1
    * (ruled 2026-08-23): "Power is the enemy side's Magic: one global integer
@@ -629,6 +640,8 @@ export type Config = {
     frostBeforeProtection: boolean
     /** Zones of control and attacks of opportunity live? SWITCHES.md, 2026-09-03 (movement.zone-of-control). */
     zoneOfControl: boolean
+    /** Does a unit with a corpse-eating power eat before it swings? SWITCHES.md, 2026-09-03. */
+    aiEatsBeforeBiting: boolean
   }
 }
 
@@ -687,6 +700,9 @@ export const DEFAULT_CONFIG: Config = {
     // Declared to change the control battles; on by ruling (GAME-DESIGN §4,
     // Angela 2026-08-13). Off keeps the pre-ZoC battle for paired sweeps.
     zoneOfControl: true,
+    // "the things surrounding them get stronger with every villager they eat"
+    // (Supper) — the feast is the design. SWITCHES.md, 2026-09-03.
+    aiEatsBeforeBiting: true,
   },
 }
 
@@ -708,4 +724,11 @@ export type Ctx = {
   encounter?: EncounterDef
   /** The unit registry, so the runner can field a spawn mid-battle. */
   units?: Readonly<Record<string, UnitDef>>
+  /**
+   * How a unit ARRIVES mid-battle (capability.corpses: a raise is a summon).
+   * A function on Ctx — Ctx is the home of the unserializable — set by
+   * createBattle, so the trigger layer can field a unit without importing the
+   * runner (which imports setup, which imports content: the cycle).
+   */
+  arrive?: (ctx: Ctx, def: UnitDef, hex: number, causeId: string) => Unit
 }

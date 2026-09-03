@@ -9,7 +9,7 @@ import { STATUSES } from '../content/statuses.js'
 import { MOVES } from '../content/moves.js'
 import { triggersFrom } from './trigger.js'
 import { emit, gainPower } from './mutate.js'
-import { heroDeployHexes, placeSetup } from './encounter.js'
+import { arrive, heroDeployHexes, placeSetup } from './encounter.js'
 
 export function makeUnit(id: number, uid: number, name: string, def: UnitDef, hex: number): Unit {
   return {
@@ -25,6 +25,7 @@ export function makeUnit(id: number, uid: number, name: string, def: UnitDef, he
     woundLevel: 0, toughness: def.toughness ?? 0,
     surge: def.surge ?? 0, surgeChance: 0,
     auras: (def.auras ?? []).map((a) => ({ ...a })),
+    summoned: false,
     ai: def.ai,
     attacks: [...def.attacks],
     abilities: [...def.abilities],
@@ -143,7 +144,8 @@ export function createBattle(opts: BattleOptions): Ctx {
   const mapId = opts.mapId ?? opts.encounter?.mapId ?? 'map.open'
   const state: State = { turn: 0, phase: 'hero', mapId, terrain: terrainOf(mapId), units: [], outcome: null, seq: 0 }
   const ctx: Ctx = { state, events: [], rng, cfg, attacks: ATTACKS, abilities: ABILITIES, statuses: STATUSES, moves: MOVES, critChart: CRIT_CHART, items: ITEMS,
-    ...(opts.encounter ? { encounter: opts.encounter, units: UNITS } : {}) }
+    units: UNITS, arrive: (c, d, hex, cause) => arrive(c, d, hex, cause, {}),
+    ...(opts.encounter ? { encounter: opts.encounter } : {}) }
 
   const def = (t: string): UnitDef => ({ ...UNITS[t]!, ...(opts.overrides?.[t] ?? {}) })
   const heroes = opts.heroes ?? FIRST_BATTLE.heroes
@@ -330,7 +332,8 @@ export function createCustomBattle(
   const rng = makeRng(rootSeedOf(99, 0, opts.replicate ?? 0), opts.strict ? { strict: true } : undefined)
   const mapId = opts.mapId ?? 'map.open'
   const state: State = { turn: 0, phase: 'hero', mapId, terrain: terrainOf(mapId), units: [], outcome: null, seq: 0 }
-  const ctx: Ctx = { state, events: [], rng, cfg, attacks: ATTACKS, abilities: ABILITIES, statuses: STATUSES, moves: MOVES, critChart: CRIT_CHART, items: ITEMS }
+  const ctx: Ctx = { state, events: [], rng, cfg, attacks: ATTACKS, abilities: ABILITIES, statuses: STATUSES, moves: MOVES, critChart: CRIT_CHART, items: ITEMS,
+    units: UNITS, arrive: (c, d, hex, cause) => arrive(c, d, hex, cause, {}) }
   let id = 0
   // Custom battles field the row's default kit too (seam.items-per-unit) —
   // a fixture hero is the same hero as a scenario hero.

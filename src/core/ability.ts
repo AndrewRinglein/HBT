@@ -19,7 +19,7 @@
 
 import { distance } from './hex.js'
 import type { AbilityDef, AbilityEffect, Ctx, Unit } from './types.js'
-import { addStatMod, applyDamage, applyHealing, emit, gainMaxHp, loseMaxHp, markPrimaryUsed, removeStatus, reduceStatus, spendStamina, unit } from './mutate.js'
+import { addStatMod, applyDamage, applyHealing, corpsesNear, emit, gainMaxHp, loseMaxHp, markPrimaryUsed, removeCorpse, removeStatus, reduceStatus, spendStamina, unit } from './mutate.js'
 import { resolveTargets, hasAnyTarget } from './target.js'
 import { executeKnockback } from './movement.js'
 import { areaHexesOf, resolveDamage } from './pipeline.js'
@@ -70,6 +70,8 @@ export function canUsePower(ctx: Ctx, userId: number, targetId: number, abilityI
     if (s.value > 0 && ctx.statuses[s.id]?.locksPowers) return false
   }
   if (a.effects) {
+    // capability.corpses: a power that eats needs a body in reach — legality, not a fizzle
+    for (const e of a.effects) if (e.kind === 'corpse.eat' && corpsesNear(ctx, u.hex, e.radius).length === 0) return false
     // ability.effects (2026-09-03): legality is the ONE targeting vocabulary.
     const t = a.target ?? { select: 'self', side: 'any' as const }
     if (t.select === 'self') { if (targetId !== userId) return false }
@@ -372,6 +374,17 @@ function applyOne(ctx: Ctx, userId: number, id: number, a: AbilityDef, e: Abilit
     case 'knockback': {
       const v = valueOf(ctx, u, e.value)
       if (v > 0) executeKnockback(ctx, userId, id, v, a.id)
+      return 0
+    }
+    case 'corpse.eat': {
+      // capability.corpses: the Ghoul's Eat Corpse — one body within reach, nearest first
+      const c = corpsesNear(ctx, u.hex, e.radius)[0]
+      if (!c) return 0
+      removeCorpse(ctx, c.id, a.id, 'eaten', userId)
+      emit(ctx, 'corpse.eaten', a.id, { actor: userId, corpse: c.id, of: c.typeId })
+      applyHealing(ctx, userId, e.heal, a.id)
+      for (const [stat, value] of Object.entries(e.mods)) if (value) addStatMod(ctx, userId, { stat: stat as import('./stats.js').StatName, op: 'add', value, source: a.id, scope: 'unit' }, a.id)
+      if (e.maxHp) gainMaxHp(ctx, userId, e.maxHp, a.id)
       return 0
     }
   }

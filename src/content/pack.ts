@@ -7,6 +7,7 @@ import { UNIT_PACK } from './generated/pack.js'
 import type { AbilityDef, AttackDef, CritRow, EncounterDef, ItemDef, MoveDef, UnitDef } from '../core/types.js'
 import { validateTrigger } from '../core/trigger.js'
 import type { StatusDef } from '../core/status.js'
+const EFFECT_KINDS = ['damage', 'heal', 'status.apply', 'status.remove', 'statMod', 'selfDamage', 'knockback', 'corpse.eat']
 import { statusDamage, statusHeal } from '../core/status.js'
 
 const REQUIRED = ['typeId', 'name', 'side', 'maxHp', 'armor', 'resist', 'accuracy', 'dodge',
@@ -77,6 +78,8 @@ export function packAbilities(): Readonly<Record<string, AbilityDef>> {
   const raw = (UNIT_PACK as { authoredAbilities?: Readonly<Record<string, AbilityDef>> }).authoredAbilities ?? {}
   for (const [k, a] of Object.entries(raw)) {
     if (k !== a.id) throw new Error(`unit pack: ability key '${k}' names id '${a.id}'`)
+    // an effect-list power (ability.effects) is validated by its list, not the three legacy shapes
+    if (a.effects) { for (const e of a.effects) if (!EFFECT_KINDS.includes(e.kind)) throw new Error(`unit pack: power '${k}' has an effect of kind '${String((e as { kind: string }).kind)}'`); continue }
     const kind = a.effect ?? 'damage'
     if (kind === 'damage' && (a.stat === undefined || a.bonus === undefined || a.damageType === undefined)) {
       throw new Error(`unit pack: damage power '${k}' is missing stat/bonus/damageType — regenerate the pack`)
@@ -248,7 +251,6 @@ export function packAttacks(): Readonly<Record<string, AttackDef>> {
 // registries: the class powers (ability.effects), the level tables, the
 // specialties, and the enchanted tier-3 rows. Each validated loudly here.
 
-const EFFECT_KINDS = ['damage', 'heal', 'status.apply', 'status.remove', 'statMod', 'selfDamage', 'knockback']
 
 /** Every class power as an ability — compiled effects, or a row that names its gaps and is inert. */
 export function packClassPowers(): Readonly<Record<string, AbilityDef>> {

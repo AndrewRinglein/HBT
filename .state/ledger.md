@@ -5953,3 +5953,53 @@ index 2f63c44..5320328 100644
 </details>
 
 IRON GAUNTLET: NOT PASSED — 2 FLAG(S) WARNED · periodic audit clean (landing #70; the gate was killed by the host cap inside the audit — finished by hand, the audit rerun clean)
+
+## capability.corpses — LANDED `d0d7f1d` **NEEDS REVIEW**
+2026-09-03 17:48
+
+  PASS  dependencies landed
+  WARN  not already decided — 5 candidate ruling(s) — READ BEFORE ASKING: ../CODEX.md:1832 · ../STATE.md:18
+  PASS  typecheck
+  PASS  full test suite
+  PASS  gate 1 — the id appears in a real battle — power.ghoul.eat-corpse: 32 log lines, 32 fired, 24 changed state
+  PASS  brought its own tests — test/enemy-pack.test.ts, test/corpses.test.ts
+  WARN  existing tests untouched — DELETED LINES in test/enemy-pack.test.ts (-1) — will land FLAGGED for review
+  PASS  control battles unchanged — will re-bless at commit — this item DECLARED it changes the control battles: map.open 854fa247->1db2df1b, map.ridge 2abb90a6->98e0cdff, map.flanks 455f06f1->5b1a1eee, map.highlands 7402fb2d->d28a141d, map.field a9103332->c00e4d6d, map.thicket 5f0d7084->e05f5f86, test.map.embers 72049ff0->0b0d2c16, test.map.showcase 404a55e8->036f0767
+  PASS  content has a published source — 18 ids without a published source (8 awaiting publication from earlier items — see audit)
+  PASS  hardcode scan — core knows mechanisms, never names
+  PASS  generalizes — the second instance costs zero engine code — power.ghoul.eat-corpse live · trigger.test-carrion.consume live
+  PASS  naming — new content ids use declared kinds
+  PASS  naming — no banned words invented
+  PASS  kill switch — the tests fail without the content — tests fail without power.ghoul.eat-corpse — they genuinely test it
+
+<details><summary>Existing tests were edited — review this diff</summary>
+
+```diff
+diff --git a/test/enemy-pack.test.ts b/test/enemy-pack.test.ts
+index 5320328..fc29ddd 100644
+--- a/test/enemy-pack.test.ts
++++ b/test/enemy-pack.test.ts
+@@ -99,5 +99,5 @@ describe('the pack carries the authored rows faithfully', () => {
+     for (const id of roster()) for (const t of UNITS[id]!.triggers ?? []) {
+       // capability.auras (2026-09-03): the Necromancer's EOA pulse is a heal to its area
+-      expect(['status.apply', 'power.gain', 'heal'], `${id} trigger ${t.id}`).toContain(t.effect.kind)
++      expect(['status.apply', 'power.gain', 'heal', 'corpse.raise', 'corpse.consume'], `${id} trigger ${t.id}`).toContain(t.effect.kind)   // + corpses, 2026-09-03
+     }
+   })
+```
+</details>
+
+IRON GAUNTLET: NOT PASSED — 2 FLAG(S) WARNED
+
+```
+effect of power.ghoul.eat-corpse — 25 paired battles per map, WITH vs WITHOUT
+  map.open: heroWins 25->25 (+0)  meanTurns 4.0->4.0
+  map.ridge: heroWins 25->25 (+0)  meanTurns 4.5->4.5
+  map.flanks: heroWins 25->25 (+0)  meanTurns 4.0->4.0
+  map.highlands: heroWins 25->25 (+0)  meanTurns 4.9->4.9
+  map.field: heroWins 25->25 (+0)  meanTurns 6.1->6.1
+  map.thicket: heroWins 25->25 (+0)  meanTurns 5.3->5.3
+  test.map.embers: heroWins 25->25 (+0)  meanTurns 2.8->2.8
+  test.map.showcase: heroWins 25->25 (+0)  meanTurns 3.9->3.9
+NO MEASURABLE EFFECT at this sample size — consequence clause caught state changes, but outcomes did not move. Consider a sweep with more replicates before drawing balance conclusions.
+```

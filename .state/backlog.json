@@ -2041,5 +2041,25 @@
   "attempts": 2,
   "sha": "824e61d",
   "gauntlet": "not passed — 2 flag(s) warned"
+ },
+ {
+  "id": "capability.corpses",
+  "kind": "engine",
+  "shape": "rule",
+  "spec": "Corpses as board objects — ENEMY-REVIEW P4 (ruled 2026-08-23), blocks 3 encounters and the undead identity. Created when any enemy dies and when a hero actually dies (the counter ran out); a SUMMON leaves none; Shadow's obliteration leaves none. State.corpses is plain data. Consumers from the bestiary rows: the Necromancer's Raise (corpse.raise: nearest within 2 — its aura radius, the encounter session's reading — as a Zombie, a summon), the Spider's Consume the Fallen (corpse.consume within 4, heal 3 each), the Ghoul's Eat Corpse (an enemy self-power with a corpse.eat effect: heal 5, +1 Str, +1 Pre, +2 Max Health; the AI eats before it bites — SWITCHES.md aiEatsBeforeBiting). ctx.arrive lets the trigger layer field a raise without importing the runner.",
+  "expect": "a dead zombie leaves a corpse on its hex, a summon and an obliteration do not; a hero who bleeds out leaves one; the Necromancer raises the nearest within 2 and the raised leave nothing; the Ghoul eats for the row's numbers and is refused with no body; Supper runs the economy",
+  "changesBaseline": true,
+  "probeIds": [
+   "power.ghoul.eat-corpse"
+  ],
+  "variants": [
+   "power.ghoul.eat-corpse",
+   "trigger.test-carrion.consume"
+  ],
+  "status": "done-needs-review",
+  "note": "changesBaseline: every dead zombie in the control battles leaves a corpse now — a corpse.created line per death.",
+  "attempts": 1,
+  "sha": "d0d7f1d",
+  "gauntlet": "not passed — 2 flag(s) warned"
  }
 ]

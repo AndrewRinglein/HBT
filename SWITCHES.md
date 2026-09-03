@@ -373,3 +373,16 @@ Ruled by GAME-DESIGN §4 and Angela 2026-08-13, so the default is **on**; the
 switch exists because it is the largest single change to every balance number
 the engine has, and the paired sweep wants the pre-ZoC arm. The AI is blind to
 both by the same ruling — that is not a switch.
+
+## aiEatsBeforeBiting — does the Ghoul eat before it bites?
+Added 2026-09-03 (capability.corpses). Eat Corpse is a self-power; the AI has to
+decide when. Default **on**: a body in reach is eaten before the swing, because
+Supper's whole design is a Ghoul "that has eaten three villagers is Strength 10
+on 21 Health". Off: it eats only when it has nothing to bite. A sweep on
+Supper answers whether the feast or the bite kills more heroes.
+
+## corpseRaiseRadius — how far does the Necromancer's Raise reach?
+Added 2026-09-03 (capability.corpses). The authored row states no range; the
+encounter session assumed its aura's 2 and named it as open (8-ENCOUNTERS E1).
+Compiled as 2 for now — a converter constant, not yet a Config switch; the row
+is where the number should live once ruled.
