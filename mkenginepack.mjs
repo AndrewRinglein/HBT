@@ -743,6 +743,91 @@ function compileCritChart(chart) {
   return { note: chart.note, rows };
 }
 
+// ── ITEMS (pack.items, 2026-09-02 — ITEMS-PLAN.md §3) ────────────────────────
+// Every Codex item row becomes an ItemDef: the physical facts the engine
+// checks (hands, slots), the stat modifiers in ENGINE stat names, the attack
+// ids it grants (every one compiled into authoredAttacks, so the attack id
+// space widens to every grant of every item), the item powers that compile,
+// and the item-level triggers the grammar reads. Compile or name the gap: a
+// clause the engine cannot express is dropped AND recorded on the row itself
+// (`gaps`), so a fielding that hands a hero an item the engine only half
+// understands can say so — never a silent, inert item. Consumables and
+// activated trinkets/relics are ABILITIES WITH CHARGES the engine lacks
+// (ITEMS-PLAN §7); they emit with their stat payload and the active named.
+const ITEM_STAT = { health: 'maxHp', armor: 'armor', resist: 'resist', dodge: 'dodge', strength: 'strength',
+  precision: 'precision', magic: 'magic', spirit: 'spirit', reach: 'reach', accuracy: 'accuracy',
+  movement: 'movement', staminaMax: 'maxStamina', staminaRegen: 'staminaRegen', crit: 'crit', luck: 'luck' };
+function takeItemAttack(a) {
+  if (authoredAttacks[a.id]) return;
+  const ranged = typeof a.range === 'number' && a.range > 1;
+  const area = areaShapeOf(a);
+  authoredAttacks[a.id] = {
+    id: a.id, name: a.name, kind: ranged ? 'ranged' : 'melee',
+    damageType: a.damageType || 'physical',
+    bonus: a.damage ?? 0, stat: a.stat || 'strength',
+    reach: ranged ? a.range : 1, staminaCost: a.stamina ?? 0,
+    ...(area ? { area } : {}),
+    ...(a.crit ? { crit: a.crit } : {}),
+  };
+}
+function compileItems() {
+  const out = {};
+  for (const it of CODEX_ITEMS) {
+    const row = ITEM_BY_ID.get(it.id) ?? it; // later sources win, as for kits
+    const gapsHere = [];
+    const g = (what, needs) => { gapsHere.push(`${what} — ${needs}`); gap(it.id, what, needs); };
+    const statModifiers = {};
+    for (const [k, v] of Object.entries(row.statModifiers || {})) {
+      if (ITEM_STAT[k]) statModifiers[ITEM_STAT[k]] = (statModifiers[ITEM_STAT[k]] || 0) + v;
+      else g(`statModifier '${k}' ${v}`, `stat: ${k} (no UnitDef field)`);
+    }
+    const grants = [], abilities = [];
+    for (const aid of row.grants || []) {
+      if (aid.startsWith('power.')) {
+        const pw = SPOWER_BY_ID.get(aid);
+        const pr = pw && compiledPowerOf(pw, it.id);
+        if (pr) { authoredAbilities[pr.id] = pr; abilities.push(pr.id); }
+        else g(`grants ${aid}`, pw ? 'item power — shape unparsed' : 'item power — no authored row');
+        continue;
+      }
+      const a = SATTACK_BY_ID.get(aid);
+      if (!a) { g(`grants ${aid}`, 'attack row unauthored'); continue; }
+      takeItemAttack(a);
+      grants.push(a.id);
+      // attack-scoped riders ride the ATTACK (settledAttackExtras); an item
+      // that grants the attack carries them under its own source
+      for (const t of settledAttackExtras(a, it.id)) (row._attackTriggers ??= []).push(t);
+    }
+    const triggers = [...(row._attackTriggers || [])];
+    delete row._attackTriggers;
+    for (const t of row.triggers || []) {
+      const eff = String(t.effect || '');
+      let m;
+      if (!TRIG_HOOKS.has(t.hook)) { g(`${t.hook}: ${eff.slice(0, 50)}`, `hook: ${t.hook} (declared, engine never fires it)`); continue; }
+      if ((m = eff.match(/^(apply|gain) (\d+) ([A-Za-z]+)$/)) && STATUS_OK.has(m[3].toLowerCase())) {
+        triggers.push({ id: `trigger.${it.id.replace(/^item\./, '')}.${m[3].toLowerCase()}`, hook: t.hook, chance: t.chance ?? 100,
+          select: m[1] === 'gain' ? 'self' : 'target', effect: { kind: 'status.apply', statusId: 'status.' + m[3].toLowerCase(), value: parseInt(m[2], 10) }, source: it.id });
+      } else if ((m = eff.match(/^Thorns (\d+)$/)) && t.hook === 'onTakingDamage') {
+        // RULED 2026-08-27: "Thorns damage that is dealt is true damage."
+        triggers.push({ id: `trigger.${it.id.replace(/^item\./, '')}.thorns`, hook: 'onTakingDamage', chance: 100,
+          select: 'target', effect: { kind: 'damage', amount: parseInt(m[1], 10), damageType: 'true' }, source: it.id });
+      } else {
+        g(`${t.hook}: ${eff.slice(0, 50)}`, 'trigger shape unparsed');
+      }
+    }
+    if (row.stamina !== undefined || row.targets) g(`active: ${String(row.description || '').slice(0, 50)}`, 'an ability with charges/targets — capability.consumables');
+    for (const k of ['thorns', 'airwalk', 'slayer', 'immunity', 'natural']) if (row[k] !== undefined) g(`${k}: ${JSON.stringify(row[k]).slice(0, 40)}`, `item field: ${k}`);
+    out[it.id] = {
+      id: it.id, name: it.name, itemClass: it.itemClass, tier: it.tier ?? 0, hands: it.hands ?? 0, slots: it.slots ?? 0,
+      ...(it.classRestriction ? { classRestriction: it.classRestriction } : {}),
+      statModifiers, grants, abilities, triggers,
+      ...(gapsHere.length ? { gaps: gapsHere } : {}),
+    };
+  }
+  return out;
+}
+const items = compileItems();
+
 // ── THE TEST RECEPTACLE (content/test/, 2026-09-02) ─────────────────────────
 // Test bodies, attacks and statuses that prove a mechanism and never ship.
 // Andrew: "We're not testing features if we're not pulling them from the
@@ -809,7 +894,7 @@ function testStatuses() {
 const testAttackRows = testAttacks();
 const test = { note: 'GENERATED from content/test/ — the test receptacle. Never ships. Wipe the folder to remove every row here.', units: testUnits(testAttackRows), attacks: testAttackRows, statuses: testStatuses() };
 
-const pack = { note: D.testCohort.note, heroes, enemies, authoredEnemies, authoredAttacks, authoredAbilities, prologueParty, alphaTeam, critChart: compileCritChart(SETTLED.critChart), statuses, moves, test };
+const pack = { note: D.testCohort.note, heroes, enemies, authoredEnemies, authoredAttacks, authoredAbilities, prologueParty, alphaTeam, critChart: compileCritChart(SETTLED.critChart), statuses, moves, items, test };
 
 // Gaps are written AFTER the pack is fully constructed (moved 2026-08-27):
 // compileCritChart names gaps during pack construction, and writing the file
@@ -827,4 +912,4 @@ const body = '// GENERATED by content/mkenginepack.mjs — NEVER HAND-EDIT (see 
   + (dropped.length ? '// Dropped (no engine meaning yet): ' + dropped.join(' | ') + '\n' : '')
   + 'export const UNIT_PACK = ' + JSON.stringify(pack, null, 2) + ' as const\n';
 fs.writeFileSync('../engine/src/content/generated/pack.ts', body);
-console.log(`pack.ts: test ${test.units.length}u/${Object.keys(test.attacks).length}a/${Object.keys(test.statuses).length}s, ${Object.keys(statuses).length} statuses, ${Object.keys(moves).length} moves, ${heroes.length} heroes, ${enemies.length} enemies, ${prologueParty.length} party, ${alphaTeam.length} alpha, ${authoredEnemies.length} authored enemies (${Object.keys(authoredAttacks).length} attacks)${dropped.length ? ', dropped: ' + dropped.length : ''}, gaps: ${gaps.length}`);
+console.log(`pack.ts: ${Object.keys(items).length} items (${Object.values(items).filter((i) => !i.gaps).length} whole), test ${test.units.length}u/${Object.keys(test.attacks).length}a/${Object.keys(test.statuses).length}s, ${Object.keys(statuses).length} statuses, ${Object.keys(moves).length} moves, ${heroes.length} heroes, ${enemies.length} enemies, ${prologueParty.length} party, ${alphaTeam.length} alpha, ${authoredEnemies.length} authored enemies (${Object.keys(authoredAttacks).length} attacks)${dropped.length ? ', dropped: ' + dropped.length : ''}, gaps: ${gaps.length}`);

@@ -362,6 +362,1136 @@
    "needs": "area attack shape"
   },
   {
+   "unit": "item.hand-axe",
+   "what": "attack.hand-axe.chop onCrit: \"+4 damage\"",
+   "needs": "trigger shape unparsed"
+  },
+  {
+   "unit": "item.carpenters-mallet",
+   "what": "attack.carpenters-mallet.bonk onCrit: \"apply 1 Stun to the target\"",
+   "needs": "trigger shape unparsed"
+  },
+  {
+   "unit": "item.cart-chain",
+   "what": "attack.cart-chain.swing onHit: \"the target gains 1 Slow\"",
+   "needs": "trigger shape unparsed"
+  },
+  {
+   "unit": "item.fishing-net",
+   "what": "attack.fishing-net.cast onHit: \"apply 3 Weak; the target gains 1 Slow\"",
+   "needs": "trigger shape unparsed"
+  },
+  {
+   "unit": "item.iron-mace",
+   "what": "attack.iron-mace.crush onHit: \"the target loses 1 Armor for the rest of the Battle\"",
+   "needs": "trigger shape unparsed"
+  },
+  {
+   "unit": "item.war-hammer",
+   "what": "onCrit: Knockback 1 — the target is moved 1 hex directly a",
+   "needs": "trigger shape unparsed"
+  },
+  {
+   "unit": "item.glaive",
+   "what": "attack.glaive.sweep targets 'an adjacent hex and one hex adjacent to both you a' — lands SINGLE-TARGET",
+   "needs": "area attack shape"
+  },
+  {
+   "unit": "item.crossbow",
+   "what": "attack.crossbow.punch-through onHit: \"ignore 2 of the target's Armor\"",
+   "needs": "trigger shape unparsed"
+  },
+  {
+   "unit": "item.rapier",
+   "what": "attack.rapier.pierce onHit: \"ignore 1 of the target's Armor\"",
+   "needs": "trigger shape unparsed"
+  },
+  {
+   "unit": "item.rapier",
+   "what": "onAttack: gain +10 Dodge until the end of your next Turn",
+   "needs": "trigger shape unparsed"
+  },
+  {
+   "unit": "item.poison-stars",
+   "what": "attack.poison-stars.venom-spread onHit: \"apply 2 Poison to each target hit\"",
+   "needs": "trigger shape unparsed"
+  },
+  {
+   "unit": "item.obsidian-fang-dagger",
+   "what": "attack.obsidian-fang-dagger.fang onHit: \"target loses 1 Strength\"",
+   "needs": "trigger shape unparsed"
+  },
+  {
+   "unit": "item.obsidian-fang-dagger",
+   "what": "attack.obsidian-fang-dagger.gut onHit: \"target loses 1 Strength\"",
+   "needs": "trigger shape unparsed"
+  },
+  {
+   "unit": "item.crippling-whip",
+   "what": "attack.crippling-whip.hamstring onHit: \"apply 2 Weak and the target gains 1 Slow\"",
+   "needs": "trigger shape unparsed"
+  },
+  {
+   "unit": "item.bane-blade",
+   "what": "attack.bane-blade.banishing-blow onCrit: \"deal 6 more damage\"",
+   "needs": "trigger shape unparsed"
+  },
+  {
+   "unit": "item.sword-of-the-fallen",
+   "what": "attack.sword-of-the-fallen.remembrance onHit: \"heal 1\"",
+   "needs": "trigger shape unparsed"
+  },
+  {
+   "unit": "item.sword-of-the-fallen",
+   "what": "attack.sword-of-the-fallen.honour-the-dead onKill: \"heal 3\"",
+   "needs": "trigger shape unparsed"
+  },
+  {
+   "unit": "item.buckler",
+   "what": "attack.buckler.punch onAttack: \"gain 7 Dodge until the end of your next Activation\"",
+   "needs": "trigger shape unparsed"
+  },
+  {
+   "unit": "item.buckler",
+   "what": "grants power.buckler.block-and-dodge",
+   "needs": "item power — shape unparsed"
+  },
+  {
+   "unit": "item.hammer-of-justice",
+   "what": "onHit: the target loses 1 Armor for the rest of the Battl",
+   "needs": "trigger shape unparsed"
+  },
+  {
+   "unit": "item.holy-shield",
+   "what": "attack.holy-shield.aegis-slam onHit: \"push the target 1 hex and it gains 1 Slow\"",
+   "needs": "trigger shape unparsed"
+  },
+  {
+   "unit": "item.holy-shield",
+   "what": "aura: AURA radius 1 — an enemy adjacent to you takes -10",
+   "needs": "hook: aura (declared, engine never fires it)"
+  },
+  {
+   "unit": "item.death-blade",
+   "what": "attack.death-blade.death-stroke onHit: \"heal 3 and gain +1 Strength for the rest of the Battle, sta",
+   "needs": "trigger shape unparsed"
+  },
+  {
+   "unit": "item.death-blade",
+   "what": "onKill: heal 3 and gain +1 Strength for the rest of the Ba",
+   "needs": "trigger shape unparsed"
+  },
+  {
+   "unit": "item.sniper-bow",
+   "what": "onKill: gain +5 Accuracy for the rest of the Battle, stack",
+   "needs": "trigger shape unparsed"
+  },
+  {
+   "unit": "item.runed-crossbow",
+   "what": "onHit: if the target is demon or undead, apply 2 Burn",
+   "needs": "trigger shape unparsed"
+  },
+  {
+   "unit": "item.poison-throwing-knives",
+   "what": "attack.poison-throwing-knives.venom-fan onHit: \"apply 2 Poison to each target hit\"",
+   "needs": "trigger shape unparsed"
+  },
+  {
+   "unit": "item.shadow-dagger",
+   "what": "onKill: gain +5 Dodge for the rest of the Battle",
+   "needs": "trigger shape unparsed"
+  },
+  {
+   "unit": "item.stormforged-blade",
+   "what": "onCrit: deal 3 magic damage to every enemy adjacent to the",
+   "needs": "trigger shape unparsed"
+  },
+  {
+   "unit": "item.wraith-touched-staff",
+   "what": "attack.wraith-touched-staff.grasp onHit: \"the target gains 1 Slow and you heal 2\"",
+   "needs": "trigger shape unparsed"
+  },
+  {
+   "unit": "item.wraith-touched-staff",
+   "what": "onKill: heal 2",
+   "needs": "trigger shape unparsed"
+  },
+  {
+   "unit": "item.book-of-exorcisms",
+   "what": "attack.book-of-exorcisms.rite-of-expulsion targets 'one enemy within 3 hexes and every enemy adjacent ' — lands SINGLE-TARGET",
+   "needs": "area attack shape"
+  },
+  {
+   "unit": "item.cursed-sand-blade",
+   "what": "startOfBattle: take 2 true damage",
+   "needs": "hook: startOfBattle (declared, engine never fires it)"
+  },
+  {
+   "unit": "item.skyforged-halberd",
+   "what": "attack.skyforged-halberd.sky-sweep targets 'every enemy adjacent to you' — lands SINGLE-TARGET",
+   "needs": "area attack shape"
+  },
+  {
+   "unit": "item.skyforged-halberd",
+   "what": "startOfBattle: every ally within 2 hexes gains +1 Armor for the r",
+   "needs": "hook: startOfBattle (declared, engine never fires it)"
+  },
+  {
+   "unit": "item.mirage-dagger",
+   "what": "attack.mirage-dagger.two-places-at-once onHit: \"after the attack resolves you may move 1 hex\"",
+   "needs": "trigger shape unparsed"
+  },
+  {
+   "unit": "item.mirage-dagger",
+   "what": "onKill: gain +10 Dodge until the start of your next Turn",
+   "needs": "trigger shape unparsed"
+  },
+  {
+   "unit": "item.seraph-bow",
+   "what": "onKill: heal 2",
+   "needs": "trigger shape unparsed"
+  },
+  {
+   "unit": "item.death-bow",
+   "what": "attack.death-bow.the-last-arrow onKill: \"make one free Death Shot against a different enemy\"",
+   "needs": "trigger shape unparsed"
+  },
+  {
+   "unit": "item.death-bow",
+   "what": "onHit: the target cannot be healed until the end of its n",
+   "needs": "trigger shape unparsed"
+  },
+  {
+   "unit": "item.death-bow",
+   "what": "onKill: regain 1 Stamina",
+   "needs": "trigger shape unparsed"
+  },
+  {
+   "unit": "item.holy-avenger",
+   "what": "startOfBattle: gain +2 Strength against demon and undead for the ",
+   "needs": "hook: startOfBattle (declared, engine never fires it)"
+  },
+  {
+   "unit": "item.holy-avenger",
+   "what": "onKill: every ally within 3 hexes heals 2",
+   "needs": "trigger shape unparsed"
+  },
+  {
+   "unit": "item.demon-whip",
+   "what": "attack.demon-whip.hellcoil onHit: \"apply 3 Burn to each target hit\"",
+   "needs": "trigger shape unparsed"
+  },
+  {
+   "unit": "item.demon-whip",
+   "what": "onAttack: apply 2 Burn to the target",
+   "needs": "trigger shape unparsed"
+  },
+  {
+   "unit": "item.demonic-shiv",
+   "what": "onKill: deal 5 true damage to up to two enemies within 4 h",
+   "needs": "trigger shape unparsed"
+  },
+  {
+   "unit": "item.void-staff",
+   "what": "attack.void-staff.unmaking onHit: \"the target loses 2 Resist for the rest of the Battle\"",
+   "needs": "trigger shape unparsed"
+  },
+  {
+   "unit": "item.void-staff",
+   "what": "onKill: regain 1 Stamina",
+   "needs": "trigger shape unparsed"
+  },
+  {
+   "unit": "item.orb-of-the-soul-stealer",
+   "what": "attack.orb-of-the-soul-stealer.soul-tap onHit: \"heal 1\"",
+   "needs": "trigger shape unparsed"
+  },
+  {
+   "unit": "item.orb-of-the-soul-stealer",
+   "what": "attack.orb-of-the-soul-stealer.steal-the-spark onHit: \"heal for half the damage dealt, rounded down\"",
+   "needs": "trigger shape unparsed"
+  },
+  {
+   "unit": "item.orb-of-the-soul-stealer",
+   "what": "onAttack: heal 2 at the start of your next Turn",
+   "needs": "trigger shape unparsed"
+  },
+  {
+   "unit": "item.blade-of-demon-slaying",
+   "what": "onDamage: apply 5 Burn if the target is demon, otherwise 2 B",
+   "needs": "trigger shape unparsed"
+  },
+  {
+   "unit": "item.tomb-sentinels-blade",
+   "what": "onKill: gain +1 Armor for the rest of the Battle, stacking",
+   "needs": "trigger shape unparsed"
+  },
+  {
+   "unit": "item.tomb-sentinels-blade",
+   "what": "thorns: 3",
+   "needs": "item field: thorns"
+  },
+  {
+   "unit": "item.siege-crossbow",
+   "what": "onHit: ignore 3 of the target's Armor",
+   "needs": "trigger shape unparsed"
+  },
+  {
+   "unit": "item.stormforged-halberd",
+   "what": "attack.stormforged-halberd.storm-sweep targets 'every enemy adjacent to you' — lands SINGLE-TARGET",
+   "needs": "area attack shape"
+  },
+  {
+   "unit": "item.fangs",
+   "what": "natural: true",
+   "needs": "item field: natural"
+  },
+  {
+   "unit": "item.tail",
+   "what": "attack.tail.lash onHit: \"the target gains 1 Slow\"",
+   "needs": "trigger shape unparsed"
+  },
+  {
+   "unit": "item.tail",
+   "what": "natural: true",
+   "needs": "item field: natural"
+  },
+  {
+   "unit": "item.horns",
+   "what": "attack.horns.ram onHit: \"the target is knocked back 1 hex\"",
+   "needs": "trigger shape unparsed"
+  },
+  {
+   "unit": "item.horns",
+   "what": "natural: true",
+   "needs": "item field: natural"
+  },
+  {
+   "unit": "item.hooves",
+   "what": "natural: true",
+   "needs": "item field: natural"
+  },
+  {
+   "unit": "item.daggers",
+   "what": "attack.daggers.thrown-dagger onKill: \"gain 50 Surge\"",
+   "needs": "trigger shape unparsed"
+  },
+  {
+   "unit": "item.watchmans-coat",
+   "what": "statModifier 'vision' 2",
+   "needs": "stat: vision (no UnitDef field)"
+  },
+  {
+   "unit": "item.peddlers-vest",
+   "what": "statModifier 'itemSlots' 1",
+   "needs": "stat: itemSlots (no UnitDef field)"
+  },
+  {
+   "unit": "item.ghost-thread-cloak",
+   "what": "onDodge: gain +10 Dodge until the end of your next Turn",
+   "needs": "hook: onDodge (declared, engine never fires it)"
+  },
+  {
+   "unit": "item.wind-blessed-leather",
+   "what": "onActivationEnd: heal 1",
+   "needs": "hook: onActivationEnd (declared, engine never fires it)"
+  },
+  {
+   "unit": "item.wraithform-cloak",
+   "what": "onDodge: take 2 true damage",
+   "needs": "hook: onDodge (declared, engine never fires it)"
+  },
+  {
+   "unit": "item.wraithform-cloak",
+   "what": "onTakingDamage: heal half the party's Magic, rounded down",
+   "needs": "trigger shape unparsed"
+  },
+  {
+   "unit": "item.qi-wraps",
+   "what": "onKill: regain 1 Stamina",
+   "needs": "trigger shape unparsed"
+  },
+  {
+   "unit": "item.gale-shroud",
+   "what": "grants power.flight-labored",
+   "needs": "item power — shape unparsed"
+  },
+  {
+   "unit": "item.gale-shroud",
+   "what": "onDodge: gain +10 Accuracy for the rest of the Battle",
+   "needs": "hook: onDodge (declared, engine never fires it)"
+  },
+  {
+   "unit": "item.scorpion-carapace",
+   "what": "onTakingDamage: Thorns 2, and the attacker gains 2 Poison",
+   "needs": "trigger shape unparsed"
+  },
+  {
+   "unit": "item.scorpion-carapace",
+   "what": "thorns: 2",
+   "needs": "item field: thorns"
+  },
+  {
+   "unit": "item.stormweave-armor",
+   "what": "thorns: 2",
+   "needs": "item field: thorns"
+  },
+  {
+   "unit": "item.battlemages-cuirass",
+   "what": "onActivationEnd: gain 2 Protection",
+   "needs": "hook: onActivationEnd (declared, engine never fires it)"
+  },
+  {
+   "unit": "item.troll-gut-vest",
+   "what": "startOfBattle: gain 3 Regeneration",
+   "needs": "hook: startOfBattle (declared, engine never fires it)"
+  },
+  {
+   "unit": "item.chains-of-the-faithful",
+   "what": "aura: AURA radius 2 — allies inside have Immunity to Bur",
+   "needs": "hook: aura (declared, engine never fires it)"
+  },
+  {
+   "unit": "item.chains-of-the-faithful",
+   "what": "onAttack: you gain 1 Burn",
+   "needs": "trigger shape unparsed"
+  },
+  {
+   "unit": "item.cloudsteel-plate",
+   "what": "passive: You have AIRWALK: no trap and no terrain status fr",
+   "needs": "hook: passive (declared, engine never fires it)"
+  },
+  {
+   "unit": "item.cloudsteel-plate",
+   "what": "airwalk: true",
+   "needs": "item field: airwalk"
+  },
+  {
+   "unit": "item.armor-of-thorns",
+   "what": "thorns: 3",
+   "needs": "item field: thorns"
+  },
+  {
+   "unit": "item.divine-bulwark",
+   "what": "startOfBattle: you may not act on Turn 1; from Turn 2 you have +1",
+   "needs": "hook: startOfBattle (declared, engine never fires it)"
+  },
+  {
+   "unit": "item.stoneskin-hauberk",
+   "what": "onActivationEnd: gain +1 Armor until the end of your next Turn",
+   "needs": "hook: onActivationEnd (declared, engine never fires it)"
+  },
+  {
+   "unit": "item.cloak-of-ghostform",
+   "what": "onDodge: gain +50 Dodge until the end of your next Turn",
+   "needs": "hook: onDodge (declared, engine never fires it)"
+  },
+  {
+   "unit": "item.phantoms-mantle",
+   "what": "onKill: enters stealth: you cannot be seen and cannot be t",
+   "needs": "trigger shape unparsed"
+  },
+  {
+   "unit": "item.skypriests-vestments",
+   "what": "passive: You have AIRWALK: no trap and no terrain status fr",
+   "needs": "hook: passive (declared, engine never fires it)"
+  },
+  {
+   "unit": "item.skypriests-vestments",
+   "what": "airwalk: true",
+   "needs": "item field: airwalk"
+  },
+  {
+   "unit": "item.wind-dancers-cloak",
+   "what": "grants power.flight",
+   "needs": "item power — shape unparsed"
+  },
+  {
+   "unit": "item.wind-dancers-cloak",
+   "what": "onDodge: Surge Chance +30",
+   "needs": "hook: onDodge (declared, engine never fires it)"
+  },
+  {
+   "unit": "item.drakescale-coat",
+   "what": "startOfBattle: gain +2 Resist against dragon for the rest of the ",
+   "needs": "hook: startOfBattle (declared, engine never fires it)"
+  },
+  {
+   "unit": "item.drakescale-coat",
+   "what": "onTakingDamage: Burn applied to you is halved, rounded down, befor",
+   "needs": "trigger shape unparsed"
+  },
+  {
+   "unit": "item.aegis-of-the-fleet",
+   "what": "grants power.flight-swift",
+   "needs": "item power — shape unparsed"
+  },
+  {
+   "unit": "item.mystic-armor",
+   "what": "startOfBattle: gain Protection equal to 2 plus the party's Magic",
+   "needs": "hook: startOfBattle (declared, engine never fires it)"
+  },
+  {
+   "unit": "item.patrocoleas-armor",
+   "what": "startOfBattle: gain 6 Protection",
+   "needs": "hook: startOfBattle (declared, engine never fires it)"
+  },
+  {
+   "unit": "item.patrocoleas-armor",
+   "what": "startOfBattle: heal 1 at the end of each of your Turns for the re",
+   "needs": "hook: startOfBattle (declared, engine never fires it)"
+  },
+  {
+   "unit": "item.storm-bastion",
+   "what": "aura: AURA radius 1 — an enemy that ends its movement in",
+   "needs": "hook: aura (declared, engine never fires it)"
+  },
+  {
+   "unit": "item.elfbow",
+   "what": "attack.elfbow.elf-shot onHit: \"gain 1 Precision\"",
+   "needs": "trigger shape unparsed"
+  },
+  {
+   "unit": "item.tower-shield",
+   "what": "grants power.tower-shield.cover",
+   "needs": "item power — shape unparsed"
+  },
+  {
+   "unit": "item.tower-shield",
+   "what": "grants power.tower-shield.stand-tall",
+   "needs": "item power — shape unparsed"
+  },
+  {
+   "unit": "item.fire-staff",
+   "what": "grants power.fire-staff.fireball",
+   "needs": "item power — shape unparsed"
+  },
+  {
+   "unit": "item.frost-staff",
+   "what": "attack.frost-staff.frost-blast onHit: \"apply 1 Frost\"",
+   "needs": "trigger shape unparsed"
+  },
+  {
+   "unit": "item.frost-staff",
+   "what": "grants power.frost-staff.frost-nova",
+   "needs": "item power — shape unparsed"
+  },
+  {
+   "unit": "item.earth-staff",
+   "what": "grants power.earth-staff.earth-shield",
+   "needs": "item power — shape unparsed"
+  },
+  {
+   "unit": "item.lightning-staff",
+   "what": "power.lightning-staff.storm targets 'a hex within 4' — engine centres the blast on a UNIT",
+   "needs": "power targeting: arbitrary hex"
+  },
+  {
+   "unit": "item.priest-chain",
+   "what": "grants power.priest-chain.benediction",
+   "needs": "item power — shape unparsed"
+  },
+  {
+   "unit": "item.loaded-dice-of-mirran",
+   "what": "active: Free. Until the end of your next Turn, your attack",
+   "needs": "an ability with charges/targets — capability.consumables"
+  },
+  {
+   "unit": "item.crows-eye-pendant",
+   "what": "active: Reveal every hidden, stealthed or obscured unit wi",
+   "needs": "an ability with charges/targets — capability.consumables"
+  },
+  {
+   "unit": "item.mug-of-endless-dregs",
+   "what": "active: Free. Heal 3 and remove 1 Weak. You take -5 Accura",
+   "needs": "an ability with charges/targets — capability.consumables"
+  },
+  {
+   "unit": "item.aether-crystal",
+   "what": "active: Gain 4 Protection. Protection is spent before Heal",
+   "needs": "an ability with charges/targets — capability.consumables"
+  },
+  {
+   "unit": "item.saints-fingerbone",
+   "what": "active: Remove 1 Burn, 1 Poison and 1 Bleed from the targe",
+   "needs": "an ability with charges/targets — capability.consumables"
+  },
+  {
+   "unit": "item.poison-caltrops",
+   "what": "active: Place three unseen traps: that hex and any two adj",
+   "needs": "an ability with charges/targets — capability.consumables"
+  },
+  {
+   "unit": "item.featherstep-boots",
+   "what": "active: You have AIRWALK: you take no trap and no terrain ",
+   "needs": "an ability with charges/targets — capability.consumables"
+  },
+  {
+   "unit": "item.featherstep-boots",
+   "what": "airwalk: true",
+   "needs": "item field: airwalk"
+  },
+  {
+   "unit": "item.medicine-belt",
+   "what": "active: Heal 4 and remove 2 Bleed. You must be adjacent — ",
+   "needs": "an ability with charges/targets — capability.consumables"
+  },
+  {
+   "unit": "item.wayfinders-compass",
+   "what": "startOfBattle: gain +2 Vision for the rest of the Battle, and you",
+   "needs": "hook: startOfBattle (declared, engine never fires it)"
+  },
+  {
+   "unit": "item.lucky-charm",
+   "what": "onMiss: gain +2 Accuracy for the rest of the Battle",
+   "needs": "trigger shape unparsed"
+  },
+  {
+   "unit": "item.mark-of-suffering",
+   "what": "onTakingDamage: gain +1 Strength and +1 Precision until the end of",
+   "needs": "trigger shape unparsed"
+  },
+  {
+   "unit": "item.mask-of-the-velvet-hand",
+   "what": "active: Free. Enter stealth, and gain +10 Luck for the res",
+   "needs": "an ability with charges/targets — capability.consumables"
+  },
+  {
+   "unit": "item.brass-spyglass-of-thessan",
+   "what": "active: Free. Until the end of the Turn every attack you o",
+   "needs": "an ability with charges/targets — capability.consumables"
+  },
+  {
+   "unit": "item.vial-of-abyssal-essence",
+   "what": "onCrit: the target gains 3 Poison and you take 1 true dama",
+   "needs": "trigger shape unparsed"
+  },
+  {
+   "unit": "item.blink-ring",
+   "what": "active: Free. This is not movement and cannot be interrupt",
+   "needs": "an ability with charges/targets — capability.consumables"
+  },
+  {
+   "unit": "item.holy-chalice",
+   "what": "active: Each ally within 3 hexes, including you, heals 2 +",
+   "needs": "an ability with charges/targets — capability.consumables"
+  },
+  {
+   "unit": "item.wreath-of-natures-protection",
+   "what": "startOfBattle: gain 2 Regeneration",
+   "needs": "hook: startOfBattle (declared, engine never fires it)"
+  },
+  {
+   "unit": "item.wreath-of-natures-protection",
+   "what": "thorns: 3",
+   "needs": "item field: thorns"
+  },
+  {
+   "unit": "item.astrolabe-of-the-threshold",
+   "what": "active: Once per Battle, an ally within 6 hexes may immedi",
+   "needs": "an ability with charges/targets — capability.consumables"
+  },
+  {
+   "unit": "item.council-of-echoes",
+   "what": "onMiss: until the end of your next Turn your attacks gain ",
+   "needs": "trigger shape unparsed"
+  },
+  {
+   "unit": "item.tandras-blood-vial",
+   "what": "onCrit: deal 2 crits",
+   "needs": "trigger shape unparsed"
+  },
+  {
+   "unit": "item.eye-of-the-oracle",
+   "what": "active: Free. Until the end of your next Turn you gain +20",
+   "needs": "an ability with charges/targets — capability.consumables"
+  },
+  {
+   "unit": "item.heart-of-vyrmothax",
+   "what": "onKill: gain 4 Protection and +1 Strength for the rest of ",
+   "needs": "trigger shape unparsed"
+  },
+  {
+   "unit": "item.velans-ferryman-coin",
+   "what": "startOfBattle: +20 Deathbed Fighting",
+   "needs": "hook: startOfBattle (declared, engine never fires it)"
+  },
+  {
+   "unit": "item.velans-ferryman-coin",
+   "what": "active: Free. Stabilise a downed ally within 2 hexes, remo",
+   "needs": "an ability with charges/targets — capability.consumables"
+  },
+  {
+   "unit": "item.tongue-of-xarveth",
+   "what": "statModifier 'corruption' 2",
+   "needs": "stat: corruption (no UnitDef field)"
+  },
+  {
+   "unit": "item.tongue-of-xarveth",
+   "what": "aura: AURA — every enemy within 4 hexes of you takes -10",
+   "needs": "hook: aura (declared, engine never fires it)"
+  },
+  {
+   "unit": "item.starweaver-loom-fragment",
+   "what": "aura: AURA radius 3 — every ally inside has +3 Luck, and",
+   "needs": "hook: aura (declared, engine never fires it)"
+  },
+  {
+   "unit": "item.shard-of-the-shattered-spire",
+   "what": "active: Place three unseen traps on any three hexes within",
+   "needs": "an ability with charges/targets — capability.consumables"
+  },
+  {
+   "unit": "item.torch",
+   "what": "statModifier 'vision' 3",
+   "needs": "stat: vision (no UnitDef field)"
+  },
+  {
+   "unit": "item.torch",
+   "what": "grants power.torch.light",
+   "needs": "item power — shape unparsed"
+  },
+  {
+   "unit": "item.torch",
+   "what": "active: +3 Vision. Once per Battle, free: light a forest h",
+   "needs": "an ability with charges/targets — capability.consumables"
+  },
+  {
+   "unit": "item.banner-assassin",
+   "what": "grants power.banner-assassin.plant",
+   "needs": "item power — shape unparsed"
+  },
+  {
+   "unit": "item.banner-mystic-power",
+   "what": "grants power.banner-mystic-power.plant",
+   "needs": "item power — shape unparsed"
+  },
+  {
+   "unit": "item.banner-vigil",
+   "what": "grants power.banner-vigil.plant",
+   "needs": "item power — shape unparsed"
+  },
+  {
+   "unit": "item.banner-courage",
+   "what": "grants power.banner-courage.plant",
+   "needs": "item power — shape unparsed"
+  },
+  {
+   "unit": "item.banner-heroism",
+   "what": "grants power.banner-heroism.plant",
+   "needs": "item power — shape unparsed"
+  },
+  {
+   "unit": "item.marching-orders",
+   "what": "statModifier 'itemSlots' -1",
+   "needs": "stat: itemSlots (no UnitDef field)"
+  },
+  {
+   "unit": "item.quartermasters-manifest",
+   "what": "statModifier 'itemSlots' 1",
+   "needs": "stat: itemSlots (no UnitDef field)"
+  },
+  {
+   "unit": "item.dusty-map-case",
+   "what": "statModifier 'vision' 2",
+   "needs": "stat: vision (no UnitDef field)"
+  },
+  {
+   "unit": "item.unbroken",
+   "what": "statModifier 'toughness' 1",
+   "needs": "stat: toughness (no UnitDef field)"
+  },
+  {
+   "unit": "item.light-of-hope",
+   "what": "statModifier 'toughness' -1",
+   "needs": "stat: toughness (no UnitDef field)"
+  },
+  {
+   "unit": "item.trackers-eyeglass",
+   "what": "statModifier 'vision' 1",
+   "needs": "stat: vision (no UnitDef field)"
+  },
+  {
+   "unit": "item.backpack",
+   "what": "statModifier 'itemSlots' 2",
+   "needs": "stat: itemSlots (no UnitDef field)"
+  },
+  {
+   "unit": "item.rune-bashing",
+   "what": "onCrit: apply 1 Stun to the target and Knockback 1 — it is",
+   "needs": "trigger shape unparsed"
+  },
+  {
+   "unit": "item.rune-vampire-hunter",
+   "what": "slayer: {\"vampire\":3,\"undead\":1}",
+   "needs": "item field: slayer"
+  },
+  {
+   "unit": "item.rune-nightmare-slayer",
+   "what": "slayer: {\"nightmare\":3}",
+   "needs": "item field: slayer"
+  },
+  {
+   "unit": "item.rune-plant-killer",
+   "what": "onKill: if the kill had the plant tag, immediately regain ",
+   "needs": "trigger shape unparsed"
+  },
+  {
+   "unit": "item.rune-plant-killer",
+   "what": "slayer: {\"plant\":3}",
+   "needs": "item field: slayer"
+  },
+  {
+   "unit": "item.rune-horror-breaker",
+   "what": "onKill: gain +5 Accuracy for the rest of the Battle",
+   "needs": "trigger shape unparsed"
+  },
+  {
+   "unit": "item.rune-horror-breaker",
+   "what": "slayer: {\"horror\":4,\"nightmare\":2}",
+   "needs": "item field: slayer"
+  },
+  {
+   "unit": "item.rune-elemental-bane",
+   "what": "onHit: if the target has the elemental or dragon tag it l",
+   "needs": "trigger shape unparsed"
+  },
+  {
+   "unit": "item.rune-elemental-bane",
+   "what": "slayer: {\"elemental\":4,\"dragon\":2}",
+   "needs": "item field: slayer"
+  },
+  {
+   "unit": "item.rune-monster-slayer",
+   "what": "slayer: {\"beast\":2,\"giant\":2,\"construct\":2,\"drag",
+   "needs": "item field: slayer"
+  },
+  {
+   "unit": "item.rune-executioner",
+   "what": "onKill: regain 1 stamina, and until the end of your next T",
+   "needs": "trigger shape unparsed"
+  },
+  {
+   "unit": "item.rune-hunters-mark",
+   "what": "onHit: the target gains 2 Bleed",
+   "needs": "trigger shape unparsed"
+  },
+  {
+   "unit": "item.rune-crushing",
+   "what": "onHit: the target loses 1 Armor for the rest of the Battl",
+   "needs": "trigger shape unparsed"
+  },
+  {
+   "unit": "item.rune-catblood",
+   "what": "grants tag.catfolk",
+   "needs": "attack row unauthored"
+  },
+  {
+   "unit": "item.rune-aura-of-dread",
+   "what": "aura: AURA — every enemy within 3 hexes gains 2 Weak",
+   "needs": "hook: aura (declared, engine never fires it)"
+  },
+  {
+   "unit": "item.rune-berserker-blood",
+   "what": "onKill: gain +1 Strength for the rest of the Battle, and h",
+   "needs": "trigger shape unparsed"
+  },
+  {
+   "unit": "item.rune-deathdealer",
+   "what": "grants tag.outcast",
+   "needs": "attack row unauthored"
+  },
+  {
+   "unit": "item.rune-deathdealer",
+   "what": "onDodge: gain +10 Crit for the rest of the Battle",
+   "needs": "hook: onDodge (declared, engine never fires it)"
+  },
+  {
+   "unit": "item.rune-deathdealer",
+   "what": "onCrit: gain +10 Dodge for the rest of the Battle",
+   "needs": "trigger shape unparsed"
+  },
+  {
+   "unit": "item.rune-deathdealer",
+   "what": "slayer: {\"demon\":4,\"plant\":4,\"beast\":4}",
+   "needs": "item field: slayer"
+  },
+  {
+   "unit": "item.rune-kairin",
+   "what": "onActivationEnd: heal 2",
+   "needs": "hook: onActivationEnd (declared, engine never fires it)"
+  },
+  {
+   "unit": "item.rune-kairin",
+   "what": "slayer: {\"undead\":3,\"demon\":3}",
+   "needs": "item field: slayer"
+  },
+  {
+   "unit": "item.rune-avatar-of-war",
+   "what": "onKill: Surge Chance +20 for the rest of the Battle, stack",
+   "needs": "trigger shape unparsed"
+  },
+  {
+   "unit": "item.rune-perfect-hunter",
+   "what": "startOfBattle: every slayer bonus you have from any source — weap",
+   "needs": "hook: startOfBattle (declared, engine never fires it)"
+  },
+  {
+   "unit": "item.rune-hells-chosen",
+   "what": "grants tag.demon",
+   "needs": "attack row unauthored"
+  },
+  {
+   "unit": "item.rune-hells-chosen",
+   "what": "aura: AURA — every unit within 3 hexes takes -10 Accurac",
+   "needs": "hook: aura (declared, engine never fires it)"
+  },
+  {
+   "unit": "item.pilgrims-warding-stone",
+   "what": "startOfBattle: gain 4 Protection",
+   "needs": "hook: startOfBattle (declared, engine never fires it)"
+  },
+  {
+   "unit": "item.finger-of-saint-aldwyn",
+   "what": "aura: AURA radius 2 — an ally who ends its Activation in",
+   "needs": "hook: aura (declared, engine never fires it)"
+  },
+  {
+   "unit": "item.idol-of-the-hearthmother",
+   "what": "immunity: {\"burn\":1,\"poison\":1}",
+   "needs": "item field: immunity"
+  },
+  {
+   "unit": "item.censer-of-true-light",
+   "what": "passive: Immunity to Burn 1",
+   "needs": "hook: passive (declared, engine never fires it)"
+  },
+  {
+   "unit": "item.vigils-shield",
+   "what": "startOfBattle: +10 to your Deathbed Fighting roll. The modifier h",
+   "needs": "hook: startOfBattle (declared, engine never fires it)"
+  },
+  {
+   "unit": "item.divine-ward",
+   "what": "active: The target gains Protection equal to 2 + Spirit. S",
+   "needs": "an ability with charges/targets — capability.consumables"
+  },
+  {
+   "unit": "item.bracer-of-courage",
+   "what": "active: Free. remove 5 Stun and 5 Weak from yourself.",
+   "needs": "an ability with charges/targets — capability.consumables"
+  },
+  {
+   "unit": "item.scorpion-shield",
+   "what": "onTakingDamage: Thorns 2, and the attacker gains 2 Poison and 1 Bl",
+   "needs": "trigger shape unparsed"
+  },
+  {
+   "unit": "item.scorpion-shield",
+   "what": "thorns: 2",
+   "needs": "item field: thorns"
+  },
+  {
+   "unit": "item.blessing-of-the-hearthmother",
+   "what": "onActivationEnd: heal 2 and remove 1 Weak",
+   "needs": "hook: onActivationEnd (declared, engine never fires it)"
+  },
+  {
+   "unit": "item.stormcallers-orb",
+   "what": "immunity: {\"frost\":1}",
+   "needs": "item field: immunity"
+  },
+  {
+   "unit": "item.ring-of-divine-protection",
+   "what": "startOfBattle: gain Protection equal to 4 + the party's Spirit",
+   "needs": "hook: startOfBattle (declared, engine never fires it)"
+  },
+  {
+   "unit": "item.kals-mercy",
+   "what": "passive: Immunity to Bleed 1. One point of Bleed is removed",
+   "needs": "hook: passive (declared, engine never fires it)"
+  },
+  {
+   "unit": "item.roster-of-the-fallen",
+   "what": "onDeath: your name goes on the roster: every ally gains +1 ",
+   "needs": "trigger shape unparsed"
+  },
+  {
+   "unit": "item.banner-of-resolve",
+   "what": "active: Each ally within 3 hexes, including you, removes a",
+   "needs": "an ability with charges/targets — capability.consumables"
+  },
+  {
+   "unit": "item.cleanse-potion",
+   "what": "active: Remove 3 Burn and 3 Poison.",
+   "needs": "an ability with charges/targets — capability.consumables"
+  },
+  {
+   "unit": "item.potion-of-strength",
+   "what": "active: +2 Strength for the rest of the Battle.",
+   "needs": "an ability with charges/targets — capability.consumables"
+  },
+  {
+   "unit": "item.potion-of-agility",
+   "what": "active: +5 Dodge and +1 Movement for the rest of the Battl",
+   "needs": "an ability with charges/targets — capability.consumables"
+  },
+  {
+   "unit": "item.embolden",
+   "what": "active: +5 Accuracy and +3 Crit for the rest of the Battle",
+   "needs": "an ability with charges/targets — capability.consumables"
+  },
+  {
+   "unit": "item.burst-of-speed",
+   "what": "active: Free. Move up to 4 hexes immediately. This is not ",
+   "needs": "an ability with charges/targets — capability.consumables"
+  },
+  {
+   "unit": "item.restorative-tonic",
+   "what": "active: Heal 3 and remove 1 Stun and 1 Weak.",
+   "needs": "an ability with charges/targets — capability.consumables"
+  },
+  {
+   "unit": "item.trolls-blood",
+   "what": "active: The target gains 4 Regen: it heals 1 at the start ",
+   "needs": "an ability with charges/targets — capability.consumables"
+  },
+  {
+   "unit": "item.invigorate",
+   "what": "active: Free. Immediately regain 3 stamina. This cannot ta",
+   "needs": "an ability with charges/targets — capability.consumables"
+  },
+  {
+   "unit": "item.greater-strength",
+   "what": "active: +3 Strength for the rest of the Battle. You also t",
+   "needs": "an ability with charges/targets — capability.consumables"
+  },
+  {
+   "unit": "item.arcane-power",
+   "what": "active: +2 Magic for the rest of the Battle.",
+   "needs": "an ability with charges/targets — capability.consumables"
+  },
+  {
+   "unit": "item.water-of-divinity",
+   "what": "active: +2 Spirit for the rest of the Battle, then every a",
+   "needs": "an ability with charges/targets — capability.consumables"
+  },
+  {
+   "unit": "item.full-healing",
+   "what": "active: Heal 15 and remove 5 Burn, Poison, Bleed and Frost",
+   "needs": "an ability with charges/targets — capability.consumables"
+  },
+  {
+   "unit": "item.demon-hunters-brew",
+   "what": "active: Every enemy within 3 hexes gains 3 Burn. Your atta",
+   "needs": "an ability with charges/targets — capability.consumables"
+  },
+  {
+   "unit": "item.frenzy-potion",
+   "what": "active: +4 Strength and +10 Crit for the rest of the Battl",
+   "needs": "an ability with charges/targets — capability.consumables"
+  },
+  {
+   "unit": "item.supercharge",
+   "what": "active: Free. Heal 4 and gain +1 Surge for the rest of the",
+   "needs": "an ability with charges/targets — capability.consumables"
+  },
+  {
+   "unit": "item.full-restoration",
+   "what": "active: Heal to full, remove 3 of every status, and remove",
+   "needs": "an ability with charges/targets — capability.consumables"
+  },
+  {
+   "unit": "item.dragons-blood",
+   "what": "active: +1 Armor and +1 Resist for the rest of the Battle,",
+   "needs": "an ability with charges/targets — capability.consumables"
+  },
+  {
+   "unit": "item.inquisitors-scroll",
+   "what": "active: remove 5 Burn from every ally within 4 hexes. Ever",
+   "needs": "an ability with charges/targets — capability.consumables"
+  },
+  {
+   "unit": "item.knights-boon-water",
+   "what": "active: +2 Armor and +2 Resist for the rest of the Battle,",
+   "needs": "an ability with charges/targets — capability.consumables"
+  },
+  {
+   "unit": "item.draining-elixir",
+   "what": "active: Heal 20 and remove 5 Burn and 5 Poison. For the re",
+   "needs": "an ability with charges/targets — capability.consumables"
+  },
+  {
+   "unit": "item.flaming-oil",
+   "what": "active: Once per Battle: apply 2 Burn (SOFT — amount not d",
+   "needs": "an ability with charges/targets — capability.consumables"
+  },
+  {
+   "unit": "item.holy-water",
+   "what": "active: Once per Battle: a magic attack at range 3 that de",
+   "needs": "an ability with charges/targets — capability.consumables"
+  },
+  {
+   "unit": "item.holy-water",
+   "what": "slayer: {\"undead\":4,\"demon\":2,\"vampire\":3}",
+   "needs": "item field: slayer"
+  },
+  {
+   "unit": "item.bandages",
+   "what": "active: Once per Battle, free, 0 Stamina: Stabilize an adj",
+   "needs": "an ability with charges/targets — capability.consumables"
+  },
+  {
+   "unit": "item.bear-trap",
+   "what": "active: Once per Battle: place a trap on an empty hex with",
+   "needs": "an ability with charges/targets — capability.consumables"
+  },
+  {
+   "unit": "item.poison-dart",
+   "what": "active: Once per Battle: a ranged attack at range 4 that d",
+   "needs": "an ability with charges/targets — capability.consumables"
+  },
+  {
+   "unit": "item.healing-potion",
+   "what": "active: Once per Battle, free: heal yourself 3. (Replaces ",
+   "needs": "an ability with charges/targets — capability.consumables"
+  },
+  {
+   "unit": "item.restoration-potion",
+   "what": "active: Once per Battle, costs your primary action: heal y",
+   "needs": "an ability with charges/targets — capability.consumables"
+  },
+  {
+   "unit": "item.rage-potion",
+   "what": "active: Once per Battle, free: +2 Strength and +10 Accurac",
+   "needs": "an ability with charges/targets — capability.consumables"
+  },
+  {
+   "unit": "item.necklace-of-fire-immunity",
+   "what": "immunity: {\"burn\":1}",
+   "needs": "item field: immunity"
+  },
+  {
+   "unit": "item.necklace-of-poison-immunity",
+   "what": "immunity: {\"poison\":1}",
+   "needs": "item field: immunity"
+  },
+  {
+   "unit": "item.necklace-of-weakness-immunity",
+   "what": "immunity: {\"weak\":1}",
+   "needs": "item field: immunity"
+  },
+  {
+   "unit": "item.necklace-of-frost-immunity",
+   "what": "immunity: {\"frost\":1}",
+   "needs": "item field: immunity"
+  },
+  {
+   "unit": "item.lumberjack-axe",
+   "what": "attack.lumberjack-axe.cleave targets 'an adjacent hex and one hex adjacent to both you a' — lands SINGLE-TARGET",
+   "needs": "area attack shape"
+  },
+  {
    "unit": "critChart",
    "what": "blinded: -4 Vision",
    "needs": "no vision model (gap L-3a)"
