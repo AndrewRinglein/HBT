@@ -1,0 +1,57 @@
+{
+ "_about": "The showcase library the standalone page bakes in, in dropdown order. Each file is an export-battle.mts output and carries its own engineCommit stamp. Regenerate with tools/gate.mjs --fresh.",
+ "battles": [
+  {
+   "file": "test_map_embers_s0.json",
+   "label": "Embers"
+  },
+  {
+   "file": "test_map_showcase_s0.json",
+   "label": "Showcase"
+  },
+  {
+   "file": "map_flanks_s2.json",
+   "label": "Flanks"
+  },
+  {
+   "file": "map_thicket_s0.json",
+   "label": "Thicket"
+  },
+  {
+   "file": "map_field_s3.json",
+   "label": "Field"
+  },
+  {
+   "file": "map_highlands_s1.json",
+   "label": "Highlands"
+  },
+  {
+   "file": "showcase.civilians.json",
+   "label": "Civilians"
+  },
+  {
+   "file": "showcase.prologue-party.json",
+   "label": "Hunter Alone"
+  },
+  {
+   "file": "showcase.prologue-enemies.json",
+   "label": "Prologue Bestiary"
+  },
+  {
+   "file": "showcase.beasts.json",
+   "label": "Beasts"
+  },
+  {
+   "file": "showcase.alpha-team.json",
+   "label": "Alpha Team"
+  },
+  {
+   "file": "showcase.item-powers.json",
+   "label": "Item Powers"
+  },
+  {
+   "file": "showcase.arc-variant.json",
+   "label": "Arc Golem"
+  }
+ ]
+}
