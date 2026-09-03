@@ -35,6 +35,8 @@ export const ENGINE_EVENTS = [
   'battle.begin', 'battle.end',
   'map.loaded',
   'unit.enter',
+  // widened 2026-09-03 (seam.loadout, G9): what the engine put on each fielded hero, per item
+  'unit.equipped',
   'turn.begin', 'turn.end',
   'phase.begin', 'phase.end',
   'damage.applied', 'heal.applied',

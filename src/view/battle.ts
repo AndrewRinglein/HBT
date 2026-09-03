@@ -26,6 +26,12 @@ export type BattleUnitView = {
   row: number
   hp: number
   maxHp: number
+  /** What the engine equipped on this unit at fielding, in order — from its unit.equipped lines (seam.loadout). */
+  equipped: string[]
+  /** The attacks those items grant, in order. */
+  attacks: string[]
+  /** Worn on the record, not fielded — a spare weapon the engine cannot yet take (SWITCHES.spareWeapons). */
+  leftBehind: string[]
 }
 
 export type BattleView = {
@@ -46,6 +52,11 @@ export function viewBattle(campaign: CampaignState): BattleView {
   const units: BattleUnitView[] = []
   const seen: Record<'hero' | 'enemy', number> = { hero: 0, enemy: 0 }
   for (const ev of ctx.events) {
+    if (ev.type === 'unit.equipped') {
+      const u = units.find((x) => x.unitId === ev.actor)
+      if (u) { u.equipped.push(ev['itemId'] as string); u.attacks.push(...(ev['grants'] as string[])) }
+      continue
+    }
     if (ev.type !== 'unit.enter') continue
     const side = ev['side'] as 'hero' | 'enemy'
     const index = seen[side]++
@@ -55,6 +66,7 @@ export function viewBattle(campaign: CampaignState): BattleView {
       heroId: side === 'hero' ? e.deployed[index] ?? null : null,
       hex, col: colOf(hex), row: rowOf(hex),
       hp: ev['hp'] as number, maxHp: ev['maxHp'] as number,
+      equipped: [], attacks: [], leftBehind: side === 'hero' ? [...(spec.heroLeftBehind?.[index] ?? [])] : [],
     })
   }
   units.sort((a, b) => (a.side === b.side ? a.index - b.index : a.side === 'hero' ? -1 : 1))

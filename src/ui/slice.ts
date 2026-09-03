@@ -334,7 +334,7 @@ function equipPanel(c: CampaignState, heroIds: readonly string[]): string {
     ${stash.length ? `<table><tr><th>stash</th><th>onto</th></tr>${stash.map((item) => `<tr><td>${esc(nm(item))} <span class="meta">${esc(itemOf(item).itemClass)} · t${itemOf(item).tier}${esc(cost(item))}</span></td><td>${heroIds.map((h) => { if (canEquip(c, h, item)) return `<button class="quiet" data-act="equip" data-id="${esc(h)}" data-item="${esc(item)}">${esc(c.roster[h]!.name)}</button>`; const d = swapFor(h, item); if (d) return `<button class="quiet" data-act="equip" data-id="${esc(h)}" data-item="${esc(item)}" data-displace="${esc(d)}" title="${esc('swap out ' + nm(d))}">${esc(c.roster[h]!.name)} ⇄ ${esc(nm(d))}</button>`; return `<span class="meta" title="${esc(whyNotEquip(c, h, item) ?? '')}">${esc(c.roster[h]!.name)} —</span>` }).join(' ')}</td></tr>`).join('')}</table>` : '<p class="meta">the stash is empty — the Forge\'s shelf, the spoils, and anything taken off fill it</p>'}
     ${paid.length ? `<p class="meta">Paid this session, refunded if taken off before you leave: ${paid.map((p) => `${esc(nm(p.itemId))} on ${esc(c.roster[p.heroId]?.name ?? p.heroId)}`).join(' · ')}</p>` : ''}
     ${setSummary(c, heroIds)}
-    <p class="meta">What is equipped is recorded on the hero; the engine still fields the unit row's own kit until the seam lands (engine/ITEMS-PLAN.md). Set bonuses are resolved here and written into the fielding as numbers; the engine's seam.unit-mods is unlanded, so they are recorded, not fought.</p>`
+    <p class="meta">What is equipped is what is fielded: the engine applies these rows at fielding — a swapped weapon changes the unit's attacks. Set bonuses are resolved here and written into the fielding as numbers; the engine's seam.unit-mods is unlanded, so they are recorded, not fought.</p>`
 }
 
 /** What leaving Equip says: every triggered set, per hero — or that none is. */
@@ -400,7 +400,7 @@ function boardSvg(v: BattleView): string {
     const { cx, cy } = centre(u.col, u.row)
     const fill = u.side === 'hero' ? '#c9a227' : '#c05a4e'
     const label = u.side === 'hero' ? 'H' + (u.index + 1) : 'E' + (u.index + 1)
-    units += `<g><circle cx="${cx.toFixed(1)}" cy="${cy.toFixed(1)}" r="${(W * 0.34).toFixed(1)}" fill="${fill}" stroke="#000" stroke-width="1.2"/><text x="${cx.toFixed(1)}" y="${(cy + 4).toFixed(1)}" text-anchor="middle" font-size="11" font-weight="700" fill="#14110f">${label}</text><title>${esc(u.name)} · ${esc(u.typeId)} · hp ${u.hp}/${u.maxHp} · hex ${u.hex}</title></g>`
+    units += `<g><circle cx="${cx.toFixed(1)}" cy="${cy.toFixed(1)}" r="${(W * 0.34).toFixed(1)}" fill="${fill}" stroke="#000" stroke-width="1.2"/><text x="${cx.toFixed(1)}" y="${(cy + 4).toFixed(1)}" text-anchor="middle" font-size="11" font-weight="700" fill="#14110f">${label}</text><title>${esc(u.name)} · ${esc(u.typeId)} · hp ${u.hp}/${u.maxHp} · hex ${u.hex}${u.equipped.length ? ' · carries ' + esc(u.equipped.map((i) => i.replace('item.', '')).join(', ')) : ''}${u.attacks.length ? ' · attacks ' + esc(u.attacks.map((a) => a.replace('attack.', '')).join(', ')) : ''}</title></g>`
   }
   const kinds = [...new Set(v.terrain)].sort()
   return `<div class="board"><svg viewBox="0 0 ${width.toFixed(0)} ${height.toFixed(0)}" width="${width.toFixed(0)}" height="${height.toFixed(0)}">${hexes}${units}</svg></div>
@@ -429,6 +429,7 @@ function battleScreen(c: CampaignState): string {
   return `<h2>The battle — ${esc(v.mapId)}</h2>
     <p class="meta"><code>${esc(v.engagementId)}</code> · ${esc(v.kind)} · ${heroes.length} heroes, ${enemies.length} enemies, placed by the engine's own setup. Nothing moves: combat is not played in the slice.</p>
     ${boardSvg(v)}
+    <div class="card"><h3>Fielded as equipped</h3><table><tr><th>hero</th><th>carries</th><th>attacks</th></tr>${heroes.map((u) => `<tr><td><span class="tag hero">H${u.index + 1}</span> ${esc(u.name)}</td><td class="meta">${esc(u.equipped.map((i) => itemOf(i).name).join(', ') || '—')}</td><td class="meta">${esc(u.attacks.map((a) => a.replace('attack.', '')).join(', ') || '—')}${u.leftBehind.length ? ` <span class="lost">left behind: ${esc(u.leftBehind.map((i) => itemOf(i).name).join(', '))} — a spare weapon the engine cannot yet take (seam.spare-weapons)</span>` : ''}</td></tr>`).join('')}</table></div>
     <h2>Set what happened</h2>
     <div class="card">
       <div class="bar">

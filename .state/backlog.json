@@ -604,7 +604,8 @@
   "needs": [
    "equip.slots",
    "sets.resolve"
-  ]
+  ],
+  "attempts": 2
  },
  {
   "id": "rewards.tiered",
@@ -624,7 +625,8 @@
    "item.ancient-tome.cursed-skull",
    "item.pilgrims-warding-stone"
   ],
-  "generalizationExempt": "the variants are two pool rows of different classes (a tier-3 weapon, a tier-1 idol) the odds table can draw; the mechanism reads REWARD_ODDS and the class off the row; tools/probe.mts's autoplay takes rewards but the draw is keyed by the Engagement, so liveness is the probe's over many keys"
+  "generalizationExempt": "the variants are two pool rows of different classes (a tier-3 weapon, a tier-1 idol) the odds table can draw; the mechanism reads REWARD_ODDS and the class off the row; tools/probe.mts's autoplay takes rewards but the draw is keyed by the Engagement, so liveness is the probe's over many keys",
+  "attempts": 1
  },
  {
   "id": "screens.equip",

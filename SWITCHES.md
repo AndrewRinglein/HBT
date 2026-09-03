@@ -25,6 +25,7 @@ document names it, the row cites the document and this table never sees it.
 | `shop.supplies` (retired) | What one item on the Forge's shelf costs in Supplies. Gear is unpriced (THIN-SLICE-IMPLEMENTATION.md §9 blocker 4). | `6` | open — soft |
 | `prologue.paysRenown` | Do the opening's five battles pay Renown? `STATE.md` lists it open ("whether those battles pay Renown"); the Charter's clock is +1 per Engagement won with no exception written. | `true` | open |
 | `quest.faith` · `quest.odds` | The one authored quest's pay and its chance of coming home. Quests pay Faith (7-KINGDOM-SETTLED.md); `resolveQuestOdds` is "the % on screen" (GAME-ARCHITECTURE.md §2.6); neither number is written anywhere. | `8` · `100` | open — soft |
+| `seam.spareWeapons` | A weapon carried past the hands, in an item slot, still grants attacks (ruled 2026-09-02; `equip.spareGrants` in GEAR-IMPLEMENTATION.md §3). The engine's `applyItems` counts hands over every weapon handed over and refuses a third — engine gap `seam.spare-weapons`, filed 2026-09-03. Until it lands: leave the spare behind at fielding and say so on the battle screen, or hand it over and let the engine refuse? | `left-behind` | open — engine gap |
 | `heal.faith` | Field Surgery at the Chapel — Andrew: "maybe 7 faith to heal your hero immediately" (7-KINGDOM-NOTES.md:189). Not a switch so much as a number waiting for a sweep. | `7` | ruled, soft |
 
 ## Notes

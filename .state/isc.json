@@ -36,7 +36,14 @@
   "closed": {
    "at": "2026-09-02 03:43",
    "sha": "0f1db1a"
-  }
+  },
+  "regressed": [
+   {
+    "at": "2026-09-03 10:45",
+    "sha": "f6515c2",
+    "tail": "the options are the engine's own BattleOptions, and the battle was run by its runBattle: AssertionError: expected [ { seq: 221, turn: 5, …(11) } ] to deeply equal []"
+   }
+  ]
  },
  "004": {
   "red": {
@@ -315,7 +322,14 @@
   "closed": {
    "at": "2026-09-02 05:25",
    "sha": "cae0665"
-  }
+  },
+  "regressed": [
+   {
+    "at": "2026-09-03 10:45",
+    "sha": "f6515c2",
+    "tail": "an attack the Stage offers is answered by fighting, or costs the Territory when passed: Error: scenario 'engagement.defend.sanctuary.week-14': alpha-osric would wield more than two hands of weapons (item.longsword, item.knight-shield, item.basic-armor, item.greatsword)"
+   }
+  ]
  },
  "008": {
   "red": {
@@ -419,7 +433,14 @@
   "closed": {
    "at": "2026-09-02 05:43",
    "sha": "6936a71"
-  }
+  },
+  "regressed": [
+   {
+    "at": "2026-09-03 10:45",
+    "sha": "f6515c2",
+    "tail": "over twelve autoplayed Weeks, every Salvage grant is caused by a won Conquer, and other currencies arrive from labours too: Error: scenario 'engagement.defend.sanctuary.week-14': alpha-osric would wield more than two hands of weapons (item.longsword, item.knight-shield, item.basic-armor, item.dagger"
+   }
+  ]
  },
  "019": {
   "red": {
@@ -497,7 +518,14 @@
   "closed": {
    "at": "2026-09-02 06:19",
    "sha": "e78a8bd"
-  }
+  },
+  "regressed": [
+   {
+    "at": "2026-09-03 10:45",
+    "sha": "f6515c2",
+    "tail": "the opening fields them in order and the civilians join the roster: Error: scenario 'engagement.conquer.prologue-2': hero.base.warrior-iron would wield more than two hands of weapons (item.destroyed-mail, item.tower-shield, item.war-axe, item.shortbow)"
+   }
+  ]
  },
  "044": {
   "red": {
@@ -510,7 +538,14 @@
   "closed": {
    "at": "2026-09-02 06:19",
    "sha": "e78a8bd"
-  }
+  },
+  "regressed": [
+   {
+    "at": "2026-09-03 10:45",
+    "sha": "f6515c2",
+    "tail": "1 · +2 · +1 · +1 · +1 up to six or the pool, then the Beacon; the opening ends with the Kingdom Territory and the Ridge held at Week 1: Error: scenario 'engagement.conquer.prologue-2': hero.base.warrior-iron would wield more than two hands of weapons (item.destroyed-mail, item.tower-shield, item.war"
+   }
+  ]
  },
  "045": {
   "red": {
@@ -523,7 +558,14 @@
   "closed": {
    "at": "2026-09-02 06:19",
    "sha": "e78a8bd"
-  }
+  },
+  "regressed": [
+   {
+    "at": "2026-09-03 10:45",
+    "sha": "f6515c2",
+    "tail": "a lost battle 5, after the Sanctuary is taken in battle 4, does not end the run; nor does a lost Conquer in Week 2: Error: scenario 'engagement.conquer.prologue-4': alpha-osric is handed 'item.knight-shield' twice"
+   }
+  ]
  },
  "023": {
   "red": {
@@ -606,7 +648,14 @@
   "closed": {
    "at": "2026-09-02 09:48",
    "sha": "e891836"
-  }
+  },
+  "regressed": [
+   {
+    "at": "2026-09-03 10:45",
+    "sha": "f6515c2",
+    "tail": "    at <anonymous> (/sessions/zealous-exciting-galileo/mnt/Heroes of Blight and Tragic/kingdom/tools/slice-run.mts:30:1) |     at ModuleJob.run (node:internal/modules/esm/module_job:343:25) | Node.js v22.23.2"
+   }
+  ]
  },
  "025": {
   "red": {
@@ -619,7 +668,14 @@
   "closed": {
    "at": "2026-09-02 09:48",
    "sha": "e891836"
-  }
+  },
+  "regressed": [
+   {
+    "at": "2026-09-03 10:45",
+    "sha": "f6515c2",
+    "tail": "    at <anonymous> (/sessions/zealous-exciting-galileo/mnt/Heroes of Blight and Tragic/kingdom/tools/slice-run.mts:30:1) |     at ModuleJob.run (node:internal/modules/esm/module_job:343:25) | Node.js v22.23.2"
+   }
+  ]
  },
  "051": {
   "red": {
@@ -645,7 +701,14 @@
   "closed": {
    "at": "2026-09-03 03:59",
    "sha": "3ae1be3"
-  }
+  },
+  "regressed": [
+   {
+    "at": "2026-09-03 10:45",
+    "sha": "f6515c2",
+    "tail": "a recruit from the Beacon arrives equipped; a rescued civilian carries its tool: Error: scenario 'engagement.conquer.prologue-4': alpha-osric is handed 'item.knight-shield' twice"
+   }
+  ]
  },
  "053": {
   "red": {
@@ -788,6 +851,24 @@
   "closed": {
    "at": "2026-09-03 10:39",
    "sha": "c0ec289"
+  }
+ },
+ "064": {
+  "red": {
+   "at": "2026-09-03 10:42",
+   "sha": "f6515c2",
+   "hash": "be45e57410e8",
+   "how": "feature absent",
+   "tail": "       |                                                                     ^ |      46|     for (const a of itemOf(LONGBOW).grants) expect(hunter.attacks).not… |      47|     // the engine says why, per item, on the log (Law 12) — and the vi…"
+  }
+ },
+ "065": {
+  "red": {
+   "at": "2026-09-03 17:41",
+   "sha": "f6515c2",
+   "hash": "a829c53950c9",
+   "how": "feature absent",
+   "tail": "       |                                                         ^ |      71|     const stash = ctx.campaign.stash.length |      72|     performTakeReward(ctx, offers[2]!.id, 'test')"
   }
  }
 }

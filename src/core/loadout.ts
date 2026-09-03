@@ -11,6 +11,7 @@
 
 import type { CampaignState, HeroId } from './campaign.js'
 import { itemOf, isShield, type ItemRow } from '../content/items.js'
+import { SWITCHES } from '../content/switches.js'
 
 export const HANDS = 2
 
@@ -81,4 +82,28 @@ export function whyNotFit(campaign: CampaignState, heroId: HeroId, equipped: rea
   for (const [cls, cap] of Object.entries(CAPPED)) if ((l.counts[cls] ?? 0) > cap) return `${h.name} already carries a ${cls} — one ${cls} per hero`
   if (l.itemSlots.used > l.itemSlots.max) return `${h.name} has ${l.itemSlots.max} item slot${l.itemSlots.max === 1 ? '' : 's'} and this would take ${l.itemSlots.used}`
   return null
+}
+
+/**
+ * What of `equipped` is handed to the engine at fielding, and what stays behind
+ * (seam.loadout, G9). The ruled slot model lets a weapon past the hands ride in an
+ * item slot and still grant attacks; the engine's own physical check refuses more
+ * than two hands of weapons (the engine backlog item seam.spare-weapons). SWITCHES.spareWeapons
+ * says which side wins until the engine lands it — the left-behind list is shown,
+ * never swallowed. Pure over rows; hands are counted as the engine counts them.
+ */
+export function fieldedItemsOf(equipped: readonly string[]): { fielded: string[]; leftBehind: string[] } {
+  if (SWITCHES.spareWeapons === 'kept') return { fielded: [...equipped], leftBehind: [] }
+  const fielded: string[] = [], leftBehind: string[] = []
+  let hands = 0
+  for (const id of equipped) {
+    const row = itemOf(id)
+    if (row.itemClass === 'weapon') {
+      const h = Math.max(1, row.hands)
+      if (hands + h > HANDS) { leftBehind.push(id); continue }
+      hands += h
+    }
+    fielded.push(id)
+  }
+  return { fielded, leftBehind }
 }

@@ -331,7 +331,10 @@ if (MODE !== 'land') {
 
 // ── land ────────────────────────────────────────────────────────────────────
 sh('git add -A')
-sh(`git -c user.email=a@b -c user.name=kingdom commit -q -m ${JSON.stringify(`${id}: ${item.spec.slice(0, 72)}`)}`)
+// Backticks stripped from the subject (2026-09-03): a spec quoting `equipped` cut at 72
+// characters left an unbalanced backtick inside the shell's double quotes, the commit
+// never ran, and the gate died between `git add -A` and the ledger.
+sh(`git -c user.email=a@b -c user.name=kingdom commit -q -m ${JSON.stringify(`${id}: ${item.spec.slice(0, 72).replace(/[`$]/g, '')}`)}`)
 const sha = sh('git rev-parse --short HEAD').trim()
 item.status = needsReview ? 'done-needs-review' : 'done'
 item.sha = sha

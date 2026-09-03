@@ -21,6 +21,7 @@ import { createBattle, runBattle } from '../engine.js'
 import type { BattleOptions, Event, Outcome, Side } from '../engine.js'
 import { itemOf } from '../content/items.js'
 import { fieldedModsOfRows, type FieldedMods } from './sets.js'
+import { fieldedItemsOf } from './loadout.js'
 
 /** A campaign-free fielding: everything a battle needs, nothing about a Campaign. */
 export type EngagementSpec = {
@@ -42,6 +43,16 @@ export type EngagementSpec = {
    * The engine's seam.unit-mods is unlanded, so battleOptionsOf cannot pass these yet.
    */
   readonly heroMods?: readonly FieldedMods[]
+  /**
+   * seam.loadout (G9, 2026-09-03): what each hero carries — the hero's `equipped` list, in
+   * placement order, parallel to `heroes`. The engine applies the rows at
+   * fielding (seam.items-per-unit): attacks granted, statModifiers folded. Absent
+   * = every hero's Codex default kit, so a fielding named without a roster is
+   * unchanged. "The items should go into battle" (7-KINGDOM-SETTLED.md 2026-09-02).
+   */
+  readonly heroItems?: readonly (readonly string[])[]
+  /** Worn on the hero's record but not handed over — a spare weapon past the hands, until the engine's seam.spare-weapons lands (SWITCHES.spareWeapons). Parallel to `heroes`; shown, never swallowed. */
+  readonly heroLeftBehind?: readonly (readonly string[])[]
 }
 
 /** One unit's tally, folded from the log. Order: heroes in spec order, then enemies. */
@@ -98,7 +109,12 @@ export function makeBattleState(
   const heroes = rows.map((h) => h.unitType)
   // the sets, resolved here — "looked up when the players are being built and shipped to combat"
   const heroMods = rows.map((h) => fieldedModsOfRows((h.equipped ?? []).map(itemOf)))
-  return { id: engagement.id, mapId: engagement.mapId, heroes, enemies: [...engagement.enemies], seed: engagement.seed, heroMods }
+  // what is equipped is what is fielded — a hero row without `equipped` (a bare fielding) keeps its kit
+  const carried = rows.every((h) => h.equipped) ? rows.map((h) => fieldedItemsOf(h.equipped!)) : null
+  return {
+    id: engagement.id, mapId: engagement.mapId, heroes, enemies: [...engagement.enemies], seed: engagement.seed, heroMods,
+    ...(carried ? { heroItems: carried.map((c) => c.fielded), heroLeftBehind: carried.map((c) => c.leftBehind) } : {}),
+  }
 }
 
 /** The joint §4.1 names: a spec becomes the engine's own options, nothing more. */
@@ -112,6 +128,9 @@ export function battleOptionsOf(spec: EngagementSpec): BattleOptions {
     enemyCount: spec.enemies.length,
     ...(spec.heroHexes ? { heroHexes: [...spec.heroHexes] } : {}),
     ...(spec.enemyHexes ? { enemyHexes: [...spec.enemyHexes] } : {}),
+    // seam.loadout: the equipped lists go through as item ids; the engine reads its own rows for them
+    ...(spec.heroItems ? { heroItems: spec.heroItems.map((l) => [...l]) } : {}),
+    // heroMods wait on the engine's seam.unit-mods — resolved and recorded on the spec, not fought
   }
 }
 
