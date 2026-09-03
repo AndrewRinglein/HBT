@@ -208,7 +208,8 @@ const TRIG_HOOKS = new Set(['onAttack', 'onMiss', 'onHit', 'onCrit', 'onDamage',
 
 // Capabilities the engine HAS now — a row naming one of these is not gapped for it.
 // capability.power: capability.power-pool, 2026-09-03.
-const HAVE = new Set(['capability.power']);
+// capability.enemy-action-cooldown: 2026-09-03.
+const HAVE = new Set(['capability.power', 'capability.enemy-action-cooldown']);
 function compileTrigger(t, unitId, attackId) {
   const where = attackId ?? '(unit)';
   const needs = (t.needs || []).filter((n) => !HAVE.has(n));
@@ -295,6 +296,7 @@ for (const u of [...AUTH.units].sort((a, b) => (a.id < b.id ? -1 : 1))) {
       bonus: a.damage?.mod ?? 0, stat: a.damage?.stat || 'strength',
       reach: ranged ? a.range : 1, staminaCost: 0, // enemies do not run stamina
       ...(a.damage?.powerScale ? { powerScale: a.damage.powerScale } : {}),   // capability.power-pool, 2026-09-03
+      ...(a.cooldown ? { cooldown: a.cooldown } : {}), ...(a.warmup ? { warmup: a.warmup } : {}),   // capability.enemy-action-cooldown, 2026-09-03
     };
     attackIds.push(a.id);
     unitTriggers.push(...(a.triggers || []).flatMap((t) => compileTrigger(t, id, a.id)));
@@ -1112,7 +1114,7 @@ function testAbilities() {
   return out;
 }
 const UNIT_FIELDS = new Set(['typeId', 'name', 'side', 'maxHp', 'armor', 'resist', 'accuracy', 'dodge', 'strength', 'precision', 'magic', 'spirit', 'crit', 'luck', 'role', 'movement', 'reach', 'maxStamina', 'staminaRegen', 'ai', 'attacks', 'abilities', 'moves', 'tags', 'triggers']);
-const ATTACK_FIELDS = new Set(['id', 'name', 'kind', 'damageType', 'bonus', 'stat', 'reach', 'staminaCost', 'crit', 'critCount', 'area', 'cooldown', 'accuracy']);
+const ATTACK_FIELDS = new Set(['id', 'name', 'kind', 'damageType', 'bonus', 'stat', 'reach', 'staminaCost', 'crit', 'critCount', 'area', 'cooldown', 'warmup', 'accuracy']);
 // a delta may start from any packed row — the real families AND the test
 // cohort (test-gash-zombie is the cohort's zombie plus one rider)
 const realUnits = new Map([...alphaTeam, ...prologueParty, ...authoredEnemies, ...heroes, ...enemies].map((u) => [u.typeId, u]));

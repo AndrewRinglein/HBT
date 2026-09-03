@@ -10,7 +10,8 @@
     "staminaCost": 0,
     "crit": 47,
     "critCount": 2,
-    "note": "station.crit-count's first consumer (2026-08-27): 'Do two criticals.' crit 47 puts the golem's chance at 50 so multi-criticals resolve in the verify scenario instead of waiting on a 3% fluke."
+    "note": "station.crit-count's first consumer (2026-08-27): 'Do two criticals.' crit 47 puts the golem's chance at 50 so multi-criticals resolve in the verify scenario instead of waiting on a 3% fluke. | capability.enemy-action-cooldown (2026-09-03): cooldown 2 — the golem slams every other Turn and reaches for Overhead between, pure data.",
+    "cooldown": 2
   },
   {
     "id": "attack.test-ram.overhead",
@@ -23,8 +24,9 @@
     "staminaCost": 4,
     "crit": 47,
     "critCount": 3,
-    "note": "station.crit-count's second variant: 'Do three criticals,' pure data. Costs stamina so the golem alternates it with the slam as its pool cycles. | station.accuracy-field's second variant (2026-09-03): accuracy −10 on the row, pure data — the same slot Punch's −5 uses.",
-    "accuracy": -10
+    "note": "station.crit-count's second variant: 'Do three criticals,' pure data. Costs stamina so the golem alternates it with the slam as its pool cycles. | station.accuracy-field's second variant (2026-09-03): accuracy −10 on the row, pure data — the same slot Punch's −5 uses. | capability.enemy-action-cooldown: warmup 1 — not before Turn 2, pure data (the second variant).",
+    "accuracy": -10,
+    "warmup": 1
   },
   {
     "id": "attack.test-arc.sweep",
