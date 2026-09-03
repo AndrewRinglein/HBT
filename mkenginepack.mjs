@@ -964,6 +964,57 @@ function takeItemAttack(a) {
     ...(a.hits > 1 ? { hits: a.hits } : {}),   // attack.multihit, 2026-09-03
   };
 }
+// ── ITEM ACTIVES (capability.charges, 2026-09-03) ───────────────────────────
+const ITEM_TARGET = (tgt) => {
+  let r;
+  if (!tgt || tgt === 'self') return { target: { select: 'self', side: 'any' }, range: 0 };
+  if ((r = tgt.match(/^(?:yourself or )?one ally within (\d+) hex(?:es)?$/))) return { target: { select: 'unit', side: 'ally' }, range: +r[1] };
+  if ((r = tgt.match(/^one enemy within (\d+) hex(?:es)?$/))) return { target: { select: 'unit', side: 'enemy' }, range: +r[1] };
+  if ((r = tgt.match(/^allies within (\d+) hexes$/))) return { target: { select: 'area', side: 'ally', radius: +r[1], origin: 'self' }, range: 0 };
+  return null;
+};
+const STAT_W = { Strength: 'strength', Precision: 'precision', Magic: 'magic', Spirit: 'spirit', Accuracy: 'accuracy', Dodge: 'dodge', Armor: 'armor', Resist: 'resist', Movement: 'movement', Reach: 'reach', Crit: 'crit', Luck: 'luck', Vision: 'vision' };
+function compileItemActive(it, row) {
+  const desc = String(row.description || '');
+  const tg = ITEM_TARGET(row.targets);
+  if (!tg) return null;
+  const free = /^Free[,.: ]/.test(desc) || /^Once per Battle: /.test(desc) && row.stamina === 0 && !/costs your primary/.test(desc);
+  const effects = []; const gaps = [];
+  // the rule sentence: after "Free, 0 Stamina:" / "Once per Battle, 2 Stamina:" / "Costs your primary action, 0 Stamina:" / "Free."
+  let rule = desc.replace(/^(Free|Once per Battle|Costs your primary action)(,? (?:costs your primary action and )?\d Stamina)?[:.]\s*/, '').trim();
+  const parts = rule.split(/(?<=\.)\s+/).map((x) => x.trim().replace(/\.$/, '')).filter(Boolean);
+  const SP = (base, mult = 1) => ({ scale: 'partySpirit', base, mult });
+  for (const s0 of parts) {
+    let m;
+    if ((m = s0.match(/^heal (\d+)$/i))) { effects.push({ kind: 'heal', amount: +m[1] }); continue; }
+    if ((m = s0.match(/^Heal (\d+) and remove (\d+) ([A-Z][a-z]+)$/))) { effects.push({ kind: 'heal', amount: +m[1] }); effects.push({ kind: 'status.remove', statusId: 'status.' + m[3].toLowerCase(), value: +m[2] }); continue; }
+    if ((m = s0.match(/^remove (\d+) ([A-Z][a-z]+)$/i))) { effects.push({ kind: 'status.remove', statusId: 'status.' + m[2].toLowerCase(), value: +m[1] }); continue; }
+    if ((m = s0.match(/^remove (\d+) ([A-Z][a-z]+) and (\d+) ([A-Z][a-z]+) from yourself$/i))) { effects.push({ kind: 'status.remove', statusId: 'status.' + m[2].toLowerCase(), value: +m[1] }); effects.push({ kind: 'status.remove', statusId: 'status.' + m[4].toLowerCase(), value: +m[3] }); continue; }
+    if ((m = s0.match(/^Remove (\d+) ([A-Z][a-z]+), (\d+) ([A-Z][a-z]+) and (\d+) ([A-Z][a-z]+) from the target$/))) { for (const [n, w] of [[m[1], m[2]], [m[3], m[4]], [m[5], m[6]]]) effects.push({ kind: 'status.remove', statusId: 'status.' + w.toLowerCase(), value: +n }); continue; }
+    if ((m = s0.match(/^regain (\d+) Stamina$/))) { effects.push({ kind: 'stamina.gain', value: +m[1] }); continue; }
+    if ((m = s0.match(/^apply (\d+) ([A-Z][a-z]+) to a target within \d+$/))) { effects.push({ kind: 'status.apply', statusId: 'status.' + m[2].toLowerCase(), value: +m[1] }); continue; }
+    if ((m = s0.match(/^apply (\d+) ([A-Z][a-z]+) to a target within \d+, and the hex it stands on gains Burning$/))) { effects.push({ kind: 'status.apply', statusId: 'status.' + m[2].toLowerCase(), value: +m[1] }); gaps.push('and the hex it stands on gains Burning — a painted layer from a power (not yet an ability effect)'); continue; }
+    if ((m = s0.match(/^Gain (\d+) Protection$/))) { effects.push({ kind: 'status.apply', statusId: 'status.protection', value: +m[1] }); continue; }
+    if ((m = s0.match(/^The target gains Protection equal to (\d+) \+ Spirit$/))) { effects.push({ kind: 'status.apply', statusId: 'status.protection', value: SP(+m[1]) }); continue; }
+    if ((m = s0.match(/^Each ally within \d+ hexes, including you, heals (\d+) \+ Spirit$/))) { effects.push({ kind: 'heal', amount: SP(+m[1]) }); continue; }
+    if ((m = s0.match(/^Each ally within \d+ hexes, including you, removes all Stun and all Weak and gains \+(\d+) Resist for the rest of the Battle$/))) { effects.push({ kind: 'status.remove', statusId: 'status.stun' }); effects.push({ kind: 'status.remove', statusId: 'status.weak' }); effects.push({ kind: 'statMod', stat: 'resist', value: +m[1], until: 'battle' }); continue; }
+    if ((m = s0.match(/^gain \+(\d+) ([A-Z][a-z]+) and lose (\d+) ([A-Z][a-z]+) for the rest of the Battle$/))) { effects.push({ kind: 'statMod', stat: STAT_W[m[2]], value: +m[1], until: 'battle', who: 'self' }); effects.push({ kind: 'statMod', stat: STAT_W[m[4]], value: -m[3], until: 'battle', who: 'self' }); continue; }
+    if ((m = s0.match(/^until the end of your Activation, gain \+(\d+) ([A-Z][a-z]+) and \+(\d+) ([A-Z][a-z]+), and lose (\d+) ([A-Z][a-z]+)$/))) { effects.push({ kind: 'statMod', stat: STAT_W[m[2]], value: +m[1], until: 'endOfTurn', who: 'self' }); effects.push({ kind: 'statMod', stat: STAT_W[m[4]], value: +m[3], until: 'endOfTurn', who: 'self' }); effects.push({ kind: 'statMod', stat: STAT_W[m[6]], value: -m[5], until: 'endOfTurn', who: 'self' }); gaps.push('"until the end of your Activation" is read as until the end of the Turn'); continue; }
+    if ((m = s0.match(/^the target gains \+(\d+) Movement for the rest of the Battle and loses (\d+) Root and (\d+) Slow$/))) { effects.push({ kind: 'statMod', stat: 'movement', value: +m[1], until: 'battle' }); effects.push({ kind: 'status.remove', statusId: 'status.root', value: +m[2] }); effects.push({ kind: 'status.remove', statusId: 'status.slow', value: +m[3] }); continue; }
+    if ((m = s0.match(/^Until the end of your next Turn, your attacks gain \+(\d+) Accuracy$/))) { effects.push({ kind: 'statMod', stat: 'accuracy', value: +m[1], until: 'endOfNextTurn', who: 'self' }); continue; }
+    if ((m = s0.match(/^Until the end of your next Turn you gain \+(\d+) ([A-Z][a-z]+) and \+(\d+) ([A-Z][a-z]+)$/))) { effects.push({ kind: 'statMod', stat: STAT_W[m[2]], value: +m[1], until: 'endOfNextTurn', who: 'self' }); effects.push({ kind: 'statMod', stat: STAT_W[m[4]], value: +m[3], until: 'endOfNextTurn', who: 'self' }); continue; }
+    if ((m = s0.match(/^Heal (\d+) and remove (\d+) ([A-Z][a-z]+)$/))) { effects.push({ kind: 'heal', amount: +m[1] }); effects.push({ kind: 'status.remove', statusId: 'status.' + m[3].toLowerCase(), value: +m[2] }); continue; }
+    if ((m = s0.match(/^You take -(\d+) Accuracy until the end of your next Turn$/))) { effects.push({ kind: 'statMod', stat: 'accuracy', value: -m[1], until: 'endOfNextTurn', who: 'self' }); continue; }
+    if (/^(Protection is spent|Spirit is the party-wide|Surplus over|Bleed is TRUE|You must be adjacent|The ferryman)/.test(s0)) continue;   // explanation, not rule
+    gaps.push(`unparsed: ${s0.slice(0, 70)}`);
+  }
+  if (!effects.length) return null;
+  for (const e of effects) if (e.kind === 'statMod' && !e.stat) return null;
+  return { id: it.id.replace(/^item\./, 'power.') + '.use', name: it.name, staminaCost: row.stamina ?? 0, cooldown: row.cooldown ?? 0,
+    ...(row.uses !== undefined ? { uses: typeof row.uses === 'number' ? row.uses : (row.uses.perBattle ?? row.uses.count ?? 1) } : {}),
+    ...(free ? { free: true } : {}), range: tg.range, target: tg.target, effects, ...(gaps.length ? { gaps } : {}) };
+}
+
 function compileItems() {
   const out = {};
   for (const it of CODEX_ITEMS) {
@@ -1009,11 +1060,20 @@ function compileItems() {
         g(`${t.hook}: ${eff.slice(0, 50)}`, 'trigger shape unparsed');
       }
     }
-    if (row.stamina !== undefined || row.targets) g(`active: ${String(row.description || '').slice(0, 50)}`, 'an ability with charges/targets — capability.consumables');
+    // capability.charges (2026-09-03): an ACTIVE item is a power the item grants —
+    // `uses` per Battle where the row says so, cooldown where it says that,
+    // `free` where the sentence opens "Free". Compiled by exact sentence through
+    // the effect vocabulary; a sentence it cannot read is a gap ON THE ROW and
+    // the item ships without the power, never with a guessed one.
+    if (row.stamina !== undefined || row.targets || row.uses !== undefined) {
+      const pw = compileItemActive(it, row);
+      if (pw) { authoredAbilities[pw.id] = pw; abilities.push(pw.id); for (const gg of pw.gaps || []) g(`${pw.id}: ${gg}`, 'item active clause'); }
+      else g(`active: ${String(row.description || '').slice(0, 50)}`, 'an ability with charges/targets — capability.consumables');
+    }
     for (const k of ['thorns', 'airwalk', 'slayer', 'immunity', 'natural']) if (row[k] !== undefined) g(`${k}: ${JSON.stringify(row[k]).slice(0, 40)}`, `item field: ${k}`);
     // one-use rows (the Waystation, 2026-09-02): a charge is spent IN battle —
     // the same missing capability as an activated item.
-    if (row.uses !== undefined) g(`uses: ${JSON.stringify(row.uses)}`, 'charges spent in battle — capability.consumables');
+    if (row.uses !== undefined && !abilities.some((a) => authoredAbilities[a]?.uses)) g(`uses: ${JSON.stringify(row.uses)} — no active compiled to carry the charge`, 'charges spent in battle — capability.consumables');
     out[it.id] = {
       id: it.id, name: it.name, itemClass: it.itemClass, tier: it.tier ?? 0, hands: it.hands ?? 0, slots: it.slots ?? 0,
       ...(it.classRestriction ? { classRestriction: it.classRestriction } : {}),

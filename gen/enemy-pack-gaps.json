@@ -583,7 +583,12 @@
   },
   {
    "unit": "item.net",
-   "what": "uses: 1",
+   "what": "active: ",
+   "needs": "an ability with charges/targets — capability.consumables"
+  },
+  {
+   "unit": "item.net",
+   "what": "uses: 1 — no active compiled to carry the charge",
    "needs": "charges spent in battle — capability.consumables"
   },
   {
@@ -847,28 +852,8 @@
    "needs": "item power — shape unparsed"
   },
   {
-   "unit": "item.loaded-dice-of-mirran",
-   "what": "active: Free. Until the end of your next Turn, your attack",
-   "needs": "an ability with charges/targets — capability.consumables"
-  },
-  {
    "unit": "item.crows-eye-pendant",
    "what": "active: Reveal every hidden, stealthed or obscured unit wi",
-   "needs": "an ability with charges/targets — capability.consumables"
-  },
-  {
-   "unit": "item.mug-of-endless-dregs",
-   "what": "active: Free. Heal 3 and remove 1 Weak. You take -5 Accura",
-   "needs": "an ability with charges/targets — capability.consumables"
-  },
-  {
-   "unit": "item.aether-crystal",
-   "what": "active: Gain 4 Protection. Protection is spent before Heal",
-   "needs": "an ability with charges/targets — capability.consumables"
-  },
-  {
-   "unit": "item.saints-fingerbone",
-   "what": "active: Remove 1 Burn, 1 Poison and 1 Bleed from the targe",
    "needs": "an ability with charges/targets — capability.consumables"
   },
   {
@@ -885,11 +870,6 @@
    "unit": "item.featherstep-boots",
    "what": "airwalk: true",
    "needs": "item field: airwalk"
-  },
-  {
-   "unit": "item.medicine-belt",
-   "what": "active: Heal 4 and remove 2 Bleed. You must be adjacent — ",
-   "needs": "an ability with charges/targets — capability.consumables"
   },
   {
    "unit": "item.wayfinders-compass",
@@ -927,11 +907,6 @@
    "needs": "an ability with charges/targets — capability.consumables"
   },
   {
-   "unit": "item.holy-chalice",
-   "what": "active: Each ally within 3 hexes, including you, heals 2 +",
-   "needs": "an ability with charges/targets — capability.consumables"
-  },
-  {
    "unit": "item.wreath-of-natures-protection",
    "what": "thorns: 3",
    "needs": "item field: thorns"
@@ -950,11 +925,6 @@
    "unit": "item.tandras-blood-vial",
    "what": "onCrit: deal 2 crits",
    "needs": "trigger shape unparsed"
-  },
-  {
-   "unit": "item.eye-of-the-oracle",
-   "what": "active: Free. Until the end of your next Turn you gain +20",
-   "needs": "an ability with charges/targets — capability.consumables"
   },
   {
    "unit": "item.heart-of-vyrmothax",
@@ -1017,43 +987,13 @@
    "needs": "item power — shape unparsed"
   },
   {
-   "unit": "item.cure-poison",
-   "what": "active: Free, 0 Stamina: remove 2 Poison.",
-   "needs": "an ability with charges/targets — capability.consumables"
-  },
-  {
-   "unit": "item.cure-poison",
-   "what": "uses: 1",
-   "needs": "charges spent in battle — capability.consumables"
-  },
-  {
-   "unit": "item.rations",
-   "what": "active: Costs your primary action, 0 Stamina: regain 2 Sta",
-   "needs": "an ability with charges/targets — capability.consumables"
-  },
-  {
-   "unit": "item.rations",
-   "what": "uses: 1",
-   "needs": "charges spent in battle — capability.consumables"
-  },
-  {
-   "unit": "item.healing-potion",
-   "what": "active: Free, 0 Stamina: heal 3.",
-   "needs": "an ability with charges/targets — capability.consumables"
-  },
-  {
-   "unit": "item.healing-potion",
-   "what": "uses: 1",
-   "needs": "charges spent in battle — capability.consumables"
-  },
-  {
    "unit": "item.bandages",
    "what": "active: Free, 0 Stamina: stabilize a downed ally — their b",
    "needs": "an ability with charges/targets — capability.consumables"
   },
   {
    "unit": "item.bandages",
-   "what": "uses: 1",
+   "what": "uses: 1 — no active compiled to carry the charge",
    "needs": "charges spent in battle — capability.consumables"
   },
   {
@@ -1062,54 +1002,14 @@
    "needs": "stat: itemSlots (no UnitDef field)"
   },
   {
-   "unit": "item.poison-flask",
-   "what": "active: Once per Battle: apply 2 Poison to a target within",
-   "needs": "an ability with charges/targets — capability.consumables"
-  },
-  {
-   "unit": "item.poison-flask",
-   "what": "uses: 1",
-   "needs": "charges spent in battle — capability.consumables"
-  },
-  {
    "unit": "item.burning-oil",
-   "what": "active: Once per Battle: apply 2 Burn to a target within 3",
-   "needs": "an ability with charges/targets — capability.consumables"
-  },
-  {
-   "unit": "item.burning-oil",
-   "what": "uses: 1",
-   "needs": "charges spent in battle — capability.consumables"
-  },
-  {
-   "unit": "item.greater-healing-potion",
-   "what": "active: Once per Battle, costs your primary action and 1 S",
-   "needs": "an ability with charges/targets — capability.consumables"
-  },
-  {
-   "unit": "item.greater-healing-potion",
-   "what": "uses: 1",
-   "needs": "charges spent in battle — capability.consumables"
+   "what": "power.burning-oil.use: and the hex it stands on gains Burning — a painted layer from a power (not yet an ability effect)",
+   "needs": "item active clause"
   },
   {
    "unit": "item.frenzy-potion",
-   "what": "active: Free: until the end of your Activation, gain +2 St",
-   "needs": "an ability with charges/targets — capability.consumables"
-  },
-  {
-   "unit": "item.frenzy-potion",
-   "what": "uses: 1",
-   "needs": "charges spent in battle — capability.consumables"
-  },
-  {
-   "unit": "item.strength-potion",
-   "what": "active: Once per Battle, 2 Stamina: gain +1 Strength and l",
-   "needs": "an ability with charges/targets — capability.consumables"
-  },
-  {
-   "unit": "item.strength-potion",
-   "what": "uses: 1",
-   "needs": "charges spent in battle — capability.consumables"
+   "what": "power.frenzy-potion.use: \"until the end of your Activation\" is read as until the end of the Turn",
+   "needs": "item active clause"
   },
   {
    "unit": "item.poison-coating",
@@ -1118,7 +1018,7 @@
   },
   {
    "unit": "item.poison-coating",
-   "what": "uses: 1",
+   "what": "uses: 1 — no active compiled to carry the charge",
    "needs": "charges spent in battle — capability.consumables"
   },
   {
@@ -1128,7 +1028,7 @@
   },
   {
    "unit": "item.winter-cloak",
-   "what": "uses: 1",
+   "what": "uses: 1 — no active compiled to carry the charge",
    "needs": "charges spent in battle — capability.consumables"
   },
   {
@@ -1138,7 +1038,7 @@
   },
   {
    "unit": "item.brilliant-torch",
-   "what": "uses: 1",
+   "what": "uses: 1 — no active compiled to carry the charge",
    "needs": "charges spent in battle — capability.consumables"
   },
   {
@@ -1148,7 +1048,7 @@
   },
   {
    "unit": "item.bear-trap",
-   "what": "uses: 1",
+   "what": "uses: 1 — no active compiled to carry the charge",
    "needs": "charges spent in battle — capability.consumables"
   },
   {
@@ -1158,7 +1058,7 @@
   },
   {
    "unit": "item.magic-trap",
-   "what": "uses: 1",
+   "what": "uses: 1 — no active compiled to carry the charge",
    "needs": "charges spent in battle — capability.consumables"
   },
   {
@@ -1168,7 +1068,7 @@
   },
   {
    "unit": "item.fire-trap",
-   "what": "uses: 1",
+   "what": "uses: 1 — no active compiled to carry the charge",
    "needs": "charges spent in battle — capability.consumables"
   },
   {
@@ -1178,17 +1078,7 @@
   },
   {
    "unit": "item.explosive-trap",
-   "what": "uses: 1",
-   "needs": "charges spent in battle — capability.consumables"
-  },
-  {
-   "unit": "item.free-movement-potion",
-   "what": "active: Once per Battle, 1 Stamina: the target gains +1 Mo",
-   "needs": "an ability with charges/targets — capability.consumables"
-  },
-  {
-   "unit": "item.free-movement-potion",
-   "what": "uses: 1",
+   "what": "uses: 1 — no active compiled to carry the charge",
    "needs": "charges spent in battle — capability.consumables"
   },
   {
@@ -1352,16 +1242,6 @@
    "needs": "trigger shape unparsed"
   },
   {
-   "unit": "item.divine-ward",
-   "what": "active: The target gains Protection equal to 2 + Spirit. S",
-   "needs": "an ability with charges/targets — capability.consumables"
-  },
-  {
-   "unit": "item.bracer-of-courage",
-   "what": "active: Free. remove 5 Stun and 5 Weak from yourself.",
-   "needs": "an ability with charges/targets — capability.consumables"
-  },
-  {
    "unit": "item.scorpion-shield",
    "what": "onTakingDamage: Thorns 2, and the attacker gains 2 Poison and 1 Bl",
    "needs": "trigger shape unparsed"
@@ -1395,11 +1275,6 @@
    "unit": "item.roster-of-the-fallen",
    "what": "onDeath: your name goes on the roster: every ally gains +1 ",
    "needs": "trigger shape unparsed"
-  },
-  {
-   "unit": "item.banner-of-resolve",
-   "what": "active: Each ally within 3 hexes, including you, removes a",
-   "needs": "an ability with charges/targets — capability.consumables"
   },
   {
    "unit": "item.necklace-of-fire-immunity",
