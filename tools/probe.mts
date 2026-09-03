@@ -28,6 +28,11 @@ const ACTED = new Set(['damage.applied','heal.applied','power.used','attack.decl
   // Widening ACTED is stricter, not looser: map items can now face gate 1
   // directly instead of hiding behind terrain probeIds.
   'map.loaded',
+  // seam.items-per-unit (2026-09-02): an ITEM's effect is the unit it was put
+  // on — attacks granted, stats folded at t=0 — and unit.equipped is the line
+  // that says so. Same widening argument as map.loaded: items can face gate 1
+  // by their own id instead of hiding behind the attacks they grant.
+  'unit.equipped',
   // movement.bonus-actions (2026-08-25): a bonus move's rider IS its state
   // change — Focus moves zero hexes on purpose, so 'stamina.gained' is the only
   // mark it leaves. Same widening-is-stricter argument as map.loaded above.

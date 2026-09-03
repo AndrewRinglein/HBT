@@ -5,10 +5,16 @@
 // clones. This file asserts what the flip claims and nothing the pack already
 // proves elsewhere (alpha-team.test.ts owns the units' shape).
 import { describe, expect, it } from 'vitest'
-import { createBattle } from '../src/core/setup.js'
+import { fieldedDef, createBattle } from '../src/core/setup.js'
 import { runBattle } from '../src/core/battle.js'
 import { ATTACKS, FIRST_BATTLE, TEST_COHORT, UNITS } from '../src/content/index.js'
 
+// LAW 10 — 2026-09-02 (seam.items-per-unit): hero rows are BARE now — the kit's
+// attacks, powers, riders and stat deltas are applied at FIELDING by
+// applyItems, not folded into the row by the converter. Every claim below
+// about what a hero carries is a claim about the hero AS FIELDED, so it reads
+// fieldedDef(id) (the one function the battle and any preview share). The
+// claims are unchanged; only where the kit lives moved.
 const ALPHA_SIX = ['alpha-oathblade', 'alpha-sky-pirate', 'alpha-dusk-hawk',
   'alpha-air-mage', 'alpha-lucius', 'alpha-osric']
 
@@ -48,7 +54,7 @@ describe('the standard battle is the Alpha Team', () => {
       const ids = swung.get(t)
       expect(ids, `${t} attacked`).toBeDefined()
       for (const id of ids!) {
-        expect(UNITS[t]!.attacks, `${t} swung ${id}, which is not in its authored kit`).toContain(id)
+        expect(fieldedDef(t).attacks, `${t} swung ${id}, which is not in its authored kit`).toContain(id)
         expect(id.startsWith('attack.') && !id.includes('.test'), id).toBe(true)
         expect(ATTACKS[id], id).toBeDefined()
       }

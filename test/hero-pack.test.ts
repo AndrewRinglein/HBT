@@ -9,9 +9,15 @@ import { readFileSync } from 'node:fs'
 import { join } from 'node:path'
 import { scenarioDef, scenarioOptions } from '../src/content/scenarios.js'
 import { ATTACKS, UNITS } from '../src/content/index.js'
-import { createBattle } from '../src/core/setup.js'
+import { fieldedDef, createBattle } from '../src/core/setup.js'
 import { runBattle } from '../src/core/battle.js'
 
+// LAW 10 — 2026-09-02 (seam.items-per-unit): hero rows are BARE now — the kit's
+// attacks, powers, riders and stat deltas are applied at FIELDING by
+// applyItems, not folded into the row by the converter. Every claim below
+// about what a hero carries is a claim about the hero AS FIELDED, so it reads
+// fieldedDef(id) (the one function the battle and any preview share). The
+// claims are unchanged; only where the kit lives moved.
 const HUNTER = 'hero.base.ranger-aggressive'
 
 // Pipeline agreement, not frozen numbers (Law 10, rewritten 2026-09-02 with
@@ -42,7 +48,7 @@ const codexHero = (id: string) => {
 
 describe('the Hunter is a real hero from the Codex', () => {
   it('carries the authored Eve stats and pays stamina like a hero', () => {
-    const h = UNITS[HUNTER]!
+    const h = fieldedDef(HUNTER)
     expect(h).toBeDefined()
     expect(h.side).toBe('hero')
     const { row, mod } = codexHero(HUNTER)
@@ -61,7 +67,7 @@ describe('the Hunter is a real hero from the Codex', () => {
   it('fights with the longbow the kit dictated — both attacks, stamina PAID', () => {
     // Punch joined every classed hero with S37's re-rule (2026-08-27) — the
     // universal flag, honored by the party lane since S37a.
-    expect(UNITS[HUNTER]!.attacks).toEqual(['attack.longbow.shot', 'attack.longbow.long-shot', 'attack.punch'])
+    expect(fieldedDef(HUNTER).attacks).toEqual(['attack.longbow.shot', 'attack.longbow.long-shot', 'attack.punch'])
     expect(ATTACKS['attack.longbow.shot']).toMatchObject(
       { kind: 'ranged', reach: 6, stat: 'precision', bonus: 1, staminaCost: 1 })
     expect(ATTACKS['attack.longbow.long-shot']).toMatchObject(
@@ -80,11 +86,11 @@ describe('the Hunter is a real hero from the Codex', () => {
     for (const id of ['hero.base.warrior-iron', 'hero.base.priest-armored']) {
       expect(gaps.some((g) => g.unit === id && /kit/.test(g.needs)), `${id} — no kit gap survives S36`).toBe(false)
       expect(UNITS[id], `${id} fields`).toBeDefined()
-      expect(UNITS[id]!.attacks.length, `${id} is armed`).toBeGreaterThan(1)
-      expect(UNITS[id]!.attacks, `${id} carries the universal Punch`).toContain('attack.punch')
+      expect(fieldedDef(id).attacks.length, `${id} is armed`).toBeGreaterThan(1)
+      expect(fieldedDef(id).attacks, `${id} carries the universal Punch`).toContain('attack.punch')
     }
-    expect(UNITS['hero.base.warrior-iron']!.attacks).toContain('attack.war-axe.chop')
-    expect(UNITS['hero.base.priest-armored']!.attacks).toContain('attack.holy-texts.mercy')
+    expect(fieldedDef('hero.base.warrior-iron').attacks).toContain('attack.war-axe.chop')
+    expect(fieldedDef('hero.base.priest-armored').attacks).toContain('attack.holy-texts.mercy')
   })
 
   it('battle 1 in miniature runs: the Hunter shoots authored zombies', () => {

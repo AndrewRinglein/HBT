@@ -311,3 +311,14 @@ near full health: half of what actually landed on the bar (default, true — S43
 says "half the APPLIED amount"), or half of what was asked after Burn's halving
 (false — a full-health unit can still be cured). They differ only at the cap.
 Both paths are built in `applyHealing`; a sweep on healers-vs-bleeders answers it.
+
+## items.foldOrLedger — do item stat deltas fold silently or show in the ledger?
+Noted 2026-09-02 (seam.items-per-unit, ITEMS-PLAN.md §5). Items fold their
+stat modifiers additively into the fielded def — the arithmetic the converter
+did at pack time, moved to fielding, so the invariant (no heroItems ⇒ the
+same unit) holds. The alternative is StatMods with scope 'item' and source =
+the item id, so a ledger line names the cause per stat (Law 12). NOT BUILT as
+a switch yet: fold is the only path today, and `unit.equipped` already names
+what each item put on the unit. When a reviewer wants the per-stat cause in a
+damage ledger, this is the switch to add; a sweep cannot answer it — it is a
+readability question, and it is not a question for Angela.

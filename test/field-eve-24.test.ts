@@ -8,9 +8,15 @@ import { join } from 'node:path'
 import { describe, expect, it } from 'vitest'
 import { ABILITIES, ATTACKS, UNITS } from '../src/content/index.js'
 import { scenarioDef, scenarioOptions } from '../src/content/scenarios.js'
-import { createBattle } from '../src/core/setup.js'
+import { fieldedDef, createBattle } from '../src/core/setup.js'
 import { runBattle } from '../src/core/battle.js'
 
+// LAW 10 — 2026-09-02 (seam.items-per-unit): hero rows are BARE now — the kit's
+// attacks, powers, riders and stat deltas are applied at FIELDING by
+// applyItems, not folded into the row by the converter. Every claim below
+// about what a hero carries is a claim about the hero AS FIELDED, so it reads
+// fieldedDef(id) (the one function the battle and any preview share). The
+// claims are unchanged; only where the kit lives moved.
 const CONTENT = join(__dirname, '..', '..', 'content')
 const kits = (): Record<string, string[]> => {
   const k = JSON.parse(readFileSync(join(CONTENT, 'gen', 'kits.json'), 'utf8')).heroKits as Record<string, unknown>
@@ -48,7 +54,7 @@ describe('all twenty-four field', () => {
     const { heroes, items } = codex()
     const g = gaps()
     for (const [id, kit] of Object.entries(kits())) {
-      const u = UNITS[id]!
+      const u = fieldedDef(id)
       const h = heroes.get(id)!
       const mod = (stat: string) => kit.reduce((s, it) => s + (items.get(it)?.statModifiers?.[stat] ?? 0), 0)
       expect(u.maxHp, `${id} maxHp`).toBe((h.ported.health ?? 0) + mod('health'))
@@ -80,7 +86,7 @@ describe('all twenty-four field', () => {
     // converter source, so eight heroes fielded with their armor's whole
     // payload dropped as a gap. The gap is gone and the fold is real.
     expect(gaps().some((x) => x.unit === 'hero.base.ranger-aggressive' && /thick-hide not in/.test(x.what))).toBe(false)
-    expect(UNITS['hero.base.ranger-aggressive']!.maxHp).toBe(9)
+    expect(fieldedDef('hero.base.ranger-aggressive').maxHp).toBe(9)
   })
 })
 
@@ -96,8 +102,9 @@ describe('in real battles — the roll-call', () => {
       }
       for (const id of scenarioDef(sid).heroes) expect(acted, `${id} acted in ${sid}`).toContain(id)
     }
-    for (const [id, u] of Object.entries(UNITS)) {
+    for (const id of Object.keys(UNITS)) {
       if (!id.startsWith('hero.base.')) continue
+      const u = fieldedDef(id)   // role follows the kit AS FIELDED (seam.items-per-unit)
       const anyRanged = u.attacks.some((a) => ATTACKS[a]!.kind === 'ranged')
       expect(u.role, `${id} role follows its kit`).toBe(anyRanged ? 'ranged' : 'melee')
     }

@@ -4142,3 +4142,385 @@ owns them now, with the Codex's crit and stamina. The gate-1 exemption
 until seam.items-per-unit fields one. Seal withheld.
 
 IRON GAUNTLET: NOT PASSED — 1 FLAG(S) WARNED; 1 EXEMPTION(S) TAKEN
+
+## seam.items-per-unit — LANDED `743b3d3` **NEEDS REVIEW**
+2026-09-03 05:40
+
+  PASS  dependencies landed
+  WARN  not already decided — 5 candidate ruling(s) — READ BEFORE ASKING: ../STATE.md:18 · ../STATE.md:21
+  PASS  typecheck
+  PASS  full test suite
+  PASS  gate 1 — the id appears in a real battle — item.halberd: 3 log lines, 3 fired, 1 changed state · item.thick-hide: 1 log lines, 1 fired, 1 changed state
+  PASS  brought its own tests — test/additions.test.ts, test/alpha-flip.test.ts, test/alpha-team.test.ts, test/civilians.test.ts, test/field-eve-24.test.ts, test/hero-pack.test.ts, test/integration.test.ts, test/knockback.test.ts, test/pack-items.test.ts, test/fixtures/, test/items-per-unit.test.ts
+  WARN  existing tests untouched — DELETED LINES in test/additions.test.ts (-2), test/alpha-flip.test.ts (-2), test/alpha-team.test.ts (-11), test/civilians.test.ts (-9), test/field-eve-24.test.ts (-4), test/hero-pack.test.ts (-7), test/integration.test.ts (-3), test/knockback.test.ts (-2), test/pack-items.test.ts (-4) — will land FLAGGED for review
+  PASS  control battles unchanged — will re-bless at commit — this item DECLARED it changes the control battles: map.open 51a83d02->f20e360f, map.ridge d5526ddb->a0a87b2a, map.flanks dc35aada->4953666a, map.highlands 7a87e744->4b442d01, map.field 9eeeaaef->758cd750, map.thicket 9cb6d776->89c211b4, test.map.embers 48fd340e->f99767e9, test.map.showcase ae724e9d->5dd43668
+  PASS  content has a published source — 19 ids without a published source (9 awaiting publication from earlier items — see audit)
+  PASS  hardcode scan — core knows mechanisms, never names
+  PASS  generalizes — the second instance costs zero engine code — shape 'plumbing' — not a mechanism, exempt
+  PASS  naming — new content ids use declared kinds
+  PASS  naming — no banned words invented
+  PASS  kill switch — the tests fail without the content — tests fail without item.halberd,item.thick-hide — they genuinely test it
+
+<details><summary>Existing tests were edited — review this diff</summary>
+
+```diff
+diff --git a/test/additions.test.ts b/test/additions.test.ts
+index 148bca3..3a9cea2 100644
+--- a/test/additions.test.ts
++++ b/test/additions.test.ts
+@@ -1,4 +1,4 @@
+ import { describe, it, expect } from 'vitest'
+-import { createBattle, createCustomBattle } from '../src/core/setup.js'
++import { createBattle, createCustomBattle, fieldedDef } from '../src/core/setup.js'
+ import { runBattle } from '../src/core/battle.js'
+ import { resolveDamage, resolveAccuracy, reachOf, canAttack } from '../src/core/pipeline.js'
+@@ -149,5 +149,5 @@ describe('pass 3 — the Mage', () => {
+     // off the unit's attack list instead of a typed attack id.
+     const MAGE = 'alpha-air-mage'
+-    const staffIds = new Set(UNITS[MAGE]!.attacks.filter((id) => ATTACKS[id]!.kind === 'ranged'))
++    const staffIds = new Set(fieldedDef(MAGE).attacks.filter((id) => ATTACKS[id]!.kind === 'ranged'))
+     expect(staffIds.size).toBeGreaterThan(0)
+     const seen = { moved:0, staff:0, strike:0, hurt:0 }
+diff --git a/test/alpha-flip.test.ts b/test/alpha-flip.test.ts
+index fd8be83..5727f1f 100644
+--- a/test/alpha-flip.test.ts
++++ b/test/alpha-flip.test.ts
+@@ -6,8 +6,14 @@
+ // proves elsewhere (alpha-team.test.ts owns the units' shape).
+ import { describe, expect, it } from 'vitest'
+-import { createBattle } from '../src/core/setup.js'
++import { fieldedDef, createBattle } from '../src/core/setup.js'
+ import { runBattle } from '../src/core/battle.js'
+ import { ATTACKS, FIRST_BATTLE, TEST_COHORT, UNITS } from '../src/content/index.js'
+ 
++// LAW 10 — 2026-09-02 (seam.items-per-unit): hero rows are BARE now — the kit's
++// attacks, powers, riders and stat deltas are applied at FIELDING by
++// applyItems, not folded into the row by the converter. Every claim below
++// about what a hero carries is a claim about the hero AS FIELDED, so it reads
++// fieldedDef(id) (the one function the battle and any preview share). The
++// claims are unchanged; only where the kit lives moved.
+ const ALPHA_SIX = ['alpha-oathblade', 'alpha-sky-pirate', 'alpha-dusk-hawk',
+   'alpha-air-mage', 'alpha-lucius', 'alpha-osric']
+@@ -49,5 +55,5 @@ describe('the standard battle is the Alpha Team', () => {
+       expect(ids, `${t} attacked`).toBeDefined()
+       for (const id of ids!) {
+-        expect(UNITS[t]!.attacks, `${t} swung ${id}, which is not in its authored kit`).toContain(id)
++        expect(fieldedDef(t).attacks, `${t} swung ${id}, which is not in its authored kit`).toContain(id)
+         expect(id.startsWith('attack.') && !id.includes('.test'), id).toBe(true)
+         expect(ATTACKS[id], id).toBeDefined()
+diff --git a/test/alpha-team.test.ts b/test/alpha-team.test.ts
+index b008227..ef13586 100644
+--- a/test/alpha-team.test.ts
++++ b/test/alpha-team.test.ts
+@@ -13,7 +13,13 @@ import { join } from 'node:path'
+ import { scenarioDef, scenarioOptions } from '../src/content/scenarios.js'
+ import { ATTACKS, UNITS } from '../src/content/index.js'
+-import { createBattle } from '../src/core/setup.js'
++import { fieldedDef, createBattle } from '../src/core/setup.js'
+ import { runBattle } from '../src/core/battle.js'
+ 
++// LAW 10 — 2026-09-02 (seam.items-per-unit): hero rows are BARE now — the kit's
++// attacks, powers, riders and stat deltas are applied at FIELDING by
++// applyItems, not folded into the row by the converter. Every claim below
++// about what a hero carries is a claim about the hero AS FIELDED, so it reads
++// fieldedDef(id) (the one function the battle and any preview share). The
++// claims are unchanged; only where the kit lives moved.
+ const SC = 'showcase.alpha-team'
+ const ALPHA = () => scenarioDef(SC).heroes
+@@ -88,17 +94,17 @@ describe('the pack carries the six alpha heroes with their real stat bodies', ()
+     expect(ATTACKS['attack.punch']).toMatchObject({ bonus: -1, staminaCost: 0, kind: 'melee', crit: -5 })
+     for (const id of ALPHA()) {
+-      for (const aid of UNITS[id]!.attacks) expect(ATTACKS[aid], `${id} grants ${aid}`).toBeDefined()
+-      expect(UNITS[id]!.attacks, `${id} — Punch is universal (universalToAllUnits honored)`)
++      for (const aid of fieldedDef(id).attacks) expect(ATTACKS[aid], `${id} grants ${aid}`).toBeDefined()
++      expect(fieldedDef(id).attacks, `${id} — Punch is universal (universalToAllUnits honored)`)
+         .toContain('attack.punch')
+-      expect(UNITS[id]!.attacks.some((aid) => cost(aid) > 0),
++      expect(fieldedDef(id).attacks.some((aid) => cost(aid) > 0),
+         `${id} — at least one kit attack costs stamina`).toBe(true)
+     }
+     // Arcane Bolt is gone — the mage's power is the staff's.
+-    expect(UNITS['alpha-air-mage']!.attacks).toEqual(['attack.lightning-staff.bolt', 'attack.punch'])
++    expect(fieldedDef('alpha-air-mage').attacks).toEqual(['attack.lightning-staff.bolt', 'attack.punch'])
+   })
+ 
+   it('the riders came through in the REAL vocabulary — translated, not test statuses', () => {
+     const rider = (unit: string, statusId: string, hook: string) =>
+-      (UNITS[unit]!.triggers ?? []).find((t) =>
++      (fieldedDef(unit).triggers ?? []).find((t) =>
+         t.effect.kind === 'status.apply' && t.effect.statusId === statusId && t.hook === hook)
+     // Oathblade: Regen 1 OTD · Stun 20% · Protection 50% OTD · Bleed on attack
+@@ -113,5 +119,5 @@ describe('the pack carries the six alpha heroes with their real stat bodies', ()
+     // Every status-applying rider must speak the engine vocabulary; other
+     // effect kinds (knockback, since capability.knockback) carry no statusId.
+-    for (const id of ALPHA()) for (const t of UNITS[id]!.triggers ?? []) {
++    for (const id of ALPHA()) for (const t of fieldedDef(id).triggers ?? []) {
+       if (t.effect.kind !== 'status.apply') continue
+       expect(String(t.effect.statusId)
+@@ -134,5 +140,5 @@ describe('the pack carries the six alpha heroes with their real stat bodies', ()
+     // its gap is gone and the trigger stands on the unit in its place
+     expect(alpha.some((g) => /trigger shape/.test(g.needs))).toBe(false)
+-    expect((UNITS['alpha-oathblade']!.triggers ?? []).some((t) =>
++    expect((fieldedDef('alpha-oathblade').triggers ?? []).some((t) =>
+       t.id === 'trigger.halberd.hack.knockback' && t.effect.kind === 'knockback')).toBe(true)
+     // Cleave's arc COMPILES now (capability.area-attack) — its gap must be gone
+@@ -158,7 +164,7 @@ describe('the pack carries the six alpha heroes with their real stat bodies', ()
+     expect(alpha.filter((g) => /item power/.test(g.needs)).length).toBe(0)
+     expect(alpha.some((g) => /power targeting: arbitrary hex/.test(g.needs))).toBe(true)
+-    expect(UNITS['alpha-air-mage']!.abilities).toEqual(['power.lightning-staff.storm'])
+-    expect(UNITS['alpha-lucius']!.abilities).toEqual(['power.holy-symbol.heal'])
+-    expect(UNITS['alpha-osric']!.abilities).toEqual(['power.knight-shield.block'])
++    expect(fieldedDef('alpha-air-mage').abilities).toEqual(['power.lightning-staff.storm'])
++    expect(fieldedDef('alpha-lucius').abilities).toEqual(['power.holy-symbol.heal'])
++    expect(fieldedDef('alpha-osric').abilities).toEqual(['power.knight-shield.block'])
+   })
+ })
+diff --git a/test/civilians.test.ts b/test/civilians.test.ts
+index ecf21d2..31463bd 100644
+--- a/test/civilians.test.ts
++++ b/test/civilians.test.ts
+@@ -13,5 +13,5 @@ import { join } from 'node:path'
+ import { scenarioDef, scenarioOptions } from '../src/content/scenarios.js'
+ import { ATTACKS, UNITS } from '../src/content/index.js'
+-import { createBattle, createCustomBattle } from '../src/core/setup.js'
++import { fieldedDef, createBattle, createCustomBattle } from '../src/core/setup.js'
+ import { runBattle } from '../src/core/battle.js'
+ import { runActivation } from '../src/ai/modes.js'
+@@ -19,4 +19,10 @@ import { beginActivation } from '../src/core/mutate.js'
+ import { hexId } from '../src/core/hex.js'
+ 
++// LAW 10 — 2026-09-02 (seam.items-per-unit): hero rows are BARE now — the kit's
++// attacks, powers, riders and stat deltas are applied at FIELDING by
++// applyItems, not folded into the row by the converter. Every claim below
++// about what a hero carries is a claim about the hero AS FIELDED, so it reads
++// fieldedDef(id) (the one function the battle and any preview share). The
++// claims are unchanged; only where the kit lives moved.
+ const CIVS = ['hero.fixed.orphans', 'hero.fixed.lumberjack-and-wife', 'hero.fixed.farmer']
+ 
+@@ -24,5 +30,5 @@ describe('civilians are ordinary heroes with their Codex behaviour', () => {
+   it('all three field hero-side with authored stats, the hero stamina baseline, no half-step', () => {
+     for (const id of CIVS) {
+-      const u = UNITS[id]!
++      const u = fieldedDef(id)
+       expect(u, id).toBeDefined()
+       expect(u.side, id).toBe('hero')
+@@ -33,14 +39,14 @@ describe('civilians are ordinary heroes with their Codex behaviour', () => {
+       expect(u.attributes, id).toContain('civilian')
+     }
+-    expect(UNITS['hero.fixed.orphans']!.maxHp).toBe(7)
+-    expect(UNITS['hero.fixed.lumberjack-and-wife']!.strength).toBe(4)
+-    expect(UNITS['hero.fixed.farmer']!.maxHp).toBe(7)
++    expect(fieldedDef('hero.fixed.orphans').maxHp).toBe(7)
++    expect(fieldedDef('hero.fixed.lumberjack-and-wife').strength).toBe(4)
++    expect(fieldedDef('hero.fixed.farmer').maxHp).toBe(7)
+   })
+ 
+   it('the orphan throws rocks and the farmer jabs — paying what the rows author', () => {
+-    expect(UNITS['hero.fixed.orphans']!.attacks).toEqual(['attack.pile-of-rocks.throw'])
++    expect(fieldedDef('hero.fixed.orphans').attacks).toEqual(['attack.pile-of-rocks.throw'])
+     expect(ATTACKS['attack.pile-of-rocks.throw']).toMatchObject(
+       { kind: 'ranged', reach: 3, stat: 'precision', staminaCost: 0 })   // authored zero
+-    expect(UNITS['hero.fixed.farmer']!.attacks).toEqual(['attack.pitchfork.jab'])
++    expect(fieldedDef('hero.fixed.farmer').attacks).toEqual(['attack.pitchfork.jab'])
+     // civilians are exactly like heroes: the Farmer PAYS the authored 1
+     expect(ATTACKS['attack.pitchfork.jab']).toMatchObject(
+@@ -53,5 +59,5 @@ describe('civilians are ordinary heroes with their Codex behaviour', () => {
+     // the second authored source (S30 merged both). The weaponless assertion
+     // was testing a CONVERTER bug as if it were content truth.
+-    expect(UNITS['hero.fixed.lumberjack-and-wife']!.attacks)
++    expect(fieldedDef('hero.fixed.lumberjack-and-wife').attacks)
+       .toEqual(['attack.lumberjack-axe.chop', 'attack.lumberjack-axe.cleave'])
+     expect(ATTACKS['attack.lumberjack-axe.chop']).toMatchObject(
+@@ -60,5 +66,5 @@ describe('civilians are ordinary heroes with their Codex behaviour', () => {
+       { kind: 'melee', bonus: 2, staminaCost: 2 })
+     // Chop's dictated rider travelled: 20% for 2 Bleed, scoped to the chop
+-    const rider = (UNITS['hero.fixed.lumberjack-and-wife']!.triggers ?? [])
++    const rider = (fieldedDef('hero.fixed.lumberjack-and-wife').triggers ?? [])
+       .find((t) => t.id === 'trigger.lumberjack-axe.chop.bleed')!
+     expect(rider).toBeDefined()
+diff --git a/test/field-eve-24.test.ts b/test/field-eve-24.test.ts
+index dd4688e..f95bb87 100644
+--- a/test/field-eve-24.test.ts
++++ b/test/field-eve-24.test.ts
+@@ -9,7 +9,13 @@ import { describe, expect, it } from 'vitest'
+ import { ABILITIES, ATTACKS, UNITS } from '../src/content/index.js'
+ import { scenarioDef, scenarioOptions } from '../src/content/scenarios.js'
+-import { createBattle } from '../src/core/setup.js'
++import { fieldedDef, createBattle } from '../src/core/setup.js'
+ import { runBattle } from '../src/core/battle.js'
+ 
++// LAW 10 — 2026-09-02 (seam.items-per-unit): hero rows are BARE now — the kit's
++// attacks, powers, riders and stat deltas are applied at FIELDING by
++// applyItems, not folded into the row by the converter. Every claim below
++// about what a hero carries is a claim about the hero AS FIELDED, so it reads
++// fieldedDef(id) (the one function the battle and any preview share). The
++// claims are unchanged; only where the kit lives moved.
+ const CONTENT = join(__dirname, '..', '..', 'content')
+ const kits = (): Record<string, string[]> => {
+@@ -49,5 +55,5 @@ describe('all twenty-four field', () => {
+     const g = gaps()
+     for (const [id, kit] of Object.entries(kits())) {
+-      const u = UNITS[id]!
++      const u = fieldedDef(id)
+       const h = heroes.get(id)!
+       const mod = (stat: string) => kit.reduce((s, it) => s + (items.get(it)?.statModifiers?.[stat] ?? 0), 0)
+@@ -81,5 +87,5 @@ describe('all twenty-four field', () => {
+     // payload dropped as a gap. The gap is gone and the fold is real.
+     expect(gaps().some((x) => x.unit === 'hero.base.ranger-aggressive' && /thick-hide not in/.test(x.what))).toBe(false)
+-    expect(UNITS['hero.base.ranger-aggressive']!.maxHp).toBe(9)
++    expect(fieldedDef('hero.base.ranger-aggressive').maxHp).toBe(9)
+   })
+ })
+@@ -97,6 +103,7 @@ describe('in real battles — the roll-call', () => {
+       for (const id of scenarioDef(sid).heroes) expect(acted, `${id} acted in ${sid}`).toContain(id)
+     }
+-    for (const [id, u] of Object.entries(UNITS)) {
++    for (const id of Object.keys(UNITS)) {
+       if (!id.startsWith('hero.base.')) continue
++      const u = fieldedDef(id)   // role follows the kit AS FIELDED (seam.items-per-unit)
+       const anyRanged = u.attacks.some((a) => ATTACKS[a]!.kind === 'ranged')
+       expect(u.role, `${id} role follows its kit`).toBe(anyRanged ? 'ranged' : 'melee')
+diff --git a/test/hero-pack.test.ts b/test/hero-pack.test.ts
+index 3b2cc8e..f63a2b7 100644
+--- a/test/hero-pack.test.ts
++++ b/test/hero-pack.test.ts
+@@ -10,7 +10,13 @@ import { join } from 'node:path'
+ import { scenarioDef, scenarioOptions } from '../src/content/scenarios.js'
+ import { ATTACKS, UNITS } from '../src/content/index.js'
+-import { createBattle } from '../src/core/setup.js'
++import { fieldedDef, createBattle } from '../src/core/setup.js'
+ import { runBattle } from '../src/core/battle.js'
+ 
++// LAW 10 — 2026-09-02 (seam.items-per-unit): hero rows are BARE now — the kit's
++// attacks, powers, riders and stat deltas are applied at FIELDING by
++// applyItems, not folded into the row by the converter. Every claim below
++// about what a hero carries is a claim about the hero AS FIELDED, so it reads
++// fieldedDef(id) (the one function the battle and any preview share). The
++// claims are unchanged; only where the kit lives moved.
+ const HUNTER = 'hero.base.ranger-aggressive'
+ 
+@@ -43,5 +49,5 @@ const codexHero = (id: string) => {
+ describe('the Hunter is a real hero from the Codex', () => {
+   it('carries the authored Eve stats and pays stamina like a hero', () => {
+-    const h = UNITS[HUNTER]!
++    const h = fieldedDef(HUNTER)
+     expect(h).toBeDefined()
+     expect(h.side).toBe('hero')
+@@ -62,5 +68,5 @@ describe('the Hunter is a real hero from the Codex', () => {
+     // Punch joined every classed hero with S37's re-rule (2026-08-27) — the
+     // universal flag, honored by the party lane since S37a.
+-    expect(UNITS[HUNTER]!.attacks).toEqual(['attack.longbow.shot', 'attack.longbow.long-shot', 'attack.punch'])
++    expect(fieldedDef(HUNTER).attacks).toEqual(['attack.longbow.shot', 'attack.longbow.long-shot', 'attack.punch'])
+     expect(ATTACKS['attack.longbow.shot']).toMatchObject(
+       { kind: 'ranged', reach: 6, stat: 'precision', bonus: 1, staminaCost: 1 })
+@@ -81,9 +87,9 @@ describe('the Hunter is a real hero from the Codex', () => {
+       expect(gaps.some((g) => g.unit === id && /kit/.test(g.needs)), `${id} — no kit gap survives S36`).toBe(false)
+       expect(UNITS[id], `${id} fields`).toBeDefined()
+-      expect(UNITS[id]!.attacks.length, `${id} is armed`).toBeGreaterThan(1)
+-      expect(UNITS[id]!.attacks, `${id} carries the universal Punch`).toContain('attack.punch')
++      expect(fieldedDef(id).attacks.length, `${id} is armed`).toBeGreaterThan(1)
++      expect(fieldedDef(id).attacks, `${id} carries the universal Punch`).toContain('attack.punch')
+     }
+-    expect(UNITS['hero.base.warrior-iron']!.attacks).toContain('attack.war-axe.chop')
+-    expect(UNITS['hero.base.priest-armored']!.attacks).toContain('attack.holy-texts.mercy')
++    expect(fieldedDef('hero.base.warrior-iron').attacks).toContain('attack.war-axe.chop')
++    expect(fieldedDef('hero.base.priest-armored').attacks).toContain('attack.holy-texts.mercy')
+   })
+ 
+diff --git a/test/integration.test.ts b/test/integration.test.ts
+index 45c9cc4..de1fafc 100644
+--- a/test/integration.test.ts
++++ b/test/integration.test.ts
+@@ -1,4 +1,4 @@
+ import { describe, it, expect } from 'vitest'
+-import { createBattle, createCustomBattle } from '../src/core/setup.js'
++import { createBattle, createCustomBattle, fieldedDef } from '../src/core/setup.js'
+ import { runBattle } from '../src/core/battle.js'
+ import { score } from '../src/sim/score.js'
+@@ -141,9 +141,10 @@ describe('gate 1 — everything appears in the log', () => {
+     const structurallyDead: string[] = []
+     for (const t of FIRST_BATTLE.heroes) {
+-      const kit = UNITS[t]!.attacks.map((id) => ATTACKS[id]!)
++      const fielded = fieldedDef(t)   // the kit AS FIELDED (seam.items-per-unit)
++      const kit = fielded.attacks.map((id) => ATTACKS[id]!)
+       kit.forEach((a, i) => {
+         if (a.area) return   // area swings are chosen by areaSwing(), outside declared order
+         const shadowed = kit.slice(0, i).some((b) => b.kind === a.kind && b.staminaCost <= a.staminaCost)
+-        const melee = UNITS[t]!.ai === 'melee-aggressive' && a.kind === 'ranged'
++        const melee = fielded.ai === 'melee-aggressive' && a.kind === 'ranged'
+         if (shadowed || melee) structurallyDead.push(`${t}:${a.id}`)
+       })
+diff --git a/test/knockback.test.ts b/test/knockback.test.ts
+index fd801a9..d6e877d 100644
+--- a/test/knockback.test.ts
++++ b/test/knockback.test.ts
+@@ -13,5 +13,5 @@ import { performAttack } from '../src/core/pipeline.js'
+ import { UNITS } from '../src/content/index.js'
+ import { scenarioDef, scenarioOptions } from '../src/content/scenarios.js'
+-import { createBattle } from '../src/core/setup.js'
++import { fieldedDef, createBattle } from '../src/core/setup.js'
+ import { runBattle } from '../src/core/battle.js'
+ import { beginActivation } from '../src/core/mutate.js'
+@@ -117,5 +117,7 @@ describe('the second consumer — pure data on the Arc Golem', () => {
+ 
+   it('the trigger is DATA on the unit rows — the engine names no unit', () => {
+-    expect((UNITS['alpha-oathblade']!.triggers ?? []).some((t) => t.effect.kind === 'knockback')).toBe(true)
++    // seam.items-per-unit (2026-09-02): the Halberd's push rides the ITEM, so
++    // it is on the Oathblade as fielded, not on his bare row — same claim.
++    expect((fieldedDef('alpha-oathblade').triggers ?? []).some((t) => t.effect.kind === 'knockback')).toBe(true)
+     expect((UNITS['test-arc-golem']!.triggers ?? []).some((t) => t.effect.kind === 'knockback')).toBe(true)
+   })
+diff --git a/test/pack-items.test.ts b/test/pack-items.test.ts
+index d975ac3..ad4d9ad 100644
+--- a/test/pack-items.test.ts
++++ b/test/pack-items.test.ts
+@@ -9,6 +9,12 @@ import { join } from 'node:path'
+ import { describe, expect, it } from 'vitest'
+ import { ABILITIES, ATTACKS, ITEMS, UNITS } from '../src/content/index.js'
+-import { createBattle } from '../src/core/setup.js'
++import { fieldedDef, createBattle } from '../src/core/setup.js'
+ 
++// LAW 10 — 2026-09-02 (seam.items-per-unit): hero rows are BARE now — the kit's
++// attacks, powers, riders and stat deltas are applied at FIELDING by
++// applyItems, not folded into the row by the converter. Every claim below
++// about what a hero carries is a claim about the hero AS FIELDED, so it reads
++// fieldedDef(id) (the one function the battle and any preview share). The
++// claims are unchanged; only where the kit lives moved.
+ const CONTENT = join(__dirname, '..', '..', 'content')
+ type CodexItem = { id: string; name: string; itemClass: string; hands: number; slots: number; grants: string[]; statModifiers: Record<string, number>; triggers: { hook: string; effect: string }[]; stamina?: number; targets?: string }
+@@ -91,5 +97,5 @@ describe('every Codex item is an ItemDef, and says exactly what it can and canno
+         const it = ITEMS[itemId]
+         expect(it, `${hero} wears ${itemId}`).toBeDefined()
+-        for (const a of it!.grants) expect(UNITS[hero]!.attacks, `${hero} swings ${a} from ${itemId}`).toContain(a)
++        for (const a of it!.grants) expect(fieldedDef(hero).attacks, `${hero} swings ${a} from ${itemId}`).toContain(a)
+       }
+     }
+@@ -100,6 +106,7 @@ describe('every Codex item is an ItemDef, and says exactly what it can and canno
+     expect(ctx.items).toBe(ITEMS)
+     expect(ctx.items['item.longsword']!.grants).toEqual(['attack.longsword.slash', 'attack.longsword.stab'])
+-    // nothing in a battle names an item until seam.items-per-unit — the log is item-free
+-    expect(ctx.events.some((e) => JSON.stringify(e).includes('item.'))).toBe(false)
++    // seam.items-per-unit landed right behind this: the log now says what
++    // every hero wears (unit.equipped, cause = the item)
++    expect(ctx.events.filter((e) => e.type === 'unit.equipped').length).toBeGreaterThan(0)
+   })
+ })
+```
+</details>
+
+Post-land audit by hand after the reaper: 58 files / 501 on the committed
+tree; control battles match the re-blessed golden. THE INVARIANT, proven two
+ways: (1) fieldedDef() reproduces the converter's old folded rows for 30 of
+33 heroes byte-for-byte (trigger `source` aside — the item is the source
+now), and the three that differ are the OLD FOLD'S BUG — item crit/luck was
+folded into `ported` and the row then read `derivedBase.crit ?? ported.crit`,
+so Rusted Plate's −5 Crit and Nice Robes' +3 Luck never reached their wearers;
+they do now. (2) All eight control hashes are IDENTICAL to the previous tree
+once unit.equipped events are removed and trigger.rolled's `source` is
+masked — the two declared reasons the baselines move, and no other. The
+probe learned unit.equipped as a state change (widening, stricter). Nine
+tests rewritten to read the hero AS FIELDED (fieldedDef), reasons at the
+edits; test/fixtures/folded-heroes.json is the oracle, delete when trusted.
+Two flags. Seal withheld.
+
+IRON GAUNTLET: NOT PASSED — 2 FLAG(S) WARNED

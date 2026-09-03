@@ -12,7 +12,7 @@ import { executeKnockback } from '../src/core/movement.js'
 import { performAttack } from '../src/core/pipeline.js'
 import { UNITS } from '../src/content/index.js'
 import { scenarioDef, scenarioOptions } from '../src/content/scenarios.js'
-import { createBattle } from '../src/core/setup.js'
+import { fieldedDef, createBattle } from '../src/core/setup.js'
 import { runBattle } from '../src/core/battle.js'
 import { beginActivation } from '../src/core/mutate.js'
 
@@ -116,7 +116,9 @@ describe('the second consumer — pure data on the Arc Golem', () => {
   })
 
   it('the trigger is DATA on the unit rows — the engine names no unit', () => {
-    expect((UNITS['alpha-oathblade']!.triggers ?? []).some((t) => t.effect.kind === 'knockback')).toBe(true)
+    // seam.items-per-unit (2026-09-02): the Halberd's push rides the ITEM, so
+    // it is on the Oathblade as fielded, not on his bare row — same claim.
+    expect((fieldedDef('alpha-oathblade').triggers ?? []).some((t) => t.effect.kind === 'knockback')).toBe(true)
     expect((UNITS['test-arc-golem']!.triggers ?? []).some((t) => t.effect.kind === 'knockback')).toBe(true)
   })
 })

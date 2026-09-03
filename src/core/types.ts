@@ -253,6 +253,18 @@ export type UnitDef = {
   readonly maxStamina: number
   readonly staminaRegen: number
   readonly ai: string
+  /**
+   * seam.items-per-unit (2026-09-02): `ai` is derived from the kit's attacks
+   * unless the Codex row AUTHORED one — then it survives a re-kit at fielding.
+   */
+  readonly aiAuthored?: boolean
+  /**
+   * The Codex kit, verbatim (gen/kits.json heroKits / the row's `kit`), applied
+   * at fielding when BattleOptions.heroItems names nothing for this unit —
+   * seam.items-per-unit (2026-09-02, ITEMS-PLAN.md §4). Bare rows: the kit's
+   * attacks, powers, riders and stat deltas are NOT on the row.
+   */
+  readonly defaultItems?: readonly string[]
   readonly attacks: readonly string[]
   readonly abilities: readonly string[]
   /**

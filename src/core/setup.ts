@@ -3,6 +3,7 @@ import { makeRng, rootSeedOf, sample } from './rng.js'
 import type { Ctx, Side, State, Unit, UnitDef, Config } from './types.js'
 import { DEFAULT_CONFIG } from './types.js'
 import { ATTACKS, ABILITIES, CRIT_CHART, ITEMS, UNITS, FIRST_BATTLE } from '../content/index.js'
+import { applyItems, type Applied } from './items.js'
 import { terrainOf, terrainIdOf, isPassable } from '../content/maps.js'
 import { STATUSES } from '../content/statuses.js'
 import { MOVES } from '../content/moves.js'
@@ -58,6 +59,15 @@ export type BattleOptions = {
   scenarioId?: string
   /** Stat overrides by unit type. Does NOT change the seed, so arms stay paired. */
   overrides?: Readonly<Record<string, Partial<UnitDef>>>
+  /**
+   * seam.items-per-unit (2026-09-02, ITEMS-PLAN.md §2): the items each fielded
+   * hero carries, in `heroes` order, parallel to heroHexes. An entry that is
+   * absent (or the whole field) means the hero's Codex default kit — so every
+   * fielding that says nothing is unchanged. Checked like hexes: the length
+   * must match, every id must be an item, and the physical facts must hold.
+   * Enemies carry no items; their rows are authored whole.
+   */
+  heroItems?: readonly (readonly string[] | undefined)[]
 }
 
 /**
@@ -72,6 +82,18 @@ export function terrainCensus(terrain: readonly number[]): Record<string, number
   const out: Record<string, number> = {}
   for (const t of terrain) { const k = terrainIdOf(t); out[k] = (out[k] ?? 0) + 1 }
   return out
+}
+
+/**
+ * The unit AS FIELDED: the bare row with its items applied — the Codex
+ * default kit, or the list handed in. seam.items-per-unit (2026-09-02). This
+ * is the one function a preview (the kingdom's Equip screen, a tooltip) and
+ * the battle both read, so they cannot disagree about what a hero carries.
+ */
+export function fieldedDef(typeId: string, items?: readonly string[]): UnitDef {
+  const bare = UNITS[typeId]
+  if (!bare) throw new Error(`fieldedDef: unknown unit '${typeId}'`)
+  return applyItems(bare, items ?? bare.defaultItems ?? [], ITEMS, ATTACKS, `fieldedDef(${typeId})`).def
 }
 
 export function createBattle(opts: BattleOptions): Ctx {
@@ -89,6 +111,9 @@ export function createBattle(opts: BattleOptions): Ctx {
 
   const def = (t: string): UnitDef => ({ ...UNITS[t]!, ...(opts.overrides?.[t] ?? {}) })
   const heroes = opts.heroes ?? FIRST_BATTLE.heroes
+  if (opts.heroItems && opts.heroItems.length !== heroes.length) {
+    throw new Error(`${opts.scenarioId ? `scenario '${opts.scenarioId}'` : 'battle options'}: ${heroes.length} heroes but ${opts.heroItems.length} item lists — they must correspond`)
+  }
   // The default battle size is pinned by content, not by the cycle's length —
   // the roster array is a repeating PATTERN (2026-08-20, the Beast pen), and
   // growing the pattern must not silently grow the canonical battle.
@@ -177,6 +202,7 @@ export function createBattle(opts: BattleOptions): Ctx {
   const heroCols = opts.heroHexes ? [] : sample(rng, cols, heroes.length, 'hero-deployment')
 
   let id = 0
+  const equipped: { unitId: number; worn: Applied['worn'] }[] = []
   // Names come from the DEF (the pack carries Codex names like "Oathblade
   // (TEST)"); a def without one falls back to its title-cased typeId. The old
   // hand-typed NAMES map died with the hand-typed party (2026-08-20).
@@ -185,11 +211,17 @@ export function createBattle(opts: BattleOptions): Ctx {
   const seen: Record<string, number> = {}
   heroes.forEach((t, i) => {
     const hex = opts.heroHexes?.[i] ?? hexId(heroCols[i]!, FIRST_BATTLE.heroRow)
-    const d = def(t)
+    const bare = def(t)
+    // Items at fielding (seam.items-per-unit): what the options hand this
+    // hero, else the row's Codex default kit, else nothing — applied by the
+    // one function before the unit is made. Enemies never take this path.
+    const itemIds = opts.heroItems?.[i] ?? bare.defaultItems ?? []
+    const { def: d, worn } = applyItems(bare, itemIds, ITEMS, ATTACKS, where)
     seen[t] = (seen[t] ?? 0)
     const nm = `${d.name ?? label(t)} ${LETTERS[seen[t]!] ?? seen[t]! + 1}`
     seen[t]!++
     state.units.push(makeUnit(id, 100 + i, nm, d, hex))
+    equipped.push({ unitId: id, worn })
     id++
   })
   const seenEnemy: Record<string, number> = {}
@@ -213,6 +245,12 @@ export function createBattle(opts: BattleOptions): Ctx {
       role: u.role, hex: u.hex, hp: u.hp, maxHp: u.maxHp,
       stamina: u.stamina, maxStamina: u.maxStamina, terrain: state.terrain[u.hex],
     })
+    // seam.items-per-unit: one unit.equipped per (unit, item), after the
+    // unit's own enter line — the log says why the Hunter shoots and why his
+    // Health is 9 (Law 12). Cause = the item.
+    for (const w of equipped.find((e) => e.unitId === u.id)?.worn ?? []) {
+      emit(ctx, 'unit.equipped', w.itemId, { actor: u.id, itemId: w.itemId, grants: w.grants, abilities: w.abilities, mods: w.mods, ...(w.gaps ? { gaps: w.gaps } : {}) })
+    }
   }
   // A battle fielded by a scenario says so IN THE LOG, not only in the export
   // envelope (Law 12: every line names its cause). The replay is built from the
@@ -240,7 +278,9 @@ export function createCustomBattle(
   const state: State = { turn: 0, phase: 'hero', mapId, terrain: terrainOf(mapId), units: [], outcome: null, seq: 0 }
   const ctx: Ctx = { state, events: [], rng, cfg, attacks: ATTACKS, abilities: ABILITIES, statuses: STATUSES, moves: MOVES, critChart: CRIT_CHART, items: ITEMS }
   let id = 0
-  heroes.forEach((h, i) => { state.units.push(makeUnit(id, 100 + i, `H${i}`, UNITS[h.type]!, h.hex)); id++ })
+  // Custom battles field the row's default kit too (seam.items-per-unit) —
+  // a fixture hero is the same hero as a scenario hero.
+  heroes.forEach((h, i) => { state.units.push(makeUnit(id, 100 + i, `H${i}`, applyItems(UNITS[h.type]!, UNITS[h.type]!.defaultItems ?? [], ITEMS, ATTACKS, 'custom battle').def, h.hex)); id++ })
   enemies.forEach((e, i) => { state.units.push(makeUnit(id, 200 + i, `E${i}`, UNITS[e.type]!, e.hex)); id++ })
   for (const u of state.units) {
     // A dotted typeId is already a full Codex id and names itself; bare

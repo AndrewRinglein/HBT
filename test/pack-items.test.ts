@@ -8,8 +8,14 @@ import { readFileSync } from 'node:fs'
 import { join } from 'node:path'
 import { describe, expect, it } from 'vitest'
 import { ABILITIES, ATTACKS, ITEMS, UNITS } from '../src/content/index.js'
-import { createBattle } from '../src/core/setup.js'
+import { fieldedDef, createBattle } from '../src/core/setup.js'
 
+// LAW 10 — 2026-09-02 (seam.items-per-unit): hero rows are BARE now — the kit's
+// attacks, powers, riders and stat deltas are applied at FIELDING by
+// applyItems, not folded into the row by the converter. Every claim below
+// about what a hero carries is a claim about the hero AS FIELDED, so it reads
+// fieldedDef(id) (the one function the battle and any preview share). The
+// claims are unchanged; only where the kit lives moved.
 const CONTENT = join(__dirname, '..', '..', 'content')
 type CodexItem = { id: string; name: string; itemClass: string; hands: number; slots: number; grants: string[]; statModifiers: Record<string, number>; triggers: { hook: string; effect: string }[]; stamina?: number; targets?: string }
 const codexItems = (): Map<string, CodexItem> => {
@@ -90,7 +96,7 @@ describe('every Codex item is an ItemDef, and says exactly what it can and canno
       for (const itemId of kit) {
         const it = ITEMS[itemId]
         expect(it, `${hero} wears ${itemId}`).toBeDefined()
-        for (const a of it!.grants) expect(UNITS[hero]!.attacks, `${hero} swings ${a} from ${itemId}`).toContain(a)
+        for (const a of it!.grants) expect(fieldedDef(hero).attacks, `${hero} swings ${a} from ${itemId}`).toContain(a)
       }
     }
   })
@@ -99,7 +105,8 @@ describe('every Codex item is an ItemDef, and says exactly what it can and canno
     const ctx = createBattle({ replicate: 0 })
     expect(ctx.items).toBe(ITEMS)
     expect(ctx.items['item.longsword']!.grants).toEqual(['attack.longsword.slash', 'attack.longsword.stab'])
-    // nothing in a battle names an item until seam.items-per-unit — the log is item-free
-    expect(ctx.events.some((e) => JSON.stringify(e).includes('item.'))).toBe(false)
+    // seam.items-per-unit landed right behind this: the log now says what
+    // every hero wears (unit.equipped, cause = the item)
+    expect(ctx.events.filter((e) => e.type === 'unit.equipped').length).toBeGreaterThan(0)
   })
 })

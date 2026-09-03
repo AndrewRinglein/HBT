@@ -1569,19 +1569,26 @@
   "id": "seam.items-per-unit",
   "kind": "engine",
   "shape": "plumbing",
-  "spec": "Ruled 2026-09-02 (Andrew): 'the items should go into battle … They define what attacks they have. They modify stats.' Today content/mkenginepack.mjs folds a hero's CONTENT kit into its unit row at pack time, so the battle never sees what the kingdom equipped. createBattle's options need a per-unit item list (item ids, the kingdom's hero.equipped) and the engine applies the item rows at fielding — attacks granted (`grants`), statModifiers folded — the same arithmetic the pack does statically, done at battle start from the ids handed over. Masterwork and enchanted items are their own rows (kingdom generates them from the tier-1 base; see 7-KINGDOM-SETTLED.md 2026-09-02), so the engine only ever sees an item id with its own stats. The pack's folded rows stay as the default when no list is handed over.",
+  "spec": "Ruled 2026-09-02 (Andrew): 'the items should go into battle … They define what attacks they have. They modify stats.' Today content/mkenginepack.mjs folds a hero's CONTENT kit into its unit row at pack time, so the battle never sees what the kingdom equipped. createBattle's options need a per-unit item list (item ids, the kingdom's hero.equipped) and the engine applies the item rows at fielding — attacks granted (`grants`), statModifiers folded — the same arithmetic the pack does statically, done at battle start from the ids handed over. Masterwork and enchanted items are their own rows (kingdom generates them from the tier-1 base; see 7-KINGDOM-SETTLED.md 2026-09-02), so the engine only ever sees an item id with its own stats. The pack's folded rows stay as the default when no list is handed over. LANDING NOTE 2026-09-02: baselines move for exactly two reasons, both verified against the previous tree — the new unit.equipped events, and trigger.rolled naming the ITEM as the trigger's source instead of the hero; with those masked all eight control hashes are identical.",
   "expect": "a unit fielded with ['item.longsword','item.basic-armor'] has the longsword's attacks and the armor's stat deltas in its BattleState, identical to the pack's folded numbers for the same kit; with no list, nothing changes",
-  "changesBaseline": false,
+  "changesBaseline": true,
   "needs": [
    "content.field-eve-24",
    "pack.items"
   ],
-  "probeIds": [],
+  "probeIds": [
+   "item.halberd",
+   "item.thick-hide"
+  ],
   "variants": [
    "item.longsword",
    "item.longbow"
   ],
-  "note": "Filed from the kingdom session 2026-09-02. The kingdom's seam (kingdom/src/core/seam.ts battleOptionsOf) will pass hero.equipped once this lands. Plan: engine/ITEMS-PLAN.md §2, §4, §5."
+  "note": "Filed from the kingdom session 2026-09-02. The kingdom's seam (kingdom/src/core/seam.ts battleOptionsOf) will pass hero.equipped once this lands. Plan: engine/ITEMS-PLAN.md §2, §4, §5.",
+  "status": "done-needs-review",
+  "attempts": 1,
+  "sha": "743b3d3",
+  "gauntlet": "not passed — 2 flag(s) warned"
  },
  {
   "id": "content.alpha-flip",

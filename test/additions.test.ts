@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { createBattle, createCustomBattle } from '../src/core/setup.js'
+import { createBattle, createCustomBattle, fieldedDef } from '../src/core/setup.js'
 import { runBattle } from '../src/core/battle.js'
 import { resolveDamage, resolveAccuracy, reachOf, canAttack } from '../src/core/pipeline.js'
 import { resolvePowerDamage, canUsePower, isReady } from '../src/core/ability.js'
@@ -148,7 +148,7 @@ describe('pass 3 — the Mage', () => {
     // same — the mage moves, swings its OWN ranged kit, and gets hurt — read
     // off the unit's attack list instead of a typed attack id.
     const MAGE = 'alpha-air-mage'
-    const staffIds = new Set(UNITS[MAGE]!.attacks.filter((id) => ATTACKS[id]!.kind === 'ranged'))
+    const staffIds = new Set(fieldedDef(MAGE).attacks.filter((id) => ATTACKS[id]!.kind === 'ranged'))
     expect(staffIds.size).toBeGreaterThan(0)
     const seen = { moved:0, staff:0, strike:0, hurt:0 }
     for (let r = 0; r < 60; r++) {

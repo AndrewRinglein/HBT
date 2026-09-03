@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { createBattle, createCustomBattle } from '../src/core/setup.js'
+import { createBattle, createCustomBattle, fieldedDef } from '../src/core/setup.js'
 import { runBattle } from '../src/core/battle.js'
 import { score } from '../src/sim/score.js'
 import { foldToTurn, setupSeq } from '../src/view/text.js'
@@ -140,11 +140,12 @@ describe('gate 1 — everything appears in the log', () => {
     // (Quick Shot fires only from an empty stamina pool) — Law 10, reason here.
     const structurallyDead: string[] = []
     for (const t of FIRST_BATTLE.heroes) {
-      const kit = UNITS[t]!.attacks.map((id) => ATTACKS[id]!)
+      const fielded = fieldedDef(t)   // the kit AS FIELDED (seam.items-per-unit)
+      const kit = fielded.attacks.map((id) => ATTACKS[id]!)
       kit.forEach((a, i) => {
         if (a.area) return   // area swings are chosen by areaSwing(), outside declared order
         const shadowed = kit.slice(0, i).some((b) => b.kind === a.kind && b.staminaCost <= a.staminaCost)
-        const melee = UNITS[t]!.ai === 'melee-aggressive' && a.kind === 'ranged'
+        const melee = fielded.ai === 'melee-aggressive' && a.kind === 'ranged'
         if (shadowed || melee) structurallyDead.push(`${t}:${a.id}`)
       })
     }

@@ -580,3 +580,17 @@ The same library serves the control card tier — walls, fire lines, and traps a
 - **Cards** are deferred, but they are a **command type at the commander level**, not an option on the primary action. Whether a card can be played mid-activation or only between activations is an open question.
 - **Do corpses and downed heroes block movement?** They're objects on the hex; whether they cost extra to cross, block entirely, or are free is undecided.
 - **Wind-ups / telegraphed charge-ups: not in the game.**
+
+### Items are applied at fielding (2026-09-02, seam.items-per-unit)
+
+Ruled 2026-09-02 (Andrew): *"the items should go into battle … They define what
+attacks they have. They modify stats."* A hero row is BARE — the Codex body,
+Punch and its own riders — and carries `defaultItems`, the Codex kit. At
+fielding, `applyItems` (one function; `fieldedDef` and the battle share it)
+applies the kit `BattleOptions.heroItems` hands over, else the default:
+attacks are the items' grants in item order then the row's own; powers the
+same; triggers the row's then the items', sourced by the item; stat deltas fold
+additively; role follows the kit and ai follows it unless the row authored one.
+The log carries one `unit.equipped` per (unit, item) after `unit.enter`.
+Refused loudly: an unknown item, more than two hands of weapons, two armors, a
+mismatched list. Enemies carry no items.

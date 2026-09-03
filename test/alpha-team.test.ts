@@ -12,9 +12,15 @@ import { readFileSync } from 'node:fs'
 import { join } from 'node:path'
 import { scenarioDef, scenarioOptions } from '../src/content/scenarios.js'
 import { ATTACKS, UNITS } from '../src/content/index.js'
-import { createBattle } from '../src/core/setup.js'
+import { fieldedDef, createBattle } from '../src/core/setup.js'
 import { runBattle } from '../src/core/battle.js'
 
+// LAW 10 — 2026-09-02 (seam.items-per-unit): hero rows are BARE now — the kit's
+// attacks, powers, riders and stat deltas are applied at FIELDING by
+// applyItems, not folded into the row by the converter. Every claim below
+// about what a hero carries is a claim about the hero AS FIELDED, so it reads
+// fieldedDef(id) (the one function the battle and any preview share). The
+// claims are unchanged; only where the kit lives moved.
 const SC = 'showcase.alpha-team'
 const ALPHA = () => scenarioDef(SC).heroes
 
@@ -87,19 +93,19 @@ describe('the pack carries the six alpha heroes with their real stat bodies', ()
     expect(ATTACKS['attack.shortbow.quick-shot']).toMatchObject({ kind: 'ranged', reach: 4 })
     expect(ATTACKS['attack.punch']).toMatchObject({ bonus: -1, staminaCost: 0, kind: 'melee', crit: -5 })
     for (const id of ALPHA()) {
-      for (const aid of UNITS[id]!.attacks) expect(ATTACKS[aid], `${id} grants ${aid}`).toBeDefined()
-      expect(UNITS[id]!.attacks, `${id} — Punch is universal (universalToAllUnits honored)`)
+      for (const aid of fieldedDef(id).attacks) expect(ATTACKS[aid], `${id} grants ${aid}`).toBeDefined()
+      expect(fieldedDef(id).attacks, `${id} — Punch is universal (universalToAllUnits honored)`)
         .toContain('attack.punch')
-      expect(UNITS[id]!.attacks.some((aid) => cost(aid) > 0),
+      expect(fieldedDef(id).attacks.some((aid) => cost(aid) > 0),
         `${id} — at least one kit attack costs stamina`).toBe(true)
     }
     // Arcane Bolt is gone — the mage's power is the staff's.
-    expect(UNITS['alpha-air-mage']!.attacks).toEqual(['attack.lightning-staff.bolt', 'attack.punch'])
+    expect(fieldedDef('alpha-air-mage').attacks).toEqual(['attack.lightning-staff.bolt', 'attack.punch'])
   })
 
   it('the riders came through in the REAL vocabulary — translated, not test statuses', () => {
     const rider = (unit: string, statusId: string, hook: string) =>
-      (UNITS[unit]!.triggers ?? []).find((t) =>
+      (fieldedDef(unit).triggers ?? []).find((t) =>
         t.effect.kind === 'status.apply' && t.effect.statusId === statusId && t.hook === hook)
     // Oathblade: Regen 1 OTD · Stun 20% · Protection 50% OTD · Bleed on attack
     expect(rider('alpha-oathblade', 'status.regeneration', 'onTakingDamage')).toMatchObject({ chance: 100 })
@@ -112,7 +118,7 @@ describe('the pack carries the six alpha heroes with their real stat bodies', ()
     expect(rider('alpha-air-mage', 'status.weak', 'onHit')).toMatchObject({ chance: 20 })
     // Every status-applying rider must speak the engine vocabulary; other
     // effect kinds (knockback, since capability.knockback) carry no statusId.
-    for (const id of ALPHA()) for (const t of UNITS[id]!.triggers ?? []) {
+    for (const id of ALPHA()) for (const t of fieldedDef(id).triggers ?? []) {
       if (t.effect.kind !== 'status.apply') continue
       expect(String(t.effect.statusId)
         .startsWith('status.'), `${id} trigger ${t.id} uses engine vocabulary`).toBe(true)
@@ -133,7 +139,7 @@ describe('the pack carries the six alpha heroes with their real stat bodies', ()
     // the Halberd's push COMPILES now too (capability.knockback, same day):
     // its gap is gone and the trigger stands on the unit in its place
     expect(alpha.some((g) => /trigger shape/.test(g.needs))).toBe(false)
-    expect((UNITS['alpha-oathblade']!.triggers ?? []).some((t) =>
+    expect((fieldedDef('alpha-oathblade').triggers ?? []).some((t) =>
       t.id === 'trigger.halberd.hack.knockback' && t.effect.kind === 'knockback')).toBe(true)
     // Cleave's arc COMPILES now (capability.area-attack) — its gap must be gone
     expect(alpha.some((g) => /area attack/.test(g.needs))).toBe(false)
@@ -157,9 +163,9 @@ describe('the pack carries the six alpha heroes with their real stat bodies', ()
     // targeting remainder is the one NAMED partial left behind
     expect(alpha.filter((g) => /item power/.test(g.needs)).length).toBe(0)
     expect(alpha.some((g) => /power targeting: arbitrary hex/.test(g.needs))).toBe(true)
-    expect(UNITS['alpha-air-mage']!.abilities).toEqual(['power.lightning-staff.storm'])
-    expect(UNITS['alpha-lucius']!.abilities).toEqual(['power.holy-symbol.heal'])
-    expect(UNITS['alpha-osric']!.abilities).toEqual(['power.knight-shield.block'])
+    expect(fieldedDef('alpha-air-mage').abilities).toEqual(['power.lightning-staff.storm'])
+    expect(fieldedDef('alpha-lucius').abilities).toEqual(['power.holy-symbol.heal'])
+    expect(fieldedDef('alpha-osric').abilities).toEqual(['power.knight-shield.block'])
   })
 })
 

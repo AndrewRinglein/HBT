@@ -2947,9 +2947,9 @@ export const UNIT_PACK = {
       "name": "Black Oath",
       "side": "hero",
       "maxHp": 9,
-      "armor": 2,
+      "armor": 1,
       "resist": 0,
-      "accuracy": 62,
+      "accuracy": 72,
       "dodge": 0,
       "crit": 3,
       "strength": 4,
@@ -2957,14 +2957,12 @@ export const UNIT_PACK = {
       "magic": 0,
       "spirit": 1,
       "role": "melee",
-      "movement": 3,
+      "movement": 5,
       "reach": 2,
-      "maxStamina": 3,
+      "maxStamina": 5,
       "staminaRegen": 1,
       "ai": "melee-aggressive",
       "attacks": [
-        "attack.greatsword.hew",
-        "attack.greatsword.great-cleave",
         "attack.punch"
       ],
       "abilities": [],
@@ -2978,13 +2976,17 @@ export const UNIT_PACK = {
       "tags": [
         "hero"
       ],
-      "triggers": []
+      "triggers": [],
+      "defaultItems": [
+        "item.greatsword",
+        "item.rusted-plate"
+      ]
     },
     {
       "typeId": "hero.base.paladin-shiney",
       "name": "Dawnblade",
       "side": "hero",
-      "maxHp": 10,
+      "maxHp": 9,
       "armor": 1,
       "resist": 0,
       "accuracy": 72,
@@ -3001,14 +3003,9 @@ export const UNIT_PACK = {
       "staminaRegen": 1,
       "ai": "melee-aggressive",
       "attacks": [
-        "attack.longsword.slash",
-        "attack.longsword.stab",
-        "attack.knight-shield.shield-slam",
         "attack.punch"
       ],
-      "abilities": [
-        "power.knight-shield.block"
-      ],
+      "abilities": [],
       "moves": [
         "power.move",
         "power.sidestep"
@@ -3019,27 +3016,18 @@ export const UNIT_PACK = {
       "tags": [
         "hero"
       ],
-      "triggers": [
-        {
-          "id": "trigger.knight-shield.shield-slam.stun",
-          "hook": "onDamage",
-          "chance": 100,
-          "select": "target",
-          "effect": {
-            "kind": "status.apply",
-            "statusId": "status.stun",
-            "value": 1
-          },
-          "source": "hero.base.paladin-shiney",
-          "onlyWithAttack": "attack.knight-shield.shield-slam"
-        }
+      "triggers": [],
+      "defaultItems": [
+        "item.longsword",
+        "item.knight-shield",
+        "item.basic-armor"
       ]
     },
     {
       "typeId": "hero.base.paladin-hunk",
       "name": "Lion of the Host",
       "side": "hero",
-      "maxHp": 11,
+      "maxHp": 9,
       "armor": 2,
       "resist": 0,
       "accuracy": 72,
@@ -3052,18 +3040,13 @@ export const UNIT_PACK = {
       "role": "melee",
       "movement": 4,
       "reach": 1,
-      "maxStamina": 4,
+      "maxStamina": 5,
       "staminaRegen": 1,
       "ai": "melee-aggressive",
       "attacks": [
-        "attack.longsword.slash",
-        "attack.longsword.stab",
-        "attack.knight-shield.shield-slam",
         "attack.punch"
       ],
-      "abilities": [
-        "power.knight-shield.block"
-      ],
+      "abilities": [],
       "moves": [
         "power.move",
         "power.sidestep"
@@ -3074,50 +3057,36 @@ export const UNIT_PACK = {
       "tags": [
         "hero"
       ],
-      "triggers": [
-        {
-          "id": "trigger.knight-shield.shield-slam.stun",
-          "hook": "onDamage",
-          "chance": 100,
-          "select": "target",
-          "effect": {
-            "kind": "status.apply",
-            "statusId": "status.stun",
-            "value": 1
-          },
-          "source": "hero.base.paladin-hunk",
-          "onlyWithAttack": "attack.knight-shield.shield-slam"
-        }
+      "triggers": [],
+      "defaultItems": [
+        "item.longsword",
+        "item.knight-shield",
+        "item.ragged-hides"
       ]
     },
     {
       "typeId": "hero.base.paladin-smug",
       "name": "Court Champion",
       "side": "hero",
-      "maxHp": 13,
+      "maxHp": 9,
       "armor": 1,
       "resist": 0,
-      "accuracy": 52,
+      "accuracy": 72,
       "dodge": 0,
       "strength": 4,
       "precision": 3,
       "magic": 0,
       "spirit": 1,
       "role": "melee",
-      "movement": 4,
+      "movement": 5,
       "reach": 2,
-      "maxStamina": 7,
+      "maxStamina": 8,
       "staminaRegen": 1,
       "ai": "melee-aggressive",
       "attacks": [
-        "attack.longsword.slash",
-        "attack.longsword.stab",
-        "attack.knight-shield.shield-slam",
         "attack.punch"
       ],
-      "abilities": [
-        "power.knight-shield.block"
-      ],
+      "abilities": [],
       "moves": [
         "power.move",
         "power.sidestep"
@@ -3128,20 +3097,11 @@ export const UNIT_PACK = {
       "tags": [
         "hero"
       ],
-      "triggers": [
-        {
-          "id": "trigger.knight-shield.shield-slam.stun",
-          "hook": "onDamage",
-          "chance": 100,
-          "select": "target",
-          "effect": {
-            "kind": "status.apply",
-            "statusId": "status.stun",
-            "value": 1
-          },
-          "source": "hero.base.paladin-smug",
-          "onlyWithAttack": "attack.knight-shield.shield-slam"
-        }
+      "triggers": [],
+      "defaultItems": [
+        "item.longsword",
+        "item.knight-shield",
+        "item.destroyed-mail"
       ]
     },
     {
@@ -3152,7 +3112,7 @@ export const UNIT_PACK = {
       "armor": 0,
       "resist": 0,
       "accuracy": 80,
-      "dodge": 5,
+      "dodge": 0,
       "crit": 3,
       "strength": 2,
       "precision": 4,
@@ -3165,8 +3125,6 @@ export const UNIT_PACK = {
       "staminaRegen": 1,
       "ai": "ranged-kite",
       "attacks": [
-        "attack.elfbow.elf-shot",
-        "attack.elfbow.double-shot",
         "attack.punch"
       ],
       "abilities": [],
@@ -3180,7 +3138,11 @@ export const UNIT_PACK = {
       "tags": [
         "hero"
       ],
-      "triggers": []
+      "triggers": [],
+      "defaultItems": [
+        "item.elfbow",
+        "item.flowing-cloak"
+      ]
     },
     {
       "typeId": "hero.base.ranger-scantily",
@@ -3190,7 +3152,7 @@ export const UNIT_PACK = {
       "armor": 0,
       "resist": 0,
       "accuracy": 80,
-      "dodge": 5,
+      "dodge": 0,
       "crit": 3,
       "strength": 2,
       "precision": 5,
@@ -3203,8 +3165,6 @@ export const UNIT_PACK = {
       "staminaRegen": 1,
       "ai": "ranged-kite",
       "attacks": [
-        "attack.elfbow.elf-shot",
-        "attack.elfbow.double-shot",
         "attack.punch"
       ],
       "abilities": [],
@@ -3218,31 +3178,33 @@ export const UNIT_PACK = {
       "tags": [
         "hero"
       ],
-      "triggers": []
+      "triggers": [],
+      "defaultItems": [
+        "item.elfbow",
+        "item.flowing-cloak"
+      ]
     },
     {
       "typeId": "hero.base.ranger-nature",
       "name": "Forest Fey",
       "side": "hero",
-      "maxHp": 4,
+      "maxHp": 6,
       "armor": 1,
       "resist": 0,
       "accuracy": 80,
-      "dodge": -5,
+      "dodge": 0,
       "crit": 3,
       "strength": 2,
       "precision": 4,
       "magic": 0,
       "spirit": 0,
       "role": "ranged",
-      "movement": 6,
+      "movement": 5,
       "reach": 2,
       "maxStamina": 5,
       "staminaRegen": 1,
       "ai": "ranged-kite",
       "attacks": [
-        "attack.shortbow.short-shot",
-        "attack.shortbow.quick-shot",
         "attack.punch"
       ],
       "abilities": [],
@@ -3256,31 +3218,33 @@ export const UNIT_PACK = {
       "tags": [
         "hero"
       ],
-      "triggers": []
+      "triggers": [],
+      "defaultItems": [
+        "item.shortbow",
+        "item.pilgrims-habit"
+      ]
     },
     {
       "typeId": "hero.base.ranger-aggressive",
       "name": "Hunter",
       "side": "hero",
-      "maxHp": 9,
+      "maxHp": 6,
       "armor": 0,
       "resist": 0,
       "accuracy": 80,
-      "dodge": -10,
+      "dodge": 0,
       "crit": 3,
       "strength": 2,
       "precision": 5,
       "magic": 0,
       "spirit": 0,
       "role": "ranged",
-      "movement": 4,
+      "movement": 5,
       "reach": 3,
       "maxStamina": 5,
       "staminaRegen": 1,
       "ai": "ranged-kite",
       "attacks": [
-        "attack.longbow.shot",
-        "attack.longbow.long-shot",
         "attack.punch"
       ],
       "abilities": [],
@@ -3294,63 +3258,15 @@ export const UNIT_PACK = {
       "tags": [
         "hero"
       ],
-      "triggers": []
+      "triggers": [],
+      "defaultItems": [
+        "item.longbow",
+        "item.thick-hide"
+      ]
     },
     {
       "typeId": "hero.base.warrior-iron",
       "name": "Iron Dwarf",
-      "side": "hero",
-      "maxHp": 16,
-      "armor": 1,
-      "resist": 0,
-      "accuracy": 55,
-      "dodge": 0,
-      "crit": 3,
-      "strength": 4,
-      "precision": 3,
-      "magic": 0,
-      "spirit": 0,
-      "role": "melee",
-      "movement": 4,
-      "reach": 1,
-      "maxStamina": 4,
-      "staminaRegen": 1,
-      "ai": "melee-aggressive",
-      "attacks": [
-        "attack.war-axe.chop",
-        "attack.war-axe.hack",
-        "attack.punch"
-      ],
-      "abilities": [],
-      "moves": [
-        "power.move",
-        "power.leap"
-      ],
-      "attributes": [
-        "hero-eve"
-      ],
-      "tags": [
-        "hero"
-      ],
-      "triggers": [
-        {
-          "id": "trigger.war-axe.hack.bleed",
-          "hook": "onHit",
-          "chance": 100,
-          "select": "target",
-          "effect": {
-            "kind": "status.apply",
-            "statusId": "status.bleed",
-            "value": 2
-          },
-          "source": "hero.base.warrior-iron",
-          "onlyWithAttack": "attack.war-axe.hack"
-        }
-      ]
-    },
-    {
-      "typeId": "hero.base.warrior-brawler",
-      "name": "Dwarven Brawler",
       "side": "hero",
       "maxHp": 12,
       "armor": 1,
@@ -3359,13 +3275,54 @@ export const UNIT_PACK = {
       "dodge": 0,
       "crit": 3,
       "strength": 4,
+      "precision": 3,
+      "magic": 0,
+      "spirit": 0,
+      "role": "melee",
+      "movement": 5,
+      "reach": 1,
+      "maxStamina": 5,
+      "staminaRegen": 1,
+      "ai": "melee-aggressive",
+      "attacks": [
+        "attack.punch"
+      ],
+      "abilities": [],
+      "moves": [
+        "power.move",
+        "power.leap"
+      ],
+      "attributes": [
+        "hero-eve"
+      ],
+      "tags": [
+        "hero"
+      ],
+      "triggers": [],
+      "defaultItems": [
+        "item.destroyed-mail",
+        "item.tower-shield",
+        "item.war-axe"
+      ]
+    },
+    {
+      "typeId": "hero.base.warrior-brawler",
+      "name": "Dwarven Brawler",
+      "side": "hero",
+      "maxHp": 10,
+      "armor": 1,
+      "resist": 0,
+      "accuracy": 75,
+      "dodge": 0,
+      "crit": 3,
+      "strength": 4,
       "precision": 4,
       "magic": 0,
       "spirit": 0,
       "role": "melee",
       "movement": 5,
       "reach": 1,
-      "maxStamina": 4,
+      "maxStamina": 5,
       "staminaRegen": 1,
       "ai": "melee-aggressive",
       "attacks": [
@@ -3382,31 +3339,32 @@ export const UNIT_PACK = {
       "tags": [
         "hero"
       ],
-      "triggers": []
+      "triggers": [],
+      "defaultItems": [
+        "item.ragged-hides"
+      ]
     },
     {
       "typeId": "hero.base.warrior-barbarian",
       "name": "Mountain Berserker",
       "side": "hero",
-      "maxHp": 13,
+      "maxHp": 10,
       "armor": 1,
       "resist": 0,
       "accuracy": 75,
-      "dodge": -10,
+      "dodge": 0,
       "crit": 3,
       "strength": 4,
       "precision": 3,
       "magic": 0,
       "spirit": 0,
       "role": "melee",
-      "movement": 4,
+      "movement": 5,
       "reach": 1,
       "maxStamina": 5,
       "staminaRegen": 1,
       "ai": "melee-aggressive",
       "attacks": [
-        "attack.greatsword.hew",
-        "attack.greatsword.great-cleave",
         "attack.punch"
       ],
       "abilities": [],
@@ -3420,13 +3378,17 @@ export const UNIT_PACK = {
       "tags": [
         "hero"
       ],
-      "triggers": []
+      "triggers": [],
+      "defaultItems": [
+        "item.greatsword",
+        "item.thick-hide"
+      ]
     },
     {
       "typeId": "hero.base.warrior-fearsome",
       "name": "Skullplate Veteran",
       "side": "hero",
-      "maxHp": 11,
+      "maxHp": 10,
       "armor": 1,
       "resist": 0,
       "accuracy": 75,
@@ -3443,8 +3405,6 @@ export const UNIT_PACK = {
       "staminaRegen": 1,
       "ai": "melee-aggressive",
       "attacks": [
-        "attack.halberd.hack",
-        "attack.halberd.cleave",
         "attack.punch"
       ],
       "abilities": [],
@@ -3458,19 +3418,10 @@ export const UNIT_PACK = {
       "tags": [
         "hero"
       ],
-      "triggers": [
-        {
-          "id": "trigger.halberd.hack.knockback",
-          "hook": "onDamage",
-          "chance": 100,
-          "select": "target",
-          "effect": {
-            "kind": "knockback",
-            "value": 1
-          },
-          "source": "hero.base.warrior-fearsome",
-          "onlyWithAttack": "attack.halberd.hack"
-        }
+      "triggers": [],
+      "defaultItems": [
+        "item.halberd",
+        "item.basic-armor"
       ]
     },
     {
@@ -3489,12 +3440,11 @@ export const UNIT_PACK = {
       "spirit": 0,
       "role": "ranged",
       "movement": 5,
-      "reach": 3,
+      "reach": 2,
       "maxStamina": 5,
       "staminaRegen": 1,
       "ai": "ranged-kite",
       "attacks": [
-        "attack.frost-staff.frost-blast",
         "attack.punch"
       ],
       "abilities": [],
@@ -3508,7 +3458,11 @@ export const UNIT_PACK = {
       "tags": [
         "hero"
       ],
-      "triggers": []
+      "triggers": [],
+      "defaultItems": [
+        "item.frost-staff",
+        "item.watchmans-coat"
+      ]
     },
     {
       "typeId": "hero.base.mage-sexy",
@@ -3516,8 +3470,8 @@ export const UNIT_PACK = {
       "side": "hero",
       "maxHp": 6,
       "armor": 0,
-      "resist": 1,
-      "accuracy": 65,
+      "resist": 0,
+      "accuracy": 75,
       "dodge": 0,
       "crit": 3,
       "strength": 2,
@@ -3525,13 +3479,12 @@ export const UNIT_PACK = {
       "magic": 2,
       "spirit": 0,
       "role": "ranged",
-      "movement": 4,
+      "movement": 5,
       "reach": 2,
       "maxStamina": 5,
       "staminaRegen": 1,
       "ai": "ranged-kite",
       "attacks": [
-        "attack.fire-staff.fire-blast",
         "attack.punch"
       ],
       "abilities": [],
@@ -3545,27 +3498,17 @@ export const UNIT_PACK = {
       "tags": [
         "hero"
       ],
-      "triggers": [
-        {
-          "id": "trigger.fire-staff.fire-blast.burn",
-          "hook": "onHit",
-          "chance": 100,
-          "select": "target",
-          "effect": {
-            "kind": "status.apply",
-            "statusId": "status.burn",
-            "value": 1
-          },
-          "source": "hero.base.mage-sexy",
-          "onlyWithAttack": "attack.fire-staff.fire-blast"
-        }
+      "triggers": [],
+      "defaultItems": [
+        "item.fire-staff",
+        "item.tanners-apron"
       ]
     },
     {
       "typeId": "hero.base.mage-fire",
       "name": "Emberwright",
       "side": "hero",
-      "maxHp": 7,
+      "maxHp": 6,
       "armor": 0,
       "resist": 0,
       "accuracy": 75,
@@ -3582,7 +3525,6 @@ export const UNIT_PACK = {
       "staminaRegen": 1,
       "ai": "ranged-kite",
       "attacks": [
-        "attack.fire-staff.fire-blast",
         "attack.punch"
       ],
       "abilities": [],
@@ -3596,20 +3538,10 @@ export const UNIT_PACK = {
       "tags": [
         "hero"
       ],
-      "triggers": [
-        {
-          "id": "trigger.fire-staff.fire-blast.burn",
-          "hook": "onHit",
-          "chance": 100,
-          "select": "target",
-          "effect": {
-            "kind": "status.apply",
-            "statusId": "status.burn",
-            "value": 1
-          },
-          "source": "hero.base.mage-fire",
-          "onlyWithAttack": "attack.fire-staff.fire-blast"
-        }
+      "triggers": [],
+      "defaultItems": [
+        "item.fire-staff",
+        "item.basic-armor"
       ]
     },
     {
@@ -3633,7 +3565,6 @@ export const UNIT_PACK = {
       "staminaRegen": 1,
       "ai": "ranged-kite",
       "attacks": [
-        "attack.fire-staff.fire-blast",
         "attack.punch"
       ],
       "abilities": [],
@@ -3647,20 +3578,10 @@ export const UNIT_PACK = {
       "tags": [
         "hero"
       ],
-      "triggers": [
-        {
-          "id": "trigger.fire-staff.fire-blast.burn",
-          "hook": "onHit",
-          "chance": 100,
-          "select": "target",
-          "effect": {
-            "kind": "status.apply",
-            "statusId": "status.burn",
-            "value": 1
-          },
-          "source": "hero.base.mage-fireaura",
-          "onlyWithAttack": "attack.fire-staff.fire-blast"
-        }
+      "triggers": [],
+      "defaultItems": [
+        "item.fire-staff",
+        "item.nice-robes"
       ]
     },
     {
@@ -3684,8 +3605,6 @@ export const UNIT_PACK = {
       "staminaRegen": 1,
       "ai": "ranged-kite",
       "attacks": [
-        "attack.holy-texts.verse",
-        "attack.holy-texts.mercy",
         "attack.punch"
       ],
       "abilities": [],
@@ -3699,37 +3618,36 @@ export const UNIT_PACK = {
       "tags": [
         "hero"
       ],
-      "triggers": []
+      "triggers": [],
+      "defaultItems": [
+        "item.holy-texts",
+        "item.nice-robes"
+      ]
     },
     {
       "typeId": "hero.base.priest-armored",
       "name": "Battle Chaplain",
       "side": "hero",
-      "maxHp": 5,
+      "maxHp": 7,
       "armor": 2,
       "resist": 0,
       "accuracy": 80,
-      "dodge": -5,
+      "dodge": 0,
       "crit": 3,
       "strength": 2,
       "precision": 3,
       "magic": 0,
       "spirit": 2,
       "role": "ranged",
-      "movement": 6,
+      "movement": 5,
       "reach": 2,
       "maxStamina": 5,
       "staminaRegen": 1,
       "ai": "ranged-kite",
       "attacks": [
-        "attack.knight-shield.shield-slam",
-        "attack.holy-texts.verse",
-        "attack.holy-texts.mercy",
         "attack.punch"
       ],
-      "abilities": [
-        "power.knight-shield.block"
-      ],
+      "abilities": [],
       "moves": [
         "power.move",
         "power.devotion"
@@ -3740,31 +3658,22 @@ export const UNIT_PACK = {
       "tags": [
         "hero"
       ],
-      "triggers": [
-        {
-          "id": "trigger.knight-shield.shield-slam.stun",
-          "hook": "onDamage",
-          "chance": 100,
-          "select": "target",
-          "effect": {
-            "kind": "status.apply",
-            "statusId": "status.stun",
-            "value": 1
-          },
-          "source": "hero.base.priest-armored",
-          "onlyWithAttack": "attack.knight-shield.shield-slam"
-        }
+      "triggers": [],
+      "defaultItems": [
+        "item.knight-shield",
+        "item.holy-texts",
+        "item.pilgrims-habit"
       ]
     },
     {
       "typeId": "hero.base.priest-robes",
       "name": "Cathedral Bishop",
       "side": "hero",
-      "maxHp": 5,
+      "maxHp": 7,
       "armor": 0,
       "resist": 0,
-      "accuracy": 75,
-      "dodge": -5,
+      "accuracy": 80,
+      "dodge": 0,
       "crit": 3,
       "strength": 2,
       "precision": 3,
@@ -3777,12 +3686,9 @@ export const UNIT_PACK = {
       "staminaRegen": 1,
       "ai": "ranged-kite",
       "attacks": [
-        "attack.holy-symbol.wrath",
         "attack.punch"
       ],
-      "abilities": [
-        "power.holy-symbol.heal"
-      ],
+      "abilities": [],
       "moves": [
         "power.move",
         "power.devotion"
@@ -3793,7 +3699,11 @@ export const UNIT_PACK = {
       "tags": [
         "hero"
       ],
-      "triggers": []
+      "triggers": [],
+      "defaultItems": [
+        "item.holy-symbol",
+        "item.peddlers-vest"
+      ]
     },
     {
       "typeId": "hero.base.priest-scantily",
@@ -3808,22 +3718,17 @@ export const UNIT_PACK = {
       "strength": 3,
       "precision": 3,
       "magic": 0,
-      "spirit": 3,
+      "spirit": 2,
       "role": "ranged",
       "movement": 5,
       "reach": 2,
-      "maxStamina": 3,
+      "maxStamina": 5,
       "staminaRegen": 1,
       "ai": "ranged-kite",
       "attacks": [
-        "attack.iron-mace.swing",
-        "attack.iron-mace.crush",
-        "attack.holy-symbol.wrath",
         "attack.punch"
       ],
-      "abilities": [
-        "power.holy-symbol.heal"
-      ],
+      "abilities": [],
       "moves": [
         "power.move",
         "power.devotion"
@@ -3834,17 +3739,22 @@ export const UNIT_PACK = {
       "tags": [
         "hero"
       ],
-      "triggers": []
+      "triggers": [],
+      "defaultItems": [
+        "item.iron-mace",
+        "item.holy-symbol",
+        "item.borrowed-vestments"
+      ]
     },
     {
       "typeId": "hero.base.rogue-raven",
       "name": "The Raven",
       "side": "hero",
-      "maxHp": 3,
+      "maxHp": 5,
       "armor": 0,
       "resist": 0,
-      "accuracy": 73,
-      "dodge": 0,
+      "accuracy": 78,
+      "dodge": 5,
       "crit": 5,
       "strength": 6,
       "precision": 4,
@@ -3857,10 +3767,6 @@ export const UNIT_PACK = {
       "staminaRegen": 1,
       "ai": "ranged-kite",
       "attacks": [
-        "attack.hand-crossbow.snapshot",
-        "attack.hand-crossbow.loaded-bolt",
-        "attack.longsword.slash",
-        "attack.longsword.stab",
         "attack.punch"
       ],
       "abilities": [],
@@ -3874,20 +3780,11 @@ export const UNIT_PACK = {
       "tags": [
         "hero"
       ],
-      "triggers": [
-        {
-          "id": "trigger.hand-crossbow.loaded-bolt.poison",
-          "hook": "onHit",
-          "chance": 100,
-          "select": "target",
-          "effect": {
-            "kind": "status.apply",
-            "statusId": "status.poison",
-            "value": 2
-          },
-          "source": "hero.base.rogue-raven",
-          "onlyWithAttack": "attack.hand-crossbow.loaded-bolt"
-        }
+      "triggers": [],
+      "defaultItems": [
+        "item.hand-crossbow",
+        "item.longsword",
+        "item.peddlers-vest"
       ]
     },
     {
@@ -3898,7 +3795,7 @@ export const UNIT_PACK = {
       "armor": 0,
       "resist": 0,
       "accuracy": 78,
-      "dodge": 10,
+      "dodge": 5,
       "crit": 5,
       "strength": 4,
       "precision": 4,
@@ -3911,8 +3808,6 @@ export const UNIT_PACK = {
       "staminaRegen": 1,
       "ai": "melee-aggressive",
       "attacks": [
-        "attack.obsidian-fang-dagger.fang",
-        "attack.obsidian-fang-dagger.gut",
         "attack.punch"
       ],
       "abilities": [],
@@ -3926,13 +3821,17 @@ export const UNIT_PACK = {
       "tags": [
         "hero"
       ],
-      "triggers": []
+      "triggers": [],
+      "defaultItems": [
+        "item.obsidian-fang-dagger",
+        "item.flowing-cloak"
+      ]
     },
     {
       "typeId": "hero.base.rogue-snake",
       "name": "The Serpent",
       "side": "hero",
-      "maxHp": 6,
+      "maxHp": 5,
       "armor": 0,
       "resist": 0,
       "accuracy": 78,
@@ -3949,8 +3848,6 @@ export const UNIT_PACK = {
       "staminaRegen": 1,
       "ai": "ranged-kite",
       "attacks": [
-        "attack.throwing-knives.flick",
-        "attack.throwing-knives.fan",
         "attack.punch"
       ],
       "abilities": [],
@@ -3964,7 +3861,11 @@ export const UNIT_PACK = {
       "tags": [
         "hero"
       ],
-      "triggers": []
+      "triggers": [],
+      "defaultItems": [
+        "item.throwing-knives",
+        "item.basic-armor"
+      ]
     },
     {
       "typeId": "hero.base.rogue-skull",
@@ -3982,13 +3883,11 @@ export const UNIT_PACK = {
       "spirit": 0,
       "role": "ranged",
       "movement": 5,
-      "reach": 2,
+      "reach": 1,
       "maxStamina": 5,
       "staminaRegen": 1,
       "ai": "ranged-kite",
       "attacks": [
-        "attack.daggers.stab",
-        "attack.daggers.thrown-dagger",
         "attack.punch"
       ],
       "abilities": [],
@@ -4002,7 +3901,11 @@ export const UNIT_PACK = {
       "tags": [
         "hero"
       ],
-      "triggers": []
+      "triggers": [],
+      "defaultItems": [
+        "item.daggers",
+        "item.watchmans-coat"
+      ]
     },
     {
       "typeId": "hero.fixed.orphans",
@@ -4025,9 +3928,7 @@ export const UNIT_PACK = {
       "maxStamina": 5,
       "staminaRegen": 1,
       "ai": "ranged-kite",
-      "attacks": [
-        "attack.pile-of-rocks.throw"
-      ],
+      "attacks": [],
       "abilities": [],
       "moves": [
         "power.move"
@@ -4039,7 +3940,10 @@ export const UNIT_PACK = {
         "hero",
         "civilian"
       ],
-      "triggers": []
+      "triggers": [],
+      "defaultItems": [
+        "item.pile-of-rocks"
+      ]
     },
     {
       "typeId": "hero.fixed.lumberjack-and-wife",
@@ -4061,10 +3965,7 @@ export const UNIT_PACK = {
       "maxStamina": 5,
       "staminaRegen": 1,
       "ai": "melee-aggressive",
-      "attacks": [
-        "attack.lumberjack-axe.chop",
-        "attack.lumberjack-axe.cleave"
-      ],
+      "attacks": [],
       "abilities": [],
       "moves": [
         "power.move"
@@ -4076,20 +3977,9 @@ export const UNIT_PACK = {
         "hero",
         "civilian"
       ],
-      "triggers": [
-        {
-          "id": "trigger.lumberjack-axe.chop.bleed",
-          "hook": "onHit",
-          "chance": 20,
-          "select": "target",
-          "effect": {
-            "kind": "status.apply",
-            "statusId": "status.bleed",
-            "value": 2
-          },
-          "source": "hero.fixed.lumberjack-and-wife",
-          "onlyWithAttack": "attack.lumberjack-axe.chop"
-        }
+      "triggers": [],
+      "defaultItems": [
+        "item.lumberjack-axe"
       ]
     },
     {
@@ -4113,9 +4003,7 @@ export const UNIT_PACK = {
       "maxStamina": 5,
       "staminaRegen": 1,
       "ai": "melee-aggressive",
-      "attacks": [
-        "attack.pitchfork.jab"
-      ],
+      "attacks": [],
       "abilities": [],
       "moves": [
         "power.move"
@@ -4127,7 +4015,10 @@ export const UNIT_PACK = {
         "hero",
         "civilian"
       ],
-      "triggers": []
+      "triggers": [],
+      "defaultItems": [
+        "item.pitchfork"
+      ]
     }
   ],
   "alphaTeam": [
@@ -4151,9 +4042,8 @@ export const UNIT_PACK = {
       "maxStamina": 5,
       "staminaRegen": 1,
       "ai": "melee-aggressive",
+      "aiAuthored": true,
       "attacks": [
-        "attack.halberd.hack",
-        "attack.halberd.cleave",
         "attack.punch"
       ],
       "abilities": [],
@@ -4215,19 +4105,10 @@ export const UNIT_PACK = {
             "value": 2
           },
           "source": "alpha-oathblade"
-        },
-        {
-          "id": "trigger.halberd.hack.knockback",
-          "hook": "onDamage",
-          "chance": 100,
-          "select": "target",
-          "effect": {
-            "kind": "knockback",
-            "value": 1
-          },
-          "source": "alpha-oathblade",
-          "onlyWithAttack": "attack.halberd.hack"
         }
+      ],
+      "defaultItems": [
+        "item.halberd"
       ]
     },
     {
@@ -4250,10 +4131,8 @@ export const UNIT_PACK = {
       "maxStamina": 5,
       "staminaRegen": 1,
       "ai": "melee-aggressive",
+      "aiAuthored": true,
       "attacks": [
-        "attack.javelin.throw",
-        "attack.javelin.stab",
-        "attack.dagger.stab",
         "attack.punch"
       ],
       "abilities": [],
@@ -4279,20 +4158,11 @@ export const UNIT_PACK = {
             "value": 1
           },
           "source": "alpha-sky-pirate"
-        },
-        {
-          "id": "trigger.dagger.stab.protection",
-          "hook": "onAttack",
-          "chance": 100,
-          "select": "self",
-          "effect": {
-            "kind": "status.apply",
-            "statusId": "status.protection",
-            "value": 1
-          },
-          "source": "alpha-sky-pirate",
-          "onlyWithAttack": "attack.dagger.stab"
         }
+      ],
+      "defaultItems": [
+        "item.javelin",
+        "item.dagger"
       ]
     },
     {
@@ -4315,9 +4185,8 @@ export const UNIT_PACK = {
       "maxStamina": 5,
       "staminaRegen": 1,
       "ai": "ranged-kite",
+      "aiAuthored": true,
       "attacks": [
-        "attack.shortbow.short-shot",
-        "attack.shortbow.quick-shot",
         "attack.punch"
       ],
       "abilities": [],
@@ -4344,6 +4213,9 @@ export const UNIT_PACK = {
           },
           "source": "alpha-dusk-hawk"
         }
+      ],
+      "defaultItems": [
+        "item.shortbow"
       ]
     },
     {
@@ -4366,13 +4238,11 @@ export const UNIT_PACK = {
       "maxStamina": 5,
       "staminaRegen": 1,
       "ai": "ranged-kite",
+      "aiAuthored": true,
       "attacks": [
-        "attack.lightning-staff.bolt",
         "attack.punch"
       ],
-      "abilities": [
-        "power.lightning-staff.storm"
-      ],
+      "abilities": [],
       "moves": [
         "power.move",
         "power.focus"
@@ -4408,6 +4278,9 @@ export const UNIT_PACK = {
           },
           "source": "alpha-air-mage"
         }
+      ],
+      "defaultItems": [
+        "item.lightning-staff"
       ]
     },
     {
@@ -4430,13 +4303,11 @@ export const UNIT_PACK = {
       "maxStamina": 5,
       "staminaRegen": 1,
       "ai": "ranged-kite",
+      "aiAuthored": true,
       "attacks": [
-        "attack.holy-symbol.wrath",
         "attack.punch"
       ],
-      "abilities": [
-        "power.holy-symbol.heal"
-      ],
+      "abilities": [],
       "moves": [
         "power.move",
         "power.devotion"
@@ -4447,7 +4318,10 @@ export const UNIT_PACK = {
       "tags": [
         "hero"
       ],
-      "triggers": []
+      "triggers": [],
+      "defaultItems": [
+        "item.holy-symbol"
+      ]
     },
     {
       "typeId": "alpha-osric",
@@ -4469,15 +4343,11 @@ export const UNIT_PACK = {
       "maxStamina": 5,
       "staminaRegen": 1,
       "ai": "melee-aggressive",
+      "aiAuthored": true,
       "attacks": [
-        "attack.longsword.slash",
-        "attack.longsword.stab",
-        "attack.knight-shield.shield-slam",
         "attack.punch"
       ],
-      "abilities": [
-        "power.knight-shield.block"
-      ],
+      "abilities": [],
       "moves": [
         "power.move",
         "power.sidestep"
@@ -4488,20 +4358,10 @@ export const UNIT_PACK = {
       "tags": [
         "hero"
       ],
-      "triggers": [
-        {
-          "id": "trigger.knight-shield.shield-slam.stun",
-          "hook": "onDamage",
-          "chance": 100,
-          "select": "target",
-          "effect": {
-            "kind": "status.apply",
-            "statusId": "status.stun",
-            "value": 1
-          },
-          "source": "alpha-osric",
-          "onlyWithAttack": "attack.knight-shield.shield-slam"
-        }
+      "triggers": [],
+      "defaultItems": [
+        "item.longsword",
+        "item.knight-shield"
       ]
     }
   ],

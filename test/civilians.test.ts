@@ -12,18 +12,24 @@ import { readFileSync } from 'node:fs'
 import { join } from 'node:path'
 import { scenarioDef, scenarioOptions } from '../src/content/scenarios.js'
 import { ATTACKS, UNITS } from '../src/content/index.js'
-import { createBattle, createCustomBattle } from '../src/core/setup.js'
+import { fieldedDef, createBattle, createCustomBattle } from '../src/core/setup.js'
 import { runBattle } from '../src/core/battle.js'
 import { runActivation } from '../src/ai/modes.js'
 import { beginActivation } from '../src/core/mutate.js'
 import { hexId } from '../src/core/hex.js'
 
+// LAW 10 — 2026-09-02 (seam.items-per-unit): hero rows are BARE now — the kit's
+// attacks, powers, riders and stat deltas are applied at FIELDING by
+// applyItems, not folded into the row by the converter. Every claim below
+// about what a hero carries is a claim about the hero AS FIELDED, so it reads
+// fieldedDef(id) (the one function the battle and any preview share). The
+// claims are unchanged; only where the kit lives moved.
 const CIVS = ['hero.fixed.orphans', 'hero.fixed.lumberjack-and-wife', 'hero.fixed.farmer']
 
 describe('civilians are ordinary heroes with their Codex behaviour', () => {
   it('all three field hero-side with authored stats, the hero stamina baseline, no half-step', () => {
     for (const id of CIVS) {
-      const u = UNITS[id]!
+      const u = fieldedDef(id)
       expect(u, id).toBeDefined()
       expect(u.side, id).toBe('hero')
       // "Civilians are exactly like heroes" — the level-1 baseline, Max 5 Regen 1
@@ -32,16 +38,16 @@ describe('civilians are ordinary heroes with their Codex behaviour', () => {
       expect(u.moves, `${id} — Beasts and Civilians get neither half-step`).toEqual(['power.move'])
       expect(u.attributes, id).toContain('civilian')
     }
-    expect(UNITS['hero.fixed.orphans']!.maxHp).toBe(7)
-    expect(UNITS['hero.fixed.lumberjack-and-wife']!.strength).toBe(4)
-    expect(UNITS['hero.fixed.farmer']!.maxHp).toBe(7)
+    expect(fieldedDef('hero.fixed.orphans').maxHp).toBe(7)
+    expect(fieldedDef('hero.fixed.lumberjack-and-wife').strength).toBe(4)
+    expect(fieldedDef('hero.fixed.farmer').maxHp).toBe(7)
   })
 
   it('the orphan throws rocks and the farmer jabs — paying what the rows author', () => {
-    expect(UNITS['hero.fixed.orphans']!.attacks).toEqual(['attack.pile-of-rocks.throw'])
+    expect(fieldedDef('hero.fixed.orphans').attacks).toEqual(['attack.pile-of-rocks.throw'])
     expect(ATTACKS['attack.pile-of-rocks.throw']).toMatchObject(
       { kind: 'ranged', reach: 3, stat: 'precision', staminaCost: 0 })   // authored zero
-    expect(UNITS['hero.fixed.farmer']!.attacks).toEqual(['attack.pitchfork.jab'])
+    expect(fieldedDef('hero.fixed.farmer').attacks).toEqual(['attack.pitchfork.jab'])
     // civilians are exactly like heroes: the Farmer PAYS the authored 1
     expect(ATTACKS['attack.pitchfork.jab']).toMatchObject(
       { kind: 'melee', reach: 1, stat: 'strength', bonus: 1, staminaCost: 1 })
@@ -52,14 +58,14 @@ describe('civilians are ordinary heroes with their Codex behaviour', () => {
     // gen/settled-items.json; the axe and its attacks live in settled.json,
     // the second authored source (S30 merged both). The weaponless assertion
     // was testing a CONVERTER bug as if it were content truth.
-    expect(UNITS['hero.fixed.lumberjack-and-wife']!.attacks)
+    expect(fieldedDef('hero.fixed.lumberjack-and-wife').attacks)
       .toEqual(['attack.lumberjack-axe.chop', 'attack.lumberjack-axe.cleave'])
     expect(ATTACKS['attack.lumberjack-axe.chop']).toMatchObject(
       { kind: 'melee', bonus: 1, staminaCost: 1 })
     expect(ATTACKS['attack.lumberjack-axe.cleave']).toMatchObject(
       { kind: 'melee', bonus: 2, staminaCost: 2 })
     // Chop's dictated rider travelled: 20% for 2 Bleed, scoped to the chop
-    const rider = (UNITS['hero.fixed.lumberjack-and-wife']!.triggers ?? [])
+    const rider = (fieldedDef('hero.fixed.lumberjack-and-wife').triggers ?? [])
       .find((t) => t.id === 'trigger.lumberjack-axe.chop.bleed')!
     expect(rider).toBeDefined()
     expect(rider.chance).toBe(20)
