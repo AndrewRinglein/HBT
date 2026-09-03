@@ -1214,3 +1214,68 @@ campaign position:
 
 Consequence: a loader turns a battle index's fielded roster into `heroItems`
 for `createBattle`; encounters run against the roster at their position.
+
+## 2026-09-03 — the feature run, second set: fourteen questions, Angela verbatim
+
+Put after reading `ENCOUNTERS-ENGINE-HANDOFF.md` §4–6, `MECHANICS-GAP.md` §6/§9,
+`content/gen/encounters.json` and `progression/PROGRESSION-SCHEDULE.json`. Her
+answer in full, then the consequence per question. Unmentioned questions take
+the default that was offered (noted).
+
+> "I would rather we are actually assembling the units so that we know that the
+> way that we're getting things into the units is still correct. I know that's
+> maybe outside of the mandate of the engine. I guess we could just use the
+> revised stat block, but it has to also have the abilities in it. Enemies spawn
+> first. Then heroes spawn and heroes act. Let's skip the dungeon. Let's skip
+> salvation. We can skip retreat. We should include the deathbed roll. And then
+> we don't need to include stabilization. If the bleed-out turns past, then
+> we'll count the hero as dead. Otherwise, they're counted as wounded. The base
+> visibility that should be revealed from darkness is 6, so it's basically
+> everyone has a vision of 6, even though the stat is 0. So versus fog, it
+> would be a 3. Taunt makes the hero target that unit. It can keep its same AI,
+> like melee or ranged. 12. Yes, Lycanthropy begins. The Werewolf badge: the
+> Lord Werewolf's aura buffs an afflicted hero. Yes. Yeah, we'll need all those
+> AI modes. Oh yeah, we don't have badges incorporated in Heroes, so we're going
+> to skip badges for this one. I guess some of the enemies have badges. We need
+> to use those."
+
+Then, as two yes/no follow-ups (answer is the option chosen):
+
+- The corpus — *"Read the NOTES file, ship the 8 authored rows"*: a one-time
+  exception to the never-another-session's-NOTES rule. The eight encounter-session
+  rows go into `content/gen/encounters.json` with provenance; the ten dictated
+  set-pieces (phases only) do not.
+- Assembly — *"Derive, compare, report"*: heroes are built through `fieldedDef()`
+  from level + specialty + items + powers; the schedule's stat block is the
+  oracle; a mismatch is a finding, never a patch.
+
+Consequences, by question:
+
+1. Corpus — the eight authored rows ship; run against 6 + 8 = 14.
+2. Hero kit — enchant rows (`content.enchant-rows`) and hero powers land before
+   the loader, so a hero fields with abilities. Her words: *"it has to also have
+   the abilities in it."*
+3. Assembly — derive through `fieldedDef()`, compare to the schedule, report.
+4. Spawn timing — *"Enemies spawn first. Then heroes spawn and heroes act."*
+   A phase's arrivals resolve before the hero phase. Not a switch; ruled.
+5. Two units on one hex — default: shunt to the nearest free hex by the Law 6
+   tiebreaker, with an event naming the displacement. (Unmentioned.)
+6. Dungeon — skipped. `map` as an ordered list is refused at load with a
+   named gap.
+7. Salvation — skipped; the field is read and ignored, recorded as a gap.
+8. Retreat — skipped; `retreat: true` rows run without it.
+9. Consequence stack — the Deathbed roll is built; stabilisation is not. A hero
+   whose bleed-out runs out is dead; a downed hero still bleeding at battle end
+   is wounded. `lifeState` gains nothing; `stabilized` is not added.
+10. Vision — effective Vision is 6 + stat (0) + modifiers; in fog it is 3, i.e.
+    the halving applies to the base. Whether bonuses halve too stays a switch
+    (`(6+bonus)÷2` default vs `3+bonus`). Targeting what you cannot see: default
+    no, as a switch. (Unmentioned.)
+11. Taunt — the hero targets the taunter and keeps its own AI mode. Not a
+    control transfer; a forced target.
+12. Lycanthropy — the badge grants the `werewolf` type; the Lord Werewolf's aura
+    buffs the afflicted hero. Intended.
+13. AI modes — all six (defender, support, focused fire, value hunter, follow,
+    hunter).
+14. Badges — no hero badges this run. Enemy badges on authored rows are used;
+    that means the badge type exists, applied at fielding for enemies only.
