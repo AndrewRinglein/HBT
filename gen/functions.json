@@ -2,7 +2,7 @@
  "hooks": [
   {
    "name": "onHit",
-   "uses": 81,
+   "uses": 84,
    "ids": [
     "item.hammer-of-justice",
     "item.runed-crossbow",
@@ -317,7 +317,7 @@
  "shapes": [
   {
    "name": "self",
-   "uses": 156,
+   "uses": 145,
    "ids": [
     "item.loaded-dice-of-mirran",
     "item.mug-of-endless-dregs",
@@ -326,22 +326,11 @@
     "item.mask-of-the-velvet-hand",
     "item.blink-ring",
     "item.eye-of-the-oracle",
-    "item.bracer-of-courage",
-    "item.potion-of-strength",
-    "item.potion-of-agility",
-    "item.embolden",
-    "item.burst-of-speed",
-    "item.invigorate",
-    "item.greater-strength",
-    "item.arcane-power",
+    "item.rations",
     "item.frenzy-potion",
-    "item.supercharge",
-    "item.dragons-blood",
-    "item.knights-boon-water",
-    "item.draining-elixir",
-    "item.healing-potion",
-    "item.restoration-potion",
-    "item.rage-potion",
+    "item.strength-potion",
+    "item.winter-cloak",
+    "item.bracer-of-courage",
     "power.berserker.fast-fury",
     "power.shieldbearer.unbreakable",
     "power.reaver.rend",
@@ -358,12 +347,23 @@
     "power.crusader.oathbound",
     "power.shieldbearer.bramble-guard",
     "power.bowmaster.careful-aim",
-    "power.bowmaster.sniper"
+    "power.bowmaster.sniper",
+    "power.winged-assassin.poisoning",
+    "power.wayfinder.quick-evasion",
+    "power.wayfinder.switch-to-melee",
+    "power.sentinel.overwatch",
+    "power.sentinel.sting-of-the-watch",
+    "power.sentinel.take-root",
+    "power.magical-friend.share-senses",
+    "power.feral.ignore-wounds",
+    "power.feral.run-down",
+    "power.bowmaster.long-shot",
+    "power.assassin.knife-in-the-back"
    ]
   },
   {
    "name": "one enemy in melee reach",
-   "uses": 105,
+   "uses": 107,
    "ids": [
     "attack.hand-axe.chop",
     "attack.sharpened-stake.jab",
@@ -409,8 +409,10 @@
   },
   {
    "name": "one enemy within N hexes",
-   "uses": 82,
+   "uses": 85,
    "ids": [
+    "item.poison-flask",
+    "item.burning-oil",
     "attack.fishing-net.cast",
     "attack.rusted-crossbow.bolt",
     "attack.hunting-spear.hurl",
@@ -448,24 +450,17 @@
     "attack.death-bow.the-last-arrow",
     "attack.demon-whip.crack",
     "attack.void-staff.void-bolt",
-    "attack.void-staff.unmaking",
-    "attack.orb-of-the-soul-stealer.steal-the-spark",
-    "attack.scepter-of-salvation.rebuke"
+    "attack.void-staff.unmaking"
    ]
   },
   {
    "name": "one ally within N hexes",
-   "uses": 54,
+   "uses": 49,
    "ids": [
     "item.saints-fingerbone",
     "item.medicine-belt",
     "item.astrolabe-of-the-threshold",
     "item.divine-ward",
-    "item.cleanse-potion",
-    "item.restorative-tonic",
-    "item.trolls-blood",
-    "item.full-healing",
-    "item.full-restoration",
     "attack.holy-texts.mercy",
     "attack.scepter-of-salvation.salvation",
     "power.protector.take-the-blow",
@@ -496,7 +491,12 @@
     "power.sacred-shield.aegis",
     "power.sacred-shield.guardian-angel",
     "power.sacred-shield.exemplify",
-    "power.grand-master.muster"
+    "power.grand-master.muster",
+    "power.purifier.purify",
+    "power.purifier.blessing",
+    "power.purifier.sanctified-ward",
+    "power.apothecary.healing-potion",
+    "power.porter.shoulder-the-load"
    ]
   },
   {
@@ -538,30 +538,6 @@
    ]
   },
   {
-   "name": "enemies within N hexes",
-   "uses": 18,
-   "ids": [
-    "item.demon-hunters-brew",
-    "item.inquisitors-scroll",
-    "power.warchief.intimidate",
-    "power.crusader.holy-fire",
-    "power.sentinel.flush-them-out",
-    "power.shadowbound.dark-veil",
-    "power.nightblade.fan-of-knives",
-    "power.soul-stealer.eldritch-sacrifice",
-    "power.storm-caller.storm-surge",
-    "power.totem-master.totem-of-wrath",
-    "power.wild-shaper.primal-roar",
-    "power.divine-light.searing-light",
-    "power.exorcist.exorcism",
-    "power.witch-hunter.burn-the-guilty",
-    "power.apothecary.smoke-bomb",
-    "power.hound.bay",
-    "power.direbeast.bellow",
-    "power.carrion.reek"
-   ]
-  },
-  {
    "name": "a hex within N hexes and every hex adjacent to it",
    "uses": 16,
    "ids": [
@@ -584,10 +560,31 @@
    ]
   },
   {
-   "name": "you and allies within N hexes",
-   "uses": 15,
+   "name": "enemies within N hexes",
+   "uses": 16,
    "ids": [
-    "item.water-of-divinity",
+    "power.warchief.intimidate",
+    "power.crusader.holy-fire",
+    "power.sentinel.flush-them-out",
+    "power.shadowbound.dark-veil",
+    "power.nightblade.fan-of-knives",
+    "power.soul-stealer.eldritch-sacrifice",
+    "power.storm-caller.storm-surge",
+    "power.totem-master.totem-of-wrath",
+    "power.wild-shaper.primal-roar",
+    "power.divine-light.searing-light",
+    "power.exorcist.exorcism",
+    "power.witch-hunter.burn-the-guilty",
+    "power.apothecary.smoke-bomb",
+    "power.hound.bay",
+    "power.direbeast.bellow",
+    "power.carrion.reek"
+   ]
+  },
+  {
+   "name": "you and allies within N hexes",
+   "uses": 14,
+   "ids": [
     "power.warchief.blood-oath",
     "power.sentinel.far-watch",
     "power.protector.sanctuary",
@@ -637,6 +634,18 @@
    ]
   },
   {
+   "name": "one downed ally within N hexes",
+   "uses": 6,
+   "ids": [
+    "item.velans-ferryman-coin",
+    "item.bandages",
+    "power.shepherd.call-them-back",
+    "power.vigil.keep-the-watch",
+    "power.apothecary.stretcher-run",
+    "power.carrion.pick-the-bones"
+   ]
+  },
+  {
    "name": "every enemy adjacent to you",
    "uses": 6,
    "ids": [
@@ -649,14 +658,14 @@
    ]
   },
   {
-   "name": "one downed ally within N hexes",
+   "name": "yourself or one ally within N hexes",
    "uses": 5,
    "ids": [
-    "item.velans-ferryman-coin",
-    "power.shepherd.call-them-back",
-    "power.vigil.keep-the-watch",
-    "power.apothecary.stretcher-run",
-    "power.carrion.pick-the-bones"
+    "item.cure-poison",
+    "item.healing-potion",
+    "item.greater-healing-potion",
+    "item.poison-coating",
+    "item.free-movement-potion"
    ]
   },
   {
@@ -701,20 +710,12 @@
    ]
   },
   {
-   "name": "one unit within N",
+   "name": "two empty hexes within N",
    "uses": 3,
    "ids": [
-    "item.flaming-oil",
-    "item.holy-water",
-    "item.poison-dart"
-   ]
-  },
-  {
-   "name": "one forest hex within N",
-   "uses": 2,
-   "ids": [
-    "item.torch",
-    "power.torch.light"
+    "item.bear-trap",
+    "item.magic-trap",
+    "item.fire-trap"
    ]
   },
   {
@@ -758,17 +759,17 @@
    ]
   },
   {
-   "name": "one adjacent ally",
+   "name": "every hex within N",
    "uses": 1,
    "ids": [
-    "item.bandages"
+    "item.brilliant-torch"
    ]
   },
   {
    "name": "one empty hex within N",
    "uses": 1,
    "ids": [
-    "item.bear-trap"
+    "item.explosive-trap"
    ]
   },
   {
@@ -790,6 +791,13 @@
    "uses": 1,
    "ids": [
     "power.bowmaster.extra-shot"
+   ]
+  },
+  {
+   "name": "one forest hex within N",
+   "uses": 1,
+   "ids": [
+    "power.torch.light"
    ]
   },
   {
@@ -871,7 +879,7 @@
  "effects": [
   {
    "name": "grant a stat for the Battle",
-   "uses": 180,
+   "uses": 173,
    "ids": [
     "item.hammer-of-justice",
     "item.death-blade",
@@ -893,6 +901,10 @@
     "item.banner-vigil",
     "item.banner-courage",
     "item.banner-heroism",
+    "item.strength-potion",
+    "item.poison-coating",
+    "item.winter-cloak",
+    "item.free-movement-potion",
     "item.rune-horror-breaker",
     "item.rune-elemental-bane",
     "item.rune-crushing",
@@ -901,18 +913,14 @@
     "item.rune-avatar-of-war",
     "item.roster-of-the-fallen",
     "item.banner-of-resolve",
-    "item.potion-of-strength",
-    "item.potion-of-agility",
-    "item.embolden",
-    "item.greater-strength",
-    "item.arcane-power",
-    "item.water-of-divinity",
-    "item.demon-hunters-brew",
-    "item.frenzy-potion",
-    "item.supercharge",
-    "item.dragons-blood",
-    "item.knights-boon-water",
-    "item.draining-elixir"
+    "attack.iron-mace.crush",
+    "attack.death-blade.death-stroke",
+    "attack.void-staff.unmaking",
+    "attack.pickaxe.pick",
+    "power.berserker.fast-fury",
+    "power.shieldbearer.unbreakable",
+    "power.leader.titans-inspiration",
+    "power.warchief.war-cry"
    ]
   },
   {
@@ -937,16 +945,15 @@
     "item.poison-caltrops",
     "item.vial-of-abyssal-essence",
     "item.wreath-of-natures-protection",
+    "item.poison-flask",
+    "item.burning-oil",
+    "item.poison-coating",
     "item.rune-bashing",
     "item.rune-burning-touch",
     "item.rune-bleeding-strike",
     "item.rune-hunters-mark",
     "item.rune-aura-of-dread",
     "item.scorpion-shield",
-    "item.demon-hunters-brew",
-    "item.inquisitors-scroll",
-    "item.flaming-oil",
-    "item.poison-dart",
     "attack.carpenters-mallet.bonk",
     "attack.fishing-net.cast",
     "attack.broken-bottle.jab",
@@ -958,12 +965,13 @@
     "attack.raiders-cutlass.boarding-swing",
     "attack.poison-stars.star",
     "attack.poison-stars.venom-spread",
-    "attack.shepherds-sling.whirl"
+    "attack.shepherds-sling.whirl",
+    "attack.crippling-whip.lash"
    ]
   },
   {
    "name": "heal",
-   "uses": 92,
+   "uses": 84,
    "ids": [
     "item.death-blade",
     "item.wraith-touched-staff",
@@ -977,19 +985,11 @@
     "item.mug-of-endless-dregs",
     "item.medicine-belt",
     "item.holy-chalice",
+    "item.healing-potion",
+    "item.greater-healing-potion",
     "item.rune-berserker-blood",
     "item.rune-kairin",
     "item.blessing-of-the-hearthmother",
-    "item.restorative-tonic",
-    "item.trolls-blood",
-    "item.water-of-divinity",
-    "item.full-healing",
-    "item.supercharge",
-    "item.full-restoration",
-    "item.knights-boon-water",
-    "item.draining-elixir",
-    "item.healing-potion",
-    "item.restoration-potion",
     "attack.sword-of-the-fallen.remembrance",
     "attack.sword-of-the-fallen.honour-the-dead",
     "attack.death-blade.death-stroke",
@@ -1004,12 +1004,20 @@
     "power.feral.ignore-wounds",
     "power.beastward.conduct-life",
     "power.beastward.sacrifice",
-    "power.contractbound.paid-in-full"
+    "power.contractbound.paid-in-full",
+    "power.demonic-ward.consume-magic",
+    "power.vengeance.every-wound-remembered",
+    "power.soul-stealer.dark-bolt",
+    "power.soul-stealer.life-drain",
+    "power.soul-stealer.soul-thief",
+    "power.totem-master.totem-of-healing",
+    "power.spirit-walker.ancestors-call",
+    "power.spirit-walker.mend-the-thread"
    ]
   },
   {
    "name": "deal TRUE damage",
-   "uses": 57,
+   "uses": 56,
    "ids": [
     "item.cursed-sand-blade",
     "item.demonic-shiv",
@@ -1017,7 +1025,6 @@
     "item.saints-fingerbone",
     "item.vial-of-abyssal-essence",
     "item.shard-of-the-shattered-spire",
-    "item.frenzy-potion",
     "attack.demonic-shiv.the-devils-favour",
     "power.berserker.fast-fury",
     "power.reaver.blood-price",
@@ -1050,7 +1057,8 @@
     "power.blessed-sufferer.power-of-the-divine",
     "power.martyred-saint.oblation",
     "power.martyred-saint.the-last-word",
-    "power.seer.inevitable"
+    "power.seer.inevitable",
+    "power.holy-avenger.succor-of-the-faithful"
    ]
   },
   {
@@ -1101,20 +1109,14 @@
   },
   {
    "name": "remove N of a status",
-   "uses": 46,
+   "uses": 40,
    "ids": [
     "item.mug-of-endless-dregs",
     "item.saints-fingerbone",
     "item.medicine-belt",
+    "item.cure-poison",
     "item.bracer-of-courage",
     "item.blessing-of-the-hearthmother",
-    "item.cleanse-potion",
-    "item.restorative-tonic",
-    "item.full-healing",
-    "item.full-restoration",
-    "item.inquisitors-scroll",
-    "item.draining-elixir",
-    "item.restoration-potion",
     "power.bloodrage.unstoppable",
     "power.guardian.stalwart",
     "power.wayfinder.quick-evasion",
@@ -1142,7 +1144,13 @@
     "power.exorcist.holy-shield",
     "power.apothecary.healing-potion",
     "power.archer.small-bandage",
-    "power.serpent.shed"
+    "power.serpent.shed",
+    "power.drake.roost",
+    "power.warbeast.warcry",
+    "power.leader.battle-cry",
+    "enchant.damned",
+    "specialty.champion",
+    "specialty.exorcist"
    ]
   },
   {
@@ -1191,9 +1199,8 @@
   },
   {
    "name": "move yourself",
-   "uses": 30,
+   "uses": 29,
    "ids": [
-    "item.burst-of-speed",
     "power.warchief.lead-from-front",
     "power.champion.heroic-charge",
     "power.crusader.holy-charge",
@@ -1256,9 +1263,12 @@
   },
   {
    "name": "deal MAGIC damage",
-   "uses": 18,
+   "uses": 21,
    "ids": [
     "item.stormforged-blade",
+    "item.magic-trap",
+    "item.fire-trap",
+    "item.explosive-trap",
     "attack.duel-runeblades.rune-cross",
     "attack.cursed-sand-blade.the-cursed-swing",
     "power.magical-friend.mystic-wrath",
@@ -1279,10 +1289,36 @@
    ]
   },
   {
+   "name": "place a trap",
+   "uses": 19,
+   "ids": [
+    "item.war-hammer",
+    "item.cloudsteel-plate",
+    "item.skypriests-vestments",
+    "item.poison-caltrops",
+    "item.featherstep-boots",
+    "item.shard-of-the-shattered-spire",
+    "item.bear-trap",
+    "item.magic-trap",
+    "item.fire-trap",
+    "item.explosive-trap",
+    "item.rune-bashing",
+    "power.trapper.poison-trap",
+    "power.trapper.bear-trap",
+    "power.trapper.entangle",
+    "power.protector.wall-of-thorns",
+    "power.flight",
+    "enchant.ironbane",
+    "specialty.trapper",
+    "specialty.protector"
+   ]
+  },
+  {
    "name": "reveal / break stealth",
-   "uses": 17,
+   "uses": 18,
    "ids": [
     "item.crows-eye-pendant",
+    "item.brilliant-torch",
     "power.trapper.entangle",
     "power.sentinel.flush-them-out",
     "power.shadowdancer.vanish-in-shadow",
@@ -1302,37 +1338,15 @@
    ]
   },
   {
-   "name": "place a trap",
-   "uses": 16,
-   "ids": [
-    "item.war-hammer",
-    "item.cloudsteel-plate",
-    "item.skypriests-vestments",
-    "item.poison-caltrops",
-    "item.featherstep-boots",
-    "item.shard-of-the-shattered-spire",
-    "item.rune-bashing",
-    "item.bear-trap",
-    "power.trapper.poison-trap",
-    "power.trapper.bear-trap",
-    "power.trapper.entangle",
-    "power.protector.wall-of-thorns",
-    "power.flight",
-    "enchant.ironbane",
-    "specialty.trapper",
-    "specialty.protector"
-   ]
-  },
-  {
    "name": "regain stamina",
    "uses": 16,
    "ids": [
     "item.death-bow",
     "item.void-staff",
     "item.qi-wraps",
+    "item.rations",
     "item.rune-plant-killer",
     "item.rune-executioner",
-    "item.invigorate",
     "power.reaver.blood-price",
     "power.blessed-sufferer.power-of-the-divine",
     "power.recover",
@@ -1366,30 +1380,11 @@
    ]
   },
   {
-   "name": "deal PHYSICAL damage",
+   "name": "Immunity N",
    "uses": 14,
    "ids": [
-    "item.stormcallers-orb",
-    "item.bear-trap",
-    "item.necklace-of-frost-immunity",
-    "power.reaver.cleave",
-    "power.bowmaster.rain-of-arrows",
-    "power.trapper.bear-trap",
-    "power.trapper.spring-the-trap",
-    "power.nightblade.fan-of-knives",
-    "power.grove-keeper.quench",
-    "power.serpent.constrict",
-    "power.drake.wing-buffet",
-    "power.direbeast.trample",
-    "power.stalker.throat-hold",
-    "specialty.spirit-walker"
-   ]
-  },
-  {
-   "name": "Immunity N",
-   "uses": 13,
-   "ids": [
     "item.chains-of-the-faithful",
+    "item.winter-cloak",
     "item.idol-of-the-hearthmother",
     "item.censer-of-true-light",
     "item.stormcallers-orb",
@@ -1402,6 +1397,26 @@
     "enchant.fire-ward",
     "specialty.poison-master",
     "specialty.drake"
+   ]
+  },
+  {
+   "name": "deal PHYSICAL damage",
+   "uses": 14,
+   "ids": [
+    "item.bear-trap",
+    "item.stormcallers-orb",
+    "item.necklace-of-frost-immunity",
+    "power.reaver.cleave",
+    "power.bowmaster.rain-of-arrows",
+    "power.trapper.bear-trap",
+    "power.trapper.spring-the-trap",
+    "power.nightblade.fan-of-knives",
+    "power.grove-keeper.quench",
+    "power.serpent.constrict",
+    "power.drake.wing-buffet",
+    "power.direbeast.trample",
+    "power.stalker.throat-hold",
+    "specialty.spirit-walker"
    ]
   },
   {
@@ -1478,11 +1493,10 @@
   },
   {
    "name": "grant Surge Chance",
-   "uses": 10,
+   "uses": 9,
    "ids": [
     "item.wind-dancers-cloak",
     "item.rune-avatar-of-war",
-    "item.supercharge",
     "power.havoc.momentum",
     "power.diviner.quicken",
     "power.berserker.unleash",
@@ -1568,26 +1582,25 @@
    ]
   },
   {
-   "name": "slayer bonus",
-   "uses": 2,
-   "ids": [
-    "item.rune-perfect-hunter",
-    "item.holy-water"
-   ]
-  },
-  {
    "name": "grant Flight",
    "uses": 2,
    "ids": [
     "power.assassin.dodge-behind",
     "power.wyrmling.take-wing"
    ]
+  },
+  {
+   "name": "slayer bonus",
+   "uses": 1,
+   "ids": [
+    "item.rune-perfect-hunter"
+   ]
   }
  ],
  "statuses": [
   {
    "name": "burn",
-   "uses": 84,
+   "uses": 79,
    "ids": [
     "item.runed-crossbow",
     "item.book-of-exorcisms",
@@ -1598,22 +1611,17 @@
     "item.drakescale-coat",
     "item.storm-bastion",
     "item.saints-fingerbone",
+    "item.burning-oil",
+    "item.fire-trap",
     "item.rune-burning-touch",
     "item.idol-of-the-hearthmother",
     "item.censer-of-true-light",
-    "item.cleanse-potion",
-    "item.full-healing",
-    "item.demon-hunters-brew",
-    "item.dragons-blood",
-    "item.inquisitors-scroll",
-    "item.draining-elixir",
-    "item.flaming-oil",
-    "item.restoration-potion",
     "item.necklace-of-fire-immunity",
     "attack.apprentice-wand.surge",
     "attack.stormforged-blade.thunder-strike",
     "attack.demon-whip.hellcoil",
     "attack.breath.gout",
+    "attack.burning-torch.swing",
     "attack.fire-staff.fire-blast",
     "power.crusader.flaming-smite",
     "power.crusader.holy-fire",
@@ -1628,12 +1636,17 @@
     "power.fire-master.fireball",
     "power.fire-master.fire-shield",
     "power.totem-master.totem-of-wrath",
-    "power.war-priest.restoration"
+    "power.war-priest.restoration",
+    "power.war-priest.holy-flames",
+    "power.shepherd.circle-of-healing",
+    "power.shepherd.close-wounds",
+    "power.divine-light.total-healing",
+    "power.divine-light.hallowed-ground"
    ]
   },
   {
    "name": "bleed",
-   "uses": 67,
+   "uses": 66,
    "ids": [
     "item.bloody-axe",
     "item.twin-talon-bow",
@@ -1642,12 +1655,11 @@
     "item.poison-caltrops",
     "item.medicine-belt",
     "item.velans-ferryman-coin",
+    "item.bandages",
     "item.rune-bleeding-strike",
     "item.rune-hunters-mark",
     "item.scorpion-shield",
     "item.kals-mercy",
-    "item.full-healing",
-    "item.restoration-potion",
     "attack.broken-bottle.jab",
     "attack.trappers-claws.rake",
     "attack.war-axe.hack",
@@ -1674,26 +1686,24 @@
     "power.contractbound.paid-in-full",
     "power.nightblade.silent-cut",
     "power.nightblade.fan-of-knives",
-    "power.nightblade.exsanguinate"
+    "power.nightblade.exsanguinate",
+    "power.nightblade.long-knife"
    ]
   },
   {
    "name": "poison",
-   "uses": 54,
+   "uses": 51,
    "ids": [
     "item.poison-throwing-knives",
     "item.scorpion-carapace",
     "item.saints-fingerbone",
     "item.poison-caltrops",
     "item.vial-of-abyssal-essence",
+    "item.cure-poison",
+    "item.poison-flask",
+    "item.poison-coating",
     "item.idol-of-the-hearthmother",
     "item.scorpion-shield",
-    "item.cleanse-potion",
-    "item.full-healing",
-    "item.inquisitors-scroll",
-    "item.draining-elixir",
-    "item.poison-dart",
-    "item.restoration-potion",
     "item.necklace-of-poison-immunity",
     "attack.hand-crossbow.loaded-bolt",
     "attack.poison-stars.star",
@@ -1720,53 +1730,10 @@
     "power.war-priest.restoration",
     "power.divine-light.hallowed-ground",
     "power.redeemer.bear-the-flame",
-    "power.vigil.protect-and-shield"
-   ]
-  },
-  {
-   "name": "weak",
-   "uses": 40,
-   "ids": [
-    "item.pharaohs-gauntlets",
-    "item.mug-of-endless-dregs",
-    "item.rune-aura-of-dread",
-    "item.bracer-of-courage",
-    "item.blessing-of-the-hearthmother",
-    "item.banner-of-resolve",
-    "item.restorative-tonic",
-    "item.necklace-of-weakness-immunity",
-    "attack.fishing-net.cast",
-    "attack.crippling-whip.lash",
-    "attack.crippling-whip.hamstring",
-    "attack.iron-claws.eviscerate",
-    "attack.pharaohs-gauntlets.the-kings-hands",
-    "attack.barbarian-bow.crippling-shot",
-    "attack.club.swing",
-    "power.warchief.war-cry",
-    "power.bloodrage.unstoppable",
-    "power.shadowbound.dark-veil",
-    "power.blightcaller.wither",
-    "power.blightcaller.creeping-blight",
-    "power.wild-shaper.primal-roar",
-    "power.wild-shaper.claw",
-    "power.vigil.bravery",
-    "power.grand-master.unyielding",
-    "power.apothecary.smoke-bomb",
-    "power.porter.drop-the-pack",
-    "power.hound.bay",
-    "power.serpent.constrict",
-    "power.direbeast.bellow",
-    "power.carrion.reek",
-    "power.warbeast.warcry",
-    "power.shieldbearer.bash",
-    "power.leader.battle-cry",
-    "rule.ground-layers",
-    "power.banner-courage.plant",
-    "enchant.damned",
-    "specialty.champion",
-    "specialty.mystic",
-    "specialty.blightcaller",
-    "specialty.wild-shaper"
+    "power.vigil.protect-and-shield",
+    "power.holy-avenger.succor-of-the-faithful",
+    "power.sacred-shield.exemplify",
+    "power.purifier.purify"
    ]
   },
   {
@@ -1816,38 +1783,57 @@
    ]
   },
   {
-   "name": "stun",
-   "uses": 22,
+   "name": "weak",
+   "uses": 39,
    "ids": [
-    "item.rune-bashing",
+    "item.pharaohs-gauntlets",
+    "item.mug-of-endless-dregs",
+    "item.rune-aura-of-dread",
     "item.bracer-of-courage",
+    "item.blessing-of-the-hearthmother",
     "item.banner-of-resolve",
-    "item.restorative-tonic",
-    "attack.carpenters-mallet.bonk",
-    "attack.iron-mace.crush",
-    "attack.war-hammer.skullsplitter",
-    "attack.shepherds-sling.whirl",
-    "attack.holy-shield.shield-bash",
-    "attack.stormforged-halberd.thunderhead",
-    "attack.knight-shield.shield-slam",
+    "item.necklace-of-weakness-immunity",
+    "attack.fishing-net.cast",
+    "attack.crippling-whip.lash",
+    "attack.crippling-whip.hamstring",
+    "attack.iron-claws.eviscerate",
+    "attack.pharaohs-gauntlets.the-kings-hands",
+    "attack.barbarian-bow.crippling-shot",
+    "attack.club.swing",
+    "power.warchief.war-cry",
     "power.bloodrage.unstoppable",
-    "power.guardian.stalwart",
-    "power.wayfinder.stunning-arrow",
-    "power.feral.pounce",
-    "power.mystic.hex",
-    "power.storm-caller.storm-surge",
-    "power.spirit-walker.ancestors-call",
-    "power.blessed-sufferer.unbent",
+    "power.shadowbound.dark-veil",
+    "power.blightcaller.wither",
+    "power.blightcaller.creeping-blight",
+    "power.wild-shaper.primal-roar",
+    "power.wild-shaper.claw",
+    "power.vigil.bravery",
     "power.grand-master.unyielding",
-    "power.exorcist.holy-shield",
-    "power.stalker.throat-hold"
+    "power.apothecary.smoke-bomb",
+    "power.porter.drop-the-pack",
+    "power.hound.bay",
+    "power.serpent.constrict",
+    "power.direbeast.bellow",
+    "power.carrion.reek",
+    "power.warbeast.warcry",
+    "power.shieldbearer.bash",
+    "power.leader.battle-cry",
+    "rule.ground-layers",
+    "power.banner-courage.plant",
+    "enchant.damned",
+    "specialty.champion",
+    "specialty.mystic",
+    "specialty.blightcaller",
+    "specialty.wild-shaper"
    ]
   },
   {
    "name": "slow",
-   "uses": 21,
+   "uses": 23,
    "ids": [
     "item.poison-caltrops",
+    "item.magic-trap",
+    "item.free-movement-potion",
     "attack.cart-chain.swing",
     "attack.fishing-net.cast",
     "attack.crippling-whip.hamstring",
@@ -1871,12 +1857,39 @@
    ]
   },
   {
+   "name": "stun",
+   "uses": 21,
+   "ids": [
+    "item.rune-bashing",
+    "item.bracer-of-courage",
+    "item.banner-of-resolve",
+    "attack.carpenters-mallet.bonk",
+    "attack.iron-mace.crush",
+    "attack.war-hammer.skullsplitter",
+    "attack.shepherds-sling.whirl",
+    "attack.holy-shield.shield-bash",
+    "attack.stormforged-halberd.thunderhead",
+    "attack.knight-shield.shield-slam",
+    "power.bloodrage.unstoppable",
+    "power.guardian.stalwart",
+    "power.wayfinder.stunning-arrow",
+    "power.feral.pounce",
+    "power.mystic.hex",
+    "power.storm-caller.storm-surge",
+    "power.spirit-walker.ancestors-call",
+    "power.blessed-sufferer.unbent",
+    "power.grand-master.unyielding",
+    "power.exorcist.holy-shield",
+    "power.stalker.throat-hold"
+   ]
+  },
+  {
    "name": "frost",
    "uses": 15,
    "ids": [
     "item.storm-bastion",
+    "item.winter-cloak",
     "item.stormcallers-orb",
-    "item.full-healing",
     "item.necklace-of-frost-immunity",
     "attack.wraith-touched-staff.grasp",
     "attack.frost-staff.frost-blast",
@@ -2133,13 +2146,13 @@
     "item.mismatched-armor",
     "item.plated-armor",
     "item.reflective-armor",
+    "item.backpack",
     "item.rangers-worn-boots",
     "item.meditation-beads",
     "item.marching-orders",
     "item.frostleaf-battle-standard",
     "item.throne-fragment-of-melandar",
     "item.crown-of-the-tempest",
-    "item.backpack",
     "enchant.eternal-ice",
     "enchant.ancient-ward",
     "enchant.divine-protection",
@@ -2334,6 +2347,33 @@
    ]
   },
   {
+   "name": "staminaMax",
+   "uses": 21,
+   "ids": [
+    "item.borrowed-vestments",
+    "item.guardians-mail",
+    "item.wind-blessed-leather",
+    "item.qi-wraps",
+    "item.troll-gut-vest",
+    "item.divine-bulwark",
+    "item.wind-dancers-cloak",
+    "item.chains-of-the-damned",
+    "item.ragged-hides",
+    "item.rusted-plate",
+    "item.destroyed-mail",
+    "item.barbarian-hide",
+    "item.heavy-leather",
+    "item.plated-armor",
+    "item.backpack",
+    "item.meditation-beads",
+    "item.quartermasters-manifest",
+    "enchant.silkweave",
+    "enchant.enduring",
+    "specialty.berserker",
+    "specialty.diviner"
+   ]
+  },
+  {
    "name": "magic",
    "uses": 20,
    "ids": [
@@ -2357,32 +2397,6 @@
     "specialty.grove-keeper",
     "specialty.sage",
     "specialty.wyrmling"
-   ]
-  },
-  {
-   "name": "staminaMax",
-   "uses": 20,
-   "ids": [
-    "item.borrowed-vestments",
-    "item.guardians-mail",
-    "item.wind-blessed-leather",
-    "item.qi-wraps",
-    "item.troll-gut-vest",
-    "item.divine-bulwark",
-    "item.wind-dancers-cloak",
-    "item.chains-of-the-damned",
-    "item.ragged-hides",
-    "item.rusted-plate",
-    "item.destroyed-mail",
-    "item.barbarian-hide",
-    "item.heavy-leather",
-    "item.plated-armor",
-    "item.meditation-beads",
-    "item.quartermasters-manifest",
-    "enchant.silkweave",
-    "enchant.enduring",
-    "specialty.berserker",
-    "specialty.diviner"
    ]
   },
   {
@@ -2438,9 +2452,9 @@
    "uses": 14,
    "ids": [
     "item.peddlers-vest",
+    "item.backpack",
     "item.marching-orders",
     "item.quartermasters-manifest",
-    "item.backpack",
     "specialty.berserker",
     "specialty.leader",
     "specialty.wayfinder",
@@ -2454,6 +2468,19 @@
    ]
   },
   {
+   "name": "vision",
+   "uses": 7,
+   "ids": [
+    "item.burning-torch",
+    "item.watchmans-coat",
+    "item.torch",
+    "item.brilliant-torch",
+    "item.dusty-map-case",
+    "item.trackers-eyeglass",
+    "specialty.torchbearer"
+   ]
+  },
+  {
    "name": "toughness",
    "uses": 7,
    "ids": [
@@ -2464,17 +2491,6 @@
     "specialty.serpent",
     "specialty.direbeast",
     "specialty.carrion"
-   ]
-  },
-  {
-   "name": "vision",
-   "uses": 5,
-   "ids": [
-    "item.watchmans-coat",
-    "item.torch",
-    "item.dusty-map-case",
-    "item.trackers-eyeglass",
-    "specialty.torchbearer"
    ]
   },
   {
@@ -2511,7 +2527,7 @@
  "durations": [
   {
    "name": "rest of the Battle",
-   "uses": 181,
+   "uses": 174,
    "ids": [
     "item.hammer-of-justice",
     "item.death-blade",
@@ -2533,6 +2549,10 @@
     "item.banner-vigil",
     "item.banner-courage",
     "item.banner-heroism",
+    "item.strength-potion",
+    "item.poison-coating",
+    "item.winter-cloak",
+    "item.free-movement-potion",
     "item.rune-horror-breaker",
     "item.rune-elemental-bane",
     "item.rune-crushing",
@@ -2541,18 +2561,14 @@
     "item.rune-avatar-of-war",
     "item.roster-of-the-fallen",
     "item.banner-of-resolve",
-    "item.potion-of-strength",
-    "item.potion-of-agility",
-    "item.embolden",
-    "item.greater-strength",
-    "item.arcane-power",
-    "item.water-of-divinity",
-    "item.demon-hunters-brew",
-    "item.frenzy-potion",
-    "item.supercharge",
-    "item.dragons-blood",
-    "item.knights-boon-water",
-    "item.draining-elixir"
+    "attack.iron-mace.crush",
+    "attack.death-blade.death-stroke",
+    "attack.void-staff.unmaking",
+    "attack.pickaxe.pick",
+    "power.berserker.fast-fury",
+    "power.shieldbearer.unbreakable",
+    "power.leader.titans-inspiration",
+    "power.warchief.war-cry"
    ]
   },
   {

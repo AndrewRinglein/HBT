@@ -768,6 +768,123 @@
    "triggers": [],
    "intent": "Heavy plate with no penalty at all, which is the strangest thing in the band.",
    "source": "settled content"
+  },
+  {
+   "id": "item.martyrs-censer",
+   "name": "Martyr's Censer",
+   "itemClass": "weapon",
+   "tier": 3,
+   "hands": 1,
+   "slots": 1,
+   "classRestriction": "class.priest",
+   "tags": [
+    "holy"
+   ],
+   "grants": [
+    "attack.martyrs-censer.swing-of-ash",
+    "attack.martyrs-censer.offering"
+   ],
+   "statModifiers": {
+    "spirit": 1,
+    "health": -2
+   },
+   "triggers": [],
+   "intent": "It burns something of yours to make the light. Every swing of it costs a little blood and buys a little more reach into the dark.",
+   "source": "Ruled 2026-09-02: tier 3 had one priest weapon and two mage weapons, so a tier-3 reward mostly helped the classes whose weapons are unrestricted. Three priest and two mage rows close that, keeping each class's theme — the priest ranged and true, the mage ranged and magic."
+  },
+  {
+   "id": "item.reliquary-of-the-nine-tears",
+   "name": "Reliquary of the Nine Tears",
+   "itemClass": "weapon",
+   "tier": 3,
+   "hands": 1,
+   "slots": 1,
+   "classRestriction": "class.priest",
+   "tags": [
+    "holy"
+   ],
+   "grants": [
+    "attack.reliquary-of-the-nine-tears.rebuke",
+    "attack.reliquary-of-the-nine-tears.intercession"
+   ],
+   "statModifiers": {
+    "spirit": 1,
+    "resist": 1
+   },
+   "triggers": [],
+   "intent": "Nine saints wept into one jar. What comes out is not comfort — it is a very specific kind of attention.",
+   "source": "Ruled 2026-09-02: tier 3 had one priest weapon and two mage weapons, so a tier-3 reward mostly helped the classes whose weapons are unrestricted. Three priest and two mage rows close that, keeping each class's theme — the priest ranged and true, the mage ranged and magic."
+  },
+  {
+   "id": "item.chorus-of-the-drowned-choir",
+   "name": "Chorus of the Drowned Choir",
+   "itemClass": "weapon",
+   "tier": 3,
+   "hands": 2,
+   "slots": 2,
+   "classRestriction": "class.priest",
+   "tags": [
+    "holy"
+   ],
+   "grants": [
+    "attack.chorus-of-the-drowned-choir.verse",
+    "attack.chorus-of-the-drowned-choir.antiphon"
+   ],
+   "statModifiers": {
+    "spirit": 2,
+    "movement": -1
+   },
+   "triggers": [],
+   "intent": "Two hands, because the singing needs both, and the choir it answers has been underwater for a long time.",
+   "source": "Ruled 2026-09-02: tier 3 had one priest weapon and two mage weapons, so a tier-3 reward mostly helped the classes whose weapons are unrestricted. Three priest and two mage rows close that, keeping each class's theme — the priest ranged and true, the mage ranged and magic."
+  },
+  {
+   "id": "item.emberglass-focus",
+   "name": "Emberglass Focus",
+   "itemClass": "weapon",
+   "tier": 3,
+   "hands": 1,
+   "slots": 1,
+   "classRestriction": "class.mage",
+   "tags": [
+    "wand",
+    "magic"
+   ],
+   "grants": [
+    "attack.emberglass-focus.ember",
+    "attack.emberglass-focus.bank-the-fire"
+   ],
+   "statModifiers": {
+    "magic": 1,
+    "crit": 5
+   },
+   "triggers": [],
+   "intent": "A lens of cooled fire. One hand, because the other is usually busy holding something that keeps you alive.",
+   "source": "Ruled 2026-09-02: tier 3 had one priest weapon and two mage weapons, so a tier-3 reward mostly helped the classes whose weapons are unrestricted. Three priest and two mage rows close that, keeping each class's theme — the priest ranged and true, the mage ranged and magic."
+  },
+  {
+   "id": "item.staff-of-the-still-air",
+   "name": "Staff of the Still Air",
+   "itemClass": "weapon",
+   "tier": 3,
+   "hands": 2,
+   "slots": 2,
+   "classRestriction": "class.mage",
+   "tags": [
+    "staff"
+   ],
+   "grants": [
+    "attack.staff-of-the-still-air.hush",
+    "attack.staff-of-the-still-air.stillness"
+   ],
+   "statModifiers": {
+    "magic": 2,
+    "reach": 1,
+    "health": -2
+   },
+   "triggers": [],
+   "intent": "Nothing moves near it that it has not agreed to. The air is still and so, shortly, is everything else.",
+   "source": "Ruled 2026-09-02: tier 3 had one priest weapon and two mage weapons, so a tier-3 reward mostly helped the classes whose weapons are unrestricted. Three priest and two mage rows close that, keeping each class's theme — the priest ranged and true, the mage ranged and magic."
   }
  ],
  "attacks": [
@@ -1373,6 +1490,257 @@
    "slayer": null,
    "intent": "It pays you a point of protection every time you swing, whether or not you connect.",
    "source": "settled content"
+  },
+  {
+   "id": "attack.martyrs-censer.swing-of-ash",
+   "name": "Swing of Ash",
+   "range": 4,
+   "stat": "spirit",
+   "damage": 1,
+   "stamina": 1,
+   "accuracy": 0,
+   "crit": 0,
+   "hits": 1,
+   "targets": "one enemy within 4 hexes",
+   "damageType": "true",
+   "tags": [
+    "holy",
+    "ranged"
+   ],
+   "triggers": [],
+   "slayer": null,
+   "description": "The censer swings and the smoke goes where it likes.",
+   "source": "Ruled 2026-09-02: tier 3 had one priest weapon and two mage weapons, so a tier-3 reward mostly helped the classes whose weapons are unrestricted. Three priest and two mage rows close that, keeping each class's theme — the priest ranged and true, the mage ranged and magic."
+  },
+  {
+   "id": "attack.martyrs-censer.offering",
+   "name": "Offering",
+   "range": 4,
+   "stat": "spirit",
+   "damage": 4,
+   "stamina": 2,
+   "accuracy": 0,
+   "crit": 0,
+   "hits": 1,
+   "targets": "one enemy within 4 hexes",
+   "damageType": "true",
+   "tags": [
+    "holy",
+    "ranged"
+   ],
+   "triggers": [
+    {
+     "hook": "onDamage",
+     "effect": "you take 2 true damage"
+    }
+   ],
+   "slayer": null,
+   "description": "Four to them and two to you, every time, and the arithmetic only works while you are standing.",
+   "source": "Ruled 2026-09-02: tier 3 had one priest weapon and two mage weapons, so a tier-3 reward mostly helped the classes whose weapons are unrestricted. Three priest and two mage rows close that, keeping each class's theme — the priest ranged and true, the mage ranged and magic."
+  },
+  {
+   "id": "attack.reliquary-of-the-nine-tears.rebuke",
+   "name": "Lesser Rebuke",
+   "range": 5,
+   "stat": "spirit",
+   "damage": 1,
+   "stamina": 1,
+   "accuracy": 0,
+   "crit": 0,
+   "hits": 1,
+   "targets": "one enemy within 5 hexes",
+   "damageType": "true",
+   "tags": [
+    "holy",
+    "ranged"
+   ],
+   "triggers": [],
+   "slayer": null,
+   "description": "A word said at range, and something in them gives.",
+   "source": "Ruled 2026-09-02: tier 3 had one priest weapon and two mage weapons, so a tier-3 reward mostly helped the classes whose weapons are unrestricted. Three priest and two mage rows close that, keeping each class's theme — the priest ranged and true, the mage ranged and magic."
+  },
+  {
+   "id": "attack.reliquary-of-the-nine-tears.intercession",
+   "name": "Intercession",
+   "range": 5,
+   "stat": "spirit",
+   "damage": 2,
+   "stamina": 2,
+   "accuracy": 0,
+   "crit": 0,
+   "hits": 1,
+   "targets": "one enemy within 5 hexes",
+   "damageType": "true",
+   "tags": [
+    "holy",
+    "ranged"
+   ],
+   "triggers": [
+    {
+     "hook": "onDamage",
+     "effect": "heal the ally nearest the target for half the damage dealt, rounded down"
+    }
+   ],
+   "slayer": null,
+   "description": "Half of what you take out of them goes into whoever is closest to them on your side. It is a bad heal and a fine reason to stand somewhere particular.",
+   "source": "Ruled 2026-09-02: tier 3 had one priest weapon and two mage weapons, so a tier-3 reward mostly helped the classes whose weapons are unrestricted. Three priest and two mage rows close that, keeping each class's theme — the priest ranged and true, the mage ranged and magic."
+  },
+  {
+   "id": "attack.chorus-of-the-drowned-choir.verse",
+   "name": "Drowned Verse",
+   "range": 6,
+   "stat": "spirit",
+   "damage": 2,
+   "stamina": 1,
+   "accuracy": 0,
+   "crit": 0,
+   "hits": 1,
+   "targets": "one enemy within 6 hexes",
+   "damageType": "true",
+   "tags": [
+    "holy",
+    "ranged"
+   ],
+   "triggers": [],
+   "slayer": null,
+   "description": "The longest reach a priest has, and it costs one Stamina.",
+   "source": "Ruled 2026-09-02: tier 3 had one priest weapon and two mage weapons, so a tier-3 reward mostly helped the classes whose weapons are unrestricted. Three priest and two mage rows close that, keeping each class's theme — the priest ranged and true, the mage ranged and magic."
+  },
+  {
+   "id": "attack.chorus-of-the-drowned-choir.antiphon",
+   "name": "Antiphon",
+   "range": 4,
+   "stat": "spirit",
+   "damage": 3,
+   "stamina": 3,
+   "accuracy": 0,
+   "crit": 0,
+   "hits": 1,
+   "targets": "one enemy within 4 hexes",
+   "damageType": "true",
+   "tags": [
+    "holy",
+    "ranged"
+   ],
+   "triggers": [
+    {
+     "hook": "onHit",
+     "effect": "every enemy within 1 hex of the target takes 2 true damage"
+    }
+   ],
+   "slayer": null,
+   "description": "Three to the one you named and two to everything leaning on it. Expensive, and the only thing in a priest's hands that hits a crowd.",
+   "source": "Ruled 2026-09-02: tier 3 had one priest weapon and two mage weapons, so a tier-3 reward mostly helped the classes whose weapons are unrestricted. Three priest and two mage rows close that, keeping each class's theme — the priest ranged and true, the mage ranged and magic."
+  },
+  {
+   "id": "attack.emberglass-focus.ember",
+   "name": "Ember",
+   "range": 5,
+   "stat": "magic",
+   "damage": 2,
+   "stamina": 1,
+   "accuracy": 0,
+   "crit": 0,
+   "hits": 1,
+   "targets": "one enemy within 5 hexes",
+   "damageType": "magic",
+   "tags": [
+    "wand",
+    "magic",
+    "ranged"
+   ],
+   "triggers": [
+    {
+     "hook": "onCrit",
+     "effect": "apply 2 Burn"
+    }
+   ],
+   "slayer": null,
+   "description": "Cheap, quick, and it sets things alight when it goes well.",
+   "source": "Ruled 2026-09-02: tier 3 had one priest weapon and two mage weapons, so a tier-3 reward mostly helped the classes whose weapons are unrestricted. Three priest and two mage rows close that, keeping each class's theme — the priest ranged and true, the mage ranged and magic."
+  },
+  {
+   "id": "attack.emberglass-focus.bank-the-fire",
+   "name": "Bank the Fire",
+   "range": 5,
+   "stat": "magic",
+   "damage": 3,
+   "stamina": 2,
+   "accuracy": 0,
+   "crit": 0,
+   "hits": 1,
+   "targets": "one enemy within 5 hexes",
+   "damageType": "magic",
+   "tags": [
+    "wand",
+    "magic",
+    "ranged"
+   ],
+   "triggers": [
+    {
+     "hook": "onHit",
+     "effect": "apply 1 Burn"
+    },
+    {
+     "hook": "onCrit",
+     "effect": "apply 2 more Burn"
+    }
+   ],
+   "slayer": null,
+   "description": "Slower and surer: the Burn lands whether or not the dice are kind.",
+   "source": "Ruled 2026-09-02: tier 3 had one priest weapon and two mage weapons, so a tier-3 reward mostly helped the classes whose weapons are unrestricted. Three priest and two mage rows close that, keeping each class's theme — the priest ranged and true, the mage ranged and magic."
+  },
+  {
+   "id": "attack.staff-of-the-still-air.hush",
+   "name": "Hush",
+   "range": 6,
+   "stat": "magic",
+   "damage": 2,
+   "stamina": 1,
+   "accuracy": 0,
+   "crit": 0,
+   "hits": 1,
+   "targets": "one enemy within 6 hexes",
+   "damageType": "magic",
+   "tags": [
+    "staff",
+    "ranged"
+   ],
+   "triggers": [
+    {
+     "hook": "onHit",
+     "effect": "the target gains 1 Slow"
+    }
+   ],
+   "slayer": null,
+   "description": "Two damage and a step taken off them, every turn, for one Stamina.",
+   "source": "Ruled 2026-09-02: tier 3 had one priest weapon and two mage weapons, so a tier-3 reward mostly helped the classes whose weapons are unrestricted. Three priest and two mage rows close that, keeping each class's theme — the priest ranged and true, the mage ranged and magic."
+  },
+  {
+   "id": "attack.staff-of-the-still-air.stillness",
+   "name": "Stillness",
+   "range": 6,
+   "stat": "magic",
+   "damage": 4,
+   "stamina": 3,
+   "accuracy": 0,
+   "crit": 0,
+   "hits": 1,
+   "targets": "one enemy within 6 hexes",
+   "damageType": "magic",
+   "tags": [
+    "staff",
+    "ranged"
+   ],
+   "triggers": [
+    {
+     "hook": "onHit",
+     "effect": "the target gains 3 Slow"
+    }
+   ],
+   "slayer": null,
+   "description": "The whole turn, spent making one thing very late.",
+   "source": "Ruled 2026-09-02: tier 3 had one priest weapon and two mage weapons, so a tier-3 reward mostly helped the classes whose weapons are unrestricted. Three priest and two mage rows close that, keeping each class's theme — the priest ranged and true, the mage ranged and magic."
   }
  ],
  "powers": [
