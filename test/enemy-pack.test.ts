@@ -97,7 +97,8 @@ describe('the pack carries the authored rows faithfully', () => {
     expect(ATTACKS['attack.necromancer.necro-bolt']!.powerScale).toBe(1)
     // and NO gap-carrying clause leaked into the pack: nothing references afflictions
     for (const id of roster()) for (const t of UNITS[id]!.triggers ?? []) {
-      expect(['status.apply', 'power.gain'], `${id} trigger ${t.id}`).toContain(t.effect.kind)
+      // capability.auras (2026-09-03): the Necromancer's EOA pulse is a heal to its area
+      expect(['status.apply', 'power.gain', 'heal'], `${id} trigger ${t.id}`).toContain(t.effect.kind)
     }
   })
 })

@@ -16,6 +16,7 @@
 
 import type { Ctx, Unit } from './types.js'
 import { accuracyBonusOf, reachBonusOf, dodgeBonusOf, armorBonusOf, resistBonusOf, terrainIdOf } from '../content/maps.js'
+import { distance } from './hex.js'
 
 export type StatName =
   | 'strength' | 'precision' | 'magic' | 'spirit'
@@ -92,9 +93,32 @@ export function terrainMods(ctx: Ctx, u: Unit): StatMod[] {
 }
 
 /** Every modifier currently applying to a unit, in a stated order (Law 6). */
+/**
+ * Modifiers LENT by the auras this unit stands inside — capability.auras
+ * (2026-09-03). DERIVED, never stored, exactly as terrain: an aura follows its
+ * holder and a unit that steps out loses it on the next read. Standing
+ * holders only; the holder is inside its own aura (the actor is always one of
+ * its own allies, target.ts). Sorted by holder id then aura id (Law 6).
+ */
+export function auraMods(ctx: Ctx, u: Unit): StatMod[] {
+  const out: StatMod[] = []
+  const holders = ctx.state.units.filter((h) => h.lifeState === 'standing' && h.auras.length).sort((a, b) => a.id - b.id)
+  for (const h of holders) {
+    for (const a of h.auras) {
+      const isAlly = h.side === u.side
+      if (a.side === 'ally' && !isAlly) continue
+      if (a.side === 'enemy' && isAlly) continue
+      if (a.requireTags && !a.requireTags.every((t) => u.tags.includes(t))) continue
+      if (distance(h.hex, u.hex) > a.radius) continue
+      for (const [stat, value] of Object.entries(a.mods)) if (value) out.push({ stat: stat as StatName, op: 'add', value, source: a.id, scope: 'unit' })
+    }
+  }
+  return out
+}
+
 export function modsFor(ctx: Ctx, u: Unit): StatMod[] {
   const stored = u.mods.filter((m) => m.expiresAtTurn === undefined || ctx.state.turn < m.expiresAtTurn)
-  const all = [...stored, ...terrainMods(ctx, u)]
+  const all = [...stored, ...terrainMods(ctx, u), ...auraMods(ctx, u)]
   // Sorted so resolution never depends on the order things happened to be added.
   // `set` last, because an override is meaningless before the adds it replaces.
   return all.sort((a, b) =>

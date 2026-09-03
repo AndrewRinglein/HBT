@@ -485,7 +485,35 @@ export const UNIT_PACK = {
       "tags": [
         "demon"
       ],
-      "triggers": []
+      "triggers": [
+        {
+          "id": "trigger.balrog.burn",
+          "hook": "onActivationEnd",
+          "chance": 100,
+          "select": {
+            "select": "area",
+            "side": "any",
+            "radius": 2,
+            "origin": "self"
+          },
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.burn",
+            "value": 1
+          },
+          "source": "unit.balrog"
+        }
+      ],
+      "auras": [
+        {
+          "id": "aura.balrog.imprisoning-aura",
+          "radius": 2,
+          "side": "enemy",
+          "mods": {
+            "movement": -5
+          }
+        }
+      ]
     },
     {
       "typeId": "unit.bloodhound",
@@ -581,6 +609,31 @@ export const UNIT_PACK = {
           },
           "source": "unit.bone-dragon",
           "onlyWithAttack": "attack.bone-dragon.bite"
+        }
+      ],
+      "auras": [
+        {
+          "id": "aura.bone-dragon.aura-1",
+          "radius": 2,
+          "side": "enemy",
+          "mods": {
+            "strength": -1,
+            "precision": -1,
+            "accuracy": -10
+          }
+        },
+        {
+          "id": "aura.bone-dragon.aura-2",
+          "radius": 2,
+          "side": "ally",
+          "requireTags": [
+            "undead"
+          ],
+          "mods": {
+            "strength": 1,
+            "precision": 1,
+            "accuracy": 10
+          }
         }
       ]
     },
@@ -909,6 +962,23 @@ export const UNIT_PACK = {
       "triggers": [
         {
           "id": "trigger.fire-imp.burn",
+          "hook": "onActivationEnd",
+          "chance": 100,
+          "select": {
+            "select": "area",
+            "side": "any",
+            "radius": 2,
+            "origin": "self"
+          },
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.burn",
+            "value": 1
+          },
+          "source": "unit.fire-imp"
+        },
+        {
+          "id": "trigger.fire-imp.burn",
           "hook": "onHit",
           "chance": 100,
           "select": "target",
@@ -1182,6 +1252,25 @@ export const UNIT_PACK = {
       ],
       "triggers": [
         {
+          "id": "trigger.lieutenant-demon.heal",
+          "hook": "onActivationEnd",
+          "chance": 100,
+          "select": {
+            "select": "area",
+            "side": "ally",
+            "radius": 4,
+            "origin": "self",
+            "requireTags": [
+              "demon"
+            ]
+          },
+          "effect": {
+            "kind": "heal",
+            "amount": 5
+          },
+          "source": "unit.lieutenant-demon"
+        },
+        {
           "id": "trigger.lieutenant-demon.gathering-doom",
           "hook": "onActivationEnd",
           "chance": 100,
@@ -1191,6 +1280,25 @@ export const UNIT_PACK = {
             "value": 1
           },
           "source": "unit.lieutenant-demon"
+        }
+      ],
+      "auras": [
+        {
+          "id": "aura.lieutenant-demon.aura-1",
+          "radius": 4,
+          "side": "ally",
+          "requireTags": [
+            "demon"
+          ],
+          "mods": {
+            "accuracy": 20
+          },
+          "gaps": [
+            "grant a stat for the Battle health 4",
+            "Immunity N weak 1",
+            "Immunity N poison 1",
+            "Immunity N burn 1"
+          ]
         }
       ]
     },
@@ -1226,6 +1334,25 @@ export const UNIT_PACK = {
       ],
       "triggers": [
         {
+          "id": "trigger.necromancer.heal",
+          "hook": "onActivationEnd",
+          "chance": 100,
+          "select": {
+            "select": "area",
+            "side": "ally",
+            "radius": 2,
+            "origin": "self",
+            "requireTags": [
+              "undead"
+            ]
+          },
+          "effect": {
+            "kind": "heal",
+            "amount": 3
+          },
+          "source": "unit.necromancer"
+        },
+        {
           "id": "trigger.necromancer.weak",
           "hook": "onHit",
           "chance": 100,
@@ -1237,6 +1364,20 @@ export const UNIT_PACK = {
           },
           "source": "unit.necromancer",
           "onlyWithAttack": "attack.necromancer.necro-bolt"
+        }
+      ],
+      "auras": [
+        {
+          "id": "aura.necromancer.aura-1",
+          "radius": 2,
+          "side": "ally",
+          "requireTags": [
+            "undead"
+          ],
+          "mods": {
+            "accuracy": 20,
+            "resist": 1
+          }
         }
       ]
     },
@@ -1303,6 +1444,23 @@ export const UNIT_PACK = {
         "poison"
       ],
       "triggers": [
+        {
+          "id": "trigger.poison-imp.poison",
+          "hook": "onActivationEnd",
+          "chance": 100,
+          "select": {
+            "select": "area",
+            "side": "any",
+            "radius": 2,
+            "origin": "self"
+          },
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.poison",
+            "value": 1
+          },
+          "source": "unit.poison-imp"
+        },
         {
           "id": "trigger.poison-imp.poison",
           "hook": "onHit",
@@ -1709,6 +1867,18 @@ export const UNIT_PACK = {
       ],
       "triggers": [
         {
+          "id": "trigger.vampire.heal",
+          "hook": "onHit",
+          "chance": 100,
+          "select": "self",
+          "effect": {
+            "kind": "heal",
+            "amount": 4
+          },
+          "source": "unit.vampire",
+          "onlyWithAttack": "attack.vampire.bite"
+        },
+        {
           "id": "trigger.vampire.stun",
           "hook": "onHit",
           "chance": 100,
@@ -1770,6 +1940,18 @@ export const UNIT_PACK = {
         "vampire"
       ],
       "triggers": [
+        {
+          "id": "trigger.vampire-lord.heal",
+          "hook": "onHit",
+          "chance": 100,
+          "select": "self",
+          "effect": {
+            "kind": "heal",
+            "amount": 6
+          },
+          "source": "unit.vampire-lord",
+          "onlyWithAttack": "attack.vampire-lord.bite"
+        },
         {
           "id": "trigger.vampire-lord.feed",
           "hook": "onKill",
@@ -11717,6 +11899,17 @@ export const UNIT_PACK = {
             },
             "onlyWithAttack": "attack.test-arc.sweep",
             "source": "unit.test-arc-golem"
+          }
+        ],
+        "auras": [
+          {
+            "id": "aura.test-golem.dread",
+            "radius": 1,
+            "side": "enemy",
+            "mods": {
+              "accuracy": -10
+            },
+            "note": "capability.auras (2026-09-03): the golem is hard to look at — enemies adjacent to it lose 10 Accuracy while adjacent. The second aura, pure data, on a body the probe fields."
           }
         ],
         "typeId": "test-arc-golem",

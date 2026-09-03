@@ -33,14 +33,15 @@ export function disabledIds(): ReadonlySet<string> { return DISABLED }
  * them — this can. Same contract: byte-identical input object when nothing is
  * disabled.
  */
-export function stripDisabledTriggers<U extends { triggers?: readonly { id: string }[] }>(
+export function stripDisabledTriggers<U extends { triggers?: readonly { id: string }[]; auras?: readonly { id: string }[] }>(
   reg: Readonly<Record<string, U>>,
 ): Readonly<Record<string, U>> {
   if (DISABLED.size === 0) return reg
-  return Object.fromEntries(Object.entries(reg).map(([k, u]) => [
-    k,
-    u.triggers?.some((t) => DISABLED.has(t.id))
-      ? { ...u, triggers: u.triggers.filter((t) => !DISABLED.has(t.id)) }
-      : u,
-  ]))
+  // auras (capability.auras, 2026-09-03) live inline on the def like triggers — same seam
+  return Object.fromEntries(Object.entries(reg).map(([k, u]) => {
+    let v = u
+    if (v.triggers?.some((t) => DISABLED.has(t.id))) v = { ...v, triggers: v.triggers.filter((t) => !DISABLED.has(t.id)) }
+    if (v.auras?.some((a) => DISABLED.has(a.id))) v = { ...v, auras: v.auras.filter((a) => !DISABLED.has(a.id)) }
+    return [k, v]
+  }))
 }

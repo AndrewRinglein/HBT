@@ -4,6 +4,7 @@
 
 import type { Ctx, Event, LifeState, Unit } from './types.js'
 import type { HexId } from './hex.js'
+import { effective } from './stats.js'
 
 export function emit(ctx: Ctx, type: string, causeId: string, fields: Record<string, unknown> = {}): Event {
   const e: Event = {
@@ -286,7 +287,11 @@ export function beginActivation(ctx: Ctx, id: number, causeId: string): void {
   // ONCE, here — a slow applied mid-activation bites the NEXT activation
   // (SWITCHES.md slowReadAtActivationStart). The registry is read inline off
   // ctx rather than via status.ts, which imports this file (cycle).
-  let mp = u.movement
+  // Movement through the stat pipeline (capability.auras, 2026-09-03): the
+  // Balrog's Imprisoning Aura is −5 Movement LENT while inside — a derived
+  // mod, so it must be read here, not off the raw field.
+  const mv = effective(ctx, u, 'movement')
+  let mp = mv.value
   for (const s of u.statuses) if (ctx.statuses[s.id]?.reducesMovement && s.value > 0) mp -= s.value
   // capability.root (2026-09-03): "Stops the unit moving at all" — not a reduction, a stop
   if (u.statuses.some((s) => ctx.statuses[s.id]?.blocksMovement && s.value > 0)) mp = 0
@@ -296,6 +301,9 @@ export function beginActivation(ctx: Ctx, id: number, causeId: string): void {
     // Named only when reduced (Law 12: the log says why the unit moved less) —
     // an unslowed activation's event is byte-identical to before this landed.
     ...(u.movePointsLeft !== u.movement ? { movePoints: u.movePointsLeft } : {}),
+    // capability.auras (2026-09-03): what LENT or took movement, by source — the
+    // Balrog's Imprisoning Aura names itself here (Law 12). Absent when nothing did.
+    ...(mv.ledger.length ? { movementMods: mv.ledger.map((r) => ({ source: r.source, delta: r.delta })) } : {}),
   })
 }
 

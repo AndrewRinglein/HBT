@@ -236,6 +236,21 @@ const RAW_SCENARIOS: Readonly<Record<string, ScenarioDef>> = {
     encounterId: 'encounter.supper',
     replicate: 0,
   },
+  'showcase.kiln': {
+    id: 'showcase.kiln',
+    note: 'encounter.kiln, the encounter session\'s E2 (shipped 2026-09-03): fire '
+      + 'imps, hellhounds and the Imp Master at setup, imps and poison imps on the '
+      + 'flanks, the Balrog at Turn 6 — its Imprisoning Aura (−5 Movement within 2) '
+      + 'is the second aura the probe reads. The burning band is a named gap. The '
+      + 'five-hero party of battle 9 on Codex kits.',
+    mapId: 'map.open',
+    heroes: ['hero.base.warrior-iron', 'hero.base.ranger-aggressive', 'hero.base.mage-fire', 'hero.base.priest-armored', 'hero.base.paladin-hunk'],
+    heroHexes: [],
+    enemies: [],
+    enemyHexes: [],
+    encounterId: 'encounter.kiln',
+    replicate: 0,
+  },
   'showcase.assembled-party': {
     id: 'showcase.assembled-party',
     note: 'Hero assembly (2026-09-03): the progression party at its battle-20 '

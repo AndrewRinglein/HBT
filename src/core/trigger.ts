@@ -29,7 +29,7 @@ import { distance } from './hex.js'
 import type { Targeting } from './target.js'
 import { resolveTargets, validateTargeting } from './target.js'
 import { roll100 } from './rng.js'
-import { applyDamage, emit, gainPower } from './mutate.js'
+import { applyDamage, applyHealing, emit, gainPower } from './mutate.js'
 import { applyStatus, removeStatus } from './status.js'
 import { executeKnockback } from './movement.js'
 
@@ -127,6 +127,8 @@ export type TriggerEffect =
   | { readonly kind: 'knockback'; readonly value: ValueSpec }
   /** capability.power-pool (2026-09-03): the clock and the condition — "add power", "gain Power". Side-wide, never per unit. */
   | { readonly kind: 'power.gain'; readonly value: ValueSpec }
+  /** capability.auras (2026-09-03): the End-of-Activation pulse — the Necromancer's "heal 3" to allies within 2. */
+  | { readonly kind: 'heal'; readonly amount: ValueSpec }
 
 export type Trigger = {
   readonly id: string
@@ -399,6 +401,12 @@ function applyEffect(ctx: Ctx, t: Trigger, owner: Unit, targetId: number): void 
         actor: owner.id, target: targetId, effect: e.kind, value: v,
       })
       if (v > 0) executeKnockback(ctx, owner.id, targetId, v, t.id)
+      break
+    }
+    case 'heal': {
+      const v = valueOf(ctx, owner, e.amount)
+      emit(ctx, 'trigger.fired', t.id, { actor: owner.id, target: targetId, effect: e.kind, amount: v })
+      if (v > 0) applyHealing(ctx, targetId, v, t.id)
       break
     }
     case 'power.gain': {

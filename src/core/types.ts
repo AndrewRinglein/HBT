@@ -375,6 +375,16 @@ export type HeroProgress = {
   readonly powers?: readonly string[]
 }
 
+export type AuraDef = {
+  readonly id: string
+  readonly radius: number
+  readonly side: 'ally' | 'enemy' | 'any'
+  readonly requireTags?: readonly string[]
+  readonly mods: Readonly<Partial<Record<import('./stats.js').StatName, number>>>
+  /** What the row asked for that the engine could not fold (immunities, Max Health). */
+  readonly gaps?: readonly string[]
+}
+
 export type UnitDef = {
   readonly typeId: string
   readonly side: Side
@@ -447,6 +457,15 @@ export type UnitDef = {
    */
   readonly surge?: number
   /**
+   * capability.auras (2026-09-03), COMBAT-DESIGN §5 / Design Law 27 "auras
+   * lend, they never give": a radius around this unit granting stat modifiers
+   * to units inside it WHILE they are inside — derived on read like terrain,
+   * never stored, so leaving the radius is losing the bonus. Radii are fixed;
+   * overlapping auras stack. Standing units only exert one. `side` is who it
+   * reaches; `requireTags` narrows it ("allies tagged Undead").
+   */
+  readonly auras?: readonly AuraDef[]
+  /**
    * Movement powers this unit grants, in preference order — REQUIRED, no core
    * default (content-driven, Angela 2026-08-21). Every hero row carries the
    * universal walk plus its class's half-step; an enemy row carries exactly
@@ -500,6 +519,8 @@ export type Unit = {
   /** capability.surge: the stat, and the accumulating chance (zeroed on a hit). */
   surge: number
   surgeChance: number
+  /** capability.auras: this unit's auras, own frozen copies (plain data). */
+  auras: AuraDef[]
   ai: string
   attacks: string[]
   abilities: string[]

@@ -5915,3 +5915,41 @@ effect of surge.hit — 25 paired battles per map, WITH vs WITHOUT
   test.map.showcase: heroWins 25->25 (+0)  meanTurns 3.9->3.9
 NO MEASURABLE EFFECT at this sample size — consequence clause caught state changes, but outcomes did not move. Consider a sweep with more replicates before drawing balance conclusions.
 ```
+
+## capability.auras — LANDED `824e61d` **NEEDS REVIEW**
+2026-09-03 10:50
+
+  PASS  dependencies landed
+  WARN  not already decided — 5 candidate ruling(s) — READ BEFORE ASKING: ../CODEX.md:980 · ../STATE.md:18
+  PASS  typecheck
+  PASS  full test suite
+  PASS  gate 1 — the id appears in a real battle — aura.necromancer.aura-1: 1 log lines, 1 fired, 1 changed state
+  PASS  brought its own tests — test/enemy-pack.test.ts, test/auras.test.ts
+  WARN  existing tests untouched — DELETED LINES in test/enemy-pack.test.ts (-1) — will land FLAGGED for review
+  PASS  control battles unchanged — will re-bless at commit — this item DECLARED it changes the control battles: map.open 9153f157->854fa247, map.ridge cce57486->2abb90a6, map.flanks 8687a21c->455f06f1, map.highlands ca4d02a6->7402fb2d, map.field e85a2262->a9103332, test.map.showcase 7d58eb77->404a55e8
+  PASS  content has a published source — 18 ids without a published source (8 awaiting publication from earlier items — see audit)
+  PASS  hardcode scan — core knows mechanisms, never names
+  PASS  generalizes — the second instance costs zero engine code — aura.necromancer.aura-1 live · aura.test-golem.dread live
+  PASS  naming — new content ids use declared kinds
+  PASS  naming — no banned words invented
+  PASS  kill switch — the tests fail without the content — tests fail without aura.necromancer.aura-1 — they genuinely test it
+
+<details><summary>Existing tests were edited — review this diff</summary>
+
+```diff
+diff --git a/test/enemy-pack.test.ts b/test/enemy-pack.test.ts
+index 2f63c44..5320328 100644
+--- a/test/enemy-pack.test.ts
++++ b/test/enemy-pack.test.ts
+@@ -98,5 +98,6 @@ describe('the pack carries the authored rows faithfully', () => {
+     // and NO gap-carrying clause leaked into the pack: nothing references afflictions
+     for (const id of roster()) for (const t of UNITS[id]!.triggers ?? []) {
+-      expect(['status.apply', 'power.gain'], `${id} trigger ${t.id}`).toContain(t.effect.kind)
++      // capability.auras (2026-09-03): the Necromancer's EOA pulse is a heal to its area
++      expect(['status.apply', 'power.gain', 'heal'], `${id} trigger ${t.id}`).toContain(t.effect.kind)
+     }
+   })
+```
+</details>
+
+IRON GAUNTLET: NOT PASSED — 2 FLAG(S) WARNED · periodic audit clean (landing #70; the gate was killed by the host cap inside the audit — finished by hand, the audit rerun clean)

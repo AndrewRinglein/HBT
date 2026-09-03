@@ -56,6 +56,13 @@ export function packUnits(): Readonly<Record<string, UnitDef>> {
     if (out[r.typeId]) throw new Error(`unit pack: duplicate typeId '${r.typeId}'`)
     out[r.typeId] = r
   }
+  // capability.auras (2026-09-03): every aura well-formed, its stats the engine's
+  for (const [k, u] of Object.entries(out)) {
+    for (const a of u.auras ?? []) {
+      if (!a.id.startsWith('aura.') || !Number.isInteger(a.radius) || a.radius < 0) throw new Error(`unit pack: '${k}' aura '${a.id}' is malformed`)
+      for (const st of Object.keys(a.mods)) if (!['strength', 'precision', 'magic', 'spirit', 'accuracy', 'dodge', 'armor', 'resist', 'movement', 'reach', 'crit', 'luck', 'maxHp', 'maxStamina', 'staminaRegen', 'toughness', 'surge'].includes(st)) throw new Error(`unit pack: '${k}' aura '${a.id}' lends '${st}', not a stat`)
+    }
+  }
   return out
 }
 

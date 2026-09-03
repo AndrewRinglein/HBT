@@ -2021,5 +2021,25 @@
   "status": "done-needs-review",
   "sha": "b0a5759",
   "gauntlet": "not passed — 2 flag(s) warned; 2 exemption(s) taken"
+ },
+ {
+  "id": "capability.auras",
+  "kind": "engine",
+  "shape": "rule",
+  "spec": "Standing auras — COMBAT-DESIGN §5, Design Law 27 (auras lend, they never give); blocks 5 of 8 authored encounters (ENCOUNTERS-ENGINE-HANDOFF §4.2). An AuraDef on a unit row: radius, side, requireTags, stat mods — resolved on READ through the stat pipeline like terrain (modsFor), never stored, so leaving the radius is losing the bonus; overlaps stack; standing holders only. Movement is read through the pipeline at beginActivation now (the Balrog's −5). The bestiary's hook:aura rows compile to aura.<unit>.<name>; area-targeted triggers (allies within N, tag conditions) compile to the one targeting vocabulary, with heal as a trigger effect (the Necromancer's EOA pulse). Kind aura approved by policy.",
+  "expect": "a zombie inside the Necromancer's aura reads +20 Accuracy with the aura as the ledger source and loses it on stepping out; a hero inside reads nothing; the Balrog's −5 Movement is felt at beginActivation; a dead holder lends nothing; the pulse heals",
+  "changesBaseline": true,
+  "probeIds": [
+   "aura.necromancer.aura-1"
+  ],
+  "variants": [
+   "aura.necromancer.aura-1",
+   "aura.test-golem.dread"
+  ],
+  "status": "done-needs-review",
+  "note": "changesBaseline: movement is read through effective() at every beginActivation now, which ledgers a stat.consulted line the control battles did not have — the numbers are unchanged, the log is longer.",
+  "attempts": 2,
+  "sha": "824e61d",
+  "gauntlet": "not passed — 2 flag(s) warned"
  }
 ]
