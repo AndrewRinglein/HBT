@@ -210,6 +210,46 @@
    "w": 212,
    "h": 316,
    "bytes": 15228
+  },
+  "hero-paladin-shiney.jpg": {
+   "w": 160,
+   "h": 240,
+   "bytes": 11444
+  },
+  "hero-priest-armored.jpg": {
+   "w": 160,
+   "h": 240,
+   "bytes": 9942
+  },
+  "hero-priest-scantily.jpg": {
+   "w": 160,
+   "h": 240,
+   "bytes": 7758
+  },
+  "hero-ranger-aggressive.jpg": {
+   "w": 160,
+   "h": 240,
+   "bytes": 10776
+  },
+  "hero-warrior-iron.jpg": {
+   "w": 160,
+   "h": 240,
+   "bytes": 8475
+  },
+  "hero-farmer.jpg": {
+   "w": 160,
+   "h": 240,
+   "bytes": 9200
+  },
+  "hero-lumberjack-and-wife.jpg": {
+   "w": 160,
+   "h": 240,
+   "bytes": 7975
+  },
+  "hero-orphans.jpg": {
+   "w": 160,
+   "h": 240,
+   "bytes": 4702
   }
  },
  "map": {
@@ -469,5 +509,16 @@
   "beacon": "card-beacon.jpg",
   "memorial": "card-memorial.jpg",
   "waystation": "card-waystation.jpg"
- }
+ },
+ "heroes": {
+  "hero.base.paladin-shiney": "hero-paladin-shiney.jpg",
+  "hero.base.priest-armored": "hero-priest-armored.jpg",
+  "hero.base.priest-scantily": "hero-priest-scantily.jpg",
+  "hero.base.ranger-aggressive": "hero-ranger-aggressive.jpg",
+  "hero.base.warrior-iron": "hero-warrior-iron.jpg",
+  "hero.fixed.farmer": "hero-farmer.jpg",
+  "hero.fixed.lumberjack-and-wife": "hero-lumberjack-and-wife.jpg",
+  "hero.fixed.orphans": "hero-orphans.jpg"
+ },
+ "heroesMissing": []
 }

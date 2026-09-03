@@ -39,8 +39,11 @@ console.log(text().slice(0, 200))
 click('title'); click('slot-end'); click('slot-clear'); click('slot-fixture')
 click('advance'); click('advance')   // reveal → council → deploy
 for (const e of root.els.filter((x) => x.dataset.act === 'deploy').slice(0, 2)) e.handlers.click()
-click('advance'); click('advance')   // → equip → battle
-has('The battle'); click('decide'); has('Reckoning'); click('apply'); click('exit')
+click('advance')                     // → equip: the Equip screen (G11) — heroes across the top, the six sections in order, the set line
+has('Equip'); has('right hand'); has('armor'); has('slot 1'); has('Set bonuses when you leave')
+{ const t = text(); let at = t.indexOf('Idols'); for (const w of ['Bloodrunes', 'Relics', 'Weapons', 'Armor', 'Trinkets']) { const n = t.indexOf(w, at + 1); if (at < 0 || n < 0) throw new Error(`the six sections are not in the ruled order — ${w} does not follow`); at = n } }
+click('advance')                     // → battle
+has('The battle'); has('Fielded as equipped'); click('decide'); has('Reckoning'); click('apply'); click('exit')
 while (!text().includes('Week 3 — ')) click(root.els.find((x) => ['take-reward', 'leave-level-up', 'level-up'].includes(x.dataset.act)).dataset.act)
 has('Week 3 — Conquer'); has('held'); has('unclaimed'); has('supplies'); has('faith'); has('mana'); has('salvage')
 click('advance'); click('advance'); click('advance')  // build → mend → Week 4 Buy

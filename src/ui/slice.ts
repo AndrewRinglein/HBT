@@ -35,7 +35,7 @@ import { xpForLevel } from '../content/levels.js'
 import { listBuildings, whyNotBuild, performBuild } from '../core/build.js'
 import { isShopOpen, listShopItems, canBuyItem, performBuyItem, costOfItem, canEquip, whyNotEquip, performEquip, canUnequip, performUnequip, loadoutOf, equipCostOf, isEquipOpen, equipWhere, performOpenEquip, performCloseEquip, forgeBandName, shelfSpecOf, whyNotTradeIn, performTradeIn, tradeCategoryOf } from '../core/shop.js'
 import { itemOf } from '../content/items.js'
-import { heroModsOf, type SetLine } from '../core/sets.js'
+import { equipScreen, deltasOf, displaceFor } from './equip.js'
 import { listCatalog, waystationLevelOf, canBuyCatalog, whyNotBuyCatalog, performBuyCatalog, priceOf } from '../core/waystation.js'
 import { makeNewCampaign, listDraftOffers, performDraft, performEndCampaign, draftsOwedOf, draftedCountOf } from '../core/opening.js'
 import { PROLOGUE } from '../content/prologue.js'
@@ -71,8 +71,10 @@ type App = {
   party: string[]
   /** The picture over the Week: the world map, or the Sanctuary. */
   view: 'map' | 'town'
+  /** The Equip screen's item in hand — a stash item clicked, waiting for a slot. A view choice, never saved. */
+  picked: string | null
 }
-const app: App = { ctx: null, draft: null, draftReckoning: null, status: '', error: false, slot: null, confirmEnd: null, roster: false, party: [], view: 'map' }
+const app: App = { ctx: null, draft: null, draftReckoning: null, status: '', error: false, slot: null, confirmEnd: null, roster: false, party: [], view: 'map', picked: null }
 
 // ── persistence ─────────────────────────────────────────────────────────────
 function persist(): void {
@@ -157,7 +159,7 @@ function rosterScreen(c: CampaignState): string {
     <div class="card"><table><tr><th>hero</th><th>class</th><th>level</th><th>xp</th><th>wound</th><th>field slot</th><th>city slot</th><th>this Week</th><th>carries</th><th>gear changes</th></tr>
     ${heroes.map((h) => `<tr class="${h.lifeState === 'dead' ? 'dead' : ''}"><td><b>${esc(h.name)}</b><br><span class="meta">${esc(h.id)}</span></td><td>${esc(h.classes.map((x) => x.replace('class.', '')).join(', '))}</td><td class="n">${h.level}</td><td class="n">${h.xp} / ${xpForLevel(h.level + 1)}</td><td>${h.lifeState === 'dead' ? '<span class="lost">dead</span>' : h.wound ? esc(woundNameOf(h.wound)) : '—'}</td><td>${slot(h, 'field')}</td><td>${slot(h, 'city')}</td><td class="meta">${esc(absenceOf(c, h.id) ?? '')}</td><td class="meta">${esc(h.equipped.map((i) => i.replace('item.', '')).join(', ') || '—')}</td><td>${deltasOf(c, h.id)}</td></tr>`).join('')}</table></div>
     <p class="meta">Two slots a Week: one in the field, one in the city; a quest takes both. The unavailability roll between Buy and Quest keeps some home with a story.</p>
-    ${equipWhere(c) === 'roster' ? `<h2>Fitting gear</h2>${equipPanel(c, heroes.filter((h) => h.lifeState === 'alive').map((h) => h.id))}<div class="bar"><span class="meta">Idols are fitted at prep only — they are paid for when the battle is about to happen.</span><span class="sp"></span><button class="primary" data-act="close-equip">Done — keep it</button></div>` : c.cursor.step === 'open' && !isEquipOpen(c) ? `<div class="bar"><span class="sp"></span><button data-act="open-equip">Fit gear</button></div>` : ''}`
+    ${equipWhere(c) === 'roster' ? `<h2>Fitting gear</h2>${equipScreen(c, heroes.filter((h) => h.lifeState === 'alive').map((h) => h.id), { where: 'roster', picked: app.picked })}<div class="bar"><span class="meta">Idols are fitted at prep only — they are paid for when the battle is about to happen.</span><span class="sp"></span><button class="primary" data-act="close-equip">Done — keep it</button></div>` : c.cursor.step === 'open' && !isEquipOpen(c) ? `<div class="bar"><span class="sp"></span><button data-act="open-equip">Fit gear</button></div>` : ''}`
 }
 
 // ── the opening ─────────────────────────────────────────────────────────────
@@ -297,52 +299,6 @@ function tradeInPanel(c: CampaignState): string {
   return `<h3>The trade-in — three for one, a tier up</h3><div class="pick">${offers.join('') || '<p class="meta">nothing in the stash comes in threes of one category and tier</p>'}</div>`
 }
 
-/** Red/green stat deltas from a hero's gear — items and sets together — and the set lines under them. */
-function deltasOf(c: CampaignState, heroId: string): string {
-  const m = heroModsOf(c, heroId)
-  const stat = (k: string, n: number) => `<span class="${n > 0 ? 'won' : 'lost'}">${n > 0 ? '+' : ''}${n} ${esc(k)}</span>`
-  const stats = Object.entries(m.total).map(([k, n]) => stat(k, n))
-  const weapons = Object.entries(m.weapons).map(([id, n]) => stat(`damage on ${itemOf(id).name}`, n))
-  const lines = m.lines.map((l) => setLineOf(l))
-  return `${[...stats, ...weapons].join(' · ') || '<span class="meta">—</span>'}${lines.length ? `<br><span class="meta">${lines.join(' · ')}</span>` : ''}`
-}
-/** "You have a chain set bonus: +2 Precision (2 other chain items)". */
-function setLineOf(l: SetLine): string {
-  const paid = [...Object.entries(l.stats).map(([k, n]) => `${n > 0 ? '+' : ''}${n} ${k}`), ...(l.attackDamage ? [`${l.attackDamage > 0 ? '+' : ''}${l.attackDamage} damage on this weapon`] : [])].join(', ')
-  return esc(`${l.tag} set bonus from ${itemOf(l.itemId).name}: ${paid} (${l.count} ${l.shape === 'per-other' ? `other ${l.tag} item${l.count === 1 ? '' : 's'}` : `${l.tag} items worn`})`)
-}
-
-/** The equip panel — hands / armor / slots per hero, the stash beside, take-off and swap. Shared by prep's Equip step and the roster's session. */
-function equipPanel(c: CampaignState, heroIds: readonly string[]): string {
-  const stash = c.stash
-  const nm = (id: string) => itemOf(id).name
-  const worn = (h: string) => {
-    const l = loadoutOf(c, h)
-    const off = (id: string) => canUnequip(c, h, id) ? ` <button class="quiet" data-act="unequip" data-id="${esc(h)}" data-item="${esc(id)}" title="off, into the stash">×</button>` : ''
-    const slot = (label: string, ids: string[], empty: string) => `<tr><td class="meta">${label}</td><td>${ids.length ? ids.map((id) => `${esc(nm(id))}${off(id)}`).join(' · ') : `<span class="meta">${empty}</span>`}</td></tr>`
-    return `<div class="card" style="margin-bottom:8px"><b>${esc(c.roster[h]!.name)}</b> <span class="meta">${deltasOf(c, h)}</span><table>${slot('hands', l.hands, 'empty')}${slot('armor', l.armor ? [l.armor] : [], 'none')}${slot(`slots ${l.itemSlots.used}/${l.itemSlots.max}`, l.items, 'empty')}</table></div>`
-  }
-  // onto a full slot: the swap — the first thing worn that the new item would displace, by class or by hand
-  const swapFor = (h: string, item: string): string | undefined => {
-    const row = itemOf(item); const l = loadoutOf(c, h)
-    const candidates = row.itemClass === 'armor' ? (l.armor ? [l.armor] : []) : row.itemClass === 'weapon' ? l.hands : c.roster[h]!.equipped.filter((id) => itemOf(id).itemClass === row.itemClass)
-    return candidates.find((d) => canEquip(c, h, item, d))
-  }
-  const cost = (item: string) => { const k = Object.entries(equipCostOf(item)); return k.length ? ` · ${k.map(([cur, n]) => `${n} ${cur.replace('currency.', '')}`).join(', ')} to equip` : '' }
-  const paid = c.cursor.equipSession?.paid ?? []
-  return `<div class="cols">${heroIds.map(worn).join('')}</div>
-    ${stash.length ? `<table><tr><th>stash</th><th>onto</th></tr>${stash.map((item) => `<tr><td>${esc(nm(item))} <span class="meta">${esc(itemOf(item).itemClass)} · t${itemOf(item).tier}${esc(cost(item))}</span></td><td>${heroIds.map((h) => { if (canEquip(c, h, item)) return `<button class="quiet" data-act="equip" data-id="${esc(h)}" data-item="${esc(item)}">${esc(c.roster[h]!.name)}</button>`; const d = swapFor(h, item); if (d) return `<button class="quiet" data-act="equip" data-id="${esc(h)}" data-item="${esc(item)}" data-displace="${esc(d)}" title="${esc('swap out ' + nm(d))}">${esc(c.roster[h]!.name)} ⇄ ${esc(nm(d))}</button>`; return `<span class="meta" title="${esc(whyNotEquip(c, h, item) ?? '')}">${esc(c.roster[h]!.name)} —</span>` }).join(' ')}</td></tr>`).join('')}</table>` : '<p class="meta">the stash is empty — the Forge\'s shelf, the spoils, and anything taken off fill it</p>'}
-    ${paid.length ? `<p class="meta">Paid this session, refunded if taken off before you leave: ${paid.map((p) => `${esc(nm(p.itemId))} on ${esc(c.roster[p.heroId]?.name ?? p.heroId)}`).join(' · ')}</p>` : ''}
-    ${setSummary(c, heroIds)}
-    <p class="meta">What is equipped is what is fielded: the engine applies these rows at fielding — a swapped weapon changes the unit's attacks. Set bonuses are resolved here and written into the fielding as numbers; the engine's seam.unit-mods is unlanded, so they are recorded, not fought.</p>`
-}
-
-/** What leaving Equip says: every triggered set, per hero — or that none is. */
-function setSummary(c: CampaignState, heroIds: readonly string[]): string {
-  const rows = heroIds.map((h) => ({ h, lines: heroModsOf(c, h).lines })).filter((r) => r.lines.length)
-  return `<div class="card" style="margin-top:8px"><b>Set bonuses</b> ${rows.length ? `<table>${rows.map((r) => `<tr><td>${esc(c.roster[r.h]!.name)}</td><td class="meta">${r.lines.map(setLineOf).join('<br>')}</td></tr>`).join('')}</table>` : '<span class="meta">none — a set pays when its members are worn together</span>'}</div>`
-}
-
 // ── Combat Prep ─────────────────────────────────────────────────────────────
 function prepScreen(c: CampaignState): string {
   const v = viewCombatPrep(c)
@@ -359,7 +315,7 @@ function prepScreen(c: CampaignState): string {
     const heroes = Object.values(c.roster).sort((a, b) => a.id.localeCompare(b.id))
     body = `<h3>Deploy — ${v.deployed.length} of ${v.deployLimit}</h3><div class="roster">${heroes.map((h) => heroCard(c, h, v.deployed.includes(h.id))).join('')}</div>`
   } else {
-    body = `<h3>Equip — fit the stash onto the deployed</h3>` + equipPanel(c, v.deployed)
+    body = `<h3>Equip — fit the stash onto the deployed</h3>` + equipScreen(c, v.deployed, { where: 'prep', picked: app.picked })
   }
   return `<h2>Combat Prep — ${esc(v.stepTitle)}</h2>
     <p class="meta"><code>${esc(v.engagementId)}</code> · ${esc(v.kind)} · ${esc(v.territoryId ?? 'no ground at stake')} · ${esc(v.mapId)}</p>
@@ -514,7 +470,9 @@ function wire(root: HTMLElement): void {
       })
       return
     }
-    el.addEventListener('click', () => {
+    el.addEventListener('click', (ev) => {
+      // the innermost [data-act] under the pointer is the one that acts — a × inside a slot is the ×, not the slot
+      if (ev && ev.target && (ev.target as HTMLElement).closest && (ev.target as HTMLElement).closest('[data-act]') !== el) return
       const id = el.dataset['id']
       const slotOf = () => ({ realm: el.dataset['realm']!, n: Number(el.dataset['n']) })
       switch (actName) {
@@ -546,6 +504,8 @@ function wire(root: HTMLElement): void {
         case 'buy-catalog': return act(() => performBuyCatalog(app.ctx!, id!, 'slice'))
         case 'trade-in': return act(() => { const got = performTradeIn(app.ctx!, id!.split(','), 'slice'); note(`traded in — ${itemOf(got).name}`) })
         case 'equip': return act(() => performEquip(app.ctx!, id!, el.dataset['item']!, 'slice', el.dataset['displace']))
+        case 'pick': app.picked = app.picked === id ? null : id!; return render()
+        case 'drop': return act(() => { performEquip(app.ctx!, id!, el.dataset['item']!, 'slice', el.dataset['displace']); app.picked = null })
         case 'unequip': return act(() => performUnequip(app.ctx!, id!, el.dataset['item']!, 'slice'))
         case 'open-equip': return act(() => performOpenEquip(app.ctx!, 'slice'))
         case 'close-equip': return act(() => performCloseEquip(app.ctx!, 'slice'))
@@ -565,6 +525,21 @@ function wire(root: HTMLElement): void {
         case 'leave-level-up': return act(() => performLeaveLevelUp(app.ctx!, 'slice'))
         case 'back-to-panel': return act(() => { app.draft = app.ctx!.campaign.cursor.battle?.result ?? app.draft; setCursor(app.ctx!, { battle: { resultSet: false } }, 'slice') })
       }
+    })
+  })
+  // the Equip screen: drag a stash item onto a slot (the click path is data-act pick → drop)
+  root.querySelectorAll<HTMLElement>('.equip .item[draggable]').forEach((el) => {
+    el.addEventListener('dragstart', (ev) => { ev.dataTransfer?.setData('text/plain', el.dataset['id']!); app.picked = el.dataset['id']!; render() })
+  })
+  root.querySelectorAll<HTMLElement>('.equip .slot[data-slot]').forEach((el) => {
+    el.addEventListener('dragover', (ev) => { ev.preventDefault(); el.classList.add('over') })
+    el.addEventListener('dragleave', () => el.classList.remove('over'))
+    el.addEventListener('drop', (ev) => {
+      ev.preventDefault()
+      const item = ev.dataTransfer?.getData('text/plain') || app.picked
+      const hero = el.dataset['hero']!
+      if (!item) return
+      act(() => { performEquip(app.ctx!, hero, item, 'slice', displaceFor(app.ctx!.campaign, hero, item, el.dataset['slot']!)); app.picked = null })
     })
   })
   // the outcome panel edits the draft result in place, then re-renders the numbers only on blur
