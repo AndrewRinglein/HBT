@@ -871,6 +871,10 @@ for (const id of CIVILIANS) {
     // "Beasts and Civilians get neither" half-step (Codex 2026-08-21).
     moves: ['power.move'],
     tags: ['hero', 'civilian', ...(h.class ? [h.class] : [])],
+    // progression.level-table-by-type (ruled 2026-09-03): a civilian levels on
+    // its TYPE's table when the Codex points it at one (civilian.farmer);
+    // no pointer = the class.civilian table, as before.
+    ...(h.levelTable ? { levelTable: h.levelTable } : {}),
     triggers: [],
     defaultItems: (h.kit || []).filter((i) => ITEM_BY_ID.has(i)),
   });
@@ -1096,7 +1100,10 @@ const items = compileItems();
 //   specialties   id -> statModifiers (engine names)
 //   enchanted     gen/tier3-combinations.json: base + enchant -> one ItemDef
 //                 (ITEMS-PLAN.md §6: generated rows, never hand-edited)
-const CLASS_FILES = ['warrior', 'ranger', 'rogue', 'mage', 'priest', 'paladin'];
+// civilian and beast joined 2026-09-03 (progression.level-table-by-type): a
+// civilian at level 2 needs a class.civilian specialty, and none compiled —
+// the file sat here with nine specialties and 36 powers, never read.
+const CLASS_FILES = ['warrior', 'ranger', 'rogue', 'mage', 'priest', 'paladin', 'civilian', 'beast'];
 const CLASS_DEFS = Object.fromEntries(CLASS_FILES.map((c) => [`class.${c}`, JSON.parse(fs.readFileSync(`gen/${c}.json`, 'utf8'))]));
 const LEVELS = JSON.parse(fs.readFileSync('gen/levels.json', 'utf8'));
 const TIER3 = JSON.parse(fs.readFileSync('gen/tier3-combinations.json', 'utf8'));
@@ -1219,7 +1226,9 @@ for (const def of Object.values(CLASS_DEFS)) for (const sp of def.specialties ||
   specialties[sp.id] = { id: sp.id, name: sp.name ?? sp.id, class: sp.class, statModifiers: mods, ...(gaps.length ? { gaps } : {}) };
 }
 const levels = {};
-for (const c of LEVELS.classes || []) {
+// the class tables, and the civilian TYPE tables (levels.civilianTypes, ruled
+// 2026-09-03) — one loop, one shape; the engine tells them apart by prefix
+for (const c of [...(LEVELS.classes || []), ...(LEVELS.civilianTypes || [])]) {
   const rows = [];
   for (const r of c.rows || []) {
     const grants = {}; const gaps = [];
@@ -1286,7 +1295,7 @@ function testAbilities() {
   }
   return out;
 }
-const UNIT_FIELDS = new Set(['typeId', 'name', 'side', 'maxHp', 'armor', 'resist', 'accuracy', 'dodge', 'strength', 'precision', 'magic', 'spirit', 'crit', 'luck', 'toughness', 'stands', 'surge', 'auras', 'role', 'movement', 'reach', 'maxStamina', 'staminaRegen', 'ai', 'attacks', 'abilities', 'moves', 'tags', 'triggers']);
+const UNIT_FIELDS = new Set(['typeId', 'name', 'side', 'levelTable', 'maxHp', 'armor', 'resist', 'accuracy', 'dodge', 'strength', 'precision', 'magic', 'spirit', 'crit', 'luck', 'toughness', 'stands', 'surge', 'auras', 'role', 'movement', 'reach', 'maxStamina', 'staminaRegen', 'ai', 'attacks', 'abilities', 'moves', 'tags', 'triggers']);
 const ATTACK_FIELDS = new Set(['id', 'name', 'kind', 'damageType', 'bonus', 'stat', 'reach', 'staminaCost', 'crit', 'critCount', 'area', 'cooldown', 'warmup', 'accuracy', 'hits']);
 // a delta may start from any packed row — the real families AND the test
 // cohort (test-gash-zombie is the cohort's zombie plus one rider)
