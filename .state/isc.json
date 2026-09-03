@@ -34,8 +34,8 @@
    "tail": "       | ^ |      10| |      11| const SPEC: EngagementSpec = {"
   },
   "closed": {
-   "at": "2026-09-02 03:43",
-   "sha": "0f1db1a"
+   "at": "2026-09-03 20:16",
+   "sha": "5edcbc5"
   },
   "regressed": [
    {
@@ -320,8 +320,8 @@
    "tail": "     40| import { engagementKindOf } from '../content/engagements.js' |      41| import { PAYOUTS } from '../content/payouts.js' |  ❯ test/walk.ts:8:1"
   },
   "closed": {
-   "at": "2026-09-02 05:25",
-   "sha": "cae0665"
+   "at": "2026-09-03 20:16",
+   "sha": "5edcbc5"
   },
   "regressed": [
    {
@@ -431,8 +431,8 @@
    "tail": "       |                            ^ |      20|     for (const g of salvage) expect(kindOf.get(g.causeId), `Salvage fr… |      21|     // the labours paid, and never in Salvage"
   },
   "closed": {
-   "at": "2026-09-02 05:43",
-   "sha": "6936a71"
+   "at": "2026-09-03 20:16",
+   "sha": "5edcbc5"
   },
   "regressed": [
    {
@@ -516,8 +516,8 @@
    "tail": "       | ^ |       6| import { makeNewCampaign } from '../src/core/opening.js' |       7| import { makeCtx } from '../src/core/mutate.js'"
   },
   "closed": {
-   "at": "2026-09-02 06:19",
-   "sha": "e78a8bd"
+   "at": "2026-09-03 20:16",
+   "sha": "5edcbc5"
   },
   "regressed": [
    {
@@ -556,8 +556,8 @@
    "tail": "       | ^ |       6| import { makeCtx } from '../src/core/mutate.js' |       7| import { playOpening, playWeeks, playStage, DEFAULTS, type Decisions }…"
   },
   "closed": {
-   "at": "2026-09-02 06:19",
-   "sha": "e78a8bd"
+   "at": "2026-09-03 20:16",
+   "sha": "5edcbc5"
   },
   "regressed": [
    {
@@ -646,8 +646,8 @@
    "tail": "  url: 'file:///sessions/brave-clever-fermat/mnt/Heroes%20of%20Blight%20and%20Tragic/kingdom/tools/slice-run.mts' | } | Node.js v22.23.2"
   },
   "closed": {
-   "at": "2026-09-02 09:48",
-   "sha": "e891836"
+   "at": "2026-09-03 20:16",
+   "sha": "5edcbc5"
   },
   "regressed": [
    {
@@ -666,8 +666,8 @@
    "tail": "  url: 'file:///sessions/brave-clever-fermat/mnt/Heroes%20of%20Blight%20and%20Tragic/kingdom/tools/slice-run.mts' | } | Node.js v22.23.2"
   },
   "closed": {
-   "at": "2026-09-02 09:48",
-   "sha": "e891836"
+   "at": "2026-09-03 20:16",
+   "sha": "5edcbc5"
   },
   "regressed": [
    {
@@ -699,8 +699,8 @@
    "tail": "       |                                                    ^ |      44|     expect(ctx.events.filter((e) => e.type === 'item.equipped' && e['h… |      45|     const opened = playOpening(makeCtx(makeNewCampaign(3)))"
   },
   "closed": {
-   "at": "2026-09-03 03:59",
-   "sha": "3ae1be3"
+   "at": "2026-09-03 20:16",
+   "sha": "5edcbc5"
   },
   "regressed": [
    {
