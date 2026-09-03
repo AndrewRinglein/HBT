@@ -13,22 +13,56 @@ export const sgn = n => (n > 0 ? '+' : '') + n
 export const STATSHORT = { strength: 'STR', precision: 'PRE', magic: 'MAG', spirit: 'SPI',
   accuracy: 'ACC', dodge: 'DODGE', armor: 'ARMOR', resist: 'RESIST', movement: 'MOVE', reach: 'REACH' }
 
-export function actionsOf(u, UD) {
+/* ── THE KIT (seam.items-per-unit, folded 2026-09-03) ──────────────────────
+   A hero is fielded as the bare row plus the items the log says it wears
+   (unit.equipped): the granted attacks come FIRST — the weapon in hand — then
+   the row's own, the same order the engine builds (core/items.ts applyItems).
+   D = V.data: the unit sheets (UD) and the attack/ability tables (AT, AB) the
+   grants resolve against. Nothing is computed: ids are looked up. */
+export function kitOf(u, D) {
+  const d = (D.UD || {})[u && u.typeId] || {}
+  const kit = (u && u.kit) || { grants: [], abilities: [] }
+  const AT = D.AT || {}, AB = D.AB || {}
+  const attacks = [], abilities = []
+  for (const id of kit.grants) { const a = AT[id]; if (a) attacks.push({ id, ...a }) }
+  for (const a of (d.attacks || [])) if (!attacks.some(x => x.id === a.id)) attacks.push(a)
+  for (const id of kit.abilities) { const p = AB[id]; if (p) abilities.push({ id, ...p }) }
+  for (const p of (d.abilities || [])) if (!abilities.some(x => x.id === p.id)) abilities.push(p)
+  return { attacks, abilities, moves: d.moves || [] }
+}
+
+export function actionsOf(u, D) {
   if (!u) return []
-  const d = UD[u.typeId] || {}
+  const k = kitOf(u, D)
   const rows = []
-  for (const m of (d.moves || []))     rows.push({ ...m, kind: 'move' })
-  for (const a of (d.attacks || []))   rows.push({ ...a, kind: a.kind || 'melee', isAttack: true })
-  for (const p of (d.abilities || [])) rows.push({ ...p, kind: 'power', isPower: true })
+  for (const m of k.moves)     rows.push({ ...m, kind: 'move' })
+  for (const a of k.attacks)   rows.push({ ...a, kind: a.kind || 'melee', isAttack: true })
+  for (const p of k.abilities) rows.push({ ...p, kind: 'power', isPower: true })
   return rows
+}
+
+/* EXEMPTION stat-delta (tools/exemptions.json): the per-stat sum of the
+   modifiers the log stated — statmod.added, and the kit's stat deltas from
+   unit.equipped — printed as the stat's delta and added to the resting
+   movement numeral. The engine emits each modifier, not the running total. */
+export function modOf(u, stat) {
+  return ((u && u.mods) || []).reduce((n, m) => n + (m.stat === stat ? (m.value || 0) : 0), 0)
+}
+/** the unit's movement at rest: the sheet's figure plus every movement
+    modifier the log stated (an item's −1, a wound's −1). During an activation
+    the engine's own `movePoints` / `movePointsLeft` outrank it. */
+export function mvOf(u, D) {
+  const base = ((D.UD || {})[u && u.typeId] || {}).movement
+  if (base == null) return null
+  return Math.max(0, base + modOf(u, 'movement'))
 }
 
 /* EXEMPTION move-range (tools/exemptions.json): a path or flight spends the
    unit's movement budget, which the power may modify — the sum is the
    viewer's until the sheet states the move's range. A sidestep is exact. */
-export function moveHexes(a, u, UD) {
+export function moveHexes(a, u, D) {
   if (a.shape === 'sidestep') return a.stepRange == null ? 1 : a.stepRange
-  const base = (UD[u && u.typeId] || {}).movement
+  const base = mvOf(u, D)
   if (base == null) return null
   return Math.max(0, base + (a.budgetMod || 0))
 }
@@ -36,10 +70,10 @@ export function moveHexes(a, u, UD) {
 /* EXEMPTION dmg-fallback: the engine's own damageOnHit once this attack has
    been declared — it carries every live modifier — else the declare-time
    stat + bonus the ledger showed. The fallback duplicates engine math. */
-export function dmgOf(a, u, UD) {
+export function dmgOf(a, u, D) {
   const live = u && u.dmgSeen ? u.dmgSeen[a.id] : undefined
   if (live != null) return { n: live, live: true }
-  const statv = a.stat != null ? (UD[u && u.typeId] || {})[a.stat] : undefined
+  const statv = a.stat != null ? ((D.UD || {})[u && u.typeId] || {})[a.stat] : undefined
   if (statv != null) return { n: Math.max(0, statv + (a.bonus || 0)), live: false }
   return null
 }
@@ -48,12 +82,12 @@ export function shortStatus(id, SN) {
   return SN[id] || String(id || '').replace(/^(test\.)?status\./, '')
 }
 
-export function effectTag(a, u, UD, SN) {
+export function effectTag(a, u, D, SN) {
   const bits = []
   if (a.kind === 'move') {
     /* "Move: 6", "Move: 1 · Ignore ZOC" (ruled 2026-09-01, Andrew's copy). The
        RNG cell prints the number; the tag keeps only the SHAPE. */
-    const n = moveHexes(a, u, UD)
+    const n = moveHexes(a, u, D)
     if (a.shape === 'sidestep') bits.push(n === 0 ? 'stands still' : 'Ignore ZOC')
     else if (a.shape === 'flight') bits.push('no steps')
     if (a.budgetMod) bits.push(sgn(a.budgetMod) + ' move')
@@ -75,7 +109,8 @@ export function effectTag(a, u, UD, SN) {
    attack's own `applies` rider plus the unit's triggers on attack hooks;
    `onlyWithAttack` scopes a trigger to one attack. */
 export const ATTACK_HOOKS = new Set(['onHit', 'onAttack', 'onDamage', 'onKill', 'onMiss', 'onCrit'])
-export function triggersFor(u, a, UD, SN, stStyle) {
+export function triggersFor(u, a, D, SN, stStyle) {
+  const UD = D.UD || {}
   const out = []
   if (a.kind === 'move') {
     /* a move's riders ARE the buff/debuff layer — same green/red as the stat block */

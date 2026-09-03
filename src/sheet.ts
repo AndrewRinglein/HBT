@@ -9,7 +9,7 @@
 // verbatim from VFX/tool/viewer/dump-static.mts (2026-09-02), and it is the
 // FIRST entry in tools/exemptions.json — EXEMPTION sheet. It reads content only, through the
 // door, and computes nothing: every field is copied from a definition.
-import { UNITS, ATTACKS, ABILITIES, MOVES, STATUSES } from './engine.js'
+import { UNITS, ATTACKS, ABILITIES, MOVES, STATUSES, LAYER_IDS, HEX_COUNT, distance } from './engine.js'
 
 const plain = (o: unknown) => (o ? JSON.parse(JSON.stringify(o)) : undefined)
 const many = (ids: readonly string[] | undefined, table: Record<string, unknown>) =>
@@ -33,14 +33,42 @@ export function sheetOf(typeId: string): UnitSheet | undefined {
     reach: u.reach, maxHp: u.maxHp, maxStamina: u.maxStamina,
     staminaRegen: u.staminaRegen,
     strength: u.strength, precision: u.precision, magic: u.magic, spirit: u.spirit,
-    crit: u.crit, luck: u.luck, tags: plain(u.tags), attributes: plain(u.attributes),
+    // `tags` is THE ONE FIELD (engine fix.unit-tags, 2026-09-03) — `attributes` is gone
+    crit: u.crit, luck: u.luck, tags: plain(u.tags) ?? [],
     ai: u.ai,
+    // 2026-09-03 fields (EVENTS-FOR-THE-VIEWER §8), copied verbatim: absent
+    // stays absent — the engine's defaults are the engine's to state
+    toughness: u.toughness, stands: u.stands, surge: u.surge, vision: u.vision,
+    powerOnArrival: u.powerOnArrival,
+    auras: plain(u.auras) ?? [],
+    defaultItems: plain(u.defaultItems),
     attacks: many(u.attacks, ATTACKS as Record<string, unknown>),
     abilities: many(u.abilities, ABILITIES as Record<string, unknown>),
     moves: many(u.moves, MOVES as Record<string, unknown>),
     triggers: plain(u.triggers) ?? [],
   }
 }
+
+/** Every attack and ability definition by id — what a `unit.equipped` grant
+    resolves against at fold time (seam.items-per-unit: a hero's kit is applied
+    at fielding, and the bare row does not carry it). Copied, never shaped. */
+export function attackTable(): Record<string, unknown> { return plain(ATTACKS) ?? {} }
+export function abilityTable(): Record<string, unknown> { return plain(ABILITIES) ?? {} }
+
+/** Hex distance for every pair on the 16×16 board, as one base64 string of
+    HEX_COUNT² bytes (row-major: dist(a,b) at a*HEX_COUNT+b) — the engine's
+    own `distance`, dumped so the viewer draws an aura's radius without
+    re-implementing hex geometry (Law 0 / Law 4). Map-independent. */
+export function hexDistanceTable(): string {
+  const n = HEX_COUNT
+  const out = new Uint8Array(n * n)
+  for (let a = 0; a < n; a++) for (let b = 0; b < n; b++) out[a * n + b] = distance(a, b)
+  return Buffer.from(out).toString('base64')
+}
+
+/** The ground layers by number — 1 burning · 2 frost · 3 poisoned · 4 darkness —
+    read from the engine, never typed (Law 4). */
+export function layerNames(): Record<number, string> { return { ...LAYER_IDS } }
 
 export function allSheets(): Record<string, UnitSheet> {
   const out: Record<string, UnitSheet> = {}

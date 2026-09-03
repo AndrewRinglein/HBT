@@ -6,10 +6,13 @@
    (fold.js) is pure, the draw reads it, and the only thing that passes in is
    the event log plus read-only content.
 
-   data = { field, units, statuses, artmap, assets, meta }
+   data = { field, units, statuses, attacks, abilities, layers, hexDist, artmap, assets, meta }
      field    — board geometry + terrain for this battle's map (generated/fields.json[mapId])
      units    — typeId -> unit sheet (generated/static.json.units)
      statuses — statusId -> display name
+     attacks, abilities — the definition tables a unit.equipped grant resolves against (static.json)
+     layers   — ground layer number -> name (static.json.layers); hexDist — the engine's hex
+                distance table, a Uint8Array of HEX_COUNT² (decoded by the host from static.json.hexDist)
      artmap   — typeId -> {token, card, aspect, height}; assets — file -> data URI / URL
      glyphs   — the icon outlines (generated/ra-glyphs.json); the sprite is added once per document
      meta     — {label, seed, engineCommit, outcome, turns} for the HUD; outcome/turns
@@ -22,7 +25,7 @@
              speedValue/dom/art/assets, _V (the verifier's handle) }
    ══════════════════════════════════════════════════════════════════════════ */
 import { createState, fold, foldTo } from './fold.js'
-import { el, ensureKeyframes, buildGround, syncUnits, drawAim, applyCam, playCues, clearFloats, initFX, traverse, ROOT_TRANSITION, bindCamera, drawEdges, cancelBeats } from './board.js'
+import { el, ensureKeyframes, buildGround, syncUnits, syncLayers, syncCorpses, syncAuras, drawAim, applyCam, playCues, clearFloats, initFX, traverse, ROOT_TRANSITION, bindCamera, drawEdges, cancelBeats } from './board.js'
 import { drawPanel } from './panel.js'
 import { drawBar, drawStam } from './actionbar.js'
 import { spriteHTML } from './icons.js'
@@ -34,17 +37,31 @@ export const DUR = { 'unit.enter': 0, 'turn.begin': 420, 'phase.begin': 120, 'mo
   'status.applied': 200, 'status.reduced': 60, 'status.expired': 60, 'activation.idle': 200,
   'heal.applied': 260, 'activation.begin': 180, 'battle.end': 600, 'bleedout.tick': 140,
   'knocked': 340, 'crit.branch': 260, 'crit.effect': 620, 'maxHp.lost': 240, 'power.hit': 180,
-  'stamina.gained': 60, 'staminaMax.lost': 60, 'statmod.added': 120, 'knockback.blocked': 160 }
+  'stamina.gained': 60, 'staminaMax.lost': 60, 'statmod.added': 120, 'knockback.blocked': 160,
+  /* 2026-09-03 */
+  'unit.equipped': 0, 'encounter.begin': 0, 'encounter.objective': 0, 'encounter.wave': 900, 'encounter.roll': 0, 'unit.shunted': 200,
+  'encounter.won': 900, 'encounter.lost': 900, 'move.stopped': 520, 'aoo.provoked': 700, 'aoo.skipped': 0, 'attack.cancelled': 120,
+  'corpse.created': 0, 'corpse.removed': 380, 'unit.raised': 640, 'corpse.eaten': 300, 'unit.obliterated': 520,
+  'deathbed.stood': 900, 'deathbed.fell': 800, 'deathbed.exhausted': 500, 'hp.reset': 320, 'bleedout.accelerated': 320,
+  'surge.checked': 0, 'surge.hit': 600, 'power.gained': 320, 'heal.boosted': 200, 'status.cancelled': 220, 'maxHp.gained': 240,
+  'stamina.drained': 160, 'layer.painted': 0, 'layer.cancelled': 0, 'band.advanced': 900, 'night.fell': 1200, 'light.cast': 0,
+  'ai.mode': 0, 'ai.hunts': 260 }
+/* a RUN of ground paints folds as one beat (night falls on 256 hexes, the
+   heroes light ~100 each phase): the pump paints them together and holds this */
+const PAINT_RUN_MS = 260
 /* beats that redraw even when their duration is zero */
 const REDRAW = new Set(['attack.declared', 'damage.applied', 'life.dead', 'turn.begin', 'moved', 'heal.applied',
-  'status.applied', 'life.downed', 'knocked', 'crit.effect', 'maxHp.lost'])
-/* the roster is seeded instantly — these never animate */
-const SEED = new Set(['unit.enter', 'map.loaded', 'battle.begin'])
+  'status.applied', 'life.downed', 'knocked', 'crit.effect', 'maxHp.lost',
+  'unit.enter', 'unit.equipped', 'encounter.objective', 'unit.shunted', 'corpse.created', 'hp.reset', 'ai.mode', 'ai.hunts', 'surge.checked', 'aoo.skipped'])
+/* the roster is seeded instantly — everything up to and including battle.begin
+   never animates: the setup's unit.enters, their kit (unit.equipped), the
+   encounter's title and objectives, the map (2026-09-03: was a fixed three) */
+const SEED_END = 'battle.begin'
 
 const TEMPLATE = `
   <div id="left">
     <div id="topbar">
-      <div id="turnchip">Turn 1</div><div id="phasechip">Hero Phase</div>
+      <div id="turnchip">Turn 1</div><div id="phasechip">Hero Phase</div><div id="encchip" style="display:none"></div><div id="powerchip" style="display:none" title="the enemy side's Power pool"></div>
       <div data-slot="top" style="display:contents"></div>
     </div>
     <div id="boardwrap"><div id="stage"></div>
@@ -64,11 +81,13 @@ export function mountBattleViewer(root, data, opts = {}) {
   const q = s => root.querySelector(s)
   const dom = { root, stage: q('#stage'), canvas: q('#vfxC'), hud: q('#camHud'), panel: q('#panel'),
     stambar: q('#stambar'), actionbar: q('#actionbar'), turnchip: q('#turnchip'), phasechip: q('#phasechip'),
+    encchip: q('#encchip'), powerchip: q('#powerchip'),
     slots: { top: q('[data-slot=top]'), transport: q('[data-slot=transport]'), bottom: q('[data-slot=bottom]') } }
   const LAYOUT = { W: F.hexW, H: F.hexH, COL: F.colStep, ROW: F.rowStep, ODD: F.oddOffset, COLS: 16, ROWS: 16, tilt: F.tilt }
   const V = {
     dom, now,
-    data: { F, POS: F.hexes, LAYOUT, UD: data.units, SN: data.statuses, ARTMAP: data.artmap, ASSETS: data.assets },
+    data: { F, POS: F.hexes, LAYOUT, UD: data.units, SN: data.statuses, AT: data.attacks || {}, AB: data.abilities || {},
+      LAYERS: data.layers || {}, DIST: data.hexDist || null, ARTMAP: data.artmap, ASSETS: data.assets },
     meta: data.meta || {},
     S: createState(), EV: [], cursor: 0,
     view: { inspectId: null, statsOpen: false, TRG_OPEN: new Set(), zoom: '1x', peek: false, bare: false, camF: { x: null, y: null } },
@@ -79,6 +98,8 @@ export function mountBattleViewer(root, data, opts = {}) {
     playing: false, speed: 1, timer: null, invalid: null,
   }
   const ctx = () => ({ UD: V.data.UD, SN: V.data.SN })
+  /* the board objects need the distance table; a host that forgot it is told (Law 1) */
+  if (!V.data.DIST) throw new Error('mountBattleViewer: data.hexDist is missing — decode generated/static.json .hexDist (the engine\'s hex distance table) and pass it')
   /* the BEAT clock: wall time scaled by playback speed, so a row that lights
      for 1600 beat-ms lights for the same number of beats at ×⅓ and ×4. The fold
      stamps its `until`s from this, and the draw compares against it. */
@@ -97,6 +118,8 @@ export function mountBattleViewer(root, data, opts = {}) {
 
   function render() {
     if (!V.layers.ground) buildGround(V)
+    /* the persistent board objects, coplanar with the ground and right after it */
+    syncLayers(V); syncCorpses(V); syncAuras(V)
     drawAim(V)
     syncUnits(V)
     drawPanel(V); drawBar(V); drawStam(V); applyCam(V); drawEdges(V); drawChips()
@@ -111,6 +134,11 @@ export function mountBattleViewer(root, data, opts = {}) {
       dom.phasechip.className = S.phase === 'enemy' ? 'enemy' : ''
       if (S.outcome) { dom.phasechip.textContent = S.outcome.toUpperCase(); dom.phasechip.className = 'enemy' }
     }
+    /* the encounter's title (encounter.begin) and the enemy side's Power pool
+       (power.gained) — both folded, both the component's to show */
+    if (dom.encchip) { const enc = S.encounter
+      dom.encchip.style.display = enc ? '' : 'none'; dom.encchip.textContent = enc ? enc.name : '' }
+    if (dom.powerchip) { dom.powerchip.style.display = S.power == null ? 'none' : ''; dom.powerchip.textContent = S.power == null ? '' : 'Power ' + S.power }
   }
 
   /* ── the pump ────────────────────────────────────────────────────────── */
@@ -160,9 +188,22 @@ export function mountBattleViewer(root, data, opts = {}) {
     if (hexes && startHex != null) traverse(V, actor, startHex, path, dur)
     return dur + (hexes ? 60 : 0)                  // the arrival settle
   }
+  /* ONE REPAINT PER RUN (2026-09-03): consecutive layer.painted/cancelled
+     events fold together and the board redraws once — night.fell paints 256
+     hexes and each hero phase lights ~100; one beat each, not four seconds
+     of 16ms ticks. Every event is still folded in order. */
+  const PAINT = new Set(['layer.painted', 'layer.cancelled'])
+  function stepPaint(e) {
+    const EV = V.EV
+    let cues = applyOne(e, false)
+    while (EV[V.cursor] && PAINT.has(EV[V.cursor].type)) cues = cues.concat(applyOne(EV[V.cursor], false))
+    playCues(V, cues); render()
+    return PAINT_RUN_MS
+  }
   function beat(e) {
     let d
     if (e.type === 'move.begin' || e.type === 'moved') d = stepMove(e)
+    else if (PAINT.has(e.type)) d = stepPaint(e)
     else {
       applyOne(e, true)
       d = DUR[e.type] ?? 0
@@ -205,8 +246,11 @@ export function mountBattleViewer(root, data, opts = {}) {
     const first = V.EV.length === 0
     for (const e of events) V.EV.push(e)
     if (first) {
-      /* seed the roster instantly: unit.enter + map.loaded + battle.begin */
-      while (V.cursor < V.EV.length && SEED.has(V.EV[V.cursor].type)) applyOne(V.EV[V.cursor], false)
+      /* seed the roster instantly: everything through battle.begin (the setup's
+         unit.enters, their kit, the encounter's title, the map). A log with no
+         battle.begin seeds nothing and plays from the first event. */
+      const end = V.EV.findIndex(e => e.type === SEED_END)
+      while (V.cursor <= end) applyOne(V.EV[V.cursor], false)
       render()
       if (opts.autoplay !== false) play()
     } else if (V.playing && !V.timer && V.cursor < V.EV.length) step()   // the pump had run dry; it resumes

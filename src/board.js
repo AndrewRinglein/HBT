@@ -2,7 +2,8 @@
    Reads V.S (the folded state) and draws it. Never folds. Every function takes
    the viewer context V; nothing here is module state, so two viewers can live
    on one page. Split out of viewer-core.js 2026-09-02 with the drawing intact. */
-import { TSWATCH, stStyle, PROJ_TINT, SIDE_TINT, SIDE_GLOW, DMG_HUE, HEAL_HUE, MOD_UP, MOD_DOWN, CRIT_HUE, NOTE_HUE, PROT_SPENT, VFX_STATUS, rgb } from './theme.js'
+import { TSWATCH, stStyle, PROJ_TINT, SIDE_TINT, SIDE_GLOW, DMG_HUE, HEAL_HUE, MOD_UP, MOD_DOWN, CRIT_HUE, NOTE_HUE, PROT_SPENT, VFX_STATUS, rgb, layerHue, AURA_HUE, BLOOD_HUE, LAYER_STATUS } from './theme.js'
+import { mvOf } from './actions.js'
 import { subjectOf } from './subject.js'
 import { projectTick, dangerOf } from './projection.js'
 import { dangerHTML, raIcon } from './icons.js'
@@ -12,6 +13,8 @@ export const el = (cls, style, html) => { const d = document.createElement('div'
   if (cls) d.className = cls; if (style) d.style.cssText = style; if (html != null) d.innerHTML = html; return d }
 const svgEl = t => document.createElementNS('http://www.w3.org/2000/svg', t)
 
+/** insert `node` right after `ref` (insertBefore only: the headless DOM has no after()) */
+const placeAfter = (ref, node) => ref.parentNode.insertBefore(node, ref.nextSibling || null)
 export const feetOf = (V, hex) => ({ x: V.data.POS[hex].px, y: V.data.POS[hex].py + V.data.LAYOUT.H * 0.28 })
 export const squash = V => Math.cos(V.data.LAYOUT.tilt * Math.PI / 180)
 
@@ -79,6 +82,119 @@ export function buildGround(V) {
   V.layers.ground = ground
 }
 
+/* ── THE PAINTED GROUND LAYERS (2026-09-03, EVENTS-FOR-THE-VIEWER §6) ──────
+   A layer sits ON the terrain: one tile per painted hex, keyed by hex, in a
+   persistent layer right after the ground (coplanar, DOM order the tiebreak).
+   Burning and poisoned reuse the terrain recipes; frost and weak are tints in
+   the status's hue; darkness is a dark veil — and a unit standing in it is
+   drawn dimmed (syncUnits), because the log says its hex is dark. */
+function frostTile(l, t, hue) {
+  const w = el('lay', `left:${l}px;top:${t}px`)
+  w.appendChild(el('', `position:absolute;inset:0;background:radial-gradient(ellipse at 50% 55%,${hue}66 0%,${hue}33 55%,${hue}0d 100%);mix-blend-mode:screen`))
+  w.appendChild(el('', `position:absolute;inset:0;background:${hue};opacity:.16;mix-blend-mode:color`))
+  ;[[40, 44, 9, 0], [76, 58, 7, .8], [58, 84, 11, 1.5], [30, 78, 6, 2.1]].forEach(([fl, ft, sz, dl]) => w.appendChild(el('',
+    `position:absolute;left:${fl}px;top:${ft}px;width:${sz}px;height:${sz}px;transform:rotate(45deg);background:${hue};opacity:.7;animation:fxSparkle 2.6s ease-in-out ${dl}s infinite`)))
+  return w
+}
+function tintTile(l, t, hue) {
+  const w = el('lay', `left:${l}px;top:${t}px`)
+  w.appendChild(el('', `position:absolute;inset:0;background:radial-gradient(ellipse at 50% 55%,${hue}55 0%,${hue}2a 60%,${hue}08 100%)`))
+  return w
+}
+function darkTile(l, t, hue) {
+  const w = el('lay dark', `left:${l}px;top:${t}px`)
+  w.appendChild(el('', `position:absolute;inset:0;background:${hue};opacity:.78`))
+  return w
+}
+export function layerTile(V, hex, layer) {
+  const p = V.data.POS[hex], l = p.px - V.data.LAYOUT.W / 2, t = p.py - V.data.LAYOUT.H / 2
+  const name = (V.data.LAYERS || {})[layer] || ('layer.' + layer)
+  const hue = layerHue(name)
+  if (name === 'layer.burning') return burnTile(l, t)
+  if (name === 'layer.poisoned') return poisonTile(l, t)
+  if (name === 'layer.frost') return frostTile(l, t, hue)
+  if (name === 'layer.darkness') return darkTile(l, t, hue)
+  return tintTile(l, t, hue)                   // weak, and any layer the engine adds: the status's hue
+}
+export function syncLayers(V) {
+  const L = V.layers, S = V.S
+  if (!L.layL) { L.layL = el('', 'position:absolute;left:0;top:0;transform-style:preserve-3d'); placeAfter(L.ground, L.layL); L.LAY = new Map() }
+  const want = S.layers || {}
+  for (const [hex, E] of L.LAY) if (want[hex] !== E.layer) { E.node.remove(); L.LAY.delete(hex) }
+  for (const [hex, layer] of Object.entries(want)) {
+    if (L.LAY.has(+hex)) continue
+    const node = layerTile(V, +hex, layer)
+    L.layL.appendChild(node); L.LAY.set(+hex, { layer, node })
+  }
+}
+export const isDark = (V, hex) => { const n = (V.data.LAYERS || {})[(V.S.layers || {})[hex]]; return n === 'layer.darkness' }
+
+/* ── CORPSES (2026-09-03, §3) — board objects, not a dead unit's leftover ──
+   corpse.created puts a body on the hex; corpse.removed takes it (raised,
+   eaten, consumed, destroyed). The body is the dead unit's own art lying flat
+   in the middle of its hex — the look ruled 2026-08-26 ("a corpse, not a
+   disappearance") and 2026-09-01 (flat, mid-hex) — drawn from the corpse's
+   typeId, so a corpse outlives nothing and needs no unit. A unit that died
+   with no corpse (obliterated, a summon) leaves nothing. */
+export function syncCorpses(V) {
+  const L = V.layers, S = V.S, { ARTMAP, ASSETS, LAYOUT } = V.data
+  if (!L.corpseL) { L.corpseL = el('', 'position:absolute;left:0;top:0;transform-style:preserve-3d'); placeAfter(L.layL || L.ground, L.corpseL); L.CORPSE = new Map() }
+  const want = S.corpses || {}
+  for (const [id, E] of L.CORPSE) if (!want[id]) { E.node.remove(); L.CORPSE.delete(id) }
+  for (const c of Object.values(want)) {
+    if (L.CORPSE.has(c.id)) continue
+    const a = ARTMAP[c.typeId] || ARTMAP._pending
+    const f = feetOf(V, c.hex)
+    const root = el('corpse', `left:${f.x}px;top:${f.y}px`)
+    root.dataset.corpse = String(c.id)
+    const ch = Math.round(150 * 1.60 * ((a.height || 1.55) / 1.55) * 0.55 * 0.6)
+    const cw = Math.round(ch * a.aspect)
+    const toCentre = Math.round(LAYOUT.H * 0.28)
+    const img = el('', `position:absolute;left:${-cw / 2}px;top:${-ch / 2 - toCentre}px;width:${cw}px;height:${ch}px;` +
+      `background-repeat:no-repeat;background-position:center bottom;background-size:contain;transform:rotate(-90deg);opacity:.38;pointer-events:none`)
+    img.style.backgroundImage = `url("${ASSETS[a.token]}")`
+    root.appendChild(img)
+    L.corpseL.appendChild(root); L.CORPSE.set(c.id, { node: root, img })
+  }
+}
+/** the beat a corpse leaves on: a raise lifts it, a feed swallows it, the rest fade */
+export function corpseGone(V, corpseId, how) {
+  const E = V.layers.CORPSE && V.layers.CORPSE.get(corpseId); if (!E || !E.img.animate) return
+  const kf = how === 'raised' ? [{ opacity: .38, transform: 'rotate(-90deg)' }, { opacity: 0, transform: 'rotate(-90deg) translateX(-40px)' }]
+    : how === 'eaten' || how === 'consumed' ? [{ opacity: .38, transform: 'rotate(-90deg) scale(1)' }, { opacity: 0, transform: 'rotate(-90deg) scale(.4)' }]
+    : [{ opacity: .38 }, { opacity: 0 }]
+  E.img.animate(kf, { duration: 360, easing: 'ease-in', fill: 'forwards' })
+}
+
+/* ── AURAS (2026-09-03, §7) — derived on read, never emitted: every STANDING
+   holder with `auras` on its sheet tints the hexes within each aura's radius.
+   The radius uses the engine's own hex distance table (generated/static.json
+   .hexDist, dumped through the door) — the viewer draws a ring it was handed,
+   it does not re-implement hex geometry. Hostile auras wear the debuff red,
+   friendly ones the buff green (theme AURA_HUE). */
+export function syncAuras(V) {
+  const L = V.layers, S = V.S, { UD, POS, LAYOUT, DIST } = V.data
+  if (!L.auraL) { L.auraL = el('', 'position:absolute;left:0;top:0;transform-style:preserve-3d'); placeAfter(L.corpseL || L.layL || L.ground, L.auraL); L.AURA = new Map() }
+  const want = new Map()                                   // hex -> {hue, edge}
+  if (DIST) for (const u of Object.values(S.U)) {
+    if (u.life !== 'standing') continue
+    const auras = (UD[u.typeId] || {}).auras || []
+    for (const a of auras) {
+      const hue = AURA_HUE[a.side] || AURA_HUE.any
+      const n = POS.length
+      for (let h = 0; h < n; h++) { const d = DIST[u.hex * n + h]
+        if (d <= a.radius && d > 0) { const k = h + '|' + hue; if (!want.has(k)) want.set(k, { hex: h, hue, edge: d === a.radius }) } }
+    }
+  }
+  for (const [k, E] of L.AURA) if (!want.has(k)) { E.remove(); L.AURA.delete(k) }
+  for (const [k, w] of want) {
+    if (L.AURA.has(k)) continue
+    const p = POS[w.hex], l = p.px - LAYOUT.W / 2, t = p.py - LAYOUT.H / 2
+    const node = el('lay aura', `left:${l}px;top:${t}px;background:${w.hue}${w.edge ? '30' : '1c'}`)
+    L.auraL.appendChild(node); L.AURA.set(k, node)
+  }
+}
+
 /* ── floating numbers (ruled 2026-08-27: overhead, float up) ─────────────
    Fire-and-forget DOM: created ONCE, drifts via CSS, removes itself. Never
    redrawn from a render — that rebuild was the flicker. */
@@ -89,8 +205,7 @@ export function floatHue(c) {
     case 'heal': return HEAL_HUE
     case 'status': return stStyle(c.statusId).hue
     case 'crit': return CRIT_HUE
-    case 'knocked': case 'resisted': case 'absorbed': case 'maxhp': return NOTE_HUE[c.kind]
-    default: return '#e8e5dc'
+    default: return NOTE_HUE[c.kind] || '#e8e5dc'
   }
 }
 export function pushFloat(V, hex, text, col, o = {}) {
@@ -309,6 +424,60 @@ export function hitstop(V, ms) {
   V.fx.timers.add(setTimeout(() => { for (const a of anims) { try { if (a.playState === 'paused') a.play() } catch (e) {} } }, ms))
 }
 
+/* ── 2026-09-03 beats: arrivals, the rise, the ZoC hold, banners, Power ──── */
+/* an ARRIVAL (a wave's unit.enter after battle.begin): the token drops in and
+   settles — the summon-arrival design's landing, without its iris (HANDOFF-
+   ICONS-AND-SUMMON §3; the iris used a blur, which flattens the 3D scene) */
+export function arrive(V, id) {
+  const E = V.layers.UEL.get(id); if (!E || !E.root.animate) return
+  E.bb.animate([{ transform: 'rotateX(var(--anti)) translateY(-46px)', opacity: 0 }, { transform: 'rotateX(var(--anti)) translateY(0)', opacity: 1 }],
+    { duration: 380, easing: 'cubic-bezier(.2,.9,.3,1.2)' })
+}
+/* the RISE (unit.raised): the raised body stands up from the corpse's flat pose */
+export function rise(V, id) {
+  const E = V.layers.UEL.get(id); if (!E || !E.img.animate) return
+  E.img.style.transformOrigin = '50% 100%'
+  E.img.animate([{ transform: 'rotate(-80deg) scaleY(.4)', opacity: .3 }, { transform: 'rotate(0) scaleY(1)', opacity: 1 }],
+    { duration: 620, easing: 'cubic-bezier(.3,0,.2,1)' })
+}
+/* the HOLD (move.stopped by a zone of control): a short dashed ground line from
+   the mover to the holder, gone in 700ms — it points, it does not persist */
+export function zocLine(V, aId, tId) {
+  const A = V.S.U[aId], T = V.S.U[tId]; if (!A || !T) return
+  const { POS, F } = V.data
+  const a = POS[A.hex], b = POS[T.hex]
+  const wrap = el('', 'position:absolute;left:0;top:0;transform-style:preserve-3d;pointer-events:none')
+  const svg = svgEl('svg'); svg.setAttribute('width', F.w); svg.setAttribute('height', F.h)
+  svg.style.cssText = 'position:absolute;left:0;top:0;overflow:visible'
+  svg.appendChild(groundLines(`M${a.px} ${a.py}L${b.px} ${b.py}`, 'rgba(203,185,160,.9)', { w: 4.4, haloW: 7.8, dash: '10 8' }))
+  wrap.appendChild(svg); V.dom.stage.appendChild(wrap); V.fx.nodes.add(wrap)
+  const t = setTimeout(() => { wrap.remove(); V.fx.nodes.delete(wrap); V.fx.timers.delete(t) }, 700)
+  V.fx.timers.add(t)
+}
+/* a BANNER over the board (a wave, night, the band, the objective): screen
+   space, top centre, 1.6s, one at a time — the newest replaces the last */
+export function banner(V, kind, text, sub) {
+  const wrap = V.dom.stage.parentNode; if (!wrap) return
+  const old = wrap.querySelector('.banner'); if (old) { old.remove(); V.fx.nodes.delete(old) }
+  const b = el('banner ' + kind, '', `<b>${text}</b>${sub ? `<span>${sub}</span>` : ''}`)
+  wrap.appendChild(b); V.fx.nodes.add(b)
+  if (b.animate) b.animate([{ opacity: 0, transform: 'translate(-50%,-8px)' }, { opacity: 1, transform: 'translate(-50%,0)', offset: .12 }, { opacity: 1, offset: .8 }, { opacity: 0 }], { duration: 1600, fill: 'forwards' })
+  const t = setTimeout(() => { b.remove(); V.fx.nodes.delete(b); V.fx.timers.delete(t) }, 1650)
+  V.fx.timers.add(t)
+}
+/* the Power chip pulses when the pool rises (the number is the fold's) */
+export function powerPulse(V) {
+  const chip = V.dom.powerchip; if (!chip || !chip.animate) return
+  chip.animate([{ transform: 'scale(1)' }, { transform: 'scale(1.18)', offset: .3 }, { transform: 'scale(1)' }], { duration: 420, easing: 'ease-out' })
+}
+/* the STAND (deathbed.stood): the token draws itself up — a scale beat, the
+   opposite of the settle — and the blood begins (syncUnits shows it) */
+export function standBeat(V, id) {
+  const E = V.layers.UEL.get(id); if (!E || !E.img.animate) return
+  E.img.style.transformOrigin = '50% 100%'
+  E.img.animate([{ transform: 'scaleY(.82)' }, { transform: 'scaleY(1.06)', offset: .6 }, { transform: 'scaleY(1)' }], { duration: 520, easing: 'cubic-bezier(.2,1.2,.4,1)' })
+}
+
 /* ── play the fold's cues on the DOM ───────────────────────────────────── */
 export function playCues(V, cues) {
   for (const c of cues) {
@@ -323,6 +492,14 @@ export function playCues(V, cues) {
       case 'fx.status': fxStatus(V, c.id, c.style); break
       case 'fx.tick': fxTick(V, c.id, c.cause); break
       case 'inspect.clear': V.view.inspectId = null; break
+      /* 2026-09-03 */
+      case 'arrive': arrive(V, c.id); break
+      case 'rise': rise(V, c.id); break
+      case 'zoc': zocLine(V, c.a, c.t); break
+      case 'banner': banner(V, c.kind, c.text, c.sub); break
+      case 'power': powerPulse(V); break
+      case 'corpse.gone': corpseGone(V, c.corpse, c.how); break
+      case 'stand': standBeat(V, c.id); break
     }
   }
 }
@@ -361,6 +538,11 @@ function mkUnit(V, u) {
     /* NO filter (the 3D trap) — the halo is a black copy scaled up behind the bone one */
     raIcon('skull', 'position:absolute;left:0;top:0;font-size:20px;color:#000;transform:scale(1.3);opacity:.9') +
     raIcon('skull', 'position:absolute;left:0;top:0;font-size:20px;color:#f4ece0'))
+  /* the wound's blood: drips in BLOOD_HUE over the lower body, hidden until a stand */
+  const blood = el('blood', 'display:none',
+    [[14, 0, 3, 22, 0], [46, 4, 2, 30, .7], [70, 0, 3, 18, 1.3], [30, 8, 2, 26, 2.0]].map(([x, y, w2, h2, dl]) =>
+      `<i style="left:${x}%;top:${y}px;width:${w2}px;height:${h2}px;background:linear-gradient(${BLOOD_HUE},${BLOOD_HUE}00);animation-delay:${dl}s"></i>`).join(''))
+  bb.appendChild(blood)
   bb.appendChild(badges); bb.appendChild(hpbar); bb.appendChild(prot); bb.appendChild(mark); bb.appendChild(skull)
   const clock = el('clockchip', 'left:-20px;top:16px;display:none')
   /* NO PLATE (ruled 2026-09-01); LIFTED toward the camera with translateZ so the
@@ -377,7 +559,7 @@ function mkUnit(V, u) {
   root.appendChild(actB); root.appendChild(selR); root.appendChild(downR)
   root.appendChild(bb); root.appendChild(clock)
   V.layers.unitsL.appendChild(root)
-  return { root, fring, shadow, actA, actB, selR, downR, bb, img, flash, badges, hpbar, hpfill, proj, prot, mark, clock, mv, dg, skull, glow, a }
+  return { root, fring, shadow, actA, actB, selR, downR, bb, img, flash, badges, hpbar, hpfill, proj, prot, mark, clock, mv, dg, skull, blood, glow, a }
 }
 export function syncUnits(V) {
   const { S, view, layers: L } = V, { UD, LAYOUT } = V.data
@@ -389,26 +571,16 @@ export function syncUnits(V) {
     const f = feetOf(V, u.hex)
     E.root.style.left = f.x + 'px'; E.root.style.top = f.y + 'px'
     if (u.life === 'dead') {
-      /* a corpse, not a disappearance (ruled 2026-08-26) */
-      E.root.style.opacity = '1'
-      E.fring.style.display = E.shadow.style.display = 'none'
-      E.actA.style.display = E.actB.style.display = E.selR.style.display = 'none'
-      E.downR.style.display = 'none'; E.clock.style.display = 'none'
-      E.badges.style.display = 'none'; E.hpbar.style.cssText = 'display:none'
-      E.mark.style.display = 'none'; E.mv.style.display = 'none'
-      E.prot.style.display = 'none'; E.dg.style.display = 'none'; E.skull.style.display = 'none'
-      const ch = Math.round(150 * 1.60 * ((E.a.height || 1.55) / 1.55) * 0.55 * 0.6)
-      const cw = Math.round(ch * E.a.aspect)
-      /* a body lying flat belongs in the MIDDLE OF ITS HEX (fixed 2026-09-01) */
-      const toCentre = Math.round(LAYOUT.H * 0.28)
-      E.img.style.left = (-cw / 2) + 'px'; E.img.style.top = (-ch / 2 - toCentre) + 'px'
-      E.img.style.width = cw + 'px'; E.img.style.height = ch + 'px'
-      E.img.style.transform = 'rotate(-90deg)'
-      E.img.style.opacity = '.38'
-      E.bb.style.transform = 'none'          // flat in the board plane, not billboarded
+      /* a corpse, not a disappearance (ruled 2026-08-26) — and since 2026-09-03
+         the corpse is the engine's board object (corpse.created), drawn by
+         syncCorpses from the log; the unit's own token leaves. A death with no
+         corpse (obliterated, a summon) leaves nothing, as the log says. */
+      E.root.style.display = 'none'
       continue
     }
-    E.root.style.display = ''; E.root.style.opacity = '1'
+    E.root.style.display = ''
+    /* a unit standing in painted darkness is drawn dimmed: the hex is dark (§6) */
+    E.root.style.opacity = isDark(V, u.hex) ? '.5' : '1'
     E.badges.style.display = ''; E.mark.style.display = ''
     const down = u.life === 'downed'
     /* Ruled 2026-08-26: units reduced 45%; the health bar keeps its size. */
@@ -433,6 +605,16 @@ export function syncUnits(V) {
       E.clock.textContent = String(u.bleed)
     } else E.clock.style.display = 'none'
     E.fring.style.display = (bare || down) ? 'none' : ''
+    /* an encounter OBJECTIVE (a civilian whose death loses) wears a dashed ring */
+    E.fring.style.borderStyle = u.objective ? 'dashed' : 'solid'
+    /* THE WOUND (Angela 2026-09-03): a little dripping blood on the token
+       while the unit carries a Deathbed wound level; more drips when Badly */
+    if (u.wound > 0 && !down) {
+      E.blood.style.display = ''
+      E.blood.style.left = (-w / 2 + 6) + 'px'; E.blood.style.top = (-Math.round(hpx * 0.62)) + 'px'
+      E.blood.style.width = (w - 12) + 'px'; E.blood.style.height = Math.round(hpx * 0.6) + 'px'
+      E.blood.className = 'blood' + (u.wound >= 2 ? ' badly' : '')
+    } else E.blood.style.display = 'none'
     if (down && !bare) {
       E.shadow.style.display = ''
       E.shadow.style.cssText = `left:${-w / 2 - 6}px;top:-6px;width:${w + 12}px;height:22px;` +
@@ -451,10 +633,14 @@ export function syncUnits(V) {
     {
       const acted = !!S.acted[u.id], isActive = u.id === S.activeId
       let num = null, grey = false
-      if (u.side === 'enemy') { num = isActive && u.activeMv != null ? u.activeMv : u.mvBase; grey = acted && !isActive }
+      /* the resting figure is the sheet's plus every movement modifier the log
+         stated (an item's, a wound's); the engine's own budget outranks it
+         during an activation (activation.begin movePoints, moved movePointsLeft) */
+      const rest = mvOf(u, V.data)
+      if (u.side === 'enemy') { num = isActive && u.activeMv != null ? u.activeMv : rest; grey = acted && !isActive }
       else if (!down) {
-        if (isActive) { num = u.activeMv ?? u.mvBase; if (num === 0) num = null }
-        else if (!acted) num = u.mvBase
+        if (isActive) { num = u.activeMv ?? rest; if (num === 0) num = null }
+        else if (!acted) num = rest
       }
       if (num == null) E.mv.style.display = 'none'
       else {
@@ -464,7 +650,7 @@ export function syncUnits(V) {
         E.mv.style.color = grey ? '#8b8778' : (u.side === 'enemy' ? '#d9b8f2' : '#ffe2a0')
       }
       /* danger, lower-right — GREY, never faction-coloured (ruled 2026-09-01) */
-      const dgr = dangerOf(u, UD)
+      const dgr = dangerOf(u, V.data)
       if (!dgr || down) E.dg.style.display = 'none'
       else {
         const GREY = '#c3bdb0'
@@ -520,7 +706,10 @@ export function syncUnits(V) {
     const sts = Object.entries(u.st).filter(([id, v]) => v > 0 && OVER.includes(id))
     /* the chevron is the buff/debuff layer — the stat block's green and red
        (ruled 2026-09-01 for move riders), not a status's hue (Law 6) */
-    const chev = (u.mods || []).length ? (u.mods.reduce((n, m) => n + (m.value > 0 ? 1 : -1), 0)) : 0
+    /* the kit a unit was fielded with (unit.equipped, source item.*) is what it
+       IS, not a buff — the chevron counts only what happened in the battle */
+    const live = (u.mods || []).filter(m => !/^item\./.test(String(m.source)))
+    const chev = live.length ? live.reduce((n, m) => n + (m.value > 0 ? 1 : -1), 0) : 0
     E.badges.style.cssText = down ? 'display:none' : `left:${-w / 2 - 2}px;top:${-hpx - 22}px`
     E.badges.innerHTML = sts.map(([id, v]) => { const st = stStyle(id)
       return `<div class="badge"><div class="gl" style="clip-path:${st.gl};background:${st.hue};position:absolute;inset:0"></div>` +
@@ -685,7 +874,7 @@ export function drawEdges(V) {
   L.edgeL.innerHTML = groups.map(g => {
     const a = V.data.ARTMAP[g.u.typeId] || V.data.ARTMAP._pending
     const tint = SIDE_TINT[g.u.side] || SIDE_TINT.enemy
-    const dgr = g.u.side === 'enemy' ? dangerOf(g.u, V.data.UD) : null
+    const dgr = g.u.side === 'enemy' ? dangerOf(g.u, V.data) : null
     const deg = Math.round(g.ang * 180 / Math.PI)
     return `<div class="edgeBub" style="left:${g.x.toFixed(0)}px;top:${g.y.toFixed(0)}px;border-color:${tint}" title="${g.units.map(x => x.name).join(', ')}">
       <i class="edgeArrow" style="transform:rotate(${deg}deg) translateX(26px);border-left-color:${tint}"></i>

@@ -3,7 +3,7 @@
    STATS ABOVE THE CARD → card art with STATUSES TO ITS RIGHT → KEYWORDS BELOW
    THE PICTURE. The action bar owns actions (§9.7). Split out 2026-09-02. */
 import { stStyle } from './theme.js'
-import { sgn, STATSHORT } from './actions.js'
+import { sgn, STATSHORT, modOf } from './actions.js'
 import { subjectOf } from './subject.js'
 import { MOD_UP, MOD_DOWN } from './theme.js'
 
@@ -26,13 +26,11 @@ export function drawPanel(V) {
   /* STAT BLOCK (layout B, ruled 2026-09-01): name left, figure hard right, two
      columns. GREEN when a live modifier raises the stat, RED when one lowers
      it — read off statmod.added, never guessed. Accuracy, Dodge, Crit carry %. */
-  /* EXEMPTION stat-delta (tools/exemptions.json): the per-stat total of the
-     statmod.added values is summed here; the engine emits each modifier, not
-     the running total */
-  const modOf = k => (u.mods || []).reduce((n, m) => n + (m.stat === k ? (m.value || 0) : 0), 0)
+  /* the per-stat delta is actions.js modOf — the stat-delta exemption's sum
+     over statmod.added and the kit's unit.equipped deltas */
   const PCT = new Set(['accuracy', 'dodge', 'crit'])
   const stat = (label, value, statKey) => {
-    const dlt = statKey ? modOf(statKey) : 0
+    const dlt = statKey ? modOf(u, statKey) : 0
     const col = dlt > 0 ? MOD_UP : dlt < 0 ? MOD_DOWN : '#e8e5dc'
     const shown = value == null ? '—' : (statKey && PCT.has(statKey) ? String(value) + '%' : String(value))
     const dl = dlt === 0 ? '' : `<em>${sgn(dlt)}</em>`
@@ -76,18 +74,35 @@ export function drawPanel(V) {
       <div style="font-size:9.5px;letter-spacing:.09em;text-transform:uppercase;color:#8b8778;margin-bottom:4px">
         ${HOOKLBL[hook] || hook}</div>${rows}</div>`
   }).join('')
-  const tagChips = (d.tags || d.attributes || [])
+  const tagChips = (d.tags || [])                 // `tags` is the one field (engine fix.unit-tags, 2026-09-03)
   const KWNOTE = `<div style="font-size:10.5px;color:#5f594c;line-height:1.45;padding:2px 2px 8px">
     Named keywords (Berserker, Firebringer) live in the content layer's badges and
     specialties — the engine's unit defs carry only creature tags, so they cannot be
     shown until that export exists.</div>`
+  /* the 2026-09-03 facts about this unit, all folded: the wound level (words —
+     the token wears the blood), the kit it was fielded with, who it hunts,
+     who taunts it, whether it is an objective, a raise, an arrival */
+  const WOUND = ['', 'WOUNDED', 'BADLY WOUNDED']
+  const woundLine = u.wound > 0 ? ` · <b style="color:#ff8f8f">${WOUND[u.wound] || 'WOUND ' + u.wound}</b>` : ''
+  const taunt = u.stBy && u.stBy['status.taunt'] != null ? S.U[u.stBy['status.taunt']] : null
+  const facts = []
+  if (u.objective) facts.push('<b style="color:var(--gold)">OBJECTIVE</b> — its death loses the battle')
+  if (u.raised) facts.push('<b>RAISED</b> from a corpse — leaves none')
+  else if (u.arrived) facts.push(`arrived mid-battle <span style="color:#6f6857">(${u.arrived})</span>`)
+  if (u.hunt != null && S.U[u.hunt]) facts.push(`hunts <b>${S.U[u.hunt].name}</b>`)
+  if (taunt) facts.push(`taunted by <b>${taunt.name}</b> — must target it`)
+  if (u.confusedFrom) facts.push(`<b>confused</b> — ran a different mode this activation <span style="color:#6f6857">(was ${u.confusedFrom})</span>`)
+  if (u.stands != null) facts.push(`Deathbed stands used: <b>${u.stands}</b>${d.stands != null ? ' of ' + d.stands : ''}`)
+  const kitLine = (u.kit && u.kit.items.length) ? `<b style="color:#cbc3ae">Kit</b> ${u.kit.items.map(i => i.replace(/^item\./, '')).join(', ')}<br>` : ''
+  const factsBlock = facts.length ? `<div style="margin:0 18px 8px;padding:6px 9px;background:#14120e;border:1px solid var(--border);border-radius:2px;font-size:11.5px;line-height:1.6;color:#a9a394">${facts.join('<br>')}</div>` : ''
   const statsOpen = view.statsOpen
   P.innerHTML = `
   <div class="pTooth"></div>
   <div class="pSubject ${subj}"><b>${SUBJ[0]}</b><span>${SUBJ[1]}</span></div>
   <div class="pId"><div class="pName" style="color:${acc}">${u.name}</div>
     <div class="pRole">${u.typeId} · ${d.role || ''}</div>
-    <div class="pHex">hex ${u.hex} (${POS[u.hex].c},${POS[u.hex].r}) · ${F.terrainIds[u.hex].replace('terrain.', '')}${u.life !== 'standing' ? ' · <b style="color:#ff8f8f">' + u.life.toUpperCase() + '</b>' : ''}</div></div>
+    <div class="pHex">hex ${u.hex} (${POS[u.hex].c},${POS[u.hex].r}) · ${F.terrainIds[u.hex].replace('terrain.', '')}${S.layers && S.layers[u.hex] ? ' · ' + String((V.data.LAYERS || {})[S.layers[u.hex]] || S.layers[u.hex]).replace('layer.', '') : ''}${u.life !== 'standing' ? ' · <b style="color:#ff8f8f">' + u.life.toUpperCase() + '</b>' : ''}${woundLine}</div></div>
+  ${factsBlock}
   <div class="pBlock">
     <div class="vitRow"><span class="vitLab">HP</span>
       <span class="vitTrack"><span class="vitFill" style="width:${Math.max(0, 100 * u.hp / u.maxHp)}%;background:linear-gradient(90deg,#e9e3d2,#c3bba4)"></span></span>
@@ -115,21 +130,22 @@ export function drawPanel(V) {
       stat('Magic', d.magic, 'magic'), stat('Spirit', d.spirit, 'spirit'),
       stat('Reach', d.reach, 'reach'), stat('Luck', d.luck ?? 0, 'luck'),
       stat('Max Stamina', d.maxStamina, 'maxStamina'),
-      stat('Vision', null), stat('Deathbed', null), stat('Hex', u.hex),
+      stat('Toughness', d.toughness ?? 0, 'toughness'), stat('Surge', d.surge ?? 0, 'surge'),
+      stat('Vision', d.vision ?? 0, 'vision'), stat('Hex', u.hex),
     ])}</div>
     <div style="margin-top:6px;padding:6px 9px;background:#1a1410;border-left:2px solid #6b5a33;
       font-size:10.5px;line-height:1.5;color:#8b8778">
-      <b style="color:#c8bfa4">Vision</b> and <b style="color:#c8bfa4">Deathbed Fighting</b> have
-      no engine values yet — Vision is open gap L-3a (no vision model, which also blocks
-      darkness and fog), and Deathbed Fighting is designed in content with no engine stat
-      behind it. Shown here so their absence is visible rather than silent.
+      <b style="color:#c8bfa4">Vision</b> is the unit's stat (0 by ruling — the battlefield's 6 is
+      added at read) and <b style="color:#c8bfa4">Deathbed</b> is derived: 20 + 5 × Toughness, plus
+      badges, gear and origins (COMBAT-DESIGN §13). The engine emits the chance it rolled against
+      on every <code>deathbed.*</code> line; the sheet does not carry the derived figure.
     </div>
     <div style="margin-top:7px;padding:7px 9px;background:#14120e;border:1px solid var(--border);
       border-radius:2px;font-size:11.5px;line-height:1.6;color:#a9a394">
       <b style="color:#cbc3ae">Role</b> ${d.role || '—'} &nbsp;·&nbsp;
       <b style="color:#cbc3ae">AI</b> ${d.ai || '—'}<br>
       <b style="color:#cbc3ae">Tags</b> ${(d.tags || []).join(', ') || '—'}<br>
-      <b style="color:#cbc3ae">Attributes</b> ${(d.attributes || []).join(', ') || '—'}
+      ${kitLine}${(d.auras || []).length ? `<b style="color:#cbc3ae">Auras</b> ` + d.auras.map(a => `${a.id.replace(/^aura\./, '')} · r${a.radius} · ${a.side}${a.requireTags ? ' ' + a.requireTags.join('/') : ''} · ${Object.entries(a.mods || {}).map(([k, v]) => (STATSHORT[k] || k) + ' ' + sgn(v)).join(' ')}`).join('; ') + '<br>' : ''}
       ${(u.mods || []).length ? `<br><b style="color:#cbc3ae">Live modifiers</b> ` +
         u.mods.map(m => `${STATSHORT[m.stat] || m.stat} ${sgn(m.value)} <span style="color:#6f6857">(${m.source})</span>`).join(' · ') : ''}
     </div>` : ''}

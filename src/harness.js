@@ -9,7 +9,17 @@
 import { mountBattleViewer } from './viewer.js'
 import { buildLog } from './log.js'
 
-const OUTNAME = { heroClear: 'heroes win', wipe: 'heroes wiped', stall: 'stall', capped: 'capped' }
+/* the engine's six Outcome arms (core/types.ts, 2026-09-03), in words */
+const OUTNAME = { heroClear: 'heroes win', wipe: 'heroes wiped', capped: 'capped',
+  objectiveMet: 'objective met', objectiveFailed: 'objective failed', retreat: 'heroes retreated' }
+
+/** the engine's hex distance table, dumped as base64 (static.json .hexDist) → bytes */
+export function decodeHexDist(b64) {
+  if (!b64) return null
+  const bin = atob(b64), out = new Uint8Array(bin.length)
+  for (let i = 0; i < bin.length; i++) out[i] = bin.charCodeAt(i)
+  return out
+}
 
 /** lib = { static:{units,statuses,engineCommit}, fields:{mapId:field}, art:{artmap,assets},
            battles:[{label, battle}], stamp:{viewer, engine, built} } */
@@ -36,12 +46,14 @@ export function startHarness(mountEl, lib) {
       <button class="tbtn" id="logBtn">log</button>`
   const logbox = document.createElement('div'); logbox.id = 'logbox'; logbox.style.display = 'none'
 
+  const hexDist = decodeHexDist(lib.static.hexDist)
   function battleData(b) {
     const mapId = b.battle.seed.mapId
     const field = lib.fields[mapId]
     if (!field) throw new Error(`no field geometry for ${mapId} — generated/fields.json must hold every map`)
     return {
       field, units: lib.static.units, statuses: lib.static.statuses,
+      attacks: lib.static.attacks, abilities: lib.static.abilities, layers: lib.static.layers, hexDist,
       artmap: lib.art.artmap, assets: lib.art.assets, glyphs: lib.glyphs,
       meta: { label: b.label, seed: b.battle.seed, engineCommit: b.battle.engineCommit, outcome: b.battle.outcome, turns: b.battle.turns },
     }
@@ -85,8 +97,14 @@ export function startHarness(mountEl, lib) {
   }
   function intro(b) {
     const bt = b.battle
-    return `Every frame folds out of <b>${bt.events.length} events</b> the engine emitted &mdash; seed ${bt.seed.replicate ?? bt.seed.scenarioId} on <code>${bt.seed.mapId}</code> (16&times;16), ` +
-      `engine <code>${bt.engineCommit}</code>, ${OUTNAME[bt.outcome] || bt.outcome} in ${bt.turns} turns. Pick another battle from the dropdown, or drop an ` +
+    /* the encounter's title and its gaps are prose from encounter.begin — listed here, in the intro */
+    const enc = bt.events.find(e => e.type === 'encounter.begin')
+    const gaps = enc && enc.gaps && enc.gaps.length
+      ? ` <details style="display:inline"><summary style="display:inline;cursor:pointer;color:#8b8778">${enc.gaps.length} gap${enc.gaps.length === 1 ? '' : 's'} the engine named</summary><ul style="margin:6px 0 0 18px;padding:0;color:#8b8778;font-size:12px">${enc.gaps.map(g => `<li>${g}</li>`).join('')}</ul></details>`
+      : ''
+    return (enc ? `<b>${enc.name}</b> &mdash; ` : '') +
+      `every frame folds out of <b>${bt.events.length} events</b> the engine emitted &mdash; seed ${bt.seed.replicate ?? bt.seed.scenarioId} on <code>${bt.seed.mapId}</code> (16&times;16), ` +
+      `engine <code>${bt.engineCommit}</code>, ${OUTNAME[bt.outcome] || bt.outcome} in ${bt.turns} turns.${gaps} Pick another battle from the dropdown, or drop an ` +
       `<code>export-battle.mts</code> file anywhere on the page. Nothing is scripted: HP, movement, statuses, downs and deaths are all read from the log.`
   }
 

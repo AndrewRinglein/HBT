@@ -13,7 +13,28 @@ export const STYLE = {   // one hue per status, everywhere — pips, VFX, chips,
   'status.weak': { hue: '#b48ae0', gl: 'polygon(0 0,100% 0,54% 46%,100% 100%,0 100%,46% 54%)' },
   'status.slow': { hue: '#6fb3df', gl: 'polygon(0 12%,100% 12%,50% 100%)' },
   'status.protection': { hue: '#e8c35a', gl: 'polygon(50% 0,100% 18%,100% 58%,50% 100%,0 58%,0 18%)' },
+  /* PROVISIONAL hues (2026-09-03, Angela: assign now, flag for Andrew) for the
+     seven Codex statuses the engine landed that day — before this they fell
+     back to Poison's green, which Law 6 forbids. Re-rule freely. */
+  'status.frost': { hue: '#bfe6ff', gl: 'polygon(50% 0,93% 25%,93% 75%,50% 100%,7% 75%,7% 25%)', provisional: true },
+  'status.karma': { hue: '#f6e7c1', gl: 'circle(50%)', provisional: true },
+  'status.taunt': { hue: '#ff7ab3', gl: 'polygon(50% 0,100% 50%,50% 100%,0 50%)', provisional: true },
+  'status.shadow': { hue: '#6e5bd9', gl: 'circle(50%)', provisional: true },
+  'status.confusion': { hue: '#d98cff', gl: 'polygon(20% 0,80% 0,100% 50%,80% 100%,20% 100%,0 50%)', provisional: true },
+  'status.root': { hue: '#9c6b3f', gl: 'polygon(50% 0,100% 100%,0 100%)', provisional: true },
+  'status.dazed': { hue: '#d9d26e', gl: 'circle(50%)', provisional: true },
+  'status.powers-locked': { hue: '#8f9bb3', gl: 'polygon(8% 8%,92% 8%,92% 92%,8% 92%)', sq: true, provisional: true },
 }
+/* THE GROUND LAYERS (2026-09-03): a painted layer wears the hue of the status
+   it applies — burning is Burn's orange, frost is Frost's ice, poisoned is
+   Poison's green, weak is Weak's purple — so one hue per status holds on the
+   ground too (Law 6). Darkness applies nothing and has its own. Keyed by the
+   engine's layer NAME (generated/static.json .layers), never by number. */
+export const LAYER_STATUS = { 'layer.burning': 'status.burn', 'layer.frost': 'status.frost', 'layer.poisoned': 'status.poison', 'layer.weak': 'status.weak' }
+export const DARK_HUE = '#0b0a14'
+export const layerHue = name => LAYER_STATUS[name] ? STYLE[LAYER_STATUS[name]].hue : name === 'layer.darkness' ? DARK_HUE : '#cbb9a0'
+/* the wound's blood (Angela 2026-09-03: "a little bit of dripping blood") */
+export const BLOOD_HUE = '#9e1b1b'
 export const stStyle = id => STYLE[String(id).replace(/^test\./, '').replace(/daze$/, 'status.stun')
   .replace(/hobble$/, 'status.slow').replace(/ward$/, 'status.protection')
   .replace(/enfeeble$/, 'status.weak')] || { hue: '#8ed14f', gl: 'circle(50%)' }
@@ -25,10 +46,17 @@ export const HEAL_HUE = '#8fe08a'
 /* the buff/debuff layer — the stat block's green and red, used by the chevron,
    the stat rows and the move-rider chips (ruled 2026-09-01) */
 export const MOD_UP = '#7ec45f', MOD_DOWN = '#d1665c'
+/* the aura tints (2026-09-03) — a hostile aura is the debuff red, a friendly
+   one the buff green: the buff/debuff layer's own pair, nothing new */
+export const AURA_HUE = { enemy: MOD_DOWN, ally: MOD_UP, any: '#cbb9a0' }
 /* the emphasis ladder's gold (CRIT!, the crit numeral rim, the injury star) */
 export const CRIT_HUE = '#ffcf6a'
-/* note floats — knocked, resisted, absorbed, max-hp lost */
-export const NOTE_HUE = { knocked: '#cbb9a0', resisted: '#9fb6c8', absorbed: '#8fd0ff', maxhp: '#d1665c' }
+/* note floats — knocked, resisted, absorbed, max-hp lost; and the 2026-09-03
+   beats: held (a zone of control), the attack of opportunity, the Deathbed's
+   stood/fell, a bleed-out moved, the rise, the feed, the obliteration, Surge */
+export const NOTE_HUE = { knocked: '#cbb9a0', resisted: '#9fb6c8', absorbed: '#8fd0ff', maxhp: '#d1665c', maxhpUp: '#7ec45f',
+  note: '#cbb9a0', held: '#cbb9a0', aoo: '#ffb070', stood: '#ffe2a0', fell: '#d1665c', bleed: '#ff3226',
+  raised: '#b48ae0', eaten: '#8ed14f', obliterated: '#6e5bd9', surge: '#ffe2a0' }
 /* the protection bar's spent segment; its live segment is the status hue */
 export const PROT_SPENT = '#2f5b78'
 /** theme hue as an "r,g,b" triplet, for the canvas VFX */

@@ -26,6 +26,12 @@
      · the camera pans by inclusion, a manual pan holds, a peek restores
      · off-screen units get edge bubbles that account for every one of them; none during a peek
      · the emphasis ladder: CRIT! + kick + super impact fire together; injuries are queued plates, never floats
+     · 2026-09-03 (engine/EVENTS-FOR-THE-VIEWER-2026-09-03.md): arrivals at any seq land as units and beats;
+       the six outcome words; the kit (unit.equipped) reaches the action bar and the movement numeral;
+       corpses and painted layers are board objects that come and go with their events, a paint run is one
+       beat; the ZoC hold and the attack-of-opportunity label; the Deathbed stand's roll, wound level and
+       blood; banners for waves, night, the band, the objective; Surge; the Power chip; auras round every
+       standing holder and none round a fallen one
    Optional --check names add change-specific assertions. */
 import fs from 'node:fs'
 import { resolve, dirname } from 'node:path'
@@ -46,7 +52,7 @@ const { createState, fold, foldTo, FOLDED_TYPES } = await import(pathToFileURL(r
 const { DUR } = await import(pathToFileURL(resolve(PKG, 'src/viewer.js')).href)   // Law 9: if this cannot import, say so
 /* event types the viewer deliberately does nothing with — a NEW engine event
    is a failure until it is folded or listed here on purpose */
-const IGNORED = new Set(['turn.end', 'activation.idle', 'ai.mode', 'trigger.rolled', 'phase.end.begin', 'map.loaded', 'battle.begin',
+const IGNORED = new Set(['turn.end', 'activation.idle', 'trigger.rolled', 'phase.end.begin', 'map.loaded',
   'ai.tookHighGround', 'ai.denied', 'knockback.blocked', 'crit.branch'])
 
 /* ── mount the page ────────────────────────────────────────────────────── */
@@ -119,7 +125,9 @@ function drive(label, battle, allowStandee = false) {
   for (const u of Object.values(v.state.U)) check(LIB.art.artmap[u.typeId] || allowStandee, `${label}: no art for ${u.typeId}`)
   /* the pure fold reaches the same state the pump did */
   const S2 = foldTo(EV, EV.length, { UD: LIB.static.units, SN: LIB.static.statuses })
-  const strip = S => JSON.stringify({ ...S, AIM: null, FIRING: null, TRIGFLASH: null, subjectId: null, subjectMode: null })
+  /* the lingering view-state foldTo() clears is stripped from both: AIM, FIRING, TRIGFLASH, the declared
+     ATTACK and the AOO (a battle that ends on the killing blow ends mid-activation, with both still set) */
+  const strip = S => JSON.stringify({ ...S, AIM: null, FIRING: null, TRIGFLASH: null, ATTACK: null, AOO: null, subjectId: null, subjectMode: null })
   check(strip(S2) === strip(v.state), `${label}: the pure fold and the pumped viewer disagree on the final state`)
   /* every type folded or ignored; float numbers verbatim from their event */
   const types = new Set(EV.map(e => e.type))
@@ -377,6 +385,124 @@ if (DUR) for (const t of Object.keys(DUR)) check(FOLDED_TYPES.includes(t) || IGN
       if (win._pending()) { const seen = {}; for (const t of win._timers()) { const k = t.f; seen[k] = (seen[k] || 0) + 1 }
         fails.push(`live: ${win._pending()} timer(s) still pending after dispose() and a 5s flush: ${Object.entries(seen).map(([k, n]) => n + '× ' + k).join(' ; ')}`) }
     }
+  }
+}
+
+/* ── 2026-09-03: the engine's feature run, one check per beat ──────────── */
+{
+  const CTX = { UD: LIB.static.units, SN: LIB.static.statuses }
+  const byType = (EV, t) => EV.map((e, i) => [e, i]).filter(([e]) => e.type === t)
+  /* the library must carry the mechanics, or these checks cannot bite */
+  const has = t => LIB.battles.some(b => b.battle.events.some(e => e.type === t))
+  for (const t of ['unit.equipped', 'encounter.wave', 'encounter.lost', 'corpse.created', 'corpse.removed', 'layer.painted', 'move.stopped', 'aoo.provoked',
+    'deathbed.stood', 'deathbed.fell', 'hp.reset', 'bleedout.accelerated', 'surge.hit', 'power.gained', 'band.advanced', 'night.fell', 'light.cast', 'maxHp.gained', 'stamina.drained'])
+    check(has(t), `2026-09-03: no library battle carries ${t} — the beat cannot be tested`)
+  /* the six outcome words (Outcome has six arms) */
+  const outcomes = new Set(LIB.battles.map(b => b.battle.outcome))
+  check(outcomes.has('objectiveFailed') || outcomes.has('objectiveMet'), '2026-09-03: no library battle ends on an objective — the outcome words cannot be tested')
+  for (let bi = 0; bi < LIB.battles.length; bi++) {
+    const b = LIB.battles[bi], EV = b.battle.events, label = b.label
+    if (!EV.some(e => /^(encounter|corpse|deathbed|layer|surge|aoo|move\.stopped|power\.gained)/.test(e.type))) continue
+    load(bi); const v = H.viewer; v.pause(); const V = v._V
+    const doc = win.document.querySelector('#doc .sub')
+    if (doc && /objective/.test(b.battle.outcome)) check(/objective (met|failed)/.test(doc.innerHTML) && !/objective(Met|Failed)/.test(doc.innerHTML), `${label}: the intro prints the outcome id, not its words`)
+    /* arrivals: every unit.enter after battle.begin is a unit in the final state and cued an arrival */
+    const bb = EV.findIndex(e => e.type === 'battle.begin')
+    const arrivals = byType(EV, 'unit.enter').filter(([, i]) => i > bb)
+    const Send = foldTo(EV, EV.length, CTX)
+    for (const [e] of arrivals) check(Send.U[e.actor] && Send.U[e.actor].arrived, `${label}: arrival ${e.name} (${e.actor}) is not in the folded roster as an arrival`)
+    { const S = createState(); let cued = 0
+      for (const e of EV) for (const c of fold(S, e, CTX, 0)) if (c.k === 'arrive') cued++
+      check(cued === arrivals.length, `${label}: ${arrivals.length} arrivals, ${cued} arrive cues`) }
+    /* the kit: a unit with unit.equipped shows its granted attacks in the bar, and its resting movement is the sheet's plus the kit's */
+    const eq = byType(EV, 'unit.equipped').find(([e]) => (e.grants || []).length)
+    if (eq) { const [e] = eq
+      v.seek(bb + 1); v.inspect(e.actor); v.render()
+      check(V.dom.actionbar.innerHTML.includes(`data-act="${e.grants[0]}"`), `${label}: the action bar lacks the granted attack ${e.grants[0]} for unit ${e.actor}`)
+      const u = v.state.U[e.actor], sheet = LIB.static.units[u.typeId]
+      const kitMv = byType(EV, 'unit.equipped').filter(([x]) => x.actor === e.actor).reduce((n, [x]) => n + ((x.mods || {}).movement || 0), 0)
+      const E = V.layers.UEL.get(e.actor)
+      if (sheet && sheet.movement != null && E.mv.style.display !== 'none') check(+E.mv.textContent === Math.max(0, sheet.movement + kitMv), `${label}: unit ${e.actor} rests at movement ${E.mv.textContent}, the sheet says ${sheet.movement} and the kit ${kitMv}`)
+      /* the kit is not a buff: no chevron from item.* sources alone */
+      const St = foldTo(EV, bb + 1, CTX)
+      if ((St.U[e.actor].mods || []).every(m => /^item\./.test(m.source))) check(!/polygon\(50% 12%|polygon\(50% 88%/.test(E.badges.innerHTML), `${label}: unit ${e.actor} wears a chevron for its kit alone`) }
+    /* corpses: a board object per corpse.created, gone on corpse.removed; the dead unit's token leaves */
+    for (const [e, i] of byType(EV, 'corpse.created').slice(0, 3)) {
+      v.seek(i + 1); v.render()
+      check(V.layers.CORPSE && V.layers.CORPSE.has(e.corpse), `${label}: no corpse node after corpse.created ${e.corpse}`)
+      const E = V.layers.UEL.get(e.of); check(E && E.root.style.display === 'none', `${label}: dead unit ${e.of} still draws its token beside its corpse`) }
+    for (const [e, i] of byType(EV, 'corpse.removed').slice(0, 3)) {
+      v.seek(i + 1); v.render()
+      check(!(V.layers.CORPSE && V.layers.CORPSE.has(e.corpse)), `${label}: corpse ${e.corpse} still drawn after corpse.removed (${e.how})`) }
+    { const S = foldTo(EV, EV.length, CTX)
+      const created = byType(EV, 'corpse.created').length, removed = byType(EV, 'corpse.removed').length
+      check(Object.keys(S.corpses).length === created - removed, `${label}: ${Object.keys(S.corpses).length} corpses folded, ${created} created − ${removed} removed`) }
+    /* layers: a paint run is ONE beat and the tiles match the folded layers */
+    const paints = byType(EV, 'layer.painted')
+    if (paints.length) { const [, i0] = paints[0]
+      let runEnd = i0; while (EV[runEnd + 1] && /^layer\.(painted|cancelled)$/.test(EV[runEnd + 1].type)) runEnd++
+      v.seek(i0); v.step()
+      check(v.cursor === runEnd + 1, `${label}: stepping the first paint run advanced to ${v.cursor}, expected ${runEnd + 1} (one beat per run)`)
+      const S = foldTo(EV, v.cursor, CTX)
+      check(V.layers.LAY && V.layers.LAY.size === Object.keys(S.layers).length, `${label}: ${V.layers.LAY && V.layers.LAY.size} layer tiles for ${Object.keys(S.layers).length} painted hexes`)
+      for (const [hex, layer] of Object.entries(S.layers).slice(0, 5)) check(V.layers.LAY.get(+hex) && V.layers.LAY.get(+hex).layer === layer, `${label}: hex ${hex} tile is not layer ${layer}`) }
+    /* the hold: move.stopped floats HELD on the stop hex and cues the line to the holder; the mover stands on e.hex */
+    { const S = createState(); let held = 0, zoc = 0
+      for (const e of EV) for (const c of fold(S, e, CTX, 0)) { if (c.k === 'float' && c.kind === 'held' && c.hex === e.hex) held++; if (c.k === 'zoc' && c.t === e.by) zoc++ }
+      const n = byType(EV, 'move.stopped').length
+      check(held === n && zoc === n, `${label}: ${n} move.stopped, ${held} HELD floats, ${zoc} zoc cues`) }
+    for (const [e, i] of byType(EV, 'move.stopped').slice(0, 2)) { const S = foldTo(EV, i + 1, CTX); check(S.U[e.actor].hex === e.hex, `${label}: after move.stopped unit ${e.actor} folds at ${S.U[e.actor].hex}, event says ${e.hex}`) }
+    /* the attack of opportunity: labelled, and the attack that follows knows it is one */
+    for (const [e, i] of byType(EV, 'aoo.provoked').slice(0, 3)) {
+      const S = foldTo(EV, i, CTX); const cues = fold(S, e, CTX, 0)
+      check(cues.some(c => c.k === 'float' && c.kind === 'aoo'), `${label}: aoo.provoked at ${i} cued no label`)
+      const j = EV.findIndex((x, k) => k > i && x.type === 'attack.declared')
+      /* folded by hand: foldTo() clears the lingering AOO, as it clears AIM */
+      if (j > 0 && EV[j].actor === e.actor) { const S2 = createState(); for (let k = 0; k <= j; k++) fold(S2, EV[k], CTX, 0); check(S2.AIM && S2.AIM.aoo, `${label}: the attack after aoo.provoked at ${i} is not marked as one`) } }
+    /* the Deathbed: the stand's float names the roll, the wound level lands on the unit, the blood shows, hp.reset restores the bar */
+    for (const [e, i] of byType(EV, 'deathbed.stood').slice(0, 3)) {
+      const S = foldTo(EV, i, CTX); const cues = fold(S, e, CTX, 0)
+      check(cues.some(c => c.k === 'float' && c.kind === 'stood' && c.n === e.roll && c.of === 'roll'), `${label}: deathbed.stood at ${i} floats no roll`)
+      check(S.U[e.target].wound === e.woundLevel, `${label}: after deathbed.stood unit ${e.target} carries wound ${S.U[e.target].wound}, event says ${e.woundLevel}`)
+      const r = EV.findIndex((x, k) => k > i && x.type === 'hp.reset' && x.target === e.target)
+      if (r > 0) { v.seek(r + 1); v.render(); const u = v.state.U[e.target], E = V.layers.UEL.get(e.target)
+        check(u.hp === EV[r].hp && u.maxHp === EV[r].maxHp, `${label}: after hp.reset unit ${e.target} folds ${u.hp}/${u.maxHp}, event says ${EV[r].hp}/${EV[r].maxHp}`)
+        check(E && E.blood.style.display !== 'none', `${label}: unit ${e.target} stood at the Deathbed but wears no blood`)
+        check(E && (u.wound >= 2) === /badly/.test(E.blood.className), `${label}: unit ${e.target} at wound ${u.wound} has blood class "${E && E.blood.className}"`) } }
+    { const S = foldTo(EV, bb + 1, CTX); for (const u of Object.values(S.U)) { const E = V.layers.UEL.get(u.id); v.seek(bb + 1); v.render(); if (E && u.wound === 0) check(E.blood.style.display === 'none', `${label}: unwounded unit ${u.id} bleeds`); break } }
+    for (const [e, i] of byType(EV, 'deathbed.fell').slice(0, 2)) { const S = foldTo(EV, i, CTX); check(fold(S, e, CTX, 0).some(c => c.k === 'float' && c.kind === 'fell' && c.n === e.roll), `${label}: deathbed.fell at ${i} floats no roll`) }
+    for (const [e, i] of byType(EV, 'bleedout.accelerated').slice(0, 2)) { const S = foldTo(EV, i + 1, CTX); check(S.U[e.target].bleed === e.bleedOut, `${label}: bleedout.accelerated left the counter at ${S.U[e.target].bleed}, event says ${e.bleedOut}`) }
+    /* banners: a wave, the band, night, the objective — a node in the wrap that leaves */
+    for (const t of ['encounter.wave', 'band.advanced', 'night.fell', 'encounter.lost', 'encounter.won']) {
+      const hit = byType(EV, t)[0]; if (!hit) continue
+      const [, i] = hit; if (i <= bb) continue                                  // seeded silently before battle.begin
+      v.seek(i); v.step()
+      const wrap = V.dom.stage.parentNode
+      check(wrap.querySelector('.banner'), `${label}: no banner after ${t}`)
+      win._flush(2000); check(!wrap.querySelector('.banner'), `${label}: the ${t} banner did not leave`) }
+    /* Surge: the float, and the hero acts again with no activation.begin between */
+    for (const [e, i] of byType(EV, 'surge.hit').slice(0, 2)) {
+      const S = foldTo(EV, i, CTX); check(fold(S, e, CTX, 0).some(c => c.k === 'float' && c.kind === 'surge'), `${label}: surge.hit at ${i} cued no SURGE!`)
+      const next = EV.slice(i + 1).find(x => x.type === 'activation.begin' || x.type === 'move.begin' || x.type === 'attack.declared')
+      check(next && next.type !== 'activation.begin' && next.actor === e.actor, `${label}: after surge.hit at ${i} the next act is ${next && next.type} by ${next && next.actor}, expected the same hero (${e.actor})`) }
+    /* Power: the chip prints the folded pool */
+    for (const [e, i] of byType(EV, 'power.gained').slice(0, 1)) { v.seek(i + 1); v.render(); check(V.dom.powerchip.style.display !== 'none' && V.dom.powerchip.textContent === 'Power ' + e.after, `${label}: the Power chip reads "${V.dom.powerchip.textContent}", the pool is ${e.after}`) }
+    /* the encounter chip carries the title from encounter.begin */
+    { const enc = EV.find(e => e.type === 'encounter.begin'); v.seek(bb + 1); v.render()
+      if (enc) check(V.dom.encchip.textContent === enc.name, `${label}: the encounter chip reads "${V.dom.encchip.textContent}", the encounter is "${enc.name}"`)
+      else check(V.dom.encchip.style.display === 'none', `${label}: an encounter chip with no encounter`) }
+    /* auras: tiles round every standing holder, from the engine's distance table; none once the holder falls */
+    { const DIST = V.data.DIST, n = V.data.POS.length
+      const holders = Object.values(Send.U).filter(u => ((LIB.static.units[u.typeId] || {}).auras || []).length)
+      for (const h of holders.slice(0, 2)) {
+        const enter = EV.findIndex(e => e.type === 'unit.enter' && e.actor === h.id)
+        const at = Math.max(bb + 1, enter + 1); v.seek(at); v.render()
+        const u = v.state.U[h.id]; const auras = LIB.static.units[u.typeId].auras
+        const want = new Set(); for (const a of auras) for (let x = 0; x < n; x++) { const d = DIST[u.hex * n + x]; if (d > 0 && d <= a.radius) want.add(x + '|' + a.side) }
+        const tiles = V.layers.AURA ? V.layers.AURA.size : 0
+        check(tiles >= want.size, `${label}: ${h.name} at hex ${u.hex} should tint ${want.size} hexes, ${tiles} aura tiles drawn`)
+        const dead = EV.findIndex(e => e.type === 'life.dead' && e.target === h.id)
+        if (dead > 0 && holders.length === 1) { v.seek(dead + 1); v.render(); check((V.layers.AURA ? V.layers.AURA.size : 0) === 0, `${label}: ${h.name} is dead and still exerts an aura`) } } }
   }
 }
 

@@ -24,10 +24,10 @@ export function drawStam(V) {
 
 export function drawBar(V) {
   const bar = V.dom.actionbar; if (!bar) return
-  const { S, view, data: { UD, SN } } = V
+  const { S, view, data: D } = V, { UD, SN } = D
   const u = S.U[subjectOf(V)]
   /* COLUMNS BY KIND (ruled 2026-09-01); a group longer than 4 overflows */
-  const all = actionsOf(u, UD)
+  const all = actionsOf(u, D)      // the sheet's rows plus the kit the log fielded (unit.equipped)
   const cols = [all.filter(a => a.kind === 'move'), all.filter(a => a.isAttack), all.filter(a => a.isPower)]
   const grid = [[], [], []], spill = []
   cols.forEach((list, c) => { list.forEach((a, i) => i < 4 ? grid[c].push(a) : spill.push(a)) })
@@ -55,14 +55,14 @@ export function drawBar(V) {
        move accent borrowing Slow's hue */
     const accent = ACT_CLASS[a.kind === 'move' ? 'move' : a.isPower ? 'special' : 'melee'].col
     /* DMG is a NUMBER, never a formula (ruled 2026-09-01) */
-    const dm = dmgOf(a, u, UD)
+    const dm = dmgOf(a, u, D)
     const dmg = dm ? String(dm.n) : '—'
-    const rng = a.kind === 'move' ? (() => { const n = moveHexes(a, u, UD); return n == null ? '—' : String(n) })()
+    const rng = a.kind === 'move' ? (() => { const n = moveHexes(a, u, D); return n == null ? '—' : String(n) })()
       : a.area ? String(a.area) : (a.reach ?? a.range) != null ? String(a.reach ?? a.range) : '—'
     const stam = (a.staminaCost ?? a.cost)
     const acc = a.area ? '—' : (a.isAttack ? (base != null ? base : '—') : '—')
-    const tag = effectTag(a, u, UD, SN)
-    const trg = triggersFor(u, a, UD, SN, stStyle)
+    const tag = effectTag(a, u, D, SN)
+    const trg = triggersFor(u, a, D, SN, stStyle)
     const tkey = u.id + '|' + a.id, topen = view.TRG_OPEN.has(tkey)
     const hidden = Math.max(0, trg.length - TRG_SHOWN)
     const vis = topen ? trg : trg.slice(0, TRG_SHOWN)

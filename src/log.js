@@ -43,6 +43,43 @@ export function buildLog(events, SN, turns) {
       case 'ai.tookHighGround': return b('', `&nbsp;&nbsp;&nbsp;&nbsp;takes the high ground`)
       case 'power.hit': return b('dmg', `&nbsp;&nbsp;&nbsp;&nbsp;strikes <b>${nmT(e)}</b>`)
       case 'battle.end': return b('turn', `— ${String(e.outcome).toUpperCase()} in ${turns} turns —`)
+      /* ── 2026-09-03 ── */
+      case 'unit.equipped': return b('', `&nbsp;&nbsp;${nmAt(e)} wears <span class="sq">${e.itemId}</span>` +
+        ((e.grants || []).length ? ` · grants ${e.grants.map(g => g.replace(/^attack\./, '')).join(', ')}` : '') +
+        (Object.keys(e.mods || {}).length ? ` · ${Object.entries(e.mods).map(([k, v]) => k + ' ' + sgn(v)).join(', ')}` : ''))
+      case 'encounter.begin': return b('turn', `— ${e.name} —`)
+      case 'encounter.objective': return b('status', `&nbsp;&nbsp;<b>${nmAt(e)}</b> is an objective <span class="sq">· ${e.kind}</span>`)
+      case 'encounter.wave': return b('turn', `— a wave arrives: ${(e.units || []).join(', ')} —`)
+      case 'encounter.roll': return b('', `&nbsp;&nbsp;scripted roll — ${e.unit} at hex ${e.chose} <span class="sq">· of ${(e.oneOf || []).join('/')}</span>`)
+      case 'unit.shunted': return b('', `&nbsp;&nbsp;${nmAt(e)} shunted to hex ${e.hex} <span class="sq">· wanted ${e.wanted} (${e.wantedCol},${e.wantedRow})</span>`)
+      case 'encounter.won': return b('turn', `— objective met: ${e.reason} —`)
+      case 'encounter.lost': return b('down', `— objective failed: ${e.reason}${e.actor != null ? ' — ' + nmAt(e) : ''}${e.limit != null ? ' (limit ' + e.limit + ')' : ''} —`)
+      case 'move.stopped': return b('', `&nbsp;&nbsp;&nbsp;&nbsp;held at hex ${e.hex} by <b>${NAMES[e.by] ?? '#' + e.by}</b> <span class="sq">· ${e.reason}</span>`)
+      case 'aoo.provoked': return b(side(e), `&nbsp;&nbsp;&nbsp;&nbsp;⚔ <b>${nmAt(e)}</b> takes an attack of opportunity on <b>${nmT(e)}</b> <span class="sq">· ${e.attackId}</span>`)
+      case 'aoo.skipped': return b('', `&nbsp;&nbsp;&nbsp;&nbsp;no attack of opportunity from ${nmAt(e)} <span class="sq">· ${e.reason}</span>`)
+      case 'attack.cancelled': return b('', `&nbsp;&nbsp;&nbsp;&nbsp;hit ${e.hit} of ${e.of} cancelled <span class="sq">· ${e.reason}</span>`)
+      case 'corpse.created': return b('down', `&nbsp;&nbsp;&nbsp;&nbsp;a corpse lies at hex ${e.hex} <span class="sq">· ${e.typeId}</span>`)
+      case 'corpse.removed': return b('status', `&nbsp;&nbsp;&nbsp;&nbsp;corpse at hex ${e.hex} ${e.how} <span class="sq">· by ${nmAt(e)}</span>`)
+      case 'unit.raised': return b('enemy', `&nbsp;&nbsp;<b>${NAMES[e.raised] ?? '#' + e.raised}</b> rises at hex ${e.hex} <span class="sq">· raised by ${nmAt(e)} from ${e.from}</span>`)
+      case 'corpse.eaten': return b('status', `&nbsp;&nbsp;<b>${nmAt(e)}</b> eats a corpse <span class="sq">· ${e.of}</span>`)
+      case 'unit.obliterated': return b('down', `&nbsp;&nbsp;<b>${nmT(e)}</b> is OBLITERATED <span class="sq">· shadow ${e.shadow} ≥ max health ${e.maxHp}</span>`)
+      case 'deathbed.stood': return b('status', `&nbsp;&nbsp;<b>${nmT(e)}</b> STANDS at the Deathbed <span class="sq">· rolled ${e.roll} vs ${e.chance} · wound level ${e.woundLevel} · stand ${e.ordinal}</span>`)
+      case 'deathbed.fell': return b('down', `&nbsp;&nbsp;<b>${nmT(e)}</b> falls at the Deathbed <span class="sq">· rolled ${e.roll} vs ${e.chance}</span>`)
+      case 'deathbed.exhausted': return b('down', `&nbsp;&nbsp;<b>${nmT(e)}</b> has no stand left <span class="sq">· ${e.stands} used</span>`)
+      case 'hp.reset': return b('status', `&nbsp;&nbsp;&nbsp;&nbsp;<b>${nmT(e)}</b> fights on at ${e.hp} / ${e.maxHp} <span class="sq">· wound level ${e.woundLevel}</span>`)
+      case 'bleedout.accelerated': return b('down', `&nbsp;&nbsp;&nbsp;&nbsp;<b>${nmT(e)}</b>'s bleed-out moved to ${e.bleedOut} <span class="sq">· ${e.steps} step${e.steps === 1 ? '' : 's'}</span>`)
+      case 'surge.checked': return b('', `&nbsp;&nbsp;&nbsp;&nbsp;surge check — rolled ${e.roll} vs ${e.chance}${e.hit ? ' — <b>SURGE</b>' : ''}`)
+      case 'surge.hit': return b('hero', `&nbsp;&nbsp;<b>${nmAt(e)}</b> SURGES — acts again`)
+      case 'power.gained': return b('enemy', `&nbsp;&nbsp;Power ${e.before} → ${e.after} <span class="sq">· ${sgn(e.amount)}${e.kind ? ' · ' + e.kind : ''}</span>`)
+      case 'heal.boosted': return b('status', `&nbsp;&nbsp;&nbsp;&nbsp;heal on <b>${nmT(e)}</b> boosted by ${e.by} <span class="sq">· ${SN[e.statusId] || e.statusId}</span>`)
+      case 'status.cancelled': return b('status', `&nbsp;&nbsp;&nbsp;&nbsp;${SN[e.statusId] || e.statusId} cancels ${e.amount} ${SN[e.against] || e.against} on <b>${nmT(e)}</b>`)
+      case 'maxHp.gained': return b('status', `&nbsp;&nbsp;&nbsp;&nbsp;<b>${nmT(e)}</b> gains ${e.amount} max HP <span class="sq">· now ${e.maxHp}</span>`)
+      case 'stamina.drained': return b('status', `&nbsp;&nbsp;&nbsp;&nbsp;<b>${nmT(e)}</b> loses ${e.amount} stamina`)
+      case 'band.advanced': return b('turn', `— the band advances: row ${e.row} ${String(e.layer).replace(/^layer\./, '')} —`)
+      case 'night.fell': return b('turn', `— night falls: ${e.hexes} hexes dark —`)
+      case 'light.cast': return b('status', `&nbsp;&nbsp;the heroes light ${e.hexes} hexes`)
+      case 'ai.hunts': return b(side(e), `&nbsp;&nbsp;&nbsp;&nbsp;${nmAt(e)} hunts <b>${nmT(e)}</b>`)
+      case 'ai.mode': return e.confusedFrom ? b('status', `&nbsp;&nbsp;&nbsp;&nbsp;${nmAt(e)} is confused — ${e.mode} <span class="sq">· was ${e.confusedFrom}</span>`) : null
       default: return null
     }
   }

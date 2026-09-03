@@ -16,5 +16,5 @@ export type { StatusDef } from '../../engine/src/core/status.js'
 export { UNITS, ATTACKS, ABILITIES } from '../../engine/src/content/index.js'
 export { MOVES } from '../../engine/src/content/moves.js'
 export { STATUSES } from '../../engine/src/content/statuses.js'
-export { MAPS, terrainOf, terrainIdOf, isPassable } from '../../engine/src/content/maps.js'
-export { WIDTH, HEIGHT, hexId, colOf, rowOf } from '../../engine/src/core/hex.js'
+export { MAPS, terrainOf, terrainIdOf, isPassable, LAYER_IDS } from '../../engine/src/content/maps.js'   // LAYER_IDS: the four ground layers by number (2026-09-03)
+export { WIDTH, HEIGHT, HEX_COUNT, hexId, colOf, rowOf, distance } from '../../engine/src/core/hex.js'   // distance: board geometry for the aura radius table (2026-09-03)

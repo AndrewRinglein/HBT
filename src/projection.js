@@ -10,6 +10,7 @@
    EXEMPTION tick-projection (tools/exemptions.json): this is a RULE and the
    viewer must not own it — it becomes an engine event, plan §8.3. */
 import { PROJ_TINT } from './theme.js'
+import { kitOf } from './actions.js'
 
 export function projectTick(u, UD) {
   const st = u.st || {}, d = UD[u.typeId] || {}
@@ -41,9 +42,10 @@ export const DANGER_AUTHORED = {
   'unit.zombie': { n: 3, kind: 'melee' }, 'unit.fast-zombie': { n: 3, kind: 'melee' },
   'test-zombie': { n: 3, kind: 'melee' }, 'test-zombie-burning': { n: 3, kind: 'melee' },
 }
-export function dangerOf(u, UD) {
+export function dangerOf(u, D) {
   const A = DANGER_AUTHORED[u.typeId]; if (A) return A
-  const d = UD[u.typeId] || {}; const a = (d.attacks || [])[0]; if (!a) return null
+  const UD = D.UD || {}
+  const d = UD[u.typeId] || {}; const a = kitOf(u, D).attacks[0]; if (!a) return null      // the weapon in hand: the kit's first grant
   const live = u.dmgSeen ? u.dmgSeen[a.id] : undefined
   const statv = a.stat != null ? d[a.stat] : undefined
   const n = live != null ? live : statv != null ? Math.max(0, statv + (a.bonus || 0)) : null

@@ -52,6 +52,26 @@
   {
    "file": "showcase.arc-variant.json",
    "label": "Arc Golem"
+  },
+  {
+   "file": "showcase.supper-s5.json",
+   "label": "Supper (seed 5)"
+  },
+  {
+   "file": "showcase.kiln.json",
+   "label": "The Kiln"
+  },
+  {
+   "file": "showcase.horrors.json",
+   "label": "Horrors of the Night"
+  },
+  {
+   "file": "showcase.surrounded.json",
+   "label": "Surrounded"
+  },
+  {
+   "file": "showcase.assembled-party.json",
+   "label": "Assembled Party"
   }
  ]
 }

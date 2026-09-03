@@ -6,7 +6,7 @@
 // at runtime. Never hand-edit the output.
 import { writeFileSync } from 'node:fs'
 import { execSync } from 'node:child_process'
-import { allSheets, statusNames } from '../src/sheet.js'
+import { allSheets, statusNames, attackTable, abilityTable, layerNames, hexDistanceTable } from '../src/sheet.js'
 import { MAPS } from '../src/engine.js'
 
 let engineCommit = 'unknown'
@@ -14,6 +14,9 @@ try { engineCommit = execSync('git -C ../engine rev-parse --short HEAD', { encod
 let dirty = false
 try { dirty = execSync('git -C ../engine status --porcelain', { encoding: 'utf8' }).trim().length > 0 } catch {}
 
-const out = { engineCommit, engineDirty: dirty, maps: MAPS.map((m) => m.id), units: allSheets(), statuses: statusNames() }
+/* attacks/abilities: the whole tables, so a unit.equipped grant resolves at fold
+   time; layers: the ground layer names by number (2026-09-03) */
+const out = { engineCommit, engineDirty: dirty, maps: MAPS.map((m) => m.id), units: allSheets(), statuses: statusNames(),
+  attacks: attackTable(), abilities: abilityTable(), layers: layerNames(), hexDist: hexDistanceTable() }
 writeFileSync('generated/static.json', JSON.stringify(out))
-console.log(`static.json: ${out.maps.length} maps · ${Object.keys(out.units).length} units · ${Object.keys(out.statuses).length} statuses · engine ${engineCommit}${dirty ? ' (DIRTY tree)' : ''}`)
+console.log(`static.json: ${out.maps.length} maps · ${Object.keys(out.units).length} units · ${Object.keys(out.statuses).length} statuses · ${Object.keys(out.attacks).length} attacks · ${Object.keys(out.abilities).length} abilities · engine ${engineCommit}${dirty ? ' (DIRTY tree)' : ''}`)

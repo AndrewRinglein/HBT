@@ -78,6 +78,32 @@ ARTMAP = {
  'arc-golem':       {'token':'stone-golem_256.png','card':'card-golem',   'src':'HELL:assets/hex-tokens/stone-golem_256.png','cardsrc':'assets/bestiary/eve/stone-golem.png','height':2.0},
  'hero.base.priest-armored':{'token':'priest-armored_256.png','card':'card-priestarm','src':'battle-tokens/units/priest-armored_256.png','cardsrc':'crucible/art/base/priest-armored1.png'},
  'hero.base.warrior-iron':  {'token':'warrior-iron_256.png',  'card':'card-warriron', 'src':'battle-tokens/units/warrior-iron_256.png',  'cardsrc':'crucible/art/base/warrior-iron1.png'},
+ # ── the encounters (2026-09-03): Supper, The Kiln, Horrors of the Night ────
+ # Exact cutouts from battle-tokens/ and the hobat bestiary paintings for the
+ # cards. The Supper villagers have no hex art at all — honest standees, never
+ # a borrowed farmer (Law 1).
+ 'hero.base.mage-fire':    {'token':'mage-fire_256.png',    'card':'card-magefire',   'src':'battle-tokens/units/mage-fire_256.png',    'cardsrc':'crucible/art/base/mage-fire1.png'},
+ 'hero.base.paladin-hunk': {'token':'paladin-hunk_256.png', 'card':'card-palhunk',    'src':'battle-tokens/units/paladin-hunk_256.png', 'cardsrc':'crucible/art/base/paladin-hunk1.png'},
+ 'hero.base.rogue-raven':  {'token':'rogue-raven_256.png',  'card':'card-rogueraven', 'src':'battle-tokens/units/rogue-raven_256.png',  'cardsrc':'crucible/art/base/rogue-raven1.jpg'},
+ 'unit.ghoul':             {'token':'ghoul_256.png',           'card':'card-ghoul',      'src':'battle-tokens/units/ghoul_256.png',           'cardsrc':'assets/bestiary/hobat/ghoul.png'},
+ 'unit.dark-sniper':       {'token':'dark-sniper_256.png',     'card':'card-darksniper', 'src':'battle-tokens/units/dark-sniper_256.png',     'cardsrc':'assets/bestiary/hobat/dark-sniper.png'},
+ 'unit.nightstalker':      {'token':'nightstalker_256.png',    'card':'card-nightstalker','src':'battle-tokens/units/nightstalker_256.png',   'cardsrc':'assets/bestiary/hobat/nightstalker.png','height':1.7},
+ 'unit.shadow-sorcerer':   {'token':'shadow-sorcerer_256.png', 'card':'card-shadowsorc', 'src':'battle-tokens/units/shadow-sorcerer_256.png', 'cardsrc':'assets/bestiary/hobat/shadow-sorcerer.png'},
+ 'unit.eyeblight':         {'token':'eyeblight_256.png',       'card':'card-eyeblight',  'src':'battle-tokens/units/eyeblight_256.png',       'cardsrc':'assets/bestiary/hobat/eyeblight.png','height':1.2},
+ 'unit.imp-master':        {'token':'imp-master_256.png',      'card':'card-impmaster',  'src':'battle-tokens/units/imp-master_256.png',      'cardsrc':'assets/bestiary/hobat/imp-master.png','height':1.7},
+ 'unit.balrog':            {'token':'balrog_256.png',          'card':'card-balrog',     'src':'battle-tokens/units/balrog_256.png',          'cardsrc':'assets/bestiary/hobat/balrog.png','height':2.4},
+ 'unit.strong-skeleton':   {'token':'strong-skeleton_256.png', 'card':'card-strongskel', 'src':'battle-tokens/units/strong-skeleton_256.png', 'cardsrc':'assets/bestiary/hobat/strong-skeleton.png'},
+ 'unit.skeleton-spider':   {'token':'skeleton-spider_256.png', 'card':'card-skelspider', 'src':'battle-tokens/units/skeleton-spider_256.png', 'cardsrc':'assets/bestiary/hobat/skeleton-spider.png','height':1.1},
+ 'unit.bone-dragon':       {'token':'bone-dragon_256.png',     'card':'card-bonedragon', 'src':'battle-tokens/units/bone-dragon_256.png',     'cardsrc':'assets/bestiary/eve/bone-dragon.png','height':2.3},
+ 'hero.fixed.librarian':        {'ph':'Librarian',        'height':1.5},
+ 'hero.fixed.cook':             {'ph':'Cook',             'height':1.5},
+ 'hero.fixed.fishermans-wife':  {'ph':'Fishermans Wife',  'height':1.5},
+ 'hero.fixed.fisherman':        {'ph':'Fisherman',        'height':1.5},
+ 'hero.fixed.old-wise-man':     {'ph':'Old Wise Man',     'height':1.4},
+ 'hero.fixed.blacksmith':       {'ph':'Blacksmith',       'height':1.6},
+ 'hero.fixed.group-of-farmers': {'ph':'Group Farmers',    'height':1.6},
+ 'hero.fixed.farming-family':   {'ph':'Farming Family',   'height':1.6},
+ 'hero.fixed.scary-kid':        {'ph':'Scary Kid',        'height':1.0},
 }
 
 def placeholder_token(label):
@@ -116,12 +142,25 @@ for tid, m in ARTMAP.items():
         im = placeholder_token(m['ph'])
     else:
         token = m['token']
-        im = Image.open(P(m['src']))
+        src = P(m['src'])
+        if not os.path.exists(src) and m['src'].startswith('HELL:') and os.path.exists(os.path.join(OUT, token)):
+            # the hell-tcg checkout is not on this machine (a sandbox): keep the
+            # token this tool wrote from it last time, and say so — never a
+            # silent substitute (2026-09-03)
+            print('prep-art: %s — source %s not mounted; keeping the existing generated/art/%s' % (tid, m['src'], token), file=sys.stderr)
+            im = Image.open(os.path.join(OUT, token)); written[token] = True
+        else:
+            im = Image.open(src)
     save_png(token, im.convert('RGBA'))
     card = m.get('card')
     if card:
-        cim = Image.open(P(m['cardsrc'])).convert('RGB'); cim.thumbnail((496, 744), Image.LANCZOS)
-        save_jpg(card + '.jpg', cim)
+        csrc = P(m['cardsrc'])
+        if not os.path.exists(csrc) and m['cardsrc'].startswith('HELL:') and os.path.exists(os.path.join(OUT, card + '.jpg')):
+            print('prep-art: %s — card source %s not mounted; keeping the existing generated/art/%s.jpg' % (tid, m['cardsrc'], card), file=sys.stderr)
+            written[card + '.jpg'] = True
+        else:
+            cim = Image.open(csrc).convert('RGB'); cim.thumbnail((496, 744), Image.LANCZOS)
+            save_jpg(card + '.jpg', cim)
     manifest[tid] = {'token': token, 'card': (card + '.jpg') if card else None,
                      'aspect': round(im.width / im.height, 4), 'height': m.get('height', 1.55)}
 # the honest standee for a typeId with no art entry at all — Law 1: never borrowed art

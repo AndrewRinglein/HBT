@@ -8,6 +8,12 @@
    Everything on screen folds out of events. If it isn't in the log, it isn't
    on the screen. Split out of viewer-core.js 2026-09-02; the event handling is
    the same code, with the DOM side effects returned as cues instead of done.
+
+   2026-09-03: brought current with the engine's feature run
+   (engine/EVENTS-FOR-THE-VIEWER-2026-09-03.md) — arrivals at any seq, the
+   encounter events, corpses and ground layers as board objects, zones of
+   control and attacks of opportunity, the Deathbed, Surge, Power, and the kit
+   a unit is fielded with (unit.equipped).
    ══════════════════════════════════════════════════════════════════════════ */
 import { sgn } from './actions.js'
 
@@ -26,7 +32,27 @@ export function createState() {
                            // second and third hits still know what struck them
     critPending: false,    // the attack.hit that just landed was a crit; the damage beat reads it
     outcome: null,
+    /* ── 2026-09-03 ── */
+    begun: false,          // battle.begin has passed: a unit.enter after it is an ARRIVAL, not the roster
+    corpses: {},           // corpse id -> {id, hex, of, typeId, side} — board objects (corpse.created/removed)
+    layers: {},            // hex -> painted ground layer number (only non-zero hexes are keys)
+    power: null,           // the enemy side's Power pool after the last power.gained; null until one
+    encounter: null,       // {id, name, gaps, objectives:[unit ids], result?}
+    AOO: null,             // {holder, mover, attackId} while a free swing interrupts the mover's walk
   }
+}
+
+/** a unit's row in S.U — one shape, whether it entered at setup or arrived */
+function mkUnit(e, UD) {
+  return { id: e.actor, name: e.name, typeId: e.typeId, side: e.side, hex: e.hex,
+    hp: e.hp, maxHp: e.maxHp, stam: e.stamina, maxStam: e.maxStamina, st: {}, stBy: {}, life: 'standing', bleed: 0,
+    mvBase: (UD[e.typeId] || {}).movement ?? null, activeMv: null, mods: [], injuries: [], cds: {}, dmgSeen: {},
+    /* the kit the engine fielded this unit with (unit.equipped): items, the
+       attacks they grant, the powers they grant — the bare row has none of it */
+    kit: { items: [], grants: [], abilities: [] },
+    wound: 0,               // Deathbed wound level: 0 · 1 Wounded · 2 Badly Wounded
+    stands: null,           // stands used, from deathbed.stood/fell `ordinal`; deathbed.exhausted says none left
+    arrived: e.arrived || null, raised: false, objective: false, hunt: null, confusedFrom: null, moveMods: null }
 }
 
 /** Fold ONE event into S. ctx = {UD, SN}. Returns the cues to play. */
@@ -34,11 +60,49 @@ export function fold(S, e, ctx, now = 0) {
   const { UD, SN } = ctx
   const U = S.U, cues = []
   const cue = (k, o) => cues.push({ k, ...o })
+  const nm = id => (U[id] && U[id].name) || ('#' + id)
   switch (e.type) {
     case 'unit.enter':
-      U[e.actor] = { id: e.actor, name: e.name, typeId: e.typeId, side: e.side, hex: e.hex,
-        hp: e.hp, maxHp: e.maxHp, stam: e.stamina, maxStam: e.maxStamina, st: {}, life: 'standing', bleed: 0,
-        mvBase: (UD[e.typeId] || {}).movement ?? null, activeMv: null, mods: [], injuries: [], cds: {}, dmgSeen: {} }
+      U[e.actor] = mkUnit(e, UD)
+      /* an ARRIVAL — a wave, a raise, a summon — lands as a beat; the roster
+         before battle.begin is seeded silently by the pump (2026-09-03) */
+      if (S.begun) cue('arrive', { id: e.actor, hex: e.hex })
+      break
+    case 'battle.begin': S.begun = true; break
+    case 'unit.equipped':
+      /* seam.items-per-unit: the fielded unit is the bare row PLUS its kit —
+         the item's stat deltas fold as modifiers (source = the item), its
+         grants become the unit's attacks and powers. The chevron and the panel
+         read them like any other modifier. The item's own triggers are NOT in
+         the event (engine finding, 2026-09-03). */
+      if (U[e.actor]) { const u = U[e.actor]
+        u.kit.items.push(e.itemId)
+        for (const a of (e.grants || [])) if (!u.kit.grants.includes(a)) u.kit.grants.push(a)
+        for (const a of (e.abilities || [])) if (!u.kit.abilities.includes(a)) u.kit.abilities.push(a)
+        for (const [stat, value] of Object.entries(e.mods || {})) u.mods.push({ stat, op: 'add', value, source: e.itemId }) }
+      break
+    /* ── the encounter (EVENTS-FOR-THE-VIEWER §1) ────────────────────────── */
+    case 'encounter.begin':
+      S.encounter = { id: e.causeId, name: e.name, gaps: e.gaps ? e.gaps.slice() : [], objectives: [], result: null }
+      break
+    case 'encounter.objective':
+      if (U[e.actor]) U[e.actor].objective = true
+      if (S.encounter) S.encounter.objectives.push(e.actor)
+      break
+    case 'encounter.wave':
+      cue('banner', { kind: 'wave', text: 'A wave arrives', sub: (e.units || []).join(' · ') })
+      break
+    case 'encounter.roll': break                                         // a scripted either/or was rolled: the log says which
+    case 'unit.shunted':
+      if (U[e.actor]) { U[e.actor].hex = e.hex; cue('float', { hex: e.hex, kind: 'note', text: 'SHUNTED', small: true }) }
+      break
+    case 'encounter.won':
+      if (S.encounter) S.encounter.result = { won: true, reason: e.reason, to: e.to }
+      cue('banner', { kind: 'won', text: 'Objective met', sub: e.reason })
+      break
+    case 'encounter.lost':
+      if (S.encounter) S.encounter.result = { won: false, reason: e.reason, actor: e.actor, limit: e.limit }
+      cue('banner', { kind: 'lost', text: 'Objective failed', sub: e.reason + (e.actor != null ? ' — ' + nm(e.actor) : '') })
       break
     /* fold the event's OWN numbers (fixed 2026-08-27): turn.begin carries a
        1-based `turn` and phase.begin carries `phase` — never count locally */
@@ -47,10 +111,16 @@ export function fold(S, e, ctx, now = 0) {
     case 'phase.end.done': S.phase = e.side === 'hero' ? 'enemy' : 'hero'; S.acted = {}; break
     case 'activation.begin':
       S.activeId = e.actor; S.subjectId = e.actor; S.subjectMode = 'acting'
-      if (U[e.actor]) U[e.actor].activeMv = U[e.actor].mvBase
-      S.AIM = null; cue('inspect.clear')          // FIRING and floats run their own clocks
+      /* the engine names the budget only when something reduced it (Law 12);
+         otherwise the resting figure stands — the draw side reads mvOf() */
+      if (U[e.actor]) { U[e.actor].activeMv = e.movePoints ?? null; U[e.actor].moveMods = e.movementMods || null; U[e.actor].confusedFrom = null }
+      S.AIM = null; S.AOO = null; cue('inspect.clear')          // FIRING and floats run their own clocks
       break
-    case 'activation.end': S.acted[e.actor] = true; if (U[e.actor]) U[e.actor].activeMv = null; S.ATTACK = null; break
+    case 'activation.end':
+      S.acted[e.actor] = true
+      if (U[e.actor]) { U[e.actor].activeMv = null; U[e.actor].moveMods = null; U[e.actor].confusedFrom = null }
+      S.ATTACK = null; S.AOO = null
+      break
     case 'move.begin':
       /* moves light their own row too (ruled 2026-09-01) — causeId names the MoveDef */
       if (e.causeId) S.FIRING = { unit: e.actor, ability: e.causeId, until: now + FIRE_MS }
@@ -58,7 +128,25 @@ export function fold(S, e, ctx, now = 0) {
     case 'moved':
       if (U[e.actor]) { U[e.actor].hex = e.to; U[e.actor].activeMv = e.movePointsLeft
         if (e.causeId) S.FIRING = { unit: e.actor, ability: e.causeId, until: now + FIRE_MS } }
+      if (S.AOO && S.AOO.mover === e.actor) S.AOO = null                 // the walk resumed; the free swing is over
       break
+    /* ── zones of control and attacks of opportunity (§2) ───────────────── */
+    case 'move.stopped':
+      /* the path ends here, short of move.begin.to — a HELD beat pointing at the holder */
+      if (U[e.actor]) { U[e.actor].hex = e.hex
+        cue('float', { hex: e.hex, kind: 'held', text: 'HELD', small: true })
+        if (U[e.by]) cue('zoc', { a: e.actor, t: e.by }) }
+      S.AOO = null
+      break
+    case 'aoo.provoked':
+      /* one attack a unit makes on someone else's turn: the ordinary
+         attack.declared/hit/miss that follow belong to this, and the label
+         says so. The holder acts; the mover's activation resumes after. */
+      S.AOO = { holder: e.actor, mover: e.target, attackId: e.attackId }
+      if (U[e.actor]) cue('float', { hex: U[e.actor].hex, kind: 'aoo', text: 'ATTACK OF OPPORTUNITY', small: true })
+      S.subjectId = e.actor; S.subjectMode = 'acting'
+      break
+    case 'aoo.skipped': break                                             // nothing to draw; the log names the reason
     case 'attack.declared':
       if (U[e.actor] && U[e.target]) {
         cue('lunge', { a: e.actor, t: e.target })
@@ -68,8 +156,9 @@ export function fold(S, e, ctx, now = 0) {
            BASE armor/resist off the sheet; the live figure is the engine's */
         S.AIM = { from: U[e.actor].hex, to: U[e.target].hex, hit: e.hitChance,
           type: e.damageType, tgt: e.target, kind: e.kind,
-          dmg: e.damageOnHit, mit, mitLabel: e.damageType === 'magic' ? 'resist' : 'armor' }
-        S.ATTACK = { kind: e.kind, dt: e.damageType, dmg: e.damageOnHit }
+          dmg: e.damageOnHit, mit, mitLabel: e.damageType === 'magic' ? 'resist' : 'armor',
+          aoo: !!(S.AOO && S.AOO.holder === e.actor), hit_n: e.hit, hit_of: e.of }
+        S.ATTACK = { kind: e.kind, dt: e.damageType, dmg: e.damageOnHit, aoo: !!(S.AOO && S.AOO.holder === e.actor) }
         /* the engine's OWN live damage for this attack — it carries Weak and
            every other live modifier; the action bar prints it, not a formula */
         if (e.damageOnHit != null) (U[e.actor].dmgSeen = U[e.actor].dmgSeen || {})[e.attackId] = e.damageOnHit
@@ -101,6 +190,11 @@ export function fold(S, e, ctx, now = 0) {
       if (S.ATTACK && U[e.target]) cue('fx.attack', { kind: S.ATTACK.kind, dt: S.ATTACK.dt, a: e.actor, t: e.target, dmg: S.ATTACK.dmg })
       if (S.activeId != null) { S.subjectId = S.activeId; S.subjectMode = 'acting' }
       break
+    case 'attack.cancelled':
+      /* a multihit ended early ("target fell"): the forecast goes with it */
+      S.AIM = null; S.ATTACK = null
+      if (S.activeId != null) { S.subjectId = S.activeId; S.subjectMode = 'acting' }
+      break
     case 'damage.applied':
       if (U[e.target]) { U[e.target].hp = e.hpAfter
         cue('flash', { id: e.target })
@@ -127,14 +221,24 @@ export function fold(S, e, ctx, now = 0) {
         cue('float', { hex: U[e.target].hex, kind: 'heal', text: '+' + e.amount, n: e.amount, of: 'amount', big: true })
         cue('fx.status', { id: e.target, style: 'heal' }) }
       break
+    case 'heal.boosted':
+      /* Karma raised a heal: the status's own word and the event's `by` */
+      if (U[e.target]) cue('float', { hex: U[e.target].hex, kind: 'status', statusId: e.statusId, text: (SN[e.statusId] || e.statusId) + ' +' + e.by, n: e.by, of: 'by', small: true })
+      break
     case 'status.applied':
       if (U[e.target]) { U[e.target].st[e.statusId] = e.after
+        if (e.by != null) U[e.target].stBy[e.statusId] = e.by             // Taunt's `by` is who the taunted must target
         if (e.after > e.before) {
           /* the event's own `amount` when it carries one; the delta only as a
              fallback (review 2026-09-03: never recompute what the log states) */
           const n = e.amount != null ? e.amount : e.after - e.before
           cue('float', { hex: U[e.target].hex, kind: 'status', statusId: e.statusId, text: (SN[e.statusId] || e.statusId) + ' ' + sgn(n), n, of: e.amount != null ? 'amount' : 'after' })
           cue('fx.status', { id: e.target, style: e.statusId }) } }
+      break
+    case 'status.cancelled':
+      /* Burn and Frost annihilate one for one on application: the status.reduced
+         that follows moves the pip; this beat names the annihilation */
+      if (U[e.target]) cue('float', { hex: U[e.target].hex, kind: 'status', statusId: e.against, text: (SN[e.against] || e.against) + ' −' + e.amount + ' cancelled', n: e.amount, of: 'amount', small: true })
       break
     case 'trigger.fired':
       /* No float (ruled 2026-08-27): the status.applied that follows floats the
@@ -143,9 +247,14 @@ export function fold(S, e, ctx, now = 0) {
       if (e.actor != null) { S.subjectId = e.actor; S.subjectMode = 'acting' }
       break
     case 'status.reduced': if (U[e.target]) U[e.target].st[e.statusId] = e.after; break
-    case 'status.expired': if (U[e.target]) delete U[e.target].st[e.statusId]; break
+    case 'status.expired': if (U[e.target]) { delete U[e.target].st[e.statusId]; delete U[e.target].stBy[e.statusId] } break
     case 'stamina.spent': case 'stamina.regen': case 'stamina.gained':
       if (U[e.actor]) U[e.actor].stam = e.stamina; break
+    case 'stamina.drained':
+      /* a trigger drained the TARGET's stamina (target-stamina-loss, 2026-09-03) */
+      if (U[e.target]) { U[e.target].stam = e.stamina
+        if (e.amount) cue('float', { hex: U[e.target].hex, kind: 'note', text: '−' + e.amount + ' STAMINA', n: e.amount, of: 'amount', small: true }) }
+      break
     /* `knocked` MOVES A UNIT (folded 2026-09-01) — unhandled, knocked units
        rendered at a stale hex until their next move */
     case 'knocked':
@@ -154,6 +263,11 @@ export function fold(S, e, ctx, now = 0) {
     case 'maxHp.lost':
       if (U[e.target]) { U[e.target].maxHp = e.maxHp; U[e.target].hp = e.hp
         cue('float', { hex: U[e.target].hex, kind: 'maxhp', text: '−' + e.amount + ' MAX HP', n: e.amount, of: 'amount', small: true }) }
+      break
+    case 'maxHp.gained':
+      /* the mirror of maxHp.lost — a ghoul that fed */
+      if (U[e.target]) { U[e.target].maxHp = e.maxHp; U[e.target].hp = e.hp
+        cue('float', { hex: U[e.target].hex, kind: 'maxhpUp', text: '+' + e.amount + ' MAX HP', n: e.amount, of: 'amount', small: true }) }
       break
     case 'staminaMax.lost':
       if (U[e.actor]) { U[e.actor].maxStam = e.maxStamina; U[e.actor].stam = e.stamina } break
@@ -181,9 +295,94 @@ export function fold(S, e, ctx, now = 0) {
       if (U[e.target] && e.actor != null && e.target !== e.actor)
         cue('fx.attack', { kind: 'ranged', dt: 'magic', a: e.actor, t: e.target, dmg: null })
       break
+    /* ── the consequence stack (§4) ─────────────────────────────────────── */
+    case 'deathbed.stood':
+      /* the hero at 0 STANDS: the roll against the chance, then the wound
+         level on the unit from here on (a dripping-blood visual on the token
+         — Angela, 2026-09-03, VISUAL-BATTLE-UPDATES §3.2) */
+      if (U[e.target]) { const u = U[e.target]
+        u.wound = e.woundLevel; u.stands = e.ordinal
+        cue('float', { hex: u.hex, kind: 'stood', text: 'STANDS · rolled ' + e.roll + ' vs ' + e.chance, n: e.roll, of: 'roll', big: true })
+        cue('stand', { id: e.target })
+        S.subjectId = e.target; S.subjectMode = 'target' }
+      break
+    case 'deathbed.fell':
+      if (U[e.target]) { U[e.target].stands = e.ordinal
+        cue('float', { hex: U[e.target].hex, kind: 'fell', text: 'FALLS · rolled ' + e.roll + ' vs ' + e.chance, n: e.roll, of: 'roll', big: true }) }
+      break
+    case 'deathbed.exhausted':
+      /* no roll left (heroes two stands, civilians one): straight to downed */
+      if (U[e.target]) cue('float', { hex: U[e.target].hex, kind: 'fell', text: 'NO STANDS LEFT', small: true })
+      break
+    case 'hp.reset':
+      /* the fresh bar after a stand */
+      if (U[e.target]) { const u = U[e.target]
+        u.hp = e.hp; u.maxHp = e.maxHp; u.wound = e.woundLevel
+        cue('float', { hex: u.hex, kind: 'heal', text: '+' + e.hp, n: e.hp, of: 'hp', big: true })
+        cue('fx.status', { id: e.target, style: 'heal' }) }
+      break
+    case 'bleedout.accelerated':
+      /* a hit on the downed moved the counter (never kills) */
+      if (U[e.target]) { U[e.target].bleed = e.bleedOut
+        cue('flash', { id: e.target })
+        cue('float', { hex: U[e.target].hex, kind: 'bleed', text: 'BLEED-OUT ' + e.bleedOut, n: e.bleedOut, of: 'bleedOut', small: true }) }
+      break
     case 'life.downed': if (U[e.target]) U[e.target].life = 'downed'; break
     case 'life.dead': if (U[e.target]) { U[e.target].life = 'dead'; cue('hitstop', { ms: 110 }) } break
     case 'bleedout.set': case 'bleedout.tick': if (U[e.target]) U[e.target].bleed = e.bleedOut; break
+    /* ── bodies and the undead economy (§3) ─────────────────────────────── */
+    case 'corpse.created':
+      /* a board object: it stays until removed. Summons and obliterations make none. */
+      S.corpses[e.corpse] = { id: e.corpse, hex: e.hex, of: e.of, typeId: e.typeId, side: e.side }
+      break
+    case 'corpse.removed':
+      delete S.corpses[e.corpse]
+      cue('corpse.gone', { corpse: e.corpse, hex: e.hex, how: e.how })
+      if (e.how === 'destroyed') cue('float', { hex: e.hex, kind: 'note', text: 'CORPSE DESTROYED', small: true })
+      break
+    case 'unit.raised':
+      /* follows a corpse.removed how:'raised' and the unit.enter: a rise */
+      if (U[e.raised]) { U[e.raised].raised = true
+        cue('rise', { id: e.raised, hex: e.hex })
+        cue('float', { hex: e.hex, kind: 'raised', text: 'RISES', big: true }) }
+      break
+    case 'corpse.eaten':
+      /* the ghoul feeds; heal.applied + statmod.added + maxHp.gained follow */
+      if (U[e.actor]) cue('float', { hex: U[e.actor].hex, kind: 'eaten', text: 'FEEDS', small: true })
+      break
+    case 'unit.obliterated':
+      /* Shadow reached Max Health: life.dead follows with corpse:false — no body */
+      if (U[e.target]) cue('float', { hex: U[e.target].hex, kind: 'obliterated', text: 'OBLITERATED', big: true })
+      break
+    /* ── Surge, Power (§5) ──────────────────────────────────────────────── */
+    case 'surge.checked': if (U[e.actor]) U[e.actor].surgeChance = e.chance; break
+    case 'surge.hit':
+      /* the hero acts AGAIN inside the same activation */
+      if (U[e.actor]) { U[e.actor].surgeChance = 0; cue('float', { hex: U[e.actor].hex, kind: 'surge', text: 'SURGE!', big: true }) }
+      break
+    case 'power.gained':
+      /* the enemy side's Power pool rose — a side-wide number, not a unit's */
+      S.power = e.after
+      cue('power', { after: e.after, amount: e.amount })
+      break
+    /* ── the ground and the light (§6) ──────────────────────────────────── */
+    case 'layer.painted': case 'layer.cancelled':
+      if (e.after) S.layers[e.hex] = e.after; else delete S.layers[e.hex]
+      break
+    case 'band.advanced':
+      cue('banner', { kind: 'band', text: 'Row ' + e.row + ' ' + String(e.layer).replace(/^layer\./, ''), sub: 'the band advances' })
+      break
+    case 'night.fell': cue('banner', { kind: 'night', text: 'Night falls', sub: 'every hex is dark' }); break
+    case 'light.cast': break                       // the layer.painted lines before it already lit the hexes
+    /* ── the AI (§7) ────────────────────────────────────────────────────── */
+    case 'ai.mode':
+      if (U[e.actor] && e.confusedFrom) { U[e.actor].confusedFrom = e.confusedFrom
+        cue('float', { hex: U[e.actor].hex, kind: 'status', statusId: 'status.confusion', text: 'CONFUSED', small: true }) }
+      break
+    case 'ai.hunts':
+      if (U[e.actor]) { U[e.actor].hunt = e.target
+        cue('float', { hex: U[e.actor].hex, kind: 'note', text: 'HUNTS', small: true }) }     // the panel names the quarry
+      break
     case 'power.used':
       if (e.causeId) S.FIRING = { unit: e.actor, ability: e.causeId, until: now + FIRE_MS }
       if (e.target != null && U[e.target] && e.target !== e.actor) cue('fx.attack', { kind: 'ranged', dt: 'magic', a: e.actor, t: e.target, dmg: null })
@@ -206,7 +405,7 @@ export function fold(S, e, ctx, now = 0) {
 export function foldTo(events, n, ctx) {
   const S = createState()
   for (let i = 0; i < n && i < events.length; i++) fold(S, events[i], ctx, 0)
-  S.AIM = null; S.FIRING = null; S.TRIGFLASH = null; S.ATTACK = null
+  S.AIM = null; S.FIRING = null; S.TRIGFLASH = null; S.ATTACK = null; S.AOO = null
   if (S.activeId != null) { S.subjectId = S.activeId; S.subjectMode = 'acting' }
   return S
 }
@@ -214,8 +413,16 @@ export function foldTo(events, n, ctx) {
 /** The event types the fold knows. verify.mjs checks every packed log and the
     pump's duration table against this until the engine exports EVENT_TYPES
     (THREE-PACKAGES-PLAN §8.3). */
-export const FOLDED_TYPES = ['unit.enter', 'turn.begin', 'phase.begin', 'phase.end.done', 'activation.begin',
-  'activation.end', 'move.begin', 'moved', 'attack.declared', 'attack.hit', 'attack.miss', 'damage.applied',
-  'heal.applied', 'status.applied', 'trigger.fired', 'status.reduced', 'status.expired', 'stamina.spent',
-  'stamina.regen', 'stamina.gained', 'knocked', 'maxHp.lost', 'staminaMax.lost', 'statmod.added', 'cooldown.set',
-  'crit.effect', 'power.hit', 'life.downed', 'life.dead', 'bleedout.set', 'bleedout.tick', 'power.used', 'battle.end']
+export const FOLDED_TYPES = ['unit.enter', 'battle.begin', 'unit.equipped', 'turn.begin', 'phase.begin', 'phase.end.done', 'activation.begin',
+  'activation.end', 'move.begin', 'moved', 'attack.declared', 'attack.hit', 'attack.miss', 'attack.cancelled', 'damage.applied',
+  'heal.applied', 'heal.boosted', 'status.applied', 'status.cancelled', 'trigger.fired', 'status.reduced', 'status.expired', 'stamina.spent',
+  'stamina.regen', 'stamina.gained', 'stamina.drained', 'knocked', 'maxHp.lost', 'maxHp.gained', 'staminaMax.lost', 'statmod.added', 'cooldown.set',
+  'crit.effect', 'power.hit', 'life.downed', 'life.dead', 'bleedout.set', 'bleedout.tick', 'bleedout.accelerated', 'power.used', 'battle.end',
+  /* 2026-09-03 */
+  'encounter.begin', 'encounter.objective', 'encounter.wave', 'encounter.roll', 'unit.shunted', 'encounter.won', 'encounter.lost',
+  'move.stopped', 'aoo.provoked', 'aoo.skipped',
+  'corpse.created', 'corpse.removed', 'unit.raised', 'corpse.eaten', 'unit.obliterated',
+  'deathbed.stood', 'deathbed.fell', 'deathbed.exhausted', 'hp.reset',
+  'surge.checked', 'surge.hit', 'power.gained',
+  'layer.painted', 'layer.cancelled', 'band.advanced', 'night.fell', 'light.cast',
+  'ai.mode', 'ai.hunts']

@@ -24,6 +24,7 @@ export class El {
   get className() { return [...this.classList._s].join(' ') } set className(v) { this.classList._s = new Set(String(v).split(/\s+/).filter(Boolean)) }
   get id() { return this.attrs.id ?? '' } set id(v) { this.attrs.id = v }
   get firstChild() { return this.children[0] ?? null } get lastChild() { return this.children[this.children.length - 1] ?? null }
+  get nextSibling() { const p = this.parentNode; if (!p) return null; const i = p.children.indexOf(this); return i < 0 ? null : (p.children[i + 1] ?? null) }
   get childNodes() { return this.children } get clientWidth() { return 1920 } get clientHeight() { return 1080 }
   get offsetWidth() { return 100 } get offsetHeight() { return 40 } get offsetTop() { return 0 } get scrollHeight() { return 400 } set scrollTop(v) {} get scrollTop() { return 0 }
   get textContent() { return this._text + this.children.map(c => c.textContent).join('') } set textContent(v) { this._text = String(v); this.children = [] }
