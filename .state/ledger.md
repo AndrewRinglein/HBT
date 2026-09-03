@@ -707,3 +707,5 @@ IRON GAUNTLET: NOT PASSED — 1 FLAG(S) WARNED
 ISC-052: CLOSED at 3ae1be3 · ISC-053: CLOSED at 3ae1be3
 slice: 49 of 68 closed · 49 probed · 0 accepted
 IRON GAUNTLET: NOT PASSED — 1 FLAG(S) WARNED
+
+Law 10 note (heroes.kits): test/isc-041.test.ts asserted `equipped` equals ['item.longsword'] after the shop equip; heroes now enter WEARING their content kit (ruled 2026-09-02), so the assertion became "the longsword is the last thing worn and it is not the only thing" — the rule under test (buy at Buy, fit at Equip) is unchanged.
