@@ -3836,7 +3836,7 @@ showcase.gash-variant, fix.bleed-magnitude). Counter now 33. Seal withheld.
 
 IRON GAUNTLET: NOT PASSED — 2 FLAG(S) WARNED
 
-## pack.moves — LANDED `a20a062`
+## pack.moves — LANDED `21d6e3c` (gate recorded a20a062, the pre-amend sha)
 2026-09-03 04:19
 
   PASS  dependencies landed
