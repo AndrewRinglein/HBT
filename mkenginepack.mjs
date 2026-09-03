@@ -122,6 +122,10 @@ const STATUS_SENTENCES = [
   ['Adds its value to every physical hit the unit receives, per hit.', { addsIncomingPhysical: true }],
   ['Stops the unit moving at all.', { blocksMovement: true }],
   ['Forces the taunted unit to target whoever taunted it.', { forcesTarget: true }],
+  // 2026-09-03 — Karma, Shadow, Confusion (capability.karma/shadow/confusion)
+  ['Increases every heal the unit receives by its value, and every point of damage it deals by half its value.', { boostsHealingReceived: true, boostsOutgoingHalf: true }],
+  ['Obliterates the unit \u2014 killed, removed, no corpse \u2014 once it reaches the unit\'s Max Health.', { obliteratesAtMaxHp: true }],
+  ["Swaps the affected unit's AI strategy for a different one.", { swapsAi: true }],
 ];
 const STATUS_GAP_NEEDS = {
   'status.root': 'a blocksMovement flag (movement 0, still acts) — capability.root',
@@ -143,6 +147,8 @@ function compileStatuses(rows) {
     let decayPerPhase;
     if (/^-1 per Turn/.test(r.decay)) decayPerPhase = 1;
     else if (r.decay === 'Spent by the damage it prevents, and decreases by an additional 1 per Turn.') decayPerPhase = 1;
+    else if (r.decay === 'No clock: -1 on a kill, and nothing else.') { decayPerPhase = 0; flags.decayOnKill = true; }   // Karma, 2026-09-03
+    else if (/^It GROWS: \+1 per Turn, first of everything in Settling\. It never decays\.$/.test(r.decay)) { decayPerPhase = 0; flags.grows = 1; }   // Shadow, 2026-09-03
     else { gap(r.id, `status decay not compilable: '${r.decay}'`, STATUS_GAP_NEEDS[r.id] ?? 'unparsed decay clause'); continue; }
     // tick damage type: the row's own damageType wins; "Resist mitigates each
     // tick" in the decay clause is the ruled magic tick (2026-08-27).
