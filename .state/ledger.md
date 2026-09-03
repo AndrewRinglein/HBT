@@ -5806,3 +5806,55 @@ IRON GAUNTLET: NOT PASSED — 1 FLAG(S) WARNED; 2 EXEMPTION(S) TAKEN
   PASS  kill switch — the tests fail without the content — tests fail without attack.ghoul.rake — they genuinely test it
 
 IRON GAUNTLET: NOT PASSED — 1 FLAG(S) WARNED
+
+## capability.deathbed — LANDED `fb9b5d3` **NEEDS REVIEW**
+2026-09-03 10:36
+
+  PASS  dependencies landed
+  WARN  not already decided — 5 candidate ruling(s) — READ BEFORE ASKING: ../STATE.md:18 · ../CODEX.md:3315
+  PASS  typecheck
+  PASS  full test suite
+  PASS  gate 1 — the id appears in a real battle — deathbed.stood: 3 log lines, 3 fired, 3 changed state · deathbed.fell: 5 log lines, 5 fired, 5 changed state
+  PASS  brought its own tests — test/items-per-unit.test.ts, test/deathbed.test.ts
+  WARN  existing tests untouched — DELETED LINES in test/items-per-unit.test.ts (-1) — will land FLAGGED for review
+  PASS  control battles unchanged — will re-bless at commit — this item DECLARED it changes the control battles: map.open 08e8d50e->d91e8a14, map.ridge 09e3c46a->3c118e58, map.flanks e12ce7a9->8b8bb1ae, map.highlands 92f83567->f72c826e, map.field 0e5b17ca->5df1fc3f, map.thicket f05514c9->822a1564, test.map.embers 388063c2->b20643e2, test.map.showcase d187f62e->5898fd0f
+  PASS  content has a published source — 17 ids without a published source (7 awaiting publication from earlier items — see audit)
+  PASS  hardcode scan — core knows mechanisms, never names
+  PASS  generalizes — the second instance costs zero engine code
+  PASS  naming — new content ids use declared kinds
+  PASS  naming — no banned words invented
+  PASS  kill switch — the tests fail without the content
+
+<details><summary>Existing tests were edited — review this diff</summary>
+
+```diff
+diff --git a/test/items-per-unit.test.ts b/test/items-per-unit.test.ts
+index eb9685c..ab6912a 100644
+--- a/test/items-per-unit.test.ts
++++ b/test/items-per-unit.test.ts
+@@ -37,5 +37,7 @@ describe('the invariant — no heroItems means the hero the converter used to fo
+       // (class.warrior …) so fieldedDef can find the level table; the oracle
+       // predates that too.
+-      const keys = [...new Set([...Object.keys(f), ...Object.keys(r)])].filter((k) => k !== 'attributes' && k !== 'tags' && JSON.stringify(f[k]) !== JSON.stringify(r[k]))
++      // capability.deathbed (2026-09-03): rows carry `toughness` now (the
++      // Deathbed Fighting base); the oracle predates it.
++      const keys = [...new Set([...Object.keys(f), ...Object.keys(r)])].filter((k) => k !== 'attributes' && k !== 'tags' && k !== 'toughness' && JSON.stringify(f[k]) !== JSON.stringify(r[k]))
+       if (keys.length) differ[id] = keys
+     }
+```
+</details>
+
+IRON GAUNTLET: NOT PASSED — 2 FLAG(S) WARNED; 2 EXEMPTION(S) TAKEN
+
+```
+effect of deathbed.stood,deathbed.fell — 25 paired battles per map, WITH vs WITHOUT
+  map.open: heroWins 25->25 (+0)  meanTurns 3.9->3.9
+  map.ridge: heroWins 25->25 (+0)  meanTurns 4.4->4.4
+  map.flanks: heroWins 25->25 (+0)  meanTurns 4.0->4.0
+  map.highlands: heroWins 25->25 (+0)  meanTurns 5.2->5.2
+  map.field: heroWins 25->25 (+0)  meanTurns 5.5->5.5
+  map.thicket: heroWins 25->25 (+0)  meanTurns 5.5->5.5
+  test.map.embers: heroWins 25->25 (+0)  meanTurns 2.9->2.9
+  test.map.showcase: heroWins 25->25 (+0)  meanTurns 3.8->3.8
+NO MEASURABLE EFFECT at this sample size — consequence clause caught state changes, but outcomes did not move. Consider a sweep with more replicates before drawing balance conclusions.
+```

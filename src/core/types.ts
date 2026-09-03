@@ -430,6 +430,14 @@ export type UnitDef = {
   /** capability.power-pool: one-time +X to the side's pool when this unit enters; the X stays after it dies. */
   readonly powerOnArrival?: number
   /**
+   * capability.deathbed (2026-09-03), COMBAT-DESIGN §13: Deathbed Fighting is
+   * DERIVED, never stored — 20 + 5 × Toughness, plus badges, gear and
+   * origins. Toughness is the base; it does not reduce damage. Absent = 0.
+   */
+  readonly toughness?: number
+  /** How many times this unit may STAND at zero: civilians one, heroes two (COMBAT-DESIGN §13 "depth by type"). Absent = 2 for heroes, 0 for enemies. */
+  readonly stands?: number
+  /**
    * Movement powers this unit grants, in preference order — REQUIRED, no core
    * default (content-driven, Angela 2026-08-21). Every hero row carries the
    * universal walk plus its class's half-step; an enemy row carries exactly
@@ -477,6 +485,9 @@ export type Unit = {
   staminaRegen: number
   lifeState: LifeState
   bleedOut: number
+  /** capability.deathbed: the wound ladder — 0 Fresh, 1 Wounded, 2 Badly Wounded. Each STAND climbs one. */
+  woundLevel: number
+  toughness: number
   ai: string
   attacks: string[]
   abilities: string[]

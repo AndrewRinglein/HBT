@@ -36,7 +36,9 @@ describe('the invariant — no heroItems means the hero the converter used to fo
       // Hero assembly (2026-09-03): rows carry their class on `tags` now
       // (class.warrior …) so fieldedDef can find the level table; the oracle
       // predates that too.
-      const keys = [...new Set([...Object.keys(f), ...Object.keys(r)])].filter((k) => k !== 'attributes' && k !== 'tags' && JSON.stringify(f[k]) !== JSON.stringify(r[k]))
+      // capability.deathbed (2026-09-03): rows carry `toughness` now (the
+      // Deathbed Fighting base); the oracle predates it.
+      const keys = [...new Set([...Object.keys(f), ...Object.keys(r)])].filter((k) => k !== 'attributes' && k !== 'tags' && k !== 'toughness' && JSON.stringify(f[k]) !== JSON.stringify(r[k]))
       if (keys.length) differ[id] = keys
     }
     // FINDING: the converter folded item crit/luck into `ported`, then wrote

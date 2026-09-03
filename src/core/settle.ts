@@ -3,7 +3,8 @@
 // Never reentrant: damage caused during a settle is absorbed by the running settle.
 
 import type { Ctx } from './types.js'
-import { emit, setBleedOut, setLifeState, setOutcome, tickBleedOut } from './mutate.js'
+import { addStatMod, emit, loseMaxHp, loseMaxStamina, setBleedOut, setLifeState, setOutcome, tickBleedOut } from './mutate.js'
+import { roll100 } from './rng.js'
 import { fireTriggers } from './trigger.js'
 
 const MAX_ROUNDS = 64
@@ -37,6 +38,8 @@ export function settle(ctx: Ctx, causeId: string): void {
           if (u.side === 'enemy') {
             setLifeState(ctx, u.id, 'dead', causeId, { reason: 'hp0' })
             died.push(u.id)
+          } else if (deathbed(ctx, u.id, causeId)) {
+            // STOOD — capability.deathbed (2026-09-03): a fresh bar at the next wound level
           } else {
             setLifeState(ctx, u.id, 'downed', causeId, { reason: 'hp0' })
             setBleedOut(ctx, u.id, BLEED_OUT_COUNTER, causeId)
@@ -109,3 +112,43 @@ export function advanceBleedOuts(ctx: Ctx): void {
   for (const u of downed) tickBleedOut(ctx, u.id, 'bleedout')
   if (downed.length) settle(ctx, 'bleedout')
 }
+
+/**
+ * THE DEATHBED ROLL — capability.deathbed (2026-09-03). COMBAT-DESIGN §13:
+ * "Hit 0 → roll Deathbed Fighting. STAND — the hero fights on with a fresh
+ * bar at the next wound level. FALL — downed." Deathbed Fighting is derived:
+ * 20 + 5 × Toughness (+ the unit's `deathbed` stat mods, when badges arrive).
+ * Depth by type: civilians one stand, heroes two. Ruled 2026-09-03 (Angela):
+ * "We should include the deathbed roll. And then we don't need to include
+ * stabilization." Marks are minted after the battle, never here: the STAND
+ * line carries what the kingdom needs (the roll, the chance, the level).
+ * The wound level applies in battle (COMBAT-DESIGN §13 "Wound levels"):
+ * Wounded −1 to every stat except Armor, Resist, Toughness and Item Slots,
+ * −2 Max Health and −2 Max Stamina; Badly Wounded doubles all of it.
+ * The cup is `deathbed`, keyed by the unit and its own ordinal (Law 4).
+ */
+export function deathbedFighting(u: { toughness: number }): number {
+  return 20 + 5 * u.toughness
+}
+function deathbed(ctx: Ctx, id: number, causeId: string): boolean {
+  const u = ctx.state.units[id]!
+  const stands = ctx.units?.[u.typeId]?.stands ?? (u.tags.includes('civilian') ? 1 : 2)
+  if (u.woundLevel >= stands) { emit(ctx, 'deathbed.exhausted', causeId, { target: id, woundLevel: u.woundLevel, stands }); return false }
+  const chance = Math.max(0, Math.min(100, deathbedFighting(u)))
+  const ord = ++u.deathbedOrdinal
+  const roll = roll100(ctx.rng, 'deathbed', u.uid, ord)
+  const stood = roll <= chance
+  emit(ctx, stood ? 'deathbed.stood' : 'deathbed.fell', causeId, { target: id, roll, chance, woundLevel: u.woundLevel + (stood ? 1 : 0), ordinal: ord })
+  if (!stood) return false
+  u.woundLevel += 1
+  const depth = u.woundLevel   // Wounded ×1, Badly Wounded ×2
+  const src = 'deathbed'   // the level is on the line; the source is the pipeline
+  for (const stat of WOUND_STATS) addStatMod(ctx, id, { stat, op: 'add', value: -1, source: src, scope: 'unit' }, causeId)
+  loseMaxHp(ctx, id, 2, src)
+  loseMaxStamina(ctx, id, 2, src)
+  // a fresh bar
+  u.hp = Math.max(1, u.maxHp)
+  emit(ctx, 'hp.reset', src, { target: id, hp: u.hp, maxHp: u.maxHp, woundLevel: u.woundLevel, depth })
+  return true
+}
+const WOUND_STATS: readonly import('./stats.js').StatName[] = ['strength', 'precision', 'magic', 'spirit', 'accuracy', 'dodge', 'movement', 'reach', 'crit', 'luck']

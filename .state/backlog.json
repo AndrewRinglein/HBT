@@ -1988,5 +1988,22 @@
   "status": "done-needs-review",
   "sha": "7908287",
   "gauntlet": "not passed — 2 flag(s) warned"
+ },
+ {
+  "id": "capability.deathbed",
+  "kind": "engine",
+  "shape": "rule",
+  "spec": "The Deathbed roll — COMBAT-DESIGN §13, ruled in scope 2026-09-03 (Angela: include the deathbed roll, no stabilisation; bleed-out past = dead, otherwise wounded). At 0 a hero rolls Deathbed Fighting (20 + 5 × Toughness, derived, never stored) on the deathbed cup keyed by unit and ordinal. STAND: a fresh bar at the next wound level, applied in battle (Wounded −1 to every stat but Armor/Resist/Toughness/Item Slots, −2 Max Health, −2 Max Stamina; Badly Wounded doubles). FALL: downed with the counter. Civilians stand once, heroes twice; the third zero is final. Marks are the kingdom's, minted from the deathbed.stood lines. Toughness joins the foldable stats (rows, items, levels, the schedule oracle).",
+  "expect": "a hero at 100% stands twice and falls the third time, each stand −1/−2/-2 as ruled with Armor untouched; at Toughness 0 both outcomes appear across seeds; a civilian stands once; the standard battle at sixteen shows a roll",
+  "changesBaseline": true,
+  "probeIds": [
+   "deathbed.stood",
+   "deathbed.fell"
+  ],
+  "generalizationExempt": "an engine rule with no content instance — every hero rolls the same way; Toughness (a row stat) is the only data axis and every hero row carries it",
+  "killSwitchExempt": "no content id carries the roll; the tests assert the ladder and the two outcomes, which no row can be disabled to falsify",
+  "status": "done-needs-review",
+  "sha": "fb9b5d3",
+  "gauntlet": "not passed — 2 flag(s) warned; 2 exemption(s) taken"
  }
 ]

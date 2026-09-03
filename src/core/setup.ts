@@ -22,6 +22,7 @@ export function makeUnit(id: number, uid: number, name: string, def: UnitDef, he
     movement: def.movement, reach: def.reach,
     stamina: def.maxStamina, maxStamina: def.maxStamina, staminaRegen: def.staminaRegen,
     lifeState: 'standing', bleedOut: 0,
+    woundLevel: 0, toughness: def.toughness ?? 0,
     ai: def.ai,
     attacks: [...def.attacks],
     abilities: [...def.abilities],

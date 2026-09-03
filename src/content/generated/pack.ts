@@ -15,6 +15,7 @@ export const UNIT_PACK = {
       "resist": 0,
       "accuracy": 75,
       "dodge": 0,
+      "toughness": 2,
       "strength": 5,
       "precision": 3,
       "magic": 0,
@@ -100,6 +101,7 @@ export const UNIT_PACK = {
       "resist": 0,
       "accuracy": 78,
       "dodge": 0,
+      "toughness": 3,
       "strength": 4,
       "precision": 3,
       "magic": 0,
@@ -148,6 +150,7 @@ export const UNIT_PACK = {
       "resist": 0,
       "accuracy": 80,
       "dodge": 5,
+      "toughness": 2,
       "strength": 3,
       "precision": 4,
       "magic": 0,
@@ -196,6 +199,7 @@ export const UNIT_PACK = {
       "resist": 0,
       "accuracy": 75,
       "dodge": 0,
+      "toughness": 2,
       "strength": 0,
       "precision": 3,
       "magic": 2,
@@ -258,6 +262,7 @@ export const UNIT_PACK = {
       "resist": 0,
       "accuracy": 80,
       "dodge": 0,
+      "toughness": 1,
       "strength": 3,
       "precision": 3,
       "magic": 0,
@@ -293,6 +298,7 @@ export const UNIT_PACK = {
       "resist": 0,
       "accuracy": 72,
       "dodge": 0,
+      "toughness": 2,
       "strength": 4,
       "precision": 3,
       "magic": 0,
@@ -4223,6 +4229,7 @@ export const UNIT_PACK = {
       "resist": 0,
       "accuracy": 72,
       "dodge": 0,
+      "toughness": 2,
       "crit": 3,
       "strength": 4,
       "precision": 3,
@@ -4261,6 +4268,7 @@ export const UNIT_PACK = {
       "resist": 0,
       "accuracy": 72,
       "dodge": 0,
+      "toughness": 2,
       "crit": 3,
       "strength": 4,
       "precision": 3,
@@ -4300,6 +4308,7 @@ export const UNIT_PACK = {
       "resist": 0,
       "accuracy": 72,
       "dodge": 0,
+      "toughness": 2,
       "crit": 3,
       "strength": 3,
       "precision": 1,
@@ -4339,6 +4348,7 @@ export const UNIT_PACK = {
       "resist": 0,
       "accuracy": 72,
       "dodge": 0,
+      "toughness": 2,
       "strength": 4,
       "precision": 3,
       "magic": 0,
@@ -4377,6 +4387,7 @@ export const UNIT_PACK = {
       "resist": 0,
       "accuracy": 80,
       "dodge": 0,
+      "toughness": 2,
       "crit": 3,
       "strength": 2,
       "precision": 4,
@@ -4415,6 +4426,7 @@ export const UNIT_PACK = {
       "resist": 0,
       "accuracy": 80,
       "dodge": 0,
+      "toughness": 2,
       "crit": 3,
       "strength": 2,
       "precision": 5,
@@ -4453,6 +4465,7 @@ export const UNIT_PACK = {
       "resist": 0,
       "accuracy": 80,
       "dodge": 0,
+      "toughness": 2,
       "crit": 3,
       "strength": 2,
       "precision": 4,
@@ -4491,6 +4504,7 @@ export const UNIT_PACK = {
       "resist": 0,
       "accuracy": 80,
       "dodge": 0,
+      "toughness": 2,
       "crit": 3,
       "strength": 2,
       "precision": 5,
@@ -4529,6 +4543,7 @@ export const UNIT_PACK = {
       "resist": 0,
       "accuracy": 75,
       "dodge": 0,
+      "toughness": 3,
       "crit": 3,
       "strength": 4,
       "precision": 3,
@@ -4568,6 +4583,7 @@ export const UNIT_PACK = {
       "resist": 0,
       "accuracy": 75,
       "dodge": 0,
+      "toughness": 3,
       "crit": 3,
       "strength": 4,
       "precision": 4,
@@ -4605,6 +4621,7 @@ export const UNIT_PACK = {
       "resist": 0,
       "accuracy": 75,
       "dodge": 0,
+      "toughness": 3,
       "crit": 3,
       "strength": 4,
       "precision": 3,
@@ -4643,6 +4660,7 @@ export const UNIT_PACK = {
       "resist": 0,
       "accuracy": 75,
       "dodge": 0,
+      "toughness": 3,
       "crit": 3,
       "strength": 5,
       "precision": 3,
@@ -4681,6 +4699,7 @@ export const UNIT_PACK = {
       "resist": 0,
       "accuracy": 75,
       "dodge": 0,
+      "toughness": 2,
       "crit": 3,
       "strength": 2,
       "precision": 3,
@@ -4719,6 +4738,7 @@ export const UNIT_PACK = {
       "resist": 0,
       "accuracy": 75,
       "dodge": 0,
+      "toughness": 2,
       "crit": 3,
       "strength": 2,
       "precision": 5,
@@ -4757,6 +4777,7 @@ export const UNIT_PACK = {
       "resist": 0,
       "accuracy": 75,
       "dodge": 0,
+      "toughness": 2,
       "crit": 3,
       "strength": 2,
       "precision": 3,
@@ -4795,6 +4816,7 @@ export const UNIT_PACK = {
       "resist": 0,
       "accuracy": 75,
       "dodge": 0,
+      "toughness": 2,
       "crit": 3,
       "strength": 2,
       "precision": 3,
@@ -4833,6 +4855,7 @@ export const UNIT_PACK = {
       "resist": 0,
       "accuracy": 80,
       "dodge": 0,
+      "toughness": 1,
       "crit": 3,
       "strength": 2,
       "precision": 3,
@@ -4871,6 +4894,7 @@ export const UNIT_PACK = {
       "resist": 0,
       "accuracy": 80,
       "dodge": 0,
+      "toughness": 1,
       "crit": 3,
       "strength": 2,
       "precision": 3,
@@ -4910,6 +4934,7 @@ export const UNIT_PACK = {
       "resist": 0,
       "accuracy": 80,
       "dodge": 0,
+      "toughness": 1,
       "crit": 3,
       "strength": 2,
       "precision": 3,
@@ -4948,6 +4973,7 @@ export const UNIT_PACK = {
       "resist": 0,
       "accuracy": 80,
       "dodge": 0,
+      "toughness": 1,
       "crit": 3,
       "strength": 3,
       "precision": 3,
@@ -4987,6 +5013,7 @@ export const UNIT_PACK = {
       "resist": 0,
       "accuracy": 78,
       "dodge": 5,
+      "toughness": 2,
       "crit": 5,
       "strength": 6,
       "precision": 4,
@@ -5026,6 +5053,7 @@ export const UNIT_PACK = {
       "resist": 0,
       "accuracy": 78,
       "dodge": 5,
+      "toughness": 2,
       "crit": 5,
       "strength": 4,
       "precision": 4,
@@ -5064,6 +5092,7 @@ export const UNIT_PACK = {
       "resist": 0,
       "accuracy": 78,
       "dodge": 5,
+      "toughness": 2,
       "crit": 5,
       "strength": 4,
       "precision": 4,
@@ -5102,6 +5131,7 @@ export const UNIT_PACK = {
       "resist": 0,
       "accuracy": 78,
       "dodge": 5,
+      "toughness": 2,
       "crit": 5,
       "strength": 4,
       "precision": 5,
@@ -5140,6 +5170,7 @@ export const UNIT_PACK = {
       "resist": 1,
       "accuracy": 70,
       "dodge": 0,
+      "toughness": 3,
       "crit": 20,
       "luck": 10,
       "strength": 2,
@@ -5176,6 +5207,7 @@ export const UNIT_PACK = {
       "resist": 0,
       "accuracy": 70,
       "dodge": 0,
+      "toughness": 2,
       "crit": 3,
       "strength": 4,
       "precision": 1,
@@ -5211,6 +5243,7 @@ export const UNIT_PACK = {
       "resist": 0,
       "accuracy": 70,
       "dodge": 0,
+      "toughness": 1,
       "crit": 3,
       "luck": 2,
       "strength": 3,
@@ -5247,6 +5280,7 @@ export const UNIT_PACK = {
       "resist": 1,
       "accuracy": 70,
       "dodge": 0,
+      "toughness": 2,
       "crit": 8,
       "luck": 7,
       "strength": 2,
@@ -5281,6 +5315,7 @@ export const UNIT_PACK = {
       "resist": 0,
       "accuracy": 70,
       "dodge": 0,
+      "toughness": 2,
       "crit": 4,
       "luck": 10,
       "strength": 4,
@@ -5317,6 +5352,7 @@ export const UNIT_PACK = {
       "resist": 0,
       "accuracy": 70,
       "dodge": 0,
+      "toughness": 2,
       "crit": 3,
       "strength": 0,
       "precision": 0,
@@ -5350,6 +5386,7 @@ export const UNIT_PACK = {
       "resist": 0,
       "accuracy": 70,
       "dodge": 0,
+      "toughness": 1,
       "crit": 3,
       "strength": 2,
       "precision": 2,
@@ -5383,6 +5420,7 @@ export const UNIT_PACK = {
       "resist": 0,
       "accuracy": 70,
       "dodge": 0,
+      "toughness": 1,
       "crit": 3,
       "strength": 1,
       "precision": 2,
@@ -5416,6 +5454,7 @@ export const UNIT_PACK = {
       "resist": 0,
       "accuracy": 70,
       "dodge": 0,
+      "toughness": 1,
       "crit": 3,
       "strength": 1,
       "precision": 3,
@@ -5449,6 +5488,7 @@ export const UNIT_PACK = {
       "resist": 0,
       "accuracy": 70,
       "dodge": 0,
+      "toughness": 2,
       "crit": 3,
       "strength": 2,
       "precision": 2,
@@ -5482,6 +5522,7 @@ export const UNIT_PACK = {
       "resist": 0,
       "accuracy": 70,
       "dodge": 0,
+      "toughness": 2,
       "crit": 3,
       "strength": 4,
       "precision": 2,
@@ -5515,6 +5556,7 @@ export const UNIT_PACK = {
       "resist": 0,
       "accuracy": 70,
       "dodge": 0,
+      "toughness": 1,
       "crit": 5,
       "strength": 3,
       "precision": 2,
@@ -5550,6 +5592,7 @@ export const UNIT_PACK = {
       "resist": 0,
       "accuracy": 70,
       "dodge": 0,
+      "toughness": 1,
       "crit": 3,
       "strength": 3,
       "precision": 3,
@@ -5583,6 +5626,7 @@ export const UNIT_PACK = {
       "resist": 0,
       "accuracy": 70,
       "dodge": 0,
+      "toughness": 4,
       "crit": 3,
       "strength": 4,
       "precision": 5,
@@ -5618,6 +5662,7 @@ export const UNIT_PACK = {
       "resist": 0,
       "accuracy": 75,
       "dodge": 0,
+      "toughness": 2,
       "crit": 3,
       "strength": 5,
       "precision": 3,
@@ -5705,6 +5750,7 @@ export const UNIT_PACK = {
       "resist": 0,
       "accuracy": 78,
       "dodge": 0,
+      "toughness": 3,
       "crit": 5,
       "strength": 4,
       "precision": 3,
@@ -5757,6 +5803,7 @@ export const UNIT_PACK = {
       "resist": 0,
       "accuracy": 80,
       "dodge": 5,
+      "toughness": 2,
       "crit": 3,
       "strength": 3,
       "precision": 4,
@@ -5808,6 +5855,7 @@ export const UNIT_PACK = {
       "resist": 0,
       "accuracy": 75,
       "dodge": 0,
+      "toughness": 2,
       "crit": 3,
       "strength": 0,
       "precision": 3,
@@ -5871,6 +5919,7 @@ export const UNIT_PACK = {
       "resist": 0,
       "accuracy": 80,
       "dodge": 0,
+      "toughness": 1,
       "crit": 3,
       "strength": 3,
       "precision": 3,
@@ -5909,6 +5958,7 @@ export const UNIT_PACK = {
       "resist": 0,
       "accuracy": 72,
       "dodge": 0,
+      "toughness": 2,
       "crit": 3,
       "strength": 4,
       "precision": 3,
@@ -10682,14 +10732,12 @@ export const UNIT_PACK = {
       "hands": 0,
       "slots": 1,
       "statModifiers": {
+        "toughness": 1,
         "maxHp": -6
       },
       "grants": [],
       "abilities": [],
-      "triggers": [],
-      "gaps": [
-        "statModifier 'toughness' 1 — stat: toughness (no UnitDef field)"
-      ]
+      "triggers": []
     },
     "item.codex-of-the-last-war": {
       "id": "item.codex-of-the-last-war",
@@ -10729,14 +10777,12 @@ export const UNIT_PACK = {
       "hands": 0,
       "slots": 1,
       "statModifiers": {
-        "staminaRegen": 1
+        "staminaRegen": 1,
+        "toughness": -1
       },
       "grants": [],
       "abilities": [],
-      "triggers": [],
-      "gaps": [
-        "statModifier 'toughness' -1 — stat: toughness (no UnitDef field)"
-      ]
+      "triggers": []
     },
     "item.seal-of-damnation": {
       "id": "item.seal-of-damnation",
@@ -16599,12 +16645,10 @@ export const UNIT_PACK = {
       "name": "Blessed Sufferer",
       "class": "class.priest",
       "statModifiers": {
+        "toughness": 1,
         "maxHp": 2,
         "dodge": 5
-      },
-      "gaps": [
-        "toughness 1: no engine stat"
-      ]
+      }
     },
     "specialty.martyred-saint": {
       "id": "specialty.martyred-saint",
@@ -16652,11 +16696,9 @@ export const UNIT_PACK = {
       "class": "class.paladin",
       "statModifiers": {
         "resist": 2,
+        "toughness": 1,
         "luck": 5
-      },
-      "gaps": [
-        "toughness 1: no engine stat"
-      ]
+      }
     },
     "specialty.deathknight": {
       "id": "specialty.deathknight",
@@ -17268,11 +17310,9 @@ export const UNIT_PACK = {
           "grants": {
             "spirit": 1,
             "maxStamina": 1,
-            "accuracy": 5
-          },
-          "gaps": [
-            "toughness 1: no engine stat"
-          ]
+            "accuracy": 5,
+            "toughness": 1
+          }
         },
         {
           "level": 5,
@@ -17338,13 +17378,11 @@ export const UNIT_PACK = {
           "level": 9,
           "grants": {
             "spirit": 1,
+            "toughness": 1,
             "accuracy": 5,
             "dodge": 2,
             "luck": 1
-          },
-          "gaps": [
-            "toughness 1: no engine stat"
-          ]
+          }
         },
         {
           "level": 10,
@@ -17389,11 +17427,9 @@ export const UNIT_PACK = {
           "grants": {
             "resist": 1,
             "maxHp": 1,
+            "toughness": 1,
             "accuracy": 3
-          },
-          "gaps": [
-            "toughness 1: no engine stat"
-          ]
+          }
         },
         {
           "level": 5,
@@ -17430,11 +17466,9 @@ export const UNIT_PACK = {
             "strength": 1,
             "staminaRegen": 1,
             "maxHp": 1,
+            "toughness": 1,
             "accuracy": 3
-          },
-          "gaps": [
-            "toughness 1: no engine stat"
-          ]
+          }
         },
         {
           "level": 7,
@@ -17452,11 +17486,9 @@ export const UNIT_PACK = {
             "strength": 1,
             "maxHp": 1,
             "itemSlots": 1,
-            "accuracy": 5
-          },
-          "gaps": [
-            "toughness 1: no engine stat"
-          ]
+            "accuracy": 5,
+            "toughness": 1
+          }
         },
         {
           "level": 9,
@@ -17588,14 +17620,12 @@ export const UNIT_PACK = {
           "level": 9,
           "grants": {
             "maxHp": 1,
+            "toughness": 1,
             "accuracy": 5,
             "crit": 2,
             "dodge": 2,
             "movement": 1
-          },
-          "gaps": [
-            "toughness 1: no engine stat"
-          ]
+          }
         },
         {
           "level": 10,
@@ -17630,11 +17660,9 @@ export const UNIT_PACK = {
           "grants": {
             "maxHp": 2,
             "movement": 1,
+            "toughness": 1,
             "crit": 3
-          },
-          "gaps": [
-            "toughness 1: no engine stat"
-          ]
+          }
         },
         {
           "level": 4,
@@ -17686,11 +17714,9 @@ export const UNIT_PACK = {
             "maxHp": 2,
             "strength": 1,
             "movement": 1,
+            "toughness": 1,
             "crit": 3
-          },
-          "gaps": [
-            "toughness 1: no engine stat"
-          ]
+          }
         },
         {
           "level": 8,

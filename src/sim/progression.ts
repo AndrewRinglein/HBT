@@ -33,7 +33,7 @@ export type Schedule = { readonly battles: readonly ScheduleBattle[] }
 export const SCHEDULE_STAT: Readonly<Record<string, keyof UnitDef>> = {
   strength: 'strength', precision: 'precision', magic: 'magic', spirit: 'spirit', armor: 'armor', resist: 'resist',
   health: 'maxHp', reach: 'reach', dodge: 'dodge', accuracy: 'accuracy', crit: 'crit', luck: 'luck',
-  movement: 'movement', staminaMax: 'maxStamina', staminaRegen: 'staminaRegen',
+  movement: 'movement', staminaMax: 'maxStamina', staminaRegen: 'staminaRegen', toughness: 'toughness',
 }
 
 /** The schedule's stat words in a pick -> engine names (the level table's choice options are in engine names). */
