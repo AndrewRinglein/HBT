@@ -123,7 +123,10 @@ describe('in real battles', () => {
   })
   it('the gash variant: a second shedByHealing status is healed off in showcase.gash-variant', () => {
     let sheds = 0
-    for (let r = 0; r < 20 && !sheds; r++) {
+    // Widened 20 -> 60 seeds on 2026-09-03 (movement.zone-of-control): the
+    // stops re-time every fight and the first heal-on-a-gashed-hero moved from
+    // seed <20 to seed 39. Same claim; early exit on the first shed.
+    for (let r = 0; r < 60 && !sheds; r++) {
       const ctx = createBattle({ ...scenarioOptions(scenarioDef('showcase.gash-variant')), replicate: r }); runBattle(ctx)
       sheds += ctx.events.filter((e) => e.type === 'status.reduced' && e['statusId'] === 'test.status.gash'
         && e.causeId === 'power.holy-symbol.heal').length

@@ -574,6 +574,8 @@ export type Config = {
     aiAttackChoice: 'declared' | 'bestDamage'
     /** Is Frost added before Protection absorbs (true) or after (false)? Before Armor either way, ruled. SWITCHES.md, 2026-09-03. */
     frostBeforeProtection: boolean
+    /** Zones of control and attacks of opportunity live? SWITCHES.md, 2026-09-03 (movement.zone-of-control). */
+    zoneOfControl: boolean
   }
 }
 
@@ -629,6 +631,9 @@ export const DEFAULT_CONFIG: Config = {
     // "Strength + Frost − Armor": Frost is part of the hit; Protection then
     // absorbs the hit. SWITCHES.md, 2026-09-03.
     frostBeforeProtection: true,
+    // Declared to change the control battles; on by ruling (GAME-DESIGN §4,
+    // Angela 2026-08-13). Off keeps the pre-ZoC battle for paired sweeps.
+    zoneOfControl: true,
   },
 }
 

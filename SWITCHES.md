@@ -366,3 +366,10 @@ the structurally-dead list from the rows). `bestDamage`: the legal attack with
 the highest previewed damage on hit, ties to the earlier listing. Riders (a
 stun, a self-Protection) are not priced by either — a third policy's question.
 `npm run sweep` on the eight control battles answers which the AI should use.
+
+## zoneOfControl — are zones of control and attacks of opportunity live?
+Added 2026-09-03 (movement.zone-of-control, movement.attack-of-opportunity).
+Ruled by GAME-DESIGN §4 and Angela 2026-08-13, so the default is **on**; the
+switch exists because it is the largest single change to every balance number
+the engine has, and the paired sweep wants the pre-ZoC arm. The AI is blind to
+both by the same ruling — that is not a switch.

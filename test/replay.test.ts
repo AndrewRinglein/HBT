@@ -35,11 +35,21 @@ beforeAll(() => {
   // 2026-08-27: station.crit turned crits ON, the fight moved again, and now
   // seed 0 shows sear + heal + wash while seed 1 lost the wash. The CLAIMS
   // under test are unchanged.
-  execSync(`npx tsx tools/export-battle.mts 0 map.thicket 8 > "${BATTLE}"`)
+  // 2026-09-03 (movement.zone-of-control): re-seeding by hand a sixth time is
+  // the wrong shape — the rig exports the FIRST seed of 0..7 whose battle shows
+  // all three (sear, heal, wash). The claims are unchanged; the seed is found.
+  const shows = (b: { events: { type: string; causeId?: string }[] }) =>
+    b.events.some((e) => e.type === 'status.applied' && e.causeId === 'trigger.zombie-burning.sear')
+    && b.events.some((e) => e.type === 'heal.applied')
+    && b.events.some((e) => e.type === 'status.reduced' && e.causeId === 'terrain.water')
+  for (let seed = 0; seed < 8; seed++) {
+    execSync(`npx tsx tools/export-battle.mts ${seed} map.thicket 8 > "${BATTLE}"`)
+    battle = JSON.parse(readFileSync(BATTLE, 'utf8'))
+    if (shows(battle)) break
+  }
   execSync(`node tools/build-replay.mjs "${BATTLE}" "${PAGE}"`)
   html = readFileSync(PAGE, 'utf8')
-  battle = JSON.parse(readFileSync(BATTLE, 'utf8'))
-}, 30_000)
+}, 90_000)
 
 describe('the replay rig', () => {
   it('assembles a self-contained page from the three committed pieces + one battle', () => {
@@ -50,7 +60,7 @@ describe('the replay rig', () => {
 
   it('the battle is a seed with its engine commit — a stale replay says so', () => {
     expect(html).toContain(`"engineCommit":"${battle.engineCommit}"`)
-    expect(html).toContain('"replicate":0') // the demo seed — see beforeAll
+    expect(html).toMatch(/"replicate":\d+/) // the found seed — see beforeAll (2026-09-03)
     expect(html).toContain('"mapId":"map.thicket"')
   })
 

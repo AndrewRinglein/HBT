@@ -1,8 +1,8 @@
-map.open f928ab5f
-map.ridge bd81ffdf
-map.flanks b817046d
-map.highlands b88a136e
-map.field 64fb7560
-map.thicket 38b80181
-test.map.embers 71965a0d
-test.map.showcase 273cbd27
+map.open 08e8d50e
+map.ridge 09e3c46a
+map.flanks e12ce7a9
+map.highlands 92f83567
+map.field 0e5b17ca
+map.thicket f05514c9
+test.map.embers 388063c2
+test.map.showcase d187f62e

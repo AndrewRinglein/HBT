@@ -139,7 +139,15 @@
   "expect": "a unit pathing past an adjacent zombie ends its move on the first hex inside that zombie's ZoC, and the log carries move.stopped naming the unit that stopped it",
   "changesBaseline": true,
   "note": "BECAUSE THE AI IS BLIND: reachable() still offers hexes the unit cannot actually reach, so units will routinely end up somewhere they did not choose. That MUST emit move.stopped. A unit ending somewhere unexplained with no log line is the exact silent-failure class the harness exists to catch.",
-  "attempts": 2
+  "attempts": 2,
+  "probeIds": [
+   "move.stopped"
+  ],
+  "generalizationExempt": "an engine RULE of the board (GAME-DESIGN §4) with no content instance to vary — every standing unit exerts it; the switch zoneOfControl is the sweep axis",
+  "killSwitchExempt": "no content id carries the zone — it is the six hexes round every standing unit; the tests assert the stop and the provoke, which no row can be disabled to falsify",
+  "status": "done-needs-review",
+  "sha": "0b79fb7",
+  "gauntlet": "not passed — 2 flag(s) warned; 2 exemption(s) taken"
  },
  {
   "id": "movement.attack-of-opportunity",
@@ -151,7 +159,12 @@
   "spec": "Leaving a hex inside an enemy's ZoC provokes one free attack from that enemy, resolved through performAttack with its cheapest melee attack, then settle. Once per enemy per activation. Costs the attacker nothing. AI remains blind — it will walk into these.",
   "expect": "a kiting ranger adjacent to a zombie takes a hit when it disengages, the log shows the attack with causeId movement.aoo, and the ranger's damage-taken share rises measurably in a paired sweep",
   "changesBaseline": true,
-  "note": "HAZARD: this lands damage MID-MOVE, so settle can fire inside executeMove's per-step loop. A unit can die between two steps, and victory can trigger mid-activation. executeMove already breaks on lifeState !== standing; that guard is now load-bearing and needs its own test."
+  "note": "HAZARD: this lands damage MID-MOVE, so settle can fire inside executeMove's per-step loop. A unit can die between two steps, and victory can trigger mid-activation. executeMove already breaks on lifeState !== standing; that guard is now load-bearing and needs its own test.",
+  "probeIds": [
+   "aoo.provoked"
+  ],
+  "generalizationExempt": "the free swing is the holder's own cheapest melee attack — the rows vary, the rule does not; the switch is the axis",
+  "killSwitchExempt": "no content id carries the provoke; the tests assert the swing through performAttack under movement.aoo"
  },
  {
   "id": "status.regeneration",

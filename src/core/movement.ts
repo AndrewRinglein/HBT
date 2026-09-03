@@ -8,6 +8,8 @@ import type { Ctx, MoveDef, Unit } from './types.js'
 import { appliesOnEnterOf, isPassable, moveCostOf, stripsOnEnterOf, terrainIdOf } from '../content/maps.js'
 import { addStatMod, emit, gainStamina, knockUnit, loseMaxStamina, markMoveUsed, moveUnit, spendStamina, unit } from './mutate.js'
 import { forcedTargetOf, applyStatus, reduceStatus } from './status.js'
+import { canAttack, performAttack } from './pipeline.js'
+import { settle } from './settle.js'
 
 // MOVE_STAMINA_COST is gone (2026-08-21) — Angela: "It shouldn't be
 // hard-coded. It should be content-driven." The cost of moving is a field on
@@ -153,11 +155,24 @@ export function executeMove(ctx: Ctx, unitId: number, path: HexId[], power: Move
   emit(ctx, 'move.begin', power.id, { actor: unitId, from: u.hex, to: path[path.length - 1], hexes: path.length })
 
   let moved = 0
+  const provoked = new Set<number>()   // once per enemy per activation
   for (const hex of path) {
     // 1. movement points — hills cost 2
     const cost = stepCost(ctx, hex)
     if (u.movePointsLeft < cost) break
-    // 2. attacks of opportunity — not in the baseline
+    // 2. attacks of opportunity — movement.attack-of-opportunity (2026-09-03):
+    //    leaving a hex inside an enemy's ZoC provokes ONE free attack from
+    //    that enemy, its cheapest melee attack, through performAttack; once
+    //    per enemy per activation; it costs the attacker nothing. The AI is
+    //    blind to it by ruling (Angela 2026-08-13) and walks into these.
+    if (ctx.cfg.switches.zoneOfControl) {
+      for (const e of zocHoldersAt(ctx, u, u.hex)) {
+        if (provoked.has(e.id)) continue
+        provoked.add(e.id)
+        attackOfOpportunity(ctx, e.id, unitId)
+        if (u.lifeState !== 'standing') return moved
+      }
+    }
     // 3. enter and spend
     const terrainHere = ctx.state.terrain[hex] ?? 0
     moveUnit(ctx, unitId, hex, cost, power.id, terrainIdOf(terrainHere))
@@ -178,8 +193,50 @@ export function executeMove(ctx: Ctx, unitId: number, path: HexId[], power: Move
     // 6. vision — none in the baseline
     if (onStep && !onStep(ctx, unitId, hex)) break
     if (u.lifeState !== 'standing') break
+    // 7. zone of control — movement.zone-of-control (2026-09-03): a unit that
+    //    ENTERS a hex inside an enemy's ZoC stops there — it may enter, then
+    //    its movement ends. Standing units only exert it. The AI is blind by
+    //    ruling: it picked its destination as if ZoC did not exist.
+    if (ctx.cfg.switches.zoneOfControl) {
+      const holders = zocHoldersAt(ctx, u, hex)
+      if (holders.length) {
+        emit(ctx, 'move.stopped', power.id, { actor: unitId, hex, by: holders[0]!.id, reason: 'zone of control' })
+        break
+      }
+    }
   }
   return moved
+}
+
+/** The standing enemies whose ZoC (their six adjacent hexes) covers `hex`. Sorted by id (Law 6). */
+export function zocHoldersAt(ctx: Ctx, u: Unit, hex: HexId): Unit[] {
+  return ctx.state.units
+    .filter((o) => o.side !== u.side && o.lifeState === 'standing' && distance(o.hex, hex) === 1)
+    .sort((a, b) => a.id - b.id)
+}
+
+/**
+ * The free swing — movement.attack-of-opportunity. The holder's cheapest
+ * melee attack (lowest stamina cost, ties to declared order), resolved through
+ * THE attack function with the primary-action and stamina gates lifted for
+ * this one swing (it costs the attacker nothing), then settle. Skipped, with
+ * a line, when the holder has no melee attack it can legally make.
+ */
+export function attackOfOpportunity(ctx: Ctx, holderId: number, moverId: number): void {
+  const h = unit(ctx, holderId)
+  const melee = h.attacks.map((id) => ctx.attacks[id]).filter((a): a is NonNullable<typeof a> => !!a && a.kind === 'melee' && !a.area)
+    .sort((a, b) => a.staminaCost - b.staminaCost)[0]
+  if (!melee) { emit(ctx, 'aoo.skipped', 'movement.aoo', { actor: holderId, target: moverId, reason: 'no melee attack' }); return }
+  const primary = h.primaryUsed, stamina = h.stamina
+  h.primaryUsed = false
+  h.stamina = Math.max(h.stamina, melee.staminaCost)
+  const legal = canAttack(ctx, holderId, moverId, melee.id) && ctx.state.turn >= (h.cooldowns[melee.id] ?? 0)
+  if (!legal) { h.primaryUsed = primary; h.stamina = stamina; emit(ctx, 'aoo.skipped', 'movement.aoo', { actor: holderId, target: moverId, reason: 'not legal' }); return }
+  emit(ctx, 'aoo.provoked', 'movement.aoo', { actor: holderId, target: moverId, attackId: melee.id })
+  performAttack(ctx, holderId, moverId, melee.id)
+  h.primaryUsed = primary
+  h.stamina = stamina   // costs the attacker nothing
+  settle(ctx, 'movement.aoo')
 }
 
 /**

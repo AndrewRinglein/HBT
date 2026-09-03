@@ -5673,3 +5673,90 @@ index 05431d6..8f0d614 100644
 </details>
 
 IRON GAUNTLET: NOT PASSED — 2 FLAG(S) WARNED
+
+## movement.zone-of-control — LANDED `0b79fb7` **NEEDS REVIEW**
+2026-09-03 10:25
+
+  PASS  dependencies landed
+  WARN  not already decided — 6 candidate ruling(s) — READ BEFORE ASKING: ../COMBAT-DESIGN.md:477 · ../CODEX.md:372
+  PASS  typecheck
+  PASS  full test suite
+  PASS  gate 1 — the id appears in a real battle — move.stopped: 3 log lines, 3 fired, 3 changed state
+  PASS  brought its own tests — test/bleed-magnitude.test.ts, test/replay.test.ts, test/zone-of-control.test.ts
+  WARN  existing tests untouched — DELETED LINES in test/bleed-magnitude.test.ts (-1), test/replay.test.ts (-4) — will land FLAGGED for review
+  PASS  control battles unchanged — will re-bless at commit — this item DECLARED it changes the control battles: map.open f928ab5f->08e8d50e, map.ridge bd81ffdf->09e3c46a, map.flanks b817046d->e12ce7a9, map.highlands b88a136e->92f83567, map.field 64fb7560->0e5b17ca, map.thicket 38b80181->f05514c9, test.map.embers 71965a0d->388063c2, test.map.showcase 273cbd27->d187f62e
+  PASS  content has a published source — 16 ids without a published source (6 awaiting publication from earlier items — see audit)
+  PASS  hardcode scan — core knows mechanisms, never names
+  PASS  generalizes — the second instance costs zero engine code
+  PASS  naming — new content ids use declared kinds
+  PASS  naming — no banned words invented
+  PASS  kill switch — the tests fail without the content
+
+<details><summary>Existing tests were edited — review this diff</summary>
+
+```diff
+diff --git a/test/bleed-magnitude.test.ts b/test/bleed-magnitude.test.ts
+index ed879a9..a6a45b3 100644
+--- a/test/bleed-magnitude.test.ts
++++ b/test/bleed-magnitude.test.ts
+@@ -124,5 +124,8 @@ describe('in real battles', () => {
+   it('the gash variant: a second shedByHealing status is healed off in showcase.gash-variant', () => {
+     let sheds = 0
+-    for (let r = 0; r < 20 && !sheds; r++) {
++    // Widened 20 -> 60 seeds on 2026-09-03 (movement.zone-of-control): the
++    // stops re-time every fight and the first heal-on-a-gashed-hero moved from
++    // seed <20 to seed 39. Same claim; early exit on the first shed.
++    for (let r = 0; r < 60 && !sheds; r++) {
+       const ctx = createBattle({ ...scenarioOptions(scenarioDef('showcase.gash-variant')), replicate: r }); runBattle(ctx)
+       sheds += ctx.events.filter((e) => e.type === 'status.reduced' && e['statusId'] === 'test.status.gash'
+diff --git a/test/replay.test.ts b/test/replay.test.ts
+index 6062afb..e783316 100644
+--- a/test/replay.test.ts
++++ b/test/replay.test.ts
+@@ -36,9 +36,19 @@ beforeAll(() => {
+   // seed 0 shows sear + heal + wash while seed 1 lost the wash. The CLAIMS
+   // under test are unchanged.
+-  execSync(`npx tsx tools/export-battle.mts 0 map.thicket 8 > "${BATTLE}"`)
++  // 2026-09-03 (movement.zone-of-control): re-seeding by hand a sixth time is
++  // the wrong shape — the rig exports the FIRST seed of 0..7 whose battle shows
++  // all three (sear, heal, wash). The claims are unchanged; the seed is found.
++  const shows = (b: { events: { type: string; causeId?: string }[] }) =>
++    b.events.some((e) => e.type === 'status.applied' && e.causeId === 'trigger.zombie-burning.sear')
++    && b.events.some((e) => e.type === 'heal.applied')
++    && b.events.some((e) => e.type === 'status.reduced' && e.causeId === 'terrain.water')
++  for (let seed = 0; seed < 8; seed++) {
++    execSync(`npx tsx tools/export-battle.mts ${seed} map.thicket 8 > "${BATTLE}"`)
++    battle = JSON.parse(readFileSync(BATTLE, 'utf8'))
++    if (shows(battle)) break
++  }
+   execSync(`node tools/build-replay.mjs "${BATTLE}" "${PAGE}"`)
+   html = readFileSync(PAGE, 'utf8')
+-  battle = JSON.parse(readFileSync(BATTLE, 'utf8'))
+-}, 30_000)
++}, 90_000)
+ 
+ describe('the replay rig', () => {
+@@ -51,5 +61,5 @@ describe('the replay rig', () => {
+   it('the battle is a seed with its engine commit — a stale replay says so', () => {
+     expect(html).toContain(`"engineCommit":"${battle.engineCommit}"`)
+-    expect(html).toContain('"replicate":0') // the demo seed — see beforeAll
++    expect(html).toMatch(/"replicate":\d+/) // the found seed — see beforeAll (2026-09-03)
+     expect(html).toContain('"mapId":"map.thicket"')
+   })
+```
+</details>
+
+IRON GAUNTLET: NOT PASSED — 2 FLAG(S) WARNED; 2 EXEMPTION(S) TAKEN
+
+```
+effect of move.stopped — 25 paired battles per map, WITH vs WITHOUT
+  map.open: heroWins 25->25 (+0)  meanTurns 4.0->4.0
+  map.ridge: heroWins 25->25 (+0)  meanTurns 4.4->4.4
+  map.flanks: heroWins 25->25 (+0)  meanTurns 4.0->4.0
+  map.highlands: heroWins 25->25 (+0)  meanTurns 5.2->5.2
+  map.field: heroWins 25->25 (+0)  meanTurns 5.5->5.5
+  map.thicket: heroWins 25->25 (+0)  meanTurns 5.4->5.4
+  test.map.embers: heroWins 25->25 (+0)  meanTurns 2.9->2.9
+  test.map.showcase: heroWins 25->25 (+0)  meanTurns 3.8->3.8
+NO MEASURABLE EFFECT at this sample size — consequence clause caught state changes, but outcomes did not move. Consider a sweep with more replicates before drawing balance conclusions.
+```

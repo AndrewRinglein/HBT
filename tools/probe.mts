@@ -52,7 +52,10 @@ const ACTED = new Set(['damage.applied','heal.applied','power.used','attack.decl
   // the battle. Widening, stricter, as above.
   'unit.shunted', 'encounter.won', 'encounter.lost',
   // capability.power-pool (2026-09-03): the pool moved. Widening, stricter.
-  'power.gained'])
+  'power.gained',
+  // movement.zone-of-control / attack-of-opportunity (2026-09-03): a stop is a
+  // move that did not finish; a provoke is a swing that would not have happened.
+  'move.stopped', 'aoo.provoked'])
 
 /**
  * A SCENARIO is probed by fielding it, not by sweeping the standard panel.
