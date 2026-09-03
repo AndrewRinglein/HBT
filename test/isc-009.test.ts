@@ -6,7 +6,7 @@ import { loadFixture } from './walk.js'
 import { performCommit, commitmentOf, listAvailable, canCommit, tickAssignments } from '../src/core/assignments.js'
 import { STAGES } from '../src/content/stages.js'
 
-const H = 'hero.shadows.dusk-hawk.v1'
+const H = 'hero.base.ranger-aggressive'
 
 describe('ISC-009 — a quest takes both slots', () => {
   it('on a quest: both slots answer onQuest, no Stage lists the hero, nothing else may be committed, and the quest ends when its Weeks do', () => {

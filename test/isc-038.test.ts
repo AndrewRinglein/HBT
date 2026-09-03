@@ -9,7 +9,7 @@ import { canHeal, performHeal, costOfHeal } from '../src/core/market.js'
 import { commitmentOf } from '../src/core/assignments.js'
 import { SWITCHES } from '../src/content/switches.js'
 
-const H = 'hero.base.paladin-shiney', WHOLE = 'hero.fixed.air-mage'
+const H = 'hero.base.paladin-shiney', WHOLE = 'hero.base.priest-armored'
 
 describe('ISC-038 — Field Surgery', () => {
   it('a Severe hero healed once is Badly Wounded and back on the field roster; Faith paid to the number', () => {

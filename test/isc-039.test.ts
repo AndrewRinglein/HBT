@@ -6,7 +6,7 @@ import { loadFixture } from './walk.js'
 import { canLevelUp, performLevelUp, listLevelUps } from '../src/core/rewards.js'
 import { LEVEL_THRESHOLDS } from '../src/content/levels.js'
 
-const H = 'hero.fixed.air-mage'
+const H = 'hero.base.priest-armored'
 
 describe('ISC-039 — the ruled thresholds', () => {
   it('20 · 100 · 250 · 500, one level at a time, refused below', () => {

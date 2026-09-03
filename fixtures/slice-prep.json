@@ -57,6 +57,21 @@
    "corruption": 0,
    "equipped": []
   },
+  "hero.base.priest-armored": {
+   "id": "hero.base.priest-armored",
+   "name": "Battle Chaplain",
+   "classes": [
+    "class.priest"
+   ],
+   "level": 1,
+   "xp": 0,
+   "wound": 0,
+   "lifeState": "alive",
+   "badges": [],
+   "unitType": "hero.base.priest-armored",
+   "corruption": 0,
+   "equipped": []
+  },
   "hero.base.priest-scantily": {
    "id": "hero.base.priest-scantily",
    "name": "Lucius",
@@ -72,18 +87,33 @@
    "corruption": 0,
    "equipped": []
   },
-  "hero.fixed.air-mage": {
-   "id": "hero.fixed.air-mage",
-   "name": "Air Mage",
+  "hero.base.ranger-aggressive": {
+   "id": "hero.base.ranger-aggressive",
+   "name": "Hunter",
    "classes": [
-    "class.mage"
+    "class.ranger"
    ],
    "level": 1,
    "xp": 0,
    "wound": 0,
    "lifeState": "alive",
    "badges": [],
-   "unitType": "alpha-air-mage",
+   "unitType": "hero.base.ranger-aggressive",
+   "corruption": 0,
+   "equipped": []
+  },
+  "hero.base.warrior-iron": {
+   "id": "hero.base.warrior-iron",
+   "name": "Iron Dwarf",
+   "classes": [
+    "class.warrior"
+   ],
+   "level": 1,
+   "xp": 0,
+   "wound": 0,
+   "lifeState": "alive",
+   "badges": [],
+   "unitType": "hero.base.warrior-iron",
    "corruption": 0,
    "equipped": []
   },
@@ -99,51 +129,6 @@
    "lifeState": "alive",
    "badges": [],
    "unitType": "hero.fixed.orphans",
-   "corruption": 0,
-   "equipped": []
-  },
-  "hero.shadows.dusk-hawk.v1": {
-   "id": "hero.shadows.dusk-hawk.v1",
-   "name": "Dusk Hawk",
-   "classes": [
-    "class.ranger"
-   ],
-   "level": 1,
-   "xp": 0,
-   "wound": 0,
-   "lifeState": "alive",
-   "badges": [],
-   "unitType": "alpha-dusk-hawk",
-   "corruption": 0,
-   "equipped": []
-  },
-  "hero.shadows.oathblade.v1": {
-   "id": "hero.shadows.oathblade.v1",
-   "name": "Oathblade",
-   "classes": [
-    "class.warrior"
-   ],
-   "level": 1,
-   "xp": 0,
-   "wound": 0,
-   "lifeState": "alive",
-   "badges": [],
-   "unitType": "alpha-oathblade",
-   "corruption": 0,
-   "equipped": []
-  },
-  "hero.skyship.sky-pirate.v1": {
-   "id": "hero.skyship.sky-pirate.v1",
-   "name": "Sky Pirate",
-   "classes": [
-    "class.rogue"
-   ],
-   "level": 1,
-   "xp": 0,
-   "wound": 0,
-   "lifeState": "alive",
-   "badges": [],
-   "unitType": "alpha-sky-pirate",
    "corruption": 0,
    "equipped": []
   }

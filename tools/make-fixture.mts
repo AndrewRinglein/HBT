@@ -26,10 +26,9 @@ const hero = (id: string, name: string, cls: string, unitType: string, level = 1
 })
 
 const roster: Hero[] = [
-  hero('hero.shadows.oathblade.v1', 'Oathblade', 'class.warrior', 'alpha-oathblade'),
-  hero('hero.skyship.sky-pirate.v1', 'Sky Pirate', 'class.rogue', 'alpha-sky-pirate'),
-  hero('hero.shadows.dusk-hawk.v1', 'Dusk Hawk', 'class.ranger', 'alpha-dusk-hawk'),
-  hero('hero.fixed.air-mage', 'Air Mage', 'class.mage', 'alpha-air-mage'),
+  hero('hero.base.ranger-aggressive', 'Hunter', 'class.ranger', 'hero.base.ranger-aggressive'),
+  hero('hero.base.warrior-iron', 'Iron Dwarf', 'class.warrior', 'hero.base.warrior-iron'),
+  hero('hero.base.priest-armored', 'Battle Chaplain', 'class.priest', 'hero.base.priest-armored'),
   hero('hero.base.priest-scantily', 'Lucius', 'class.priest', 'alpha-lucius'),
   hero('hero.base.paladin-shiney', 'Osric', 'class.paladin', 'alpha-osric'),
   hero('hero.fixed.orphans', 'Orphan Child', 'class.civilian', 'hero.fixed.orphans'),

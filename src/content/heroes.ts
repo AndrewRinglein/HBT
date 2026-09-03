@@ -25,10 +25,12 @@ const RAW_HEROES: readonly HeroRow[] = [
   hero('hero.base.ranger-aggressive', 'Hunter', 'class.ranger', 'hero.base.ranger-aggressive'),
   hero('hero.base.warrior-iron', 'Iron Dwarf', 'class.warrior', 'hero.base.warrior-iron'),
   hero('hero.base.priest-armored', 'Battle Chaplain', 'class.priest', 'hero.base.priest-armored'),
-  hero('hero.shadows.oathblade.v1', 'Oathblade', 'class.warrior', 'alpha-oathblade'),
-  hero('hero.skyship.sky-pirate.v1', 'Sky Pirate', 'class.rogue', 'alpha-sky-pirate'),
-  hero('hero.shadows.dusk-hawk.v1', 'Dusk Hawk', 'class.ranger', 'alpha-dusk-hawk'),
-  hero('hero.fixed.air-mage', 'Air Mage', 'class.mage', 'alpha-air-mage'),
+  // Removed 2026-09-02 (Andrew: "Let's just remove those four alpha heroes"):
+  // Oathblade, Sky Pirate, Dusk Hawk, Air Mage — alpha test units with no kit
+  // in the content. The pool is short until the engine fields the rest of the
+  // Eve 24 (engine backlog: content.field-eve-24); the opening drafts what the
+  // pool holds. Lucius and Osric are Eve rows with kits, still fielded on
+  // alpha unit rows until that lands.
   hero('hero.base.priest-scantily', 'Lucius', 'class.priest', 'alpha-lucius'),
   hero('hero.base.paladin-shiney', 'Osric', 'class.paladin', 'alpha-osric'),
 ]

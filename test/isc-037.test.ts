@@ -55,7 +55,7 @@ describe('ISC-037 — recruiting costs Faith and adds a hero', () => {
     expect(canRecruit(ctx.campaign, listRecruitOffers(ctx.campaign)[0]!.id)).toBe(false)
   })
   it('a full roster refuses a recruit until a Roster Article holds more', () => {
-    const ctx = atBuy((c) => { c.purse['currency.faith'] = 100; c.roster['hero.base.warrior-iron'] = { ...c.roster['hero.fixed.orphans']!, id: 'hero.base.warrior-iron', name: 'Iron Dwarf' } })   // eight alive
+    const ctx = atBuy((c) => { c.purse['currency.faith'] = 100; for (const n of [2, 3]) c.roster[`hero.fixed.orphans.${n}`] = { ...c.roster['hero.fixed.orphans']!, id: `hero.fixed.orphans.${n}`, name: `Orphan ${n}` } })   // eight alive (the fixture holds six since the alpha four were removed, 2026-09-02)
     const pick = listRecruitOffers(ctx.campaign)[0]!
     expect(canRecruit(ctx.campaign, pick.id)).toBe(false)
     expect(() => performRecruit(ctx, pick.id, 'test')).toThrow(/roster is full at 8/)

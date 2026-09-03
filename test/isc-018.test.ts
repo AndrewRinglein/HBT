@@ -9,7 +9,7 @@ import { WOUND_UNAVAILABLE } from '../src/content/wounds.js'
 
 describe('ISC-018 — wounds gate deployment', () => {
   it('a Severe hero is wounded to commitmentOf, absent from listDeployable, and refused by canDeploy; a Wounded one still goes', () => {
-    const severe = 'hero.base.paladin-shiney', lightly = 'hero.fixed.air-mage'
+    const severe = 'hero.base.paladin-shiney', lightly = 'hero.base.priest-armored'
     const ctx = loadFixture((c) => { c.roster[severe]!.wound = WOUND_UNAVAILABLE; c.roster[lightly]!.wound = WOUND_UNAVAILABLE - 1 })
     beginCombatPrep(ctx, 'test'); performAdvancePrep(ctx, 'test'); performAdvancePrep(ctx, 'test')
     expect(commitmentOf(ctx.campaign, severe, 'field')).toBe('wounded')

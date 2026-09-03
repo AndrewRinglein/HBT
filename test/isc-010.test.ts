@@ -7,7 +7,7 @@ import { loadFixture } from './walk.js'
 import { commitmentOf, listAvailable, canCommit } from '../src/core/assignments.js'
 import { beginCombatPrep, performAdvancePrep, canDeploy, listDeployable } from '../src/core/prep.js'
 
-const H = 'hero.fixed.air-mage'
+const H = 'hero.base.priest-armored'
 
 describe('ISC-010 — unavailable is a third value, answered in one place', () => {
   it("a hero the Week's roll kept home answers 'unavailable' in both slots and is offered nowhere", () => {

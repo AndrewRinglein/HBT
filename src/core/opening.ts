@@ -57,7 +57,9 @@ export function draftsOwedOf(campaign: CampaignState): number {
   if (n === null) return 0
   const have = draftedCountOf(campaign)
   // before battle 1: one; before battle 2: three; then one more per battle, capped at six
-  const target = n === 1 ? DRAFT_CADENCE.first : Math.min(DRAFT_CADENCE.until, DRAFT_CADENCE.first + DRAFT_CADENCE.afterFirst + (n - 2) * DRAFT_CADENCE.afterEach)
+  // …and never more than the pool holds: with the alpha four removed (2026-09-02) the pool is short of six until the engine fields the Eve 24
+  const cap = Math.min(DRAFT_CADENCE.until, HERO_POOL.filter((h) => groupOf(h.classes) === 'hero').length)
+  const target = n === 1 ? DRAFT_CADENCE.first : Math.min(cap, DRAFT_CADENCE.first + DRAFT_CADENCE.afterFirst + (n - 2) * DRAFT_CADENCE.afterEach)
   return Math.max(0, target - have)
 }
 

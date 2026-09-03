@@ -9,7 +9,7 @@ import { beginStage, performAdvance } from '../src/core/week.js'
 import { yieldOf, performAssignLabour, canAssignLabour, nodeCountOf } from '../src/core/mend.js'
 import { commitmentOf } from '../src/core/assignments.js'
 
-const H = ['hero.shadows.oathblade.v1', 'hero.skyship.sky-pirate.v1', 'hero.shadows.dusk-hawk.v1', 'hero.fixed.air-mage', 'hero.base.priest-scantily'] as const
+const H = ['hero.base.warrior-iron', 'hero.base.paladin-shiney', 'hero.base.ranger-aggressive', 'hero.base.priest-armored', 'hero.base.priest-scantily'] as const
 
 function atMend(edit?: Parameters<typeof loadFixture>[0]) {
   const ctx = loadFixture(edit)
@@ -44,7 +44,8 @@ describe('ISC-036 — the four labours yield what the settled table says', () =>
     expect(ctx.campaign.purse['currency.salvage']).toBe(purse['currency.salvage'])
     const gains = ctx.events.filter((e) => e.type === 'resource.gained')
     // heroes resolve in id order (Law 6), not assignment order
-    expect(gains.map((e) => e.causeId)).toEqual([`stage.mend.week-3:delve:${H[2]}`, `stage.mend.week-3:farm:${H[0]}`, `stage.mend.week-3:pray:${H[1]}`])
+    // (the ids changed 2026-09-02 with the alpha four gone; the rule — id order — did not: paladin < ranger < warrior)
+    expect(gains.map((e) => e.causeId)).toEqual([`stage.mend.week-3:pray:${H[1]}`, `stage.mend.week-3:delve:${H[2]}`, `stage.mend.week-3:farm:${H[0]}`])
     expect(commitmentOf(ctx.campaign, H[0], 'city')).toBe('free')             // released at the Week boundary
   })
   it('a second Field and an Abbey held raise the yields by the node', () => {
