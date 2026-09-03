@@ -9,7 +9,7 @@ export const raIcon = (name, style = '') => `<svg class="ra" style="${style}"><u
 export function spriteHTML(RA) {
   return '<svg id="raSprite" aria-hidden="true" style="position:absolute;width:0;height:0;overflow:hidden">' +
     Object.entries(RA.glyphs).map(([name, g]) =>
-      `<symbol id="ra-${name}" viewBox="0 0 ${g.adv} 1024"><path transform="translate(0,${RA.ascent}) scale(1,-1)" d="${g.d}"/></symbol>`).join('') +
+      `<symbol id="ra-${name}" viewBox="0 0 ${g.adv} 1024"><path${g.raw ? '' : ` transform="translate(0,${RA.ascent}) scale(1,-1)"`} d="${g.d}"/></symbol>`).join('') +
     '</svg>'
 }
 
@@ -18,7 +18,7 @@ export function spriteHTML(RA) {
    arrow stays STRICTLY vertical; an angled arrow reads as a heading. */
 export const ACT_CLASS = {
   melee:   { glyph: 'crossed-swords',  col: '#d1665c', rot: '' },
-  ranged:  { glyph: 'crossbow',        col: '#d1665c', rot: '' },
+  ranged:  { glyph: 'bow',             col: '#d1665c', rot: '' },   // ruled 2026-09-03: a bow, not a crossbow
   move:    { glyph: 'shoe-prints',     col: '#7f9ec0', rot: '' },
   special: { glyph: 'broadhead-arrow', col: '#d6b25e', rot: 'transform:rotate(-135deg)' },
 }
@@ -44,11 +44,12 @@ export function icoHTML(a) {
   const k = ACT_CLASS[actClass(a)], h = actHue(a)
   return `<div class="acIco" style="color:${h.col};background:${h.bg};border-color:${h.bd}">${raIcon(k.glyph, k.rot)}</div>`
 }
-/* the danger marker's icon: crossed swords for melee, the crossbow for ranged
-   — "the bow is filed under crossbow". 22px is the badge tier. No plate. */
+/* the danger marker's icon: crossed swords for melee, the bow for ranged
+   (ruled 2026-09-03 — RPG Awesome has no plain bow, so `bow` is the viewer's
+   own glyph in the sprite). 22px is the badge tier. No plate. */
 export const DGSZ = 22
 export function dangerHTML(d, col) {
-  const ico = raIcon(d.kind === 'ranged' ? 'crossbow' : 'crossed-swords',
+  const ico = raIcon(d.kind === 'ranged' ? 'bow' : 'crossed-swords',
     `font-size:${DGSZ}px;color:${col};flex:0 0 ${DGSZ}px`)
   return `<span style="font:700 18px/1 ui-monospace,monospace">${d.n}</span>${ico}`
 }

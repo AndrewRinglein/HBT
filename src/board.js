@@ -580,6 +580,14 @@ export function drawAim(V) {
    play at (fit is 0.654 — a 132px token becomes 86px). */
 export const VIEW = { W: 1408, H: 744 }
 export const PEEK_KEY = 'z'
+/* A unit is its whole standee, not its feet: the token stands ~132 screen px
+   above the feet point, with the bars, badges and floats above that. When the
+   camera brings a unit into view it must bring the HEAD in, and at the top of
+   the board it must be allowed to show empty space above row 0 for the
+   standees standing there (Andrew, 2026-09-03: "the units are taller than two
+   hexes … a unit on the top of the map … is getting cut off"). Screen px,
+   converted to board-y by the squash where it matters. */
+export const TOKEN_TOP = 200
 /** the viewport the camera reasons in: the board wrap as laid out, or the
     design size when nothing is laid out yet (review 2026-09-03: the inclusion
     test and the bubble placement used two different rectangles) */
@@ -594,7 +602,8 @@ export function applyCam(V, opts = {}) {
   const bw = F.w, bh = F.h, sq = squash(V)
   const fit = view.zoom === 'fit' || view.peek
   const { W: VW, H: VH } = viewportOf(V)
-  const s = fit ? Math.min(VW / bw, VH / (bh * sq)) : 1
+  const top = TOKEN_TOP / sq                          // the standee's overhang above its feet, in board-y
+  const s = fit ? Math.min(VW / bw, VH / ((bh + top) * sq)) : 1
   const halfW = (VW / 2) / s, halfH = (VH / 2) / (s * sq)
   const M = 80
   const pts = []
@@ -611,15 +620,16 @@ export function applyCam(V, opts = {}) {
     for (const p of pts) {                                                             // the minimal nudge, per point
       if (p.px < camF.x - halfW + M) camF.x = p.px + halfW - M
       else if (p.px > camF.x + halfW - M) camF.x = p.px - halfW + M
-      if (p.py < camF.y - halfH + M) camF.y = p.py + halfH - M
+      if (p.py - top < camF.y - halfH + M) camF.y = p.py - top + halfH - M            // the HEAD comes in, not the feet
       else if (p.py > camF.y + halfH - M) camF.y = p.py - halfH + M
     }
   }
   if (!fit) {
+    /* the clamp lets the camera show TOKEN_TOP of empty space above row 0 */
     camF.x = bw <= halfW * 2 ? bw / 2 : Math.min(Math.max(camF.x, halfW), bw - halfW)
-    camF.y = bh <= halfH * 2 ? bh / 2 : Math.min(Math.max(camF.y, halfH), bh - halfH)
+    camF.y = bh + top <= halfH * 2 ? (bh - top) / 2 : Math.min(Math.max(camF.y, halfH - top), bh - halfH)
   }
-  const cx = fit ? bw / 2 : camF.x, cy = fit ? bh / 2 : camF.y                        // peek shows the whole board, centred
+  const cx = fit ? bw / 2 : camF.x, cy = fit ? (bh - top) / 2 : camF.y                // peek shows the whole board and every standee, centred
   V.dom.stage.style.transform = `perspective(2600px) rotateX(${LAYOUT.tilt}deg) scale(${s.toFixed(4)}) translate(${(bw / 2 - cx).toFixed(1)}px,${(bh / 2 - cy).toFixed(1)}px)`
   V.dom.stage.style.setProperty('--anti', (-LAYOUT.tilt) + 'deg')
   /* the HUD says only what the camera is doing (Law 5: the export's outcome,
@@ -658,7 +668,7 @@ export function drawEdges(V) {
   for (const u of Object.values(S.U)) {
     if (u.life === 'dead') continue
     const p = POS[u.hex]
-    const inside = Math.abs(p.px - camF.x) <= halfW - EDGE_TOKEN && Math.abs(p.py - camF.y) <= halfH - EDGE_TOKEN / sq
+    const inside = Math.abs(p.px - camF.x) <= halfW - EDGE_TOKEN && (p.py - TOKEN_TOP / sq) >= camF.y - halfH && p.py <= camF.y + halfH - EDGE_TOKEN / sq
     if (inside) continue
     /* screen offset from the viewport centre, clamped to the edge rectangle */
     const dx = (p.px - camF.x) * s, dy = (p.py - camF.y) * s * sq
@@ -681,7 +691,7 @@ export function drawEdges(V) {
       <i class="edgeArrow" style="transform:rotate(${deg}deg) translateX(26px);border-left-color:${tint}"></i>
       <span class="edgeArt" style="background-image:url('${V.data.ASSETS[a.token]}')"></span>
       ${g.n > 1 ? `<b class="edgeN" style="background:${tint}">${g.n}</b>` : ''}
-      ${dgr ? `<span class="edgeDg">${dgr.n}${raIcon(dgr.kind === 'ranged' ? 'crossbow' : 'crossed-swords', 'font-size:12px')}</span>` : ''}
+      ${dgr ? `<span class="edgeDg">${dgr.n}${raIcon(dgr.kind === 'ranged' ? 'bow' : 'crossed-swords', 'font-size:12px')}</span>` : ''}
     </div>` }).join('')
 }
 /** wire drag, arrow keys and the peek key; returns an unbind for dispose() */

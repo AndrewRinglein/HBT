@@ -160,7 +160,7 @@ for (let i = 0; i < LIB.battles.length; i++) {
   drive(b.label, b.battle)
 }
 for (const u of uses) check(spriteIds.has(u), `icons: <use> names ${u}, sprite lacks it`)
-check(uses.has('ra-crossed-swords') && uses.has('ra-shoe-prints'), `icons: expected swords and shoe-prints among uses, got ${[...uses].join(',')}`)
+check(uses.has('ra-crossed-swords') && uses.has('ra-shoe-prints') && uses.has('ra-bow') && !uses.has('ra-crossbow'), `icons: expected swords, shoe-prints and the bow (never the crossbow) among uses, got ${[...uses].join(',')}`)
 check(damaging > 0 && plain > 0, `icons: rows damaging=${damaging} plain=${plain} — both kinds must appear`)
 if (DUR) for (const t of Object.keys(DUR)) check(FOLDED_TYPES.includes(t) || IGNORED.has(t), `pump: DUR names ${t}, which no log folds`)
 
@@ -257,6 +257,24 @@ if (DUR) for (const t of Object.keys(DUR)) check(FOLDED_TYPES.includes(t) || IGN
   v.peek(false); check(/scale\(1\.0000\)/.test(V.dom.stage.style.transform), 'camera: releasing peek did not return to 1x')
 }
 
+/* ── a standee at the top of the board is shown whole (ruled 2026-09-03) ──── */
+{
+  load(0); const v = H.viewer; v.pause(); const V = v._V
+  const POS = V.data.POS, sq = Math.cos(V.data.LAYOUT.tilt * Math.PI / 180), halfH = DESIGN.H / 2 / sq, TOP = 200 / sq
+  const EV = v.events
+  /* the first activation of a unit standing in row 0 or 1 */
+  let ai = -1, actor = null
+  for (let i = 0; i < EV.length; i++) if (EV[i].type === 'activation.begin') {
+    const St = foldTo(EV, i + 1, { UD: LIB.static.units, SN: LIB.static.statuses }); const u = St.U[EV[i].actor]
+    if (u && POS[u.hex].r <= 1) { ai = i; actor = u; break } }
+  check(ai >= 0, 'camera-top: no activation of a top-row unit in the first battle to test with')
+  if (ai >= 0) {
+    v.seek(ai + 1); v.render()
+    const head = POS[actor.hex].py - TOP, camTop = V.view.camF.y - halfH
+    check(head >= camTop - 1, `camera-top: the acting unit's head (board-y ${head.toFixed(0)}) is above the viewport's top edge (${camTop.toFixed(0)}) — cut off`)
+  }
+}
+
 /* ── off-screen indicators (PLAYBACK-DESIGN §7.8 part 1) ───────────────── */
 {
   load(0); const v = H.viewer; v.pause(); const V = v._V
@@ -267,7 +285,7 @@ if (DUR) for (const t of Object.keys(DUR)) check(FOLDED_TYPES.includes(t) || IGN
   const bubs = V.layers.edgeL ? V.layers.edgeL.querySelectorAll('.edgeBub') : []
   const POS = V.data.POS, camF = V.view.camF
   const sq = Math.cos(V.data.LAYOUT.tilt * Math.PI / 180)
-  const offCount = Object.values(v.state.U).filter(u => u.life !== 'dead' && !(Math.abs(POS[u.hex].px - camF.x) <= DESIGN.W / 2 - 24 && Math.abs(POS[u.hex].py - camF.y) <= DESIGN.H / 2 / sq - 24 / sq)).length
+  const offCount = Object.values(v.state.U).filter(u => u.life !== 'dead' && !(Math.abs(POS[u.hex].px - camF.x) <= DESIGN.W / 2 - 24 && (POS[u.hex].py - 200 / sq) >= camF.y - DESIGN.H / 2 / sq && POS[u.hex].py <= camF.y + DESIGN.H / 2 / sq - 24 / sq)).length
   check(offCount > 0, 'edges: panning to a corner left nobody off-screen — the test cannot bite')
   check(bubs.length > 0 && bubs.length <= offCount, `edges: ${bubs.length} bubbles for ${offCount} off-screen units`)
   const counted = bubs.reduce((n, b) => n + (b.querySelector('.edgeN') ? +b.querySelector('.edgeN').textContent : 1), 0)
