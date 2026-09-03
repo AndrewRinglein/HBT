@@ -1422,16 +1422,6 @@
    "needs": "stat: vision (no UnitDef field)"
   },
   {
-   "unit": "item.unbroken",
-   "what": "statModifier 'toughness' 1",
-   "needs": "stat: toughness (no UnitDef field)"
-  },
-  {
-   "unit": "item.light-of-hope",
-   "what": "statModifier 'toughness' -1",
-   "needs": "stat: toughness (no UnitDef field)"
-  },
-  {
    "unit": "item.trackers-eyeglass",
    "what": "statModifier 'vision' 1",
    "needs": "stat: vision (no UnitDef field)"

@@ -42,7 +42,7 @@ const heroes = D.testCohort.heroes.map((h) => {
   return {
     typeId: h.typeId, name: h.name, side: 'hero', copyOf: h.copyOf,
     maxHp: p.health, armor: p.armor ?? 0, resist: p.resist ?? 0,
-    accuracy: d.accuracy, dodge: p.dodge ?? 0,
+    accuracy: d.accuracy, dodge: p.dodge ?? 0, ...(p.toughness ? { toughness: p.toughness } : {}),
     strength: p.strength ?? 0, precision: p.precision ?? 0, magic: p.magic ?? 0, spirit: p.spirit ?? 0,
     role: e.role, movement: d.movement, reach: p.reach ?? 0,
     maxStamina: d.staminaMax, staminaRegen: d.staminaRegen ?? 1,
@@ -598,7 +598,7 @@ for (const id of PARTY) {
   prologueParty.push({
     typeId: id, name: h.name, side: 'hero',
     maxHp: p.health, armor: p.armor ?? 0, resist: p.resist ?? 0,
-    accuracy: d.accuracy, dodge: p.dodge ?? 0,
+    accuracy: d.accuracy, dodge: p.dodge ?? 0, ...(p.toughness ? { toughness: p.toughness } : {}),
     ...((d.crit ?? p.crit) ? { crit: d.crit ?? p.crit } : {}), ...((d.luck ?? p.luck) ? { luck: d.luck ?? p.luck } : {}), // station.crit
     strength: p.strength ?? 0, precision: p.precision ?? 0, magic: p.magic ?? 0, spirit: p.spirit ?? 0,
     // role and ai derived from the DEFAULT kit's attacks — the engine derives
@@ -696,7 +696,7 @@ const alphaTeam = [];
     alphaTeam.push({
       typeId: id, name: h.name, side: 'hero',
       maxHp: p.health, armor: p.armor ?? 0, resist: p.resist ?? 0,
-      accuracy: d.accuracy, dodge: p.dodge ?? 0,
+      accuracy: d.accuracy, dodge: p.dodge ?? 0, ...(p.toughness ? { toughness: p.toughness } : {}),
       ...(d.crit ?? p.crit ? { crit: d.crit ?? p.crit } : {}), ...(d.luck ?? p.luck ? { luck: d.luck ?? p.luck } : {}), // station.crit 2026-08-27
       strength: p.strength ?? 0, precision: p.precision ?? 0, magic: p.magic ?? 0, spirit: p.spirit ?? 0,
       role: anyRanged ? 'ranged' : 'melee',
@@ -768,7 +768,7 @@ for (const id of CIVILIANS) {
   prologueParty.push({
     typeId: id, name: h.name, side: 'hero',
     maxHp: p2.health, armor: p2.armor ?? 0, resist: p2.resist ?? 0,
-    accuracy: d2.accuracy, dodge: p2.dodge ?? 0,
+    accuracy: d2.accuracy, dodge: p2.dodge ?? 0, ...(p2.toughness ? { toughness: p2.toughness } : {}),
     ...(d2.crit ?? p2.crit ? { crit: d2.crit ?? p2.crit } : {}), ...(d2.luck ?? p2.luck ? { luck: d2.luck ?? p2.luck } : {}), // station.crit 2026-08-27
     strength: p2.strength ?? 0, precision: p2.precision ?? 0, magic: p2.magic ?? 0, spirit: p2.spirit ?? 0,
     role: anyRanged ? 'ranged' : 'melee',
@@ -858,7 +858,7 @@ function compileCritChart(chart) {
 // (ITEMS-PLAN §7); they emit with their stat payload and the active named.
 const ITEM_STAT = { health: 'maxHp', armor: 'armor', resist: 'resist', dodge: 'dodge', strength: 'strength',
   precision: 'precision', magic: 'magic', spirit: 'spirit', reach: 'reach', accuracy: 'accuracy',
-  movement: 'movement', staminaMax: 'maxStamina', staminaRegen: 'staminaRegen', crit: 'crit', luck: 'luck' };
+  movement: 'movement', staminaMax: 'maxStamina', staminaRegen: 'staminaRegen', crit: 'crit', luck: 'luck', toughness: 'toughness' };   // toughness: capability.deathbed 2026-09-03
 function takeItemAttack(a) {
   if (authoredAttacks[a.id]) return;
   const ranged = typeof a.range === 'number' && a.range > 1;
@@ -955,7 +955,7 @@ const ARMORS = JSON.parse(fs.readFileSync('gen/armor-enchants.json', 'utf8'));
 // Codex stat words -> engine StatName. Anything not here is a named gap.
 const HERO_STAT = { strength: 'strength', precision: 'precision', magic: 'magic', spirit: 'spirit', accuracy: 'accuracy',
   dodge: 'dodge', armor: 'armor', resist: 'resist', movement: 'movement', reach: 'reach', health: 'maxHp',
-  staminaMax: 'maxStamina', staminaRegen: 'staminaRegen', crit: 'crit', luck: 'luck' };
+  staminaMax: 'maxStamina', staminaRegen: 'staminaRegen', crit: 'crit', luck: 'luck', toughness: 'toughness' };
 const statWord = { Strength: 'strength', Precision: 'precision', Magic: 'magic', Spirit: 'spirit', Accuracy: 'accuracy',
   Dodge: 'dodge', Armor: 'armor', Resist: 'resist', Movement: 'movement', Reach: 'reach', Health: 'maxHp', Crit: 'crit', Luck: 'luck' };
 
@@ -1136,7 +1136,7 @@ function testAbilities() {
   }
   return out;
 }
-const UNIT_FIELDS = new Set(['typeId', 'name', 'side', 'maxHp', 'armor', 'resist', 'accuracy', 'dodge', 'strength', 'precision', 'magic', 'spirit', 'crit', 'luck', 'role', 'movement', 'reach', 'maxStamina', 'staminaRegen', 'ai', 'attacks', 'abilities', 'moves', 'tags', 'triggers']);
+const UNIT_FIELDS = new Set(['typeId', 'name', 'side', 'maxHp', 'armor', 'resist', 'accuracy', 'dodge', 'strength', 'precision', 'magic', 'spirit', 'crit', 'luck', 'toughness', 'stands', 'role', 'movement', 'reach', 'maxStamina', 'staminaRegen', 'ai', 'attacks', 'abilities', 'moves', 'tags', 'triggers']);
 const ATTACK_FIELDS = new Set(['id', 'name', 'kind', 'damageType', 'bonus', 'stat', 'reach', 'staminaCost', 'crit', 'critCount', 'area', 'cooldown', 'warmup', 'accuracy', 'hits']);
 // a delta may start from any packed row — the real families AND the test
 // cohort (test-gash-zombie is the cohort's zombie plus one rider)
