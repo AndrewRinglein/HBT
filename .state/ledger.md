@@ -3805,7 +3805,7 @@ followed the rename. Hand-landed under the reaper protocol; seal unwritten.
 
 IRON GAUNTLET: NOT PASSED — 1 FLAG(S) WARNED
 
-## pack.statuses — LANDED `1a1e9f8`
+## pack.statuses — LANDED `c3f9ac8` (gate recorded 1a1e9f8, the pre-amend sha)
 2026-09-03 04:09
 
   PASS  dependencies landed
