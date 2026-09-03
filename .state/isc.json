@@ -620,5 +620,14 @@
    "at": "2026-09-02 09:48",
    "sha": "e891836"
   }
+ },
+ "051": {
+  "red": {
+   "at": "2026-09-03 03:23",
+   "sha": "90247cd",
+   "hash": "daae314ec1c4",
+   "how": "feature absent",
+   "tail": "       | ^ |       9| import { REWARDS } from '../src/content/rewards.js' |      10| import { HERO_POOL, CIVILIANS } from '../src/content/heroes.js'"
+  }
  }
 }

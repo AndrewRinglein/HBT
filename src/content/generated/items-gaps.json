@@ -1,0 +1,296 @@
+{
+ "generatedBy": "tools/mk-items.mjs",
+ "count": 58,
+ "gaps": [
+  {
+   "id": "item.greatsword.destroying",
+   "needs": "enchant.destroying",
+   "why": "enchant not in the codex yet"
+  },
+  {
+   "id": "item.war-axe.taunting",
+   "needs": "enchant.taunting",
+   "why": "enchant not in the codex yet"
+  },
+  {
+   "id": "item.war-hammer.destroying",
+   "needs": "enchant.destroying",
+   "why": "enchant not in the codex yet"
+  },
+  {
+   "id": "item.war-hammer.taunting",
+   "needs": "enchant.taunting",
+   "why": "enchant not in the codex yet"
+  },
+  {
+   "id": "item.hunting-spear.hunting",
+   "needs": "enchant.hunting",
+   "why": "enchant not in the codex yet"
+  },
+  {
+   "id": "item.glaive.taunting",
+   "needs": "enchant.taunting",
+   "why": "enchant not in the codex yet"
+  },
+  {
+   "id": "item.crossbow.gale",
+   "needs": "enchant.gale",
+   "why": "enchant not in the codex yet"
+  },
+  {
+   "id": "item.crossbow.hunting",
+   "needs": "enchant.hunting",
+   "why": "enchant not in the codex yet"
+  },
+  {
+   "id": "item.crossbow.abundant",
+   "needs": "enchant.abundant",
+   "why": "enchant not in the codex yet"
+  },
+  {
+   "id": "item.crossbow.magic",
+   "needs": "enchant.magic",
+   "why": "enchant not in the codex yet"
+  },
+  {
+   "id": "item.crossbow.goading",
+   "needs": "enchant.goading",
+   "why": "enchant not in the codex yet"
+  },
+  {
+   "id": "item.hand-crossbow.hunting",
+   "needs": "enchant.hunting",
+   "why": "enchant not in the codex yet"
+  },
+  {
+   "id": "item.hand-crossbow.magic",
+   "needs": "enchant.magic",
+   "why": "enchant not in the codex yet"
+  },
+  {
+   "id": "item.hand-crossbow.abundant",
+   "needs": "enchant.abundant",
+   "why": "enchant not in the codex yet"
+  },
+  {
+   "id": "item.throwing-knives.hunting",
+   "needs": "enchant.hunting",
+   "why": "enchant not in the codex yet"
+  },
+  {
+   "id": "item.throwing-knives.gale",
+   "needs": "enchant.gale",
+   "why": "enchant not in the codex yet"
+  },
+  {
+   "id": "item.poison-stars.hunting",
+   "needs": "enchant.hunting",
+   "why": "enchant not in the codex yet"
+  },
+  {
+   "id": "item.obsidian-fang-dagger.addling",
+   "needs": "enchant.addling",
+   "why": "enchant not in the codex yet"
+  },
+  {
+   "id": "item.obsidian-fang-dagger.hobbling",
+   "needs": "enchant.hobbling",
+   "why": "enchant not in the codex yet"
+  },
+  {
+   "id": "item.shepherds-sling.hunting",
+   "needs": "enchant.hunting",
+   "why": "enchant not in the codex yet"
+  },
+  {
+   "id": "item.shepherds-sling.abundant",
+   "needs": "enchant.abundant",
+   "why": "enchant not in the codex yet"
+  },
+  {
+   "id": "item.shepherds-sling.magic",
+   "needs": "enchant.magic",
+   "why": "enchant not in the codex yet"
+  },
+  {
+   "id": "item.shepherds-sling.gale",
+   "needs": "enchant.gale",
+   "why": "enchant not in the codex yet"
+  },
+  {
+   "id": "item.grappling-harpoon.hunting",
+   "needs": "enchant.hunting",
+   "why": "enchant not in the codex yet"
+  },
+  {
+   "id": "item.daggers.addling",
+   "needs": "enchant.addling",
+   "why": "enchant not in the codex yet"
+  },
+  {
+   "id": "item.daggers.hobbling",
+   "needs": "enchant.hobbling",
+   "why": "enchant not in the codex yet"
+  },
+  {
+   "id": "item.longbow.rooting",
+   "needs": "enchant.rooting",
+   "why": "enchant not in the codex yet"
+  },
+  {
+   "id": "item.longbow.gale",
+   "needs": "enchant.gale",
+   "why": "enchant not in the codex yet"
+  },
+  {
+   "id": "item.longbow.hunting",
+   "needs": "enchant.hunting",
+   "why": "enchant not in the codex yet"
+  },
+  {
+   "id": "item.longbow.magic",
+   "needs": "enchant.magic",
+   "why": "enchant not in the codex yet"
+  },
+  {
+   "id": "item.longbow.goading",
+   "needs": "enchant.goading",
+   "why": "enchant not in the codex yet"
+  },
+  {
+   "id": "item.shortbow.rooting",
+   "needs": "enchant.rooting",
+   "why": "enchant not in the codex yet"
+  },
+  {
+   "id": "item.shortbow.abundant",
+   "needs": "enchant.abundant",
+   "why": "enchant not in the codex yet"
+  },
+  {
+   "id": "item.shortbow.goading",
+   "needs": "enchant.goading",
+   "why": "enchant not in the codex yet"
+  },
+  {
+   "id": "item.shortbow.hunting",
+   "needs": "enchant.hunting",
+   "why": "enchant not in the codex yet"
+  },
+  {
+   "id": "item.elfbow.gale",
+   "needs": "enchant.gale",
+   "why": "enchant not in the codex yet"
+  },
+  {
+   "id": "item.elfbow.magic",
+   "needs": "enchant.magic",
+   "why": "enchant not in the codex yet"
+  },
+  {
+   "id": "item.elfbow.rooting",
+   "needs": "enchant.rooting",
+   "why": "enchant not in the codex yet"
+  },
+  {
+   "id": "item.barbarian-bow.hunting",
+   "needs": "enchant.hunting",
+   "why": "enchant not in the codex yet"
+  },
+  {
+   "id": "item.barbarian-bow.rooting",
+   "needs": "enchant.rooting",
+   "why": "enchant not in the codex yet"
+  },
+  {
+   "id": "item.javelin.hunting",
+   "needs": "enchant.hunting",
+   "why": "enchant not in the codex yet"
+  },
+  {
+   "id": "item.longsword.taunting",
+   "needs": "enchant.taunting",
+   "why": "enchant not in the codex yet"
+  },
+  {
+   "id": "item.longsword.destroying",
+   "needs": "enchant.destroying",
+   "why": "enchant not in the codex yet"
+  },
+  {
+   "id": "item.halberd.taunting",
+   "needs": "enchant.taunting",
+   "why": "enchant not in the codex yet"
+  },
+  {
+   "id": "item.halberd.destroying",
+   "needs": "enchant.destroying",
+   "why": "enchant not in the codex yet"
+  },
+  {
+   "id": "item.fire-staff.maddening",
+   "needs": "enchant.maddening",
+   "why": "enchant not in the codex yet"
+  },
+  {
+   "id": "item.fire-staff.bewildering",
+   "needs": "enchant.bewildering",
+   "why": "enchant not in the codex yet"
+  },
+  {
+   "id": "item.frost-staff.bewildering",
+   "needs": "enchant.bewildering",
+   "why": "enchant not in the codex yet"
+  },
+  {
+   "id": "item.earth-staff.maddening",
+   "needs": "enchant.maddening",
+   "why": "enchant not in the codex yet"
+  },
+  {
+   "id": "item.lightning-staff.bewildering",
+   "needs": "enchant.bewildering",
+   "why": "enchant not in the codex yet"
+  },
+  {
+   "id": "item.lightning-staff.maddening",
+   "needs": "enchant.maddening",
+   "why": "enchant not in the codex yet"
+  },
+  {
+   "id": "item.force-staff.bewildering",
+   "needs": "enchant.bewildering",
+   "why": "enchant not in the codex yet"
+  },
+  {
+   "id": "item.holy-symbol.bewildering",
+   "needs": "enchant.bewildering",
+   "why": "enchant not in the codex yet"
+  },
+  {
+   "id": "item.heavy-leather.durable",
+   "needs": "enchant.durable",
+   "why": "enchant not in the codex yet"
+  },
+  {
+   "id": "item.heavy-chain.durable",
+   "needs": "enchant.durable",
+   "why": "enchant not in the codex yet"
+  },
+  {
+   "id": "item.mismatched-armor.durable",
+   "needs": "enchant.durable",
+   "why": "enchant not in the codex yet"
+  },
+  {
+   "id": "item.guardians-mail.durable",
+   "needs": "enchant.durable",
+   "why": "enchant not in the codex yet"
+  },
+  {
+   "id": "item.plated-armor.durable",
+   "needs": "enchant.durable",
+   "why": "enchant not in the codex yet"
+  }
+ ]
+}

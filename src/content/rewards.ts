@@ -6,30 +6,35 @@
 // (content/hbt-content.json), named here so the kingdom never reads the 6 MB
 // book at runtime. Prices are not here: gear is unpriced (blocker 4).
 
-import { omitDisabled } from './disable.js'
+import { ITEMS, itemOf, isShield, type ItemRow } from './items.js'
 
 export type RewardRow = { readonly id: string; readonly name: string; readonly tier: number; readonly slot: 'weapon' | 'armor' | 'off-hand' | 'trinket' }
 
-const RAW_REWARDS: readonly RewardRow[] = [
-  { id: 'item.halberd', name: 'Halberd', tier: 1, slot: 'weapon' },
-  { id: 'item.javelin', name: 'Javelin', tier: 1, slot: 'weapon' },
-  { id: 'item.dagger', name: 'Dagger', tier: 0, slot: 'weapon' },
-  { id: 'item.shortbow', name: 'Shortbow', tier: 1, slot: 'weapon' },
-  { id: 'item.lightning-staff', name: 'Lightning Staff', tier: 1, slot: 'weapon' },
-  { id: 'item.holy-symbol', name: 'Holy Symbol', tier: 1, slot: 'trinket' },
-  { id: 'item.longsword', name: 'Longsword', tier: 1, slot: 'weapon' },
-  { id: 'item.knight-shield', name: 'Knight Shield', tier: 1, slot: 'off-hand' },
-  { id: 'item.basic-armor', name: 'Basic Armor', tier: 0, slot: 'armor' },
-  { id: 'item.thick-hide', name: 'Thick Hide', tier: 0, slot: 'armor' },
-  { id: 'item.silkweave-armor', name: 'Silkweave Armor', tier: 1, slot: 'armor' },
-  { id: 'item.guardians-mail', name: "Guardian's Mail", tier: 1, slot: 'armor' },
+/** Where a row goes on a hero, read from the codex's class and tags — never typed per item. */
+export function slotOf(r: ItemRow): RewardRow['slot'] {
+  if (isShield(r)) return 'off-hand'
+  if (r.itemClass === 'weapon') return 'weapon'
+  if (r.itemClass === 'armor') return 'armor'
+  return 'trinket'
+}
+
+/**
+ * The slice's pool — a FILTER over the generated rows, not a second list. Until
+ * G10 (rewards.tiered) the pool is the twelve ids the slice has drawn from since
+ * M8, so nothing about the draw changes here; the rows behind them are now the
+ * codex's, so the Holy Symbol is the weapon the codex says it is, not the
+ * trinket the hand-typed row said (corrected 2026-09-02).
+ */
+const SLICE_POOL = [
+  'item.halberd', 'item.javelin', 'item.dagger', 'item.shortbow', 'item.lightning-staff', 'item.holy-symbol',
+  'item.longsword', 'item.knight-shield', 'item.basic-armor', 'item.thick-hide', 'item.silkweave-armor', 'item.guardians-mail',
 ]
 
-export const REWARDS: readonly RewardRow[] = omitDisabled(RAW_REWARDS)
+export const REWARDS: readonly RewardRow[] = ITEMS.filter((r) => SLICE_POOL.includes(r.id)).map((r) => ({ id: r.id, name: r.name, tier: r.tier, slot: slotOf(r) }))
 
 export function rewardOf(id: string): RewardRow {
   const row = REWARDS.find((r) => r.id === id)
-  if (!row) throw new Error(`unknown reward '${id}' — the pool is an explicit registry: ${REWARDS.map((r) => r.id).join(', ')}`)
+  if (!row) { itemOf(id); throw new Error(`'${id}' is an item but not in the reward pool: ${REWARDS.map((r) => r.id).join(', ')}`) }
   return row
 }
 
