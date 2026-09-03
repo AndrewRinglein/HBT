@@ -14,7 +14,8 @@ vocabulary) · `GLOSSARY.md` (the naming authority) · **`HANDOFF-2026-09-03.md`
 (the seams, the stages, what not to do) · then the look, which is ruled in
 `VFX/PLAYBACK-DESIGN.md`, `VFX/UI-BUILD-NOTES-2026-09-02.md` and the work list
 `VFX/VISUAL-BATTLE-UPDATES.md`. `VFX/VIEWER-CHECKPOINT.md` is the thread's dated
-record — traps, rulings, what exists.
+record — traps, rulings, what exists. `ENGINE-FINDINGS-2026-09-03.md` is what the
+viewer found the engine's events do not carry — for the engine chat.
 
 ---
 
@@ -26,10 +27,11 @@ Python 3 with Pillow is present for the art half.
 ```
 node tools/gate.mjs              CHECK ONLY: door probe · laws 5 and 6 · typecheck · engine map list vs the dumps · build into .build/ with verify inside
 node tools/gate.mjs --land       the same, then writes BATTLE-VIEWER.html
-node tools/gate.mjs --fresh      also re-export every library battle from ../engine and diff byte-for-byte (refuses a dirty engine; --dirty-ok to compare anyway)
+node tools/gate.mjs --fresh      also re-export every library battle from ../engine and diff byte-for-byte (refuses a dirty engine; --dirty-ok to compare anyway; a scenario's --seed is passed through)
+node tools/play.mjs <page> <export.json>   play ONE export headlessly: every event type folded/ignored/UNKNOWN, every cue, the final board objects, the first throw (asserts nothing — verify is the gate)
 node tools/build-viewer.mjs [--out path]     the page — refuses to write unless verify passes
 node tools/verify.mjs BATTLE-VIEWER.html     the headless fold of every battle, every surface, every catch (~50s)
-npm run static                   generated/static.json through the door (unit sheets, status names, map list; stamped with the engine commit)
+npm run static                   generated/static.json through the door (unit sheets, status names, map list, the attack/ability tables, layer names, the hex distance table; stamped with the engine commit)
 node tools/dump-fields.mjs       generated/fields.json for EVERY map, stamped (interim until viewer.geometry lands in engine/src)
 python3 tools/prep-art.py [hell-tcg-root]    generated/art/ from the source art + art-src/ (only when art changes; clears orphans)
 npm run typecheck                the door, the sheet and the .mts tools — the .js modules are not typed
@@ -50,11 +52,11 @@ the page stamps the sources' sha.
 ## Where things live
 
 ```
-src/engine.ts      THE DOOR — types and read-only content. Never a rule, a mutator, preview() or the AI.
+src/engine.ts      THE DOOR — types and read-only content (and hex geometry: distance). Never a rule, a mutator, preview() or the AI.
 src/sheet.ts       unit sheets resolved from content — OWED TO THE ENGINE (exemption "sheet")
-src/fold.js        PURE: state × event → state + cues. No DOM, no clock. The half every test runs over.
+src/fold.js        PURE: state × event → state + cues. No DOM, no clock. The half every test runs over. Current with engine 4516bbb (2026-09-03): arrivals, the encounter, the kit, corpses, layers, ZoC/AoO, the Deathbed, Surge, Power
 src/viewer.js      mountBattleViewer(el, data, opts) → {push, seek, play, pause, step, dispose, …}; the pump, DUR
-src/board.js       the DOM half of the board: ground, tokens, floats, hexVFX bridge, camera
+src/board.js       the DOM half of the board: ground, painted layers, corpses, auras, tokens, floats, banners, hexVFX bridge, camera
 src/panel.js       the focus panel          src/actionbar.js   the 12-slot bar + stamina strip
 src/actions.js     what an action does/triggers (pure)      src/projection.js   tick projection + danger (pure, exempt)
 src/icons.js       the RPG Awesome sprite + the four ability glyphs      src/theme.js   ONE hue per status
