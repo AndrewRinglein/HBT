@@ -4017,7 +4017,7 @@ Two flags (decided-scan; existing tests edited). Seal withheld.
 
 IRON GAUNTLET: NOT PASSED — 2 FLAG(S) WARNED
 
-## content.field-eve-24 — LANDED `a88fe5f` **NEEDS REVIEW**
+## content.field-eve-24 — LANDED `60710eb` (gate recorded a88fe5f, the pre-amend sha) **NEEDS REVIEW**
 2026-09-03 04:59
 
   PASS  dependencies landed
