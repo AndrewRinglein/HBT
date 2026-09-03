@@ -193,6 +193,31 @@ export type CritRow = {
   readonly effects: readonly CritEffect[]
 }
 
+/**
+ * An item row — pack.items (2026-09-02, ITEMS-PLAN.md §3). Ruled 2026-09-02
+ * (Andrew): "the items should go into battle … They define what attacks they
+ * have. They modify stats." The engine reads the physical facts it checks
+ * (hands, slots), the stat deltas in ITS stat names, the attacks and powers
+ * the item grants, and the triggers the converter's grammar could read.
+ * `gaps` lists, verbatim, every clause of the Codex row the engine cannot
+ * express yet — an item is never silently half-real. Nothing fields an item
+ * until seam.items-per-unit; this is the registry.
+ */
+export type ItemDef = {
+  readonly id: string
+  readonly name: string
+  readonly itemClass: 'weapon' | 'armor' | 'trinket' | 'relic' | 'idol' | 'bloodrune' | 'consumable'
+  readonly tier: number
+  readonly hands: number
+  readonly slots: number
+  readonly classRestriction?: string
+  readonly statModifiers: Readonly<Partial<Record<import('./stats.js').StatName | 'maxHp' | 'maxStamina' | 'staminaRegen' | 'movement' | 'reach', number>>>
+  readonly grants: readonly string[]
+  readonly abilities: readonly string[]
+  readonly triggers: readonly import('./trigger.js').Trigger[]
+  readonly gaps?: readonly string[]
+}
+
 export type UnitDef = {
   readonly typeId: string
   readonly side: Side
@@ -408,4 +433,6 @@ export type Ctx = {
   /** The Critical Injury Chart — ruled data from the pack (station.crit 2026-08-27). */
   critChart: readonly CritRow[]
   moves: Readonly<Record<string, MoveDef>>
+  /** The item registry — pack.items (2026-09-02). Read by nothing until seam.items-per-unit. */
+  items: Readonly<Record<string, ItemDef>>
 }

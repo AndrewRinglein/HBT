@@ -4,7 +4,7 @@
 
 import type { AbilityDef, AttackDef, UnitDef } from '../core/types.js'
 import { omitDisabled, stripDisabledTriggers } from './disable.js'
-import { packAbilities, packAttacks, packCritChart, packTestAttacks, packUnits } from './pack.js'
+import { packAbilities, packAttacks, packCritChart, packItems, packTestAttacks, packUnits } from './pack.js'
 
 // ─────────────────────────────────────────────────────────────────────────────
 // PROVISIONAL CONTENT — NOT PUBLISHED, NOT DESIGN
@@ -65,24 +65,11 @@ const RAW_ATTACKS: Readonly<Record<string, AttackDef>> = {
   // generated pack now owns the id. One owner only — the collision guard
   // below is what caught the shadowing. Cost 0→1 is a declared baseline
   // change: cohort punchers now pay.
-  'attack.breath.hiss': {
-    // PUBLISHED: 6-BESTIARY-SETTLED § attack.* (2026-08-20); Codex §5 Breath:
-    // "Hiss | range 3 | magic | +0 | magic | onHit apply 2 Poison". Acc +5
-    // dropped (no per-attack accuracy field yet — backlog station.accuracy-field).
-    // The poison rider lives on trigger.green-drake.venom-breath, not the
-    // legacy `applies` field. With the drake's published magic 0 this is a
-    // 0-damage attack — the whole threat is the poison clock, faithfully.
-    id: 'attack.breath.hiss', name: 'Hiss', kind: 'ranged',
-    damageType: 'magic', bonus: 0, stat: 'magic', reach: 3, staminaCost: 0,
-  },
-  'attack.fangs.bite': {
-    // PUBLISHED: Codex §5 Fangs: "Bite | melee | strength | +2 | physical |
-    // reach 1 | Crit +5 | Stam 1". Crit +5 dropped (no AttackDef field, crits
-    // disabled). Stam 1 is REAL as of 2026-08-20 — the Spirit Snake is a hero
-    // and pays it (SWITCHES.md brawlStaminaCost, answered).
-    id: 'attack.fangs.bite', name: 'Bite', kind: 'melee',
-    damageType: 'physical', bonus: 2, stat: 'strength', reach: 1, staminaCost: 1,
-  },
+  // attack.breath.hiss and attack.fangs.bite left this file 2026-09-02
+  // (pack.items): the Codex item rows that grant them (Breath, Fangs) now
+  // compile every attack they grant into the pack, and one owner only. The
+  // pack's rows are the Codex's — Fangs' Bite carries its authored Crit +5
+  // (the field exists now), Hiss pays the 1 Stamina its row says.
   'attack.drake.poison-breath': {
     // PUBLISHED: Codex §5, Drake's Maw (Angela 2026-08-20, dictated): "Poison
     // Breath — precision magic damage, on hit applies 3 Poison, 2 Stamina."
@@ -430,6 +417,10 @@ export const ABILITIES = omitDisabled({ ...RAW_ABILITIES, ...packAbilities() })
 // omitDisabled: rows carry keys, not ids; the kill seam for crits is the
 // critEnabled switch itself.
 export const CRIT_CHART = packCritChart()
+// The item registry — pack.items (2026-09-02). Every Codex item row, validated
+// against the attacks and abilities it grants. On Ctx so the kill-switch seam
+// (CF_DISABLE_IDS) reaches an item id like any other.
+export const ITEMS = omitDisabled(packItems(ATTACKS, ABILITIES))
 // The generated pack (Codex-tracked test cohort) joins the hand-authored rows.
 // A collision is a LOUD failure: the pack owns test- ids, this file owns the
 // rest, and neither may quietly shadow the other.

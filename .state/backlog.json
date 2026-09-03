@@ -1558,7 +1558,12 @@
    "item.longsword",
    "item.thick-hide"
   ],
-  "note": "Filed from the kingdom session 2026-09-02. Plan: engine/ITEMS-PLAN.md."
+  "note": "Filed from the kingdom session 2026-09-02. Plan: engine/ITEMS-PLAN.md.",
+  "unreachable": "an item id appears in no battle log until seam.items-per-unit fields one (the next landing, which carries the probe); this landing is the registry, proven by pack-items.test against the Codex rows",
+  "status": "done-needs-review",
+  "attempts": 1,
+  "sha": "2fce79c",
+  "gauntlet": "not passed — 1 flag(s) warned; 1 exemption(s) taken"
  },
  {
   "id": "seam.items-per-unit",

@@ -1628,6 +1628,1277 @@ export const UNIT_PACK = {
       "stat": "strength",
       "reach": 1,
       "staminaCost": 1
+    },
+    "attack.hand-axe.chop": {
+      "id": "attack.hand-axe.chop",
+      "name": "Chop",
+      "kind": "melee",
+      "damageType": "physical",
+      "bonus": 2,
+      "stat": "strength",
+      "reach": 1,
+      "staminaCost": 2
+    },
+    "attack.sharpened-stake.jab": {
+      "id": "attack.sharpened-stake.jab",
+      "name": "Jab",
+      "kind": "melee",
+      "damageType": "physical",
+      "bonus": 0,
+      "stat": "strength",
+      "reach": 1,
+      "staminaCost": 1,
+      "crit": 2
+    },
+    "attack.carpenters-mallet.bonk": {
+      "id": "attack.carpenters-mallet.bonk",
+      "name": "Bonk",
+      "kind": "melee",
+      "damageType": "physical",
+      "bonus": 1,
+      "stat": "strength",
+      "reach": 1,
+      "staminaCost": 2
+    },
+    "attack.cart-chain.swing": {
+      "id": "attack.cart-chain.swing",
+      "name": "Swing",
+      "kind": "melee",
+      "damageType": "physical",
+      "bonus": 1,
+      "stat": "strength",
+      "reach": 1,
+      "staminaCost": 2
+    },
+    "attack.fishing-net.cast": {
+      "id": "attack.fishing-net.cast",
+      "name": "Cast",
+      "kind": "ranged",
+      "damageType": "physical",
+      "bonus": 0,
+      "stat": "precision",
+      "reach": 3,
+      "staminaCost": 1
+    },
+    "attack.pot-lid.bash": {
+      "id": "attack.pot-lid.bash",
+      "name": "Bash",
+      "kind": "melee",
+      "damageType": "physical",
+      "bonus": 0,
+      "stat": "strength",
+      "reach": 1,
+      "staminaCost": 1
+    },
+    "attack.broken-bottle.jab": {
+      "id": "attack.broken-bottle.jab",
+      "name": "Jab",
+      "kind": "melee",
+      "damageType": "physical",
+      "bonus": 0,
+      "stat": "strength",
+      "reach": 1,
+      "staminaCost": 1,
+      "crit": 5
+    },
+    "attack.rusted-crossbow.bolt": {
+      "id": "attack.rusted-crossbow.bolt",
+      "name": "Bolt",
+      "kind": "ranged",
+      "damageType": "physical",
+      "bonus": 2,
+      "stat": "precision",
+      "reach": 7,
+      "staminaCost": 3
+    },
+    "attack.trappers-claws.rake": {
+      "id": "attack.trappers-claws.rake",
+      "name": "Rake",
+      "kind": "melee",
+      "damageType": "physical",
+      "bonus": 0,
+      "stat": "strength",
+      "reach": 1,
+      "staminaCost": 1,
+      "crit": 3
+    },
+    "attack.practice-sword.swing": {
+      "id": "attack.practice-sword.swing",
+      "name": "Swing",
+      "kind": "melee",
+      "damageType": "physical",
+      "bonus": 0,
+      "stat": "strength",
+      "reach": 1,
+      "staminaCost": 1
+    },
+    "attack.war-hammer.smash": {
+      "id": "attack.war-hammer.smash",
+      "name": "Smash",
+      "kind": "melee",
+      "damageType": "physical",
+      "bonus": 2,
+      "stat": "strength",
+      "reach": 1,
+      "staminaCost": 2
+    },
+    "attack.war-hammer.skullsplitter": {
+      "id": "attack.war-hammer.skullsplitter",
+      "name": "Skullsplitter",
+      "kind": "melee",
+      "damageType": "physical",
+      "bonus": 0,
+      "stat": "strength",
+      "reach": 1,
+      "staminaCost": 3,
+      "crit": 3
+    },
+    "attack.hunting-spear.thrust": {
+      "id": "attack.hunting-spear.thrust",
+      "name": "Thrust",
+      "kind": "melee",
+      "damageType": "physical",
+      "bonus": 1,
+      "stat": "strength",
+      "reach": 1,
+      "staminaCost": 1
+    },
+    "attack.hunting-spear.hurl": {
+      "id": "attack.hunting-spear.hurl",
+      "name": "Hurl",
+      "kind": "ranged",
+      "damageType": "physical",
+      "bonus": 1,
+      "stat": "precision",
+      "reach": 4,
+      "staminaCost": 2
+    },
+    "attack.glaive.sweep": {
+      "id": "attack.glaive.sweep",
+      "name": "Sweep",
+      "kind": "melee",
+      "damageType": "physical",
+      "bonus": 1,
+      "stat": "strength",
+      "reach": 1,
+      "staminaCost": 2
+    },
+    "attack.glaive.impale": {
+      "id": "attack.glaive.impale",
+      "name": "Impale",
+      "kind": "melee",
+      "damageType": "physical",
+      "bonus": 2,
+      "stat": "strength",
+      "reach": 1,
+      "staminaCost": 2,
+      "crit": 3
+    },
+    "attack.crossbow.bolt": {
+      "id": "attack.crossbow.bolt",
+      "name": "Bolt",
+      "kind": "ranged",
+      "damageType": "physical",
+      "bonus": 2,
+      "stat": "precision",
+      "reach": 8,
+      "staminaCost": 2
+    },
+    "attack.crossbow.punch-through": {
+      "id": "attack.crossbow.punch-through",
+      "name": "Punch Through",
+      "kind": "ranged",
+      "damageType": "physical",
+      "bonus": 3,
+      "stat": "precision",
+      "reach": 8,
+      "staminaCost": 3,
+      "crit": 3
+    },
+    "attack.rapier.thrust": {
+      "id": "attack.rapier.thrust",
+      "name": "Thrust",
+      "kind": "melee",
+      "damageType": "physical",
+      "bonus": 0,
+      "stat": "strength",
+      "reach": 1,
+      "staminaCost": 1,
+      "crit": 3
+    },
+    "attack.rapier.pierce": {
+      "id": "attack.rapier.pierce",
+      "name": "Pierce",
+      "kind": "melee",
+      "damageType": "physical",
+      "bonus": 2,
+      "stat": "strength",
+      "reach": 1,
+      "staminaCost": 2,
+      "crit": 5
+    },
+    "attack.raiders-cutlass.slash": {
+      "id": "attack.raiders-cutlass.slash",
+      "name": "Slash",
+      "kind": "melee",
+      "damageType": "physical",
+      "bonus": 1,
+      "stat": "strength",
+      "reach": 1,
+      "staminaCost": 1
+    },
+    "attack.raiders-cutlass.boarding-swing": {
+      "id": "attack.raiders-cutlass.boarding-swing",
+      "name": "Boarding Swing",
+      "kind": "melee",
+      "damageType": "physical",
+      "bonus": 2,
+      "stat": "strength",
+      "reach": 1,
+      "staminaCost": 2,
+      "crit": 3
+    },
+    "attack.poison-stars.star": {
+      "id": "attack.poison-stars.star",
+      "name": "Star",
+      "kind": "ranged",
+      "damageType": "physical",
+      "bonus": 1,
+      "stat": "precision",
+      "reach": 4,
+      "staminaCost": 1
+    },
+    "attack.poison-stars.venom-spread": {
+      "id": "attack.poison-stars.venom-spread",
+      "name": "Venom Spread",
+      "kind": "ranged",
+      "damageType": "physical",
+      "bonus": 0,
+      "stat": "precision",
+      "reach": 4,
+      "staminaCost": 2
+    },
+    "attack.duel-runeblades.twin-cut": {
+      "id": "attack.duel-runeblades.twin-cut",
+      "name": "Twin Cut",
+      "kind": "melee",
+      "damageType": "physical",
+      "bonus": 0,
+      "stat": "strength",
+      "reach": 1,
+      "staminaCost": 2
+    },
+    "attack.duel-runeblades.rune-cross": {
+      "id": "attack.duel-runeblades.rune-cross",
+      "name": "Rune Cross",
+      "kind": "melee",
+      "damageType": "physical",
+      "bonus": 0,
+      "stat": "strength",
+      "reach": 1,
+      "staminaCost": 2,
+      "crit": 3
+    },
+    "attack.shepherds-sling.stone": {
+      "id": "attack.shepherds-sling.stone",
+      "name": "Stone",
+      "kind": "ranged",
+      "damageType": "physical",
+      "bonus": 1,
+      "stat": "precision",
+      "reach": 5,
+      "staminaCost": 1
+    },
+    "attack.shepherds-sling.whirl": {
+      "id": "attack.shepherds-sling.whirl",
+      "name": "Whirl",
+      "kind": "ranged",
+      "damageType": "physical",
+      "bonus": 2,
+      "stat": "precision",
+      "reach": 7,
+      "staminaCost": 2,
+      "crit": 3
+    },
+    "attack.crippling-whip.lash": {
+      "id": "attack.crippling-whip.lash",
+      "name": "Lash",
+      "kind": "melee",
+      "damageType": "physical",
+      "bonus": 0,
+      "stat": "strength",
+      "reach": 1,
+      "staminaCost": 1
+    },
+    "attack.crippling-whip.hamstring": {
+      "id": "attack.crippling-whip.hamstring",
+      "name": "Hamstring",
+      "kind": "melee",
+      "damageType": "physical",
+      "bonus": 1,
+      "stat": "strength",
+      "reach": 1,
+      "staminaCost": 2
+    },
+    "attack.iron-claws.rake": {
+      "id": "attack.iron-claws.rake",
+      "name": "Rake",
+      "kind": "melee",
+      "damageType": "physical",
+      "bonus": -1,
+      "stat": "strength",
+      "reach": 1,
+      "staminaCost": 2
+    },
+    "attack.iron-claws.eviscerate": {
+      "id": "attack.iron-claws.eviscerate",
+      "name": "Eviscerate",
+      "kind": "melee",
+      "damageType": "physical",
+      "bonus": 1,
+      "stat": "strength",
+      "reach": 1,
+      "staminaCost": 2,
+      "crit": 5
+    },
+    "attack.grappling-harpoon.brace": {
+      "id": "attack.grappling-harpoon.brace",
+      "name": "Brace",
+      "kind": "melee",
+      "damageType": "physical",
+      "bonus": 1,
+      "stat": "strength",
+      "reach": 1,
+      "staminaCost": 1
+    },
+    "attack.grappling-harpoon.hurl": {
+      "id": "attack.grappling-harpoon.hurl",
+      "name": "Hurl",
+      "kind": "ranged",
+      "damageType": "physical",
+      "bonus": 0,
+      "stat": "precision",
+      "reach": 4,
+      "staminaCost": 2
+    },
+    "attack.apprentice-wand.spark": {
+      "id": "attack.apprentice-wand.spark",
+      "name": "Spark",
+      "kind": "ranged",
+      "damageType": "magic",
+      "bonus": 0,
+      "stat": "magic",
+      "reach": 5,
+      "staminaCost": 0
+    },
+    "attack.apprentice-wand.surge": {
+      "id": "attack.apprentice-wand.surge",
+      "name": "Surge",
+      "kind": "ranged",
+      "damageType": "magic",
+      "bonus": 1,
+      "stat": "magic",
+      "reach": 5,
+      "staminaCost": 2,
+      "crit": 3
+    },
+    "attack.ancient-tome.read-the-page": {
+      "id": "attack.ancient-tome.read-the-page",
+      "name": "Read the Page",
+      "kind": "ranged",
+      "damageType": "magic",
+      "bonus": 0,
+      "stat": "precision",
+      "reach": 4,
+      "staminaCost": 1
+    },
+    "attack.ancient-tome.long-passage": {
+      "id": "attack.ancient-tome.long-passage",
+      "name": "Long Passage",
+      "kind": "ranged",
+      "damageType": "magic",
+      "bonus": 2,
+      "stat": "magic",
+      "reach": 4,
+      "staminaCost": 2
+    },
+    "attack.bane-blade.strike": {
+      "id": "attack.bane-blade.strike",
+      "name": "Strike",
+      "kind": "melee",
+      "damageType": "physical",
+      "bonus": 1,
+      "stat": "strength",
+      "reach": 1,
+      "staminaCost": 1
+    },
+    "attack.bane-blade.banishing-blow": {
+      "id": "attack.bane-blade.banishing-blow",
+      "name": "Banishing Blow",
+      "kind": "melee",
+      "damageType": "physical",
+      "bonus": 2,
+      "stat": "strength",
+      "reach": 1,
+      "staminaCost": 2
+    },
+    "attack.sword-of-the-fallen.remembrance": {
+      "id": "attack.sword-of-the-fallen.remembrance",
+      "name": "Remembrance",
+      "kind": "melee",
+      "damageType": "physical",
+      "bonus": 0,
+      "stat": "strength",
+      "reach": 1,
+      "staminaCost": 1
+    },
+    "attack.sword-of-the-fallen.honour-the-dead": {
+      "id": "attack.sword-of-the-fallen.honour-the-dead",
+      "name": "Honour the Dead",
+      "kind": "melee",
+      "damageType": "physical",
+      "bonus": 1,
+      "stat": "strength",
+      "reach": 1,
+      "staminaCost": 2
+    },
+    "attack.buckler.punch": {
+      "id": "attack.buckler.punch",
+      "name": "Shield Punch",
+      "kind": "melee",
+      "damageType": "physical",
+      "bonus": 0,
+      "stat": "strength",
+      "reach": 1,
+      "staminaCost": 1
+    },
+    "attack.bloody-axe.cleave-open": {
+      "id": "attack.bloody-axe.cleave-open",
+      "name": "Cleave Open",
+      "kind": "melee",
+      "damageType": "physical",
+      "bonus": 2,
+      "stat": "strength",
+      "reach": 1,
+      "staminaCost": 1
+    },
+    "attack.bloody-axe.butcher": {
+      "id": "attack.bloody-axe.butcher",
+      "name": "Butcher",
+      "kind": "melee",
+      "damageType": "physical",
+      "bonus": 2,
+      "stat": "strength",
+      "reach": 1,
+      "staminaCost": 2,
+      "crit": 5
+    },
+    "attack.hammer-of-justice.judgment": {
+      "id": "attack.hammer-of-justice.judgment",
+      "name": "Judgment",
+      "kind": "melee",
+      "damageType": "physical",
+      "bonus": 2,
+      "stat": "strength",
+      "reach": 1,
+      "staminaCost": 2
+    },
+    "attack.hammer-of-justice.sentence": {
+      "id": "attack.hammer-of-justice.sentence",
+      "name": "Sentence",
+      "kind": "melee",
+      "damageType": "physical",
+      "bonus": 1,
+      "stat": "strength",
+      "reach": 1,
+      "staminaCost": 3,
+      "crit": 3
+    },
+    "attack.holy-shield.shield-bash": {
+      "id": "attack.holy-shield.shield-bash",
+      "name": "Shield Bash",
+      "kind": "melee",
+      "damageType": "physical",
+      "bonus": 1,
+      "stat": "strength",
+      "reach": 1,
+      "staminaCost": 1
+    },
+    "attack.holy-shield.aegis-slam": {
+      "id": "attack.holy-shield.aegis-slam",
+      "name": "Aegis Slam",
+      "kind": "melee",
+      "damageType": "physical",
+      "bonus": 0,
+      "stat": "strength",
+      "reach": 1,
+      "staminaCost": 2
+    },
+    "attack.death-blade.reap": {
+      "id": "attack.death-blade.reap",
+      "name": "Reap",
+      "kind": "melee",
+      "damageType": "physical",
+      "bonus": 2,
+      "stat": "strength",
+      "reach": 1,
+      "staminaCost": 1
+    },
+    "attack.death-blade.death-stroke": {
+      "id": "attack.death-blade.death-stroke",
+      "name": "Death Stroke",
+      "kind": "melee",
+      "damageType": "physical",
+      "bonus": 3,
+      "stat": "strength",
+      "reach": 1,
+      "staminaCost": 2,
+      "crit": 5
+    },
+    "attack.sniper-bow.loose": {
+      "id": "attack.sniper-bow.loose",
+      "name": "Loose",
+      "kind": "ranged",
+      "damageType": "physical",
+      "bonus": 1,
+      "stat": "precision",
+      "reach": 9,
+      "staminaCost": 1
+    },
+    "attack.sniper-bow.long-shot": {
+      "id": "attack.sniper-bow.long-shot",
+      "name": "Long Shot",
+      "kind": "ranged",
+      "damageType": "physical",
+      "bonus": 2,
+      "stat": "precision",
+      "reach": 14,
+      "staminaCost": 3,
+      "crit": 5
+    },
+    "attack.runed-crossbow.rune-bolt": {
+      "id": "attack.runed-crossbow.rune-bolt",
+      "name": "Rune Bolt",
+      "kind": "ranged",
+      "damageType": "physical",
+      "bonus": 2,
+      "stat": "precision",
+      "reach": 8,
+      "staminaCost": 2
+    },
+    "attack.runed-crossbow.banishing-bolt": {
+      "id": "attack.runed-crossbow.banishing-bolt",
+      "name": "Banishing Bolt",
+      "kind": "ranged",
+      "damageType": "physical",
+      "bonus": 3,
+      "stat": "precision",
+      "reach": 8,
+      "staminaCost": 3,
+      "crit": 3
+    },
+    "attack.poison-throwing-knives.toss": {
+      "id": "attack.poison-throwing-knives.toss",
+      "name": "Toss",
+      "kind": "ranged",
+      "damageType": "physical",
+      "bonus": 2,
+      "stat": "precision",
+      "reach": 5,
+      "staminaCost": 1
+    },
+    "attack.poison-throwing-knives.venom-fan": {
+      "id": "attack.poison-throwing-knives.venom-fan",
+      "name": "Venom Fan",
+      "kind": "ranged",
+      "damageType": "physical",
+      "bonus": 0,
+      "stat": "precision",
+      "reach": 4,
+      "staminaCost": 2
+    },
+    "attack.shadow-dagger.shadow-cut": {
+      "id": "attack.shadow-dagger.shadow-cut",
+      "name": "Shadow Cut",
+      "kind": "melee",
+      "damageType": "physical",
+      "bonus": 2,
+      "stat": "strength",
+      "reach": 1,
+      "staminaCost": 1,
+      "crit": 5
+    },
+    "attack.shadow-dagger.from-behind": {
+      "id": "attack.shadow-dagger.from-behind",
+      "name": "From Behind",
+      "kind": "melee",
+      "damageType": "physical",
+      "bonus": 2,
+      "stat": "strength",
+      "reach": 1,
+      "staminaCost": 2,
+      "crit": 15
+    },
+    "attack.stormforged-blade.arc-cut": {
+      "id": "attack.stormforged-blade.arc-cut",
+      "name": "Arc Cut",
+      "kind": "melee",
+      "damageType": "physical",
+      "bonus": 2,
+      "stat": "strength",
+      "reach": 1,
+      "staminaCost": 1
+    },
+    "attack.stormforged-blade.thunder-strike": {
+      "id": "attack.stormforged-blade.thunder-strike",
+      "name": "Thunder Strike",
+      "kind": "melee",
+      "damageType": "physical",
+      "bonus": 0,
+      "stat": "strength",
+      "reach": 1,
+      "staminaCost": 2,
+      "crit": 5
+    },
+    "attack.twin-talon-bow.talon-shot": {
+      "id": "attack.twin-talon-bow.talon-shot",
+      "name": "Talon Shot",
+      "kind": "ranged",
+      "damageType": "physical",
+      "bonus": 2,
+      "stat": "precision",
+      "reach": 8,
+      "staminaCost": 1
+    },
+    "attack.twin-talon-bow.double-nock": {
+      "id": "attack.twin-talon-bow.double-nock",
+      "name": "Double Nock",
+      "kind": "ranged",
+      "damageType": "physical",
+      "bonus": 1,
+      "stat": "precision",
+      "reach": 7,
+      "staminaCost": 2
+    },
+    "attack.wraith-touched-staff.wraith-bolt": {
+      "id": "attack.wraith-touched-staff.wraith-bolt",
+      "name": "Wraith Bolt",
+      "kind": "ranged",
+      "damageType": "magic",
+      "bonus": 2,
+      "stat": "magic",
+      "reach": 6,
+      "staminaCost": 1
+    },
+    "attack.wraith-touched-staff.grasp": {
+      "id": "attack.wraith-touched-staff.grasp",
+      "name": "Grasp of the Wraith",
+      "kind": "ranged",
+      "damageType": "magic",
+      "bonus": 1,
+      "stat": "magic",
+      "reach": 5,
+      "staminaCost": 2,
+      "crit": 3
+    },
+    "attack.book-of-exorcisms.reading": {
+      "id": "attack.book-of-exorcisms.reading",
+      "name": "Reading",
+      "kind": "ranged",
+      "damageType": "true",
+      "bonus": 2,
+      "stat": "spirit",
+      "reach": 4,
+      "staminaCost": 1
+    },
+    "attack.book-of-exorcisms.rite-of-expulsion": {
+      "id": "attack.book-of-exorcisms.rite-of-expulsion",
+      "name": "Rite of Expulsion",
+      "kind": "ranged",
+      "damageType": "true",
+      "bonus": 0,
+      "stat": "spirit",
+      "reach": 3,
+      "staminaCost": 2
+    },
+    "attack.cursed-sand-blade.sand-cut": {
+      "id": "attack.cursed-sand-blade.sand-cut",
+      "name": "Sand Cut",
+      "kind": "melee",
+      "damageType": "physical",
+      "bonus": 2,
+      "stat": "strength",
+      "reach": 1,
+      "staminaCost": 1
+    },
+    "attack.cursed-sand-blade.the-cursed-swing": {
+      "id": "attack.cursed-sand-blade.the-cursed-swing",
+      "name": "The Cursed Swing",
+      "kind": "melee",
+      "damageType": "magic",
+      "bonus": 1,
+      "stat": "strength",
+      "reach": 1,
+      "staminaCost": 2,
+      "crit": 5
+    },
+    "attack.skyforged-halberd.sky-sweep": {
+      "id": "attack.skyforged-halberd.sky-sweep",
+      "name": "Sky Sweep",
+      "kind": "melee",
+      "damageType": "physical",
+      "bonus": 1,
+      "stat": "strength",
+      "reach": 1,
+      "staminaCost": 2
+    },
+    "attack.skyforged-halberd.hallowed-thrust": {
+      "id": "attack.skyforged-halberd.hallowed-thrust",
+      "name": "Hallowed Thrust",
+      "kind": "ranged",
+      "damageType": "physical",
+      "bonus": 3,
+      "stat": "strength",
+      "reach": 2,
+      "staminaCost": 2,
+      "crit": 3
+    },
+    "attack.boarding-hook.hook": {
+      "id": "attack.boarding-hook.hook",
+      "name": "Hook",
+      "kind": "ranged",
+      "damageType": "physical",
+      "bonus": 1,
+      "stat": "strength",
+      "reach": 2,
+      "staminaCost": 1
+    },
+    "attack.boarding-hook.drag-down": {
+      "id": "attack.boarding-hook.drag-down",
+      "name": "Drag Down",
+      "kind": "ranged",
+      "damageType": "physical",
+      "bonus": 2,
+      "stat": "strength",
+      "reach": 2,
+      "staminaCost": 2
+    },
+    "attack.mirage-dagger.flicker-cut": {
+      "id": "attack.mirage-dagger.flicker-cut",
+      "name": "Flicker Cut",
+      "kind": "melee",
+      "damageType": "physical",
+      "bonus": 2,
+      "stat": "strength",
+      "reach": 1,
+      "staminaCost": 1,
+      "crit": 3
+    },
+    "attack.mirage-dagger.two-places-at-once": {
+      "id": "attack.mirage-dagger.two-places-at-once",
+      "name": "Two Places at Once",
+      "kind": "melee",
+      "damageType": "physical",
+      "bonus": 2,
+      "stat": "strength",
+      "reach": 1,
+      "staminaCost": 2,
+      "crit": 3
+    },
+    "attack.seraph-bow.seraph-shot": {
+      "id": "attack.seraph-bow.seraph-shot",
+      "name": "Seraph Shot",
+      "kind": "ranged",
+      "damageType": "physical",
+      "bonus": 2,
+      "stat": "precision",
+      "reach": 9,
+      "staminaCost": 1
+    },
+    "attack.seraph-bow.feathered-judgment": {
+      "id": "attack.seraph-bow.feathered-judgment",
+      "name": "Feathered Judgment",
+      "kind": "ranged",
+      "damageType": "physical",
+      "bonus": 3,
+      "stat": "precision",
+      "reach": 9,
+      "staminaCost": 2,
+      "crit": 5
+    },
+    "attack.death-bow.death-shot": {
+      "id": "attack.death-bow.death-shot",
+      "name": "Death Shot",
+      "kind": "ranged",
+      "damageType": "physical",
+      "bonus": 3,
+      "stat": "precision",
+      "reach": 9,
+      "staminaCost": 1
+    },
+    "attack.death-bow.the-last-arrow": {
+      "id": "attack.death-bow.the-last-arrow",
+      "name": "The Last Arrow",
+      "kind": "ranged",
+      "damageType": "physical",
+      "bonus": 5,
+      "stat": "precision",
+      "reach": 12,
+      "staminaCost": 3,
+      "crit": 5
+    },
+    "attack.holy-avenger.avenging-strike": {
+      "id": "attack.holy-avenger.avenging-strike",
+      "name": "Avenging Strike",
+      "kind": "melee",
+      "damageType": "physical",
+      "bonus": 2,
+      "stat": "strength",
+      "reach": 1,
+      "staminaCost": 1
+    },
+    "attack.holy-avenger.the-avenger-wakes": {
+      "id": "attack.holy-avenger.the-avenger-wakes",
+      "name": "The Avenger Wakes",
+      "kind": "melee",
+      "damageType": "true",
+      "bonus": 4,
+      "stat": "strength",
+      "reach": 1,
+      "staminaCost": 2,
+      "crit": 5
+    },
+    "attack.demon-whip.crack": {
+      "id": "attack.demon-whip.crack",
+      "name": "Crack",
+      "kind": "ranged",
+      "damageType": "physical",
+      "bonus": 2,
+      "stat": "strength",
+      "reach": 3,
+      "staminaCost": 1
+    },
+    "attack.demon-whip.hellcoil": {
+      "id": "attack.demon-whip.hellcoil",
+      "name": "Hellcoil",
+      "kind": "ranged",
+      "damageType": "physical",
+      "bonus": 2,
+      "stat": "strength",
+      "reach": 3,
+      "staminaCost": 2
+    },
+    "attack.demonic-shiv.shiv": {
+      "id": "attack.demonic-shiv.shiv",
+      "name": "Shiv",
+      "kind": "melee",
+      "damageType": "physical",
+      "bonus": 2,
+      "stat": "strength",
+      "reach": 1,
+      "staminaCost": 1,
+      "crit": 5
+    },
+    "attack.demonic-shiv.the-devils-favour": {
+      "id": "attack.demonic-shiv.the-devils-favour",
+      "name": "The Devil's Favour",
+      "kind": "melee",
+      "damageType": "true",
+      "bonus": 0,
+      "stat": "strength",
+      "reach": 1,
+      "staminaCost": 2,
+      "crit": 10
+    },
+    "attack.void-staff.void-bolt": {
+      "id": "attack.void-staff.void-bolt",
+      "name": "Void Bolt",
+      "kind": "ranged",
+      "damageType": "magic",
+      "bonus": 3,
+      "stat": "magic",
+      "reach": 6,
+      "staminaCost": 1
+    },
+    "attack.void-staff.unmaking": {
+      "id": "attack.void-staff.unmaking",
+      "name": "Unmaking",
+      "kind": "ranged",
+      "damageType": "magic",
+      "bonus": 4,
+      "stat": "magic",
+      "reach": 6,
+      "staminaCost": 3,
+      "crit": 5
+    },
+    "attack.orb-of-the-soul-stealer.soul-tap": {
+      "id": "attack.orb-of-the-soul-stealer.soul-tap",
+      "name": "Soul Tap",
+      "kind": "melee",
+      "damageType": "magic",
+      "bonus": 0,
+      "stat": "magic",
+      "reach": 1,
+      "staminaCost": 1
+    },
+    "attack.orb-of-the-soul-stealer.steal-the-spark": {
+      "id": "attack.orb-of-the-soul-stealer.steal-the-spark",
+      "name": "Steal the Spark",
+      "kind": "ranged",
+      "damageType": "magic",
+      "bonus": 3,
+      "stat": "magic",
+      "reach": 7,
+      "staminaCost": 2,
+      "crit": 3
+    },
+    "attack.blade-of-demon-slaying.slayer-cut": {
+      "id": "attack.blade-of-demon-slaying.slayer-cut",
+      "name": "Slayer's Cut",
+      "kind": "melee",
+      "damageType": "physical",
+      "bonus": 2,
+      "stat": "strength",
+      "reach": 1,
+      "staminaCost": 1
+    },
+    "attack.blade-of-demon-slaying.demonbane": {
+      "id": "attack.blade-of-demon-slaying.demonbane",
+      "name": "Demonbane",
+      "kind": "melee",
+      "damageType": "physical",
+      "bonus": 4,
+      "stat": "strength",
+      "reach": 1,
+      "staminaCost": 3,
+      "crit": 5
+    },
+    "attack.pharaohs-gauntlets.gilded-strike": {
+      "id": "attack.pharaohs-gauntlets.gilded-strike",
+      "name": "Gilded Strike",
+      "kind": "melee",
+      "damageType": "physical",
+      "bonus": 2,
+      "stat": "strength",
+      "reach": 1,
+      "staminaCost": 1
+    },
+    "attack.pharaohs-gauntlets.the-kings-hands": {
+      "id": "attack.pharaohs-gauntlets.the-kings-hands",
+      "name": "The King's Hands",
+      "kind": "melee",
+      "damageType": "physical",
+      "bonus": 2,
+      "stat": "strength",
+      "reach": 1,
+      "staminaCost": 2,
+      "crit": 3
+    },
+    "attack.scepter-of-salvation.rebuke": {
+      "id": "attack.scepter-of-salvation.rebuke",
+      "name": "Rebuke",
+      "kind": "ranged",
+      "damageType": "true",
+      "bonus": 0,
+      "stat": "spirit",
+      "reach": 4,
+      "staminaCost": 1
+    },
+    "attack.scepter-of-salvation.salvation": {
+      "id": "attack.scepter-of-salvation.salvation",
+      "name": "Salvation",
+      "kind": "ranged",
+      "damageType": "true",
+      "bonus": 3,
+      "stat": "spirit",
+      "reach": 5,
+      "staminaCost": 2
+    },
+    "attack.tomb-sentinels-blade.sentinel-cut": {
+      "id": "attack.tomb-sentinels-blade.sentinel-cut",
+      "name": "Sentinel's Cut",
+      "kind": "melee",
+      "damageType": "physical",
+      "bonus": 2,
+      "stat": "strength",
+      "reach": 1,
+      "staminaCost": 1
+    },
+    "attack.tomb-sentinels-blade.grave-warden": {
+      "id": "attack.tomb-sentinels-blade.grave-warden",
+      "name": "Grave Warden",
+      "kind": "melee",
+      "damageType": "physical",
+      "bonus": 1,
+      "stat": "strength",
+      "reach": 1,
+      "staminaCost": 2,
+      "crit": 3
+    },
+    "attack.siege-crossbow.bolt": {
+      "id": "attack.siege-crossbow.bolt",
+      "name": "Bolt",
+      "kind": "ranged",
+      "damageType": "physical",
+      "bonus": 3,
+      "stat": "precision",
+      "reach": 10,
+      "staminaCost": 2
+    },
+    "attack.siege-crossbow.siege-shot": {
+      "id": "attack.siege-crossbow.siege-shot",
+      "name": "Siege Shot",
+      "kind": "ranged",
+      "damageType": "physical",
+      "bonus": 1,
+      "stat": "precision",
+      "reach": 12,
+      "staminaCost": 3,
+      "crit": 3
+    },
+    "attack.stormforged-halberd.storm-sweep": {
+      "id": "attack.stormforged-halberd.storm-sweep",
+      "name": "Storm Sweep",
+      "kind": "melee",
+      "damageType": "physical",
+      "bonus": 2,
+      "stat": "strength",
+      "reach": 1,
+      "staminaCost": 2
+    },
+    "attack.stormforged-halberd.thunderhead": {
+      "id": "attack.stormforged-halberd.thunderhead",
+      "name": "Thunderhead",
+      "kind": "ranged",
+      "damageType": "physical",
+      "bonus": 4,
+      "stat": "strength",
+      "reach": 2,
+      "staminaCost": 3,
+      "crit": 5
+    },
+    "attack.fangs.bite": {
+      "id": "attack.fangs.bite",
+      "name": "Bite",
+      "kind": "melee",
+      "damageType": "physical",
+      "bonus": 2,
+      "stat": "strength",
+      "reach": 1,
+      "staminaCost": 1,
+      "crit": 5
+    },
+    "attack.fangs.savage": {
+      "id": "attack.fangs.savage",
+      "name": "Savage",
+      "kind": "melee",
+      "damageType": "physical",
+      "bonus": 1,
+      "stat": "strength",
+      "reach": 1,
+      "staminaCost": 2
+    },
+    "attack.claws.swipe": {
+      "id": "attack.claws.swipe",
+      "name": "Swipe",
+      "kind": "melee",
+      "damageType": "physical",
+      "bonus": 1,
+      "stat": "strength",
+      "reach": 1,
+      "staminaCost": 1,
+      "crit": 5
+    },
+    "attack.claws.flense": {
+      "id": "attack.claws.flense",
+      "name": "Flense",
+      "kind": "melee",
+      "damageType": "physical",
+      "bonus": 0,
+      "stat": "strength",
+      "reach": 1,
+      "staminaCost": 2
+    },
+    "attack.tail.lash": {
+      "id": "attack.tail.lash",
+      "name": "Lash",
+      "kind": "melee",
+      "damageType": "physical",
+      "bonus": 1,
+      "stat": "strength",
+      "reach": 1,
+      "staminaCost": 1
+    },
+    "attack.tail.tail-sweep": {
+      "id": "attack.tail.tail-sweep",
+      "name": "Tail Sweep",
+      "kind": "melee",
+      "damageType": "physical",
+      "bonus": 0,
+      "stat": "strength",
+      "reach": 1,
+      "staminaCost": 2
+    },
+    "attack.horns.ram": {
+      "id": "attack.horns.ram",
+      "name": "Ram",
+      "kind": "melee",
+      "damageType": "physical",
+      "bonus": 3,
+      "stat": "strength",
+      "reach": 1,
+      "staminaCost": 2
+    },
+    "attack.horns.toss": {
+      "id": "attack.horns.toss",
+      "name": "Toss",
+      "kind": "melee",
+      "damageType": "physical",
+      "bonus": 1,
+      "stat": "strength",
+      "reach": 1,
+      "staminaCost": 1,
+      "crit": 5
+    },
+    "attack.breath.gout": {
+      "id": "attack.breath.gout",
+      "name": "Gout",
+      "kind": "ranged",
+      "damageType": "magic",
+      "bonus": 1,
+      "stat": "magic",
+      "reach": 3,
+      "staminaCost": 2
+    },
+    "attack.breath.hiss": {
+      "id": "attack.breath.hiss",
+      "name": "Hiss",
+      "kind": "ranged",
+      "damageType": "magic",
+      "bonus": 0,
+      "stat": "magic",
+      "reach": 3,
+      "staminaCost": 1
+    },
+    "attack.hooves.kick": {
+      "id": "attack.hooves.kick",
+      "name": "Kick",
+      "kind": "melee",
+      "damageType": "physical",
+      "bonus": 2,
+      "stat": "strength",
+      "reach": 1,
+      "staminaCost": 1
+    },
+    "attack.hooves.stomp": {
+      "id": "attack.hooves.stomp",
+      "name": "Stomp",
+      "kind": "melee",
+      "damageType": "physical",
+      "bonus": 1,
+      "stat": "strength",
+      "reach": 1,
+      "staminaCost": 2
+    },
+    "attack.pickaxe.pick": {
+      "id": "attack.pickaxe.pick",
+      "name": "Pick",
+      "kind": "melee",
+      "damageType": "physical",
+      "bonus": -3,
+      "stat": "strength",
+      "reach": 1,
+      "staminaCost": 1
+    },
+    "attack.burning-torch.swing": {
+      "id": "attack.burning-torch.swing",
+      "name": "Swing",
+      "kind": "melee",
+      "damageType": "physical",
+      "bonus": -2,
+      "stat": "strength",
+      "reach": 1,
+      "staminaCost": 1
+    },
+    "attack.net.cast": {
+      "id": "attack.net.cast",
+      "name": "Cast",
+      "kind": "ranged",
+      "damageType": "physical",
+      "bonus": 0,
+      "stat": "precision",
+      "reach": 3,
+      "staminaCost": 1
+    },
+    "attack.barbarian-bow.power-shot": {
+      "id": "attack.barbarian-bow.power-shot",
+      "name": "Power Shot",
+      "kind": "ranged",
+      "damageType": "physical",
+      "bonus": 2,
+      "stat": "precision",
+      "reach": 6,
+      "staminaCost": 2
+    },
+    "attack.barbarian-bow.crippling-shot": {
+      "id": "attack.barbarian-bow.crippling-shot",
+      "name": "Crippling Shot",
+      "kind": "ranged",
+      "damageType": "physical",
+      "bonus": 1,
+      "stat": "precision",
+      "reach": 6,
+      "staminaCost": 2
+    },
+    "attack.earth-staff.earth-blast": {
+      "id": "attack.earth-staff.earth-blast",
+      "name": "Earth Blast",
+      "kind": "ranged",
+      "damageType": "magic",
+      "bonus": 1,
+      "stat": "precision",
+      "reach": 3,
+      "staminaCost": 1
+    },
+    "attack.force-staff.force-blast": {
+      "id": "attack.force-staff.force-blast",
+      "name": "Force Blast",
+      "kind": "ranged",
+      "damageType": "magic",
+      "bonus": 0,
+      "stat": "precision",
+      "reach": 4,
+      "staminaCost": 1
+    },
+    "attack.priest-chain.smite": {
+      "id": "attack.priest-chain.smite",
+      "name": "Smite",
+      "kind": "ranged",
+      "damageType": "true",
+      "bonus": 1,
+      "stat": "precision",
+      "reach": 5,
+      "staminaCost": 1
+    },
+    "attack.slingshot.shot": {
+      "id": "attack.slingshot.shot",
+      "name": "Shot",
+      "kind": "ranged",
+      "damageType": "physical",
+      "bonus": 0,
+      "stat": "precision",
+      "reach": 4,
+      "staminaCost": 0
+    },
+    "attack.club.swing": {
+      "id": "attack.club.swing",
+      "name": "Swing",
+      "kind": "melee",
+      "damageType": "physical",
+      "bonus": 0,
+      "stat": "strength",
+      "reach": 1,
+      "staminaCost": 1
     }
   },
   "authoredAbilities": {
@@ -3572,6 +4843,5050 @@ export const UNIT_PACK = {
       "budgetMod": -1,
       "staminaCost": 2,
       "cooldown": 0
+    }
+  },
+  "items": {
+    "item.hand-axe": {
+      "id": "item.hand-axe",
+      "name": "Hand Axe",
+      "itemClass": "weapon",
+      "tier": 0,
+      "hands": 1,
+      "slots": 1,
+      "statModifiers": {},
+      "grants": [
+        "attack.hand-axe.chop"
+      ],
+      "abilities": [],
+      "triggers": []
+    },
+    "item.sharpened-stake": {
+      "id": "item.sharpened-stake",
+      "name": "Sharpened Stake",
+      "itemClass": "weapon",
+      "tier": 0,
+      "hands": 1,
+      "slots": 1,
+      "statModifiers": {},
+      "grants": [
+        "attack.sharpened-stake.jab"
+      ],
+      "abilities": [],
+      "triggers": []
+    },
+    "item.carpenters-mallet": {
+      "id": "item.carpenters-mallet",
+      "name": "Carpenter's Mallet",
+      "itemClass": "weapon",
+      "tier": 0,
+      "hands": 1,
+      "slots": 1,
+      "statModifiers": {},
+      "grants": [
+        "attack.carpenters-mallet.bonk"
+      ],
+      "abilities": [],
+      "triggers": []
+    },
+    "item.cart-chain": {
+      "id": "item.cart-chain",
+      "name": "Cart Chain",
+      "itemClass": "weapon",
+      "tier": 0,
+      "hands": 1,
+      "slots": 1,
+      "statModifiers": {},
+      "grants": [
+        "attack.cart-chain.swing"
+      ],
+      "abilities": [],
+      "triggers": []
+    },
+    "item.fishing-net": {
+      "id": "item.fishing-net",
+      "name": "Fishing Net",
+      "itemClass": "weapon",
+      "tier": 0,
+      "hands": 1,
+      "slots": 1,
+      "statModifiers": {},
+      "grants": [
+        "attack.fishing-net.cast"
+      ],
+      "abilities": [],
+      "triggers": []
+    },
+    "item.pot-lid": {
+      "id": "item.pot-lid",
+      "name": "Pot Lid",
+      "itemClass": "weapon",
+      "tier": 0,
+      "hands": 1,
+      "slots": 1,
+      "statModifiers": {
+        "armor": 1,
+        "accuracy": -15
+      },
+      "grants": [
+        "attack.pot-lid.bash"
+      ],
+      "abilities": [],
+      "triggers": []
+    },
+    "item.broken-bottle": {
+      "id": "item.broken-bottle",
+      "name": "Broken Bottle",
+      "itemClass": "weapon",
+      "tier": 0,
+      "hands": 1,
+      "slots": 1,
+      "statModifiers": {},
+      "grants": [
+        "attack.broken-bottle.jab"
+      ],
+      "abilities": [],
+      "triggers": [
+        {
+          "id": "trigger.broken-bottle.jab.bleed",
+          "hook": "onHit",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.bleed",
+            "value": 1
+          },
+          "source": "item.broken-bottle",
+          "onlyWithAttack": "attack.broken-bottle.jab"
+        }
+      ]
+    },
+    "item.rusted-crossbow": {
+      "id": "item.rusted-crossbow",
+      "name": "Rusted Crossbow",
+      "itemClass": "weapon",
+      "tier": 0,
+      "hands": 2,
+      "slots": 2,
+      "statModifiers": {},
+      "grants": [
+        "attack.rusted-crossbow.bolt"
+      ],
+      "abilities": [],
+      "triggers": []
+    },
+    "item.trappers-claws": {
+      "id": "item.trappers-claws",
+      "name": "Trapper's Claws",
+      "itemClass": "weapon",
+      "tier": 0,
+      "hands": 1,
+      "slots": 1,
+      "statModifiers": {},
+      "grants": [
+        "attack.trappers-claws.rake"
+      ],
+      "abilities": [],
+      "triggers": [
+        {
+          "id": "trigger.trappers-claws.rake.bleed",
+          "hook": "onHit",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.bleed",
+            "value": 1
+          },
+          "source": "item.trappers-claws",
+          "onlyWithAttack": "attack.trappers-claws.rake"
+        }
+      ]
+    },
+    "item.practice-sword": {
+      "id": "item.practice-sword",
+      "name": "Practice Sword",
+      "itemClass": "weapon",
+      "tier": 0,
+      "hands": 1,
+      "slots": 1,
+      "statModifiers": {},
+      "grants": [
+        "attack.practice-sword.swing"
+      ],
+      "abilities": [],
+      "triggers": []
+    },
+    "item.greatsword": {
+      "id": "item.greatsword",
+      "name": "Greatsword",
+      "itemClass": "weapon",
+      "tier": 1,
+      "hands": 2,
+      "slots": 2,
+      "statModifiers": {},
+      "grants": [
+        "attack.greatsword.hew",
+        "attack.greatsword.great-cleave"
+      ],
+      "abilities": [],
+      "triggers": []
+    },
+    "item.war-axe": {
+      "id": "item.war-axe",
+      "name": "War Axe",
+      "itemClass": "weapon",
+      "tier": 1,
+      "hands": 1,
+      "slots": 1,
+      "classRestriction": "class.warrior",
+      "statModifiers": {},
+      "grants": [
+        "attack.war-axe.chop",
+        "attack.war-axe.hack"
+      ],
+      "abilities": [],
+      "triggers": [
+        {
+          "id": "trigger.war-axe.hack.bleed",
+          "hook": "onHit",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.bleed",
+            "value": 2
+          },
+          "source": "item.war-axe",
+          "onlyWithAttack": "attack.war-axe.hack"
+        }
+      ]
+    },
+    "item.iron-mace": {
+      "id": "item.iron-mace",
+      "name": "Iron Mace",
+      "itemClass": "weapon",
+      "tier": 1,
+      "hands": 1,
+      "slots": 1,
+      "statModifiers": {},
+      "grants": [
+        "attack.iron-mace.swing",
+        "attack.iron-mace.crush"
+      ],
+      "abilities": [],
+      "triggers": []
+    },
+    "item.war-hammer": {
+      "id": "item.war-hammer",
+      "name": "War Hammer",
+      "itemClass": "weapon",
+      "tier": 1,
+      "hands": 2,
+      "slots": 2,
+      "classRestriction": "class.warrior",
+      "statModifiers": {},
+      "grants": [
+        "attack.war-hammer.smash",
+        "attack.war-hammer.skullsplitter"
+      ],
+      "abilities": [],
+      "triggers": [
+        {
+          "id": "trigger.war-hammer.skullsplitter.stun",
+          "hook": "onHit",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.stun",
+            "value": 1
+          },
+          "source": "item.war-hammer",
+          "onlyWithAttack": "attack.war-hammer.skullsplitter"
+        }
+      ],
+      "gaps": [
+        "onCrit: Knockback 1 — the target is moved 1 hex directly a — trigger shape unparsed"
+      ]
+    },
+    "item.hunting-spear": {
+      "id": "item.hunting-spear",
+      "name": "Hunting Spear",
+      "itemClass": "weapon",
+      "tier": 1,
+      "hands": 1,
+      "slots": 1,
+      "statModifiers": {},
+      "grants": [
+        "attack.hunting-spear.thrust",
+        "attack.hunting-spear.hurl"
+      ],
+      "abilities": [],
+      "triggers": []
+    },
+    "item.glaive": {
+      "id": "item.glaive",
+      "name": "Glaive",
+      "itemClass": "weapon",
+      "tier": 1,
+      "hands": 2,
+      "slots": 2,
+      "statModifiers": {},
+      "grants": [
+        "attack.glaive.sweep",
+        "attack.glaive.impale"
+      ],
+      "abilities": [],
+      "triggers": []
+    },
+    "item.crossbow": {
+      "id": "item.crossbow",
+      "name": "Crossbow",
+      "itemClass": "weapon",
+      "tier": 1,
+      "hands": 2,
+      "slots": 2,
+      "statModifiers": {},
+      "grants": [
+        "attack.crossbow.bolt",
+        "attack.crossbow.punch-through"
+      ],
+      "abilities": [],
+      "triggers": []
+    },
+    "item.hand-crossbow": {
+      "id": "item.hand-crossbow",
+      "name": "Hand Crossbow",
+      "itemClass": "weapon",
+      "tier": 1,
+      "hands": 1,
+      "slots": 1,
+      "statModifiers": {},
+      "grants": [
+        "attack.hand-crossbow.snapshot",
+        "attack.hand-crossbow.loaded-bolt"
+      ],
+      "abilities": [],
+      "triggers": [
+        {
+          "id": "trigger.hand-crossbow.loaded-bolt.poison",
+          "hook": "onHit",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.poison",
+            "value": 2
+          },
+          "source": "item.hand-crossbow",
+          "onlyWithAttack": "attack.hand-crossbow.loaded-bolt"
+        }
+      ]
+    },
+    "item.rapier": {
+      "id": "item.rapier",
+      "name": "Duelist's Rapier",
+      "itemClass": "weapon",
+      "tier": 1,
+      "hands": 1,
+      "slots": 1,
+      "statModifiers": {},
+      "grants": [
+        "attack.rapier.thrust",
+        "attack.rapier.pierce"
+      ],
+      "abilities": [],
+      "triggers": [],
+      "gaps": [
+        "onAttack: gain +10 Dodge until the end of your next Turn — trigger shape unparsed"
+      ]
+    },
+    "item.raiders-cutlass": {
+      "id": "item.raiders-cutlass",
+      "name": "Raider's Cutlass",
+      "itemClass": "weapon",
+      "tier": 1,
+      "hands": 1,
+      "slots": 1,
+      "statModifiers": {},
+      "grants": [
+        "attack.raiders-cutlass.slash",
+        "attack.raiders-cutlass.boarding-swing"
+      ],
+      "abilities": [],
+      "triggers": [
+        {
+          "id": "trigger.raiders-cutlass.slash.bleed",
+          "hook": "onHit",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.bleed",
+            "value": 1
+          },
+          "source": "item.raiders-cutlass",
+          "onlyWithAttack": "attack.raiders-cutlass.slash"
+        },
+        {
+          "id": "trigger.raiders-cutlass.boarding-swing.bleed",
+          "hook": "onHit",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.bleed",
+            "value": 2
+          },
+          "source": "item.raiders-cutlass",
+          "onlyWithAttack": "attack.raiders-cutlass.boarding-swing"
+        }
+      ]
+    },
+    "item.throwing-knives": {
+      "id": "item.throwing-knives",
+      "name": "Throwing Knives",
+      "itemClass": "weapon",
+      "tier": 1,
+      "hands": 1,
+      "slots": 1,
+      "classRestriction": "class.rogue",
+      "statModifiers": {},
+      "grants": [
+        "attack.throwing-knives.flick",
+        "attack.throwing-knives.fan"
+      ],
+      "abilities": [],
+      "triggers": []
+    },
+    "item.poison-stars": {
+      "id": "item.poison-stars",
+      "name": "Poison Stars",
+      "itemClass": "weapon",
+      "tier": 1,
+      "hands": 1,
+      "slots": 1,
+      "classRestriction": "class.rogue",
+      "statModifiers": {},
+      "grants": [
+        "attack.poison-stars.star",
+        "attack.poison-stars.venom-spread"
+      ],
+      "abilities": [],
+      "triggers": [
+        {
+          "id": "trigger.poison-stars.star.poison",
+          "hook": "onHit",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.poison",
+            "value": 2
+          },
+          "source": "item.poison-stars",
+          "onlyWithAttack": "attack.poison-stars.star"
+        }
+      ]
+    },
+    "item.obsidian-fang-dagger": {
+      "id": "item.obsidian-fang-dagger",
+      "name": "Obsidian Fang Dagger",
+      "itemClass": "weapon",
+      "tier": 1,
+      "hands": 1,
+      "slots": 1,
+      "classRestriction": "class.rogue",
+      "statModifiers": {},
+      "grants": [
+        "attack.obsidian-fang-dagger.fang",
+        "attack.obsidian-fang-dagger.gut"
+      ],
+      "abilities": [],
+      "triggers": []
+    },
+    "item.duel-runeblades": {
+      "id": "item.duel-runeblades",
+      "name": "Duel Runeblades",
+      "itemClass": "weapon",
+      "tier": 1,
+      "hands": 2,
+      "slots": 2,
+      "statModifiers": {},
+      "grants": [
+        "attack.duel-runeblades.twin-cut",
+        "attack.duel-runeblades.rune-cross"
+      ],
+      "abilities": [],
+      "triggers": []
+    },
+    "item.shepherds-sling": {
+      "id": "item.shepherds-sling",
+      "name": "Shepherd's Sling",
+      "itemClass": "weapon",
+      "tier": 1,
+      "hands": 1,
+      "slots": 1,
+      "statModifiers": {},
+      "grants": [
+        "attack.shepherds-sling.stone",
+        "attack.shepherds-sling.whirl"
+      ],
+      "abilities": [],
+      "triggers": [
+        {
+          "id": "trigger.shepherds-sling.whirl.stun",
+          "hook": "onCrit",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.stun",
+            "value": 1
+          },
+          "source": "item.shepherds-sling",
+          "onlyWithAttack": "attack.shepherds-sling.whirl"
+        }
+      ]
+    },
+    "item.crippling-whip": {
+      "id": "item.crippling-whip",
+      "name": "Crippling Whip",
+      "itemClass": "weapon",
+      "tier": 1,
+      "hands": 1,
+      "slots": 1,
+      "statModifiers": {},
+      "grants": [
+        "attack.crippling-whip.lash",
+        "attack.crippling-whip.hamstring"
+      ],
+      "abilities": [],
+      "triggers": [
+        {
+          "id": "trigger.crippling-whip.lash.weak",
+          "hook": "onHit",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.weak",
+            "value": 2
+          },
+          "source": "item.crippling-whip",
+          "onlyWithAttack": "attack.crippling-whip.lash"
+        }
+      ]
+    },
+    "item.iron-claws": {
+      "id": "item.iron-claws",
+      "name": "Iron Claws",
+      "itemClass": "weapon",
+      "tier": 1,
+      "hands": 2,
+      "slots": 2,
+      "statModifiers": {},
+      "grants": [
+        "attack.iron-claws.rake",
+        "attack.iron-claws.eviscerate"
+      ],
+      "abilities": [],
+      "triggers": [
+        {
+          "id": "trigger.iron-claws.eviscerate.bleed",
+          "hook": "onHit",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.bleed",
+            "value": 3
+          },
+          "source": "item.iron-claws",
+          "onlyWithAttack": "attack.iron-claws.eviscerate"
+        }
+      ]
+    },
+    "item.grappling-harpoon": {
+      "id": "item.grappling-harpoon",
+      "name": "Grappling Harpoon",
+      "itemClass": "weapon",
+      "tier": 1,
+      "hands": 2,
+      "slots": 2,
+      "statModifiers": {},
+      "grants": [
+        "attack.grappling-harpoon.brace",
+        "attack.grappling-harpoon.hurl"
+      ],
+      "abilities": [],
+      "triggers": []
+    },
+    "item.apprentice-wand": {
+      "id": "item.apprentice-wand",
+      "name": "Apprentice Wand",
+      "itemClass": "weapon",
+      "tier": 1,
+      "hands": 1,
+      "slots": 1,
+      "classRestriction": "class.mage",
+      "statModifiers": {},
+      "grants": [
+        "attack.apprentice-wand.spark",
+        "attack.apprentice-wand.surge"
+      ],
+      "abilities": [],
+      "triggers": [
+        {
+          "id": "trigger.apprentice-wand.surge.burn",
+          "hook": "onHit",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.burn",
+            "value": 1
+          },
+          "source": "item.apprentice-wand",
+          "onlyWithAttack": "attack.apprentice-wand.surge"
+        }
+      ]
+    },
+    "item.ancient-tome": {
+      "id": "item.ancient-tome",
+      "name": "Ancient Tome",
+      "itemClass": "weapon",
+      "tier": 1,
+      "hands": 1,
+      "slots": 1,
+      "classRestriction": "class.mage",
+      "statModifiers": {},
+      "grants": [
+        "attack.ancient-tome.read-the-page",
+        "attack.ancient-tome.long-passage"
+      ],
+      "abilities": [],
+      "triggers": []
+    },
+    "item.holy-texts": {
+      "id": "item.holy-texts",
+      "name": "Holy Texts",
+      "itemClass": "weapon",
+      "tier": 1,
+      "hands": 1,
+      "slots": 1,
+      "classRestriction": "class.priest",
+      "statModifiers": {},
+      "grants": [
+        "attack.holy-texts.verse",
+        "attack.holy-texts.mercy"
+      ],
+      "abilities": [],
+      "triggers": []
+    },
+    "item.bane-blade": {
+      "id": "item.bane-blade",
+      "name": "Bane Blade",
+      "itemClass": "weapon",
+      "tier": 1,
+      "hands": 1,
+      "slots": 1,
+      "classRestriction": "class.paladin",
+      "statModifiers": {},
+      "grants": [
+        "attack.bane-blade.strike",
+        "attack.bane-blade.banishing-blow"
+      ],
+      "abilities": [],
+      "triggers": []
+    },
+    "item.sword-of-the-fallen": {
+      "id": "item.sword-of-the-fallen",
+      "name": "Sword of the Fallen",
+      "itemClass": "weapon",
+      "tier": 1,
+      "hands": 1,
+      "slots": 1,
+      "classRestriction": "class.paladin",
+      "statModifiers": {},
+      "grants": [
+        "attack.sword-of-the-fallen.remembrance",
+        "attack.sword-of-the-fallen.honour-the-dead"
+      ],
+      "abilities": [],
+      "triggers": []
+    },
+    "item.buckler": {
+      "id": "item.buckler",
+      "name": "Buckler",
+      "itemClass": "weapon",
+      "tier": 1,
+      "hands": 1,
+      "slots": 1,
+      "statModifiers": {},
+      "grants": [
+        "attack.buckler.punch"
+      ],
+      "abilities": [],
+      "triggers": [],
+      "gaps": [
+        "grants power.buckler.block-and-dodge — item power — shape unparsed"
+      ]
+    },
+    "item.bloody-axe": {
+      "id": "item.bloody-axe",
+      "name": "Bloody Axe",
+      "itemClass": "weapon",
+      "tier": 2,
+      "hands": 1,
+      "slots": 1,
+      "statModifiers": {
+        "strength": 1
+      },
+      "grants": [
+        "attack.bloody-axe.cleave-open",
+        "attack.bloody-axe.butcher"
+      ],
+      "abilities": [],
+      "triggers": [
+        {
+          "id": "trigger.bloody-axe.butcher.bleed",
+          "hook": "onHit",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.bleed",
+            "value": 3
+          },
+          "source": "item.bloody-axe",
+          "onlyWithAttack": "attack.bloody-axe.butcher"
+        },
+        {
+          "id": "trigger.bloody-axe.bleed",
+          "hook": "onDamage",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.bleed",
+            "value": 1
+          },
+          "source": "item.bloody-axe"
+        }
+      ]
+    },
+    "item.hammer-of-justice": {
+      "id": "item.hammer-of-justice",
+      "name": "Hammer of Justice",
+      "itemClass": "weapon",
+      "tier": 2,
+      "hands": 2,
+      "slots": 2,
+      "classRestriction": "class.paladin",
+      "statModifiers": {
+        "strength": 1
+      },
+      "grants": [
+        "attack.hammer-of-justice.judgment",
+        "attack.hammer-of-justice.sentence"
+      ],
+      "abilities": [],
+      "triggers": [],
+      "gaps": [
+        "onHit: the target loses 1 Armor for the rest of the Battl — trigger shape unparsed"
+      ]
+    },
+    "item.holy-shield": {
+      "id": "item.holy-shield",
+      "name": "Holy Shield",
+      "itemClass": "weapon",
+      "tier": 2,
+      "hands": 1,
+      "slots": 1,
+      "classRestriction": "class.paladin",
+      "statModifiers": {
+        "armor": 1,
+        "resist": 1,
+        "maxHp": 2
+      },
+      "grants": [
+        "attack.holy-shield.shield-bash",
+        "attack.holy-shield.aegis-slam"
+      ],
+      "abilities": [],
+      "triggers": [
+        {
+          "id": "trigger.holy-shield.shield-bash.stun",
+          "hook": "onCrit",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.stun",
+            "value": 1
+          },
+          "source": "item.holy-shield",
+          "onlyWithAttack": "attack.holy-shield.shield-bash"
+        }
+      ],
+      "gaps": [
+        "aura: AURA radius 1 — an enemy adjacent to you takes -10 — hook: aura (declared, engine never fires it)"
+      ]
+    },
+    "item.death-blade": {
+      "id": "item.death-blade",
+      "name": "Death Blade",
+      "itemClass": "weapon",
+      "tier": 2,
+      "hands": 1,
+      "slots": 1,
+      "statModifiers": {
+        "strength": 1
+      },
+      "grants": [
+        "attack.death-blade.reap",
+        "attack.death-blade.death-stroke"
+      ],
+      "abilities": [],
+      "triggers": [],
+      "gaps": [
+        "onKill: heal 3 and gain +1 Strength for the rest of the Ba — trigger shape unparsed"
+      ]
+    },
+    "item.sniper-bow": {
+      "id": "item.sniper-bow",
+      "name": "Sniper Bow",
+      "itemClass": "weapon",
+      "tier": 2,
+      "hands": 2,
+      "slots": 2,
+      "statModifiers": {
+        "reach": 1
+      },
+      "grants": [
+        "attack.sniper-bow.loose",
+        "attack.sniper-bow.long-shot"
+      ],
+      "abilities": [],
+      "triggers": [],
+      "gaps": [
+        "onKill: gain +5 Accuracy for the rest of the Battle, stack — trigger shape unparsed"
+      ]
+    },
+    "item.runed-crossbow": {
+      "id": "item.runed-crossbow",
+      "name": "Runed Crossbow",
+      "itemClass": "weapon",
+      "tier": 2,
+      "hands": 2,
+      "slots": 2,
+      "statModifiers": {},
+      "grants": [
+        "attack.runed-crossbow.rune-bolt",
+        "attack.runed-crossbow.banishing-bolt"
+      ],
+      "abilities": [],
+      "triggers": [],
+      "gaps": [
+        "onHit: if the target is demon or undead, apply 2 Burn — trigger shape unparsed"
+      ]
+    },
+    "item.poison-throwing-knives": {
+      "id": "item.poison-throwing-knives",
+      "name": "Poison Throwing Knives",
+      "itemClass": "weapon",
+      "tier": 2,
+      "hands": 1,
+      "slots": 1,
+      "classRestriction": "class.rogue",
+      "statModifiers": {},
+      "grants": [
+        "attack.poison-throwing-knives.toss",
+        "attack.poison-throwing-knives.venom-fan"
+      ],
+      "abilities": [],
+      "triggers": [
+        {
+          "id": "trigger.poison-throwing-knives.poison",
+          "hook": "onDamage",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.poison",
+            "value": 1
+          },
+          "source": "item.poison-throwing-knives"
+        }
+      ]
+    },
+    "item.shadow-dagger": {
+      "id": "item.shadow-dagger",
+      "name": "Shadow Dagger",
+      "itemClass": "weapon",
+      "tier": 2,
+      "hands": 1,
+      "slots": 1,
+      "classRestriction": "class.rogue",
+      "statModifiers": {
+        "dodge": 5
+      },
+      "grants": [
+        "attack.shadow-dagger.shadow-cut",
+        "attack.shadow-dagger.from-behind"
+      ],
+      "abilities": [],
+      "triggers": [],
+      "gaps": [
+        "onKill: gain +5 Dodge for the rest of the Battle — trigger shape unparsed"
+      ]
+    },
+    "item.stormforged-blade": {
+      "id": "item.stormforged-blade",
+      "name": "Stormforged Blade",
+      "itemClass": "weapon",
+      "tier": 2,
+      "hands": 1,
+      "slots": 1,
+      "statModifiers": {
+        "strength": 1
+      },
+      "grants": [
+        "attack.stormforged-blade.arc-cut",
+        "attack.stormforged-blade.thunder-strike"
+      ],
+      "abilities": [],
+      "triggers": [
+        {
+          "id": "trigger.stormforged-blade.thunder-strike.burn",
+          "hook": "onHit",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.burn",
+            "value": 2
+          },
+          "source": "item.stormforged-blade",
+          "onlyWithAttack": "attack.stormforged-blade.thunder-strike"
+        }
+      ],
+      "gaps": [
+        "onCrit: deal 3 magic damage to every enemy adjacent to the — trigger shape unparsed"
+      ]
+    },
+    "item.twin-talon-bow": {
+      "id": "item.twin-talon-bow",
+      "name": "Twin Talon Bow",
+      "itemClass": "weapon",
+      "tier": 2,
+      "hands": 2,
+      "slots": 2,
+      "statModifiers": {},
+      "grants": [
+        "attack.twin-talon-bow.talon-shot",
+        "attack.twin-talon-bow.double-nock"
+      ],
+      "abilities": [],
+      "triggers": [
+        {
+          "id": "trigger.twin-talon-bow.bleed",
+          "hook": "onDamage",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.bleed",
+            "value": 1
+          },
+          "source": "item.twin-talon-bow"
+        }
+      ]
+    },
+    "item.wraith-touched-staff": {
+      "id": "item.wraith-touched-staff",
+      "name": "Wraith-Touched Staff",
+      "itemClass": "weapon",
+      "tier": 2,
+      "hands": 2,
+      "slots": 2,
+      "classRestriction": "class.mage",
+      "statModifiers": {
+        "magic": 1,
+        "reach": 1
+      },
+      "grants": [
+        "attack.wraith-touched-staff.wraith-bolt",
+        "attack.wraith-touched-staff.grasp"
+      ],
+      "abilities": [],
+      "triggers": [],
+      "gaps": [
+        "onKill: heal 2 — trigger shape unparsed"
+      ]
+    },
+    "item.book-of-exorcisms": {
+      "id": "item.book-of-exorcisms",
+      "name": "Book of Exorcisms",
+      "itemClass": "weapon",
+      "tier": 2,
+      "hands": 1,
+      "slots": 1,
+      "classRestriction": "class.priest",
+      "statModifiers": {},
+      "grants": [
+        "attack.book-of-exorcisms.reading",
+        "attack.book-of-exorcisms.rite-of-expulsion"
+      ],
+      "abilities": [],
+      "triggers": [
+        {
+          "id": "trigger.book-of-exorcisms.burn",
+          "hook": "onAttack",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.burn",
+            "value": 1
+          },
+          "source": "item.book-of-exorcisms"
+        }
+      ]
+    },
+    "item.cursed-sand-blade": {
+      "id": "item.cursed-sand-blade",
+      "name": "Cursed Sand Blade",
+      "itemClass": "weapon",
+      "tier": 2,
+      "hands": 2,
+      "slots": 2,
+      "statModifiers": {
+        "strength": 2,
+        "maxHp": -2
+      },
+      "grants": [
+        "attack.cursed-sand-blade.sand-cut",
+        "attack.cursed-sand-blade.the-cursed-swing"
+      ],
+      "abilities": [],
+      "triggers": [],
+      "gaps": [
+        "startOfBattle: take 2 true damage — hook: startOfBattle (declared, engine never fires it)"
+      ]
+    },
+    "item.skyforged-halberd": {
+      "id": "item.skyforged-halberd",
+      "name": "Skyforged Halberd",
+      "itemClass": "weapon",
+      "tier": 2,
+      "hands": 2,
+      "slots": 2,
+      "classRestriction": "class.paladin",
+      "statModifiers": {},
+      "grants": [
+        "attack.skyforged-halberd.sky-sweep",
+        "attack.skyforged-halberd.hallowed-thrust"
+      ],
+      "abilities": [],
+      "triggers": [],
+      "gaps": [
+        "startOfBattle: every ally within 2 hexes gains +1 Armor for the r — hook: startOfBattle (declared, engine never fires it)"
+      ]
+    },
+    "item.boarding-hook": {
+      "id": "item.boarding-hook",
+      "name": "Boarding Hook",
+      "itemClass": "weapon",
+      "tier": 2,
+      "hands": 1,
+      "slots": 1,
+      "statModifiers": {},
+      "grants": [
+        "attack.boarding-hook.hook",
+        "attack.boarding-hook.drag-down"
+      ],
+      "abilities": [],
+      "triggers": [
+        {
+          "id": "trigger.boarding-hook.bleed",
+          "hook": "onDamage",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.bleed",
+            "value": 1
+          },
+          "source": "item.boarding-hook"
+        }
+      ]
+    },
+    "item.mirage-dagger": {
+      "id": "item.mirage-dagger",
+      "name": "Mirage Dagger",
+      "itemClass": "weapon",
+      "tier": 2,
+      "hands": 1,
+      "slots": 1,
+      "statModifiers": {
+        "dodge": 5
+      },
+      "grants": [
+        "attack.mirage-dagger.flicker-cut",
+        "attack.mirage-dagger.two-places-at-once"
+      ],
+      "abilities": [],
+      "triggers": [],
+      "gaps": [
+        "onKill: gain +10 Dodge until the start of your next Turn — trigger shape unparsed"
+      ]
+    },
+    "item.seraph-bow": {
+      "id": "item.seraph-bow",
+      "name": "Seraph Bow",
+      "itemClass": "weapon",
+      "tier": 2,
+      "hands": 2,
+      "slots": 2,
+      "classRestriction": "class.ranger",
+      "statModifiers": {
+        "precision": 1,
+        "reach": 1
+      },
+      "grants": [
+        "attack.seraph-bow.seraph-shot",
+        "attack.seraph-bow.feathered-judgment"
+      ],
+      "abilities": [],
+      "triggers": [],
+      "gaps": [
+        "onKill: heal 2 — trigger shape unparsed"
+      ]
+    },
+    "item.death-bow": {
+      "id": "item.death-bow",
+      "name": "Death Bow",
+      "itemClass": "weapon",
+      "tier": 3,
+      "hands": 2,
+      "slots": 2,
+      "statModifiers": {
+        "precision": 2
+      },
+      "grants": [
+        "attack.death-bow.death-shot",
+        "attack.death-bow.the-last-arrow"
+      ],
+      "abilities": [],
+      "triggers": [],
+      "gaps": [
+        "onHit: the target cannot be healed until the end of its n — trigger shape unparsed",
+        "onKill: regain 1 Stamina — trigger shape unparsed"
+      ]
+    },
+    "item.holy-avenger": {
+      "id": "item.holy-avenger",
+      "name": "Holy Avenger",
+      "itemClass": "weapon",
+      "tier": 3,
+      "hands": 1,
+      "slots": 1,
+      "classRestriction": "class.paladin",
+      "statModifiers": {
+        "strength": 1,
+        "resist": 1
+      },
+      "grants": [
+        "attack.holy-avenger.avenging-strike",
+        "attack.holy-avenger.the-avenger-wakes"
+      ],
+      "abilities": [],
+      "triggers": [],
+      "gaps": [
+        "startOfBattle: gain +2 Strength against demon and undead for the  — hook: startOfBattle (declared, engine never fires it)",
+        "onKill: every ally within 3 hexes heals 2 — trigger shape unparsed"
+      ]
+    },
+    "item.demon-whip": {
+      "id": "item.demon-whip",
+      "name": "Demon Whip",
+      "itemClass": "weapon",
+      "tier": 3,
+      "hands": 1,
+      "slots": 1,
+      "statModifiers": {
+        "strength": 2
+      },
+      "grants": [
+        "attack.demon-whip.crack",
+        "attack.demon-whip.hellcoil"
+      ],
+      "abilities": [],
+      "triggers": [],
+      "gaps": [
+        "onAttack: apply 2 Burn to the target — trigger shape unparsed"
+      ]
+    },
+    "item.demonic-shiv": {
+      "id": "item.demonic-shiv",
+      "name": "Demonic Shiv",
+      "itemClass": "weapon",
+      "tier": 3,
+      "hands": 1,
+      "slots": 1,
+      "classRestriction": "class.rogue",
+      "statModifiers": {
+        "strength": 1,
+        "crit": 5
+      },
+      "grants": [
+        "attack.demonic-shiv.shiv",
+        "attack.demonic-shiv.the-devils-favour"
+      ],
+      "abilities": [],
+      "triggers": [],
+      "gaps": [
+        "onKill: deal 5 true damage to up to two enemies within 4 h — trigger shape unparsed"
+      ]
+    },
+    "item.void-staff": {
+      "id": "item.void-staff",
+      "name": "Void Staff",
+      "itemClass": "weapon",
+      "tier": 3,
+      "hands": 2,
+      "slots": 2,
+      "classRestriction": "class.mage",
+      "statModifiers": {
+        "magic": 2,
+        "resist": 1
+      },
+      "grants": [
+        "attack.void-staff.void-bolt",
+        "attack.void-staff.unmaking"
+      ],
+      "abilities": [],
+      "triggers": [],
+      "gaps": [
+        "onKill: regain 1 Stamina — trigger shape unparsed"
+      ]
+    },
+    "item.orb-of-the-soul-stealer": {
+      "id": "item.orb-of-the-soul-stealer",
+      "name": "Orb of the Soul Stealer",
+      "itemClass": "weapon",
+      "tier": 3,
+      "hands": 1,
+      "slots": 1,
+      "classRestriction": "class.mage",
+      "statModifiers": {
+        "magic": 1,
+        "reach": 2
+      },
+      "grants": [
+        "attack.orb-of-the-soul-stealer.soul-tap",
+        "attack.orb-of-the-soul-stealer.steal-the-spark"
+      ],
+      "abilities": [],
+      "triggers": [],
+      "gaps": [
+        "onAttack: heal 2 at the start of your next Turn — trigger shape unparsed"
+      ]
+    },
+    "item.blade-of-demon-slaying": {
+      "id": "item.blade-of-demon-slaying",
+      "name": "Blade of Demon Slaying",
+      "itemClass": "weapon",
+      "tier": 3,
+      "hands": 2,
+      "slots": 2,
+      "statModifiers": {
+        "strength": 1,
+        "resist": 1
+      },
+      "grants": [
+        "attack.blade-of-demon-slaying.slayer-cut",
+        "attack.blade-of-demon-slaying.demonbane"
+      ],
+      "abilities": [],
+      "triggers": [],
+      "gaps": [
+        "onDamage: apply 5 Burn if the target is demon, otherwise 2 B — trigger shape unparsed"
+      ]
+    },
+    "item.pharaohs-gauntlets": {
+      "id": "item.pharaohs-gauntlets",
+      "name": "Pharaoh's Gauntlets",
+      "itemClass": "weapon",
+      "tier": 3,
+      "hands": 2,
+      "slots": 2,
+      "statModifiers": {
+        "strength": 2,
+        "armor": 1
+      },
+      "grants": [
+        "attack.pharaohs-gauntlets.gilded-strike",
+        "attack.pharaohs-gauntlets.the-kings-hands"
+      ],
+      "abilities": [],
+      "triggers": [
+        {
+          "id": "trigger.pharaohs-gauntlets.weak",
+          "hook": "onHit",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.weak",
+            "value": 1
+          },
+          "source": "item.pharaohs-gauntlets"
+        }
+      ]
+    },
+    "item.scepter-of-salvation": {
+      "id": "item.scepter-of-salvation",
+      "name": "Scepter of Salvation",
+      "itemClass": "weapon",
+      "tier": 3,
+      "hands": 1,
+      "slots": 1,
+      "classRestriction": "class.priest",
+      "statModifiers": {
+        "spirit": 1
+      },
+      "grants": [
+        "attack.scepter-of-salvation.rebuke",
+        "attack.scepter-of-salvation.salvation"
+      ],
+      "abilities": [],
+      "triggers": [
+        {
+          "id": "trigger.scepter-of-salvation.regeneration",
+          "hook": "onHit",
+          "chance": 100,
+          "select": "self",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.regeneration",
+            "value": 2
+          },
+          "source": "item.scepter-of-salvation"
+        }
+      ]
+    },
+    "item.tomb-sentinels-blade": {
+      "id": "item.tomb-sentinels-blade",
+      "name": "Tomb Sentinel's Blade",
+      "itemClass": "weapon",
+      "tier": 3,
+      "hands": 1,
+      "slots": 1,
+      "statModifiers": {
+        "strength": 2
+      },
+      "grants": [
+        "attack.tomb-sentinels-blade.sentinel-cut",
+        "attack.tomb-sentinels-blade.grave-warden"
+      ],
+      "abilities": [],
+      "triggers": [
+        {
+          "id": "trigger.tomb-sentinels-blade.thorns",
+          "hook": "onTakingDamage",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "damage",
+            "amount": 3,
+            "damageType": "true"
+          },
+          "source": "item.tomb-sentinels-blade"
+        }
+      ],
+      "gaps": [
+        "onKill: gain +1 Armor for the rest of the Battle, stacking — trigger shape unparsed",
+        "thorns: 3 — item field: thorns"
+      ]
+    },
+    "item.siege-crossbow": {
+      "id": "item.siege-crossbow",
+      "name": "Siege Crossbow",
+      "itemClass": "weapon",
+      "tier": 3,
+      "hands": 2,
+      "slots": 2,
+      "statModifiers": {
+        "precision": 2,
+        "movement": -1
+      },
+      "grants": [
+        "attack.siege-crossbow.bolt",
+        "attack.siege-crossbow.siege-shot"
+      ],
+      "abilities": [],
+      "triggers": [],
+      "gaps": [
+        "onHit: ignore 3 of the target's Armor — trigger shape unparsed"
+      ]
+    },
+    "item.stormforged-halberd": {
+      "id": "item.stormforged-halberd",
+      "name": "Stormforged Halberd",
+      "itemClass": "weapon",
+      "tier": 3,
+      "hands": 2,
+      "slots": 2,
+      "classRestriction": "class.warrior",
+      "statModifiers": {
+        "strength": 2
+      },
+      "grants": [
+        "attack.stormforged-halberd.storm-sweep",
+        "attack.stormforged-halberd.thunderhead"
+      ],
+      "abilities": [],
+      "triggers": [
+        {
+          "id": "trigger.stormforged-halberd.thunderhead.stun",
+          "hook": "onHit",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.stun",
+            "value": 1
+          },
+          "source": "item.stormforged-halberd",
+          "onlyWithAttack": "attack.stormforged-halberd.thunderhead"
+        },
+        {
+          "id": "trigger.stormforged-halberd.burn",
+          "hook": "onDamage",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.burn",
+            "value": 4
+          },
+          "source": "item.stormforged-halberd"
+        }
+      ]
+    },
+    "item.fangs": {
+      "id": "item.fangs",
+      "name": "Fangs",
+      "itemClass": "weapon",
+      "tier": 1,
+      "hands": 0,
+      "slots": 0,
+      "classRestriction": "class.beast",
+      "statModifiers": {},
+      "grants": [
+        "attack.fangs.bite",
+        "attack.fangs.savage"
+      ],
+      "abilities": [],
+      "triggers": [
+        {
+          "id": "trigger.fangs.savage.bleed",
+          "hook": "onHit",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.bleed",
+            "value": 2
+          },
+          "source": "item.fangs",
+          "onlyWithAttack": "attack.fangs.savage"
+        }
+      ],
+      "gaps": [
+        "natural: true — item field: natural"
+      ]
+    },
+    "item.claws": {
+      "id": "item.claws",
+      "name": "Claws",
+      "itemClass": "weapon",
+      "tier": 1,
+      "hands": 0,
+      "slots": 0,
+      "classRestriction": "class.beast",
+      "statModifiers": {},
+      "grants": [
+        "attack.claws.swipe",
+        "attack.claws.flense"
+      ],
+      "abilities": [],
+      "triggers": [
+        {
+          "id": "trigger.claws.flense.bleed",
+          "hook": "onCrit",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.bleed",
+            "value": 3
+          },
+          "source": "item.claws",
+          "onlyWithAttack": "attack.claws.flense"
+        }
+      ]
+    },
+    "item.tail": {
+      "id": "item.tail",
+      "name": "Tail",
+      "itemClass": "weapon",
+      "tier": 1,
+      "hands": 0,
+      "slots": 0,
+      "classRestriction": "class.beast",
+      "statModifiers": {
+        "reach": 1
+      },
+      "grants": [
+        "attack.tail.lash",
+        "attack.tail.tail-sweep"
+      ],
+      "abilities": [],
+      "triggers": [],
+      "gaps": [
+        "natural: true — item field: natural"
+      ]
+    },
+    "item.horns": {
+      "id": "item.horns",
+      "name": "Horns",
+      "itemClass": "weapon",
+      "tier": 1,
+      "hands": 0,
+      "slots": 0,
+      "classRestriction": "class.beast",
+      "statModifiers": {},
+      "grants": [
+        "attack.horns.ram",
+        "attack.horns.toss"
+      ],
+      "abilities": [],
+      "triggers": [],
+      "gaps": [
+        "natural: true — item field: natural"
+      ]
+    },
+    "item.breath": {
+      "id": "item.breath",
+      "name": "Breath",
+      "itemClass": "weapon",
+      "tier": 2,
+      "hands": 0,
+      "slots": 0,
+      "classRestriction": "class.beast",
+      "statModifiers": {},
+      "grants": [
+        "attack.breath.gout",
+        "attack.breath.hiss"
+      ],
+      "abilities": [],
+      "triggers": [
+        {
+          "id": "trigger.breath.gout.burn",
+          "hook": "onHit",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.burn",
+            "value": 2
+          },
+          "source": "item.breath",
+          "onlyWithAttack": "attack.breath.gout"
+        },
+        {
+          "id": "trigger.breath.hiss.poison",
+          "hook": "onHit",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.poison",
+            "value": 2
+          },
+          "source": "item.breath",
+          "onlyWithAttack": "attack.breath.hiss"
+        }
+      ]
+    },
+    "item.hooves": {
+      "id": "item.hooves",
+      "name": "Hooves",
+      "itemClass": "weapon",
+      "tier": 1,
+      "hands": 0,
+      "slots": 0,
+      "classRestriction": "class.beast",
+      "statModifiers": {
+        "movement": 1
+      },
+      "grants": [
+        "attack.hooves.kick",
+        "attack.hooves.stomp"
+      ],
+      "abilities": [],
+      "triggers": [],
+      "gaps": [
+        "natural: true — item field: natural"
+      ]
+    },
+    "item.daggers": {
+      "id": "item.daggers",
+      "name": "Daggers",
+      "itemClass": "weapon",
+      "tier": 1,
+      "hands": 2,
+      "slots": 2,
+      "statModifiers": {},
+      "grants": [
+        "attack.daggers.stab",
+        "attack.daggers.thrown-dagger"
+      ],
+      "abilities": [],
+      "triggers": []
+    },
+    "item.pickaxe": {
+      "id": "item.pickaxe",
+      "name": "Pickaxe",
+      "itemClass": "weapon",
+      "tier": 0,
+      "hands": 2,
+      "slots": 2,
+      "statModifiers": {},
+      "grants": [
+        "attack.pickaxe.pick"
+      ],
+      "abilities": [],
+      "triggers": []
+    },
+    "item.burning-torch": {
+      "id": "item.burning-torch",
+      "name": "Burning Torch",
+      "itemClass": "weapon",
+      "tier": 0,
+      "hands": 1,
+      "slots": 1,
+      "statModifiers": {},
+      "grants": [
+        "attack.burning-torch.swing"
+      ],
+      "abilities": [],
+      "triggers": [
+        {
+          "id": "trigger.burning-torch.swing.burn",
+          "hook": "onHit",
+          "chance": 80,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.burn",
+            "value": 1
+          },
+          "source": "item.burning-torch",
+          "onlyWithAttack": "attack.burning-torch.swing"
+        }
+      ],
+      "gaps": [
+        "statModifier 'vision' 3 — stat: vision (no UnitDef field)"
+      ]
+    },
+    "item.net": {
+      "id": "item.net",
+      "name": "Net",
+      "itemClass": "weapon",
+      "tier": 0,
+      "hands": 0,
+      "slots": 1,
+      "statModifiers": {},
+      "grants": [
+        "attack.net.cast"
+      ],
+      "abilities": [],
+      "triggers": [],
+      "gaps": [
+        "uses: 1 — charges spent in battle — capability.consumables"
+      ]
+    },
+    "item.thick-hide": {
+      "id": "item.thick-hide",
+      "name": "Thick Hide",
+      "itemClass": "armor",
+      "tier": 0,
+      "hands": 0,
+      "slots": 0,
+      "statModifiers": {
+        "maxHp": 3,
+        "movement": -1,
+        "dodge": -10
+      },
+      "grants": [],
+      "abilities": [],
+      "triggers": []
+    },
+    "item.tanners-apron": {
+      "id": "item.tanners-apron",
+      "name": "Tanner's Apron",
+      "itemClass": "armor",
+      "tier": 0,
+      "hands": 0,
+      "slots": 0,
+      "statModifiers": {
+        "resist": 1,
+        "movement": -1,
+        "accuracy": -10
+      },
+      "grants": [],
+      "abilities": [],
+      "triggers": []
+    },
+    "item.pilgrims-habit": {
+      "id": "item.pilgrims-habit",
+      "name": "Pilgrim's Habit",
+      "itemClass": "armor",
+      "tier": 0,
+      "hands": 0,
+      "slots": 0,
+      "statModifiers": {
+        "movement": 1,
+        "maxHp": -2,
+        "dodge": -5
+      },
+      "grants": [],
+      "abilities": [],
+      "triggers": []
+    },
+    "item.watchmans-coat": {
+      "id": "item.watchmans-coat",
+      "name": "Watchman's Coat",
+      "itemClass": "armor",
+      "tier": 0,
+      "hands": 0,
+      "slots": 0,
+      "statModifiers": {
+        "reach": 1
+      },
+      "grants": [],
+      "abilities": [],
+      "triggers": [],
+      "gaps": [
+        "statModifier 'vision' 2 — stat: vision (no UnitDef field)"
+      ]
+    },
+    "item.peddlers-vest": {
+      "id": "item.peddlers-vest",
+      "name": "Peddler's Vest",
+      "itemClass": "armor",
+      "tier": 0,
+      "hands": 0,
+      "slots": 0,
+      "statModifiers": {
+        "maxHp": -2,
+        "dodge": -5,
+        "accuracy": -5
+      },
+      "grants": [],
+      "abilities": [],
+      "triggers": [],
+      "gaps": [
+        "statModifier 'itemSlots' 1 — stat: itemSlots (no UnitDef field)"
+      ]
+    },
+    "item.borrowed-vestments": {
+      "id": "item.borrowed-vestments",
+      "name": "Borrowed Vestments",
+      "itemClass": "armor",
+      "tier": 0,
+      "hands": 0,
+      "slots": 0,
+      "statModifiers": {
+        "spirit": 1,
+        "maxStamina": -2
+      },
+      "grants": [],
+      "abilities": [],
+      "triggers": []
+    },
+    "item.silkweave-armor": {
+      "id": "item.silkweave-armor",
+      "name": "Silkweave Armor",
+      "itemClass": "armor",
+      "tier": 1,
+      "hands": 0,
+      "slots": 1,
+      "statModifiers": {
+        "armor": 1,
+        "dodge": 5,
+        "maxHp": -2
+      },
+      "grants": [],
+      "abilities": [],
+      "triggers": []
+    },
+    "item.brutes-harness": {
+      "id": "item.brutes-harness",
+      "name": "Brute's Harness",
+      "itemClass": "armor",
+      "tier": 1,
+      "hands": 0,
+      "slots": 1,
+      "statModifiers": {
+        "maxHp": 4,
+        "strength": 1,
+        "dodge": -5,
+        "accuracy": -5
+      },
+      "grants": [],
+      "abilities": [],
+      "triggers": []
+    },
+    "item.guardians-mail": {
+      "id": "item.guardians-mail",
+      "name": "Guardian's Mail",
+      "itemClass": "armor",
+      "tier": 1,
+      "hands": 0,
+      "slots": 1,
+      "statModifiers": {
+        "armor": 1,
+        "resist": 1,
+        "movement": -1,
+        "maxStamina": -1
+      },
+      "grants": [],
+      "abilities": [],
+      "triggers": []
+    },
+    "item.ghost-thread-cloak": {
+      "id": "item.ghost-thread-cloak",
+      "name": "Ghost-Thread Cloak",
+      "itemClass": "armor",
+      "tier": 2,
+      "hands": 0,
+      "slots": 1,
+      "statModifiers": {
+        "dodge": 15,
+        "luck": 3,
+        "maxHp": -3
+      },
+      "grants": [],
+      "abilities": [],
+      "triggers": [],
+      "gaps": [
+        "onDodge: gain +10 Dodge until the end of your next Turn — hook: onDodge (declared, engine never fires it)"
+      ]
+    },
+    "item.wind-blessed-leather": {
+      "id": "item.wind-blessed-leather",
+      "name": "Wind-Blessed Leather",
+      "itemClass": "armor",
+      "tier": 2,
+      "hands": 0,
+      "slots": 1,
+      "statModifiers": {
+        "dodge": 5,
+        "maxHp": 2,
+        "movement": 1,
+        "maxStamina": -1
+      },
+      "grants": [],
+      "abilities": [],
+      "triggers": [],
+      "gaps": [
+        "onActivationEnd: heal 1 — hook: onActivationEnd (declared, engine never fires it)"
+      ]
+    },
+    "item.wraithform-cloak": {
+      "id": "item.wraithform-cloak",
+      "name": "Wraithform Cloak",
+      "itemClass": "armor",
+      "tier": 2,
+      "hands": 0,
+      "slots": 1,
+      "statModifiers": {
+        "resist": 1,
+        "dodge": 40,
+        "precision": -1,
+        "maxHp": -2
+      },
+      "grants": [],
+      "abilities": [],
+      "triggers": [],
+      "gaps": [
+        "onDodge: take 2 true damage — hook: onDodge (declared, engine never fires it)",
+        "onTakingDamage: heal half the party's Magic, rounded down — trigger shape unparsed"
+      ]
+    },
+    "item.qi-wraps": {
+      "id": "item.qi-wraps",
+      "name": "Qi Wraps",
+      "itemClass": "armor",
+      "tier": 2,
+      "hands": 0,
+      "slots": 1,
+      "statModifiers": {
+        "maxStamina": 2,
+        "dodge": 5,
+        "maxHp": -3
+      },
+      "grants": [],
+      "abilities": [],
+      "triggers": [],
+      "gaps": [
+        "onKill: regain 1 Stamina — trigger shape unparsed"
+      ]
+    },
+    "item.gale-shroud": {
+      "id": "item.gale-shroud",
+      "name": "Gale Shroud",
+      "itemClass": "armor",
+      "tier": 2,
+      "hands": 0,
+      "slots": 1,
+      "statModifiers": {
+        "dodge": 10,
+        "movement": 1,
+        "maxHp": -3
+      },
+      "grants": [],
+      "abilities": [],
+      "triggers": [],
+      "gaps": [
+        "grants power.flight-labored — item power — shape unparsed",
+        "onDodge: gain +10 Accuracy for the rest of the Battle — hook: onDodge (declared, engine never fires it)"
+      ]
+    },
+    "item.scorpion-carapace": {
+      "id": "item.scorpion-carapace",
+      "name": "Scorpion Carapace",
+      "itemClass": "armor",
+      "tier": 2,
+      "hands": 0,
+      "slots": 1,
+      "statModifiers": {
+        "maxHp": 6,
+        "resist": 1,
+        "movement": -1,
+        "dodge": -5
+      },
+      "grants": [],
+      "abilities": [],
+      "triggers": [],
+      "gaps": [
+        "onTakingDamage: Thorns 2, and the attacker gains 2 Poison — trigger shape unparsed",
+        "thorns: 2 — item field: thorns"
+      ]
+    },
+    "item.stormweave-armor": {
+      "id": "item.stormweave-armor",
+      "name": "Stormweave Armor",
+      "itemClass": "armor",
+      "tier": 2,
+      "hands": 0,
+      "slots": 1,
+      "statModifiers": {
+        "maxHp": 2
+      },
+      "grants": [],
+      "abilities": [],
+      "triggers": [
+        {
+          "id": "trigger.stormweave-armor.thorns",
+          "hook": "onTakingDamage",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "damage",
+            "amount": 2,
+            "damageType": "true"
+          },
+          "source": "item.stormweave-armor"
+        }
+      ],
+      "gaps": [
+        "thorns: 2 — item field: thorns"
+      ]
+    },
+    "item.battlemages-cuirass": {
+      "id": "item.battlemages-cuirass",
+      "name": "Battlemage's Cuirass",
+      "itemClass": "armor",
+      "tier": 2,
+      "hands": 0,
+      "slots": 1,
+      "statModifiers": {
+        "magic": 1,
+        "maxHp": 4,
+        "armor": 1,
+        "movement": -1,
+        "dodge": -5
+      },
+      "grants": [],
+      "abilities": [],
+      "triggers": [],
+      "gaps": [
+        "onActivationEnd: gain 2 Protection — hook: onActivationEnd (declared, engine never fires it)"
+      ]
+    },
+    "item.troll-gut-vest": {
+      "id": "item.troll-gut-vest",
+      "name": "Troll-Gut Vest",
+      "itemClass": "armor",
+      "tier": 2,
+      "hands": 0,
+      "slots": 1,
+      "statModifiers": {
+        "maxHp": 6,
+        "armor": 1,
+        "maxStamina": -1,
+        "accuracy": -5
+      },
+      "grants": [],
+      "abilities": [],
+      "triggers": [
+        {
+          "id": "trigger.troll-gut-vest.regeneration",
+          "hook": "onTakingDamage",
+          "chance": 100,
+          "select": "self",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.regeneration",
+            "value": 2
+          },
+          "source": "item.troll-gut-vest"
+        }
+      ],
+      "gaps": [
+        "startOfBattle: gain 3 Regeneration — hook: startOfBattle (declared, engine never fires it)"
+      ]
+    },
+    "item.chains-of-the-faithful": {
+      "id": "item.chains-of-the-faithful",
+      "name": "Chains of the Faithful",
+      "itemClass": "armor",
+      "tier": 2,
+      "hands": 0,
+      "slots": 1,
+      "classRestriction": "class.priest",
+      "statModifiers": {
+        "armor": 2,
+        "maxHp": 2,
+        "strength": -1,
+        "movement": -1
+      },
+      "grants": [],
+      "abilities": [],
+      "triggers": [],
+      "gaps": [
+        "aura: AURA radius 2 — allies inside have Immunity to Bur — hook: aura (declared, engine never fires it)",
+        "onAttack: you gain 1 Burn — trigger shape unparsed"
+      ]
+    },
+    "item.cloudsteel-plate": {
+      "id": "item.cloudsteel-plate",
+      "name": "Cloudsteel Plate",
+      "itemClass": "armor",
+      "tier": 2,
+      "hands": 0,
+      "slots": 1,
+      "statModifiers": {
+        "armor": 1,
+        "maxHp": 6,
+        "movement": -1,
+        "dodge": -5,
+        "accuracy": -5
+      },
+      "grants": [],
+      "abilities": [],
+      "triggers": [],
+      "gaps": [
+        "passive: You have AIRWALK: no trap and no terrain status fr — hook: passive (declared, engine never fires it)",
+        "airwalk: true — item field: airwalk"
+      ]
+    },
+    "item.sandstone-aegis": {
+      "id": "item.sandstone-aegis",
+      "name": "Sandstone Aegis",
+      "itemClass": "armor",
+      "tier": 2,
+      "hands": 0,
+      "slots": 1,
+      "statModifiers": {
+        "luck": 5
+      },
+      "grants": [],
+      "abilities": [],
+      "triggers": []
+    },
+    "item.armor-of-thorns": {
+      "id": "item.armor-of-thorns",
+      "name": "Armor of Thorns",
+      "itemClass": "armor",
+      "tier": 2,
+      "hands": 0,
+      "slots": 1,
+      "statModifiers": {
+        "maxHp": 6,
+        "armor": 1,
+        "movement": -1,
+        "dodge": -5
+      },
+      "grants": [],
+      "abilities": [],
+      "triggers": [
+        {
+          "id": "trigger.armor-of-thorns.thorns",
+          "hook": "onTakingDamage",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "damage",
+            "amount": 3,
+            "damageType": "true"
+          },
+          "source": "item.armor-of-thorns"
+        }
+      ],
+      "gaps": [
+        "thorns: 3 — item field: thorns"
+      ]
+    },
+    "item.divine-bulwark": {
+      "id": "item.divine-bulwark",
+      "name": "Divine Bulwark",
+      "itemClass": "armor",
+      "tier": 2,
+      "hands": 0,
+      "slots": 1,
+      "classRestriction": "class.paladin",
+      "statModifiers": {
+        "armor": 1,
+        "resist": 1,
+        "maxHp": 4,
+        "movement": -1,
+        "maxStamina": -1
+      },
+      "grants": [],
+      "abilities": [],
+      "triggers": [],
+      "gaps": [
+        "startOfBattle: you may not act on Turn 1; from Turn 2 you have +1 — hook: startOfBattle (declared, engine never fires it)"
+      ]
+    },
+    "item.stoneskin-hauberk": {
+      "id": "item.stoneskin-hauberk",
+      "name": "Stoneskin Hauberk",
+      "itemClass": "armor",
+      "tier": 2,
+      "hands": 0,
+      "slots": 1,
+      "statModifiers": {
+        "armor": 2,
+        "maxHp": 2,
+        "movement": -2,
+        "dodge": -5
+      },
+      "grants": [],
+      "abilities": [],
+      "triggers": [],
+      "gaps": [
+        "onActivationEnd: gain +1 Armor until the end of your next Turn — hook: onActivationEnd (declared, engine never fires it)"
+      ]
+    },
+    "item.cloak-of-ghostform": {
+      "id": "item.cloak-of-ghostform",
+      "name": "Cloak of Ghostform",
+      "itemClass": "armor",
+      "tier": 3,
+      "hands": 0,
+      "slots": 1,
+      "statModifiers": {
+        "dodge": 15,
+        "luck": 5,
+        "resist": 1,
+        "maxHp": -4
+      },
+      "grants": [],
+      "abilities": [],
+      "triggers": [],
+      "gaps": [
+        "onDodge: gain +50 Dodge until the end of your next Turn — hook: onDodge (declared, engine never fires it)"
+      ]
+    },
+    "item.phantoms-mantle": {
+      "id": "item.phantoms-mantle",
+      "name": "Phantom's Mantle",
+      "itemClass": "armor",
+      "tier": 3,
+      "hands": 0,
+      "slots": 1,
+      "statModifiers": {
+        "dodge": 15,
+        "movement": 1,
+        "luck": 5,
+        "maxHp": -4
+      },
+      "grants": [],
+      "abilities": [],
+      "triggers": [],
+      "gaps": [
+        "onKill: enters stealth: you cannot be seen and cannot be t — trigger shape unparsed"
+      ]
+    },
+    "item.skypriests-vestments": {
+      "id": "item.skypriests-vestments",
+      "name": "Skypriest's Vestments",
+      "itemClass": "armor",
+      "tier": 3,
+      "hands": 0,
+      "slots": 1,
+      "classRestriction": "class.priest",
+      "statModifiers": {
+        "spirit": 2,
+        "resist": 1,
+        "dodge": 5,
+        "maxHp": -4
+      },
+      "grants": [],
+      "abilities": [],
+      "triggers": [],
+      "gaps": [
+        "passive: You have AIRWALK: no trap and no terrain status fr — hook: passive (declared, engine never fires it)",
+        "airwalk: true — item field: airwalk"
+      ]
+    },
+    "item.wind-dancers-cloak": {
+      "id": "item.wind-dancers-cloak",
+      "name": "Wind Dancer's Cloak",
+      "itemClass": "armor",
+      "tier": 3,
+      "hands": 0,
+      "slots": 1,
+      "statModifiers": {
+        "dodge": 10,
+        "movement": 2,
+        "maxStamina": 1,
+        "maxHp": -4
+      },
+      "grants": [],
+      "abilities": [],
+      "triggers": [],
+      "gaps": [
+        "grants power.flight — item power — shape unparsed",
+        "onDodge: Surge Chance +30 — hook: onDodge (declared, engine never fires it)"
+      ]
+    },
+    "item.sturdy-runed-leather": {
+      "id": "item.sturdy-runed-leather",
+      "name": "Sturdy Runed Leather",
+      "itemClass": "armor",
+      "tier": 3,
+      "hands": 0,
+      "slots": 1,
+      "statModifiers": {
+        "maxHp": 6,
+        "resist": 2,
+        "armor": 1,
+        "accuracy": -20
+      },
+      "grants": [],
+      "abilities": [],
+      "triggers": []
+    },
+    "item.drakescale-coat": {
+      "id": "item.drakescale-coat",
+      "name": "Drakescale Coat",
+      "itemClass": "armor",
+      "tier": 3,
+      "hands": 0,
+      "slots": 1,
+      "statModifiers": {
+        "resist": 2,
+        "armor": 1,
+        "maxHp": 4,
+        "movement": -1,
+        "dodge": -5
+      },
+      "grants": [],
+      "abilities": [],
+      "triggers": [],
+      "gaps": [
+        "startOfBattle: gain +2 Resist against dragon for the rest of the  — hook: startOfBattle (declared, engine never fires it)",
+        "onTakingDamage: Burn applied to you is halved, rounded down, befor — trigger shape unparsed"
+      ]
+    },
+    "item.aegis-of-the-fleet": {
+      "id": "item.aegis-of-the-fleet",
+      "name": "Aegis of the Fleet",
+      "itemClass": "armor",
+      "tier": 3,
+      "hands": 0,
+      "slots": 1,
+      "statModifiers": {
+        "armor": 1,
+        "resist": 1,
+        "maxHp": 4,
+        "dodge": -5
+      },
+      "grants": [],
+      "abilities": [],
+      "triggers": [],
+      "gaps": [
+        "grants power.flight-swift — item power — shape unparsed"
+      ]
+    },
+    "item.mystic-armor": {
+      "id": "item.mystic-armor",
+      "name": "Mystic Armor",
+      "itemClass": "armor",
+      "tier": 3,
+      "hands": 0,
+      "slots": 1,
+      "statModifiers": {
+        "magic": 1,
+        "resist": 2,
+        "maxHp": 4,
+        "movement": -1
+      },
+      "grants": [],
+      "abilities": [],
+      "triggers": [],
+      "gaps": [
+        "startOfBattle: gain Protection equal to 2 plus the party's Magic — hook: startOfBattle (declared, engine never fires it)"
+      ]
+    },
+    "item.patrocoleas-armor": {
+      "id": "item.patrocoleas-armor",
+      "name": "Patrocolea's Armor",
+      "itemClass": "armor",
+      "tier": 3,
+      "hands": 0,
+      "slots": 1,
+      "statModifiers": {
+        "armor": 3,
+        "resist": 1,
+        "maxHp": -4,
+        "movement": -2,
+        "accuracy": -10,
+        "dodge": -10
+      },
+      "grants": [],
+      "abilities": [],
+      "triggers": [],
+      "gaps": [
+        "startOfBattle: gain 6 Protection — hook: startOfBattle (declared, engine never fires it)",
+        "startOfBattle: heal 1 at the end of each of your Turns for the re — hook: startOfBattle (declared, engine never fires it)"
+      ]
+    },
+    "item.chains-of-the-damned": {
+      "id": "item.chains-of-the-damned",
+      "name": "Chains of the Damned",
+      "itemClass": "armor",
+      "tier": 3,
+      "hands": 0,
+      "slots": 1,
+      "statModifiers": {
+        "armor": 2,
+        "maxHp": 6,
+        "strength": 1,
+        "movement": -1,
+        "maxStamina": -1,
+        "dodge": -10
+      },
+      "grants": [],
+      "abilities": [],
+      "triggers": []
+    },
+    "item.storm-bastion": {
+      "id": "item.storm-bastion",
+      "name": "Storm Bastion",
+      "itemClass": "armor",
+      "tier": 3,
+      "hands": 0,
+      "slots": 1,
+      "statModifiers": {
+        "armor": 3,
+        "resist": 1,
+        "maxHp": 4,
+        "movement": -1,
+        "accuracy": -10,
+        "dodge": -5
+      },
+      "grants": [],
+      "abilities": [],
+      "triggers": [],
+      "gaps": [
+        "aura: AURA radius 1 — an enemy that ends its movement in — hook: aura (declared, engine never fires it)"
+      ]
+    },
+    "item.longbow": {
+      "id": "item.longbow",
+      "name": "Longbow",
+      "itemClass": "weapon",
+      "tier": 1,
+      "hands": 2,
+      "slots": 2,
+      "classRestriction": "class.ranger",
+      "statModifiers": {},
+      "grants": [
+        "attack.longbow.shot",
+        "attack.longbow.long-shot"
+      ],
+      "abilities": [],
+      "triggers": []
+    },
+    "item.shortbow": {
+      "id": "item.shortbow",
+      "name": "Shortbow",
+      "itemClass": "weapon",
+      "tier": 1,
+      "hands": 2,
+      "slots": 2,
+      "statModifiers": {},
+      "grants": [
+        "attack.shortbow.short-shot",
+        "attack.shortbow.quick-shot"
+      ],
+      "abilities": [],
+      "triggers": []
+    },
+    "item.elfbow": {
+      "id": "item.elfbow",
+      "name": "Elfbow",
+      "itemClass": "weapon",
+      "tier": 1,
+      "hands": 2,
+      "slots": 2,
+      "classRestriction": "class.ranger",
+      "statModifiers": {},
+      "grants": [
+        "attack.elfbow.elf-shot",
+        "attack.elfbow.double-shot"
+      ],
+      "abilities": [],
+      "triggers": []
+    },
+    "item.barbarian-bow": {
+      "id": "item.barbarian-bow",
+      "name": "Barbarian Bow",
+      "itemClass": "weapon",
+      "tier": 1,
+      "hands": 2,
+      "slots": 2,
+      "statModifiers": {},
+      "grants": [
+        "attack.barbarian-bow.power-shot",
+        "attack.barbarian-bow.crippling-shot"
+      ],
+      "abilities": [],
+      "triggers": [
+        {
+          "id": "trigger.barbarian-bow.power-shot.knockback",
+          "hook": "onDamage",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "knockback",
+            "value": 1
+          },
+          "source": "item.barbarian-bow",
+          "onlyWithAttack": "attack.barbarian-bow.power-shot"
+        },
+        {
+          "id": "trigger.barbarian-bow.crippling-shot.weak",
+          "hook": "onDamage",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.weak",
+            "value": 2
+          },
+          "source": "item.barbarian-bow",
+          "onlyWithAttack": "attack.barbarian-bow.crippling-shot"
+        }
+      ]
+    },
+    "item.javelin": {
+      "id": "item.javelin",
+      "name": "Javelin",
+      "itemClass": "weapon",
+      "tier": 1,
+      "hands": 1,
+      "slots": 1,
+      "statModifiers": {},
+      "grants": [
+        "attack.javelin.throw",
+        "attack.javelin.stab"
+      ],
+      "abilities": [],
+      "triggers": []
+    },
+    "item.longsword": {
+      "id": "item.longsword",
+      "name": "Longsword",
+      "itemClass": "weapon",
+      "tier": 1,
+      "hands": 1,
+      "slots": 1,
+      "statModifiers": {},
+      "grants": [
+        "attack.longsword.slash",
+        "attack.longsword.stab"
+      ],
+      "abilities": [],
+      "triggers": []
+    },
+    "item.halberd": {
+      "id": "item.halberd",
+      "name": "Halberd",
+      "itemClass": "weapon",
+      "tier": 1,
+      "hands": 2,
+      "slots": 2,
+      "classRestriction": "class.warrior",
+      "statModifiers": {},
+      "grants": [
+        "attack.halberd.hack",
+        "attack.halberd.cleave"
+      ],
+      "abilities": [],
+      "triggers": [
+        {
+          "id": "trigger.halberd.hack.knockback",
+          "hook": "onDamage",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "knockback",
+            "value": 1
+          },
+          "source": "item.halberd",
+          "onlyWithAttack": "attack.halberd.hack"
+        }
+      ]
+    },
+    "item.knight-shield": {
+      "id": "item.knight-shield",
+      "name": "Knight Shield",
+      "itemClass": "weapon",
+      "tier": 1,
+      "hands": 1,
+      "slots": 1,
+      "statModifiers": {},
+      "grants": [
+        "attack.knight-shield.shield-slam"
+      ],
+      "abilities": [
+        "power.knight-shield.block"
+      ],
+      "triggers": [
+        {
+          "id": "trigger.knight-shield.shield-slam.stun",
+          "hook": "onDamage",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.stun",
+            "value": 1
+          },
+          "source": "item.knight-shield",
+          "onlyWithAttack": "attack.knight-shield.shield-slam"
+        }
+      ]
+    },
+    "item.tower-shield": {
+      "id": "item.tower-shield",
+      "name": "Tower Shield",
+      "itemClass": "weapon",
+      "tier": 1,
+      "hands": 1,
+      "slots": 1,
+      "statModifiers": {},
+      "grants": [],
+      "abilities": [],
+      "triggers": [],
+      "gaps": [
+        "grants power.tower-shield.cover — item power — shape unparsed",
+        "grants power.tower-shield.stand-tall — item power — shape unparsed"
+      ]
+    },
+    "item.fire-staff": {
+      "id": "item.fire-staff",
+      "name": "Fire Staff",
+      "itemClass": "weapon",
+      "tier": 1,
+      "hands": 2,
+      "slots": 2,
+      "classRestriction": "class.mage",
+      "statModifiers": {},
+      "grants": [
+        "attack.fire-staff.fire-blast"
+      ],
+      "abilities": [],
+      "triggers": [
+        {
+          "id": "trigger.fire-staff.fire-blast.burn",
+          "hook": "onHit",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.burn",
+            "value": 1
+          },
+          "source": "item.fire-staff",
+          "onlyWithAttack": "attack.fire-staff.fire-blast"
+        }
+      ],
+      "gaps": [
+        "grants power.fire-staff.fireball — item power — shape unparsed"
+      ]
+    },
+    "item.frost-staff": {
+      "id": "item.frost-staff",
+      "name": "Frost Staff",
+      "itemClass": "weapon",
+      "tier": 1,
+      "hands": 2,
+      "slots": 2,
+      "classRestriction": "class.mage",
+      "statModifiers": {},
+      "grants": [
+        "attack.frost-staff.frost-blast"
+      ],
+      "abilities": [],
+      "triggers": [],
+      "gaps": [
+        "grants power.frost-staff.frost-nova — item power — shape unparsed"
+      ]
+    },
+    "item.earth-staff": {
+      "id": "item.earth-staff",
+      "name": "Earth Staff",
+      "itemClass": "weapon",
+      "tier": 1,
+      "hands": 2,
+      "slots": 2,
+      "classRestriction": "class.mage",
+      "statModifiers": {},
+      "grants": [
+        "attack.earth-staff.earth-blast"
+      ],
+      "abilities": [],
+      "triggers": [
+        {
+          "id": "trigger.earth-staff.earth-blast.knockback",
+          "hook": "onDamage",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "knockback",
+            "value": 1
+          },
+          "source": "item.earth-staff",
+          "onlyWithAttack": "attack.earth-staff.earth-blast"
+        }
+      ],
+      "gaps": [
+        "grants power.earth-staff.earth-shield — item power — shape unparsed"
+      ]
+    },
+    "item.lightning-staff": {
+      "id": "item.lightning-staff",
+      "name": "Lightning Staff",
+      "itemClass": "weapon",
+      "tier": 1,
+      "hands": 2,
+      "slots": 2,
+      "classRestriction": "class.mage",
+      "statModifiers": {},
+      "grants": [
+        "attack.lightning-staff.bolt"
+      ],
+      "abilities": [
+        "power.lightning-staff.storm"
+      ],
+      "triggers": []
+    },
+    "item.force-staff": {
+      "id": "item.force-staff",
+      "name": "Force Staff",
+      "itemClass": "weapon",
+      "tier": 1,
+      "hands": 2,
+      "slots": 2,
+      "classRestriction": "class.mage",
+      "statModifiers": {},
+      "grants": [
+        "attack.force-staff.force-blast"
+      ],
+      "abilities": [],
+      "triggers": []
+    },
+    "item.holy-symbol": {
+      "id": "item.holy-symbol",
+      "name": "Holy Symbol",
+      "itemClass": "weapon",
+      "tier": 1,
+      "hands": 1,
+      "slots": 1,
+      "classRestriction": "class.priest",
+      "statModifiers": {},
+      "grants": [
+        "attack.holy-symbol.wrath"
+      ],
+      "abilities": [
+        "power.holy-symbol.heal"
+      ],
+      "triggers": []
+    },
+    "item.priest-chain": {
+      "id": "item.priest-chain",
+      "name": "Priest Chain",
+      "itemClass": "weapon",
+      "tier": 1,
+      "hands": 1,
+      "slots": 1,
+      "classRestriction": "class.priest",
+      "statModifiers": {},
+      "grants": [
+        "attack.priest-chain.smite"
+      ],
+      "abilities": [],
+      "triggers": [],
+      "gaps": [
+        "grants power.priest-chain.benediction — item power — shape unparsed"
+      ]
+    },
+    "item.pile-of-rocks": {
+      "id": "item.pile-of-rocks",
+      "name": "Pile of Rocks",
+      "itemClass": "weapon",
+      "tier": 0,
+      "hands": 1,
+      "slots": 1,
+      "statModifiers": {},
+      "grants": [
+        "attack.pile-of-rocks.throw"
+      ],
+      "abilities": [],
+      "triggers": []
+    },
+    "item.slingshot": {
+      "id": "item.slingshot",
+      "name": "Slingshot",
+      "itemClass": "weapon",
+      "tier": 0,
+      "hands": 1,
+      "slots": 1,
+      "statModifiers": {},
+      "grants": [
+        "attack.slingshot.shot"
+      ],
+      "abilities": [],
+      "triggers": []
+    },
+    "item.pitchfork": {
+      "id": "item.pitchfork",
+      "name": "Pitchfork",
+      "itemClass": "weapon",
+      "tier": 0,
+      "hands": 2,
+      "slots": 2,
+      "statModifiers": {},
+      "grants": [
+        "attack.pitchfork.jab"
+      ],
+      "abilities": [],
+      "triggers": []
+    },
+    "item.club": {
+      "id": "item.club",
+      "name": "Club",
+      "itemClass": "weapon",
+      "tier": 0,
+      "hands": 1,
+      "slots": 1,
+      "statModifiers": {},
+      "grants": [
+        "attack.club.swing"
+      ],
+      "abilities": [],
+      "triggers": [
+        {
+          "id": "trigger.club.swing.weak",
+          "hook": "onDamage",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.weak",
+            "value": 1
+          },
+          "source": "item.club",
+          "onlyWithAttack": "attack.club.swing"
+        }
+      ]
+    },
+    "item.dagger": {
+      "id": "item.dagger",
+      "name": "Dagger",
+      "itemClass": "weapon",
+      "tier": 0,
+      "hands": 1,
+      "slots": 1,
+      "statModifiers": {},
+      "grants": [
+        "attack.dagger.stab"
+      ],
+      "abilities": [],
+      "triggers": [
+        {
+          "id": "trigger.dagger.stab.protection",
+          "hook": "onAttack",
+          "chance": 100,
+          "select": "self",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.protection",
+            "value": 1
+          },
+          "source": "item.dagger",
+          "onlyWithAttack": "attack.dagger.stab"
+        }
+      ]
+    },
+    "item.basic-armor": {
+      "id": "item.basic-armor",
+      "name": "Basic Armor",
+      "itemClass": "armor",
+      "tier": 0,
+      "hands": 0,
+      "slots": 0,
+      "statModifiers": {
+        "maxHp": 1
+      },
+      "grants": [],
+      "abilities": [],
+      "triggers": []
+    },
+    "item.flowing-cloak": {
+      "id": "item.flowing-cloak",
+      "name": "Flowing Cloak",
+      "itemClass": "armor",
+      "tier": 0,
+      "hands": 0,
+      "slots": 0,
+      "statModifiers": {
+        "dodge": 5
+      },
+      "grants": [],
+      "abilities": [],
+      "triggers": []
+    },
+    "item.nice-robes": {
+      "id": "item.nice-robes",
+      "name": "Nice Robes",
+      "itemClass": "armor",
+      "tier": 0,
+      "hands": 0,
+      "slots": 0,
+      "statModifiers": {
+        "luck": 3
+      },
+      "grants": [],
+      "abilities": [],
+      "triggers": []
+    },
+    "item.ragged-hides": {
+      "id": "item.ragged-hides",
+      "name": "Ragged Hides",
+      "itemClass": "armor",
+      "tier": 0,
+      "hands": 0,
+      "slots": 0,
+      "statModifiers": {
+        "maxHp": 2,
+        "maxStamina": -1
+      },
+      "grants": [],
+      "abilities": [],
+      "triggers": []
+    },
+    "item.rusted-plate": {
+      "id": "item.rusted-plate",
+      "name": "Rusted Plate",
+      "itemClass": "armor",
+      "tier": 0,
+      "hands": 0,
+      "slots": 0,
+      "statModifiers": {
+        "armor": 1,
+        "movement": -2,
+        "maxStamina": -2,
+        "accuracy": -10,
+        "crit": -5
+      },
+      "grants": [],
+      "abilities": [],
+      "triggers": []
+    },
+    "item.destroyed-mail": {
+      "id": "item.destroyed-mail",
+      "name": "Destroyed Mail",
+      "itemClass": "armor",
+      "tier": 0,
+      "hands": 0,
+      "slots": 0,
+      "statModifiers": {
+        "maxHp": 4,
+        "movement": -1,
+        "maxStamina": -1,
+        "accuracy": -20
+      },
+      "grants": [],
+      "abilities": [],
+      "triggers": []
+    },
+    "item.barbarian-hide": {
+      "id": "item.barbarian-hide",
+      "name": "Barbarian Hide",
+      "itemClass": "armor",
+      "tier": 1,
+      "hands": 0,
+      "slots": 1,
+      "statModifiers": {
+        "maxStamina": 1,
+        "luck": 3
+      },
+      "grants": [],
+      "abilities": [],
+      "triggers": []
+    },
+    "item.studded-leather": {
+      "id": "item.studded-leather",
+      "name": "Studded Leather",
+      "itemClass": "armor",
+      "tier": 1,
+      "hands": 0,
+      "slots": 1,
+      "statModifiers": {
+        "maxHp": 2
+      },
+      "grants": [],
+      "abilities": [],
+      "triggers": []
+    },
+    "item.heavy-leather": {
+      "id": "item.heavy-leather",
+      "name": "Heavy Leather",
+      "itemClass": "armor",
+      "tier": 1,
+      "hands": 0,
+      "slots": 1,
+      "statModifiers": {
+        "maxHp": 4,
+        "maxStamina": -1,
+        "dodge": -5
+      },
+      "grants": [],
+      "abilities": [],
+      "triggers": []
+    },
+    "item.heavy-chain": {
+      "id": "item.heavy-chain",
+      "name": "Heavy Chain",
+      "itemClass": "armor",
+      "tier": 1,
+      "hands": 0,
+      "slots": 1,
+      "statModifiers": {
+        "armor": 1,
+        "movement": -1
+      },
+      "grants": [],
+      "abilities": [],
+      "triggers": []
+    },
+    "item.mismatched-armor": {
+      "id": "item.mismatched-armor",
+      "name": "Mismatched Armor",
+      "itemClass": "armor",
+      "tier": 1,
+      "hands": 0,
+      "slots": 1,
+      "statModifiers": {
+        "maxHp": 4,
+        "movement": -1
+      },
+      "grants": [],
+      "abilities": [],
+      "triggers": []
+    },
+    "item.creature-hide": {
+      "id": "item.creature-hide",
+      "name": "Creature Hide",
+      "itemClass": "armor",
+      "tier": 1,
+      "hands": 0,
+      "slots": 1,
+      "statModifiers": {
+        "luck": 5,
+        "dodge": 5,
+        "maxHp": 1
+      },
+      "grants": [],
+      "abilities": [],
+      "triggers": []
+    },
+    "item.plated-armor": {
+      "id": "item.plated-armor",
+      "name": "Plated Armor",
+      "itemClass": "armor",
+      "tier": 1,
+      "hands": 0,
+      "slots": 1,
+      "statModifiers": {
+        "armor": 2,
+        "maxHp": 4,
+        "luck": 3,
+        "movement": -2,
+        "maxStamina": -2,
+        "dodge": -10,
+        "accuracy": -10
+      },
+      "grants": [],
+      "abilities": [],
+      "triggers": []
+    },
+    "item.reflective-armor": {
+      "id": "item.reflective-armor",
+      "name": "Reflective Armor",
+      "itemClass": "armor",
+      "tier": 1,
+      "hands": 0,
+      "slots": 1,
+      "statModifiers": {
+        "armor": 1,
+        "resist": 2,
+        "movement": -3,
+        "accuracy": -15,
+        "reach": -1
+      },
+      "grants": [],
+      "abilities": [],
+      "triggers": []
+    },
+    "item.soaked-plate": {
+      "id": "item.soaked-plate",
+      "name": "Soaked Plate",
+      "itemClass": "armor",
+      "tier": 1,
+      "hands": 0,
+      "slots": 1,
+      "statModifiers": {
+        "armor": 1,
+        "maxHp": 3
+      },
+      "grants": [],
+      "abilities": [],
+      "triggers": []
+    },
+    "item.loaded-dice-of-mirran": {
+      "id": "item.loaded-dice-of-mirran",
+      "name": "Loaded Dice of Mirran",
+      "itemClass": "trinket",
+      "tier": 1,
+      "hands": 0,
+      "slots": 1,
+      "statModifiers": {},
+      "grants": [],
+      "abilities": [],
+      "triggers": [],
+      "gaps": [
+        "active: Free. Until the end of your next Turn, your attack — an ability with charges/targets — capability.consumables"
+      ]
+    },
+    "item.crows-eye-pendant": {
+      "id": "item.crows-eye-pendant",
+      "name": "Crow's Eye Pendant",
+      "itemClass": "trinket",
+      "tier": 1,
+      "hands": 0,
+      "slots": 1,
+      "statModifiers": {},
+      "grants": [],
+      "abilities": [],
+      "triggers": [],
+      "gaps": [
+        "active: Reveal every hidden, stealthed or obscured unit wi — an ability with charges/targets — capability.consumables"
+      ]
+    },
+    "item.mug-of-endless-dregs": {
+      "id": "item.mug-of-endless-dregs",
+      "name": "Mug of Endless Dregs",
+      "itemClass": "trinket",
+      "tier": 1,
+      "hands": 0,
+      "slots": 1,
+      "statModifiers": {},
+      "grants": [],
+      "abilities": [],
+      "triggers": [],
+      "gaps": [
+        "active: Free. Heal 3 and remove 1 Weak. You take -5 Accura — an ability with charges/targets — capability.consumables"
+      ]
+    },
+    "item.aether-crystal": {
+      "id": "item.aether-crystal",
+      "name": "Aether Crystal",
+      "itemClass": "trinket",
+      "tier": 1,
+      "hands": 0,
+      "slots": 1,
+      "statModifiers": {},
+      "grants": [],
+      "abilities": [],
+      "triggers": [],
+      "gaps": [
+        "active: Gain 4 Protection. Protection is spent before Heal — an ability with charges/targets — capability.consumables"
+      ]
+    },
+    "item.saints-fingerbone": {
+      "id": "item.saints-fingerbone",
+      "name": "Saint's Fingerbone",
+      "itemClass": "trinket",
+      "tier": 1,
+      "hands": 0,
+      "slots": 1,
+      "statModifiers": {},
+      "grants": [],
+      "abilities": [],
+      "triggers": [],
+      "gaps": [
+        "active: Remove 1 Burn, 1 Poison and 1 Bleed from the targe — an ability with charges/targets — capability.consumables"
+      ]
+    },
+    "item.poison-caltrops": {
+      "id": "item.poison-caltrops",
+      "name": "Poison Caltrops",
+      "itemClass": "trinket",
+      "tier": 1,
+      "hands": 0,
+      "slots": 1,
+      "statModifiers": {},
+      "grants": [],
+      "abilities": [],
+      "triggers": [],
+      "gaps": [
+        "active: Place three unseen traps: that hex and any two adj — an ability with charges/targets — capability.consumables"
+      ]
+    },
+    "item.featherstep-boots": {
+      "id": "item.featherstep-boots",
+      "name": "Featherstep Boots",
+      "itemClass": "trinket",
+      "tier": 1,
+      "hands": 0,
+      "slots": 1,
+      "statModifiers": {},
+      "grants": [],
+      "abilities": [],
+      "triggers": [],
+      "gaps": [
+        "active: You have AIRWALK: you take no trap and no terrain  — an ability with charges/targets — capability.consumables",
+        "airwalk: true — item field: airwalk"
+      ]
+    },
+    "item.medicine-belt": {
+      "id": "item.medicine-belt",
+      "name": "Medicine Belt",
+      "itemClass": "trinket",
+      "tier": 1,
+      "hands": 0,
+      "slots": 1,
+      "statModifiers": {},
+      "grants": [],
+      "abilities": [],
+      "triggers": [],
+      "gaps": [
+        "active: Heal 4 and remove 2 Bleed. You must be adjacent —  — an ability with charges/targets — capability.consumables"
+      ]
+    },
+    "item.wayfinders-compass": {
+      "id": "item.wayfinders-compass",
+      "name": "Wayfinder's Compass",
+      "itemClass": "trinket",
+      "tier": 1,
+      "hands": 0,
+      "slots": 1,
+      "statModifiers": {},
+      "grants": [],
+      "abilities": [],
+      "triggers": [],
+      "gaps": [
+        "startOfBattle: gain +2 Vision for the rest of the Battle, and you — hook: startOfBattle (declared, engine never fires it)"
+      ]
+    },
+    "item.lucky-charm": {
+      "id": "item.lucky-charm",
+      "name": "Lucky Charm",
+      "itemClass": "trinket",
+      "tier": 1,
+      "hands": 0,
+      "slots": 1,
+      "statModifiers": {},
+      "grants": [],
+      "abilities": [],
+      "triggers": [],
+      "gaps": [
+        "onMiss: gain +2 Accuracy for the rest of the Battle — trigger shape unparsed"
+      ]
+    },
+    "item.mark-of-suffering": {
+      "id": "item.mark-of-suffering",
+      "name": "Mark of Suffering",
+      "itemClass": "trinket",
+      "tier": 1,
+      "hands": 0,
+      "slots": 1,
+      "statModifiers": {},
+      "grants": [],
+      "abilities": [],
+      "triggers": [],
+      "gaps": [
+        "onTakingDamage: gain +1 Strength and +1 Precision until the end of — trigger shape unparsed"
+      ]
+    },
+    "item.mask-of-the-velvet-hand": {
+      "id": "item.mask-of-the-velvet-hand",
+      "name": "Mask of the Velvet Hand",
+      "itemClass": "trinket",
+      "tier": 2,
+      "hands": 0,
+      "slots": 1,
+      "statModifiers": {},
+      "grants": [],
+      "abilities": [],
+      "triggers": [],
+      "gaps": [
+        "active: Free. Enter stealth, and gain +10 Luck for the res — an ability with charges/targets — capability.consumables"
+      ]
+    },
+    "item.brass-spyglass-of-thessan": {
+      "id": "item.brass-spyglass-of-thessan",
+      "name": "Brass Spyglass of Thessan",
+      "itemClass": "trinket",
+      "tier": 2,
+      "hands": 0,
+      "slots": 1,
+      "statModifiers": {},
+      "grants": [],
+      "abilities": [],
+      "triggers": [],
+      "gaps": [
+        "active: Free. Until the end of the Turn every attack you o — an ability with charges/targets — capability.consumables"
+      ]
+    },
+    "item.vial-of-abyssal-essence": {
+      "id": "item.vial-of-abyssal-essence",
+      "name": "Vial of Abyssal Essence",
+      "itemClass": "trinket",
+      "tier": 2,
+      "hands": 0,
+      "slots": 1,
+      "statModifiers": {},
+      "grants": [],
+      "abilities": [],
+      "triggers": [],
+      "gaps": [
+        "onCrit: the target gains 3 Poison and you take 1 true dama — trigger shape unparsed"
+      ]
+    },
+    "item.blink-ring": {
+      "id": "item.blink-ring",
+      "name": "Blink Ring",
+      "itemClass": "trinket",
+      "tier": 2,
+      "hands": 0,
+      "slots": 1,
+      "statModifiers": {},
+      "grants": [],
+      "abilities": [],
+      "triggers": [],
+      "gaps": [
+        "active: Free. This is not movement and cannot be interrupt — an ability with charges/targets — capability.consumables"
+      ]
+    },
+    "item.holy-chalice": {
+      "id": "item.holy-chalice",
+      "name": "Holy Chalice",
+      "itemClass": "trinket",
+      "tier": 2,
+      "hands": 0,
+      "slots": 1,
+      "statModifiers": {},
+      "grants": [],
+      "abilities": [],
+      "triggers": [],
+      "gaps": [
+        "active: Each ally within 3 hexes, including you, heals 2 + — an ability with charges/targets — capability.consumables"
+      ]
+    },
+    "item.wreath-of-natures-protection": {
+      "id": "item.wreath-of-natures-protection",
+      "name": "Wreath of Nature's Protection",
+      "itemClass": "trinket",
+      "tier": 2,
+      "hands": 0,
+      "slots": 1,
+      "statModifiers": {},
+      "grants": [],
+      "abilities": [],
+      "triggers": [
+        {
+          "id": "trigger.wreath-of-natures-protection.thorns",
+          "hook": "onTakingDamage",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "damage",
+            "amount": 3,
+            "damageType": "true"
+          },
+          "source": "item.wreath-of-natures-protection"
+        }
+      ],
+      "gaps": [
+        "startOfBattle: gain 2 Regeneration — hook: startOfBattle (declared, engine never fires it)",
+        "thorns: 3 — item field: thorns"
+      ]
+    },
+    "item.astrolabe-of-the-threshold": {
+      "id": "item.astrolabe-of-the-threshold",
+      "name": "Astrolabe of the Threshold",
+      "itemClass": "trinket",
+      "tier": 2,
+      "hands": 0,
+      "slots": 1,
+      "statModifiers": {},
+      "grants": [],
+      "abilities": [],
+      "triggers": [],
+      "gaps": [
+        "active: Once per Battle, an ally within 6 hexes may immedi — an ability with charges/targets — capability.consumables"
+      ]
+    },
+    "item.council-of-echoes": {
+      "id": "item.council-of-echoes",
+      "name": "Council of Echoes",
+      "itemClass": "trinket",
+      "tier": 2,
+      "hands": 0,
+      "slots": 1,
+      "statModifiers": {},
+      "grants": [],
+      "abilities": [],
+      "triggers": [],
+      "gaps": [
+        "onMiss: until the end of your next Turn your attacks gain  — trigger shape unparsed"
+      ]
+    },
+    "item.tandras-blood-vial": {
+      "id": "item.tandras-blood-vial",
+      "name": "Tandra's Blood Vial",
+      "itemClass": "trinket",
+      "tier": 2,
+      "hands": 0,
+      "slots": 1,
+      "statModifiers": {},
+      "grants": [],
+      "abilities": [],
+      "triggers": [],
+      "gaps": [
+        "onCrit: deal 2 crits — trigger shape unparsed"
+      ]
+    },
+    "item.eye-of-the-oracle": {
+      "id": "item.eye-of-the-oracle",
+      "name": "Eye of the Oracle",
+      "itemClass": "trinket",
+      "tier": 3,
+      "hands": 0,
+      "slots": 1,
+      "statModifiers": {},
+      "grants": [],
+      "abilities": [],
+      "triggers": [],
+      "gaps": [
+        "active: Free. Until the end of your next Turn you gain +20 — an ability with charges/targets — capability.consumables"
+      ]
+    },
+    "item.heart-of-vyrmothax": {
+      "id": "item.heart-of-vyrmothax",
+      "name": "Heart of Vyrmothax",
+      "itemClass": "trinket",
+      "tier": 3,
+      "hands": 0,
+      "slots": 1,
+      "statModifiers": {},
+      "grants": [],
+      "abilities": [],
+      "triggers": [],
+      "gaps": [
+        "onKill: gain 4 Protection and +1 Strength for the rest of  — trigger shape unparsed"
+      ]
+    },
+    "item.velans-ferryman-coin": {
+      "id": "item.velans-ferryman-coin",
+      "name": "Velan's Ferryman Coin",
+      "itemClass": "trinket",
+      "tier": 3,
+      "hands": 0,
+      "slots": 1,
+      "statModifiers": {},
+      "grants": [],
+      "abilities": [],
+      "triggers": [],
+      "gaps": [
+        "startOfBattle: +20 Deathbed Fighting — hook: startOfBattle (declared, engine never fires it)",
+        "active: Free. Stabilise a downed ally within 2 hexes, remo — an ability with charges/targets — capability.consumables"
+      ]
+    },
+    "item.tongue-of-xarveth": {
+      "id": "item.tongue-of-xarveth",
+      "name": "Tongue of Xar'veth",
+      "itemClass": "trinket",
+      "tier": 3,
+      "hands": 0,
+      "slots": 1,
+      "statModifiers": {},
+      "grants": [],
+      "abilities": [],
+      "triggers": [],
+      "gaps": [
+        "statModifier 'corruption' 2 — stat: corruption (no UnitDef field)",
+        "aura: AURA — every enemy within 4 hexes of you takes -10 — hook: aura (declared, engine never fires it)"
+      ]
+    },
+    "item.starweaver-loom-fragment": {
+      "id": "item.starweaver-loom-fragment",
+      "name": "Starweaver Loom Fragment",
+      "itemClass": "trinket",
+      "tier": 3,
+      "hands": 0,
+      "slots": 1,
+      "statModifiers": {},
+      "grants": [],
+      "abilities": [],
+      "triggers": [],
+      "gaps": [
+        "aura: AURA radius 3 — every ally inside has +3 Luck, and — hook: aura (declared, engine never fires it)"
+      ]
+    },
+    "item.shard-of-the-shattered-spire": {
+      "id": "item.shard-of-the-shattered-spire",
+      "name": "Shard of the Shattered Spire",
+      "itemClass": "trinket",
+      "tier": 3,
+      "hands": 0,
+      "slots": 1,
+      "statModifiers": {},
+      "grants": [],
+      "abilities": [],
+      "triggers": [],
+      "gaps": [
+        "active: Place three unseen traps on any three hexes within — an ability with charges/targets — capability.consumables"
+      ]
+    },
+    "item.banner-assassin": {
+      "id": "item.banner-assassin",
+      "name": "Banner of the Assassin",
+      "itemClass": "trinket",
+      "tier": 1,
+      "hands": 0,
+      "slots": 1,
+      "classRestriction": "class.rogue",
+      "statModifiers": {},
+      "grants": [],
+      "abilities": [],
+      "triggers": [],
+      "gaps": [
+        "grants power.banner-assassin.plant — item power — shape unparsed"
+      ]
+    },
+    "item.banner-mystic-power": {
+      "id": "item.banner-mystic-power",
+      "name": "Banner of Mystic Power",
+      "itemClass": "trinket",
+      "tier": 1,
+      "hands": 0,
+      "slots": 1,
+      "classRestriction": "class.mage",
+      "statModifiers": {},
+      "grants": [],
+      "abilities": [],
+      "triggers": [],
+      "gaps": [
+        "grants power.banner-mystic-power.plant — item power — shape unparsed"
+      ]
+    },
+    "item.banner-vigil": {
+      "id": "item.banner-vigil",
+      "name": "Banner of the Vigil",
+      "itemClass": "trinket",
+      "tier": 1,
+      "hands": 0,
+      "slots": 1,
+      "classRestriction": "class.priest",
+      "statModifiers": {},
+      "grants": [],
+      "abilities": [],
+      "triggers": [],
+      "gaps": [
+        "grants power.banner-vigil.plant — item power — shape unparsed"
+      ]
+    },
+    "item.banner-courage": {
+      "id": "item.banner-courage",
+      "name": "Banner of Courage",
+      "itemClass": "trinket",
+      "tier": 2,
+      "hands": 0,
+      "slots": 1,
+      "classRestriction": "class.warrior",
+      "statModifiers": {},
+      "grants": [],
+      "abilities": [],
+      "triggers": [],
+      "gaps": [
+        "grants power.banner-courage.plant — item power — shape unparsed"
+      ]
+    },
+    "item.banner-heroism": {
+      "id": "item.banner-heroism",
+      "name": "Banner of Heroism",
+      "itemClass": "trinket",
+      "tier": 3,
+      "hands": 0,
+      "slots": 1,
+      "classRestriction": "class.paladin",
+      "statModifiers": {},
+      "grants": [],
+      "abilities": [],
+      "triggers": [],
+      "gaps": [
+        "grants power.banner-heroism.plant — item power — shape unparsed"
+      ]
+    },
+    "item.torch": {
+      "id": "item.torch",
+      "name": "Torch",
+      "itemClass": "trinket",
+      "tier": 0,
+      "hands": 0,
+      "slots": 1,
+      "statModifiers": {},
+      "grants": [],
+      "abilities": [],
+      "triggers": [],
+      "gaps": [
+        "statModifier 'vision' 4 — stat: vision (no UnitDef field)"
+      ]
+    },
+    "item.cure-poison": {
+      "id": "item.cure-poison",
+      "name": "Cure Poison",
+      "itemClass": "trinket",
+      "tier": 0,
+      "hands": 0,
+      "slots": 1,
+      "statModifiers": {},
+      "grants": [],
+      "abilities": [],
+      "triggers": [],
+      "gaps": [
+        "active: Free, 0 Stamina: remove 2 Poison. — an ability with charges/targets — capability.consumables",
+        "uses: 1 — charges spent in battle — capability.consumables"
+      ]
+    },
+    "item.rations": {
+      "id": "item.rations",
+      "name": "Rations",
+      "itemClass": "trinket",
+      "tier": 0,
+      "hands": 0,
+      "slots": 1,
+      "statModifiers": {},
+      "grants": [],
+      "abilities": [],
+      "triggers": [],
+      "gaps": [
+        "active: Costs your primary action, 0 Stamina: regain 2 Sta — an ability with charges/targets — capability.consumables",
+        "uses: 1 — charges spent in battle — capability.consumables"
+      ]
+    },
+    "item.healing-potion": {
+      "id": "item.healing-potion",
+      "name": "Healing Potion",
+      "itemClass": "trinket",
+      "tier": 0,
+      "hands": 0,
+      "slots": 1,
+      "statModifiers": {},
+      "grants": [],
+      "abilities": [],
+      "triggers": [],
+      "gaps": [
+        "active: Free, 0 Stamina: heal 3. — an ability with charges/targets — capability.consumables",
+        "uses: 1 — charges spent in battle — capability.consumables"
+      ]
+    },
+    "item.bandages": {
+      "id": "item.bandages",
+      "name": "Bandages",
+      "itemClass": "trinket",
+      "tier": 0,
+      "hands": 0,
+      "slots": 1,
+      "statModifiers": {},
+      "grants": [],
+      "abilities": [],
+      "triggers": [],
+      "gaps": [
+        "active: Free, 0 Stamina: stabilize a downed ally — their b — an ability with charges/targets — capability.consumables",
+        "uses: 1 — charges spent in battle — capability.consumables"
+      ]
+    },
+    "item.backpack": {
+      "id": "item.backpack",
+      "name": "Backpack",
+      "itemClass": "trinket",
+      "tier": 0,
+      "hands": 0,
+      "slots": 1,
+      "statModifiers": {
+        "movement": -1,
+        "maxStamina": -1
+      },
+      "grants": [],
+      "abilities": [],
+      "triggers": [],
+      "gaps": [
+        "statModifier 'itemSlots' 2 — stat: itemSlots (no UnitDef field)"
+      ]
+    },
+    "item.poison-flask": {
+      "id": "item.poison-flask",
+      "name": "Poison Flask",
+      "itemClass": "trinket",
+      "tier": 0,
+      "hands": 0,
+      "slots": 1,
+      "statModifiers": {},
+      "grants": [],
+      "abilities": [],
+      "triggers": [],
+      "gaps": [
+        "active: Once per Battle: apply 2 Poison to a target within — an ability with charges/targets — capability.consumables",
+        "uses: 1 — charges spent in battle — capability.consumables"
+      ]
+    },
+    "item.burning-oil": {
+      "id": "item.burning-oil",
+      "name": "Burning Oil",
+      "itemClass": "trinket",
+      "tier": 0,
+      "hands": 0,
+      "slots": 1,
+      "statModifiers": {},
+      "grants": [],
+      "abilities": [],
+      "triggers": [],
+      "gaps": [
+        "active: Once per Battle: apply 2 Burn to a target within 3 — an ability with charges/targets — capability.consumables",
+        "uses: 1 — charges spent in battle — capability.consumables"
+      ]
+    },
+    "item.greater-healing-potion": {
+      "id": "item.greater-healing-potion",
+      "name": "Greater Healing Potion",
+      "itemClass": "trinket",
+      "tier": 0,
+      "hands": 0,
+      "slots": 1,
+      "statModifiers": {},
+      "grants": [],
+      "abilities": [],
+      "triggers": [],
+      "gaps": [
+        "active: Once per Battle, costs your primary action and 1 S — an ability with charges/targets — capability.consumables",
+        "uses: 1 — charges spent in battle — capability.consumables"
+      ]
+    },
+    "item.frenzy-potion": {
+      "id": "item.frenzy-potion",
+      "name": "Frenzy Potion",
+      "itemClass": "trinket",
+      "tier": 0,
+      "hands": 0,
+      "slots": 1,
+      "statModifiers": {},
+      "grants": [],
+      "abilities": [],
+      "triggers": [],
+      "gaps": [
+        "active: Free: until the end of your Activation, gain +2 St — an ability with charges/targets — capability.consumables",
+        "uses: 1 — charges spent in battle — capability.consumables"
+      ]
+    },
+    "item.strength-potion": {
+      "id": "item.strength-potion",
+      "name": "Strength Potion",
+      "itemClass": "trinket",
+      "tier": 0,
+      "hands": 0,
+      "slots": 1,
+      "statModifiers": {},
+      "grants": [],
+      "abilities": [],
+      "triggers": [],
+      "gaps": [
+        "active: Once per Battle, 2 Stamina: gain +1 Strength and l — an ability with charges/targets — capability.consumables",
+        "uses: 1 — charges spent in battle — capability.consumables"
+      ]
+    },
+    "item.poison-coating": {
+      "id": "item.poison-coating",
+      "name": "Poison Coating",
+      "itemClass": "trinket",
+      "tier": 0,
+      "hands": 0,
+      "slots": 1,
+      "statModifiers": {},
+      "grants": [],
+      "abilities": [],
+      "triggers": [],
+      "gaps": [
+        "active: Once per Battle, 1 Stamina: for the rest of the Ba — an ability with charges/targets — capability.consumables",
+        "uses: 1 — charges spent in battle — capability.consumables"
+      ]
+    },
+    "item.winter-cloak": {
+      "id": "item.winter-cloak",
+      "name": "Winter Cloak",
+      "itemClass": "trinket",
+      "tier": 0,
+      "hands": 0,
+      "slots": 1,
+      "statModifiers": {},
+      "grants": [],
+      "abilities": [],
+      "triggers": [],
+      "gaps": [
+        "active: Once per Battle, 1 Stamina: gain Immunity to Frost — an ability with charges/targets — capability.consumables",
+        "uses: 1 — charges spent in battle — capability.consumables"
+      ]
+    },
+    "item.brilliant-torch": {
+      "id": "item.brilliant-torch",
+      "name": "Brilliant Torch",
+      "itemClass": "trinket",
+      "tier": 0,
+      "hands": 0,
+      "slots": 1,
+      "statModifiers": {},
+      "grants": [],
+      "abilities": [],
+      "triggers": [],
+      "gaps": [
+        "statModifier 'vision' 5 — stat: vision (no UnitDef field)",
+        "active: +5 Vision. Once per Battle, 1 Stamina: reveal ever — an ability with charges/targets — capability.consumables",
+        "uses: 1 — charges spent in battle — capability.consumables"
+      ]
+    },
+    "item.bear-trap": {
+      "id": "item.bear-trap",
+      "name": "Bear Traps",
+      "itemClass": "trinket",
+      "tier": 0,
+      "hands": 0,
+      "slots": 1,
+      "statModifiers": {},
+      "grants": [],
+      "abilities": [],
+      "triggers": [],
+      "gaps": [
+        "active: Once per Battle: place two traps on empty hexes wi — an ability with charges/targets — capability.consumables",
+        "uses: 1 — charges spent in battle — capability.consumables"
+      ]
+    },
+    "item.magic-trap": {
+      "id": "item.magic-trap",
+      "name": "Magic Trap",
+      "itemClass": "trinket",
+      "tier": 0,
+      "hands": 0,
+      "slots": 1,
+      "statModifiers": {},
+      "grants": [],
+      "abilities": [],
+      "triggers": [],
+      "gaps": [
+        "active: Once per Battle: place two traps on empty hexes wi — an ability with charges/targets — capability.consumables",
+        "uses: 1 — charges spent in battle — capability.consumables"
+      ]
+    },
+    "item.fire-trap": {
+      "id": "item.fire-trap",
+      "name": "Fire Trap",
+      "itemClass": "trinket",
+      "tier": 0,
+      "hands": 0,
+      "slots": 1,
+      "statModifiers": {},
+      "grants": [],
+      "abilities": [],
+      "triggers": [],
+      "gaps": [
+        "active: Once per Battle: place two traps on empty hexes wi — an ability with charges/targets — capability.consumables",
+        "uses: 1 — charges spent in battle — capability.consumables"
+      ]
+    },
+    "item.explosive-trap": {
+      "id": "item.explosive-trap",
+      "name": "Explosive Trap",
+      "itemClass": "trinket",
+      "tier": 0,
+      "hands": 0,
+      "slots": 1,
+      "statModifiers": {},
+      "grants": [],
+      "abilities": [],
+      "triggers": [],
+      "gaps": [
+        "active: Once per Battle: place one trap on an empty hex wi — an ability with charges/targets — capability.consumables",
+        "uses: 1 — charges spent in battle — capability.consumables"
+      ]
+    },
+    "item.free-movement-potion": {
+      "id": "item.free-movement-potion",
+      "name": "Potion of Free Movement",
+      "itemClass": "trinket",
+      "tier": 0,
+      "hands": 0,
+      "slots": 1,
+      "statModifiers": {},
+      "grants": [],
+      "abilities": [],
+      "triggers": [],
+      "gaps": [
+        "active: Once per Battle, 1 Stamina: the target gains +1 Mo — an ability with charges/targets — capability.consumables",
+        "uses: 1 — charges spent in battle — capability.consumables"
+      ]
+    },
+    "item.bloodbound-gauntlets": {
+      "id": "item.bloodbound-gauntlets",
+      "name": "Bloodbound Gauntlets",
+      "itemClass": "relic",
+      "tier": 1,
+      "hands": 0,
+      "slots": 1,
+      "statModifiers": {
+        "strength": 1,
+        "maxHp": -2
+      },
+      "grants": [],
+      "abilities": [],
+      "triggers": []
+    },
+    "item.stormfeather-quiver": {
+      "id": "item.stormfeather-quiver",
+      "name": "Stormfeather Quiver",
+      "itemClass": "relic",
+      "tier": 1,
+      "hands": 0,
+      "slots": 1,
+      "statModifiers": {
+        "precision": 1,
+        "reach": -1
+      },
+      "grants": [],
+      "abilities": [],
+      "triggers": []
+    },
+    "item.barbarian-furs": {
+      "id": "item.barbarian-furs",
+      "name": "Barbarian Furs",
+      "itemClass": "relic",
+      "tier": 1,
+      "hands": 0,
+      "slots": 1,
+      "statModifiers": {
+        "maxHp": 2,
+        "accuracy": -10
+      },
+      "grants": [],
+      "abilities": [],
+      "triggers": []
+    },
+    "item.veterans-war-journal": {
+      "id": "item.veterans-war-journal",
+      "name": "Veteran's War Journal",
+      "itemClass": "relic",
+      "tier": 1,
+      "hands": 0,
+      "slots": 1,
+      "statModifiers": {
+        "accuracy": 10,
+        "maxHp": -3
+      },
+      "grants": [],
+      "abilities": [],
+      "triggers": []
+    },
+    "item.elven-protection-charm": {
+      "id": "item.elven-protection-charm",
+      "name": "Elven Protection Charm",
+      "itemClass": "relic",
+      "tier": 1,
+      "hands": 0,
+      "slots": 1,
+      "statModifiers": {
+        "resist": 1,
+        "armor": -1
+      },
+      "grants": [],
+      "abilities": [],
+      "triggers": []
+    },
+    "item.vow-of-iron": {
+      "id": "item.vow-of-iron",
+      "name": "Vow of Iron",
+      "itemClass": "relic",
+      "tier": 1,
+      "hands": 0,
+      "slots": 1,
+      "statModifiers": {
+        "armor": 1,
+        "resist": -1
+      },
+      "grants": [],
+      "abilities": [],
+      "triggers": []
+    },
+    "item.rangers-worn-boots": {
+      "id": "item.rangers-worn-boots",
+      "name": "Ranger's Worn Boots",
+      "itemClass": "relic",
+      "tier": 1,
+      "hands": 0,
+      "slots": 1,
+      "statModifiers": {
+        "movement": 1,
+        "dodge": -5
+      },
+      "grants": [],
+      "abilities": [],
+      "triggers": []
+    },
+    "item.scouts-lucky-charm": {
+      "id": "item.scouts-lucky-charm",
+      "name": "Scout's Lucky Charm",
+      "itemClass": "relic",
+      "tier": 1,
+      "hands": 0,
+      "slots": 1,
+      "statModifiers": {
+        "luck": 3,
+        "crit": -3
+      },
+      "grants": [],
+      "abilities": [],
+      "triggers": []
+    },
+    "item.meditation-beads": {
+      "id": "item.meditation-beads",
+      "name": "Meditation Beads",
+      "itemClass": "relic",
+      "tier": 1,
+      "hands": 0,
+      "slots": 1,
+      "statModifiers": {
+        "maxStamina": 1,
+        "movement": -1
+      },
+      "grants": [],
+      "abilities": [],
+      "triggers": []
+    },
+    "item.marching-orders": {
+      "id": "item.marching-orders",
+      "name": "Marching Orders",
+      "itemClass": "relic",
+      "tier": 2,
+      "hands": 0,
+      "slots": 1,
+      "statModifiers": {
+        "movement": 1
+      },
+      "grants": [],
+      "abilities": [],
+      "triggers": [],
+      "gaps": [
+        "statModifier 'itemSlots' -1 — stat: itemSlots (no UnitDef field)"
+      ]
+    },
+    "item.tome-of-forgotten-whispers": {
+      "id": "item.tome-of-forgotten-whispers",
+      "name": "Tome of Forgotten Whispers",
+      "itemClass": "relic",
+      "tier": 2,
+      "hands": 0,
+      "slots": 1,
+      "statModifiers": {
+        "magic": 1,
+        "dodge": -5
+      },
+      "grants": [],
+      "abilities": [],
+      "triggers": []
+    },
+    "item.quartermasters-manifest": {
+      "id": "item.quartermasters-manifest",
+      "name": "Quartermaster's Manifest",
+      "itemClass": "relic",
+      "tier": 2,
+      "hands": 0,
+      "slots": 1,
+      "statModifiers": {
+        "maxStamina": -1
+      },
+      "grants": [],
+      "abilities": [],
+      "triggers": [],
+      "gaps": [
+        "statModifier 'itemSlots' 1 — stat: itemSlots (no UnitDef field)"
+      ]
+    },
+    "item.captains-seal": {
+      "id": "item.captains-seal",
+      "name": "Captain's Seal",
+      "itemClass": "relic",
+      "tier": 2,
+      "hands": 0,
+      "slots": 1,
+      "statModifiers": {
+        "strength": 2,
+        "accuracy": -10
+      },
+      "grants": [],
+      "abilities": [],
+      "triggers": []
+    },
+    "item.banner-of-the-lost-legion": {
+      "id": "item.banner-of-the-lost-legion",
+      "name": "Banner of the Lost Legion",
+      "itemClass": "relic",
+      "tier": 2,
+      "hands": 0,
+      "slots": 1,
+      "statModifiers": {
+        "dodge": 10,
+        "strength": -1
+      },
+      "grants": [],
+      "abilities": [],
+      "triggers": []
+    },
+    "item.tandras-empty-cradle": {
+      "id": "item.tandras-empty-cradle",
+      "name": "Tandra's Empty Cradle",
+      "itemClass": "relic",
+      "tier": 2,
+      "hands": 0,
+      "slots": 1,
+      "statModifiers": {
+        "resist": 2,
+        "accuracy": -20
+      },
+      "grants": [],
+      "abilities": [],
+      "triggers": []
+    },
+    "item.frostleaf-battle-standard": {
+      "id": "item.frostleaf-battle-standard",
+      "name": "Frostleaf Battle Standard",
+      "itemClass": "relic",
+      "tier": 2,
+      "hands": 0,
+      "slots": 1,
+      "statModifiers": {
+        "accuracy": 10,
+        "movement": -1
+      },
+      "grants": [],
+      "abilities": [],
+      "triggers": []
+    },
+    "item.dusty-map-case": {
+      "id": "item.dusty-map-case",
+      "name": "Dusty Map Case",
+      "itemClass": "relic",
+      "tier": 2,
+      "hands": 0,
+      "slots": 1,
+      "statModifiers": {
+        "dodge": -5
+      },
+      "grants": [],
+      "abilities": [],
+      "triggers": [],
+      "gaps": [
+        "statModifier 'vision' 2 — stat: vision (no UnitDef field)"
+      ]
+    },
+    "item.berserkers-torc": {
+      "id": "item.berserkers-torc",
+      "name": "Berserker's Torc",
+      "itemClass": "relic",
+      "tier": 2,
+      "hands": 0,
+      "slots": 1,
+      "statModifiers": {
+        "strength": 2,
+        "armor": -1
+      },
+      "grants": [],
+      "abilities": [],
+      "triggers": []
+    },
+    "item.admirals-compass": {
+      "id": "item.admirals-compass",
+      "name": "Admiral's Compass",
+      "itemClass": "relic",
+      "tier": 2,
+      "hands": 0,
+      "slots": 1,
+      "statModifiers": {
+        "reach": 1,
+        "maxHp": -4
+      },
+      "grants": [],
+      "abilities": [],
+      "triggers": []
+    },
+    "item.crown-of-emperor-valdric": {
+      "id": "item.crown-of-emperor-valdric",
+      "name": "Crown of Emperor Valdric",
+      "itemClass": "relic",
+      "tier": 3,
+      "hands": 0,
+      "slots": 1,
+      "statModifiers": {
+        "strength": 2,
+        "maxHp": -4
+      },
+      "grants": [],
+      "abilities": [],
+      "triggers": []
+    },
+    "item.seal-of-the-radiant-order": {
+      "id": "item.seal-of-the-radiant-order",
+      "name": "Seal of the Radiant Order",
+      "itemClass": "relic",
+      "tier": 3,
+      "hands": 0,
+      "slots": 1,
+      "statModifiers": {
+        "resist": 2,
+        "accuracy": -20
+      },
+      "grants": [],
+      "abilities": [],
+      "triggers": []
+    },
+    "item.throne-fragment-of-melandar": {
+      "id": "item.throne-fragment-of-melandar",
+      "name": "Throne Fragment of Melandar",
+      "itemClass": "relic",
+      "tier": 3,
+      "hands": 0,
+      "slots": 1,
+      "statModifiers": {
+        "armor": 2,
+        "movement": -2
+      },
+      "grants": [],
+      "abilities": [],
+      "triggers": []
+    },
+    "item.unbroken": {
+      "id": "item.unbroken",
+      "name": "Ossuary Reliquary",
+      "itemClass": "relic",
+      "tier": 3,
+      "hands": 0,
+      "slots": 1,
+      "statModifiers": {
+        "maxHp": -6
+      },
+      "grants": [],
+      "abilities": [],
+      "triggers": [],
+      "gaps": [
+        "statModifier 'toughness' 1 — stat: toughness (no UnitDef field)"
+      ]
+    },
+    "item.codex-of-the-last-war": {
+      "id": "item.codex-of-the-last-war",
+      "name": "Codex of the Last War",
+      "itemClass": "relic",
+      "tier": 3,
+      "hands": 0,
+      "slots": 1,
+      "statModifiers": {
+        "magic": 2,
+        "maxHp": -4
+      },
+      "grants": [],
+      "abilities": [],
+      "triggers": []
+    },
+    "item.eye-of-damnation": {
+      "id": "item.eye-of-damnation",
+      "name": "Eye of Damnation",
+      "itemClass": "relic",
+      "tier": 3,
+      "hands": 0,
+      "slots": 1,
+      "statModifiers": {
+        "crit": 15,
+        "dodge": -15
+      },
+      "grants": [],
+      "abilities": [],
+      "triggers": []
+    },
+    "item.light-of-hope": {
+      "id": "item.light-of-hope",
+      "name": "Light of Hope",
+      "itemClass": "relic",
+      "tier": 3,
+      "hands": 0,
+      "slots": 1,
+      "statModifiers": {
+        "staminaRegen": 1
+      },
+      "grants": [],
+      "abilities": [],
+      "triggers": [],
+      "gaps": [
+        "statModifier 'toughness' -1 — stat: toughness (no UnitDef field)"
+      ]
+    },
+    "item.seal-of-damnation": {
+      "id": "item.seal-of-damnation",
+      "name": "Seal of Damnation",
+      "itemClass": "relic",
+      "tier": 3,
+      "hands": 0,
+      "slots": 1,
+      "statModifiers": {
+        "armor": 2,
+        "spirit": -1
+      },
+      "grants": [],
+      "abilities": [],
+      "triggers": []
+    },
+    "item.crown-of-the-tempest": {
+      "id": "item.crown-of-the-tempest",
+      "name": "Crown of the Tempest",
+      "itemClass": "relic",
+      "tier": 3,
+      "hands": 0,
+      "slots": 1,
+      "statModifiers": {
+        "precision": 2,
+        "movement": -2
+      },
+      "grants": [],
+      "abilities": [],
+      "triggers": []
+    },
+    "item.crown-of-the-sand-king": {
+      "id": "item.crown-of-the-sand-king",
+      "name": "Crown of the Sand King",
+      "itemClass": "relic",
+      "tier": 3,
+      "hands": 0,
+      "slots": 1,
+      "statModifiers": {
+        "dodge": 15,
+        "maxHp": -4
+      },
+      "grants": [],
+      "abilities": [],
+      "triggers": []
+    },
+    "item.gravediggers-lantern": {
+      "id": "item.gravediggers-lantern",
+      "name": "Gravedigger's Lantern",
+      "itemClass": "relic",
+      "tier": 2,
+      "hands": 0,
+      "slots": 1,
+      "statModifiers": {
+        "maxHp": 4,
+        "crit": -5
+      },
+      "grants": [],
+      "abilities": [],
+      "triggers": []
+    },
+    "item.censer-of-the-high-choir": {
+      "id": "item.censer-of-the-high-choir",
+      "name": "Censer of the High Choir",
+      "itemClass": "relic",
+      "tier": 2,
+      "hands": 0,
+      "slots": 1,
+      "statModifiers": {
+        "spirit": 2,
+        "maxHp": -4
+      },
+      "grants": [],
+      "abilities": [],
+      "triggers": []
+    },
+    "item.trackers-eyeglass": {
+      "id": "item.trackers-eyeglass",
+      "name": "Tracker's Eyeglass",
+      "itemClass": "relic",
+      "tier": 1,
+      "hands": 0,
+      "slots": 1,
+      "statModifiers": {
+        "maxHp": -2
+      },
+      "grants": [],
+      "abilities": [],
+      "triggers": [],
+      "gaps": [
+        "statModifier 'vision' 1 — stat: vision (no UnitDef field)"
+      ]
+    },
+    "item.rune-bashing": {
+      "id": "item.rune-bashing",
+      "name": "Bashing",
+      "itemClass": "bloodrune",
+      "tier": 1,
+      "hands": 0,
+      "slots": 0,
+      "statModifiers": {
+        "strength": 1
+      },
+      "grants": [],
+      "abilities": [],
+      "triggers": [],
+      "gaps": [
+        "onCrit: apply 1 Stun to the target and Knockback 1 — it is — trigger shape unparsed"
+      ]
+    },
+    "item.rune-cat-eyes": {
+      "id": "item.rune-cat-eyes",
+      "name": "Cat Eyes",
+      "itemClass": "bloodrune",
+      "tier": 1,
+      "hands": 0,
+      "slots": 0,
+      "statModifiers": {
+        "precision": 1,
+        "accuracy": 5
+      },
+      "grants": [],
+      "abilities": [],
+      "triggers": []
+    },
+    "item.rune-sharp-eyes": {
+      "id": "item.rune-sharp-eyes",
+      "name": "Sharp Eyes",
+      "itemClass": "bloodrune",
+      "tier": 1,
+      "hands": 0,
+      "slots": 0,
+      "statModifiers": {
+        "reach": 1
+      },
+      "grants": [],
+      "abilities": [],
+      "triggers": []
+    },
+    "item.rune-vampire-hunter": {
+      "id": "item.rune-vampire-hunter",
+      "name": "Vampire Hunter",
+      "itemClass": "bloodrune",
+      "tier": 1,
+      "hands": 0,
+      "slots": 0,
+      "statModifiers": {},
+      "grants": [],
+      "abilities": [],
+      "triggers": [],
+      "gaps": [
+        "slayer: {\"vampire\":3,\"undead\":1} — item field: slayer"
+      ]
+    },
+    "item.rune-nightmare-slayer": {
+      "id": "item.rune-nightmare-slayer",
+      "name": "Nightmare Slayer",
+      "itemClass": "bloodrune",
+      "tier": 1,
+      "hands": 0,
+      "slots": 0,
+      "statModifiers": {},
+      "grants": [],
+      "abilities": [],
+      "triggers": [],
+      "gaps": [
+        "slayer: {\"nightmare\":3} — item field: slayer"
+      ]
+    },
+    "item.rune-plant-killer": {
+      "id": "item.rune-plant-killer",
+      "name": "Plant Killer",
+      "itemClass": "bloodrune",
+      "tier": 1,
+      "hands": 0,
+      "slots": 0,
+      "statModifiers": {},
+      "grants": [],
+      "abilities": [],
+      "triggers": [],
+      "gaps": [
+        "onKill: if the kill had the plant tag, immediately regain  — trigger shape unparsed",
+        "slayer: {\"plant\":3} — item field: slayer"
+      ]
+    },
+    "item.rune-burning-touch": {
+      "id": "item.rune-burning-touch",
+      "name": "Burning Touch",
+      "itemClass": "bloodrune",
+      "tier": 1,
+      "hands": 0,
+      "slots": 0,
+      "statModifiers": {},
+      "grants": [],
+      "abilities": [],
+      "triggers": [
+        {
+          "id": "trigger.rune-burning-touch.burn",
+          "hook": "onHit",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.burn",
+            "value": 1
+          },
+          "source": "item.rune-burning-touch"
+        }
+      ]
+    },
+    "item.rune-bleeding-strike": {
+      "id": "item.rune-bleeding-strike",
+      "name": "Bleeding Strike",
+      "itemClass": "bloodrune",
+      "tier": 1,
+      "hands": 0,
+      "slots": 0,
+      "statModifiers": {
+        "crit": 3
+      },
+      "grants": [],
+      "abilities": [],
+      "triggers": [
+        {
+          "id": "trigger.rune-bleeding-strike.bleed",
+          "hook": "onCrit",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.bleed",
+            "value": 3
+          },
+          "source": "item.rune-bleeding-strike"
+        }
+      ]
+    },
+    "item.rune-horror-breaker": {
+      "id": "item.rune-horror-breaker",
+      "name": "Horror Breaker",
+      "itemClass": "bloodrune",
+      "tier": 2,
+      "hands": 0,
+      "slots": 0,
+      "statModifiers": {},
+      "grants": [],
+      "abilities": [],
+      "triggers": [],
+      "gaps": [
+        "onKill: gain +5 Accuracy for the rest of the Battle — trigger shape unparsed",
+        "slayer: {\"horror\":4,\"nightmare\":2} — item field: slayer"
+      ]
+    },
+    "item.rune-elemental-bane": {
+      "id": "item.rune-elemental-bane",
+      "name": "Elemental Bane",
+      "itemClass": "bloodrune",
+      "tier": 2,
+      "hands": 0,
+      "slots": 0,
+      "statModifiers": {},
+      "grants": [],
+      "abilities": [],
+      "triggers": [],
+      "gaps": [
+        "onHit: if the target has the elemental or dragon tag it l — trigger shape unparsed",
+        "slayer: {\"elemental\":4,\"dragon\":2} — item field: slayer"
+      ]
+    },
+    "item.rune-monster-slayer": {
+      "id": "item.rune-monster-slayer",
+      "name": "Monster Slayer",
+      "itemClass": "bloodrune",
+      "tier": 2,
+      "hands": 0,
+      "slots": 0,
+      "statModifiers": {},
+      "grants": [],
+      "abilities": [],
+      "triggers": [],
+      "gaps": [
+        "slayer: {\"beast\":2,\"giant\":2,\"construct\":2,\"drag — item field: slayer"
+      ]
+    },
+    "item.rune-executioner": {
+      "id": "item.rune-executioner",
+      "name": "Executioner",
+      "itemClass": "bloodrune",
+      "tier": 2,
+      "hands": 0,
+      "slots": 0,
+      "statModifiers": {
+        "strength": 1,
+        "precision": 1
+      },
+      "grants": [],
+      "abilities": [],
+      "triggers": [],
+      "gaps": [
+        "onKill: regain 1 stamina, and until the end of your next T — trigger shape unparsed"
+      ]
+    },
+    "item.rune-hunters-mark": {
+      "id": "item.rune-hunters-mark",
+      "name": "Hunter's Mark",
+      "itemClass": "bloodrune",
+      "tier": 2,
+      "hands": 0,
+      "slots": 0,
+      "statModifiers": {},
+      "grants": [],
+      "abilities": [],
+      "triggers": [],
+      "gaps": [
+        "onHit: the target gains 2 Bleed — trigger shape unparsed"
+      ]
+    },
+    "item.rune-reckless": {
+      "id": "item.rune-reckless",
+      "name": "Reckless",
+      "itemClass": "bloodrune",
+      "tier": 2,
+      "hands": 0,
+      "slots": 0,
+      "statModifiers": {
+        "crit": 8
+      },
+      "grants": [],
+      "abilities": [],
+      "triggers": []
+    },
+    "item.rune-crushing": {
+      "id": "item.rune-crushing",
+      "name": "Crushing",
+      "itemClass": "bloodrune",
+      "tier": 2,
+      "hands": 0,
+      "slots": 0,
+      "statModifiers": {
+        "strength": 1
+      },
+      "grants": [],
+      "abilities": [],
+      "triggers": [],
+      "gaps": [
+        "onHit: the target loses 1 Armor for the rest of the Battl — trigger shape unparsed"
+      ]
+    },
+    "item.rune-catblood": {
+      "id": "item.rune-catblood",
+      "name": "Catblood",
+      "itemClass": "bloodrune",
+      "tier": 2,
+      "hands": 0,
+      "slots": 0,
+      "statModifiers": {
+        "crit": 3
+      },
+      "grants": [],
+      "abilities": [],
+      "triggers": [],
+      "gaps": [
+        "grants tag.catfolk — attack row unauthored"
+      ]
+    },
+    "item.rune-aura-of-dread": {
+      "id": "item.rune-aura-of-dread",
+      "name": "Aura of Dread",
+      "itemClass": "bloodrune",
+      "tier": 2,
+      "hands": 0,
+      "slots": 0,
+      "statModifiers": {},
+      "grants": [],
+      "abilities": [],
+      "triggers": [],
+      "gaps": [
+        "aura: AURA — every enemy within 3 hexes gains 2 Weak — hook: aura (declared, engine never fires it)"
+      ]
+    },
+    "item.rune-berserker-blood": {
+      "id": "item.rune-berserker-blood",
+      "name": "Berserker Blood",
+      "itemClass": "bloodrune",
+      "tier": 3,
+      "hands": 0,
+      "slots": 0,
+      "statModifiers": {
+        "strength": 1
+      },
+      "grants": [],
+      "abilities": [],
+      "triggers": [],
+      "gaps": [
+        "onKill: gain +1 Strength for the rest of the Battle, and h — trigger shape unparsed"
+      ]
+    },
+    "item.rune-deathdealer": {
+      "id": "item.rune-deathdealer",
+      "name": "Deathdealer",
+      "itemClass": "bloodrune",
+      "tier": 3,
+      "hands": 0,
+      "slots": 0,
+      "statModifiers": {},
+      "grants": [],
+      "abilities": [],
+      "triggers": [],
+      "gaps": [
+        "grants tag.outcast — attack row unauthored",
+        "onDodge: gain +10 Crit for the rest of the Battle — hook: onDodge (declared, engine never fires it)",
+        "onCrit: gain +10 Dodge for the rest of the Battle — trigger shape unparsed",
+        "slayer: {\"demon\":4,\"plant\":4,\"beast\":4} — item field: slayer"
+      ]
+    },
+    "item.rune-kairin": {
+      "id": "item.rune-kairin",
+      "name": "Kai'rin",
+      "itemClass": "bloodrune",
+      "tier": 3,
+      "hands": 0,
+      "slots": 0,
+      "statModifiers": {},
+      "grants": [],
+      "abilities": [],
+      "triggers": [],
+      "gaps": [
+        "onActivationEnd: heal 2 — hook: onActivationEnd (declared, engine never fires it)",
+        "slayer: {\"undead\":3,\"demon\":3} — item field: slayer"
+      ]
+    },
+    "item.rune-avatar-of-war": {
+      "id": "item.rune-avatar-of-war",
+      "name": "Avatar of War",
+      "itemClass": "bloodrune",
+      "tier": 3,
+      "hands": 0,
+      "slots": 0,
+      "statModifiers": {
+        "strength": 1,
+        "precision": 1,
+        "accuracy": 5
+      },
+      "grants": [],
+      "abilities": [],
+      "triggers": [],
+      "gaps": [
+        "onKill: Surge Chance +20 for the rest of the Battle, stack — trigger shape unparsed"
+      ]
+    },
+    "item.rune-perfect-hunter": {
+      "id": "item.rune-perfect-hunter",
+      "name": "Perfect Hunter",
+      "itemClass": "bloodrune",
+      "tier": 3,
+      "hands": 0,
+      "slots": 0,
+      "statModifiers": {
+        "precision": 1,
+        "reach": 1
+      },
+      "grants": [],
+      "abilities": [],
+      "triggers": [],
+      "gaps": [
+        "startOfBattle: every slayer bonus you have from any source — weap — hook: startOfBattle (declared, engine never fires it)"
+      ]
+    },
+    "item.rune-hells-chosen": {
+      "id": "item.rune-hells-chosen",
+      "name": "Hell's Chosen",
+      "itemClass": "bloodrune",
+      "tier": 3,
+      "hands": 0,
+      "slots": 0,
+      "statModifiers": {
+        "strength": 2,
+        "magic": 2
+      },
+      "grants": [],
+      "abilities": [],
+      "triggers": [],
+      "gaps": [
+        "grants tag.demon — attack row unauthored",
+        "aura: AURA — every unit within 3 hexes takes -10 Accurac — hook: aura (declared, engine never fires it)"
+      ]
+    },
+    "item.pilgrims-warding-stone": {
+      "id": "item.pilgrims-warding-stone",
+      "name": "Pilgrim's Warding Stone",
+      "itemClass": "idol",
+      "tier": 1,
+      "hands": 0,
+      "slots": 1,
+      "statModifiers": {},
+      "grants": [],
+      "abilities": [],
+      "triggers": [],
+      "gaps": [
+        "startOfBattle: gain 4 Protection — hook: startOfBattle (declared, engine never fires it)"
+      ]
+    },
+    "item.finger-of-saint-aldwyn": {
+      "id": "item.finger-of-saint-aldwyn",
+      "name": "Finger of Saint Aldwyn",
+      "itemClass": "idol",
+      "tier": 1,
+      "hands": 0,
+      "slots": 1,
+      "statModifiers": {},
+      "grants": [],
+      "abilities": [],
+      "triggers": [],
+      "gaps": [
+        "aura: AURA radius 2 — an ally who ends its Activation in — hook: aura (declared, engine never fires it)"
+      ]
+    },
+    "item.idol-of-the-hearthmother": {
+      "id": "item.idol-of-the-hearthmother",
+      "name": "Idol of the Hearthmother",
+      "itemClass": "idol",
+      "tier": 1,
+      "hands": 0,
+      "slots": 1,
+      "statModifiers": {},
+      "grants": [],
+      "abilities": [],
+      "triggers": [],
+      "gaps": [
+        "immunity: {\"burn\":1,\"poison\":1} — item field: immunity"
+      ]
+    },
+    "item.censer-of-true-light": {
+      "id": "item.censer-of-true-light",
+      "name": "Censer of True Light",
+      "itemClass": "idol",
+      "tier": 1,
+      "hands": 0,
+      "slots": 1,
+      "statModifiers": {},
+      "grants": [],
+      "abilities": [],
+      "triggers": [],
+      "gaps": [
+        "passive: Immunity to Burn 1 — hook: passive (declared, engine never fires it)"
+      ]
+    },
+    "item.vigils-shield": {
+      "id": "item.vigils-shield",
+      "name": "Vigil's Shield",
+      "itemClass": "idol",
+      "tier": 2,
+      "hands": 0,
+      "slots": 1,
+      "statModifiers": {},
+      "grants": [],
+      "abilities": [],
+      "triggers": [],
+      "gaps": [
+        "startOfBattle: +10 to your Deathbed Fighting roll. The modifier h — hook: startOfBattle (declared, engine never fires it)"
+      ]
+    },
+    "item.divine-ward": {
+      "id": "item.divine-ward",
+      "name": "Divine Ward",
+      "itemClass": "idol",
+      "tier": 2,
+      "hands": 0,
+      "slots": 1,
+      "statModifiers": {},
+      "grants": [],
+      "abilities": [],
+      "triggers": [],
+      "gaps": [
+        "active: The target gains Protection equal to 2 + Spirit. S — an ability with charges/targets — capability.consumables"
+      ]
+    },
+    "item.bracer-of-courage": {
+      "id": "item.bracer-of-courage",
+      "name": "Bracer of Courage",
+      "itemClass": "idol",
+      "tier": 2,
+      "hands": 0,
+      "slots": 1,
+      "statModifiers": {},
+      "grants": [],
+      "abilities": [],
+      "triggers": [],
+      "gaps": [
+        "active: Free. remove 5 Stun and 5 Weak from yourself. — an ability with charges/targets — capability.consumables"
+      ]
+    },
+    "item.scorpion-shield": {
+      "id": "item.scorpion-shield",
+      "name": "Scorpion Shield",
+      "itemClass": "idol",
+      "tier": 2,
+      "hands": 0,
+      "slots": 1,
+      "statModifiers": {},
+      "grants": [],
+      "abilities": [],
+      "triggers": [],
+      "gaps": [
+        "onTakingDamage: Thorns 2, and the attacker gains 2 Poison and 1 Bl — trigger shape unparsed",
+        "thorns: 2 — item field: thorns"
+      ]
+    },
+    "item.blessing-of-the-hearthmother": {
+      "id": "item.blessing-of-the-hearthmother",
+      "name": "Blessing of the Hearthmother",
+      "itemClass": "idol",
+      "tier": 2,
+      "hands": 0,
+      "slots": 1,
+      "statModifiers": {},
+      "grants": [],
+      "abilities": [],
+      "triggers": [],
+      "gaps": [
+        "onActivationEnd: heal 2 and remove 1 Weak — hook: onActivationEnd (declared, engine never fires it)"
+      ]
+    },
+    "item.stormcallers-orb": {
+      "id": "item.stormcallers-orb",
+      "name": "Stormcaller's Orb",
+      "itemClass": "idol",
+      "tier": 2,
+      "hands": 0,
+      "slots": 1,
+      "statModifiers": {},
+      "grants": [],
+      "abilities": [],
+      "triggers": [],
+      "gaps": [
+        "immunity: {\"frost\":1} — item field: immunity"
+      ]
+    },
+    "item.ring-of-divine-protection": {
+      "id": "item.ring-of-divine-protection",
+      "name": "Ring of Divine Protection",
+      "itemClass": "idol",
+      "tier": 3,
+      "hands": 0,
+      "slots": 1,
+      "statModifiers": {},
+      "grants": [],
+      "abilities": [],
+      "triggers": [],
+      "gaps": [
+        "startOfBattle: gain Protection equal to 4 + the party's Spirit — hook: startOfBattle (declared, engine never fires it)"
+      ]
+    },
+    "item.kals-mercy": {
+      "id": "item.kals-mercy",
+      "name": "Kal's Mercy",
+      "itemClass": "idol",
+      "tier": 3,
+      "hands": 0,
+      "slots": 1,
+      "statModifiers": {},
+      "grants": [],
+      "abilities": [],
+      "triggers": [],
+      "gaps": [
+        "passive: Immunity to Bleed 1. One point of Bleed is removed — hook: passive (declared, engine never fires it)"
+      ]
+    },
+    "item.roster-of-the-fallen": {
+      "id": "item.roster-of-the-fallen",
+      "name": "Roster of the Fallen",
+      "itemClass": "idol",
+      "tier": 3,
+      "hands": 0,
+      "slots": 1,
+      "statModifiers": {},
+      "grants": [],
+      "abilities": [],
+      "triggers": [],
+      "gaps": [
+        "onDeath: your name goes on the roster: every ally gains +1  — trigger shape unparsed"
+      ]
+    },
+    "item.banner-of-resolve": {
+      "id": "item.banner-of-resolve",
+      "name": "Banner of Resolve",
+      "itemClass": "idol",
+      "tier": 3,
+      "hands": 0,
+      "slots": 1,
+      "statModifiers": {},
+      "grants": [],
+      "abilities": [],
+      "triggers": [],
+      "gaps": [
+        "active: Each ally within 3 hexes, including you, removes a — an ability with charges/targets — capability.consumables"
+      ]
+    },
+    "item.necklace-of-fire-immunity": {
+      "id": "item.necklace-of-fire-immunity",
+      "name": "Necklace of Fire Immunity",
+      "itemClass": "trinket",
+      "tier": 2,
+      "hands": 0,
+      "slots": 1,
+      "statModifiers": {},
+      "grants": [],
+      "abilities": [],
+      "triggers": [],
+      "gaps": [
+        "immunity: {\"burn\":1} — item field: immunity"
+      ]
+    },
+    "item.necklace-of-poison-immunity": {
+      "id": "item.necklace-of-poison-immunity",
+      "name": "Necklace of Poison Immunity",
+      "itemClass": "trinket",
+      "tier": 2,
+      "hands": 0,
+      "slots": 1,
+      "statModifiers": {},
+      "grants": [],
+      "abilities": [],
+      "triggers": [],
+      "gaps": [
+        "immunity: {\"poison\":1} — item field: immunity"
+      ]
+    },
+    "item.necklace-of-weakness-immunity": {
+      "id": "item.necklace-of-weakness-immunity",
+      "name": "Necklace of Weakness Immunity",
+      "itemClass": "trinket",
+      "tier": 2,
+      "hands": 0,
+      "slots": 1,
+      "statModifiers": {},
+      "grants": [],
+      "abilities": [],
+      "triggers": [],
+      "gaps": [
+        "immunity: {\"weak\":1} — item field: immunity"
+      ]
+    },
+    "item.necklace-of-frost-immunity": {
+      "id": "item.necklace-of-frost-immunity",
+      "name": "Necklace of Frost Immunity",
+      "itemClass": "trinket",
+      "tier": 2,
+      "hands": 0,
+      "slots": 1,
+      "statModifiers": {},
+      "grants": [],
+      "abilities": [],
+      "triggers": [],
+      "gaps": [
+        "immunity: {\"frost\":1} — item field: immunity"
+      ]
+    },
+    "item.lumberjack-axe": {
+      "id": "item.lumberjack-axe",
+      "name": "Lumberjack's Axe",
+      "itemClass": "weapon",
+      "tier": 0,
+      "hands": 2,
+      "slots": 2,
+      "statModifiers": {},
+      "grants": [
+        "attack.lumberjack-axe.chop",
+        "attack.lumberjack-axe.cleave"
+      ],
+      "abilities": [],
+      "triggers": [
+        {
+          "id": "trigger.lumberjack-axe.chop.bleed",
+          "hook": "onHit",
+          "chance": 20,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.bleed",
+            "value": 2
+          },
+          "source": "item.lumberjack-axe",
+          "onlyWithAttack": "attack.lumberjack-axe.chop"
+        }
+      ]
     }
   },
   "test": {

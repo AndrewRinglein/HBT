@@ -4,7 +4,7 @@
 // GENERATED (content/mkenginepack.mjs) and never hand-edited; this loader
 // validates it LOUDLY at import time (Law 9) and hands back plain UnitDefs.
 import { UNIT_PACK } from './generated/pack.js'
-import type { AbilityDef, AttackDef, CritRow, MoveDef, UnitDef } from '../core/types.js'
+import type { AbilityDef, AttackDef, CritRow, ItemDef, MoveDef, UnitDef } from '../core/types.js'
 import { validateTrigger } from '../core/trigger.js'
 import type { StatusDef } from '../core/status.js'
 import { statusDamage, statusHeal } from '../core/status.js'
@@ -180,6 +180,34 @@ export function packTestStatuses(): Readonly<Record<string, StatusDef>> {
   const raw = (UNIT_PACK as { test?: { statuses?: Readonly<Record<string, PackStatusRow>> } }).test?.statuses ?? {}
   for (const k of Object.keys(raw)) if (!k.startsWith('test.status.')) throw new Error(`test receptacle: '${k}' is not test.status.*`)
   return statusRowsToDefs(raw, 'test receptacle')
+}
+
+/**
+ * The item registry — pack.items (2026-09-02, ITEMS-PLAN.md §3). Every Codex
+ * item row, compiled by content/mkenginepack.mjs. Validated loudly: the
+ * physical facts must be numbers, every granted attack must be a pack attack,
+ * every granted power a pack ability, every trigger well-formed with the item
+ * as its source, and every stat key one the engine has. `gaps` is carried as
+ * the row's own list of what it cannot yet do.
+ */
+export function packItems(attacks: Readonly<Record<string, AttackDef>>, abilities: Readonly<Record<string, AbilityDef>>): Readonly<Record<string, ItemDef>> {
+  const raw = (UNIT_PACK as { items?: Readonly<Record<string, ItemDef>> }).items ?? {}
+  const CLASSES = ['weapon', 'armor', 'trinket', 'relic', 'idol', 'bloodrune', 'consumable']
+  const STATS = ['maxHp', 'armor', 'resist', 'dodge', 'strength', 'precision', 'magic', 'spirit', 'reach', 'accuracy', 'movement', 'maxStamina', 'staminaRegen', 'crit', 'luck']
+  for (const [k, it] of Object.entries(raw)) {
+    if (k !== it.id) throw new Error(`item pack: key '${k}' names id '${it.id}'`)
+    if (!k.startsWith('item.')) throw new Error(`item pack: '${k}' is not an item.* id`)
+    if (!CLASSES.includes(it.itemClass)) throw new Error(`item pack: '${k}' has itemClass '${String(it.itemClass)}'`)
+    for (const f of ['tier', 'hands', 'slots'] as const) if (typeof it[f] !== 'number') throw new Error(`item pack: '${k}' is missing ${f}`)
+    for (const [s, v] of Object.entries(it.statModifiers)) {
+      if (!STATS.includes(s)) throw new Error(`item pack: '${k}' modifies '${s}', which is not an engine stat — the converter must gap it, never pass it`)
+      if (typeof v !== 'number') throw new Error(`item pack: '${k}' statModifier ${s} is not a number`)
+    }
+    for (const a of it.grants) if (!attacks[a]) throw new Error(`item pack: '${k}' grants '${a}', which is not in the pack's attacks`)
+    for (const a of it.abilities) if (!abilities[a]) throw new Error(`item pack: '${k}' grants power '${a}', which is not in the pack's abilities`)
+    for (const t of it.triggers) { validateTrigger(t); if (t.source !== k) throw new Error(`item pack: '${k}' carries a trigger sourced '${t.source}'`) }
+  }
+  return raw
 }
 
 /** The authored enemies' attacks — generated rows, validated like the units. */

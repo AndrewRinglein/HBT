@@ -4106,3 +4106,39 @@ the edit). The "2 NEW" unpublished ids are the two showcase roll-call
 fieldings (a reserved kind). Three flags. Seal withheld.
 
 IRON GAUNTLET: NOT PASSED — 3 FLAG(S) WARNED
+
+## pack.items — LANDED `2fce79c` **NEEDS REVIEW**
+2026-09-03 05:17
+
+  PASS  dependencies landed
+  WARN  not already decided — 5 candidate ruling(s) — READ BEFORE ASKING: ITEMS-PLAN.md:213 · ../STATE.md:18
+  PASS  typecheck
+  PASS  full test suite
+  PASS  gate 1 — the id appears in a real battle
+  PASS  brought its own tests — test/pack-items.test.ts
+  PASS  existing tests untouched
+  PASS  control battles unchanged
+  PASS  content has a published source — 19 ids without a published source (9 awaiting publication from earlier items — see audit)
+  PASS  hardcode scan — core knows mechanisms, never names
+  PASS  generalizes — the second instance costs zero engine code — shape 'data' — not a mechanism, exempt
+  PASS  naming — new content ids use declared kinds
+  PASS  naming — no banned words invented
+  PASS  kill switch — the tests fail without the content — no content id to disable — engine plumbing, not applicable
+
+<details><summary>Existing tests were edited — review this diff</summary>
+
+```diff
+```
+</details>
+
+Post-land audit by hand after the reaper: 57 files / 493 on the committed
+tree; control battles IDENTICAL. 268 Codex items (the content chat deleted the
+consumable class and added the Waystation rows while this landed — the test
+reads the Codex each run and froze nothing); 116 rows whole, the rest carry
+their gaps on the row; 177 attacks in the pack — every grant of every item.
+Two hand-typed attacks (Fangs' Bite, Breath's Hiss) left index.ts: the pack
+owns them now, with the Codex's crit and stamina. The gate-1 exemption
+(unreachable) was taken on purpose and says why: no battle log names an item
+until seam.items-per-unit fields one. Seal withheld.
+
+IRON GAUNTLET: NOT PASSED — 1 FLAG(S) WARNED; 1 EXEMPTION(S) TAKEN
