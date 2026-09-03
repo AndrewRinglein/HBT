@@ -1571,5 +1571,63 @@
    "item.longbow"
   ],
   "note": "Filed from the kingdom session 2026-09-02. The kingdom's seam (kingdom/src/core/seam.ts battleOptionsOf) will pass hero.equipped once this lands. Plan: engine/ITEMS-PLAN.md \u00a72, \u00a74, \u00a75."
+ },
+ {
+  "id": "cohort.alpha-flip",
+  "kind": "engine",
+  "shape": "data",
+  "spec": "The standard battle (FIRST_BATTLE, baseline.6v4) fields the six Alpha Team heroes \u2014 alpha-oathblade, alpha-sky-pirate, alpha-dusk-hawk, alpha-air-mage, alpha-lucius, alpha-osric \u2014 in place of the six test-* clones. Real authored kits (Halberd, Javelin/Dagger, Shortbow, Lightning Staff, Holy Symbol, Longsword/Knight Shield, universal Punch), real riders (push, cleave arc, crit fields, item powers) run in every control baseline and every sweep. Nothing about the units is authored here: the ids already come from the pack's alphaTeam section. The enemy roster of the standard battle is unchanged (three test-zombie + one test-zombie-burning) \u2014 flipping it is a separate question. Sequence step (C) of the 2026-08-27 Alpha Team ruling; ruled 2026-09-02 'Yes, proceed with step one.'",
+  "expect": "every one of the eight control battles moves; the alpha ids and their authored attacks appear in the gate-1 probe from the standard battle itself (no showcase needed); tests that assumed the test cohort in standard battles are rewritten toward the rule they were checking, with reasons at the edits; disabling alpha-oathblade breaks the standard battle",
+  "changesBaseline": true,
+  "needs": [
+   "content.alpha-team",
+   "capability.area-attack",
+   "capability.knockback",
+   "capability.item-powers",
+   "station.crit"
+  ],
+  "probeIds": [
+   "alpha-oathblade",
+   "attack.halberd.hack"
+  ],
+  "variants": [
+   "attack.halberd.cleave",
+   "attack.longsword.slash"
+  ],
+  "status": "ready"
+ },
+ {
+  "id": "seam.unit-mods",
+  "kind": "engine",
+  "shape": "plumbing",
+  "spec": "GEAR-IMPLEMENTATION.md \u00a71. Set bonuses (GEAR-DESIGN.md \u00a75) are resolved by the kingdom at fielding \u2014 'looked up when the players are being built and shipped to combat \u2026 then it gets written to the stats for that battle' (Andrew 2026-09-02) \u2014 and must reach the battle as PER-UNIT numbers: stat mods on one fielded hero, and +damage on one fielded weapon's attacks. BattleOptions.overrides is by unit TYPE today. Add a per-fielded-hero list parallel to heroes/heroHexes/heroItems: stat mods (StatMod with source = the set id, scope 'unit') and per-item attack bonuses; applied after applyItems; each emits unit.modified naming the set.",
+  "expect": "a hero fielded with mods [{stat:'magic',add:4,source:'set.ring'}] has Magic +4 in the ledger under that source; a weapon bonus of +2 from set.slaying shows on that weapon's attacks only; with no list nothing changes",
+  "changesBaseline": false,
+  "needs": [
+   "seam.items-per-unit"
+  ],
+  "probeIds": [],
+  "variants": [
+   "set.plate",
+   "set.slaying"
+  ],
+  "note": "Filed from the kingdom session 2026-09-02."
+ },
+ {
+  "id": "capability.charges",
+  "kind": "engine",
+  "shape": "rule",
+  "spec": "GEAR-IMPLEMENTATION.md \u00a71 \u00b7 GEAR-DESIGN.md \u00a74. One-use-per-battle items (the Waystation's potions, oils, flasks, traps, the Net, Bandages, Rations): an AbilityDef gains `uses` (per battle); a spent use removes the power from the unit's list for the rest of the Battle \u2014 'they should vanish from the list of things available to a hero in the powers list, because there's no cooldown' (Andrew 2026-09-02); the BattleResult reports uses spent so the kingdom can restock. Traps: bear/magic/fire place TWO on activation, explosive one; all within 3.",
+  "expect": "a unit with a heal-3 potion power uses it once, cannot again that Battle, and the result names the item as spent; the next Battle it is whole",
+  "changesBaseline": false,
+  "needs": [
+   "pack.items"
+  ],
+  "probeIds": [],
+  "variants": [
+   "item.healing-potion",
+   "item.bear-trap"
+  ],
+  "note": "Filed from the kingdom session 2026-09-02. Target grammar, Root/Confusion/Taunt/Frost and trap placement are separate gaps the rows will name."
  }
 ]
