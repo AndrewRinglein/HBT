@@ -292,6 +292,11 @@ for (const u of [...AUTH.units].sort((a, b) => (a.id < b.id ? -1 : 1))) {
   for (const raw of u.attacks || []) {
     const a = resolveAttack(raw, id);
     if (!a) continue;
+    // FOUND 2026-09-03 (running Supper): a `kind: self` row (Eat Corpse — heal
+    // 5, +stats, needs corpses) compiled as an ATTACK and the Ghoul swung it at
+    // heroes. A self-kind row is a power, and one that needs a capability is
+    // a named gap, never an attack.
+    if (a.kind === 'self' || a.targets === 'self') { gap(id, `${a.id} is a self-targeted action (${(a.effects || []).map((e) => e.effect).join('; ')})`, (a.needs || []).filter((n) => !HAVE.has(n)).join(',') || 'enemy self-power (no AbilityDef lane for enemies)'); continue; }
     const ranged = /within/.test(a.targets || '');
     if (ranged && (a.range === null || a.range === undefined)) { gap(id, `${a.id} range is null — N never stated`, 'content: range unstated'); continue; }
     // capability.power-pool (2026-09-03): the share rides on the row (was a gap)
@@ -310,6 +315,7 @@ for (const u of [...AUTH.units].sort((a, b) => (a.id < b.id ? -1 : 1))) {
       reach: ranged ? a.range : 1, staminaCost: 0, // enemies do not run stamina
       ...(a.damage?.powerScale ? { powerScale: a.damage.powerScale } : {}),   // capability.power-pool, 2026-09-03
       ...(a.cooldown ? { cooldown: a.cooldown } : {}), ...(a.warmup ? { warmup: a.warmup } : {}),   // capability.enemy-action-cooldown, 2026-09-03
+      ...(a.attackCount > 1 ? { hits: a.attackCount } : {}),   // attack.multihit, 2026-09-03
     };
     attackIds.push(a.id);
     unitTriggers.push(...(a.triggers || []).flatMap((t) => compileTrigger(t, id, a.id)));
@@ -545,6 +551,7 @@ for (const id of PARTY) {
         ...(areaShapeOf(a) ? { area: areaShapeOf(a) } : {}), // capability.area-attack
         ...(a.crit ? { crit: a.crit } : {}), // station.crit 2026-08-27
         ...(a.accuracy ? { accuracy: a.accuracy } : {}),   // station.accuracy-field, 2026-09-03
+        ...(a.hits > 1 ? { hits: a.hits } : {}),   // attack.multihit, 2026-09-03
       };
       attackIds.push(a.id);
       kitTriggers.push(...settledAttackExtras(a, id));
@@ -646,6 +653,7 @@ const alphaTeam = [];
         ...(area ? { area } : {}), // capability.area-attack, 2026-08-27
         ...(a.crit ? { crit: a.crit } : {}), // station.crit, 2026-08-27
         ...(a.accuracy ? { accuracy: a.accuracy } : {}),   // station.accuracy-field, 2026-09-03
+        ...(a.hits > 1 ? { hits: a.hits } : {}),   // attack.multihit, 2026-09-03
       };
       attackIds.push(a.id);
       const extras = settledAttackExtras(a, id);
@@ -751,6 +759,7 @@ for (const id of CIVILIANS) {
         ...(areaShapeOf(a) ? { area: areaShapeOf(a) } : {}), // capability.area-attack
         ...(a.crit ? { crit: a.crit } : {}), // station.crit 2026-08-27
         ...(a.accuracy ? { accuracy: a.accuracy } : {}),   // station.accuracy-field, 2026-09-03
+        ...(a.hits > 1 ? { hits: a.hits } : {}),   // attack.multihit, 2026-09-03
       };
       attackIds.push(a.id);
       civTriggers.push(...settledAttackExtras(a, id));
@@ -862,6 +871,7 @@ function takeItemAttack(a) {
     ...(area ? { area } : {}),
     ...(a.crit ? { crit: a.crit } : {}),
     ...(a.accuracy ? { accuracy: a.accuracy } : {}),   // station.accuracy-field, 2026-09-03
+    ...(a.hits > 1 ? { hits: a.hits } : {}),   // attack.multihit, 2026-09-03
   };
 }
 function compileItems() {
@@ -1127,7 +1137,7 @@ function testAbilities() {
   return out;
 }
 const UNIT_FIELDS = new Set(['typeId', 'name', 'side', 'maxHp', 'armor', 'resist', 'accuracy', 'dodge', 'strength', 'precision', 'magic', 'spirit', 'crit', 'luck', 'role', 'movement', 'reach', 'maxStamina', 'staminaRegen', 'ai', 'attacks', 'abilities', 'moves', 'tags', 'triggers']);
-const ATTACK_FIELDS = new Set(['id', 'name', 'kind', 'damageType', 'bonus', 'stat', 'reach', 'staminaCost', 'crit', 'critCount', 'area', 'cooldown', 'warmup', 'accuracy']);
+const ATTACK_FIELDS = new Set(['id', 'name', 'kind', 'damageType', 'bonus', 'stat', 'reach', 'staminaCost', 'crit', 'critCount', 'area', 'cooldown', 'warmup', 'accuracy', 'hits']);
 // a delta may start from any packed row — the real families AND the test
 // cohort (test-gash-zombie is the cohort's zombie plus one rider)
 const realUnits = new Map([...alphaTeam, ...prologueParty, ...authoredEnemies, ...heroes, ...enemies].map((u) => [u.typeId, u]));

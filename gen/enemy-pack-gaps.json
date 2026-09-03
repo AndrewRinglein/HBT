@@ -113,6 +113,11 @@
   },
   {
    "unit": "unit.ghoul",
+   "what": "attack.ghoul.eat-corpse is a self-targeted action (heal; grant a stat for the Battle; grant a stat for the Battle; grant a stat for the Battle)",
+   "needs": "capability.corpses"
+  },
+  {
+   "unit": "unit.ghoul",
    "what": "attack.ghoul.shriek onHit: target loses stamina",
    "needs": "capability.target-stamina-loss"
   },
