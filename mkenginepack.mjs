@@ -48,7 +48,7 @@ const heroes = D.testCohort.heroes.map((h) => {
     maxStamina: d.staminaMax, staminaRegen: d.staminaRegen ?? 1,
     ai: e.ai, attacks: e.attacks || [], abilities: e.abilities || [],
     // fix.unit-tags (2026-09-03): `tags` is the one field; a cohort hero is a hero.
-    tags: ['hero'],
+    tags: ['hero', ...(h.class ? [h.class] : [])],
     // Movement is a granted CHOICE (ruled 2026-08-21) — no default here: a
     // cohort row without moves should fail the loader, loudly.
     moves: e.moves,
@@ -563,7 +563,8 @@ for (const id of PARTY) {
     ai: anyRanged ? 'ranged-kite' : 'melee-aggressive',
     attacks: ownAttackIds, abilities: [],
     moves: movesForClass(h.class),
-    tags: ['hero'],
+    // hero assembly (2026-09-03): the class rides on tags so fieldedDef can find the level table
+    tags: ['hero', ...(h.class ? [h.class] : [])],
     triggers: ownTriggers,
     defaultItems: items.filter((i) => ITEM_BY_ID.has(i)),
   }); }
@@ -656,7 +657,7 @@ const alphaTeam = [];
       ...(h.ai ? { aiAuthored: true } : {}),
       attacks: ownAttackIds, abilities: [],
       moves: movesForClass(h.class),
-      tags: ['hero'],
+      tags: ['hero', ...(h.class ? [h.class] : [])],
       triggers: ownTriggers,
       defaultItems: (h.kit || []).filter((i) => ITEM_BY_ID.has(i)),
     });
@@ -721,7 +722,7 @@ for (const id of CIVILIANS) {
     attacks: [], abilities: [],
     // "Beasts and Civilians get neither" half-step (Codex 2026-08-21).
     moves: ['power.move'],
-    tags: ['hero', 'civilian'],
+    tags: ['hero', 'civilian', ...(h.class ? [h.class] : [])],
     triggers: [],
     defaultItems: (h.kit || []).filter((i) => ITEM_BY_ID.has(i)),
   });
@@ -875,6 +876,180 @@ function compileItems() {
 }
 const items = compileItems();
 
+// ── CLASS POWERS, LEVELS, SPECIALTIES, ENCHANTED ROWS (2026-09-03) ───────────
+// Hero assembly, ruled 2026-09-03 (Angela): "I would rather we are actually
+// assembling the units so that we know that the way that we're getting things
+// into the units is still correct ... it has to also have the abilities in it."
+// Four registries the engine's fieldedDef() reads at fielding:
+//   classPowers   every gen/<class>.json power, compiled by EXACT sentence
+//                 (ability.effects) — or a row carrying named gaps, never rounded
+//   levels        gen/levels.json per class: what each level grants, the L5 choice
+//   specialties   id -> statModifiers (engine names)
+//   enchanted     gen/tier3-combinations.json: base + enchant -> one ItemDef
+//                 (ITEMS-PLAN.md §6: generated rows, never hand-edited)
+const CLASS_FILES = ['warrior', 'ranger', 'rogue', 'mage', 'priest', 'paladin'];
+const CLASS_DEFS = Object.fromEntries(CLASS_FILES.map((c) => [`class.${c}`, JSON.parse(fs.readFileSync(`gen/${c}.json`, 'utf8'))]));
+const LEVELS = JSON.parse(fs.readFileSync('gen/levels.json', 'utf8'));
+const TIER3 = JSON.parse(fs.readFileSync('gen/tier3-combinations.json', 'utf8'));
+const ARMORS = JSON.parse(fs.readFileSync('gen/armor-enchants.json', 'utf8'));
+
+// Codex stat words -> engine StatName. Anything not here is a named gap.
+const HERO_STAT = { strength: 'strength', precision: 'precision', magic: 'magic', spirit: 'spirit', accuracy: 'accuracy',
+  dodge: 'dodge', armor: 'armor', resist: 'resist', movement: 'movement', reach: 'reach', health: 'maxHp',
+  staminaMax: 'maxStamina', staminaRegen: 'staminaRegen', crit: 'crit', luck: 'luck' };
+const statWord = { Strength: 'strength', Precision: 'precision', Magic: 'magic', Spirit: 'spirit', Accuracy: 'accuracy',
+  Dodge: 'dodge', Armor: 'armor', Resist: 'resist', Movement: 'movement', Reach: 'reach', Health: 'maxHp', Crit: 'crit', Luck: 'luck' };
+
+function targetingOf(tgt) {
+  let r;
+  if (tgt === 'self') return { target: { select: 'self', side: 'any' }, range: 0 };
+  if ((r = tgt.match(/^one ally within (\d+) hexes$/))) return { target: { select: 'unit', side: 'ally' }, range: +r[1] };
+  if ((r = tgt.match(/^one enemy within (\d+) hexes$/))) return { target: { select: 'unit', side: 'enemy' }, range: +r[1] };
+  if ((r = tgt.match(/^(?:you and )?allies within (\d+) hexes$/))) return { target: { select: 'area', side: 'ally', radius: +r[1], origin: 'self' }, range: 0 };
+  if ((r = tgt.match(/^enemies within (\d+) hexes$/))) return { target: { select: 'area', side: 'enemy', radius: +r[1], origin: 'self' }, range: 0 };
+  if ((r = tgt.match(/^a hex within (\d+) hexes and every hex adjacent to it$/))) return { target: { select: 'area', side: 'any', radius: 1, origin: 'target' }, range: +r[1], hexGap: r[1] };
+  if (tgt === 'one enemy in melee reach') return { target: { select: 'unit', side: 'enemy' }, range: 1 };
+  if ((r = tgt.match(/^every unit within (\d+) hexes$/))) return { target: { select: 'area', side: 'any', radius: +r[1], origin: 'self' }, range: 0 };
+  if (tgt === 'every enemy adjacent to you') return { target: { select: 'area', side: 'enemy', radius: 1, origin: 'self' }, range: 0 };
+  if ((r = tgt.match(/^one ally within (\d+) hex$/))) return { target: { select: 'unit', side: 'ally' }, range: +r[1] };
+  return null;
+}
+const SPIRIT = (base, mult = 1) => ({ scale: 'partySpirit', base, mult });
+const untilOf = (scope) => scope === 'until-end-of-your-next-turn' ? 'endOfNextTurn' : scope === 'until-end-of-turn' ? 'endOfTurn' : scope === 'battle' || scope === 'rest-of-battle' ? 'battle' : null;
+
+// One sentence, one shape. Returns { effects, gaps } or null when nothing matched.
+function compileSentences(desc) {
+  const effects = [], gaps = [];
+  // split on sentence ends, keep the semicolon halves too
+  const parts = desc.split(/(?<=[.;])\s+|;\s+/).map((x) => x.trim()).filter(Boolean);
+  for (const sRaw of parts) {
+    const s0 = sRaw.replace(/\.$/, '');
+    let m;
+    if ((m = s0.match(/^Deal (\d+) \+ (Magic|Spirit|Strength|Precision) (magic|physical|true) damage to every unit in the blast(?:, (.*))?$/))) {
+      effects.push({ kind: 'damage', stat: m[2].toLowerCase(), bonus: +m[1], damageType: m[3] });
+      if (m[4]) gaps.push(`rider: ${m[4]}`);
+      continue;
+    }
+    if ((m = s0.match(/^Every unit in those hexes, ally or enemy, takes (Precision|Strength|Magic|Spirit) - (\d+) (physical|magic|true) damage(?:, .*)?$/))) {
+      effects.push({ kind: 'damage', stat: m[1].toLowerCase(), bonus: -m[2], damageType: m[3], allies: 'always' }); continue;
+    }
+    if ((m = s0.match(/^Heal every ally within (\d+) hexes for (\d+) \+ Spirit(?: — .*)?$/))) { effects.push({ kind: 'heal', amount: SPIRIT(+m[2]) }); continue; }
+    if ((m = s0.match(/^[Hh]eal (?:the target|it) (?:for )?(\d+) \+ Spirit$/))) { effects.push({ kind: 'heal', amount: SPIRIT(+m[1]) }); continue; }
+    if ((m = s0.match(/^[Hh]eal (?:the target )?(\d+)$/))) { effects.push({ kind: 'heal', amount: +m[1] }); continue; }
+    if ((m = s0.match(/^The target gains Protection equal to (\d+) \+ Spirit$/))) { effects.push({ kind: 'status.apply', statusId: 'status.protection', value: SPIRIT(+m[1]) }); continue; }
+    if ((m = s0.match(/^Give one ally within \d+ hexes (\d+) Protection$/))) { effects.push({ kind: 'status.apply', statusId: 'status.protection', value: +m[1] }); continue; }
+    if ((m = s0.match(/^remove (\d+) ([A-Z][a-z]+)(?: and (\d+) ([A-Z][a-z]+))? from (?:the target|yourself)(?:, then heal it for (\d+) \+ Spirit| and heal (\d+))?$/))) {
+      const st = (w) => STATUS_OK.has(w.toLowerCase()) ? 'status.' + w.toLowerCase() : null;
+      const a = st(m[2]); if (a) effects.push({ kind: 'status.remove', statusId: a, value: +m[1] }); else gaps.push(`status ${m[2]} unknown`);
+      if (m[3]) { const b = st(m[4]); if (b) effects.push({ kind: 'status.remove', statusId: b, value: +m[3] }); else gaps.push(`status ${m[4]} unknown`); }
+      if (m[5]) effects.push({ kind: 'heal', amount: SPIRIT(+m[5]) });
+      if (m[6]) effects.push({ kind: 'heal', amount: +m[6] });
+      continue;
+    }
+    if ((m = s0.match(/^Take (\d+) true damage and gain \+(\d+) (Strength|Magic|Spirit|Precision) for the rest of the Battle(?:; .*)?$/))) {
+      effects.push({ kind: 'selfDamage', amount: +m[1], damageType: 'true' });
+      effects.push({ kind: 'statMod', stat: m[3].toLowerCase(), value: +m[2], until: 'battle', who: 'self' }); continue;
+    }
+    if ((m = s0.match(/^Every ally within \d+ hexes gains \+(\d+) (Armor|Resist|Strength|Dodge|Accuracy) for the rest of the Battle$/))) {
+      effects.push({ kind: 'statMod', stat: m[2].toLowerCase(), value: +m[1], until: 'battle' }); continue;
+    }
+    if ((m = s0.match(/^you gain \+(\d+) (Health|Armor|Strength|Dodge)$/))) { effects.push({ kind: 'statMod', stat: statWord[m[2]], value: +m[1], until: 'battle', who: 'self' }); continue; }
+    if ((m = s0.match(/^Stance: gain ([+-]\d+) ([A-Z][a-z]+)(?: and ([+-]\d+) ([A-Z][a-z]+))? for the rest of the Battle(?:, and (.*))?$/))) {
+      effects.push({ kind: 'statMod', stat: statWord[m[2]], value: +m[1], until: 'battle', who: 'self' });
+      if (m[3]) effects.push({ kind: 'statMod', stat: statWord[m[4]], value: +m[3], until: 'battle', who: 'self' });
+      if (m[5]) gaps.push(`stance rider: ${m[5]}`);
+      continue;
+    }
+    if ((m = s0.match(/^[Tt]ake (\d+) true damage$/))) { effects.push({ kind: 'selfDamage', amount: +m[1], damageType: 'true' }); continue; }
+    if (/^(Free|No roll, no crit)$/.test(s0)) continue;   // markers the row's fields already carry
+    // flavour and explanation sentences — not rules
+    if (/^(Read that|It makes no attack|It does not roll|It never rolls|It does not spend|It costs nothing|Cheap and|Put it on|Thrown into|Because Magic|Your cheap|Anyone carrying Burn|about \d|as an area effect)/.test(s0)) continue;
+    if (/^Until the end of your next Turn, your attacks/.test(s0)) continue;   // the `modifies` field carries it
+    gaps.push(`unparsed: ${s0.slice(0, 80)}`);
+  }
+  return { effects, gaps };
+}
+
+function compileClassPower(p, cls) {
+  const desc = String(p.description || '');
+  const tg = targetingOf(String(p.targets || ''));
+  const gaps = [];
+  const base = { id: p.id, name: p.name, staminaCost: p.stamina ?? 0, cooldown: p.cooldown ?? 0,
+    ...(p.warmup ? { warmup: p.warmup } : {}), ...(p.free ? { free: true } : {}) };
+  if (!tg) return { ...base, range: 0, effects: [], target: { select: 'self', side: 'any' }, gaps: [`targets '${p.targets}' unparsed — the power is inert`] };
+  if (tg.hexGap) gaps.push(`targets 'a hex within ${tg.hexGap}' — engine centres the blast on a UNIT`);
+  const { effects, gaps: g2 } = compileSentences(desc);
+  gaps.push(...g2);
+  if (p.modifies) {
+    const until = untilOf(p.modifies.scope);
+    if (!until) gaps.push(`modifies scope '${p.modifies.scope}' unparsed`);
+    else for (const [k, v] of Object.entries(p.modifies.statModifiers || {})) {
+      const st = HERO_STAT[k]; if (!st) { gaps.push(`modifies ${k}: no engine stat`); continue; }
+      effects.push({ kind: 'statMod', stat: st, value: v, until, who: 'self' });
+    }
+    if (p.modifies.tags?.length) gaps.push(`modifies only ${p.modifies.tags.join('/')} attacks — engine applies it to the unit`);
+  }
+  if (p.needsCapability) gaps.push(`needs capability: ${p.needsCapability}`);
+  if (!effects.length) gaps.push('no effect compiled — the power is inert');
+  return { ...base, range: tg.range, target: tg.target, effects, ...(gaps.length ? { gaps } : {}) };
+}
+
+const classPowers = {};
+const classPowerGaps = [];
+for (const [cls, def] of Object.entries(CLASS_DEFS)) {
+  for (const p of def.powers || []) {
+    const row = compileClassPower(p, cls);
+    classPowers[row.id] = row;
+    for (const g of row.gaps || []) classPowerGaps.push({ power: row.id, class: cls, what: g });
+  }
+}
+const specialties = {};
+for (const def of Object.values(CLASS_DEFS)) for (const sp of def.specialties || []) {
+  const mods = {}; const gaps = [];
+  for (const [k, v] of Object.entries(sp.statModifiers || {})) { const st = HERO_STAT[k]; if (st) mods[st] = v; else gaps.push(`${k} ${v}: no engine stat`); }
+  specialties[sp.id] = { id: sp.id, name: sp.name ?? sp.id, class: sp.class, statModifiers: mods, ...(gaps.length ? { gaps } : {}) };
+}
+const levels = {};
+for (const c of LEVELS.classes || []) {
+  const rows = [];
+  for (const r of c.rows || []) {
+    const grants = {}; const gaps = [];
+    const put = (k, v) => { const st = HERO_STAT[k] ?? (k === 'itemSlots' ? 'itemSlots' : k === 'surge' ? 'surge' : null); if (st) grants[st] = (grants[st] ?? 0) + v; else gaps.push(`${k} ${v}: no engine stat`); };
+    for (const [k, v] of Object.entries(c.freebie || {})) put(k, v);
+    for (const [k, v] of Object.entries(r.grants || {})) put(k, v);
+    const choice = r.choice ? r.choice.options.map((o) => { const out = {}; for (const [k, v] of Object.entries(o)) { const st = HERO_STAT[k] ?? (k === 'itemSlots' ? 'itemSlots' : k === 'surge' ? 'surge' : null); if (st) out[st] = v; else gaps.push(`choice ${k}: no engine stat`); } return out; }) : undefined;
+    rows.push({ level: r.level, grants, ...(choice ? { choice } : {}), ...(r.power ? { power: true } : {}), ...(gaps.length ? { gaps } : {}) });
+  }
+  levels[c.id] = { id: c.id, rows };
+}
+// tier-3 rows: base + enchant, merged the way progression/build-schedule.mjs merges them
+const ENCH_BY_ID = new Map([...(ARMORS.enchants || []), ...(SITEMS.enchants || [])].map((e) => [e.id, e]));
+const enchanted = {};
+for (const combo of TIER3) {
+  const b = items[combo.base]; const e = ENCH_BY_ID.get(combo.enchant);
+  const gaps = [];
+  if (!b) { enchanted[combo.id] = { id: combo.id, name: combo.name, itemClass: combo.itemClass, tier: 3, hands: 0, slots: 0, statModifiers: {}, grants: [], abilities: [], triggers: [], gaps: [`base ${combo.base} is not an ItemDef`] }; continue; }
+  if (!e) gaps.push(`enchant ${combo.enchant} unauthored`);
+  const statModifiers = { ...b.statModifiers };
+  for (const [k, v] of Object.entries(e?.statModifiers || {})) {
+    const st = ITEM_STAT[k] ?? HERO_STAT[k];
+    if (st) statModifiers[st] = (statModifiers[st] ?? 0) + v;
+    else gaps.push(`enchant stat ${k} ${v}: no engine stat`);   // never passed, never rounded
+  }
+  const triggers = [...b.triggers];
+  for (const t of e?.triggers || []) {
+    const eff = String(t.effect || ''); let m;
+    if (TRIG_HOOKS.has(t.hook) && (m = eff.match(/^(apply|gain) (\d+) (?:more )?([A-Za-z]+)$/)) && STATUS_OK.has(m[3].toLowerCase())) {
+      triggers.push({ id: `trigger.${combo.id.replace(/^item\./, '')}.${m[3].toLowerCase()}${t.hook === 'onCrit' ? '-crit' : ''}`, hook: t.hook, chance: t.chance ?? 100,
+        select: m[1] === 'gain' ? 'self' : 'target', effect: { kind: 'status.apply', statusId: 'status.' + m[3].toLowerCase(), value: +m[2] }, source: combo.id });
+    } else gaps.push(`enchant ${t.hook}: ${eff.slice(0, 50)} — trigger shape unparsed`);
+  }
+  if (e?.slayer) gaps.push(`slayer ${JSON.stringify(e.slayer).slice(0, 40)} — no VS_TARGET station`);
+  enchanted[combo.id] = { ...b, id: combo.id, name: combo.name, tier: 3, statModifiers, triggers, base: combo.base, enchant: combo.enchant,
+    gaps: [...(b.gaps || []), ...gaps].length ? [...(b.gaps || []), ...gaps] : undefined };
+  if (!enchanted[combo.id].gaps) delete enchanted[combo.id].gaps;
+}
+
 // ── THE TEST RECEPTACLE (content/test/, 2026-09-02) ─────────────────────────
 // Test bodies, attacks and statuses that prove a mechanism and never ship.
 // Andrew: "We're not testing features if we're not pulling them from the
@@ -959,7 +1134,8 @@ const testAttackRows = testAttacks();
 const testAbilityRows = testAbilities();
 const test = { note: 'GENERATED from content/test/ — the test receptacle. Never ships. Wipe the folder to remove every row here.', units: testUnits(testAttackRows, testAbilityRows), attacks: testAttackRows, abilities: testAbilityRows, statuses: testStatuses() };
 
-const pack = { note: D.testCohort.note, heroes, enemies, authoredEnemies, authoredAttacks, authoredAbilities, prologueParty, alphaTeam, critChart: compileCritChart(SETTLED.critChart), statuses, moves, items, test };
+const pack = { note: D.testCohort.note, heroes, enemies, authoredEnemies, authoredAttacks, authoredAbilities, prologueParty, alphaTeam, critChart: compileCritChart(SETTLED.critChart), statuses, moves, items, test,
+  classPowers, specialties, levels, enchanted };
 
 // Gaps are written AFTER the pack is fully constructed (moved 2026-08-27):
 // compileCritChart names gaps during pack construction, and writing the file
@@ -968,6 +1144,15 @@ const pack = { note: D.testCohort.note, heroes, enemies, authoredEnemies, author
 fs.writeFileSync('gen/enemy-pack-gaps.json', JSON.stringify({
   _note: 'GENERATED by mkenginepack.mjs — clauses the engine cannot yet express, dropped with their reason. Regenerate, never hand-edit.',
   gaps,
+}, null, 1) + '\n');
+// The class-power census (2026-09-03): every clause of every class power the
+// engine cannot express, by power. Regenerate, never hand-edit.
+fs.writeFileSync('gen/class-power-gaps.json', JSON.stringify({
+  _note: 'GENERATED by mkenginepack.mjs — class-power clauses the engine cannot express (ability.effects). A power with no compiled effect is INERT and says so. Regenerate, never hand-edit.',
+  compiled: Object.values(classPowers).filter((p) => p.effects.length).length,
+  inert: Object.values(classPowers).filter((p) => !p.effects.length).length,
+  total: Object.keys(classPowers).length,
+  gaps: classPowerGaps,
 }, null, 1) + '\n');
 
 const body = '// GENERATED by content/mkenginepack.mjs — NEVER HAND-EDIT (see engine CLAUDE.md,\n'
