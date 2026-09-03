@@ -858,7 +858,7 @@ function compileCritChart(chart) {
 // (ITEMS-PLAN §7); they emit with their stat payload and the active named.
 const ITEM_STAT = { health: 'maxHp', armor: 'armor', resist: 'resist', dodge: 'dodge', strength: 'strength',
   precision: 'precision', magic: 'magic', spirit: 'spirit', reach: 'reach', accuracy: 'accuracy',
-  movement: 'movement', staminaMax: 'maxStamina', staminaRegen: 'staminaRegen', crit: 'crit', luck: 'luck', toughness: 'toughness' };   // toughness: capability.deathbed 2026-09-03
+  movement: 'movement', staminaMax: 'maxStamina', staminaRegen: 'staminaRegen', crit: 'crit', luck: 'luck', toughness: 'toughness', surge: 'surge' };   // toughness: capability.deathbed; surge: capability.surge — 2026-09-03
 function takeItemAttack(a) {
   if (authoredAttacks[a.id]) return;
   const ranged = typeof a.range === 'number' && a.range > 1;
@@ -955,7 +955,7 @@ const ARMORS = JSON.parse(fs.readFileSync('gen/armor-enchants.json', 'utf8'));
 // Codex stat words -> engine StatName. Anything not here is a named gap.
 const HERO_STAT = { strength: 'strength', precision: 'precision', magic: 'magic', spirit: 'spirit', accuracy: 'accuracy',
   dodge: 'dodge', armor: 'armor', resist: 'resist', movement: 'movement', reach: 'reach', health: 'maxHp',
-  staminaMax: 'maxStamina', staminaRegen: 'staminaRegen', crit: 'crit', luck: 'luck', toughness: 'toughness' };
+  staminaMax: 'maxStamina', staminaRegen: 'staminaRegen', crit: 'crit', luck: 'luck', toughness: 'toughness', surge: 'surge' };
 const statWord = { Strength: 'strength', Precision: 'precision', Magic: 'magic', Spirit: 'spirit', Accuracy: 'accuracy',
   Dodge: 'dodge', Armor: 'armor', Resist: 'resist', Movement: 'movement', Reach: 'reach', Health: 'maxHp', Crit: 'crit', Luck: 'luck' };
 
@@ -1073,10 +1073,10 @@ for (const c of LEVELS.classes || []) {
   const rows = [];
   for (const r of c.rows || []) {
     const grants = {}; const gaps = [];
-    const put = (k, v) => { const st = HERO_STAT[k] ?? (k === 'itemSlots' ? 'itemSlots' : k === 'surge' ? 'surge' : null); if (st) grants[st] = (grants[st] ?? 0) + v; else gaps.push(`${k} ${v}: no engine stat`); };
+    const put = (k, v) => { const st = HERO_STAT[k] ?? (k === 'itemSlots' ? 'itemSlots' : null); if (st) grants[st] = (grants[st] ?? 0) + v; else gaps.push(`${k} ${v}: no engine stat`); };
     for (const [k, v] of Object.entries(c.freebie || {})) put(k, v);
     for (const [k, v] of Object.entries(r.grants || {})) put(k, v);
-    const choice = r.choice ? r.choice.options.map((o) => { const out = {}; for (const [k, v] of Object.entries(o)) { const st = HERO_STAT[k] ?? (k === 'itemSlots' ? 'itemSlots' : k === 'surge' ? 'surge' : null); if (st) out[st] = v; else gaps.push(`choice ${k}: no engine stat`); } return out; }) : undefined;
+    const choice = r.choice ? r.choice.options.map((o) => { const out = {}; for (const [k, v] of Object.entries(o)) { const st = HERO_STAT[k] ?? (k === 'itemSlots' ? 'itemSlots' : null); if (st) out[st] = v; else gaps.push(`choice ${k}: no engine stat`); } return out; }) : undefined;
     rows.push({ level: r.level, grants, ...(choice ? { choice } : {}), ...(r.power ? { power: true } : {}), ...(gaps.length ? { gaps } : {}) });
   }
   levels[c.id] = { id: c.id, rows };
@@ -1136,7 +1136,7 @@ function testAbilities() {
   }
   return out;
 }
-const UNIT_FIELDS = new Set(['typeId', 'name', 'side', 'maxHp', 'armor', 'resist', 'accuracy', 'dodge', 'strength', 'precision', 'magic', 'spirit', 'crit', 'luck', 'toughness', 'stands', 'role', 'movement', 'reach', 'maxStamina', 'staminaRegen', 'ai', 'attacks', 'abilities', 'moves', 'tags', 'triggers']);
+const UNIT_FIELDS = new Set(['typeId', 'name', 'side', 'maxHp', 'armor', 'resist', 'accuracy', 'dodge', 'strength', 'precision', 'magic', 'spirit', 'crit', 'luck', 'toughness', 'stands', 'surge', 'role', 'movement', 'reach', 'maxStamina', 'staminaRegen', 'ai', 'attacks', 'abilities', 'moves', 'tags', 'triggers']);
 const ATTACK_FIELDS = new Set(['id', 'name', 'kind', 'damageType', 'bonus', 'stat', 'reach', 'staminaCost', 'crit', 'critCount', 'area', 'cooldown', 'warmup', 'accuracy', 'hits']);
 // a delta may start from any packed row — the real families AND the test
 // cohort (test-gash-zombie is the cohort's zombie plus one rider)
