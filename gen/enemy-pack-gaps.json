@@ -23,11 +23,6 @@
   },
   {
    "unit": "unit.demon-hound",
-   "what": "(unit) hook 'startOfBattle'",
-   "needs": "hook: startOfBattle (declared, engine never fires it)"
-  },
-  {
-   "unit": "unit.demon-hound",
    "what": "special move move.demon-hound.close-bite (carries an attack)",
    "needs": "enemy special moves (move.* — kind unapproved, no engine mechanism)"
   },
@@ -45,11 +40,6 @@
    "unit": "unit.fast-zombie",
    "what": "special move move.fast-zombie.charge (carries an attack)",
    "needs": "enemy special moves (move.* — kind unapproved, no engine mechanism)"
-  },
-  {
-   "unit": "unit.ghoul",
-   "what": "(unit) hook 'startOfBattle'",
-   "needs": "hook: startOfBattle (declared, engine never fires it)"
   },
   {
    "unit": "unit.ghoul",
@@ -120,11 +110,6 @@
    "unit": "unit.nightstalker",
    "what": "attack.nightstalker.rend onAttack: deal 2 crits — condition 'you are standing on darkness'",
    "needs": "trigger condition"
-  },
-  {
-   "unit": "unit.shadow-sorcerer",
-   "what": "(unit) hook 'startOfBattle'",
-   "needs": "hook: startOfBattle (declared, engine never fires it)"
   },
   {
    "unit": "unit.shadow-sorcerer",
@@ -459,7 +444,7 @@
   {
    "unit": "item.cursed-sand-blade",
    "what": "startOfBattle: take 2 true damage",
-   "needs": "hook: startOfBattle (declared, engine never fires it)"
+   "needs": "trigger shape unparsed"
   },
   {
    "unit": "item.skyforged-halberd",
@@ -469,7 +454,7 @@
   {
    "unit": "item.skyforged-halberd",
    "what": "startOfBattle: every ally within 2 hexes gains +1 Armor for the r",
-   "needs": "hook: startOfBattle (declared, engine never fires it)"
+   "needs": "trigger shape unparsed"
   },
   {
    "unit": "item.mirage-dagger",
@@ -504,7 +489,7 @@
   {
    "unit": "item.holy-avenger",
    "what": "startOfBattle: gain +2 Strength against demon and undead for the ",
-   "needs": "hook: startOfBattle (declared, engine never fires it)"
+   "needs": "trigger shape unparsed"
   },
   {
    "unit": "item.holy-avenger",
@@ -597,19 +582,9 @@
    "needs": "trigger shape unparsed"
   },
   {
-   "unit": "item.burning-torch",
-   "what": "statModifier 'vision' 3",
-   "needs": "stat: vision (no UnitDef field)"
-  },
-  {
    "unit": "item.net",
    "what": "uses: 1",
    "needs": "charges spent in battle — capability.consumables"
-  },
-  {
-   "unit": "item.watchmans-coat",
-   "what": "statModifier 'vision' 2",
-   "needs": "stat: vision (no UnitDef field)"
   },
   {
    "unit": "item.peddlers-vest",
@@ -667,11 +642,6 @@
    "needs": "item field: thorns"
   },
   {
-   "unit": "item.troll-gut-vest",
-   "what": "startOfBattle: gain 3 Regeneration",
-   "needs": "hook: startOfBattle (declared, engine never fires it)"
-  },
-  {
    "unit": "item.chains-of-the-faithful",
    "what": "aura: AURA radius 2 -- allies inside have Immunity to Bu",
    "needs": "hook: aura (declared, engine never fires it)"
@@ -694,7 +664,7 @@
   {
    "unit": "item.divine-bulwark",
    "what": "startOfBattle: you may not act on Turn 1; from Turn 2 you have +1",
-   "needs": "hook: startOfBattle (declared, engine never fires it)"
+   "needs": "trigger shape unparsed"
   },
   {
    "unit": "item.stoneskin-hauberk",
@@ -734,7 +704,7 @@
   {
    "unit": "item.drakescale-coat",
    "what": "startOfBattle: gain +2 Resist against dragon for the rest of the ",
-   "needs": "hook: startOfBattle (declared, engine never fires it)"
+   "needs": "trigger shape unparsed"
   },
   {
    "unit": "item.drakescale-coat",
@@ -749,17 +719,12 @@
   {
    "unit": "item.mystic-armor",
    "what": "startOfBattle: gain Protection equal to 2 plus the party's Magic",
-   "needs": "hook: startOfBattle (declared, engine never fires it)"
-  },
-  {
-   "unit": "item.patrocoleas-armor",
-   "what": "startOfBattle: gain 6 Protection",
-   "needs": "hook: startOfBattle (declared, engine never fires it)"
+   "needs": "trigger shape unparsed"
   },
   {
    "unit": "item.patrocoleas-armor",
    "what": "startOfBattle: heal 1 at the end of each of your Turns for the re",
-   "needs": "hook: startOfBattle (declared, engine never fires it)"
+   "needs": "trigger shape unparsed"
   },
   {
    "unit": "item.storm-bastion",
@@ -929,7 +894,7 @@
   {
    "unit": "item.wayfinders-compass",
    "what": "startOfBattle: gain +2 Vision for the rest of the Battle, and you",
-   "needs": "hook: startOfBattle (declared, engine never fires it)"
+   "needs": "trigger shape unparsed"
   },
   {
    "unit": "item.lucky-charm",
@@ -968,11 +933,6 @@
   },
   {
    "unit": "item.wreath-of-natures-protection",
-   "what": "startOfBattle: gain 2 Regeneration",
-   "needs": "hook: startOfBattle (declared, engine never fires it)"
-  },
-  {
-   "unit": "item.wreath-of-natures-protection",
    "what": "thorns: 3",
    "needs": "item field: thorns"
   },
@@ -1004,7 +964,7 @@
   {
    "unit": "item.velans-ferryman-coin",
    "what": "startOfBattle: +20 Deathbed Fighting",
-   "needs": "hook: startOfBattle (declared, engine never fires it)"
+   "needs": "trigger shape unparsed"
   },
   {
    "unit": "item.velans-ferryman-coin",
@@ -1055,11 +1015,6 @@
    "unit": "item.banner-heroism",
    "what": "grants power.banner-heroism.plant",
    "needs": "item power — shape unparsed"
-  },
-  {
-   "unit": "item.torch",
-   "what": "statModifier 'vision' 4",
-   "needs": "stat: vision (no UnitDef field)"
   },
   {
    "unit": "item.cure-poison",
@@ -1178,11 +1133,6 @@
   },
   {
    "unit": "item.brilliant-torch",
-   "what": "statModifier 'vision' 5",
-   "needs": "stat: vision (no UnitDef field)"
-  },
-  {
-   "unit": "item.brilliant-torch",
    "what": "active: +5 Vision. Once per Battle, 1 Stamina: reveal ever",
    "needs": "an ability with charges/targets — capability.consumables"
   },
@@ -1250,16 +1200,6 @@
    "unit": "item.quartermasters-manifest",
    "what": "statModifier 'itemSlots' 1",
    "needs": "stat: itemSlots (no UnitDef field)"
-  },
-  {
-   "unit": "item.dusty-map-case",
-   "what": "statModifier 'vision' 2",
-   "needs": "stat: vision (no UnitDef field)"
-  },
-  {
-   "unit": "item.trackers-eyeglass",
-   "what": "statModifier 'vision' 1",
-   "needs": "stat: vision (no UnitDef field)"
   },
   {
    "unit": "item.rune-bashing",
@@ -1379,7 +1319,7 @@
   {
    "unit": "item.rune-perfect-hunter",
    "what": "startOfBattle: every slayer bonus you have from any source — weap",
-   "needs": "hook: startOfBattle (declared, engine never fires it)"
+   "needs": "trigger shape unparsed"
   },
   {
    "unit": "item.rune-hells-chosen",
@@ -1390,11 +1330,6 @@
    "unit": "item.rune-hells-chosen",
    "what": "aura: AURA — every unit within 3 hexes takes -10 Accurac",
    "needs": "hook: aura (declared, engine never fires it)"
-  },
-  {
-   "unit": "item.pilgrims-warding-stone",
-   "what": "startOfBattle: gain 4 Protection",
-   "needs": "hook: startOfBattle (declared, engine never fires it)"
   },
   {
    "unit": "item.finger-of-saint-aldwyn",
@@ -1414,7 +1349,7 @@
   {
    "unit": "item.vigils-shield",
    "what": "startOfBattle: +10 to your Deathbed Fighting roll. The modifier h",
-   "needs": "hook: startOfBattle (declared, engine never fires it)"
+   "needs": "trigger shape unparsed"
   },
   {
    "unit": "item.divine-ward",
@@ -1449,7 +1384,7 @@
   {
    "unit": "item.ring-of-divine-protection",
    "what": "startOfBattle: gain Protection equal to 4 + the party's Spirit",
-   "needs": "hook: startOfBattle (declared, engine never fires it)"
+   "needs": "trigger shape unparsed"
   },
   {
    "unit": "item.kals-mercy",

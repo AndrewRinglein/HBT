@@ -217,7 +217,8 @@ function compileMoves(powers) {
 }
 const moves = compileMoves(SETTLED.powers || []);
 // onActivationEnd joined 2026-09-03 (fix.activation-end-fires): the engine fires it now.
-const TRIG_HOOKS = new Set(['onAttack', 'onMiss', 'onHit', 'onCrit', 'onDamage', 'onKill', 'onTakingDamage', 'onDeath', 'onActivationEnd']);
+// startOfBattle joined 2026-09-03 (hook.on-enter, with encounter.runner): fires at battle.begin and at arrival.
+const TRIG_HOOKS = new Set(['onAttack', 'onMiss', 'onHit', 'onCrit', 'onDamage', 'onKill', 'onTakingDamage', 'onDeath', 'onActivationEnd', 'startOfBattle']);
 
 // Capabilities the engine HAS now — a row naming one of these is not gapped for it.
 // capability.power: capability.power-pool, 2026-09-03.
@@ -947,7 +948,7 @@ function compileCritChart(chart) {
 // (ITEMS-PLAN §7); they emit with their stat payload and the active named.
 const ITEM_STAT = { health: 'maxHp', armor: 'armor', resist: 'resist', dodge: 'dodge', strength: 'strength',
   precision: 'precision', magic: 'magic', spirit: 'spirit', reach: 'reach', accuracy: 'accuracy',
-  movement: 'movement', staminaMax: 'maxStamina', staminaRegen: 'staminaRegen', crit: 'crit', luck: 'luck', toughness: 'toughness', surge: 'surge' };   // toughness: capability.deathbed; surge: capability.surge — 2026-09-03
+  movement: 'movement', staminaMax: 'maxStamina', staminaRegen: 'staminaRegen', crit: 'crit', luck: 'luck', toughness: 'toughness', surge: 'surge', vision: 'vision' };   // toughness, surge, vision — 2026-09-03
 function takeItemAttack(a) {
   if (authoredAttacks[a.id]) return;
   const ranged = typeof a.range === 'number' && a.range > 1;
@@ -1044,7 +1045,7 @@ const ARMORS = JSON.parse(fs.readFileSync('gen/armor-enchants.json', 'utf8'));
 // Codex stat words -> engine StatName. Anything not here is a named gap.
 const HERO_STAT = { strength: 'strength', precision: 'precision', magic: 'magic', spirit: 'spirit', accuracy: 'accuracy',
   dodge: 'dodge', armor: 'armor', resist: 'resist', movement: 'movement', reach: 'reach', health: 'maxHp',
-  staminaMax: 'maxStamina', staminaRegen: 'staminaRegen', crit: 'crit', luck: 'luck', toughness: 'toughness', surge: 'surge' };
+  staminaMax: 'maxStamina', staminaRegen: 'staminaRegen', crit: 'crit', luck: 'luck', toughness: 'toughness', surge: 'surge', vision: 'vision' };
 const statWord = { Strength: 'strength', Precision: 'precision', Magic: 'magic', Spirit: 'spirit', Accuracy: 'accuracy',
   Dodge: 'dodge', Armor: 'armor', Resist: 'resist', Movement: 'movement', Reach: 'reach', Health: 'maxHp', Crit: 'crit', Luck: 'luck' };
 
