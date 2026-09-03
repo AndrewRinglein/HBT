@@ -5445,3 +5445,49 @@ IRON GAUNTLET: NOT PASSED — 1 FLAG(S) WARNED
   PASS  kill switch — the tests fail without the content — tests fail without battle.prologue-2 — they genuinely test it
 
 IRON GAUNTLET: NOT PASSED — 1 FLAG(S) WARNED
+
+## capability.power-pool — LANDED `79e8703` **NEEDS REVIEW**
+2026-09-03 09:22
+
+  PASS  dependencies landed
+  WARN  not already decided — 5 candidate ruling(s) — READ BEFORE ASKING: ../STATE.md:18 · ../STATE.md:21
+  PASS  typecheck
+  PASS  full test suite
+  PASS  gate 1 — the id appears in a real battle — trigger.lieutenant-demon.gathering-doom: 15 log lines, 15 fired, 5 changed state
+  PASS  brought its own tests — test/enemy-pack.test.ts, test/power-pool.test.ts
+  WARN  existing tests untouched — DELETED LINES in test/enemy-pack.test.ts (-2) — will land FLAGGED for review
+  PASS  control battles unchanged
+  PASS  content has a published source — 16 ids without a published source (6 awaiting publication from earlier items — see audit)
+  PASS  hardcode scan — core knows mechanisms, never names
+  PASS  generalizes — the second instance costs zero engine code — trigger.lieutenant-demon.gathering-doom live · attack.necromancer.necro-bolt live · trigger.bruiser-demon.protection live
+  PASS  naming — new content ids use declared kinds
+  PASS  naming — no banned words invented
+  PASS  kill switch — the tests fail without the content — tests fail without trigger.lieutenant-demon.gathering-doom — they genuinely test it
+
+<details><summary>Existing tests were edited — review this diff</summary>
+
+```diff
+diff --git a/test/enemy-pack.test.ts b/test/enemy-pack.test.ts
+index b1a18b5..2f63c44 100644
+--- a/test/enemy-pack.test.ts
++++ b/test/enemy-pack.test.ts
+@@ -90,8 +90,13 @@ describe('the pack carries the authored rows faithfully', () => {
+     // afflictions and the power pool are named, not guessed
+     expect(gaps.some((g) => g.needs.includes('capability.inflict-affliction'))).toBe(true)
+-    expect(gaps.some((g) => g.needs.includes('capability.power'))).toBe(true)
++    // capability.power-pool landed 2026-09-03: `capability.power` is no longer
++    // a gap anywhere — the Lieutenant's clock and the Vampire Lord's feed are
++    // power.gain triggers, the necro-bolt carries its powerScale on the row.
++    expect(gaps.some((g) => g.needs.includes('capability.power'))).toBe(false)
++    expect(UNITS['unit.lieutenant-demon']!.triggers!.some((t) => t.effect.kind === 'power.gain')).toBe(true)
++    expect(ATTACKS['attack.necromancer.necro-bolt']!.powerScale).toBe(1)
+     // and NO gap-carrying clause leaked into the pack: nothing references afflictions
+     for (const id of roster()) for (const t of UNITS[id]!.triggers ?? []) {
+-      expect(t.effect.kind, `${id} trigger ${t.id}`).toBe('status.apply')
++      expect(['status.apply', 'power.gain'], `${id} trigger ${t.id}`).toContain(t.effect.kind)
+     }
+   })
+```
+</details>
+
+IRON GAUNTLET: NOT PASSED — 2 FLAG(S) WARNED · periodic audit clean

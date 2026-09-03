@@ -8,7 +8,7 @@ import { terrainOf, terrainIdOf, isPassable } from '../content/maps.js'
 import { STATUSES } from '../content/statuses.js'
 import { MOVES } from '../content/moves.js'
 import { triggersFrom } from './trigger.js'
-import { emit } from './mutate.js'
+import { emit, gainPower } from './mutate.js'
 import { heroDeployHexes, placeSetup } from './encounter.js'
 
 export function makeUnit(id: number, uid: number, name: string, def: UnitDef, hex: number): Unit {
@@ -288,6 +288,9 @@ export function createBattle(opts: BattleOptions): Ctx {
     for (const w of equipped.find((e) => e.unitId === u.id)?.worn ?? []) {
       emit(ctx, 'unit.equipped', w.itemId, { actor: u.id, itemId: w.itemId, grants: w.grants, abilities: w.abilities, mods: w.mods, ...(w.gaps ? { gaps: w.gaps } : {}) })
     }
+    // capability.power-pool (2026-09-03): a unit fielded at setup arrives too
+    const arrival = UNITS[u.typeId]?.powerOnArrival
+    if (arrival && u.side === 'enemy') gainPower(ctx, arrival, u.typeId, { kind: 'arrival', actor: u.id })
   }
   // The encounter's own units — after the heroes, so a hero already standing
   // where an authored unit wants to be is the one that stays and the arrival

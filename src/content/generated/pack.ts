@@ -554,7 +554,11 @@ export const UNIT_PACK = {
           "effect": {
             "kind": "status.apply",
             "statusId": "status.poison",
-            "value": 4
+            "value": {
+              "scale": "power",
+              "base": 4,
+              "mult": 1
+            }
           },
           "source": "unit.bone-dragon",
           "onlyWithAttack": "attack.bone-dragon.poison-line"
@@ -604,7 +608,24 @@ export const UNIT_PACK = {
       "tags": [
         "demon"
       ],
-      "triggers": []
+      "triggers": [
+        {
+          "id": "trigger.bruiser-demon.protection",
+          "hook": "onActivationEnd",
+          "chance": 100,
+          "select": "self",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.protection",
+            "value": {
+              "scale": "power",
+              "base": 0,
+              "mult": 0.334
+            }
+          },
+          "source": "unit.bruiser-demon"
+        }
+      ]
     },
     {
       "typeId": "unit.dark-sniper",
@@ -743,6 +764,22 @@ export const UNIT_PACK = {
         "demon"
       ],
       "triggers": [
+        {
+          "id": "trigger.doombringer.protection",
+          "hook": "onTakingDamage",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.protection",
+            "value": {
+              "scale": "power",
+              "base": 2,
+              "mult": 0.334
+            }
+          },
+          "source": "unit.doombringer"
+        },
         {
           "id": "trigger.doombringer.protection",
           "hook": "onActivationEnd",
@@ -1125,7 +1162,19 @@ export const UNIT_PACK = {
       "tags": [
         "demon"
       ],
-      "triggers": []
+      "triggers": [
+        {
+          "id": "trigger.lieutenant-demon.gathering-doom",
+          "hook": "onActivationEnd",
+          "chance": 100,
+          "select": "self",
+          "effect": {
+            "kind": "power.gain",
+            "value": 1
+          },
+          "source": "unit.lieutenant-demon"
+        }
+      ]
     },
     {
       "typeId": "unit.necromancer",
@@ -1574,6 +1623,23 @@ export const UNIT_PACK = {
             "value": 1
           },
           "source": "unit.terror-imp"
+        },
+        {
+          "id": "trigger.terror-imp.weak",
+          "hook": "onAttack",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.weak",
+            "value": {
+              "scale": "power",
+              "base": 1,
+              "mult": 0.5
+            }
+          },
+          "source": "unit.terror-imp",
+          "onlyWithAttack": "attack.terror-imp.fear"
         }
       ]
     },
@@ -1672,6 +1738,18 @@ export const UNIT_PACK = {
         "vampire"
       ],
       "triggers": [
+        {
+          "id": "trigger.vampire-lord.feed",
+          "hook": "onKill",
+          "chance": 100,
+          "select": "self",
+          "effect": {
+            "kind": "power.gain",
+            "value": 2
+          },
+          "source": "unit.vampire-lord",
+          "onlyWithAttack": "attack.vampire-lord.bite"
+        },
         {
           "id": "trigger.vampire-lord.stun",
           "hook": "onHit",
@@ -1876,7 +1954,8 @@ export const UNIT_PACK = {
       "bonus": 0,
       "stat": "strength",
       "reach": 1,
-      "staminaCost": 0
+      "staminaCost": 0,
+      "powerScale": 1
     },
     "attack.balrog.hurl": {
       "id": "attack.balrog.hurl",
@@ -1906,7 +1985,8 @@ export const UNIT_PACK = {
       "bonus": -4,
       "stat": "precision",
       "reach": 10,
-      "staminaCost": 0
+      "staminaCost": 0,
+      "powerScale": 1
     },
     "attack.bone-dragon.bite": {
       "id": "attack.bone-dragon.bite",
@@ -1966,7 +2046,8 @@ export const UNIT_PACK = {
       "bonus": 0,
       "stat": "strength",
       "reach": 1,
-      "staminaCost": 0
+      "staminaCost": 0,
+      "powerScale": 0.334
     },
     "attack.doombringer.hammer": {
       "id": "attack.doombringer.hammer",
@@ -2116,7 +2197,8 @@ export const UNIT_PACK = {
       "bonus": 0,
       "stat": "precision",
       "reach": 7,
-      "staminaCost": 0
+      "staminaCost": 0,
+      "powerScale": 0.5
     },
     "attack.lieutenant-demon.melee": {
       "id": "attack.lieutenant-demon.melee",
@@ -2126,7 +2208,8 @@ export const UNIT_PACK = {
       "bonus": 0,
       "stat": "strength",
       "reach": 1,
-      "staminaCost": 0
+      "staminaCost": 0,
+      "powerScale": 0.5
     },
     "attack.necromancer.necro-bolt": {
       "id": "attack.necromancer.necro-bolt",
@@ -2136,7 +2219,8 @@ export const UNIT_PACK = {
       "bonus": 0,
       "stat": "precision",
       "reach": 7,
-      "staminaCost": 0
+      "staminaCost": 0,
+      "powerScale": 1
     },
     "attack.necromancer.necro-strike": {
       "id": "attack.necromancer.necro-strike",
@@ -2146,7 +2230,8 @@ export const UNIT_PACK = {
       "bonus": 0,
       "stat": "strength",
       "reach": 1,
-      "staminaCost": 0
+      "staminaCost": 0,
+      "powerScale": 0.5
     },
     "attack.nightstalker.rend": {
       "id": "attack.nightstalker.rend",
@@ -2176,7 +2261,8 @@ export const UNIT_PACK = {
       "bonus": 0,
       "stat": "precision",
       "reach": 8,
-      "staminaCost": 0
+      "staminaCost": 0,
+      "powerScale": 0.5
     },
     "attack.shadow-sorcerer.shadow-rend": {
       "id": "attack.shadow-sorcerer.shadow-rend",
@@ -2186,7 +2272,8 @@ export const UNIT_PACK = {
       "bonus": -3,
       "stat": "precision",
       "reach": 10,
-      "staminaCost": 0
+      "staminaCost": 0,
+      "powerScale": 0.5
     },
     "attack.shadow-sorcerer.shadow-grasp": {
       "id": "attack.shadow-sorcerer.shadow-grasp",
@@ -2196,7 +2283,8 @@ export const UNIT_PACK = {
       "bonus": 0,
       "stat": "strength",
       "reach": 1,
-      "staminaCost": 0
+      "staminaCost": 0,
+      "powerScale": 0.5
     },
     "attack.skeleton.gut": {
       "id": "attack.skeleton.gut",
@@ -2266,7 +2354,8 @@ export const UNIT_PACK = {
       "bonus": -4,
       "stat": "precision",
       "reach": 3,
-      "staminaCost": 0
+      "staminaCost": 0,
+      "powerScale": 1
     },
     "attack.vampire-lord.bite": {
       "id": "attack.vampire-lord.bite",
@@ -2286,7 +2375,8 @@ export const UNIT_PACK = {
       "bonus": 0,
       "stat": "precision",
       "reach": 2,
-      "staminaCost": 0
+      "staminaCost": 0,
+      "powerScale": 1
     },
     "attack.werewolf.claw-frenzy": {
       "id": "attack.werewolf.claw-frenzy",

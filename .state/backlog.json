@@ -1420,7 +1420,19 @@
   "changesBaseline": false,
   "needs": [
    "encounter.battle-2"
-  ]
+  ],
+  "probeIds": [
+   "trigger.lieutenant-demon.gathering-doom"
+  ],
+  "variants": [
+   "trigger.lieutenant-demon.gathering-doom",
+   "attack.necromancer.necro-bolt",
+   "trigger.bruiser-demon.protection"
+  ],
+  "attempts": 1,
+  "status": "done-needs-review",
+  "sha": "79e8703",
+  "gauntlet": "not passed — 2 flag(s) warned"
  },
  {
   "id": "fix.status-tick-timing",

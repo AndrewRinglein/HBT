@@ -50,7 +50,9 @@ const ACTED = new Set(['damage.applied','heal.applied','power.used','attack.decl
   // encounter.runner (2026-09-03): an arrival is a unit that was not there
   // (unit.enter already counts); a shunt moved it; an objective outcome ended
   // the battle. Widening, stricter, as above.
-  'unit.shunted', 'encounter.won', 'encounter.lost'])
+  'unit.shunted', 'encounter.won', 'encounter.lost',
+  // capability.power-pool (2026-09-03): the pool moved. Widening, stricter.
+  'power.gained'])
 
 /**
  * A SCENARIO is probed by fielding it, not by sweeping the standard panel.

@@ -59,6 +59,8 @@ export type EncounterDef = {
   readonly loseAfter?: { readonly phase?: number; readonly heroPhase?: number }
   /** Absent = board clear. */
   readonly win?: { readonly surviveTo: number }
+  /** capability.power-pool: the pool at battle start (kind 'external'). */
+  readonly powerSources?: readonly { readonly kind: 'external'; readonly value: number }[]
   /** Where the heroes deploy (prologue-1's `heroes: 1, at: {near, range}`); absent = the player edge. */
   readonly heroZone?: { readonly count: number; readonly at: { readonly near: { readonly col: number; readonly row: number }; readonly range: number } }
   readonly gaps?: readonly string[]
@@ -273,6 +275,13 @@ export type AttackDef = {
    */
   readonly crit?: number
   /**
+   * capability.power-pool (2026-09-03): the share of the enemy side's Power
+   * this attack adds to its damage — 1 = +Power, 0.5 = +½ Power, 0.334 = +⅓
+   * — resolved nearest, 0.5 up (Law 7) at the DMG.POWER station. Enemy rows
+   * only; a hero attack carrying it adds nothing (the pool is the enemy's).
+   */
+  readonly powerScale?: number
+  /**
    * The attack's own Accuracy modifier — station.accuracy-field (2026-09-03).
    * Applied at ACC.SITUATIONAL (700). Punch's −5 (ruled 2026-08-27); the
    * station every later per-attack modifier lands on — the attack of
@@ -400,6 +409,8 @@ export type UnitDef = {
   readonly defaultItems?: readonly string[]
   readonly attacks: readonly string[]
   readonly abilities: readonly string[]
+  /** capability.power-pool: one-time +X to the side's pool when this unit enters; the X stays after it dies. */
+  readonly powerOnArrival?: number
   /**
    * Movement powers this unit grants, in preference order — REQUIRED, no core
    * default (content-driven, Angela 2026-08-21). Every hero row carries the
@@ -479,6 +490,14 @@ export type State = {
   mapId: string
   /** encounter.runner: which schedule rows have fired (by index), plain data. */
   encounter?: { id: string; fired: number[]; objectives: number[] }
+  /**
+   * THE POWER POOL — capability.power-pool (2026-09-03), ENEMY-REVIEW.md P1
+   * (ruled 2026-08-23): "Power is the enemy side's Magic: one global integer
+   * for the whole enemy side." Gained externally (the encounter's
+   * powerSources), on arrival (a unit's row), or by a clock or condition (a
+   * trigger effect). Consumers read it; it is never spent. Absent = 0.
+   */
+  power?: number
   /** One entry per HexId. Plain array so State stays JSON-round-trippable (Law 5b). */
   terrain: number[]
   units: Unit[]

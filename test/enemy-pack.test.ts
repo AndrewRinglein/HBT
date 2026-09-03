@@ -89,10 +89,15 @@ describe('the pack carries the authored rows faithfully', () => {
     expect(gaps.some((g) => g.unit === 'unit.skeletal-archer' && /range unstated/.test(g.needs))).toBe(false)
     // afflictions and the power pool are named, not guessed
     expect(gaps.some((g) => g.needs.includes('capability.inflict-affliction'))).toBe(true)
-    expect(gaps.some((g) => g.needs.includes('capability.power'))).toBe(true)
+    // capability.power-pool landed 2026-09-03: `capability.power` is no longer
+    // a gap anywhere — the Lieutenant's clock and the Vampire Lord's feed are
+    // power.gain triggers, the necro-bolt carries its powerScale on the row.
+    expect(gaps.some((g) => g.needs.includes('capability.power'))).toBe(false)
+    expect(UNITS['unit.lieutenant-demon']!.triggers!.some((t) => t.effect.kind === 'power.gain')).toBe(true)
+    expect(ATTACKS['attack.necromancer.necro-bolt']!.powerScale).toBe(1)
     // and NO gap-carrying clause leaked into the pack: nothing references afflictions
     for (const id of roster()) for (const t of UNITS[id]!.triggers ?? []) {
-      expect(t.effect.kind, `${id} trigger ${t.id}`).toBe('status.apply')
+      expect(['status.apply', 'power.gain'], `${id} trigger ${t.id}`).toContain(t.effect.kind)
     }
   })
 })

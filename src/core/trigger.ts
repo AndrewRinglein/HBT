@@ -29,7 +29,7 @@ import { distance } from './hex.js'
 import type { Targeting } from './target.js'
 import { resolveTargets, validateTargeting } from './target.js'
 import { roll100 } from './rng.js'
-import { applyDamage, emit } from './mutate.js'
+import { applyDamage, emit, gainPower } from './mutate.js'
 import { applyStatus, removeStatus } from './status.js'
 import { executeKnockback } from './movement.js'
 
@@ -104,7 +104,8 @@ export type TriggerTarget = Selector | Targeting
 export type ValueSpec =
   | number
   | {
-      readonly scale: 'partyMagic' | 'partySpirit'
+      /** capability.power-pool (2026-09-03): 'power' scales off the enemy side's pool, base + share. */
+      readonly scale: 'partyMagic' | 'partySpirit' | 'power'
       /** value = base + mult x sum / div, rounded as stated. Law 7: integers only. */
       readonly div?: number
       readonly mult?: number
@@ -124,6 +125,8 @@ export type TriggerEffect =
    * away from you" made data.
    */
   | { readonly kind: 'knockback'; readonly value: ValueSpec }
+  /** capability.power-pool (2026-09-03): the clock and the condition — "add power", "gain Power". Side-wide, never per unit. */
+  | { readonly kind: 'power.gain'; readonly value: ValueSpec }
 
 export type Trigger = {
   readonly id: string
@@ -237,6 +240,11 @@ export const partySpiritSum = (ctx: Ctx, side: Unit['side']) => partySum(ctx, si
 
 export function valueOf(ctx: Ctx, owner: Unit, spec: ValueSpec): number {
   if (typeof spec === 'number') return spec
+  if (spec.scale === 'power') {
+    // the pool is the ENEMY side's; a hero-side owner reads 0 (nearest, 0.5 up — ENEMY-REVIEW P1)
+    const pool = owner.side === 'enemy' ? (ctx.state.power ?? 0) : 0
+    return (spec.base ?? 0) + Math.floor((pool * (spec.mult ?? 1)) / (spec.div ?? 1) + 0.5)
+  }
   if (spec.scale === 'partyMagic' || spec.scale === 'partySpirit') {
     const total = partySum(ctx, owner.side, spec.scale === 'partyMagic' ? 'magic' : 'spirit')
     const div = spec.div ?? 1
@@ -391,6 +399,12 @@ function applyEffect(ctx: Ctx, t: Trigger, owner: Unit, targetId: number): void 
         actor: owner.id, target: targetId, effect: e.kind, value: v,
       })
       if (v > 0) executeKnockback(ctx, owner.id, targetId, v, t.id)
+      break
+    }
+    case 'power.gain': {
+      const v = valueOf(ctx, owner, e.value)
+      emit(ctx, 'trigger.fired', t.id, { actor: owner.id, target: targetId, effect: e.kind, value: v })
+      if (owner.side === 'enemy' && v > 0) gainPower(ctx, v, t.id, { actor: owner.id })
       break
     }
   }

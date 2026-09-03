@@ -316,3 +316,15 @@ export function beginTurn(ctx: Ctx, causeId: string): void {
   ctx.state.turn += 1
   emit(ctx, 'turn.begin', causeId, { turn: ctx.state.turn })
 }
+
+/**
+ * THE POWER POOL — capability.power-pool (2026-09-03). The enemy side's one
+ * global integer (ENEMY-REVIEW.md P1): gained, never spent, and it stays
+ * when the unit that brought it dies. Every gain is a line naming its cause.
+ */
+export function gainPower(ctx: Ctx, amount: number, causeId: string, extra: Record<string, unknown> = {}): void {
+  if (amount <= 0) return
+  const before = ctx.state.power ?? 0
+  ctx.state.power = before + amount
+  emit(ctx, 'power.gained', causeId, { amount, before, after: ctx.state.power, ...extra })
+}

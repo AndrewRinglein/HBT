@@ -23,7 +23,7 @@
 import type { Ctx, EncounterDef, EncounterPlacement, Unit, UnitDef } from './types.js'
 import type { HexId } from './hex.js'
 import { WIDTH, colOf, distance, hexId, inBounds, rowOf } from './hex.js'
-import { emit, setOutcome } from './mutate.js'
+import { emit, gainPower, setOutcome } from './mutate.js'
 import { rollBelow } from './rng.js'
 import { settle } from './settle.js'
 import { HOOKS, fireTriggers } from './trigger.js'
@@ -97,6 +97,8 @@ export function arrive(ctx: Ctx, def: UnitDef, want: HexId, causeId: string, nam
     stamina: u.stamina, maxStamina: u.maxStamina, terrain: ctx.state.terrain[u.hex], arrived: causeId,
   })
   if (hex !== want) emit(ctx, 'unit.shunted', causeId, { actor: u.id, wanted: want, hex, wantedCol: colOf(want), wantedRow: rowOf(want) })
+  // one-time on arrival — capability.power-pool: "a unit adds X when it enters, and the X stays after it dies"
+  if (def.powerOnArrival && u.side === 'enemy') gainPower(ctx, def.powerOnArrival, def.typeId, { kind: 'arrival', actor: u.id })
   return u
 }
 
@@ -109,6 +111,8 @@ function defOf(ctx: Ctx, typeId: string, where: string): UnitDef {
 /** Setup: the encounter's own units at phase 1. Called by createBattle after the heroes are placed. */
 export function placeSetup(ctx: Ctx, enc: EncounterDef, names: Record<string, number>): void {
   const st = ctx.state.encounter ?? (ctx.state.encounter = { id: enc.id, fired: [], objectives: [] })
+  // the external pool — capability.power-pool: "the battle starts with N"
+  for (const ps of enc.powerSources ?? []) gainPower(ctx, ps.value, enc.id, { kind: 'external' })
   for (const p of enc.setup) {
     const def = defOf(ctx, p.unit, `encounter '${enc.id}' setup`)
     for (const hex of hexesOf(ctx, p, `encounter '${enc.id}' setup`, [-1, enc.setup.indexOf(p)])) {

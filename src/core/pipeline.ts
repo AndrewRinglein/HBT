@@ -27,6 +27,8 @@ export const ACC = {
 export const DMG = {
   DECLARE: 100,
   SOURCE_STAT: 200,
+  /** capability.power-pool (2026-09-03): the enemy side's Power, by the attack's share. */
+  POWER: 225,
   SOURCE_STATUS: 250,
   TERRAIN: 300,
   POSITIONAL: 350,
@@ -135,7 +137,12 @@ export function resolveAccuracy(ctx: Ctx, attacker: Unit, target: Unit, a: Attac
  * it — which is the mechanism behind Law 1: powers do not get a second pipeline,
  * they get this one with crit forced false (Design Law 23: no roll, no crit).
  */
-export type DamageSource = Pick<AttackDef, 'id' | 'bonus' | 'stat' | 'damageType'>
+export type DamageSource = Pick<AttackDef, 'id' | 'bonus' | 'stat' | 'damageType' | 'powerScale'>
+
+/** Power × share, rounded nearest with 0.5 up — the ruled rounding (ENEMY-REVIEW P1). Integers only (Law 7). */
+export function powerShare(pool: number, scale: number): number {
+  return Math.floor(pool * scale + 0.5)
+}
 
 export function resolveDamage(
   ctx: Ctx, attacker: Unit, target: Unit, a: DamageSource, critHeads: number | boolean,
@@ -151,6 +158,12 @@ export function resolveDamage(
 
   const src = effective(ctx, attacker, a.stat)
   v = step(ledger, DMG.SOURCE_STAT, 'SOURCE_STAT', `unit.${attacker.typeId}`, v, v + src.value)
+  // POWER (225): the enemy side's pool, by this attack's share — capability.
+  // power-pool (2026-09-03). Nearest, 0.5 up (Law 7). Zero pool, zero row.
+  if (a.powerScale && attacker.side === 'enemy') {
+    const share = powerShare(ctx.state.power ?? 0, a.powerScale)
+    if (share) v = step(ledger, DMG.POWER, 'POWER', 'power', v, v + share)
+  }
   if (outPenalty) v = step(ledger, DMG.SOURCE_STATUS, 'SOURCE_STATUS', 'status', v, v - outPenalty)
 
   if (heads > 0) {
