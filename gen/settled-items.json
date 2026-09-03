@@ -1880,6 +1880,216 @@
    ],
    "intent": "It only starts working once someone has hit you, which is exactly when you want it.",
    "source": "settled content"
+  },
+  {
+   "id": "enchant.hale",
+   "name": "Hale",
+   "appliesToTags": [
+    "armor"
+   ],
+   "tier": 2,
+   "buyable": true,
+   "statModifiers": {
+    "health": 2
+   },
+   "triggers": [],
+   "slayer": null,
+   "grants": [],
+   "intent": "Two Health on any armor: the plainest thing the Forge can do to a coat.",
+   "source": "Ruled 2026-09-02 (GEAR-DESIGN.md §3): the Forge sells basic enchants at its Enchanted band — \"you can buy enchanted, which are 2s … enchanted basically gives an item an additional stat point\" — for the base Supplies plus the same Mana. Tier 2, buyable. Named by the kingdom session the same day."
+  },
+  {
+   "id": "enchant.lucky",
+   "name": "Lucky",
+   "appliesToTags": [
+    "armor"
+   ],
+   "tier": 2,
+   "buyable": true,
+   "statModifiers": {
+    "luck": 8
+   },
+   "triggers": [],
+   "slayer": null,
+   "grants": [],
+   "intent": "Eight Luck: crits against the wearer come rarer.",
+   "source": "Ruled 2026-09-02 (GEAR-DESIGN.md §3): the Forge sells basic enchants at its Enchanted band — \"you can buy enchanted, which are 2s … enchanted basically gives an item an additional stat point\" — for the base Supplies plus the same Mana. Tier 2, buyable. Named by the kingdom session the same day."
+  },
+  {
+   "id": "enchant.nimble",
+   "name": "Nimble",
+   "appliesToTags": [
+    "armor"
+   ],
+   "tier": 2,
+   "buyable": true,
+   "statModifiers": {
+    "dodge": 6
+   },
+   "triggers": [],
+   "slayer": null,
+   "grants": [],
+   "intent": "Six Dodge: one point of the ladder, on the stat armor least often gives.",
+   "source": "Ruled 2026-09-02 (GEAR-DESIGN.md §3): the Forge sells basic enchants at its Enchanted band — \"you can buy enchanted, which are 2s … enchanted basically gives an item an additional stat point\" — for the base Supplies plus the same Mana. Tier 2, buyable. Named by the kingdom session the same day."
+  },
+  {
+   "id": "enchant.fleet",
+   "name": "Fleet",
+   "appliesToTags": [
+    "armor"
+   ],
+   "tier": 2,
+   "buyable": true,
+   "statModifiers": {
+    "movement": 1
+   },
+   "triggers": [],
+   "slayer": null,
+   "grants": [],
+   "intent": "One Movement on armor — the same value as a Strength, and the one heavy coats lack.",
+   "source": "Ruled 2026-09-02 (GEAR-DESIGN.md §3): the Forge sells basic enchants at its Enchanted band — \"you can buy enchanted, which are 2s … enchanted basically gives an item an additional stat point\" — for the base Supplies plus the same Mana. Tier 2, buyable. Named by the kingdom session the same day."
+  },
+  {
+   "id": "enchant.heavy",
+   "name": "Heavy",
+   "appliesToTags": [
+    "bow",
+    "crossbow",
+    "sword",
+    "dagger",
+    "axe",
+    "hammer",
+    "spear",
+    "polearm",
+    "staff",
+    "thrown",
+    "sling",
+    "improvised",
+    "chain",
+    "claw",
+    "blade",
+    "exotic",
+    "wand",
+    "tome",
+    "holy"
+   ],
+   "tier": 2,
+   "buyable": true,
+   "statModifiers": {},
+   "triggers": [],
+   "slayer": null,
+   "grants": [],
+   "intent": "One more damage on THIS weapon's attacks — the weapon hits harder, not the hand.",
+   "source": "Ruled 2026-09-02 (GEAR-DESIGN.md §3): the Forge sells basic enchants at its Enchanted band — \"you can buy enchanted, which are 2s … enchanted basically gives an item an additional stat point\" — for the base Supplies plus the same Mana. Tier 2, buyable. Named by the kingdom session the same day.",
+   "attackModifiers": {
+    "damage": 1
+   }
+  },
+  {
+   "id": "enchant.keen",
+   "name": "Keen",
+   "appliesToTags": [
+    "bow",
+    "crossbow",
+    "sword",
+    "dagger",
+    "axe",
+    "hammer",
+    "spear",
+    "polearm",
+    "staff",
+    "thrown",
+    "sling",
+    "improvised",
+    "chain",
+    "claw",
+    "blade",
+    "exotic",
+    "wand",
+    "tome",
+    "holy"
+   ],
+   "tier": 2,
+   "buyable": true,
+   "statModifiers": {
+    "accuracy": 6
+   },
+   "triggers": [],
+   "slayer": null,
+   "grants": [],
+   "intent": "Six Hit: the weapon finds its mark a little more often.",
+   "source": "Ruled 2026-09-02 (GEAR-DESIGN.md §3): the Forge sells basic enchants at its Enchanted band — \"you can buy enchanted, which are 2s … enchanted basically gives an item an additional stat point\" — for the base Supplies plus the same Mana. Tier 2, buyable. Named by the kingdom session the same day."
+  },
+  {
+   "id": "enchant.cruel",
+   "name": "Cruel",
+   "appliesToTags": [
+    "bow",
+    "crossbow",
+    "sword",
+    "dagger",
+    "axe",
+    "hammer",
+    "spear",
+    "polearm",
+    "staff",
+    "thrown",
+    "sling",
+    "improvised",
+    "chain",
+    "claw",
+    "blade",
+    "exotic",
+    "wand",
+    "tome",
+    "holy"
+   ],
+   "tier": 2,
+   "buyable": true,
+   "statModifiers": {
+    "accuracy": 3,
+    "crit": 4
+   },
+   "triggers": [],
+   "slayer": null,
+   "grants": [],
+   "intent": "Three Hit and four Crit: the edge that opens on the lucky swing.",
+   "source": "Ruled 2026-09-02 (GEAR-DESIGN.md §3): the Forge sells basic enchants at its Enchanted band — \"you can buy enchanted, which are 2s … enchanted basically gives an item an additional stat point\" — for the base Supplies plus the same Mana. Tier 2, buyable. Named by the kingdom session the same day."
+  },
+  {
+   "id": "enchant.far",
+   "name": "Far",
+   "appliesToTags": [
+    "bow"
+   ],
+   "tier": 2,
+   "buyable": true,
+   "statModifiers": {
+    "reach": 2
+   },
+   "triggers": [],
+   "slayer": null,
+   "grants": [],
+   "intent": "Two Reach on a bow: the shot from one hex further back.",
+   "source": "Ruled 2026-09-02 (GEAR-DESIGN.md §3): the Forge sells basic enchants at its Enchanted band — \"you can buy enchanted, which are 2s … enchanted basically gives an item an additional stat point\" — for the base Supplies plus the same Mana. Tier 2, buyable. Named by the kingdom session the same day."
+  },
+  {
+   "id": "enchant.long",
+   "name": "Long",
+   "appliesToTags": [
+    "bow"
+   ],
+   "tier": 2,
+   "buyable": true,
+   "statModifiers": {
+    "reach": 1,
+    "accuracy": 3
+   },
+   "triggers": [],
+   "slayer": null,
+   "grants": [],
+   "intent": "One Reach and three Hit on a bow: a little further, a little truer.",
+   "source": "Ruled 2026-09-02 (GEAR-DESIGN.md §3): the Forge sells basic enchants at its Enchanted band — \"you can buy enchanted, which are 2s … enchanted basically gives an item an additional stat point\" — for the base Supplies plus the same Mana. Tier 2, buyable. Named by the kingdom session the same day."
   }
  ]
 }
