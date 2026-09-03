@@ -77,8 +77,14 @@ export function fold(S, e, ctx, now = 0) {
     case 'attack.hit':
       S.critPending = !!e.crit
       if (S.AIM) {
-        cue('fx.attack', { kind: S.AIM.kind, dt: S.AIM.type, a: e.actor, t: e.target, dmg: S.AIM.dmg })
-        if (e.crit) cue('float', { hex: U[S.AIM.tgt] ? U[S.AIM.tgt].hex : null, text: 'CRIT!', col: '#ffcf6a', big: true })
+        /* THE EMPHASIS LADDER, rung 2 (ruled 2026-09-02, VISUAL-BATTLE-UPDATES §1.3):
+           a crit keeps the word — Andrew: "I think we actually want the word
+           'crit' when all it's doing is damage" — and on top of it the impact
+           renders at the super tier and the camera kicks along the blow. The
+           numeral itself is the crit's on the damage beat (critPending). */
+        cue('fx.attack', { kind: S.AIM.kind, dt: S.AIM.type, a: e.actor, t: e.target, dmg: S.AIM.dmg, crit: !!e.crit })
+        if (e.crit) { cue('float', { hex: U[S.AIM.tgt] ? U[S.AIM.tgt].hex : null, text: 'CRIT!', col: '#ffcf6a', big: true })
+          cue('kick', { a: e.actor, t: e.target }) }
         /* the projection is a FORECAST — it clears at impact so the result
            number never shares the screen with it (ruled 2026-08-27) */
         S.AIM = null
@@ -98,10 +104,12 @@ export function fold(S, e, ctx, now = 0) {
         /* HITSTOP (ruled 2026-09-01, VISUAL-BATTLE-UPDATES §1.2): a strike freezes
            the tokens for 70ms, a crit for 140. A status tick is not a strike. */
         else cue('hitstop', { ms: S.critPending ? 140 : 70 })
-        S.critPending = false
         /* EVERY damage floats overhead and drifts up, coloured by damage type
-           (ruled 2026-08-27): red physical, blue magic, white true. */
-        cue('float', { hex: U[e.target].hex, text: '−' + e.amount, col: DCOL[e.damageType] || '#ffd9a0', big: true })
+           (ruled 2026-08-27): red physical, blue magic, white true. A crit's
+           numeral arrives bigger, gold-rimmed, snaps in and HOLDS before it
+           drifts — every other number fades in and drifts at once (rung 2). */
+        cue('float', { hex: U[e.target].hex, text: '−' + e.amount, col: DCOL[e.damageType] || '#ffd9a0', big: true, crit: S.critPending && !tick })
+        S.critPending = false
         if (e.resisted) cue('float', { hex: U[e.target].hex, text: e.resisted + ' resisted', col: '#9fb6c8', small: true })
         if (e.absorbed) cue('float', { hex: U[e.target].hex, text: e.absorbed + ' absorbed', col: '#8fd0ff', small: true })
         S.AIM = null
@@ -146,8 +154,12 @@ export function fold(S, e, ctx, now = 0) {
     case 'cooldown.set':
       if (U[e.actor]) (U[e.actor].cds = U[e.actor].cds || {})[e.abilityId] = e.readyOnTurn; break
     case 'crit.effect':
-      /* a Critical Injury Chart row landed — the biggest single beat the engine emits */
-      if (U[e.target]) { cue('float', { hex: U[e.target].hex, text: '✶ ' + e.name, col: '#ffcf6a', big: true })
+      /* a Critical Injury Chart row landed — the biggest single beat the
+         engine emits, and rung 3 of the ladder (ruled 2026-09-02): not a
+         float. A plate lands on the token, holds, then flies to the panel's
+         injury list. critCount can land several on one attack; the board
+         QUEUES them. */
+      if (U[e.target]) { cue('injury', { id: e.target, name: e.name })
         ;(U[e.target].injuries = U[e.target].injuries || []).push(e.name) }
       break
     case 'power.hit':

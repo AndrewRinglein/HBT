@@ -25,6 +25,7 @@
      · the skull is on the bar exactly when the tick projection is lethal
      · the camera pans by inclusion, a manual pan holds, a peek restores
      · off-screen units get edge bubbles that account for every one of them; none during a peek
+     · the emphasis ladder: CRIT! + kick + super impact fire together; injuries are queued plates, never floats
    Optional --check names add change-specific assertions. */
 import fs from 'node:fs'
 import { resolve, dirname } from 'node:path'
@@ -220,6 +221,30 @@ if (DUR) for (const t of Object.keys(DUR)) check(FOLDED_TYPES.includes(t) || IGN
   check(counted === offCount, `edges: bubbles account for ${counted} units, ${offCount} are off-screen`)
   check(bubs.some(b => b.querySelector('.edgeDg')), 'edges: no enemy bubble carries a danger numeral')
   v.peek(true); check((V.layers.edgeL.querySelectorAll('.edgeBub')).length === 0, 'edges: bubbles shown during peek, when nothing is off-screen'); v.peek(false)
+}
+
+/* ── the emphasis ladder (VISUAL-BATTLE-UPDATES §1.3, ruled 2026-09-02) ─── */
+{
+  let critWord = 0, critNumeral = 0, superTier = 0, kicks = 0, injuries = 0, injuryFloats = 0
+  for (const b of LIB.battles) { const S = createState()
+    for (const e of b.battle.events) for (const c of fold(S, e, { UD: LIB.static.units, SN: LIB.static.statuses }, 0)) {
+      if (c.k === 'float' && c.text === 'CRIT!') critWord++
+      if (c.k === 'float' && c.crit) critNumeral++
+      if (c.k === 'fx.attack' && c.crit) superTier++
+      if (c.k === 'kick') kicks++
+      if (c.k === 'injury') injuries++
+      if (c.k === 'float' && /^✶/.test(c.text)) injuryFloats++ } }
+  check(critWord > 0, 'ladder: no CRIT! word anywhere in the library')
+  check(critWord === kicks && critWord === superTier, `ladder: CRIT! ${critWord}, kicks ${kicks}, super-tier impacts ${superTier} — rung 2 must fire all three together`)
+  check(critNumeral > 0 && critNumeral <= critWord, `ladder: ${critNumeral} crit numerals for ${critWord} crits`)
+  check(injuries > 0 && injuryFloats === 0, `ladder: ${injuries} injury plates, ${injuryFloats} injury floats — rung 3 is a plate, never a float`)
+  /* the queue: two injuries at once produce ONE plate on the board and one waiting */
+  const v = H.viewer, V = v._V
+  const anyUnit = Object.values(v.state.U).find(u => u.life !== 'dead') || Object.values(v.state.U)[0]
+  V.fx.injuryQ = []
+  V.playCues([{ k: 'injury', id: anyUnit.id, name: 'Test Injury A' }, { k: 'injury', id: anyUnit.id, name: 'Test Injury B' }])
+  const plates = V.dom.stage.querySelectorAll('.injPlate').length
+  check(V.fx.injuryQ.length === 2 && plates === 1, `ladder: two simultaneous injuries gave ${plates} plate(s) with ${V.fx.injuryQ.length} queued — they must queue, one at a time`)
 }
 
 /* ── a dropped export plays (plan §8.6) ────────────────────────────────── */

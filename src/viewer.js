@@ -94,6 +94,7 @@ export function mountBattleViewer(root, data, opts = {}) {
     drawPanel(V); drawBar(V); drawStam(V); applyCam(V); drawEdges(V); drawChips()
   }
   V.render = render
+  V.playCues = cues => playCues(V, cues)      // the verifier injects synthetic cues here
   function drawChips() {
     const S = V.S
     if (dom.turnchip) dom.turnchip.textContent = 'Turn ' + Math.max(1, S.turnNo)

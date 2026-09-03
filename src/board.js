@@ -23,7 +23,11 @@ export function ensureKeyframes() {
     '25%{transform:translateY(-6px) rotate(-2.6deg)}50%{transform:translateY(-2px) rotate(0)}' +
     '75%{transform:translateY(-6px) rotate(2.6deg)}}' +
     '@keyframes floatUp{0%{transform:translateY(0);opacity:0}6%{opacity:1}' +
-    '70%{opacity:1}100%{transform:translateY(-52px);opacity:0}}'
+    '70%{opacity:1}100%{transform:translateY(-52px);opacity:0}}' +
+    /* the crit numeral: overshoot in (1.35 → 1), HOLD, then drift like the rest */
+    '@keyframes critPop{0%{transform:scale(1.35) translateY(0);opacity:0}8%{opacity:1;transform:scale(1.35) translateY(0)}' +
+    '18%{transform:scale(1) translateY(0)}30%{transform:scale(1) translateY(0);opacity:1}' +
+    '75%{opacity:1}100%{transform:scale(1) translateY(-52px);opacity:0}}'
   document.body.appendChild(s); keyframed = true
 }
 
@@ -87,10 +91,17 @@ export function pushFloat(V, hex, text, col, o = {}) {
   if (!L.floatL) { L.floatL = el('', 'position:absolute;left:0;top:0;transform-style:preserve-3d;pointer-events:none'); V.dom.stage.appendChild(L.floatL) }
   const p = V.data.POS[hex]; if (!p) return
   const slot = (L.FLOAT_SLOTS[hex] = (L.FLOAT_SLOTS[hex] ?? -1) + 1)
-  const life = o.big ? 1500 : 1200
+  const life = o.crit ? 1900 : o.big ? 1500 : 1200
   const wrap = el('bb', `left:${p.px}px;top:${p.py}px`)
   wrap.style.transform = 'rotateX(var(--anti)) translateZ(150px)'
   /* units stand taller than the hex — floats start another half-hex above the head */
+  if (o.crit) {
+    /* rung 2: the numeral IS the crit — bigger, gold-rimmed, snaps in with an
+       overshoot and holds ~200ms before it drifts (critPop keyframes) */
+    wrap.appendChild(el('dmg crit', `left:-40px;top:${-140 - slot * 30}px;color:${col};font-size:52px;` +
+      '-webkit-text-stroke:1.5px #ffcf6a;text-shadow:0 0 14px rgba(255,207,106,.75),0 2px 6px #000;transform-origin:50% 100%;' +
+      `animation:critPop 1900ms cubic-bezier(.2,1.3,.4,1) forwards`, text))
+  } else
   wrap.appendChild(el('dmg', `left:-34px;top:${-136 - slot * 30}px;color:${col};` +
     (o.big ? 'font-size:36px;' : o.small ? 'font-size:15px;' : 'font-size:20px;') +
     `animation:floatUp ${life}ms ease-out forwards`, text))
@@ -122,13 +133,14 @@ const DTYPE = { physical: 'phys', magic: 'mag', 'true': 'true' }
 const VSTYLE = id => { const n = String(id).replace(/^test\./, '').replace(/^status\./, '')
   return { regeneration: 'regen', stun: 'shadow', daze: 'shadow', slow: 'frost', hobble: 'frost',
     protection: 'weak', ward: 'weak', enfeeble: 'affliction' }[n] || n }
-export function fxAttack(V, kind, dt, aId, tId, dmg) {
+export function fxAttack(V, kind, dt, aId, tId, dmg, crit = false) {
   const FX = V.fx.FX; if (!FX) return
   const A = anchorOf(V, aId), T = anchorOf(V, tId); if (!A || !T) return
+  const tier = crit ? 'super' : TIER(dmg)          // rung 2: a crit renders at the super tier regardless of damage
   try {
-    if (kind === 'melee')    playMeleeAttack(FX, A, T, DTYPE[dt] || 'phys', TIER(dmg), {})
-    else if (dt === 'magic') playMagicBolt(FX, A, T, TIER(dmg), {})
-    else if (dt === 'true')  playHolyBolt(FX, A, T, TIER(dmg), {})
+    if (kind === 'melee')    playMeleeAttack(FX, A, T, DTYPE[dt] || 'phys', tier, {})
+    else if (dt === 'magic') playMagicBolt(FX, A, T, tier, {})
+    else if (dt === 'true')  playHolyBolt(FX, A, T, tier, {})
     else                     playArrow(FX, A, T, {})
   } catch (e) {}
 }
@@ -177,6 +189,66 @@ export function traverse(V, id, startHex, path, dur) {
   }
 }
 
+/* ── THE EMPHASIS LADDER, rungs 2 and 3 (ruled 2026-09-02) ────────────────
+   Celebration comes from channels nothing else uses: time (hitstop), the
+   camera (the kick), scale-of-motion (the crit numeral) and movement between
+   board and panel (the injury plate). Each is reserved for its rung. */
+/* rung 2 · the camera KICK — ~6px along the blow, 90ms out, 140ms back;
+   translation only, never rotation; on the wrap, outside the 3D scene, so
+   applyCam's stage transform is untouched. Reserved for crits. */
+export function cameraKick(V, aId, tId) {
+  const wrap = V.dom.stage.parentNode, A = V.S.U[aId], T = V.S.U[tId]
+  if (!wrap || !wrap.animate || !A || !T) return
+  const pa = V.data.POS[A.hex], pt = V.data.POS[T.hex]
+  const dx = pt.px - pa.px, dy = pt.py - pa.py, L = Math.hypot(dx, dy) || 1
+  const kx = (dx / L * 6).toFixed(1), ky = (dy / L * 6 * squash(V)).toFixed(1)
+  wrap.animate([{ transform: 'translate(0,0)' }, { transform: `translate(${kx}px,${ky}px)`, offset: 90 / 230 }, { transform: 'translate(0,0)' }],
+    { duration: 230, easing: 'ease-out' })
+}
+/* rung 3 · the INJURY PLATE — the name lands on the token, holds ~900ms, then
+   flies to the panel's injury list: nothing else moves between board and
+   panel, so it is unmistakable and it teaches where the fact went to live. A
+   ~250ms darkening beneath it, once per group. critCount can land several on
+   one attack, so plates QUEUE: plate, fly, next plate — never three at once. */
+const PLATE_HOLD = 900, PLATE_FLY = 450, DARKEN = 250
+export function queueInjury(V, id, name) {
+  const Q = (V.fx.injuryQ ??= [])
+  Q.push({ id, name })
+  if (Q.length === 1) { darken(V); playInjury(V) }
+}
+function darken(V) {
+  const wrap = V.dom.stage.parentNode; if (!wrap) return
+  const d = el('', 'position:absolute;inset:0;background:#000;opacity:0;pointer-events:none;z-index:38')
+  wrap.appendChild(d)
+  if (d.animate) { const a = d.animate([{ opacity: 0 }, { opacity: .45, offset: .35 }, { opacity: 0 }], { duration: DARKEN }); a.onfinish = () => d.remove() }
+  else setTimeout(() => d.remove(), DARKEN)
+}
+function playInjury(V) {
+  const Q = V.fx.injuryQ; const job = Q[0]; if (!job) return
+  const u = V.S.U[job.id], wrap = V.dom.stage.parentNode
+  const next = () => { Q.shift(); if (Q.length) playInjury(V) }
+  if (!u || !wrap) { next(); return }
+  const p = V.data.POS[u.hex]
+  const bb = el('bb', `left:${p.px}px;top:${p.py}px`)
+  bb.style.transform = 'rotateX(var(--anti)) translateZ(160px)'
+  const plate = el('injPlate', 'left:-90px;top:-118px;width:180px', `<b>✶</b> ${job.name}`)
+  bb.appendChild(plate); V.dom.stage.appendChild(bb)
+  if (plate.animate) plate.animate([{ transform: 'scale(1.25)', opacity: 0 }, { transform: 'scale(1)', opacity: 1 }], { duration: 140, easing: 'cubic-bezier(.2,1.2,.4,1)' })
+  setTimeout(() => {
+    /* fly: a screen-space clone from the plate's rect to the panel's injury list */
+    let from = null, to = null
+    try { from = plate.getBoundingClientRect(); const tgt = V.dom.panel && V.dom.panel.querySelector('.pInjuries'); to = tgt ? tgt.getBoundingClientRect() : (V.dom.panel && V.dom.panel.getBoundingClientRect()) } catch (e) {}
+    bb.remove()
+    if (from && to && document.body.animate) {
+      const fly = el('injPlate fly', `position:fixed;left:${from.left}px;top:${from.top}px;width:${from.width}px;z-index:1000;margin:0`, `<b>✶</b> ${job.name}`)
+      document.body.appendChild(fly)
+      const a = fly.animate([{ transform: 'translate(0,0) scale(1)', opacity: 1 }, { transform: `translate(${to.left - from.left}px,${to.top - from.top}px) scale(.6)`, opacity: .9 }],
+        { duration: PLATE_FLY, easing: 'cubic-bezier(.4,0,.2,1)' })
+      a.onfinish = () => { fly.remove(); next() }
+    } else next()
+  }, PLATE_HOLD)
+}
+
 /* ── token beats: walk-bob, lunge, flash ───────────────────────────────── */
 export function walkBob(V, id) {
   const E = V.layers.UEL.get(id), u = V.S.U[id]
@@ -221,7 +293,9 @@ export function playCues(V, cues) {
       case 'flash': hitFlash(V, c.id); break
       case 'hitstop': hitstop(V, c.ms); break
       case 'float': pushFloat(V, c.hex, c.text, c.col, c); break
-      case 'fx.attack': fxAttack(V, c.kind, c.dt, c.a, c.t, c.dmg); break
+      case 'fx.attack': fxAttack(V, c.kind, c.dt, c.a, c.t, c.dmg, c.crit); break
+      case 'kick': cameraKick(V, c.a, c.t); break
+      case 'injury': queueInjury(V, c.id, c.name); break
       case 'fx.status': fxStatus(V, c.id, c.style); break
       case 'fx.tick': fxTick(V, c.id, c.cause); break
       case 'inspect.clear': V.view.inspectId = null; break

@@ -465,3 +465,10 @@ html,body{margin:0;background:#08090b;color:var(--ink);
   font:700 11px/18px ui-monospace,monospace;color:#0d0c0a;text-align:center;box-shadow:0 1px 3px #000}
 .edgeDg{position:absolute;left:50%;bottom:-13px;transform:translateX(-50%);display:flex;align-items:center;gap:2px;
   font:700 12px/1 ui-monospace,monospace;color:#c3bdb0;text-shadow:0 1px 3px #000,0 0 6px #000;white-space:nowrap}
+
+/* ── the injury plate (emphasis ladder rung 3, 2026-09-02) — lands on the token,
+   holds, flies to the panel. The one thing that moves between board and panel. */
+.injPlate{position:absolute;padding:6px 10px;border-radius:3px;background:#1d100e;border:1px solid #ffb0a4;
+  box-shadow:0 0 18px rgba(255,120,100,.45),0 4px 12px rgba(0,0,0,.8);color:#ffb0a4;text-align:center;
+  font:700 15px/1.2 'Barlow Semi Condensed',sans-serif;letter-spacing:.03em;white-space:nowrap;pointer-events:none}
+.injPlate b{color:#ffcf6a;margin-right:4px}

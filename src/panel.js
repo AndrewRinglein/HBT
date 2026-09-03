@@ -150,7 +150,7 @@ export function drawPanel(V) {
         padding:2px 8px;border-radius:2px;background:#221c12;border:1px solid #3a3223;color:#cbb9a0">${t}</span>`).join('')}</div>` : ''}
     ${KWNOTE}
     ${trigCol ? `<div style="font-size:9.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--dim);margin:4px 0 6px">⚡ Triggers</div>${trigCol}` : ''}
-    ${(u.injuries || []).length ? `<div style="font-size:9.5px;letter-spacing:.12em;text-transform:uppercase;color:#d1665c;margin:10px 0 6px">✶ Critical injuries</div>` +
+    ${(u.injuries || []).length ? `<div class="pInjuries" style="font-size:9.5px;letter-spacing:.12em;text-transform:uppercase;color:#d1665c;margin:10px 0 6px">✶ Critical injuries</div>` +
       u.injuries.map(n => `<div style="font:600 12px 'Barlow Semi Condensed',sans-serif;color:#ffb0a4;padding:4px 8px;margin-bottom:4px;background:#1d100e;border:1px solid #4a2320;border-radius:3px">${n}</div>`).join('') : ''}
     ${(u.mods || []).length ? `<div style="font-size:9.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--dim);margin:10px 0 6px">Modifiers</div>` +
       u.mods.map(m => `<div style="font:600 11.5px 'Barlow Semi Condensed',sans-serif;color:#cbb9a0;padding:3px 8px;margin-bottom:4px;background:#16130e;border:1px solid #2b2418;border-radius:3px">${m.stat} ${sgn(m.value)} <span style="color:#6f6857">· ${m.source}</span></div>`).join('') : ''}
