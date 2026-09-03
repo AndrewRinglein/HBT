@@ -885,13 +885,27 @@ const TEST_DIR = 'test';
 const readTest = (f) => { try { return JSON.parse(fs.readFileSync(`${TEST_DIR}/${f}`, 'utf8')); } catch (e) { if (e.code === 'ENOENT') return []; throw e; } };
 const isTestId = {
   unit: (id) => /^test-[a-z0-9-]+$/.test(id),
+  ability: (id) => /^power\.test-[a-z0-9.-]+$/.test(id),
   attack: (id) => /^attack\.test-[a-z0-9.-]+$/.test(id),
   trigger: (id) => /^(test\.|trigger\.test-)[a-z0-9.-]+$/.test(id),
   status: (id) => /^test\.status\.[a-z0-9-]+$/.test(id),
 };
+const ABILITY_FIELDS = new Set(['id', 'name', 'stat', 'bonus', 'damageType', 'range', 'staminaCost', 'cooldown', 'effect', 'area', 'heal', 'guard']);
+function testAbilities() {
+  const out = {};
+  for (const row of readTest('abilities.json')) {
+    const { note, ...rest } = row;
+    if (!isTestId.ability(row.id)) throw new Error(`content/test/abilities.json: '${row.id}' is not power.test-* — the test family or nothing`);
+    for (const k of Object.keys(rest)) if (!ABILITY_FIELDS.has(k)) throw new Error(`content/test/abilities.json: '${row.id}' carries unknown field '${k}'`);
+    out[row.id] = rest;
+  }
+  return out;
+}
 const UNIT_FIELDS = new Set(['typeId', 'name', 'side', 'maxHp', 'armor', 'resist', 'accuracy', 'dodge', 'strength', 'precision', 'magic', 'spirit', 'crit', 'luck', 'role', 'movement', 'reach', 'maxStamina', 'staminaRegen', 'ai', 'attacks', 'abilities', 'moves', 'attributes', 'tags', 'triggers']);
 const ATTACK_FIELDS = new Set(['id', 'name', 'kind', 'damageType', 'bonus', 'stat', 'reach', 'staminaCost', 'crit', 'critCount', 'area', 'cooldown']);
-const realUnits = new Map([...alphaTeam, ...prologueParty, ...authoredEnemies].map((u) => [u.typeId, u]));
+// a delta may start from any packed row — the real families AND the test
+// cohort (test-gash-zombie is the cohort's zombie plus one rider)
+const realUnits = new Map([...alphaTeam, ...prologueParty, ...authoredEnemies, ...heroes, ...enemies].map((u) => [u.typeId, u]));
 function testAttacks() {
   const out = {};
   for (const row of readTest('attacks.json')) {
@@ -905,7 +919,7 @@ function testAttacks() {
   }
   return out;
 }
-function testUnits(testAttackRows) {
+function testUnits(testAttackRows, testAbilityRows) {
   const out = [];
   for (const row of readTest('units.json')) {
     const { note, from, set, ...rest } = row;
@@ -922,6 +936,9 @@ function testUnits(testAttackRows) {
       return { ...trig, source: `unit.${row.id}` };
     });
     for (const a of u.attacks) if (!testAttackRows[a] && !authoredAttacks[a]) throw new Error(`content/test/units.json: '${row.id}' wields '${a}', which is neither a test attack nor a real one`);
+    for (const a of u.abilities) if (!testAbilityRows[a] && !authoredAbilities[a]) throw new Error(`content/test/units.json: '${row.id}' casts '${a}', which is neither a test power nor a real one`);
+    // a delta's triggers ADD to the base's, under the test family
+    if (from && base.triggers) u.triggers = [...base.triggers.map((t) => ({ ...t, source: `unit.${row.id}` })), ...u.triggers];
     out.push(u);
   }
   return out;
@@ -938,7 +955,8 @@ function testStatuses() {
   return out;
 }
 const testAttackRows = testAttacks();
-const test = { note: 'GENERATED from content/test/ — the test receptacle. Never ships. Wipe the folder to remove every row here.', units: testUnits(testAttackRows), attacks: testAttackRows, statuses: testStatuses() };
+const testAbilityRows = testAbilities();
+const test = { note: 'GENERATED from content/test/ — the test receptacle. Never ships. Wipe the folder to remove every row here.', units: testUnits(testAttackRows, testAbilityRows), attacks: testAttackRows, abilities: testAbilityRows, statuses: testStatuses() };
 
 const pack = { note: D.testCohort.note, heroes, enemies, authoredEnemies, authoredAttacks, authoredAbilities, prologueParty, alphaTeam, critChart: compileCritChart(SETTLED.critChart), statuses, moves, items, test };
 

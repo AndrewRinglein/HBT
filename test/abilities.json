@@ -1,0 +1,13 @@
+[
+  {
+    "id": "power.test-mage.bolt",
+    "name": "Arcane Bolt (TEST)",
+    "stat": "magic",
+    "bonus": 6,
+    "damageType": "magic",
+    "range": 10,
+    "staminaCost": 1,
+    "cooldown": 6,
+    "note": "test.fixture-migration: the invented Arcane Bolt (2026-08-14) — the engine's first power, the cooldown and primary-action tests' instrument. The test cohort's Air Mage casts it."
+  }
+]

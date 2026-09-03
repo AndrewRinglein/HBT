@@ -23,11 +23,16 @@ and real content carries it, delete the test rows; the tests that fielded them
 are rewritten to real content or deleted with them. Nothing here is design,
 and `content-check` lists every id here as `test`, never as INVENTED.
 
-**Files.** `units.json`, `attacks.json`, `statuses.json`. Each is an array of
-rows with a `note` saying which backlog item the row proves.
+**Files.** `units.json`, `attacks.json`, `abilities.json`, `statuses.json`. Each
+is an array of rows with a `note` saying which backlog item the row proves.
+Ids: units `test-*`, attacks `attack.test-*`, powers `power.test-*`, statuses
+`test.status.*`, triggers `test.*` / `trigger.test-*`.
 
-**Not here (yet).** `settled.json` → `testCohort` (the six `test-*` clone heroes
-and two zombies, 2026-08-20) predates this folder and still ships from there;
-and the engine's `src/content/index.ts` still holds the pre-cohort fixtures
-(zombie, warrior, ranger, mage, zombie-burning) that ~25 test files build
-custom battles from — backlog `test.fixture-migration` moves them here.
+**Since 2026-09-02 (`test.fixture-migration`)** the engine's pre-cohort fixtures
+live here too: `test-warrior`, `test-ranger`, `test-mage` (the 2026-08-14 bodies,
+kept exactly), their six attacks and the Arcane Bolt, all renamed into the test
+family. The engine types no unit but the three dictated beasts.
+
+**Not here.** `settled.json` → `testCohort` (the six `test-*` clone heroes and
+two zombies, 2026-08-20) predates this folder and still ships from there; its
+rows swing the attacks in `attacks.json`.

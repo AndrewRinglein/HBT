@@ -1481,8 +1481,8 @@
      "role": "melee",
      "ai": "melee-aggressive",
      "attacks": [
-      "attack.warrior.massive",
-      "attack.warrior.axe",
+      "attack.test-warrior.massive",
+      "attack.test-warrior.axe",
       "attack.punch"
      ],
      "abilities": [],
@@ -1550,7 +1550,7 @@
      "role": "melee",
      "ai": "melee-aggressive",
      "attacks": [
-      "attack.warrior.axe",
+      "attack.test-warrior.axe",
       "attack.punch"
      ],
      "abilities": [],
@@ -1582,7 +1582,7 @@
      "role": "ranged",
      "ai": "ranged-kite",
      "attacks": [
-      "attack.ranger.bow",
+      "attack.test-ranger.bow",
       "attack.punch"
      ],
      "abilities": [],
@@ -1614,11 +1614,11 @@
      "role": "ranged",
      "ai": "ranged-kite",
      "attacks": [
-      "attack.mage.staff",
-      "attack.mage.strike"
+      "attack.test-mage.staff",
+      "attack.test-mage.strike"
      ],
      "abilities": [
-      "power.mage.bolt"
+      "power.test-mage.bolt"
      ],
      "riders": [
       {
@@ -1660,7 +1660,7 @@
      "role": "ranged",
      "ai": "ranged-kite",
      "attacks": [
-      "attack.mage.staff",
+      "attack.test-mage.staff",
       "attack.punch"
      ],
      "abilities": [],
@@ -1680,7 +1680,7 @@
      "role": "melee",
      "ai": "melee-aggressive",
      "attacks": [
-      "attack.warrior.axe",
+      "attack.test-warrior.axe",
       "attack.punch"
      ],
      "abilities": [],
@@ -1714,7 +1714,7 @@
     "staminaRegen": 0,
     "ai": "dumb-melee",
     "attacks": [
-     "attack.zombie.basic"
+     "attack.test-zombie.bite"
     ],
     "abilities": [],
     "attributes": [
@@ -1732,7 +1732,7 @@
        "value": 1
       },
       "source": "unit.test-zombie",
-      "onlyWithAttack": "attack.zombie.basic"
+      "onlyWithAttack": "attack.test-zombie.bite"
      },
      {
       "id": "test.zombie.sap",
@@ -1783,7 +1783,7 @@
     "staminaRegen": 0,
     "ai": "dumb-melee",
     "attacks": [
-     "attack.zombie.basic"
+     "attack.test-zombie.bite"
     ],
     "abilities": [],
     "attributes": [
