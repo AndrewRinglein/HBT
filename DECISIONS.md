@@ -1406,3 +1406,26 @@ nearest enemy; never attack) and an encounter field `civilianAi: {mode,
 untilTurn}` that overrides every civilian's mode until that Turn ends —
 Supper carries `{mode: 'flee', untilTurn: 3}`. After Turn 3 they fight as
 their rows say.
+
+## 2026-09-03 — board formats (planning; nothing built yet)
+
+Angela, verbatim:
+
+> "We're going to be switching the player start zone to the left of the map
+> and the enemy's typical start zone to the right of the map, but that is
+> content authoring. ... Heroes start on the left, and enemies start on the
+> right. That is the default configuration. I will update that in content.
+> Now I want to be able to have different map dimensions, so a map that is 8
+> high and 16 wide for a dungeon segment. 16x16 is a standard engagement.
+> 24/24 is like a horde engagement." · "I guess we also want to be able to
+> support 8x8, like a dueling format." · "We can do a per-width formula."
+> · "Every encounter needs to have its map size specified and then needs to
+> have its placement according to the map structure."
+
+Consequences: board size is the map's, not a constant — four formats
+(8×8 duel, 16×8 dungeon segment, 16×16 standard, 24×24 horde); the default
+orientation is heroes WEST, enemies EAST (content moves the existing rows);
+hex ids stay `row × width + col` (per-width — a hex's number is meaningful
+only on its own board); every encounter names its map size and places to it.
+The plan is in the chat of 2026-09-03 evening and in HANDOFF-2026-09-03b.md §7
+once work starts.
