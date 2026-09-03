@@ -709,3 +709,26 @@ slice: 49 of 68 closed · 49 probed · 0 accepted
 IRON GAUNTLET: NOT PASSED — 1 FLAG(S) WARNED
 
 Law 10 note (heroes.kits): test/isc-041.test.ts asserted `equipped` equals ['item.longsword'] after the shop equip; heroes now enter WEARING their content kit (ruled 2026-09-02), so the assertion became "the longsword is the last thing worn and it is not the only thing" — the rule under test (buy at Buy, fit at Equip) is unchanged.
+
+## equip.slots — LANDED `a3e9d82` **NEEDS REVIEW**
+2026-09-03 04:06 · engine @ 37f7311
+
+  PASS  dependencies landed
+  WARN  not already decided — 3 candidate ruling(s) — READ BEFORE ASKING: ../STATE.md:20 · ../CODEX.md:1816
+  PASS  typecheck
+  PASS  full test suite — 118 passed
+  PASS  gate 1 — every claimed criterion holds — ISC-054 holds · ISC-055 holds
+  PASS  brought its own tests — test/isc-004.test.ts, test/isc-054.test.ts, test/isc-055.test.ts, test/walk.ts
+  PASS  existing tests untouched
+  PASS  kill switch — every claimed probe has been seen red — ISC-054: red on record (2026-09-03 04:05 @ 11bb483, probe 5eee980745f4) · ISC-055: red on record (2026-09-03 04:06 @ 11bb483, probe a0309ff88cbe)
+  PASS  nothing regresses — every P-tier probe — 51 P-tier probe(s): 51 green, 0 red, 0 regression(s). 49 of 68 closed · 51 probed · 0 accepted
+  PASS  hardcode scan — core knows mechanisms, never names
+  PASS  generalizes — the second instance costs zero kingdom code
+  PASS  naming — new ids use declared kinds
+  PASS  naming — no banned words invented
+  WARN  engine working tree clean — verified against a DIRTY engine tree (37f7311 + 4 uncommitted under src/test): M src/content/generated/pack.ts, M src/content/pack.ts, M src/content/statuses.ts
+  PASS  one door to the engine
+
+ISC-054: CLOSED at a3e9d82 · ISC-055: CLOSED at a3e9d82
+slice: 51 of 68 closed · 51 probed · 0 accepted
+IRON GAUNTLET: NOT PASSED — 2 FLAG(S) WARNED; 1 EXEMPTION(S) TAKEN

@@ -667,6 +667,10 @@
    "hash": "5eee980745f4",
    "how": "feature absent",
    "tail": "       |            ^ |      45|     // a greatsword (2 hands) with one slot left: refused; after the B… |      46|     expect(canEquip(ctx.campaign, OSRIC, 'item.greatsword')).toBe(fals…"
+  },
+  "closed": {
+   "at": "2026-09-03 04:08",
+   "sha": "a3e9d82"
   }
  },
  "055": {
@@ -676,6 +680,10 @@
    "hash": "a0309ff88cbe",
    "how": "feature absent",
    "tail": "       |            ^ |      26|     performUnequip(ctx, HUNTER, 'item.thick-hide', 'test') |      27|     expect(loadoutOf(ctx.campaign, HUNTER).armor).toBeNull()"
+  },
+  "closed": {
+   "at": "2026-09-03 04:08",
+   "sha": "a3e9d82"
   }
  }
 }
