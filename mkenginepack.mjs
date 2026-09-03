@@ -228,17 +228,28 @@ function compileTrigger(t, unitId, attackId) {
   const needs = (t.needs || []).filter((n) => !HAVE.has(n));
   if (needs.length) { gap(unitId, `${where} ${t.hook}: ${t.effects?.map((e) => e.effect).join('; ')}`, needs.join(',')); return []; }
   if (!TRIG_HOOKS.has(t.hook)) { gap(unitId, `${where} hook '${t.hook}'`, t.hook === 'aura' ? 'hook: aura' : 'hook: ' + t.hook + ' (declared, engine never fires it)'); return []; }
-  if (t.targets && /within/.test(t.targets)) { gap(unitId, `${where} ${t.hook} area '${t.targets}'`, 'area trigger select'); return []; }
+  // capability.auras (2026-09-03): area targets compile to the ONE targeting
+  // vocabulary — "allies within N hexes" → {area, ally, radius N, origin self};
+  // the "tag Undead" condition → requireTags. A null range stays a gap.
+  let areaSelect = null;
+  if (t.targets && /within/.test(t.targets)) {
+    if (t.range === null || t.range === undefined) { gap(unitId, `${where} ${t.hook} area '${t.targets}' — range null, N never stated`, 'content: range unstated'); return []; }
+    const side = /^allies/.test(t.targets) ? 'ally' : /^enemies/.test(t.targets) ? 'enemy' : /^every unit/.test(t.targets) ? 'any' : null;
+    if (!side) { gap(unitId, `${where} ${t.hook} area '${t.targets}'`, 'area trigger select'); return []; }
+    const tagM = String(t.condition || '').match(/^the target has tag ([A-Za-z]+)$/);
+    if (t.condition && !tagM) { gap(unitId, `${where} ${t.hook}: condition '${t.condition}'`, 'trigger condition'); return []; }
+    areaSelect = { select: 'area', side, radius: t.range, origin: 'self', ...(tagM ? { requireTags: [tagM[1].toLowerCase()] } : {}) };
+  }
   const out = [];
   for (const ef of t.effects || []) {
     const efNeeds = (ef.needs || []).filter((n) => !HAVE.has(n));
     if (efNeeds.length) { gap(unitId, `${where} ${t.hook}: ${ef.effect}`, efNeeds.join(',')); continue; }
-    if (ef.condition || t.condition) { gap(unitId, `${where} ${t.hook}: ${ef.effect} — condition '${ef.condition || t.condition}'`, 'trigger condition'); continue; }
+    if (ef.condition || (t.condition && !areaSelect)) { gap(unitId, `${where} ${t.hook}: ${ef.effect} — condition '${ef.condition || t.condition}'`, 'trigger condition'); continue; }
     if (ef.effect === 'apply a status' && STATUS_OK.has(ef.status)) {
       // chance absent = certain. Splitting a multi-effect trigger is only safe
       // when nothing rolls; at chance<100 the halves would diverge on the die.
       if ((t.effects.length > 1) && (t.chance ?? 100) !== 100) { gap(unitId, `${where} ${t.hook}: multi-effect at chance ${t.chance}`, 'multi-effect rolled trigger'); return []; }
-      const select = ef.target === 'the attacker' || t.hook === 'onTakingDamage' ? 'target' : ef.target === 'self' ? 'self' : 'target';
+      const select = areaSelect ?? (ef.target === 'the attacker' || t.hook === 'onTakingDamage' ? 'target' : ef.target === 'self' ? 'self' : 'target');
       // capability.power-pool (2026-09-03): a status whose value scales off Power — base + share
       const value = ef.powerScale ? { scale: 'power', base: ef.value ?? 0, mult: ef.powerScale } : (ef.value ?? 1);
       const trig = {
@@ -249,6 +260,12 @@ function compileTrigger(t, unitId, attackId) {
       };
       if (attackId) trig.onlyWithAttack = attackId;
       out.push(trig);
+    } else if (ef.effect === 'heal' && typeof ef.value === 'number') {
+      // capability.auras (2026-09-03): the Necromancer's EOA pulse — heal N to the area
+      if ((t.effects.length > 1) && (t.chance ?? 100) !== 100) { gap(unitId, `${where} ${t.hook}: multi-effect at chance ${t.chance}`, 'multi-effect rolled trigger'); return []; }
+      out.push({ id: `${unitId.replace(/^unit\./, 'trigger.')}.${(t.name || 'heal').toLowerCase().replace(/[^a-z0-9]+/g, '-')}`,
+        hook: t.hook, chance: t.chance ?? 100, select: areaSelect ?? (ef.target === 'self' ? 'self' : 'target'),
+        effect: { kind: 'heal', amount: ef.value }, source: unitId, ...(attackId ? { onlyWithAttack: attackId } : {}) });
     } else if (ef.effect === 'add power' || ef.effect === 'gain Power') {
       // capability.power-pool (2026-09-03): the clock and the condition — side-wide
       if ((t.effects.length > 1) && (t.chance ?? 100) !== 100) { gap(unitId, `${where} ${t.hook}: multi-effect at chance ${t.chance}`, 'multi-effect rolled trigger'); return []; }
@@ -267,6 +284,8 @@ function compileTrigger(t, unitId, attackId) {
   return out;
 }
 
+// stat words an aura can lend (the engine's foldable stats that resolve on read; health is Max Health, not resolved — a gap)
+const HERO_STAT_LATE = { strength: 'strength', precision: 'precision', magic: 'magic', spirit: 'spirit', accuracy: 'accuracy', dodge: 'dodge', armor: 'armor', resist: 'resist', movement: 'movement', reach: 'reach', crit: 'crit', luck: 'luck' };
 const authoredEnemies = [];
 const authoredAttacks = {};
 const authoredAbilities = {}; // capability.item-powers, 2026-08-27
@@ -280,7 +299,25 @@ for (const u of [...AUTH.units].sort((a, b) => (a.id < b.id ? -1 : 1))) {
   const st = u.stats || {};
   // crit and luck COMPILE since station.crit (2026-08-27): per-unit crit is
   // COMBAT-DESIGN's "Base Crit varies by enemy" axis, luck the resistance side.
-  const unitTriggers = (u.triggers || []).flatMap((t) => compileTrigger(t, id, null));
+  const unitTriggers = (u.triggers || []).flatMap((t) => t.hook === 'aura' ? [] : compileTrigger(t, id, null));
+  // capability.auras (2026-09-03): a `hook: aura` row is an AuraDef — a radius
+  // lending stat modifiers while inside. Stats the engine folds compile; the
+  // rest (immunities, Max Health) are named on the aura and in the census.
+  const unitAuras = [];
+  (u.triggers || []).filter((x) => x.hook === 'aura').forEach((t, ai) => {
+    const nm = (t.name || `aura-${ai + 1}`).toLowerCase().replace(/[^a-z0-9]+/g, '-');
+    const aid = `${id.replace(/^unit\./, 'aura.')}.${nm}`;
+    if (t.range === null || t.range === undefined) { gap(id, `aura '${t.targets}' — range null, N never stated`, 'content: range unstated'); return; }
+    const side = /^allies/.test(t.targets || '') ? 'ally' : /^enemies/.test(t.targets || '') ? 'enemy' : 'any';
+    const tagM = String(t.condition || '').match(/^the target has tag ([A-Za-z]+)$/);
+    if (t.condition && !tagM) { gap(id, `aura condition '${t.condition}'`, 'aura condition'); return; }
+    const mods = {}; const agaps = [];
+    for (const ef of t.effects || []) {
+      if (/^grant a stat/.test(ef.effect) && HERO_STAT_LATE[ef.stat]) mods[HERO_STAT_LATE[ef.stat]] = (mods[HERO_STAT_LATE[ef.stat]] ?? 0) + ef.value;
+      else { agaps.push(`${ef.effect}${ef.stat ? ' ' + ef.stat : ''}${ef.status ? ' ' + ef.status : ''} ${ef.value ?? ''}`.trim()); gap(id, `aura ${nm}: ${ef.effect}${ef.stat ? ' (' + ef.stat + ')' : ''}${ef.status ? ' ' + ef.status : ''}`, ef.status ? 'aura: status immunity' : 'aura: ' + (ef.stat || ef.effect)); }
+    }
+    unitAuras.push({ id: aid, radius: t.range, side, ...(tagM ? { requireTags: [tagM[1].toLowerCase()] } : {}), mods, ...(agaps.length ? { gaps: agaps } : {}) });
+  });
   // Enemy SPECIAL MOVES (move.* — Charge, Close Bite, Clobber…) are a kind the
   // engine has no mechanism for and Andrew has not approved (kinds.mjs). They
   // were dropped silently until content.enemy-flip (2026-09-02); the Iron
@@ -340,6 +377,7 @@ for (const u of [...AUTH.units].sort((a, b) => (a.id < b.id ? -1 : 1))) {
     attacks: attackIds, abilities: [], moves: ['power.move'],
     tags: (u.types || []).map((t) => t.toLowerCase()),
     triggers: unitTriggers,
+    ...(unitAuras.length ? { auras: unitAuras } : {}),
   });
 }
 // ── THE PROLOGUE PARTY (content.hero-pack, 2026-08-26) ──────────────────────
@@ -1136,7 +1174,7 @@ function testAbilities() {
   }
   return out;
 }
-const UNIT_FIELDS = new Set(['typeId', 'name', 'side', 'maxHp', 'armor', 'resist', 'accuracy', 'dodge', 'strength', 'precision', 'magic', 'spirit', 'crit', 'luck', 'toughness', 'stands', 'surge', 'role', 'movement', 'reach', 'maxStamina', 'staminaRegen', 'ai', 'attacks', 'abilities', 'moves', 'tags', 'triggers']);
+const UNIT_FIELDS = new Set(['typeId', 'name', 'side', 'maxHp', 'armor', 'resist', 'accuracy', 'dodge', 'strength', 'precision', 'magic', 'spirit', 'crit', 'luck', 'toughness', 'stands', 'surge', 'auras', 'role', 'movement', 'reach', 'maxStamina', 'staminaRegen', 'ai', 'attacks', 'abilities', 'moves', 'tags', 'triggers']);
 const ATTACK_FIELDS = new Set(['id', 'name', 'kind', 'damageType', 'bonus', 'stat', 'reach', 'staminaCost', 'crit', 'critCount', 'area', 'cooldown', 'warmup', 'accuracy', 'hits']);
 // a delta may start from any packed row — the real families AND the test
 // cohort (test-gash-zombie is the cohort's zombie plus one rider)

@@ -145,7 +145,18 @@
         "note": "capability.confusion (2026-09-03): the sweep addles what it hits — the zombie runs a different AI while it lasts. Pure data."
       }
     ],
-    "note": "A complete body, not a delta — no real unit is a 30-hp, 5-accuracy stone that never rolls to hit. capability.area-attack / capability.knockback / station.crit-count scaffolding; fields ONLY in showcase.arc-variant. Re-statted 2026-08-27: the original 14-hp body died before a single-target turn."
+    "note": "A complete body, not a delta — no real unit is a 30-hp, 5-accuracy stone that never rolls to hit. capability.area-attack / capability.knockback / station.crit-count scaffolding; fields ONLY in showcase.arc-variant. Re-statted 2026-08-27: the original 14-hp body died before a single-target turn.",
+    "auras": [
+      {
+        "id": "aura.test-golem.dread",
+        "radius": 1,
+        "side": "enemy",
+        "mods": {
+          "accuracy": -10
+        },
+        "note": "capability.auras (2026-09-03): the golem is hard to look at — enemies adjacent to it lose 10 Accuracy while adjacent. The second aura, pure data, on a body the probe fields."
+      }
+    ]
   },
   {
     "id": "test-warrior",

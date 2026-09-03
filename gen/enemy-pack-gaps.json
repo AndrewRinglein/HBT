@@ -13,33 +13,13 @@
   },
   {
    "unit": "unit.balrog",
-   "what": "(unit) hook 'aura'",
-   "needs": "hook: aura"
-  },
-  {
-   "unit": "unit.balrog",
    "what": "(unit) onTakingDamage: set a ground layer",
    "needs": "set a ground layer"
-  },
-  {
-   "unit": "unit.balrog",
-   "what": "(unit) onActivationEnd area 'every unit within N hexes'",
-   "needs": "area trigger select"
   },
   {
    "unit": "unit.bloodhound",
    "what": "special move move.hound.close-bite (carries an attack)",
    "needs": "enemy special moves (move.* — kind unapproved, no engine mechanism)"
-  },
-  {
-   "unit": "unit.bone-dragon",
-   "what": "(unit) hook 'aura'",
-   "needs": "hook: aura"
-  },
-  {
-   "unit": "unit.bone-dragon",
-   "what": "(unit) hook 'aura'",
-   "needs": "hook: aura"
   },
   {
    "unit": "unit.dark-sniper",
@@ -102,11 +82,6 @@
    "needs": "enemy special moves (move.* — kind unapproved, no engine mechanism)"
   },
   {
-   "unit": "unit.fire-imp",
-   "what": "(unit) onActivationEnd area 'every unit within N hexes'",
-   "needs": "area trigger select"
-  },
-  {
    "unit": "unit.ghoul",
    "what": "(unit) hook 'startOfBattle'",
    "needs": "hook: startOfBattle (declared, engine never fires it)"
@@ -138,8 +113,8 @@
   },
   {
    "unit": "unit.imp-master",
-   "what": "(unit) hook 'aura'",
-   "needs": "hook: aura"
+   "what": "aura 'allies within N hexes' — range null, N never stated",
+   "needs": "content: range unstated"
   },
   {
    "unit": "unit.iron-colossus",
@@ -158,23 +133,28 @@
   },
   {
    "unit": "unit.lieutenant-demon",
-   "what": "(unit) hook 'aura'",
-   "needs": "hook: aura"
+   "what": "(unit) onActivationEnd: grant a stat for the Battle (health)",
+   "needs": "trigger-effect: statMod"
   },
   {
    "unit": "unit.lieutenant-demon",
-   "what": "(unit) onActivationEnd area 'allies within N hexes'",
-   "needs": "area trigger select"
+   "what": "aura aura-1: grant a stat for the Battle (health)",
+   "needs": "aura: health"
   },
   {
-   "unit": "unit.necromancer",
-   "what": "(unit) hook 'aura'",
-   "needs": "hook: aura"
+   "unit": "unit.lieutenant-demon",
+   "what": "aura aura-1: Immunity N weak",
+   "needs": "aura: status immunity"
   },
   {
-   "unit": "unit.necromancer",
-   "what": "(unit) onActivationEnd area 'allies within N hexes'",
-   "needs": "area trigger select"
+   "unit": "unit.lieutenant-demon",
+   "what": "aura aura-1: Immunity N poison",
+   "needs": "aura: status immunity"
+  },
+  {
+   "unit": "unit.lieutenant-demon",
+   "what": "aura aura-1: Immunity N burn",
+   "needs": "aura: status immunity"
   },
   {
    "unit": "unit.necromancer",
@@ -200,11 +180,6 @@
    "unit": "unit.nightstalker",
    "what": "attack.nightstalker.rend onAttack: deal 2 crits — condition 'you are standing on darkness'",
    "needs": "trigger condition"
-  },
-  {
-   "unit": "unit.poison-imp",
-   "what": "(unit) onActivationEnd area 'every unit within N hexes'",
-   "needs": "area trigger select"
   },
   {
    "unit": "unit.shadow-sorcerer",
@@ -273,8 +248,8 @@
   },
   {
    "unit": "unit.skeleton-spider",
-   "what": "(unit) onActivationEnd area 'allies within N hexes'",
-   "needs": "area trigger select"
+   "what": "(unit) onActivationEnd: grant a stat for the Battle (armor)",
+   "needs": "trigger-effect: statMod"
   },
   {
    "unit": "unit.skeleton-spider",
@@ -293,11 +268,6 @@
   },
   {
    "unit": "unit.vampire",
-   "what": "attack.vampire.bite onHit: heal",
-   "needs": "heal"
-  },
-  {
-   "unit": "unit.vampire",
    "what": "attack.vampire.bite onKill: grant a stat for the Battle (health)",
    "needs": "trigger-effect: statMod"
   },
@@ -310,11 +280,6 @@
    "unit": "unit.vampire",
    "what": "attack.vampire.mesmerize onHit: target loses stamina",
    "needs": "capability.target-stamina-loss"
-  },
-  {
-   "unit": "unit.vampire-lord",
-   "what": "attack.vampire-lord.bite onHit: heal",
-   "needs": "heal"
   },
   {
    "unit": "unit.vampire-lord",
