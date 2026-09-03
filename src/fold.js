@@ -23,6 +23,7 @@ export function createState() {
     subjectId: null, subjectMode: 'acting',
     acted: {},             // id -> true, this phase (plain data — Law 5b)
     AIM: null, FIRING: null, TRIGFLASH: null,
+    critPending: false,    // the attack.hit that just landed was a crit; the damage beat reads it
     outcome: null,
   }
 }
@@ -74,6 +75,7 @@ export function fold(S, e, ctx, now = 0) {
         S.subjectId = e.target; S.subjectMode = 'target'
       } break
     case 'attack.hit':
+      S.critPending = !!e.crit
       if (S.AIM) {
         cue('fx.attack', { kind: S.AIM.kind, dt: S.AIM.type, a: e.actor, t: e.target, dmg: S.AIM.dmg })
         if (e.crit) cue('float', { hex: U[S.AIM.tgt] ? U[S.AIM.tgt].hex : null, text: 'CRIT!', col: '#ffcf6a', big: true })
@@ -91,7 +93,12 @@ export function fold(S, e, ctx, now = 0) {
     case 'damage.applied':
       if (U[e.target]) { U[e.target].hp = e.hpAfter
         cue('flash', { id: e.target })
-        if (String(e.causeId || '').includes('status.')) cue('fx.tick', { id: e.target, cause: e.causeId })
+        const tick = String(e.causeId || '').includes('status.')
+        if (tick) cue('fx.tick', { id: e.target, cause: e.causeId })
+        /* HITSTOP (ruled 2026-09-01, VISUAL-BATTLE-UPDATES §1.2): a strike freezes
+           the tokens for 70ms, a crit for 140. A status tick is not a strike. */
+        else cue('hitstop', { ms: S.critPending ? 140 : 70 })
+        S.critPending = false
         /* EVERY damage floats overhead and drifts up, coloured by damage type
            (ruled 2026-08-27): red physical, blue magic, white true. */
         cue('float', { hex: U[e.target].hex, text: '−' + e.amount, col: DCOL[e.damageType] || '#ffd9a0', big: true })
@@ -148,7 +155,7 @@ export function fold(S, e, ctx, now = 0) {
         cue('fx.attack', { kind: 'ranged', dt: 'magic', a: e.actor, t: e.target, dmg: 5 })
       break
     case 'life.downed': if (U[e.target]) U[e.target].life = 'downed'; break
-    case 'life.dead': if (U[e.target]) U[e.target].life = 'dead'; break
+    case 'life.dead': if (U[e.target]) { U[e.target].life = 'dead'; cue('hitstop', { ms: 110 }) } break
     case 'bleedout.set': case 'bleedout.tick': if (U[e.target]) U[e.target].bleed = e.bleedOut; break
     case 'power.used':
       if (e.causeId) S.FIRING = { unit: e.actor, ability: e.causeId, until: now + FIRE_MS }

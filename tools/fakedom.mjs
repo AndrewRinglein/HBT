@@ -43,6 +43,8 @@ export class El {
   querySelectorAll(sel) { const out = []; const walk = n => { for (const c of n.children) { if (matchSel(c, sel)) out.push(c); walk(c) } }; walk(this); return out }
   closest(sel) { for (let p = this; p; p = p.parentNode) if (p.matches && p.matches(sel)) return p; return null }
   focus() {} blur() {} scrollIntoView() {} scrollTo() {}
+  /* Web Animations, recorded not run — verify reads what was asked for */
+  animate(kf, opts) { const a = { kf, opts, onfinish: null, cancel() { a.cancelled = true } }; (this.animations ??= []).push(a); return a }
   contains(n) { for (let p = n; p; p = p.parentNode) if (p === this) return true; return false }
   /** every rendered string on this subtree — markup as set plus text */
   allHTML(out = []) { if (this._html) out.push(this._html); if (this._text) out.push(this._text); this.children.forEach(c => c.allHTML(out)); return out }

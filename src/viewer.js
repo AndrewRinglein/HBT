@@ -20,7 +20,7 @@
              render, dispose, get cursor, get events, get state, _V }
    ══════════════════════════════════════════════════════════════════════════ */
 import { createState, fold, foldTo } from './fold.js'
-import { el, ensureKeyframes, buildGround, syncUnits, drawAim, applyCam, playCues, clearFloats, initFX } from './board.js'
+import { el, ensureKeyframes, buildGround, syncUnits, drawAim, applyCam, playCues, clearFloats, initFX, traverse, ROOT_TRANSITION } from './board.js'
 import { drawPanel } from './panel.js'
 import { drawBar, drawStam } from './actionbar.js'
 import { spriteHTML } from './icons.js'
@@ -109,27 +109,59 @@ export function mountBattleViewer(root, data, opts = {}) {
     if (visual) playCues(V, cues)
     V.cursor++
     if (opts.onCursor) opts.onCursor(V.cursor, e)
+    return cues
+  }
+  /* ONE TRAVERSAL PER MOVE (ruled 2026-09-01, VISUAL-BATTLE-UPDATES §1.1).
+     The engine emits a `moved` per hex; the pump used to schedule each 125ms
+     against a .26s CSS transition, so every step was interrupted at ~48% and
+     the easing never resolved. Now a move.begin and the consecutive `moved`
+     events of the same actor fold as ONE beat: every event is still folded in
+     order (the state is exact at each), but the token travels the whole path
+     under one easing, and the pump waits for the arrival. Pacing is the pump's
+     to decide (Law 3); the log is untouched. */
+  function stepMove(e) {
+    const actor = e.actor, EV = V.EV
+    const startHex = V.S.U[actor] ? V.S.U[actor].hex : null
+    const path = []
+    let cues = []
+    if (e.type === 'move.begin') cues = cues.concat(applyOne(e, false))
+    while (V.cursor < EV.length && EV[V.cursor].type === 'moved' && EV[V.cursor].actor === actor) {
+      path.push(EV[V.cursor].to)
+      cues = cues.concat(applyOne(EV[V.cursor], false))
+    }
+    const hexes = path.length
+    const dur = hexes ? Math.min(900, Math.max(320, 200 + 85 * hexes)) : 0
+    playCues(V, cues.filter(c => c.k !== 'walk'))
+    render()
+    if (hexes && startHex != null) traverse(V, actor, startHex, path, dur)
+    return dur + (hexes ? 60 : 0)                  // the arrival settle
   }
   function step() {
     if (V.cursor >= V.EV.length) { pause(); return }
     const e = V.EV[V.cursor]
-    applyOne(e, true)
-    const d = DUR[e.type] ?? 0
-    if (d > 0 || REDRAW.has(e.type)) render()
+    let d
+    if (e.type === 'move.begin' || e.type === 'moved') d = stepMove(e)
+    else {
+      applyOne(e, true)
+      d = DUR[e.type] ?? 0
+      if (d > 0 || REDRAW.has(e.type)) render()
+    }
     /* Ruled 2026-08-26: standard speed is 25% slower; all speeds scale off it */
     if (V.playing) V.timer = setTimeout(step, Math.max(16, (d || 8) / (V.speed * 0.75)))
   }
   function play() { V.playing = true; clearTimeout(V.timer); step() }
   function pause() { V.playing = false; clearTimeout(V.timer) }
-  function stepOnce() { pause(); if (V.cursor >= V.EV.length) return; applyOne(V.EV[V.cursor], true); render() }
+  function stepOnce() { pause(); if (V.cursor >= V.EV.length) return
+    const e = V.EV[V.cursor]
+    if (e.type === 'move.begin' || e.type === 'moved') stepMove(e); else { applyOne(e, true); render() } }
   function seek(n) {
     clearTimeout(V.timer)
     V.cursor = Math.max(0, Math.min(n, V.EV.length))
     V.S = foldTo(V.EV, V.cursor, ctx())
     clearFloats(V)
-    for (const E of V.layers.UEL.values()) E.root.style.transition = 'none'
+    for (const E of V.layers.UEL.values()) { if (E.walk) { E.walk.cancel(); E.walk = null } E.root.style.transition = 'none' }
     render()
-    requestAnimationFrame(() => { for (const E of V.layers.UEL.values()) E.root.style.transition = 'left .26s ease, top .26s ease, opacity .5s ease' })
+    requestAnimationFrame(() => { for (const E of V.layers.UEL.values()) E.root.style.transition = ROOT_TRANSITION })
     if (opts.onCursor) opts.onCursor(V.cursor, V.EV[V.cursor - 1] || null)
     if (V.playing) V.timer = setTimeout(step, 120)
   }

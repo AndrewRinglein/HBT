@@ -20,6 +20,9 @@
      · every <use href="#ra-…"> resolves to a sprite symbol
      · a dropped export plays (harness.playExport)
      · the page stamps the viewer and engine commits
+     · a multi-hex move steps as ONE beat and lands the unit where the log says
+     · hitstop cues carry only the ruled 70/110/140 and all three occur
+     · the skull is on the bar exactly when the tick projection is lethal
    Optional --check names add change-specific assertions. */
 import fs from 'node:fs'
 import { resolve, dirname } from 'node:path'
@@ -125,6 +128,60 @@ for (const u of uses) check(spriteIds.has(u), `icons: <use> names ${u}, sprite l
 check(uses.has('ra-crossed-swords') && uses.has('ra-shoe-prints'), `icons: expected swords and shoe-prints among uses, got ${[...uses].join(',')}`)
 check(damaging > 0 && plain > 0, `icons: rows damaging=${damaging} plain=${plain} — both kinds must appear`)
 if (DUR) for (const t of Object.keys(DUR)) check(FOLDED_TYPES.includes(t) || IGNORED.has(t), `pump: DUR names ${t}, which no log folds`)
+
+/* ── one traversal per move (VISUAL-BATTLE-UPDATES §1.1) ───────────────── */
+{
+  const b = LIB.battles[0]; H.load(0); const v = H.viewer; v.pause()
+  const EV = v.events
+  const i = EV.findIndex(e => e.type === 'move.begin' && e.hexes > 1)
+  if (i < 0) fails.push('traversal: no multi-hex move in the first battle to test with')
+  else {
+    v.seek(i); v.step()
+    check(v.cursor === i + 1 + EV[i].hexes, `traversal: stepping a ${EV[i].hexes}-hex move advanced ${v.cursor - i} events, expected ${1 + EV[i].hexes} (one beat per move)`)
+    const u = v.state.U[EV[i].actor]
+    check(u && u.hex === EV[i].to, `traversal: after the beat the unit stands at ${u && u.hex}, the move said ${EV[i].to}`)
+    const E = v._V.layers.UEL.get(EV[i].actor)
+    const a = E && E.root.animations && E.root.animations[E.root.animations.length - 1]
+    const want = Math.min(900, Math.max(320, 200 + 85 * EV[i].hexes))
+    check(a && a.kf.length === EV[i].hexes + 1, `traversal: expected ${EV[i].hexes + 1} waypoints, got ${a && a.kf.length}`)
+    check(a && a.opts.duration === want && a.opts.easing === 'cubic-bezier(.35,0,.2,1)', `traversal: duration/easing ${a && a.opts.duration}/${a && a.opts.easing}, expected ${want}/cubic-bezier(.35,0,.2,1)`)
+    const bob = E && E.img.animations && E.img.animations[E.img.animations.length - 1]
+    check(bob && bob.opts.iterations === EV[i].hexes, `traversal: the bob should cycle once per hex (${EV[i].hexes}), got ${bob && bob.opts.iterations}`)
+  }
+}
+
+/* ── hitstop (VISUAL-BATTLE-UPDATES §1.2): 70 hit · 110 kill · 140 crit ── */
+{
+  const seen = new Set(); const S = createState()
+  for (const b of LIB.battles) { const S = createState()
+    for (const e of b.battle.events) for (const c of fold(S, e, { UD: LIB.static.units, SN: LIB.static.statuses }, 0)) if (c.k === 'hitstop') seen.add(c.ms) }
+  for (const ms of [70, 110, 140]) check(seen.has(ms), `hitstop: no ${ms}ms beat in any library battle`)
+  for (const ms of seen) check([70, 110, 140].includes(ms), `hitstop: unruled duration ${ms}`)
+}
+
+/* ── the skull (VISUAL-BATTLE-UPDATES §3.1): shown exactly when the projection is lethal ── */
+{
+  const { projectTick } = await import(pathToFileURL(resolve(PKG, 'src/projection.js')).href)
+  let lethalSeen = 0, mismatches = 0
+  for (let bi = 0; bi < LIB.battles.length; bi++) {
+    H.load(bi); const v = H.viewer; v.pause()
+    const EV = v.events, V = v._V
+    for (let i = 0; i < EV.length; i++) {
+      v.step()
+      if (!['status.applied', 'damage.applied'].includes(EV[i].type)) continue
+      for (const u of Object.values(v.state.U)) {
+        if (u.life !== 'standing') continue
+        const E = V.layers.UEL.get(u.id); if (!E) continue
+        const lethal = projectTick(u, LIB.static.units).lethal
+        const shown = E.skull.style.display !== 'none'
+        if (lethal) lethalSeen++
+        if (lethal !== shown) mismatches++
+      }
+    }
+  }
+  check(lethalSeen > 0, 'skull: no lethal projection anywhere in the library — cannot test the skull')
+  check(mismatches === 0, `skull: ${mismatches} unit-frames where the skull and the projection disagree`)
+}
 
 /* ── a dropped export plays (plan §8.6) ────────────────────────────────── */
 {

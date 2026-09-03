@@ -4,7 +4,7 @@
    on one page. Split out of viewer-core.js 2026-09-02 with the drawing intact. */
 import { TSWATCH, stStyle, PROJ_TINT, SIDE_TINT, SIDE_GLOW } from './theme.js'
 import { projectTick, dangerOf } from './projection.js'
-import { dangerHTML } from './icons.js'
+import { dangerHTML, raIcon } from './icons.js'
 import { createHexVFX, playMeleeAttack, playMagicBolt, playHolyBolt, playArrow, playStatusApply, playStatusTick } from './hexvfx.js'
 
 export const el = (cls, style, html) => { const d = document.createElement('div')
@@ -143,6 +143,40 @@ export function fxTick(V, tId, causeId) {
   try { playStatusTick(FX, T, st) } catch (e) {}
 }
 
+/* ── one traversal per move (ruled 2026-09-01, VISUAL-BATTLE-UPDATES §1.1) ─
+   The token's style already holds the destination (render ran first); this
+   animation drives it from the start hex along the whole path under ONE
+   easing — duration 200 + 85 × hexes, clamped 320–900ms — with the walk-bob
+   cycling once per hex (bob by distance travelled, not per event) and a 60ms
+   arrival settle. Web Animations override the style during playback and
+   release to it on finish, so there is no snap. Without `animate` (the
+   headless verifier) the token is simply already there. */
+export const ROOT_TRANSITION = 'left .26s ease, top .26s ease, opacity .5s ease'
+const BOB = [{ transform: 'translateY(0) rotate(0)' }, { transform: 'translateY(-6px) rotate(-2.6deg)', offset: .25 },
+  { transform: 'translateY(-2px) rotate(0)', offset: .5 }, { transform: 'translateY(-6px) rotate(2.6deg)', offset: .75 }, { transform: 'translateY(0) rotate(0)' }]
+export function traverse(V, id, startHex, path, dur) {
+  const E = V.layers.UEL.get(id), u = V.S.U[id]
+  if (!E || !u || !E.root.animate) return
+  const pts = [feetOf(V, startHex), ...path.map(h => feetOf(V, h))]
+  const cum = [0]
+  for (let i = 1; i < pts.length; i++) cum.push(cum[i - 1] + Math.hypot(pts[i].x - pts[i - 1].x, pts[i].y - pts[i - 1].y))
+  const total = cum[cum.length - 1] || 1
+  const kf = pts.map((p, i) => ({ left: p.x + 'px', top: p.y + 'px', offset: cum[i] / total }))
+  if (E.walk) E.walk.cancel()
+  E.root.style.transition = 'none'
+  const a = E.root.animate(kf, { duration: dur, easing: 'cubic-bezier(.35,0,.2,1)', fill: 'none' })
+  E.walk = a
+  if (u.life === 'standing') E.img.animate(BOB, { duration: Math.max(120, dur / path.length), iterations: path.length, easing: 'ease-in-out' })
+  a.onfinish = () => {
+    E.root.style.transition = ROOT_TRANSITION
+    E.walk = null
+    if (u.life === 'standing' && E.img.animate) {
+      E.img.style.transformOrigin = '50% 100%'
+      E.img.animate([{ transform: 'scaleY(.94)' }, { transform: 'scaleY(1)' }], { duration: 60, easing: 'ease-out' })
+    }
+  }
+}
+
 /* ── token beats: walk-bob, lunge, flash ───────────────────────────────── */
 export function walkBob(V, id) {
   const E = V.layers.UEL.get(id), u = V.S.U[id]
@@ -161,9 +195,21 @@ export function lunge(V, attId, tgtId) {
   setTimeout(() => { A.bb.style.transform = 'rotateX(var(--anti))' }, 170)
 }
 export function hitFlash(V, tgtId) {
+  /* a STRIKE, not a glow: 45ms (ruled 2026-09-01; it was 160 and read as a glow) */
   const T = V.layers.UEL.get(tgtId); if (!T) return
   T.flash.style.opacity = '1'
-  setTimeout(() => { T.flash.style.opacity = '0' }, 170)
+  setTimeout(() => { T.flash.style.opacity = '0' }, 60)
+}
+/* HITSTOP (ruled 2026-09-01): freeze TOKEN TRANSFORMS ONLY — every animation
+   under the units layer (traversals, bobs, the lunge's transition) pauses for
+   the beat; the canvas VFX and the floating numbers keep running, because they
+   are other layers. Time is a channel nothing else on the board uses. */
+export function hitstop(V, ms) {
+  const L = V.layers.unitsL; if (!L || !L.getAnimations) return
+  const anims = L.getAnimations({ subtree: true }).filter(a => a.playState === 'running')
+  if (!anims.length) return
+  for (const a of anims) a.pause()
+  setTimeout(() => { for (const a of anims) { try { a.play() } catch (e) {} } }, ms)
 }
 
 /* ── play the fold's cues on the DOM ───────────────────────────────────── */
@@ -173,6 +219,7 @@ export function playCues(V, cues) {
       case 'walk': walkBob(V, c.id); break
       case 'lunge': lunge(V, c.a, c.t); break
       case 'flash': hitFlash(V, c.id); break
+      case 'hitstop': hitstop(V, c.ms); break
       case 'float': pushFloat(V, c.hex, c.text, c.col, c); break
       case 'fx.attack': fxAttack(V, c.kind, c.dt, c.a, c.t, c.dmg); break
       case 'fx.status': fxStatus(V, c.id, c.style); break
@@ -186,8 +233,7 @@ export function playCues(V, cues) {
 function mkUnit(V, u) {
   const { ARTMAP, ASSETS } = V.data
   const a = ARTMAP[u.typeId] || ARTMAP['test-zombie']
-  const root = el('', 'position:absolute;width:0;height:0;transform-style:preserve-3d;' +
-    'transition:left .26s ease, top .26s ease, opacity .5s ease')
+  const root = el('', 'position:absolute;width:0;height:0;transform-style:preserve-3d;transition:' + ROOT_TRANSITION)
   const tint = SIDE_TINT[u.side] || SIDE_TINT.enemy, glow = SIDE_GLOW[u.side] || SIDE_GLOW.enemy
   const fring = el('fring', `left:-46px;top:-30px;width:92px;height:60px;border-color:${tint};opacity:.55`)
   const shadow = el('shadow', 'left:-44px;top:-24px;width:88px;height:44px;transform:rotate(-16deg) scale(1.05,.8);opacity:.58')
@@ -202,14 +248,22 @@ function mkUnit(V, u) {
   img.style.backgroundImage = `url("${ASSETS[a.token]}")`
   img.addEventListener('click', ev => { ev.stopPropagation(); V.view.inspectId = u.id; V.render() })
   bb.appendChild(img)
-  const flash = el('', 'position:absolute;border-radius:50%;background:radial-gradient(circle,rgba(255,255,255,.95),rgba(255,220,160,.4) 55%,transparent 75%);opacity:0;transition:opacity .16s ease;pointer-events:none')
+  const flash = el('', 'position:absolute;border-radius:50%;background:radial-gradient(circle,rgba(255,255,255,.95),rgba(255,220,160,.4) 55%,transparent 75%);opacity:0;transition:opacity .045s ease;pointer-events:none')
   bb.appendChild(flash)
   const badges = el('badges', '')
   const hpbar = el('hpbar', ''); const hpfill = el('hpfill', ''); hpbar.appendChild(hpfill)
   const proj = el('', 'display:none'); hpbar.appendChild(proj)
   const prot = el('', 'display:none')
   const mark = el('actMark', 'display:none')
-  bb.appendChild(badges); bb.appendChild(hpbar); bb.appendChild(prot); bb.appendChild(mark)
+  /* THE SKULL (ruled 2026-09-01, VISUAL-BATTLE-UPDATES §3.1): when the
+     projection crosses zero — the unit dies of its statuses before it acts
+     again — the bar carries a skull. The highest-value fact on the bar: do not
+     spend an action here. Lifted with translateZ like every low numeral. */
+  const skull = el('', 'position:absolute;display:none;pointer-events:none;transform:translateZ(60px);width:20px;height:20px;line-height:1',
+    /* NO filter (the 3D trap) — the halo is a black copy scaled up behind the bone one */
+    raIcon('skull', 'position:absolute;left:0;top:0;font-size:20px;color:#000;transform:scale(1.3);opacity:.9') +
+    raIcon('skull', 'position:absolute;left:0;top:0;font-size:20px;color:#f4ece0'))
+  bb.appendChild(badges); bb.appendChild(hpbar); bb.appendChild(prot); bb.appendChild(mark); bb.appendChild(skull)
   const clock = el('clockchip', 'left:-20px;top:16px;display:none')
   /* NO PLATE (ruled 2026-09-01); LIFTED toward the camera with translateZ so the
      hex in front does not shear the numeral (PLAYBACK-DESIGN §7.3d) */
@@ -225,7 +279,7 @@ function mkUnit(V, u) {
   root.appendChild(actB); root.appendChild(selR); root.appendChild(downR)
   root.appendChild(bb); root.appendChild(clock)
   V.layers.unitsL.appendChild(root)
-  return { root, fring, shadow, actA, actB, selR, downR, bb, img, flash, badges, hpbar, hpfill, proj, prot, mark, clock, mv, dg, glow, a }
+  return { root, fring, shadow, actA, actB, selR, downR, bb, img, flash, badges, hpbar, hpfill, proj, prot, mark, clock, mv, dg, skull, glow, a }
 }
 export function syncUnits(V) {
   const { S, view, layers: L } = V, { UD, LAYOUT } = V.data
@@ -243,7 +297,7 @@ export function syncUnits(V) {
       E.downR.style.display = 'none'; E.clock.style.display = 'none'
       E.badges.style.display = 'none'; E.hpbar.style.cssText = 'display:none'
       E.mark.style.display = 'none'; E.mv.style.display = 'none'
-      E.prot.style.display = 'none'; E.dg.style.display = 'none'
+      E.prot.style.display = 'none'; E.dg.style.display = 'none'; E.skull.style.display = 'none'
       const ch = Math.round(150 * 1.60 * ((E.a.height || 1.55) / 1.55) * 0.55 * 0.6)
       const cw = Math.round(ch * E.a.aspect)
       /* a body lying flat belongs in the MIDDLE OF ITS HEX (fixed 2026-09-01) */
@@ -348,6 +402,9 @@ export function syncUnits(V) {
             `height:${(100 * gainFrac).toFixed(1)}%;background:${PROJ_TINT.heal}66;border-bottom:2px solid ${PROJ_TINT.heal}`
         }
       }
+      /* the skull sits on the bar's shoulder — centred on the 6px bar, just above it */
+      if (!down && P.lethal) { E.skull.style.display = ''; E.skull.style.left = (w / 2 + 7 + 3 - 10) + 'px'; E.skull.style.top = (-bhFull - 24) + 'px' }
+      else E.skull.style.display = 'none'
       /* PROTECTION: its own segmented bar beside the HP bar (§1) */
       const segs = Math.min(12, P.pool)
       if (down || segs <= 0) E.prot.style.display = 'none'
