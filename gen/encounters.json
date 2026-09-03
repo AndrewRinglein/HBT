@@ -9,7 +9,7 @@
  },
  "prologue": [
   {
-   "id": "battle.prologue-1",
+   "id": "encounter.prologue-1",
    "name": "Two Zombies and a Child",
    "fixed": true,
    "retreat": false,
@@ -85,7 +85,7 @@
    }
   },
   {
-   "id": "battle.prologue-2",
+   "id": "encounter.prologue-2",
    "name": "Surrounded",
    "fixed": true,
    "retreat": false,
@@ -229,7 +229,7 @@
    }
   },
   {
-   "id": "battle.prologue-3",
+   "id": "encounter.prologue-3",
    "name": "The Schoolhouse",
    "fixed": true,
    "retreat": true,
@@ -338,7 +338,7 @@
    }
   },
   {
-   "id": "battle.prologue-4",
+   "id": "encounter.prologue-4",
    "name": "The Curse",
    "fixed": true,
    "retreat": true,
@@ -487,7 +487,7 @@
    }
   },
   {
-   "id": "battle.prologue-5",
+   "id": "encounter.prologue-5",
    "name": "The Hunt",
    "fixed": true,
    "retreat": true,
@@ -623,7 +623,7 @@
  },
  "scripted": [
   {
-   "id": "battle.horrors-of-the-night",
+   "id": "encounter.horrors-of-the-night",
    "name": "Horrors of the Night",
    "family": "night",
    "setup": [

@@ -815,7 +815,7 @@ const alphaTeam = [];
 // grants attacks that exist only as NAMES (no authored rows) — he fields
 // weaponless with a named gap, the shadow-hound-puppy precedent.
 // encounter.runner (2026-09-03): the School Teacher and School Children join —
-// battle.prologue-3 places them, and ruled 2026-08-25 confirms all three
+// encounter.prologue-3 places them, and ruled 2026-08-25 confirms all three
 // (encounters.json civilians.confirmed). Read the list from the data.
 // (ENC is read above)
 const namedByEncounters = [...(ENC.prologue || []), ...(ENC.scripted || []), ...(ENC.authored || [])]

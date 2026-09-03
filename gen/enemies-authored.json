@@ -267,7 +267,7 @@
      "name": "Shoot",
      "targets": "one enemy within N hexes",
      "range": 5,
-     "rangeSource": "5 — ruled 2026-09-03 (ENCOUNTERS-ENGINE-HANDOFF.md §5.2: 'attack.skeletal-archer.shoot (range 5, ruled 2026-09-03)'); was null, so the archer fielded with only Gut and walked at the party — battle.prologue-2's ranged chaff never existed",
+     "rangeSource": "5 — ruled 2026-09-03 (ENCOUNTERS-ENGINE-HANDOFF.md §5.2: 'attack.skeletal-archer.shoot (range 5, ruled 2026-09-03)'); was null, so the archer fielded with only Gut and walked at the party — encounter.prologue-2's ranged chaff never existed",
      "damage": {
       "stat": "precision",
       "mod": 0
