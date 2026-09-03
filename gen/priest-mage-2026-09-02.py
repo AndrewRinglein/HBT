@@ -186,8 +186,8 @@ ITEMS = [
                   intent='Three Turns of warning and ten of waiting, for the largest single block in the game.'),
              dict(id='power.staff-of-the-magi.vortex', name='Vortex', stamina=3, cooldown=0,
                   targets='a hex within 5 hexes and every hex adjacent to it', tags=['area'],
-                  description='Deal magic damage equal to Magic x 3 to every unit in the blast. It does not roll to hit, so it cannot crit. Using it costs you 1 Magic and 1 Precision for the rest of the Battle.',
-                  intent='It is the biggest number on the board and it makes every number after it smaller. Fire it late.'),
+                  description="Deal magic damage equal to Magic x 3 to every unit in the blast. It does not roll to hit, so it cannot crit. Using it lowers the party's Magic by 1 AND the enemy side's Power by 1 for the rest of the Battle.",
+                  intent='It eats the magic out of the field -- yours and theirs, one point each. The blast is enormous and every spell cast after it, on either side, is smaller.'),
          ],
          attacks=[]),
     dict(id='item.staff-of-the-destroyer', name='Staff of the Destroyer', cls='class.mage', tier=5, hands=2, slots=2,
@@ -217,8 +217,9 @@ ITEMS = [
          powers=[
              dict(id='power.staff-of-the-ultimate-destroyer.perfect-sight', name='Perfect Sight', stamina=2, cooldown=0,
                   targets='self', tags=[],
-                  description='Until the end of your third Activation from now, your Precision is doubled.',
-                  intent='Two Stamina to make the next three Activations count twice.'),
+                  description='Until the end of your third Activation from now, your Precision is doubled (Precision added to Precision).',
+                  intent='Two Stamina to make the next three Activations count twice.',
+                  src=' | CONFIRMED 2026-09-03: "add precision to precision" -- the dictation\'s "perception" was Precision, and the effect is doubling, not a flat bonus.'),
          ],
          attacks=[
              dict(id='attack.staff-of-the-ultimate-destroyer.annihilation', name='Annihilation', rng=8, stat='precision',
@@ -298,7 +299,7 @@ GAPS = [
     ('doubleStatBonus', 'attack.staff-of-the-destroyer.ruin +3', 'Damage = stat + 2x another stat. `addsStat` adds one, `halfStatBonus` adds a half; there is no doubling field.'),
     ('doubleStat', 'attack.staff-of-the-ultimate-destroyer.annihilation', 'The attack\'s OWN stat doubled.'),
     ('cooldown on an attack', 'attack.staff-of-the-destroyer.ruin +2', 'Cooldown is a POWER field. Three of these attacks carry one.'),
-    ('self-cost on use', 'power.staff-of-the-magi.vortex', 'Using a power permanently lowering the user\'s own stats for the Battle.'),
+    ('lowering a global scalar for the Battle', 'power.staff-of-the-magi.vortex', "Vortex takes 1 off the party-wide Magic sum AND 1 off the enemy side's POWER (COMBAT-DESIGN.md line 647: \"Power is the enemy's Magic ... a single global scalar for the whole enemy side\"). Nothing writes to either global mid-Battle today, and Power is not in the codex's 20-stat ladder because it is not a hero stat."),
     ('stat doubling for a duration', 'power.staff-of-the-ultimate-destroyer.perfect-sight', 'Precision doubled for 3 Activations -- a multiplier, not a flat modifier.'),
     ('on-hit rider granted for a duration', 'power.fire-gauntlet.stoke', 'A power that adds an onHit effect to every attack for 3 Activations.'),
     ('corpse destruction on kill', 'attack.staff-of-the-destroyer.ruin +1', 'rule.corpses defines the corpse; an onKill that DESTROYS it needs the hook.'),
@@ -322,7 +323,7 @@ def power_row(p, item):
         'id': p['id'], 'name': p['name'], 'specialty': None, 'owner': item['id'],
         'stamina': p['stamina'], 'cooldown': p.get('cooldown', 0), 'warmup': p.get('warmup', 0),
         'free': p.get('free', False), 'targets': p['targets'], 'tags': p.get('tags', []),
-        'description': p['description'], 'source': S, 'triggers': p.get('triggers', []),
+        'description': p['description'], 'source': S + p.get('src', ''), 'triggers': p.get('triggers', []),
         'intent': p.get('intent', ''),
     }
 

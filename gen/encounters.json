@@ -704,9 +704,9 @@
        "from": "the opposite side",
        "at": {
         "col": 8,
-        "row": 15
+        "row": 0
        },
-       "was": "the opposite side — read as the PLAYER edge, since everything else starts far side (2026-09-03)"
+       "was": "the opposite side — RULED 2026-09-03 to mean the ENEMY side, i.e. the far edge, as everything else"
       },
       {
        "unit": "unit.eyeblight",
@@ -714,30 +714,39 @@
        "from": "the opposite side",
        "hexes": [
         {
-         "col": 5,
-         "row": 15
+         "col": 3,
+         "row": 0
         },
         {
-         "col": 11,
-         "row": 15
+         "col": 13,
+         "row": 0
         }
        ],
-       "was": "the opposite side — the player edge"
+       "was": "the opposite side — the enemy side"
       }
      ]
     }
    ],
    "intent": "The board goes dark faster than the party can cross it. Four Eyeblights strip Vision from range 9 and each one that dies floods ten hexes with darkness — then the things that live in darkness arrive.",
-   "source": "Dictated 2026-09-02. PHASE NUMBERING IS A READING: dictated as 'next phase ... in the second phase, or their first end phase, there is nothing ... the next one ... the next one', read as waves at the end of phases 1, 2 (empty), 3 and 4. Say so if the empty phase sits elsewhere. No hex placements were dictated beyond the last wave arriving from the opposite side. | 2026-09-03 RULED: all units start on the FAR SIDE of the board, and the battle starts in darkness — every square dark. Hex placements added on that ruling; \"from the opposite side\" at phase 4 is therefore read as the PLAYER edge, which surrounds the party. NOTE the consequence: with the whole board already dark, the Eyeblights' on-death darkness flood and the Shadow Sorcerer's Nightfall have nothing to darken unless the party makes light — so those effects become the answer to torches and Reveal, not the source of the dark.",
+   "source": "Dictated 2026-09-02. PHASE NUMBERING IS A READING: dictated as 'next phase ... in the second phase, or their first end phase, there is nothing ... the next one ... the next one', read as waves at the end of phases 1, 2 (empty), 3 and 4. Say so if the empty phase sits elsewhere. No hex placements were dictated beyond the last wave arriving from the opposite side. | 2026-09-03 RULED: all units start on the FAR SIDE; the battle starts in darkness, every square dark; \"from the opposite side\" at phase 4 means the ENEMY side (the far edge), NOT behind the party. The darkness is not static: heroes light their Vision radius on their own phase, and the night family answers by stripping Vision and repainting darkness — that tug of war IS the encounter. Vision: stat 0, battlefield +6, floor 1.",
    "board": {
     "width": 16,
     "height": 16
    },
    "standing": [
     {
-     "rule": "THE BOARD STARTS DARK",
-     "effect": "Darkness the battlefield condition, covering the whole map from phase 1 — not the painted layer. Every hex is dark before anything moves.",
-     "source": "Ruled 2026-09-03: \"The units in Horror of the Night start on the far side of the board, and it starts in darkness, so every square is dark.\"",
+     "rule": "THE BOARD STARTS DARK, AND LIGHT IS A TUG OF WAR",
+     "effect": "Every hex is dark at phase 1 (Darkness the battlefield condition, whole-map). On the HERO phase each hero lights everything within its Vision radius. The night family then strips Vision and repaints darkness over what was lit. Light is not a resource the party spends — it is a bubble that moves with them and that the enemy shrinks and paints over.",
+     "source": "Ruled 2026-09-03: \"when it's the hero's turn, they light up everything within their vision range. Then things will attack and lower their vision range and try to repaint Nightfall.\"",
+     "needs": [
+      "capability.vision-and-darkness",
+      "capability.ground-layers"
+     ]
+    },
+    {
+     "rule": "VISION: BATTLEFIELD +6, STAT 0, FLOOR 1",
+     "effect": "The Vision STAT is 0 by default — nothing is stored there. The battlefield contributes a +6 modifier. Effective Vision = 6 + whatever badges, gear and effects modify it. It can never fall below 1: every unit always sees its adjacent hexes.",
+     "source": "Ruled 2026-09-03: \"the base modifier to vision range is 6... it should always have a minimum of one. Every unit can always see what is adjacent to it. But the base vision stats are zero because there's no reason to have a stat there, but the modifier to vision on the battlefield is 6.\" GENERAL RULE, not specific to this encounter — COMBAT-DESIGN.md sec4 is the owning document and carries it too.",
      "needs": [
       "capability.vision-and-darkness"
      ]
