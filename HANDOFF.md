@@ -5,6 +5,12 @@ engine/simulation chat for Heroes of Blight and Tragic. Read this whole file
 before touching anything; it is short on purpose and everything it points at is
 long.*
 
+> **2026-09-03: read `HANDOFF-2026-09-03.md` first.** It is the current state —
+> the engine reads its content from the Codex now, items go into battle, the
+> test content lives in `content/test/`, and the landing loop has a sandbox
+> protocol (the reaper). This file's setup steps still hold; its picture of
+> the engine is 2026-08-21's.
+
 ---
 
 ## 0. First ten minutes
