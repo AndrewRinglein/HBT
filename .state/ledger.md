@@ -924,3 +924,53 @@ IRON GAUNTLET: NOT PASSED — 2 FLAG(S) WARNED
 
 slice: 60 of 68 closed · 61 probed · 0 accepted
 IRON GAUNTLET: NOT PASSED — 2 FLAG(S) WARNED
+
+## screens.equip-stats — LANDED `cf2e188` **NEEDS REVIEW**
+2026-09-03 21:18 · engine @ 4516bbb
+
+  PASS  dependencies landed
+  WARN  not already decided — 3 candidate ruling(s) — READ BEFORE ASKING: ../STATE.md:20 · ../STATE.md:21
+  PASS  typecheck
+  PASS  full test suite — 154 passed
+  PASS  gate 1 — every claimed criterion holds
+  PASS  brought its own tests — test/equip-screen.test.ts
+  WARN  existing tests untouched — DELETED LINES in test/equip-screen.test.ts (-1) — will land FLAGGED for review
+  PASS  kill switch — every claimed probe has been seen red — no criterion claimed — not applicable
+  PASS  nothing regresses — every P-tier probe — 61 P-tier probe(s): 61 green, 0 red, 0 regression(s). 60 of 68 closed · 61 probed · 0 accepted
+  PASS  hardcode scan — core knows mechanisms, never names
+  PASS  generalizes — the second instance costs zero kingdom code — shape 'plumbing' — not a mechanism, exempt
+  PASS  naming — new ids use declared kinds
+  PASS  naming — no banned words invented
+  WARN  engine working tree clean — verified against a DIRTY engine tree (4516bbb + 1 uncommitted under src/test): ?? src/sim/coverage.ts
+  PASS  one door to the engine
+
+<details><summary>Existing tests were edited — review this diff</summary>
+
+```diff
+diff --git a/test/equip-screen.test.ts b/test/equip-screen.test.ts
+index 8c13ae4..1d31b48 100644
+--- a/test/equip-screen.test.ts
++++ b/test/equip-screen.test.ts
+@@ -17,4 +17,9 @@ describe('the Equip screen', () => {
+     const html = equipScreen(ctx.campaign, [HUNTER, CHAPLAIN], { where: 'prep', picked: null })
+     expect(html.match(/class="herocard"/g)?.length).toBe(2)
++    // stats above the art, the viewer's ten rows; the art carries the name
++    for (const label of ['Move', 'Armor', 'Resist', 'Dodge', 'Max HP', 'Accuracy', 'Crit', 'Strength', 'Precision', 'Stam Regen']) expect(html).toContain(`<span class="stN">${label}</span>`)
++    expect(html.indexOf('class="stats"')).toBeLessThan(html.indexOf('class="art"'))
++    expect(html).toContain('<div class="plate"><b>Hunter</b>')
++    expect(html).toMatch(/Accuracy<\/span><span class="stV[^"]*">(<em>[^<]*<\/em>)?\d+%/)
+     expect(html).toContain('both hands')                     // the Hunter's longbow fills both
+     expect(html).toContain('right hand'); expect(html).toContain('left hand')   // the Chaplain's shield and texts
+@@ -50,5 +55,6 @@ describe('the Equip screen', () => {
+     const html = equipScreen(ctx.campaign, [HUNTER, CHAPLAIN], { where: 'prep', picked: null })
+     expect(html).toContain('chain set bonus from Chains of the Wrathful: +2 precision (2 other chain items)')
+-    expect(html).toMatch(/class="delta won">\+\d+ precision/)
++    // the card's stat block is the viewer's: the Precision row carries the set's +2 in front of the engine's fielded number
++    expect(html).toMatch(/<span class="stN">Precision<\/span><span class="stV up"><em>\+\d+<\/em>\d+<\/span>/)
+     expect(html).toContain('<i>spare</i>')                    // the priest chain rides in the item slot as a spare
+     // the Bloodrune's cost is paid on the way on and listed as refundable
+```
+</details>
+
+slice: 60 of 68 closed · 61 probed · 0 accepted
+IRON GAUNTLET: NOT PASSED — 3 FLAG(S) WARNED; 1 EXEMPTION(S) TAKEN
