@@ -84,7 +84,7 @@ for (const i of codex.items) {
 // 3. enchanted — tier-1 base × buyable enchant, when the codex has buyable enchants
 const applies = (base, e) => {
   const tags = new Set(base.tags)
-  const ranged = ['bow', 'crossbow', 'sling', 'thrown', 'staff', 'wand', 'tome'].some((t) => tags.has(t))
+  const ranged = ['bow', 'crossbow', 'sling', 'thrown', 'staff', 'wand', 'book'].some((t) => tags.has(t))
   for (const t of e.appliesToTags ?? []) {
     if (t === 'armor' && base.itemClass === 'armor') return true
     if (t === 'shield' && tags.has('shield')) return true

@@ -41,9 +41,20 @@ describe('ISC-059 — the trade-in', () => {
     const mixed = [three[0]!, three[1]!, 'item.dagger']
     expect(whyNotTradeIn(loadFixture(forgeAt(ALL, mixed)).campaign, mixed)).toMatch(/category/)
     expect(whyNotTradeIn(loadFixture(forgeAt(ALL, three)).campaign, three.slice(0, 2))).toMatch(/three/)
+    // REWRITTEN 2026-09-03 (Law 10 — a failing test is a finding). This line used to assert
+    // that three tier-3 WEAPONS were refused, "no tier-4 rows exist yet". The 2026-09-02b
+    // priest/mage pass authored Staff of the Magi and Rod of Imprisonment at tier 4 and two
+    // more above them, so the weapon ladder now climbs and the refusal is gone — which is the
+    // behaviour the trade-in was written for. The assertion moves to ARMOR, which still tops
+    // out at tier 3 and is therefore the category that still has nothing to climb into.
     const weapons3 = ITEMS.filter((r) => r.itemClass === 'weapon' && r.tier === 3).slice(0, 3).map((r) => r.id)
     expect(weapons3.length).toBe(3)
-    expect(whyNotTradeIn(loadFixture(forgeAt(ALL, weapons3)).campaign, weapons3)).toMatch(/tier 4/)   // no tier-4 rows exist yet
+    expect(whyNotTradeIn(loadFixture(forgeAt(ALL, weapons3)).campaign, weapons3)).toBe(null)
+    const gotW = performTradeIn(loadFixture(forgeAt(ALL, weapons3)), weapons3, 'test')
+    expect(itemOf(gotW).itemClass).toBe('weapon'); expect(itemOf(gotW).tier).toBe(4)
+    const armor3 = ITEMS.filter((r) => r.itemClass === 'armor' && r.tier === 3).slice(0, 3).map((r) => r.id)
+    expect(armor3.length).toBe(3)
+    expect(whyNotTradeIn(loadFixture(forgeAt(ALL, armor3)).campaign, armor3)).toMatch(/tier 4/)   // no tier-4 armor exists yet
     const t1w = ITEMS.filter((r) => r.itemClass === 'weapon' && r.tier === 1 && r.source === 'codex').slice(0, 3).map((r) => r.id)
     expect(whyNotTradeIn(loadFixture(forgeAt(ALL, t1w)).campaign, t1w)).toMatch(/tier 3/)             // weapons climb from 3, not 1
     expect(() => performTradeIn(loadFixture(forgeAt(ALL, t1w)), t1w, 'test')).toThrow(/refused/)
