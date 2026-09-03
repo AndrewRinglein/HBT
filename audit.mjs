@@ -68,7 +68,10 @@ for(const e of all){
     if(/\bFLIGHT\b/.test(g.effect||'')) add('flight-in-a-trigger',e.name,(g.effect||'').slice(0,80));
   // R22 Vision is not something a weapon adds — ruled 2026-08-20. Armour, relics and
   // trinkets may; a weapon or a weapon enchant may not.
-  if((e.itemClass==='weapon'||String(e.id).startsWith('enchant.')) && (e.statModifiers||{}).vision)
+  // AMENDED 2026-09-02: the Burning Torch is the one weapon that lights the ground it swings
+  // at — "this torch breaks the rule of giving a modifier to a stat: it gives +3 vision just
+  // for being equipped." A Waystation row (waystationBand) may carry Vision; nothing else may.
+  if((e.itemClass==='weapon'||String(e.id).startsWith('enchant.')) && (e.statModifiers||{}).vision && !e.waystationBand)
     add('weapon-grants-vision',e.name,'vision '+e.statModifiers.vision);
   // R21 conditions may look at you and your six neighbours. Not at the target's
   // neighbours, and never at remembered per-target state. Ruled 2026-08-20.
@@ -1089,9 +1092,15 @@ if(D.kits){
 // field AND in prose, so it produced 8 false positives (the slayer runes, the immunity and
 // Protection idols). A rule that cries wolf is worse than no rule.
 {
+  // AMENDED 2026-09-02: "We're occasionally going to break the trinkets with flat stat
+  // modifiers." The Waystation's common items are the ruled break — a torch is +4 Vision and
+  // nothing else, a backpack is slots for Movement — so a row the Waystation sells
+  // (waystationBand) is exempt. The rule still holds for every other trinket, which is where
+  // it was earning its keep.
   const IMMUNITY=/\bimmunit(y|ies)\b/i;
   for(const it of D.items){
     if(it.itemClass!=='trinket') continue;
+    if(it.waystationBand) continue;                          // ruled 2026-09-02
     const sm=Object.keys(it.statModifiers||{}).length;
     const tg=(it.triggers||[]).length, gr=(it.grants||[]).length;
     const prose=(it.description||'')+' '+(it.intent||'');

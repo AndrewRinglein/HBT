@@ -2,7 +2,7 @@
  "hooks": [
   {
    "name": "onHit",
-   "uses": 79,
+   "uses": 81,
    "ids": [
     "item.hammer-of-justice",
     "item.runed-crossbow",
@@ -48,7 +48,7 @@
   },
   {
    "name": "onKill",
-   "uses": 38,
+   "uses": 37,
    "ids": [
     "item.death-blade",
     "item.sniper-bow",
@@ -79,9 +79,8 @@
     "enchant.soul-reaper",
     "enchant.bloodthirsty",
     "enchant.undead-slayer",
-    "enchant.ghost-slayer",
-    "enchant.blight",
     "enchant.death",
+    "enchant.destroying",
     "specialty.bloodrage",
     "specialty.champion",
     "specialty.shadowdancer",
@@ -154,9 +153,35 @@
     "enchant.venomous",
     "enchant.bloodletting",
     "enchant.lightning",
-    "enchant.gale-arrows",
+    "enchant.gale",
     "enchant.ironbane",
     "enchant.fire"
+   ]
+  },
+  {
+   "name": "onDamage",
+   "uses": 20,
+   "ids": [
+    "item.bloody-axe",
+    "item.poison-throwing-knives",
+    "item.twin-talon-bow",
+    "item.boarding-hook",
+    "item.blade-of-demon-slaying",
+    "item.stormforged-halberd",
+    "attack.barbarian-bow.power-shot",
+    "attack.barbarian-bow.crippling-shot",
+    "attack.halberd.hack",
+    "attack.knight-shield.shield-slam",
+    "attack.earth-staff.earth-blast",
+    "attack.club.swing",
+    "power.berserker.bloody-strikes",
+    "enchant.venomous",
+    "enchant.heavens-edge",
+    "enchant.rooting",
+    "enchant.hobbling",
+    "enchant.goading",
+    "enchant.bewildering",
+    "enchant.maddening"
    ]
   },
   {
@@ -205,27 +230,6 @@
    ]
   },
   {
-   "name": "onDamage",
-   "uses": 15,
-   "ids": [
-    "item.bloody-axe",
-    "item.poison-throwing-knives",
-    "item.twin-talon-bow",
-    "item.boarding-hook",
-    "item.blade-of-demon-slaying",
-    "item.stormforged-halberd",
-    "attack.barbarian-bow.power-shot",
-    "attack.barbarian-bow.crippling-shot",
-    "attack.halberd.hack",
-    "attack.knight-shield.shield-slam",
-    "attack.earth-staff.earth-blast",
-    "attack.club.swing",
-    "power.berserker.bloody-strikes",
-    "enchant.venomous",
-    "enchant.heavens-edge"
-   ]
-  },
-  {
    "name": "aura",
    "uses": 14,
    "ids": [
@@ -262,21 +266,6 @@
    ]
   },
   {
-   "name": "onAttack",
-   "uses": 9,
-   "ids": [
-    "item.rapier",
-    "item.book-of-exorcisms",
-    "item.demon-whip",
-    "item.orb-of-the-soul-stealer",
-    "item.chains-of-the-faithful",
-    "attack.buckler.punch",
-    "attack.dagger.stab",
-    "power.berserker.bloody-strikes",
-    "enchant.werewolf-bane"
-   ]
-  },
-  {
    "name": "onDodge",
    "uses": 9,
    "ids": [
@@ -292,12 +281,26 @@
    ]
   },
   {
+   "name": "onAttack",
+   "uses": 8,
+   "ids": [
+    "item.rapier",
+    "item.book-of-exorcisms",
+    "item.demon-whip",
+    "item.orb-of-the-soul-stealer",
+    "item.chains-of-the-faithful",
+    "attack.buckler.punch",
+    "attack.dagger.stab",
+    "power.berserker.bloody-strikes"
+   ]
+  },
+  {
    "name": "onMiss",
    "uses": 5,
    "ids": [
     "item.lucky-charm",
     "item.council-of-echoes",
-    "enchant.abundant-arrows",
+    "enchant.abundant",
     "enchant.recklessness",
     "enchant.the-master"
    ]
@@ -1006,7 +1009,7 @@
   },
   {
    "name": "deal TRUE damage",
-   "uses": 58,
+   "uses": 57,
    "ids": [
     "item.cursed-sand-blade",
     "item.demonic-shiv",
@@ -1277,7 +1280,7 @@
   },
   {
    "name": "reveal / break stealth",
-   "uses": 18,
+   "uses": 17,
    "ids": [
     "item.crows-eye-pendant",
     "power.trapper.entangle",
@@ -1293,7 +1296,6 @@
     "power.remembrancer.read-the-field",
     "power.stalker.melt-away",
     "rule.stealth-does-not-hold",
-    "enchant.ghost-slayer",
     "specialty.assassin",
     "specialty.demonic-ward",
     "specialty.stalker"
@@ -1338,14 +1340,14 @@
     "power.focus",
     "power.devotion",
     "power.banner-assassin.plant",
-    "enchant.abundant-arrows",
+    "enchant.abundant",
     "enchant.bloodthirsty",
     "enchant.death"
    ]
   },
   {
    "name": "deal damage (type from the weapon)",
-   "uses": 15,
+   "uses": 14,
    "ids": [
     "item.stormforged-blade",
     "item.demonic-shiv",
@@ -1360,8 +1362,7 @@
     "power.serpent.constrict",
     "power.stalker.throat-hold",
     "power.wyrmling.scorch",
-    "power.berserker.unleash",
-    "enchant.stormward"
+    "power.berserker.unleash"
    ]
   },
   {
@@ -1844,7 +1845,7 @@
   },
   {
    "name": "slow",
-   "uses": 20,
+   "uses": 21,
    "ids": [
     "item.poison-caltrops",
     "attack.cart-chain.swing",
@@ -1865,6 +1866,7 @@
     "power.hound.bay",
     "power.serpent.constrict",
     "enchant.giant-slayer",
+    "enchant.hobbling",
     "specialty.trapper"
    ]
   },
@@ -1994,7 +1996,7 @@
     "enchant.divine-protection",
     "enchant.demon-slayer",
     "enchant.dragon-slayer",
-    "enchant.enchanted",
+    "enchant.durable",
     "enchant.might",
     "specialty.warchief",
     "specialty.guardian",
@@ -2009,7 +2011,7 @@
   },
   {
    "name": "strength",
-   "uses": 55,
+   "uses": 54,
    "ids": [
     "item.bloody-axe",
     "item.hammer-of-justice",
@@ -2041,7 +2043,6 @@
     "enchant.bloodthirsty",
     "enchant.tainted-blood",
     "enchant.sacrifice",
-    "enchant.blight",
     "enchant.might",
     "specialty.berserker",
     "specialty.reaver",
@@ -2050,7 +2051,8 @@
     "specialty.champion",
     "specialty.crusader",
     "specialty.wayfinder",
-    "specialty.feral"
+    "specialty.feral",
+    "specialty.assassin"
    ]
   },
   {
@@ -2147,7 +2149,7 @@
   },
   {
    "name": "armor",
-   "uses": 43,
+   "uses": 44,
    "ids": [
     "item.pot-lid",
     "item.holy-shield",
@@ -2178,8 +2180,9 @@
     "item.throne-fragment-of-melandar",
     "item.seal-of-damnation",
     "enchant.runed",
+    "enchant.ancient-ward",
     "enchant.divine-protection",
-    "enchant.enchanted",
+    "enchant.durable",
     "specialty.shieldbearer",
     "specialty.protector",
     "specialty.beastward",
@@ -2187,8 +2190,7 @@
     "specialty.vengeance",
     "specialty.war-priest",
     "specialty.deathknight",
-    "specialty.holy-champion",
-    "specialty.sacred-shield"
+    "specialty.holy-champion"
    ]
   },
   {
@@ -2217,7 +2219,7 @@
     "item.rune-cat-eyes",
     "item.rune-avatar-of-war",
     "enchant.lightning",
-    "enchant.gale-arrows",
+    "enchant.gale",
     "enchant.runed",
     "enchant.keen",
     "enchant.cruel",
@@ -2247,8 +2249,8 @@
     "item.rune-avatar-of-war",
     "item.rune-perfect-hunter",
     "power.wayfinder.switch-to-melee",
-    "enchant.magic-arrows",
-    "enchant.hunting-arrows",
+    "enchant.magic",
+    "enchant.hunting",
     "enchant.sacrifice",
     "specialty.berserker",
     "specialty.bowmaster",
@@ -2319,7 +2321,7 @@
     "item.rune-sharp-eyes",
     "item.rune-perfect-hunter",
     "power.wayfinder.switch-to-melee",
-    "enchant.gale-arrows",
+    "enchant.gale",
     "enchant.far",
     "enchant.long",
     "specialty.bowmaster",
@@ -2453,11 +2455,10 @@
   },
   {
    "name": "toughness",
-   "uses": 8,
+   "uses": 7,
    "ids": [
     "item.unbroken",
     "item.light-of-hope",
-    "enchant.blight",
     "specialty.blessed-sufferer",
     "specialty.vigil",
     "specialty.serpent",

@@ -11,17 +11,17 @@ When a rule fires. Twelve, plus `aura` and `passive` which are standing properti
 
 | Function | Uses | Notes |
 |---|---:|---|
-| `onHit` | 79 | after a hit lands, even if armour ate all of it |
-| `onKill` | 38 |  |
+| `onHit` | 81 | after a hit lands, even if armour ate all of it |
+| `onKill` | 37 |  |
 | `startOfBattle` | 37 |  |
 | `onCrit` | 20 | after its own onHit, only if it crit |
+| `onDamage` | 20 | only if damage actually landed |
 | `passive` | 17 | always true |
 | `onTakingDamage` | 16 |  |
-| `onDamage` | 15 | only if damage actually landed |
 | `aura` | 14 | checked continuously |
 | `onActivationEnd` | 10 | a unit's go, not a Turn |
-| `onAttack` | 9 |  |
 | `onDodge` | 9 | on the DEFENDER, when its Dodge is why the attack missed |
+| `onAttack` | 8 |  |
 | `onMiss` | 5 | on the ATTACKER |
 | `onDeath` | 2 |  |
 
@@ -83,17 +83,17 @@ What a rule may DO.
 | `grant a stat for the Battle` | 180 |
 | `apply a status` | 142 |
 | `heal` | 92 |
-| `deal TRUE damage` | 58 |
+| `deal TRUE damage` | 57 |
 | `grant a stat until end of next Turn` | 47 |
 | `remove N of a status` | 46 |
 | `grant an aura` | 38 |
 | `move yourself` | 30 |
 | `read the party-wide sum` | 23 |
 | `deal MAGIC damage` | 18 |
-| `reveal / break stealth` | 18 |
+| `reveal / break stealth` | 17 |
 | `place a trap` | 16 |
 | `regain stamina` | 16 |
-| `deal damage (type from the weapon)` | 15 |
+| `deal damage (type from the weapon)` | 14 |
 | `deal PHYSICAL damage` | 14 |
 | `Immunity N` | 13 |
 | `move WITHOUT provoking` | 13 |
@@ -125,7 +125,7 @@ What a rule may DO.
 | `weak` | 40 |
 | `protection` | 40 |
 | `stun` | 22 |
-| `slow` | 20 |
+| `slow` | 21 |
 | `frost` | 15 |
 | `regeneration` | 7 |
 | `karma` | 5 |
@@ -136,10 +136,10 @@ What a rule may DO.
 |---|---:|
 | `health` | 98 |
 | `resist` | 60 |
-| `strength` | 55 |
+| `strength` | 54 |
 | `dodge` | 53 |
 | `movement` | 49 |
-| `armor` | 43 |
+| `armor` | 44 |
 | `accuracy` | 35 |
 | `precision` | 30 |
 | `crit` | 29 |
@@ -149,7 +149,7 @@ What a rule may DO.
 | `luck` | 19 |
 | `spirit` | 17 |
 | `itemSlots` | 14 |
-| `toughness` | 8 |
+| `toughness` | 7 |
 | `vision` | 5 |
 | `corruption` | 2 |
 | `surge` | 2 |

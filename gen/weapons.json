@@ -1642,6 +1642,86 @@
    "triggers": [],
    "intent": "A pair, and the pair is the weapon: one for the hand you can reach, one for the hand you cannot.",
    "source": "Authored in the 2026-08-27 gear workbook review (new row added to the sheet). | 2026-09-02, from the weapon outlier review: two-handed, so it takes TWO slots. Ruled."
+  },
+  {
+   "id": "item.pickaxe",
+   "name": "Pickaxe",
+   "itemClass": "weapon",
+   "tier": 0,
+   "slots": 2,
+   "hands": 2,
+   "classRestriction": null,
+   "statModifiers": {},
+   "triggers": [],
+   "grants": [
+    "attack.pickaxe.pick"
+   ],
+   "equipCost": {},
+   "persists": true,
+   "tags": [
+    "improvised",
+    "melee"
+   ],
+   "waystationBand": 1,
+   "price": {
+    "supplies": 5
+   },
+   "intent": "A mining tool with a spike on it. It is bad at killing and very good at ruining armour.",
+   "source": "Ruled 2026-09-02 (GEAR-DESIGN.md §4): the Waystation's common items — a fixed catalog, tier 0, unlocked by the building's bands, bought for Supplies or Mana Crystals, restocked after each Battle."
+  },
+  {
+   "id": "item.burning-torch",
+   "name": "Burning Torch",
+   "itemClass": "weapon",
+   "tier": 0,
+   "slots": 1,
+   "hands": 1,
+   "classRestriction": null,
+   "statModifiers": {
+    "vision": 3
+   },
+   "triggers": [],
+   "grants": [
+    "attack.burning-torch.swing"
+   ],
+   "equipCost": {},
+   "persists": true,
+   "tags": [
+    "improvised",
+    "melee"
+   ],
+   "waystationBand": 2,
+   "price": {
+    "supplies": 6
+   },
+   "intent": "A weapon that is mostly a light source, and a light source that sets people on fire.",
+   "source": "Ruled 2026-09-02 (GEAR-DESIGN.md §4): the Waystation's common items — a fixed catalog, tier 0, unlocked by the building's bands, bought for Supplies or Mana Crystals, restocked after each Battle."
+  },
+  {
+   "id": "item.net",
+   "name": "Net",
+   "itemClass": "weapon",
+   "tier": 0,
+   "slots": 1,
+   "hands": 0,
+   "classRestriction": null,
+   "statModifiers": {},
+   "triggers": [],
+   "grants": [
+    "attack.net.cast"
+   ],
+   "equipCost": {},
+   "persists": true,
+   "tags": [
+    "thrown"
+   ],
+   "waystationBand": 2,
+   "price": {
+    "supplies": 7
+   },
+   "intent": "No hands, one throw, and the biggest thing on the field stops moving.",
+   "source": "Ruled 2026-09-02 (GEAR-DESIGN.md §4): the Waystation's common items — a fixed catalog, tier 0, unlocked by the building's bands, bought for Supplies or Mana Crystals, restocked after each Battle.",
+   "uses": 1
   }
  ],
  "attacks": [
@@ -4469,6 +4549,83 @@
    ],
    "slayer": null,
    "source": "Edited in the 2026-08-27 gear workbook review."
+  },
+  {
+   "id": "attack.pickaxe.pick",
+   "name": "Pick",
+   "range": "melee",
+   "stat": "strength",
+   "damage": -3,
+   "stamina": 1,
+   "accuracy": 0,
+   "crit": 0,
+   "hits": 1,
+   "targets": "one enemy in melee reach",
+   "damageType": "physical",
+   "tags": [
+    "improvised",
+    "melee"
+   ],
+   "triggers": [
+    {
+     "hook": "onHit",
+     "chance": 90,
+     "effect": "the target loses 1 Armor for the rest of the Battle"
+    }
+   ],
+   "slayer": null,
+   "source": "Ruled 2026-09-02 (GEAR-DESIGN.md §4): the Waystation's common items — a fixed catalog, tier 0, unlocked by the building's bands, bought for Supplies or Mana Crystals, restocked after each Battle. The Pickaxe: \"a strength attack at -3 damage, costs 1 stamina, and on hit there's a 90% chance of -1 armor.\""
+  },
+  {
+   "id": "attack.burning-torch.swing",
+   "name": "Swing",
+   "range": "melee",
+   "stat": "strength",
+   "damage": -2,
+   "stamina": 1,
+   "accuracy": 0,
+   "crit": 0,
+   "hits": 1,
+   "targets": "one enemy in melee reach",
+   "damageType": "physical",
+   "tags": [
+    "improvised",
+    "melee"
+   ],
+   "triggers": [
+    {
+     "hook": "onHit",
+     "chance": 80,
+     "effect": "apply 1 Burn"
+    }
+   ],
+   "slayer": null,
+   "source": "Ruled 2026-09-02 (GEAR-DESIGN.md §4): the Waystation's common items — a fixed catalog, tier 0, unlocked by the building's bands, bought for Supplies or Mana Crystals, restocked after each Battle. The Burning Torch: \"attacked as strength -2. On hit, an 80% chance of inflicting burn 1.\""
+  },
+  {
+   "id": "attack.net.cast",
+   "name": "Cast",
+   "range": 3,
+   "stat": "precision",
+   "damage": 0,
+   "stamina": 1,
+   "accuracy": 0,
+   "crit": 0,
+   "hits": 1,
+   "targets": "one enemy within 3 hexes",
+   "damageType": "physical",
+   "tags": [
+    "thrown"
+   ],
+   "triggers": [
+    {
+     "hook": "onHit",
+     "chance": 70,
+     "effect": "apply 1 Root"
+    }
+   ],
+   "slayer": null,
+   "source": "Ruled 2026-09-02 (GEAR-DESIGN.md §4): the Waystation's common items — a fixed catalog, tier 0, unlocked by the building's bands, bought for Supplies or Mana Crystals, restocked after each Battle. The Net: \"an attack that does 0 damage. On hit, a 70% chance of doing root 1, range of 3.\""
   }
  ]
 }
