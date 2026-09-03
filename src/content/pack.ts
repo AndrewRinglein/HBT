@@ -281,7 +281,9 @@ export type LevelTable = { readonly id: string; readonly rows: readonly LevelRow
 export function packLevels(): Readonly<Record<string, LevelTable>> {
   const raw = (UNIT_PACK as unknown as { levels?: Readonly<Record<string, LevelTable>> }).levels ?? {}
   for (const [k, t] of Object.entries(raw)) {
-    if (k !== t.id || !k.startsWith('class.')) throw new Error(`levels: bad key '${k}'`)
+    // class.* tables, and since progression.level-table-by-type (2026-09-03)
+    // the civilian TYPE tables (civilian.farmer) a hero names with levelTable
+    if (k !== t.id || !(k.startsWith('class.') || k.startsWith('civilian.'))) throw new Error(`levels: bad key '${k}' — a level table is class.* or civilian.*`)
     let last = 0
     for (const r of t.rows) { if (r.level <= last) throw new Error(`levels: '${k}' rows are not ascending at ${r.level}`); last = r.level }
   }

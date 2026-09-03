@@ -220,7 +220,7 @@ for (const k of Object.keys(packEnchanted(ATTACKS, ABILITIES))) {
 }
 export const ITEMS = omitDisabled({ ...packItems(ATTACKS, ABILITIES), ...packEnchanted(ATTACKS, ABILITIES) })
 /** Level tables and specialties — read by fieldedDef() (hero assembly, 2026-09-03). */
-export const LEVELS = packLevels()
+export const LEVELS = omitDisabled(packLevels())
 export const SPECIALTIES = omitDisabled(packSpecialties())
 // The generated pack (Codex-tracked test cohort) joins the hand-authored rows.
 // A collision is a LOUD failure: the pack owns test- ids, this file owns the
@@ -230,6 +230,13 @@ for (const k of Object.keys(PACK)) {
   if (k in RAW_UNITS) throw new Error(`unit '${k}' exists in BOTH content/index.ts and the generated pack — one owner only`)
 }
 export const UNITS = stripDisabledTriggers(omitDisabled({ ...RAW_UNITS, ...PACK }, 'unit.'))
+// progression.level-table-by-type: a unit that names its own level table names
+// one that exists. Checked at load, not at fielding, so a bad pointer is loud
+// before any battle — a civilian silently levelling on the class table was the
+// failure mode this replaces.
+for (const u of Object.values(UNITS)) {
+  if (u.levelTable !== undefined && !(u.levelTable in LEVELS)) throw new Error(`unit '${u.typeId}' levels on '${u.levelTable}', which is not a level table in the pack`)
+}
 
 /** The standard battle: the Alpha Team on row 15, four zombies on row 0. */
 export const FIRST_BATTLE = {

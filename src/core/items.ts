@@ -23,7 +23,7 @@ export type Applied = {
   readonly worn: readonly { readonly itemId: string; readonly grants: readonly string[]; readonly abilities: readonly string[]; readonly mods: Readonly<Record<string, number>>; readonly gaps?: readonly string[] }[]
 }
 
-const FOLDABLE = ['maxHp', 'armor', 'resist', 'dodge', 'strength', 'precision', 'magic', 'spirit', 'reach', 'accuracy', 'movement', 'maxStamina', 'staminaRegen', 'crit', 'luck', 'toughness', 'surge', 'vision'] as const   // toughness: capability.deathbed; surge: capability.surge — 2026-09-03
+export const FOLDABLE = ['maxHp', 'armor', 'resist', 'dodge', 'strength', 'precision', 'magic', 'spirit', 'reach', 'accuracy', 'movement', 'maxStamina', 'staminaRegen', 'crit', 'luck', 'toughness', 'surge', 'vision'] as const   // toughness: capability.deathbed; surge: capability.surge — 2026-09-03
 
 export function applyItems(
   base: UnitDef,
@@ -101,9 +101,11 @@ export function applyProgress(
   specialties: Readonly<Record<string, SpecialtyLike>>,
   abilities: Readonly<Record<string, unknown>>,
   where: string,
+  /** progression.level-table-by-type: the table to level on when it is not the class's (civilian.farmer). */
+  tableId: string = classId,
 ): UnitDef {
-  const table = levels[classId]
-  if (!table) throw new Error(`${where}: ${base.typeId} is a ${classId}, which has no level table`)
+  const table = levels[tableId]
+  if (!table) throw new Error(`${where}: ${base.typeId} levels on '${tableId}', and the pack has no such level table`)
   const stats: Record<string, number> = {}
   for (const k of FOLDABLE) stats[k] = (base as unknown as Record<string, number | undefined>)[k] ?? 0
   const add = (k: string, v: number, src: string) => {
@@ -116,17 +118,17 @@ export function applyProgress(
   }
   if (!Number.isInteger(progress.level) || progress.level < 1) throw new Error(`${where}: ${base.typeId} level ${progress.level} is not a level`)
   const maxLevel = table.rows.reduce((m, r) => Math.max(m, r.level), 1)
-  if (progress.level > maxLevel) throw new Error(`${where}: ${base.typeId} level ${progress.level} is past ${classId}'s table (${maxLevel})`)
+  if (progress.level > maxLevel) throw new Error(`${where}: ${base.typeId} level ${progress.level} is past ${tableId}'s table (${maxLevel})`)
   let pickTaken = false
   for (const row of table.rows) {
     if (row.level < 2 || row.level > progress.level) continue
-    for (const [k, v] of Object.entries(row.grants)) add(k, v, `${classId} level ${row.level}`)
+    for (const [k, v] of Object.entries(row.grants)) add(k, v, `${tableId} level ${row.level}`)
     if (row.choice) {
       const pick = progress.levelFivePick
       if (!pick) throw new Error(`${where}: ${base.typeId} is level ${progress.level} but names no level-${row.level} pick`)
       const same = (a: Readonly<Record<string, number>>, b: Readonly<Record<string, number>>) =>
         Object.keys(a).length === Object.keys(b).length && Object.entries(a).every(([k, v]) => b[k] === v)
-      if (!row.choice.some((o) => same(o, pick))) throw new Error(`${where}: ${base.typeId}'s level-${row.level} pick ${JSON.stringify(pick)} is not one of ${classId}'s options`)
+      if (!row.choice.some((o) => same(o, pick))) throw new Error(`${where}: ${base.typeId}'s level-${row.level} pick ${JSON.stringify(pick)} is not one of ${tableId}'s options`)
       for (const [k, v] of Object.entries(pick)) add(k, v, `level-${row.level} pick`)
       pickTaken = true
     }

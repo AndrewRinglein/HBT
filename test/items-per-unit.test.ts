@@ -39,7 +39,10 @@ describe('the invariant — no heroItems means the hero the converter used to fo
       // capability.deathbed (2026-09-03): rows carry `toughness` now (the
       // Deathbed Fighting base); the oracle predates it.
       // capability.vision (2026-09-03): items fold `vision` now; the oracle predates it too.
-      const keys = [...new Set([...Object.keys(f), ...Object.keys(r)])].filter((k) => !['attributes', 'tags', 'toughness', 'vision'].includes(k) && JSON.stringify(f[k]) !== JSON.stringify(r[k]))
+      // progression.level-table-by-type (2026-09-03): the farmer row names its
+      // own level table (`levelTable`); a pointer, not a folded number — the
+      // oracle predates it. Law 10 reason: a new row FIELD, not a changed value.
+      const keys = [...new Set([...Object.keys(f), ...Object.keys(r)])].filter((k) => !['attributes', 'tags', 'toughness', 'vision', 'levelTable'].includes(k) && JSON.stringify(f[k]) !== JSON.stringify(r[k]))
       if (keys.length) differ[id] = keys
     }
     // FINDING: the converter folded item crit/luck into `ported`, then wrote

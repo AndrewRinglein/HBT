@@ -2240,5 +2240,24 @@
   "status": "done-needs-review",
   "sha": "2e9f5fd",
   "gauntlet": "not passed — 1 flag(s) warned; 1 exemption(s) taken"
+ },
+ {
+  "id": "progression.level-table-by-type",
+  "kind": "engine",
+  "shape": "plumbing",
+  "spec": "Ruled 2026-09-03 (Angela): \"We need some unique way to define the level-ups by the name of the civilian... Maiden and farmer are different in how they should level up.\" Content ships levels.civilianTypes (civilian.farmer, a full 10-row table) and a levelTable pointer on the farmer rows. Engine: packLevels admits civilian.* keys beside class.* (the guard at pack.ts:284 threw on them); UnitDef.levelTable; levelTableOf(def) prefers the row's own table and falls back to the class tag; applyProgress takes the table id separately from the class id (the specialty check stays on the class); LEVELS passes through the kill-switch seam and every levelTable is validated at load. One unit.grown log line per grown hero, cause = the table (Law 12). Exporter: the civilianTypes loop, levelTable on the civilian unit rows, and civilian + beast join CLASS_FILES — a civilian at level 2 needs a class.civilian specialty and none had ever compiled.",
+  "expect": "hero.fixed.farmer at level 3 carries civilian.farmer's +5 dodge and the class table's numbers are not on it; hero.fixed.orphans with no pointer still levels on class.civilian; showcase.farmers-grown logs three unit.grown lines caused by civilian.farmer and one by class.civilian; a pointer at a missing table fails at pack load",
+  "changesBaseline": false,
+  "probeIds": [
+   "civilian.farmer"
+  ],
+  "tests": [
+   "test/level-table-by-type.test.ts"
+  ],
+  "note": "Filed 2026-09-03 from Angela's four-point note (pack.ts:284 crash, mkenginepack:1222, setup.ts:131, items.ts:105). FINDING: of the 36 civilian class powers now compiling, 2 carry effects; the other 34 are inert with named gaps — same as the six classes' first compile. The beast file (9 specialties, 36 powers) compiles too, under the same rule.",
+  "attempts": 1,
+  "status": "done-needs-review",
+  "sha": "a559403",
+  "gauntlet": "not passed — 3 flag(s) warned"
  }
 ]

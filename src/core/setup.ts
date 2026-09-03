@@ -3,7 +3,7 @@ import { makeRng, rootSeedOf, sample } from './rng.js'
 import type { Ctx, EncounterDef, HeroProgress, Side, State, Unit, UnitDef, Config } from './types.js'
 import { DEFAULT_CONFIG } from './types.js'
 import { ATTACKS, ABILITIES, CRIT_CHART, ITEMS, LEVELS, SPECIALTIES, UNITS, FIRST_BATTLE } from '../content/index.js'
-import { applyItems, applyProgress, type Applied } from './items.js'
+import { applyItems, applyProgress, type Applied, FOLDABLE } from './items.js'
 import { terrainOf, terrainIdOf, isPassable } from '../content/maps.js'
 import { STATUSES } from '../content/statuses.js'
 import { MOVES } from '../content/moves.js'
@@ -123,7 +123,7 @@ export function fieldedDef(typeId: string, items?: readonly string[], progress?:
   // Hero assembly (2026-09-03): level, specialty and drafted powers fold on
   // BEFORE the items, so the kit sees the grown hero. No progress = the bare
   // row, so every fielding that says nothing is unchanged.
-  const grown = progress ? applyProgress(bare, progress, classOf(bare), LEVELS, SPECIALTIES, ABILITIES, `fieldedDef(${typeId})`) : bare
+  const grown = progress ? applyProgress(bare, progress, classOf(bare), LEVELS, SPECIALTIES, ABILITIES, `fieldedDef(${typeId})`, levelTableOf(bare)) : bare
   return applyItems(grown, items ?? bare.defaultItems ?? [], ITEMS, ATTACKS, `fieldedDef(${typeId})`).def
 }
 
@@ -132,6 +132,16 @@ export function classOf(def: UnitDef): string {
   const tag = (def.tags ?? []).find((t) => t.startsWith('class.'))
   if (!tag) throw new Error(`${def.typeId} carries no class.* tag, so its level table cannot be found`)
   return tag
+}
+
+/**
+ * The level table a hero levels on — progression.level-table-by-type
+ * (2026-09-03): the row's own `levelTable` when it names one (a civilian TYPE,
+ * civilian.farmer), else the class's. The class tag stays what it was; only
+ * the curve moves.
+ */
+export function levelTableOf(def: UnitDef): string {
+  return def.levelTable ?? classOf(def)
 }
 
 export function createBattle(opts: BattleOptions): Ctx {
@@ -247,6 +257,7 @@ export function createBattle(opts: BattleOptions): Ctx {
 
   let id = 0
   const equipped: { unitId: number; worn: Applied['worn'] }[] = []
+  const grownLog: { unitId: number; table: string; level: number; specialtyId?: string; mods: Record<string, number> }[] = []
   // Names come from the DEF (the pack carries Codex names like "Oathblade
   // (TEST)"); a def without one falls back to its title-cased typeId. The old
   // hand-typed NAMES map died with the hand-typed party (2026-08-20).
@@ -263,13 +274,24 @@ export function createBattle(opts: BattleOptions): Ctx {
     // one function before the unit is made. Enemies never take this path.
     const itemIds = opts.heroItems?.[i] ?? bare.defaultItems ?? []
     const progress = opts.heroProgress?.[i]
-    const grown = progress ? applyProgress(bare, progress, classOf(bare), LEVELS, SPECIALTIES, ABILITIES, where) : bare
+    const grown = progress ? applyProgress(bare, progress, classOf(bare), LEVELS, SPECIALTIES, ABILITIES, where, levelTableOf(bare)) : bare
     const { def: d, worn } = applyItems(grown, itemIds, ITEMS, ATTACKS, where)
     seen[t] = (seen[t] ?? 0)
     const nm = `${d.name ?? label(t)} ${LETTERS[seen[t]!] ?? seen[t]! + 1}`
     seen[t]!++
     state.units.push(makeUnit(id, 100 + i, nm, d, hex))
     equipped.push({ unitId: id, worn })
+    if (progress) {
+      // progression.level-table-by-type (2026-09-03), Law 12: the log says
+      // which TABLE grew this hero and by how much — a farmer on
+      // civilian.farmer and an orphan on class.civilian are told apart here.
+      const mods: Record<string, number> = {}
+      for (const k of FOLDABLE) {
+        const delta = ((grown as unknown as Record<string, number | undefined>)[k] ?? 0) - ((bare as unknown as Record<string, number | undefined>)[k] ?? 0)
+        if (delta !== 0) mods[k] = delta
+      }
+      grownLog.push({ unitId: id, table: levelTableOf(bare), level: progress.level, ...(progress.specialtyId ? { specialtyId: progress.specialtyId } : {}), mods })
+    }
     id++
   })
   const seenEnemy: Record<string, number> = {}
@@ -299,6 +321,9 @@ export function createBattle(opts: BattleOptions): Ctx {
     for (const w of equipped.find((e) => e.unitId === u.id)?.worn ?? []) {
       emit(ctx, 'unit.equipped', w.itemId, { actor: u.id, itemId: w.itemId, grants: w.grants, abilities: w.abilities, mods: w.mods, ...(w.gaps ? { gaps: w.gaps } : {}) })
     }
+    // progression.level-table-by-type: one unit.grown per grown hero, cause = the table
+    const g = grownLog.find((e) => e.unitId === u.id)
+    if (g) emit(ctx, 'unit.grown', g.table, { actor: u.id, table: g.table, level: g.level, ...(g.specialtyId ? { specialtyId: g.specialtyId } : {}), mods: g.mods })
     // capability.power-pool (2026-09-03): a unit fielded at setup arrives too
     const arrival = UNITS[u.typeId]?.powerOnArrival
     if (arrival && u.side === 'enemy') gainPower(ctx, arrival, u.typeId, { kind: 'arrival', actor: u.id })

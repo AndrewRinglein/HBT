@@ -6315,6 +6315,7 @@ export const UNIT_PACK = {
         "civilian",
         "class.civilian"
       ],
+      "levelTable": "civilian.farmer",
       "triggers": [],
       "defaultItems": [
         "item.pitchfork"
@@ -6627,6 +6628,7 @@ export const UNIT_PACK = {
         "civilian",
         "class.civilian"
       ],
+      "levelTable": "civilian.farmer",
       "triggers": [],
       "defaultItems": [
         "item.pitchfork"
@@ -6663,6 +6665,7 @@ export const UNIT_PACK = {
         "civilian",
         "class.civilian"
       ],
+      "levelTable": "civilian.farmer",
       "triggers": [],
       "defaultItems": []
     },
@@ -17304,6 +17307,1261 @@ export const UNIT_PACK = {
         "unparsed: You and every ally within 2 hexes gain Thorns 2 for the rest of the Battle",
         "no effect compiled — the power is inert"
       ]
+    },
+    "power.apothecary.healing-potion": {
+      "id": "power.apothecary.healing-potion",
+      "name": "Poultice",
+      "staminaCost": 0,
+      "cooldown": 2,
+      "range": 1,
+      "target": {
+        "select": "unit",
+        "side": "ally"
+      },
+      "effects": [],
+      "gaps": [
+        "unparsed: Heal an adjacent ally 5 and remove 2 Burn from it",
+        "unparsed: You have to be standing next to them, so the decision is where you walked, not w",
+        "no effect compiled — the power is inert"
+      ]
+    },
+    "power.apothecary.stretcher-run": {
+      "id": "power.apothecary.stretcher-run",
+      "name": "Stretcher Run",
+      "staminaCost": 0,
+      "cooldown": 4,
+      "range": 0,
+      "effects": [],
+      "target": {
+        "select": "self",
+        "side": "any"
+      },
+      "gaps": [
+        "targets 'one downed ally within 1 hex' unparsed — the power is inert"
+      ]
+    },
+    "power.apothecary.smoke-bomb": {
+      "id": "power.apothecary.smoke-bomb",
+      "name": "Smoke Bomb",
+      "staminaCost": 0,
+      "cooldown": 3,
+      "warmup": 1,
+      "range": 0,
+      "target": {
+        "select": "area",
+        "side": "enemy",
+        "radius": 2,
+        "origin": "self"
+      },
+      "effects": [],
+      "gaps": [
+        "unparsed: Every enemy within 2 hexes gains 2 Weak for the rest of the Battle",
+        "no effect compiled — the power is inert"
+      ]
+    },
+    "power.apothecary.fire-bomb": {
+      "id": "power.apothecary.fire-bomb",
+      "name": "Fire Bomb",
+      "staminaCost": 0,
+      "cooldown": 3,
+      "warmup": 1,
+      "range": 4,
+      "target": {
+        "select": "area",
+        "side": "any",
+        "radius": 1,
+        "origin": "target"
+      },
+      "effects": [],
+      "gaps": [
+        "targets 'a hex within 4' — engine centres the blast on a UNIT",
+        "unparsed: Every enemy on or adjacent to the target hex gains 2 Burn, or 4 Burn if it is pl",
+        "no effect compiled — the power is inert"
+      ]
+    },
+    "power.torchbearer.raise-the-torch": {
+      "id": "power.torchbearer.raise-the-torch",
+      "name": "Raise the Torch",
+      "staminaCost": 0,
+      "cooldown": 0,
+      "range": 0,
+      "target": {
+        "select": "area",
+        "side": "ally",
+        "radius": 3,
+        "origin": "self"
+      },
+      "effects": [],
+      "gaps": [
+        "unparsed: Stance: for the rest of the Battle every ally within 3 hexes has +2 Vision, and ",
+        "unparsed: It lapses the moment you go down, which is the whole tension of bringing you",
+        "no effect compiled — the power is inert"
+      ]
+    },
+    "power.torchbearer.flare": {
+      "id": "power.torchbearer.flare",
+      "name": "Flare",
+      "staminaCost": 0,
+      "cooldown": 4,
+      "range": 0,
+      "effects": [],
+      "target": {
+        "select": "self",
+        "side": "any"
+      },
+      "gaps": [
+        "targets 'a hex within 6 hexes' unparsed — the power is inert"
+      ]
+    },
+    "power.torchbearer.hold-the-light": {
+      "id": "power.torchbearer.hold-the-light",
+      "name": "Hold the Light",
+      "staminaCost": 0,
+      "cooldown": 3,
+      "free": true,
+      "range": 0,
+      "target": {
+        "select": "area",
+        "side": "ally",
+        "radius": 4,
+        "origin": "self"
+      },
+      "effects": [],
+      "gaps": [
+        "unparsed: Free: you do not move this Turn, and every ally within 4 hexes gains +1 Vision a",
+        "no effect compiled — the power is inert"
+      ]
+    },
+    "power.torchbearer.burn-it-out": {
+      "id": "power.torchbearer.burn-it-out",
+      "name": "Burn It Out",
+      "staminaCost": 0,
+      "cooldown": 5,
+      "warmup": 2,
+      "range": 0,
+      "target": {
+        "select": "self",
+        "side": "any"
+      },
+      "effects": [
+        {
+          "kind": "statMod",
+          "stat": "strength",
+          "value": -1,
+          "until": "endOfNextTurn",
+          "who": "self"
+        }
+      ],
+      "gaps": [
+        "modifies only melee attacks — engine applies it to the unit"
+      ]
+    },
+    "power.porter.drop-the-pack": {
+      "id": "power.porter.drop-the-pack",
+      "name": "Drop the Pack",
+      "staminaCost": 0,
+      "cooldown": 5,
+      "warmup": 1,
+      "range": 0,
+      "effects": [],
+      "target": {
+        "select": "self",
+        "side": "any"
+      },
+      "gaps": [
+        "targets 'your own hex' unparsed — the power is inert"
+      ]
+    },
+    "power.porter.shoulder-the-load": {
+      "id": "power.porter.shoulder-the-load",
+      "name": "Shoulder the Load",
+      "staminaCost": 0,
+      "cooldown": 4,
+      "range": 1,
+      "target": {
+        "select": "unit",
+        "side": "ally"
+      },
+      "effects": [],
+      "gaps": [
+        "unparsed: One ally within 1 hex gains +1 Movement and +5 Dodge for the rest of the Battle,",
+        "no effect compiled — the power is inert"
+      ]
+    },
+    "power.militia.fall-in": {
+      "id": "power.militia.fall-in",
+      "name": "Fall In",
+      "staminaCost": 0,
+      "cooldown": 4,
+      "range": 0,
+      "target": {
+        "select": "self",
+        "side": "any"
+      },
+      "effects": [
+        {
+          "kind": "statMod",
+          "stat": "maxHp",
+          "value": 2,
+          "until": "battle",
+          "who": "self"
+        },
+        {
+          "kind": "statMod",
+          "stat": "armor",
+          "value": 1,
+          "until": "battle",
+          "who": "self"
+        }
+      ]
+    },
+    "power.militia.ready": {
+      "id": "power.militia.ready",
+      "name": "Ready!",
+      "staminaCost": 0,
+      "cooldown": 3,
+      "range": 0,
+      "target": {
+        "select": "self",
+        "side": "any"
+      },
+      "effects": [],
+      "gaps": [
+        "unparsed: Stance: gain +1 Strength and +1 Precision for the rest of the Battle and lose 1 ",
+        "no effect compiled — the power is inert"
+      ]
+    },
+    "power.militia.aim": {
+      "id": "power.militia.aim",
+      "name": "Aim!",
+      "staminaCost": 0,
+      "cooldown": 2,
+      "range": 0,
+      "effects": [],
+      "target": {
+        "select": "self",
+        "side": "any"
+      },
+      "gaps": [
+        "targets 'one enemy within your Vision' unparsed — the power is inert"
+      ]
+    },
+    "power.militia.take-the-wall": {
+      "id": "power.militia.take-the-wall",
+      "name": "Take the Wall",
+      "staminaCost": 0,
+      "cooldown": 5,
+      "warmup": 2,
+      "range": 0,
+      "effects": [],
+      "target": {
+        "select": "self",
+        "side": "any"
+      },
+      "gaps": [
+        "targets 'you and allies within 1 hex' unparsed — the power is inert"
+      ]
+    },
+    "power.trickster.armor-gap": {
+      "id": "power.trickster.armor-gap",
+      "name": "Armor Gap",
+      "staminaCost": 0,
+      "cooldown": 2,
+      "range": 3,
+      "target": {
+        "select": "unit",
+        "side": "enemy"
+      },
+      "effects": [],
+      "gaps": [
+        "unparsed: The target loses 2 Armor for the rest of the Battle",
+        "unparsed: Armor floors at zero, so spend this on something that had some",
+        "no effect compiled — the power is inert"
+      ]
+    },
+    "power.trickster.poison-nick": {
+      "id": "power.trickster.poison-nick",
+      "name": "Poison Nick",
+      "staminaCost": 0,
+      "cooldown": 2,
+      "range": 1,
+      "target": {
+        "select": "unit",
+        "side": "enemy"
+      },
+      "effects": [],
+      "gaps": [
+        "unparsed: Melee attack at -1 Strength",
+        "unparsed: on hit the target gains 4 Poison, reduced by its Resist on every tick",
+        "no effect compiled — the power is inert"
+      ]
+    },
+    "power.trickster.escape": {
+      "id": "power.trickster.escape",
+      "name": "Escape",
+      "staminaCost": 0,
+      "cooldown": 6,
+      "range": 0,
+      "target": {
+        "select": "self",
+        "side": "any"
+      },
+      "effects": [],
+      "gaps": [
+        "unparsed: Move up to twice your Movement toward the nearest map edge and leave the Battle",
+        "unparsed: You keep everything you are carrying and you are available for the next one — th",
+        "no effect compiled — the power is inert"
+      ]
+    },
+    "power.trickster.impersonation": {
+      "id": "power.trickster.impersonation",
+      "name": "Impersonation",
+      "staminaCost": 0,
+      "cooldown": 8,
+      "warmup": 3,
+      "range": 0,
+      "target": {
+        "select": "self",
+        "side": "any"
+      },
+      "effects": [],
+      "gaps": [
+        "unparsed: Stance: for the rest of the Battle you satisfy EVERY class restriction on every ",
+        "no effect compiled — the power is inert"
+      ]
+    },
+    "power.archer.dedication": {
+      "id": "power.archer.dedication",
+      "name": "Dedication",
+      "staminaCost": 0,
+      "cooldown": 4,
+      "range": 0,
+      "target": {
+        "select": "self",
+        "side": "any"
+      },
+      "effects": [],
+      "gaps": [
+        "unparsed: Stance: gain +3 Precision for the rest of the Battle and take 2 true damage imme",
+        "no effect compiled — the power is inert"
+      ]
+    },
+    "power.archer.flurry-of-arrows": {
+      "id": "power.archer.flurry-of-arrows",
+      "name": "Flurry of Arrows",
+      "staminaCost": 0,
+      "cooldown": 3,
+      "warmup": 1,
+      "range": 0,
+      "effects": [],
+      "target": {
+        "select": "self",
+        "side": "any"
+      },
+      "gaps": [
+        "targets 'up to 2 enemies within 3 hexes' unparsed — the power is inert"
+      ]
+    },
+    "power.archer.small-bandage": {
+      "id": "power.archer.small-bandage",
+      "name": "Small Bandage",
+      "staminaCost": 0,
+      "cooldown": 3,
+      "range": 1,
+      "target": {
+        "select": "unit",
+        "side": "ally"
+      },
+      "effects": [],
+      "gaps": [
+        "unparsed: Heal an adjacent ally 3 and remove 5 Burn from it",
+        "no effect compiled — the power is inert"
+      ]
+    },
+    "power.archer.take-the-shot": {
+      "id": "power.archer.take-the-shot",
+      "name": "Take the Shot",
+      "staminaCost": 0,
+      "cooldown": 2,
+      "range": 6,
+      "target": {
+        "select": "unit",
+        "side": "enemy"
+      },
+      "effects": [],
+      "gaps": [
+        "unparsed: Ranged attack at +10 Accuracy",
+        "unparsed: you may not move this Turn",
+        "no effect compiled — the power is inert"
+      ]
+    },
+    "power.archivist.identify": {
+      "id": "power.archivist.identify",
+      "name": "Identify",
+      "staminaCost": 0,
+      "cooldown": 2,
+      "range": 0,
+      "effects": [],
+      "target": {
+        "select": "self",
+        "side": "any"
+      },
+      "gaps": [
+        "targets 'one enemy within your Vision' unparsed — the power is inert"
+      ]
+    },
+    "power.archivist.scroll-of-power": {
+      "id": "power.archivist.scroll-of-power",
+      "name": "Scroll of Power",
+      "staminaCost": 0,
+      "cooldown": 5,
+      "warmup": 1,
+      "range": 0,
+      "target": {
+        "select": "area",
+        "side": "ally",
+        "radius": 6,
+        "origin": "self"
+      },
+      "effects": [],
+      "gaps": [
+        "unparsed: Read it aloud and burn it: the party's Magic total rises by 3 for the rest of th",
+        "unparsed: That is one grant to the party-wide sum, not +3 to each hero — and it is worth n",
+        "no effect compiled — the power is inert"
+      ]
+    },
+    "power.archivist.forbidden-tome": {
+      "id": "power.archivist.forbidden-tome",
+      "name": "Forbidden Tome",
+      "staminaCost": 0,
+      "cooldown": 6,
+      "warmup": 2,
+      "range": 0,
+      "target": {
+        "select": "self",
+        "side": "any"
+      },
+      "effects": [],
+      "gaps": [
+        "unparsed: Take 3 true damage and read anyway: every enemy on the map is revealed and every",
+        "no effect compiled — the power is inert"
+      ]
+    },
+    "power.archivist.cross-reference": {
+      "id": "power.archivist.cross-reference",
+      "name": "Cross-Reference",
+      "staminaCost": 0,
+      "cooldown": 4,
+      "range": 0,
+      "target": {
+        "select": "area",
+        "side": "ally",
+        "radius": 6,
+        "origin": "self"
+      },
+      "effects": [],
+      "gaps": [
+        "unparsed: Every ally within 6 hexes gains +2 damage for the rest of the Battle, and you ga",
+        "no effect compiled — the power is inert"
+      ]
+    },
+    "power.sage.wisdom": {
+      "id": "power.sage.wisdom",
+      "name": "Wisdom",
+      "staminaCost": 0,
+      "cooldown": 5,
+      "warmup": 1,
+      "range": 0,
+      "target": {
+        "select": "area",
+        "side": "ally",
+        "radius": 6,
+        "origin": "self"
+      },
+      "effects": [],
+      "gaps": [
+        "unparsed: Stop keeping up with the fight in order to keep reading it: the party's Spirit t",
+        "unparsed: One grant to the party-wide sum, not +2 to each hero",
+        "no effect compiled — the power is inert"
+      ]
+    },
+    "power.sage.enlighten": {
+      "id": "power.sage.enlighten",
+      "name": "Enlighten",
+      "staminaCost": 0,
+      "cooldown": 3,
+      "range": 3,
+      "target": {
+        "select": "unit",
+        "side": "ally"
+      },
+      "effects": [],
+      "gaps": [
+        "unparsed: The target's next power this Battle costs 1 less Stamina, and it gains +5 Accura",
+        "no effect compiled — the power is inert"
+      ]
+    },
+    "power.sage.ancient-knowledge": {
+      "id": "power.sage.ancient-knowledge",
+      "name": "Ancient Knowledge",
+      "staminaCost": 0,
+      "cooldown": 6,
+      "warmup": 2,
+      "range": 0,
+      "target": {
+        "select": "area",
+        "side": "ally",
+        "radius": 4,
+        "origin": "self"
+      },
+      "effects": [],
+      "gaps": [
+        "unparsed: Every ally within 4 hexes gains +2 Resist for the rest of the Battle, and the pa",
+        "no effect compiled — the power is inert"
+      ]
+    },
+    "power.sage.meditation": {
+      "id": "power.sage.meditation",
+      "name": "Meditation",
+      "staminaCost": 0,
+      "cooldown": 4,
+      "range": 0,
+      "target": {
+        "select": "self",
+        "side": "any"
+      },
+      "effects": [],
+      "gaps": [
+        "unparsed: Stance: you do not move for the rest of the Battle",
+        "unparsed: Heal yourself equal to the party's Spirit at the start of each of your Turns",
+        "no effect compiled — the power is inert"
+      ]
+    },
+    "power.remembrancer.take-down-the-name": {
+      "id": "power.remembrancer.take-down-the-name",
+      "name": "Take Down the Name",
+      "staminaCost": 0,
+      "cooldown": 3,
+      "range": 0,
+      "target": {
+        "select": "area",
+        "side": "ally",
+        "radius": 6,
+        "origin": "self"
+      },
+      "effects": [],
+      "gaps": [
+        "unparsed: Every ally within 6 hexes gains +1 Strength and +1 Precision for the rest of the",
+        "no effect compiled — the power is inert"
+      ]
+    },
+    "power.remembrancer.story-of-heroes": {
+      "id": "power.remembrancer.story-of-heroes",
+      "name": "Story of Heroes",
+      "staminaCost": 0,
+      "cooldown": 6,
+      "warmup": 2,
+      "range": 0,
+      "target": {
+        "select": "area",
+        "side": "ally",
+        "radius": 4,
+        "origin": "self"
+      },
+      "effects": [],
+      "gaps": [
+        "unparsed: Every ally within 4 hexes gains +1 Strength and +1 Precision for the rest of the",
+        "no effect compiled — the power is inert"
+      ]
+    },
+    "power.remembrancer.read-the-field": {
+      "id": "power.remembrancer.read-the-field",
+      "name": "Read the Field",
+      "staminaCost": 0,
+      "cooldown": 3,
+      "range": 0,
+      "target": {
+        "select": "self",
+        "side": "any"
+      },
+      "effects": [],
+      "gaps": [
+        "unparsed: Gain +3 Vision for the rest of the Battle and reveal every enemy within 8 hexes ",
+        "no effect compiled — the power is inert"
+      ]
+    },
+    "power.remembrancer.close-the-ledger": {
+      "id": "power.remembrancer.close-the-ledger",
+      "name": "Close the Ledger",
+      "staminaCost": 0,
+      "cooldown": 8,
+      "warmup": 3,
+      "range": 0,
+      "target": {
+        "select": "area",
+        "side": "ally",
+        "radius": 6,
+        "origin": "self"
+      },
+      "effects": [],
+      "gaps": [
+        "unparsed: Every ally within 6 hexes heals 4 and loses all Bleed",
+        "no effect compiled — the power is inert"
+      ]
+    },
+    "power.porter.brace-the-line": {
+      "id": "power.porter.brace-the-line",
+      "name": "Brace the Line",
+      "staminaCost": 1,
+      "cooldown": 3,
+      "range": 0,
+      "effects": [],
+      "target": {
+        "select": "self",
+        "side": "any"
+      },
+      "gaps": [
+        "targets 'you and allies within 1 hex' unparsed — the power is inert"
+      ]
+    },
+    "power.porter.set-it-down": {
+      "id": "power.porter.set-it-down",
+      "name": "Set It Down",
+      "staminaCost": 0,
+      "cooldown": 4,
+      "free": true,
+      "range": 0,
+      "target": {
+        "select": "self",
+        "side": "any"
+      },
+      "effects": [],
+      "gaps": [
+        "unparsed: Gain +2 Movement and +10 Dodge until the end of your next Turn",
+        "no effect compiled — the power is inert"
+      ]
+    },
+    "power.hound.run-them-down": {
+      "id": "power.hound.run-them-down",
+      "name": "Run Them Down",
+      "staminaCost": 1,
+      "cooldown": 3,
+      "range": 0,
+      "target": {
+        "select": "self",
+        "side": "any"
+      },
+      "effects": [],
+      "gaps": [
+        "unparsed: Move up to your Movement and make a melee attack at +1 Strength",
+        "unparsed: It provokes nothing",
+        "no effect compiled — the power is inert"
+      ]
+    },
+    "power.hound.worry-the-wound": {
+      "id": "power.hound.worry-the-wound",
+      "name": "Worry the Wound",
+      "staminaCost": 1,
+      "cooldown": 2,
+      "range": 0,
+      "target": {
+        "select": "self",
+        "side": "any"
+      },
+      "effects": [],
+      "gaps": [
+        "no effect compiled — the power is inert"
+      ]
+    },
+    "power.hound.bay": {
+      "id": "power.hound.bay",
+      "name": "Bay",
+      "staminaCost": 1,
+      "cooldown": 4,
+      "range": 0,
+      "target": {
+        "select": "area",
+        "side": "enemy",
+        "radius": 3,
+        "origin": "self"
+      },
+      "effects": [],
+      "gaps": [
+        "unparsed: Every enemy within 3 hexes gains 2 Weak and 1 Slow",
+        "unparsed: As an area effect it cannot crit",
+        "no effect compiled — the power is inert"
+      ]
+    },
+    "power.hound.loose-rein": {
+      "id": "power.hound.loose-rein",
+      "name": "Loose Rein",
+      "staminaCost": 0,
+      "cooldown": 3,
+      "free": true,
+      "range": 0,
+      "target": {
+        "select": "self",
+        "side": "any"
+      },
+      "effects": [],
+      "gaps": [
+        "unparsed: Until the end of your next Turn you gain +2 Movement and +10 Dodge",
+        "no effect compiled — the power is inert"
+      ]
+    },
+    "power.serpent.venom-spit": {
+      "id": "power.serpent.venom-spit",
+      "name": "Venom Spit",
+      "staminaCost": 1,
+      "cooldown": 3,
+      "range": 4,
+      "target": {
+        "select": "unit",
+        "side": "enemy"
+      },
+      "effects": [],
+      "gaps": [
+        "unparsed: Ranged attack at +2 Precision that applies 4 Poison on hit",
+        "no effect compiled — the power is inert"
+      ]
+    },
+    "power.serpent.coil": {
+      "id": "power.serpent.coil",
+      "name": "Coil",
+      "staminaCost": 1,
+      "cooldown": 2,
+      "range": 0,
+      "target": {
+        "select": "self",
+        "side": "any"
+      },
+      "effects": [],
+      "gaps": [
+        "no effect compiled — the power is inert"
+      ]
+    },
+    "power.serpent.constrict": {
+      "id": "power.serpent.constrict",
+      "name": "Constrict",
+      "staminaCost": 2,
+      "cooldown": 4,
+      "warmup": 1,
+      "range": 1,
+      "target": {
+        "select": "unit",
+        "side": "enemy"
+      },
+      "effects": [],
+      "gaps": [
+        "unparsed: Deal 3 + Strength physical damage and the target gains 3 Slow and 2 Weak",
+        "no effect compiled — the power is inert"
+      ]
+    },
+    "power.serpent.shed": {
+      "id": "power.serpent.shed",
+      "name": "Shed",
+      "staminaCost": 1,
+      "cooldown": 4,
+      "range": 0,
+      "target": {
+        "select": "self",
+        "side": "any"
+      },
+      "effects": [],
+      "gaps": [
+        "unparsed: Remove 5 Poison, 5 Bleed and 5 Burn from yourself and gain +15 Dodge until the e",
+        "no effect compiled — the power is inert"
+      ]
+    },
+    "power.drake.stoop": {
+      "id": "power.drake.stoop",
+      "name": "Stoop",
+      "staminaCost": 1,
+      "cooldown": 3,
+      "range": 0,
+      "target": {
+        "select": "self",
+        "side": "any"
+      },
+      "effects": [],
+      "gaps": [
+        "unparsed: Move up to your Movement and make a melee attack at +2 Strength",
+        "unparsed: It provokes nothing",
+        "no effect compiled — the power is inert"
+      ]
+    },
+    "power.drake.wing-buffet": {
+      "id": "power.drake.wing-buffet",
+      "name": "Wing Buffet",
+      "staminaCost": 2,
+      "cooldown": 4,
+      "range": 0,
+      "target": {
+        "select": "area",
+        "side": "enemy",
+        "radius": 1,
+        "origin": "self"
+      },
+      "effects": [],
+      "gaps": [
+        "unparsed: Every adjacent enemy takes 2 + Strength physical damage and is knocked back 1 he",
+        "unparsed: As an area effect it cannot crit",
+        "no effect compiled — the power is inert"
+      ]
+    },
+    "power.drake.scale-and-bone": {
+      "id": "power.drake.scale-and-bone",
+      "name": "Scale and Bone",
+      "staminaCost": 1,
+      "cooldown": 4,
+      "range": 0,
+      "target": {
+        "select": "self",
+        "side": "any"
+      },
+      "effects": [],
+      "gaps": [
+        "unparsed: Stance: for the rest of the Battle gain +2 Armor and +1 Resist, and lose 1 Movem",
+        "no effect compiled — the power is inert"
+      ]
+    },
+    "power.drake.roost": {
+      "id": "power.drake.roost",
+      "name": "Roost",
+      "staminaCost": 0,
+      "cooldown": 5,
+      "range": 0,
+      "target": {
+        "select": "self",
+        "side": "any"
+      },
+      "effects": [],
+      "gaps": [
+        "unparsed: Heal 4 and remove 3 Bleed from yourself",
+        "no effect compiled — the power is inert"
+      ]
+    },
+    "power.direbeast.maul": {
+      "id": "power.direbeast.maul",
+      "name": "Maul",
+      "staminaCost": 2,
+      "cooldown": 3,
+      "range": 1,
+      "target": {
+        "select": "unit",
+        "side": "enemy"
+      },
+      "effects": [],
+      "gaps": [
+        "unparsed: Make two melee attacks at -5 Accuracy each against the same enemy",
+        "no effect compiled — the power is inert"
+      ]
+    },
+    "power.direbeast.trample": {
+      "id": "power.direbeast.trample",
+      "name": "Trample",
+      "staminaCost": 2,
+      "cooldown": 4,
+      "warmup": 1,
+      "range": 0,
+      "target": {
+        "select": "self",
+        "side": "any"
+      },
+      "effects": [],
+      "gaps": [
+        "unparsed: Move up to your Movement",
+        "unparsed: every enemy whose hex you passed beside takes 3 + Strength physical damage",
+        "unparsed: It provokes nothing and it cannot crit",
+        "no effect compiled — the power is inert"
+      ]
+    },
+    "power.direbeast.bellow": {
+      "id": "power.direbeast.bellow",
+      "name": "Bellow",
+      "staminaCost": 1,
+      "cooldown": 4,
+      "range": 0,
+      "target": {
+        "select": "area",
+        "side": "enemy",
+        "radius": 3,
+        "origin": "self"
+      },
+      "effects": [],
+      "gaps": [
+        "unparsed: Every enemy within 3 hexes gains 3 Weak",
+        "unparsed: As an area effect it cannot crit",
+        "no effect compiled — the power is inert"
+      ]
+    },
+    "power.direbeast.thick-pelt": {
+      "id": "power.direbeast.thick-pelt",
+      "name": "Thick Pelt",
+      "staminaCost": 1,
+      "cooldown": 5,
+      "range": 0,
+      "target": {
+        "select": "self",
+        "side": "any"
+      },
+      "effects": [],
+      "gaps": [
+        "unparsed: Gain Protection equal to 4 + your Toughness",
+        "no effect compiled — the power is inert"
+      ]
+    },
+    "power.stalker.from-the-grass": {
+      "id": "power.stalker.from-the-grass",
+      "name": "From the Grass",
+      "staminaCost": 1,
+      "cooldown": 3,
+      "range": 1,
+      "target": {
+        "select": "unit",
+        "side": "enemy"
+      },
+      "effects": [],
+      "gaps": [
+        "unparsed: Melee attack at +2 Strength and +15 Crit",
+        "no effect compiled — the power is inert"
+      ]
+    },
+    "power.stalker.throat-hold": {
+      "id": "power.stalker.throat-hold",
+      "name": "Throat Hold",
+      "staminaCost": 2,
+      "cooldown": 4,
+      "warmup": 1,
+      "range": 1,
+      "target": {
+        "select": "unit",
+        "side": "enemy"
+      },
+      "effects": [],
+      "gaps": [
+        "unparsed: Deal 4 + Strength physical damage",
+        "unparsed: the target gains 2 Stun and 4 Bleed",
+        "no effect compiled — the power is inert"
+      ]
+    },
+    "power.stalker.melt-away": {
+      "id": "power.stalker.melt-away",
+      "name": "Melt Away",
+      "staminaCost": 1,
+      "cooldown": 4,
+      "free": true,
+      "range": 0,
+      "target": {
+        "select": "self",
+        "side": "any"
+      },
+      "effects": [],
+      "gaps": [
+        "unparsed: Immediately enter stealth: you cannot be seen and cannot be targeted by an attac",
+        "unparsed: Area effects, terrain and auras still reach you",
+        "unparsed: It breaks the moment you use an attack or another power — not when you move — an",
+        "no effect compiled — the power is inert"
+      ]
+    },
+    "power.stalker.patience": {
+      "id": "power.stalker.patience",
+      "name": "Patience",
+      "staminaCost": 1,
+      "cooldown": 3,
+      "range": 0,
+      "target": {
+        "select": "self",
+        "side": "any"
+      },
+      "effects": [],
+      "gaps": [
+        "no effect compiled — the power is inert"
+      ]
+    },
+    "power.broodmother.hatch": {
+      "id": "power.broodmother.hatch",
+      "name": "Hatch",
+      "staminaCost": 2,
+      "cooldown": 4,
+      "warmup": 1,
+      "range": 0,
+      "target": {
+        "select": "self",
+        "side": "any"
+      },
+      "effects": [],
+      "gaps": [
+        "unparsed: Summon one hatchling on a hex adjacent to you",
+        "unparsed: It is a summoned ally with its own stat block and its own AI",
+        "no effect compiled — the power is inert"
+      ]
+    },
+    "power.broodmother.screen": {
+      "id": "power.broodmother.screen",
+      "name": "Screen",
+      "staminaCost": 1,
+      "cooldown": 3,
+      "range": 0,
+      "target": {
+        "select": "area",
+        "side": "ally",
+        "radius": 2,
+        "origin": "self"
+      },
+      "effects": [],
+      "gaps": [
+        "unparsed: You and every ally within 2 hexes gain 4 Protection",
+        "no effect compiled — the power is inert"
+      ]
+    },
+    "power.broodmother.feed-the-brood": {
+      "id": "power.broodmother.feed-the-brood",
+      "name": "Feed the Brood",
+      "staminaCost": 1,
+      "cooldown": 3,
+      "range": 3,
+      "target": {
+        "select": "unit",
+        "side": "ally"
+      },
+      "effects": [],
+      "gaps": [
+        "unparsed: Take 2 true damage and heal that ally for 3 + Spirit",
+        "no effect compiled — the power is inert"
+      ]
+    },
+    "power.broodmother.nest": {
+      "id": "power.broodmother.nest",
+      "name": "Nest",
+      "staminaCost": 1,
+      "cooldown": 5,
+      "warmup": 1,
+      "range": 3,
+      "target": {
+        "select": "area",
+        "side": "any",
+        "radius": 1,
+        "origin": "target"
+      },
+      "effects": [],
+      "gaps": [
+        "targets 'a hex within 3' — engine centres the blast on a UNIT",
+        "unparsed: Those seven hexes become poisoned",
+        "no effect compiled — the power is inert"
+      ]
+    },
+    "power.carrion.gorge": {
+      "id": "power.carrion.gorge",
+      "name": "Gorge",
+      "staminaCost": 1,
+      "cooldown": 3,
+      "range": 0,
+      "target": {
+        "select": "self",
+        "side": "any"
+      },
+      "effects": [],
+      "gaps": [
+        "unparsed: Heal 5 and gain 2 Karma",
+        "no effect compiled — the power is inert"
+      ]
+    },
+    "power.carrion.reek": {
+      "id": "power.carrion.reek",
+      "name": "Reek",
+      "staminaCost": 1,
+      "cooldown": 4,
+      "range": 0,
+      "target": {
+        "select": "area",
+        "side": "enemy",
+        "radius": 2,
+        "origin": "self"
+      },
+      "effects": [],
+      "gaps": [
+        "unparsed: Every enemy within 2 hexes gains 3 Poison and 2 Weak",
+        "unparsed: As an area effect it cannot crit",
+        "no effect compiled — the power is inert"
+      ]
+    },
+    "power.carrion.pick-the-bones": {
+      "id": "power.carrion.pick-the-bones",
+      "name": "Pick the Bones",
+      "staminaCost": 1,
+      "cooldown": 4,
+      "range": 0,
+      "effects": [],
+      "target": {
+        "select": "self",
+        "side": "any"
+      },
+      "gaps": [
+        "targets 'one downed ally within 2 hexes' unparsed — the power is inert"
+      ]
+    },
+    "power.carrion.carrion-song": {
+      "id": "power.carrion.carrion-song",
+      "name": "Carrion Song",
+      "staminaCost": 2,
+      "cooldown": 5,
+      "warmup": 1,
+      "range": 0,
+      "target": {
+        "select": "self",
+        "side": "any"
+      },
+      "effects": [],
+      "gaps": [
+        "unparsed: Stance: for the rest of the Battle gain +2 Strength and +1 Toughness",
+        "no effect compiled — the power is inert"
+      ]
+    },
+    "power.warbeast.charge-together": {
+      "id": "power.warbeast.charge-together",
+      "name": "Charge Together",
+      "staminaCost": 2,
+      "cooldown": 4,
+      "range": 0,
+      "target": {
+        "select": "self",
+        "side": "any"
+      },
+      "effects": [],
+      "gaps": [
+        "unparsed: Move up to 4 hexes and make a melee attack at +2 Strength",
+        "unparsed: Every ally within 2 hexes may immediately move up to 2 hexes",
+        "unparsed: it provokes nothing",
+        "no effect compiled — the power is inert"
+      ]
+    },
+    "power.warbeast.stand-over": {
+      "id": "power.warbeast.stand-over",
+      "name": "Stand Over",
+      "staminaCost": 1,
+      "cooldown": 3,
+      "range": 1,
+      "target": {
+        "select": "unit",
+        "side": "ally"
+      },
+      "effects": [],
+      "gaps": [
+        "unparsed: That ally gains 5 Protection and you gain 3",
+        "no effect compiled — the power is inert"
+      ]
+    },
+    "power.warbeast.harness": {
+      "id": "power.warbeast.harness",
+      "name": "Harness",
+      "staminaCost": 1,
+      "cooldown": 5,
+      "range": 0,
+      "target": {
+        "select": "area",
+        "side": "ally",
+        "radius": 3,
+        "origin": "self"
+      },
+      "effects": [],
+      "gaps": [
+        "unparsed: You and every ally within 3 hexes gain +1 Armor for the rest of the Battle",
+        "no effect compiled — the power is inert"
+      ]
+    },
+    "power.warbeast.warcry": {
+      "id": "power.warbeast.warcry",
+      "name": "Warcry",
+      "staminaCost": 1,
+      "cooldown": 4,
+      "range": 0,
+      "target": {
+        "select": "area",
+        "side": "any",
+        "radius": 3,
+        "origin": "self"
+      },
+      "effects": [],
+      "gaps": [
+        "unparsed: Every enemy within 3 hexes gains 2 Weak",
+        "unparsed: You and every ally within 3 hexes remove 2 Weak",
+        "no effect compiled — the power is inert"
+      ]
+    },
+    "power.wyrmling.kindle": {
+      "id": "power.wyrmling.kindle",
+      "name": "Kindle",
+      "staminaCost": 1,
+      "cooldown": 2,
+      "range": 0,
+      "target": {
+        "select": "self",
+        "side": "any"
+      },
+      "effects": [],
+      "gaps": [
+        "no effect compiled — the power is inert"
+      ]
+    },
+    "power.wyrmling.scorch": {
+      "id": "power.wyrmling.scorch",
+      "name": "Scorch",
+      "staminaCost": 2,
+      "cooldown": 3,
+      "warmup": 1,
+      "range": 3,
+      "target": {
+        "select": "area",
+        "side": "any",
+        "radius": 1,
+        "origin": "target"
+      },
+      "effects": [
+        {
+          "kind": "damage",
+          "stat": "magic",
+          "bonus": 2,
+          "damageType": "magic"
+        }
+      ],
+      "gaps": [
+        "targets 'a hex within 3' — engine centres the blast on a UNIT",
+        "rider: and those seven hexes become burning"
+      ]
+    },
+    "power.wyrmling.molten-scales": {
+      "id": "power.wyrmling.molten-scales",
+      "name": "Molten Scales",
+      "staminaCost": 1,
+      "cooldown": 4,
+      "range": 0,
+      "target": {
+        "select": "self",
+        "side": "any"
+      },
+      "effects": [],
+      "gaps": [
+        "unparsed: Stance: for the rest of the Battle you have Thorns 3 and +1 Resist",
+        "no effect compiled — the power is inert"
+      ]
+    },
+    "power.wyrmling.take-wing": {
+      "id": "power.wyrmling.take-wing",
+      "name": "Take Wing",
+      "staminaCost": 1,
+      "cooldown": 4,
+      "range": 0,
+      "target": {
+        "select": "self",
+        "side": "any"
+      },
+      "effects": [],
+      "gaps": [
+        "unparsed: Move 4 hexes as FLIGHT: 1 Movement per hex, over units and obstructions, taking ",
+        "unparsed: The hex you land on must be legal like any other",
+        "no effect compiled — the power is inert"
+      ]
     }
   },
   "specialties": {
@@ -17861,6 +19119,192 @@ export const UNIT_PACK = {
       "statModifiers": {
         "precision": 2,
         "crit": 3,
+        "resist": 1
+      }
+    },
+    "specialty.apothecary": {
+      "id": "specialty.apothecary",
+      "name": "Apothecary",
+      "class": "class.civilian",
+      "statModifiers": {
+        "resist": 1,
+        "maxHp": 2,
+        "movement": 1
+      }
+    },
+    "specialty.torchbearer": {
+      "id": "specialty.torchbearer",
+      "name": "Torch-Bearer",
+      "class": "class.civilian",
+      "statModifiers": {
+        "maxHp": 1,
+        "resist": 1,
+        "vision": 2
+      }
+    },
+    "specialty.porter": {
+      "id": "specialty.porter",
+      "name": "Porter",
+      "class": "class.civilian",
+      "statModifiers": {
+        "movement": 1,
+        "maxHp": 1
+      },
+      "gaps": [
+        "itemSlots 2: no engine stat"
+      ]
+    },
+    "specialty.militia": {
+      "id": "specialty.militia",
+      "name": "Militia",
+      "class": "class.civilian",
+      "statModifiers": {
+        "accuracy": 5,
+        "resist": 1,
+        "strength": 1
+      }
+    },
+    "specialty.trickster": {
+      "id": "specialty.trickster",
+      "name": "Trickster",
+      "class": "class.civilian",
+      "statModifiers": {
+        "dodge": 10,
+        "luck": 3
+      },
+      "gaps": [
+        "itemSlots 1: no engine stat"
+      ]
+    },
+    "specialty.archer": {
+      "id": "specialty.archer",
+      "name": "Archer",
+      "class": "class.civilian",
+      "statModifiers": {
+        "precision": 2,
+        "reach": 1,
+        "crit": 3
+      }
+    },
+    "specialty.archivist": {
+      "id": "specialty.archivist",
+      "name": "Archivist",
+      "class": "class.civilian",
+      "statModifiers": {
+        "resist": 1,
+        "luck": 3
+      },
+      "gaps": [
+        "itemSlots 1: no engine stat"
+      ]
+    },
+    "specialty.sage": {
+      "id": "specialty.sage",
+      "name": "Sage",
+      "class": "class.civilian",
+      "statModifiers": {
+        "magic": 1,
+        "spirit": 1,
+        "resist": 1
+      }
+    },
+    "specialty.remembrancer": {
+      "id": "specialty.remembrancer",
+      "name": "Remembrancer",
+      "class": "class.civilian",
+      "statModifiers": {
+        "luck": 3,
+        "resist": 1,
+        "maxHp": 1
+      }
+    },
+    "specialty.hound": {
+      "id": "specialty.hound",
+      "name": "Hound",
+      "class": "class.beast",
+      "statModifiers": {
+        "movement": 1,
+        "precision": 1,
+        "dodge": 5
+      }
+    },
+    "specialty.serpent": {
+      "id": "specialty.serpent",
+      "name": "Serpent",
+      "class": "class.beast",
+      "statModifiers": {
+        "dodge": 15,
+        "precision": 2,
+        "toughness": 1
+      }
+    },
+    "specialty.drake": {
+      "id": "specialty.drake",
+      "name": "Drake",
+      "class": "class.beast",
+      "statModifiers": {
+        "armor": 2,
+        "reach": 1,
+        "maxHp": 4
+      }
+    },
+    "specialty.direbeast": {
+      "id": "specialty.direbeast",
+      "name": "Direbeast",
+      "class": "class.beast",
+      "statModifiers": {
+        "strength": 3,
+        "maxHp": 6,
+        "toughness": 2
+      }
+    },
+    "specialty.stalker": {
+      "id": "specialty.stalker",
+      "name": "Stalker",
+      "class": "class.beast",
+      "statModifiers": {
+        "crit": 10,
+        "precision": 2,
+        "dodge": 5
+      }
+    },
+    "specialty.broodmother": {
+      "id": "specialty.broodmother",
+      "name": "Broodmother",
+      "class": "class.beast",
+      "statModifiers": {
+        "maxHp": 6,
+        "spirit": 2,
+        "resist": 1
+      }
+    },
+    "specialty.carrion": {
+      "id": "specialty.carrion",
+      "name": "Carrion",
+      "class": "class.beast",
+      "statModifiers": {
+        "maxHp": 4,
+        "strength": 2,
+        "toughness": 2
+      }
+    },
+    "specialty.warbeast": {
+      "id": "specialty.warbeast",
+      "name": "Warbeast",
+      "class": "class.beast",
+      "statModifiers": {
+        "strength": 2,
+        "armor": 1,
+        "maxHp": 4
+      }
+    },
+    "specialty.wyrmling": {
+      "id": "specialty.wyrmling",
+      "name": "Wyrmling",
+      "class": "class.beast",
+      "statModifiers": {
+        "magic": 2,
+        "maxHp": 4,
         "resist": 1
       }
     }
@@ -18811,6 +20255,114 @@ export const UNIT_PACK = {
             "staminaRegen": 1,
             "armor": 1,
             "accuracy": 5
+          }
+        }
+      ]
+    },
+    "civilian.farmer": {
+      "id": "civilian.farmer",
+      "rows": [
+        {
+          "level": 1,
+          "grants": {}
+        },
+        {
+          "level": 2,
+          "grants": {
+            "maxHp": 1,
+            "itemSlots": 1
+          }
+        },
+        {
+          "level": 3,
+          "grants": {
+            "strength": 1,
+            "maxHp": 1,
+            "itemSlots": 1,
+            "dodge": 5,
+            "accuracy": 5
+          }
+        },
+        {
+          "level": 4,
+          "grants": {
+            "precision": 1,
+            "maxHp": 1,
+            "resist": 1,
+            "crit": 5,
+            "luck": 2,
+            "accuracy": 5
+          }
+        },
+        {
+          "level": 5,
+          "grants": {},
+          "choice": [
+            {
+              "strength": 2
+            },
+            {
+              "maxHp": 5
+            },
+            {
+              "accuracy": 15
+            },
+            {
+              "resist": 1
+            },
+            {
+              "armor": 1
+            }
+          ]
+        },
+        {
+          "level": 6,
+          "grants": {
+            "strength": 1,
+            "maxHp": 1,
+            "crit": 5,
+            "luck": 2,
+            "accuracy": 5
+          }
+        },
+        {
+          "level": 7,
+          "grants": {
+            "precision": 1,
+            "maxHp": 1,
+            "itemSlots": 1,
+            "dodge": 2,
+            "accuracy": 3
+          }
+        },
+        {
+          "level": 8,
+          "grants": {
+            "strength": 1,
+            "maxHp": 1,
+            "crit": 5,
+            "luck": 2,
+            "accuracy": 3
+          }
+        },
+        {
+          "level": 9,
+          "grants": {
+            "precision": 1,
+            "maxHp": 1,
+            "itemSlots": 1,
+            "dodge": 2,
+            "accuracy": 2
+          }
+        },
+        {
+          "level": 10,
+          "grants": {
+            "maxHp": 1,
+            "resist": 1,
+            "crit": 5,
+            "luck": 2,
+            "accuracy": 2
           }
         }
       ]

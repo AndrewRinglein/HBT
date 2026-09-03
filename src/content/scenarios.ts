@@ -301,6 +301,26 @@ const RAW_SCENARIOS: Readonly<Record<string, ScenarioDef>> = {
     enemyHexes: [64, 66, 68, 70, 72, 74, 80, 82, 84, 86, 88, 90],
     replicate: 0,
   },
+  // progression.level-table-by-type (2026-09-03): the three farmer rows at
+  // level 3 on civilian.farmer beside the orphans at level 3 on
+  // class.civilian — the same level, two curves, told apart in the log's
+  // unit.grown lines. Militia is the civilian specialty they all hold.
+  'showcase.farmers-grown': {
+    id: 'showcase.farmers-grown',
+    note: 'progression.level-table-by-type: three farmers level 3 on civilian.farmer, the orphans level 3 on class.civilian, against four zombies.',
+    mapId: 'map.open',
+    heroes: ['hero.fixed.farmer', 'hero.fixed.farming-family', 'hero.fixed.group-of-farmers', 'hero.fixed.orphans'],
+    heroHexes: [245, 246, 247, 248],
+    heroProgress: [
+      { level: 3, specialtyId: 'specialty.militia' },
+      { level: 3, specialtyId: 'specialty.militia' },
+      { level: 3, specialtyId: 'specialty.militia' },
+      { level: 3, specialtyId: 'specialty.trickster' },
+    ],
+    enemies: ['unit.zombie', 'unit.zombie', 'unit.zombie', 'unit.fast-zombie'],
+    enemyHexes: [116, 118, 120, 122],
+    replicate: 0,
+  },
   'showcase.assembled-party': {
     id: 'showcase.assembled-party',
     note: 'Hero assembly (2026-09-03): the progression party at its battle-20 '

@@ -6494,3 +6494,43 @@ IRON GAUNTLET: NOT PASSED — 3 FLAG(S) WARNED
 </details>
 
 IRON GAUNTLET: NOT PASSED — 1 FLAG(S) WARNED; 1 EXEMPTION(S) TAKEN · periodic audit clean
+
+## progression.level-table-by-type — LANDED `a559403` **NEEDS REVIEW**
+2026-09-03 23:16
+
+  PASS  dependencies landed
+  WARN  not already decided — 3 candidate ruling(s) — READ BEFORE ASKING: ../CODEX.md:121 · ../STATE.md:20
+  PASS  typecheck
+  PASS  full test suite
+  PASS  gate 1 — the id appears in a real battle — civilian.farmer: 3 log lines, 3 fired, 3 changed state
+  PASS  brought its own tests — test/items-per-unit.test.ts, test/level-table-by-type.test.ts
+  WARN  existing tests untouched — DELETED LINES in test/items-per-unit.test.ts (-1) — will land FLAGGED for review
+  PASS  control battles unchanged
+  PASS  content has a published source — 22 ids without a published source — 1 NEW from THIS item, seal withheld until published
+  PASS  hardcode scan — core knows mechanisms, never names
+  PASS  generalizes — the second instance costs zero engine code — shape 'plumbing' — not a mechanism, exempt
+  PASS  naming — new content ids use declared kinds
+  PASS  naming — no banned words invented
+  PASS  kill switch — the tests fail without the content — tests fail without civilian.farmer — they genuinely test it
+
+<details><summary>Existing tests were edited — review this diff</summary>
+
+```diff
+diff --git a/test/items-per-unit.test.ts b/test/items-per-unit.test.ts
+index 87102a9..6248d21 100644
+--- a/test/items-per-unit.test.ts
++++ b/test/items-per-unit.test.ts
+@@ -40,5 +40,8 @@ describe('the invariant — no heroItems means the hero the converter used to fo
+       // Deathbed Fighting base); the oracle predates it.
+       // capability.vision (2026-09-03): items fold `vision` now; the oracle predates it too.
+-      const keys = [...new Set([...Object.keys(f), ...Object.keys(r)])].filter((k) => !['attributes', 'tags', 'toughness', 'vision'].includes(k) && JSON.stringify(f[k]) !== JSON.stringify(r[k]))
++      // progression.level-table-by-type (2026-09-03): the farmer row names its
++      // own level table (`levelTable`); a pointer, not a folded number — the
++      // oracle predates it. Law 10 reason: a new row FIELD, not a changed value.
++      const keys = [...new Set([...Object.keys(f), ...Object.keys(r)])].filter((k) => !['attributes', 'tags', 'toughness', 'vision', 'levelTable'].includes(k) && JSON.stringify(f[k]) !== JSON.stringify(r[k]))
+       if (keys.length) differ[id] = keys
+     }
+```
+</details>
+
+IRON GAUNTLET: NOT PASSED — 3 FLAG(S) WARNED

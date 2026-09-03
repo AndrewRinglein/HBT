@@ -444,6 +444,13 @@ export type UnitDef = {
    * "target undead" found no zombies. Absent = [].
    */
   readonly tags?: readonly string[]
+  /**
+   * progression.level-table-by-type (2026-09-03): the level table this unit
+   * levels on when it is NOT its class's — a civilian TYPE (`civilian.farmer`),
+   * because "Maiden and farmer are different in how they should level up".
+   * Absent = the `class.*` tag's table. Several heroes may share one.
+   */
+  readonly levelTable?: string
   readonly strength: number
   readonly precision: number
   readonly magic: number
