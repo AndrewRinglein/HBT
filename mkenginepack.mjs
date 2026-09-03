@@ -673,7 +673,11 @@ const alphaTeam = [];
 // invented), and attacks cost what their rows author. The Lumberjack's axe
 // grants attacks that exist only as NAMES (no authored rows) — he fields
 // weaponless with a named gap, the shadow-hound-puppy precedent.
-const CIVILIANS = ['hero.fixed.orphans', 'hero.fixed.lumberjack-and-wife', 'hero.fixed.farmer'];
+// encounter.runner (2026-09-03): the School Teacher and School Children join —
+// battle.prologue-3 places them, and ruled 2026-08-25 confirms all three
+// (encounters.json civilians.confirmed). Read the list from the data.
+// (ENC is read above)
+const CIVILIANS = [...new Set(['hero.fixed.orphans', 'hero.fixed.lumberjack-and-wife', 'hero.fixed.farmer', ...(ENC.civilians?.confirmed || [])])];
 for (const id of CIVILIANS) {
   const h = allHeroes.find((x) => x.id === id);
   if (!h) { gap(id, 'named for the prologue, absent from the Codex', 'content'); continue; }
@@ -1134,8 +1138,50 @@ const testAttackRows = testAttacks();
 const testAbilityRows = testAbilities();
 const test = { note: 'GENERATED from content/test/ — the test receptacle. Never ships. Wipe the folder to remove every row here.', units: testUnits(testAttackRows, testAbilityRows), attacks: testAttackRows, abilities: testAbilityRows, statuses: testStatuses() };
 
+// ── ENCOUNTERS (encounter.runner, 2026-09-03; P11 approved as written) ─────────
+// Every prologue and scripted row of gen/encounters.json becomes an
+// EncounterDef. What the engine cannot honour is a named gap on the row —
+// retreat (skipped by ruling), standing rules, schedule events, a map series,
+// salvation — never silently dropped. Unit ids are checked against the pack.
+const packUnitIds = new Set([...heroes, ...enemies, ...authoredEnemies, ...prologueParty, ...alphaTeam].map((u) => u.typeId));
+function compileEncounter(row) {
+  const gaps = [];
+  const setup = [];
+  let heroZone = null;
+  for (const s of row.setup || []) {
+    if (s.heroes !== undefined) { heroZone = { count: s.heroes, at: s.at }; continue; }
+    if (!s.unit) { gaps.push(`setup entry without a unit: ${JSON.stringify(s).slice(0, 60)}`); continue; }
+    if (!packUnitIds.has(s.unit)) gaps.push(`setup unit ${s.unit} is not in the pack`);
+    const { was: _w, note: _n, ...rest } = s;
+    setup.push(rest);
+  }
+  const schedule = [];
+  for (const r of row.schedule || []) {
+    if (r.event) gaps.push(`schedule event '${r.event.name}': ${(r.event.effects || []).map((e) => e.needs ? e.needs.join(',') : e.effect).join('; ')}`);
+    const spawn = [];
+    for (const s of r.spawn || []) {
+      if (!s.unit) { gaps.push(`spawn without a unit: ${JSON.stringify(s).slice(0, 60)}`); continue; }
+      if (!packUnitIds.has(s.unit)) gaps.push(`spawn unit ${s.unit} is not in the pack`);
+      const { was: _w, note: _n, ...rest } = s;
+      spawn.push(rest);
+    }
+    if (r.phase === undefined && r.enemyPhase === undefined) { gaps.push('schedule row with no phase'); continue; }
+    schedule.push({ ...(r.phase !== undefined ? { phase: r.phase } : {}), ...(r.enemyPhase !== undefined ? { enemyPhase: r.enemyPhase } : {}), spawn });
+  }
+  if (row.retreat) gaps.push('retreat allowed — skipped by ruling 2026-09-03');
+  if (row.salvation) gaps.push('salvation — skipped by ruling 2026-09-03');
+  if (Array.isArray(row.map)) gaps.push('a map series (dungeon) — skipped by ruling 2026-09-03');
+  for (const st of row.standing || []) gaps.push(`standing rule: ${st.rule || st.name || String(st).slice(0, 60)}`);
+  const win = row.win?.surviveTo !== undefined ? { surviveTo: row.win.surviveTo } : undefined;
+  const loseAfter = row.loseAfter ? { ...(row.loseAfter.phase !== undefined ? { phase: row.loseAfter.phase } : {}), ...(row.loseAfter.heroPhase !== undefined ? { heroPhase: row.loseAfter.heroPhase } : {}) } : undefined;
+  return { id: row.id, name: row.name, ...(typeof row.map === 'string' && row.map !== 'none' ? { mapId: row.map } : {}),
+    setup, schedule, ...(loseAfter ? { loseAfter } : {}), ...(win ? { win } : {}), ...(heroZone ? { heroZone } : {}), ...(gaps.length ? { gaps } : {}) };
+}
+const encounters = {};
+for (const row of [...(ENC.prologue || []), ...(ENC.scripted || []), ...(ENC.authored || [])]) encounters[row.id] = compileEncounter(row);
+
 const pack = { note: D.testCohort.note, heroes, enemies, authoredEnemies, authoredAttacks, authoredAbilities, prologueParty, alphaTeam, critChart: compileCritChart(SETTLED.critChart), statuses, moves, items, test,
-  classPowers, specialties, levels, enchanted };
+  classPowers, specialties, levels, enchanted, encounters };
 
 // Gaps are written AFTER the pack is fully constructed (moved 2026-08-27):
 // compileCritChart names gaps during pack construction, and writing the file
