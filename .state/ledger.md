@@ -809,3 +809,26 @@ slice: 57 of 68 closed · 57 probed · 0 accepted
 IRON GAUNTLET: NOT PASSED — 2 FLAG(S) WARNED; 1 EXEMPTION(S) TAKEN
 
 Law 10 note (waystation.catalog): test/art.test.ts asserted the town shows ['chapel'] with the Ridge unheld; the Waystation joined the Sanctuary's buildings this landing, so the expectation became ['chapel','waystation'] and its art was prepared (generated/art-wanted.json). The rule under test — a Territory's building shows only once it is held — is unchanged and still asserted by the Forge.
+
+## sets.resolve — LANDED `c0ec289` **NEEDS REVIEW**
+2026-09-03 10:37 · engine @ 94ab255
+
+  PASS  dependencies landed
+  WARN  not already decided — 5 candidate ruling(s) — READ BEFORE ASKING: ../STATE.md:20 · ../STATE.md:18
+  PASS  typecheck
+  PASS  full test suite — 140 passed
+  PASS  gate 1 — every claimed criterion holds — ISC-062 holds · ISC-063 holds
+  PASS  brought its own tests — test/isc-062.test.ts, test/isc-063.test.ts
+  PASS  existing tests untouched
+  PASS  kill switch — every claimed probe has been seen red — ISC-062: red on record (2026-09-03 10:23 @ 096dd47, probe 26c75af8baf2) · ISC-063: red on record (2026-09-03 10:23 @ 096dd47, probe a06490952936)
+  PASS  nothing regresses — every P-tier probe — 59 P-tier probe(s): 59 green, 0 red, 0 regression(s). 57 of 68 closed · 59 probed · 0 accepted
+  PASS  hardcode scan — core knows mechanisms, never names
+  PASS  generalizes — the second instance costs zero kingdom code
+  PASS  naming — new ids use declared kinds
+  PASS  naming — no banned words invented
+  WARN  engine working tree clean — verified against a DIRTY engine tree (94ab255 + 1 uncommitted under src/test): ?? src/sim/coverage.ts
+  PASS  one door to the engine
+
+ISC-062: CLOSED at c0ec289 · ISC-063: CLOSED at c0ec289
+slice: 59 of 68 closed · 59 probed · 0 accepted
+IRON GAUNTLET: NOT PASSED — 2 FLAG(S) WARNED; 1 EXEMPTION(S) TAKEN

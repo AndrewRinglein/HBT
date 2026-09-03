@@ -771,6 +771,10 @@
    "hash": "26c75af8baf2",
    "how": "feature absent",
    "tail": "npm notice Changelog: https://github.com/npm/cli/releases/tag/v12.0.2 | npm notice To update run: npm install -g npm@12.0.2 | npm notice"
+  },
+  "closed": {
+   "at": "2026-09-03 10:39",
+   "sha": "c0ec289"
   }
  },
  "063": {
@@ -780,6 +784,10 @@
    "hash": "a06490952936",
    "how": "feature absent",
    "tail": "       | ^ |      11| import { makeBattleState, battleOptionsOf } from '../src/core/seam.js' |      12| import { itemOf } from '../src/content/items.js'"
+  },
+  "closed": {
+   "at": "2026-09-03 10:39",
+   "sha": "c0ec289"
   }
  }
 }
