@@ -429,6 +429,9 @@ export function hitstop(V, ms) {
    settles — the summon-arrival design's landing, without its iris (HANDOFF-
    ICONS-AND-SUMMON §3; the iris used a blur, which flattens the 3D scene) */
 export function arrive(V, id) {
+  /* the cue plays before the beat's render, so the arrival's token may not
+     exist yet — make it now, so the drop-in has something to drop */
+  if (!V.layers.UEL.has(id)) syncUnits(V)
   const E = V.layers.UEL.get(id); if (!E || !E.root.animate) return
   E.bb.animate([{ transform: 'rotateX(var(--anti)) translateY(-46px)', opacity: 0 }, { transform: 'rotateX(var(--anti)) translateY(0)', opacity: 1 }],
     { duration: 380, easing: 'cubic-bezier(.2,.9,.3,1.2)' })

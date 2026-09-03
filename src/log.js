@@ -12,10 +12,10 @@ export function buildLog(events, SN, turns) {
     switch (e.type) {
       case 'turn.begin': return b('turn', `— Turn ${e.turn} —`)   // e.turn is already 1-based
       case 'phase.end.begin': return b('turn', `— end of ${e.side} phase —`)
-      case 'activation.begin': return b(side(e), `<b>${nmAt(e)}</b> activates <span class="sq">· ${e.hp} hp, ${e.stamina} stamina</span>`)
+      case 'activation.begin': return b(side(e), `<b>${nmAt(e)}</b> activates <span class="sq">· ${e.hp} hp, ${e.stamina} stamina${e.movePoints != null ? ', ' + e.movePoints + ' move' : ''}${e.movementMods ? ' (' + e.movementMods.map(m => m.source + ' ' + sgn(m.delta)).join(', ') + ')' : ''}</span>`)
       case 'activation.idle': return b('', `&nbsp;&nbsp;${nmAt(e)} idles <span class="sq">· ${e.reason}</span>`)
       case 'move.begin': return b('', `&nbsp;&nbsp;moves ${e.hexes} hex${e.hexes === 1 ? '' : 'es'}`)
-      case 'attack.declared': return b(side(e), `&nbsp;&nbsp;attacks <b>${nmT(e)}</b> <span class="sq">· hit ${e.hitChance}%</span>`)
+      case 'attack.declared': return b(side(e), `&nbsp;&nbsp;attacks <b>${nmT(e)}</b> <span class="sq">· hit ${e.hitChance}%${e.of > 1 ? ' · hit ' + e.hit + ' of ' + e.of : ''}</span>`)
       case 'attack.hit': return b('dmg', `&nbsp;&nbsp;&nbsp;&nbsp;rolled ${e.roll} vs ${e.hitChance} — HIT${e.crit ? ' <b>CRIT</b>' : ''}`)
       case 'attack.miss': return b('', `&nbsp;&nbsp;&nbsp;&nbsp;rolled ${e.roll} vs ${e.hitChance} — miss`)
       case 'damage.applied': return b('dmg', `&nbsp;&nbsp;&nbsp;&nbsp;<b>${nmT(e)}</b> takes ${e.amount} ${e.damageType}` +

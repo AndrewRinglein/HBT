@@ -89,7 +89,9 @@ if (fresh) {
   let diffs = 0
   for (const { file, label } of lib) {
     const cur = JSON.parse(readFileSync(join('battles', file), 'utf8'))
-    const args = cur.seed.scenarioId ? ['--scenario', cur.seed.scenarioId] : [String(cur.seed.replicate), cur.seed.mapId, String(cur.seed.enemyCount)]
+    /* a scenario export carries its replicate too (--seed <n>, engine 2026-09-03): re-export with the same dice */
+    const args = cur.seed.scenarioId ? ['--scenario', cur.seed.scenarioId, ...(cur.seed.replicate != null ? ['--seed', String(cur.seed.replicate)] : [])]
+      : [String(cur.seed.replicate), cur.seed.mapId, String(cur.seed.enemyCount)]
     let out
     try { out = execFileSync('node', [tsx, 'tools/export-battle.mts', ...args], { cwd: '../engine', encoding: 'utf8', maxBuffer: 1 << 28, stdio: ['ignore', 'pipe', 'pipe'] }) }
     catch (e) { console.error(`fresh: ${label} — export failed: ${String(e.stderr || e.message).trim().split('\n').slice(-3).join(' | ')}`); diffs++; continue }

@@ -414,6 +414,10 @@ if (DUR) for (const t of Object.keys(DUR)) check(FOLDED_TYPES.includes(t) || IGN
     { const S = createState(); let cued = 0
       for (const e of EV) for (const c of fold(S, e, CTX, 0)) if (c.k === 'arrive') cued++
       check(cued === arrivals.length, `${label}: ${arrivals.length} arrivals, ${cued} arrive cues`) }
+    /* and the beat lands on a token that exists: stepping the first arrival animates its billboard */
+    if (arrivals.length) { const [e, i] = arrivals[0]; v.seek(i); v.step()
+      const E = V.layers.UEL.get(e.actor)
+      check(E && E.bb.animations && E.bb.animations.length > 0, `${label}: the arrival of ${e.name} played no drop-in (the token did not exist when the cue played?)`) }
     /* the kit: a unit with unit.equipped shows its granted attacks in the bar, and its resting movement is the sheet's plus the kit's */
     const eq = byType(EV, 'unit.equipped').find(([e]) => (e.grants || []).length)
     if (eq) { const [e] = eq

@@ -458,6 +458,18 @@
    "aspect": 0.64,
    "height": 1.0
   },
+  "test-arc-golem": {
+   "token": "stone-golem_256.png",
+   "card": "card-golem.jpg",
+   "aspect": 0.6914,
+   "height": 2.0
+  },
+  "unit.zombie-burning": {
+   "token": "zombie_256.png",
+   "card": "card-zombie.jpg",
+   "aspect": 0.3789,
+   "height": 1.55
+  },
   "_pending": {
    "token": "ph-art-pending.png",
    "card": null,

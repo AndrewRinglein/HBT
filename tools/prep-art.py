@@ -104,6 +104,9 @@ ARTMAP = {
  'hero.fixed.group-of-farmers': {'ph':'Group Farmers',    'height':1.6},
  'hero.fixed.farming-family':   {'ph':'Farming Family',   'height':1.6},
  'hero.fixed.scary-kid':        {'ph':'Scary Kid',        'height':1.0},
+ # engine 4516bbb renamed two probe bodies: the arc golem is `test-arc-golem`, the burning zombie `unit.zombie-burning`
+ 'test-arc-golem':      {'token':'stone-golem_256.png','card':'card-golem',   'src':'HELL:assets/hex-tokens/stone-golem_256.png','cardsrc':'assets/bestiary/eve/stone-golem.png','height':2.0},
+ 'unit.zombie-burning': {'token':'zombie_256.png','card':'card-zombie','src':'battle-tokens/units/zombie_256.png','cardsrc':'assets/bestiary/eve/zombie.png'},
 }
 
 def placeholder_token(label):
