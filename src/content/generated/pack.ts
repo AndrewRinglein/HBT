@@ -936,7 +936,6 @@ export const UNIT_PACK = {
       "staminaRegen": 0,
       "ai": "dumb-melee",
       "attacks": [
-        "attack.ghoul.eat-corpse",
         "attack.ghoul.rake",
         "attack.ghoul.shriek",
         "attack.ghoul.devour"
@@ -2127,16 +2126,6 @@ export const UNIT_PACK = {
       "reach": 4,
       "staminaCost": 0
     },
-    "attack.ghoul.eat-corpse": {
-      "id": "attack.ghoul.eat-corpse",
-      "name": "Eat Corpse",
-      "kind": "melee",
-      "damageType": "physical",
-      "bonus": 0,
-      "stat": "strength",
-      "reach": 1,
-      "staminaCost": 0
-    },
     "attack.ghoul.rake": {
       "id": "attack.ghoul.rake",
       "name": "Rake",
@@ -2145,7 +2134,8 @@ export const UNIT_PACK = {
       "bonus": -1,
       "stat": "strength",
       "reach": 1,
-      "staminaCost": 0
+      "staminaCost": 0,
+      "hits": 2
     },
     "attack.ghoul.shriek": {
       "id": "attack.ghoul.shriek",
@@ -2514,7 +2504,8 @@ export const UNIT_PACK = {
       "stat": "precision",
       "reach": 4,
       "staminaCost": 2,
-      "accuracy": -5
+      "accuracy": -5,
+      "hits": 2
     },
     "attack.shortbow.short-shot": {
       "id": "attack.shortbow.short-shot",
@@ -2728,7 +2719,8 @@ export const UNIT_PACK = {
       "stat": "precision",
       "reach": 3,
       "staminaCost": 2,
-      "accuracy": -5
+      "accuracy": -5,
+      "hits": 2
     },
     "attack.daggers.stab": {
       "id": "attack.daggers.stab",
@@ -3103,7 +3095,8 @@ export const UNIT_PACK = {
       "stat": "precision",
       "reach": 4,
       "staminaCost": 2,
-      "accuracy": -5
+      "accuracy": -5,
+      "hits": 2
     },
     "attack.duel-runeblades.twin-cut": {
       "id": "attack.duel-runeblades.twin-cut",
@@ -3113,7 +3106,8 @@ export const UNIT_PACK = {
       "bonus": 0,
       "stat": "strength",
       "reach": 1,
-      "staminaCost": 2
+      "staminaCost": 2,
+      "hits": 2
     },
     "attack.duel-runeblades.rune-cross": {
       "id": "attack.duel-runeblades.rune-cross",
@@ -3179,7 +3173,8 @@ export const UNIT_PACK = {
       "stat": "strength",
       "reach": 1,
       "staminaCost": 2,
-      "accuracy": 5
+      "accuracy": 5,
+      "hits": 2
     },
     "attack.iron-claws.eviscerate": {
       "id": "attack.iron-claws.eviscerate",
@@ -3461,7 +3456,8 @@ export const UNIT_PACK = {
       "stat": "precision",
       "reach": 4,
       "staminaCost": 2,
-      "accuracy": -5
+      "accuracy": -5,
+      "hits": 3
     },
     "attack.shadow-dagger.shadow-cut": {
       "id": "attack.shadow-dagger.shadow-cut",
@@ -3529,7 +3525,8 @@ export const UNIT_PACK = {
       "stat": "precision",
       "reach": 7,
       "staminaCost": 2,
-      "accuracy": -5
+      "accuracy": -5,
+      "hits": 2
     },
     "attack.book-of-exorcisms.reading": {
       "id": "attack.book-of-exorcisms.reading",
@@ -3639,7 +3636,8 @@ export const UNIT_PACK = {
       "reach": 1,
       "staminaCost": 2,
       "crit": 3,
-      "accuracy": -5
+      "accuracy": -5,
+      "hits": 2
     },
     "attack.seraph-bow.seraph-shot": {
       "id": "attack.seraph-bow.seraph-shot",
@@ -3729,7 +3727,8 @@ export const UNIT_PACK = {
       "stat": "strength",
       "reach": 3,
       "staminaCost": 2,
-      "accuracy": -5
+      "accuracy": -5,
+      "hits": 2
     },
     "attack.demonic-shiv.shiv": {
       "id": "attack.demonic-shiv.shiv",
@@ -3797,7 +3796,8 @@ export const UNIT_PACK = {
       "reach": 1,
       "staminaCost": 2,
       "crit": 3,
-      "accuracy": -5
+      "accuracy": -5,
+      "hits": 2
     },
     "attack.scepter-of-salvation.rebuke": {
       "id": "attack.scepter-of-salvation.rebuke",
@@ -3897,7 +3897,8 @@ export const UNIT_PACK = {
       "stat": "strength",
       "reach": 1,
       "staminaCost": 2,
-      "accuracy": -10
+      "accuracy": -10,
+      "hits": 2
     },
     "attack.claws.swipe": {
       "id": "attack.claws.swipe",
@@ -3919,7 +3920,8 @@ export const UNIT_PACK = {
       "bonus": 0,
       "stat": "strength",
       "reach": 1,
-      "staminaCost": 2
+      "staminaCost": 2,
+      "hits": 2
     },
     "attack.tail.lash": {
       "id": "attack.tail.lash",
@@ -4005,7 +4007,8 @@ export const UNIT_PACK = {
       "stat": "strength",
       "reach": 1,
       "staminaCost": 2,
-      "accuracy": -5
+      "accuracy": -5,
+      "hits": 2
     },
     "attack.pickaxe.pick": {
       "id": "attack.pickaxe.pick",

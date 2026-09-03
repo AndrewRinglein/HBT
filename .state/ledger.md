@@ -5786,3 +5786,23 @@ NO MEASURABLE EFFECT at this sample size — consequence clause caught state cha
 </details>
 
 IRON GAUNTLET: NOT PASSED — 1 FLAG(S) WARNED; 2 EXEMPTION(S) TAKEN
+
+## attack.multihit — LANDED `a96058a`
+2026-09-03 10:32
+
+  PASS  dependencies landed
+  WARN  not already decided — 5 candidate ruling(s) — READ BEFORE ASKING: COMBAT-SEQUENCE.md:231 · SWITCHES.md:54
+  PASS  typecheck
+  PASS  full test suite
+  PASS  gate 1 — the id appears in a real battle — attack.ghoul.rake: 82 log lines, 82 fired, 55 changed state
+  PASS  brought its own tests — test/multihit.test.ts
+  PASS  existing tests untouched
+  PASS  control battles unchanged
+  PASS  content has a published source — 17 ids without a published source (7 awaiting publication from earlier items — see audit)
+  PASS  hardcode scan — core knows mechanisms, never names
+  PASS  generalizes — the second instance costs zero engine code — attack.ghoul.rake live · attack.throwing-knives.fan live
+  PASS  naming — new content ids use declared kinds
+  PASS  naming — no banned words invented
+  PASS  kill switch — the tests fail without the content — tests fail without attack.ghoul.rake — they genuinely test it
+
+IRON GAUNTLET: NOT PASSED — 1 FLAG(S) WARNED

@@ -220,6 +220,22 @@ const RAW_SCENARIOS: Readonly<Record<string, ScenarioDef>> = {
     encounterId: 'battle.prologue-1',
     replicate: 0,
   },
+  'showcase.supper': {
+    id: 'showcase.supper',
+    note: 'encounter.supper, the encounter session\'s E1 (shipped 2026-09-03): ten '
+      + 'villagers in a square, eight zombies already on them, four ghouls '
+      + 'running in, two more at Turn 3, the necromancer at 5, four zombies '
+      + 'behind the party at 7. The four opening heroes on Codex kits. The '
+      + 'fielding the probe reads the Ghoul (Rake ×2, Devour on cooldown) and '
+      + 'the rescue civilians in.',
+    mapId: 'map.open',
+    heroes: ['hero.base.warrior-iron', 'hero.base.ranger-aggressive', 'hero.base.mage-fire', 'hero.base.priest-armored'],
+    heroHexes: [],
+    enemies: [],
+    enemyHexes: [],
+    encounterId: 'encounter.supper',
+    replicate: 0,
+  },
   'showcase.assembled-party': {
     id: 'showcase.assembled-party',
     note: 'Hero assembly (2026-09-03): the progression party at its battle-20 '

@@ -12,6 +12,7 @@ import { applyStatus, decayOnKill, incomingAbsorb, incomingPhysicalBonus, outgoi
 import { rollCritEffect } from './crit.js'
 import { effective, stat } from './stats.js'
 import { accelerateBleedOut, applyDamage, emit, markPrimaryUsed, spendStamina, unit } from './mutate.js'
+import { settle } from './settle.js'
 
 export const ACC = {
   BASE: 100,
@@ -323,20 +324,48 @@ function critChanceOf(ctx: Ctx, attacker: Unit, target: Unit, finalAcc: number, 
 
 /** One Hit. Damage resolves completely; triggers would fire after (none yet). */
 export function performAttack(ctx: Ctx, attackerId: number, targetId: number, attackId: string): AttackResult {
+  const a0 = ctx.attacks[attackId]
+  if (!a0) throw new Error(`unknown attack ${attackId}`)
+  const hits = Math.max(1, a0.hits ?? 1)
+  if (hits === 1) return performHit(ctx, attackerId, targetId, attackId, 1, 1)
+  // attack.multihit (2026-09-03): each hit runs the whole cycle — damage,
+  // triggers, settle — before the next; no retargeting; cancelled the moment
+  // the target stops standing. The FIRST hit pays the stamina and the primary.
+  let last: AttackResult | null = null
+  let damage = 0
+  for (let h = 1; h <= hits; h++) {
+    const tg = unit(ctx, targetId)
+    if (h > 1 && tg.lifeState !== 'standing') { emit(ctx, 'attack.cancelled', attackId, { actor: attackerId, target: targetId, hit: h, of: hits, reason: 'target fell' }); break }
+    if (h > 1 && unit(ctx, attackerId).lifeState !== 'standing') break
+    last = performHit(ctx, attackerId, targetId, attackId, h, hits)
+    damage += last.damage
+    settle(ctx, attackId)
+  }
+  return { ...(last as AttackResult), damage, killed: unit(ctx, targetId).hp === 0 }
+}
+
+/** One hit of an attack — the whole of performAttack before multihit. `hit`/`of` name the swing in the log. */
+function performHit(ctx: Ctx, attackerId: number, targetId: number, attackId: string, hitNo: number, of: number): AttackResult {
   const at = unit(ctx, attackerId)
   const tg = unit(ctx, targetId)
   const a = ctx.attacks[attackId]
   if (!a) throw new Error(`unknown attack ${attackId}`)
-  if (!canAttack(ctx, attackerId, targetId, attackId)) {
+  // the first hit is the legal one; later hits of the same swing skip the
+  // primary/stamina gates (already paid) but still need a standing target in reach
+  if (hitNo === 1 && !canAttack(ctx, attackerId, targetId, attackId)) {
     throw new Error(`illegal attack: ${at.name} -> ${tg.name} with ${attackId}`)
+  }
+  if (hitNo > 1 && (tg.lifeState !== 'standing' || distance(at.hex, tg.hex) > reachOf(ctx, at, a))) {
+    emit(ctx, 'attack.cancelled', attackId, { actor: attackerId, target: targetId, hit: hitNo, of, reason: 'no longer legal' })
+    return { hit: false, crit: false, accuracy: 0, roll: 0, damage: 0, killed: false }
   }
 
   const ord = ++at.attackOrdinal
   const pv = preview(ctx, attackerId, targetId, attackId)
 
-  spendStamina(ctx, attackerId, a.staminaCost, a.id)
-  markPrimaryUsed(ctx, attackerId)
-  if (a.cooldown) {
+  if (hitNo === 1) spendStamina(ctx, attackerId, a.staminaCost, a.id)
+  if (hitNo === 1) markPrimaryUsed(ctx, attackerId)
+  if (a.cooldown && hitNo === 1) {
     // capability.enemy-action-cooldown: ready again on Turn now + cooldown, like a power
     const readyAgain = ctx.state.turn + a.cooldown
     at.cooldowns[a.id] = readyAgain
@@ -348,7 +377,7 @@ export function performAttack(ctx: Ctx, attackerId: number, targetId: number, at
   const struck = a.area ? areaUnitIdsOf(ctx, attackerId, targetId, attackId) : undefined
 
   emit(ctx, 'attack.declared', a.id, {
-    actor: attackerId, target: targetId, attackId, ordinal: ord,
+    actor: attackerId, target: targetId, attackId, ordinal: ord, ...(of > 1 ? { hit: hitNo, of } : {}),
     // kind and damageType are on the event, not looked up from ATTACKS, so a
     // renderer can pick an animation without importing game content.
     kind: a.kind, damageType: a.damageType,

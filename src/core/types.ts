@@ -275,6 +275,15 @@ export type AttackDef = {
    */
   readonly crit?: number
   /**
+   * attack.multihit (2026-09-03), Angela 2026-08-15: "An attack is a list of
+   * hits, resolved one at a time. Each hit runs the full cycle — damage,
+   * triggers, settle — before the next hit begins." No retargeting; the rest
+   * are cancelled the moment the target stops standing; hit 2 is re-resolved
+   * from scratch (a status hit 1 applied is read by hit 2). Absent = 1.
+   * The Codex `hits` field; the bestiary's `attackCount`.
+   */
+  readonly hits?: number
+  /**
    * capability.enemy-action-cooldown (2026-09-03), ENEMY-REVIEW P10: "probably
    * just permission to use the same fields" — the cooldown and warmup hero
    * powers carry, on an ATTACK. Turns until it can be used again after a use

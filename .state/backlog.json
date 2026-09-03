@@ -439,8 +439,19 @@
   "shape": "rule",
   "spec": "An attack may contain N hits. Angela 2026-08-15: each hit resolves COMPLETELY -- damage, triggers, settle -- before the next begins. No retargeting. Remaining hits are cancelled the moment the target stops standing. Hit 2 is re-resolved from scratch, never a replay of hit 1's preview, because hit 1 can apply a status that hit 2's damage reads.",
   "expect": "Double Toss throws two daggers at one target; a kill on the first cancels the second; poison applied by hit 1 is visible to hit 2's resolution",
-  "changesBaseline": true,
-  "note": "Each hit needs its own ordinal in the to-hit key or both daggers share one roll -- the same correlation bug as two triggers on one hit."
+  "changesBaseline": false,
+  "note": "Each hit needs its own ordinal in the to-hit key or both daggers share one roll -- the same correlation bug as two triggers on one hit.",
+  "probeIds": [
+   "attack.ghoul.rake"
+  ],
+  "variants": [
+   "attack.ghoul.rake",
+   "attack.throwing-knives.fan"
+  ],
+  "attempts": 1,
+  "status": "done",
+  "sha": "a96058a",
+  "gauntlet": "not passed — 1 flag(s) warned"
  },
  {
   "id": "ability.effects",
