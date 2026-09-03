@@ -753,5 +753,795 @@
     }
    ]
   }
- ]
+ ],
+ "authored": [
+  {
+   "id": "encounter.supper",
+   "name": "Supper",
+   "era": "early",
+   "family": "undead-army",
+   "map": "none",
+   "retreat": true,
+   "salvation": null,
+   "source": "8-ENCOUNTERS-NOTES.md (the encounter session, 2026-09-03) — shipped by the engine session 2026-09-03 under a one-time exception ruled by Angela (\"Read the NOTES file, ship the 8 authored rows\"). Placements and phases verbatim from the entry's Setup and Schedule tables; every `needs` the entry lists is carried as a gap. E1.",
+   "intent": "Ten civilians are already surrounded when the party arrives, and the things surrounding them get stronger with every villager they eat.",
+   "heroZone": {
+    "count": 4,
+    "at": {
+     "near": {
+      "col": 8,
+      "row": 14
+     },
+     "range": 3
+    }
+   },
+   "setup": [
+    {
+     "unit": "hero.fixed.librarian",
+     "civilian": true,
+     "rescue": true,
+     "at": {
+      "col": 10,
+      "row": 7
+     }
+    },
+    {
+     "unit": "hero.fixed.cook",
+     "civilian": true,
+     "rescue": true,
+     "at": {
+      "col": 6,
+      "row": 7
+     }
+    },
+    {
+     "unit": "hero.fixed.fishermans-wife",
+     "civilian": true,
+     "rescue": true,
+     "at": {
+      "col": 8,
+      "row": 7
+     }
+    },
+    {
+     "unit": "hero.fixed.fisherman",
+     "civilian": true,
+     "rescue": true,
+     "at": {
+      "col": 10,
+      "row": 8
+     }
+    },
+    {
+     "unit": "hero.fixed.old-wise-man",
+     "civilian": true,
+     "rescue": true,
+     "at": {
+      "col": 8,
+      "row": 8
+     }
+    },
+    {
+     "unit": "hero.fixed.blacksmith",
+     "civilian": true,
+     "rescue": true,
+     "at": {
+      "col": 8,
+      "row": 9
+     }
+    },
+    {
+     "unit": "hero.fixed.farmer",
+     "civilian": true,
+     "rescue": true,
+     "at": {
+      "col": 6,
+      "row": 8
+     }
+    },
+    {
+     "unit": "hero.fixed.group-of-farmers",
+     "civilian": true,
+     "rescue": true,
+     "at": {
+      "col": 6,
+      "row": 9
+     }
+    },
+    {
+     "unit": "hero.fixed.farming-family",
+     "civilian": true,
+     "rescue": true,
+     "at": {
+      "col": 10,
+      "row": 9
+     }
+    },
+    {
+     "unit": "hero.fixed.scary-kid",
+     "civilian": true,
+     "rescue": true,
+     "at": {
+      "col": 8,
+      "row": 10
+     }
+    },
+    {
+     "unit": "unit.zombie",
+     "count": 8,
+     "hexes": [
+      {
+       "col": 6,
+       "row": 6
+      },
+      {
+       "col": 8,
+       "row": 6
+      },
+      {
+       "col": 10,
+       "row": 6
+      },
+      {
+       "col": 5,
+       "row": 8
+      },
+      {
+       "col": 11,
+       "row": 8
+      },
+      {
+       "col": 6,
+       "row": 10
+      },
+      {
+       "col": 10,
+       "row": 10
+      },
+      {
+       "col": 8,
+       "row": 11
+      }
+     ]
+    },
+    {
+     "unit": "unit.ghoul",
+     "count": 4,
+     "hexes": [
+      {
+       "col": 4,
+       "row": 0
+      },
+      {
+       "col": 7,
+       "row": 0
+      },
+      {
+       "col": 9,
+       "row": 0
+      },
+      {
+       "col": 12,
+       "row": 0
+      }
+     ]
+    }
+   ],
+   "schedule": [
+    {
+     "phase": 3,
+     "spawn": [
+      {
+       "unit": "unit.ghoul",
+       "count": 2,
+       "hexes": [
+        {
+         "col": 0,
+         "row": 8
+        },
+        {
+         "col": 15,
+         "row": 8
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "phase": 5,
+     "spawn": [
+      {
+       "unit": "unit.necromancer",
+       "count": 1,
+       "at": {
+        "col": 8,
+        "row": 3
+       }
+      }
+     ]
+    },
+    {
+     "phase": 7,
+     "spawn": [
+      {
+       "unit": "unit.zombie",
+       "count": 4,
+       "hexes": [
+        {
+         "col": 5,
+         "row": 15
+        },
+        {
+         "col": 7,
+         "row": 15
+        },
+        {
+         "col": 9,
+         "row": 15
+        },
+        {
+         "col": 11,
+         "row": 15
+        }
+       ]
+      }
+     ]
+    }
+   ],
+   "needs": [
+    "capability.corpses (Eat Corpse, the Necromancer's raise)",
+    "capability.enemy-action-cooldown (Devour CD 3)",
+    "capability.target-stamina-loss (Shriek, Necro Bolt)",
+    "capability.inflict-affliction (Claw's 10% rotting flesh)",
+    "a civilian flee behaviour and attach mode",
+    "the rescue reward: 2 resources per villager alive at the end (the kingdom seam)"
+   ]
+  },
+  {
+   "id": "encounter.kiln",
+   "name": "The Kiln",
+   "era": "mid",
+   "family": "imps",
+   "map": "none",
+   "retreat": true,
+   "salvation": {
+    "phase": 8
+   },
+   "source": "8-ENCOUNTERS-NOTES.md (the encounter session, 2026-09-03) — shipped by the engine session 2026-09-03 under a one-time exception ruled by Angela (\"Read the NOTES file, ship the 8 authored rows\"). Placements and phases verbatim from the entry's Setup and Schedule tables; every `needs` the entry lists is carried as a gap. E2.",
+   "intent": "The board closes in, as one encounter's own standing rule rather than as weather. A line of burning ground advances a row a phase; the enemies do not care and the party does.",
+   "heroZone": {
+    "count": 5,
+    "at": {
+     "near": {
+      "col": 8,
+      "row": 14
+     },
+     "range": 3
+    }
+   },
+   "standing": [
+    {
+     "rule": "THE KILN",
+     "effect": "At the end of each enemy phase from phase 2, one more row burns, from row 0 upward (row 0 at phase 2, row 1 at 3 … one further row each phase for as long as the battle runs). Five water pockets stay cold (the mapHint).",
+     "needs": [
+      "capability.ground-layers (the Band shape)"
+     ]
+    }
+   ],
+   "setup": [
+    {
+     "unit": "unit.fire-imp",
+     "count": 4,
+     "hexes": [
+      {
+       "col": 5,
+       "row": 2
+      },
+      {
+       "col": 7,
+       "row": 2
+      },
+      {
+       "col": 9,
+       "row": 2
+      },
+      {
+       "col": 11,
+       "row": 2
+      }
+     ]
+    },
+    {
+     "unit": "unit.hellhound",
+     "count": 3,
+     "hexes": [
+      {
+       "col": 4,
+       "row": 3
+      },
+      {
+       "col": 8,
+       "row": 3
+      },
+      {
+       "col": 12,
+       "row": 3
+      }
+     ]
+    },
+    {
+     "unit": "unit.imp-master",
+     "count": 1,
+     "at": {
+      "col": 8,
+      "row": 1
+     }
+    }
+   ],
+   "schedule": [
+    {
+     "phase": 2,
+     "spawn": [
+      {
+       "unit": "unit.imp",
+       "count": 2,
+       "hexes": [
+        {
+         "col": 0,
+         "row": 6
+        },
+        {
+         "col": 0,
+         "row": 8
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "phase": 4,
+     "spawn": [
+      {
+       "unit": "unit.poison-imp",
+       "count": 2,
+       "hexes": [
+        {
+         "col": 15,
+         "row": 6
+        },
+        {
+         "col": 15,
+         "row": 8
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "phase": 6,
+     "spawn": [
+      {
+       "unit": "unit.balrog",
+       "count": 1,
+       "at": {
+        "col": 8,
+        "row": 0
+       }
+      }
+     ]
+    }
+   ],
+   "needs": [
+    "capability.ground-layers (the advancing burning band; water pockets)",
+    "the salvation card at phase 8"
+   ]
+  },
+  {
+   "id": "encounter.last-company",
+   "name": "The Last Company",
+   "era": "mid-late",
+   "family": "night, then undead-army",
+   "map": "none",
+   "retreat": true,
+   "salvation": {
+    "phase": 8
+   },
+   "source": "8-ENCOUNTERS-NOTES.md (the encounter session, 2026-09-03) — shipped by the engine session 2026-09-03 under a one-time exception ruled by Angela (\"Read the NOTES file, ship the 8 authored rows\"). Placements and phases verbatim from the entry's Setup and Schedule tables; every `needs` the entry lists is carried as a gap. E4.",
+   "intent": "The field where the last expedition died is still where they died, and their bodies are on the board. Shades cross and Embody them; the party then fights the previous company in its own gear — unless it kills the Shades first.",
+   "heroZone": {
+    "count": 6,
+    "at": {
+     "near": {
+      "col": 8,
+      "row": 14
+     },
+     "range": 3
+    }
+   },
+   "setup": [
+    {
+     "corpses": 5,
+     "hexes": [
+      {
+       "col": 5,
+       "row": 12
+      },
+      {
+       "col": 7,
+       "row": 13
+      },
+      {
+       "col": 8,
+       "row": 12
+      },
+      {
+       "col": 10,
+       "row": 13
+      },
+      {
+       "col": 11,
+       "row": 12
+      }
+     ],
+     "note": "the near company: Wall Sentry, Longbow Hunter, Moon Bearer, Star Oracle, Violet Knife — hero rows as CORPSES (capability.corpses)"
+    },
+    {
+     "unit": "unit.shade",
+     "count": 5,
+     "hexes": [
+      {
+       "col": 5,
+       "row": 10
+      },
+      {
+       "col": 7,
+       "row": 9
+      },
+      {
+       "col": 8,
+       "row": 10
+      },
+      {
+       "col": 10,
+       "row": 9
+      },
+      {
+       "col": 11,
+       "row": 10
+      }
+     ]
+    },
+    {
+     "corpses": 5,
+     "hexes": [
+      {
+       "col": 5,
+       "row": 8
+      },
+      {
+       "col": 7,
+       "row": 7
+      },
+      {
+       "col": 8,
+       "row": 8
+      },
+      {
+       "col": 10,
+       "row": 7
+      },
+      {
+       "col": 11,
+       "row": 8
+      }
+     ],
+     "note": "the mid company: Blue Buccaneer, Storm Archer, Talisman Bearer, Frost Duelist, Twin Sabers"
+    }
+   ],
+   "schedule": [
+    {
+     "phase": 3,
+     "spawn": [
+      {
+       "unit": "unit.shade",
+       "count": 5,
+       "hexes": [
+        {
+         "col": 3,
+         "row": 0
+        },
+        {
+         "col": 6,
+         "row": 0
+        },
+        {
+         "col": 8,
+         "row": 0
+        },
+        {
+         "col": 10,
+         "row": 0
+        },
+        {
+         "col": 13,
+         "row": 0
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "phase": 5,
+     "spawn": [
+      {
+       "unit": "unit.necromancer",
+       "count": 1,
+       "at": {
+        "col": 8,
+        "row": 1
+       }
+      }
+     ]
+    },
+    {
+     "phase": 7,
+     "spawn": [
+      {
+       "unit": "unit.ghoul",
+       "count": 2,
+       "hexes": [
+        {
+         "col": 4,
+         "row": 1
+        },
+        {
+         "col": 12,
+         "row": 1
+        }
+       ]
+      }
+     ]
+    }
+   ],
+   "needs": [
+    "capability.corpses (the ten bodies; the Necromancer's raise)",
+    "rule.summon-order and Embody (a Shade leaves play and the corpse's hero row fields enemy-side)",
+    "unit.shade (Dodge 60, flies 9) — an owed row",
+    "the salvation card at phase 8"
+   ]
+  },
+  {
+   "id": "encounter.rime",
+   "name": "Rime",
+   "era": "late",
+   "family": "undead-army",
+   "map": "none",
+   "retreat": true,
+   "salvation": {
+    "phase": 8
+   },
+   "source": "8-ENCOUNTERS-NOTES.md (the encounter session, 2026-09-03) — shipped by the engine session 2026-09-03 under a one-time exception ruled by Angela (\"Read the NOTES file, ship the 8 authored rows\"). Placements and phases verbatim from the entry's Setup and Schedule tables; every `needs` the entry lists is carried as a gap. E5.",
+   "intent": "Frost is added before Armor, so Frost cancels Armor point for point — and a horde is nothing but hit count. This fight puts the horde back.",
+   "heroZone": {
+    "count": 6,
+    "at": {
+     "near": {
+      "col": 8,
+      "row": 14
+     },
+     "range": 3
+    }
+   },
+   "standing": [
+    {
+     "rule": "THE FROST BAND",
+     "effect": "Rows 6–8, all columns, carry frost ground; hills at rows 3–4, cols 6–10.",
+     "needs": [
+      "capability.ground-layers (frost)",
+      "a map with those hills"
+     ]
+    }
+   ],
+   "setup": [
+    {
+     "unit": "unit.frozen-skeleton",
+     "count": 8,
+     "hexes": [
+      {
+       "col": 4,
+       "row": 9
+      },
+      {
+       "col": 6,
+       "row": 9
+      },
+      {
+       "col": 8,
+       "row": 9
+      },
+      {
+       "col": 10,
+       "row": 9
+      },
+      {
+       "col": 12,
+       "row": 9
+      },
+      {
+       "col": 5,
+       "row": 10
+      },
+      {
+       "col": 9,
+       "row": 10
+      },
+      {
+       "col": 11,
+       "row": 10
+      }
+     ]
+    },
+    {
+     "unit": "unit.strong-skeleton",
+     "count": 4,
+     "hexes": [
+      {
+       "col": 3,
+       "row": 10
+      },
+      {
+       "col": 7,
+       "row": 10
+      },
+      {
+       "col": 13,
+       "row": 10
+      },
+      {
+       "col": 8,
+       "row": 11
+      }
+     ]
+    },
+    {
+     "unit": "unit.skeletal-archer",
+     "count": 3,
+     "hexes": [
+      {
+       "col": 7,
+       "row": 3
+      },
+      {
+       "col": 9,
+       "row": 3
+      },
+      {
+       "col": 8,
+       "row": 4
+      }
+     ],
+     "note": "the entry says Skeleton Archer; the pack row is unit.skeletal-archer"
+    },
+    {
+     "unit": "unit.hoarfrost-wight",
+     "count": 2,
+     "hexes": [
+      {
+       "col": 6,
+       "row": 2
+      },
+      {
+       "col": 10,
+       "row": 2
+      }
+     ]
+    }
+   ],
+   "schedule": [
+    {
+     "phase": 3,
+     "spawn": [
+      {
+       "unit": "unit.frozen-skeleton",
+       "count": 6,
+       "hexes": [
+        {
+         "col": 0,
+         "row": 11
+        },
+        {
+         "col": 0,
+         "row": 12
+        },
+        {
+         "col": 0,
+         "row": 13
+        },
+        {
+         "col": 15,
+         "row": 11
+        },
+        {
+         "col": 15,
+         "row": 12
+        },
+        {
+         "col": 15,
+         "row": 13
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "phase": 4,
+     "spawn": [
+      {
+       "unit": "unit.skeleton-spider",
+       "count": 1,
+       "at": {
+        "col": 8,
+        "row": 2
+       }
+      }
+     ]
+    },
+    {
+     "phase": 6,
+     "spawn": [
+      {
+       "unit": "unit.zombie",
+       "count": 6,
+       "hexes": [
+        {
+         "col": 3,
+         "row": 15
+        },
+        {
+         "col": 5,
+         "row": 15
+        },
+        {
+         "col": 7,
+         "row": 15
+        },
+        {
+         "col": 9,
+         "row": 15
+        },
+        {
+         "col": 11,
+         "row": 15
+        },
+        {
+         "col": 13,
+         "row": 15
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "phase": 9,
+     "spawn": [
+      {
+       "unit": "unit.bone-dragon",
+       "count": 1,
+       "at": {
+        "col": 8,
+        "row": 0
+       }
+      }
+     ]
+    }
+   ],
+   "needs": [
+    "status.frost added BEFORE Armor (ruled 2026-09-03)",
+    "unit.frozen-skeleton and unit.hoarfrost-wight — owed rows",
+    "capability.ground-layers (the band)",
+    "the salvation card at phase 8 (Purify)"
+   ]
+  }
+ ],
+ "_authoredNote": "authored: the encounter session's `+` entries (E1, E2, E4, E5), transcribed 2026-09-03. E3 (the dungeon) is skipped by ruling; E6–E8 are `-` (not settled) and stay in the NOTES. `corpses` entries and `rescue` civilians are shapes the runner does not honour yet — named gaps on the compiled row."
 }

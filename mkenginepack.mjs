@@ -254,6 +254,7 @@ for (const u of [...AUTH.units].sort((a, b) => (a.id < b.id ? -1 : 1))) {
   for (const mv of u.moves || []) gap(id, `special move ${mv.id}${mv.attack ? ' (carries an attack)' : ''}`, 'enemy special moves (move.* — kind unapproved, no engine mechanism)');
   const attackIds = [];
   let anyRanged = false;
+  let rangedN = 0, meleeN = 0;
   for (const raw of u.attacks || []) {
     const a = resolveAttack(raw, id);
     if (!a) continue;
@@ -266,6 +267,7 @@ for (const u of [...AUTH.units].sort((a, b) => (a.id < b.id ? -1 : 1))) {
     // precedent), never with a stat guessed for it.
     if (a.damage && (a.damage.stat === 'none' || a.damage.stat === null)) { gap(id, `${a.id} damage reads no stat (flat ${a.damage.mod ?? 0})`, 'attack shape: stat-less (flat) damage'); continue; }
     anyRanged = anyRanged || ranged;
+    if (ranged) rangedN++; else meleeN++;
     authoredAttacks[a.id] = {
       id: a.id, name: a.name || a.id.split('.').pop(),
       kind: ranged ? 'ranged' : 'melee',
@@ -276,18 +278,23 @@ for (const u of [...AUTH.units].sort((a, b) => (a.id < b.id ? -1 : 1))) {
     attackIds.push(a.id);
     unitTriggers.push(...(a.triggers || []).flatMap((t) => compileTrigger(t, id, a.id)));
   }
+  const mostlyRanged = rangedN > 0 && rangedN >= meleeN;
   authoredEnemies.push({
     typeId: id, name: u.name, side: 'enemy',
     maxHp: st.health, armor: st.armor ?? 0, resist: st.resist ?? 0,
     accuracy: st.accuracy, dodge: st.dodge ?? 0,
     ...(st.crit ? { crit: st.crit } : {}), ...(st.luck ? { luck: st.luck } : {}), // station.crit 2026-08-27
     strength: st.strength ?? 0, precision: st.precision ?? 0, magic: st.magic ?? 0, spirit: st.spirit ?? 0,
-    // Mechanical mapping, not design: a unit with any ranged attack kites,
-    // the rest close. The real enemy AI is future work (ai.mode.* backlog).
-    role: u.role === 'support' ? 'support' : anyRanged ? 'ranged' : 'melee',
+    // Mechanical mapping, not design: a unit kites when its ranged attacks
+    // are at least as many as its melee ones; the rest close. Was "any ranged
+    // attack kites" until 2026-09-03 (fix.enemy-ai-role): the Ghoul — Rake,
+    // Devour, Eat Corpse and one Shriek at range 4 — kited from the whole
+    // Supper and never bit anyone; the Skeletal Archer (Gut + Shoot) kites.
+    // The real enemy AI is future work (ai.mode.* backlog).
+    role: u.role === 'support' ? 'support' : mostlyRanged ? 'ranged' : 'melee',
     movement: st.movement, reach: 0,
     maxStamina: 0, staminaRegen: 0,
-    ai: anyRanged ? 'ranged-kite' : 'dumb-melee',
+    ai: mostlyRanged ? 'ranged-kite' : 'dumb-melee',
     attacks: attackIds, abilities: [], moves: ['power.move'],
     tags: (u.types || []).map((t) => t.toLowerCase()),
     triggers: unitTriggers,
@@ -677,7 +684,9 @@ const alphaTeam = [];
 // battle.prologue-3 places them, and ruled 2026-08-25 confirms all three
 // (encounters.json civilians.confirmed). Read the list from the data.
 // (ENC is read above)
-const CIVILIANS = [...new Set(['hero.fixed.orphans', 'hero.fixed.lumberjack-and-wife', 'hero.fixed.farmer', ...(ENC.civilians?.confirmed || [])])];
+const namedByEncounters = [...(ENC.prologue || []), ...(ENC.scripted || []), ...(ENC.authored || [])]
+  .flatMap((row) => [...(row.setup || []), ...(row.schedule || []).flatMap((r) => r.spawn || [])]).map((s) => s.unit).filter((u) => u && u.startsWith('hero.fixed.'));
+const CIVILIANS = [...new Set(['hero.fixed.orphans', 'hero.fixed.lumberjack-and-wife', 'hero.fixed.farmer', ...(ENC.civilians?.confirmed || []), ...namedByEncounters])];
 for (const id of CIVILIANS) {
   const h = allHeroes.find((x) => x.id === id);
   if (!h) { gap(id, 'named for the prologue, absent from the Codex', 'content'); continue; }
@@ -1148,11 +1157,14 @@ function compileEncounter(row) {
   const gaps = [];
   const setup = [];
   let heroZone = null;
+  if (row.heroZone) heroZone = row.heroZone;
   for (const s of row.setup || []) {
     if (s.heroes !== undefined) { heroZone = { count: s.heroes, at: s.at }; continue; }
+    if (s.corpses !== undefined) { gaps.push(`setup: ${s.corpses} corpses — ${s.note || 'capability.corpses'}`); continue; }
     if (!s.unit) { gaps.push(`setup entry without a unit: ${JSON.stringify(s).slice(0, 60)}`); continue; }
-    if (!packUnitIds.has(s.unit)) gaps.push(`setup unit ${s.unit} is not in the pack`);
-    const { was: _w, note: _n, ...rest } = s;
+    if (!packUnitIds.has(s.unit)) { gaps.push(`setup: ${s.count ?? 1} × ${s.unit} — no such row in the pack, NOT fielded`); continue; }
+    if (s.rescue) gaps.push(`${s.unit} is a RESCUE (2 resources alive at the end) — the reward is the kingdom's; fielded as a civilian`);
+    const { was: _w, note: _n, rescue: _r, ...rest } = s;
     setup.push(rest);
   }
   const schedule = [];
@@ -1161,7 +1173,7 @@ function compileEncounter(row) {
     const spawn = [];
     for (const s of r.spawn || []) {
       if (!s.unit) { gaps.push(`spawn without a unit: ${JSON.stringify(s).slice(0, 60)}`); continue; }
-      if (!packUnitIds.has(s.unit)) gaps.push(`spawn unit ${s.unit} is not in the pack`);
+      if (!packUnitIds.has(s.unit)) { gaps.push(`schedule ${r.phase ?? r.enemyPhase}: ${s.count ?? 1} × ${s.unit} — no such row in the pack, NOT fielded`); continue; }
       const { was: _w, note: _n, ...rest } = s;
       spawn.push(rest);
     }
@@ -1171,7 +1183,8 @@ function compileEncounter(row) {
   if (row.retreat) gaps.push('retreat allowed — skipped by ruling 2026-09-03');
   if (row.salvation) gaps.push('salvation — skipped by ruling 2026-09-03');
   if (Array.isArray(row.map)) gaps.push('a map series (dungeon) — skipped by ruling 2026-09-03');
-  for (const st of row.standing || []) gaps.push(`standing rule: ${st.rule || st.name || String(st).slice(0, 60)}`);
+  for (const st of row.standing || []) gaps.push(`standing rule: ${st.rule || st.name || String(st).slice(0, 60)}${st.needs ? ' — needs ' + st.needs.join(', ') : ''}`);
+  for (const n of row.needs || []) gaps.push(`needs: ${n}`);
   const win = row.win?.surviveTo !== undefined ? { surviveTo: row.win.surviveTo } : undefined;
   const loseAfter = row.loseAfter ? { ...(row.loseAfter.phase !== undefined ? { phase: row.loseAfter.phase } : {}), ...(row.loseAfter.heroPhase !== undefined ? { heroPhase: row.loseAfter.heroPhase } : {}) } : undefined;
   return { id: row.id, name: row.name, ...(typeof row.map === 'string' && row.map !== 'none' ? { mapId: row.map } : {}),

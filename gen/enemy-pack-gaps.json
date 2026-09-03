@@ -368,8 +368,8 @@
   },
   {
    "unit": "unit.skeletal-archer",
-   "what": "attack.skeletal-archer.shoot range is null — N never stated",
-   "needs": "content: range unstated"
+   "what": "attack.skeletal-archer.shoot onHit: grant a stat until end of next Turn (movement)",
+   "needs": "trigger-effect: statMod"
   },
   {
    "unit": "unit.skeleton-spider",
