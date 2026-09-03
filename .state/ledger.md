@@ -832,3 +832,26 @@ Law 10 note (waystation.catalog): test/art.test.ts asserted the town shows ['cha
 ISC-062: CLOSED at c0ec289 · ISC-063: CLOSED at c0ec289
 slice: 59 of 68 closed · 59 probed · 0 accepted
 IRON GAUNTLET: NOT PASSED — 2 FLAG(S) WARNED; 1 EXEMPTION(S) TAKEN
+
+## seam.loadout — LANDED `5edcbc5` **NEEDS REVIEW**
+2026-09-03 20:13 · engine @ a5f5678
+
+  PASS  dependencies landed
+  WARN  not already decided — 2 candidate ruling(s) — READ BEFORE ASKING: ITEMS-PLAN.md:214 · ../GEAR-IMPLEMENTATION.md:281
+  PASS  typecheck
+  PASS  full test suite — 142 passed
+  PASS  gate 1 — every claimed criterion holds — ISC-064 — what is equipped is what is fielded
+  PASS  brought its own tests — test/isc-064.test.ts
+  PASS  existing tests untouched
+  PASS  kill switch — every claimed probe has been seen red — ISC-064: red on record (2026-09-03 10:42 @ f6515c2, probe be45e57410e8)
+  PASS  nothing regresses — every P-tier probe — 61 P-tier probe(s): 60 green, 1 red, 0 regression(s). 50 of 68 closed · 61 probed · 0 accepted
+  PASS  hardcode scan — core knows mechanisms, never names
+  PASS  generalizes — the second instance costs zero kingdom code — shape 'plumbing' — not a mechanism, exempt
+  PASS  naming — new ids use declared kinds
+  PASS  naming — no banned words invented
+  WARN  engine working tree clean — verified against a DIRTY engine tree (a5f5678 + 1 uncommitted under src/test): ?? src/sim/coverage.ts
+  PASS  one door to the engine
+
+ISC-064: CLOSED at 5edcbc5
+slice: 51 of 68 closed · 61 probed · 0 accepted
+IRON GAUNTLET: NOT PASSED — 2 FLAG(S) WARNED

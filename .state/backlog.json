@@ -605,7 +605,11 @@
    "equip.slots",
    "sets.resolve"
   ],
-  "attempts": 2
+  "attempts": 2,
+  "status": "done-needs-review",
+  "sha": "5edcbc5",
+  "engineSha": "a5f5678",
+  "gauntlet": "not passed — 2 flag(s) warned"
  },
  {
   "id": "rewards.tiered",

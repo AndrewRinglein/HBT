@@ -860,6 +860,10 @@
    "hash": "be45e57410e8",
    "how": "feature absent",
    "tail": "       |                                                                     ^ |      46|     for (const a of itemOf(LONGBOW).grants) expect(hunter.attacks).not… |      47|     // the engine says why, per item, on the log (Law 12) — and the vi…"
+  },
+  "closed": {
+   "at": "2026-09-03 20:15",
+   "sha": "5edcbc5"
   }
  },
  "065": {
