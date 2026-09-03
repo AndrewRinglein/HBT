@@ -27,19 +27,19 @@ and date. Tool tasks and engine chores go in the backlog, never here.
   and `move.*` (8 rows) exist in content and `node tools/kinds.mjs` fails on
   them. Approve the kinds or have the content session rename them.
 
-- (2026-09-02) **Name the crit chart's powers-lock status.** Dazed is two things (your
-  words: a critical effect and a status effect). The chart's "loses access to class
-  powers" now applies a placeholder called `status.powers-locked`. Give it a real name
-  when you like — it changes in one Codex row and one converter line.
-
-- (2026-09-02) **Six Codex statuses the engine cannot behave for yet** — Karma, Taunt,
-  Confusion, Root, Frost, Shadow are named gaps, each a capability item waiting in the
-  backlog. Build them next, or after step three? (Default if you say nothing: after.)
+- (2026-09-02) **Note, no action needed:** the crit chart's "loses access to class powers"
+  applies a placeholder called `status.powers-locked` (Dazed is two things — your words).
+  Rename whenever; one Codex row and one converter line. Answered 2026-09-02: "leave it
+  as just a note."
 
 - (2026-08-27) **19 flagged landings await your review** —
   `node tools/report.mjs`, verdicts recorded in your words via review.mjs.
 
 ## ANSWERED
+
+- (2026-09-02) **Build the six unbuilt statuses now?** — No: "I really want all the
+  structure, everything to be correct. We don't need all of the features built." They
+  stay named gaps; engine work is structure only.
 
 - (2026-09-02) **May the Codex own the status rows?** — "Yes — Codex owns the rows."
   approved-kinds.json re-ruled (status: content); pack.statuses landed — ten rows read
