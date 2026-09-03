@@ -637,3 +637,25 @@ IRON GAUNTLET: NOT PASSED — 2 FLAG(S) WARNED; 1 EXEMPTION(S) TAKEN
 
 slice: 46 of 68 closed · 46 probed · 0 accepted
 IRON GAUNTLET: NOT PASSED — 2 FLAG(S) WARNED; 1 EXEMPTION(S) TAKEN
+
+## heroes.cut-alpha — LANDED `97b879c` **NEEDS REVIEW**
+2026-09-03 03:17 · engine @ 7a11028
+
+  PASS  dependencies landed
+  WARN  not already decided — 3 candidate ruling(s) — READ BEFORE ASKING: ../STATE.md:20 · ITEMS-PLAN.md:212
+  PASS  typecheck
+  PASS  full test suite — 103 passed
+  PASS  gate 1 — every claimed criterion holds
+  PASS  brought its own tests — test/isc-009.test.ts, test/isc-010.test.ts, test/isc-018.test.ts, test/isc-020.test.ts, test/isc-036.test.ts, test/isc-037.test.ts, test/isc-038.test.ts, test/isc-039.test.ts, test/isc-044.test.ts
+  PASS  existing tests untouched
+  PASS  kill switch — every claimed probe has been seen red — no criterion claimed — not applicable
+  PASS  nothing regresses — every P-tier probe — 46 P-tier probe(s): 46 green, 0 red, 0 regression(s). 46 of 68 closed · 46 probed · 0 accepted
+  PASS  hardcode scan — core knows mechanisms, never names
+  PASS  generalizes — the second instance costs zero kingdom code — shape 'data' — not a mechanism, exempt
+  PASS  naming — new ids use declared kinds
+  PASS  naming — no banned words invented
+  WARN  engine working tree clean — verified against a DIRTY engine tree (7a11028 + 14 uncommitted under src/test): M src/content/index.ts, M src/view/text.ts, M test/additions.test.ts
+  PASS  one door to the engine
+
+slice: 46 of 68 closed · 46 probed · 0 accepted
+IRON GAUNTLET: NOT PASSED — 2 FLAG(S) WARNED; 1 EXEMPTION(S) TAKEN
