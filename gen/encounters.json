@@ -995,9 +995,14 @@
     "capability.enemy-action-cooldown (Devour CD 3)",
     "capability.target-stamina-loss (Shriek, Necro Bolt)",
     "capability.inflict-affliction (Claw's 10% rotting flesh)",
-    "a civilian flee behaviour and attach mode",
-    "the rescue reward: 2 resources per villager alive at the end (the kingdom seam)"
-   ]
+    "the rescue reward: 2 resources per villager alive at the end (the kingdom seam)",
+    "attach mode (a civilian following an assigned hero)"
+   ],
+   "civilianAi": {
+    "mode": "flee",
+    "untilTurn": 3,
+    "note": "RULED 2026-09-03 (Angela, after watching seed 5): \"in this battle specifically, the civilians should have a flight mindset for the first three turns.\""
+   }
   },
   {
    "id": "encounter.kiln",

@@ -1392,7 +1392,9 @@ function compileEncounter(row) {
   return { id: row.id, name: row.name, ...(typeof row.map === 'string' && row.map !== 'none' ? { mapId: row.map } : {}),
     setup, schedule, ...(loseAfter ? { loseAfter } : {}), ...(win ? { win } : {}), ...(heroZone ? { heroZone } : {}),
     ...(powerSources.length ? { powerSources } : {}), ...(band ? { band } : {}), ...(paint ? { paint } : {}),
-    ...(row.condition ? { condition: row.condition } : {}), ...(gaps.length ? { gaps } : {}) };
+    ...(row.condition ? { condition: row.condition } : {}),
+    ...(row.civilianAi ? { civilianAi: { mode: row.civilianAi.mode, untilTurn: row.civilianAi.untilTurn } } : {}),   // ruled 2026-09-03
+    ...(gaps.length ? { gaps } : {}) };
 }
 const encounters = {};
 for (const row of [...(ENC.prologue || []), ...(ENC.scripted || []), ...(ENC.authored || [])]) encounters[row.id] = compileEncounter(row);
