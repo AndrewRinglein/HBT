@@ -88,7 +88,73 @@ const resolveAttack = (a, unitId) => {
   return src;
 };
 
-const STATUS_OK = new Set(['poison', 'burn', 'bleed', 'weak', 'stun', 'slow', 'protection', 'regeneration']);
+// The statuses a trigger or a chart row may name: exactly the Codex status rows
+// the engine can EXPRESS — filled by compileStatuses() below (pack.statuses,
+// 2026-09-02). Was a hand list of eight; a row the engine cannot behave for is
+// a named gap, and anything naming it is a gap too.
+const STATUS_OK = new Set();
+
+const SETTLED = JSON.parse(fs.readFileSync('settled.json', 'utf8'));
+
+// ── STATUSES (pack.statuses, 2026-09-02) ────────────────────────────────────
+// The Codex owns the status rows (Andrew 2026-09-02: "Yes — Codex owns the
+// rows"); the engine owns the behaviour. Each row's ONE SENTENCE (S51b: "a
+// status row teaches the STATUS") compiles here into the engine's behaviour
+// flags by exact phrase — compile-or-name-the-gap, like every other row. The
+// engine never parses prose at runtime. A row whose sentence the engine cannot
+// yet behave for is NOT emitted (an applicable status that silently does
+// nothing is a Law 9 swallow) — it is a named gap, and every trigger or chart
+// clause naming it becomes a gap as well.
+const STATUS_SENTENCES = [
+  // [exact effect sentence, flags]
+  ['Deals damage equal to its value each Turn.', { tick: 'damage' }],
+  ['Deals damage equal to its value each Turn and halves all healing received.', { tick: 'damage', halvesHealing: true }],
+  ['Deals TRUE damage equal to its value each Turn, and healing removes half the amount healed.', { tick: 'damage', tickDamageType: 'true', shedByHealing: 'half' }],
+  ['Heals the unit an amount equal to its value each Turn.', { tick: 'heal' }],
+  ['Stops the unit acting \u2014 its whole Activation is skipped.', { blocksAction: true }],
+  ['Prevents damage from any source.', { reducesIncomingDamage: true }],
+  ['Reduces the damage the unit deals by 1 per point.', { reducesOutgoingDamage: true }],
+  ["Reduces the unit's Movement by its value.", { reducesMovement: true }],
+  ['Loses access to class powers.', { locksPowers: true }],
+  ["Takes the unit out of its owner's control and hands it to the AI.", { aiControlled: true }],
+];
+const STATUS_GAP_NEEDS = {
+  'status.root': 'a blocksMovement flag (movement 0, still acts) — capability.root',
+  'status.frost': 'a per-hit incoming damage station (+N on every physical hit received) — capability.frost',
+  'status.karma': 'heal-received bonus and half-value outgoing damage bonus, decay on kill — capability.karma',
+  'status.taunt': 'AI targeting override (must target the taunter) — capability.taunt',
+  'status.confusion': 'AI mode swap — capability.confusion',
+  'status.shadow': 'a status that GROWS in Settling and obliterates at Max Health, no corpse — capability.shadow',
+};
+function compileStatuses(rows) {
+  const out = {};
+  for (const r of rows) {
+    const hit = STATUS_SENTENCES.find(([s]) => s === r.effect);
+    if (!hit) { gap(r.id, `status sentence not compilable: '${r.effect}'`, STATUS_GAP_NEEDS[r.id] ?? 'unparsed status sentence'); continue; }
+    const flags = { ...hit[1] };
+    // decay: the one clock the engine has is -1 per Phase (plus Protection's
+    // spend-as-it-absorbs, which the absorb station does). Anything else is
+    // a gap, whatever the sentence compiled to.
+    let decayPerPhase;
+    if (/^-1 per Turn/.test(r.decay)) decayPerPhase = 1;
+    else if (r.decay === 'Spent by the damage it prevents, and decreases by an additional 1 per Turn.') decayPerPhase = 1;
+    else { gap(r.id, `status decay not compilable: '${r.decay}'`, STATUS_GAP_NEEDS[r.id] ?? 'unparsed decay clause'); continue; }
+    // tick damage type: the row's own damageType wins; "Resist mitigates each
+    // tick" in the decay clause is the ruled magic tick (2026-08-27).
+    if (flags.tick === 'damage' && !flags.tickDamageType) {
+      if (r.damageType) flags.tickDamageType = r.damageType;
+      else if (/Resist mitigates each tick/.test(r.decay)) flags.tickDamageType = 'magic';
+      else { gap(r.id, 'a damage tick with no damage type', 'damageType on the row'); continue; }
+    }
+    // the engine's shape word is derived from the behaviour; the Codex family
+    // rides along verbatim.
+    const shape = flags.reducesIncomingDamage ? 'pool' : flags.reducesOutgoingDamage ? 'modifier' : 'counter';
+    out[r.id] = { id: r.id, name: r.name, shape, family: r.family ?? r.shape, stacking: 'add', decayPerPhase, ...flags };
+    STATUS_OK.add(r.id.replace(/^status\./, ''));
+  }
+  return out;
+}
+const statuses = compileStatuses(SETTLED.statuses || []);
 const TRIG_HOOKS = new Set(['onAttack', 'onMiss', 'onHit', 'onCrit', 'onDamage', 'onKill', 'onTakingDamage', 'onDeath']);
 
 function compileTrigger(t, unitId, attackId) {
@@ -175,7 +241,6 @@ for (const id of [...fielded].sort()) {
 // I make here. Heroes PAY attack stamina (the hero throttle).
 const KITS = JSON.parse(fs.readFileSync('gen/kits.json', 'utf8'));
 const SITEMS = JSON.parse(fs.readFileSync('gen/settled-items.json', 'utf8'));
-const SETTLED = JSON.parse(fs.readFileSync('settled.json', 'utf8'));
 // settled.json is the SECOND authored source of items and attacks (the Lumberjack's Axe
 // and its Chop/Cleave rows live there, with the universal Punch). The converter read only
 // settled-items.json and reported the axe as unauthored — a false gap, corrected 2026-08-27.
@@ -604,7 +669,7 @@ function compileCritChart(chart) {
   return { note: chart.note, rows };
 }
 
-const pack = { note: D.testCohort.note, heroes, enemies, authoredEnemies, authoredAttacks, authoredAbilities, prologueParty, alphaTeam, critChart: compileCritChart(SETTLED.critChart) };
+const pack = { note: D.testCohort.note, heroes, enemies, authoredEnemies, authoredAttacks, authoredAbilities, prologueParty, alphaTeam, critChart: compileCritChart(SETTLED.critChart), statuses };
 
 // Gaps are written AFTER the pack is fully constructed (moved 2026-08-27):
 // compileCritChart names gaps during pack construction, and writing the file
@@ -622,4 +687,4 @@ const body = '// GENERATED by content/mkenginepack.mjs — NEVER HAND-EDIT (see 
   + (dropped.length ? '// Dropped (no engine meaning yet): ' + dropped.join(' | ') + '\n' : '')
   + 'export const UNIT_PACK = ' + JSON.stringify(pack, null, 2) + ' as const\n';
 fs.writeFileSync('../engine/src/content/generated/pack.ts', body);
-console.log(`pack.ts: ${heroes.length} heroes, ${enemies.length} enemies, ${prologueParty.length} party, ${alphaTeam.length} alpha, ${authoredEnemies.length} authored enemies (${Object.keys(authoredAttacks).length} attacks)${dropped.length ? ', dropped: ' + dropped.length : ''}, gaps: ${gaps.length}`);
+console.log(`pack.ts: ${Object.keys(statuses).length} statuses, ${heroes.length} heroes, ${enemies.length} enemies, ${prologueParty.length} party, ${alphaTeam.length} alpha, ${authoredEnemies.length} authored enemies (${Object.keys(authoredAttacks).length} attacks)${dropped.length ? ', dropped: ' + dropped.length : ''}, gaps: ${gaps.length}`);
