@@ -57,6 +57,8 @@ function rowOfCodex(i) {
     hands: i.hands ?? 0, slots: i.slots ?? 0, classRestriction: i.classRestriction ?? null,
     tags: [...(i.tags ?? [])].sort(), sets: [...(i.sets ?? [])].sort(),
     uses: i.uses ?? null, equipCost: sorted(costOf(i.equipCost)),
+    // the Waystation's catalog: which band opens the row, and what it costs there (GEAR-DESIGN.md §4)
+    waystationBand: i.waystationBand ?? null, price: sorted(costOf(i.price)),
     statModifiers: sorted(i.statModifiers ?? {}), attackModifiers: sorted(i.attackModifiers ?? {}), grants: [...(i.grants ?? [])],
     base: null, enchant: null, source: 'codex',
   }

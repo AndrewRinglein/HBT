@@ -27,6 +27,10 @@ export type ItemRow = {
   readonly sets: readonly string[]
   /** Uses per battle for a one-use item, restocked after; null = permanent. */
   readonly uses: number | null
+  /** The Waystation band that opens this row in its catalog, or null — it is not sold there. */
+  readonly waystationBand: number | null
+  /** What the Waystation charges, by currency id. Empty when it does not sell it. */
+  readonly price: Readonly<Record<string, number>>
   /** What equipping costs, by currency id: idols Faith, Bloodrunes Mana, nothing else. */
   readonly equipCost: Readonly<Record<string, number>>
   readonly statModifiers: Readonly<Record<string, number>>
