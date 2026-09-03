@@ -402,7 +402,10 @@ for (const u of [...AUTH.units].sort((a, b) => (a.id < b.id ? -1 : 1))) {
     role: u.role === 'support' ? 'support' : mostlyRanged ? 'ranged' : 'melee',
     movement: st.movement, reach: 0,
     maxStamina: 0, staminaRegen: 0,
-    ai: mostlyRanged ? 'ranged-kite' : 'dumb-melee',
+    // 2026-09-03 (the six AI modes): a row that AUTHORS its ai keeps it (the
+    // hounds' hunter); a support row runs support; the rest as before.
+    ai: u.ai ?? (u.role === 'support' ? 'support' : mostlyRanged ? 'ranged-kite' : 'dumb-melee'),
+    ...(u.ai || u.role === 'support' ? { aiAuthored: true } : {}),
     attacks: attackIds, abilities: abilityIdsLocal, moves: ['power.move'],
     tags: (u.types || []).map((t) => t.toLowerCase()),
     triggers: unitTriggers,
