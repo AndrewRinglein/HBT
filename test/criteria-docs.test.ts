@@ -17,9 +17,10 @@ describe('the criteria instrument over two documents', () => {
     expect(gear).toMatch(/\*\*`\d+ of 18 closed · \d+ probed · \d+ accepted`\*\*/)
     for (let n = 51; n <= 68; n++) expect(gear).toContain(`### ISC-0${n} —`)
   })
-  it('a gear criterion is addressable by number like a slice one (its probe is not written yet, and the tool says so)', () => {
-    let out = ''
-    try { out = run('--isc 051') } catch (e) { out = String((e as { stdout?: string }).stdout ?? '') }
-    expect(out).toMatch(/ISC-051/)
+  it('a gear criterion is addressable by number like a slice one', () => {
+    // (written 2026-09-02 when ISC-051's probe did not exist and the tool said so; the probe
+    // exists now, so the test asks the smaller, truer thing: the number resolves to a verdict)
+    const out = run('--isc 068')            // an H criterion: no probe to run, a verdict all the same
+    expect(out).toMatch(/ISC-068/)
   })
 })

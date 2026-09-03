@@ -780,3 +780,5 @@ slice: 55 of 68 closed · 55 probed · 0 accepted
 IRON GAUNTLET: NOT PASSED — 2 FLAG(S) WARNED; 1 EXEMPTION(S) TAKEN
 
 Law 10 note (forge.shelf): test/isc-041.test.ts bought two named items at a flat switch price; the shelf is now a weekly roll sized by the Forge's band at a rolled 10–20 Supplies (ruled 2026-09-02), so the probe buys what the shelf offers this Week. The rule it holds — no shelf until repaired, tier-1 weapons and armor for Supplies, then equipped at prep — is unchanged.
+
+Law 10 note (the enchant pass, content-side): test/criteria-docs.test.ts asserted ISC-051's probe did NOT exist yet ("the tool says so") — it does now, so the assertion was rewritten to the rule it was really holding: a gear criterion's number resolves to a verdict. It now asks ISC-068 (H-tier, no probe to run).
