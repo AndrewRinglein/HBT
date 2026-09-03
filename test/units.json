@@ -143,6 +143,18 @@
         },
         "onlyWithAttack": "attack.test-arc.sweep",
         "note": "capability.confusion (2026-09-03): the sweep addles what it hits — the zombie runs a different AI while it lasts. Pure data."
+      },
+      {
+        "id": "trigger.test-carrion.consume",
+        "hook": "onActivationEnd",
+        "chance": 100,
+        "select": "self",
+        "effect": {
+          "kind": "corpse.consume",
+          "radius": 2,
+          "healPer": 1
+        },
+        "note": "capability.corpses (2026-09-03): the golem grinds the bodies within 2 at the end of its Activation, 1 Health each — the second consumer, pure data."
       }
     ],
     "note": "A complete body, not a delta — no real unit is a 30-hp, 5-accuracy stone that never rolls to hit. capability.area-attack / capability.knockback / station.crit-count scaffolding; fields ONLY in showcase.arc-variant. Re-statted 2026-08-27: the original 14-hp body died before a single-target turn.",

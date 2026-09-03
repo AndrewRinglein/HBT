@@ -222,7 +222,7 @@ const TRIG_HOOKS = new Set(['onAttack', 'onMiss', 'onHit', 'onCrit', 'onDamage',
 // Capabilities the engine HAS now — a row naming one of these is not gapped for it.
 // capability.power: capability.power-pool, 2026-09-03.
 // capability.enemy-action-cooldown: 2026-09-03.
-const HAVE = new Set(['capability.power', 'capability.enemy-action-cooldown']);
+const HAVE = new Set(['capability.power', 'capability.enemy-action-cooldown', 'capability.corpses']);   // corpses: 2026-09-03
 function compileTrigger(t, unitId, attackId) {
   const where = attackId ?? '(unit)';
   const needs = (t.needs || []).filter((n) => !HAVE.has(n));
@@ -266,6 +266,14 @@ function compileTrigger(t, unitId, attackId) {
       out.push({ id: `${unitId.replace(/^unit\./, 'trigger.')}.${(t.name || 'heal').toLowerCase().replace(/[^a-z0-9]+/g, '-')}`,
         hook: t.hook, chance: t.chance ?? 100, select: areaSelect ?? (ef.target === 'self' ? 'self' : 'target'),
         effect: { kind: 'heal', amount: ef.value }, source: unitId, ...(attackId ? { onlyWithAttack: attackId } : {}) });
+    } else if (ef.effect === 'raise a corpse as a Zombie') {
+      // capability.corpses (2026-09-03): the Necromancer's Raise. Radius: its aura's 2 (the encounter session's reading; SWITCHES.md corpseRaiseRadius)
+      out.push({ id: `${unitId.replace(/^unit\./, 'trigger.')}.${(t.name || 'raise').toLowerCase().replace(/[^a-z0-9]+/g, '-')}`,
+        hook: t.hook, chance: t.chance ?? 100, select: 'self', effect: { kind: 'corpse.raise', unit: 'unit.zombie', radius: 2 }, source: unitId });
+    } else if (/^remove all corpses within range; heal (\d+) per corpse$/.test(ef.effect)) {
+      const m = ef.effect.match(/heal (\d+) per corpse/);
+      out.push({ id: `${unitId.replace(/^unit\./, 'trigger.')}.${(t.name || 'consume').toLowerCase().replace(/[^a-z0-9]+/g, '-')}`,
+        hook: t.hook, chance: t.chance ?? 100, select: 'self', effect: { kind: 'corpse.consume', radius: ef.range ?? t.range ?? 1, healPer: +m[1] }, source: unitId });
     } else if (ef.effect === 'add power' || ef.effect === 'gain Power') {
       // capability.power-pool (2026-09-03): the clock and the condition — side-wide
       if ((t.effects.length > 1) && (t.chance ?? 100) !== 100) { gap(unitId, `${where} ${t.hook}: multi-effect at chance ${t.chance}`, 'multi-effect rolled trigger'); return []; }
@@ -299,6 +307,7 @@ for (const u of [...AUTH.units].sort((a, b) => (a.id < b.id ? -1 : 1))) {
   const st = u.stats || {};
   // crit and luck COMPILE since station.crit (2026-08-27): per-unit crit is
   // COMBAT-DESIGN's "Base Crit varies by enemy" axis, luck the resistance side.
+  const abilityIdsLocal = [];
   const unitTriggers = (u.triggers || []).flatMap((t) => t.hook === 'aura' ? [] : compileTrigger(t, id, null));
   // capability.auras (2026-09-03): a `hook: aura` row is an AuraDef — a radius
   // lending stat modifiers while inside. Stats the engine folds compile; the
@@ -333,7 +342,27 @@ for (const u of [...AUTH.units].sort((a, b) => (a.id < b.id ? -1 : 1))) {
     // 5, +stats, needs corpses) compiled as an ATTACK and the Ghoul swung it at
     // heroes. A self-kind row is a power, and one that needs a capability is
     // a named gap, never an attack.
-    if (a.kind === 'self' || a.targets === 'self') { gap(id, `${a.id} is a self-targeted action (${(a.effects || []).map((e) => e.effect).join('; ')})`, (a.needs || []).filter((n) => !HAVE.has(n)).join(',') || 'enemy self-power (no AbilityDef lane for enemies)'); continue; }
+    if (a.kind === 'self' || a.targets === 'self') {
+      const need = (a.needs || []).filter((n) => !HAVE.has(n));
+      // capability.corpses (2026-09-03): Eat Corpse compiles to an enemy self-power — heal, battle-long stat gains, Max Health
+      const isEat = /corpse/i.test(a.name || a.id) && (a.effects || []).some((e) => e.effect === 'heal');
+      if (!need.length && isEat) {
+        const mods = {}; let heal = 0, maxHp = 0; const egaps = [];
+        for (const e of a.effects || []) {
+          if (e.effect === 'heal') heal += e.value ?? 0;
+          else if (/^grant a stat/.test(e.effect) && e.stat === 'health') maxHp += e.value ?? 0;
+          else if (/^grant a stat/.test(e.effect) && HERO_STAT_LATE[e.stat]) mods[HERO_STAT_LATE[e.stat]] = (mods[HERO_STAT_LATE[e.stat]] ?? 0) + (e.value ?? 0);
+          else egaps.push(`${e.effect} ${e.stat ?? ''}`.trim());
+        }
+        const pid = a.id.replace(/^attack\./, 'power.');
+        authoredAbilities[pid] = { id: pid, name: a.name, staminaCost: 0, cooldown: a.cooldown ?? 0, range: 0, target: { select: 'self', side: 'any' },
+          effects: [{ kind: 'corpse.eat', radius: 1, heal, mods, ...(maxHp ? { maxHp } : {}) }], ...(egaps.length ? { gaps: egaps } : {}) };
+        abilityIdsLocal.push(pid);
+        for (const g of egaps) gap(id, `${pid}: ${g}`, 'enemy self-power clause');
+        continue;
+      }
+      gap(id, `${a.id} is a self-targeted action (${(a.effects || []).map((e) => e.effect).join('; ')})`, need.join(',') || 'enemy self-power (no AbilityDef lane for enemies)'); continue;
+    }
     const ranged = /within/.test(a.targets || '');
     if (ranged && (a.range === null || a.range === undefined)) { gap(id, `${a.id} range is null — N never stated`, 'content: range unstated'); continue; }
     // capability.power-pool (2026-09-03): the share rides on the row (was a gap)
@@ -374,7 +403,7 @@ for (const u of [...AUTH.units].sort((a, b) => (a.id < b.id ? -1 : 1))) {
     movement: st.movement, reach: 0,
     maxStamina: 0, staminaRegen: 0,
     ai: mostlyRanged ? 'ranged-kite' : 'dumb-melee',
-    attacks: attackIds, abilities: [], moves: ['power.move'],
+    attacks: attackIds, abilities: abilityIdsLocal, moves: ['power.move'],
     tags: (u.types || []).map((t) => t.toLowerCase()),
     triggers: unitTriggers,
     ...(unitAuras.length ? { auras: unitAuras } : {}),

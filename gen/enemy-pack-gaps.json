@@ -88,11 +88,6 @@
   },
   {
    "unit": "unit.ghoul",
-   "what": "attack.ghoul.eat-corpse is a self-targeted action (heal; grant a stat for the Battle; grant a stat for the Battle; grant a stat for the Battle)",
-   "needs": "capability.corpses"
-  },
-  {
-   "unit": "unit.ghoul",
    "what": "attack.ghoul.shriek onHit: target loses stamina",
    "needs": "capability.target-stamina-loss"
   },
@@ -155,11 +150,6 @@
    "unit": "unit.lieutenant-demon",
    "what": "aura aura-1: Immunity N burn",
    "needs": "aura: status immunity"
-  },
-  {
-   "unit": "unit.necromancer",
-   "what": "(unit) onActivationEnd: raise a corpse as a Zombie",
-   "needs": "capability.corpses"
   },
   {
    "unit": "unit.necromancer",
@@ -250,11 +240,6 @@
    "unit": "unit.skeleton-spider",
    "what": "(unit) onActivationEnd: grant a stat for the Battle (armor)",
    "needs": "trigger-effect: statMod"
-  },
-  {
-   "unit": "unit.skeleton-spider",
-   "what": "(unit) onActivationEnd: remove all corpses within range; heal 3 per corpse",
-   "needs": "capability.corpses"
   },
   {
    "unit": "unit.skeleton-spider",
