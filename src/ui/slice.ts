@@ -33,7 +33,7 @@ import { performRelease } from '../core/assignments.js'
 import { listRewardOffers, performTakeReward, listLevelUps, performLevelUp, performLeaveLevelUp } from '../core/rewards.js'
 import { xpForLevel } from '../content/levels.js'
 import { listBuildings, whyNotBuild, performBuild } from '../core/build.js'
-import { isShopOpen, listShopItems, canBuyItem, performBuyItem, costOfItem, canEquip, whyNotEquip, performEquip, canUnequip, performUnequip, loadoutOf } from '../core/shop.js'
+import { isShopOpen, listShopItems, canBuyItem, performBuyItem, costOfItem, canEquip, whyNotEquip, performEquip, canUnequip, performUnequip, loadoutOf, equipCostOf, isEquipOpen, equipWhere, performOpenEquip, performCloseEquip } from '../core/shop.js'
 import { itemOf } from '../content/items.js'
 import { makeNewCampaign, listDraftOffers, performDraft, performEndCampaign, draftsOwedOf, draftedCountOf } from '../core/opening.js'
 import { PROLOGUE } from '../content/prologue.js'
@@ -154,7 +154,8 @@ function rosterScreen(c: CampaignState): string {
   return `<h2>The roster — ${heroes.length} hero${heroes.length === 1 ? '' : 'es'}, Week ${c.week}</h2>
     <div class="card"><table><tr><th>hero</th><th>class</th><th>level</th><th>xp</th><th>wound</th><th>field slot</th><th>city slot</th><th>this Week</th><th>carries</th></tr>
     ${heroes.map((h) => `<tr class="${h.lifeState === 'dead' ? 'dead' : ''}"><td><b>${esc(h.name)}</b><br><span class="meta">${esc(h.id)}</span></td><td>${esc(h.classes.map((x) => x.replace('class.', '')).join(', '))}</td><td class="n">${h.level}</td><td class="n">${h.xp} / ${xpForLevel(h.level + 1)}</td><td>${h.lifeState === 'dead' ? '<span class="lost">dead</span>' : h.wound ? esc(woundNameOf(h.wound)) : '—'}</td><td>${slot(h, 'field')}</td><td>${slot(h, 'city')}</td><td class="meta">${esc(absenceOf(c, h.id) ?? '')}</td><td class="meta">${esc(h.equipped.map((i) => i.replace('item.', '')).join(', ') || '—')}</td></tr>`).join('')}</table></div>
-    <p class="meta">Two slots a Week: one in the field, one in the city; a quest takes both. The unavailability roll between Buy and Quest keeps some home with a story.</p>`
+    <p class="meta">Two slots a Week: one in the field, one in the city; a quest takes both. The unavailability roll between Buy and Quest keeps some home with a story.</p>
+    ${equipWhere(c) === 'roster' ? `<h2>Fitting gear</h2>${equipPanel(c, heroes.filter((h) => h.lifeState === 'alive').map((h) => h.id))}<div class="bar"><span class="meta">Idols are fitted at prep only — they are paid for when the battle is about to happen.</span><span class="sp"></span><button class="primary" data-act="close-equip">Done — keep it</button></div>` : c.cursor.step === 'open' && !isEquipOpen(c) ? `<div class="bar"><span class="sp"></span><button data-act="open-equip">Fit gear</button></div>` : ''}`
 }
 
 // ── the opening ─────────────────────────────────────────────────────────────
@@ -281,6 +282,31 @@ function worldScreen(c: CampaignState): string {
     </div>`
 }
 
+
+/** The equip panel — hands / armor / slots per hero, the stash beside, take-off and swap. Shared by prep's Equip step and the roster's session. */
+function equipPanel(c: CampaignState, heroIds: readonly string[]): string {
+  const stash = c.stash
+  const nm = (id: string) => itemOf(id).name
+  const worn = (h: string) => {
+    const l = loadoutOf(c, h)
+    const off = (id: string) => canUnequip(c, h, id) ? ` <button class="quiet" data-act="unequip" data-id="${esc(h)}" data-item="${esc(id)}" title="off, into the stash">×</button>` : ''
+    const slot = (label: string, ids: string[], empty: string) => `<tr><td class="meta">${label}</td><td>${ids.length ? ids.map((id) => `${esc(nm(id))}${off(id)}`).join(' · ') : `<span class="meta">${empty}</span>`}</td></tr>`
+    return `<div class="card" style="margin-bottom:8px"><b>${esc(c.roster[h]!.name)}</b><table>${slot('hands', l.hands, 'empty')}${slot('armor', l.armor ? [l.armor] : [], 'none')}${slot(`slots ${l.itemSlots.used}/${l.itemSlots.max}`, l.items, 'empty')}</table></div>`
+  }
+  // onto a full slot: the swap — the first thing worn that the new item would displace, by class or by hand
+  const swapFor = (h: string, item: string): string | undefined => {
+    const row = itemOf(item); const l = loadoutOf(c, h)
+    const candidates = row.itemClass === 'armor' ? (l.armor ? [l.armor] : []) : row.itemClass === 'weapon' ? l.hands : c.roster[h]!.equipped.filter((id) => itemOf(id).itemClass === row.itemClass)
+    return candidates.find((d) => canEquip(c, h, item, d))
+  }
+  const cost = (item: string) => { const k = Object.entries(equipCostOf(item)); return k.length ? ` · ${k.map(([cur, n]) => `${n} ${cur.replace('currency.', '')}`).join(', ')} to equip` : '' }
+  const paid = c.cursor.equipSession?.paid ?? []
+  return `<div class="cols">${heroIds.map(worn).join('')}</div>
+    ${stash.length ? `<table><tr><th>stash</th><th>onto</th></tr>${stash.map((item) => `<tr><td>${esc(nm(item))} <span class="meta">${esc(itemOf(item).itemClass)} · t${itemOf(item).tier}${esc(cost(item))}</span></td><td>${heroIds.map((h) => { if (canEquip(c, h, item)) return `<button class="quiet" data-act="equip" data-id="${esc(h)}" data-item="${esc(item)}">${esc(c.roster[h]!.name)}</button>`; const d = swapFor(h, item); if (d) return `<button class="quiet" data-act="equip" data-id="${esc(h)}" data-item="${esc(item)}" data-displace="${esc(d)}" title="${esc('swap out ' + nm(d))}">${esc(c.roster[h]!.name)} ⇄ ${esc(nm(d))}</button>`; return `<span class="meta" title="${esc(whyNotEquip(c, h, item) ?? '')}">${esc(c.roster[h]!.name)} —</span>` }).join(' ')}</td></tr>`).join('')}</table>` : '<p class="meta">the stash is empty — the Forge\'s shelf, the spoils, and anything taken off fill it</p>'}
+    ${paid.length ? `<p class="meta">Paid this session, refunded if taken off before you leave: ${paid.map((p) => `${esc(nm(p.itemId))} on ${esc(c.roster[p.heroId]?.name ?? p.heroId)}`).join(' · ')}</p>` : ''}
+    <p class="meta">What is equipped is recorded on the hero; the engine still fields the unit row's own kit until the seam lands (engine/ITEMS-PLAN.md).</p>`
+}
+
 // ── Combat Prep ─────────────────────────────────────────────────────────────
 function prepScreen(c: CampaignState): string {
   const v = viewCombatPrep(c)
@@ -297,24 +323,7 @@ function prepScreen(c: CampaignState): string {
     const heroes = Object.values(c.roster).sort((a, b) => a.id.localeCompare(b.id))
     body = `<h3>Deploy — ${v.deployed.length} of ${v.deployLimit}</h3><div class="roster">${heroes.map((h) => heroCard(c, h, v.deployed.includes(h.id))).join('')}</div>`
   } else {
-    const stash = c.stash
-    const nm = (id: string) => itemOf(id).name
-    const worn = (h: string) => {
-      const l = loadoutOf(c, h)
-      const off = (id: string) => canUnequip(c, h, id) ? ` <button class="quiet" data-act="unequip" data-id="${esc(h)}" data-item="${esc(id)}" title="off, into the stash">×</button>` : ''
-      const slot = (label: string, ids: string[], empty: string) => `<tr><td class="meta">${label}</td><td>${ids.length ? ids.map((id) => `${esc(nm(id))}${off(id)}`).join(' · ') : `<span class="meta">${empty}</span>`}</td></tr>`
-      return `<div class="card" style="margin-bottom:8px"><b>${esc(c.roster[h]!.name)}</b><table>${slot('hands', l.hands, 'empty')}${slot('armor', l.armor ? [l.armor] : [], 'none')}${slot(`slots ${l.itemSlots.used}/${l.itemSlots.max}`, l.items, 'empty')}</table></div>`
-    }
-    // onto a full slot: the swap — the first thing worn that the new item would displace, by class or by hand
-    const swapFor = (h: string, item: string): string | undefined => {
-      const row = itemOf(item); const l = loadoutOf(c, h)
-      const candidates = row.itemClass === 'armor' ? (l.armor ? [l.armor] : []) : row.itemClass === 'weapon' ? l.hands : c.roster[h]!.equipped.filter((id) => itemOf(id).itemClass === row.itemClass)
-      return candidates.find((d) => canEquip(c, h, item, d))
-    }
-    body = `<h3>Equip — fit the stash onto the deployed</h3>
-      <div class="cols">${v.deployed.map(worn).join('')}</div>
-      ${stash.length ? `<table><tr><th>stash</th><th>onto</th></tr>${stash.map((item) => `<tr><td>${esc(nm(item))} <span class="meta">${esc(itemOf(item).itemClass)} · t${itemOf(item).tier}</span></td><td>${v.deployed.map((h) => { if (canEquip(c, h, item)) return `<button class="quiet" data-act="equip" data-id="${esc(h)}" data-item="${esc(item)}">${esc(c.roster[h]!.name)}</button>`; const d = swapFor(h, item); if (d) return `<button class="quiet" data-act="equip" data-id="${esc(h)}" data-item="${esc(item)}" data-displace="${esc(d)}" title="${esc('swap out ' + nm(d))}">${esc(c.roster[h]!.name)} ⇄ ${esc(nm(d))}</button>`; return `<span class="meta" title="${esc(whyNotEquip(c, h, item) ?? '')}">${esc(c.roster[h]!.name)} —</span>` }).join(' ')}</td></tr>`).join('')}</table>` : '<p class="meta">the stash is empty — the Forge\'s shelf, the spoils, and anything taken off fill it</p>'}
-      <p class="meta">What is equipped is recorded on the hero; the engine still fields the unit row's own kit until the seam lands (engine/ITEMS-PLAN.md).</p>`
+    body = `<h3>Equip — fit the stash onto the deployed</h3>` + equipPanel(c, v.deployed)
   }
   return `<h2>Combat Prep — ${esc(v.stepTitle)}</h2>
     <p class="meta"><code>${esc(v.engagementId)}</code> · ${esc(v.kind)} · ${esc(v.territoryId ?? 'no ground at stake')} · ${esc(v.mapId)}</p>
@@ -499,6 +508,8 @@ function wire(root: HTMLElement): void {
         case 'buy-item': return act(() => performBuyItem(app.ctx!, id!, 'slice'))
         case 'equip': return act(() => performEquip(app.ctx!, id!, el.dataset['item']!, 'slice', el.dataset['displace']))
         case 'unequip': return act(() => performUnequip(app.ctx!, id!, el.dataset['item']!, 'slice'))
+        case 'open-equip': return act(() => performOpenEquip(app.ctx!, 'slice'))
+        case 'close-equip': return act(() => performCloseEquip(app.ctx!, 'slice'))
         case 'council': return act(() => performCouncil(app.ctx!, viewCombatPrep(app.ctx!.campaign).tactic === id ? null : id!, 'slice'))
         case 'deploy': return act(() => performDeploy(app.ctx!, id!, 'slice'))
         case 'undeploy': return act(() => performUndeploy(app.ctx!, id!, 'slice'))

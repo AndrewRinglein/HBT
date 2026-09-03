@@ -88,6 +88,13 @@ export type Cursor = {
    * the panel or the tally with nothing lost.
    */
   battle: { resultSet: boolean; result?: EngagementResult; reckoning?: Reckoning } | null
+  /**
+   * The equip session (G5, ruled 2026-09-02): open while the Equip step runs at prep, or
+   * while the player is fitting gear from the roster between battles. `paid` is what this
+   * session spent to equip — refunded if the item comes off before the session closes,
+   * kept once it has ("once you leave that screen, it's saved").
+   */
+  equipSession: { where: 'prep' | 'roster'; paid: { heroId: HeroId; itemId: string; cost: Record<CurrencyId, number> }[] } | null
 }
 
 export type Hero = {
@@ -208,7 +215,7 @@ export function makeCampaign(seed: number, options: MakeCampaignOptions): Campai
     realm: options.realm,
     seed,
     week: options.week ?? 1,
-    cursor: { week: options.week ?? 1, stage: options.stage, step: 'open', prepStep: null, engagement: null, attack: null, fought: 0, recruited: 0, rewardOffer: null, prologue: null, draftOffer: null, battle: null },
+    cursor: { week: options.week ?? 1, stage: options.stage, step: 'open', prepStep: null, engagement: null, attack: null, fought: 0, recruited: 0, rewardOffer: null, prologue: null, draftOffer: null, battle: null, equipSession: null },
     purse,
     renown: options.renown ?? 0,
     unlocks: [],
@@ -266,6 +273,6 @@ export function campaignOf(json: string): CampaignState {
   assertPlainData(c)
   const required: (keyof CampaignState)[] = ['realm', 'seed', 'week', 'cursor', 'purse', 'renown', 'unlocks', 'revealed', 'roster', 'assignments', 'stash', 'territories', 'threat', 'losses', 'quests', 'captured', 'unavailable', 'cups', 'ended']
   for (const k of required) if (!(k in c)) throw new Error(`save is missing '${k}' — not a Campaign`)
-  for (const k of ['week', 'stage', 'step', 'prepStep', 'engagement', 'attack', 'fought', 'recruited', 'rewardOffer', 'prologue', 'draftOffer', 'battle'] as const) if (!(k in c.cursor)) throw new Error(`save's cursor is missing '${k}'`)
+  for (const k of ['week', 'stage', 'step', 'prepStep', 'engagement', 'attack', 'fought', 'recruited', 'rewardOffer', 'prologue', 'draftOffer', 'battle', 'equipSession'] as const) if (!(k in c.cursor)) throw new Error(`save's cursor is missing '${k}'`)
   return c
 }

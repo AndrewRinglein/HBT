@@ -30,7 +30,8 @@
   "rewardOffer": null,
   "prologue": null,
   "draftOffer": null,
-  "battle": null
+  "battle": null,
+  "equipSession": null
  },
  "purse": {
   "currency.faith": 6,

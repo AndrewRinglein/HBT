@@ -63,6 +63,12 @@ export function setTactic(ctx: Ctx, tacticId: string | null, causeId: string): v
   emit(ctx, 'council.taken', causeId, { engagementId: e.id, tacticId })
 }
 
+/** The equip session — the one write of cursor.equipSession (G5). Opening and closing, paying and refunding, each its own word. */
+export function setEquipSession(ctx: Ctx, session: Cursor['equipSession'], causeId: string, said: { type: 'equip.opened' | 'equip.closed' | 'equip.paid' | 'equip.refunded'; heroId?: string; itemId?: string }): void {
+  ctx.campaign.cursor.equipSession = session ? { where: session.where, paid: session.paid.map((p) => ({ ...p, cost: { ...p.cost } })) } : null
+  emit(ctx, said.type, causeId, { where: session?.where ?? null, heroId: said.heroId, itemId: said.itemId, paid: session?.paid.length ?? 0 })
+}
+
 /** The Week's absences — the one write of campaign.unavailable. An empty list clears it. */
 export function setUnavailable(ctx: Ctx, absences: readonly Absence[], causeId: string): void {
   ctx.campaign.unavailable = absences.map((a) => ({ ...a }))

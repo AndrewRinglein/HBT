@@ -12,6 +12,7 @@
 import type { CampaignState, HeroId } from './campaign.js'
 import { type Ctx, applyBuyItem, applyEquip, applyUnequip } from './mutate.js'
 import { whyNotFit } from './loadout.js'
+import { isEquipOpen, equipWhere, openEquipSession, closeEquipSession, whyNotPay, paySession, refundSession } from './equip-session.js'
 import { canAfford, performSpend, type Cost } from './purse.js'
 import { listBuildings } from './build.js'
 import { REWARDS, type RewardRow } from '../content/rewards.js'
@@ -50,8 +51,22 @@ export function performBuyItem(ctx: Ctx, itemId: string, causeId: string): void 
   applyBuyItem(ctx, itemId, costOfItem(itemId), causeId)
 }
 
-/** The prep step whose row says it equips — core reads the row, not the name. */
-const atEquip = (campaign: CampaignState) => campaign.cursor.step === 'prep' && campaign.cursor.prepStep === PREP_STEP_ROWS.find((r) => r.equips)?.step
+/** Equipping happens inside an equip session (G5): the prep step whose row equips opens one; the roster between battles may open one too. */
+const atEquip = (campaign: CampaignState) => isEquipOpen(campaign)
+/** Whose gear may be fitted: at prep the deployed; from the roster any living hero. */
+const fittable = (campaign: CampaignState, heroId: HeroId): boolean =>
+  equipWhere(campaign) === 'prep' ? (campaign.cursor.engagement?.deployed.includes(heroId) ?? false) : campaign.roster[heroId]?.lifeState === 'alive'
+
+/** Open the equip session from the roster, between battles — never inside prep or a battle. */
+export function performOpenEquip(ctx: Ctx, causeId: string): void {
+  if (ctx.campaign.cursor.step !== 'open') throw new Error(`performOpenEquip refused: the cursor is at step '${ctx.campaign.cursor.step}' — gear is fitted from the roster between battles, or at prep's Equip step`)
+  openEquipSession(ctx, 'roster', causeId)
+}
+export function performCloseEquip(ctx: Ctx, causeId: string): void {
+  if (equipWhere(ctx.campaign) !== 'roster') throw new Error(`performCloseEquip refused: no roster equip session is open`)
+  closeEquipSession(ctx, causeId)
+}
+export { isEquipOpen, equipWhere, equipCostOf } from './equip-session.js'
 
 /**
  * Why this hero cannot put on this item now — or null. `displace` names an item the
@@ -60,13 +75,13 @@ const atEquip = (campaign: CampaignState) => campaign.cursor.step === 'prep' && 
  */
 export function whyNotEquip(campaign: CampaignState, heroId: HeroId, itemId: string, displace?: string): string | null {
   if (!atEquip(campaign)) return 'not the equip step'
-  if (!campaign.cursor.engagement?.deployed.includes(heroId)) return 'not deployed'
+  if (!fittable(campaign, heroId)) return equipWhere(campaign) === 'prep' ? 'not deployed' : 'not a living hero'
   const h = campaign.roster[heroId]
   if (!h) return `no hero '${heroId}'`
   if (!campaign.stash.includes(itemId)) return `'${itemId}' is not in the stash`
   if (displace !== undefined && !h.equipped.includes(displace)) return `'${displace}' is not worn by ${h.name}`
   const after = displace === undefined ? [...h.equipped, itemId] : [...h.equipped.filter((id) => id !== displace), itemId]
-  return whyNotFit(campaign, heroId, after)
+  return whyNotFit(campaign, heroId, after) ?? whyNotPay(campaign, itemId)
 }
 
 export const canEquip = (campaign: CampaignState, heroId: HeroId, itemId: string, displace?: string): boolean => whyNotEquip(campaign, heroId, itemId, displace) === null
@@ -74,13 +89,14 @@ export const canEquip = (campaign: CampaignState, heroId: HeroId, itemId: string
 export function performEquip(ctx: Ctx, heroId: HeroId, itemId: string, causeId: string, displace?: string): void {
   const why = whyNotEquip(ctx.campaign, heroId, itemId, displace)
   if (why) throw new Error(`performEquip refused (${heroId} ← ${itemId}): ${why}`)
-  if (displace !== undefined) applyUnequip(ctx, heroId, displace, causeId)
+  if (displace !== undefined) { applyUnequip(ctx, heroId, displace, causeId); refundSession(ctx, heroId, displace, causeId) }
+  paySession(ctx, heroId, itemId, causeId)
   applyEquip(ctx, heroId, itemId, causeId)
 }
 
 export function whyNotUnequip(campaign: CampaignState, heroId: HeroId, itemId: string): string | null {
   if (!atEquip(campaign)) return 'not the equip step'
-  if (!campaign.cursor.engagement?.deployed.includes(heroId)) return 'not deployed'
+  if (!fittable(campaign, heroId)) return equipWhere(campaign) === 'prep' ? 'not deployed' : 'not a living hero'
   const h = campaign.roster[heroId]
   if (!h) return `no hero '${heroId}'`
   if (!h.equipped.includes(itemId)) return `'${itemId}' is not worn by ${h.name}`
@@ -95,6 +111,7 @@ export function performUnequip(ctx: Ctx, heroId: HeroId, itemId: string, causeId
   const why = whyNotUnequip(ctx.campaign, heroId, itemId)
   if (why) throw new Error(`performUnequip refused (${heroId} → ${itemId}): ${why}`)
   applyUnequip(ctx, heroId, itemId, causeId)
+  refundSession(ctx, heroId, itemId, causeId)
 }
 
 export { loadoutOf, itemSlotsOf, slotCostOf } from './loadout.js'

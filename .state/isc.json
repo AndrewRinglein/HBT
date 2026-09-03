@@ -685,5 +685,14 @@
    "at": "2026-09-03 04:08",
    "sha": "a3e9d82"
   }
+ },
+ "056": {
+  "red": {
+   "at": "2026-09-03 04:17",
+   "sha": "e93a811",
+   "hash": "66e707756327",
+   "how": "feature absent",
+   "tail": "       |            ^ |      47|     expect(() => performEquip(ctx, HUNTER, RUNE, 'test')).toThrow(/ref… |      48|     performOpenEquip(ctx, 'test')"
+  }
  }
 }

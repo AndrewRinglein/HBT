@@ -56,6 +56,10 @@ export const KINGDOM_EVENTS = [
   // Added 2026-09-02 with equip.slots (G4), and to GLOSSARY.md the same commit: the
   // swap's first half — an item off a hero and into the stash.
   'item.unequipped',
+  // Added 2026-09-02 with equip.costs (G5), and to GLOSSARY.md the same commit: the
+  // equip session — open at prep's Equip step or from the roster; what it pays refunds
+  // until it closes.
+  'equip.opened', 'equip.closed', 'equip.paid', 'equip.refunded',
 ] as const
 
 export type KingdomEventType = (typeof KINGDOM_EVENTS)[number]

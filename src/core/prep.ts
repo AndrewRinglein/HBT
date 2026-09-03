@@ -12,6 +12,7 @@
 
 import type { CampaignState, HeroId, PrepStep } from './campaign.js'
 import { type Ctx, engagementOf, setCouncilOffer, setTactic, applyDeploy, applyUndeploy, setCursor } from './mutate.js'
+import { openEquipSession, closeEquipSession } from './equip-session.js'
 import { pickOf } from './rng.js'
 import { PREP_STEP_ROWS, COUNCIL_OFFER_SIZE } from '../content/prep.js'
 import { deployLimitOf } from './charter.js'
@@ -125,6 +126,8 @@ function beginPrepStep(ctx: Ctx, step: PrepStep, causeId: string): void {
     const offer = pickOf(ctx.campaign, row.drawsFrom, [e.id], TACTICS, COUNCIL_OFFER_SIZE)
     setCouncilOffer(ctx, offer.map((t) => t.id), causeId)
   }
+  // the step whose row equips opens the equip session — costs paid here refund until the step is left (G5)
+  if (row?.equips && !ctx.campaign.cursor.equipSession) openEquipSession(ctx, 'prep', causeId)
 }
 
 /** Put a Campaign whose cursor holds an Engagement onto the first prep step. */
@@ -163,6 +166,8 @@ export function performAdvancePrep(ctx: Ctx, causeId: string): void {
   if (!canAdvancePrep(ctx.campaign)) throw new Error(`performAdvancePrep refused at '${step}': nothing chosen and the step is not skippable`)
   const at = PREP_STEP_ROWS.findIndex((r) => r.step === step)
   const next = PREP_STEP_ROWS[at + 1]
+  // leaving the equip step commits what it paid — "once you leave that screen, it's saved"
+  if (PREP_STEP_ROWS[at]?.equips && ctx.campaign.cursor.equipSession) closeEquipSession(ctx, causeId)
   if (next) beginPrepStep(ctx, next.step, causeId)
   else setCursor(ctx, { step: 'battle', prepStep: null, battle: { resultSet: false } }, causeId)
 }
