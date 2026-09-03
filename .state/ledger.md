@@ -4880,3 +4880,39 @@ no attack but the drake's two, no ability. The engine's INVENTED count is 13.
 Two flags. Seal withheld.
 
 IRON GAUNTLET: NOT PASSED — 2 FLAG(S) WARNED
+
+## CHECKPOINT — 2026-09-03 (session: engine, "structure first")
+engine `e7fc412` · content `05f854a` · root `640ad45`+. Suite 60 files / 510,
+audit clean, baselines golden.
+
+Landed this session, in order: content.alpha-flip · pack re-bless ·
+fix.bleed-magnitude · fix.dazed-split · pack.statuses · pack.moves ·
+test.receptacle · content.field-eve-24 · pack.items · seam.items-per-unit ·
+content.enemy-flip · test.fixture-migration. Every seal withheld (edited tests
+/ decided-scan / one deliberate unreachable); every landing has a ledger entry
+above with its checks and its Law-10 reasons.
+
+Where the engine stands: the standard battle is authored end to end (Alpha
+Team + Codex kits applied at fielding vs the Codex's Zombie and Burning Zombie);
+statuses, moves, items, all 33 enemies and all 24 Eve heroes read from the
+Codex; test content lives in content/test/; index.ts hand-types only the three
+beasts (ruled: later). Unpublished ids 13, all scenario/terrain names.
+
+Rulings taken today are in DECISIONS.md (2026-09-02 entries, verbatim). Open
+for Andrew: P11 encounter format (the structural blocker); Vision; Surge;
+item.bracer; ~29 flagged landings (`node tools/report.mjs`). Named gaps,
+deliberately unbuilt: six statuses, Pray, Charging Run, activated items and
+charges, move.* mechanism (kind approved), four dead attacks
+(ai.attack-choice, a switch), stat-less attacks.
+
+Foreign work-in-progress in this tree, NOT mine, left uncommitted on purpose:
+engine/CLAUDE.md and .claude/skills/visual-replay/SKILL.md (a viewer session
+retiring the old replay rig), .claude/skills/create-enemy-art/ (untracked),
+tools/field-geometry.mts and src/sim/coverage.ts (stashed by the gate landings
+and popped back — see `git stash list` if a pop failed). Root: ~10 docs dirty
+from the content/design chats. Content: FUNCTIONS.md, gen/functions.json,
+hbt-codex.html are the content chat's build outputs.
+
+Next structural items, none blocked: content.beasts (later, ruled);
+content.enchant-rows (content tooling); kingdom passes hero.equipped as
+heroItems and reads fieldedDef(); viewer re-exports at this engine commit.
