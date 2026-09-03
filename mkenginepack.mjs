@@ -716,7 +716,73 @@ function compileCritChart(chart) {
   return { note: chart.note, rows };
 }
 
-const pack = { note: D.testCohort.note, heroes, enemies, authoredEnemies, authoredAttacks, authoredAbilities, prologueParty, alphaTeam, critChart: compileCritChart(SETTLED.critChart), statuses, moves };
+// ── THE TEST RECEPTACLE (content/test/, 2026-09-02) ─────────────────────────
+// Test bodies, attacks and statuses that prove a mechanism and never ship.
+// Andrew: "We're not testing features if we're not pulling them from the
+// right way." They enter through THIS converter and the same loader as real
+// content — a row is a DELTA over a real row (`from` + `set`) or a complete
+// body — and they are refused unless their ids are the test family. Wipe the
+// folder and they are gone; nothing in the engine has to change.
+const TEST_DIR = 'test';
+const readTest = (f) => { try { return JSON.parse(fs.readFileSync(`${TEST_DIR}/${f}`, 'utf8')); } catch (e) { if (e.code === 'ENOENT') return []; throw e; } };
+const isTestId = {
+  unit: (id) => /^test-[a-z0-9-]+$/.test(id),
+  attack: (id) => /^attack\.test-[a-z0-9.-]+$/.test(id),
+  trigger: (id) => /^(test\.|trigger\.test-)[a-z0-9.-]+$/.test(id),
+  status: (id) => /^test\.status\.[a-z0-9-]+$/.test(id),
+};
+const UNIT_FIELDS = new Set(['typeId', 'name', 'side', 'maxHp', 'armor', 'resist', 'accuracy', 'dodge', 'strength', 'precision', 'magic', 'spirit', 'crit', 'luck', 'role', 'movement', 'reach', 'maxStamina', 'staminaRegen', 'ai', 'attacks', 'abilities', 'moves', 'attributes', 'tags', 'triggers']);
+const ATTACK_FIELDS = new Set(['id', 'name', 'kind', 'damageType', 'bonus', 'stat', 'reach', 'staminaCost', 'crit', 'critCount', 'area', 'cooldown']);
+const realUnits = new Map([...alphaTeam, ...prologueParty, ...authoredEnemies].map((u) => [u.typeId, u]));
+function testAttacks() {
+  const out = {};
+  for (const row of readTest('attacks.json')) {
+    const { note, from, set, ...rest } = row;
+    if (!isTestId.attack(row.id)) throw new Error(`content/test/attacks.json: '${row.id}' is not attack.test-* — the test family or nothing`);
+    let base = {};
+    if (from) { base = authoredAttacks[from]; if (!base) throw new Error(`content/test/attacks.json: '${row.id}' is a delta over '${from}', which is not a real attack in the pack`); }
+    const a = { ...base, ...rest, ...(set || {}), id: row.id };
+    for (const k of Object.keys(a)) if (!ATTACK_FIELDS.has(k)) throw new Error(`content/test/attacks.json: '${row.id}' carries unknown field '${k}'`);
+    out[row.id] = a;
+  }
+  return out;
+}
+function testUnits(testAttackRows) {
+  const out = [];
+  for (const row of readTest('units.json')) {
+    const { note, from, set, ...rest } = row;
+    if (!isTestId.unit(row.id)) throw new Error(`content/test/units.json: '${row.id}' is not test-* — the test family or nothing`);
+    let base = {};
+    if (from) { base = realUnits.get(from); if (!base) throw new Error(`content/test/units.json: '${row.id}' is a delta over '${from}', which is not a real unit in the pack`); }
+    const { id, ...body } = rest;
+    const u = { ...base, ...body, ...(set || {}), typeId: row.id, abilities: body.abilities ?? base.abilities ?? [], attributes: body.attributes ?? ['test'], tags: body.tags ?? base.tags ?? [] };
+    delete u.copyOf;
+    for (const k of Object.keys(u)) if (!UNIT_FIELDS.has(k)) throw new Error(`content/test/units.json: '${row.id}' carries unknown field '${k}'`);
+    u.triggers = (u.triggers || []).map((t) => {
+      const { note: _n, ...trig } = t;
+      if (!isTestId.trigger(trig.id)) throw new Error(`content/test/units.json: '${row.id}' trigger '${trig.id}' is not test.* / trigger.test-*`);
+      return { ...trig, source: `unit.${row.id}` };
+    });
+    for (const a of u.attacks) if (!testAttackRows[a] && !authoredAttacks[a]) throw new Error(`content/test/units.json: '${row.id}' wields '${a}', which is neither a test attack nor a real one`);
+    out.push(u);
+  }
+  return out;
+}
+function testStatuses() {
+  const out = {};
+  const FLAGS = new Set(['id', 'name', 'shape', 'family', 'decayPerPhase', 'tick', 'tickDamageType', 'reducesIncomingDamage', 'reducesOutgoingDamage', 'blocksAction', 'reducesMovement', 'halvesHealing', 'locksPowers', 'shedByHealing', 'aiControlled']);
+  for (const row of readTest('statuses.json')) {
+    const { note, ...r } = row;
+    if (!isTestId.status(r.id)) throw new Error(`content/test/statuses.json: '${r.id}' is not test.status.*`);
+    for (const k of Object.keys(r)) if (!FLAGS.has(k)) throw new Error(`content/test/statuses.json: '${r.id}' carries unknown field '${k}'`);
+    out[r.id] = { ...r, stacking: 'add' };
+  }
+  return out;
+}
+const testAttackRows = testAttacks();
+const test = { note: 'GENERATED from content/test/ — the test receptacle. Never ships. Wipe the folder to remove every row here.', units: testUnits(testAttackRows), attacks: testAttackRows, statuses: testStatuses() };
+
+const pack = { note: D.testCohort.note, heroes, enemies, authoredEnemies, authoredAttacks, authoredAbilities, prologueParty, alphaTeam, critChart: compileCritChart(SETTLED.critChart), statuses, moves, test };
 
 // Gaps are written AFTER the pack is fully constructed (moved 2026-08-27):
 // compileCritChart names gaps during pack construction, and writing the file
@@ -734,4 +800,4 @@ const body = '// GENERATED by content/mkenginepack.mjs — NEVER HAND-EDIT (see 
   + (dropped.length ? '// Dropped (no engine meaning yet): ' + dropped.join(' | ') + '\n' : '')
   + 'export const UNIT_PACK = ' + JSON.stringify(pack, null, 2) + ' as const\n';
 fs.writeFileSync('../engine/src/content/generated/pack.ts', body);
-console.log(`pack.ts: ${Object.keys(statuses).length} statuses, ${Object.keys(moves).length} moves, ${heroes.length} heroes, ${enemies.length} enemies, ${prologueParty.length} party, ${alphaTeam.length} alpha, ${authoredEnemies.length} authored enemies (${Object.keys(authoredAttacks).length} attacks)${dropped.length ? ', dropped: ' + dropped.length : ''}, gaps: ${gaps.length}`);
+console.log(`pack.ts: test ${test.units.length}u/${Object.keys(test.attacks).length}a/${Object.keys(test.statuses).length}s, ${Object.keys(statuses).length} statuses, ${Object.keys(moves).length} moves, ${heroes.length} heroes, ${enemies.length} enemies, ${prologueParty.length} party, ${alphaTeam.length} alpha, ${authoredEnemies.length} authored enemies (${Object.keys(authoredAttacks).length} attacks)${dropped.length ? ', dropped: ' + dropped.length : ''}, gaps: ${gaps.length}`);

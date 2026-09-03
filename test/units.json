@@ -1,0 +1,22 @@
+[
+  {
+    "id": "test-arc-golem",
+    "name": "Arc Golem (TEST)",
+    "side": "hero",
+    "maxHp": 30, "armor": 2, "resist": 0,
+    "accuracy": 5, "dodge": 0, "strength": 5, "precision": 0, "magic": 0, "spirit": 0,
+    "role": "melee", "movement": 4, "reach": 1, "maxStamina": 5, "staminaRegen": 1,
+    "ai": "melee-aggressive",
+    "attacks": ["attack.test-ram.overhead", "attack.test-ram.slam", "attack.test-arc.sweep"],
+    "moves": ["power.move"],
+    "triggers": [
+      { "id": "trigger.test-ram.knockback", "hook": "onDamage", "chance": 100, "select": "target",
+        "effect": { "kind": "knockback", "value": 1 }, "onlyWithAttack": "attack.test-arc.sweep",
+        "note": "capability.knockback's second variant: the same mechanism as trigger.halberd.hack.knockback, pure data on the test body." },
+      { "id": "trigger.test-thorns", "hook": "onTakingDamage", "chance": 100, "select": "target",
+        "effect": { "kind": "damage", "amount": 1, "damageType": "true" },
+        "note": "Thorns, test lane (fix.status-damage-types): RULED 'Thorns damage that is dealt is true damage.'" }
+    ],
+    "note": "A complete body, not a delta — no real unit is a 30-hp, 5-accuracy stone that never rolls to hit. capability.area-attack / capability.knockback / station.crit-count scaffolding; fields ONLY in showcase.arc-variant. Re-statted 2026-08-27: the original 14-hp body died before a single-target turn."
+  }
+]

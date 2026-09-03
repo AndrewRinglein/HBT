@@ -1,0 +1,12 @@
+[
+  { "id": "test.status.ward", "name": "Ward (testing)", "shape": "pool", "family": "magnitude", "decayPerPhase": 1, "reducesIncomingDamage": true,
+    "note": "The second reducesIncomingDamage pool beside Protection (2026-08-20): proves the absorb station consumes data, not a name. Sorted after status.protection, so Protection pays first (SWITCHES absorbSpendOrder)." },
+  { "id": "test.status.enfeeble", "name": "Enfeeble (testing)", "shape": "modifier", "family": "magnitude", "decayPerPhase": 1, "reducesOutgoingDamage": true,
+    "note": "The second reducesOutgoingDamage instance beside Weak." },
+  { "id": "test.status.hobble", "name": "Hobble (testing)", "shape": "counter", "family": "pool", "decayPerPhase": 1, "reducesMovement": true,
+    "note": "The second reducesMovement instance beside Slow." },
+  { "id": "test.status.gash", "name": "Gash (testing)", "shape": "counter", "family": "magnitude", "decayPerPhase": 1, "tick": "damage", "tickDamageType": "true", "shedByHealing": "half",
+    "note": "The second shedByHealing status beside Bleed (fix.bleed-magnitude): true tick by value, healed off in showcase.gash-variant. Its source, test.zombie.gash, still rides the engine-side fixture zombie until test.fixture-migration." },
+  { "id": "test.status.daze", "name": "Daze (testing)", "shape": "counter", "family": "duration", "decayPerPhase": 1, "blocksAction": true,
+    "note": "The second blocksAction instance beside Stun (2026-08-20)." }
+]

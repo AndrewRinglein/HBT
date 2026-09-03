@@ -1,0 +1,23 @@
+[
+  {
+    "id": "attack.test-ram.slam",
+    "name": "Slam (TEST)",
+    "kind": "melee", "damageType": "physical", "bonus": 2, "stat": "strength", "reach": 1, "staminaCost": 0,
+    "crit": 47, "critCount": 2,
+    "note": "station.crit-count's first consumer (2026-08-27): 'Do two criticals.' crit 47 puts the golem's chance at 50 so multi-criticals resolve in the verify scenario instead of waiting on a 3% fluke."
+  },
+  {
+    "id": "attack.test-ram.overhead",
+    "name": "Overhead (TEST)",
+    "kind": "melee", "damageType": "physical", "bonus": 1, "stat": "strength", "reach": 1, "staminaCost": 4,
+    "crit": 47, "critCount": 3,
+    "note": "station.crit-count's second variant: 'Do three criticals,' pure data. Costs stamina so the golem alternates it with the slam as its pool cycles."
+  },
+  {
+    "id": "attack.test-arc.sweep",
+    "from": "attack.halberd.cleave",
+    "name": "Sweep (TEST)",
+    "set": { "staminaCost": 0 },
+    "note": "capability.area-attack's second variant (2026-08-27): the SAME 'arc' shape as the Halberd's Cleave — a delta over that real row, cost 0 so stamina can never bench the proof."
+  }
+]
