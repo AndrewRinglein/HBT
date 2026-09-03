@@ -5425,3 +5425,23 @@ IRON GAUNTLET: NOT PASSED — 2 FLAG(S) WARNED
   PASS  kill switch — the tests fail without the content — tests fail without battle.prologue-1 — they genuinely test it
 
 IRON GAUNTLET: NOT PASSED — 1 FLAG(S) WARNED
+
+## encounter.battle-2 — LANDED `41b607a`
+2026-09-03 09:16
+
+  PASS  dependencies landed
+  WARN  not already decided — 6 candidate ruling(s) — READ BEFORE ASKING: ../STATE.md:18 · ../CODEX.md:1829
+  PASS  typecheck
+  PASS  full test suite
+  PASS  gate 1 — the id appears in a real battle — battle.prologue-2: 23 log lines, 23 fired, 16 changed state
+  PASS  brought its own tests — test/surrounded.test.ts
+  PASS  existing tests untouched
+  PASS  control battles unchanged
+  PASS  content has a published source — 16 ids without a published source (6 awaiting publication from earlier items — see audit)
+  PASS  hardcode scan — core knows mechanisms, never names
+  PASS  generalizes — the second instance costs zero engine code — shape 'data' — not a mechanism, exempt
+  PASS  naming — new content ids use declared kinds
+  PASS  naming — no banned words invented
+  PASS  kill switch — the tests fail without the content — tests fail without battle.prologue-2 — they genuinely test it
+
+IRON GAUNTLET: NOT PASSED — 1 FLAG(S) WARNED

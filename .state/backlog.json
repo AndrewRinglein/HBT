@@ -1406,7 +1406,10 @@
   ],
   "probeIds": [
    "battle.prologue-2"
-  ]
+  ],
+  "status": "done",
+  "sha": "41b607a",
+  "gauntlet": "not passed — 1 flag(s) warned"
  },
  {
   "id": "capability.power-pool",
