@@ -111,7 +111,9 @@ type PackStatusRow = Omit<StatusDef, 'onPhaseEnd'> & { readonly tick?: 'damage' 
 const STATUS_FLAGS = ['tickDamageType', 'decayPerPhase', 'reducesIncomingDamage', 'reducesOutgoingDamage',
   'blocksAction', 'reducesMovement', 'halvesHealing', 'locksPowers', 'shedByHealing', 'aiControlled', 'tick', 'family',
   // capability.frost / root / taunt, 2026-09-03
-  'addsIncomingPhysical', 'blocksMovement', 'forcesTarget', 'cancels'] as const
+  'addsIncomingPhysical', 'blocksMovement', 'forcesTarget', 'cancels',
+  // capability.karma / shadow / confusion, 2026-09-03
+  'boostsHealingReceived', 'boostsOutgoingHalf', 'decayOnKill', 'grows', 'obliteratesAtMaxHp', 'swapsAi'] as const
 export function packStatuses(): Readonly<Record<string, StatusDef>> {
   const raw = (UNIT_PACK as { statuses?: Readonly<Record<string, PackStatusRow>> }).statuses ?? {}
   for (const k of Object.keys(raw)) if (!k.startsWith('status.')) throw new Error(`unit pack: status '${k}' is not a status.* id`)

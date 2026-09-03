@@ -11,6 +11,7 @@ import { isPassable } from './../content/maps.js'
 import { neighboursOf } from './../core/hex.js'
 import { areaUnitIdsOf, canAttack, performAttack, preview, reachOf } from './../core/pipeline.js'
 import { canUsePower, isReady, powerBlastIdsOf, powerTargetsOf, previewPower, usePower } from './../core/ability.js'
+import { isConfused } from './../core/status.js'
 import { reachBonusOf } from './../content/maps.js'
 import { TERRAIN } from './../core/types.js'
 import { emit, unit } from './../core/mutate.js'
@@ -627,9 +628,14 @@ const MODES: Record<string, (ctx: Ctx, u: Unit) => void> = {
 
 export function runActivation(ctx: Ctx, unitId: number): void {
   const u = unit(ctx, unitId)
-  const mode = MODES[u.ai]
-  if (!mode) throw new Error(`unknown AI mode '${u.ai}'`)
-  emit(ctx, 'ai.mode', `ai.${u.ai}`, { actor: unitId, mode: u.ai })
+  if (!MODES[u.ai]) throw new Error(`unknown AI mode '${u.ai}'`)
+  // capability.confusion (2026-09-03): "Swaps the affected unit's AI strategy
+  // for a different one" — the next mode in registry order stands in, and the
+  // log names both. Deterministic: no cup, no choice.
+  const names = Object.keys(MODES)
+  const ai = isConfused(ctx, u) ? names[(names.indexOf(u.ai) + 1) % names.length]! : u.ai
+  const mode = MODES[ai]!
+  emit(ctx, 'ai.mode', `ai.${ai}`, { actor: unitId, mode: ai, ...(ai !== u.ai ? { confusedFrom: u.ai } : {}) })
   mode(ctx, u)
 }
 

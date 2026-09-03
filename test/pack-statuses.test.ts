@@ -37,7 +37,8 @@ describe('the rows come from the Codex, and only from the Codex', () => {
     // the ones the engine cannot behave for yet, by name — when one lands its
     // gap disappears and this list is the finding. 2026-09-03: Frost, Root and
     // Taunt landed (capability.frost/root/taunt); three remain.
-    expect([...gapIds].sort()).toEqual(['status.confusion', 'status.karma', 'status.shadow'])
+    // ... and the last three the same day (capability.karma/shadow/confusion). None remain.
+    expect([...gapIds].sort()).toEqual([])
   })
 
   it('statuses.ts hand-types nothing but the test lane', () => {

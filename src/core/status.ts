@@ -9,7 +9,7 @@
 // row in the registry and, if it needs behaviour, one function.
 
 import type { Ctx, Side, Unit } from './types.js'
-import { applyDamage, applyHealing, emit, reduceStatus, removeStatus, unit } from './mutate.js'
+import { applyDamage, applyHealing, emit, reduceStatus, removeStatus, setLifeState, unit } from './mutate.js'
 import { effective } from './stats.js'
 
 /**
@@ -98,6 +98,30 @@ export type StatusDef = {
    * application — a unit never carries both").
    */
   readonly cancels?: string
+  /**
+   * capability.karma (2026-09-03), the Codex row: "Increases every heal the
+   * unit receives by its value, and every point of damage it deals by half
+   * its value." Read by applyHealing (whole value) and at DMG.SOURCE_STATUS
+   * (half, rounded down — "rounded down", the longEffect). "No clock: -1 on a
+   * kill, and nothing else" — `decayOnKill`, read where onKill fires.
+   */
+  readonly boostsHealingReceived?: boolean
+  readonly boostsOutgoingHalf?: boolean
+  readonly decayOnKill?: boolean
+  /**
+   * capability.shadow (2026-09-03), the Codex row: "Obliterates the unit —
+   * killed, removed, no corpse — once it reaches the unit's Max Health." "It
+   * GROWS: +1 per Turn, first of everything in Settling. It never decays."
+   * `grows` = the per-tick growth; the tick compares it to Max Health.
+   */
+  readonly grows?: number
+  readonly obliteratesAtMaxHp?: boolean
+  /**
+   * capability.confusion (2026-09-03), the Codex row: "Swaps the affected
+   * unit's AI strategy for a different one." Read by runActivation: the next
+   * mode in the registry's order stands in while it lasts.
+   */
+  readonly swapsAi?: boolean
   /**
    * Read by applyHealing — fix.bleed-magnitude (2026-09-02), Codex S41/S43
    * ("healing should cure bleed", "half the applied amount comes off Bleed"):
@@ -260,10 +284,43 @@ export function tickUnitStatuses(ctx: Ctx, unitId: number): void {
     const def = ctx.statuses[s.id]
     if (!def) continue
     if (u.lifeState !== 'standing') break
+    // capability.shadow: it grows first, then is compared to Max Health
+    if (def.grows) {
+      applyStatus(ctx, unitId, s.id, def.grows, s.id)
+      const now = u.statuses.find((x) => x.id === s.id)?.value ?? 0
+      if (def.obliteratesAtMaxHp && now >= u.maxHp) {
+        emit(ctx, 'unit.obliterated', s.id, { target: unitId, shadow: now, maxHp: u.maxHp })
+        u.hp = 0
+        setLifeState(ctx, unitId, 'dead', s.id, { reason: 'obliterated', corpse: false })
+        break
+      }
+    }
     def.onPhaseEnd?.(ctx, unitId, s.value)
     const decay = def.decayPerPhase ?? 1
     if (decay > 0) reduceStatus(ctx, unitId, s.id, decay, s.id)
   }
+}
+
+/** capability.karma: the heal bonus this unit's statuses grant to healing it receives. */
+export function healingBonus(ctx: Ctx, u: Unit): number {
+  let n = 0
+  for (const s of u.statuses) if (ctx.statuses[s.id]?.boostsHealingReceived) n += s.value
+  return n
+}
+/** capability.karma: half the value, rounded down, of every status that boosts this unit's outgoing damage. */
+export function outgoingBonus(ctx: Ctx, u: Unit): number {
+  let n = 0
+  for (const s of u.statuses) if (ctx.statuses[s.id]?.boostsOutgoingHalf) n += Math.floor(s.value / 2)
+  return n
+}
+/** capability.karma: "-1 on a kill, and nothing else" — every decayOnKill status the killer holds loses 1. */
+export function decayOnKill(ctx: Ctx, killerId: number, causeId: string): void {
+  const u = unit(ctx, killerId)
+  for (const s of [...u.statuses]) if (ctx.statuses[s.id]?.decayOnKill && s.value > 0) reduceStatus(ctx, killerId, s.id, 1, causeId)
+}
+/** capability.confusion: is this unit's AI swapped out? */
+export function isConfused(ctx: Ctx, u: Unit): boolean {
+  return u.statuses.some((s) => ctx.statuses[s.id]?.swapsAi && s.value > 0)
 }
 
 /**

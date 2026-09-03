@@ -6078,6 +6078,17 @@ export const UNIT_PACK = {
     ]
   },
   "statuses": {
+    "status.karma": {
+      "id": "status.karma",
+      "name": "Karma",
+      "shape": "counter",
+      "family": "magnitude",
+      "stacking": "add",
+      "decayPerPhase": 0,
+      "boostsHealingReceived": true,
+      "boostsOutgoingHalf": true,
+      "decayOnKill": true
+    },
     "status.slow": {
       "id": "status.slow",
       "name": "Slow",
@@ -6114,6 +6125,15 @@ export const UNIT_PACK = {
       "decayPerPhase": 1,
       "locksPowers": true
     },
+    "status.confusion": {
+      "id": "status.confusion",
+      "name": "Confusion",
+      "shape": "counter",
+      "family": "pool",
+      "stacking": "add",
+      "decayPerPhase": 1,
+      "swapsAi": true
+    },
     "status.root": {
       "id": "status.root",
       "name": "Root",
@@ -6143,6 +6163,16 @@ export const UNIT_PACK = {
       "decayPerPhase": 1,
       "addsIncomingPhysical": true,
       "cancels": "status.burn"
+    },
+    "status.shadow": {
+      "id": "status.shadow",
+      "name": "Shadow",
+      "shape": "counter",
+      "family": "magnitude",
+      "stacking": "add",
+      "decayPerPhase": 0,
+      "obliteratesAtMaxHp": true,
+      "grows": 1
     },
     "status.protection": {
       "id": "status.protection",
@@ -11599,6 +11629,44 @@ export const UNIT_PACK = {
               "statusId": "status.taunt",
               "value": 2
             },
+            "source": "unit.test-arc-golem"
+          },
+          {
+            "id": "trigger.test-grace.karma",
+            "hook": "onTakingDamage",
+            "chance": 100,
+            "select": "self",
+            "effect": {
+              "kind": "status.apply",
+              "statusId": "status.karma",
+              "value": 2
+            },
+            "source": "unit.test-arc-golem"
+          },
+          {
+            "id": "trigger.test-gloom.shadow",
+            "hook": "onHit",
+            "chance": 100,
+            "select": "target",
+            "effect": {
+              "kind": "status.apply",
+              "statusId": "status.shadow",
+              "value": 2
+            },
+            "onlyWithAttack": "attack.test-arc.sweep",
+            "source": "unit.test-arc-golem"
+          },
+          {
+            "id": "trigger.test-addle.confusion",
+            "hook": "onHit",
+            "chance": 100,
+            "select": "target",
+            "effect": {
+              "kind": "status.apply",
+              "statusId": "status.confusion",
+              "value": 2
+            },
+            "onlyWithAttack": "attack.test-arc.sweep",
             "source": "unit.test-arc-golem"
           }
         ],
@@ -19547,12 +19615,22 @@ export const UNIT_PACK = {
         "attack.obsidian-fang-dagger.gut"
       ],
       "abilities": [],
-      "triggers": [],
+      "triggers": [
+        {
+          "id": "trigger.obsidian-fang-dagger.addling.confusion",
+          "hook": "onHit",
+          "chance": 40,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.confusion",
+            "value": 1
+          },
+          "source": "item.obsidian-fang-dagger.addling"
+        }
+      ],
       "base": "item.obsidian-fang-dagger",
-      "enchant": "enchant.addling",
-      "gaps": [
-        "enchant onHit: apply 1 Confusion — trigger shape unparsed"
-      ]
+      "enchant": "enchant.addling"
     },
     "item.obsidian-fang-dagger.hobbling": {
       "id": "item.obsidian-fang-dagger.hobbling",
@@ -20875,12 +20953,22 @@ export const UNIT_PACK = {
         "attack.daggers.thrown-dagger"
       ],
       "abilities": [],
-      "triggers": [],
+      "triggers": [
+        {
+          "id": "trigger.daggers.addling.confusion",
+          "hook": "onHit",
+          "chance": 40,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.confusion",
+            "value": 1
+          },
+          "source": "item.daggers.addling"
+        }
+      ],
       "base": "item.daggers",
-      "enchant": "enchant.addling",
-      "gaps": [
-        "enchant onHit: apply 1 Confusion — trigger shape unparsed"
-      ]
+      "enchant": "enchant.addling"
     },
     "item.daggers.hobbling": {
       "id": "item.daggers.hobbling",
@@ -22341,11 +22429,22 @@ export const UNIT_PACK = {
           },
           "source": "item.fire-staff",
           "onlyWithAttack": "attack.fire-staff.fire-blast"
+        },
+        {
+          "id": "trigger.fire-staff.maddening.confusion",
+          "hook": "onDamage",
+          "chance": 20,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.confusion",
+            "value": 4
+          },
+          "source": "item.fire-staff.maddening"
         }
       ],
       "gaps": [
-        "grants power.fire-staff.fireball — item power — shape unparsed",
-        "enchant onDamage: apply 4 Confusion — trigger shape unparsed"
+        "grants power.fire-staff.fireball — item power — shape unparsed"
       ],
       "base": "item.fire-staff",
       "enchant": "enchant.maddening"
@@ -22376,11 +22475,22 @@ export const UNIT_PACK = {
           },
           "source": "item.fire-staff",
           "onlyWithAttack": "attack.fire-staff.fire-blast"
+        },
+        {
+          "id": "trigger.fire-staff.bewildering.confusion",
+          "hook": "onDamage",
+          "chance": 40,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.confusion",
+            "value": 1
+          },
+          "source": "item.fire-staff.bewildering"
         }
       ],
       "gaps": [
-        "grants power.fire-staff.fireball — item power — shape unparsed",
-        "enchant onDamage: apply 1 Confusion — trigger shape unparsed"
+        "grants power.fire-staff.fireball — item power — shape unparsed"
       ],
       "base": "item.fire-staff",
       "enchant": "enchant.bewildering"
@@ -22498,11 +22608,22 @@ export const UNIT_PACK = {
           },
           "source": "item.frost-staff",
           "onlyWithAttack": "attack.frost-staff.frost-blast"
+        },
+        {
+          "id": "trigger.frost-staff.bewildering.confusion",
+          "hook": "onDamage",
+          "chance": 40,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.confusion",
+            "value": 1
+          },
+          "source": "item.frost-staff.bewildering"
         }
       ],
       "gaps": [
-        "grants power.frost-staff.frost-nova — item power — shape unparsed",
-        "enchant onDamage: apply 1 Confusion — trigger shape unparsed"
+        "grants power.frost-staff.frost-nova — item power — shape unparsed"
       ],
       "base": "item.frost-staff",
       "enchant": "enchant.bewildering"
@@ -22607,11 +22728,22 @@ export const UNIT_PACK = {
           },
           "source": "item.earth-staff",
           "onlyWithAttack": "attack.earth-staff.earth-blast"
+        },
+        {
+          "id": "trigger.earth-staff.maddening.confusion",
+          "hook": "onDamage",
+          "chance": 20,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.confusion",
+            "value": 4
+          },
+          "source": "item.earth-staff.maddening"
         }
       ],
       "gaps": [
-        "grants power.earth-staff.earth-shield — item power — shape unparsed",
-        "enchant onDamage: apply 4 Confusion — trigger shape unparsed"
+        "grants power.earth-staff.earth-shield — item power — shape unparsed"
       ],
       "base": "item.earth-staff",
       "enchant": "enchant.maddening"
@@ -22704,12 +22836,22 @@ export const UNIT_PACK = {
       "abilities": [
         "power.lightning-staff.storm"
       ],
-      "triggers": [],
+      "triggers": [
+        {
+          "id": "trigger.lightning-staff.bewildering.confusion",
+          "hook": "onDamage",
+          "chance": 40,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.confusion",
+            "value": 1
+          },
+          "source": "item.lightning-staff.bewildering"
+        }
+      ],
       "base": "item.lightning-staff",
-      "enchant": "enchant.bewildering",
-      "gaps": [
-        "enchant onDamage: apply 1 Confusion — trigger shape unparsed"
-      ]
+      "enchant": "enchant.bewildering"
     },
     "item.lightning-staff.maddening": {
       "id": "item.lightning-staff.maddening",
@@ -22726,12 +22868,22 @@ export const UNIT_PACK = {
       "abilities": [
         "power.lightning-staff.storm"
       ],
-      "triggers": [],
+      "triggers": [
+        {
+          "id": "trigger.lightning-staff.maddening.confusion",
+          "hook": "onDamage",
+          "chance": 20,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.confusion",
+            "value": 4
+          },
+          "source": "item.lightning-staff.maddening"
+        }
+      ],
       "base": "item.lightning-staff",
-      "enchant": "enchant.maddening",
-      "gaps": [
-        "enchant onDamage: apply 4 Confusion — trigger shape unparsed"
-      ]
+      "enchant": "enchant.maddening"
     },
     "item.force-staff.eternal-ice": {
       "id": "item.force-staff.eternal-ice",
@@ -22827,12 +22979,22 @@ export const UNIT_PACK = {
         "attack.force-staff.force-blast"
       ],
       "abilities": [],
-      "triggers": [],
+      "triggers": [
+        {
+          "id": "trigger.force-staff.bewildering.confusion",
+          "hook": "onDamage",
+          "chance": 40,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.confusion",
+            "value": 1
+          },
+          "source": "item.force-staff.bewildering"
+        }
+      ],
       "base": "item.force-staff",
-      "enchant": "enchant.bewildering",
-      "gaps": [
-        "enchant onDamage: apply 1 Confusion — trigger shape unparsed"
-      ]
+      "enchant": "enchant.bewildering"
     },
     "item.holy-symbol.holy-water": {
       "id": "item.holy-symbol.holy-water",
@@ -22895,12 +23057,22 @@ export const UNIT_PACK = {
       "abilities": [
         "power.holy-symbol.heal"
       ],
-      "triggers": [],
+      "triggers": [
+        {
+          "id": "trigger.holy-symbol.bewildering.confusion",
+          "hook": "onDamage",
+          "chance": 40,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.confusion",
+            "value": 1
+          },
+          "source": "item.holy-symbol.bewildering"
+        }
+      ],
       "base": "item.holy-symbol",
-      "enchant": "enchant.bewildering",
-      "gaps": [
-        "enchant onDamage: apply 1 Confusion — trigger shape unparsed"
-      ]
+      "enchant": "enchant.bewildering"
     },
     "item.holy-symbol.cursed-skull": {
       "id": "item.holy-symbol.cursed-skull",

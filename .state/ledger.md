@@ -5635,3 +5635,41 @@ effect of status.frost — 25 paired battles per map, WITH vs WITHOUT
   test.map.showcase: heroWins 25->25 (+0)  meanTurns 3.7->3.7
 NO MEASURABLE EFFECT at this sample size — consequence clause caught state changes, but outcomes did not move. Consider a sweep with more replicates before drawing balance conclusions.
 ```
+
+## capability.karma-shadow-confusion — LANDED `7908287` **NEEDS REVIEW**
+2026-09-03 10:21
+
+  PASS  dependencies landed
+  WARN  not already decided — 5 candidate ruling(s) — READ BEFORE ASKING: ../CODEX.md:1832 · ../STATE.md:18
+  PASS  typecheck
+  PASS  full test suite
+  PASS  gate 1 — the id appears in a real battle — status.karma: 13 log lines, 13 fired, 7 changed state
+  PASS  brought its own tests — test/pack-statuses.test.ts, test/karma-shadow-confusion.test.ts
+  WARN  existing tests untouched — DELETED LINES in test/pack-statuses.test.ts (-1) — will land FLAGGED for review
+  PASS  control battles unchanged
+  PASS  content has a published source — 16 ids without a published source (6 awaiting publication from earlier items — see audit)
+  PASS  hardcode scan — core knows mechanisms, never names
+  PASS  generalizes — the second instance costs zero engine code — status.karma live · status.shadow live · status.confusion live
+  PASS  naming — new content ids use declared kinds
+  PASS  naming — no banned words invented
+  PASS  kill switch — the tests fail without the content — tests fail without status.karma — they genuinely test it
+
+<details><summary>Existing tests were edited — review this diff</summary>
+
+```diff
+diff --git a/test/pack-statuses.test.ts b/test/pack-statuses.test.ts
+index 05431d6..8f0d614 100644
+--- a/test/pack-statuses.test.ts
++++ b/test/pack-statuses.test.ts
+@@ -38,5 +38,6 @@ describe('the rows come from the Codex, and only from the Codex', () => {
+     // gap disappears and this list is the finding. 2026-09-03: Frost, Root and
+     // Taunt landed (capability.frost/root/taunt); three remain.
+-    expect([...gapIds].sort()).toEqual(['status.confusion', 'status.karma', 'status.shadow'])
++    // ... and the last three the same day (capability.karma/shadow/confusion). None remain.
++    expect([...gapIds].sort()).toEqual([])
+   })
+ 
+```
+</details>
+
+IRON GAUNTLET: NOT PASSED — 2 FLAG(S) WARNED

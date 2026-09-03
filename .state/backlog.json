@@ -1942,5 +1942,24 @@
   "attempts": 1,
   "sha": "bd81004",
   "gauntlet": "not passed — 2 flag(s) warned"
+ },
+ {
+  "id": "capability.karma-shadow-confusion",
+  "kind": "engine",
+  "shape": "counter",
+  "spec": "The last three Codex status rows that were named gaps (ruled 2026-09-03: build them all). Karma: heals received grow by its value, damage dealt by half rounded down, -1 on a kill and no clock. Shadow: grows +1 each tick, first in the tick, and at or above Max Health the unit is OBLITERATED — dead with no downed step and no corpse. Confusion: the unit runs the next AI mode in registry order while it lasts, the log naming the swap. Each is one sentence compiled by exact phrase and one flag read where it belongs.",
+  "expect": "Karma 3 makes a heal of 2 heal 5 and an axe hit deal +1, a kill takes it to 2, the clock leaves it; Shadow at maxHp-2 obliterates on the second tick with no downed event; a confused zombie logs a different mode with confusedFrom; no status.* gap remains in the census",
+  "changesBaseline": false,
+  "probeIds": [
+   "status.karma"
+  ],
+  "variants": [
+   "status.karma",
+   "status.shadow",
+   "status.confusion"
+  ],
+  "status": "done-needs-review",
+  "sha": "7908287",
+  "gauntlet": "not passed — 2 flag(s) warned"
  }
 ]

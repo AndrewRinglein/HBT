@@ -8,7 +8,7 @@ import { distance, neighboursOf, type HexId } from './hex.js'
 import { roll100 } from './rng.js'
 import type { AttackDef, Ctx, Unit } from './types.js'
 import { fireTriggers } from './trigger.js'
-import { applyStatus, incomingAbsorb, incomingPhysicalBonus, outgoingPenalty, spendAbsorb } from './status.js'
+import { applyStatus, decayOnKill, incomingAbsorb, incomingPhysicalBonus, outgoingBonus, outgoingPenalty, spendAbsorb } from './status.js'
 import { rollCritEffect } from './crit.js'
 import { effective, stat } from './stats.js'
 import { accelerateBleedOut, applyDamage, emit, markPrimaryUsed, spendStamina, unit } from './mutate.js'
@@ -166,7 +166,10 @@ export function resolveDamage(
     const share = powerShare(ctx.state.power ?? 0, a.powerScale)
     if (share) v = step(ledger, DMG.POWER, 'POWER', 'power', v, v + share)
   }
-  if (outPenalty) v = step(ledger, DMG.SOURCE_STATUS, 'SOURCE_STATUS', 'status', v, v - outPenalty)
+  // SOURCE_STATUS (250): what the attacker's statuses do to the number — Weak
+  // takes, Karma gives half its value rounded down (capability.karma 2026-09-03).
+  const outBonus = outgoingBonus(ctx, attacker)
+  if (outPenalty || outBonus) v = step(ledger, DMG.SOURCE_STATUS, 'SOURCE_STATUS', 'status', v, v - outPenalty + outBonus)
 
   if (heads > 0) {
     // +50% PER HEADS-CRITICAL, before all mitigation — "do two criticals"
@@ -549,7 +552,7 @@ function resolveHitOn(
     fireTriggers(ctx, 'onTakingDamage',
       { ownerId: targetId, targetId: attackerId, causeId: a.id, ordinal: ord })
   }
-  if (tg.hp === 0 && applied > 0) fireTriggers(ctx, 'onKill', fc)
+  if (tg.hp === 0 && applied > 0) { fireTriggers(ctx, 'onKill', fc); decayOnKill(ctx, attackerId, a.id) }   // Karma: -1 on a kill
 
   // The legacy `applies` rider — a hardcoded 100% onHit trigger with no chance and
   // no hook. Kept working until its content moves to a real trigger, then deleted.

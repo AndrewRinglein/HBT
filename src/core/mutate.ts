@@ -198,6 +198,9 @@ export function removeStatus(ctx: Ctx, unitId: number, id: string, causeId: stri
 export function applyHealing(ctx: Ctx, id: number, amount: number, causeId: string): void {
   const u = unit(ctx, id)
   if (u.lifeState !== 'standing' || amount <= 0) return
+  // capability.karma (2026-09-03): "Increases every heal the unit receives by
+  // its value" — before Burn's halving, which the row calls the only reducer.
+  for (const s of u.statuses) if (ctx.statuses[s.id]?.boostsHealingReceived && s.value > 0) { amount += s.value; emit(ctx, 'heal.boosted', causeId, { target: id, statusId: s.id, by: s.value }) }
   const asked = amount
   // GAME-DESIGN §5: "Burn is the only thing that reduces healing, and it halves
   // rather than blocks." The gate lives INSIDE the one heal mutator, so no future
