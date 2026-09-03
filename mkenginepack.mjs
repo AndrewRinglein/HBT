@@ -245,6 +245,11 @@ for (const u of [...AUTH.units].sort((a, b) => (a.id < b.id ? -1 : 1))) {
   // crit and luck COMPILE since station.crit (2026-08-27): per-unit crit is
   // COMBAT-DESIGN's "Base Crit varies by enemy" axis, luck the resistance side.
   const unitTriggers = (u.triggers || []).flatMap((t) => compileTrigger(t, id, null));
+  // Enemy SPECIAL MOVES (move.* — Charge, Close Bite, Clobber…) are a kind the
+  // engine has no mechanism for and Andrew has not approved (kinds.mjs). They
+  // were dropped silently until content.enemy-flip (2026-09-02); the Iron
+  // Colossus fielded with no attack at all and nothing said so. Named now.
+  for (const mv of u.moves || []) gap(id, `special move ${mv.id}${mv.attack ? ' (carries an attack)' : ''}`, 'enemy special moves (move.* — kind unapproved, no engine mechanism)');
   const attackIds = [];
   let anyRanged = false;
   for (const raw of u.attacks || []) {
@@ -253,6 +258,11 @@ for (const u of [...AUTH.units].sort((a, b) => (a.id < b.id ? -1 : 1))) {
     const ranged = /within/.test(a.targets || '');
     if (ranged && (a.range === null || a.range === undefined)) { gap(id, `${a.id} range is null — N never stated`, 'content: range unstated'); continue; }
     if (a.damage?.powerScale) gap(id, `${a.id} powerScale ${a.damage.powerScale} (base damage kept)`, 'capability.power');
+    // An attack whose damage reads NO stat (the Eyeblight's gaze: flat true
+    // damage) is a shape AttackDef cannot say — every attack adds a stat. A
+    // named gap; the unit fields without it (the weaponless-Lumberjack
+    // precedent), never with a stat guessed for it.
+    if (a.damage && (a.damage.stat === 'none' || a.damage.stat === null)) { gap(id, `${a.id} damage reads no stat (flat ${a.damage.mod ?? 0})`, 'attack shape: stat-less (flat) damage'); continue; }
     anyRanged = anyRanged || ranged;
     authoredAttacks[a.id] = {
       id: a.id, name: a.name || a.id.split('.').pop(),
