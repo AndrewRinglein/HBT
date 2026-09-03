@@ -2005,5 +2005,21 @@
   "status": "done-needs-review",
   "sha": "fb9b5d3",
   "gauntlet": "not passed — 2 flag(s) warned; 2 exemption(s) taken"
+ },
+ {
+  "id": "capability.surge",
+  "kind": "engine",
+  "shape": "rule",
+  "spec": "The Surge check — COMBAT-SEQUENCE, ruled 2026-08-21; in scope by ruling 2026-09-03 (build them all). Heroes only: each Activation Surge Chance += Surge and a roll on the surge cup (unit, activation, link); a hit grants 1 + Stamina Regen, zeroes the chance and runs another movement-and-action inside the same Activation; the End of Activation ladder runs once. Surge equals the character level (heroes.json rules) plus specialty and gear; it joins the foldable stats. FINDING: the schedule builder leaves surge at 0 + mods; the Codex says level — the oracle no longer compares surge.",
+  "expect": "Surge 100 surges every activation with one End of Activation; the chance accumulates across misses and zeroes on a hit; enemies never surge; the level-20 party surges in a real battle",
+  "changesBaseline": true,
+  "probeIds": [
+   "surge.hit"
+  ],
+  "generalizationExempt": "an engine rule of the Activation with no content instance — every hero rolls it; Surge (a row stat) is the data axis",
+  "killSwitchExempt": "no content id carries the check; the tests assert the loop, the stamina and the once-only ladder, which no row can be disabled to falsify",
+  "status": "done-needs-review",
+  "sha": "b0a5759",
+  "gauntlet": "not passed — 2 flag(s) warned; 2 exemption(s) taken"
  }
 ]

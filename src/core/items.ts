@@ -23,7 +23,7 @@ export type Applied = {
   readonly worn: readonly { readonly itemId: string; readonly grants: readonly string[]; readonly abilities: readonly string[]; readonly mods: Readonly<Record<string, number>>; readonly gaps?: readonly string[] }[]
 }
 
-const FOLDABLE = ['maxHp', 'armor', 'resist', 'dodge', 'strength', 'precision', 'magic', 'spirit', 'reach', 'accuracy', 'movement', 'maxStamina', 'staminaRegen', 'crit', 'luck', 'toughness'] as const   // toughness: capability.deathbed 2026-09-03
+const FOLDABLE = ['maxHp', 'armor', 'resist', 'dodge', 'strength', 'precision', 'magic', 'spirit', 'reach', 'accuracy', 'movement', 'maxStamina', 'staminaRegen', 'crit', 'luck', 'toughness', 'surge'] as const   // toughness: capability.deathbed; surge: capability.surge — 2026-09-03
 
 export function applyItems(
   base: UnitDef,
@@ -70,7 +70,7 @@ export function applyItems(
     reach: stats['reach']!, accuracy: stats['accuracy']!, movement: stats['movement']!,
     maxStamina: stats['maxStamina']!, staminaRegen: stats['staminaRegen']!,
     ...(stats['crit'] ? { crit: stats['crit'] } : {}), ...(stats['luck'] ? { luck: stats['luck'] } : {}),
-    ...(stats['toughness'] ? { toughness: stats['toughness'] } : {}),
+    ...(stats['toughness'] ? { toughness: stats['toughness'] } : {}), ...(stats['surge'] ? { surge: stats['surge'] } : {}),
     attacks: attackIds,
     abilities: [...abilities, ...base.abilities.filter((a) => !abilities.includes(a))],
     triggers,
@@ -109,7 +109,7 @@ export function applyProgress(
   const add = (k: string, v: number, src: string) => {
     if (!(FOLDABLE as readonly string[]).includes(k)) {
       // itemSlots and surge are campaign quantities the engine does not fold; anything else is an error
-      if (k === 'itemSlots' || k === 'surge') return
+      if (k === 'itemSlots') return
       throw new Error(`${where}: ${src} grants '${k}', which the engine cannot fold`)
     }
     stats[k] = (stats[k] ?? 0) + v
@@ -139,6 +139,8 @@ export function applyProgress(
     if (sp.class !== classId) throw new Error(`${where}: ${base.typeId} (${classId}) cannot hold ${sp.id}, a ${sp.class} specialty`)
     for (const [k, v] of Object.entries(sp.statModifiers)) add(k, v, sp.id)
   } else if (progress.specialtyId) throw new Error(`${where}: ${base.typeId} is level 1 and names a specialty`)
+  // capability.surge: "Surge always EQUALS the character level" (heroes.json rules) — added to whatever the row and the specialty grant
+  stats['surge'] = (stats['surge'] ?? 0) + progress.level
   const powers = [...(progress.powers ?? [])]
   for (const p of powers) if (!abilities[p]) throw new Error(`${where}: ${base.typeId} drafted '${p}', which is not a power in the registry`)
   return {
@@ -148,7 +150,7 @@ export function applyProgress(
     reach: stats['reach']!, accuracy: stats['accuracy']!, movement: stats['movement']!,
     maxStamina: stats['maxStamina']!, staminaRegen: stats['staminaRegen']!,
     ...(stats['crit'] ? { crit: stats['crit'] } : {}), ...(stats['luck'] ? { luck: stats['luck'] } : {}),
-    ...(stats['toughness'] ? { toughness: stats['toughness'] } : {}),
+    ...(stats['toughness'] ? { toughness: stats['toughness'] } : {}), ...(stats['surge'] ? { surge: stats['surge'] } : {}),
     abilities: [...base.abilities, ...powers.filter((p) => !base.abilities.includes(p))],
   }
 }

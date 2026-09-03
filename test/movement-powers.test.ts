@@ -150,9 +150,13 @@ describe('the choice is ALIVE in the standard battles', () => {
     // (2) scripted — the OTHER data variant is chosen too, proven by starving
     //     its one grantor. Two variants, both AI-chosen, seed-independent.
     const used = new Set<string>()
+    // Widened 2026-09-03 (capability.surge): Surge refills stamina, so at eight
+    // zombies no hero was ever starved into the free step in 25 seeds. The
+    // ruled pressure ceiling is sixteen; same claim, honest fielding.
     for (let r = 0; r < 25 && used.size < 1; r++) {
-      for (const mapId of ['map.open', 'map.thicket']) {
-        const ctx = createBattle({ replicate: r, enemyCount: 8, mapId })
+      for (const mapId of ['map.open', 'map.thicket']) for (const enemyCount of [8, 16]) {
+        if (used.size) break
+        const ctx = createBattle({ replicate: r, enemyCount, mapId })
         runBattle(ctx)
         for (const e of ctx.events) {
           if (e.type === 'moved' && (e.causeId === 'power.sidestep' || e.causeId === 'power.side-roll')) used.add(e.causeId)

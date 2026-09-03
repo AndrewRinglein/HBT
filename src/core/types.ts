@@ -438,6 +438,15 @@ export type UnitDef = {
   /** How many times this unit may STAND at zero: civilians one, heroes two (COMBAT-DESIGN §13 "depth by type"). Absent = 2 for heroes, 0 for enemies. */
   readonly stands?: number
   /**
+   * capability.surge (2026-09-03), COMBAT-SEQUENCE "Surge check": each
+   * Activation `Surge Chance += Surge`, roll against it; a hit grants
+   * 1 + Stamina Regen stamina, zeroes the chance, and loops back to
+   * movement — inside the SAME Activation; the End of Activation ladder runs
+   * once. Heroes only. "Surge always EQUALS the character level" (the Codex),
+   * plus specialty and gear. Absent = 0.
+   */
+  readonly surge?: number
+  /**
    * Movement powers this unit grants, in preference order — REQUIRED, no core
    * default (content-driven, Angela 2026-08-21). Every hero row carries the
    * universal walk plus its class's half-step; an enemy row carries exactly
@@ -488,6 +497,9 @@ export type Unit = {
   /** capability.deathbed: the wound ladder — 0 Fresh, 1 Wounded, 2 Badly Wounded. Each STAND climbs one. */
   woundLevel: number
   toughness: number
+  /** capability.surge: the stat, and the accumulating chance (zeroed on a hit). */
+  surge: number
+  surgeChance: number
   ai: string
   attacks: string[]
   abilities: string[]

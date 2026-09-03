@@ -34,6 +34,11 @@ export const SCHEDULE_STAT: Readonly<Record<string, keyof UnitDef>> = {
   strength: 'strength', precision: 'precision', magic: 'magic', spirit: 'spirit', armor: 'armor', resist: 'resist',
   health: 'maxHp', reach: 'reach', dodge: 'dodge', accuracy: 'accuracy', crit: 'crit', luck: 'luck',
   movement: 'movement', staminaMax: 'maxStamina', staminaRegen: 'staminaRegen', toughness: 'toughness',
+  // NOT surge — FINDING 2026-09-03 (capability.surge): the schedule's builder
+  // starts every hero at surge 0 and adds only specialty mods, while the
+  // Codex rule (heroes.json rules.surge) is "Surge always EQUALS the character
+  // level". The engine follows the Codex; the disagreement is the builder's
+  // to settle, reported here rather than compared.
 }
 
 /** The schedule's stat words in a pick -> engine names (the level table's choice options are in engine names). */

@@ -13,6 +13,8 @@ export const STREAMS = [
   'crit-branch',
   'crit-effect',
   'deathbed',
+  /** capability.surge (2026-09-03): the Surge check, keyed by unit, activation and loop index. */
+  'surge',
   'schedule',
   'wave',
   'enemy-count',

@@ -5858,3 +5858,60 @@ effect of deathbed.stood,deathbed.fell — 25 paired battles per map, WITH vs WI
   test.map.showcase: heroWins 25->25 (+0)  meanTurns 3.8->3.8
 NO MEASURABLE EFFECT at this sample size — consequence clause caught state changes, but outcomes did not move. Consider a sweep with more replicates before drawing balance conclusions.
 ```
+
+## capability.surge — LANDED `b0a5759` **NEEDS REVIEW**
+2026-09-03 10:40
+
+  PASS  dependencies landed
+  WARN  not already decided — 4 candidate ruling(s) — READ BEFORE ASKING: ../CODEX.md:3315 · ../STATE.md:18
+  PASS  typecheck
+  PASS  full test suite
+  PASS  gate 1 — the id appears in a real battle — surge.hit: 3 log lines, 3 fired, 3 changed state
+  PASS  brought its own tests — test/movement-powers.test.ts, test/surge.test.ts
+  WARN  existing tests untouched — DELETED LINES in test/movement-powers.test.ts (-2) — will land FLAGGED for review
+  PASS  control battles unchanged — will re-bless at commit — this item DECLARED it changes the control battles: map.open d91e8a14->9153f157, map.ridge 3c118e58->cce57486, map.flanks 8b8bb1ae->8687a21c, map.highlands f72c826e->ca4d02a6, map.field 5df1fc3f->e85a2262, map.thicket 822a1564->5f0d7084, test.map.embers b20643e2->72049ff0, test.map.showcase 5898fd0f->7d58eb77
+  PASS  content has a published source — 17 ids without a published source (7 awaiting publication from earlier items — see audit)
+  PASS  hardcode scan — core knows mechanisms, never names
+  PASS  generalizes — the second instance costs zero engine code
+  PASS  naming — new content ids use declared kinds
+  PASS  naming — no banned words invented
+  PASS  kill switch — the tests fail without the content
+
+<details><summary>Existing tests were edited — review this diff</summary>
+
+```diff
+diff --git a/test/movement-powers.test.ts b/test/movement-powers.test.ts
+index 87f5d1b..b53b200 100644
+--- a/test/movement-powers.test.ts
++++ b/test/movement-powers.test.ts
+@@ -151,7 +151,11 @@ describe('the choice is ALIVE in the standard battles', () => {
+     //     its one grantor. Two variants, both AI-chosen, seed-independent.
+     const used = new Set<string>()
++    // Widened 2026-09-03 (capability.surge): Surge refills stamina, so at eight
++    // zombies no hero was ever starved into the free step in 25 seeds. The
++    // ruled pressure ceiling is sixteen; same claim, honest fielding.
+     for (let r = 0; r < 25 && used.size < 1; r++) {
+-      for (const mapId of ['map.open', 'map.thicket']) {
+-        const ctx = createBattle({ replicate: r, enemyCount: 8, mapId })
++      for (const mapId of ['map.open', 'map.thicket']) for (const enemyCount of [8, 16]) {
++        if (used.size) break
++        const ctx = createBattle({ replicate: r, enemyCount, mapId })
+         runBattle(ctx)
+         for (const e of ctx.events) {
+```
+</details>
+
+IRON GAUNTLET: NOT PASSED — 2 FLAG(S) WARNED; 2 EXEMPTION(S) TAKEN
+
+```
+effect of surge.hit — 25 paired battles per map, WITH vs WITHOUT
+  map.open: heroWins 25->25 (+0)  meanTurns 4.0->4.0
+  map.ridge: heroWins 25->25 (+0)  meanTurns 4.5->4.5
+  map.flanks: heroWins 25->25 (+0)  meanTurns 4.0->4.0
+  map.highlands: heroWins 25->25 (+0)  meanTurns 4.9->4.9
+  map.field: heroWins 25->25 (+0)  meanTurns 6.1->6.1
+  map.thicket: heroWins 25->25 (+0)  meanTurns 5.3->5.3
+  test.map.embers: heroWins 25->25 (+0)  meanTurns 2.8->2.8
+  test.map.showcase: heroWins 25->25 (+0)  meanTurns 3.9->3.9
+NO MEASURABLE EFFECT at this sample size — consequence clause caught state changes, but outcomes did not move. Consider a sweep with more replicates before drawing balance conclusions.
+```

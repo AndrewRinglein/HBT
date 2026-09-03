@@ -16263,11 +16263,9 @@ export const UNIT_PACK = {
       "class": "class.warrior",
       "statModifiers": {
         "strength": 2,
-        "maxHp": 3
-      },
-      "gaps": [
-        "surge 1: no engine stat"
-      ]
+        "maxHp": 3,
+        "surge": 1
+      }
     },
     "specialty.warchief": {
       "id": "specialty.warchief",
@@ -16285,11 +16283,9 @@ export const UNIT_PACK = {
       "class": "class.warrior",
       "statModifiers": {
         "strength": 2,
-        "crit": 3
-      },
-      "gaps": [
-        "surge 1: no engine stat"
-      ]
+        "crit": 3,
+        "surge": 1
+      }
     },
     "specialty.champion": {
       "id": "specialty.champion",

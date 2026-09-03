@@ -3,7 +3,8 @@
 //   Each unit gets one Activation: movement, then a primary action.
 
 import { runActivation } from '../ai/modes.js'
-import { beginActivation, beginTurn, emit, endActivation, regenStamina, setOutcome, setPhase } from './mutate.js'
+import { beginActivation, beginTurn, emit, endActivation, gainStamina, regenStamina, setOutcome, setPhase } from './mutate.js'
+import { roll100 } from './rng.js'
 import { appliesOnActivationEndOf, stripsOnActivationEndOf, terrainIdOf } from '../content/maps.js'
 import { advanceBleedOuts, checkVictory, settle } from './settle.js'
 import { fireSchedule, startOfTurn } from './encounter.js'
@@ -35,11 +36,38 @@ function runPhase(ctx: Ctx, phase: Phase): void {
       continue
     }
     runActivation(ctx, id)
+    // THE SURGE CHECK — capability.surge (2026-09-03), COMBAT-SEQUENCE: heroes
+    // only; `Surge Chance += Surge`, roll; a hit grants 1 + Stamina Regen,
+    // zeroes the chance and loops back to movement INSIDE this Activation;
+    // a miss keeps the chance. Before End of Activation, which runs once
+    // (ruled 2026-08-21). A surged Activation can surge again, from zero.
+    surgeLoop(ctx, id)
     endActivation(ctx, id, 'engine')
     endOfActivation(ctx, id)
   }
 
   endOfPhase(ctx, side)
+}
+
+function surgeLoop(ctx: Ctx, id: number): void {
+  const u = ctx.state.units[id]!
+  if (u.side !== 'hero' || u.surge <= 0) return
+  for (let link = 0; link < 8; link++) {   // a hard ceiling — Law 9 over an infinite loop
+    if (u.lifeState !== 'standing' || ctx.state.outcome) return
+    u.surgeChance += u.surge
+    const roll = roll100(ctx.rng, 'surge', u.uid, u.activationOrdinal, link)
+    const hit = roll <= u.surgeChance
+    emit(ctx, 'surge.checked', 'engine', { actor: id, roll, chance: u.surgeChance, surge: u.surge, hit, link })
+    if (!hit) return
+    u.surgeChance = 0
+    gainStamina(ctx, id, 1 + u.staminaRegen, 'surge')
+    // a fresh movement and primary action in the same Activation
+    u.moveUsed = false
+    u.primaryUsed = false
+    u.movePointsLeft = u.movement
+    emit(ctx, 'surge.hit', 'engine', { actor: id, link: link + 1 })
+    runActivation(ctx, id)
+  }
 }
 
 /**
