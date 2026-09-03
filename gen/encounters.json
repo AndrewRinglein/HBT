@@ -741,7 +741,8 @@
      "needs": [
       "capability.vision-and-darkness",
       "capability.ground-layers"
-     ]
+     ],
+     "asData": "condition: darkness (capability.vision, 2026-09-03) — the board starts dark, heroes light within Vision on the hero phase, the night family repaints"
     },
     {
      "rule": "VISION: BATTLEFIELD +6, STAT 0, FLOOR 1",
@@ -751,7 +752,8 @@
       "capability.vision-and-darkness"
      ]
     }
-   ]
+   ],
+   "condition": "darkness"
   }
  ],
  "authored": [

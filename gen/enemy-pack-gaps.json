@@ -22,16 +22,6 @@
    "needs": "enemy special moves (move.* — kind unapproved, no engine mechanism)"
   },
   {
-   "unit": "unit.dark-sniper",
-   "what": "attack.dark-sniper.long-shot onMiss: grant a stat for the Battle (dodge)",
-   "needs": "trigger-effect: statMod"
-  },
-  {
-   "unit": "unit.dark-sniper",
-   "what": "attack.dark-sniper.long-shot onMiss: paint a ground layer",
-   "needs": "capability.ground-layers"
-  },
-  {
    "unit": "unit.demon-hound",
    "what": "(unit) hook 'startOfBattle'",
    "needs": "hook: startOfBattle (declared, engine never fires it)"
@@ -52,29 +42,9 @@
    "needs": "capability.target-stamina-loss"
   },
   {
-   "unit": "unit.doombringer",
-   "what": "attack.doombringer.crush onHit: grant a stat for the Battle (armor)",
-   "needs": "trigger-effect: statMod"
-  },
-  {
-   "unit": "unit.eyeblight",
-   "what": "(unit) onDeath: paint a ground layer",
-   "needs": "capability.ground-layers"
-  },
-  {
    "unit": "unit.eyeblight",
    "what": "attack.eyeblight.gaze damage reads no stat (flat 1)",
    "needs": "attack shape: stat-less (flat) damage"
-  },
-  {
-   "unit": "unit.eyeblight",
-   "what": "attack.eyeblight.claw onHit: grant a stat for the Battle (vision)",
-   "needs": "trigger-effect: statMod"
-  },
-  {
-   "unit": "unit.eyeblight",
-   "what": "attack.eyeblight.claw onHit: grant a stat for the Battle (accuracy)",
-   "needs": "trigger-effect: statMod"
   },
   {
    "unit": "unit.fast-zombie",
@@ -90,11 +60,6 @@
    "unit": "unit.ghoul",
    "what": "attack.ghoul.shriek onHit: target loses stamina",
    "needs": "capability.target-stamina-loss"
-  },
-  {
-   "unit": "unit.ghoul",
-   "what": "attack.ghoul.devour onKill: grant a stat for the Battle (strength)",
-   "needs": "trigger-effect: statMod"
   },
   {
    "unit": "unit.ghoul",
@@ -183,11 +148,6 @@
   },
   {
    "unit": "unit.shadow-sorcerer",
-   "what": "(unit) onActivationEnd: paint a ground layer",
-   "needs": "capability.ground-layers"
-  },
-  {
-   "unit": "unit.shadow-sorcerer",
    "what": "special move undefined",
    "needs": "enemy special moves (move.* — kind unapproved, no engine mechanism)"
   },
@@ -198,28 +158,8 @@
   },
   {
    "unit": "unit.shadow-sorcerer",
-   "what": "attack.shadow-sorcerer.shadow-strike onHit: paint a ground layer",
-   "needs": "capability.ground-layers"
-  },
-  {
-   "unit": "unit.shadow-sorcerer",
-   "what": "attack.shadow-sorcerer.shadow-strike onHit: grant a stat for the Battle (vision)",
-   "needs": "trigger-effect: statMod"
-  },
-  {
-   "unit": "unit.shadow-sorcerer",
    "what": "attack.shadow-sorcerer.shadow-rend onHit: pull",
    "needs": "pull"
-  },
-  {
-   "unit": "unit.shadow-sorcerer",
-   "what": "attack.shadow-sorcerer.shadow-rend onHit: paint a ground layer",
-   "needs": "capability.ground-layers"
-  },
-  {
-   "unit": "unit.shadow-sorcerer",
-   "what": "attack.shadow-sorcerer.shadow-rend onHit: grant a stat for the Battle (vision)",
-   "needs": "trigger-effect: statMod"
   },
   {
    "unit": "unit.shadow-sorcerer",
@@ -227,28 +167,8 @@
    "needs": "knockback"
   },
   {
-   "unit": "unit.shadow-sorcerer",
-   "what": "attack.shadow-sorcerer.shadow-grasp onHit: grant a stat for the Battle (vision)",
-   "needs": "trigger-effect: statMod"
-  },
-  {
    "unit": "unit.skeletal-archer",
    "what": "attack.skeletal-archer.shoot onHit: grant a stat until end of next Turn (movement)",
-   "needs": "trigger-effect: statMod"
-  },
-  {
-   "unit": "unit.skeleton-spider",
-   "what": "(unit) onActivationEnd: grant a stat for the Battle (armor)",
-   "needs": "trigger-effect: statMod"
-  },
-  {
-   "unit": "unit.skeleton-spider",
-   "what": "attack.skeleton-spider.bone-strike onDamage: grant a stat for the Battle (movement)",
-   "needs": "trigger-effect: statMod"
-  },
-  {
-   "unit": "unit.skeleton-spider",
-   "what": "attack.skeleton-spider.bone-slash onDamage: grant a stat for the Battle (armor)",
    "needs": "trigger-effect: statMod"
   },
   {
@@ -273,16 +193,6 @@
   },
   {
    "unit": "unit.vampire-lord",
-   "what": "attack.vampire-lord.bite onKill: grant a stat for the Battle (strength)",
-   "needs": "trigger-effect: statMod"
-  },
-  {
-   "unit": "unit.vampire-lord",
-   "what": "attack.vampire-lord.bite onKill: grant a stat for the Battle (precision)",
-   "needs": "trigger-effect: statMod"
-  },
-  {
-   "unit": "unit.vampire-lord",
    "what": "attack.vampire-lord.bite onDamage: inflict an affliction",
    "needs": "capability.inflict-affliction"
   },
@@ -293,8 +203,8 @@
   },
   {
    "unit": "unit.werewolf",
-   "what": "attack.werewolf.claw-frenzy onAttack: grant a stat for the Battle (strength)",
-   "needs": "trigger-effect: statMod"
+   "what": "attack.werewolf.claw-frenzy onAttack: grant a stat for the Battle (strength) — a pre-damage stat grant is a STATION question (Law 1)",
+   "needs": "trigger-effect: statMod before damage"
   },
   {
    "unit": "unit.werewolf",

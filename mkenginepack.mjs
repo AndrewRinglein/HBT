@@ -222,7 +222,7 @@ const TRIG_HOOKS = new Set(['onAttack', 'onMiss', 'onHit', 'onCrit', 'onDamage',
 // Capabilities the engine HAS now — a row naming one of these is not gapped for it.
 // capability.power: capability.power-pool, 2026-09-03.
 // capability.enemy-action-cooldown: 2026-09-03.
-const HAVE = new Set(['capability.power', 'capability.enemy-action-cooldown', 'capability.corpses']);   // corpses: 2026-09-03
+const HAVE = new Set(['capability.power', 'capability.enemy-action-cooldown', 'capability.corpses', 'capability.ground-layers']);   // corpses, ground-layers: 2026-09-03
 function compileTrigger(t, unitId, attackId) {
   const where = attackId ?? '(unit)';
   const needs = (t.needs || []).filter((n) => !HAVE.has(n));
@@ -274,6 +274,21 @@ function compileTrigger(t, unitId, attackId) {
       const m = ef.effect.match(/heal (\d+) per corpse/);
       out.push({ id: `${unitId.replace(/^unit\./, 'trigger.')}.${(t.name || 'consume').toLowerCase().replace(/[^a-z0-9]+/g, '-')}`,
         hook: t.hook, chance: t.chance ?? 100, select: 'self', effect: { kind: 'corpse.consume', radius: ef.range ?? t.range ?? 1, healPer: +m[1] }, source: unitId });
+    } else if (ef.effect === 'paint a ground layer' && ef.layer && ef.radius !== undefined) {
+      // capability.ground-layers / vision (2026-09-03): Nightfall, The Dark Rushes In, Thrown Down's shadow
+      out.push({ id: `${unitId.replace(/^unit\./, 'trigger.')}.${(t.name || 'paint-' + ef.layer).toLowerCase().replace(/[^a-z0-9]+/g, '-')}`,
+        hook: t.hook, chance: t.chance ?? ef.chance ?? 100, select: ef.origin === 'self' || !ef.origin ? 'self' : 'target',
+        effect: { kind: 'layer.paint', layer: 'layer.' + ef.layer, radius: ef.radius, origin: ef.origin === 'self' || !ef.origin ? 'self' : 'target' }, source: unitId, ...(attackId ? { onlyWithAttack: attackId } : {}) });
+    } else if (/^grant a stat (for the Battle|until end of your Activation)$/.test(ef.effect) && (HERO_STAT_LATE[ef.stat] || ef.stat === 'vision')) {
+      // statMod trigger effects (2026-09-03): "grant a stat for the Battle" — Blight the Eye's −2 Vision, −10 Accuracy
+      const until = /Battle/.test(ef.effect) ? 'battle' : 'endOfTurn';
+      const select = ef.target === 'self' ? 'self' : areaSelect ?? 'target';
+      // a stat grant BEFORE the damage is computed (onAttack, onCrit) would change the number the preview promised — Law 1: damage-changing effects are stations, not triggers
+      if (t.hook === 'onAttack' || t.hook === 'onCrit') { gap(unitId, `${where} ${t.hook}: ${ef.effect} (${ef.stat}) — a pre-damage stat grant is a STATION question (Law 1)`, 'trigger-effect: statMod before damage'); continue; }
+      if (t.hook === 'onActivationEnd' && select === 'target') { gap(unitId, `${where} ${t.hook}: ${ef.effect} (${ef.stat}) — no target on this hook`, 'trigger-effect: statMod'); continue; }
+      out.push({ id: `${unitId.replace(/^unit\./, 'trigger.')}.${(t.name || ef.stat).toLowerCase().replace(/[^a-z0-9]+/g, '-')}-${ef.stat}`,
+        hook: t.hook, chance: t.chance ?? ef.chance ?? 100, select,
+        effect: { kind: 'statMod', stat: HERO_STAT_LATE[ef.stat] ?? 'vision', value: ef.value, until }, source: unitId, ...(attackId ? { onlyWithAttack: attackId } : {}) });
     } else if (ef.effect === 'add power' || ef.effect === 'gain Power') {
       // capability.power-pool (2026-09-03): the clock and the condition — side-wide
       if ((t.effects.length > 1) && (t.chance ?? 100) !== 100) { gap(unitId, `${where} ${t.hook}: multi-effect at chance ${t.chance}`, 'multi-effect rolled trigger'); return []; }
@@ -293,7 +308,7 @@ function compileTrigger(t, unitId, attackId) {
 }
 
 // stat words an aura can lend (the engine's foldable stats that resolve on read; health is Max Health, not resolved — a gap)
-const HERO_STAT_LATE = { strength: 'strength', precision: 'precision', magic: 'magic', spirit: 'spirit', accuracy: 'accuracy', dodge: 'dodge', armor: 'armor', resist: 'resist', movement: 'movement', reach: 'reach', crit: 'crit', luck: 'luck' };
+const HERO_STAT_LATE = { strength: 'strength', precision: 'precision', magic: 'magic', spirit: 'spirit', accuracy: 'accuracy', dodge: 'dodge', armor: 'armor', resist: 'resist', movement: 'movement', reach: 'reach', crit: 'crit', luck: 'luck', vision: 'vision' };
 const authoredEnemies = [];
 const authoredAttacks = {};
 const authoredAbilities = {}; // capability.item-powers, 2026-08-27
@@ -1299,7 +1314,7 @@ function compileEncounter(row) {
   if (row.retreat) gaps.push('retreat allowed — skipped by ruling 2026-09-03');
   if (row.salvation) gaps.push('salvation — skipped by ruling 2026-09-03');
   if (Array.isArray(row.map)) gaps.push('a map series (dungeon) — skipped by ruling 2026-09-03');
-  for (const st of row.standing || []) gaps.push(`standing rule: ${st.rule || st.name || String(st).slice(0, 60)}${st.needs ? ' — needs ' + st.needs.join(', ') : ''}`);
+  for (const st of row.standing || []) { if (st.asData) continue; gaps.push(`standing rule: ${st.rule || st.name || String(st).slice(0, 60)}${st.needs ? ' — needs ' + st.needs.join(', ') : ''}`); }
   for (const n of row.needs || []) gaps.push(`needs: ${n}`);
   const win = row.win?.surviveTo !== undefined ? { surviveTo: row.win.surviveTo } : undefined;
   const loseAfter = row.loseAfter ? { ...(row.loseAfter.phase !== undefined ? { phase: row.loseAfter.phase } : {}), ...(row.loseAfter.heroPhase !== undefined ? { heroPhase: row.loseAfter.heroPhase } : {}) } : undefined;
@@ -1311,7 +1326,8 @@ function compileEncounter(row) {
   const paint = row.paint ? row.paint.map((p) => ({ layer: p.layer, hexes: p.hexes })) : undefined;
   return { id: row.id, name: row.name, ...(typeof row.map === 'string' && row.map !== 'none' ? { mapId: row.map } : {}),
     setup, schedule, ...(loseAfter ? { loseAfter } : {}), ...(win ? { win } : {}), ...(heroZone ? { heroZone } : {}),
-    ...(powerSources.length ? { powerSources } : {}), ...(band ? { band } : {}), ...(paint ? { paint } : {}), ...(gaps.length ? { gaps } : {}) };
+    ...(powerSources.length ? { powerSources } : {}), ...(band ? { band } : {}), ...(paint ? { paint } : {}),
+    ...(row.condition ? { condition: row.condition } : {}), ...(gaps.length ? { gaps } : {}) };
 }
 const encounters = {};
 for (const row of [...(ENC.prologue || []), ...(ENC.scripted || []), ...(ENC.authored || [])]) encounters[row.id] = compileEncounter(row);
