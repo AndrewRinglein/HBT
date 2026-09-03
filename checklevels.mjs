@@ -17,7 +17,10 @@ const OFF=new Set([]);
 const COUNT=['staminaMax','staminaRegen','toughness','movement'];
 const price=g=>Object.entries(g||{}).reduce((n,[k,v])=>n+(OFF.has(k)?0:(V[k]??0)*v),0);
 const bad=[];
-for(const c of L.classes){
+// Civilian TYPE tables are priced exactly like a class table — ruled 2026-09-03. They obey the
+// same invariants, so they get the same ladder check; otherwise they would be the one part of
+// the game with no lint.
+for(const c of [...L.classes, ...(L.civilianTypes||[])]){
   let tot=0, cum={}, off={staminaMax:0,staminaRegen:0,toughness:0,movement:0};
   const lines=[];
   for(const r of c.rows){
@@ -36,8 +39,12 @@ for(const c of L.classes){
   console.log('  TOTAL '+tot.toFixed(2)+'   staminaMax +'+off.staminaMax+'  regen +'+off.staminaRegen+'  toughness +'+off.toughness);
   console.log('  cumulative: '+Object.entries(cum).sort((a,b)=>(V[b[0]]||0)*b[1]-(V[a[0]]||0)*a[1]).map(([k,v])=>'+'+v+' '+k+' ('+((V[k]||0)*v).toFixed(1)+')').join(' · '));
   // invariants
-  if(c.id!=='class.civilian' && off.staminaRegen!==2) bad.push(c.name+' regen count '+off.staminaRegen+' (want 2)');
-  if(c.id==='class.civilian' && (off.staminaRegen||off.staminaMax)) bad.push('Civilian was granted stamina');
+  // A civilian TYPE table inherits the civilian stamina rule from its parentClass — ruled
+  // 2026-09-03. Keying off c.id alone made the Farmer table demand +2 regen, which a civilian
+  // can never have.
+  const isCivilian=(c.parentClass||c.id)==='class.civilian';
+  if(!isCivilian && off.staminaRegen!==2) bad.push(c.name+' regen count '+off.staminaRegen+' (want 2)');
+  if(isCivilian && (off.staminaRegen||off.staminaMax)) bad.push(c.name+' was granted stamina');
   if(c.rows[0].level!==1||Object.keys(c.rows[0].grants).length) bad.push(c.name+' L1 is not empty');
   const sp=c.rows.filter(r=>r.specialty); if(sp.length!==1||sp[0].level!==2) bad.push(c.name+' specialty not exactly once at L2');
   const ch=c.rows.filter(r=>r.choice); if(ch.length!==1||ch[0].level!==5) bad.push(c.name+' choice not exactly once at L5');

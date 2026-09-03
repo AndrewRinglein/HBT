@@ -6,7 +6,7 @@ const nice=k=>({staminaMax:'Stamina Max',staminaRegen:'STAMINA REGEN',itemSlots:
 const price=g=>Object.entries(g||{}).reduce((n,[k,v])=>n+(OFF.has(k)?0:(V[k]||0)*v),0);
 const fmt=g=>Object.entries(g||{}).map(([k,v])=>'+'+v+' '+nice(k)).join(' · ');
 let o=[];
-o.push('# Level tables — all seven classes\n');
+o.push('# Level tables — eight classes, and the civilian types\n');
 o.push('**Owner: session 3 (Units).** Written 2026-08-19 from the verbatim dictation in');
 o.push('`2-ACTIONS-NOTES.md` (Warrior 1–10, Ranger 2–6) and the stat value ladder.');
 o.push('Machine-readable source of truth: `content/gen/levels.json`. Rendered in the Codex');
@@ -15,7 +15,9 @@ o.push('---\n\n## The rules\n');
 for(const [k,v] of Object.entries(L.rules)){ if(k==='cap'){o.push('**Level cap** — '+v+'\n');continue} o.push('**'+nice(k).replace(/([A-Z])/g,' $1').trim()+'** — '+v+'\n');
 }
 o.push('---\n');
-for(const c of L.classes){ let tot=0, cum={}; o.push('## '+c.name+'\n'); o.push('`'+c.id+'` · **'+c.source+'**\n'); o.push('> '+c.note+'\n'); if(c.freebie) o.push('**Per-level freebie: '+fmt(c.freebie)+' at every level**, in addition to what each row lists.\n'); o.push('| Lv | Grants | Ladder |'); o.push('|---|---|---|'); for(const r of c.rows){ const best=r.choice?Math.max(...r.choice.options.map(price)):0; tot+=price(r.grants)+best; for(const [k,v] of Object.entries(r.grants||{})) cum[k]=(cum[k]||0)+v; let cell = r.level===1 ? '*the starting line — no level-up happens here*'
+// Civilian TYPE tables render with the class tables — ruled 2026-09-03. A civilian levels by
+// its type, so the table a reader needs is the type's, not the class's.
+for(const c of [...L.classes, ...(L.civilianTypes||[])]){ let tot=0, cum={}; o.push('## '+c.name+'\n'); o.push('`'+c.id+'` · **'+c.source+'**\n'); o.push('> '+c.note+'\n'); if(c.freebie) o.push('**Per-level freebie: '+fmt(c.freebie)+' at every level**, in addition to what each row lists.\n'); o.push('| Lv | Grants | Ladder |'); o.push('|---|---|---|'); for(const r of c.rows){ const best=r.choice?Math.max(...r.choice.options.map(price)):0; tot+=price(r.grants)+best; for(const [k,v] of Object.entries(r.grants||{})) cum[k]=(cum[k]||0)+v; let cell = r.level===1 ? '*the starting line — no level-up happens here*'
       : (r.specialty?'**CHOOSE YOUR SPECIALTY**'+(Object.keys(r.grants).length?' · ':''):'')+fmt(r.grants); if(r.choice) cell += '<br>**CHOOSE ONE:** '+r.choice.options.map(x=>fmt(x)).join(' / '); if(r.authored) cell += '<br>*authored — not dictated*'; if(r.note && r.level>1) cell += '<br>*'+r.note+'*'; o.push('| **'+r.level+'** | '+cell+' | '+(r.level===1?'—':(price(r.grants)+best).toFixed(1))+' |');
   } const cl=Object.entries(cum).filter(([k])=>!OFF.has(k)).sort((a,b)=>(V[b[0]]||0)*b[1]-(V[a[0]]||0)*a[1]); o.push('\n**At level 10**, before the L5 pick and before any badge, origin, item or specialty:\n'); o.push('```'); o.push(cl.map(([k,v])=>'+'+v+' '+nice(k)).join(' · ')); o.push(Object.entries(cum).filter(([k])=>OFF.has(k)).map(([k,v])=>'+'+v+' '+nice(k)).join(' · ')||'no off-ladder grants'); o.push('```'); o.push('\nLadder total across the run: **'+tot.toFixed(1)+'**\n'); o.push('---\n');
 }

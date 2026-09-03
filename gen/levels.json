@@ -10,7 +10,8 @@
   "budget": "Each row is priced on the stat ladder: Armor/Resist and Stamina Regen 2.0 · Magic/Spirit 1.5 · Strength/Precision 1.0 · Movement 0.7 · Item Slots 0.67 · Health/Reach 0.5 · Toughness 0.4 · Dodge 0.3 · Stamina Max 0.3 · Accuracy/Crit/Luck/Vision 0.2 · Surge 0.15. Rows run 2.2 to 6.5; the dictated Warrior's own ceiling is L7 at 6.40. Classes land 30 to 40 across the whole run.",
   "offLadder": "Nothing is off the ladder any more. priced the last five 2026-08-20: Movement 0.7, Stamina Max 0.3, Stamina Regen 2.0, Surge 0.15, Toughness 0.4. Stamina Regen at 2.0 is the one that reshapes these tables — it is as expensive as Armor, every class gets exactly two, and Civilian gets none.",
   "movement": "Movement is granted sparingly and never to a Mage or a Priest. Warrior L4 · Rogue L3 and L6 · Ranger L6 · Civilian L9 · Paladin L10, because armour should be the last thing that learns to run. Ruled by 2026-08-20. Beast L3 and L7 — two, like the Rogue, because a Beast that cannot close is not a Beast.",
-  "itemSlots": "Every class gains Item Slots across the run except the BEAST, which is granted none at any level. That is the branch: a Civilian is what it carries and a Beast is what it is. The ~4 ladder points the Beast forgoes in slots come back as Health, Strength and Reach."
+  "itemSlots": "Every class gains Item Slots across the run except the BEAST, which is granted none at any level. That is the branch: a Civilian is what it carries and a Beast is what it is. The ~4 ladder points the Beast forgoes in slots come back as Health, Strength and Reach.",
+  "civilianTypes": "Civilian TYPE tables, ruled 2026-09-03. A civilian levels by its type, not by the class: \"We need some unique way to define the level-ups by the name of the civilian... Maiden and farmer are different in how they should level up.\" Each entry here is a full 10-row table under every rule a class table obeys — nothing at L1, the specialty at L2, the choice at L5, and never any stamina. A hero points at one with levelTable, authored in gen/civilian-rulings.json; a civilian with no pointer uses the class.civilian table. Several heroes may share one table — that is how a group of farmers stays one curve."
  },
  "classes": [
   {
@@ -1029,6 +1030,126 @@
       "staminaRegen": 1,
       "armor": 1,
       "accuracy": 5
+     }
+    }
+   ]
+  }
+ ],
+ "civilianTypes": [
+  {
+   "id": "civilian.farmer",
+   "name": "Farmer",
+   "parentClass": "class.civilian",
+   "source": "AUTHORED",
+   "note": "Dictated 2026-09-03. \"A farmer subclass of a civilian... There are several farmers. All of the farmers should have these same level-ups.\" Bare stat names in the dictation are read as +1, matching every other table. THREE THINGS STILL SOFT: (1) L2 grants only Health and an Item Slot as dictated — the class-wide civilian table also grants +5 Accuracy at L2, and it is not yet ruled whether the Farmer drops it. (2) \"Let's add another resist at level 4\" is read as Resist +1 at L4, since the dictated L4 list carried none. (3) The L5 choice is \"similar to that of a warrior\" and is the Warrior's list verbatim; a Farmer-specific list has not been dictated.",
+   "rows": [
+    {
+     "level": 1,
+     "grants": {},
+     "note": "starting line"
+    },
+    {
+     "level": 2,
+     "specialty": true,
+     "grants": {
+      "health": 1,
+      "itemSlots": 1
+     }
+    },
+    {
+     "level": 3,
+     "grants": {
+      "strength": 1,
+      "health": 1,
+      "itemSlots": 1,
+      "dodge": 5,
+      "accuracy": 5
+     }
+    },
+    {
+     "level": 4,
+     "grants": {
+      "precision": 1,
+      "health": 1,
+      "resist": 1,
+      "crit": 5,
+      "luck": 2,
+      "accuracy": 5
+     }
+    },
+    {
+     "level": 5,
+     "grants": {},
+     "choice": {
+      "pick": 1,
+      "options": [
+       {
+        "strength": 2
+       },
+       {
+        "health": 5
+       },
+       {
+        "accuracy": 15
+       },
+       {
+        "resist": 1
+       },
+       {
+        "armor": 1
+       }
+      ]
+     },
+     "note": "\"A similar choice to that of a warrior\" — the Warrior L5 list verbatim."
+    },
+    {
+     "level": 6,
+     "grants": {
+      "strength": 1,
+      "health": 1,
+      "crit": 5,
+      "luck": 2,
+      "accuracy": 5
+     }
+    },
+    {
+     "level": 7,
+     "grants": {
+      "precision": 1,
+      "health": 1,
+      "itemSlots": 1,
+      "dodge": 2,
+      "accuracy": 3
+     }
+    },
+    {
+     "level": 8,
+     "grants": {
+      "strength": 1,
+      "health": 1,
+      "crit": 5,
+      "luck": 2,
+      "accuracy": 3
+     }
+    },
+    {
+     "level": 9,
+     "grants": {
+      "precision": 1,
+      "health": 1,
+      "itemSlots": 1,
+      "dodge": 2,
+      "accuracy": 2
+     }
+    },
+    {
+     "level": 10,
+     "grants": {
+      "health": 1,
+      "resist": 1,
+      "crit": 5,
+      "luck": 2,
+      "accuracy": 2
      }
     }
    ]

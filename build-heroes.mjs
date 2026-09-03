@@ -406,6 +406,25 @@ for(const h of heroes){
 // Ids never change — encounters reference ids, so nothing dangles.
 {
   const CR=JSON.parse(fs.readFileSync('gen/civilian-rulings.json','utf8'));
+
+  // Civilian TYPE level tables, ruled 2026-09-03. A civilian levels by its type, not by the
+  // class — "Maiden and farmer are different in how they should level up." The table lives in
+  // gen/levels.json under civilianTypes; this only points a hero at one. Several heroes may
+  // share a table, which is how a group of farmers stays one curve. No pointer = class.civilian.
+  {
+    const LV=JSON.parse(fs.readFileSync('gen/levels.json','utf8'));
+    const known=new Set((LV.civilianTypes||[]).map(t=>t.id));
+    for(const [id,table] of Object.entries(CR.levelTables||{})){
+      if(id.startsWith('_')) continue;
+      const h=heroes.find(x=>x.id===id);
+      if(!h){problems.push('civilian-rulings levelTables: no hero '+id);continue;}
+      if(!known.has(table)){problems.push('civilian-rulings levelTables: no civilianTypes table '+table);continue;}
+      if(h.class!=='class.civilian'){problems.push('civilian-rulings levelTables: '+id+' is '+h.class+', not a civilian');continue;}
+      h.levelTable=table;
+      h.notes.push('Levels on '+table+' rather than the class.civilian table — ruled 2026-09-03.');
+    }
+  }
+
   for(const [id,name] of Object.entries(CR.renames||{})){
     const h=heroes.find(x=>x.id===id);
     if(!h){problems.push('civilian-rulings: no hero '+id);continue;}

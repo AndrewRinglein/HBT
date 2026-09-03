@@ -358,11 +358,15 @@ if(D.bestiaryTest){ const B=D.bestiaryTest;
 }
 
 // R15 the level tables must stay inside their own rules
-if(D.levels) for(const c of D.levels.classes){
+// Civilian TYPE tables (levels.civilianTypes) are walked with the class tables — ruled
+// 2026-09-03. Every invariant a class table obeys, a civilian type table obeys. The two
+// civilian-specific checks key off parentClass so a type table inherits them.
+if(D.levels) for(const c of [...D.levels.classes, ...(D.levels.civilianTypes||[])]){
   const st=k=>c.rows.reduce((n,r)=>n+((r.grants||{})[k]||0),0);
+  const isCivilian=(c.parentClass||c.id)==='class.civilian';
   if(c.rows.length!==10) add('level-table-wrong-length',c.name,c.rows.length+' rows');
-  if(c.id!=='class.civilian'&&st('staminaRegen')!==2) add('level-regen-count',c.name,'+'+st('staminaRegen'));
-  if(c.id==='class.civilian'&&(st('staminaMax')||st('staminaRegen'))) add('civilian-granted-stamina',c.name,'');
+  if(!isCivilian&&st('staminaRegen')!==2) add('level-regen-count',c.name,'+'+st('staminaRegen'));
+  if(isCivilian&&(st('staminaMax')||st('staminaRegen'))) add('civilian-granted-stamina',c.name,'');
   const sp=c.rows.filter(r=>r.specialty), ch=c.rows.filter(r=>r.choice);
   if(sp.length!==1||sp[0].level!==2) add('specialty-pick-not-at-l2',c.name,'');
   if(ch.length!==1||ch[0].level!==5) add('choice-not-at-l5',c.name,'');

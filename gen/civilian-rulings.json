@@ -1,240 +1,246 @@
 {
-  "_note": "Civilian naming and art, ruled 2026-08-25 while reviewing the hero-art pairs. Applied by build-heroes.mjs — a rename lives here, never as a hand-patch on gen/heroes.json, because anything patched onto a generated file dies at the next rebuild. Ids never change; names do. ALL FIVE VARIANT PAIRS ARE RULED as of 2026-08-25: lumberjack v1 · orphan-child v1 · farmer-family v1 (Farmer) · farmer-group v2 (Farmer with a Hat) · school-child v1 (School Child (female), a NEW unit — the plural School Children remains its own).",
-  "renames": {
-    "hero.fixed.lumberjack-and-wife": "Lumberjack",
-    "hero.fixed.group-of-farmers": "Farmer with a Hat",
-    "hero.fixed.orphans": "Orphan Child"
+ "_note": "Civilian naming and art, ruled 2026-08-25 while reviewing the hero-art pairs. Applied by build-heroes.mjs — a rename lives here, never as a hand-patch on gen/heroes.json, because anything patched onto a generated file dies at the next rebuild. Ids never change; names do. ALL FIVE VARIANT PAIRS ARE RULED as of 2026-08-25: lumberjack v1 · orphan-child v1 · farmer-family v1 (Farmer) · farmer-group v2 (Farmer with a Hat) · school-child v1 (School Child (female), a NEW unit — the plural School Children remains its own).",
+ "renames": {
+  "hero.fixed.lumberjack-and-wife": "Lumberjack",
+  "hero.fixed.group-of-farmers": "Farmer with a Hat",
+  "hero.fixed.orphans": "Orphan Child"
+ },
+ "art": {
+  "_note": "Only the SETTLED files are wired — single-version files with no v1/v2 ambiguity. The four pairs below stay unwired until each gets a variant ruling; per gen/art-conventions.json, picking a variant in an undeclared folder is a ruling, not a guess.",
+  "hero.fixed.school-children": {
+   "slug": "school-children",
+   "source": "New Art/hero-art/school-children-flux-v3-1769337543265.png",
+   "why": "Ruled: use the PLURAL school children art from hell-tcg, not the school-child-solo pair."
   },
-  "art": {
-    "_note": "Only the SETTLED files are wired — single-version files with no v1/v2 ambiguity. The four pairs below stay unwired until each gets a variant ruling; per gen/art-conventions.json, picking a variant in an undeclared folder is a ruling, not a guess.",
-    "hero.fixed.school-children": {
-      "slug": "school-children",
-      "source": "New Art/hero-art/school-children-flux-v3-1769337543265.png",
-      "why": "Ruled: use the PLURAL school children art from hell-tcg, not the school-child-solo pair."
-    },
-    "hero.fixed.school-teacher": {
-      "slug": "schoolteacher",
-      "source": "New Art/hero-art/schoolteacher-fullbody-edit-1769338628474.png",
-      "why": "Single settled file."
-    },
-    "hero.fixed.lumberjack-and-wife": {
-      "slug": "lumberjack",
-      "source": "New Art/hero-art/lumberjack-solo-v1-20260819.png",
-      "why": "Ruled 2026-08-25: v1."
-    },
-    "hero.fixed.orphans": {
-      "slug": "orphan-child",
-      "source": "New Art/hero-art/orphan-child-solo-v1-20260819.png",
-      "why": "Ruled 2026-08-25: v1."
-    },
-    "hero.fixed.farmer": {
-      "slug": "farmer",
-      "source": "New Art/hero-art/farmer-family-solo-solo-v1-20260819.png",
-      "why": "Ruled 2026-08-25: v1 (the farmer-family art IS the Farmer)."
-    },
-    "hero.fixed.group-of-farmers": {
-      "slug": "farmer-with-hat",
-      "source": "New Art/hero-art/farmer-group-solo-solo-v2-20260819.png",
-      "why": "Ruled 2026-08-25: v2. The farmer-group art is Farmer with a Hat."
-    },
-    "hero.fixed.school-child-female": {
-      "slug": "school-child-female",
-      "source": "New Art/hero-art/school-child-solo-v1-20260819.png",
-      "why": "Ruled 2026-08-25: v1."
-    }
+  "hero.fixed.school-teacher": {
+   "slug": "schoolteacher",
+   "source": "New Art/hero-art/schoolteacher-fullbody-edit-1769338628474.png",
+   "why": "Single settled file."
   },
-  "openArtQuestion": "art/heroes has BOTH teacher/ (16 anims) and schoolteacher/ (2 anims), and BOTH children/ (16 anims) and school-children/ (2 anims). The name-exact folders are used here; whether teacher/ and children/ are the same units or different ones is the art channel's to say.",
-  "newUnits": {
-    "_note": "Ruled 2026-08-25: the school-child-solo art is NOT rejected — it is its own unit, School Child (female), while School Children (plural art) remains a separate unit. Stats cloned from School Children as a soft baseline; a sweep or ruling prices her.",
-    "hero.fixed.school-child-female": {
-      "name": "School Child (female)",
-      "cloneStatsOf": "hero.fixed.school-children"
-    }
+  "hero.fixed.lumberjack-and-wife": {
+   "slug": "lumberjack",
+   "source": "New Art/hero-art/lumberjack-solo-v1-20260819.png",
+   "why": "Ruled 2026-08-25: v1."
   },
-  "statBlocks": {
-    "_note": "Full civilian stat blocks, dictated 2026-08-25. Ported-stat keys and derived-stat keys are applied to their own bags; derived deviations from class.civilian are recorded as derivedDeltas so R23 reads them as declared decisions, not drift. Numbers SOFT.",
-    "hero.fixed.orphans": {
-      "why": "Orphan Child, dictated 2026-08-25. Tiny, absurdly lucky, and the whole party fights harder when she falls.",
-      "ported": {
-        "strength": 1,
-        "precision": 1,
-        "health": 3,
-        "resist": 1,
-        "itemSlots": 1
-      },
-      "derived": {
-        "movement": 4,
-        "crit": 20,
-        "luck": 10
-      },
-      "kit": [
-        "item.pile-of-rocks"
-      ],
-      "authoredTriggers": [
-        {
-          "hook": "onDeath",
-          "targets": "all heroes",
-          "name": "For Her",
-          "note": "ALL heroes, battle-wide as dictated — not a radius.",
-          "effects": [
-            {
-              "effect": "regain stamina",
-              "value": 2
-            },
-            {
-              "effect": "grant a stat for the Battle",
-              "stat": "staminaMax",
-              "value": 1
-            },
-            {
-              "effect": "grant a stat for the Battle",
-              "stat": "strength",
-              "value": 2
-            }
-          ]
-        }
-      ],
-      "survivalReward": {
-        "currency": "Faith",
-        "value": 2,
-        "needsCapability": "battle-outcome reward — surviving is not a combat hook; this pays from the encounter outcome into the kingdom purse. Faith is a live currency (KINGDOM-DESIGN: Pray, quest rewards)."
-      }
-    },
-    "hero.fixed.lumberjack-and-wife": {
-      "why": "Lumberjack, dictated 2026-08-25. The one civilian who is genuinely dangerous — a two-handed axe and the arms that use it all day.",
-      "ported": {
-        "strength": 4,
-        "precision": 1,
-        "health": 8,
-        "itemSlots": 1
-      },
-      "derived": {
-        "movement": 5,
-        "crit": 3
-      },
-      "kit": [
-        "item.lumberjack-axe"
-      ],
-      "survivalReward": {
-        "currency": "Supplies",
-        "value": 2,
-        "needsCapability": "battle-outcome reward — pays from the encounter outcome into the purse. Supplies is a live currency (KINGDOM-DESIGN: Farm)."
-      }
-    },
-    "hero.fixed.school-teacher": {
-      "why": "School Teacher, dictated 2026-08-25. Unarmed and unkillable-by-carelessness — luck, resist, and the sense to bring a plan instead of a weapon.",
-      "ported": {
-        "strength": 2,
-        "precision": 2,
-        "health": 5,
-        "resist": 1,
-        "itemSlots": 2
-      },
-      "derived": {
-        "movement": 5,
-        "crit": 8,
-        "luck": 7
-      },
-      "kit": [],
-      "grantsTactics": [
-        "Learned"
-      ],
-      "grantsTacticsNote": "THE HAND (stub for now, ruled 2026-08-25): the Learned tactic grant, like Draw, waits on The Hand / tactic.* declaration. Recorded by name.",
-      "startOfBattleDraw": {
-        "value": 2,
-        "phase": 1,
-        "needsCapability": "THE HAND (stub for now, ruled 2026-08-25): Draw belongs to The Hand — the card system beyond the slice (slice ruling 1 skips cards entirely). Recorded verbatim; wires up when The Hand exists."
-      }
-    },
-    "hero.fixed.school-children": {
-      "why": "School Children, dictated 2026-08-25. The plural unit (school-children-flux-v3 art). Braver than they should be, luckier than they know.",
-      "ported": {
-        "strength": 3,
-        "precision": 3,
-        "health": 8,
-        "itemSlots": 1
-      },
-      "derived": {
-        "movement": 4,
-        "crit": 4,
-        "luck": 10
-      },
-      "kit": [
-        "item.pile-of-rocks"
-      ],
-      "authoredTriggers": [
-        {
-          "hook": "onDeath",
-          "targets": "all heroes",
-          "name": "For Them",
-          "note": "ALL heroes, battle-wide as dictated — the same grief-as-fuel trigger as the Orphan Child.",
-          "effects": [
-            {
-              "effect": "regain stamina",
-              "value": 2
-            },
-            {
-              "effect": "grant a stat for the Battle",
-              "stat": "staminaMax",
-              "value": 1
-            },
-            {
-              "effect": "grant a stat for the Battle",
-              "stat": "strength",
-              "value": 2
-            }
-          ]
-        }
-      ],
-      "survivalReward": {
-        "currency": "Faith",
-        "value": 2,
-        "needsCapability": "battle-outcome reward — as the Orphan Child."
-      }
-    },
-    "hero.fixed.farmer": {
-      "why": "Farmer, dictated 2026-08-25. A pitchfork and enough sense to use it pointy-end first. Movement 5 INFERRED (not dictated; as the other adult civilians).",
-      "ported": {
-        "strength": 3,
-        "precision": 2,
-        "health": 7,
-        "itemSlots": 2
-      },
-      "kit": [
-        "item.pitchfork"
-      ],
-      "survivalReward": {
-        "currency": "Supplies",
-        "value": 2,
-        "needsCapability": "battle-outcome reward — pays from the encounter outcome into the purse."
-      },
-      "derived": {
-        "movement": 5,
-        "crit": 3,
-        "luck": 2
-      }
-    },
-    "hero.fixed.group-of-farmers": {
-      "why": "Farmer with a Hat, dictated 2026-08-25: same stats as the Farmer but crit 5, luck 0 — the hat is confidence, not fortune. Movement 5, pitchfork and survival reward INFERRED as shared with the Farmer (dictated \"same stats but\").",
-      "ported": {
-        "strength": 3,
-        "precision": 2,
-        "health": 7,
-        "itemSlots": 2
-      },
-      "kit": [
-        "item.pitchfork"
-      ],
-      "survivalReward": {
-        "currency": "Supplies",
-        "value": 2,
-        "needsCapability": "battle-outcome reward — pays from the encounter outcome into the purse."
-      },
-      "derived": {
-        "movement": 5,
-        "crit": 5,
-        "luck": 0
-      }
-    }
+  "hero.fixed.orphans": {
+   "slug": "orphan-child",
+   "source": "New Art/hero-art/orphan-child-solo-v1-20260819.png",
+   "why": "Ruled 2026-08-25: v1."
+  },
+  "hero.fixed.farmer": {
+   "slug": "farmer",
+   "source": "New Art/hero-art/farmer-family-solo-solo-v1-20260819.png",
+   "why": "Ruled 2026-08-25: v1 (the farmer-family art IS the Farmer)."
+  },
+  "hero.fixed.group-of-farmers": {
+   "slug": "farmer-with-hat",
+   "source": "New Art/hero-art/farmer-group-solo-solo-v2-20260819.png",
+   "why": "Ruled 2026-08-25: v2. The farmer-group art is Farmer with a Hat."
+  },
+  "hero.fixed.school-child-female": {
+   "slug": "school-child-female",
+   "source": "New Art/hero-art/school-child-solo-v1-20260819.png",
+   "why": "Ruled 2026-08-25: v1."
   }
+ },
+ "openArtQuestion": "art/heroes has BOTH teacher/ (16 anims) and schoolteacher/ (2 anims), and BOTH children/ (16 anims) and school-children/ (2 anims). The name-exact folders are used here; whether teacher/ and children/ are the same units or different ones is the art channel's to say.",
+ "newUnits": {
+  "_note": "Ruled 2026-08-25: the school-child-solo art is NOT rejected — it is its own unit, School Child (female), while School Children (plural art) remains a separate unit. Stats cloned from School Children as a soft baseline; a sweep or ruling prices her.",
+  "hero.fixed.school-child-female": {
+   "name": "School Child (female)",
+   "cloneStatsOf": "hero.fixed.school-children"
+  }
+ },
+ "statBlocks": {
+  "_note": "Full civilian stat blocks, dictated 2026-08-25. Ported-stat keys and derived-stat keys are applied to their own bags; derived deviations from class.civilian are recorded as derivedDeltas so R23 reads them as declared decisions, not drift. Numbers SOFT.",
+  "hero.fixed.orphans": {
+   "why": "Orphan Child, dictated 2026-08-25. Tiny, absurdly lucky, and the whole party fights harder when she falls.",
+   "ported": {
+    "strength": 1,
+    "precision": 1,
+    "health": 3,
+    "resist": 1,
+    "itemSlots": 1
+   },
+   "derived": {
+    "movement": 4,
+    "crit": 20,
+    "luck": 10
+   },
+   "kit": [
+    "item.pile-of-rocks"
+   ],
+   "authoredTriggers": [
+    {
+     "hook": "onDeath",
+     "targets": "all heroes",
+     "name": "For Her",
+     "note": "ALL heroes, battle-wide as dictated — not a radius.",
+     "effects": [
+      {
+       "effect": "regain stamina",
+       "value": 2
+      },
+      {
+       "effect": "grant a stat for the Battle",
+       "stat": "staminaMax",
+       "value": 1
+      },
+      {
+       "effect": "grant a stat for the Battle",
+       "stat": "strength",
+       "value": 2
+      }
+     ]
+    }
+   ],
+   "survivalReward": {
+    "currency": "Faith",
+    "value": 2,
+    "needsCapability": "battle-outcome reward — surviving is not a combat hook; this pays from the encounter outcome into the kingdom purse. Faith is a live currency (KINGDOM-DESIGN: Pray, quest rewards)."
+   }
+  },
+  "hero.fixed.lumberjack-and-wife": {
+   "why": "Lumberjack, dictated 2026-08-25. The one civilian who is genuinely dangerous — a two-handed axe and the arms that use it all day.",
+   "ported": {
+    "strength": 4,
+    "precision": 1,
+    "health": 8,
+    "itemSlots": 1
+   },
+   "derived": {
+    "movement": 5,
+    "crit": 3
+   },
+   "kit": [
+    "item.lumberjack-axe"
+   ],
+   "survivalReward": {
+    "currency": "Supplies",
+    "value": 2,
+    "needsCapability": "battle-outcome reward — pays from the encounter outcome into the purse. Supplies is a live currency (KINGDOM-DESIGN: Farm)."
+   }
+  },
+  "hero.fixed.school-teacher": {
+   "why": "School Teacher, dictated 2026-08-25. Unarmed and unkillable-by-carelessness — luck, resist, and the sense to bring a plan instead of a weapon.",
+   "ported": {
+    "strength": 2,
+    "precision": 2,
+    "health": 5,
+    "resist": 1,
+    "itemSlots": 2
+   },
+   "derived": {
+    "movement": 5,
+    "crit": 8,
+    "luck": 7
+   },
+   "kit": [],
+   "grantsTactics": [
+    "Learned"
+   ],
+   "grantsTacticsNote": "THE HAND (stub for now, ruled 2026-08-25): the Learned tactic grant, like Draw, waits on The Hand / tactic.* declaration. Recorded by name.",
+   "startOfBattleDraw": {
+    "value": 2,
+    "phase": 1,
+    "needsCapability": "THE HAND (stub for now, ruled 2026-08-25): Draw belongs to The Hand — the card system beyond the slice (slice ruling 1 skips cards entirely). Recorded verbatim; wires up when The Hand exists."
+   }
+  },
+  "hero.fixed.school-children": {
+   "why": "School Children, dictated 2026-08-25. The plural unit (school-children-flux-v3 art). Braver than they should be, luckier than they know.",
+   "ported": {
+    "strength": 3,
+    "precision": 3,
+    "health": 8,
+    "itemSlots": 1
+   },
+   "derived": {
+    "movement": 4,
+    "crit": 4,
+    "luck": 10
+   },
+   "kit": [
+    "item.pile-of-rocks"
+   ],
+   "authoredTriggers": [
+    {
+     "hook": "onDeath",
+     "targets": "all heroes",
+     "name": "For Them",
+     "note": "ALL heroes, battle-wide as dictated — the same grief-as-fuel trigger as the Orphan Child.",
+     "effects": [
+      {
+       "effect": "regain stamina",
+       "value": 2
+      },
+      {
+       "effect": "grant a stat for the Battle",
+       "stat": "staminaMax",
+       "value": 1
+      },
+      {
+       "effect": "grant a stat for the Battle",
+       "stat": "strength",
+       "value": 2
+      }
+     ]
+    }
+   ],
+   "survivalReward": {
+    "currency": "Faith",
+    "value": 2,
+    "needsCapability": "battle-outcome reward — as the Orphan Child."
+   }
+  },
+  "hero.fixed.farmer": {
+   "why": "Farmer, dictated 2026-08-25. A pitchfork and enough sense to use it pointy-end first. Movement 5 INFERRED (not dictated; as the other adult civilians).",
+   "ported": {
+    "strength": 3,
+    "precision": 2,
+    "health": 7,
+    "itemSlots": 2
+   },
+   "kit": [
+    "item.pitchfork"
+   ],
+   "survivalReward": {
+    "currency": "Supplies",
+    "value": 2,
+    "needsCapability": "battle-outcome reward — pays from the encounter outcome into the purse."
+   },
+   "derived": {
+    "movement": 5,
+    "crit": 3,
+    "luck": 2
+   }
+  },
+  "hero.fixed.group-of-farmers": {
+   "why": "Farmer with a Hat, dictated 2026-08-25: same stats as the Farmer but crit 5, luck 0 — the hat is confidence, not fortune. Movement 5, pitchfork and survival reward INFERRED as shared with the Farmer (dictated \"same stats but\").",
+   "ported": {
+    "strength": 3,
+    "precision": 2,
+    "health": 7,
+    "itemSlots": 2
+   },
+   "kit": [
+    "item.pitchfork"
+   ],
+   "survivalReward": {
+    "currency": "Supplies",
+    "value": 2,
+    "needsCapability": "battle-outcome reward — pays from the encounter outcome into the purse."
+   },
+   "derived": {
+    "movement": 5,
+    "crit": 5,
+    "luck": 0
+   }
+  }
+ },
+ "levelTables": {
+  "_note": "Which civilian TYPE table a civilian levels on, ruled 2026-09-03. The table itself lives in gen/levels.json under civilianTypes; this only says who points at it. Several heroes may name the same table — that is how a group of farmers stays one curve, and how a new farmer costs one line. A civilian with no entry here levels on the class.civilian table, so the untyped cast is unaffected.",
+  "hero.fixed.farmer": "civilian.farmer",
+  "hero.fixed.group-of-farmers": "civilian.farmer",
+  "hero.fixed.farming-family": "civilian.farmer"
+ }
 }

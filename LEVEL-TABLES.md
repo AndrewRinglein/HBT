@@ -1,4 +1,4 @@
-# Level tables — all seven classes
+# Level tables — eight classes, and the civilian types
 
 **Owner: session 3 (Units).** Written 2026-08-19 from the verbatim dictation in
 `2-ACTIONS-NOTES.md` (Warrior 1–10, Ranger 2–6) and the stat value ladder.
@@ -30,6 +30,8 @@ under **Level Tables**. `content/audit.mjs` enforces every rule below.
 **Movement** — Movement is granted sparingly and never to a Mage or a Priest. Warrior L4 · Rogue L3 and L6 · Ranger L6 · Civilian L9 · Paladin L10, because armour should be the last thing that learns to run. Ruled by 2026-08-20. Beast L3 and L7 — two, like the Rogue, because a Beast that cannot close is not a Beast.
 
 **Item  Slots** — Every class gains Item Slots across the run except the BEAST, which is granted none at any level. That is the branch: a Civilian is what it carries and a Beast is what it is. The ~4 ladder points the Beast forgoes in slots come back as Health, Strength and Reach.
+
+**Civilian Types** — Civilian TYPE tables, ruled 2026-09-03. A civilian levels by its type, not by the class: "We need some unique way to define the level-ups by the name of the civilian... Maiden and farmer are different in how they should level up." Each entry here is a full 10-row table under every rule a class table obeys — nothing at L1, the specialty at L2, the choice at L5, and never any stamina. A hero points at one with levelTable, authored in gen/civilian-rulings.json; a civilian with no pointer uses the class.civilian table. Several heroes may share one table — that is how a group of farmers stays one curve.
 
 ---
 
@@ -272,6 +274,36 @@ no off-ladder grants
 ```
 
 Ladder total across the run: **40.1**
+
+---
+
+## Farmer
+
+`civilian.farmer` · **AUTHORED**
+
+> Dictated 2026-09-03. "A farmer subclass of a civilian... There are several farmers. All of the farmers should have these same level-ups." Bare stat names in the dictation are read as +1, matching every other table. THREE THINGS STILL SOFT: (1) L2 grants only Health and an Item Slot as dictated — the class-wide civilian table also grants +5 Accuracy at L2, and it is not yet ruled whether the Farmer drops it. (2) "Let's add another resist at level 4" is read as Resist +1 at L4, since the dictated L4 list carried none. (3) The L5 choice is "similar to that of a warrior" and is the Warrior's list verbatim; a Farmer-specific list has not been dictated.
+
+| Lv | Grants | Ladder |
+|---|---|---|
+| **1** | *the starting line — no level-up happens here* | — |
+| **2** | **CHOOSE YOUR SPECIALTY** · +1 Health · +1 Item Slots | 1.2 |
+| **3** | +1 Strength · +1 Health · +1 Item Slots · +5 Dodge · +5 Accuracy | 4.7 |
+| **4** | +1 Precision · +1 Health · +1 Resist · +5 Crit · +2 Luck · +5 Accuracy | 5.9 |
+| **5** | <br>**CHOOSE ONE:** +2 Strength / +5 Health / +15 Accuracy / +1 Resist / +1 Armor<br>*"A similar choice to that of a warrior" — the Warrior L5 list verbatim.* | 3.0 |
+| **6** | +1 Strength · +1 Health · +5 Crit · +2 Luck · +5 Accuracy | 3.9 |
+| **7** | +1 Precision · +1 Health · +1 Item Slots · +2 Dodge · +3 Accuracy | 3.4 |
+| **8** | +1 Strength · +1 Health · +5 Crit · +2 Luck · +3 Accuracy | 3.5 |
+| **9** | +1 Precision · +1 Health · +1 Item Slots · +2 Dodge · +2 Accuracy | 3.2 |
+| **10** | +1 Health · +1 Resist · +5 Crit · +2 Luck · +2 Accuracy | 4.3 |
+
+**At level 10**, before the L5 pick and before any badge, origin, item or specialty:
+
+```
++25 Accuracy · +8 Health · +2 Resist · +20 Crit · +3 Strength · +3 Precision · +9 Dodge · +4 Item Slots · +8 Luck
+no off-ladder grants
+```
+
+Ladder total across the run: **33.0**
 
 ---
 

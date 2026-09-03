@@ -111,12 +111,17 @@ if(fs.existsSync(G+'functions.json')) out.functions=R('functions.json');
     for(const k of Object.keys(h.derivedBase||{})) if(!STATS.has(k)) prob.push(`hero ${h.id}: unknown derived stat "${k}"`);
   } }
 { const known=new Set(out.classes.map(c=>c.id));
-  for(const c of out.levels.classes){
-    if(!known.has(c.id)) prob.push(`levels: unknown class ${c.id}`);
+  // Civilian TYPE tables (levels.civilianTypes) are validated with the class tables — ruled
+  // 2026-09-03. A type table is checked against its parentClass, not its own id, because its id
+  // is a civilian type and was never meant to be a class.
+  for(const c of [...out.levels.classes, ...(out.levels.civilianTypes||[])]){
+    const owner=c.parentClass||c.id;
+    if(!known.has(owner)) prob.push(`levels: unknown class ${owner}`);
+    if(c.parentClass && known.has(c.id)) prob.push(`levels ${c.id}: a civilian type may not reuse a class id`);
     if(c.rows.length!==10) prob.push(`levels ${c.id}: ${c.rows.length} rows, want 10`);
     const st=(k)=>c.rows.reduce((n,r)=>n+((r.grants||{})[k]||0),0);
-    if(c.id!=='class.civilian' && st('staminaRegen')!==2) prob.push(`levels ${c.id}: staminaRegen +${st('staminaRegen')}, want 2`);
-    if(c.id==='class.civilian' && (st('staminaRegen')||st('staminaMax'))) prob.push('levels: civilian granted stamina');
+    if(owner!=='class.civilian' && st('staminaRegen')!==2) prob.push(`levels ${c.id}: staminaRegen +${st('staminaRegen')}, want 2`);
+    if(owner==='class.civilian' && (st('staminaRegen')||st('staminaMax'))) prob.push('levels: civilian granted stamina');
     const sp=c.rows.filter(r=>r.specialty), ch=c.rows.filter(r=>r.choice);
     if(sp.length!==1||sp[0].level!==2) prob.push(`levels ${c.id}: specialty pick not exactly once at L2`);
     if(ch.length!==1||ch[0].level!==5) prob.push(`levels ${c.id}: choice not exactly once at L5`);

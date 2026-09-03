@@ -1,0 +1,1037 @@
+{
+ "rules": {
+  "cap": 10,
+  "l1": "Level 1 is the starting line, not a level-up. No class grants anything at L1.",
+  "specialty": "The specialty is chosen at the FIRST level-up — reaching level 2 — for every class. This resolves the dictated conflict: the Warrior dump said 'the first level up for a warrior, they choose their specialty', the Ranger table says L2 explicitly, and the class-power rule says 'at level two you choose a class specialty'. All three agree once 'first level-up' is read as the 1 to 2 transition.",
+  "draft": "Each power grant offers three: two from the specialty, one from the general pool.",
+  "choiceLevel": "Level 5 is the choice level for every class. One pick from the list, plus a small flat grant alongside it. Both dictated tables pair the choice with something flat, so all seven do.",
+  "regen": "Every class gains Stamina Regen exactly twice — once at L6, once at L10 — taking it 1 to 3. Civilian is the exception and gains it never.",
+  "civilian": "Civilian has no stamina bar, so it is granted no Stamina Max and no Stamina Regen at any level. Its power comes from Item Slots and gear instead — it ends with more slots than any other class. Now that Stamina Regen prices at 2.0, that exemption costs the Civilian 4.9 points across the run and it is the whole reason it totals 30.5 against the Warrior's 39.2.",
+  "budget": "Each row is priced on the stat ladder: Armor/Resist and Stamina Regen 2.0 · Magic/Spirit 1.5 · Strength/Precision 1.0 · Movement 0.7 · Item Slots 0.67 · Health/Reach 0.5 · Toughness 0.4 · Dodge 0.3 · Stamina Max 0.3 · Accuracy/Crit/Luck/Vision 0.2 · Surge 0.15. Rows run 2.2 to 6.5; the dictated Warrior's own ceiling is L7 at 6.40. Classes land 30 to 40 across the whole run.",
+  "offLadder": "Nothing is off the ladder any more. priced the last five 2026-08-20: Movement 0.7, Stamina Max 0.3, Stamina Regen 2.0, Surge 0.15, Toughness 0.4. Stamina Regen at 2.0 is the one that reshapes these tables — it is as expensive as Armor, every class gets exactly two, and Civilian gets none.",
+  "movement": "Movement is granted sparingly and never to a Mage or a Priest. Warrior L4 · Rogue L3 and L6 · Ranger L6 · Civilian L9 · Paladin L10, because armour should be the last thing that learns to run. Ruled by 2026-08-20. Beast L3 and L7 — two, like the Rogue, because a Beast that cannot close is not a Beast.",
+  "itemSlots": "Every class gains Item Slots across the run except the BEAST, which is granted none at any level. That is the branch: a Civilian is what it carries and a Beast is what it is. The ~4 ladder points the Beast forgoes in slots come back as Health, Strength and Reach."
+ },
+ "classes": [
+  {
+   "id": "class.warrior",
+   "name": "Warrior",
+   "source": "DICTATED 1-10, verbatim",
+   "freebie": {
+    "health": 1
+   },
+   "note": "Every level grants +1 Health in addition to what is listed. The item-slot class: five slots across the run, more than anyone. Movement: +1 at level 4.",
+   "rows": [
+    {
+     "level": 1,
+     "grants": {},
+     "note": "starting line"
+    },
+    {
+     "level": 2,
+     "specialty": true,
+     "grants": {
+      "health": 1,
+      "staminaMax": 1,
+      "itemSlots": 1,
+      "accuracy": 5
+     }
+    },
+    {
+     "level": 3,
+     "grants": {
+      "health": 1,
+      "strength": 1,
+      "itemSlots": 1,
+      "crit": 2
+     }
+    },
+    {
+     "level": 4,
+     "grants": {
+      "health": 1,
+      "precision": 1,
+      "reach": 1,
+      "staminaMax": 1,
+      "resist": 1,
+      "dodge": 5,
+      "movement": 1
+     }
+    },
+    {
+     "level": 5,
+     "grants": {
+      "health": 1
+     },
+     "choice": {
+      "pick": 1,
+      "options": [
+       {
+        "strength": 2
+       },
+       {
+        "health": 5
+       },
+       {
+        "accuracy": 15
+       },
+       {
+        "resist": 1
+       },
+       {
+        "armor": 1
+       }
+      ]
+     },
+     "note": "Dictated as a bare list of five stat names — 'they definitely get a choice of a bunch of big things'. Magnitudes set to match the Ranger's dictated L5 list, which is the only place magnitudes were given."
+    },
+    {
+     "level": 6,
+     "grants": {
+      "health": 1,
+      "staminaRegen": 1,
+      "itemSlots": 1,
+      "accuracy": 5,
+      "luck": 2
+     }
+    },
+    {
+     "level": 7,
+     "grants": {
+      "health": 1,
+      "strength": 1,
+      "precision": 1,
+      "armor": 1,
+      "staminaMax": 1,
+      "crit": 2,
+      "dodge": 5
+     }
+    },
+    {
+     "level": 8,
+     "grants": {
+      "health": 1,
+      "strength": 1,
+      "itemSlots": 1,
+      "accuracy": 4,
+      "crit": 1,
+      "dodge": 2
+     }
+    },
+    {
+     "level": 9,
+     "grants": {
+      "health": 1,
+      "precision": 1,
+      "reach": 1,
+      "staminaMax": 1,
+      "dodge": 5,
+      "luck": 2
+     }
+    },
+    {
+     "level": 10,
+     "grants": {
+      "health": 1,
+      "strength": 1,
+      "staminaRegen": 1,
+      "itemSlots": 1,
+      "accuracy": 5,
+      "crit": 2
+     }
+    }
+   ]
+  },
+  {
+   "id": "class.ranger",
+   "name": "Ranger",
+   "source": "DICTATED 2-6 · AUTHORED 7-10",
+   "note": "No per-level freebie — 'unlike Warrior, who got one health at every level, Rangers do not get that'. Reach is the Ranger's stat: four grants, twice anyone else. Movement: +1 at level 6.",
+   "rows": [
+    {
+     "level": 1,
+     "grants": {},
+     "note": "starting line"
+    },
+    {
+     "level": 2,
+     "specialty": true,
+     "grants": {
+      "precision": 1,
+      "resist": 1,
+      "accuracy": 5,
+      "dodge": 3
+     }
+    },
+    {
+     "level": 3,
+     "grants": {
+      "strength": 1,
+      "reach": 1,
+      "health": 1,
+      "staminaMax": 1,
+      "resist": 1,
+      "itemSlots": 1,
+      "crit": 3
+     }
+    },
+    {
+     "level": 4,
+     "grants": {
+      "precision": 1,
+      "health": 1,
+      "accuracy": 7,
+      "dodge": 2,
+      "luck": 1
+     }
+    },
+    {
+     "level": 5,
+     "grants": {
+      "staminaMax": 1,
+      "accuracy": 2,
+      "crit": 1,
+      "dodge": 1,
+      "luck": 1
+     },
+     "choice": {
+      "pick": 1,
+      "options": [
+       {
+        "precision": 2
+       },
+       {
+        "health": 5
+       },
+       {
+        "accuracy": 15
+       },
+       {
+        "armor": 1
+       },
+       {
+        "resist": 1
+       },
+       {
+        "magic": 2
+       },
+       {
+        "crit": 8
+       }
+      ]
+     },
+     "note": "Dictated with magnitudes — the only L5 list that was."
+    },
+    {
+     "level": 6,
+     "grants": {
+      "strength": 1,
+      "reach": 1,
+      "staminaRegen": 1,
+      "dodge": 5,
+      "movement": 1
+     }
+    },
+    {
+     "level": 7,
+     "authored": true,
+     "grants": {
+      "precision": 1,
+      "reach": 1,
+      "vision": 1,
+      "accuracy": 5,
+      "dodge": 3
+     }
+    },
+    {
+     "level": 8,
+     "authored": true,
+     "grants": {
+      "strength": 1,
+      "itemSlots": 1,
+      "staminaMax": 1,
+      "crit": 3,
+      "dodge": 2
+     }
+    },
+    {
+     "level": 9,
+     "authored": true,
+     "grants": {
+      "precision": 1,
+      "health": 1,
+      "vision": 1,
+      "accuracy": 5,
+      "dodge": 2,
+      "luck": 1
+     }
+    },
+    {
+     "level": 10,
+     "authored": true,
+     "grants": {
+      "precision": 1,
+      "reach": 1,
+      "staminaRegen": 1,
+      "itemSlots": 1,
+      "dodge": 5,
+      "crit": 2
+     }
+    }
+   ]
+  },
+  {
+   "id": "class.rogue",
+   "name": "Rogue",
+   "source": "AUTHORED",
+   "note": "Crit and Dodge in volume — both price cheap on the ladder, which is exactly right for a class that wins by landing one hit and not being there for the answer. Ends at 27% crit, the highest in the game. Two Health grants total: the squishiest hero on the board. Movement: +1 at level 3 and 6.",
+   "rows": [
+    {
+     "level": 1,
+     "grants": {},
+     "note": "starting line"
+    },
+    {
+     "level": 2,
+     "specialty": true,
+     "grants": {
+      "precision": 1,
+      "staminaMax": 1,
+      "accuracy": 5,
+      "dodge": 3,
+      "crit": 2
+     }
+    },
+    {
+     "level": 3,
+     "grants": {
+      "strength": 1,
+      "itemSlots": 1,
+      "health": 1,
+      "crit": 3,
+      "dodge": 3,
+      "movement": 1
+     }
+    },
+    {
+     "level": 4,
+     "grants": {
+      "precision": 1,
+      "staminaMax": 1,
+      "accuracy": 5,
+      "crit": 4,
+      "luck": 2
+     }
+    },
+    {
+     "level": 5,
+     "grants": {
+      "itemSlots": 1,
+      "accuracy": 2,
+      "crit": 2
+     },
+     "choice": {
+      "pick": 1,
+      "options": [
+       {
+        "precision": 2
+       },
+       {
+        "strength": 2
+       },
+       {
+        "crit": 10
+       },
+       {
+        "dodge": 10
+       },
+       {
+        "health": 5
+       },
+       {
+        "resist": 1
+       },
+       {
+        "accuracy": 15
+       }
+      ]
+     }
+    },
+    {
+     "level": 6,
+     "grants": {
+      "precision": 1,
+      "staminaRegen": 1,
+      "dodge": 5,
+      "crit": 3,
+      "movement": 1
+     }
+    },
+    {
+     "level": 7,
+     "grants": {
+      "strength": 1,
+      "precision": 1,
+      "itemSlots": 1,
+      "accuracy": 5,
+      "crit": 3
+     }
+    },
+    {
+     "level": 8,
+     "grants": {
+      "precision": 1,
+      "staminaMax": 1,
+      "vision": 1,
+      "dodge": 5,
+      "luck": 2
+     }
+    },
+    {
+     "level": 9,
+     "grants": {
+      "strength": 1,
+      "health": 1,
+      "itemSlots": 1,
+      "accuracy": 5,
+      "crit": 4,
+      "dodge": 2
+     }
+    },
+    {
+     "level": 10,
+     "grants": {
+      "precision": 1,
+      "staminaRegen": 1,
+      "resist": 1,
+      "dodge": 3,
+      "crit": 3
+     },
+     "note": "The single Resist grant of the run — a rogue with no Resist at all is free food for any mage, and this is the cheapest place to fix that."
+    }
+   ]
+  },
+  {
+   "id": "class.mage",
+   "name": "Mage",
+   "source": "AUTHORED",
+   "note": "Four Magic grants, rationed against the Warrior's four Strength — Magic prices at 1.5 because it scales off the party-wide sum. Precision matters too: staves scale their basic attacks off it. Never granted Armor at any level; the L5 choice is the only way a Mage gets any. Never gains Movement.",
+   "rows": [
+    {
+     "level": 1,
+     "grants": {},
+     "note": "starting line"
+    },
+    {
+     "level": 2,
+     "specialty": true,
+     "grants": {
+      "magic": 1,
+      "staminaMax": 1,
+      "accuracy": 5,
+      "vision": 1
+     }
+    },
+    {
+     "level": 3,
+     "grants": {
+      "precision": 1,
+      "health": 1,
+      "resist": 1,
+      "itemSlots": 1,
+      "crit": 2
+     }
+    },
+    {
+     "level": 4,
+     "grants": {
+      "magic": 1,
+      "staminaMax": 1,
+      "accuracy": 5,
+      "dodge": 3
+     }
+    },
+    {
+     "level": 5,
+     "grants": {
+      "itemSlots": 1,
+      "accuracy": 2,
+      "dodge": 1
+     },
+     "choice": {
+      "pick": 1,
+      "options": [
+       {
+        "magic": 2
+       },
+       {
+        "precision": 2
+       },
+       {
+        "health": 5
+       },
+       {
+        "accuracy": 15
+       },
+       {
+        "armor": 1
+       },
+       {
+        "resist": 1
+       },
+       {
+        "vision": 2
+       }
+      ]
+     }
+    },
+    {
+     "level": 6,
+     "grants": {
+      "precision": 1,
+      "staminaRegen": 1,
+      "vision": 1,
+      "accuracy": 5
+     }
+    },
+    {
+     "level": 7,
+     "grants": {
+      "magic": 1,
+      "resist": 1,
+      "staminaMax": 1,
+      "crit": 2
+     }
+    },
+    {
+     "level": 8,
+     "grants": {
+      "precision": 1,
+      "health": 1,
+      "itemSlots": 1,
+      "accuracy": 5,
+      "dodge": 3
+     }
+    },
+    {
+     "level": 9,
+     "grants": {
+      "precision": 1,
+      "vision": 1,
+      "accuracy": 5,
+      "crit": 2,
+      "dodge": 2
+     }
+    },
+    {
+     "level": 10,
+     "grants": {
+      "magic": 1,
+      "staminaRegen": 1,
+      "precision": 1,
+      "itemSlots": 1,
+      "accuracy": 5
+     }
+    }
+   ]
+  },
+  {
+   "id": "class.priest",
+   "name": "Priest",
+   "source": "AUTHORED",
+   "note": "Accuracy at every single level and four Crit across the whole run — 'hits soft, hits reliably' written as numbers. Five Health grants and two Toughness make it the second-hardest thing to kill, which it has to be: it is the only class standing between a fallen hero and the clock. Never gains Movement.",
+   "rows": [
+    {
+     "level": 1,
+     "grants": {},
+     "note": "starting line"
+    },
+    {
+     "level": 2,
+     "specialty": true,
+     "grants": {
+      "spirit": 1,
+      "health": 1,
+      "staminaMax": 1,
+      "accuracy": 5
+     }
+    },
+    {
+     "level": 3,
+     "grants": {
+      "precision": 1,
+      "resist": 1,
+      "itemSlots": 1,
+      "health": 1,
+      "accuracy": 3
+     }
+    },
+    {
+     "level": 4,
+     "grants": {
+      "spirit": 1,
+      "staminaMax": 1,
+      "accuracy": 5,
+      "toughness": 1
+     }
+    },
+    {
+     "level": 5,
+     "grants": {
+      "itemSlots": 1,
+      "accuracy": 3,
+      "dodge": 1
+     },
+     "choice": {
+      "pick": 1,
+      "options": [
+       {
+        "spirit": 2
+       },
+       {
+        "precision": 2
+       },
+       {
+        "health": 5
+       },
+       {
+        "accuracy": 15
+       },
+       {
+        "armor": 1
+       },
+       {
+        "resist": 1
+       },
+       {
+        "deathbedFighting": 20
+       }
+      ]
+     },
+     "note": "The Deathbed option is the only place on any table where a level grants Deathbed Fighting directly. Deathbed is derived, 20 + 5x Toughness, so this is a flat modifier hanging off the level row, exactly as a badge would."
+    },
+    {
+     "level": 6,
+     "grants": {
+      "precision": 1,
+      "staminaRegen": 1,
+      "health": 1,
+      "accuracy": 5
+     }
+    },
+    {
+     "level": 7,
+     "grants": {
+      "spirit": 1,
+      "resist": 1,
+      "staminaMax": 1,
+      "crit": 2
+     }
+    },
+    {
+     "level": 8,
+     "grants": {
+      "precision": 1,
+      "health": 1,
+      "itemSlots": 1,
+      "accuracy": 5,
+      "dodge": 2
+     }
+    },
+    {
+     "level": 9,
+     "grants": {
+      "spirit": 1,
+      "toughness": 1,
+      "accuracy": 5,
+      "dodge": 2,
+      "luck": 1
+     }
+    },
+    {
+     "level": 10,
+     "grants": {
+      "precision": 1,
+      "staminaRegen": 1,
+      "health": 1,
+      "itemSlots": 1,
+      "accuracy": 5,
+      "crit": 2
+     }
+    }
+   ]
+  },
+  {
+   "id": "class.paladin",
+   "name": "Paladin",
+   "source": "AUTHORED · Luck added by 2026-08-20",
+   "note": "Three Armor and two Resist — five points of mitigation against the Warrior's two, and the reason every row is short. Armor and Resist are the two most expensive things on the ladder at 2.0, so the Paladin buys them by going without breadth: two Item Slots, one Dodge grant, four Crit. Health at every level from 2 upward is the Paladin's answer to the Warrior's freebie. Movement: +1 at level 10. Luck at 5, 7 and 9 for +5 total — the anti-crit stat on the class that is built to be hit.",
+   "rows": [
+    {
+     "level": 1,
+     "grants": {},
+     "note": "starting line"
+    },
+    {
+     "level": 2,
+     "specialty": true,
+     "grants": {
+      "armor": 1,
+      "health": 1,
+      "accuracy": 5
+     }
+    },
+    {
+     "level": 3,
+     "grants": {
+      "strength": 1,
+      "health": 1,
+      "staminaMax": 1,
+      "itemSlots": 1,
+      "crit": 2
+     }
+    },
+    {
+     "level": 4,
+     "grants": {
+      "resist": 1,
+      "health": 1,
+      "toughness": 1,
+      "accuracy": 3
+     }
+    },
+    {
+     "level": 5,
+     "grants": {
+      "health": 1,
+      "staminaMax": 1,
+      "accuracy": 2,
+      "luck": 2
+     },
+     "choice": {
+      "pick": 1,
+      "options": [
+       {
+        "strength": 2
+       },
+       {
+        "armor": 1
+       },
+       {
+        "resist": 1
+       },
+       {
+        "health": 5
+       },
+       {
+        "spirit": 2
+       },
+       {
+        "accuracy": 15
+       }
+      ]
+     }
+    },
+    {
+     "level": 6,
+     "grants": {
+      "strength": 1,
+      "staminaRegen": 1,
+      "health": 1,
+      "toughness": 1,
+      "accuracy": 3
+     }
+    },
+    {
+     "level": 7,
+     "grants": {
+      "armor": 1,
+      "health": 1,
+      "staminaMax": 1,
+      "crit": 2,
+      "luck": 2
+     }
+    },
+    {
+     "level": 8,
+     "grants": {
+      "strength": 1,
+      "health": 1,
+      "itemSlots": 1,
+      "accuracy": 5,
+      "toughness": 1
+     }
+    },
+    {
+     "level": 9,
+     "grants": {
+      "resist": 1,
+      "health": 1,
+      "accuracy": 3,
+      "dodge": 2,
+      "luck": 1
+     }
+    },
+    {
+     "level": 10,
+     "grants": {
+      "strength": 1,
+      "staminaRegen": 1,
+      "armor": 1,
+      "health": 1,
+      "accuracy": 1,
+      "movement": 1
+     }
+    }
+   ]
+  },
+  {
+   "id": "class.civilian",
+   "name": "Civilian",
+   "source": "AUTHORED",
+   "note": "No Stamina Max and no Stamina Regen at any level — a civilian has no stamina bar, and that absence is the whole shape of the table. What it gets instead is Item Slots: six across the run, more than any other class. A civilian's power comes from what it is carrying, not from what it is. The widest L5 list in the game, ten options, because a civilian with no primary stats is defined by what it has been through. Movement: +1 at level 9.",
+   "rows": [
+    {
+     "level": 1,
+     "grants": {},
+     "note": "starting line"
+    },
+    {
+     "level": 2,
+     "specialty": true,
+     "grants": {
+      "health": 1,
+      "itemSlots": 1,
+      "accuracy": 5
+     }
+    },
+    {
+     "level": 3,
+     "grants": {
+      "strength": 1,
+      "health": 1,
+      "itemSlots": 1,
+      "accuracy": 3
+     }
+    },
+    {
+     "level": 4,
+     "grants": {
+      "precision": 1,
+      "health": 1,
+      "resist": 1,
+      "dodge": 3
+     }
+    },
+    {
+     "level": 5,
+     "grants": {
+      "itemSlots": 1,
+      "accuracy": 3,
+      "luck": 1
+     },
+     "choice": {
+      "pick": 1,
+      "options": [
+       {
+        "strength": 2
+       },
+       {
+        "precision": 2
+       },
+       {
+        "health": 5
+       },
+       {
+        "accuracy": 15
+       },
+       {
+        "armor": 1
+       },
+       {
+        "resist": 1
+       },
+       {
+        "magic": 2
+       },
+       {
+        "spirit": 2
+       },
+       {
+        "dodge": 10
+       },
+       {
+        "crit": 8
+       }
+      ]
+     }
+    },
+    {
+     "level": 6,
+     "grants": {
+      "health": 1,
+      "itemSlots": 1,
+      "vision": 1,
+      "accuracy": 5,
+      "crit": 2
+     }
+    },
+    {
+     "level": 7,
+     "grants": {
+      "strength": 1,
+      "precision": 1,
+      "health": 1,
+      "dodge": 3
+     }
+    },
+    {
+     "level": 8,
+     "grants": {
+      "armor": 1,
+      "itemSlots": 1,
+      "accuracy": 3,
+      "luck": 1
+     }
+    },
+    {
+     "level": 9,
+     "grants": {
+      "health": 1,
+      "toughness": 1,
+      "accuracy": 5,
+      "crit": 2,
+      "dodge": 2,
+      "movement": 1
+     }
+    },
+    {
+     "level": 10,
+     "grants": {
+      "strength": 1,
+      "precision": 1,
+      "itemSlots": 1,
+      "health": 1,
+      "accuracy": 5
+     }
+    }
+   ]
+  },
+  {
+   "id": "class.beast",
+   "name": "Beast",
+   "rows": [
+    {
+     "level": 1,
+     "grants": {},
+     "note": "starting line"
+    },
+    {
+     "level": 2,
+     "specialty": true,
+     "grants": {
+      "health": 2,
+      "strength": 1,
+      "staminaMax": 1,
+      "accuracy": 5
+     }
+    },
+    {
+     "level": 3,
+     "grants": {
+      "health": 2,
+      "movement": 1,
+      "toughness": 1,
+      "crit": 3
+     }
+    },
+    {
+     "level": 4,
+     "grants": {
+      "health": 2,
+      "strength": 1,
+      "armor": 1,
+      "dodge": 5
+     }
+    },
+    {
+     "level": 5,
+     "grants": {
+      "health": 2
+     },
+     "choice": {
+      "pick": 1,
+      "options": [
+       {
+        "strength": 2
+       },
+       {
+        "health": 6
+       },
+       {
+        "armor": 1
+       },
+       {
+        "resist": 1
+       },
+       {
+        "reach": 1
+       },
+       {
+        "dodge": 15
+       }
+      ]
+     },
+     "note": "No Item Slot option, because the Beast never gets one. Reach is on the list instead — it is the stat that changes how a Beast plays."
+    },
+    {
+     "level": 6,
+     "grants": {
+      "health": 2,
+      "staminaRegen": 1,
+      "reach": 1,
+      "accuracy": 5
+     }
+    },
+    {
+     "level": 7,
+     "grants": {
+      "health": 2,
+      "strength": 1,
+      "movement": 1,
+      "toughness": 1,
+      "crit": 3
+     }
+    },
+    {
+     "level": 8,
+     "grants": {
+      "health": 2,
+      "precision": 1,
+      "resist": 1,
+      "dodge": 5
+     }
+    },
+    {
+     "level": 9,
+     "grants": {
+      "health": 2,
+      "strength": 1,
+      "reach": 1,
+      "staminaMax": 1,
+      "luck": 3
+     }
+    },
+    {
+     "level": 10,
+     "grants": {
+      "health": 2,
+      "staminaRegen": 1,
+      "armor": 1,
+      "accuracy": 5
+     }
+    }
+   ]
+  }
+ ]
+}

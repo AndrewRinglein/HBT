@@ -2013,6 +2013,7 @@
    },
    "notes": [
     "Toughness 1 is hell-tcg maxAfflictions, ported straight across — same meaning.",
+    "Levels on civilian.farmer rather than the class.civilian table — ruled 2026-09-03.",
     "Stat block dictated 2026-08-25: Farmer, dictated 2026-08-25. A pitchfork and enough sense to use it pointy-end first. Movement 5 INFERRED (not dictated; as the other adult civilians)."
    ],
    "specialty": null,
@@ -2037,6 +2038,7 @@
    "passiveDescription": null,
    "additionalClasses": null,
    "subtype": "Farmer",
+   "levelTable": "civilian.farmer",
    "derivedDeltas": {
     "luck": 2
    },
@@ -2163,7 +2165,8 @@
     "bleedOutTurns": 5
    },
    "notes": [
-    "Toughness 1 is hell-tcg maxAfflictions, ported straight across — same meaning."
+    "Toughness 1 is hell-tcg maxAfflictions, ported straight across — same meaning.",
+    "Levels on civilian.farmer rather than the class.civilian table — ruled 2026-09-03."
    ],
    "specialty": null,
    "originBadges": [],
@@ -2185,6 +2188,7 @@
    "passiveDescription": null,
    "additionalClasses": null,
    "subtype": "Farming Family",
+   "levelTable": "civilian.farmer",
    "personality": [
     "fearful"
    ]
@@ -2353,6 +2357,7 @@
    },
    "notes": [
     "Toughness 1 is hell-tcg maxAfflictions, ported straight across — same meaning.",
+    "Levels on civilian.farmer rather than the class.civilian table — ruled 2026-09-03.",
     "Renamed \"Group of Farmers\" -> \"Farmer with a Hat\", ruled 2026-08-25.",
     "Stat block dictated 2026-08-25: Farmer with a Hat, dictated 2026-08-25: same stats as the Farmer but crit 5, luck 0 — the hat is confidence, not fortune. Movement 5, pitchfork and survival reward INFERRED as shared with the Farmer (dictated \"same stats but\")."
    ],
@@ -2376,6 +2381,7 @@
    "passiveDescription": null,
    "additionalClasses": null,
    "subtype": "Farmer with a Hat",
+   "levelTable": "civilian.farmer",
    "derivedDeltas": {
     "crit": 2
    },
