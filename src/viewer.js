@@ -42,10 +42,11 @@ export const DUR = { 'unit.enter': 0, 'turn.begin': 420, 'phase.begin': 120, 'mo
   'unit.equipped': 0, 'encounter.begin': 0, 'encounter.objective': 0, 'encounter.wave': 900, 'encounter.roll': 0, 'unit.shunted': 200,
   'encounter.won': 900, 'encounter.lost': 900, 'move.stopped': 520, 'aoo.provoked': 700, 'aoo.skipped': 0, 'attack.cancelled': 120,
   'corpse.created': 0, 'corpse.removed': 380, 'unit.raised': 640, 'corpse.eaten': 300, 'unit.obliterated': 520,
-  'deathbed.stood': 900, 'deathbed.fell': 800, 'deathbed.exhausted': 500, 'hp.reset': 320, 'bleedout.accelerated': 320,
+  /* the Deathbed Fighting modal holds the game (ruled 2026-09-03 evening): DB_TOTAL + a breath */
+  'deathbed.stood': 2800, 'deathbed.fell': 2800, 'deathbed.exhausted': 2800, 'hp.reset': 320, 'bleedout.accelerated': 320,
   'surge.checked': 0, 'surge.hit': 600, 'power.gained': 320, 'heal.boosted': 200, 'status.cancelled': 220, 'maxHp.gained': 240,
   'stamina.drained': 160, 'layer.painted': 0, 'layer.cancelled': 0, 'band.advanced': 900, 'night.fell': 1200, 'light.cast': 0,
-  'ai.mode': 0, 'ai.hunts': 260 }
+  'ai.mode': 0, 'ai.hunts': 260, 'ai.override': 0 }
 /* a RUN of ground paints folds as one beat (night falls on 256 hexes, the
    heroes light ~100 each phase): the pump paints them together and holds this */
 const PAINT_RUN_MS = 260

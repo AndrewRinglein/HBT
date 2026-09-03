@@ -77,7 +77,9 @@ ARTMAP = {
  'alpha-osric':     {'token':'osric_256.png',     'card':'card-osric',    'src':'battle-tokens/units/osric_256.png',     'cardsrc':'crucible/art/base/paladin-shiney1.png'},
  'arc-golem':       {'token':'stone-golem_256.png','card':'card-golem',   'src':'HELL:assets/hex-tokens/stone-golem_256.png','cardsrc':'assets/bestiary/eve/stone-golem.png','height':2.0},
  'hero.base.priest-armored':{'token':'priest-armored_256.png','card':'card-priestarm','src':'battle-tokens/units/priest-armored_256.png','cardsrc':'crucible/art/base/priest-armored1.png'},
- 'hero.base.warrior-iron':  {'token':'warrior-iron_256.png',  'card':'card-warriron', 'src':'battle-tokens/units/warrior-iron_256.png',  'cardsrc':'crucible/art/base/warrior-iron1.png'},
+ # the Eve warriors are DWARFS (Angela 2026-09-03: "scaled to the same height as humans, they look massive") — the
+ # stature ladder's child rung (0.60 of a human, create-battle-token skill): artmap 0.95 against the human 1.55
+ 'hero.base.warrior-iron':  {'token':'warrior-iron_256.png',  'card':'card-warriron', 'src':'battle-tokens/units/warrior-iron_256.png',  'cardsrc':'crucible/art/base/warrior-iron1.png','height':0.95},
  # ── the encounters (2026-09-03): Supper, The Kiln, Horrors of the Night ────
  # Exact cutouts from battle-tokens/ and the hobat bestiary paintings for the
  # cards. The Supper villagers have no hex art at all — honest standees, never

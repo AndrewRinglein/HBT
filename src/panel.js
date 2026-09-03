@@ -90,9 +90,10 @@ export function drawPanel(V) {
   if (u.raised) facts.push('<b>RAISED</b> from a corpse — leaves none')
   else if (u.arrived) facts.push(`arrived mid-battle <span style="color:#6f6857">(${u.arrived})</span>`)
   if (u.hunt != null && S.U[u.hunt]) facts.push(`hunts <b>${S.U[u.hunt].name}</b>`)
+  if (u.aiOverride) facts.push(`the encounter sets its mind to <b>${u.aiOverride.mode}</b> through Turn ${u.aiOverride.untilTurn}${S.turnNo > u.aiOverride.untilTurn ? ' — over' : ''}`)
   if (taunt) facts.push(`taunted by <b>${taunt.name}</b> — must target it`)
   if (u.confusedFrom) facts.push(`<b>confused</b> — ran a different mode this activation <span style="color:#6f6857">(was ${u.confusedFrom})</span>`)
-  if (u.stands != null) facts.push(`Deathbed stands used: <b>${u.stands}</b>${d.stands != null ? ' of ' + d.stands : ''}`)
+  if (u.rolls != null) facts.push(`Deathbed Fighting rolls made: <b>${u.rolls}</b>${d.stands != null ? ' of ' + d.stands : ''}`)
   const kitLine = (u.kit && u.kit.items.length) ? `<b style="color:#cbc3ae">Kit</b> ${u.kit.items.map(i => i.replace(/^item\./, '')).join(', ')}<br>` : ''
   const factsBlock = facts.length ? `<div style="margin:0 18px 8px;padding:6px 9px;background:#14120e;border:1px solid var(--border);border-radius:2px;font-size:11.5px;line-height:1.6;color:#a9a394">${facts.join('<br>')}</div>` : ''
   const statsOpen = view.statsOpen

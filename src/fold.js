@@ -51,8 +51,8 @@ function mkUnit(e, UD) {
        attacks they grant, the powers they grant — the bare row has none of it */
     kit: { items: [], grants: [], abilities: [] },
     wound: 0,               // Deathbed wound level: 0 · 1 Wounded · 2 Badly Wounded
-    stands: null,           // stands used, from deathbed.stood/fell `ordinal`; deathbed.exhausted says none left
-    arrived: e.arrived || null, raised: false, objective: false, hunt: null, confusedFrom: null, moveMods: null }
+    rolls: null,            // Deathbed Fighting rolls made, from deathbed.stood/fell `ordinal`; deathbed.exhausted says none left
+    arrived: e.arrived || null, raised: false, objective: false, hunt: null, confusedFrom: null, moveMods: null, aiOverride: null }
 }
 
 /** Fold ONE event into S. ctx = {UD, SN}. Returns the cues to play. */
@@ -296,23 +296,27 @@ export function fold(S, e, ctx, now = 0) {
         cue('fx.attack', { kind: 'ranged', dt: 'magic', a: e.actor, t: e.target, dmg: null })
       break
     /* ── the consequence stack (§4) ─────────────────────────────────────── */
+    /* DEATHBED FIGHTING (Angela, 2026-09-03 evening, VISUAL-BATTLE-UPDATES §3.2):
+       "a pop-up, the game should freeze, and it should say 'Unit downed,
+       deathbed fighting roll'. Then, if it passes, a very bold statement:
+       'Deathbed fighting: this hero fights on.'" — a MODAL cue, never a float,
+       and never the word "stands" where the player reads. The roll and the
+       chance are the event's, verbatim (n/of, the root law's catch). The wound
+       level lands on the unit as the dripping blood. */
     case 'deathbed.stood':
-      /* the hero at 0 STANDS: the roll against the chance, then the wound
-         level on the unit from here on (a dripping-blood visual on the token
-         — Angela, 2026-09-03, VISUAL-BATTLE-UPDATES §3.2) */
       if (U[e.target]) { const u = U[e.target]
-        u.wound = e.woundLevel; u.stands = e.ordinal
-        cue('float', { hex: u.hex, kind: 'stood', text: 'STANDS · rolled ' + e.roll + ' vs ' + e.chance, n: e.roll, of: 'roll', big: true })
+        u.wound = e.woundLevel; u.rolls = e.ordinal
+        cue('deathbed', { id: e.target, result: 'stood', n: e.roll, of: 'roll', chance: e.chance, chanceOf: 'chance' })
         cue('stand', { id: e.target })
         S.subjectId = e.target; S.subjectMode = 'target' }
       break
     case 'deathbed.fell':
-      if (U[e.target]) { U[e.target].stands = e.ordinal
-        cue('float', { hex: U[e.target].hex, kind: 'fell', text: 'FALLS · rolled ' + e.roll + ' vs ' + e.chance, n: e.roll, of: 'roll', big: true }) }
+      if (U[e.target]) { U[e.target].rolls = e.ordinal
+        cue('deathbed', { id: e.target, result: 'fell', n: e.roll, of: 'roll', chance: e.chance, chanceOf: 'chance' }) }
       break
     case 'deathbed.exhausted':
-      /* no roll left (heroes two stands, civilians one): straight to downed */
-      if (U[e.target]) cue('float', { hex: U[e.target].hex, kind: 'fell', text: 'NO STANDS LEFT', small: true })
+      /* no roll left (heroes two, civilians one): straight to downed */
+      if (U[e.target]) cue('deathbed', { id: e.target, result: 'exhausted' })
       break
     case 'hp.reset':
       /* the fresh bar after a stand */
@@ -379,6 +383,11 @@ export function fold(S, e, ctx, now = 0) {
       if (U[e.actor] && e.confusedFrom) { U[e.actor].confusedFrom = e.confusedFrom
         cue('float', { hex: U[e.actor].hex, kind: 'status', statusId: 'status.confusion', text: 'CONFUSED', small: true }) }
       break
+    case 'ai.override':
+      /* the encounter overrides a civilian's mode until a Turn ends (ai.civilian-flight,
+         ruled 2026-09-03 after Angela watched Supper seed 5): held on the unit for the panel */
+      if (U[e.actor]) U[e.actor].aiOverride = { mode: e.mode, untilTurn: e.untilTurn }
+      break
     case 'ai.hunts':
       if (U[e.actor]) { U[e.actor].hunt = e.target
         cue('float', { hex: U[e.actor].hex, kind: 'note', text: 'HUNTS', small: true }) }     // the panel names the quarry
@@ -425,4 +434,4 @@ export const FOLDED_TYPES = ['unit.enter', 'battle.begin', 'unit.equipped', 'tur
   'deathbed.stood', 'deathbed.fell', 'deathbed.exhausted', 'hp.reset',
   'surge.checked', 'surge.hit', 'power.gained',
   'layer.painted', 'layer.cancelled', 'band.advanced', 'night.fell', 'light.cast',
-  'ai.mode', 'ai.hunts']
+  'ai.mode', 'ai.hunts', 'ai.override']

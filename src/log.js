@@ -63,9 +63,9 @@ export function buildLog(events, SN, turns) {
       case 'unit.raised': return b('enemy', `&nbsp;&nbsp;<b>${NAMES[e.raised] ?? '#' + e.raised}</b> rises at hex ${e.hex} <span class="sq">· raised by ${nmAt(e)} from ${e.from}</span>`)
       case 'corpse.eaten': return b('status', `&nbsp;&nbsp;<b>${nmAt(e)}</b> eats a corpse <span class="sq">· ${e.of}</span>`)
       case 'unit.obliterated': return b('down', `&nbsp;&nbsp;<b>${nmT(e)}</b> is OBLITERATED <span class="sq">· shadow ${e.shadow} ≥ max health ${e.maxHp}</span>`)
-      case 'deathbed.stood': return b('status', `&nbsp;&nbsp;<b>${nmT(e)}</b> STANDS at the Deathbed <span class="sq">· rolled ${e.roll} vs ${e.chance} · wound level ${e.woundLevel} · stand ${e.ordinal}</span>`)
-      case 'deathbed.fell': return b('down', `&nbsp;&nbsp;<b>${nmT(e)}</b> falls at the Deathbed <span class="sq">· rolled ${e.roll} vs ${e.chance}</span>`)
-      case 'deathbed.exhausted': return b('down', `&nbsp;&nbsp;<b>${nmT(e)}</b> has no stand left <span class="sq">· ${e.stands} used</span>`)
+      case 'deathbed.stood': return b('status', `&nbsp;&nbsp;<b>${nmT(e)}</b> downed — Deathbed Fighting: <b>fights on</b> <span class="sq">· rolled ${e.roll} vs ${e.chance} · wound level ${e.woundLevel} · roll ${e.ordinal}</span>`)
+      case 'deathbed.fell': return b('down', `&nbsp;&nbsp;<b>${nmT(e)}</b> downed — Deathbed Fighting: falls <span class="sq">· rolled ${e.roll} vs ${e.chance}</span>`)
+      case 'deathbed.exhausted': return b('down', `&nbsp;&nbsp;<b>${nmT(e)}</b> downed — no Deathbed Fighting roll left <span class="sq">· ${e.stands} made</span>`)
       case 'hp.reset': return b('status', `&nbsp;&nbsp;&nbsp;&nbsp;<b>${nmT(e)}</b> fights on at ${e.hp} / ${e.maxHp} <span class="sq">· wound level ${e.woundLevel}</span>`)
       case 'bleedout.accelerated': return b('down', `&nbsp;&nbsp;&nbsp;&nbsp;<b>${nmT(e)}</b>'s bleed-out moved to ${e.bleedOut} <span class="sq">· ${e.steps} step${e.steps === 1 ? '' : 's'}</span>`)
       case 'surge.checked': return b('', `&nbsp;&nbsp;&nbsp;&nbsp;surge check — rolled ${e.roll} vs ${e.chance}${e.hit ? ' — <b>SURGE</b>' : ''}`)
@@ -78,6 +78,7 @@ export function buildLog(events, SN, turns) {
       case 'band.advanced': return b('turn', `— the band advances: row ${e.row} ${String(e.layer).replace(/^layer\./, '')} —`)
       case 'night.fell': return b('turn', `— night falls: ${e.hexes} hexes dark —`)
       case 'light.cast': return b('status', `&nbsp;&nbsp;the heroes light ${e.hexes} hexes`)
+      case 'ai.override': return b('status', `&nbsp;&nbsp;${nmAt(e)} — ${e.mode} until Turn ${e.untilTurn} <span class="sq">· ${e.causeId}</span>`)
       case 'ai.hunts': return b(side(e), `&nbsp;&nbsp;&nbsp;&nbsp;${nmAt(e)} hunts <b>${nmT(e)}</b>`)
       case 'ai.mode': return e.confusedFrom ? b('status', `&nbsp;&nbsp;&nbsp;&nbsp;${nmAt(e)} is confused — ${e.mode} <span class="sq">· was ${e.confusedFrom}</span>`) : null
       default: return null

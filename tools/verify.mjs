@@ -463,10 +463,22 @@ if (DUR) for (const t of Object.keys(DUR)) check(FOLDED_TYPES.includes(t) || IGN
       const j = EV.findIndex((x, k) => k > i && x.type === 'attack.declared')
       /* folded by hand: foldTo() clears the lingering AOO, as it clears AIM */
       if (j > 0 && EV[j].actor === e.actor) { const S2 = createState(); for (let k = 0; k <= j; k++) fold(S2, EV[k], CTX, 0); check(S2.AIM && S2.AIM.aoo, `${label}: the attack after aoo.provoked at ${i} is not marked as one`) } }
-    /* the Deathbed: the stand's float names the roll, the wound level lands on the unit, the blood shows, hp.reset restores the bar */
+    /* the Deathbed (ruled 2026-09-03 evening): a MODAL, never a float and never the word "stands"; the roll and
+       chance verbatim; stage one says UNIT DOWNED, stage two the bold result; the wound level lands on the
+       unit, the blood shows, hp.reset restores the bar */
+    { const S = createState(); for (const e of EV) for (const c of fold(S, e, CTX, 0)) {
+        if (/^deathbed\./.test(e.type)) { check(!(c.k === 'float'), `${label}: ${e.type} floats "${c.text}" — the Deathbed is a modal`)
+          if (c.k === 'deathbed' && c.n != null) check(e[c.of] === c.n && e[c.chanceOf] === c.chance, `${label}: the Deathbed modal carries roll ${c.n}/chance ${c.chance}, the event says ${e.roll}/${e.chance}`) } } }
     for (const [e, i] of byType(EV, 'deathbed.stood').slice(0, 3)) {
       const S = foldTo(EV, i, CTX); const cues = fold(S, e, CTX, 0)
-      check(cues.some(c => c.k === 'float' && c.kind === 'stood' && c.n === e.roll && c.of === 'roll'), `${label}: deathbed.stood at ${i} floats no roll`)
+      check(cues.some(c => c.k === 'deathbed' && c.result === 'stood' && c.n === e.roll), `${label}: deathbed.stood at ${i} cued no modal`)
+      v.seek(i); v.step()
+      const wrap = V.dom.stage.parentNode, m = wrap.querySelector('.dbModal')
+      check(m && /UNIT DOWNED/.test(m.innerHTML) && /Deathbed Fighting roll/.test(m.innerHTML) && new RegExp('<b>' + e.roll + '</b> vs ' + e.chance).test(m.innerHTML), `${label}: the Deathbed modal's first stage is wrong or missing at ${i}`)
+      const plateHTML = () => m ? m.querySelector('.dbPlate').innerHTML : ''      // the fake DOM's innerHTML is per element, not re-serialised
+      win._flush(1200); check(/DEATHBED FIGHTING/.test(plateHTML()) && /This hero fights on\./.test(plateHTML()), `${label}: the Deathbed modal's second stage does not say the hero fights on`)
+      check(!/stands/i.test(plateHTML()), `${label}: the Deathbed modal says "stands"`)
+      win._flush(2000); check(!wrap.querySelector('.dbModal'), `${label}: the Deathbed modal did not leave`)
       check(S.U[e.target].wound === e.woundLevel, `${label}: after deathbed.stood unit ${e.target} carries wound ${S.U[e.target].wound}, event says ${e.woundLevel}`)
       const r = EV.findIndex((x, k) => k > i && x.type === 'hp.reset' && x.target === e.target)
       if (r > 0) { v.seek(r + 1); v.render(); const u = v.state.U[e.target], E = V.layers.UEL.get(e.target)
@@ -474,7 +486,9 @@ if (DUR) for (const t of Object.keys(DUR)) check(FOLDED_TYPES.includes(t) || IGN
         check(E && E.blood.style.display !== 'none', `${label}: unit ${e.target} stood at the Deathbed but wears no blood`)
         check(E && (u.wound >= 2) === /badly/.test(E.blood.className), `${label}: unit ${e.target} at wound ${u.wound} has blood class "${E && E.blood.className}"`) } }
     { const S = foldTo(EV, bb + 1, CTX); for (const u of Object.values(S.U)) { const E = V.layers.UEL.get(u.id); v.seek(bb + 1); v.render(); if (E && u.wound === 0) check(E.blood.style.display === 'none', `${label}: unwounded unit ${u.id} bleeds`); break } }
-    for (const [e, i] of byType(EV, 'deathbed.fell').slice(0, 2)) { const S = foldTo(EV, i, CTX); check(fold(S, e, CTX, 0).some(c => c.k === 'float' && c.kind === 'fell' && c.n === e.roll), `${label}: deathbed.fell at ${i} floats no roll`) }
+    for (const [e, i] of byType(EV, 'deathbed.fell').slice(0, 2)) { const S = foldTo(EV, i, CTX); check(fold(S, e, CTX, 0).some(c => c.k === 'deathbed' && c.result === 'fell' && c.n === e.roll), `${label}: deathbed.fell at ${i} cued no modal`)
+      v.seek(i); v.step(); win._flush(1200); const m = V.dom.stage.parentNode.querySelector('.dbModal'); check(m && /This hero falls\./.test(m.querySelector('.dbPlate').innerHTML), `${label}: the fell modal does not say the hero falls`); win._flush(2000) }
+    for (const [e, i] of byType(EV, 'deathbed.exhausted').slice(0, 1)) { v.seek(i); v.step(); const m = V.dom.stage.parentNode.querySelector('.dbModal'); check(m && /No Deathbed Fighting roll left/.test(m.innerHTML), `${label}: the exhausted modal is wrong or missing`); win._flush(3000) }
     for (const [e, i] of byType(EV, 'bleedout.accelerated').slice(0, 2)) { const S = foldTo(EV, i + 1, CTX); check(S.U[e.target].bleed === e.bleedOut, `${label}: bleedout.accelerated left the counter at ${S.U[e.target].bleed}, event says ${e.bleedOut}`) }
     /* banners: a wave, the band, night, the objective — a node in the wrap that leaves */
     for (const t of ['encounter.wave', 'band.advanced', 'night.fell', 'encounter.lost', 'encounter.won']) {

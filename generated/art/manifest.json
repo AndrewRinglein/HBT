@@ -324,7 +324,7 @@
    "token": "warrior-iron_256.png",
    "card": "card-warriron.jpg",
    "aspect": 0.6758,
-   "height": 1.55
+   "height": 0.95
   },
   "hero.base.mage-fire": {
    "token": "mage-fire_256.png",

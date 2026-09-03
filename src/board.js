@@ -481,6 +481,35 @@ export function standBeat(V, id) {
   E.img.animate([{ transform: 'scaleY(.82)' }, { transform: 'scaleY(1.06)', offset: .6 }, { transform: 'scaleY(1)' }], { duration: 520, easing: 'cubic-bezier(.2,1.2,.4,1)' })
 }
 
+/* DEATHBED FIGHTING — the modal (Angela, 2026-09-03 evening, VISUAL-BATTLE-
+   UPDATES §3.2). Screen space over the board wrap, outside the 3D scene; the
+   pump holds the beat, which is the freeze. Stage one: UNIT DOWNED — Deathbed
+   Fighting roll, the unit's name, the roll against the chance. Stage two: the
+   bold result. The replay times it (DB_STAGE, DB_TOTAL); the game will wait
+   for a click. One at a time — a new one replaces the last. */
+export const DB_STAGE = 1100, DB_TOTAL = 2600
+export function deathbedModal(V, c) {
+  const wrap = V.dom.stage.parentNode, u = V.S.U[c.id]; if (!wrap || !u) return
+  const old = wrap.querySelector('.dbModal'); if (old) { old.remove(); V.fx.nodes.delete(old) }
+  const roll = c.n != null ? `<span class="dbRoll">rolled <b>${c.n}</b> vs ${c.chance}</span>` : ''
+  const stage1 = c.result === 'exhausted'
+    ? `<span class="dbHead">UNIT DOWNED</span><span class="dbSub">No Deathbed Fighting roll left</span><span class="dbName">${u.name}</span>`
+    : `<span class="dbHead">UNIT DOWNED</span><span class="dbSub">Deathbed Fighting roll</span><span class="dbName">${u.name}</span>${roll}`
+  const stage2 = c.result === 'stood'
+    ? `<span class="dbHead gold">DEATHBED FIGHTING</span><span class="dbBold gold">This hero fights on.</span><span class="dbName">${u.name}</span>${roll}`
+    : c.result === 'fell'
+    ? `<span class="dbHead red">DEATHBED FIGHTING</span><span class="dbBold red">This hero falls.</span><span class="dbName">${u.name}</span>${roll}`
+    : `<span class="dbHead red">UNIT DOWNED</span><span class="dbBold red">This hero falls.</span><span class="dbName">${u.name}</span>`
+  const m = el('dbModal ' + c.result, '', `<div class="dbVeil"></div><div class="dbPlate">${stage1}</div>`)
+  wrap.appendChild(m); V.fx.nodes.add(m)
+  const plate = m.querySelector('.dbPlate')
+  if (plate.animate) plate.animate([{ transform: 'scale(1.12)', opacity: 0 }, { transform: 'scale(1)', opacity: 1 }], { duration: 160, easing: 'cubic-bezier(.2,1.2,.4,1)' })
+  const t1 = setTimeout(() => { V.fx.timers.delete(t1); plate.innerHTML = stage2; plate.className = 'dbPlate ' + c.result
+    if (plate.animate) plate.animate([{ transform: 'scale(1.25)' }, { transform: 'scale(1)' }], { duration: 220, easing: 'cubic-bezier(.2,1.3,.4,1)' }) }, DB_STAGE)
+  const t2 = setTimeout(() => { V.fx.timers.delete(t2); m.remove(); V.fx.nodes.delete(m) }, DB_TOTAL)
+  V.fx.timers.add(t1); V.fx.timers.add(t2)
+}
+
 /* ── play the fold's cues on the DOM ───────────────────────────────────── */
 export function playCues(V, cues) {
   for (const c of cues) {
@@ -503,6 +532,7 @@ export function playCues(V, cues) {
       case 'power': powerPulse(V); break
       case 'corpse.gone': corpseGone(V, c.corpse, c.how); break
       case 'stand': standBeat(V, c.id); break
+      case 'deathbed': deathbedModal(V, c); break
     }
   }
 }

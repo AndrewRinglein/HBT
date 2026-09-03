@@ -55,7 +55,7 @@ export const CRIT_HUE = '#ffcf6a'
    beats: held (a zone of control), the attack of opportunity, the Deathbed's
    stood/fell, a bleed-out moved, the rise, the feed, the obliteration, Surge */
 export const NOTE_HUE = { knocked: '#cbb9a0', resisted: '#9fb6c8', absorbed: '#8fd0ff', maxhp: '#d1665c', maxhpUp: '#7ec45f',
-  note: '#cbb9a0', held: '#cbb9a0', aoo: '#ffb070', stood: '#ffe2a0', fell: '#d1665c', bleed: '#ff3226',
+  note: '#cbb9a0', held: '#cbb9a0', aoo: '#ffb070', bleed: '#ff3226',
   raised: '#b48ae0', eaten: '#8ed14f', obliterated: '#6e5bd9', surge: '#ffe2a0' }
 /* the protection bar's spent segment; its live segment is the status hue */
 export const PROT_SPENT = '#2f5b78'
