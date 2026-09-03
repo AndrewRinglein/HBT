@@ -4143,7 +4143,7 @@ until seam.items-per-unit fields one. Seal withheld.
 
 IRON GAUNTLET: NOT PASSED — 1 FLAG(S) WARNED; 1 EXEMPTION(S) TAKEN
 
-## seam.items-per-unit — LANDED `743b3d3` **NEEDS REVIEW**
+## seam.items-per-unit — LANDED `0ea4ad2` (gate recorded 743b3d3, the pre-amend sha) **NEEDS REVIEW**
 2026-09-03 05:40
 
   PASS  dependencies landed

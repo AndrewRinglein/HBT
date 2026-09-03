@@ -1587,7 +1587,7 @@
   "note": "Filed from the kingdom session 2026-09-02. The kingdom's seam (kingdom/src/core/seam.ts battleOptionsOf) will pass hero.equipped once this lands. Plan: engine/ITEMS-PLAN.md §2, §4, §5.",
   "status": "done-needs-review",
   "attempts": 1,
-  "sha": "743b3d3",
+  "sha": "0ea4ad2",
   "gauntlet": "not passed — 2 flag(s) warned"
  },
  {
