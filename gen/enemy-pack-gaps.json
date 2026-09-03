@@ -677,6 +677,26 @@
    "needs": "trigger shape unparsed"
   },
   {
+   "unit": "item.pickaxe",
+   "what": "attack.pickaxe.pick onHit: \"the target loses 1 Armor for the rest of the Battle\"",
+   "needs": "trigger shape unparsed"
+  },
+  {
+   "unit": "item.burning-torch",
+   "what": "statModifier 'vision' 3",
+   "needs": "stat: vision (no UnitDef field)"
+  },
+  {
+   "unit": "item.net",
+   "what": "attack.net.cast onHit: \"apply 1 Root\"",
+   "needs": "trigger shape unparsed"
+  },
+  {
+   "unit": "item.net",
+   "what": "uses: 1",
+   "needs": "charges spent in battle — capability.consumables"
+  },
+  {
    "unit": "item.watchmans-coat",
    "what": "statModifier 'vision' 2",
    "needs": "stat: vision (no UnitDef field)"
@@ -1042,21 +1062,6 @@
    "needs": "an ability with charges/targets — capability.consumables"
   },
   {
-   "unit": "item.torch",
-   "what": "statModifier 'vision' 3",
-   "needs": "stat: vision (no UnitDef field)"
-  },
-  {
-   "unit": "item.torch",
-   "what": "grants power.torch.light",
-   "needs": "item power — shape unparsed"
-  },
-  {
-   "unit": "item.torch",
-   "what": "active: +3 Vision. Once per Battle, free: light a forest h",
-   "needs": "an ability with charges/targets — capability.consumables"
-  },
-  {
    "unit": "item.banner-assassin",
    "what": "grants power.banner-assassin.plant",
    "needs": "item power — shape unparsed"
@@ -1080,6 +1085,191 @@
    "unit": "item.banner-heroism",
    "what": "grants power.banner-heroism.plant",
    "needs": "item power — shape unparsed"
+  },
+  {
+   "unit": "item.torch",
+   "what": "statModifier 'vision' 4",
+   "needs": "stat: vision (no UnitDef field)"
+  },
+  {
+   "unit": "item.cure-poison",
+   "what": "active: Free, 0 Stamina: remove 2 Poison.",
+   "needs": "an ability with charges/targets — capability.consumables"
+  },
+  {
+   "unit": "item.cure-poison",
+   "what": "uses: 1",
+   "needs": "charges spent in battle — capability.consumables"
+  },
+  {
+   "unit": "item.rations",
+   "what": "active: Costs your primary action, 0 Stamina: regain 2 Sta",
+   "needs": "an ability with charges/targets — capability.consumables"
+  },
+  {
+   "unit": "item.rations",
+   "what": "uses: 1",
+   "needs": "charges spent in battle — capability.consumables"
+  },
+  {
+   "unit": "item.healing-potion",
+   "what": "active: Free, 0 Stamina: heal 3.",
+   "needs": "an ability with charges/targets — capability.consumables"
+  },
+  {
+   "unit": "item.healing-potion",
+   "what": "uses: 1",
+   "needs": "charges spent in battle — capability.consumables"
+  },
+  {
+   "unit": "item.bandages",
+   "what": "active: Free, 0 Stamina: stabilize a downed ally — their b",
+   "needs": "an ability with charges/targets — capability.consumables"
+  },
+  {
+   "unit": "item.bandages",
+   "what": "uses: 1",
+   "needs": "charges spent in battle — capability.consumables"
+  },
+  {
+   "unit": "item.backpack",
+   "what": "statModifier 'itemSlots' 2",
+   "needs": "stat: itemSlots (no UnitDef field)"
+  },
+  {
+   "unit": "item.poison-flask",
+   "what": "active: Once per Battle: apply 2 Poison to a target within",
+   "needs": "an ability with charges/targets — capability.consumables"
+  },
+  {
+   "unit": "item.poison-flask",
+   "what": "uses: 1",
+   "needs": "charges spent in battle — capability.consumables"
+  },
+  {
+   "unit": "item.burning-oil",
+   "what": "active: Once per Battle: apply 2 Burn to a target within 3",
+   "needs": "an ability with charges/targets — capability.consumables"
+  },
+  {
+   "unit": "item.burning-oil",
+   "what": "uses: 1",
+   "needs": "charges spent in battle — capability.consumables"
+  },
+  {
+   "unit": "item.greater-healing-potion",
+   "what": "active: Once per Battle, costs your primary action and 1 S",
+   "needs": "an ability with charges/targets — capability.consumables"
+  },
+  {
+   "unit": "item.greater-healing-potion",
+   "what": "uses: 1",
+   "needs": "charges spent in battle — capability.consumables"
+  },
+  {
+   "unit": "item.frenzy-potion",
+   "what": "active: Free: until the end of your Activation, gain +2 St",
+   "needs": "an ability with charges/targets — capability.consumables"
+  },
+  {
+   "unit": "item.frenzy-potion",
+   "what": "uses: 1",
+   "needs": "charges spent in battle — capability.consumables"
+  },
+  {
+   "unit": "item.strength-potion",
+   "what": "active: Once per Battle, 2 Stamina: gain +1 Strength and l",
+   "needs": "an ability with charges/targets — capability.consumables"
+  },
+  {
+   "unit": "item.strength-potion",
+   "what": "uses: 1",
+   "needs": "charges spent in battle — capability.consumables"
+  },
+  {
+   "unit": "item.poison-coating",
+   "what": "active: Once per Battle, 1 Stamina: for the rest of the Ba",
+   "needs": "an ability with charges/targets — capability.consumables"
+  },
+  {
+   "unit": "item.poison-coating",
+   "what": "uses: 1",
+   "needs": "charges spent in battle — capability.consumables"
+  },
+  {
+   "unit": "item.winter-cloak",
+   "what": "active: Once per Battle, 1 Stamina: gain Immunity to Frost",
+   "needs": "an ability with charges/targets — capability.consumables"
+  },
+  {
+   "unit": "item.winter-cloak",
+   "what": "uses: 1",
+   "needs": "charges spent in battle — capability.consumables"
+  },
+  {
+   "unit": "item.brilliant-torch",
+   "what": "statModifier 'vision' 5",
+   "needs": "stat: vision (no UnitDef field)"
+  },
+  {
+   "unit": "item.brilliant-torch",
+   "what": "active: +5 Vision. Once per Battle, 1 Stamina: reveal ever",
+   "needs": "an ability with charges/targets — capability.consumables"
+  },
+  {
+   "unit": "item.brilliant-torch",
+   "what": "uses: 1",
+   "needs": "charges spent in battle — capability.consumables"
+  },
+  {
+   "unit": "item.bear-trap",
+   "what": "active: Once per Battle: place two traps on empty hexes wi",
+   "needs": "an ability with charges/targets — capability.consumables"
+  },
+  {
+   "unit": "item.bear-trap",
+   "what": "uses: 1",
+   "needs": "charges spent in battle — capability.consumables"
+  },
+  {
+   "unit": "item.magic-trap",
+   "what": "active: Once per Battle: place two traps on empty hexes wi",
+   "needs": "an ability with charges/targets — capability.consumables"
+  },
+  {
+   "unit": "item.magic-trap",
+   "what": "uses: 1",
+   "needs": "charges spent in battle — capability.consumables"
+  },
+  {
+   "unit": "item.fire-trap",
+   "what": "active: Once per Battle: place two traps on empty hexes wi",
+   "needs": "an ability with charges/targets — capability.consumables"
+  },
+  {
+   "unit": "item.fire-trap",
+   "what": "uses: 1",
+   "needs": "charges spent in battle — capability.consumables"
+  },
+  {
+   "unit": "item.explosive-trap",
+   "what": "active: Once per Battle: place one trap on an empty hex wi",
+   "needs": "an ability with charges/targets — capability.consumables"
+  },
+  {
+   "unit": "item.explosive-trap",
+   "what": "uses: 1",
+   "needs": "charges spent in battle — capability.consumables"
+  },
+  {
+   "unit": "item.free-movement-potion",
+   "what": "active: Once per Battle, 1 Stamina: the target gains +1 Mo",
+   "needs": "an ability with charges/targets — capability.consumables"
+  },
+  {
+   "unit": "item.free-movement-potion",
+   "what": "uses: 1",
+   "needs": "charges spent in battle — capability.consumables"
   },
   {
    "unit": "item.marching-orders",
@@ -1110,11 +1300,6 @@
    "unit": "item.trackers-eyeglass",
    "what": "statModifier 'vision' 1",
    "needs": "stat: vision (no UnitDef field)"
-  },
-  {
-   "unit": "item.backpack",
-   "what": "statModifier 'itemSlots' 2",
-   "needs": "stat: itemSlots (no UnitDef field)"
   },
   {
    "unit": "item.rune-bashing",
@@ -1319,151 +1504,6 @@
   {
    "unit": "item.banner-of-resolve",
    "what": "active: Each ally within 3 hexes, including you, removes a",
-   "needs": "an ability with charges/targets — capability.consumables"
-  },
-  {
-   "unit": "item.cleanse-potion",
-   "what": "active: Remove 3 Burn and 3 Poison.",
-   "needs": "an ability with charges/targets — capability.consumables"
-  },
-  {
-   "unit": "item.potion-of-strength",
-   "what": "active: +2 Strength for the rest of the Battle.",
-   "needs": "an ability with charges/targets — capability.consumables"
-  },
-  {
-   "unit": "item.potion-of-agility",
-   "what": "active: +5 Dodge and +1 Movement for the rest of the Battl",
-   "needs": "an ability with charges/targets — capability.consumables"
-  },
-  {
-   "unit": "item.embolden",
-   "what": "active: +5 Accuracy and +3 Crit for the rest of the Battle",
-   "needs": "an ability with charges/targets — capability.consumables"
-  },
-  {
-   "unit": "item.burst-of-speed",
-   "what": "active: Free. Move up to 4 hexes immediately. This is not ",
-   "needs": "an ability with charges/targets — capability.consumables"
-  },
-  {
-   "unit": "item.restorative-tonic",
-   "what": "active: Heal 3 and remove 1 Stun and 1 Weak.",
-   "needs": "an ability with charges/targets — capability.consumables"
-  },
-  {
-   "unit": "item.trolls-blood",
-   "what": "active: The target gains 4 Regen: it heals 1 at the start ",
-   "needs": "an ability with charges/targets — capability.consumables"
-  },
-  {
-   "unit": "item.invigorate",
-   "what": "active: Free. Immediately regain 3 stamina. This cannot ta",
-   "needs": "an ability with charges/targets — capability.consumables"
-  },
-  {
-   "unit": "item.greater-strength",
-   "what": "active: +3 Strength for the rest of the Battle. You also t",
-   "needs": "an ability with charges/targets — capability.consumables"
-  },
-  {
-   "unit": "item.arcane-power",
-   "what": "active: +2 Magic for the rest of the Battle.",
-   "needs": "an ability with charges/targets — capability.consumables"
-  },
-  {
-   "unit": "item.water-of-divinity",
-   "what": "active: +2 Spirit for the rest of the Battle, then every a",
-   "needs": "an ability with charges/targets — capability.consumables"
-  },
-  {
-   "unit": "item.full-healing",
-   "what": "active: Heal 15 and remove 5 Burn, Poison, Bleed and Frost",
-   "needs": "an ability with charges/targets — capability.consumables"
-  },
-  {
-   "unit": "item.demon-hunters-brew",
-   "what": "active: Every enemy within 3 hexes gains 3 Burn. Your atta",
-   "needs": "an ability with charges/targets — capability.consumables"
-  },
-  {
-   "unit": "item.frenzy-potion",
-   "what": "active: +4 Strength and +10 Crit for the rest of the Battl",
-   "needs": "an ability with charges/targets — capability.consumables"
-  },
-  {
-   "unit": "item.supercharge",
-   "what": "active: Free. Heal 4 and gain +1 Surge for the rest of the",
-   "needs": "an ability with charges/targets — capability.consumables"
-  },
-  {
-   "unit": "item.full-restoration",
-   "what": "active: Heal to full, remove 3 of every status, and remove",
-   "needs": "an ability with charges/targets — capability.consumables"
-  },
-  {
-   "unit": "item.dragons-blood",
-   "what": "active: +1 Armor and +1 Resist for the rest of the Battle,",
-   "needs": "an ability with charges/targets — capability.consumables"
-  },
-  {
-   "unit": "item.inquisitors-scroll",
-   "what": "active: remove 5 Burn from every ally within 4 hexes. Ever",
-   "needs": "an ability with charges/targets — capability.consumables"
-  },
-  {
-   "unit": "item.knights-boon-water",
-   "what": "active: +2 Armor and +2 Resist for the rest of the Battle,",
-   "needs": "an ability with charges/targets — capability.consumables"
-  },
-  {
-   "unit": "item.draining-elixir",
-   "what": "active: Heal 20 and remove 5 Burn and 5 Poison. For the re",
-   "needs": "an ability with charges/targets — capability.consumables"
-  },
-  {
-   "unit": "item.flaming-oil",
-   "what": "active: Once per Battle: apply 2 Burn (SOFT — amount not d",
-   "needs": "an ability with charges/targets — capability.consumables"
-  },
-  {
-   "unit": "item.holy-water",
-   "what": "active: Once per Battle: a magic attack at range 3 that de",
-   "needs": "an ability with charges/targets — capability.consumables"
-  },
-  {
-   "unit": "item.holy-water",
-   "what": "slayer: {\"undead\":4,\"demon\":2,\"vampire\":3}",
-   "needs": "item field: slayer"
-  },
-  {
-   "unit": "item.bandages",
-   "what": "active: Once per Battle, free, 0 Stamina: Stabilize an adj",
-   "needs": "an ability with charges/targets — capability.consumables"
-  },
-  {
-   "unit": "item.bear-trap",
-   "what": "active: Once per Battle: place a trap on an empty hex with",
-   "needs": "an ability with charges/targets — capability.consumables"
-  },
-  {
-   "unit": "item.poison-dart",
-   "what": "active: Once per Battle: a ranged attack at range 4 that d",
-   "needs": "an ability with charges/targets — capability.consumables"
-  },
-  {
-   "unit": "item.healing-potion",
-   "what": "active: Once per Battle, free: heal yourself 3. (Replaces ",
-   "needs": "an ability with charges/targets — capability.consumables"
-  },
-  {
-   "unit": "item.restoration-potion",
-   "what": "active: Once per Battle, costs your primary action: heal y",
-   "needs": "an ability with charges/targets — capability.consumables"
-  },
-  {
-   "unit": "item.rage-potion",
-   "what": "active: Once per Battle, free: +2 Strength and +10 Accurac",
    "needs": "an ability with charges/targets — capability.consumables"
   },
   {

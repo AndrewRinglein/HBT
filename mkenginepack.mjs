@@ -817,6 +817,9 @@ function compileItems() {
     }
     if (row.stamina !== undefined || row.targets) g(`active: ${String(row.description || '').slice(0, 50)}`, 'an ability with charges/targets — capability.consumables');
     for (const k of ['thorns', 'airwalk', 'slayer', 'immunity', 'natural']) if (row[k] !== undefined) g(`${k}: ${JSON.stringify(row[k]).slice(0, 40)}`, `item field: ${k}`);
+    // one-use rows (the Waystation, 2026-09-02): a charge is spent IN battle —
+    // the same missing capability as an activated item.
+    if (row.uses !== undefined) g(`uses: ${JSON.stringify(row.uses)}`, 'charges spent in battle — capability.consumables');
     out[it.id] = {
       id: it.id, name: it.name, itemClass: it.itemClass, tier: it.tier ?? 0, hands: it.hands ?? 0, slots: it.slots ?? 0,
       ...(it.classRestriction ? { classRestriction: it.classRestriction } : {}),
