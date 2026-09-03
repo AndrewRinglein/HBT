@@ -12,15 +12,36 @@
 
 import type { CampaignState, HeroId } from './campaign.js'
 import { type Ctx, setRewardOffer, applyTakeReward, applyLevel, setCursor } from './mutate.js'
-import { pickOf } from './rng.js'
-import { REWARDS, rewardOf, type RewardRow } from '../content/rewards.js'
+import { rollOf } from './rng.js'
+import { REWARDS, REWARD_ODDS, rewardOf, type RewardRow } from '../content/rewards.js'
+import { itemOf } from '../content/items.js'
 import { rewardDrawOf } from './charter.js'
 import { CUP_IDS } from '../content/cups.js'
 import { xpForLevel } from '../content/levels.js'
 
-/** The draw for an Engagement — pure, so the same battle always offers the same three. */
+/**
+ * The draw for an Engagement — pure, so the same battle always offers the same
+ * three. Tiered (rewards.tiered, G10): each card rolls its CLASS on the odds
+ * table, then a row of that class from the pool, both on cup.reward keyed by
+ * the Engagement and the card's ordinal (Law 4). Cards are distinct: a row
+ * already dealt leaves the class pool for the next card.
+ */
 export function resolveRewardDraw(campaign: CampaignState, engagementId: string): string[] {
-  return pickOf(campaign, CUP_IDS.reward, [engagementId], REWARDS, rewardDrawOf(campaign)).map((r) => r.id)
+  const out: string[] = []
+  for (let i = 0; i < rewardDrawOf(campaign); i++) {
+    const cls = classOfRoll(rollOf(campaign, CUP_IDS.reward, [engagementId, 'class', i]) % 100)
+    const pool = REWARDS.filter((r) => itemOf(r.id).itemClass === cls && !out.includes(r.id))
+    if (pool.length === 0) throw new Error(`resolveRewardDraw: the pool has no ${cls} row left to deal for card ${i + 1} of '${engagementId}'`)
+    out.push(pool[rollOf(campaign, CUP_IDS.reward, [engagementId, 'row', i]) % pool.length]!.id)
+  }
+  return out
+}
+
+/** A percent roll (0–99) against the odds table, in table order. */
+function classOfRoll(r: number): string {
+  let at = 0
+  for (const o of REWARD_ODDS) { at += o.pct; if (r < at) return o.itemClass }
+  throw new Error(`rewards odds sum to ${at}, not 100`)
 }
 
 export function listRewardOffers(campaign: CampaignState): RewardRow[] {

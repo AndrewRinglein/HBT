@@ -39,4 +39,6 @@ export const SWITCHES = {
   sanctuaryLostDefenceSupplies: 5,
   /** seam.spareWeapons — a weapon carried past the hands, in an item slot (ruled: it still grants attacks). The engine's applyItems counts hands over EVERY weapon handed over and refuses a third (engine gap seam.spare-weapons, filed 2026-09-03), so until it lands the spare is 'left-behind' at fielding and named on the battle screen; 'kept' hands it over and lets the engine refuse. */
   spareWeapons: 'left-behind' as 'left-behind' | 'kept',
+  /** rewards.includeWaystation — may the reward draw deal a row the Waystation sells (a one-use potion, a torch)? The odds name classes and tiers, not shops; unsaid. */
+  rewardsIncludeWaystation: false,
 } as const
