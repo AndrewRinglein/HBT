@@ -5,6 +5,7 @@
 // test.mage.arcane-ward (protection) and test.warrior.brace (the ward variant).
 import { describe, expect, it } from 'vitest'
 import { createBattle, createCustomBattle } from '../src/core/setup.js'
+import { TEST_COHORT } from '../src/content/index.js'
 import { runBattle } from '../src/core/battle.js'
 import { applyStatus, tickStatuses, valueOf } from '../src/core/status.js'
 import { resolvePowerDamage, usePower } from '../src/core/ability.js'
@@ -93,11 +94,28 @@ describe('a depleting pool that also decays (COMBAT-SEQUENCE)', () => {
   })
 })
 
+// LAW 10 — 2026-09-02 (content.alpha-flip): the standard battle fields the ALPHA
+// TEAM now, so the test-lane sources below no longer ride in it. The rule these
+// tests check — "the battle source fires in a real, AI-driven battle" — is
+// unchanged: the test-lane bearers are fielded explicitly (TEST_COHORT), and
+// the AUTHORED counterpart is asserted in the standard battle itself, which is
+// the stronger claim. Extended, never weakened.
 describe('the battle sources fire in real battles', () => {
-  it('arcane-ward raises Protection on the mage somewhere in the first 30 seeds', () => {
+  it('the Air Mage\'s arcane-ward raises Protection in the STANDARD battle somewhere in the first 30 seeds', () => {
     let found = 0
     for (let r = 0; r < 30 && !found; r++) {
       const ctx = createBattle({ replicate: r, enemyCount: 8 })
+      runBattle(ctx)
+      found += ctx.events.filter((e) => e.type === 'status.applied'
+        && e['causeId'] === 'alpha-air-mage.arcane-ward' && e['statusId'] === 'status.protection').length
+    }
+    expect(found).toBeGreaterThan(0)
+  })
+
+  it('arcane-ward raises Protection on the test mage somewhere in the first 30 seeds', () => {
+    let found = 0
+    for (let r = 0; r < 30 && !found; r++) {
+      const ctx = createBattle({ replicate: r, enemyCount: 8, heroes: TEST_COHORT.heroes })
       runBattle(ctx)
       found += ctx.events.filter((e) => e.type === 'status.applied'
         && e['causeId'] === 'test.mage.arcane-ward' && e['statusId'] === 'status.protection').length
@@ -105,10 +123,10 @@ describe('the battle sources fire in real battles', () => {
     expect(found).toBeGreaterThan(0)
   })
 
-  it('brace raises the ward on the warrior somewhere in the first 30 seeds', () => {
+  it('brace raises the ward on the test warrior somewhere in the first 30 seeds', () => {
     let found = 0
     for (let r = 0; r < 30 && !found; r++) {
-      const ctx = createBattle({ replicate: r, enemyCount: 8 })
+      const ctx = createBattle({ replicate: r, enemyCount: 8, heroes: TEST_COHORT.heroes })
       runBattle(ctx)
       found += ctx.events.filter((e) => e.type === 'status.applied'
         && e['causeId'] === 'test.warrior.brace' && e['statusId'] === 'test.status.ward').length

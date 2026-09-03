@@ -4,7 +4,7 @@ import { runBattle } from '../src/core/battle.js'
 import { resolveDamage, resolveAccuracy, reachOf, canAttack } from '../src/core/pipeline.js'
 import { resolvePowerDamage, canUsePower, isReady } from '../src/core/ability.js'
 import { reachable, stepCost } from '../src/core/movement.js'
-import { ATTACKS, ABILITIES, UNITS, FIRST_BATTLE } from '../src/content/index.js'
+import { ATTACKS, ABILITIES, UNITS, FIRST_BATTLE, TEST_COHORT } from '../src/content/index.js'
 import { MAPS, terrainOf, MAP_PANEL } from '../src/content/maps.js'
 import { hexId, distance } from '../src/core/hex.js'
 import { TERRAIN } from '../src/core/types.js'
@@ -93,6 +93,13 @@ describe('pass 2 — hills', () => {
   })
   it('a ranged hero never ends its move inside a melee threat range it could have avoided', () => {
     // Weaker property: it prefers safety, so unsafe endings should be rare.
+    // LAW 10 — 2026-09-02 (content.alpha-flip): the ranger is the Alpha Dusk
+    // Hawk now, and the threat is whatever the standard battle fields on the
+    // enemy side. The old text compared against typeId 'zombie', which the
+    // standard battle has not fielded since 2026-08-20 — the ratio was
+    // vacuously 0. It is measured now. Extended, never weakened.
+    const RANGER = 'alpha-dusk-hawk'
+    const ENEMY = new Set<string>(FIRST_BATTLE.enemies)
     let unsafe = 0, total = 0
     for (const mapId of MAPS_ALL) for (let r = 0; r < 20; r++) {
       const ctx = createBattle({ replicate: r, mapId, enemyCount: 8 }); runBattle(ctx)
@@ -100,10 +107,10 @@ describe('pass 2 — hills', () => {
       for (const e of ctx.events) {
         if (e.type === 'unit.enter') { type.set(e.actor!, e['typeId'] as string); pos.set(e.actor!, e['hex'] as number) }
         if (e.type === 'moved') pos.set(e.actor!, e['to'] as number)
-        if (e.type === 'activation.end' && type.get(e.actor!) === 'test-dusk-hawk') {
+        if (e.type === 'activation.end' && type.get(e.actor!) === RANGER) {
           total++
           const me = pos.get(e.actor!)!
-          for (const [id, t] of type) if (t === 'zombie' && distance(me, pos.get(id)!) <= 5) { unsafe++; break }
+          for (const [id, t] of type) if (ENEMY.has(t) && distance(me, pos.get(id)!) <= 5) { unsafe++; break }
         }
       }
     }
@@ -136,16 +143,23 @@ describe('pass 3 — the Mage', () => {
     expect(resolveDamage(ctx, m, warded,   ATTACKS['attack.mage.staff']!, false).value).toBe(1)
   })
   it('gate 1 — the Mage appears, moves, attacks and is targeted in real battles', () => {
+    // LAW 10 — 2026-09-02 (content.alpha-flip): the standard battle's mage is
+    // the Alpha Air Mage with the authored Lightning Staff; the claim is the
+    // same — the mage moves, swings its OWN ranged kit, and gets hurt — read
+    // off the unit's attack list instead of a typed attack id.
+    const MAGE = 'alpha-air-mage'
+    const staffIds = new Set(UNITS[MAGE]!.attacks.filter((id) => ATTACKS[id]!.kind === 'ranged'))
+    expect(staffIds.size).toBeGreaterThan(0)
     const seen = { moved:0, staff:0, strike:0, hurt:0 }
     for (let r = 0; r < 60; r++) {
       const ctx = createBattle({ replicate: r, enemyCount: 8, strict: true }); runBattle(ctx)
       const type = new Map<number, string>()
       for (const e of ctx.events) {
         if (e.type === 'unit.enter') type.set(e.actor!, e['typeId'] as string)
-        if (e.type === 'moved' && type.get(e.actor!) === 'test-air-mage') seen.moved++
-        if (e.type === 'attack.declared' && e['attackId'] === 'attack.mage.staff') seen.staff++
+        if (e.type === 'moved' && type.get(e.actor!) === MAGE) seen.moved++
+        if (e.type === 'attack.declared' && staffIds.has(e['attackId'] as string)) seen.staff++
         if (e.type === 'attack.declared' && e['attackId'] === 'attack.mage.strike') seen.strike++
-        if (e.type === 'damage.applied' && type.get(e.target!) === 'test-air-mage') seen.hurt++
+        if (e.type === 'damage.applied' && type.get(e.target!) === MAGE) seen.hurt++
       }
     }
     expect(seen.moved).toBeGreaterThan(0)
@@ -170,7 +184,12 @@ describe('pass 4 — Arcane Bolt', () => {
     expect(canUsePower(at11, 0, 1, 'power.mage.bolt')).toBe(false)
   })
   it('gate 2 — the cooldown is exactly 6 turns and blocks reuse', () => {
-    const ctx = createBattle({ replicate: 1, enemyCount: 8, strict: true })
+    // LAW 10 — 2026-09-02 (content.alpha-flip): Arcane Bolt is the TEST mage's
+    // power (power.mage.bolt); the standard battle's mage now casts its
+    // authored item power. This pass is about Arcane Bolt, so it fields the
+    // test cohort explicitly — the 6-turn claim and the no-reuse claim are
+    // exactly as before.
+    const ctx = createBattle({ replicate: 1, enemyCount: 8, strict: true, heroes: TEST_COHORT.heroes })
     runBattle(ctx)
     const casts = ctx.events.filter(e => e.type === 'power.used')
     const cds = ctx.events.filter(e => e.type === 'cooldown.set')
@@ -184,8 +203,11 @@ describe('pass 4 — Arcane Bolt', () => {
       for (let i = 1; i < turns.length; i++) expect(turns[i]! - turns[i-1]!).toBeGreaterThanOrEqual(6)
   })
   it('gate 2 — the power spends the primary action, so no attack follows it', () => {
-    for (let r = 0; r < 40; r++) {
-      const ctx = createBattle({ replicate: r, enemyCount: 8, strict: true }); runBattle(ctx)
+    // Holds for every power a standard battle casts — the Alpha Team's item
+    // powers (Storm / Heal / Block) as much as the test mage's bolt — so this
+    // one runs on the standard battle AND the test cohort (2026-09-02).
+    for (let r = 0; r < 40; r++) for (const heroes of [FIRST_BATTLE.heroes, TEST_COHORT.heroes]) {
+      const ctx = createBattle({ replicate: r, enemyCount: 8, strict: true, heroes }); runBattle(ctx)
       let castBy: number | null = null
       for (const e of ctx.events) {
         if (e.type === 'activation.begin') castBy = null
@@ -196,7 +218,8 @@ describe('pass 4 — Arcane Bolt', () => {
     }
   })
   it('gate 1 — casts appear in the log with a full damage ledger', () => {
-    const ctx = createBattle({ replicate: 1, enemyCount: 8 }); runBattle(ctx)
+    // Arcane Bolt again — test cohort, explicitly (2026-09-02, see above).
+    const ctx = createBattle({ replicate: 1, enemyCount: 8, heroes: TEST_COHORT.heroes }); runBattle(ctx)
     const cast = ctx.events.find(e => e.type === 'power.used')!
     const led = cast['ledger'] as { station: string; delta: number }[]
     expect(led.reduce((s, r) => s + r.delta, 0)).toBe(8)

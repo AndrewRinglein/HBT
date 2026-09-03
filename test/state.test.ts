@@ -1,6 +1,7 @@
 import { describe, it, expect } from 'vitest'
 import { createBattle } from '../src/core/setup.js'
 import { rowOf } from '../src/core/hex.js'
+import { UNITS } from '../src/content/index.js'
 
 describe('state and setup', () => {
   it('creates the standard SIX heroes and 4 zombies on the right rows (Angela 2026-08-20)', () => {
@@ -14,9 +15,14 @@ describe('state and setup', () => {
   })
 
   it('gives the CODEX stat blocks — the party reads from the pack, not from typed rows (2026-08-20)', () => {
+    // LAW 10 — 2026-09-02 (content.alpha-flip): the standard party is the Alpha
+    // Team, whose stat bodies are the SAME Codex rows (S31: "same stat bodies
+    // as the test cohort", resolved through copyOf). The numbers below are
+    // unchanged; only the ids are. The "(TEST)" differentiation ruling is
+    // asserted on the test cohort's pack row, where it still holds.
     const ctx = createBattle({ replicate: 0 })
-    const w = ctx.state.units.find(u => u.typeId === 'test-oathblade')!
-    const r = ctx.state.units.find(u => u.typeId === 'test-dusk-hawk')!
+    const w = ctx.state.units.find(u => u.typeId === 'alpha-oathblade')!
+    const r = ctx.state.units.find(u => u.typeId === 'alpha-dusk-hawk')!
     const z = ctx.state.units.find(u => u.typeId === 'test-zombie')!
     // Oathblade I, hero.shadows.oathblade.v1: the Codex row verbatim
     expect([w.maxHp, w.armor, w.accuracy, w.strength, w.precision, w.movement, w.maxStamina]).toEqual([15,0,75,5,3,5,5])
@@ -25,7 +31,8 @@ describe('state and setup', () => {
     expect(r.dodge).toBe(5)
     expect([z.maxHp, z.armor, z.accuracy, z.strength, z.movement, z.maxStamina]).toEqual([10,0,65,4,4,0])
     expect(z.attributes).toContain('undead')
-    expect(w.name).toContain('(TEST)')   // clearly differentiated text, per the ruling
+    expect(w.name).not.toContain('(TEST)')                      // the Alpha Team is real content
+    expect(UNITS['test-oathblade']!.name).toContain('(TEST)')   // clearly differentiated text, per the ruling
   })
 
   it('places units on distinct hexes', () => {

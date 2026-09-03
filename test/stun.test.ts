@@ -6,6 +6,7 @@
 // generalization variant test.status.daze).
 import { describe, expect, it } from 'vitest'
 import { createBattle, createCustomBattle } from '../src/core/setup.js'
+import { TEST_COHORT } from '../src/content/index.js'
 import { runBattle } from '../src/core/battle.js'
 import { applyStatus, isBlocked, tickStatuses, valueOf } from '../src/core/status.js'
 import { STATUSES } from '../src/content/statuses.js'
@@ -73,11 +74,28 @@ describe('Stun N = exactly N lost activations', () => {
   })
 })
 
+// LAW 10 — 2026-09-02 (content.alpha-flip): the standard battle fields the ALPHA
+// TEAM now, so the test-lane sources below no longer ride in it. The rule these
+// tests check — "the battle source fires in a real, AI-driven battle" — is
+// unchanged: the test-lane bearers are fielded explicitly (TEST_COHORT), and
+// the AUTHORED counterpart is asserted in the standard battle itself, which is
+// the stronger claim. Extended, never weakened.
 describe('the battle sources fire in real battles', () => {
-  it('test.warrior.stagger stuns zombies somewhere in the first 30 field seeds', () => {
+  it('the Oathblade\'s stagger stuns zombies in the STANDARD battle somewhere in the first 30 field seeds', () => {
     let found = 0
     for (let r = 0; r < 30 && !found; r++) {
       const ctx = createBattle({ replicate: r, enemyCount: 8, mapId: 'map.field' })
+      runBattle(ctx)
+      found += ctx.events.filter((e) => e.type === 'status.applied'
+        && e['causeId'] === 'alpha-oathblade.stagger' && e['statusId'] === 'status.stun').length
+    }
+    expect(found).toBeGreaterThan(0)
+  })
+
+  it('test.warrior.stagger stuns zombies somewhere in the first 30 test-cohort field seeds', () => {
+    let found = 0
+    for (let r = 0; r < 30 && !found; r++) {
+      const ctx = createBattle({ replicate: r, enemyCount: 8, mapId: 'map.field', heroes: TEST_COHORT.heroes })
       runBattle(ctx)
       found += ctx.events.filter((e) => e.type === 'status.applied'
         && e['causeId'] === 'test.warrior.stagger' && e['statusId'] === 'status.stun').length

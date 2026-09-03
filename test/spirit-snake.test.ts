@@ -39,8 +39,10 @@ describe('benched — out of every horde, off the default party', () => {
       expect(ctx.state.units.some((u) => u.typeId === 'spirit-snake'), String(z)).toBe(false)
     }
     expect([...FIRST_BATTLE.enemies]).toEqual(['test-zombie', 'test-zombie', 'test-zombie', 'test-zombie-burning'])
-    expect([...FIRST_BATTLE.heroes]).toEqual(['test-oathblade', 'test-sky-pirate', 'test-dusk-hawk',
-      'test-air-mage', 'test-lucius', 'test-osric'])
+    // 2026-09-02 (content.alpha-flip): the standard party is the Alpha Team —
+    // still the six Codex bodies, one of each class, still snake-free.
+    expect([...FIRST_BATTLE.heroes]).toEqual(['alpha-oathblade', 'alpha-sky-pirate', 'alpha-dusk-hawk',
+      'alpha-air-mage', 'alpha-lucius', 'alpha-osric'])
   })
 })
 

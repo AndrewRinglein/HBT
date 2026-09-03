@@ -3699,3 +3699,52 @@ magnitude — rewritten toward the SHAPE (a Bleed status with a positive
 magnitude), reason at the edit. Suite 49/448 after. Blessed on its own so the
 alpha flip that follows is measured against the shipped content, not against
 a stale pack.
+
+## content.alpha-flip — LANDED `54c8131` **NEEDS REVIEW**
+2026-09-03T03:22:01.000Z
+
+  PASS  dependencies landed
+  PASS  typecheck
+  PASS  full test suite — 50 files / 457 passed, 1 todo
+  PASS  gate 1 — id appears in a real battle — alpha-oathblade: 37 log lines, 37 fired, 13 changed state · attack.halberd.hack: 16 log lines, 16 fired, 7 changed state
+  PASS  brought its own tests — test/alpha-flip.test.ts
+  PASS  control battles — changesBaseline declared; ALL EIGHT moved (map.open 4a1e92a7→dad0f57c, ridge 088940c9→159b6da9, flanks 1761f009→2ade9f7e, highlands 619a236c→0fec89b1, field dfaf036f→8396f5ec, thicket 4ff40484→7937b2ed, embers b38ab657→f5d497db, showcase 895058db→a48483df) — re-blessed
+  PASS  content has a published source — alpha-* are S31 rows, read from the pack's alphaTeam section
+  PASS  hardcode scan — src/core untouched
+  PASS  generalizes — shape 'data', exempt by rule; variants attack.halberd.cleave (7 fired) and attack.longsword.slash (6 fired) probed live regardless
+  PASS  naming — no new content ids minted (the item id was renamed cohort.→content. before landing so no backlog-kind was invented)
+  PASS  kill switch — with attack.halberd.hack disabled the touched tests fail (3 files)
+  WARN  existing tests untouched — DELETED LINES in 12 test files — lands FLAGGED for review
+
+Step one of the 2026-09-02 plan, ruled "Yes, proceed with step one." FIRST_BATTLE.heroes
+is the six alpha-* ids; the enemy roster is unchanged (that is the next question). One
+engine-side fix the flip surfaced: `foldToTurn` in src/view/text.ts never folded the
+`knocked` event, so the text renderer's rebuild-from-log lost a pushed unit's hex —
+found the first time a Halberd pushed a zombie in a control battle.
+
+Every Law 10 rewrite carries its reason at the edit. The pattern, twelve files: the
+test-lane sources (test.mage.arcane-ward, test.warrior.brace, test.ranger.pin,
+test.mage.dampen, test.warrior.stagger, the Cutlass bleed, Arcane Bolt) are now
+exercised on the test cohort FIELDED EXPLICITLY (`heroes: TEST_COHORT.heroes`), and the
+AUTHORED counterpart (alpha-air-mage.arcane-ward, alpha-oathblade.brace / stagger /
+oath-of-blood, alpha-sky-pirate.ragged-edge, alpha-dusk-hawk.pin, alpha-air-mage.dampen)
+is asserted in the standard battle itself. The auditor learned area attacks (a certain
+100 to hit, per-struck-unit damage recompute) and n-heads crit multipliers; the "specific
+expected numbers" pairs are now Halberd Hack 7 / Lightning Bolt 6 / Short Shot 5, read off
+the pack rows. additions.test's ranged-safety ratio had been vacuous since 2026-08-20
+(it compared against typeId 'zombie', never fielded) — it is measured now, and passes.
+
+FINDING, filed as backlog ai.attack-choice: in 200 standard battles four authored attacks
+never fire — javelin.throw, dagger.stab (Sky Pirate), longsword.stab, knight-shield
+.shield-slam (Osric) — because bestAttack() takes the first affordable attack in declared
+order. The test cohort's dear-first kits hid it. integration.test asserts that dead-list
+EXACTLY so its shrinking is a visible event. The policy is a switch to sweep, not a call.
+
+Downstream: the viewer's 13 frozen battles were exported at 8cfe833 and six are standard-
+battle seeds — its `gate --fresh` will diff until it re-exports at this commit (contract
+working as designed). Kingdom tests field the test cohort explicitly; unaffected.
+
+Hand-landed under the reaper protocol (each check run piecewise ≤110 s; the sandbox kills
+the gate's single run). Seal field left unwritten — it belongs to the gate.
+
+IRON GAUNTLET: NOT PASSED — 1 FLAG(S) WARNED · landing #40, periodic audit run at batch end

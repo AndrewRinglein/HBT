@@ -48,7 +48,7 @@ describe('independent audit of logged battles', () => {
       const outPenalty = new Map<number, Map<string, number>>()
       const penaltyOf = (id: number) =>
         [...(outPenalty.get(id) ?? new Map()).values()].reduce((a, b) => a + b, 0)
-      let pending: { actor: number; target: number; attackId: string; dist: number; crit?: boolean } | null = null
+      let pending: { actor: number; target: number; attackId: string; dist: number; crit?: boolean; heads?: number; area?: number } | null = null
       let pendingPower: { actor: number; target: number; abilityId: string } | null = null
 
       for (const e of ctx.events) {
@@ -233,10 +233,22 @@ describe('independent audit of logged battles', () => {
             // Guard Broken docks dodge (min 0 at application) — the target's
             // dodge reads through the mod ledger too.
             acc -= modded(e.target!, 'dodge', tgDef.dodge, e.turn) + dodgeBonusOf(terr[hex.get(e.target!)!] ?? 0)
-            expect(e['hitChance'], `hit chance for ${a.id} at range ${d}`).toBe(Math.max(0, Math.min(100, acc)))
+            // capability.area-attack (2026-08-27), audited since the Alpha
+            // Team's Cleave reached the standard battle (content.alpha-flip,
+            // 2026-09-02): an AREA attack does not roll to hit — the logged
+            // chance is a certain 100 whatever the accuracy arithmetic says,
+            // and the declaration names every struck unit. Each struck unit's
+            // damage is then recomputed below exactly as a single hit would be.
+            if (a.area) {
+              expect(e['hitChance'], `${a.id} is an area attack: no roll`).toBe(100)
+              const struck = e['struck'] as number[]
+              expect(struck, 'the declaration names the struck units').toContain(e.target)
+              pending = { actor: e.actor!, target: e.target!, attackId: a.id, dist: d, area: struck.length }
+            } else {
+              expect(e['hitChance'], `hit chance for ${a.id} at range ${d}`).toBe(Math.max(0, Math.min(100, acc)))
+              pending = { actor: e.actor!, target: e.target!, attackId: a.id, dist: d }
+            }
             checkedAcc++
-
-            pending = { actor: e.actor!, target: e.target!, attackId: a.id, dist: d }
             break
           }
 
@@ -245,7 +257,11 @@ describe('independent audit of logged battles', () => {
             // DAMAGE ARM fired (crit:true = the +50% pre-mitigation station).
             // The chart arm lands normal damage, so its hits carry crit:false
             // and the recompute below needs no change for them.
-            if (pending && e.actor === pending.actor) pending.crit = e['crit'] === true
+            if (pending && e.actor === pending.actor) {
+              pending.crit = e['crit'] === true
+              // station.crit-count: several criticals stack +50% each.
+              pending.heads = typeof e['critHeads'] === 'number' ? (e['critHeads'] as number) : (pending.crit ? 1 : 0)
+            }
             break
           }
 
@@ -311,21 +327,29 @@ describe('independent audit of logged battles', () => {
             }
             if (!pending) break
             const at = UNITS[type.get(pending.actor)!]!
-            const tg = UNITS[type.get(pending.target)!]!
+            // An area swing lands on every struck unit in turn; the victim is
+            // whoever THIS event names, not the declared target.
+            const tg = UNITS[type.get(pending.area ? e.target! : pending.target)!]!
             const a = ATTACKS[pending.attackId]!
-            const stat = modded(pending.actor, a.stat,
-              a.stat === 'strength' ? at.strength : at.precision, e.turn)
-            const mit = a.damageType === 'physical' ? tg.armor : tg.resist
+            // The attack names its stat (strength / precision / spirit since
+            // the Chaplain's Mercy, 2026-08-28) — read that one, not a guess.
+            const base = a.stat === 'strength' ? at.strength : a.stat === 'precision' ? at.precision
+              : a.stat === 'magic' ? at.magic : (at as unknown as Record<string, number>)[a.stat] ?? 0
+            const stat = modded(pending.actor, a.stat, base, e.turn)
+            const mit = a.damageType === 'physical' ? tg.armor : a.damageType === 'magic' ? tg.resist : 0
             // The damage-arm crit multiplies BEFORE Protection and Mitigation
-            // (DMG.CRIT at 450), truncating division — the one rounding rule.
+            // (DMG.CRIT at 450), truncating division — the one rounding rule;
+            // n heads multiply by (2+n)/2 (station.crit-count).
             const preMit = a.bonus + stat - penaltyOf(pending.actor)
-            const critted = pending.crit ? Math.trunc((preMit * 3) / 2) : preMit
+            const heads = pending.heads ?? (pending.crit ? 1 : 0)
+            const critted = heads > 0 ? Math.trunc((preMit * (2 + heads)) / 2) : preMit
             const expected = Math.max(0, critted
               - ((e['absorbed'] as number) ?? 0) - mit)
             const total = (e['amount'] as number) + (e['overkill'] as number)
             expect(total, `${a.id} damage`).toBe(expected)
             expect(e['hpBefore'] as number - (e['amount'] as number)).toBe(e['hpAfter'])
             checkedDamage++
+            if (pending.area && --pending.area > 0) break
             pending = null
             break
           }
@@ -359,11 +383,16 @@ describe('independent audit of logged battles', () => {
     // Pairs rewritten 2026-08-20 (Law 10): the party is the Codex cohort now.
     // Same arithmetic, new bodies — a bite into the unarmoured Oathblade lands
     // its full 4; Osric's armor 1 shaves it to 3.
-    expect(seen, 'zombie -> Oathblade = 4').toContain('attack.zombie.basic->test-oathblade=4')
-    expect(seen, 'zombie -> Osric = 3').toContain('attack.zombie.basic->test-osric=3')
-    expect(seen, 'axe -> zombie = 6').toContain('attack.warrior.axe->test-zombie=6')
-    expect(seen, 'massive -> zombie = 8').toContain('attack.warrior.massive->test-zombie=8')
-    expect(seen, 'bow -> zombie = 5').toContain('attack.ranger.bow->test-zombie=5')
+    // Rewritten again 2026-09-02 (content.alpha-flip, Law 10): the party is the
+    // Alpha Team with its authored kit. Same bodies (S31 copied the stat rows),
+    // authored weapons: Halberd Hack = Str 5 + 2 = 7 physical; Lightning Staff
+    // Bolt = Prc 3 + 3 = 6 magic into resist 0; Shortbow Short Shot = Prc 4 +
+    // 1 = 5. Read off the pack rows, not invented.
+    expect(seen, 'zombie -> Oathblade = 4').toContain('attack.zombie.basic->alpha-oathblade=4')
+    expect(seen, 'zombie -> Osric = 3').toContain('attack.zombie.basic->alpha-osric=3')
+    expect(seen, 'hack -> zombie = 7').toContain('attack.halberd.hack->test-zombie=7')
+    expect(seen, 'bolt -> zombie = 6').toContain('attack.lightning-staff.bolt->test-zombie=6')
+    expect(seen, 'short shot -> zombie = 5').toContain('attack.shortbow.short-shot->test-zombie=5')
   })
 
   it('observed hit rates converge on the declared accuracies', () => {

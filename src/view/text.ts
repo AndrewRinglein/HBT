@@ -37,6 +37,10 @@ export function foldToTurn(events: Event[], upToSeq: number): Map<number, UnitVi
         })
         break
       case 'moved': units.get(e.actor!)!.hex = e['to'] as number; break
+      // capability.knockback (2026-08-27) moves the TARGET without a `moved`
+      // event; the fold missed it until the Alpha Team's Halberd pushed a
+      // zombie in a standard battle (content.alpha-flip, 2026-09-02).
+      case 'knocked': units.get(e.target!)!.hex = e['to'] as number; break
       case 'damage.applied': units.get(e.target!)!.hp = e['hpAfter'] as number; break
       // heal.applied joined the event vocabulary with status.regeneration (2026-08-20)
       case 'heal.applied': units.get(e.target!)!.hp = e['hpAfter'] as number; break

@@ -491,17 +491,20 @@ for (const k of Object.keys(PACK)) {
 }
 export const UNITS = stripDisabledTriggers(omitDisabled({ ...RAW_UNITS, ...PACK }, 'unit.'))
 
-/** The first battle: 4 zombies on row 0, 2 warriors + 2 rangers on row 11. */
+/** The standard battle: the Alpha Team on row 15, four zombies on row 0. */
 export const FIRST_BATTLE = {
   id: 'baseline.6v4',
   scenarioId: 1,
   // THE STANDARD TEST SIX — Angela 2026-08-20: "Our standard test will run
-  // against six heroes, one of each class." Codex-tracked clones fielded from
-  // the generated pack, never hand-typed here: Oathblade I (warrior), Sky
-  // Pirate I (rogue), Dusk Hawk I (ranger), Air Mage (mage), Lucius (priest),
-  // Osric (paladin).
-  heroes: ['test-oathblade', 'test-sky-pirate', 'test-dusk-hawk',
-    'test-air-mage', 'test-lucius', 'test-osric'] as const,
+  // against six heroes, one of each class." Since 2026-09-02 ("Yes, proceed
+  // with step one" — DECISIONS.md) those six are the ALPHA TEAM, S31, read
+  // from the pack's alphaTeam section with their authored kits: Oathblade
+  // (warrior), Sky Pirate (rogue), Dusk Hawk (ranger), Air Mage (mage), Lucius
+  // (priest), Osric (paladin). The test-* clones they replace stay in the pack
+  // for fixtures and probes only; every control baseline and sweep now runs on
+  // real content.
+  heroes: ['alpha-oathblade', 'alpha-sky-pirate', 'alpha-dusk-hawk',
+    'alpha-air-mage', 'alpha-lucius', 'alpha-osric'] as const,
   // The horde is the pack's test enemies now — the same rows, Codex-sourced,
   // one burning zombie per four as ever. The hand-typed zombie defs below
   // survive only as custom-battle fixtures until the test-file migration
@@ -513,4 +516,18 @@ export const FIRST_BATTLE = {
   // format.placement. Was 11 when the board was 12 deep.
   heroRow: 15,
   enemyRow: 0,
+}
+
+/**
+ * The TEST COHORT — the six Codex clones with test-lane weapons and riders
+ * that were the standard party from 2026-08-20 until the Alpha Team took the
+ * standard battle (content.alpha-flip, 2026-09-02). Still in the pack, still
+ * probeable: a test that exercises a test-lane source (test.mage.dampen,
+ * test.status.ward…) fields these explicitly through BattleOptions.heroes.
+ * Nothing in the engine reads this list; it exists so no test types the six
+ * ids by hand.
+ */
+export const TEST_COHORT = {
+  heroes: ['test-oathblade', 'test-sky-pirate', 'test-dusk-hawk',
+    'test-air-mage', 'test-lucius', 'test-osric'] as const,
 }

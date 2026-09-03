@@ -89,13 +89,20 @@ describe('the pack — read from the data, clearly differentiated', () => {
   })
 
   it('the standard battle fields the pack and ONLY the pack', () => {
+    // LAW 10 — 2026-09-02 (content.alpha-flip): the rule is "nothing hand-typed
+    // in the standard battle" — every fielded id comes from the generated
+    // pack. Heroes are the Alpha Team (pack alphaTeam section); the horde is
+    // still the pack's test enemies. Asserted against the pack's own id
+    // families rather than the 'test-' prefix alone.
+    const fromPack = (t: string) => t.startsWith('test-') || t.startsWith('alpha-')
     for (const t of [...FIRST_BATTLE.heroes, ...FIRST_BATTLE.enemies]) {
-      expect(t.startsWith('test-'), t).toBe(true)
+      expect(fromPack(t), t).toBe(true)
     }
+    for (const t of FIRST_BATTLE.heroes) expect(t.startsWith('alpha-'), t).toBe(true)
     const ctx = createBattle({ replicate: 0 })
     runBattle(ctx)
     const fielded = new Set(ctx.state.units.map((u) => u.typeId))
-    for (const t of fielded) expect(t.startsWith('test-'), t).toBe(true)
+    for (const t of fielded) expect(fromPack(t), t).toBe(true)
     expect(ctx.state.units.filter((u) => u.side === 'hero').length).toBe(6)
   })
 })

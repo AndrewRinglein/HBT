@@ -1573,7 +1573,7 @@
   "note": "Filed from the kingdom session 2026-09-02. The kingdom's seam (kingdom/src/core/seam.ts battleOptionsOf) will pass hero.equipped once this lands. Plan: engine/ITEMS-PLAN.md \u00a72, \u00a74, \u00a75."
  },
  {
-  "id": "cohort.alpha-flip",
+  "id": "content.alpha-flip",
   "kind": "engine",
   "shape": "data",
   "spec": "The standard battle (FIRST_BATTLE, baseline.6v4) fields the six Alpha Team heroes \u2014 alpha-oathblade, alpha-sky-pirate, alpha-dusk-hawk, alpha-air-mage, alpha-lucius, alpha-osric \u2014 in place of the six test-* clones. Real authored kits (Halberd, Javelin/Dagger, Shortbow, Lightning Staff, Holy Symbol, Longsword/Knight Shield, universal Punch), real riders (push, cleave arc, crit fields, item powers) run in every control baseline and every sweep. Nothing about the units is authored here: the ids already come from the pack's alphaTeam section. The enemy roster of the standard battle is unchanged (three test-zombie + one test-zombie-burning) \u2014 flipping it is a separate question. Sequence step (C) of the 2026-08-27 Alpha Team ruling; ruled 2026-09-02 'Yes, proceed with step one.'",
@@ -1594,7 +1594,9 @@
    "attack.halberd.cleave",
    "attack.longsword.slash"
   ],
-  "status": "ready"
+  "status": "done-needs-review",
+  "sha": "54c8131",
+  "gauntlet": "not passed \u2014 1 flag(s) warned"
  },
  {
   "id": "seam.unit-mods",
@@ -1629,5 +1631,25 @@
    "item.bear-trap"
   ],
   "note": "Filed from the kingdom session 2026-09-02. Target grammar, Root/Confusion/Taunt/Frost and trap placement are separate gaps the rows will name."
+ },
+ {
+  "id": "ai.attack-choice",
+  "kind": "ai",
+  "shape": "rule",
+  "spec": "bestAttack() takes the FIRST affordable attack in the unit's declared order, so an authored kit's later entries are dead unless the first is unaffordable. Surfaced by content.alpha-flip (2026-09-02) \u2014 in 200 standard battles the Alpha Sky Pirate never threw the Javelin (its melee-aggressive mode closes to reach 1, where a ranged attack is illegal) and never drew the Dagger (javelin.stab precedes it, same cost); Osric never used Longsword Stab (+2, cost 2) or Shield Slam (stun rider) because Slash (+1, cost 1) is first and affordable. The test cohort hid this: its kits were ordered dear-first. AMBIGUITY, NOT A DECISION: the choice policy is a SWITCH (declared-order | best-preview-damage | best-preview-with-riders) with declared-order as the default it has always been, and a sweep answers which policy the AI should use. Riders (a self-Protection on the dagger, a stun on the slam) are not priced by preview() at all \u2014 that is the third policy's question. ALSO: the Sky Pirate's role is 'ranged' in the pack while its ai is 'melee-aggressive' \u2014 a converter/derivation question for the content chat, noted here so it is not lost.",
+  "expect": "with the switch at best-preview the four dead attacks fire in the standard battle and integration.test's exact dead-list shrinks to []; with declared-order it stays as asserted; the effect of each policy on the eight control battles is measured by a sweep, not decided",
+  "changesBaseline": true,
+  "needs": [
+   "content.alpha-flip"
+  ],
+  "probeIds": [
+   "attack.javelin.throw",
+   "attack.longsword.stab"
+  ],
+  "variants": [
+   "attack.dagger.stab",
+   "attack.knight-shield.shield-slam"
+  ],
+  "status": "ready"
  }
 ]

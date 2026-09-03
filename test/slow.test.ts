@@ -7,6 +7,7 @@
 // (slow) and test.ranger.pin (the hobble variant).
 import { describe, expect, it } from 'vitest'
 import { createBattle, createCustomBattle } from '../src/core/setup.js'
+import { TEST_COHORT } from '../src/content/index.js'
 import { runBattle } from '../src/core/battle.js'
 import { applyStatus, isBlocked, tickStatuses } from '../src/core/status.js'
 import { beginActivation } from '../src/core/mutate.js'
@@ -97,10 +98,27 @@ describe('the battle sources fire in real battles', () => {
     expect(found).toBeGreaterThan(0)
   })
 
-  it('pin hobbles zombies somewhere in the first 30 seeds', () => {
+// LAW 10 — 2026-09-02 (content.alpha-flip): the standard battle fields the ALPHA
+// TEAM now, so the test-lane sources below no longer ride in it. The rule these
+// tests check — "the battle source fires in a real, AI-driven battle" — is
+// unchanged: the test-lane bearers are fielded explicitly (TEST_COHORT), and
+// the AUTHORED counterpart is asserted in the standard battle itself, which is
+// the stronger claim. Extended, never weakened.
+  it('the Dusk Hawk\'s pin slows zombies in the STANDARD battle somewhere in the first 30 seeds', () => {
     let found = 0
     for (let r = 0; r < 30 && !found; r++) {
       const ctx = createBattle({ replicate: r, enemyCount: 8 })
+      runBattle(ctx)
+      found += ctx.events.filter((e) => e.type === 'status.applied'
+        && e['causeId'] === 'alpha-dusk-hawk.pin' && e['statusId'] === 'status.slow').length
+    }
+    expect(found).toBeGreaterThan(0)
+  })
+
+  it('pin hobbles zombies somewhere in the first 30 test-cohort seeds', () => {
+    let found = 0
+    for (let r = 0; r < 30 && !found; r++) {
+      const ctx = createBattle({ replicate: r, enemyCount: 8, heroes: TEST_COHORT.heroes })
       runBattle(ctx)
       found += ctx.events.filter((e) => e.type === 'status.applied'
         && e['causeId'] === 'test.ranger.pin' && e['statusId'] === 'test.status.hobble').length

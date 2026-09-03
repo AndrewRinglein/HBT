@@ -4,6 +4,7 @@ import { runBattle } from '../src/core/battle.js'
 import { score } from '../src/sim/score.js'
 import { foldToTurn, setupSeq } from '../src/view/text.js'
 import { hexId, neighboursOf } from '../src/core/hex.js'
+import { FIRST_BATTLE, UNITS } from '../src/content/index.js'
 
 const hash = (s: string) => { let h = 2166136261; for (const c of s) { h ^= c.charCodeAt(0); h = Math.imul(h, 16777619) } return h >>> 0 }
 const logHash = (ev: unknown[]) => hash(JSON.stringify(ev))
@@ -38,8 +39,10 @@ describe('gate 1 — everything appears in the log', () => {
       }
     }
     // typeIds updated 2026-08-20 (Law 10): the standard battle fields the
-    // Codex cohort; same claim, new bodies.
-    for (const t of ['test-oathblade', 'test-dusk-hawk', 'test-zombie']) {
+    // Codex cohort; same claim, new bodies. 2026-09-02 (content.alpha-flip):
+    // the party is the Alpha Team — the claim now covers EVERY fielded id,
+    // read off FIRST_BATTLE rather than three typed names. Extended.
+    for (const t of new Set<string>([...FIRST_BATTLE.heroes, ...FIRST_BATTLE.enemies])) {
       expect(seen.entered, `${t} entered`).toContain(t)
       expect(seen.moved, `${t} moved`).toContain(t)
       expect(seen.attacked, `${t} attacked`).toContain(t)
@@ -47,7 +50,7 @@ describe('gate 1 — everything appears in the log', () => {
     expect(seen.killed).toContain('test-zombie')
     // Rangers take no damage in the baseline. That is a FINDING about the scenario,
     // not an engine fault — the next test proves the engine can damage them.
-    expect(seen.damaged).toContain('test-oathblade')
+    expect(seen.damaged).toContain('alpha-oathblade')
     expect(seen.damaged).toContain('test-zombie')
   })
 
@@ -83,30 +86,49 @@ describe('gate 1 — everything appears in the log', () => {
     }
     // typeIds updated 2026-08-20 (Law 10): the standard party is the
     // Codex-tracked test cohort now — the RULE (kiting spares the archer)
-    // is unchanged and asserted on the same roles.
-    expect(dmg['test-oathblade']).toBeGreaterThan(0)
+    // is unchanged and asserted on the same roles. 2026-09-02
+    // (content.alpha-flip): the same roles again, now the Alpha Team's.
+    const HAWK = 'alpha-dusk-hawk', OATH = 'alpha-oathblade'
+    expect(dmg[OATH]).toBeGreaterThan(0)
     // LAW 10 — 2026-08-26 (fix.status-tick-timing): /10 sat at a knife edge
     // (10.2% vs 10.0% after the tick moved to End of Activation) and the exact
     // divisor was never the rule. The rule is that kiting SPARES the archer:
     // the hawk takes a small fraction of the front line's damage and less than
     // any melee hero. Both survive legitimate timing changes; a broken kite
     // (ratios near 1) still fails loudly.
-    expect(dmg['test-dusk-hawk'] ?? 0).toBeLessThan(dmg['test-oathblade']! / 5)
-    for (const melee of ['test-oathblade', 'test-sky-pirate', 'test-osric']) {
-      expect(dmg['test-dusk-hawk'] ?? 0, `hawk vs ${melee}`).toBeLessThan(dmg[melee] ?? Infinity)
+    expect(dmg[HAWK] ?? 0).toBeLessThan(dmg[OATH]! / 5)
+    for (const melee of [OATH, 'alpha-sky-pirate', 'alpha-osric']) {
+      expect(dmg[HAWK] ?? 0, `hawk vs ${melee}`).toBeLessThan(dmg[melee] ?? Infinity)
     }
   })
 
-  it('every attack in the content library is actually used somewhere', () => {
+  it('every attack a fielded unit carries is actually used somewhere', () => {
+    // LAW 10 — 2026-09-02 (content.alpha-flip): the old text named four
+    // test-lane attacks and called that "every attack in the content
+    // library". The rule, stated properly: every attack carried by a unit the
+    // standard battle fields is declared at least once across 200 seeds — the
+    // AI reaches the whole authored kit, not a favourite. Extended.
     const used = new Set<string>()
     for (let r = 0; r < 200; r++) {
       const ctx = createBattle({ replicate: r }); runBattle(ctx)
       for (const e of ctx.events) if (e.type === 'attack.declared') used.add(e['attackId'] as string)
     }
-    expect(used).toContain('attack.warrior.massive')
-    expect(used).toContain('attack.warrior.axe')
-    expect(used).toContain('attack.ranger.bow')
-    expect(used).toContain('attack.zombie.basic')
+    for (const t of new Set<string>([...FIRST_BATTLE.heroes, ...FIRST_BATTLE.enemies]))
+      expect(UNITS[t]!.attacks.some((id) => used.has(id)), `${t} never attacked`).toBe(true)
+    // FINDING 2026-09-02, surfaced by the flip: bestAttack() takes the FIRST
+    // affordable attack in the unit's declared order, so an authored kit's
+    // later entries are dead unless the first is unaffordable. The test cohort
+    // hid this (its kits were ordered dear-first); the Alpha Team's are not.
+    // Recorded as backlog ai.attack-choice. This list is asserted EXACTLY so
+    // that the day it shrinks — or grows — the suite says so.
+    const dead: string[] = []
+    for (const t of FIRST_BATTLE.heroes) for (const id of UNITS[t]!.attacks) if (!used.has(id)) dead.push(`${t}:${id}`)
+    expect(dead.sort()).toEqual([
+      'alpha-osric:attack.knight-shield.shield-slam',
+      'alpha-osric:attack.longsword.stab',
+      'alpha-sky-pirate:attack.dagger.stab',
+      'alpha-sky-pirate:attack.javelin.throw',
+    ])
   })
 })
 

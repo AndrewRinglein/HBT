@@ -4,6 +4,7 @@
 // TESTING LANE: test.ranger.serrated-arrows (Codex Hunter's Mark shape).
 import { describe, expect, it } from 'vitest'
 import { createBattle, createCustomBattle } from '../src/core/setup.js'
+import { TEST_COHORT } from '../src/content/index.js'
 import { runBattle } from '../src/core/battle.js'
 import { applyStatus, tickStatuses } from '../src/core/status.js'
 import { stripsOnActivationEndOf, stripsOnEnterOf } from '../src/content/maps.js'
@@ -75,13 +76,28 @@ describe('the battle source fires in real battles', () => {
     // scaffolding; the Codex cohort's Sky Pirate carries a real published
     // bleed ("Cutlass and Plunder: on damage, bleed enemy"), so the scaffold
     // retired exactly as the testing-lane ruling always intended.
+    // LAW 10 — 2026-09-02 (content.alpha-flip): the standard battle fields the
+    // Alpha Team, whose Sky Pirate carries the AUTHORED bleed rider (ragged-edge)
+    // and whose Oathblade carries Oath of Blood. The test-cohort Cutlass is
+    // still exercised, fielded explicitly. Extended, never weakened.
     let found = 0
     for (let r = 0; r < 10 && !found; r++) {
-      const ctx = createBattle({ replicate: r, enemyCount: 8 })
+      const ctx = createBattle({ replicate: r, enemyCount: 8, heroes: TEST_COHORT.heroes })
       runBattle(ctx)
       found += ctx.events.filter((e) => e.type === 'status.applied'
         && e['causeId'] === 'test.sky-pirate.apply-bleed' && e['statusId'] === 'status.bleed').length
     }
     expect(found).toBeGreaterThan(0)
+  })
+
+  it('the Alpha Sky Pirate\'s ragged-edge and the Oathblade\'s Oath of Blood bleed zombies in the STANDARD battle', () => {
+    const causes = new Set<string>()
+    for (let r = 0; r < 10; r++) {
+      const ctx = createBattle({ replicate: r, enemyCount: 8 })
+      runBattle(ctx)
+      for (const e of ctx.events) if (e.type === 'status.applied' && e['statusId'] === 'status.bleed') causes.add(e['causeId'] as string)
+    }
+    expect(causes).toContain('alpha-sky-pirate.ragged-edge')
+    expect(causes).toContain('alpha-oathblade.oath-of-blood')
   })
 })

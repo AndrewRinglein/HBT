@@ -1043,3 +1043,32 @@ Poison and burn ticks are MAGIC damage — resist reduces them, and the viewer
 paints them blue like any magic damage. Bleed's tick is TRUE damage — nothing
 reduces it. Thorns (retaliation damage a struck unit deals back) is TRUE
 damage. The tick's type is a STATUS ROW field, not a hardcoded name list.
+
+---
+
+## 2026-09-02 — the control battles field the Alpha Team (step one)
+
+Context: the 2026-09-02 engine review found the standard battles — the eight
+control baselines every balance number comes from — still fielding the
+`test-*` cohort (Codex clones with test-lane weapons and riders) while the
+real Alpha Team sat loaded and unused. Andrew's goal, in his words:
+
+> "The goal here is to use the engine to do balance testing, but also to
+> build features and test… We're not testing features if we're not pulling
+> them from the right way. When you hardcode something, it sort of tests the
+> features, but it doesn't really test it all the way."
+
+Three steps were proposed: (1) point the main battles at real content — flip
+the standard battles to the Alpha Team; (2) statuses and moves through the
+pack; (3) a `content/test/` delta receptacle for probe content. Ruled:
+
+> "Yes, proceed with step one."
+
+Engine consequence: `FIRST_BATTLE.heroes` becomes the six `alpha-*` ids. This
+is sequence step (C) of the 2026-08-27 Alpha Team ruling ("the default cohort
+flips to the alpha six — a changesBaseline item, taken last"). It keeps the
+2026-08-20 ruling intact — "Our standard test will run against six heroes,
+one of each class" — the Alpha Team IS six heroes, one of each class, and the
+test cohort were clones of exactly these six. The enemy side of the standard
+battle (three test-zombies and a burning one) is NOT flipped by this ruling;
+it is the next question, not this one. Steps two and three stay open.
