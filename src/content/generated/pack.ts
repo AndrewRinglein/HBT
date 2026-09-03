@@ -2487,5 +2487,155 @@ export const UNIT_PACK = {
       "staminaCost": 2,
       "cooldown": 0
     }
+  },
+  "test": {
+    "note": "GENERATED from content/test/ — the test receptacle. Never ships. Wipe the folder to remove every row here.",
+    "units": [
+      {
+        "name": "Arc Golem (TEST)",
+        "side": "hero",
+        "maxHp": 30,
+        "armor": 2,
+        "resist": 0,
+        "accuracy": 5,
+        "dodge": 0,
+        "strength": 5,
+        "precision": 0,
+        "magic": 0,
+        "spirit": 0,
+        "role": "melee",
+        "movement": 4,
+        "reach": 1,
+        "maxStamina": 5,
+        "staminaRegen": 1,
+        "ai": "melee-aggressive",
+        "attacks": [
+          "attack.test-ram.overhead",
+          "attack.test-ram.slam",
+          "attack.test-arc.sweep"
+        ],
+        "moves": [
+          "power.move"
+        ],
+        "triggers": [
+          {
+            "id": "trigger.test-ram.knockback",
+            "hook": "onDamage",
+            "chance": 100,
+            "select": "target",
+            "effect": {
+              "kind": "knockback",
+              "value": 1
+            },
+            "onlyWithAttack": "attack.test-arc.sweep",
+            "source": "unit.test-arc-golem"
+          },
+          {
+            "id": "trigger.test-thorns",
+            "hook": "onTakingDamage",
+            "chance": 100,
+            "select": "target",
+            "effect": {
+              "kind": "damage",
+              "amount": 1,
+              "damageType": "true"
+            },
+            "source": "unit.test-arc-golem"
+          }
+        ],
+        "typeId": "test-arc-golem",
+        "abilities": [],
+        "attributes": [
+          "test"
+        ],
+        "tags": []
+      }
+    ],
+    "attacks": {
+      "attack.test-ram.slam": {
+        "id": "attack.test-ram.slam",
+        "name": "Slam (TEST)",
+        "kind": "melee",
+        "damageType": "physical",
+        "bonus": 2,
+        "stat": "strength",
+        "reach": 1,
+        "staminaCost": 0,
+        "crit": 47,
+        "critCount": 2
+      },
+      "attack.test-ram.overhead": {
+        "id": "attack.test-ram.overhead",
+        "name": "Overhead (TEST)",
+        "kind": "melee",
+        "damageType": "physical",
+        "bonus": 1,
+        "stat": "strength",
+        "reach": 1,
+        "staminaCost": 4,
+        "crit": 47,
+        "critCount": 3
+      },
+      "attack.test-arc.sweep": {
+        "id": "attack.test-arc.sweep",
+        "name": "Sweep (TEST)",
+        "kind": "melee",
+        "damageType": "physical",
+        "bonus": 1,
+        "stat": "strength",
+        "reach": 1,
+        "staminaCost": 0,
+        "area": "arc"
+      }
+    },
+    "statuses": {
+      "test.status.ward": {
+        "id": "test.status.ward",
+        "name": "Ward (testing)",
+        "shape": "pool",
+        "family": "magnitude",
+        "decayPerPhase": 1,
+        "reducesIncomingDamage": true,
+        "stacking": "add"
+      },
+      "test.status.enfeeble": {
+        "id": "test.status.enfeeble",
+        "name": "Enfeeble (testing)",
+        "shape": "modifier",
+        "family": "magnitude",
+        "decayPerPhase": 1,
+        "reducesOutgoingDamage": true,
+        "stacking": "add"
+      },
+      "test.status.hobble": {
+        "id": "test.status.hobble",
+        "name": "Hobble (testing)",
+        "shape": "counter",
+        "family": "pool",
+        "decayPerPhase": 1,
+        "reducesMovement": true,
+        "stacking": "add"
+      },
+      "test.status.gash": {
+        "id": "test.status.gash",
+        "name": "Gash (testing)",
+        "shape": "counter",
+        "family": "magnitude",
+        "decayPerPhase": 1,
+        "tick": "damage",
+        "tickDamageType": "true",
+        "shedByHealing": "half",
+        "stacking": "add"
+      },
+      "test.status.daze": {
+        "id": "test.status.daze",
+        "name": "Daze (testing)",
+        "shape": "counter",
+        "family": "duration",
+        "decayPerPhase": 1,
+        "blocksAction": true,
+        "stacking": "add"
+      }
+    }
   }
 } as const

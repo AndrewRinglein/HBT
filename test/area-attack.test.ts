@@ -40,7 +40,7 @@ describe('the geometry — one function, Law 6 order', () => {
 describe('no roll, no crit — the authored rule', () => {
   it('preview of an area attack is certain: hitChance 100, critChance 0, crit damage = hit damage', () => {
     const ctx = mk()
-    const golem = ctx.state.units.findIndex((u) => u.typeId === 'arc-golem')
+    const golem = ctx.state.units.findIndex((u) => u.typeId === 'test-arc-golem')
     const z = ctx.state.units.findIndex((u) => u.typeId === 'test-zombie')
     const pv = preview(ctx, golem, z, 'attack.test-arc.sweep')
     // The golem's accuracy is 5 ON PURPOSE — an area attack never consults it.
@@ -64,7 +64,7 @@ describe('no roll, no crit — the authored rule', () => {
 describe('the swing — one declaration, one hit per struck unit', () => {
   it('the opening sweep strikes both zombies from the scenario geometry', () => {
     const ctx = mk()
-    const golem = ctx.state.units.find((u) => u.typeId === 'arc-golem')!
+    const golem = ctx.state.units.find((u) => u.typeId === 'test-arc-golem')!
     // The adjacent PAIR — the scenario's third zombie (hex 55, added for
     // station.crit-count's single-target turns) stands outside the arc.
     const zombies = ctx.state.units.filter((u) => u.typeId === 'test-zombie' && [118, 119].includes(u.hex))
@@ -84,11 +84,11 @@ describe('the swing — one declaration, one hit per struck unit', () => {
   it('an ally in the arc is struck under the authored default, and spared with areaHitsAllies off', () => {
     // Scripted: stand a second golem in the arc. "To every unit in the blast."
     const base = scenarioOptions(scenarioDef(SC))
-    const withAlly = { ...base, heroes: ['arc-golem', 'arc-golem'], heroHexes: [135, 119] as number[], enemies: ['test-zombie'], enemyHexes: [118] as number[], enemyCount: 1 }
+    const withAlly = { ...base, heroes: ['test-arc-golem', 'test-arc-golem'], heroHexes: [135, 119] as number[], enemies: ['test-zombie'], enemyHexes: [118] as number[], enemyCount: 1 }
     {
       const ctx = createBattle(withAlly)
-      const a = ctx.state.units.find((u) => u.typeId === 'arc-golem' && u.hex === 135)!
-      const friend = ctx.state.units.find((u) => u.typeId === 'arc-golem' && u.hex === 119)!
+      const a = ctx.state.units.find((u) => u.typeId === 'test-arc-golem' && u.hex === 135)!
+      const friend = ctx.state.units.find((u) => u.typeId === 'test-arc-golem' && u.hex === 119)!
       const z = ctx.state.units.find((u) => u.typeId === 'test-zombie')!
       expect(areaUnitIdsOf(ctx, a.id, z.id, 'attack.test-arc.sweep')).toEqual([z.id, friend.id])
       beginActivation(ctx, a.id, 'test')
@@ -98,8 +98,8 @@ describe('the swing — one declaration, one hit per struck unit', () => {
     {
       const ctx = createBattle(withAlly)
       ctx.cfg.switches.areaHitsAllies = false
-      const a = ctx.state.units.find((u) => u.typeId === 'arc-golem' && u.hex === 135)!
-      const friend = ctx.state.units.find((u) => u.typeId === 'arc-golem' && u.hex === 119)!
+      const a = ctx.state.units.find((u) => u.typeId === 'test-arc-golem' && u.hex === 135)!
+      const friend = ctx.state.units.find((u) => u.typeId === 'test-arc-golem' && u.hex === 119)!
       const z = ctx.state.units.find((u) => u.typeId === 'test-zombie')!
       expect(areaUnitIdsOf(ctx, a.id, z.id, 'attack.test-arc.sweep')).toEqual([z.id])
       beginActivation(ctx, a.id, 'test')

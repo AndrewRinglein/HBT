@@ -103,7 +103,7 @@ const RAW_SCENARIOS: Readonly<Record<string, ScenarioDef>> = {
       + 'activation is a sweep through both — the arc as pure data on a body '
       + 'no control battle fields.',
     mapId: 'map.open',
-    heroes: ['arc-golem'],
+    heroes: ['test-arc-golem'],
     heroHexes: [135],
     // The pair at 118/119 feeds the opening sweep; the third zombie starts
     // five hexes out and arrives after the rams have scattered the pair, so

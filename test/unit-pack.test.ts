@@ -16,7 +16,11 @@ describe('the pack — read from the data, clearly differentiated', () => {
     const pack = packUnits()
     // The COHORT is six; the prologue party (hero.*) is a separate family
     // and is counted by its own tests (2026-08-26, content.hero-pack).
-    const heroes = Object.values(pack).filter((u) => u.side === 'hero' && u.typeId.startsWith('test-'))
+    // LAW 10 — 2026-09-02 (test.receptacle): the test- family now also holds
+    // the receptacle's bodies (test-arc-golem is a hero-side test body), so
+    // the COHORT is the six test- heroes that carry a Codex copyOf. Same
+    // claim — six clones, one per class — read off the trait that defines it.
+    const heroes = Object.values(pack).filter((u) => u.side === 'hero' && u.typeId.startsWith('test-') && (u as { copyOf?: string }).copyOf)
     expect(heroes.length).toBe(6)
     // LAW 10 — widened 2026-08-26 (content.enemy-pack) and again 2026-08-27
     // (content.alpha-team): the pack carries clearly-differentiated families,

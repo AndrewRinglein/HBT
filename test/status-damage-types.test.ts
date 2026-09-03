@@ -65,7 +65,7 @@ describe('the tick — type on the event, mitigation by the type', () => {
 
 describe('thorns — retaliation damage is TRUE', () => {
   it('the test golem\'s hide deals 1 TRUE back to its attacker, live in the scenario', () => {
-    expect((UNITS['arc-golem']!.triggers ?? []).some((t) =>
+    expect((UNITS['test-arc-golem']!.triggers ?? []).some((t) =>
       t.id === 'trigger.test-thorns' && t.effect.kind === 'damage'
       && (t.effect as { damageType: string }).damageType === 'true')).toBe(true)
     const ctx = createBattle(scenarioOptions(scenarioDef('showcase.arc-variant')))

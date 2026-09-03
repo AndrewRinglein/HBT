@@ -20,9 +20,9 @@ import { beginActivation } from '../src/core/mutate.js'
 // the multi-critical resolution is deterministic to observe.
 const rig = () => createBattle({
   ...scenarioOptions(scenarioDef('showcase.arc-variant')),
-  heroes: ['arc-golem'], heroHexes: [135],
+  heroes: ['test-arc-golem'], heroHexes: [135],
   enemies: ['test-zombie'], enemyHexes: [118], enemyCount: 1,
-  overrides: { 'arc-golem': { crit: 97, accuracy: 200 } }, // chance 97+47+3+surplus → 100; never misses
+  overrides: { 'test-arc-golem': { crit: 97, accuracy: 200 } }, // chance 97+47+3+surplus → 100; never misses
 })
 
 describe('the rows carry their counts', () => {
@@ -30,14 +30,14 @@ describe('the rows carry their counts', () => {
     expect(ATTACKS['attack.test-ram.slam']!.critCount).toBe(2)
     expect(ATTACKS['attack.test-ram.overhead']!.critCount).toBe(3)
     expect(ATTACKS['attack.halberd.hack']!.critCount).toBeUndefined()
-    expect(UNITS['arc-golem']!.attacks).toContain('attack.test-ram.slam')
+    expect(UNITS['test-arc-golem']!.attacks).toContain('attack.test-ram.slam')
   })
 })
 
 describe('one critting hit, N criticals', () => {
   it('a critting slam flips exactly two branches, numbered, and the arms reconcile', () => {
     const ctx = rig()
-    const golem = ctx.state.units.find((u) => u.typeId === 'arc-golem')!
+    const golem = ctx.state.units.find((u) => u.typeId === 'test-arc-golem')!
     const z = ctx.state.units.find((u) => u.typeId === 'test-zombie')!
     beginActivation(ctx, golem.id, 'test')
     const r = performAttack(ctx, golem.id, z.id, 'attack.test-ram.slam')
@@ -64,7 +64,7 @@ describe('one critting hit, N criticals', () => {
 
   it('two heads read as +100% pre-mitigation — the stacking rule, straight arithmetic', () => {
     const ctx = rig()
-    const golem = ctx.state.units.find((u) => u.typeId === 'arc-golem')!
+    const golem = ctx.state.units.find((u) => u.typeId === 'test-arc-golem')!
     const z = ctx.state.units.find((u) => u.typeId === 'test-zombie')!
     const base = resolveDamage(ctx, golem, z, ATTACKS['attack.test-ram.slam']!, 0).value
     const one = resolveDamage(ctx, golem, z, ATTACKS['attack.test-ram.slam']!, 1).value
@@ -81,7 +81,7 @@ describe('one critting hit, N criticals', () => {
 
   it('a single-crit attack still flips exactly one branch — the count is data, one is the default', () => {
     const ctx = rig()
-    const golem = ctx.state.units.find((u) => u.typeId === 'arc-golem')!
+    const golem = ctx.state.units.find((u) => u.typeId === 'test-arc-golem')!
     const z = ctx.state.units.find((u) => u.typeId === 'test-zombie')!
     beginActivation(ctx, golem.id, 'test')
     performAttack(ctx, golem.id, z.id, 'attack.test-arc.sweep') // area: cannot crit at all

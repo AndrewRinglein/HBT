@@ -27,7 +27,11 @@ export function packUnits(): Readonly<Record<string, UnitDef>> {
     // on real scaffolding — authored kits, authored attack rows, riders in the
     // real vocabulary. Delivered from the content session (S31): "The Alpha
     // Team is landed … I want to switch to using these heroes."
-    ...(UNIT_PACK as { alphaTeam?: readonly unknown[] }).alphaTeam ?? []]) {
+    ...(UNIT_PACK as { alphaTeam?: readonly unknown[] }).alphaTeam ?? [],
+    // the TEST RECEPTACLE joined 2026-09-02 (test.receptacle): content/test/
+    // bodies — deltas over real rows or complete test bodies — through the
+    // same converter and the same checks. Wipe the folder, they are gone.
+    ...(UNIT_PACK as { test?: { units?: readonly unknown[] } }).test?.units ?? []]) {
     const r = row as unknown as UnitDef & { typeId: string; copyOf?: string }
     for (const k of REQUIRED) {
       if ((r as Record<string, unknown>)[k] === undefined) {
@@ -108,16 +112,19 @@ const STATUS_FLAGS = ['tickDamageType', 'decayPerPhase', 'reducesIncomingDamage'
   'blocksAction', 'reducesMovement', 'halvesHealing', 'locksPowers', 'shedByHealing', 'aiControlled', 'tick', 'family'] as const
 export function packStatuses(): Readonly<Record<string, StatusDef>> {
   const raw = (UNIT_PACK as { statuses?: Readonly<Record<string, PackStatusRow>> }).statuses ?? {}
+  for (const k of Object.keys(raw)) if (!k.startsWith('status.')) throw new Error(`unit pack: status '${k}' is not a status.* id`)
+  return statusRowsToDefs(raw, 'unit pack')
+}
+function statusRowsToDefs(raw: Readonly<Record<string, PackStatusRow>>, where: string): Readonly<Record<string, StatusDef>> {
   const out: Record<string, StatusDef> = {}
   for (const [k, r] of Object.entries(raw)) {
-    if (k !== r.id) throw new Error(`unit pack: status key '${k}' names id '${r.id}'`)
-    if (!r.id.startsWith('status.')) throw new Error(`unit pack: status '${k}' is not a status.* id`)
-    if (!['counter', 'pool', 'modifier', 'flag'].includes(r.shape)) throw new Error(`unit pack: status '${k}' has shape '${String(r.shape)}'`)
-    if (typeof r.decayPerPhase !== 'number') throw new Error(`unit pack: status '${k}' has no decayPerPhase — regenerate the pack`)
+    if (k !== r.id) throw new Error(`${where}: status key '${k}' names id '${r.id}'`)
+    if (!['counter', 'pool', 'modifier', 'flag'].includes(r.shape)) throw new Error(`${where}: status '${k}' has shape '${String(r.shape)}'`)
+    if (typeof r.decayPerPhase !== 'number') throw new Error(`${where}: status '${k}' has no decayPerPhase — regenerate the pack`)
     for (const f of Object.keys(r)) {
-      if (!['id', 'name', 'shape', 'stacking', ...STATUS_FLAGS].includes(f)) throw new Error(`unit pack: status '${k}' carries unknown field '${f}' — the loader does not know it, so the engine would ignore it silently`)
+      if (!['id', 'name', 'shape', 'stacking', ...STATUS_FLAGS].includes(f)) throw new Error(`${where}: status '${k}' carries unknown field '${f}' — the loader does not know it, so the engine would ignore it silently`)
     }
-    if (r.tick === 'damage' && r.tickDamageType === undefined) throw new Error(`unit pack: status '${k}' ticks damage with no type`)
+    if (r.tick === 'damage' && r.tickDamageType === undefined) throw new Error(`${where}: status '${k}' ticks damage with no type`)
     const { tick, ...def } = r
     const id = r.id
     const hook = tick === 'damage' ? (ctx: Parameters<typeof statusDamage>[0], unitId: number, value: number) => statusDamage(ctx, unitId, value, id)
@@ -150,6 +157,29 @@ export function packMoves(): Readonly<Record<string, MoveDef>> {
     }
   }
   return raw
+}
+
+/**
+ * The test receptacle's attacks and statuses — test.receptacle (2026-09-02).
+ * content/test/attacks.json and statuses.json, converted beside the real rows.
+ * The family is enforced twice: the converter refuses a non-test id, and so
+ * does this loader — a test row can never shadow real content.
+ */
+export function packTestAttacks(): Readonly<Record<string, AttackDef>> {
+  const raw = (UNIT_PACK as { test?: { attacks?: Readonly<Record<string, AttackDef>> } }).test?.attacks ?? {}
+  for (const [k, a] of Object.entries(raw)) {
+    if (k !== a.id) throw new Error(`test receptacle: attack key '${k}' names id '${a.id}'`)
+    if (!k.startsWith('attack.test-')) throw new Error(`test receptacle: '${k}' is not attack.test-*`)
+    for (const f of ['kind', 'damageType', 'bonus', 'stat', 'reach', 'staminaCost'] as const) {
+      if (a[f] === undefined) throw new Error(`test receptacle: attack '${k}' is missing ${f}`)
+    }
+  }
+  return raw
+}
+export function packTestStatuses(): Readonly<Record<string, StatusDef>> {
+  const raw = (UNIT_PACK as { test?: { statuses?: Readonly<Record<string, PackStatusRow>> } }).test?.statuses ?? {}
+  for (const k of Object.keys(raw)) if (!k.startsWith('test.status.')) throw new Error(`test receptacle: '${k}' is not test.status.*`)
+  return statusRowsToDefs(raw, 'test receptacle')
 }
 
 /** The authored enemies' attacks — generated rows, validated like the units. */

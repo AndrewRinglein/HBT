@@ -1731,5 +1731,23 @@
   "status": "done",
   "sha": "21d6e3c",
   "gauntlet": "not passed — 1 flag(s) warned"
+ },
+ {
+  "id": "test.receptacle",
+  "kind": "test",
+  "shape": "data",
+  "spec": "Step three of the 2026-09-02 review plan: the test receptacle. content/test/{units,attacks,statuses}.json holds test content — a row is a DELTA over a real row (`from` + `set`, resolved against the pack's own real rows) or a complete test body — and reaches the engine through mkenginepack.mjs (pack.test) and the same loaders as real content (packUnits fields test units; packTestAttacks; packTestStatuses). Ids are the test family only, refused twice (converter and loader). Wipe the folder and every row is gone with no engine change. First residents: the arc golem (now test-arc-golem, a complete body), its three attacks (the Sweep is a delta over attack.halberd.cleave at cost 0), its two triggers, and the five test statuses — all out of src/content/index.ts and statuses.ts, which hand-type no test row any more. Andrew: 'We're not testing features if we're not pulling them from the right way.' Not moved yet: settled.json's testCohort (predates the folder) and the engine's pre-cohort fixtures (test.fixture-migration).",
+  "expect": "BASELINE-NEUTRAL (no control battle fields a test body); every row in content/test/ is loaded and every loaded test row is in content/test/; the Sweep equals the Cleave except the declared change; disabling attack.test-arc.sweep breaks the tests; content-check's INVENTED count falls (the receptacle rows are `test`, never INVENTED)",
+  "changesBaseline": false,
+  "needs": [
+   "pack.moves"
+  ],
+  "probeIds": [
+   "attack.test-arc.sweep",
+   "test-arc-golem"
+  ],
+  "status": "done-needs-review",
+  "sha": "629d34c",
+  "gauntlet": "not passed — 2 flag(s) warned"
  }
 ]

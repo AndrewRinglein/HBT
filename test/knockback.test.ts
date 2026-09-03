@@ -117,6 +117,6 @@ describe('the second consumer — pure data on the Arc Golem', () => {
 
   it('the trigger is DATA on the unit rows — the engine names no unit', () => {
     expect((UNITS['alpha-oathblade']!.triggers ?? []).some((t) => t.effect.kind === 'knockback')).toBe(true)
-    expect((UNITS['arc-golem']!.triggers ?? []).some((t) => t.effect.kind === 'knockback')).toBe(true)
+    expect((UNITS['test-arc-golem']!.triggers ?? []).some((t) => t.effect.kind === 'knockback')).toBe(true)
   })
 })

@@ -4,7 +4,7 @@
 
 import type { AbilityDef, AttackDef, UnitDef } from '../core/types.js'
 import { omitDisabled, stripDisabledTriggers } from './disable.js'
-import { packAbilities, packAttacks, packCritChart, packUnits } from './pack.js'
+import { packAbilities, packAttacks, packCritChart, packTestAttacks, packUnits } from './pack.js'
 
 // ─────────────────────────────────────────────────────────────────────────────
 // PROVISIONAL CONTENT — NOT PUBLISHED, NOT DESIGN
@@ -98,33 +98,9 @@ const RAW_ATTACKS: Readonly<Record<string, AttackDef>> = {
     id: 'attack.drake.snap', name: 'Snap', kind: 'melee',
     damageType: 'physical', bonus: 0, stat: 'strength', reach: 1, staminaCost: 1,
   },
-  'attack.test-ram.slam': {
-    // TEST SCAFFOLDING — station.crit-count's first consumer (2026-08-27):
-    // "Do two criticals." crit 47 puts the golem's chance at 50, so multi-
-    // criticals actually resolve in the verify scenario instead of waiting on
-    // a 3% fluke. Pure data; no control battle fields the golem.
-    id: 'attack.test-ram.slam', name: 'Slam (TEST)', kind: 'melee',
-    damageType: 'physical', bonus: 2, stat: 'strength', reach: 1, staminaCost: 0,
-    crit: 47, critCount: 2,
-  },
-  'attack.test-ram.overhead': {
-    // TEST SCAFFOLDING — station.crit-count's second variant: "Do three
-    // criticals," pure data. Costs stamina so the golem alternates between
-    // this and the slam as its pool cycles — both variants live in one battle.
-    id: 'attack.test-ram.overhead', name: 'Overhead (TEST)', kind: 'melee',
-    damageType: 'physical', bonus: 1, stat: 'strength', reach: 1, staminaCost: 4,
-    crit: 47, critCount: 3,
-  },
-  'attack.test-arc.sweep': {
-    // TEST SCAFFOLDING — capability.area-attack's second variant (2026-08-27):
-    // the same 'arc' shape as attack.halberd.cleave, pure data on a test unit,
-    // which is the generalization gate's whole question. Cost 0 so stamina can
-    // never bench the proof. Lives only on the Arc Golem, only in
-    // showcase.arc-variant — never in a control battle.
-    id: 'attack.test-arc.sweep', name: 'Sweep (TEST)', kind: 'melee',
-    damageType: 'physical', bonus: 1, stat: 'strength', reach: 1, staminaCost: 0,
-    area: 'arc',
-  },
+  // attack.test-ram.slam / .overhead and attack.test-arc.sweep moved to
+  // content/test/attacks.json (test.receptacle, 2026-09-02) — the sweep is a
+  // DELTA over the real Halberd Cleave now, not a re-typed row.
 }
 
 const RAW_ABILITIES: Readonly<Record<string, AbilityDef>> = {
@@ -291,50 +267,9 @@ const RAW_UNITS: Readonly<Record<string, UnitDef>> = {
     moves: ['power.move'],
     attributes: ['beast'],
   },
-  'arc-golem': {
-    // TEST SCAFFOLDING — capability.area-attack's second consumer (2026-08-27),
-    // the cohort precedent: an invented test body carrying a pure-data variant
-    // of a real mechanism. Wields ONLY the test sweep, fields ONLY in
-    // showcase.arc-variant. Accuracy is irrelevant on purpose: an area attack
-    // never rolls, and a 5-accuracy unit landing every sweep is itself part of
-    // the proof.
-    typeId: 'arc-golem', side: 'hero',
-    // Re-statted 2026-08-27 (station.crit-count): the original 14hp body died
-    // to the zombie clump before the battle ever reached a single-target turn,
-    // so the slam and overhead could not fire live. Scaffolding, not design.
-    maxHp: 30, armor: 2, resist: 0,
-    accuracy: 5, dodge: 0, strength: 5, precision: 0, magic: 0, spirit: 0,
-    role: 'melee',
-    movement: 4, reach: 1,
-    maxStamina: 5, staminaRegen: 1,
-    triggers: [{
-      // capability.knockback's second variant (2026-08-27) — the same
-      // mechanism as trigger.halberd.hack.knockback, pure data on the test
-      // body: every unit the golem's sweep damages is rammed a hex away.
-      id: 'trigger.test-ram.knockback', hook: 'onDamage', chance: 100,
-      select: 'target',
-      effect: { kind: 'knockback', value: 1 },
-      source: 'unit.arc-golem',
-      onlyWithAttack: 'attack.test-arc.sweep',
-    }, {
-      // THORNS, test lane (fix.status-damage-types 2026-08-27) — RULED:
-      // "Thorns damage that is dealt is true damage." The golem's stone hide
-      // deals 1 TRUE back to whoever hurts it; the typed retaliation, live.
-      id: 'trigger.test-thorns', hook: 'onTakingDamage', chance: 100,
-      select: 'target',
-      effect: { kind: 'damage', amount: 1, damageType: 'true' },
-      source: 'unit.arc-golem',
-    }],
-    ai: 'melee-aggressive',
-    // Preference order: the overhead ("three criticals") when its stamina is
-    // there, the slam ("two criticals") otherwise; areaSwing still overrides
-    // with the sweep whenever two enemies stand in the arc. All three are
-    // station scaffolding on one body (station.crit-count, 2026-08-27).
-    attacks: ['attack.test-ram.overhead', 'attack.test-ram.slam', 'attack.test-arc.sweep'],
-    abilities: [],
-    moves: ['power.move'],
-    attributes: ['test'],
-  },
+  // 'arc-golem' moved to content/test/units.json as test-arc-golem
+  // (test.receptacle, 2026-09-02): a complete test body in the receptacle,
+  // through the converter and the pack like everything real.
   'green-drake': {
     // A PLAYER BEAST — Angela 2026-08-20, dictated block, recorded in the
     // Codex source (settled.json hero ruling; §5 Drake's Maw; §10 hero table):
@@ -479,7 +414,12 @@ const RAW_UNITS: Readonly<Record<string, UnitDef>> = {
 for (const k of Object.keys(packAttacks())) {
   if (k in RAW_ATTACKS) throw new Error(`attack '${k}' exists in BOTH content/index.ts and the generated pack — one owner only`)
 }
-export const ATTACKS = omitDisabled({ ...RAW_ATTACKS, ...packAttacks() })
+// The test receptacle's attacks join through the same seam (test.receptacle,
+// 2026-09-02); one owner per id, loudly.
+for (const k of Object.keys(packTestAttacks())) {
+  if (k in RAW_ATTACKS || k in packAttacks()) throw new Error(`attack '${k}' exists in the test receptacle AND elsewhere — one owner only`)
+}
+export const ATTACKS = omitDisabled({ ...RAW_ATTACKS, ...packAttacks(), ...packTestAttacks() })
 // The authored item powers join the hand-authored abilities through the same
 // seam — capability.item-powers (2026-08-27). One owner per id, loudly.
 for (const k of Object.keys(packAbilities())) {

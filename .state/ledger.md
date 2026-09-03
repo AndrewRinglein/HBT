@@ -3863,3 +3863,156 @@ that were INVENTED-by-location in moves.ts are now read from their Codex
 rows. One flag (the decided-scan, STATE.md mentions of this plan). Seal withheld.
 
 IRON GAUNTLET: NOT PASSED — 1 FLAG(S) WARNED
+
+## test.receptacle — LANDED `629d34c` **NEEDS REVIEW**
+2026-09-03 04:41
+
+  PASS  dependencies landed
+  WARN  not already decided — 4 candidate ruling(s) — READ BEFORE ASKING: ../STATE.md:18 · ../STATE.md:20
+  PASS  typecheck
+  PASS  full test suite
+  PASS  gate 1 — the id appears in a real battle — attack.test-arc.sweep: 12 log lines, 12 fired, 8 changed state · test-arc-golem: 46 log lines, 46 fired, 14 changed state
+  PASS  brought its own tests — test/area-attack.test.ts, test/crit-count.test.ts, test/knockback.test.ts, test/status-damage-types.test.ts, test/unit-pack.test.ts, test/receptacle.test.ts
+  WARN  existing tests untouched — DELETED LINES in test/area-attack.test.ts (-7), test/crit-count.test.ts (-6), test/knockback.test.ts (-1), test/status-damage-types.test.ts (-1), test/unit-pack.test.ts (-1) — will land FLAGGED for review
+  PASS  control battles unchanged
+  PASS  content has a published source — 22 ids without a published source (12 awaiting publication from earlier items — see audit)
+  PASS  hardcode scan — core knows mechanisms, never names
+  PASS  generalizes — the second instance costs zero engine code — shape 'data' — not a mechanism, exempt
+  PASS  naming — new content ids use declared kinds
+  PASS  naming — no banned words invented
+  PASS  kill switch — the tests fail without the content — tests fail without attack.test-arc.sweep — they genuinely test it
+
+<details><summary>Existing tests were edited — review this diff</summary>
+
+```diff
+diff --git a/test/area-attack.test.ts b/test/area-attack.test.ts
+index e3e851b..05dc95a 100644
+--- a/test/area-attack.test.ts
++++ b/test/area-attack.test.ts
+@@ -41,5 +41,5 @@ describe('no roll, no crit — the authored rule', () => {
+   it('preview of an area attack is certain: hitChance 100, critChance 0, crit damage = hit damage', () => {
+     const ctx = mk()
+-    const golem = ctx.state.units.findIndex((u) => u.typeId === 'arc-golem')
++    const golem = ctx.state.units.findIndex((u) => u.typeId === 'test-arc-golem')
+     const z = ctx.state.units.findIndex((u) => u.typeId === 'test-zombie')
+     const pv = preview(ctx, golem, z, 'attack.test-arc.sweep')
+@@ -65,5 +65,5 @@ describe('the swing — one declaration, one hit per struck unit', () => {
+   it('the opening sweep strikes both zombies from the scenario geometry', () => {
+     const ctx = mk()
+-    const golem = ctx.state.units.find((u) => u.typeId === 'arc-golem')!
++    const golem = ctx.state.units.find((u) => u.typeId === 'test-arc-golem')!
+     // The adjacent PAIR — the scenario's third zombie (hex 55, added for
+     // station.crit-count's single-target turns) stands outside the arc.
+@@ -85,9 +85,9 @@ describe('the swing — one declaration, one hit per struck unit', () => {
+     // Scripted: stand a second golem in the arc. "To every unit in the blast."
+     const base = scenarioOptions(scenarioDef(SC))
+-    const withAlly = { ...base, heroes: ['arc-golem', 'arc-golem'], heroHexes: [135, 119] as number[], enemies: ['test-zombie'], enemyHexes: [118] as number[], enemyCount: 1 }
++    const withAlly = { ...base, heroes: ['test-arc-golem', 'test-arc-golem'], heroHexes: [135, 119] as number[], enemies: ['test-zombie'], enemyHexes: [118] as number[], enemyCount: 1 }
+     {
+       const ctx = createBattle(withAlly)
+-      const a = ctx.state.units.find((u) => u.typeId === 'arc-golem' && u.hex === 135)!
+-      const friend = ctx.state.units.find((u) => u.typeId === 'arc-golem' && u.hex === 119)!
++      const a = ctx.state.units.find((u) => u.typeId === 'test-arc-golem' && u.hex === 135)!
++      const friend = ctx.state.units.find((u) => u.typeId === 'test-arc-golem' && u.hex === 119)!
+       const z = ctx.state.units.find((u) => u.typeId === 'test-zombie')!
+       expect(areaUnitIdsOf(ctx, a.id, z.id, 'attack.test-arc.sweep')).toEqual([z.id, friend.id])
+@@ -99,6 +99,6 @@ describe('the swing — one declaration, one hit per struck unit', () => {
+       const ctx = createBattle(withAlly)
+       ctx.cfg.switches.areaHitsAllies = false
+-      const a = ctx.state.units.find((u) => u.typeId === 'arc-golem' && u.hex === 135)!
+-      const friend = ctx.state.units.find((u) => u.typeId === 'arc-golem' && u.hex === 119)!
++      const a = ctx.state.units.find((u) => u.typeId === 'test-arc-golem' && u.hex === 135)!
++      const friend = ctx.state.units.find((u) => u.typeId === 'test-arc-golem' && u.hex === 119)!
+       const z = ctx.state.units.find((u) => u.typeId === 'test-zombie')!
+       expect(areaUnitIdsOf(ctx, a.id, z.id, 'attack.test-arc.sweep')).toEqual([z.id])
+diff --git a/test/crit-count.test.ts b/test/crit-count.test.ts
+index f1b9369..17458d5 100644
+--- a/test/crit-count.test.ts
++++ b/test/crit-count.test.ts
+@@ -21,7 +21,7 @@ import { beginActivation } from '../src/core/mutate.js'
+ const rig = () => createBattle({
+   ...scenarioOptions(scenarioDef('showcase.arc-variant')),
+-  heroes: ['arc-golem'], heroHexes: [135],
++  heroes: ['test-arc-golem'], heroHexes: [135],
+   enemies: ['test-zombie'], enemyHexes: [118], enemyCount: 1,
+-  overrides: { 'arc-golem': { crit: 97, accuracy: 200 } }, // chance 97+47+3+surplus → 100; never misses
++  overrides: { 'test-arc-golem': { crit: 97, accuracy: 200 } }, // chance 97+47+3+surplus → 100; never misses
+ })
+ 
+@@ -31,5 +31,5 @@ describe('the rows carry their counts', () => {
+     expect(ATTACKS['attack.test-ram.overhead']!.critCount).toBe(3)
+     expect(ATTACKS['attack.halberd.hack']!.critCount).toBeUndefined()
+-    expect(UNITS['arc-golem']!.attacks).toContain('attack.test-ram.slam')
++    expect(UNITS['test-arc-golem']!.attacks).toContain('attack.test-ram.slam')
+   })
+ })
+@@ -38,5 +38,5 @@ describe('one critting hit, N criticals', () => {
+   it('a critting slam flips exactly two branches, numbered, and the arms reconcile', () => {
+     const ctx = rig()
+-    const golem = ctx.state.units.find((u) => u.typeId === 'arc-golem')!
++    const golem = ctx.state.units.find((u) => u.typeId === 'test-arc-golem')!
+     const z = ctx.state.units.find((u) => u.typeId === 'test-zombie')!
+     beginActivation(ctx, golem.id, 'test')
+@@ -65,5 +65,5 @@ describe('one critting hit, N criticals', () => {
+   it('two heads read as +100% pre-mitigation — the stacking rule, straight arithmetic', () => {
+     const ctx = rig()
+-    const golem = ctx.state.units.find((u) => u.typeId === 'arc-golem')!
++    const golem = ctx.state.units.find((u) => u.typeId === 'test-arc-golem')!
+     const z = ctx.state.units.find((u) => u.typeId === 'test-zombie')!
+     const base = resolveDamage(ctx, golem, z, ATTACKS['attack.test-ram.slam']!, 0).value
+@@ -82,5 +82,5 @@ describe('one critting hit, N criticals', () => {
+   it('a single-crit attack still flips exactly one branch — the count is data, one is the default', () => {
+     const ctx = rig()
+-    const golem = ctx.state.units.find((u) => u.typeId === 'arc-golem')!
++    const golem = ctx.state.units.find((u) => u.typeId === 'test-arc-golem')!
+     const z = ctx.state.units.find((u) => u.typeId === 'test-zombie')!
+     beginActivation(ctx, golem.id, 'test')
+diff --git a/test/knockback.test.ts b/test/knockback.test.ts
+index d01467f..fd801a9 100644
+--- a/test/knockback.test.ts
++++ b/test/knockback.test.ts
+@@ -118,5 +118,5 @@ describe('the second consumer — pure data on the Arc Golem', () => {
+   it('the trigger is DATA on the unit rows — the engine names no unit', () => {
+     expect((UNITS['alpha-oathblade']!.triggers ?? []).some((t) => t.effect.kind === 'knockback')).toBe(true)
+-    expect((UNITS['arc-golem']!.triggers ?? []).some((t) => t.effect.kind === 'knockback')).toBe(true)
++    expect((UNITS['test-arc-golem']!.triggers ?? []).some((t) => t.effect.kind === 'knockback')).toBe(true)
+   })
+ })
+diff --git a/test/status-damage-types.test.ts b/test/status-damage-types.test.ts
+index 7f1a4c0..1e76005 100644
+--- a/test/status-damage-types.test.ts
++++ b/test/status-damage-types.test.ts
+@@ -66,5 +66,5 @@ describe('the tick — type on the event, mitigation by the type', () => {
+ describe('thorns — retaliation damage is TRUE', () => {
+   it('the test golem\'s hide deals 1 TRUE back to its attacker, live in the scenario', () => {
+-    expect((UNITS['arc-golem']!.triggers ?? []).some((t) =>
++    expect((UNITS['test-arc-golem']!.triggers ?? []).some((t) =>
+       t.id === 'trigger.test-thorns' && t.effect.kind === 'damage'
+       && (t.effect as { damageType: string }).damageType === 'true')).toBe(true)
+diff --git a/test/unit-pack.test.ts b/test/unit-pack.test.ts
+index 3f9d95a..1a308da 100644
+--- a/test/unit-pack.test.ts
++++ b/test/unit-pack.test.ts
+@@ -17,5 +17,9 @@ describe('the pack — read from the data, clearly differentiated', () => {
+     // The COHORT is six; the prologue party (hero.*) is a separate family
+     // and is counted by its own tests (2026-08-26, content.hero-pack).
+-    const heroes = Object.values(pack).filter((u) => u.side === 'hero' && u.typeId.startsWith('test-'))
++    // LAW 10 — 2026-09-02 (test.receptacle): the test- family now also holds
++    // the receptacle's bodies (test-arc-golem is a hero-side test body), so
++    // the COHORT is the six test- heroes that carry a Codex copyOf. Same
++    // claim — six clones, one per class — read off the trait that defines it.
++    const heroes = Object.values(pack).filter((u) => u.side === 'hero' && u.typeId.startsWith('test-') && (u as { copyOf?: string }).copyOf)
+     expect(heroes.length).toBe(6)
+     // LAW 10 — widened 2026-08-26 (content.enemy-pack) and again 2026-08-27
+```
+</details>
+
+Post-land audit by hand after the reaper (all pre-land checks ran; the gate
+committed): 55 files / 483 on the committed tree; control battles IDENTICAL.
+content-check INVENTED 27 → 22: the golem's three attacks and two triggers
+are `test` rows now, not engine inventions. The edited tests are the rename
+'arc-golem' → 'test-arc-golem' (the receptacle enforces the test family) and
+unit-pack.test's cohort count reading the copyOf trait instead of the prefix.
+Two flags (decided-scan; existing tests edited). Seal withheld.
+
+IRON GAUNTLET: NOT PASSED — 2 FLAG(S) WARNED

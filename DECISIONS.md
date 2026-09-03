@@ -1109,3 +1109,27 @@ class powers, 3 turns" — placeholder id `status.powers-locked`, a plain
 descriptive name chosen so nothing is invented; it is renameable in one place
 (the Codex row and the chart compile) whenever Andrew names it. The chart row
 itself keeps its dictated key, name and text.
+
+---
+
+## 2026-09-02 — structure first; features wait
+
+Asked whether the six unbuilt Codex statuses should be built now, and what to
+call the chart's powers-lock status:
+
+> "You can leave 'dazed loses access to class powers' as just a note. We don't
+> need to do that right now. In regards to question one, I really want all the
+> structure, everything to be correct. We don't need all of the features built.
+> How much are you working on all the individual features right now? We're not
+> testing them, so I don't think they're actually working. I thought you were
+> just working on the structure and the architecture, and where we're pulling
+> from content and pulling from items."
+
+Consequence: `status.powers-locked` stays a placeholder with a note, no rename
+asked for. The six statuses (Karma, Taunt, Confusion, Root, Frost, Shadow),
+Pray, Charging Run and the four dead attacks stay NAMED GAPS. Engine work is
+structure only until told otherwise: where content is read from, the test
+receptacle, the enemy side of the standard battle, items per unit. A Codex row
+the engine cannot behave for is listed as a gap, never built to make it fit
+(fix.bleed-magnitude, landed the same day, was the wrong call by this
+standard and is recorded as such in the ledger).
