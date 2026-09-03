@@ -290,7 +290,7 @@
    "slots": 1,
    "classRestriction": "class.priest",
    "tags": [
-    "staff"
+    "holy"
    ],
    "grants": [
     "attack.holy-symbol.wrath",
@@ -299,7 +299,7 @@
    "statModifiers": {},
    "triggers": [],
    "intent": "A hand's worth of god: it hurts the walking dead and mends the walking living.",
-   "source": "settled content"
+   "source": "settled content | 2026-09-02b workbook: tagged staff, which it is not. It is a holy symbol."
   },
   {
    "id": "item.priest-chain",
@@ -310,7 +310,8 @@
    "slots": 1,
    "classRestriction": "class.priest",
    "tags": [
-    "holy"
+    "holy",
+    "chain"
    ],
    "grants": [
     "attack.priest-chain.smite",
@@ -319,7 +320,7 @@
    "statModifiers": {},
    "triggers": [],
    "intent": "A censer on a length of chain — it swings at one enemy and blesses everyone behind it.",
-   "source": "settled content"
+   "source": "settled content | 2026-09-02b workbook: joins the CHAIN set."
   },
   {
    "id": "item.pile-of-rocks",
@@ -770,121 +771,228 @@
    "source": "settled content"
   },
   {
-   "id": "item.martyrs-censer",
-   "name": "Martyr's Censer",
-   "itemClass": "weapon",
-   "tier": 3,
-   "hands": 1,
-   "slots": 1,
-   "classRestriction": "class.priest",
-   "tags": [
-    "holy"
-   ],
-   "grants": [
-    "attack.martyrs-censer.swing-of-ash",
-    "attack.martyrs-censer.offering"
-   ],
-   "statModifiers": {
-    "spirit": 1,
-    "health": -2
-   },
-   "triggers": [],
-   "intent": "It burns something of yours to make the light. Every swing of it costs a little blood and buys a little more reach into the dark.",
-   "source": "Ruled 2026-09-02: tier 3 had one priest weapon and two mage weapons, so a tier-3 reward mostly helped the classes whose weapons are unrestricted. Three priest and two mage rows close that, keeping each class's theme — the priest ranged and true, the mage ranged and magic."
-  },
-  {
-   "id": "item.reliquary-of-the-nine-tears",
-   "name": "Reliquary of the Nine Tears",
-   "itemClass": "weapon",
-   "tier": 3,
-   "hands": 1,
-   "slots": 1,
-   "classRestriction": "class.priest",
-   "tags": [
-    "holy"
-   ],
-   "grants": [
-    "attack.reliquary-of-the-nine-tears.rebuke",
-    "attack.reliquary-of-the-nine-tears.intercession"
-   ],
-   "statModifiers": {
-    "spirit": 1,
-    "resist": 1
-   },
-   "triggers": [],
-   "intent": "Nine saints wept into one jar. What comes out is not comfort — it is a very specific kind of attention.",
-   "source": "Ruled 2026-09-02: tier 3 had one priest weapon and two mage weapons, so a tier-3 reward mostly helped the classes whose weapons are unrestricted. Three priest and two mage rows close that, keeping each class's theme — the priest ranged and true, the mage ranged and magic."
-  },
-  {
-   "id": "item.chorus-of-the-drowned-choir",
-   "name": "Chorus of the Drowned Choir",
-   "itemClass": "weapon",
-   "tier": 3,
-   "hands": 2,
-   "slots": 2,
-   "classRestriction": "class.priest",
-   "tags": [
-    "holy"
-   ],
-   "grants": [
-    "attack.chorus-of-the-drowned-choir.verse",
-    "attack.chorus-of-the-drowned-choir.antiphon"
-   ],
-   "statModifiers": {
-    "spirit": 2,
-    "movement": -1
-   },
-   "triggers": [],
-   "intent": "Two hands, because the singing needs both, and the choir it answers has been underwater for a long time.",
-   "source": "Ruled 2026-09-02: tier 3 had one priest weapon and two mage weapons, so a tier-3 reward mostly helped the classes whose weapons are unrestricted. Three priest and two mage rows close that, keeping each class's theme — the priest ranged and true, the mage ranged and magic."
-  },
-  {
-   "id": "item.emberglass-focus",
-   "name": "Emberglass Focus",
+   "id": "item.fire-gauntlet",
+   "name": "Fire Gauntlet",
    "itemClass": "weapon",
    "tier": 3,
    "hands": 1,
    "slots": 1,
    "classRestriction": "class.mage",
    "tags": [
-    "wand",
+    "gauntlet",
+    "fire",
     "magic"
    ],
    "grants": [
-    "attack.emberglass-focus.ember",
-    "attack.emberglass-focus.bank-the-fire"
+    "power.fire-gauntlet.stoke",
+    "attack.fire-gauntlet.fire-punch"
    ],
-   "statModifiers": {
-    "magic": 1,
-    "crit": 5
-   },
+   "statModifiers": {},
    "triggers": [],
-   "intent": "A lens of cooled fire. One hand, because the other is usually busy holding something that keeps you alive.",
-   "source": "Ruled 2026-09-02: tier 3 had one priest weapon and two mage weapons, so a tier-3 reward mostly helped the classes whose weapons are unrestricted. Three priest and two mage rows close that, keeping each class's theme — the priest ranged and true, the mage ranged and magic."
+   "intent": "The one mage weapon that wants you in reach. Strength swings it and Magic is what actually burns.",
+   "source": "Ruled 2026-09-02b, dictated: the priest and mage ladder above tier 3, and the sets it hangs on."
   },
   {
-   "id": "item.staff-of-the-still-air",
-   "name": "Staff of the Still Air",
+   "id": "item.staff-of-summoning",
+   "name": "Staff of Summoning",
    "itemClass": "weapon",
    "tier": 3,
    "hands": 2,
    "slots": 2,
    "classRestriction": "class.mage",
    "tags": [
-    "staff"
+    "staff",
+    "magic"
    ],
    "grants": [
-    "attack.staff-of-the-still-air.hush",
-    "attack.staff-of-the-still-air.stillness"
+    "power.staff-of-summoning.call-the-wolf",
+    "attack.staff-of-summoning.unbinding"
    ],
-   "statModifiers": {
-    "magic": 2,
-    "reach": 1,
-    "health": -2
-   },
+   "statModifiers": {},
    "triggers": [],
-   "intent": "Nothing moves near it that it has not agreed to. The air is still and so, shortly, is everything else.",
-   "source": "Ruled 2026-09-02: tier 3 had one priest weapon and two mage weapons, so a tier-3 reward mostly helped the classes whose weapons are unrestricted. Three priest and two mage rows close that, keeping each class's theme — the priest ranged and true, the mage ranged and magic."
+   "intent": "It calls one thing up and it is unusually good at putting other people's things back down.",
+   "source": "Ruled 2026-09-02b, dictated: the priest and mage ladder above tier 3, and the sets it hangs on."
+  },
+  {
+   "id": "item.staff-of-the-magi",
+   "name": "Staff of the Magi",
+   "itemClass": "weapon",
+   "tier": 4,
+   "hands": 2,
+   "slots": 2,
+   "classRestriction": "class.mage",
+   "tags": [
+    "staff",
+    "magic"
+   ],
+   "grants": [
+    "power.staff-of-the-magi.power-ward",
+    "power.staff-of-the-magi.vortex"
+   ],
+   "statModifiers": {},
+   "triggers": [],
+   "intent": "The staff is the smaller half. What it really is, is a reason to fill every slot you own with rings.",
+   "source": "Ruled 2026-09-02b, dictated: the priest and mage ladder above tier 3, and the sets it hangs on.",
+   "setBonus": {
+    "tag": "ring",
+    "each": {
+     "magic": 1
+    }
+   },
+   "setBonusText": "+1 Magic for every RING you are wearing."
+  },
+  {
+   "id": "item.staff-of-the-destroyer",
+   "name": "Staff of the Destroyer",
+   "itemClass": "weapon",
+   "tier": 5,
+   "hands": 2,
+   "slots": 2,
+   "classRestriction": "class.mage",
+   "tags": [
+    "staff",
+    "magic",
+    "destroyer"
+   ],
+   "grants": [
+    "attack.staff-of-the-destroyer.ruin",
+    "attack.staff-of-the-destroyer.sundering"
+   ],
+   "statModifiers": {},
+   "triggers": [],
+   "intent": "Nothing it kills gets to be raised, walked past, or mourned. There is no corpse.",
+   "source": "Ruled 2026-09-02b, dictated: the priest and mage ladder above tier 3, and the sets it hangs on.",
+   "setBonus": {
+    "tag": "destroyer",
+    "each": {
+     "attackDamage": 1
+    }
+   },
+   "setBonusText": "+1 damage for every DESTROYER item you carry."
+  },
+  {
+   "id": "item.staff-of-the-ultimate-destroyer",
+   "name": "Staff of the Ultimate Destroyer",
+   "itemClass": "weapon",
+   "tier": 6,
+   "hands": 2,
+   "slots": 2,
+   "classRestriction": "class.mage",
+   "tags": [
+    "staff",
+    "magic",
+    "destroyer"
+   ],
+   "grants": [
+    "power.staff-of-the-ultimate-destroyer.perfect-sight",
+    "attack.staff-of-the-ultimate-destroyer.annihilation"
+   ],
+   "statModifiers": {},
+   "triggers": [],
+   "intent": "The last staff. It doubles the stat it scales on and then scales on it.",
+   "source": "Ruled 2026-09-02b, dictated: the priest and mage ladder above tier 3, and the sets it hangs on.",
+   "setBonus": {
+    "tag": "destroyer",
+    "each": {
+     "attackDamage": 1
+    }
+   },
+   "setBonusText": "+1 damage for every DESTROYER item you carry."
+  },
+  {
+   "id": "item.chains-of-the-wrathful",
+   "name": "Chains of the Wrathful",
+   "itemClass": "weapon",
+   "tier": 3,
+   "hands": 2,
+   "slots": 2,
+   "classRestriction": "class.priest",
+   "tags": [
+    "holy",
+    "chain"
+   ],
+   "grants": [
+    "power.chains-of-the-wrathful.weight-of-sin",
+    "attack.chains-of-the-wrathful.wrathful-sweep"
+   ],
+   "statModifiers": {},
+   "triggers": [],
+   "intent": "Both hands, swung wide. It is the only priest weapon that does not care which one of them it hits.",
+   "source": "Ruled 2026-09-02b, dictated: the priest and mage ladder above tier 3, and the sets it hangs on.",
+   "setBonus": {
+    "tag": "chain",
+    "each": {
+     "precision": 1
+    }
+   },
+   "setBonusText": "+1 Precision for every CHAIN item you carry."
+  },
+  {
+   "id": "item.benevolent-rod",
+   "name": "Benevolent Rod",
+   "itemClass": "weapon",
+   "tier": 3,
+   "hands": 1,
+   "slots": 1,
+   "classRestriction": "class.priest",
+   "tags": [
+    "holy"
+   ],
+   "grants": [
+    "power.benevolent-rod.restoration",
+    "power.benevolent-rod.small-mercy"
+   ],
+   "statModifiers": {},
+   "triggers": [],
+   "intent": "One good heal on a clock and one small one you can spend every single Turn.",
+   "source": "Ruled 2026-09-02b, dictated: the priest and mage ladder above tier 3, and the sets it hangs on."
+  },
+  {
+   "id": "item.book-of-karma",
+   "name": "Book of Karma",
+   "itemClass": "weapon",
+   "tier": 3,
+   "hands": 1,
+   "slots": 1,
+   "classRestriction": "class.priest",
+   "tags": [
+    "holy",
+    "book"
+   ],
+   "grants": [
+    "power.book-of-karma.balance-the-ledger"
+   ],
+   "statModifiers": {},
+   "triggers": [],
+   "intent": "The ledger is kept whether or not you read it aloud. Reading it aloud is how someone else gets paid.",
+   "source": "Ruled 2026-09-02b, dictated: the priest and mage ladder above tier 3, and the sets it hangs on.",
+   "setBonus": {
+    "tag": "book",
+    "each": {
+     "resist": 1
+    }
+   },
+   "setBonusText": "+1 Resist for every BOOK you carry."
+  },
+  {
+   "id": "item.rod-of-imprisonment",
+   "name": "Rod of Imprisonment",
+   "itemClass": "weapon",
+   "tier": 4,
+   "hands": 1,
+   "slots": 1,
+   "classRestriction": "class.priest",
+   "tags": [
+    "holy"
+   ],
+   "grants": [
+    "power.rod-of-imprisonment.imprison",
+    "power.rod-of-imprisonment.sanctuary"
+   ],
+   "statModifiers": {},
+   "triggers": [],
+   "intent": "It does not hurt anything. It takes one thing off the board for a Turn -- theirs, or, when it has to be, yours.",
+   "source": "Ruled 2026-09-02b, dictated: the priest and mage ladder above tier 3, and the sets it hangs on."
   }
  ],
  "attacks": [
@@ -1492,255 +1600,161 @@
    "source": "settled content"
   },
   {
-   "id": "attack.martyrs-censer.swing-of-ash",
-   "name": "Swing of Ash",
-   "range": 4,
-   "stat": "spirit",
-   "damage": 1,
+   "id": "attack.fire-gauntlet.fire-punch",
+   "name": "Fire Punch",
+   "range": "melee",
+   "stat": "strength",
+   "damage": 0,
    "stamina": 1,
    "accuracy": 0,
    "crit": 0,
    "hits": 1,
-   "targets": "one enemy within 4 hexes",
-   "damageType": "true",
+   "targets": "one enemy in melee reach",
+   "damageType": "magic",
    "tags": [
-    "holy",
-    "ranged"
-   ],
-   "triggers": [],
-   "slayer": null,
-   "description": "The censer swings and the smoke goes where it likes.",
-   "source": "Ruled 2026-09-02: tier 3 had one priest weapon and two mage weapons, so a tier-3 reward mostly helped the classes whose weapons are unrestricted. Three priest and two mage rows close that, keeping each class's theme — the priest ranged and true, the mage ranged and magic."
-  },
-  {
-   "id": "attack.martyrs-censer.offering",
-   "name": "Offering",
-   "range": 4,
-   "stat": "spirit",
-   "damage": 4,
-   "stamina": 2,
-   "accuracy": 0,
-   "crit": 0,
-   "hits": 1,
-   "targets": "one enemy within 4 hexes",
-   "damageType": "true",
-   "tags": [
-    "holy",
-    "ranged"
+    "melee",
+    "fire",
+    "brawl"
    ],
    "triggers": [
     {
-     "hook": "onDamage",
-     "effect": "you take 2 true damage"
+     "hook": "onHit",
+     "effect": "apply Burn equal to half your Magic, rounded nearest, 0.5 up"
     }
    ],
    "slayer": null,
-   "description": "Four to them and two to you, every time, and the arithmetic only works while you are standing.",
-   "source": "Ruled 2026-09-02: tier 3 had one priest weapon and two mage weapons, so a tier-3 reward mostly helped the classes whose weapons are unrestricted. Three priest and two mage rows close that, keeping each class's theme — the priest ranged and true, the mage ranged and magic."
+   "description": "Damage equals your Strength, dealt as magic, and it leaves half your Magic burning on them.",
+   "source": "Ruled 2026-09-02b, dictated: the priest and mage ladder above tier 3, and the sets it hangs on."
   },
   {
-   "id": "attack.reliquary-of-the-nine-tears.rebuke",
-   "name": "Lesser Rebuke",
+   "id": "attack.staff-of-summoning.unbinding",
+   "name": "Unbinding",
    "range": 5,
-   "stat": "spirit",
-   "damage": 1,
-   "stamina": 1,
-   "accuracy": 0,
-   "crit": 0,
-   "hits": 1,
-   "targets": "one enemy within 5 hexes",
-   "damageType": "true",
-   "tags": [
-    "holy",
-    "ranged"
-   ],
-   "triggers": [],
-   "slayer": null,
-   "description": "A word said at range, and something in them gives.",
-   "source": "Ruled 2026-09-02: tier 3 had one priest weapon and two mage weapons, so a tier-3 reward mostly helped the classes whose weapons are unrestricted. Three priest and two mage rows close that, keeping each class's theme — the priest ranged and true, the mage ranged and magic."
-  },
-  {
-   "id": "attack.reliquary-of-the-nine-tears.intercession",
-   "name": "Intercession",
-   "range": 5,
-   "stat": "spirit",
-   "damage": 2,
+   "stat": "precision",
+   "damage": 0,
    "stamina": 2,
    "accuracy": 0,
    "crit": 0,
    "hits": 1,
    "targets": "one enemy within 5 hexes",
-   "damageType": "true",
+   "damageType": "magic",
    "tags": [
-    "holy",
-    "ranged"
-   ],
-   "triggers": [
-    {
-     "hook": "onDamage",
-     "effect": "heal the ally nearest the target for half the damage dealt, rounded down"
-    }
-   ],
-   "slayer": null,
-   "description": "Half of what you take out of them goes into whoever is closest to them on your side. It is a bad heal and a fine reason to stand somewhere particular.",
-   "source": "Ruled 2026-09-02: tier 3 had one priest weapon and two mage weapons, so a tier-3 reward mostly helped the classes whose weapons are unrestricted. Three priest and two mage rows close that, keeping each class's theme — the priest ranged and true, the mage ranged and magic."
-  },
-  {
-   "id": "attack.chorus-of-the-drowned-choir.verse",
-   "name": "Drowned Verse",
-   "range": 6,
-   "stat": "spirit",
-   "damage": 2,
-   "stamina": 1,
-   "accuracy": 0,
-   "crit": 0,
-   "hits": 1,
-   "targets": "one enemy within 6 hexes",
-   "damageType": "true",
-   "tags": [
-    "holy",
     "ranged"
    ],
    "triggers": [],
    "slayer": null,
-   "description": "The longest reach a priest has, and it costs one Stamina.",
-   "source": "Ruled 2026-09-02: tier 3 had one priest weapon and two mage weapons, so a tier-3 reward mostly helped the classes whose weapons are unrestricted. Three priest and two mage rows close that, keeping each class's theme — the priest ranged and true, the mage ranged and magic."
+   "description": "Damage equals your Precision plus half the party's Magic, and you are 15 Accuracy better against anything summoned.",
+   "source": "Ruled 2026-09-02b, dictated: the priest and mage ladder above tier 3, and the sets it hangs on.",
+   "halfStatBonus": "magic",
+   "accuracyVs": {
+    "summon": 15
+   }
   },
   {
-   "id": "attack.chorus-of-the-drowned-choir.antiphon",
-   "name": "Antiphon",
-   "range": 4,
-   "stat": "spirit",
-   "damage": 3,
+   "id": "attack.staff-of-the-destroyer.ruin",
+   "name": "Ruin",
+   "range": 8,
+   "stat": "precision",
+   "damage": 0,
    "stamina": 3,
    "accuracy": 0,
    "crit": 0,
    "hits": 1,
-   "targets": "one enemy within 4 hexes",
-   "damageType": "true",
+   "targets": "one enemy within 8 hexes",
+   "damageType": "magic",
    "tags": [
-    "holy",
-    "ranged"
+    "ranged",
+    "destroyer"
+   ],
+   "triggers": [
+    {
+     "hook": "onKill",
+     "effect": "the corpse is destroyed"
+    }
+   ],
+   "slayer": null,
+   "description": "Damage equals your Precision plus twice the party's Magic. Anything it kills leaves nothing behind.",
+   "source": "Ruled 2026-09-02b, dictated: the priest and mage ladder above tier 3, and the sets it hangs on.",
+   "doubleStatBonus": "magic",
+   "cooldown": 3
+  },
+  {
+   "id": "attack.staff-of-the-destroyer.sundering",
+   "name": "Sundering",
+   "range": 10,
+   "stat": "precision",
+   "damage": 0,
+   "stamina": 3,
+   "accuracy": 0,
+   "crit": 0,
+   "hits": 1,
+   "targets": "one enemy within 10 hexes",
+   "damageType": "magic",
+   "tags": [
+    "ranged",
+    "destroyer",
+    "stun"
    ],
    "triggers": [
     {
      "hook": "onHit",
-     "effect": "every enemy within 1 hex of the target takes 2 true damage"
-    }
-   ],
-   "slayer": null,
-   "description": "Three to the one you named and two to everything leaning on it. Expensive, and the only thing in a priest's hands that hits a crowd.",
-   "source": "Ruled 2026-09-02: tier 3 had one priest weapon and two mage weapons, so a tier-3 reward mostly helped the classes whose weapons are unrestricted. Three priest and two mage rows close that, keeping each class's theme — the priest ranged and true, the mage ranged and magic."
-  },
-  {
-   "id": "attack.emberglass-focus.ember",
-   "name": "Ember",
-   "range": 5,
-   "stat": "magic",
-   "damage": 2,
-   "stamina": 1,
-   "accuracy": 0,
-   "crit": 0,
-   "hits": 1,
-   "targets": "one enemy within 5 hexes",
-   "damageType": "magic",
-   "tags": [
-    "wand",
-    "magic",
-    "ranged"
-   ],
-   "triggers": [
-    {
-     "hook": "onCrit",
-     "effect": "apply 2 Burn"
-    }
-   ],
-   "slayer": null,
-   "description": "Cheap, quick, and it sets things alight when it goes well.",
-   "source": "Ruled 2026-09-02: tier 3 had one priest weapon and two mage weapons, so a tier-3 reward mostly helped the classes whose weapons are unrestricted. Three priest and two mage rows close that, keeping each class's theme — the priest ranged and true, the mage ranged and magic."
-  },
-  {
-   "id": "attack.emberglass-focus.bank-the-fire",
-   "name": "Bank the Fire",
-   "range": 5,
-   "stat": "magic",
-   "damage": 3,
-   "stamina": 2,
-   "accuracy": 0,
-   "crit": 0,
-   "hits": 1,
-   "targets": "one enemy within 5 hexes",
-   "damageType": "magic",
-   "tags": [
-    "wand",
-    "magic",
-    "ranged"
-   ],
-   "triggers": [
-    {
-     "hook": "onHit",
-     "effect": "apply 1 Burn"
+     "effect": "apply 2 Stun"
     },
     {
-     "hook": "onCrit",
-     "effect": "apply 2 more Burn"
+     "hook": "onKill",
+     "effect": "the corpse is destroyed"
     }
    ],
    "slayer": null,
-   "description": "Slower and surer: the Burn lands whether or not the dice are kind.",
-   "source": "Ruled 2026-09-02: tier 3 had one priest weapon and two mage weapons, so a tier-3 reward mostly helped the classes whose weapons are unrestricted. Three priest and two mage rows close that, keeping each class's theme — the priest ranged and true, the mage ranged and magic."
+   "description": "The same damage two hexes further out, and it takes two Activations off whatever survives it.",
+   "source": "Ruled 2026-09-02b, dictated: the priest and mage ladder above tier 3, and the sets it hangs on.",
+   "doubleStatBonus": "magic",
+   "cooldown": 3
   },
   {
-   "id": "attack.staff-of-the-still-air.hush",
-   "name": "Hush",
-   "range": 6,
-   "stat": "magic",
-   "damage": 2,
-   "stamina": 1,
+   "id": "attack.staff-of-the-ultimate-destroyer.annihilation",
+   "name": "Annihilation",
+   "range": 8,
+   "stat": "precision",
+   "damage": 0,
+   "stamina": 4,
    "accuracy": 0,
    "crit": 0,
    "hits": 1,
-   "targets": "one enemy within 6 hexes",
+   "targets": "one enemy within 8 hexes",
    "damageType": "magic",
    "tags": [
-    "staff",
-    "ranged"
+    "ranged",
+    "destroyer"
    ],
-   "triggers": [
-    {
-     "hook": "onHit",
-     "effect": "the target gains 1 Slow"
-    }
-   ],
+   "triggers": [],
    "slayer": null,
-   "description": "Two damage and a step taken off them, every turn, for one Stamina.",
-   "source": "Ruled 2026-09-02: tier 3 had one priest weapon and two mage weapons, so a tier-3 reward mostly helped the classes whose weapons are unrestricted. Three priest and two mage rows close that, keeping each class's theme — the priest ranged and true, the mage ranged and magic."
+   "description": "Damage equals twice your Precision plus twice the party's Magic. Once every five Turns, and it costs most of a Turn's Stamina.",
+   "source": "Ruled 2026-09-02b, dictated: the priest and mage ladder above tier 3, and the sets it hangs on.",
+   "doubleStatBonus": "magic",
+   "doubleStat": true,
+   "cooldown": 5
   },
   {
-   "id": "attack.staff-of-the-still-air.stillness",
-   "name": "Stillness",
-   "range": 6,
-   "stat": "magic",
-   "damage": 4,
+   "id": "attack.chains-of-the-wrathful.wrathful-sweep",
+   "name": "Wrathful Sweep",
+   "range": 3,
+   "stat": "spirit",
+   "damage": 1,
    "stamina": 3,
    "accuracy": 0,
    "crit": 0,
    "hits": 1,
-   "targets": "one enemy within 6 hexes",
-   "damageType": "magic",
+   "targets": "every enemy within 3 hexes",
+   "damageType": "true",
    "tags": [
-    "staff",
-    "ranged"
+    "area",
+    "holy"
    ],
-   "triggers": [
-    {
-     "hook": "onHit",
-     "effect": "the target gains 3 Slow"
-    }
-   ],
+   "triggers": [],
    "slayer": null,
-   "description": "The whole turn, spent making one thing very late.",
-   "source": "Ruled 2026-09-02: tier 3 had one priest weapon and two mage weapons, so a tier-3 reward mostly helped the classes whose weapons are unrestricted. Three priest and two mage rows close that, keeping each class's theme — the priest ranged and true, the mage ranged and magic."
+   "description": "Damage equals 1 plus the party's Spirit, to everything within 3 hexes. As an area effect it does not roll and cannot crit.",
+   "source": "Ruled 2026-09-02b, dictated: the priest and mage ladder above tier 3, and the sets it hangs on. | The dictated line is \"1+spirit\" with no Precision term, which makes this the ONLY attack in the codex still scaling on Spirit alone -- every other priest attack was moved to precision + 1/2 spirit in the same pass. Kept as dictated; it is the two-handed area weapon, so paying entirely in the party stat is the trade."
   }
  ],
  "powers": [
@@ -1961,6 +1975,238 @@
    "intent": "The cheap answer to a forest, and the reason a torch is not just a lamp.",
    "source": "Authored 2026-09-02: the Torch's option was written in its description only, so the merged R37 (trinket-is-a-stat-stick) correctly read the item as pure stats. The option was always the design — this expresses it in data, where the rule can see it.",
    "triggers": []
+  },
+  {
+   "id": "power.holy-texts.mercy",
+   "name": "Mercy",
+   "specialty": null,
+   "owner": "item.holy-texts",
+   "stamina": 2,
+   "cooldown": 0,
+   "warmup": 0,
+   "free": false,
+   "targets": "one ally within 4 hexes",
+   "tags": [
+    "heal"
+   ],
+   "description": "Heal the target for 2 + half your Spirit.",
+   "source": "2026-09-02b workbook: Mercy was written as an ATTACK aimed at an ally, which is not a thing the engine can be asked to do. It is a power. Ruled 2026-09-02b, dictated: the priest and mage ladder above tier 3, and the sets it hangs on.",
+   "triggers": [],
+   "intent": "The same book either way -- you are choosing which of two people it is aimed at."
+  },
+  {
+   "id": "power.scepter-of-salvation.salvation",
+   "name": "Salvation",
+   "specialty": null,
+   "owner": "item.scepter-of-salvation",
+   "stamina": 2,
+   "cooldown": 0,
+   "warmup": 0,
+   "free": false,
+   "targets": "one ally within 5 hexes",
+   "tags": [
+    "heal"
+   ],
+   "description": "Heal the target for 4 + your Spirit.",
+   "source": "2026-09-02b workbook: was an attack aimed at an ally; rewritten as a power, healing 4 + Spirit. Ruled 2026-09-02b, dictated: the priest and mage ladder above tier 3, and the sets it hangs on.",
+   "triggers": [],
+   "intent": "The mercy you were going to spend anyway, aimed on purpose for once."
+  },
+  {
+   "id": "power.fire-gauntlet.stoke",
+   "name": "Stoke",
+   "specialty": null,
+   "owner": "item.fire-gauntlet",
+   "stamina": 1,
+   "cooldown": 0,
+   "warmup": 0,
+   "free": false,
+   "targets": "self",
+   "tags": [
+    "fire"
+   ],
+   "description": "For your next 3 Activations, every hit you land applies Burn equal to half your Magic, rounded nearest, 0.5 up.",
+   "source": "Ruled 2026-09-02b, dictated: the priest and mage ladder above tier 3, and the sets it hangs on.",
+   "triggers": [],
+   "intent": "A mage buying three Activations of burn onto whatever else they were already doing."
+  },
+  {
+   "id": "power.staff-of-summoning.call-the-wolf",
+   "name": "Call the Wolf",
+   "specialty": null,
+   "owner": "item.staff-of-summoning",
+   "stamina": 2,
+   "cooldown": 5,
+   "warmup": 0,
+   "free": false,
+   "targets": "an empty hex adjacent to you",
+   "tags": [
+    "summon"
+   ],
+   "description": "Summon one Wolf on a hex adjacent to you. It is a summoned ally with its own stat block and its own AI.",
+   "source": "Ruled 2026-09-02b, dictated: the priest and mage ladder above tier 3, and the sets it hangs on.",
+   "triggers": [],
+   "intent": "Two Stamina and a five-Turn wait for a body that is not yours."
+  },
+  {
+   "id": "power.staff-of-the-magi.power-ward",
+   "name": "Power Ward",
+   "specialty": null,
+   "owner": "item.staff-of-the-magi",
+   "stamina": 2,
+   "cooldown": 10,
+   "warmup": 3,
+   "free": false,
+   "targets": "self",
+   "tags": [
+    "defence-power"
+   ],
+   "description": "You gain 8 + (Magic x 2) Protection.",
+   "source": "Ruled 2026-09-02b, dictated: the priest and mage ladder above tier 3, and the sets it hangs on.",
+   "triggers": [],
+   "intent": "Three Turns of warning and ten of waiting, for the largest single block in the game."
+  },
+  {
+   "id": "power.staff-of-the-magi.vortex",
+   "name": "Vortex",
+   "specialty": null,
+   "owner": "item.staff-of-the-magi",
+   "stamina": 3,
+   "cooldown": 0,
+   "warmup": 0,
+   "free": false,
+   "targets": "a hex within 5 hexes and every hex adjacent to it",
+   "tags": [
+    "area"
+   ],
+   "description": "Deal magic damage equal to Magic x 3 to every unit in the blast. It does not roll to hit, so it cannot crit. Using it costs you 1 Magic and 1 Precision for the rest of the Battle.",
+   "source": "Ruled 2026-09-02b, dictated: the priest and mage ladder above tier 3, and the sets it hangs on.",
+   "triggers": [],
+   "intent": "It is the biggest number on the board and it makes every number after it smaller. Fire it late."
+  },
+  {
+   "id": "power.staff-of-the-ultimate-destroyer.perfect-sight",
+   "name": "Perfect Sight",
+   "specialty": null,
+   "owner": "item.staff-of-the-ultimate-destroyer",
+   "stamina": 2,
+   "cooldown": 0,
+   "warmup": 0,
+   "free": false,
+   "targets": "self",
+   "tags": [],
+   "description": "Until the end of your third Activation from now, your Precision is doubled.",
+   "source": "Ruled 2026-09-02b, dictated: the priest and mage ladder above tier 3, and the sets it hangs on.",
+   "triggers": [],
+   "intent": "Two Stamina to make the next three Activations count twice."
+  },
+  {
+   "id": "power.chains-of-the-wrathful.weight-of-sin",
+   "name": "Weight of Sin",
+   "specialty": null,
+   "owner": "item.chains-of-the-wrathful",
+   "stamina": 2,
+   "cooldown": 0,
+   "warmup": 0,
+   "free": false,
+   "targets": "every enemy within 3 hexes",
+   "tags": [
+    "area"
+   ],
+   "description": "Every enemy within 3 hexes gains Weak equal to half your Spirit, rounded nearest, 0.5 up, and 2 Slow.",
+   "source": "Ruled 2026-09-02b, dictated: the priest and mage ladder above tier 3, and the sets it hangs on.",
+   "triggers": [],
+   "intent": "No damage at all -- it just makes the next three things everyone else does land harder."
+  },
+  {
+   "id": "power.benevolent-rod.restoration",
+   "name": "Mending Light",
+   "specialty": null,
+   "owner": "item.benevolent-rod",
+   "stamina": 2,
+   "cooldown": 2,
+   "warmup": 0,
+   "free": false,
+   "targets": "one ally within 4 hexes",
+   "tags": [
+    "heal"
+   ],
+   "description": "Heal the target for (Spirit x 2) + 2, give it Protection equal to your Spirit, and remove Weak equal to your Spirit.",
+   "source": "Ruled 2026-09-02b, dictated: the priest and mage ladder above tier 3, and the sets it hangs on.",
+   "triggers": [],
+   "intent": "Three things at once, which is why it waits two Turns between castings."
+  },
+  {
+   "id": "power.benevolent-rod.small-mercy",
+   "name": "Small Mercy",
+   "specialty": null,
+   "owner": "item.benevolent-rod",
+   "stamina": 0,
+   "cooldown": 0,
+   "warmup": 0,
+   "free": true,
+   "targets": "one ally within 7 hexes",
+   "tags": [
+    "heal"
+   ],
+   "description": "Free, 0 Stamina: heal the target for your Spirit.",
+   "source": "Ruled 2026-09-02b, dictated: the priest and mage ladder above tier 3, and the sets it hangs on.",
+   "triggers": [],
+   "intent": "Costs nothing and reaches seven hexes, so there is never a Turn it is wrong to use."
+  },
+  {
+   "id": "power.book-of-karma.balance-the-ledger",
+   "name": "Balance the Ledger",
+   "specialty": null,
+   "owner": "item.book-of-karma",
+   "stamina": 1,
+   "cooldown": 0,
+   "warmup": 0,
+   "free": false,
+   "targets": "one ally within 6 hexes",
+   "tags": [
+    "heal"
+   ],
+   "description": "Heal the target for 3 + half your Spirit, rounded nearest, 0.5 up, and give it 2 Karma.",
+   "source": "Ruled 2026-09-02b, dictated: the priest and mage ladder above tier 3, and the sets it hangs on.",
+   "triggers": [],
+   "intent": "The heal is the smaller half. Karma makes every heal after it bigger and every hit it lands harder."
+  },
+  {
+   "id": "power.rod-of-imprisonment.imprison",
+   "name": "Imprison",
+   "specialty": null,
+   "owner": "item.rod-of-imprisonment",
+   "stamina": 1,
+   "cooldown": 0,
+   "warmup": 0,
+   "free": false,
+   "targets": "one enemy within 8 hexes",
+   "tags": [
+    "stun"
+   ],
+   "description": "Until the end of its next Activation the target has +10 Armor and +10 Resist. It also gains 1 Stun and 2 Root.",
+   "source": "Ruled 2026-09-02b, dictated: the priest and mage ladder above tier 3, and the sets it hangs on.",
+   "triggers": [],
+   "intent": "You pay for the Stun by making it briefly very hard to kill. Use it on the thing you were never going to kill this Turn."
+  },
+  {
+   "id": "power.rod-of-imprisonment.sanctuary",
+   "name": "Hallow",
+   "specialty": null,
+   "owner": "item.rod-of-imprisonment",
+   "stamina": 2,
+   "cooldown": 0,
+   "warmup": 0,
+   "free": true,
+   "targets": "self",
+   "tags": [
+    "defence-power"
+   ],
+   "description": "Free: until the end of your next Activation you have +10 Armor, +10 Resist, 2 Root and -100 Accuracy.",
+   "source": "Ruled 2026-09-02b, dictated: the priest and mage ladder above tier 3, and the sets it hangs on.",
+   "triggers": [],
+   "intent": "You stop being a threat and you stop being a target. It is the button you press when the answer is to survive the Turn."
   }
  ],
  "enchants": [
@@ -2007,7 +2253,8 @@
     "sling",
     "improvised",
     "chain",
-    "claw"
+    "claw",
+    "gauntlet"
    ],
    "tier": 3,
    "statModifiers": {},
@@ -2039,7 +2286,8 @@
     "sling",
     "improvised",
     "chain",
-    "claw"
+    "claw",
+    "gauntlet"
    ],
    "tier": 3,
    "statModifiers": {},
@@ -2090,7 +2338,8 @@
     "sling",
     "improvised",
     "chain",
-    "claw"
+    "claw",
+    "gauntlet"
    ],
    "tier": 3,
    "statModifiers": {},
@@ -2335,8 +2584,9 @@
     "blade",
     "exotic",
     "wand",
-    "tome",
-    "holy"
+    "book",
+    "holy",
+    "gauntlet"
    ],
    "tier": 2,
    "buyable": true,
@@ -2371,8 +2621,9 @@
     "blade",
     "exotic",
     "wand",
-    "tome",
-    "holy"
+    "book",
+    "holy",
+    "gauntlet"
    ],
    "tier": 2,
    "buyable": true,
@@ -2406,8 +2657,9 @@
     "blade",
     "exotic",
     "wand",
-    "tome",
-    "holy"
+    "book",
+    "holy",
+    "gauntlet"
    ],
    "tier": 2,
    "buyable": true,
@@ -2480,8 +2732,9 @@
     "thrown",
     "staff",
     "wand",
-    "tome",
-    "ranged"
+    "book",
+    "ranged",
+    "gauntlet"
    ],
    "tier": 3,
    "statModifiers": {},
@@ -2581,7 +2834,8 @@
     "melee",
     "exotic",
     "improvised",
-    "chain"
+    "chain",
+    "gauntlet"
    ],
    "tier": 3,
    "statModifiers": {},
@@ -2623,7 +2877,7 @@
    "appliesToTags": [
     "staff",
     "wand",
-    "tome"
+    "book"
    ],
    "tier": 3,
    "statModifiers": {},
@@ -2645,7 +2899,7 @@
    "appliesToTags": [
     "staff",
     "wand",
-    "tome"
+    "book"
    ],
    "tier": 3,
    "statModifiers": {},

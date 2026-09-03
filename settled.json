@@ -233,11 +233,6 @@
    "source": "2026-08-27 gear workbook review"
   },
   {
-   "id": "tag.tome",
-   "group": "form",
-   "source": "2026-08-27 gear workbook review"
-  },
-  {
    "id": "tag.magic",
    "group": "quality",
    "source": "2026-08-27 gear workbook review"
@@ -262,6 +257,30 @@
    "group": "quality",
    "source": "2026-09-02: the five banners are the first planted board objects and they are a form, like shield or staff.",
    "note": "Grouped as a quality, not a form: a banner is not something you swing, so the form rules (an enchant must reach it, a rule must read 'banner attacks') do not apply. Same reclassification the 2-hander and exotic tags took 2026-08-27."
+  },
+  {
+   "id": "tag.book",
+   "group": "form"
+  },
+  {
+   "id": "tag.fire",
+   "group": "theme"
+  },
+  {
+   "id": "tag.gauntlet",
+   "group": "form"
+  },
+  {
+   "id": "tag.summon",
+   "group": "kind"
+  },
+  {
+   "id": "tag.ring",
+   "group": "form"
+  },
+  {
+   "id": "tag.destroyer",
+   "group": "theme"
   }
  ],
  "powers": [

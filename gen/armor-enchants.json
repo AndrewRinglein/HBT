@@ -487,14 +487,15 @@
    "id": "item.chains-of-the-faithful",
    "name": "Chains of the Faithful",
    "itemClass": "armor",
-   "tier": 2,
+   "tier": 3,
    "armorWeight": "medium",
    "slots": 1,
    "hands": 0,
    "classRestriction": "class.priest",
    "tags": [
     "armor",
-    "medium"
+    "medium",
+    "chain"
    ],
    "grants": [],
    "statModifiers": {
@@ -506,15 +507,11 @@
    "triggers": [
     {
      "hook": "aura",
-     "effect": "AURA radius 2 — allies inside have Immunity to Burn 1"
-    },
-    {
-     "hook": "onAttack",
-     "effect": "you gain 1 Burn"
+     "effect": "AURA radius 2 -- allies inside have Immunity to Burn 1"
     }
    ],
    "intent": "The fire has to go somewhere, and you decided it goes on you. Every swing costs you a little of it.",
-   "source": "Hell-TCG name reused (Martyr, Chains of the Faithful — the Martyr line rebuilt as damage redirection) | 2026-08-17: CUT. ally-reactive hooks, guarding, Consequence-Stack interference and non-knockback forced movement all removed by ruling. | 2026-08-17 quality pass: replaced a placeholder aura with a distinct effect. | 2026-08-20: the 1 Burn hung on \"the end of each of your Activations while any ally is standing inside\" — a clock with a condition on it. Moved inside the attack: you swing, you burn. The aura keeps the ally immunity."
+   "source": "Hell-TCG name reused (Martyr, Chains of the Faithful — the Martyr line rebuilt as damage redirection) | 2026-08-17: CUT. ally-reactive hooks, guarding, Consequence-Stack interference and non-knockback forced movement all removed by ruling. | 2026-08-17 quality pass: replaced a placeholder aura with a distinct effect. | 2026-08-20: the 1 Burn hung on \"the end of each of your Activations while any ally is standing inside\" — a clock with a condition on it. Moved inside the attack: you swing, you burn. The aura keeps the ally immunity. | 2026-09-02b workbook: tier 2 -> 3; joins the CHAIN set; the onAttack self-Burn is cut -- the armor no longer charges you for swinging."
   },
   {
    "id": "item.cloudsteel-plate",
@@ -730,10 +727,10 @@
    ],
    "grants": [],
    "statModifiers": {
-    "spirit": 2,
+    "spirit": 1,
     "resist": 1,
     "dodge": 5,
-    "health": -4
+    "health": -1
    },
    "triggers": [
     {
@@ -741,8 +738,8 @@
      "effect": "You have AIRWALK: no trap and no terrain status from the hex you end your Turn on."
     }
    ],
-   "intent": "Spirit is a party-wide sum, so this is two points for everyone and four fewer Health for exactly one person.",
-   "source": "Hell-TCG name reused (Skypriest's Vestments — Priest +1 Spirit scaled to tier 3) | 2026-08-17: CUT. ally-reactive hooks, guarding, Consequence-Stack interference and non-knockback forced movement all removed by ruling. | 2026-08-17 quality pass: replaced a placeholder aura with a distinct effect. | 2026-08-17: Flight is a granted MOVEMENT ACTION (1 Movement per hex, passes over units and obstructions, takes nothing from the ground on the way, one click). Airwalk is a standing property covering only the hex you END your Turn on. Neither existed in the content.",
+   "intent": "Spirit is a party-wide sum, so this is a point for everyone and one fewer Health for exactly one person.",
+   "source": "Hell-TCG name reused (Skypriest's Vestments — Priest +1 Spirit scaled to tier 3) | 2026-08-17: CUT. ally-reactive hooks, guarding, Consequence-Stack interference and non-knockback forced movement all removed by ruling. | 2026-08-17 quality pass: replaced a placeholder aura with a distinct effect. | 2026-08-17: Flight is a granted MOVEMENT ACTION (1 Movement per hex, passes over units and obstructions, takes nothing from the ground on the way, one click). Airwalk is a standing property covering only the hex you END your Turn on. Neither existed in the content. | 2026-09-02b workbook: spirit +2 / health -4 -> spirit +1 / health -1. Two party-wide Spirit for four Health was the wrong trade at the tier.",
    "airwalk": true
   },
   {
@@ -1072,7 +1069,7 @@
     "staff",
     "breath",
     "wand",
-    "tome"
+    "book"
    ],
    "tier": 3,
    "statModifiers": {
@@ -1144,7 +1141,7 @@
     "melee",
     "breath",
     "wand",
-    "tome"
+    "book"
    ],
    "tier": 3,
    "statModifiers": {
@@ -1257,7 +1254,8 @@
    "name": "Bloodthirsty",
    "appliesToTags": [
     "melee",
-    "brawl"
+    "brawl",
+    "gauntlet"
    ],
    "tier": 3,
    "statModifiers": {
@@ -1514,7 +1512,8 @@
    "appliesToTags": [
     "hammer",
     "axe",
-    "chain"
+    "chain",
+    "gauntlet"
    ],
    "tier": 3,
    "statModifiers": {},
@@ -1617,7 +1616,7 @@
     "staff",
     "breath",
     "wand",
-    "tome"
+    "book"
    ],
    "tier": 3,
    "statModifiers": {

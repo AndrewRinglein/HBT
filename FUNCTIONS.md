@@ -11,7 +11,7 @@ When a rule fires. Twelve, plus `aura` and `passive` which are standing properti
 
 | Function | Uses | Notes |
 |---|---:|---|
-| `onHit` | 84 | after a hit lands, even if armour ate all of it |
+| `onHit` | 82 | after a hit lands, even if armour ate all of it |
 | `onKill` | 37 |  |
 | `startOfBattle` | 37 |  |
 | `onCrit` | 20 | after its own onHit, only if it crit |
@@ -21,7 +21,7 @@ When a rule fires. Twelve, plus `aura` and `passive` which are standing properti
 | `aura` | 14 | checked continuously |
 | `onActivationEnd` | 10 | a unit's go, not a Turn |
 | `onDodge` | 9 | on the DEFENDER, when its Dodge is why the attack missed |
-| `onAttack` | 8 |  |
+| `onAttack` | 6 |  |
 | `onMiss` | 5 | on the ATTACKER |
 | `onDeath` | 2 |  |
 
@@ -31,12 +31,12 @@ When a rule fires. Twelve, plus `aura` and `passive` which are standing properti
 
 | Function | Uses |
 |---|---:|
-| `self` | 145 |
+| `self` | 149 |
 | `one enemy in melee reach` | 107 |
 | `one enemy within N hexes` | 85 |
-| `one ally within N hexes` | 49 |
+| `one ally within N hexes` | 52 |
 | `allies within N hexes` | 32 |
-| `a hex within N hexes and every hex adjacent to it` | 16 |
+| `a hex within N hexes and every hex adjacent to it` | 17 |
 | `enemies within N hexes` | 16 |
 | `you and allies within N hexes` | 14 |
 | `up to N enemies within N hexes` | 12 |
@@ -52,6 +52,7 @@ When a rule fires. Twelve, plus `aura` and `passive` which are standing properti
 | `an adjacent hex and the two hexes adjacent to both you and it` | 2 |
 | `an adjacent hex and one hex adjacent to both you and it` | 2 |
 | `one enemy within N hexes and every enemy adjacent to it` | 2 |
+| `every enemy within N hexes` | 2 |
 | `up to N allies within N hexes` | 2 |
 | `your own hex` | 2 |
 | `every hex within N` | 1 |
@@ -60,6 +61,7 @@ When a rule fires. Twelve, plus `aura` and `passive` which are standing properti
 | `one enemy within N hexes and the hex directly behind it` | 1 |
 | `up to N enemies within Reach` | 1 |
 | `one forest hex within N` | 1 |
+| `an empty hex adjacent to you` | 1 |
 | `a hex` | 1 |
 | `any unit or hex` | 1 |
 | `any unit` | 1 |
@@ -72,7 +74,7 @@ When a rule fires. Twelve, plus `aura` and `passive` which are standing properti
 | Function | Uses |
 |---|---:|
 | `the target has tag X` | 15 |
-| `the target carries a status` | 10 |
+| `the target carries a status` | 9 |
 | `you are in stealth` | 2 |
 
 ## 4 · Effects
@@ -82,27 +84,27 @@ What a rule may DO.
 | Function | Uses |
 |---|---:|
 | `grant a stat for the Battle` | 173 |
-| `apply a status` | 142 |
+| `apply a status` | 143 |
 | `heal` | 84 |
 | `deal TRUE damage` | 56 |
 | `grant a stat until end of next Turn` | 47 |
 | `remove N of a status` | 40 |
 | `grant an aura` | 38 |
 | `move yourself` | 29 |
-| `read the party-wide sum` | 23 |
-| `deal MAGIC damage` | 21 |
+| `read the party-wide sum` | 26 |
+| `deal MAGIC damage` | 22 |
 | `place a trap` | 19 |
 | `reveal / break stealth` | 18 |
-| `regain stamina` | 16 |
+| `regain stamina` | 15 |
 | `deal damage (type from the weapon)` | 14 |
 | `Immunity N` | 14 |
 | `deal PHYSICAL damage` | 14 |
 | `move WITHOUT provoking` | 13 |
-| `take damage yourself (a cost)` | 12 |
 | `set a ground layer` | 12 |
 | `Thorns N` | 11 |
+| `take damage yourself (a cost)` | 11 |
 | `grant Surge Chance` | 9 |
-| `consume the target’s status` | 8 |
+| `consume the target’s status` | 7 |
 | `lose a stat (a cost)` | 6 |
 | `enter stealth` | 5 |
 | `stabilise a downed ally` | 5 |
@@ -120,23 +122,23 @@ What a rule may DO.
 
 | Function | Uses |
 |---|---:|
-| `burn` | 79 |
+| `burn` | 81 |
 | `bleed` | 66 |
 | `poison` | 51 |
-| `protection` | 40 |
-| `weak` | 39 |
+| `protection` | 42 |
+| `weak` | 41 |
 | `slow` | 23 |
-| `stun` | 21 |
-| `frost` | 15 |
+| `stun` | 23 |
+| `frost` | 14 |
 | `regeneration` | 7 |
-| `karma` | 5 |
+| `karma` | 6 |
 
 ## 6 · Stats a modifier may name
 
 | Function | Uses |
 |---|---:|
 | `health` | 98 |
-| `resist` | 60 |
+| `resist` | 59 |
 | `strength` | 54 |
 | `dodge` | 53 |
 | `movement` | 49 |
@@ -144,11 +146,11 @@ What a rule may DO.
 | `accuracy` | 35 |
 | `precision` | 30 |
 | `crit` | 29 |
-| `reach` | 22 |
 | `staminaMax` | 21 |
-| `magic` | 20 |
+| `reach` | 20 |
 | `luck` | 19 |
-| `spirit` | 17 |
+| `magic` | 17 |
+| `spirit` | 16 |
 | `itemSlots` | 14 |
 | `vision` | 7 |
 | `toughness` | 7 |

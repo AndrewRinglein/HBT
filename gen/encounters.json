@@ -629,7 +629,26 @@
    "setup": [
     {
      "unit": "unit.eyeblight",
-     "count": 4
+     "count": 4,
+     "hexes": [
+      {
+       "col": 4,
+       "row": 0
+      },
+      {
+       "col": 7,
+       "row": 0
+      },
+      {
+       "col": 9,
+       "row": 0
+      },
+      {
+       "col": 12,
+       "row": 0
+      }
+     ],
+     "was": "far side — hex placement added 2026-09-03 with the far-side ruling"
     }
    ],
    "schedule": [
@@ -638,7 +657,17 @@
      "spawn": [
       {
        "unit": "unit.dark-sniper",
-       "count": 2
+       "count": 2,
+       "hexes": [
+        {
+         "col": 6,
+         "row": 0
+        },
+        {
+         "col": 10,
+         "row": 0
+        }
+       ]
       }
      ]
     },
@@ -652,7 +681,17 @@
      "spawn": [
       {
        "unit": "unit.nightstalker",
-       "count": 2
+       "count": 2,
+       "hexes": [
+        {
+         "col": 7,
+         "row": 1
+        },
+        {
+         "col": 9,
+         "row": 1
+        }
+       ]
       }
      ]
     },
@@ -662,18 +701,48 @@
       {
        "unit": "unit.shadow-sorcerer",
        "count": 1,
-       "from": "the opposite side"
+       "from": "the opposite side",
+       "at": {
+        "col": 8,
+        "row": 15
+       },
+       "was": "the opposite side — read as the PLAYER edge, since everything else starts far side (2026-09-03)"
       },
       {
        "unit": "unit.eyeblight",
        "count": 2,
-       "from": "the opposite side"
+       "from": "the opposite side",
+       "hexes": [
+        {
+         "col": 5,
+         "row": 15
+        },
+        {
+         "col": 11,
+         "row": 15
+        }
+       ],
+       "was": "the opposite side — the player edge"
       }
      ]
     }
    ],
    "intent": "The board goes dark faster than the party can cross it. Four Eyeblights strip Vision from range 9 and each one that dies floods ten hexes with darkness — then the things that live in darkness arrive.",
-   "source": "Dictated 2026-09-02. PHASE NUMBERING IS A READING: dictated as 'next phase ... in the second phase, or their first end phase, there is nothing ... the next one ... the next one', read as waves at the end of phases 1, 2 (empty), 3 and 4. Say so if the empty phase sits elsewhere. No hex placements were dictated beyond the last wave arriving from the opposite side."
+   "source": "Dictated 2026-09-02. PHASE NUMBERING IS A READING: dictated as 'next phase ... in the second phase, or their first end phase, there is nothing ... the next one ... the next one', read as waves at the end of phases 1, 2 (empty), 3 and 4. Say so if the empty phase sits elsewhere. No hex placements were dictated beyond the last wave arriving from the opposite side. | 2026-09-03 RULED: all units start on the FAR SIDE of the board, and the battle starts in darkness — every square dark. Hex placements added on that ruling; \"from the opposite side\" at phase 4 is therefore read as the PLAYER edge, which surrounds the party. NOTE the consequence: with the whole board already dark, the Eyeblights' on-death darkness flood and the Shadow Sorcerer's Nightfall have nothing to darken unless the party makes light — so those effects become the answer to torches and Reveal, not the source of the dark.",
+   "board": {
+    "width": 16,
+    "height": 16
+   },
+   "standing": [
+    {
+     "rule": "THE BOARD STARTS DARK",
+     "effect": "Darkness the battlefield condition, covering the whole map from phase 1 — not the painted layer. Every hex is dark before anything moves.",
+     "source": "Ruled 2026-09-03: \"The units in Horror of the Night start on the far side of the board, and it starts in darkness, so every square is dark.\"",
+     "needs": [
+      "capability.vision-and-darkness"
+     ]
+    }
+   ]
   }
  ]
 }
