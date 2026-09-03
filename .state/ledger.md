@@ -4525,7 +4525,7 @@ Two flags. Seal withheld.
 
 IRON GAUNTLET: NOT PASSED — 2 FLAG(S) WARNED
 
-## content.enemy-flip — LANDED `4acbc68` **NEEDS REVIEW**
+## content.enemy-flip — LANDED `01d871a` (gate recorded 4acbc68, the pre-amend sha) **NEEDS REVIEW**
 2026-09-03 06:32
 
   PASS  dependencies landed

@@ -32,6 +32,15 @@ and date. Tool tasks and engine chores go in the backlog, never here.
   Rename whenever; one Codex row and one converter line. Answered 2026-09-02: "leave it
   as just a note."
 
+- (2026-09-02) **The standard test horde is a walkover.** Now that the standard battle is
+  fully authored — the Alpha Team with real kits against the Codex's own Zombies (5 hp,
+  str 3) — four zombies fall in under three turns, 100 of 100, with one hero ever
+  downed; the mage isn't touched until there are sixteen. The control panel runs eight.
+  Fine for a first battle, thin as a test bed. Do you want the standard horde to be
+  something harder (your pick of authored rows), or keep zombies and let the panel
+  measure a stomp? (Default if you say nothing: keep zombies; tests that need pressure
+  field twelve to sixteen.)
+
 - (2026-08-27) **19 flagged landings await your review** —
   `node tools/report.mjs`, verdicts recorded in your words via review.mjs.
 
