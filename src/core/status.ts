@@ -71,6 +71,34 @@ export type StatusDef = {
    */
   readonly locksPowers?: boolean
   /**
+   * capability.frost (2026-09-03), the Codex row: "Adds its value to every
+   * physical hit the unit receives, per hit." Read at damage station FROST
+   * (540) — BEFORE Armor (ruled 2026-09-03: "Frost is added BEFORE Armor, so
+   * a hit is Strength + Frost − Armor"), and before Protection by default
+   * (SWITCHES.md frostBeforeProtection).
+   */
+  readonly addsIncomingPhysical?: boolean
+  /**
+   * capability.root (2026-09-03), the Codex row: "Stops the unit moving at
+   * all." Read at beginActivation: movement points are 0 while it is held;
+   * the unit still acts from where it stands.
+   */
+  readonly blocksMovement?: boolean
+  /**
+   * capability.taunt (2026-09-03), the Codex row: "Forces the taunted unit to
+   * target whoever taunted it." Angela, 2026-09-03: "Taunt makes the hero
+   * target that unit. It can keep its same AI, like melee or ranged." The
+   * taunter is the status's `by` on the unit; the AI's candidate list is
+   * narrowed to it while it lives.
+   */
+  readonly forcesTarget?: boolean
+  /**
+   * Applied onto a unit holding `cancels`, the two annihilate one for one
+   * (rule.burn-frost-cancel: "Burn and Frost annihilate one for one on
+   * application — a unit never carries both").
+   */
+  readonly cancels?: string
+  /**
    * Read by applyHealing — fix.bleed-magnitude (2026-09-02), Codex S41/S43
    * ("healing should cure bleed", "half the applied amount comes off Bleed"):
    * every heal this unit receives reduces the status by HALF the healing,
@@ -93,22 +121,33 @@ export function hasStatus(u: Unit, id: string): boolean {
   return valueOf(u, id) > 0
 }
 
-export function applyStatus(ctx: Ctx, unitId: number, id: string, value: number, causeId: string): void {
+export function applyStatus(ctx: Ctx, unitId: number, id: string, value: number, causeId: string, by?: number): void {
   const def = ctx.statuses[id]
   if (!def) throw new Error(`unknown status '${id}' — statuses are an explicit registry, check content/statuses.ts`)
   const u = unit(ctx, unitId)
+  // rule.burn-frost-cancel (capability.frost, 2026-09-03): one for one on application
+  if (def.cancels) {
+    const other = u.statuses.find((s) => s.id === def.cancels)
+    if (other && other.value > 0 && value > 0) {
+      const cancelled = Math.min(other.value, value)
+      emit(ctx, 'status.cancelled', causeId, { target: unitId, statusId: id, against: def.cancels, amount: cancelled })
+      reduceStatus(ctx, unitId, def.cancels, cancelled, causeId)
+      value -= cancelled
+      if (value <= 0) return
+    }
+  }
   const existing = u.statuses.find((s) => s.id === id)
   const before = existing?.value ?? 0
   const after = def.stacking === 'add' ? before + value
     : def.stacking === 'highest' ? Math.max(before, value)
     : value
-  if (existing) existing.value = after
+  if (existing) { existing.value = after; if (by !== undefined) existing.by = by }
   else {
-    u.statuses.push({ id, value: after })
+    u.statuses.push({ id, value: after, ...(by !== undefined ? { by } : {}) })
     // Sorted, so iteration is never insertion order (Law 6).
     u.statuses.sort((a, b) => (a.id < b.id ? -1 : a.id > b.id ? 1 : 0))
   }
-  emit(ctx, 'status.applied', causeId, { target: unitId, statusId: id, amount: value, before, after })
+  emit(ctx, 'status.applied', causeId, { target: unitId, statusId: id, amount: value, before, after, ...(by !== undefined ? { by } : {}) })
 }
 
 // reduceStatus / removeStatus moved into mutate.ts (fix.bleed-magnitude,
@@ -237,4 +276,24 @@ export function tickStatuses(ctx: Ctx, side: Side): void {
     .filter((u) => u.side === side && u.lifeState === 'standing' && u.statuses.length > 0)
     .map((u) => u.id).sort((a, b) => a - b)
   for (const id of ids) tickUnitStatuses(ctx, id)
+}
+
+/** capability.frost: the sum of every status that adds to incoming physical hits. */
+export function incomingPhysicalBonus(ctx: Ctx, u: Unit): number {
+  let n = 0
+  for (const s of u.statuses) if (ctx.statuses[s.id]?.addsIncomingPhysical) n += s.value
+  return n
+}
+/** capability.root: is this unit held in place? */
+export function isRooted(ctx: Ctx, u: Unit): boolean {
+  return u.statuses.some((s) => ctx.statuses[s.id]?.blocksMovement && s.value > 0)
+}
+/** capability.taunt: the unit this one must target, if a live taunt names one that still stands. */
+export function forcedTargetOf(ctx: Ctx, u: Unit): number | null {
+  for (const s of u.statuses) {
+    if (!ctx.statuses[s.id]?.forcesTarget || s.value <= 0 || s.by === undefined) continue
+    const t = ctx.state.units[s.by]
+    if (t && t.lifeState === 'standing' && t.side !== u.side) return t.id
+  }
+  return null
 }

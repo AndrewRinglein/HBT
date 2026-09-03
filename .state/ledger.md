@@ -5568,3 +5568,70 @@ IRON GAUNTLET: NOT PASSED — 2 FLAG(S) WARNED
 </details>
 
 IRON GAUNTLET: NOT PASSED — 1 FLAG(S) WARNED; 1 EXEMPTION(S) TAKEN
+
+## capability.frost-root-taunt — LANDED `bd81004` **NEEDS REVIEW**
+2026-09-03 10:17
+
+  PASS  dependencies landed
+  WARN  not already decided — 5 candidate ruling(s) — READ BEFORE ASKING: ../STATE.md:18 · ../STATE.md:21
+  PASS  typecheck
+  PASS  full test suite
+  PASS  gate 1 — the id appears in a real battle — status.frost: 2 log lines, 2 fired, 1 changed state
+  PASS  brought its own tests — test/items-per-unit.test.ts, test/pack-statuses.test.ts, test/frost-root-taunt.test.ts
+  WARN  existing tests untouched — DELETED LINES in test/pack-statuses.test.ts (-3) — will land FLAGGED for review
+  PASS  control battles unchanged — will re-bless at commit — this item DECLARED it changes the control battles: map.open f98463dc->f928ab5f, map.ridge daaaf735->bd81ffdf, map.flanks e88f5685->b817046d, map.highlands 0effa39d->b88a136e, map.field f81ed997->64fb7560, map.thicket 55273805->38b80181, test.map.embers be95bac7->71965a0d, test.map.showcase b41ff62b->273cbd27
+  PASS  content has a published source — 16 ids without a published source (6 awaiting publication from earlier items — see audit)
+  PASS  hardcode scan — core knows mechanisms, never names
+  PASS  generalizes — the second instance costs zero engine code — status.frost live · status.root live · status.taunt live
+  PASS  naming — new content ids use declared kinds
+  PASS  naming — no banned words invented
+  PASS  kill switch — the tests fail without the content — tests fail without status.frost — they genuinely test it
+
+<details><summary>Existing tests were edited — review this diff</summary>
+
+```diff
+diff --git a/test/items-per-unit.test.ts b/test/items-per-unit.test.ts
+index 69da2a1..eb9685c 100644
+--- a/test/items-per-unit.test.ts
++++ b/test/items-per-unit.test.ts
+@@ -53,4 +53,7 @@ describe('the invariant — no heroItems means the hero the converter used to fo
+       'hero.base.mage-fireaura': ['luck'],
+       'hero.base.priest-pauper': ['attacks', 'luck'],
++      // capability.frost (2026-09-03): the Thinking Mage's staff applies Frost,
++      // which compiles now that the status exists — a trigger the oracle never had.
++      'hero.base.mage-thinking': ['triggers'],
+     })
+     expect(fieldedDef('hero.base.paladin-dark').crit).toBe((o['hero.base.paladin-dark']!['crit'] as number) + ITEMS['item.rusted-plate']!.statModifiers.crit!)
+diff --git a/test/pack-statuses.test.ts b/test/pack-statuses.test.ts
+index bf52303..05431d6 100644
+--- a/test/pack-statuses.test.ts
++++ b/test/pack-statuses.test.ts
+@@ -35,7 +35,8 @@ describe('the rows come from the Codex, and only from the Codex', () => {
+       expect(loaded !== gapped, `${r.id} must be exactly one of: loaded, named gap (loaded=${loaded}, gap=${gapped})`).toBe(true)
+     }
+-    // the six the engine cannot behave for yet, by name — when one lands its
+-    // gap disappears and this list is the finding
+-    expect([...gapIds].sort()).toEqual(['status.confusion', 'status.frost', 'status.karma', 'status.root', 'status.shadow', 'status.taunt'])
++    // the ones the engine cannot behave for yet, by name — when one lands its
++    // gap disappears and this list is the finding. 2026-09-03: Frost, Root and
++    // Taunt landed (capability.frost/root/taunt); three remain.
++    expect([...gapIds].sort()).toEqual(['status.confusion', 'status.karma', 'status.shadow'])
+   })
+ 
+```
+</details>
+
+IRON GAUNTLET: NOT PASSED — 2 FLAG(S) WARNED
+
+```
+effect of status.frost — 25 paired battles per map, WITH vs WITHOUT
+  map.open: heroWins 25->25 (+0)  meanTurns 4.0->4.0
+  map.ridge: heroWins 25->25 (+0)  meanTurns 4.4->4.4
+  map.flanks: heroWins 25->25 (+0)  meanTurns 4.1->4.1
+  map.highlands: heroWins 25->25 (+0)  meanTurns 5.1->5.1
+  map.field: heroWins 25->25 (+0)  meanTurns 5.5->5.5
+  map.thicket: heroWins 25->25 (+0)  meanTurns 5.4->5.4
+  test.map.embers: heroWins 25->25 (+0)  meanTurns 2.9->2.9
+  test.map.showcase: heroWins 25->25 (+0)  meanTurns 3.7->3.7
+NO MEASURABLE EFFECT at this sample size — consequence clause caught state changes, but outcomes did not move. Consider a sweep with more replicates before drawing balance conclusions.
+```

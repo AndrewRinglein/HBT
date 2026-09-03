@@ -375,7 +375,7 @@ function applyEffect(ctx: Ctx, t: Trigger, owner: Unit, targetId: number): void 
       emit(ctx, 'trigger.fired', t.id, {
         actor: owner.id, target: targetId, effect: e.kind, statusId: e.statusId, value: v,
       })
-      if (v > 0) applyStatus(ctx, targetId, e.statusId, v, t.id)
+      if (v > 0) applyStatus(ctx, targetId, e.statusId, v, t.id, owner.id)
       break
     }
     case 'status.remove': {

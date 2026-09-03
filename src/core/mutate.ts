@@ -285,6 +285,8 @@ export function beginActivation(ctx: Ctx, id: number, causeId: string): void {
   // ctx rather than via status.ts, which imports this file (cycle).
   let mp = u.movement
   for (const s of u.statuses) if (ctx.statuses[s.id]?.reducesMovement && s.value > 0) mp -= s.value
+  // capability.root (2026-09-03): "Stops the unit moving at all" — not a reduction, a stop
+  if (u.statuses.some((s) => ctx.statuses[s.id]?.blocksMovement && s.value > 0)) mp = 0
   u.movePointsLeft = Math.max(0, mp)
   emit(ctx, 'activation.begin', causeId, {
     actor: id, ordinal: u.activationOrdinal, hex: u.hex, hp: u.hp, stamina: u.stamina,

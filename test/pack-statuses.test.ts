@@ -34,9 +34,10 @@ describe('the rows come from the Codex, and only from the Codex', () => {
       const gapped = gapIds.has(r.id)
       expect(loaded !== gapped, `${r.id} must be exactly one of: loaded, named gap (loaded=${loaded}, gap=${gapped})`).toBe(true)
     }
-    // the six the engine cannot behave for yet, by name — when one lands its
-    // gap disappears and this list is the finding
-    expect([...gapIds].sort()).toEqual(['status.confusion', 'status.frost', 'status.karma', 'status.root', 'status.shadow', 'status.taunt'])
+    // the ones the engine cannot behave for yet, by name — when one lands its
+    // gap disappears and this list is the finding. 2026-09-03: Frost, Root and
+    // Taunt landed (capability.frost/root/taunt); three remain.
+    expect([...gapIds].sort()).toEqual(['status.confusion', 'status.karma', 'status.shadow'])
   })
 
   it('statuses.ts hand-types nothing but the test lane', () => {

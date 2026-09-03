@@ -52,6 +52,9 @@ describe('the invariant — no heroItems means the hero the converter used to fo
       'hero.base.priest-armored': ['attacks'],
       'hero.base.mage-fireaura': ['luck'],
       'hero.base.priest-pauper': ['attacks', 'luck'],
+      // capability.frost (2026-09-03): the Thinking Mage's staff applies Frost,
+      // which compiles now that the status exists — a trigger the oracle never had.
+      'hero.base.mage-thinking': ['triggers'],
     })
     expect(fieldedDef('hero.base.paladin-dark').crit).toBe((o['hero.base.paladin-dark']!['crit'] as number) + ITEMS['item.rusted-plate']!.statModifiers.crit!)
     expect(fieldedDef('hero.base.priest-pauper').luck).toBe(ITEMS['item.nice-robes']!.statModifiers.luck)

@@ -347,7 +347,7 @@ function applyOne(ctx: Ctx, userId: number, id: number, a: AbilityDef, e: Abilit
     }
     case 'status.apply': {
       const v = valueOf(ctx, u, e.value)
-      if (v > 0) applyStatus(ctx, id, e.statusId, v, a.id)
+      if (v > 0) applyStatus(ctx, id, e.statusId, v, a.id, userId)
       return 0
     }
     case 'status.remove': {

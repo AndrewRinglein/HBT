@@ -8,7 +8,7 @@ import { distance, neighboursOf, type HexId } from './hex.js'
 import { roll100 } from './rng.js'
 import type { AttackDef, Ctx, Unit } from './types.js'
 import { fireTriggers } from './trigger.js'
-import { applyStatus, incomingAbsorb, outgoingPenalty, spendAbsorb } from './status.js'
+import { applyStatus, incomingAbsorb, incomingPhysicalBonus, outgoingPenalty, spendAbsorb } from './status.js'
 import { rollCritEffect } from './crit.js'
 import { effective, stat } from './stats.js'
 import { accelerateBleedOut, applyDamage, emit, markPrimaryUsed, spendStamina, unit } from './mutate.js'
@@ -33,6 +33,8 @@ export const DMG = {
   TERRAIN: 300,
   POSITIONAL: 350,
   CRIT: 450,
+  /** capability.frost (2026-09-03): Frost on the target, physical hits only, before Armor. */
+  FROST: 540,
   PROTECTION: 550,
   MITIGATION: 600,
   FLOOR: 700,
@@ -174,11 +176,17 @@ export function resolveDamage(
 
   // PROTECTION (550): absorbs, and is spent by what it absorbs. Pure here —
   // the spending happens in performAttack, so preview cannot consume anything.
+  // FROST (540): the target's Frost adds to every PHYSICAL hit, per hit —
+  // capability.frost (2026-09-03), before Armor (ruled) and, by the switch,
+  // before Protection. Reads the target's statuses through one helper.
+  const frost = a.damageType === 'physical' ? incomingPhysicalBonus(ctx, target) : 0
+  if (frost && ctx.cfg.switches.frostBeforeProtection) v = step(ledger, DMG.FROST, 'FROST', 'status', v, v + frost)
   let absorbed = 0
   if (absorbAvailable > 0 && v > 0) {
     absorbed = Math.min(absorbAvailable, v)
     v = step(ledger, DMG.PROTECTION, 'PROTECTION', 'status.absorb', v, v - absorbed)
   }
+  if (frost && !ctx.cfg.switches.frostBeforeProtection) v = step(ledger, DMG.FROST, 'FROST', 'status', v, v + frost)
 
   if (a.damageType !== 'true') {
     const mit = effective(ctx, target, a.damageType === 'physical' ? 'armor' : 'resist')

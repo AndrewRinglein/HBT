@@ -476,7 +476,8 @@ export type Unit = {
   /** Ability id -> the turn on which it becomes usable again. Plain object, JSON-safe. */
   cooldowns: Record<string, number>
   /** Live statuses, kept sorted by id so iteration is never insertion order. */
-  statuses: { id: string; value: number }[]
+  /** `by` = the unit that applied it (Taunt reads it; capability.taunt 2026-09-03). */
+  statuses: { id: string; value: number; by?: number }[]
   /** Stored stat modifiers — gear, wounds, badges. Terrain is derived, not stored. */
   mods: import('./stats.js').StatMod[]
   tags: readonly string[]
@@ -571,6 +572,8 @@ export type Config = {
     boardClearWaitsForSchedule: boolean
     /** Which attack the AI swings: the first affordable in declared order, or the best previewed damage. SWITCHES.md, 2026-09-03. */
     aiAttackChoice: 'declared' | 'bestDamage'
+    /** Is Frost added before Protection absorbs (true) or after (false)? Before Armor either way, ruled. SWITCHES.md, 2026-09-03. */
+    frostBeforeProtection: boolean
   }
 }
 
@@ -623,6 +626,9 @@ export const DEFAULT_CONFIG: Config = {
     // The rule it has always been; four authored attacks never fire under it
     // (integration.test names them). A sweep answers. SWITCHES.md, 2026-09-03.
     aiAttackChoice: 'declared',
+    // "Strength + Frost − Armor": Frost is part of the hit; Protection then
+    // absorbs the hit. SWITCHES.md, 2026-09-03.
+    frostBeforeProtection: true,
   },
 }
 

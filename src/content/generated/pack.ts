@@ -660,6 +660,19 @@ export const UNIT_PACK = {
       ],
       "triggers": [
         {
+          "id": "trigger.dark-sniper.pin",
+          "hook": "onHit",
+          "chance": 30,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.root",
+            "value": 1
+          },
+          "source": "unit.dark-sniper",
+          "onlyWithAttack": "attack.dark-sniper.shot"
+        },
+        {
           "id": "trigger.dark-sniper.cripple",
           "hook": "onHit",
           "chance": 50,
@@ -1380,7 +1393,21 @@ export const UNIT_PACK = {
       "tags": [
         "horror"
       ],
-      "triggers": []
+      "triggers": [
+        {
+          "id": "trigger.shadow-sorcerer.dragged-under",
+          "hook": "onHit",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.root",
+            "value": 1
+          },
+          "source": "unit.shadow-sorcerer",
+          "onlyWithAttack": "attack.shadow-sorcerer.shadow-rend"
+        }
+      ]
     },
     {
       "typeId": "unit.skeletal-archer",
@@ -6060,6 +6087,15 @@ export const UNIT_PACK = {
       "decayPerPhase": 1,
       "reducesMovement": true
     },
+    "status.taunt": {
+      "id": "status.taunt",
+      "name": "Taunt",
+      "shape": "counter",
+      "family": "pool",
+      "stacking": "add",
+      "decayPerPhase": 1,
+      "forcesTarget": true
+    },
     "status.dazed": {
       "id": "status.dazed",
       "name": "Dazed",
@@ -6078,6 +6114,15 @@ export const UNIT_PACK = {
       "decayPerPhase": 1,
       "locksPowers": true
     },
+    "status.root": {
+      "id": "status.root",
+      "name": "Root",
+      "shape": "counter",
+      "family": "pool",
+      "stacking": "add",
+      "decayPerPhase": 1,
+      "blocksMovement": true
+    },
     "status.bleed": {
       "id": "status.bleed",
       "name": "Bleed",
@@ -6088,6 +6133,16 @@ export const UNIT_PACK = {
       "tick": "damage",
       "tickDamageType": "true",
       "shedByHealing": "half"
+    },
+    "status.frost": {
+      "id": "status.frost",
+      "name": "Frost",
+      "shape": "counter",
+      "family": "magnitude",
+      "stacking": "add",
+      "decayPerPhase": 1,
+      "addsIncomingPhysical": true,
+      "cancels": "status.burn"
     },
     "status.protection": {
       "id": "status.protection",
@@ -6107,7 +6162,8 @@ export const UNIT_PACK = {
       "decayPerPhase": 1,
       "tick": "damage",
       "halvesHealing": true,
-      "tickDamageType": "magic"
+      "tickDamageType": "magic",
+      "cancels": "status.frost"
     },
     "status.poison": {
       "id": "status.poison",
@@ -7858,7 +7914,21 @@ export const UNIT_PACK = {
         "attack.net.cast"
       ],
       "abilities": [],
-      "triggers": [],
+      "triggers": [
+        {
+          "id": "trigger.net.cast.root",
+          "hook": "onHit",
+          "chance": 70,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.root",
+            "value": 1
+          },
+          "source": "item.net",
+          "onlyWithAttack": "attack.net.cast"
+        }
+      ],
       "gaps": [
         "uses: 1 — charges spent in battle — capability.consumables"
       ]
@@ -8822,7 +8892,21 @@ export const UNIT_PACK = {
         "attack.frost-staff.frost-blast"
       ],
       "abilities": [],
-      "triggers": [],
+      "triggers": [
+        {
+          "id": "trigger.frost-staff.frost-blast.frost",
+          "hook": "onHit",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.frost",
+            "value": 1
+          },
+          "source": "item.frost-staff",
+          "onlyWithAttack": "attack.frost-staff.frost-blast"
+        }
+      ],
       "gaps": [
         "grants power.frost-staff.frost-nova — item power — shape unparsed"
       ]
@@ -11489,6 +11573,31 @@ export const UNIT_PACK = {
               "kind": "status.apply",
               "statusId": "status.poison",
               "value": 1
+            },
+            "source": "unit.test-arc-golem"
+          },
+          {
+            "id": "trigger.test-hold.root",
+            "hook": "onHit",
+            "chance": 100,
+            "select": "target",
+            "effect": {
+              "kind": "status.apply",
+              "statusId": "status.root",
+              "value": 1
+            },
+            "onlyWithAttack": "attack.test-arc.sweep",
+            "source": "unit.test-arc-golem"
+          },
+          {
+            "id": "trigger.test-call.taunt",
+            "hook": "onTakingDamage",
+            "chance": 100,
+            "select": "target",
+            "effect": {
+              "kind": "status.apply",
+              "statusId": "status.taunt",
+              "value": 2
             },
             "source": "unit.test-arc-golem"
           }
@@ -17866,13 +17975,22 @@ export const UNIT_PACK = {
           },
           "source": "item.war-axe",
           "onlyWithAttack": "attack.war-axe.hack"
+        },
+        {
+          "id": "trigger.war-axe.taunting.taunt",
+          "hook": "onHit",
+          "chance": 50,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.taunt",
+            "value": 2
+          },
+          "source": "item.war-axe.taunting"
         }
       ],
       "base": "item.war-axe",
-      "enchant": "enchant.taunting",
-      "gaps": [
-        "enchant onHit: apply 2 Taunt — trigger shape unparsed"
-      ]
+      "enchant": "enchant.taunting"
     },
     "item.iron-mace.ironbane": {
       "id": "item.iron-mace.ironbane",
@@ -18023,12 +18141,34 @@ export const UNIT_PACK = {
           },
           "source": "item.war-hammer",
           "onlyWithAttack": "attack.war-hammer.skullsplitter"
+        },
+        {
+          "id": "trigger.war-hammer.frost.frost",
+          "hook": "onHit",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.frost",
+            "value": 1
+          },
+          "source": "item.war-hammer.frost"
+        },
+        {
+          "id": "trigger.war-hammer.frost.frost-crit",
+          "hook": "onCrit",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.frost",
+            "value": 2
+          },
+          "source": "item.war-hammer.frost"
         }
       ],
       "gaps": [
-        "onCrit: Knockback 1 — the target is moved 1 hex directly a — trigger shape unparsed",
-        "enchant onHit: apply 1 Frost — trigger shape unparsed",
-        "enchant onCrit: apply 2 more Frost — trigger shape unparsed"
+        "onCrit: Knockback 1 — the target is moved 1 hex directly a — trigger shape unparsed"
       ],
       "base": "item.war-hammer",
       "enchant": "enchant.frost"
@@ -18132,11 +18272,22 @@ export const UNIT_PACK = {
           },
           "source": "item.war-hammer",
           "onlyWithAttack": "attack.war-hammer.skullsplitter"
+        },
+        {
+          "id": "trigger.war-hammer.taunting.taunt",
+          "hook": "onHit",
+          "chance": 50,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.taunt",
+            "value": 2
+          },
+          "source": "item.war-hammer.taunting"
         }
       ],
       "gaps": [
-        "onCrit: Knockback 1 — the target is moved 1 hex directly a — trigger shape unparsed",
-        "enchant onHit: apply 2 Taunt — trigger shape unparsed"
+        "onCrit: Knockback 1 — the target is moved 1 hex directly a — trigger shape unparsed"
       ],
       "base": "item.war-hammer",
       "enchant": "enchant.taunting"
@@ -18358,12 +18509,22 @@ export const UNIT_PACK = {
         "attack.glaive.impale"
       ],
       "abilities": [],
-      "triggers": [],
+      "triggers": [
+        {
+          "id": "trigger.glaive.taunting.taunt",
+          "hook": "onHit",
+          "chance": 50,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.taunt",
+            "value": 2
+          },
+          "source": "item.glaive.taunting"
+        }
+      ],
       "base": "item.glaive",
-      "enchant": "enchant.taunting",
-      "gaps": [
-        "enchant onHit: apply 2 Taunt — trigger shape unparsed"
-      ]
+      "enchant": "enchant.taunting"
     },
     "item.crossbow.venomous": {
       "id": "item.crossbow.venomous",
@@ -18504,12 +18665,22 @@ export const UNIT_PACK = {
         "attack.crossbow.punch-through"
       ],
       "abilities": [],
-      "triggers": [],
+      "triggers": [
+        {
+          "id": "trigger.crossbow.goading.taunt",
+          "hook": "onDamage",
+          "chance": 40,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.taunt",
+            "value": 1
+          },
+          "source": "item.crossbow.goading"
+        }
+      ],
       "base": "item.crossbow",
-      "enchant": "enchant.goading",
-      "gaps": [
-        "enchant onDamage: apply 1 Taunt — trigger shape unparsed"
-      ]
+      "enchant": "enchant.goading"
     },
     "item.crossbow.giant-slayer": {
       "id": "item.crossbow.giant-slayer",
@@ -18748,11 +18919,34 @@ export const UNIT_PACK = {
         "attack.rapier.pierce"
       ],
       "abilities": [],
-      "triggers": [],
+      "triggers": [
+        {
+          "id": "trigger.rapier.frost.frost",
+          "hook": "onHit",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.frost",
+            "value": 1
+          },
+          "source": "item.rapier.frost"
+        },
+        {
+          "id": "trigger.rapier.frost.frost-crit",
+          "hook": "onCrit",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.frost",
+            "value": 2
+          },
+          "source": "item.rapier.frost"
+        }
+      ],
       "gaps": [
-        "onAttack: gain +10 Dodge until the end of your next Turn — trigger shape unparsed",
-        "enchant onHit: apply 1 Frost — trigger shape unparsed",
-        "enchant onCrit: apply 2 more Frost — trigger shape unparsed"
+        "onAttack: gain +10 Dodge until the end of your next Turn — trigger shape unparsed"
       ],
       "base": "item.rapier",
       "enchant": "enchant.frost"
@@ -19211,14 +19405,34 @@ export const UNIT_PACK = {
           },
           "source": "item.poison-stars",
           "onlyWithAttack": "attack.poison-stars.star"
+        },
+        {
+          "id": "trigger.poison-stars.frost.frost",
+          "hook": "onHit",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.frost",
+            "value": 1
+          },
+          "source": "item.poison-stars.frost"
+        },
+        {
+          "id": "trigger.poison-stars.frost.frost-crit",
+          "hook": "onCrit",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.frost",
+            "value": 2
+          },
+          "source": "item.poison-stars.frost"
         }
       ],
       "base": "item.poison-stars",
-      "enchant": "enchant.frost",
-      "gaps": [
-        "enchant onHit: apply 1 Frost — trigger shape unparsed",
-        "enchant onCrit: apply 2 more Frost — trigger shape unparsed"
-      ]
+      "enchant": "enchant.frost"
     },
     "item.obsidian-fang-dagger.venomous": {
       "id": "item.obsidian-fang-dagger.venomous",
@@ -19459,13 +19673,34 @@ export const UNIT_PACK = {
         "attack.duel-runeblades.rune-cross"
       ],
       "abilities": [],
-      "triggers": [],
+      "triggers": [
+        {
+          "id": "trigger.duel-runeblades.frost.frost",
+          "hook": "onHit",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.frost",
+            "value": 1
+          },
+          "source": "item.duel-runeblades.frost"
+        },
+        {
+          "id": "trigger.duel-runeblades.frost.frost-crit",
+          "hook": "onCrit",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.frost",
+            "value": 2
+          },
+          "source": "item.duel-runeblades.frost"
+        }
+      ],
       "base": "item.duel-runeblades",
-      "enchant": "enchant.frost",
-      "gaps": [
-        "enchant onHit: apply 1 Frost — trigger shape unparsed",
-        "enchant onCrit: apply 2 more Frost — trigger shape unparsed"
-      ]
+      "enchant": "enchant.frost"
     },
     "item.duel-runeblades.sacrifice": {
       "id": "item.duel-runeblades.sacrifice",
@@ -19710,14 +19945,34 @@ export const UNIT_PACK = {
           },
           "source": "item.crippling-whip",
           "onlyWithAttack": "attack.crippling-whip.lash"
+        },
+        {
+          "id": "trigger.crippling-whip.frost.frost",
+          "hook": "onHit",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.frost",
+            "value": 1
+          },
+          "source": "item.crippling-whip.frost"
+        },
+        {
+          "id": "trigger.crippling-whip.frost.frost-crit",
+          "hook": "onCrit",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.frost",
+            "value": 2
+          },
+          "source": "item.crippling-whip.frost"
         }
       ],
       "base": "item.crippling-whip",
-      "enchant": "enchant.frost",
-      "gaps": [
-        "enchant onHit: apply 1 Frost — trigger shape unparsed",
-        "enchant onCrit: apply 2 more Frost — trigger shape unparsed"
-      ]
+      "enchant": "enchant.frost"
     },
     "item.crippling-whip.shadow-touched": {
       "id": "item.crippling-whip.shadow-touched",
@@ -20039,13 +20294,34 @@ export const UNIT_PACK = {
         "attack.grappling-harpoon.hurl"
       ],
       "abilities": [],
-      "triggers": [],
+      "triggers": [
+        {
+          "id": "trigger.grappling-harpoon.frost.frost",
+          "hook": "onHit",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.frost",
+            "value": 1
+          },
+          "source": "item.grappling-harpoon.frost"
+        },
+        {
+          "id": "trigger.grappling-harpoon.frost.frost-crit",
+          "hook": "onCrit",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.frost",
+            "value": 2
+          },
+          "source": "item.grappling-harpoon.frost"
+        }
+      ],
       "base": "item.grappling-harpoon",
-      "enchant": "enchant.frost",
-      "gaps": [
-        "enchant onHit: apply 1 Frost — trigger shape unparsed",
-        "enchant onCrit: apply 2 more Frost — trigger shape unparsed"
-      ]
+      "enchant": "enchant.frost"
     },
     "item.apprentice-wand.lightning": {
       "id": "item.apprentice-wand.lightning",
@@ -20114,12 +20390,23 @@ export const UNIT_PACK = {
           },
           "source": "item.apprentice-wand",
           "onlyWithAttack": "attack.apprentice-wand.surge"
+        },
+        {
+          "id": "trigger.apprentice-wand.eternal-ice.frost",
+          "hook": "onHit",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.frost",
+            "value": 2
+          },
+          "source": "item.apprentice-wand.eternal-ice"
         }
       ],
       "base": "item.apprentice-wand",
       "enchant": "enchant.eternal-ice",
       "gaps": [
-        "enchant onHit: apply 2 Frost — trigger shape unparsed",
         "enchant onKill: every enemy within 2 hexes of the target gains 1 F — trigger shape unparsed"
       ]
     },
@@ -20201,11 +20488,23 @@ export const UNIT_PACK = {
         "attack.ancient-tome.long-passage"
       ],
       "abilities": [],
-      "triggers": [],
+      "triggers": [
+        {
+          "id": "trigger.ancient-tome.eternal-ice.frost",
+          "hook": "onHit",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.frost",
+            "value": 2
+          },
+          "source": "item.ancient-tome.eternal-ice"
+        }
+      ],
       "base": "item.ancient-tome",
       "enchant": "enchant.eternal-ice",
       "gaps": [
-        "enchant onHit: apply 2 Frost — trigger shape unparsed",
         "enchant onKill: every enemy within 2 hexes of the target gains 1 F — trigger shape unparsed"
       ]
     },
@@ -20679,12 +20978,22 @@ export const UNIT_PACK = {
         "attack.longbow.long-shot"
       ],
       "abilities": [],
-      "triggers": [],
+      "triggers": [
+        {
+          "id": "trigger.longbow.rooting.root",
+          "hook": "onDamage",
+          "chance": 25,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.root",
+            "value": 1
+          },
+          "source": "item.longbow.rooting"
+        }
+      ],
       "base": "item.longbow",
-      "enchant": "enchant.rooting",
-      "gaps": [
-        "enchant onDamage: apply 1 Root — trigger shape unparsed"
-      ]
+      "enchant": "enchant.rooting"
     },
     "item.longbow.gale": {
       "id": "item.longbow.gale",
@@ -20810,12 +21119,22 @@ export const UNIT_PACK = {
         "attack.longbow.long-shot"
       ],
       "abilities": [],
-      "triggers": [],
+      "triggers": [
+        {
+          "id": "trigger.longbow.goading.taunt",
+          "hook": "onDamage",
+          "chance": 40,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.taunt",
+            "value": 1
+          },
+          "source": "item.longbow.goading"
+        }
+      ],
       "base": "item.longbow",
-      "enchant": "enchant.goading",
-      "gaps": [
-        "enchant onDamage: apply 1 Taunt — trigger shape unparsed"
-      ]
+      "enchant": "enchant.goading"
     },
     "item.longbow.dragon-slayer": {
       "id": "item.longbow.dragon-slayer",
@@ -20855,13 +21174,34 @@ export const UNIT_PACK = {
         "attack.longbow.long-shot"
       ],
       "abilities": [],
-      "triggers": [],
+      "triggers": [
+        {
+          "id": "trigger.longbow.frost.frost",
+          "hook": "onHit",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.frost",
+            "value": 1
+          },
+          "source": "item.longbow.frost"
+        },
+        {
+          "id": "trigger.longbow.frost.frost-crit",
+          "hook": "onCrit",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.frost",
+            "value": 2
+          },
+          "source": "item.longbow.frost"
+        }
+      ],
       "base": "item.longbow",
-      "enchant": "enchant.frost",
-      "gaps": [
-        "enchant onHit: apply 1 Frost — trigger shape unparsed",
-        "enchant onCrit: apply 2 more Frost — trigger shape unparsed"
-      ]
+      "enchant": "enchant.frost"
     },
     "item.shortbow.rooting": {
       "id": "item.shortbow.rooting",
@@ -20876,12 +21216,22 @@ export const UNIT_PACK = {
         "attack.shortbow.quick-shot"
       ],
       "abilities": [],
-      "triggers": [],
+      "triggers": [
+        {
+          "id": "trigger.shortbow.rooting.root",
+          "hook": "onDamage",
+          "chance": 25,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.root",
+            "value": 1
+          },
+          "source": "item.shortbow.rooting"
+        }
+      ],
       "base": "item.shortbow",
-      "enchant": "enchant.rooting",
-      "gaps": [
-        "enchant onDamage: apply 1 Root — trigger shape unparsed"
-      ]
+      "enchant": "enchant.rooting"
     },
     "item.shortbow.abundant": {
       "id": "item.shortbow.abundant",
@@ -20958,12 +21308,22 @@ export const UNIT_PACK = {
         "attack.shortbow.quick-shot"
       ],
       "abilities": [],
-      "triggers": [],
+      "triggers": [
+        {
+          "id": "trigger.shortbow.goading.taunt",
+          "hook": "onDamage",
+          "chance": 40,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.taunt",
+            "value": 1
+          },
+          "source": "item.shortbow.goading"
+        }
+      ],
       "base": "item.shortbow",
-      "enchant": "enchant.goading",
-      "gaps": [
-        "enchant onDamage: apply 1 Taunt — trigger shape unparsed"
-      ]
+      "enchant": "enchant.goading"
     },
     "item.shortbow.hunting": {
       "id": "item.shortbow.hunting",
@@ -21110,12 +21470,22 @@ export const UNIT_PACK = {
         "attack.elfbow.double-shot"
       ],
       "abilities": [],
-      "triggers": [],
+      "triggers": [
+        {
+          "id": "trigger.elfbow.rooting.root",
+          "hook": "onDamage",
+          "chance": 25,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.root",
+            "value": 1
+          },
+          "source": "item.elfbow.rooting"
+        }
+      ],
       "base": "item.elfbow",
-      "enchant": "enchant.rooting",
-      "gaps": [
-        "enchant onDamage: apply 1 Root — trigger shape unparsed"
-      ]
+      "enchant": "enchant.rooting"
     },
     "item.elfbow.fire": {
       "id": "item.elfbow.fire",
@@ -21406,13 +21776,22 @@ export const UNIT_PACK = {
           },
           "source": "item.barbarian-bow",
           "onlyWithAttack": "attack.barbarian-bow.crippling-shot"
+        },
+        {
+          "id": "trigger.barbarian-bow.rooting.root",
+          "hook": "onDamage",
+          "chance": 25,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.root",
+            "value": 1
+          },
+          "source": "item.barbarian-bow.rooting"
         }
       ],
       "base": "item.barbarian-bow",
-      "enchant": "enchant.rooting",
-      "gaps": [
-        "enchant onDamage: apply 1 Root — trigger shape unparsed"
-      ]
+      "enchant": "enchant.rooting"
     },
     "item.javelin.giant-slayer": {
       "id": "item.javelin.giant-slayer",
@@ -21512,13 +21891,34 @@ export const UNIT_PACK = {
         "attack.javelin.stab"
       ],
       "abilities": [],
-      "triggers": [],
+      "triggers": [
+        {
+          "id": "trigger.javelin.frost.frost",
+          "hook": "onHit",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.frost",
+            "value": 1
+          },
+          "source": "item.javelin.frost"
+        },
+        {
+          "id": "trigger.javelin.frost.frost-crit",
+          "hook": "onCrit",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.frost",
+            "value": 2
+          },
+          "source": "item.javelin.frost"
+        }
+      ],
       "base": "item.javelin",
-      "enchant": "enchant.frost",
-      "gaps": [
-        "enchant onHit: apply 1 Frost — trigger shape unparsed",
-        "enchant onCrit: apply 2 more Frost — trigger shape unparsed"
-      ]
+      "enchant": "enchant.frost"
     },
     "item.longsword.bloodletting": {
       "id": "item.longsword.bloodletting",
@@ -21649,12 +22049,22 @@ export const UNIT_PACK = {
         "attack.longsword.stab"
       ],
       "abilities": [],
-      "triggers": [],
+      "triggers": [
+        {
+          "id": "trigger.longsword.taunting.taunt",
+          "hook": "onHit",
+          "chance": 50,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.taunt",
+            "value": 2
+          },
+          "source": "item.longsword.taunting"
+        }
+      ],
       "base": "item.longsword",
-      "enchant": "enchant.taunting",
-      "gaps": [
-        "enchant onHit: apply 2 Taunt — trigger shape unparsed"
-      ]
+      "enchant": "enchant.taunting"
     },
     "item.longsword.destroying": {
       "id": "item.longsword.destroying",
@@ -21816,13 +22226,22 @@ export const UNIT_PACK = {
           },
           "source": "item.halberd",
           "onlyWithAttack": "attack.halberd.hack"
+        },
+        {
+          "id": "trigger.halberd.taunting.taunt",
+          "hook": "onHit",
+          "chance": 50,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.taunt",
+            "value": 2
+          },
+          "source": "item.halberd.taunting"
         }
       ],
       "base": "item.halberd",
-      "enchant": "enchant.taunting",
-      "gaps": [
-        "enchant onHit: apply 2 Taunt — trigger shape unparsed"
-      ]
+      "enchant": "enchant.taunting"
     },
     "item.halberd.destroying": {
       "id": "item.halberd.destroying",
@@ -22019,10 +22438,35 @@ export const UNIT_PACK = {
         "attack.frost-staff.frost-blast"
       ],
       "abilities": [],
-      "triggers": [],
+      "triggers": [
+        {
+          "id": "trigger.frost-staff.frost-blast.frost",
+          "hook": "onHit",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.frost",
+            "value": 1
+          },
+          "source": "item.frost-staff",
+          "onlyWithAttack": "attack.frost-staff.frost-blast"
+        },
+        {
+          "id": "trigger.frost-staff.eternal-ice.frost",
+          "hook": "onHit",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.frost",
+            "value": 2
+          },
+          "source": "item.frost-staff.eternal-ice"
+        }
+      ],
       "gaps": [
         "grants power.frost-staff.frost-nova — item power — shape unparsed",
-        "enchant onHit: apply 2 Frost — trigger shape unparsed",
         "enchant onKill: every enemy within 2 hexes of the target gains 1 F — trigger shape unparsed"
       ],
       "base": "item.frost-staff",
@@ -22041,7 +22485,21 @@ export const UNIT_PACK = {
         "attack.frost-staff.frost-blast"
       ],
       "abilities": [],
-      "triggers": [],
+      "triggers": [
+        {
+          "id": "trigger.frost-staff.frost-blast.frost",
+          "hook": "onHit",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.frost",
+            "value": 1
+          },
+          "source": "item.frost-staff",
+          "onlyWithAttack": "attack.frost-staff.frost-blast"
+        }
+      ],
       "gaps": [
         "grants power.frost-staff.frost-nova — item power — shape unparsed",
         "enchant onDamage: apply 1 Confusion — trigger shape unparsed"
@@ -22065,7 +22523,21 @@ export const UNIT_PACK = {
         "attack.frost-staff.frost-blast"
       ],
       "abilities": [],
-      "triggers": [],
+      "triggers": [
+        {
+          "id": "trigger.frost-staff.frost-blast.frost",
+          "hook": "onHit",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.frost",
+            "value": 1
+          },
+          "source": "item.frost-staff",
+          "onlyWithAttack": "attack.frost-staff.frost-blast"
+        }
+      ],
       "gaps": [
         "grants power.frost-staff.frost-nova — item power — shape unparsed",
         "enchant onActivationEnd: you take 1 true damage — trigger shape unparsed"
@@ -22172,11 +22644,22 @@ export const UNIT_PACK = {
           },
           "source": "item.earth-staff",
           "onlyWithAttack": "attack.earth-staff.earth-blast"
+        },
+        {
+          "id": "trigger.earth-staff.eternal-ice.frost",
+          "hook": "onHit",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.frost",
+            "value": 2
+          },
+          "source": "item.earth-staff.eternal-ice"
         }
       ],
       "gaps": [
         "grants power.earth-staff.earth-shield — item power — shape unparsed",
-        "enchant onHit: apply 2 Frost — trigger shape unparsed",
         "enchant onKill: every enemy within 2 hexes of the target gains 1 F — trigger shape unparsed"
       ],
       "base": "item.earth-staff",
@@ -22266,11 +22749,23 @@ export const UNIT_PACK = {
         "attack.force-staff.force-blast"
       ],
       "abilities": [],
-      "triggers": [],
+      "triggers": [
+        {
+          "id": "trigger.force-staff.eternal-ice.frost",
+          "hook": "onHit",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.frost",
+            "value": 2
+          },
+          "source": "item.force-staff.eternal-ice"
+        }
+      ],
       "base": "item.force-staff",
       "enchant": "enchant.eternal-ice",
       "gaps": [
-        "enchant onHit: apply 2 Frost — trigger shape unparsed",
         "enchant onKill: every enemy within 2 hexes of the target gains 1 F — trigger shape unparsed"
       ]
     },

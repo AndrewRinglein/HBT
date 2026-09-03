@@ -7,7 +7,7 @@ import type { HexId } from './hex.js'
 import type { Ctx, MoveDef, Unit } from './types.js'
 import { appliesOnEnterOf, isPassable, moveCostOf, stripsOnEnterOf, terrainIdOf } from '../content/maps.js'
 import { addStatMod, emit, gainStamina, knockUnit, loseMaxStamina, markMoveUsed, moveUnit, spendStamina, unit } from './mutate.js'
-import { applyStatus, reduceStatus } from './status.js'
+import { forcedTargetOf, applyStatus, reduceStatus } from './status.js'
 
 // MOVE_STAMINA_COST is gone (2026-08-21) — Angela: "It shouldn't be
 // hard-coded. It should be content-driven." The cost of moving is a field on
@@ -329,6 +329,12 @@ export function nearestEnemy(ctx: Ctx, u: Unit): Unit | null {
 }
 
 export function livingEnemies(ctx: Ctx, u: Unit): Unit[] {
+  // capability.taunt (2026-09-03): "Forces the taunted unit to target whoever
+  // taunted it" — while a live Taunt names a standing enemy, that enemy is
+  // the whole candidate list. The unit keeps its own AI mode (Angela: "It can
+  // keep its same AI, like melee or ranged"); only the list narrows.
+  const forced = forcedTargetOf(ctx, u)
+  if (forced !== null) return [ctx.state.units[forced]!]
   return ctx.state.units.filter((o) => o.side !== u.side && o.lifeState === 'standing')
 }
 

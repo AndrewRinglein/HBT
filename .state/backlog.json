@@ -1921,5 +1921,26 @@
   "attempts": 2,
   "sha": "f5a5cac",
   "gauntlet": "not passed — 2 flag(s) warned"
+ },
+ {
+  "id": "capability.frost-root-taunt",
+  "kind": "engine",
+  "shape": "counter",
+  "spec": "Three Codex status rows that were named gaps, each ONE flag read where it belongs (ruled 2026-09-03: build them all). Frost — \"Adds its value to every physical hit the unit receives, per hit\", added BEFORE Armor (ruled 2026-09-03) at DMG.FROST 540, and rule.burn-frost-cancel on application. Root — \"Stops the unit moving at all\": movement points 0 at beginActivation. Taunt — \"Forces the taunted unit to target whoever taunted it\": the status remembers who applied it () and livingEnemies narrows to that unit while it stands; the AI mode is untouched (Angela: \"It can keep its same AI\"). The Emberwright's Frost Staff and the Frost war-hammer now compile their riders.",
+  "expect": "Frost 3 adds exactly 3 to a physical hit and nothing to a magic one; Burn 3 + Frost 2 = Burn 1; a rooted unit has 0 movement points and still attacks; a taunted zombie lists only its taunter as an enemy until the taunter falls",
+  "changesBaseline": true,
+  "probeIds": [
+   "status.frost"
+  ],
+  "variants": [
+   "status.frost",
+   "status.root",
+   "status.taunt"
+  ],
+  "status": "done-needs-review",
+  "note": "changesBaseline: the Alpha Air Mage's frost staff (trigger.frost-staff.frost-blast.frost) applies Frost in the standard battle now; before this the rider was a gap and did nothing.",
+  "attempts": 1,
+  "sha": "bd81004",
+  "gauntlet": "not passed — 2 flag(s) warned"
  }
 ]
