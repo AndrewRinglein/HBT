@@ -38,6 +38,20 @@ const combos = JSON.parse(readFileSync(COMBOS, 'utf8'))
 const byId = new Map(codex.items.map((i) => [i.id, i]))
 const enchants = new Map(codex.enchants.map((e) => [e.id, e]))
 
+// A set is a TAG plus a `setBonus` block on the item that cares (GEAR-DESIGN.md §5,
+// resolved 2026-09-03) — so the set tags are the tags any codex setBonus names, and a
+// row's `sets` are those of its tags. Nothing here knows a tag by name.
+const SET_TAGS = new Set(codex.items.map((i) => i.setBonus?.tag).filter(Boolean))
+const setBonusOf = (sb) => {
+  if (!sb) return null
+  if (typeof sb.tag !== 'string') fail(`setBonus without a tag: ${JSON.stringify(sb)}`)
+  const out = { tag: sb.tag }
+  if (sb.each) out.each = sorted(sb.each)
+  if (sb.at !== undefined) { if (!Number.isInteger(sb.at) || !sb.once) fail(`setBonus at-count on '${sb.tag}' needs integer at and once{}`); out.at = sb.at; out.once = sorted(sb.once) }
+  if (!out.each && out.at === undefined) fail(`setBonus on '${sb.tag}' pays nothing — each{} or at/once{}`)
+  return out
+}
+
 const CURRENCY = { faith: 'currency.faith', manaCrystals: 'currency.mana', supplies: 'currency.supplies', salvage: 'currency.salvage' }
 const fail = (msg) => { console.error(`mk-items: ${msg}`); process.exit(1) }
 
@@ -55,7 +69,7 @@ function rowOfCodex(i) {
   return {
     id: i.id, name: i.name, itemClass: i.itemClass, tier: tierOf(i.tier),
     hands: i.hands ?? 0, slots: i.slots ?? 0, classRestriction: i.classRestriction ?? null,
-    tags: [...(i.tags ?? [])].sort(), sets: [...(i.sets ?? [])].sort(),
+    tags: [...(i.tags ?? [])].sort(), sets: [...(i.tags ?? [])].filter((t) => SET_TAGS.has(t)).sort(), setBonus: setBonusOf(i.setBonus),
     uses: i.uses ?? null, equipCost: sorted(costOf(i.equipCost)),
     // the Waystation's catalog: which band opens the row, and what it costs there (GEAR-DESIGN.md §4)
     waystationBand: i.waystationBand ?? null, price: sorted(costOf(i.price)),

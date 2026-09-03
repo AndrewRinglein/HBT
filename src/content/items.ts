@@ -23,8 +23,16 @@ export type ItemRow = {
   readonly slots: number
   readonly classRestriction: string | null
   readonly tags: readonly string[]
-  /** `set.*` ids — an item may carry several (GEAR-DESIGN.md §5). Empty until the content session lands them. */
+  /** The set TAGS this item is a member of — its tags that some codex setBonus names (GEAR-DESIGN.md §5, resolved 2026-09-03: a set is a tag, not a kind). An item may carry several. */
   readonly sets: readonly string[]
+  /**
+   * The bonus THIS item pays for members of a set, or null. Two shapes (GEAR-DESIGN.md §5):
+   * per-other — `each` per OTHER equipped member of `tag`; at-count — `once`, paid once when
+   * `at` members are worn, this item included. Keys are unit stats, or `attackDamage` for
+   * this weapon's own attacks. The codex authors `each` today; `at`/`once` is the shape the
+   * kingdom reads for the dictated Shadows set, which no codex row carries yet.
+   */
+  readonly setBonus: { readonly tag: string; readonly each?: Readonly<Record<string, number>>; readonly at?: number; readonly once?: Readonly<Record<string, number>> } | null
   /** Uses per battle for a one-use item, restocked after; null = permanent. */
   readonly uses: number | null
   /** The Waystation band that opens this row in its catalog, or null — it is not sold there. */

@@ -19,6 +19,7 @@ import { deployLimitOf } from './charter.js'
 import { TACTICS, tacticOf, type TacticRow } from '../content/tactics.js'
 import { engagementKindOf } from '../content/engagements.js'
 import { commitmentOf } from './assignments.js'
+import { resolveSets, type SetLine } from './sets.js'
 
 // ── reading ─────────────────────────────────────────────────────────────────
 
@@ -91,6 +92,8 @@ export type CombatPrepView = {
   deployable: HeroId[]
   deployLimit: number
   canAdvance: boolean
+  /** The triggered sets per deployed hero, with their numbers — what the end of Equip says (GEAR-DESIGN.md §5). One entry per deployed hero. */
+  sets: Record<HeroId, SetLine[]>
 }
 
 /** The one read-model the prep screen renders from. Pure. */
@@ -109,6 +112,7 @@ export function viewCombatPrep(campaign: CampaignState): CombatPrepView {
     deployable: listDeployable(campaign),
     deployLimit: deployLimitOf(campaign),
     canAdvance: canAdvancePrep(campaign),
+    sets: Object.fromEntries(e.deployed.map((h) => [h, resolveSets(campaign, h)])),
   }
 }
 

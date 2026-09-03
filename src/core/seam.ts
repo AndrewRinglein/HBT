@@ -19,6 +19,8 @@
 
 import { createBattle, runBattle } from '../engine.js'
 import type { BattleOptions, Event, Outcome, Side } from '../engine.js'
+import { itemOf } from '../content/items.js'
+import { fieldedModsOfRows, type FieldedMods } from './sets.js'
 
 /** A campaign-free fielding: everything a battle needs, nothing about a Campaign. */
 export type EngagementSpec = {
@@ -32,6 +34,14 @@ export type EngagementSpec = {
   readonly enemyHexes?: readonly number[]
   /** The battle's named seed. The caller derives it from what the engagement is. */
   readonly seed: number
+  /**
+   * sets.resolve (G8, 2026-09-03): what each hero's sets resolved to — unit-stat
+   * mods and per-weapon damage, plain numbers, parallel to `heroes`. Resolved when
+   * the hero is built for battle and WRITTEN here, never recomputed in battle
+   * (2-ACTIONS-SETTLED.md 2026-09-02). Absent for a fielding named without a roster.
+   * The engine's seam.unit-mods is unlanded, so battleOptionsOf cannot pass these yet.
+   */
+  readonly heroMods?: readonly FieldedMods[]
 }
 
 /** One unit's tally, folded from the log. Order: heroes in spec order, then enemies. */
@@ -77,15 +87,18 @@ export type EngagementResult = {
  * battle condition arrive here when those systems exist.
  */
 export function makeBattleState(
-  roster: Readonly<Record<string, { unitType: string }>>,
+  roster: Readonly<Record<string, { unitType: string; equipped?: readonly string[] }>>,
   engagement: { id: string; mapId: string; enemies: readonly string[]; deployed: readonly string[]; seed: number },
 ): EngagementSpec {
-  const heroes = engagement.deployed.map((heroId) => {
+  const rows = engagement.deployed.map((heroId) => {
     const h = roster[heroId]
     if (!h) throw new Error(`${engagement.id}: deployed hero '${heroId}' is not on the roster`)
-    return h.unitType
+    return h
   })
-  return { id: engagement.id, mapId: engagement.mapId, heroes, enemies: [...engagement.enemies], seed: engagement.seed }
+  const heroes = rows.map((h) => h.unitType)
+  // the sets, resolved here — "looked up when the players are being built and shipped to combat"
+  const heroMods = rows.map((h) => fieldedModsOfRows((h.equipped ?? []).map(itemOf)))
+  return { id: engagement.id, mapId: engagement.mapId, heroes, enemies: [...engagement.enemies], seed: engagement.seed, heroMods }
 }
 
 /** The joint §4.1 names: a spec becomes the engine's own options, nothing more. */
