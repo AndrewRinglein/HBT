@@ -873,6 +873,10 @@
    "hash": "a829c53950c9",
    "how": "feature absent",
    "tail": "       |                                                         ^ |      71|     const stash = ctx.campaign.stash.length |      72|     performTakeReward(ctx, offers[2]!.id, 'test')"
+  },
+  "closed": {
+   "at": "2026-09-03 20:19",
+   "sha": "26c25b5"
   }
  }
 }

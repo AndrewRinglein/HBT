@@ -857,3 +857,26 @@ slice: 51 of 68 closed · 61 probed · 0 accepted
 IRON GAUNTLET: NOT PASSED — 2 FLAG(S) WARNED
 
 Note (seam.loadout, 2026-09-03): the first --land attempt at 10:45 ran before the engine's fix.post-end-ladder existed and against the un-switched seam, and its "nothing regresses" pass REOPENED nine criteria (001, 003, 022, 025, 035, 043, 044, 045, 052) — seven on the engine's applyItems refusing a spare weapon (now SWITCHES.spareWeapons, engine backlog seam.spare-weapons), 003 on the engine ticking poison after battle.end (engine fix.post-end-ladder, landed by the engine session at 98a74b6), 052 on the fixture. All nine are green on the landed tree; eight were re-closed by `slice-gate.mjs --close … --sha 5edcbc5`. **ISC-044 stays OPEN:** its probe was edited after its red (7bd17febfd0b → 8719b22da823) by an earlier landing and the instrument refuses to close it until it is seen red again — someone with the tree must stash src, `--isc 044 --red`, and close it. Also fixed this landing: tools/gate.mjs strips backticks and `$` from the commit subject (an unbalanced backtick in a spec's first 72 characters killed the commit between `git add -A` and the ledger).
+
+## rewards.tiered — LANDED `26c25b5` **NEEDS REVIEW**
+2026-09-03 20:17 · engine @ fc72b9a
+
+  PASS  dependencies landed
+  WARN  not already decided — 3 candidate ruling(s) — READ BEFORE ASKING: ../STATE.md:21 · ../GEAR-DESIGN.md:61
+  PASS  typecheck
+  PASS  full test suite — 146 passed
+  PASS  gate 1 — every claimed criterion holds — ISC-065 — the reward draw is tiered at the ruled odds
+  PASS  brought its own tests — test/isc-065.test.ts
+  PASS  existing tests untouched
+  PASS  kill switch — every claimed probe has been seen red — ISC-065: red on record (2026-09-03 17:41 @ f6515c2, probe a829c53950c9)
+  PASS  nothing regresses — every P-tier probe — 61 P-tier probe(s): 61 green, 0 red, 0 regression(s). 59 of 68 closed · 61 probed · 0 accepted
+  PASS  hardcode scan — core knows mechanisms, never names
+  PASS  generalizes — the second instance costs zero kingdom code
+  PASS  naming — new ids use declared kinds
+  PASS  naming — no banned words invented
+  WARN  engine working tree clean — verified against a DIRTY engine tree (fc72b9a + 1 uncommitted under src/test): ?? src/sim/coverage.ts
+  PASS  one door to the engine
+
+ISC-065: CLOSED at 26c25b5
+slice: 60 of 68 closed · 61 probed · 0 accepted
+IRON GAUNTLET: NOT PASSED — 2 FLAG(S) WARNED; 1 EXEMPTION(S) TAKEN

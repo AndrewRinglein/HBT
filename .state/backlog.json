@@ -630,7 +630,11 @@
    "item.pilgrims-warding-stone"
   ],
   "generalizationExempt": "the variants are two pool rows of different classes (a tier-3 weapon, a tier-1 idol) the odds table can draw; the mechanism reads REWARD_ODDS and the class off the row; tools/probe.mts's autoplay takes rewards but the draw is keyed by the Engagement, so liveness is the probe's over many keys",
-  "attempts": 1
+  "attempts": 1,
+  "status": "done-needs-review",
+  "sha": "26c25b5",
+  "engineSha": "fc72b9a",
+  "gauntlet": "not passed — 2 flag(s) warned; 1 exemption(s) taken"
  },
  {
   "id": "screens.equip",
