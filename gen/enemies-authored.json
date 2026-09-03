@@ -86,6 +86,42 @@
    ]
   },
   {
+   "id": "unit.zombie-burning",
+   "name": "Burning Zombie",
+   "tier": 1,
+   "types": [
+    "Undead"
+   ],
+   "family": "undead-army",
+   "stats": {
+    "movement": 4,
+    "strength": 3,
+    "precision": 1,
+    "accuracy": 65,
+    "health": 5
+   },
+   "source": "6-BESTIARY-SETTLED.md, Angela 2026-08-20: \"You could create a burning zombie and mix them in with the other zombies. On taking damage, the zombie deals 1 burn to its attacker.\" Mixed into the horde at one per four; zombie stat line, unchanged. Authored into this registry 2026-09-02 (engine session, content.enemy-flip) so the standard battle's horde is authored rows — the stat line is the authored Zombie's, copied, not the 2026-08-14 placeholder's.",
+   "triggers": [
+    {
+     "hook": "onTakingDamage",
+     "effects": [
+      {
+       "effect": "apply a status",
+       "status": "burn",
+       "value": 1,
+       "target": "the attacker"
+      }
+     ]
+    }
+   ],
+   "attacks": [
+    {
+     "id": "attack.zombie.claw",
+     "sameAs": "attack.zombie.claw"
+    }
+   ]
+  },
+  {
    "id": "unit.strong-zombie",
    "name": "Strong Zombie",
    "tier": 1,

@@ -42,19 +42,154 @@
    "needs": "a statMod that expires at End of Activation (MoveEffect.until knows endOfTurn | battle only)"
   },
   {
+   "unit": "unit.balrog",
+   "what": "(unit) hook 'aura'",
+   "needs": "hook: aura"
+  },
+  {
+   "unit": "unit.balrog",
+   "what": "(unit) onTakingDamage: set a ground layer",
+   "needs": "set a ground layer"
+  },
+  {
+   "unit": "unit.balrog",
+   "what": "(unit) hook 'onActivationEnd'",
+   "needs": "hook: onActivationEnd (declared, engine never fires it)"
+  },
+  {
+   "unit": "unit.balrog",
+   "what": "attack.balrog.strike powerScale 1 (base damage kept)",
+   "needs": "capability.power"
+  },
+  {
+   "unit": "unit.bone-dragon",
+   "what": "(unit) hook 'aura'",
+   "needs": "hook: aura"
+  },
+  {
+   "unit": "unit.bone-dragon",
+   "what": "(unit) hook 'aura'",
+   "needs": "hook: aura"
+  },
+  {
+   "unit": "unit.bone-dragon",
+   "what": "attack.bone-dragon.poison-line powerScale 1 (base damage kept)",
+   "needs": "capability.power"
+  },
+  {
    "unit": "unit.bruiser-demon",
    "what": "(unit) onActivationEnd: apply a status",
    "needs": "capability.power"
   },
   {
-   "unit": "unit.fast-zombie",
-   "what": "attack.zombie.claw onHit: inflict an affliction",
-   "needs": "capability.inflict-affliction"
+   "unit": "unit.dark-sniper",
+   "what": "attack.dark-sniper.shot onHit: apply a status",
+   "needs": "apply a status"
+  },
+  {
+   "unit": "unit.dark-sniper",
+   "what": "attack.dark-sniper.long-shot onMiss: grant a stat for the Battle (dodge)",
+   "needs": "trigger-effect: statMod"
+  },
+  {
+   "unit": "unit.dark-sniper",
+   "what": "attack.dark-sniper.long-shot onMiss: paint a ground layer",
+   "needs": "paint a ground layer"
+  },
+  {
+   "unit": "unit.demon-hound",
+   "what": "(unit) hook 'startOfBattle'",
+   "needs": "hook: startOfBattle (declared, engine never fires it)"
+  },
+  {
+   "unit": "unit.demon-hound",
+   "what": "(unit) hook 'onActivationEnd'",
+   "needs": "hook: onActivationEnd (declared, engine never fires it)"
+  },
+  {
+   "unit": "unit.demon-hound",
+   "what": "attack.demon-hound.bite powerScale 0.334 (base damage kept)",
+   "needs": "capability.power"
+  },
+  {
+   "unit": "unit.doombringer",
+   "what": "(unit) onTakingDamage: apply a status",
+   "needs": "capability.power"
+  },
+  {
+   "unit": "unit.doombringer",
+   "what": "(unit) hook 'onActivationEnd'",
+   "needs": "hook: onActivationEnd (declared, engine never fires it)"
+  },
+  {
+   "unit": "unit.doombringer",
+   "what": "attack.doombringer.hammer onDamage: Knockback N",
+   "needs": "Knockback N"
+  },
+  {
+   "unit": "unit.doombringer",
+   "what": "attack.doombringer.crush onHit: target loses stamina",
+   "needs": "target loses stamina"
+  },
+  {
+   "unit": "unit.doombringer",
+   "what": "attack.doombringer.crush onHit: grant a stat for the Battle (armor)",
+   "needs": "trigger-effect: statMod"
+  },
+  {
+   "unit": "unit.eyeblight",
+   "what": "(unit) onDeath: paint a ground layer",
+   "needs": "paint a ground layer"
+  },
+  {
+   "unit": "unit.eyeblight",
+   "what": "attack.eyeblight.gaze onHit: grant a stat for the Battle (vision)",
+   "needs": "trigger-effect: statMod"
+  },
+  {
+   "unit": "unit.eyeblight",
+   "what": "attack.eyeblight.gaze onHit: grant a stat for the Battle (accuracy)",
+   "needs": "trigger-effect: statMod"
+  },
+  {
+   "unit": "unit.eyeblight",
+   "what": "attack.eyeblight.claw onHit: grant a stat for the Battle (vision)",
+   "needs": "trigger-effect: statMod"
+  },
+  {
+   "unit": "unit.eyeblight",
+   "what": "attack.eyeblight.claw onHit: grant a stat for the Battle (accuracy)",
+   "needs": "trigger-effect: statMod"
   },
   {
    "unit": "unit.fire-imp",
    "what": "(unit) hook 'onActivationEnd'",
    "needs": "hook: onActivationEnd (declared, engine never fires it)"
+  },
+  {
+   "unit": "unit.ghoul",
+   "what": "(unit) hook 'startOfBattle'",
+   "needs": "hook: startOfBattle (declared, engine never fires it)"
+  },
+  {
+   "unit": "unit.ghoul",
+   "what": "attack.ghoul.shriek onHit: target loses stamina",
+   "needs": "target loses stamina"
+  },
+  {
+   "unit": "unit.ghoul",
+   "what": "attack.ghoul.devour onKill: grant a stat for the Battle (strength)",
+   "needs": "trigger-effect: statMod"
+  },
+  {
+   "unit": "unit.ghoul",
+   "what": "attack.ghoul.devour onKill: grant a stat for the Battle (health)",
+   "needs": "trigger-effect: statMod"
+  },
+  {
+   "unit": "unit.imp-master",
+   "what": "(unit) hook 'aura'",
+   "needs": "hook: aura"
   },
   {
    "unit": "unit.lieutenant-demon",
@@ -112,14 +247,199 @@
    "needs": "capability.power"
   },
   {
+   "unit": "unit.nightstalker",
+   "what": "(unit) onActivationEnd: enter stealth",
+   "needs": "capability.stealth"
+  },
+  {
+   "unit": "unit.nightstalker",
+   "what": "attack.nightstalker.rend onAttack: grant a stat until end of your Activation (crit)",
+   "needs": "trigger-effect: statMod"
+  },
+  {
+   "unit": "unit.nightstalker",
+   "what": "attack.nightstalker.rend onAttack: deal 2 crits",
+   "needs": "deal 2 crits"
+  },
+  {
    "unit": "unit.poison-imp",
    "what": "(unit) hook 'onActivationEnd'",
    "needs": "hook: onActivationEnd (declared, engine never fires it)"
   },
   {
+   "unit": "unit.shadow-sorcerer",
+   "what": "(unit) hook 'startOfBattle'",
+   "needs": "hook: startOfBattle (declared, engine never fires it)"
+  },
+  {
+   "unit": "unit.shadow-sorcerer",
+   "what": "(unit) hook 'onActivationEnd'",
+   "needs": "hook: onActivationEnd (declared, engine never fires it)"
+  },
+  {
+   "unit": "unit.shadow-sorcerer",
+   "what": "(unit) hook 'onActivationEnd'",
+   "needs": "hook: onActivationEnd (declared, engine never fires it)"
+  },
+  {
+   "unit": "unit.shadow-sorcerer",
+   "what": "attack.shadow-sorcerer.shadow-strike powerScale 0.5 (base damage kept)",
+   "needs": "capability.power"
+  },
+  {
+   "unit": "unit.shadow-sorcerer",
+   "what": "attack.shadow-sorcerer.shadow-strike onHit: knockback",
+   "needs": "knockback"
+  },
+  {
+   "unit": "unit.shadow-sorcerer",
+   "what": "attack.shadow-sorcerer.shadow-strike onHit: paint a ground layer",
+   "needs": "paint a ground layer"
+  },
+  {
+   "unit": "unit.shadow-sorcerer",
+   "what": "attack.shadow-sorcerer.shadow-strike onHit: grant a stat for the Battle (vision)",
+   "needs": "trigger-effect: statMod"
+  },
+  {
+   "unit": "unit.shadow-sorcerer",
+   "what": "attack.shadow-sorcerer.shadow-rend powerScale 0.5 (base damage kept)",
+   "needs": "capability.power"
+  },
+  {
+   "unit": "unit.shadow-sorcerer",
+   "what": "attack.shadow-sorcerer.shadow-rend onHit: pull",
+   "needs": "pull"
+  },
+  {
+   "unit": "unit.shadow-sorcerer",
+   "what": "attack.shadow-sorcerer.shadow-rend onHit: apply a status",
+   "needs": "apply a status"
+  },
+  {
+   "unit": "unit.shadow-sorcerer",
+   "what": "attack.shadow-sorcerer.shadow-rend onHit: paint a ground layer",
+   "needs": "paint a ground layer"
+  },
+  {
+   "unit": "unit.shadow-sorcerer",
+   "what": "attack.shadow-sorcerer.shadow-rend onHit: grant a stat for the Battle (vision)",
+   "needs": "trigger-effect: statMod"
+  },
+  {
+   "unit": "unit.shadow-sorcerer",
+   "what": "attack.shadow-sorcerer.shadow-grasp powerScale 0.5 (base damage kept)",
+   "needs": "capability.power"
+  },
+  {
+   "unit": "unit.shadow-sorcerer",
+   "what": "attack.shadow-sorcerer.shadow-grasp onHit: knockback",
+   "needs": "knockback"
+  },
+  {
+   "unit": "unit.shadow-sorcerer",
+   "what": "attack.shadow-sorcerer.shadow-grasp onHit: grant a stat for the Battle (vision)",
+   "needs": "trigger-effect: statMod"
+  },
+  {
    "unit": "unit.skeletal-archer",
    "what": "attack.skeletal-archer.shoot range is null — N never stated",
    "needs": "content: range unstated"
+  },
+  {
+   "unit": "unit.skeleton-spider",
+   "what": "(unit) hook 'onActivationEnd'",
+   "needs": "hook: onActivationEnd (declared, engine never fires it)"
+  },
+  {
+   "unit": "unit.skeleton-spider",
+   "what": "(unit) onActivationEnd: remove all corpses within range; heal 3 per corpse",
+   "needs": "capability.corpses"
+  },
+  {
+   "unit": "unit.skeleton-spider",
+   "what": "attack.skeleton-spider.bone-strike onDamage: grant a stat for the Battle (movement)",
+   "needs": "trigger-effect: statMod"
+  },
+  {
+   "unit": "unit.skeleton-spider",
+   "what": "attack.skeleton-spider.bone-slash onDamage: grant a stat for the Battle (armor)",
+   "needs": "trigger-effect: statMod"
+  },
+  {
+   "unit": "unit.terror-imp",
+   "what": "attack.terror-imp.fear onAttack: apply a status",
+   "needs": "capability.power"
+  },
+  {
+   "unit": "unit.vampire",
+   "what": "attack.vampire.bite onHit: heal",
+   "needs": "heal"
+  },
+  {
+   "unit": "unit.vampire",
+   "what": "attack.vampire.bite onKill: grant a stat for the Battle (health)",
+   "needs": "trigger-effect: statMod"
+  },
+  {
+   "unit": "unit.vampire",
+   "what": "attack.vampire.bite onDamage: inflict an affliction",
+   "needs": "capability.inflict-affliction"
+  },
+  {
+   "unit": "unit.vampire",
+   "what": "attack.vampire.mesmerize powerScale 1 (base damage kept)",
+   "needs": "capability.power"
+  },
+  {
+   "unit": "unit.vampire",
+   "what": "attack.vampire.mesmerize onHit: target loses stamina",
+   "needs": "target loses stamina"
+  },
+  {
+   "unit": "unit.vampire-lord",
+   "what": "attack.vampire-lord.bite onHit: heal",
+   "needs": "heal"
+  },
+  {
+   "unit": "unit.vampire-lord",
+   "what": "attack.vampire-lord.bite onKill: grant a stat for the Battle (health)",
+   "needs": "trigger-effect: statMod"
+  },
+  {
+   "unit": "unit.vampire-lord",
+   "what": "attack.vampire-lord.bite onKill: grant a stat for the Battle (strength)",
+   "needs": "trigger-effect: statMod"
+  },
+  {
+   "unit": "unit.vampire-lord",
+   "what": "attack.vampire-lord.bite onKill: grant a stat for the Battle (precision)",
+   "needs": "trigger-effect: statMod"
+  },
+  {
+   "unit": "unit.vampire-lord",
+   "what": "attack.vampire-lord.bite onKill: add power",
+   "needs": "add power"
+  },
+  {
+   "unit": "unit.vampire-lord",
+   "what": "attack.vampire-lord.bite onDamage: inflict an affliction",
+   "needs": "capability.inflict-affliction"
+  },
+  {
+   "unit": "unit.vampire-lord",
+   "what": "attack.vampire.mesmerize powerScale 1 (base damage kept)",
+   "needs": "capability.power"
+  },
+  {
+   "unit": "unit.vampire-lord",
+   "what": "attack.vampire.mesmerize onHit: target loses stamina",
+   "needs": "target loses stamina"
+  },
+  {
+   "unit": "unit.vampire-lord",
+   "what": "attack.vampire-lord.soul-rend powerScale 1 (base damage kept)",
+   "needs": "capability.power"
   },
   {
    "unit": "unit.werewolf",
@@ -910,6 +1230,36 @@
    "unit": "item.priest-chain",
    "what": "grants power.priest-chain.benediction",
    "needs": "item power — shape unparsed"
+  },
+  {
+   "unit": "item.martyrs-censer",
+   "what": "attack.martyrs-censer.offering onDamage: \"you take 2 true damage\"",
+   "needs": "trigger shape unparsed"
+  },
+  {
+   "unit": "item.reliquary-of-the-nine-tears",
+   "what": "attack.reliquary-of-the-nine-tears.intercession onDamage: \"heal the ally nearest the target for half the damage dealt,",
+   "needs": "trigger shape unparsed"
+  },
+  {
+   "unit": "item.chorus-of-the-drowned-choir",
+   "what": "attack.chorus-of-the-drowned-choir.antiphon onHit: \"every enemy within 1 hex of the target takes 2 true damage\"",
+   "needs": "trigger shape unparsed"
+  },
+  {
+   "unit": "item.emberglass-focus",
+   "what": "attack.emberglass-focus.bank-the-fire onCrit: \"apply 2 more Burn\"",
+   "needs": "trigger shape unparsed"
+  },
+  {
+   "unit": "item.staff-of-the-still-air",
+   "what": "attack.staff-of-the-still-air.hush onHit: \"the target gains 1 Slow\"",
+   "needs": "trigger shape unparsed"
+  },
+  {
+   "unit": "item.staff-of-the-still-air",
+   "what": "attack.staff-of-the-still-air.stillness onHit: \"the target gains 3 Slow\"",
+   "needs": "trigger shape unparsed"
   },
   {
    "unit": "item.loaded-dice-of-mirran",

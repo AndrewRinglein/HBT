@@ -234,9 +234,13 @@ function compileTrigger(t, unitId, attackId) {
 const authoredEnemies = [];
 const authoredAttacks = {};
 const authoredAbilities = {}; // capability.item-powers, 2026-08-27
-for (const id of [...fielded].sort()) {
-  const u = AUTH.units.find((x) => x.id === id);
-  if (!u) { gap(id, 'fielded by the prologue, absent from enemies-authored', 'content'); continue; }
+// content.enemy-flip (2026-09-02): EVERY authored enemy packs, not only the
+// ones the prologue fields — the registry is read whole, like items and
+// statuses, and a row the engine cannot fully express carries named gaps. A
+// prologue id with no authored row is still its own gap.
+for (const id of [...fielded].filter((x) => !AUTH.units.some((u) => u.id === x))) gap(id, 'fielded by the prologue, absent from enemies-authored', 'content');
+for (const u of [...AUTH.units].sort((a, b) => (a.id < b.id ? -1 : 1))) {
+  const id = u.id;
   const st = u.stats || {};
   // crit and luck COMPILE since station.crit (2026-08-27): per-unit crit is
   // COMBAT-DESIGN's "Base Crit varies by enemy" axis, luck the resistance side.
