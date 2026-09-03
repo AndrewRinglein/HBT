@@ -11,10 +11,6 @@ and date. Tool tasks and engine chores go in the backlog, never here.
   runner gets built, then battles 1 and 2 land as real encounters with
   both-outcome sweeps. Everything else about the prologue waits behind this.
 
-- (2026-08-27) **Flip the standard battles to the Alpha Team?** The alphas are
-  in and armed; the control battles still field the (TEST) cohort. Flipping is
-  one landing that re-blesses every baseline. Say when.
-
 - (2026-08-27) **Vision** — there is no vision model (gap L-3a). It blocks
   Blinded's −4 Vision half, and the viewer thread's darkness/fog. Build the
   Vision stat and concealment as designed, or keep it parked?
@@ -35,6 +31,16 @@ and date. Tool tasks and engine chores go in the backlog, never here.
   `node tools/report.mjs`, verdicts recorded in your words via review.mjs.
 
 ## ANSWERED
+
+- (2026-09-02) **Flip the standard battles to the Alpha Team?** — "Yes, proceed with
+  step one." Landed as content.alpha-flip; all eight baselines re-blessed. The enemy
+  side of the standard battle (three test-zombies + a burning one) is still the test
+  cohort — flipping it to authored enemies is the next question, not yet asked.
+
+- (2026-09-02) **Which attack should the AI choose?** — NOT a question for you: it is
+  a switch (backlog ai.attack-choice). The flip showed four authored attacks never
+  fire because the AI takes the first affordable one in declared order. A sweep
+  will measure the policies; you get the data, not the decision.
 
 - (2026-08-20) Water and regeneration — regeneration is NOT washed off by water. Water removes burning (on entry, and at end of activation) and poison (at end of activation) only. Fixed and landed (fix.water-regen).
 
