@@ -27,10 +27,27 @@ and date. Tool tasks and engine chores go in the backlog, never here.
   and `move.*` (8 rows) exist in content and `node tools/kinds.mjs` fails on
   them. Approve the kinds or have the content session rename them.
 
+- (2026-09-02) **Name the crit chart's powers-lock status.** Dazed is two things (your
+  words: a critical effect and a status effect). The chart's "loses access to class
+  powers" now applies a placeholder called `status.powers-locked`. Give it a real name
+  when you like — it changes in one Codex row and one converter line.
+
+- (2026-09-02) **Six Codex statuses the engine cannot behave for yet** — Karma, Taunt,
+  Confusion, Root, Frost, Shadow are named gaps, each a capability item waiting in the
+  backlog. Build them next, or after step three? (Default if you say nothing: after.)
+
 - (2026-08-27) **19 flagged landings await your review** —
   `node tools/report.mjs`, verdicts recorded in your words via review.mjs.
 
 ## ANSWERED
+
+- (2026-09-02) **May the Codex own the status rows?** — "Yes — Codex owns the rows."
+  approved-kinds.json re-ruled (status: content); pack.statuses landed — ten rows read
+  from settled.json, baseline-neutral. pack.moves the same day, also neutral.
+
+- (2026-09-02) **Which is Dazed — the chart's powers-lock or the Codex's control loss?** —
+  "It does two different things: there is a critical effect, and then there is a status
+  effect… can you account for that?" Accounted for as two ids (fix.dazed-split).
 
 - (2026-09-02) **Flip the standard battles to the Alpha Team?** — "Yes, proceed with
   step one." Landed as content.alpha-flip; all eight baselines re-blessed. The enemy
