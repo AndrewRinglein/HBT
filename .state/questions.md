@@ -32,19 +32,20 @@ and date. Tool tasks and engine chores go in the backlog, never here.
   Rename whenever; one Codex row and one converter line. Answered 2026-09-02: "leave it
   as just a note."
 
-- (2026-09-02) **The standard test horde is a walkover.** Now that the standard battle is
-  fully authored — the Alpha Team with real kits against the Codex's own Zombies (5 hp,
-  str 3) — four zombies fall in under three turns, 100 of 100, with one hero ever
-  downed; the mage isn't touched until there are sixteen. The control panel runs eight.
-  Fine for a first battle, thin as a test bed. Do you want the standard horde to be
-  something harder (your pick of authored rows), or keep zombies and let the panel
-  measure a stomp? (Default if you say nothing: keep zombies; tests that need pressure
-  field twelve to sixteen.)
-
 - (2026-08-27) **19 flagged landings await your review** —
   `node tools/report.mjs`, verdicts recorded in your words via review.mjs.
 
 ## ANSWERED
+
+- (2026-09-02) **The standard test horde is a walkover — keep it or harden it?** — "Keep the
+  zombies." Tests that need pressure field twelve to sixteen.
+
+- (2026-09-02) **Approve the `move.*` kind (enemy special moves)?** — "Yes, I do want to have
+  these special moves: charge, close, bite, clobber." Approved as a name; the mechanism is
+  unbuilt and stays a named gap.
+
+- (2026-09-02) **When do the three beasts get their Codex rows?** — "Later — leave them for
+  now."
 
 - (2026-09-02) **Build the six unbuilt statuses now?** — No: "I really want all the
   structure, everything to be correct. We don't need all of the features built." They
