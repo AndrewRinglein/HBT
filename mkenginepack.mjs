@@ -47,10 +47,11 @@ const heroes = D.testCohort.heroes.map((h) => {
     role: e.role, movement: d.movement, reach: p.reach ?? 0,
     maxStamina: d.staminaMax, staminaRegen: d.staminaRegen ?? 1,
     ai: e.ai, attacks: e.attacks || [], abilities: e.abilities || [],
+    // fix.unit-tags (2026-09-03): `tags` is the one field; a cohort hero is a hero.
+    tags: ['hero'],
     // Movement is a granted CHOICE (ruled 2026-08-21) — no default here: a
     // cohort row without moves should fail the loader, loudly.
     moves: e.moves,
-    attributes: ['hero-test'],
     triggers: [...mapCodexTriggers(h, h.typeId), ...(e.riders || [])],
   };
 });
@@ -288,7 +289,6 @@ for (const u of [...AUTH.units].sort((a, b) => (a.id < b.id ? -1 : 1))) {
     maxStamina: 0, staminaRegen: 0,
     ai: anyRanged ? 'ranged-kite' : 'dumb-melee',
     attacks: attackIds, abilities: [], moves: ['power.move'],
-    attributes: (u.types || []).map((t) => t.toLowerCase()),
     tags: (u.types || []).map((t) => t.toLowerCase()),
     triggers: unitTriggers,
   });
@@ -563,7 +563,6 @@ for (const id of PARTY) {
     ai: anyRanged ? 'ranged-kite' : 'melee-aggressive',
     attacks: ownAttackIds, abilities: [],
     moves: movesForClass(h.class),
-    attributes: ['hero-eve'],
     tags: ['hero'],
     triggers: ownTriggers,
     defaultItems: items.filter((i) => ITEM_BY_ID.has(i)),
@@ -656,7 +655,6 @@ const alphaTeam = [];
       ...(h.ai ? { aiAuthored: true } : {}),
       attacks: ownAttackIds, abilities: [],
       moves: movesForClass(h.class),
-      attributes: ['hero-alpha'],
       tags: ['hero'],
       triggers: ownTriggers,
       defaultItems: (h.kit || []).filter((i) => ITEM_BY_ID.has(i)),
@@ -721,7 +719,6 @@ for (const id of CIVILIANS) {
     attacks: [], abilities: [],
     // "Beasts and Civilians get neither" half-step (Codex 2026-08-21).
     moves: ['power.move'],
-    attributes: ['civilian'],
     tags: ['hero', 'civilian'],
     triggers: [],
     defaultItems: (h.kit || []).filter((i) => ITEM_BY_ID.has(i)),
@@ -902,7 +899,7 @@ function testAbilities() {
   }
   return out;
 }
-const UNIT_FIELDS = new Set(['typeId', 'name', 'side', 'maxHp', 'armor', 'resist', 'accuracy', 'dodge', 'strength', 'precision', 'magic', 'spirit', 'crit', 'luck', 'role', 'movement', 'reach', 'maxStamina', 'staminaRegen', 'ai', 'attacks', 'abilities', 'moves', 'attributes', 'tags', 'triggers']);
+const UNIT_FIELDS = new Set(['typeId', 'name', 'side', 'maxHp', 'armor', 'resist', 'accuracy', 'dodge', 'strength', 'precision', 'magic', 'spirit', 'crit', 'luck', 'role', 'movement', 'reach', 'maxStamina', 'staminaRegen', 'ai', 'attacks', 'abilities', 'moves', 'tags', 'triggers']);
 const ATTACK_FIELDS = new Set(['id', 'name', 'kind', 'damageType', 'bonus', 'stat', 'reach', 'staminaCost', 'crit', 'critCount', 'area', 'cooldown']);
 // a delta may start from any packed row — the real families AND the test
 // cohort (test-gash-zombie is the cohort's zombie plus one rider)
@@ -928,7 +925,7 @@ function testUnits(testAttackRows, testAbilityRows) {
     let base = {};
     if (from) { base = realUnits.get(from); if (!base) throw new Error(`content/test/units.json: '${row.id}' is a delta over '${from}', which is not a real unit in the pack`); }
     const { id, ...body } = rest;
-    const u = { ...base, ...body, ...(set || {}), typeId: row.id, abilities: body.abilities ?? base.abilities ?? [], attributes: body.attributes ?? ['test'], tags: body.tags ?? base.tags ?? [] };
+    const u = { ...base, ...body, ...(set || {}), typeId: row.id, abilities: body.abilities ?? base.abilities ?? [], tags: body.tags ?? base.tags ?? [] };
     delete u.copyOf;
     for (const k of Object.keys(u)) if (!UNIT_FIELDS.has(k)) throw new Error(`content/test/units.json: '${row.id}' carries unknown field '${k}'`);
     u.triggers = (u.triggers || []).map((t) => {

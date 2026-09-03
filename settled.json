@@ -1736,7 +1736,7 @@
      "attack.test-zombie.bite"
     ],
     "abilities": [],
-    "attributes": [
+    "tags": [
      "undead"
     ],
     "triggers": [
@@ -1805,7 +1805,7 @@
      "attack.test-zombie.bite"
     ],
     "abilities": [],
-    "attributes": [
+    "tags": [
      "undead"
     ],
     "triggers": [
