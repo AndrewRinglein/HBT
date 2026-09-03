@@ -350,6 +350,12 @@ export type Config = {
     critMaxHealthFloorsAtOne: boolean
     /** Do multiple tails-criticals roll chart rows WITH replacement? SWITCHES.md, 2026-08-27. */
     multiCritWithReplacement: boolean
+    /**
+     * Healing sheds Bleed by half the healing — half of what LANDED on the
+     * health bar (true), or half of what was asked after Burn's halving
+     * (false)? They differ only at or near full health. SWITCHES.md, 2026-09-02.
+     */
+    bleedShedFromLanded: boolean
   }
 }
 
@@ -384,6 +390,9 @@ export const DEFAULT_CONFIG: Config = {
     // simplest reading, and item.bracer's open with/without-replacement
     // question shares this switch's answer. SWITCHES.md, 2026-08-27.
     multiCritWithReplacement: true,
+    // S43 (content ea99a4d): "half the applied amount comes off Bleed" — the
+    // amount applied to Health is what landed. SWITCHES.md, 2026-09-02.
+    bleedShedFromLanded: true,
   },
 }
 

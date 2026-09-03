@@ -35,10 +35,15 @@ describe('the data', () => {
   })
 })
 
-describe('flat 2, full clock — the ruled pair with poison, in one harness', () => {
-  it('bleed 5 vs resist 2 ticks 2,2,2,2,2 while poison 5 vs resist 2 ticks 3,2,1,0,0', () => {
+// LAW 10 — 2026-09-02 (fix.bleed-magnitude): "flat 2" was the 2026-08-20 model.
+// Codex S41 ruled verbatim "Bleed is being converted to magnitude damage", so
+// the tick is the VALUE and the flat-2 assertions below are rewritten to that
+// ruling. The pairing with poison (resist mitigates one, never the other) is
+// the rule that survives; the numbers follow the newer ruling.
+describe('magnitude, full clock — the ruled pair with poison, in one harness', () => {
+  it('bleed 5 vs resist 2 ticks 5,4,3,2,1 while poison 5 vs resist 2 ticks 3,2,1,0,0', () => {
     for (const [id, expected] of [
-      ['status.bleed', [2, 2, 2, 2, 2]],
+      ['status.bleed', [5, 4, 3, 2, 1]],
       ['status.poison', [3, 2, 1, 0, 0]],
     ] as const) {
       const { ctx, w } = warriorWithResist(2)
@@ -55,12 +60,12 @@ describe('flat 2, full clock — the ruled pair with poison, in one harness', ()
     }
   })
 
-  it('bleed 1 still ticks the flat 2 — flat means flat', () => {
+  it('bleed 1 ticks 1 and expires — the value is the tick (S41)', () => {
     const { ctx, w } = warriorWithResist(0)
     const before = w.hp
     applyStatus(ctx, w.id, 'status.bleed', 1, 'test')
     tickStatuses(ctx, 'hero')
-    expect(before - w.hp).toBe(2)
+    expect(before - w.hp).toBe(1)
     expect(w.statuses.find((s) => s.id === 'status.bleed')).toBeUndefined()   // 1 → 0, expired
   })
 

@@ -88,3 +88,4 @@
 {"at":"2026-08-28T03:59:42.681Z","type":"batch-end","audit":"clean","label":"the party stands whole"}
 {"at": "2026-09-03T03:22:01.000Z", "id": "content.alpha-flip", "mode": "land", "disposition": "landed", "attempt": 1, "checks": [{"name": "existing tests untouched", "ok": true, "warn": true, "note": "12 test files rewritten toward rules; reasons at the edits"}], "sha": "54c8131", "seal": "unwritten \u2014 hand-landed under the reaper protocol", "handLanded": true, "finding": "ai.attack-choice"}
 {"at":"2026-09-03T03:25:39.647Z","type":"batch-end","audit":"clean","label":"step one — the standard battle is the Alpha Team"}
+{"at":"2026-09-03T03:51:03.315Z","id":"fix.bleed-magnitude","mode":"land","disposition":"landed","attempt":1,"checks":[{"name":"existing tests untouched","ok":true,"warn":true,"note":"3 test files rewritten toward the S41 ruling; reasons at the edits"}],"sha":"cc6c70b","seal":"unwritten — hand-landed under the reaper protocol","handLanded":true}

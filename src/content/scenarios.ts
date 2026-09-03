@@ -147,6 +147,20 @@ const RAW_SCENARIOS: Readonly<Record<string, ScenarioDef>> = {
     enemyHexes: [118, 122, 120],
     replicate: 0,
   },
+  'showcase.gash-variant': {
+    id: 'showcase.gash-variant',
+    note: 'fix.bleed-magnitude verify fielding (2026-09-02): the FIXTURE zombies '
+      + 'carry test.zombie.gash, a second shedByHealing status beside Bleed, and '
+      + 'Lucius stands behind two melee heroes to heal them — so a gashed hero is '
+      + 'healed and the log shows the shed. Six fixture zombies so the line is '
+      + 'actually wounded enough for the priest\'s heal rule to fire.',
+    mapId: 'map.open',
+    heroes: ['alpha-oathblade', 'alpha-osric', 'alpha-lucius', 'alpha-sky-pirate'],
+    heroHexes: [246, 248, 231, 247],
+    enemies: ['zombie', 'zombie', 'zombie', 'zombie', 'zombie', 'zombie'],
+    enemyHexes: [117, 119, 121, 123, 118, 122],
+    replicate: 0,
+  },
 }
 
 // The kill-switch seam (disable.ts): byte-identical object when nothing is

@@ -9,7 +9,7 @@
 // row in the registry and, if it needs behaviour, one function.
 
 import type { Ctx, Side, Unit } from './types.js'
-import { applyDamage, applyHealing, emit, unit } from './mutate.js'
+import { applyDamage, applyHealing, emit, reduceStatus, removeStatus, unit } from './mutate.js'
 import { effective } from './stats.js'
 
 /**
@@ -70,6 +70,14 @@ export type StatusDef = {
    * "loses access to class powers, 3 turns". Attacks and movement stay.
    */
   readonly locksPowers?: boolean
+  /**
+   * Read by applyHealing — fix.bleed-magnitude (2026-09-02), Codex S41/S43
+   * ("healing should cure bleed", "half the applied amount comes off Bleed"):
+   * every heal this unit receives reduces the status by HALF the healing,
+   * rounded nearest with 0.5 up. Lives in the one heal mutator so no heal
+   * source — a power, a Regeneration tick — can forget it.
+   */
+  readonly shedByHealing?: 'half'
 }
 
 export function valueOf(u: Unit, id: string): number {
@@ -97,25 +105,11 @@ export function applyStatus(ctx: Ctx, unitId: number, id: string, value: number,
   emit(ctx, 'status.applied', causeId, { target: unitId, statusId: id, amount: value, before, after })
 }
 
-export function reduceStatus(ctx: Ctx, unitId: number, id: string, by: number, causeId: string): number {
-  const u = unit(ctx, unitId)
-  const s = u.statuses.find((x) => x.id === id)
-  if (!s) return 0
-  const before = s.value
-  s.value = Math.max(0, s.value - by)
-  const spent = before - s.value
-  emit(ctx, 'status.reduced', causeId, { target: unitId, statusId: id, by: spent, before, after: s.value })
-  if (s.value === 0) removeStatus(ctx, unitId, id, causeId)
-  return spent
-}
-
-export function removeStatus(ctx: Ctx, unitId: number, id: string, causeId: string): void {
-  const u = unit(ctx, unitId)
-  const i = u.statuses.findIndex((s) => s.id === id)
-  if (i < 0) return
-  u.statuses.splice(i, 1)
-  emit(ctx, 'status.expired', causeId, { target: unitId, statusId: id })
-}
+// reduceStatus / removeStatus moved into mutate.ts (fix.bleed-magnitude,
+// 2026-09-02) so the one heal mutator can shed Bleed without importing this
+// module back (status.ts already imports mutate.ts). Same bodies, same events;
+// re-exported here so every existing caller keeps its import.
+export { reduceStatus, removeStatus }
 
 /** Damage this unit deals is reduced by the total of any outgoing-damage statuses. */
 export function outgoingPenalty(ctx: Ctx, u: Unit): number {

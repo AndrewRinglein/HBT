@@ -302,3 +302,12 @@ stacks; the simplest reading). The without-replacement path re-draws repeats
 on a salted key and is fully built, because item.bracer ("multiplies chart
 rolls") was explicitly parked on this exact question — when Andrew answers it
 for the bracer, this switch is the one that moves.
+
+## bleedShedFromLanded — which "healing" sheds Bleed?
+Added 2026-09-02 (fix.bleed-magnitude). Codex S41/S43, ruled: healing cures
+Bleed by HALF the healing, "rounded nearest, 0.5 up", and Burn halves the heal
+first. The one thing the ruling leaves open is the BASE when the unit is at or
+near full health: half of what actually landed on the bar (default, true — S43
+says "half the APPLIED amount"), or half of what was asked after Burn's halving
+(false — a full-health unit can still be cured). They differ only at the cap.
+Both paths are built in `applyHealing`; a sweep on healers-vs-bleeders answers it.

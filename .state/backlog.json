@@ -1650,6 +1650,46 @@
    "attack.dagger.stab",
    "attack.knight-shield.shield-slam"
   ],
+  "status": "done-needs-review",
+  "sha": "cc6c70b",
+  "gauntlet": "not passed \u2014 1 flag(s) warned"
+ },
+ {
+  "id": "fix.bleed\u002dmagnitude",
+  "kind": "status",
+  "shape": "counter",
+  "spec": "Bleed becomes what the Codex ruled it is (S41, adb627b, verbatim: 'Bleed is True Damage.' and 'Bleed is being converted to magnitude damage. Also healing should cure bleed. Regen should be healing.'; S43: 'karma and bonuses to healing before Burn, then halved, then applied' with half the applied amount coming off Bleed). The engine still ticks a FLAT 2 and healing never touches it. Now: the tick is TRUE damage equal to the status VALUE (same decay, \u002d1 per Phase); healing received removes Bleed equal to HALF the healing, rounded nearest with 0.5 up, inside the one heal mutator so no heal source can forget it — a Regeneration tick strips Bleed too, and Burn halves the heal first so a burning unit sheds a quarter. The row flag is data (shedByHealing: 'half'); the base of the shed is a SWITCH (bleedShedFromLanded: the hp that actually landed vs the post\u002dBurn amount asked, which differ only at full health).",
+  "expect": "Bleed 5 ticks 5,4,3,2,1 true damage (resist 2 changes nothing); a 4\u002dpoint heal on a unit with Bleed 3 leaves Bleed 1 and the log carries status.reduced by 2 with the heal as cause; Regeneration 2 under Burn heals 1 and sheds Bleed by 1 (0.5 rounds up); disabling the bleed row makes the tests fail; every control battle moves (the Alpha Team bleeds zombies every battle)",
+  "changesBaseline": true,
+  "needs": [
+   "content.alpha\u002dflip"
+  ],
+  "probeIds": [
+   "status.bleed"
+  ],
+  "variants": [
+   "status.bleed",
+   "test.status.gash"
+  ],
+  "status": "ready"
+ },
+ {
+  "id": "fix.dazed\u002dsplit",
+  "kind": "status",
+  "shape": "counter",
+  "spec": "Andrew 2026\u002d09\u002d02: Dazed 'does two different things: there is a critical effect, and then there is a status effect.' Two ids. status.dazed keeps the Codex meaning (S51: 'Takes the unit out of its owner's control and hands it to the AI.') — in the simulator every unit is AI\u002ddriven already, so the engine carries it as a recorded status with decay and NO behaviour of its own (the flag aiControlled is data for the UI/kingdom, never read by core). The crit chart's Dazed row ('loses access to class powers, 3 turns') applies a SEPARATE status, placeholder id status.powers\u002dlocked (locksPowers) — authored as a Codex status row (the Codex owns status rows since 2026\u002d09\u002d02) and compiled by the converter's chart pass. Renameable in one place.",
+  "expect": "the chart's Dazed row applies status.powers\u002dlocked and canUsePower refuses under it; status.dazed applies, decays and expires and locks nothing; the converter emits the new row from settled.json; baselines move only because the chart's status id changed (the crit.effect and status.applied events name it)",
+  "changesBaseline": true,
+  "needs": [
+   "fix.bleed\u002dmagnitude"
+  ],
+  "probeIds": [
+   "status.powers\u002dlocked"
+  ],
+  "variants": [
+   "status.powers\u002dlocked",
+   "status.dazed"
+  ],
   "status": "ready"
  }
 ]

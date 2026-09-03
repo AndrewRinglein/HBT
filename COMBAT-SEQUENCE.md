@@ -438,8 +438,17 @@ Triggers are not stations. Damage resolves completely, then triggers fire.
 `max(0, value − Resist)` for Burn and Poison — **never Bleed** — and Resist never
 touches the status value, which decays on its own clock. The canonical verify
 scenario, 5 Poison vs 2 Resist: take 3, 2, 1, 0, 0 as the value walks 5→4→3→2→1→0.
-A resisted status runs its full clock. The engine currently applies ticks raw
-(`statusDamage`, no mitigation step) — this is a pending change, not a description.
+A resisted status runs its full clock. Built: `statusDamage` mitigates by the
+row's `tickDamageType` (magic → Resist, physical → Armor, true → nothing;
+fix.status-damage-types 2026-08-27).
+
+**Bleed is a magnitude that healing cures** *(Codex S41/S43, ruled; engine
+fix.bleed-magnitude 2026-09-02)*: the tick is TRUE damage equal to the value —
+the old flat 2 is gone — and every heal the unit receives removes Bleed equal to
+half the healing, rounded nearest with 0.5 up, inside the one heal mutator.
+Burn halves the heal first, so a burning unit sheds a quarter. Regeneration is
+healing, so its tick sheds too. Which base the half is taken from at full
+health is `bleedShedFromLanded` (SWITCHES.md).
 
 **Switches:** `recomputeStatsBetweenHits` (does a strength gain from hit 1 apply to hit 2?) · `multiAttackRetargets` (if the target died, does hit 2 retarget or fizzle?)
 

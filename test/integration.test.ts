@@ -4,7 +4,7 @@ import { runBattle } from '../src/core/battle.js'
 import { score } from '../src/sim/score.js'
 import { foldToTurn, setupSeq } from '../src/view/text.js'
 import { hexId, neighboursOf } from '../src/core/hex.js'
-import { FIRST_BATTLE, UNITS } from '../src/content/index.js'
+import { ATTACKS, FIRST_BATTLE, UNITS } from '../src/content/index.js'
 
 const hash = (s: string) => { let h = 2166136261; for (const c of s) { h ^= c.charCodeAt(0); h = Math.imul(h, 16777619) } return h >>> 0 }
 const logHash = (ev: unknown[]) => hash(JSON.stringify(ev))
@@ -109,9 +109,19 @@ describe('gate 1 — everything appears in the log', () => {
     // standard battle fields is declared at least once across 200 seeds — the
     // AI reaches the whole authored kit, not a favourite. Extended.
     const used = new Set<string>()
+    const usedBy = new Map<string, Set<string>>()
     for (let r = 0; r < 200; r++) {
       const ctx = createBattle({ replicate: r }); runBattle(ctx)
-      for (const e of ctx.events) if (e.type === 'attack.declared') used.add(e['attackId'] as string)
+      const type = new Map<number, string>()
+      for (const e of ctx.events) {
+        if (e.type === 'unit.enter') type.set(e.actor!, e['typeId'] as string)
+        if (e.type === 'attack.declared') {
+          used.add(e['attackId'] as string)
+          const t = type.get(e.actor!)!
+          if (!usedBy.has(t)) usedBy.set(t, new Set())
+          usedBy.get(t)!.add(e['attackId'] as string)
+        }
+      }
     }
     for (const t of new Set<string>([...FIRST_BATTLE.heroes, ...FIRST_BATTLE.enemies]))
       expect(UNITS[t]!.attacks.some((id) => used.has(id)), `${t} never attacked`).toBe(true)
@@ -119,16 +129,36 @@ describe('gate 1 — everything appears in the log', () => {
     // affordable attack in the unit's declared order, so an authored kit's
     // later entries are dead unless the first is unaffordable. The test cohort
     // hid this (its kits were ordered dear-first); the Alpha Team's are not.
-    // Recorded as backlog ai.attack-choice. This list is asserted EXACTLY so
-    // that the day it shrinks — or grows — the suite says so.
-    const dead: string[] = []
-    for (const t of FIRST_BATTLE.heroes) for (const id of UNITS[t]!.attacks) if (!used.has(id)) dead.push(`${t}:${id}`)
-    expect(dead.sort()).toEqual([
+    // Recorded as backlog ai.attack-choice. STRUCTURALLY dead, from the rows:
+    // an earlier attack in the same list, of the same kind, costing no more —
+    // it is always affordable whenever this one is. (A melee-mode unit's
+    // ranged Throw is dead for a different reason: it closes to reach 1, where
+    // a ranged attack is illegal.) Computed from data so the list moves only
+    // when the rows or the rule do; asserted unused so the suite says so the
+    // day ai.attack-choice changes the rule. Rewritten 2026-09-02 from an
+    // exact list of unused ids, which also caught rare-but-live attacks
+    // (Quick Shot fires only from an empty stamina pool) — Law 10, reason here.
+    const structurallyDead: string[] = []
+    for (const t of FIRST_BATTLE.heroes) {
+      const kit = UNITS[t]!.attacks.map((id) => ATTACKS[id]!)
+      kit.forEach((a, i) => {
+        if (a.area) return   // area swings are chosen by areaSwing(), outside declared order
+        const shadowed = kit.slice(0, i).some((b) => b.kind === a.kind && b.staminaCost <= a.staminaCost)
+        const melee = UNITS[t]!.ai === 'melee-aggressive' && a.kind === 'ranged'
+        if (shadowed || melee) structurallyDead.push(`${t}:${a.id}`)
+      })
+    }
+    expect(structurallyDead.sort()).toEqual([
       'alpha-osric:attack.knight-shield.shield-slam',
       'alpha-osric:attack.longsword.stab',
       'alpha-sky-pirate:attack.dagger.stab',
       'alpha-sky-pirate:attack.javelin.throw',
+      'alpha-sky-pirate:attack.punch',   // javelin.stab is cost 0 and first — the Pirate never needs his fists
     ])
+    for (const key of structurallyDead) {
+      const [t, id] = key.split(':') as [string, string]
+      expect(usedBy.get(t) ?? new Set(), `${key} is structurally dead under declared-order choice`).not.toContain(id)
+    }
   })
 })
 

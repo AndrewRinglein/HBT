@@ -56,9 +56,15 @@ const RAW_STATUSES: Readonly<Record<string, StatusDef>> = {
     // true damage") — the exact seam
     // statusDamage was built with (ruled 2026-08-20: burn/poison per tick,
     // "never bleed"). The tick amount is the constant 2, not the value.
+    // fix.bleed-magnitude (2026-09-02) — the flat 2 is GONE. Codex S41, ruled
+    // verbatim: "Bleed is True Damage." / "Bleed is being converted to
+    // magnitude damage. Also healing should cure bleed. Regen should be
+    // healing." The tick is the VALUE, true; healing sheds half (shedByHealing,
+    // read by applyHealing). Same decay clock as ever.
     id: 'status.bleed', name: 'Bleed', shape: 'counter', stacking: 'add',
-    tickDamageType: 'true',   // explicit since 2026-08-27; flat as ever
-    onPhaseEnd: (ctx, unitId, _value) => statusDamage(ctx, unitId, 2, 'status.bleed'),
+    tickDamageType: 'true',
+    shedByHealing: 'half',
+    onPhaseEnd: (ctx, unitId, value) => statusDamage(ctx, unitId, value, 'status.bleed'),
   },
   'status.protection': {
     // PUBLISHED: 1-EFFECTS-SETTLED.md § status.* (row added 2026-08-20); Codex
@@ -119,6 +125,17 @@ const RAW_STATUSES: Readonly<Record<string, StatusDef>> = {
     // pure data. Never ships.
     id: 'test.status.hobble', name: 'Hobble (testing)', shape: 'counter', stacking: 'add',
     reducesMovement: true,
+  },
+  'test.status.gash': {
+    // TESTING LANE — the second shedByHealing instance (fix.bleed-magnitude,
+    // 2026-09-02): proves the heal-sheds-half mechanism is a row flag, not a
+    // Bleed special case. True tick by value like Bleed; applied by the
+    // fixture zombie's test.zombie.gash, healed off by Lucius in
+    // showcase.gash-variant.
+    id: 'test.status.gash', name: 'Gash (testing)', shape: 'counter', stacking: 'add',
+    tickDamageType: 'true',
+    shedByHealing: 'half',
+    onPhaseEnd: (ctx, unitId, value) => statusDamage(ctx, unitId, value, 'test.status.gash'),
   },
   'test.status.daze': {
     // TESTING LANE (ruled 2026-08-20) — the second blocksAction instance, proving

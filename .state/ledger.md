@@ -3748,3 +3748,32 @@ Hand-landed under the reaper protocol (each check run piecewise ≤110 s; the sa
 the gate's single run). Seal field left unwritten — it belongs to the gate.
 
 IRON GAUNTLET: NOT PASSED — 1 FLAG(S) WARNED · landing #40, periodic audit run at batch end
+
+## fix.bleed-magnitude — LANDED `cc6c70b` **NEEDS REVIEW**
+2026-09-03T03:51:03.315Z
+
+  PASS  dependencies landed
+  PASS  typecheck
+  PASS  full test suite — 51 files / 466 passed, 1 todo
+  PASS  gate 1 — status.bleed: 11 log lines, 11 fired, 8 changed state
+  PASS  brought its own tests — test/bleed-magnitude.test.ts
+  PASS  control battles — changesBaseline declared; all eight moved (the Alpha Team bleeds every battle) — re-blessed
+  PASS  content has a published source — Codex S41 (adb627b) / S43 (ea99a4d), ruled verbatim
+  PASS  hardcode scan — no content id in src/core (the flag value 'half' is a shape word)
+  PASS  generalizes — variants status.bleed (8 changed state) and test.status.gash (13 lines, 10 changed state) — the second is pure data on the FIXTURE zombie, healed off in showcase.gash-variant
+  PASS  naming — test.status.gash / test.zombie.gash / showcase.gash-variant, all declared kinds
+  PASS  kill switch — with status.bleed disabled the touched tests fail (29 of 36)
+  WARN  existing tests untouched — bleed.test.ts, status-damage-types.test.ts, integration.test.ts edited — lands FLAGGED
+
+The flat-2 tick is gone: Bleed ticks its VALUE as true damage and every heal
+sheds half (nearest, 0.5 up) inside applyHealing — reduceStatus/removeStatus
+moved into mutate.ts so the one heal mutator can call them (same bodies, same
+events; status.ts re-exports). Switch bleedShedFromLanded (SWITCHES.md).
+Law 10 rewrites carry their reasons: the "flat 2" assertions follow the newer
+ruling; integration.test's dead-attack list is now COMPUTED from the rows
+(structurally shadowed under declared-order choice, area swings exempt) after
+the exact list caught Quick Shot, which is rare, not dead — and it grew by one:
+the Sky Pirate's Punch is dead too (javelin.stab is cost 0 and first).
+Hand-landed under the reaper protocol; seal unwritten.
+
+IRON GAUNTLET: NOT PASSED — 1 FLAG(S) WARNED

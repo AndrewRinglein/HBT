@@ -170,6 +170,14 @@ const RAW_UNITS: Readonly<Record<string, UnitDef>> = {
       select: 'target',
       effect: { kind: 'status.apply', statusId: 'status.slow', value: 1 },
       source: 'unit.zombie',
+    }, {
+      // TESTING LANE — fix.bleed-magnitude's generalization variant
+      // (2026-09-02): a second heal-shed status, on the FIXTURE zombie only
+      // (never a control battle). Lives in showcase.gash-variant.
+      id: 'test.zombie.gash', hook: 'onHit', chance: 30,
+      select: 'target',
+      effect: { kind: 'status.apply', statusId: 'test.status.gash', value: 2 },
+      source: 'unit.zombie',
     }],
     ai: 'dumb-melee',
     attacks: ['attack.zombie.basic'],

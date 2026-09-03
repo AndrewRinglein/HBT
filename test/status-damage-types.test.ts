@@ -55,8 +55,11 @@ describe('the tick — type on the event, mitigation by the type', () => {
     const tick = ctx.events.find((e) => e.type === 'damage.applied' && e.causeId === 'status.bleed')!
     expect(tick['damageType'], '"Bleed damage is true damage"').toBe('true')
     expect(tick['resisted']).toBeUndefined()
-    expect(tick['amount'], 'the flat 2, resist 99 notwithstanding').toBe(2)
-    expect(oath.hp).toBe(hpBefore - 2)
+    // LAW 10 — 2026-09-02 (fix.bleed-magnitude): the tick is the value (3),
+    // not the retired flat 2 — Codex S41. The claim under test — TRUE, and
+    // resist 99 changes nothing — is unchanged.
+    expect(tick['amount'], 'the value, resist 99 notwithstanding').toBe(3)
+    expect(oath.hp).toBe(hpBefore - 3)
   })
 })
 

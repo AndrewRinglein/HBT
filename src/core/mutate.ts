@@ -161,6 +161,26 @@ export function applyDamage(ctx: Ctx, id: number, amount: number, causeId: strin
  * will need (GAME-DESIGN §5: Burn halves healing — not yet implemented, and when
  * it is, it belongs on the ASKED amount before this mutator, one code path).
  */
+export function reduceStatus(ctx: Ctx, unitId: number, id: string, by: number, causeId: string): number {
+  const u = unit(ctx, unitId)
+  const s = u.statuses.find((x) => x.id === id)
+  if (!s) return 0
+  const before = s.value
+  s.value = Math.max(0, s.value - by)
+  const spent = before - s.value
+  emit(ctx, 'status.reduced', causeId, { target: unitId, statusId: id, by: spent, before, after: s.value })
+  if (s.value === 0) removeStatus(ctx, unitId, id, causeId)
+  return spent
+}
+
+export function removeStatus(ctx: Ctx, unitId: number, id: string, causeId: string): void {
+  const u = unit(ctx, unitId)
+  const i = u.statuses.findIndex((s) => s.id === id)
+  if (i < 0) return
+  u.statuses.splice(i, 1)
+  emit(ctx, 'status.expired', causeId, { target: unitId, statusId: id })
+}
+
 export function applyHealing(ctx: Ctx, id: number, amount: number, causeId: string): void {
   const u = unit(ctx, id)
   if (u.lifeState !== 'standing' || amount <= 0) return
@@ -176,9 +196,32 @@ export function applyHealing(ctx: Ctx, id: number, amount: number, causeId: stri
   const hpBefore = u.hp
   const applied = Math.min(amount, u.maxHp - hpBefore)
   const tail = halvedBy ? { halvedBy } : {}
-  if (applied <= 0) { emit(ctx, 'heal.applied', causeId, { target: id, asked, amount: 0, hpBefore, hpAfter: hpBefore, ...tail }); return }
+  if (applied <= 0) {
+    emit(ctx, 'heal.applied', causeId, { target: id, asked, amount: 0, hpBefore, hpAfter: hpBefore, ...tail })
+    shedByHealing(ctx, id, 0, amount, causeId)   // nothing landed; the asked-after-Burn path may still shed
+    return
+  }
   u.hp = hpBefore + applied
   emit(ctx, 'heal.applied', causeId, { target: id, asked, amount: applied, hpBefore, hpAfter: u.hp, ...tail })
+  shedByHealing(ctx, id, applied, amount, causeId)
+}
+
+/**
+ * fix.bleed-magnitude (2026-09-02) — Codex S41 "healing should cure bleed",
+ * S43 "half the applied amount comes off Bleed": every status whose row says
+ * shedByHealing loses HALF the healing, rounded nearest with 0.5 up (Codex:
+ * "rounded nearest, 0.5 up"). Which "healing" — what landed on the bar, or
+ * what was asked after Burn — is the bleedShedFromLanded switch. Runs after
+ * the heal event so the log reads heal, then shed, with the heal as cause.
+ */
+function shedByHealing(ctx: Ctx, id: number, landed: number, askedAfterBurn: number, causeId: string): void {
+  const u = unit(ctx, id)
+  const base = ctx.cfg.switches.bleedShedFromLanded ? landed : askedAfterBurn
+  const shed = Math.floor((base + 1) / 2)   // nearest, 0.5 up — integers only (Law 7)
+  if (shed <= 0) return
+  for (const s of [...u.statuses]) {
+    if (ctx.statuses[s.id]?.shedByHealing === 'half' && s.value > 0) reduceStatus(ctx, id, s.id, shed, causeId)
+  }
 }
 
 export function setLifeState(ctx: Ctx, id: number, to: LifeState, causeId: string, extra: Record<string, unknown> = {}): void {
