@@ -569,6 +569,8 @@ export type Config = {
     aiKiteHoldsAtPowerRange: boolean
     /** Is a cleared board a win while the encounter's schedule still owes arrivals? SWITCHES.md, 2026-09-03. */
     boardClearWaitsForSchedule: boolean
+    /** Which attack the AI swings: the first affordable in declared order, or the best previewed damage. SWITCHES.md, 2026-09-03. */
+    aiAttackChoice: 'declared' | 'bestDamage'
   }
 }
 
@@ -618,6 +620,9 @@ export const DEFAULT_CONFIG: Config = {
     // The wave that has not come is the fight; clearing the first four
     // zombies of Surrounded is not surviving Surrounded. SWITCHES.md, 2026-09-03.
     boardClearWaitsForSchedule: true,
+    // The rule it has always been; four authored attacks never fire under it
+    // (integration.test names them). A sweep answers. SWITCHES.md, 2026-09-03.
+    aiAttackChoice: 'declared',
   },
 }
 

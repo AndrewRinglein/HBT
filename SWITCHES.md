@@ -356,3 +356,13 @@ killed the four by Turn 2 and the board was "clear". Default **on**: heroClear
 waits until every schedule row has fired. Off: the old rule, a cleared board
 is a cleared board. The wipe check is unaffected either way. A sweep on
 prologue outcomes decides whether the waiting changes anything but the label.
+
+## aiAttackChoice — which attack does the AI swing?
+Added 2026-09-03 (ai.attack-choice). `declared` (default): the first affordable
+attack in the unit's declared order — the rule since the first battle, under
+which the Sky Pirate's Javelin Throw and Dagger Stab, Osric's Longsword Stab
+and Shield Slam, and the Ghoul's Devour never fire (integration.test computes
+the structurally-dead list from the rows). `bestDamage`: the legal attack with
+the highest previewed damage on hit, ties to the earlier listing. Riders (a
+stun, a self-Protection) are not priced by either — a third policy's question.
+`npm run sweep` on the eight control battles answers which the AI should use.

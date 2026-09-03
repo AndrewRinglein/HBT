@@ -9,7 +9,7 @@ import type { Reach } from './../core/movement.js'
 import type { MoveDef } from './../core/types.js'
 import { isPassable } from './../content/maps.js'
 import { neighboursOf } from './../core/hex.js'
-import { areaUnitIdsOf, canAttack, performAttack, reachOf } from './../core/pipeline.js'
+import { areaUnitIdsOf, canAttack, performAttack, preview, reachOf } from './../core/pipeline.js'
 import { canUsePower, isReady, powerBlastIdsOf, powerTargetsOf, previewPower, usePower } from './../core/ability.js'
 import { reachBonusOf } from './../content/maps.js'
 import { TERRAIN } from './../core/types.js'
@@ -75,9 +75,27 @@ function maxAttackReach(ctx: Ctx, u: Unit): number {
   return r
 }
 
-/** First affordable attack, in the unit's declared preference order. */
+/**
+ * Which attack to swing — ai.attack-choice (2026-09-03), a SWITCH, not a
+ * ruling (SWITCHES.md aiAttackChoice):
+ *   declared     the first affordable attack in the unit's declared order —
+ *                the rule it has always been, and the default
+ *   bestDamage   the legal attack whose preview damageOnHit is highest;
+ *                ties to the earlier listing (Law 6). Riders are not priced.
+ * Every quantity from canAttack/preview (Law 2).
+ */
 function bestAttack(ctx: Ctx, attackerId: number, targetId: number): string | null {
-  for (const id of unit(ctx, attackerId).attacks) {
+  const u = unit(ctx, attackerId)
+  if (ctx.cfg.switches.aiAttackChoice === 'bestDamage') {
+    let best: string | null = null, bestDmg = -1
+    for (const id of u.attacks) {
+      if (!canAttack(ctx, attackerId, targetId, id)) continue
+      const d = preview(ctx, attackerId, targetId, id).damageOnHit
+      if (d > bestDmg) { best = id; bestDmg = d }
+    }
+    return best
+  }
+  for (const id of u.attacks) {
     if (canAttack(ctx, attackerId, targetId, id)) return id
   }
   return null
