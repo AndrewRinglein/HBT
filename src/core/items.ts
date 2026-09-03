@@ -23,7 +23,7 @@ export type Applied = {
   readonly worn: readonly { readonly itemId: string; readonly grants: readonly string[]; readonly abilities: readonly string[]; readonly mods: Readonly<Record<string, number>>; readonly gaps?: readonly string[] }[]
 }
 
-const FOLDABLE = ['maxHp', 'armor', 'resist', 'dodge', 'strength', 'precision', 'magic', 'spirit', 'reach', 'accuracy', 'movement', 'maxStamina', 'staminaRegen', 'crit', 'luck', 'toughness', 'surge'] as const   // toughness: capability.deathbed; surge: capability.surge — 2026-09-03
+const FOLDABLE = ['maxHp', 'armor', 'resist', 'dodge', 'strength', 'precision', 'magic', 'spirit', 'reach', 'accuracy', 'movement', 'maxStamina', 'staminaRegen', 'crit', 'luck', 'toughness', 'surge', 'vision'] as const   // toughness: capability.deathbed; surge: capability.surge — 2026-09-03
 
 export function applyItems(
   base: UnitDef,
@@ -70,7 +70,7 @@ export function applyItems(
     reach: stats['reach']!, accuracy: stats['accuracy']!, movement: stats['movement']!,
     maxStamina: stats['maxStamina']!, staminaRegen: stats['staminaRegen']!,
     ...(stats['crit'] ? { crit: stats['crit'] } : {}), ...(stats['luck'] ? { luck: stats['luck'] } : {}),
-    ...(stats['toughness'] ? { toughness: stats['toughness'] } : {}), ...(stats['surge'] ? { surge: stats['surge'] } : {}),
+    ...(stats['toughness'] ? { toughness: stats['toughness'] } : {}), ...(stats['surge'] ? { surge: stats['surge'] } : {}), ...(stats['vision'] ? { vision: stats['vision'] } : {}),
     attacks: attackIds,
     abilities: [...abilities, ...base.abilities.filter((a) => !abilities.includes(a))],
     triggers,
@@ -150,7 +150,7 @@ export function applyProgress(
     reach: stats['reach']!, accuracy: stats['accuracy']!, movement: stats['movement']!,
     maxStamina: stats['maxStamina']!, staminaRegen: stats['staminaRegen']!,
     ...(stats['crit'] ? { crit: stats['crit'] } : {}), ...(stats['luck'] ? { luck: stats['luck'] } : {}),
-    ...(stats['toughness'] ? { toughness: stats['toughness'] } : {}), ...(stats['surge'] ? { surge: stats['surge'] } : {}),
+    ...(stats['toughness'] ? { toughness: stats['toughness'] } : {}), ...(stats['surge'] ? { surge: stats['surge'] } : {}), ...(stats['vision'] ? { vision: stats['vision'] } : {}),
     abilities: [...base.abilities, ...powers.filter((p) => !base.abilities.includes(p))],
   }
 }

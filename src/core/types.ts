@@ -69,6 +69,12 @@ export type EncounterDef = {
   readonly band?: { readonly layer: string; readonly fromPhase: number; readonly startRow: number; readonly direction: 1 | -1; readonly spare?: readonly number[] }
   /** capability.ground-layers: cells painted at setup, before phase 1 (Rime's frost band rows 6–8). */
   readonly paint?: readonly { readonly layer: string; readonly hexes: readonly number[] }[]
+  /**
+   * capability.vision: the battlefield CONDITION — 'darkness' paints every hex
+   * dark at phase 1 (Horrors of the Night); heroes light what is inside their
+   * Vision on the hero phase; the night family repaints. Absent = daylight.
+   */
+  readonly condition?: 'darkness'
   /** capability.power-pool: the pool at battle start (kind 'external'). */
   readonly powerSources?: readonly { readonly kind: 'external'; readonly value: number }[]
   /** Where the heroes deploy (prologue-1's `heroes: 1, at: {near, range}`); absent = the player edge. */
@@ -468,6 +474,8 @@ export type UnitDef = {
    * plus specialty and gear. Absent = 0.
    */
   readonly surge?: number
+  /** capability.vision (2026-09-03): the unit's Vision stat. Ruled 2026-09-03: 0 by default — "nothing is stored on the unit"; the battlefield's 6 is the modifier. */
+  readonly vision?: number
   /**
    * capability.auras (2026-09-03), COMBAT-DESIGN §5 / Design Law 27 "auras
    * lend, they never give": a radius around this unit granting stat modifiers
@@ -531,6 +539,8 @@ export type Unit = {
   /** capability.surge: the stat, and the accumulating chance (zeroed on a hit). */
   surge: number
   surgeChance: number
+  /** capability.vision: the Vision STAT (0 by default — the battlefield's 6 is added at read). */
+  vision: number
   /** capability.auras: this unit's auras, own frozen copies (plain data). */
   auras: AuraDef[]
   /** capability.corpses: a raised or summoned unit leaves no corpse. */
@@ -660,6 +670,8 @@ export type Config = {
     zoneOfControl: boolean
     /** Does a unit with a corpse-eating power eat before it swings? SWITCHES.md, 2026-09-03. */
     aiEatsBeforeBiting: boolean
+    /** May a unit target something it cannot see? COMBAT-DESIGN §4 assumes no. SWITCHES.md, 2026-09-03. */
+    targetUnseen: boolean
   }
 }
 
@@ -721,6 +733,8 @@ export const DEFAULT_CONFIG: Config = {
     // "the things surrounding them get stronger with every villager they eat"
     // (Supper) — the feast is the design. SWITCHES.md, 2026-09-03.
     aiEatsBeforeBiting: true,
+    // "Can you target what you cannot see (assumed: no)" — COMBAT-DESIGN §4.
+    targetUnseen: false,
   },
 }
 

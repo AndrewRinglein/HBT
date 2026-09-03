@@ -27,6 +27,7 @@ import type { DamageSource } from './pipeline.js'
 import { applyStatus, incomingAbsorb, outgoingPenalty, spendAbsorb } from './status.js'
 import { valueOf } from './trigger.js'
 import { effective } from './stats.js'
+import { canSee } from './vision.js'
 
 export function abilityDef(ctx: Ctx, id: string): AbilityDef {
   const a = ctx.abilities[id]
@@ -69,6 +70,8 @@ export function canUsePower(ctx: Ctx, userId: number, targetId: number, abilityI
   for (const s of u.statuses) {
     if (s.value > 0 && ctx.statuses[s.id]?.locksPowers) return false
   }
+  // capability.vision: an enemy you cannot see is not a target
+  if (tg.side !== u.side && !ctx.cfg.switches.targetUnseen && !canSee(ctx, u, tg)) return false
   if (a.effects) {
     // capability.corpses: a power that eats needs a body in reach — legality, not a fizzle
     for (const e of a.effects) if (e.kind === 'corpse.eat' && corpsesNear(ctx, u.hex, e.radius).length === 0) return false

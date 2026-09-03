@@ -27,6 +27,8 @@ export type StatName =
   // station.crit (2026-08-27): the two crit-system stats, resolvable so
   // badges and wounds can modify them like anything else.
   | 'crit' | 'luck'
+  /** capability.vision (2026-09-03): the unit's Vision STAT — 0 by default; the battlefield's 6 is added at read (visionOf), never stored. */
+  | 'vision'
 
 /**
  * `add` sums. `set` overrides and wins outright (disarm, petrify).
@@ -71,6 +73,7 @@ const BASE: Record<StatName, (u: Unit) => number> = {
   staminaRegen: (u) => u.staminaRegen,
   crit: (u) => u.crit,
   luck: (u) => u.luck,
+  vision: (u) => u.vision,
 }
 
 /**

@@ -6075,3 +6075,40 @@ IRON GAUNTLET: NOT PASSED — 1 FLAG(S) WARNED; 1 EXEMPTION(S) TAKEN
 </details>
 
 IRON GAUNTLET: NOT PASSED — 1 FLAG(S) WARNED; 1 EXEMPTION(S) TAKEN
+
+## capability.vision — LANDED `22793db` **NEEDS REVIEW**
+2026-09-03 18:09
+
+  PASS  dependencies landed
+  WARN  not already decided — 4 candidate ruling(s) — READ BEFORE ASKING: ../STATE.md:18 · ../CODEX.md:3315
+  PASS  typecheck
+  PASS  full test suite
+  PASS  gate 1 — the id appears in a real battle — trigger.shadow-sorcerer.nightfall: 368 log lines, 368 fired, 360 changed state
+  PASS  brought its own tests — test/enemy-pack.test.ts, test/vision.test.ts
+  WARN  existing tests untouched — DELETED LINES in test/enemy-pack.test.ts (-1) — will land FLAGGED for review
+  PASS  control battles unchanged
+  PASS  content has a published source — 20 ids without a published source (10 awaiting publication from earlier items — see audit)
+  PASS  hardcode scan — core knows mechanisms, never names
+  PASS  generalizes — the second instance costs zero engine code — trigger.shadow-sorcerer.nightfall live · trigger.eyeblight.blight-the-eye-vision live
+  PASS  naming — new content ids use declared kinds
+  PASS  naming — no banned words invented
+  PASS  kill switch — the tests fail without the content — tests fail without trigger.shadow-sorcerer.nightfall — they genuinely test it
+
+<details><summary>Existing tests were edited — review this diff</summary>
+
+```diff
+diff --git a/test/enemy-pack.test.ts b/test/enemy-pack.test.ts
+index fc29ddd..9797b36 100644
+--- a/test/enemy-pack.test.ts
++++ b/test/enemy-pack.test.ts
+@@ -99,5 +99,5 @@ describe('the pack carries the authored rows faithfully', () => {
+     for (const id of roster()) for (const t of UNITS[id]!.triggers ?? []) {
+       // capability.auras (2026-09-03): the Necromancer's EOA pulse is a heal to its area
+-      expect(['status.apply', 'power.gain', 'heal', 'corpse.raise', 'corpse.consume'], `${id} trigger ${t.id}`).toContain(t.effect.kind)   // + corpses, 2026-09-03
++      expect(['status.apply', 'power.gain', 'heal', 'corpse.raise', 'corpse.consume', 'statMod', 'layer.paint'], `${id} trigger ${t.id}`).toContain(t.effect.kind)   // + corpses, statMod, layers — 2026-09-03
+     }
+   })
+```
+</details>
+
+IRON GAUNTLET: NOT PASSED — 2 FLAG(S) WARNED

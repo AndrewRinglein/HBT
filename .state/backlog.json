@@ -2106,5 +2106,24 @@
   "attempts": 1,
   "sha": "55a624d",
   "gauntlet": "not passed — 1 flag(s) warned"
+ },
+ {
+  "id": "capability.vision",
+  "kind": "engine",
+  "shape": "rule",
+  "spec": "Vision, darkness and light — COMBAT-DESIGN §4 re-ruled 2026-09-03 (Andrew): effective Vision = 6 (the battlefield) + the unit's Vision stat (0) + mods, floored at 1; no line of sight. Angela 2026-09-03: base 6, fog would be 3 (fog not built — no row). Darkness is the battlefield CONDITION (every hex dark at phase 1 — encounter.condition) and the LAYER (painted in a radius by the night family's triggers: Nightfall, The Dark Rushes In, Thrown Down); heroes light within Vision at the start of the hero phase (darkness unpainted); burning reveals regardless of range; you cannot target what you cannot see (SWITCHES.md targetUnseen). vision joins the stats; statMod becomes a trigger effect (Blight the Eye −2 Vision, −10 Accuracy) — except before damage (onAttack/onCrit), where a stat grant is a station question (Law 1). Stealth stays a named gap.",
+  "expect": "Vision reads 6 at stat 0, 4 with −2, never below 1; in the dark a zombie beyond 6 cannot be seen or attacked, an adjacent one can, a burning one can at any range; the hero phase unpaints darkness within Vision; Horrors of the Night starts dark, lights, and is repainted",
+  "changesBaseline": false,
+  "probeIds": [
+   "trigger.shadow-sorcerer.nightfall"
+  ],
+  "variants": [
+   "trigger.shadow-sorcerer.nightfall",
+   "trigger.eyeblight.blight-the-eye-vision"
+  ],
+  "status": "done-needs-review",
+  "attempts": 1,
+  "sha": "22793db",
+  "gauntlet": "not passed — 2 flag(s) warned"
  }
 ]

@@ -29,7 +29,9 @@ import { distance } from './hex.js'
 import type { Targeting } from './target.js'
 import { resolveTargets, validateTargeting } from './target.js'
 import { roll100 } from './rng.js'
-import { applyDamage, applyHealing, corpsesNear, emit, gainPower, removeCorpse } from './mutate.js'
+import { addStatMod, applyDamage, applyHealing, corpsesNear, emit, gainPower, removeCorpse } from './mutate.js'
+import { paintRadius } from './vision.js'
+import { layerOfId } from '../content/maps.js'
 import { applyStatus, removeStatus } from './status.js'
 import { executeKnockback } from './movement.js'
 
@@ -138,6 +140,15 @@ export type TriggerEffect =
   | { readonly kind: 'corpse.raise'; readonly unit: string; readonly radius: number }
   /** capability.corpses: remove every corpse within `radius`, healing the owner `healPer` each (the Spider's Consume the Fallen). */
   | { readonly kind: 'corpse.consume'; readonly radius: number; readonly healPer: number }
+  /**
+   * A stat modifier with a lifetime (2026-09-03, with capability.vision): the
+   * bestiary's "grant a stat for the Battle" (Blight the Eye: −2 Vision, −10
+   * Accuracy) and "until end of your Activation". Through addStatMod, so the
+   * ledger names the trigger.
+   */
+  | { readonly kind: 'statMod'; readonly stat: import('./stats.js').StatName; readonly value: number; readonly until: 'battle' | 'endOfTurn' }
+  /** capability.vision / ground-layers: paint `layer` in `radius` around the owner ('self') or the hook's target ('target') — Nightfall, The Dark Rushes In. */
+  | { readonly kind: 'layer.paint'; readonly layer: string; readonly radius: number; readonly origin: 'self' | 'target' }
 
 export type Trigger = {
   readonly id: string
@@ -377,8 +388,10 @@ export function fireTriggers(ctx: Ctx, hook: Hook, fc: FireContext): void {
 
 function applyEffect(ctx: Ctx, t: Trigger, owner: Unit, targetId: number): void {
   const tg = ctx.state.units[targetId]
-  if (!tg || tg.lifeState === 'dead') return
+  if (!tg) return
   const e = t.effect
+  // a dying unit may still paint the ground (the Eyeblight's "The Dark Rushes In", onDeath); nothing else lands on the dead
+  if (tg.lifeState === 'dead' && e.kind !== 'layer.paint') return
 
   switch (e.kind) {
     case 'status.apply': {
@@ -437,6 +450,17 @@ function applyEffect(ctx: Ctx, t: Trigger, owner: Unit, targetId: number): void 
       emit(ctx, 'trigger.fired', t.id, { actor: owner.id, target: targetId, effect: e.kind, corpses: near.length })
       for (const c of near) removeCorpse(ctx, c.id, t.id, 'consumed', owner.id)
       if (near.length) applyHealing(ctx, owner.id, near.length * e.healPer, t.id)
+      break
+    }
+    case 'statMod': {
+      emit(ctx, 'trigger.fired', t.id, { actor: owner.id, target: targetId, effect: e.kind, stat: e.stat, value: e.value, until: e.until })
+      addStatMod(ctx, targetId, { stat: e.stat, op: 'add', value: e.value, source: t.id, scope: 'unit', ...(e.until === 'endOfTurn' ? { expiresAtTurn: ctx.state.turn + 1 } : {}) }, t.id)
+      break
+    }
+    case 'layer.paint': {
+      const centre = e.origin === 'target' ? tg.hex : owner.hex
+      const n = paintRadius(ctx, centre, e.radius, layerOfId(e.layer), t.id)
+      emit(ctx, 'trigger.fired', t.id, { actor: owner.id, target: targetId, effect: e.kind, layer: e.layer, radius: e.radius, hexes: n })
       break
     }
     case 'power.gain': {

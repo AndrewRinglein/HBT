@@ -8,6 +8,7 @@ import { roll100 } from './rng.js'
 import { appliesOnActivationEndOf, layerAppliesOnActivationEnd, layerIdOf, stripsOnActivationEndOf, terrainIdOf } from '../content/maps.js'
 import { advanceBleedOuts, checkVictory, settle } from './settle.js'
 import { advanceBand, fireSchedule, startOfTurn } from './encounter.js'
+import { heroesLight } from './vision.js'
 import { applyStatus, isBlocked, reduceStatus, tickUnitStatuses } from './status.js'
 import { HOOKS, fireTriggers } from './trigger.js'
 import type { Ctx, Phase, Side } from './types.js'
@@ -187,6 +188,8 @@ export function runBattle(ctx: Ctx): BattleResult {
     startOfTurn(ctx)
     if (ctx.state.outcome) break
 
+    // capability.vision: "when it's the hero's turn, they light up everything within their vision range"
+    heroesLight(ctx, 'phase.hero')
     runPhase(ctx, 'hero')
     if (ctx.state.outcome) break
 

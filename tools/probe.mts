@@ -63,7 +63,9 @@ const ACTED = new Set(['damage.applied','heal.applied','power.used','attack.decl
   // capability.corpses (2026-09-03): a body on the board, and what became of it
   'corpse.created', 'corpse.removed', 'unit.raised', 'corpse.eaten',
   // capability.ground-layers (2026-09-03): a stroke on the board
-  'layer.painted', 'layer.cancelled', 'band.advanced'])
+  'layer.painted', 'layer.cancelled', 'band.advanced',
+  // capability.vision (2026-09-03)
+  'night.fell', 'light.cast'])
 
 /**
  * A SCENARIO is probed by fielding it, not by sweeping the standard panel.

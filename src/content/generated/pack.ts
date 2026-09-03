@@ -744,6 +744,34 @@ export const UNIT_PACK = {
           },
           "source": "unit.dark-sniper",
           "onlyWithAttack": "attack.dark-sniper.long-shot"
+        },
+        {
+          "id": "trigger.dark-sniper.the-shot-that-misses-dodge",
+          "hook": "onMiss",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "statMod",
+            "stat": "dodge",
+            "value": -10,
+            "until": "battle"
+          },
+          "source": "unit.dark-sniper",
+          "onlyWithAttack": "attack.dark-sniper.long-shot"
+        },
+        {
+          "id": "trigger.dark-sniper.the-shot-that-misses",
+          "hook": "onMiss",
+          "chance": 100,
+          "select": "self",
+          "effect": {
+            "kind": "layer.paint",
+            "layer": "layer.darkness",
+            "radius": 5,
+            "origin": "self"
+          },
+          "source": "unit.dark-sniper",
+          "onlyWithAttack": "attack.dark-sniper.long-shot"
         }
       ]
     },
@@ -864,6 +892,20 @@ export const UNIT_PACK = {
             "value": 1
           },
           "source": "unit.doombringer"
+        },
+        {
+          "id": "trigger.doombringer.armor-armor",
+          "hook": "onHit",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "statMod",
+            "stat": "armor",
+            "value": -1,
+            "until": "battle"
+          },
+          "source": "unit.doombringer",
+          "onlyWithAttack": "attack.doombringer.crush"
         }
       ]
     },
@@ -897,7 +939,49 @@ export const UNIT_PACK = {
       "tags": [
         "horror"
       ],
-      "triggers": []
+      "triggers": [
+        {
+          "id": "trigger.eyeblight.the-dark-rushes-in",
+          "hook": "onDeath",
+          "chance": 100,
+          "select": "self",
+          "effect": {
+            "kind": "layer.paint",
+            "layer": "layer.darkness",
+            "radius": 10,
+            "origin": "self"
+          },
+          "source": "unit.eyeblight"
+        },
+        {
+          "id": "trigger.eyeblight.blight-the-eye-vision",
+          "hook": "onHit",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "statMod",
+            "stat": "vision",
+            "value": -2,
+            "until": "battle"
+          },
+          "source": "unit.eyeblight",
+          "onlyWithAttack": "attack.eyeblight.claw"
+        },
+        {
+          "id": "trigger.eyeblight.blight-the-eye-accuracy",
+          "hook": "onHit",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "statMod",
+            "stat": "accuracy",
+            "value": -10,
+            "until": "battle"
+          },
+          "source": "unit.eyeblight",
+          "onlyWithAttack": "attack.eyeblight.claw"
+        }
+      ]
     },
     {
       "typeId": "unit.fast-zombie",
@@ -1026,7 +1110,22 @@ export const UNIT_PACK = {
       "tags": [
         "undead"
       ],
-      "triggers": []
+      "triggers": [
+        {
+          "id": "trigger.ghoul.strength-strength",
+          "hook": "onKill",
+          "chance": 100,
+          "select": "self",
+          "effect": {
+            "kind": "statMod",
+            "stat": "strength",
+            "value": 2,
+            "until": "battle"
+          },
+          "source": "unit.ghoul",
+          "onlyWithAttack": "attack.ghoul.devour"
+        }
+      ]
     },
     {
       "typeId": "unit.hellhound",
@@ -1575,6 +1674,47 @@ export const UNIT_PACK = {
       ],
       "triggers": [
         {
+          "id": "trigger.shadow-sorcerer.nightfall",
+          "hook": "onActivationEnd",
+          "chance": 100,
+          "select": "self",
+          "effect": {
+            "kind": "layer.paint",
+            "layer": "layer.darkness",
+            "radius": 7,
+            "origin": "self"
+          },
+          "source": "unit.shadow-sorcerer"
+        },
+        {
+          "id": "trigger.shadow-sorcerer.thrown-down",
+          "hook": "onHit",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "layer.paint",
+            "layer": "layer.darkness",
+            "radius": 3,
+            "origin": "target"
+          },
+          "source": "unit.shadow-sorcerer",
+          "onlyWithAttack": "attack.shadow-sorcerer.shadow-strike"
+        },
+        {
+          "id": "trigger.shadow-sorcerer.thrown-down-vision",
+          "hook": "onHit",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "statMod",
+            "stat": "vision",
+            "value": -1,
+            "until": "battle"
+          },
+          "source": "unit.shadow-sorcerer",
+          "onlyWithAttack": "attack.shadow-sorcerer.shadow-strike"
+        },
+        {
           "id": "trigger.shadow-sorcerer.dragged-under",
           "hook": "onHit",
           "chance": 100,
@@ -1586,6 +1726,48 @@ export const UNIT_PACK = {
           },
           "source": "unit.shadow-sorcerer",
           "onlyWithAttack": "attack.shadow-sorcerer.shadow-rend"
+        },
+        {
+          "id": "trigger.shadow-sorcerer.dragged-under",
+          "hook": "onHit",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "layer.paint",
+            "layer": "layer.darkness",
+            "radius": 3,
+            "origin": "target"
+          },
+          "source": "unit.shadow-sorcerer",
+          "onlyWithAttack": "attack.shadow-sorcerer.shadow-rend"
+        },
+        {
+          "id": "trigger.shadow-sorcerer.dragged-under-vision",
+          "hook": "onHit",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "statMod",
+            "stat": "vision",
+            "value": -1,
+            "until": "battle"
+          },
+          "source": "unit.shadow-sorcerer",
+          "onlyWithAttack": "attack.shadow-sorcerer.shadow-rend"
+        },
+        {
+          "id": "trigger.shadow-sorcerer.cast-aside-vision",
+          "hook": "onHit",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "statMod",
+            "stat": "vision",
+            "value": -1,
+            "until": "battle"
+          },
+          "source": "unit.shadow-sorcerer",
+          "onlyWithAttack": "attack.shadow-sorcerer.shadow-grasp"
         }
       ]
     },
@@ -1713,6 +1895,27 @@ export const UNIT_PACK = {
       ],
       "triggers": [
         {
+          "id": "trigger.skeleton-spider.armor-armor",
+          "hook": "onActivationEnd",
+          "chance": 100,
+          "select": {
+            "select": "area",
+            "side": "ally",
+            "radius": 4,
+            "origin": "self",
+            "requireTags": [
+              "undead"
+            ]
+          },
+          "effect": {
+            "kind": "statMod",
+            "stat": "armor",
+            "value": 1,
+            "until": "battle"
+          },
+          "source": "unit.skeleton-spider"
+        },
+        {
           "id": "trigger.skeleton-spider.consume-the-fallen",
           "hook": "onActivationEnd",
           "chance": 100,
@@ -1723,6 +1926,34 @@ export const UNIT_PACK = {
             "healPer": 3
           },
           "source": "unit.skeleton-spider"
+        },
+        {
+          "id": "trigger.skeleton-spider.movement-movement",
+          "hook": "onDamage",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "statMod",
+            "stat": "movement",
+            "value": -1,
+            "until": "battle"
+          },
+          "source": "unit.skeleton-spider",
+          "onlyWithAttack": "attack.skeleton-spider.bone-strike"
+        },
+        {
+          "id": "trigger.skeleton-spider.armor-armor",
+          "hook": "onDamage",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "statMod",
+            "stat": "armor",
+            "value": -1,
+            "until": "battle"
+          },
+          "source": "unit.skeleton-spider",
+          "onlyWithAttack": "attack.skeleton-spider.bone-slash"
         }
       ]
     },
@@ -1979,6 +2210,34 @@ export const UNIT_PACK = {
           "effect": {
             "kind": "heal",
             "amount": 6
+          },
+          "source": "unit.vampire-lord",
+          "onlyWithAttack": "attack.vampire-lord.bite"
+        },
+        {
+          "id": "trigger.vampire-lord.feed-strength",
+          "hook": "onKill",
+          "chance": 100,
+          "select": "self",
+          "effect": {
+            "kind": "statMod",
+            "stat": "strength",
+            "value": 1,
+            "until": "battle"
+          },
+          "source": "unit.vampire-lord",
+          "onlyWithAttack": "attack.vampire-lord.bite"
+        },
+        {
+          "id": "trigger.vampire-lord.feed-precision",
+          "hook": "onKill",
+          "chance": 100,
+          "select": "self",
+          "effect": {
+            "kind": "statMod",
+            "stat": "precision",
+            "value": 1,
+            "until": "battle"
           },
           "source": "unit.vampire-lord",
           "onlyWithAttack": "attack.vampire-lord.bite"
@@ -25535,8 +25794,8 @@ export const UNIT_PACK = {
           ]
         }
       ],
+      "condition": "darkness",
       "gaps": [
-        "standing rule: THE BOARD STARTS DARK, AND LIGHT IS A TUG OF WAR — needs capability.vision-and-darkness, capability.ground-layers",
         "standing rule: VISION: BATTLEFIELD +6, STAT 0, FLOOR 1 — needs capability.vision-and-darkness"
       ]
     },

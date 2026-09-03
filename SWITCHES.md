@@ -393,3 +393,9 @@ a layer and status.frost is shaped, but no row says what standing on frost
 ground does. Compiled as Frost 1 at End of Activation — the mirror of burning
 ground's Burn 1 — as a constant in `maps.ts` LAYER_TRAITS, not yet a Config
 switch. Rime's design ("heroes carrying Frost 2–3 from the band") is the sweep.
+
+## targetUnseen — can you target what you cannot see?
+Added 2026-09-03 (capability.vision). COMBAT-DESIGN §4 leaves it OPEN and
+assumes no; default **false** (no). True lets a unit attack into the dark at
+full range, which makes darkness a movement problem only. Fog's order of
+operations (§4's other OPEN) is not built: there is no fog row yet.

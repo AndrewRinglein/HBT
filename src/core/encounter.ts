@@ -25,6 +25,7 @@ import type { HexId } from './hex.js'
 import { WIDTH, colOf, distance, hexId, inBounds, rowOf } from './hex.js'
 import { emit, gainPower, paintLayer, setOutcome } from './mutate.js'
 import { applyStatus } from './status.js'
+import { fallNight } from './vision.js'
 import { rollBelow } from './rng.js'
 import { settle } from './settle.js'
 import { HOOKS, fireTriggers } from './trigger.js'
@@ -115,6 +116,7 @@ export function placeSetup(ctx: Ctx, enc: EncounterDef, names: Record<string, nu
   // the external pool — capability.power-pool: "the battle starts with N"
   for (const ps of enc.powerSources ?? []) gainPower(ctx, ps.value, enc.id, { kind: 'external' })
   paintSetup(ctx, enc)
+  if (enc.condition === 'darkness') fallNight(ctx, enc.id)   // capability.vision: the board starts dark
   for (const p of enc.setup) {
     const def = defOf(ctx, p.unit, `encounter '${enc.id}' setup`)
     for (const hex of hexesOf(ctx, p, `encounter '${enc.id}' setup`, [-1, enc.setup.indexOf(p)])) {

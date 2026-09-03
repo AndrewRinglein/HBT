@@ -13,6 +13,7 @@ import { rollCritEffect } from './crit.js'
 import { effective, stat } from './stats.js'
 import { accelerateBleedOut, applyDamage, emit, markPrimaryUsed, spendStamina, unit } from './mutate.js'
 import { settle } from './settle.js'
+import { canSee } from './vision.js'
 
 export const ACC = {
   BASE: 100,
@@ -222,6 +223,8 @@ export function canAttack(ctx: Ctx, attackerId: number, targetId: number, attack
   // beyond reach. What a hit on the downed does is decided in performAttack.
   if (tg.lifeState === 'dead') return false
   if (at.side === tg.side) return false
+  // capability.vision (2026-09-03): you cannot target what you cannot see (SWITCHES.md targetUnseen)
+  if (!ctx.cfg.switches.targetUnseen && !canSee(ctx, at, tg)) return false
   if (at.primaryUsed) return false
   if (at.stamina < a.staminaCost) return false
   // capability.enemy-action-cooldown (2026-09-03): the same readiness rule a power has

@@ -266,6 +266,21 @@ const RAW_SCENARIOS: Readonly<Record<string, ScenarioDef>> = {
     encounterId: 'encounter.rime',
     replicate: 0,
   },
+  'showcase.horrors': {
+    id: 'showcase.horrors',
+    note: 'battle.horrors-of-the-night as an encounter (capability.vision, 2026-09-03): '
+      + 'the board starts dark, the four eyeblights, the dark snipers at Turn 1, the '
+      + 'nightstalkers at 3, the shadow sorcerer at 4 — the light is a tug of war. '
+      + 'Six heroes on Codex kits. The fielding the probe reads Nightfall and The '
+      + 'Dark Rushes In in.',
+    mapId: 'map.open',
+    heroes: ['hero.base.warrior-iron', 'hero.base.ranger-aggressive', 'hero.base.mage-fire', 'hero.base.priest-armored', 'hero.base.paladin-hunk', 'hero.base.rogue-raven'],
+    heroHexes: [],
+    enemies: [],
+    enemyHexes: [],
+    encounterId: 'battle.horrors-of-the-night',
+    replicate: 0,
+  },
   'showcase.assembled-party': {
     id: 'showcase.assembled-party',
     note: 'Hero assembly (2026-09-03): the progression party at its battle-20 '

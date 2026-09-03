@@ -24,6 +24,7 @@ export function makeUnit(id: number, uid: number, name: string, def: UnitDef, he
     lifeState: 'standing', bleedOut: 0,
     woundLevel: 0, toughness: def.toughness ?? 0,
     surge: def.surge ?? 0, surgeChance: 0,
+    vision: def.vision ?? 0,
     auras: (def.auras ?? []).map((a) => ({ ...a })),
     summoned: false,
     ai: def.ai,
