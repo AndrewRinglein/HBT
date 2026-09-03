@@ -14,7 +14,7 @@
   "reviewed": {
    "by": "Angela",
    "at": "2026-08-20T20:53:39.777Z",
-   "note": "Every seal I read was reasonable. \u2014 Angela, 2026-08-20, reviewing the flagged landings through the showcase batch"
+   "note": "Every seal I read was reasonable. — Angela, 2026-08-20, reviewing the flagged landings through the showcase batch"
   }
  },
  {
@@ -43,10 +43,10 @@
   "id": "terrain.kinds",
   "kind": "terrain",
   "shape": "plumbing",
-  "spec": "Add forest, rocky, rocky-hills, water, obstacle to TERRAIN alongside OPEN and HILLS, and teach terrainOf() their glyphs (f r R w x) from MAP-01's legend. NO RULES YET \u2014 every new kind behaves exactly like open. This item is pure plumbing and must be provably behaviour-neutral.",
+  "spec": "Add forest, rocky, rocky-hills, water, obstacle to TERRAIN alongside OPEN and HILLS, and teach terrainOf() their glyphs (f r R w x) from MAP-01's legend. NO RULES YET — every new kind behaves exactly like open. This item is pure plumbing and must be provably behaviour-neutral.",
   "expect": "map.field loads its real 7-terrain layout instead of collapsing to open/hills, and all four original baselines are BYTE-IDENTICAL because no existing map contains a new glyph",
   "changesBaseline": true,
-  "note": "PLUMBING \u2014 declared neutral: the five new kinds must appear in the log and must NOT change state. Baselines: all five moved, and the reason is LABEL-ONLY \u2014 map.loaded now carries a terrain census by id instead of a bare hills count, because a log holding raw integers cannot tell forest from water. Proven: rebuilding the old map.loaded payload from the new one reproduces fed687ad / 9f243cac / eaa096cb / 4c71eb68 exactly. map.field additionally moved because its terrain array now carries real values. terrain.obstacle is NOT probed: no authored map contains one yet, so it genuinely is not wired in \u2014 it arrives with terrain.passable, which must add one to a map.",
+  "note": "PLUMBING — declared neutral: the five new kinds must appear in the log and must NOT change state. Baselines: all five moved, and the reason is LABEL-ONLY — map.loaded now carries a terrain census by id instead of a bare hills count, because a log holding raw integers cannot tell forest from water. Proven: rebuilding the old map.loaded payload from the new one reproduces fed687ad / 9f243cac / eaa096cb / 4c71eb68 exactly. map.field additionally moved because its terrain array now carries real values. terrain.obstacle is NOT probed: no authored map contains one yet, so it genuinely is not wired in — it arrives with terrain.passable, which must add one to a map.",
   "attempts": 2,
   "neutral": true,
   "probeIds": [
@@ -65,7 +65,7 @@
   "needs": [
    "terrain.kinds"
   ],
-  "spec": "moveCostOf gains a case per kind. SWITCH, do not decide: forest 2, rocky 2, rocky-hills 2, water 3-or-impassable, obstacle impassable. map.json leaves moveCost null ON PURPOSE \u2014 these are design decisions. Put each in SWITCHES.md with a default and let a sweep answer.",
+  "spec": "moveCostOf gains a case per kind. SWITCH, do not decide: forest 2, rocky 2, rocky-hills 2, water 3-or-impassable, obstacle impassable. map.json leaves moveCost null ON PURPOSE — these are design decisions. Put each in SWITCHES.md with a default and let a sweep answer.",
   "expect": "reachable() shrinks on map.field relative to terrain.kinds, and the shrink is larger for a move-4 unit than a move-5 unit",
   "changesBaseline": true,
   "probeIds": [
@@ -73,14 +73,14 @@
    "terrain.rocky",
    "terrain.water"
   ],
-  "note": "Costs are SWITCHES, recorded in SWITCHES.md: terrain.forest.moveCost, terrain.rocky.moveCost, terrain.water.passable. IMPASSABLE (999) is introduced but unused \u2014 terrain.passable is the item that uses it.",
+  "note": "Costs are SWITCHES, recorded in SWITCHES.md: terrain.forest.moveCost, terrain.rocky.moveCost, terrain.water.passable. IMPASSABLE (999) is introduced but unused — terrain.passable is the item that uses it.",
   "attempts": 1,
   "status": "done",
   "sha": "013a373",
   "reviewed": {
    "by": "Angela",
    "at": "2026-08-20T20:53:39.777Z",
-   "note": "Every seal I read was reasonable. \u2014 Angela, 2026-08-20, reviewing the flagged landings through the showcase batch"
+   "note": "Every seal I read was reasonable. — Angela, 2026-08-20, reviewing the flagged landings through the showcase batch"
   }
  },
  {
@@ -96,7 +96,7 @@
   "probeIds": [
    "terrain.obstacle"
   ],
-  "note": "Adds map.thicket (MAP-01 rows 10-21, cols 0-11) because no existing map had an obstacle, so the rule was untestable. Also hardens deployment: it now refuses impassable hexes loudly instead of placing a unit inside a wall. | Probed NEUTRAL, and that is the assertion, not a dodge: for a WALL, zero interactions is the pass condition. terrain.obstacle must appear on the board (it does, 75x) and must never appear in a moved event. The stronger form of the same claim is in the test \u2014 0 obstacle entries across 60 battles and 13645 moves, and 0 capped outcomes proving the wall does not strand the AI.",
+  "note": "Adds map.thicket (MAP-01 rows 10-21, cols 0-11) because no existing map had an obstacle, so the rule was untestable. Also hardens deployment: it now refuses impassable hexes loudly instead of placing a unit inside a wall. | Probed NEUTRAL, and that is the assertion, not a dodge: for a WALL, zero interactions is the pass condition. terrain.obstacle must appear on the board (it does, 75x) and must never appear in a moved event. The stronger form of the same claim is in the test — 0 obstacle entries across 60 battles and 13645 moves, and 0 capped outcomes proving the wall does not strand the AI.",
   "attempts": 1,
   "neutral": true,
   "status": "done",
@@ -104,7 +104,7 @@
   "reviewed": {
    "by": "Angela",
    "at": "2026-08-20T20:53:39.777Z",
-   "note": "Every seal I read was reasonable. \u2014 Angela, 2026-08-20, reviewing the flagged landings through the showcase batch"
+   "note": "Every seal I read was reasonable. — Angela, 2026-08-20, reviewing the flagged landings through the showcase batch"
   }
  },
  {
@@ -114,10 +114,10 @@
   "needs": [
    "terrain.kinds"
   ],
-  "spec": "Terrain grants stat modifiers through the EXISTING stat pipeline \u2014 rows in terrainMods(), not new stations. Forest +10 dodge +1 armor. Water -10 accuracy. Rocky-hills as hills. Values are SWITCHES; map.json leaves coverBonus and modifiers null on purpose.",
+  "spec": "Terrain grants stat modifiers through the EXISTING stat pipeline — rows in terrainMods(), not new stations. Forest +10 dodge +1 armor. Water -10 accuracy. Rocky-hills as hills. Values are SWITCHES; map.json leaves coverBonus and modifiers null on purpose.",
   "expect": "a unit standing in forest shows terrain.forest rows in its effective(dodge) ledger, and hit rate against it drops measurably in a paired sweep",
   "changesBaseline": true,
-  "note": "Zero changes to stats.ts or pipeline.ts \u2014 one table in maps.ts and four readers. Values are SWITCHES (terrain.forest.cover, terrain.rocky.cover, terrain.water.penalty). Baselines: map.open/ridge/flanks/highlands are UNTOUCHED because they contain only open and hills, whose values did not change. Only map.field and map.thicket move.",
+  "note": "Zero changes to stats.ts or pipeline.ts — one table in maps.ts and four readers. Values are SWITCHES (terrain.forest.cover, terrain.rocky.cover, terrain.water.penalty). Baselines: map.open/ridge/flanks/highlands are UNTOUCHED because they contain only open and hills, whose values did not change. Only map.field and map.thicket move.",
   "probeIds": [
    "terrain.forest",
    "terrain.water",
@@ -128,14 +128,14 @@
   "reviewed": {
    "by": "Angela",
    "at": "2026-08-20T20:53:39.777Z",
-   "note": "Every seal I read was reasonable. \u2014 Angela, 2026-08-20, reviewing the flagged landings through the showcase batch"
+   "note": "Every seal I read was reasonable. — Angela, 2026-08-20, reviewing the flagged landings through the showcase batch"
   }
  },
  {
   "id": "movement.zone-of-control",
   "kind": "movement",
   "shape": "rule",
-  "spec": "A standing unit exerts ZoC on its six adjacent hexes. A unit that ENTERS a hex inside an enemy ZoC stops there \u2014 it may enter, then its movement ends. Downed and dead units exert nothing. THE AI IS DELIBERATELY BLIND TO THIS (Angela, 2026-08-13): it keeps its current scoring, picks a destination as if ZoC did not exist, and gets stopped short. That is accepted, not a defect.",
+  "spec": "A standing unit exerts ZoC on its six adjacent hexes. A unit that ENTERS a hex inside an enemy ZoC stops there — it may enter, then its movement ends. Downed and dead units exert nothing. THE AI IS DELIBERATELY BLIND TO THIS (Angela, 2026-08-13): it keeps its current scoring, picks a destination as if ZoC did not exist, and gets stopped short. That is accepted, not a defect.",
   "expect": "a unit pathing past an adjacent zombie ends its move on the first hex inside that zombie's ZoC, and the log carries move.stopped naming the unit that stopped it",
   "changesBaseline": true,
   "note": "BECAUSE THE AI IS BLIND: reachable() still offers hexes the unit cannot actually reach, so units will routinely end up somewhere they did not choose. That MUST emit move.stopped. A unit ending somewhere unexplained with no log line is the exact silent-failure class the harness exists to catch.",
@@ -148,7 +148,7 @@
   "needs": [
    "movement.zone-of-control"
   ],
-  "spec": "Leaving a hex inside an enemy's ZoC provokes one free attack from that enemy, resolved through performAttack with its cheapest melee attack, then settle. Once per enemy per activation. Costs the attacker nothing. AI remains blind \u2014 it will walk into these.",
+  "spec": "Leaving a hex inside an enemy's ZoC provokes one free attack from that enemy, resolved through performAttack with its cheapest melee attack, then settle. Once per enemy per activation. Costs the attacker nothing. AI remains blind — it will walk into these.",
   "expect": "a kiting ranger adjacent to a zombie takes a hit when it disengages, the log shows the attack with causeId movement.aoo, and the ranger's damage-taken share rises measurably in a paired sweep",
   "changesBaseline": true,
   "note": "HAZARD: this lands damage MID-MOVE, so settle can fire inside executeMove's per-step loop. A unit can die between two steps, and victory can trigger mid-activation. executeMove already breaks on lifeState !== standing; that guard is now load-bearing and needs its own test."
@@ -157,7 +157,7 @@
   "id": "status.regeneration",
   "kind": "status",
   "shape": "counter",
-  "spec": "PUBLISHED: 1-EFFECTS-SETTLED.md \u2014 pool. Heals equal to its value at End of Phase, then -1. Poison mirrored, so one number reads both directions. Halved while status.burn is present (burn not yet shaped \u2014 do not implement that clause).",
+  "spec": "PUBLISHED: 1-EFFECTS-SETTLED.md — pool. Heals equal to its value at End of Phase, then -1. Poison mirrored, so one number reads both directions. Halved while status.burn is present (burn not yet shaped — do not implement that clause).",
   "expect": "regen 3 on a damaged unit heals 3 then 2 then 1, capped at max HP",
   "attempts": 4,
   "variants": [
@@ -167,18 +167,18 @@
   "changesBaseline": true,
   "status": "done",
   "sha": "36211e9",
-  "gauntlet": "not passed \u2014 2 flag(s) warned",
+  "gauntlet": "not passed — 2 flag(s) warned",
   "reviewed": {
    "by": "Angela",
    "at": "2026-08-20T20:53:39.777Z",
-   "note": "Every seal I read was reasonable. \u2014 Angela, 2026-08-20, reviewing the flagged landings through the showcase batch"
+   "note": "Every seal I read was reasonable. — Angela, 2026-08-20, reviewing the flagged landings through the showcase batch"
   }
  },
  {
   "id": "status.weakness",
   "kind": "status",
   "shape": "counter",
-  "spec": "Weak (id status.weak \u2014 Codex fresh name over GAME-DESIGN \"Weakness\"): \u22121 damage dealt per point, read at station SOURCE_STATUS (250) by outgoingPenalty \u2014 attacks and powers through the one damage function; never the Strength/Precision stats; \u22121 at End of Phase, never ticks damage. The station was built and synthetic-tested; this is the content that makes it live. Bearers TESTING LANE: test.zombie.sap (backlog trigger.zombie.sap absorbed here \u2014 second independent 20% onDamage beside rot) and test.mage.dampen (variant source). Published: 1-EFFECTS-SETTLED \u00a7 status.* row (2026-08-20) + GAME-DESIGN \u00a75 + Codex census (38 uses).",
+  "spec": "Weak (id status.weak — Codex fresh name over GAME-DESIGN \"Weakness\"): −1 damage dealt per point, read at station SOURCE_STATUS (250) by outgoingPenalty — attacks and powers through the one damage function; never the Strength/Precision stats; −1 at End of Phase, never ticks damage. The station was built and synthetic-tested; this is the content that makes it live. Bearers TESTING LANE: test.zombie.sap (backlog trigger.zombie.sap absorbed here — second independent 20% onDamage beside rot) and test.mage.dampen (variant source). Published: 1-EFFECTS-SETTLED § status.* row (2026-08-20) + GAME-DESIGN §5 + Codex census (38 uses).",
   "expect": "a warrior with weakness 2 does axe damage minus 2; the stat itself is unchanged",
   "variants": [
    "status.weak",
@@ -194,18 +194,18 @@
   "attempts": 1,
   "status": "done",
   "sha": "50d4eed",
-  "gauntlet": "not passed \u2014 1 flag(s) warned",
+  "gauntlet": "not passed — 1 flag(s) warned",
   "reviewed": {
    "by": "Angela",
    "at": "2026-08-20T20:53:39.777Z",
-   "note": "Every seal I read was reasonable. \u2014 Angela, 2026-08-20, reviewing the flagged landings through the showcase batch"
+   "note": "Every seal I read was reasonable. — Angela, 2026-08-20, reviewing the flagged landings through the showcase batch"
   }
  },
  {
   "id": "status.stun",
   "kind": "status",
   "shape": "counter",
-  "spec": "Stun: the unit cannot act \u2014 the whole Activation (move and primary) is skipped, the End of Activation ladder still runs; \u22121 at End of Phase, so Stun N is exactly N lost activations. blocksAction was already consumed generically by the turn loop; this item is the data that makes the path live. Sources are TESTING LANE (test.warrior.stagger 20% onDamage; the old Ghoul Brute source predates the testing-lane ruling and was never published). Published: 1-EFFECTS-SETTLED \u00a7 status.* row (2026-08-20) + GAME-DESIGN \u00a75 + Codex census (22 uses).",
+  "spec": "Stun: the unit cannot act — the whole Activation (move and primary) is skipped, the End of Activation ladder still runs; −1 at End of Phase, so Stun N is exactly N lost activations. blocksAction was already consumed generically by the turn loop; this item is the data that makes the path live. Sources are TESTING LANE (test.warrior.stagger 20% onDamage; the old Ghoul Brute source predates the testing-lane ruling and was never published). Published: 1-EFFECTS-SETTLED § status.* row (2026-08-20) + GAME-DESIGN §5 + Codex census (22 uses).",
   "expect": "a stunned unit produces no move and no primary, and the log says why",
   "variants": [
    "status.stun",
@@ -221,18 +221,18 @@
   "attempts": 1,
   "status": "done",
   "sha": "23a048c",
-  "gauntlet": "not passed \u2014 1 flag(s) warned",
+  "gauntlet": "not passed — 1 flag(s) warned",
   "reviewed": {
    "by": "Angela",
    "at": "2026-08-20T20:53:39.777Z",
-   "note": "Every seal I read was reasonable. \u2014 Angela, 2026-08-20, reviewing the flagged landings through the showcase batch"
+   "note": "Every seal I read was reasonable. — Angela, 2026-08-20, reviewing the flagged landings through the showcase batch"
   }
  },
  {
   "id": "status.protection",
   "kind": "status",
   "shape": "pool",
-  "spec": "Protection: the pool shape made real \u2014 absorbed at station PROTECTION (550, before armor/resist) and SPENT by what it absorbs (spendAbsorb after the hit; preview never spends); also \u22121 at End of Phase so it cannot be banked; additive per the answered protectionStacking switch. The station was built and synthetic-tested; this is the content that makes it live. The old ability.warrior.rally source waits on ability effects \u2014 bearers are TESTING LANE: test.mage.arcane-ward (flat 3, Codex Earth Shield shape) and test.warrior.brace (the ward variant). Published: 1-EFFECTS-SETTLED \u00a7 status.* row (2026-08-20) + Codex census (40 uses) + COMBAT-SEQUENCE pool clause.",
+  "spec": "Protection: the pool shape made real — absorbed at station PROTECTION (550, before armor/resist) and SPENT by what it absorbs (spendAbsorb after the hit; preview never spends); also −1 at End of Phase so it cannot be banked; additive per the answered protectionStacking switch. The station was built and synthetic-tested; this is the content that makes it live. The old ability.warrior.rally source waits on ability effects — bearers are TESTING LANE: test.mage.arcane-ward (flat 3, Codex Earth Shield shape) and test.warrior.brace (the ward variant). Published: 1-EFFECTS-SETTLED § status.* row (2026-08-20) + Codex census (40 uses) + COMBAT-SEQUENCE pool clause.",
   "expect": "protection 3 hit for 2 absorbs 2 and drops to 1; then End of Phase takes it to 0",
   "variants": [
    "status.protection",
@@ -247,11 +247,11 @@
   "changesBaseline": true,
   "status": "done",
   "sha": "affba58",
-  "gauntlet": "not passed \u2014 1 flag(s) warned",
+  "gauntlet": "not passed — 1 flag(s) warned",
   "reviewed": {
    "by": "Angela",
    "at": "2026-08-20T20:53:39.777Z",
-   "note": "Every seal I read was reasonable. \u2014 Angela, 2026-08-20, reviewing the flagged landings through the showcase batch"
+   "note": "Every seal I read was reasonable. — Angela, 2026-08-20, reviewing the flagged landings through the showcase batch"
   }
  },
  {
@@ -303,8 +303,8 @@
   "id": "content.mage-staff",
   "kind": "content",
   "shape": "numbers",
-  "spec": "NOT A DEFECT \u2014 Angela: the Mage/Ranger split is intentional. The Mage deals MAGIC damage and the Ranger PHYSICAL, which diverge sharply once enemies carry armor; and the Mage has Arcane Bolt and more to come, while the Ranger is essentially just its attack. Raw damage-per-swing is therefore the wrong yardstick. What is still worth measuring: the staff is only distinguishable from the bow against a target with armor > 0, and every enemy in the game today has armor 0. Add an armored enemy, then sweep staff vs bow against it.",
-  "expect": "against an armored enemy the Mage out-damages the Ranger, and against an unarmored one it does not \u2014 the split is visible in the sweep, not just in the design",
+  "spec": "NOT A DEFECT — Angela: the Mage/Ranger split is intentional. The Mage deals MAGIC damage and the Ranger PHYSICAL, which diverge sharply once enemies carry armor; and the Mage has Arcane Bolt and more to come, while the Ranger is essentially just its attack. Raw damage-per-swing is therefore the wrong yardstick. What is still worth measuring: the staff is only distinguishable from the bow against a target with armor > 0, and every enemy in the game today has armor 0. Add an armored enemy, then sweep staff vs bow against it.",
+  "expect": "against an armored enemy the Mage out-damages the Ranger, and against an unarmored one it does not — the split is visible in the sweep, not just in the design",
   "note": "Open question that IS real: attack.mage.strike was used 0 times in 300 battles, the same dead-content shape as Massive Strike. The melee option on a ranged unit may never be worth taking.",
   "needs": [
    "unit.brute"
@@ -314,7 +314,7 @@
   "id": "terrain.water-cleanses",
   "kind": "terrain",
   "shape": "rule",
-  "spec": "PUBLISHED: 1-EFFECTS-SETTLED.md \u2014 poison and regeneration are stripped by water at the occupant END OF ACTIVATION. The rung is specified; do not re-decide it.",
+  "spec": "PUBLISHED: 1-EFFECTS-SETTLED.md — poison and regeneration are stripped by water at the occupant END OF ACTIVATION. The rung is specified; do not re-decide it.",
   "expect": "a poisoned unit that walks into water loses the status, and the log shows status.expired with causeId terrain.water",
   "changesBaseline": true,
   "note": "I queued this asking which rung. It was already answered in the published file.",
@@ -325,20 +325,20 @@
   "killSwitchExempt": "terrain.water is not a registry row the CF_DISABLE_IDS seam can remove -- terrain is an enum plus trait tables. The tests assert strip data and live battle events directly; a future terrain-registry refactor brings terrain under the seam.",
   "status": "done",
   "sha": "a44a94a",
-  "gauntlet": "not passed \u2014 2 exemption(s) taken",
+  "gauntlet": "not passed — 2 exemption(s) taken",
   "reviewed": {
    "by": "Angela",
    "at": "2026-08-20T20:53:39.777Z",
-   "note": "Every seal I read was reasonable. \u2014 Angela, 2026-08-20, reviewing the flagged landings through the showcase batch"
+   "note": "Every seal I read was reasonable. — Angela, 2026-08-20, reviewing the flagged landings through the showcase batch"
   }
  },
  {
   "id": "terrain.impassable-naming",
   "kind": "naming",
   "shape": "decision",
-  "spec": "GROUND-REQUIREMENTS.md \u00a71.1 names it terrain.impassable. MAP-01's legend calls it Obstruction, glyph x. The engine uses terrain.obstacle. Two names for one thing \u2014 Angela picks, then it goes in GLOSSARY.md and the other is retired.",
+  "spec": "GROUND-REQUIREMENTS.md §1.1 names it terrain.impassable. MAP-01's legend calls it Obstruction, glyph x. The engine uses terrain.obstacle. Two names for one thing — Angela picks, then it goes in GLOSSARY.md and the other is retired.",
   "expect": "one id, in the glossary, and no occurrence of the other anywhere",
-  "note": "BRING TO ANGELA \u2014 a naming collision is hers, not a switch."
+  "note": "BRING TO ANGELA — a naming collision is hers, not a switch."
  },
  {
   "id": "trigger.mechanism",
@@ -369,11 +369,11 @@
   "attempts": 1,
   "status": "done",
   "sha": "676f6b3",
-  "gauntlet": "not passed \u2014 2 flag(s) warned",
+  "gauntlet": "not passed — 2 flag(s) warned",
   "reviewed": {
    "by": "Angela",
    "at": "2026-08-20T20:53:39.777Z",
-   "note": "Every seal I read was reasonable. \u2014 Angela, 2026-08-20, reviewing the flagged landings through the showcase batch"
+   "note": "Every seal I read was reasonable. — Angela, 2026-08-20, reviewing the flagged landings through the showcase batch"
   }
  },
  {
@@ -385,7 +385,7 @@
   "needs": [
    "trigger.mechanism"
   ],
-  "note": "ABSORBED 2026-08-20 into the status.weakness landing as test.zombie.sap (testing-lane id \u2014 trigger.* is not a publishable kind). Its spec and expect are covered by test/weak.test.ts. Do not build separately."
+  "note": "ABSORBED 2026-08-20 into the status.weakness landing as test.zombie.sap (testing-lane id — trigger.* is not a publishable kind). Its spec and expect are covered by test/weak.test.ts. Do not build separately."
  },
  {
   "id": "trigger.mage.kindle",
@@ -466,7 +466,7 @@
   "id": "fix.unit-tags",
   "kind": "engine",
   "shape": "plumbing",
-  "spec": "UnitDef carries BOTH `attributes` and `tags` for what a unit is. Content fills `attributes` (zombie: ['undead']); every reader \u2014 target.ts requireTags, the planned VS_TARGET station \u2014 uses `tags`, and no UnitDef sets it. So \"target undead\" finds no zombies. Collapse to one field (Law 11).",
+  "spec": "UnitDef carries BOTH `attributes` and `tags` for what a unit is. Content fills `attributes` (zombie: ['undead']); every reader — target.ts requireTags, the planned VS_TARGET station — uses `tags`, and no UnitDef sets it. So \"target undead\" finds no zombies. Collapse to one field (Law 11).",
   "expect": "resolveTargets with requireTags:[\"undead\"] returns the zombies",
   "changesBaseline": false
  },
@@ -487,7 +487,7 @@
   "attempts": 1,
   "status": "done",
   "sha": "5e7f33d",
-  "gauntlet": "not passed \u2014 1 flag(s) warned"
+  "gauntlet": "not passed — 1 flag(s) warned"
  },
  {
   "id": "fix.adjacent-ranged",
@@ -506,14 +506,14 @@
   "reviewed": {
    "by": "Angela",
    "at": "2026-08-20T20:53:39.777Z",
-   "note": "Every seal I read was reasonable. \u2014 Angela, 2026-08-20, reviewing the flagged landings through the showcase batch"
+   "note": "Every seal I read was reasonable. — Angela, 2026-08-20, reviewing the flagged landings through the showcase batch"
   }
  },
  {
   "id": "fix.downed-targetable",
   "kind": "engine",
   "shape": "rule",
-  "spec": "canAttack refuses any attack whose target is not standing, so a downed hero cannot be attacked at all. GAME-DESIGN 9: enemies roll at +20 against the downed, and a hit only accelerates the bleed-out counter \u2014 it never kills.",
+  "spec": "canAttack refuses any attack whose target is not standing, so a downed hero cannot be attacked at all. GAME-DESIGN 9: enemies roll at +20 against the downed, and a hit only accelerates the bleed-out counter — it never kills.",
   "expect": "an enemy can attack a downed hero, at +20, and the hit reduces bleedOut rather than hp",
   "changesBaseline": true
  },
@@ -521,7 +521,7 @@
   "id": "fix.bleedout-duration",
   "kind": "engine",
   "shape": "numbers",
-  "spec": "RULED, Angela 2026-08-15: 'Bleed Out counter should be five phases, but it only moves forward at the end of the hero phase.' Was 3, advancing at Start of Turn. Counter becomes 5 and the rung moves into the End of Hero Phase ladder \u2014 not Start of Turn, not the enemy phase.",
+  "spec": "RULED, Angela 2026-08-15: 'Bleed Out counter should be five phases, but it only moves forward at the end of the hero phase.' Was 3, advancing at Start of Turn. Counter becomes 5 and the rung moves into the End of Hero Phase ladder — not Start of Turn, not the enemy phase.",
   "expect": "a downed hero is set to 5, the counter advances only inside an End of Hero Phase ladder, and death arrives on the fifth tick",
   "changesBaseline": true,
   "needsAngela": false,
@@ -533,14 +533,14 @@
   "reviewed": {
    "by": "Angela",
    "at": "2026-08-20T20:53:39.777Z",
-   "note": "Every seal I read was reasonable. \u2014 Angela, 2026-08-20, reviewing the flagged landings through the showcase batch"
+   "note": "Every seal I read was reasonable. — Angela, 2026-08-20, reviewing the flagged landings through the showcase batch"
   }
  },
  {
   "id": "fix.start-of-turn-victory",
   "kind": "engine",
   "shape": "plumbing",
-  "spec": "COMBAT-SEQUENCE Start of Turn rung 3 is a victory check. battle.ts runs only advanceBleedOuts, whose settle is guarded by if (downed.length) \u2014 so with nobody downed, Start of Turn checks nothing.",
+  "spec": "COMBAT-SEQUENCE Start of Turn rung 3 is a victory check. battle.ts runs only advanceBleedOuts, whose settle is guarded by if (downed.length) — so with nobody downed, Start of Turn checks nothing.",
   "expect": "a battle that becomes decided between phases ends at Start of Turn rather than mid-activation",
   "changesBaseline": false
  },
@@ -572,7 +572,7 @@
   "id": "fix.poison-shape",
   "kind": "content",
   "shape": "plumbing",
-  "spec": "status.poison is declared shape:'pool'; core/status.ts's own table says poison is a counter (a pool is spent when something consumes it \u2014 protection, shields). shape is documentation and never branches, which is why a wrong one sits there indefinitely.",
+  "spec": "status.poison is declared shape:'pool'; core/status.ts's own table says poison is a counter (a pool is spent when something consumes it — protection, shields). shape is documentation and never branches, which is why a wrong one sits there indefinitely.",
   "expect": "the declared shape matches the shape table",
   "changesBaseline": false,
   "probeIds": [
@@ -594,7 +594,7 @@
   "id": "crit.branch-and-injuries",
   "kind": "engine",
   "shape": "rule",
-  "spec": "On a crit the engine always applies the +50% arm. GAME-DESIGN 4: flip a coin \u2014 half the time +50% before mitigation, half the time roll evenly among six injuries, with normal damage still landing. Two cups (critBranch, critInjury) because the weights and the table tune independently; the crit-effect stream is declared and never drawn. Also needs the Crit and Grit stats: crit chance is 3 + gear/badges + (final Accuracy - 100)/4 - target Grit, and the Grit term does not exist.",
+  "spec": "On a crit the engine always applies the +50% arm. GAME-DESIGN 4: flip a coin — half the time +50% before mitigation, half the time roll evenly among six injuries, with normal damage still landing. Two cups (critBranch, critInjury) because the weights and the table tune independently; the crit-effect stream is declared and never drawn. Also needs the Crit and Grit stats: crit chance is 3 + gear/badges + (final Accuracy - 100)/4 - target Grit, and the Grit term does not exist.",
   "expect": "over many crits the branch splits about evenly and each of the six injuries appears; a high-Grit target is crit measurably less often",
   "changesBaseline": true
  },
@@ -620,7 +620,7 @@
   "reviewed": {
    "by": "Angela",
    "at": "2026-08-20T20:53:39.777Z",
-   "note": "Every seal I read was reasonable. \u2014 Angela, 2026-08-20, reviewing the flagged landings through the showcase batch"
+   "note": "Every seal I read was reasonable. — Angela, 2026-08-20, reviewing the flagged landings through the showcase batch"
   }
  },
  {
@@ -634,11 +634,11 @@
   "unreachable": "Test-harness plumbing: the seam is invisible in any battle unless the env var is set, and no battle sets it. Neutrality is proven by the control baselines being byte-identical with the seam in place.",
   "status": "done",
   "sha": "839460a",
-  "gauntlet": "not passed \u2014 1 flag(s) warned; 1 exemption(s) taken",
+  "gauntlet": "not passed — 1 flag(s) warned; 1 exemption(s) taken",
   "reviewed": {
    "by": "Angela",
    "at": "2026-08-20T20:53:39.777Z",
-   "note": "Every seal I read was reasonable. \u2014 Angela, 2026-08-20, reviewing the flagged landings through the showcase batch"
+   "note": "Every seal I read was reasonable. — Angela, 2026-08-20, reviewing the flagged landings through the showcase batch"
   }
  },
  {
@@ -654,11 +654,11 @@
   "generalizationExempt": "Only one damaging tick status exists as published content (poison). The second instance is burn, which 1-EFFECTS-SETTLED explicitly marks not-yet-shaped -- do not reference. The flag is data on StatusDef, so burn setting it WILL be the zero-engine-code second instance the day it publishes.",
   "status": "done",
   "sha": "fae1c37",
-  "gauntlet": "not passed \u2014 1 exemption(s) taken",
+  "gauntlet": "not passed — 1 exemption(s) taken",
   "reviewed": {
    "by": "Angela",
    "at": "2026-08-20T20:53:39.777Z",
-   "note": "Every seal I read was reasonable. \u2014 Angela, 2026-08-20, reviewing the flagged landings through the showcase batch"
+   "note": "Every seal I read was reasonable. — Angela, 2026-08-20, reviewing the flagged landings through the showcase batch"
   }
  },
  {
@@ -674,11 +674,11 @@
   "changesBaseline": true,
   "status": "done",
   "sha": "252be44",
-  "gauntlet": "not passed \u2014 1 flag(s) warned",
+  "gauntlet": "not passed — 1 flag(s) warned",
   "reviewed": {
    "by": "Angela",
    "at": "2026-08-20T20:53:39.777Z",
-   "note": "Every seal I read was reasonable. \u2014 Angela, 2026-08-20, reviewing the flagged landings through the showcase batch"
+   "note": "Every seal I read was reasonable. — Angela, 2026-08-20, reviewing the flagged landings through the showcase batch"
   }
  },
  {
@@ -701,11 +701,11 @@
   "killSwitchExempt": "terrain is an enum plus trait tables, not a registry row the CF_DISABLE_IDS seam can remove; the tests assert the strip data and live battle events directly.",
   "status": "done",
   "sha": "97229ec",
-  "gauntlet": "not passed \u2014 1 flag(s) warned; 1 exemption(s) taken",
+  "gauntlet": "not passed — 1 flag(s) warned; 1 exemption(s) taken",
   "reviewed": {
    "by": "Angela",
    "at": "2026-08-20T20:53:39.777Z",
-   "note": "Every seal I read was reasonable. \u2014 Angela, 2026-08-20, reviewing the flagged landings through the showcase batch"
+   "note": "Every seal I read was reasonable. — Angela, 2026-08-20, reviewing the flagged landings through the showcase batch"
   }
  },
  {
@@ -762,7 +762,7 @@
   "needs": [
    "viewer.replay-layout"
   ],
-  "spec": "Found while verifying viewer.replay-layout at 900px: the toolbar wraps mid-battle when the event counter first renders, dropping the board 32px \u2014 the exact keeps-expanding-down class Angela reported. The counter now reserves its width before play begins.",
+  "spec": "Found while verifying viewer.replay-layout at 900px: the toolbar wraps mid-battle when the event counter first renders, dropping the board 32px — the exact keeps-expanding-down class Angela reported. The counter now reserves its width before play begins.",
   "expect": "page height identical before play and after 4s of playback at 900x700",
   "probeIds": [
    "unit.zombie-burning"
@@ -775,7 +775,7 @@
   "id": "status.bleed",
   "kind": "status",
   "shape": "counter",
-  "spec": "Bleed: flat 2 damage at End of Phase \u2014 Resist NEVER touches it (ruled 2026-08-20; tickMitigatedByResist deliberately absent, the seam statusDamage was built with); the value is a turn counter, not a magnitude; \u22121 at End of Phase; never stripped by water (ruled: burn+poison only, nothing else). Bearer TESTING LANE: test.ranger.serrated-arrows (Codex Hunters Mark shape, onHit apply 2 Bleed). Published: 1-EFFECTS-SETTLED \u00a7 status.* row (2026-08-20) + Codex census (63 uses) + GAME-DESIGN \u00a75.",
+  "spec": "Bleed: flat 2 damage at End of Phase — Resist NEVER touches it (ruled 2026-08-20; tickMitigatedByResist deliberately absent, the seam statusDamage was built with); the value is a turn counter, not a magnitude; −1 at End of Phase; never stripped by water (ruled: burn+poison only, nothing else). Bearer TESTING LANE: test.ranger.serrated-arrows (Codex Hunters Mark shape, onHit apply 2 Bleed). Published: 1-EFFECTS-SETTLED § status.* row (2026-08-20) + Codex census (63 uses) + GAME-DESIGN §5.",
   "expect": "bleed 5 vs resist 2 ticks 2,2,2,2,2 in the same harness where poison 5 vs resist 2 ticks 3,2,1,0,0",
   "variants": [
    "status.bleed",
@@ -794,7 +794,7 @@
   "id": "status.slow",
   "kind": "status",
   "shape": "counter",
-  "spec": "Slow: reduces Movement by its value, read ONCE at beginActivation (the one new core read \u2014 everything downstream flows from movePointsLeft); floor 0, and at 0 points the unit still ACTS from where it stands (Slow is not Stun); \u22121 at End of Phase. Two switches recorded: slowReadAtActivationStart (default: next activation only) and slowVsEffectiveMovement (default: base). Bearers TESTING LANE: test.zombie.grasp (Codex Lash shape) and test.ranger.pin (hobble variant). Published: 1-EFFECTS-SETTLED \u00a7 status.* row (2026-08-20) + GAME-DESIGN \u00a75 + Codex 2026-08-20 sub-note (19 uses).",
+  "spec": "Slow: reduces Movement by its value, read ONCE at beginActivation (the one new core read — everything downstream flows from movePointsLeft); floor 0, and at 0 points the unit still ACTS from where it stands (Slow is not Stun); −1 at End of Phase. Two switches recorded: slowReadAtActivationStart (default: next activation only) and slowVsEffectiveMovement (default: base). Bearers TESTING LANE: test.zombie.grasp (Codex Lash shape) and test.ranger.pin (hobble variant). Published: 1-EFFECTS-SETTLED § status.* row (2026-08-20) + GAME-DESIGN §5 + Codex 2026-08-20 sub-note (19 uses).",
   "expect": "zombie (movement 4) with Slow 3 gets budgets 1,2,3,4 as the value decays; overstack floors at 0 and the unit still attacks",
   "variants": [
    "status.slow",
@@ -815,7 +815,7 @@
   "id": "terrain.burning-ground",
   "kind": "terrain",
   "shape": "rule",
-  "spec": "Terrain that APPLIES statuses \u2014 the exact inverse of water strips, as ONE general mechanism: appliesOnEnter / appliesOnActivationEnd [statusId, amount] lists on Mods, unioned by composed(), consumed at the two existing sites (the movement step loop beat 5b, and End of Activation ladder rung 2 \u2014 the rung reserved for tile effects that Airwalk will gate; the early-return that would have eaten rung 2 on strip-free terrain is removed). Burning: +1 Burn on enter, +1 at EoA (GAME-DESIGN \u00a74 running-through-1/standing-2; \u00a76; Flight ruling). Second pure-data instance: poisoned ground, 2 Poison + 1 Weak at EoA only (Codex Creeping Blight \u2014 landable in full because status.weak landed tonight). Both carried by test.map.embers (TESTING LANE map, joins MAP_PANEL to be probeable \u2014 the map.field precedent). Kill-switch seam lives in the applies getters (CF_DISABLE_IDS with a terrain id silences it). Switch recorded: poisonedGroundTiming (default EoA). Published: 5-GROUND-SETTLED \u00a7 terrain.* rows (2026-08-20).",
+  "spec": "Terrain that APPLIES statuses — the exact inverse of water strips, as ONE general mechanism: appliesOnEnter / appliesOnActivationEnd [statusId, amount] lists on Mods, unioned by composed(), consumed at the two existing sites (the movement step loop beat 5b, and End of Activation ladder rung 2 — the rung reserved for tile effects that Airwalk will gate; the early-return that would have eaten rung 2 on strip-free terrain is removed). Burning: +1 Burn on enter, +1 at EoA (GAME-DESIGN §4 running-through-1/standing-2; §6; Flight ruling). Second pure-data instance: poisoned ground, 2 Poison + 1 Weak at EoA only (Codex Creeping Blight — landable in full because status.weak landed tonight). Both carried by test.map.embers (TESTING LANE map, joins MAP_PANEL to be probeable — the map.field precedent). Kill-switch seam lives in the applies getters (CF_DISABLE_IDS with a terrain id silences it). Switch recorded: poisonedGroundTiming (default EoA). Published: 5-GROUND-SETTLED § terrain.* rows (2026-08-20).",
   "expect": "crossing 2 ember hexes = Burn 2; ending on embers adds 1 more; poisoned ground applies nothing on entry and 2 Poison + 1 Weak at EoA; the six real maps are byte-identical",
   "variants": [
    "terrain.burning",
@@ -829,18 +829,18 @@
   "attempts": 1,
   "status": "done",
   "sha": "9899d10",
-  "gauntlet": "not passed \u2014 1 flag(s) warned",
+  "gauntlet": "not passed — 1 flag(s) warned",
   "reviewed": {
    "by": "Angela",
    "at": "2026-08-20T20:53:39.777Z",
-   "note": "Every seal I read was reasonable. \u2014 Angela, 2026-08-20, reviewing the flagged landings through the showcase batch"
+   "note": "Every seal I read was reasonable. — Angela, 2026-08-20, reviewing the flagged landings through the showcase batch"
   }
  },
  {
   "id": "unit.spirit-snake",
   "kind": "content",
   "shape": "data",
-  "spec": "The Spirit Snake \u2014 first of the Beast pen, mined from the Codex Beast class (published source, ruled 2026-08-20). Codex \u00a710 statline verbatim (str 1, prec 1, armor 1, hp 2, reach 1); \u00a75 Fangs Bite (+2 strength melee, shared attack row); \u00a73 Serpent rider as trigger.spirit-snake.venom (onHit 100%, poison 2 \u2014 unconditional onHit is identical while the bite is its only attack). Accuracy 70 = SWITCHES.md beastAccuracy (Codex prices every class but Beast); stamina 0 (enemies do not run stamina). Extends the FIRST_BATTLE cycle at slot 5 \u2014 composition of the first four unchanged. Forced one core fix: setup named every enemy Zombie N (content literal in core); enemies are now named from their typeId. Viewer: zombie art + green coil-ring overlay + venom pop; token in static.json. Published: 6-BESTIARY-SETTLED rows (2026-08-20).",
+  "spec": "The Spirit Snake — first of the Beast pen, mined from the Codex Beast class (published source, ruled 2026-08-20). Codex §10 statline verbatim (str 1, prec 1, armor 1, hp 2, reach 1); §5 Fangs Bite (+2 strength melee, shared attack row); §3 Serpent rider as trigger.spirit-snake.venom (onHit 100%, poison 2 — unconditional onHit is identical while the bite is its only attack). Accuracy 70 = SWITCHES.md beastAccuracy (Codex prices every class but Beast); stamina 0 (enemies do not run stamina). Extends the FIRST_BATTLE cycle at slot 5 — composition of the first four unchanged. Forced one core fix: setup named every enemy Zombie N (content literal in core); enemies are now named from their typeId. Viewer: zombie art + green coil-ring overlay + venom pop; token in static.json. Published: 6-BESTIARY-SETTLED rows (2026-08-20).",
   "expect": "bite previews 3 vs the ranger and 2 vs the warrior; venom applies poison 2 in real battles; at enemyCount 4 the composition is the original 4v4",
   "probeIds": [
    "unit.spirit-snake",
@@ -851,11 +851,11 @@
   "attempts": 1,
   "status": "done",
   "sha": "2ca5d4d",
-  "gauntlet": "not passed \u2014 1 flag(s) warned",
+  "gauntlet": "not passed — 1 flag(s) warned",
   "reviewed": {
    "by": "Angela",
    "at": "2026-08-20T20:53:39.777Z",
-   "note": "Every seal I read was reasonable. \u2014 Angela, 2026-08-20, reviewing the flagged landings through the showcase batch"
+   "note": "Every seal I read was reasonable. — Angela, 2026-08-20, reviewing the flagged landings through the showcase batch"
   }
  },
  {
@@ -865,7 +865,7 @@
   "needs": [
    "unit.spirit-snake"
   ],
-  "spec": "The Green Drake \u2014 Codex \u00a710 statline verbatim (str 5, prec 4, armor 1, hp 12, reach 2, resist 1; toughness dropped, no field); \u00a75 Breath Hiss (+0 magic, range 3, rider as trigger.green-drake.venom-breath onHit 100% poison 2). Published magic 0 makes Hiss a 0-damage attack \u2014 the threat is the poison clock, faithful to the rows (flagged for Angela: if this reads wrong in play the fix is attack-scoped triggers, not a fangs fallback). Extends the cycle at slot 10 \u2014 enemyCount 8 control battles are BYTE-IDENTICAL (changesBaseline false, proven neutral). Forced one AI generalization: dumb-melee swings at what is IN REACH via canAttack (Law 2), not merely adjacent \u2014 an adjacency-only check meant the drake closed and never attacked; for reach-1 units (every zombie) candidates and idle text are the old behaviour exactly. Viewer: double emerald ring + venom pop; token in static.json. Published: 6-BESTIARY-SETTLED rows (2026-08-20).",
+  "spec": "The Green Drake — Codex §10 statline verbatim (str 5, prec 4, armor 1, hp 12, reach 2, resist 1; toughness dropped, no field); §5 Breath Hiss (+0 magic, range 3, rider as trigger.green-drake.venom-breath onHit 100% poison 2). Published magic 0 makes Hiss a 0-damage attack — the threat is the poison clock, faithful to the rows (flagged for Angela: if this reads wrong in play the fix is attack-scoped triggers, not a fangs fallback). Extends the cycle at slot 10 — enemyCount 8 control battles are BYTE-IDENTICAL (changesBaseline false, proven neutral). Forced one AI generalization: dumb-melee swings at what is IN REACH via canAttack (Law 2), not merely adjacent — an adjacency-only check meant the drake closed and never attacked; for reach-1 units (every zombie) candidates and idle text are the old behaviour exactly. Viewer: double emerald ring + venom pop; token in static.json. Published: 6-BESTIARY-SETTLED rows (2026-08-20).",
   "expect": "hiss previews 0 damage at reach 5; venom-breath poisons in z=12 battles; z=8 battles byte-identical",
   "probeIds": [
    "unit.green-drake",
@@ -885,7 +885,7 @@
    "unit.spirit-snake",
    "status.bleed"
   ],
-  "spec": "The Shadow Hound Puppy \u2014 Codex \u00a710 statline verbatim (str 6, prec 2, armor 0, hp 12, reach 1; toughness dropped, no field); \u00a73 Hound rider as trigger.shadow-hound-puppy.worry (onHit 100%, bleed 1 \u2014 named for the Hound power Worry the Wound); shares attack.fangs.bite. Landed LAST of the pen because the kit needs status.bleed. melee-aggressive \u2014 the thing that is still coming. Cycle slot 11 \u2014 z=8 control battles byte-identical (changesBaseline false). Viewer: umbral violet ring + worried! pop; token in static.json. Published: 6-BESTIARY-SETTLED rows (2026-08-20).",
+  "spec": "The Shadow Hound Puppy — Codex §10 statline verbatim (str 6, prec 2, armor 0, hp 12, reach 1; toughness dropped, no field); §3 Hound rider as trigger.shadow-hound-puppy.worry (onHit 100%, bleed 1 — named for the Hound power Worry the Wound); shares attack.fangs.bite. Landed LAST of the pen because the kit needs status.bleed. melee-aggressive — the thing that is still coming. Cycle slot 11 — z=8 control battles byte-identical (changesBaseline false). Viewer: umbral violet ring + worried! pop; token in static.json. Published: 6-BESTIARY-SETTLED rows (2026-08-20).",
   "expect": "bite previews 7 vs the warrior; worry bleeds in z=12 battles and the bleed ticks its flat 2; z=8 battles byte-identical",
   "probeIds": [
    "unit.shadow-hound-puppy",
@@ -903,7 +903,7 @@
   "needs": [
    "viewer.replay-rig"
   ],
-  "spec": "Angela 2026-08-20 (on watching the thicket replay): poison-green and regeneration-mint dots were indistinguishable at pip size \u2014 \"a legibility bug of mine, not your eyes\". With four more statuses landing tonight the collision would have compounded. Every status now has ONE distinct pip hue (regeneration moved from mint to teal and renders as a square pip \u2014 a shape cue on top of colour); every status maps to a NAMED hexVFX style (stun/daze\u2192shadow, slow/hobble\u2192frost, weak/enfeeble\u2192affliction, protection/ward\u2192weak, bleed\u2192bleed) so nothing silently falls back to poison-green; and the new mechanics read as log sentences (stunned \u2014 the activation is lost / is slowed \u2014 N move points / N absorbed by protection / the embers catch / the blight seeps). Beast pops: venom!, worried!. Viewer only \u2014 zero engine bytes.",
+  "spec": "Angela 2026-08-20 (on watching the thicket replay): poison-green and regeneration-mint dots were indistinguishable at pip size — \"a legibility bug of mine, not your eyes\". With four more statuses landing tonight the collision would have compounded. Every status now has ONE distinct pip hue (regeneration moved from mint to teal and renders as a square pip — a shape cue on top of colour); every status maps to a NAMED hexVFX style (stun/daze→shadow, slow/hobble→frost, weak/enfeeble→affliction, protection/ward→weak, bleed→bleed) so nothing silently falls back to poison-green; and the new mechanics read as log sentences (stunned — the activation is lost / is slowed — N move points / N absorbed by protection / the embers catch / the blight seeps). Beast pops: venom!, worried!. Viewer only — zero engine bytes.",
   "expect": "built page carries a distinct colour per status id, the five style mappings, and the five new log sentences; control battles untouched",
   "probeIds": [
    "status.bleed"
@@ -911,18 +911,18 @@
   "changesBaseline": false,
   "status": "done",
   "sha": "4d4d47f",
-  "gauntlet": "not passed \u2014 1 flag(s) warned",
+  "gauntlet": "not passed — 1 flag(s) warned",
   "reviewed": {
    "by": "Angela",
    "at": "2026-08-20T20:53:39.777Z",
-   "note": "Every seal I read was reasonable. \u2014 Angela, 2026-08-20, reviewing the flagged landings through the showcase batch"
+   "note": "Every seal I read was reasonable. — Angela, 2026-08-20, reviewing the flagged landings through the showcase batch"
   }
  },
  {
   "id": "map.showcase",
   "kind": "content",
   "shape": "data",
-  "spec": "The Proving Ground (test.map.showcase, TESTING LANE \u2014 never ships): one board exercising every ground mechanic at once \u2014 western river (washes), an ember band (rows 3-4) and a blight belt (rows 6-7) both sides must cross, hills for modifiers, both deployment rows clean. Exists so a single replay can SHOW every landed mechanic (Angela 2026-08-20: a replay that shows off all the various new things). Joins MAP_PANEL, so the baseline gains one line; the six real maps and embers are untouched.",
+  "spec": "The Proving Ground (test.map.showcase, TESTING LANE — never ships): one board exercising every ground mechanic at once — western river (washes), an ember band (rows 3-4) and a blight belt (rows 6-7) both sides must cross, hills for modifiers, both deployment rows clean. Exists so a single replay can SHOW every landed mechanic (Angela 2026-08-20: a replay that shows off all the various new things). Joins MAP_PANEL, so the baseline gains one line; the six real maps and embers are untouched.",
   "expect": "battles on it produce ember applies, blight applies and river washes; deployment rows are hazard-free",
   "probeIds": [
    "test.map.showcase"
@@ -941,7 +941,7 @@
    "viewer.replay-rig",
    "map.showcase"
   ],
-  "spec": "Angela 2026-08-20: \"What visual elements are we missing? Status effect on ground. What else are we missing?\" The gaps, closed: (1) replay geometry was frozen to the thicket painting \u2014 tools/field-geometry.mts now derives ANY map board from the engine tables (terrain, costs, modifiers AND ground behaviour for the legend), and build-replay uses it whenever the battle map is not static.json artMapId, shipping art:null so a testing board is painted flat from its terrain ids instead of lying with the wrong art. (2) Ground had no life \u2014 burning hexes shed rising embers, poisoned hexes drift blight motes (drawLiveGround, under the tokens). (3) Statuses existed only as roster pips \u2014 now stun/daze orbit stars over the head, slow/hobble ring icy shackles at the feet, protection/ward hold a golden guard-arc, bleed drips down the flank. (4) Hero stamina was invisible \u2014 the roster shows a live counter fed by stamina.spent/regen events. Viewer + build tooling only, zero engine bytes.",
+  "spec": "Angela 2026-08-20: \"What visual elements are we missing? Status effect on ground. What else are we missing?\" The gaps, closed: (1) replay geometry was frozen to the thicket painting — tools/field-geometry.mts now derives ANY map board from the engine tables (terrain, costs, modifiers AND ground behaviour for the legend), and build-replay uses it whenever the battle map is not static.json artMapId, shipping art:null so a testing board is painted flat from its terrain ids instead of lying with the wrong art. (2) Ground had no life — burning hexes shed rising embers, poisoned hexes drift blight motes (drawLiveGround, under the tokens). (3) Statuses existed only as roster pips — now stun/daze orbit stars over the head, slow/hobble ring icy shackles at the feet, protection/ward hold a golden guard-arc, bleed drips down the flank. (4) Hero stamina was invisible — the roster shows a live counter fed by stamina.spent/regen events. Viewer + build tooling only, zero engine bytes.",
   "expect": "a showcase build carries art:null + 144 generated hexes + ground notes in the legend; both build paths byte-identical on rebuild",
   "probeIds": [
    "test.map.showcase"
@@ -955,7 +955,7 @@
   "id": "trigger.attack-scoped",
   "kind": "engine",
   "shape": "trigger",
-  "spec": "Attack-scoped triggers: Trigger gains onlyWithAttack \u2014 when set, the trigger fires only when the firing context cause IS that attack (validated at load: must name an attack id). Forced by Angela's Green Drake redesign (2026-08-20): its Poison Breath applies 3 Poison on hit and its Snap applies 1, so onHit alone cannot say which. Makes the Codex's your-fang-attacks phrasing pure data. Retro-scoped variants: trigger.zombie.rot rides attack.zombie.basic and trigger.spirit-snake.venom rides attack.fangs.bite \u2014 vacuous while each bearer has one attack, which is exactly what keeps this landing byte-identical on the control battles. The differential (fires on its attack, silent on a sibling attack, never even ROLLS on the wrong one) is proven with a synthetic scoped trigger on the two-attack warrior.",
+  "spec": "Attack-scoped triggers: Trigger gains onlyWithAttack — when set, the trigger fires only when the firing context cause IS that attack (validated at load: must name an attack id). Forced by Angela's Green Drake redesign (2026-08-20): its Poison Breath applies 3 Poison on hit and its Snap applies 1, so onHit alone cannot say which. Makes the Codex's your-fang-attacks phrasing pure data. Retro-scoped variants: trigger.zombie.rot rides attack.zombie.basic and trigger.spirit-snake.venom rides attack.fangs.bite — vacuous while each bearer has one attack, which is exactly what keeps this landing byte-identical on the control battles. The differential (fires on its attack, silent on a sibling attack, never even ROLLS on the wrong one) is proven with a synthetic scoped trigger on the two-attack warrior.",
   "expect": "a trigger scoped to the axe fires on axe hits and never on Massive Strike hits; control battles byte-identical",
   "variants": [
    "trigger.zombie.rot",
@@ -978,19 +978,19 @@
   "needs": [
    "trigger.attack-scoped"
   ],
-  "spec": "Angela 2026-08-20: the Beast pen are PLAYER beasts and the ported blocks were never her design; content changes land in the CODEX, the source of truth, not hard-coded. Her rulings went into content/settled.json (a new hero-rulings overlay assemble.mjs applies) and the Codex was regenerated (PROBLEMS: 0); the engine now mirrors the Codex. Spirit Snake: hero-side, her dictated block (hp 4, dodge 50, move 8, acc 110, armor 0, resist 2, str 2, prec 0, stamina 8), venom 3 Poison on hit scoped to the fangs; zero item slots and no weapon slots (slots live in the Codex \u2014 no engine loadout yet). Green Drake: hero-side, her block (hp 12, armor 2, resist 1, str 4, prec 3, acc 65, reach 2), two attacks with different scoped riders \u2014 Poison Breath (precision magic, 3 Poison, 2 Stam) and Snap (strength, 1 Poison, 1 Stam); Flight waits on movement.flight. Puppy: pulled, benched-provisional, pending her block. The horde cycle is the original undead texture again; fangs cost their Codex Stam 1 (brawlStaminaCost answered). ALL THREE ARE BENCHED by her fielding ruling \u2014 hence the unreachable exemption: they appear in no standard battle until party assembly exists; the custom-battle tests field them.",
+  "spec": "Angela 2026-08-20: the Beast pen are PLAYER beasts and the ported blocks were never her design; content changes land in the CODEX, the source of truth, not hard-coded. Her rulings went into content/settled.json (a new hero-rulings overlay assemble.mjs applies) and the Codex was regenerated (PROBLEMS: 0); the engine now mirrors the Codex. Spirit Snake: hero-side, her dictated block (hp 4, dodge 50, move 8, acc 110, armor 0, resist 2, str 2, prec 0, stamina 8), venom 3 Poison on hit scoped to the fangs; zero item slots and no weapon slots (slots live in the Codex — no engine loadout yet). Green Drake: hero-side, her block (hp 12, armor 2, resist 1, str 4, prec 3, acc 65, reach 2), two attacks with different scoped riders — Poison Breath (precision magic, 3 Poison, 2 Stam) and Snap (strength, 1 Poison, 1 Stam); Flight waits on movement.flight. Puppy: pulled, benched-provisional, pending her block. The horde cycle is the original undead texture again; fangs cost their Codex Stam 1 (brawlStaminaCost answered). ALL THREE ARE BENCHED by her fielding ruling — hence the unreachable exemption: they appear in no standard battle until party assembly exists; the custom-battle tests field them.",
   "expect": "snake never misses a zombie (acc 110) and lands 4 damage + 3 poison per bite; drake breath poisons 3 and snap poisons 1 with correct stamina; no beast in any horde; control battles re-blessed",
-  "unreachable": "BENCHED by Angela's fielding ruling (2026-08-20): all three beasts are hero-side and out of the default party until party assembly exists \u2014 no standard battle can field them, so gate 1 has nothing to probe; the custom-battle tests in test/spirit-snake.test.ts and test/green-drake.test.ts field them instead.",
+  "unreachable": "BENCHED by Angela's fielding ruling (2026-08-20): all three beasts are hero-side and out of the default party until party assembly exists — no standard battle can field them, so gate 1 has nothing to probe; the custom-battle tests in test/spirit-snake.test.ts and test/green-drake.test.ts field them instead.",
   "changesBaseline": true,
   "status": "done-needs-review",
   "sha": "a4822ab",
-  "gauntlet": "not passed \u2014 2 flag(s) warned; 1 exemption(s) taken"
+  "gauntlet": "not passed — 2 flag(s) warned; 1 exemption(s) taken"
  },
  {
   "id": "movement.powers",
   "kind": "engine",
   "shape": "rule",
-  "spec": "Angela 2026-08-21: \"Movement is supposed to be a type of activation. There are different abilities in movement, like the sidestep, the regular move, or the flight. Movement is a choice, and that movement choice can have a modifier. It can cost stamina. It shouldn't be hard-coded. It should be content-driven.\" Rows are the CODEX rows (settled.json powers, movementAction \u2014 published by the content chat 2026-08-21): power.move (1 Stam, universal to all units), power.sidestep (free, COOLDOWN 1 \u2014 her ruling the same day: \"it's available every other turn\"; granted to Warrior/Mage/Priest/Paladin), power.side-roll (1 Stam, no cooldown; Rogue/Ranger). Beasts and Civilians get neither half-step; an enemy row carries exactly ONE movement power and pays no stamina (stamina is the hero throttle). Engine: MoveDef rows in content/moves.ts, ctx.moves registry, grants in unit data end-to-end (RAW rows + settled.json testCohort -> pack), executeMove takes the CHOSEN power (the MOVE_STAMINA_COST constant died), executeSidestep is the one-hex shape, cooldowns share the ability gate (Codex counts Turns DOWN: ready = turn+cd+1). AI picks by SHAPE, never by name. Sprint stays ungranted (not ruled); the flight ladder is backlog movement.flight.",
+  "spec": "Angela 2026-08-21: \"Movement is supposed to be a type of activation. There are different abilities in movement, like the sidestep, the regular move, or the flight. Movement is a choice, and that movement choice can have a modifier. It can cost stamina. It shouldn't be hard-coded. It should be content-driven.\" Rows are the CODEX rows (settled.json powers, movementAction — published by the content chat 2026-08-21): power.move (1 Stam, universal to all units), power.sidestep (free, COOLDOWN 1 — her ruling the same day: \"it's available every other turn\"; granted to Warrior/Mage/Priest/Paladin), power.side-roll (1 Stam, no cooldown; Rogue/Ranger). Beasts and Civilians get neither half-step; an enemy row carries exactly ONE movement power and pays no stamina (stamina is the hero throttle). Engine: MoveDef rows in content/moves.ts, ctx.moves registry, grants in unit data end-to-end (RAW rows + settled.json testCohort -> pack), executeMove takes the CHOSEN power (the MOVE_STAMINA_COST constant died), executeSidestep is the one-hex shape, cooldowns share the ability gate (Codex counts Turns DOWN: ready = turn+cd+1). AI picks by SHAPE, never by name. Sprint stays ungranted (not ruled); the flight ladder is backlog movement.flight.",
   "expect": "a hero sidesteps onto a cost-3 hex with 0 movement points for 0 stamina and the ground's entry beat still fires; sidestep is down the Turn after use, Side Roll never is; no enemy is ever refused a move for stamina; disabling power.sidestep breaks the tests",
   "probeIds": [
    "power.sidestep"
@@ -1003,29 +1003,29 @@
   "attempts": 1,
   "status": "done-needs-review",
   "sha": "ba09f6a",
-  "gauntlet": "not passed \u2014 2 flag(s) warned"
+  "gauntlet": "not passed — 2 flag(s) warned"
  },
  {
   "id": "movement.flight",
   "kind": "engine",
   "shape": "rule",
-  "spec": "Flight rides on movement.powers \u2014 the flight LADDER is Codex-published now (Angela 2026-08-20, settled.json powers): power.flight-labored (2 Stam, Movement -1), power.flight (1 Stam, full Movement), power.flight-swift (0 Stam, Movement +1, granted by item.aegis-of-the-fleet). One atomic jump: over units and obstructions, no terrain cost, no entry beats (zero Steps); the landing hex's End-of-Activation ladder fires normally. The only current grantor is the BENCHED Green Drake (her dictated \"flight movement power that moves +0 and costs 1 stamina\" = the standard rung). Needs shape:'flight' rows + executeFlight + kite-AI awareness.",
+  "spec": "Flight rides on movement.powers — the flight LADDER is Codex-published now (Angela 2026-08-20, settled.json powers): power.flight-labored (2 Stam, Movement -1), power.flight (1 Stam, full Movement), power.flight-swift (0 Stam, Movement +1, granted by item.aegis-of-the-fleet). One atomic jump: over units and obstructions, no terrain cost, no entry beats (zero Steps); the landing hex's End-of-Activation ladder fires normally. The only current grantor is the BENCHED Green Drake (her dictated \"flight movement power that moves +0 and costs 1 stamina\" = the standard rung). Needs shape:'flight' rows + executeFlight + kite-AI awareness.",
   "expect": "a flying move crosses water without shedding burn and crosses embers without catching fire, then the EoA rung fires normally on the landing hex; walking the same path does both",
   "probeIds": [
    "power.flight"
   ],
-  "unreachable": "power.flight's only grantor is the Green Drake, BENCHED by Angela's fielding ruling (2026-08-20: hero-side, out of the default party until party assembly exists) \u2014 no standard-panel battle can contain a flight. The custom-battle tests in test/flight.test.ts field it live, including through the real AI, and the kill-switch check proves they fail without the row.",
-  "generalizationExempt": "the ladder's three rows (labored/standard/swift) ARE the data variants and prove the shape generalizes, but only the standard rung has a grantor (the benched drake) \u2014 the other two cannot appear in a live battle until an engine loadout grants them (swift belongs to item.aegis-of-the-fleet). Asserted as data in flight.test.ts instead.",
+  "unreachable": "power.flight's only grantor is the Green Drake, BENCHED by Angela's fielding ruling (2026-08-20: hero-side, out of the default party until party assembly exists) — no standard-panel battle can contain a flight. The custom-battle tests in test/flight.test.ts field it live, including through the real AI, and the kill-switch check proves they fail without the row.",
+  "generalizationExempt": "the ladder's three rows (labored/standard/swift) ARE the data variants and prove the shape generalizes, but only the standard rung has a grantor (the benched drake) — the other two cannot appear in a live battle until an engine loadout grants them (swift belongs to item.aegis-of-the-fleet). Asserted as data in flight.test.ts instead.",
   "changesBaseline": false,
   "status": "done-needs-review",
   "sha": "a61228f",
-  "gauntlet": "not passed \u2014 1 flag(s) warned; 2 exemption(s) taken"
+  "gauntlet": "not passed — 1 flag(s) warned; 2 exemption(s) taken"
  },
  {
   "id": "content.test-cohort",
   "kind": "content",
   "shape": "data",
-  "spec": "THE STANDARD TEST SIX (Angela 2026-08-20): heroes tracked in the Codex, not dictated \u2014 six clones, one per class, copied so they can be tweaked without touching the originals: Oathblade I (warrior), Sky Pirate I (rogue), Dusk Hawk I (ranger), Air Mage (mage), Lucius (priest), Osric (paladin) \u2014 plus test copies of the zombie horde as the Codex bestiary seed. Source of truth: content/settled.json testCohort \u2192 assemble.mjs resolves clones \u2192 mkenginepack.mjs exports src/content/generated/pack.ts (NEVER hand-edited) \u2192 pack.ts loader validates loudly and merges with collision-is-an-error. Clearly differentiated: test- typeIds, (TEST) names, enforced by the loader. Stats first, weapons next (her ruling). The testing-lane riders travelled to the cohort with unchanged ids so every status kept its bearer, and the FIRST retIREMENT happened: test.ranger.serrated-arrows is gone \u2014 the Sky Pirates published Cutlass (converter-mapped from the Codex, on damage bleed 1) is bleeds battle source now. Old dictated defs remain ONLY as custom-battle fixtures pending backlog test.fixture-migration. New id kind declared: hero.* (GLOSSARY).",
+  "spec": "THE STANDARD TEST SIX (Angela 2026-08-20): heroes tracked in the Codex, not dictated — six clones, one per class, copied so they can be tweaked without touching the originals: Oathblade I (warrior), Sky Pirate I (rogue), Dusk Hawk I (ranger), Air Mage (mage), Lucius (priest), Osric (paladin) — plus test copies of the zombie horde as the Codex bestiary seed. Source of truth: content/settled.json testCohort → assemble.mjs resolves clones → mkenginepack.mjs exports src/content/generated/pack.ts (NEVER hand-edited) → pack.ts loader validates loudly and merges with collision-is-an-error. Clearly differentiated: test- typeIds, (TEST) names, enforced by the loader. Stats first, weapons next (her ruling). The testing-lane riders travelled to the cohort with unchanged ids so every status kept its bearer, and the FIRST retIREMENT happened: test.ranger.serrated-arrows is gone — the Sky Pirates published Cutlass (converter-mapped from the Codex, on damage bleed 1) is bleeds battle source now. Old dictated defs remain ONLY as custom-battle fixtures pending backlog test.fixture-migration. New id kind declared: hero.* (GLOSSARY).",
   "expect": "the standard battle is 6v4, every fielded typeId is test- prefixed, stat blocks match the Codex rows verbatim, the Cutlass bleeds, and no unit in the registry carries serrated-arrows",
   "probeIds": [
    "test-oathblade",
@@ -1041,34 +1041,34 @@
   "changesBaseline": true,
   "status": "done-needs-review",
   "sha": "286472a",
-  "gauntlet": "not passed \u2014 1 flag(s) warned"
+  "gauntlet": "not passed — 1 flag(s) warned"
  },
  {
   "id": "test.fixture-migration",
   "kind": "engine",
   "shape": "plumbing",
-  "spec": "CHORE (born with content.test-cohort): ~25 test files still build custom battles from the old dictated defs (warrior/ranger/mage/zombie/zombie-burning), which survive in index.ts as unfielded fixtures. Migrate the custom battles to the cohort units (or a scripted fixture pack), then DELETE the dictated rows \u2014 the last hand-typed units in the engine.",
+  "spec": "CHORE (born with content.test-cohort): ~25 test files still build custom battles from the old dictated defs (warrior/ranger/mage/zombie/zombie-burning), which survive in index.ts as unfielded fixtures. Migrate the custom battles to the cohort units (or a scripted fixture pack), then DELETE the dictated rows — the last hand-typed units in the engine.",
   "expect": "no unit def in index.ts except registries that read from data; the suite green throughout"
  },
  {
   "id": "viewer.hexvfx-path",
   "kind": "engine",
   "shape": "plumbing",
-  "spec": "PLAYBACK-DESIGN \u00a713 item 0, \u00a77.5. Delete the empty `assets/vfx/` directory and correct the nine prose references that point at `assets/vfx/hexVFX.js` to `VFX/hexVFX.js`. Verified 2026-08-21: the directory exists and is empty, and ZERO code files import that path \u2014 no import, no <script src>, anywhere. This is a documentation bug that has been propagating, not a build bug. Do it first: every session that reads those docs starts by believing something false about where the effect library lives.",
+  "spec": "PLAYBACK-DESIGN §13 item 0, §7.5. Delete the empty `assets/vfx/` directory and correct the nine prose references that point at `assets/vfx/hexVFX.js` to `VFX/hexVFX.js`. Verified 2026-08-21: the directory exists and is empty, and ZERO code files import that path — no import, no <script src>, anywhere. This is a documentation bug that has been propagating, not a build bug. Do it first: every session that reads those docs starts by believing something false about where the effect library lives.",
   "expect": "assets/vfx/ is gone, no markdown in the project references assets/vfx, and nothing in src/ or tools/ changes behaviour",
   "changesBaseline": false,
   "needs": [],
-  "note": "Mostly outside the engine repo (VFX/*.md plus engine/VIEWER-PLAN.md). Gate 1 has no battle-visible id \u2014 expect to need `unreachable` with a written reason, or `neutral`."
+  "note": "Mostly outside the engine repo (VFX/*.md plus engine/VIEWER-PLAN.md). Gate 1 has no battle-visible id — expect to need `unreachable` with a written reason, or `neutral`."
  },
  {
   "id": "scenario.export",
   "kind": "engine",
   "shape": "plumbing",
-  "spec": "PLAYBACK-DESIGN \u00a76.2, \u00a711.3, \u00a713 item 1. THE ONE ENGINE CHANGE THE PLAYBACK REBUILD NEEDS. A scenario names a fielding from outside and gets it into an export: `engine/src/content/scenarios/<id>.json`, explicit-array registry, plus `npx tsx tools/export-battle.mts --scenario <id>`. createBattle already accepts heroes/mapId/enemyCount/heroHexes/enemyHexes \u2014 every ingredient exists; what is missing is a way to NAME a fielding. Rationale, measured 2026-08-21: across 640 battles on all 8 maps at two army sizes, power.flight, power.flight-swift and power.flight-labored fired ZERO times, as did all four beast attacks \u2014 because the beasts are player units benched until party assembly exists. movement.flight landed having never once run in a real fight. CONSTRAINT, ruled: a scenario names units and positions and MUST NOT accept stat overrides. Overrides belong to sweeps; a showcase that can change numbers is a showcase that can lie about the game. Positions validate as passable at load, loudly (Law 9).",
+  "spec": "PLAYBACK-DESIGN §6.2, §11.3, §13 item 1. THE ONE ENGINE CHANGE THE PLAYBACK REBUILD NEEDS. A scenario names a fielding from outside and gets it into an export: `engine/src/content/scenarios/<id>.json`, explicit-array registry, plus `npx tsx tools/export-battle.mts --scenario <id>`. createBattle already accepts heroes/mapId/enemyCount/heroHexes/enemyHexes — every ingredient exists; what is missing is a way to NAME a fielding. Rationale, measured 2026-08-21: across 640 battles on all 8 maps at two army sizes, power.flight, power.flight-swift and power.flight-labored fired ZERO times, as did all four beast attacks — because the beasts are player units benched until party assembly exists. movement.flight landed having never once run in a real fight. CONSTRAINT, ruled: a scenario names units and positions and MUST NOT accept stat overrides. Overrides belong to sweeps; a showcase that can change numbers is a showcase that can lie about the game. Positions validate as passable at load, loudly (Law 9).",
   "expect": "a scenario id fields the named units at the named hexes and exports a battle whose log mentions ids no standard battle can produce (the benched beasts, the flight ladder); an out-of-range or impassable hex throws at scenario load rather than silently relocating",
   "changesBaseline": false,
   "needs": [],
-  "note": "Gate 1: probe.mts runs createBattle over the standard MAP_PANEL and cannot field a scenario, so no standard battle can mention a scenario id. Expect `unreachable` with a written reason, which flags the landing for review \u2014 the correct outcome, not a dodge.",
+  "note": "Gate 1: probe.mts runs createBattle over the standard MAP_PANEL and cannot field a scenario, so no standard battle can mention a scenario id. Expect `unreachable` with a written reason, which flags the landing for review — the correct outcome, not a dodge.",
   "attempts": 1,
   "probeIds": [
    "showcase.beasts"
@@ -1080,18 +1080,18 @@
   "id": "viewer.geometry",
   "kind": "engine",
   "shape": "plumbing",
-  "spec": "PLAYBACK-DESIGN \u00a77.2, \u00a713 item 2. field-geometry.mts emits BOARD SPACE, unsquashed: colStep 128 \u00b7 rowStep 96 \u00b7 oddOffset 64 \u00b7 cell 128x132, and BASE_Y is dropped. The board applies rotateX(49.3deg) once at layer 0 \u2014 49.3 is ruled (the angle the whole mapgen asset pipeline was built at; the Muster mock's 46 is superseded). Today the constants are HEXW 68.2, HEXH 59.675, ROW 44.8, BASE_Y 30.2 \u2014 an art-traced FLAT projection with the foreshortening already baked into the row step, which cannot be re-tilted without re-deriving every constant. Verified 2026-08-21: field-geometry.mts has exactly ONE consumer, tools/build-replay.mjs, and test/replay.test.ts does not read its constants at all \u2014 so unlike scenario.export this needs no cross-thread coordination and can land on its own.",
+  "spec": "PLAYBACK-DESIGN §7.2, §13 item 2. field-geometry.mts emits BOARD SPACE, unsquashed: colStep 128 · rowStep 96 · oddOffset 64 · cell 128x132, and BASE_Y is dropped. The board applies rotateX(49.3deg) once at layer 0 — 49.3 is ruled (the angle the whole mapgen asset pipeline was built at; the Muster mock's 46 is superseded). Today the constants are HEXW 68.2, HEXH 59.675, ROW 44.8, BASE_Y 30.2 — an art-traced FLAT projection with the foreshortening already baked into the row step, which cannot be re-tilted without re-deriving every constant. Verified 2026-08-21: field-geometry.mts has exactly ONE consumer, tools/build-replay.mjs, and test/replay.test.ts does not read its constants at all — so unlike scenario.export this needs no cross-thread coordination and can land on its own.",
   "expect": "a 12x12 board measures 1600 x 1188 board px and presents 1600 x 826 after tilt; cos(49.3) = 0.6521, so a 96px row step lands at 62.6px and a 132px hex face at 86.1px",
   "changesBaseline": false,
   "needs": [],
-  "note": "Prerequisite for viewer.board. Changes build output, never battle behaviour \u2014 the baseline hashes must not move.",
+  "note": "Prerequisite for viewer.board. Changes build output, never battle behaviour — the baseline hashes must not move.",
   "attempts": 1
  },
  {
   "id": "content.art-manifest",
   "kind": "content",
   "shape": "data",
-  "spec": "PLAYBACK-DESIGN \u00a75.2, \u00a713 item 3. One generated manifest keyed by CODEX ENTITY ID, absorbing battle-tokens/manifest.json (23 of 32 slugs) and content/art/*manifest*.json, adding the fields the board needs. `aspect` and `height` are REQUIRED \u2014 a missing value is a loud build failure, never a default, because hardcoding 1.55 is exactly why the Grave Warden would be the wrong size. Board mips are DERIVED by the build, never hand-touched. RULED 2026-08-21: another chat builds this manifest and inserts it; the playback design owns its CONTRACT, not its construction.",
+  "spec": "PLAYBACK-DESIGN §5.2, §13 item 3. One generated manifest keyed by CODEX ENTITY ID, absorbing battle-tokens/manifest.json (23 of 32 slugs) and content/art/*manifest*.json, adding the fields the board needs. `aspect` and `height` are REQUIRED — a missing value is a loud build failure, never a default, because hardcoding 1.55 is exactly why the Grave Warden would be the wrong size. Board mips are DERIVED by the build, never hand-touched. RULED 2026-08-21: another chat builds this manifest and inserts it; the playback design owns its CONTRACT, not its construction.",
   "expect": "every unit the playback build needs resolves to a card, a token, an aspect and a height from one generated file; a missing aspect or height throws",
   "changesBaseline": false,
   "needs": [],
@@ -1101,8 +1101,8 @@
   "id": "viewer.build",
   "kind": "engine",
   "shape": "plumbing",
-  "spec": "PLAYBACK-DESIGN \u00a76.3, \u00a710, \u00a713 item 4. build-playback.mjs replaces build-replay.mjs: the enrichment build that emits the static bundle (schema 2) \u2014 field geometry, terrain swatches, units keyed by typeId with stats and classified ability rows, the status table, provenance. Every value derived at build time from the codex, the art manifest and src/content/statuses.ts; nothing typed in by hand. Data before pixels. The loud failures of \u00a710 are part of this item, not a follow-up: unknown typeId throws, missing aspect/height throws, unresolvable codex art path throws, a statusId with no entry throws, any reachable Date.now() fails a test.",
-  "expect": "a battle export plus the manifests produce one self-contained byte-deterministic page bundle; each of the six \u00a710 failure conditions throws or warns exactly as specified rather than silently degrading",
+  "spec": "PLAYBACK-DESIGN §6.3, §10, §13 item 4. build-playback.mjs replaces build-replay.mjs: the enrichment build that emits the static bundle (schema 2) — field geometry, terrain swatches, units keyed by typeId with stats and classified ability rows, the status table, provenance. Every value derived at build time from the codex, the art manifest and src/content/statuses.ts; nothing typed in by hand. Data before pixels. The loud failures of §10 are part of this item, not a follow-up: unknown typeId throws, missing aspect/height throws, unresolvable codex art path throws, a statusId with no entry throws, any reachable Date.now() fails a test.",
+  "expect": "a battle export plus the manifests produce one self-contained byte-deterministic page bundle; each of the six §10 failure conditions throws or warns exactly as specified rather than silently degrading",
   "changesBaseline": false,
   "needs": [
    "scenario.export",
@@ -1114,7 +1114,7 @@
   "id": "viewer.board",
   "kind": "engine",
   "shape": "plumbing",
-  "spec": "PLAYBACK-DESIGN \u00a77.1, \u00a77.2, \u00a77.2a, \u00a77.4, \u00a77.4a, \u00a713 item 5. The Muster stage: layer stack in paint order, geometry consumed in board space with one rotateX(49.3deg) at layer 0, per-hex battle-scale swatches as the ground plane, the token presence stack (faction ring, contact shadow, selection ring, billboard, status glyphs with corner pips, HP and protection bars, move chip). Sizing from the manifest, never hardcoded: h = 150 x tokenScale x (height / 1.55), w = h x aspect. Active vs selected are two states with two tells \u2014 the active ring may be faction-hued, selection never is. Behind the BoardRenderer interface so a WebGL board could replace it later without touching the pump.",
+  "spec": "PLAYBACK-DESIGN §7.1, §7.2, §7.2a, §7.4, §7.4a, §13 item 5. The Muster stage: layer stack in paint order, geometry consumed in board space with one rotateX(49.3deg) at layer 0, per-hex battle-scale swatches as the ground plane, the token presence stack (faction ring, contact shadow, selection ring, billboard, status glyphs with corner pips, HP and protection bars, move chip). Sizing from the manifest, never hardcoded: h = 150 x tokenScale x (height / 1.55), w = h x aspect. Active vs selected are two states with two tells — the active ring may be faction-hued, selection never is. Behind the BoardRenderer interface so a WebGL board could replace it later without touching the pump.",
   "expect": "a battle renders on the tilted board with every unit visible and correctly sized, active and selected distinguishable at a glance, and anchorOf() supplying hexVFX live feet-and-height per frame",
   "changesBaseline": false,
   "needs": [
@@ -1126,44 +1126,44 @@
   "id": "viewer.tile-state",
   "kind": "engine",
   "shape": "plumbing",
-  "spec": "PLAYBACK-DESIGN \u00a77.3, \u00a77.3a, \u00a77.3b, \u00a713 item 6. THE BIGGEST GAP in the effect stack: nothing today draws PERSISTENT ground state. hexVFX plays events; a burning hex must still be burning next Turn. One node per affected hex against the TileState shape, fed from terrain at map.loaded so that when the engine gains dynamic ground events (gap L-2) only the feed changes. Governing rules: terrain keeps >=60% contribution and layers differ by HUE never by alpha \u2014 with darkness the one deliberate exception, ruled fully black because concealment IS the mechanic. Patch edges are a soft falloff; a hard-clipped hex is still a bug.",
+  "spec": "PLAYBACK-DESIGN §7.3, §7.3a, §7.3b, §13 item 6. THE BIGGEST GAP in the effect stack: nothing today draws PERSISTENT ground state. hexVFX plays events; a burning hex must still be burning next Turn. One node per affected hex against the TileState shape, fed from terrain at map.loaded so that when the engine gains dynamic ground events (gap L-2) only the feed changes. Governing rules: terrain keeps >=60% contribution and layers differ by HUE never by alpha — with darkness the one deliberate exception, ruled fully black because concealment IS the mechanic. Patch edges are a soft falloff; a hard-clipped hex is still a bug.",
   "expect": "burning, frost, poisoned and darkness persist across Turns on the hexes their terrain names, each owning a different channel, and no layer hides the terrain beneath it except darkness",
   "changesBaseline": false,
   "needs": [
    "viewer.board"
   ],
-  "note": "Fog is NOT part of this item \u2014 it is blocked on engine vision (gap L-3) and is structurally distinct: unbounded, above the units, hides them."
+  "note": "Fog is NOT part of this item — it is blocked on engine vision (gap L-3) and is structurally distinct: unbounded, above the units, hides them."
  },
  {
   "id": "viewer.panel",
   "kind": "engine",
   "shape": "plumbing",
-  "spec": "PLAYBACK-DESIGN \u00a77.6, \u00a77.6a, \u00a76.4, \u00a713 item 7. The Muster panel, faction-accented, 472px. Order: identity, HP/Protection, six-cell stat grid, status chips, card art, STAMINA, abilities \u2014 stamina sits between the art and the ability list because it pays for them. RULED: the panel is about WHOEVER IS ACTING, not click-driven; subject resolves inspect > target > acting, and the panel states which of the three it is doing. Ability rows are defined boxes, not table rows, carrying a class rule and four bordered cells RNG/DMG/AP/CD. Consequence: enemies need real card art, because an enemy activation puts an enemy in the panel every Enemy Phase \u2014 147 painted enemy cards already exist in assets/bestiary/.",
+  "spec": "PLAYBACK-DESIGN §7.6, §7.6a, §6.4, §13 item 7. The Muster panel, faction-accented, 472px. Order: identity, HP/Protection, six-cell stat grid, status chips, card art, STAMINA, abilities — stamina sits between the art and the ability list because it pays for them. RULED: the panel is about WHOEVER IS ACTING, not click-driven; subject resolves inspect > target > acting, and the panel states which of the three it is doing. Ability rows are defined boxes, not table rows, carrying a class rule and four bordered cells RNG/DMG/AP/CD. Consequence: enemies need real card art, because an enemy activation puts an enemy in the panel every Enemy Phase — 147 painted enemy cards already exist in assets/bestiary/.",
   "expect": "the panel follows the acting unit without a click, swaps to the target during resolution, labels which mode it is in, and the fired ability row flashes on the beat",
   "changesBaseline": false,
   "needs": [
    "viewer.build"
   ],
-  "note": "The six-cell stat grid shows STATIC values \u2014 gap L-1: unit.enter carries no armor/resist/dodge/accuracy/reach/movement and no event reports a change to them."
+  "note": "The six-cell stat grid shows STATIC values — gap L-1: unit.enter carries no armor/resist/dodge/accuracy/reach/movement and no event reports a change to them."
  },
  {
   "id": "viewer.pump",
   "kind": "engine",
   "shape": "plumbing",
-  "spec": "PLAYBACK-DESIGN \u00a74, \u00a78, \u00a713 item 8. The event pump against the full \u00a74 mapping and the DUR table of \u00a78. Every event either has a beat or is explicitly silent-but-logged; there is no third category. THE SPLIT SWING is the hard part and the reason the naive one-event-one-beat mapping is wrong: a projectile takes ~700ms, so the travel half plays on attack.declared/attack.hit and the impact half is HELD until damage.applied \u2014 otherwise the bolt lands on a target that already took the damage. attack.hit is DUR 0 on purpose: its beat is a Promise that resolves when the projectile lands, and the pump awaits that, not a number. The speed multiplier scales durations uniformly and must never scale ORDER \u2014 at x4 the split swing must still split.",
+  "spec": "PLAYBACK-DESIGN §4, §8, §13 item 8. The event pump against the full §4 mapping and the DUR table of §8. Every event either has a beat or is explicitly silent-but-logged; there is no third category. THE SPLIT SWING is the hard part and the reason the naive one-event-one-beat mapping is wrong: a projectile takes ~700ms, so the travel half plays on attack.declared/attack.hit and the impact half is HELD until damage.applied — otherwise the bolt lands on a target that already took the damage. attack.hit is DUR 0 on purpose: its beat is a Promise that resolves when the projectile lands, and the pump awaits that, not a number. The speed multiplier scales durations uniformly and must never scale ORDER — at x4 the split swing must still split.",
   "expect": "all 37 event types are handled, damage never lands before its projectile at any speed multiplier, and an unknown event type logs a finding line and continues rather than stopping an otherwise honest replay",
   "changesBaseline": false,
   "needs": [
    "viewer.board",
    "viewer.panel"
   ],
-  "note": "The event contract is 37 rows, not the 36 the first draft of \u00a73.2 listed \u2014 battle.end was omitted. On the wire its only field beyond the envelope is `outcome`; `turn` is already an envelope field."
+  "note": "The event contract is 37 rows, not the 36 the first draft of §3.2 listed — battle.end was omitted. On the wire its only field beyond the envelope is `outcome`; `turn` is already an envelope field."
  },
  {
   "id": "viewer.log-transport",
   "kind": "engine",
   "shape": "plumbing",
-  "spec": "PLAYBACK-DESIGN \u00a77.7, \u00a713 item 9. The log is built UP FRONT, one sentence per event, before playback starts \u2014 so it greps without playing and a reviewer can read a battle without watching it; playback only marks the current line. Three filterable channels: main, debug (trigger.rolled, ai.mode), findings. Scroll the log box, never the page \u2014 scrollIntoView walks up every scrollable ancestor including <html>, so the board drifts off screen during playback, visible only when watching and never in a test. THE ACTIVATION STRIP IS NOT AN INITIATIVE RAIL: the engine has no initiative, but this is playback and the recorded activation.begin order IS the order. Sentence voice agrees with src/view/text.ts; where they diverge, text.ts is right.",
+  "spec": "PLAYBACK-DESIGN §7.7, §13 item 9. The log is built UP FRONT, one sentence per event, before playback starts — so it greps without playing and a reviewer can read a battle without watching it; playback only marks the current line. Three filterable channels: main, debug (trigger.rolled, ai.mode), findings. Scroll the log box, never the page — scrollIntoView walks up every scrollable ancestor including <html>, so the board drifts off screen during playback, visible only when watching and never in a test. THE ACTIVATION STRIP IS NOT AN INITIATIVE RAIL: the engine has no initiative, but this is playback and the recorded activation.begin order IS the order. Sentence voice agrees with src/view/text.ts; where they diverge, text.ts is right.",
   "expect": "the full log exists in the DOM before play is pressed, the board never drifts during playback, and the activation strip shows recorded order without predicting anything",
   "changesBaseline": false,
   "needs": [
@@ -1174,8 +1174,8 @@
   "id": "viewer.styles",
   "kind": "engine",
   "shape": "plumbing",
-  "spec": "PLAYBACK-DESIGN \u00a74.4, \u00a713 item 10. Three hexVFX styles are OWED and currently borrow another: status.stun borrows shadow, status.slow borrows frost, status.protection borrows weak. Author them natively in VFX/hexVFX.js, the canonical and only copy. One hue per status everywhere \u2014 pips, board glyphs, panel chips and hexVFX all read the single table. status.regeneration keeps its square pip: a shape cue on top of hue so the one helpful status can never be misread as poison. blight and shadow have no content behind them and may be re-pointed at poisoned ground and darkness; affliction is otherwise dead.",
-  "expect": "stun, slow and protection each play a native style, and no status silently falls back to poison-green \u2014 the fallback is the exact legibility bug that was caught by eye",
+  "spec": "PLAYBACK-DESIGN §4.4, §13 item 10. Three hexVFX styles are OWED and currently borrow another: status.stun borrows shadow, status.slow borrows frost, status.protection borrows weak. Author them natively in VFX/hexVFX.js, the canonical and only copy. One hue per status everywhere — pips, board glyphs, panel chips and hexVFX all read the single table. status.regeneration keeps its square pip: a shape cue on top of hue so the one helpful status can never be misread as poison. blight and shadow have no content behind them and may be re-pointed at poisoned ground and darkness; affliction is otherwise dead.",
+  "expect": "stun, slow and protection each play a native style, and no status silently falls back to poison-green — the fallback is the exact legibility bug that was caught by eye",
   "changesBaseline": false,
   "needs": []
  },
@@ -1183,14 +1183,14 @@
   "id": "fix.shadow-hound-hero-side",
   "kind": "content",
   "shape": "data",
-  "spec": "RULED 2026-08-21: 'Shadow Hound Puppy is supposed to be a hero, not an enemy. All of those initial beasts, of which there were only a couple, were meant to be heroes.' The 2026-08-20 Beast-pen ruling reached the snake and the drake (fix.beast-pen-hero-correction, a4822ab) and missed this row, which kept side 'enemy' from its ported block \u2014 so index.ts carried a comment reading 'the Beast pen are PLAYER beasts' directly above a field saying enemy. Found by the side check added with scenario.export, which threw rather than silently swapping the unit's side. Does NOT settle its stat block: the numbers are still the ported Codex row awaiting her dictation. maxStamina 0 is an enemy property and attack.fangs.bite costs 1 Stamina, so hero-side the puppy can move and can never attack \u2014 recorded, not invented around ('copy, don't invent'). Harmless while benched.",
+  "spec": "RULED 2026-08-21: 'Shadow Hound Puppy is supposed to be a hero, not an enemy. All of those initial beasts, of which there were only a couple, were meant to be heroes.' The 2026-08-20 Beast-pen ruling reached the snake and the drake (fix.beast-pen-hero-correction, a4822ab) and missed this row, which kept side 'enemy' from its ported block — so index.ts carried a comment reading 'the Beast pen are PLAYER beasts' directly above a field saying enemy. Found by the side check added with scenario.export, which threw rather than silently swapping the unit's side. Does NOT settle its stat block: the numbers are still the ported Codex row awaiting her dictation. maxStamina 0 is an enemy property and attack.fangs.bite costs 1 Stamina, so hero-side the puppy can move and can never attack — recorded, not invented around ('copy, don't invent'). Harmless while benched.",
   "expect": "the puppy enters battles side 'hero', showcase.beasts fields all three beasts hero-side, and a test asserts the can-move-cannot-attack gap so her dictated block breaks it loudly instead of changing behaviour silently",
   "changesBaseline": false,
   "needs": [],
   "probeIds": [
    "showcase.beasts"
   ],
-  "note": "Not in content/settled.json at all \u2014 unlike the snake and drake this ruling could not go through the Codex pipeline, because the puppy exists only as a hand-typed def in engine/src/content/index.ts. That is a content gap.",
+  "note": "Not in content/settled.json at all — unlike the snake and drake this ruling could not go through the Codex pipeline, because the puppy exists only as a hand-typed def in engine/src/content/index.ts. That is a content gap.",
   "status": "done-needs-review",
   "sha": "3314213"
  },
@@ -1198,7 +1198,7 @@
   "id": "sim.coverage",
   "kind": "engine",
   "shape": "plumbing",
-  "spec": "A sweep reports WHAT IT NEVER TOUCHED. For a run, split the content the matchup could reach into exercised and never-used, and name the unused ids. The argument, from the Bastion audit 2026-08-21: 'a flat win rate looks exactly the same whether your change did nothing or was never tested.' This is the kill-switch argument applied to MEASUREMENT rather than to tests. Not hypothetical here: movement.flight landed with a green gate on 2026-08-21 and a 640-battle sweep showed power.flight firing ZERO times on every map, because its only grantor is benched. Nothing in the harness said so; it was found by hand-counting causes. Lives in src/sim/coverage.ts beside score.ts \u2014 a measurement read from the event log, never a rule, and it must not be reachable from src/core.",
+  "spec": "A sweep reports WHAT IT NEVER TOUCHED. For a run, split the content the matchup could reach into exercised and never-used, and name the unused ids. The argument, from the Bastion audit 2026-08-21: 'a flat win rate looks exactly the same whether your change did nothing or was never tested.' This is the kill-switch argument applied to MEASUREMENT rather than to tests. Not hypothetical here: movement.flight landed with a green gate on 2026-08-21 and a 640-battle sweep showed power.flight firing ZERO times on every map, because its only grantor is benched. Nothing in the harness said so; it was found by hand-counting causes. Lives in src/sim/coverage.ts beside score.ts — a measurement read from the event log, never a rule, and it must not be reachable from src/core.",
   "expect": "a run over the standard battle names power.mage.bolt-class content that was reachable and never used, reports a reachable-coverage percent, and reports zero unused when every reachable id fired; the battle itself is byte-identical with the report on or off",
   "changesBaseline": false,
   "needs": [],
@@ -1208,8 +1208,8 @@
   "id": "fix.cohort-drift",
   "kind": "engine",
   "shape": "plumbing",
-  "spec": "Reconcile the engine with the S16a/S17 content restructure that left 6 tests red. THE DATA LEADS (standing rule, encounters.json format.placement). Three distinct drifts: (1) the half-step split \u2014 power.sidestep is now Paladin-only, side-roll Rogue/Ranger, and warrior/mage/priest clones grant power.leap/focus/devotion, which the engine registry does not have \u2014 those grants silently vanish in usableMoves. Tests asserting the old grants get rewritten to assert the pack. (2) copyOf renames (hero.tutorial.priest-scantily.lucius -> hero.base.priest-scantily) \u2014 follow the content. (3) the Sky Pirate Cutlass trigger is GONE from the pack: S16a moved authored triggers to their own field and mkenginepack.mjs may not read it yet \u2014 investigate the converter, do not fake the trigger engine-side. Tests that assert content VALUES become tests of the pack pipeline, not of frozen ids.",
-  "expect": "the full suite is green again with zero weakened assertions \u2014 every edit follows the pack, and the Cutlass rider either flows through the converter or its absence is a named finding in the content chat",
+  "spec": "Reconcile the engine with the S16a/S17 content restructure that left 6 tests red. THE DATA LEADS (standing rule, encounters.json format.placement). Three distinct drifts: (1) the half-step split — power.sidestep is now Paladin-only, side-roll Rogue/Ranger, and warrior/mage/priest clones grant power.leap/focus/devotion, which the engine registry does not have — those grants silently vanish in usableMoves. Tests asserting the old grants get rewritten to assert the pack. (2) copyOf renames (hero.tutorial.priest-scantily.lucius -> hero.base.priest-scantily) — follow the content. (3) the Sky Pirate Cutlass trigger is GONE from the pack: S16a moved authored triggers to their own field and mkenginepack.mjs may not read it yet — investigate the converter, do not fake the trigger engine-side. Tests that assert content VALUES become tests of the pack pipeline, not of frozen ids.",
+  "expect": "the full suite is green again with zero weakened assertions — every edit follows the pack, and the Cutlass rider either flows through the converter or its absence is a named finding in the content chat",
   "changesBaseline": true,
   "needs": [],
   "probeIds": [
@@ -1248,7 +1248,7 @@
   "id": "content.enemy-pack",
   "kind": "engine",
   "shape": "plumbing",
-  "spec": "A converter from content/gen/enemies-authored.json into the engine pack \u2014 the 14 units the five prologue battles field, of the 28 authored. Bastion-style discipline: a trigger clause whose capability the engine lacks (capability.inflict-affliction on the zombie, capability.power/corpses/target-stamina-loss on the necromancer) is DROPPED WITH A NAMED GAP recorded in the pack note and CONTENT-GAPS, never guessed at. Stats, attacks, and the trigger clauses that DO compile (skeletal-archer onHit, plain damage riders) come through whole. Regenerable: same input, byte-identical output.",
+  "spec": "A converter from content/gen/enemies-authored.json into the engine pack — the 14 units the five prologue battles field, of the 28 authored. Bastion-style discipline: a trigger clause whose capability the engine lacks (capability.inflict-affliction on the zombie, capability.power/corpses/target-stamina-loss on the necromancer) is DROPPED WITH A NAMED GAP recorded in the pack note and CONTENT-GAPS, never guessed at. Stats, attacks, and the trigger clauses that DO compile (skeletal-archer onHit, plain damage riders) come through whole. Regenerable: same input, byte-identical output.",
   "expect": "unit.zombie, unit.fast-zombie, unit.skeletal-archer and unit.necromancer exist as engine units with their authored stats and compilable triggers, each dropped clause is named somewhere greppable, and the converter run twice is byte-identical",
   "changesBaseline": false,
   "needs": [
@@ -1264,7 +1264,7 @@
   "id": "content.civilians",
   "kind": "engine",
   "shape": "data",
-  "spec": "hero.fixed.orphans, hero.fixed.lumberjack-and-wife, hero.fixed.farmer as engine units. RULED 2026-08-26: civilians ACT \u2014 they are ordinary heroes with their Codex behaviour, stats and actions, not do-nothing statues (the earlier do-nothing reading was wrong and is dead). Rows come from the Codex civilian class through the same conversion path as other units.",
+  "spec": "hero.fixed.orphans, hero.fixed.lumberjack-and-wife, hero.fixed.farmer as engine units. RULED 2026-08-26: civilians ACT — they are ordinary heroes with their Codex behaviour, stats and actions, not do-nothing statues (the earlier do-nothing reading was wrong and is dead). Rows come from the Codex civilian class through the same conversion path as other units.",
   "expect": "the three civilians field as hero-side units with their Codex stats and behave like heroes; killing one is visible in the log",
   "changesBaseline": false,
   "needs": [
@@ -1280,7 +1280,7 @@
   "id": "encounter.runner",
   "kind": "engine",
   "shape": "rule",
-  "spec": "Scenarios grow into encounters \u2014 the P11 prologue shape from content/gen/encounters.json: hex placement at:{col,row} / near+range / oneOf (scenario.export landed the validation seam already), phase-keyed spawn SCHEDULE (clock ruling 2026-08-23: schedules count PHASES, the word turn never appears in encounter data), loseAfter (heroPhase N), objective/civilian flags, and victory: protect-the-objective \u2014 outcome enum gains objectiveMet and objectiveLost. Spawned units arrive per the schedule and their startOfBattle fires on arrival (COMBAT-SEQUENCE Start of Turn rung 1, currently not yet). NOTE the format is marked PROPOSED, NOT RULED \u2014 Andrew approving it is the gate for this item landing, per STATE.md.",
+  "spec": "Scenarios grow into encounters — the P11 prologue shape from content/gen/encounters.json: hex placement at:{col,row} / near+range / oneOf (scenario.export landed the validation seam already), phase-keyed spawn SCHEDULE (clock ruling 2026-08-23: schedules count PHASES, the word turn never appears in encounter data), loseAfter (heroPhase N), objective/civilian flags, and victory: protect-the-objective — outcome enum gains objectiveMet and objectiveLost. Spawned units arrive per the schedule and their startOfBattle fires on arrival (COMBAT-SEQUENCE Start of Turn rung 1, currently not yet). NOTE the format is marked PROPOSED, NOT RULED — Andrew approving it is the gate for this item landing, per STATE.md.",
   "expect": "battle.prologue-1 loads from encounters.json and runs end to end: zombies at (6,7)/(10,7), orphans at (8,8), the phase-4 spawn arrives on one of the two named hexes, the battle is lost if the orphans die or ten hero phases pass, won when the board clears",
   "changesBaseline": false,
   "needs": [
@@ -1292,7 +1292,7 @@
   "id": "content.hero-pack",
   "kind": "engine",
   "shape": "plumbing",
-  "spec": "Real heroes for the prologue: battle 1 fields ONE hero, battle 2 fields THREE, drawn from the 24-hero roster. Heroes come through the Codex pipeline like the test cohort (copyOf resolution), with their class kit WEAPON as the attack source \u2014 the first crack in stats-first-weapons-next, scoped to exactly what the battles need: each fielded hero carries its kit weapon attacks instead of the provisional attack.* scaffolding rows. Which heroes field is content; ask, do not pick.",
+  "spec": "Real heroes for the prologue: battle 1 fields ONE hero, battle 2 fields THREE, drawn from the 24-hero roster. Heroes come through the Codex pipeline like the test cohort (copyOf resolution), with their class kit WEAPON as the attack source — the first crack in stats-first-weapons-next, scoped to exactly what the battles need: each fielded hero carries its kit weapon attacks instead of the provisional attack.* scaffolding rows. Which heroes field is content; ask, do not pick.",
   "expect": "a named hero fields with its Codex stats and its kit weapon attacks, and the five provisional attacks are not referenced by any fielded prologue unit",
   "changesBaseline": false,
   "needs": [
@@ -1320,7 +1320,7 @@
   "id": "encounter.battle-2",
   "kind": "engine",
   "shape": "data",
-  "spec": "battle.prologue-2 Surrounded: 3 heroes, 2 civilians, 4 zombies, skeletal archers pE1/pE3, fast zombies p4, necromancer p5. The necromancer fields with its compilable behaviour; its power/corpse/stamina-drain clauses stay named gaps until their capability rows land \u2014 the battle runs honestly WITHOUT them rather than pretending.",
+  "spec": "battle.prologue-2 Surrounded: 3 heroes, 2 civilians, 4 zombies, skeletal archers pE1/pE3, fast zombies p4, necromancer p5. The necromancer fields with its compilable behaviour; its power/corpse/stamina-drain clauses stay named gaps until their capability rows land — the battle runs honestly WITHOUT them rather than pretending.",
   "expect": "runs end to end with all spawns arriving on schedule; the dropped necromancer clauses are visible as named gaps, not silent absences",
   "changesBaseline": false,
   "needs": [
@@ -1331,7 +1331,7 @@
   "id": "capability.power-pool",
   "kind": "engine",
   "shape": "rule",
-  "spec": "The enemy power pool \u2014 15 of 28 authored enemies need it, the largest single capability. Integer; fractions resolve nearest, 0.5 up; gained external/arrival/clock; consumers read it. Design-ruled in ENEMY-REVIEW.md 2026-08-23. Needed for the necromancer to act fully in battle 2, but battle 2 lands first without it.",
+  "spec": "The enemy power pool — 15 of 28 authored enemies need it, the largest single capability. Integer; fractions resolve nearest, 0.5 up; gained external/arrival/clock; consumers read it. Design-ruled in ENEMY-REVIEW.md 2026-08-23. Needed for the necromancer to act fully in battle 2, but battle 2 lands first without it.",
   "expect": "a pool exists per side, arrival and clock gains emit events, and a consumer refuses when the pool is short",
   "changesBaseline": false,
   "needs": [
@@ -1342,7 +1342,7 @@
   "id": "fix.status-tick-timing",
   "kind": "engine",
   "shape": "rule",
-  "spec": "RULED 2026-08-26 (DECISIONS.md, verbatim): statuses resolve at the end of each unit's ACTIVATION, not at End of Phase \u2014 damage, healing, decay, expiry. Seen in a replay: zombies crossed embers, and every burn tick queued up to fire one at a time at phase end instead of at each zombie's own activation end. The tick becomes an End-of-Activation rung, per unit, after the terrain strips/applies (the water promise holds per-activation); a unit can die at the end of its own activation; each unit still ticks once per Turn. Bleed-out is not a status and stays at End of Hero Phase (2026-08-15). Surge ordering (2026-08-21) re-affirmed: the ladder runs once, after the surge loop.",
+  "spec": "RULED 2026-08-26 (DECISIONS.md, verbatim): statuses resolve at the end of each unit's ACTIVATION, not at End of Phase — damage, healing, decay, expiry. Seen in a replay: zombies crossed embers, and every burn tick queued up to fire one at a time at phase end instead of at each zombie's own activation end. The tick becomes an End-of-Activation rung, per unit, after the terrain strips/applies (the water promise holds per-activation); a unit can die at the end of its own activation; each unit still ticks once per Turn. Bleed-out is not a status and stays at End of Hero Phase (2026-08-15). Surge ordering (2026-08-21) re-affirmed: the ladder runs once, after the surge loop.",
   "expect": "a zombie that crosses embers takes its burn at ITS activation end and can die there; the phase-end ladder no longer ticks statuses; the canonical 5-poison-vs-2-resist walk still reads 3,2,1,0,0 across five of that unit's activations",
   "changesBaseline": true,
   "needs": [],
@@ -1387,7 +1387,7 @@
   "id": "capability.area-attack",
   "kind": "engine",
   "shape": "rule",
-  "spec": "An attack may declare an AREA: 'arc' (the target hex plus the two hexes adjacent to both attacker and target \u2014 attack.halberd.cleave, authored 'an adjacent hex and the two hexes adjacent to both you and it') or 'blast1' (a hex plus its six neighbors \u2014 the shape power.lightning-staff.storm will ride). Area attacks DO NOT ROLL TO HIT and therefore cannot crit (authored: 'It does not roll to hit, so it cannot crit') \u2014 no accuracy station, no miss, no dodge; mitigation and riders run per struck unit through the one damage function. The AI values an area attack by summing preview() over every unit it would strike (Law 2 \u2014 no second calculator).",
+  "spec": "An attack may declare an AREA: 'arc' (the target hex plus the two hexes adjacent to both attacker and target — attack.halberd.cleave, authored 'an adjacent hex and the two hexes adjacent to both you and it') or 'blast1' (a hex plus its six neighbors — the shape power.lightning-staff.storm will ride). Area attacks DO NOT ROLL TO HIT and therefore cannot crit (authored: 'It does not roll to hit, so it cannot crit') — no accuracy station, no miss, no dodge; mitigation and riders run per struck unit through the one damage function. The AI values an area attack by summing preview() over every unit it would strike (Law 2 — no second calculator).",
   "expect": "the Oathblade cleaves when two enemies stand in the arc and the log carries one attack.declared plus a hit per struck unit, each naming attack.halberd.cleave as cause; a single-target cleave does strictly less total damage than hack and the AI prefers hack then",
   "changesBaseline": false,
   "needs": [
@@ -1407,7 +1407,7 @@
   "id": "capability.knockback",
   "kind": "engine",
   "shape": "rule",
-  "spec": "Forced movement, Knockback only (CODEX bans pulls/pushes/swaps beyond it): attack.halberd.hack's authored onDamage rider 'push the target 1 hex directly away from you'. Directly-away = the hex continuing the attacker->target line. Undefined edges become SWITCHES, never guesses: destination blocked/occupied/off-board (default: the push fizzles, logged), and whether entering a hex by knockback triggers its ground status (default: yes \u2014 the hex does not care why you arrived).",
+  "spec": "Forced movement, Knockback only (CODEX bans pulls/pushes/swaps beyond it): attack.halberd.hack's authored onDamage rider 'push the target 1 hex directly away from you'. Directly-away = the hex continuing the attacker->target line. Undefined edges become SWITCHES, never guesses: destination blocked/occupied/off-board (default: the push fizzles, logged), and whether entering a hex by knockback triggers its ground status (default: yes — the hex does not care why you arrived).",
   "expect": "a hacked zombie ends one hex further from the Oathblade along the push line, the log carries a knockback event naming the causing trigger, and a zombie against a wall is NOT displaced with the fizzle logged",
   "changesBaseline": false,
   "needs": [
@@ -1427,7 +1427,7 @@
   "id": "capability.item-powers",
   "kind": "engine",
   "shape": "rule",
-  "spec": "AbilityDef generalizes beyond bolt-shaped blasts to speak the three authored item powers: power.holy-symbol.heal ('Heal the target for 1 + 2 x Spirit', one ally within 6), power.knight-shield.block ('Gain Protection equal to 4 + your Armor, and lose 5 Dodge for the rest of the Battle. Every use costs another 5 Dodge', self, cooldown 3), power.lightning-staff.storm ('Deal magic damage equal to your Magic + 1 to every unit in the blast', hex within 4 plus neighbors, no roll, cannot crit \u2014 rides capability.area-attack's blast1). Copied from the authored rows, never invented; anything the rows leave unstated is a switch.",
+  "spec": "AbilityDef generalizes beyond bolt-shaped blasts to speak the three authored item powers: power.holy-symbol.heal ('Heal the target for 1 + 2 x Spirit', one ally within 6), power.knight-shield.block ('Gain Protection equal to 4 + your Armor, and lose 5 Dodge for the rest of the Battle. Every use costs another 5 Dodge', self, cooldown 3), power.lightning-staff.storm ('Deal magic damage equal to your Magic + 1 to every unit in the blast', hex within 4 plus neighbors, no roll, cannot crit — rides capability.area-attack's blast1). Copied from the authored rows, never invented; anything the rows leave unstated is a switch.",
   "expect": "Lucius heals a wounded ally and the heal amount is 1+2xSpirit in the log; Osric blocks and carries protection 4+armor plus a -5 dodge statmod that survives to battle end and stacks on reuse; the Air Mage storms a clump and every unit in the seven hexes takes magic damage equal to Magic+1",
   "changesBaseline": false,
   "needs": [
@@ -1445,7 +1445,7 @@
   "id": "station.crit",
   "kind": "engine",
   "shape": "rule",
-  "spec": "Critical hits per COMBAT-DESIGN and the full 2026-08-27 dictation (DECISIONS.md): chance = 3 base + unit Crit ('Base Crit varies by enemy') + weapon crit field + surplus final accuracy over 100 at 1 per 4, minus target Luck; two resolution rolls from named streams \u2014 cup.crit-branch (weighted per victim side by critChartSplit, Angela 2026-08-22: chart 25 vs heroes, 50 vs enemies) and cup.crit-effect (evenly among the ten chart rows). Normal damage always lands first; the damage arm is +50% before Armor/Resist/Protection (DMG.CRIT); the chart arm applies one battle-only injury row. The chart is RULED DATA in settled.json critChart, compiled by mkenginepack (prose parsed at export, never at runtime); Blinded's -4 Vision and Knocked Sprawling's -50 Surge are the pass's named gaps; item.bracer is out of scope. rollCritEffect is the GLOSSARY-fixed entry point. critEnabled defaults ON ('We want to implement crits').",
+  "spec": "Critical hits per COMBAT-DESIGN and the full 2026-08-27 dictation (DECISIONS.md): chance = 3 base + unit Crit ('Base Crit varies by enemy') + weapon crit field + surplus final accuracy over 100 at 1 per 4, minus target Luck; two resolution rolls from named streams — cup.crit-branch (weighted per victim side by critChartSplit, Angela 2026-08-22: chart 25 vs heroes, 50 vs enemies) and cup.crit-effect (evenly among the ten chart rows). Normal damage always lands first; the damage arm is +50% before Armor/Resist/Protection (DMG.CRIT); the chart arm applies one battle-only injury row. The chart is RULED DATA in settled.json critChart, compiled by mkenginepack (prose parsed at export, never at runtime); Blinded's -4 Vision and Knocked Sprawling's -50 Surge are the pass's named gaps; item.bracer is out of scope. rollCritEffect is the GLOSSARY-fixed entry point. critEnabled defaults ON ('We want to implement crits').",
   "expect": "crits fire in real battles with crit.branch and crit.effect events naming their causes; the four alpha crit fields and unit crit/luck stats raise/lower the chance by their stated amounts; each chart row does exactly what its dictated line says (floors only where dictated; Nerve Struck can kill under the literal no-floor reading, switchable); everything clears at battle end because units are battle state",
   "changesBaseline": true,
   "needs": [
@@ -1466,7 +1466,7 @@
   "id": "fix.crit-branch-even",
   "kind": "engine",
   "shape": "rule",
-  "spec": "Ruled 2026-08-27: 'It should be a 50% chance of just a damage boost and a 50% chance of one of the effects' \u2014 both branch-share switches default 50 (the 2026-08-22 per-side 75/25 is HELD OFF, machinery kept sweepable). And 'we want all of the things being rolled and all of the effects to have an even chance': the crit-branch and crit-effect draws now key on (attacker uid, TARGET uid, ordinal) \u2014 the panel's 25-replicate dice universe was excluding Winded and Bleeding entirely under the narrower key.",
+  "spec": "Ruled 2026-08-27: 'It should be a 50% chance of just a damage boost and a 50% chance of one of the effects' — both branch-share switches default 50 (the 2026-08-22 per-side 75/25 is HELD OFF, machinery kept sweepable). And 'we want all of the things being rolled and all of the effects to have an even chance': the crit-branch and crit-effect draws now key on (attacker uid, TARGET uid, ordinal) — the panel's 25-replicate dice universe was excluding Winded and Bleeding entirely under the narrower key.",
   "expect": "crit.branch events carry chartShare 50 against both sides; over a few hundred synthetic draws every one of the ten chart keys appears; battles remain seeds",
   "changesBaseline": true,
   "needs": [
@@ -1486,7 +1486,7 @@
   "id": "station.crit-count",
   "kind": "engine",
   "shape": "rule",
-  "spec": "Ruled 2026-08-27: 'there is also an ability to have more than one critical happen at once... Do two criticals or Do three criticals \u2014 account for that.' AttackDef gains critCount (default 1). A critting attack resolves critCount CRITICALS: each flips its own branch (own draw, keyed by its index); heads stack as +50% of pre-mitigation damage EACH (DMG.CRIT applies (2+heads)/2, truncating); each tails rolls its own chart row, independently \u2014 with replacement (multiCritReplacement switch, the same question item.bracer waits on). No authored row carries a count above 1 yet, so the consumers are declared test scaffolding: attack.test-ram.slam (critCount 2) and attack.test-ram.overhead (critCount 3) on the test golems in showcase.arc-variant.",
+  "spec": "Ruled 2026-08-27: 'there is also an ability to have more than one critical happen at once... Do two criticals or Do three criticals — account for that.' AttackDef gains critCount (default 1). A critting attack resolves critCount CRITICALS: each flips its own branch (own draw, keyed by its index); heads stack as +50% of pre-mitigation damage EACH (DMG.CRIT applies (2+heads)/2, truncating); each tails rolls its own chart row, independently — with replacement (multiCritReplacement switch, the same question item.bracer waits on). No authored row carries a count above 1 yet, so the consumers are declared test scaffolding: attack.test-ram.slam (critCount 2) and attack.test-ram.overhead (critCount 3) on the test golems in showcase.arc-variant.",
   "expect": "a critCount-2 attack that crits emits two crit.branch events for one attack.hit; two heads read as +100% pre-mitigation in the ledger; two tails apply two chart rows; single-crit attacks are byte-identical to before this landing",
   "changesBaseline": false,
   "needs": [
@@ -1506,7 +1506,7 @@
   "id": "fix.status-damage-types",
   "kind": "engine",
   "shape": "rule",
-  "spec": "Ruled 2026-08-27: 'Status damage from poison and burn is magic damage. It should be blue. It gets reduced by resist. Bleed damage is true damage. Thorns damage that is dealt is true damage.' The tick's damage TYPE becomes a status-row field (tickDamageType) replacing the tickMitigatedByResist flag \u2014 one vocabulary: magic ticks are resist-reduced (the arithmetic burn and poison have had since 2026-08-20), true ticks are flat (bleed's existing behaviour), and the emitted damage.applied now carries the row's type so the viewer paints magic ticks blue. Thorns (retaliation damage triggers) are typed true \u2014 proven live by a test-lane thorns trigger.",
+  "spec": "Ruled 2026-08-27: 'Status damage from poison and burn is magic damage. It should be blue. It gets reduced by resist. Bleed damage is true damage. Thorns damage that is dealt is true damage.' The tick's damage TYPE becomes a status-row field (tickDamageType) replacing the tickMitigatedByResist flag — one vocabulary: magic ticks are resist-reduced (the arithmetic burn and poison have had since 2026-08-20), true ticks are flat (bleed's existing behaviour), and the emitted damage.applied now carries the row's type so the viewer paints magic ticks blue. Thorns (retaliation damage triggers) are typed true — proven live by a test-lane thorns trigger.",
   "expect": "a poison tick's damage.applied says damageType magic and is reduced by the holder's resist; a bleed tick says true and nothing reduces it; a thorns retaliation says true; the replay viewer colours magic damage pops blue",
   "changesBaseline": true,
   "needs": [
@@ -1526,7 +1526,7 @@
   "id": "content.field-eve-24",
   "kind": "content",
   "shape": "data",
-  "spec": "Field the rest of the Eve-of-Ruin 24 in the engine pack (content/mkenginepack.mjs currently fields the prologue three \u2014 Hunter, Iron Dwarf, Battle Chaplain \u2014 plus the three civilians). All 24 carry FULL kits in hbt-content.json heroKits (2026-08-27b), so every one resolves deterministically under the pack's own kit law; no draw is needed. Ruled 2026-09-02 (Andrew): the four alpha heroes \u2014 Air Mage, Oathblade, Sky Pirate, Dusk Hawk \u2014 are REMOVED from the kingdom's pool because no kit exists for them; the kingdom needs kitted Eve mages, paladins and rogues in the pack to draft six and to recruit at the Beacon. Lucius (hero.base.priest-scantily) and Osric (hero.base.paladin-shiney) are Eve rows still fielded as alpha-lucius / alpha-osric test units; fielding their real rows retires those too.",
+  "spec": "Field the rest of the Eve-of-Ruin 24 in the engine pack (content/mkenginepack.mjs currently fields the prologue three — Hunter, Iron Dwarf, Battle Chaplain — plus the three civilians). All 24 carry FULL kits in hbt-content.json heroKits (2026-08-27b), so every one resolves deterministically under the pack's own kit law; no draw is needed. Ruled 2026-09-02 (Andrew): the four alpha heroes — Air Mage, Oathblade, Sky Pirate, Dusk Hawk — are REMOVED from the kingdom's pool because no kit exists for them; the kingdom needs kitted Eve mages, paladins and rogues in the pack to draft six and to recruit at the Beacon. Lucius (hero.base.priest-scantily) and Osric (hero.base.paladin-shiney) are Eve rows still fielded as alpha-lucius / alpha-osric test units; fielding their real rows retires those too.",
   "expect": "UNITS carries a hero.base.* row for each of the 24 with attacks and folded kit stats per the existing three; the kingdom's src/content/heroes.ts can then list them by id with no alpha-* unitType left",
   "changesBaseline": false,
   "needs": [],
@@ -1541,7 +1541,7 @@
   "id": "pack.items",
   "kind": "content",
   "shape": "data",
-  "spec": "engine/ITEMS-PLAN.md \u00a73: content/mkenginepack.mjs emits ItemDef rows (id, name, itemClass, hands, slots, statModifiers in engine stat names, grants, abilities, compiled triggers with source = the item id) into src/content/generated/pack.ts \u2014 weapons and armor first, then every other class whose payload compiles; attacks widened to every attack any packed item grants; an ITEMS registry in src/content/index.ts beside UNITS and ATTACKS, on Ctx so CF_DISABLE_IDS reaches it. Compile or name the gap: vision, itemSlots, toughness, corruption and unparsed trigger prose go to gaps.json, never rounded.",
+  "spec": "engine/ITEMS-PLAN.md §3: content/mkenginepack.mjs emits ItemDef rows (id, name, itemClass, hands, slots, statModifiers in engine stat names, grants, abilities, compiled triggers with source = the item id) into src/content/generated/pack.ts — weapons and armor first, then every other class whose payload compiles; attacks widened to every attack any packed item grants; an ITEMS registry in src/content/index.ts beside UNITS and ATTACKS, on Ctx so CF_DISABLE_IDS reaches it. Compile or name the gap: vision, itemSlots, toughness, corruption and unparsed trigger prose go to gaps.json, never rounded.",
   "expect": "every kit item in heroKits resolves to an ItemDef; every grants id is in ATTACKS; disabling an item id by kill-switch refuses loudly where it is referenced",
   "changesBaseline": false,
   "needs": [
@@ -1558,7 +1558,7 @@
   "id": "seam.items-per-unit",
   "kind": "engine",
   "shape": "plumbing",
-  "spec": "Ruled 2026-09-02 (Andrew): 'the items should go into battle \u2026 They define what attacks they have. They modify stats.' Today content/mkenginepack.mjs folds a hero's CONTENT kit into its unit row at pack time, so the battle never sees what the kingdom equipped. createBattle's options need a per-unit item list (item ids, the kingdom's hero.equipped) and the engine applies the item rows at fielding \u2014 attacks granted (`grants`), statModifiers folded \u2014 the same arithmetic the pack does statically, done at battle start from the ids handed over. Masterwork and enchanted items are their own rows (kingdom generates them from the tier-1 base; see 7-KINGDOM-SETTLED.md 2026-09-02), so the engine only ever sees an item id with its own stats. The pack's folded rows stay as the default when no list is handed over.",
+  "spec": "Ruled 2026-09-02 (Andrew): 'the items should go into battle … They define what attacks they have. They modify stats.' Today content/mkenginepack.mjs folds a hero's CONTENT kit into its unit row at pack time, so the battle never sees what the kingdom equipped. createBattle's options need a per-unit item list (item ids, the kingdom's hero.equipped) and the engine applies the item rows at fielding — attacks granted (`grants`), statModifiers folded — the same arithmetic the pack does statically, done at battle start from the ids handed over. Masterwork and enchanted items are their own rows (kingdom generates them from the tier-1 base; see 7-KINGDOM-SETTLED.md 2026-09-02), so the engine only ever sees an item id with its own stats. The pack's folded rows stay as the default when no list is handed over.",
   "expect": "a unit fielded with ['item.longsword','item.basic-armor'] has the longsword's attacks and the armor's stat deltas in its BattleState, identical to the pack's folded numbers for the same kit; with no list, nothing changes",
   "changesBaseline": false,
   "needs": [
@@ -1570,13 +1570,13 @@
    "item.longsword",
    "item.longbow"
   ],
-  "note": "Filed from the kingdom session 2026-09-02. The kingdom's seam (kingdom/src/core/seam.ts battleOptionsOf) will pass hero.equipped once this lands. Plan: engine/ITEMS-PLAN.md \u00a72, \u00a74, \u00a75."
+  "note": "Filed from the kingdom session 2026-09-02. The kingdom's seam (kingdom/src/core/seam.ts battleOptionsOf) will pass hero.equipped once this lands. Plan: engine/ITEMS-PLAN.md §2, §4, §5."
  },
  {
   "id": "content.alpha-flip",
   "kind": "engine",
   "shape": "data",
-  "spec": "The standard battle (FIRST_BATTLE, baseline.6v4) fields the six Alpha Team heroes \u2014 alpha-oathblade, alpha-sky-pirate, alpha-dusk-hawk, alpha-air-mage, alpha-lucius, alpha-osric \u2014 in place of the six test-* clones. Real authored kits (Halberd, Javelin/Dagger, Shortbow, Lightning Staff, Holy Symbol, Longsword/Knight Shield, universal Punch), real riders (push, cleave arc, crit fields, item powers) run in every control baseline and every sweep. Nothing about the units is authored here: the ids already come from the pack's alphaTeam section. The enemy roster of the standard battle is unchanged (three test-zombie + one test-zombie-burning) \u2014 flipping it is a separate question. Sequence step (C) of the 2026-08-27 Alpha Team ruling; ruled 2026-09-02 'Yes, proceed with step one.'",
+  "spec": "The standard battle (FIRST_BATTLE, baseline.6v4) fields the six Alpha Team heroes — alpha-oathblade, alpha-sky-pirate, alpha-dusk-hawk, alpha-air-mage, alpha-lucius, alpha-osric — in place of the six test-* clones. Real authored kits (Halberd, Javelin/Dagger, Shortbow, Lightning Staff, Holy Symbol, Longsword/Knight Shield, universal Punch), real riders (push, cleave arc, crit fields, item powers) run in every control baseline and every sweep. Nothing about the units is authored here: the ids already come from the pack's alphaTeam section. The enemy roster of the standard battle is unchanged (three test-zombie + one test-zombie-burning) — flipping it is a separate question. Sequence step (C) of the 2026-08-27 Alpha Team ruling; ruled 2026-09-02 'Yes, proceed with step one.'",
   "expect": "every one of the eight control battles moves; the alpha ids and their authored attacks appear in the gate-1 probe from the standard battle itself (no showcase needed); tests that assumed the test cohort in standard battles are rewritten toward the rule they were checking, with reasons at the edits; disabling alpha-oathblade breaks the standard battle",
   "changesBaseline": true,
   "needs": [
@@ -1595,14 +1595,14 @@
    "attack.longsword.slash"
   ],
   "status": "done-needs-review",
-  "sha": "54c8131",
-  "gauntlet": "not passed \u2014 1 flag(s) warned"
+  "sha": "da99720",
+  "gauntlet": "not passed — 1 flag(s) warned"
  },
  {
   "id": "seam.unit-mods",
   "kind": "engine",
   "shape": "plumbing",
-  "spec": "GEAR-IMPLEMENTATION.md \u00a71. Set bonuses (GEAR-DESIGN.md \u00a75) are resolved by the kingdom at fielding \u2014 'looked up when the players are being built and shipped to combat \u2026 then it gets written to the stats for that battle' (Andrew 2026-09-02) \u2014 and must reach the battle as PER-UNIT numbers: stat mods on one fielded hero, and +damage on one fielded weapon's attacks. BattleOptions.overrides is by unit TYPE today. Add a per-fielded-hero list parallel to heroes/heroHexes/heroItems: stat mods (StatMod with source = the set id, scope 'unit') and per-item attack bonuses; applied after applyItems; each emits unit.modified naming the set.",
+  "spec": "GEAR-IMPLEMENTATION.md §1. Set bonuses (GEAR-DESIGN.md §5) are resolved by the kingdom at fielding — 'looked up when the players are being built and shipped to combat … then it gets written to the stats for that battle' (Andrew 2026-09-02) — and must reach the battle as PER-UNIT numbers: stat mods on one fielded hero, and +damage on one fielded weapon's attacks. BattleOptions.overrides is by unit TYPE today. Add a per-fielded-hero list parallel to heroes/heroHexes/heroItems: stat mods (StatMod with source = the set id, scope 'unit') and per-item attack bonuses; applied after applyItems; each emits unit.modified naming the set.",
   "expect": "a hero fielded with mods [{stat:'magic',add:4,source:'set.ring'}] has Magic +4 in the ledger under that source; a weapon bonus of +2 from set.slaying shows on that weapon's attacks only; with no list nothing changes",
   "changesBaseline": false,
   "needs": [
@@ -1619,7 +1619,7 @@
   "id": "capability.charges",
   "kind": "engine",
   "shape": "rule",
-  "spec": "GEAR-IMPLEMENTATION.md \u00a71 \u00b7 GEAR-DESIGN.md \u00a74. One-use-per-battle items (the Waystation's potions, oils, flasks, traps, the Net, Bandages, Rations): an AbilityDef gains `uses` (per battle); a spent use removes the power from the unit's list for the rest of the Battle \u2014 'they should vanish from the list of things available to a hero in the powers list, because there's no cooldown' (Andrew 2026-09-02); the BattleResult reports uses spent so the kingdom can restock. Traps: bear/magic/fire place TWO on activation, explosive one; all within 3.",
+  "spec": "GEAR-IMPLEMENTATION.md §1 · GEAR-DESIGN.md §4. One-use-per-battle items (the Waystation's potions, oils, flasks, traps, the Net, Bandages, Rations): an AbilityDef gains `uses` (per battle); a spent use removes the power from the unit's list for the rest of the Battle — 'they should vanish from the list of things available to a hero in the powers list, because there's no cooldown' (Andrew 2026-09-02); the BattleResult reports uses spent so the kingdom can restock. Traps: bear/magic/fire place TWO on activation, explosive one; all within 3.",
   "expect": "a unit with a heal-3 potion power uses it once, cannot again that Battle, and the result names the item as spent; the next Battle it is whole",
   "changesBaseline": false,
   "needs": [
@@ -1636,7 +1636,7 @@
   "id": "ai.attack-choice",
   "kind": "ai",
   "shape": "rule",
-  "spec": "bestAttack() takes the FIRST affordable attack in the unit's declared order, so an authored kit's later entries are dead unless the first is unaffordable. Surfaced by content.alpha-flip (2026-09-02) \u2014 in 200 standard battles the Alpha Sky Pirate never threw the Javelin (its melee-aggressive mode closes to reach 1, where a ranged attack is illegal) and never drew the Dagger (javelin.stab precedes it, same cost); Osric never used Longsword Stab (+2, cost 2) or Shield Slam (stun rider) because Slash (+1, cost 1) is first and affordable. The test cohort hid this: its kits were ordered dear-first. AMBIGUITY, NOT A DECISION: the choice policy is a SWITCH (declared-order | best-preview-damage | best-preview-with-riders) with declared-order as the default it has always been, and a sweep answers which policy the AI should use. Riders (a self-Protection on the dagger, a stun on the slam) are not priced by preview() at all \u2014 that is the third policy's question. ALSO: the Sky Pirate's role is 'ranged' in the pack while its ai is 'melee-aggressive' \u2014 a converter/derivation question for the content chat, noted here so it is not lost.",
+  "spec": "bestAttack() takes the FIRST affordable attack in the unit's declared order, so an authored kit's later entries are dead unless the first is unaffordable. Surfaced by content.alpha-flip (2026-09-02) — in 200 standard battles the Alpha Sky Pirate never threw the Javelin (its melee-aggressive mode closes to reach 1, where a ranged attack is illegal) and never drew the Dagger (javelin.stab precedes it, same cost); Osric never used Longsword Stab (+2, cost 2) or Shield Slam (stun rider) because Slash (+1, cost 1) is first and affordable. The test cohort hid this: its kits were ordered dear-first. AMBIGUITY, NOT A DECISION: the choice policy is a SWITCH (declared-order | best-preview-damage | best-preview-with-riders) with declared-order as the default it has always been, and a sweep answers which policy the AI should use. Riders (a self-Protection on the dagger, a stun on the slam) are not priced by preview() at all — that is the third policy's question. ALSO: the Sky Pirate's role is 'ranged' in the pack while its ai is 'melee-aggressive' — a converter/derivation question for the content chat, noted here so it is not lost.",
   "expect": "with the switch at best-preview the four dead attacks fire in the standard battle and integration.test's exact dead-list shrinks to []; with declared-order it stays as asserted; the effect of each policy on the eight control battles is measured by a sweep, not decided",
   "changesBaseline": true,
   "needs": [
@@ -1650,9 +1650,7 @@
    "attack.dagger.stab",
    "attack.knight-shield.shield-slam"
   ],
-  "status": "done-needs-review",
-  "sha": "cc6c70b",
-  "gauntlet": "not passed \u2014 1 flag(s) warned"
+  "status": "ready"
  },
  {
   "id": "fix.bleed-magnitude",
@@ -1671,7 +1669,9 @@
    "status.bleed",
    "test.status.gash"
   ],
-  "status": "ready"
+  "sha": "8215824",
+  "gauntlet": "not passed — 1 flag(s) warned",
+  "status": "done-needs-review"
  },
  {
   "id": "fix.dazed-split",
@@ -1691,7 +1691,27 @@
    "status.bleed"
   ],
   "status": "done-needs-review",
-  "sha": "e0f75c2",
-  "gauntlet": "not passed \u2014 1 flag(s) warned"
+  "sha": "37f7311",
+  "gauntlet": "not passed — 1 flag(s) warned"
+ },
+ {
+  "id": "pack.statuses",
+  "kind": "engine",
+  "shape": "data",
+  "spec": "The engine reads its status rows from the Codex. Andrew 2026-09-02, asked whether the Codex may own the rows: 'Yes — Codex owns the rows.' content/mkenginepack.mjs compiles each settled.json status row's ONE SENTENCE into the engine's behaviour flags by EXACT phrase (compile-or-name-the-gap: a row the engine cannot behave for is not emitted, it is a named gap, and every trigger or chart clause naming it becomes a gap too); the pack carries a statuses section; the loader (packStatuses) validates it loudly and turns `tick` into the End-of-Phase hook — the one place a row becomes a function. src/content/statuses.ts keeps ONLY the test.* lane and refuses a hand-typed status.* row. Ten rows load (poison, burn, bleed, regeneration, protection, weak, slow, stun, dazed, powers-locked); six are named gaps (karma, taunt, confusion, root, frost, shadow — each a capability item). The Codex family word rides along verbatim; the engine's shape word is derived from behaviour.",
+  "expect": "the swap is BASELINE-NEUTRAL — every control hash identical before and after, which is the proof that the compile is faithful to the rows that were hand-typed; every loaded status.* id is a Codex row and every Codex row is loaded or a named gap; disabling status.poison breaks the tests; the six gaps are greppable in gen/enemy-pack-gaps.json",
+  "changesBaseline": false,
+  "needs": [
+   "fix.bleed-magnitude",
+   "fix.dazed-split"
+  ],
+  "probeIds": [
+   "status.poison",
+   "status.protection"
+  ],
+  "status": "done",
+  "attempts": 1,
+  "sha": "1a1e9f8",
+  "gauntlet": "not passed — 2 flag(s) warned"
  }
 ]

@@ -2,81 +2,26 @@
 // deterministic load order both matter (Law 6).
 
 import type { StatusDef } from '../core/status.js'
-import { statusDamage, statusHeal } from '../core/status.js'
+import { statusDamage } from '../core/status.js'
 import { omitDisabled } from './disable.js'
+import { packStatuses } from './pack.js'
 
 // PUBLISHED SOURCE: `1-EFFECTS-SETTLED.md` § status.*
 // Only ids published there may appear in this file. `status.burn` was implemented
 // here and removed on 2026-08-14 — that document says outright it "is not yet
 // shaped, so do not reference it from another session yet", and it was referenced.
-const RAW_STATUSES: Readonly<Record<string, StatusDef>> = {
-  // Shapes are a checklist, not a branch — see StatusDef. What differs between
-  // these is only which hooks each one declares.
-  'status.poison': {
-    // RULED 2026-08-20: counters accumulate and tick down; pool is reserved for
-    // spent-when-consumed (protection). 1-EFFECTS-SETTLED amended with a CHANGED entry.
-    id: 'status.poison', name: 'Poison', shape: 'counter', stacking: 'add',
-    tickDamageType: 'magic',   // RULED 2026-08-27: 'poison and burn is magic damage... reduced by resist' — same arithmetic as the 2026-08-20 flag, now typed
-    onPhaseEnd: (ctx, unitId, value) => statusDamage(ctx, unitId, value, 'status.poison'),
-  },
-  'status.burn': {
-    // Codex-published (79 uses). Same tick as poison — damage equal to value,
-    // Resist-mitigated (ruled 2026-08-20), decay 1 — AND halves all healing
-    // received while held (§5: halves, never blocks). 1-EFFECTS-SETTLED's regen
-    // row already says "halved while status.burn is present"; the halving is
-    // read by applyHealing from the halvesHealing flag, one code path.
-    id: 'status.burn', name: 'Burn', shape: 'counter', stacking: 'add',
-    tickDamageType: 'magic',   // ruled 2026-08-27, see poison
-    halvesHealing: true,
-    onPhaseEnd: (ctx, unitId, value) => statusDamage(ctx, unitId, value, 'status.burn'),
-  },
-  'status.regeneration': {
-    // PUBLISHED: 1-EFFECTS-SETTLED.md — "Heals equal to its value at End of Phase,
-    // then −1 — poison's mirror, so one number reads both directions."
-    // The halved-while-Burn clause is deliberately NOT here: the same file says
-    // status.burn is not yet shaped, do not reference it.
-    id: 'status.regeneration', name: 'Regeneration', shape: 'counter', stacking: 'add',
-    onPhaseEnd: (ctx, unitId, value) => statusHeal(ctx, unitId, value, 'status.regeneration'),
-  },
-  'status.stun': {
-    // PUBLISHED: 1-EFFECTS-SETTLED.md § status.* (row added 2026-08-20);
-    // GAME-DESIGN §5 "Stunned | the unit cannot act | −1"; Codex census: stun,
-    // 22 uses — the Codex name is Stun (fresh over stale). blocksAction is read
-    // by isBlocked() in the turn loop: the whole Activation is skipped — no move,
-    // no primary — and the End of Activation ladder still runs (a stunned hero
-    // in the river still soaks). Default decay 1: Stun N = N lost activations.
-    id: 'status.stun', name: 'Stun', shape: 'counter', stacking: 'add',
-    blocksAction: true,
-  },
-  'status.bleed': {
-    // PUBLISHED: 1-EFFECTS-SETTLED.md § status.* (row added 2026-08-20); Codex
-    // census: bleed, 63 uses — "Bleed ticks a flat 2 and Resist never touches
-    // it"; GAME-DESIGN §5: "flat 2 damage — its value is a turn counter, not a
-    // magnitude". The tick is typed TRUE (ruled 2026-08-27: "Bleed damage is
-    // true damage") — the exact seam
-    // statusDamage was built with (ruled 2026-08-20: burn/poison per tick,
-    // "never bleed"). The tick amount is the constant 2, not the value.
-    // fix.bleed-magnitude (2026-09-02) — the flat 2 is GONE. Codex S41, ruled
-    // verbatim: "Bleed is True Damage." / "Bleed is being converted to
-    // magnitude damage. Also healing should cure bleed. Regen should be
-    // healing." The tick is the VALUE, true; healing sheds half (shedByHealing,
-    // read by applyHealing). Same decay clock as ever.
-    id: 'status.bleed', name: 'Bleed', shape: 'counter', stacking: 'add',
-    tickDamageType: 'true',
-    shedByHealing: 'half',
-    onPhaseEnd: (ctx, unitId, value) => statusDamage(ctx, unitId, value, 'status.bleed'),
-  },
-  'status.protection': {
-    // PUBLISHED: 1-EFFECTS-SETTLED.md § status.* (row added 2026-08-20); Codex
-    // census: protection, 40 uses ("Protection decays 1 a Phase and is spent by
-    // what it absorbs, so it limits itself" — Angela, Codex Martyr row);
-    // COMBAT-SEQUENCE: "a depleting pool that also decays". The POOL shape made
-    // real: absorbed at station PROTECTION (550, before armor/resist), spent by
-    // spendAbsorb after the hit — preview never spends. Additive per the
-    // answered protectionStacking switch; default decay 1 stops banking.
-    id: 'status.protection', name: 'Protection', shape: 'pool', stacking: 'add',
-    reducesIncomingDamage: true,
-  },
+// pack.statuses (2026-09-02) — THE CODEX OWNS THE STATUS ROWS. Andrew, asked
+// whether the engine may read its statuses from the Codex: "Yes — Codex owns
+// the rows." The ten expressible rows (poison, burn, bleed, regeneration,
+// protection, weak, slow, stun, dazed, powers-locked) arrive through the
+// generated pack, compiled from each row's one sentence by content/
+// mkenginepack.mjs; the six the engine cannot yet behave for (karma, taunt,
+// confusion, root, frost, shadow) are NAMED GAPS in gen/enemy-pack-gaps.json,
+// not rows. The hand-written rows that lived here since 2026-08-14 are gone —
+// the behaviour they declared is now the converter's phrase table and the
+// loader's hook, and the numbers were never here anyway. What remains is the
+// TESTING LANE: test.* rows that prove each flag is a slot, not a name.
+const RAW_TEST_STATUSES: Readonly<Record<string, StatusDef>> = {
   'test.status.ward': {
     // TESTING LANE — the second reducesIncomingDamage pool, proving the station
     // consumes data, not a name (and the second shield SWITCHES.md says makes
@@ -85,55 +30,11 @@ const RAW_STATUSES: Readonly<Record<string, StatusDef>> = {
     id: 'test.status.ward', name: 'Ward (testing)', shape: 'pool', stacking: 'add',
     reducesIncomingDamage: true,
   },
-  'status.powers-locked': {
-    // PUBLISHED: the Critical Injury Chart (settled.json critChart, dictated
-    // 2026-08-27) — "Dazed | loses access to class powers, 3 turns" — and
-    // the Codex row status.powers-locked (S52, 2026-09-02). fix.dazed-split:
-    // the chart's Dazed ROW and the Dazed STATUS are two different things
-    // (Andrew 2026-09-02: "there is a critical effect, and then there is a
-    // status effect"), so the row applies THIS status. Placeholder id, chosen
-    // so nothing is invented; renamed in the Codex row and the converter's
-    // chart compile, nowhere else. A counter: locksPowers is read by
-    // canUsePower; standard decay 1 per own End of Activation, and one
-    // activation per Turn makes value 3 the dictated three turns. Attacks and
-    // movement are untouched — only the POWERS are gone.
-    id: 'status.powers-locked', name: 'Powers Locked', shape: 'counter', stacking: 'add',
-    locksPowers: true,
-  },
-  'status.dazed': {
-    // PUBLISHED: settled.json statuses (S51, 2026-09-01/02) — "Takes the unit
-    // out of its owner's control and hands it to the AI." In the simulator
-    // EVERY unit is AI-driven already, so the engine carries Dazed as a
-    // recorded status — applied, decayed, expired, visible in the log for the
-    // UI and the kingdom to act on — with no behaviour of its own. aiControlled
-    // is data for the layers above; nothing in src/core reads it.
-    id: 'status.dazed', name: 'Dazed', shape: 'counter', stacking: 'add',
-    aiControlled: true,
-  },
-  'status.weak': {
-    // PUBLISHED: 1-EFFECTS-SETTLED.md § status.* (row added 2026-08-20);
-    // GAME-DESIGN §5 "Weakness | −1 damage per point. It reduces damage dealt,
-    // not the Strength and Precision stats | −1"; Codex census: weak, 38 uses —
-    // the Codex name is Weak, fresh over stale, so the id follows it. Read at
-    // pipeline station SOURCE_STATUS (250) by outgoingPenalty — attacks AND
-    // powers, one damage function. Never ticks damage; decays 1.
-    id: 'status.weak', name: 'Weak', shape: 'modifier', stacking: 'add',
-    reducesOutgoingDamage: true,
-  },
   'test.status.enfeeble': {
     // TESTING LANE — the second reducesOutgoingDamage instance, proving the
     // station consumes data, not a name. Never ships.
     id: 'test.status.enfeeble', name: 'Enfeeble (testing)', shape: 'modifier', stacking: 'add',
     reducesOutgoingDamage: true,
-  },
-  'status.slow': {
-    // PUBLISHED: 1-EFFECTS-SETTLED.md § status.* (row added 2026-08-20);
-    // GAME-DESIGN §5 "Slow | reduces Movement by its value | −1"; Codex
-    // 2026-08-20 sub-note: "A one-Turn Movement loss is now the Slow status —
-    // apply N Slow" (19 uses). Read once at beginActivation; floor 0 — at zero
-    // points the unit still acts from where it stands. Never ticks damage.
-    id: 'status.slow', name: 'Slow', shape: 'counter', stacking: 'add',
-    reducesMovement: true,
   },
   'test.status.hobble': {
     // TESTING LANE — the second reducesMovement instance, proving the slot is
@@ -162,4 +63,10 @@ const RAW_STATUSES: Readonly<Record<string, StatusDef>> = {
 }
 
 // Kill-switch seam — identical object when CF_DISABLE_IDS is unset.
-export const STATUSES = omitDisabled(RAW_STATUSES)
+// One owner per id: a test row may never shadow a Codex row.
+for (const id of Object.keys(RAW_TEST_STATUSES)) {
+  if (!id.startsWith('test.')) throw new Error(`statuses.ts: '${id}' is not a test.* row — status rows are Codex content, authored in content/settled.json`)
+}
+const PACK_STATUSES = packStatuses()
+for (const id of Object.keys(RAW_TEST_STATUSES)) if (PACK_STATUSES[id]) throw new Error(`statuses.ts: '${id}' is in the pack AND hand-typed — one owner only`)
+export const STATUSES = omitDisabled({ ...PACK_STATUSES, ...RAW_TEST_STATUSES })

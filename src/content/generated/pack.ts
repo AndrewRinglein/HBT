@@ -2287,5 +2287,102 @@ export const UNIT_PACK = {
         ]
       }
     ]
+  },
+  "statuses": {
+    "status.slow": {
+      "id": "status.slow",
+      "name": "Slow",
+      "shape": "counter",
+      "family": "pool",
+      "stacking": "add",
+      "decayPerPhase": 1,
+      "reducesMovement": true
+    },
+    "status.dazed": {
+      "id": "status.dazed",
+      "name": "Dazed",
+      "shape": "counter",
+      "family": "pool",
+      "stacking": "add",
+      "decayPerPhase": 1,
+      "aiControlled": true
+    },
+    "status.powers-locked": {
+      "id": "status.powers-locked",
+      "name": "Powers Locked",
+      "shape": "counter",
+      "family": "duration",
+      "stacking": "add",
+      "decayPerPhase": 1,
+      "locksPowers": true
+    },
+    "status.bleed": {
+      "id": "status.bleed",
+      "name": "Bleed",
+      "shape": "counter",
+      "family": "magnitude",
+      "stacking": "add",
+      "decayPerPhase": 1,
+      "tick": "damage",
+      "tickDamageType": "true",
+      "shedByHealing": "half"
+    },
+    "status.protection": {
+      "id": "status.protection",
+      "name": "Protection",
+      "shape": "pool",
+      "family": "magnitude",
+      "stacking": "add",
+      "decayPerPhase": 1,
+      "reducesIncomingDamage": true
+    },
+    "status.burn": {
+      "id": "status.burn",
+      "name": "Burn",
+      "shape": "counter",
+      "family": "magnitude",
+      "stacking": "add",
+      "decayPerPhase": 1,
+      "tick": "damage",
+      "halvesHealing": true,
+      "tickDamageType": "magic"
+    },
+    "status.poison": {
+      "id": "status.poison",
+      "name": "Poison",
+      "shape": "counter",
+      "family": "magnitude",
+      "stacking": "add",
+      "decayPerPhase": 1,
+      "tick": "damage",
+      "tickDamageType": "magic"
+    },
+    "status.regeneration": {
+      "id": "status.regeneration",
+      "name": "Regeneration",
+      "shape": "counter",
+      "family": "magnitude",
+      "stacking": "add",
+      "decayPerPhase": 1,
+      "tick": "heal"
+    },
+    "status.weak": {
+      "id": "status.weak",
+      "name": "Weak",
+      "shape": "modifier",
+      "family": "magnitude",
+      "stacking": "add",
+      "decayPerPhase": 1,
+      "reducesOutgoingDamage": true
+    },
+    "status.stun": {
+      "id": "status.stun",
+      "name": "Stun",
+      "shape": "counter",
+      "family": "duration",
+      "stacking": "add",
+      "decayPerPhase": 1,
+      "blocksAction": true
+    }
   }
 } as const

@@ -6,6 +6,8 @@
 import { UNIT_PACK } from './generated/pack.js'
 import type { AbilityDef, AttackDef, CritRow, UnitDef } from '../core/types.js'
 import { validateTrigger } from '../core/trigger.js'
+import type { StatusDef } from '../core/status.js'
+import { statusDamage, statusHeal } from '../core/status.js'
 
 const REQUIRED = ['typeId', 'name', 'side', 'maxHp', 'armor', 'resist', 'accuracy', 'dodge',
   'strength', 'precision', 'magic', 'spirit', 'role', 'movement', 'reach',
@@ -92,6 +94,38 @@ export function packCritChart(): readonly CritRow[] {
     }
   }
   return raw
+}
+
+/**
+ * The Codex status rows — pack.statuses (2026-09-02). Andrew: "Yes — Codex
+ * owns the rows"; the engine owns the behaviour. A pack row is plain data:
+ * the behaviour flags the converter compiled from the row's one sentence,
+ * plus `tick` ('damage' | 'heal'), which becomes the End-of-Phase hook HERE —
+ * the only place a status row turns into a function. Validated loudly.
+ */
+type PackStatusRow = Omit<StatusDef, 'onPhaseEnd'> & { readonly tick?: 'damage' | 'heal'; readonly family?: string }
+const STATUS_FLAGS = ['tickDamageType', 'decayPerPhase', 'reducesIncomingDamage', 'reducesOutgoingDamage',
+  'blocksAction', 'reducesMovement', 'halvesHealing', 'locksPowers', 'shedByHealing', 'aiControlled', 'tick', 'family'] as const
+export function packStatuses(): Readonly<Record<string, StatusDef>> {
+  const raw = (UNIT_PACK as { statuses?: Readonly<Record<string, PackStatusRow>> }).statuses ?? {}
+  const out: Record<string, StatusDef> = {}
+  for (const [k, r] of Object.entries(raw)) {
+    if (k !== r.id) throw new Error(`unit pack: status key '${k}' names id '${r.id}'`)
+    if (!r.id.startsWith('status.')) throw new Error(`unit pack: status '${k}' is not a status.* id`)
+    if (!['counter', 'pool', 'modifier', 'flag'].includes(r.shape)) throw new Error(`unit pack: status '${k}' has shape '${String(r.shape)}'`)
+    if (typeof r.decayPerPhase !== 'number') throw new Error(`unit pack: status '${k}' has no decayPerPhase — regenerate the pack`)
+    for (const f of Object.keys(r)) {
+      if (!['id', 'name', 'shape', 'stacking', ...STATUS_FLAGS].includes(f)) throw new Error(`unit pack: status '${k}' carries unknown field '${f}' — the loader does not know it, so the engine would ignore it silently`)
+    }
+    if (r.tick === 'damage' && r.tickDamageType === undefined) throw new Error(`unit pack: status '${k}' ticks damage with no type`)
+    const { tick, ...def } = r
+    const id = r.id
+    const hook = tick === 'damage' ? (ctx: Parameters<typeof statusDamage>[0], unitId: number, value: number) => statusDamage(ctx, unitId, value, id)
+      : tick === 'heal' ? (ctx: Parameters<typeof statusHeal>[0], unitId: number, value: number) => statusHeal(ctx, unitId, value, id)
+      : undefined
+    out[id] = { ...def, ...(hook ? { onPhaseEnd: hook } : {}) }
+  }
+  return out
 }
 
 /** The authored enemies' attacks — generated rows, validated like the units. */

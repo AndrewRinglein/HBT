@@ -3804,3 +3804,34 @@ one other place, the converter's chart compile. The viewer's pip colour
 followed the rename. Hand-landed under the reaper protocol; seal unwritten.
 
 IRON GAUNTLET: NOT PASSED — 1 FLAG(S) WARNED
+
+## pack.statuses — LANDED `1a1e9f8`
+2026-09-03 04:09
+
+  PASS  dependencies landed
+  WARN  not already decided — 4 candidate ruling(s) — READ BEFORE ASKING: ../STATE.md:18 · ../STATE.md:20
+  PASS  typecheck
+  PASS  full test suite
+  PASS  gate 1 — the id appears in a real battle — status.poison: 18 log lines, 18 fired, 13 changed state · status.protection: 6 log lines, 6 fired, 4 changed state
+  PASS  brought its own tests — test/pack-statuses.test.ts
+  PASS  existing tests untouched
+  PASS  control battles unchanged
+  PASS  content has a published source — 33 ids without a published source — 8 NEW from THIS item, seal withheld until published
+  PASS  hardcode scan — core knows mechanisms, never names
+  PASS  generalizes — the second instance costs zero engine code — shape 'data' — not a mechanism, exempt
+  PASS  naming — new content ids use declared kinds
+  PASS  naming — no banned words invented
+  PASS  kill switch — the tests fail without the content — tests fail without status.poison,status.protection — they genuinely test it
+
+Post-land audit, run by hand after the reaper killed the gate mid-audit (the
+gate's pre-land checks all ran and it committed; the host's 178 s cap ended it
+during the suite rerun): suite 53 files / 475 on the committed tree; control
+battles IDENTICAL to golden — the swap from hand-typed rows to compiled Codex
+rows moved nothing, which is the proof the compile is faithful. Two flags
+warned: the decided-scan (4 candidates, all STATE.md mentions of this very
+plan) and the content check's "8 NEW" — an ATTRIBUTION ARTEFACT: this item
+added no ids; gauntlet.json's inventedCount (25) was stale because the three
+hand-landings before it never maintained the counter (the real growth was
+showcase.gash-variant, fix.bleed-magnitude). Counter now 33. Seal withheld.
+
+IRON GAUNTLET: NOT PASSED — 2 FLAG(S) WARNED
