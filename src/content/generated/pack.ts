@@ -2206,7 +2206,7 @@ export const UNIT_PACK = {
         "effects": [
           {
             "kind": "status",
-            "statusId": "status.dazed",
+            "statusId": "status.powers-locked",
             "value": 3
           }
         ]

@@ -3777,3 +3777,30 @@ the Sky Pirate's Punch is dead too (javelin.stab is cost 0 and first).
 Hand-landed under the reaper protocol; seal unwritten.
 
 IRON GAUNTLET: NOT PASSED — 1 FLAG(S) WARNED
+
+## fix.dazed-split — LANDED `e0f75c2` **NEEDS REVIEW**
+2026-09-03T03:59:01.753Z
+
+  PASS  dependencies landed
+  PASS  typecheck
+  PASS  full test suite — 52 files / 470 passed, 1 todo
+  PASS  gate 1 — status.powers-locked: 1 log line, fired, changed state (a chart roll in the panel)
+  PASS  brought its own tests — test/dazed-split.test.ts
+  PASS  control battles — changesBaseline declared; six of eight moved (the chart's status id is in the events; flanks and showcase rolled no Dazed) — re-blessed
+  PASS  content has a published source — Codex row status.powers-locked (content b9a4062, S52) + the dictated chart row; status.dazed per S51
+  PASS  hardcode scan — src/core gained one data flag (aiControlled), no id
+  PASS  generalizes — the chart's status effect kind names whichever row the Codex says: status.powers-locked (1) and status.bleed (11 lines, 8 changed)
+  PASS  naming — status.* is a declared kind (content family since today)
+  PASS  kill switch — with status.powers-locked disabled the touched tests fail (5 of 16)
+  WARN  existing tests untouched — crit.test.ts's two Dazed assertions renamed to the new id (reasons at the edits) — lands FLAGGED
+
+Dazed is two things, and now two ids. status.dazed carries the Codex meaning
+("hands it to the AI") as a recorded status with no engine behaviour — every
+unit here is AI-driven — flagged aiControlled for the layers above; nothing in
+the standard battle applies it yet, and the test says so. The chart's Dazed
+row applies status.powers-locked (locksPowers), a PLACEHOLDER id authored as a
+Codex row (settled.json, source carries Andrew's words) and named in exactly
+one other place, the converter's chart compile. The viewer's pip colour
+followed the rename. Hand-landed under the reaper protocol; seal unwritten.
+
+IRON GAUNTLET: NOT PASSED — 1 FLAG(S) WARNED

@@ -85,15 +85,30 @@ const RAW_STATUSES: Readonly<Record<string, StatusDef>> = {
     id: 'test.status.ward', name: 'Ward (testing)', shape: 'pool', stacking: 'add',
     reducesIncomingDamage: true,
   },
-  'status.dazed': {
+  'status.powers-locked': {
     // PUBLISHED: the Critical Injury Chart (settled.json critChart, dictated
-    // 2026-08-27) — "Dazed | loses access to class powers, 3 turns". A
-    // counter: locksPowers is read by canUsePower; standard decay 1 per own
-    // End of Activation, and one activation per Turn makes value 3 the
-    // dictated three turns. Attacks and movement are untouched — only the
-    // POWERS are gone.
-    id: 'status.dazed', name: 'Dazed', shape: 'counter', stacking: 'add',
+    // 2026-08-27) — "Dazed | loses access to class powers, 3 turns" — and
+    // the Codex row status.powers-locked (S52, 2026-09-02). fix.dazed-split:
+    // the chart's Dazed ROW and the Dazed STATUS are two different things
+    // (Andrew 2026-09-02: "there is a critical effect, and then there is a
+    // status effect"), so the row applies THIS status. Placeholder id, chosen
+    // so nothing is invented; renamed in the Codex row and the converter's
+    // chart compile, nowhere else. A counter: locksPowers is read by
+    // canUsePower; standard decay 1 per own End of Activation, and one
+    // activation per Turn makes value 3 the dictated three turns. Attacks and
+    // movement are untouched — only the POWERS are gone.
+    id: 'status.powers-locked', name: 'Powers Locked', shape: 'counter', stacking: 'add',
     locksPowers: true,
+  },
+  'status.dazed': {
+    // PUBLISHED: settled.json statuses (S51, 2026-09-01/02) — "Takes the unit
+    // out of its owner's control and hands it to the AI." In the simulator
+    // EVERY unit is AI-driven already, so the engine carries Dazed as a
+    // recorded status — applied, decayed, expired, visible in the log for the
+    // UI and the kingdom to act on — with no behaviour of its own. aiControlled
+    // is data for the layers above; nothing in src/core reads it.
+    id: 'status.dazed', name: 'Dazed', shape: 'counter', stacking: 'add',
+    aiControlled: true,
   },
   'status.weak': {
     // PUBLISHED: 1-EFFECTS-SETTLED.md § status.* (row added 2026-08-20);

@@ -249,7 +249,8 @@ const STCOL = {
   'status.weak':'#b48ae0',          // drained violet
   'status.slow':'#6fb3df',          // ice blue
   'status.protection':'#e8c35a',    // shield gold
-  'status.dazed':'#c9a86b',         // concussed amber — station.crit 2026-08-27
+  'status.powers-locked':'#c9a86b', // concussed amber — station.crit 2026-08-27; renamed fix.dazed-split 2026-09-02
+  'status.dazed':'#a68bd6',         // handed to the AI — S51
   'test.status.daze':'#c4b25a', 'test.status.hobble':'#4f7f9f',
   'test.status.ward':'#a08840', 'test.status.enfeeble':'#7a5f96',
 };

@@ -39,7 +39,10 @@ describe('the chart arrives as ruled data', () => {
     // magnitude) and lets the pack carry whatever the Codex says.
     expect(rowOf('bleeding').effects).toEqual([{ kind: 'status', statusId: 'status.bleed', value: expect.any(Number) }])
     expect((rowOf('bleeding').effects[0] as { value: number }).value).toBeGreaterThan(0)
-    expect(rowOf('dazed').effects).toEqual([{ kind: 'status', statusId: 'status.dazed', value: 3 }])
+    // fix.dazed-split (2026-09-02): the chart's Dazed ROW applies
+    // status.powers-locked — the Dazed STATUS is a different thing (Andrew:
+    // "there is a critical effect, and then there is a status effect").
+    expect(rowOf('dazed').effects).toEqual([{ kind: 'status', statusId: 'status.powers-locked', value: 3 }])
     expect(rowOf('nerve-struck').effects).toEqual([{ kind: 'loseMaxHp', value: 2 }])
     expect(rowOf('winded').effects).toEqual([{ kind: 'loseStamina', value: 4 }])
     // floors only where dictated
@@ -133,7 +136,7 @@ describe('rollCritEffect — each row does exactly what it says', () => {
     oath.hp = 1 // someone to heal
     expect(canUsePower(ctx, lucius.id, oath.id, 'power.holy-symbol.heal')).toBe(true)
     rollCritEffect(ctx, z.id, lucius.id, 1, 'attack.zombie.bite')
-    expect(lucius.statuses.find((s) => s.id === 'status.dazed')?.value).toBe(3)
+    expect(lucius.statuses.find((s) => s.id === 'status.powers-locked')?.value).toBe(3)   // fix.dazed-split 2026-09-02
     expect(canUsePower(ctx, lucius.id, oath.id, 'power.holy-symbol.heal'),
       '"loses access to class powers"').toBe(false)
     beginActivation(ctx, lucius.id, 'test')

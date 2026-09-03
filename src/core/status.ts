@@ -78,6 +78,12 @@ export type StatusDef = {
    * source — a power, a Regeneration tick — can forget it.
    */
   readonly shedByHealing?: 'half'
+  /**
+   * Codex S51: "Takes the unit out of its owner's control and hands it to the
+   * AI." Read by NOTHING in the engine — every unit here is AI-driven — and
+   * carried so the log, the viewer and the kingdom can see who is Dazed.
+   */
+  readonly aiControlled?: boolean
 }
 
 export function valueOf(u: Unit, id: string): number {
