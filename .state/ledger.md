@@ -4934,3 +4934,23 @@ Working method for this session: the engine and content repos are cloned to a
 local disk (the mounted folder is I/O-bound — 118 s suite vs 19 s), the gate
 runs to completion there in one call, and landings are fast-forwarded into the
 mounted repos. No hand-finished landings; seals are the gate's own.
+
+## fix.activation-end-fires — LANDED `f169f14`
+2026-09-03 08:16
+
+  PASS  dependencies landed
+  WARN  not already decided — 4 candidate ruling(s) — READ BEFORE ASKING: COMBAT-SEQUENCE.md:220 · ../COMBAT-DESIGN.md:477
+  PASS  typecheck
+  PASS  full test suite
+  PASS  gate 1 — the id appears in a real battle — trigger.test-eoa.brace: 57 log lines, 57 fired, 19 changed state
+  PASS  brought its own tests — test/activation-end.test.ts
+  PASS  existing tests untouched
+  PASS  control battles unchanged
+  PASS  content has a published source — 13 ids without a published source (3 awaiting publication from earlier items — see audit)
+  PASS  hardcode scan — core knows mechanisms, never names
+  PASS  generalizes — the second instance costs zero engine code — shape 'plumbing' — not a mechanism, exempt
+  PASS  naming — new content ids use declared kinds
+  PASS  naming — no banned words invented
+  PASS  kill switch — the tests fail without the content — tests fail without trigger.test-eoa.brace — they genuinely test it
+
+IRON GAUNTLET: NOT PASSED — 1 FLAG(S) WARNED

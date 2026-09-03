@@ -251,6 +251,16 @@ export type FireContext = {
   readonly causeId: string
   /** Per-unit ordinal for this attack, so the RNG key is structural (Law 4). */
   readonly ordinal: number
+  /**
+   * An extra key for hooks whose ordinal is NOT the attack ordinal
+   * (fix.activation-end-fires, 2026-09-03). `onActivationEnd` rolls under the
+   * ACTIVATION ordinal, and without this an activation-end roll on a unit
+   * could draw the same key as one of its attack rolls (targetId null reads
+   * as 0, which is a real unit id) — the strict RNG would throw on the
+   * collision. Appended only when present, so every existing key is
+   * unchanged and the control battles stay byte-identical.
+   */
+  readonly keyTag?: number
 }
 
 export function selectOf(ctx: Ctx, t: Trigger, fc: FireContext): number[] {
@@ -324,7 +334,9 @@ export function fireTriggers(ctx: Ctx, hook: Hook, fc: FireContext): void {
     // The key is structural and includes the SLOT. Without it, two 20% triggers on
     // the same hit draw the same key, get a bit-identical value, and always fire
     // together — the correlated-stream bug this RNG exists to prevent.
-    const roll = roll100(ctx.rng, 'trigger', owner.uid, fc.targetId ?? 0, fc.ordinal, slot)
+    const roll = fc.keyTag === undefined
+      ? roll100(ctx.rng, 'trigger', owner.uid, fc.targetId ?? 0, fc.ordinal, slot)
+      : roll100(ctx.rng, 'trigger', owner.uid, fc.targetId ?? 0, fc.ordinal, slot, fc.keyTag)
     const fired = roll <= chance.value
 
     emit(ctx, 'trigger.rolled', t.id, {

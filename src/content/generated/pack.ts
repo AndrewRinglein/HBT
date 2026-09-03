@@ -701,6 +701,18 @@ export const UNIT_PACK = {
       "triggers": [
         {
           "id": "trigger.demon-hound.regeneration",
+          "hook": "onActivationEnd",
+          "chance": 100,
+          "select": "self",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.regeneration",
+            "value": 1
+          },
+          "source": "unit.demon-hound"
+        },
+        {
+          "id": "trigger.demon-hound.regeneration",
           "hook": "onTakingDamage",
           "chance": 100,
           "select": "target",
@@ -747,7 +759,20 @@ export const UNIT_PACK = {
       "tags": [
         "demon"
       ],
-      "triggers": []
+      "triggers": [
+        {
+          "id": "trigger.doombringer.protection",
+          "hook": "onActivationEnd",
+          "chance": 100,
+          "select": "self",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.protection",
+            "value": 1
+          },
+          "source": "unit.doombringer"
+        }
+      ]
     },
     {
       "typeId": "unit.eyeblight",
@@ -1794,7 +1819,20 @@ export const UNIT_PACK = {
       "tags": [
         "beast"
       ],
-      "triggers": []
+      "triggers": [
+        {
+          "id": "trigger.werewolf.regeneration",
+          "hook": "onActivationEnd",
+          "chance": 100,
+          "select": "self",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.regeneration",
+            "value": 2
+          },
+          "source": "unit.werewolf"
+        }
+      ]
     },
     {
       "typeId": "unit.zombie",
@@ -7613,7 +7651,7 @@ export const UNIT_PACK = {
       "abilities": [],
       "triggers": [],
       "gaps": [
-        "onActivationEnd: heal 1 — hook: onActivationEnd (declared, engine never fires it)"
+        "onActivationEnd: heal 1 — trigger shape unparsed"
       ]
     },
     "item.wraithform-cloak": {
@@ -7743,9 +7781,19 @@ export const UNIT_PACK = {
       },
       "grants": [],
       "abilities": [],
-      "triggers": [],
-      "gaps": [
-        "onActivationEnd: gain 2 Protection — hook: onActivationEnd (declared, engine never fires it)"
+      "triggers": [
+        {
+          "id": "trigger.battlemages-cuirass.protection",
+          "hook": "onActivationEnd",
+          "chance": 100,
+          "select": "self",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.protection",
+            "value": 2
+          },
+          "source": "item.battlemages-cuirass"
+        }
       ]
     },
     "item.troll-gut-vest": {
@@ -7910,7 +7958,7 @@ export const UNIT_PACK = {
       "abilities": [],
       "triggers": [],
       "gaps": [
-        "onActivationEnd: gain +1 Armor until the end of your next Turn — hook: onActivationEnd (declared, engine never fires it)"
+        "onActivationEnd: gain +1 Armor until the end of your next Turn — trigger shape unparsed"
       ]
     },
     "item.cloak-of-ghostform": {
@@ -10602,7 +10650,7 @@ export const UNIT_PACK = {
       "abilities": [],
       "triggers": [],
       "gaps": [
-        "onActivationEnd: heal 2 — hook: onActivationEnd (declared, engine never fires it)",
+        "onActivationEnd: heal 2 — trigger shape unparsed",
         "slayer: {\"undead\":3,\"demon\":3} — item field: slayer"
       ]
     },
@@ -10795,7 +10843,7 @@ export const UNIT_PACK = {
       "abilities": [],
       "triggers": [],
       "gaps": [
-        "onActivationEnd: heal 2 and remove 1 Weak — hook: onActivationEnd (declared, engine never fires it)"
+        "onActivationEnd: heal 2 and remove 1 Weak — trigger shape unparsed"
       ]
     },
     "item.stormcallers-orb": {
@@ -11014,6 +11062,18 @@ export const UNIT_PACK = {
               "kind": "damage",
               "amount": 1,
               "damageType": "true"
+            },
+            "source": "unit.test-arc-golem"
+          },
+          {
+            "id": "trigger.test-eoa.brace",
+            "hook": "onActivationEnd",
+            "chance": 100,
+            "select": "self",
+            "effect": {
+              "kind": "status.apply",
+              "statusId": "status.protection",
+              "value": 2
             },
             "source": "unit.test-arc-golem"
           }

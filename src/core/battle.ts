@@ -7,6 +7,7 @@ import { beginActivation, beginTurn, emit, endActivation, regenStamina, setOutco
 import { appliesOnActivationEndOf, stripsOnActivationEndOf, terrainIdOf } from '../content/maps.js'
 import { advanceBleedOuts, checkVictory, settle } from './settle.js'
 import { applyStatus, isBlocked, reduceStatus, tickUnitStatuses } from './status.js'
+import { HOOKS, fireTriggers } from './trigger.js'
 import type { Ctx, Phase, Side } from './types.js'
 
 function activationOrder(ctx: Ctx, side: Side): number[] {
@@ -70,6 +71,19 @@ export function endOfActivation(ctx: Ctx, unitId: number): void {
   for (const sid of strips) reduceStatus(ctx, unitId, sid, 1, terrainIdOf(t))
   const applies = appliesOnActivationEndOf(t)
   for (const [sid, n] of applies) applyStatus(ctx, unitId, sid, n, terrainIdOf(t))
+  // Rung 2 — `onActivationEnd` triggers fire (fix.activation-end-fires,
+  // 2026-09-03). The hook was in HOOKS, validated, glossed and never called —
+  // "indistinguishable from a working one until a piece of content depends on
+  // it" (COMBAT-SEQUENCE, End of Activation rung 2). Fires ONCE per
+  // Activation for the unit that acted, whatever it did — an idle (stunned)
+  // unit reaches here too, through the isBlocked branch in runPhase. Sits
+  // between the terrain rungs and the status tick, as the ladder orders it.
+  // The ordinal is the activation's, so the RNG key is structural (Law 4).
+  fireTriggers(ctx, 'onActivationEnd', {
+    ownerId: unitId, targetId: null, causeId: 'activation.end', ordinal: u.activationOrdinal,
+    keyTag: HOOKS.indexOf('onActivationEnd'),
+  })
+  if (u.lifeState !== 'standing') return   // a trigger may have killed its owner
   // Rung 3 — THE STATUS TICK, moved here from End of Phase (RULED 2026-08-26:
   // "statuses are supposed to resolve at the end of each unit's activation...
   // a unit can die at the end of its activation"). Runs AFTER the terrain

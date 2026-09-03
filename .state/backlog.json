@@ -460,7 +460,13 @@
   "shape": "plumbing",
   "spec": "onActivationEnd is in HOOKS, validated, glossed and banned-alias documented, and fireTriggers(ctx,'onActivationEnd',...) appears nowhere in src/. Call it at the end of every activation, for the unit that acted, whatever it did.",
   "expect": "a unit carrying an onActivationEnd trigger fires it once per activation, including an activation where it neither moved nor acted",
-  "changesBaseline": false
+  "changesBaseline": false,
+  "probeIds": [
+   "trigger.test-eoa.brace"
+  ],
+  "status": "done",
+  "sha": "f169f14",
+  "gauntlet": "not passed — 1 flag(s) warned"
  },
  {
   "id": "fix.unit-tags",
