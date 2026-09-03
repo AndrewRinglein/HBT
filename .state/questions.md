@@ -109,3 +109,9 @@ sweepable at 50. The same message ruled every chart row genuinely reachable
 (the dice keys widened — Winded fires in real battles now) and multiple
 criticals ("do two criticals" / "do three criticals"), landed as
 station.crit-count (8780794).
+
+## From the kingdom session, 2026-09-03 (G9 seam.loadout)
+
+- **ISC-003 red on engine HEAD (52c2ba8): the End of Activation ladder runs after `battle.end`.** In `test.seam.door` (map.open, oathblade + osric v two test zombies, seed 3) the axe kills the last zombie at seq 218, `battle.end` is seq 219, then `activation.end`, then `status.poison` deals `damage.applied` to unit 0 (seq 221) and regeneration heals it. The kingdom's fold holds that nothing is damaged after the battle has ended (corrected 2026-09-01, not weakened). Filed as `fix.post-end-ladder`. Every kingdom landing tonight fails "nothing regresses" on this alone.
+- **`applyItems` refuses the ruled spare weapon** (`seam.spare-weapons`, filed): a hero fitted with longsword + knight-shield + dagger-in-the-item-slot is "more than two hands of weapons". The kingdom leaves the spare behind at fielding under `SWITCHES.spareWeapons` and names it on the battle screen.
+- **203 kingdom-generated rows are not in ITEMS** (`pack.derived-rows`, filed): the 30 masterwork and 173 enchanted tier-2 rows the Forge sells.

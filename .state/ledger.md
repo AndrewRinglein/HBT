@@ -6167,3 +6167,42 @@ index 5b2b663..c53cb25 100644
 </details>
 
 IRON GAUNTLET: NOT PASSED — 2 FLAG(S) WARNED
+
+## fix.post-end-ladder — LANDED `c5bf0b8` **NEEDS REVIEW**
+2026-09-03 20:06
+
+  PASS  dependencies landed
+  WARN  not already decided — 4 candidate ruling(s) — READ BEFORE ASKING: ../STATE.md:18 · ../STATE.md:20
+  PASS  typecheck
+  PASS  full test suite
+  PASS  gate 1 — the id appears in a real battle
+  PASS  brought its own tests — test/post-end-ladder.test.ts
+  PASS  existing tests untouched
+  PASS  control battles unchanged — will re-bless at commit — this item DECLARED it changes the control battles: map.open 1db2df1b->b0581857, map.ridge 98e0cdff->e24089e2, map.flanks 5b1a1eee->1cc8f786, map.highlands d28a141d->93aa3515, map.field c00e4d6d->273d3fea, map.thicket e05f5f86->f655af93, test.map.embers 0b0d2c16->6c6b7e90, test.map.showcase 036f0767->43c0fbab
+  PASS  content has a published source — 20 ids without a published source (10 awaiting publication from earlier items — see audit)
+  PASS  hardcode scan — core knows mechanisms, never names
+  PASS  generalizes — the second instance costs zero engine code
+  PASS  naming — new content ids use declared kinds
+  PASS  naming — no banned words invented
+  PASS  kill switch — the tests fail without the content
+
+<details><summary>Existing tests were edited — review this diff</summary>
+
+```diff
+```
+</details>
+
+IRON GAUNTLET: NOT PASSED — 1 FLAG(S) WARNED; 3 EXEMPTION(S) TAKEN
+
+```
+effect of fix.post-end-ladder — 25 paired battles per map, WITH vs WITHOUT
+  map.open: heroWins 25->25 (+0)  meanTurns 4.0->4.0
+  map.ridge: heroWins 25->25 (+0)  meanTurns 4.5->4.5
+  map.flanks: heroWins 25->25 (+0)  meanTurns 4.0->4.0
+  map.highlands: heroWins 25->25 (+0)  meanTurns 4.9->4.9
+  map.field: heroWins 25->25 (+0)  meanTurns 6.1->6.1
+  map.thicket: heroWins 25->25 (+0)  meanTurns 5.3->5.3
+  test.map.embers: heroWins 25->25 (+0)  meanTurns 2.8->2.8
+  test.map.showcase: heroWins 25->25 (+0)  meanTurns 3.9->3.9
+NO MEASURABLE EFFECT at this sample size — consequence clause caught state changes, but outcomes did not move. Consider a sweep with more replicates before drawing balance conclusions.
+```

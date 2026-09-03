@@ -2144,5 +2144,56 @@
   "attempts": 1,
   "sha": "776c550",
   "gauntlet": "not passed — 2 flag(s) warned"
+ },
+ {
+  "id": "seam.spare-weapons",
+  "kind": "engine",
+  "shape": "plumbing",
+  "spec": "Filed from the kingdom session 2026-09-03 (seam.loadout, G9). The ruled slot model (GEAR-DESIGN.md §1, 2026-09-02) lets a weapon past the two hands ride in a general item slot and STILL grant its attacks (GEAR-IMPLEMENTATION.md §3 switch equip.spareGrants, 'yes (ruled)'). applyItems counts hands over every weapon in heroItems and throws 'would wield more than two hands of weapons' — so a hero the kingdom legally fitted with a longsword, a shield and a dagger in the item slot cannot be fielded. Widen the check: the first two hands' worth of weapons are the hands; any weapon past them is a spare that grants attacks (and, per the kingdom's slot model, costs an item slot the engine need not count). Until this lands the kingdom's SWITCHES.spareWeapons leaves the spare behind at fielding and says so on the battle screen.",
+  "expect": "a hero fielded with [longsword, knight-shield, dagger] carries all three, has the dagger's attacks, and unit.equipped names all three; four hands of weapons is still refused",
+  "changesBaseline": false,
+  "needs": [
+   "seam.items-per-unit"
+  ],
+  "probeIds": [],
+  "variants": [
+   "item.dagger",
+   "item.shortbow"
+  ],
+  "note": "Filed from the kingdom session 2026-09-03; the kingdom's ISC-022/035/043/044 hit it the moment hero.equipped went through the seam."
+ },
+ {
+  "id": "pack.derived-rows",
+  "kind": "content",
+  "shape": "data",
+  "spec": "Filed from the kingdom session 2026-09-03 (seam.loadout, G9). The kingdom generates 30 masterwork rows (item.<base>.masterwork: +1 Max Stamina, tier 2) and 173 enchanted tier-2 rows (item.<base>.<enchant>) from the codex per GEAR-DESIGN.md §3 — the Forge sells them. The engine's ITEMS registry has the 274 codex items and the 236 tier-3 combinations, not these 203, so a hero who buys one off the shelf and wears it into battle is refused by applyItems ('not an item in the registry'). Either the pack derives the same rows by the same rule (the kingdom's tools/mk-items.mjs is the reference) or the kingdom hands the engine a row, not an id — the first keeps one owner per row.",
+  "expect": "every id in kingdom/src/content/generated/items.ts resolves in the engine's ITEMS; a hero fielded with item.longsword.masterwork has +1 maxStamina over the longsword",
+  "changesBaseline": false,
+  "needs": [
+   "pack.items"
+  ],
+  "probeIds": [],
+  "variants": [
+   "item.longsword.masterwork",
+   "item.ancient-tome.cruel"
+  ],
+  "note": "Filed from the kingdom session 2026-09-03."
+ },
+ {
+  "id": "fix.post-end-ladder",
+  "kind": "engine",
+  "shape": "rule",
+  "spec": "Found by the kingdom's ISC-003 probe 2026-09-03 against engine 52c2ba8 (green at 096dd47-era 8de1620): after battle.end (the axe kills the last zombie mid-Activation) the End of Activation ladder still runs — status.poison ticks damage.applied on a hero, status.reduced/expired, regeneration heal.applied — all AFTER the outcome is set. The 2026-09-01 correction to that probe holds that nothing is damaged after the battle has ended; today's landings (movement.zone-of-control, movement.attack-of-opportunity, attack.multihit, capability.deathbed, capability.surge) moved it. Either the ladder must not run once battle.end is emitted, or battle.end must come after the ladder — COMBAT-SEQUENCE.md decides which; the kingdom's fold reads the log and asserts the first.",
+  "expect": "the kingdom's test/isc-003.test.ts is green again on the engine's HEAD: no damage.applied or life.* event carries a seq past battle.end",
+  "changesBaseline": true,
+  "needs": [],
+  "note": "Filed from the kingdom session 2026-09-03. Until it lands, every kingdom landing's 'nothing regresses' check is red on ISC-003 through no change of the kingdom's.",
+  "generalizationExempt": "an engine rule of the turn loop — after battle.end, nothing; no content instance",
+  "killSwitchExempt": "no content id carries the loop guard; the test asserts no state change after battle.end across the panel",
+  "status": "done-needs-review",
+  "attempts": 1,
+  "unreachable": "a REMOVAL: the fix is that the ladder no longer runs after battle.end — there is no event it adds, only lines it stops; the test asserts the absence across the panel",
+  "sha": "c5bf0b8",
+  "gauntlet": "not passed — 1 flag(s) warned; 3 exemption(s) taken"
  }
 ]

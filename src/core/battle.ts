@@ -37,6 +37,11 @@ function runPhase(ctx: Ctx, phase: Phase): void {
       continue
     }
     runActivation(ctx, id)
+    // fix.post-end-ladder (2026-09-03, filed by the kingdom's ISC-003 probe):
+    // a battle decided mid-Activation is OVER — no surge, no End of Activation
+    // ladder, nothing damaged after battle.end. The idle branch above has the
+    // same guard by construction (isBlocked units never end a battle).
+    if (ctx.state.outcome) return
     // THE SURGE CHECK — capability.surge (2026-09-03), COMBAT-SEQUENCE: heroes
     // only; `Surge Chance += Surge`, roll; a hit grants 1 + Stamina Regen,
     // zeroes the chance and loops back to movement INSIDE this Activation;
@@ -96,6 +101,7 @@ function surgeLoop(ctx: Ctx, id: number): void {
 export function endOfActivation(ctx: Ctx, unitId: number): void {
   const u = ctx.state.units[unitId]!
   if (u.lifeState !== 'standing') return
+  if (ctx.state.outcome) return   // fix.post-end-ladder: nothing after battle.end
   const t = ctx.state.terrain[u.hex] ?? 0
   const strips = stripsOnActivationEndOf(t)
   for (const sid of strips) reduceStatus(ctx, unitId, sid, 1, terrainIdOf(t))
