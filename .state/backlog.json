@@ -1530,12 +1530,18 @@
   "expect": "UNITS carries a hero.base.* row for each of the 24 with attacks and folded kit stats per the existing three; the kingdom's src/content/heroes.ts can then list them by id with no alpha-* unitType left",
   "changesBaseline": false,
   "needs": [],
-  "probeIds": [],
+  "probeIds": [
+   "hero.base.mage-fire",
+   "hero.base.rogue-skull"
+  ],
   "variants": [
    "hero.base.mage-fire",
    "hero.base.rogue-skull"
   ],
-  "note": "Filed from the kingdom session 2026-09-02; the kingdom reads the engine and never edits it. Until this lands the kingdom's pool is five heroes and the opening drafts what the pool holds."
+  "note": "Filed from the kingdom session 2026-09-02; the kingdom reads the engine and never edits it. Until this lands the kingdom's pool is five heroes and the opening drafts what the pool holds.",
+  "status": "done-needs-review",
+  "sha": "a88fe5f",
+  "gauntlet": "not passed — 3 flag(s) warned"
  },
  {
   "id": "pack.items",

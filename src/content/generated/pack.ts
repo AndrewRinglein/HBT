@@ -1227,6 +1227,110 @@ export const UNIT_PACK = {
       "reach": 1,
       "staminaCost": 0
     },
+    "attack.greatsword.hew": {
+      "id": "attack.greatsword.hew",
+      "name": "Hew",
+      "kind": "melee",
+      "damageType": "physical",
+      "bonus": 2,
+      "stat": "strength",
+      "reach": 1,
+      "staminaCost": 2
+    },
+    "attack.greatsword.great-cleave": {
+      "id": "attack.greatsword.great-cleave",
+      "name": "Great Cleave",
+      "kind": "melee",
+      "damageType": "physical",
+      "bonus": 1,
+      "stat": "strength",
+      "reach": 1,
+      "staminaCost": 3,
+      "area": "arc"
+    },
+    "attack.punch": {
+      "id": "attack.punch",
+      "name": "Punch",
+      "kind": "melee",
+      "damageType": "physical",
+      "bonus": -1,
+      "stat": "strength",
+      "reach": 1,
+      "staminaCost": 0,
+      "crit": -5
+    },
+    "attack.longsword.slash": {
+      "id": "attack.longsword.slash",
+      "name": "Slash",
+      "kind": "melee",
+      "damageType": "physical",
+      "bonus": 1,
+      "stat": "strength",
+      "reach": 1,
+      "staminaCost": 1
+    },
+    "attack.longsword.stab": {
+      "id": "attack.longsword.stab",
+      "name": "Stab",
+      "kind": "melee",
+      "damageType": "physical",
+      "bonus": 2,
+      "stat": "strength",
+      "reach": 1,
+      "staminaCost": 2,
+      "crit": 3
+    },
+    "attack.knight-shield.shield-slam": {
+      "id": "attack.knight-shield.shield-slam",
+      "name": "Shield Slam",
+      "kind": "melee",
+      "damageType": "physical",
+      "bonus": 0,
+      "stat": "strength",
+      "reach": 1,
+      "staminaCost": 2
+    },
+    "attack.elfbow.elf-shot": {
+      "id": "attack.elfbow.elf-shot",
+      "name": "Elf Shot",
+      "kind": "ranged",
+      "damageType": "physical",
+      "bonus": -1,
+      "stat": "precision",
+      "reach": 6,
+      "staminaCost": 1
+    },
+    "attack.elfbow.double-shot": {
+      "id": "attack.elfbow.double-shot",
+      "name": "Double Shot",
+      "kind": "ranged",
+      "damageType": "physical",
+      "bonus": -2,
+      "stat": "precision",
+      "reach": 4,
+      "staminaCost": 2
+    },
+    "attack.shortbow.short-shot": {
+      "id": "attack.shortbow.short-shot",
+      "name": "Short Shot",
+      "kind": "ranged",
+      "damageType": "physical",
+      "bonus": 1,
+      "stat": "precision",
+      "reach": 5,
+      "staminaCost": 1
+    },
+    "attack.shortbow.quick-shot": {
+      "id": "attack.shortbow.quick-shot",
+      "name": "Quick Shot",
+      "kind": "ranged",
+      "damageType": "physical",
+      "bonus": 0,
+      "stat": "precision",
+      "reach": 4,
+      "staminaCost": 0,
+      "crit": 5
+    },
     "attack.longbow.shot": {
       "id": "attack.longbow.shot",
       "name": "Shot",
@@ -1246,17 +1350,6 @@ export const UNIT_PACK = {
       "stat": "precision",
       "reach": 7,
       "staminaCost": 2
-    },
-    "attack.punch": {
-      "id": "attack.punch",
-      "name": "Punch",
-      "kind": "melee",
-      "damageType": "physical",
-      "bonus": -1,
-      "stat": "strength",
-      "reach": 1,
-      "staminaCost": 0,
-      "crit": -5
     },
     "attack.war-axe.chop": {
       "id": "attack.war-axe.chop",
@@ -1279,15 +1372,46 @@ export const UNIT_PACK = {
       "staminaCost": 2,
       "crit": 5
     },
-    "attack.knight-shield.shield-slam": {
-      "id": "attack.knight-shield.shield-slam",
-      "name": "Shield Slam",
+    "attack.halberd.hack": {
+      "id": "attack.halberd.hack",
+      "name": "Hack",
       "kind": "melee",
       "damageType": "physical",
-      "bonus": 0,
+      "bonus": 2,
       "stat": "strength",
       "reach": 1,
-      "staminaCost": 2
+      "staminaCost": 1
+    },
+    "attack.halberd.cleave": {
+      "id": "attack.halberd.cleave",
+      "name": "Cleave",
+      "kind": "melee",
+      "damageType": "physical",
+      "bonus": 1,
+      "stat": "strength",
+      "reach": 1,
+      "staminaCost": 2,
+      "area": "arc"
+    },
+    "attack.frost-staff.frost-blast": {
+      "id": "attack.frost-staff.frost-blast",
+      "name": "Frost Blast",
+      "kind": "ranged",
+      "damageType": "magic",
+      "bonus": 1,
+      "stat": "precision",
+      "reach": 4,
+      "staminaCost": 1
+    },
+    "attack.fire-staff.fire-blast": {
+      "id": "attack.fire-staff.fire-blast",
+      "name": "Fire Blast",
+      "kind": "ranged",
+      "damageType": "magic",
+      "bonus": 1,
+      "stat": "precision",
+      "reach": 4,
+      "staminaCost": 1
     },
     "attack.holy-texts.verse": {
       "id": "attack.holy-texts.verse",
@@ -1309,26 +1433,118 @@ export const UNIT_PACK = {
       "reach": 4,
       "staminaCost": 2
     },
-    "attack.halberd.hack": {
-      "id": "attack.halberd.hack",
-      "name": "Hack",
-      "kind": "melee",
-      "damageType": "physical",
-      "bonus": 2,
-      "stat": "strength",
-      "reach": 1,
+    "attack.holy-symbol.wrath": {
+      "id": "attack.holy-symbol.wrath",
+      "name": "Wrath",
+      "kind": "ranged",
+      "damageType": "true",
+      "bonus": 0,
+      "stat": "precision",
+      "reach": 5,
       "staminaCost": 1
     },
-    "attack.halberd.cleave": {
-      "id": "attack.halberd.cleave",
-      "name": "Cleave",
+    "attack.iron-mace.swing": {
+      "id": "attack.iron-mace.swing",
+      "name": "Swing",
       "kind": "melee",
       "damageType": "physical",
       "bonus": 1,
       "stat": "strength",
       "reach": 1,
+      "staminaCost": 1
+    },
+    "attack.iron-mace.crush": {
+      "id": "attack.iron-mace.crush",
+      "name": "Crush",
+      "kind": "melee",
+      "damageType": "physical",
+      "bonus": 1,
+      "stat": "strength",
+      "reach": 1,
+      "staminaCost": 2
+    },
+    "attack.hand-crossbow.snapshot": {
+      "id": "attack.hand-crossbow.snapshot",
+      "name": "Snapshot",
+      "kind": "ranged",
+      "damageType": "physical",
+      "bonus": 1,
+      "stat": "precision",
+      "reach": 5,
+      "staminaCost": 1
+    },
+    "attack.hand-crossbow.loaded-bolt": {
+      "id": "attack.hand-crossbow.loaded-bolt",
+      "name": "Loaded Bolt",
+      "kind": "ranged",
+      "damageType": "physical",
+      "bonus": 1,
+      "stat": "precision",
+      "reach": 5,
       "staminaCost": 2,
-      "area": "arc"
+      "crit": 3
+    },
+    "attack.obsidian-fang-dagger.fang": {
+      "id": "attack.obsidian-fang-dagger.fang",
+      "name": "Fang",
+      "kind": "melee",
+      "damageType": "true",
+      "bonus": 0,
+      "stat": "strength",
+      "reach": 1,
+      "staminaCost": 1
+    },
+    "attack.obsidian-fang-dagger.gut": {
+      "id": "attack.obsidian-fang-dagger.gut",
+      "name": "Gut",
+      "kind": "melee",
+      "damageType": "true",
+      "bonus": 1,
+      "stat": "strength",
+      "reach": 1,
+      "staminaCost": 2,
+      "crit": 10
+    },
+    "attack.throwing-knives.flick": {
+      "id": "attack.throwing-knives.flick",
+      "name": "Flick",
+      "kind": "ranged",
+      "damageType": "physical",
+      "bonus": 0,
+      "stat": "precision",
+      "reach": 4,
+      "staminaCost": 0
+    },
+    "attack.throwing-knives.fan": {
+      "id": "attack.throwing-knives.fan",
+      "name": "Fan",
+      "kind": "ranged",
+      "damageType": "physical",
+      "bonus": 0,
+      "stat": "precision",
+      "reach": 3,
+      "staminaCost": 2
+    },
+    "attack.daggers.stab": {
+      "id": "attack.daggers.stab",
+      "name": "Stab",
+      "kind": "melee",
+      "damageType": "physical",
+      "bonus": 0,
+      "stat": "strength",
+      "reach": 1,
+      "staminaCost": 0,
+      "crit": 15
+    },
+    "attack.daggers.thrown-dagger": {
+      "id": "attack.daggers.thrown-dagger",
+      "name": "Thrown Dagger",
+      "kind": "ranged",
+      "damageType": "physical",
+      "bonus": 1,
+      "stat": "precision",
+      "reach": 4,
+      "staminaCost": 1
     },
     "attack.javelin.throw": {
       "id": "attack.javelin.throw",
@@ -1362,27 +1578,6 @@ export const UNIT_PACK = {
       "staminaCost": 0,
       "crit": 5
     },
-    "attack.shortbow.short-shot": {
-      "id": "attack.shortbow.short-shot",
-      "name": "Short Shot",
-      "kind": "ranged",
-      "damageType": "physical",
-      "bonus": 1,
-      "stat": "precision",
-      "reach": 5,
-      "staminaCost": 1
-    },
-    "attack.shortbow.quick-shot": {
-      "id": "attack.shortbow.quick-shot",
-      "name": "Quick Shot",
-      "kind": "ranged",
-      "damageType": "physical",
-      "bonus": 0,
-      "stat": "precision",
-      "reach": 4,
-      "staminaCost": 0,
-      "crit": 5
-    },
     "attack.lightning-staff.bolt": {
       "id": "attack.lightning-staff.bolt",
       "name": "Bolt",
@@ -1392,37 +1587,6 @@ export const UNIT_PACK = {
       "stat": "precision",
       "reach": 5,
       "staminaCost": 2
-    },
-    "attack.holy-symbol.wrath": {
-      "id": "attack.holy-symbol.wrath",
-      "name": "Wrath",
-      "kind": "ranged",
-      "damageType": "true",
-      "bonus": 0,
-      "stat": "precision",
-      "reach": 5,
-      "staminaCost": 1
-    },
-    "attack.longsword.slash": {
-      "id": "attack.longsword.slash",
-      "name": "Slash",
-      "kind": "melee",
-      "damageType": "physical",
-      "bonus": 1,
-      "stat": "strength",
-      "reach": 1,
-      "staminaCost": 1
-    },
-    "attack.longsword.stab": {
-      "id": "attack.longsword.stab",
-      "name": "Stab",
-      "kind": "melee",
-      "damageType": "physical",
-      "bonus": 2,
-      "stat": "strength",
-      "reach": 1,
-      "staminaCost": 2,
-      "crit": 3
     },
     "attack.pile-of-rocks.throw": {
       "id": "attack.pile-of-rocks.throw",
@@ -1467,17 +1631,18 @@ export const UNIT_PACK = {
     }
   },
   "authoredAbilities": {
-    "power.lightning-staff.storm": {
-      "id": "power.lightning-staff.storm",
-      "name": "Storm",
-      "staminaCost": 3,
-      "cooldown": 0,
-      "range": 4,
-      "effect": "damage",
-      "stat": "magic",
-      "bonus": 1,
-      "damageType": "magic",
-      "area": "blast1"
+    "power.knight-shield.block": {
+      "id": "power.knight-shield.block",
+      "name": "Block",
+      "staminaCost": 1,
+      "cooldown": 3,
+      "range": 0,
+      "effect": "selfGuard",
+      "guard": {
+        "protectionBase": 4,
+        "protectionPerArmor": 1,
+        "dodgeLoss": 5
+      }
     },
     "power.holy-symbol.heal": {
       "id": "power.holy-symbol.heal",
@@ -1492,36 +1657,352 @@ export const UNIT_PACK = {
         "mult": 2
       }
     },
-    "power.knight-shield.block": {
-      "id": "power.knight-shield.block",
-      "name": "Block",
-      "staminaCost": 1,
-      "cooldown": 3,
-      "range": 0,
-      "effect": "selfGuard",
-      "guard": {
-        "protectionBase": 4,
-        "protectionPerArmor": 1,
-        "dodgeLoss": 5
-      }
+    "power.lightning-staff.storm": {
+      "id": "power.lightning-staff.storm",
+      "name": "Storm",
+      "staminaCost": 3,
+      "cooldown": 0,
+      "range": 4,
+      "effect": "damage",
+      "stat": "magic",
+      "bonus": 1,
+      "damageType": "magic",
+      "area": "blast1"
     }
   },
   "prologueParty": [
     {
-      "typeId": "hero.base.ranger-aggressive",
-      "name": "Hunter",
+      "typeId": "hero.base.paladin-dark",
+      "name": "Black Oath",
+      "side": "hero",
+      "maxHp": 9,
+      "armor": 2,
+      "resist": 0,
+      "accuracy": 62,
+      "dodge": 0,
+      "crit": 3,
+      "strength": 4,
+      "precision": 3,
+      "magic": 0,
+      "spirit": 1,
+      "role": "melee",
+      "movement": 3,
+      "reach": 2,
+      "maxStamina": 3,
+      "staminaRegen": 1,
+      "ai": "melee-aggressive",
+      "attacks": [
+        "attack.greatsword.hew",
+        "attack.greatsword.great-cleave",
+        "attack.punch"
+      ],
+      "abilities": [],
+      "moves": [
+        "power.move",
+        "power.sidestep"
+      ],
+      "attributes": [
+        "hero-eve"
+      ],
+      "tags": [
+        "hero"
+      ],
+      "triggers": []
+    },
+    {
+      "typeId": "hero.base.paladin-shiney",
+      "name": "Dawnblade",
+      "side": "hero",
+      "maxHp": 10,
+      "armor": 1,
+      "resist": 0,
+      "accuracy": 72,
+      "dodge": 0,
+      "crit": 3,
+      "strength": 4,
+      "precision": 3,
+      "magic": 0,
+      "spirit": 1,
+      "role": "melee",
+      "movement": 5,
+      "reach": 1,
+      "maxStamina": 5,
+      "staminaRegen": 1,
+      "ai": "melee-aggressive",
+      "attacks": [
+        "attack.longsword.slash",
+        "attack.longsword.stab",
+        "attack.knight-shield.shield-slam",
+        "attack.punch"
+      ],
+      "abilities": [
+        "power.knight-shield.block"
+      ],
+      "moves": [
+        "power.move",
+        "power.sidestep"
+      ],
+      "attributes": [
+        "hero-eve"
+      ],
+      "tags": [
+        "hero"
+      ],
+      "triggers": [
+        {
+          "id": "trigger.knight-shield.shield-slam.stun",
+          "hook": "onDamage",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.stun",
+            "value": 1
+          },
+          "source": "hero.base.paladin-shiney",
+          "onlyWithAttack": "attack.knight-shield.shield-slam"
+        }
+      ]
+    },
+    {
+      "typeId": "hero.base.paladin-hunk",
+      "name": "Lion of the Host",
+      "side": "hero",
+      "maxHp": 11,
+      "armor": 2,
+      "resist": 0,
+      "accuracy": 72,
+      "dodge": 0,
+      "crit": 3,
+      "strength": 3,
+      "precision": 1,
+      "magic": 0,
+      "spirit": 1,
+      "role": "melee",
+      "movement": 4,
+      "reach": 1,
+      "maxStamina": 4,
+      "staminaRegen": 1,
+      "ai": "melee-aggressive",
+      "attacks": [
+        "attack.longsword.slash",
+        "attack.longsword.stab",
+        "attack.knight-shield.shield-slam",
+        "attack.punch"
+      ],
+      "abilities": [
+        "power.knight-shield.block"
+      ],
+      "moves": [
+        "power.move",
+        "power.sidestep"
+      ],
+      "attributes": [
+        "hero-eve"
+      ],
+      "tags": [
+        "hero"
+      ],
+      "triggers": [
+        {
+          "id": "trigger.knight-shield.shield-slam.stun",
+          "hook": "onDamage",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.stun",
+            "value": 1
+          },
+          "source": "hero.base.paladin-hunk",
+          "onlyWithAttack": "attack.knight-shield.shield-slam"
+        }
+      ]
+    },
+    {
+      "typeId": "hero.base.paladin-smug",
+      "name": "Court Champion",
+      "side": "hero",
+      "maxHp": 13,
+      "armor": 1,
+      "resist": 0,
+      "accuracy": 52,
+      "dodge": 0,
+      "strength": 4,
+      "precision": 3,
+      "magic": 0,
+      "spirit": 1,
+      "role": "melee",
+      "movement": 4,
+      "reach": 2,
+      "maxStamina": 7,
+      "staminaRegen": 1,
+      "ai": "melee-aggressive",
+      "attacks": [
+        "attack.longsword.slash",
+        "attack.longsword.stab",
+        "attack.knight-shield.shield-slam",
+        "attack.punch"
+      ],
+      "abilities": [
+        "power.knight-shield.block"
+      ],
+      "moves": [
+        "power.move",
+        "power.sidestep"
+      ],
+      "attributes": [
+        "hero-eve"
+      ],
+      "tags": [
+        "hero"
+      ],
+      "triggers": [
+        {
+          "id": "trigger.knight-shield.shield-slam.stun",
+          "hook": "onDamage",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.stun",
+            "value": 1
+          },
+          "source": "hero.base.paladin-smug",
+          "onlyWithAttack": "attack.knight-shield.shield-slam"
+        }
+      ]
+    },
+    {
+      "typeId": "hero.base.ranger-ranger",
+      "name": "Ancient Elf",
       "side": "hero",
       "maxHp": 6,
       "armor": 0,
       "resist": 0,
       "accuracy": 80,
-      "dodge": 0,
+      "dodge": 5,
+      "crit": 3,
+      "strength": 2,
+      "precision": 4,
+      "magic": 0,
+      "spirit": 0,
+      "role": "ranged",
+      "movement": 5,
+      "reach": 2,
+      "maxStamina": 5,
+      "staminaRegen": 1,
+      "ai": "ranged-kite",
+      "attacks": [
+        "attack.elfbow.elf-shot",
+        "attack.elfbow.double-shot",
+        "attack.punch"
+      ],
+      "abilities": [],
+      "moves": [
+        "power.move",
+        "power.side-roll"
+      ],
+      "attributes": [
+        "hero-eve"
+      ],
+      "tags": [
+        "hero"
+      ],
+      "triggers": []
+    },
+    {
+      "typeId": "hero.base.ranger-scantily",
+      "name": "Forest Elf",
+      "side": "hero",
+      "maxHp": 5,
+      "armor": 0,
+      "resist": 0,
+      "accuracy": 80,
+      "dodge": 5,
+      "crit": 3,
       "strength": 2,
       "precision": 5,
       "magic": 0,
       "spirit": 0,
       "role": "ranged",
       "movement": 5,
+      "reach": 2,
+      "maxStamina": 5,
+      "staminaRegen": 1,
+      "ai": "ranged-kite",
+      "attacks": [
+        "attack.elfbow.elf-shot",
+        "attack.elfbow.double-shot",
+        "attack.punch"
+      ],
+      "abilities": [],
+      "moves": [
+        "power.move",
+        "power.side-roll"
+      ],
+      "attributes": [
+        "hero-eve"
+      ],
+      "tags": [
+        "hero"
+      ],
+      "triggers": []
+    },
+    {
+      "typeId": "hero.base.ranger-nature",
+      "name": "Forest Fey",
+      "side": "hero",
+      "maxHp": 4,
+      "armor": 1,
+      "resist": 0,
+      "accuracy": 80,
+      "dodge": -5,
+      "crit": 3,
+      "strength": 2,
+      "precision": 4,
+      "magic": 0,
+      "spirit": 0,
+      "role": "ranged",
+      "movement": 6,
+      "reach": 2,
+      "maxStamina": 5,
+      "staminaRegen": 1,
+      "ai": "ranged-kite",
+      "attacks": [
+        "attack.shortbow.short-shot",
+        "attack.shortbow.quick-shot",
+        "attack.punch"
+      ],
+      "abilities": [],
+      "moves": [
+        "power.move",
+        "power.side-roll"
+      ],
+      "attributes": [
+        "hero-eve"
+      ],
+      "tags": [
+        "hero"
+      ],
+      "triggers": []
+    },
+    {
+      "typeId": "hero.base.ranger-aggressive",
+      "name": "Hunter",
+      "side": "hero",
+      "maxHp": 9,
+      "armor": 0,
+      "resist": 0,
+      "accuracy": 80,
+      "dodge": -10,
+      "crit": 3,
+      "strength": 2,
+      "precision": 5,
+      "magic": 0,
+      "spirit": 0,
+      "role": "ranged",
+      "movement": 4,
       "reach": 3,
       "maxStamina": 5,
       "staminaRegen": 1,
@@ -1553,6 +2034,7 @@ export const UNIT_PACK = {
       "resist": 0,
       "accuracy": 55,
       "dodge": 0,
+      "crit": 3,
       "strength": 4,
       "precision": 3,
       "magic": 0,
@@ -1596,20 +2078,374 @@ export const UNIT_PACK = {
       ]
     },
     {
-      "typeId": "hero.base.priest-armored",
-      "name": "Battle Chaplain",
+      "typeId": "hero.base.warrior-brawler",
+      "name": "Dwarven Brawler",
+      "side": "hero",
+      "maxHp": 12,
+      "armor": 1,
+      "resist": 0,
+      "accuracy": 75,
+      "dodge": 0,
+      "crit": 3,
+      "strength": 4,
+      "precision": 4,
+      "magic": 0,
+      "spirit": 0,
+      "role": "melee",
+      "movement": 5,
+      "reach": 1,
+      "maxStamina": 4,
+      "staminaRegen": 1,
+      "ai": "melee-aggressive",
+      "attacks": [
+        "attack.punch"
+      ],
+      "abilities": [],
+      "moves": [
+        "power.move",
+        "power.leap"
+      ],
+      "attributes": [
+        "hero-eve"
+      ],
+      "tags": [
+        "hero"
+      ],
+      "triggers": []
+    },
+    {
+      "typeId": "hero.base.warrior-barbarian",
+      "name": "Mountain Berserker",
+      "side": "hero",
+      "maxHp": 13,
+      "armor": 1,
+      "resist": 0,
+      "accuracy": 75,
+      "dodge": -10,
+      "crit": 3,
+      "strength": 4,
+      "precision": 3,
+      "magic": 0,
+      "spirit": 0,
+      "role": "melee",
+      "movement": 4,
+      "reach": 1,
+      "maxStamina": 5,
+      "staminaRegen": 1,
+      "ai": "melee-aggressive",
+      "attacks": [
+        "attack.greatsword.hew",
+        "attack.greatsword.great-cleave",
+        "attack.punch"
+      ],
+      "abilities": [],
+      "moves": [
+        "power.move",
+        "power.leap"
+      ],
+      "attributes": [
+        "hero-eve"
+      ],
+      "tags": [
+        "hero"
+      ],
+      "triggers": []
+    },
+    {
+      "typeId": "hero.base.warrior-fearsome",
+      "name": "Skullplate Veteran",
+      "side": "hero",
+      "maxHp": 11,
+      "armor": 1,
+      "resist": 0,
+      "accuracy": 75,
+      "dodge": 0,
+      "crit": 3,
+      "strength": 5,
+      "precision": 3,
+      "magic": 0,
+      "spirit": 0,
+      "role": "melee",
+      "movement": 5,
+      "reach": 1,
+      "maxStamina": 5,
+      "staminaRegen": 1,
+      "ai": "melee-aggressive",
+      "attacks": [
+        "attack.halberd.hack",
+        "attack.halberd.cleave",
+        "attack.punch"
+      ],
+      "abilities": [],
+      "moves": [
+        "power.move",
+        "power.leap"
+      ],
+      "attributes": [
+        "hero-eve"
+      ],
+      "tags": [
+        "hero"
+      ],
+      "triggers": [
+        {
+          "id": "trigger.halberd.hack.knockback",
+          "hook": "onDamage",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "knockback",
+            "value": 1
+          },
+          "source": "hero.base.warrior-fearsome",
+          "onlyWithAttack": "attack.halberd.hack"
+        }
+      ]
+    },
+    {
+      "typeId": "hero.base.mage-thinking",
+      "name": "Archive Scholar",
+      "side": "hero",
+      "maxHp": 6,
+      "armor": 1,
+      "resist": 0,
+      "accuracy": 75,
+      "dodge": 0,
+      "crit": 3,
+      "strength": 2,
+      "precision": 3,
+      "magic": 2,
+      "spirit": 0,
+      "role": "ranged",
+      "movement": 5,
+      "reach": 3,
+      "maxStamina": 5,
+      "staminaRegen": 1,
+      "ai": "ranged-kite",
+      "attacks": [
+        "attack.frost-staff.frost-blast",
+        "attack.punch"
+      ],
+      "abilities": [],
+      "moves": [
+        "power.move",
+        "power.focus"
+      ],
+      "attributes": [
+        "hero-eve"
+      ],
+      "tags": [
+        "hero"
+      ],
+      "triggers": []
+    },
+    {
+      "typeId": "hero.base.mage-sexy",
+      "name": "Crimson Sorceress",
+      "side": "hero",
+      "maxHp": 6,
+      "armor": 0,
+      "resist": 1,
+      "accuracy": 65,
+      "dodge": 0,
+      "crit": 3,
+      "strength": 2,
+      "precision": 5,
+      "magic": 2,
+      "spirit": 0,
+      "role": "ranged",
+      "movement": 4,
+      "reach": 2,
+      "maxStamina": 5,
+      "staminaRegen": 1,
+      "ai": "ranged-kite",
+      "attacks": [
+        "attack.fire-staff.fire-blast",
+        "attack.punch"
+      ],
+      "abilities": [],
+      "moves": [
+        "power.move",
+        "power.focus"
+      ],
+      "attributes": [
+        "hero-eve"
+      ],
+      "tags": [
+        "hero"
+      ],
+      "triggers": [
+        {
+          "id": "trigger.fire-staff.fire-blast.burn",
+          "hook": "onHit",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.burn",
+            "value": 1
+          },
+          "source": "hero.base.mage-sexy",
+          "onlyWithAttack": "attack.fire-staff.fire-blast"
+        }
+      ]
+    },
+    {
+      "typeId": "hero.base.mage-fire",
+      "name": "Emberwright",
       "side": "hero",
       "maxHp": 7,
-      "armor": 2,
+      "armor": 0,
+      "resist": 0,
+      "accuracy": 75,
+      "dodge": 0,
+      "crit": 3,
+      "strength": 2,
+      "precision": 3,
+      "magic": 3,
+      "spirit": 0,
+      "role": "ranged",
+      "movement": 5,
+      "reach": 2,
+      "maxStamina": 5,
+      "staminaRegen": 1,
+      "ai": "ranged-kite",
+      "attacks": [
+        "attack.fire-staff.fire-blast",
+        "attack.punch"
+      ],
+      "abilities": [],
+      "moves": [
+        "power.move",
+        "power.focus"
+      ],
+      "attributes": [
+        "hero-eve"
+      ],
+      "tags": [
+        "hero"
+      ],
+      "triggers": [
+        {
+          "id": "trigger.fire-staff.fire-blast.burn",
+          "hook": "onHit",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.burn",
+            "value": 1
+          },
+          "source": "hero.base.mage-fire",
+          "onlyWithAttack": "attack.fire-staff.fire-blast"
+        }
+      ]
+    },
+    {
+      "typeId": "hero.base.mage-fireaura",
+      "name": "Pyre Witch",
+      "side": "hero",
+      "maxHp": 6,
+      "armor": 1,
+      "resist": 0,
+      "accuracy": 75,
+      "dodge": 0,
+      "crit": 3,
+      "strength": 2,
+      "precision": 3,
+      "magic": 2,
+      "spirit": 0,
+      "role": "ranged",
+      "movement": 5,
+      "reach": 2,
+      "maxStamina": 5,
+      "staminaRegen": 1,
+      "ai": "ranged-kite",
+      "attacks": [
+        "attack.fire-staff.fire-blast",
+        "attack.punch"
+      ],
+      "abilities": [],
+      "moves": [
+        "power.move",
+        "power.focus"
+      ],
+      "attributes": [
+        "hero-eve"
+      ],
+      "tags": [
+        "hero"
+      ],
+      "triggers": [
+        {
+          "id": "trigger.fire-staff.fire-blast.burn",
+          "hook": "onHit",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.burn",
+            "value": 1
+          },
+          "source": "hero.base.mage-fireaura",
+          "onlyWithAttack": "attack.fire-staff.fire-blast"
+        }
+      ]
+    },
+    {
+      "typeId": "hero.base.priest-pauper",
+      "name": "Barefoot Mendicant",
+      "side": "hero",
+      "maxHp": 7,
+      "armor": 0,
       "resist": 0,
       "accuracy": 80,
       "dodge": 0,
+      "crit": 3,
+      "strength": 2,
+      "precision": 3,
+      "magic": 0,
+      "spirit": 3,
+      "role": "ranged",
+      "movement": 5,
+      "reach": 2,
+      "maxStamina": 5,
+      "staminaRegen": 1,
+      "ai": "ranged-kite",
+      "attacks": [
+        "attack.holy-texts.verse",
+        "attack.holy-texts.mercy",
+        "attack.punch"
+      ],
+      "abilities": [],
+      "moves": [
+        "power.move",
+        "power.devotion"
+      ],
+      "attributes": [
+        "hero-eve"
+      ],
+      "tags": [
+        "hero"
+      ],
+      "triggers": []
+    },
+    {
+      "typeId": "hero.base.priest-armored",
+      "name": "Battle Chaplain",
+      "side": "hero",
+      "maxHp": 5,
+      "armor": 2,
+      "resist": 0,
+      "accuracy": 80,
+      "dodge": -5,
+      "crit": 3,
       "strength": 2,
       "precision": 3,
       "magic": 0,
       "spirit": 2,
       "role": "ranged",
-      "movement": 5,
+      "movement": 6,
       "reach": 2,
       "maxStamina": 5,
       "staminaRegen": 1,
@@ -1620,7 +2456,9 @@ export const UNIT_PACK = {
         "attack.holy-texts.mercy",
         "attack.punch"
       ],
-      "abilities": [],
+      "abilities": [
+        "power.knight-shield.block"
+      ],
       "moves": [
         "power.move",
         "power.devotion"
@@ -1646,6 +2484,254 @@ export const UNIT_PACK = {
           "onlyWithAttack": "attack.knight-shield.shield-slam"
         }
       ]
+    },
+    {
+      "typeId": "hero.base.priest-robes",
+      "name": "Cathedral Bishop",
+      "side": "hero",
+      "maxHp": 5,
+      "armor": 0,
+      "resist": 0,
+      "accuracy": 75,
+      "dodge": -5,
+      "crit": 3,
+      "strength": 2,
+      "precision": 3,
+      "magic": -1,
+      "spirit": 3,
+      "role": "ranged",
+      "movement": 5,
+      "reach": 2,
+      "maxStamina": 5,
+      "staminaRegen": 1,
+      "ai": "ranged-kite",
+      "attacks": [
+        "attack.holy-symbol.wrath",
+        "attack.punch"
+      ],
+      "abilities": [
+        "power.holy-symbol.heal"
+      ],
+      "moves": [
+        "power.move",
+        "power.devotion"
+      ],
+      "attributes": [
+        "hero-eve"
+      ],
+      "tags": [
+        "hero"
+      ],
+      "triggers": []
+    },
+    {
+      "typeId": "hero.base.priest-scantily",
+      "name": "Rune-Marked Ascetic",
+      "side": "hero",
+      "maxHp": 7,
+      "armor": 0,
+      "resist": 0,
+      "accuracy": 80,
+      "dodge": 0,
+      "crit": 3,
+      "strength": 3,
+      "precision": 3,
+      "magic": 0,
+      "spirit": 3,
+      "role": "ranged",
+      "movement": 5,
+      "reach": 2,
+      "maxStamina": 3,
+      "staminaRegen": 1,
+      "ai": "ranged-kite",
+      "attacks": [
+        "attack.iron-mace.swing",
+        "attack.iron-mace.crush",
+        "attack.holy-symbol.wrath",
+        "attack.punch"
+      ],
+      "abilities": [
+        "power.holy-symbol.heal"
+      ],
+      "moves": [
+        "power.move",
+        "power.devotion"
+      ],
+      "attributes": [
+        "hero-eve"
+      ],
+      "tags": [
+        "hero"
+      ],
+      "triggers": []
+    },
+    {
+      "typeId": "hero.base.rogue-raven",
+      "name": "The Raven",
+      "side": "hero",
+      "maxHp": 3,
+      "armor": 0,
+      "resist": 0,
+      "accuracy": 73,
+      "dodge": 0,
+      "crit": 5,
+      "strength": 6,
+      "precision": 4,
+      "magic": 0,
+      "spirit": 0,
+      "role": "ranged",
+      "movement": 5,
+      "reach": 1,
+      "maxStamina": 5,
+      "staminaRegen": 1,
+      "ai": "ranged-kite",
+      "attacks": [
+        "attack.hand-crossbow.snapshot",
+        "attack.hand-crossbow.loaded-bolt",
+        "attack.longsword.slash",
+        "attack.longsword.stab",
+        "attack.punch"
+      ],
+      "abilities": [],
+      "moves": [
+        "power.move",
+        "power.side-roll"
+      ],
+      "attributes": [
+        "hero-eve"
+      ],
+      "tags": [
+        "hero"
+      ],
+      "triggers": [
+        {
+          "id": "trigger.hand-crossbow.loaded-bolt.poison",
+          "hook": "onHit",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.poison",
+            "value": 2
+          },
+          "source": "hero.base.rogue-raven",
+          "onlyWithAttack": "attack.hand-crossbow.loaded-bolt"
+        }
+      ]
+    },
+    {
+      "typeId": "hero.base.rogue-rose",
+      "name": "The Rose",
+      "side": "hero",
+      "maxHp": 5,
+      "armor": 0,
+      "resist": 0,
+      "accuracy": 78,
+      "dodge": 10,
+      "crit": 5,
+      "strength": 4,
+      "precision": 4,
+      "magic": 0,
+      "spirit": 0,
+      "role": "melee",
+      "movement": 5,
+      "reach": 2,
+      "maxStamina": 5,
+      "staminaRegen": 1,
+      "ai": "melee-aggressive",
+      "attacks": [
+        "attack.obsidian-fang-dagger.fang",
+        "attack.obsidian-fang-dagger.gut",
+        "attack.punch"
+      ],
+      "abilities": [],
+      "moves": [
+        "power.move",
+        "power.side-roll"
+      ],
+      "attributes": [
+        "hero-eve"
+      ],
+      "tags": [
+        "hero"
+      ],
+      "triggers": []
+    },
+    {
+      "typeId": "hero.base.rogue-snake",
+      "name": "The Serpent",
+      "side": "hero",
+      "maxHp": 6,
+      "armor": 0,
+      "resist": 0,
+      "accuracy": 78,
+      "dodge": 5,
+      "crit": 5,
+      "strength": 4,
+      "precision": 4,
+      "magic": 0,
+      "spirit": 0,
+      "role": "ranged",
+      "movement": 5,
+      "reach": 1,
+      "maxStamina": 5,
+      "staminaRegen": 1,
+      "ai": "ranged-kite",
+      "attacks": [
+        "attack.throwing-knives.flick",
+        "attack.throwing-knives.fan",
+        "attack.punch"
+      ],
+      "abilities": [],
+      "moves": [
+        "power.move",
+        "power.side-roll"
+      ],
+      "attributes": [
+        "hero-eve"
+      ],
+      "tags": [
+        "hero"
+      ],
+      "triggers": []
+    },
+    {
+      "typeId": "hero.base.rogue-skull",
+      "name": "The Skull",
+      "side": "hero",
+      "maxHp": 5,
+      "armor": 0,
+      "resist": 0,
+      "accuracy": 78,
+      "dodge": 5,
+      "crit": 5,
+      "strength": 4,
+      "precision": 5,
+      "magic": 0,
+      "spirit": 0,
+      "role": "ranged",
+      "movement": 5,
+      "reach": 2,
+      "maxStamina": 5,
+      "staminaRegen": 1,
+      "ai": "ranged-kite",
+      "attacks": [
+        "attack.daggers.stab",
+        "attack.daggers.thrown-dagger",
+        "attack.punch"
+      ],
+      "abilities": [],
+      "moves": [
+        "power.move",
+        "power.side-roll"
+      ],
+      "attributes": [
+        "hero-eve"
+      ],
+      "tags": [
+        "hero"
+      ],
+      "triggers": []
     },
     {
       "typeId": "hero.fixed.orphans",

@@ -14,15 +14,46 @@ import { runBattle } from '../src/core/battle.js'
 
 const HUNTER = 'hero.base.ranger-aggressive'
 
+// Pipeline agreement, not frozen numbers (Law 10, rewritten 2026-09-02 with
+// content.field-eve-24): a hero's row is its Codex body PLUS the kit's stat
+// modifiers. The Hunter was asserted at maxHp 6 — his bare body — because the
+// converter could not find the tier-0 armors (they live only in
+// hbt-content.json) and dropped Thick Hide's +3 Health / −1 Movement / −10
+// Dodge as a gap. Now it folds, and the expectation is derived from the same
+// two sources the converter reads.
+const codexHero = (id: string) => {
+  const D = JSON.parse(readFileSync(join(__dirname, '..', '..', 'content', 'hbt-content.json'), 'utf8'))
+  let found: { ported: Record<string, number & {}>; derivedBase: Record<string, number> } | null = null
+  const items = new Map<string, { statModifiers?: Record<string, number> }>()
+  const walk = (o: unknown): void => {
+    if (Array.isArray(o)) { o.forEach(walk); return }
+    if (o && typeof o === 'object') {
+      const r = o as { id?: string; ported?: Record<string, number>; itemClass?: string }
+      if (r.id === id && r.ported) found = r as typeof found
+      if (typeof r.id === 'string' && r.id.startsWith('item.') && r.itemClass) items.set(r.id, r as { statModifiers?: Record<string, number> })
+      Object.values(o).forEach(walk)
+    }
+  }
+  walk(D)
+  const kits = JSON.parse(readFileSync(join(__dirname, '..', '..', 'content', 'gen', 'kits.json'), 'utf8')).heroKits as Record<string, string[]>
+  const mod = (stat: string) => (kits[id] ?? []).reduce((s, it) => s + (items.get(it)?.statModifiers?.[stat] ?? 0), 0)
+  return { row: found!, mod }
+}
+
 describe('the Hunter is a real hero from the Codex', () => {
   it('carries the authored Eve stats and pays stamina like a hero', () => {
     const h = UNITS[HUNTER]!
     expect(h).toBeDefined()
     expect(h.side).toBe('hero')
-    expect(h.maxHp).toBe(6)
-    expect(h.accuracy).toBe(80)
-    expect(h.precision).toBe(5)
-    expect(h.maxStamina, 'heroes run stamina').toBe(5)
+    const { row, mod } = codexHero(HUNTER)
+    expect(row.ported.health, 'the bare Codex body').toBe(6)
+    expect(mod('health'), 'Thick Hide folds').toBe(3)
+    expect(h.maxHp).toBe((row.ported.health ?? 0) + mod('health'))
+    expect(h.accuracy).toBe((row.derivedBase.accuracy ?? 0) + mod('accuracy'))
+    expect(h.precision).toBe((row.ported.precision ?? 0) + mod('precision'))
+    expect(h.movement).toBe((row.derivedBase.movement ?? 0) + mod('movement'))
+    expect(h.dodge).toBe((row.ported.dodge ?? 0) + mod('dodge'))
+    expect(h.maxStamina, 'heroes run stamina').toBe((row.derivedBase.staminaMax ?? 0) + mod('staminaMax'))
     // class half-step read from the Codex movementAction grants
     expect(h.moves).toEqual(['power.move', 'power.side-roll'])
   })

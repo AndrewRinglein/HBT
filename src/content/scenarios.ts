@@ -147,6 +147,34 @@ const RAW_SCENARIOS: Readonly<Record<string, ScenarioDef>> = {
     enemyHexes: [118, 122, 120],
     replicate: 0,
   },
+  // content.field-eve-24 (2026-09-02): the twenty-four Eve heroes field in
+  // two halves of twelve, each against a zombie line — the verify fieldings.
+  // Twelve on row 15 (hexes 242–253), six zombies on row 7. Not design; a
+  // roll-call. Order follows gen/kits.json heroKits.
+  'showcase.eve-24-a': {
+    id: 'showcase.eve-24-a',
+    note: 'content.field-eve-24: the first twelve of the Eve 24 — paladins, rangers, warriors — kitted as dictated 2026-08-27b, against six zombies.',
+    mapId: 'map.open',
+    heroes: ['hero.base.paladin-dark', 'hero.base.paladin-shiney', 'hero.base.paladin-hunk', 'hero.base.paladin-smug',
+      'hero.base.ranger-ranger', 'hero.base.ranger-scantily', 'hero.base.ranger-nature', 'hero.base.ranger-aggressive',
+      'hero.base.warrior-iron', 'hero.base.warrior-brawler', 'hero.base.warrior-barbarian', 'hero.base.warrior-fearsome'],
+    heroHexes: [242, 243, 244, 245, 246, 247, 248, 249, 250, 251, 252, 253],
+    enemies: ['unit.zombie', 'unit.zombie', 'unit.zombie', 'unit.fast-zombie', 'unit.zombie', 'unit.zombie'],
+    enemyHexes: [115, 117, 119, 121, 123, 125],
+    replicate: 0,
+  },
+  'showcase.eve-24-b': {
+    id: 'showcase.eve-24-b',
+    note: 'content.field-eve-24: the second twelve — mages, priests, rogues — kitted as dictated 2026-08-27b, against six zombies.',
+    mapId: 'map.open',
+    heroes: ['hero.base.mage-thinking', 'hero.base.mage-sexy', 'hero.base.mage-fire', 'hero.base.mage-fireaura',
+      'hero.base.priest-pauper', 'hero.base.priest-armored', 'hero.base.priest-robes', 'hero.base.priest-scantily',
+      'hero.base.rogue-raven', 'hero.base.rogue-rose', 'hero.base.rogue-snake', 'hero.base.rogue-skull'],
+    heroHexes: [242, 243, 244, 245, 246, 247, 248, 249, 250, 251, 252, 253],
+    enemies: ['unit.zombie', 'unit.zombie', 'unit.zombie', 'unit.fast-zombie', 'unit.zombie', 'unit.zombie'],
+    enemyHexes: [115, 117, 119, 121, 123, 125],
+    replicate: 0,
+  },
   'showcase.gash-variant': {
     id: 'showcase.gash-variant',
     note: 'fix.bleed-magnitude verify fielding (2026-09-02): the FIXTURE zombies '
