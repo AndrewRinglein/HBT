@@ -1386,7 +1386,13 @@
   "needs": [
    "encounter.runner",
    "content.hero-pack"
-  ]
+  ],
+  "probeIds": [
+   "battle.prologue-1"
+  ],
+  "status": "done",
+  "sha": "50fdb05",
+  "gauntlet": "not passed — 1 flag(s) warned"
  },
  {
   "id": "encounter.battle-2",
@@ -1397,6 +1403,9 @@
   "changesBaseline": false,
   "needs": [
    "encounter.battle-1"
+  ],
+  "probeIds": [
+   "battle.prologue-2"
   ]
  },
  {

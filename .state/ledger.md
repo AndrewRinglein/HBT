@@ -5405,3 +5405,23 @@ index ccfc949..b1a18b5 100644
 </details>
 
 IRON GAUNTLET: NOT PASSED — 2 FLAG(S) WARNED
+
+## encounter.battle-1 — LANDED `50fdb05`
+2026-09-03 09:15
+
+  PASS  dependencies landed
+  WARN  not already decided — 5 candidate ruling(s) — READ BEFORE ASKING: ../STATE.md:18 · ../STATE.md:20
+  PASS  typecheck
+  PASS  full test suite
+  PASS  gate 1 — the id appears in a real battle — battle.prologue-1: 9 log lines, 9 fired, 5 changed state
+  PASS  brought its own tests — test/prologue-battles.test.ts
+  PASS  existing tests untouched
+  PASS  control battles unchanged
+  PASS  content has a published source — 16 ids without a published source (6 awaiting publication from earlier items — see audit)
+  PASS  hardcode scan — core knows mechanisms, never names
+  PASS  generalizes — the second instance costs zero engine code — shape 'data' — not a mechanism, exempt
+  PASS  naming — new content ids use declared kinds
+  PASS  naming — no banned words invented
+  PASS  kill switch — the tests fail without the content — tests fail without battle.prologue-1 — they genuinely test it
+
+IRON GAUNTLET: NOT PASSED — 1 FLAG(S) WARNED

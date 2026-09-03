@@ -78,7 +78,6 @@ export function hexesOf(ctx: Ctx, p: EncounterPlacement, where: string, key: rea
   throw new Error(`${where}: ${p.unit} has no placement (at / hexes)`)
 }
 
-let arrivals = 0
 /** Field one unit at (or shunted from) a hex. Returns the unit. */
 export function arrive(ctx: Ctx, def: UnitDef, want: HexId, causeId: string, names: Record<string, number>): Unit {
   const hex = nearestFree(ctx, want)
@@ -86,7 +85,11 @@ export function arrive(ctx: Ctx, def: UnitDef, want: HexId, causeId: string, nam
   const id = ctx.state.units.length
   names[def.typeId] = (names[def.typeId] ?? 0) + 1
   const label = def.typeId.split('.').pop()!.split('-').map((w) => (w[0] ?? '').toUpperCase() + w.slice(1)).join(' ')
-  const u = makeUnit(id, 300 + arrivals++, `${def.name ?? label} ${names[def.typeId]}`, def, hex)
+  // uid is the RNG identity (Law 4): 300 + this battle's arrival count, read
+  // off the state — a module counter here made the same seed roll differently
+  // on the second battle of a process (found by the determinism test).
+  const uid = 300 + ctx.state.units.filter((x) => x.uid >= 300).length
+  const u = makeUnit(id, uid, `${def.name ?? label} ${names[def.typeId]}`, def, hex)
   ctx.state.units.push(u)
   emit(ctx, 'unit.enter', def.typeId.includes('.') ? def.typeId : `unit.${def.typeId}`, {
     actor: u.id, uid: u.uid, name: u.name, side: u.side, typeId: u.typeId,
