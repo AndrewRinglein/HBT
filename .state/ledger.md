@@ -807,3 +807,5 @@ BLOCKED, not mine (2026-09-02): SLICE.html cannot be rebuilt right now. The engi
 ISC-060: CLOSED at bf993f0 · ISC-061: CLOSED at bf993f0
 slice: 57 of 68 closed · 57 probed · 0 accepted
 IRON GAUNTLET: NOT PASSED — 2 FLAG(S) WARNED; 1 EXEMPTION(S) TAKEN
+
+Law 10 note (waystation.catalog): test/art.test.ts asserted the town shows ['chapel'] with the Ridge unheld; the Waystation joined the Sanctuary's buildings this landing, so the expectation became ['chapel','waystation'] and its art was prepared (generated/art-wanted.json). The rule under test — a Territory's building shows only once it is held — is unchanged and still asserted by the Forge.
