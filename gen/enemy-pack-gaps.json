@@ -32,6 +32,16 @@
    "needs": "a status that GROWS in Settling and obliterates at Max Health, no corpse — capability.shadow"
   },
   {
+   "unit": "power.pray",
+   "what": "Pray: A bonus move: zero movement, costs 1 Stamina, gain 1 Faith. A bonus mo…",
+   "needs": "no Faith quantity in the engine"
+  },
+  {
+   "unit": "power.charging-run",
+   "what": "Charging Run: A full movement action: move up to your Movement +2, and gain +3 Stren…",
+   "needs": "a statMod that expires at End of Activation (MoveEffect.until knows endOfTurn | battle only)"
+  },
+  {
    "unit": "unit.bruiser-demon",
    "what": "(unit) onActivationEnd: apply a status",
    "needs": "capability.power"
