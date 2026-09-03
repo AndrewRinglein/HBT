@@ -534,7 +534,8 @@ export const UNIT_PACK = {
       "reach": 0,
       "maxStamina": 0,
       "staminaRegen": 0,
-      "ai": "dumb-melee",
+      "ai": "hunter",
+      "aiAuthored": true,
       "attacks": [
         "attack.bloodhound.bite"
       ],
@@ -1151,7 +1152,8 @@ export const UNIT_PACK = {
       "reach": 0,
       "maxStamina": 0,
       "staminaRegen": 0,
-      "ai": "ranged-kite",
+      "ai": "support",
+      "aiAuthored": true,
       "attacks": [
         "attack.imp-master.fire-bow",
         "attack.imp-master.fire-sword"
@@ -1322,7 +1324,8 @@ export const UNIT_PACK = {
       "reach": 0,
       "maxStamina": 0,
       "staminaRegen": 0,
-      "ai": "ranged-kite",
+      "ai": "support",
+      "aiAuthored": true,
       "attacks": [
         "attack.necromancer.necro-bolt",
         "attack.necromancer.necro-strike"
@@ -1695,7 +1698,8 @@ export const UNIT_PACK = {
       "reach": 0,
       "maxStamina": 0,
       "staminaRegen": 0,
-      "ai": "ranged-kite",
+      "ai": "support",
+      "aiAuthored": true,
       "attacks": [
         "attack.skeleton-spider.bone-strike",
         "attack.skeleton-spider.bone-slash"
@@ -2171,7 +2175,8 @@ export const UNIT_PACK = {
       "reach": 0,
       "maxStamina": 0,
       "staminaRegen": 0,
-      "ai": "dumb-melee",
+      "ai": "hunter",
+      "aiAuthored": true,
       "attacks": [
         "attack.zombie-hound.bite"
       ],

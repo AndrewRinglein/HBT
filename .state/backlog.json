@@ -306,14 +306,37 @@
   "kind": "ai",
   "shape": "data",
   "spec": "Defender mode: stays within 2 hexes of the nearest ally with less than half HP, attacks anything adjacent, never advances alone.",
-  "expect": "a defender never ends further than 2 from its charge while that ally lives"
+  "expect": "a defender never ends further than 2 from its charge while that ally lives",
+  "probeIds": [
+   "ai.hunter"
+  ],
+  "variants": [
+   "ai.hunter",
+   "ai.support"
+  ],
+  "changesBaseline": false,
+  "note": " | 2026-09-03: lands with all six modes (defender, support, focused-fire, value-hunter, follow, hunter) — one registry, one test file; ai.mode.support lands after it against the same code.",
+  "attempts": 1,
+  "killSwitchExempt": "an AI mode is engine behaviour, not a content row the seam can remove — ai.* names a mode, not a registry entry; the tests assert the rule's visible choices (who was approached, who was struck, who was healed)",
+  "status": "done-needs-review",
+  "sha": "13634b9",
+  "gauntlet": "not passed — 1 flag(s) warned; 1 exemption(s) taken"
  },
  {
   "id": "ai.mode.support",
   "kind": "ai",
   "shape": "data",
   "spec": "Support mode: holds at range, prefers using abilities on allies over attacking, retreats when threatened.",
-  "expect": "exercises the support role, which is currently declared and unused"
+  "expect": "exercises the support role, which is currently declared and unused",
+  "probeIds": [
+   "ai.support"
+  ],
+  "variants": [
+   "ai.support",
+   "ai.hunter"
+  ],
+  "changesBaseline": false,
+  "killSwitchExempt": "an AI mode is engine behaviour, not a content row the seam can remove — ai.* names a mode, not a registry entry; the tests assert the rule's visible choices (who was approached, who was struck, who was healed)"
  },
  {
   "id": "content.mage-staff",

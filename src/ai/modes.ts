@@ -629,10 +629,119 @@ function rangedKite(ctx: Ctx, u: Unit): void {
   }
 }
 
+// ── the six modes of 2026-09-03 (ai.mode.defender, ai.mode.support, and the
+// four the encounter session wanted — ENCOUNTERS-ENGINE-HANDOFF §4.10). Rules,
+// not scores, inspectable by eye; every quantity from canAttack/preview.
+
+/** Walk toward `dest` with the first affordable path power, stopping as close as reach allows. */
+function closeOn(ctx: Ctx, u: Unit, dest: HexId, stopAt = 1): void {
+  if (distance(u.hex, dest) <= stopAt) return
+  const walk = movePowerOf(ctx, u, 'path')
+  if (!walk) { sidestepToward(ctx, u, dest); return }
+  const reach = reachable(ctx, u, walk.budgetMod)
+  let bestHex: HexId | null = null, bestD = distance(u.hex, dest)
+  for (const [hex] of [...reach].sort((a, b) => a[0] - b[0])) {
+    const d = distance(hex, dest)
+    if (d < bestD && d >= stopAt) { bestD = d; bestHex = hex }
+  }
+  if (bestHex !== null) executeMove(ctx, u.id, pathTo(reach, u.hex, bestHex), walk)
+}
+const allies = (ctx: Ctx, u: Unit) => ctx.state.units.filter((o) => o.side === u.side && o.id !== u.id && o.lifeState === 'standing')
+
+/** defender — stays within 2 of the nearest ally under half health (else the nearest ally), attacks anything in reach, never advances alone. */
+function defender(ctx: Ctx, u: Unit): void {
+  const hurt = allies(ctx, u).filter((o) => o.hp * 2 < o.maxHp)
+  const ward = (hurt.length ? hurt : allies(ctx, u)).sort((a, b) => distance(u.hex, a.hex) - distance(u.hex, b.hex) || a.id - b.id)[0]
+  if (ward && distance(u.hex, ward.hex) > 2) closeOn(ctx, u, ward.hex, 1)
+  if (u.lifeState !== 'standing') return
+  if (!attackIfPossible(ctx, u, enemiesInAttackReach(ctx, u))) idle(ctx, u, ward ? 'holding by ' + ward.name : 'nobody to defend')
+}
+
+/** support — holds at range like a kiter, but allies come first: a free power, a support power, an effect power; the weapon last. */
+function support(ctx: Ctx, u: Unit): void {
+  effectsPower(ctx, u, 'free')
+  if (supportPower(ctx, u)) return
+  if (effectsPower(ctx, u, 'primary')) return
+  rangedKite(ctx, u)
+}
+
+/** focused fire — the whole side picks one target: the standing enemy with the least health, ties to the lower id. */
+function focusedFire(ctx: Ctx, u: Unit): void {
+  const target = lowestHealth(livingEnemies(ctx, u))
+  if (!target) return
+  closeOn(ctx, u, target.hex, 1)
+  if (u.lifeState !== 'standing') return
+  const id = bestAttack(ctx, u.id, target.id)
+  if (id) { performAttack(ctx, u.id, target.id, id); settle(ctx, id); return }
+  if (!attackIfPossible(ctx, u, enemiesInAttackReach(ctx, u))) idle(ctx, u, 'the focus is out of reach')
+}
+
+/** value hunter — damage or healing, whichever is worth more this activation. */
+function valueHunter(ctx: Ctx, u: Unit): void {
+  effectsPower(ctx, u, 'free')
+  let bestHeal = 0, healId: string | null = null, healTo: number | null = null
+  for (const id of u.abilities) {
+    const a = ctx.abilities[id]
+    if (!a || !(a.effect === 'heal' || a.effects?.some((e) => e.kind === 'heal'))) continue
+    for (const o of allies(ctx, u).concat([u])) {
+      if (!canUsePower(ctx, u.id, o.id, id)) continue
+      const worth = Math.min(previewPower(ctx, u.id, o.id, id).heal ?? 0, o.maxHp - o.hp)
+      if (worth > bestHeal || (worth === bestHeal && healTo !== null && o.id < healTo)) { bestHeal = worth; healId = id; healTo = o.id }
+    }
+  }
+  let bestDmg = 0, dmgTarget: Unit | null = null, dmgId: string | null = null
+  for (const e of livingEnemies(ctx, u)) {
+    const id = bestAttack(ctx, u.id, e.id)
+    if (!id) continue
+    const d = preview(ctx, u.id, e.id, id).damageOnHit
+    if (d > bestDmg || (d === bestDmg && dmgTarget && e.id < dmgTarget.id)) { bestDmg = d; dmgTarget = e; dmgId = id }
+  }
+  if (healId && healTo !== null && bestHeal >= bestDmg && bestHeal > 0) { usePower(ctx, u.id, healTo, healId); settle(ctx, healId); return }
+  if (dmgTarget && dmgId) { performAttack(ctx, u.id, dmgTarget.id, dmgId); settle(ctx, dmgId); return }
+  // nothing worth doing from here: close on the nearest enemy, then try again
+  const near = nearestEnemy(ctx, u)
+  if (near) closeOn(ctx, u, near.hex, 1)
+  if (u.lifeState !== 'standing') return
+  if (!attackIfPossible(ctx, u, enemiesInAttackReach(ctx, u))) idle(ctx, u, 'nothing worth doing')
+}
+
+/** follow — stays adjacent to the nearest ally that is not itself a follower, and attacks what it can from there. */
+function follow(ctx: Ctx, u: Unit): void {
+  const lead = allies(ctx, u).filter((o) => o.ai !== 'follow').sort((a, b) => distance(u.hex, a.hex) - distance(u.hex, b.hex) || a.id - b.id)[0]
+    ?? allies(ctx, u).sort((a, b) => a.id - b.id)[0]
+  if (lead && distance(u.hex, lead.hex) > 1) closeOn(ctx, u, lead.hex, 1)
+  if (u.lifeState !== 'standing') return
+  if (!attackIfPossible(ctx, u, enemiesInAttackReach(ctx, u))) idle(ctx, u, lead ? 'following ' + lead.name : 'nobody to follow')
+}
+
+/** hunter — has a target and goes for it: the weakest enemy when it first acts, pursued until it falls. */
+function hunter(ctx: Ctx, u: Unit): void {
+  let t = u.huntTarget !== undefined ? ctx.state.units[u.huntTarget] : undefined
+  if (!t || t.lifeState !== 'standing' || t.side === u.side) {
+    const pick = lowestHealth(livingEnemies(ctx, u))
+    if (!pick) return
+    u.huntTarget = pick.id
+    emit(ctx, 'ai.hunts', `ai.${u.ai}`, { actor: u.id, target: pick.id })
+    t = pick
+  }
+  closeOn(ctx, u, t.hex, 1)
+  if (u.lifeState !== 'standing') return
+  const id = bestAttack(ctx, u.id, t.id)
+  if (id) { performAttack(ctx, u.id, t.id, id); settle(ctx, id); return }
+  if (!attackIfPossible(ctx, u, enemiesInAttackReach(ctx, u))) idle(ctx, u, 'the quarry is out of reach')
+}
+
 const MODES: Record<string, (ctx: Ctx, u: Unit) => void> = {
   'dumb-melee': dumbMelee,
   'melee-aggressive': meleeAggressive,
   'ranged-kite': rangedKite,
+  // 2026-09-03
+  'defender': defender,
+  'support': support,
+  'focused-fire': focusedFire,
+  'value-hunter': valueHunter,
+  'follow': follow,
+  'hunter': hunter,
 }
 
 export function runActivation(ctx: Ctx, unitId: number): void {

@@ -535,6 +535,8 @@ export type Unit = {
   auras: AuraDef[]
   /** capability.corpses: a raised or summoned unit leaves no corpse. */
   summoned: boolean
+  /** ai.mode.hunter (2026-09-03): the quarry, until it falls. */
+  huntTarget?: number
   ai: string
   attacks: string[]
   abilities: string[]
