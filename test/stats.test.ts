@@ -9,7 +9,7 @@ import { TERRAIN } from '../src/core/types.js'
 
 function ranger() {
   const ctx = createCustomBattle(
-    [{ type: 'ranger', hex: hexId(5, 5) }], [{ type: 'zombie', hex: hexId(5, 8) }], { mapId: 'map.open' })
+    [{ type: 'test-ranger', hex: hexId(5, 5) }], [{ type: 'test-zombie', hex: hexId(5, 8) }], { mapId: 'map.open' })
   return { ctx, r: ctx.state.units[0]!, z: ctx.state.units[1]! }
 }
 
@@ -20,12 +20,12 @@ const mod = (m: Partial<StatMod> & Pick<StatMod, 'stat' | 'value'>): StatMod =>
 describe('terrain through the stat pipeline', () => {
   it('hills are still +10 accuracy and +2 ranged reach, and nothing else', () => {
     const { ctx, r, z } = ranger()
-    const flatAcc = resolveAccuracy(ctx, r, z, ATTACKS['attack.ranger.bow']!).value
-    const flatReach = reachOf(ctx, r, ATTACKS['attack.ranger.bow']!)
+    const flatAcc = resolveAccuracy(ctx, r, z, ATTACKS['attack.test-ranger.bow']!).value
+    const flatReach = reachOf(ctx, r, ATTACKS['attack.test-ranger.bow']!)
 
     ctx.state.terrain[r.hex] = TERRAIN.HILLS
-    expect(resolveAccuracy(ctx, r, z, ATTACKS['attack.ranger.bow']!).value - flatAcc).toBe(10)
-    expect(reachOf(ctx, r, ATTACKS['attack.ranger.bow']!) - flatReach).toBe(2)
+    expect(resolveAccuracy(ctx, r, z, ATTACKS['attack.test-ranger.bow']!).value - flatAcc).toBe(10)
+    expect(reachOf(ctx, r, ATTACKS['attack.test-ranger.bow']!) - flatReach).toBe(2)
     expect(reachOf(ctx, r, ATTACKS['attack.punch']!)).toBe(1)      // melee ignores it
     expect(stat(ctx, r, 'dodge')).toBe(r.dodge)                    // hills grant no dodge
     expect(stat(ctx, r, 'armor')).toBe(r.armor)                    // and no armor

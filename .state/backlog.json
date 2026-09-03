@@ -1048,7 +1048,10 @@
   "kind": "engine",
   "shape": "plumbing",
   "spec": "CHORE (born with content.test-cohort): ~25 test files still build custom battles from the old dictated defs (warrior/ranger/mage/zombie/zombie-burning), which survive in index.ts as unfielded fixtures. Migrate the custom battles to the cohort units (or a scripted fixture pack), then DELETE the dictated rows — the last hand-typed units in the engine.",
-  "expect": "no unit def in index.ts except registries that read from data; the suite green throughout"
+  "expect": "no unit def in index.ts except registries that read from data; the suite green throughout",
+  "status": "done-needs-review",
+  "sha": "da34223",
+  "gauntlet": "not passed — 2 flag(s) warned"
  },
  {
   "id": "viewer.hexvfx-path",

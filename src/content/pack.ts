@@ -176,6 +176,14 @@ export function packTestAttacks(): Readonly<Record<string, AttackDef>> {
   }
   return raw
 }
+export function packTestAbilities(): Readonly<Record<string, AbilityDef>> {
+  const raw = (UNIT_PACK as { test?: { abilities?: Readonly<Record<string, AbilityDef>> } }).test?.abilities ?? {}
+  for (const [k, a] of Object.entries(raw)) {
+    if (k !== a.id) throw new Error(`test receptacle: ability key '${k}' names id '${a.id}'`)
+    if (!k.startsWith('power.test-')) throw new Error(`test receptacle: '${k}' is not power.test-*`)
+  }
+  return raw
+}
 export function packTestStatuses(): Readonly<Record<string, StatusDef>> {
   const raw = (UNIT_PACK as { test?: { statuses?: Readonly<Record<string, PackStatusRow>> } }).test?.statuses ?? {}
   for (const k of Object.keys(raw)) if (!k.startsWith('test.status.')) throw new Error(`test receptacle: '${k}' is not test.status.*`)

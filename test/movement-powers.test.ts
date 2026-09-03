@@ -60,8 +60,8 @@ describe('sidestep — one hex, free, terrain cost irrelevant, still a Step', ()
     // the burn on entry proves a sidestep is still a Step — only Flight
     // skips the ground.
     const ctx = createCustomBattle(
-      [{ type: 'warrior', hex: hexId(3, 3) }],
-      [{ type: 'zombie', hex: hexId(11, 11) }],
+      [{ type: 'test-warrior', hex: hexId(3, 3) }],
+      [{ type: 'test-zombie', hex: hexId(11, 11) }],
       { mapId: 'test.map.embers' },
     )
     const w = ctx.state.units[0]!
@@ -79,8 +79,8 @@ describe('sidestep — one hex, free, terrain cost irrelevant, still a Step', ()
 
   it('is available every other Turn — the cooldown gate (Angela 2026-08-21)', () => {
     const ctx = createCustomBattle(
-      [{ type: 'warrior', hex: hexId(5, 5) }],
-      [{ type: 'zombie', hex: hexId(11, 11) }],
+      [{ type: 'test-warrior', hex: hexId(5, 5) }],
+      [{ type: 'test-zombie', hex: hexId(11, 11) }],
     )
     const w = ctx.state.units[0]!
     ctx.state.turn = 3
@@ -95,8 +95,8 @@ describe('sidestep — one hex, free, terrain cost irrelevant, still a Step', ()
 
   it('Side Roll is the same shape priced the other way: 1 stamina, usable every Turn', () => {
     const ctx = createCustomBattle(
-      [{ type: 'ranger', hex: hexId(5, 5) }],
-      [{ type: 'zombie', hex: hexId(11, 11) }],
+      [{ type: 'test-ranger', hex: hexId(5, 5) }],
+      [{ type: 'test-zombie', hex: hexId(11, 11) }],
     )
     const r = ctx.state.units[0]!
     ctx.state.turn = 3
@@ -112,8 +112,8 @@ describe('sidestep — one hex, free, terrain cost irrelevant, still a Step', ()
 describe('stamina is the hero throttle — the enemy side does not run it', () => {
   it('a zombie can always afford its one movement power despite stamina 0', () => {
     const ctx = createCustomBattle(
-      [{ type: 'warrior', hex: hexId(5, 5) }],
-      [{ type: 'zombie', hex: hexId(5, 7) }],
+      [{ type: 'test-warrior', hex: hexId(5, 5) }],
+      [{ type: 'test-zombie', hex: hexId(5, 7) }],
     )
     const z = ctx.state.units[1]!
     expect(z.maxStamina).toBe(0)

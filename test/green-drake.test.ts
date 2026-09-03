@@ -39,7 +39,7 @@ describe('two riders, two attacks — attack scoping doing real work', () => {
     // gets a breath target at range 3 and a snap target at its jaws.
     const ctx = createCustomBattle(
       [{ type: 'green-drake', hex: hexId(5, 5) }],
-      [{ type: 'zombie', hex: hexId(5, 8) }, { type: 'zombie', hex: hexId(5, 6) }],
+      [{ type: 'test-zombie', hex: hexId(5, 8) }, { type: 'test-zombie', hex: hexId(5, 6) }],
     )
     const d = ctx.state.units[0]!
     d.mods.push({ stat: 'accuracy', op: 'add', value: 60, source: 'test', scope: 'unit' })  // never miss

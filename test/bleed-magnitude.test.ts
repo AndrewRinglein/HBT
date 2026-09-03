@@ -12,7 +12,7 @@ import { STATUSES } from '../src/content/statuses.js'
 import { scenarioDef, scenarioOptions } from '../src/content/scenarios.js'
 import { hexId } from '../src/core/hex.js'
 
-const rig = () => createCustomBattle([{ type: 'warrior', hex: hexId(5, 5) }], [{ type: 'zombie', hex: hexId(9, 9) }])
+const rig = () => createCustomBattle([{ type: 'test-warrior', hex: hexId(5, 5) }], [{ type: 'test-zombie', hex: hexId(9, 9) }])
 
 describe('the tick is the value, true', () => {
   it('Bleed 5 ticks 5,4,3,2,1 — resist 2 changes nothing', () => {

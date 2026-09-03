@@ -17,7 +17,7 @@ describe('trigger.zombie.rot', () => {
     // The status.weakness landing added test.zombie.sap (backlog
     // trigger.zombie.sap absorbed as a testing-lane id), so exclusivity is
     // stale by design. Rot itself is unchanged and still asserted.
-    expect((UNITS['zombie']!.triggers ?? []).map((t) => t.id)).toContain('trigger.zombie.rot')
+    expect((UNITS['test-zombie']!.triggers ?? []).map((t) => t.id)).toContain('trigger.zombie.rot')
   })
 
   it('rot fires in real battles at roughly its chance — a rule, not a snapshot', () => {
@@ -55,7 +55,7 @@ describe('trigger.zombie.rot', () => {
       // every rot roll must be preceded in the same attack by damage.applied:
       // cheap proxy — rot rolls never exceed zombie damage events
       const rotRolls = ctx.events.filter((e) => e.type === 'trigger.rolled' && e.causeId === 'trigger.zombie.rot').length
-      const zombieDamage = ctx.events.filter((e) => e.type === 'damage.applied' && e['attackId'] === 'attack.zombie.basic' && (e['amount'] as number) > 0).length
+      const zombieDamage = ctx.events.filter((e) => e.type === 'damage.applied' && e['attackId'] === 'attack.test-zombie.bite' && (e['amount'] as number) > 0).length
       expect(rotRolls).toBeLessThanOrEqual(zombieDamage)
     }
   })

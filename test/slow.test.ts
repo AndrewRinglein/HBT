@@ -18,8 +18,8 @@ import { hexId } from '../src/core/hex.js'
 
 function board() {
   const ctx = createCustomBattle(
-    [{ type: 'warrior', hex: hexId(5, 5) }],
-    [{ type: 'zombie', hex: hexId(5, 6) }],
+    [{ type: 'test-warrior', hex: hexId(5, 5) }],
+    [{ type: 'test-zombie', hex: hexId(5, 6) }],
   )
   return { ctx, w: ctx.state.units[0]!, z: ctx.state.units[1]! }
 }
@@ -55,7 +55,7 @@ describe('the budget walk: slow N leaves movement − N points, recovering as it
     beginActivation(ctx, z.id, 'test')
     expect(z.movePointsLeft).toBe(0)
     expect(isBlocked(ctx, z)).toBe(false)                       // Slow is not Stun
-    expect(canAttack(ctx, z.id, w.id, 'attack.zombie.basic')).toBe(true)  // adjacent, still bites
+    expect(canAttack(ctx, z.id, w.id, 'attack.test-zombie.bite')).toBe(true)  // adjacent, still bites
   })
 
   it('reach shrinks under slow — everything downstream flows from movePointsLeft', () => {

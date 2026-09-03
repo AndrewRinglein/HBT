@@ -15,7 +15,7 @@ describe('the kill-switch seam', () => {
     const reg = { a: 1, b: 2 }
     expect(omitDisabled(reg)).toBe(reg)
     expect(STATUSES['status.poison']).toBeDefined()
-    expect(UNITS['zombie']).toBeDefined()
+    expect(UNITS['test-zombie']).toBeDefined()
   })
 
   it('drops exactly the named rows, by full id or bare key, in a child process', () => {
@@ -32,11 +32,11 @@ describe('the kill-switch seam', () => {
       `  const u = await import('./src/content/index.js');` +
       `  console.log(JSON.stringify({` +
       `    poison: 'status.poison' in s.STATUSES,` +
-      `    zombie: 'zombie' in u.UNITS,` +
-      `    axe: 'attack.warrior.axe' in u.ATTACKS }))})"`,
+      `    zombie: 'test-zombie' in u.UNITS,` +
+      `    axe: 'attack.test-warrior.axe' in u.ATTACKS }))})"`,
       {
         encoding: 'utf8', cwd: process.cwd(),
-        env: { ...process.env, CF_DISABLE_IDS: 'status.poison,unit.zombie' },
+        env: { ...process.env, CF_DISABLE_IDS: 'status.poison,unit.test-zombie' },
       },
     )
     const r = JSON.parse(out.trim().split('\n').pop()!)

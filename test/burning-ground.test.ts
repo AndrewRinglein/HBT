@@ -46,8 +46,8 @@ describe('running through costs 1 stack per splash — the entry beat', () => {
   it('a warrior crossing 2 ember hexes picks up Burn 2', () => {
     // test.map.embers: rows 4-5 are the full-width burning band.
     const ctx = createCustomBattle(
-      [{ type: 'warrior', hex: hexId(3, 5) }],
-      [{ type: 'zombie', hex: hexId(11, 11) }],
+      [{ type: 'test-warrior', hex: hexId(3, 5) }],
+      [{ type: 'test-zombie', hex: hexId(11, 11) }],
       { mapId: 'test.map.embers' },
     )
     const w = ctx.state.units[0]!
@@ -64,8 +64,8 @@ describe('running through costs 1 stack per splash — the entry beat', () => {
   it('walking through poisoned ground applies NOTHING — only ending there does', () => {
     // rows 7-8 are the poisoned belt.
     const ctx = createCustomBattle(
-      [{ type: 'warrior', hex: hexId(6, 5) }],
-      [{ type: 'zombie', hex: hexId(11, 11) }],
+      [{ type: 'test-warrior', hex: hexId(6, 5) }],
+      [{ type: 'test-zombie', hex: hexId(11, 11) }],
       { mapId: 'test.map.embers' },
     )
     const w = ctx.state.units[0]!

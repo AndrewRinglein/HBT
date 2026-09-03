@@ -18,8 +18,8 @@ import { hexId } from '../src/core/hex.js'
 
 function board() {
   const ctx = createCustomBattle(
-    [{ type: 'warrior', hex: hexId(5, 5) }, { type: 'mage', hex: hexId(5, 4) }],
-    [{ type: 'zombie', hex: hexId(5, 6) }],
+    [{ type: 'test-warrior', hex: hexId(5, 5) }, { type: 'test-mage', hex: hexId(5, 4) }],
+    [{ type: 'test-zombie', hex: hexId(5, 6) }],
   )
   return { ctx, w: ctx.state.units[0]!, m: ctx.state.units[1]!, z: ctx.state.units[2]! }
 }
@@ -39,30 +39,30 @@ describe('the data', () => {
 describe('−1 damage per point, not the stats (GAME-DESIGN §5)', () => {
   it('the design sentence as an expect: axe minus 2, strength unchanged', () => {
     const { ctx, w } = board()
-    const clean = preview(ctx, w.id, 2, 'attack.warrior.axe').damageOnHit  // 1 + 5 = 6
+    const clean = preview(ctx, w.id, 2, 'attack.test-warrior.axe').damageOnHit  // 1 + 5 = 6
     applyStatus(ctx, w.id, 'status.weak', 2, 'test')
-    expect(preview(ctx, w.id, 2, 'attack.warrior.axe').damageOnHit).toBe(clean - 2)
+    expect(preview(ctx, w.id, 2, 'attack.test-warrior.axe').damageOnHit).toBe(clean - 2)
     expect(effective(ctx, w, 'strength').value).toBe(5)   // the stat itself is unchanged
   })
 
   it('over-stack floors at zero, never negative', () => {
     const { ctx, w } = board()
     applyStatus(ctx, w.id, 'status.weak', 9, 'test')
-    expect(preview(ctx, w.id, 2, 'attack.warrior.axe').damageOnHit).toBe(0)
+    expect(preview(ctx, w.id, 2, 'attack.test-warrior.axe').damageOnHit).toBe(0)
   })
 
   it('reaches powers through the one damage function', () => {
     const { ctx, m } = board()
-    const clean = previewPower(ctx, m.id, 2, 'power.mage.bolt').damage    // 6 + 2 = 8
+    const clean = previewPower(ctx, m.id, 2, 'power.test-mage.bolt').damage    // 6 + 2 = 8
     applyStatus(ctx, m.id, 'status.weak', 3, 'test')
-    expect(previewPower(ctx, m.id, 2, 'power.mage.bolt').damage).toBe(clean - 3)
+    expect(previewPower(ctx, m.id, 2, 'power.test-mage.bolt').damage).toBe(clean - 3)
   })
 
   it('the enfeeble variant subtracts identically — the station reads data, not a name', () => {
     const { ctx, w } = board()
-    const clean = preview(ctx, w.id, 2, 'attack.warrior.axe').damageOnHit
+    const clean = preview(ctx, w.id, 2, 'attack.test-warrior.axe').damageOnHit
     applyStatus(ctx, w.id, 'test.status.enfeeble', 2, 'test')
-    expect(preview(ctx, w.id, 2, 'attack.warrior.axe').damageOnHit).toBe(clean - 2)
+    expect(preview(ctx, w.id, 2, 'attack.test-warrior.axe').damageOnHit).toBe(clean - 2)
   })
 
   it('decays 1 per End of Phase and deals no tick damage on the way', () => {

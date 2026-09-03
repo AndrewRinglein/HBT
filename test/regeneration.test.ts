@@ -7,8 +7,8 @@ import { applyDamage } from '../src/core/mutate.js'
 
 function wounded(hp: number) {
   const ctx = createCustomBattle(
-    [{ type: 'warrior', hex: 30 }],
-    [{ type: 'zombie', hex: 80 }],
+    [{ type: 'test-warrior', hex: 30 }],
+    [{ type: 'test-zombie', hex: 80 }],
   )
   const w = ctx.state.units[0]!
   applyDamage(ctx, w.id, w.maxHp - hp, 'test', {})

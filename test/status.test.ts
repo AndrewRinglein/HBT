@@ -9,7 +9,7 @@ import { ATTACKS } from '../src/content/index.js'
 // A hero and a zombie in opposite corners never meet, so nothing but the
 // status under test changes the board.
 const isolated = () => createCustomBattle(
-  [{ type: 'warrior', hex: hexId(0, 11) }], [{ type: 'zombie', hex: hexId(11, 0) }])
+  [{ type: 'test-warrior', hex: hexId(0, 11) }], [{ type: 'test-zombie', hex: hexId(11, 0) }])
 
 describe('status.poison', () => {
   it('gate 2 — 3 poison deals 3 then 2 then 1, then is gone', () => {
@@ -104,7 +104,7 @@ describe('status.poison', () => {
 
 describe('the status system itself', () => {
   const iso = () => createCustomBattle(
-    [{ type: 'warrior', hex: hexId(0, 11) }], [{ type: 'zombie', hex: hexId(11, 0) }])
+    [{ type: 'test-warrior', hex: hexId(0, 11) }], [{ type: 'test-zombie', hex: hexId(11, 0) }])
 
   // This test needed TWO statuses to prove one pass handles them together, and the
   // second one was status.burn. With burn removed there is only one published
@@ -132,24 +132,24 @@ describe('the status system itself', () => {
     }
     applyStatus(ctx, 0, 'status.testward', 5, 'test')
     const before = valueOf(ctx.state.units[0]!, 'status.testward')
-    preview(ctx, 1, 0, 'attack.zombie.basic')
-    preview(ctx, 1, 0, 'attack.zombie.basic')
+    preview(ctx, 1, 0, 'attack.test-zombie.bite')
+    preview(ctx, 1, 0, 'attack.test-zombie.bite')
     expect(valueOf(ctx.state.units[0]!, 'status.testward')).toBe(before)
   })
 
   it('an absorbing status reduces the hit AND is spent by exactly what it absorbed', () => {
     const ctx = createCustomBattle(
-      [{ type: 'warrior', hex: hexId(5, 5) }], [{ type: 'zombie', hex: hexId(6, 5) }])
+      [{ type: 'test-warrior', hex: hexId(5, 5) }], [{ type: 'test-zombie', hex: hexId(6, 5) }])
     ;(ctx.statuses as Record<string, unknown>)['status.testward'] = {
       id: 'status.testward', name: 'Ward', shape: 'pool', stacking: 'add',
       reducesIncomingDamage: true,
     }
     applyStatus(ctx, 0, 'status.testward', 2, 'test')
     const hp0 = ctx.state.units[0]!.hp
-    const pv = preview(ctx, 1, 0, 'attack.zombie.basic')
+    const pv = preview(ctx, 1, 0, 'attack.test-zombie.bite')
     // zombie 4 strength, warrior 1 armour: normally 3. Ward 2 absorbs first.
     expect(pv.damageOnHit).toBe(1)
-    performAttack(ctx, 1, 0, 'attack.zombie.basic')
+    performAttack(ctx, 1, 0, 'attack.test-zombie.bite')
     const hit = ctx.events.filter(e => e.type === 'damage.applied').pop()
     if (hit) {
       expect(hit['absorbed']).toBe(2)
@@ -160,14 +160,14 @@ describe('the status system itself', () => {
 
   it('the damage ledger still fully explains the number when a pool absorbs', () => {
     const ctx = createCustomBattle(
-      [{ type: 'warrior', hex: hexId(5, 5) }], [{ type: 'zombie', hex: hexId(6, 5) }])
+      [{ type: 'test-warrior', hex: hexId(5, 5) }], [{ type: 'test-zombie', hex: hexId(6, 5) }])
     ;(ctx.statuses as Record<string, unknown>)['status.testward'] = {
       id: 'status.testward', name: 'Ward', shape: 'pool', stacking: 'add',
       reducesIncomingDamage: true,
     }
     applyStatus(ctx, 0, 'status.testward', 2, 'test')
     const d = resolveDamage(ctx, ctx.state.units[1]!, ctx.state.units[0]!,
-      ATTACKS['attack.zombie.basic']!, false, 0, 2)
+      ATTACKS['attack.test-zombie.bite']!, false, 0, 2)
     expect(d.ledger.reduce((s, r) => s + r.delta, 0)).toBe(d.value)
     expect(d.absorbed).toBe(2)
     expect(d.ledger.map(r => r.name)).toContain('PROTECTION')

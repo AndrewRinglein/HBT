@@ -14,10 +14,10 @@ const MAPS_ALL = MAP_PANEL
 // ─── PASS 1: roles ───────────────────────────────────────────────────────────
 describe('pass 1 — unit roles', () => {
   it('every unit type declares a role', () => {
-    expect(UNITS['zombie']!.role).toBe('melee')
-    expect(UNITS['warrior']!.role).toBe('melee')
-    expect(UNITS['ranger']!.role).toBe('ranged')
-    expect(UNITS['mage']!.role).toBe('ranged')
+    expect(UNITS['test-zombie']!.role).toBe('melee')
+    expect(UNITS['test-warrior']!.role).toBe('melee')
+    expect(UNITS['test-ranger']!.role).toBe('ranged')
+    expect(UNITS['test-mage']!.role).toBe('ranged')
   })
   it('gate 1 — the role appears in the log for every unit', () => {
     const ctx = createBattle({ replicate: 0 })
@@ -53,20 +53,20 @@ describe('pass 2 — hills', () => {
   })
   it('gate 2 — hills give exactly +10 accuracy', () => {
     const ctx = createCustomBattle(
-      [{ type: 'ranger', hex: hexId(5, 5) }], [{ type: 'zombie', hex: hexId(5, 8) }], { mapId: 'map.open' })
+      [{ type: 'test-ranger', hex: hexId(5, 5) }], [{ type: 'test-zombie', hex: hexId(5, 8) }], { mapId: 'map.open' })
     const [r, z] = [ctx.state.units[0]!, ctx.state.units[1]!]
-    const flat = resolveAccuracy(ctx, r, z, ATTACKS['attack.ranger.bow']!).value
+    const flat = resolveAccuracy(ctx, r, z, ATTACKS['attack.test-ranger.bow']!).value
     ctx.state.terrain[r.hex] = TERRAIN.HILLS
-    const hill = resolveAccuracy(ctx, r, z, ATTACKS['attack.ranger.bow']!).value
+    const hill = resolveAccuracy(ctx, r, z, ATTACKS['attack.test-ranger.bow']!).value
     expect(hill - flat).toBe(10)
   })
   it('gate 2 — hills give exactly +2 reach, ranged only', () => {
     const ctx = createCustomBattle(
-      [{ type: 'ranger', hex: hexId(5, 5) }], [{ type: 'zombie', hex: hexId(5, 8) }], { mapId: 'map.open' })
+      [{ type: 'test-ranger', hex: hexId(5, 5) }], [{ type: 'test-zombie', hex: hexId(5, 8) }], { mapId: 'map.open' })
     const r = ctx.state.units[0]!
-    expect(reachOf(ctx, r, ATTACKS['attack.ranger.bow']!)).toBe(6)
+    expect(reachOf(ctx, r, ATTACKS['attack.test-ranger.bow']!)).toBe(6)
     ctx.state.terrain[r.hex] = TERRAIN.HILLS
-    expect(reachOf(ctx, r, ATTACKS['attack.ranger.bow']!)).toBe(8)
+    expect(reachOf(ctx, r, ATTACKS['attack.test-ranger.bow']!)).toBe(8)
     expect(reachOf(ctx, r, ATTACKS['attack.punch']!)).toBe(1)
   })
   it('gate 2 — reachability shrinks on rough ground', () => {
@@ -122,25 +122,25 @@ describe('pass 2 — hills', () => {
 // ─── PASS 3: the Mage ────────────────────────────────────────────────────────
 describe('pass 3 — the Mage', () => {
   it('has the stat block that was specified', () => {
-    const m = UNITS['mage']!
+    const m = UNITS['test-mage']!
     expect([m.maxHp, m.armor, m.resist, m.strength, m.precision, m.magic, m.movement, m.reach, m.maxStamina, m.staminaRegen])
       .toEqual([6, 0, 1, 2, 4, 2, 4, 0, 5, 1])
   })
   it('gate 2 — staff bolt is Precision magic at range 6; strike is Strength physical at 1', () => {
-    const ctx = createCustomBattle([{ type: 'mage', hex: hexId(5, 5) }], [{ type: 'zombie', hex: hexId(6, 5) }])
+    const ctx = createCustomBattle([{ type: 'test-mage', hex: hexId(5, 5) }], [{ type: 'test-zombie', hex: hexId(6, 5) }])
     const [m, z] = [ctx.state.units[0]!, ctx.state.units[1]!]
-    expect(resolveDamage(ctx, m, z, ATTACKS['attack.mage.staff']!, false).value).toBe(4)   // precision 4, magic vs resist 0
-    expect(resolveDamage(ctx, m, z, ATTACKS['attack.mage.strike']!, false).value).toBe(2)  // strength 2, physical vs armor 0
-    expect(ATTACKS['attack.mage.staff']!.reach).toBe(6)
-    expect(ATTACKS['attack.mage.strike']!.reach).toBe(1)
+    expect(resolveDamage(ctx, m, z, ATTACKS['attack.test-mage.staff']!, false).value).toBe(4)   // precision 4, magic vs resist 0
+    expect(resolveDamage(ctx, m, z, ATTACKS['attack.test-mage.strike']!, false).value).toBe(2)  // strength 2, physical vs armor 0
+    expect(ATTACKS['attack.test-mage.staff']!.reach).toBe(6)
+    expect(ATTACKS['attack.test-mage.strike']!.reach).toBe(1)
   })
   it('gate 2 — magic damage is mitigated by Resist, not Armor', () => {
-    const ctx = createCustomBattle([{ type: 'mage', hex: hexId(5,5) }], [{ type: 'zombie', hex: hexId(6,5) }])
+    const ctx = createCustomBattle([{ type: 'test-mage', hex: hexId(5,5) }], [{ type: 'test-zombie', hex: hexId(6,5) }])
     const m = ctx.state.units[0]!
     const armoured = { ...ctx.state.units[1]!, armor: 3, resist: 0 }
     const warded  = { ...ctx.state.units[1]!, armor: 0, resist: 3 }
-    expect(resolveDamage(ctx, m, armoured, ATTACKS['attack.mage.staff']!, false).value).toBe(4)
-    expect(resolveDamage(ctx, m, warded,   ATTACKS['attack.mage.staff']!, false).value).toBe(1)
+    expect(resolveDamage(ctx, m, armoured, ATTACKS['attack.test-mage.staff']!, false).value).toBe(4)
+    expect(resolveDamage(ctx, m, warded,   ATTACKS['attack.test-mage.staff']!, false).value).toBe(1)
   })
   it('gate 1 — the Mage appears, moves, attacks and is targeted in real battles', () => {
     // LAW 10 — 2026-09-02 (content.alpha-flip): the standard battle's mage is
@@ -158,7 +158,7 @@ describe('pass 3 — the Mage', () => {
         if (e.type === 'unit.enter') type.set(e.actor!, e['typeId'] as string)
         if (e.type === 'moved' && type.get(e.actor!) === MAGE) seen.moved++
         if (e.type === 'attack.declared' && staffIds.has(e['attackId'] as string)) seen.staff++
-        if (e.type === 'attack.declared' && e['attackId'] === 'attack.mage.strike') seen.strike++
+        if (e.type === 'attack.declared' && e['attackId'] === 'attack.test-mage.strike') seen.strike++
         if (e.type === 'damage.applied' && type.get(e.target!) === MAGE) seen.hurt++
       }
     }
@@ -171,17 +171,17 @@ describe('pass 3 — the Mage', () => {
 // ─── PASS 4: the class power ─────────────────────────────────────────────────
 describe('pass 4 — Arcane Bolt', () => {
   it('gate 2 — deals Magic + 6 as magic damage', () => {
-    const ctx = createCustomBattle([{ type: 'mage', hex: hexId(5,5) }], [{ type: 'zombie', hex: hexId(6,5) }])
+    const ctx = createCustomBattle([{ type: 'test-mage', hex: hexId(5,5) }], [{ type: 'test-zombie', hex: hexId(6,5) }])
     const [m, z] = [ctx.state.units[0]!, ctx.state.units[1]!]
-    expect(resolvePowerDamage(ctx, m, z, ABILITIES['power.mage.bolt']!).value).toBe(8)
-    expect(resolvePowerDamage(ctx, m, { ...z, resist: 3 }, ABILITIES['power.mage.bolt']!).value).toBe(5)
+    expect(resolvePowerDamage(ctx, m, z, ABILITIES['power.test-mage.bolt']!).value).toBe(8)
+    expect(resolvePowerDamage(ctx, m, { ...z, resist: 3 }, ABILITIES['power.test-mage.bolt']!).value).toBe(5)
   })
   it('gate 2 — reaches exactly 10 hexes, not 11', () => {
-    const at10 = createCustomBattle([{ type:'mage', hex: hexId(1,0) }], [{ type:'zombie', hex: hexId(11,0) }])
-    const at11 = createCustomBattle([{ type:'mage', hex: hexId(0,0) }], [{ type:'zombie', hex: hexId(11,0) }])
+    const at10 = createCustomBattle([{ type: 'test-mage', hex: hexId(1,0) }], [{ type: 'test-zombie', hex: hexId(11,0) }])
+    const at11 = createCustomBattle([{ type: 'test-mage', hex: hexId(0,0) }], [{ type: 'test-zombie', hex: hexId(11,0) }])
     expect(distance(hexId(1,0), hexId(11,0))).toBe(10)
-    expect(canUsePower(at10, 0, 1, 'power.mage.bolt')).toBe(true)
-    expect(canUsePower(at11, 0, 1, 'power.mage.bolt')).toBe(false)
+    expect(canUsePower(at10, 0, 1, 'power.test-mage.bolt')).toBe(true)
+    expect(canUsePower(at11, 0, 1, 'power.test-mage.bolt')).toBe(false)
   })
   it('gate 2 — the cooldown is exactly 6 turns and blocks reuse', () => {
     // LAW 10 — 2026-09-02 (content.alpha-flip): Arcane Bolt is the TEST mage's

@@ -11,12 +11,12 @@ import { hexId } from '../src/core/hex.js'
 // A priest, two allies, three enemies, spread out.
 function board() {
   const ctx = createCustomBattle(
-    [{ type: 'mage', hex: hexId(5, 5) },      // 0 — the actor
-     { type: 'warrior', hex: hexId(6, 5) },   // 1 — ally, adjacent
-     { type: 'ranger', hex: hexId(5, 9) }],   // 2 — ally, far
-    [{ type: 'zombie', hex: hexId(4, 5) },    // 3 — enemy, adjacent
-     { type: 'zombie', hex: hexId(7, 5) },    // 4 — enemy, 2 away
-     { type: 'zombie', hex: hexId(5, 11) }],  // 5 — enemy, far
+    [{ type: 'test-mage', hex: hexId(5, 5) },      // 0 — the actor
+     { type: 'test-warrior', hex: hexId(6, 5) },   // 1 — ally, adjacent
+     { type: 'test-ranger', hex: hexId(5, 9) }],   // 2 — ally, far
+    [{ type: 'test-zombie', hex: hexId(4, 5) },    // 3 — enemy, adjacent
+     { type: 'test-zombie', hex: hexId(7, 5) },    // 4 — enemy, 2 away
+     { type: 'test-zombie', hex: hexId(5, 11) }],  // 5 — enemy, far
     { mapId: 'map.open' })
   return ctx
 }

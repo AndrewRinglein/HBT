@@ -28,7 +28,7 @@ describe('water cleanses', () => {
   /** First water hex on the map, and a passable non-water neighbour to start from. */
   function waterAndShore(mapId: string) {
     const probe = createCustomBattle(
-      [{ type: 'warrior', hex: hexId(6, 6) }], [{ type: 'zombie', hex: hexId(11, 11) }], { mapId })
+      [{ type: 'test-warrior', hex: hexId(6, 6) }], [{ type: 'test-zombie', hex: hexId(11, 11) }], { mapId })
     const t = probe.state.terrain
     for (let h = 0; h < t.length; h++) {
       if (t[h] !== TERRAIN.WATER) continue
@@ -42,8 +42,8 @@ describe('water cleanses', () => {
   it('running through water strips 1 Burn per splash — the entry rung', () => {
     const { water, shore } = waterAndShore('map.thicket')
     const ctx = createCustomBattle(
-      [{ type: 'warrior', hex: shore }],
-      [{ type: 'zombie', hex: hexId(11, 11) }],
+      [{ type: 'test-warrior', hex: shore }],
+      [{ type: 'test-zombie', hex: hexId(11, 11) }],
       { mapId: 'map.thicket' },
     )
     const w = ctx.state.units[0]!
@@ -61,8 +61,8 @@ describe('water cleanses', () => {
     // battle that terrain.water is the causeId of status.reduced lines.
     const { water } = waterAndShore('map.thicket')
     const ctx = createCustomBattle(
-      [{ type: 'warrior', hex: water }],   // starts ON water
-      [{ type: 'zombie', hex: hexId(11, 11) }],
+      [{ type: 'test-warrior', hex: water }],   // starts ON water
+      [{ type: 'test-zombie', hex: hexId(11, 11) }],
       { mapId: 'map.thicket' },
     )
     const w = ctx.state.units[0]!
@@ -82,8 +82,8 @@ describe('water cleanses', () => {
     // EoA, and the tick deals NOTHING.
     const { water } = waterAndShore('map.thicket')
     const ctx = createCustomBattle(
-      [{ type: 'warrior', hex: water }],
-      [{ type: 'zombie', hex: hexId(11, 11) }],
+      [{ type: 'test-warrior', hex: water }],
+      [{ type: 'test-zombie', hex: hexId(11, 11) }],
       { mapId: 'map.thicket' },
     )
     const w = ctx.state.units[0]!

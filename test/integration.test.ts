@@ -67,8 +67,8 @@ describe('gate 1 — everything appears in the log', () => {
     const centre = hexId(5, 5)
     const ring = neighboursOf(centre)
     const ctx = createCustomBattle(
-      [{ type: 'ranger', hex: centre }],
-      ring.map(h => ({ type: 'zombie', hex: h })),
+      [{ type: 'test-ranger', hex: centre }],
+      ring.map(h => ({ type: 'test-zombie', hex: h })),
     )
     runBattle(ctx)
     const hits = ctx.events.filter(e => e.type === 'damage.applied' && e.target === 0)
@@ -246,9 +246,9 @@ describe('the log alone can rebuild the battle', () => {
 describe('consequence stack', () => {
   it('a hero at 0 goes DOWN, not dead; a zombie at 0 dies outright', () => {
     const ctx = createCustomBattle(
-      [{ type: 'ranger', hex: hexId(5, 5) }],
-      [{ type: 'zombie', hex: hexId(6, 5) }, { type: 'zombie', hex: hexId(5, 6) },
-       { type: 'zombie', hex: hexId(6, 6) }, { type: 'zombie', hex: hexId(4, 5) }],
+      [{ type: 'test-ranger', hex: hexId(5, 5) }],
+      [{ type: 'test-zombie', hex: hexId(6, 5) }, { type: 'test-zombie', hex: hexId(5, 6) },
+       { type: 'test-zombie', hex: hexId(6, 6) }, { type: 'test-zombie', hex: hexId(4, 5) }],
     )
     runBattle(ctx)
     const hero = ctx.state.units[0]!
@@ -263,9 +263,9 @@ describe('consequence stack', () => {
 
   it('a downed hero bleeds out in exactly 3 turns with nobody to save them', () => {
     const ctx = createCustomBattle(
-      [{ type: 'ranger', hex: hexId(5, 5) }],
-      [{ type: 'zombie', hex: hexId(6, 5) }, { type: 'zombie', hex: hexId(5, 6) },
-       { type: 'zombie', hex: hexId(6, 6) }, { type: 'zombie', hex: hexId(4, 5) }],
+      [{ type: 'test-ranger', hex: hexId(5, 5) }],
+      [{ type: 'test-zombie', hex: hexId(6, 5) }, { type: 'test-zombie', hex: hexId(5, 6) },
+       { type: 'test-zombie', hex: hexId(6, 6) }, { type: 'test-zombie', hex: hexId(4, 5) }],
     )
     runBattle(ctx)
     const down = ctx.events.find(e => e.type === 'life.downed')
@@ -275,8 +275,8 @@ describe('consequence stack', () => {
 
   it('a wipe is reported as a wipe', () => {
     const ctx = createCustomBattle(
-      [{ type: 'ranger', hex: hexId(5, 5) }],
-      Array.from({ length: 4 }, (_, i) => ({ type: 'zombie', hex: hexId(4 + i, 6) })),
+      [{ type: 'test-ranger', hex: hexId(5, 5) }],
+      Array.from({ length: 4 }, (_, i) => ({ type: 'test-zombie', hex: hexId(4 + i, 6) })),
     )
     const res = runBattle(ctx)
     expect(['wipe', 'heroClear', 'capped']).toContain(res.outcome)

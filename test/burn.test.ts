@@ -12,8 +12,8 @@ import { hexId } from '../src/core/hex.js'
 
 function board(resist = 0) {
   const ctx = createCustomBattle(
-    [{ type: 'warrior', hex: hexId(5, 5) }],
-    [{ type: 'zombie-burning', hex: hexId(6, 5) }],
+    [{ type: 'test-warrior', hex: hexId(5, 5) }],
+    [{ type: 'test-zombie-burning', hex: hexId(6, 5) }],
   )
   const w = ctx.state.units[0]!
   if (resist) w.mods.push({ stat: 'resist', op: 'add', value: resist, source: 'test', scope: 'unit' })
@@ -78,7 +78,7 @@ describe('status.burn', () => {
 
   it('the sear: hitting a burning zombie burns the attacker, 1 per connected hit', () => {
     const { ctx } = board()
-    const zdef = UNITS['zombie-burning']!
+    const zdef = UNITS['test-zombie-burning']!
     // WEAKENED 2026-08-20 with a reason (Law 10): this asserted sear was the
     // ONLY trigger. status.stun's landing gave the burning zombie a second,
     // testing-lane trigger (test.zombie-burning.lurch — the blocksAction

@@ -4,7 +4,7 @@
 
 import type { AbilityDef, AttackDef, UnitDef } from '../core/types.js'
 import { omitDisabled, stripDisabledTriggers } from './disable.js'
-import { packAbilities, packAttacks, packCritChart, packItems, packTestAttacks, packUnits } from './pack.js'
+import { packAbilities, packAttacks, packCritChart, packItems, packTestAbilities, packTestAttacks, packUnits } from './pack.js'
 
 // ─────────────────────────────────────────────────────────────────────────────
 // PROVISIONAL CONTENT — NOT PUBLISHED, NOT DESIGN
@@ -26,50 +26,12 @@ import { packAbilities, packAttacks, packCritChart, packItems, packTestAttacks, 
 
 
 const RAW_ATTACKS: Readonly<Record<string, AttackDef>> = {
-  'attack.zombie.basic': {
-    // PROVISIONAL — no published source
-    id: 'attack.zombie.basic', name: 'Rotting Bite', kind: 'melee',
-    damageType: 'physical', bonus: 0, stat: 'strength', reach: 1, staminaCost: 0,
-    // The poison rider moved to trigger.zombie.rot (2026-08-20) — it was a
-    // hardcoded 100% on-hit with no chance and no hook, the exact shape the
-    // trigger system exists to replace.
-  },
-  'attack.warrior.axe': {
-    // PROVISIONAL — no published source
-    id: 'attack.warrior.axe', name: 'Axe', kind: 'melee',
-    damageType: 'physical', bonus: 1, stat: 'strength', reach: 1, staminaCost: 1,
-  },
-  'attack.warrior.massive': {
-    // PROVISIONAL — no published source
-    id: 'attack.warrior.massive', name: 'Massive Strike', kind: 'melee',
-    damageType: 'physical', bonus: 3, stat: 'strength', reach: 1, staminaCost: 2,
-  },
-  'attack.ranger.bow': {
-    // PROVISIONAL — no published source
-    id: 'attack.ranger.bow', name: 'Bow', kind: 'ranged',
-    damageType: 'physical', bonus: 1, stat: 'precision', reach: 6, staminaCost: 1,
-  },
-  'attack.mage.staff': {
-    // PROVISIONAL — no published source
-    id: 'attack.mage.staff', name: 'Staff (bolt)', kind: 'ranged',
-    damageType: 'magic', bonus: 0, stat: 'precision', reach: 6, staminaCost: 1,
-  },
-  'attack.mage.strike': {
-    // PROVISIONAL — no published source
-    id: 'attack.mage.strike', name: 'Staff (strike)', kind: 'melee',
-    damageType: 'physical', bonus: 0, stat: 'strength', reach: 1, staminaCost: 1,
-  },
-  // attack.punch left this file 2026-08-27 (content.alpha-team): it was
-  // PROVISIONAL here since the first baseline; S31 authored the real row
-  // (universalToAllUnits, staminaCost 1 vs the provisional 0) and the
-  // generated pack now owns the id. One owner only — the collision guard
-  // below is what caught the shadowing. Cost 0→1 is a declared baseline
-  // change: cohort punchers now pay.
-  // attack.breath.hiss and attack.fangs.bite left this file 2026-09-02
-  // (pack.items): the Codex item rows that grant them (Breath, Fangs) now
-  // compile every attack they grant into the pack, and one owner only. The
-  // pack's rows are the Codex's — Fangs' Bite carries its authored Crit +5
-  // (the field exists now), Hiss pays the 1 Stamina its row says.
+  // The six PROVISIONAL attacks (zombie bite, warrior axe and massive, ranger
+  // bow, mage staff and strike — 2026-08-14, no published source) left this
+  // file with test.fixture-migration (2026-09-02): they are test rows in
+  // content/test/attacks.json now, under the test family, swung by the test
+  // cohort and the test bodies. Punch, Breath, Fangs left earlier. What
+  // remains here is the dictated beast content awaiting its Codex rows.
   'attack.drake.poison-breath': {
     // PUBLISHED: Codex §5, Drake's Maw (Angela 2026-08-20, dictated): "Poison
     // Breath — precision magic damage, on hit applies 3 Poison, 2 Stamina."
@@ -91,99 +53,17 @@ const RAW_ATTACKS: Readonly<Record<string, AttackDef>> = {
 }
 
 const RAW_ABILITIES: Readonly<Record<string, AbilityDef>> = {
-  'power.mage.bolt': {
-    id: 'power.mage.bolt', name: 'Arcane Bolt',
-    stat: 'magic', bonus: 6, damageType: 'magic',
-    range: 10, staminaCost: 1, cooldown: 6,
-  },
+  // power.mage.bolt (the invented Arcane Bolt, 2026-08-14) left with
+  // test.fixture-migration (2026-09-02): content/test/abilities.json. Nothing
+  // is hand-typed here; the registry below stays for the beasts' day.
 }
 
 const RAW_UNITS: Readonly<Record<string, UnitDef>> = {
-  zombie: {
-    typeId: 'zombie', side: 'enemy',
-    maxHp: 10, armor: 0, resist: 0,
-    accuracy: 65, dodge: 0, strength: 4, precision: 0, magic: 0, spirit: 0,
-    role: 'melee',
-    movement: 4, reach: 0,
-    maxStamina: 0, staminaRegen: 0,   // enemies do not run stamina
-    // Backlog trigger.zombie.rot: 20% onDamage, poison 1 to the target —
-    // replaces the hardcoded 100% rider that lived on attack.zombie.basic.
-    triggers: [{
-      id: 'trigger.zombie.rot', hook: 'onDamage', chance: 20,
-      select: 'target',
-      effect: { kind: 'status.apply', statusId: 'status.poison', value: 1 },
-      source: 'unit.zombie',
-      // Scoped to the bite (2026-08-20, the attack-scoped mechanism's first
-      // variant). Vacuous while the bite is the zombie's only attack — which is
-      // exactly what keeps this landing byte-identical — and correct the day a
-      // second zombie attack exists: rot rides the BITE, not the zombie.
-      onlyWithAttack: 'attack.zombie.basic',
-    }, {
-      // TESTING LANE — this is backlog trigger.zombie.sap, absorbed into the
-      // status.weakness landing: a SECOND independent 20% onDamage, weak 1 to
-      // the target. Rot and sap roll on their own named streams (~4% both).
-      id: 'test.zombie.sap', hook: 'onDamage', chance: 20,
-      select: 'target',
-      effect: { kind: 'status.apply', statusId: 'status.weak', value: 1 },
-      source: 'unit.zombie',
-    }, {
-      // TESTING LANE — status.slow's battle source (Codex Lash shape: "onHit
-      // the target gains 1 Slow"): a grasping hand out of the horde.
-      id: 'test.zombie.grasp', hook: 'onHit', chance: 20,
-      select: 'target',
-      effect: { kind: 'status.apply', statusId: 'status.slow', value: 1 },
-      source: 'unit.zombie',
-    }, {
-      // TESTING LANE — fix.bleed-magnitude's generalization variant
-      // (2026-09-02): a second heal-shed status, on the FIXTURE zombie only
-      // (never a control battle). Lives in showcase.gash-variant.
-      id: 'test.zombie.gash', hook: 'onHit', chance: 30,
-      select: 'target',
-      effect: { kind: 'status.apply', statusId: 'test.status.gash', value: 2 },
-      source: 'unit.zombie',
-    }],
-    ai: 'dumb-melee',
-    attacks: ['attack.zombie.basic'],
-    abilities: [],
-    // ONE movement power per enemy row (Angela 2026-08-21); power.move is
-    // universal to all units (Codex) and enemies pay no stamina for it —
-    // stamina is the hero throttle.
-    moves: ['power.move'],
-    attributes: ['undead'],
-  },
-  'zombie-burning': {
-    // Angela 2026-08-20: "You could create a burning zombie and mix them in with
-    // the other zombies. On taking damage, the zombie deals 1 burn to its
-    // attacker." Same stat line as the zombie — the identity is the sear, not
-    // the numbers. Published: 6-BESTIARY-SETTLED.md.
-    typeId: 'zombie-burning', side: 'enemy',
-    maxHp: 10, armor: 0, resist: 0,
-    accuracy: 65, dodge: 0, strength: 4, precision: 0, magic: 0, spirit: 0,
-    role: 'melee',
-    movement: 4, reach: 0,
-    maxStamina: 0, staminaRegen: 0,
-    triggers: [{
-      // onTakingDamage is the VICTIM's hook, so from this zombie's side the
-      // "target" is whoever hit it — exactly where the sear lands.
-      id: 'trigger.zombie-burning.sear', hook: 'onTakingDamage', chance: 100,
-      select: 'target',
-      effect: { kind: 'status.apply', statusId: 'status.burn', value: 1 },
-      source: 'unit.zombie-burning',
-    }, {
-      // TESTING LANE — test.status.daze's battle source (the blocksAction
-      // generalization variant needs to run live). A concussive lurch: 15% of
-      // this zombie's damaging hits daze the victim for one activation.
-      id: 'test.zombie-burning.lurch', hook: 'onDamage', chance: 15,
-      select: 'target',
-      effect: { kind: 'status.apply', statusId: 'test.status.daze', value: 1 },
-      source: 'unit.zombie-burning',
-    }],
-    ai: 'dumb-melee',
-    attacks: ['attack.zombie.basic'],
-    abilities: [],
-    moves: ['power.move'],
-    attributes: ['undead'],
-  },
+  // zombie, zombie-burning, warrior, ranger and mage — the 2026-08-14 dictated
+  // fixtures — left with test.fixture-migration (2026-09-02). The zombies were
+  // the test cohort's rows already (settled.json testCohort); the three heroes
+  // are complete test bodies in content/test/units.json. Custom battles field
+  // test-zombie / test-warrior / test-ranger / test-mage by name.
   'spirit-snake': {
     // A PLAYER BEAST — Angela 2026-08-20: "These beasts were meant to be
     // player beasts... Spirit Snake is supposed to be a hero unit." Her block,
@@ -298,100 +178,6 @@ const RAW_UNITS: Readonly<Record<string, UnitDef>> = {
     moves: ['power.flight', 'power.move'],
     attributes: ['beast', 'dragon'],
   },
-  warrior: {
-    typeId: 'warrior', side: 'hero',
-    maxHp: 10, armor: 1, resist: 0,
-    accuracy: 80, dodge: 0, strength: 5, precision: 3, magic: 0, spirit: 0,
-    role: 'melee',
-    movement: 5, reach: 0,
-    maxStamina: 5, staminaRegen: 1,
-    // TESTING LANE (ruled 2026-08-20): test.* content exists to exercise a
-    // mechanic under test, lives beside real rows, and never ships. This one is
-    // status.regeneration's battle source until a real regen source publishes.
-    // Second Wind: taking damage grants Regeneration 1, self.
-    triggers: [{
-      id: 'test.warrior.second-wind', hook: 'onTakingDamage', chance: 100,
-      select: 'self',
-      effect: { kind: 'status.apply', statusId: 'status.regeneration', value: 1 },
-      source: 'unit.warrior',
-    }, {
-      // TESTING LANE — status.stun's battle source until a published stunner
-      // lands. Codex-shaped (Shield Slam: "onDamage apply 1 Stun"), diluted to
-      // 20% because it rides every damaging hit.
-      id: 'test.warrior.stagger', hook: 'onDamage', chance: 20,
-      select: 'target',
-      effect: { kind: 'status.apply', statusId: 'status.stun', value: 1 },
-      source: 'unit.warrior',
-    }, {
-      // TESTING LANE — test.status.ward's battle source (the PROTECTION-station
-      // generalization variant must run live): half of the blows the warrior
-      // takes raise a brace worth 1.
-      id: 'test.warrior.brace', hook: 'onTakingDamage', chance: 50,
-      select: 'self',
-      effect: { kind: 'status.apply', statusId: 'test.status.ward', value: 1 },
-      source: 'unit.warrior',
-    }],
-    ai: 'melee-aggressive',
-    // Ordered by preference. The AI takes the first it can afford.
-    attacks: ['attack.warrior.massive', 'attack.warrior.axe', 'attack.punch'],
-    abilities: [],
-    // Warrior class: Move + Sidestep (Codex 2026-08-21 — Sidestep to
-    // Warrior/Mage/Priest/Paladin; Rogues and Rangers take Side Roll).
-    moves: ['power.move', 'power.sidestep'],
-    attributes: [],
-  },
-  ranger: {
-    typeId: 'ranger', side: 'hero',
-    maxHp: 7, armor: 0, resist: 0,
-    accuracy: 90, dodge: 0, strength: 3, precision: 4, magic: 0, spirit: 0,
-    role: 'ranged',
-    movement: 5, reach: 0,
-    maxStamina: 5, staminaRegen: 1,
-    // TESTING LANE — status.bleed's battle source, mirroring the published
-    // Hunter's Mark shape (Codex: "onHit the target gains 2 Bleed").
-    // test.ranger.serrated-arrows RETIRED 2026-08-20 — the first rider
-    // retirement: the Sky Pirate's own published Cutlass bleed (in the cohort
-    // pack) is status.bleed's battle source now. Pin moved to the cohort's
-    // Dusk Hawk; this whole def is an unfielded custom-battle fixture awaiting
-    // backlog test.fixture-migration.
-    triggers: [],
-    ai: 'ranged-kite',
-    attacks: ['attack.ranger.bow', 'attack.punch'],
-    abilities: [],
-    // Ranger class takes Side Roll, not Sidestep (Codex 2026-08-21).
-    moves: ['power.move', 'power.side-roll'],
-    attributes: [],
-  },
-  mage: {
-    typeId: 'mage', side: 'hero',
-    maxHp: 6, armor: 0, resist: 1,
-    accuracy: 80, dodge: 0, strength: 2, precision: 4, magic: 2, spirit: 0,
-    role: 'ranged',
-    movement: 4, reach: 0,
-    maxStamina: 5, staminaRegen: 1,
-    // TESTING LANE — test.status.enfeeble's battle source (the SOURCE_STATUS
-    // generalization variant must run live): 20% of the mage's connected hits
-    // sap the target's blows.
-    triggers: [{
-      id: 'test.mage.dampen', hook: 'onHit', chance: 20,
-      select: 'target',
-      effect: { kind: 'status.apply', statusId: 'test.status.enfeeble', value: 1 },
-      source: 'unit.mage',
-    }, {
-      // TESTING LANE — status.protection's battle source (Codex Earth Shield /
-      // Muster shape: a flat 3). onTakingDamage fires AFTER the blow that
-      // triggered it, so the ward protects the NEXT hit.
-      id: 'test.mage.arcane-ward', hook: 'onTakingDamage', chance: 100,
-      select: 'self',
-      effect: { kind: 'status.apply', statusId: 'status.protection', value: 3 },
-      source: 'unit.mage',
-    }],
-    ai: 'ranged-kite',
-    attacks: ['attack.mage.staff', 'attack.mage.strike'],
-    abilities: ['power.mage.bolt'],
-    moves: ['power.move', 'power.sidestep'],
-    attributes: [],
-  },
 }
 
 // The kill-switch seam (see disable.ts). With CF_DISABLE_IDS unset these are the
@@ -412,7 +198,10 @@ export const ATTACKS = omitDisabled({ ...RAW_ATTACKS, ...packAttacks(), ...packT
 for (const k of Object.keys(packAbilities())) {
   if (k in RAW_ABILITIES) throw new Error(`ability '${k}' exists in BOTH content/index.ts and the generated pack — one owner only`)
 }
-export const ABILITIES = omitDisabled({ ...RAW_ABILITIES, ...packAbilities() })
+for (const k of Object.keys(packTestAbilities())) {
+  if (k in RAW_ABILITIES || k in packAbilities()) throw new Error(`ability '${k}' exists in the test receptacle AND elsewhere — one owner only`)
+}
+export const ABILITIES = omitDisabled({ ...RAW_ABILITIES, ...packAbilities(), ...packTestAbilities() })
 // The Critical Injury Chart — ruled data (station.crit 2026-08-27). Not under
 // omitDisabled: rows carry keys, not ids; the kill seam for crits is the
 // critEnabled switch itself.

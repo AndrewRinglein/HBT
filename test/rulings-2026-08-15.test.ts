@@ -25,16 +25,16 @@ describe('ranged attacks and adjacency (Angela 2026-08-15)', () => {
   /** A ranger, a zombie in her face, and a second zombie four hexes out. */
   function board(withNeighbour: boolean) {
     return createCustomBattle(
-      [{ type: 'ranger', hex: hexId(5, 5) }],
+      [{ type: 'test-ranger', hex: hexId(5, 5) }],
       withNeighbour
-        ? [{ type: 'zombie', hex: hexId(6, 5) }, { type: 'zombie', hex: hexId(5, 9) }]
-        : [{ type: 'zombie', hex: hexId(5, 9) }],
+        ? [{ type: 'test-zombie', hex: hexId(6, 5) }, { type: 'test-zombie', hex: hexId(5, 9) }]
+        : [{ type: 'test-zombie', hex: hexId(5, 9) }],
       { mapId: 'map.open' })
   }
 
   it('a ranged attack on an adjacent enemy is ILLEGAL, not merely penalised', () => {
     const ctx = board(true)
-    expect(canAttack(ctx, 0, 1, 'attack.ranger.bow')).toBe(false)
+    expect(canAttack(ctx, 0, 1, 'attack.test-ranger.bow')).toBe(false)
     // and the fallback is a real one — she is not left with no action at all
     expect(canAttack(ctx, 0, 1, 'attack.punch')).toBe(true)
   })
@@ -42,18 +42,18 @@ describe('ranged attacks and adjacency (Angela 2026-08-15)', () => {
   it('shooting PAST an adjacent enemy is legal, and costs 20', () => {
     const pinned = board(true)
     const clear = board(false)
-    expect(canAttack(pinned, 0, 2, 'attack.ranger.bow')).toBe(true)
+    expect(canAttack(pinned, 0, 2, 'attack.test-ranger.bow')).toBe(true)
 
     // Same shooter, same target, same distance, same terrain. The only difference
     // is the zombie standing next to her.
-    const a = preview(pinned, 0, 2, 'attack.ranger.bow')
-    const b = preview(clear, 0, 1, 'attack.ranger.bow')
+    const a = preview(pinned, 0, 2, 'attack.test-ranger.bow')
+    const b = preview(clear, 0, 1, 'attack.test-ranger.bow')
     expect(a.accuracy).toBe(b.accuracy - 20)
   })
 
   it('no adjacent enemy means no penalty at all — the ledger has no ADJACENT row', () => {
     const ctx = board(false)
-    const acc = resolveAccuracy(ctx, ctx.state.units[0]!, ctx.state.units[1]!, ctx.attacks['attack.ranger.bow']!)
+    const acc = resolveAccuracy(ctx, ctx.state.units[0]!, ctx.state.units[1]!, ctx.attacks['attack.test-ranger.bow']!)
     expect(acc.ledger.some((r) => r.name === 'ADJACENT')).toBe(false)
     // ranger 90, four hexes = −5 under the 2026-08-26 grace window (Law 10:
     // was −15 when the penalty started past the first hex)
@@ -67,14 +67,14 @@ describe('ranged attacks and adjacency (Angela 2026-08-15)', () => {
     // a dead neighbour threatens nobody
     ctx.state.units[1]!.lifeState = 'dead'
     expect(inMelee(ctx, ranger)).toBe(false)
-    expect(preview(ctx, 0, 2, 'attack.ranger.bow').accuracy)
-      .toBe(preview(board(false), 0, 1, 'attack.ranger.bow').accuracy)
+    expect(preview(ctx, 0, 2, 'attack.test-ranger.bow').accuracy)
+      .toBe(preview(board(false), 0, 1, 'attack.test-ranger.bow').accuracy)
   })
 
   it('an ally standing next to you is not a threat', () => {
     const ctx = createCustomBattle(
-      [{ type: 'ranger', hex: hexId(5, 5) }, { type: 'warrior', hex: hexId(6, 5) }],
-      [{ type: 'zombie', hex: hexId(5, 9) }],
+      [{ type: 'test-ranger', hex: hexId(5, 5) }, { type: 'test-warrior', hex: hexId(6, 5) }],
+      [{ type: 'test-zombie', hex: hexId(5, 9) }],
       { mapId: 'map.open' })
     expect(inMelee(ctx, ctx.state.units[0]!)).toBe(false)
   })
@@ -175,7 +175,7 @@ describe('range grace — ruled 2026-08-26', () => {
         [{ type: 'test-dusk-hawk', hex: hexId(1, 8) }],
         [{ type: 'test-zombie', hex: hexId(1 + dist, 8) }],
       )
-      const pv = preview(ctx, 0, 1, 'attack.ranger.bow')
+      const pv = preview(ctx, 0, 1, 'attack.test-ranger.bow')
       const row = pv.accLedger.find((r) => r.name === 'RANGE')
       if (delta === 0) expect(row, `distance ${dist} is inside the grace window`).toBeUndefined()
       else expect(row?.delta, `distance ${dist}`).toBe(delta)

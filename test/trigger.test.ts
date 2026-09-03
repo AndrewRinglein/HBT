@@ -22,7 +22,7 @@ const T = (over: Partial<Trigger> = {}): Trigger => ({
 // roll — which is the engine working correctly, and made a rate test read 0%.
 function duel(over: Partial<Trigger>[] = [], replicate = 0) {
   const ctx = createCustomBattle(
-    [{ type: 'warrior', hex: hexId(5, 5) }], [{ type: 'zombie', hex: hexId(6, 5) }],
+    [{ type: 'test-warrior', hex: hexId(5, 5) }], [{ type: 'test-zombie', hex: hexId(6, 5) }],
     { mapId: 'map.open', replicate })
   ctx.state.units[0]!.triggers = triggersFrom(over.map((o) => T(o)))
   return ctx
@@ -80,7 +80,7 @@ describe('triggers — two triggers on the same hit roll INDEPENDENTLY', () => {
     let both = 0, either = 0, one = 0, n = 0
     for (let r = 0; r < 1200; r++) {
       const ctx = createCustomBattle(
-        [{ type: 'warrior', hex: hexId(5, 5) }], [{ type: 'zombie', hex: hexId(6, 5) }],
+        [{ type: 'test-warrior', hex: hexId(5, 5) }], [{ type: 'test-zombie', hex: hexId(6, 5) }],
         { mapId: 'map.open', replicate: r })
       const [w, z] = [ctx.state.units[0]!, ctx.state.units[1]!]
       w.triggers = triggersFrom([
@@ -154,13 +154,13 @@ describe('triggers — §5 firing order', () => {
     let miss = 0, hit = 0
     for (let r = 0; r < 40; r++) {
       const ctx = createCustomBattle(
-        [{ type: 'warrior', hex: hexId(5, 5) }], [{ type: 'zombie', hex: hexId(6, 5) }],
+        [{ type: 'test-warrior', hex: hexId(5, 5) }], [{ type: 'test-zombie', hex: hexId(6, 5) }],
         { mapId: 'map.open', replicate: r })
       const w = ctx.state.units[0]!
       w.triggers = triggersFrom([T({ hook: 'onAttack', chance: 100, select: 'self',
         effect: { kind: 'status.apply', statusId: 'status.poison', value: 1 } })])
       ctx.state.units[1]!.hp = 99
-      const res = performAttack(ctx, 0, 1, 'attack.warrior.axe')
+      const res = performAttack(ctx, 0, 1, 'attack.test-warrior.axe')
       expect(hooksSeen(ctx)).toContain('onAttack')
       res.hit ? hit++ : miss++
     }
@@ -170,7 +170,7 @@ describe('triggers — §5 firing order', () => {
 
   it('onHit fires even when armor absorbs everything; onDamage does not', () => {
     const ctx = createCustomBattle(
-      [{ type: 'warrior', hex: hexId(5, 5) }], [{ type: 'zombie', hex: hexId(6, 5) }], { mapId: 'map.open' })
+      [{ type: 'test-warrior', hex: hexId(5, 5) }], [{ type: 'test-zombie', hex: hexId(6, 5) }], { mapId: 'map.open' })
     const w = ctx.state.units[0]!
     w.triggers = triggersFrom([
       T({ id: 'trigger.h', hook: 'onHit', chance: 100, source: 'h' }),
@@ -179,7 +179,7 @@ describe('triggers — §5 firing order', () => {
     ctx.state.units[1]!.armor = 99      // absorbs the lot
     ctx.state.units[1]!.hp = 99
     ctx.state.units[0]!.accuracy = 999  // guarantee the hit
-    performAttack(ctx, 0, 1, 'attack.warrior.axe')
+    performAttack(ctx, 0, 1, 'attack.test-warrior.axe')
     const seen = hooksSeen(ctx)
     expect(seen).toContain('onHit')
     expect(seen).not.toContain('onDamage')
@@ -188,14 +188,14 @@ describe('triggers — §5 firing order', () => {
   it('onMiss and onHit are exclusive', () => {
     for (let r = 0; r < 30; r++) {
       const ctx = createCustomBattle(
-        [{ type: 'warrior', hex: hexId(5, 5) }], [{ type: 'zombie', hex: hexId(6, 5) }],
+        [{ type: 'test-warrior', hex: hexId(5, 5) }], [{ type: 'test-zombie', hex: hexId(6, 5) }],
         { mapId: 'map.open', replicate: r })
       ctx.state.units[0]!.triggers = triggersFrom([
         T({ id: 'trigger.m', hook: 'onMiss', chance: 100, select: 'self', source: 'm' }),
         T({ id: 'trigger.h', hook: 'onHit', chance: 100, source: 'h' }),
       ])
       ctx.state.units[1]!.hp = 99
-      performAttack(ctx, 0, 1, 'attack.warrior.axe')
+      performAttack(ctx, 0, 1, 'attack.test-warrior.axe')
       const seen = hooksSeen(ctx)
       expect(seen.includes('onMiss') && seen.includes('onHit')).toBe(false)
       expect(seen.includes('onMiss') || seen.includes('onHit')).toBe(true)
@@ -207,19 +207,19 @@ describe('triggers — §5 firing order', () => {
 describe('triggers — Magic scales off the PARTY-WIDE sum', () => {
   it('partyMagicSum totals the side, not the caster', () => {
     const ctx = createCustomBattle(
-      [{ type: 'mage', hex: hexId(5, 5) }, { type: 'mage', hex: hexId(4, 5) }],
-      [{ type: 'zombie', hex: hexId(6, 5) }], { mapId: 'map.open' })
+      [{ type: 'test-mage', hex: hexId(5, 5) }, { type: 'test-mage', hex: hexId(4, 5) }],
+      [{ type: 'test-zombie', hex: hexId(6, 5) }], { mapId: 'map.open' })
     const m = ctx.state.units[0]!
     expect(m.magic).toBe(2)
     expect(partyMagicSum(ctx, 'hero')).toBe(4)   // two mages
   })
 
   it('a Magic-scaled value uses the party total, and rounds as stated', () => {
-    const one = createCustomBattle([{ type: 'mage', hex: hexId(5, 5) }],
-      [{ type: 'zombie', hex: hexId(6, 5) }], { mapId: 'map.open' })
+    const one = createCustomBattle([{ type: 'test-mage', hex: hexId(5, 5) }],
+      [{ type: 'test-zombie', hex: hexId(6, 5) }], { mapId: 'map.open' })
     const two = createCustomBattle(
-      [{ type: 'mage', hex: hexId(5, 5) }, { type: 'mage', hex: hexId(4, 5) }],
-      [{ type: 'zombie', hex: hexId(6, 5) }], { mapId: 'map.open' })
+      [{ type: 'test-mage', hex: hexId(5, 5) }, { type: 'test-mage', hex: hexId(4, 5) }],
+      [{ type: 'test-zombie', hex: hexId(6, 5) }], { mapId: 'map.open' })
     const spec = { scale: 'partyMagic', div: 5, round: 'up' } as const
     // one Mage: ceil(2/5) = 1.  Two Mages: ceil(4/5) = 1.  Three would be ceil(6/5) = 2.
     expect(valueOf(one, one.state.units[0]!, spec)).toBe(1)
@@ -230,8 +230,8 @@ describe('triggers — Magic scales off the PARTY-WIDE sum', () => {
 
   it('the dead do not contribute to the party sum', () => {
     const ctx = createCustomBattle(
-      [{ type: 'mage', hex: hexId(5, 5) }, { type: 'mage', hex: hexId(4, 5) }],
-      [{ type: 'zombie', hex: hexId(6, 5) }], { mapId: 'map.open' })
+      [{ type: 'test-mage', hex: hexId(5, 5) }, { type: 'test-mage', hex: hexId(4, 5) }],
+      [{ type: 'test-zombie', hex: hexId(6, 5) }], { mapId: 'map.open' })
     expect(partyMagicSum(ctx, 'hero')).toBe(4)
     ctx.state.units[1]!.lifeState = 'dead'
     expect(partyMagicSum(ctx, 'hero')).toBe(2)
@@ -264,8 +264,8 @@ describe('triggers — every trigger on the board is declared content', () => {
   // trigger appears on a unit only because the unit's DEF declared it. No trigger
   // arrives from anywhere else.
   it('units carry exactly the triggers their defs declare, copied not shared', () => {
-    const ctx = createCustomBattle([{ type: 'warrior', hex: hexId(5, 5) }],
-      [{ type: 'zombie', hex: hexId(6, 5) }], { mapId: 'map.open' })
+    const ctx = createCustomBattle([{ type: 'test-warrior', hex: hexId(5, 5) }],
+      [{ type: 'test-zombie', hex: hexId(6, 5) }], { mapId: 'map.open' })
     for (const u of ctx.state.units) {
       const declared = (UNITS[u.typeId]?.triggers ?? []).map((t) => t.id)
       expect(u.triggers.map((t) => t.id)).toEqual(declared)
@@ -288,7 +288,7 @@ describe('COMBAT-SEQUENCE.md per-hit order', () => {
 
   function swing(replicate: number) {
     const ctx = createCustomBattle(
-      [{ type: 'warrior', hex: hexId(5, 5) }], [{ type: 'zombie', hex: hexId(6, 5) }],
+      [{ type: 'test-warrior', hex: hexId(5, 5) }], [{ type: 'test-zombie', hex: hexId(6, 5) }],
       { mapId: 'map.open', replicate })
     ctx.state.units[0]!.triggers = triggersFrom([
       T({ id: 'trigger.a', hook: 'onAttack', chance: 100, select: 'self', source: 'a',
@@ -299,7 +299,7 @@ describe('COMBAT-SEQUENCE.md per-hit order', () => {
       T({ id: 'trigger.d', hook: 'onDamage', chance: 100, select: 'target', source: 'd' }),
     ])
     ctx.state.units[1]!.hp = 99
-    performAttack(ctx, 0, 1, 'attack.warrior.axe')
+    performAttack(ctx, 0, 1, 'attack.test-warrior.axe')
     return order(ctx)
   }
 
@@ -323,7 +323,7 @@ describe('COMBAT-SEQUENCE.md per-hit order', () => {
 
   it('onTakingDamage belongs to the VICTIM and fires after onDamage', () => {
     const ctx = createCustomBattle(
-      [{ type: 'warrior', hex: hexId(5, 5) }], [{ type: 'zombie', hex: hexId(6, 5) }],
+      [{ type: 'test-warrior', hex: hexId(5, 5) }], [{ type: 'test-zombie', hex: hexId(6, 5) }],
       { mapId: 'map.open' })
     const [w, z] = [ctx.state.units[0]!, ctx.state.units[1]!]
     w.accuracy = 999
@@ -334,7 +334,7 @@ describe('COMBAT-SEQUENCE.md per-hit order', () => {
     z.triggers = triggersFrom([T({ id: 'trigger.t', hook: 'onTakingDamage', chance: 100,
       select: 'target', source: 't',
       effect: { kind: 'status.apply', statusId: 'status.poison', value: 2 } })])
-    performAttack(ctx, 0, 1, 'attack.warrior.axe')
+    performAttack(ctx, 0, 1, 'attack.test-warrior.axe')
 
     const seq = ctx.events.filter((e) => e.type === 'trigger.rolled').map((e) => String(e['hook']))
     expect(seq).toEqual(['onDamage', 'onTakingDamage'])
@@ -347,7 +347,7 @@ describe('COMBAT-SEQUENCE.md per-hit order', () => {
   it('onKill fires last, and only on a kill', () => {
     const mk = (hp: number) => {
       const ctx = createCustomBattle(
-        [{ type: 'warrior', hex: hexId(5, 5) }], [{ type: 'zombie', hex: hexId(6, 5) }],
+        [{ type: 'test-warrior', hex: hexId(5, 5) }], [{ type: 'test-zombie', hex: hexId(6, 5) }],
         { mapId: 'map.open' })
       const [w, z] = [ctx.state.units[0]!, ctx.state.units[1]!]
       w.accuracy = 999
@@ -357,7 +357,7 @@ describe('COMBAT-SEQUENCE.md per-hit order', () => {
         T({ id: 'trigger.k', hook: 'onKill', chance: 100, select: 'self', source: 'k',
             effect: { kind: 'status.apply', statusId: 'status.poison', value: 1 } }),
       ])
-      performAttack(ctx, 0, 1, 'attack.warrior.axe')
+      performAttack(ctx, 0, 1, 'attack.test-warrior.axe')
       return ctx.events.filter((e) => e.type === 'trigger.rolled').map((e) => String(e['hook']))
     }
     expect(mk(99)).toEqual(['onDamage'])                 // survived
@@ -369,7 +369,7 @@ describe('COMBAT-SEQUENCE.md per-hit order', () => {
 describe('onDeath', () => {
   it('fires for the unit that died, whose owner is dead by definition', () => {
     const ctx = createCustomBattle(
-      [{ type: 'warrior', hex: hexId(5, 5) }], [{ type: 'zombie', hex: hexId(6, 5) }],
+      [{ type: 'test-warrior', hex: hexId(5, 5) }], [{ type: 'test-zombie', hex: hexId(6, 5) }],
       { mapId: 'map.open' })
     const [w, z] = [ctx.state.units[0]!, ctx.state.units[1]!]
     w.accuracy = 999
@@ -378,7 +378,7 @@ describe('onDeath', () => {
     z.triggers = triggersFrom([T({ id: 'trigger.rot', hook: 'onDeath', chance: 100, source: 'z',
       select: { select: 'area', side: 'enemy', radius: 2, origin: 'self' },
       effect: { kind: 'status.apply', statusId: 'status.poison', value: 3 } })])
-    performAttack(ctx, 0, 1, 'attack.warrior.axe')
+    performAttack(ctx, 0, 1, 'attack.test-warrior.axe')
     settle(ctx, 'test')
     expect(z.lifeState).toBe('dead')
     expect(ctx.events.some((e) => e.type === 'trigger.rolled' && e['hook'] === 'onDeath')).toBe(true)
@@ -389,7 +389,7 @@ describe('onDeath', () => {
     // This is why onDeath lives in settle: a hook wired only into performAttack
     // would miss every poison death and every bleed-out.
     const ctx = createCustomBattle(
-      [{ type: 'warrior', hex: hexId(5, 5) }], [{ type: 'zombie', hex: hexId(6, 5) }],
+      [{ type: 'test-warrior', hex: hexId(5, 5) }], [{ type: 'test-zombie', hex: hexId(6, 5) }],
       { mapId: 'map.open' })
     const z = ctx.state.units[1]!
     z.hp = 1
@@ -405,7 +405,7 @@ describe('onDeath', () => {
 
   it('a dead unit fires nothing ELSE — only onDeath is excepted', () => {
     const ctx = createCustomBattle(
-      [{ type: 'warrior', hex: hexId(5, 5) }], [{ type: 'zombie', hex: hexId(6, 5) }],
+      [{ type: 'test-warrior', hex: hexId(5, 5) }], [{ type: 'test-zombie', hex: hexId(6, 5) }],
       { mapId: 'map.open' })
     const z = ctx.state.units[1]!
     z.lifeState = 'dead'
@@ -425,14 +425,14 @@ describe('onCrit', () => {
     let sawCrit = 0, sawOrder = 0
     for (let r = 0; r < 400 && sawCrit < 3; r++) {
       const ctx = createCustomBattle(
-        [{ type: 'warrior', hex: hexId(5, 5) }], [{ type: 'zombie', hex: hexId(6, 5) }],
+        [{ type: 'test-warrior', hex: hexId(5, 5) }], [{ type: 'test-zombie', hex: hexId(6, 5) }],
         { mapId: 'map.open', replicate: r })
       const [w, z] = [ctx.state.units[0]!, ctx.state.units[1]!]
       ctx.cfg.switches.critEnabled = true
       w.accuracy = 160          // surplus accuracy above 100 becomes crit chance
       z.hp = 99
       w.triggers = triggersFrom([T({ id: 'trigger.c', hook: 'onCrit', chance: 100, source: 'c' })])
-      performAttack(ctx, 0, 1, 'attack.warrior.axe')
+      performAttack(ctx, 0, 1, 'attack.test-warrior.axe')
       const hit = ctx.events.find((e) => e.type === 'attack.hit')
       if (!hit?.['crit']) continue
       sawCrit++
@@ -450,13 +450,13 @@ describe('onCrit', () => {
 
   it('does not fire when the attack does not crit', () => {
     const ctx = createCustomBattle(
-      [{ type: 'warrior', hex: hexId(5, 5) }], [{ type: 'zombie', hex: hexId(6, 5) }],
+      [{ type: 'test-warrior', hex: hexId(5, 5) }], [{ type: 'test-zombie', hex: hexId(6, 5) }],
       { mapId: 'map.open' })
     const [w, z] = [ctx.state.units[0]!, ctx.state.units[1]!]
     ctx.cfg.switches.critEnabled = false     // crit system off entirely
     w.accuracy = 999; z.hp = 99
     w.triggers = triggersFrom([T({ id: 'trigger.c', hook: 'onCrit', chance: 100, source: 'c' })])
-    performAttack(ctx, 0, 1, 'attack.warrior.axe')
+    performAttack(ctx, 0, 1, 'attack.test-warrior.axe')
     expect(ctx.events.some((e) => e.type === 'trigger.rolled' && e['hook'] === 'onCrit')).toBe(false)
   })
 })
@@ -464,10 +464,10 @@ describe('onCrit', () => {
 describe('area origin — TRIGGER-NOTES Q2, answered explicitly', () => {
   it('origin:self is a whirlwind; origin:target is a cleave', () => {
     const ctx = createCustomBattle(
-      [{ type: 'warrior', hex: hexId(5, 5) }],
-      [{ type: 'zombie', hex: hexId(6, 5) },     // 1 — adjacent to the warrior
-       { type: 'zombie', hex: hexId(8, 5) },     // 2 — adjacent to unit 1's far side
-       { type: 'zombie', hex: hexId(7, 5) }],    // 3 — between them
+      [{ type: 'test-warrior', hex: hexId(5, 5) }],
+      [{ type: 'test-zombie', hex: hexId(6, 5) },     // 1 — adjacent to the warrior
+       { type: 'test-zombie', hex: hexId(8, 5) },     // 2 — adjacent to unit 1's far side
+       { type: 'test-zombie', hex: hexId(7, 5) }],    // 3 — between them
       { mapId: 'map.open' })
     const w = ctx.state.units[0]!
     const whirl = { select: 'area', side: 'enemy', radius: 1, origin: 'self' } as const

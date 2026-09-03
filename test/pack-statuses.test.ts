@@ -81,7 +81,7 @@ describe('the rows come from the Codex, and only from the Codex', () => {
       const ticks = ['status.poison', 'status.burn', 'status.bleed', 'status.regeneration'].includes(id)
       expect(def.onPhaseEnd !== undefined, `${id} ${ticks ? 'ticks' : 'does not tick'}`).toBe(ticks)
     }
-    const ctx = createCustomBattle([{ type: 'warrior', hex: hexId(5, 5) }], [{ type: 'zombie', hex: hexId(9, 9) }])
+    const ctx = createCustomBattle([{ type: 'test-warrior', hex: hexId(5, 5) }], [{ type: 'test-zombie', hex: hexId(9, 9) }])
     const w = ctx.state.units[0]!
     w.maxHp = 20; w.hp = 10
     applyStatus(ctx, 0, 'status.poison', 3, 'test')

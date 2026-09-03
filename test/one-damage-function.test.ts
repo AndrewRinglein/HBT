@@ -15,8 +15,8 @@ import { hexId } from '../src/core/hex.js'
 // can be replaced with the real ids.
 function board() {
   const ctx = createCustomBattle(
-    [{ type: 'mage', hex: hexId(5, 5) }],
-    [{ type: 'zombie', hex: hexId(9, 5) }],
+    [{ type: 'test-mage', hex: hexId(5, 5) }],
+    [{ type: 'test-zombie', hex: hexId(9, 5) }],
   )
   const statuses = ctx.statuses as Record<string, StatusDef>
   statuses['status.test-weak'] = { id: 'status.test-weak', name: 'TestWeak', shape: 'counter', stacking: 'add', reducesOutgoingDamage: true }
@@ -28,13 +28,13 @@ describe('one damage function (Law 1)', () => {
   it('baseline parity: an unmodified bolt resolves exactly as before the unification', () => {
     const { ctx } = board()
     // Arcane Bolt: bonus 6 + mage magic 2, magic damage vs resist 0 → 8.
-    expect(previewPower(ctx, 0, 1, 'power.mage.bolt').damage).toBe(8)
+    expect(previewPower(ctx, 0, 1, 'power.test-mage.bolt').damage).toBe(8)
   })
 
   it('SOURCE_STATUS now reaches powers: outgoing penalty reduces a bolt', () => {
     const { ctx, mage, zombie } = board()
     applyStatus(ctx, mage.id, 'status.test-weak', 3, 'test')
-    const r = resolvePowerDamage(ctx, mage, zombie, ctx.abilities['power.mage.bolt']!, 3, 0)
+    const r = resolvePowerDamage(ctx, mage, zombie, ctx.abilities['power.test-mage.bolt']!, 3, 0)
     expect(r.value).toBe(5)
     expect(r.ledger.some((row) => row.name === 'SOURCE_STATUS' && row.delta === -3)).toBe(true)
   })
@@ -43,7 +43,7 @@ describe('one damage function (Law 1)', () => {
     const { ctx, zombie } = board()
     applyStatus(ctx, zombie.id, 'status.test-ward', 3, 'test')
     const hpBefore = zombie.hp
-    const { damage } = usePower(ctx, 0, 1, 'power.mage.bolt')
+    const { damage } = usePower(ctx, 0, 1, 'power.test-mage.bolt')
     expect(damage).toBe(5)                       // 8 asked, 3 absorbed
     expect(zombie.hp).toBe(hpBefore - 5)
     expect(zombie.statuses.find((s) => s.id === 'status.test-ward')).toBeUndefined() // 3 absorbed = pool spent
@@ -54,14 +54,14 @@ describe('one damage function (Law 1)', () => {
   it('the preview and the applied number are the same code path, penalties included', () => {
     const { ctx, zombie } = board()
     applyStatus(ctx, zombie.id, 'status.test-ward', 2, 'test')
-    const pv = previewPower(ctx, 0, 1, 'power.mage.bolt').damage
-    const { damage } = usePower(ctx, 0, 1, 'power.mage.bolt')
+    const pv = previewPower(ctx, 0, 1, 'power.test-mage.bolt').damage
+    const { damage } = usePower(ctx, 0, 1, 'power.test-mage.bolt')
     expect(damage).toBe(pv)
   })
 
   it('powers still cannot crit — Design Law 23 survives the unification', () => {
     const { ctx, mage, zombie } = board()
-    const r = resolvePowerDamage(ctx, mage, zombie, ctx.abilities['power.mage.bolt']!)
+    const r = resolvePowerDamage(ctx, mage, zombie, ctx.abilities['power.test-mage.bolt']!)
     expect(r.ledger.some((row) => row.name === 'CRIT')).toBe(false)
   })
 })

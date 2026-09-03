@@ -26,8 +26,8 @@ export const UNIT_PACK = {
       "staminaRegen": 1,
       "ai": "melee-aggressive",
       "attacks": [
-        "attack.warrior.massive",
-        "attack.warrior.axe",
+        "attack.test-warrior.massive",
+        "attack.test-warrior.axe",
         "attack.punch"
       ],
       "abilities": [],
@@ -110,7 +110,7 @@ export const UNIT_PACK = {
       "staminaRegen": 1,
       "ai": "melee-aggressive",
       "attacks": [
-        "attack.warrior.axe",
+        "attack.test-warrior.axe",
         "attack.punch"
       ],
       "abilities": [],
@@ -157,7 +157,7 @@ export const UNIT_PACK = {
       "staminaRegen": 1,
       "ai": "ranged-kite",
       "attacks": [
-        "attack.ranger.bow",
+        "attack.test-ranger.bow",
         "attack.punch"
       ],
       "abilities": [],
@@ -204,11 +204,11 @@ export const UNIT_PACK = {
       "staminaRegen": 1,
       "ai": "ranged-kite",
       "attacks": [
-        "attack.mage.staff",
-        "attack.mage.strike"
+        "attack.test-mage.staff",
+        "attack.test-mage.strike"
       ],
       "abilities": [
-        "power.mage.bolt"
+        "power.test-mage.bolt"
       ],
       "moves": [
         "power.move",
@@ -265,7 +265,7 @@ export const UNIT_PACK = {
       "staminaRegen": 1,
       "ai": "ranged-kite",
       "attacks": [
-        "attack.mage.staff",
+        "attack.test-mage.staff",
         "attack.punch"
       ],
       "abilities": [],
@@ -299,7 +299,7 @@ export const UNIT_PACK = {
       "staminaRegen": 1,
       "ai": "melee-aggressive",
       "attacks": [
-        "attack.warrior.axe",
+        "attack.test-warrior.axe",
         "attack.punch"
       ],
       "abilities": [],
@@ -333,7 +333,7 @@ export const UNIT_PACK = {
       "staminaRegen": 0,
       "ai": "dumb-melee",
       "attacks": [
-        "attack.zombie.basic"
+        "attack.test-zombie.bite"
       ],
       "abilities": [],
       "attributes": [
@@ -351,7 +351,7 @@ export const UNIT_PACK = {
             "value": 1
           },
           "source": "unit.test-zombie",
-          "onlyWithAttack": "attack.zombie.basic"
+          "onlyWithAttack": "attack.test-zombie.bite"
         },
         {
           "id": "test.zombie.sap",
@@ -403,7 +403,7 @@ export const UNIT_PACK = {
       "staminaRegen": 0,
       "ai": "dumb-melee",
       "attacks": [
-        "attack.zombie.basic"
+        "attack.test-zombie.bite"
       ],
       "abilities": [],
       "attributes": [
@@ -11166,6 +11166,255 @@ export const UNIT_PACK = {
           "test"
         ],
         "tags": []
+      },
+      {
+        "name": "Warrior (TEST)",
+        "side": "hero",
+        "maxHp": 10,
+        "armor": 1,
+        "resist": 0,
+        "accuracy": 80,
+        "dodge": 0,
+        "strength": 5,
+        "precision": 3,
+        "magic": 0,
+        "spirit": 0,
+        "role": "melee",
+        "movement": 5,
+        "reach": 0,
+        "maxStamina": 5,
+        "staminaRegen": 1,
+        "ai": "melee-aggressive",
+        "attacks": [
+          "attack.test-warrior.massive",
+          "attack.test-warrior.axe",
+          "attack.punch"
+        ],
+        "moves": [
+          "power.move",
+          "power.sidestep"
+        ],
+        "triggers": [
+          {
+            "id": "test.warrior.second-wind",
+            "hook": "onTakingDamage",
+            "chance": 100,
+            "select": "self",
+            "effect": {
+              "kind": "status.apply",
+              "statusId": "status.regeneration",
+              "value": 1
+            },
+            "source": "unit.test-warrior"
+          },
+          {
+            "id": "test.warrior.stagger",
+            "hook": "onDamage",
+            "chance": 20,
+            "select": "target",
+            "effect": {
+              "kind": "status.apply",
+              "statusId": "status.stun",
+              "value": 1
+            },
+            "source": "unit.test-warrior"
+          },
+          {
+            "id": "test.warrior.brace",
+            "hook": "onTakingDamage",
+            "chance": 50,
+            "select": "self",
+            "effect": {
+              "kind": "status.apply",
+              "statusId": "test.status.ward",
+              "value": 1
+            },
+            "source": "unit.test-warrior"
+          }
+        ],
+        "typeId": "test-warrior",
+        "abilities": [],
+        "attributes": [
+          "test"
+        ],
+        "tags": []
+      },
+      {
+        "name": "Ranger (TEST)",
+        "side": "hero",
+        "maxHp": 7,
+        "armor": 0,
+        "resist": 0,
+        "accuracy": 90,
+        "dodge": 0,
+        "strength": 3,
+        "precision": 4,
+        "magic": 0,
+        "spirit": 0,
+        "role": "ranged",
+        "movement": 5,
+        "reach": 0,
+        "maxStamina": 5,
+        "staminaRegen": 1,
+        "ai": "ranged-kite",
+        "attacks": [
+          "attack.test-ranger.bow",
+          "attack.punch"
+        ],
+        "moves": [
+          "power.move",
+          "power.side-roll"
+        ],
+        "triggers": [],
+        "typeId": "test-ranger",
+        "abilities": [],
+        "attributes": [
+          "test"
+        ],
+        "tags": []
+      },
+      {
+        "name": "Mage (TEST)",
+        "side": "hero",
+        "maxHp": 6,
+        "armor": 0,
+        "resist": 1,
+        "accuracy": 80,
+        "dodge": 0,
+        "strength": 2,
+        "precision": 4,
+        "magic": 2,
+        "spirit": 0,
+        "role": "ranged",
+        "movement": 4,
+        "reach": 0,
+        "maxStamina": 5,
+        "staminaRegen": 1,
+        "ai": "ranged-kite",
+        "attacks": [
+          "attack.test-mage.staff",
+          "attack.test-mage.strike"
+        ],
+        "abilities": [
+          "power.test-mage.bolt"
+        ],
+        "moves": [
+          "power.move",
+          "power.sidestep"
+        ],
+        "triggers": [
+          {
+            "id": "test.mage.dampen",
+            "hook": "onHit",
+            "chance": 20,
+            "select": "target",
+            "effect": {
+              "kind": "status.apply",
+              "statusId": "test.status.enfeeble",
+              "value": 1
+            },
+            "source": "unit.test-mage"
+          },
+          {
+            "id": "test.mage.arcane-ward",
+            "hook": "onTakingDamage",
+            "chance": 100,
+            "select": "self",
+            "effect": {
+              "kind": "status.apply",
+              "statusId": "status.protection",
+              "value": 3
+            },
+            "source": "unit.test-mage"
+          }
+        ],
+        "typeId": "test-mage",
+        "attributes": [
+          "test"
+        ],
+        "tags": []
+      },
+      {
+        "typeId": "test-gash-zombie",
+        "name": "Gash Zombie (TEST)",
+        "maxHp": 10,
+        "armor": 0,
+        "resist": 0,
+        "accuracy": 65,
+        "dodge": 0,
+        "strength": 4,
+        "precision": 0,
+        "magic": 0,
+        "spirit": 0,
+        "role": "melee",
+        "movement": 4,
+        "reach": 0,
+        "maxStamina": 0,
+        "staminaRegen": 0,
+        "ai": "dumb-melee",
+        "attacks": [
+          "attack.test-zombie.bite"
+        ],
+        "abilities": [],
+        "attributes": [
+          "test"
+        ],
+        "triggers": [
+          {
+            "id": "trigger.zombie.rot",
+            "hook": "onDamage",
+            "chance": 20,
+            "select": "target",
+            "effect": {
+              "kind": "status.apply",
+              "statusId": "status.poison",
+              "value": 1
+            },
+            "source": "unit.test-gash-zombie",
+            "onlyWithAttack": "attack.test-zombie.bite"
+          },
+          {
+            "id": "test.zombie.sap",
+            "hook": "onDamage",
+            "chance": 20,
+            "select": "target",
+            "effect": {
+              "kind": "status.apply",
+              "statusId": "status.weak",
+              "value": 1
+            },
+            "source": "unit.test-gash-zombie"
+          },
+          {
+            "id": "test.zombie.grasp",
+            "hook": "onHit",
+            "chance": 20,
+            "select": "target",
+            "effect": {
+              "kind": "status.apply",
+              "statusId": "status.slow",
+              "value": 1
+            },
+            "source": "unit.test-gash-zombie"
+          },
+          {
+            "id": "test.zombie.gash",
+            "hook": "onHit",
+            "chance": 30,
+            "select": "target",
+            "effect": {
+              "kind": "status.apply",
+              "statusId": "test.status.gash",
+              "value": 2
+            },
+            "source": "unit.test-gash-zombie"
+          }
+        ],
+        "moves": [
+          "power.move"
+        ],
+        "side": "enemy",
+        "tags": []
       }
     ],
     "attacks": {
@@ -11203,6 +11452,78 @@ export const UNIT_PACK = {
         "reach": 1,
         "staminaCost": 0,
         "area": "arc"
+      },
+      "attack.test-zombie.bite": {
+        "id": "attack.test-zombie.bite",
+        "name": "Rotting Bite (TEST)",
+        "kind": "melee",
+        "damageType": "physical",
+        "bonus": 0,
+        "stat": "strength",
+        "reach": 1,
+        "staminaCost": 0
+      },
+      "attack.test-warrior.axe": {
+        "id": "attack.test-warrior.axe",
+        "name": "Axe (TEST)",
+        "kind": "melee",
+        "damageType": "physical",
+        "bonus": 1,
+        "stat": "strength",
+        "reach": 1,
+        "staminaCost": 1
+      },
+      "attack.test-warrior.massive": {
+        "id": "attack.test-warrior.massive",
+        "name": "Massive Strike (TEST)",
+        "kind": "melee",
+        "damageType": "physical",
+        "bonus": 3,
+        "stat": "strength",
+        "reach": 1,
+        "staminaCost": 2
+      },
+      "attack.test-ranger.bow": {
+        "id": "attack.test-ranger.bow",
+        "name": "Bow (TEST)",
+        "kind": "ranged",
+        "damageType": "physical",
+        "bonus": 1,
+        "stat": "precision",
+        "reach": 6,
+        "staminaCost": 1
+      },
+      "attack.test-mage.staff": {
+        "id": "attack.test-mage.staff",
+        "name": "Staff (bolt) (TEST)",
+        "kind": "ranged",
+        "damageType": "magic",
+        "bonus": 0,
+        "stat": "precision",
+        "reach": 6,
+        "staminaCost": 1
+      },
+      "attack.test-mage.strike": {
+        "id": "attack.test-mage.strike",
+        "name": "Staff (strike) (TEST)",
+        "kind": "melee",
+        "damageType": "physical",
+        "bonus": 0,
+        "stat": "strength",
+        "reach": 1,
+        "staminaCost": 1
+      }
+    },
+    "abilities": {
+      "power.test-mage.bolt": {
+        "id": "power.test-mage.bolt",
+        "name": "Arcane Bolt (TEST)",
+        "stat": "magic",
+        "bonus": 6,
+        "damageType": "magic",
+        "range": 10,
+        "staminaCost": 1,
+        "cooldown": 6
       }
     },
     "statuses": {

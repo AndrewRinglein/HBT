@@ -16,7 +16,7 @@ const ALL_KINDS = [TERRAIN.OPEN, TERRAIN.HILLS, ...NEW_KINDS]
 
 function warriorOn(terrain: number) {
   const ctx = createCustomBattle(
-    [{ type: 'warrior', hex: hexId(5, 5) }], [{ type: 'zombie', hex: hexId(5, 8) }], { mapId: 'map.open' })
+    [{ type: 'test-warrior', hex: hexId(5, 5) }], [{ type: 'test-zombie', hex: hexId(5, 8) }], { mapId: 'map.open' })
   ctx.state.terrain[ctx.state.units[0]!.hex] = terrain
   return { ctx, u: ctx.state.units[0]! }
 }
@@ -162,10 +162,10 @@ describe('terrain.movecost — rough ground costs more', () => {
   })
 
   it('the same unit reaches strictly fewer hexes on map.field than on open ground', () => {
-    const open = createCustomBattle([{ type: 'warrior', hex: hexId(5, 5) }],
-      [{ type: 'zombie', hex: hexId(0, 0) }], { mapId: 'map.open' })
-    const field = createCustomBattle([{ type: 'warrior', hex: hexId(5, 5) }],
-      [{ type: 'zombie', hex: hexId(0, 0) }], { mapId: 'map.field' })
+    const open = createCustomBattle([{ type: 'test-warrior', hex: hexId(5, 5) }],
+      [{ type: 'test-zombie', hex: hexId(0, 0) }], { mapId: 'map.open' })
+    const field = createCustomBattle([{ type: 'test-warrior', hex: hexId(5, 5) }],
+      [{ type: 'test-zombie', hex: hexId(0, 0) }], { mapId: 'map.field' })
     for (const c of [open, field]) c.state.units[0]!.movePointsLeft = c.state.units[0]!.movement
     expect(reachable(field, field.state.units[0]!).size)
       .toBeLessThan(reachable(open, open.state.units[0]!).size)
@@ -182,8 +182,8 @@ describe('terrain.movecost — rough ground costs more', () => {
   // never becomes cheaper on rough ground.
   it('rough ground never makes a hex cheaper to reach than open ground does', () => {
     const mk = (mapId: string) => {
-      const c = createCustomBattle([{ type: 'warrior', hex: hexId(5, 5) }],
-        [{ type: 'zombie', hex: hexId(0, 0) }], { mapId })
+      const c = createCustomBattle([{ type: 'test-warrior', hex: hexId(5, 5) }],
+        [{ type: 'test-zombie', hex: hexId(0, 0) }], { mapId })
       c.state.units[0]!.movePointsLeft = 12
       return reachable(c, c.state.units[0]!)
     }
@@ -257,8 +257,8 @@ describe('terrain.passable — a wall is a wall', () => {
   })
 
   it('reachable() never offers an obstacle, and pathTo never routes through one', () => {
-    const ctx = createCustomBattle([{ type: 'warrior', hex: hexId(3, 12) }],
-      [{ type: 'zombie', hex: hexId(0, 0) }], { mapId: 'map.thicket' })
+    const ctx = createCustomBattle([{ type: 'test-warrior', hex: hexId(3, 12) }],
+      [{ type: 'test-zombie', hex: hexId(0, 0) }], { mapId: 'map.thicket' })
     const u = ctx.state.units[0]!
     u.movePointsLeft = 12
     const reach = reachable(ctx, u)
@@ -338,20 +338,20 @@ describe('terrain.modifiers — the ground is just another modifier', () => {
   })
 
   it('cover actually lands in a real fight — a forest target is harder to hit', () => {
-    const ctx = createCustomBattle([{ type: 'ranger', hex: hexId(5, 5) }],
-      [{ type: 'zombie', hex: hexId(5, 8) }], { mapId: 'map.open' })
+    const ctx = createCustomBattle([{ type: 'test-ranger', hex: hexId(5, 5) }],
+      [{ type: 'test-zombie', hex: hexId(5, 8) }], { mapId: 'map.open' })
     const [r, z] = [ctx.state.units[0]!, ctx.state.units[1]!]
-    const open = resolveAccuracy(ctx, r, z, ATTACKS['attack.ranger.bow']!).value
+    const open = resolveAccuracy(ctx, r, z, ATTACKS['attack.test-ranger.bow']!).value
     ctx.state.terrain[z.hex] = TERRAIN.FOREST
-    const wooded = resolveAccuracy(ctx, r, z, ATTACKS['attack.ranger.bow']!).value
+    const wooded = resolveAccuracy(ctx, r, z, ATTACKS['attack.test-ranger.bow']!).value
     expect(open - wooded).toBe(10)
   })
 
   it('no new pipeline station was added — terrain rides the stat pipeline', () => {
-    const ctx = createCustomBattle([{ type: 'ranger', hex: hexId(5, 5) }],
-      [{ type: 'zombie', hex: hexId(5, 8) }], { mapId: 'map.open' })
+    const ctx = createCustomBattle([{ type: 'test-ranger', hex: hexId(5, 5) }],
+      [{ type: 'test-zombie', hex: hexId(5, 8) }], { mapId: 'map.open' })
     ctx.state.terrain[ctx.state.units[0]!.hex] = TERRAIN.WATER
-    const led = resolveAccuracy(ctx, ctx.state.units[0]!, ctx.state.units[1]!, ATTACKS['attack.ranger.bow']!).ledger
+    const led = resolveAccuracy(ctx, ctx.state.units[0]!, ctx.state.units[1]!, ATTACKS['attack.test-ranger.bow']!).ledger
     expect(led.some(r => r.name === 'TERRAIN')).toBe(false)
     expect(led.some(r => r.effectId === 'terrain.water')).toBe(true)
   })

@@ -29,8 +29,8 @@ describe('the data', () => {
 describe('Stun N = exactly N lost activations', () => {
   it('isBlocked walks with the counter: blocked, blocked, free', () => {
     const ctx = createCustomBattle(
-      [{ type: 'warrior', hex: hexId(5, 5) }],
-      [{ type: 'zombie', hex: hexId(11, 11) }],
+      [{ type: 'test-warrior', hex: hexId(5, 5) }],
+      [{ type: 'test-zombie', hex: hexId(11, 11) }],
     )
     const z = ctx.state.units[1]!
     applyStatus(ctx, z.id, 'status.stun', 2, 'test')
@@ -48,8 +48,8 @@ describe('Stun N = exactly N lost activations', () => {
     // activation.idle "cannot act" every enemy phase and die without ever
     // declaring an attack.
     const ctx = createCustomBattle(
-      [{ type: 'warrior', hex: hexId(5, 5) }],
-      [{ type: 'zombie', hex: hexId(5, 6) }],
+      [{ type: 'test-warrior', hex: hexId(5, 5) }],
+      [{ type: 'test-zombie', hex: hexId(5, 6) }],
     )
     const z = ctx.state.units[1]!
     applyStatus(ctx, z.id, 'status.stun', 5, 'test')
@@ -63,8 +63,8 @@ describe('Stun N = exactly N lost activations', () => {
 
   it('the daze variant blocks identically — the slot is data, not a stun special-case', () => {
     const ctx = createCustomBattle(
-      [{ type: 'warrior', hex: hexId(5, 5) }],
-      [{ type: 'zombie', hex: hexId(11, 11) }],
+      [{ type: 'test-warrior', hex: hexId(5, 5) }],
+      [{ type: 'test-zombie', hex: hexId(11, 11) }],
     )
     const w = ctx.state.units[0]!
     applyStatus(ctx, w.id, 'test.status.daze', 1, 'test')

@@ -33,7 +33,7 @@ describe('the ladder is data — three rows, one shape', () => {
   it('the rungs change the range, pure data: 5 points fly 4 / 5 / 6', () => {
     const ctx = createCustomBattle(
       [{ type: 'green-drake', hex: hexId(5, 5) }],
-      [{ type: 'zombie', hex: hexId(11, 11) }],
+      [{ type: 'test-zombie', hex: hexId(11, 11) }],
     )
     const d = ctx.state.units[0]!
     beginActivation(ctx, d.id, 'test')
@@ -49,7 +49,7 @@ describe('zero Steps — the ground between is never touched', () => {
     // same destination, the only difference is the CHOICE of movement power.
     const fly = createCustomBattle(
       [{ type: 'green-drake', hex: hexId(3, 3) }],
-      [{ type: 'zombie', hex: hexId(11, 11) }],
+      [{ type: 'test-zombie', hex: hexId(11, 11) }],
       { mapId: 'test.map.embers' },
     )
     const fd = fly.state.units[0]!
@@ -61,7 +61,7 @@ describe('zero Steps — the ground between is never touched', () => {
 
     const walk = createCustomBattle(
       [{ type: 'green-drake', hex: hexId(3, 3) }],
-      [{ type: 'zombie', hex: hexId(11, 11) }],
+      [{ type: 'test-zombie', hex: hexId(11, 11) }],
       { mapId: 'test.map.embers' },
     )
     const wd = walk.state.units[0]!
@@ -76,7 +76,7 @@ describe('zero Steps — the ground between is never touched', () => {
     // carries Burn, jumps a water-adjacent line, and keeps every stack).
     const ctx = createCustomBattle(
       [{ type: 'green-drake', hex: hexId(3, 3) }],
-      [{ type: 'zombie', hex: hexId(11, 11) }],
+      [{ type: 'test-zombie', hex: hexId(11, 11) }],
       { mapId: 'map.thicket' },
     )
     const d = ctx.state.units[0]!
@@ -93,7 +93,7 @@ describe('zero Steps — the ground between is never touched', () => {
     const centre = hexId(6, 6)
     const ctx = createCustomBattle(
       [{ type: 'green-drake', hex: centre }],
-      neighboursOf(centre).map((h) => ({ type: 'zombie', hex: h })),
+      neighboursOf(centre).map((h) => ({ type: 'test-zombie', hex: h })),
     )
     const d = ctx.state.units[0]!
     beginActivation(ctx, d.id, 'test')
@@ -110,7 +110,7 @@ describe('landing is real', () => {
   it('the landing hex fires its End-of-Activation rung — embers catch AFTER you land on them', () => {
     const ctx = createCustomBattle(
       [{ type: 'green-drake', hex: hexId(3, 3) }],
-      [{ type: 'zombie', hex: hexId(11, 11) }],
+      [{ type: 'test-zombie', hex: hexId(11, 11) }],
       { mapId: 'test.map.embers' },
     )
     const d = ctx.state.units[0]!
@@ -139,7 +139,7 @@ describe('landing is real', () => {
   it('flight costs its stamina and one movement slot, and the point store never goes negative', () => {
     const ctx = createCustomBattle(
       [{ type: 'green-drake', hex: hexId(5, 5) }],
-      [{ type: 'zombie', hex: hexId(11, 11) }],
+      [{ type: 'test-zombie', hex: hexId(11, 11) }],
     )
     const d = ctx.state.units[0]!
     beginActivation(ctx, d.id, 'test')
@@ -167,8 +167,8 @@ describe('the AI chooses the wings when they win', () => {
     for (let r = 0; r < 8; r++) {
       const ctx = createCustomBattle(
         [{ type: 'green-drake', hex: hexId(2, 10) }],
-        [{ type: 'zombie', hex: hexId(4, 1) }, { type: 'zombie', hex: hexId(8, 1) },
-         { type: 'zombie', hex: hexId(6, 2) }, { type: 'zombie', hex: hexId(10, 2) }],
+        [{ type: 'test-zombie', hex: hexId(4, 1) }, { type: 'test-zombie', hex: hexId(8, 1) },
+         { type: 'test-zombie', hex: hexId(6, 2) }, { type: 'test-zombie', hex: hexId(10, 2) }],
         { mapId: 'map.thicket', replicate: r },
       )
       runBattle(ctx)

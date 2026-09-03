@@ -51,7 +51,7 @@ describe('fielded in a custom battle, it plays like her block says', () => {
   function board() {
     const ctx = createCustomBattle(
       [{ type: 'spirit-snake', hex: hexId(5, 5) }],
-      [{ type: 'zombie', hex: hexId(5, 6) }],
+      [{ type: 'test-zombie', hex: hexId(5, 6) }],
     )
     return { ctx, s: ctx.state.units[0]!, z: ctx.state.units[1]! }
   }
@@ -67,6 +67,6 @@ describe('fielded in a custom battle, it plays like her block says', () => {
   })
   it('dodge 50 makes it slippery: a zombie bite has only a 15% chance to touch it', () => {
     const { ctx, s, z } = board()
-    expect(resolveAccuracy(ctx, z, s, ctx.attacks['attack.zombie.basic']!).value).toBe(15)  // 65 − 50
+    expect(resolveAccuracy(ctx, z, s, ctx.attacks['attack.test-zombie.bite']!).value).toBe(15)  // 65 − 50
   })
 })

@@ -14,8 +14,8 @@ import { hexId } from '../src/core/hex.js'
 
 function warriorWithResist(resist: number) {
   const ctx = createCustomBattle(
-    [{ type: 'warrior', hex: hexId(5, 5) }],
-    [{ type: 'zombie', hex: hexId(11, 11) }],
+    [{ type: 'test-warrior', hex: hexId(5, 5) }],
+    [{ type: 'test-zombie', hex: hexId(11, 11) }],
   )
   const w = ctx.state.units[0]!
   if (resist) w.mods.push({ stat: 'resist', op: 'add', value: resist, source: 'test', scope: 'unit' })

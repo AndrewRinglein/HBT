@@ -4854,3 +4854,29 @@ explicitly; pressure-needing claims field 12–16 authored zombies and say why.
 Fourteen tests edited, reasons at the edits. Two flags. Seal withheld.
 
 IRON GAUNTLET: NOT PASSED — 2 FLAG(S) WARNED
+
+## test.fixture-migration — LANDED `da34223` **NEEDS REVIEW**
+2026-09-03T06:46:20.127Z
+
+  PASS  dependencies landed
+  WARN  not already decided — 3 candidates (STATE.md mentions of this plan)
+  PASS  typecheck
+  PASS  full test suite — 60 files / 510
+  PASS  gate 1 — attack.test-warrior.axe: 25 log lines, 25 fired, 11 changed state · attack.test-zombie.bite: 9 fired, 5 changed
+  PASS  brought its own tests — test/fixture-migration.test.ts (+ 29 re-pointed)
+  WARN  existing tests untouched — 29 files edited: the fixture ids renamed by name (zombie→test-zombie, warrior→test-warrior, …; attack.zombie.basic→attack.test-zombie.bite, …; power.mage.bolt→power.test-mage.bolt). No assertion changed — lands FLAGGED
+  PASS  control battles unchanged — IDENTICAL (no fixture is in a control battle)
+  PASS  content has a published source — 13 unpublished (was 19): the six provisional attacks are `test` rows now
+  PASS  hardcode scan
+  PASS  generalizes — shape 'plumbing', exempt
+  PASS  naming — every new id is the test family
+  PASS  kill switch — with attack.test-warrior.axe and attack.test-zombie.bite disabled, 12 of 29 touched tests fail (run by hand: the gate's own run of it was the step the reaper ended)
+
+The gate ran every check through naming and was killed inside the kill-switch
+run (thirty files); the kill switch was re-run by hand on the four files that
+carry the arithmetic, then the landing was committed by hand — the reaper
+protocol. src/content/index.ts types no unit but the three dictated beasts,
+no attack but the drake's two, no ability. The engine's INVENTED count is 13.
+Two flags. Seal withheld.
+
+IRON GAUNTLET: NOT PASSED — 2 FLAG(S) WARNED

@@ -185,7 +185,7 @@ const RAW_SCENARIOS: Readonly<Record<string, ScenarioDef>> = {
     mapId: 'map.open',
     heroes: ['alpha-oathblade', 'alpha-osric', 'alpha-lucius', 'alpha-sky-pirate'],
     heroHexes: [246, 248, 231, 247],
-    enemies: ['zombie', 'zombie', 'zombie', 'zombie', 'zombie', 'zombie'],
+    enemies: ['test-gash-zombie', 'test-gash-zombie', 'test-gash-zombie', 'test-gash-zombie', 'test-gash-zombie', 'test-gash-zombie'],
     enemyHexes: [117, 119, 121, 123, 118, 122],
     replicate: 0,
   },

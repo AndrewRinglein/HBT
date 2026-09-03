@@ -17,8 +17,8 @@ import { hexId } from '../src/core/hex.js'
 
 function board() {
   const ctx = createCustomBattle(
-    [{ type: 'warrior', hex: hexId(5, 5) }],
-    [{ type: 'zombie', hex: hexId(5, 6) }],
+    [{ type: 'test-warrior', hex: hexId(5, 5) }],
+    [{ type: 'test-zombie', hex: hexId(5, 6) }],
   )
   const w = ctx.state.units[0]!, z = ctx.state.units[1]!
   w.mods.push({ stat: 'accuracy', op: 'add', value: 60, source: 'test', scope: 'unit' })  // never miss
@@ -34,16 +34,16 @@ describe('the differential — the same hook, two attacks, only one carries the 
       id: 'test.warrior.aimed-venom', hook: 'onHit', chance: 100,
       select: 'target',
       effect: { kind: 'status.apply', statusId: 'status.poison', value: 2 },
-      source: 'test', onlyWithAttack: 'attack.warrior.axe',
+      source: 'test', onlyWithAttack: 'attack.test-warrior.axe',
     }
     ;(w as { triggers: readonly Trigger[] }).triggers = [scoped]
 
     beginActivation(ctx, w.id, 'test')   // one primary per activation
-    performAttack(ctx, w.id, z.id, 'attack.warrior.massive')
+    performAttack(ctx, w.id, z.id, 'attack.test-warrior.massive')
     expect(valueOf(z, 'status.poison')).toBe(0)          // wrong attack — silent
 
     beginActivation(ctx, w.id, 'test')
-    performAttack(ctx, w.id, z.id, 'attack.warrior.axe')
+    performAttack(ctx, w.id, z.id, 'attack.test-warrior.axe')
     expect(valueOf(z, 'status.poison')).toBe(2)          // its attack — fires
 
     // and the wrong-attack case never even ROLLED — scope is a filter, not a miss
@@ -54,8 +54,8 @@ describe('the differential — the same hook, two attacks, only one carries the 
 
 describe('the retro-scoped variants — the Codex sentences as data', () => {
   it('rot rides the bite; venom rides the fangs', () => {
-    expect(UNITS['zombie']!.triggers!.find((t) => t.id === 'trigger.zombie.rot')!.onlyWithAttack)
-      .toBe('attack.zombie.basic')
+    expect(UNITS['test-zombie']!.triggers!.find((t) => t.id === 'trigger.zombie.rot')!.onlyWithAttack)
+      .toBe('attack.test-zombie.bite')
     expect(UNITS['spirit-snake']!.triggers!.find((t) => t.id === 'trigger.spirit-snake.venom')!.onlyWithAttack)
       .toBe('attack.fangs.bite')
   })

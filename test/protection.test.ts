@@ -15,8 +15,8 @@ import { hexId } from '../src/core/hex.js'
 
 function board() {
   const ctx = createCustomBattle(
-    [{ type: 'mage', hex: hexId(5, 5) }],
-    [{ type: 'zombie', hex: hexId(9, 5) }],
+    [{ type: 'test-mage', hex: hexId(5, 5) }],
+    [{ type: 'test-zombie', hex: hexId(9, 5) }],
   )
   return { ctx, m: ctx.state.units[0]!, z: ctx.state.units[1]! }
 }
@@ -40,7 +40,7 @@ describe('a depleting pool that also decays (COMBAT-SEQUENCE)', () => {
     // Weak the mage so the bolt asks exactly 2: 8 − 6 = 2.
     applyStatus(ctx, m.id, 'status.weak', 6, 'test')
     const hpBefore = z.hp
-    const { damage } = usePower(ctx, m.id, z.id, 'power.mage.bolt')
+    const { damage } = usePower(ctx, m.id, z.id, 'power.test-mage.bolt')
     expect(damage).toBe(0)                                     // fully absorbed
     expect(z.hp).toBe(hpBefore)
     expect(valueOf(z, 'status.protection')).toBe(1)            // 3 − 2 spent
@@ -54,7 +54,7 @@ describe('a depleting pool that also decays (COMBAT-SEQUENCE)', () => {
     // the MITIGATION row exist at all.
     z.mods.push({ stat: 'resist', op: 'add', value: 2, source: 'test', scope: 'unit' })
     applyStatus(ctx, z.id, 'status.protection', 3, 'test')
-    const r = resolvePowerDamage(ctx, m, z, ctx.abilities['power.mage.bolt']!, 3, 3)
+    const r = resolvePowerDamage(ctx, m, z, ctx.abilities['power.test-mage.bolt']!, 3, 3)
     const names = r.ledger.map((row) => row.name)
     expect(names.indexOf('PROTECTION')).toBeGreaterThan(-1)
     expect(names.indexOf('MITIGATION')).toBeGreaterThan(names.indexOf('PROTECTION'))
@@ -64,12 +64,12 @@ describe('a depleting pool that also decays (COMBAT-SEQUENCE)', () => {
   it('preview never spends: the pool is intact after the AI looks', () => {
     const { ctx, z } = board()
     const w = createCustomBattle(
-      [{ type: 'warrior', hex: hexId(5, 5) }],
-      [{ type: 'zombie', hex: hexId(5, 6) }],
+      [{ type: 'test-warrior', hex: hexId(5, 5) }],
+      [{ type: 'test-zombie', hex: hexId(5, 6) }],
     )
     const zz = w.state.units[1]!
     applyStatus(w, zz.id, 'status.protection', 3, 'test')
-    preview(w, 0, zz.id, 'attack.warrior.axe')
+    preview(w, 0, zz.id, 'attack.test-warrior.axe')
     expect(valueOf(zz, 'status.protection')).toBe(3)
     void z
   })
@@ -86,7 +86,7 @@ describe('a depleting pool that also decays (COMBAT-SEQUENCE)', () => {
     applyStatus(ctx, z.id, 'status.protection', 2, 'test')
     applyStatus(ctx, z.id, 'test.status.ward', 4, 'test')
     const hpBefore = z.hp
-    const { damage } = usePower(ctx, m.id, z.id, 'power.mage.bolt')   // asks 8
+    const { damage } = usePower(ctx, m.id, z.id, 'power.test-mage.bolt')   // asks 8
     expect(damage).toBe(2)                                            // 6 absorbed
     expect(z.hp).toBe(hpBefore - 2)
     expect(valueOf(z, 'status.protection')).toBe(0)   // spent first — id order
