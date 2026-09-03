@@ -737,5 +737,23 @@
    "at": "2026-09-03 04:35",
    "sha": "d74a0bc"
   }
+ },
+ "060": {
+  "red": {
+   "at": "2026-09-03 05:22",
+   "sha": "06467ca",
+   "hash": "a0b486814460",
+   "how": "feature absent",
+   "tail": "       | ^ |       8| import { ITEMS, itemOf } from '../src/content/items.js' |       9| import type { CampaignState } from '../src/core/campaign.js'"
+  }
+ },
+ "061": {
+  "red": {
+   "at": "2026-09-03 05:22",
+   "sha": "06467ca",
+   "hash": "fe35bdb44703",
+   "how": "feature absent",
+   "tail": "       | ^ |      10| import { itemOf } from '../src/content/items.js' |      11|"
+  }
  }
 }

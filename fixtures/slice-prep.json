@@ -28,6 +28,7 @@
   "fought": 0,
   "recruited": 0,
   "sold": [],
+  "spent": [],
   "rewardOffer": null,
   "prologue": null,
   "draftOffer": null,
@@ -226,6 +227,12 @@
      "nodes": [
       "standing"
      ]
+    },
+    {
+     "id": "building.waystation",
+     "level": 0,
+     "damaged": true,
+     "nodes": []
     }
    ],
    "adjacent": [

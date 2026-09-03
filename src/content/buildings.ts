@@ -81,6 +81,25 @@ const RAW_BUILDINGS: readonly BuildingRow[] = [
     ],
   },
   {
+    // THE-KINGDOM.html §III: repair 10 · CATALOG (Light & remedies 18, Bombs & oils 30) ·
+    // RANGE (Quest range 25, and the siege-relief node the besieged cut retired). Its bands
+    // open the catalog by row (GEAR-DESIGN.md §4, ruled 2026-09-02: "let's have items unlock
+    // with the Waystation levels; Torch, Pickaxe, Cure poison, Rations at the lowest").
+    id: 'building.waystation', name: 'The Waystation', tag: 'Quartermaster + Stables. Going out, and coming back.', stands: 'sanctuary',
+    nodes: [
+      { key: 'repair', name: 'Repair', salvage: 10, parents: [] },
+      { key: 'light-and-remedies', name: 'Light & remedies', salvage: 18, parents: ['repair'] },
+      { key: 'bombs-and-oils', name: 'Bombs & oils', salvage: 30, parents: ['light-and-remedies'] },
+      { key: 'quest-range', name: 'Quest range', salvage: 25, parents: ['repair'], gate: { field: 2 }, note: 'the quest half of the tree — the range itself is out of the slice' },
+    ],
+    bands: [
+      { name: 'Repaired', at: ['repair'] },
+      { name: 'Light & remedies', at: ['light-and-remedies'] },
+      { name: 'Bombs & oils', at: ['bombs-and-oils'] },
+      { name: 'Stocked', at: ['quest-range'] },
+    ],
+  },
+  {
     id: 'building.chapel', name: 'The Chapel', tag: 'What the gods do to your people — bodies and souls.', stands: 'sanctuary',
     nodes: [
       { key: 'standing', name: 'Standing', salvage: 0, parents: [], note: 'free — cleanse & cure Minor · gates Pray' },

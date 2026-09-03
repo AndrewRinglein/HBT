@@ -35,6 +35,7 @@ import { xpForLevel } from '../content/levels.js'
 import { listBuildings, whyNotBuild, performBuild } from '../core/build.js'
 import { isShopOpen, listShopItems, canBuyItem, performBuyItem, costOfItem, canEquip, whyNotEquip, performEquip, canUnequip, performUnequip, loadoutOf, equipCostOf, isEquipOpen, equipWhere, performOpenEquip, performCloseEquip, forgeBandName, shelfSpecOf, whyNotTradeIn, performTradeIn, tradeCategoryOf } from '../core/shop.js'
 import { itemOf } from '../content/items.js'
+import { listCatalog, waystationLevelOf, canBuyCatalog, whyNotBuyCatalog, performBuyCatalog, priceOf } from '../core/waystation.js'
 import { makeNewCampaign, listDraftOffers, performDraft, performEndCampaign, draftsOwedOf, draftedCountOf } from '../core/opening.js'
 import { PROLOGUE } from '../content/prologue.js'
 import { purchasesFreeOf, articleSlotsOf, articlesHeldOf, whyNotPurchase, performPurchase, hasUnlock } from '../core/charter.js'
@@ -235,6 +236,8 @@ function worldScreen(c: CampaignState): string {
       <div class="pick">${listShopItems(c).map((r) => `<div class="opt${canBuyItem(c, r.id) ? '' : ' off'}" data-act="buy-item" data-id="${esc(r.id)}"><b>${esc(r.name)}</b><small>${esc(r.slot)} · tier ${r.tier} · ${esc(fmt(costOfItem(c, r.id)))}</small></div>`).join('') || (isShopOpen(c) ? '<p class="meta">sold out for the Week</p>' : '')}</div>
       ${isShopOpen(c) && shelfSpecOf(c).enchanted > 0 && listShopItems(c).every((r) => itemOf(r.id).source !== 'enchanted') ? '<p class="meta">the Enchanted band would show enchanted items; the codex has no buyable enchants yet</p>' : ''}
       ${shelfSpecOf(c).tradeIn ? tradeInPanel(c) : ''}
+      <h3>The Waystation${waystationLevelOf(c) ? ` · band ${waystationLevelOf(c)} · a fixed catalog, buy as many as you like` : ' — a ruin until it is repaired'}</h3>
+      <div class="pick">${listCatalog(c).map((r) => `<div class="opt${canBuyCatalog(c, r.id) ? '' : ' off'}" data-act="buy-catalog" data-id="${esc(r.id)}" title="${esc(whyNotBuyCatalog(c, r.id) ?? '')}"><b>${esc(r.name)}</b><small>${esc(r.itemClass)}${r.uses ? ` · ${r.uses} use` : ''} · ${esc(fmt(priceOf(r.id)))}</small></div>`).join('') || ''}</div>
       <h3>The Chapel — Field Surgery · ${esc(fmt(hc))} a hero</h3>
       <div class="pick">${wounded.map((h) => `<div class="opt${canHeal(c, h.id) ? '' : ' off'}" data-act="heal" data-id="${esc(h.id)}"><b>${esc(h.name)}</b><small>${esc(woundNameOf(h.wound))} → ${esc(woundNameOf(h.wound - 1))}</small></div>`).join('') || '<p class="meta">nobody is wounded</p>'}</div>`
   } else if (row.offers === 'labours') {
@@ -516,6 +519,7 @@ function wire(root: HTMLElement): void {
         case 'release': return act(() => performRelease(app.ctx!, id!, 'city', 'slice'))
         case 'build': return act(() => performBuild(app.ctx!, id!, el.dataset['building']!, el.dataset['key']!, 'slice'))
         case 'buy-item': return act(() => performBuyItem(app.ctx!, id!, 'slice'))
+        case 'buy-catalog': return act(() => performBuyCatalog(app.ctx!, id!, 'slice'))
         case 'trade-in': return act(() => { const got = performTradeIn(app.ctx!, id!.split(','), 'slice'); note(`traded in — ${itemOf(got).name}`) })
         case 'equip': return act(() => performEquip(app.ctx!, id!, el.dataset['item']!, 'slice', el.dataset['displace']))
         case 'unequip': return act(() => performUnequip(app.ctx!, id!, el.dataset['item']!, 'slice'))

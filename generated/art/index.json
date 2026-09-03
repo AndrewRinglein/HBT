@@ -46,6 +46,11 @@
    "h": 112,
    "bytes": 28047
   },
+  "iso-waystation.png": {
+   "w": 127,
+   "h": 124,
+   "bytes": 31069
+  },
   "iso-keep.png": {
    "w": 127,
    "h": 141,
@@ -131,6 +136,31 @@
    "h": 303,
    "bytes": 51673
   },
+  "band-waystation-1-ruined.png": {
+   "w": 428,
+   "h": 204,
+   "bytes": 84073
+  },
+  "band-waystation-2-working.png": {
+   "w": 428,
+   "h": 204,
+   "bytes": 84222
+  },
+  "band-waystation-3-established.png": {
+   "w": 428,
+   "h": 204,
+   "bytes": 94247
+  },
+  "band-waystation-4-masterwork.png": {
+   "w": 428,
+   "h": 204,
+   "bytes": 124053
+  },
+  "band-waystation-5-ascendant.png": {
+   "w": 428,
+   "h": 204,
+   "bytes": 112137
+  },
   "interior-forge.jpg": {
    "w": 960,
    "h": 536,
@@ -150,6 +180,11 @@
    "w": 960,
    "h": 536,
    "bytes": 51826
+  },
+  "interior-waystation.jpg": {
+   "w": 960,
+   "h": 536,
+   "bytes": 52257
   },
   "card-forge.jpg": {
    "w": 212,
@@ -171,23 +206,10 @@
    "h": 316,
    "bytes": 12931
   },
-  "banner-eve-of-ruin.jpg": {
-   "bytes": 49128
-  },
-  "banner-shadows-in-the-sand.jpg": {
-   "bytes": 30508
-  },
-  "banner-skyship.jpg": {
-   "bytes": 38240
-  },
-  "font-cinzel-normal.woff2": {
-   "bytes": 25904
-  },
-  "font-im-fell-english-italic.woff2": {
-   "bytes": 57808
-  },
-  "font-im-fell-english-normal.woff2": {
-   "bytes": 59880
+  "card-waystation.jpg": {
+   "w": 212,
+   "h": 316,
+   "bytes": 15228
   }
  },
  "map": {
@@ -279,6 +301,13 @@
    "h": 112,
    "anchorX": 56.9,
    "anchorY": 111.72
+  },
+  "waystation": {
+   "file": "iso-waystation.png",
+   "w": 127,
+   "h": 124,
+   "anchorX": 84.31,
+   "anchorY": 123.62
   },
   "keep": {
    "file": "iso-keep.png",
@@ -391,6 +420,39 @@
       "h": 303
      }
     ]
+   },
+   "waystation": {
+    "x": 658,
+    "y": 574,
+    "anchorX": 174,
+    "baselineY": 198,
+    "bands": [
+     {
+      "file": "band-waystation-1-ruined.png",
+      "w": 428,
+      "h": 204
+     },
+     {
+      "file": "band-waystation-2-working.png",
+      "w": 428,
+      "h": 204
+     },
+     {
+      "file": "band-waystation-3-established.png",
+      "w": 428,
+      "h": 204
+     },
+     {
+      "file": "band-waystation-4-masterwork.png",
+      "w": 428,
+      "h": 204
+     },
+     {
+      "file": "band-waystation-5-ascendant.png",
+      "w": 428,
+      "h": 204
+     }
+    ]
    }
   }
  },
@@ -398,31 +460,14 @@
   "forge": "interior-forge.jpg",
   "chapel": "interior-chapel.jpg",
   "beacon": "interior-beacon.jpg",
-  "memorial": "interior-memorial.jpg"
+  "memorial": "interior-memorial.jpg",
+  "waystation": "interior-waystation.jpg"
  },
  "cards": {
   "forge": "card-forge.jpg",
   "chapel": "card-chapel.jpg",
   "beacon": "card-beacon.jpg",
-  "memorial": "card-memorial.jpg"
- },
- "banners": {
-  "eve-of-ruin": "banner-eve-of-ruin.jpg",
-  "shadows-in-the-sand": "banner-shadows-in-the-sand.jpg",
-  "skyship": "banner-skyship.jpg"
- },
- "fonts": {
-  "font-cinzel-normal.woff2": {
-   "family": "Cinzel",
-   "style": "normal"
-  },
-  "font-im-fell-english-italic.woff2": {
-   "family": "IM Fell English",
-   "style": "italic"
-  },
-  "font-im-fell-english-normal.woff2": {
-   "family": "IM Fell English",
-   "style": "normal"
-  }
+  "memorial": "card-memorial.jpg",
+  "waystation": "card-waystation.jpg"
  }
 }

@@ -44,7 +44,7 @@ const t = (id: string, name: string, mapId: string, hex: [number, number], extra
 const RAW_TERRITORIES: readonly TerritoryRow[] = [
   t('territory.ruined-kingdom.sanctuary', 'Sanctuary', 'map.open', [-1, 0], {
     owned: true, kingdom: true, claimedOnce: true, node: 'field',
-    buildings: [{ id: 'building.chapel', level: 1, damaged: false, nodes: ['standing'] }],
+    buildings: [{ id: 'building.chapel', level: 1, damaged: false, nodes: ['standing'] }, { id: 'building.waystation', level: 0, damaged: true, nodes: [] }],
     adjacent: ['territory.ruined-kingdom.ridge', 'territory.ruined-kingdom.highlands'],
     enemies: ['unit.zombie', 'unit.zombie', 'unit.zombie', 'unit.fast-zombie'],
     lostDefenceCosts: { 'currency.supplies': SWITCHES.sanctuaryLostDefenceSupplies },

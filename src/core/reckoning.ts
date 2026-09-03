@@ -34,7 +34,7 @@ import { rollOf } from './rng.js'
 import { validateResult } from './result.js'
 import {
   type Ctx, applyXp, setWound, setHeroDead, applyGrant, applyRenown,
-  setEngagementResolved, applyClaim, setCursor, setRewardOffer,
+  setEngagementResolved, applyClaim, setCursor, setRewardOffer, applyRestock,
 } from './mutate.js'
 import { performLose } from './map.js'
 import { resolveRewardDraw, performExitReckoning } from './rewards.js'
@@ -169,6 +169,8 @@ export function applyBattleResult(ctx: Ctx, engagement: Engagement, result: Enga
  * cursor keeps the Engagement until then so the screens can name it.
  */
 export function performExitBattle(ctx: Ctx, causeId: string): void {
+  // "used-up items are replaced; they're restocked after the battle" (2026-09-02)
+  applyRestock(ctx, causeId)
   performExitReckoning(ctx, causeId)
   if (ctx.campaign.cursor.step === 'open') setCursor(ctx, { engagement: null, battle: null }, causeId)
 }

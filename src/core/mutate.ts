@@ -187,6 +187,19 @@ export function applyBuyItem(ctx: Ctx, itemId: string, cost: Record<string, numb
   emit(ctx, 'item.bought', causeId, { itemId, cost })
 }
 
+/** A one-use item spent in the Battle being fought — the one write of cursor.spent. */
+export function applySpendUse(ctx: Ctx, itemId: string, causeId: string): void {
+  ctx.campaign.cursor.spent.push(itemId)
+  emit(ctx, 'item.spent', causeId, { itemId })
+}
+
+/** Everything spent, made whole again as the Battle is left. */
+export function applyRestock(ctx: Ctx, causeId: string): void {
+  const spent = [...new Set(ctx.campaign.cursor.spent)].sort()
+  ctx.campaign.cursor.spent = []
+  for (const itemId of spent) emit(ctx, 'item.restocked', causeId, { itemId })
+}
+
 /** The trade-in: three burned from the stash, one gained — one write, one word. */
 export function applyTradeIn(ctx: Ctx, burned: readonly string[], itemId: string, causeId: string): void {
   for (const id of burned) {

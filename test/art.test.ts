@@ -61,10 +61,11 @@ describe('the kingdom art', () => {
   it('the town shows the Sanctuary\'s buildings, and a Territory\'s only once it is held', () => {
     const ctx = loadFixture()
     const ridge = Object.values(ctx.campaign.territories).find((t) => t.buildings.some((b) => b.id === 'building.forge'))!
+    // (the Sanctuary's own buildings: the Chapel and, since G7, the Waystation)
     ridge.owned = false
-    expect(townBuildings(ctx.campaign).map((b) => b.slug)).toEqual(['chapel'])
+    expect(townBuildings(ctx.campaign).map((b) => b.slug).sort()).toEqual(['chapel', 'waystation'])
     ridge.owned = true
-    expect(townBuildings(ctx.campaign).map((b) => b.slug).sort()).toEqual(['chapel', 'forge'])
+    expect(townBuildings(ctx.campaign).map((b) => b.slug).sort()).toEqual(['chapel', 'forge', 'waystation'])
     expect(townBuildings(ctx.campaign).find((b) => b.slug === 'forge')!.band).toBe(0)   // a ruin until repaired
   })
 })

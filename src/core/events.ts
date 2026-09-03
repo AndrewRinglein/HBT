@@ -63,6 +63,9 @@ export const KINGDOM_EVENTS = [
   // Added 2026-09-02 with forge.shelf (G6), and to GLOSSARY.md the same commit: three
   // burned for one a tier up.
   'item.traded',
+  // Added 2026-09-02 with waystation.catalog (G7), and to GLOSSARY.md the same commit: a
+  // one-use item spent in a Battle, and made whole again when the Battle is left.
+  'item.spent', 'item.restocked',
 ] as const
 
 export type KingdomEventType = (typeof KINGDOM_EVENTS)[number]
