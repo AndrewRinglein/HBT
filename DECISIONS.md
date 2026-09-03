@@ -1279,3 +1279,21 @@ Consequences, by question:
     hunter).
 14. Badges — no hero badges this run. Enemy badges on authored rows are used;
     that means the badge type exists, applied at fielding for enemies only.
+
+## 2026-09-03 — the downed, confirmed after the run
+
+Angela reviewed `fix.downed-targetable` (canAttack accepts a downed target;
++20 at the CONDITION station; a hit deals no damage, cannot crit, and moves
+the bleed-out counter one step, never below 1; the AI takes a downed target
+only when nothing standing is in reach — `aiAttacksDowned`, default
+`whenNoStanding`). She first read it as wrong ("a player unit that is down is
+inert and cannot be targeted"), was shown COMBAT-DESIGN.md line 871
+("Enemies roll at +20 against downed heroes — but a hit only accelerates the
+bleed-out counter. It never kills"), and ruled:
+
+> "Actually, that's all pretty reasonable. If it has no other target, it
+> attacks and costs a turn. That's reasonable. We can leave that as it is."
+
+Consequence: the landing stands as built; `aiAttacksDowned` keeps its default
+(the downed are a finisher's target only when nothing stands in reach) and
+stays sweepable; COMBAT-DESIGN §13 is confirmed, not amended.
