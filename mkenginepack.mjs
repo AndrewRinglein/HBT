@@ -118,6 +118,10 @@ const STATUS_SENTENCES = [
   ["Reduces the unit's Movement by its value.", { reducesMovement: true }],
   ['Loses access to class powers.', { locksPowers: true }],
   ["Takes the unit out of its owner's control and hands it to the AI.", { aiControlled: true }],
+  // 2026-09-03 — the three that were gaps: Frost, Root, Taunt (capability.frost/root/taunt)
+  ['Adds its value to every physical hit the unit receives, per hit.', { addsIncomingPhysical: true }],
+  ['Stops the unit moving at all.', { blocksMovement: true }],
+  ['Forces the taunted unit to target whoever taunted it.', { forcesTarget: true }],
 ];
 const STATUS_GAP_NEEDS = {
   'status.root': 'a blocksMovement flag (movement 0, still acts) — capability.root',
@@ -150,12 +154,15 @@ function compileStatuses(rows) {
     // the engine's shape word is derived from the behaviour; the Codex family
     // rides along verbatim.
     const shape = flags.reducesIncomingDamage ? 'pool' : flags.reducesOutgoingDamage ? 'modifier' : 'counter';
-    out[r.id] = { id: r.id, name: r.name, shape, family: r.family ?? r.shape, stacking: 'add', decayPerPhase, ...flags };
+    // rule.burn-frost-cancel: the row's application clause, exact phrase, sets `cancels` on BOTH rows
+    const cancels = /Burn and Frost annihilate one for one on application/.test(r.application || '') ? { cancels: 'status.burn' } : {};
+    out[r.id] = { id: r.id, name: r.name, shape, family: r.family ?? r.shape, stacking: 'add', decayPerPhase, ...flags, ...cancels };
     STATUS_OK.add(r.id.replace(/^status\./, ''));
   }
   return out;
 }
 const statuses = compileStatuses(SETTLED.statuses || []);
+if (statuses['status.frost']?.cancels === 'status.burn' && statuses['status.burn']) statuses['status.burn'].cancels = 'status.frost';   // one rule, both rows
 
 // ── MOVEMENT POWERS (pack.moves, 2026-09-02) ────────────────────────────────
 // The eleven `movementAction` power rows compile into the engine's MoveDef

@@ -7,24 +7,9 @@
    "needs": "heal-received bonus and half-value outgoing damage bonus, decay on kill — capability.karma"
   },
   {
-   "unit": "status.taunt",
-   "what": "status sentence not compilable: 'Forces the taunted unit to target whoever taunted it.'",
-   "needs": "AI targeting override (must target the taunter) — capability.taunt"
-  },
-  {
    "unit": "status.confusion",
    "what": "status sentence not compilable: 'Swaps the affected unit's AI strategy for a different one.'",
    "needs": "AI mode swap — capability.confusion"
-  },
-  {
-   "unit": "status.root",
-   "what": "status sentence not compilable: 'Stops the unit moving at all.'",
-   "needs": "a blocksMovement flag (movement 0, still acts) — capability.root"
-  },
-  {
-   "unit": "status.frost",
-   "what": "status sentence not compilable: 'Adds its value to every physical hit the unit receives, per hit.'",
-   "needs": "a per-hit incoming damage station (+N on every physical hit received) — capability.frost"
   },
   {
    "unit": "status.shadow",
@@ -70,11 +55,6 @@
    "unit": "unit.bone-dragon",
    "what": "(unit) hook 'aura'",
    "needs": "hook: aura"
-  },
-  {
-   "unit": "unit.dark-sniper",
-   "what": "attack.dark-sniper.shot onHit: apply a status",
-   "needs": "apply a status"
   },
   {
    "unit": "unit.dark-sniper",
@@ -278,11 +258,6 @@
   },
   {
    "unit": "unit.shadow-sorcerer",
-   "what": "attack.shadow-sorcerer.shadow-rend onHit: apply a status",
-   "needs": "apply a status"
-  },
-  {
-   "unit": "unit.shadow-sorcerer",
    "what": "attack.shadow-sorcerer.shadow-rend onHit: paint a ground layer",
    "needs": "capability.ground-layers"
   },
@@ -420,11 +395,6 @@
    "unit": "hero.base.warrior-iron",
    "what": "item.tower-shield grants power.tower-shield.stand-tall",
    "needs": "item power — shape unparsed"
-  },
-  {
-   "unit": "hero.base.mage-thinking",
-   "what": "attack.frost-staff.frost-blast onHit: \"apply 1 Frost\"",
-   "needs": "trigger shape unparsed"
   },
   {
    "unit": "hero.base.mage-thinking",
@@ -808,11 +778,6 @@
   },
   {
    "unit": "item.net",
-   "what": "attack.net.cast onHit: \"apply 1 Root\"",
-   "needs": "trigger shape unparsed"
-  },
-  {
-   "unit": "item.net",
    "what": "uses: 1",
    "needs": "charges spent in battle — capability.consumables"
   },
@@ -995,11 +960,6 @@
    "unit": "item.fire-staff",
    "what": "grants power.fire-staff.fireball",
    "needs": "item power — shape unparsed"
-  },
-  {
-   "unit": "item.frost-staff",
-   "what": "attack.frost-staff.frost-blast onHit: \"apply 1 Frost\"",
-   "needs": "trigger shape unparsed"
   },
   {
    "unit": "item.frost-staff",
