@@ -5,6 +5,8 @@
      powers  — effect (damage / heal / selfGuard), area, range
    Split out of viewer-core.js 2026-09-02. */
 
+import { MOD_UP, MOD_DOWN } from './theme.js'
+
 /* Signed numbers go through ONE helper. Hardcoding '+' produced "crit +-5" on
    Punch, whose crit is genuinely negative (2026-09-01). */
 export const sgn = n => (n > 0 ? '+' : '') + n
@@ -78,10 +80,10 @@ export function triggersFor(u, a, UD, SN, stStyle) {
   if (a.kind === 'move') {
     /* a move's riders ARE the buff/debuff layer — same green/red as the stat block */
     for (const e of (a.effects || [])) {
-      if (e.kind === 'gainStamina')        out.push({ word: 'Stamina ' + sgn(e.value), hue: '#7ec45f', chance: 100 })
-      else if (e.kind === 'loseMaxStamina') out.push({ word: 'Max Stam ' + sgn(-Math.abs(e.value)), hue: '#d1665c', chance: 100 })
+      if (e.kind === 'gainStamina')        out.push({ word: 'Stamina ' + sgn(e.value), hue: MOD_UP, chance: 100 })
+      else if (e.kind === 'loseMaxStamina') out.push({ word: 'Max Stam ' + sgn(-Math.abs(e.value)), hue: MOD_DOWN, chance: 100 })
       else if (e.kind === 'statMod')        out.push({ word: (STATSHORT[e.stat] || e.stat) + ' ' + sgn(e.value),
-                                                        hue: e.value > 0 ? '#7ec45f' : '#d1665c', chance: 100 })
+                                                        hue: e.value > 0 ? MOD_UP : MOD_DOWN, chance: 100 })
     }
     return out
   }

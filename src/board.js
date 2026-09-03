@@ -2,10 +2,11 @@
    Reads V.S (the folded state) and draws it. Never folds. Every function takes
    the viewer context V; nothing here is module state, so two viewers can live
    on one page. Split out of viewer-core.js 2026-09-02 with the drawing intact. */
-import { TSWATCH, stStyle, PROJ_TINT, SIDE_TINT, SIDE_GLOW } from './theme.js'
+import { TSWATCH, stStyle, PROJ_TINT, SIDE_TINT, SIDE_GLOW, DMG_HUE, HEAL_HUE, MOD_UP, MOD_DOWN, CRIT_HUE, NOTE_HUE, PROT_SPENT, VFX_STATUS, rgb } from './theme.js'
+import { subjectOf } from './subject.js'
 import { projectTick, dangerOf } from './projection.js'
 import { dangerHTML, raIcon } from './icons.js'
-import { createHexVFX, playMeleeAttack, playMagicBolt, playHolyBolt, playArrow, playStatusApply, playStatusTick } from './hexvfx.js'
+import { createHexVFX, playMeleeAttack, playMagicBolt, playHolyBolt, playArrow, playStatusApply, playStatusTick, STATUS_STYLES } from './hexvfx.js'
 
 export const el = (cls, style, html) => { const d = document.createElement('div')
   if (cls) d.className = cls; if (style) d.style.cssText = style; if (html != null) d.innerHTML = html; return d }
@@ -15,20 +16,16 @@ export const feetOf = (V, hex) => ({ x: V.data.POS[hex].px, y: V.data.POS[hex].p
 export const squash = V => Math.cos(V.data.LAYOUT.tilt * Math.PI / 180)
 
 /* ── keyframes the tokens and floats use (once per document) ─────────── */
-let keyframed = false
 export function ensureKeyframes() {
-  if (keyframed || typeof document === 'undefined') return
+  if (typeof document === 'undefined' || document.getElementById('bvKeyframes')) return
   const s = document.createElement('style'); s.id = 'bvKeyframes'
-  s.textContent = '@keyframes tokWalk{0%,100%{transform:translateY(0) rotate(0)}' +
-    '25%{transform:translateY(-6px) rotate(-2.6deg)}50%{transform:translateY(-2px) rotate(0)}' +
-    '75%{transform:translateY(-6px) rotate(2.6deg)}}' +
-    '@keyframes floatUp{0%{transform:translateY(0);opacity:0}6%{opacity:1}' +
+  s.textContent = '@keyframes floatUp{0%{transform:translateY(0);opacity:0}6%{opacity:1}' +
     '70%{opacity:1}100%{transform:translateY(-52px);opacity:0}}' +
     /* the crit numeral: overshoot in (1.35 → 1), HOLD, then drift like the rest */
     '@keyframes critPop{0%{transform:scale(1.35) translateY(0);opacity:0}8%{opacity:1;transform:scale(1.35) translateY(0)}' +
     '18%{transform:scale(1) translateY(0)}30%{transform:scale(1) translateY(0);opacity:1}' +
     '75%{opacity:1}100%{transform:scale(1) translateY(-52px);opacity:0}}'
-  document.body.appendChild(s); keyframed = true
+  document.body.appendChild(s)
 }
 
 /* ── the ground: per-hex swatches and the two persistent ground recipes ── */
@@ -85,6 +82,17 @@ export function buildGround(V) {
 /* ── floating numbers (ruled 2026-08-27: overhead, float up) ─────────────
    Fire-and-forget DOM: created ONCE, drifts via CSS, removes itself. Never
    redrawn from a render — that rebuild was the flicker. */
+/* the cue says WHAT the float is; the hue is theme.js's (Law 6) */
+export function floatHue(c) {
+  switch (c.kind) {
+    case 'damage': return DMG_HUE[c.dt] || DMG_HUE.other
+    case 'heal': return HEAL_HUE
+    case 'status': return stStyle(c.statusId).hue
+    case 'crit': return CRIT_HUE
+    case 'knocked': case 'resisted': case 'absorbed': case 'maxhp': return NOTE_HUE[c.kind]
+    default: return '#e8e5dc'
+  }
+}
 export function pushFloat(V, hex, text, col, o = {}) {
   if (hex == null) return
   const L = V.layers
@@ -99,7 +107,7 @@ export function pushFloat(V, hex, text, col, o = {}) {
     /* rung 2: the numeral IS the crit — bigger, gold-rimmed, snaps in with an
        overshoot and holds ~200ms before it drifts (critPop keyframes) */
     wrap.appendChild(el('dmg crit', `left:-40px;top:${-140 - slot * 30}px;color:${col};font-size:52px;` +
-      '-webkit-text-stroke:1.5px #ffcf6a;text-shadow:0 0 14px rgba(255,207,106,.75),0 2px 6px #000;transform-origin:50% 100%;' +
+      `-webkit-text-stroke:1.5px ${CRIT_HUE};text-shadow:0 0 14px rgba(255,207,106,.75),0 2px 6px #000;transform-origin:50% 100%;` +
       `animation:critPop 1900ms cubic-bezier(.2,1.3,.4,1) forwards`, text))
   } else
   wrap.appendChild(el('dmg', `left:-34px;top:${-136 - slot * 30}px;color:${col};` +
@@ -118,6 +126,10 @@ export function clearFloats(V) {
    Every call is guarded: a VFX failure must never stop the pump (Law 9
    applies to the run, not to sparkles). */
 export function initFX(V) {
+  /* Law 6: the canvas palette takes the theme's hues — hexvfx.js ships its own,
+     and a second palette is exactly what "one hue per status, everywhere" forbids */
+  for (const [style, sid] of Object.entries(VFX_STATUS)) if (STATUS_STYLES[style]) STATUS_STYLES[style].ring = rgb(stStyle(sid).hue)
+  STATUS_STYLES.heal.ring = rgb(HEAL_HUE)
   try { V.fx.FX = createHexVFX(V.dom.canvas) } catch (e) { V.fx.FX = null }
 }
 function anchorOf(V, id) {
@@ -179,6 +191,7 @@ export function traverse(V, id, startHex, path, dur) {
   const a = E.root.animate(kf, { duration: dur, easing: 'cubic-bezier(.35,0,.2,1)', fill: 'none' })
   E.walk = a
   if (u.life === 'standing') E.img.animate(BOB, { duration: Math.max(120, dur / path.length), iterations: path.length, easing: 'ease-in-out' })
+  a.oncancel = () => { E.root.style.transition = ROOT_TRANSITION; E.walk = null }
   a.onfinish = () => {
     E.root.style.transition = ROOT_TRANSITION
     E.walk = null
@@ -216,12 +229,23 @@ export function queueInjury(V, id, name) {
   Q.push({ id, name })
   if (Q.length === 1) { darken(V); playInjury(V) }
 }
+/** drop every pending beat — seek() and dispose() call this so nothing lands
+    on a board that has moved on (review 2026-09-03) */
+export function cancelBeats(V) {
+  for (const t of V.fx.timers) clearTimeout(t)
+  V.fx.timers.clear()
+  if (V.fx.injuryQ) V.fx.injuryQ.length = 0
+  for (const n of V.fx.nodes) { try { n.remove() } catch (e) {} }
+  V.fx.nodes.clear()
+  if (V.fx.FX && V.fx.FX.clear) { try { V.fx.FX.clear() } catch (e) {} }
+}
 function darken(V) {
   const wrap = V.dom.stage.parentNode; if (!wrap) return
   const d = el('', 'position:absolute;inset:0;background:#000;opacity:0;pointer-events:none;z-index:38')
-  wrap.appendChild(d)
-  if (d.animate) { const a = d.animate([{ opacity: 0 }, { opacity: .45, offset: .35 }, { opacity: 0 }], { duration: DARKEN }); a.onfinish = () => d.remove() }
-  else setTimeout(() => d.remove(), DARKEN)
+  wrap.appendChild(d); V.fx.nodes.add(d)
+  const done = () => { d.remove(); V.fx.nodes.delete(d) }
+  if (d.animate) { const a = d.animate([{ opacity: 0 }, { opacity: .45, offset: .35 }, { opacity: 0 }], { duration: DARKEN }); a.onfinish = done }
+  else V.fx.timers.add(setTimeout(done, DARKEN))
 }
 function playInjury(V) {
   const Q = V.fx.injuryQ; const job = Q[0]; if (!job) return
@@ -232,31 +256,32 @@ function playInjury(V) {
   const bb = el('bb', `left:${p.px}px;top:${p.py}px`)
   bb.style.transform = 'rotateX(var(--anti)) translateZ(160px)'
   const plate = el('injPlate', 'left:-90px;top:-118px;width:180px', `<b>✶</b> ${job.name}`)
-  bb.appendChild(plate); V.dom.stage.appendChild(bb)
+  bb.appendChild(plate); V.dom.stage.appendChild(bb); V.fx.nodes.add(bb)
   if (plate.animate) plate.animate([{ transform: 'scale(1.25)', opacity: 0 }, { transform: 'scale(1)', opacity: 1 }], { duration: 140, easing: 'cubic-bezier(.2,1.2,.4,1)' })
-  setTimeout(() => {
-    /* fly: a screen-space clone from the plate's rect to the panel's injury list */
+  const t = setTimeout(() => {
+    V.fx.timers.delete(t)
+    /* fly: a screen-space clone from the plate's rect to the injured unit's
+       list in the panel — the fold makes the injured unit the subject for
+       exactly this reason; if the panel has moved on, no flight */
     let from = null, to = null
-    try { from = plate.getBoundingClientRect(); const tgt = V.dom.panel && V.dom.panel.querySelector('.pInjuries'); to = tgt ? tgt.getBoundingClientRect() : (V.dom.panel && V.dom.panel.getBoundingClientRect()) } catch (e) {}
-    bb.remove()
+    try {
+      from = plate.getBoundingClientRect()
+      const tgt = subjectOf(V) === job.id && V.dom.panel ? V.dom.panel.querySelector('.pInjuries') : null
+      to = tgt ? tgt.getBoundingClientRect() : null
+    } catch (e) {}
+    bb.remove(); V.fx.nodes.delete(bb)
     if (from && to && document.body.animate) {
       const fly = el('injPlate fly', `position:fixed;left:${from.left}px;top:${from.top}px;width:${from.width}px;z-index:1000;margin:0`, `<b>✶</b> ${job.name}`)
-      document.body.appendChild(fly)
+      document.body.appendChild(fly); V.fx.nodes.add(fly)
       const a = fly.animate([{ transform: 'translate(0,0) scale(1)', opacity: 1 }, { transform: `translate(${to.left - from.left}px,${to.top - from.top}px) scale(.6)`, opacity: .9 }],
         { duration: PLATE_FLY, easing: 'cubic-bezier(.4,0,.2,1)' })
-      a.onfinish = () => { fly.remove(); next() }
+      a.onfinish = () => { fly.remove(); V.fx.nodes.delete(fly); next() }
     } else next()
   }, PLATE_HOLD)
+  V.fx.timers.add(t)
 }
 
 /* ── token beats: walk-bob, lunge, flash ───────────────────────────────── */
-export function walkBob(V, id) {
-  const E = V.layers.UEL.get(id), u = V.S.U[id]
-  if (!E || !u || u.life !== 'standing') return
-  E.img.style.animation = 'none'
-  void E.img.offsetWidth                         // retrigger per step
-  E.img.style.animation = 'tokWalk .34s ease-in-out'
-}
 export function lunge(V, attId, tgtId) {
   const A = V.layers.UEL.get(attId), T = V.S.U[tgtId], from = V.S.U[attId]
   if (!A || !T || !from) return
@@ -264,13 +289,13 @@ export function lunge(V, attId, tgtId) {
   const dx = p2.px - p1.px, dy = p2.py - p1.py, L = Math.hypot(dx, dy) || 1
   A.bb.style.transition = 'transform .13s ease'
   A.bb.style.transform = `rotateX(var(--anti)) translate(${(dx / L * 26).toFixed(0)}px,${(dy / L * 26 * 0.65).toFixed(0)}px)`
-  setTimeout(() => { A.bb.style.transform = 'rotateX(var(--anti))' }, 170)
+  V.fx.timers.add(setTimeout(() => { A.bb.style.transform = 'rotateX(var(--anti))' }, 170))
 }
 export function hitFlash(V, tgtId) {
   /* a STRIKE, not a glow: 45ms (ruled 2026-09-01; it was 160 and read as a glow) */
   const T = V.layers.UEL.get(tgtId); if (!T) return
   T.flash.style.opacity = '1'
-  setTimeout(() => { T.flash.style.opacity = '0' }, 60)
+  V.fx.timers.add(setTimeout(() => { T.flash.style.opacity = '0' }, 60))
 }
 /* HITSTOP (ruled 2026-09-01): freeze TOKEN TRANSFORMS ONLY — every animation
    under the units layer (traversals, bobs, the lunge's transition) pauses for
@@ -281,18 +306,17 @@ export function hitstop(V, ms) {
   const anims = L.getAnimations({ subtree: true }).filter(a => a.playState === 'running')
   if (!anims.length) return
   for (const a of anims) a.pause()
-  setTimeout(() => { for (const a of anims) { try { a.play() } catch (e) {} } }, ms)
+  V.fx.timers.add(setTimeout(() => { for (const a of anims) { try { if (a.playState === 'paused') a.play() } catch (e) {} } }, ms))
 }
 
 /* ── play the fold's cues on the DOM ───────────────────────────────────── */
 export function playCues(V, cues) {
   for (const c of cues) {
     switch (c.k) {
-      case 'walk': walkBob(V, c.id); break
       case 'lunge': lunge(V, c.a, c.t); break
       case 'flash': hitFlash(V, c.id); break
       case 'hitstop': hitstop(V, c.ms); break
-      case 'float': pushFloat(V, c.hex, c.text, c.col, c); break
+      case 'float': pushFloat(V, c.hex, c.text, floatHue(c), c); break
       case 'fx.attack': fxAttack(V, c.kind, c.dt, c.a, c.t, c.dmg, c.crit); break
       case 'kick': cameraKick(V, c.a, c.t); break
       case 'injury': queueInjury(V, c.id, c.name); break
@@ -306,7 +330,7 @@ export function playCues(V, cues) {
 /* ── persistent unit elements ──────────────────────────────────────────── */
 function mkUnit(V, u) {
   const { ARTMAP, ASSETS } = V.data
-  const a = ARTMAP[u.typeId] || ARTMAP['test-zombie']
+  const a = ARTMAP[u.typeId] || ARTMAP._pending      // Law 1: an honest ART PENDING standee, never borrowed art
   const root = el('', 'position:absolute;width:0;height:0;transform-style:preserve-3d;transition:' + ROOT_TRANSITION)
   const tint = SIDE_TINT[u.side] || SIDE_TINT.enemy, glow = SIDE_GLOW[u.side] || SIDE_GLOW.enemy
   const fring = el('fring', `left:-46px;top:-30px;width:92px;height:60px;border-color:${tint};opacity:.55`)
@@ -359,6 +383,7 @@ export function syncUnits(V) {
   const { S, view, layers: L } = V, { UD, LAYOUT } = V.data
   if (!L.unitsL) { L.unitsL = el('', 'position:absolute;left:0;top:0;transform-style:preserve-3d'); V.dom.stage.appendChild(L.unitsL) }
   const bare = view.bare
+  for (const [id, E] of L.UEL) if (!S.U[id]) E.root.style.display = 'none'
   for (const u of Object.values(S.U)) {
     let E = L.UEL.get(u.id); if (!E) { E = mkUnit(V, u); L.UEL.set(u.id, E) }
     const f = feetOf(V, u.hex)
@@ -486,7 +511,7 @@ export function syncUnits(V) {
         E.prot.style.cssText = `position:absolute;left:${w / 2 + 7 + 9}px;top:${-bhFull}px;height:${bh}px;` +
           `width:6px;display:flex;flex-direction:column-reverse;gap:1px;pointer-events:none`
         E.prot.innerHTML = Array.from({ length: segs }, (_, i) =>
-          `<div style="flex:1;border-radius:1px;background:${i < segs - P.absorbed ? '#5aa8d8' : '#2f5b78'};` +
+          `<div style="flex:1;border-radius:1px;background:${i < segs - P.absorbed ? stStyle('status.protection').hue : PROT_SPENT};` +
           `box-shadow:0 0 3px rgba(0,0,0,.9)"></div>`).join('')
       }
     }
@@ -500,7 +525,7 @@ export function syncUnits(V) {
     E.badges.innerHTML = sts.map(([id, v]) => { const st = stStyle(id)
       return `<div class="badge"><div class="gl" style="clip-path:${st.gl};background:${st.hue};position:absolute;inset:0"></div>` +
              `<div class="pip${st.sq ? ' sq' : ''}" style="background:${st.hue}">${v}</div></div>` }).join('')
-      + (chev !== 0 ? `<div class="badge"><div class="gl" style="position:absolute;inset:0;background:${chev > 0 ? '#7ec45f' : '#d1665c'};` +
+      + (chev !== 0 ? `<div class="badge"><div class="gl" style="position:absolute;inset:0;background:${chev > 0 ? MOD_UP : MOD_DOWN};` +
           `clip-path:${chev > 0 ? 'polygon(50% 12%,100% 74%,72% 74%,72% 92%,28% 92%,28% 74%,0 74%)' : 'polygon(50% 88%,0 26%,28% 26%,28% 8%,72% 8%,72% 26%,100% 26%)'}"></div></div>` : '')
   }
 }
@@ -516,7 +541,6 @@ export function drawAim(V) {
   svg.setAttribute('width', F.w); svg.setAttribute('height', F.h)
   svg.style.cssText = 'position:absolute;left:0;top:0;overflow:visible;pointer-events:none'
   dyn.appendChild(svg)
-  if (S.AIM && S.AIM.expire && V.now() > S.AIM.expire) S.AIM = null
   const AIM = S.AIM; if (!AIM) return
   const A = POS[AIM.from], B = POS[AIM.to]
   const dx = B.px - A.px, dy = B.py - A.py, L = Math.hypot(dx, dy) || 1, bow = Math.min(120, L * 0.22)
@@ -556,16 +580,26 @@ export function drawAim(V) {
    play at (fit is 0.654 — a 132px token becomes 86px). */
 export const VIEW = { W: 1408, H: 744 }
 export const PEEK_KEY = 'z'
+/** the viewport the camera reasons in: the board wrap as laid out, or the
+    design size when nothing is laid out yet (review 2026-09-03: the inclusion
+    test and the bubble placement used two different rectangles) */
+export function viewportOf(V) {
+  const wrap = V.dom.stage.parentNode
+  const W = wrap && wrap.clientWidth ? wrap.clientWidth : VIEW.W
+  const H = wrap && wrap.clientHeight ? wrap.clientHeight : VIEW.H
+  return { W, H }
+}
 export function applyCam(V, opts = {}) {
   const { S, view, data: { POS, F, LAYOUT } } = V
   const bw = F.w, bh = F.h, sq = squash(V)
   const fit = view.zoom === 'fit' || view.peek
-  const s = fit ? Math.min(VIEW.W / bw, VIEW.H / (bh * sq)) : 1
-  const halfW = (VIEW.W / 2) / s, halfH = (VIEW.H / 2) / (s * sq)
+  const { W: VW, H: VH } = viewportOf(V)
+  const s = fit ? Math.min(VW / bw, VH / (bh * sq)) : 1
+  const halfW = (VW / 2) / s, halfH = (VH / 2) / (s * sq)
   const M = 80
   const pts = []
   if (S.AIM) pts.push(POS[S.AIM.from], POS[S.AIM.to])
-  else { const sid = view.inspectId != null ? view.inspectId : S.subjectId; const u = S.U[sid]; if (u) pts.push(POS[u.hex]) }
+  else { const u = S.U[subjectOf(V)]; if (u) pts.push(POS[u.hex]) }
   /* a peek never moves the remembered camera; a manual pan is applied first */
   const camF = view.camF
   if (fit) { /* the whole board, centred; the remembered camera is not touched */ }
@@ -588,12 +622,11 @@ export function applyCam(V, opts = {}) {
   const cx = fit ? bw / 2 : camF.x, cy = fit ? bh / 2 : camF.y                        // peek shows the whole board, centred
   V.dom.stage.style.transform = `perspective(2600px) rotateX(${LAYOUT.tilt}deg) scale(${s.toFixed(4)}) translate(${(bw / 2 - cx).toFixed(1)}px,${(bh / 2 - cy).toFixed(1)}px)`
   V.dom.stage.style.setProperty('--anti', (-LAYOUT.tilt) + 'deg')
-  if (V.dom.hud) {
-    const sid = view.inspectId != null ? view.inspectId : S.subjectId; const u = S.U[sid]
-    const m = V.meta
-    V.dom.hud.textContent = (view.peek ? 'peek — whole board' : view.zoom === 'fit' ? 'fit' : '1× native · drag or arrows to pan · hold Z to peek') + (u ? ' · on ' + u.name : '') +
-      ` · ${m.outcome} in ${m.turns} turns · engine ${m.engineCommit}`
-  }
+  /* the HUD says only what the camera is doing (Law 5: the export's outcome,
+     turn count and engine stamp are the harness's to print, and a replay must
+     not spoil its own ending on frame one — review 2026-09-03) */
+  if (V.dom.hud) { const u = S.U[subjectOf(V)]
+    V.dom.hud.textContent = (view.peek ? 'peek — whole board' : view.zoom === 'fit' ? 'fit' : '1× native · drag or arrows to pan · hold Z to peek') + (u ? ' · on ' + u.name : '') }
 }
 /* ── OFF-SCREEN UNIT INDICATORS (PLAYBACK-DESIGN §7.8 part 1, ruled) ──────
    Andrew: "a little bubble with an arrow pointing off with a miniaturized
@@ -605,7 +638,11 @@ export function applyCam(V, opts = {}) {
    the camera's own notion of inside (the same margin), so a unit the camera
    would not nudge for is never flagged. Screen-space layer over the board
    wrap, outside the 3D scene. */
-const EDGE_INSET = 34, EDGE_GROUP = 44
+/* a unit is OFF-SCREEN when it is outside the viewport itself (less a token's
+   half-width), not outside the camera's comfort margin: near a board edge the
+   clamp leaves units visible but past the margin, and a bubble over a visible
+   unit is noise (review 2026-09-03). Bubbles sit EDGE_INSET inside the edge. */
+export const EDGE_INSET = 34, EDGE_GROUP = 44, EDGE_TOKEN = 24
 export function drawEdges(V) {
   const { S, view, data: { POS, F }, layers: L } = V
   const wrap = V.dom.stage.parentNode; if (!wrap) return
@@ -614,14 +651,14 @@ export function drawEdges(V) {
   const camF = view.camF
   if (fit || camF.x == null) { L.edgeL.innerHTML = ''; return }
   const sq = squash(V), s = 1
-  const halfW = (VIEW.W / 2) / s, halfH = (VIEW.H / 2) / (s * sq), M = 80
-  const W = wrap.clientWidth || VIEW.W, Hh = wrap.clientHeight || VIEW.H
+  const { W, H: Hh } = viewportOf(V)
+  const halfW = (W / 2) / s, halfH = (Hh / 2) / (s * sq)
   const cx = W / 2, cy = Hh / 2
   const off = []
   for (const u of Object.values(S.U)) {
     if (u.life === 'dead') continue
     const p = POS[u.hex]
-    const inside = Math.abs(p.px - camF.x) <= halfW - M && Math.abs(p.py - camF.y) <= halfH - M
+    const inside = Math.abs(p.px - camF.x) <= halfW - EDGE_TOKEN && Math.abs(p.py - camF.y) <= halfH - EDGE_TOKEN / sq
     if (inside) continue
     /* screen offset from the viewport centre, clamped to the edge rectangle */
     const dx = (p.px - camF.x) * s, dy = (p.py - camF.y) * s * sq
@@ -636,7 +673,7 @@ export function drawEdges(V) {
     if (g) { g.n++; g.units.push(o.u) } else groups.push({ ...o, n: 1, units: [o.u] })
   }
   L.edgeL.innerHTML = groups.map(g => {
-    const a = V.data.ARTMAP[g.u.typeId] || V.data.ARTMAP['test-zombie']
+    const a = V.data.ARTMAP[g.u.typeId] || V.data.ARTMAP._pending
     const tint = SIDE_TINT[g.u.side] || SIDE_TINT.enemy
     const dgr = g.u.side === 'enemy' ? dangerOf(g.u, V.data.UD) : null
     const deg = Math.round(g.ang * 180 / Math.PI)
@@ -653,13 +690,21 @@ export function bindCamera(V) {
   let drag = null
   const down = e => { if (e.button !== 0 && e.button !== 1) return; drag = { x: e.clientX, y: e.clientY }; wrap.style.cursor = 'grabbing' }
   const move = e => { if (!drag) return
-    const sq = squash(V), scale = V.dom.root.getBoundingClientRect ? (V.dom.root.getBoundingClientRect().width / 1920 || 1) : 1
+    /* the host may scale the whole component (the harness fits 1920 to the
+       window): screen px → component px is the root's rect over its layout width */
+    const sq = squash(V), scale = (V.dom.root.getBoundingClientRect && V.dom.root.offsetWidth) ? (V.dom.root.getBoundingClientRect().width / V.dom.root.offsetWidth || 1) : 1
     const dx = (e.clientX - drag.x) / scale, dy = (e.clientY - drag.y) / (scale * sq)
     drag = { x: e.clientX, y: e.clientY }
     if (dx || dy) { applyCam(V, { pan: { x: -dx, y: -dy } }); drawEdges(V) } }
   const up = () => { drag = null; wrap.style.cursor = '' }
+  /* keys act only while the pointer is over the board or the component has
+     focus — two viewers on one page must not both pan, and a host page keeps
+     its arrow keys (review 2026-09-03) */
+  let hover = false
+  const enter = () => { hover = true }, leave = () => { hover = false; up() }
   const key = e => {
     if (e.target && /INPUT|TEXTAREA/.test(e.target.tagName)) return
+    if (!hover && !(V.dom.root.contains && document.activeElement && V.dom.root.contains(document.activeElement))) return
     const STEP = 120
     const pan = (x, y) => { applyCam(V, { pan: { x, y } }); drawEdges(V) }
     if (e.key === 'ArrowLeft') pan(-STEP, 0)
@@ -672,7 +717,7 @@ export function bindCamera(V) {
   }
   const keyup = e => { if (e.key.toLowerCase() === PEEK_KEY) { V.view.peek = false; applyCam(V); drawEdges(V) } }
   wrap.addEventListener('pointerdown', down); wrap.addEventListener('pointermove', move)
-  wrap.addEventListener('pointerup', up); wrap.addEventListener('pointerleave', up)
+  wrap.addEventListener('pointerup', up); wrap.addEventListener('pointerleave', leave); wrap.addEventListener('pointerenter', enter)
   document.addEventListener('keydown', key); document.addEventListener('keyup', keyup)
   return () => { document.removeEventListener('keydown', key); document.removeEventListener('keyup', keyup) }
 }

@@ -13,6 +13,7 @@ const styleProxy = () => new Proxy(new Style(), {
   set(t, k, v) { if (k === 'cssText') t.cssText = v; else t._p[k] = v; return true } })
 
 const VOID = new Set(['img', 'input', 'br', 'hr', 'meta', 'link'])
+const ANIMS = []                       // every recorded animation, so the window can finish them
 
 export class El {
   constructor(tag) { this.tagName = String(tag).toUpperCase(); this.tag = String(tag).toLowerCase(); this.children = []; this.parentNode = null; this.attrs = {}
@@ -37,14 +38,22 @@ export class El {
   getAttribute(k) { return this.attrs[k] ?? null } hasAttribute(k) { return k in this.attrs }
   addEventListener(t, f) { (this.listeners[t] ??= []).push(f) } removeEventListener() {}
   getBoundingClientRect() { return { left: 0, top: 0, width: 100, height: 100, right: 100, bottom: 100 } }
-  getContext() { return new Proxy({}, { get: (t, k) => k === 'canvas' ? this : (() => {}) }) }
+  getContext() {
+    /* a 2D context that swallows drawing but answers the calls that return objects */
+    const grad = () => ({ addColorStop() {} })
+    return new Proxy({}, { get: (t, k) => k === 'canvas' ? this
+      : (k === 'createLinearGradient' || k === 'createRadialGradient' || k === 'createConicGradient') ? grad
+      : k === 'createPattern' ? (() => ({})) : k === 'measureText' ? (() => ({ width: 0 }))
+      : k === 'getImageData' ? (() => ({ data: new Uint8ClampedArray(4), width: 1, height: 1 }))
+      : (k in t ? t[k] : (() => {})), set: (t, k, v) => { t[k] = v; return true } }) }
   matches(sel) { return matchSel(this, sel) }
   querySelector(sel) { const r = this.querySelectorAll(sel); return r[0] ?? null }
   querySelectorAll(sel) { const out = []; const walk = n => { for (const c of n.children) { if (matchSel(c, sel)) out.push(c); walk(c) } }; walk(this); return out }
   closest(sel) { for (let p = this; p; p = p.parentNode) if (p.matches && p.matches(sel)) return p; return null }
   focus() {} blur() {} scrollIntoView() {} scrollTo() {}
   /* Web Animations, recorded not run — verify reads what was asked for */
-  animate(kf, opts) { const a = { kf, opts, onfinish: null, cancel() { a.cancelled = true } }; (this.animations ??= []).push(a); return a }
+  animate(kf, opts) { const a = { kf, opts, onfinish: null, oncancel: null, playState: 'running', cancel() { a.cancelled = true; a.playState = 'idle'; if (a.oncancel) a.oncancel() }, pause() { a.playState = 'paused' }, play() { a.playState = 'running' }, finish() { a.playState = 'finished'; if (a.onfinish) a.onfinish() } }; (this.animations ??= []).push(a); ANIMS.push(a); return a }
+  getAnimations() { return ANIMS.filter(a => a.playState === 'running' || a.playState === 'paused') }
   contains(n) { for (let p = n; p; p = p.parentNode) if (p === this) return true; return false }
   /** every rendered string on this subtree — markup as set plus text */
   allHTML(out = []) { if (this._html) out.push(this._html); if (this._text) out.push(this._text); this.children.forEach(c => c.allHTML(out)); return out }
@@ -94,16 +103,35 @@ export function makeWindow() {
     querySelector(s) { return this.body.querySelector(s) }, querySelectorAll(s) { return this.body.querySelectorAll(s) },
     addEventListener() {}, removeEventListener() {},
   }
-  const timers = []; let now = 0
+  const timers = new Map(); let tid = 0, now = 0
+  const listeners = {}
+  document.addEventListener = (t, f) => { (listeners[t] ??= []).push(f) }
+  document.removeEventListener = (t, f) => { if (listeners[t]) listeners[t] = listeners[t].filter(x => x !== f) }
+  document.dispatch = (t, ev) => { for (const f of (listeners[t] || [])) f(ev) }
   const window = {
     document, innerWidth: 1920, innerHeight: 1080, devicePixelRatio: 1,
     addEventListener() {}, alert(m) { throw new Error('alert: ' + m) },
-    requestAnimationFrame: f => { timers.push(f); return timers.length }, cancelAnimationFrame() {},
-    setTimeout: (f, ms) => { timers.push(f); return timers.length }, clearTimeout() {}, setInterval: () => 0, clearInterval() {},
+    /* a frame callback runs on the NEXT flush, never inside the one that scheduled it — a render loop must not spin a flush forever */
+    requestAnimationFrame: f => { const id = ++tid; timers.set(id, { at: now + 16, f }); return id }, cancelAnimationFrame(id) { timers.delete(id) },
+    setTimeout: (f, ms) => { const id = ++tid; timers.set(id, { at: now + (ms || 0), f }); return id }, clearTimeout(id) { timers.delete(id) },
+    setInterval: () => 0, clearInterval() {},
     getComputedStyle: () => ({ getPropertyValue: () => '' }), matchMedia: () => ({ matches: false, addEventListener() {} }),
     performance: { now: () => now }, localStorage: { getItem: () => null, setItem() {} },
     Date: class extends Date { static now() { return now } },
     _tick(ms) { now += ms }, _now: () => now,
+    /** advance the clock and run every timer that came due, in order; finish
+        every running animation. This is how the verifier reaches the code
+        the browser would reach on its own. */
+    _flush(ms = 0) {
+      now += ms
+      for (let guard = 0; guard < 10000; guard++) {
+        const due = [...timers.entries()].filter(([, t]) => t.at <= now).sort((a, b) => a[1].at - b[1].at)
+        if (!due.length) break
+        for (const [id, t] of due) { timers.delete(id); t.f(now) }      // frame callbacks get the timestamp, as in a browser
+      }
+      for (const a of ANIMS.splice(0)) if (a.playState === 'running' || a.playState === 'paused') a.finish()
+    },
+    _pending: () => timers.size, _timers: () => [...timers.values()].map(t => ({ at: t.at, f: t.f.toString().slice(0, 90).replace(/\s+/g, " ") })),
   }
   window.window = window
   return window

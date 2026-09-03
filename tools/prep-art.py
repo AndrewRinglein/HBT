@@ -26,7 +26,8 @@ os.makedirs(OUT, exist_ok=True)
 os.chdir(ROOT)
 
 def P(p):
-    return p.replace('/sessions/serene-ecstatic-sagan/mnt/hell-tcg', HELL)
+    # sources on the sibling hell-tcg checkout are written as HELL:/... — never a machine path
+    return p.replace('HELL:', HELL + '/') if p.startswith('HELL:') else p
 
 ARTMAP = {
  'test-oathblade':    {'token':'oathblade_256.png',  'card':'card-oathblade', 'src':'battle-tokens/units/oathblade_256.png',  'cardsrc':'crucible/art/avtair/oathblade-v1.png'},
@@ -58,10 +59,10 @@ ARTMAP = {
  'unit.bruiser-demon':{'token':'imp_256.png','card':'card-firedemon','src':'battle-tokens/units/imp_256.png','cardsrc':'assets/bestiary/eve/fire-demon.png','height':2.0},
  'unit.lieutenant-demon':{'token':'imp_256.png','card':'card-demoncmd','src':'battle-tokens/units/imp_256.png','cardsrc':'assets/bestiary/eve/demon-commander.png','height':2.1},
  'unit.bloodhound':  {'token':'wolf_256.png','card':'card-bloodhound','src':'battle-tokens/units/wolf_256.png','cardsrc':'assets/bestiary/eve/bloodhound.png','height':1.0},
- 'unit.hellhound':   {'token':'hellhound_256.png','card':'card-hellhound','src':'/sessions/serene-ecstatic-sagan/mnt/hell-tcg/assets/hex-tokens/hellhound_256.png','cardsrc':'assets/bestiary/eve/hellhound.png','height':1.1},
+ 'unit.hellhound':   {'token':'hellhound_256.png','card':'card-hellhound','src':'HELL:assets/hex-tokens/hellhound_256.png','cardsrc':'assets/bestiary/eve/hellhound.png','height':1.1},
  'unit.zombie-hound':{'token':'wolf_256.png','card':'card-wolf','src':'battle-tokens/units/wolf_256.png','cardsrc':'assets/bestiary/eve/wolf.png','height':1.0},
  'unit.werewolf':    {'token':'werewolf_256.png','card':'card-werewolf','src':'battle-tokens/units/werewolf_256.png','cardsrc':'assets/bestiary/eve/werewolf.png','height':1.85},
- 'spirit-snake':     {'ph':'Spirit Snake','card':'card-spiritsnake','cardsrc':'/sessions/serene-ecstatic-sagan/mnt/hell-tcg/assets/cards/heroes/fixed/spirit-snake/1.png','height':1.0},
+ 'spirit-snake':     {'ph':'Spirit Snake','card':'card-spiritsnake','cardsrc':'HELL:assets/cards/heroes/fixed/spirit-snake/1.png','height':1.0},
  'green-drake':      {'token':'bone-dragon_256.png','card':'card-greendrake','src':'battle-tokens/units/bone-dragon_256.png','cardsrc':'crucible/art/variants/green-drake-level1.png','height':2.1},
  'shadow-hound-puppy':{'token':'wolf_256.png','card':'card-desertwolf','src':'battle-tokens/units/wolf_256.png','cardsrc':'assets/bestiary/shadows/desert-wolf.png','height':0.8},
  # ── engine HEAD 745922d: the S31 ALPHA TEAM and friends (2026-09-01) ───────
@@ -74,7 +75,7 @@ ARTMAP = {
  'alpha-air-mage':  {'token':'air-mage_256.png',  'card':'card-airmage',  'src':'battle-tokens/units/air-mage_256.png',  'cardsrc':'crucible/art/aeronissa/air-mage.png'},
  'alpha-lucius':    {'token':'lucius_256.png',    'card':'card-lucius',   'src':'battle-tokens/units/lucius_256.png',    'cardsrc':'crucible/art/base/priest-scantily1.png'},
  'alpha-osric':     {'token':'osric_256.png',     'card':'card-osric',    'src':'battle-tokens/units/osric_256.png',     'cardsrc':'crucible/art/base/paladin-shiney1.png'},
- 'arc-golem':       {'token':'stone-golem_256.png','card':'card-golem',   'src':'/sessions/serene-ecstatic-sagan/mnt/hell-tcg/assets/hex-tokens/stone-golem_256.png','cardsrc':'assets/bestiary/eve/stone-golem.png','height':2.0},
+ 'arc-golem':       {'token':'stone-golem_256.png','card':'card-golem',   'src':'HELL:assets/hex-tokens/stone-golem_256.png','cardsrc':'assets/bestiary/eve/stone-golem.png','height':2.0},
  'hero.base.priest-armored':{'token':'priest-armored_256.png','card':'card-priestarm','src':'battle-tokens/units/priest-armored_256.png','cardsrc':'crucible/art/base/priest-armored1.png'},
  'hero.base.warrior-iron':  {'token':'warrior-iron_256.png',  'card':'card-warriron', 'src':'battle-tokens/units/warrior-iron_256.png',  'cardsrc':'crucible/art/base/warrior-iron1.png'},
 }
@@ -123,9 +124,19 @@ for tid, m in ARTMAP.items():
         save_jpg(card + '.jpg', cim)
     manifest[tid] = {'token': token, 'card': (card + '.jpg') if card else None,
                      'aspect': round(im.width / im.height, 4), 'height': m.get('height', 1.55)}
+# the honest standee for a typeId with no art entry at all — Law 1: never borrowed art
+save_png('ph-art-pending.png', placeholder_token('Art Pending'))
+manifest['_pending'] = {'token': 'ph-art-pending.png', 'card': None, 'aspect': round(256 / 400, 4), 'height': 1.55}
+# the parchment surround: a hand-placed SOURCE in art-src/, copied here so generated/ is whole
+import shutil
+shutil.copyfile(os.path.join(VIEWER, 'art-src', 'parchment.jpg'), os.path.join(OUT, 'parchment.jpg')); written['parchment.jpg'] = True
 # swatches stay PNG — their transparent corners went black as JPEG
 for sw in ['hexPlains','hexForest','hexHills','hexScrub','hexOcean','hexMountain','hexDirt','hexMarsh']:
     save_png(sw + '.png', Image.open('VFX/battle-screen-mocks/art/%s.png' % sw).convert('RGBA'))
-json.dump({'_about': 'Generated by tools/prep-art.py — never hand-edit. typeId -> token/card file in this folder, aspect, height.',
-           'artmap': manifest}, open(os.path.join(OUT, 'manifest.json'), 'w'), indent=1)
+# clear anything this run did not write — a stale token must not ship forever
+for f in os.listdir(OUT):
+    if f != 'manifest.json' and f not in written:
+        os.remove(os.path.join(OUT, f))
+json.dump({'_about': 'Generated by tools/prep-art.py — never hand-edit. typeId -> token/card file in this folder, aspect, height. _pending is the ART PENDING standee for any typeId with no entry.',
+           'files': sorted(written), 'artmap': manifest}, open(os.path.join(OUT, 'manifest.json'), 'w'), indent=1)
 print('prep-art: %d typeIds · %d files -> generated/art/' % (len(manifest), len(written)))

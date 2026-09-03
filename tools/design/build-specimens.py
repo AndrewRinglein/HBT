@@ -1,3 +1,4 @@
+import os
 """Build the token-furniture specimen sheet — VFX/TOKEN-FURNITURE.html.
 
 A design surface, not playback: the numbers are chosen to show each state, not
@@ -8,7 +9,7 @@ so Root and the bars can be judged against a real silhouette at real size.
 import base64, io, os, json
 from PIL import Image
 
-ROOT = '/sessions/serene-ecstatic-sagan/mnt/Heroes of Blight and Tragic'
+ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))  # the project root, from this file
 OUT  = ROOT + '/VFX/TOKEN-FURNITURE.html'
 os.chdir(ROOT)
 

@@ -14,7 +14,9 @@ const OUTNAME = { heroClear: 'heroes win', wipe: 'heroes wiped', stall: 'stall',
 /** lib = { static:{units,statuses,engineCommit}, fields:{mapId:field}, art:{artmap,assets},
            battles:[{label, battle}], stamp:{viewer, engine, built} } */
 export function startHarness(mountEl, lib) {
-  let viewer = null, cur = 0, playingBeforeScrub = true
+  let viewer = null, cur = 0
+  /* chrome state the harness owns and re-applies to every mounted viewer */
+  const chrome = { speed: 1, bare: false, zoom: '1x', log: false }
   const q = s => document.querySelector(s)
   const doc = q('#doc .sub')
 
@@ -50,12 +52,18 @@ export function startHarness(mountEl, lib) {
     if (viewer) viewer.dispose()
     cur = i
     viewer = mountBattleViewer(mountEl, battleData(b), {
-      onCursor(c, e) { q('#scrub').value = String(c); markLog(c - 1) },
+      onCursor(c, e) { q('#scrub').value = String(c); markLog(c - 1); drawRail(); foot(c) },
+      onPlayState: setPlayBtn,
+      onDrain() { viewer.pause() },                       // a replay's end reads as paused
+      onError(err) { q('#seedline').innerHTML += `<br><b style="color:#ff8f8f">RUN INVALID: ${err.message}</b>` },
     })
     /* the harness's own pieces go into the component's slots */
-    viewer._V.dom.slots.top.appendChild(top)
-    viewer._V.dom.slots.transport.appendChild(transport)
-    viewer._V.dom.slots.bottom.appendChild(logbox)
+    viewer.dom.slots.top.appendChild(top)
+    viewer.dom.slots.transport.appendChild(transport)
+    viewer.dom.slots.bottom.appendChild(logbox)
+    /* the chrome's state outlives the viewer; apply it to the new one */
+    viewer.speed(chrome.speed); if (chrome.bare) viewer.setBare(true); if (chrome.zoom !== '1x') viewer.setZoom(chrome.zoom)
+    viewer.dom.actionbar.style.display = chrome.log ? 'none' : ''; logbox.style.display = chrome.log ? '' : 'none'
     const EV = b.battle.events
     const lines = buildLog(EV, lib.static.statuses, b.battle.turns)
     logbox.innerHTML = lines.map(l => `<div class="ln ${l.cls}" data-i="${l.i}">${l.t}</div>`).join('')
@@ -65,9 +73,15 @@ export function startHarness(mountEl, lib) {
       `engine <span class="mono">${b.battle.engineCommit}</span> · ${EV.length} events`
     const bb = q('#battleBtn'); if (bb) bb.innerHTML = '⚔ ' + b.label + ' &#9662;'
     if (doc) doc.innerHTML = intro(b)
-    q('#playBtn').textContent = '❚❚ Pause'; q('#playBtn').classList.add('on')
     viewer.push(EV)
     drawRail()
+  }
+  /* the event counter: replay knowledge, so it is the harness's line, in the
+     panel's foot slot (Law 5 — review 2026-09-03) */
+  function foot(c) {
+    const el = mountEl.querySelector('[data-slot=foot]'); if (!el || !viewer) return
+    const EV = viewer.events
+    el.textContent = `event ${c} of ${EV.length} · seq ${EV[Math.min(c, EV.length - 1)]?.seq ?? '—'}`
   }
   function intro(b) {
     const bt = b.battle
@@ -79,17 +93,15 @@ export function startHarness(mountEl, lib) {
   /* ── the unit rail: replay-only, cut from the game (ruled 2026-09-01) ── */
   function drawRail() {
     const rail = q('#rail'); if (!rail || !viewer) return
-    const S = viewer.state, V = viewer._V
+    const S = viewer.state, ART = viewer.art, ASSETS = viewer.assets
     rail.innerHTML = Object.values(S.U).map(u => {
-      const a = V.data.ARTMAP[u.typeId] || V.data.ARTMAP['test-zombie']
+      const a = ART[u.typeId] || ART._pending
       const acted = !!S.acted[u.id]
       return `<div class="railchip ${u.side}${u.id === S.activeId ? ' now' : ''}${acted ? ' done' : ''}${u.life === 'dead' ? ' gone' : ''}" data-i="${u.id}" title="${u.name}">
       <span class="railno">${u.life === 'dead' ? '✝' : acted ? '✓' : u.id === S.activeId ? '▸' : ''}</span>
-      <img src="${V.data.ASSETS[a.token]}" alt=""></div>` }).join('')
+      <img src="${ASSETS[a.token]}" alt=""></div>` }).join('')
     rail.querySelectorAll('.railchip').forEach(ch => ch.addEventListener('click', () => viewer.inspect(+ch.dataset.i)))
   }
-  /* the rail follows the pump — a cheap hook on the viewer's own render */
-  const railTimer = setInterval(() => { if (viewer && viewer.playing) drawRail() }, 400)
 
   function markLog(evIdx) {
     const rows = logbox.children; let target = null
@@ -123,47 +135,52 @@ export function startHarness(mountEl, lib) {
 
   /* ── transport ───────────────────────────────────────────────────────── */
   const T = s => transport.querySelector(s)
-  const setPlayBtn = () => { T('#playBtn').textContent = viewer.playing ? '❚❚ Pause' : '▶ Play'; T('#playBtn').classList.toggle('on', viewer.playing) }
-  T('#playBtn').addEventListener('click', () => { viewer.playing ? viewer.pause() : viewer.play(); setPlayBtn() })
-  T('#stepBtn').addEventListener('click', () => { viewer.step(); setPlayBtn() })
-  T('#backBtn').addEventListener('click', () => { viewer.pause(); viewer.seek(viewer.cursor - 1); setPlayBtn() })
+  const setPlayBtn = (playing = viewer && viewer.playing) => { T('#playBtn').textContent = playing ? '❚❚ Pause' : '▶ Play'; T('#playBtn').classList.toggle('on', !!playing) }
+  T('#playBtn').addEventListener('click', () => { viewer.playing ? viewer.pause() : viewer.play() })
+  T('#stepBtn').addEventListener('click', () => { viewer.step() })
+  T('#backBtn').addEventListener('click', () => { viewer.pause(); viewer.seek(viewer.cursor - 1) })
   T('#turnBtn').addEventListener('click', () => {
     const EV = viewer.events
     for (let i = viewer.cursor; i < EV.length; i++) if (EV[i].type === 'turn.begin') { viewer.seek(i + 1); return }
     viewer.seek(EV.length) })
-  T('#scrub').addEventListener('input', e => { viewer.pause(); viewer.seek(+e.target.value); setPlayBtn() })
+  T('#scrub').addEventListener('input', e => { viewer.pause(); viewer.seek(+e.target.value) })
   T('#speedBtn').addEventListener('click', e => {
     /* ruled 2026-08-26: a one-third speed for watching closely */
-    const s = viewer._V.speed
+    const s = chrome.speed
     const n = s === 1 ? 2 : s === 2 ? 4 : s === 4 ? (1 / 3) : 1
-    viewer.speed(n); e.target.textContent = n === 1 / 3 ? '×⅓' : '×' + n })
+    chrome.speed = n; viewer.speed(n); e.target.textContent = n === 1 / 3 ? '×⅓' : '×' + n })
   T('#bareBtn').addEventListener('click', e => {
-    const b = !viewer.view.bare; viewer.setBare(b)
+    const b = !chrome.bare; chrome.bare = b; viewer.setBare(b)
     e.target.classList.toggle('on', b); e.target.textContent = b ? 'units only ✓' : 'units only' })
   T('#logBtn').addEventListener('click', e => {
     /* the log is a development affordance, not a game surface — it folds so the
        board keeps its height once the action bar takes the bottom (ruled 9.6) */
-    const ab = viewer._V.dom.actionbar
-    const on = logbox.style.display === 'none'
+    const ab = viewer.dom.actionbar
+    const on = !chrome.log; chrome.log = on
     logbox.style.display = on ? '' : 'none'; ab.style.display = on ? 'none' : ''
     e.target.classList.toggle('on', on)
     if (on) markLog(viewer.cursor - 1) })
   T('#zoomBtn').addEventListener('click', e => {
-    const z = viewer.view.zoom === '1x' ? 'fit' : '1x'; viewer.setZoom(z)
+    const z = chrome.zoom === '1x' ? 'fit' : '1x'; chrome.zoom = z; viewer.setZoom(z)
     e.target.textContent = z === '1x' ? '1× native' : 'fit board'; e.target.classList.toggle('on', z === '1x') })
 
   /* ── drop an export on the page and it plays (plan §8.6) ─────────────── */
-  document.addEventListener('dragover', e => { e.preventDefault() })
-  document.addEventListener('drop', e => {
+  /** one export file → a mounted battle; the drop listener and the verifier both
+      come through here, so the parse and the validation are tested */
+  function playExportText(txt, name = 'dropped export') {
+    const b = JSON.parse(txt)
+    if (!b || !Array.isArray(b.events) || !b.seed || !b.seed.mapId) throw new Error('not an export-battle.mts file: needs {seed:{mapId,…}, events, engineCommit, outcome, turns}')
+    if (!lib.fields[b.seed.mapId]) throw new Error(`no board geometry for ${b.seed.mapId} — regenerate generated/fields.json`)
+    load(cur, { label: String(name).replace(/\.json$/, ''), battle: b })
+    return b
+  }
+  const onDrop = e => {
     e.preventDefault()
     const f = e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files[0]; if (!f) return
-    f.text().then(txt => {
-      const b = JSON.parse(txt)
-      if (!b || !Array.isArray(b.events) || !b.seed) throw new Error('not an export-battle.mts file: needs {seed, events, engineCommit, outcome, turns}')
-      load(cur, { label: f.name.replace(/\.json$/, ''), battle: b })
-    }).catch(err => { alert('Could not play that file: ' + err.message) })
-  })
-  /** the same path without the drag — for tests and for a future file button */
+    f.text().then(txt => playExportText(txt, f.name)).catch(err => { alert('Could not play that file: ' + err.message) })
+  }
+  document.addEventListener('dragover', e => { e.preventDefault() })
+  document.addEventListener('drop', onDrop)
   function playExport(battle, label = 'dropped export') { load(cur, { label, battle }) }
 
   /* ── page fit: fill the window, capped at 2× (ruled 2026-08-27) ───────── */
@@ -175,5 +192,5 @@ export function startHarness(mountEl, lib) {
   addEventListener('resize', fit); fit()
 
   load(0)
-  return { load, playExport, get viewer() { return viewer }, dispose() { clearInterval(railTimer); if (viewer) viewer.dispose() } }
+  return { load, playExport, playExportText, onDrop, battleData, get viewer() { return viewer }, dispose() { document.removeEventListener('drop', onDrop); if (viewer) viewer.dispose() } }
 }

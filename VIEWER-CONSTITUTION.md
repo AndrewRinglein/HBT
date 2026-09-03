@@ -1,7 +1,7 @@
 # Viewer Constitution
 
 *Heroes of Blight and Tragic — the battle viewer.*
-*These laws govern the standalone replay page and the battle screen inside the game, which are one component. They were not written here: each was ruled between 2026-08-20 and 2026-09-01 and lived buried in 2,500 lines of design document, which is why they did not bind. Extracted 2026-09-02; the source line is cited so nothing here is invented. Each carries a* Caught by *— a check in `tools/gate.mjs` or `tools/verify.mjs` that fails when the law is broken. A law without a catch is a wish.*
+*Seven laws — a root and its six consequences. They govern the standalone replay page and the battle screen inside the game, which are one component. They were not written here: each was ruled between 2026-08-20 and 2026-09-01 and lived buried in 2,500 lines of design document, which is why they did not bind. Extracted 2026-09-02; the source line is cited so nothing here is invented. Each carries a* Caught by *— a check in `tools/gate.mjs` or `tools/verify.mjs` that fails when the law is broken. A law without a catch is a wish.*
 
 The engine's constitution (`engine/ENGINE-CONSTITUTION.md`) applies here in full where it reaches: plain data, integers, named streams, explicit order, never swallow a failure, every log line names its cause.
 
@@ -15,7 +15,7 @@ The engine's constitution (`engine/ENGINE-CONSTITUTION.md`) applies here in full
 
 This is the root; the six below are its consequences. It exists because the engine that simulates must be the engine that plays (`STATE.md`, Q4, ruled 2026-08-26), and a viewer that computes is a second engine that can disagree with the first.
 
-*Caught by:* every number a float carries must appear verbatim in the event that cued it (`verify.mjs`, per battle, per cue). Every place the viewer still computes carries an `EXEMPTION <name>` marker, and `tools/exemptions.json` must list exactly those markers — an unlisted marker fails, a listed marker that no longer exists fails. **The file may only shrink.** Six today; each names the engine event or sheet field that retires it (`THREE-PACKAGES-PLAN.md` §8.3).
+*Caught by:* every float cue names the event FIELD its number came from (`n`, `of`), and `verify.mjs` asserts `event[of] === n` for every cue of every battle — not "the number appears somewhere in the event" (review 2026-09-03 measured that weaker test as a coin flip). Every place the viewer still computes carries an `EXEMPTION <name>` marker, and `tools/exemptions.json` must list exactly those markers — an unlisted marker fails, a listed marker that no longer exists fails, and **the list may only shrink**: verify compares it against the committed file and fails on growth unless `ALLOW_EXEMPTION_GROWTH=1` is set for the one commit that records a review's discovery of an unmarked computation. Nine today (six landed with stage 1; three found unmarked in the 2026-09-03 review); each names the engine event or sheet field that retires it (`THREE-PACKAGES-PLAN.md` §8.3).
 
 ---
 
@@ -27,7 +27,7 @@ This is the root; the six below are its consequences. It exists because the engi
 
 A missing fact is a **build failure**, never a default, a fallback, or a placeholder that looks like data. The one honest placeholder is art: a unit with no token gets an *ART PENDING* standee, never borrowed art.
 
-*Caught by:* `verify.mjs` — every fielded `typeId` has an art entry; every battle's map has field geometry; `generated/fields.json` covers every map the engine authors; `build-viewer.mjs` refuses a stylesheet reference to art that is not in `generated/art/`.
+*Caught by:* `verify.mjs` — every fielded `typeId` in the library has an art entry, and a dropped export fielding a `typeId` with none renders the `_pending` standee (the drop test fields one on purpose); `gate.mjs` asks the engine for its map list through the door and fails if either dump lacks a map; `build-viewer.mjs` inlines only what `prep-art.py`'s manifest lists, fails on an orphan file, on a manifest entry with no file, and on a stylesheet reference to art that is not there.
 
 ### 2. Render any unit, with zero viewer code per unit.
 
@@ -43,7 +43,7 @@ The roster is the content. A new unit is a sheet row and an art file, never a br
 
 The clock is the pump's. The fold is pure — state × event → state, plus cues — and has no clock of its own; the pump stamps the `now` it hands in. A replay and a live game play the same fold at the same pace.
 
-*Caught by:* `verify.mjs` folds every battle twice — once through the pumped viewer, once through the pure `fold.js` — and the two final states must be identical. Every type in `DUR` must be a type some log carries. Every type a log carries must be folded or on `verify.mjs`'s explicit ignore list — a new engine event is a failure until it is placed on purpose.
+*Caught by:* `verify.mjs` folds every battle twice — once through the pumped viewer, once through the pure `fold.js` — and the two final states must be identical. Every type in `DUR` must be folded or ignored; every type a log carries must be folded or on `verify.mjs`'s explicit ignore list — a new engine event is a failure until it is placed on purpose. The fold stamps its lingering view-state from the pump's BEAT clock (wall time × playback speed), so a highlight lasts the same number of beats at every speed; the pump, never a draw call, expires them.
 
 ### 4. Legends derive, never hand-typed.
 
@@ -51,7 +51,7 @@ The clock is the pump's. The fold is pure — state × event → state, plus cue
 
 Terrain effects, status names, unit sheets, board geometry: all generated from the engine through the door, into `generated/`, never typed into the viewer. `generated/` is never hand-edited.
 
-*Caught by:* `generated/static.json` and `generated/fields.json` are written by `tools/dump-static.mts` and `tools/dump-fields.mjs` from the door; `verify.mjs` checks the field set against the engine's map list the dump recorded. (A hand edit is not yet caught mechanically — the built page stamps the engine commit it read, so a stale dump says so.)
+*Caught by:* `generated/static.json` and `generated/fields.json` are written by `tools/dump-static.mts` and `tools/dump-fields.mjs` through the door, each stamped with the engine commit it read; `gate.mjs` checks both against the engine's live map list; `verify.mjs` fails if the two dumps carry different engine commits; the page header prints the viewer, engine, sheet and field commits with a `*` for a dirty tree, and carries no build timestamp, so the same sources build the same bytes and `git diff --quiet BATTLE-VIEWER.html` says whether the page is current. (A hand edit of a dump is still not caught mechanically.)
 
 ### 5. Never a condition inside a draw call.
 
@@ -59,15 +59,15 @@ Terrain effects, status names, unit sheets, board geometry: all generated from t
 
 Replay-only chrome — transport, scrub, the battle dropdown, the unit rail, the log — lives in `src/harness.js` and nowhere below. `mountBattleViewer()` has no mode.
 
-*Caught by:* `gate.mjs` fails if `src/viewer.js`, `board.js`, `panel.js`, `actionbar.js` or `fold.js` mentions `mode`, `playback`, `harness` or `replay` as an identifier. *(Added to the gate 2026-09-02.)*
+*Caught by:* `gate.mjs` fails if any file under `src/` other than `harness.js` and `main.js` compares `mode` to a string, or mentions `playback`, `harness` or `replay` as a word — strings and comments stripped first. It is a word list, not a parser; the review of 2026-09-03 also found replay knowledge the words could not see (the export's outcome and turn count on the camera HUD, the event counter in the panel's foot) and moved both to the harness. *(Added 2026-09-02, sharpened 2026-09-03.)*
 
 ### 6. One hue per status, everywhere.
 
 > *"One hue per status, everywhere — pips, VFX, chips, panel."* — `VFX/PLAYBACK-DESIGN.md:109`
 
-`src/theme.js` is the only place a status has a colour. The fold, the board, the panel and the bar all read it.
+`src/theme.js` is the only place a status has a colour — and the only place any board colour lives: damage types, heals, the buff/debuff pair, the ladder's gold, the note floats. The fold emits cues that say WHAT a float is, never what colour; the board asks theme. The canvas VFX (`hexvfx.js`) ships its own palette and is patched from theme at mount.
 
-*Caught by:* `gate.mjs` fails if a status hue literal from `theme.js` appears in any other source file. *(Added 2026-09-02.)*
+*Caught by:* `gate.mjs` fails if a status hue literal from `theme.js` appears in any other source file. It scans six-digit hex literals only; the VFX palette is patched rather than scanned. *(Added 2026-09-02; the fold's colour literals and the protection bar's second blue were found and removed 2026-09-03.)*
 
 ---
 

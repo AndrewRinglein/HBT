@@ -22,19 +22,23 @@ There is **no install step**. The package runs on `../engine/node_modules`.
 Python 3 with Pillow is present for the art half.
 
 ```
-node tools/gate.mjs              door probe · laws 5 and 6 · typecheck · build (verify runs inside the build)
-node tools/gate.mjs --fresh      the above, then re-export every library battle from ../engine and diff byte-for-byte
-node tools/build-viewer.mjs      BATTLE-VIEWER.html — refuses to write unless verify passes
-node tools/verify.mjs BATTLE-VIEWER.html     the headless fold of every battle, every surface, every catch
-npm run static                   generated/static.json from the door (unit sheets, status names, map list)
-node tools/dump-fields.mjs [engineRoot]      generated/fields.json for EVERY map (interim until viewer.geometry lands in engine/src)
-python3 tools/prep-art.py [hell-tcg-root]    generated/art/ from the source art (only when art changes)
-npm run typecheck
+node tools/gate.mjs              CHECK ONLY: door probe · laws 5 and 6 · typecheck · engine map list vs the dumps · build into .build/ with verify inside
+node tools/gate.mjs --land       the same, then writes BATTLE-VIEWER.html
+node tools/gate.mjs --fresh      also re-export every library battle from ../engine and diff byte-for-byte (refuses a dirty engine; --dirty-ok to compare anyway)
+node tools/build-viewer.mjs [--out path]     the page — refuses to write unless verify passes
+node tools/verify.mjs BATTLE-VIEWER.html     the headless fold of every battle, every surface, every catch (~50s)
+npm run static                   generated/static.json through the door (unit sheets, status names, map list; stamped with the engine commit)
+node tools/dump-fields.mjs       generated/fields.json for EVERY map, stamped (interim until viewer.geometry lands in engine/src)
+python3 tools/prep-art.py [hell-tcg-root]    generated/art/ from the source art + art-src/ (only when art changes; clears orphans)
+npm run typecheck                the door, the sheet and the .mts tools — the .js modules are not typed
+ALLOW_EXEMPTION_GROWTH=1 …       only for the one commit that records a review's discovery of an unmarked computation
 ```
 
 **Publishing:** `BATTLE-VIEWER.html` is the one generated page; the artifact is
 published *from it*, never from a copy (ruled 2026-09-02: "one HTML that is just
-being referenced in two places").
+being referenced in two places"). The page carries no timestamp, so after
+`gate --land` the sources commit and the page commit are two commits by design —
+the page stamps the sources' sha.
 
 **Commit at the end of every session** — `git add -A && git commit` from
 `viewer/`. Until 2026-09-02 a week of this work had no history.
@@ -52,10 +56,12 @@ src/board.js       the DOM half of the board: ground, tokens, floats, hexVFX bri
 src/panel.js       the focus panel          src/actionbar.js   the 12-slot bar + stamina strip
 src/actions.js     what an action does/triggers (pure)      src/projection.js   tick projection + danger (pure, exempt)
 src/icons.js       the RPG Awesome sprite + the four ability glyphs      src/theme.js   ONE hue per status
-src/log.js         the log sentences (pure)  src/hexvfx.js  the canvas VFX library
+src/log.js         the log sentences (pure)  src/hexvfx.js  the canvas VFX library (its palette is patched from theme.js at mount)
+src/subject.js     the ONE rule for whose panel/bar/camera it is
 src/harness.js     the REPLAY page only: dropdown, transport, rail, log, file-drop, page fit
 src/main.js        the standalone entry      src/page.html  its shell      src/styles.css  the stylesheet
-tools/             build, verify, gate, the dumps, prep-art, fakedom, exemptions.json, design/ (the Python design surfaces)
+tools/             build, verify, gate, the dumps, list-maps.mts (the map list through the door), prep-art, fakedom, exemptions.json, design/ (the Python design surfaces)
+art-src/           hand-placed SOURCE art the viewer owns (the parchment); prep-art copies it into generated/
 generated/         static.json · fields.json · ra-glyphs.json · art/  — never hand-edit
 battles/           the showcase library (library.json is the roster; each file is an export-battle.mts output with its engineCommit stamp)
 BATTLE-VIEWER.html generated — never hand-edit
@@ -64,9 +70,10 @@ BATTLE-VIEWER.html generated — never hand-edit
 ## The rules this package lives under
 
 - **Law 0: the viewer computes nothing.** Every number is in the log, in the
-  sheet, or the engine owes an event. The six places it still computes carry an
+  sheet, or the engine owes an event. The nine places it still computes carry an
   `EXEMPTION <name>` marker and are listed in `tools/exemptions.json`; that file
-  only shrinks. Never add a seventh without writing the debt down first.
+  only shrinks (verify fails on growth). Never add one without writing the debt
+  down first, and never without `ALLOW_EXEMPTION_GROWTH=1` in the commit that does.
 - **The door is the only way in.** `src/engine.ts`. The gate probes for any other
   engine import.
 - **Nothing replay-only below `harness.js`.** No `mode` check inside a draw call.
@@ -74,6 +81,10 @@ BATTLE-VIEWER.html generated — never hand-edit
   `board.js`.
 - **The stylesheet is id-based** (`#stage`, `#panel`, …), so one viewer per
   document until it is classed — a known debt, not a rule.
+- **Keys act only while the pointer is over the board** (or the component has
+  focus): two viewers on one page must not both pan.
+- **The pump never pauses itself when it runs dry** — a live game pushes more.
+  The harness hears `onDrain` and shows the replay as paused.
 - **Every ruling is dated and lives in its owning document** — the look in the
   VFX documents, the seams in the plan, the laws here.
 

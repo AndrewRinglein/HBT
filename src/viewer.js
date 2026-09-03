@@ -14,13 +14,15 @@
      glyphs   — the icon outlines (generated/ra-glyphs.json); the sprite is added once per document
      meta     — {label, seed, engineCommit, outcome, turns} for the HUD; outcome/turns
                 are the engine's stamps on the export, never derived here
-   opts = { now?: () => ms, autoplay?: bool, onCursor?: (cursor, event) => void }
+   opts = { now?: () => ms, autoplay?: bool, onCursor?: (cursor, event) => void,
+            onDrain?: () => void, onPlayState?: (playing) => void, onError?: (err) => void }
 
    Returns { push, seek, play, pause, speed, step, setZoom, setBare, inspect,
-             peek, pan, render, dispose, get cursor, get events, get state, _V }
+             peek, pan, render, dispose, get cursor/events/state/playing/view/invalid/
+             speedValue/dom/art/assets, _V (the verifier's handle) }
    ══════════════════════════════════════════════════════════════════════════ */
 import { createState, fold, foldTo } from './fold.js'
-import { el, ensureKeyframes, buildGround, syncUnits, drawAim, applyCam, playCues, clearFloats, initFX, traverse, ROOT_TRANSITION, bindCamera, drawEdges } from './board.js'
+import { el, ensureKeyframes, buildGround, syncUnits, drawAim, applyCam, playCues, clearFloats, initFX, traverse, ROOT_TRANSITION, bindCamera, drawEdges, cancelBeats } from './board.js'
 import { drawPanel } from './panel.js'
 import { drawBar, drawStam } from './actionbar.js'
 import { spriteHTML } from './icons.js'
@@ -71,10 +73,16 @@ export function mountBattleViewer(root, data, opts = {}) {
     S: createState(), EV: [], cursor: 0,
     view: { inspectId: null, statsOpen: false, TRG_OPEN: new Set(), zoom: '1x', peek: false, bare: false, camF: { x: null, y: null } },
     layers: { ground: null, dyn: null, unitsL: null, UEL: new Map(), floatL: null, FLOAT_SLOTS: {} },
-    fx: { FX: null },
-    playing: false, speed: 1, timer: null,
+    /* every pending beat the board schedules — timers, stray nodes, the injury
+       queue — so seek() and dispose() can drop them all (review 2026-09-03) */
+    fx: { FX: null, timers: new Set(), nodes: new Set(), injuryQ: [] },
+    playing: false, speed: 1, timer: null, invalid: null,
   }
   const ctx = () => ({ UD: V.data.UD, SN: V.data.SN })
+  /* the BEAT clock: wall time scaled by playback speed, so a row that lights
+     for 1600 beat-ms lights for the same number of beats at ×⅓ and ×4. The fold
+     stamps its `until`s from this, and the draw compares against it. */
+  V.clock = () => now() * V.speed * 0.75
 
   /* the stage is sized and centred once; without this it is a zero-size point
      and rotateX pivots around the wrong origin (the quarter-screen bug) */
@@ -107,11 +115,18 @@ export function mountBattleViewer(root, data, opts = {}) {
 
   /* ── the pump ────────────────────────────────────────────────────────── */
   function applyOne(e, visual) {
-    const cues = fold(V.S, e, ctx(), now())
+    const cues = fold(V.S, e, ctx(), V.clock())
     if (visual) playCues(V, cues)
     V.cursor++
     if (opts.onCursor) opts.onCursor(V.cursor, e)
     return cues
+  }
+  /* the forecast's MISS line expires on the beat clock; the pump owns that,
+     never a draw call (review 2026-09-03: drawAim used to null S.AIM) */
+  function expireAim() {
+    const A = V.S.AIM
+    if (A && A.expire && V.clock() > A.expire) { V.S.AIM = null; return true }
+    return false
   }
   /* ONE TRAVERSAL PER MOVE (ruled 2026-09-01, VISUAL-BATTLE-UPDATES §1.1).
      The engine emits a `moved` per hex; the pump used to schedule each 125ms
@@ -120,47 +135,66 @@ export function mountBattleViewer(root, data, opts = {}) {
      events of the same actor fold as ONE beat: every event is still folded in
      order (the state is exact at each), but the token travels the whole path
      under one easing, and the pump waits for the arrival. Pacing is the pump's
-     to decide (Law 3); the log is untouched. */
+     to decide (Law 3); the log is untouched. Small events the engine emits
+     mid-walk (a stamina spend, a status tick on entering terrain) fold inside
+     the beat rather than cutting the walk in two. */
+  const MID_WALK = new Set(['stamina.spent', 'status.applied', 'status.reduced', 'trigger.rolled', 'trigger.fired', 'ai.mode'])
   function stepMove(e) {
     const actor = e.actor, EV = V.EV
     const startHex = V.S.U[actor] ? V.S.U[actor].hex : null
     const path = []
     let cues = []
     if (e.type === 'move.begin') cues = cues.concat(applyOne(e, false))
-    while (V.cursor < EV.length && EV[V.cursor].type === 'moved' && EV[V.cursor].actor === actor) {
-      path.push(EV[V.cursor].to)
-      cues = cues.concat(applyOne(EV[V.cursor], false))
+    for (;;) {
+      const x = EV[V.cursor]; if (!x) break
+      if (x.type === 'moved' && x.actor === actor) { path.push(x.to); cues = cues.concat(applyOne(x, false)); continue }
+      /* a mid-walk side event followed by more of this walk folds inside the beat */
+      const y = EV[V.cursor + 1]
+      if (MID_WALK.has(x.type) && y && y.type === 'moved' && y.actor === actor) { cues = cues.concat(applyOne(x, false)); continue }
+      break
     }
     const hexes = path.length
     const dur = hexes ? Math.min(900, Math.max(320, 200 + 85 * hexes)) : 0
-    playCues(V, cues.filter(c => c.k !== 'walk'))
+    playCues(V, cues)
     render()
     if (hexes && startHex != null) traverse(V, actor, startHex, path, dur)
     return dur + (hexes ? 60 : 0)                  // the arrival settle
   }
-  function step() {
-    if (V.cursor >= V.EV.length) { pause(); return }
-    const e = V.EV[V.cursor]
+  function beat(e) {
     let d
     if (e.type === 'move.begin' || e.type === 'moved') d = stepMove(e)
     else {
       applyOne(e, true)
       d = DUR[e.type] ?? 0
-      if (d > 0 || REDRAW.has(e.type)) render()
+      if (d > 0 || REDRAW.has(e.type) || expireAim()) render()
     }
+    return d
+  }
+  function step() {
+    V.timer = null
+    if (V.invalid) return
+    if (V.cursor >= V.EV.length) {
+      /* dry, not paused: a live game will push more; a replay's host hears onDrain */
+      if (opts.onDrain) opts.onDrain()
+      return
+    }
+    let d
+    /* Law 9: a beat that throws stops the run and says so — never a silent
+       freeze behind a "Pause" button */
+    try { d = beat(V.EV[V.cursor]) }
+    catch (err) { V.invalid = err; V.playing = false; if (opts.onPlayState) opts.onPlayState(false); if (opts.onError) opts.onError(err); throw err }
     /* Ruled 2026-08-26: standard speed is 25% slower; all speeds scale off it */
     if (V.playing) V.timer = setTimeout(step, Math.max(16, (d || 8) / (V.speed * 0.75)))
   }
-  function play() { V.playing = true; clearTimeout(V.timer); step() }
-  function pause() { V.playing = false; clearTimeout(V.timer) }
-  function stepOnce() { pause(); if (V.cursor >= V.EV.length) return
-    const e = V.EV[V.cursor]
-    if (e.type === 'move.begin' || e.type === 'moved') stepMove(e); else { applyOne(e, true); render() } }
+  function play() { if (V.invalid) return; V.playing = true; if (V.timer) { clearTimeout(V.timer); V.timer = null } if (opts.onPlayState) opts.onPlayState(true); step() }
+  function pause() { V.playing = false; if (V.timer) { clearTimeout(V.timer); V.timer = null } if (opts.onPlayState) opts.onPlayState(false) }
+  function stepOnce() { pause(); if (V.invalid || V.cursor >= V.EV.length) return; beat(V.EV[V.cursor]) }
   function seek(n) {
-    clearTimeout(V.timer)
+    if (V.timer) { clearTimeout(V.timer); V.timer = null }
     V.cursor = Math.max(0, Math.min(n, V.EV.length))
     V.S = foldTo(V.EV, V.cursor, ctx())
-    clearFloats(V)
+    cancelBeats(V); clearFloats(V)
+    V.view.inspectId = null                       // a click from before the scrub must not outrank the actor after it
     for (const E of V.layers.UEL.values()) { if (E.walk) { E.walk.cancel(); E.walk = null } E.root.style.transition = 'none' }
     render()
     requestAnimationFrame(() => { for (const E of V.layers.UEL.values()) E.root.style.transition = ROOT_TRANSITION })
@@ -175,20 +209,21 @@ export function mountBattleViewer(root, data, opts = {}) {
       while (V.cursor < V.EV.length && SEED.has(V.EV[V.cursor].type)) applyOne(V.EV[V.cursor], false)
       render()
       if (opts.autoplay !== false) play()
-    } else if (V.playing && V.cursor < V.EV.length && !V.timer) step()
+    } else if (V.playing && !V.timer && V.cursor < V.EV.length) step()   // the pump had run dry; it resumes
   }
 
   const api = {
     push, seek, play, pause, step: stepOnce, render,
     speed(x) { V.speed = x },
-    setZoom(z) { V.view.zoom = z; applyCam(V) },
+    setZoom(z) { V.view.zoom = z; applyCam(V); drawEdges(V) },
     setBare(b) { V.view.bare = b; render() },
     inspect(id) { V.view.inspectId = id; render() },
     get cursor() { return V.cursor }, get events() { return V.EV }, get state() { return V.S },
-    get playing() { return V.playing }, get view() { return V.view },
+    get playing() { return V.playing }, get view() { return V.view }, get invalid() { return V.invalid },
+    get speedValue() { return V.speed }, get dom() { return { slots: dom.slots, actionbar: dom.actionbar } }, get art() { return V.data.ARTMAP }, get assets() { return V.data.ASSETS },
     peek(on) { V.view.peek = !!on; applyCam(V); drawEdges(V) },
     pan(dx, dy) { applyCam(V, { pan: { x: dx, y: dy } }); drawEdges(V) },
-    dispose() { pause(); unbindCamera(); root.innerHTML = '' },
+    dispose() { pause(); cancelBeats(V); unbindCamera(); for (const E of V.layers.UEL.values()) if (E.walk) E.walk.cancel(); root.innerHTML = '' },
     _V: V,
   }
   /* first frame is already tilted; enable the half-speed camera glide after it */

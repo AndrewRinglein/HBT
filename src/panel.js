@@ -4,15 +4,12 @@
    THE PICTURE. The action bar owns actions (§9.7). Split out 2026-09-02. */
 import { stStyle } from './theme.js'
 import { sgn, STATSHORT } from './actions.js'
+import { subjectOf } from './subject.js'
+import { MOD_UP, MOD_DOWN } from './theme.js'
 
 const HOOKLBL = { onHit: 'ON HIT', onAttack: 'ON ATTACK', onDamage: 'ON DAMAGE',
   onTakingDamage: 'WHEN HIT', onKill: 'ON KILL', onDeath: 'ON DEATH', onMiss: 'ON MISS',
   onCrit: 'ON CRIT', startOfBattle: 'BATTLE START', onActivationEnd: 'ACTIVATION END' }
-
-export function subjectOf(V) {
-  const { S, view } = V
-  return view.inspectId != null ? view.inspectId : S.subjectId != null ? S.subjectId : Object.keys(S.U)[0]
-}
 
 export function drawPanel(V) {
   const P = V.dom.panel; if (!P) return
@@ -29,11 +26,14 @@ export function drawPanel(V) {
   /* STAT BLOCK (layout B, ruled 2026-09-01): name left, figure hard right, two
      columns. GREEN when a live modifier raises the stat, RED when one lowers
      it — read off statmod.added, never guessed. Accuracy, Dodge, Crit carry %. */
+  /* EXEMPTION stat-delta (tools/exemptions.json): the per-stat total of the
+     statmod.added values is summed here; the engine emits each modifier, not
+     the running total */
   const modOf = k => (u.mods || []).reduce((n, m) => n + (m.stat === k ? (m.value || 0) : 0), 0)
   const PCT = new Set(['accuracy', 'dodge', 'crit'])
   const stat = (label, value, statKey) => {
     const dlt = statKey ? modOf(statKey) : 0
-    const col = dlt > 0 ? '#7ec45f' : dlt < 0 ? '#d1665c' : '#e8e5dc'
+    const col = dlt > 0 ? MOD_UP : dlt < 0 ? MOD_DOWN : '#e8e5dc'
     const shown = value == null ? '—' : (statKey && PCT.has(statKey) ? String(value) + '%' : String(value))
     const dl = dlt === 0 ? '' : `<em>${sgn(dlt)}</em>`
     return `<div class="stRow"><span class="stN">${label}</span><span class="stV" style="color:${col}">${dl}${shown}</span></div>`
@@ -49,7 +49,7 @@ export function drawPanel(V) {
         <span style="flex:1;font-size:12.5px;color:${st.hue};font-weight:600">${SN[id] || id}</span>
         <span class="mono" style="font-size:14px;font-weight:700;color:${st.hue}">${v}</span></div>` }).join('')
     : '<div style="font-size:11.5px;color:#5f594c;padding:6px 2px">no status effects</div>'
-  const now = V.now()
+  const now = V.clock()
   /* triggers grouped BY HOOK per §4; a trigger's effect lives in t.effect */
   const trigByHook = {}
   for (const t of (d.triggers || [])) (trigByHook[t.hook] = trigByHook[t.hook] || []).push(t)
@@ -59,7 +59,7 @@ export function drawPanel(V) {
       const st = ef.statusId ? stStyle(ef.statusId) : { hue: '#d6b25e' }
       const who = t.select === 'self' ? ' on self' : t.select === 'target' ? '' : ' → ' + t.select
       const eff = ef.kind === 'status.apply'
-          ? `${SN[ef.statusId] || String(ef.statusId || '').replace(/^(test\.)?status\./, '')} +${ef.value ?? 1}${who}`
+          ? `${SN[ef.statusId] || String(ef.statusId || '').replace(/^(test\.)?status\./, '')} ${ef.value != null ? sgn(ef.value) : ''}${who}`
         : ef.kind === 'damage' ? `${ef.amount ?? ef.value ?? ''} ${ef.damageType || ''} damage${who}`
         : ef.kind === 'knockback' ? `knock back ${ef.hexes ?? 1}`
         : ef.kind === 'heal' ? `heal ${ef.value ?? ''}${who}` : (ef.kind || '—')
@@ -82,7 +82,6 @@ export function drawPanel(V) {
     specialties — the engine's unit defs carry only creature tags, so they cannot be
     shown until that export exists.</div>`
   const statsOpen = view.statsOpen
-  const ev = V.EV, cursor = V.cursor
   P.innerHTML = `
   <div class="pTooth"></div>
   <div class="pSubject ${subj}"><b>${SUBJ[0]}</b><span>${SUBJ[1]}</span></div>
@@ -91,11 +90,11 @@ export function drawPanel(V) {
     <div class="pHex">hex ${u.hex} (${POS[u.hex].c},${POS[u.hex].r}) · ${F.terrainIds[u.hex].replace('terrain.', '')}${u.life !== 'standing' ? ' · <b style="color:#ff8f8f">' + u.life.toUpperCase() + '</b>' : ''}</div></div>
   <div class="pBlock">
     <div class="vitRow"><span class="vitLab">HP</span>
-      <span class="vitTrack"><span class="vitFill" style="width:${Math.max(0, 100 * u.hp / u.maxHp)}%;background:${u.hp / u.maxHp < .34 ? '#d1665c' : u.hp / u.maxHp < .67 ? '#d6b25e' : '#7ec45f'}"></span></span>
+      <span class="vitTrack"><span class="vitFill" style="width:${Math.max(0, 100 * u.hp / u.maxHp)}%;background:linear-gradient(90deg,#e9e3d2,#c3bba4)"></span></span>
       <span class="vitNum mono">${u.hp} / ${u.maxHp}</span></div>
     ${(() => { const pr = u.st['status.protection'] || u.st['test.status.ward'] || 0
       return pr > 0 ? `<div class="vitRow"><span class="vitLab">Prot</span>
-      <span class="vitTrack"><span class="vitFill" style="width:${Math.min(100, pr * 12)}%;background:#5aa8d8"></span></span>
+      <span class="vitTrack"><span class="vitFill" style="width:${Math.min(100, pr * 12)}%;background:${stStyle('status.protection').hue}"></span></span>
       <span class="vitNum mono">${pr}</span></div>` : '' })()}
   </div>
   <div class="pBlock" style="padding:0;border:none;background:none">
@@ -155,7 +154,7 @@ export function drawPanel(V) {
     ${(u.mods || []).length ? `<div style="font-size:9.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--dim);margin:10px 0 6px">Modifiers</div>` +
       u.mods.map(m => `<div style="font:600 11.5px 'Barlow Semi Condensed',sans-serif;color:#cbb9a0;padding:3px 8px;margin-bottom:4px;background:#16130e;border:1px solid #2b2418;border-radius:3px">${m.stat} ${sgn(m.value)} <span style="color:#6f6857">· ${m.source}</span></div>`).join('') : ''}
   </div>
-  <div class="pFoot">event ${cursor} of ${ev.length} · seq ${ev[Math.min(cursor, ev.length - 1)]?.seq ?? '—'}</div>`
+  <div class="pFoot" data-slot="foot"></div>`
   /* reattached every rebuild — the panel replaces its own innerHTML */
   const tg = P.querySelector('.statsToggle')
   if (tg) tg.addEventListener('click', ev2 => { ev2.stopPropagation(); view.statsOpen = !view.statsOpen; drawPanel(V) })

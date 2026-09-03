@@ -2,6 +2,7 @@
    __BUNDLED_*__ constants from generated/ and battles/; nothing here reads a
    file. The kingdom's bundle imports viewer.js directly and never this. */
 import { startHarness } from './harness.js'
+import { mountBattleViewer } from './viewer.js'
 
 const LIB = {
   static: __BUNDLED_STATIC__,
@@ -13,4 +14,4 @@ const LIB = {
 }
 const H = startHarness(document.getElementById('screen'), LIB)
 /* the verifier and the console reach the running viewer here */
-window.__battleView = { lib: LIB, harness: H, get viewer() { return H.viewer } }
+window.__battleView = { lib: LIB, harness: H, mount: mountBattleViewer, get viewer() { return H.viewer } }

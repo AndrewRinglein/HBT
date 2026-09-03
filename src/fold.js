@@ -9,7 +9,6 @@
    on the screen. Split out of viewer-core.js 2026-09-02; the event handling is
    the same code, with the DOM side effects returned as cues instead of done.
    ══════════════════════════════════════════════════════════════════════════ */
-import { stStyle } from './theme.js'
 import { sgn } from './actions.js'
 
 /* view-state clocks the fold stamps from the `now` it is handed — a beat's
@@ -23,6 +22,8 @@ export function createState() {
     subjectId: null, subjectMode: 'acting',
     acted: {},             // id -> true, this phase (plain data — Law 5b)
     AIM: null, FIRING: null, TRIGFLASH: null,
+    ATTACK: null,          // the declared attack {kind, dt, dmg} — outlives AIM, so an area attack's
+                           // second and third hits still know what struck them
     critPending: false,    // the attack.hit that just landed was a crit; the damage beat reads it
     outcome: null,
   }
@@ -33,7 +34,6 @@ export function fold(S, e, ctx, now = 0) {
   const { UD, SN } = ctx
   const U = S.U, cues = []
   const cue = (k, o) => cues.push({ k, ...o })
-  const DCOL = { physical: '#ff5346', magic: '#6fb3ff', 'true': '#ffffff' }
   switch (e.type) {
     case 'unit.enter':
       U[e.actor] = { id: e.actor, name: e.name, typeId: e.typeId, side: e.side, hex: e.hex,
@@ -50,14 +50,13 @@ export function fold(S, e, ctx, now = 0) {
       if (U[e.actor]) U[e.actor].activeMv = U[e.actor].mvBase
       S.AIM = null; cue('inspect.clear')          // FIRING and floats run their own clocks
       break
-    case 'activation.end': S.acted[e.actor] = true; if (U[e.actor]) U[e.actor].activeMv = null; break
+    case 'activation.end': S.acted[e.actor] = true; if (U[e.actor]) U[e.actor].activeMv = null; S.ATTACK = null; break
     case 'move.begin':
       /* moves light their own row too (ruled 2026-09-01) — causeId names the MoveDef */
       if (e.causeId) S.FIRING = { unit: e.actor, ability: e.causeId, until: now + FIRE_MS }
       break
     case 'moved':
       if (U[e.actor]) { U[e.actor].hex = e.to; U[e.actor].activeMv = e.movePointsLeft
-        cue('walk', { id: e.actor })
         if (e.causeId) S.FIRING = { unit: e.actor, ability: e.causeId, until: now + FIRE_MS } }
       break
     case 'attack.declared':
@@ -65,9 +64,12 @@ export function fold(S, e, ctx, now = 0) {
         cue('lunge', { a: e.actor, t: e.target })
         const tdef = UD[U[e.target].typeId] || {}
         const mit = e.damageType === 'magic' ? (tdef.resist || 0) : (tdef.armor || 0)
+        /* EXEMPTION aim-mitigation (tools/exemptions.json): `mit` is the target's
+           BASE armor/resist off the sheet; the live figure is the engine's */
         S.AIM = { from: U[e.actor].hex, to: U[e.target].hex, hit: e.hitChance,
           type: e.damageType, tgt: e.target, kind: e.kind,
           dmg: e.damageOnHit, mit, mitLabel: e.damageType === 'magic' ? 'resist' : 'armor' }
+        S.ATTACK = { kind: e.kind, dt: e.damageType, dmg: e.damageOnHit }
         /* the engine's OWN live damage for this attack — it carries Weak and
            every other live modifier; the action bar prints it, not a formula */
         if (e.damageOnHit != null) (U[e.actor].dmgSeen = U[e.actor].dmgSeen || {})[e.attackId] = e.damageOnHit
@@ -76,24 +78,27 @@ export function fold(S, e, ctx, now = 0) {
       } break
     case 'attack.hit':
       S.critPending = !!e.crit
-      if (S.AIM) {
+      /* the declared attack outlives the forecast: an area attack emits one
+         attack.hit per struck unit, and every one of them strikes (the old
+         code nulled AIM on the first hit and the rest went silent) */
+      if (S.ATTACK && U[e.target]) {
         /* THE EMPHASIS LADDER, rung 2 (ruled 2026-09-02, VISUAL-BATTLE-UPDATES §1.3):
            a crit keeps the word — Andrew: "I think we actually want the word
            'crit' when all it's doing is damage" — and on top of it the impact
            renders at the super tier and the camera kicks along the blow. The
            numeral itself is the crit's on the damage beat (critPending). */
-        cue('fx.attack', { kind: S.AIM.kind, dt: S.AIM.type, a: e.actor, t: e.target, dmg: S.AIM.dmg, crit: !!e.crit })
-        if (e.crit) { cue('float', { hex: U[S.AIM.tgt] ? U[S.AIM.tgt].hex : null, text: 'CRIT!', col: '#ffcf6a', big: true })
+        cue('fx.attack', { kind: S.ATTACK.kind, dt: S.ATTACK.dt, a: e.actor, t: e.target, dmg: S.ATTACK.dmg, crit: !!e.crit })
+        if (e.crit) { cue('float', { hex: U[e.target].hex, kind: 'crit', text: 'CRIT!', big: true })
           cue('kick', { a: e.actor, t: e.target }) }
-        /* the projection is a FORECAST — it clears at impact so the result
-           number never shares the screen with it (ruled 2026-08-27) */
-        S.AIM = null
       }
+      /* the projection is a FORECAST — it clears at impact so the result
+         number never shares the screen with it (ruled 2026-08-27) */
+      S.AIM = null
       break
     case 'attack.miss':
       /* ONE place says miss (2026-08-27): the lingering targeting line carries the roll */
-      if (S.AIM) { S.AIM.missed = { roll: e.roll }; S.AIM.expire = now + MISS_MS
-        cue('fx.attack', { kind: S.AIM.kind, dt: S.AIM.type, a: e.actor, t: e.target, dmg: S.AIM.dmg }) }
+      if (S.AIM) { S.AIM.missed = { roll: e.roll }; S.AIM.expire = now + MISS_MS }
+      if (S.ATTACK && U[e.target]) cue('fx.attack', { kind: S.ATTACK.kind, dt: S.ATTACK.dt, a: e.actor, t: e.target, dmg: S.ATTACK.dmg })
       if (S.activeId != null) { S.subjectId = S.activeId; S.subjectMode = 'acting' }
       break
     case 'damage.applied':
@@ -108,22 +113,27 @@ export function fold(S, e, ctx, now = 0) {
            (ruled 2026-08-27): red physical, blue magic, white true. A crit's
            numeral arrives bigger, gold-rimmed, snaps in and HOLDS before it
            drifts — every other number fades in and drifts at once (rung 2). */
-        cue('float', { hex: U[e.target].hex, text: '−' + e.amount, col: DCOL[e.damageType] || '#ffd9a0', big: true, crit: S.critPending && !tick })
+        /* every number a float carries names the event field it came from —
+           the constitution's catch checks e[of] === n, verbatim */
+        cue('float', { hex: U[e.target].hex, kind: 'damage', dt: e.damageType, text: '−' + e.amount, n: e.amount, of: 'amount', big: true, crit: S.critPending && !tick })
         S.critPending = false
-        if (e.resisted) cue('float', { hex: U[e.target].hex, text: e.resisted + ' resisted', col: '#9fb6c8', small: true })
-        if (e.absorbed) cue('float', { hex: U[e.target].hex, text: e.absorbed + ' absorbed', col: '#8fd0ff', small: true })
+        if (e.resisted) cue('float', { hex: U[e.target].hex, kind: 'resisted', text: e.resisted + ' resisted', n: e.resisted, of: 'resisted', small: true })
+        if (e.absorbed) cue('float', { hex: U[e.target].hex, kind: 'absorbed', text: e.absorbed + ' absorbed', n: e.absorbed, of: 'absorbed', small: true })
         S.AIM = null
         if (S.activeId != null) { S.subjectId = S.activeId; S.subjectMode = 'acting' } }
       break
     case 'heal.applied':
       if (U[e.target]) { U[e.target].hp = e.hpAfter
-        cue('float', { hex: U[e.target].hex, text: '+' + e.amount, col: '#8fe08a', big: true })
+        cue('float', { hex: U[e.target].hex, kind: 'heal', text: '+' + e.amount, n: e.amount, of: 'amount', big: true })
         cue('fx.status', { id: e.target, style: 'heal' }) }
       break
     case 'status.applied':
       if (U[e.target]) { U[e.target].st[e.statusId] = e.after
-        if (e.after > e.before) { const st = stStyle(e.statusId)
-          cue('float', { hex: U[e.target].hex, text: (SN[e.statusId] || e.statusId) + ' ' + sgn(e.after - e.before), col: st.hue })
+        if (e.after > e.before) {
+          /* the event's own `amount` when it carries one; the delta only as a
+             fallback (review 2026-09-03: never recompute what the log states) */
+          const n = e.amount != null ? e.amount : e.after - e.before
+          cue('float', { hex: U[e.target].hex, kind: 'status', statusId: e.statusId, text: (SN[e.statusId] || e.statusId) + ' ' + sgn(n), n, of: e.amount != null ? 'amount' : 'after' })
           cue('fx.status', { id: e.target, style: e.statusId }) } }
       break
     case 'trigger.fired':
@@ -139,11 +149,11 @@ export function fold(S, e, ctx, now = 0) {
     /* `knocked` MOVES A UNIT (folded 2026-09-01) — unhandled, knocked units
        rendered at a stale hex until their next move */
     case 'knocked':
-      if (U[e.target]) { U[e.target].hex = e.to; cue('float', { hex: e.to, text: 'KNOCKED', col: '#cbb9a0', small: true }) }
+      if (U[e.target]) { U[e.target].hex = e.to; cue('float', { hex: e.to, kind: 'knocked', text: 'KNOCKED', small: true }) }
       break
     case 'maxHp.lost':
       if (U[e.target]) { U[e.target].maxHp = e.maxHp; U[e.target].hp = e.hp
-        cue('float', { hex: U[e.target].hex, text: '−' + e.amount + ' MAX HP', col: '#d1665c', small: true }) }
+        cue('float', { hex: U[e.target].hex, kind: 'maxhp', text: '−' + e.amount + ' MAX HP', n: e.amount, of: 'amount', small: true }) }
       break
     case 'staminaMax.lost':
       if (U[e.actor]) { U[e.actor].maxStam = e.maxStamina; U[e.actor].stam = e.stamina } break
@@ -160,19 +170,30 @@ export function fold(S, e, ctx, now = 0) {
          injury list. critCount can land several on one attack; the board
          QUEUES them. */
       if (U[e.target]) { cue('injury', { id: e.target, name: e.name })
-        ;(U[e.target].injuries = U[e.target].injuries || []).push(e.name) }
+        ;(U[e.target].injuries = U[e.target].injuries || []).push(e.name)
+        /* the injured unit is the subject while the plate lands, so the plate
+           flies to ITS injury list (review 2026-09-03: crit.effect arrives after
+           damage.applied has already handed the panel back to the attacker) */
+        S.subjectId = e.target; S.subjectMode = 'target' }
       break
     case 'power.hit':
+      /* no invented tier: the event carries no amount, so the impact takes the default */
       if (U[e.target] && e.actor != null && e.target !== e.actor)
-        cue('fx.attack', { kind: 'ranged', dt: 'magic', a: e.actor, t: e.target, dmg: 5 })
+        cue('fx.attack', { kind: 'ranged', dt: 'magic', a: e.actor, t: e.target, dmg: null })
       break
     case 'life.downed': if (U[e.target]) U[e.target].life = 'downed'; break
     case 'life.dead': if (U[e.target]) { U[e.target].life = 'dead'; cue('hitstop', { ms: 110 }) } break
     case 'bleedout.set': case 'bleedout.tick': if (U[e.target]) U[e.target].bleed = e.bleedOut; break
     case 'power.used':
       if (e.causeId) S.FIRING = { unit: e.actor, ability: e.causeId, until: now + FIRE_MS }
-      if (e.target != null && U[e.target] && e.target !== e.actor) cue('fx.attack', { kind: 'ranged', dt: 'magic', a: e.actor, t: e.target, dmg: 5 })
-      else cue('fx.status', { id: e.actor, style: 'protection' })
+      if (e.target != null && U[e.target] && e.target !== e.actor) cue('fx.attack', { kind: 'ranged', dt: 'magic', a: e.actor, t: e.target, dmg: null })
+      else {
+        /* the power's own effect from the sheet, never a guess: selfGuard reads as
+           protection, heal as heal, anything else gets no status flourish */
+        const def = e.causeId && U[e.actor] ? ((UD[U[e.actor].typeId] || {}).abilities || []).find(p => p.id === e.causeId) : null
+        const fx = def && def.effect === 'selfGuard' ? 'protection' : def && def.effect === 'heal' ? 'heal' : null
+        if (fx) cue('fx.status', { id: e.actor, style: fx })
+      }
       break
     case 'battle.end': S.outcome = e.outcome; break
   }
@@ -185,7 +206,7 @@ export function fold(S, e, ctx, now = 0) {
 export function foldTo(events, n, ctx) {
   const S = createState()
   for (let i = 0; i < n && i < events.length; i++) fold(S, events[i], ctx, 0)
-  S.AIM = null; S.FIRING = null; S.TRIGFLASH = null
+  S.AIM = null; S.FIRING = null; S.TRIGFLASH = null; S.ATTACK = null
   if (S.activeId != null) { S.subjectId = S.activeId; S.subjectMode = 'acting' }
   return S
 }

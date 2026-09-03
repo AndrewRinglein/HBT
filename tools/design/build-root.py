@@ -1,10 +1,11 @@
+import os
 """Build VFX/ROOT-VARIANTS.html — eight ways to draw Root, plus the corrected
 danger chip. CSS and clip-path only; real token art so the silhouette test is
 honest. A design surface: pick one, or a pair to cross."""
 import base64, io, os
 from PIL import Image
 
-ROOT = '/sessions/serene-ecstatic-sagan/mnt/Heroes of Blight and Tragic'
+ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))  # the project root, from this file
 OUT  = ROOT + '/VFX/ROOT-VARIANTS.html'
 os.chdir(ROOT)
 

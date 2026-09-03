@@ -1,9 +1,10 @@
+import os
 """Build VFX/PREVIEW-NUMBER.html — five treatments for the damage PROJECTION,
 each shown beside the result float it must not be confused with."""
 import base64, io, os
 from PIL import Image
 
-ROOT='/sessions/serene-ecstatic-sagan/mnt/Heroes of Blight and Tragic'
+ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))  # the project root, from this file
 OUT=ROOT+'/VFX/PREVIEW-NUMBER.html'
 os.chdir(ROOT)
 

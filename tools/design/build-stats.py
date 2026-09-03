@@ -2,7 +2,7 @@
 Name left, number right; green when a modifier raises it, red when one lowers
 it. Drawn at the real 472px panel width so the judgement is at true scale."""
 import os
-ROOT='/sessions/serene-ecstatic-sagan/mnt/Heroes of Blight and Tragic'
+ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))  # the project root, from this file
 OUT=ROOT+'/VFX/STAT-BLOCK.html'
 os.chdir(ROOT)
 

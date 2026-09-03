@@ -12,14 +12,16 @@ import { resolve } from 'node:path'
 
 const engine = resolve(process.argv[2] ?? '../engine')
 const tsx = resolve('../engine/node_modules/tsx/dist/cli.mjs')
-const list = execFileSync('node', [tsx, '-e',
-  `import('${engine.replace(/\\/g, '/')}/src/content/maps.ts').then(m => console.log(m.MAPS.map(x => x.id).join(' ')))`],
-  { encoding: 'utf8' }).trim().split(/\s+/)
+/* the map list comes through the door (tools/list-maps.mts), never a direct engine import */
+const list = execFileSync('node', [tsx, 'tools/list-maps.mts'], { encoding: 'utf8' }).trim().split(/\s+/)
+const sha = (() => { try { return execFileSync('git', ['-C', engine, 'rev-parse', '--short', 'HEAD'], { encoding: 'utf8' }).trim() } catch { return 'unknown' } })()
+const dirty = (() => { try { return execFileSync('git', ['-C', engine, 'status', '--porcelain'], { encoding: 'utf8' }).trim().length > 0 } catch { return false } })()
 const fields = {}
 for (const id of list) {
   const f = JSON.parse(execFileSync('node', [tsx, 'tools/field-geometry.mts', id], { cwd: engine, encoding: 'utf8', maxBuffer: 1 << 26 }))
   if (f.tilt !== 49.3 || f.colStep !== 128) throw new Error(`STALE GEOMETRY for ${id}: tilt ${f.tilt} colStep ${f.colStep} — the engine's field-geometry.mts is not the board-space one`)
   fields[id] = f
 }
+fields._engine = { commit: sha, dirty }
 writeFileSync('generated/fields.json', JSON.stringify(fields))
-console.log(`fields.json: ${list.length} maps (${list.join(', ')})`)
+console.log(`fields.json: ${list.length} maps (${list.join(', ')}) · engine ${sha}${dirty ? ' (DIRTY tree)' : ''}`)

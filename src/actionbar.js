@@ -8,19 +8,15 @@
 import { icoHTML, actHue, ACT_CLASS } from './icons.js'
 import { stStyle } from './theme.js'
 import { actionsOf, moveHexes, dmgOf, effectTag, triggersFor } from './actions.js'
+import { subjectOf } from './subject.js'
 
 const TRG_SHOWN = 3                 // collapse past this many
 const cell = (k, v, col) => `<div class="acCell"><span class="k">${k}</span><span class="v"${col ? ` style="color:${col}"` : ''}>${v}</span></div>`
 
-export function barSubject(V) {
-  const { S, view } = V
-  return view.inspectId != null ? view.inspectId : S.subjectId != null ? S.subjectId : S.activeId
-}
-
 /* stamina, directly above the action bar — one pip per point (ruled 2026-09-01) */
 export function drawStam(V) {
   const el2 = V.dom.stambar; if (!el2) return
-  const u = V.S.U[barSubject(V)]
+  const u = V.S.U[subjectOf(V)]
   if (!u || !u.maxStam) { el2.innerHTML = ''; return }
   const pips = Array.from({ length: u.maxStam }, (_, i) => `<i class="sPip${i < u.stam ? ' on' : ''}"></i>`).join('')
   el2.innerHTML = `<div class="cell1"><span class="lab">Stamina</span><span class="track">${pips}</span><span class="num">${u.stam} / ${u.maxStam}</span></div>`
@@ -29,7 +25,7 @@ export function drawStam(V) {
 export function drawBar(V) {
   const bar = V.dom.actionbar; if (!bar) return
   const { S, view, data: { UD, SN } } = V
-  const u = S.U[barSubject(V)]
+  const u = S.U[subjectOf(V)]
   /* COLUMNS BY KIND (ruled 2026-09-01); a group longer than 4 overflows */
   const all = actionsOf(u, UD)
   const cols = [all.filter(a => a.kind === 'move'), all.filter(a => a.isAttack), all.filter(a => a.isPower)]
@@ -43,13 +39,15 @@ export function drawBar(V) {
   for (const a of all) if (a) nameCount[a.name || a.id] = (nameCount[a.name || a.id] || 0) + 1
   const weaponOf = id => { const p = String(id).split('.'); return p.length > 2 ? p[1] : '' }
   const base = (UD[u?.typeId] || {}).accuracy      // EXEMPTION base-accuracy: the sheet's base, not the live total
-  const now = V.now()
+  const now = V.clock()
   let html = ''
   for (let i = 0; i < 12; i++) {
     const a = rows[i]
     if (!a) { html += '<div class="acRow empty"></div>'; continue }
     const F = S.FIRING
     const firing = F && F.unit === u.id && F.ability === a.id && (F.until == null || F.until > now)
+    /* EXEMPTION cooldown-left: readyOnTurn − the folded turn; the engine
+       emits the ready turn, not the count */
     const ready = u.cds ? (u.cds[a.id] || 0) : 0
     const left = Math.max(0, ready - S.turnNo)
     const cool = left > 0
