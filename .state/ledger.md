@@ -615,3 +615,25 @@ IRON GAUNTLET: NOT PASSED — 2 FLAG(S) WARNED; 1 EXEMPTION(S) TAKEN
 
 slice: 46 of 50 closed · 46 probed · 0 accepted
 IRON GAUNTLET: NOT PASSED — 2 FLAG(S) WARNED; 1 EXEMPTION(S) TAKEN
+
+## tools.gear-doc — LANDED `50eb0f1` **NEEDS REVIEW**
+2026-09-03 03:12 · engine @ 7a11028
+
+  PASS  dependencies landed
+  WARN  not already decided — 2 candidate ruling(s) — READ BEFORE ASKING: ../DOCS.md:80 · ../STATE.md:20
+  PASS  typecheck
+  PASS  full test suite — 103 passed
+  PASS  gate 1 — every claimed criterion holds
+  PASS  brought its own tests — test/criteria-docs.test.ts
+  PASS  existing tests untouched
+  PASS  kill switch — every claimed probe has been seen red — no criterion claimed — not applicable
+  PASS  nothing regresses — every P-tier probe — 46 P-tier probe(s): 46 green, 0 red, 0 regression(s). 46 of 68 closed · 46 probed · 0 accepted
+  PASS  hardcode scan — core knows mechanisms, never names
+  PASS  generalizes — the second instance costs zero kingdom code — shape 'tooling' — not a mechanism, exempt
+  PASS  naming — new ids use declared kinds
+  PASS  naming — no banned words invented
+  WARN  engine working tree clean — verified against a DIRTY engine tree (7a11028 + 11 uncommitted under src/test): M src/content/index.ts, M test/additions.test.ts, M test/bleed.test.ts
+  PASS  one door to the engine
+
+slice: 46 of 68 closed · 46 probed · 0 accepted
+IRON GAUNTLET: NOT PASSED — 2 FLAG(S) WARNED; 1 EXEMPTION(S) TAKEN
