@@ -1133,3 +1133,36 @@ receptacle, the enemy side of the standard battle, items per unit. A Codex row
 the engine cannot behave for is listed as a gap, never built to make it fit
 (fix.bleed-magnitude, landed the same day, was the wrong call by this
 standard and is recorded as such in the ledger).
+
+---
+
+## 2026-09-02 — three answers after the standard battle went authored
+
+**The test horde.** Asked: *"The standard test battle is now real heroes vs
+the Codex's real Zombies, and it's a walkover: four zombies fall in under
+three turns, 100 times out of 100, and a hero almost never goes down… What
+should the standard test horde be?"*
+
+> "Keep the zombies"
+
+Consequence: `FIRST_BATTLE.enemies` stays the authored Zombie ×3 + Burning
+Zombie, one per four. Tests that need pressure field twelve to sixteen and say
+so. The walkover is a finding about the game, recorded, not a knob turned.
+
+**The enemy special moves.** Asked whether to approve the `move.*` id kind
+(Charge, Close Bite, Clobber — eight rows the engine cannot run):
+
+> "I don't exactly know what you mean by 'move star.' Yes, I do want to have
+> these special moves: charge, close, bite, clobber, that start with moves."
+
+Consequence: `move` is an approved content kind in
+`tools/approved-kinds.json` — an enemy's special move. The NAME is settled;
+the mechanism is feature work and stays a named gap until asked for.
+
+**The beasts.** Asked when the Spirit Snake, Shadow Hound Puppy and Green
+Drake — the last hand-typed units in the engine — get their Codex rows:
+
+> "Later — leave them for now"
+
+Consequence: they stay in `src/content/index.ts`, marked as waiting on their
+rows (`content.beasts`, not scheduled).
