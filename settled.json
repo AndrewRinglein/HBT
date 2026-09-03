@@ -1356,6 +1356,15 @@
    "longEffect": "The player loses control of the hero for as long as it lasts. Unlike Taunt there is no priority target — the unit simply behaves as the AI would drive its striker type."
   },
   {
+   "id": "status.powers-locked",
+   "name": "Powers Locked",
+   "shape": "counter",
+   "family": "duration",
+   "effect": "Loses access to class powers.",
+   "decay": "-1 per Turn.",
+   "source": "2026-09-02: the Critical Injury Chart's Dazed row (dictated 2026-08-27: \"dazed — loses access to class powers, 3 turns\") and the Dazed STATUS (2026-09-01: control handed to the AI) are two different things — Andrew, asked which is Dazed: \"This is a problem with just ambiguity. It does two different things: there is a critical effect, and then there is a status effect. Do we need to disambiguate this right now, or can you account for that?\" Accounted for as two ids: status.dazed keeps the Sep 1 meaning; the chart's row applies THIS status. The id and name are a plain descriptive PLACEHOLDER chosen so nothing is invented — rename in one place (this row and the chart's compile in mkenginepack.mjs) whenever a real name is given. Attacks and movement are untouched; only class powers are refused."
+  },
+  {
    "id": "status.confusion",
    "name": "Confusion",
    "shape": "pool",

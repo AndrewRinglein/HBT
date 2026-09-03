@@ -557,6 +557,9 @@ for (const id of CIVILIANS) {
 // Blinded's −4 Vision (no vision model — gap L-3a) and Knocked Sprawling's
 // −50 Surge (no surge quantity). The push LANDS — forced movement was built
 // today (capability.knockback), overtaking the row's own `needs` note.
+// The chart's "loses access to class powers" status. A placeholder id, see the
+// settled.json row's source; the ONE other place it is named.
+const POWERS_LOCKED = 'status.powers-locked';
 const STAT_WORD = { Accuracy: 'accuracy', Movement: 'movement', Strength: 'strength', Precision: 'precision', Armor: 'armor', Resist: 'resist', Dodge: 'dodge' };
 function compileCritChart(chart) {
   const rows = [];
@@ -573,7 +576,7 @@ function compileCritChart(chart) {
         effects.push({ kind: 'statMod', stat, value: -parseInt(m[1], 10), ...(floored ? { floor: 0 } : {}) });
       } else if ((m = clause.match(/^(\d+) turns?$/))) {
         const prev = effects[effects.length - 1];
-        if (prev && prev.statusId === 'status.dazed' && prev.value === 0) prev.value = parseInt(m[1], 10);
+        if (prev && prev.statusId === POWERS_LOCKED && prev.value === 0) prev.value = parseInt(m[1], 10);
         else gap('critChart', `${r.key}: dangling duration '${clause}'`, 'unparsed chart clause');
       } else if ((m = clause.match(/^gain (\d+) ([A-Za-z]+)$/)) || (m = clause.match(/^(\d+) ([A-Za-z]+)$/))) {
         const status = m[2].toLowerCase();
@@ -585,8 +588,12 @@ function compileCritChart(chart) {
         effects.push({ kind: 'loseStamina', value: parseInt(m[1], 10) });
       } else if ((m = clause.match(/^loses access to class powers$/))) {
         // "loses access to class powers, 3 turns" — the duration arrives as
-        // the next clause; handled below.
-        effects.push({ kind: 'status', statusId: 'status.dazed', value: 0 });
+        // the next clause; handled above. The chart's Dazed row and the Dazed
+        // STATUS are two different things (Andrew 2026-09-02: "there is a
+        // critical effect, and then there is a status effect"), so the row
+        // applies status.powers-locked — the Codex row whose one sentence is
+        // exactly this clause. Rename there and here, nowhere else.
+        effects.push({ kind: 'status', statusId: POWERS_LOCKED, value: 0 });
       } else {
         gap('critChart', `${r.key}: '${clause}'`, 'unparsed chart clause');
       }
