@@ -809,6 +809,18 @@ export const UNIT_PACK = {
       "triggers": [
         {
           "id": "trigger.demon-hound.regeneration",
+          "hook": "startOfBattle",
+          "chance": 100,
+          "select": "self",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.regeneration",
+            "value": 3
+          },
+          "source": "unit.demon-hound"
+        },
+        {
+          "id": "trigger.demon-hound.regeneration",
           "hook": "onActivationEnd",
           "chance": 100,
           "select": "self",
@@ -1123,6 +1135,18 @@ export const UNIT_PACK = {
         "undead"
       ],
       "triggers": [
+        {
+          "id": "trigger.ghoul.regeneration",
+          "hook": "startOfBattle",
+          "chance": 100,
+          "select": "self",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.regeneration",
+            "value": 6
+          },
+          "source": "unit.ghoul"
+        },
         {
           "id": "trigger.ghoul.drain-stamina",
           "hook": "onHit",
@@ -1709,6 +1733,17 @@ export const UNIT_PACK = {
         "horror"
       ],
       "triggers": [
+        {
+          "id": "trigger.shadow-sorcerer.gathering-night",
+          "hook": "startOfBattle",
+          "chance": 100,
+          "select": "self",
+          "effect": {
+            "kind": "power.gain",
+            "value": 2
+          },
+          "source": "unit.shadow-sorcerer"
+        },
         {
           "id": "trigger.shadow-sorcerer.nightfall",
           "hook": "onActivationEnd",
@@ -7954,7 +7989,7 @@ export const UNIT_PACK = {
       "abilities": [],
       "triggers": [],
       "gaps": [
-        "startOfBattle: take 2 true damage — hook: startOfBattle (declared, engine never fires it)"
+        "startOfBattle: take 2 true damage — trigger shape unparsed"
       ]
     },
     "item.skyforged-halberd": {
@@ -7973,7 +8008,7 @@ export const UNIT_PACK = {
       "abilities": [],
       "triggers": [],
       "gaps": [
-        "startOfBattle: every ally within 2 hexes gains +1 Armor for the r — hook: startOfBattle (declared, engine never fires it)"
+        "startOfBattle: every ally within 2 hexes gains +1 Armor for the r — trigger shape unparsed"
       ]
     },
     "item.boarding-hook": {
@@ -8086,7 +8121,7 @@ export const UNIT_PACK = {
       "abilities": [],
       "triggers": [],
       "gaps": [
-        "startOfBattle: gain +2 Strength against demon and undead for the  — hook: startOfBattle (declared, engine never fires it)",
+        "startOfBattle: gain +2 Strength against demon and undead for the  — trigger shape unparsed",
         "onKill: every ally within 3 hexes heals 2 — trigger shape unparsed"
       ]
     },
@@ -8517,7 +8552,9 @@ export const UNIT_PACK = {
       "tier": 0,
       "hands": 1,
       "slots": 1,
-      "statModifiers": {},
+      "statModifiers": {
+        "vision": 3
+      },
       "grants": [
         "attack.burning-torch.swing"
       ],
@@ -8536,9 +8573,6 @@ export const UNIT_PACK = {
           "source": "item.burning-torch",
           "onlyWithAttack": "attack.burning-torch.swing"
         }
-      ],
-      "gaps": [
-        "statModifier 'vision' 3 — stat: vision (no UnitDef field)"
       ]
     },
     "item.net": {
@@ -8628,14 +8662,12 @@ export const UNIT_PACK = {
       "hands": 0,
       "slots": 0,
       "statModifiers": {
-        "reach": 1
+        "reach": 1,
+        "vision": 2
       },
       "grants": [],
       "abilities": [],
-      "triggers": [],
-      "gaps": [
-        "statModifier 'vision' 2 — stat: vision (no UnitDef field)"
-      ]
+      "triggers": []
     },
     "item.peddlers-vest": {
       "id": "item.peddlers-vest",
@@ -8920,6 +8952,18 @@ export const UNIT_PACK = {
       "triggers": [
         {
           "id": "trigger.troll-gut-vest.regeneration",
+          "hook": "startOfBattle",
+          "chance": 100,
+          "select": "self",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.regeneration",
+            "value": 3
+          },
+          "source": "item.troll-gut-vest"
+        },
+        {
+          "id": "trigger.troll-gut-vest.regeneration",
           "hook": "onTakingDamage",
           "chance": 100,
           "select": "self",
@@ -8930,9 +8974,6 @@ export const UNIT_PACK = {
           },
           "source": "item.troll-gut-vest"
         }
-      ],
-      "gaps": [
-        "startOfBattle: gain 3 Regeneration — hook: startOfBattle (declared, engine never fires it)"
       ]
     },
     "item.chains-of-the-faithful": {
@@ -9044,7 +9085,7 @@ export const UNIT_PACK = {
       "abilities": [],
       "triggers": [],
       "gaps": [
-        "startOfBattle: you may not act on Turn 1; from Turn 2 you have +1 — hook: startOfBattle (declared, engine never fires it)"
+        "startOfBattle: you may not act on Turn 1; from Turn 2 you have +1 — trigger shape unparsed"
       ]
     },
     "item.stoneskin-hauberk": {
@@ -9185,7 +9226,7 @@ export const UNIT_PACK = {
       "abilities": [],
       "triggers": [],
       "gaps": [
-        "startOfBattle: gain +2 Resist against dragon for the rest of the  — hook: startOfBattle (declared, engine never fires it)",
+        "startOfBattle: gain +2 Resist against dragon for the rest of the  — trigger shape unparsed",
         "onTakingDamage: Burn applied to you is halved, rounded down, befor — trigger shape unparsed"
       ]
     },
@@ -9226,7 +9267,7 @@ export const UNIT_PACK = {
       "abilities": [],
       "triggers": [],
       "gaps": [
-        "startOfBattle: gain Protection equal to 2 plus the party's Magic — hook: startOfBattle (declared, engine never fires it)"
+        "startOfBattle: gain Protection equal to 2 plus the party's Magic — trigger shape unparsed"
       ]
     },
     "item.patrocoleas-armor": {
@@ -9246,10 +9287,22 @@ export const UNIT_PACK = {
       },
       "grants": [],
       "abilities": [],
-      "triggers": [],
+      "triggers": [
+        {
+          "id": "trigger.patrocoleas-armor.protection",
+          "hook": "startOfBattle",
+          "chance": 100,
+          "select": "self",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.protection",
+            "value": 6
+          },
+          "source": "item.patrocoleas-armor"
+        }
+      ],
       "gaps": [
-        "startOfBattle: gain 6 Protection — hook: startOfBattle (declared, engine never fires it)",
-        "startOfBattle: heal 1 at the end of each of your Turns for the re — hook: startOfBattle (declared, engine never fires it)"
+        "startOfBattle: heal 1 at the end of each of your Turns for the re — trigger shape unparsed"
       ]
     },
     "item.chains-of-the-damned": {
@@ -10284,7 +10337,7 @@ export const UNIT_PACK = {
       "abilities": [],
       "triggers": [],
       "gaps": [
-        "startOfBattle: gain +2 Vision for the rest of the Battle, and you — hook: startOfBattle (declared, engine never fires it)"
+        "startOfBattle: gain +2 Vision for the rest of the Battle, and you — trigger shape unparsed"
       ]
     },
     "item.lucky-charm": {
@@ -10414,10 +10467,21 @@ export const UNIT_PACK = {
             "damageType": "true"
           },
           "source": "item.wreath-of-natures-protection"
+        },
+        {
+          "id": "trigger.wreath-of-natures-protection.regeneration",
+          "hook": "startOfBattle",
+          "chance": 100,
+          "select": "self",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.regeneration",
+            "value": 2
+          },
+          "source": "item.wreath-of-natures-protection"
         }
       ],
       "gaps": [
-        "startOfBattle: gain 2 Regeneration — hook: startOfBattle (declared, engine never fires it)",
         "thorns: 3 — item field: thorns"
       ]
     },
@@ -10508,7 +10572,7 @@ export const UNIT_PACK = {
       "abilities": [],
       "triggers": [],
       "gaps": [
-        "startOfBattle: +20 Deathbed Fighting — hook: startOfBattle (declared, engine never fires it)",
+        "startOfBattle: +20 Deathbed Fighting — trigger shape unparsed",
         "active: Free. Stabilise a downed ally within 2 hexes, remo — an ability with charges/targets — capability.consumables"
       ]
     },
@@ -10645,13 +10709,12 @@ export const UNIT_PACK = {
       "tier": 0,
       "hands": 0,
       "slots": 1,
-      "statModifiers": {},
+      "statModifiers": {
+        "vision": 4
+      },
       "grants": [],
       "abilities": [],
-      "triggers": [],
-      "gaps": [
-        "statModifier 'vision' 4 — stat: vision (no UnitDef field)"
-      ]
+      "triggers": []
     },
     "item.cure-poison": {
       "id": "item.cure-poison",
@@ -10854,12 +10917,13 @@ export const UNIT_PACK = {
       "tier": 0,
       "hands": 0,
       "slots": 1,
-      "statModifiers": {},
+      "statModifiers": {
+        "vision": 5
+      },
       "grants": [],
       "abilities": [],
       "triggers": [],
       "gaps": [
-        "statModifier 'vision' 5 — stat: vision (no UnitDef field)",
         "active: +5 Vision. Once per Battle, 1 Stamina: reveal ever — an ability with charges/targets — capability.consumables",
         "uses: 1 — charges spent in battle — capability.consumables"
       ]
@@ -11196,14 +11260,12 @@ export const UNIT_PACK = {
       "hands": 0,
       "slots": 1,
       "statModifiers": {
+        "vision": 2,
         "dodge": -5
       },
       "grants": [],
       "abilities": [],
-      "triggers": [],
-      "gaps": [
-        "statModifier 'vision' 2 — stat: vision (no UnitDef field)"
-      ]
+      "triggers": []
     },
     "item.berserkers-torc": {
       "id": "item.berserkers-torc",
@@ -11423,14 +11485,12 @@ export const UNIT_PACK = {
       "hands": 0,
       "slots": 1,
       "statModifiers": {
+        "vision": 1,
         "maxHp": -2
       },
       "grants": [],
       "abilities": [],
-      "triggers": [],
-      "gaps": [
-        "statModifier 'vision' 1 — stat: vision (no UnitDef field)"
-      ]
+      "triggers": []
     },
     "item.rune-bashing": {
       "id": "item.rune-bashing",
@@ -11804,7 +11864,7 @@ export const UNIT_PACK = {
       "abilities": [],
       "triggers": [],
       "gaps": [
-        "startOfBattle: every slayer bonus you have from any source — weap — hook: startOfBattle (declared, engine never fires it)"
+        "startOfBattle: every slayer bonus you have from any source — weap — trigger shape unparsed"
       ]
     },
     "item.rune-hells-chosen": {
@@ -11836,9 +11896,19 @@ export const UNIT_PACK = {
       "statModifiers": {},
       "grants": [],
       "abilities": [],
-      "triggers": [],
-      "gaps": [
-        "startOfBattle: gain 4 Protection — hook: startOfBattle (declared, engine never fires it)"
+      "triggers": [
+        {
+          "id": "trigger.pilgrims-warding-stone.protection",
+          "hook": "startOfBattle",
+          "chance": 100,
+          "select": "self",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.protection",
+            "value": 4
+          },
+          "source": "item.pilgrims-warding-stone"
+        }
       ]
     },
     "item.finger-of-saint-aldwyn": {
@@ -11898,7 +11968,7 @@ export const UNIT_PACK = {
       "abilities": [],
       "triggers": [],
       "gaps": [
-        "startOfBattle: +10 to your Deathbed Fighting roll. The modifier h — hook: startOfBattle (declared, engine never fires it)"
+        "startOfBattle: +10 to your Deathbed Fighting roll. The modifier h — trigger shape unparsed"
       ]
     },
     "item.divine-ward": {
@@ -11989,7 +12059,7 @@ export const UNIT_PACK = {
       "abilities": [],
       "triggers": [],
       "gaps": [
-        "startOfBattle: gain Protection equal to 4 + the party's Spirit — hook: startOfBattle (declared, engine never fires it)"
+        "startOfBattle: gain Protection equal to 4 + the party's Spirit — trigger shape unparsed"
       ]
     },
     "item.kals-mercy": {
@@ -17564,12 +17634,10 @@ export const UNIT_PACK = {
           "grants": {
             "precision": 1,
             "reach": 1,
+            "vision": 1,
             "accuracy": 5,
             "dodge": 3
-          },
-          "gaps": [
-            "vision 1: no engine stat"
-          ]
+          }
         },
         {
           "level": 8,
@@ -17586,13 +17654,11 @@ export const UNIT_PACK = {
           "grants": {
             "precision": 1,
             "maxHp": 1,
+            "vision": 1,
             "accuracy": 5,
             "dodge": 2,
             "luck": 1
-          },
-          "gaps": [
-            "vision 1: no engine stat"
-          ]
+          }
         },
         {
           "level": 10,
@@ -17701,12 +17767,10 @@ export const UNIT_PACK = {
           "grants": {
             "precision": 1,
             "maxStamina": 1,
+            "vision": 1,
             "dodge": 5,
             "luck": 2
-          },
-          "gaps": [
-            "vision 1: no engine stat"
-          ]
+          }
         },
         {
           "level": 9,
@@ -17743,11 +17807,9 @@ export const UNIT_PACK = {
           "grants": {
             "magic": 1,
             "maxStamina": 1,
-            "accuracy": 5
-          },
-          "gaps": [
-            "vision 1: no engine stat"
-          ]
+            "accuracy": 5,
+            "vision": 1
+          }
         },
         {
           "level": 3,
@@ -17794,10 +17856,9 @@ export const UNIT_PACK = {
             {
               "resist": 1
             },
-            {}
-          ],
-          "gaps": [
-            "choice vision: no engine stat"
+            {
+              "vision": 2
+            }
           ]
         },
         {
@@ -17805,11 +17866,9 @@ export const UNIT_PACK = {
           "grants": {
             "precision": 1,
             "staminaRegen": 1,
+            "vision": 1,
             "accuracy": 5
-          },
-          "gaps": [
-            "vision 1: no engine stat"
-          ]
+          }
         },
         {
           "level": 7,
@@ -17834,13 +17893,11 @@ export const UNIT_PACK = {
           "level": 9,
           "grants": {
             "precision": 1,
+            "vision": 1,
             "accuracy": 5,
             "crit": 2,
             "dodge": 2
-          },
-          "gaps": [
-            "vision 1: no engine stat"
-          ]
+          }
         },
         {
           "level": 10,
@@ -18166,12 +18223,10 @@ export const UNIT_PACK = {
           "grants": {
             "maxHp": 1,
             "itemSlots": 1,
+            "vision": 1,
             "accuracy": 5,
             "crit": 2
-          },
-          "gaps": [
-            "vision 1: no engine stat"
-          ]
+          }
         },
         {
           "level": 7,

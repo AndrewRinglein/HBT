@@ -38,7 +38,8 @@ describe('the invariant — no heroItems means the hero the converter used to fo
       // predates that too.
       // capability.deathbed (2026-09-03): rows carry `toughness` now (the
       // Deathbed Fighting base); the oracle predates it.
-      const keys = [...new Set([...Object.keys(f), ...Object.keys(r)])].filter((k) => k !== 'attributes' && k !== 'tags' && k !== 'toughness' && JSON.stringify(f[k]) !== JSON.stringify(r[k]))
+      // capability.vision (2026-09-03): items fold `vision` now; the oracle predates it too.
+      const keys = [...new Set([...Object.keys(f), ...Object.keys(r)])].filter((k) => !['attributes', 'tags', 'toughness', 'vision'].includes(k) && JSON.stringify(f[k]) !== JSON.stringify(r[k]))
       if (keys.length) differ[id] = keys
     }
     // FINDING: the converter folded item crit/luck into `ported`, then wrote
