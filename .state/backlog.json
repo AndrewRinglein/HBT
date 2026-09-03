@@ -336,7 +336,10 @@
    "ai.hunter"
   ],
   "changesBaseline": false,
-  "killSwitchExempt": "an AI mode is engine behaviour, not a content row the seam can remove — ai.* names a mode, not a registry entry; the tests assert the rule's visible choices (who was approached, who was struck, who was healed)"
+  "killSwitchExempt": "an AI mode is engine behaviour, not a content row the seam can remove — ai.* names a mode, not a registry entry; the tests assert the rule's visible choices (who was approached, who was struck, who was healed)",
+  "status": "done-needs-review",
+  "sha": "9f133be",
+  "gauntlet": "not passed — 1 flag(s) warned; 1 exemption(s) taken"
  },
  {
   "id": "content.mage-staff",
