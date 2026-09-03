@@ -26567,6 +26567,10 @@ export const UNIT_PACK = {
           "range": 3
         }
       },
+      "civilianAi": {
+        "mode": "flee",
+        "untilTurn": 3
+      },
       "gaps": [
         "hero.fixed.librarian is a RESCUE (2 resources alive at the end) — the reward is the kingdom's; fielded as a civilian",
         "hero.fixed.cook is a RESCUE (2 resources alive at the end) — the reward is the kingdom's; fielded as a civilian",
@@ -26583,8 +26587,8 @@ export const UNIT_PACK = {
         "needs: capability.enemy-action-cooldown (Devour CD 3)",
         "needs: capability.target-stamina-loss (Shriek, Necro Bolt)",
         "needs: capability.inflict-affliction (Claw's 10% rotting flesh)",
-        "needs: a civilian flee behaviour and attach mode",
-        "needs: the rescue reward: 2 resources per villager alive at the end (the kingdom seam)"
+        "needs: the rescue reward: 2 resources per villager alive at the end (the kingdom seam)",
+        "needs: attach mode (a civilian following an assigned hero)"
       ]
     },
     "encounter.kiln": {

@@ -75,6 +75,12 @@ export type EncounterDef = {
    * Vision on the hero phase; the night family repaints. Absent = daylight.
    */
   readonly condition?: 'darkness'
+  /**
+   * Ruled 2026-09-03 (Angela, Supper): "the civilians should have a flight
+   * mindset for the first three turns." Every civilian fielded by this
+   * encounter runs `mode` through Turn `untilTurn`, then its own row's AI.
+   */
+  readonly civilianAi?: { readonly mode: string; readonly untilTurn: number }
   /** capability.power-pool: the pool at battle start (kind 'external'). */
   readonly powerSources?: readonly { readonly kind: 'external'; readonly value: number }[]
   /** Where the heroes deploy (prologue-1's `heroes: 1, at: {near, range}`); absent = the player edge. */
@@ -556,6 +562,8 @@ export type Unit = {
   summoned: boolean
   /** ai.mode.hunter (2026-09-03): the quarry, until it falls. */
   huntTarget?: number
+  /** An AI mode standing in for the row's until a Turn ends (the civilians' flight, ruled 2026-09-03). */
+  aiOverride?: { mode: string; untilTurn: number }
   /** capability.charges: uses left this Battle, by power id. Only powers with `uses` appear. */
   usesLeft: Record<string, number>
   /** capability.charges: what was spent, for the BattleResult. */

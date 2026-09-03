@@ -1382,3 +1382,27 @@ Consequence: a taunted hero acts in normal activation order for now;
 Consequence: `corpse.eat`, `corpse.raise` and `corpse.consume` are one family
 — remove a corpse, then do something. Embody (the Shade, an owed row) joins
 it and must remove the corpse it animates.
+
+## 2026-09-03 — after watching Supper seed 5 in the viewer
+
+Angela, verbatim:
+
+> "It's supposed to be: if you make a regular move action and you move out
+> of a ZOC, it triggers it, so if you just run away, they get an AOE."
+
+Checked against the export: that is the rule the engine runs — every hero
+move that BEGAN adjacent to a standing enemy provoked (t3 the Emberwright
+from Ghoul 6; t7 the Chaplain from two zombies; t8 from four), every move
+that began clear provoked nothing, and the Hunter's side-roll (a sidestep,
+never provokes, ruled 2026-08-17) did not. What she saw was the viewer,
+which does not yet fold arrivals, shunts or corpses (EVENTS-FOR-THE-VIEWER
+§1–3) and so draws some units where they no longer are. No engine change.
+
+> "Also, in this battle specifically, the civilians should have a flight
+> mindset for the first three turns."
+
+Consequence: an AI mode `flee` (move to the reachable hex farthest from the
+nearest enemy; never attack) and an encounter field `civilianAi: {mode,
+untilTurn}` that overrides every civilian's mode until that Turn ends —
+Supper carries `{mode: 'flee', untilTurn: 3}`. After Turn 3 they fight as
+their rows say.

@@ -122,6 +122,7 @@ export function placeSetup(ctx: Ctx, enc: EncounterDef, names: Record<string, nu
     for (const hex of hexesOf(ctx, p, `encounter '${enc.id}' setup`, [-1, enc.setup.indexOf(p)])) {
       const u = arrive(ctx, def, hex, enc.id, names)
       if (p.objective) { st.objectives.push(u.id); emit(ctx, 'encounter.objective', enc.id, { actor: u.id, typeId: u.typeId, kind: 'protect' }) }
+      if (p.civilian && enc.civilianAi) { u.aiOverride = { ...enc.civilianAi }; emit(ctx, 'ai.override', enc.id, { actor: u.id, mode: enc.civilianAi.mode, untilTurn: enc.civilianAi.untilTurn }) }
     }
   }
 }

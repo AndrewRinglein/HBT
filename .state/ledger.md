@@ -6468,3 +6468,29 @@ index d8ddf3a..b2bf98b 100644
 </details>
 
 IRON GAUNTLET: NOT PASSED — 3 FLAG(S) WARNED
+
+## ai.civilian-flight — LANDED `2e9f5fd` **NEEDS REVIEW**
+2026-09-03 22:08
+
+  PASS  dependencies landed
+  WARN  not already decided — 4 candidate ruling(s) — READ BEFORE ASKING: ../STATE.md:20 · ../STATE.md:21
+  PASS  typecheck
+  PASS  full test suite
+  PASS  gate 1 — the id appears in a real battle — ai.flee: 17 log lines, 17 fired, 17 changed state
+  PASS  brought its own tests — test/civilian-flight.test.ts
+  PASS  existing tests untouched
+  PASS  control battles unchanged
+  PASS  content has a published source — 21 ids without a published source (11 awaiting publication from earlier items — see audit)
+  PASS  hardcode scan — core knows mechanisms, never names
+  PASS  generalizes — the second instance costs zero engine code — ai.flee live · ai.hunter live
+  PASS  naming — new content ids use declared kinds
+  PASS  naming — no banned words invented
+  PASS  kill switch — the tests fail without the content
+
+<details><summary>Existing tests were edited — review this diff</summary>
+
+```diff
+```
+</details>
+
+IRON GAUNTLET: NOT PASSED — 1 FLAG(S) WARNED; 1 EXEMPTION(S) TAKEN · periodic audit clean

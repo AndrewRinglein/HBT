@@ -731,7 +731,32 @@ function hunter(ctx: Ctx, u: Unit): void {
   if (!attackIfPossible(ctx, u, enemiesInAttackReach(ctx, u))) idle(ctx, u, 'the quarry is out of reach')
 }
 
+/** flee — the reachable hex farthest from the nearest enemy; never attacks. The civilians' flight (ruled 2026-09-03). */
+function flee(ctx: Ctx, u: Unit): void {
+  const enemies = livingEnemies(ctx, u)
+  if (!enemies.length) { idle(ctx, u, 'nothing to flee'); return }
+  const walk = movePowerOf(ctx, u, 'path')
+  if (walk) {
+    const reach = reachable(ctx, u, walk.budgetMod)
+    let best: HexId | null = null, bestD = Math.min(...enemies.map((e) => distance(u.hex, e.hex)))
+    for (const [hex] of [...reach].sort((a, b) => a[0] - b[0])) {
+      const d = Math.min(...enemies.map((e) => distance(hex, e.hex)))
+      if (d > bestD) { bestD = d; best = hex }
+    }
+    if (best !== null) executeMove(ctx, u.id, pathTo(reach, u.hex, best), walk)
+  } else {
+    const near = nearestEnemy(ctx, u)
+    const step = movePowerOf(ctx, u, 'sidestep')
+    if (near && step) {
+      const away = stepCandidates(ctx, u, stepRangeOf(step)).sort((a, b) => distance(b, near.hex) - distance(a, near.hex) || a - b)[0]
+      if (away !== undefined && distance(away, near.hex) > distance(u.hex, near.hex)) executeSidestep(ctx, u.id, away, step)
+    }
+  }
+  if (u.lifeState === 'standing') idle(ctx, u, 'fleeing')
+}
+
 const MODES: Record<string, (ctx: Ctx, u: Unit) => void> = {
+  'flee': flee,
   'dumb-melee': dumbMelee,
   'melee-aggressive': meleeAggressive,
   'ranged-kite': rangedKite,
@@ -751,9 +776,11 @@ export function runActivation(ctx: Ctx, unitId: number): void {
   // for a different one" — the next mode in registry order stands in, and the
   // log names both. Deterministic: no cup, no choice.
   const names = Object.keys(MODES)
-  const ai = isConfused(ctx, u) ? names[(names.indexOf(u.ai) + 1) % names.length]! : u.ai
+  // an override (the civilians' flight, ruled 2026-09-03) stands in until its Turn ends
+  const base = u.aiOverride && ctx.state.turn <= u.aiOverride.untilTurn ? u.aiOverride.mode : u.ai
+  const ai = isConfused(ctx, u) ? names[(names.indexOf(base) + 1) % names.length]! : base
   const mode = MODES[ai]!
-  emit(ctx, 'ai.mode', `ai.${ai}`, { actor: unitId, mode: ai, ...(ai !== u.ai ? { confusedFrom: u.ai } : {}) })
+  emit(ctx, 'ai.mode', `ai.${ai}`, { actor: unitId, mode: ai, ...(isConfused(ctx, u) ? { confusedFrom: base } : {}), ...(base !== u.ai ? { overriding: u.ai } : {}) })
   mode(ctx, u)
 }
 
