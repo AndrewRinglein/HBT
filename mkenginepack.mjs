@@ -501,6 +501,7 @@ for (const id of PARTY) {
         reach: ranged ? a.range : 1, staminaCost: a.stamina ?? 0, // heroes pay
         ...(areaShapeOf(a) ? { area: areaShapeOf(a) } : {}), // capability.area-attack
         ...(a.crit ? { crit: a.crit } : {}), // station.crit 2026-08-27
+        ...(a.accuracy ? { accuracy: a.accuracy } : {}),   // station.accuracy-field, 2026-09-03
       };
       attackIds.push(a.id);
       kitTriggers.push(...settledAttackExtras(a, id));
@@ -514,12 +515,11 @@ for (const id of PARTY) {
     authoredAttacks[a.id] = {
       id: a.id, name: a.name, kind: 'melee', damageType: a.damageType || 'physical',
       bonus: a.damage ?? 0, stat: a.stat || 'strength', reach: 1, staminaCost: a.stamina ?? 0,
-      ...(a.crit ? { crit: a.crit } : {}),
+      ...(a.accuracy ? { accuracy: a.accuracy } : {}),   // station.accuracy-field (2026-09-03): Punch's −5 has a slot
     };
     attackIds.push(a.id);
     ownAttackIds.push(a.id);
     ownTriggers.push(...settledAttackExtras(a, id));
-    if (a.accuracy) gap(id, `${a.id} accuracy ${a.accuracy}`, 'attack field: accuracy (no AttackDef slot)');
   }
 
   // Fold kit-item stat modifiers into the row (the armor pins are the first kit items
@@ -601,6 +601,7 @@ const alphaTeam = [];
         reach: ranged ? a.range : 1, staminaCost: a.stamina ?? 0, // heroes pay
         ...(area ? { area } : {}), // capability.area-attack, 2026-08-27
         ...(a.crit ? { crit: a.crit } : {}), // station.crit, 2026-08-27
+        ...(a.accuracy ? { accuracy: a.accuracy } : {}),   // station.accuracy-field, 2026-09-03
       };
       attackIds.push(a.id);
       const extras = settledAttackExtras(a, id);
@@ -699,6 +700,7 @@ for (const id of CIVILIANS) {
         reach: ranged ? a.range : 1, staminaCost: a.stamina ?? 0,
         ...(areaShapeOf(a) ? { area: areaShapeOf(a) } : {}), // capability.area-attack
         ...(a.crit ? { crit: a.crit } : {}), // station.crit 2026-08-27
+        ...(a.accuracy ? { accuracy: a.accuracy } : {}),   // station.accuracy-field, 2026-09-03
       };
       attackIds.push(a.id);
       civTriggers.push(...settledAttackExtras(a, id));
@@ -809,6 +811,7 @@ function takeItemAttack(a) {
     reach: ranged ? a.range : 1, staminaCost: a.stamina ?? 0,
     ...(area ? { area } : {}),
     ...(a.crit ? { crit: a.crit } : {}),
+    ...(a.accuracy ? { accuracy: a.accuracy } : {}),   // station.accuracy-field, 2026-09-03
   };
 }
 function compileItems() {
@@ -900,7 +903,7 @@ function testAbilities() {
   return out;
 }
 const UNIT_FIELDS = new Set(['typeId', 'name', 'side', 'maxHp', 'armor', 'resist', 'accuracy', 'dodge', 'strength', 'precision', 'magic', 'spirit', 'crit', 'luck', 'role', 'movement', 'reach', 'maxStamina', 'staminaRegen', 'ai', 'attacks', 'abilities', 'moves', 'tags', 'triggers']);
-const ATTACK_FIELDS = new Set(['id', 'name', 'kind', 'damageType', 'bonus', 'stat', 'reach', 'staminaCost', 'crit', 'critCount', 'area', 'cooldown']);
+const ATTACK_FIELDS = new Set(['id', 'name', 'kind', 'damageType', 'bonus', 'stat', 'reach', 'staminaCost', 'crit', 'critCount', 'area', 'cooldown', 'accuracy']);
 // a delta may start from any packed row — the real families AND the test
 // cohort (test-gash-zombie is the cohort's zombie plus one rider)
 const realUnits = new Map([...alphaTeam, ...prologueParty, ...authoredEnemies, ...heroes, ...enemies].map((u) => [u.typeId, u]));

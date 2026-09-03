@@ -492,54 +492,14 @@
    "needs": "capability.inflict-affliction"
   },
   {
-   "unit": "hero.base.paladin-dark",
-   "what": "attack.punch accuracy -5",
-   "needs": "attack field: accuracy (no AttackDef slot)"
-  },
-  {
-   "unit": "hero.base.paladin-shiney",
-   "what": "attack.punch accuracy -5",
-   "needs": "attack field: accuracy (no AttackDef slot)"
-  },
-  {
-   "unit": "hero.base.paladin-hunk",
-   "what": "attack.punch accuracy -5",
-   "needs": "attack field: accuracy (no AttackDef slot)"
-  },
-  {
-   "unit": "hero.base.paladin-smug",
-   "what": "attack.punch accuracy -5",
-   "needs": "attack field: accuracy (no AttackDef slot)"
-  },
-  {
    "unit": "hero.base.ranger-ranger",
    "what": "attack.elfbow.elf-shot onHit: \"gain 1 Precision\"",
    "needs": "trigger shape unparsed"
   },
   {
-   "unit": "hero.base.ranger-ranger",
-   "what": "attack.punch accuracy -5",
-   "needs": "attack field: accuracy (no AttackDef slot)"
-  },
-  {
    "unit": "hero.base.ranger-scantily",
    "what": "attack.elfbow.elf-shot onHit: \"gain 1 Precision\"",
    "needs": "trigger shape unparsed"
-  },
-  {
-   "unit": "hero.base.ranger-scantily",
-   "what": "attack.punch accuracy -5",
-   "needs": "attack field: accuracy (no AttackDef slot)"
-  },
-  {
-   "unit": "hero.base.ranger-nature",
-   "what": "attack.punch accuracy -5",
-   "needs": "attack field: accuracy (no AttackDef slot)"
-  },
-  {
-   "unit": "hero.base.ranger-aggressive",
-   "what": "attack.punch accuracy -5",
-   "needs": "attack field: accuracy (no AttackDef slot)"
   },
   {
    "unit": "hero.base.warrior-iron",
@@ -550,26 +510,6 @@
    "unit": "hero.base.warrior-iron",
    "what": "item.tower-shield grants power.tower-shield.stand-tall",
    "needs": "item power — shape unparsed"
-  },
-  {
-   "unit": "hero.base.warrior-iron",
-   "what": "attack.punch accuracy -5",
-   "needs": "attack field: accuracy (no AttackDef slot)"
-  },
-  {
-   "unit": "hero.base.warrior-brawler",
-   "what": "attack.punch accuracy -5",
-   "needs": "attack field: accuracy (no AttackDef slot)"
-  },
-  {
-   "unit": "hero.base.warrior-barbarian",
-   "what": "attack.punch accuracy -5",
-   "needs": "attack field: accuracy (no AttackDef slot)"
-  },
-  {
-   "unit": "hero.base.warrior-fearsome",
-   "what": "attack.punch accuracy -5",
-   "needs": "attack field: accuracy (no AttackDef slot)"
   },
   {
    "unit": "hero.base.mage-thinking",
@@ -583,11 +523,6 @@
   },
   {
    "unit": "hero.base.mage-thinking",
-   "what": "attack.punch accuracy -5",
-   "needs": "attack field: accuracy (no AttackDef slot)"
-  },
-  {
-   "unit": "hero.base.mage-thinking",
    "what": "item.watchmans-coat statModifier 'vision' 2",
    "needs": "stat: vision (no UnitDef field)"
   },
@@ -597,19 +532,9 @@
    "needs": "item power — shape unparsed"
   },
   {
-   "unit": "hero.base.mage-sexy",
-   "what": "attack.punch accuracy -5",
-   "needs": "attack field: accuracy (no AttackDef slot)"
-  },
-  {
    "unit": "hero.base.mage-fire",
    "what": "item.fire-staff grants power.fire-staff.fireball",
    "needs": "item power — shape unparsed"
-  },
-  {
-   "unit": "hero.base.mage-fire",
-   "what": "attack.punch accuracy -5",
-   "needs": "attack field: accuracy (no AttackDef slot)"
   },
   {
    "unit": "hero.base.mage-fireaura",
@@ -617,34 +542,14 @@
    "needs": "item power — shape unparsed"
   },
   {
-   "unit": "hero.base.mage-fireaura",
-   "what": "attack.punch accuracy -5",
-   "needs": "attack field: accuracy (no AttackDef slot)"
-  },
-  {
    "unit": "hero.base.priest-pauper",
    "what": "item.holy-texts grants power.holy-texts.mercy",
    "needs": "item power — shape unparsed"
   },
   {
-   "unit": "hero.base.priest-pauper",
-   "what": "attack.punch accuracy -5",
-   "needs": "attack field: accuracy (no AttackDef slot)"
-  },
-  {
    "unit": "hero.base.priest-armored",
    "what": "item.holy-texts grants power.holy-texts.mercy",
    "needs": "item power — shape unparsed"
-  },
-  {
-   "unit": "hero.base.priest-armored",
-   "what": "attack.punch accuracy -5",
-   "needs": "attack field: accuracy (no AttackDef slot)"
-  },
-  {
-   "unit": "hero.base.priest-robes",
-   "what": "attack.punch accuracy -5",
-   "needs": "attack field: accuracy (no AttackDef slot)"
   },
   {
    "unit": "hero.base.priest-robes",
@@ -655,16 +560,6 @@
    "unit": "hero.base.priest-scantily",
    "what": "attack.iron-mace.crush onHit: \"the target loses 1 Armor for the rest of the Battle\"",
    "needs": "trigger shape unparsed"
-  },
-  {
-   "unit": "hero.base.priest-scantily",
-   "what": "attack.punch accuracy -5",
-   "needs": "attack field: accuracy (no AttackDef slot)"
-  },
-  {
-   "unit": "hero.base.rogue-raven",
-   "what": "attack.punch accuracy -5",
-   "needs": "attack field: accuracy (no AttackDef slot)"
   },
   {
    "unit": "hero.base.rogue-raven",
@@ -682,24 +577,9 @@
    "needs": "trigger shape unparsed"
   },
   {
-   "unit": "hero.base.rogue-rose",
-   "what": "attack.punch accuracy -5",
-   "needs": "attack field: accuracy (no AttackDef slot)"
-  },
-  {
-   "unit": "hero.base.rogue-snake",
-   "what": "attack.punch accuracy -5",
-   "needs": "attack field: accuracy (no AttackDef slot)"
-  },
-  {
    "unit": "hero.base.rogue-skull",
    "what": "attack.daggers.thrown-dagger onKill: \"gain 50 Surge\"",
    "needs": "trigger shape unparsed"
-  },
-  {
-   "unit": "hero.base.rogue-skull",
-   "what": "attack.punch accuracy -5",
-   "needs": "attack field: accuracy (no AttackDef slot)"
   },
   {
    "unit": "hero.base.rogue-skull",

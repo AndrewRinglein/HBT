@@ -23,7 +23,8 @@
     "staminaCost": 4,
     "crit": 47,
     "critCount": 3,
-    "note": "station.crit-count's second variant: 'Do three criticals,' pure data. Costs stamina so the golem alternates it with the slam as its pool cycles."
+    "note": "station.crit-count's second variant: 'Do three criticals,' pure data. Costs stamina so the golem alternates it with the slam as its pool cycles. | station.accuracy-field's second variant (2026-09-03): accuracy −10 on the row, pure data — the same slot Punch's −5 uses.",
+    "accuracy": -10
   },
   {
     "id": "attack.test-arc.sweep",
