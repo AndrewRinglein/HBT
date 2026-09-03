@@ -628,6 +628,10 @@
    "hash": "daae314ec1c4",
    "how": "feature absent",
    "tail": "       | ^ |       9| import { REWARDS } from '../src/content/rewards.js' |      10| import { HERO_POOL, CIVILIANS } from '../src/content/heroes.js'"
+  },
+  "closed": {
+   "at": "2026-09-03 03:25",
+   "sha": "bd45b65"
   }
  }
 }

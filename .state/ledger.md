@@ -661,3 +661,26 @@ slice: 46 of 68 closed · 46 probed · 0 accepted
 IRON GAUNTLET: NOT PASSED — 2 FLAG(S) WARNED; 1 EXEMPTION(S) TAKEN
 
 Law 10 notes (heroes.cut-alpha): seven probes re-pointed from the removed ids to Eve rows; three numbers moved WITH the roster, none against a rule — isc-020's hand sums (five heroes, not six; four living of five in the dead case), isc-036's id-order expectation (paladin < ranger < warrior; the rule "heroes resolve in id order" is unchanged), isc-044's cadence clipped at the pool (the rule is the cadence; the pool is five until content.field-eve-24). isc-037's "full roster" case now adds two synthetic orphans to reach eight.
+
+## items.rows — LANDED `bd45b65` **NEEDS REVIEW**
+2026-09-03 03:23 · engine @ da99720
+
+  PASS  dependencies landed
+  WARN  not already decided — 4 candidate ruling(s) — READ BEFORE ASKING: ../STATE.md:20 · ../GEAR-IMPLEMENTATION.md:278
+  PASS  typecheck
+  PASS  full test suite — 108 passed
+  PASS  gate 1 — every claimed criterion holds — ISC-051 — the kingdom's item rows are the codex's
+  PASS  brought its own tests — test/fixtures/bad-combos.json, test/isc-051.test.ts
+  PASS  existing tests untouched
+  PASS  kill switch — every claimed probe has been seen red — ISC-051: red on record (2026-09-03 03:23 @ 90247cd, probe daae314ec1c4)
+  PASS  nothing regresses — every P-tier probe — 47 P-tier probe(s): 47 green, 0 red, 0 regression(s). 46 of 68 closed · 47 probed · 0 accepted
+  PASS  hardcode scan — core knows mechanisms, never names
+  PASS  generalizes — the second instance costs zero kingdom code — shape 'data' — not a mechanism, exempt
+  PASS  naming — new ids use declared kinds
+  PASS  naming — no banned words invented
+  PASS  engine working tree clean — engine @ da99720, clean
+  PASS  one door to the engine
+
+ISC-051: CLOSED at bd45b65
+slice: 47 of 68 closed · 47 probed · 0 accepted
+IRON GAUNTLET: NOT PASSED — 1 FLAG(S) WARNED
