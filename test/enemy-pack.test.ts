@@ -98,7 +98,7 @@ describe('the pack carries the authored rows faithfully', () => {
     // and NO gap-carrying clause leaked into the pack: nothing references afflictions
     for (const id of roster()) for (const t of UNITS[id]!.triggers ?? []) {
       // capability.auras (2026-09-03): the Necromancer's EOA pulse is a heal to its area
-      expect(['status.apply', 'power.gain', 'heal', 'corpse.raise', 'corpse.consume', 'statMod', 'layer.paint'], `${id} trigger ${t.id}`).toContain(t.effect.kind)   // + corpses, statMod, layers — 2026-09-03
+      expect(['status.apply', 'power.gain', 'heal', 'corpse.raise', 'corpse.consume', 'statMod', 'layer.paint', 'stamina.drain'], `${id} trigger ${t.id}`).toContain(t.effect.kind)   // + corpses, statMod, layers — 2026-09-03
     }
   })
 })

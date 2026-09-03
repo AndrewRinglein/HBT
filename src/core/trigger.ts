@@ -29,7 +29,7 @@ import { distance } from './hex.js'
 import type { Targeting } from './target.js'
 import { resolveTargets, validateTargeting } from './target.js'
 import { roll100 } from './rng.js'
-import { addStatMod, applyDamage, applyHealing, corpsesNear, emit, gainPower, removeCorpse } from './mutate.js'
+import { addStatMod, applyDamage, applyHealing, corpsesNear, drainStamina, emit, gainPower, removeCorpse } from './mutate.js'
 import { paintRadius } from './vision.js'
 import { layerOfId } from '../content/maps.js'
 import { applyStatus, removeStatus } from './status.js'
@@ -147,6 +147,8 @@ export type TriggerEffect =
    * ledger names the trigger.
    */
   | { readonly kind: 'statMod'; readonly stat: import('./stats.js').StatName; readonly value: number; readonly until: 'battle' | 'endOfTurn' }
+  /** capability.target-stamina-loss (2026-09-03), ENEMY-REVIEW P8: "the existing stamina loss, aimed at a target" — Shriek, Necro Bolt, Mesmerize. Through drainStamina, floors at 0. */
+  | { readonly kind: 'stamina.drain'; readonly value: ValueSpec }
   /** capability.vision / ground-layers: paint `layer` in `radius` around the owner ('self') or the hook's target ('target') — Nightfall, The Dark Rushes In. */
   | { readonly kind: 'layer.paint'; readonly layer: string; readonly radius: number; readonly origin: 'self' | 'target' }
 
@@ -450,6 +452,12 @@ function applyEffect(ctx: Ctx, t: Trigger, owner: Unit, targetId: number): void 
       emit(ctx, 'trigger.fired', t.id, { actor: owner.id, target: targetId, effect: e.kind, corpses: near.length })
       for (const c of near) removeCorpse(ctx, c.id, t.id, 'consumed', owner.id)
       if (near.length) applyHealing(ctx, owner.id, near.length * e.healPer, t.id)
+      break
+    }
+    case 'stamina.drain': {
+      const v = valueOf(ctx, owner, e.value)
+      emit(ctx, 'trigger.fired', t.id, { actor: owner.id, target: targetId, effect: e.kind, value: v })
+      if (v > 0) drainStamina(ctx, targetId, v, t.id)
       break
     }
     case 'statMod': {

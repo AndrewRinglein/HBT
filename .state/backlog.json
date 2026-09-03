@@ -2125,5 +2125,24 @@
   "attempts": 1,
   "sha": "22793db",
   "gauntlet": "not passed — 2 flag(s) warned"
+ },
+ {
+  "id": "capability.target-stamina-loss",
+  "kind": "engine",
+  "shape": "trigger",
+  "spec": "ENEMY-REVIEW P8 (ruled 2026-08-23): the existing stamina loss, aimed at a target — a stamina.drain trigger effect through drainStamina (floors at 0). Shriek, Necro Bolt, Mesmerize, the Doombringer. Blocks 2 encounters (ENCOUNTERS-ENGINE-HANDOFF §4.8).",
+  "expect": "a Necro Bolt hit takes 1 Stamina off the hero, never below 0, with the trigger as the cause; the gap is gone from the census",
+  "changesBaseline": false,
+  "probeIds": [
+   "trigger.necromancer.drain-stamina"
+  ],
+  "variants": [
+   "trigger.necromancer.drain-stamina",
+   "trigger.ghoul.drain-stamina"
+  ],
+  "status": "done-needs-review",
+  "attempts": 1,
+  "sha": "776c550",
+  "gauntlet": "not passed — 2 flag(s) warned"
  }
 ]

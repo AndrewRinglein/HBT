@@ -894,6 +894,18 @@ export const UNIT_PACK = {
           "source": "unit.doombringer"
         },
         {
+          "id": "trigger.doombringer.drain-stamina",
+          "hook": "onHit",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "stamina.drain",
+            "value": 2
+          },
+          "source": "unit.doombringer",
+          "onlyWithAttack": "attack.doombringer.crush"
+        },
+        {
           "id": "trigger.doombringer.armor-armor",
           "hook": "onHit",
           "chance": 100,
@@ -1111,6 +1123,18 @@ export const UNIT_PACK = {
         "undead"
       ],
       "triggers": [
+        {
+          "id": "trigger.ghoul.drain-stamina",
+          "hook": "onHit",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "stamina.drain",
+            "value": 1
+          },
+          "source": "unit.ghoul",
+          "onlyWithAttack": "attack.ghoul.shriek"
+        },
         {
           "id": "trigger.ghoul.strength-strength",
           "hook": "onKill",
@@ -1477,6 +1501,18 @@ export const UNIT_PACK = {
             "kind": "status.apply",
             "statusId": "status.weak",
             "value": 2
+          },
+          "source": "unit.necromancer",
+          "onlyWithAttack": "attack.necromancer.necro-bolt"
+        },
+        {
+          "id": "trigger.necromancer.drain-stamina",
+          "hook": "onHit",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "stamina.drain",
+            "value": 1
           },
           "source": "unit.necromancer",
           "onlyWithAttack": "attack.necromancer.necro-bolt"
@@ -2165,6 +2201,18 @@ export const UNIT_PACK = {
           },
           "source": "unit.vampire",
           "onlyWithAttack": "attack.vampire.mesmerize"
+        },
+        {
+          "id": "trigger.vampire.drain-stamina",
+          "hook": "onHit",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "stamina.drain",
+            "value": 1
+          },
+          "source": "unit.vampire",
+          "onlyWithAttack": "attack.vampire.mesmerize"
         }
       ]
     },
@@ -2276,6 +2324,18 @@ export const UNIT_PACK = {
             "kind": "status.apply",
             "statusId": "status.weak",
             "value": 2
+          },
+          "source": "unit.vampire-lord",
+          "onlyWithAttack": "attack.vampire.mesmerize"
+        },
+        {
+          "id": "trigger.vampire-lord.drain-stamina",
+          "hook": "onHit",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "stamina.drain",
+            "value": 1
           },
           "source": "unit.vampire-lord",
           "onlyWithAttack": "attack.vampire.mesmerize"

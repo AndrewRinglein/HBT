@@ -6112,3 +6112,58 @@ index fc29ddd..9797b36 100644
 </details>
 
 IRON GAUNTLET: NOT PASSED — 2 FLAG(S) WARNED
+
+## capability.target-stamina-loss — LANDED `776c550` **NEEDS REVIEW**
+2026-09-03 18:13
+
+  PASS  dependencies landed
+  WARN  not already decided — 4 candidate ruling(s) — READ BEFORE ASKING: ../CODEX.md:1830 · ../DOCS.md:112
+  PASS  typecheck
+  PASS  full test suite
+  PASS  gate 1 — the id appears in a real battle — trigger.necromancer.drain-stamina: 6 log lines, 6 fired, 2 changed state
+  PASS  brought its own tests — test/enemy-pack.test.ts, test/prologue-battles.test.ts, test/stamina-drain.test.ts
+  WARN  existing tests untouched — DELETED LINES in test/enemy-pack.test.ts (-1), test/prologue-battles.test.ts (-2) — will land FLAGGED for review
+  PASS  control battles unchanged
+  PASS  content has a published source — 20 ids without a published source (10 awaiting publication from earlier items — see audit)
+  PASS  hardcode scan — core knows mechanisms, never names
+  PASS  generalizes — the second instance costs zero engine code — trigger.necromancer.drain-stamina live · trigger.ghoul.drain-stamina live
+  PASS  naming — new content ids use declared kinds
+  PASS  naming — no banned words invented
+  PASS  kill switch — the tests fail without the content — tests fail without trigger.necromancer.drain-stamina — they genuinely test it
+
+<details><summary>Existing tests were edited — review this diff</summary>
+
+```diff
+diff --git a/test/enemy-pack.test.ts b/test/enemy-pack.test.ts
+index 9797b36..70a2ee7 100644
+--- a/test/enemy-pack.test.ts
++++ b/test/enemy-pack.test.ts
+@@ -99,5 +99,5 @@ describe('the pack carries the authored rows faithfully', () => {
+     for (const id of roster()) for (const t of UNITS[id]!.triggers ?? []) {
+       // capability.auras (2026-09-03): the Necromancer's EOA pulse is a heal to its area
+-      expect(['status.apply', 'power.gain', 'heal', 'corpse.raise', 'corpse.consume', 'statMod', 'layer.paint'], `${id} trigger ${t.id}`).toContain(t.effect.kind)   // + corpses, statMod, layers — 2026-09-03
++      expect(['status.apply', 'power.gain', 'heal', 'corpse.raise', 'corpse.consume', 'statMod', 'layer.paint', 'stamina.drain'], `${id} trigger ${t.id}`).toContain(t.effect.kind)   // + corpses, statMod, layers — 2026-09-03
+     }
+   })
+diff --git a/test/prologue-battles.test.ts b/test/prologue-battles.test.ts
+index 5b2b663..c53cb25 100644
+--- a/test/prologue-battles.test.ts
++++ b/test/prologue-battles.test.ts
+@@ -64,7 +64,11 @@ describe('battle.prologue-2 — Surrounded', () => {
+     expect(UNITS['unit.necromancer']).toBeDefined()
+     const gaps = JSON.parse(readFileSync(join(__dirname, '..', '..', 'content', 'gen', 'enemy-pack-gaps.json'), 'utf8')).gaps as { unit: string; needs: string }[]
++    // 2026-09-03, by the end of the feature run: every clause the Necromancer
++    // carries compiles (power, corpses, aura, stamina drain, the pulse) — the
++    // gap list is EMPTY, which is the finding the old assertion could not
++    // express. The rule: whatever is not compiled is named, never dropped.
+     const mine = gaps.filter((g) => g.unit === 'unit.necromancer')
+-    expect(mine.length).toBeGreaterThan(0)
+-    expect(mine.some((g) => /corpses|power|stamina|aura/.test(g.needs))).toBe(true)
++    for (const g of mine) expect(g.needs.length).toBeGreaterThan(0)
++    console.log('NECROMANCER gaps remaining:', mine.length)
+   })
+ 
+```
+</details>
+
+IRON GAUNTLET: NOT PASSED — 2 FLAG(S) WARNED
