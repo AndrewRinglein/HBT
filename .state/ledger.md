@@ -778,3 +778,5 @@ IRON GAUNTLET: NOT PASSED — 2 FLAG(S) WARNED; 1 EXEMPTION(S) TAKEN
 ISC-057: CLOSED at d74a0bc · ISC-058: CLOSED at d74a0bc · ISC-059: CLOSED at d74a0bc
 slice: 55 of 68 closed · 55 probed · 0 accepted
 IRON GAUNTLET: NOT PASSED — 2 FLAG(S) WARNED; 1 EXEMPTION(S) TAKEN
+
+Law 10 note (forge.shelf): test/isc-041.test.ts bought two named items at a flat switch price; the shelf is now a weekly roll sized by the Forge's band at a rolled 10–20 Supplies (ruled 2026-09-02), so the probe buys what the shelf offers this Week. The rule it holds — no shelf until repaired, tier-1 weapons and armor for Supplies, then equipped at prep — is unchanged.
