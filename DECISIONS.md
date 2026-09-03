@@ -1166,3 +1166,51 @@ Drake — the last hand-typed units in the engine — get their Codex rows:
 
 Consequence: they stay in `src/content/index.ts`, marked as waiting on their
 rows (`content.beasts`, not scheduled).
+
+---
+
+## 2026-09-03 — the feature run: four answers before an unattended batch
+
+Angela, at the start of an eleven-hour Iron Gauntlet run ("I want to work
+through without pausing to ask questions. I want to work through all of the
+combat backlog. If something can't be gotten to work, it can be skipped for
+now. Try three attempts to get something to work"). Each was put as a yes/no
+with a recommended default; the answer is the option she chose, quoted as
+offered.
+
+**Structure only, superseded.** Asked whether today's run supersedes the
+2026-09-02 ruling *"we don't need all of the features built"* and opens the
+deliberately-unbuilt list (six statuses, Pray, Charging Run, charges and
+activated items, the `move.*` mechanism, stat-less attacks, Vision, Surge):
+
+> "Yes — build them all"
+
+Consequence: the do-not-build list in `HANDOFF-2026-09-03.md` §6 is open. The
+2026-09-02 entry above stands as a record of what was true then.
+
+**P11, the encounter format.** Asked whether it is approved as written in
+`ENCOUNTERS-ENGINE-HANDOFF.md` §1 (id · map or ordered map list · requirements
+· standing · setup · phase-keyed schedule · salvation · win/loss · civilians):
+
+> "Approved as written"
+
+Consequence: `encounter.runner` is unblocked; `questions.md`'s P11 entry moves
+to ANSWERED. The 24 authored encounters are the run's test bed.
+
+**New kinds, by policy.** Asked how to handle prefixes no existing kind covers
+(auras, corpses, ground layers, cooldowns) when nobody can be asked mid-run:
+
+> "Propose and record"
+
+Consequence: this session proposes ids per `GLOSSARY.md` conventions and
+records them in `tools/approved-kinds.json` with the note *approved by policy,
+Angela 2026-09-03*. Each is listed in the run's handoff for a look afterwards.
+
+**The hero states.** Asked whether `progression/PROGRESSION-SCHEDULE.json`'s
+roster at all twenty battle indices is the party, matched to each encounter's
+campaign position:
+
+> "Yes, all twenty by position"
+
+Consequence: a loader turns a battle index's fielded roster into `heroItems`
+for `createBattle`; encounters run against the roster at their position.
