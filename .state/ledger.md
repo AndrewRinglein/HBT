@@ -684,3 +684,26 @@ Law 10 notes (heroes.cut-alpha): seven probes re-pointed from the removed ids to
 ISC-051: CLOSED at bd45b65
 slice: 47 of 68 closed · 47 probed · 0 accepted
 IRON GAUNTLET: NOT PASSED — 1 FLAG(S) WARNED
+
+## heroes.kits — LANDED `3ae1be3` **NEEDS REVIEW**
+2026-09-03 03:57 · engine @ 37f7311
+
+  PASS  dependencies landed
+  WARN  not already decided — 4 candidate ruling(s) — READ BEFORE ASKING: ../GEAR-IMPLEMENTATION.md:55 · ../STATE.md:18
+  PASS  typecheck
+  PASS  full test suite — 113 passed
+  PASS  gate 1 — every claimed criterion holds — ISC-052 holds · ISC-053 holds
+  PASS  brought its own tests — test/isc-041.test.ts, test/isc-052.test.ts, test/isc-053.test.ts
+  PASS  existing tests untouched
+  PASS  kill switch — every claimed probe has been seen red — ISC-052: red on record (2026-09-03 03:54 @ 05848fe, probe 7c20f25f12a0) · ISC-053: red on record (2026-09-03 03:54 @ 05848fe, probe db6adbf52489)
+  PASS  nothing regresses — every P-tier probe — 49 P-tier probe(s): 49 green, 0 red, 0 regression(s). 47 of 68 closed · 49 probed · 0 accepted
+  PASS  hardcode scan — core knows mechanisms, never names
+  PASS  generalizes — the second instance costs zero kingdom code — shape 'data' — not a mechanism, exempt
+  PASS  naming — new ids use declared kinds
+  PASS  naming — no banned words invented
+  PASS  engine working tree clean — engine @ 37f7311, clean
+  PASS  one door to the engine
+
+ISC-052: CLOSED at 3ae1be3 · ISC-053: CLOSED at 3ae1be3
+slice: 49 of 68 closed · 49 probed · 0 accepted
+IRON GAUNTLET: NOT PASSED — 1 FLAG(S) WARNED
