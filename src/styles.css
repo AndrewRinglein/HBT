@@ -452,3 +452,16 @@ html,body{margin:0;background:#08090b;color:var(--ink);
 #doc{max-width:1400px;margin:0 auto 4px}
 #boardwrap::after{background:none !important;
   box-shadow:inset 0 0 130px 48px rgba(96,70,36,.42) !important;}
+/* ── OFF-SCREEN UNIT INDICATORS (PLAYBACK-DESIGN §7.8, 2026-09-02) ────────
+   a bubble at the viewport edge: the unit's art, an arrow toward it, a count,
+   the danger numeral for enemies. Screen space, outside the 3D scene. */
+.edgeBub{position:absolute;width:44px;height:44px;margin:-22px 0 0 -22px;border-radius:50%;
+  border:2px solid;background:rgba(10,9,7,.88);box-shadow:0 2px 10px rgba(0,0,0,.7);
+  display:flex;align-items:center;justify-content:center}
+.edgeArt{position:absolute;inset:4px;border-radius:50%;background-size:cover;background-position:center 15%}
+.edgeArrow{position:absolute;left:50%;top:50%;width:0;height:0;margin:-7px 0 0 -4px;
+  border:7px solid transparent;border-right:none;border-left-width:11px}
+.edgeN{position:absolute;right:-6px;top:-6px;min-width:18px;height:18px;border-radius:9px;padding:0 4px;
+  font:700 11px/18px ui-monospace,monospace;color:#0d0c0a;text-align:center;box-shadow:0 1px 3px #000}
+.edgeDg{position:absolute;left:50%;bottom:-13px;transform:translateX(-50%);display:flex;align-items:center;gap:2px;
+  font:700 12px/1 ui-monospace,monospace;color:#c3bdb0;text-shadow:0 1px 3px #000,0 0 6px #000;white-space:nowrap}

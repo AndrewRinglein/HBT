@@ -23,6 +23,8 @@
      · a multi-hex move steps as ONE beat and lands the unit where the log says
      · hitstop cues carry only the ruled 70/110/140 and all three occur
      · the skull is on the bar exactly when the tick projection is lethal
+     · the camera pans by inclusion, a manual pan holds, a peek restores
+     · off-screen units get edge bubbles that account for every one of them; none during a peek
    Optional --check names add change-specific assertions. */
 import fs from 'node:fs'
 import { resolve, dirname } from 'node:path'
@@ -181,6 +183,43 @@ if (DUR) for (const t of Object.keys(DUR)) check(FOLDED_TYPES.includes(t) || IGN
   }
   check(lethalSeen > 0, 'skull: no lethal projection anywhere in the library — cannot test the skull')
   check(mismatches === 0, `skull: ${mismatches} unit-frames where the skull and the projection disagree`)
+}
+
+/* ── the camera (PLAYBACK-DESIGN §7.8): inclusion, not centring; pan holds; peek restores ── */
+{
+  H.load(0); const v = H.viewer; v.pause(); const V = v._V
+  v.render()
+  const before = { ...V.view.camF }
+  /* inspect a unit that is already inside the viewport: the camera must not move */
+  const POS = V.data.POS
+  const inside = Object.values(v.state.U).find(u => Math.abs(POS[u.hex].px - before.x) < 400 && Math.abs(POS[u.hex].py - before.y) < 200)
+  if (inside) { v.inspect(inside.id); check(V.view.camF.x === before.x && V.view.camF.y === before.y, 'camera: inspecting a unit already in view moved the camera (centring, not inclusion)') }
+  /* a manual pan holds while the subject stays in view */
+  v.pan(60, 0); const panned = { ...V.view.camF }
+  check(panned.x !== before.x, 'camera: pan did nothing')
+  v.render(); check(V.view.camF.x === panned.x, 'camera: a render undid a manual pan although the subject was still in view')
+  /* peek shows the whole board and releases to exactly where it was */
+  v.peek(true); check(/scale\(0\.\d+\)/.test(V.dom.stage.style.transform), 'camera: peek did not scale the board to fit')
+  check(V.view.camF.x === panned.x && V.view.camF.y === panned.y, 'camera: peek moved the remembered camera')
+  v.peek(false); check(/scale\(1\.0000\)/.test(V.dom.stage.style.transform), 'camera: releasing peek did not return to 1x')
+}
+
+/* ── off-screen indicators (PLAYBACK-DESIGN §7.8 part 1) ───────────────── */
+{
+  H.load(0); const v = H.viewer; v.pause(); const V = v._V
+  for (let i = 0; i < 40 && v.cursor < v.events.length; i++) v.step()      // units spread out a little
+  v.render()
+  /* pan to a corner: with 16×16 board space larger than the view, someone must be off-screen */
+  v.pan(-4000, -4000)
+  const bubs = V.layers.edgeL ? V.layers.edgeL.querySelectorAll('.edgeBub') : []
+  const POS = V.data.POS, camF = V.view.camF
+  const offCount = Object.values(v.state.U).filter(u => u.life !== 'dead' && !(Math.abs(POS[u.hex].px - camF.x) <= 704 - 80 && Math.abs(POS[u.hex].py - camF.y) <= (372 / Math.cos(V.data.LAYOUT.tilt * Math.PI / 180)) - 80)).length
+  check(offCount > 0, 'edges: panning to a corner left nobody off-screen — the test cannot bite')
+  check(bubs.length > 0 && bubs.length <= offCount, `edges: ${bubs.length} bubbles for ${offCount} off-screen units`)
+  const counted = bubs.reduce((n, b) => n + (b.querySelector('.edgeN') ? +b.querySelector('.edgeN').textContent : 1), 0)
+  check(counted === offCount, `edges: bubbles account for ${counted} units, ${offCount} are off-screen`)
+  check(bubs.some(b => b.querySelector('.edgeDg')), 'edges: no enemy bubble carries a danger numeral')
+  v.peek(true); check((V.layers.edgeL.querySelectorAll('.edgeBub')).length === 0, 'edges: bubbles shown during peek, when nothing is off-screen'); v.peek(false)
 }
 
 /* ── a dropped export plays (plan §8.6) ────────────────────────────────── */

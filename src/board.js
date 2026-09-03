@@ -471,40 +471,135 @@ export function drawAim(V) {
   if (AIM.missed) line(104, `<span style="font-size:26px;font-weight:700;color:#b9b2a3">MISS <span style="font-size:13px;color:#8b8778">rolled ${AIM.missed.roll}</span></span>`)
 }
 
-/* ── camera: 1x native, follows the subject — LAZY (ruled 2026-08-26) ────
-   If what matters is already on screen, DO NOT move; nudge the minimum.
-   (Pan-by-inclusion, ruled 2026-09-01, is the same rule for the whole
-   viewport — the ruled camera work in VISUAL-BATTLE-UPDATES §2 builds here.) */
+/* ── camera (PLAYBACK-DESIGN §7.8, ruled 2026-09-01) ─────────────────────
+   PAN BY INCLUSION, NEVER BY CENTRING: the camera moves the minimum that
+   brings the subject wholly inside the viewport, with a margin, and not at all
+   when it is already inside. Governs clicking a unit and the enemy phase alike.
+   FREE PAN: drag the board, or the arrow keys; a manual pan holds until the
+   subject leaves the view, when the same inclusion rule pulls it back.
+   HOLD-TO-PEEK: hold Z to see the whole board; release and the camera is
+   exactly where it was. An overview is a check you perform, not a scale you
+   play at (fit is 0.654 — a 132px token becomes 86px). */
 export const VIEW = { W: 1408, H: 744 }
-export function applyCam(V) {
+export const PEEK_KEY = 'z'
+export function applyCam(V, opts = {}) {
   const { S, view, data: { POS, F, LAYOUT } } = V
   const bw = F.w, bh = F.h, sq = squash(V)
-  const s = view.zoom === 'fit' ? Math.min(VIEW.W / bw, VIEW.H / (bh * sq)) : 1
+  const fit = view.zoom === 'fit' || view.peek
+  const s = fit ? Math.min(VIEW.W / bw, VIEW.H / (bh * sq)) : 1
   const halfW = (VIEW.W / 2) / s, halfH = (VIEW.H / 2) / (s * sq)
   const M = 80
   const pts = []
   if (S.AIM) pts.push(POS[S.AIM.from], POS[S.AIM.to])
   else { const sid = view.inspectId != null ? view.inspectId : S.subjectId; const u = S.U[sid]; if (u) pts.push(POS[u.hex]) }
+  /* a peek never moves the remembered camera; a manual pan is applied first */
   const camF = view.camF
-  if (camF.x == null) { const p = pts[0] || { px: bw / 2, py: bh / 2 }; camF.x = p.px; camF.y = p.py }
+  if (fit) { /* the whole board, centred; the remembered camera is not touched */ }
+  else if (opts.pan) { if (camF.x == null) { camF.x = bw / 2; camF.y = bh / 2 } camF.x += opts.pan.x; camF.y += opts.pan.y }
+  else if (camF.x == null) { const p = pts[0] || { px: bw / 2, py: bh / 2 }; camF.x = p.px; camF.y = p.py }
   else if (pts.length === 2 && (Math.abs(pts[0].px - pts[1].px) > 2 * (halfW - M) || Math.abs(pts[0].py - pts[1].py) > 2 * (halfH - M))) {
-    camF.x = (pts[0].px + pts[1].px) / 2; camF.y = (pts[0].py + pts[1].py) / 2
+    camF.x = (pts[0].px + pts[1].px) / 2; camF.y = (pts[0].py + pts[1].py) / 2       // a pair that cannot both fit: the midpoint
   } else {
-    for (const p of pts) {
+    for (const p of pts) {                                                             // the minimal nudge, per point
       if (p.px < camF.x - halfW + M) camF.x = p.px + halfW - M
       else if (p.px > camF.x + halfW - M) camF.x = p.px - halfW + M
       if (p.py < camF.y - halfH + M) camF.y = p.py + halfH - M
       else if (p.py > camF.y + halfH - M) camF.y = p.py - halfH + M
     }
   }
-  camF.x = bw <= halfW * 2 ? bw / 2 : Math.min(Math.max(camF.x, halfW), bw - halfW)
-  camF.y = bh <= halfH * 2 ? bh / 2 : Math.min(Math.max(camF.y, halfH), bh - halfH)
-  V.dom.stage.style.transform = `perspective(2600px) rotateX(${LAYOUT.tilt}deg) scale(${s.toFixed(4)}) translate(${(bw / 2 - camF.x).toFixed(1)}px,${(bh / 2 - camF.y).toFixed(1)}px)`
+  if (!fit) {
+    camF.x = bw <= halfW * 2 ? bw / 2 : Math.min(Math.max(camF.x, halfW), bw - halfW)
+    camF.y = bh <= halfH * 2 ? bh / 2 : Math.min(Math.max(camF.y, halfH), bh - halfH)
+  }
+  const cx = fit ? bw / 2 : camF.x, cy = fit ? bh / 2 : camF.y                        // peek shows the whole board, centred
+  V.dom.stage.style.transform = `perspective(2600px) rotateX(${LAYOUT.tilt}deg) scale(${s.toFixed(4)}) translate(${(bw / 2 - cx).toFixed(1)}px,${(bh / 2 - cy).toFixed(1)}px)`
   V.dom.stage.style.setProperty('--anti', (-LAYOUT.tilt) + 'deg')
   if (V.dom.hud) {
     const sid = view.inspectId != null ? view.inspectId : S.subjectId; const u = S.U[sid]
     const m = V.meta
-    V.dom.hud.textContent = (view.zoom === 'fit' ? 'fit' : '1× native') + (u ? ' · on ' + u.name : '') +
+    V.dom.hud.textContent = (view.peek ? 'peek — whole board' : view.zoom === 'fit' ? 'fit' : '1× native · drag or arrows to pan · hold Z to peek') + (u ? ' · on ' + u.name : '') +
       ` · ${m.outcome} in ${m.turns} turns · engine ${m.engineCommit}`
   }
 }
+/* ── OFF-SCREEN UNIT INDICATORS (PLAYBACK-DESIGN §7.8 part 1, ruled) ──────
+   Andrew: "a little bubble with an arrow pointing off with a miniaturized
+   version of unit that says 2." One bubble per cluster of off-screen units,
+   pinned at the viewport edge in their direction: the unit's own art, an
+   arrow, a count when it stands for more than one, faction-coloured, and for
+   enemies the danger numeral. Continuous whole-board awareness at zero screen
+   cost — the load-bearing answer to "you need to see the entire board." Uses
+   the camera's own notion of inside (the same margin), so a unit the camera
+   would not nudge for is never flagged. Screen-space layer over the board
+   wrap, outside the 3D scene. */
+const EDGE_INSET = 34, EDGE_GROUP = 44
+export function drawEdges(V) {
+  const { S, view, data: { POS, F }, layers: L } = V
+  const wrap = V.dom.stage.parentNode; if (!wrap) return
+  if (!L.edgeL) { L.edgeL = el('edgeL', 'position:absolute;inset:0;pointer-events:none;z-index:40'); wrap.appendChild(L.edgeL) }
+  const fit = view.zoom === 'fit' || view.peek
+  const camF = view.camF
+  if (fit || camF.x == null) { L.edgeL.innerHTML = ''; return }
+  const sq = squash(V), s = 1
+  const halfW = (VIEW.W / 2) / s, halfH = (VIEW.H / 2) / (s * sq), M = 80
+  const W = wrap.clientWidth || VIEW.W, Hh = wrap.clientHeight || VIEW.H
+  const cx = W / 2, cy = Hh / 2
+  const off = []
+  for (const u of Object.values(S.U)) {
+    if (u.life === 'dead') continue
+    const p = POS[u.hex]
+    const inside = Math.abs(p.px - camF.x) <= halfW - M && Math.abs(p.py - camF.y) <= halfH - M
+    if (inside) continue
+    /* screen offset from the viewport centre, clamped to the edge rectangle */
+    const dx = (p.px - camF.x) * s, dy = (p.py - camF.y) * s * sq
+    const k = Math.min((cx - EDGE_INSET) / Math.max(1, Math.abs(dx)), (cy - EDGE_INSET) / Math.max(1, Math.abs(dy)))
+    const x = cx + dx * Math.min(1, k), y = cy + dy * Math.min(1, k)
+    off.push({ u, x, y, ang: Math.atan2(dy, dx) })
+  }
+  /* cluster by proximity along the edge */
+  const groups = []
+  for (const o of off) {
+    const g = groups.find(g => g.u.side === o.u.side && Math.hypot(g.x - o.x, g.y - o.y) < EDGE_GROUP)
+    if (g) { g.n++; g.units.push(o.u) } else groups.push({ ...o, n: 1, units: [o.u] })
+  }
+  L.edgeL.innerHTML = groups.map(g => {
+    const a = V.data.ARTMAP[g.u.typeId] || V.data.ARTMAP['test-zombie']
+    const tint = SIDE_TINT[g.u.side] || SIDE_TINT.enemy
+    const dgr = g.u.side === 'enemy' ? dangerOf(g.u, V.data.UD) : null
+    const deg = Math.round(g.ang * 180 / Math.PI)
+    return `<div class="edgeBub" style="left:${g.x.toFixed(0)}px;top:${g.y.toFixed(0)}px;border-color:${tint}" title="${g.units.map(x => x.name).join(', ')}">
+      <i class="edgeArrow" style="transform:rotate(${deg}deg) translateX(26px);border-left-color:${tint}"></i>
+      <span class="edgeArt" style="background-image:url('${V.data.ASSETS[a.token]}')"></span>
+      ${g.n > 1 ? `<b class="edgeN" style="background:${tint}">${g.n}</b>` : ''}
+      ${dgr ? `<span class="edgeDg">${dgr.n}${raIcon(dgr.kind === 'ranged' ? 'crossbow' : 'crossed-swords', 'font-size:12px')}</span>` : ''}
+    </div>` }).join('')
+}
+/** wire drag, arrow keys and the peek key; returns an unbind for dispose() */
+export function bindCamera(V) {
+  const wrap = V.dom.stage.parentNode; if (!wrap || !wrap.addEventListener) return () => {}
+  let drag = null
+  const down = e => { if (e.button !== 0 && e.button !== 1) return; drag = { x: e.clientX, y: e.clientY }; wrap.style.cursor = 'grabbing' }
+  const move = e => { if (!drag) return
+    const sq = squash(V), scale = V.dom.root.getBoundingClientRect ? (V.dom.root.getBoundingClientRect().width / 1920 || 1) : 1
+    const dx = (e.clientX - drag.x) / scale, dy = (e.clientY - drag.y) / (scale * sq)
+    drag = { x: e.clientX, y: e.clientY }
+    if (dx || dy) { applyCam(V, { pan: { x: -dx, y: -dy } }); drawEdges(V) } }
+  const up = () => { drag = null; wrap.style.cursor = '' }
+  const key = e => {
+    if (e.target && /INPUT|TEXTAREA/.test(e.target.tagName)) return
+    const STEP = 120
+    const pan = (x, y) => { applyCam(V, { pan: { x, y } }); drawEdges(V) }
+    if (e.key === 'ArrowLeft') pan(-STEP, 0)
+    else if (e.key === 'ArrowRight') pan(STEP, 0)
+    else if (e.key === 'ArrowUp') pan(0, -STEP)
+    else if (e.key === 'ArrowDown') pan(0, STEP)
+    else if (e.key.toLowerCase() === PEEK_KEY && !e.repeat) { V.view.peek = true; applyCam(V); drawEdges(V) }
+    else return
+    e.preventDefault()
+  }
+  const keyup = e => { if (e.key.toLowerCase() === PEEK_KEY) { V.view.peek = false; applyCam(V); drawEdges(V) } }
+  wrap.addEventListener('pointerdown', down); wrap.addEventListener('pointermove', move)
+  wrap.addEventListener('pointerup', up); wrap.addEventListener('pointerleave', up)
+  document.addEventListener('keydown', key); document.addEventListener('keyup', keyup)
+  return () => { document.removeEventListener('keydown', key); document.removeEventListener('keyup', keyup) }
+}
+

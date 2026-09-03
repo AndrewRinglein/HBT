@@ -92,7 +92,7 @@ export function makeWindow() {
     createElement: t => new El(t), createElementNS: (_, t) => new El(t), createTextNode: t => ({ textContent: t }),
     getElementById(id) { return this.body.querySelector('#' + id) ?? this.documentElement.querySelector('#' + id) },
     querySelector(s) { return this.body.querySelector(s) }, querySelectorAll(s) { return this.body.querySelectorAll(s) },
-    addEventListener() {},
+    addEventListener() {}, removeEventListener() {},
   }
   const timers = []; let now = 0
   const window = {

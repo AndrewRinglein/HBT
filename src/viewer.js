@@ -17,10 +17,10 @@
    opts = { now?: () => ms, autoplay?: bool, onCursor?: (cursor, event) => void }
 
    Returns { push, seek, play, pause, speed, step, setZoom, setBare, inspect,
-             render, dispose, get cursor, get events, get state, _V }
+             peek, pan, render, dispose, get cursor, get events, get state, _V }
    ══════════════════════════════════════════════════════════════════════════ */
 import { createState, fold, foldTo } from './fold.js'
-import { el, ensureKeyframes, buildGround, syncUnits, drawAim, applyCam, playCues, clearFloats, initFX, traverse, ROOT_TRANSITION } from './board.js'
+import { el, ensureKeyframes, buildGround, syncUnits, drawAim, applyCam, playCues, clearFloats, initFX, traverse, ROOT_TRANSITION, bindCamera, drawEdges } from './board.js'
 import { drawPanel } from './panel.js'
 import { drawBar, drawStam } from './actionbar.js'
 import { spriteHTML } from './icons.js'
@@ -69,7 +69,7 @@ export function mountBattleViewer(root, data, opts = {}) {
     data: { F, POS: F.hexes, LAYOUT, UD: data.units, SN: data.statuses, ARTMAP: data.artmap, ASSETS: data.assets },
     meta: data.meta || {},
     S: createState(), EV: [], cursor: 0,
-    view: { inspectId: null, statsOpen: false, TRG_OPEN: new Set(), zoom: '1x', bare: false, camF: { x: null, y: null } },
+    view: { inspectId: null, statsOpen: false, TRG_OPEN: new Set(), zoom: '1x', peek: false, bare: false, camF: { x: null, y: null } },
     layers: { ground: null, dyn: null, unitsL: null, UEL: new Map(), floatL: null, FLOAT_SLOTS: {} },
     fx: { FX: null },
     playing: false, speed: 1, timer: null,
@@ -85,12 +85,13 @@ export function mountBattleViewer(root, data, opts = {}) {
   /* the icon sprite is the component's: one per document, whoever mounts */
   if (data.glyphs && !document.getElementById('raSprite')) document.body.insertAdjacentHTML('beforeend', spriteHTML(data.glyphs))
   initFX(V)
+  const unbindCamera = bindCamera(V)
 
   function render() {
     if (!V.layers.ground) buildGround(V)
     drawAim(V)
     syncUnits(V)
-    drawPanel(V); drawBar(V); drawStam(V); applyCam(V); drawChips()
+    drawPanel(V); drawBar(V); drawStam(V); applyCam(V); drawEdges(V); drawChips()
   }
   V.render = render
   function drawChips() {
@@ -184,7 +185,9 @@ export function mountBattleViewer(root, data, opts = {}) {
     inspect(id) { V.view.inspectId = id; render() },
     get cursor() { return V.cursor }, get events() { return V.EV }, get state() { return V.S },
     get playing() { return V.playing }, get view() { return V.view },
-    dispose() { pause(); root.innerHTML = '' },
+    peek(on) { V.view.peek = !!on; applyCam(V); drawEdges(V) },
+    pan(dx, dy) { applyCam(V, { pan: { x: dx, y: dy } }); drawEdges(V) },
+    dispose() { pause(); unbindCamera(); root.innerHTML = '' },
     _V: V,
   }
   /* first frame is already tilted; enable the half-speed camera glide after it */
