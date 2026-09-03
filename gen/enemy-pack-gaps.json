@@ -37,11 +37,6 @@
    "needs": "Knockback N"
   },
   {
-   "unit": "unit.doombringer",
-   "what": "attack.doombringer.crush onHit: target loses stamina",
-   "needs": "capability.target-stamina-loss"
-  },
-  {
    "unit": "unit.eyeblight",
    "what": "attack.eyeblight.gaze damage reads no stat (flat 1)",
    "needs": "attack shape: stat-less (flat) damage"
@@ -55,11 +50,6 @@
    "unit": "unit.ghoul",
    "what": "(unit) hook 'startOfBattle'",
    "needs": "hook: startOfBattle (declared, engine never fires it)"
-  },
-  {
-   "unit": "unit.ghoul",
-   "what": "attack.ghoul.shriek onHit: target loses stamina",
-   "needs": "capability.target-stamina-loss"
   },
   {
    "unit": "unit.ghoul",
@@ -115,11 +105,6 @@
    "unit": "unit.lieutenant-demon",
    "what": "aura aura-1: Immunity N burn",
    "needs": "aura: status immunity"
-  },
-  {
-   "unit": "unit.necromancer",
-   "what": "attack.necromancer.necro-bolt onHit: target loses stamina",
-   "needs": "capability.target-stamina-loss"
   },
   {
    "unit": "unit.nightstalker",
@@ -182,11 +167,6 @@
    "needs": "capability.inflict-affliction"
   },
   {
-   "unit": "unit.vampire",
-   "what": "attack.vampire.mesmerize onHit: target loses stamina",
-   "needs": "capability.target-stamina-loss"
-  },
-  {
    "unit": "unit.vampire-lord",
    "what": "attack.vampire-lord.bite onKill: grant a stat for the Battle (health)",
    "needs": "trigger-effect: statMod"
@@ -195,11 +175,6 @@
    "unit": "unit.vampire-lord",
    "what": "attack.vampire-lord.bite onDamage: inflict an affliction",
    "needs": "capability.inflict-affliction"
-  },
-  {
-   "unit": "unit.vampire-lord",
-   "what": "attack.vampire.mesmerize onHit: target loses stamina",
-   "needs": "capability.target-stamina-loss"
   },
   {
    "unit": "unit.werewolf",

@@ -222,7 +222,7 @@ const TRIG_HOOKS = new Set(['onAttack', 'onMiss', 'onHit', 'onCrit', 'onDamage',
 // Capabilities the engine HAS now — a row naming one of these is not gapped for it.
 // capability.power: capability.power-pool, 2026-09-03.
 // capability.enemy-action-cooldown: 2026-09-03.
-const HAVE = new Set(['capability.power', 'capability.enemy-action-cooldown', 'capability.corpses', 'capability.ground-layers']);   // corpses, ground-layers: 2026-09-03
+const HAVE = new Set(['capability.power', 'capability.enemy-action-cooldown', 'capability.corpses', 'capability.ground-layers', 'capability.target-stamina-loss']);   // 2026-09-03
 function compileTrigger(t, unitId, attackId) {
   const where = attackId ?? '(unit)';
   const needs = (t.needs || []).filter((n) => !HAVE.has(n));
@@ -289,6 +289,10 @@ function compileTrigger(t, unitId, attackId) {
       out.push({ id: `${unitId.replace(/^unit\./, 'trigger.')}.${(t.name || ef.stat).toLowerCase().replace(/[^a-z0-9]+/g, '-')}-${ef.stat}`,
         hook: t.hook, chance: t.chance ?? ef.chance ?? 100, select,
         effect: { kind: 'statMod', stat: HERO_STAT_LATE[ef.stat] ?? 'vision', value: ef.value, until }, source: unitId, ...(attackId ? { onlyWithAttack: attackId } : {}) });
+    } else if (ef.effect === 'target loses stamina') {
+      // capability.target-stamina-loss (2026-09-03): the existing drain, aimed at the target
+      out.push({ id: `${unitId.replace(/^unit\./, 'trigger.')}.${(t.name || 'drain').toLowerCase().replace(/[^a-z0-9]+/g, '-')}-stamina`,
+        hook: t.hook, chance: t.chance ?? ef.chance ?? 100, select: 'target', effect: { kind: 'stamina.drain', value: ef.value ?? 1 }, source: unitId, ...(attackId ? { onlyWithAttack: attackId } : {}) });
     } else if (ef.effect === 'add power' || ef.effect === 'gain Power') {
       // capability.power-pool (2026-09-03): the clock and the condition — side-wide
       if ((t.effects.length > 1) && (t.chance ?? 100) !== 100) { gap(unitId, `${where} ${t.hook}: multi-effect at chance ${t.chance}`, 'multi-effect rolled trigger'); return []; }
