@@ -275,6 +275,15 @@ export type AttackDef = {
    */
   readonly crit?: number
   /**
+   * capability.enemy-action-cooldown (2026-09-03), ENEMY-REVIEW P10: "probably
+   * just permission to use the same fields" — the cooldown and warmup hero
+   * powers carry, on an ATTACK. Turns until it can be used again after a use
+   * (absent/0 = every turn); warmup = Turns before the first use. Tracked in
+   * the unit's one `cooldowns` map, keyed by the attack id.
+   */
+  readonly cooldown?: number
+  readonly warmup?: number
+  /**
    * capability.power-pool (2026-09-03): the share of the enemy side's Power
    * this attack adds to its damage — 1 = +Power, 0.5 = +½ Power, 0.334 = +⅓
    * — resolved nearest, 0.5 up (Law 7) at the DMG.POWER station. Enemy rows

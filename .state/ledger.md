@@ -5491,3 +5491,54 @@ index b1a18b5..2f63c44 100644
 </details>
 
 IRON GAUNTLET: NOT PASSED — 2 FLAG(S) WARNED · periodic audit clean
+
+## capability.enemy-action-cooldown — LANDED `f5a5cac` **NEEDS REVIEW**
+2026-09-03 09:27
+
+  PASS  dependencies landed
+  WARN  not already decided — 3 candidate ruling(s) — READ BEFORE ASKING: ../STATE.md:18 · ../STATE.md:21
+  PASS  typecheck
+  PASS  full test suite
+  PASS  gate 1 — the id appears in a real battle — attack.test-ram.slam: 4 log lines, 4 fired, 1 changed state
+  PASS  brought its own tests — test/accuracy-field.test.ts, test/crit-count.test.ts, test/attack-cooldown.test.ts
+  WARN  existing tests untouched — DELETED LINES in test/crit-count.test.ts (-1) — will land FLAGGED for review
+  PASS  control battles unchanged
+  PASS  content has a published source — 16 ids without a published source (6 awaiting publication from earlier items — see audit)
+  PASS  hardcode scan — core knows mechanisms, never names
+  PASS  generalizes — the second instance costs zero engine code — attack.test-ram.slam live · attack.test-ram.overhead live
+  PASS  naming — new content ids use declared kinds
+  PASS  naming — no banned words invented
+  PASS  kill switch — the tests fail without the content — tests fail without attack.test-ram.slam — they genuinely test it
+
+<details><summary>Existing tests were edited — review this diff</summary>
+
+```diff
+diff --git a/test/accuracy-field.test.ts b/test/accuracy-field.test.ts
+index 923f721..9403d27 100644
+--- a/test/accuracy-field.test.ts
++++ b/test/accuracy-field.test.ts
+@@ -19,4 +19,5 @@ function golemBoard() {
+   const g = ctx.state.units[0]!
+   g.stamina = 99
++  ctx.state.turn = 5   // past the Overhead's warmup (capability.enemy-action-cooldown, 2026-09-03)
+   return { ctx, g, z: ctx.state.units[1]! }
+ }
+diff --git a/test/crit-count.test.ts b/test/crit-count.test.ts
+index 17458d5..e0c33f6 100644
+--- a/test/crit-count.test.ts
++++ b/test/crit-count.test.ts
+@@ -93,5 +93,9 @@ describe('live — both counts fire in the verify scenario', () => {
+   it('across a handful of seeds the golem lands slams and overheads, and multi-branches appear', () => {
+     let sawSlam = false, sawOverhead = false, sawMulti = false
+-    for (const r of [0, 1, 2, 3, 4, 5]) {
++    // Widened 6 -> 24 seeds on 2026-09-03 (capability.enemy-action-cooldown):
++    // the Slam carries cooldown 2 now, so the golem swings half as often and
++    // the first multi-critical moved from seed <6 to seed 16. Same claim
++    // (multi-criticals resolve in real battles); early exit once all seen.
++    for (let r = 0; r < 24 && !(sawSlam && sawOverhead && sawMulti); r++) {
+       const ctx = createBattle({ ...scenarioOptions(scenarioDef('showcase.arc-variant')), replicate: r })
+       runBattle(ctx)
+```
+</details>
+
+IRON GAUNTLET: NOT PASSED — 2 FLAG(S) WARNED

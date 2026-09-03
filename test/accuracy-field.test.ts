@@ -18,6 +18,7 @@ function golemBoard() {
   )
   const g = ctx.state.units[0]!
   g.stamina = 99
+  ctx.state.turn = 5   // past the Overhead's warmup (capability.enemy-action-cooldown, 2026-09-03)
   return { ctx, g, z: ctx.state.units[1]! }
 }
 

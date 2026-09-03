@@ -212,6 +212,8 @@ export function canAttack(ctx: Ctx, attackerId: number, targetId: number, attack
   if (at.side === tg.side) return false
   if (at.primaryUsed) return false
   if (at.stamina < a.staminaCost) return false
+  // capability.enemy-action-cooldown (2026-09-03): the same readiness rule a power has
+  if (ctx.state.turn < (at.cooldowns[attackId] ?? 0)) return false
   const d = distance(at.hex, tg.hex)
   // "You cannot use a ranged attack on something adjacent." (Angela, 2026-08-15;
   // GAME-DESIGN.md §4.) A legality rule, so it is answered here rather than as a
@@ -323,6 +325,12 @@ export function performAttack(ctx: Ctx, attackerId: number, targetId: number, at
 
   spendStamina(ctx, attackerId, a.staminaCost, a.id)
   markPrimaryUsed(ctx, attackerId)
+  if (a.cooldown) {
+    // capability.enemy-action-cooldown: ready again on Turn now + cooldown, like a power
+    const readyAgain = ctx.state.turn + a.cooldown
+    at.cooldowns[a.id] = readyAgain
+    emit(ctx, 'cooldown.set', a.id, { actor: attackerId, attackId: a.id, readyOnTurn: readyAgain })
+  }
 
   // Area attacks name every struck unit on the declaration, so a renderer can
   // sweep the whole shape from the one event.

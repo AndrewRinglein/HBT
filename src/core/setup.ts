@@ -28,7 +28,11 @@ export function makeUnit(id: number, uid: number, name: string, def: UnitDef, he
     moves: [...def.moves],
     // warmup (hero assembly, 2026-09-03): a power with warmup W is first
     // usable on Turn W+1 — isReady is `turn >= cooldowns[id]`.
-    cooldowns: Object.fromEntries(def.abilities.flatMap((a) => { const w = ABILITIES[a]?.warmup; return w ? [[a, w + 1]] : [] })),
+    cooldowns: Object.fromEntries([
+      ...def.abilities.flatMap((a) => { const w = ABILITIES[a]?.warmup; return w ? [[a, w + 1]] : [] }),
+      // capability.enemy-action-cooldown: an attack's warmup, the same way
+      ...def.attacks.flatMap((a) => { const w = ATTACKS[a]?.warmup; return w ? [[a, w + 1]] : [] }),
+    ]),
     statuses: [],
     mods: [],
     triggers: triggersFrom(def.triggers ?? []),

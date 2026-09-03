@@ -92,7 +92,11 @@ describe('one critting hit, N criticals', () => {
 describe('live — both counts fire in the verify scenario', () => {
   it('across a handful of seeds the golem lands slams and overheads, and multi-branches appear', () => {
     let sawSlam = false, sawOverhead = false, sawMulti = false
-    for (const r of [0, 1, 2, 3, 4, 5]) {
+    // Widened 6 -> 24 seeds on 2026-09-03 (capability.enemy-action-cooldown):
+    // the Slam carries cooldown 2 now, so the golem swings half as often and
+    // the first multi-critical moved from seed <6 to seed 16. Same claim
+    // (multi-criticals resolve in real battles); early exit once all seen.
+    for (let r = 0; r < 24 && !(sawSlam && sawOverhead && sawMulti); r++) {
       const ctx = createBattle({ ...scenarioOptions(scenarioDef('showcase.arc-variant')), replicate: r })
       runBattle(ctx)
       for (const e of ctx.events) {

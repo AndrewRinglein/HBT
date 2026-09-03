@@ -1986,7 +1986,8 @@ export const UNIT_PACK = {
       "stat": "precision",
       "reach": 10,
       "staminaCost": 0,
-      "powerScale": 1
+      "powerScale": 1,
+      "cooldown": 3
     },
     "attack.bone-dragon.bite": {
       "id": "attack.bone-dragon.bite",
@@ -2137,7 +2138,8 @@ export const UNIT_PACK = {
       "bonus": 2,
       "stat": "strength",
       "reach": 1,
-      "staminaCost": 0
+      "staminaCost": 0,
+      "cooldown": 3
     },
     "attack.hellhound.bite": {
       "id": "attack.hellhound.bite",
@@ -2376,7 +2378,8 @@ export const UNIT_PACK = {
       "stat": "precision",
       "reach": 2,
       "staminaCost": 0,
-      "powerScale": 1
+      "powerScale": 1,
+      "cooldown": 2
     },
     "attack.werewolf.claw-frenzy": {
       "id": "attack.werewolf.claw-frenzy",
@@ -11745,7 +11748,8 @@ export const UNIT_PACK = {
         "reach": 1,
         "staminaCost": 0,
         "crit": 47,
-        "critCount": 2
+        "critCount": 2,
+        "cooldown": 2
       },
       "attack.test-ram.overhead": {
         "id": "attack.test-ram.overhead",
@@ -11758,7 +11762,8 @@ export const UNIT_PACK = {
         "staminaCost": 4,
         "crit": 47,
         "critCount": 3,
-        "accuracy": -10
+        "accuracy": -10,
+        "warmup": 1
       },
       "attack.test-arc.sweep": {
         "id": "attack.test-arc.sweep",

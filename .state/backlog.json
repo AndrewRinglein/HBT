@@ -1899,5 +1899,24 @@
   "status": "done-needs-review",
   "sha": "32c244e",
   "gauntlet": "not passed — 2 flag(s) warned"
+ },
+ {
+  "id": "capability.enemy-action-cooldown",
+  "kind": "engine",
+  "shape": "rule",
+  "spec": "ENEMY-REVIEW P10 (ruled 2026-08-23): cooldown and warmup on enemy ACTIONS — the fields hero powers already carry, reused on AttackDef. canAttack refuses an attack before its ready Turn; performAttack sets it; warmup seeds the map at fielding. Blocks four authored encounters (ENCOUNTERS-ENGINE-HANDOFF §4.5). The Ghoul's Devour (cd 3), the Vampire Lord's Soul Rend (cd 2), the Bone Dragon's Poison Line (cd 3) carry it; the golem's Slam (cd 2, test lane) shows it in a battle.",
+  "expect": "Devour is legal, used, then refused until Turn now+3; the golem slams every other Turn; the gap capability.enemy-action-cooldown is gone from the census",
+  "changesBaseline": false,
+  "probeIds": [
+   "attack.test-ram.slam"
+  ],
+  "variants": [
+   "attack.test-ram.slam",
+   "attack.test-ram.overhead"
+  ],
+  "status": "done-needs-review",
+  "attempts": 2,
+  "sha": "f5a5cac",
+  "gauntlet": "not passed — 2 flag(s) warned"
  }
 ]
