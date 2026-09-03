@@ -36,7 +36,7 @@ describe('civilians are ordinary heroes with their Codex behaviour', () => {
       expect(u.maxStamina, `${id} runs stamina like any hero`).toBe(5)
       expect(u.staminaRegen, id).toBe(1)
       expect(u.moves, `${id} — Beasts and Civilians get neither half-step`).toEqual(['power.move'])
-      expect(u.attributes, id).toContain('civilian')
+      expect(u.tags, id).toContain('civilian')   // fix.unit-tags 2026-09-03: one field
     }
     expect(fieldedDef('hero.fixed.orphans').maxHp).toBe(7)
     expect(fieldedDef('hero.fixed.lumberjack-and-wife').strength).toBe(4)

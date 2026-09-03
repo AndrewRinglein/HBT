@@ -239,6 +239,9 @@ export type UnitDef = {
    * ['undead'], ['demon'], ['hero','ranger']. A unit is often several things, so
    * a list rather than one `type` field.
    * The MECHANISM is here; which units carry which tags is content (session 6).
+   * THE ONE FIELD (fix.unit-tags, 2026-09-03, Law 11): `attributes` carried
+   * the same words under a second name and no reader ever looked at it, so
+   * "target undead" found no zombies. Absent = [].
    */
   readonly tags?: readonly string[]
   readonly strength: number
@@ -275,7 +278,6 @@ export type UnitDef = {
    * content/moves.ts has the rows.
    */
   readonly moves: readonly string[]
-  readonly attributes: readonly string[]
   /**
    * Display base name ("Oathblade (TEST)"). Setup derives battle names from it
    * — pack units carry theirs from the Codex; a def without one falls back to
@@ -330,7 +332,6 @@ export type Unit = {
   tags: readonly string[]
   /** Assembled from the unit's sources at makeUnit — own frozen copies (GAME-DESIGN §5). */
   triggers: import('./trigger.js').Trigger[]
-  attributes: string[]
   // Per-activation budget.
   moveUsed: boolean
   primaryUsed: boolean

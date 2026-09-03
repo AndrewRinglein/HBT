@@ -93,7 +93,7 @@ const RAW_UNITS: Readonly<Record<string, UnitDef>> = {
     // A hero, but a BEAST: "Beasts and Civilians get neither" Sidestep nor
     // Side Roll (Angela 2026-08-21, Codex sidestep ruling).
     moves: ['power.move'],
-    attributes: ['beast'],
+    tags: ['beast'],
   },
   'shadow-hound-puppy': {
     // A PLAYER BEAST — ruled 2026-08-21: "Shadow Hound Puppy is supposed to be
@@ -132,7 +132,7 @@ const RAW_UNITS: Readonly<Record<string, UnitDef>> = {
     attacks: ['attack.fangs.bite'],
     abilities: [],
     moves: ['power.move'],
-    attributes: ['beast'],
+    tags: ['beast'],
   },
   // 'arc-golem' moved to content/test/units.json as test-arc-golem
   // (test.receptacle, 2026-09-02): a complete test body in the receptacle,
@@ -176,7 +176,7 @@ const RAW_UNITS: Readonly<Record<string, UnitDef>> = {
     // Sidestep nor Side Roll (Codex 2026-08-21). Declared order is AI
     // preference order — ties go to the wings.
     moves: ['power.flight', 'power.move'],
-    attributes: ['beast', 'dragon'],
+    tags: ['beast', 'dragon'],
   },
 }
 

@@ -474,7 +474,13 @@
   "shape": "plumbing",
   "spec": "UnitDef carries BOTH `attributes` and `tags` for what a unit is. Content fills `attributes` (zombie: ['undead']); every reader — target.ts requireTags, the planned VS_TARGET station — uses `tags`, and no UnitDef sets it. So \"target undead\" finds no zombies. Collapse to one field (Law 11).",
   "expect": "resolveTargets with requireTags:[\"undead\"] returns the zombies",
-  "changesBaseline": false
+  "changesBaseline": false,
+  "probeIds": [
+   "trigger.test-tags.grave-rot"
+  ],
+  "status": "done-needs-review",
+  "sha": "9b83319",
+  "gauntlet": "not passed — 2 flag(s) warned"
  },
  {
   "id": "fix.one-damage-function",

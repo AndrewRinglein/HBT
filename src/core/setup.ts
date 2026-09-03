@@ -30,7 +30,6 @@ function makeUnit(id: number, uid: number, name: string, def: UnitDef, hex: numb
     mods: [],
     triggers: triggersFrom(def.triggers ?? []),
     tags: def.tags ?? [],
-    attributes: [...def.attributes],
     moveUsed: false, primaryUsed: false, movePointsLeft: 0,
     activationOrdinal: 0, attackOrdinal: 0, deathbedOrdinal: 0,
   }

@@ -31,7 +31,9 @@ describe('the invariant — no heroItems means the hero the converter used to fo
     for (const [id, row] of Object.entries(o)) {
       const f = shape(fieldedDef(id) as unknown as Record<string, unknown>)
       const r = shape(row)
-      const keys = [...new Set([...Object.keys(f), ...Object.keys(r)])].filter((k) => JSON.stringify(f[k]) !== JSON.stringify(r[k]))
+      // fix.unit-tags (2026-09-03): the oracle predates the collapse of
+      // `attributes` into `tags` (Law 11); the field no longer exists.
+      const keys = [...new Set([...Object.keys(f), ...Object.keys(r)])].filter((k) => k !== 'attributes' && JSON.stringify(f[k]) !== JSON.stringify(r[k]))
       if (keys.length) differ[id] = keys
     }
     // FINDING: the converter folded item crit/luck into `ported`, then wrote

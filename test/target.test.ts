@@ -81,20 +81,30 @@ describe('targeting — by type', () => {
     expect(got).toEqual([2])             // the ranger, not the warrior
   })
 
-  it('an untagged unit matches nothing that requires a tag', () => {
+  // Law 10 rewrite, fix.unit-tags (2026-09-03): this test used to ASSERT THE
+  // BUG — the cohort zombie carried 'undead' under `attributes`, the readers
+  // read `tags`, and the test pinned "tags is []" as if that were the rule.
+  // The rule is: a unit WITHOUT the tag matches nothing that requires it, and
+  // a unit WITH it does. Both read off the rows.
+  it('a unit without the tag matches nothing that requires it; the zombie, tagged undead, does', () => {
     const ctx = board()
-    expect(ctx.state.units[3]!.tags).toEqual([])
-    expect(eligible(ctx.state.units[0]!, ctx.state.units[3]!, T({ requireTags: ['undead'] }))).toBe(false)
+    const hero = ctx.state.units[1]!, zombie = ctx.state.units[3]!
+    expect(hero.tags).not.toContain('undead')
+    expect(zombie.tags).toContain('undead')
+    expect(eligible(ctx.state.units[0]!, hero, T({ side: 'any', requireTags: ['undead'] }))).toBe(false)
+    expect(eligible(ctx.state.units[0]!, zombie, T({ side: 'any', requireTags: ['undead'] }))).toBe(true)
   })
 })
 
 describe('targeting — legality is answered before the stamina is spent', () => {
-  it('"target undead" is not castable on a board with no undead', () => {
+  // Law 10 rewrite, fix.unit-tags (2026-09-03) — see above. The board HAS
+  // undead now that the zombies' tags are read; a tag nothing carries is what
+  // "not castable" means.
+  it('"target undead" is castable on a board with zombies; a tag nobody carries is not', () => {
     const ctx = board()
     const a = ctx.state.units[0]!
-    expect(hasAnyTarget(ctx, a, T({ requireTags: ['undead'] }), 99)).toBe(false)
-    ;(ctx.state.units[3] as unknown as { tags: string[] }).tags = ['undead']
     expect(hasAnyTarget(ctx, a, T({ requireTags: ['undead'] }), 99)).toBe(true)
+    expect(hasAnyTarget(ctx, a, T({ requireTags: ['nobody-carries-this'] }), 99)).toBe(false)
   })
 
   it('range is part of legality', () => {

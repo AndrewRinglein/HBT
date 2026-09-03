@@ -31,12 +31,12 @@ export const UNIT_PACK = {
         "attack.punch"
       ],
       "abilities": [],
+      "tags": [
+        "hero"
+      ],
       "moves": [
         "power.move",
         "power.leap"
-      ],
-      "attributes": [
-        "hero-test"
       ],
       "triggers": [
         {
@@ -114,12 +114,12 @@ export const UNIT_PACK = {
         "attack.punch"
       ],
       "abilities": [],
+      "tags": [
+        "hero"
+      ],
       "moves": [
         "power.move",
         "power.side-roll"
-      ],
-      "attributes": [
-        "hero-test"
       ],
       "triggers": [
         {
@@ -161,12 +161,12 @@ export const UNIT_PACK = {
         "attack.punch"
       ],
       "abilities": [],
+      "tags": [
+        "hero"
+      ],
       "moves": [
         "power.move",
         "power.side-roll"
-      ],
-      "attributes": [
-        "hero-test"
       ],
       "triggers": [
         {
@@ -210,12 +210,12 @@ export const UNIT_PACK = {
       "abilities": [
         "power.test-mage.bolt"
       ],
+      "tags": [
+        "hero"
+      ],
       "moves": [
         "power.move",
         "power.focus"
-      ],
-      "attributes": [
-        "hero-test"
       ],
       "triggers": [
         {
@@ -269,12 +269,12 @@ export const UNIT_PACK = {
         "attack.punch"
       ],
       "abilities": [],
+      "tags": [
+        "hero"
+      ],
       "moves": [
         "power.move",
         "power.devotion"
-      ],
-      "attributes": [
-        "hero-test"
       ],
       "triggers": []
     },
@@ -303,12 +303,12 @@ export const UNIT_PACK = {
         "attack.punch"
       ],
       "abilities": [],
+      "tags": [
+        "hero"
+      ],
       "moves": [
         "power.move",
         "power.sidestep"
-      ],
-      "attributes": [
-        "hero-test"
       ],
       "triggers": []
     }
@@ -336,7 +336,7 @@ export const UNIT_PACK = {
         "attack.test-zombie.bite"
       ],
       "abilities": [],
-      "attributes": [
+      "tags": [
         "undead"
       ],
       "triggers": [
@@ -406,7 +406,7 @@ export const UNIT_PACK = {
         "attack.test-zombie.bite"
       ],
       "abilities": [],
-      "attributes": [
+      "tags": [
         "undead"
       ],
       "triggers": [
@@ -470,9 +470,6 @@ export const UNIT_PACK = {
       "moves": [
         "power.move"
       ],
-      "attributes": [
-        "demon"
-      ],
       "tags": [
         "demon"
       ],
@@ -504,9 +501,6 @@ export const UNIT_PACK = {
       "abilities": [],
       "moves": [
         "power.move"
-      ],
-      "attributes": [
-        "beast"
       ],
       "tags": [
         "beast"
@@ -540,10 +534,6 @@ export const UNIT_PACK = {
       "abilities": [],
       "moves": [
         "power.move"
-      ],
-      "attributes": [
-        "undead",
-        "dragon"
       ],
       "tags": [
         "undead",
@@ -605,9 +595,6 @@ export const UNIT_PACK = {
       "moves": [
         "power.move"
       ],
-      "attributes": [
-        "demon"
-      ],
       "tags": [
         "demon"
       ],
@@ -640,9 +627,6 @@ export const UNIT_PACK = {
       "abilities": [],
       "moves": [
         "power.move"
-      ],
-      "attributes": [
-        "horror"
       ],
       "tags": [
         "horror"
@@ -689,10 +673,6 @@ export const UNIT_PACK = {
       "abilities": [],
       "moves": [
         "power.move"
-      ],
-      "attributes": [
-        "demon",
-        "beast"
       ],
       "tags": [
         "demon",
@@ -753,9 +733,6 @@ export const UNIT_PACK = {
       "moves": [
         "power.move"
       ],
-      "attributes": [
-        "demon"
-      ],
       "tags": [
         "demon"
       ],
@@ -801,9 +778,6 @@ export const UNIT_PACK = {
       "moves": [
         "power.move"
       ],
-      "attributes": [
-        "horror"
-      ],
       "tags": [
         "horror"
       ],
@@ -835,9 +809,6 @@ export const UNIT_PACK = {
       "moves": [
         "power.move"
       ],
-      "attributes": [
-        "undead"
-      ],
       "tags": [
         "undead"
       ],
@@ -868,10 +839,6 @@ export const UNIT_PACK = {
       "abilities": [],
       "moves": [
         "power.move"
-      ],
-      "attributes": [
-        "demon",
-        "fire"
       ],
       "tags": [
         "demon",
@@ -922,9 +889,6 @@ export const UNIT_PACK = {
       "moves": [
         "power.move"
       ],
-      "attributes": [
-        "undead"
-      ],
       "tags": [
         "undead"
       ],
@@ -956,10 +920,6 @@ export const UNIT_PACK = {
       "abilities": [],
       "moves": [
         "power.move"
-      ],
-      "attributes": [
-        "demon",
-        "beast"
       ],
       "tags": [
         "demon",
@@ -1020,9 +980,6 @@ export const UNIT_PACK = {
       "moves": [
         "power.move"
       ],
-      "attributes": [
-        "demon"
-      ],
       "tags": [
         "demon"
       ],
@@ -1069,9 +1026,6 @@ export const UNIT_PACK = {
       "abilities": [],
       "moves": [
         "power.move"
-      ],
-      "attributes": [
-        "human"
       ],
       "tags": [
         "human"
@@ -1129,9 +1083,6 @@ export const UNIT_PACK = {
       "moves": [
         "power.move"
       ],
-      "attributes": [
-        "construct"
-      ],
       "tags": [
         "construct"
       ],
@@ -1165,9 +1116,6 @@ export const UNIT_PACK = {
       "moves": [
         "power.move"
       ],
-      "attributes": [
-        "demon"
-      ],
       "tags": [
         "demon"
       ],
@@ -1199,9 +1147,6 @@ export const UNIT_PACK = {
       "abilities": [],
       "moves": [
         "power.move"
-      ],
-      "attributes": [
-        "human"
       ],
       "tags": [
         "human"
@@ -1249,9 +1194,6 @@ export const UNIT_PACK = {
       "moves": [
         "power.move"
       ],
-      "attributes": [
-        "horror"
-      ],
       "tags": [
         "horror"
       ],
@@ -1282,10 +1224,6 @@ export const UNIT_PACK = {
       "abilities": [],
       "moves": [
         "power.move"
-      ],
-      "attributes": [
-        "demon",
-        "poison"
       ],
       "tags": [
         "demon",
@@ -1334,9 +1272,6 @@ export const UNIT_PACK = {
       "abilities": [],
       "moves": [
         "power.move"
-      ],
-      "attributes": [
-        "demon"
       ],
       "tags": [
         "demon"
@@ -1387,9 +1322,6 @@ export const UNIT_PACK = {
       "moves": [
         "power.move"
       ],
-      "attributes": [
-        "horror"
-      ],
       "tags": [
         "horror"
       ],
@@ -1420,9 +1352,6 @@ export const UNIT_PACK = {
       "abilities": [],
       "moves": [
         "power.move"
-      ],
-      "attributes": [
-        "undead"
       ],
       "tags": [
         "undead"
@@ -1468,9 +1397,6 @@ export const UNIT_PACK = {
       "abilities": [],
       "moves": [
         "power.move"
-      ],
-      "attributes": [
-        "undead"
       ],
       "tags": [
         "undead"
@@ -1518,9 +1444,6 @@ export const UNIT_PACK = {
       "moves": [
         "power.move"
       ],
-      "attributes": [
-        "undead"
-      ],
       "tags": [
         "undead"
       ],
@@ -1551,9 +1474,6 @@ export const UNIT_PACK = {
       "abilities": [],
       "moves": [
         "power.move"
-      ],
-      "attributes": [
-        "undead"
       ],
       "tags": [
         "undead"
@@ -1600,9 +1520,6 @@ export const UNIT_PACK = {
       "moves": [
         "power.move"
       ],
-      "attributes": [
-        "undead"
-      ],
       "tags": [
         "undead"
       ],
@@ -1634,9 +1551,6 @@ export const UNIT_PACK = {
       "abilities": [],
       "moves": [
         "power.move"
-      ],
-      "attributes": [
-        "demon"
       ],
       "tags": [
         "demon"
@@ -1683,10 +1597,6 @@ export const UNIT_PACK = {
       "abilities": [],
       "moves": [
         "power.move"
-      ],
-      "attributes": [
-        "undead",
-        "vampire"
       ],
       "tags": [
         "undead",
@@ -1750,10 +1660,6 @@ export const UNIT_PACK = {
       "moves": [
         "power.move"
       ],
-      "attributes": [
-        "undead",
-        "vampire"
-      ],
       "tags": [
         "undead",
         "vampire"
@@ -1813,9 +1719,6 @@ export const UNIT_PACK = {
       "moves": [
         "power.move"
       ],
-      "attributes": [
-        "beast"
-      ],
       "tags": [
         "beast"
       ],
@@ -1859,9 +1762,6 @@ export const UNIT_PACK = {
       "abilities": [],
       "moves": [
         "power.move"
-      ],
-      "attributes": [
-        "undead"
       ],
       "tags": [
         "undead"
@@ -1908,9 +1808,6 @@ export const UNIT_PACK = {
       "moves": [
         "power.move"
       ],
-      "attributes": [
-        "undead"
-      ],
       "tags": [
         "undead"
       ],
@@ -1955,10 +1852,6 @@ export const UNIT_PACK = {
       "abilities": [],
       "moves": [
         "power.move"
-      ],
-      "attributes": [
-        "undead",
-        "beast"
       ],
       "tags": [
         "undead",
@@ -4118,9 +4011,6 @@ export const UNIT_PACK = {
         "power.move",
         "power.sidestep"
       ],
-      "attributes": [
-        "hero-eve"
-      ],
       "tags": [
         "hero"
       ],
@@ -4157,9 +4047,6 @@ export const UNIT_PACK = {
       "moves": [
         "power.move",
         "power.sidestep"
-      ],
-      "attributes": [
-        "hero-eve"
       ],
       "tags": [
         "hero"
@@ -4199,9 +4086,6 @@ export const UNIT_PACK = {
         "power.move",
         "power.sidestep"
       ],
-      "attributes": [
-        "hero-eve"
-      ],
       "tags": [
         "hero"
       ],
@@ -4238,9 +4122,6 @@ export const UNIT_PACK = {
       "moves": [
         "power.move",
         "power.sidestep"
-      ],
-      "attributes": [
-        "hero-eve"
       ],
       "tags": [
         "hero"
@@ -4280,9 +4161,6 @@ export const UNIT_PACK = {
         "power.move",
         "power.side-roll"
       ],
-      "attributes": [
-        "hero-eve"
-      ],
       "tags": [
         "hero"
       ],
@@ -4319,9 +4197,6 @@ export const UNIT_PACK = {
       "moves": [
         "power.move",
         "power.side-roll"
-      ],
-      "attributes": [
-        "hero-eve"
       ],
       "tags": [
         "hero"
@@ -4360,9 +4235,6 @@ export const UNIT_PACK = {
         "power.move",
         "power.side-roll"
       ],
-      "attributes": [
-        "hero-eve"
-      ],
       "tags": [
         "hero"
       ],
@@ -4400,9 +4272,6 @@ export const UNIT_PACK = {
         "power.move",
         "power.side-roll"
       ],
-      "attributes": [
-        "hero-eve"
-      ],
       "tags": [
         "hero"
       ],
@@ -4439,9 +4308,6 @@ export const UNIT_PACK = {
       "moves": [
         "power.move",
         "power.leap"
-      ],
-      "attributes": [
-        "hero-eve"
       ],
       "tags": [
         "hero"
@@ -4481,9 +4347,6 @@ export const UNIT_PACK = {
         "power.move",
         "power.leap"
       ],
-      "attributes": [
-        "hero-eve"
-      ],
       "tags": [
         "hero"
       ],
@@ -4519,9 +4382,6 @@ export const UNIT_PACK = {
       "moves": [
         "power.move",
         "power.leap"
-      ],
-      "attributes": [
-        "hero-eve"
       ],
       "tags": [
         "hero"
@@ -4560,9 +4420,6 @@ export const UNIT_PACK = {
         "power.move",
         "power.leap"
       ],
-      "attributes": [
-        "hero-eve"
-      ],
       "tags": [
         "hero"
       ],
@@ -4599,9 +4456,6 @@ export const UNIT_PACK = {
       "moves": [
         "power.move",
         "power.focus"
-      ],
-      "attributes": [
-        "hero-eve"
       ],
       "tags": [
         "hero"
@@ -4640,9 +4494,6 @@ export const UNIT_PACK = {
         "power.move",
         "power.focus"
       ],
-      "attributes": [
-        "hero-eve"
-      ],
       "tags": [
         "hero"
       ],
@@ -4679,9 +4530,6 @@ export const UNIT_PACK = {
       "moves": [
         "power.move",
         "power.focus"
-      ],
-      "attributes": [
-        "hero-eve"
       ],
       "tags": [
         "hero"
@@ -4720,9 +4568,6 @@ export const UNIT_PACK = {
         "power.move",
         "power.focus"
       ],
-      "attributes": [
-        "hero-eve"
-      ],
       "tags": [
         "hero"
       ],
@@ -4760,9 +4605,6 @@ export const UNIT_PACK = {
         "power.move",
         "power.devotion"
       ],
-      "attributes": [
-        "hero-eve"
-      ],
       "tags": [
         "hero"
       ],
@@ -4799,9 +4641,6 @@ export const UNIT_PACK = {
       "moves": [
         "power.move",
         "power.devotion"
-      ],
-      "attributes": [
-        "hero-eve"
       ],
       "tags": [
         "hero"
@@ -4841,9 +4680,6 @@ export const UNIT_PACK = {
         "power.move",
         "power.devotion"
       ],
-      "attributes": [
-        "hero-eve"
-      ],
       "tags": [
         "hero"
       ],
@@ -4880,9 +4716,6 @@ export const UNIT_PACK = {
       "moves": [
         "power.move",
         "power.devotion"
-      ],
-      "attributes": [
-        "hero-eve"
       ],
       "tags": [
         "hero"
@@ -4922,9 +4755,6 @@ export const UNIT_PACK = {
         "power.move",
         "power.side-roll"
       ],
-      "attributes": [
-        "hero-eve"
-      ],
       "tags": [
         "hero"
       ],
@@ -4963,9 +4793,6 @@ export const UNIT_PACK = {
         "power.move",
         "power.side-roll"
       ],
-      "attributes": [
-        "hero-eve"
-      ],
       "tags": [
         "hero"
       ],
@@ -5002,9 +4829,6 @@ export const UNIT_PACK = {
       "moves": [
         "power.move",
         "power.side-roll"
-      ],
-      "attributes": [
-        "hero-eve"
       ],
       "tags": [
         "hero"
@@ -5043,9 +4867,6 @@ export const UNIT_PACK = {
         "power.move",
         "power.side-roll"
       ],
-      "attributes": [
-        "hero-eve"
-      ],
       "tags": [
         "hero"
       ],
@@ -5081,9 +4902,6 @@ export const UNIT_PACK = {
       "moves": [
         "power.move"
       ],
-      "attributes": [
-        "civilian"
-      ],
       "tags": [
         "hero",
         "civilian"
@@ -5117,9 +4935,6 @@ export const UNIT_PACK = {
       "abilities": [],
       "moves": [
         "power.move"
-      ],
-      "attributes": [
-        "civilian"
       ],
       "tags": [
         "hero",
@@ -5155,9 +4970,6 @@ export const UNIT_PACK = {
       "abilities": [],
       "moves": [
         "power.move"
-      ],
-      "attributes": [
-        "civilian"
       ],
       "tags": [
         "hero",
@@ -5198,9 +5010,6 @@ export const UNIT_PACK = {
       "moves": [
         "power.move",
         "power.leap"
-      ],
-      "attributes": [
-        "hero-alpha"
       ],
       "tags": [
         "hero"
@@ -5288,9 +5097,6 @@ export const UNIT_PACK = {
         "power.move",
         "power.side-roll"
       ],
-      "attributes": [
-        "hero-alpha"
-      ],
       "tags": [
         "hero"
       ],
@@ -5342,9 +5148,6 @@ export const UNIT_PACK = {
         "power.move",
         "power.side-roll"
       ],
-      "attributes": [
-        "hero-alpha"
-      ],
       "tags": [
         "hero"
       ],
@@ -5394,9 +5197,6 @@ export const UNIT_PACK = {
       "moves": [
         "power.move",
         "power.focus"
-      ],
-      "attributes": [
-        "hero-alpha"
       ],
       "tags": [
         "hero"
@@ -5460,9 +5260,6 @@ export const UNIT_PACK = {
         "power.move",
         "power.devotion"
       ],
-      "attributes": [
-        "hero-alpha"
-      ],
       "tags": [
         "hero"
       ],
@@ -5499,9 +5296,6 @@ export const UNIT_PACK = {
       "moves": [
         "power.move",
         "power.sidestep"
-      ],
-      "attributes": [
-        "hero-alpha"
       ],
       "tags": [
         "hero"
@@ -11076,13 +10870,28 @@ export const UNIT_PACK = {
               "value": 2
             },
             "source": "unit.test-arc-golem"
+          },
+          {
+            "id": "trigger.test-tags.grave-rot",
+            "hook": "onHit",
+            "chance": 100,
+            "select": {
+              "select": "unit",
+              "side": "enemy",
+              "requireTags": [
+                "undead"
+              ]
+            },
+            "effect": {
+              "kind": "status.apply",
+              "statusId": "status.poison",
+              "value": 1
+            },
+            "source": "unit.test-arc-golem"
           }
         ],
         "typeId": "test-arc-golem",
         "abilities": [],
-        "attributes": [
-          "test"
-        ],
         "tags": []
       },
       {
@@ -11152,9 +10961,6 @@ export const UNIT_PACK = {
         ],
         "typeId": "test-warrior",
         "abilities": [],
-        "attributes": [
-          "test"
-        ],
         "tags": []
       },
       {
@@ -11186,9 +10992,6 @@ export const UNIT_PACK = {
         "triggers": [],
         "typeId": "test-ranger",
         "abilities": [],
-        "attributes": [
-          "test"
-        ],
         "tags": []
       },
       {
@@ -11247,9 +11050,6 @@ export const UNIT_PACK = {
           }
         ],
         "typeId": "test-mage",
-        "attributes": [
-          "test"
-        ],
         "tags": []
       },
       {
@@ -11274,8 +11074,8 @@ export const UNIT_PACK = {
           "attack.test-zombie.bite"
         ],
         "abilities": [],
-        "attributes": [
-          "test"
+        "tags": [
+          "undead"
         ],
         "triggers": [
           {
@@ -11331,8 +11131,7 @@ export const UNIT_PACK = {
         "moves": [
           "power.move"
         ],
-        "side": "enemy",
-        "tags": []
+        "side": "enemy"
       }
     ],
     "attacks": {

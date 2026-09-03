@@ -33,7 +33,7 @@ describe('state and setup', () => {
     expect([r.maxHp, r.armor, r.accuracy, r.strength, r.precision, r.movement, r.maxStamina]).toEqual([5,0,80,3,4,5,5])
     expect(r.dodge).toBe(5)
     expect([z.maxHp, z.armor, z.accuracy, z.strength, z.movement, z.maxStamina]).toEqual([5,0,65,3,4,0])
-    expect(z.attributes).toContain('undead')
+    expect(z.tags).toContain('undead')   // fix.unit-tags 2026-09-03: one field
     expect(w.name).not.toContain('(TEST)')                      // the Alpha Team is real content
     expect(UNITS['test-oathblade']!.name).toContain('(TEST)')   // clearly differentiated text, per the ruling
   })

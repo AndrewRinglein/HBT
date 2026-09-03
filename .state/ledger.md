@@ -4954,3 +4954,104 @@ mounted repos. No hand-finished landings; seals are the gate's own.
   PASS  kill switch — the tests fail without the content — tests fail without trigger.test-eoa.brace — they genuinely test it
 
 IRON GAUNTLET: NOT PASSED — 1 FLAG(S) WARNED
+
+## fix.unit-tags — LANDED `9b83319` **NEEDS REVIEW**
+2026-09-03 08:21
+
+  PASS  dependencies landed
+  WARN  not already decided — 5 candidate ruling(s) — READ BEFORE ASKING: ../STATE.md:18 · MECHANICS-GAP.md:480
+  PASS  typecheck
+  PASS  full test suite
+  PASS  gate 1 — the id appears in a real battle — trigger.test-tags.grave-rot: 12 log lines, 12 fired, 4 changed state
+  PASS  brought its own tests — test/civilians.test.ts, test/items-per-unit.test.ts, test/state.test.ts, test/target.test.ts, test/unit-tags.test.ts
+  WARN  existing tests untouched — DELETED LINES in test/civilians.test.ts (-1), test/items-per-unit.test.ts (-1), test/state.test.ts (-1), test/target.test.ts (-7) — will land FLAGGED for review
+  PASS  control battles unchanged
+  PASS  content has a published source — 13 ids without a published source (3 awaiting publication from earlier items — see audit)
+  PASS  hardcode scan — core knows mechanisms, never names
+  PASS  generalizes — the second instance costs zero engine code — shape 'plumbing' — not a mechanism, exempt
+  PASS  naming — new content ids use declared kinds
+  PASS  naming — no banned words invented
+  PASS  kill switch — the tests fail without the content — tests fail without trigger.test-tags.grave-rot — they genuinely test it
+
+<details><summary>Existing tests were edited — review this diff</summary>
+
+```diff
+diff --git a/test/civilians.test.ts b/test/civilians.test.ts
+index 31463bd..4328c35 100644
+--- a/test/civilians.test.ts
++++ b/test/civilians.test.ts
+@@ -37,5 +37,5 @@ describe('civilians are ordinary heroes with their Codex behaviour', () => {
+       expect(u.staminaRegen, id).toBe(1)
+       expect(u.moves, `${id} — Beasts and Civilians get neither half-step`).toEqual(['power.move'])
+-      expect(u.attributes, id).toContain('civilian')
++      expect(u.tags, id).toContain('civilian')   // fix.unit-tags 2026-09-03: one field
+     }
+     expect(fieldedDef('hero.fixed.orphans').maxHp).toBe(7)
+diff --git a/test/items-per-unit.test.ts b/test/items-per-unit.test.ts
+index daaa982..5777593 100644
+--- a/test/items-per-unit.test.ts
++++ b/test/items-per-unit.test.ts
+@@ -32,5 +32,7 @@ describe('the invariant — no heroItems means the hero the converter used to fo
+       const f = shape(fieldedDef(id) as unknown as Record<string, unknown>)
+       const r = shape(row)
+-      const keys = [...new Set([...Object.keys(f), ...Object.keys(r)])].filter((k) => JSON.stringify(f[k]) !== JSON.stringify(r[k]))
++      // fix.unit-tags (2026-09-03): the oracle predates the collapse of
++      // `attributes` into `tags` (Law 11); the field no longer exists.
++      const keys = [...new Set([...Object.keys(f), ...Object.keys(r)])].filter((k) => k !== 'attributes' && JSON.stringify(f[k]) !== JSON.stringify(r[k]))
+       if (keys.length) differ[id] = keys
+     }
+diff --git a/test/state.test.ts b/test/state.test.ts
+index 1b957cb..7acf618 100644
+--- a/test/state.test.ts
++++ b/test/state.test.ts
+@@ -34,5 +34,5 @@ describe('state and setup', () => {
+     expect(r.dodge).toBe(5)
+     expect([z.maxHp, z.armor, z.accuracy, z.strength, z.movement, z.maxStamina]).toEqual([5,0,65,3,4,0])
+-    expect(z.attributes).toContain('undead')
++    expect(z.tags).toContain('undead')   // fix.unit-tags 2026-09-03: one field
+     expect(w.name).not.toContain('(TEST)')                      // the Alpha Team is real content
+     expect(UNITS['test-oathblade']!.name).toContain('(TEST)')   // clearly differentiated text, per the ruling
+diff --git a/test/target.test.ts b/test/target.test.ts
+index dd79f6c..6c43d97 100644
+--- a/test/target.test.ts
++++ b/test/target.test.ts
+@@ -82,18 +82,28 @@ describe('targeting — by type', () => {
+   })
+ 
+-  it('an untagged unit matches nothing that requires a tag', () => {
+-    const ctx = board()
+-    expect(ctx.state.units[3]!.tags).toEqual([])
+-    expect(eligible(ctx.state.units[0]!, ctx.state.units[3]!, T({ requireTags: ['undead'] }))).toBe(false)
++  // Law 10 rewrite, fix.unit-tags (2026-09-03): this test used to ASSERT THE
++  // BUG — the cohort zombie carried 'undead' under `attributes`, the readers
++  // read `tags`, and the test pinned "tags is []" as if that were the rule.
++  // The rule is: a unit WITHOUT the tag matches nothing that requires it, and
++  // a unit WITH it does. Both read off the rows.
++  it('a unit without the tag matches nothing that requires it; the zombie, tagged undead, does', () => {
++    const ctx = board()
++    const hero = ctx.state.units[1]!, zombie = ctx.state.units[3]!
++    expect(hero.tags).not.toContain('undead')
++    expect(zombie.tags).toContain('undead')
++    expect(eligible(ctx.state.units[0]!, hero, T({ side: 'any', requireTags: ['undead'] }))).toBe(false)
++    expect(eligible(ctx.state.units[0]!, zombie, T({ side: 'any', requireTags: ['undead'] }))).toBe(true)
+   })
+ })
+ 
+ describe('targeting — legality is answered before the stamina is spent', () => {
+-  it('"target undead" is not castable on a board with no undead', () => {
++  // Law 10 rewrite, fix.unit-tags (2026-09-03) — see above. The board HAS
++  // undead now that the zombies' tags are read; a tag nothing carries is what
++  // "not castable" means.
++  it('"target undead" is castable on a board with zombies; a tag nobody carries is not', () => {
+     const ctx = board()
+     const a = ctx.state.units[0]!
+-    expect(hasAnyTarget(ctx, a, T({ requireTags: ['undead'] }), 99)).toBe(false)
+-    ;(ctx.state.units[3] as unknown as { tags: string[] }).tags = ['undead']
+     expect(hasAnyTarget(ctx, a, T({ requireTags: ['undead'] }), 99)).toBe(true)
++    expect(hasAnyTarget(ctx, a, T({ requireTags: ['nobody-carries-this'] }), 99)).toBe(false)
+   })
+ 
+```
+</details>
+
+IRON GAUNTLET: NOT PASSED — 2 FLAG(S) WARNED
