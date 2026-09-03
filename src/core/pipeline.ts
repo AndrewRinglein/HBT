@@ -11,7 +11,7 @@ import { fireTriggers } from './trigger.js'
 import { applyStatus, incomingAbsorb, outgoingPenalty, spendAbsorb } from './status.js'
 import { rollCritEffect } from './crit.js'
 import { effective, stat } from './stats.js'
-import { applyDamage, emit, markPrimaryUsed, spendStamina, unit } from './mutate.js'
+import { accelerateBleedOut, applyDamage, emit, markPrimaryUsed, spendStamina, unit } from './mutate.js'
 
 export const ACC = {
   BASE: 100,
@@ -120,7 +120,9 @@ export function resolveAccuracy(ctx: Ctx, attacker: Unit, target: Unit, a: Attac
   if (a.kind === 'ranged' && inMelee(ctx, attacker)) {
     v = step(ledger, ACC.ADJACENT, 'ADJACENT', a.id, v, v - 20)
   }
-  // CONDITION: nothing live yet.
+  // CONDITION — the target's state. Downed: +20 (GAME-DESIGN §9, ruled;
+  // fix.downed-targetable 2026-09-03). The row names the attack as its cause.
+  if (target.lifeState === 'downed') v = step(ledger, ACC.CONDITION, 'TARGET_DOWNED', a.id, v, v + 20)
   // SITUATIONAL — the attack's own modifier (station.accuracy-field, 2026-09-03).
   if (a.accuracy) v = step(ledger, ACC.SITUATIONAL, 'SITUATIONAL', a.id, v, v + a.accuracy)
   const dodge = effective(ctx, target, 'dodge')
@@ -189,7 +191,11 @@ export function canAttack(ctx: Ctx, attackerId: number, targetId: number, attack
   const tg = unit(ctx, targetId)
   const a = ctx.attacks[attackId]
   if (!a) return false
-  if (at.lifeState !== 'standing' || tg.lifeState !== 'standing') return false
+  if (at.lifeState !== 'standing') return false
+  // fix.downed-targetable (2026-09-03): a DOWNED unit can be attacked — GAME-
+  // DESIGN §9, "enemies roll at +20 against downed heroes". Only the dead are
+  // beyond reach. What a hit on the downed does is decided in performAttack.
+  if (tg.lifeState === 'dead') return false
   if (at.side === tg.side) return false
   if (at.primaryUsed) return false
   if (at.stamina < a.staminaCost) return false
@@ -259,6 +265,11 @@ export function preview(ctx: Ctx, attackerId: number, targetId: number, attackId
   }
   const acc = resolveAccuracy(ctx, at, tg, a)
   const hitChance = Math.max(0, Math.min(100, acc.value))
+  // A hit on the DOWNED deals no damage and cannot crit — it accelerates the
+  // bleed-out counter (fix.downed-targetable, 2026-09-03). The preview says so.
+  if (tg.lifeState === 'downed') {
+    return { hitChance, accuracy: acc.value, accLedger: acc.ledger, damageOnHit: 0, damageOnCrit: 0, critChance: 0, downed: true as const }
+  }
   return {
     hitChance,
     accuracy: acc.value,
@@ -353,6 +364,17 @@ export function performAttack(ctx: Ctx, attackerId: number, targetId: number, at
     // into a silent no-op rather than an error.
     fireTriggers(ctx, 'onMiss', fc)
     return { hit: false, crit: false, accuracy: pv.accuracy, roll, damage: 0, killed: false }
+  }
+
+  // THE DOWNED (fix.downed-targetable, 2026-09-03). GAME-DESIGN §9: "a hit
+  // only accelerates the bleed-out counter. It never kills." No damage, no
+  // crit, no onDamage; onHit still fires (it connected). The counter never
+  // goes below 1 by a hit — the kill belongs to the bleed-out rung alone.
+  if (tg.lifeState === 'downed') {
+    emit(ctx, 'attack.hit', a.id, { actor: attackerId, target: targetId, roll, hitChance: pv.hitChance, downed: true, damage: 0 })
+    fireTriggers(ctx, 'onHit', fc)
+    accelerateBleedOut(ctx, targetId, ctx.cfg.switches.downedHitBleedTicks, a.id, attackerId)
+    return { hit: true, crit: false, accuracy: pv.accuracy, roll, damage: 0, killed: false }
   }
 
   let crit = false

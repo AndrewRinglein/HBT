@@ -527,7 +527,16 @@
   "shape": "rule",
   "spec": "canAttack refuses any attack whose target is not standing, so a downed hero cannot be attacked at all. GAME-DESIGN 9: enemies roll at +20 against the downed, and a hit only accelerates the bleed-out counter — it never kills.",
   "expect": "an enemy can attack a downed hero, at +20, and the hit reduces bleedOut rather than hp",
-  "changesBaseline": true
+  "changesBaseline": true,
+  "probeIds": [
+   "bleedout.accelerated"
+  ],
+  "attempts": 1,
+  "generalizationExempt": "an engine RULE with no content instance: the downed become legal targets and a hit moves the counter — there is no row to vary, the switches (downedHitBleedTicks, aiAttacksDowned) are the axes",
+  "killSwitchExempt": "no content id carries this rule — it is canAttack and the hit branch themselves; the tests assert the counter moves and hp does not, which no row can be disabled to falsify",
+  "status": "done-needs-review",
+  "sha": "4c2b425",
+  "gauntlet": "not passed — 1 flag(s) warned; 2 exemption(s) taken"
  },
  {
   "id": "fix.bleedout-duration",

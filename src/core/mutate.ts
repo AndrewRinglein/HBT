@@ -244,6 +244,20 @@ export function tickBleedOut(ctx: Ctx, id: number, causeId: string): void {
   emit(ctx, 'bleedout.tick', causeId, { target: id, bleedOut: u.bleedOut })
 }
 
+/**
+ * A hit on the downed pushes the counter — fix.downed-targetable (2026-09-03),
+ * GAME-DESIGN §9: "a hit only accelerates the bleed-out counter. It never
+ * kills." Its own mutator and its own event, NOT tickBleedOut: the tick is the
+ * End-of-Hero-Phase rung's line and the rulings test holds it to that ladder.
+ * Never below 1 — the kill belongs to the rung alone.
+ */
+export function accelerateBleedOut(ctx: Ctx, id: number, steps: number, causeId: string, actor: number): void {
+  const u = unit(ctx, id)
+  const before = u.bleedOut
+  u.bleedOut = Math.max(1, u.bleedOut - Math.max(0, steps))
+  emit(ctx, 'bleedout.accelerated', causeId, { actor, target: id, steps: before - u.bleedOut, bleedOut: u.bleedOut })
+}
+
 export function beginActivation(ctx: Ctx, id: number, causeId: string): void {
   const u = unit(ctx, id)
   u.activationOrdinal += 1

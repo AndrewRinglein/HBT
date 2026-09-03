@@ -322,3 +322,20 @@ a switch yet: fold is the only path today, and `unit.equipped` already names
 what each item put on the unit. When a reviewer wants the per-stat cause in a
 damage ledger, this is the switch to add; a sweep cannot answer it — it is a
 readability question, and it is not a question for Angela.
+
+## downedHitBleedTicks — how hard does a hit on the downed push the counter?
+Added 2026-09-03 (fix.downed-targetable). GAME-DESIGN §9, ruled: "Enemies roll
+at +20 against downed heroes, but a hit only accelerates the bleed-out counter.
+It never kills." *Accelerates* is not a number. Default **1** step per hit —
+the smallest reading; the counter never drops below 1 by a hit, because the
+kill belongs to the End-of-Hero-Phase rung alone (that half is the ruling, not
+a switch). A sweep on rescue windows answers whether 1 is too gentle.
+
+## aiAttacksDowned — when does the AI swing at a downed hero?
+Added 2026-09-03 (fix.downed-targetable). The downed are legal targets now;
+whether an enemy TAKES one is the AI's call, and the design never says.
+`never` · `whenNoStanding` (default — the downed are a finisher's target, only
+when nothing standing is in reach) · `always` (the finisher: a downed hero in
+reach is struck before anyone standing, which is what "the zombies swarm the
+fallen" would mean). Default chosen for the mildest change to the control
+battles; a sweep on hero deaths per battle is the measurement.

@@ -37,7 +37,7 @@ function meleeThreatens(ctx: Ctx, u: Unit, hex: HexId): boolean {
 }
 
 function adjacentEnemies(ctx: Ctx, u: Unit): Unit[] {
-  return livingEnemies(ctx, u).filter((e) => distance(u.hex, e.hex) === 1)
+  return withDowned(ctx, u, livingEnemies(ctx, u).filter((e) => distance(u.hex, e.hex) === 1))
 }
 
 /**
@@ -48,7 +48,24 @@ function adjacentEnemies(ctx: Ctx, u: Unit): Unit[] {
  * reach unit closed politely and then never attacked at all.
  */
 function enemiesInAttackReach(ctx: Ctx, u: Unit): Unit[] {
-  return livingEnemies(ctx, u).filter((e) => u.attacks.some((id) => canAttack(ctx, u.id, e.id, id)))
+  return withDowned(ctx, u, livingEnemies(ctx, u).filter((e) => u.attacks.some((id) => canAttack(ctx, u.id, e.id, id))))
+}
+
+/**
+ * fix.downed-targetable (2026-09-03): the DOWNED are legal targets now
+ * (canAttack), and whether the AI takes them is the `aiAttacksDowned` switch —
+ * never · only when no standing enemy is in reach (default) · always. Downed
+ * candidates are appended AFTER the standing ones, so `lowestHealth` (hp 0)
+ * would otherwise always pick the corpse-to-be first: with 'always' that is
+ * the intent (a finisher); with 'whenNoStanding' the standing list wins.
+ */
+function withDowned(ctx: Ctx, u: Unit, standing: Unit[]): Unit[] {
+  const mode = ctx.cfg.switches.aiAttacksDowned
+  if (mode === 'never') return standing
+  if (mode === 'whenNoStanding' && standing.length) return standing
+  const downed = ctx.state.units.filter((o) => o.side !== u.side && o.lifeState === 'downed'
+    && u.attacks.some((id) => canAttack(ctx, u.id, o.id, id)))
+  return mode === 'always' ? [...downed, ...standing] : downed
 }
 
 /** The farthest this unit can strike with any of its attacks, for honest idle text. */

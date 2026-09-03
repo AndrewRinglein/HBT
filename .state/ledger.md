@@ -5143,3 +5143,42 @@ effect of attack.punch,attack.test-ram.overhead — 25 paired battles per map, W
   test.map.showcase: heroWins 25->25 (+0)  meanTurns 3.8->3.8
 MEASURABLE
 ```
+
+## fix.downed-targetable — LANDED `4c2b425` **NEEDS REVIEW**
+2026-09-03 08:31
+
+  PASS  dependencies landed
+  WARN  not already decided — 4 candidate ruling(s) — READ BEFORE ASKING: MECHANICS-GAP.md:354 · ../8-ENCOUNTERS-NOTES.md:1018
+  PASS  typecheck
+  PASS  full test suite
+  PASS  gate 1 — the id appears in a real battle — bleedout.accelerated: 1 log lines, 1 fired, 1 changed state
+  PASS  brought its own tests — test/downed-targetable.test.ts
+  PASS  existing tests untouched
+  PASS  control battles unchanged — will re-bless at commit — this item DECLARED it changes the control battles: map.highlands 689bcd63->db85ee58, map.field 4037c76a->4f7fafbb, map.thicket c3c49fee->04293116
+  PASS  content has a published source — 13 ids without a published source (3 awaiting publication from earlier items — see audit)
+  PASS  hardcode scan — core knows mechanisms, never names
+  PASS  generalizes — the second instance costs zero engine code
+  PASS  naming — new content ids use declared kinds
+  PASS  naming — no banned words invented
+  PASS  kill switch — the tests fail without the content
+
+<details><summary>Existing tests were edited — review this diff</summary>
+
+```diff
+```
+</details>
+
+IRON GAUNTLET: NOT PASSED — 1 FLAG(S) WARNED; 2 EXEMPTION(S) TAKEN
+
+```
+effect of bleedout.accelerated — 25 paired battles per map, WITH vs WITHOUT
+  map.open: heroWins 25->25 (+0)  meanTurns 4.0->4.0
+  map.ridge: heroWins 25->25 (+0)  meanTurns 4.5->4.5
+  map.flanks: heroWins 25->25 (+0)  meanTurns 4.1->4.1
+  map.highlands: heroWins 25->25 (+0)  meanTurns 5.4->5.4
+  map.field: heroWins 25->25 (+0)  meanTurns 5.5->5.5
+  map.thicket: heroWins 25->25 (+0)  meanTurns 5.4->5.4
+  test.map.embers: heroWins 25->25 (+0)  meanTurns 2.9->2.9
+  test.map.showcase: heroWins 25->25 (+0)  meanTurns 3.8->3.8
+NO MEASURABLE EFFECT at this sample size — consequence clause caught state changes, but outcomes did not move. Consider a sweep with more replicates before drawing balance conclusions.
+```

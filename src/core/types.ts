@@ -401,6 +401,17 @@ export type Config = {
      * (false)? They differ only at or near full health. SWITCHES.md, 2026-09-02.
      */
     bleedShedFromLanded: boolean
+    /**
+     * fix.downed-targetable (2026-09-03). GAME-DESIGN §9: "Enemies roll at +20
+     * against downed heroes, but a hit only accelerates the bleed-out counter.
+     * It never kills." How many counter steps one hit costs. SWITCHES.md.
+     */
+    downedHitBleedTicks: number
+    /**
+     * When does the AI swing at a downed hero: never, only when no standing
+     * enemy is in reach, or whenever one is (the finisher). SWITCHES.md.
+     */
+    aiAttacksDowned: 'never' | 'whenNoStanding' | 'always'
   }
 }
 
@@ -438,6 +449,12 @@ export const DEFAULT_CONFIG: Config = {
     // S43 (content ea99a4d): "half the applied amount comes off Bleed" — the
     // amount applied to Health is what landed. SWITCHES.md, 2026-09-02.
     bleedShedFromLanded: true,
+    // GAME-DESIGN §9 says "accelerates", not by how much; one step per hit is
+    // the smallest reading. SWITCHES.md, 2026-09-03.
+    downedHitBleedTicks: 1,
+    // The downed are a finisher's target, not a preference: only when nothing
+    // standing is in reach. SWITCHES.md, 2026-09-03.
+    aiAttacksDowned: 'whenNoStanding',
   },
 }
 

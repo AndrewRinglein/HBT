@@ -43,7 +43,10 @@ const ACTED = new Set(['damage.applied','heal.applied','power.used','attack.decl
   // deliberately NOT here. Same widening-is-stricter argument as above.
   'knocked',
   // station.crit (2026-08-27): the chart's own state changes.
-  'stamina.drained', 'maxHp.lost'])
+  'stamina.drained', 'maxHp.lost',
+  // fix.downed-targetable (2026-09-03): a hit on the downed moves the counter,
+  // and this is the line that says so. Widening, stricter, as above.
+  'bleedout.accelerated'])
 
 /**
  * A SCENARIO is probed by fielding it, not by sweeping the standard panel.
