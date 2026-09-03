@@ -1,566 +1,570 @@
 [
-  {
-    "id": "seam.run-engagement",
-    "kind": "kingdom",
-    "shape": "plumbing",
-    "milestone": "M0",
-    "spec": "The seam, alone (THIN-SLICE-IMPLEMENTATION.md \u00a74, \u00a75 M0). src/engine.ts is the one door to the engine (\u00a74.5). src/core/seam.ts: EngagementSpec (a campaign-free fielding: heroes, enemies, mapId, hexes, seed) -> battleOptionsOf(spec): BattleOptions (the joint \u00a74.1 names, kept campaign-free until M1 gives makeBattleState a campaign) -> createBattle -> runBattle -> makeBattleResult(events): EngagementResult, an events-to-result FOLD (\u00a74.2) that never reaches into Ctx: outcome, turns, enemy phases, and per-unit rows keyed to the spec's roster by index (uid 100+i) carrying downed, dead, damageTaken, kills. runEngagement(spec) is the three in a row. No campaign code.",
-    "expect": "ISC-002: running a known fielding yields per-hero rows whose downed/dead/damageTaken/kills equal what a hand count of the same event log gives, and a wiped fielding reports every hero downed or dead. ISC-003: the only file importing an engine path is src/engine.ts, and the events the fold read begin with battle.begin and end with battle.end emitted by the engine's own runBattle.",
-    "isc": [
-      "002",
-      "003"
-    ],
-    "needs": [],
-    "attempts": 1,
-    "status": "done-needs-review",
-    "sha": "0f1db1a",
-    "engineSha": "745922d",
-    "gauntlet": "not passed \u2014 2 flag(s) warned"
-  },
-  {
-    "id": "campaign.state",
-    "kind": "kingdom",
-    "shape": "plumbing",
-    "milestone": "M1",
-    "spec": "CampaignState as plain data (Law 5b; GAME-ARCHITECTURE.md \u00a71): week, cursor, purse (Record<CurrencyId, number>), renown, roster, assignments, territories, buildings, revealed, unlocks, threat, cups \u2014 plus the rows SKELETON-SETTLED.md:57-61 flags as owed: losses, quests in flight, captured; corruption stored. makeCampaign(seed, legacy, options). One mutator module and one emit; every state change goes through it (Law 3). The item also ships a loadable fixture \u2014 fixtures/slice-prep.json \u2014 a Campaign positioned at Combat Prep (cursor.step reveal) with a small roster and an engagement.conquer on a Territory row, so the next items have something to load (ruling 2026-09-01: load state \u2192 decide what happened \u2192 exit).",
-    "expect": "ISC-004: JSON.stringify/parse round-trips a fresh Campaign and a Campaign mid-Week to deep-equal values; no field holds a class, Map, Set or function.",
-    "isc": [
-      "004"
-    ],
-    "needs": [
-      "seam.run-engagement"
-    ],
-    "status": "done-needs-review",
-    "sha": "fb04ddf",
-    "engineSha": "745922d",
-    "gauntlet": "not passed \u2014 3 flag(s) warned"
-  },
-  {
-    "id": "combat.prep",
-    "kind": "kingdom",
-    "shape": "machine",
-    "milestone": "M2",
-    "spec": "Combat Prep as cursor transitions (GAME-ARCHITECTURE.md \u00a74 Inside Combat Prep; SKELETON-SETTLED.md:127): reveal \u2192 council \u2192 deploy \u2192 equip, then battle. viewCombatPrep(campaign, engagement) lists the enemies and the condition at reveal; listCouncilOptions offers exactly three placeholder tactic rows under the reserved test.* kind (ruling 2026-09-01 \u2014 until tactic.* is declared) and performing one records it; canDeploy/performDeploy/performUndeploy under the base size limit 4 (\u00a72.3 axis 1); equip is a step that exists and passes through (nothing priced yet). The four steps are rows the machine reads in order, not four hardcoded cases.",
-    "expect": "ISC-026: the cursor visits reveal, council, deploy, equip in that order. ISC-027: at reveal the view lists every enemy and no choice is recorded. ISC-028: three options, one taken, two gone. ISC-029: the fifth deploy is refused at limit 4.",
-    "isc": [
-      "026",
-      "027",
-      "028",
-      "029"
-    ],
-    "variants": [
-      "test.tactic.hold-the-line",
-      "test.tactic.forced-march"
-    ],
-    "needs": [
-      "campaign.state"
-    ],
-    "status": "done-needs-review",
-    "sha": "25a215c",
-    "engineSha": "745922d",
-    "gauntlet": "not passed \u2014 2 flag(s) warned"
-  },
-  {
-    "id": "battle.screen",
-    "kind": "kingdom",
-    "shape": "plumbing",
-    "milestone": "M3",
-    "spec": "The battle screen and the outcome panel, in SLICE.html (self-contained, built by tools/build-slice.mjs with esbuild from engine/node_modules \u2014 ruling 2026-09-01). The board and every unit come from the engine's own setup (createBattle at t=0 through the seam; nothing runs). The panel sets everything a battle could decide as an EngagementResult \u2014 outcome, per unit lifeState/downed/dead/damage/kills, phases \u2014 and validateResult accepts a panel-built result and a fold-built result alike. resolveReckoning(campaign, engagement, result) proposes XP per unit and a wound per hero; every proposal is editable before apply.",
-    "expect": "ISC-030 (H): the map with every deployed hero and every enemy, still. ISC-031: one result shape, one validator, applyBattleResult blind to the producer. ISC-032: proposals editable, written exactly.",
-    "isc": [
-      "030",
-      "034"
-    ],
-    "needs": [
-      "combat.prep"
-    ],
-    "note": "ISC-031 and ISC-032 name the writer and land with reckoning.apply (2026-09-01); ISC-034 is the proposal half. SLICE.html stops at the tally until the writer lands.",
-    "attempts": 1,
-    "status": "done-needs-review",
-    "sha": "9ee8ea3",
-    "engineSha": "745922d",
-    "gauntlet": "not passed \u2014 2 flag(s) warned"
-  },
-  {
-    "id": "reckoning.apply",
-    "kind": "kingdom",
-    "shape": "rule",
-    "milestone": "M4",
-    "spec": "applyBattleResult(campaign, engagement, result) \u2014 the only writer (GAME-ARCHITECTURE.md \u00a71 rule 2) \u2014 and the tail: wounds from downed/dead (a level on hero.wound; commitmentOf -> 'wounded' above the threshold), Renown +1 per Engagement won (KINGDOM-DESIGN.md \u00a73A), the losses counter, Salvage only from a first Conquer (SKELETON-SETTLED.md:104,108), the reward draft 3-keep-1 (7-KINGDOM-SETTLED.md), the difficulty number \u03a3(hero levels, civilians \u00f72 \u230a\u230b) + 2\u00d7week \u2212 5\u00d7losses + 3\u00d7corruption counting everyone alive (SKELETON-NOTES.md:675).",
-    "expect": "ISC-014..020 as written in THIN-SLICE-IMPLEMENTATION.md \u00a76 \u2014 the scan finds one writer; a lost battle wounds and pays no Salvage; Renown rises exactly 1 per win; re-conquest pays Renown and never Salvage; a wounded hero is refused deployment; the draft offers 3 and keeps 1; the difficulty number matches the hand sum on three authored rosters. ISC-033: after apply the cursor is past the battle, the save round-trips, a second apply is refused.",
-    "isc": [
-      "014",
-      "015",
-      "016",
-      "017",
-      "018",
-      "020",
-      "031",
-      "032",
-      "033"
-    ],
-    "variants": [
-      "engagement.conquer",
-      "engagement.defend"
-    ],
-    "needs": [
-      "battle.screen"
-    ],
-    "note": "ISC-019 (the reward draft) moved to rewards.draft 2026-09-01 \u2014 it is the rewards screen, not the writer.",
-    "status": "done-needs-review",
-    "sha": "123a501",
-    "engineSha": "745922d",
-    "gauntlet": "not passed \u2014 3 flag(s) warned"
-  },
-  {
-    "id": "week.machine",
-    "kind": "kingdom",
-    "shape": "machine",
-    "milestone": "M5",
-    "spec": "The Week: six Stage rows in src/content (stage.buy, stage.quest, stage.defend, stage.conquer, stage.build, stage.mend \u2014 KINGDOM-DESIGN.md \u00a73, GLOSSARY.md) read in registry order by a machine in src/core that knows no Stage by name. beginWeek/endWeek/tickWeek, beginStage/endStage, canAdvance/performAdvance, weekOf/stageOf/cursorOf (GAME-ARCHITECTURE.md \u00a72.6). Every Stage emits stage.begun and stage.ended even when it resolves to nothing (\u00a72.1). The cursor holds week, stage, step, engagement, and the battle's SEED AND OPTIONS \u2014 never its state (\u00a74.4). The world screen in SLICE.html: the Week and Stage named, Next to pass through a Stage that resolves to nothing; the Conquer Stage picks up the fixture engagement until the map (M6) offers real ones.",
-    "expect": "ISC-005: a Week visits the six ids in the ruled order, and disabling stage.mend (KINGDOM_DISABLE_IDS) makes the order test fail. ISC-006: stage.begun/stage.ended pairs appear for every Stage of an empty Week. ISC-007: at every cursor position, stringify/parse then advance gives the same event stream as advancing the original. tools/probe.mts lands with this item: it runs N Weeks and reports whether an id appears in the log.",
-    "isc": [
-      "005",
-      "006",
-      "007"
-    ],
-    "needs": [
-      "reckoning.apply"
-    ],
-    "variants": [
-      "stage.buy",
-      "stage.mend"
-    ],
-    "attempts": 2,
-    "status": "done-needs-review",
-    "sha": "a46150c",
-    "engineSha": "745922d",
-    "gauntlet": "not passed \u2014 3 flag(s) warned"
-  },
-  {
-    "id": "map.four-territories",
-    "kind": "kingdom",
-    "shape": "rule",
-    "milestone": "M6",
-    "spec": "The slice map as content (GAME-ARCHITECTURE.md \u00a72.4; THIN-SLICE-REVIEW.md \u00a7G2): four territory.<realm>.* rows \u2014 the Kingdom Territory plus three, the first conquest carrying a critical building \u2014 with adjacency and a map id each. canClaim/performClaim/performLose; the Kingdom Territory's row says it cannot be lost (SKELETON-SETTLED.md:80-81). stage.conquer produces an Engagement through the seam and a won one claims the Territory and any building on it (7-KINGDOM-SETTLED.md). The first vertical slice: Week -> Conquer -> battle -> result -> Week N+1. Plus the defend roll: stage.defend rolls once on cup.threat at 6% per owned Territory (THIN-SLICE-REVIEW.md \u00a7G2) and produces at most one engagement.defend on an owned non-kingdom Territory (or the Sanctuary, whose loss costs resources instead). The world screen shows the four, owned and not, and lets you pick a conquest.",
-    "expect": "ISC-011: listTerritories returns four rows, one flagged kingdom, one carrying a building. ISC-012: a heroClear Conquer claims the Territory and its building; a wipe claims nothing. ISC-013: performLose on an owned non-kingdom Territory makes it conquerable again; on the Kingdom Territory it is refused and costs resources and wounds per its stakes row. ISC-035: over 200 Weeks with four owned the defend rate lands within 24% \u00b1 6.",
-    "isc": [
-      "011",
-      "012",
-      "013",
-      "035"
-    ],
-    "needs": [
-      "week.machine"
-    ],
-    "note": "variants named from src/content/territories.ts, the realm manifest \u2014 the Ridge (GLOSSARY.md's example) and the Highlands (an engine map name).",
-    "attempts": 1,
-    "variants": [
-      "territory.ruined-kingdom.ridge",
-      "territory.ruined-kingdom.highlands"
-    ],
-    "status": "done-needs-review",
-    "sha": "cae0665",
-    "engineSha": "745922d",
-    "gauntlet": "not passed \u2014 2 flag(s) warned"
-  },
-  {
-    "id": "assignments.two-slots",
-    "kind": "kingdom",
-    "shape": "rule",
-    "milestone": "M7a",
-    "spec": "Assignments under amended Law 17 (SKELETON-SETTLED.md:102; GAME-ARCHITECTURE.md \u00a72.3): campaign.assignments: Record<HeroId, {field?, city?}>; commitmentOf(campaign, heroId, slot) -> 'free' | 'onQuest' | 'committed' | 'wounded' | 'unavailable' | 'captured' | 'dead'; canCommit is the only legality check; a quest takes both slots; listAvailable(campaign, stageId) reads commitmentOf and nothing else has an opinion about availability.",
-    "expect": "ISC-008: a second field or city commit in one Week is refused by canCommit. ISC-009: a hero on a quest is absent from listAvailable for every Stage. ISC-010: commitmentOf returns 'unavailable' for a hero the Week's roll kept home, and no other function in src/ inspects hero availability (a static scan).",
-    "isc": [
-      "008",
-      "009",
-      "010"
-    ],
-    "needs": [
-      "map.four-territories"
-    ],
-    "note": "variants: the two Stage rows that spend the two slots \u2014 listAvailable reads which slot from the row (spends: assignments \u2192 field, city-assignments \u2192 city), so the second slot is data.",
-    "variants": [
-      "stage.conquer",
-      "stage.mend"
-    ],
-    "status": "done-needs-review",
-    "sha": "f8f6d99",
-    "engineSha": "745922d",
-    "gauntlet": "not passed \u2014 2 flag(s) warned"
-  },
-  {
-    "id": "purse.mend-and-buy",
-    "kind": "kingdom",
-    "shape": "rule",
-    "milestone": "M7b",
-    "spec": "The purse (Law 18; 7-KINGDOM-SETTLED.md Currencies): four currency.* rows in src/content; balanceOf/canAfford/applySpend/applyGrant with a causeId on every grant (GAME-ARCHITECTURE.md \u00a72.6). Payouts are DATA \u2014 a table of which Stage grants which currency \u2014 so 'Salvage only from Conquer' is a row the machine reads, and deleting that row is what turns ISC-022 red. stage.buy spends the purse and nothing else. Mend: the four labours as rows (no id kind yet \u2014 \u00a79 blocker 9) with the settled yields \u2014 Farm 5+2\u00d7Fields Supplies, Pray 4+1\u00d7Abbeys Faith, Delve 4+1\u00d7Wellsprings Mana \u2014 each a city Assignment resolved at stage.mend; Heal and Rest yield nothing. Buy: performRecruit spends Faith and adds a hero from a small recruit pool (the Beacon, thin); performHeal spends Faith and lowers a wound one level.",
-    "expect": "ISC-021: four ids exist and canAfford is false when the named currency is short whatever the others hold; disabling currency.salvage makes the test fail. ISC-022: across a simulated run every resource.gained event whose currency is Salvage has a Conquer Engagement as its cause. ISC-036: the yields to the number. ISC-037: recruit spends Faith, adds a row, refused when short. ISC-038: heal spends Faith, lowers one level, refused on a whole hero.",
-    "isc": [
-      "021",
-      "022",
-      "036",
-      "037",
-      "038"
-    ],
-    "needs": [
-      "assignments.two-slots"
-    ],
-    "variants": [
-      "currency.salvage",
-      "currency.faith"
-    ],
-    "status": "done-needs-review",
-    "sha": "6936a71",
-    "engineSha": "745922d",
-    "gauntlet": "not passed \u2014 4 flag(s) warned"
-  },
-  {
-    "id": "rewards.and-levels",
-    "kind": "kingdom",
-    "shape": "rule",
-    "milestone": "M8",
-    "spec": "The reward draft \u2014 3 drawn, keep 1 (7-KINGDOM-SETTLED.md; keep-2 rejected). listRewardOffers draws three item rows on cup.reward keyed by the Engagement; performTakeReward keeps one into the stash and burns two; the rewards step sits between reckoning and open. Level-up: canLevelUp at 20 \u00b7 100 \u00b7 250 XP (GLOSSARY.md, soft), performLevelUp +1 level, no specialty pick yet; the levelUp step follows rewards.",
-    "expect": "ISC-019: three offers, one kept, two gone, the same three on reload. ISC-039: level at the thresholds, refused below.",
-    "isc": [
-      "019",
-      "039"
-    ],
-    "needs": [
-      "purse.mend-and-buy"
-    ],
-    "attempts": 1,
-    "variants": [
-      "item.halberd",
-      "item.silkweave-armor"
-    ],
-    "note": "variants: two reward rows of different slots \u2014 a weapon and an armor \u2014 drawn by the same draft.",
-    "status": "done-needs-review",
-    "sha": "bd95fd7",
-    "engineSha": "745922d",
-    "gauntlet": "not passed \u2014 2 flag(s) warned"
-  },
-  {
-    "id": "build.forge",
-    "kind": "kingdom",
-    "shape": "rule",
-    "milestone": "M9",
-    "spec": "The Forge as rows from the settled tree (7-KINGDOM-SETTLED.md: repair 10, then Blades \u00b7 Bows \u00b7 Shields \u00b7 Light \u00b7 Heavy as a fan, then the chain \u2014 190 total; THE-KINGDOM.html for the nodes): building.forge with nodes, prices in Salvage, parents. stage.build: canBuild/costOfBuild/performBuild; a node needs its parents built and the purse. The shelf: with the repair node built, listShopItems offers the starting weapons and tier-1 armors (item rows the engine already fields); performBuyItem spends Supplies into the stash; the equip step gains performEquip onto a deployed hero.",
-    "expect": "ISC-040: a node bought spends its price and is marked; unmet parents or purse refused. ISC-041: the shelf sells for Supplies and the item equips at the equip step.",
-    "isc": [
-      "040",
-      "041"
-    ],
-    "needs": [
-      "rewards.and-levels"
-    ],
-    "variants": [
-      "building.forge",
-      "building.chapel"
-    ],
-    "note": "building.chapel as the second instance: its root node only, to prove the tree machine is data \u2014 the full Chapel is out of the slice.",
-    "attempts": 1,
-    "status": "done-needs-review",
-    "sha": "2aa2ab0",
-    "engineSha": "745922d",
-    "gauntlet": "not passed \u2014 3 flag(s) warned"
-  },
-  {
-    "id": "opening.prologue",
-    "kind": "kingdom",
-    "shape": "rule",
-    "milestone": "M10",
-    "spec": "A new Campaign from nothing (GAME-ARCHITECTURE.md \u00a72.5): makeCampaign(seed) at Week 0 with an empty roster; listDraftOffers shows three hero rows stat-less (name, class, personality, prose \u2014 SKELETON-SETTLED.md:124); performDraft puts one on the roster. The five prologue battles as Engagement rows from ENEMY-REVIEW.md Battles 1\u20135 with their civilians; the cadence 1 \u00b7 +2 \u00b7 +1 per battle to six drafted heroes; the Kingdom Territory is taken on the last; a loss before that ends the Campaign (performEndCampaign, then a fresh makeCampaign).",
-    "expect": "ISC-042..045 as written in \u00a76b.",
-    "isc": [
-      "042",
-      "043",
-      "044",
-      "045"
-    ],
-    "needs": [
-      "build.forge"
-    ],
-    "variants": [
-      "engagement.conquer",
-      "hero.base.ranger-aggressive"
-    ],
-    "note": "variants: the prologue battles are engagement.conquer rows flagged prologue (no kind of their own \u2014 the open label question), and the ruled first draftee (engine/DECISIONS.md 2026-08-26) as a hero-pool row; both live in the autoplayed opening. Whether the prologue pays Renown is SWITCHES.md prologue.paysRenown.",
-    "attempts": 1,
-    "status": "done-needs-review",
-    "sha": "e78a8bd",
-    "engineSha": "745922d",
-    "gauntlet": "not passed \u2014 3 flag(s) warned"
-  },
-  {
-    "id": "charter.renown",
-    "kind": "kingdom",
-    "shape": "rule",
-    "milestone": "M11",
-    "spec": "The Charter (KINGDOM-DESIGN.md \u00a73A; SKELETON-SETTLED.md:106): Renown is the entire budget, one Renown one purchase, unlock.* rows in src/content; an Article slot opens at Renown 10 and every 5 after, 1-9 is the free spine. canPurchase/performPurchase; hasUnlock/listUnlocks.",
-    "expect": "ISC-023: a purchase costs exactly one Renown and no currency can substitute. ISC-024: listArticleSlots is empty below 10, one at 10, two at 15, and a Provision is what 1-9 buys.",
-    "isc": [
-      "023",
-      "024"
-    ],
-    "needs": [
-      "opening.prologue"
-    ],
-    "note": "variants: an Article and a Provision, each with an effect the slice enacts (the field, the draw); both bought in the autoplayed run once Renown reaches ten.",
-    "variants": [
-      "unlock.field-size.5",
-      "unlock.spoils.1"
-    ],
-    "status": "done-needs-review",
-    "sha": "44f4f68",
-    "engineSha": "745922d",
-    "gauntlet": "not passed \u2014 3 flag(s) warned"
-  },
-  {
-    "id": "screens.thin",
-    "kind": "kingdom",
-    "shape": "plumbing",
-    "milestone": "M12",
-    "spec": "The thin screens (THIN-SLICE-REVIEW.md \u00a7G2 list): screen.title and screen.mode-select as stubs in front of the Campaign (Start Game \u2192 new Campaign or the browser save; other modes locked); screen.roster (every hero, class, level, XP, wound, availability); the unavailability roll between Buy and Quest \u2014 a roll on cup.unavailability marking heroes unavailable for the Week with story lines (KINGDOM-DESIGN.md \u00a73, numbers soft); one authored quest at stage.quest taking both slots for N Weeks and returning with tickWeek.",
-    "expect": "ISC-046 (unavailability), ISC-047 (one quest), ISC-048/049/050 (H \u2014 world map, roster, title).",
-    "isc": [
-      "046",
-      "047",
-      "048",
-      "049",
-      "050"
-    ],
-    "needs": [
-      "charter.renown"
-    ],
-    "variants": [
-      "quest.escort"
-    ],
-    "status": "done-needs-review",
-    "sha": "9a3ba63",
-    "engineSha": "745922d",
-    "gauntlet": "not passed \u2014 2 flag(s) warned"
-  },
-  {
-    "id": "run.cold-start",
-    "kind": "kingdom",
-    "shape": "plumbing",
-    "milestone": "M13",
-    "spec": "tools/slice-run.mjs: from a new save, with no human input (an authored default choice at every decision), the run advances Week by Week until the first Article threshold fires (THIN-SLICE-REVIEW.md \u00a7G ruling 1). --until article-1 --assert no-out-systems proves the terminus depends on none of \u00a78's systems. BLOCKED on \u00a79 item 1 (the P11 encounter format; battleList.rows is empty) for the eleven battles it needs \u2014 until then it runs the authored five and stops, red. \u2014 UNBLOCKED 2026-09-02: map.four-territories gave every Territory its own enemies row, so the battles past the authored five are Territory battles (Conquer, and the weekly defend roll); the P11 format is not needed for the slice.",
-    "expect": "ISC-001: exit 0 with the Article threshold event in the log at battle 11. ISC-025: exit 0 with every \u00a78 system absent or stubbed.",
-    "isc": [
-      "001",
-      "025"
-    ],
-    "needs": [
-      "screens.thin"
-    ],
-    "attempts": 1,
-    "status": "done-needs-review",
-    "sha": "e891836",
-    "engineSha": "745922d",
-    "gauntlet": "not passed \u2014 2 flag(s) warned"
-  },
-  {
-    "id": "screens.art",
-    "kind": "kingdom",
-    "shape": "plumbing",
-    "milestone": "M12",
-    "spec": "The kingdom art on SLICE.html (Andrew, 2026-09-01: \"the art assets that should be incorporated in some of the elements\"; USE-THIS-ART.md is the contract). tools/prep-art.py downscales from Autobattler/kingdom-art into generated/art/ (2.3 MB, committed so the build needs no art folder); tools/build-slice.mjs inlines it as data: URIs. The world screen draws the realm: a crop of the painted map with the four Territory tiles at the handoff's hex geometry (rows gain `hex`), a held/unclaimed/attacked outline, iso overlays for the buildings that stand there (a ruin greyed \u2014 no ruined art at map scale yet), clickable when offered. The Sanctuary view: the plate with band sprites on the pipeline's lot anchors, band = the building's level, shown once its Territory is held (ART-NOTES.md 2026-09-01 ruling). The Build Stage shows each hall's clean interior behind its tree, with its card.",
-    "expect": "no criterion \u2014 the H checks ISC-048/049 are what a person sees; tools/smoke-slice.mjs still green; SLICE.html ~3.4 MB.",
-    "isc": [],
-    "needs": [
-      "screens.thin"
-    ],
-    "generalizationExempt": "plumbing: the art path, not a mechanism",
-    "attempts": 1,
-    "unreachable": "no criterion names the art: ISC-048/049 are H checks a person makes with eyes, and the art is what they now see. test/art.test.ts holds the geometry and the state\u2192picture mapping.",
-    "status": "done-needs-review",
-    "sha": "7d954ed",
-    "engineSha": "745922d",
-    "gauntlet": "not passed \u2014 2 flag(s) warned; 1 exemption(s) taken"
-  },
-  {
-    "id": "screens.load-game",
-    "kind": "kingdom",
-    "shape": "plumbing",
-    "milestone": "M12",
-    "spec": "The Load Game screen is the front of the slice (Andrew, 2026-09-02: \"This is supposed to be the load game screen\"; research/mocks/Load Game.html): three campaigns in sequence as realm rows (src/content/realms.ts \u2014 Eve of Ruin playable, Shadows in the Sand and Skyship locked), three party slots each, a slot = one Campaign with one autosave (slotKey), Continue / End Game (two clicks) / + New Party / Load a save / the fixture; three leaderboards with the mock's fake numbers, labelled fake. Banners and the two faces pulled from the mock by tools/prep-mock.py into generated/art. Replaces the title\u2192mode-select stubs; the old single browser save migrates into slot 1 once.",
-    "expect": "no criterion \u2014 ISC-050 (H) is what a person sees. test/loadgame.test.ts; tools/smoke-slice.mjs green.",
-    "isc": [],
-    "needs": [
-      "screens.art"
-    ],
-    "unreachable": "ISC-050 is H \u2014 a person opens the page; the slots and the migration are held by test/loadgame.test.ts.",
-    "generalizationExempt": "plumbing: a screen, not a mechanism",
-    "status": "done-needs-review",
-    "sha": "0e8872f",
-    "engineSha": "745922d",
-    "gauntlet": "not passed \u2014 2 flag(s) warned; 1 exemption(s) taken"
-  },
-  {
-    "id": "tools.gear-doc",
-    "kind": "kingdom",
-    "shape": "tooling",
-    "milestone": "G0",
-    "spec": "GEAR-IMPLEMENTATION.md G0: the ISC instrument (tools/slice-gate.mjs) reads BOTH criteria documents \u2014 THIN-SLICE-IMPLEMENTATION.md (ISC-001\u2026050) and GEAR-IMPLEMENTATION.md (ISC-051\u2026) \u2014 as one list with unique numbers; --sync writes each file's own header count over the criteria it holds; --count is the total. Simpler than the plan's --doc flag: nothing in gate.mjs changes.",
-    "expect": "node tools/slice-gate.mjs --count reports N of 68; each file syncs its own line; ISC-051 is addressable.",
-    "isc": [],
-    "needs": [],
-    "unreachable": "tooling: it closes no criterion; test/criteria-docs.test.ts holds it",
-    "generalizationExempt": "tooling, not a mechanism",
-    "status": "done-needs-review",
-    "sha": "50eb0f1",
-    "engineSha": "7a11028",
-    "gauntlet": "not passed \u2014 2 flag(s) warned; 1 exemption(s) taken"
-  },
-  {
-    "id": "heroes.cut-alpha",
-    "kind": "kingdom",
-    "shape": "data",
-    "milestone": "G1",
-    "spec": "Ruled 2026-09-02 (Andrew): \"Let's just remove those four alpha heroes.\" Oathblade, Sky Pirate, Dusk Hawk and Air Mage leave the pool (alpha test units with no kit in the content). The pool is five heroes until the engine fields the rest of the Eve 24 (engine backlog content.field-eve-24, filed); the opening's draft cadence stops where the pool does (draftsOwedOf caps at the pool). The fixture re-pointed at Eve rows (Hunter, Iron Dwarf, Battle Chaplain, Lucius, Osric, Orphan Child \u2014 six rows); seven probes re-pointed with Law 10 notes where a number moved with the roster.",
-    "expect": "no alpha-* unitType among HERO_POOL heroes except Lucius/Osric (their Eve rows have kits; unit rows still alpha until the pack fields them); the opening drafts five; the cold-start run still reaches the first Article.",
-    "isc": [],
-    "needs": [
-      "tools.gear-doc"
-    ],
-    "unreachable": "a removal closes no criterion; the re-pointed probes and the cold-start run hold it",
-    "generalizationExempt": "data removal, not a mechanism",
-    "status": "done-needs-review",
-    "sha": "97b879c",
-    "engineSha": "7a11028",
-    "gauntlet": "not passed \u2014 2 flag(s) warned; 1 exemption(s) taken"
-  },
-  {
-    "id": "items.rows",
-    "kind": "kingdom",
-    "shape": "data",
-    "milestone": "G2",
-    "spec": "GEAR-IMPLEMENTATION.md G2: tools/mk-items.mjs generates src/content/generated/items.ts from content/hbt-content.json and content/gen/tier3-combinations.json \u2014 every codex item as it is; a masterwork row per tier-1 two-hander and armor (+1 Max Stamina, tier 2); an enchanted row per tier-1 base \u00d7 codex enchant flagged buyable (none until the content session lands the nine); the tier-3 combinations, an unknown base refused, an unknown enchant a NAMED gap in generated/items-gaps.json (58 today: the 2026-09-02 enchant renames and additions are not in the codex yet). src/content/items.ts is the registry (ItemRow, ITEMS, itemOf, kill switch); rewards.ts becomes a filter over ITEMS with slot derived from class and tags (the Holy Symbol is a weapon again).",
-    "expect": "ISC-051.",
-    "isc": [
-      "051"
-    ],
-    "needs": [
-      "heroes.cut-alpha"
-    ],
-    "generalizationExempt": "data: a generator and its registry, not a mechanism",
-    "status": "done-needs-review",
-    "sha": "bd45b65",
-    "engineSha": "da99720",
-    "gauntlet": "not passed \u2014 1 flag(s) warned"
-  },
-  {
-    "id": "heroes.kits",
-    "kind": "kingdom",
-    "shape": "data",
-    "milestone": "G3",
-    "spec": "GEAR-IMPLEMENTATION.md G3: tools/mk-items.mjs also generates src/content/generated/kits.ts (HERO_KITS from hbt-content.json heroes[].kit \u2014 the 24 Eve full kits and the civilians' dictated tools; pinned-only kits listed as KIT_SPECS, none in the pool) and tools/kit-gaps.mts writes kits-gaps.json for pool heroes without one. A hero row's `equipped` at entry IS its kit; applyDraft / applyRecruit / applyRescue emit one item.equipped per item with `from` draft | beacon | rescue; performDraft and performRecruit assertKitted first \u2014 a hero the codex gives no kit is refused by name, never fielded bare. The fixture's rows now come from the content, kits on.",
-    "expect": "ISC-052, ISC-053.",
-    "isc": [
-      "052",
-      "053"
-    ],
-    "needs": [
-      "items.rows"
-    ],
-    "generalizationExempt": "data: rows wearing rows, not a mechanism",
-    "status": "done-needs-review",
-    "sha": "3ae1be3",
-    "engineSha": "37f7311",
-    "gauntlet": "not passed \u2014 1 flag(s) warned"
-  },
-  {
-    "id": "equip.slots",
-    "kind": "kingdom",
-    "shape": "rule",
-    "milestone": "G4",
-    "spec": "GEAR-IMPLEMENTATION.md G4: the slot model as ruled 2026-09-02 (GEAR-DESIGN.md \u00a71). src/core/loadout.ts reads `equipped` IN ORDER as placement: two hands that take weapons and shields only (a two-hander both; the first weapon is the right hand), one armor in its own slot, N general item slots from the codex hero row (`itemSlots`, now on Hero) widened by worn items (the Backpack's +2); a weapon past the hands spills into an item slot at its hands' cost; every other item one slot (the codex's Bloodrune slots:0 is outdated \u2014 ruled); caps one idol / one Bloodrune / one relic. whyNotEquip / canEquip judge the list AFTER the change, with an optional `displace` (a drop onto a full slot swaps: item.unequipped then item.equipped); whyNotUnequip / performUnequip put any worn item, a starting one included, into the shared stash. item.unequipped joins the vocabulary and GLOSSARY.md. The prep Equip panel shows hands / armor / slots per deployed hero with take-off and swap buttons.",
-    "expect": "ISC-054, ISC-055.",
-    "isc": [
-      "054",
-      "055"
-    ],
-    "needs": [
-      "heroes.kits"
-    ],
-    "variants": [
-      "item.backpack",
-      "item.greatsword"
-    ],
-    "generalizationExempt": "the variants are codex rows the probes exercise (Backpack widening, a two-hander spilling); the mechanism is one loadout function and there is no second-instance code \u2014 but tools/probe.mts runs no equip decisions, so liveness cannot be shown in a run yet",
-    "status": "done-needs-review",
-    "sha": "a3e9d82",
-    "engineSha": "37f7311",
-    "gauntlet": "not passed \u2014 2 flag(s) warned; 1 exemption(s) taken"
-  },
-  {
-    "id": "equip.costs",
-    "kind": "kingdom",
-    "shape": "rule",
-    "milestone": "G5",
-    "spec": "GEAR-IMPLEMENTATION.md G5: the equip session (cursor.equipSession {where: prep|roster, paid[]}) - opened by the prep step whose row equips, closed when it is left; or opened from the roster between battles (performOpenEquip at step 'open', performCloseEquip; leaving the Stage closes it). An item's equipCost (the codex's: idols 1 Faith, Bloodrunes 3 Mana) is spent as it goes on and REFUNDED if it comes off in the same session, a swap's displaced item included; once the session closes what was paid stays paid. Idols are paid for at prep only (src/content/equip.ts PREP_ONLY_CLASSES: 'idols only relate to one battle'). Four words join the vocabulary: equip.opened, equip.closed, equip.paid, equip.refunded. The roster screen gains 'Fit gear' between battles; the prep panel shows costs and what this session paid.",
-    "expect": "ISC-056.",
-    "isc": [
-      "056"
-    ],
-    "needs": [
-      "equip.slots"
-    ],
-    "variants": [
-      "item.pilgrims-warding-stone",
-      "item.rune-bashing"
-    ],
-    "generalizationExempt": "the two variants are codex rows the probe pays for (an idol, a Bloodrune); the mechanism reads equipCost off the row and names no class but the prep-only list in content; tools/probe.mts runs no equip decisions, so liveness is the probe's, not a run's",
-    "status": "done-needs-review",
-    "sha": "abe219b",
-    "engineSha": "2dd4781",
-    "gauntlet": "not passed \u2014 2 flag(s) warned; 1 exemption(s) taken"
-  },
-  {
-    "id": "forge.shelf",
-    "kind": "kingdom",
-    "shape": "rule",
-    "milestone": "G6",
-    "spec": "GEAR-IMPLEMENTATION.md G6: the Forge's building row gains `bands` (Repaired / Equipped / Masterwork / Enchanted, reached by nodes) and `shelf` (2 base at Repaired, 4 at Equipped, +2 masterwork, +2 enchanted and the trade-in at Enchanted). src/core/forge.ts: the shelf drawn on cup.forge keyed by the Week (each part its own draw), tier-1 weapons and armor from the codex, the generated masterwork and enchanted rows over them, minus what was sold this Week (cursor.sold, reset at tickWeek); a base item's Supplies rolled once per item in the switches' 10-20; a masterwork x1.5, an enchanted the base plus equal Mana; the trade-in: three stash items of one category (shields count as weapons) and one tier -> one row a tier up, weapons and armor from tier 3, the rest from tier 1, drawn on cup.forge (a switch: chosen), refused below Enchanted, across categories or tiers, with two, or where no row a tier up exists. item.traded joins the vocabulary. The Buy panel shows the band, prices, sold-out, and the trade-in offers.",
-    "expect": "ISC-057, ISC-058, ISC-059.",
-    "isc": [
-      "057",
-      "058",
-      "059"
-    ],
-    "needs": [
-      "items.rows"
-    ],
-    "variants": [
-      "item.longsword.masterwork",
-      "item.pilgrims-warding-stone"
-    ],
-    "generalizationExempt": "the shelf's second instances are rows (the masterwork rows, the trade-in's categories) and the probes draw them; tools/probe.mts's autoplay buys off the shelf but cannot reach the Masterwork band or a trade-in inside 30 Weeks of default decisions, so liveness is the probes'",
-    "status": "done-needs-review",
-    "sha": "d74a0bc",
-    "engineSha": "8de1620",
-    "gauntlet": "not passed \u2014 2 flag(s) warned; 1 exemption(s) taken"
-  },
-  {
-    "id": "waystation.catalog",
-    "kind": "kingdom",
-    "shape": "rule",
-    "milestone": "G7",
-    "spec": "GEAR-IMPLEMENTATION.md G7: building.waystation is a row (its tree from THE-KINGDOM.html: repair 10, Light & remedies 18, Bombs & oils 30, Quest range 25) standing at the Sanctuary, with four bands. src/core/waystation.ts: listCatalog is the FIXED catalog at the band reached \u2014 every codex row whose waystationBand is open, sorted by band then id, never rolled and never sold out; priceOf is the row's own Supplies or Mana; buy as many as you like, at stage.buy, refused below the band or short of the purse, each refusal naming why. Uses: a one-use row spends into cursor.spent during the Battle (usesLeftOf, isSpent, spendUse) and performExitBattle restocks everything spent \u2014 item.spent and item.restocked join the vocabulary. The Buy panel shows the catalog with prices and uses; the Waystation's art joins generated/art.",
-    "expect": "ISC-060, ISC-061.",
-    "isc": [
-      "060",
-      "061"
-    ],
-    "needs": [
-      "items.rows"
-    ],
-    "variants": [
-      "item.torch",
-      "item.healing-potion"
-    ],
-    "generalizationExempt": "the second instance is a row (every catalog item is one field, waystationBand, on a codex row) and the probes buy two of them; tools/probe.mts's autoplay does not visit the Waystation (no Salvage is spent on it in 30 default Weeks), so liveness is the probes'"
-  }
+ {
+  "id": "seam.run-engagement",
+  "kind": "kingdom",
+  "shape": "plumbing",
+  "milestone": "M0",
+  "spec": "The seam, alone (THIN-SLICE-IMPLEMENTATION.md §4, §5 M0). src/engine.ts is the one door to the engine (§4.5). src/core/seam.ts: EngagementSpec (a campaign-free fielding: heroes, enemies, mapId, hexes, seed) -> battleOptionsOf(spec): BattleOptions (the joint §4.1 names, kept campaign-free until M1 gives makeBattleState a campaign) -> createBattle -> runBattle -> makeBattleResult(events): EngagementResult, an events-to-result FOLD (§4.2) that never reaches into Ctx: outcome, turns, enemy phases, and per-unit rows keyed to the spec's roster by index (uid 100+i) carrying downed, dead, damageTaken, kills. runEngagement(spec) is the three in a row. No campaign code.",
+  "expect": "ISC-002: running a known fielding yields per-hero rows whose downed/dead/damageTaken/kills equal what a hand count of the same event log gives, and a wiped fielding reports every hero downed or dead. ISC-003: the only file importing an engine path is src/engine.ts, and the events the fold read begin with battle.begin and end with battle.end emitted by the engine's own runBattle.",
+  "isc": [
+   "002",
+   "003"
+  ],
+  "needs": [],
+  "attempts": 1,
+  "status": "done-needs-review",
+  "sha": "0f1db1a",
+  "engineSha": "745922d",
+  "gauntlet": "not passed — 2 flag(s) warned"
+ },
+ {
+  "id": "campaign.state",
+  "kind": "kingdom",
+  "shape": "plumbing",
+  "milestone": "M1",
+  "spec": "CampaignState as plain data (Law 5b; GAME-ARCHITECTURE.md §1): week, cursor, purse (Record<CurrencyId, number>), renown, roster, assignments, territories, buildings, revealed, unlocks, threat, cups — plus the rows SKELETON-SETTLED.md:57-61 flags as owed: losses, quests in flight, captured; corruption stored. makeCampaign(seed, legacy, options). One mutator module and one emit; every state change goes through it (Law 3). The item also ships a loadable fixture — fixtures/slice-prep.json — a Campaign positioned at Combat Prep (cursor.step reveal) with a small roster and an engagement.conquer on a Territory row, so the next items have something to load (ruling 2026-09-01: load state → decide what happened → exit).",
+  "expect": "ISC-004: JSON.stringify/parse round-trips a fresh Campaign and a Campaign mid-Week to deep-equal values; no field holds a class, Map, Set or function.",
+  "isc": [
+   "004"
+  ],
+  "needs": [
+   "seam.run-engagement"
+  ],
+  "status": "done-needs-review",
+  "sha": "fb04ddf",
+  "engineSha": "745922d",
+  "gauntlet": "not passed — 3 flag(s) warned"
+ },
+ {
+  "id": "combat.prep",
+  "kind": "kingdom",
+  "shape": "machine",
+  "milestone": "M2",
+  "spec": "Combat Prep as cursor transitions (GAME-ARCHITECTURE.md §4 Inside Combat Prep; SKELETON-SETTLED.md:127): reveal → council → deploy → equip, then battle. viewCombatPrep(campaign, engagement) lists the enemies and the condition at reveal; listCouncilOptions offers exactly three placeholder tactic rows under the reserved test.* kind (ruling 2026-09-01 — until tactic.* is declared) and performing one records it; canDeploy/performDeploy/performUndeploy under the base size limit 4 (§2.3 axis 1); equip is a step that exists and passes through (nothing priced yet). The four steps are rows the machine reads in order, not four hardcoded cases.",
+  "expect": "ISC-026: the cursor visits reveal, council, deploy, equip in that order. ISC-027: at reveal the view lists every enemy and no choice is recorded. ISC-028: three options, one taken, two gone. ISC-029: the fifth deploy is refused at limit 4.",
+  "isc": [
+   "026",
+   "027",
+   "028",
+   "029"
+  ],
+  "variants": [
+   "test.tactic.hold-the-line",
+   "test.tactic.forced-march"
+  ],
+  "needs": [
+   "campaign.state"
+  ],
+  "status": "done-needs-review",
+  "sha": "25a215c",
+  "engineSha": "745922d",
+  "gauntlet": "not passed — 2 flag(s) warned"
+ },
+ {
+  "id": "battle.screen",
+  "kind": "kingdom",
+  "shape": "plumbing",
+  "milestone": "M3",
+  "spec": "The battle screen and the outcome panel, in SLICE.html (self-contained, built by tools/build-slice.mjs with esbuild from engine/node_modules — ruling 2026-09-01). The board and every unit come from the engine's own setup (createBattle at t=0 through the seam; nothing runs). The panel sets everything a battle could decide as an EngagementResult — outcome, per unit lifeState/downed/dead/damage/kills, phases — and validateResult accepts a panel-built result and a fold-built result alike. resolveReckoning(campaign, engagement, result) proposes XP per unit and a wound per hero; every proposal is editable before apply.",
+  "expect": "ISC-030 (H): the map with every deployed hero and every enemy, still. ISC-031: one result shape, one validator, applyBattleResult blind to the producer. ISC-032: proposals editable, written exactly.",
+  "isc": [
+   "030",
+   "034"
+  ],
+  "needs": [
+   "combat.prep"
+  ],
+  "note": "ISC-031 and ISC-032 name the writer and land with reckoning.apply (2026-09-01); ISC-034 is the proposal half. SLICE.html stops at the tally until the writer lands.",
+  "attempts": 1,
+  "status": "done-needs-review",
+  "sha": "9ee8ea3",
+  "engineSha": "745922d",
+  "gauntlet": "not passed — 2 flag(s) warned"
+ },
+ {
+  "id": "reckoning.apply",
+  "kind": "kingdom",
+  "shape": "rule",
+  "milestone": "M4",
+  "spec": "applyBattleResult(campaign, engagement, result) — the only writer (GAME-ARCHITECTURE.md §1 rule 2) — and the tail: wounds from downed/dead (a level on hero.wound; commitmentOf -> 'wounded' above the threshold), Renown +1 per Engagement won (KINGDOM-DESIGN.md §3A), the losses counter, Salvage only from a first Conquer (SKELETON-SETTLED.md:104,108), the reward draft 3-keep-1 (7-KINGDOM-SETTLED.md), the difficulty number Σ(hero levels, civilians ÷2 ⌊⌋) + 2×week − 5×losses + 3×corruption counting everyone alive (SKELETON-NOTES.md:675).",
+  "expect": "ISC-014..020 as written in THIN-SLICE-IMPLEMENTATION.md §6 — the scan finds one writer; a lost battle wounds and pays no Salvage; Renown rises exactly 1 per win; re-conquest pays Renown and never Salvage; a wounded hero is refused deployment; the draft offers 3 and keeps 1; the difficulty number matches the hand sum on three authored rosters. ISC-033: after apply the cursor is past the battle, the save round-trips, a second apply is refused.",
+  "isc": [
+   "014",
+   "015",
+   "016",
+   "017",
+   "018",
+   "020",
+   "031",
+   "032",
+   "033"
+  ],
+  "variants": [
+   "engagement.conquer",
+   "engagement.defend"
+  ],
+  "needs": [
+   "battle.screen"
+  ],
+  "note": "ISC-019 (the reward draft) moved to rewards.draft 2026-09-01 — it is the rewards screen, not the writer.",
+  "status": "done-needs-review",
+  "sha": "123a501",
+  "engineSha": "745922d",
+  "gauntlet": "not passed — 3 flag(s) warned"
+ },
+ {
+  "id": "week.machine",
+  "kind": "kingdom",
+  "shape": "machine",
+  "milestone": "M5",
+  "spec": "The Week: six Stage rows in src/content (stage.buy, stage.quest, stage.defend, stage.conquer, stage.build, stage.mend — KINGDOM-DESIGN.md §3, GLOSSARY.md) read in registry order by a machine in src/core that knows no Stage by name. beginWeek/endWeek/tickWeek, beginStage/endStage, canAdvance/performAdvance, weekOf/stageOf/cursorOf (GAME-ARCHITECTURE.md §2.6). Every Stage emits stage.begun and stage.ended even when it resolves to nothing (§2.1). The cursor holds week, stage, step, engagement, and the battle's SEED AND OPTIONS — never its state (§4.4). The world screen in SLICE.html: the Week and Stage named, Next to pass through a Stage that resolves to nothing; the Conquer Stage picks up the fixture engagement until the map (M6) offers real ones.",
+  "expect": "ISC-005: a Week visits the six ids in the ruled order, and disabling stage.mend (KINGDOM_DISABLE_IDS) makes the order test fail. ISC-006: stage.begun/stage.ended pairs appear for every Stage of an empty Week. ISC-007: at every cursor position, stringify/parse then advance gives the same event stream as advancing the original. tools/probe.mts lands with this item: it runs N Weeks and reports whether an id appears in the log.",
+  "isc": [
+   "005",
+   "006",
+   "007"
+  ],
+  "needs": [
+   "reckoning.apply"
+  ],
+  "variants": [
+   "stage.buy",
+   "stage.mend"
+  ],
+  "attempts": 2,
+  "status": "done-needs-review",
+  "sha": "a46150c",
+  "engineSha": "745922d",
+  "gauntlet": "not passed — 3 flag(s) warned"
+ },
+ {
+  "id": "map.four-territories",
+  "kind": "kingdom",
+  "shape": "rule",
+  "milestone": "M6",
+  "spec": "The slice map as content (GAME-ARCHITECTURE.md §2.4; THIN-SLICE-REVIEW.md §G2): four territory.<realm>.* rows — the Kingdom Territory plus three, the first conquest carrying a critical building — with adjacency and a map id each. canClaim/performClaim/performLose; the Kingdom Territory's row says it cannot be lost (SKELETON-SETTLED.md:80-81). stage.conquer produces an Engagement through the seam and a won one claims the Territory and any building on it (7-KINGDOM-SETTLED.md). The first vertical slice: Week -> Conquer -> battle -> result -> Week N+1. Plus the defend roll: stage.defend rolls once on cup.threat at 6% per owned Territory (THIN-SLICE-REVIEW.md §G2) and produces at most one engagement.defend on an owned non-kingdom Territory (or the Sanctuary, whose loss costs resources instead). The world screen shows the four, owned and not, and lets you pick a conquest.",
+  "expect": "ISC-011: listTerritories returns four rows, one flagged kingdom, one carrying a building. ISC-012: a heroClear Conquer claims the Territory and its building; a wipe claims nothing. ISC-013: performLose on an owned non-kingdom Territory makes it conquerable again; on the Kingdom Territory it is refused and costs resources and wounds per its stakes row. ISC-035: over 200 Weeks with four owned the defend rate lands within 24% ± 6.",
+  "isc": [
+   "011",
+   "012",
+   "013",
+   "035"
+  ],
+  "needs": [
+   "week.machine"
+  ],
+  "note": "variants named from src/content/territories.ts, the realm manifest — the Ridge (GLOSSARY.md's example) and the Highlands (an engine map name).",
+  "attempts": 1,
+  "variants": [
+   "territory.ruined-kingdom.ridge",
+   "territory.ruined-kingdom.highlands"
+  ],
+  "status": "done-needs-review",
+  "sha": "cae0665",
+  "engineSha": "745922d",
+  "gauntlet": "not passed — 2 flag(s) warned"
+ },
+ {
+  "id": "assignments.two-slots",
+  "kind": "kingdom",
+  "shape": "rule",
+  "milestone": "M7a",
+  "spec": "Assignments under amended Law 17 (SKELETON-SETTLED.md:102; GAME-ARCHITECTURE.md §2.3): campaign.assignments: Record<HeroId, {field?, city?}>; commitmentOf(campaign, heroId, slot) -> 'free' | 'onQuest' | 'committed' | 'wounded' | 'unavailable' | 'captured' | 'dead'; canCommit is the only legality check; a quest takes both slots; listAvailable(campaign, stageId) reads commitmentOf and nothing else has an opinion about availability.",
+  "expect": "ISC-008: a second field or city commit in one Week is refused by canCommit. ISC-009: a hero on a quest is absent from listAvailable for every Stage. ISC-010: commitmentOf returns 'unavailable' for a hero the Week's roll kept home, and no other function in src/ inspects hero availability (a static scan).",
+  "isc": [
+   "008",
+   "009",
+   "010"
+  ],
+  "needs": [
+   "map.four-territories"
+  ],
+  "note": "variants: the two Stage rows that spend the two slots — listAvailable reads which slot from the row (spends: assignments → field, city-assignments → city), so the second slot is data.",
+  "variants": [
+   "stage.conquer",
+   "stage.mend"
+  ],
+  "status": "done-needs-review",
+  "sha": "f8f6d99",
+  "engineSha": "745922d",
+  "gauntlet": "not passed — 2 flag(s) warned"
+ },
+ {
+  "id": "purse.mend-and-buy",
+  "kind": "kingdom",
+  "shape": "rule",
+  "milestone": "M7b",
+  "spec": "The purse (Law 18; 7-KINGDOM-SETTLED.md Currencies): four currency.* rows in src/content; balanceOf/canAfford/applySpend/applyGrant with a causeId on every grant (GAME-ARCHITECTURE.md §2.6). Payouts are DATA — a table of which Stage grants which currency — so 'Salvage only from Conquer' is a row the machine reads, and deleting that row is what turns ISC-022 red. stage.buy spends the purse and nothing else. Mend: the four labours as rows (no id kind yet — §9 blocker 9) with the settled yields — Farm 5+2×Fields Supplies, Pray 4+1×Abbeys Faith, Delve 4+1×Wellsprings Mana — each a city Assignment resolved at stage.mend; Heal and Rest yield nothing. Buy: performRecruit spends Faith and adds a hero from a small recruit pool (the Beacon, thin); performHeal spends Faith and lowers a wound one level.",
+  "expect": "ISC-021: four ids exist and canAfford is false when the named currency is short whatever the others hold; disabling currency.salvage makes the test fail. ISC-022: across a simulated run every resource.gained event whose currency is Salvage has a Conquer Engagement as its cause. ISC-036: the yields to the number. ISC-037: recruit spends Faith, adds a row, refused when short. ISC-038: heal spends Faith, lowers one level, refused on a whole hero.",
+  "isc": [
+   "021",
+   "022",
+   "036",
+   "037",
+   "038"
+  ],
+  "needs": [
+   "assignments.two-slots"
+  ],
+  "variants": [
+   "currency.salvage",
+   "currency.faith"
+  ],
+  "status": "done-needs-review",
+  "sha": "6936a71",
+  "engineSha": "745922d",
+  "gauntlet": "not passed — 4 flag(s) warned"
+ },
+ {
+  "id": "rewards.and-levels",
+  "kind": "kingdom",
+  "shape": "rule",
+  "milestone": "M8",
+  "spec": "The reward draft — 3 drawn, keep 1 (7-KINGDOM-SETTLED.md; keep-2 rejected). listRewardOffers draws three item rows on cup.reward keyed by the Engagement; performTakeReward keeps one into the stash and burns two; the rewards step sits between reckoning and open. Level-up: canLevelUp at 20 · 100 · 250 XP (GLOSSARY.md, soft), performLevelUp +1 level, no specialty pick yet; the levelUp step follows rewards.",
+  "expect": "ISC-019: three offers, one kept, two gone, the same three on reload. ISC-039: level at the thresholds, refused below.",
+  "isc": [
+   "019",
+   "039"
+  ],
+  "needs": [
+   "purse.mend-and-buy"
+  ],
+  "attempts": 1,
+  "variants": [
+   "item.halberd",
+   "item.silkweave-armor"
+  ],
+  "note": "variants: two reward rows of different slots — a weapon and an armor — drawn by the same draft.",
+  "status": "done-needs-review",
+  "sha": "bd95fd7",
+  "engineSha": "745922d",
+  "gauntlet": "not passed — 2 flag(s) warned"
+ },
+ {
+  "id": "build.forge",
+  "kind": "kingdom",
+  "shape": "rule",
+  "milestone": "M9",
+  "spec": "The Forge as rows from the settled tree (7-KINGDOM-SETTLED.md: repair 10, then Blades · Bows · Shields · Light · Heavy as a fan, then the chain — 190 total; THE-KINGDOM.html for the nodes): building.forge with nodes, prices in Salvage, parents. stage.build: canBuild/costOfBuild/performBuild; a node needs its parents built and the purse. The shelf: with the repair node built, listShopItems offers the starting weapons and tier-1 armors (item rows the engine already fields); performBuyItem spends Supplies into the stash; the equip step gains performEquip onto a deployed hero.",
+  "expect": "ISC-040: a node bought spends its price and is marked; unmet parents or purse refused. ISC-041: the shelf sells for Supplies and the item equips at the equip step.",
+  "isc": [
+   "040",
+   "041"
+  ],
+  "needs": [
+   "rewards.and-levels"
+  ],
+  "variants": [
+   "building.forge",
+   "building.chapel"
+  ],
+  "note": "building.chapel as the second instance: its root node only, to prove the tree machine is data — the full Chapel is out of the slice.",
+  "attempts": 1,
+  "status": "done-needs-review",
+  "sha": "2aa2ab0",
+  "engineSha": "745922d",
+  "gauntlet": "not passed — 3 flag(s) warned"
+ },
+ {
+  "id": "opening.prologue",
+  "kind": "kingdom",
+  "shape": "rule",
+  "milestone": "M10",
+  "spec": "A new Campaign from nothing (GAME-ARCHITECTURE.md §2.5): makeCampaign(seed) at Week 0 with an empty roster; listDraftOffers shows three hero rows stat-less (name, class, personality, prose — SKELETON-SETTLED.md:124); performDraft puts one on the roster. The five prologue battles as Engagement rows from ENEMY-REVIEW.md Battles 1–5 with their civilians; the cadence 1 · +2 · +1 per battle to six drafted heroes; the Kingdom Territory is taken on the last; a loss before that ends the Campaign (performEndCampaign, then a fresh makeCampaign).",
+  "expect": "ISC-042..045 as written in §6b.",
+  "isc": [
+   "042",
+   "043",
+   "044",
+   "045"
+  ],
+  "needs": [
+   "build.forge"
+  ],
+  "variants": [
+   "engagement.conquer",
+   "hero.base.ranger-aggressive"
+  ],
+  "note": "variants: the prologue battles are engagement.conquer rows flagged prologue (no kind of their own — the open label question), and the ruled first draftee (engine/DECISIONS.md 2026-08-26) as a hero-pool row; both live in the autoplayed opening. Whether the prologue pays Renown is SWITCHES.md prologue.paysRenown.",
+  "attempts": 1,
+  "status": "done-needs-review",
+  "sha": "e78a8bd",
+  "engineSha": "745922d",
+  "gauntlet": "not passed — 3 flag(s) warned"
+ },
+ {
+  "id": "charter.renown",
+  "kind": "kingdom",
+  "shape": "rule",
+  "milestone": "M11",
+  "spec": "The Charter (KINGDOM-DESIGN.md §3A; SKELETON-SETTLED.md:106): Renown is the entire budget, one Renown one purchase, unlock.* rows in src/content; an Article slot opens at Renown 10 and every 5 after, 1-9 is the free spine. canPurchase/performPurchase; hasUnlock/listUnlocks.",
+  "expect": "ISC-023: a purchase costs exactly one Renown and no currency can substitute. ISC-024: listArticleSlots is empty below 10, one at 10, two at 15, and a Provision is what 1-9 buys.",
+  "isc": [
+   "023",
+   "024"
+  ],
+  "needs": [
+   "opening.prologue"
+  ],
+  "note": "variants: an Article and a Provision, each with an effect the slice enacts (the field, the draw); both bought in the autoplayed run once Renown reaches ten.",
+  "variants": [
+   "unlock.field-size.5",
+   "unlock.spoils.1"
+  ],
+  "status": "done-needs-review",
+  "sha": "44f4f68",
+  "engineSha": "745922d",
+  "gauntlet": "not passed — 3 flag(s) warned"
+ },
+ {
+  "id": "screens.thin",
+  "kind": "kingdom",
+  "shape": "plumbing",
+  "milestone": "M12",
+  "spec": "The thin screens (THIN-SLICE-REVIEW.md §G2 list): screen.title and screen.mode-select as stubs in front of the Campaign (Start Game → new Campaign or the browser save; other modes locked); screen.roster (every hero, class, level, XP, wound, availability); the unavailability roll between Buy and Quest — a roll on cup.unavailability marking heroes unavailable for the Week with story lines (KINGDOM-DESIGN.md §3, numbers soft); one authored quest at stage.quest taking both slots for N Weeks and returning with tickWeek.",
+  "expect": "ISC-046 (unavailability), ISC-047 (one quest), ISC-048/049/050 (H — world map, roster, title).",
+  "isc": [
+   "046",
+   "047",
+   "048",
+   "049",
+   "050"
+  ],
+  "needs": [
+   "charter.renown"
+  ],
+  "variants": [
+   "quest.escort"
+  ],
+  "status": "done-needs-review",
+  "sha": "9a3ba63",
+  "engineSha": "745922d",
+  "gauntlet": "not passed — 2 flag(s) warned"
+ },
+ {
+  "id": "run.cold-start",
+  "kind": "kingdom",
+  "shape": "plumbing",
+  "milestone": "M13",
+  "spec": "tools/slice-run.mjs: from a new save, with no human input (an authored default choice at every decision), the run advances Week by Week until the first Article threshold fires (THIN-SLICE-REVIEW.md §G ruling 1). --until article-1 --assert no-out-systems proves the terminus depends on none of §8's systems. BLOCKED on §9 item 1 (the P11 encounter format; battleList.rows is empty) for the eleven battles it needs — until then it runs the authored five and stops, red. — UNBLOCKED 2026-09-02: map.four-territories gave every Territory its own enemies row, so the battles past the authored five are Territory battles (Conquer, and the weekly defend roll); the P11 format is not needed for the slice.",
+  "expect": "ISC-001: exit 0 with the Article threshold event in the log at battle 11. ISC-025: exit 0 with every §8 system absent or stubbed.",
+  "isc": [
+   "001",
+   "025"
+  ],
+  "needs": [
+   "screens.thin"
+  ],
+  "attempts": 1,
+  "status": "done-needs-review",
+  "sha": "e891836",
+  "engineSha": "745922d",
+  "gauntlet": "not passed — 2 flag(s) warned"
+ },
+ {
+  "id": "screens.art",
+  "kind": "kingdom",
+  "shape": "plumbing",
+  "milestone": "M12",
+  "spec": "The kingdom art on SLICE.html (Andrew, 2026-09-01: \"the art assets that should be incorporated in some of the elements\"; USE-THIS-ART.md is the contract). tools/prep-art.py downscales from Autobattler/kingdom-art into generated/art/ (2.3 MB, committed so the build needs no art folder); tools/build-slice.mjs inlines it as data: URIs. The world screen draws the realm: a crop of the painted map with the four Territory tiles at the handoff's hex geometry (rows gain `hex`), a held/unclaimed/attacked outline, iso overlays for the buildings that stand there (a ruin greyed — no ruined art at map scale yet), clickable when offered. The Sanctuary view: the plate with band sprites on the pipeline's lot anchors, band = the building's level, shown once its Territory is held (ART-NOTES.md 2026-09-01 ruling). The Build Stage shows each hall's clean interior behind its tree, with its card.",
+  "expect": "no criterion — the H checks ISC-048/049 are what a person sees; tools/smoke-slice.mjs still green; SLICE.html ~3.4 MB.",
+  "isc": [],
+  "needs": [
+   "screens.thin"
+  ],
+  "generalizationExempt": "plumbing: the art path, not a mechanism",
+  "attempts": 1,
+  "unreachable": "no criterion names the art: ISC-048/049 are H checks a person makes with eyes, and the art is what they now see. test/art.test.ts holds the geometry and the state→picture mapping.",
+  "status": "done-needs-review",
+  "sha": "7d954ed",
+  "engineSha": "745922d",
+  "gauntlet": "not passed — 2 flag(s) warned; 1 exemption(s) taken"
+ },
+ {
+  "id": "screens.load-game",
+  "kind": "kingdom",
+  "shape": "plumbing",
+  "milestone": "M12",
+  "spec": "The Load Game screen is the front of the slice (Andrew, 2026-09-02: \"This is supposed to be the load game screen\"; research/mocks/Load Game.html): three campaigns in sequence as realm rows (src/content/realms.ts — Eve of Ruin playable, Shadows in the Sand and Skyship locked), three party slots each, a slot = one Campaign with one autosave (slotKey), Continue / End Game (two clicks) / + New Party / Load a save / the fixture; three leaderboards with the mock's fake numbers, labelled fake. Banners and the two faces pulled from the mock by tools/prep-mock.py into generated/art. Replaces the title→mode-select stubs; the old single browser save migrates into slot 1 once.",
+  "expect": "no criterion — ISC-050 (H) is what a person sees. test/loadgame.test.ts; tools/smoke-slice.mjs green.",
+  "isc": [],
+  "needs": [
+   "screens.art"
+  ],
+  "unreachable": "ISC-050 is H — a person opens the page; the slots and the migration are held by test/loadgame.test.ts.",
+  "generalizationExempt": "plumbing: a screen, not a mechanism",
+  "status": "done-needs-review",
+  "sha": "0e8872f",
+  "engineSha": "745922d",
+  "gauntlet": "not passed — 2 flag(s) warned; 1 exemption(s) taken"
+ },
+ {
+  "id": "tools.gear-doc",
+  "kind": "kingdom",
+  "shape": "tooling",
+  "milestone": "G0",
+  "spec": "GEAR-IMPLEMENTATION.md G0: the ISC instrument (tools/slice-gate.mjs) reads BOTH criteria documents — THIN-SLICE-IMPLEMENTATION.md (ISC-001…050) and GEAR-IMPLEMENTATION.md (ISC-051…) — as one list with unique numbers; --sync writes each file's own header count over the criteria it holds; --count is the total. Simpler than the plan's --doc flag: nothing in gate.mjs changes.",
+  "expect": "node tools/slice-gate.mjs --count reports N of 68; each file syncs its own line; ISC-051 is addressable.",
+  "isc": [],
+  "needs": [],
+  "unreachable": "tooling: it closes no criterion; test/criteria-docs.test.ts holds it",
+  "generalizationExempt": "tooling, not a mechanism",
+  "status": "done-needs-review",
+  "sha": "50eb0f1",
+  "engineSha": "7a11028",
+  "gauntlet": "not passed — 2 flag(s) warned; 1 exemption(s) taken"
+ },
+ {
+  "id": "heroes.cut-alpha",
+  "kind": "kingdom",
+  "shape": "data",
+  "milestone": "G1",
+  "spec": "Ruled 2026-09-02 (Andrew): \"Let's just remove those four alpha heroes.\" Oathblade, Sky Pirate, Dusk Hawk and Air Mage leave the pool (alpha test units with no kit in the content). The pool is five heroes until the engine fields the rest of the Eve 24 (engine backlog content.field-eve-24, filed); the opening's draft cadence stops where the pool does (draftsOwedOf caps at the pool). The fixture re-pointed at Eve rows (Hunter, Iron Dwarf, Battle Chaplain, Lucius, Osric, Orphan Child — six rows); seven probes re-pointed with Law 10 notes where a number moved with the roster.",
+  "expect": "no alpha-* unitType among HERO_POOL heroes except Lucius/Osric (their Eve rows have kits; unit rows still alpha until the pack fields them); the opening drafts five; the cold-start run still reaches the first Article.",
+  "isc": [],
+  "needs": [
+   "tools.gear-doc"
+  ],
+  "unreachable": "a removal closes no criterion; the re-pointed probes and the cold-start run hold it",
+  "generalizationExempt": "data removal, not a mechanism",
+  "status": "done-needs-review",
+  "sha": "97b879c",
+  "engineSha": "7a11028",
+  "gauntlet": "not passed — 2 flag(s) warned; 1 exemption(s) taken"
+ },
+ {
+  "id": "items.rows",
+  "kind": "kingdom",
+  "shape": "data",
+  "milestone": "G2",
+  "spec": "GEAR-IMPLEMENTATION.md G2: tools/mk-items.mjs generates src/content/generated/items.ts from content/hbt-content.json and content/gen/tier3-combinations.json — every codex item as it is; a masterwork row per tier-1 two-hander and armor (+1 Max Stamina, tier 2); an enchanted row per tier-1 base × codex enchant flagged buyable (none until the content session lands the nine); the tier-3 combinations, an unknown base refused, an unknown enchant a NAMED gap in generated/items-gaps.json (58 today: the 2026-09-02 enchant renames and additions are not in the codex yet). src/content/items.ts is the registry (ItemRow, ITEMS, itemOf, kill switch); rewards.ts becomes a filter over ITEMS with slot derived from class and tags (the Holy Symbol is a weapon again).",
+  "expect": "ISC-051.",
+  "isc": [
+   "051"
+  ],
+  "needs": [
+   "heroes.cut-alpha"
+  ],
+  "generalizationExempt": "data: a generator and its registry, not a mechanism",
+  "status": "done-needs-review",
+  "sha": "bd45b65",
+  "engineSha": "da99720",
+  "gauntlet": "not passed — 1 flag(s) warned"
+ },
+ {
+  "id": "heroes.kits",
+  "kind": "kingdom",
+  "shape": "data",
+  "milestone": "G3",
+  "spec": "GEAR-IMPLEMENTATION.md G3: tools/mk-items.mjs also generates src/content/generated/kits.ts (HERO_KITS from hbt-content.json heroes[].kit — the 24 Eve full kits and the civilians' dictated tools; pinned-only kits listed as KIT_SPECS, none in the pool) and tools/kit-gaps.mts writes kits-gaps.json for pool heroes without one. A hero row's `equipped` at entry IS its kit; applyDraft / applyRecruit / applyRescue emit one item.equipped per item with `from` draft | beacon | rescue; performDraft and performRecruit assertKitted first — a hero the codex gives no kit is refused by name, never fielded bare. The fixture's rows now come from the content, kits on.",
+  "expect": "ISC-052, ISC-053.",
+  "isc": [
+   "052",
+   "053"
+  ],
+  "needs": [
+   "items.rows"
+  ],
+  "generalizationExempt": "data: rows wearing rows, not a mechanism",
+  "status": "done-needs-review",
+  "sha": "3ae1be3",
+  "engineSha": "37f7311",
+  "gauntlet": "not passed — 1 flag(s) warned"
+ },
+ {
+  "id": "equip.slots",
+  "kind": "kingdom",
+  "shape": "rule",
+  "milestone": "G4",
+  "spec": "GEAR-IMPLEMENTATION.md G4: the slot model as ruled 2026-09-02 (GEAR-DESIGN.md §1). src/core/loadout.ts reads `equipped` IN ORDER as placement: two hands that take weapons and shields only (a two-hander both; the first weapon is the right hand), one armor in its own slot, N general item slots from the codex hero row (`itemSlots`, now on Hero) widened by worn items (the Backpack's +2); a weapon past the hands spills into an item slot at its hands' cost; every other item one slot (the codex's Bloodrune slots:0 is outdated — ruled); caps one idol / one Bloodrune / one relic. whyNotEquip / canEquip judge the list AFTER the change, with an optional `displace` (a drop onto a full slot swaps: item.unequipped then item.equipped); whyNotUnequip / performUnequip put any worn item, a starting one included, into the shared stash. item.unequipped joins the vocabulary and GLOSSARY.md. The prep Equip panel shows hands / armor / slots per deployed hero with take-off and swap buttons.",
+  "expect": "ISC-054, ISC-055.",
+  "isc": [
+   "054",
+   "055"
+  ],
+  "needs": [
+   "heroes.kits"
+  ],
+  "variants": [
+   "item.backpack",
+   "item.greatsword"
+  ],
+  "generalizationExempt": "the variants are codex rows the probes exercise (Backpack widening, a two-hander spilling); the mechanism is one loadout function and there is no second-instance code — but tools/probe.mts runs no equip decisions, so liveness cannot be shown in a run yet",
+  "status": "done-needs-review",
+  "sha": "a3e9d82",
+  "engineSha": "37f7311",
+  "gauntlet": "not passed — 2 flag(s) warned; 1 exemption(s) taken"
+ },
+ {
+  "id": "equip.costs",
+  "kind": "kingdom",
+  "shape": "rule",
+  "milestone": "G5",
+  "spec": "GEAR-IMPLEMENTATION.md G5: the equip session (cursor.equipSession {where: prep|roster, paid[]}) - opened by the prep step whose row equips, closed when it is left; or opened from the roster between battles (performOpenEquip at step 'open', performCloseEquip; leaving the Stage closes it). An item's equipCost (the codex's: idols 1 Faith, Bloodrunes 3 Mana) is spent as it goes on and REFUNDED if it comes off in the same session, a swap's displaced item included; once the session closes what was paid stays paid. Idols are paid for at prep only (src/content/equip.ts PREP_ONLY_CLASSES: 'idols only relate to one battle'). Four words join the vocabulary: equip.opened, equip.closed, equip.paid, equip.refunded. The roster screen gains 'Fit gear' between battles; the prep panel shows costs and what this session paid.",
+  "expect": "ISC-056.",
+  "isc": [
+   "056"
+  ],
+  "needs": [
+   "equip.slots"
+  ],
+  "variants": [
+   "item.pilgrims-warding-stone",
+   "item.rune-bashing"
+  ],
+  "generalizationExempt": "the two variants are codex rows the probe pays for (an idol, a Bloodrune); the mechanism reads equipCost off the row and names no class but the prep-only list in content; tools/probe.mts runs no equip decisions, so liveness is the probe's, not a run's",
+  "status": "done-needs-review",
+  "sha": "abe219b",
+  "engineSha": "2dd4781",
+  "gauntlet": "not passed — 2 flag(s) warned; 1 exemption(s) taken"
+ },
+ {
+  "id": "forge.shelf",
+  "kind": "kingdom",
+  "shape": "rule",
+  "milestone": "G6",
+  "spec": "GEAR-IMPLEMENTATION.md G6: the Forge's building row gains `bands` (Repaired / Equipped / Masterwork / Enchanted, reached by nodes) and `shelf` (2 base at Repaired, 4 at Equipped, +2 masterwork, +2 enchanted and the trade-in at Enchanted). src/core/forge.ts: the shelf drawn on cup.forge keyed by the Week (each part its own draw), tier-1 weapons and armor from the codex, the generated masterwork and enchanted rows over them, minus what was sold this Week (cursor.sold, reset at tickWeek); a base item's Supplies rolled once per item in the switches' 10-20; a masterwork x1.5, an enchanted the base plus equal Mana; the trade-in: three stash items of one category (shields count as weapons) and one tier -> one row a tier up, weapons and armor from tier 3, the rest from tier 1, drawn on cup.forge (a switch: chosen), refused below Enchanted, across categories or tiers, with two, or where no row a tier up exists. item.traded joins the vocabulary. The Buy panel shows the band, prices, sold-out, and the trade-in offers.",
+  "expect": "ISC-057, ISC-058, ISC-059.",
+  "isc": [
+   "057",
+   "058",
+   "059"
+  ],
+  "needs": [
+   "items.rows"
+  ],
+  "variants": [
+   "item.longsword.masterwork",
+   "item.pilgrims-warding-stone"
+  ],
+  "generalizationExempt": "the shelf's second instances are rows (the masterwork rows, the trade-in's categories) and the probes draw them; tools/probe.mts's autoplay buys off the shelf but cannot reach the Masterwork band or a trade-in inside 30 Weeks of default decisions, so liveness is the probes'",
+  "status": "done-needs-review",
+  "sha": "d74a0bc",
+  "engineSha": "8de1620",
+  "gauntlet": "not passed — 2 flag(s) warned; 1 exemption(s) taken"
+ },
+ {
+  "id": "waystation.catalog",
+  "kind": "kingdom",
+  "shape": "rule",
+  "milestone": "G7",
+  "spec": "GEAR-IMPLEMENTATION.md G7: building.waystation is a row (its tree from THE-KINGDOM.html: repair 10, Light & remedies 18, Bombs & oils 30, Quest range 25) standing at the Sanctuary, with four bands. src/core/waystation.ts: listCatalog is the FIXED catalog at the band reached — every codex row whose waystationBand is open, sorted by band then id, never rolled and never sold out; priceOf is the row's own Supplies or Mana; buy as many as you like, at stage.buy, refused below the band or short of the purse, each refusal naming why. Uses: a one-use row spends into cursor.spent during the Battle (usesLeftOf, isSpent, spendUse) and performExitBattle restocks everything spent — item.spent and item.restocked join the vocabulary. The Buy panel shows the catalog with prices and uses; the Waystation's art joins generated/art.",
+  "expect": "ISC-060, ISC-061.",
+  "isc": [
+   "060",
+   "061"
+  ],
+  "needs": [
+   "items.rows"
+  ],
+  "variants": [
+   "item.torch",
+   "item.healing-potion"
+  ],
+  "generalizationExempt": "the second instance is a row (every catalog item is one field, waystationBand, on a codex row) and the probes buy two of them; tools/probe.mts's autoplay does not visit the Waystation (no Salvage is spent on it in 30 default Weeks), so liveness is the probes'",
+  "status": "done-needs-review",
+  "sha": "bf993f0",
+  "engineSha": "e6f8201",
+  "gauntlet": "not passed — 2 flag(s) warned; 1 exemption(s) taken"
+ }
 ]

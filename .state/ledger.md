@@ -784,3 +784,26 @@ Law 10 note (forge.shelf): test/isc-041.test.ts bought two named items at a flat
 Law 10 note (the enchant pass, content-side): test/criteria-docs.test.ts asserted ISC-051's probe did NOT exist yet ("the tool says so") — it does now, so the assertion was rewritten to the rule it was really holding: a gear criterion's number resolves to a verdict. It now asks ISC-068 (H-tier, no probe to run).
 
 BLOCKED, not mine (2026-09-02): SLICE.html cannot be rebuilt right now. The engine's working tree is mid-landing — its regenerated pack now defines attack.fangs.bite, which is ALSO hand-typed in engine/src/content/index.ts, and the engine's own loader refuses ("one owner only", correctly). The kingdom's suite is green (128) because it never loads that registry; the browser bundle does, and throws at load. SLICE.html is left at the last good build (kingdom a42ecc2); rebuild when the engine session's content.field-eve-24 work settles. The kingdom does not edit engine/src.
+
+## waystation.catalog — LANDED `bf993f0` **NEEDS REVIEW**
+2026-09-03 05:22 · engine @ e6f8201
+
+  PASS  dependencies landed
+  WARN  not already decided — 4 candidate ruling(s) — READ BEFORE ASKING: ../STATE.md:20 · ../STATE.md:21
+  PASS  typecheck
+  PASS  full test suite — 132 passed
+  PASS  gate 1 — every claimed criterion holds — ISC-060 holds · ISC-061 holds
+  PASS  brought its own tests — test/art.test.ts, test/isc-060.test.ts, test/isc-061.test.ts
+  PASS  existing tests untouched
+  PASS  kill switch — every claimed probe has been seen red — ISC-060: red on record (2026-09-03 05:22 @ 06467ca, probe a0b486814460) · ISC-061: red on record (2026-09-03 05:22 @ 06467ca, probe fe35bdb44703)
+  PASS  nothing regresses — every P-tier probe — 57 P-tier probe(s): 57 green, 0 red, 0 regression(s). 55 of 68 closed · 57 probed · 0 accepted
+  PASS  hardcode scan — core knows mechanisms, never names
+  PASS  generalizes — the second instance costs zero kingdom code
+  PASS  naming — new ids use declared kinds
+  PASS  naming — no banned words invented
+  WARN  engine working tree clean — verified against a DIRTY engine tree (e6f8201 + 5 uncommitted under src/test): M src/content/generated/pack.ts, M src/core/setup.ts, M src/core/types.ts
+  PASS  one door to the engine
+
+ISC-060: CLOSED at bf993f0 · ISC-061: CLOSED at bf993f0
+slice: 57 of 68 closed · 57 probed · 0 accepted
+IRON GAUNTLET: NOT PASSED — 2 FLAG(S) WARNED; 1 EXEMPTION(S) TAKEN
