@@ -386,3 +386,10 @@ Added 2026-09-03 (capability.corpses). The authored row states no range; the
 encounter session assumed its aura's 2 and named it as open (8-ENCOUNTERS E1).
 Compiled as 2 for now — a converter constant, not yet a Config switch; the row
 is where the number should live once ruled.
+
+## frostLayerStack — what does frost GROUND put on its occupant?
+Added 2026-09-03 (capability.ground-layers). rule.ground-layers names frost as
+a layer and status.frost is shaped, but no row says what standing on frost
+ground does. Compiled as Frost 1 at End of Activation — the mirror of burning
+ground's Burn 1 — as a constant in `maps.ts` LAYER_TRAITS, not yet a Config
+switch. Rime's design ("heroes carrying Frost 2–3 from the band") is the sweep.

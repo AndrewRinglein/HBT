@@ -364,3 +364,20 @@ export function corpsesNear(ctx: Ctx, hex: HexId, radius: number): { id: number;
   return (ctx.state.corpses ?? []).filter((c) => hexDistance(c.hex, hex) <= radius)
     .sort((a, b) => hexDistance(a.hex, hex) - hexDistance(b.hex, hex) || a.id - b.id)
 }
+
+// ── GROUND LAYERS — capability.ground-layers (2026-09-03) ────────────────────
+/**
+ * Paint a layer onto a hex. rule.ground-layers: at most one per hex, a new one
+ * replaces the old — except Burn and Frost, which cancel one for one
+ * (rule.burn-frost-cancel): painting burning onto frost (or the reverse)
+ * leaves the hex bare. Every stroke is a line naming its cause.
+ */
+export function paintLayer(ctx: Ctx, hex: HexId, layer: number, causeId: string): void {
+  const layers = ctx.state.layers ?? (ctx.state.layers = new Array<number>(ctx.state.terrain.length).fill(0))
+  const before = layers[hex] ?? 0
+  const cancel = (before === 1 && layer === 2) || (before === 2 && layer === 1)   // burning ⟷ frost
+  const after = cancel ? 0 : layer
+  layers[hex] = after
+  emit(ctx, cancel ? 'layer.cancelled' : 'layer.painted', causeId, { hex, before, after, layer })
+}
+export function layerAt(ctx: Ctx, hex: HexId): number { return ctx.state.layers?.[hex] ?? 0 }

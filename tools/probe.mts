@@ -61,7 +61,9 @@ const ACTED = new Set(['damage.applied','heal.applied','power.used','attack.decl
   // capability.surge (2026-09-03): a surge is another move and action
   'surge.hit',
   // capability.corpses (2026-09-03): a body on the board, and what became of it
-  'corpse.created', 'corpse.removed', 'unit.raised', 'corpse.eaten'])
+  'corpse.created', 'corpse.removed', 'unit.raised', 'corpse.eaten',
+  // capability.ground-layers (2026-09-03): a stroke on the board
+  'layer.painted', 'layer.cancelled', 'band.advanced'])
 
 /**
  * A SCENARIO is probed by fielding it, not by sweeping the standard panel.

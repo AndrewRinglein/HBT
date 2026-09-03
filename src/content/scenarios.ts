@@ -251,6 +251,21 @@ const RAW_SCENARIOS: Readonly<Record<string, ScenarioDef>> = {
     encounterId: 'encounter.kiln',
     replicate: 0,
   },
+  'showcase.rime': {
+    id: 'showcase.rime',
+    note: 'encounter.rime, the encounter session\'s E5 (shipped 2026-09-03): the frost '
+      + 'band at rows 6–8 from setup, strong skeletons and archers, the spider at 4, '
+      + 'zombies behind the party at 6, the Bone Dragon at 9. The frozen skeletons '
+      + 'and the wights are owed rows (named gaps). The six-hero party of battle 20 '
+      + 'on Codex kits. The fielding the probe reads the frost layer in.',
+    mapId: 'map.open',
+    heroes: ['hero.base.warrior-iron', 'hero.base.ranger-aggressive', 'hero.base.mage-fire', 'hero.base.priest-armored', 'hero.base.paladin-hunk', 'hero.base.rogue-raven'],
+    heroHexes: [],
+    enemies: [],
+    enemyHexes: [],
+    encounterId: 'encounter.rime',
+    replicate: 0,
+  },
   'showcase.assembled-party': {
     id: 'showcase.assembled-party',
     note: 'Hero assembly (2026-09-03): the progression party at its battle-20 '

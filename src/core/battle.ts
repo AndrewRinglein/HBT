@@ -3,11 +3,11 @@
 //   Each unit gets one Activation: movement, then a primary action.
 
 import { runActivation } from '../ai/modes.js'
-import { beginActivation, beginTurn, emit, endActivation, gainStamina, regenStamina, setOutcome, setPhase } from './mutate.js'
+import { beginActivation, beginTurn, emit, endActivation, gainStamina, layerAt, regenStamina, setOutcome, setPhase } from './mutate.js'
 import { roll100 } from './rng.js'
-import { appliesOnActivationEndOf, stripsOnActivationEndOf, terrainIdOf } from '../content/maps.js'
+import { appliesOnActivationEndOf, layerAppliesOnActivationEnd, layerIdOf, stripsOnActivationEndOf, terrainIdOf } from '../content/maps.js'
 import { advanceBleedOuts, checkVictory, settle } from './settle.js'
-import { fireSchedule, startOfTurn } from './encounter.js'
+import { advanceBand, fireSchedule, startOfTurn } from './encounter.js'
 import { applyStatus, isBlocked, reduceStatus, tickUnitStatuses } from './status.js'
 import { HOOKS, fireTriggers } from './trigger.js'
 import type { Ctx, Phase, Side } from './types.js'
@@ -100,6 +100,9 @@ export function endOfActivation(ctx: Ctx, unitId: number): void {
   for (const sid of strips) reduceStatus(ctx, unitId, sid, 1, terrainIdOf(t))
   const applies = appliesOnActivationEndOf(t)
   for (const [sid, n] of applies) applyStatus(ctx, unitId, sid, n, terrainIdOf(t))
+  // the painted layer, through the same funnel (capability.ground-layers, 2026-09-03)
+  const layer = layerAt(ctx, u.hex)
+  for (const [sid, n] of layerAppliesOnActivationEnd(layer)) applyStatus(ctx, unitId, sid, n, layerIdOf(layer))
   // Rung 2 — `onActivationEnd` triggers fire (fix.activation-end-fires,
   // 2026-09-03). The hook was in HOOKS, validated, glossed and never called —
   // "indistinguishable from a working one until a piece of content depends on
@@ -192,6 +195,8 @@ export function runBattle(ctx: Ctx): BattleResult {
     if (ctx.state.outcome) break
     runPhase(ctx, 'enemy')
     if (ctx.state.outcome) break
+    // the band paints one more row as the enemy phase ends (capability.ground-layers)
+    advanceBand(ctx)
 
     emit(ctx, 'turn.end', 'engine', { turn: ctx.state.turn })
   }

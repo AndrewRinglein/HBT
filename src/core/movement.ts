@@ -5,8 +5,8 @@
 import { distance, neighboursOf, stepAwayFrom } from './hex.js'
 import type { HexId } from './hex.js'
 import type { Ctx, MoveDef, Unit } from './types.js'
-import { appliesOnEnterOf, isPassable, moveCostOf, stripsOnEnterOf, terrainIdOf } from '../content/maps.js'
-import { addStatMod, emit, gainStamina, knockUnit, loseMaxStamina, markMoveUsed, moveUnit, spendStamina, unit } from './mutate.js'
+import { appliesOnEnterOf, isPassable, layerAppliesOnEnter, layerIdOf, moveCostOf, stripsOnEnterOf, terrainIdOf } from '../content/maps.js'
+import { addStatMod, emit, gainStamina, knockUnit, layerAt, loseMaxStamina, markMoveUsed, moveUnit, spendStamina, unit } from './mutate.js'
 import { forcedTargetOf, applyStatus, reduceStatus } from './status.js'
 import { canAttack, performAttack } from './pipeline.js'
 import { settle } from './settle.js'
@@ -190,6 +190,8 @@ export function executeMove(ctx: Ctx, unitId: number, path: HexId[], power: Move
     for (const [sid, n] of appliesOnEnterOf(terrainHere)) {
       applyStatus(ctx, unitId, sid, n, terrainIdOf(terrainHere))
     }
+    // the painted layer's entry beat, same funnel (capability.ground-layers, 2026-09-03)
+    for (const [sid, n] of layerAppliesOnEnter(layerAt(ctx, hex))) applyStatus(ctx, unitId, sid, n, layerIdOf(layerAt(ctx, hex)))
     // 6. vision — none in the baseline
     if (onStep && !onStep(ctx, unitId, hex)) break
     if (u.lifeState !== 'standing') break

@@ -6003,3 +6003,23 @@ effect of power.ghoul.eat-corpse — 25 paired battles per map, WITH vs WITHOUT
   test.map.showcase: heroWins 25->25 (+0)  meanTurns 3.9->3.9
 NO MEASURABLE EFFECT at this sample size — consequence clause caught state changes, but outcomes did not move. Consider a sweep with more replicates before drawing balance conclusions.
 ```
+
+## capability.ground-layers — LANDED `55a624d`
+2026-09-03 17:53
+
+  PASS  dependencies landed
+  WARN  not already decided — 3 candidate ruling(s) — READ BEFORE ASKING: ../STATE.md:18 · ../CODEX.md:1831
+  PASS  typecheck
+  PASS  full test suite
+  PASS  gate 1 — the id appears in a real battle — layer.burning: 44 log lines, 44 fired, 44 changed state
+  PASS  brought its own tests — test/ground-layers.test.ts
+  PASS  existing tests untouched
+  PASS  control battles unchanged
+  PASS  content has a published source — 19 ids without a published source (9 awaiting publication from earlier items — see audit)
+  PASS  hardcode scan — core knows mechanisms, never names
+  PASS  generalizes — the second instance costs zero engine code — layer.burning live · layer.frost live
+  PASS  naming — new content ids use declared kinds
+  PASS  naming — no banned words invented
+  PASS  kill switch — the tests fail without the content — tests fail without layer.burning — they genuinely test it
+
+IRON GAUNTLET: NOT PASSED — 1 FLAG(S) WARNED

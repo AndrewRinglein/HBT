@@ -305,3 +305,39 @@ export function armorBonusOf(terrain: number): number { return statOf(terrain, '
 
 /** Flat magic mitigation while standing here. */
 export function resistBonusOf(terrain: number): number { return statOf(terrain, 'resist') }
+
+// ── GROUND LAYERS — capability.ground-layers (2026-09-03) ────────────────────
+// rule.ground-layers: four layers painted onto arbitrary hexes at runtime —
+// burning · frost · poisoned · darkness — a hex carries AT MOST ONE, applying a
+// new one replaces it, except Burn and Frost which cancel one for one
+// (rule.burn-frost-cancel). Persistent, no clock. 5-GROUND-SETTLED (2026-08-20):
+// "the layer must feed the same composed() trait funnel" — so a painted
+// burning hex sears exactly as authored burning terrain does. Frost paints
+// what the row says of the status (Frost 1 at End of Activation — SWITCHES.md
+// frostLayerStack); darkness is vision's (capability.vision) and applies nothing.
+export const LAYER = { NONE: 0, BURNING: 1, FROST: 2, POISONED: 3, DARKNESS: 4 } as const
+export type LayerId = (typeof LAYER)[keyof typeof LAYER]
+export const LAYER_IDS: Readonly<Record<number, string>> = {
+  [LAYER.BURNING]: 'layer.burning', [LAYER.FROST]: 'layer.frost', [LAYER.POISONED]: 'layer.poisoned', [LAYER.DARKNESS]: 'layer.darkness',
+}
+export function layerIdOf(layer: number): string { return LAYER_IDS[layer] ?? 'layer.none' }
+export function layerOfId(id: string): number {
+  const k = Object.entries(LAYER_IDS).find(([, v]) => v === id)
+  if (!k) throw new Error(`unknown ground layer '${id}' — the four are ${Object.values(LAYER_IDS).join(', ')}`)
+  return +k[0]
+}
+const LAYER_TRAITS: Readonly<Record<number, Mods>> = {
+  [LAYER.BURNING]: TRAIT['burning']!,
+  [LAYER.POISONED]: TRAIT['poisoned']!,
+  [LAYER.FROST]: { moveCost: 0, appliesOnActivationEnd: [['status.frost', 1]] },
+  [LAYER.DARKNESS]: { moveCost: 0 },
+}
+/** What a layer applies on entry / at End of Activation — the same shapes terrain has. */
+export function layerAppliesOnEnter(layer: number): Applies {
+  if (!layer || disabledIds().has(layerIdOf(layer))) return []
+  return LAYER_TRAITS[layer]?.appliesOnEnter ?? []
+}
+export function layerAppliesOnActivationEnd(layer: number): Applies {
+  if (!layer || disabledIds().has(layerIdOf(layer))) return []
+  return LAYER_TRAITS[layer]?.appliesOnActivationEnd ?? []
+}

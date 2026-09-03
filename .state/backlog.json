@@ -2061,5 +2061,24 @@
   "attempts": 1,
   "sha": "d0d7f1d",
   "gauntlet": "not passed — 2 flag(s) warned"
+ },
+ {
+  "id": "capability.ground-layers",
+  "kind": "engine",
+  "shape": "rule",
+  "spec": "Painted ground layers — rule.ground-layers (burning · frost · poisoned · darkness), one per hex, replace-on-paint except Burn/Frost cancel one for one (rule.burn-frost-cancel); persistent, no clock. 5-GROUND-SETTLED: the layer feeds the same composed() trait funnel as terrain, so a painted burning hex sears on entry and at End of Activation like terrain.burning. Frost paints Frost 1 at End of Activation (SWITCHES.md frostLayerStack). Darkness is vision's. State.layers is plain data parallel to terrain. Two encounter shapes as data: the BAND (The Kiln — one row per Turn from row 0 as the enemy phase ends, units standing there take the entry beat) and setup PAINT (Rime — rows 6–8 frost). Blocks 2 encounters and prologue-4's Curse (ENCOUNTERS-ENGINE-HANDOFF §4.4).",
+  "expect": "paint replaces, burn onto frost cancels; a painted burning hex sears exactly as burning terrain; the Kiln lights row 0 at Turn 2 and one row per Turn; Rime's rows 6-8 are frost at setup",
+  "changesBaseline": false,
+  "probeIds": [
+   "layer.burning"
+  ],
+  "variants": [
+   "layer.burning",
+   "layer.frost"
+  ],
+  "status": "done",
+  "attempts": 1,
+  "sha": "55a624d",
+  "gauntlet": "not passed — 1 flag(s) warned"
  }
 ]

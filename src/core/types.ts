@@ -59,6 +59,16 @@ export type EncounterDef = {
   readonly loseAfter?: { readonly phase?: number; readonly heroPhase?: number }
   /** Absent = board clear. */
   readonly win?: { readonly surviveTo: number }
+  /**
+   * capability.ground-layers: the BAND — one row of a layer painted per Turn,
+   * from `startRow` in `direction` (+1 toward the player edge), starting at
+   * Turn `fromPhase`, as the enemy phase ends (The Kiln: "at end of enemy
+   * phase, row 0 lights at phase 2, row 1 at 3 …"). Painted cells are named
+   * `layer`; `spare` hexes (the Kiln's water pockets) are never painted.
+   */
+  readonly band?: { readonly layer: string; readonly fromPhase: number; readonly startRow: number; readonly direction: 1 | -1; readonly spare?: readonly number[] }
+  /** capability.ground-layers: cells painted at setup, before phase 1 (Rime's frost band rows 6–8). */
+  readonly paint?: readonly { readonly layer: string; readonly hexes: readonly number[] }[]
   /** capability.power-pool: the pool at battle start (kind 'external'). */
   readonly powerSources?: readonly { readonly kind: 'external'; readonly value: number }[]
   /** Where the heroes deploy (prologue-1's `heroes: 1, at: {near, range}`); absent = the player edge. */
@@ -574,6 +584,12 @@ export type State = {
   power?: number
   /** One entry per HexId. Plain array so State stays JSON-round-trippable (Law 5b). */
   terrain: number[]
+  /**
+   * capability.ground-layers (2026-09-03): the painted layer per hex, parallel
+   * to `terrain` — LAYER.NONE where nothing is painted. Absent = nothing painted
+   * anywhere (every pre-layer battle is byte-identical).
+   */
+  layers?: number[]
   units: Unit[]
   outcome: Outcome | null
   seq: number

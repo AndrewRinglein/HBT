@@ -25887,10 +25887,16 @@ export const UNIT_PACK = {
           "range": 3
         }
       },
+      "band": {
+        "layer": "layer.burning",
+        "fromPhase": 2,
+        "startRow": 0,
+        "direction": 1
+      },
       "gaps": [
         "retreat allowed — skipped by ruling 2026-09-03",
         "salvation — skipped by ruling 2026-09-03",
-        "standing rule: THE KILN — needs capability.ground-layers (the Band shape)",
+        "standing rule: THE KILN — needs a map with the five water pockets",
         "needs: capability.ground-layers (the advancing burning band; water pockets)",
         "needs: the salvation card at phase 8"
       ]
@@ -26082,13 +26088,68 @@ export const UNIT_PACK = {
           "range": 3
         }
       },
+      "paint": [
+        {
+          "layer": "layer.frost",
+          "hexes": [
+            96,
+            97,
+            98,
+            99,
+            100,
+            101,
+            102,
+            103,
+            104,
+            105,
+            106,
+            107,
+            108,
+            109,
+            110,
+            111,
+            112,
+            113,
+            114,
+            115,
+            116,
+            117,
+            118,
+            119,
+            120,
+            121,
+            122,
+            123,
+            124,
+            125,
+            126,
+            127,
+            128,
+            129,
+            130,
+            131,
+            132,
+            133,
+            134,
+            135,
+            136,
+            137,
+            138,
+            139,
+            140,
+            141,
+            142,
+            143
+          ]
+        }
+      ],
       "gaps": [
         "setup: 8 × unit.frozen-skeleton — no such row in the pack, NOT fielded",
         "setup: 2 × unit.hoarfrost-wight — no such row in the pack, NOT fielded",
         "schedule 3: 6 × unit.frozen-skeleton — no such row in the pack, NOT fielded",
         "retreat allowed — skipped by ruling 2026-09-03",
         "salvation — skipped by ruling 2026-09-03",
-        "standing rule: THE FROST BAND — needs capability.ground-layers (frost), a map with those hills",
+        "standing rule: THE FROST BAND — needs a map with those hills",
         "needs: status.frost added BEFORE Armor (ruled 2026-09-03)",
         "needs: unit.frozen-skeleton and unit.hoarfrost-wight — owed rows",
         "needs: capability.ground-layers (the band)",

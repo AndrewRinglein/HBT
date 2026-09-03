@@ -23,12 +23,13 @@
 import type { Ctx, EncounterDef, EncounterPlacement, Unit, UnitDef } from './types.js'
 import type { HexId } from './hex.js'
 import { WIDTH, colOf, distance, hexId, inBounds, rowOf } from './hex.js'
-import { emit, gainPower, setOutcome } from './mutate.js'
+import { emit, gainPower, paintLayer, setOutcome } from './mutate.js'
+import { applyStatus } from './status.js'
 import { rollBelow } from './rng.js'
 import { settle } from './settle.js'
 import { HOOKS, fireTriggers } from './trigger.js'
 import { makeUnit } from './setup.js'
-import { isPassable } from '../content/maps.js'
+import { isPassable, layerAppliesOnEnter, layerOfId } from '../content/maps.js'
 
 function free(ctx: Ctx, hex: HexId): boolean {
   if (!isPassable(ctx.state.terrain[hex] ?? 0)) return false
@@ -113,6 +114,7 @@ export function placeSetup(ctx: Ctx, enc: EncounterDef, names: Record<string, nu
   const st = ctx.state.encounter ?? (ctx.state.encounter = { id: enc.id, fired: [], objectives: [] })
   // the external pool — capability.power-pool: "the battle starts with N"
   for (const ps of enc.powerSources ?? []) gainPower(ctx, ps.value, enc.id, { kind: 'external' })
+  paintSetup(ctx, enc)
   for (const p of enc.setup) {
     const def = defOf(ctx, p.unit, `encounter '${enc.id}' setup`)
     for (const hex of hexesOf(ctx, p, `encounter '${enc.id}' setup`, [-1, enc.setup.indexOf(p)])) {
@@ -193,4 +195,31 @@ export function objectiveDead(ctx: Ctx, causeId: string): boolean {
     }
   }
   return false
+}
+
+/** Setup paint (Rime's frost band) — capability.ground-layers. */
+export function paintSetup(ctx: Ctx, enc: EncounterDef): void {
+  for (const p of enc.paint ?? []) for (const hex of p.hexes) paintLayer(ctx, hex, layerOfId(p.layer), enc.id)
+}
+/** The band: as the enemy phase of Turn N ends (N ≥ fromPhase), row startRow + (N − fromPhase) × direction is painted, spare hexes excepted. */
+export function advanceBand(ctx: Ctx): void {
+  const enc = ctx.encounter
+  if (!enc?.band || ctx.state.outcome) return
+  const b = enc.band
+  const n = ctx.state.turn
+  if (n < b.fromPhase) return
+  const row = b.startRow + (n - b.fromPhase) * b.direction
+  if (row < 0 || row >= WIDTH) return
+  const layer = layerOfId(b.layer)
+  emit(ctx, 'band.advanced', enc.id, { turn: n, row, layer: b.layer })
+  for (let col = 0; col < WIDTH; col++) {
+    const hex = hexId(col, row)
+    if (b.spare?.includes(hex)) continue
+    paintLayer(ctx, hex, layer, enc.id)
+  }
+  // a unit standing on a freshly painted hex takes the entry beat now — it did not step, the ground came to it
+  for (const u of ctx.state.units) if (u.lifeState === 'standing' && rowOf(u.hex) === row && !b.spare?.includes(u.hex)) {
+    for (const [sid, k] of layerAppliesOnEnter(layer)) applyStatus(ctx, u.id, sid, k, b.layer)
+  }
+  settle(ctx, enc.id)
 }
