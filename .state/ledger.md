@@ -902,3 +902,25 @@ IRON GAUNTLET: NOT PASSED — 2 FLAG(S) WARNED; 1 EXEMPTION(S) TAKEN
 
 slice: 60 of 68 closed · 61 probed · 0 accepted
 IRON GAUNTLET: NOT PASSED — 2 FLAG(S) WARNED
+
+## screens.after-battle — LANDED `f1745d1` **NEEDS REVIEW**
+2026-09-03 20:31 · engine @ b5ee6ce
+
+  PASS  dependencies landed
+  WARN  not already decided — 2 candidate ruling(s) — READ BEFORE ASKING: ../STATE.md:20 · ../STATE.md:21
+  PASS  typecheck
+  PASS  full test suite — 154 passed
+  PASS  gate 1 — every claimed criterion holds — ISC-067 — H, a person checks · ISC-068 — H, a person checks
+  PASS  brought its own tests — test/after-battle.test.ts
+  PASS  existing tests untouched
+  PASS  kill switch — every claimed probe has been seen red —   (no red demanded of an H criterion) ·   (no red demanded of an H criterion)
+  PASS  nothing regresses — every P-tier probe — 61 P-tier probe(s): 61 green, 0 red, 0 regression(s). 60 of 68 closed · 61 probed · 0 accepted
+  PASS  hardcode scan — core knows mechanisms, never names
+  PASS  generalizes — the second instance costs zero kingdom code — shape 'plumbing' — not a mechanism, exempt
+  PASS  naming — new ids use declared kinds
+  PASS  naming — no banned words invented
+  WARN  engine working tree clean — verified against a DIRTY engine tree (b5ee6ce + 1 uncommitted under src/test): ?? src/sim/coverage.ts
+  PASS  one door to the engine
+
+slice: 60 of 68 closed · 61 probed · 0 accepted
+IRON GAUNTLET: NOT PASSED — 2 FLAG(S) WARNED
