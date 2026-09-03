@@ -5760,3 +5760,29 @@ effect of move.stopped — 25 paired battles per map, WITH vs WITHOUT
   test.map.showcase: heroWins 25->25 (+0)  meanTurns 3.8->3.8
 NO MEASURABLE EFFECT at this sample size — consequence clause caught state changes, but outcomes did not move. Consider a sweep with more replicates before drawing balance conclusions.
 ```
+
+## movement.attack-of-opportunity — LANDED `e1db41d` **NEEDS REVIEW**
+2026-09-03 10:27
+
+  PASS  dependencies landed
+  WARN  not already decided — 5 candidate ruling(s) — READ BEFORE ASKING: ../COMBAT-DESIGN.md:477 · ../CODEX.md:372
+  PASS  typecheck
+  PASS  full test suite
+  PASS  gate 1 — the id appears in a real battle — aoo.provoked: 2 log lines, 2 fired, 2 changed state
+  PASS  brought its own tests — test/attack-of-opportunity.test.ts
+  PASS  existing tests untouched
+  PASS  control battles unchanged
+  PASS  content has a published source — 16 ids without a published source (6 awaiting publication from earlier items — see audit)
+  PASS  hardcode scan — core knows mechanisms, never names
+  PASS  generalizes — the second instance costs zero engine code
+  PASS  naming — new content ids use declared kinds
+  PASS  naming — no banned words invented
+  PASS  kill switch — the tests fail without the content
+
+<details><summary>Existing tests were edited — review this diff</summary>
+
+```diff
+```
+</details>
+
+IRON GAUNTLET: NOT PASSED — 1 FLAG(S) WARNED; 2 EXEMPTION(S) TAKEN

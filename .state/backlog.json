@@ -158,13 +158,16 @@
   ],
   "spec": "Leaving a hex inside an enemy's ZoC provokes one free attack from that enemy, resolved through performAttack with its cheapest melee attack, then settle. Once per enemy per activation. Costs the attacker nothing. AI remains blind — it will walk into these.",
   "expect": "a kiting ranger adjacent to a zombie takes a hit when it disengages, the log shows the attack with causeId movement.aoo, and the ranger's damage-taken share rises measurably in a paired sweep",
-  "changesBaseline": true,
-  "note": "HAZARD: this lands damage MID-MOVE, so settle can fire inside executeMove's per-step loop. A unit can die between two steps, and victory can trigger mid-activation. executeMove already breaks on lifeState !== standing; that guard is now load-bearing and needs its own test.",
+  "changesBaseline": false,
+  "note": "HAZARD: this lands damage MID-MOVE, so settle can fire inside executeMove's per-step loop. A unit can die between two steps, and victory can trigger mid-activation. executeMove already breaks on lifeState !== standing; that guard is now load-bearing and needs its own test. | 2026-09-03: landed in the same code as movement.zone-of-control (one step loop); the control battles moved on that landing, so this one declares no further change.",
   "probeIds": [
    "aoo.provoked"
   ],
   "generalizationExempt": "the free swing is the holder's own cheapest melee attack — the rows vary, the rule does not; the switch is the axis",
-  "killSwitchExempt": "no content id carries the provoke; the tests assert the swing through performAttack under movement.aoo"
+  "killSwitchExempt": "no content id carries the provoke; the tests assert the swing through performAttack under movement.aoo",
+  "status": "done-needs-review",
+  "sha": "e1db41d",
+  "gauntlet": "not passed — 1 flag(s) warned; 2 exemption(s) taken"
  },
  {
   "id": "status.regeneration",
