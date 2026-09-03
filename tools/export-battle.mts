@@ -36,13 +36,17 @@ if (sIdx >= 0 && !scenarioId) {
 }
 
 // Positional form, unchanged — every existing caller keeps working.
-const positional = argv.filter((a) => !a.startsWith('--') && a !== scenarioId)
+const positional = argv.filter((a, i) => !a.startsWith('--') && a !== scenarioId && argv[i - 1] !== '--seed')
 const replicate = Number(positional[0] ?? 0)
 const mapId = positional[1] ?? 'map.field'
 const enemyCount = Number(positional[2] ?? 8)
 
+// --seed <n> on a scenario export (2026-09-03): the scenario names the fielding,
+// the replicate picks the dice — a showcase seed is still a seed.
+const seedIdx = argv.indexOf('--seed')
+const seedOverride = seedIdx >= 0 ? Number(argv[seedIdx + 1]) : undefined
 const ctx = scenarioId
-  ? createBattle(scenarioOptions(scenarioDef(scenarioId)))
+  ? createBattle({ ...scenarioOptions(scenarioDef(scenarioId)), ...(seedOverride !== undefined ? { replicate: seedOverride } : {}) })
   : createBattle({ replicate, enemyCount, mapId })
 runBattle(ctx)
 
@@ -53,7 +57,7 @@ try { commit = execSync('git rev-parse --short HEAD', { encoding: 'utf8' }).trim
 // byte-identical to what it produced before this flag existed (§9: same battle,
 // same templates, byte-identical page).
 const seed = scenarioId
-  ? { ...(({ scenarioId: _s, ...rest }) => rest)(scenarioOptions(scenarioDef(scenarioId))), scenarioId }
+  ? { ...(({ scenarioId: _s, ...rest }) => rest)(scenarioOptions(scenarioDef(scenarioId))), scenarioId, ...(seedOverride !== undefined ? { replicate: seedOverride } : {}) }
   : { replicate, mapId, enemyCount }
 
 console.log(JSON.stringify({
