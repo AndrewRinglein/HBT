@@ -13,9 +13,11 @@ and date. Tool tasks and engine chores go in the backlog, never here.
 
 - (2026-09-03) **Kinds approved BY POLICY this run, for your look** — Angela
   ruled "propose and record" for the unattended run; each is in
-  `tools/approved-kinds.json` with a note: `encounter` and `battle` (two ids
-  for one thing — GLOSSARY says encounter; one should retire, a content
-  rename), `aura`, `corpse`, `layer`, `stamina` (event names, not rows).
+  `tools/approved-kinds.json` with a note: `encounter` (unified on it
+  2026-09-03 evening — "We do need to unify on battle or encounter"; the six
+  battle.* rows are renamed and `battle` is gone), `aura`, `corpse`, `layer`
+  (now five instances — `layer.weak` joined by the one-ground-shape ruling),
+  `stamina` (event names, not rows).
 
 - (2026-09-03) **The Necromancer's Raise has no range on its row.** Compiled
   as 2 (its aura's radius — the encounter session's reading). Rule it.
