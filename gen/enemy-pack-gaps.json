@@ -53,8 +53,8 @@
   },
   {
    "unit": "unit.balrog",
-   "what": "(unit) hook 'onActivationEnd'",
-   "needs": "hook: onActivationEnd (declared, engine never fires it)"
+   "what": "(unit) onActivationEnd area 'every unit within N hexes'",
+   "needs": "area trigger select"
   },
   {
    "unit": "unit.balrog",
@@ -108,11 +108,6 @@
   },
   {
    "unit": "unit.demon-hound",
-   "what": "(unit) hook 'onActivationEnd'",
-   "needs": "hook: onActivationEnd (declared, engine never fires it)"
-  },
-  {
-   "unit": "unit.demon-hound",
    "what": "special move move.demon-hound.close-bite (carries an attack)",
    "needs": "enemy special moves (move.* — kind unapproved, no engine mechanism)"
   },
@@ -125,11 +120,6 @@
    "unit": "unit.doombringer",
    "what": "(unit) onTakingDamage: apply a status",
    "needs": "capability.power"
-  },
-  {
-   "unit": "unit.doombringer",
-   "what": "(unit) hook 'onActivationEnd'",
-   "needs": "hook: onActivationEnd (declared, engine never fires it)"
   },
   {
    "unit": "unit.doombringer",
@@ -173,8 +163,8 @@
   },
   {
    "unit": "unit.fire-imp",
-   "what": "(unit) hook 'onActivationEnd'",
-   "needs": "hook: onActivationEnd (declared, engine never fires it)"
+   "what": "(unit) onActivationEnd area 'every unit within N hexes'",
+   "needs": "area trigger select"
   },
   {
    "unit": "unit.ghoul",
@@ -228,8 +218,8 @@
   },
   {
    "unit": "unit.lieutenant-demon",
-   "what": "(unit) hook 'onActivationEnd'",
-   "needs": "hook: onActivationEnd (declared, engine never fires it)"
+   "what": "(unit) onActivationEnd area 'allies within N hexes'",
+   "needs": "area trigger select"
   },
   {
    "unit": "unit.lieutenant-demon",
@@ -253,8 +243,8 @@
   },
   {
    "unit": "unit.necromancer",
-   "what": "(unit) hook 'onActivationEnd'",
-   "needs": "hook: onActivationEnd (declared, engine never fires it)"
+   "what": "(unit) onActivationEnd area 'allies within N hexes'",
+   "needs": "area trigger select"
   },
   {
    "unit": "unit.necromancer",
@@ -293,8 +283,8 @@
   },
   {
    "unit": "unit.poison-imp",
-   "what": "(unit) hook 'onActivationEnd'",
-   "needs": "hook: onActivationEnd (declared, engine never fires it)"
+   "what": "(unit) onActivationEnd area 'every unit within N hexes'",
+   "needs": "area trigger select"
   },
   {
    "unit": "unit.shadow-sorcerer",
@@ -303,13 +293,13 @@
   },
   {
    "unit": "unit.shadow-sorcerer",
-   "what": "(unit) hook 'onActivationEnd'",
-   "needs": "hook: onActivationEnd (declared, engine never fires it)"
+   "what": "(unit) onActivationEnd: gain Power",
+   "needs": "gain Power"
   },
   {
    "unit": "unit.shadow-sorcerer",
-   "what": "(unit) hook 'onActivationEnd'",
-   "needs": "hook: onActivationEnd (declared, engine never fires it)"
+   "what": "(unit) onActivationEnd: paint a ground layer",
+   "needs": "paint a ground layer"
   },
   {
    "unit": "unit.shadow-sorcerer",
@@ -383,8 +373,8 @@
   },
   {
    "unit": "unit.skeleton-spider",
-   "what": "(unit) hook 'onActivationEnd'",
-   "needs": "hook: onActivationEnd (declared, engine never fires it)"
+   "what": "(unit) onActivationEnd area 'allies within N hexes'",
+   "needs": "area trigger select"
   },
   {
    "unit": "unit.skeleton-spider",
@@ -475,11 +465,6 @@
    "unit": "unit.vampire-lord",
    "what": "attack.vampire-lord.soul-rend powerScale 1 (base damage kept)",
    "needs": "capability.power"
-  },
-  {
-   "unit": "unit.werewolf",
-   "what": "(unit) hook 'onActivationEnd'",
-   "needs": "hook: onActivationEnd (declared, engine never fires it)"
   },
   {
    "unit": "unit.werewolf",
@@ -638,8 +623,18 @@
   },
   {
    "unit": "hero.base.priest-pauper",
+   "what": "item.holy-texts grants power.holy-texts.mercy",
+   "needs": "item power — shape unparsed"
+  },
+  {
+   "unit": "hero.base.priest-pauper",
    "what": "attack.punch accuracy -5",
    "needs": "attack field: accuracy (no AttackDef slot)"
+  },
+  {
+   "unit": "hero.base.priest-armored",
+   "what": "item.holy-texts grants power.holy-texts.mercy",
+   "needs": "item power — shape unparsed"
   },
   {
    "unit": "hero.base.priest-armored",
@@ -792,6 +787,11 @@
    "needs": "trigger shape unparsed"
   },
   {
+   "unit": "item.holy-texts",
+   "what": "grants power.holy-texts.mercy",
+   "needs": "item power — shape unparsed"
+  },
+  {
    "unit": "item.bane-blade",
    "what": "attack.bane-blade.banishing-blow onCrit: \"deal 6 more damage\"",
    "needs": "trigger shape unparsed"
@@ -864,16 +864,6 @@
   {
    "unit": "item.stormforged-blade",
    "what": "onCrit: deal 3 magic damage to every enemy adjacent to the",
-   "needs": "trigger shape unparsed"
-  },
-  {
-   "unit": "item.wraith-touched-staff",
-   "what": "attack.wraith-touched-staff.grasp onHit: \"the target gains 1 Slow and you heal 2\"",
-   "needs": "trigger shape unparsed"
-  },
-  {
-   "unit": "item.wraith-touched-staff",
-   "what": "onKill: heal 2",
    "needs": "trigger shape unparsed"
   },
   {
@@ -952,34 +942,14 @@
    "needs": "trigger shape unparsed"
   },
   {
-   "unit": "item.void-staff",
-   "what": "attack.void-staff.unmaking onHit: \"the target loses 2 Resist for the rest of the Battle\"",
-   "needs": "trigger shape unparsed"
-  },
-  {
-   "unit": "item.void-staff",
-   "what": "onKill: regain 1 Stamina",
-   "needs": "trigger shape unparsed"
-  },
-  {
-   "unit": "item.orb-of-the-soul-stealer",
-   "what": "attack.orb-of-the-soul-stealer.soul-tap onHit: \"heal 1\"",
-   "needs": "trigger shape unparsed"
-  },
-  {
-   "unit": "item.orb-of-the-soul-stealer",
-   "what": "attack.orb-of-the-soul-stealer.steal-the-spark onHit: \"heal for half the damage dealt, rounded down\"",
-   "needs": "trigger shape unparsed"
-  },
-  {
-   "unit": "item.orb-of-the-soul-stealer",
-   "what": "onAttack: heal 2 at the start of your next Turn",
-   "needs": "trigger shape unparsed"
-  },
-  {
    "unit": "item.blade-of-demon-slaying",
    "what": "onDamage: apply 5 Burn if the target is demon, otherwise 2 B",
    "needs": "trigger shape unparsed"
+  },
+  {
+   "unit": "item.scepter-of-salvation",
+   "what": "grants power.scepter-of-salvation.salvation",
+   "needs": "item power — shape unparsed"
   },
   {
    "unit": "item.tomb-sentinels-blade",
@@ -1074,7 +1044,7 @@
   {
    "unit": "item.wind-blessed-leather",
    "what": "onActivationEnd: heal 1",
-   "needs": "hook: onActivationEnd (declared, engine never fires it)"
+   "needs": "trigger shape unparsed"
   },
   {
    "unit": "item.wraithform-cloak",
@@ -1117,24 +1087,14 @@
    "needs": "item field: thorns"
   },
   {
-   "unit": "item.battlemages-cuirass",
-   "what": "onActivationEnd: gain 2 Protection",
-   "needs": "hook: onActivationEnd (declared, engine never fires it)"
-  },
-  {
    "unit": "item.troll-gut-vest",
    "what": "startOfBattle: gain 3 Regeneration",
    "needs": "hook: startOfBattle (declared, engine never fires it)"
   },
   {
    "unit": "item.chains-of-the-faithful",
-   "what": "aura: AURA radius 2 — allies inside have Immunity to Bur",
+   "what": "aura: AURA radius 2 -- allies inside have Immunity to Bu",
    "needs": "hook: aura (declared, engine never fires it)"
-  },
-  {
-   "unit": "item.chains-of-the-faithful",
-   "what": "onAttack: you gain 1 Burn",
-   "needs": "trigger shape unparsed"
   },
   {
    "unit": "item.cloudsteel-plate",
@@ -1159,7 +1119,7 @@
   {
    "unit": "item.stoneskin-hauberk",
    "what": "onActivationEnd: gain +1 Armor until the end of your next Turn",
-   "needs": "hook: onActivationEnd (declared, engine never fires it)"
+   "needs": "trigger shape unparsed"
   },
   {
    "unit": "item.cloak-of-ghostform",
@@ -1272,34 +1232,79 @@
    "needs": "item power — shape unparsed"
   },
   {
-   "unit": "item.martyrs-censer",
-   "what": "attack.martyrs-censer.offering onDamage: \"you take 2 true damage\"",
+   "unit": "item.fire-gauntlet",
+   "what": "grants power.fire-gauntlet.stoke",
+   "needs": "item power — shape unparsed"
+  },
+  {
+   "unit": "item.fire-gauntlet",
+   "what": "attack.fire-gauntlet.fire-punch onHit: \"apply Burn equal to half your Magic, rounded nearest, 0.5 u",
    "needs": "trigger shape unparsed"
   },
   {
-   "unit": "item.reliquary-of-the-nine-tears",
-   "what": "attack.reliquary-of-the-nine-tears.intercession onDamage: \"heal the ally nearest the target for half the damage dealt,",
+   "unit": "item.staff-of-summoning",
+   "what": "grants power.staff-of-summoning.call-the-wolf",
+   "needs": "item power — shape unparsed"
+  },
+  {
+   "unit": "item.staff-of-the-magi",
+   "what": "grants power.staff-of-the-magi.power-ward",
+   "needs": "item power — shape unparsed"
+  },
+  {
+   "unit": "item.staff-of-the-magi",
+   "what": "grants power.staff-of-the-magi.vortex",
+   "needs": "item power — shape unparsed"
+  },
+  {
+   "unit": "item.staff-of-the-destroyer",
+   "what": "attack.staff-of-the-destroyer.ruin onKill: \"the corpse is destroyed\"",
    "needs": "trigger shape unparsed"
   },
   {
-   "unit": "item.chorus-of-the-drowned-choir",
-   "what": "attack.chorus-of-the-drowned-choir.antiphon onHit: \"every enemy within 1 hex of the target takes 2 true damage\"",
+   "unit": "item.staff-of-the-destroyer",
+   "what": "attack.staff-of-the-destroyer.sundering onKill: \"the corpse is destroyed\"",
    "needs": "trigger shape unparsed"
   },
   {
-   "unit": "item.emberglass-focus",
-   "what": "attack.emberglass-focus.bank-the-fire onCrit: \"apply 2 more Burn\"",
-   "needs": "trigger shape unparsed"
+   "unit": "item.staff-of-the-ultimate-destroyer",
+   "what": "grants power.staff-of-the-ultimate-destroyer.perfect-sight",
+   "needs": "item power — shape unparsed"
   },
   {
-   "unit": "item.staff-of-the-still-air",
-   "what": "attack.staff-of-the-still-air.hush onHit: \"the target gains 1 Slow\"",
-   "needs": "trigger shape unparsed"
+   "unit": "item.chains-of-the-wrathful",
+   "what": "grants power.chains-of-the-wrathful.weight-of-sin",
+   "needs": "item power — shape unparsed"
   },
   {
-   "unit": "item.staff-of-the-still-air",
-   "what": "attack.staff-of-the-still-air.stillness onHit: \"the target gains 3 Slow\"",
-   "needs": "trigger shape unparsed"
+   "unit": "item.chains-of-the-wrathful",
+   "what": "attack.chains-of-the-wrathful.wrathful-sweep targets 'every enemy within 3 hexes' — lands SINGLE-TARGET",
+   "needs": "area attack shape"
+  },
+  {
+   "unit": "item.benevolent-rod",
+   "what": "grants power.benevolent-rod.restoration",
+   "needs": "item power — shape unparsed"
+  },
+  {
+   "unit": "item.benevolent-rod",
+   "what": "grants power.benevolent-rod.small-mercy",
+   "needs": "item power — shape unparsed"
+  },
+  {
+   "unit": "item.book-of-karma",
+   "what": "grants power.book-of-karma.balance-the-ledger",
+   "needs": "item power — shape unparsed"
+  },
+  {
+   "unit": "item.rod-of-imprisonment",
+   "what": "grants power.rod-of-imprisonment.imprison",
+   "needs": "item power — shape unparsed"
+  },
+  {
+   "unit": "item.rod-of-imprisonment",
+   "what": "grants power.rod-of-imprisonment.sanctuary",
+   "needs": "item power — shape unparsed"
   },
   {
    "unit": "item.loaded-dice-of-mirran",
@@ -1794,7 +1799,7 @@
   {
    "unit": "item.rune-kairin",
    "what": "onActivationEnd: heal 2",
-   "needs": "hook: onActivationEnd (declared, engine never fires it)"
+   "needs": "trigger shape unparsed"
   },
   {
    "unit": "item.rune-kairin",
@@ -1869,7 +1874,7 @@
   {
    "unit": "item.blessing-of-the-hearthmother",
    "what": "onActivationEnd: heal 2 and remove 1 Weak",
-   "needs": "hook: onActivationEnd (declared, engine never fires it)"
+   "needs": "trigger shape unparsed"
   },
   {
    "unit": "item.stormcallers-orb",

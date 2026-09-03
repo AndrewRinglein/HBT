@@ -50,6 +50,18 @@
           "damageType": "true"
         },
         "note": "Thorns, test lane (fix.status-damage-types): RULED 'Thorns damage that is dealt is true damage.'"
+      },
+      {
+        "id": "trigger.test-eoa.brace",
+        "hook": "onActivationEnd",
+        "chance": 100,
+        "select": "self",
+        "effect": {
+          "kind": "status.apply",
+          "statusId": "status.protection",
+          "value": 2
+        },
+        "note": "fix.activation-end-fires: the golem braces at the end of every Activation it takes — the first content that DEPENDS on the hook firing. Fires once per Activation, idle ones included. Value 2, not 1: rung 3 (the status tick) follows rung 2 in the same ladder and decays a pool by 1, exactly as embers catch-then-cook — so 1 would be gone before anyone could read it."
       }
     ],
     "note": "A complete body, not a delta — no real unit is a 30-hp, 5-accuracy stone that never rolls to hit. capability.area-attack / capability.knockback / station.crit-count scaffolding; fields ONLY in showcase.arc-variant. Re-statted 2026-08-27: the original 14-hp body died before a single-target turn."

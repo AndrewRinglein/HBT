@@ -202,7 +202,8 @@ function compileMoves(powers) {
   return out;
 }
 const moves = compileMoves(SETTLED.powers || []);
-const TRIG_HOOKS = new Set(['onAttack', 'onMiss', 'onHit', 'onCrit', 'onDamage', 'onKill', 'onTakingDamage', 'onDeath']);
+// onActivationEnd joined 2026-09-03 (fix.activation-end-fires): the engine fires it now.
+const TRIG_HOOKS = new Set(['onAttack', 'onMiss', 'onHit', 'onCrit', 'onDamage', 'onKill', 'onTakingDamage', 'onDeath', 'onActivationEnd']);
 
 function compileTrigger(t, unitId, attackId) {
   const where = attackId ?? '(unit)';
