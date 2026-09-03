@@ -47,11 +47,19 @@ describe('gate 1 — everything appears in the log', () => {
       expect(seen.moved, `${t} moved`).toContain(t)
       expect(seen.attacked, `${t} attacked`).toContain(t)
     }
-    expect(seen.killed).toContain('test-zombie')
+// LAW 10 — 2026-09-02 (content.enemy-flip): the standard horde is the AUTHORED
+// Zombie and Burning Zombie now (5 hp, str 3 — the Codex's), not the test
+// clones (10 hp, str 4). FINDING: four authored zombies are a 2.8-turn walkover
+// for the Alpha Team (100 battles: 100% clear, one hero down); pressure for a
+// claim that needs it comes from a larger authored horde (enemyCount 12: 130
+// downs per 100), and the test-lane enemy riders are fielded explicitly
+// (TEST_COHORT.enemies). Claims unchanged; the fielding says where the
+// pressure comes from.
+    expect(seen.killed).toContain(FIRST_BATTLE.enemies[0])
     // Rangers take no damage in the baseline. That is a FINDING about the scenario,
     // not an engine fault — the next test proves the engine can damage them.
     expect(seen.damaged).toContain('alpha-oathblade')
-    expect(seen.damaged).toContain('test-zombie')
+    expect(seen.damaged).toContain(FIRST_BATTLE.enemies[0])
   })
 
   it('the engine CAN damage a ranger — so zero ranger damage is a scenario fact', () => {
@@ -74,7 +82,9 @@ describe('gate 1 — everything appears in the log', () => {
     // legitimately changes.
     const dmg: Record<string, number> = {}
     for (let r = 0; r < 100; r++) {
-      const ctx = createBattle({ replicate: r }); runBattle(ctx)
+      // enemyCount 12 (content.enemy-flip): against four authored zombies the
+      // front line takes almost nothing, and a ratio over nothing is noise
+      const ctx = createBattle({ replicate: r, enemyCount: 12 }); runBattle(ctx)
       const type = new Map<number, string>()
       for (const e of ctx.events) {
         if (e.type === 'unit.enter') type.set(e.actor!, e['typeId'] as string)

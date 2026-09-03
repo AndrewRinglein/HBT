@@ -104,7 +104,7 @@ describe('the battle sources fire in real battles', () => {
   it('the Air Mage\'s arcane-ward raises Protection in the STANDARD battle somewhere in the first 30 seeds', () => {
     let found = 0
     for (let r = 0; r < 30 && !found; r++) {
-      const ctx = createBattle({ replicate: r, enemyCount: 8 })
+      const ctx = createBattle({ replicate: r, enemyCount: 16 })   // authored horde, pressure (content.enemy-flip): the mage is not even touched under 16
       runBattle(ctx)
       found += ctx.events.filter((e) => e.type === 'status.applied'
         && e['causeId'] === 'alpha-air-mage.arcane-ward' && e['statusId'] === 'status.protection').length
@@ -115,7 +115,7 @@ describe('the battle sources fire in real battles', () => {
   it('arcane-ward raises Protection on the test mage somewhere in the first 30 seeds', () => {
     let found = 0
     for (let r = 0; r < 30 && !found; r++) {
-      const ctx = createBattle({ replicate: r, enemyCount: 8, heroes: TEST_COHORT.heroes })
+      const ctx = createBattle({ replicate: r, enemyCount: 8, heroes: TEST_COHORT.heroes, enemies: [...TEST_COHORT.enemies, ...TEST_COHORT.enemies] })
       runBattle(ctx)
       found += ctx.events.filter((e) => e.type === 'status.applied'
         && e['causeId'] === 'test.mage.arcane-ward' && e['statusId'] === 'status.protection').length
@@ -126,7 +126,7 @@ describe('the battle sources fire in real battles', () => {
   it('brace raises the ward on the test warrior somewhere in the first 30 seeds', () => {
     let found = 0
     for (let r = 0; r < 30 && !found; r++) {
-      const ctx = createBattle({ replicate: r, enemyCount: 8, heroes: TEST_COHORT.heroes })
+      const ctx = createBattle({ replicate: r, enemyCount: 8, heroes: TEST_COHORT.heroes, enemies: [...TEST_COHORT.enemies, ...TEST_COHORT.enemies] })
       runBattle(ctx)
       found += ctx.events.filter((e) => e.type === 'status.applied'
         && e['causeId'] === 'test.warrior.brace' && e['statusId'] === 'test.status.ward').length

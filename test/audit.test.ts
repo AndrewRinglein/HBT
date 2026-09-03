@@ -388,11 +388,14 @@ describe('independent audit of logged battles', () => {
     // authored weapons: Halberd Hack = Str 5 + 2 = 7 physical; Lightning Staff
     // Bolt = Prc 3 + 3 = 6 magic into resist 0; Shortbow Short Shot = Prc 4 +
     // 1 = 5. Read off the pack rows, not invented.
-    expect(seen, 'zombie -> Oathblade = 4').toContain('attack.zombie.basic->alpha-oathblade=4')
-    expect(seen, 'zombie -> Osric = 3').toContain('attack.zombie.basic->alpha-osric=3')
-    expect(seen, 'hack -> zombie = 7').toContain('attack.halberd.hack->test-zombie=7')
-    expect(seen, 'bolt -> zombie = 6').toContain('attack.lightning-staff.bolt->test-zombie=6')
-    expect(seen, 'short shot -> zombie = 5').toContain('attack.shortbow.short-shot->test-zombie=5')
+    // content.enemy-flip (2026-09-02): the authored Zombie's Claw is Str 3 +
+    // 0 — 3 into the unarmoured Oathblade, 2 into Osric's armor 1. Read off
+    // enemies-authored.json, not invented.
+    expect(seen, 'zombie -> Oathblade = 3').toContain('attack.zombie.claw->alpha-oathblade=3')
+    expect(seen, 'zombie -> Osric = 2').toContain('attack.zombie.claw->alpha-osric=2')
+    expect(seen, 'hack -> zombie = 7').toContain('attack.halberd.hack->unit.zombie=7')
+    expect(seen, 'bolt -> zombie = 6').toContain('attack.lightning-staff.bolt->unit.zombie=6')
+    expect(seen, 'short shot -> zombie = 5').toContain('attack.shortbow.short-shot->unit.zombie=5')
   })
 
   it('observed hit rates converge on the declared accuracies', () => {
@@ -415,7 +418,12 @@ describe('independent audit of logged battles', () => {
       if (v.swings < 400) continue
       const declared = Number(k.split('@')[1])
       const observed = (v.hits / v.swings) * 100
-      expect(Math.abs(observed - declared), `${k}: observed ${observed.toFixed(1)}%`).toBeLessThan(6)
+      // Tolerance follows the sample (2026-09-02, content.enemy-flip: shorter
+      // battles mean fewer swings per key): four binomial sigmas, never under
+      // the old flat 6 — the same claim, stated for the n actually observed.
+      const p = declared / 100
+      const sigma = Math.sqrt((p * (1 - p)) / v.swings) * 100
+      expect(Math.abs(observed - declared), `${k}: observed ${observed.toFixed(1)}% over ${v.swings}`).toBeLessThan(Math.max(6, 4 * sigma))
     }
   })
 })

@@ -67,7 +67,7 @@ describe('the standard battle is the Alpha Team', () => {
     const causes = new Set<string>()
     let knocked = 0, area = 0
     for (let r = 0; r < 40; r++) {
-      const ctx = createBattle({ replicate: r, enemyCount: 8 }); runBattle(ctx)
+      const ctx = createBattle({ replicate: r, enemyCount: 16 }); runBattle(ctx)   // authored horde, pressure (content.enemy-flip): sixteen before the back line is reached
       for (const e of ctx.events) {
         if (e.type === 'status.applied') causes.add(e['causeId'] as string)
         if (e.type === 'knocked') knocked++

@@ -23,13 +23,16 @@ describe('state and setup', () => {
     const ctx = createBattle({ replicate: 0 })
     const w = ctx.state.units.find(u => u.typeId === 'alpha-oathblade')!
     const r = ctx.state.units.find(u => u.typeId === 'alpha-dusk-hawk')!
-    const z = ctx.state.units.find(u => u.typeId === 'test-zombie')!
+    // content.enemy-flip (2026-09-02): the horde is the AUTHORED Zombie —
+    // enemies-authored.json's row (health 5, strength 3, precision 1), not
+    // the 2026-08-14 placeholder's 10/4 the test clone copied.
+    const z = ctx.state.units.find(u => u.typeId === 'unit.zombie')!
     // Oathblade I, hero.shadows.oathblade.v1: the Codex row verbatim
     expect([w.maxHp, w.armor, w.accuracy, w.strength, w.precision, w.movement, w.maxStamina]).toEqual([15,0,75,5,3,5,5])
     // Dusk Hawk I, hero.shadows.dusk-hawk.v1
     expect([r.maxHp, r.armor, r.accuracy, r.strength, r.precision, r.movement, r.maxStamina]).toEqual([5,0,80,3,4,5,5])
     expect(r.dodge).toBe(5)
-    expect([z.maxHp, z.armor, z.accuracy, z.strength, z.movement, z.maxStamina]).toEqual([10,0,65,4,4,0])
+    expect([z.maxHp, z.armor, z.accuracy, z.strength, z.movement, z.maxStamina]).toEqual([5,0,65,3,4,0])
     expect(z.attributes).toContain('undead')
     expect(w.name).not.toContain('(TEST)')                      // the Alpha Team is real content
     expect(UNITS['test-oathblade']!.name).toContain('(TEST)')   // clearly differentiated text, per the ruling

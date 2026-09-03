@@ -4524,3 +4524,333 @@ edits; test/fixtures/folded-heroes.json is the oracle, delete when trusted.
 Two flags. Seal withheld.
 
 IRON GAUNTLET: NOT PASSED — 2 FLAG(S) WARNED
+
+## content.enemy-flip — LANDED `4acbc68` **NEEDS REVIEW**
+2026-09-03 06:32
+
+  PASS  dependencies landed
+  WARN  not already decided — 3 candidate ruling(s) — READ BEFORE ASKING: ../STATE.md:18 · ../STATE.md:21
+  PASS  typecheck
+  PASS  full test suite
+  PASS  gate 1 — the id appears in a real battle — unit.zombie-burning: 2 log lines, 2 fired, 1 changed state · trigger.zombie-burning.sear: 6 log lines, 6 fired, 2 changed state
+  PASS  brought its own tests — test/alpha-flip.test.ts, test/audit.test.ts, test/burn.test.ts, test/integration.test.ts, test/killswitch.test.ts, test/protection.test.ts, test/rulings-2026-08-15.test.ts, test/slow.test.ts, test/spirit-snake.test.ts, test/state.test.ts, test/stun.test.ts, test/unit-pack.test.ts, test/weak.test.ts, test/zombie-rot.test.ts, test/enemy-flip.test.ts
+  WARN  existing tests untouched — DELETED LINES in test/alpha-flip.test.ts (-1), test/audit.test.ts (-6), test/burn.test.ts (-2), test/integration.test.ts (-3), test/killswitch.test.ts (-1), test/protection.test.ts (-3), test/rulings-2026-08-15.test.ts (-2), test/slow.test.ts (-2), test/spirit-snake.test.ts (-1), test/state.test.ts (-2), test/stun.test.ts (-2), test/unit-pack.test.ts (-1), test/weak.test.ts (-2), test/zombie-rot.test.ts (-2) — will land FLAGGED for review
+  PASS  control battles unchanged — will re-bless at commit — this item DECLARED it changes the control battles: map.open f20e360f->195d6744, map.ridge a0a87b2a->82adf819, map.flanks 4953666a->09ff3798, map.highlands 4b442d01->46832ec9, map.field 758cd750->d573156b, map.thicket 89c211b4->dca70791, test.map.embers f99767e9->eaee0539, test.map.showcase 5dd43668->9d00acfb
+  PASS  content has a published source — 19 ids without a published source (9 awaiting publication from earlier items — see audit)
+  PASS  hardcode scan — core knows mechanisms, never names
+  PASS  generalizes — the second instance costs zero engine code — shape 'data' — not a mechanism, exempt
+  PASS  naming — new content ids use declared kinds
+  PASS  naming — no banned words invented
+  PASS  kill switch — the tests fail without the content — tests fail without unit.zombie-burning,trigger.zombie-burning.sear — they genuinely test it
+
+<details><summary>Existing tests were edited — review this diff</summary>
+
+```diff
+diff --git a/test/alpha-flip.test.ts b/test/alpha-flip.test.ts
+index 5727f1f..ca87734 100644
+--- a/test/alpha-flip.test.ts
++++ b/test/alpha-flip.test.ts
+@@ -68,5 +68,5 @@ describe('the standard battle is the Alpha Team', () => {
+     let knocked = 0, area = 0
+     for (let r = 0; r < 40; r++) {
+-      const ctx = createBattle({ replicate: r, enemyCount: 8 }); runBattle(ctx)
++      const ctx = createBattle({ replicate: r, enemyCount: 16 }); runBattle(ctx)   // authored horde, pressure (content.enemy-flip): sixteen before the back line is reached
+       for (const e of ctx.events) {
+         if (e.type === 'status.applied') causes.add(e['causeId'] as string)
+diff --git a/test/audit.test.ts b/test/audit.test.ts
+index aaa90f8..c063783 100644
+--- a/test/audit.test.ts
++++ b/test/audit.test.ts
+@@ -389,9 +389,12 @@ describe('independent audit of logged battles', () => {
+     // Bolt = Prc 3 + 3 = 6 magic into resist 0; Shortbow Short Shot = Prc 4 +
+     // 1 = 5. Read off the pack rows, not invented.
+-    expect(seen, 'zombie -> Oathblade = 4').toContain('attack.zombie.basic->alpha-oathblade=4')
+-    expect(seen, 'zombie -> Osric = 3').toContain('attack.zombie.basic->alpha-osric=3')
+-    expect(seen, 'hack -> zombie = 7').toContain('attack.halberd.hack->test-zombie=7')
+-    expect(seen, 'bolt -> zombie = 6').toContain('attack.lightning-staff.bolt->test-zombie=6')
+-    expect(seen, 'short shot -> zombie = 5').toContain('attack.shortbow.short-shot->test-zombie=5')
++    // content.enemy-flip (2026-09-02): the authored Zombie's Claw is Str 3 +
++    // 0 — 3 into the unarmoured Oathblade, 2 into Osric's armor 1. Read off
++    // enemies-authored.json, not invented.
++    expect(seen, 'zombie -> Oathblade = 3').toContain('attack.zombie.claw->alpha-oathblade=3')
++    expect(seen, 'zombie -> Osric = 2').toContain('attack.zombie.claw->alpha-osric=2')
++    expect(seen, 'hack -> zombie = 7').toContain('attack.halberd.hack->unit.zombie=7')
++    expect(seen, 'bolt -> zombie = 6').toContain('attack.lightning-staff.bolt->unit.zombie=6')
++    expect(seen, 'short shot -> zombie = 5').toContain('attack.shortbow.short-shot->unit.zombie=5')
+   })
+ 
+@@ -416,5 +419,10 @@ describe('independent audit of logged battles', () => {
+       const declared = Number(k.split('@')[1])
+       const observed = (v.hits / v.swings) * 100
+-      expect(Math.abs(observed - declared), `${k}: observed ${observed.toFixed(1)}%`).toBeLessThan(6)
++      // Tolerance follows the sample (2026-09-02, content.enemy-flip: shorter
++      // battles mean fewer swings per key): four binomial sigmas, never under
++      // the old flat 6 — the same claim, stated for the n actually observed.
++      const p = declared / 100
++      const sigma = Math.sqrt((p * (1 - p)) / v.swings) * 100
++      expect(Math.abs(observed - declared), `${k}: observed ${observed.toFixed(1)}% over ${v.swings}`).toBeLessThan(Math.max(6, 4 * sigma))
+     }
+   })
+diff --git a/test/burn.test.ts b/test/burn.test.ts
+index f2c513e..726e577 100644
+--- a/test/burn.test.ts
++++ b/test/burn.test.ts
+@@ -102,7 +102,9 @@ describe('status.burn', () => {
+     // typeIds updated 2026-08-20 (Law 10): the horde reads from the Codex pack
+     // now (test-zombie / test-zombie-burning). The cadence claim is unchanged.
++    // content.enemy-flip (2026-09-02): the AUTHORED Burning Zombie, one per
++    // four — Angela's cadence, kept (6-BESTIARY-SETTLED).
+     const ctx = createBattle({ replicate: 3, enemyCount: 8 })
+-    expect(ctx.state.units.filter((u) => u.typeId === 'test-zombie-burning').length).toBe(2)
+-    expect(ctx.state.units.filter((u) => u.typeId === 'test-zombie').length).toBe(6)
++    expect(ctx.state.units.filter((u) => u.typeId === 'unit.zombie-burning').length).toBe(2)
++    expect(ctx.state.units.filter((u) => u.typeId === 'unit.zombie').length).toBe(6)
+   })
+ })
+diff --git a/test/integration.test.ts b/test/integration.test.ts
+index de1fafc..8ba2ffa 100644
+--- a/test/integration.test.ts
++++ b/test/integration.test.ts
+@@ -48,9 +48,17 @@ describe('gate 1 — everything appears in the log', () => {
+       expect(seen.attacked, `${t} attacked`).toContain(t)
+     }
+-    expect(seen.killed).toContain('test-zombie')
++// LAW 10 — 2026-09-02 (content.enemy-flip): the standard horde is the AUTHORED
++// Zombie and Burning Zombie now (5 hp, str 3 — the Codex's), not the test
++// clones (10 hp, str 4). FINDING: four authored zombies are a 2.8-turn walkover
++// for the Alpha Team (100 battles: 100% clear, one hero down); pressure for a
++// claim that needs it comes from a larger authored horde (enemyCount 12: 130
++// downs per 100), and the test-lane enemy riders are fielded explicitly
++// (TEST_COHORT.enemies). Claims unchanged; the fielding says where the
++// pressure comes from.
++    expect(seen.killed).toContain(FIRST_BATTLE.enemies[0])
+     // Rangers take no damage in the baseline. That is a FINDING about the scenario,
+     // not an engine fault — the next test proves the engine can damage them.
+     expect(seen.damaged).toContain('alpha-oathblade')
+-    expect(seen.damaged).toContain('test-zombie')
++    expect(seen.damaged).toContain(FIRST_BATTLE.enemies[0])
+   })
+ 
+@@ -75,5 +83,7 @@ describe('gate 1 — everything appears in the log', () => {
+     const dmg: Record<string, number> = {}
+     for (let r = 0; r < 100; r++) {
+-      const ctx = createBattle({ replicate: r }); runBattle(ctx)
++      // enemyCount 12 (content.enemy-flip): against four authored zombies the
++      // front line takes almost nothing, and a ratio over nothing is noise
++      const ctx = createBattle({ replicate: r, enemyCount: 12 }); runBattle(ctx)
+       const type = new Map<number, string>()
+       for (const e of ctx.events) {
+diff --git a/test/killswitch.test.ts b/test/killswitch.test.ts
+index 09dbe4a..cf1f1a1 100644
+--- a/test/killswitch.test.ts
++++ b/test/killswitch.test.ts
+@@ -73,5 +73,6 @@ describe('the kill-switch seam', () => {
+       `  let found = false;` +
+       `  for (let r = 0; r < 20 && !found; r++) {` +
+-      `    const ctx = m.createBattle({ replicate: r, enemyCount: 4 });` +
++      `    const { TEST_COHORT } = await import('./src/content/index.js');` +
++      `    const ctx = m.createBattle({ replicate: r, enemyCount: 4, enemies: TEST_COHORT.enemies });` +
+       `    runBattle(ctx);` +
+       `    found = ctx.events.some((e) => e.type === 'status.applied' && e.causeId === 'trigger.zombie.rot');` +
+diff --git a/test/protection.test.ts b/test/protection.test.ts
+index cf1408b..c0fc3f2 100644
+--- a/test/protection.test.ts
++++ b/test/protection.test.ts
+@@ -105,5 +105,5 @@ describe('the battle sources fire in real battles', () => {
+     let found = 0
+     for (let r = 0; r < 30 && !found; r++) {
+-      const ctx = createBattle({ replicate: r, enemyCount: 8 })
++      const ctx = createBattle({ replicate: r, enemyCount: 16 })   // authored horde, pressure (content.enemy-flip): the mage is not even touched under 16
+       runBattle(ctx)
+       found += ctx.events.filter((e) => e.type === 'status.applied'
+@@ -116,5 +116,5 @@ describe('the battle sources fire in real battles', () => {
+     let found = 0
+     for (let r = 0; r < 30 && !found; r++) {
+-      const ctx = createBattle({ replicate: r, enemyCount: 8, heroes: TEST_COHORT.heroes })
++      const ctx = createBattle({ replicate: r, enemyCount: 8, heroes: TEST_COHORT.heroes, enemies: [...TEST_COHORT.enemies, ...TEST_COHORT.enemies] })
+       runBattle(ctx)
+       found += ctx.events.filter((e) => e.type === 'status.applied'
+@@ -127,5 +127,5 @@ describe('the battle sources fire in real battles', () => {
+     let found = 0
+     for (let r = 0; r < 30 && !found; r++) {
+-      const ctx = createBattle({ replicate: r, enemyCount: 8, heroes: TEST_COHORT.heroes })
++      const ctx = createBattle({ replicate: r, enemyCount: 8, heroes: TEST_COHORT.heroes, enemies: [...TEST_COHORT.enemies, ...TEST_COHORT.enemies] })
+       runBattle(ctx)
+       found += ctx.events.filter((e) => e.type === 'status.applied'
+diff --git a/test/rulings-2026-08-15.test.ts b/test/rulings-2026-08-15.test.ts
+index 404b19e..0efa4dc 100644
+--- a/test/rulings-2026-08-15.test.ts
++++ b/test/rulings-2026-08-15.test.ts
+@@ -102,7 +102,15 @@ describe('bleed-out (Angela 2026-08-15)', () => {
+   })
+ 
++// LAW 10 — 2026-09-02 (content.enemy-flip): the standard horde is the AUTHORED
++// Zombie and Burning Zombie now (5 hp, str 3 — the Codex's), not the test
++// clones (10 hp, str 4). FINDING: four authored zombies are a 2.8-turn walkover
++// for the Alpha Team (100 battles: 100% clear, one hero down); pressure for a
++// claim that needs it comes from a larger authored horde (enemyCount 12: 130
++// downs per 100), and the test-lane enemy riders are fielded explicitly
++// (TEST_COHORT.enemies). Claims unchanged; the fielding says where the
++// pressure comes from.
+   it('a hero who drops is set to five, every time', () => {
+     for (let r = 0; r < 8; r++) {
+-      const ctx = createBattle({ replicate: r, enemyCount: 10, mapId: 'map.open' })
++      const ctx = createBattle({ replicate: r, enemyCount: 14, mapId: 'map.open' })
+       runBattle(ctx)
+       const set = ctx.events.filter((e) => e.type === 'bleedout.set')
+@@ -115,5 +123,5 @@ describe('bleed-out (Angela 2026-08-15)', () => {
+     let ticksChecked = 0
+     for (let r = 0; r < 8; r++) {
+-      const ctx = createBattle({ replicate: r, enemyCount: 10, mapId: 'map.open' })
++      const ctx = createBattle({ replicate: r, enemyCount: 14, mapId: 'map.open' })
+       runBattle(ctx)
+ 
+diff --git a/test/slow.test.ts b/test/slow.test.ts
+index a6dafba..65f8293 100644
+--- a/test/slow.test.ts
++++ b/test/slow.test.ts
+@@ -88,8 +88,13 @@ describe('the budget walk: slow N leaves movement − N points, recovering as it
+ 
+ describe('the battle sources fire in real battles', () => {
++  // content.enemy-flip (2026-09-02): the test-lane enemy riders (grasp, sap,
++  // lurch) ride the TEST enemies, fielded explicitly now that the standard
++  // horde is the authored Zombie; standard-battle claims field enough
++  // authored zombies to matter (four are a 2.8-turn walkover — see the
++  // finding in the ledger).
+   it('grasp slows heroes somewhere in the first 30 seeds', () => {
+     let found = 0
+     for (let r = 0; r < 30 && !found; r++) {
+-      const ctx = createBattle({ replicate: r, enemyCount: 8 })
++      const ctx = createBattle({ replicate: r, enemyCount: 8, enemies: [...TEST_COHORT.enemies, ...TEST_COHORT.enemies] })
+       runBattle(ctx)
+       found += ctx.events.filter((e) => e.type === 'status.applied'
+@@ -108,5 +113,5 @@ describe('the battle sources fire in real battles', () => {
+     let found = 0
+     for (let r = 0; r < 30 && !found; r++) {
+-      const ctx = createBattle({ replicate: r, enemyCount: 8 })
++      const ctx = createBattle({ replicate: r, enemyCount: 12 })
+       runBattle(ctx)
+       found += ctx.events.filter((e) => e.type === 'status.applied'
+diff --git a/test/spirit-snake.test.ts b/test/spirit-snake.test.ts
+index f24c2c7..95919fa 100644
+--- a/test/spirit-snake.test.ts
++++ b/test/spirit-snake.test.ts
+@@ -39,5 +39,6 @@ describe('benched — out of every horde, off the default party', () => {
+       expect(ctx.state.units.some((u) => u.typeId === 'spirit-snake'), String(z)).toBe(false)
+     }
+-    expect([...FIRST_BATTLE.enemies]).toEqual(['test-zombie', 'test-zombie', 'test-zombie', 'test-zombie-burning'])
++    // content.enemy-flip (2026-09-02): the authored Zombie and Burning Zombie, one per four
++    expect([...FIRST_BATTLE.enemies]).toEqual(['unit.zombie', 'unit.zombie', 'unit.zombie', 'unit.zombie-burning'])
+     // 2026-09-02 (content.alpha-flip): the standard party is the Alpha Team —
+     // still the six Codex bodies, one of each class, still snake-free.
+diff --git a/test/state.test.ts b/test/state.test.ts
+index 4b1794b..1b957cb 100644
+--- a/test/state.test.ts
++++ b/test/state.test.ts
+@@ -24,5 +24,8 @@ describe('state and setup', () => {
+     const w = ctx.state.units.find(u => u.typeId === 'alpha-oathblade')!
+     const r = ctx.state.units.find(u => u.typeId === 'alpha-dusk-hawk')!
+-    const z = ctx.state.units.find(u => u.typeId === 'test-zombie')!
++    // content.enemy-flip (2026-09-02): the horde is the AUTHORED Zombie —
++    // enemies-authored.json's row (health 5, strength 3, precision 1), not
++    // the 2026-08-14 placeholder's 10/4 the test clone copied.
++    const z = ctx.state.units.find(u => u.typeId === 'unit.zombie')!
+     // Oathblade I, hero.shadows.oathblade.v1: the Codex row verbatim
+     expect([w.maxHp, w.armor, w.accuracy, w.strength, w.precision, w.movement, w.maxStamina]).toEqual([15,0,75,5,3,5,5])
+@@ -30,5 +33,5 @@ describe('state and setup', () => {
+     expect([r.maxHp, r.armor, r.accuracy, r.strength, r.precision, r.movement, r.maxStamina]).toEqual([5,0,80,3,4,5,5])
+     expect(r.dodge).toBe(5)
+-    expect([z.maxHp, z.armor, z.accuracy, z.strength, z.movement, z.maxStamina]).toEqual([10,0,65,4,4,0])
++    expect([z.maxHp, z.armor, z.accuracy, z.strength, z.movement, z.maxStamina]).toEqual([5,0,65,3,4,0])
+     expect(z.attributes).toContain('undead')
+     expect(w.name).not.toContain('(TEST)')                      // the Alpha Team is real content
+diff --git a/test/stun.test.ts b/test/stun.test.ts
+index a6c1797..387bdbb 100644
+--- a/test/stun.test.ts
++++ b/test/stun.test.ts
+@@ -85,5 +85,5 @@ describe('the battle sources fire in real battles', () => {
+     let found = 0
+     for (let r = 0; r < 30 && !found; r++) {
+-      const ctx = createBattle({ replicate: r, enemyCount: 8, mapId: 'map.field' })
++      const ctx = createBattle({ replicate: r, enemyCount: 12, mapId: 'map.field' })   // authored horde, pressure (content.enemy-flip)
+       runBattle(ctx)
+       found += ctx.events.filter((e) => e.type === 'status.applied'
+@@ -107,5 +107,6 @@ describe('the battle sources fire in real battles', () => {
+     let found = 0
+     for (let r = 0; r < 40 && !found; r++) {
+-      const ctx = createBattle({ replicate: r, enemyCount: 8, mapId: 'map.thicket' })
++      // test.zombie-burning.lurch rides the TEST burning zombie — fielded explicitly (content.enemy-flip)
++      const ctx = createBattle({ replicate: r, enemyCount: 8, mapId: 'map.thicket', enemies: [...TEST_COHORT.enemies, ...TEST_COHORT.enemies] })
+       runBattle(ctx)
+       found += ctx.events.filter((e) => e.type === 'status.applied'
+diff --git a/test/unit-pack.test.ts b/test/unit-pack.test.ts
+index 1a308da..72a7359 100644
+--- a/test/unit-pack.test.ts
++++ b/test/unit-pack.test.ts
+@@ -99,5 +99,6 @@ describe('the pack — read from the data, clearly differentiated', () => {
+     // still the pack's test enemies. Asserted against the pack's own id
+     // families rather than the 'test-' prefix alone.
+-    const fromPack = (t: string) => t.startsWith('test-') || t.startsWith('alpha-')
++    // content.enemy-flip (2026-09-02): the horde is the authored unit.* family
++    const fromPack = (t: string) => t.startsWith('test-') || t.startsWith('alpha-') || t.startsWith('unit.')
+     for (const t of [...FIRST_BATTLE.heroes, ...FIRST_BATTLE.enemies]) {
+       expect(fromPack(t), t).toBe(true)
+diff --git a/test/weak.test.ts b/test/weak.test.ts
+index 504e856..c066a11 100644
+--- a/test/weak.test.ts
++++ b/test/weak.test.ts
+@@ -82,5 +82,6 @@ describe('the battle sources fire in real battles', () => {
+     let sapped = 0, both = 0
+     for (let r = 0; r < 30; r++) {
+-      const ctx = createBattle({ replicate: r, enemyCount: 8 })
++      // test.zombie.sap and trigger.zombie.rot ride the TEST zombie — fielded explicitly (content.enemy-flip)
++      const ctx = createBattle({ replicate: r, enemyCount: 8, enemies: [...TEST_COHORT.enemies, ...TEST_COHORT.enemies] })
+       runBattle(ctx)
+       const sapEvents = ctx.events.filter((e) => e.type === 'status.applied' && e['causeId'] === 'test.zombie.sap')
+@@ -104,5 +105,5 @@ describe('the battle sources fire in real battles', () => {
+     let found = 0
+     for (let r = 0; r < 30 && !found; r++) {
+-      const ctx = createBattle({ replicate: r, enemyCount: 8, mapId: 'map.field' })
++      const ctx = createBattle({ replicate: r, enemyCount: 12, mapId: 'map.field' })   // authored horde, pressure (content.enemy-flip)
+       runBattle(ctx)
+       found += ctx.events.filter((e) => e.type === 'status.applied'
+diff --git a/test/zombie-rot.test.ts b/test/zombie-rot.test.ts
+index a494f3b..db686d1 100644
+--- a/test/zombie-rot.test.ts
++++ b/test/zombie-rot.test.ts
+@@ -3,4 +3,5 @@
+ // one-off shape the trigger system exists to make unnecessary.
+ import { describe, expect, it } from 'vitest'
++import { TEST_COHORT } from '../src/content/index.js'
+ import { ATTACKS, UNITS } from '../src/content/index.js'
+ import { createBattle } from '../src/core/setup.js'
+@@ -32,5 +33,5 @@ describe('trigger.zombie.rot', () => {
+     let rolled = 0, fired = 0, poisonFromRot = 0
+     for (let r = 0; r < 70; r++) {
+-      const ctx = createBattle({ replicate: r }); runBattle(ctx)
++      const ctx = createBattle({ replicate: r, enemies: TEST_COHORT.enemies }); runBattle(ctx)   // rot rides the TEST zombie (content.enemy-flip)
+       for (const e of ctx.events) {
+         if (e.causeId === 'trigger.zombie.rot') {
+@@ -51,5 +52,5 @@ describe('trigger.zombie.rot', () => {
+   it('boundary: a miss never rots — onDamage means damage landed', () => {
+     for (let r = 0; r < 10; r++) {
+-      const ctx = createBattle({ replicate: r }); runBattle(ctx)
++      const ctx = createBattle({ replicate: r, enemies: TEST_COHORT.enemies }); runBattle(ctx)   // rot rides the TEST zombie (content.enemy-flip)
+       // every rot roll must be preceded in the same attack by damage.applied:
+       // cheap proxy — rot rolls never exceed zombie damage events
+```
+</details>
+
+Post-land audit by hand after the reaper: 59 files / 506 on the committed
+tree; control battles match the re-blessed golden. The standard battle is
+now authored end to end: Alpha Team, authored kits applied at fielding,
+authored Zombie and Burning Zombie one per four. All 33 authored enemies pack
+(215 attacks); two silent drops became named gaps (move.* special moves — the
+Iron Colossus had fielded WEAPONLESS with nothing said; stat-less attacks).
+FINDING, for Andrew: four authored zombies are a 2.8-turn walkover for the
+Alpha Team (100 battles: 100% clear, one hero down); the mage is not touched
+under sixteen. The test-lane rider tests field TEST_COHORT.enemies
+explicitly; pressure-needing claims field 12–16 authored zombies and say why.
+Fourteen tests edited, reasons at the edits. Two flags. Seal withheld.
+
+IRON GAUNTLET: NOT PASSED — 2 FLAG(S) WARNED

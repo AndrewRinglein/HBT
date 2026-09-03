@@ -87,10 +87,15 @@ describe('the budget walk: slow N leaves movement − N points, recovering as it
 })
 
 describe('the battle sources fire in real battles', () => {
+  // content.enemy-flip (2026-09-02): the test-lane enemy riders (grasp, sap,
+  // lurch) ride the TEST enemies, fielded explicitly now that the standard
+  // horde is the authored Zombie; standard-battle claims field enough
+  // authored zombies to matter (four are a 2.8-turn walkover — see the
+  // finding in the ledger).
   it('grasp slows heroes somewhere in the first 30 seeds', () => {
     let found = 0
     for (let r = 0; r < 30 && !found; r++) {
-      const ctx = createBattle({ replicate: r, enemyCount: 8 })
+      const ctx = createBattle({ replicate: r, enemyCount: 8, enemies: [...TEST_COHORT.enemies, ...TEST_COHORT.enemies] })
       runBattle(ctx)
       found += ctx.events.filter((e) => e.type === 'status.applied'
         && e['causeId'] === 'test.zombie.grasp' && e['statusId'] === 'status.slow').length
@@ -107,7 +112,7 @@ describe('the battle sources fire in real battles', () => {
   it('the Dusk Hawk\'s pin slows zombies in the STANDARD battle somewhere in the first 30 seeds', () => {
     let found = 0
     for (let r = 0; r < 30 && !found; r++) {
-      const ctx = createBattle({ replicate: r, enemyCount: 8 })
+      const ctx = createBattle({ replicate: r, enemyCount: 12 })
       runBattle(ctx)
       found += ctx.events.filter((e) => e.type === 'status.applied'
         && e['causeId'] === 'alpha-dusk-hawk.pin' && e['statusId'] === 'status.slow').length

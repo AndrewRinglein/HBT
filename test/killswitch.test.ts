@@ -72,7 +72,8 @@ describe('the kill-switch seam', () => {
       `  const { runBattle } = await import('./src/core/battle.js');` +
       `  let found = false;` +
       `  for (let r = 0; r < 20 && !found; r++) {` +
-      `    const ctx = m.createBattle({ replicate: r, enemyCount: 4 });` +
+      `    const { TEST_COHORT } = await import('./src/content/index.js');` +
+      `    const ctx = m.createBattle({ replicate: r, enemyCount: 4, enemies: TEST_COHORT.enemies });` +
       `    runBattle(ctx);` +
       `    found = ctx.events.some((e) => e.type === 'status.applied' && e.causeId === 'trigger.zombie.rot');` +
       `  }` +

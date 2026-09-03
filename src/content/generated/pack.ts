@@ -444,6 +444,41 @@ export const UNIT_PACK = {
   ],
   "authoredEnemies": [
     {
+      "typeId": "unit.balrog",
+      "name": "Balrog",
+      "side": "enemy",
+      "maxHp": 23,
+      "armor": 3,
+      "resist": 2,
+      "accuracy": 100,
+      "dodge": 0,
+      "strength": 6,
+      "precision": 5,
+      "magic": 0,
+      "spirit": 0,
+      "role": "ranged",
+      "movement": 4,
+      "reach": 0,
+      "maxStamina": 0,
+      "staminaRegen": 0,
+      "ai": "ranged-kite",
+      "attacks": [
+        "attack.balrog.strike",
+        "attack.balrog.hurl"
+      ],
+      "abilities": [],
+      "moves": [
+        "power.move"
+      ],
+      "attributes": [
+        "demon"
+      ],
+      "tags": [
+        "demon"
+      ],
+      "triggers": []
+    },
+    {
       "typeId": "unit.bloodhound",
       "name": "Bloodhound",
       "side": "enemy",
@@ -477,6 +512,71 @@ export const UNIT_PACK = {
         "beast"
       ],
       "triggers": []
+    },
+    {
+      "typeId": "unit.bone-dragon",
+      "name": "Bone Dragon",
+      "side": "enemy",
+      "maxHp": 25,
+      "armor": 5,
+      "resist": 2,
+      "accuracy": 90,
+      "dodge": 0,
+      "strength": 8,
+      "precision": 6,
+      "magic": 0,
+      "spirit": 0,
+      "role": "ranged",
+      "movement": 5,
+      "reach": 0,
+      "maxStamina": 0,
+      "staminaRegen": 0,
+      "ai": "ranged-kite",
+      "attacks": [
+        "attack.bone-dragon.poison-line",
+        "attack.bone-dragon.bite",
+        "attack.bone-dragon.wings"
+      ],
+      "abilities": [],
+      "moves": [
+        "power.move"
+      ],
+      "attributes": [
+        "undead",
+        "dragon"
+      ],
+      "tags": [
+        "undead",
+        "dragon"
+      ],
+      "triggers": [
+        {
+          "id": "trigger.bone-dragon.poison",
+          "hook": "onHit",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.poison",
+            "value": 4
+          },
+          "source": "unit.bone-dragon",
+          "onlyWithAttack": "attack.bone-dragon.poison-line"
+        },
+        {
+          "id": "trigger.bone-dragon.stun",
+          "hook": "onDamage",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.stun",
+            "value": 1
+          },
+          "source": "unit.bone-dragon",
+          "onlyWithAttack": "attack.bone-dragon.bite"
+        }
+      ]
     },
     {
       "typeId": "unit.bruiser-demon",
@@ -514,6 +614,177 @@ export const UNIT_PACK = {
       "triggers": []
     },
     {
+      "typeId": "unit.dark-sniper",
+      "name": "Dark Sniper",
+      "side": "enemy",
+      "maxHp": 19,
+      "armor": 0,
+      "resist": 0,
+      "accuracy": 75,
+      "dodge": 0,
+      "crit": 10,
+      "strength": 2,
+      "precision": 6,
+      "magic": 0,
+      "spirit": 0,
+      "role": "ranged",
+      "movement": 4,
+      "reach": 0,
+      "maxStamina": 0,
+      "staminaRegen": 0,
+      "ai": "ranged-kite",
+      "attacks": [
+        "attack.dark-sniper.shot",
+        "attack.dark-sniper.long-shot"
+      ],
+      "abilities": [],
+      "moves": [
+        "power.move"
+      ],
+      "attributes": [
+        "horror"
+      ],
+      "tags": [
+        "horror"
+      ],
+      "triggers": [
+        {
+          "id": "trigger.dark-sniper.cripple",
+          "hook": "onHit",
+          "chance": 50,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.slow",
+            "value": 2
+          },
+          "source": "unit.dark-sniper",
+          "onlyWithAttack": "attack.dark-sniper.long-shot"
+        }
+      ]
+    },
+    {
+      "typeId": "unit.demon-hound",
+      "name": "Demon Hound",
+      "side": "enemy",
+      "maxHp": 10,
+      "armor": 0,
+      "resist": 0,
+      "accuracy": 80,
+      "dodge": 20,
+      "crit": 10,
+      "strength": 4,
+      "precision": 0,
+      "magic": 0,
+      "spirit": 0,
+      "role": "melee",
+      "movement": 6,
+      "reach": 0,
+      "maxStamina": 0,
+      "staminaRegen": 0,
+      "ai": "dumb-melee",
+      "attacks": [
+        "attack.demon-hound.bite"
+      ],
+      "abilities": [],
+      "moves": [
+        "power.move"
+      ],
+      "attributes": [
+        "demon",
+        "beast"
+      ],
+      "tags": [
+        "demon",
+        "beast"
+      ],
+      "triggers": [
+        {
+          "id": "trigger.demon-hound.regeneration",
+          "hook": "onTakingDamage",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.regeneration",
+            "value": 1
+          },
+          "source": "unit.demon-hound"
+        }
+      ]
+    },
+    {
+      "typeId": "unit.doombringer",
+      "name": "Doombringer",
+      "side": "enemy",
+      "maxHp": 25,
+      "armor": 2,
+      "resist": 1,
+      "accuracy": 60,
+      "dodge": -20,
+      "crit": 25,
+      "strength": 6,
+      "precision": 0,
+      "magic": 0,
+      "spirit": 0,
+      "role": "melee",
+      "movement": 3,
+      "reach": 0,
+      "maxStamina": 0,
+      "staminaRegen": 0,
+      "ai": "dumb-melee",
+      "attacks": [
+        "attack.doombringer.hammer",
+        "attack.doombringer.crush"
+      ],
+      "abilities": [],
+      "moves": [
+        "power.move"
+      ],
+      "attributes": [
+        "demon"
+      ],
+      "tags": [
+        "demon"
+      ],
+      "triggers": []
+    },
+    {
+      "typeId": "unit.eyeblight",
+      "name": "Eyeblight",
+      "side": "enemy",
+      "maxHp": 17,
+      "armor": 1,
+      "resist": 2,
+      "accuracy": 110,
+      "dodge": 0,
+      "luck": 50,
+      "strength": 2,
+      "precision": 1,
+      "magic": 0,
+      "spirit": 0,
+      "role": "melee",
+      "movement": 5,
+      "reach": 0,
+      "maxStamina": 0,
+      "staminaRegen": 0,
+      "ai": "dumb-melee",
+      "attacks": [
+        "attack.eyeblight.claw"
+      ],
+      "abilities": [],
+      "moves": [
+        "power.move"
+      ],
+      "attributes": [
+        "horror"
+      ],
+      "tags": [
+        "horror"
+      ],
+      "triggers": []
+    },
+    {
       "typeId": "unit.fast-zombie",
       "name": "Fast Zombie",
       "side": "enemy",
@@ -545,21 +816,7 @@ export const UNIT_PACK = {
       "tags": [
         "undead"
       ],
-      "triggers": [
-        {
-          "id": "trigger.fast-zombie.poison",
-          "hook": "onHit",
-          "chance": 20,
-          "select": "target",
-          "effect": {
-            "kind": "status.apply",
-            "statusId": "status.poison",
-            "value": 2
-          },
-          "source": "unit.fast-zombie",
-          "onlyWithAttack": "attack.zombie.claw"
-        }
-      ]
+      "triggers": []
     },
     {
       "typeId": "unit.fire-imp",
@@ -610,6 +867,43 @@ export const UNIT_PACK = {
           "onlyWithAttack": "attack.fire-imp.blast"
         }
       ]
+    },
+    {
+      "typeId": "unit.ghoul",
+      "name": "Ghoul",
+      "side": "enemy",
+      "maxHp": 9,
+      "armor": 0,
+      "resist": 0,
+      "accuracy": 90,
+      "dodge": 0,
+      "strength": 4,
+      "precision": 3,
+      "magic": 0,
+      "spirit": 0,
+      "role": "ranged",
+      "movement": 6,
+      "reach": 0,
+      "maxStamina": 0,
+      "staminaRegen": 0,
+      "ai": "ranged-kite",
+      "attacks": [
+        "attack.ghoul.eat-corpse",
+        "attack.ghoul.rake",
+        "attack.ghoul.shriek",
+        "attack.ghoul.devour"
+      ],
+      "abilities": [],
+      "moves": [
+        "power.move"
+      ],
+      "attributes": [
+        "undead"
+      ],
+      "tags": [
+        "undead"
+      ],
+      "triggers": []
     },
     {
       "typeId": "unit.hellhound",
@@ -724,6 +1018,101 @@ export const UNIT_PACK = {
       ]
     },
     {
+      "typeId": "unit.imp-master",
+      "name": "Imp Master",
+      "side": "enemy",
+      "maxHp": 9,
+      "armor": 0,
+      "resist": 0,
+      "accuracy": 70,
+      "dodge": 0,
+      "crit": 10,
+      "strength": 4,
+      "precision": 4,
+      "magic": 0,
+      "spirit": 0,
+      "role": "support",
+      "movement": 5,
+      "reach": 0,
+      "maxStamina": 0,
+      "staminaRegen": 0,
+      "ai": "ranged-kite",
+      "attacks": [
+        "attack.imp-master.fire-bow",
+        "attack.imp-master.fire-sword"
+      ],
+      "abilities": [],
+      "moves": [
+        "power.move"
+      ],
+      "attributes": [
+        "human"
+      ],
+      "tags": [
+        "human"
+      ],
+      "triggers": [
+        {
+          "id": "trigger.imp-master.burn",
+          "hook": "onHit",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.burn",
+            "value": 2
+          },
+          "source": "unit.imp-master",
+          "onlyWithAttack": "attack.imp-master.fire-bow"
+        },
+        {
+          "id": "trigger.imp-master.burn",
+          "hook": "onHit",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.burn",
+            "value": 1
+          },
+          "source": "unit.imp-master",
+          "onlyWithAttack": "attack.imp-master.fire-sword"
+        }
+      ]
+    },
+    {
+      "typeId": "unit.iron-colossus",
+      "name": "Iron Colossus",
+      "side": "enemy",
+      "maxHp": 30,
+      "armor": 6,
+      "resist": 0,
+      "accuracy": 80,
+      "dodge": -30,
+      "strength": 10,
+      "precision": 0,
+      "magic": 0,
+      "spirit": 0,
+      "role": "melee",
+      "movement": 5,
+      "reach": 0,
+      "maxStamina": 0,
+      "staminaRegen": 0,
+      "ai": "dumb-melee",
+      "attacks": [],
+      "abilities": [],
+      "moves": [
+        "power.move"
+      ],
+      "attributes": [
+        "construct"
+      ],
+      "tags": [
+        "construct"
+      ],
+      "triggers": []
+    },
+    {
       "typeId": "unit.lieutenant-demon",
       "name": "Lieutenant Demon",
       "side": "enemy",
@@ -807,6 +1196,41 @@ export const UNIT_PACK = {
           "onlyWithAttack": "attack.necromancer.necro-bolt"
         }
       ]
+    },
+    {
+      "typeId": "unit.nightstalker",
+      "name": "Nightstalker",
+      "side": "enemy",
+      "maxHp": 7,
+      "armor": 0,
+      "resist": 0,
+      "accuracy": 90,
+      "dodge": 0,
+      "crit": 10,
+      "strength": 7,
+      "precision": 0,
+      "magic": 0,
+      "spirit": 0,
+      "role": "melee",
+      "movement": 6,
+      "reach": 0,
+      "maxStamina": 0,
+      "staminaRegen": 0,
+      "ai": "dumb-melee",
+      "attacks": [
+        "attack.nightstalker.rend"
+      ],
+      "abilities": [],
+      "moves": [
+        "power.move"
+      ],
+      "attributes": [
+        "horror"
+      ],
+      "tags": [
+        "horror"
+      ],
+      "triggers": []
     },
     {
       "typeId": "unit.poison-imp",
@@ -909,6 +1333,44 @@ export const UNIT_PACK = {
       ]
     },
     {
+      "typeId": "unit.shadow-sorcerer",
+      "name": "Shadow Sorcerer",
+      "side": "enemy",
+      "maxHp": 22,
+      "armor": 0,
+      "resist": 2,
+      "accuracy": 130,
+      "dodge": 0,
+      "crit": 7,
+      "luck": 7,
+      "strength": 5,
+      "precision": 6,
+      "magic": 0,
+      "spirit": 0,
+      "role": "ranged",
+      "movement": 11,
+      "reach": 0,
+      "maxStamina": 0,
+      "staminaRegen": 0,
+      "ai": "ranged-kite",
+      "attacks": [
+        "attack.shadow-sorcerer.shadow-strike",
+        "attack.shadow-sorcerer.shadow-rend",
+        "attack.shadow-sorcerer.shadow-grasp"
+      ],
+      "abilities": [],
+      "moves": [
+        "power.move"
+      ],
+      "attributes": [
+        "horror"
+      ],
+      "tags": [
+        "horror"
+      ],
+      "triggers": []
+    },
+    {
       "typeId": "unit.skeletal-archer",
       "name": "Skeleton Archer",
       "side": "enemy",
@@ -953,6 +1415,350 @@ export const UNIT_PACK = {
           },
           "source": "unit.skeletal-archer",
           "onlyWithAttack": "attack.skeleton.gut"
+        }
+      ]
+    },
+    {
+      "typeId": "unit.skeleton",
+      "name": "Skeleton",
+      "side": "enemy",
+      "maxHp": 5,
+      "armor": 1,
+      "resist": 0,
+      "accuracy": 55,
+      "dodge": 0,
+      "strength": 3,
+      "precision": 1,
+      "magic": 0,
+      "spirit": 0,
+      "role": "melee",
+      "movement": 4,
+      "reach": 0,
+      "maxStamina": 0,
+      "staminaRegen": 0,
+      "ai": "dumb-melee",
+      "attacks": [
+        "attack.skeleton.gut"
+      ],
+      "abilities": [],
+      "moves": [
+        "power.move"
+      ],
+      "attributes": [
+        "undead"
+      ],
+      "tags": [
+        "undead"
+      ],
+      "triggers": [
+        {
+          "id": "trigger.skeleton.bleed",
+          "hook": "onHit",
+          "chance": 20,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.bleed",
+            "value": 2
+          },
+          "source": "unit.skeleton",
+          "onlyWithAttack": "attack.skeleton.gut"
+        }
+      ]
+    },
+    {
+      "typeId": "unit.skeleton-spider",
+      "name": "Skeleton Spider",
+      "side": "enemy",
+      "maxHp": 14,
+      "armor": 0,
+      "resist": 3,
+      "accuracy": 90,
+      "dodge": 0,
+      "strength": 5,
+      "precision": 5,
+      "magic": 0,
+      "spirit": 0,
+      "role": "support",
+      "movement": 4,
+      "reach": 0,
+      "maxStamina": 0,
+      "staminaRegen": 0,
+      "ai": "ranged-kite",
+      "attacks": [
+        "attack.skeleton-spider.bone-strike",
+        "attack.skeleton-spider.bone-slash"
+      ],
+      "abilities": [],
+      "moves": [
+        "power.move"
+      ],
+      "attributes": [
+        "undead"
+      ],
+      "tags": [
+        "undead"
+      ],
+      "triggers": []
+    },
+    {
+      "typeId": "unit.strong-skeleton",
+      "name": "Strong Skeleton",
+      "side": "enemy",
+      "maxHp": 9,
+      "armor": 1,
+      "resist": 0,
+      "accuracy": 70,
+      "dodge": 0,
+      "strength": 4,
+      "precision": 2,
+      "magic": 0,
+      "spirit": 0,
+      "role": "melee",
+      "movement": 4,
+      "reach": 0,
+      "maxStamina": 0,
+      "staminaRegen": 0,
+      "ai": "dumb-melee",
+      "attacks": [
+        "attack.skeleton.gut"
+      ],
+      "abilities": [],
+      "moves": [
+        "power.move"
+      ],
+      "attributes": [
+        "undead"
+      ],
+      "tags": [
+        "undead"
+      ],
+      "triggers": [
+        {
+          "id": "trigger.strong-skeleton.bleed",
+          "hook": "onHit",
+          "chance": 20,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.bleed",
+            "value": 2
+          },
+          "source": "unit.strong-skeleton",
+          "onlyWithAttack": "attack.skeleton.gut"
+        }
+      ]
+    },
+    {
+      "typeId": "unit.strong-zombie",
+      "name": "Strong Zombie",
+      "side": "enemy",
+      "maxHp": 10,
+      "armor": 1,
+      "resist": 0,
+      "accuracy": 60,
+      "dodge": 0,
+      "strength": 4,
+      "precision": 2,
+      "magic": 0,
+      "spirit": 0,
+      "role": "melee",
+      "movement": 4,
+      "reach": 0,
+      "maxStamina": 0,
+      "staminaRegen": 0,
+      "ai": "dumb-melee",
+      "attacks": [
+        "attack.zombie.claw"
+      ],
+      "abilities": [],
+      "moves": [
+        "power.move"
+      ],
+      "attributes": [
+        "undead"
+      ],
+      "tags": [
+        "undead"
+      ],
+      "triggers": []
+    },
+    {
+      "typeId": "unit.terror-imp",
+      "name": "Terror Imp",
+      "side": "enemy",
+      "maxHp": 9,
+      "armor": 0,
+      "resist": 0,
+      "accuracy": 80,
+      "dodge": 20,
+      "strength": 3,
+      "precision": 4,
+      "magic": 0,
+      "spirit": 0,
+      "role": "ranged",
+      "movement": 5,
+      "reach": 0,
+      "maxStamina": 0,
+      "staminaRegen": 0,
+      "ai": "ranged-kite",
+      "attacks": [
+        "attack.terror-imp.fear",
+        "attack.imp.claw"
+      ],
+      "abilities": [],
+      "moves": [
+        "power.move"
+      ],
+      "attributes": [
+        "demon"
+      ],
+      "tags": [
+        "demon"
+      ],
+      "triggers": [
+        {
+          "id": "trigger.terror-imp.weak",
+          "hook": "onTakingDamage",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.weak",
+            "value": 1
+          },
+          "source": "unit.terror-imp"
+        }
+      ]
+    },
+    {
+      "typeId": "unit.vampire",
+      "name": "Vampire",
+      "side": "enemy",
+      "maxHp": 15,
+      "armor": 0,
+      "resist": 0,
+      "accuracy": 85,
+      "dodge": 10,
+      "crit": 7,
+      "strength": 6,
+      "precision": 4,
+      "magic": 0,
+      "spirit": 0,
+      "role": "ranged",
+      "movement": 5,
+      "reach": 0,
+      "maxStamina": 0,
+      "staminaRegen": 0,
+      "ai": "ranged-kite",
+      "attacks": [
+        "attack.vampire.bite",
+        "attack.vampire.mesmerize"
+      ],
+      "abilities": [],
+      "moves": [
+        "power.move"
+      ],
+      "attributes": [
+        "undead",
+        "vampire"
+      ],
+      "tags": [
+        "undead",
+        "vampire"
+      ],
+      "triggers": [
+        {
+          "id": "trigger.vampire.stun",
+          "hook": "onHit",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.stun",
+            "value": 1
+          },
+          "source": "unit.vampire",
+          "onlyWithAttack": "attack.vampire.mesmerize"
+        },
+        {
+          "id": "trigger.vampire.weak",
+          "hook": "onHit",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.weak",
+            "value": 2
+          },
+          "source": "unit.vampire",
+          "onlyWithAttack": "attack.vampire.mesmerize"
+        }
+      ]
+    },
+    {
+      "typeId": "unit.vampire-lord",
+      "name": "Vampire Lord",
+      "side": "enemy",
+      "maxHp": 25,
+      "armor": 1,
+      "resist": 3,
+      "accuracy": 95,
+      "dodge": 15,
+      "crit": 12,
+      "strength": 8,
+      "precision": 6,
+      "magic": 0,
+      "spirit": 0,
+      "role": "ranged",
+      "movement": 5,
+      "reach": 0,
+      "maxStamina": 0,
+      "staminaRegen": 0,
+      "ai": "ranged-kite",
+      "attacks": [
+        "attack.vampire-lord.bite",
+        "attack.vampire.mesmerize",
+        "attack.vampire-lord.soul-rend"
+      ],
+      "abilities": [],
+      "moves": [
+        "power.move"
+      ],
+      "attributes": [
+        "undead",
+        "vampire"
+      ],
+      "tags": [
+        "undead",
+        "vampire"
+      ],
+      "triggers": [
+        {
+          "id": "trigger.vampire-lord.stun",
+          "hook": "onHit",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.stun",
+            "value": 1
+          },
+          "source": "unit.vampire-lord",
+          "onlyWithAttack": "attack.vampire.mesmerize"
+        },
+        {
+          "id": "trigger.vampire-lord.weak",
+          "hook": "onHit",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.weak",
+            "value": 2
+          },
+          "source": "unit.vampire-lord",
+          "onlyWithAttack": "attack.vampire.mesmerize"
         }
       ]
     },
@@ -1039,6 +1845,53 @@ export const UNIT_PACK = {
       ]
     },
     {
+      "typeId": "unit.zombie-burning",
+      "name": "Burning Zombie",
+      "side": "enemy",
+      "maxHp": 5,
+      "armor": 0,
+      "resist": 0,
+      "accuracy": 65,
+      "dodge": 0,
+      "strength": 3,
+      "precision": 1,
+      "magic": 0,
+      "spirit": 0,
+      "role": "melee",
+      "movement": 4,
+      "reach": 0,
+      "maxStamina": 0,
+      "staminaRegen": 0,
+      "ai": "dumb-melee",
+      "attacks": [
+        "attack.zombie.claw"
+      ],
+      "abilities": [],
+      "moves": [
+        "power.move"
+      ],
+      "attributes": [
+        "undead"
+      ],
+      "tags": [
+        "undead"
+      ],
+      "triggers": [
+        {
+          "id": "trigger.zombie-burning.sear",
+          "hook": "onTakingDamage",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.burn",
+            "value": 1
+          },
+          "source": "unit.zombie-burning"
+        }
+      ]
+    },
+    {
       "typeId": "unit.zombie-hound",
       "name": "Zombie Hound",
       "side": "enemy",
@@ -1077,12 +1930,62 @@ export const UNIT_PACK = {
     }
   ],
   "authoredAttacks": {
+    "attack.balrog.strike": {
+      "id": "attack.balrog.strike",
+      "name": "Strike",
+      "kind": "melee",
+      "damageType": "physical",
+      "bonus": 0,
+      "stat": "strength",
+      "reach": 1,
+      "staminaCost": 0
+    },
+    "attack.balrog.hurl": {
+      "id": "attack.balrog.hurl",
+      "name": "Hurl Fire",
+      "kind": "ranged",
+      "damageType": "physical",
+      "bonus": 0,
+      "stat": "precision",
+      "reach": 4,
+      "staminaCost": 0
+    },
     "attack.bloodhound.bite": {
       "id": "attack.bloodhound.bite",
       "name": "Bite",
       "kind": "melee",
       "damageType": "physical",
       "bonus": 0,
+      "stat": "strength",
+      "reach": 1,
+      "staminaCost": 0
+    },
+    "attack.bone-dragon.poison-line": {
+      "id": "attack.bone-dragon.poison-line",
+      "name": "Poison Line",
+      "kind": "ranged",
+      "damageType": "magic",
+      "bonus": -4,
+      "stat": "precision",
+      "reach": 10,
+      "staminaCost": 0
+    },
+    "attack.bone-dragon.bite": {
+      "id": "attack.bone-dragon.bite",
+      "name": "Bite",
+      "kind": "melee",
+      "damageType": "physical",
+      "bonus": 0,
+      "stat": "strength",
+      "reach": 1,
+      "staminaCost": 0
+    },
+    "attack.bone-dragon.wings": {
+      "id": "attack.bone-dragon.wings",
+      "name": "Wings",
+      "kind": "melee",
+      "damageType": "physical",
+      "bonus": -2,
       "stat": "strength",
       "reach": 1,
       "staminaCost": 0
@@ -1097,9 +2000,69 @@ export const UNIT_PACK = {
       "reach": 1,
       "staminaCost": 0
     },
+    "attack.dark-sniper.shot": {
+      "id": "attack.dark-sniper.shot",
+      "name": "Shot",
+      "kind": "ranged",
+      "damageType": "physical",
+      "bonus": 0,
+      "stat": "precision",
+      "reach": 7,
+      "staminaCost": 0
+    },
+    "attack.dark-sniper.long-shot": {
+      "id": "attack.dark-sniper.long-shot",
+      "name": "Long Shot",
+      "kind": "ranged",
+      "damageType": "physical",
+      "bonus": -3,
+      "stat": "precision",
+      "reach": 10,
+      "staminaCost": 0
+    },
+    "attack.demon-hound.bite": {
+      "id": "attack.demon-hound.bite",
+      "name": "Bite",
+      "kind": "melee",
+      "damageType": "physical",
+      "bonus": 0,
+      "stat": "strength",
+      "reach": 1,
+      "staminaCost": 0
+    },
+    "attack.doombringer.hammer": {
+      "id": "attack.doombringer.hammer",
+      "name": "Hammer",
+      "kind": "melee",
+      "damageType": "physical",
+      "bonus": 0,
+      "stat": "strength",
+      "reach": 1,
+      "staminaCost": 0
+    },
+    "attack.doombringer.crush": {
+      "id": "attack.doombringer.crush",
+      "name": "Crush",
+      "kind": "melee",
+      "damageType": "physical",
+      "bonus": -2,
+      "stat": "strength",
+      "reach": 1,
+      "staminaCost": 0
+    },
+    "attack.eyeblight.claw": {
+      "id": "attack.eyeblight.claw",
+      "name": "Claw",
+      "kind": "melee",
+      "damageType": "physical",
+      "bonus": 0,
+      "stat": "strength",
+      "reach": 1,
+      "staminaCost": 0
+    },
     "attack.zombie.claw": {
       "id": "attack.zombie.claw",
-      "name": "Claw",
+      "name": "claw",
       "kind": "melee",
       "damageType": "physical",
       "bonus": 0,
@@ -1115,6 +2078,46 @@ export const UNIT_PACK = {
       "bonus": 0,
       "stat": "precision",
       "reach": 4,
+      "staminaCost": 0
+    },
+    "attack.ghoul.eat-corpse": {
+      "id": "attack.ghoul.eat-corpse",
+      "name": "Eat Corpse",
+      "kind": "melee",
+      "damageType": "physical",
+      "bonus": 0,
+      "stat": "strength",
+      "reach": 1,
+      "staminaCost": 0
+    },
+    "attack.ghoul.rake": {
+      "id": "attack.ghoul.rake",
+      "name": "Rake",
+      "kind": "melee",
+      "damageType": "physical",
+      "bonus": -1,
+      "stat": "strength",
+      "reach": 1,
+      "staminaCost": 0
+    },
+    "attack.ghoul.shriek": {
+      "id": "attack.ghoul.shriek",
+      "name": "Shriek",
+      "kind": "ranged",
+      "damageType": "physical",
+      "bonus": 0,
+      "stat": "precision",
+      "reach": 4,
+      "staminaCost": 0
+    },
+    "attack.ghoul.devour": {
+      "id": "attack.ghoul.devour",
+      "name": "Devour",
+      "kind": "melee",
+      "damageType": "physical",
+      "bonus": 2,
+      "stat": "strength",
+      "reach": 1,
       "staminaCost": 0
     },
     "attack.hellhound.bite": {
@@ -1140,6 +2143,26 @@ export const UNIT_PACK = {
     "attack.imp.claw": {
       "id": "attack.imp.claw",
       "name": "Imp Claw",
+      "kind": "melee",
+      "damageType": "physical",
+      "bonus": 0,
+      "stat": "strength",
+      "reach": 1,
+      "staminaCost": 0
+    },
+    "attack.imp-master.fire-bow": {
+      "id": "attack.imp-master.fire-bow",
+      "name": "Fire Bow",
+      "kind": "ranged",
+      "damageType": "physical",
+      "bonus": 0,
+      "stat": "precision",
+      "reach": 6,
+      "staminaCost": 0
+    },
+    "attack.imp-master.fire-sword": {
+      "id": "attack.imp-master.fire-sword",
+      "name": "Fire Sword",
       "kind": "melee",
       "damageType": "physical",
       "bonus": 0,
@@ -1187,6 +2210,16 @@ export const UNIT_PACK = {
       "reach": 1,
       "staminaCost": 0
     },
+    "attack.nightstalker.rend": {
+      "id": "attack.nightstalker.rend",
+      "name": "Rend",
+      "kind": "melee",
+      "damageType": "physical",
+      "bonus": 0,
+      "stat": "strength",
+      "reach": 1,
+      "staminaCost": 0
+    },
     "attack.poison-imp.blast": {
       "id": "attack.poison-imp.blast",
       "name": "Poison Imp Blast",
@@ -1197,6 +2230,36 @@ export const UNIT_PACK = {
       "reach": 4,
       "staminaCost": 0
     },
+    "attack.shadow-sorcerer.shadow-strike": {
+      "id": "attack.shadow-sorcerer.shadow-strike",
+      "name": "Shadow Strike",
+      "kind": "ranged",
+      "damageType": "magic",
+      "bonus": 0,
+      "stat": "precision",
+      "reach": 8,
+      "staminaCost": 0
+    },
+    "attack.shadow-sorcerer.shadow-rend": {
+      "id": "attack.shadow-sorcerer.shadow-rend",
+      "name": "Shadow Rend",
+      "kind": "ranged",
+      "damageType": "magic",
+      "bonus": -3,
+      "stat": "precision",
+      "reach": 10,
+      "staminaCost": 0
+    },
+    "attack.shadow-sorcerer.shadow-grasp": {
+      "id": "attack.shadow-sorcerer.shadow-grasp",
+      "name": "Shadow Grasp",
+      "kind": "melee",
+      "damageType": "physical",
+      "bonus": 0,
+      "stat": "strength",
+      "reach": 1,
+      "staminaCost": 0
+    },
     "attack.skeleton.gut": {
       "id": "attack.skeleton.gut",
       "name": "Gut",
@@ -1205,6 +2268,76 @@ export const UNIT_PACK = {
       "bonus": 0,
       "stat": "strength",
       "reach": 1,
+      "staminaCost": 0
+    },
+    "attack.skeleton-spider.bone-strike": {
+      "id": "attack.skeleton-spider.bone-strike",
+      "name": "Bone Strike",
+      "kind": "ranged",
+      "damageType": "physical",
+      "bonus": 0,
+      "stat": "precision",
+      "reach": 4,
+      "staminaCost": 0
+    },
+    "attack.skeleton-spider.bone-slash": {
+      "id": "attack.skeleton-spider.bone-slash",
+      "name": "Bone Slash",
+      "kind": "melee",
+      "damageType": "physical",
+      "bonus": 0,
+      "stat": "strength",
+      "reach": 1,
+      "staminaCost": 0
+    },
+    "attack.terror-imp.fear": {
+      "id": "attack.terror-imp.fear",
+      "name": "Fear",
+      "kind": "ranged",
+      "damageType": "physical",
+      "bonus": 0,
+      "stat": "precision",
+      "reach": 4,
+      "staminaCost": 0
+    },
+    "attack.vampire.bite": {
+      "id": "attack.vampire.bite",
+      "name": "Bite",
+      "kind": "melee",
+      "damageType": "physical",
+      "bonus": 0,
+      "stat": "strength",
+      "reach": 1,
+      "staminaCost": 0
+    },
+    "attack.vampire.mesmerize": {
+      "id": "attack.vampire.mesmerize",
+      "name": "Mesmerize",
+      "kind": "ranged",
+      "damageType": "magic",
+      "bonus": -4,
+      "stat": "precision",
+      "reach": 3,
+      "staminaCost": 0
+    },
+    "attack.vampire-lord.bite": {
+      "id": "attack.vampire-lord.bite",
+      "name": "Bite",
+      "kind": "melee",
+      "damageType": "physical",
+      "bonus": 0,
+      "stat": "strength",
+      "reach": 1,
+      "staminaCost": 0
+    },
+    "attack.vampire-lord.soul-rend": {
+      "id": "attack.vampire-lord.soul-rend",
+      "name": "Soul Rend",
+      "kind": "ranged",
+      "damageType": "magic",
+      "bonus": 0,
+      "stat": "precision",
+      "reach": 2,
       "staminaCost": 0
     },
     "attack.werewolf.claw-frenzy": {
@@ -2899,6 +4032,106 @@ export const UNIT_PACK = {
       "stat": "strength",
       "reach": 1,
       "staminaCost": 1
+    },
+    "attack.martyrs-censer.swing-of-ash": {
+      "id": "attack.martyrs-censer.swing-of-ash",
+      "name": "Swing of Ash",
+      "kind": "ranged",
+      "damageType": "true",
+      "bonus": 1,
+      "stat": "spirit",
+      "reach": 4,
+      "staminaCost": 1
+    },
+    "attack.martyrs-censer.offering": {
+      "id": "attack.martyrs-censer.offering",
+      "name": "Offering",
+      "kind": "ranged",
+      "damageType": "true",
+      "bonus": 4,
+      "stat": "spirit",
+      "reach": 4,
+      "staminaCost": 2
+    },
+    "attack.reliquary-of-the-nine-tears.rebuke": {
+      "id": "attack.reliquary-of-the-nine-tears.rebuke",
+      "name": "Lesser Rebuke",
+      "kind": "ranged",
+      "damageType": "true",
+      "bonus": 1,
+      "stat": "spirit",
+      "reach": 5,
+      "staminaCost": 1
+    },
+    "attack.reliquary-of-the-nine-tears.intercession": {
+      "id": "attack.reliquary-of-the-nine-tears.intercession",
+      "name": "Intercession",
+      "kind": "ranged",
+      "damageType": "true",
+      "bonus": 2,
+      "stat": "spirit",
+      "reach": 5,
+      "staminaCost": 2
+    },
+    "attack.chorus-of-the-drowned-choir.verse": {
+      "id": "attack.chorus-of-the-drowned-choir.verse",
+      "name": "Drowned Verse",
+      "kind": "ranged",
+      "damageType": "true",
+      "bonus": 2,
+      "stat": "spirit",
+      "reach": 6,
+      "staminaCost": 1
+    },
+    "attack.chorus-of-the-drowned-choir.antiphon": {
+      "id": "attack.chorus-of-the-drowned-choir.antiphon",
+      "name": "Antiphon",
+      "kind": "ranged",
+      "damageType": "true",
+      "bonus": 3,
+      "stat": "spirit",
+      "reach": 4,
+      "staminaCost": 3
+    },
+    "attack.emberglass-focus.ember": {
+      "id": "attack.emberglass-focus.ember",
+      "name": "Ember",
+      "kind": "ranged",
+      "damageType": "magic",
+      "bonus": 2,
+      "stat": "magic",
+      "reach": 5,
+      "staminaCost": 1
+    },
+    "attack.emberglass-focus.bank-the-fire": {
+      "id": "attack.emberglass-focus.bank-the-fire",
+      "name": "Bank the Fire",
+      "kind": "ranged",
+      "damageType": "magic",
+      "bonus": 3,
+      "stat": "magic",
+      "reach": 5,
+      "staminaCost": 2
+    },
+    "attack.staff-of-the-still-air.hush": {
+      "id": "attack.staff-of-the-still-air.hush",
+      "name": "Hush",
+      "kind": "ranged",
+      "damageType": "magic",
+      "bonus": 2,
+      "stat": "magic",
+      "reach": 6,
+      "staminaCost": 1
+    },
+    "attack.staff-of-the-still-air.stillness": {
+      "id": "attack.staff-of-the-still-air.stillness",
+      "name": "Stillness",
+      "kind": "ranged",
+      "damageType": "magic",
+      "bonus": 4,
+      "stat": "magic",
+      "reach": 6,
+      "staminaCost": 3
     }
   },
   "authoredAbilities": {
@@ -7766,6 +8999,129 @@ export const UNIT_PACK = {
         "maxHp": 3
       },
       "grants": [],
+      "abilities": [],
+      "triggers": []
+    },
+    "item.martyrs-censer": {
+      "id": "item.martyrs-censer",
+      "name": "Martyr's Censer",
+      "itemClass": "weapon",
+      "tier": 3,
+      "hands": 1,
+      "slots": 1,
+      "classRestriction": "class.priest",
+      "statModifiers": {
+        "spirit": 1,
+        "maxHp": -2
+      },
+      "grants": [
+        "attack.martyrs-censer.swing-of-ash",
+        "attack.martyrs-censer.offering"
+      ],
+      "abilities": [],
+      "triggers": []
+    },
+    "item.reliquary-of-the-nine-tears": {
+      "id": "item.reliquary-of-the-nine-tears",
+      "name": "Reliquary of the Nine Tears",
+      "itemClass": "weapon",
+      "tier": 3,
+      "hands": 1,
+      "slots": 1,
+      "classRestriction": "class.priest",
+      "statModifiers": {
+        "spirit": 1,
+        "resist": 1
+      },
+      "grants": [
+        "attack.reliquary-of-the-nine-tears.rebuke",
+        "attack.reliquary-of-the-nine-tears.intercession"
+      ],
+      "abilities": [],
+      "triggers": []
+    },
+    "item.chorus-of-the-drowned-choir": {
+      "id": "item.chorus-of-the-drowned-choir",
+      "name": "Chorus of the Drowned Choir",
+      "itemClass": "weapon",
+      "tier": 3,
+      "hands": 2,
+      "slots": 2,
+      "classRestriction": "class.priest",
+      "statModifiers": {
+        "spirit": 2,
+        "movement": -1
+      },
+      "grants": [
+        "attack.chorus-of-the-drowned-choir.verse",
+        "attack.chorus-of-the-drowned-choir.antiphon"
+      ],
+      "abilities": [],
+      "triggers": []
+    },
+    "item.emberglass-focus": {
+      "id": "item.emberglass-focus",
+      "name": "Emberglass Focus",
+      "itemClass": "weapon",
+      "tier": 3,
+      "hands": 1,
+      "slots": 1,
+      "classRestriction": "class.mage",
+      "statModifiers": {
+        "magic": 1,
+        "crit": 5
+      },
+      "grants": [
+        "attack.emberglass-focus.ember",
+        "attack.emberglass-focus.bank-the-fire"
+      ],
+      "abilities": [],
+      "triggers": [
+        {
+          "id": "trigger.emberglass-focus.ember.burn",
+          "hook": "onCrit",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.burn",
+            "value": 2
+          },
+          "source": "item.emberglass-focus",
+          "onlyWithAttack": "attack.emberglass-focus.ember"
+        },
+        {
+          "id": "trigger.emberglass-focus.bank-the-fire.burn",
+          "hook": "onHit",
+          "chance": 100,
+          "select": "target",
+          "effect": {
+            "kind": "status.apply",
+            "statusId": "status.burn",
+            "value": 1
+          },
+          "source": "item.emberglass-focus",
+          "onlyWithAttack": "attack.emberglass-focus.bank-the-fire"
+        }
+      ]
+    },
+    "item.staff-of-the-still-air": {
+      "id": "item.staff-of-the-still-air",
+      "name": "Staff of the Still Air",
+      "itemClass": "weapon",
+      "tier": 3,
+      "hands": 2,
+      "slots": 2,
+      "classRestriction": "class.mage",
+      "statModifiers": {
+        "magic": 2,
+        "reach": 1,
+        "maxHp": -2
+      },
+      "grants": [
+        "attack.staff-of-the-still-air.hush",
+        "attack.staff-of-the-still-air.stillness"
+      ],
       "abilities": [],
       "triggers": []
     },

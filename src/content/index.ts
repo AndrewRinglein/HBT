@@ -444,11 +444,12 @@ export const FIRST_BATTLE = {
   // real content.
   heroes: ['alpha-oathblade', 'alpha-sky-pirate', 'alpha-dusk-hawk',
     'alpha-air-mage', 'alpha-lucius', 'alpha-osric'] as const,
-  // The horde is the pack's test enemies now — the same rows, Codex-sourced,
-  // one burning zombie per four as ever. The hand-typed zombie defs below
-  // survive only as custom-battle fixtures until the test-file migration
-  // chore retires them (backlog test.fixture-migration).
-  enemies: ['test-zombie', 'test-zombie', 'test-zombie', 'test-zombie-burning'] as const,
+  // The horde is AUTHORED since content.enemy-flip (2026-09-02): the Codex's
+  // own Zombie (enemies-authored.json) and the Burning Zombie authored from
+  // 6-BESTIARY-SETTLED — "mixed into the horde at one per four" (Angela
+  // 2026-08-20), the pattern kept. The test-* enemy clones stay in the pack
+  // as an explicitly-fielded fixture (TEST_COHORT.enemies).
+  enemies: ['unit.zombie', 'unit.zombie', 'unit.zombie', 'unit.zombie-burning'] as const,
   defaultEnemyCount: 4,
   // Row 15 is the player edge, row 0 the enemy edge — ruled 2026-08-25 with the
   // 16x16 board, and stated the same way in content/gen/encounters.json's
@@ -469,4 +470,8 @@ export const FIRST_BATTLE = {
 export const TEST_COHORT = {
   heroes: ['test-oathblade', 'test-sky-pirate', 'test-dusk-hawk',
     'test-air-mage', 'test-lucius', 'test-osric'] as const,
+  // the test enemies joined 2026-09-02 (content.enemy-flip) when the standard
+  // horde became authored rows — the test-lane riders (grasp, sap, lurch)
+  // ride these, fielded explicitly by the tests that prove them
+  enemies: ['test-zombie', 'test-zombie', 'test-zombie', 'test-zombie-burning'] as const,
 }

@@ -38,7 +38,8 @@ describe('benched — out of every horde, off the default party', () => {
       const ctx = createBattle({ replicate: 0, enemyCount: z })
       expect(ctx.state.units.some((u) => u.typeId === 'spirit-snake'), String(z)).toBe(false)
     }
-    expect([...FIRST_BATTLE.enemies]).toEqual(['test-zombie', 'test-zombie', 'test-zombie', 'test-zombie-burning'])
+    // content.enemy-flip (2026-09-02): the authored Zombie and Burning Zombie, one per four
+    expect([...FIRST_BATTLE.enemies]).toEqual(['unit.zombie', 'unit.zombie', 'unit.zombie', 'unit.zombie-burning'])
     // 2026-09-02 (content.alpha-flip): the standard party is the Alpha Team —
     // still the six Codex bodies, one of each class, still snake-free.
     expect([...FIRST_BATTLE.heroes]).toEqual(['alpha-oathblade', 'alpha-sky-pirate', 'alpha-dusk-hawk',

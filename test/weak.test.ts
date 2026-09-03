@@ -81,7 +81,8 @@ describe('the battle sources fire in real battles', () => {
   it('sap weakens heroes; rot and sap roll independently on their own streams', () => {
     let sapped = 0, both = 0
     for (let r = 0; r < 30; r++) {
-      const ctx = createBattle({ replicate: r, enemyCount: 8 })
+      // test.zombie.sap and trigger.zombie.rot ride the TEST zombie — fielded explicitly (content.enemy-flip)
+      const ctx = createBattle({ replicate: r, enemyCount: 8, enemies: [...TEST_COHORT.enemies, ...TEST_COHORT.enemies] })
       runBattle(ctx)
       const sapEvents = ctx.events.filter((e) => e.type === 'status.applied' && e['causeId'] === 'test.zombie.sap')
       sapped += sapEvents.length
@@ -103,7 +104,7 @@ describe('the battle sources fire in real battles', () => {
   it('the Air Mage\'s dampen weakens zombies in the STANDARD battle somewhere in the first 30 field seeds', () => {
     let found = 0
     for (let r = 0; r < 30 && !found; r++) {
-      const ctx = createBattle({ replicate: r, enemyCount: 8, mapId: 'map.field' })
+      const ctx = createBattle({ replicate: r, enemyCount: 12, mapId: 'map.field' })   // authored horde, pressure (content.enemy-flip)
       runBattle(ctx)
       found += ctx.events.filter((e) => e.type === 'status.applied'
         && e['causeId'] === 'alpha-air-mage.dampen' && e['statusId'] === 'status.weak').length

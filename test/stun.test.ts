@@ -84,7 +84,7 @@ describe('the battle sources fire in real battles', () => {
   it('the Oathblade\'s stagger stuns zombies in the STANDARD battle somewhere in the first 30 field seeds', () => {
     let found = 0
     for (let r = 0; r < 30 && !found; r++) {
-      const ctx = createBattle({ replicate: r, enemyCount: 8, mapId: 'map.field' })
+      const ctx = createBattle({ replicate: r, enemyCount: 12, mapId: 'map.field' })   // authored horde, pressure (content.enemy-flip)
       runBattle(ctx)
       found += ctx.events.filter((e) => e.type === 'status.applied'
         && e['causeId'] === 'alpha-oathblade.stagger' && e['statusId'] === 'status.stun').length
@@ -106,7 +106,8 @@ describe('the battle sources fire in real battles', () => {
   it('test.zombie-burning.lurch dazes a hero somewhere in the first 40 thicket seeds', () => {
     let found = 0
     for (let r = 0; r < 40 && !found; r++) {
-      const ctx = createBattle({ replicate: r, enemyCount: 8, mapId: 'map.thicket' })
+      // test.zombie-burning.lurch rides the TEST burning zombie — fielded explicitly (content.enemy-flip)
+      const ctx = createBattle({ replicate: r, enemyCount: 8, mapId: 'map.thicket', enemies: [...TEST_COHORT.enemies, ...TEST_COHORT.enemies] })
       runBattle(ctx)
       found += ctx.events.filter((e) => e.type === 'status.applied'
         && e['causeId'] === 'test.zombie-burning.lurch' && e['statusId'] === 'test.status.daze').length

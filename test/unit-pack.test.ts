@@ -98,7 +98,8 @@ describe('the pack — read from the data, clearly differentiated', () => {
     // pack. Heroes are the Alpha Team (pack alphaTeam section); the horde is
     // still the pack's test enemies. Asserted against the pack's own id
     // families rather than the 'test-' prefix alone.
-    const fromPack = (t: string) => t.startsWith('test-') || t.startsWith('alpha-')
+    // content.enemy-flip (2026-09-02): the horde is the authored unit.* family
+    const fromPack = (t: string) => t.startsWith('test-') || t.startsWith('alpha-') || t.startsWith('unit.')
     for (const t of [...FIRST_BATTLE.heroes, ...FIRST_BATTLE.enemies]) {
       expect(fromPack(t), t).toBe(true)
     }

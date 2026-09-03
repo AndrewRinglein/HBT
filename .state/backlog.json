@@ -1767,5 +1767,23 @@
   "status": "done-needs-review",
   "sha": "bef295a",
   "gauntlet": "not passed — 2 flag(s) warned"
+ },
+ {
+  "id": "content.enemy-flip",
+  "kind": "content",
+  "shape": "data",
+  "spec": "The standard battle's horde becomes AUTHORED rows: the Codex's own Zombie (enemies-authored.json) and a Burning Zombie authored from 6-BESTIARY-SETTLED — Angela 2026-08-20: 'You could create a burning zombie and mix them in with the other zombies. On taking damage, the zombie deals 1 burn to its attacker.' — mixed in one per four, the ruled cadence kept; its trigger keeps the published id trigger.zombie-burning.sear. The converter packs EVERY authored enemy (33), not only the prologue's; two silent drops become named gaps (enemy special moves move.*, and stat-less attacks like the Eyeblight's gaze). The test enemy clones stay in the pack as an explicitly-fielded fixture (TEST_COHORT.enemies) for the test-lane riders (grasp, sap, lurch, rot). The last of the standard battle's scaffolding.",
+  "expect": "every control battle moves (the horde changed); the standard battle fields unit.zombie x3 + unit.zombie-burning per four; the sear burns attackers in the standard battle; every authored enemy is in UNITS and every dropped clause is a named gap; tests that assumed the test enemies field them explicitly or take pressure from a larger authored horde (reasons at the edits). FINDING to carry to Andrew: four authored zombies are a 2.8-turn walkover for the Alpha Team",
+  "changesBaseline": true,
+  "needs": [
+   "seam.items-per-unit"
+  ],
+  "probeIds": [
+   "unit.zombie-burning",
+   "trigger.zombie-burning.sear"
+  ],
+  "status": "done-needs-review",
+  "sha": "4acbc68",
+  "gauntlet": "not passed — 2 flag(s) warned"
  }
 ]

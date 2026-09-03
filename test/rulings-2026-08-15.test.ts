@@ -101,9 +101,17 @@ describe('bleed-out (Angela 2026-08-15)', () => {
     expect(BLEED_OUT_COUNTER).toBe(5)
   })
 
+// LAW 10 — 2026-09-02 (content.enemy-flip): the standard horde is the AUTHORED
+// Zombie and Burning Zombie now (5 hp, str 3 — the Codex's), not the test
+// clones (10 hp, str 4). FINDING: four authored zombies are a 2.8-turn walkover
+// for the Alpha Team (100 battles: 100% clear, one hero down); pressure for a
+// claim that needs it comes from a larger authored horde (enemyCount 12: 130
+// downs per 100), and the test-lane enemy riders are fielded explicitly
+// (TEST_COHORT.enemies). Claims unchanged; the fielding says where the
+// pressure comes from.
   it('a hero who drops is set to five, every time', () => {
     for (let r = 0; r < 8; r++) {
-      const ctx = createBattle({ replicate: r, enemyCount: 10, mapId: 'map.open' })
+      const ctx = createBattle({ replicate: r, enemyCount: 14, mapId: 'map.open' })
       runBattle(ctx)
       const set = ctx.events.filter((e) => e.type === 'bleedout.set')
       expect(set.length, `replicate ${r} put nobody down`).toBeGreaterThan(0)
@@ -114,7 +122,7 @@ describe('bleed-out (Angela 2026-08-15)', () => {
   it('it advances ONLY inside the End of Hero Phase ladder', () => {
     let ticksChecked = 0
     for (let r = 0; r < 8; r++) {
-      const ctx = createBattle({ replicate: r, enemyCount: 10, mapId: 'map.open' })
+      const ctx = createBattle({ replicate: r, enemyCount: 14, mapId: 'map.open' })
       runBattle(ctx)
 
       // Walk the log and remember which ladder, if any, we are standing in.
