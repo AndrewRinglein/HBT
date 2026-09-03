@@ -1,0 +1,1890 @@
+[
+ {
+  "id": "item.greatsword.bloodletting",
+  "name": "Bloodletting Greatsword",
+  "base": "item.greatsword",
+  "enchant": "enchant.bloodletting",
+  "tier": 3,
+  "itemClass": "weapon"
+ },
+ {
+  "id": "item.greatsword.soul-reaper",
+  "name": "Greatsword of the Soul Reaper",
+  "base": "item.greatsword",
+  "enchant": "enchant.soul-reaper",
+  "tier": 3,
+  "itemClass": "weapon"
+ },
+ {
+  "id": "item.greatsword.sacrifice",
+  "name": "Greatsword of Sacrifice",
+  "base": "item.greatsword",
+  "enchant": "enchant.sacrifice",
+  "tier": 3,
+  "itemClass": "weapon"
+ },
+ {
+  "id": "item.greatsword.demon-slayer",
+  "name": "Greatsword of Demon-Slaying",
+  "base": "item.greatsword",
+  "enchant": "enchant.demon-slayer",
+  "tier": 3,
+  "itemClass": "weapon"
+ },
+ {
+  "id": "item.greatsword.destroying",
+  "name": "Greatsword of Destroying",
+  "base": "item.greatsword",
+  "enchant": "enchant.destroying",
+  "tier": 3,
+  "itemClass": "weapon"
+ },
+ {
+  "id": "item.greatsword.the-master",
+  "name": "Greatsword of the Master",
+  "base": "item.greatsword",
+  "enchant": "enchant.the-master",
+  "tier": 3,
+  "itemClass": "weapon"
+ },
+ {
+  "id": "item.war-axe.bloodletting",
+  "name": "Bloodletting War Axe",
+  "base": "item.war-axe",
+  "enchant": "enchant.bloodletting",
+  "tier": 3,
+  "itemClass": "weapon"
+ },
+ {
+  "id": "item.war-axe.ironbane",
+  "name": "Ironbane War Axe",
+  "base": "item.war-axe",
+  "enchant": "enchant.ironbane",
+  "tier": 3,
+  "itemClass": "weapon"
+ },
+ {
+  "id": "item.war-axe.bloodthirsty",
+  "name": "Bloodthirsty War Axe",
+  "base": "item.war-axe",
+  "enchant": "enchant.bloodthirsty",
+  "tier": 3,
+  "itemClass": "weapon"
+ },
+ {
+  "id": "item.war-axe.death",
+  "name": "War Axe of Death",
+  "base": "item.war-axe",
+  "enchant": "enchant.death",
+  "tier": 3,
+  "itemClass": "weapon"
+ },
+ {
+  "id": "item.war-axe.taunting",
+  "name": "Taunting War Axe",
+  "base": "item.war-axe",
+  "enchant": "enchant.taunting",
+  "tier": 3,
+  "itemClass": "weapon"
+ },
+ {
+  "id": "item.iron-mace.ironbane",
+  "name": "Ironbane Iron Mace",
+  "base": "item.iron-mace",
+  "enchant": "enchant.ironbane",
+  "tier": 3,
+  "itemClass": "weapon"
+ },
+ {
+  "id": "item.iron-mace.holy-water",
+  "name": "Iron Mace of Holy Water",
+  "base": "item.iron-mace",
+  "enchant": "enchant.holy-water",
+  "tier": 3,
+  "itemClass": "weapon"
+ },
+ {
+  "id": "item.iron-mace.undead-slayer",
+  "name": "Iron Mace of Undead-Slaying",
+  "base": "item.iron-mace",
+  "enchant": "enchant.undead-slayer",
+  "tier": 3,
+  "itemClass": "weapon"
+ },
+ {
+  "id": "item.iron-mace.heavens-edge",
+  "name": "Iron Mace of Heaven's Edge",
+  "base": "item.iron-mace",
+  "enchant": "enchant.heavens-edge",
+  "tier": 3,
+  "itemClass": "weapon"
+ },
+ {
+  "id": "item.war-hammer.ironbane",
+  "name": "Ironbane War Hammer",
+  "base": "item.war-hammer",
+  "enchant": "enchant.ironbane",
+  "tier": 3,
+  "itemClass": "weapon"
+ },
+ {
+  "id": "item.war-hammer.frost",
+  "name": "Frost War Hammer",
+  "base": "item.war-hammer",
+  "enchant": "enchant.frost",
+  "tier": 3,
+  "itemClass": "weapon"
+ },
+ {
+  "id": "item.war-hammer.recklessness",
+  "name": "War Hammer of Recklessness",
+  "base": "item.war-hammer",
+  "enchant": "enchant.recklessness",
+  "tier": 3,
+  "itemClass": "weapon"
+ },
+ {
+  "id": "item.war-hammer.destroying",
+  "name": "War Hammer of Destroying",
+  "base": "item.war-hammer",
+  "enchant": "enchant.destroying",
+  "tier": 3,
+  "itemClass": "weapon"
+ },
+ {
+  "id": "item.war-hammer.taunting",
+  "name": "Taunting War Hammer",
+  "base": "item.war-hammer",
+  "enchant": "enchant.taunting",
+  "tier": 3,
+  "itemClass": "weapon"
+ },
+ {
+  "id": "item.hunting-spear.hunting",
+  "name": "Hunting Hunting Spear",
+  "base": "item.hunting-spear",
+  "enchant": "enchant.hunting",
+  "tier": 3,
+  "itemClass": "weapon"
+ },
+ {
+  "id": "item.hunting-spear.giant-slayer",
+  "name": "Hunting Spear of Giant-Slaying",
+  "base": "item.hunting-spear",
+  "enchant": "enchant.giant-slayer",
+  "tier": 3,
+  "itemClass": "weapon"
+ },
+ {
+  "id": "item.hunting-spear.dragon-slayer",
+  "name": "Hunting Spear of Dragon-Slaying",
+  "base": "item.hunting-spear",
+  "enchant": "enchant.dragon-slayer",
+  "tier": 3,
+  "itemClass": "weapon"
+ },
+ {
+  "id": "item.hunting-spear.venomous",
+  "name": "Venomous Hunting Spear",
+  "base": "item.hunting-spear",
+  "enchant": "enchant.venomous",
+  "tier": 3,
+  "itemClass": "weapon"
+ },
+ {
+  "id": "item.glaive.bloodletting",
+  "name": "Bloodletting Glaive",
+  "base": "item.glaive",
+  "enchant": "enchant.bloodletting",
+  "tier": 3,
+  "itemClass": "weapon"
+ },
+ {
+  "id": "item.glaive.giant-slayer",
+  "name": "Glaive of Giant-Slaying",
+  "base": "item.glaive",
+  "enchant": "enchant.giant-slayer",
+  "tier": 3,
+  "itemClass": "weapon"
+ },
+ {
+  "id": "item.glaive.dragon-slayer",
+  "name": "Glaive of Dragon-Slaying",
+  "base": "item.glaive",
+  "enchant": "enchant.dragon-slayer",
+  "tier": 3,
+  "itemClass": "weapon"
+ },
+ {
+  "id": "item.glaive.death",
+  "name": "Glaive of Death",
+  "base": "item.glaive",
+  "enchant": "enchant.death",
+  "tier": 3,
+  "itemClass": "weapon"
+ },
+ {
+  "id": "item.glaive.taunting",
+  "name": "Taunting Glaive",
+  "base": "item.glaive",
+  "enchant": "enchant.taunting",
+  "tier": 3,
+  "itemClass": "weapon"
+ },
+ {
+  "id": "item.crossbow.venomous",
+  "name": "Venomous Crossbow",
+  "base": "item.crossbow",
+  "enchant": "enchant.venomous",
+  "tier": 3,
+  "itemClass": "weapon"
+ },
+ {
+  "id": "item.crossbow.gale",
+  "name": "Gale Crossbow",
+  "base": "item.crossbow",
+  "enchant": "enchant.gale",
+  "tier": 3,
+  "itemClass": "weapon"
+ },
+ {
+  "id": "item.crossbow.hunting",
+  "name": "Hunting Crossbow",
+  "base": "item.crossbow",
+  "enchant": "enchant.hunting",
+  "tier": 3,
+  "itemClass": "weapon"
+ },
+ {
+  "id": "item.crossbow.abundant",
+  "name": "Abundant Crossbow",
+  "base": "item.crossbow",
+  "enchant": "enchant.abundant",
+  "tier": 3,
+  "itemClass": "weapon"
+ },
+ {
+  "id": "item.crossbow.magic",
+  "name": "Magic Crossbow",
+  "base": "item.crossbow",
+  "enchant": "enchant.magic",
+  "tier": 3,
+  "itemClass": "weapon"
+ },
+ {
+  "id": "item.crossbow.goading",
+  "name": "Goading Crossbow",
+  "base": "item.crossbow",
+  "enchant": "enchant.goading",
+  "tier": 3,
+  "itemClass": "weapon"
+ },
+ {
+  "id": "item.crossbow.giant-slayer",
+  "name": "Crossbow of Giant-Slaying",
+  "base": "item.crossbow",
+  "enchant": "enchant.giant-slayer",
+  "tier": 3,
+  "itemClass": "weapon"
+ },
+ {
+  "id": "item.hand-crossbow.venomous",
+  "name": "Venomous Hand Crossbow",
+  "base": "item.hand-crossbow",
+  "enchant": "enchant.venomous",
+  "tier": 3,
+  "itemClass": "weapon"
+ },
+ {
+  "id": "item.hand-crossbow.hunting",
+  "name": "Hunting Hand Crossbow",
+  "base": "item.hand-crossbow",
+  "enchant": "enchant.hunting",
+  "tier": 3,
+  "itemClass": "weapon"
+ },
+ {
+  "id": "item.hand-crossbow.magic",
+  "name": "Magic Hand Crossbow",
+  "base": "item.hand-crossbow",
+  "enchant": "enchant.magic",
+  "tier": 3,
+  "itemClass": "weapon"
+ },
+ {
+  "id": "item.hand-crossbow.abundant",
+  "name": "Abundant Hand Crossbow",
+  "base": "item.hand-crossbow",
+  "enchant": "enchant.abundant",
+  "tier": 3,
+  "itemClass": "weapon"
+ },
+ {
+  "id": "item.rapier.shadow-touched",
+  "name": "Shadow-Touched Duelist's Rapier",
+  "base": "item.rapier",
+  "enchant": "enchant.shadow-touched",
+  "tier": 3,
+  "itemClass": "weapon"
+ },
+ {
+  "id": "item.rapier.the-master",
+  "name": "Duelist's Rapier of the Master",
+  "base": "item.rapier",
+  "enchant": "enchant.the-master",
+  "tier": 3,
+  "itemClass": "weapon"
+ },
+ {
+  "id": "item.rapier.frost",
+  "name": "Frost Duelist's Rapier",
+  "base": "item.rapier",
+  "enchant": "enchant.frost",
+  "tier": 3,
+  "itemClass": "weapon"
+ },
+ {
+  "id": "item.rapier.death",
+  "name": "Duelist's Rapier of Death",
+  "base": "item.rapier",
+  "enchant": "enchant.death",
+  "tier": 3,
+  "itemClass": "weapon"
+ },
+ {
+  "id": "item.raiders-cutlass.bloodletting",
+  "name": "Bloodletting Raider's Cutlass",
+  "base": "item.raiders-cutlass",
+  "enchant": "enchant.bloodletting",
+  "tier": 3,
+  "itemClass": "weapon"
+ },
+ {
+  "id": "item.raiders-cutlass.werewolf-bane",
+  "name": "Werewolf-Bane Raider's Cutlass",
+  "base": "item.raiders-cutlass",
+  "enchant": "enchant.werewolf-bane",
+  "tier": 3,
+  "itemClass": "weapon"
+ },
+ {
+  "id": "item.raiders-cutlass.bloodthirsty",
+  "name": "Bloodthirsty Raider's Cutlass",
+  "base": "item.raiders-cutlass",
+  "enchant": "enchant.bloodthirsty",
+  "tier": 3,
+  "itemClass": "weapon"
+ },
+ {
+  "id": "item.raiders-cutlass.death",
+  "name": "Raider's Cutlass of Death",
+  "base": "item.raiders-cutlass",
+  "enchant": "enchant.death",
+  "tier": 3,
+  "itemClass": "weapon"
+ },
+ {
+  "id": "item.throwing-knives.venomous",
+  "name": "Venomous Throwing Knives",
+  "base": "item.throwing-knives",
+  "enchant": "enchant.venomous",
+  "tier": 3,
+  "itemClass": "weapon"
+ },
+ {
+  "id": "item.throwing-knives.hunting",
+  "name": "Hunting Throwing Knives",
+  "base": "item.throwing-knives",
+  "enchant": "enchant.hunting",
+  "tier": 3,
+  "itemClass": "weapon"
+ },
+ {
+  "id": "item.throwing-knives.gale",
+  "name": "Gale Throwing Knives",
+  "base": "item.throwing-knives",
+  "enchant": "enchant.gale",
+  "tier": 3,
+  "itemClass": "weapon"
+ },
+ {
+  "id": "item.throwing-knives.werewolf-bane",
+  "name": "Werewolf-Bane Throwing Knives",
+  "base": "item.throwing-knives",
+  "enchant": "enchant.werewolf-bane",
+  "tier": 3,
+  "itemClass": "weapon"
+ },
+ {
+  "id": "item.poison-stars.venomous",
+  "name": "Venomous Poison Stars",
+  "base": "item.poison-stars",
+  "enchant": "enchant.venomous",
+  "tier": 3,
+  "itemClass": "weapon"
+ },
+ {
+  "id": "item.poison-stars.hunting",
+  "name": "Hunting Poison Stars",
+  "base": "item.poison-stars",
+  "enchant": "enchant.hunting",
+  "tier": 3,
+  "itemClass": "weapon"
+ },
+ {
+  "id": "item.poison-stars.frost",
+  "name": "Frost Poison Stars",
+  "base": "item.poison-stars",
+  "enchant": "enchant.frost",
+  "tier": 3,
+  "itemClass": "weapon"
+ },
+ {
+  "id": "item.obsidian-fang-dagger.venomous",
+  "name": "Venomous Obsidian Fang Dagger",
+  "base": "item.obsidian-fang-dagger",
+  "enchant": "enchant.venomous",
+  "tier": 3,
+  "itemClass": "weapon"
+ },
+ {
+  "id": "item.obsidian-fang-dagger.bloodletting",
+  "name": "Bloodletting Obsidian Fang Dagger",
+  "base": "item.obsidian-fang-dagger",
+  "enchant": "enchant.bloodletting",
+  "tier": 3,
+  "itemClass": "weapon"
+ },
+ {
+  "id": "item.obsidian-fang-dagger.shadow-touched",
+  "name": "Shadow-Touched Obsidian Fang Dagger",
+  "base": "item.obsidian-fang-dagger",
+  "enchant": "enchant.shadow-touched",
+  "tier": 3,
+  "itemClass": "weapon"
+ },
+ {
+  "id": "item.obsidian-fang-dagger.addling",
+  "name": "Addling Obsidian Fang Dagger",
+  "base": "item.obsidian-fang-dagger",
+  "enchant": "enchant.addling",
+  "tier": 3,
+  "itemClass": "weapon"
+ },
+ {
+  "id": "item.obsidian-fang-dagger.hobbling",
+  "name": "Hobbling Obsidian Fang Dagger",
+  "base": "item.obsidian-fang-dagger",
+  "enchant": "enchant.hobbling",
+  "tier": 3,
+  "itemClass": "weapon"
+ },
+ {
+  "id": "item.obsidian-fang-dagger.werewolf-bane",
+  "name": "Werewolf-Bane Obsidian Fang Dagger",
+  "base": "item.obsidian-fang-dagger",
+  "enchant": "enchant.werewolf-bane",
+  "tier": 3,
+  "itemClass": "weapon"
+ },
+ {
+  "id": "item.duel-runeblades.bloodletting",
+  "name": "Bloodletting Duel Runeblades",
+  "base": "item.duel-runeblades",
+  "enchant": "enchant.bloodletting",
+  "tier": 3,
+  "itemClass": "weapon"
+ },
+ {
+  "id": "item.duel-runeblades.lightning",
+  "name": "Lightning Duel Runeblades",
+  "base": "item.duel-runeblades",
+  "enchant": "enchant.lightning",
+  "tier": 3,
+  "itemClass": "weapon"
+ },
+ {
+  "id": "item.duel-runeblades.frost",
+  "name": "Frost Duel Runeblades",
+  "base": "item.duel-runeblades",
+  "enchant": "enchant.frost",
+  "tier": 3,
+  "itemClass": "weapon"
+ },
+ {
+  "id": "item.duel-runeblades.sacrifice",
+  "name": "Duel Runeblades of Sacrifice",
+  "base": "item.duel-runeblades",
+  "enchant": "enchant.sacrifice",
+  "tier": 3,
+  "itemClass": "weapon"
+ },
+ {
+  "id": "item.shepherds-sling.venomous",
+  "name": "Venomous Shepherd's Sling",
+  "base": "item.shepherds-sling",
+  "enchant": "enchant.venomous",
+  "tier": 3,
+  "itemClass": "weapon"
+ },
+ {
+  "id": "item.shepherds-sling.hunting",
+  "name": "Hunting Shepherd's Sling",
+  "base": "item.shepherds-sling",
+  "enchant": "enchant.hunting",
+  "tier": 3,
+  "itemClass": "weapon"
+ },
+ {
+  "id": "item.shepherds-sling.abundant",
+  "name": "Abundant Shepherd's Sling",
+  "base": "item.shepherds-sling",
+  "enchant": "enchant.abundant",
+  "tier": 3,
+  "itemClass": "weapon"
+ },
+ {
+  "id": "item.shepherds-sling.magic",
+  "name": "Magic Shepherd's Sling",
+  "base": "item.shepherds-sling",
+  "enchant": "enchant.magic",
+  "tier": 3,
+  "itemClass": "weapon"
+ },
+ {
+  "id": "item.shepherds-sling.gale",
+  "name": "Gale Shepherd's Sling",
+  "base": "item.shepherds-sling",
+  "enchant": "enchant.gale",
+  "tier": 3,
+  "itemClass": "weapon"
+ },
+ {
+  "id": "item.crippling-whip.frost",
+  "name": "Frost Crippling Whip",
+  "base": "item.crippling-whip",
+  "enchant": "enchant.frost",
+  "tier": 3,
+  "itemClass": "weapon"
+ },
+ {
+  "id": "item.crippling-whip.shadow-touched",
+  "name": "Shadow-Touched Crippling Whip",
+  "base": "item.crippling-whip",
+  "enchant": "enchant.shadow-touched",
+  "tier": 3,
+  "itemClass": "weapon"
+ },
+ {
+  "id": "item.crippling-whip.death",
+  "name": "Crippling Whip of Death",
+  "base": "item.crippling-whip",
+  "enchant": "enchant.death",
+  "tier": 3,
+  "itemClass": "weapon"
+ },
+ {
+  "id": "item.iron-claws.venomous",
+  "name": "Venomous Iron Claws",
+  "base": "item.iron-claws",
+  "enchant": "enchant.venomous",
+  "tier": 3,
+  "itemClass": "weapon"
+ },
+ {
+  "id": "item.iron-claws.bloodletting",
+  "name": "Bloodletting Iron Claws",
+  "base": "item.iron-claws",
+  "enchant": "enchant.bloodletting",
+  "tier": 3,
+  "itemClass": "weapon"
+ },
+ {
+  "id": "item.iron-claws.werewolf-bane",
+  "name": "Werewolf-Bane Iron Claws",
+  "base": "item.iron-claws",
+  "enchant": "enchant.werewolf-bane",
+  "tier": 3,
+  "itemClass": "weapon"
+ },
+ {
+  "id": "item.iron-claws.bloodthirsty",
+  "name": "Bloodthirsty Iron Claws",
+  "base": "item.iron-claws",
+  "enchant": "enchant.bloodthirsty",
+  "tier": 3,
+  "itemClass": "weapon"
+ },
+ {
+  "id": "item.grappling-harpoon.giant-slayer",
+  "name": "Grappling Harpoon of Giant-Slaying",
+  "base": "item.grappling-harpoon",
+  "enchant": "enchant.giant-slayer",
+  "tier": 3,
+  "itemClass": "weapon"
+ },
+ {
+  "id": "item.grappling-harpoon.dragon-slayer",
+  "name": "Grappling Harpoon of Dragon-Slaying",
+  "base": "item.grappling-harpoon",
+  "enchant": "enchant.dragon-slayer",
+  "tier": 3,
+  "itemClass": "weapon"
+ },
+ {
+  "id": "item.grappling-harpoon.hunting",
+  "name": "Hunting Grappling Harpoon",
+  "base": "item.grappling-harpoon",
+  "enchant": "enchant.hunting",
+  "tier": 3,
+  "itemClass": "weapon"
+ },
+ {
+  "id": "item.grappling-harpoon.frost",
+  "name": "Frost Grappling Harpoon",
+  "base": "item.grappling-harpoon",
+  "enchant": "enchant.frost",
+  "tier": 3,
+  "itemClass": "weapon"
+ },
+ {
+  "id": "item.apprentice-wand.lightning",
+  "name": "Lightning Apprentice Wand",
+  "base": "item.apprentice-wand",
+  "enchant": "enchant.lightning",
+  "tier": 3,
+  "itemClass": "weapon"
+ },
+ {
+  "id": "item.apprentice-wand.eternal-ice",
+  "name": "Apprentice Wand of Eternal Ice",
+  "base": "item.apprentice-wand",
+  "enchant": "enchant.eternal-ice",
+  "tier": 3,
+  "itemClass": "weapon"
+ },
+ {
+  "id": "item.apprentice-wand.cursed-skull",
+  "name": "Apprentice Wand of the Cursed Skull",
+  "base": "item.apprentice-wand",
+  "enchant": "enchant.cursed-skull",
+  "tier": 3,
+  "itemClass": "weapon"
+ },
+ {
+  "id": "item.ancient-tome.lightning",
+  "name": "Lightning Ancient Tome",
+  "base": "item.ancient-tome",
+  "enchant": "enchant.lightning",
+  "tier": 3,
+  "itemClass": "weapon"
+ },
+ {
+  "id": "item.ancient-tome.eternal-ice",
+  "name": "Ancient Tome of Eternal Ice",
+  "base": "item.ancient-tome",
+  "enchant": "enchant.eternal-ice",
+  "tier": 3,
+  "itemClass": "weapon"
+ },
+ {
+  "id": "item.ancient-tome.cursed-skull",
+  "name": "Ancient Tome of the Cursed Skull",
+  "base": "item.ancient-tome",
+  "enchant": "enchant.cursed-skull",
+  "tier": 3,
+  "itemClass": "weapon"
+ },
+ {
+  "id": "item.holy-texts.holy-water",
+  "name": "Holy Texts of Holy Water",
+  "base": "item.holy-texts",
+  "enchant": "enchant.holy-water",
+  "tier": 3,
+  "itemClass": "weapon"
+ },
+ {
+  "id": "item.holy-texts.undead-slayer",
+  "name": "Holy Texts of Undead-Slaying",
+  "base": "item.holy-texts",
+  "enchant": "enchant.undead-slayer",
+  "tier": 3,
+  "itemClass": "weapon"
+ },
+ {
+  "id": "item.holy-texts.heavens-edge",
+  "name": "Holy Texts of Heaven's Edge",
+  "base": "item.holy-texts",
+  "enchant": "enchant.heavens-edge",
+  "tier": 3,
+  "itemClass": "weapon"
+ },
+ {
+  "id": "item.holy-texts.demon-slayer",
+  "name": "Holy Texts of Demon-Slaying",
+  "base": "item.holy-texts",
+  "enchant": "enchant.demon-slayer",
+  "tier": 3,
+  "itemClass": "weapon"
+ },
+ {
+  "id": "item.bane-blade.demon-slayer",
+  "name": "Bane Blade of Demon-Slaying",
+  "base": "item.bane-blade",
+  "enchant": "enchant.demon-slayer",
+  "tier": 3,
+  "itemClass": "weapon"
+ },
+ {
+  "id": "item.bane-blade.holy-water",
+  "name": "Bane Blade of Holy Water",
+  "base": "item.bane-blade",
+  "enchant": "enchant.holy-water",
+  "tier": 3,
+  "itemClass": "weapon"
+ },
+ {
+  "id": "item.bane-blade.undead-slayer",
+  "name": "Bane Blade of Undead-Slaying",
+  "base": "item.bane-blade",
+  "enchant": "enchant.undead-slayer",
+  "tier": 3,
+  "itemClass": "weapon"
+ },
+ {
+  "id": "item.bane-blade.sacrifice",
+  "name": "Bane Blade of Sacrifice",
+  "base": "item.bane-blade",
+  "enchant": "enchant.sacrifice",
+  "tier": 3,
+  "itemClass": "weapon"
+ },
+ {
+  "id": "item.sword-of-the-fallen.undead-slayer",
+  "name": "Sword of the Fallen of Undead-Slaying",
+  "base": "item.sword-of-the-fallen",
+  "enchant": "enchant.undead-slayer",
+  "tier": 3,
+  "itemClass": "weapon"
+ },
+ {
+  "id": "item.sword-of-the-fallen.heavens-edge",
+  "name": "Sword of the Fallen of Heaven's Edge",
+  "base": "item.sword-of-the-fallen",
+  "enchant": "enchant.heavens-edge",
+  "tier": 3,
+  "itemClass": "weapon"
+ },
+ {
+  "id": "item.sword-of-the-fallen.holy-water",
+  "name": "Sword of the Fallen of Holy Water",
+  "base": "item.sword-of-the-fallen",
+  "enchant": "enchant.holy-water",
+  "tier": 3,
+  "itemClass": "weapon"
+ },
+ {
+  "id": "item.sword-of-the-fallen.soul-reaper",
+  "name": "Sword of the Fallen of the Soul Reaper",
+  "base": "item.sword-of-the-fallen",
+  "enchant": "enchant.soul-reaper",
+  "tier": 3,
+  "itemClass": "weapon"
+ },
+ {
+  "id": "item.daggers.venomous",
+  "name": "Venomous Daggers",
+  "base": "item.daggers",
+  "enchant": "enchant.venomous",
+  "tier": 3,
+  "itemClass": "weapon"
+ },
+ {
+  "id": "item.daggers.shadow-touched",
+  "name": "Shadow-Touched Daggers",
+  "base": "item.daggers",
+  "enchant": "enchant.shadow-touched",
+  "tier": 3,
+  "itemClass": "weapon"
+ },
+ {
+  "id": "item.daggers.addling",
+  "name": "Addling Daggers",
+  "base": "item.daggers",
+  "enchant": "enchant.addling",
+  "tier": 3,
+  "itemClass": "weapon"
+ },
+ {
+  "id": "item.daggers.hobbling",
+  "name": "Hobbling Daggers",
+  "base": "item.daggers",
+  "enchant": "enchant.hobbling",
+  "tier": 3,
+  "itemClass": "weapon"
+ },
+ {
+  "id": "item.daggers.bloodletting",
+  "name": "Bloodletting Daggers",
+  "base": "item.daggers",
+  "enchant": "enchant.bloodletting",
+  "tier": 3,
+  "itemClass": "weapon"
+ },
+ {
+  "id": "item.daggers.death",
+  "name": "Daggers of Death",
+  "base": "item.daggers",
+  "enchant": "enchant.death",
+  "tier": 3,
+  "itemClass": "weapon"
+ },
+ {
+  "id": "item.longbow.rooting",
+  "name": "Longbow of Rooting",
+  "base": "item.longbow",
+  "enchant": "enchant.rooting",
+  "tier": 3,
+  "itemClass": "weapon"
+ },
+ {
+  "id": "item.longbow.gale",
+  "name": "Gale Longbow",
+  "base": "item.longbow",
+  "enchant": "enchant.gale",
+  "tier": 3,
+  "itemClass": "weapon"
+ },
+ {
+  "id": "item.longbow.hunting",
+  "name": "Hunting Longbow",
+  "base": "item.longbow",
+  "enchant": "enchant.hunting",
+  "tier": 3,
+  "itemClass": "weapon"
+ },
+ {
+  "id": "item.longbow.venomous",
+  "name": "Venomous Longbow",
+  "base": "item.longbow",
+  "enchant": "enchant.venomous",
+  "tier": 3,
+  "itemClass": "weapon"
+ },
+ {
+  "id": "item.longbow.magic",
+  "name": "Magic Longbow",
+  "base": "item.longbow",
+  "enchant": "enchant.magic",
+  "tier": 3,
+  "itemClass": "weapon"
+ },
+ {
+  "id": "item.longbow.goading",
+  "name": "Goading Longbow",
+  "base": "item.longbow",
+  "enchant": "enchant.goading",
+  "tier": 3,
+  "itemClass": "weapon"
+ },
+ {
+  "id": "item.longbow.dragon-slayer",
+  "name": "Longbow of Dragon-Slaying",
+  "base": "item.longbow",
+  "enchant": "enchant.dragon-slayer",
+  "tier": 3,
+  "itemClass": "weapon"
+ },
+ {
+  "id": "item.longbow.frost",
+  "name": "Frost Longbow",
+  "base": "item.longbow",
+  "enchant": "enchant.frost",
+  "tier": 3,
+  "itemClass": "weapon"
+ },
+ {
+  "id": "item.shortbow.rooting",
+  "name": "Shortbow of Rooting",
+  "base": "item.shortbow",
+  "enchant": "enchant.rooting",
+  "tier": 3,
+  "itemClass": "weapon"
+ },
+ {
+  "id": "item.shortbow.abundant",
+  "name": "Abundant Shortbow",
+  "base": "item.shortbow",
+  "enchant": "enchant.abundant",
+  "tier": 3,
+  "itemClass": "weapon"
+ },
+ {
+  "id": "item.shortbow.venomous",
+  "name": "Venomous Shortbow",
+  "base": "item.shortbow",
+  "enchant": "enchant.venomous",
+  "tier": 3,
+  "itemClass": "weapon"
+ },
+ {
+  "id": "item.shortbow.goading",
+  "name": "Goading Shortbow",
+  "base": "item.shortbow",
+  "enchant": "enchant.goading",
+  "tier": 3,
+  "itemClass": "weapon"
+ },
+ {
+  "id": "item.shortbow.hunting",
+  "name": "Hunting Shortbow",
+  "base": "item.shortbow",
+  "enchant": "enchant.hunting",
+  "tier": 3,
+  "itemClass": "weapon"
+ },
+ {
+  "id": "item.shortbow.fire",
+  "name": "Fire Shortbow",
+  "base": "item.shortbow",
+  "enchant": "enchant.fire",
+  "tier": 3,
+  "itemClass": "weapon"
+ },
+ {
+  "id": "item.elfbow.gale",
+  "name": "Gale Elfbow",
+  "base": "item.elfbow",
+  "enchant": "enchant.gale",
+  "tier": 3,
+  "itemClass": "weapon"
+ },
+ {
+  "id": "item.elfbow.magic",
+  "name": "Magic Elfbow",
+  "base": "item.elfbow",
+  "enchant": "enchant.magic",
+  "tier": 3,
+  "itemClass": "weapon"
+ },
+ {
+  "id": "item.elfbow.shadow-touched",
+  "name": "Shadow-Touched Elfbow",
+  "base": "item.elfbow",
+  "enchant": "enchant.shadow-touched",
+  "tier": 3,
+  "itemClass": "weapon"
+ },
+ {
+  "id": "item.elfbow.rooting",
+  "name": "Elfbow of Rooting",
+  "base": "item.elfbow",
+  "enchant": "enchant.rooting",
+  "tier": 3,
+  "itemClass": "weapon"
+ },
+ {
+  "id": "item.elfbow.fire",
+  "name": "Fire Elfbow",
+  "base": "item.elfbow",
+  "enchant": "enchant.fire",
+  "tier": 3,
+  "itemClass": "weapon"
+ },
+ {
+  "id": "item.barbarian-bow.hunting",
+  "name": "Hunting Barbarian Bow",
+  "base": "item.barbarian-bow",
+  "enchant": "enchant.hunting",
+  "tier": 3,
+  "itemClass": "weapon"
+ },
+ {
+  "id": "item.barbarian-bow.giant-slayer",
+  "name": "Barbarian Bow of Giant-Slaying",
+  "base": "item.barbarian-bow",
+  "enchant": "enchant.giant-slayer",
+  "tier": 3,
+  "itemClass": "weapon"
+ },
+ {
+  "id": "item.barbarian-bow.fire",
+  "name": "Fire Barbarian Bow",
+  "base": "item.barbarian-bow",
+  "enchant": "enchant.fire",
+  "tier": 3,
+  "itemClass": "weapon"
+ },
+ {
+  "id": "item.barbarian-bow.recklessness",
+  "name": "Barbarian Bow of Recklessness",
+  "base": "item.barbarian-bow",
+  "enchant": "enchant.recklessness",
+  "tier": 3,
+  "itemClass": "weapon"
+ },
+ {
+  "id": "item.barbarian-bow.rooting",
+  "name": "Barbarian Bow of Rooting",
+  "base": "item.barbarian-bow",
+  "enchant": "enchant.rooting",
+  "tier": 3,
+  "itemClass": "weapon"
+ },
+ {
+  "id": "item.javelin.giant-slayer",
+  "name": "Javelin of Giant-Slaying",
+  "base": "item.javelin",
+  "enchant": "enchant.giant-slayer",
+  "tier": 3,
+  "itemClass": "weapon"
+ },
+ {
+  "id": "item.javelin.hunting",
+  "name": "Hunting Javelin",
+  "base": "item.javelin",
+  "enchant": "enchant.hunting",
+  "tier": 3,
+  "itemClass": "weapon"
+ },
+ {
+  "id": "item.javelin.venomous",
+  "name": "Venomous Javelin",
+  "base": "item.javelin",
+  "enchant": "enchant.venomous",
+  "tier": 3,
+  "itemClass": "weapon"
+ },
+ {
+  "id": "item.javelin.frost",
+  "name": "Frost Javelin",
+  "base": "item.javelin",
+  "enchant": "enchant.frost",
+  "tier": 3,
+  "itemClass": "weapon"
+ },
+ {
+  "id": "item.longsword.bloodletting",
+  "name": "Bloodletting Longsword",
+  "base": "item.longsword",
+  "enchant": "enchant.bloodletting",
+  "tier": 3,
+  "itemClass": "weapon"
+ },
+ {
+  "id": "item.longsword.the-master",
+  "name": "Longsword of the Master",
+  "base": "item.longsword",
+  "enchant": "enchant.the-master",
+  "tier": 3,
+  "itemClass": "weapon"
+ },
+ {
+  "id": "item.longsword.demon-slayer",
+  "name": "Longsword of Demon-Slaying",
+  "base": "item.longsword",
+  "enchant": "enchant.demon-slayer",
+  "tier": 3,
+  "itemClass": "weapon"
+ },
+ {
+  "id": "item.longsword.undead-slayer",
+  "name": "Longsword of Undead-Slaying",
+  "base": "item.longsword",
+  "enchant": "enchant.undead-slayer",
+  "tier": 3,
+  "itemClass": "weapon"
+ },
+ {
+  "id": "item.longsword.werewolf-bane",
+  "name": "Werewolf-Bane Longsword",
+  "base": "item.longsword",
+  "enchant": "enchant.werewolf-bane",
+  "tier": 3,
+  "itemClass": "weapon"
+ },
+ {
+  "id": "item.longsword.taunting",
+  "name": "Taunting Longsword",
+  "base": "item.longsword",
+  "enchant": "enchant.taunting",
+  "tier": 3,
+  "itemClass": "weapon"
+ },
+ {
+  "id": "item.longsword.destroying",
+  "name": "Longsword of Destroying",
+  "base": "item.longsword",
+  "enchant": "enchant.destroying",
+  "tier": 3,
+  "itemClass": "weapon"
+ },
+ {
+  "id": "item.halberd.giant-slayer",
+  "name": "Halberd of Giant-Slaying",
+  "base": "item.halberd",
+  "enchant": "enchant.giant-slayer",
+  "tier": 3,
+  "itemClass": "weapon"
+ },
+ {
+  "id": "item.halberd.bloodletting",
+  "name": "Bloodletting Halberd",
+  "base": "item.halberd",
+  "enchant": "enchant.bloodletting",
+  "tier": 3,
+  "itemClass": "weapon"
+ },
+ {
+  "id": "item.halberd.death",
+  "name": "Halberd of Death",
+  "base": "item.halberd",
+  "enchant": "enchant.death",
+  "tier": 3,
+  "itemClass": "weapon"
+ },
+ {
+  "id": "item.halberd.taunting",
+  "name": "Taunting Halberd",
+  "base": "item.halberd",
+  "enchant": "enchant.taunting",
+  "tier": 3,
+  "itemClass": "weapon"
+ },
+ {
+  "id": "item.halberd.destroying",
+  "name": "Halberd of Destroying",
+  "base": "item.halberd",
+  "enchant": "enchant.destroying",
+  "tier": 3,
+  "itemClass": "weapon"
+ },
+ {
+  "id": "item.fire-staff.cursed-skull",
+  "name": "Fire Staff of the Cursed Skull",
+  "base": "item.fire-staff",
+  "enchant": "enchant.cursed-skull",
+  "tier": 3,
+  "itemClass": "weapon"
+ },
+ {
+  "id": "item.fire-staff.maddening",
+  "name": "Maddening Fire Staff",
+  "base": "item.fire-staff",
+  "enchant": "enchant.maddening",
+  "tier": 3,
+  "itemClass": "weapon"
+ },
+ {
+  "id": "item.fire-staff.bewildering",
+  "name": "Bewildering Fire Staff",
+  "base": "item.fire-staff",
+  "enchant": "enchant.bewildering",
+  "tier": 3,
+  "itemClass": "weapon"
+ },
+ {
+  "id": "item.fire-staff.lightning",
+  "name": "Lightning Fire Staff",
+  "base": "item.fire-staff",
+  "enchant": "enchant.lightning",
+  "tier": 3,
+  "itemClass": "weapon"
+ },
+ {
+  "id": "item.frost-staff.eternal-ice",
+  "name": "Frost Staff of Eternal Ice",
+  "base": "item.frost-staff",
+  "enchant": "enchant.eternal-ice",
+  "tier": 3,
+  "itemClass": "weapon"
+ },
+ {
+  "id": "item.frost-staff.bewildering",
+  "name": "Bewildering Frost Staff",
+  "base": "item.frost-staff",
+  "enchant": "enchant.bewildering",
+  "tier": 3,
+  "itemClass": "weapon"
+ },
+ {
+  "id": "item.frost-staff.cursed-skull",
+  "name": "Frost Staff of the Cursed Skull",
+  "base": "item.frost-staff",
+  "enchant": "enchant.cursed-skull",
+  "tier": 3,
+  "itemClass": "weapon"
+ },
+ {
+  "id": "item.earth-staff.cursed-skull",
+  "name": "Earth Staff of the Cursed Skull",
+  "base": "item.earth-staff",
+  "enchant": "enchant.cursed-skull",
+  "tier": 3,
+  "itemClass": "weapon"
+ },
+ {
+  "id": "item.earth-staff.maddening",
+  "name": "Maddening Earth Staff",
+  "base": "item.earth-staff",
+  "enchant": "enchant.maddening",
+  "tier": 3,
+  "itemClass": "weapon"
+ },
+ {
+  "id": "item.earth-staff.eternal-ice",
+  "name": "Earth Staff of Eternal Ice",
+  "base": "item.earth-staff",
+  "enchant": "enchant.eternal-ice",
+  "tier": 3,
+  "itemClass": "weapon"
+ },
+ {
+  "id": "item.lightning-staff.lightning",
+  "name": "Lightning Lightning Staff",
+  "base": "item.lightning-staff",
+  "enchant": "enchant.lightning",
+  "tier": 3,
+  "itemClass": "weapon"
+ },
+ {
+  "id": "item.lightning-staff.bewildering",
+  "name": "Bewildering Lightning Staff",
+  "base": "item.lightning-staff",
+  "enchant": "enchant.bewildering",
+  "tier": 3,
+  "itemClass": "weapon"
+ },
+ {
+  "id": "item.lightning-staff.maddening",
+  "name": "Maddening Lightning Staff",
+  "base": "item.lightning-staff",
+  "enchant": "enchant.maddening",
+  "tier": 3,
+  "itemClass": "weapon"
+ },
+ {
+  "id": "item.force-staff.eternal-ice",
+  "name": "Force Staff of Eternal Ice",
+  "base": "item.force-staff",
+  "enchant": "enchant.eternal-ice",
+  "tier": 3,
+  "itemClass": "weapon"
+ },
+ {
+  "id": "item.force-staff.lightning",
+  "name": "Lightning Force Staff",
+  "base": "item.force-staff",
+  "enchant": "enchant.lightning",
+  "tier": 3,
+  "itemClass": "weapon"
+ },
+ {
+  "id": "item.force-staff.cursed-skull",
+  "name": "Force Staff of the Cursed Skull",
+  "base": "item.force-staff",
+  "enchant": "enchant.cursed-skull",
+  "tier": 3,
+  "itemClass": "weapon"
+ },
+ {
+  "id": "item.force-staff.bewildering",
+  "name": "Bewildering Force Staff",
+  "base": "item.force-staff",
+  "enchant": "enchant.bewildering",
+  "tier": 3,
+  "itemClass": "weapon"
+ },
+ {
+  "id": "item.holy-symbol.holy-water",
+  "name": "Holy Symbol of Holy Water",
+  "base": "item.holy-symbol",
+  "enchant": "enchant.holy-water",
+  "tier": 3,
+  "itemClass": "weapon"
+ },
+ {
+  "id": "item.holy-symbol.undead-slayer",
+  "name": "Holy Symbol of Undead-Slaying",
+  "base": "item.holy-symbol",
+  "enchant": "enchant.undead-slayer",
+  "tier": 3,
+  "itemClass": "weapon"
+ },
+ {
+  "id": "item.holy-symbol.bewildering",
+  "name": "Bewildering Holy Symbol",
+  "base": "item.holy-symbol",
+  "enchant": "enchant.bewildering",
+  "tier": 3,
+  "itemClass": "weapon"
+ },
+ {
+  "id": "item.holy-symbol.cursed-skull",
+  "name": "Holy Symbol of the Cursed Skull",
+  "base": "item.holy-symbol",
+  "enchant": "enchant.cursed-skull",
+  "tier": 3,
+  "itemClass": "weapon"
+ },
+ {
+  "id": "item.priest-chain.holy-water",
+  "name": "Priest Chain of Holy Water",
+  "base": "item.priest-chain",
+  "enchant": "enchant.holy-water",
+  "tier": 3,
+  "itemClass": "weapon"
+ },
+ {
+  "id": "item.priest-chain.undead-slayer",
+  "name": "Priest Chain of Undead-Slaying",
+  "base": "item.priest-chain",
+  "enchant": "enchant.undead-slayer",
+  "tier": 3,
+  "itemClass": "weapon"
+ },
+ {
+  "id": "item.priest-chain.heavens-edge",
+  "name": "Priest Chain of Heaven's Edge",
+  "base": "item.priest-chain",
+  "enchant": "enchant.heavens-edge",
+  "tier": 3,
+  "itemClass": "weapon"
+ },
+ {
+  "id": "item.priest-chain.demon-slayer",
+  "name": "Priest Chain of Demon-Slaying",
+  "base": "item.priest-chain",
+  "enchant": "enchant.demon-slayer",
+  "tier": 3,
+  "itemClass": "weapon"
+ },
+ {
+  "id": "item.buckler.riposte",
+  "name": "Buckler of Riposte",
+  "base": "item.buckler",
+  "enchant": "enchant.riposte",
+  "tier": 3,
+  "itemClass": "weapon"
+ },
+ {
+  "id": "item.knight-shield.riposte",
+  "name": "Knight Shield of Riposte",
+  "base": "item.knight-shield",
+  "enchant": "enchant.riposte",
+  "tier": 3,
+  "itemClass": "weapon"
+ },
+ {
+  "id": "item.tower-shield.riposte",
+  "name": "Tower Shield of Riposte",
+  "base": "item.tower-shield",
+  "enchant": "enchant.riposte",
+  "tier": 3,
+  "itemClass": "weapon"
+ },
+ {
+  "id": "item.silkweave-armor.stormward",
+  "name": "Stormward Silkweave Armor",
+  "base": "item.silkweave-armor",
+  "enchant": "enchant.stormward",
+  "tier": 3,
+  "itemClass": "armor"
+ },
+ {
+  "id": "item.silkweave-armor.blessed",
+  "name": "Blessed Silkweave Armor",
+  "base": "item.silkweave-armor",
+  "enchant": "enchant.blessed",
+  "tier": 3,
+  "itemClass": "armor"
+ },
+ {
+  "id": "item.silkweave-armor.charmed",
+  "name": "Charmed Silkweave Armor",
+  "base": "item.silkweave-armor",
+  "enchant": "enchant.charmed",
+  "tier": 3,
+  "itemClass": "armor"
+ },
+ {
+  "id": "item.silkweave-armor.scalding-ward",
+  "name": "Scalding Silkweave Armor",
+  "base": "item.silkweave-armor",
+  "enchant": "enchant.scalding-ward",
+  "tier": 3,
+  "itemClass": "armor"
+ },
+ {
+  "id": "item.silkweave-armor.fire-ward",
+  "name": "Fire-Warded Silkweave Armor",
+  "base": "item.silkweave-armor",
+  "enchant": "enchant.fire-ward",
+  "tier": 3,
+  "itemClass": "armor"
+ },
+ {
+  "id": "item.barbarian-hide.silkweave",
+  "name": "Silkweave Barbarian Hide",
+  "base": "item.barbarian-hide",
+  "enchant": "enchant.silkweave",
+  "tier": 3,
+  "itemClass": "armor"
+ },
+ {
+  "id": "item.barbarian-hide.stormward",
+  "name": "Stormward Barbarian Hide",
+  "base": "item.barbarian-hide",
+  "enchant": "enchant.stormward",
+  "tier": 3,
+  "itemClass": "armor"
+ },
+ {
+  "id": "item.barbarian-hide.thorned",
+  "name": "Thorned Barbarian Hide",
+  "base": "item.barbarian-hide",
+  "enchant": "enchant.thorned",
+  "tier": 3,
+  "itemClass": "armor"
+ },
+ {
+  "id": "item.barbarian-hide.tainted-blood",
+  "name": "Barbarian Hide of Tainted Blood",
+  "base": "item.barbarian-hide",
+  "enchant": "enchant.tainted-blood",
+  "tier": 3,
+  "itemClass": "armor"
+ },
+ {
+  "id": "item.barbarian-hide.regeneration",
+  "name": "Barbarian Hide of Regeneration",
+  "base": "item.barbarian-hide",
+  "enchant": "enchant.regeneration",
+  "tier": 3,
+  "itemClass": "armor"
+ },
+ {
+  "id": "item.studded-leather.silkweave",
+  "name": "Silkweave Studded Leather",
+  "base": "item.studded-leather",
+  "enchant": "enchant.silkweave",
+  "tier": 3,
+  "itemClass": "armor"
+ },
+ {
+  "id": "item.studded-leather.stormward",
+  "name": "Stormward Studded Leather",
+  "base": "item.studded-leather",
+  "enchant": "enchant.stormward",
+  "tier": 3,
+  "itemClass": "armor"
+ },
+ {
+  "id": "item.studded-leather.blessed",
+  "name": "Blessed Studded Leather",
+  "base": "item.studded-leather",
+  "enchant": "enchant.blessed",
+  "tier": 3,
+  "itemClass": "armor"
+ },
+ {
+  "id": "item.studded-leather.charmed",
+  "name": "Charmed Studded Leather",
+  "base": "item.studded-leather",
+  "enchant": "enchant.charmed",
+  "tier": 3,
+  "itemClass": "armor"
+ },
+ {
+  "id": "item.studded-leather.scalding-ward",
+  "name": "Scalding Studded Leather",
+  "base": "item.studded-leather",
+  "enchant": "enchant.scalding-ward",
+  "tier": 3,
+  "itemClass": "armor"
+ },
+ {
+  "id": "item.heavy-leather.silkweave",
+  "name": "Silkweave Heavy Leather",
+  "base": "item.heavy-leather",
+  "enchant": "enchant.silkweave",
+  "tier": 3,
+  "itemClass": "armor"
+ },
+ {
+  "id": "item.heavy-leather.warded",
+  "name": "Warded Heavy Leather",
+  "base": "item.heavy-leather",
+  "enchant": "enchant.warded",
+  "tier": 3,
+  "itemClass": "armor"
+ },
+ {
+  "id": "item.heavy-leather.thorned",
+  "name": "Thorned Heavy Leather",
+  "base": "item.heavy-leather",
+  "enchant": "enchant.thorned",
+  "tier": 3,
+  "itemClass": "armor"
+ },
+ {
+  "id": "item.heavy-leather.durable",
+  "name": "Durable Heavy Leather",
+  "base": "item.heavy-leather",
+  "enchant": "enchant.durable",
+  "tier": 3,
+  "itemClass": "armor"
+ },
+ {
+  "id": "item.heavy-leather.fire-ward",
+  "name": "Fire-Warded Heavy Leather",
+  "base": "item.heavy-leather",
+  "enchant": "enchant.fire-ward",
+  "tier": 3,
+  "itemClass": "armor"
+ },
+ {
+  "id": "item.brutes-harness.thorned",
+  "name": "Thorned Brute's Harness",
+  "base": "item.brutes-harness",
+  "enchant": "enchant.thorned",
+  "tier": 3,
+  "itemClass": "armor"
+ },
+ {
+  "id": "item.brutes-harness.tainted-blood",
+  "name": "Brute's Harness of Tainted Blood",
+  "base": "item.brutes-harness",
+  "enchant": "enchant.tainted-blood",
+  "tier": 3,
+  "itemClass": "armor"
+ },
+ {
+  "id": "item.brutes-harness.might",
+  "name": "Brute's Harness of Might",
+  "base": "item.brutes-harness",
+  "enchant": "enchant.might",
+  "tier": 3,
+  "itemClass": "armor"
+ },
+ {
+  "id": "item.brutes-harness.regeneration",
+  "name": "Brute's Harness of Regeneration",
+  "base": "item.brutes-harness",
+  "enchant": "enchant.regeneration",
+  "tier": 3,
+  "itemClass": "armor"
+ },
+ {
+  "id": "item.brutes-harness.stormward",
+  "name": "Stormward Brute's Harness",
+  "base": "item.brutes-harness",
+  "enchant": "enchant.stormward",
+  "tier": 3,
+  "itemClass": "armor"
+ },
+ {
+  "id": "item.heavy-chain.warded",
+  "name": "Warded Heavy Chain",
+  "base": "item.heavy-chain",
+  "enchant": "enchant.warded",
+  "tier": 3,
+  "itemClass": "armor"
+ },
+ {
+  "id": "item.heavy-chain.durable",
+  "name": "Durable Heavy Chain",
+  "base": "item.heavy-chain",
+  "enchant": "enchant.durable",
+  "tier": 3,
+  "itemClass": "armor"
+ },
+ {
+  "id": "item.heavy-chain.enduring",
+  "name": "Enduring Heavy Chain",
+  "base": "item.heavy-chain",
+  "enchant": "enchant.enduring",
+  "tier": 3,
+  "itemClass": "armor"
+ },
+ {
+  "id": "item.heavy-chain.might",
+  "name": "Heavy Chain of Might",
+  "base": "item.heavy-chain",
+  "enchant": "enchant.might",
+  "tier": 3,
+  "itemClass": "armor"
+ },
+ {
+  "id": "item.heavy-chain.runed",
+  "name": "Runed Heavy Chain",
+  "base": "item.heavy-chain",
+  "enchant": "enchant.runed",
+  "tier": 3,
+  "itemClass": "armor"
+ },
+ {
+  "id": "item.mismatched-armor.thorned",
+  "name": "Thorned Mismatched Armor",
+  "base": "item.mismatched-armor",
+  "enchant": "enchant.thorned",
+  "tier": 3,
+  "itemClass": "armor"
+ },
+ {
+  "id": "item.mismatched-armor.tainted-blood",
+  "name": "Mismatched Armor of Tainted Blood",
+  "base": "item.mismatched-armor",
+  "enchant": "enchant.tainted-blood",
+  "tier": 3,
+  "itemClass": "armor"
+ },
+ {
+  "id": "item.mismatched-armor.damned",
+  "name": "Damned Mismatched Armor",
+  "base": "item.mismatched-armor",
+  "enchant": "enchant.damned",
+  "tier": 3,
+  "itemClass": "armor"
+ },
+ {
+  "id": "item.mismatched-armor.durable",
+  "name": "Durable Mismatched Armor",
+  "base": "item.mismatched-armor",
+  "enchant": "enchant.durable",
+  "tier": 3,
+  "itemClass": "armor"
+ },
+ {
+  "id": "item.mismatched-armor.regeneration",
+  "name": "Mismatched Armor of Regeneration",
+  "base": "item.mismatched-armor",
+  "enchant": "enchant.regeneration",
+  "tier": 3,
+  "itemClass": "armor"
+ },
+ {
+  "id": "item.creature-hide.tainted-blood",
+  "name": "Creature Hide of Tainted Blood",
+  "base": "item.creature-hide",
+  "enchant": "enchant.tainted-blood",
+  "tier": 3,
+  "itemClass": "armor"
+ },
+ {
+  "id": "item.creature-hide.regeneration",
+  "name": "Creature Hide of Regeneration",
+  "base": "item.creature-hide",
+  "enchant": "enchant.regeneration",
+  "tier": 3,
+  "itemClass": "armor"
+ },
+ {
+  "id": "item.creature-hide.stormward",
+  "name": "Stormward Creature Hide",
+  "base": "item.creature-hide",
+  "enchant": "enchant.stormward",
+  "tier": 3,
+  "itemClass": "armor"
+ },
+ {
+  "id": "item.creature-hide.scalding-ward",
+  "name": "Scalding Creature Hide",
+  "base": "item.creature-hide",
+  "enchant": "enchant.scalding-ward",
+  "tier": 3,
+  "itemClass": "armor"
+ },
+ {
+  "id": "item.creature-hide.enduring",
+  "name": "Enduring Creature Hide",
+  "base": "item.creature-hide",
+  "enchant": "enchant.enduring",
+  "tier": 3,
+  "itemClass": "armor"
+ },
+ {
+  "id": "item.guardians-mail.runed",
+  "name": "Runed Guardian's Mail",
+  "base": "item.guardians-mail",
+  "enchant": "enchant.runed",
+  "tier": 3,
+  "itemClass": "armor"
+ },
+ {
+  "id": "item.guardians-mail.ancient-ward",
+  "name": "Guardian's Mail of the Ancient Ward",
+  "base": "item.guardians-mail",
+  "enchant": "enchant.ancient-ward",
+  "tier": 3,
+  "itemClass": "armor"
+ },
+ {
+  "id": "item.guardians-mail.divine-protection",
+  "name": "Guardian's Mail of Divine Protection",
+  "base": "item.guardians-mail",
+  "enchant": "enchant.divine-protection",
+  "tier": 3,
+  "itemClass": "armor"
+ },
+ {
+  "id": "item.guardians-mail.durable",
+  "name": "Durable Guardian's Mail",
+  "base": "item.guardians-mail",
+  "enchant": "enchant.durable",
+  "tier": 3,
+  "itemClass": "armor"
+ },
+ {
+  "id": "item.guardians-mail.white-steel",
+  "name": "White-Steel Guardian's Mail",
+  "base": "item.guardians-mail",
+  "enchant": "enchant.white-steel",
+  "tier": 3,
+  "itemClass": "armor"
+ },
+ {
+  "id": "item.guardians-mail.enduring",
+  "name": "Enduring Guardian's Mail",
+  "base": "item.guardians-mail",
+  "enchant": "enchant.enduring",
+  "tier": 3,
+  "itemClass": "armor"
+ },
+ {
+  "id": "item.plated-armor.runed",
+  "name": "Runed Plated Armor",
+  "base": "item.plated-armor",
+  "enchant": "enchant.runed",
+  "tier": 3,
+  "itemClass": "armor"
+ },
+ {
+  "id": "item.plated-armor.ancient-ward",
+  "name": "Plated Armor of the Ancient Ward",
+  "base": "item.plated-armor",
+  "enchant": "enchant.ancient-ward",
+  "tier": 3,
+  "itemClass": "armor"
+ },
+ {
+  "id": "item.plated-armor.might",
+  "name": "Plated Armor of Might",
+  "base": "item.plated-armor",
+  "enchant": "enchant.might",
+  "tier": 3,
+  "itemClass": "armor"
+ },
+ {
+  "id": "item.plated-armor.thorned",
+  "name": "Thorned Plated Armor",
+  "base": "item.plated-armor",
+  "enchant": "enchant.thorned",
+  "tier": 3,
+  "itemClass": "armor"
+ },
+ {
+  "id": "item.plated-armor.durable",
+  "name": "Durable Plated Armor",
+  "base": "item.plated-armor",
+  "enchant": "enchant.durable",
+  "tier": 3,
+  "itemClass": "armor"
+ },
+ {
+  "id": "item.plated-armor.white-steel",
+  "name": "White-Steel Plated Armor",
+  "base": "item.plated-armor",
+  "enchant": "enchant.white-steel",
+  "tier": 3,
+  "itemClass": "armor"
+ },
+ {
+  "id": "item.reflective-armor.warded",
+  "name": "Warded Reflective Armor",
+  "base": "item.reflective-armor",
+  "enchant": "enchant.warded",
+  "tier": 3,
+  "itemClass": "armor"
+ },
+ {
+  "id": "item.reflective-armor.fire-ward",
+  "name": "Fire-Warded Reflective Armor",
+  "base": "item.reflective-armor",
+  "enchant": "enchant.fire-ward",
+  "tier": 3,
+  "itemClass": "armor"
+ },
+ {
+  "id": "item.reflective-armor.divine-protection",
+  "name": "Reflective Armor of Divine Protection",
+  "base": "item.reflective-armor",
+  "enchant": "enchant.divine-protection",
+  "tier": 3,
+  "itemClass": "armor"
+ },
+ {
+  "id": "item.reflective-armor.cursed-skull",
+  "name": "Reflective Armor of the Cursed Skull",
+  "base": "item.reflective-armor",
+  "enchant": "enchant.cursed-skull",
+  "tier": 3,
+  "itemClass": "armor"
+ },
+ {
+  "id": "item.reflective-armor.damned",
+  "name": "Damned Reflective Armor",
+  "base": "item.reflective-armor",
+  "enchant": "enchant.damned",
+  "tier": 3,
+  "itemClass": "armor"
+ },
+ {
+  "id": "item.soaked-plate.runed",
+  "name": "Runed Soaked Plate",
+  "base": "item.soaked-plate",
+  "enchant": "enchant.runed",
+  "tier": 3,
+  "itemClass": "armor"
+ },
+ {
+  "id": "item.soaked-plate.ancient-ward",
+  "name": "Soaked Plate of the Ancient Ward",
+  "base": "item.soaked-plate",
+  "enchant": "enchant.ancient-ward",
+  "tier": 3,
+  "itemClass": "armor"
+ },
+ {
+  "id": "item.soaked-plate.enduring",
+  "name": "Enduring Soaked Plate",
+  "base": "item.soaked-plate",
+  "enchant": "enchant.enduring",
+  "tier": 3,
+  "itemClass": "armor"
+ },
+ {
+  "id": "item.soaked-plate.might",
+  "name": "Soaked Plate of Might",
+  "base": "item.soaked-plate",
+  "enchant": "enchant.might",
+  "tier": 3,
+  "itemClass": "armor"
+ },
+ {
+  "id": "item.soaked-plate.damned",
+  "name": "Damned Soaked Plate",
+  "base": "item.soaked-plate",
+  "enchant": "enchant.damned",
+  "tier": 3,
+  "itemClass": "armor"
+ },
+ {
+  "id": "item.soaked-plate.white-steel",
+  "name": "White-Steel Soaked Plate",
+  "base": "item.soaked-plate",
+  "enchant": "enchant.white-steel",
+  "tier": 3,
+  "itemClass": "armor"
+ }
+]
