@@ -449,6 +449,13 @@ for (const id of PARTY) {
   const attackIds = [];
   const abilityIds = [];
   let anyRanged = false;
+  // seam.items-per-unit (2026-09-02): what the KIT grants is tracked apart
+  // from what the ROW owns (Punch and its riders). The row ships BARE with
+  // `defaultItems`; the engine applies the items at fielding. What follows
+  // still computes the kit's attacks/powers/riders — for role/ai, for the
+  // ItemDef rows, and because the oracle test compares against exactly this.
+  const ownAttackIds = [];
+  const ownTriggers = [];
   for (const itemId of items) {
     const it = ITEM_BY_ID.get(itemId);
     if (!it) { gap(id, `kit item ${itemId} not in settled-items`, 'content'); continue; }
@@ -495,13 +502,18 @@ for (const id of PARTY) {
       ...(a.crit ? { crit: a.crit } : {}),
     };
     attackIds.push(a.id);
-    kitTriggers.push(...settledAttackExtras(a, id));
+    ownAttackIds.push(a.id);
+    ownTriggers.push(...settledAttackExtras(a, id));
     if (a.accuracy) gap(id, `${a.id} accuracy ${a.accuracy}`, 'attack field: accuracy (no AttackDef slot)');
   }
 
   // Fold kit-item stat modifiers into the row (the armor pins are the first kit items
   // whose whole payload IS the mods — without this the Destroyed Mail does nothing).
+  // BARE since seam.items-per-unit: the fold below is applied to a COPY for
+  // the gap census only; the row carries the Codex body and `defaultItems`,
+  // and the engine folds the same numbers at fielding (applyItems).
   const p = { ...h.ported }, d = { ...h.derivedBase };
+  const bareP = { ...h.ported }, bareD = { ...h.derivedBase };
   const FOLD = { health: [p, 'health'], armor: [p, 'armor'], resist: [p, 'resist'], dodge: [p, 'dodge'],
     strength: [p, 'strength'], precision: [p, 'precision'], magic: [p, 'magic'], spirit: [p, 'spirit'],
     reach: [p, 'reach'], accuracy: [d, 'accuracy'], movement: [d, 'movement'],
@@ -517,12 +529,15 @@ for (const id of PARTY) {
       else gap(id, `${itemId} statModifier '${stat}' ${v}`, 'stat: ' + stat + ' (no UnitDef field)');
     }
   }
+  { const p = bareP, d = bareD;
   prologueParty.push({
     typeId: id, name: h.name, side: 'hero',
     maxHp: p.health, armor: p.armor ?? 0, resist: p.resist ?? 0,
     accuracy: d.accuracy, dodge: p.dodge ?? 0,
     ...((d.crit ?? p.crit) ? { crit: d.crit ?? p.crit } : {}), ...((d.luck ?? p.luck) ? { luck: d.luck ?? p.luck } : {}), // station.crit
     strength: p.strength ?? 0, precision: p.precision ?? 0, magic: p.magic ?? 0, spirit: p.spirit ?? 0,
+    // role and ai derived from the DEFAULT kit's attacks — the engine derives
+    // them again from whatever kit it is handed (seam.items-per-unit)
     role: anyRanged ? 'ranged' : 'melee',
     movement: d.movement,
     // Reach as AUTHORED (Hunter 3). The Codex-wide reach sweep (ruled: 0 is
@@ -531,12 +546,13 @@ for (const id of PARTY) {
     reach: p.reach ?? 0,
     maxStamina: d.staminaMax, staminaRegen: d.staminaRegen ?? 1,
     ai: anyRanged ? 'ranged-kite' : 'melee-aggressive',
-    attacks: attackIds, abilities: abilityIds,
+    attacks: ownAttackIds, abilities: [],
     moves: movesForClass(h.class),
     attributes: ['hero-eve'],
     tags: ['hero'],
-    triggers: kitTriggers,
-  });
+    triggers: ownTriggers,
+    defaultItems: items.filter((i) => ITEM_BY_ID.has(i)),
+  }); }
 }
 
 // ── THE ALPHA TEAM (dictated 2026-08-27) ────────────────────────────────────
@@ -554,9 +570,13 @@ const alphaTeam = [];
   for (const h of AT) {
     const id = h.typeId;
     const kitTriggers = (h.triggers || []).flatMap((t) => compileTrigger(t, id, null));
+    // seam.items-per-unit (2026-09-02): the row's OWN triggers are the hero's
+    // Codex riders; the kit's ride the items. The row ships bare.
+    const ownTriggers = [...kitTriggers];
     const attackIds = [];
+    const ownAttackIds = [];
     let anyRanged = false;
-    const takeAttack = (a) => {
+    const takeAttack = (a, own = false) => {
       const ranged = (a.range ?? 1) > 1 && typeof a.range === 'number';
       anyRanged = anyRanged || ranged;
       const area = areaShapeOf(a);
@@ -569,7 +589,9 @@ const alphaTeam = [];
         ...(a.crit ? { crit: a.crit } : {}), // station.crit, 2026-08-27
       };
       attackIds.push(a.id);
-      kitTriggers.push(...settledAttackExtras(a, id));
+      const extras = settledAttackExtras(a, id);
+      kitTriggers.push(...extras);
+      if (own) { ownAttackIds.push(a.id); ownTriggers.push(...extras); }
     };
     const abilityIds = [];
     for (const itemId of h.kit || []) {
@@ -590,7 +612,7 @@ const alphaTeam = [];
         takeAttack(a);
       }
     }
-    for (const a of universals) if (!attackIds.includes(a.id)) takeAttack(a);
+    for (const a of universals) if (!attackIds.includes(a.id)) takeAttack(a, true);
     // STAT BODIES VIA copyOf (fixed 2026-08-27). S31 wrote `ported: {}` and
     // `derivedBase: {}` on every alphaTeam row and put the real source in
     // `copyOf` — this block read the empty objects and emitted heroes with no
@@ -614,11 +636,15 @@ const alphaTeam = [];
       movement: d.movement, reach: p.reach ?? 0,
       maxStamina: d.staminaMax, staminaRegen: d.staminaRegen ?? 1,
       ai: h.ai || (anyRanged ? 'ranged-kite' : 'melee-aggressive'),
-      attacks: attackIds, abilities: abilityIds,
+      // an AUTHORED ai (settled.json says so) survives a re-kit at fielding;
+      // a derived one is derived again (seam.items-per-unit)
+      ...(h.ai ? { aiAuthored: true } : {}),
+      attacks: ownAttackIds, abilities: [],
       moves: movesForClass(h.class),
       attributes: ['hero-alpha'],
       tags: ['hero'],
-      triggers: kitTriggers,
+      triggers: ownTriggers,
+      defaultItems: (h.kit || []).filter((i) => ITEM_BY_ID.has(i)),
     });
   }
 }
@@ -641,6 +667,8 @@ for (const id of CIVILIANS) {
   const attackIds = [];
   const civTriggers = [];
   let anyRanged = false;
+  // seam.items-per-unit (2026-09-02): civilians ship bare too — their kit
+  // (rocks, a pitchfork, the weaponless axe) applies at fielding.
   for (const itemId of h.kit || []) {
     const it = ITEM_BY_ID.get(itemId);
     if (!it) { gap(id, `kit item ${itemId} has no settled-items row`, 'content: item unauthored'); continue; }
@@ -675,12 +703,13 @@ for (const id of CIVILIANS) {
     // is stale and the ruling says exactly-like-heroes.
     maxStamina: 5, staminaRegen: 1,
     ai: anyRanged ? 'ranged-kite' : 'melee-aggressive',
-    attacks: attackIds, abilities: [],
+    attacks: [], abilities: [],
     // "Beasts and Civilians get neither" half-step (Codex 2026-08-21).
     moves: ['power.move'],
     attributes: ['civilian'],
     tags: ['hero', 'civilian'],
-    triggers: civTriggers,
+    triggers: [],
+    defaultItems: (h.kit || []).filter((i) => ITEM_BY_ID.has(i)),
   });
 }
 
