@@ -134,19 +134,19 @@ What a rule may DO.
 
 | Function | Uses |
 |---|---:|
-| `health` | 97 |
+| `health` | 98 |
 | `resist` | 60 |
 | `strength` | 55 |
-| `dodge` | 52 |
-| `movement` | 48 |
+| `dodge` | 53 |
+| `movement` | 49 |
 | `armor` | 43 |
-| `accuracy` | 32 |
+| `accuracy` | 35 |
 | `precision` | 30 |
-| `crit` | 28 |
-| `reach` | 20 |
+| `crit` | 29 |
+| `reach` | 22 |
 | `magic` | 20 |
 | `staminaMax` | 20 |
-| `luck` | 18 |
+| `luck` | 19 |
 | `spirit` | 17 |
 | `itemSlots` | 14 |
 | `toughness` | 8 |

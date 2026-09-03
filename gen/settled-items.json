@@ -1603,7 +1603,7 @@
     "bow",
     "ranged"
    ],
-   "tier": null,
+   "tier": 3,
    "statModifiers": {},
    "triggers": [
     {
@@ -1620,7 +1620,7 @@
     "power.enchant-fire.ignite"
    ],
    "intent": "Burning arrows: a stack on every hit, and once every six Turns a patch of ground that burns on its own.",
-   "source": "settled content | 2026-08-20: onCrit is a real hook now, and this is the standard rider on a status enchantment — a crit deals 2 more of whatever status it already applies. enchant.bloodletting had it first and it is now the pattern."
+   "source": "settled content | 2026-08-20: onCrit is a real hook now, and this is the standard rider on a status enchantment — a crit deals 2 more of whatever status it already applies. enchant.bloodletting had it first and it is now the pattern. | Ruled 2026-09-02 (GEAR-DESIGN.md §3a): the enchant pass — every surviving ingredient is tier 3 and is found on a reward weapon or armor, never sold; the Forge sells the nine tier-2 buyables instead. Renames drop \"arrows\" for the weapon itself; shields take no stat-modifying enchant (only the conditional Riposte)."
   },
   {
    "id": "enchant.recklessness",
@@ -1635,14 +1635,13 @@
     "spear",
     "polearm",
     "staff",
-    "shield",
     "thrown",
     "sling",
     "improvised",
     "chain",
     "claw"
    ],
-   "tier": null,
+   "tier": 3,
    "statModifiers": {},
    "triggers": [
     {
@@ -1653,7 +1652,7 @@
    "slayer": null,
    "grants": [],
    "intent": "It pays out only when you have already failed, which makes it a comeback rider rather than a bonus.",
-   "source": "settled content"
+   "source": "settled content | Ruled 2026-09-02 (GEAR-DESIGN.md §3a): the enchant pass — every surviving ingredient is tier 3 and is found on a reward weapon or armor, never sold; the Forge sells the nine tier-2 buyables instead. Renames drop \"arrows\" for the weapon itself; shields take no stat-modifying enchant (only the conditional Riposte)."
   },
   {
    "id": "enchant.death",
@@ -1668,14 +1667,13 @@
     "spear",
     "polearm",
     "staff",
-    "shield",
     "thrown",
     "sling",
     "improvised",
     "chain",
     "claw"
    ],
-   "tier": null,
+   "tier": 3,
    "statModifiers": {},
    "triggers": [
     {
@@ -1686,7 +1684,7 @@
    "slayer": null,
    "grants": [],
    "intent": "Two stamina back on a kill — it turns a finished enemy into most of another attack.",
-   "source": "settled content"
+   "source": "settled content | Ruled 2026-09-02 (GEAR-DESIGN.md §3a): the enchant pass — every surviving ingredient is tier 3 and is found on a reward weapon or armor, never sold; the Forge sells the nine tier-2 buyables instead. Renames drop \"arrows\" for the weapon itself; shields take no stat-modifying enchant (only the conditional Riposte)."
   },
   {
    "id": "enchant.heavens-edge",
@@ -1694,7 +1692,7 @@
    "appliesToTags": [
     "melee"
    ],
-   "tier": null,
+   "tier": 3,
    "statModifiers": {},
    "triggers": [
     {
@@ -1705,7 +1703,7 @@
    "slayer": null,
    "grants": [],
    "intent": "Melee-only lifesteal that scales off the party's Spirit, so it is worth most in a party with a priest.",
-   "source": "settled content"
+   "source": "settled content | Ruled 2026-09-02 (GEAR-DESIGN.md §3a): the enchant pass — every surviving ingredient is tier 3 and is found on a reward weapon or armor, never sold; the Forge sells the nine tier-2 buyables instead. Renames drop \"arrows\" for the weapon itself; shields take no stat-modifying enchant (only the conditional Riposte)."
   },
   {
    "id": "enchant.the-master",
@@ -1720,14 +1718,13 @@
     "spear",
     "polearm",
     "staff",
-    "shield",
     "thrown",
     "sling",
     "improvised",
     "chain",
     "claw"
    ],
-   "tier": null,
+   "tier": 3,
    "statModifiers": {},
    "triggers": [
     {
@@ -1742,7 +1739,7 @@
    "slayer": null,
    "grants": [],
    "intent": "It rewards a hot streak and punishes a cold one, twice as hard in the wrong direction.",
-   "source": "settled content"
+   "source": "settled content | Ruled 2026-09-02 (GEAR-DESIGN.md §3a): the enchant pass — every surviving ingredient is tier 3 and is found on a reward weapon or armor, never sold; the Forge sells the nine tier-2 buyables instead. Renames drop \"arrows\" for the weapon itself; shields take no stat-modifying enchant (only the conditional Riposte)."
   },
   {
    "id": "enchant.white-steel",
@@ -1750,7 +1747,7 @@
    "appliesToTags": [
     "armor"
    ],
-   "tier": null,
+   "tier": 3,
    "statModifiers": {},
    "triggers": [
     {
@@ -1761,7 +1758,7 @@
    "slayer": null,
    "grants": [],
    "intent": "Two protection every activation, for every Turn of the Battle; the decay is the only thing keeping it honest.",
-   "source": "settled content | 2026-09-01: reworded battle-scoped — caught by the merged claims-permanence-past-the-battle rule."
+   "source": "settled content | 2026-09-01: reworded battle-scoped — caught by the merged claims-permanence-past-the-battle rule. | Ruled 2026-09-02 (GEAR-DESIGN.md §3a): the enchant pass — every surviving ingredient is tier 3 and is found on a reward weapon or armor, never sold; the Forge sells the nine tier-2 buyables instead. Renames drop \"arrows\" for the weapon itself; shields take no stat-modifying enchant (only the conditional Riposte)."
   },
   {
    "id": "enchant.charmed",
@@ -1769,7 +1766,7 @@
    "appliesToTags": [
     "armor"
    ],
-   "tier": null,
+   "tier": 3,
    "statModifiers": {
     "luck": 5,
     "health": 2
@@ -1780,15 +1777,15 @@
     "power.recover"
    ],
    "intent": "Luck, Health and a way to get your stamina back — the generalist's enchant.",
-   "source": "settled content"
+   "source": "settled content | Ruled 2026-09-02 (GEAR-DESIGN.md §3a): the enchant pass — every surviving ingredient is tier 3 and is found on a reward weapon or armor, never sold; the Forge sells the nine tier-2 buyables instead. Renames drop \"arrows\" for the weapon itself; shields take no stat-modifying enchant (only the conditional Riposte)."
   },
   {
-   "id": "enchant.enchanted",
-   "name": "Enchanted",
+   "id": "enchant.durable",
+   "name": "Durable",
    "appliesToTags": [
     "armor"
    ],
-   "tier": null,
+   "tier": 3,
    "statModifiers": {
     "armor": 1,
     "resist": 1
@@ -1797,7 +1794,7 @@
    "slayer": null,
    "grants": [],
    "intent": "One point of each mitigation, no drawback, nothing clever. The most valuable single points in the game.",
-   "source": "settled content"
+   "source": "settled content | Ruled 2026-09-02 (GEAR-DESIGN.md §3a): the enchant pass — every surviving ingredient is tier 3 and is found on a reward weapon or armor, never sold; the Forge sells the nine tier-2 buyables instead. Renames drop \"arrows\" for the weapon itself; shields take no stat-modifying enchant (only the conditional Riposte)."
   },
   {
    "id": "enchant.damned",
@@ -1805,7 +1802,7 @@
    "appliesToTags": [
     "armor"
    ],
-   "tier": null,
+   "tier": 3,
    "statModifiers": {
     "corruption": 1
    },
@@ -1818,7 +1815,7 @@
    "slayer": null,
    "grants": [],
    "intent": "It sheds the two statuses that stack in ones, and it charges you in Corruption rather than in stats.",
-   "source": "settled content"
+   "source": "settled content | Ruled 2026-09-02 (GEAR-DESIGN.md §3a): the enchant pass — every surviving ingredient is tier 3 and is found on a reward weapon or armor, never sold; the Forge sells the nine tier-2 buyables instead. Renames drop \"arrows\" for the weapon itself; shields take no stat-modifying enchant (only the conditional Riposte)."
   },
   {
    "id": "enchant.might",
@@ -1826,7 +1823,7 @@
    "appliesToTags": [
     "armor"
    ],
-   "tier": null,
+   "tier": 3,
    "statModifiers": {
     "strength": 1,
     "health": 2,
@@ -1838,7 +1835,7 @@
     "power.charge"
    ],
    "intent": "Strength, Health, Resist and a free activation to close with — armour written for the front rank.",
-   "source": "settled content"
+   "source": "settled content | Ruled 2026-09-02 (GEAR-DESIGN.md §3a): the enchant pass — every surviving ingredient is tier 3 and is found on a reward weapon or armor, never sold; the Forge sells the nine tier-2 buyables instead. Renames drop \"arrows\" for the weapon itself; shields take no stat-modifying enchant (only the conditional Riposte)."
   },
   {
    "id": "enchant.enduring",
@@ -1846,7 +1843,7 @@
    "appliesToTags": [
     "armor"
    ],
-   "tier": null,
+   "tier": 3,
    "statModifiers": {
     "staminaMax": 2,
     "health": 4,
@@ -1858,7 +1855,7 @@
     "power.recover"
    ],
    "intent": "Everything on it is about lasting: more stamina, more Health, and a better chance of standing back up.",
-   "source": "settled content"
+   "source": "settled content | Ruled 2026-09-02 (GEAR-DESIGN.md §3a): the enchant pass — every surviving ingredient is tier 3 and is found on a reward weapon or armor, never sold; the Forge sells the nine tier-2 buyables instead. Renames drop \"arrows\" for the weapon itself; shields take no stat-modifying enchant (only the conditional Riposte)."
   },
   {
    "id": "enchant.regeneration",
@@ -1866,7 +1863,7 @@
    "appliesToTags": [
     "armor"
    ],
-   "tier": null,
+   "tier": 3,
    "statModifiers": {},
    "triggers": [
     {
@@ -1879,7 +1876,7 @@
     "power.regen"
    ],
    "intent": "It only starts working once someone has hit you, which is exactly when you want it.",
-   "source": "settled content"
+   "source": "settled content | Ruled 2026-09-02 (GEAR-DESIGN.md §3a): the enchant pass — every surviving ingredient is tier 3 and is found on a reward weapon or armor, never sold; the Forge sells the nine tier-2 buyables instead. Renames drop \"arrows\" for the weapon itself; shields take no stat-modifying enchant (only the conditional Riposte)."
   },
   {
    "id": "enchant.hale",
@@ -2090,6 +2087,211 @@
    "grants": [],
    "intent": "One Reach and three Hit on a bow: a little further, a little truer.",
    "source": "Ruled 2026-09-02 (GEAR-DESIGN.md §3): the Forge sells basic enchants at its Enchanted band — \"you can buy enchanted, which are 2s … enchanted basically gives an item an additional stat point\" — for the base Supplies plus the same Mana. Tier 2, buyable. Named by the kingdom session the same day."
+  },
+  {
+   "id": "enchant.destroying",
+   "name": "Destroying",
+   "appliesToTags": [
+    "sword",
+    "dagger",
+    "axe",
+    "hammer",
+    "spear",
+    "polearm",
+    "claw",
+    "blade",
+    "fang",
+    "brawl",
+    "melee",
+    "exotic",
+    "improvised",
+    "chain",
+    "bow",
+    "crossbow",
+    "sling",
+    "thrown",
+    "staff",
+    "wand",
+    "tome",
+    "ranged"
+   ],
+   "tier": 3,
+   "statModifiers": {},
+   "triggers": [
+    {
+     "hook": "onKill",
+     "effect": "the corpse is destroyed"
+    }
+   ],
+   "slayer": null,
+   "grants": [],
+   "intent": "One more damage, and nothing left to raise: the necromancer finds an empty hex where his soldier fell.",
+   "source": "Ruled 2026-09-02 (GEAR-DESIGN.md §3a) — a tier-3 ingredient, found on a reward weapon, never sold. Named by the kingdom session the same day.",
+   "attackModifiers": {
+    "damage": 1
+   }
+  },
+  {
+   "id": "enchant.rooting",
+   "name": "Rooting",
+   "appliesToTags": [
+    "bow"
+   ],
+   "tier": 3,
+   "statModifiers": {},
+   "triggers": [
+    {
+     "hook": "onDamage",
+     "chance": 25,
+     "effect": "apply 1 Root"
+    }
+   ],
+   "slayer": null,
+   "grants": [],
+   "intent": "A shaft through the boot. One more damage, and a quarter of the time they are not going anywhere.",
+   "source": "Ruled 2026-09-02 (GEAR-DESIGN.md §3a) — a tier-3 ingredient, found on a reward weapon, never sold. Named by the kingdom session the same day.",
+   "attackModifiers": {
+    "damage": 1
+   }
+  },
+  {
+   "id": "enchant.hobbling",
+   "name": "Hobbling",
+   "appliesToTags": [
+    "dagger"
+   ],
+   "tier": 3,
+   "statModifiers": {},
+   "triggers": [
+    {
+     "hook": "onDamage",
+     "effect": "apply 2 Slow"
+    }
+   ],
+   "slayer": null,
+   "grants": [],
+   "intent": "The tendon cut: they still come, but slowly, and you are already elsewhere.",
+   "source": "Ruled 2026-09-02 (GEAR-DESIGN.md §3a) — a tier-3 ingredient, found on a reward weapon, never sold. Named by the kingdom session the same day.",
+   "attackModifiers": {
+    "damage": 1
+   }
+  },
+  {
+   "id": "enchant.addling",
+   "name": "Addling",
+   "appliesToTags": [
+    "dagger"
+   ],
+   "tier": 3,
+   "statModifiers": {},
+   "triggers": [
+    {
+     "hook": "onHit",
+     "chance": 40,
+     "effect": "apply 1 Confusion"
+    }
+   ],
+   "slayer": null,
+   "grants": [],
+   "intent": "Something on the blade that is not poison. Four times in ten they forget which way they were facing.",
+   "source": "Ruled 2026-09-02 (GEAR-DESIGN.md §3a) — a tier-3 ingredient, found on a reward weapon, never sold. Named by the kingdom session the same day."
+  },
+  {
+   "id": "enchant.taunting",
+   "name": "Taunting",
+   "appliesToTags": [
+    "sword",
+    "dagger",
+    "axe",
+    "hammer",
+    "spear",
+    "polearm",
+    "claw",
+    "blade",
+    "fang",
+    "brawl",
+    "melee",
+    "exotic",
+    "improvised",
+    "chain"
+   ],
+   "tier": 3,
+   "statModifiers": {},
+   "triggers": [
+    {
+     "hook": "onHit",
+     "chance": 50,
+     "effect": "apply 2 Taunt"
+    }
+   ],
+   "slayer": null,
+   "grants": [],
+   "intent": "Hit them hard enough to be the only thing they can think about.",
+   "source": "Ruled 2026-09-02 (GEAR-DESIGN.md §3a), recovered from NOTES-2026-09-01.md \"Weapons and enchantments\", where it was dictated and never landed. Named by the kingdom session."
+  },
+  {
+   "id": "enchant.goading",
+   "name": "Goading",
+   "appliesToTags": [
+    "bow"
+   ],
+   "tier": 3,
+   "statModifiers": {},
+   "triggers": [
+    {
+     "hook": "onDamage",
+     "chance": 40,
+     "effect": "apply 1 Taunt"
+    }
+   ],
+   "slayer": null,
+   "grants": [],
+   "intent": "An arrow is an argument, and it names you.",
+   "source": "Ruled 2026-09-02 (GEAR-DESIGN.md §3a), recovered from NOTES-2026-09-01.md \"Weapons and enchantments\", where it was dictated and never landed. Named by the kingdom session."
+  },
+  {
+   "id": "enchant.bewildering",
+   "name": "Bewildering",
+   "appliesToTags": [
+    "staff",
+    "wand",
+    "tome"
+   ],
+   "tier": 3,
+   "statModifiers": {},
+   "triggers": [
+    {
+     "hook": "onDamage",
+     "chance": 40,
+     "effect": "apply 1 Confusion"
+    }
+   ],
+   "slayer": null,
+   "grants": [],
+   "intent": "The spell lands and something in the ordering of their thoughts comes loose.",
+   "source": "Ruled 2026-09-02 (GEAR-DESIGN.md §3a), recovered from NOTES-2026-09-01.md \"Weapons and enchantments\", where it was dictated and never landed. Named by the kingdom session."
+  },
+  {
+   "id": "enchant.maddening",
+   "name": "Maddening",
+   "appliesToTags": [
+    "staff",
+    "wand",
+    "tome"
+   ],
+   "tier": 3,
+   "statModifiers": {},
+   "triggers": [
+    {
+     "hook": "onDamage",
+     "chance": 20,
+     "effect": "apply 4 Confusion"
+    }
+   ],
+   "slayer": null,
+   "grants": [],
+   "intent": "Rarely — and when it does, they are no use to anyone for a long while.",
+   "source": "Ruled 2026-09-02 (GEAR-DESIGN.md §3a), recovered from NOTES-2026-09-01.md \"Weapons and enchantments\", where it was dictated and never landed. Named by the kingdom session."
   }
  ]
 }

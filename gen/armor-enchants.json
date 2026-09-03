@@ -990,7 +990,7 @@
     "melee",
     "ranged"
    ],
-   "tier": 1,
+   "tier": 3,
    "statModifiers": {},
    "triggers": [
     {
@@ -1005,7 +1005,7 @@
    "slayer": null,
    "grants": [],
    "intent": "Frost cancels burn on application and amplifies the next physical hit by its value, which makes one point of it worth more than it reads.",
-   "source": "Hell-TCG name reused (Frost Arrows / Frost Touched — generalised off the bow) | 2026-08-20: onCrit is a real hook now, and this is the standard rider on a status enchantment — a crit deals 2 more of whatever status it already applies. enchant.bloodletting had it first and it is now the pattern."
+   "source": "Hell-TCG name reused (Frost Arrows / Frost Touched — generalised off the bow) | 2026-08-20: onCrit is a real hook now, and this is the standard rider on a status enchantment — a crit deals 2 more of whatever status it already applies. enchant.bloodletting had it first and it is now the pattern. | Ruled 2026-09-02 (GEAR-DESIGN.md §3a): the enchant pass — every surviving ingredient is tier 3 and is found on a reward weapon or armor, never sold; the Forge sells the nine tier-2 buyables instead. Renames drop \"arrows\" for the weapon itself; shields take no stat-modifying enchant (only the conditional Riposte)."
   },
   {
    "id": "enchant.venomous",
@@ -1019,7 +1019,7 @@
     "sling",
     "fang"
    ],
-   "tier": 1,
+   "tier": 3,
    "statModifiers": {},
    "triggers": [
     {
@@ -1034,7 +1034,7 @@
    "slayer": null,
    "grants": [],
    "intent": "Cheap, patient and completely useless against anything with two Resist — which is most of what the late campaign fields.",
-   "source": "Hell-TCG name reused (Venomous / Poison Stars — the on-damage Poison ported directly) | 2026-08-20: onCrit is a real hook now, and this is the standard rider on a status enchantment — a crit deals 2 more of whatever status it already applies. enchant.bloodletting had it first and it is now the pattern. | 2026-08-20 self-check: +fang. The Beast’s Claws could take this and its Fangs could not, purely because `claw` predated `fang`. Same weapon, same body, same enchant."
+   "source": "Hell-TCG name reused (Venomous / Poison Stars — the on-damage Poison ported directly) | 2026-08-20: onCrit is a real hook now, and this is the standard rider on a status enchantment — a crit deals 2 more of whatever status it already applies. enchant.bloodletting had it first and it is now the pattern. | 2026-08-20 self-check: +fang. The Beast’s Claws could take this and its Fangs could not, purely because `claw` predated `fang`. Same weapon, same body, same enchant. | Ruled 2026-09-02 (GEAR-DESIGN.md §3a): the enchant pass — every surviving ingredient is tier 3 and is found on a reward weapon or armor, never sold; the Forge sells the nine tier-2 buyables instead. Renames drop \"arrows\" for the weapon itself; shields take no stat-modifying enchant (only the conditional Riposte)."
   },
   {
    "id": "enchant.bloodletting",
@@ -1048,7 +1048,7 @@
     "fang",
     "blade"
    ],
-   "tier": 1,
+   "tier": 3,
    "statModifiers": {
     "crit": 3
    },
@@ -1061,7 +1061,7 @@
    "slayer": null,
    "grants": [],
    "intent": "Bleed is TRUE damage, so this rider keeps working through any mitigation — healing is the answer to it now, not armour.",
-   "source": "Hell-TCG name reused (Bloody Strike / Bloody Axe — moved onto the crit) | 2026-08-20 self-check: +fang. The Beast’s Claws could take this and its Fangs could not, purely because `claw` predated `fang`. Same weapon, same body, same enchant. | 2026-08-27: sword renamed blade in the workbook review — appliesToTags follows the rename (sword kept for any straggler rows)."
+   "source": "Hell-TCG name reused (Bloody Strike / Bloody Axe — moved onto the crit) | 2026-08-20 self-check: +fang. The Beast’s Claws could take this and its Fangs could not, purely because `claw` predated `fang`. Same weapon, same body, same enchant. | 2026-08-27: sword renamed blade in the workbook review — appliesToTags follows the rename (sword kept for any straggler rows). | Ruled 2026-09-02 (GEAR-DESIGN.md §3a): the enchant pass — every surviving ingredient is tier 3 and is found on a reward weapon or armor, never sold; the Forge sells the nine tier-2 buyables instead. Renames drop \"arrows\" for the weapon itself; shields take no stat-modifying enchant (only the conditional Riposte)."
   },
   {
    "id": "enchant.lightning",
@@ -1074,7 +1074,7 @@
     "wand",
     "tome"
    ],
-   "tier": 2,
+   "tier": 3,
    "statModifiers": {
     "accuracy": 5
    },
@@ -1087,7 +1087,7 @@
    "slayer": null,
    "grants": [],
    "intent": "It only arcs on a crit, so it is worth exactly as much as the Accuracy you are carrying above 100.",
-   "source": "Hell-TCG name reused (Lightning Bracers / Chain Lightning) | 2026-08-20: reworded \"a second enemy\" to \"another enemy\" — it never meant the second occurrence, and the words invited the wrong reading. | 2026-08-20 self-check: +breath. Breath is the Beast’s magic-ranged form; the enchants that reach a staff reach it. | 2026-08-27: the wand and tome forms split off the staff tag in the review; they were staff-enchantable before the split, so the reach is preserved, not invented."
+   "source": "Hell-TCG name reused (Lightning Bracers / Chain Lightning) | 2026-08-20: reworded \"a second enemy\" to \"another enemy\" — it never meant the second occurrence, and the words invited the wrong reading. | 2026-08-20 self-check: +breath. Breath is the Beast’s magic-ranged form; the enchants that reach a staff reach it. | 2026-08-27: the wand and tome forms split off the staff tag in the review; they were staff-enchantable before the split, so the reach is preserved, not invented. | Ruled 2026-09-02 (GEAR-DESIGN.md §3a): the enchant pass — every surviving ingredient is tier 3 and is found on a reward weapon or armor, never sold; the Forge sells the nine tier-2 buyables instead. Renames drop \"arrows\" for the weapon itself; shields take no stat-modifying enchant (only the conditional Riposte)."
   },
   {
    "id": "enchant.holy-water",
@@ -1096,7 +1096,7 @@
     "melee",
     "ranged"
    ],
-   "tier": 2,
+   "tier": 3,
    "statModifiers": {},
    "triggers": [
     {
@@ -1111,7 +1111,7 @@
    },
    "grants": [],
    "intent": "A flask, a rag and a prayer; against anything that is merely alive it is a slightly damp weapon.",
-   "source": "Hell-TCG name reused (Holy Water)"
+   "source": "Hell-TCG name reused (Holy Water) | Ruled 2026-09-02 (GEAR-DESIGN.md §3a): the enchant pass — every surviving ingredient is tier 3 and is found on a reward weapon or armor, never sold; the Forge sells the nine tier-2 buyables instead. Renames drop \"arrows\" for the weapon itself; shields take no stat-modifying enchant (only the conditional Riposte)."
   },
   {
    "id": "enchant.shadow-touched",
@@ -1121,7 +1121,7 @@
     "dagger",
     "bow"
    ],
-   "tier": 2,
+   "tier": 3,
    "statModifiers": {
     "crit": 3
    },
@@ -1134,7 +1134,7 @@
    "slayer": null,
    "grants": [],
    "intent": "It does not blind them so much as put the room somewhere slightly to their left.",
-   "source": "Hell-TCG name reused (Flame Touched / Frost Touched / Tome of Shadows — the name family, rebuilt)"
+   "source": "Hell-TCG name reused (Flame Touched / Frost Touched / Tome of Shadows — the name family, rebuilt) | Ruled 2026-09-02 (GEAR-DESIGN.md §3a): the enchant pass — every surviving ingredient is tier 3 and is found on a reward weapon or armor, never sold; the Forge sells the nine tier-2 buyables instead. Renames drop \"arrows\" for the weapon itself; shields take no stat-modifying enchant (only the conditional Riposte)."
   },
   {
    "id": "enchant.eternal-ice",
@@ -1164,18 +1164,18 @@
    "slayer": null,
    "grants": [],
    "intent": "Two Frost strips the target's burn and opens it up for whoever swings next — this is a setup enchant wearing a damage enchant's coat.",
-   "source": "Hell-TCG name reused (Eternal Ice) | 2026-08-20 self-check: +breath. Breath is the Beast’s magic-ranged form; the enchants that reach a staff reach it. | 2026-08-27: the wand and tome forms split off the staff tag in the review; they were staff-enchantable before the split, so the reach is preserved, not invented."
+   "source": "Hell-TCG name reused (Eternal Ice) | 2026-08-20 self-check: +breath. Breath is the Beast’s magic-ranged form; the enchants that reach a staff reach it. | 2026-08-27: the wand and tome forms split off the staff tag in the review; they were staff-enchantable before the split, so the reach is preserved, not invented. | Ruled 2026-09-02 (GEAR-DESIGN.md §3a): the enchant pass — every surviving ingredient is tier 3 and is found on a reward weapon or armor, never sold; the Forge sells the nine tier-2 buyables instead. Renames drop \"arrows\" for the weapon itself; shields take no stat-modifying enchant (only the conditional Riposte)."
   },
   {
-   "id": "enchant.gale-arrows",
-   "name": "Gale Arrows",
+   "id": "enchant.gale",
+   "name": "Gale",
    "appliesToTags": [
     "bow",
     "crossbow",
     "sling",
     "thrown"
    ],
-   "tier": 2,
+   "tier": 3,
    "statModifiers": {
     "accuracy": 20,
     "reach": 1
@@ -1189,17 +1189,17 @@
    "slayer": null,
    "grants": [],
    "intent": "Reach only helps ranged, which is why it lives here — and every crit blows the shot a little further out than the last one.",
-   "source": "Hell-TCG name reused (Gale Arrows) | 2026-08-17 quality pass: the flat +5 Accuracy was worth almost nothing to the veterans who could afford the enchant. Rebuilt to branch on the 100-Accuracy threshold so it is live at both ends of a campaign. | 2026-08-20: the 100-Accuracy branch is cut. Below 100 it gave +15 Accuracy and above it +3 Crit, which is almost exactly what a flat +20 Accuracy does on its own — the branch bought nothing and cost a rule. And an onAttack that only modifies its own attack is not a trigger at all, because onAttack always fires; that is a stat line. Now a stat line: +20 Accuracy, +1 Reach, plus an onCrit that grows the Reach."
+   "source": "Hell-TCG name reused (Gale Arrows) | 2026-08-17 quality pass: the flat +5 Accuracy was worth almost nothing to the veterans who could afford the enchant. Rebuilt to branch on the 100-Accuracy threshold so it is live at both ends of a campaign. | 2026-08-20: the 100-Accuracy branch is cut. Below 100 it gave +15 Accuracy and above it +3 Crit, which is almost exactly what a flat +20 Accuracy does on its own — the branch bought nothing and cost a rule. And an onAttack that only modifies its own attack is not a trigger at all, because onAttack always fires; that is a stat line. Now a stat line: +20 Accuracy, +1 Reach, plus an onCrit that grows the Reach. | Ruled 2026-09-02 (GEAR-DESIGN.md §3a): the enchant pass — every surviving ingredient is tier 3 and is found on a reward weapon or armor, never sold; the Forge sells the nine tier-2 buyables instead. Renames drop \"arrows\" for the weapon itself; shields take no stat-modifying enchant (only the conditional Riposte)."
   },
   {
-   "id": "enchant.abundant-arrows",
-   "name": "Abundant Arrows",
+   "id": "enchant.abundant",
+   "name": "Abundant",
    "appliesToTags": [
     "bow",
     "crossbow",
     "sling"
    ],
-   "tier": 2,
+   "tier": 3,
    "statModifiers": {},
    "triggers": [
     {
@@ -1210,17 +1210,17 @@
    "slayer": null,
    "grants": [],
    "intent": "It does not make you hit. It makes missing free, which on a crossbow is very nearly the same thing.",
-   "source": "Hell-TCG name reused (Abundant Arrows — the draw effect rebuilt as a Stamina refund) | 2026-08-20: \"the attack costs 0 Stamina instead of its printed cost\" changes a cost after the fact — nothing else in the game rewrites a printed cost. Refunds a stamina instead, which is the same feeling through a mechanic that exists."
+   "source": "Hell-TCG name reused (Abundant Arrows — the draw effect rebuilt as a Stamina refund) | 2026-08-20: \"the attack costs 0 Stamina instead of its printed cost\" changes a cost after the fact — nothing else in the game rewrites a printed cost. Refunds a stamina instead, which is the same feeling through a mechanic that exists. | Ruled 2026-09-02 (GEAR-DESIGN.md §3a): the enchant pass — every surviving ingredient is tier 3 and is found on a reward weapon or armor, never sold; the Forge sells the nine tier-2 buyables instead. Renames drop \"arrows\" for the weapon itself; shields take no stat-modifying enchant (only the conditional Riposte)."
   },
   {
-   "id": "enchant.magic-arrows",
-   "name": "Magic Arrows",
+   "id": "enchant.magic",
+   "name": "Magic",
    "appliesToTags": [
     "bow",
     "crossbow",
     "sling"
    ],
-   "tier": 2,
+   "tier": 3,
    "statModifiers": {
     "precision": 1
    },
@@ -1228,7 +1228,7 @@
    "slayer": null,
    "grants": [],
    "intent": "Mitigation is a three-way branch and this moves you to the other side of it — wonderful against plate, miserable against a warded thing.",
-   "source": "Hell-TCG name reused (Magic Arrows) | 2026-08-20: an unconditional onAttack that only changes this attack is not a trigger — onAttack always fires. Moved to a damageTypeOverride property on the enchant, which is what it always was.",
+   "source": "Hell-TCG name reused (Magic Arrows) | 2026-08-20: an unconditional onAttack that only changes this attack is not a trigger — onAttack always fires. Moved to a damageTypeOverride property on the enchant, which is what it always was. | Ruled 2026-09-02 (GEAR-DESIGN.md §3a): the enchant pass — every surviving ingredient is tier 3 and is found on a reward weapon or armor, never sold; the Forge sells the nine tier-2 buyables instead. Renames drop \"arrows\" for the weapon itself; shields take no stat-modifying enchant (only the conditional Riposte).",
    "damageTypeOverride": "magic"
   },
   {
@@ -1250,7 +1250,7 @@
    "slayer": null,
    "grants": [],
    "intent": "The wrong incentive handed to the wrong person, which is the only reason anyone still makes these.",
-   "source": "Hell-TCG name reused (Soul Reaper)"
+   "source": "Hell-TCG name reused (Soul Reaper) | Ruled 2026-09-02 (GEAR-DESIGN.md §3a): the enchant pass — every surviving ingredient is tier 3 and is found on a reward weapon or armor, never sold; the Forge sells the nine tier-2 buyables instead. Renames drop \"arrows\" for the weapon itself; shields take no stat-modifying enchant (only the conditional Riposte)."
   },
   {
    "id": "enchant.bloodthirsty",
@@ -1259,7 +1259,7 @@
     "melee",
     "brawl"
    ],
-   "tier": 2,
+   "tier": 3,
    "statModifiers": {
     "strength": 1,
     "dodge": -5
@@ -1273,7 +1273,7 @@
    "slayer": null,
    "grants": [],
    "intent": "Every kill buys the next swing, and every Turn you fail to kill something you are simply easier to hit.",
-   "source": "Hell-TCG name reused (Bloodthirsty)"
+   "source": "Hell-TCG name reused (Bloodthirsty) | Ruled 2026-09-02 (GEAR-DESIGN.md §3a): the enchant pass — every surviving ingredient is tier 3 and is found on a reward weapon or armor, never sold; the Forge sells the nine tier-2 buyables instead. Renames drop \"arrows\" for the weapon itself; shields take no stat-modifying enchant (only the conditional Riposte)."
   },
   {
    "id": "enchant.runed",
@@ -1281,7 +1281,7 @@
    "appliesToTags": [
     "armor"
    ],
-   "tier": 1,
+   "tier": 3,
    "statModifiers": {
     "armor": 1,
     "resist": 1,
@@ -1291,16 +1291,15 @@
    "slayer": null,
    "grants": [],
    "intent": "The armoursmith's first trick and still the honest one: both mitigations, and your aim pays for the etching.",
-   "source": "Hell-TCG name reused (Sturdy Runed Leather / Runed Crossbow — the adjective, made portable) | 2026-08-17: Accuracy is worth about a quarter as a cost, so -5 was not paying for Armor and Resist."
+   "source": "Hell-TCG name reused (Sturdy Runed Leather / Runed Crossbow — the adjective, made portable) | 2026-08-17: Accuracy is worth about a quarter as a cost, so -5 was not paying for Armor and Resist. | Ruled 2026-09-02 (GEAR-DESIGN.md §3a): the enchant pass — every surviving ingredient is tier 3 and is found on a reward weapon or armor, never sold; the Forge sells the nine tier-2 buyables instead. Renames drop \"arrows\" for the weapon itself; shields take no stat-modifying enchant (only the conditional Riposte)."
   },
   {
    "id": "enchant.warded",
    "name": "Warded",
    "appliesToTags": [
-    "armor",
-    "shield"
+    "armor"
    ],
-   "tier": 2,
+   "tier": 3,
    "statModifiers": {
     "resist": 2
    },
@@ -1308,7 +1307,7 @@
    "slayer": null,
    "grants": [],
    "intent": "Insurance against the opening spell, and after that it is one point of Resist like everyone else's.",
-   "source": "Hell-TCG name reused (Warded / Warding) | 2026-08-20: nothing counts occurrences — no \"first time\", no Nth hit, no per-Turn or per-Battle tally. \"the first magic damage you take each Battle is reduced by 3\" was an occurrence count. Replaced with +2 Resist, which reduces magic damage every time instead of once."
+   "source": "Hell-TCG name reused (Warded / Warding) | 2026-08-20: nothing counts occurrences — no \"first time\", no Nth hit, no per-Turn or per-Battle tally. \"the first magic damage you take each Battle is reduced by 3\" was an occurrence count. Replaced with +2 Resist, which reduces magic damage every time instead of once. | Ruled 2026-09-02 (GEAR-DESIGN.md §3a): the enchant pass — every surviving ingredient is tier 3 and is found on a reward weapon or armor, never sold; the Forge sells the nine tier-2 buyables instead. Renames drop \"arrows\" for the weapon itself; shields take no stat-modifying enchant (only the conditional Riposte)."
   },
   {
    "id": "enchant.ancient-ward",
@@ -1316,25 +1315,25 @@
    "appliesToTags": [
     "armor"
    ],
-   "tier": 2,
+   "tier": 3,
    "statModifiers": {
     "resist": 2,
-    "movement": -1
+    "movement": -1,
+    "armor": 1
    },
    "triggers": [],
    "slayer": null,
    "grants": [],
    "intent": "Two Resist neutralises two burn and two poison at once, per tick, and the price is one hex a Turn, every Turn of the Battle.",
-   "source": "Hell-TCG name reused (Ancient Ward) | Merged from the parallel content chat 2026-09-01; attribution de-named per the standing passive-voice ruling. Wording taken from their branch: battle-scoped phrasing, consistent with rule.nothing-outlasts-the-battle."
+   "source": "Hell-TCG name reused (Ancient Ward) | Merged from the parallel content chat 2026-09-01; attribution de-named per the standing passive-voice ruling. Wording taken from their branch: battle-scoped phrasing, consistent with rule.nothing-outlasts-the-battle. | Ruled 2026-09-02 (GEAR-DESIGN.md §3a): the enchant pass — every surviving ingredient is tier 3 and is found on a reward weapon or armor, never sold; the Forge sells the nine tier-2 buyables instead. Renames drop \"arrows\" for the weapon itself; shields take no stat-modifying enchant (only the conditional Riposte)."
   },
   {
    "id": "enchant.fire-ward",
    "name": "Fire Ward",
    "appliesToTags": [
-    "armor",
-    "shield"
+    "armor"
    ],
-   "tier": 2,
+   "tier": 3,
    "statModifiers": {
     "resist": 1
    },
@@ -1342,7 +1341,7 @@
    "slayer": null,
    "grants": [],
    "intent": "Burn simply stops being a thing that happens to you, which is either the best line on the page or completely dead.",
-   "source": "Hell-TCG name reused (Fire Ward / Fire Shield) | 2026-08-17 corrected: immunity resolves BEFORE the status does; it is not a second strip. The status still takes its own -1 afterwards.",
+   "source": "Hell-TCG name reused (Fire Ward / Fire Shield) | 2026-08-17 corrected: immunity resolves BEFORE the status does; it is not a second strip. The status still takes its own -1 afterwards. | Ruled 2026-09-02 (GEAR-DESIGN.md §3a): the enchant pass — every surviving ingredient is tier 3 and is found on a reward weapon or armor, never sold; the Forge sells the nine tier-2 buyables instead. Renames drop \"arrows\" for the weapon itself; shields take no stat-modifying enchant (only the conditional Riposte).",
    "immunity": {
     "burn": 2
    },
@@ -1352,23 +1351,22 @@
    "id": "enchant.stormward",
    "name": "Stormward",
    "appliesToTags": [
-    "armor",
-    "shield"
+    "armor"
    ],
-   "tier": 2,
+   "tier": 3,
    "statModifiers": {
-    "dodge": 5
+    "dodge": 15
    },
    "triggers": [
     {
      "hook": "onTakingDamage",
-     "effect": "ranged attacks against you deal 2 less damage"
+     "effect": "gain +20 Dodge until the end of your next Activation"
     }
    ],
    "slayer": null,
    "grants": [],
    "intent": "It is a wind that lives around you and disagrees with arrows specifically.",
-   "source": "Hell-TCG name reused (Stormward / Tempest Ward)"
+   "source": "Hell-TCG name reused (Stormward / Tempest Ward) | Ruled 2026-09-02 (GEAR-DESIGN.md §3a): the enchant pass — every surviving ingredient is tier 3 and is found on a reward weapon or armor, never sold; the Forge sells the nine tier-2 buyables instead. Renames drop \"arrows\" for the weapon itself; shields take no stat-modifying enchant (only the conditional Riposte)."
   },
   {
    "id": "enchant.thorned",
@@ -1376,7 +1374,7 @@
    "appliesToTags": [
     "armor"
    ],
-   "tier": 2,
+   "tier": 3,
    "statModifiers": {},
    "triggers": [
     {
@@ -1387,7 +1385,7 @@
    "slayer": null,
    "grants": [],
    "intent": "Zero stats and a standing tax on melee — the enchant that only pays out when things are going badly.",
-   "source": "Hell-TCG name reused (Armor of Thorns / Wreath of Nature's Protection — Thorns as a portable rider) | 2026-08-20: THORNS is a keyword now: on taking damage the attacker takes N TRUE damage, at any range. This wrote it longhand, as physical, from an adjacent attacker — all three wrong.",
+   "source": "Hell-TCG name reused (Armor of Thorns / Wreath of Nature's Protection — Thorns as a portable rider) | 2026-08-20: THORNS is a keyword now: on taking damage the attacker takes N TRUE damage, at any range. This wrote it longhand, as physical, from an adjacent attacker — all three wrong. | Ruled 2026-09-02 (GEAR-DESIGN.md §3a): the enchant pass — every surviving ingredient is tier 3 and is found on a reward weapon or armor, never sold; the Forge sells the nine tier-2 buyables instead. Renames drop \"arrows\" for the weapon itself; shields take no stat-modifying enchant (only the conditional Riposte).",
    "thorns": 2
   },
   {
@@ -1396,7 +1394,7 @@
    "appliesToTags": [
     "armor"
    ],
-   "tier": 2,
+   "tier": 3,
    "statModifiers": {
     "dodge": 5,
     "staminaMax": 1,
@@ -1406,16 +1404,15 @@
    "slayer": null,
    "grants": [],
    "intent": "It re-cuts whatever it is sewn into as light armour, including the plate you spent a campaign finding.",
-   "source": "Hell-TCG name reused (Silkweave Armor — the treatment rather than the coat)"
+   "source": "Hell-TCG name reused (Silkweave Armor — the treatment rather than the coat) | Ruled 2026-09-02 (GEAR-DESIGN.md §3a): the enchant pass — every surviving ingredient is tier 3 and is found on a reward weapon or armor, never sold; the Forge sells the nine tier-2 buyables instead. Renames drop \"arrows\" for the weapon itself; shields take no stat-modifying enchant (only the conditional Riposte)."
   },
   {
    "id": "enchant.blessed",
    "name": "Blessed",
    "appliesToTags": [
-    "armor",
-    "shield"
+    "armor"
    ],
-   "tier": 2,
+   "tier": 3,
    "statModifiers": {
     "luck": 6,
     "health": 2
@@ -1424,14 +1421,13 @@
    "slayer": null,
    "grants": [],
    "intent": "Luck is already the anti-crit stat — a flat subtraction from the attacker’s crit chance. This is simply a lot of it.",
-   "source": "Hell-TCG name reused (Blessed / Blessing — the corpus's most-repeated word, made into the anti-crit ward) | 2026-08-20: nothing counts occurrences — no \"first time\", no Nth hit, no per-Turn or per-Battle tally. \"the first critical hit against you each Battle is an ordinary hit\" was both a crit cancel and an occurrence count. Cut. Luck raised 3 to 6, which says the same thing in a stat that already exists."
+   "source": "Hell-TCG name reused (Blessed / Blessing — the corpus's most-repeated word, made into the anti-crit ward) | 2026-08-20: nothing counts occurrences — no \"first time\", no Nth hit, no per-Turn or per-Battle tally. \"the first critical hit against you each Battle is an ordinary hit\" was both a crit cancel and an occurrence count. Cut. Luck raised 3 to 6, which says the same thing in a stat that already exists. | Ruled 2026-09-02 (GEAR-DESIGN.md §3a): the enchant pass — every surviving ingredient is tier 3 and is found on a reward weapon or armor, never sold; the Forge sells the nine tier-2 buyables instead. Renames drop \"arrows\" for the weapon itself; shields take no stat-modifying enchant (only the conditional Riposte)."
   },
   {
    "id": "enchant.divine-protection",
    "name": "Divine Protection",
    "appliesToTags": [
-    "armor",
-    "shield"
+    "armor"
    ],
    "tier": 3,
    "statModifiers": {
@@ -1448,7 +1444,7 @@
    "slayer": null,
    "grants": [],
    "intent": "The best defensive enchant in the book and it is still only worth what your Priest is worth.",
-   "source": "Hell-TCG name reused (Divine Protection / Ring of Divine Protection)"
+   "source": "Hell-TCG name reused (Divine Protection / Ring of Divine Protection) | Ruled 2026-09-02 (GEAR-DESIGN.md §3a): the enchant pass — every surviving ingredient is tier 3 and is found on a reward weapon or armor, never sold; the Forge sells the nine tier-2 buyables instead. Renames drop \"arrows\" for the weapon itself; shields take no stat-modifying enchant (only the conditional Riposte)."
   },
   {
    "id": "enchant.undead-slayer",
@@ -1457,7 +1453,7 @@
     "melee",
     "ranged"
    ],
-   "tier": 2,
+   "tier": 3,
    "statModifiers": {},
    "triggers": [
     {
@@ -1470,7 +1466,7 @@
    },
    "grants": [],
    "intent": "Three points against the one thing the campaign will not stop sending, and nothing at all against a man.",
-   "source": "Hell-TCG name reused (Undead Slayer — Required Type / Adds Type ports straight into tags)"
+   "source": "Hell-TCG name reused (Undead Slayer — Required Type / Adds Type ports straight into tags) | Ruled 2026-09-02 (GEAR-DESIGN.md §3a): the enchant pass — every surviving ingredient is tier 3 and is found on a reward weapon or armor, never sold; the Forge sells the nine tier-2 buyables instead. Renames drop \"arrows\" for the weapon itself; shields take no stat-modifying enchant (only the conditional Riposte)."
   },
   {
    "id": "enchant.demon-slayer",
@@ -1479,7 +1475,7 @@
     "melee",
     "ranged"
    ],
-   "tier": 2,
+   "tier": 3,
    "statModifiers": {
     "resist": 1
    },
@@ -1489,18 +1485,18 @@
    },
    "grants": [],
    "intent": "The Resist is not generosity; it is an acknowledgement of what happens when the demon gets its Turn.",
-   "source": "Hell-TCG name reused (Demon Slayer / Blade of Demon Slaying)"
+   "source": "Hell-TCG name reused (Demon Slayer / Blade of Demon Slaying) | Ruled 2026-09-02 (GEAR-DESIGN.md §3a): the enchant pass — every surviving ingredient is tier 3 and is found on a reward weapon or armor, never sold; the Forge sells the nine tier-2 buyables instead. Renames drop \"arrows\" for the weapon itself; shields take no stat-modifying enchant (only the conditional Riposte)."
   },
   {
-   "id": "enchant.hunting-arrows",
-   "name": "Hunting Arrows",
+   "id": "enchant.hunting",
+   "name": "Hunting",
    "appliesToTags": [
     "bow",
     "crossbow",
     "sling",
     "thrown"
    ],
-   "tier": 1,
+   "tier": 3,
    "statModifiers": {
     "precision": 1
    },
@@ -1510,7 +1506,7 @@
    },
    "grants": [],
    "intent": "Broadheads for something with fur on it; the cheapest useful enchant a Ranger will ever bolt onto a bow.",
-   "source": "Hell-TCG name reused (Ranger, Hunting Arrows — '+2 vs Animals' becomes the beast tag)"
+   "source": "Hell-TCG name reused (Ranger, Hunting Arrows — '+2 vs Animals' becomes the beast tag) | Ruled 2026-09-02 (GEAR-DESIGN.md §3a): the enchant pass — every surviving ingredient is tier 3 and is found on a reward weapon or armor, never sold; the Forge sells the nine tier-2 buyables instead. Renames drop \"arrows\" for the weapon itself; shields take no stat-modifying enchant (only the conditional Riposte)."
   },
   {
    "id": "enchant.ironbane",
@@ -1520,7 +1516,7 @@
     "axe",
     "chain"
    ],
-   "tier": 2,
+   "tier": 3,
    "statModifiers": {},
    "triggers": [
     {
@@ -1537,7 +1533,7 @@
    },
    "grants": [],
    "intent": "Armor floors at zero, so the shred alone stopped mattering — now the same swing puts four points through the plating regardless, and a crit puts the construct two hexes into whatever is behind it.",
-   "source": "Hell-TCG name reused (Bane Blade / Elemental Bane — the bane family, pointed at constructs) | 2026-08-17 quality pass: Armor shred floors out and left the enchant dead late. Knockback added on crit, so hammers, axes and chains have the effect their form implies. | 2026-08-20: the construct clause now also deals 4 true damage, which skips Armor and Resist both and so keeps paying after the shred has floored out. Knockback on crit stays."
+   "source": "Hell-TCG name reused (Bane Blade / Elemental Bane — the bane family, pointed at constructs) | 2026-08-17 quality pass: Armor shred floors out and left the enchant dead late. Knockback added on crit, so hammers, axes and chains have the effect their form implies. | 2026-08-20: the construct clause now also deals 4 true damage, which skips Armor and Resist both and so keeps paying after the shred has floored out. Knockback on crit stays. | Ruled 2026-09-02 (GEAR-DESIGN.md §3a): the enchant pass — every surviving ingredient is tier 3 and is found on a reward weapon or armor, never sold; the Forge sells the nine tier-2 buyables instead. Renames drop \"arrows\" for the weapon itself; shields take no stat-modifying enchant (only the conditional Riposte)."
   },
   {
    "id": "enchant.giant-slayer",
@@ -1548,7 +1544,7 @@
     "bow",
     "crossbow"
    ],
-   "tier": 2,
+   "tier": 3,
    "statModifiers": {},
    "triggers": [
     {
@@ -1561,7 +1557,7 @@
    },
    "grants": [],
    "intent": "You do not kill it. You hamstring it and make it walk to you, which takes a while and is the entire plan.",
-   "source": "Hell-TCG name reused (Monster Slayer — split out onto the giant tag) | 2026-08-20: \"clean up that movement stuff.\" A one-Turn Movement loss is now the Slow status — apply N Slow. Fourteen entries said this two different ways and every one of them needed the engine to remember whose next Turn it was. Amount unchanged."
+   "source": "Hell-TCG name reused (Monster Slayer — split out onto the giant tag) | 2026-08-20: \"clean up that movement stuff.\" A one-Turn Movement loss is now the Slow status — apply N Slow. Fourteen entries said this two different ways and every one of them needed the engine to remember whose next Turn it was. Amount unchanged. | Ruled 2026-09-02 (GEAR-DESIGN.md §3a): the enchant pass — every surviving ingredient is tier 3 and is found on a reward weapon or armor, never sold; the Forge sells the nine tier-2 buyables instead. Renames drop \"arrows\" for the weapon itself; shields take no stat-modifying enchant (only the conditional Riposte)."
   },
   {
    "id": "enchant.dragon-slayer",
@@ -1589,30 +1585,7 @@
     "badge.dragon-slayer"
    ],
    "intent": "Bleed is TRUE damage and a dragon is mostly Resist; the whole enchant is that one sentence.",
-   "source": "Hell-TCG name reused (Dragon Slayer) | 2026-08-20: Bleed on hit raised 2 to 4, and the campaign Toughness grant became the Dragon Slayer badge, which is a thing that exists rather than a bespoke campaign rider. | 2026-08-20 sweep: the onKill line restated the grants field. The badge is awarded by grants: [badge.dragon-slayer]; saying it again in prose made it look like a bespoke in-battle award, which is the only one in the game."
-  },
-  {
-   "id": "enchant.ghost-slayer",
-   "name": "Ghost Slayer",
-   "appliesToTags": [
-    "melee",
-    "ranged"
-   ],
-   "tier": 2,
-   "statModifiers": {},
-   "triggers": [
-    {
-     "hook": "onKill",
-     "effect": "every stealthed enemy on the battlefield is revealed and its stealth breaks"
-    }
-   ],
-   "slayer": {
-    "horror": 4,
-    "nightmare": 4
-   },
-   "grants": [],
-   "intent": "Ghost was its own type in the old game; here it is two tags and a kill that turns the lights on everywhere at once.",
-   "source": "Hell-TCG name reused (Ghost Slayer — the Ghost type folded into horror and nightmare) | 2026-08-20: Vision is not something an attacking weapon adds — cut. Slayer raised to +4 against both tags, and the kill now reveals every stealthed enemy on the map. NOTE: there is no tag.ghost; \"ghost\" was folded into horror and nightmare when this was first written, so +4 against ghosts means +4 against both of those."
+   "source": "Hell-TCG name reused (Dragon Slayer) | 2026-08-20: Bleed on hit raised 2 to 4, and the campaign Toughness grant became the Dragon Slayer badge, which is a thing that exists rather than a bespoke campaign rider. | 2026-08-20 sweep: the onKill line restated the grants field. The badge is awarded by grants: [badge.dragon-slayer]; saying it again in prose made it look like a bespoke in-battle award, which is the only one in the game. | Ruled 2026-09-02 (GEAR-DESIGN.md §3a): the enchant pass — every surviving ingredient is tier 3 and is found on a reward weapon or armor, never sold; the Forge sells the nine tier-2 buyables instead. Renames drop \"arrows\" for the weapon itself; shields take no stat-modifying enchant (only the conditional Riposte)."
   },
   {
    "id": "enchant.werewolf-bane",
@@ -1625,21 +1598,16 @@
     "fang",
     "blade"
    ],
-   "tier": 2,
+   "tier": 3,
    "statModifiers": {},
-   "triggers": [
-    {
-     "hook": "onAttack",
-     "effect": "this attack deals true damage against werewolf"
-    }
-   ],
+   "triggers": [],
    "slayer": {
-    "werewolf": 2,
+    "werewolf": 4,
     "beast": 1
    },
    "grants": [],
    "intent": "Silver does not hit harder. It hits past everything the thing was counting on.",
-   "source": "Hell-TCG name reused (Werewolf Bane) | 2026-08-20 self-check: +fang. The Beast’s Claws could take this and its Fangs could not, purely because `claw` predated `fang`. Same weapon, same body, same enchant. | 2026-08-27: sword renamed blade in the workbook review — appliesToTags follows the rename (sword kept for any straggler rows)."
+   "source": "Hell-TCG name reused (Werewolf Bane) | 2026-08-20 self-check: +fang. The Beast’s Claws could take this and its Fangs could not, purely because `claw` predated `fang`. Same weapon, same body, same enchant. | 2026-08-27: sword renamed blade in the workbook review — appliesToTags follows the rename (sword kept for any straggler rows). | Ruled 2026-09-02 (GEAR-DESIGN.md §3a): the enchant pass — every surviving ingredient is tier 3 and is found on a reward weapon or armor, never sold; the Forge sells the nine tier-2 buyables instead. Renames drop \"arrows\" for the weapon itself; shields take no stat-modifying enchant (only the conditional Riposte)."
   },
   {
    "id": "enchant.cursed-skull",
@@ -1651,7 +1619,7 @@
     "wand",
     "tome"
    ],
-   "tier": 2,
+   "tier": 3,
    "statModifiers": {
     "spirit": 1,
     "health": 4
@@ -1665,7 +1633,7 @@
    "slayer": null,
    "grants": [],
    "intent": "It talks. Everything it says is useful and none of it is free.",
-   "source": "Hell-TCG name reused (Martyr, Cursed Skull — the party heal rebuilt as a Spirit line with a tithe) | 2026-08-20 self-check: +breath. Breath is the Beast’s magic-ranged form; the enchants that reach a staff reach it. | 2026-08-27: the wand and tome forms split off the staff tag in the review; they were staff-enchantable before the split, so the reach is preserved, not invented."
+   "source": "Hell-TCG name reused (Martyr, Cursed Skull — the party heal rebuilt as a Spirit line with a tithe) | 2026-08-20 self-check: +breath. Breath is the Beast’s magic-ranged form; the enchants that reach a staff reach it. | 2026-08-27: the wand and tome forms split off the staff tag in the review; they were staff-enchantable before the split, so the reach is preserved, not invented. | Ruled 2026-09-02 (GEAR-DESIGN.md §3a): the enchant pass — every surviving ingredient is tier 3 and is found on a reward weapon or armor, never sold; the Forge sells the nine tier-2 buyables instead. Renames drop \"arrows\" for the weapon itself; shields take no stat-modifying enchant (only the conditional Riposte)."
   },
   {
    "id": "enchant.tainted-blood",
@@ -1673,7 +1641,7 @@
    "appliesToTags": [
     "armor"
    ],
-   "tier": 2,
+   "tier": 3,
    "statModifiers": {
     "health": 6,
     "strength": 1,
@@ -1688,7 +1656,7 @@
    "slayer": null,
    "grants": [],
    "intent": "Six Health and a body that will not close a wound; you are bigger and you are leaking.",
-   "source": "Hell-TCG name reused (Tainted Blood / Cursed Blood)"
+   "source": "Hell-TCG name reused (Tainted Blood / Cursed Blood) | Ruled 2026-09-02 (GEAR-DESIGN.md §3a): the enchant pass — every surviving ingredient is tier 3 and is found on a reward weapon or armor, never sold; the Forge sells the nine tier-2 buyables instead. Renames drop \"arrows\" for the weapon itself; shields take no stat-modifying enchant (only the conditional Riposte)."
   },
   {
    "id": "enchant.sacrifice",
@@ -1708,37 +1676,15 @@
    "slayer": null,
    "grants": [],
    "intent": "Two points on both damage stats is a tier-3 weapon's whole budget; this hands it to you and then removes the person holding it.",
-   "source": "Hell-TCG name reused (Sacrifice) | 2026-08-19: power.beastward.sacrifice already owns \"Sacrifice\", and power.reaver.blood-price already owns the obvious replacement."
-  },
-  {
-   "id": "enchant.blight",
-   "name": "Blight",
-   "appliesToTags": [
-    "melee"
-   ],
-   "tier": 3,
-   "statModifiers": {
-    "strength": 2,
-    "toughness": -1
-   },
-   "triggers": [
-    {
-     "hook": "onKill",
-     "effect": "gain 1 Corruption"
-    }
-   ],
-   "slayer": null,
-   "grants": [],
-   "intent": "Toughness is injury capacity and the base for Deathbed Fighting, so this does not cost you damage — it costs you the campaign.",
-   "source": "Hell-TCG name reused (Blight / Torment of Ire — rebuilt against Toughness and Corruption)"
+   "source": "Hell-TCG name reused (Sacrifice) | 2026-08-19: power.beastward.sacrifice already owns \"Sacrifice\", and power.reaver.blood-price already owns the obvious replacement. | Ruled 2026-09-02 (GEAR-DESIGN.md §3a): the enchant pass — every surviving ingredient is tier 3 and is found on a reward weapon or armor, never sold; the Forge sells the nine tier-2 buyables instead. Renames drop \"arrows\" for the weapon itself; shields take no stat-modifying enchant (only the conditional Riposte)."
   },
   {
    "id": "enchant.riposte",
    "name": "Riposte",
    "appliesToTags": [
-    "armor"
+    "shield"
    ],
-   "tier": 2,
+   "tier": 3,
    "statModifiers": {},
    "triggers": [
     {
@@ -1749,16 +1695,15 @@
    "slayer": null,
    "grants": [],
    "intent": "They swung, they missed, and the answer was already on its way. True damage, so their armour has nothing to say about it.",
-   "source": "new 2026-08-20: the first counter-enchant on the onDodge hook. Thorns punishes being hit; this punishes missing."
+   "source": "new 2026-08-20: the first counter-enchant on the onDodge hook. Thorns punishes being hit; this punishes missing. | Ruled 2026-09-02 (GEAR-DESIGN.md §3a): the enchant pass — every surviving ingredient is tier 3 and is found on a reward weapon or armor, never sold; the Forge sells the nine tier-2 buyables instead. Renames drop \"arrows\" for the weapon itself; shields take no stat-modifying enchant (only the conditional Riposte)."
   },
   {
    "id": "enchant.scalding-ward",
    "name": "Scalding Ward",
    "appliesToTags": [
-    "armor",
-    "shield"
+    "armor"
    ],
-   "tier": 2,
+   "tier": 3,
    "statModifiers": {},
    "triggers": [
     {
@@ -1769,7 +1714,7 @@
    "slayer": null,
    "grants": [],
    "intent": "Step out of the way and leave the heat where you were standing.",
-   "source": "new 2026-08-20: the status half of the onDodge counter pair."
+   "source": "new 2026-08-20: the status half of the onDodge counter pair. | Ruled 2026-09-02 (GEAR-DESIGN.md §3a): the enchant pass — every surviving ingredient is tier 3 and is found on a reward weapon or armor, never sold; the Forge sells the nine tier-2 buyables instead. Renames drop \"arrows\" for the weapon itself; shields take no stat-modifying enchant (only the conditional Riposte)."
   }
  ]
 }

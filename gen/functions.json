@@ -1917,7 +1917,7 @@
  "stats": [
   {
    "name": "health",
-   "uses": 97,
+   "uses": 98,
    "ids": [
     "item.holy-shield",
     "item.cursed-sand-blade",
@@ -2055,7 +2055,7 @@
   },
   {
    "name": "dodge",
-   "uses": 52,
+   "uses": 53,
    "ids": [
     "item.shadow-dagger",
     "item.mirage-dagger",
@@ -2101,7 +2101,7 @@
   },
   {
    "name": "movement",
-   "uses": 48,
+   "uses": 49,
    "ids": [
     "item.siege-crossbow",
     "item.hooves",
@@ -2141,8 +2141,8 @@
     "enchant.eternal-ice",
     "enchant.ancient-ward",
     "enchant.divine-protection",
-    "specialty.winged-assassin",
-    "specialty.sentinel"
+    "enchant.fleet",
+    "specialty.winged-assassin"
    ]
   },
   {
@@ -2193,7 +2193,7 @@
   },
   {
    "name": "accuracy",
-   "uses": 32,
+   "uses": 35,
    "ids": [
     "item.pot-lid",
     "item.tanners-apron",
@@ -2219,6 +2219,9 @@
     "enchant.lightning",
     "enchant.gale-arrows",
     "enchant.runed",
+    "enchant.keen",
+    "enchant.cruel",
+    "enchant.long",
     "specialty.berserker",
     "specialty.leader",
     "specialty.bowmaster",
@@ -2267,7 +2270,7 @@
   },
   {
    "name": "crit",
-   "uses": 28,
+   "uses": 29,
    "ids": [
     "item.demonic-shiv",
     "item.rusted-plate",
@@ -2279,6 +2282,7 @@
     "item.rune-catblood",
     "enchant.bloodletting",
     "enchant.shadow-touched",
+    "enchant.cruel",
     "specialty.leader",
     "specialty.bloodrage",
     "specialty.champion",
@@ -2301,7 +2305,7 @@
   },
   {
    "name": "reach",
-   "uses": 20,
+   "uses": 22,
    "ids": [
     "item.sniper-bow",
     "item.wraith-touched-staff",
@@ -2316,6 +2320,8 @@
     "item.rune-perfect-hunter",
     "power.wayfinder.switch-to-melee",
     "enchant.gale-arrows",
+    "enchant.far",
+    "enchant.long",
     "specialty.bowmaster",
     "specialty.sentinel",
     "specialty.trapper",
@@ -2379,7 +2385,7 @@
   },
   {
    "name": "luck",
-   "uses": 18,
+   "uses": 19,
    "ids": [
     "item.ghost-thread-cloak",
     "item.sandstone-aegis",
@@ -2393,6 +2399,7 @@
     "enchant.blessed",
     "enchant.tainted-blood",
     "enchant.charmed",
+    "enchant.lucky",
     "specialty.guardian",
     "specialty.oracle",
     "specialty.vigil",
