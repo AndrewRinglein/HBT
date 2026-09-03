@@ -206,22 +206,42 @@ const moves = compileMoves(SETTLED.powers || []);
 // onActivationEnd joined 2026-09-03 (fix.activation-end-fires): the engine fires it now.
 const TRIG_HOOKS = new Set(['onAttack', 'onMiss', 'onHit', 'onCrit', 'onDamage', 'onKill', 'onTakingDamage', 'onDeath', 'onActivationEnd']);
 
+// Capabilities the engine HAS now — a row naming one of these is not gapped for it.
+// capability.power: capability.power-pool, 2026-09-03.
+const HAVE = new Set(['capability.power']);
 function compileTrigger(t, unitId, attackId) {
   const where = attackId ?? '(unit)';
-  if (t.needs?.length) { gap(unitId, `${where} ${t.hook}: ${t.effects?.map((e) => e.effect).join('; ')}`, t.needs.join(',')); return []; }
+  const needs = (t.needs || []).filter((n) => !HAVE.has(n));
+  if (needs.length) { gap(unitId, `${where} ${t.hook}: ${t.effects?.map((e) => e.effect).join('; ')}`, needs.join(',')); return []; }
   if (!TRIG_HOOKS.has(t.hook)) { gap(unitId, `${where} hook '${t.hook}'`, t.hook === 'aura' ? 'hook: aura' : 'hook: ' + t.hook + ' (declared, engine never fires it)'); return []; }
   if (t.targets && /within/.test(t.targets)) { gap(unitId, `${where} ${t.hook} area '${t.targets}'`, 'area trigger select'); return []; }
   const out = [];
   for (const ef of t.effects || []) {
+    const efNeeds = (ef.needs || []).filter((n) => !HAVE.has(n));
+    if (efNeeds.length) { gap(unitId, `${where} ${t.hook}: ${ef.effect}`, efNeeds.join(',')); continue; }
+    if (ef.condition || t.condition) { gap(unitId, `${where} ${t.hook}: ${ef.effect} — condition '${ef.condition || t.condition}'`, 'trigger condition'); continue; }
     if (ef.effect === 'apply a status' && STATUS_OK.has(ef.status)) {
       // chance absent = certain. Splitting a multi-effect trigger is only safe
       // when nothing rolls; at chance<100 the halves would diverge on the die.
       if ((t.effects.length > 1) && (t.chance ?? 100) !== 100) { gap(unitId, `${where} ${t.hook}: multi-effect at chance ${t.chance}`, 'multi-effect rolled trigger'); return []; }
       const select = ef.target === 'the attacker' || t.hook === 'onTakingDamage' ? 'target' : ef.target === 'self' ? 'self' : 'target';
+      // capability.power-pool (2026-09-03): a status whose value scales off Power — base + share
+      const value = ef.powerScale ? { scale: 'power', base: ef.value ?? 0, mult: ef.powerScale } : (ef.value ?? 1);
       const trig = {
         id: `${unitId.replace(/^unit\./, 'trigger.')}.${(t.name || ef.status).toLowerCase().replace(/[^a-z0-9]+/g, '-')}`,
         hook: t.hook, chance: t.chance ?? 100, select,
-        effect: { kind: 'status.apply', statusId: 'status.' + ef.status, value: ef.value ?? 1 },
+        effect: { kind: 'status.apply', statusId: 'status.' + ef.status, value },
+        source: unitId,
+      };
+      if (attackId) trig.onlyWithAttack = attackId;
+      out.push(trig);
+    } else if (ef.effect === 'add power' || ef.effect === 'gain Power') {
+      // capability.power-pool (2026-09-03): the clock and the condition — side-wide
+      if ((t.effects.length > 1) && (t.chance ?? 100) !== 100) { gap(unitId, `${where} ${t.hook}: multi-effect at chance ${t.chance}`, 'multi-effect rolled trigger'); return []; }
+      const trig = {
+        id: `${unitId.replace(/^unit\./, 'trigger.')}.${(t.name || 'power').toLowerCase().replace(/[^a-z0-9]+/g, '-')}`,
+        hook: t.hook, chance: t.chance ?? 100, select: 'self',
+        effect: { kind: 'power.gain', value: ef.value ?? 1 },
         source: unitId,
       };
       if (attackId) trig.onlyWithAttack = attackId;
@@ -260,7 +280,7 @@ for (const u of [...AUTH.units].sort((a, b) => (a.id < b.id ? -1 : 1))) {
     if (!a) continue;
     const ranged = /within/.test(a.targets || '');
     if (ranged && (a.range === null || a.range === undefined)) { gap(id, `${a.id} range is null — N never stated`, 'content: range unstated'); continue; }
-    if (a.damage?.powerScale) gap(id, `${a.id} powerScale ${a.damage.powerScale} (base damage kept)`, 'capability.power');
+    // capability.power-pool (2026-09-03): the share rides on the row (was a gap)
     // An attack whose damage reads NO stat (the Eyeblight's gaze: flat true
     // damage) is a shape AttackDef cannot say — every attack adds a stat. A
     // named gap; the unit fields without it (the weaponless-Lumberjack
@@ -274,6 +294,7 @@ for (const u of [...AUTH.units].sort((a, b) => (a.id < b.id ? -1 : 1))) {
       damageType: a.damageType || 'physical',
       bonus: a.damage?.mod ?? 0, stat: a.damage?.stat || 'strength',
       reach: ranged ? a.range : 1, staminaCost: 0, // enemies do not run stamina
+      ...(a.damage?.powerScale ? { powerScale: a.damage.powerScale } : {}),   // capability.power-pool, 2026-09-03
     };
     attackIds.push(a.id);
     unitTriggers.push(...(a.triggers || []).flatMap((t) => compileTrigger(t, id, a.id)));
@@ -1187,8 +1208,12 @@ function compileEncounter(row) {
   for (const n of row.needs || []) gaps.push(`needs: ${n}`);
   const win = row.win?.surviveTo !== undefined ? { surviveTo: row.win.surviveTo } : undefined;
   const loseAfter = row.loseAfter ? { ...(row.loseAfter.phase !== undefined ? { phase: row.loseAfter.phase } : {}), ...(row.loseAfter.heroPhase !== undefined ? { heroPhase: row.loseAfter.heroPhase } : {}) } : undefined;
+  // capability.power-pool (2026-09-03): the external pool ships; arrival and clock live on unit rows
+  const powerSources = (row.powerSources || []).filter((ps) => ps.kind === 'external' && typeof ps.value === 'number').map((ps) => ({ kind: 'external', value: ps.value }));
+  for (const ps of row.powerSources || []) if (ps.kind !== 'external') gaps.push(`powerSource ${ps.kind}: ${JSON.stringify(ps).slice(0, 60)} — only external ships on the row`);
   return { id: row.id, name: row.name, ...(typeof row.map === 'string' && row.map !== 'none' ? { mapId: row.map } : {}),
-    setup, schedule, ...(loseAfter ? { loseAfter } : {}), ...(win ? { win } : {}), ...(heroZone ? { heroZone } : {}), ...(gaps.length ? { gaps } : {}) };
+    setup, schedule, ...(loseAfter ? { loseAfter } : {}), ...(win ? { win } : {}), ...(heroZone ? { heroZone } : {}),
+    ...(powerSources.length ? { powerSources } : {}), ...(gaps.length ? { gaps } : {}) };
 }
 const encounters = {};
 for (const row of [...(ENC.prologue || []), ...(ENC.scripted || []), ...(ENC.authored || [])]) encounters[row.id] = compileEncounter(row);
