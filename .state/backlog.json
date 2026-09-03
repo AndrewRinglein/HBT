@@ -689,7 +689,11 @@
   ],
   "unreachable": "plumbing: a load path, no criterion; test/save-migrate.test.ts holds it",
   "generalizationExempt": "plumbing: a table of defaults, not a mechanism",
-  "attempts": 1
+  "attempts": 1,
+  "status": "done-needs-review",
+  "sha": "5b7d1e0",
+  "engineSha": "685baac",
+  "gauntlet": "not passed — 2 flag(s) warned; 1 exemption(s) taken"
  },
  {
   "id": "screens.equip-stats",

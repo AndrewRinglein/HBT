@@ -976,3 +976,25 @@ slice: 60 of 68 closed · 61 probed · 0 accepted
 IRON GAUNTLET: NOT PASSED — 3 FLAG(S) WARNED; 1 EXEMPTION(S) TAKEN
 
 Law 10 note (screens.equip-stats): test/equip-screen.test.ts asserted the set's +2 Precision as a `delta won` chip on the hero card; the card now carries the viewer's stat block instead (Andrew's note, 2026-09-03), so the same +2 is asserted on the Precision row of that block. The rule under test — a triggered set shows its number on the card — is unchanged.
+
+## save.migrate — LANDED `5b7d1e0` **NEEDS REVIEW**
+2026-09-03 21:20 · engine @ 685baac
+
+  PASS  dependencies landed
+  WARN  not already decided — 3 candidate ruling(s) — READ BEFORE ASKING: ../STATE.md:20 · ../STATE.md:21
+  PASS  typecheck
+  PASS  full test suite — 156 passed
+  PASS  gate 1 — every claimed criterion holds
+  PASS  brought its own tests — test/save-migrate.test.ts
+  PASS  existing tests untouched
+  PASS  kill switch — every claimed probe has been seen red — no criterion claimed — not applicable
+  PASS  nothing regresses — every P-tier probe — 61 P-tier probe(s): 61 green, 0 red, 0 regression(s). 60 of 68 closed · 61 probed · 0 accepted
+  PASS  hardcode scan — core knows mechanisms, never names
+  PASS  generalizes — the second instance costs zero kingdom code — shape 'plumbing' — not a mechanism, exempt
+  PASS  naming — new ids use declared kinds
+  PASS  naming — no banned words invented
+  WARN  engine working tree clean — verified against a DIRTY engine tree (685baac + 1 uncommitted under src/test): ?? src/sim/coverage.ts
+  PASS  one door to the engine
+
+slice: 60 of 68 closed · 61 probed · 0 accepted
+IRON GAUNTLET: NOT PASSED — 2 FLAG(S) WARNED; 1 EXEMPTION(S) TAKEN
