@@ -14,11 +14,24 @@
 
 import type { Hero } from '../core/campaign.js'
 import { omitDisabled } from './disable.js'
+import { HERO_KITS, KIT_SPECS } from './generated/kits.js'
 
 export type HeroRow = Hero
 
+/** What the codex says a hero wears at entry, or null when it says nothing (G3, 2026-09-02). */
+export function heroKitOf(id: string): readonly string[] | null {
+  return HERO_KITS[id] ?? null
+}
+
+/** A hero with no content kit is refused by name — never fielded bare (ISC-053). */
+export function assertKitted(id: string): void {
+  if (!heroKitOf(id)) throw new Error(`hero '${id}' has no kit in the content (hbt-content.json heroes[].kit is null) — a hero enters wearing its kit or not at all; author the kit, do not draft the hero`)
+}
+
+// A row enters WEARING its kit: `equipped` at entry is the codex's list, verbatim
+// (GEAR-DESIGN.md §1, "starting weapons and starting armor … are their own thing").
 const hero = (id: string, name: string, cls: string, unitType: string): HeroRow => ({
-  id, name, classes: [cls], level: 1, xp: 0, wound: 0, lifeState: 'alive', badges: [], unitType, corruption: 0, equipped: [],
+  id, name, classes: [cls], level: 1, xp: 0, wound: 0, lifeState: 'alive', badges: [], unitType, corruption: 0, equipped: [...(heroKitOf(id) ?? [])],
 })
 
 const RAW_HEROES: readonly HeroRow[] = [
@@ -44,6 +57,16 @@ const RAW_CIVILIANS: readonly HeroRow[] = [
 
 export const HERO_POOL: readonly HeroRow[] = omitDisabled(RAW_HEROES)
 export const CIVILIANS: readonly HeroRow[] = omitDisabled(RAW_CIVILIANS)
+
+/**
+ * Pool rows the codex gives no kit — a NAMED gap. tools/kit-gaps.mts writes it to
+ * src/content/generated/kits-gaps.json (the root CONTENT-GAPS.md is the content
+ * pipeline's own and is never hand-edited). Empty today; the alpha four were removed
+ * for exactly this on 2026-09-02.
+ */
+export const KIT_GAPS: readonly string[] = [...RAW_HEROES, ...RAW_CIVILIANS].filter((h) => !heroKitOf(h.id)).map((h) => h.id)
+/** Pool rows whose kit is only pinned — the class draw the kingdom does not roll. None today. */
+export const KIT_SPEC_IDS: readonly string[] = KIT_SPECS.filter((k) => [...RAW_HEROES, ...RAW_CIVILIANS].some((h) => h.id === k.id)).map((k) => k.id)
 /** The Beacon offers from the same pool, plus the civilians once the opening is done. */
 export const RECRUITS: readonly HeroRow[] = [...HERO_POOL, ...CIVILIANS]
 export type RecruitRow = HeroRow

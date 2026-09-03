@@ -633,5 +633,23 @@
    "at": "2026-09-03 03:25",
    "sha": "bd45b65"
   }
+ },
+ "052": {
+  "red": {
+   "at": "2026-09-03 03:54",
+   "sha": "05848fe",
+   "hash": "7c20f25f12a0",
+   "how": "feature absent",
+   "tail": "       |                                                    ^ |      44|     expect(ctx.events.filter((e) => e.type === 'item.equipped' && e['h… |      45|     const opened = playOpening(makeCtx(makeNewCampaign(3)))"
+  }
+ },
+ "053": {
+  "red": {
+   "at": "2026-09-03 03:54",
+   "sha": "05848fe",
+   "hash": "db6adbf52489",
+   "how": "feature absent",
+   "tail": "       |            ^ |      21|     expect(() => assertKitted('hero.shadows.oathblade.v1')).toThrow(/h… |      22|     expect(() => assertKitted('hero.base.ranger-aggressive')).not.toTh…"
+  }
  }
 }

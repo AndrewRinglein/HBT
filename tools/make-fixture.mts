@@ -20,10 +20,10 @@ import { makeCtx, setCursor } from '../src/core/mutate.js'
 import { CURRENCIES } from '../src/content/currencies.js'
 import { CUPS } from '../src/content/cups.js'
 import { TERRITORIES } from '../src/content/territories.js'
+import { heroRowOf } from '../src/content/heroes.js'
 
-const hero = (id: string, name: string, cls: string, unitType: string, level = 1): Hero => ({
-  id, name, classes: [cls], level, xp: 0, wound: 0, lifeState: 'alive', badges: [], unitType, corruption: 0, equipped: [],
-})
+// the rows come from the content, kits on (G3, 2026-09-02); the fixture only picks which
+const hero = (id: string, _name: string, _cls: string, _unitType: string, level = 1): Hero => ({ ...heroRowOf(id), classes: [...heroRowOf(id).classes], badges: [], equipped: [...heroRowOf(id).equipped], level })
 
 const roster: Hero[] = [
   hero('hero.base.ranger-aggressive', 'Hunter', 'class.ranger', 'hero.base.ranger-aggressive'),

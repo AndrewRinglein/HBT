@@ -7,7 +7,7 @@
 import type { CampaignState, HeroId } from './campaign.js'
 import { type Ctx, applyRecruit, setWound, setCursor } from './mutate.js'
 import { canAfford, performSpend, type Cost } from './purse.js'
-import { RECRUITS, type RecruitRow } from '../content/heroes.js'
+import { RECRUITS, assertKitted, type RecruitRow } from '../content/heroes.js'
 import { SWITCHES } from '../content/switches.js'
 import { CURRENCY_IDS } from '../content/currencies.js'
 import { stageRowOf } from '../content/stages.js'
@@ -40,6 +40,7 @@ export function performRecruit(ctx: Ctx, recruitId: string, causeId: string): vo
   }
   performSpend(ctx, costOfRecruit(), causeId)
   const row = RECRUITS.find((r) => r.id === recruitId)!
+  assertKitted(row.id)
   applyRecruit(ctx, row, causeId, costOfRecruit())
   setCursor(ctx, { recruited: c.cursor.recruited + 1 }, causeId)
 }

@@ -22,7 +22,7 @@ import { beginWeek } from './week.js'
 import { listTerritories } from './map.js'
 import { tickAssignments } from './assignments.js'
 import { groupOf } from '../content/classes.js'
-import { HERO_POOL, CIVILIANS, heroRowOf, type HeroRow } from '../content/heroes.js'
+import { HERO_POOL, CIVILIANS, heroRowOf, assertKitted, type HeroRow } from '../content/heroes.js'
 import { PROLOGUE, DRAFT_CADENCE, DRAFT_OFFER, type PrologueRow } from '../content/prologue.js'
 import { TERRITORIES, REALM } from '../content/territories.js'
 import { CURRENCIES } from '../content/currencies.js'
@@ -87,6 +87,7 @@ function offerDraft(ctx: Ctx, causeId: string): void {
 
 export function performDraft(ctx: Ctx, heroId: HeroId, causeId: string): void {
   if (!canDraft(ctx.campaign, heroId)) throw new Error(`performDraft refused: '${heroId}' is not on offer at step '${ctx.campaign.cursor.step}' — ${(ctx.campaign.cursor.draftOffer ?? []).join(', ') || 'nothing is'}`)
+  assertKitted(heroId)
   applyDraft(ctx, heroRowOf(heroId), causeId)
   setCursor(ctx, { step: 'open' }, causeId)
 }

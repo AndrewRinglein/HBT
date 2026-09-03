@@ -50,7 +50,9 @@ describe('ISC-041 — the shelf, and the equip step', () => {
     expect(canEquip(ctx.campaign, other, 'item.longsword')).toBe(false)        // not deployed
     expect(canEquip(ctx.campaign, hero, 'item.halberd')).toBe(false)           // not in the stash
     performEquip(ctx, hero, 'item.longsword', 'test')
-    expect(ctx.campaign.roster[hero]!.equipped).toEqual(['item.longsword'])
+    // Law 10 (2026-09-02): heroes enter WEARING their content kit (G3), so the bought longsword joins the kit rather than being the only thing worn
+    expect(ctx.campaign.roster[hero]!.equipped.slice(-1)).toEqual(['item.longsword'])
+    expect(ctx.campaign.roster[hero]!.equipped.length).toBeGreaterThan(1)
     expect(ctx.campaign.stash).toEqual(['item.silkweave-armor'])
     expect(ctx.events.filter((e) => e.type === 'item.bought').length).toBe(2)
     expect(ctx.events.filter((e) => e.type === 'item.equipped').map((e) => [e['heroId'], e['itemId']])).toEqual([[hero, 'item.longsword']])

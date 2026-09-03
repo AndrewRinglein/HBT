@@ -135,8 +135,14 @@ export function setBattleOutcome(ctx: Ctx, result: EngagementResult, reckoning: 
 /** A recruit onto the roster — the one write of campaign.roster's keys. */
 export function applyRecruit(ctx: Ctx, hero: Hero, causeId: string, cost: Record<string, number>): void {
   if (ctx.campaign.roster[hero.id]) throw new Error(`applyRecruit refused: '${hero.id}' is already on the roster`)
-  ctx.campaign.roster[hero.id] = { ...hero, classes: [...hero.classes], badges: [...hero.badges] }
+  ctx.campaign.roster[hero.id] = { ...hero, classes: [...hero.classes], badges: [...hero.badges], equipped: [...hero.equipped] }
   emit(ctx, 'hero.recruited', causeId, { heroId: hero.id, name: hero.name, cost })
+  emitWorn(ctx, hero, 'beacon', causeId)
+}
+
+/** A hero enters WEARING its kit (G3, 2026-09-02): one item.equipped per item, naming where the hero came from. */
+function emitWorn(ctx: Ctx, hero: Hero, from: 'draft' | 'beacon' | 'rescue', causeId: string): void {
+  for (const itemId of hero.equipped) emit(ctx, 'item.equipped', causeId, { heroId: hero.id, itemId, from })
 }
 
 /** The reward draft: offered as three, then one taken into the stash and the rest burned. */
@@ -194,6 +200,7 @@ export function applyDraft(ctx: Ctx, hero: Hero, causeId: string): void {
   ctx.campaign.roster[hero.id] = { ...hero, classes: [...hero.classes], badges: [...hero.badges], equipped: [...hero.equipped] }
   ctx.campaign.cursor.draftOffer = null
   emit(ctx, 'hero.drafted', causeId, { heroId: hero.id, name: hero.name })
+  emitWorn(ctx, hero, 'draft', causeId)
 }
 
 /** A civilian rescued into the roster — the same record as any hero (ruled 2026-08-23). */
@@ -201,6 +208,7 @@ export function applyRescue(ctx: Ctx, hero: Hero, causeId: string): void {
   if (ctx.campaign.roster[hero.id]) return
   ctx.campaign.roster[hero.id] = { ...hero, classes: [...hero.classes], badges: [...hero.badges], equipped: [...hero.equipped] }
   emit(ctx, 'hero.rescued', causeId, { heroId: hero.id, name: hero.name })
+  emitWorn(ctx, hero, 'rescue', causeId)
 }
 
 /** Permanent death — the Campaign is over. §6: "there is no branch, no reload." */

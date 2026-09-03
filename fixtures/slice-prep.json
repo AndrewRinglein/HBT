@@ -55,7 +55,11 @@
    "badges": [],
    "unitType": "alpha-osric",
    "corruption": 0,
-   "equipped": []
+   "equipped": [
+    "item.longsword",
+    "item.knight-shield",
+    "item.basic-armor"
+   ]
   },
   "hero.base.priest-armored": {
    "id": "hero.base.priest-armored",
@@ -70,7 +74,11 @@
    "badges": [],
    "unitType": "hero.base.priest-armored",
    "corruption": 0,
-   "equipped": []
+   "equipped": [
+    "item.knight-shield",
+    "item.holy-texts",
+    "item.pilgrims-habit"
+   ]
   },
   "hero.base.priest-scantily": {
    "id": "hero.base.priest-scantily",
@@ -85,7 +93,11 @@
    "badges": [],
    "unitType": "alpha-lucius",
    "corruption": 0,
-   "equipped": []
+   "equipped": [
+    "item.iron-mace",
+    "item.holy-symbol",
+    "item.borrowed-vestments"
+   ]
   },
   "hero.base.ranger-aggressive": {
    "id": "hero.base.ranger-aggressive",
@@ -100,7 +112,10 @@
    "badges": [],
    "unitType": "hero.base.ranger-aggressive",
    "corruption": 0,
-   "equipped": []
+   "equipped": [
+    "item.longbow",
+    "item.thick-hide"
+   ]
   },
   "hero.base.warrior-iron": {
    "id": "hero.base.warrior-iron",
@@ -115,7 +130,11 @@
    "badges": [],
    "unitType": "hero.base.warrior-iron",
    "corruption": 0,
-   "equipped": []
+   "equipped": [
+    "item.destroyed-mail",
+    "item.tower-shield",
+    "item.war-axe"
+   ]
   },
   "hero.fixed.orphans": {
    "id": "hero.fixed.orphans",
@@ -130,7 +149,9 @@
    "badges": [],
    "unitType": "hero.fixed.orphans",
    "corruption": 0,
-   "equipped": []
+   "equipped": [
+    "item.pile-of-rocks"
+   ]
   }
  },
  "assignments": {},
