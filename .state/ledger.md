@@ -3864,7 +3864,7 @@ rows. One flag (the decided-scan, STATE.md mentions of this plan). Seal withheld
 
 IRON GAUNTLET: NOT PASSED — 1 FLAG(S) WARNED
 
-## test.receptacle — LANDED `629d34c` **NEEDS REVIEW**
+## test.receptacle — LANDED `bef295a` (gate recorded 629d34c, the pre-amend sha) **NEEDS REVIEW**
 2026-09-03 04:41
 
   PASS  dependencies landed
