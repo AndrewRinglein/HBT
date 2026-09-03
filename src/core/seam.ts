@@ -132,7 +132,7 @@ export function makeBattleState(
  * level table, so the option's stat names have one owner (the pack). Null at level 1
  * with nothing chosen.
  */
-function progressOf(h: { classes?: readonly string[]; level?: number; specialty?: string | null; levelPick?: number | null }): HeroProgress | null {
+export function progressOf(h: { classes?: readonly string[]; level?: number; specialty?: string | null; levelPick?: number | null }): HeroProgress | null {
   const level = h.level ?? 1
   if (level <= 1 && !h.specialty) return null
   const out: { level: number; specialtyId?: string; levelFivePick?: Readonly<Record<string, number>> } = { level }

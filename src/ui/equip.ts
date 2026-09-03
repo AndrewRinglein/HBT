@@ -15,6 +15,9 @@ import type { CampaignState } from '../core/campaign.js'
 import { loadoutOf, canEquip, whyNotEquip, canUnequip, equipCostOf } from '../core/shop.js'
 import { heroModsOf, type SetLine } from '../core/sets.js'
 import { itemOf, isShield, type ItemRow } from '../content/items.js'
+import { fieldedItemsOf } from '../core/loadout.js'
+import { progressOf } from '../core/seam.js'
+import { fieldedDef, type UnitDef } from '../engine.js'
 import { portraitOf } from './art.js'
 
 const esc = (s: string) => s.replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]!))
@@ -44,6 +47,42 @@ export function deltasOf(c: CampaignState, heroId: string): string {
   const stat = (k: string, n: number) => `<span class="delta ${n > 0 ? 'won' : 'lost'}">${sign(n)} ${esc(k)}</span>`
   const parts = [...Object.entries(m.total).map(([k, n]) => stat(k, n)), ...Object.entries(m.weapons).map(([id, n]) => stat(`damage · ${itemOf(id).name}`, n))]
   return parts.join(' ') || '<span class="meta">no change from gear</span>'
+}
+
+/**
+ * The stat block, the battle viewer's (viewer/src/panel.js): two columns, label left,
+ * the value right in monospace with a small ± in front when gear or a set moved it,
+ * % on Accuracy, Dodge and Crit. The numbers are the ENGINE's own fielded unit —
+ * fieldedDef(typeId, what is handed over, progress) — so the card shows what the
+ * battle would field; the set bonuses (resolved here, not yet fought) are added on
+ * top and counted in the ±. A row the engine has no item for is said, not hidden.
+ */
+export const STAT_ROWS: readonly [label: string, key: keyof UnitDef & string][] = [
+  ['Move', 'movement'], ['Armor', 'armor'], ['Resist', 'resist'], ['Dodge', 'dodge'], ['Max HP', 'maxHp'],
+  ['Accuracy', 'accuracy'], ['Crit', 'crit'], ['Strength', 'strength'], ['Precision', 'precision'], ['Stam Regen', 'staminaRegen'],
+]
+const PCT = new Set(['accuracy', 'dodge', 'crit'])
+/** The codex's stat names the set payloads use, as the engine's def names them. */
+const ENGINE_STAT: Readonly<Record<string, string>> = { health: 'maxHp', staminaMax: 'maxStamina', staminaRegen: 'staminaRegen' }
+
+export function statBlock(c: CampaignState, heroId: string): string {
+  const h = c.roster[heroId]!
+  const progress = progressOf(h) ?? undefined
+  const { fielded, leftBehind } = fieldedItemsOf(h.equipped)
+  let now: UnitDef, bare: UnitDef
+  try { now = fieldedDef(h.unitType, fielded, progress); bare = fieldedDef(h.unitType, [], progress) }
+  catch (e) { return `<div class="stats gap"><b>the engine cannot field this gear</b> — ${esc((e as Error).message)}</div>` }
+  const sets = heroModsOf(c, heroId).sets
+  const setOn: Record<string, number> = {}
+  for (const [k, n] of Object.entries(sets)) setOn[ENGINE_STAT[k] ?? k] = (setOn[ENGINE_STAT[k] ?? k] ?? 0) + n
+  const rows = STAT_ROWS.map(([label, key]) => {
+    const base = (bare[key] as number | undefined) ?? 0
+    const value = ((now[key] as number | undefined) ?? 0) + (setOn[key] ?? 0)
+    const d = value - base
+    return `<div class="stRow"><span class="stN">${esc(label)}</span><span class="stV${d > 0 ? ' up' : d < 0 ? ' down' : ''}">${d ? `<em>${sign(d)}</em>` : ''}${value}${PCT.has(key) ? '%' : ''}</span></div>`
+  })
+  const half = Math.ceil(rows.length / 2)
+  return `<div class="stats"><div class="stCols"><div>${rows.slice(0, half).join('')}</div><div>${rows.slice(half).join('')}</div></div>${leftBehind.length ? `<div class="meta lost">${esc(leftBehind.map((i) => itemOf(i).name).join(', '))} left behind at fielding — a spare weapon the engine cannot yet take</div>` : ''}</div>`
 }
 
 /** What leaving says: every triggered set per hero, or that none is. */
@@ -112,9 +151,8 @@ function heroCard(c: CampaignState, heroId: string, picked: string | null): stri
     : slot('hand-r', 'right hand', l.hands[0] ?? null) + slot('hand-l', 'left hand', l.hands[1] ?? null)
   const items = Array.from({ length: Math.max(l.itemSlots.max, l.items.length) }, (_, i) => slot(`item-${i}`, `slot ${i + 1}`, l.items[i] ?? null, l.items[i] && itemOf(l.items[i]!).itemClass === 'weapon' ? 'spare' : ''))
   return `<div class="herocard">
-    <div class="face">${art ? `<img src="${art}" alt="">` : '<div class="noart"></div>'}</div>
-    <b>${esc(h.name)}</b> <span class="meta">${esc(h.classes.map((x) => x.replace('class.', '')).join(', '))} · L${h.level}</span>
-    <div class="deltas">${deltasOf(c, heroId)}</div>
+    ${statBlock(c, heroId)}
+    <div class="art">${art ? `<img src="${art}" alt="">` : '<div class="noart"></div>'}<div class="plate"><b>${esc(h.name)}</b><span>${esc(h.classes.map((x) => x.replace('class.', '')).join(', '))} · L${h.level}${h.specialty ? ' · ' + esc(h.specialty.replace('specialty.', '')) : ''}</span></div></div>
     <div class="slots">${hands}${slot('armor', 'armor', l.armor)}${items.join('')}</div>
   </div>`
 }

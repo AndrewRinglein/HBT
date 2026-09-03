@@ -16,6 +16,11 @@ describe('the Equip screen', () => {
     const ctx = toEquip(loadFixture((c) => { c.stash = [...STASH] }), [HUNTER, CHAPLAIN])
     const html = equipScreen(ctx.campaign, [HUNTER, CHAPLAIN], { where: 'prep', picked: null })
     expect(html.match(/class="herocard"/g)?.length).toBe(2)
+    // stats above the art, the viewer's ten rows; the art carries the name
+    for (const label of ['Move', 'Armor', 'Resist', 'Dodge', 'Max HP', 'Accuracy', 'Crit', 'Strength', 'Precision', 'Stam Regen']) expect(html).toContain(`<span class="stN">${label}</span>`)
+    expect(html.indexOf('class="stats"')).toBeLessThan(html.indexOf('class="art"'))
+    expect(html).toContain('<div class="plate"><b>Hunter</b>')
+    expect(html).toMatch(/Accuracy<\/span><span class="stV[^"]*">(<em>[^<]*<\/em>)?\d+%/)
     expect(html).toContain('both hands')                     // the Hunter's longbow fills both
     expect(html).toContain('right hand'); expect(html).toContain('left hand')   // the Chaplain's shield and texts
     expect(html).toContain('data-slot="armor"'); expect(html).toContain('data-slot="item-0"')
@@ -49,7 +54,8 @@ describe('the Equip screen', () => {
     performEquip(ctx, CHAPLAIN, 'item.priest-chain', 'test')
     const html = equipScreen(ctx.campaign, [HUNTER, CHAPLAIN], { where: 'prep', picked: null })
     expect(html).toContain('chain set bonus from Chains of the Wrathful: +2 precision (2 other chain items)')
-    expect(html).toMatch(/class="delta won">\+\d+ precision/)
+    // the card's stat block is the viewer's: the Precision row carries the set's +2 in front of the engine's fielded number
+    expect(html).toMatch(/<span class="stN">Precision<\/span><span class="stV up"><em>\+\d+<\/em>\d+<\/span>/)
     expect(html).toContain('<i>spare</i>')                    // the priest chain rides in the item slot as a spare
     // the Bloodrune's cost is paid on the way on and listed as refundable
     performEquip(ctx, HUNTER, 'item.rune-bashing', 'test')

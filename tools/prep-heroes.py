@@ -17,7 +17,7 @@ CODEX = sys.argv[1] if len(sys.argv) > 1 else os.path.join(HERE, '..', '..', 'co
 ROOT = sys.argv[2] if len(sys.argv) > 2 else os.path.join(HERE, '..', '..')
 OUT = os.path.join(HERE, '..', 'generated', 'art')
 INDEX = os.path.join(OUT, 'index.json')
-W, H = 160, 240   # the 2:3 card at thumbnail size — ~10 KB a hero
+W, H = 320, 480   # the 2:3 card, full-size on the Equip screen — ~35 KB a hero
 
 # the pool is the kingdom's registry; read its ids off the source so this tool never keeps a second list
 POOL_SRC = open(os.path.join(HERE, '..', 'src', 'content', 'heroes.ts')).read()

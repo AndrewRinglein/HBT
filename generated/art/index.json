@@ -212,44 +212,44 @@
    "bytes": 15228
   },
   "hero-paladin-shiney.jpg": {
-   "w": 160,
-   "h": 240,
-   "bytes": 11444
+   "w": 320,
+   "h": 480,
+   "bytes": 36386
   },
   "hero-priest-armored.jpg": {
-   "w": 160,
-   "h": 240,
-   "bytes": 9942
+   "w": 320,
+   "h": 480,
+   "bytes": 33133
   },
   "hero-priest-scantily.jpg": {
-   "w": 160,
-   "h": 240,
-   "bytes": 7758
+   "w": 320,
+   "h": 480,
+   "bytes": 25209
   },
   "hero-ranger-aggressive.jpg": {
-   "w": 160,
-   "h": 240,
-   "bytes": 10776
+   "w": 320,
+   "h": 480,
+   "bytes": 35613
   },
   "hero-warrior-iron.jpg": {
-   "w": 160,
-   "h": 240,
-   "bytes": 8475
+   "w": 320,
+   "h": 480,
+   "bytes": 28282
   },
   "hero-farmer.jpg": {
-   "w": 160,
-   "h": 240,
-   "bytes": 9200
+   "w": 320,
+   "h": 480,
+   "bytes": 29854
   },
   "hero-lumberjack-and-wife.jpg": {
-   "w": 160,
-   "h": 240,
-   "bytes": 7975
+   "w": 320,
+   "h": 480,
+   "bytes": 24575
   },
   "hero-orphans.jpg": {
-   "w": 160,
-   "h": 240,
-   "bytes": 4702
+   "w": 320,
+   "h": 480,
+   "bytes": 14547
   }
  },
  "map": {
