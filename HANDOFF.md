@@ -267,3 +267,7 @@ be, retroactively. Flagged deliberately rather than buried.
 
 **Also still true:** the four flagged landings in §5 are still awaiting her
 verdict. Nothing was reviewed or cleared.
+
+> **2026-09-03 (evening): read `HANDOFF-2026-09-03b.md` after the morning one.**
+> 31 landings from the feature run — assembly, the encounter runner, powers,
+> every status, ZoC, deathbed, surge, auras, corpses, layers, vision, AI.

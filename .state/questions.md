@@ -7,35 +7,48 @@ and date. Tool tasks and engine chores go in the backlog, never here.
 
 ## OPEN
 
-- (2026-08-27) **The P11 encounter format** — approve it and the encounter
-  runner gets built, then battles 1 and 2 land as real encounters with
-  both-outcome sweeps. Everything else about the prologue waits behind this.
-
-- (2026-08-27) **Vision** — there is no vision model (gap L-3a). It blocks
-  Blinded's −4 Vision half, and the viewer thread's darkness/fog. Build the
-  Vision stat and concealment as designed, or keep it parked?
-
-- (2026-08-27) **Surge** — the Surge check is designed into the Activation
-  ladder but no Surge quantity exists in the engine. It blocks Knocked
-  Sprawling's −50 Surge half. Build it next?
-
 - (2026-08-27) **item.bracer's replacement rule** — your dictation parked it.
   Multi-criticals currently roll the chart WITH replacement (a doubled row
   stacks); the without-replacement path is built and waiting on your word.
 
-- (2026-08-27) **Two content kinds were never approved** — `battle.*` (5 rows)
-  and `move.*` (8 rows) exist in content and `node tools/kinds.mjs` fails on
-  them. Approve the kinds or have the content session rename them.
+- (2026-09-03) **Kinds approved BY POLICY this run, for your look** — Angela
+  ruled "propose and record" for the unattended run; each is in
+  `tools/approved-kinds.json` with a note: `encounter` and `battle` (two ids
+  for one thing — GLOSSARY says encounter; one should retire, a content
+  rename), `aura`, `corpse`, `layer`, `stamina` (event names, not rows).
+
+- (2026-09-03) **The Necromancer's Raise has no range on its row.** Compiled
+  as 2 (its aura's radius — the encounter session's reading). Rule it.
+
+- (2026-09-03) **The schedule vs the Codex on Surge** — the progression
+  builder leaves Surge at 0 + specialty; heroes.json says Surge equals the
+  level. The engine follows the Codex. Which is right?
+
+- (2026-09-03) **The schedule stows spare weapons in item slots** (the Lion's
+  third one-hander). The engine wields or nothing. Is a carried weapon a thing?
 
 - (2026-09-02) **Note, no action needed:** the crit chart's "loses access to class powers"
   applies a placeholder called `status.powers-locked` (Dazed is two things — your words).
   Rename whenever; one Codex row and one converter line. Answered 2026-09-02: "leave it
   as just a note."
 
-- (2026-08-27) **19 flagged landings await your review** —
-  `node tools/report.mjs`, verdicts recorded in your words via review.mjs.
+- (2026-09-03) **50 flagged landings await your review** (31 from the
+  2026-09-03 feature run) — `node tools/report.mjs`, verdicts recorded in your
+  words via review.mjs.
 
 ## ANSWERED
+
+- (2026-09-03) **The P11 encounter format** — "Approved as written" (Angela,
+  from ENCOUNTERS-ENGINE-HANDOFF.md §1). encounter.runner landed; ten
+  encounters ship; the 24 promised are 6 + 4 (E3 the dungeon skipped, E6–E8
+  unsettled).
+
+- (2026-09-03) **Vision** and **Surge** — built (Angela: "build them all").
+  Vision 6 + stat 0, floored 1; fog would be 3 (no fog row yet). Surge per
+  COMBAT-SEQUENCE; equals the level.
+
+- (2026-09-03) **`move.*` approved 2026-09-02; `battle.*` approved by policy
+  2026-09-03** — see OPEN for the retire question.
 
 - (2026-09-02) **The standard test horde is a walkover — keep it or harden it?** — "Keep the
   zombies." Tests that need pressure field twelve to sixteen.
