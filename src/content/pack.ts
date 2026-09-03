@@ -4,7 +4,7 @@
 // GENERATED (content/mkenginepack.mjs) and never hand-edited; this loader
 // validates it LOUDLY at import time (Law 9) and hands back plain UnitDefs.
 import { UNIT_PACK } from './generated/pack.js'
-import type { AbilityDef, AttackDef, CritRow, UnitDef } from '../core/types.js'
+import type { AbilityDef, AttackDef, CritRow, MoveDef, UnitDef } from '../core/types.js'
 import { validateTrigger } from '../core/trigger.js'
 import type { StatusDef } from '../core/status.js'
 import { statusDamage, statusHeal } from '../core/status.js'
@@ -126,6 +126,30 @@ export function packStatuses(): Readonly<Record<string, StatusDef>> {
     out[id] = { ...def, ...(hook ? { onPhaseEnd: hook } : {}) }
   }
   return out
+}
+
+/**
+ * The movement powers — pack.moves (2026-09-02). The Codex's `movementAction`
+ * power rows, compiled by exact phrase in content/mkenginepack.mjs into the
+ * MoveDef shape (Angela 2026-08-21: "It shouldn't be hard-coded. It should be
+ * content-driven."). Two rows the engine cannot express — Pray (Faith) and
+ * Charging Run (a stat mod that ends with the Activation) — are named gaps.
+ * Validated loudly; plain data in, plain data out.
+ */
+export function packMoves(): Readonly<Record<string, MoveDef>> {
+  const raw = (UNIT_PACK as { moves?: Readonly<Record<string, MoveDef>> }).moves ?? {}
+  for (const [k, m] of Object.entries(raw)) {
+    if (k !== m.id) throw new Error(`unit pack: move key '${k}' names id '${m.id}'`)
+    if (!['path', 'sidestep', 'flight'].includes(m.shape)) throw new Error(`unit pack: move '${k}' has shape '${String(m.shape)}'`)
+    for (const f of ['staminaCost', 'budgetMod', 'cooldown'] as const) {
+      if (typeof m[f] !== 'number') throw new Error(`unit pack: move '${k}' is missing ${f} — regenerate the pack`)
+    }
+    if (m.stepRange !== undefined && (m.shape !== 'sidestep' || typeof m.stepRange !== 'number')) throw new Error(`unit pack: move '${k}' carries a stepRange it cannot use`)
+    for (const e of m.effects ?? []) {
+      if (!['gainStamina', 'loseMaxStamina', 'statMod'].includes(e.kind)) throw new Error(`unit pack: move '${k}' carries unknown effect kind '${(e as { kind: string }).kind}'`)
+    }
+  }
+  return raw
 }
 
 /** The authored enemies' attacks — generated rows, validated like the units. */

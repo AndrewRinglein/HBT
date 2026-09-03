@@ -1713,5 +1713,23 @@
   "attempts": 1,
   "sha": "c3f9ac8",
   "gauntlet": "not passed — 2 flag(s) warned"
+ },
+ {
+  "id": "pack.moves",
+  "kind": "engine",
+  "shape": "data",
+  "spec": "The engine reads its movement powers from the Codex. Angela 2026-08-21: 'Movement is a choice… It shouldn't be hard-coded. It should be content-driven.' content/mkenginepack.mjs compiles the eleven movementAction power rows (settled.json powers) into the MoveDef shape by EXACT phrase — shape from the description's fixed sentences, stamina/cooldown from the row's numbers, riders (Leap's +2 Strength, Focus's Stamina, Devotion's Max Stamina trade) from fixed sentences — and cross-checks the prose against the numbers ('Costs no Stamina' must be stamina 0; a disagreement is a content finding). The pack carries a moves section; the loader (packMoves) validates it loudly; src/content/moves.ts types nothing and reads the pack. Nine rows load; two are named gaps: power.pray (no Faith quantity) and power.charging-run (a stat mod that ends with the Activation — MoveEffect.until knows endOfTurn | battle only).",
+  "expect": "BASELINE-NEUTRAL — every control hash identical, the proof that the nine hand transcriptions were faithful and the compile reproduces them; every loaded power.* move is a Codex movementAction row and every such row is loaded or a named gap; disabling power.move breaks the tests; every movement power the standard battle walks is a loaded row",
+  "changesBaseline": false,
+  "needs": [
+   "pack.statuses"
+  ],
+  "probeIds": [
+   "power.move",
+   "power.leap"
+  ],
+  "status": "done",
+  "sha": "a20a062",
+  "gauntlet": "not passed — 1 flag(s) warned"
  }
 ]

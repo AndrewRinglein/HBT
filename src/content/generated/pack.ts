@@ -2384,5 +2384,108 @@ export const UNIT_PACK = {
       "decayPerPhase": 1,
       "blocksAction": true
     }
+  },
+  "moves": {
+    "power.move": {
+      "id": "power.move",
+      "name": "Move",
+      "shape": "path",
+      "budgetMod": 0,
+      "staminaCost": 1,
+      "cooldown": 0
+    },
+    "power.sidestep": {
+      "id": "power.sidestep",
+      "name": "Sidestep",
+      "shape": "sidestep",
+      "stepRange": 1,
+      "budgetMod": 0,
+      "staminaCost": 0,
+      "cooldown": 1
+    },
+    "power.side-roll": {
+      "id": "power.side-roll",
+      "name": "Side Roll",
+      "shape": "sidestep",
+      "stepRange": 1,
+      "budgetMod": 0,
+      "staminaCost": 1,
+      "cooldown": 0
+    },
+    "power.leap": {
+      "id": "power.leap",
+      "name": "Leap",
+      "shape": "sidestep",
+      "stepRange": 2,
+      "budgetMod": 0,
+      "effects": [
+        {
+          "kind": "statMod",
+          "stat": "strength",
+          "value": 2,
+          "until": "endOfTurn"
+        }
+      ],
+      "staminaCost": 2,
+      "cooldown": 0
+    },
+    "power.focus": {
+      "id": "power.focus",
+      "name": "Focus",
+      "shape": "sidestep",
+      "stepRange": 0,
+      "budgetMod": 0,
+      "effects": [
+        {
+          "kind": "gainStamina",
+          "value": 1
+        }
+      ],
+      "staminaCost": 0,
+      "cooldown": 0
+    },
+    "power.devotion": {
+      "id": "power.devotion",
+      "name": "Devotion",
+      "shape": "sidestep",
+      "stepRange": 0,
+      "budgetMod": 0,
+      "effects": [
+        {
+          "kind": "loseMaxStamina",
+          "value": 1
+        },
+        {
+          "kind": "gainStamina",
+          "value": 2
+        }
+      ],
+      "staminaCost": 0,
+      "cooldown": 0
+    },
+    "power.flight": {
+      "id": "power.flight",
+      "name": "Flight",
+      "shape": "flight",
+      "budgetMod": 0,
+      "staminaCost": 1,
+      "cooldown": 0
+    },
+    "power.flight-swift": {
+      "id": "power.flight-swift",
+      "name": "Flight (Swift)",
+      "shape": "flight",
+      "budgetMod": 1,
+      "staminaCost": 0,
+      "cooldown": 0
+    },
+    "power.flight-labored": {
+      "id": "power.flight-labored",
+      "name": "Flight (Labored)",
+      "shape": "flight",
+      "budgetMod": -1,
+      "staminaCost": 2,
+      "cooldown": 0
+    }
   }
 } as const

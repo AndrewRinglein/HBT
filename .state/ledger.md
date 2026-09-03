@@ -3835,3 +3835,31 @@ hand-landings before it never maintained the counter (the real growth was
 showcase.gash-variant, fix.bleed-magnitude). Counter now 33. Seal withheld.
 
 IRON GAUNTLET: NOT PASSED — 2 FLAG(S) WARNED
+
+## pack.moves — LANDED `a20a062`
+2026-09-03 04:19
+
+  PASS  dependencies landed
+  WARN  not already decided — 3 candidate ruling(s) — READ BEFORE ASKING: ../STATE.md:18 · ../STATE.md:20
+  PASS  typecheck
+  PASS  full test suite
+  PASS  gate 1 — the id appears in a real battle — power.move: 24 log lines, 24 fired, 16 changed state · power.leap: 8 log lines, 8 fired, 4 changed state
+  PASS  brought its own tests — test/pack-moves.test.ts
+  PASS  existing tests untouched
+  PASS  control battles unchanged
+  PASS  content has a published source — 27 ids without a published source (17 awaiting publication from earlier items — see audit)
+  PASS  hardcode scan — core knows mechanisms, never names
+  PASS  generalizes — the second instance costs zero engine code — shape 'data' — not a mechanism, exempt
+  PASS  naming — new content ids use declared kinds
+  PASS  naming — no banned words invented
+  PASS  kill switch — the tests fail without the content — tests fail without power.move,power.leap — they genuinely test it
+
+Post-land audit by hand (the reaper again — every pre-land check ran and the
+gate committed; the host cap ended it in the suite rerun): 54 files / 478 on
+the committed tree; control battles IDENTICAL to golden — the nine hand
+transcriptions were faithful and the compile reproduces them exactly. The
+content check dropped from 33 to 27 unpublished ids: the six movement powers
+that were INVENTED-by-location in moves.ts are now read from their Codex
+rows. One flag (the decided-scan, STATE.md mentions of this plan). Seal withheld.
+
+IRON GAUNTLET: NOT PASSED — 1 FLAG(S) WARNED
