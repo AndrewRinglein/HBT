@@ -2556,16 +2556,6 @@ export const UNIT_PACK = {
       "reach": 4,
       "staminaCost": 1
     },
-    "attack.holy-texts.mercy": {
-      "id": "attack.holy-texts.mercy",
-      "name": "Mercy",
-      "kind": "ranged",
-      "damageType": "true",
-      "bonus": 2,
-      "stat": "spirit",
-      "reach": 4,
-      "staminaCost": 2
-    },
     "attack.holy-symbol.wrath": {
       "id": "attack.holy-symbol.wrath",
       "name": "Wrath",
@@ -3413,34 +3403,13 @@ export const UNIT_PACK = {
       "reach": 7,
       "staminaCost": 2
     },
-    "attack.wraith-touched-staff.wraith-bolt": {
-      "id": "attack.wraith-touched-staff.wraith-bolt",
-      "name": "Wraith Bolt",
-      "kind": "ranged",
-      "damageType": "magic",
-      "bonus": 2,
-      "stat": "magic",
-      "reach": 6,
-      "staminaCost": 1
-    },
-    "attack.wraith-touched-staff.grasp": {
-      "id": "attack.wraith-touched-staff.grasp",
-      "name": "Grasp of the Wraith",
-      "kind": "ranged",
-      "damageType": "magic",
-      "bonus": 1,
-      "stat": "magic",
-      "reach": 5,
-      "staminaCost": 2,
-      "crit": 3
-    },
     "attack.book-of-exorcisms.reading": {
       "id": "attack.book-of-exorcisms.reading",
       "name": "Reading",
       "kind": "ranged",
       "damageType": "true",
-      "bonus": 2,
-      "stat": "spirit",
+      "bonus": 0,
+      "stat": "precision",
       "reach": 4,
       "staminaCost": 1
     },
@@ -3450,7 +3419,7 @@ export const UNIT_PACK = {
       "kind": "ranged",
       "damageType": "true",
       "bonus": 0,
-      "stat": "spirit",
+      "stat": "precision",
       "reach": 3,
       "staminaCost": 2
     },
@@ -3643,48 +3612,6 @@ export const UNIT_PACK = {
       "staminaCost": 2,
       "crit": 10
     },
-    "attack.void-staff.void-bolt": {
-      "id": "attack.void-staff.void-bolt",
-      "name": "Void Bolt",
-      "kind": "ranged",
-      "damageType": "magic",
-      "bonus": 3,
-      "stat": "magic",
-      "reach": 6,
-      "staminaCost": 1
-    },
-    "attack.void-staff.unmaking": {
-      "id": "attack.void-staff.unmaking",
-      "name": "Unmaking",
-      "kind": "ranged",
-      "damageType": "magic",
-      "bonus": 4,
-      "stat": "magic",
-      "reach": 6,
-      "staminaCost": 3,
-      "crit": 5
-    },
-    "attack.orb-of-the-soul-stealer.soul-tap": {
-      "id": "attack.orb-of-the-soul-stealer.soul-tap",
-      "name": "Soul Tap",
-      "kind": "melee",
-      "damageType": "magic",
-      "bonus": 0,
-      "stat": "magic",
-      "reach": 1,
-      "staminaCost": 1
-    },
-    "attack.orb-of-the-soul-stealer.steal-the-spark": {
-      "id": "attack.orb-of-the-soul-stealer.steal-the-spark",
-      "name": "Steal the Spark",
-      "kind": "ranged",
-      "damageType": "magic",
-      "bonus": 3,
-      "stat": "magic",
-      "reach": 7,
-      "staminaCost": 2,
-      "crit": 3
-    },
     "attack.blade-of-demon-slaying.slayer-cut": {
       "id": "attack.blade-of-demon-slaying.slayer-cut",
       "name": "Slayer's Cut",
@@ -3733,19 +3660,9 @@ export const UNIT_PACK = {
       "kind": "ranged",
       "damageType": "true",
       "bonus": 0,
-      "stat": "spirit",
+      "stat": "precision",
       "reach": 4,
       "staminaCost": 1
-    },
-    "attack.scepter-of-salvation.salvation": {
-      "id": "attack.scepter-of-salvation.salvation",
-      "name": "Salvation",
-      "kind": "ranged",
-      "damageType": "true",
-      "bonus": 3,
-      "stat": "spirit",
-      "reach": 5,
-      "staminaCost": 2
     },
     "attack.tomb-sentinels-blade.sentinel-cut": {
       "id": "attack.tomb-sentinels-blade.sentinel-cut",
@@ -4033,104 +3950,64 @@ export const UNIT_PACK = {
       "reach": 1,
       "staminaCost": 1
     },
-    "attack.martyrs-censer.swing-of-ash": {
-      "id": "attack.martyrs-censer.swing-of-ash",
-      "name": "Swing of Ash",
-      "kind": "ranged",
-      "damageType": "true",
-      "bonus": 1,
-      "stat": "spirit",
-      "reach": 4,
+    "attack.fire-gauntlet.fire-punch": {
+      "id": "attack.fire-gauntlet.fire-punch",
+      "name": "Fire Punch",
+      "kind": "melee",
+      "damageType": "magic",
+      "bonus": 0,
+      "stat": "strength",
+      "reach": 1,
       "staminaCost": 1
     },
-    "attack.martyrs-censer.offering": {
-      "id": "attack.martyrs-censer.offering",
-      "name": "Offering",
+    "attack.staff-of-summoning.unbinding": {
+      "id": "attack.staff-of-summoning.unbinding",
+      "name": "Unbinding",
       "kind": "ranged",
-      "damageType": "true",
-      "bonus": 4,
-      "stat": "spirit",
-      "reach": 4,
-      "staminaCost": 2
-    },
-    "attack.reliquary-of-the-nine-tears.rebuke": {
-      "id": "attack.reliquary-of-the-nine-tears.rebuke",
-      "name": "Lesser Rebuke",
-      "kind": "ranged",
-      "damageType": "true",
-      "bonus": 1,
-      "stat": "spirit",
-      "reach": 5,
-      "staminaCost": 1
-    },
-    "attack.reliquary-of-the-nine-tears.intercession": {
-      "id": "attack.reliquary-of-the-nine-tears.intercession",
-      "name": "Intercession",
-      "kind": "ranged",
-      "damageType": "true",
-      "bonus": 2,
-      "stat": "spirit",
+      "damageType": "magic",
+      "bonus": 0,
+      "stat": "precision",
       "reach": 5,
       "staminaCost": 2
     },
-    "attack.chorus-of-the-drowned-choir.verse": {
-      "id": "attack.chorus-of-the-drowned-choir.verse",
-      "name": "Drowned Verse",
+    "attack.staff-of-the-destroyer.ruin": {
+      "id": "attack.staff-of-the-destroyer.ruin",
+      "name": "Ruin",
       "kind": "ranged",
-      "damageType": "true",
-      "bonus": 2,
-      "stat": "spirit",
-      "reach": 6,
-      "staminaCost": 1
-    },
-    "attack.chorus-of-the-drowned-choir.antiphon": {
-      "id": "attack.chorus-of-the-drowned-choir.antiphon",
-      "name": "Antiphon",
-      "kind": "ranged",
-      "damageType": "true",
-      "bonus": 3,
-      "stat": "spirit",
-      "reach": 4,
+      "damageType": "magic",
+      "bonus": 0,
+      "stat": "precision",
+      "reach": 8,
       "staminaCost": 3
     },
-    "attack.emberglass-focus.ember": {
-      "id": "attack.emberglass-focus.ember",
-      "name": "Ember",
+    "attack.staff-of-the-destroyer.sundering": {
+      "id": "attack.staff-of-the-destroyer.sundering",
+      "name": "Sundering",
       "kind": "ranged",
       "damageType": "magic",
-      "bonus": 2,
-      "stat": "magic",
-      "reach": 5,
-      "staminaCost": 1
+      "bonus": 0,
+      "stat": "precision",
+      "reach": 10,
+      "staminaCost": 3
     },
-    "attack.emberglass-focus.bank-the-fire": {
-      "id": "attack.emberglass-focus.bank-the-fire",
-      "name": "Bank the Fire",
+    "attack.staff-of-the-ultimate-destroyer.annihilation": {
+      "id": "attack.staff-of-the-ultimate-destroyer.annihilation",
+      "name": "Annihilation",
       "kind": "ranged",
       "damageType": "magic",
-      "bonus": 3,
-      "stat": "magic",
-      "reach": 5,
-      "staminaCost": 2
+      "bonus": 0,
+      "stat": "precision",
+      "reach": 8,
+      "staminaCost": 4
     },
-    "attack.staff-of-the-still-air.hush": {
-      "id": "attack.staff-of-the-still-air.hush",
-      "name": "Hush",
+    "attack.chains-of-the-wrathful.wrathful-sweep": {
+      "id": "attack.chains-of-the-wrathful.wrathful-sweep",
+      "name": "Wrathful Sweep",
       "kind": "ranged",
-      "damageType": "magic",
-      "bonus": 2,
-      "stat": "magic",
-      "reach": 6,
-      "staminaCost": 1
-    },
-    "attack.staff-of-the-still-air.stillness": {
-      "id": "attack.staff-of-the-still-air.stillness",
-      "name": "Stillness",
-      "kind": "ranged",
-      "damageType": "magic",
-      "bonus": 4,
-      "stat": "magic",
-      "reach": 6,
+      "damageType": "true",
+      "bonus": 1,
+      "stat": "spirit",
+      "reach": 3,
       "staminaCost": 3
     }
   },
@@ -6572,11 +6449,13 @@ export const UNIT_PACK = {
       "classRestriction": "class.priest",
       "statModifiers": {},
       "grants": [
-        "attack.holy-texts.verse",
-        "attack.holy-texts.mercy"
+        "attack.holy-texts.verse"
       ],
       "abilities": [],
-      "triggers": []
+      "triggers": [],
+      "gaps": [
+        "grants power.holy-texts.mercy — item power — shape unparsed"
+      ]
     },
     "item.bane-blade": {
       "id": "item.bane-blade",
@@ -6898,33 +6777,11 @@ export const UNIT_PACK = {
         }
       ]
     },
-    "item.wraith-touched-staff": {
-      "id": "item.wraith-touched-staff",
-      "name": "Wraith-Touched Staff",
-      "itemClass": "weapon",
-      "tier": 2,
-      "hands": 2,
-      "slots": 2,
-      "classRestriction": "class.mage",
-      "statModifiers": {
-        "magic": 1,
-        "reach": 1
-      },
-      "grants": [
-        "attack.wraith-touched-staff.wraith-bolt",
-        "attack.wraith-touched-staff.grasp"
-      ],
-      "abilities": [],
-      "triggers": [],
-      "gaps": [
-        "onKill: heal 2 — trigger shape unparsed"
-      ]
-    },
     "item.book-of-exorcisms": {
       "id": "item.book-of-exorcisms",
       "name": "Book of Exorcisms",
       "itemClass": "weapon",
-      "tier": 2,
+      "tier": 3,
       "hands": 1,
       "slots": 1,
       "classRestriction": "class.priest",
@@ -7145,50 +7002,6 @@ export const UNIT_PACK = {
         "onKill: deal 5 true damage to up to two enemies within 4 h — trigger shape unparsed"
       ]
     },
-    "item.void-staff": {
-      "id": "item.void-staff",
-      "name": "Void Staff",
-      "itemClass": "weapon",
-      "tier": 3,
-      "hands": 2,
-      "slots": 2,
-      "classRestriction": "class.mage",
-      "statModifiers": {
-        "magic": 2,
-        "resist": 1
-      },
-      "grants": [
-        "attack.void-staff.void-bolt",
-        "attack.void-staff.unmaking"
-      ],
-      "abilities": [],
-      "triggers": [],
-      "gaps": [
-        "onKill: regain 1 Stamina — trigger shape unparsed"
-      ]
-    },
-    "item.orb-of-the-soul-stealer": {
-      "id": "item.orb-of-the-soul-stealer",
-      "name": "Orb of the Soul Stealer",
-      "itemClass": "weapon",
-      "tier": 3,
-      "hands": 1,
-      "slots": 1,
-      "classRestriction": "class.mage",
-      "statModifiers": {
-        "magic": 1,
-        "reach": 2
-      },
-      "grants": [
-        "attack.orb-of-the-soul-stealer.soul-tap",
-        "attack.orb-of-the-soul-stealer.steal-the-spark"
-      ],
-      "abilities": [],
-      "triggers": [],
-      "gaps": [
-        "onAttack: heal 2 at the start of your next Turn — trigger shape unparsed"
-      ]
-    },
     "item.blade-of-demon-slaying": {
       "id": "item.blade-of-demon-slaying",
       "name": "Blade of Demon Slaying",
@@ -7249,12 +7062,9 @@ export const UNIT_PACK = {
       "hands": 1,
       "slots": 1,
       "classRestriction": "class.priest",
-      "statModifiers": {
-        "spirit": 1
-      },
+      "statModifiers": {},
       "grants": [
-        "attack.scepter-of-salvation.rebuke",
-        "attack.scepter-of-salvation.salvation"
+        "attack.scepter-of-salvation.rebuke"
       ],
       "abilities": [],
       "triggers": [
@@ -7270,6 +7080,9 @@ export const UNIT_PACK = {
           },
           "source": "item.scepter-of-salvation"
         }
+      ],
+      "gaps": [
+        "grants power.scepter-of-salvation.salvation — item power — shape unparsed"
       ]
     },
     "item.tomb-sentinels-blade": {
@@ -7972,7 +7785,7 @@ export const UNIT_PACK = {
       "id": "item.chains-of-the-faithful",
       "name": "Chains of the Faithful",
       "itemClass": "armor",
-      "tier": 2,
+      "tier": 3,
       "hands": 0,
       "slots": 1,
       "classRestriction": "class.priest",
@@ -7986,8 +7799,7 @@ export const UNIT_PACK = {
       "abilities": [],
       "triggers": [],
       "gaps": [
-        "aura: AURA radius 2 — allies inside have Immunity to Bur — hook: aura (declared, engine never fires it)",
-        "onAttack: you gain 1 Burn — trigger shape unparsed"
+        "aura: AURA radius 2 -- allies inside have Immunity to Bu — hook: aura (declared, engine never fires it)"
       ]
     },
     "item.cloudsteel-plate": {
@@ -8150,10 +7962,10 @@ export const UNIT_PACK = {
       "slots": 1,
       "classRestriction": "class.priest",
       "statModifiers": {
-        "spirit": 2,
+        "spirit": 1,
         "resist": 1,
         "dodge": 5,
-        "maxHp": -4
+        "maxHp": -1
       },
       "grants": [],
       "abilities": [],
@@ -9002,128 +8814,174 @@ export const UNIT_PACK = {
       "abilities": [],
       "triggers": []
     },
-    "item.martyrs-censer": {
-      "id": "item.martyrs-censer",
-      "name": "Martyr's Censer",
-      "itemClass": "weapon",
-      "tier": 3,
-      "hands": 1,
-      "slots": 1,
-      "classRestriction": "class.priest",
-      "statModifiers": {
-        "spirit": 1,
-        "maxHp": -2
-      },
-      "grants": [
-        "attack.martyrs-censer.swing-of-ash",
-        "attack.martyrs-censer.offering"
-      ],
-      "abilities": [],
-      "triggers": []
-    },
-    "item.reliquary-of-the-nine-tears": {
-      "id": "item.reliquary-of-the-nine-tears",
-      "name": "Reliquary of the Nine Tears",
-      "itemClass": "weapon",
-      "tier": 3,
-      "hands": 1,
-      "slots": 1,
-      "classRestriction": "class.priest",
-      "statModifiers": {
-        "spirit": 1,
-        "resist": 1
-      },
-      "grants": [
-        "attack.reliquary-of-the-nine-tears.rebuke",
-        "attack.reliquary-of-the-nine-tears.intercession"
-      ],
-      "abilities": [],
-      "triggers": []
-    },
-    "item.chorus-of-the-drowned-choir": {
-      "id": "item.chorus-of-the-drowned-choir",
-      "name": "Chorus of the Drowned Choir",
-      "itemClass": "weapon",
-      "tier": 3,
-      "hands": 2,
-      "slots": 2,
-      "classRestriction": "class.priest",
-      "statModifiers": {
-        "spirit": 2,
-        "movement": -1
-      },
-      "grants": [
-        "attack.chorus-of-the-drowned-choir.verse",
-        "attack.chorus-of-the-drowned-choir.antiphon"
-      ],
-      "abilities": [],
-      "triggers": []
-    },
-    "item.emberglass-focus": {
-      "id": "item.emberglass-focus",
-      "name": "Emberglass Focus",
+    "item.fire-gauntlet": {
+      "id": "item.fire-gauntlet",
+      "name": "Fire Gauntlet",
       "itemClass": "weapon",
       "tier": 3,
       "hands": 1,
       "slots": 1,
       "classRestriction": "class.mage",
-      "statModifiers": {
-        "magic": 1,
-        "crit": 5
-      },
+      "statModifiers": {},
       "grants": [
-        "attack.emberglass-focus.ember",
-        "attack.emberglass-focus.bank-the-fire"
+        "attack.fire-gauntlet.fire-punch"
+      ],
+      "abilities": [],
+      "triggers": [],
+      "gaps": [
+        "grants power.fire-gauntlet.stoke — item power — shape unparsed"
+      ]
+    },
+    "item.staff-of-summoning": {
+      "id": "item.staff-of-summoning",
+      "name": "Staff of Summoning",
+      "itemClass": "weapon",
+      "tier": 3,
+      "hands": 2,
+      "slots": 2,
+      "classRestriction": "class.mage",
+      "statModifiers": {},
+      "grants": [
+        "attack.staff-of-summoning.unbinding"
+      ],
+      "abilities": [],
+      "triggers": [],
+      "gaps": [
+        "grants power.staff-of-summoning.call-the-wolf — item power — shape unparsed"
+      ]
+    },
+    "item.staff-of-the-magi": {
+      "id": "item.staff-of-the-magi",
+      "name": "Staff of the Magi",
+      "itemClass": "weapon",
+      "tier": 4,
+      "hands": 2,
+      "slots": 2,
+      "classRestriction": "class.mage",
+      "statModifiers": {},
+      "grants": [],
+      "abilities": [],
+      "triggers": [],
+      "gaps": [
+        "grants power.staff-of-the-magi.power-ward — item power — shape unparsed",
+        "grants power.staff-of-the-magi.vortex — item power — shape unparsed"
+      ]
+    },
+    "item.staff-of-the-destroyer": {
+      "id": "item.staff-of-the-destroyer",
+      "name": "Staff of the Destroyer",
+      "itemClass": "weapon",
+      "tier": 5,
+      "hands": 2,
+      "slots": 2,
+      "classRestriction": "class.mage",
+      "statModifiers": {},
+      "grants": [
+        "attack.staff-of-the-destroyer.ruin",
+        "attack.staff-of-the-destroyer.sundering"
       ],
       "abilities": [],
       "triggers": [
         {
-          "id": "trigger.emberglass-focus.ember.burn",
-          "hook": "onCrit",
-          "chance": 100,
-          "select": "target",
-          "effect": {
-            "kind": "status.apply",
-            "statusId": "status.burn",
-            "value": 2
-          },
-          "source": "item.emberglass-focus",
-          "onlyWithAttack": "attack.emberglass-focus.ember"
-        },
-        {
-          "id": "trigger.emberglass-focus.bank-the-fire.burn",
+          "id": "trigger.staff-of-the-destroyer.sundering.stun",
           "hook": "onHit",
           "chance": 100,
           "select": "target",
           "effect": {
             "kind": "status.apply",
-            "statusId": "status.burn",
-            "value": 1
+            "statusId": "status.stun",
+            "value": 2
           },
-          "source": "item.emberglass-focus",
-          "onlyWithAttack": "attack.emberglass-focus.bank-the-fire"
+          "source": "item.staff-of-the-destroyer",
+          "onlyWithAttack": "attack.staff-of-the-destroyer.sundering"
         }
       ]
     },
-    "item.staff-of-the-still-air": {
-      "id": "item.staff-of-the-still-air",
-      "name": "Staff of the Still Air",
+    "item.staff-of-the-ultimate-destroyer": {
+      "id": "item.staff-of-the-ultimate-destroyer",
+      "name": "Staff of the Ultimate Destroyer",
+      "itemClass": "weapon",
+      "tier": 6,
+      "hands": 2,
+      "slots": 2,
+      "classRestriction": "class.mage",
+      "statModifiers": {},
+      "grants": [
+        "attack.staff-of-the-ultimate-destroyer.annihilation"
+      ],
+      "abilities": [],
+      "triggers": [],
+      "gaps": [
+        "grants power.staff-of-the-ultimate-destroyer.perfect-sight — item power — shape unparsed"
+      ]
+    },
+    "item.chains-of-the-wrathful": {
+      "id": "item.chains-of-the-wrathful",
+      "name": "Chains of the Wrathful",
       "itemClass": "weapon",
       "tier": 3,
       "hands": 2,
       "slots": 2,
-      "classRestriction": "class.mage",
-      "statModifiers": {
-        "magic": 2,
-        "reach": 1,
-        "maxHp": -2
-      },
+      "classRestriction": "class.priest",
+      "statModifiers": {},
       "grants": [
-        "attack.staff-of-the-still-air.hush",
-        "attack.staff-of-the-still-air.stillness"
+        "attack.chains-of-the-wrathful.wrathful-sweep"
       ],
       "abilities": [],
-      "triggers": []
+      "triggers": [],
+      "gaps": [
+        "grants power.chains-of-the-wrathful.weight-of-sin — item power — shape unparsed"
+      ]
+    },
+    "item.benevolent-rod": {
+      "id": "item.benevolent-rod",
+      "name": "Benevolent Rod",
+      "itemClass": "weapon",
+      "tier": 3,
+      "hands": 1,
+      "slots": 1,
+      "classRestriction": "class.priest",
+      "statModifiers": {},
+      "grants": [],
+      "abilities": [],
+      "triggers": [],
+      "gaps": [
+        "grants power.benevolent-rod.restoration — item power — shape unparsed",
+        "grants power.benevolent-rod.small-mercy — item power — shape unparsed"
+      ]
+    },
+    "item.book-of-karma": {
+      "id": "item.book-of-karma",
+      "name": "Book of Karma",
+      "itemClass": "weapon",
+      "tier": 3,
+      "hands": 1,
+      "slots": 1,
+      "classRestriction": "class.priest",
+      "statModifiers": {},
+      "grants": [],
+      "abilities": [],
+      "triggers": [],
+      "gaps": [
+        "grants power.book-of-karma.balance-the-ledger — item power — shape unparsed"
+      ]
+    },
+    "item.rod-of-imprisonment": {
+      "id": "item.rod-of-imprisonment",
+      "name": "Rod of Imprisonment",
+      "itemClass": "weapon",
+      "tier": 4,
+      "hands": 1,
+      "slots": 1,
+      "classRestriction": "class.priest",
+      "statModifiers": {},
+      "grants": [],
+      "abilities": [],
+      "triggers": [],
+      "gaps": [
+        "grants power.rod-of-imprisonment.imprison — item power — shape unparsed",
+        "grants power.rod-of-imprisonment.sanctuary — item power — shape unparsed"
+      ]
     },
     "item.loaded-dice-of-mirran": {
       "id": "item.loaded-dice-of-mirran",

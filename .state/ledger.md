@@ -4916,3 +4916,21 @@ hbt-codex.html are the content chat's build outputs.
 Next structural items, none blocked: content.beasts (later, ruled);
 content.enchant-rows (content tooling); kingdom passes hero.equipped as
 heroItems and reads fieldedDef(); viewer re-exports at this engine commit.
+
+## pack regen — content 3f0f1fa shipped (chore, not a gate item)
+2026-09-03
+
+The content chat committed the priest/mage pass (20f8576, 3f0f1fa) without
+shipping; the pack was stale against settled.json and four pipeline-agreement
+tests failed on a fresh checkout. `content/ship.mjs` run; pack.ts and
+pack.stamp.json regenerated; control battles byte-identical (baseline unchanged).
+Two tests rewritten as rules, reason at each edit (Law 10): `hero-pack.test.ts`
+pinned `attack.holy-texts.mercy`, which content moved to a power;
+`items-per-unit.test.ts`'s oracle exception list gains both priests' `attacks`
+for the same reason. 510 passed / 1 todo. This is the "land or revert the dirty
+tree" item STATE.md owed the kingdom seals.
+
+Working method for this session: the engine and content repos are cloned to a
+local disk (the mounted folder is I/O-bound — 118 s suite vs 19 s), the gate
+runs to completion there in one call, and landings are fast-forwarded into the
+mounted repos. No hand-finished landings; seals are the gate's own.

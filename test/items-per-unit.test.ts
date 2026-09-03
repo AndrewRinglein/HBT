@@ -38,10 +38,15 @@ describe('the invariant — no heroItems means the hero the converter used to fo
     // the row from `derivedBase.crit ?? ported.crit` — so an item's crit or
     // luck never reached a hero whose body carried a derived crit. Rusted
     // Plate's −5 Crit and Nice Robes' +3 Luck apply at fielding now.
+    // 2026-09-03, pack shipped at content 3f0f1fa: the priest/mage pass
+    // (content 20f8576) moved the Holy Texts' Mercy from an attack to a power,
+    // so both priests' `attacks` now differ from the pre-2026-09-02 oracle.
+    // That is content moving, not the fold — the oracle is frozen on purpose.
     expect(differ).toEqual({
       'hero.base.paladin-dark': ['crit'],
+      'hero.base.priest-armored': ['attacks'],
       'hero.base.mage-fireaura': ['luck'],
-      'hero.base.priest-pauper': ['luck'],
+      'hero.base.priest-pauper': ['attacks', 'luck'],
     })
     expect(fieldedDef('hero.base.paladin-dark').crit).toBe((o['hero.base.paladin-dark']!['crit'] as number) + ITEMS['item.rusted-plate']!.statModifiers.crit!)
     expect(fieldedDef('hero.base.priest-pauper').luck).toBe(ITEMS['item.nice-robes']!.statModifiers.luck)

@@ -8,7 +8,7 @@ import { describe, expect, it } from 'vitest'
 import { readFileSync } from 'node:fs'
 import { join } from 'node:path'
 import { scenarioDef, scenarioOptions } from '../src/content/scenarios.js'
-import { ATTACKS, UNITS } from '../src/content/index.js'
+import { ATTACKS, UNITS, ITEMS } from '../src/content/index.js'
 import { fieldedDef, createBattle } from '../src/core/setup.js'
 import { runBattle } from '../src/core/battle.js'
 
@@ -90,7 +90,13 @@ describe('the Hunter is a real hero from the Codex', () => {
       expect(fieldedDef(id).attacks, `${id} carries the universal Punch`).toContain('attack.punch')
     }
     expect(fieldedDef('hero.base.warrior-iron').attacks).toContain('attack.war-axe.chop')
-    expect(fieldedDef('hero.base.priest-armored').attacks).toContain('attack.holy-texts.mercy')
+    // Law 10 rewrite, 2026-09-03 (pack shipped at content 3f0f1fa): the
+    // priest/mage pass (content 20f8576) made Mercy a POWER, so the pinned
+    // 'attack.holy-texts.mercy' no longer exists. The rule is pipeline
+    // agreement — the Chaplain carries whatever attacks the Holy Texts grant.
+    const holyAttacks = ITEMS['item.holy-texts']!.grants.filter((g) => g.startsWith('attack.'))
+    expect(holyAttacks.length).toBeGreaterThan(0)
+    for (const a of holyAttacks) expect(fieldedDef('hero.base.priest-armored').attacks).toContain(a)
   })
 
   it('battle 1 in miniature runs: the Hunter shoots authored zombies', () => {
