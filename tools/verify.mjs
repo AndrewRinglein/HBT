@@ -388,6 +388,18 @@ if (DUR) for (const t of Object.keys(DUR)) check(FOLDED_TYPES.includes(t) || IGN
   }
 }
 
+/* ── the lift (Angela 2026-09-03: the dwarf with no legs): every standing or downed token image sits in front of the ground plane, and keeps it through its animations ── */
+{
+  load(0); const v = H.viewer; v.pause(); v.render(); const V = v._V
+  let n = 0
+  for (const u of Object.values(v.state.U)) { if (u.life === 'dead') continue; const E = V.layers.UEL.get(u.id); if (!E) continue; n++
+    check(/translateZ\(2px\)/.test(E.img.style.transform), `lift: ${u.name}'s token image is not lifted off the ground plane (${E.img.style.transform || 'no transform'})`) }
+  check(n > 0, 'lift: no tokens to check')
+  const EV = v.events, i = EV.findIndex(e => e.type === 'move.begin' && e.hexes > 1)
+  if (i >= 0) { v.seek(i); v.step(); const E = V.layers.UEL.get(EV[i].actor); const bob = E && E.img.animations && E.img.animations[E.img.animations.length - 1]
+    check(bob && bob.kf.every(k => /translateZ\(2px\)/.test(k.transform)), 'lift: the walk-bob drops the lift — the legs would vanish for the walk') }
+}
+
 /* ── the footprint follows the stature (Angela 2026-09-03: the dwarf's elevation) ── */
 {
   load(0); const v = H.viewer; v.pause(); v.render(); const V = v._V

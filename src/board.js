@@ -291,8 +291,15 @@ export function fxTick(V, tId, causeId) {
    release to it on finish, so there is no snap. Without `animate` (the
    headless verifier) the token is simply already there. */
 export const ROOT_TRANSITION = 'left .26s ease, top .26s ease, opacity .5s ease'
-const BOB = [{ transform: 'translateY(0) rotate(0)' }, { transform: 'translateY(-6px) rotate(-2.6deg)', offset: .25 },
-  { transform: 'translateY(-2px) rotate(0)', offset: .5 }, { transform: 'translateY(-6px) rotate(2.6deg)', offset: .75 }, { transform: 'translateY(0) rotate(0)' }]
+/* THE LIFT (Angela 2026-09-03, the dwarf with no legs): the token image sits
+   2px in front of the ground plane. At z=0 the act ring's haze, the shadow
+   (a blurred, composited layer) and the hex tiles paint over the lowest part
+   of a billboard — a human lost its boots, an 81px dwarf lost its legs, and
+   Andrew's "the units seem too low in the hex" was the same thing. Every
+   animation on the image keeps the lift, or the legs vanish for the walk. */
+export const LIFT = 'translateZ(2px)'
+const BOB = [{ transform: LIFT + ' translateY(0) rotate(0)' }, { transform: LIFT + ' translateY(-6px) rotate(-2.6deg)', offset: .25 },
+  { transform: LIFT + ' translateY(-2px) rotate(0)', offset: .5 }, { transform: LIFT + ' translateY(-6px) rotate(2.6deg)', offset: .75 }, { transform: LIFT + ' translateY(0) rotate(0)' }]
 export function traverse(V, id, startHex, path, dur) {
   const E = V.layers.UEL.get(id), u = V.S.U[id]
   if (!E || !u || !E.root.animate) return
@@ -312,7 +319,7 @@ export function traverse(V, id, startHex, path, dur) {
     E.walk = null
     if (u.life === 'standing' && E.img.animate) {
       E.img.style.transformOrigin = '50% 100%'
-      E.img.animate([{ transform: 'scaleY(.94)' }, { transform: 'scaleY(1)' }], { duration: 60, easing: 'ease-out' })
+      E.img.animate([{ transform: LIFT + ' scaleY(.94)' }, { transform: LIFT + ' scaleY(1)' }], { duration: 60, easing: 'ease-out' })
     }
   }
 }
@@ -440,7 +447,7 @@ export function arrive(V, id) {
 export function rise(V, id) {
   const E = V.layers.UEL.get(id); if (!E || !E.img.animate) return
   E.img.style.transformOrigin = '50% 100%'
-  E.img.animate([{ transform: 'rotate(-80deg) scaleY(.4)', opacity: .3 }, { transform: 'rotate(0) scaleY(1)', opacity: 1 }],
+  E.img.animate([{ transform: LIFT + ' rotate(-80deg) scaleY(.4)', opacity: .3 }, { transform: LIFT + ' rotate(0) scaleY(1)', opacity: 1 }],
     { duration: 620, easing: 'cubic-bezier(.3,0,.2,1)' })
 }
 /* the HOLD (move.stopped by a zone of control): a short dashed ground line from
@@ -478,7 +485,7 @@ export function powerPulse(V) {
 export function standBeat(V, id) {
   const E = V.layers.UEL.get(id); if (!E || !E.img.animate) return
   E.img.style.transformOrigin = '50% 100%'
-  E.img.animate([{ transform: 'scaleY(.82)' }, { transform: 'scaleY(1.06)', offset: .6 }, { transform: 'scaleY(1)' }], { duration: 520, easing: 'cubic-bezier(.2,1.2,.4,1)' })
+  E.img.animate([{ transform: LIFT + ' scaleY(.82)' }, { transform: LIFT + ' scaleY(1.06)', offset: .6 }, { transform: LIFT + ' scaleY(1)' }], { duration: 520, easing: 'cubic-bezier(.2,1.2,.4,1)' })
 }
 
 /* DEATHBED FIGHTING — the modal (Angela, 2026-09-03 evening, VISUAL-BATTLE-
@@ -622,7 +629,7 @@ export function syncUnits(V) {
     const w = Math.round(hpx * E.a.aspect * (down ? 2 : 1))
     E.img.style.left = (-w / 2) + 'px'; E.img.style.top = (-hpx) + 'px'
     E.img.style.width = w + 'px'; E.img.style.height = hpx + 'px'
-    E.img.style.transform = down ? 'rotate(-90deg)' : ''
+    E.img.style.transform = down ? 'rotate(-90deg) ' + LIFT : LIFT
     if (down) E.img.style.top = (-Math.round(hpx * 0.42)) + 'px'
     /* A DOWNED HERO IS STILL A PERSON, not a decal (ruled 2026-09-01) */
     E.img.style.opacity = down ? '.82' : '1'
