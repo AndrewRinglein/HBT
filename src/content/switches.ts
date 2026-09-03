@@ -41,4 +41,6 @@ export const SWITCHES = {
   spareWeapons: 'left-behind' as 'left-behind' | 'kept',
   /** rewards.includeWaystation — may the reward draw deal a row the Waystation sells (a one-use potion, a torch)? The odds name classes and tiers, not shops; unsaid. */
   rewardsIncludeWaystation: false,
+  /** levelup.specialtyRequired — "specialization once at level 2" (GEAR-DESIGN.md §7): must the first level-up NAME a specialty, or is the offer declinable (a level taken without one passes it up for good)? Unsaid. */
+  levelUpSpecialtyRequired: false,
 } as const

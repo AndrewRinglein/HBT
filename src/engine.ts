@@ -14,7 +14,7 @@ export { createBattle } from '../../engine/src/core/setup.js'
 export type { BattleOptions } from '../../engine/src/core/setup.js'
 export { runBattle } from '../../engine/src/core/battle.js'
 export type { BattleResult } from '../../engine/src/core/battle.js'
-export type { Ctx, Event, Outcome, Side, ScenarioDef } from '../../engine/src/core/types.js'
+export type { Ctx, Event, Outcome, Side, ScenarioDef, HeroProgress } from '../../engine/src/core/types.js'
 export { SCENARIOS, scenarioOptions, scenarioDef } from '../../engine/src/content/scenarios.js'
 // Widened 2026-09-01 for the battle screen (M3): the board's geometry and
 // terrain, and the unit rows' display names. Read-only content and geometry —
@@ -22,6 +22,9 @@ export { SCENARIOS, scenarioOptions, scenarioDef } from '../../engine/src/conten
 export { WIDTH, HEIGHT, hexId, colOf, rowOf } from '../../engine/src/core/hex.js'
 export { terrainOf, terrainIdOf, isPassable } from '../../engine/src/content/maps.js'
 export { UNITS } from '../../engine/src/content/index.js'
+// Widened 2026-09-03 for screens.after-battle (G12): the engine's own level tables, read so the
+// level-5 pick the kingdom records as an index resolves to the option in the pack's stat names.
+export { LEVELS } from '../../engine/src/content/index.js'
 
 /**
  * The engine's event vocabulary the kingdom READS — the seam's fold and nothing

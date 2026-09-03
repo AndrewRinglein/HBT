@@ -36,6 +36,7 @@ import { listBuildings, whyNotBuild, performBuild } from '../core/build.js'
 import { isShopOpen, listShopItems, canBuyItem, performBuyItem, costOfItem, canEquip, whyNotEquip, performEquip, canUnequip, performUnequip, loadoutOf, equipCostOf, isEquipOpen, equipWhere, performOpenEquip, performCloseEquip, forgeBandName, shelfSpecOf, whyNotTradeIn, performTradeIn, tradeCategoryOf } from '../core/shop.js'
 import { itemOf } from '../content/items.js'
 import { equipScreen, deltasOf, displaceFor } from './equip.js'
+import { resultsScreen, rewardsScreen as spoilsScreen, levelUpScreen as levelScreen, type LastBattle } from './after.js'
 import { listCatalog, waystationLevelOf, canBuyCatalog, whyNotBuyCatalog, performBuyCatalog, priceOf } from '../core/waystation.js'
 import { makeNewCampaign, listDraftOffers, performDraft, performEndCampaign, draftsOwedOf, draftedCountOf } from '../core/opening.js'
 import { PROLOGUE } from '../content/prologue.js'
@@ -73,8 +74,14 @@ type App = {
   view: 'map' | 'town'
   /** The Equip screen's item in hand — a stash item clicked, waiting for a slot. A view choice, never saved. */
   picked: string | null
+  /** The battle the writer just wrote, kept for the results screen (the cursor drops the result at apply). */
+  lastBattle: LastBattle | null
+  /** The spoils: the three cards have been turned over. */
+  revealed: boolean
+  /** The level-up screen's choices before Take. */
+  chosen: { specialtyId: string | null; pick: number | null }
 }
-const app: App = { ctx: null, draft: null, draftReckoning: null, status: '', error: false, slot: null, confirmEnd: null, roster: false, party: [], view: 'map', picked: null }
+const app: App = { ctx: null, draft: null, draftReckoning: null, status: '', error: false, slot: null, confirmEnd: null, roster: false, party: [], view: 'map', picked: null, lastBattle: null, revealed: false, chosen: { specialtyId: null, pick: null } }
 
 // ── persistence ─────────────────────────────────────────────────────────────
 function persist(): void {
@@ -141,9 +148,9 @@ function screen(c: CampaignState): string {
     case 'draft': return draftScreen(c)
     case 'prep': return prepScreen(c)
     case 'battle': return c.cursor.battle?.resultSet ? tallyScreen(c) : battleScreen(c)
-    case 'reckoning': return appliedScreen(c)
-    case 'rewards': return rewardsScreen(c)
-    case 'levelUp': return levelUpScreen(c)
+    case 'reckoning': return resultsScreen(c, app.ctx!.events, app.lastBattle, resolveDifficulty(c))
+    case 'rewards': return spoilsScreen(c, app.ctx!.events, app.revealed)
+    case 'levelUp': return levelScreen(c, app.chosen)
     case 'open': return worldScreen(c)
     default: return `<div class="card"><p>The cursor is at <code>${esc(c.cursor.step)}</code> — a step the slice has no screen for yet.</p></div>`
   }
@@ -194,21 +201,6 @@ function charterPanel(c: CampaignState): string {
 function rosterPanel(c: CampaignState): string {
   const heroes = Object.values(c.roster).sort((a, b) => a.id.localeCompare(b.id))
   return `<div class="card" style="margin-top:12px"><h3>The roster</h3><table>${heroes.map((h) => `<tr><td>${esc(h.name)}</td><td class="meta">${esc(h.classes.map((x) => x.replace('class.', '')).join(', '))} · L${h.level} · ${h.xp} xp</td><td>${h.lifeState === 'dead' ? '<span class="lost">dead</span>' : h.wound ? woundNameOf(h.wound) : ''} <span class="meta">${esc(commitmentOf(c, h.id, 'field'))}</span></td></tr>`).join('') || '<tr><td class="meta">nobody yet</td></tr>'}</table></div>`
-}
-
-// ── rewards and level-up ────────────────────────────────────────────────────
-function rewardsScreen(c: CampaignState): string {
-  const offers = listRewardOffers(c)
-  return `<h2>The spoils — three drawn, keep one</h2>
-    <p class="meta"><code>${esc(c.cursor.engagement?.id ?? '')}</code> · the two you leave are burned.</p>
-    <div class="card"><div class="pick">${offers.map((r) => `<div class="opt" data-act="take-reward" data-id="${esc(r.id)}"><b>${esc(r.name)}</b><small>${esc(r.slot)} · tier ${r.tier} · <code>${esc(r.id)}</code></small></div>`).join('')}</div></div>`
-}
-function levelUpScreen(c: CampaignState): string {
-  const ready = listLevelUps(c)
-  return `<h2>Level up</h2>
-    <p class="meta">A level is +1 and nothing else until specialties arrive. XP is never lost — a level not taken waits.</p>
-    <div class="card"><div class="pick">${ready.map((id) => { const h = c.roster[id]!; return `<div class="opt" data-act="level-up" data-id="${esc(id)}"><b>${esc(h.name)}</b><small>L${h.level} → L${h.level + 1} · ${h.xp} xp (needs ${xpForLevel(h.level + 1)})</small></div>` }).join('') || '<p class="meta">nobody is ready</p>'}</div></div>
-    <div class="bar"><span class="sp"></span><button class="primary" data-act="leave-level-up">${ready.length ? 'Leave the rest for later' : 'Back to the Week'}</button></div>`
 }
 
 // ── the Week ────────────────────────────────────────────────────────────────
@@ -433,31 +425,6 @@ function applyButton(): string {
   return `<button class="primary" data-act="apply">Apply — write it to the Campaign</button>`
 }
 
-// ── after the writer: what changed, and the way out ─────────────────────────
-function appliedScreen(c: CampaignState): string {
-  const e = c.cursor.engagement
-  const written = app.ctx!.events.filter((ev) => ev.causeId === e?.id && ev.type !== 'cursor.moved')
-  const hero = (id: unknown) => (typeof id === 'string' ? c.roster[id]?.name ?? id : '')
-  const line = (ev: (typeof written)[number]): string => {
-    switch (ev.type) {
-      case 'xp.gained': return `${hero(ev['heroId'])} +${ev['amount']} XP → ${ev['xp']}`
-      case 'hero.wounded': return `${hero(ev['heroId'])} ${woundNameOf(ev['from'] as number)} → ${woundNameOf(ev['to'] as number)}`
-      case 'hero.died': return `${hero(ev['heroId'])} died`
-      case 'renown.gained': return `Renown +${ev['amount']} → ${ev['renown']}`
-      case 'engagement.resolved': return `${ev['won'] ? 'won' : 'lost'} — losses ${ev['losses']}`
-      case 'territory.claimed': return `claimed ${ev['territoryId']}${(ev['buildings'] as string[]).length ? ' with ' + (ev['buildings'] as string[]).join(', ') : ''}`
-      case 'territory.lost': return `lost ${ev['territoryId']}`
-      case 'resource.gained': return `+${ev['amount']} ${String(ev['currencyId']).replace('currency.', '')} → ${ev['balance']}`
-      default: return ev.type
-    }
-  }
-  return `<h2>Written</h2>
-    <p class="meta"><code>${esc(e?.id ?? '')}</code> — every line below is an event the writer emitted; the save already holds it.</p>
-    <div class="card"><table>${written.map((ev) => `<tr><td><code>${esc(ev.type)}</code></td><td>${esc(line(ev))}</td></tr>`).join('') || '<tr><td class="meta">nothing was written this session (loaded after the apply)</td></tr>'}</table>
-      <p class="meta">difficulty now ${resolveDifficulty(c)} · Renown ${c.renown} · losses ${c.losses} · purse ${Object.entries(c.purse).map(([k, v]) => `${k.replace('currency.', '')} ${v}`).join(' · ')}</p></div>
-    <div class="bar"><span class="sp"></span><button class="primary" data-act="exit">${c.cursor.rewardOffer ? 'On to the spoils →' : 'Exit — back to the Week'}</button></div>`
-}
-
 // ── wiring ──────────────────────────────────────────────────────────────────
 function wire(root: HTMLElement): void {
   root.querySelectorAll<HTMLElement>('[data-act]').forEach((el) => {
@@ -518,10 +485,13 @@ function wire(root: HTMLElement): void {
           const k = resolveReckoning(app.ctx!.campaign, e, r)
           setBattleOutcome(app.ctx!, r, k, 'slice')
         })
-        case 'apply': return act(() => { const b = app.ctx!.campaign.cursor.battle!; applyBattleResult(app.ctx!, app.ctx!.campaign.cursor.engagement!, b.result!, b.reckoning!); app.draft = null })
-        case 'exit': return act(() => performExitBattle(app.ctx!, 'slice'))
-        case 'take-reward': return act(() => performTakeReward(app.ctx!, id!, 'slice'))
-        case 'level-up': return act(() => performLevelUp(app.ctx!, id!, 'slice'))
+        case 'apply': return act(() => { const b = app.ctx!.campaign.cursor.battle!; const e = app.ctx!.campaign.cursor.engagement!; app.lastBattle = { engagementId: e.id, result: b.result!, reckoning: b.reckoning! }; applyBattleResult(app.ctx!, e, b.result!, b.reckoning!); app.draft = null })
+        case 'exit': app.revealed = false; return act(() => performExitBattle(app.ctx!, 'slice'))
+        case 'reveal': app.revealed = true; return render()
+        case 'take-reward': return act(() => { performTakeReward(app.ctx!, id!, 'slice'); app.revealed = false; app.chosen = { specialtyId: null, pick: null } })
+        case 'choose-specialty': app.chosen = { ...app.chosen, specialtyId: app.chosen.specialtyId === id ? null : id! }; return render()
+        case 'choose-pick': app.chosen = { ...app.chosen, pick: app.chosen.pick === Number(id) ? null : Number(id) }; return render()
+        case 'level-up': return act(() => { const ch: { specialtyId?: string; pick?: number } = {}; if (app.chosen.specialtyId) ch.specialtyId = app.chosen.specialtyId; if (app.chosen.pick !== null) ch.pick = app.chosen.pick; performLevelUp(app.ctx!, id!, 'slice', ch); app.chosen = { specialtyId: null, pick: null } })
         case 'leave-level-up': return act(() => performLeaveLevelUp(app.ctx!, 'slice'))
         case 'back-to-panel': return act(() => { app.draft = app.ctx!.campaign.cursor.battle?.result ?? app.draft; setCursor(app.ctx!, { battle: { resultSet: false } }, 'slice') })
       }

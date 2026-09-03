@@ -17,8 +17,8 @@
 // No campaign code. `makeBattleState(campaign, engagement, seed) → BattleOptions`
 // is M1's; it will produce an EngagementSpec and call battleOptionsOf.
 
-import { createBattle, runBattle } from '../engine.js'
-import type { BattleOptions, Event, Outcome, Side } from '../engine.js'
+import { createBattle, runBattle, LEVELS } from '../engine.js'
+import type { BattleOptions, Event, Outcome, Side, HeroProgress } from '../engine.js'
 import { itemOf } from '../content/items.js'
 import { fieldedModsOfRows, type FieldedMods } from './sets.js'
 import { fieldedItemsOf } from './loadout.js'
@@ -53,6 +53,13 @@ export type EngagementSpec = {
   readonly heroItems?: readonly (readonly string[])[]
   /** Worn on the hero's record but not handed over — a spare weapon past the hands, until the engine's seam.spare-weapons lands (SWITCHES.spareWeapons). Parallel to `heroes`; shown, never swallowed. */
   readonly heroLeftBehind?: readonly (readonly string[])[]
+  /**
+   * screens.after-battle (G12, 2026-09-03): how far each hero has come — level, specialty,
+   * the level-5 pick — parallel to `heroes`; the engine folds the codex's level rows onto the
+   * unit at fielding (hero assembly 2026-09-03). An entry is null for a hero at level 1 with
+   * nothing chosen: the bare row, unchanged.
+   */
+  readonly heroProgress?: readonly (HeroProgress | null)[]
 }
 
 /** One unit's tally, folded from the log. Order: heroes in spec order, then enemies. */
@@ -98,7 +105,7 @@ export type EngagementResult = {
  * battle condition arrive here when those systems exist.
  */
 export function makeBattleState(
-  roster: Readonly<Record<string, { unitType: string; equipped?: readonly string[] }>>,
+  roster: Readonly<Record<string, { unitType: string; equipped?: readonly string[]; classes?: readonly string[]; level?: number; specialty?: string | null; levelPick?: number | null }>>,
   engagement: { id: string; mapId: string; enemies: readonly string[]; deployed: readonly string[]; seed: number },
 ): EngagementSpec {
   const rows = engagement.deployed.map((heroId) => {
@@ -111,10 +118,33 @@ export function makeBattleState(
   const heroMods = rows.map((h) => fieldedModsOfRows((h.equipped ?? []).map(itemOf)))
   // what is equipped is what is fielded — a hero row without `equipped` (a bare fielding) keeps its kit
   const carried = rows.every((h) => h.equipped) ? rows.map((h) => fieldedItemsOf(h.equipped!)) : null
+  const heroProgress = rows.map((h) => progressOf(h))
   return {
     id: engagement.id, mapId: engagement.mapId, heroes, enemies: [...engagement.enemies], seed: engagement.seed, heroMods,
     ...(carried ? { heroItems: carried.map((c) => c.fielded), heroLeftBehind: carried.map((c) => c.leftBehind) } : {}),
+    ...(heroProgress.some((p) => p) ? { heroProgress } : {}),
   }
+}
+
+/**
+ * A hero's progress as the engine takes it: level, specialty, and the level-5 pick — the
+ * pick is recorded on the hero as an INDEX and resolved here against the engine's own
+ * level table, so the option's stat names have one owner (the pack). Null at level 1
+ * with nothing chosen.
+ */
+function progressOf(h: { classes?: readonly string[]; level?: number; specialty?: string | null; levelPick?: number | null }): HeroProgress | null {
+  const level = h.level ?? 1
+  if (level <= 1 && !h.specialty) return null
+  const out: { level: number; specialtyId?: string; levelFivePick?: Readonly<Record<string, number>> } = { level }
+  if (h.specialty) out.specialtyId = h.specialty
+  if (h.levelPick !== null && h.levelPick !== undefined) {
+    const cls = h.classes?.[0]
+    const choice = cls ? LEVELS[cls]?.rows.find((r) => r.choice)?.choice : undefined
+    const opt = choice?.[h.levelPick]
+    if (!opt) throw new Error(`progress: pick ${h.levelPick} names no option on ${cls ?? 'no class'}'s choice row in the engine's level table`)
+    out.levelFivePick = opt
+  }
+  return out
 }
 
 /** The joint §4.1 names: a spec becomes the engine's own options, nothing more. */
@@ -131,6 +161,7 @@ export function battleOptionsOf(spec: EngagementSpec): BattleOptions {
     // seam.loadout: the equipped lists go through as item ids; the engine reads its own rows for them
     ...(spec.heroItems ? { heroItems: spec.heroItems.map((l) => [...l]) } : {}),
     // heroMods wait on the engine's seam.unit-mods — resolved and recorded on the spec, not fought
+    ...(spec.heroProgress ? { heroProgress: spec.heroProgress.map((p) => p ?? undefined) } : {}),
   }
 }
 

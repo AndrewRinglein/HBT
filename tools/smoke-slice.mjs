@@ -43,7 +43,9 @@ click('advance')                     // → equip: the Equip screen (G11) — he
 has('Equip'); has('right hand'); has('armor'); has('slot 1'); has('Set bonuses when you leave')
 { const t = text(); let at = t.indexOf('Idols'); for (const w of ['Bloodrunes', 'Relics', 'Weapons', 'Armor', 'Trinkets']) { const n = t.indexOf(w, at + 1); if (at < 0 || n < 0) throw new Error(`the six sections are not in the ruled order — ${w} does not follow`); at = n } }
 click('advance')                     // → battle
-has('The battle'); has('Fielded as equipped'); click('decide'); has('Reckoning'); click('apply'); click('exit')
+has('The battle'); has('Fielded as equipped'); click('decide'); has('Reckoning'); click('apply')
+has('Victory'); has('kill'); click('exit')                 // the results screen (G12), then the spoils: face down, reveal, keep
+has('The spoils'); has('Turn them over'); click('reveal'); has('Keep one')
 while (!text().includes('Week 3 — ')) click(root.els.find((x) => ['take-reward', 'leave-level-up', 'level-up'].includes(x.dataset.act)).dataset.act)
 has('Week 3 — Conquer'); has('held'); has('unclaimed'); has('supplies'); has('faith'); has('mana'); has('salvage')
 click('advance'); click('advance'); click('advance')  // build → mend → Week 4 Buy

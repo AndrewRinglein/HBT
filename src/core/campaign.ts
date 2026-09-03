@@ -122,6 +122,10 @@ export type Hero = {
   itemSlots: number
   /** Per-hero corruption, STORED (SKELETON-SETTLED.md:117 derives the pool; the summand lives here). */
   corruption: number
+  /** The specialty chosen at the first level-up (the codex: reaching level 2), a specialty.* id — or null/absent before it. G12. */
+  specialty?: string | null
+  /** The level-5 pick: the INDEX of the option taken from the class table's choice row — or null/absent. The engine reads the option by index through the seam. G12. */
+  levelPick?: number | null
 }
 
 /**

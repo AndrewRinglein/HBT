@@ -36,6 +36,8 @@ node tools/slice-gate.mjs --count            "N of M closed · K probed · J acc
 python3 tools/prep-art.py [kingdom-art]      downscale the kingdom art into generated/art/ (Pillow; default ../../Autobattler/kingdom-art)
 python3 tools/prep-mock.py [mock]           pull the Load Game mock's banners and faces into generated/art/ (after prep-art)
 node tools/mk-items.mjs                      regenerate src/content/generated/items.ts from the codex (+ items-gaps.json)
+node tools/mk-progress.mjs                   regenerate src/content/generated/progress.ts (level tables, specialties) from the codex
+python3 tools/prep-heroes.py                 the pool heroes' card portraits into generated/art/ (after prep-art)
 node tools/build-slice.mjs                   SLICE.html, with generated/art/ inlined
 node tools/smoke-slice.mjs SLICE.html        drive the built page headlessly
 node tools/slice-gate.mjs --sync             write the count and every State: line into the doc

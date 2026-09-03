@@ -66,6 +66,10 @@ export const KINGDOM_EVENTS = [
   // Added 2026-09-02 with waystation.catalog (G7), and to GLOSSARY.md the same commit: a
   // one-use item spent in a Battle, and made whole again when the Battle is left.
   'item.spent', 'item.restocked',
+  // Added 2026-09-03 with screens.after-battle (G12), and to GLOSSARY.md the same commit: the
+  // specialty chosen at the first level-up. A level is a number; a specialization is a choice
+  // made once, so it takes its own word.
+  'hero.specialized',
 ] as const
 
 export type KingdomEventType = (typeof KINGDOM_EVENTS)[number]

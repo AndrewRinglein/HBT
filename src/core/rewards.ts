@@ -11,7 +11,9 @@
 // level is +1 and nothing else until specialties arrive.
 
 import type { CampaignState, HeroId } from './campaign.js'
-import { type Ctx, setRewardOffer, applyTakeReward, applyLevel, setCursor } from './mutate.js'
+import { type Ctx, setRewardOffer, applyTakeReward, applyLevel, applySpecialty, setCursor } from './mutate.js'
+import { levelRowOf, specialtiesOf, specialtyOf, type SpecialtyRow, type LevelRow } from '../content/progress.js'
+import { SWITCHES } from '../content/switches.js'
 import { rollOf } from './rng.js'
 import { REWARDS, REWARD_ODDS, rewardOf, type RewardRow } from '../content/rewards.js'
 import { itemOf } from '../content/items.js'
@@ -73,12 +75,69 @@ export function listLevelUps(campaign: CampaignState): HeroId[] {
   return Object.keys(campaign.roster).filter((id) => canLevelUp(campaign, id)).sort()
 }
 
-export function performLevelUp(ctx: Ctx, heroId: HeroId, causeId: string): void {
-  if (!canLevelUp(ctx.campaign, heroId)) {
-    const h = ctx.campaign.roster[heroId]
-    throw new Error(`performLevelUp refused for '${heroId}': ${h ? `${h.xp} xp at level ${h.level}, needs ${xpForLevel(h.level + 1) ?? 'a curve past the ruled one'}` : 'no such hero'}`)
+/** The class whose table a hero levels on — the first of its classes (a multi-class hero's table is unruled; SWITCHES would own it). */
+export const levelClassOf = (campaign: CampaignState, heroId: HeroId): string => {
+  const h = campaign.roster[heroId]
+  if (!h) throw new Error(`no hero '${heroId}'`)
+  const cls = h.classes[0]
+  if (!cls) throw new Error(`${heroId} has no class — no level table to read`)
+  return cls
+}
+
+/** What the next level does (screens.after-battle, G12): the row's grants, the specialty offer at the codex's level, the level-5 pick. Pure. */
+export type LevelUpView = {
+  heroId: HeroId
+  from: number
+  to: number
+  row: LevelRow
+  /** The specialty is chosen here — the first level-up (codex levels.rules) — and only if none is held. */
+  needsSpecialty: boolean
+  specialtyOffers: SpecialtyRow[]
+  /** The row carries a choice: one of these, by index. */
+  pickOptions: readonly Readonly<Record<string, number>>[] | null
+  specialty: SpecialtyRow | null
+}
+export function viewLevelUp(campaign: CampaignState, heroId: HeroId): LevelUpView {
+  const h = campaign.roster[heroId]
+  if (!h) throw new Error(`no hero '${heroId}'`)
+  const cls = levelClassOf(campaign, heroId)
+  const row = levelRowOf(cls, h.level + 1)
+  const needsSpecialty = row.specialty && !h.specialty
+  return {
+    heroId, from: h.level, to: h.level + 1, row,
+    needsSpecialty, specialtyOffers: needsSpecialty ? specialtiesOf(cls) : [],
+    pickOptions: row.choice ?? null,
+    specialty: h.specialty ? specialtyOf(h.specialty) : null,
   }
-  applyLevel(ctx, heroId, causeId)
+}
+
+export type LevelChoice = { specialtyId?: string; pick?: number }
+
+/** Why this level cannot be taken with this choice — or null. Refuses loudly (Law 9): a specialty owed and not named, a pick owed and not made, a specialty of another class. */
+export function whyNotLevelUp(campaign: CampaignState, heroId: HeroId, choice: LevelChoice = {}): string | null {
+  if (!canLevelUp(campaign, heroId)) {
+    const h = campaign.roster[heroId]
+    return h ? `${h.xp} xp at level ${h.level}, needs ${xpForLevel(h.level + 1) ?? 'a curve past the ruled one'}` : 'no such hero'
+  }
+  const v = viewLevelUp(campaign, heroId)
+  if (v.needsSpecialty) {
+    // the offer is made once; a level taken without a name DECLINES it unless the switch says it must be answered
+    if (!choice.specialtyId && SWITCHES.levelUpSpecialtyRequired) return `reaching level ${v.to} chooses a specialty — name one of ${v.specialtyOffers.map((s) => s.id).join(', ')}`
+    if (choice.specialtyId && !v.specialtyOffers.some((s) => s.id === choice.specialtyId)) return `'${choice.specialtyId}' is not a ${levelClassOf(campaign, heroId)} specialty`
+  } else if (choice.specialtyId) return `the specialty is chosen once, at the first level-up — ${campaign.roster[heroId]!.name} already ${campaign.roster[heroId]!.specialty ? 'holds ' + campaign.roster[heroId]!.specialty : 'passed it'}`
+  if (v.pickOptions) {
+    if (choice.pick === undefined) return `level ${v.to} picks one of ${v.pickOptions.length} — name its index`
+    if (!Number.isInteger(choice.pick) || choice.pick < 0 || choice.pick >= v.pickOptions.length) return `pick ${choice.pick} is not one of level ${v.to}'s ${v.pickOptions.length} options`
+  } else if (choice.pick !== undefined) return `level ${v.to} offers no pick`
+  return null
+}
+
+export function performLevelUp(ctx: Ctx, heroId: HeroId, causeId: string, choice: LevelChoice = {}): void {
+  const why = whyNotLevelUp(ctx.campaign, heroId, choice)
+  if (why) throw new Error(`performLevelUp refused for '${heroId}': ${why}`)
+  const v = viewLevelUp(ctx.campaign, heroId)
+  if (v.needsSpecialty && choice.specialtyId) applySpecialty(ctx, heroId, choice.specialtyId, causeId)
+  applyLevel(ctx, heroId, causeId, v.row.grants, v.pickOptions ? choice.pick! : null, v.needsSpecialty && !choice.specialtyId)
 }
 
 /** Leave the level-up step for the Week, levelled or not — a level waits; XP is never lost. */

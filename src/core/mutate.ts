@@ -164,10 +164,24 @@ export function applyTakeReward(ctx: Ctx, itemId: string, causeId: string): void
   emit(ctx, 'reward.taken', causeId, { itemId, burned: offer.filter((i) => i !== itemId) })
 }
 
-export function applyLevel(ctx: Ctx, heroId: string, causeId: string): void {
+/**
+ * A level, with what the codex row grants (screens.after-battle, G12): the grants ride on the
+ * event so the log says what the level did; itemSlots — the slot model's number, the one grant
+ * the kingdom folds itself — moves on the hero; the rest is the engine's at fielding, from the
+ * same rows, through heroProgress. A pick (level 5) is recorded as its option index.
+ */
+export function applyLevel(ctx: Ctx, heroId: string, causeId: string, grants: Readonly<Record<string, number>> = {}, pick: number | null = null, specialtyDeclined = false): void {
   const h = heroOrThrow(ctx.campaign, heroId)
   h.level += 1
-  emit(ctx, 'hero.leveled', causeId, { heroId, level: h.level, xp: h.xp })
+  if (grants['itemSlots']) h.itemSlots += grants['itemSlots']
+  if (pick !== null) h.levelPick = pick
+  emit(ctx, 'hero.leveled', causeId, { heroId, level: h.level, xp: h.xp, grants: { ...grants }, ...(pick !== null ? { pick } : {}), ...(specialtyDeclined ? { specialtyDeclined: true } : {}) })
+}
+
+export function applySpecialty(ctx: Ctx, heroId: string, specialtyId: string, causeId: string): void {
+  const h = heroOrThrow(ctx.campaign, heroId)
+  h.specialty = specialtyId
+  emit(ctx, 'hero.specialized', causeId, { heroId, specialtyId, level: h.level })
 }
 
 /** A node of a building's tree, bought — the one write of a Building's nodes. */

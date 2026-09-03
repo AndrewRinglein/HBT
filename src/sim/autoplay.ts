@@ -16,7 +16,7 @@ import { performAdvance, listStageOffers, performChooseEngagement, canAdvance } 
 import { prepStepOf, performAdvancePrep, listCouncilOptions, performCouncil, listDeployable, performDeploy, canAdvancePrep } from '../core/prep.js'
 import { makeBlankResult, withUnitFate, validateResult } from '../core/result.js'
 import { resolveReckoning, applyBattleResult, performExitBattle } from '../core/reckoning.js'
-import { listRewardOffers, performTakeReward, listLevelUps, performLevelUp, performLeaveLevelUp } from '../core/rewards.js'
+import { listRewardOffers, performTakeReward, listLevelUps, performLevelUp, performLeaveLevelUp, viewLevelUp } from '../core/rewards.js'
 import { viewBattle } from '../view/battle.js'
 import type { EngagementResult } from '../core/seam.js'
 import { listAvailable } from '../core/assignments.js'
@@ -40,6 +40,10 @@ export type Decisions = {
   outcome: (campaign: CampaignState, blank: EngagementResult) => EngagementResult
   /** Which of the three rewards to keep. Default: the first. */
   reward: (campaign: CampaignState, offers: string[]) => string
+  /** The specialty at the first level-up, from the class's offers. Default: the first by id. */
+  specialty: (campaign: CampaignState, heroId: string, offers: string[]) => string | undefined
+  /** The level-5 pick, an index into the row's options. Default: the first. */
+  levelPick: (campaign: CampaignState, heroId: string, options: number) => number
   /** Who works what at Mend. Default: every free hero, cycling through the labours that yield. */
   labours: (campaign: CampaignState, free: string[]) => [string, string][]
   /** Which node to build, of those buildable, or null. Default: the cheapest. */
@@ -64,6 +68,8 @@ export const DEFAULTS: Decisions = {
     return { ...r, outcome: 'heroClear', turns: 5, heroPhases: 5, enemyPhases: 4 }
   },
   reward: (_c, offers) => offers[0]!,
+  specialty: (_c, _h, offers) => offers[0],
+  levelPick: () => 0,
   labours: (_c, free) => {
     const keys = listLabours().filter((l) => l.currency).map((l) => l.key)
     return free.map((h, i) => [h, keys[i % keys.length]!] as [string, string])
@@ -101,7 +107,17 @@ export function playEngagement(ctx: Ctx, d: Decisions, causeId: string): void {
   applyBattleResult(ctx, e, result, reckoning)
   performExitBattle(ctx, causeId)
   if (c.cursor.step === 'rewards') performTakeReward(ctx, d.reward(c, listRewardOffers(c).map((r) => r.id)), causeId)
-  if (c.cursor.step === 'levelUp') { for (const h of listLevelUps(c)) performLevelUp(ctx, h, causeId); performLeaveLevelUp(ctx, causeId) }
+  if (c.cursor.step === 'levelUp') {
+    for (const h of listLevelUps(c)) {
+      const v = viewLevelUp(c, h)
+      const choice: { specialtyId?: string; pick?: number } = {}
+      const sp = v.needsSpecialty ? d.specialty(c, h, v.specialtyOffers.map((s) => s.id)) : undefined
+      if (sp) choice.specialtyId = sp
+      if (v.pickOptions) choice.pick = d.levelPick(c, h, v.pickOptions.length)
+      performLevelUp(ctx, h, causeId, choice)
+    }
+    performLeaveLevelUp(ctx, causeId)
+  }
 }
 
 /** Advance one Stage — or one step of the opening — taking what it offers first if the decisions say so. */
