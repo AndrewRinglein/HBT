@@ -1229,8 +1229,7 @@
         "health": 5
        }
       ]
-     },
-     "note": "The Warrior L5 list verbatim — ruled 2026-09-03: \"for number 6, I was saying the L5 choice is the Warrior list.\" That closes the soft flag on every civilian type table."
+     }
     },
     {
      "level": 6,
@@ -1288,7 +1287,7 @@
    "startingPowers": [
     "power.apothecary.healing-potion"
    ],
-   "startingPowersNote": "Ruled 2026-09-03: \"specialty is different than civilian. Sure, give a poultice.\" Then, same day, when the deltas against the dictation were put to her: \"we are going to use the previous Poultice.\" So this is power.apothecary.healing-potion EXACTLY AS IT STANDS — heal 5, remove 2 Burn, cooldown 2, 0 Stamina, one ally within 1 hex. The earlier dictation (heal 4, remove 2 Poison, cooldown 3, 1 Stamina) is SUPERSEDED and no new power is authored. The same power is also carried by specialty.apothecary; that is fine, it is one power in two places."
+   "startingPowersNote": "Ruled 2026-09-03: \"specialty is different than civilian. Sure, give a poultice.\" A hero on this table starts with Poultice (power.apothecary.healing-potion), the EXISTING power, rather than a new near-duplicate. THREE DELTAS ARE STILL SOFT against the dictation of 2026-09-03 (\"heals 4 and removes 2 poison, cooldown 3, costs 1 stamina, range 1\"): the existing Poultice heals 5 not 4, removes Burn not Poison, has cooldown 2 not 3, and costs 0 Stamina not 1. The existing power is also carried by specialty.apothecary, so rewriting its numbers would change the specialty too. Not changed without a ruling. NOTE ALSO: no hero is currently pointed at civilian.apothecary, so nothing receives this yet."
   },
   {
    "id": "civilian.child",
@@ -1356,8 +1355,7 @@
         "accuracy": 15
        }
       ]
-     },
-     "note": "The Warrior L5 list verbatim — ruled 2026-09-03: \"for number 6, I was saying the L5 choice is the Warrior list.\" That closes the soft flag on every civilian type table."
+     }
     },
     {
      "level": 6,
@@ -1479,8 +1477,7 @@
         "accuracy": 15
        }
       ]
-     },
-     "note": "The Warrior L5 list verbatim — ruled 2026-09-03: \"for number 6, I was saying the L5 choice is the Warrior list.\" That closes the soft flag on every civilian type table."
+     }
     },
     {
      "level": 6,
@@ -1597,8 +1594,7 @@
         "crit": 8
        }
       ]
-     },
-     "note": "The Warrior L5 list verbatim — ruled 2026-09-03: \"for number 6, I was saying the L5 choice is the Warrior list.\" That closes the soft flag on every civilian type table."
+     }
     },
     {
      "level": 6,
@@ -1720,8 +1716,7 @@
         "resist": 1
        }
       ]
-     },
-     "note": "The Warrior L5 list verbatim — ruled 2026-09-03: \"for number 6, I was saying the L5 choice is the Warrior list.\" That closes the soft flag on every civilian type table."
+     }
     },
     {
      "level": 6,
@@ -1843,8 +1838,7 @@
         "accuracy": 15
        }
       ]
-     },
-     "note": "The Warrior L5 list verbatim — ruled 2026-09-03: \"for number 6, I was saying the L5 choice is the Warrior list.\" That closes the soft flag on every civilian type table."
+     }
     },
     {
      "level": 6,
@@ -1961,8 +1955,7 @@
         "resist": 1
        }
       ]
-     },
-     "note": "The Warrior L5 list verbatim — ruled 2026-09-03: \"for number 6, I was saying the L5 choice is the Warrior list.\" That closes the soft flag on every civilian type table."
+     }
     },
     {
      "level": 6,
@@ -2082,8 +2075,7 @@
         "crit": 8
        }
       ]
-     },
-     "note": "The Warrior L5 list verbatim — ruled 2026-09-03: \"for number 6, I was saying the L5 choice is the Warrior list.\" That closes the soft flag on every civilian type table."
+     }
     },
     {
      "level": 6,
@@ -2205,8 +2197,7 @@
         "dodge": 10
        }
       ]
-     },
-     "note": "The Warrior L5 list verbatim — ruled 2026-09-03: \"for number 6, I was saying the L5 choice is the Warrior list.\" That closes the soft flag on every civilian type table."
+     }
     },
     {
      "level": 6,
@@ -2256,351 +2247,6 @@
       "luck": 3,
       "resist": 1,
       "spirit": 1
-     }
-    }
-   ]
-  },
-  {
-   "id": "civilian.wife",
-   "name": "Wife",
-   "parentClass": "class.civilian",
-   "source": "AUTHORED",
-   "note": "The wives — the ones who stayed and were still standing when it came through the door. Health and Resist above everything, a little Strength and Armor late, and Item Slots: she has the house. No Magic, no Spirit, almost no Dodge — she does not evade, she absorbs. Invented 2026-09-03 on Angela's call: \"invent a table for Wife #3, Living Ghost, and Zombie Bride.\" Numbers SOFT. Stamina: +3 Max (L2, L4, L8), +2 Regen (L6, L9), same as every civilian type.",
-   "rows": [
-    {
-     "level": 1,
-     "grants": {}
-    },
-    {
-     "level": 2,
-     "grants": {
-      "health": 1,
-      "resist": 1,
-      "staminaMax": 1
-     },
-     "specialty": true
-    },
-    {
-     "level": 3,
-     "grants": {
-      "health": 2,
-      "precision": 1,
-      "itemSlots": 1,
-      "accuracy": 3
-     }
-    },
-    {
-     "level": 4,
-     "grants": {
-      "strength": 1,
-      "health": 1,
-      "resist": 1,
-      "staminaMax": 1
-     }
-    },
-    {
-     "level": 5,
-     "grants": {
-      "health": 1,
-      "itemSlots": 1
-     },
-     "choice": {
-      "pick": 1,
-      "options": [
-       {
-        "strength": 2
-       },
-       {
-        "health": 5
-       },
-       {
-        "accuracy": 15
-       },
-       {
-        "resist": 1
-       },
-       {
-        "armor": 1
-       }
-      ]
-     },
-     "note": "The Warrior L5 list verbatim — ruled 2026-09-03: \"for number 6, I was saying the L5 choice is the Warrior list.\" That closes the soft flag on every civilian type table."
-    },
-    {
-     "level": 6,
-     "grants": {
-      "armor": 1,
-      "health": 2,
-      "accuracy": 3,
-      "staminaRegen": 1
-     }
-    },
-    {
-     "level": 7,
-     "grants": {
-      "strength": 1,
-      "health": 1,
-      "itemSlots": 1,
-      "dodge": 3,
-      "crit": 5
-     }
-    },
-    {
-     "level": 8,
-     "grants": {
-      "health": 2,
-      "resist": 1,
-      "accuracy": 3,
-      "staminaMax": 1
-     }
-    },
-    {
-     "level": 9,
-     "grants": {
-      "armor": 1,
-      "health": 1,
-      "toughness": 1,
-      "staminaRegen": 1
-     }
-    },
-    {
-     "level": 10,
-     "grants": {
-      "strength": 1,
-      "health": 2,
-      "resist": 1,
-      "itemSlots": 1,
-      "accuracy": 3,
-      "luck": 2
-     }
-    }
-   ]
-  },
-  {
-   "id": "civilian.ghost",
-   "name": "Living Ghost",
-   "parentClass": "class.civilian",
-   "source": "AUTHORED",
-   "note": "Dodge, Spirit and Resist, and almost no body at all — the lowest Health in the game and not one point of Strength or Armor across ten levels. Forty-five Dodge, more than any other table: the whole design is that it is difficult to establish that she is there. Spirit because a ghost lifts the side rather than itself. Invented 2026-09-03 on Angela's call. Numbers SOFT. Stamina: +3 Max (L2, L4, L8), +2 Regen (L6, L9), same as every civilian type.",
-   "rows": [
-    {
-     "level": 1,
-     "grants": {}
-    },
-    {
-     "level": 2,
-     "grants": {
-      "health": 1,
-      "dodge": 5,
-      "staminaMax": 1
-     },
-     "specialty": true
-    },
-    {
-     "level": 3,
-     "grants": {
-      "health": 1,
-      "dodge": 5,
-      "resist": 1,
-      "vision": 1
-     }
-    },
-    {
-     "level": 4,
-     "grants": {
-      "health": 1,
-      "dodge": 5,
-      "spirit": 1,
-      "staminaMax": 1
-     }
-    },
-    {
-     "level": 5,
-     "grants": {
-      "dodge": 5,
-      "vision": 1
-     },
-     "choice": {
-      "pick": 1,
-      "options": [
-       {
-        "strength": 2
-       },
-       {
-        "health": 5
-       },
-       {
-        "accuracy": 15
-       },
-       {
-        "resist": 1
-       },
-       {
-        "armor": 1
-       }
-      ]
-     },
-     "note": "The Warrior L5 list verbatim — ruled 2026-09-03: \"for number 6, I was saying the L5 choice is the Warrior list.\" That closes the soft flag on every civilian type table."
-    },
-    {
-     "level": 6,
-     "grants": {
-      "health": 1,
-      "dodge": 5,
-      "resist": 1,
-      "staminaRegen": 1
-     }
-    },
-    {
-     "level": 7,
-     "grants": {
-      "health": 1,
-      "dodge": 5,
-      "spirit": 1,
-      "itemSlots": 1
-     }
-    },
-    {
-     "level": 8,
-     "grants": {
-      "health": 1,
-      "dodge": 5,
-      "resist": 1,
-      "crit": 5,
-      "staminaMax": 1
-     }
-    },
-    {
-     "level": 9,
-     "grants": {
-      "dodge": 5,
-      "spirit": 1,
-      "movement": 1,
-      "staminaRegen": 1
-     }
-    },
-    {
-     "level": 10,
-     "grants": {
-      "health": 1,
-      "dodge": 5,
-      "resist": 1,
-      "spirit": 1,
-      "crit": 5
-     }
-    }
-   ]
-  },
-  {
-   "id": "civilian.revenant",
-   "name": "Revenant",
-   "parentClass": "class.civilian",
-   "source": "AUTHORED",
-   "note": "Toughness, Armor and Health, and not one point of Dodge — the Zombie Bride does not get out of the way, she is simply still there afterwards. The most Health of any table, eighteen across the run, and Strength late because something that does not feel it hits harder than it should. This is the armoured cousin of the Refugee, which takes Dodge instead. Invented 2026-09-03 on Angela's call. Numbers SOFT. Stamina: +3 Max (L2, L4, L8), +2 Regen (L6, L9), same as every civilian type.",
-   "rows": [
-    {
-     "level": 1,
-     "grants": {}
-    },
-    {
-     "level": 2,
-     "grants": {
-      "health": 2,
-      "toughness": 1,
-      "staminaMax": 1
-     },
-     "specialty": true
-    },
-    {
-     "level": 3,
-     "grants": {
-      "armor": 1,
-      "health": 2,
-      "toughness": 1,
-      "strength": 1
-     }
-    },
-    {
-     "level": 4,
-     "grants": {
-      "health": 2,
-      "resist": 1,
-      "toughness": 1,
-      "staminaMax": 1
-     }
-    },
-    {
-     "level": 5,
-     "grants": {
-      "health": 2,
-      "toughness": 1
-     },
-     "choice": {
-      "pick": 1,
-      "options": [
-       {
-        "strength": 2
-       },
-       {
-        "health": 5
-       },
-       {
-        "accuracy": 15
-       },
-       {
-        "resist": 1
-       },
-       {
-        "armor": 1
-       }
-      ]
-     },
-     "note": "The Warrior L5 list verbatim — ruled 2026-09-03: \"for number 6, I was saying the L5 choice is the Warrior list.\" That closes the soft flag on every civilian type table."
-    },
-    {
-     "level": 6,
-     "grants": {
-      "armor": 1,
-      "health": 2,
-      "strength": 1,
-      "staminaRegen": 1
-     }
-    },
-    {
-     "level": 7,
-     "grants": {
-      "health": 2,
-      "toughness": 1,
-      "itemSlots": 1,
-      "accuracy": 3
-     }
-    },
-    {
-     "level": 8,
-     "grants": {
-      "armor": 1,
-      "health": 2,
-      "resist": 1,
-      "staminaMax": 1
-     }
-    },
-    {
-     "level": 9,
-     "grants": {
-      "health": 2,
-      "strength": 1,
-      "toughness": 1,
-      "staminaRegen": 1
-     }
-    },
-    {
-     "level": 10,
-     "grants": {
-      "armor": 1,
-      "health": 2,
-      "strength": 1,
-      "toughness": 1,
-      "accuracy": 3
      }
     }
    ]

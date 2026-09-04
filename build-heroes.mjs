@@ -407,7 +407,42 @@ for(const h of heroes){
 {
   const CR=JSON.parse(fs.readFileSync('gen/civilian-rulings.json','utf8'));
 
-  // Civilian TYPE level tables, ruled 2026-09-03. A civilian levels by its type, not by the
+  for(const [id,name] of Object.entries(CR.renames||{})){
+    const h=heroes.find(x=>x.id===id);
+    if(!h){problems.push('civilian-rulings: no hero '+id);continue;}
+    h.notes.push('Renamed '+JSON.stringify(h.name)+' -> '+JSON.stringify(name)+', ruled 2026-08-25.');
+    h.name=name;
+    h.subtype=name;   // a fixed hero's subtype IS its name (R19) — the rename carries it
+  }
+  // newUnits. A spec may now carry its OWN art (`artSlug`), which is what the twelve painted
+  // civilians of 2026-09-03 need — the original loop hard-nulled every art field because the
+  // only new unit at the time had none. A spec with an artSlug gets the local tree declared in
+  // gen/art-conventions.json: art/heroes/<slug>/card/l1.png and hex/l1_{256,1024,full}.png.
+  // levelArt stays UNSET until l2..l4 are painted; mkthumbs falls back to `art` for the level
+  // strip, so an incomplete levelArt array would be worse than none.
+  for(const [id,spec] of Object.entries(CR.newUnits||{})){
+    if(id.startsWith('_'))continue;
+    const src=heroes.find(x=>x.id===spec.cloneStatsOf);
+    if(!src){problems.push('civilian-rulings newUnits: no clone source '+spec.cloneStatsOf);continue;}
+    const slug=spec.artSlug;
+    const art=slug?{
+      art:'art/heroes/'+slug+'/card/l1.png', artSlug:slug, artMissing:undefined,
+      levelArt:undefined, afflictionArt:undefined, anim:undefined,
+      hexArt:['art/heroes/'+slug+'/hex/l1_1024.png','art/heroes/'+slug+'/hex/l1_256.png','art/heroes/'+slug+'/hex/l1_full.png'],
+    }:{ art:null, artSlug:undefined, artMissing:true, levelArt:undefined, afflictionArt:undefined, anim:undefined, hexArt:undefined };
+    heroes.push({...JSON.parse(JSON.stringify(src)), id, name:spec.name, subtype:spec.name, ...art,
+      // A civilian's specialty is CHOSEN at L2 from the civilian list, never fixed on the row —
+      // ruled 2026-09-03: "The specialties are the same for all of them. The specialty options
+      // for civilians right now." Cloning a source would otherwise carry its specialty across.
+      ...(spec.clearSpecialty?{specialty:undefined}:{}),
+      notes:[spec.note||('NEW UNIT ruled 2026-08-25: the school-child-solo art is its own character, separate from School Children. Stats cloned from '+src.name+' as a SOFT baseline — a sweep or ruling prices her.')]});
+  }
+  // Full dictated stat blocks for civilians. Ported keys and derived keys go to their own
+  // bags; every derived deviation from the class baseline lands in derivedDeltas with the
+  // block's why, so R23 reads a declared decision rather than drift.
+  // Civilian TYPE level tables, ruled 2026-09-03. RUNS AFTER newUnits: a cloned civilian such as
+  // hero.fixed.school-child-female does not exist until that loop has made it, and pointing at a
+  // hero that is not there yet is how this was caught the first time. A civilian levels by its type, not by the
   // class — "Maiden and farmer are different in how they should level up." The table lives in
   // gen/levels.json under civilianTypes; this only points a hero at one. Several heroes may
   // share a table, which is how a group of farmers stays one curve. No pointer = class.civilian.
@@ -425,24 +460,6 @@ for(const h of heroes){
     }
   }
 
-  for(const [id,name] of Object.entries(CR.renames||{})){
-    const h=heroes.find(x=>x.id===id);
-    if(!h){problems.push('civilian-rulings: no hero '+id);continue;}
-    h.notes.push('Renamed '+JSON.stringify(h.name)+' -> '+JSON.stringify(name)+', ruled 2026-08-25.');
-    h.name=name;
-    h.subtype=name;   // a fixed hero's subtype IS its name (R19) — the rename carries it
-  }
-  for(const [id,spec] of Object.entries(CR.newUnits||{})){
-    if(id.startsWith('_'))continue;
-    const src=heroes.find(x=>x.id===spec.cloneStatsOf);
-    if(!src){problems.push('civilian-rulings newUnits: no clone source '+spec.cloneStatsOf);continue;}
-    heroes.push({...JSON.parse(JSON.stringify(src)), id, name:spec.name, subtype:spec.name,
-      art:null, artSlug:undefined, artMissing:true, levelArt:undefined, afflictionArt:undefined, anim:undefined, hexArt:undefined,
-      notes:['NEW UNIT ruled 2026-08-25: the school-child-solo art is its own character, separate from School Children. Stats cloned from '+src.name+' as a SOFT baseline — a sweep or ruling prices her.']});
-  }
-  // Full dictated stat blocks for civilians. Ported keys and derived keys go to their own
-  // bags; every derived deviation from the class baseline lands in derivedDeltas with the
-  // block's why, so R23 reads a declared decision rather than drift.
   for(const [id,sb] of Object.entries(CR.statBlocks||{})){
     if(id.startsWith('_'))continue;
     const h=heroes.find(x=>x.id===id);

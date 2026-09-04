@@ -49,6 +49,91 @@
   "hero.fixed.school-child-female": {
    "name": "School Child (female)",
    "cloneStatsOf": "hero.fixed.school-children"
+  },
+  "_note12": "THE TWELVE PAINTED CIVILIANS, ruled 2026-09-04. Angela: \"The specialties are the same for all of them. The specialty options for civilians right now, but go ahead and build the 12. I do not know the names. The names are defined inside of units and encounters.\" NAMES ARE PROPOSALS, NOT RULINGS: units and encounters name civilians by ARCHETYPE (Farmer, Librarian, Cook, Blacksmith, Militia, Bard), never by a personal name, so these twelve follow that convention and are named for what they are. The art slugs (apothecary-wren, sage-orla, ...) are the art chat placeholders and survive only as the art directory and the id. ONE COLLISION: specialty.militia would have produced a second hero called \"Militia\" beside hero.fixed.militia, so this one is \"Village Militia\"; \"Village Archer\" likewise avoids reading as a Ranger. Ids are hero.fixed.* rather than the published hero.base.civilian-* family BECAUSE path base is the Eve draft pool and civilians are not drafted — \"Civilians do not have unique names. They are not drafted in that same way.\" Say the word and they move.",
+  "hero.fixed.farmhand-reed": {
+   "name": "Young Farmhand",
+   "cloneStatsOf": "hero.fixed.farmer",
+   "artSlug": "farmhand-reed",
+   "clearSpecialty": true,
+   "note": "NEW UNIT, ruled 2026-09-04: \"go ahead and build the 12.\" One of the twelve civilians the art chat painted on 2026-09-03 (content/art/heroes/farmhand-reed/). Art was on disk with no hero row behind it. Stats cloned as a SOFT baseline from the nearest existing civilian of the same kind; a sweep or a ruling prices this row. NO SPECIALTY IS SET — \"the specialties are the same for all of them, the specialty options for civilians right now\", so it is picked at L2 from the nine civilian specialties like any other civilian. levelArt is unset until l2..l4 are painted; only l1 exists."
+  },
+  "hero.fixed.ploughman-corbin": {
+   "name": "Ploughman",
+   "cloneStatsOf": "hero.fixed.farmer",
+   "artSlug": "ploughman-corbin",
+   "clearSpecialty": true,
+   "note": "NEW UNIT, ruled 2026-09-04: \"go ahead and build the 12.\" One of the twelve civilians the art chat painted on 2026-09-03 (content/art/heroes/ploughman-corbin/). Art was on disk with no hero row behind it. Stats cloned as a SOFT baseline from the nearest existing civilian of the same kind; a sweep or a ruling prices this row. NO SPECIALTY IS SET — \"the specialties are the same for all of them, the specialty options for civilians right now\", so it is picked at L2 from the nine civilian specialties like any other civilian. levelArt is unset until l2..l4 are painted; only l1 exists."
+  },
+  "hero.fixed.old-reaper-mattick": {
+   "name": "Old Reaper",
+   "cloneStatsOf": "hero.fixed.farmer",
+   "artSlug": "old-reaper-mattick",
+   "clearSpecialty": true,
+   "note": "NEW UNIT, ruled 2026-09-04: \"go ahead and build the 12.\" One of the twelve civilians the art chat painted on 2026-09-03 (content/art/heroes/old-reaper-mattick/). Art was on disk with no hero row behind it. Stats cloned as a SOFT baseline from the nearest existing civilian of the same kind; a sweep or a ruling prices this row. NO SPECIALTY IS SET — \"the specialties are the same for all of them, the specialty options for civilians right now\", so it is picked at L2 from the nine civilian specialties like any other civilian. levelArt is unset until l2..l4 are painted; only l1 exists."
+  },
+  "hero.fixed.apothecary-wren": {
+   "name": "Apothecary",
+   "cloneStatsOf": "hero.fixed.cook",
+   "artSlug": "apothecary-wren",
+   "clearSpecialty": true,
+   "note": "NEW UNIT, ruled 2026-09-04: \"go ahead and build the 12.\" One of the twelve civilians the art chat painted on 2026-09-03 (content/art/heroes/apothecary-wren/). Art was on disk with no hero row behind it. Stats cloned as a SOFT baseline from the nearest existing civilian of the same kind; a sweep or a ruling prices this row. NO SPECIALTY IS SET — \"the specialties are the same for all of them, the specialty options for civilians right now\", so it is picked at L2 from the nine civilian specialties like any other civilian. levelArt is unset until l2..l4 are painted; only l1 exists."
+  },
+  "hero.fixed.torchbearer-cass": {
+   "name": "Torch-Bearer",
+   "cloneStatsOf": "hero.fixed.guard",
+   "artSlug": "torchbearer-cass",
+   "clearSpecialty": true,
+   "note": "NEW UNIT, ruled 2026-09-04: \"go ahead and build the 12.\" One of the twelve civilians the art chat painted on 2026-09-03 (content/art/heroes/torchbearer-cass/). Art was on disk with no hero row behind it. Stats cloned as a SOFT baseline from the nearest existing civilian of the same kind; a sweep or a ruling prices this row. NO SPECIALTY IS SET — \"the specialties are the same for all of them, the specialty options for civilians right now\", so it is picked at L2 from the nine civilian specialties like any other civilian. levelArt is unset until l2..l4 are painted; only l1 exists."
+  },
+  "hero.fixed.porter-halloway": {
+   "name": "Porter",
+   "cloneStatsOf": "hero.fixed.caravan-master",
+   "artSlug": "porter-halloway",
+   "clearSpecialty": true,
+   "note": "NEW UNIT, ruled 2026-09-04: \"go ahead and build the 12.\" One of the twelve civilians the art chat painted on 2026-09-03 (content/art/heroes/porter-halloway/). Art was on disk with no hero row behind it. Stats cloned as a SOFT baseline from the nearest existing civilian of the same kind; a sweep or a ruling prices this row. NO SPECIALTY IS SET — \"the specialties are the same for all of them, the specialty options for civilians right now\", so it is picked at L2 from the nine civilian specialties like any other civilian. levelArt is unset until l2..l4 are painted; only l1 exists."
+  },
+  "hero.fixed.militia-tam": {
+   "name": "Village Militia",
+   "cloneStatsOf": "hero.fixed.militia",
+   "artSlug": "militia-tam",
+   "clearSpecialty": true,
+   "note": "NEW UNIT, ruled 2026-09-04: \"go ahead and build the 12.\" One of the twelve civilians the art chat painted on 2026-09-03 (content/art/heroes/militia-tam/). Art was on disk with no hero row behind it. Stats cloned as a SOFT baseline from the nearest existing civilian of the same kind; a sweep or a ruling prices this row. NO SPECIALTY IS SET — \"the specialties are the same for all of them, the specialty options for civilians right now\", so it is picked at L2 from the nine civilian specialties like any other civilian. levelArt is unset until l2..l4 are painted; only l1 exists."
+  },
+  "hero.fixed.trickster-fen": {
+   "name": "Trickster",
+   "cloneStatsOf": "hero.fixed.the-outcast",
+   "artSlug": "trickster-fen",
+   "clearSpecialty": true,
+   "note": "NEW UNIT, ruled 2026-09-04: \"go ahead and build the 12.\" One of the twelve civilians the art chat painted on 2026-09-03 (content/art/heroes/trickster-fen/). Art was on disk with no hero row behind it. Stats cloned as a SOFT baseline from the nearest existing civilian of the same kind; a sweep or a ruling prices this row. NO SPECIALTY IS SET — \"the specialties are the same for all of them, the specialty options for civilians right now\", so it is picked at L2 from the nine civilian specialties like any other civilian. levelArt is unset until l2..l4 are painted; only l1 exists."
+  },
+  "hero.fixed.archer-mabb": {
+   "name": "Village Archer",
+   "cloneStatsOf": "hero.fixed.militia",
+   "artSlug": "archer-mabb",
+   "clearSpecialty": true,
+   "note": "NEW UNIT, ruled 2026-09-04: \"go ahead and build the 12.\" One of the twelve civilians the art chat painted on 2026-09-03 (content/art/heroes/archer-mabb/). Art was on disk with no hero row behind it. Stats cloned as a SOFT baseline from the nearest existing civilian of the same kind; a sweep or a ruling prices this row. NO SPECIALTY IS SET — \"the specialties are the same for all of them, the specialty options for civilians right now\", so it is picked at L2 from the nine civilian specialties like any other civilian. levelArt is unset until l2..l4 are painted; only l1 exists."
+  },
+  "hero.fixed.archivist-perrin": {
+   "name": "Archivist",
+   "cloneStatsOf": "hero.fixed.librarian",
+   "artSlug": "archivist-perrin",
+   "clearSpecialty": true,
+   "note": "NEW UNIT, ruled 2026-09-04: \"go ahead and build the 12.\" One of the twelve civilians the art chat painted on 2026-09-03 (content/art/heroes/archivist-perrin/). Art was on disk with no hero row behind it. Stats cloned as a SOFT baseline from the nearest existing civilian of the same kind; a sweep or a ruling prices this row. NO SPECIALTY IS SET — \"the specialties are the same for all of them, the specialty options for civilians right now\", so it is picked at L2 from the nine civilian specialties like any other civilian. levelArt is unset until l2..l4 are painted; only l1 exists."
+  },
+  "hero.fixed.sage-orla": {
+   "name": "Sage",
+   "cloneStatsOf": "hero.fixed.old-wise-man",
+   "artSlug": "sage-orla",
+   "clearSpecialty": true,
+   "note": "NEW UNIT, ruled 2026-09-04: \"go ahead and build the 12.\" One of the twelve civilians the art chat painted on 2026-09-03 (content/art/heroes/sage-orla/). Art was on disk with no hero row behind it. Stats cloned as a SOFT baseline from the nearest existing civilian of the same kind; a sweep or a ruling prices this row. NO SPECIALTY IS SET — \"the specialties are the same for all of them, the specialty options for civilians right now\", so it is picked at L2 from the nine civilian specialties like any other civilian. levelArt is unset until l2..l4 are painted; only l1 exists."
+  },
+  "hero.fixed.remembrancer-idris": {
+   "name": "Remembrancer",
+   "cloneStatsOf": "hero.fixed.bard",
+   "artSlug": "remembrancer-idris",
+   "clearSpecialty": true,
+   "note": "NEW UNIT, ruled 2026-09-04: \"go ahead and build the 12.\" One of the twelve civilians the art chat painted on 2026-09-03 (content/art/heroes/remembrancer-idris/). Art was on disk with no hero row behind it. Stats cloned as a SOFT baseline from the nearest existing civilian of the same kind; a sweep or a ruling prices this row. NO SPECIALTY IS SET — \"the specialties are the same for all of them, the specialty options for civilians right now\", so it is picked at L2 from the nine civilian specialties like any other civilian. levelArt is unset until l2..l4 are painted; only l1 exists."
   }
  },
  "statBlocks": {
@@ -238,9 +323,74 @@
   }
  },
  "levelTables": {
-  "_note": "Which civilian TYPE table a civilian levels on, ruled 2026-09-03. The table itself lives in gen/levels.json under civilianTypes; this only says who points at it. Several heroes may name the same table — that is how a group of farmers stays one curve, and how a new farmer costs one line. A civilian with no entry here levels on the class.civilian table, so the untyped cast is unaffected.",
+  "_note": "Which civilian TYPE table a civilian levels on, ruled 2026-09-03. The tables live in gen/levels.json under civilianTypes; this only says who points at one. Several heroes may name the same table — that is how a group of farmers stays one curve, and how a new civilian costs one line. A civilian with no entry here levels on the class.civilian table. NOT ASSIGNED, on purpose: the eight 'aspiring' civilians, who are on their way to a real class and should not be pinned to a civilian curve; and Wife #3, Wife #5, Living Ghost and Zombie Bride, which no archetype fitted and which want a call rather than a guess. 2026-09-03, second pass: the four unassigned civilians are assigned. Wife #3 and Wife #5 both take civilian.wife; Living Ghost takes civilian.ghost; Zombie Bride takes civilian.revenant — \"invent a table for Wife #3, Living Ghost, and Zombie Bride.\" Wife #5 was NOT named in that ruling but is the same unit kind as Wife #3, so it is pointed at the same table; flag if that is wrong. The 8 hero.aspiring.* civilians are still deliberately unassigned — they are the tutorial ladder, not roster civilians.",
+  "hero.fixed.bard": "civilian.bard",
+  "hero.fixed.ethereal-bard": "civilian.bard",
+  "hero.fixed.djinn-touched-child": "civilian.child",
+  "hero.fixed.orphans": "civilian.child",
+  "hero.fixed.refugee-children": "civilian.child",
+  "hero.fixed.scary-kid": "civilian.child",
+  "hero.fixed.school-child-female": "civilian.child",
+  "hero.fixed.school-children": "civilian.child",
+  "hero.fixed.stowaway-children": "civilian.child",
+  "hero.fixed.wayward-child": "civilian.child",
+  "hero.fixed.blacksmith": "civilian.crafter",
+  "hero.fixed.catfolk-cook": "civilian.crafter",
+  "hero.fixed.cook": "civilian.crafter",
   "hero.fixed.farmer": "civilian.farmer",
+  "hero.fixed.farming-family": "civilian.farmer",
   "hero.fixed.group-of-farmers": "civilian.farmer",
-  "hero.fixed.farming-family": "civilian.farmer"
+  "hero.fixed.lumberjack-and-wife": "civilian.farmer",
+  "hero.fixed.big-caravan": "civilian.merchant",
+  "hero.fixed.caravan": "civilian.merchant",
+  "hero.fixed.caravan-master": "civilian.merchant",
+  "hero.fixed.julie-supply-master": "civilian.merchant",
+  "hero.fixed.merchant-wagon": "civilian.merchant",
+  "hero.fixed.silk-merchant": "civilian.merchant",
+  "hero.fixed.badgered-soldier": "civilian.militia",
+  "hero.fixed.guard": "civilian.militia",
+  "hero.fixed.militia": "civilian.militia",
+  "hero.fixed.militia-commander": "civilian.militia",
+  "hero.fixed.small-army": "civilian.militia",
+  "hero.fixed.catfolk-villager": "civilian.refugee",
+  "hero.fixed.cursed-passengers": "civilian.refugee",
+  "hero.fixed.defenseless-women": "civilian.refugee",
+  "hero.fixed.desperate-villagers": "civilian.refugee",
+  "hero.fixed.huge-group-of-refugees": "civilian.refugee",
+  "hero.fixed.refugees": "civilian.refugee",
+  "hero.fixed.survivors": "civilian.refugee",
+  "hero.fixed.the-outcast": "civilian.refugee",
+  "hero.fixed.cargo-hold-crew": "civilian.sailor",
+  "hero.fixed.catfolk-cabin-boy": "civilian.sailor",
+  "hero.fixed.catfolk-crew": "civilian.sailor",
+  "hero.fixed.catfolk-navigator": "civilian.sailor",
+  "hero.fixed.catfolk-whip-master": "civilian.sailor",
+  "hero.fixed.fisherman": "civilian.sailor",
+  "hero.fixed.fishermans-wife": "civilian.sailor",
+  "hero.fixed.lost-fishers": "civilian.sailor",
+  "hero.fixed.sailors": "civilian.sailor",
+  "hero.fixed.skyship-deckhands": "civilian.sailor",
+  "hero.fixed.librarian": "civilian.scholar",
+  "hero.fixed.mirian": "civilian.scholar",
+  "hero.fixed.old-wise-man": "civilian.scholar",
+  "hero.fixed.runesmith": "civilian.scholar",
+  "hero.fixed.school-teacher": "civilian.scholar",
+  "hero.fixed.ships-astrologer": "civilian.scholar",
+  "hero.fixed.wife3": "civilian.wife",
+  "hero.fixed.wife5": "civilian.wife",
+  "hero.fixed.living-ghost": "civilian.ghost",
+  "hero.fixed.zombie-bride": "civilian.revenant",
+  "hero.fixed.farmhand-reed": "civilian.farmer",
+  "hero.fixed.ploughman-corbin": "civilian.farmer",
+  "hero.fixed.old-reaper-mattick": "civilian.farmer",
+  "hero.fixed.apothecary-wren": "civilian.apothecary",
+  "hero.fixed.torchbearer-cass": "civilian.militia",
+  "hero.fixed.porter-halloway": "civilian.merchant",
+  "hero.fixed.militia-tam": "civilian.militia",
+  "hero.fixed.trickster-fen": "civilian.child",
+  "hero.fixed.archer-mabb": "civilian.militia",
+  "hero.fixed.archivist-perrin": "civilian.scholar",
+  "hero.fixed.sage-orla": "civilian.scholar",
+  "hero.fixed.remembrancer-idris": "civilian.bard"
  }
 }

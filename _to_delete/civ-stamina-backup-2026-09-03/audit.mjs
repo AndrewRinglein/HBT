@@ -365,14 +365,8 @@ if(D.levels) for(const c of [...D.levels.classes, ...(D.levels.civilianTypes||[]
   const st=k=>c.rows.reduce((n,r)=>n+((r.grants||{})[k]||0),0);
   const isCivilian=(c.parentClass||c.id)==='class.civilian';
   if(c.rows.length!==10) add('level-table-wrong-length',c.name,c.rows.length+' rows');
-  // 2026-09-03: the civilian stamina exemption is REVERSED. Every table, civilian included,
-  // grants exactly +2 Stamina Regen and at least +2 Stamina Max. isCivilian survives only to
-  // check WHERE the second regen lands: L10 for a combat class, L9 for a civilian.
-  if(st('staminaRegen')!==2) add('level-regen-count',c.name,'+'+st('staminaRegen'));
-  if(st('staminaMax')<2) add('level-staminamax-thin',c.name,'+'+st('staminaMax'));
-  {const at=c.rows.filter(r=>(r.grants||{}).staminaRegen).map(r=>r.level).join(',');
-   const want=isCivilian?'6,9':'6,10';
-   if(at!==want) add('regen-placement',c.name,'at '+at+', want '+want);}
+  if(!isCivilian&&st('staminaRegen')!==2) add('level-regen-count',c.name,'+'+st('staminaRegen'));
+  if(isCivilian&&(st('staminaMax')||st('staminaRegen'))) add('civilian-granted-stamina',c.name,'');
   const sp=c.rows.filter(r=>r.specialty), ch=c.rows.filter(r=>r.choice);
   if(sp.length!==1||sp[0].level!==2) add('specialty-pick-not-at-l2',c.name,'');
   if(ch.length!==1||ch[0].level!==5) add('choice-not-at-l5',c.name,'');

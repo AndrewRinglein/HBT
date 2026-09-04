@@ -42,12 +42,9 @@ for(const c of [...L.classes, ...(L.civilianTypes||[])]){
   // A civilian TYPE table inherits the civilian stamina rule from its parentClass — ruled
   // 2026-09-03. Keying off c.id alone made the Farmer table demand +2 regen, which a civilian
   // can never have.
-  // 2026-09-03: civilians gain stamina like everyone else. The exemption is gone; what is left
-  // is the placement difference — a civilian's second Regen is at L9, not L10, because the
-  // civilian tables put their heaviest grant on the last row and Regen prices at 2.0.
   const isCivilian=(c.parentClass||c.id)==='class.civilian';
-  if(off.staminaRegen!==2) bad.push(c.name+' regen count '+off.staminaRegen+' (want 2)');
-  if(off.staminaMax<2) bad.push(c.name+' staminaMax +'+off.staminaMax+' (want at least 2)');
+  if(!isCivilian && off.staminaRegen!==2) bad.push(c.name+' regen count '+off.staminaRegen+' (want 2)');
+  if(isCivilian && (off.staminaRegen||off.staminaMax)) bad.push(c.name+' was granted stamina');
   if(c.rows[0].level!==1||Object.keys(c.rows[0].grants).length) bad.push(c.name+' L1 is not empty');
   const sp=c.rows.filter(r=>r.specialty); if(sp.length!==1||sp[0].level!==2) bad.push(c.name+' specialty not exactly once at L2');
   const ch=c.rows.filter(r=>r.choice); if(ch.length!==1||ch[0].level!==5) bad.push(c.name+' choice not exactly once at L5');

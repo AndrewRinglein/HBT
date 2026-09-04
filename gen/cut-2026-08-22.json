@@ -2976,6 +2976,91 @@
      }
     ]
    }
+  },
+  {
+   "hero": "Apothecary",
+   "was": {
+    "onEnter": [
+     {
+      "action": "healParty",
+      "value": 1
+     }
+    ],
+    "onKill": [
+     {
+      "action": "gainSupplies",
+      "amount": 2
+     }
+    ]
+   }
+  },
+  {
+   "hero": "Porter",
+   "was": {
+    "onEnter": [
+     {
+      "action": "gainSupplies",
+      "value": 2
+     },
+     {
+      "action": "increaseActionRate",
+      "amount": 1
+     }
+    ]
+   }
+  },
+  {
+   "hero": "Archivist",
+   "was": {
+    "onEnter": [
+     {
+      "action": "modifyStatPermanent",
+      "target": "allHeroes",
+      "stat": "itemSlots",
+      "value": 1,
+      "description": "All heroes gain +1 Item Slot"
+     },
+     {
+      "action": "modifyStatPermanent",
+      "target": "allHeroes",
+      "stat": "reach",
+      "value": 1,
+      "description": "All heroes gain +1 Reach"
+     }
+    ]
+   }
+  },
+  {
+   "hero": "Sage",
+   "was": {
+    "onEnter": [
+     {
+      "action": "grantDraws",
+      "amount": 2
+     }
+    ]
+   }
+  },
+  {
+   "hero": "Remembrancer",
+   "was": {
+    "onEnter": [
+     {
+      "action": "removeStatusEffects",
+      "target": "allHeroes",
+      "statuses": [
+       "weak"
+      ],
+      "amount": 1
+     }
+    ],
+    "onAttack": [
+     {
+      "action": "healParty",
+      "amount": 1
+     }
+    ]
+   }
   }
  ],
  "undefinedBadges": {
@@ -2988,15 +3073,15 @@
   "Tough": 2
  },
  "personalityTags": {
-  "Personality_Cheerful": 25,
-  "Personality_Grim": 16,
-  "Personality_Sardonic": 7,
+  "Personality_Cheerful": 28,
+  "Personality_Grim": 20,
+  "Personality_Sardonic": 8,
   "Personality_Sultry": 3,
-  "Personality_Cold": 14,
+  "Personality_Cold": 15,
   "Personality_Flirty": 4,
   "Personality_Bloodthirsty": 7,
   "Personality_Aspiring": 1,
-  "Personality_Brooding": 4,
+  "Personality_Brooding": 5,
   "Personality_Fearful": 3,
   "Personality_Dramatic": 2
  }

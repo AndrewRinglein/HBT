@@ -185,6 +185,7 @@
     "Resolute +1 DROPPED — the stat was removed 2026-08-15 with no replacement.",
     "Toughness 3 is hell-tcg maxAfflictions, ported straight across — same meaning.",
     "Renamed \"Orphan Children\" -> \"Orphan Child\", ruled 2026-08-25.",
+    "Levels on civilian.child rather than the class.civilian table — ruled 2026-09-03.",
     "Stat block dictated 2026-08-25: Orphan Child, dictated 2026-08-25. Tiny, absurdly lucky, and the whole party fights harder when she falls.",
     "Base stats +1 strength, +1 precision, +4 health — Child compensation (ruled 2026-08-25)."
    ],
@@ -215,6 +216,7 @@
    "passiveDescription": "On enter: +1 Faith. On death: -2 Faith",
    "additionalClasses": null,
    "subtype": "Orphan Child",
+   "levelTable": "civilian.child",
    "derivedDeltas": {
     "crit": 17,
     "luck": 10,
@@ -300,7 +302,8 @@
     "bleedOutTurns": 5
    },
    "notes": [
-    "Toughness 3 is hell-tcg maxAfflictions, ported straight across — same meaning."
+    "Toughness 3 is hell-tcg maxAfflictions, ported straight across — same meaning.",
+    "Levels on civilian.refugee rather than the class.civilian table — ruled 2026-09-03."
    ],
    "specialty": null,
    "originBadges": [],
@@ -322,6 +325,7 @@
    "passiveDescription": null,
    "additionalClasses": null,
    "subtype": "Ragtag Survivors",
+   "levelTable": "civilian.refugee",
    "personality": [
     "grim"
    ]
@@ -424,7 +428,8 @@
     "bleedOutTurns": 5
    },
    "notes": [
-    "Toughness 2 is hell-tcg maxAfflictions, ported straight across — same meaning."
+    "Toughness 2 is hell-tcg maxAfflictions, ported straight across — same meaning.",
+    "Levels on civilian.merchant rather than the class.civilian table — ruled 2026-09-03."
    ],
    "specialty": null,
    "originBadges": [],
@@ -446,6 +451,7 @@
    "passiveDescription": null,
    "additionalClasses": null,
    "subtype": "Caravan",
+   "levelTable": "civilian.merchant",
    "personality": [
     "cheerful"
    ]
@@ -486,7 +492,8 @@
     "bleedOutTurns": 5
    },
    "notes": [
-    "Toughness 2 is hell-tcg maxAfflictions, ported straight across — same meaning."
+    "Toughness 2 is hell-tcg maxAfflictions, ported straight across — same meaning.",
+    "Levels on civilian.wife rather than the class.civilian table — ruled 2026-09-03."
    ],
    "specialty": null,
    "originBadges": [],
@@ -513,6 +520,7 @@
    "passiveDescription": "End of turn: Deal half Magic damage (rounded up) to a chosen enemy",
    "additionalClasses": null,
    "subtype": "Wife #3",
+   "levelTable": "civilian.wife",
    "personality": [
     "sultry"
    ]
@@ -553,7 +561,8 @@
     "bleedOutTurns": 5
    },
    "notes": [
-    "Toughness 5 is hell-tcg maxAfflictions, ported straight across — same meaning."
+    "Toughness 5 is hell-tcg maxAfflictions, ported straight across — same meaning.",
+    "Levels on civilian.scholar rather than the class.civilian table — ruled 2026-09-03."
    ],
    "specialty": null,
    "originBadges": [
@@ -587,6 +596,7 @@
    "passiveDescription": null,
    "additionalClasses": null,
    "subtype": "Mirian, the Lore Keeper",
+   "levelTable": "civilian.scholar",
    "personality": [
     "cold"
    ]
@@ -828,7 +838,8 @@
     "bleedOutTurns": 5
    },
    "notes": [
-    "Toughness 3 is hell-tcg maxAfflictions, ported straight across — same meaning."
+    "Toughness 3 is hell-tcg maxAfflictions, ported straight across — same meaning.",
+    "Levels on civilian.wife rather than the class.civilian table — ruled 2026-09-03."
    ],
    "specialty": null,
    "originBadges": [],
@@ -855,6 +866,7 @@
    "passiveDescription": "On kill: Kill the lowest health enemy. Lvl 3: On enter draw 4. Lvl 4: On kill +1 Action",
    "additionalClasses": null,
    "subtype": "Wife #5",
+   "levelTable": "civilian.wife",
    "personality": [
     "bloodthirsty"
    ]
@@ -1036,7 +1048,8 @@
     "bleedOutTurns": 5
    },
    "notes": [
-    "Toughness 2 is hell-tcg maxAfflictions, ported straight across — same meaning."
+    "Toughness 2 is hell-tcg maxAfflictions, ported straight across — same meaning.",
+    "Levels on civilian.scholar rather than the class.civilian table — ruled 2026-09-03."
    ],
    "specialty": null,
    "originBadges": [
@@ -1067,6 +1080,7 @@
    "passiveDescription": null,
    "additionalClasses": null,
    "subtype": "Old Wise Man",
+   "levelTable": "civilian.scholar",
    "personality": [
     "sardonic"
    ]
@@ -1109,6 +1123,7 @@
    "notes": [
     "Toughness 2 is hell-tcg maxAfflictions, ported straight across — same meaning.",
     "Renamed \"Lumberjack and Wife\" -> \"Lumberjack\", ruled 2026-08-25.",
+    "Levels on civilian.farmer rather than the class.civilian table — ruled 2026-09-03.",
     "Stat block dictated 2026-08-25: Lumberjack, dictated 2026-08-25. The one civilian who is genuinely dangerous — a two-handed axe and the arms that use it all day."
    ],
    "specialty": null,
@@ -1130,6 +1145,7 @@
    "passiveDescription": null,
    "additionalClasses": null,
    "subtype": "Lumberjack",
+   "levelTable": "civilian.farmer",
    "kit": [
     "item.lumberjack-axe"
    ],
@@ -1185,6 +1201,7 @@
    },
    "notes": [
     "Toughness 4 is hell-tcg maxAfflictions, ported straight across — same meaning.",
+    "Levels on civilian.child rather than the class.civilian table — ruled 2026-09-03.",
     "Base stats +1 strength, +1 precision, +4 health — Child compensation (ruled 2026-08-25)."
    ],
    "specialty": null,
@@ -1214,6 +1231,7 @@
    "passiveDescription": null,
    "additionalClasses": null,
    "subtype": "Scary Kid",
+   "levelTable": "civilian.child",
    "personality": [
     "bloodthirsty"
    ]
@@ -1458,7 +1476,8 @@
    },
    "notes": [
     "Toughness 0 is hell-tcg maxAfflictions, ported straight across — same meaning.",
-    "2026-08-20: \"change the Spirit to just be a Civilian so that there are no outliers on classes.\" One hero is not a class."
+    "2026-08-20: \"change the Spirit to just be a Civilian so that there are no outliers on classes.\" One hero is not a class.",
+    "Levels on civilian.ghost rather than the class.civilian table — ruled 2026-09-03."
    ],
    "specialty": null,
    "originBadges": [
@@ -1488,6 +1507,7 @@
    "passiveDescription": null,
    "additionalClasses": null,
    "subtype": "Living Ghost",
+   "levelTable": "civilian.ghost",
    "personality": [
     "brooding"
    ]
@@ -1600,7 +1620,8 @@
     "bleedOutTurns": 5
    },
    "notes": [
-    "Toughness 2 is hell-tcg maxAfflictions, ported straight across — same meaning."
+    "Toughness 2 is hell-tcg maxAfflictions, ported straight across — same meaning.",
+    "Levels on civilian.scholar rather than the class.civilian table — ruled 2026-09-03."
    ],
    "specialty": null,
    "originBadges": [
@@ -1629,6 +1650,7 @@
    "passiveDescription": null,
    "additionalClasses": null,
    "subtype": "Librarian",
+   "levelTable": "civilian.scholar",
    "personality": [
     "cold"
    ]
@@ -1669,7 +1691,8 @@
     "bleedOutTurns": 5
    },
    "notes": [
-    "Toughness 1 is hell-tcg maxAfflictions, ported straight across — same meaning."
+    "Toughness 1 is hell-tcg maxAfflictions, ported straight across — same meaning.",
+    "Levels on civilian.crafter rather than the class.civilian table — ruled 2026-09-03."
    ],
    "specialty": null,
    "originBadges": [
@@ -1698,6 +1721,7 @@
    "passiveDescription": null,
    "additionalClasses": null,
    "subtype": "Cook",
+   "levelTable": "civilian.crafter",
    "personality": [
     "cheerful"
    ]
@@ -1738,7 +1762,8 @@
     "bleedOutTurns": 5
    },
    "notes": [
-    "Toughness 2 is hell-tcg maxAfflictions, ported straight across — same meaning."
+    "Toughness 2 is hell-tcg maxAfflictions, ported straight across — same meaning.",
+    "Levels on civilian.crafter rather than the class.civilian table — ruled 2026-09-03."
    ],
    "specialty": null,
    "originBadges": [],
@@ -1765,6 +1790,7 @@
    "passiveDescription": null,
    "additionalClasses": null,
    "subtype": "Blacksmith",
+   "levelTable": "civilian.crafter",
    "personality": [
     "flirty"
    ]
@@ -1808,7 +1834,8 @@
    },
    "notes": [
     "Resolute +4 DROPPED — the stat was removed 2026-08-15 with no replacement.",
-    "Toughness 2 is hell-tcg maxAfflictions, ported straight across — same meaning."
+    "Toughness 2 is hell-tcg maxAfflictions, ported straight across — same meaning.",
+    "Levels on civilian.revenant rather than the class.civilian table — ruled 2026-09-03."
    ],
    "specialty": null,
    "originBadges": [
@@ -1833,6 +1860,7 @@
    "passiveDescription": null,
    "additionalClasses": null,
    "subtype": "Zombie Bride",
+   "levelTable": "civilian.revenant",
    "personality": [
     "brooding"
    ]
@@ -1873,7 +1901,8 @@
     "bleedOutTurns": 5
    },
    "notes": [
-    "Toughness 1 is hell-tcg maxAfflictions, ported straight across — same meaning."
+    "Toughness 1 is hell-tcg maxAfflictions, ported straight across — same meaning.",
+    "Levels on civilian.sailor rather than the class.civilian table — ruled 2026-09-03."
    ],
    "specialty": null,
    "originBadges": [
@@ -1902,6 +1931,7 @@
    "passiveDescription": null,
    "additionalClasses": null,
    "subtype": "Fisherman",
+   "levelTable": "civilian.sailor",
    "personality": [
     "sardonic"
    ]
@@ -1942,7 +1972,8 @@
     "bleedOutTurns": 5
    },
    "notes": [
-    "Toughness 1 is hell-tcg maxAfflictions, ported straight across — same meaning."
+    "Toughness 1 is hell-tcg maxAfflictions, ported straight across — same meaning.",
+    "Levels on civilian.sailor rather than the class.civilian table — ruled 2026-09-03."
    ],
    "specialty": null,
    "originBadges": [
@@ -1972,6 +2003,7 @@
    "passiveDescription": null,
    "additionalClasses": null,
    "subtype": "Fishermans Wife",
+   "levelTable": "civilian.sailor",
    "personality": [
     "cold"
    ]
@@ -2357,8 +2389,8 @@
    },
    "notes": [
     "Toughness 1 is hell-tcg maxAfflictions, ported straight across — same meaning.",
-    "Levels on civilian.farmer rather than the class.civilian table — ruled 2026-09-03.",
     "Renamed \"Group of Farmers\" -> \"Farmer with a Hat\", ruled 2026-08-25.",
+    "Levels on civilian.farmer rather than the class.civilian table — ruled 2026-09-03.",
     "Stat block dictated 2026-08-25: Farmer with a Hat, dictated 2026-08-25: same stats as the Farmer but crit 5, luck 0 — the hat is confidence, not fortune. Movement 5, pitchfork and survival reward INFERRED as shared with the Farmer (dictated \"same stats but\")."
    ],
    "specialty": null,
@@ -2510,7 +2542,8 @@
     "bleedOutTurns": 5
    },
    "notes": [
-    "Toughness 3 is hell-tcg maxAfflictions, ported straight across — same meaning."
+    "Toughness 3 is hell-tcg maxAfflictions, ported straight across — same meaning.",
+    "Levels on civilian.merchant rather than the class.civilian table — ruled 2026-09-03."
    ],
    "specialty": null,
    "originBadges": [],
@@ -2537,6 +2570,7 @@
    "passiveDescription": "⚠️ On enter: +1 Supplies. On death: -5 Supplies",
    "additionalClasses": null,
    "subtype": "Big Caravan",
+   "levelTable": "civilian.merchant",
    "personality": [
     "cheerful"
    ]
@@ -3131,7 +3165,8 @@
     "bleedOutTurns": 5
    },
    "notes": [
-    "Toughness 2 is hell-tcg maxAfflictions, ported straight across — same meaning."
+    "Toughness 2 is hell-tcg maxAfflictions, ported straight across — same meaning.",
+    "Levels on civilian.merchant rather than the class.civilian table — ruled 2026-09-03."
    ],
    "specialty": null,
    "originBadges": [
@@ -3162,6 +3197,7 @@
    "passiveDescription": null,
    "additionalClasses": null,
    "subtype": "Julie the Supply Master",
+   "levelTable": "civilian.merchant",
    "personality": [
     "cheerful"
    ]
@@ -3426,7 +3462,8 @@
     "bleedOutTurns": 5
    },
    "notes": [
-    "Toughness 2 is hell-tcg maxAfflictions, ported straight across — same meaning."
+    "Toughness 2 is hell-tcg maxAfflictions, ported straight across — same meaning.",
+    "Levels on civilian.refugee rather than the class.civilian table — ruled 2026-09-03."
    ],
    "specialty": null,
    "originBadges": [],
@@ -3453,6 +3490,7 @@
    "passiveDescription": "⚠️ On death: Lose 3 Faith AND 3 Supplies",
    "additionalClasses": null,
    "subtype": "Desperate Villagers",
+   "levelTable": "civilian.refugee",
    "personality": [
     "fearful"
    ]
@@ -3564,7 +3602,8 @@
     "bleedOutTurns": 5
    },
    "notes": [
-    "Toughness 1 is hell-tcg maxAfflictions, ported straight across — same meaning."
+    "Toughness 1 is hell-tcg maxAfflictions, ported straight across — same meaning.",
+    "Levels on civilian.merchant rather than the class.civilian table — ruled 2026-09-03."
    ],
    "specialty": null,
    "originBadges": [],
@@ -3591,6 +3630,7 @@
    "passiveDescription": null,
    "additionalClasses": null,
    "subtype": "Merchant Wagon",
+   "levelTable": "civilian.merchant",
    "personality": [
     "cheerful"
    ]
@@ -3702,7 +3742,8 @@
    },
    "notes": [
     "Dodge 1 scaled x5 to 5 — hell-tcg Dodge was a 0-3 integer, HoBaT Dodge is a flat to-hit penalty in points.",
-    "Toughness 3 is hell-tcg maxAfflictions, ported straight across — same meaning."
+    "Toughness 3 is hell-tcg maxAfflictions, ported straight across — same meaning.",
+    "Levels on civilian.refugee rather than the class.civilian table — ruled 2026-09-03."
    ],
    "specialty": null,
    "originBadges": [
@@ -3726,6 +3767,7 @@
    "passiveDescription": null,
    "additionalClasses": null,
    "subtype": "Catfolk Villager",
+   "levelTable": "civilian.refugee",
    "personality": [
     "cheerful"
    ]
@@ -3914,6 +3956,7 @@
    "notes": [
     "Toughness 2 is hell-tcg maxAfflictions, ported straight across — same meaning.",
     "maxRuneSlots 2 has no HoBaT stat; blood runes are items here.",
+    "Levels on civilian.child rather than the class.civilian table — ruled 2026-09-03.",
     "Stat block dictated 2026-08-25: School Children, dictated 2026-08-25. The plural unit (school-children-flux-v3 art). Braver than they should be, luckier than they know.",
     "Base stats +1 strength, +1 precision, +4 health — Child compensation (ruled 2026-08-25)."
    ],
@@ -3936,6 +3979,7 @@
    "passiveDescription": null,
    "additionalClasses": null,
    "subtype": "School Children",
+   "levelTable": "civilian.child",
    "derivedDeltas": {
     "crit": 1,
     "luck": 10,
@@ -4027,6 +4071,7 @@
    "notes": [
     "Toughness 2 is hell-tcg maxAfflictions, ported straight across — same meaning.",
     "maxRuneSlots 2 has no HoBaT stat; blood runes are items here.",
+    "Levels on civilian.scholar rather than the class.civilian table — ruled 2026-09-03.",
     "Stat block dictated 2026-08-25: School Teacher, dictated 2026-08-25. Unarmed and unkillable-by-carelessness — luck, resist, and the sense to bring a plan instead of a weapon."
    ],
    "specialty": {
@@ -4057,6 +4102,7 @@
    "passiveDescription": "Grants Knowledge spell and Knowledge tactic",
    "additionalClasses": null,
    "subtype": "School Teacher",
+   "levelTable": "civilian.scholar",
    "derivedDeltas": {
     "crit": 5,
     "luck": 7
@@ -4261,7 +4307,8 @@
    },
    "notes": [
     "Dodge 1 scaled x5 to 5 — hell-tcg Dodge was a 0-3 integer, HoBaT Dodge is a flat to-hit penalty in points.",
-    "Toughness 2 is hell-tcg maxAfflictions, ported straight across — same meaning."
+    "Toughness 2 is hell-tcg maxAfflictions, ported straight across — same meaning.",
+    "Levels on civilian.merchant rather than the class.civilian table — ruled 2026-09-03."
    ],
    "specialty": null,
    "originBadges": [
@@ -4291,6 +4338,7 @@
    "passiveDescription": "On enter: +2 Supplies. Recruit bonus: +3 Supplies",
    "additionalClasses": null,
    "subtype": "Silk Merchant",
+   "levelTable": "civilian.merchant",
    "artMissing": true,
    "personality": [
     "cheerful"
@@ -4332,7 +4380,8 @@
     "bleedOutTurns": 5
    },
    "notes": [
-    "Toughness 2 is hell-tcg maxAfflictions, ported straight across — same meaning."
+    "Toughness 2 is hell-tcg maxAfflictions, ported straight across — same meaning.",
+    "Levels on civilian.scholar rather than the class.civilian table — ruled 2026-09-03."
    ],
    "specialty": null,
    "originBadges": [],
@@ -4361,6 +4410,7 @@
    "passiveDescription": "Class Power: Runesmith Forge",
    "additionalClasses": null,
    "subtype": "Runesmith",
+   "levelTable": "civilian.scholar",
    "artMissing": true
   },
   {
@@ -4399,7 +4449,8 @@
     "bleedOutTurns": 5
    },
    "notes": [
-    "Toughness 2 is hell-tcg maxAfflictions, ported straight across — same meaning."
+    "Toughness 2 is hell-tcg maxAfflictions, ported straight across — same meaning.",
+    "Levels on civilian.militia rather than the class.civilian table — ruled 2026-09-03."
    ],
    "specialty": null,
    "originBadges": [],
@@ -4421,6 +4472,7 @@
    "passiveDescription": "A disciplined guard of the sovereignty",
    "additionalClasses": null,
    "subtype": "Guard",
+   "levelTable": "civilian.militia",
    "artMissing": true,
    "personality": [
     "grim"
@@ -4675,6 +4727,7 @@
    },
    "notes": [
     "Toughness 4 is hell-tcg maxAfflictions, ported straight across — same meaning.",
+    "Levels on civilian.child rather than the class.civilian table — ruled 2026-09-03.",
     "Base stats +1 strength, +1 precision, +4 health — Child compensation (ruled 2026-08-25)."
    ],
    "specialty": null,
@@ -4699,6 +4752,7 @@
    "passiveDescription": "A child touched by djinn magic",
    "additionalClasses": null,
    "subtype": "The Djinn-Touched Child",
+   "levelTable": "civilian.child",
    "artMissing": true
   },
   {
@@ -4805,7 +4859,8 @@
     "bleedOutTurns": 5
    },
    "notes": [
-    "Toughness 2 is hell-tcg maxAfflictions, ported straight across — same meaning."
+    "Toughness 2 is hell-tcg maxAfflictions, ported straight across — same meaning.",
+    "Levels on civilian.refugee rather than the class.civilian table — ruled 2026-09-03."
    ],
    "specialty": null,
    "originBadges": [
@@ -4836,6 +4891,7 @@
    "passiveDescription": "Grants spell: Outcast",
    "additionalClasses": null,
    "subtype": "The Outcast",
+   "levelTable": "civilian.refugee",
    "artMissing": true,
    "personality": [
     "brooding"
@@ -4878,6 +4934,7 @@
    },
    "notes": [
     "Toughness 4 is hell-tcg maxAfflictions, ported straight across — same meaning.",
+    "Levels on civilian.child rather than the class.civilian table — ruled 2026-09-03.",
     "Base stats +1 strength, +1 precision, +4 health — Child compensation (ruled 2026-08-25)."
    ],
    "specialty": null,
@@ -4907,6 +4964,7 @@
    "passiveDescription": "On enter: +2 Faith",
    "additionalClasses": null,
    "subtype": "Refugee Children",
+   "levelTable": "civilian.child",
    "artMissing": true,
    "personality": [
     "cheerful"
@@ -4948,7 +5006,8 @@
     "bleedOutTurns": 5
    },
    "notes": [
-    "Toughness 3 is hell-tcg maxAfflictions, ported straight across — same meaning."
+    "Toughness 3 is hell-tcg maxAfflictions, ported straight across — same meaning.",
+    "Levels on civilian.sailor rather than the class.civilian table — ruled 2026-09-03."
    ],
    "specialty": null,
    "originBadges": [
@@ -4977,6 +5036,7 @@
    "passiveDescription": "On attack: Apply 2 Weak to target",
    "additionalClasses": null,
    "subtype": "Lost Fishers",
+   "levelTable": "civilian.sailor",
    "artMissing": true,
    "personality": [
     "grim"
@@ -5018,7 +5078,8 @@
     "bleedOutTurns": 5
    },
    "notes": [
-    "Toughness 3 is hell-tcg maxAfflictions, ported straight across — same meaning."
+    "Toughness 3 is hell-tcg maxAfflictions, ported straight across — same meaning.",
+    "Levels on civilian.sailor rather than the class.civilian table — ruled 2026-09-03."
    ],
    "specialty": null,
    "originBadges": [],
@@ -5040,6 +5101,7 @@
    "passiveDescription": "A group of rough sailors",
    "additionalClasses": null,
    "subtype": "Sailors",
+   "levelTable": "civilian.sailor",
    "artMissing": true,
    "personality": [
     "grim"
@@ -5081,7 +5143,8 @@
     "bleedOutTurns": 5
    },
    "notes": [
-    "Toughness 3 is hell-tcg maxAfflictions, ported straight across — same meaning."
+    "Toughness 3 is hell-tcg maxAfflictions, ported straight across — same meaning.",
+    "Levels on civilian.refugee rather than the class.civilian table — ruled 2026-09-03."
    ],
    "specialty": null,
    "originBadges": [
@@ -5110,6 +5173,7 @@
    "passiveDescription": "On enter: +1 Faith",
    "additionalClasses": null,
    "subtype": "Refugees",
+   "levelTable": "civilian.refugee",
    "artMissing": true
   },
   {
@@ -5148,7 +5212,8 @@
     "bleedOutTurns": 5
    },
    "notes": [
-    "Toughness 3 is hell-tcg maxAfflictions, ported straight across — same meaning."
+    "Toughness 3 is hell-tcg maxAfflictions, ported straight across — same meaning.",
+    "Levels on civilian.refugee rather than the class.civilian table — ruled 2026-09-03."
    ],
    "specialty": null,
    "originBadges": [],
@@ -5175,6 +5240,7 @@
    "passiveDescription": "Grants spell: Solace of Refugees",
    "additionalClasses": null,
    "subtype": "Huge Group of Refugees",
+   "levelTable": "civilian.refugee",
    "artMissing": true
   },
   {
@@ -5213,7 +5279,8 @@
     "bleedOutTurns": 5
    },
    "notes": [
-    "Toughness 3 is hell-tcg maxAfflictions, ported straight across — same meaning."
+    "Toughness 3 is hell-tcg maxAfflictions, ported straight across — same meaning.",
+    "Levels on civilian.merchant rather than the class.civilian table — ruled 2026-09-03."
    ],
    "specialty": null,
    "originBadges": [],
@@ -5240,6 +5307,7 @@
    "passiveDescription": "On enter: +2 Supplies, +1 Action per turn. Recruit bonus: +5 Supplies",
    "additionalClasses": null,
    "subtype": "Caravan Master",
+   "levelTable": "civilian.merchant",
    "artMissing": true,
    "personality": [
     "cheerful"
@@ -5284,7 +5352,8 @@
    },
    "notes": [
     "Resolute +3 DROPPED — the stat was removed 2026-08-15 with no replacement.",
-    "Toughness 3 is hell-tcg maxAfflictions, ported straight across — same meaning."
+    "Toughness 3 is hell-tcg maxAfflictions, ported straight across — same meaning.",
+    "Levels on civilian.militia rather than the class.civilian table — ruled 2026-09-03."
    ],
    "specialty": null,
    "originBadges": [
@@ -5310,6 +5379,7 @@
    "passiveDescription": "A battered but resolute soldier",
    "additionalClasses": null,
    "subtype": "Badgered Soldier",
+   "levelTable": "civilian.militia",
    "artMissing": true,
    "personality": [
     "grim"
@@ -5351,7 +5421,8 @@
     "bleedOutTurns": 5
    },
    "notes": [
-    "Toughness 3 is hell-tcg maxAfflictions, ported straight across — same meaning."
+    "Toughness 3 is hell-tcg maxAfflictions, ported straight across — same meaning.",
+    "Levels on civilian.refugee rather than the class.civilian table — ruled 2026-09-03."
    ],
    "specialty": null,
    "originBadges": [
@@ -5380,6 +5451,7 @@
    "passiveDescription": "Grants spells: Protect the Weak, No Recourse",
    "additionalClasses": null,
    "subtype": "Defenseless Women",
+   "levelTable": "civilian.refugee",
    "artMissing": true
   },
   {
@@ -5418,7 +5490,8 @@
     "bleedOutTurns": 5
    },
    "notes": [
-    "Toughness 3 is hell-tcg maxAfflictions, ported straight across — same meaning."
+    "Toughness 3 is hell-tcg maxAfflictions, ported straight across — same meaning.",
+    "Levels on civilian.militia rather than the class.civilian table — ruled 2026-09-03."
    ],
    "specialty": null,
    "originBadges": [],
@@ -5440,6 +5513,7 @@
    "passiveDescription": "An organized militia force",
    "additionalClasses": null,
    "subtype": "Militia",
+   "levelTable": "civilian.militia",
    "artMissing": true
   },
   {
@@ -5478,7 +5552,8 @@
     "bleedOutTurns": 5
    },
    "notes": [
-    "Toughness 3 is hell-tcg maxAfflictions, ported straight across — same meaning."
+    "Toughness 3 is hell-tcg maxAfflictions, ported straight across — same meaning.",
+    "Levels on civilian.militia rather than the class.civilian table — ruled 2026-09-03."
    ],
    "specialty": null,
    "originBadges": [
@@ -5509,6 +5584,7 @@
    "passiveDescription": "+1 Max Heroes. Class Power: Coordinate",
    "additionalClasses": null,
    "subtype": "Militia Commander",
+   "levelTable": "civilian.militia",
    "artMissing": true
   },
   {
@@ -5618,7 +5694,8 @@
    },
    "notes": [
     "Dodge 1 scaled x5 to 5 — hell-tcg Dodge was a 0-3 integer, HoBaT Dodge is a flat to-hit penalty in points.",
-    "Toughness 2 is hell-tcg maxAfflictions, ported straight across — same meaning."
+    "Toughness 2 is hell-tcg maxAfflictions, ported straight across — same meaning.",
+    "Levels on civilian.sailor rather than the class.civilian table — ruled 2026-09-03."
    ],
    "specialty": null,
    "originBadges": [
@@ -5650,6 +5727,7 @@
    "additionalClasses": null,
    "subtype": "Catfolk Crew",
    "type": "Ship Cat",
+   "levelTable": "civilian.sailor",
    "artMissing": true,
    "personality": [
     "cheerful"
@@ -5691,7 +5769,8 @@
     "bleedOutTurns": 5
    },
    "notes": [
-    "Toughness 3 is hell-tcg maxAfflictions, ported straight across — same meaning."
+    "Toughness 3 is hell-tcg maxAfflictions, ported straight across — same meaning.",
+    "Levels on civilian.sailor rather than the class.civilian table — ruled 2026-09-03."
    ],
    "specialty": null,
    "originBadges": [
@@ -5721,6 +5800,7 @@
    "additionalClasses": null,
    "subtype": "Catfolk Navigator",
    "type": "Chart Reader",
+   "levelTable": "civilian.sailor",
    "artMissing": true,
    "personality": [
     "cold"
@@ -5762,7 +5842,8 @@
     "bleedOutTurns": 5
    },
    "notes": [
-    "Toughness 3 is hell-tcg maxAfflictions, ported straight across — same meaning."
+    "Toughness 3 is hell-tcg maxAfflictions, ported straight across — same meaning.",
+    "Levels on civilian.crafter rather than the class.civilian table — ruled 2026-09-03."
    ],
    "specialty": null,
    "originBadges": [
@@ -5792,6 +5873,7 @@
    "additionalClasses": null,
    "subtype": "Catfolk Cook",
    "type": "Galley Cook",
+   "levelTable": "civilian.crafter",
    "artMissing": true,
    "personality": [
     "cheerful"
@@ -5838,6 +5920,7 @@
     "Dodge 1 scaled x5 to 5 — hell-tcg Dodge was a 0-3 integer, HoBaT Dodge is a flat to-hit penalty in points.",
     "Resolute +1 DROPPED — the stat was removed 2026-08-15 with no replacement.",
     "Toughness 3 is hell-tcg maxAfflictions, ported straight across — same meaning.",
+    "Levels on civilian.sailor rather than the class.civilian table — ruled 2026-09-03.",
     "Base stats +1 strength, +1 precision, +4 health — Child compensation (ruled 2026-08-25)."
    ],
    "specialty": null,
@@ -5871,6 +5954,7 @@
    "additionalClasses": null,
    "subtype": "Catfolk Cabin Boy",
    "type": "Bucket Boy",
+   "levelTable": "civilian.sailor",
    "artMissing": true,
    "personality": [
     "cheerful"
@@ -6130,7 +6214,8 @@
     "bleedOutTurns": 5
    },
    "notes": [
-    "Toughness 2 is hell-tcg maxAfflictions, ported straight across — same meaning."
+    "Toughness 2 is hell-tcg maxAfflictions, ported straight across — same meaning.",
+    "Levels on civilian.sailor rather than the class.civilian table — ruled 2026-09-03."
    ],
    "specialty": null,
    "originBadges": [
@@ -6160,6 +6245,7 @@
    "additionalClasses": null,
    "subtype": "Catfolk Whip Master",
    "type": "Whip Handler",
+   "levelTable": "civilian.sailor",
    "artMissing": true,
    "personality": [
     "cold"
@@ -6343,7 +6429,8 @@
     "bleedOutTurns": 5
    },
    "notes": [
-    "Toughness 2 is hell-tcg maxAfflictions, ported straight across — same meaning."
+    "Toughness 2 is hell-tcg maxAfflictions, ported straight across — same meaning.",
+    "Levels on civilian.sailor rather than the class.civilian table — ruled 2026-09-03."
    ],
    "specialty": null,
    "originBadges": [],
@@ -6366,6 +6453,7 @@
    "additionalClasses": null,
    "subtype": "Cargo Hold Crew",
    "type": "Cargo Line",
+   "levelTable": "civilian.sailor",
    "artMissing": true,
    "personality": [
     "cheerful"
@@ -6407,7 +6495,8 @@
     "bleedOutTurns": 5
    },
    "notes": [
-    "Toughness 2 is hell-tcg maxAfflictions, ported straight across — same meaning."
+    "Toughness 2 is hell-tcg maxAfflictions, ported straight across — same meaning.",
+    "Levels on civilian.scholar rather than the class.civilian table — ruled 2026-09-03."
    ],
    "specialty": null,
    "originBadges": [
@@ -6439,6 +6528,7 @@
    "additionalClasses": null,
    "subtype": "Ship's Astrologer",
    "type": "Globe Keeper",
+   "levelTable": "civilian.scholar",
    "artMissing": true,
    "personality": [
     "sardonic"
@@ -6481,6 +6571,7 @@
    },
    "notes": [
     "Toughness 4 is hell-tcg maxAfflictions, ported straight across — same meaning.",
+    "Levels on civilian.child rather than the class.civilian table — ruled 2026-09-03.",
     "Base stats +1 strength, +1 precision, +4 health — Child compensation (ruled 2026-08-25)."
    ],
    "specialty": null,
@@ -6511,6 +6602,7 @@
    "additionalClasses": null,
    "subtype": "Stowaway Children",
    "type": "Knife Children",
+   "levelTable": "civilian.child",
    "artMissing": true,
    "personality": [
     "cheerful"
@@ -6552,7 +6644,8 @@
     "bleedOutTurns": 5
    },
    "notes": [
-    "Toughness 3 is hell-tcg maxAfflictions, ported straight across — same meaning."
+    "Toughness 3 is hell-tcg maxAfflictions, ported straight across — same meaning.",
+    "Levels on civilian.refugee rather than the class.civilian table — ruled 2026-09-03."
    ],
    "specialty": null,
    "originBadges": [
@@ -6577,6 +6670,7 @@
    "additionalClasses": null,
    "subtype": "Cursed Passengers",
    "type": "Blood Marked",
+   "levelTable": "civilian.refugee",
    "artMissing": true
   },
   {
@@ -6615,7 +6709,8 @@
     "bleedOutTurns": 5
    },
    "notes": [
-    "Toughness 3 is hell-tcg maxAfflictions, ported straight across — same meaning."
+    "Toughness 3 is hell-tcg maxAfflictions, ported straight across — same meaning.",
+    "Levels on civilian.sailor rather than the class.civilian table — ruled 2026-09-03."
    ],
    "specialty": null,
    "originBadges": [],
@@ -6638,6 +6733,7 @@
    "additionalClasses": null,
    "subtype": "Skyship Deckhands",
    "type": "Armed Deckhands",
+   "levelTable": "civilian.sailor",
    "artMissing": true,
    "personality": [
     "grim"
@@ -6679,7 +6775,8 @@
     "bleedOutTurns": 5
    },
    "notes": [
-    "Toughness 3 is hell-tcg maxAfflictions, ported straight across — same meaning."
+    "Toughness 3 is hell-tcg maxAfflictions, ported straight across — same meaning.",
+    "Levels on civilian.bard rather than the class.civilian table — ruled 2026-09-03."
    ],
    "specialty": null,
    "originBadges": [],
@@ -6706,6 +6803,7 @@
    "passiveDescription": "On enter: remove 1 Weak from all heroes. On attack: heal party for 1.",
    "additionalClasses": null,
    "subtype": "Bard",
+   "levelTable": "civilian.bard",
    "personality": [
     "cheerful"
    ]
@@ -6746,7 +6844,8 @@
     "bleedOutTurns": 5
    },
    "notes": [
-    "Toughness 3 is hell-tcg maxAfflictions, ported straight across — same meaning."
+    "Toughness 3 is hell-tcg maxAfflictions, ported straight across — same meaning.",
+    "Levels on civilian.bard rather than the class.civilian table — ruled 2026-09-03."
    ],
    "specialty": null,
    "originBadges": [],
@@ -6773,6 +6872,7 @@
    "passiveDescription": "On attack: apply 1 Weak to all enemies in row.",
    "additionalClasses": null,
    "subtype": "Ethereal Bard",
+   "levelTable": "civilian.bard",
    "personality": [
     "cold"
    ]
@@ -6816,7 +6916,8 @@
    },
    "notes": [
     "Resolute -1 DROPPED — the stat was removed 2026-08-15 with no replacement.",
-    "Toughness 3 is hell-tcg maxAfflictions, ported straight across — same meaning."
+    "Toughness 3 is hell-tcg maxAfflictions, ported straight across — same meaning.",
+    "Levels on civilian.militia rather than the class.civilian table — ruled 2026-09-03."
    ],
    "specialty": null,
    "originBadges": [],
@@ -6843,6 +6944,7 @@
    "passiveDescription": "On enter: gain 5 Weak. Overwhelming numbers but no discipline.",
    "additionalClasses": null,
    "subtype": "Small Army",
+   "levelTable": "civilian.militia",
    "personality": [
     "grim"
    ]
@@ -6884,6 +6986,7 @@
    },
    "notes": [
     "Toughness 3 is hell-tcg maxAfflictions, ported straight across — same meaning.",
+    "Levels on civilian.child rather than the class.civilian table — ruled 2026-09-03.",
     "Base stats +1 strength, +1 precision, +4 health — Child compensation (ruled 2026-08-25)."
    ],
    "specialty": null,
@@ -6914,6 +7017,7 @@
    "passiveDescription": "Free to deploy. Too young and frail for battle.",
    "additionalClasses": null,
    "subtype": "Wayward Child",
+   "levelTable": "civilian.child",
    "personality": [
     "cheerful"
    ]
@@ -19030,6 +19134,7 @@
    },
    "notes": [
     "NEW UNIT ruled 2026-08-25: the school-child-solo art is its own character, separate from School Children. Stats cloned from School Children as a SOFT baseline — a sweep or ruling prices her.",
+    "Levels on civilian.child rather than the class.civilian table — ruled 2026-09-03.",
     "Base stats +1 strength, +1 precision, +4 health — Child compensation (ruled 2026-08-25)."
    ],
    "specialty": null,
@@ -19057,6 +19162,877 @@
     "art/heroes/school-child-female/hex/l1_256.png",
     "art/heroes/school-child-female/hex/l1_full.png"
    ],
+   "levelTable": "civilian.child",
+   "personality": [
+    "cheerful"
+   ]
+  },
+  {
+   "id": "hero.fixed.farmhand-reed",
+   "name": "Young Farmhand",
+   "path": "fixed",
+   "sourceClass": "Civilian",
+   "class": "class.civilian",
+   "tier": 0,
+   "level": 1,
+   "gender": "male",
+   "campaign": null,
+   "art": "art/heroes/farmhand-reed/card/l1.png",
+   "ported": {
+    "strength": 2,
+    "precision": 2,
+    "armor": 0,
+    "health": 6,
+    "reach": 1,
+    "magic": 0,
+    "spirit": 0,
+    "resist": 0,
+    "itemSlots": 3,
+    "toughness": 1,
+    "dodge": 0
+   },
+   "dropped": {},
+   "derivedBase": {
+    "accuracy": 70,
+    "crit": 3,
+    "luck": 0,
+    "vision": 6,
+    "movement": 5,
+    "staminaMax": 5,
+    "staminaRegen": 1,
+    "bleedOutTurns": 5
+   },
+   "notes": [
+    "NEW UNIT, ruled 2026-09-04: \"go ahead and build the 12.\" One of the twelve civilians the art chat painted on 2026-09-03 (content/art/heroes/farmhand-reed/). Art was on disk with no hero row behind it. Stats cloned as a SOFT baseline from the nearest existing civilian of the same kind; a sweep or a ruling prices this row. NO SPECIALTY IS SET — \"the specialties are the same for all of them, the specialty options for civilians right now\", so it is picked at L2 from the nine civilian specialties like any other civilian. levelArt is unset until l2..l4 are painted; only l1 exists.",
+    "Levels on civilian.farmer rather than the class.civilian table — ruled 2026-09-03."
+   ],
+   "originBadges": [
+    "Frail"
+   ],
+   "classPowers": [],
+   "namedSpecials": [],
+   "levelBonuses": [
+    "2",
+    "3",
+    "4"
+   ],
+   "cost": {
+    "action": 1,
+    "faith": 0,
+    "discard": 0,
+    "supplies": 0
+   },
+   "quote": null,
+   "backstory": null,
+   "passiveDescription": null,
+   "additionalClasses": null,
+   "subtype": "Young Farmhand",
+   "artSlug": "farmhand-reed",
+   "hexArt": [
+    "art/heroes/farmhand-reed/hex/l1_1024.png",
+    "art/heroes/farmhand-reed/hex/l1_256.png",
+    "art/heroes/farmhand-reed/hex/l1_full.png"
+   ],
+   "levelTable": "civilian.farmer",
+   "personality": [
+    "grim"
+   ]
+  },
+  {
+   "id": "hero.fixed.ploughman-corbin",
+   "name": "Ploughman",
+   "path": "fixed",
+   "sourceClass": "Civilian",
+   "class": "class.civilian",
+   "tier": 0,
+   "level": 1,
+   "gender": "male",
+   "campaign": null,
+   "art": "art/heroes/ploughman-corbin/card/l1.png",
+   "ported": {
+    "strength": 2,
+    "precision": 2,
+    "armor": 0,
+    "health": 6,
+    "reach": 1,
+    "magic": 0,
+    "spirit": 0,
+    "resist": 0,
+    "itemSlots": 3,
+    "toughness": 1,
+    "dodge": 0
+   },
+   "dropped": {},
+   "derivedBase": {
+    "accuracy": 70,
+    "crit": 3,
+    "luck": 0,
+    "vision": 6,
+    "movement": 5,
+    "staminaMax": 5,
+    "staminaRegen": 1,
+    "bleedOutTurns": 5
+   },
+   "notes": [
+    "NEW UNIT, ruled 2026-09-04: \"go ahead and build the 12.\" One of the twelve civilians the art chat painted on 2026-09-03 (content/art/heroes/ploughman-corbin/). Art was on disk with no hero row behind it. Stats cloned as a SOFT baseline from the nearest existing civilian of the same kind; a sweep or a ruling prices this row. NO SPECIALTY IS SET — \"the specialties are the same for all of them, the specialty options for civilians right now\", so it is picked at L2 from the nine civilian specialties like any other civilian. levelArt is unset until l2..l4 are painted; only l1 exists.",
+    "Levels on civilian.farmer rather than the class.civilian table — ruled 2026-09-03."
+   ],
+   "originBadges": [
+    "Frail"
+   ],
+   "classPowers": [],
+   "namedSpecials": [],
+   "levelBonuses": [
+    "2",
+    "3",
+    "4"
+   ],
+   "cost": {
+    "action": 1,
+    "faith": 0,
+    "discard": 0,
+    "supplies": 0
+   },
+   "quote": null,
+   "backstory": null,
+   "passiveDescription": null,
+   "additionalClasses": null,
+   "subtype": "Ploughman",
+   "artSlug": "ploughman-corbin",
+   "hexArt": [
+    "art/heroes/ploughman-corbin/hex/l1_1024.png",
+    "art/heroes/ploughman-corbin/hex/l1_256.png",
+    "art/heroes/ploughman-corbin/hex/l1_full.png"
+   ],
+   "levelTable": "civilian.farmer",
+   "personality": [
+    "grim"
+   ]
+  },
+  {
+   "id": "hero.fixed.old-reaper-mattick",
+   "name": "Old Reaper",
+   "path": "fixed",
+   "sourceClass": "Civilian",
+   "class": "class.civilian",
+   "tier": 0,
+   "level": 1,
+   "gender": "male",
+   "campaign": null,
+   "art": "art/heroes/old-reaper-mattick/card/l1.png",
+   "ported": {
+    "strength": 2,
+    "precision": 2,
+    "armor": 0,
+    "health": 6,
+    "reach": 1,
+    "magic": 0,
+    "spirit": 0,
+    "resist": 0,
+    "itemSlots": 3,
+    "toughness": 1,
+    "dodge": 0
+   },
+   "dropped": {},
+   "derivedBase": {
+    "accuracy": 70,
+    "crit": 3,
+    "luck": 0,
+    "vision": 6,
+    "movement": 5,
+    "staminaMax": 5,
+    "staminaRegen": 1,
+    "bleedOutTurns": 5
+   },
+   "notes": [
+    "NEW UNIT, ruled 2026-09-04: \"go ahead and build the 12.\" One of the twelve civilians the art chat painted on 2026-09-03 (content/art/heroes/old-reaper-mattick/). Art was on disk with no hero row behind it. Stats cloned as a SOFT baseline from the nearest existing civilian of the same kind; a sweep or a ruling prices this row. NO SPECIALTY IS SET — \"the specialties are the same for all of them, the specialty options for civilians right now\", so it is picked at L2 from the nine civilian specialties like any other civilian. levelArt is unset until l2..l4 are painted; only l1 exists.",
+    "Levels on civilian.farmer rather than the class.civilian table — ruled 2026-09-03."
+   ],
+   "originBadges": [
+    "Frail"
+   ],
+   "classPowers": [],
+   "namedSpecials": [],
+   "levelBonuses": [
+    "2",
+    "3",
+    "4"
+   ],
+   "cost": {
+    "action": 1,
+    "faith": 0,
+    "discard": 0,
+    "supplies": 0
+   },
+   "quote": null,
+   "backstory": null,
+   "passiveDescription": null,
+   "additionalClasses": null,
+   "subtype": "Old Reaper",
+   "artSlug": "old-reaper-mattick",
+   "hexArt": [
+    "art/heroes/old-reaper-mattick/hex/l1_1024.png",
+    "art/heroes/old-reaper-mattick/hex/l1_256.png",
+    "art/heroes/old-reaper-mattick/hex/l1_full.png"
+   ],
+   "levelTable": "civilian.farmer",
+   "personality": [
+    "grim"
+   ]
+  },
+  {
+   "id": "hero.fixed.apothecary-wren",
+   "name": "Apothecary",
+   "path": "fixed",
+   "sourceClass": "Civilian",
+   "class": "class.civilian",
+   "tier": 0,
+   "level": 1,
+   "gender": "male",
+   "campaign": null,
+   "art": "art/heroes/apothecary-wren/card/l1.png",
+   "ported": {
+    "strength": 2,
+    "precision": 2,
+    "armor": 1,
+    "health": 5,
+    "reach": 1,
+    "magic": 0,
+    "spirit": 0,
+    "resist": 0,
+    "itemSlots": 2,
+    "toughness": 1,
+    "dodge": 0
+   },
+   "dropped": {},
+   "derivedBase": {
+    "accuracy": 70,
+    "crit": 3,
+    "luck": 0,
+    "vision": 6,
+    "movement": 5,
+    "staminaMax": 5,
+    "staminaRegen": 1,
+    "bleedOutTurns": 5
+   },
+   "notes": [
+    "NEW UNIT, ruled 2026-09-04: \"go ahead and build the 12.\" One of the twelve civilians the art chat painted on 2026-09-03 (content/art/heroes/apothecary-wren/). Art was on disk with no hero row behind it. Stats cloned as a SOFT baseline from the nearest existing civilian of the same kind; a sweep or a ruling prices this row. NO SPECIALTY IS SET — \"the specialties are the same for all of them, the specialty options for civilians right now\", so it is picked at L2 from the nine civilian specialties like any other civilian. levelArt is unset until l2..l4 are painted; only l1 exists.",
+    "Levels on civilian.apothecary rather than the class.civilian table — ruled 2026-09-03."
+   ],
+   "originBadges": [
+    "Frail"
+   ],
+   "classPowers": [],
+   "namedSpecials": [
+    {
+     "name": "Provisions",
+     "description": "On enter: heal all heroes 1. On kill: gain 2 Supplies."
+    }
+   ],
+   "levelBonuses": [
+    "2",
+    "3",
+    "4"
+   ],
+   "cost": {
+    "action": 1,
+    "faith": 0,
+    "discard": 0,
+    "supplies": 0
+   },
+   "quote": null,
+   "backstory": null,
+   "passiveDescription": null,
+   "additionalClasses": null,
+   "subtype": "Apothecary",
+   "artSlug": "apothecary-wren",
+   "hexArt": [
+    "art/heroes/apothecary-wren/hex/l1_1024.png",
+    "art/heroes/apothecary-wren/hex/l1_256.png",
+    "art/heroes/apothecary-wren/hex/l1_full.png"
+   ],
+   "levelTable": "civilian.apothecary",
+   "personality": [
+    "cheerful"
+   ]
+  },
+  {
+   "id": "hero.fixed.torchbearer-cass",
+   "name": "Torch-Bearer",
+   "path": "fixed",
+   "sourceClass": "Civilian",
+   "class": "class.civilian",
+   "tier": 0,
+   "level": 1,
+   "gender": "male",
+   "campaign": "shadows",
+   "art": "art/heroes/torchbearer-cass/card/l1.png",
+   "ported": {
+    "strength": 3,
+    "precision": 3,
+    "armor": 1,
+    "health": 8,
+    "reach": 2,
+    "magic": 0,
+    "spirit": 0,
+    "resist": 0,
+    "itemSlots": 2,
+    "toughness": 2,
+    "dodge": 0
+   },
+   "dropped": {},
+   "derivedBase": {
+    "accuracy": 70,
+    "crit": 3,
+    "luck": 0,
+    "vision": 6,
+    "movement": 5,
+    "staminaMax": 5,
+    "staminaRegen": 1,
+    "bleedOutTurns": 5
+   },
+   "notes": [
+    "NEW UNIT, ruled 2026-09-04: \"go ahead and build the 12.\" One of the twelve civilians the art chat painted on 2026-09-03 (content/art/heroes/torchbearer-cass/). Art was on disk with no hero row behind it. Stats cloned as a SOFT baseline from the nearest existing civilian of the same kind; a sweep or a ruling prices this row. NO SPECIALTY IS SET — \"the specialties are the same for all of them, the specialty options for civilians right now\", so it is picked at L2 from the nine civilian specialties like any other civilian. levelArt is unset until l2..l4 are painted; only l1 exists.",
+    "Levels on civilian.militia rather than the class.civilian table — ruled 2026-09-03."
+   ],
+   "originBadges": [],
+   "classPowers": [],
+   "namedSpecials": [],
+   "levelBonuses": [
+    "2",
+    "3",
+    "4"
+   ],
+   "cost": {
+    "action": 1,
+    "faith": 0,
+    "discard": 0,
+    "supplies": 0
+   },
+   "quote": null,
+   "backstory": null,
+   "passiveDescription": "A disciplined guard of the sovereignty",
+   "additionalClasses": null,
+   "subtype": "Torch-Bearer",
+   "artSlug": "torchbearer-cass",
+   "hexArt": [
+    "art/heroes/torchbearer-cass/hex/l1_1024.png",
+    "art/heroes/torchbearer-cass/hex/l1_256.png",
+    "art/heroes/torchbearer-cass/hex/l1_full.png"
+   ],
+   "levelTable": "civilian.militia",
+   "personality": [
+    "grim"
+   ]
+  },
+  {
+   "id": "hero.fixed.porter-halloway",
+   "name": "Porter",
+   "path": "fixed",
+   "sourceClass": "Civilian",
+   "class": "class.civilian",
+   "tier": 0,
+   "level": 1,
+   "gender": "male",
+   "campaign": "shadows",
+   "art": "art/heroes/porter-halloway/card/l1.png",
+   "ported": {
+    "strength": 2,
+    "precision": 2,
+    "armor": 1,
+    "health": 8,
+    "reach": 2,
+    "magic": 0,
+    "spirit": 0,
+    "resist": 0,
+    "itemSlots": 4,
+    "toughness": 3,
+    "dodge": 0
+   },
+   "dropped": {},
+   "derivedBase": {
+    "accuracy": 70,
+    "crit": 3,
+    "luck": 0,
+    "vision": 6,
+    "movement": 5,
+    "staminaMax": 5,
+    "staminaRegen": 1,
+    "bleedOutTurns": 5
+   },
+   "notes": [
+    "NEW UNIT, ruled 2026-09-04: \"go ahead and build the 12.\" One of the twelve civilians the art chat painted on 2026-09-03 (content/art/heroes/porter-halloway/). Art was on disk with no hero row behind it. Stats cloned as a SOFT baseline from the nearest existing civilian of the same kind; a sweep or a ruling prices this row. NO SPECIALTY IS SET — \"the specialties are the same for all of them, the specialty options for civilians right now\", so it is picked at L2 from the nine civilian specialties like any other civilian. levelArt is unset until l2..l4 are painted; only l1 exists.",
+    "Levels on civilian.merchant rather than the class.civilian table — ruled 2026-09-03."
+   ],
+   "originBadges": [],
+   "classPowers": [],
+   "namedSpecials": [
+    {
+     "name": "Trade Master",
+     "description": "On enter: +2 Supplies, +1 action per turn."
+    }
+   ],
+   "levelBonuses": [
+    "2",
+    "3",
+    "4"
+   ],
+   "cost": {
+    "action": 4,
+    "faith": 0,
+    "discard": 0,
+    "supplies": 0
+   },
+   "quote": null,
+   "backstory": null,
+   "passiveDescription": "On enter: +2 Supplies, +1 Action per turn. Recruit bonus: +5 Supplies",
+   "additionalClasses": null,
+   "subtype": "Porter",
+   "artSlug": "porter-halloway",
+   "hexArt": [
+    "art/heroes/porter-halloway/hex/l1_1024.png",
+    "art/heroes/porter-halloway/hex/l1_256.png",
+    "art/heroes/porter-halloway/hex/l1_full.png"
+   ],
+   "levelTable": "civilian.merchant",
+   "personality": [
+    "cheerful"
+   ]
+  },
+  {
+   "id": "hero.fixed.militia-tam",
+   "name": "Village Militia",
+   "path": "fixed",
+   "sourceClass": "Civilian",
+   "class": "class.civilian",
+   "tier": 0,
+   "level": 1,
+   "gender": "male",
+   "campaign": "shadows",
+   "art": "art/heroes/militia-tam/card/l1.png",
+   "ported": {
+    "strength": 8,
+    "precision": 5,
+    "armor": 0,
+    "health": 23,
+    "reach": 2,
+    "magic": 0,
+    "spirit": 0,
+    "resist": 0,
+    "itemSlots": 3,
+    "toughness": 3,
+    "dodge": 0
+   },
+   "dropped": {},
+   "derivedBase": {
+    "accuracy": 70,
+    "crit": 3,
+    "luck": 0,
+    "vision": 6,
+    "movement": 5,
+    "staminaMax": 5,
+    "staminaRegen": 1,
+    "bleedOutTurns": 5
+   },
+   "notes": [
+    "NEW UNIT, ruled 2026-09-04: \"go ahead and build the 12.\" One of the twelve civilians the art chat painted on 2026-09-03 (content/art/heroes/militia-tam/). Art was on disk with no hero row behind it. Stats cloned as a SOFT baseline from the nearest existing civilian of the same kind; a sweep or a ruling prices this row. NO SPECIALTY IS SET — \"the specialties are the same for all of them, the specialty options for civilians right now\", so it is picked at L2 from the nine civilian specialties like any other civilian. levelArt is unset until l2..l4 are painted; only l1 exists.",
+    "Levels on civilian.militia rather than the class.civilian table — ruled 2026-09-03."
+   ],
+   "originBadges": [],
+   "classPowers": [],
+   "namedSpecials": [],
+   "levelBonuses": [
+    "2",
+    "3",
+    "4"
+   ],
+   "cost": {
+    "action": 4,
+    "faith": 0,
+    "discard": 0,
+    "supplies": 0
+   },
+   "quote": null,
+   "backstory": null,
+   "passiveDescription": "An organized militia force",
+   "additionalClasses": null,
+   "subtype": "Village Militia",
+   "artSlug": "militia-tam",
+   "hexArt": [
+    "art/heroes/militia-tam/hex/l1_1024.png",
+    "art/heroes/militia-tam/hex/l1_256.png",
+    "art/heroes/militia-tam/hex/l1_full.png"
+   ],
+   "levelTable": "civilian.militia"
+  },
+  {
+   "id": "hero.fixed.trickster-fen",
+   "name": "Trickster",
+   "path": "fixed",
+   "sourceClass": "Civilian",
+   "class": "class.civilian",
+   "tier": 0,
+   "level": 1,
+   "gender": "male",
+   "campaign": "shadows",
+   "art": "art/heroes/trickster-fen/card/l1.png",
+   "ported": {
+    "strength": 4,
+    "precision": 3,
+    "armor": 0,
+    "health": 8,
+    "reach": 2,
+    "magic": 0,
+    "spirit": 0,
+    "resist": 0,
+    "itemSlots": 3,
+    "toughness": 2,
+    "dodge": 0
+   },
+   "dropped": {},
+   "derivedBase": {
+    "accuracy": 70,
+    "crit": 3,
+    "luck": 0,
+    "vision": 6,
+    "movement": 5,
+    "staminaMax": 5,
+    "staminaRegen": 1,
+    "bleedOutTurns": 5
+   },
+   "notes": [
+    "NEW UNIT, ruled 2026-09-04: \"go ahead and build the 12.\" One of the twelve civilians the art chat painted on 2026-09-03 (content/art/heroes/trickster-fen/). Art was on disk with no hero row behind it. Stats cloned as a SOFT baseline from the nearest existing civilian of the same kind; a sweep or a ruling prices this row. NO SPECIALTY IS SET — \"the specialties are the same for all of them, the specialty options for civilians right now\", so it is picked at L2 from the nine civilian specialties like any other civilian. levelArt is unset until l2..l4 are painted; only l1 exists.",
+    "Levels on civilian.child rather than the class.civilian table — ruled 2026-09-03."
+   ],
+   "originBadges": [
+    "Outcast",
+    "Survivor",
+    "Veteran"
+   ],
+   "classPowers": [],
+   "namedSpecials": [
+    {
+     "name": "Outcast's Gift",
+     "description": "Grants spell: Outcast."
+    }
+   ],
+   "levelBonuses": [
+    "2",
+    "3",
+    "4"
+   ],
+   "cost": {
+    "action": 1,
+    "faith": 0,
+    "discard": 0,
+    "supplies": 0
+   },
+   "quote": null,
+   "backstory": null,
+   "passiveDescription": "Grants spell: Outcast",
+   "additionalClasses": null,
+   "subtype": "Trickster",
+   "artSlug": "trickster-fen",
+   "hexArt": [
+    "art/heroes/trickster-fen/hex/l1_1024.png",
+    "art/heroes/trickster-fen/hex/l1_256.png",
+    "art/heroes/trickster-fen/hex/l1_full.png"
+   ],
+   "levelTable": "civilian.child",
+   "personality": [
+    "brooding"
+   ]
+  },
+  {
+   "id": "hero.fixed.archer-mabb",
+   "name": "Village Archer",
+   "path": "fixed",
+   "sourceClass": "Civilian",
+   "class": "class.civilian",
+   "tier": 0,
+   "level": 1,
+   "gender": "male",
+   "campaign": "shadows",
+   "art": "art/heroes/archer-mabb/card/l1.png",
+   "ported": {
+    "strength": 8,
+    "precision": 5,
+    "armor": 0,
+    "health": 23,
+    "reach": 2,
+    "magic": 0,
+    "spirit": 0,
+    "resist": 0,
+    "itemSlots": 3,
+    "toughness": 3,
+    "dodge": 0
+   },
+   "dropped": {},
+   "derivedBase": {
+    "accuracy": 70,
+    "crit": 3,
+    "luck": 0,
+    "vision": 6,
+    "movement": 5,
+    "staminaMax": 5,
+    "staminaRegen": 1,
+    "bleedOutTurns": 5
+   },
+   "notes": [
+    "NEW UNIT, ruled 2026-09-04: \"go ahead and build the 12.\" One of the twelve civilians the art chat painted on 2026-09-03 (content/art/heroes/archer-mabb/). Art was on disk with no hero row behind it. Stats cloned as a SOFT baseline from the nearest existing civilian of the same kind; a sweep or a ruling prices this row. NO SPECIALTY IS SET — \"the specialties are the same for all of them, the specialty options for civilians right now\", so it is picked at L2 from the nine civilian specialties like any other civilian. levelArt is unset until l2..l4 are painted; only l1 exists.",
+    "Levels on civilian.militia rather than the class.civilian table — ruled 2026-09-03."
+   ],
+   "originBadges": [],
+   "classPowers": [],
+   "namedSpecials": [],
+   "levelBonuses": [
+    "2",
+    "3",
+    "4"
+   ],
+   "cost": {
+    "action": 4,
+    "faith": 0,
+    "discard": 0,
+    "supplies": 0
+   },
+   "quote": null,
+   "backstory": null,
+   "passiveDescription": "An organized militia force",
+   "additionalClasses": null,
+   "subtype": "Village Archer",
+   "artSlug": "archer-mabb",
+   "hexArt": [
+    "art/heroes/archer-mabb/hex/l1_1024.png",
+    "art/heroes/archer-mabb/hex/l1_256.png",
+    "art/heroes/archer-mabb/hex/l1_full.png"
+   ],
+   "levelTable": "civilian.militia"
+  },
+  {
+   "id": "hero.fixed.archivist-perrin",
+   "name": "Archivist",
+   "path": "fixed",
+   "sourceClass": "Civilian",
+   "class": "class.civilian",
+   "tier": 0,
+   "level": 1,
+   "gender": "female",
+   "campaign": null,
+   "art": "art/heroes/archivist-perrin/card/l1.png",
+   "ported": {
+    "strength": 0,
+    "precision": 0,
+    "armor": 0,
+    "health": 4,
+    "reach": 2,
+    "magic": 0,
+    "spirit": 0,
+    "resist": 0,
+    "itemSlots": 3,
+    "toughness": 2,
+    "dodge": 0
+   },
+   "dropped": {},
+   "derivedBase": {
+    "accuracy": 70,
+    "crit": 3,
+    "luck": 0,
+    "vision": 6,
+    "movement": 5,
+    "staminaMax": 5,
+    "staminaRegen": 1,
+    "bleedOutTurns": 5
+   },
+   "notes": [
+    "NEW UNIT, ruled 2026-09-04: \"go ahead and build the 12.\" One of the twelve civilians the art chat painted on 2026-09-03 (content/art/heroes/archivist-perrin/). Art was on disk with no hero row behind it. Stats cloned as a SOFT baseline from the nearest existing civilian of the same kind; a sweep or a ruling prices this row. NO SPECIALTY IS SET — \"the specialties are the same for all of them, the specialty options for civilians right now\", so it is picked at L2 from the nine civilian specialties like any other civilian. levelArt is unset until l2..l4 are painted; only l1 exists.",
+    "Levels on civilian.scholar rather than the class.civilian table — ruled 2026-09-03."
+   ],
+   "originBadges": [
+    "Frail"
+   ],
+   "classPowers": [],
+   "namedSpecials": [
+    {
+     "name": "Knowledge",
+     "description": "On enter: all heroes gain +1 Item Slot and +1 Reach."
+    }
+   ],
+   "levelBonuses": [
+    "2",
+    "3",
+    "4"
+   ],
+   "cost": {
+    "action": 0,
+    "faith": 0,
+    "discard": 0,
+    "supplies": 0
+   },
+   "quote": null,
+   "backstory": null,
+   "passiveDescription": null,
+   "additionalClasses": null,
+   "subtype": "Archivist",
+   "artSlug": "archivist-perrin",
+   "hexArt": [
+    "art/heroes/archivist-perrin/hex/l1_1024.png",
+    "art/heroes/archivist-perrin/hex/l1_256.png",
+    "art/heroes/archivist-perrin/hex/l1_full.png"
+   ],
+   "levelTable": "civilian.scholar",
+   "personality": [
+    "cold"
+   ]
+  },
+  {
+   "id": "hero.fixed.sage-orla",
+   "name": "Sage",
+   "path": "fixed",
+   "sourceClass": "Civilian",
+   "class": "class.civilian",
+   "tier": 0,
+   "level": 1,
+   "gender": "male",
+   "campaign": null,
+   "art": "art/heroes/sage-orla/card/l1.png",
+   "ported": {
+    "strength": 2,
+    "precision": 2,
+    "armor": 0,
+    "health": 6,
+    "reach": 1,
+    "magic": 0,
+    "spirit": 0,
+    "resist": 0,
+    "itemSlots": 2,
+    "toughness": 2,
+    "dodge": 0
+   },
+   "dropped": {},
+   "derivedBase": {
+    "accuracy": 70,
+    "crit": 3,
+    "luck": 0,
+    "vision": 6,
+    "movement": 5,
+    "staminaMax": 5,
+    "staminaRegen": 1,
+    "bleedOutTurns": 5
+   },
+   "notes": [
+    "NEW UNIT, ruled 2026-09-04: \"go ahead and build the 12.\" One of the twelve civilians the art chat painted on 2026-09-03 (content/art/heroes/sage-orla/). Art was on disk with no hero row behind it. Stats cloned as a SOFT baseline from the nearest existing civilian of the same kind; a sweep or a ruling prices this row. NO SPECIALTY IS SET — \"the specialties are the same for all of them, the specialty options for civilians right now\", so it is picked at L2 from the nine civilian specialties like any other civilian. levelArt is unset until l2..l4 are painted; only l1 exists.",
+    "Levels on civilian.scholar rather than the class.civilian table — ruled 2026-09-03."
+   ],
+   "originBadges": [
+    "Old",
+    "Wise",
+    "Ancient",
+    "Frail"
+   ],
+   "classPowers": [],
+   "namedSpecials": [
+    {
+     "name": "Wisdom",
+     "description": "On enter: draw 2 cards."
+    }
+   ],
+   "levelBonuses": [
+    "2",
+    "3"
+   ],
+   "cost": {
+    "action": 1,
+    "faith": 0,
+    "discard": 0,
+    "supplies": 0
+   },
+   "quote": "\"Listen well, for I shall not repeat myself.\"",
+   "backstory": "He has seen civilizations rise and fall, remembers the old ways, and carries secrets that should have died with his generation.",
+   "passiveDescription": null,
+   "additionalClasses": null,
+   "subtype": "Sage",
+   "artSlug": "sage-orla",
+   "hexArt": [
+    "art/heroes/sage-orla/hex/l1_1024.png",
+    "art/heroes/sage-orla/hex/l1_256.png",
+    "art/heroes/sage-orla/hex/l1_full.png"
+   ],
+   "levelTable": "civilian.scholar",
+   "personality": [
+    "sardonic"
+   ]
+  },
+  {
+   "id": "hero.fixed.remembrancer-idris",
+   "name": "Remembrancer",
+   "path": "fixed",
+   "sourceClass": "Civilian",
+   "class": "class.civilian",
+   "tier": 0,
+   "level": 1,
+   "gender": "female",
+   "campaign": null,
+   "art": "art/heroes/remembrancer-idris/card/l1.png",
+   "ported": {
+    "strength": 2,
+    "precision": 3,
+    "armor": 0,
+    "health": 5,
+    "reach": 2,
+    "magic": 0,
+    "spirit": 0,
+    "resist": 0,
+    "itemSlots": 2,
+    "toughness": 3,
+    "dodge": 0
+   },
+   "dropped": {},
+   "derivedBase": {
+    "accuracy": 70,
+    "crit": 3,
+    "luck": 0,
+    "vision": 6,
+    "movement": 5,
+    "staminaMax": 5,
+    "staminaRegen": 1,
+    "bleedOutTurns": 5
+   },
+   "notes": [
+    "NEW UNIT, ruled 2026-09-04: \"go ahead and build the 12.\" One of the twelve civilians the art chat painted on 2026-09-03 (content/art/heroes/remembrancer-idris/). Art was on disk with no hero row behind it. Stats cloned as a SOFT baseline from the nearest existing civilian of the same kind; a sweep or a ruling prices this row. NO SPECIALTY IS SET — \"the specialties are the same for all of them, the specialty options for civilians right now\", so it is picked at L2 from the nine civilian specialties like any other civilian. levelArt is unset until l2..l4 are painted; only l1 exists.",
+    "Levels on civilian.bard rather than the class.civilian table — ruled 2026-09-03."
+   ],
+   "originBadges": [],
+   "classPowers": [],
+   "namedSpecials": [
+    {
+     "name": "Rallying Verse",
+     "description": "On enter: remove 1 Weak from all heroes. On attack: heal party for 1."
+    }
+   ],
+   "levelBonuses": [
+    "2",
+    "3",
+    "4"
+   ],
+   "cost": {
+    "action": 1,
+    "faith": 0,
+    "discard": 0,
+    "supplies": 0
+   },
+   "quote": null,
+   "backstory": null,
+   "passiveDescription": "On enter: remove 1 Weak from all heroes. On attack: heal party for 1.",
+   "additionalClasses": null,
+   "subtype": "Remembrancer",
+   "artSlug": "remembrancer-idris",
+   "hexArt": [
+    "art/heroes/remembrancer-idris/hex/l1_1024.png",
+    "art/heroes/remembrancer-idris/hex/l1_256.png",
+    "art/heroes/remembrancer-idris/hex/l1_full.png"
+   ],
+   "levelTable": "civilian.bard",
    "personality": [
     "cheerful"
    ]

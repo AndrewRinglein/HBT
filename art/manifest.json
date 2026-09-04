@@ -3204,6 +3204,234 @@
    }
   ]
  },
+ "hero.fixed.farmhand-reed": {
+  "thumb": "27a29b7a1dbd.webp",
+  "src": "art/heroes/farmhand-reed/card/l1.png",
+  "how": "local art tree",
+  "variants": [
+   {
+    "kind": "level",
+    "label": "Level 1",
+    "thumb": "27a29b7a1dbd.webp",
+    "src": "art/heroes/farmhand-reed/card/l1.png"
+   },
+   {
+    "kind": "hex",
+    "label": "Level 1",
+    "thumb": "b92e7ff89375.webp",
+    "src": "art/heroes/farmhand-reed/hex/l1_256.png"
+   }
+  ]
+ },
+ "hero.fixed.ploughman-corbin": {
+  "thumb": "8f3e9673b56e.webp",
+  "src": "art/heroes/ploughman-corbin/card/l1.png",
+  "how": "local art tree",
+  "variants": [
+   {
+    "kind": "level",
+    "label": "Level 1",
+    "thumb": "8f3e9673b56e.webp",
+    "src": "art/heroes/ploughman-corbin/card/l1.png"
+   },
+   {
+    "kind": "hex",
+    "label": "Level 1",
+    "thumb": "8d5f61f35079.webp",
+    "src": "art/heroes/ploughman-corbin/hex/l1_256.png"
+   }
+  ]
+ },
+ "hero.fixed.old-reaper-mattick": {
+  "thumb": "7125776e125f.webp",
+  "src": "art/heroes/old-reaper-mattick/card/l1.png",
+  "how": "local art tree",
+  "variants": [
+   {
+    "kind": "level",
+    "label": "Level 1",
+    "thumb": "7125776e125f.webp",
+    "src": "art/heroes/old-reaper-mattick/card/l1.png"
+   },
+   {
+    "kind": "hex",
+    "label": "Level 1",
+    "thumb": "c8fae95b29fc.webp",
+    "src": "art/heroes/old-reaper-mattick/hex/l1_256.png"
+   }
+  ]
+ },
+ "hero.fixed.apothecary-wren": {
+  "thumb": "87d86aeb37b9.webp",
+  "src": "art/heroes/apothecary-wren/card/l1.png",
+  "how": "local art tree",
+  "variants": [
+   {
+    "kind": "level",
+    "label": "Level 1",
+    "thumb": "87d86aeb37b9.webp",
+    "src": "art/heroes/apothecary-wren/card/l1.png"
+   },
+   {
+    "kind": "hex",
+    "label": "Level 1",
+    "thumb": "e032bf4aea7e.webp",
+    "src": "art/heroes/apothecary-wren/hex/l1_256.png"
+   }
+  ]
+ },
+ "hero.fixed.torchbearer-cass": {
+  "thumb": "5c4248f39f39.webp",
+  "src": "art/heroes/torchbearer-cass/card/l1.png",
+  "how": "local art tree",
+  "variants": [
+   {
+    "kind": "level",
+    "label": "Level 1",
+    "thumb": "5c4248f39f39.webp",
+    "src": "art/heroes/torchbearer-cass/card/l1.png"
+   },
+   {
+    "kind": "hex",
+    "label": "Level 1",
+    "thumb": "da1944b34a3d.webp",
+    "src": "art/heroes/torchbearer-cass/hex/l1_256.png"
+   }
+  ]
+ },
+ "hero.fixed.porter-halloway": {
+  "thumb": "3c214d530d6a.webp",
+  "src": "art/heroes/porter-halloway/card/l1.png",
+  "how": "local art tree",
+  "variants": [
+   {
+    "kind": "level",
+    "label": "Level 1",
+    "thumb": "3c214d530d6a.webp",
+    "src": "art/heroes/porter-halloway/card/l1.png"
+   },
+   {
+    "kind": "hex",
+    "label": "Level 1",
+    "thumb": "b51f7f087278.webp",
+    "src": "art/heroes/porter-halloway/hex/l1_256.png"
+   }
+  ]
+ },
+ "hero.fixed.militia-tam": {
+  "thumb": "81c9d2d846e5.webp",
+  "src": "art/heroes/militia-tam/card/l1.png",
+  "how": "local art tree",
+  "variants": [
+   {
+    "kind": "level",
+    "label": "Level 1",
+    "thumb": "81c9d2d846e5.webp",
+    "src": "art/heroes/militia-tam/card/l1.png"
+   },
+   {
+    "kind": "hex",
+    "label": "Level 1",
+    "thumb": "0917141f7f67.webp",
+    "src": "art/heroes/militia-tam/hex/l1_256.png"
+   }
+  ]
+ },
+ "hero.fixed.trickster-fen": {
+  "thumb": "b47cdd62a401.webp",
+  "src": "art/heroes/trickster-fen/card/l1.png",
+  "how": "local art tree",
+  "variants": [
+   {
+    "kind": "level",
+    "label": "Level 1",
+    "thumb": "b47cdd62a401.webp",
+    "src": "art/heroes/trickster-fen/card/l1.png"
+   },
+   {
+    "kind": "hex",
+    "label": "Level 1",
+    "thumb": "96b8314e29cb.webp",
+    "src": "art/heroes/trickster-fen/hex/l1_256.png"
+   }
+  ]
+ },
+ "hero.fixed.archer-mabb": {
+  "thumb": "35342333a1b3.webp",
+  "src": "art/heroes/archer-mabb/card/l1.png",
+  "how": "local art tree",
+  "variants": [
+   {
+    "kind": "level",
+    "label": "Level 1",
+    "thumb": "35342333a1b3.webp",
+    "src": "art/heroes/archer-mabb/card/l1.png"
+   },
+   {
+    "kind": "hex",
+    "label": "Level 1",
+    "thumb": "92873eea60f5.webp",
+    "src": "art/heroes/archer-mabb/hex/l1_256.png"
+   }
+  ]
+ },
+ "hero.fixed.archivist-perrin": {
+  "thumb": "3531129b88d1.webp",
+  "src": "art/heroes/archivist-perrin/card/l1.png",
+  "how": "local art tree",
+  "variants": [
+   {
+    "kind": "level",
+    "label": "Level 1",
+    "thumb": "3531129b88d1.webp",
+    "src": "art/heroes/archivist-perrin/card/l1.png"
+   },
+   {
+    "kind": "hex",
+    "label": "Level 1",
+    "thumb": "9d09177d8dbc.webp",
+    "src": "art/heroes/archivist-perrin/hex/l1_256.png"
+   }
+  ]
+ },
+ "hero.fixed.sage-orla": {
+  "thumb": "83d807a50d85.webp",
+  "src": "art/heroes/sage-orla/card/l1.png",
+  "how": "local art tree",
+  "variants": [
+   {
+    "kind": "level",
+    "label": "Level 1",
+    "thumb": "83d807a50d85.webp",
+    "src": "art/heroes/sage-orla/card/l1.png"
+   },
+   {
+    "kind": "hex",
+    "label": "Level 1",
+    "thumb": "97ded93fd739.webp",
+    "src": "art/heroes/sage-orla/hex/l1_256.png"
+   }
+  ]
+ },
+ "hero.fixed.remembrancer-idris": {
+  "thumb": "dbcf346a55af.webp",
+  "src": "art/heroes/remembrancer-idris/card/l1.png",
+  "how": "local art tree",
+  "variants": [
+   {
+    "kind": "level",
+    "label": "Level 1",
+    "thumb": "dbcf346a55af.webp",
+    "src": "art/heroes/remembrancer-idris/card/l1.png"
+   },
+   {
+    "kind": "hex",
+    "label": "Level 1",
+    "thumb": "9e7589722b66.webp",
+    "src": "art/heroes/remembrancer-idris/hex/l1_256.png"
+   }
+  ]
+ },
  "hero.skyship.aeronissa-priest.v2": {
   "thumb": "3420e88aeae4.webp",
   "src": null,

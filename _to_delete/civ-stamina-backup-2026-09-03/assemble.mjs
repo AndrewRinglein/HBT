@@ -120,13 +120,8 @@ if(fs.existsSync(G+'functions.json')) out.functions=R('functions.json');
     if(c.parentClass && known.has(c.id)) prob.push(`levels ${c.id}: a civilian type may not reuse a class id`);
     if(c.rows.length!==10) prob.push(`levels ${c.id}: ${c.rows.length} rows, want 10`);
     const st=(k)=>c.rows.reduce((n,r)=>n+((r.grants||{})[k]||0),0);
-    // Stamina, ruled 2026-09-03: EVERY table grants exactly +2 Stamina Regen, civilians included.
-    // The old carve-out ("a civilian has no stamina bar") was wrong at the source — every civilian
-    // hero row already carried staminaMax 5 / staminaRegen 1. Only the progression was missing.
-    if(st('staminaRegen')!==2) prob.push(`levels ${c.id}: staminaRegen +${st('staminaRegen')}, want 2`);
-    if(st('staminaMax')<2) prob.push(`levels ${c.id}: staminaMax +${st('staminaMax')}, want at least 2`);
-    // A civilian type may name starting powers. They have to be real powers.
-    for(const pid of (c.startingPowers||[])) if(!(out.powers||[]).some(p=>p.id===pid)) prob.push(`levels ${c.id}: startingPowers unknown power ${pid}`);
+    if(owner!=='class.civilian' && st('staminaRegen')!==2) prob.push(`levels ${c.id}: staminaRegen +${st('staminaRegen')}, want 2`);
+    if(owner==='class.civilian' && (st('staminaRegen')||st('staminaMax'))) prob.push('levels: civilian granted stamina');
     const sp=c.rows.filter(r=>r.specialty), ch=c.rows.filter(r=>r.choice);
     if(sp.length!==1||sp[0].level!==2) prob.push(`levels ${c.id}: specialty pick not exactly once at L2`);
     if(ch.length!==1||ch[0].level!==5) prob.push(`levels ${c.id}: choice not exactly once at L5`);
