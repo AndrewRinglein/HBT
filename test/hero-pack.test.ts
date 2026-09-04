@@ -1,3 +1,4 @@
+// refactor.one-action-type (2026-09-04), Law 10 reason: the row's SHAPE moved by ruling — attack fields read under `.attack`, reach is `range`, move fields under `.move`, the registries are one (`ctx.actions`) and the unit's lists are views (attackIdsOf/powerIdsOf). No assertion changed.
 // The prologue party — content.hero-pack (2026-08-26).
 //
 // Ruled: "pick a ranger of the 24 Eve, then a warrior and a preist, all from
@@ -69,9 +70,9 @@ describe('the Hunter is a real hero from the Codex', () => {
     // universal flag, honored by the party lane since S37a.
     expect(fieldedDef(HUNTER).attacks).toEqual(['attack.longbow.shot', 'attack.longbow.long-shot', 'attack.punch'])
     expect(ATTACKS['attack.longbow.shot']).toMatchObject(
-      { kind: 'ranged', reach: 6, stat: 'precision', bonus: 1, staminaCost: 1 })
+      { range: 6, staminaCost: 1, attack: { kind: 'ranged', stat: 'precision', bonus: 1 } })
     expect(ATTACKS['attack.longbow.long-shot']).toMatchObject(
-      { kind: 'ranged', reach: 7, bonus: 2, staminaCost: 2 })
+      { range: 7, staminaCost: 2, attack: { kind: 'ranged', bonus: 2 } })
   })
 
   it('the whole battle-2 party fields, fully armed — S36 dictated every kit', () => {

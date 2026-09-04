@@ -1,3 +1,4 @@
+// refactor.one-action-type (2026-09-04), Law 10 reason: the row's SHAPE moved by ruling — attack fields read under `.attack`, reach is `range`, move fields under `.move`, the registries are one (`ctx.actions`) and the unit's lists are views (attackIdsOf/powerIdsOf). No assertion changed.
 // capability.charges (2026-09-03) — GEAR-DESIGN §4, GEAR-IMPLEMENTATION §1:
 // one-use-per-battle items. An AbilityDef carries `uses`; a spent use counts
 // down and at zero the power leaves the unit's list for the rest of the
@@ -23,14 +24,14 @@ describe('a use is spent', () => {
     expect(ITEMS['item.healing-potion']!.abilities).toContain(POTION)
     const ctx = createCustomBattle([{ type: 'test-warrior', hex: hexId(5, 5) }], [{ type: 'test-zombie', hex: hexId(15, 15) }])
     const w = ctx.state.units[0]!
-    w.abilities.push(POTION); w.usesLeft[POTION] = 1
+    w.actions.push(POTION); w.usesLeft[POTION] = 1
     w.hp = 1
     beginActivation(ctx, w.id, 'test')
     expect(canUsePower(ctx, w.id, w.id, POTION)).toBe(true)
     usePower(ctx, w.id, w.id, POTION)
     expect(w.hp).toBe(4)
     expect(w.primaryUsed).toBe(false)   // free
-    expect(w.abilities).not.toContain(POTION)
+    expect(w.actions).not.toContain(POTION)
     expect(canUsePower(ctx, w.id, w.id, POTION)).toBe(false)
     expect(ctx.events.some((e) => e.type === 'charge.spent' && e['left'] === 0)).toBe(true)
     expect(ctx.events.some((e) => e.type === 'power.exhausted')).toBe(true)
@@ -45,7 +46,7 @@ describe('a use is spent', () => {
     runBattle(a)
     const b = createBattle(scenarioOptions(scenarioDef('showcase.waystation')))
     expect(b.state.units[0]!.usesLeft[POTION]).toBe(1)
-    expect(b.state.units[0]!.abilities).toContain(POTION)
+    expect(b.state.units[0]!.actions).toContain(POTION)
   })
 
   it('Rations regain Stamina and cost the primary; the Strength Potion is a battle-long stance', () => {

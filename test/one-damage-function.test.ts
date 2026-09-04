@@ -1,3 +1,4 @@
+// refactor.one-action-type (2026-09-04), Law 10 reason: the row's SHAPE moved by ruling — attack fields read under `.attack`, reach is `range`, move fields under `.move`, the registries are one (`ctx.actions`) and the unit's lists are views (attackIdsOf/powerIdsOf). No assertion changed.
 // Law 1, restored: powers resolve through THE damage pipeline. Before
 // 2026-08-20, ability.ts hand-rolled a second one that skipped SOURCE_STATUS,
 // CRIT and PROTECTION — so Weakness could not have reduced a power, and
@@ -34,7 +35,7 @@ describe('one damage function (Law 1)', () => {
   it('SOURCE_STATUS now reaches powers: outgoing penalty reduces a bolt', () => {
     const { ctx, mage, zombie } = board()
     applyStatus(ctx, mage.id, 'status.test-weak', 3, 'test')
-    const r = resolvePowerDamage(ctx, mage, zombie, ctx.abilities['power.test-mage.bolt']!, 3, 0)
+    const r = resolvePowerDamage(ctx, mage, zombie, ctx.actions['power.test-mage.bolt']!, 3, 0)
     expect(r.value).toBe(5)
     expect(r.ledger.some((row) => row.name === 'SOURCE_STATUS' && row.delta === -3)).toBe(true)
   })
@@ -61,7 +62,7 @@ describe('one damage function (Law 1)', () => {
 
   it('powers still cannot crit — Design Law 23 survives the unification', () => {
     const { ctx, mage, zombie } = board()
-    const r = resolvePowerDamage(ctx, mage, zombie, ctx.abilities['power.test-mage.bolt']!)
+    const r = resolvePowerDamage(ctx, mage, zombie, ctx.actions['power.test-mage.bolt']!)
     expect(r.ledger.some((row) => row.name === 'CRIT')).toBe(false)
   })
 })

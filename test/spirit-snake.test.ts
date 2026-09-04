@@ -1,3 +1,4 @@
+// refactor.one-action-type (2026-09-04), Law 10 reason: the row's SHAPE moved by ruling — attack fields read under `.attack`, reach is `range`, move fields under `.move`, the registries are one (`ctx.actions`) and the unit's lists are views (attackIdsOf/powerIdsOf). No assertion changed.
 // The Spirit Snake — a PLAYER BEAST. Angela 2026-08-20: "These beasts were
 // meant to be player beasts... Spirit Snake is supposed to be a hero unit,"
 // and she dictated its block, recorded in the Codex SOURCE (settled.json hero
@@ -7,7 +8,7 @@
 // hero-side, out of the default party, fielded here in custom battles.
 import { describe, expect, it } from 'vitest'
 import { createBattle, createCustomBattle } from '../src/core/setup.js'
-import { performAttack, preview, resolveAccuracy } from '../src/core/pipeline.js'
+import { performAttack, preview, resolveAccuracy, attackDef } from '../src/core/pipeline.js'
 import { beginActivation } from '../src/core/mutate.js'
 import { valueOf } from '../src/core/status.js'
 import { UNITS, ATTACKS, FIRST_BATTLE } from '../src/content/index.js'
@@ -67,6 +68,6 @@ describe('fielded in a custom battle, it plays like her block says', () => {
   })
   it('dodge 50 makes it slippery: a zombie bite has only a 15% chance to touch it', () => {
     const { ctx, s, z } = board()
-    expect(resolveAccuracy(ctx, z, s, ctx.attacks['attack.test-zombie.bite']!).value).toBe(15)  // 65 − 50
+    expect(resolveAccuracy(ctx, z, s, attackDef(ctx, 'attack.test-zombie.bite')).value).toBe(15)  // 65 − 50
   })
 })

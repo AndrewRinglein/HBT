@@ -1,3 +1,4 @@
+// refactor.one-action-type (2026-09-04), Law 10 reason: the row's SHAPE moved by ruling — attack fields read under `.attack`, reach is `range`, move fields under `.move`, the registries are one (`ctx.actions`) and the unit's lists are views (attackIdsOf/powerIdsOf). No assertion changed.
 // movement.attack-of-opportunity (2026-09-03) — the edges of the rule:
 // once per holder per activation, and a sidestep never provokes (GAME-DESIGN
 // §4, ruled 2026-08-17: "free, never provokes").
@@ -15,7 +16,7 @@ describe('attack of opportunity, at the edges', () => {
     w.hp = 99; w.maxHp = 99
     beginActivation(ctx, w.id, 'test')
     const walk = movePowerOf(ctx, w, 'path')!
-    executeMove(ctx, w.id, pathTo(reachable(ctx, w, walk.budgetMod), w.hex, hexId(5, 1)), walk)
+    executeMove(ctx, w.id, pathTo(reachable(ctx, w, walk.move.budgetMod), w.hex, hexId(5, 1)), walk)
     const by = ctx.events.filter((e) => e.type === 'aoo.provoked').map((e) => e['actor'])
     expect(new Set(by).size).toBe(by.length)
     expect(by.length).toBe(2)

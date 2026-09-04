@@ -1,6 +1,7 @@
+// refactor.one-action-type (2026-09-04), Law 10 reason: the row's SHAPE moved by ruling — attack fields read under `.attack`, reach is `range`, move fields under `.move`, the registries are one (`ctx.actions`) and the unit's lists are views (attackIdsOf/powerIdsOf). No assertion changed.
 import { describe, it, expect } from 'vitest'
 import { createCustomBattle } from '../src/core/setup.js'
-import { resolveDamage, resolveAccuracy, preview, canAttack, reachOf } from '../src/core/pipeline.js'
+import { resolveDamage, resolveAccuracy, preview, canAttack, reachOf, damageSourceOfAttack } from '../src/core/pipeline.js'
 import { ATTACKS } from '../src/content/index.js'
 import { hexId } from './board16.js'
 
@@ -16,34 +17,34 @@ describe('FIRST-BATTLE expected numbers', () => {
   it('Zombie -> Warrior = 3 (4 strength, 1 armor)', () => {
     const ctx = createCustomBattle([{ type: 'test-warrior', hex: hexId(5,5) }], [{ type: 'test-zombie', hex: hexId(6,5) }])
     const z = ctx.state.units[1]!, w = ctx.state.units[0]!
-    expect(resolveDamage(ctx, z, w, ATTACKS['attack.test-zombie.bite']!, false).value).toBe(3)
+    expect(resolveDamage(ctx, z, w, damageSourceOfAttack(ATTACKS['attack.test-zombie.bite']!), false).value).toBe(3)
   })
 
   it('Zombie -> Ranger = 4 (no armor)', () => {
     const ctx = createCustomBattle([{ type: 'test-ranger', hex: hexId(5,5) }], [{ type: 'test-zombie', hex: hexId(6,5) }])
     const z = ctx.state.units[1]!, r = ctx.state.units[0]!
-    expect(resolveDamage(ctx, z, r, ATTACKS['attack.test-zombie.bite']!, false).value).toBe(4)
+    expect(resolveDamage(ctx, z, r, damageSourceOfAttack(ATTACKS['attack.test-zombie.bite']!), false).value).toBe(4)
   })
 
   it('Warrior Axe -> Zombie = 6', () => {
     const ctx = pair('test-warrior')
-    expect(resolveDamage(ctx, ctx.state.units[0]!, ctx.state.units[1]!, ATTACKS['attack.test-warrior.axe']!, false).value).toBe(6)
+    expect(resolveDamage(ctx, ctx.state.units[0]!, ctx.state.units[1]!, damageSourceOfAttack(ATTACKS['attack.test-warrior.axe']!), false).value).toBe(6)
   })
 
   it('Warrior Massive Strike -> Zombie = 8', () => {
     const ctx = pair('test-warrior')
-    expect(resolveDamage(ctx, ctx.state.units[0]!, ctx.state.units[1]!, ATTACKS['attack.test-warrior.massive']!, false).value).toBe(8)
+    expect(resolveDamage(ctx, ctx.state.units[0]!, ctx.state.units[1]!, damageSourceOfAttack(ATTACKS['attack.test-warrior.massive']!), false).value).toBe(8)
   })
 
   it('Ranger Bow -> Zombie = 5', () => {
     const ctx = pair('test-ranger')
-    expect(resolveDamage(ctx, ctx.state.units[0]!, ctx.state.units[1]!, ATTACKS['attack.test-ranger.bow']!, false).value).toBe(5)
+    expect(resolveDamage(ctx, ctx.state.units[0]!, ctx.state.units[1]!, damageSourceOfAttack(ATTACKS['attack.test-ranger.bow']!), false).value).toBe(5)
   })
 
   it('Warrior Punch -> Zombie = 4, Ranger Punch -> Zombie = 2', () => {
     const w = pair('test-warrior'), r = pair('test-ranger')
-    expect(resolveDamage(w, w.state.units[0]!, w.state.units[1]!, ATTACKS['attack.punch']!, false).value).toBe(4)
-    expect(resolveDamage(r, r.state.units[0]!, r.state.units[1]!, ATTACKS['attack.punch']!, false).value).toBe(2)
+    expect(resolveDamage(w, w.state.units[0]!, w.state.units[1]!, damageSourceOfAttack(ATTACKS['attack.punch']!), false).value).toBe(4)
+    expect(resolveDamage(r, r.state.units[0]!, r.state.units[1]!, damageSourceOfAttack(ATTACKS['attack.punch']!), false).value).toBe(2)
   })
 
   it('hits-to-kill matches the spec table', () => {
@@ -57,8 +58,8 @@ describe('FIRST-BATTLE expected numbers', () => {
 
   it('Massive Strike buys nothing against a 10hp zombie — the predicted content finding', () => {
     const ctx = pair('test-warrior')
-    const axe = resolveDamage(ctx, ctx.state.units[0]!, ctx.state.units[1]!, ATTACKS['attack.test-warrior.axe']!, false).value
-    const massive = resolveDamage(ctx, ctx.state.units[0]!, ctx.state.units[1]!, ATTACKS['attack.test-warrior.massive']!, false).value
+    const axe = resolveDamage(ctx, ctx.state.units[0]!, ctx.state.units[1]!, damageSourceOfAttack(ATTACKS['attack.test-warrior.axe']!), false).value
+    const massive = resolveDamage(ctx, ctx.state.units[0]!, ctx.state.units[1]!, damageSourceOfAttack(ATTACKS['attack.test-warrior.massive']!), false).value
     expect(massive).toBeGreaterThan(axe)
     expect(Math.ceil(10 / massive)).toBe(Math.ceil(10 / axe))
   })
@@ -67,13 +68,13 @@ describe('FIRST-BATTLE expected numbers', () => {
     const ctx = createCustomBattle([{ type: 'test-ranger', hex: hexId(5,5) }], [{ type: 'test-zombie', hex: hexId(6,5) }])
     const r = ctx.state.units[0]!
     const tank = { ...ctx.state.units[1]!, armor: 99 }
-    expect(resolveDamage(ctx, r, tank, ATTACKS['attack.punch']!, false).value).toBe(0)
+    expect(resolveDamage(ctx, r, tank, damageSourceOfAttack(ATTACKS['attack.punch']!), false).value).toBe(0)
   })
 
   it('the ledger fully explains every damage number', () => {
     const ctx = pair('test-warrior')
     for (const id of Object.keys(ATTACKS)) {
-      const d = resolveDamage(ctx, ctx.state.units[0]!, ctx.state.units[1]!, ATTACKS[id]!, false)
+      const d = resolveDamage(ctx, ctx.state.units[0]!, ctx.state.units[1]!, damageSourceOfAttack(ATTACKS[id]!), false)
       expect(d.ledger.reduce((s, r) => s + r.delta, 0)).toBe(d.value)
     }
   })

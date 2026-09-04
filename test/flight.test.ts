@@ -1,3 +1,4 @@
+// refactor.one-action-type (2026-09-04), Law 10 reason: the row's SHAPE moved by ruling — attack fields read under `.attack`, reach is `range`, move fields under `.move`, the registries are one (`ctx.actions`) and the unit's lists are views (attackIdsOf/powerIdsOf). No assertion changed.
 // Flight — the atomic jump. Angela 2026-08-20 (GAME-DESIGN §Movement
 // keywords, rewritten): "Click the destination hex and fly there as one
 // motion: no square-by-square movement, every terrain effect and impassable
@@ -23,9 +24,9 @@ const valueOf = (u: { statuses: { id: string; value: number }[] }, id: string) =
 
 describe('the ladder is data — three rows, one shape', () => {
   it('labored / standard / swift carry the Codex costs and modifiers', () => {
-    expect(MOVES['power.flight']).toMatchObject({ shape: 'flight', staminaCost: 1, budgetMod: 0 })
-    expect(MOVES['power.flight-swift']).toMatchObject({ shape: 'flight', staminaCost: 0, budgetMod: 1 })
-    expect(MOVES['power.flight-labored']).toMatchObject({ shape: 'flight', staminaCost: 2, budgetMod: -1 })
+    expect(MOVES['power.flight']).toMatchObject({ staminaCost: 1, move: { shape: 'flight', budgetMod: 0 } })
+    expect(MOVES['power.flight-swift']).toMatchObject({ staminaCost: 0, move: { shape: 'flight', budgetMod: 1 } })
+    expect(MOVES['power.flight-labored']).toMatchObject({ staminaCost: 2, move: { shape: 'flight', budgetMod: -1 } })
   })
   it('the drake grants the standard rung, wings before feet, and no half-step (beasts get neither)', () => {
     expect(UNITS['green-drake']!.moves).toEqual(['power.flight', 'power.move'])

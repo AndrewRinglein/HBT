@@ -1,3 +1,4 @@
+// refactor.one-action-type (2026-09-04), Law 10 reason: the row's SHAPE moved by ruling — attack fields read under `.attack`, reach is `range`, move fields under `.move`, the registries are one (`ctx.actions`) and the unit's lists are views (attackIdsOf/powerIdsOf). No assertion changed.
 // capability.enemy-action-cooldown (2026-09-03) — ENEMY-REVIEW P10, ruled
 // 2026-08-23 as "probably just permission to use the same fields": an attack
 // carries cooldown and warmup like a power, tracked in the unit's one
@@ -24,10 +25,14 @@ describe('an attack on cooldown', () => {
     beginActivation(ctx, g.id, 'test')
     expect(canAttack(ctx, g.id, w.id, 'attack.ghoul.devour')).toBe(true)
     performAttack(ctx, g.id, w.id, 'attack.ghoul.devour')
-    expect(g.cooldowns['attack.ghoul.devour']).toBe(1 + cd)
-    expect(ctx.events.some((e) => e.type === 'cooldown.set' && e['attackId'] === 'attack.ghoul.devour')).toBe(true)
-    for (let t = 2; t <= cd; t++) { ctx.state.turn = t; beginActivation(ctx, g.id, 'test'); expect(canAttack(ctx, g.id, w.id, 'attack.ghoul.devour'), `turn ${t}`).toBe(false) }
-    ctx.state.turn = 1 + cd; beginActivation(ctx, g.id, 'test')
+    // LAW 10 — 2026-09-04 (refactor.one-action-type): "`cooldown` N = skip N
+    // Turns" (2-ACTIONS-SETTLED.md:71) — used on Turn 1 with cooldown N, the
+    // attack is refused on Turns 2..1+N and ready on 2+N. The attack path wrote
+    // one Turn short until today (FINDING 32). The log line names the ACTION.
+    expect(g.cooldowns['attack.ghoul.devour']).toBe(2 + cd)
+    expect(ctx.events.some((e) => e.type === 'cooldown.set' && e['actionId'] === 'attack.ghoul.devour')).toBe(true)
+    for (let t = 2; t <= 1 + cd; t++) { ctx.state.turn = t; beginActivation(ctx, g.id, 'test'); expect(canAttack(ctx, g.id, w.id, 'attack.ghoul.devour'), `turn ${t}`).toBe(false) }
+    ctx.state.turn = 2 + cd; beginActivation(ctx, g.id, 'test')
     expect(canAttack(ctx, g.id, w.id, 'attack.ghoul.devour')).toBe(true)
   })
 
@@ -35,7 +40,7 @@ describe('an attack on cooldown', () => {
     const ctx = createCustomBattle([{ type: 'test-warrior', hex: hexId(5, 5) }], [{ type: 'unit.iron-colossus', hex: hexId(5, 6) }])
     // the colossus is weaponless (its moves are a named gap) — the mechanism is checked on the map itself
     const u = ctx.state.units[1]!
-    for (const [id, ready] of Object.entries(u.cooldowns)) expect(ready).toBe((ATTACKS[id]?.warmup ?? ctx.abilities[id]?.warmup ?? 0) + 1)
+    for (const [id, ready] of Object.entries(u.cooldowns)) expect(ready).toBe((ATTACKS[id]?.warmup ?? ctx.actions[id]?.warmup ?? 0) + 1)
   })
 
   it('in a real battle the golem slams every other Turn — the Slam is on cooldown between, and the log says so', () => {
@@ -45,7 +50,8 @@ describe('an attack on cooldown', () => {
     const slams = ctx.events.filter((e) => e.type === 'attack.declared' && e['actor'] === golem.id && e.causeId === 'attack.test-ram.slam')
     expect(slams.length).toBeGreaterThan(0)
     const turns = slams.map((e) => e.turn)
-    for (let i = 1; i < turns.length; i++) expect(turns[i]! - turns[i - 1]!).toBeGreaterThanOrEqual(ATTACKS['attack.test-ram.slam']!.cooldown!)
-    expect(ctx.events.some((e) => e.type === 'cooldown.set' && e['attackId'] === 'attack.test-ram.slam')).toBe(true)
+    // skip N Turns (2-ACTIONS-SETTLED.md:71): consecutive slams are N + 1 Turns apart
+    for (let i = 1; i < turns.length; i++) expect(turns[i]! - turns[i - 1]!).toBeGreaterThanOrEqual(ATTACKS['attack.test-ram.slam']!.cooldown! + 1)
+    expect(ctx.events.some((e) => e.type === 'cooldown.set' && e['actionId'] === 'attack.test-ram.slam')).toBe(true)
   })
 })

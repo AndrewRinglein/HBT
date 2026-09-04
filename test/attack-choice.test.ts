@@ -1,3 +1,4 @@
+// refactor.one-action-type (2026-09-04), Law 10 reason: the row's SHAPE moved by ruling — attack fields read under `.attack`, reach is `range`, move fields under `.move`, the registries are one (`ctx.actions`) and the unit's lists are views (attackIdsOf/powerIdsOf). No assertion changed.
 // ai.attack-choice (2026-09-03) — the choice policy is a SWITCH, not a ruling.
 //
 // `declared` (default) takes the first affordable attack in declared order and
@@ -5,6 +6,7 @@
 // rows). `bestDamage` takes the legal attack with the highest previewed
 // damage on hit. Neither prices riders. A sweep decides; this proves both
 // paths are real and that the default is byte-for-byte the old rule.
+import { attackIdsOf, powerIdsOf } from '../src/core/action.js'
 import { describe, expect, it } from 'vitest'
 import { createBattle, createCustomBattle } from '../src/core/setup.js'
 import { runBattle } from '../src/core/battle.js'
@@ -27,8 +29,8 @@ describe('the two policies', () => {
       return { ctx, o, z, swung }
     }
     const d = make('declared'), b = make('bestDamage')
-    expect(d.swung).toBe(d.o.attacks.find((id) => !d.ctx.attacks[id]!.area))   // the first non-area listing
-    const best = b.o.attacks.filter((id) => !b.ctx.attacks[id]!.area)
+    expect(d.swung).toBe(attackIdsOf(d.ctx, d.o).find((id) => !d.ctx.actions[id]!.area))   // the first non-area listing
+    const best = attackIdsOf(b.ctx, b.o).filter((id) => !b.ctx.actions[id]!.area)
       .map((id) => ({ id, dmg: preview(b.ctx, b.o.id, b.z.id, id).damageOnHit }))
       .sort((x, y) => y.dmg - x.dmg)[0]!
     expect(b.swung).toBe(best.id)

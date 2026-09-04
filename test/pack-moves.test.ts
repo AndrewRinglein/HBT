@@ -1,3 +1,4 @@
+// refactor.one-action-type (2026-09-04), Law 10 reason: the row's SHAPE moved by ruling — attack fields read under `.attack`, reach is `range`, move fields under `.move`, the registries are one (`ctx.actions`) and the unit's lists are views (attackIdsOf/powerIdsOf). No assertion changed.
 // pack.moves (2026-09-02) — the engine reads its movement powers from the
 // Codex. Angela 2026-08-21: "Movement is a choice… It shouldn't be hard-coded.
 // It should be content-driven." The Codex's movementAction power rows compile
@@ -42,15 +43,15 @@ describe('the rows come from the Codex, and only from the Codex', () => {
       expect(m.cooldown, `${r.id} cooldown`).toBe(r.cooldown)
       expect(m.name).toBe(r.name)
       if (/Move exactly (\d) hex/.test(r.description)) {
-        expect(m.shape).toBe('sidestep')
-        expect(m.stepRange).toBe(parseInt(r.description.match(/Move exactly (\d) hex/)![1]!, 10))
+        expect(m.move.shape).toBe('sidestep')
+        expect(m.move.stepRange).toBe(parseInt(r.description.match(/Move exactly (\d) hex/)![1]!, 10))
       }
-      if (/Do not move at all/.test(r.description)) { expect(m.shape).toBe('sidestep'); expect(m.stepRange).toBe(0) }
-      if (/^Movement action\. Move up to your Movement/.test(r.description)) expect(m.shape).toBe('flight')
-      if (/^Move up to your Movement, hex by hex/.test(r.description)) expect(m.shape).toBe('path')
-      if (/It is a bonus move/.test(r.description)) expect(m.budgetMod, `${r.id} a bonus move does NOT add the Movement stat`).toBe(0)
-      if (/Movement \+ 1/.test(r.description)) expect(m.budgetMod).toBe(1)
-      if (/Movement - 1/.test(r.description)) expect(m.budgetMod).toBe(-1)
+      if (/Do not move at all/.test(r.description)) { expect(m.move.shape).toBe('sidestep'); expect(m.move.stepRange).toBe(0) }
+      if (/^Movement action\. Move up to your Movement/.test(r.description)) expect(m.move.shape).toBe('flight')
+      if (/^Move up to your Movement, hex by hex/.test(r.description)) expect(m.move.shape).toBe('path')
+      if (/It is a bonus move/.test(r.description)) expect(m.move.budgetMod, `${r.id} a bonus move does NOT add the Movement stat`).toBe(0)
+      if (/Movement \+ 1/.test(r.description)) expect(m.move.budgetMod).toBe(1)
+      if (/Movement - 1/.test(r.description)) expect(m.move.budgetMod).toBe(-1)
       if (/gain \+(\d) Strength until the end of the Turn/.test(r.description)) {
         expect(m.effects).toContainEqual({ kind: 'statMod', stat: 'strength', value: parseInt(r.description.match(/gain \+(\d) Strength/)![1]!, 10), until: 'endOfTurn' })
       }

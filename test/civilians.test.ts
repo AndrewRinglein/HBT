@@ -1,3 +1,4 @@
+// refactor.one-action-type (2026-09-04), Law 10 reason: the row's SHAPE moved by ruling — attack fields read under `.attack`, reach is `range`, move fields under `.move`, the registries are one (`ctx.actions`) and the unit's lists are views (attackIdsOf/powerIdsOf). No assertion changed.
 // The prologue civilians — content.civilians (2026-08-26).
 //
 // RULED: "we have a plan for a number of initial civilians, and they do
@@ -46,11 +47,11 @@ describe('civilians are ordinary heroes with their Codex behaviour', () => {
   it('the orphan throws rocks and the farmer jabs — paying what the rows author', () => {
     expect(fieldedDef('hero.fixed.orphans').attacks).toEqual(['attack.pile-of-rocks.throw'])
     expect(ATTACKS['attack.pile-of-rocks.throw']).toMatchObject(
-      { kind: 'ranged', reach: 3, stat: 'precision', staminaCost: 0 })   // authored zero
+      { range: 3, staminaCost: 0, attack: { kind: 'ranged', stat: 'precision' } })   // authored zero
     expect(fieldedDef('hero.fixed.farmer').attacks).toEqual(['attack.pitchfork.jab'])
     // civilians are exactly like heroes: the Farmer PAYS the authored 1
     expect(ATTACKS['attack.pitchfork.jab']).toMatchObject(
-      { kind: 'melee', reach: 1, stat: 'strength', bonus: 1, staminaCost: 1 })
+      { range: 1, staminaCost: 1, attack: { kind: 'melee', stat: 'strength', bonus: 1 } })
   })
 
   it('the Lumberjack swings the axe that was authored all along — and its drops are NAMED', () => {
@@ -61,9 +62,9 @@ describe('civilians are ordinary heroes with their Codex behaviour', () => {
     expect(fieldedDef('hero.fixed.lumberjack-and-wife').attacks)
       .toEqual(['attack.lumberjack-axe.chop', 'attack.lumberjack-axe.cleave'])
     expect(ATTACKS['attack.lumberjack-axe.chop']).toMatchObject(
-      { kind: 'melee', bonus: 1, staminaCost: 1 })
+      { staminaCost: 1, attack: { kind: 'melee', bonus: 1 } })
     expect(ATTACKS['attack.lumberjack-axe.cleave']).toMatchObject(
-      { kind: 'melee', bonus: 2, staminaCost: 2 })
+      { staminaCost: 2, attack: { kind: 'melee', bonus: 2 } })
     // Chop's dictated rider travelled: 20% for 2 Bleed, scoped to the chop
     const rider = (fieldedDef('hero.fixed.lumberjack-and-wife').triggers ?? [])
       .find((t) => t.id === 'trigger.lumberjack-axe.chop.bleed')!
@@ -79,7 +80,7 @@ describe('civilians are ordinary heroes with their Codex behaviour', () => {
       { unit: string; needs: string; what: string }[]
     expect(gaps.some((g) => /cleave/.test(g.what) && g.needs === 'area attack shape')).toBe(true)
     expect(gaps.some((g) => /cleave/.test(g.what) && /crit/.test(g.needs))).toBe(false)
-    expect(ATTACKS['attack.lumberjack-axe.cleave']!.crit).toBe(20)
+    expect(ATTACKS['attack.lumberjack-axe.cleave']!.attack.crit).toBe(20)
   })
 
   it('they ACT — the verify battles show civilians fighting, not statues', () => {

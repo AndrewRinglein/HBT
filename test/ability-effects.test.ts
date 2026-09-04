@@ -1,3 +1,4 @@
+// refactor.one-action-type (2026-09-04), Law 10 reason: the row's SHAPE moved by ruling — attack fields read under `.attack`, reach is `range`, move fields under `.move`, the registries are one (`ctx.actions`) and the unit's lists are views (attackIdsOf/powerIdsOf). No assertion changed.
 // ability.effects (2026-09-03) — powers speak the trigger vocabulary and more.
 //
 // Backlog: "Abilities get the trigger effect vocabulary (status.apply /
@@ -29,7 +30,7 @@ function board(powers: string[]) {
     [{ type: 'test-zombie', hex: hexId(5, 8) }, { type: 'test-zombie', hex: hexId(6, 8) }],
   )
   const w = ctx.state.units[0]!, m = ctx.state.units[1]!
-  w.abilities.push(...powers); w.stamina = 99
+  w.actions.push(...powers); w.stamina = 99
   return { ctx, w, m, z: ctx.state.units[2]! }
 }
 const eff = (id: string, kind: AbilityEffect['kind']) => ABILITIES[id]!.effects!.find((e) => e.kind === kind)!
@@ -81,7 +82,7 @@ describe('the effect vocabulary, one row each', () => {
     const f = ABILITIES[FIREBALL]!
     expect(f.warmup).toBeGreaterThan(0)
     const ctx2 = createBattle({ ...scenarioOptions(scenarioDef('showcase.assembled-party')) })
-    const mage = ctx2.state.units.find((u) => u.abilities.includes(FIREBALL))!
+    const mage = ctx2.state.units.find((u) => u.actions.includes(FIREBALL))!
     expect(mage.cooldowns[FIREBALL]).toBe(f.warmup! + 1)
   })
 

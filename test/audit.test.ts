@@ -1,3 +1,4 @@
+// refactor.one-action-type (2026-09-04), Law 10 reason: the row's SHAPE moved by ruling — attack fields read under `.attack`, reach is `range`, move fields under `.move`, the registries are one (`ctx.actions`) and the unit's lists are views (attackIdsOf/powerIdsOf). No assertion changed.
 import { describe, it, expect } from 'vitest'
 import { createBattle } from '../src/core/setup.js'
 import { runBattle } from '../src/core/battle.js'
@@ -90,7 +91,7 @@ describe('independent audit of logged battles', () => {
             // allowed distance from the causing power's own row — widened to
             // follow the rule, not loosened: a 3-hex leap would still fail.
             const mp = MOVES[String(e.causeId)]
-            const allowed = mp && mp.shape === 'sidestep' ? Math.max(1, mp.stepRange ?? 1) : 1
+            const allowed = mp && mp.move.shape === 'sidestep' ? Math.max(1, mp.move.stepRange ?? 1) : 1
             expect(distance(e['from'] as number, e['to'] as number), 'a step is its power\'s size').toBeLessThanOrEqual(allowed)
             // The auditor learned the movement CHOICE 2026-08-21 (Law 10:
             // rule widened, not weakened): every moved event now names its
@@ -98,7 +99,7 @@ describe('independent audit of logged battles', () => {
             // cost BY THE PUBLISHED RULE ("the destination's terrain cost is
             // irrelevant"), so its recomputed cost is 0. A path-shaped move
             // still pays the terrain, recomputed from the board as before.
-            const shape = MOVES[e.causeId]?.shape
+            const shape = MOVES[e.causeId]?.move.shape
             expect(shape, `moved must be caused by a movement power (got '${e.causeId}')`).toBeDefined()
             expect(e['cost']).toBe(shape === 'sidestep' ? 0 : terr[e['to'] as number] === 1 ? 2 : 1)
             expect(e['movePointsLeft'] as number).toBeGreaterThanOrEqual(0)
@@ -195,12 +196,12 @@ describe('independent audit of logged battles', () => {
 
             // reach: hero Reach and high ground add to ranged only
             const myTerr = terr[hex.get(e.actor!)!]!
-            const reach = a.kind === 'ranged' ? a.reach + at.reach + reachBonusOf(myTerr) : a.reach
+            const reach = a.attack.kind === 'ranged' ? a.range + at.reach + reachBonusOf(myTerr) : a.range
             expect(d, 'attack was within reach').toBeLessThanOrEqual(reach)
 
             // A ranged attack may not target an adjacent enemy at all.
             // Angela 2026-08-15; GAME-DESIGN.md §4.
-            if (a.kind === 'ranged') expect(d, 'ranged never targets an adjacent enemy').toBeGreaterThan(1)
+            if (a.attack.kind === 'ranged') expect(d, 'ranged never targets an adjacent enemy').toBeGreaterThan(1)
 
             // accuracy, recomputed.
             //
@@ -215,7 +216,7 @@ describe('independent audit of logged battles', () => {
             // own mod ledger applies to accuracy exactly as the engine's stat
             // pipeline does. EXTENDED, not weakened.
             let acc = modded(e.actor!, 'accuracy', at.accuracy, e.turn)
-            if (a.kind === 'ranged') {
+            if (a.attack.kind === 'ranged') {
               // range grace of 3 tiles, ruled 2026-08-26 — penalty from the 4th
               if (d > 3) acc -= (d - 3) * 5
               const me = hex.get(e.actor!)!
@@ -228,7 +229,7 @@ describe('independent audit of logged battles', () => {
             // The auditor learned the attack's OWN modifier on 2026-09-03
             // (station.accuracy-field): the row's `accuracy` — Punch −5, the
             // war-axe's Hack −5, the longbow's +10 — lands at SITUATIONAL.
-            acc += a.accuracy ?? 0
+            acc += a.attack.accuracy ?? 0
             // The auditor learned TARGET_DODGE on 2026-08-20 — the Codex
             // cohort brought the first nonzero dodge (Dusk Hawk 5), and dodge
             // is flat off the hit chance, plus whatever the target's terrain
@@ -337,14 +338,14 @@ describe('independent audit of logged battles', () => {
             const a = ATTACKS[pending.attackId]!
             // The attack names its stat (strength / precision / spirit since
             // the Chaplain's Mercy, 2026-08-28) — read that one, not a guess.
-            const base = a.stat === 'strength' ? at.strength : a.stat === 'precision' ? at.precision
-              : a.stat === 'magic' ? at.magic : (at as unknown as Record<string, number>)[a.stat] ?? 0
-            const stat = modded(pending.actor, a.stat, base, e.turn)
-            const mit = a.damageType === 'physical' ? tg.armor : a.damageType === 'magic' ? tg.resist : 0
+            const base = a.attack.stat === 'strength' ? at.strength : a.attack.stat === 'precision' ? at.precision
+              : a.attack.stat === 'magic' ? at.magic : (at as unknown as Record<string, number>)[a.attack.stat] ?? 0
+            const stat = modded(pending.actor, a.attack.stat, base, e.turn)
+            const mit = a.attack.damageType === 'physical' ? tg.armor : a.attack.damageType === 'magic' ? tg.resist : 0
             // The damage-arm crit multiplies BEFORE Protection and Mitigation
             // (DMG.CRIT at 450), truncating division — the one rounding rule;
             // n heads multiply by (2+n)/2 (station.crit-count).
-            const preMit = a.bonus + stat - penaltyOf(pending.actor)
+            const preMit = a.attack.bonus + stat - penaltyOf(pending.actor)
             const heads = pending.heads ?? (pending.crit ? 1 : 0)
             const critted = heads > 0 ? Math.trunc((preMit * (2 + heads)) / 2) : preMit
             const expected = Math.max(0, critted

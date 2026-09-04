@@ -62,7 +62,7 @@ export function applyItems(
     worn.push({ itemId: id, grants: [...it.grants], abilities: [...it.abilities], mods, ...(it.gaps ? { gaps: it.gaps } : {}) })
   }
   const attackIds = [...grants, ...base.attacks.filter((a) => !grants.includes(a))]
-  const anyRanged = attackIds.some((a) => attacks[a]?.kind === 'ranged')
+  const anyRanged = attackIds.some((a) => attacks[a]?.attack.kind === 'ranged')
   const def: UnitDef = {
     ...base,
     maxHp: stats['maxHp']!, armor: stats['armor']!, resist: stats['resist']!, dodge: stats['dodge']!,

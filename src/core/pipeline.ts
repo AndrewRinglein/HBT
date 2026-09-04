@@ -11,7 +11,8 @@ import { fireTriggers } from './trigger.js'
 import { applyStatus, decayOnKill, incomingAbsorb, incomingPhysicalBonus, outgoingBonus, outgoingPenalty, spendAbsorb } from './status.js'
 import { rollCritEffect } from './crit.js'
 import { effective, stat } from './stats.js'
-import { accelerateBleedOut, applyDamage, emit, markPrimaryUsed, spendStamina, unit } from './mutate.js'
+import { accelerateBleedOut, applyDamage, emit, unit } from './mutate.js'
+import { actionReady, isAttack, spendAction } from './action.js'
 import { settle } from './settle.js'
 import { canSee } from './vision.js'
 
@@ -95,7 +96,7 @@ export function inMelee(ctx: Ctx, u: Unit): boolean {
  * own Reach, high ground, and later gear — so this no longer knows about terrain.
  */
 export function reachOf(ctx: Ctx, u: Unit, a: AttackDef): number {
-  return a.kind === 'ranged' ? a.reach + stat(ctx, u, 'reach') : a.reach
+  return a.attack.kind === 'ranged' ? a.range + stat(ctx, u, 'reach') : a.range
 }
 
 /**
@@ -121,16 +122,16 @@ export function resolveAccuracy(ctx: Ctx, attacker: Unit, target: Unit, a: Attac
   // RULED 2026-08-26: "no ranged penalty up to 3 tiles away, and the range
   // penalty starts at the 4th tile" — 4th is −5, 5th is −10, 6th is −15.
   // Was −5 per hex past the FIRST; the grace window is now three tiles.
-  if (a.kind === 'ranged' && d > 3) v = step(ledger, ACC.RANGE, 'RANGE', a.id, v, v - (d - 3) * 5)
+  if (a.attack.kind === 'ranged' && d > 3) v = step(ledger, ACC.RANGE, 'RANGE', a.id, v, v - (d - 3) * 5)
   // The shooter's own surroundings, not the target's distance. See inMelee().
-  if (a.kind === 'ranged' && inMelee(ctx, attacker)) {
+  if (a.attack.kind === 'ranged' && inMelee(ctx, attacker)) {
     v = step(ledger, ACC.ADJACENT, 'ADJACENT', a.id, v, v - 20)
   }
   // CONDITION — the target's state. Downed: +20 (GAME-DESIGN §9, ruled;
   // fix.downed-targetable 2026-09-03). The row names the attack as its cause.
   if (target.lifeState === 'downed') v = step(ledger, ACC.CONDITION, 'TARGET_DOWNED', a.id, v, v + 20)
   // SITUATIONAL — the attack's own modifier (station.accuracy-field, 2026-09-03).
-  if (a.accuracy) v = step(ledger, ACC.SITUATIONAL, 'SITUATIONAL', a.id, v, v + a.accuracy)
+  if (a.attack.accuracy) v = step(ledger, ACC.SITUATIONAL, 'SITUATIONAL', a.id, v, v + a.attack.accuracy)
   const dodge = effective(ctx, target, 'dodge')
   v = step(ledger, ACC.TARGET_DODGE, 'TARGET_DODGE', `unit.${target.typeId}`, v, v - dodge.value)
   return { value: v, ledger, absorbed: 0 }
@@ -141,7 +142,11 @@ export function resolveAccuracy(ctx: Ctx, attacker: Unit, target: Unit, a: Attac
  * it — which is the mechanism behind Law 1: powers do not get a second pipeline,
  * they get this one with crit forced false (Design Law 23: no roll, no crit).
  */
-export type DamageSource = Pick<AttackDef, 'id' | 'bonus' | 'stat' | 'damageType' | 'powerScale'>
+export type DamageSource = { readonly id: string; readonly bonus: number; readonly stat: 'strength' | 'precision' | 'magic' | 'spirit'; readonly damageType: import('./types.js').DamageType; readonly powerScale?: number }
+/** An attack as the one damage function reads it — the profile with the action's id. */
+export function damageSourceOfAttack(a: AttackDef): DamageSource {
+  return { id: a.id, bonus: a.attack.bonus, stat: a.attack.stat, damageType: a.attack.damageType, ...(a.attack.powerScale !== undefined ? { powerScale: a.attack.powerScale } : {}) }
+}
 
 /** Power × share, rounded nearest with 0.5 up — the ruled rounding (ENEMY-REVIEW P1). Integers only (Law 7). */
 export function powerShare(pool: number, scale: number): number {
@@ -211,12 +216,20 @@ export type AttackResult = {
   killed: boolean
 }
 
+/** The attack row, loudly — an id that is not an attack is a caller's error, not a fizzle. */
+export function attackDef(ctx: Ctx, attackId: string): AttackDef {
+  const a = ctx.actions[attackId]
+  if (!a) throw new Error(`unknown attack ${attackId}`)
+  if (!isAttack(a)) throw new Error(`'${attackId}' is not an attack — it carries no attack profile`)
+  return a
+}
+
 /** Can this attack be made right now? The one legality answer (Law 2). */
 export function canAttack(ctx: Ctx, attackerId: number, targetId: number, attackId: string): boolean {
   const at = unit(ctx, attackerId)
   const tg = unit(ctx, targetId)
-  const a = ctx.attacks[attackId]
-  if (!a) return false
+  const a = ctx.actions[attackId]
+  if (!a || !isAttack(a)) return false
   if (at.lifeState !== 'standing') return false
   // fix.downed-targetable (2026-09-03): a DOWNED unit can be attacked — GAME-
   // DESIGN §9, "enemies roll at +20 against downed heroes". Only the dead are
@@ -225,15 +238,14 @@ export function canAttack(ctx: Ctx, attackerId: number, targetId: number, attack
   if (at.side === tg.side) return false
   // capability.vision (2026-09-03): you cannot target what you cannot see (SWITCHES.md targetUnseen)
   if (!ctx.cfg.switches.targetUnseen && !canSee(ctx, at, tg)) return false
-  if (at.primaryUsed) return false
-  if (at.stamina < a.staminaCost) return false
-  // capability.enemy-action-cooldown (2026-09-03): the same readiness rule a power has
-  if (ctx.state.turn < (at.cooldowns[attackId] ?? 0)) return false
+  if (at.primaryUsed && !a.free) return false
+  // refactor.one-action-type: THE ONE LIMITS CHECK — granted, stamina, cooldown/warmup, uses
+  if (!actionReady(ctx, at, a)) return false
   const d = ctx.geo.distance(at.hex, tg.hex)
   // "You cannot use a ranged attack on something adjacent." (Angela, 2026-08-15;
   // GAME-DESIGN.md §4.) A legality rule, so it is answered here rather than as a
   // penalty the shooter can eat — the shot does not exist.
-  if (a.kind === 'ranged' && d <= 1) return false
+  if (a.attack.kind === 'ranged' && d <= 1) return false
   return d <= reachOf(ctx, at, a)
 }
 
@@ -265,7 +277,7 @@ export function areaHexesOf(geo: Geometry, attackerHex: HexId, targetHex: HexId,
  */
 export function areaUnitIdsOf(ctx: Ctx, attackerId: number, targetId: number, attackId: string): number[] {
   const at = unit(ctx, attackerId)
-  const a = ctx.attacks[attackId]
+  const a = ctx.actions[attackId]
   if (!a?.area) return [targetId]
   const hexes = new Set(areaHexesOf(ctx.geo, at.hex, unit(ctx, targetId).hex, a.area))
   const out: number[] = []
@@ -282,12 +294,12 @@ export function areaUnitIdsOf(ctx: Ctx, attackerId: number, targetId: number, at
 export function preview(ctx: Ctx, attackerId: number, targetId: number, attackId: string) {
   const at = unit(ctx, attackerId)
   const tg = unit(ctx, targetId)
-  const a = ctx.attacks[attackId]!
+  const a = attackDef(ctx, attackId)
   // An AREA attack does not roll to hit: no accuracy pipeline, no dodge, no
   // crit (authored: "It does not roll to hit, so it cannot crit"). The hit is
   // certain, so both damage numbers are the plain resolution.
   if (a.area) {
-    const damage = resolveDamage(ctx, at, tg, a, false, outgoingPenalty(ctx, at), incomingAbsorb(ctx, tg)).value
+    const damage = resolveDamage(ctx, at, tg, damageSourceOfAttack(a), false, outgoingPenalty(ctx, at), incomingAbsorb(ctx, tg)).value
     return {
       hitChance: 100, accuracy: 100, accLedger: [] as LedgerRow[],
       damageOnHit: damage, damageOnCrit: damage, critChance: 0,
@@ -304,8 +316,8 @@ export function preview(ctx: Ctx, attackerId: number, targetId: number, attackId
     hitChance,
     accuracy: acc.value,
     accLedger: acc.ledger,
-    damageOnHit: resolveDamage(ctx, at, tg, a, false, outgoingPenalty(ctx, at), incomingAbsorb(ctx, tg)).value,
-    damageOnCrit: resolveDamage(ctx, at, tg, a, true, outgoingPenalty(ctx, at), incomingAbsorb(ctx, tg)).value,
+    damageOnHit: resolveDamage(ctx, at, tg, damageSourceOfAttack(a), false, outgoingPenalty(ctx, at), incomingAbsorb(ctx, tg)).value,
+    damageOnCrit: resolveDamage(ctx, at, tg, damageSourceOfAttack(a), true, outgoingPenalty(ctx, at), incomingAbsorb(ctx, tg)).value,
     critChance: critChanceOf(ctx, at, tg, acc.value, a),
   }
 }
@@ -320,16 +332,15 @@ export function preview(ctx: Ctx, attackerId: number, targetId: number, attackId
 function critChanceOf(ctx: Ctx, attacker: Unit, target: Unit, finalAcc: number, a?: AttackDef): number {
   if (!ctx.cfg.switches.critEnabled) return 0
   const surplus = finalAcc > 100 ? Math.trunc((finalAcc - 100) / 4) : 0
-  const gear = a?.crit ?? 0
+  const gear = a?.attack.crit ?? 0
   return Math.max(0, 3 + effective(ctx, attacker, 'crit').value + gear + surplus
     - effective(ctx, target, 'luck').value)
 }
 
 /** One Hit. Damage resolves completely; triggers would fire after (none yet). */
 export function performAttack(ctx: Ctx, attackerId: number, targetId: number, attackId: string): AttackResult {
-  const a0 = ctx.attacks[attackId]
-  if (!a0) throw new Error(`unknown attack ${attackId}`)
-  const hits = Math.max(1, a0.hits ?? 1)
+  const a0 = attackDef(ctx, attackId)
+  const hits = Math.max(1, a0.attack.hits ?? 1)
   if (hits === 1) return performHit(ctx, attackerId, targetId, attackId, 1, 1)
   // attack.multihit (2026-09-03): each hit runs the whole cycle — damage,
   // triggers, settle — before the next; no retargeting; cancelled the moment
@@ -351,8 +362,7 @@ export function performAttack(ctx: Ctx, attackerId: number, targetId: number, at
 function performHit(ctx: Ctx, attackerId: number, targetId: number, attackId: string, hitNo: number, of: number): AttackResult {
   const at = unit(ctx, attackerId)
   const tg = unit(ctx, targetId)
-  const a = ctx.attacks[attackId]
-  if (!a) throw new Error(`unknown attack ${attackId}`)
+  const a = attackDef(ctx, attackId)
   // the first hit is the legal one; later hits of the same swing skip the
   // primary/stamina gates (already paid) but still need a standing target in reach
   if (hitNo === 1 && !canAttack(ctx, attackerId, targetId, attackId)) {
@@ -366,14 +376,8 @@ function performHit(ctx: Ctx, attackerId: number, targetId: number, attackId: st
   const ord = ++at.attackOrdinal
   const pv = preview(ctx, attackerId, targetId, attackId)
 
-  if (hitNo === 1) spendStamina(ctx, attackerId, a.staminaCost, a.id)
-  if (hitNo === 1) markPrimaryUsed(ctx, attackerId)
-  if (a.cooldown && hitNo === 1) {
-    // capability.enemy-action-cooldown: ready again on Turn now + cooldown, like a power
-    const readyAgain = ctx.state.turn + a.cooldown
-    at.cooldowns[a.id] = readyAgain
-    emit(ctx, 'cooldown.set', a.id, { actor: attackerId, attackId: a.id, readyOnTurn: readyAgain })
-  }
+  // refactor.one-action-type: THE ONE SPEND — stamina, the primary, the cooldown, a use
+  if (hitNo === 1) spendAction(ctx, attackerId, a, 'primary')
 
   // Area attacks name every struck unit on the declaration, so a renderer can
   // sweep the whole shape from the one event.
@@ -383,7 +387,7 @@ function performHit(ctx: Ctx, attackerId: number, targetId: number, attackId: st
     actor: attackerId, target: targetId, attackId, ordinal: ord, ...(of > 1 ? { hit: hitNo, of } : {}),
     // kind and damageType are on the event, not looked up from ATTACKS, so a
     // renderer can pick an animation without importing game content.
-    kind: a.kind, damageType: a.damageType,
+    kind: a.attack.kind, damageType: a.attack.damageType,
     distance: ctx.geo.distance(at.hex, tg.hex), hitChance: pv.hitChance, damageOnHit: pv.damageOnHit,
     ...(a.area ? { area: a.area, struck } : {}),
     // COMBAT-SEQUENCE: "The accuracy roll carries the same [ledger]." It did — and
@@ -465,7 +469,7 @@ function performHit(ctx: Ctx, attackerId: number, targetId: number, attackId: st
   let heads = 0
   const chartCriticals: number[] = []
   if (crit) {
-    const count = Math.max(1, a.critCount ?? 1)
+    const count = Math.max(1, a.attack.critCount ?? 1)
     const chartShare = tg.side === 'hero'
       ? ctx.cfg.switches.critChartShareVsHeroes
       : ctx.cfg.switches.critChartShareVsEnemies
@@ -495,7 +499,7 @@ function performHit(ctx: Ctx, attackerId: number, targetId: number, attackId: st
   // same pipeline at the same moment — the conservation check stays exact.
   const expected = heads === 0 ? pv.damageOnHit
     : heads === 1 ? pv.damageOnCrit
-    : resolveDamage(ctx, at, tg, a, heads, outgoingPenalty(ctx, at), incomingAbsorb(ctx, tg)).value
+    : resolveDamage(ctx, at, tg, damageSourceOfAttack(a), heads, outgoingPenalty(ctx, at), incomingAbsorb(ctx, tg)).value
   const damage = resolveHitOn(ctx, attackerId, targetId, a, heads, ord, {
     expected,
     rollInfo: { roll, hitChance: pv.hitChance },
@@ -540,7 +544,7 @@ function resolveHitOn(
   const fc = { ownerId: attackerId, targetId, causeId: a.id, ordinal: ord }
 
   const expected = opts.expected ?? preview(ctx, attackerId, targetId, a.id).damageOnHit
-  const dmg = resolveDamage(ctx, at, tg, a, heads, outgoingPenalty(ctx, at), incomingAbsorb(ctx, tg))
+  const dmg = resolveDamage(ctx, at, tg, damageSourceOfAttack(a), heads, outgoingPenalty(ctx, at), incomingAbsorb(ctx, tg))
 
   // Conservation: the ledger must fully explain the number (Law 1's sibling).
   const summed = dmg.ledger.reduce((s, r) => s + r.delta, 0)
@@ -567,8 +571,8 @@ function resolveHitOn(
   const hpBefore = tg.hp
   applyDamage(ctx, targetId, dmg.value, a.id,
     dmg.absorbed > 0
-      ? { actor: attackerId, attackId: a.id, crit: heads > 0, damageType: a.damageType, absorbed: dmg.absorbed }
-      : { actor: attackerId, attackId: a.id, crit: heads > 0, damageType: a.damageType })
+      ? { actor: attackerId, attackId: a.id, crit: heads > 0, damageType: a.attack.damageType, absorbed: dmg.absorbed }
+      : { actor: attackerId, attackId: a.id, crit: heads > 0, damageType: a.attack.damageType })
 
   // "At least 1 damage got through mitigation." applyDamage already computed
   // applied = min(amount, hpBefore), so absorbed-to-zero distinguishes itself.
@@ -588,8 +592,8 @@ function resolveHitOn(
 
   // The legacy `applies` rider — a hardcoded 100% onHit trigger with no chance and
   // no hook. Kept working until its content moves to a real trigger, then deleted.
-  if (a.applies && tg.lifeState === 'standing') {
-    applyStatus(ctx, targetId, a.applies.statusId, a.applies.value, a.id)
+  if (a.attack.applies && tg.lifeState === 'standing') {
+    applyStatus(ctx, targetId, a.attack.applies.statusId, a.attack.applies.value, a.id)
   }
 
   return applied

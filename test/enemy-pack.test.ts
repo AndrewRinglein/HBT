@@ -1,3 +1,4 @@
+// refactor.one-action-type (2026-09-04), Law 10 reason: the row's SHAPE moved by ruling — attack fields read under `.attack`, reach is `range`, move fields under `.move`, the registries are one (`ctx.actions`) and the unit's lists are views (attackIdsOf/powerIdsOf). No assertion changed.
 // The authored enemies — content.enemy-pack (2026-08-26).
 //
 // The 14 units the five prologue battles field, converted from
@@ -65,9 +66,9 @@ describe('the pack carries the authored rows faithfully', () => {
   })
 
   it('the ranged attacks carry their authored ranges', () => {
-    expect(ATTACKS['attack.imp.blast']).toMatchObject({ kind: 'ranged', reach: 4 })
-    expect(ATTACKS['attack.necromancer.necro-bolt']).toMatchObject({ kind: 'ranged', reach: 7 })
-    expect(ATTACKS['attack.lieutenant-demon.ranged']).toMatchObject({ kind: 'ranged', reach: 7 })
+    expect(ATTACKS['attack.imp.blast']).toMatchObject({ range: 4, attack: { kind: 'ranged' } })
+    expect(ATTACKS['attack.necromancer.necro-bolt']).toMatchObject({ range: 7, attack: { kind: 'ranged' } })
+    expect(ATTACKS['attack.lieutenant-demon.ranged']).toMatchObject({ range: 7, attack: { kind: 'ranged' } })
     // every enemy attack costs no stamina — enemies do not run it
     for (const id of roster()) for (const aid of UNITS[id]!.attacks) {
       expect(ATTACKS[aid]!.staminaCost, aid).toBe(0)
@@ -84,8 +85,8 @@ describe('the pack carries the authored rows faithfully', () => {
     // that a null range never compiles into a bow: so no attack in the pack
     // may carry a non-number reach, and the archer's Shoot, now authored,
     // reaches exactly what its row says.
-    for (const a of Object.values(ATTACKS)) expect(typeof a.reach, `${a.id} reach`).toBe('number')
-    expect(ATTACKS['attack.skeletal-archer.shoot']?.reach).toBe(5)
+    for (const a of Object.values(ATTACKS)) expect(typeof a.range, `${a.id} reach`).toBe('number')
+    expect(ATTACKS['attack.skeletal-archer.shoot']?.range).toBe(5)
     expect(gaps.some((g) => g.unit === 'unit.skeletal-archer' && /range unstated/.test(g.needs))).toBe(false)
     // afflictions and the power pool are named, not guessed
     expect(gaps.some((g) => g.needs.includes('capability.inflict-affliction'))).toBe(true)
@@ -94,7 +95,7 @@ describe('the pack carries the authored rows faithfully', () => {
     // power.gain triggers, the necro-bolt carries its powerScale on the row.
     expect(gaps.some((g) => g.needs.includes('capability.power'))).toBe(false)
     expect(UNITS['unit.lieutenant-demon']!.triggers!.some((t) => t.effect.kind === 'power.gain')).toBe(true)
-    expect(ATTACKS['attack.necromancer.necro-bolt']!.powerScale).toBe(1)
+    expect(ATTACKS['attack.necromancer.necro-bolt']!.attack.powerScale).toBe(1)
     // and NO gap-carrying clause leaked into the pack: nothing references afflictions
     for (const id of roster()) for (const t of UNITS[id]!.triggers ?? []) {
       // capability.auras (2026-09-03): the Necromancer's EOA pulse is a heal to its area

@@ -1,3 +1,4 @@
+// refactor.one-action-type (2026-09-04), Law 10 reason: the row's SHAPE moved by ruling — attack fields read under `.attack`, reach is `range`, move fields under `.move`, the registries are one (`ctx.actions`) and the unit's lists are views (attackIdsOf/powerIdsOf). No assertion changed.
 // capability.frost / capability.root / capability.taunt (2026-09-03) — three
 // Codex status rows that were named gaps, each one flag read where it belongs.
 //   Frost: "Adds its value to every physical hit the unit receives, per hit."
@@ -5,6 +6,7 @@
 //   Root:  "Stops the unit moving at all."
 //   Taunt: "Forces the taunted unit to target whoever taunted it." Angela:
 //          "It can keep its same AI, like melee or ranged."
+import { attackIdsOf, powerIdsOf } from '../src/core/action.js'
 import { describe, expect, it } from 'vitest'
 import { createCustomBattle } from '../src/core/setup.js'
 import { runBattle } from '../src/core/battle.js'
@@ -33,7 +35,7 @@ describe('Frost', () => {
   it('adds nothing to a magic hit', () => {
     const ctx = createCustomBattle([{ type: 'test-mage', hex: hexId(5, 5) }], [{ type: 'test-zombie', hex: hexId(5, 8) }])
     const m = ctx.state.units[0]!, z = ctx.state.units[1]!
-    const magic = m.attacks.find((a) => ctx.attacks[a]!.damageType === 'magic')!
+    const magic = attackIdsOf(ctx, m).find((a) => ctx.actions[a]!.attack!.damageType === 'magic')!
     const before = preview(ctx, m.id, z.id, magic).damageOnHit
     applyStatus(ctx, z.id, 'status.frost', 3, 'test')
     expect(preview(ctx, m.id, z.id, magic).damageOnHit).toBe(before)

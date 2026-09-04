@@ -12659,6 +12659,7 @@ export const UNIT_PACK = {
         "staminaRegen": 1,
         "ai": "melee-aggressive",
         "attacks": [
+          "attack.test-ram.once",
           "attack.test-ram.overhead",
           "attack.test-ram.slam",
           "attack.test-arc.sweep"
@@ -12808,8 +12809,10 @@ export const UNIT_PACK = {
             "note": "capability.auras (2026-09-03): the golem is hard to look at — enemies adjacent to it lose 10 Accuracy while adjacent. The second aura, pure data, on a body the probe fields."
           }
         ],
+        "abilities": [
+          "power.test-second-wind"
+        ],
         "typeId": "test-arc-golem",
-        "abilities": [],
         "tags": []
       },
       {
@@ -13150,6 +13153,17 @@ export const UNIT_PACK = {
         "stat": "strength",
         "reach": 1,
         "staminaCost": 1
+      },
+      "attack.test-ram.once": {
+        "id": "attack.test-ram.once",
+        "name": "Desperate Slam (TEST)",
+        "kind": "melee",
+        "damageType": "physical",
+        "bonus": 4,
+        "stat": "strength",
+        "reach": 1,
+        "staminaCost": 0,
+        "uses": 1
       }
     },
     "abilities": {
@@ -13162,6 +13176,24 @@ export const UNIT_PACK = {
         "range": 10,
         "staminaCost": 1,
         "cooldown": 6
+      },
+      "power.test-second-wind": {
+        "id": "power.test-second-wind",
+        "name": "Second Wind (TEST)",
+        "range": 0,
+        "staminaCost": 0,
+        "cooldown": 1,
+        "free": true,
+        "target": {
+          "select": "self",
+          "side": "any"
+        },
+        "effects": [
+          {
+            "kind": "gainStamina",
+            "value": 2
+          }
+        ]
       }
     },
     "statuses": {

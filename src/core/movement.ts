@@ -5,7 +5,8 @@
 import type { HexId } from './hex.js'
 import type { Ctx, MoveDef, Unit } from './types.js'
 import { appliesOnEnterOf, isPassable, layerAppliesOnEnter, layerIdOf, moveCostOf, stripsOnEnterOf, terrainIdOf } from '../content/maps.js'
-import { addStatMod, emit, gainStamina, knockUnit, layerAt, loseMaxStamina, markMoveUsed, moveUnit, spendStamina, unit } from './mutate.js'
+import { addStatMod, emit, gainStamina, knockUnit, layerAt, loseMaxStamina, moveUnit, unit } from './mutate.js'
+import { actionReady, attacksOf, movesOf, spendAction, staminaCostOf } from './action.js'
 import { forcedTargetOf, applyStatus, reduceStatus } from './status.js'
 import { canAttack, performAttack } from './pipeline.js'
 import { settle } from './settle.js'
@@ -22,8 +23,9 @@ import { settle } from './settle.js'
  * we don't have stamina." A unit with no stamina pool pays nothing and can
  * never be refused for lack of it. A stat read, not a content name.
  */
+/** Kept as a name the tests know; the one rule is action.ts staminaCostOf. */
 export function moveStaminaCost(u: Unit, power: MoveDef): number {
-  return u.maxStamina > 0 ? power.staminaCost : 0
+  return staminaCostOf(u, power)
 }
 
 /**
@@ -34,33 +36,14 @@ export function moveStaminaCost(u: Unit, power: MoveDef): number {
  * this).
  */
 export function usableMoves(ctx: Ctx, u: Unit): MoveDef[] {
-  const out: MoveDef[] = []
-  for (const id of u.moves) {
-    const m = ctx.moves[id]
-    if (!m) continue
-    if (u.stamina < moveStaminaCost(u, m)) continue
-    // Cooldown gate — same map and comparison abilities use. Codex counts
-    // Turns DOWN, so a used power wrote turn + cooldown + 1 (see below).
-    if (ctx.state.turn < (u.cooldowns[id] ?? 0)) continue
-    out.push(m)
-  }
-  return out
-}
-
-/** After a power with a cooldown is used, mark when it is ready again. */
-function setMoveCooldown(ctx: Ctx, unitId: number, power: MoveDef): void {
-  if (power.cooldown === 0) return
-  const u = unit(ctx, unitId)
-  // Codex semantics: "usable every other Turn" (cooldown 1) = down for one
-  // full Turn = ready on turn + 2 under the `turn >= readyOn` gate.
-  const readyAgain = ctx.state.turn + power.cooldown + 1
-  u.cooldowns[power.id] = readyAgain
-  emit(ctx, 'cooldown.set', power.id, { actor: unitId, abilityId: power.id, readyOnTurn: readyAgain })
+  // refactor.one-action-type: the movements are a view over the unit's one
+  // list, and THE ONE LIMITS CHECK (stamina, cooldown/warmup, uses) gates them
+  return movesOf(ctx, u).filter((m) => actionReady(ctx, u, m))
 }
 
 /** First affordable granted power of a shape, or null. Order is the unit's data (Law 6: no re-sorting). */
-export function movePowerOf(ctx: Ctx, u: Unit, shape: MoveDef['shape']): MoveDef | null {
-  for (const m of usableMoves(ctx, u)) if (m.shape === shape) return m
+export function movePowerOf(ctx: Ctx, u: Unit, shape: MoveDef['move']['shape']): MoveDef | null {
+  for (const m of usableMoves(ctx, u)) if (m.move.shape === shape) return m
   return null
 }
 
@@ -148,9 +131,7 @@ export function executeMove(ctx: Ctx, unitId: number, path: HexId[], power: Move
     return 0
   }
 
-  spendStamina(ctx, unitId, moveStaminaCost(u, power), power.id)
-  markMoveUsed(ctx, unitId)
-  setMoveCooldown(ctx, unitId, power)
+  spendAction(ctx, unitId, power, 'movement')   // THE ONE SPEND (refactor.one-action-type)
   emit(ctx, 'move.begin', power.id, { actor: unitId, from: u.hex, to: path[path.length - 1], hexes: path.length })
 
   let moved = 0
@@ -225,7 +206,7 @@ export function zocHoldersAt(ctx: Ctx, u: Unit, hex: HexId): Unit[] {
  */
 export function attackOfOpportunity(ctx: Ctx, holderId: number, moverId: number): void {
   const h = unit(ctx, holderId)
-  const melee = h.attacks.map((id) => ctx.attacks[id]).filter((a): a is NonNullable<typeof a> => !!a && a.kind === 'melee' && !a.area)
+  const melee = attacksOf(ctx, h).filter((a) => a.attack.kind === 'melee' && !a.area)
     .sort((a, b) => a.staminaCost - b.staminaCost)[0]
   if (!melee) { emit(ctx, 'aoo.skipped', 'movement.aoo', { actor: holderId, target: moverId, reason: 'no melee attack' }); return }
   const primary = h.primaryUsed, stamina = h.stamina
@@ -255,7 +236,7 @@ export function attackOfOpportunity(ctx: Ctx, holderId: number, moverId: number)
  * Focus and Devotion declare 0 (2026-08-25, movement.bonus-actions).
  */
 export function stepRangeOf(power: MoveDef): number {
-  return power.stepRange ?? 1
+  return power.move.stepRange ?? 1
 }
 
 /**
@@ -287,9 +268,7 @@ export function executeSidestep(ctx: Ctx, unitId: number, to: HexId, power: Move
     // "It moves you zero hexes on purpose" (Focus / Devotion). Still a bonus
     // move: pays, spends the move slot, cooldowns, fires its riders. No Step
     // occurs, so no ground entry beat — you never left your hex.
-    spendStamina(ctx, unitId, moveStaminaCost(u, power), power.id)
-    markMoveUsed(ctx, unitId)
-    setMoveCooldown(ctx, unitId, power)
+    spendAction(ctx, unitId, power, 'movement')   // THE ONE SPEND
     emit(ctx, 'move.begin', power.id, { actor: unitId, from: u.hex, to: u.hex, hexes: 0 })
     applyMoveEffects(ctx, unitId, power)
     return true
@@ -301,9 +280,7 @@ export function executeSidestep(ctx: Ctx, unitId: number, to: HexId, power: Move
   if (!isPassable(terrainHere) || occupancy(ctx).has(to)) {
     throw new Error(`sidestep destination ${to} is not open`)
   }
-  spendStamina(ctx, unitId, moveStaminaCost(u, power), power.id)
-  markMoveUsed(ctx, unitId)
-  setMoveCooldown(ctx, unitId, power)
+  spendAction(ctx, unitId, power, 'movement')   // THE ONE SPEND (refactor.one-action-type)
   emit(ctx, 'move.begin', power.id, { actor: unitId, from: u.hex, to, hexes: 1 })
   moveUnit(ctx, unitId, to, 0, power.id, terrainIdOf(terrainHere))
   for (const sid of stripsOnEnterOf(terrainHere)) reduceStatus(ctx, unitId, sid, 1, terrainIdOf(terrainHere))
@@ -318,7 +295,7 @@ export function executeSidestep(ctx: Ctx, unitId: number, to: HexId, power: Move
  * swift +1), 1 Movement per hex. Slow already bit at beginActivation.
  */
 export function flightRange(u: Unit, power: MoveDef): number {
-  return Math.max(0, u.movePointsLeft + power.budgetMod)
+  return Math.max(0, u.movePointsLeft + power.move.budgetMod)
 }
 
 /**
@@ -360,13 +337,11 @@ export function executeFlight(ctx: Ctx, unitId: number, to: HexId, power: MoveDe
   if (!isPassable(terrainThere) || occupancy(ctx).has(to)) {
     throw new Error(`flight landing ${to} is not open`)
   }
-  spendStamina(ctx, unitId, moveStaminaCost(u, power), power.id)
-  markMoveUsed(ctx, unitId)
-  setMoveCooldown(ctx, unitId, power)
+  spendAction(ctx, unitId, power, 'movement')   // THE ONE SPEND (refactor.one-action-type)
   emit(ctx, 'move.begin', power.id, { actor: unitId, from: u.hex, to, hexes: d })
   // Points drawn from the unit's own store; the power's modifier covers the
   // rest (swift can jump one hex past the store without sending it negative).
-  const paid = u.movePointsLeft - Math.max(0, u.movePointsLeft + power.budgetMod - d)
+  const paid = u.movePointsLeft - Math.max(0, u.movePointsLeft + power.move.budgetMod - d)
   moveUnit(ctx, unitId, to, paid, power.id, terrainIdOf(terrainThere))
   return true
 }

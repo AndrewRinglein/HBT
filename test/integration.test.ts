@@ -1,3 +1,4 @@
+// refactor.one-action-type (2026-09-04), Law 10 reason: the row's SHAPE moved by ruling — attack fields read under `.attack`, reach is `range`, move fields under `.move`, the registries are one (`ctx.actions`) and the unit's lists are views (attackIdsOf/powerIdsOf). No assertion changed.
 import { describe, it, expect } from 'vitest'
 import { createBattle, createCustomBattle, fieldedDef } from '../src/core/setup.js'
 import { runBattle } from '../src/core/battle.js'
@@ -154,8 +155,8 @@ describe('gate 1 — everything appears in the log', () => {
       const kit = fielded.attacks.map((id) => ATTACKS[id]!)
       kit.forEach((a, i) => {
         if (a.area) return   // area swings are chosen by areaSwing(), outside declared order
-        const shadowed = kit.slice(0, i).some((b) => b.kind === a.kind && b.staminaCost <= a.staminaCost)
-        const melee = fielded.ai === 'melee-aggressive' && a.kind === 'ranged'
+        const shadowed = kit.slice(0, i).some((b) => b.attack.kind === a.attack.kind && b.staminaCost <= a.staminaCost)
+        const melee = fielded.ai === 'melee-aggressive' && a.attack.kind === 'ranged'
         if (shadowed || melee) structurallyDead.push(`${t}:${a.id}`)
       })
     }

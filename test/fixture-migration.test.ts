@@ -1,3 +1,4 @@
+// refactor.one-action-type (2026-09-04), Law 10 reason: the row's SHAPE moved by ruling — attack fields read under `.attack`, reach is `range`, move fields under `.move`, the registries are one (`ctx.actions`) and the unit's lists are views (attackIdsOf/powerIdsOf). No assertion changed.
 // test.fixture-migration (2026-09-02) — the last hand-typed units leave the
 // engine. The 2026-08-14 fixtures (zombie, zombie-burning, warrior, ranger,
 // mage), their six PROVISIONAL attacks and the invented Arcane Bolt are test
@@ -11,7 +12,7 @@ import { describe, expect, it } from 'vitest'
 import { ABILITIES, ATTACKS, UNITS } from '../src/content/index.js'
 import { packTestAbilities, packTestAttacks, packUnits } from '../src/content/pack.js'
 import { createCustomBattle } from '../src/core/setup.js'
-import { resolveDamage } from '../src/core/pipeline.js'
+import { resolveDamage, damageSourceOfAttack } from '../src/core/pipeline.js'
 import { hexId } from './board16.js'
 
 const src = () => readFileSync(join(__dirname, '..', 'src', 'content', 'index.ts'), 'utf8')
@@ -50,7 +51,7 @@ describe('what index.ts still types', () => {
   it('the classic arithmetic still reads: the test zombie bites the test warrior for 3 through armor 1, the test ranger for 4', () => {
     const w = createCustomBattle([{ type: 'test-warrior', hex: hexId(5, 5) }], [{ type: 'test-zombie', hex: hexId(6, 5) }])
     const r = createCustomBattle([{ type: 'test-ranger', hex: hexId(5, 5) }], [{ type: 'test-zombie', hex: hexId(6, 5) }])
-    expect(resolveDamage(w, w.state.units[1]!, w.state.units[0]!, ATTACKS['attack.test-zombie.bite']!, false).value).toBe(3)
-    expect(resolveDamage(r, r.state.units[1]!, r.state.units[0]!, ATTACKS['attack.test-zombie.bite']!, false).value).toBe(4)
+    expect(resolveDamage(w, w.state.units[1]!, w.state.units[0]!, damageSourceOfAttack(ATTACKS['attack.test-zombie.bite']!), false).value).toBe(3)
+    expect(resolveDamage(r, r.state.units[1]!, r.state.units[0]!, damageSourceOfAttack(ATTACKS['attack.test-zombie.bite']!), false).value).toBe(4)
   })
 })

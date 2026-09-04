@@ -1,9 +1,11 @@
+// refactor.one-action-type (2026-09-04), Law 10 reason: the row's SHAPE moved by ruling — attack fields read under `.attack`, reach is `range`, move fields under `.move`, the registries are one (`ctx.actions`) and the unit's lists are views (attackIdsOf/powerIdsOf). No assertion changed.
 // capability.vision (2026-09-03) — COMBAT-DESIGN §4, re-ruled 2026-09-03:
 // effective Vision = 6 (the battlefield) + the stat (0) + mods, floored at 1.
 // Angela: "everyone has a vision of 6, even though the stat is 0". Darkness is
 // the CONDITION (the whole board at phase 1) and the LAYER (painted in a
 // radius); heroes light within Vision on the hero phase; burning reveals
 // regardless of range; you cannot target what you cannot see (switch).
+import { attackIdsOf, powerIdsOf } from '../src/core/action.js'
 import { describe, expect, it } from 'vitest'
 import { createBattle, createCustomBattle } from '../src/core/setup.js'
 import { runBattle } from '../src/core/battle.js'
@@ -38,7 +40,7 @@ describe('darkness', () => {
     expect(distance(r.hex, far.hex)).toBeGreaterThan(6)
     expect(canSee(ctx, r, far)).toBe(false)
     expect(canSee(ctx, r, near)).toBe(true)
-    expect(canAttack(ctx, r.id, far.id, r.attacks[0]!)).toBe(false)
+    expect(canAttack(ctx, r.id, far.id, attackIdsOf(ctx, r)[0]!)).toBe(false)
     applyStatus(ctx, far.id, 'status.burn', 1, 'test')
     expect(canSee(ctx, r, far)).toBe(true)
   })

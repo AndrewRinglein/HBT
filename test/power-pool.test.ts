@@ -1,3 +1,4 @@
+// refactor.one-action-type (2026-09-04), Law 10 reason: the row's SHAPE moved by ruling — attack fields read under `.attack`, reach is `range`, move fields under `.move`, the registries are one (`ctx.actions`) and the unit's lists are views (attackIdsOf/powerIdsOf). No assertion changed.
 // capability.power-pool (2026-09-03) — ENEMY-REVIEW.md P1, ruled 2026-08-23:
 // "Power is the enemy side's Magic: one global integer for the whole enemy
 // side. Fractions resolve to an integer before adding, rounded to nearest,
@@ -5,6 +6,7 @@
 // after death), a clock or condition." Consumers read it; nothing spends it.
 // Every number here is read off the rows (the Lieutenant Demon's Gathering
 // Doom, the Necromancer's Necro Bolt at +Power, Necro Strike at +½ Power).
+import { attackIdsOf, powerIdsOf } from '../src/core/action.js'
 import { describe, expect, it } from 'vitest'
 import { createBattle, createCustomBattle } from '../src/core/setup.js'
 import { runBattle } from '../src/core/battle.js'
@@ -30,26 +32,26 @@ describe('consumers read the pool', () => {
     const ctx = createCustomBattle([{ type: 'test-warrior', hex: hexId(8, 8) }], [{ type: 'unit.necromancer', hex: hexId(8, 12) }])
     const n = ctx.state.units[1]!, w = ctx.state.units[0]!
     const bolt = ATTACKS['attack.necromancer.necro-bolt']!, strike = ATTACKS['attack.necromancer.necro-strike']!
-    expect(bolt.powerScale).toBe(1)
+    expect(bolt.attack.powerScale).toBe(1)
     const at0 = preview(ctx, n.id, w.id, bolt.id)
     expect(at0.damageOnHit).toBe(preview(ctx, n.id, w.id, bolt.id).damageOnHit)
     gainPower(ctx, 3, 'test')
     const at3 = preview(ctx, n.id, w.id, bolt.id)
-    expect(at3.damageOnHit - at0.damageOnHit).toBe(powerShare(3, bolt.powerScale!))
+    expect(at3.damageOnHit - at0.damageOnHit).toBe(powerShare(3, bolt.attack.powerScale!))
     n.hex = hexId(8, 9)   // adjacent for the strike
     const s3 = preview(ctx, n.id, w.id, strike.id)
     ctx.state.power = 0
     const s0 = preview(ctx, n.id, w.id, strike.id)
-    expect(s3.damageOnHit - s0.damageOnHit).toBe(powerShare(3, strike.powerScale!))
+    expect(s3.damageOnHit - s0.damageOnHit).toBe(powerShare(3, strike.attack.powerScale!))
   })
 
   it('a hero attack with a share adds nothing — the pool is the enemy side\'s', () => {
     const ctx = createCustomBattle([{ type: 'test-warrior', hex: hexId(8, 8) }], [{ type: 'unit.zombie', hex: hexId(8, 9) }])
     gainPower(ctx, 5, 'test')
     const w = ctx.state.units[0]!, z = ctx.state.units[1]!
-    const pv = preview(ctx, w.id, z.id, w.attacks[0]!)
+    const pv = preview(ctx, w.id, z.id, attackIdsOf(ctx, w)[0]!)
     expect(pv.accLedger.length).toBeGreaterThan(0)
-    const dmgRows = (ctx.attacks[w.attacks[0]!]!.powerScale ?? 0)
+    const dmgRows = (ctx.actions[attackIdsOf(ctx, w)[0]!]!.attack!.powerScale ?? 0)
     expect(dmgRows).toBe(0)
   })
 })

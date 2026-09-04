@@ -1,3 +1,4 @@
+// refactor.one-action-type (2026-09-04), Law 10 reason: the row's SHAPE moved by ruling — attack fields read under `.attack`, reach is `range`, move fields under `.move`, the registries are one (`ctx.actions`) and the unit's lists are views (attackIdsOf/powerIdsOf). No assertion changed.
 // The Critical Injury Chart — station.crit (2026-08-27).
 //
 // Dictated in full (DECISIONS.md 2026-08-27): two rolls from named streams
@@ -51,7 +52,7 @@ describe('the chart arrives as ruled data', () => {
   })
 
   it('the crit fields and unit crit/luck came through the pipeline', () => {
-    expect(ATTACKS['attack.dagger.stab']!.crit).toBe(5)
+    expect(ATTACKS['attack.dagger.stab']!.attack.crit).toBe(5)
     expect(UNITS['unit.bloodhound']!.crit).toBe(10)
     expect(UNITS['unit.bruiser-demon']!.luck).toBe(5)
     expect(UNITS['hero.fixed.orphans']!.crit).toBe(20)
@@ -141,7 +142,7 @@ describe('rollCritEffect — each row does exactly what it says', () => {
       '"loses access to class powers"').toBe(false)
     beginActivation(ctx, lucius.id, 'test')
     // attacks are NOT locked — only the powers are gone
-    expect(ctx.attacks['attack.punch']).toBeDefined()
+    expect(ctx.actions['attack.punch']).toBeDefined()
   })
 
   it('knocked-sprawling pushes directly away and slows', () => {

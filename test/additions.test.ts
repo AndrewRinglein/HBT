@@ -1,7 +1,8 @@
+// refactor.one-action-type (2026-09-04), Law 10 reason: the row's SHAPE moved by ruling — attack fields read under `.attack`, reach is `range`, move fields under `.move`, the registries are one (`ctx.actions`) and the unit's lists are views (attackIdsOf/powerIdsOf). No assertion changed.
 import { describe, it, expect } from 'vitest'
 import { createBattle, createCustomBattle, fieldedDef } from '../src/core/setup.js'
 import { runBattle } from '../src/core/battle.js'
-import { resolveDamage, resolveAccuracy, reachOf, canAttack } from '../src/core/pipeline.js'
+import { resolveDamage, resolveAccuracy, reachOf, canAttack, damageSourceOfAttack } from '../src/core/pipeline.js'
 import { resolvePowerDamage, canUsePower, isReady } from '../src/core/ability.js'
 import { reachable, stepCost } from '../src/core/movement.js'
 import { ATTACKS, ABILITIES, UNITS, FIRST_BATTLE, TEST_COHORT } from '../src/content/index.js'
@@ -133,18 +134,18 @@ describe('pass 3 — the Mage', () => {
   it('gate 2 — staff bolt is Precision magic at range 6; strike is Strength physical at 1', () => {
     const ctx = createCustomBattle([{ type: 'test-mage', hex: hexId(5, 5) }], [{ type: 'test-zombie', hex: hexId(6, 5) }])
     const [m, z] = [ctx.state.units[0]!, ctx.state.units[1]!]
-    expect(resolveDamage(ctx, m, z, ATTACKS['attack.test-mage.staff']!, false).value).toBe(4)   // precision 4, magic vs resist 0
-    expect(resolveDamage(ctx, m, z, ATTACKS['attack.test-mage.strike']!, false).value).toBe(2)  // strength 2, physical vs armor 0
-    expect(ATTACKS['attack.test-mage.staff']!.reach).toBe(6)
-    expect(ATTACKS['attack.test-mage.strike']!.reach).toBe(1)
+    expect(resolveDamage(ctx, m, z, damageSourceOfAttack(ATTACKS['attack.test-mage.staff']!), false).value).toBe(4)   // precision 4, magic vs resist 0
+    expect(resolveDamage(ctx, m, z, damageSourceOfAttack(ATTACKS['attack.test-mage.strike']!), false).value).toBe(2)  // strength 2, physical vs armor 0
+    expect(ATTACKS['attack.test-mage.staff']!.range).toBe(6)
+    expect(ATTACKS['attack.test-mage.strike']!.range).toBe(1)
   })
   it('gate 2 — magic damage is mitigated by Resist, not Armor', () => {
     const ctx = createCustomBattle([{ type: 'test-mage', hex: hexId(5,5) }], [{ type: 'test-zombie', hex: hexId(6,5) }])
     const m = ctx.state.units[0]!
     const armoured = { ...ctx.state.units[1]!, armor: 3, resist: 0 }
     const warded  = { ...ctx.state.units[1]!, armor: 0, resist: 3 }
-    expect(resolveDamage(ctx, m, armoured, ATTACKS['attack.test-mage.staff']!, false).value).toBe(4)
-    expect(resolveDamage(ctx, m, warded,   ATTACKS['attack.test-mage.staff']!, false).value).toBe(1)
+    expect(resolveDamage(ctx, m, armoured, damageSourceOfAttack(ATTACKS['attack.test-mage.staff']!), false).value).toBe(4)
+    expect(resolveDamage(ctx, m, warded,   damageSourceOfAttack(ATTACKS['attack.test-mage.staff']!), false).value).toBe(1)
   })
   it('gate 1 — the Mage appears, moves, attacks and is targeted in real battles', () => {
     // LAW 10 — 2026-09-02 (content.alpha-flip): the standard battle's mage is
@@ -152,7 +153,7 @@ describe('pass 3 — the Mage', () => {
     // same — the mage moves, swings its OWN ranged kit, and gets hurt — read
     // off the unit's attack list instead of a typed attack id.
     const MAGE = 'alpha-air-mage'
-    const staffIds = new Set(fieldedDef(MAGE).attacks.filter((id) => ATTACKS[id]!.kind === 'ranged'))
+    const staffIds = new Set(fieldedDef(MAGE).attacks.filter((id) => ATTACKS[id]!.attack.kind === 'ranged'))
     expect(staffIds.size).toBeGreaterThan(0)
     const seen = { moved:0, staff:0, strike:0, hurt:0 }
     for (let r = 0; r < 60; r++) {
@@ -199,12 +200,17 @@ describe('pass 4 — Arcane Bolt', () => {
     const cds = ctx.events.filter(e => e.type === 'cooldown.set')
     expect(casts.length).toBeGreaterThan(0)
     expect(cds.length).toBe(casts.length)
-    for (const c of cds) expect((c['readyOnTurn'] as number) - (c.turn as number)).toBe(6)
+    // LAW 10 — 2026-09-04 (refactor.one-action-type): the Codex semantic is
+    // 2-ACTIONS-SETTLED.md:71, "`cooldown` N = skip N Turns. CD 0 is usable
+    // again next Turn." Cooldown 6 therefore means ready on turn + 7 and no
+    // recast within 7 Turns. The power path wrote turn + 6 until today — one
+    // Turn short of the ruling, and this test had asserted the bug (FINDING 32).
+    for (const c of cds) expect((c['readyOnTurn'] as number) - (c.turn as number)).toBe(7)
     // never two casts by the same unit inside the cooldown window
     const byUnit = new Map<number, number[]>()
     for (const c of casts) byUnit.set(c.actor!, [...(byUnit.get(c.actor!) ?? []), c.turn as number])
     for (const turns of byUnit.values())
-      for (let i = 1; i < turns.length; i++) expect(turns[i]! - turns[i-1]!).toBeGreaterThanOrEqual(6)
+      for (let i = 1; i < turns.length; i++) expect(turns[i]! - turns[i-1]!).toBeGreaterThanOrEqual(7)
   })
   it('gate 2 — the power spends the primary action, so no attack follows it', () => {
     // Holds for every power a standard battle casts — the Alpha Team's item

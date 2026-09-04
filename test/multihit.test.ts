@@ -1,3 +1,4 @@
+// refactor.one-action-type (2026-09-04), Law 10 reason: the row's SHAPE moved by ruling — attack fields read under `.attack`, reach is `range`, move fields under `.move`, the registries are one (`ctx.actions`) and the unit's lists are views (attackIdsOf/powerIdsOf). No assertion changed.
 // attack.multihit (2026-09-03) — Angela 2026-08-15: "An attack is a list of
 // hits, resolved one at a time. Each hit runs the full cycle — damage,
 // triggers, settle — before the next hit begins." No retargeting; the rest
@@ -13,7 +14,7 @@ import { hexId } from './board16.js'
 
 describe('an attack of two hits', () => {
   it('the Rake declares two swings, numbered, and each resolves its own roll; stamina and the primary are paid once', () => {
-    expect(ATTACKS['attack.ghoul.rake']!.hits).toBe(2)
+    expect(ATTACKS['attack.ghoul.rake']!.attack.hits).toBe(2)
     const ctx = createCustomBattle([{ type: 'test-warrior', hex: hexId(5, 5) }], [{ type: 'unit.ghoul', hex: hexId(5, 6) }])
     const g = ctx.state.units[1]!, w = ctx.state.units[0]!
     w.hp = 99; w.maxHp = 99

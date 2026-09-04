@@ -1,3 +1,4 @@
+// refactor.one-action-type (2026-09-04), Law 10 reason: the row's SHAPE moved by ruling — attack fields read under `.attack`, reach is `range`, move fields under `.move`, the registries are one (`ctx.actions`) and the unit's lists are views (attackIdsOf/powerIdsOf). No assertion changed.
 // capability.ground-layers (2026-09-03) — rule.ground-layers: burning · frost ·
 // poisoned · darkness painted onto arbitrary hexes at runtime; a hex carries
 // at most one; a new layer replaces the old, except Burn and Frost which
@@ -32,7 +33,7 @@ describe('painting', () => {
     paintLayer(ctx, hexId(5, 4), LAYER.BURNING, 'test')
     beginActivation(ctx, w.id, 'test')
     const walk = movePowerOf(ctx, w, 'path')!
-    executeMove(ctx, w.id, pathTo(reachable(ctx, w, walk.budgetMod), w.hex, hexId(5, 4)), walk)
+    executeMove(ctx, w.id, pathTo(reachable(ctx, w, walk.move.budgetMod), w.hex, hexId(5, 4)), walk)
     expect(valueOf(w, 'status.burn')).toBe(1)   // the entry beat
     endActivation(ctx, w.id, 'test'); endOfActivation(ctx, w.id)
     // +1 at End of Activation, then the tick burns and decays one: 1 + 1 - 1

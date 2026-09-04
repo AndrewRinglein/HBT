@@ -124,61 +124,147 @@ export type AbilityEffect =
   /** capability.corpses: eat one corpse within `radius` — heal and battle-long stat gains to the eater. Refused (canUsePower) when none is in reach. */
   | { readonly kind: 'corpse.eat'; readonly radius: number; readonly heal: number; readonly mods: Readonly<Partial<Record<import('./stats.js').StatName, number>>>; readonly maxHp?: number }
 
-export type AbilityDef = {
+/**
+ * THE ONE ACTION TYPE — refactor.one-action-type (2026-09-04). Ruled three
+ * times on 2026-09-04 (DECISIONS.md: "ONE ACTION TYPE"): "Whether they're an
+ * item granted power, a class power, an attack, an innate ability someone has,
+ * or a movement ability, all of them can have any of those shapes. All of them
+ * should be capable of doing all of the same things. Move 3, do damage, give a
+ * [status — her word was buff], have a cooldown, like any of these things. Or one use."
+ *
+ * So: where an action came from is a PROPERTY (`source`); which slot spends it
+ * is a PROPERTY (`slot`); what limits it — stamina, cooldown, warmup, uses,
+ * free — is one set of fields on every action; and what it DOES is any
+ * combination of an attack profile (rolls to hit and runs the one damage
+ * function), a move profile (walks, sidesteps or flies), and an effect list.
+ * `AttackDef`, `AbilityDef` and `MoveDef` below are VIEWS over this one type —
+ * narrowings by which profile is present — kept so the pipeline, the powers
+ * path and the movement path each read the fields they resolve. "An item power
+ * can't do that because it's an item power" is no longer a valid answer.
+ */
+export type ActionDef = {
   readonly id: string
   readonly name: string
-  /** Damage = this stat + bonus. Required on damage powers; absent on the rest. */
-  readonly stat?: 'strength' | 'precision' | 'magic' | 'spirit'
-  readonly bonus?: number
-  readonly damageType?: DamageType
-  readonly range: number
+  /** Where it came from. A property, never a kind. */
+  readonly source?: 'weapon' | 'item' | 'class' | 'innate' | 'movement'
+  /**
+   * Which of the Activation's two actions may spend it. Ruled 2026-09-04:
+   * "structurally, movement and primary are identical. They can both do any
+   * of the same things." Absent = `either`. SWITCHES.md `actionSlots` says how
+   * the AI reads it until the AI is designed (system.ai-modes).
+   */
+  readonly slot?: 'movement' | 'primary' | 'either'
+  // ── the limits — one set, on every action (ruled 2026-09-04) ──
   readonly staminaCost: number
-  /** Turns before it can be used again. 0 = every turn. */
+  /** Turns before it can be used again after a use. 0 = every turn. Codex semantics (Sidestep "every other turn" = 1). */
   readonly cooldown: number
-  /**
-   * What the power DOES — capability.item-powers (2026-08-27). Absent =
-   * 'damage', the original Arcane-Bolt shape, so every existing row is
-   * unchanged. 'heal' restores HP (amount in `heal` — a trigger ValueSpec, so
-   * Spirit scaling uses the party-wide sum per GAME-DESIGN §5's law).
-   * 'selfGuard' is the Knight Shield's Block: protection now, a permanent
-   * stat price each use (`guard`).
-   */
-  readonly effect?: 'damage' | 'heal' | 'selfGuard'
-  /** damage only: strike EVERY standing unit in the blast (areaHexesOf 'blast1'). */
-  readonly area?: 'blast1'
-  /** heal only. */
-  readonly heal?: import('./trigger.js').ValueSpec
-  /** selfGuard only: protection = base + perArmor x effective Armor; dodgeLoss applies each use, rest of Battle. */
-  readonly guard?: { readonly protectionBase: number; readonly protectionPerArmor: number; readonly dodgeLoss: number }
-  /**
-   * ability.effects (2026-09-03): the effect list and the ONE targeting
-   * vocabulary (target.ts). When `effects` is present the three legacy shapes
-   * above are not consulted. `range` still gates how far the aimed unit may
-   * be; an area with origin 'self' ignores the aim.
-   */
-  readonly effects?: readonly AbilityEffect[]
-  readonly target?: import('./target.js').Targeting
-  /** "It does not use your primary action" — the power spends stamina and cooldown only. */
-  readonly free?: boolean
   /** Turns before the first use: cooldowns[id] starts at warmup + 1 at fielding. */
   readonly warmup?: number
   /**
    * capability.charges (2026-09-03), GEAR-DESIGN §4: uses per Battle. A spent
-   * use counts down; at 0 the power leaves the unit's list for the rest of the
-   * Battle — "they should vanish from the list of things available to a hero"
-   * (Andrew 2026-09-02). Absent = unlimited (cooldown governs).
+   * use counts down; at 0 the action leaves the unit's list for the rest of
+   * the Battle — "they should vanish from the list of things available to a
+   * hero" (Andrew 2026-09-02). Absent = unlimited (cooldown governs).
    */
   readonly uses?: number
+  /** "It does not use your primary action" — spends stamina and cooldown only. */
+  readonly free?: boolean
+  // ── reach and targeting — one vocabulary ──
+  /** How far the aimed unit may be. An attack's weapon reach (melee 1, the bow 6; hero Reach adds to ranged); a power's range; a move's step range. */
+  readonly range: number
+  readonly target?: import('./target.js').Targeting
+  /**
+   * AREA (capability.area-attack, 2026-08-27). 'arc' — "an adjacent hex and
+   * the two hexes adjacent to both you and it"; 'blast1' — a hex plus its six
+   * neighbours. An area attack DOES NOT ROLL TO HIT (authored: "It does not
+   * roll to hit, so it cannot crit") — no accuracy station, no miss, no dodge,
+   * no crit; mitigation and riders still run per struck unit.
+   */
+  readonly area?: 'arc' | 'blast1'
+  // ── what it does — any combination ──
+  /** Rolls to hit and runs the one damage function. Present = this action is an attack. */
+  readonly attack?: AttackProfile
+  /** Walks, sidesteps or flies. Present = this action is a movement. */
+  readonly move?: MoveProfile
+  /**
+   * ability.effects (2026-09-03): the effect list and the ONE targeting
+   * vocabulary (target.ts). When `effects` is present the three legacy power
+   * shapes below are not consulted. Movement riders (MoveEffect) live here too.
+   */
+  readonly effects?: readonly ActionEffect[]
+  // ── the legacy power shapes (capability.item-powers, 2026-08-27) — read only when `effects` is absent ──
+  /** Damage = this stat + bonus. Required on damage powers; absent on the rest. */
+  readonly stat?: 'strength' | 'precision' | 'magic' | 'spirit'
+  readonly bonus?: number
+  readonly damageType?: DamageType
+  /** Absent = 'damage' on a power without `effects`. 'heal' restores HP (`heal`); 'selfGuard' is the Knight Shield's Block (`guard`). */
+  readonly effect?: 'damage' | 'heal' | 'selfGuard'
+  readonly heal?: import('./trigger.js').ValueSpec
+  readonly guard?: { readonly protectionBase: number; readonly protectionPerArmor: number; readonly dodgeLoss: number }
   /** What the Codex row says that the engine cannot do. Never silently half-real. */
   readonly gaps?: readonly string[]
 }
 
+/** The attack half of an action — the fields the accuracy and damage pipelines resolve. */
+export type AttackProfile = {
+  readonly kind: 'melee' | 'ranged'
+  readonly damageType: DamageType
+  /** Added to the governing stat. Zombie basic = 0, Axe = +1, Punch = -1. */
+  readonly bonus: number
+  /** Which stat carries the damage. Spirit is "identical to Magic" as a scaling stat (GAME-DESIGN §5). */
+  readonly stat: 'strength' | 'precision' | 'magic' | 'spirit'
+  /** On hit, apply this status to the target. A rider, not a station. */
+  readonly applies?: { readonly statusId: string; readonly value: number }
+  /** The weapon's flat addition to crit chance — station.crit (2026-08-27): the Dagger's +5. Plus OR minus (ruled 2026-09-04). */
+  readonly crit?: number
+  /**
+   * attack.multihit (2026-09-03): "An attack is a list of hits, resolved one at
+   * a time. Each hit runs the full cycle — damage, triggers, settle — before
+   * the next hit begins." Absent = 1.
+   */
+  readonly hits?: number
+  /** capability.power-pool: the share of the enemy side's Power this attack adds — 1, 0.5, 0.334 — at DMG.POWER. */
+  readonly powerScale?: number
+  /** The attack's own Accuracy modifier at ACC.SITUATIONAL (700). Punch's −5. Absent = 0. */
+  readonly accuracy?: number
+  /** How many CRITICALS one critting hit resolves — station.crit-count. Absent = 1. */
+  readonly critCount?: number
+}
+
 /**
- * A movement power — Angela 2026-08-21: "Movement is a choice, and that
- * movement choice can have a modifier. It can cost stamina. It shouldn't be
- * hard-coded. It should be content-driven." Rows live in content/moves.ts;
- * which unit grants which powers is unit data (UnitDef.moves).
+ * The movement half of an action — Angela 2026-08-21: "Movement is a choice,
+ * and that movement choice can have a modifier. It can cost stamina. It
+ * shouldn't be hard-coded. It should be content-driven."
  */
+export type MoveProfile = {
+  /**
+   * How the move resolves. `path` walks the step loop one hex at a time;
+   * `sidestep` is exactly one hex, any direction, terrain cost ignored, still
+   * a Step; `flight` is a targeted atomic jump with zero Steps (GAME-DESIGN
+   * §Movement keywords, rewritten 2026-08-20).
+   */
+  readonly shape: 'path' | 'sidestep' | 'flight'
+  /**
+   * Sidestep-shaped only: EXACTLY how many hexes the step moves. Absent = 1.
+   * Leap is 2; Focus and Devotion are 0 ("it moves you zero hexes on
+   * purpose"). A 0-range bonus move still spends the slot, still cooldowns,
+   * still fires its effects.
+   */
+  readonly stepRange?: number
+  /** Added to the unit's movement-point budget for this action. Move/Sidestep 0; flight-swift +1. */
+  readonly budgetMod: number
+}
+
+/** An action seen as an attack: the pipeline's view. */
+export type AttackDef = ActionDef & { readonly attack: AttackProfile }
+/** An action seen as a movement: the movement path's view. */
+export type MoveDef = ActionDef & { readonly move: MoveProfile }
+/** An action seen as a power: the effects path's view. Every action is one. */
+export type AbilityDef = ActionDef
+
+/** Every effect kind an action may carry — the power effects and the movement riders, one list. */
+export type ActionEffect = AbilityEffect | MoveEffect
+
 /**
  * What a movement power DOES beyond moving — the rider on a bonus move.
  * Added 2026-08-25 (movement.bonus-actions): the S17 half-step split gave the
@@ -200,34 +286,6 @@ export type MoveEffect =
       readonly until: 'endOfTurn' | 'battle'
     }
 
-export type MoveDef = {
-  readonly id: string
-  readonly name: string
-  /**
-   * How the move resolves. `path` walks the step loop one hex at a time;
-   * `sidestep` is exactly one hex, any direction, terrain cost ignored, still
-   * a Step; `flight` is a targeted atomic jump with zero Steps (GAME-DESIGN
-   * §Movement keywords, rewritten 2026-08-20).
-   */
-  readonly shape: 'path' | 'sidestep' | 'flight'
-  /**
-   * Sidestep-shaped only: EXACTLY how many hexes the step moves. Absent = 1
-   * (the classic half-step). Leap is 2 ("move exactly 2 hexes"); Focus and
-   * Devotion are 0 ("it moves you zero hexes on purpose"). A 0-range bonus
-   * move still spends the move slot, still cooldowns, still fires its effects.
-   */
-  readonly stepRange?: number
-  /** Riders applied after the step resolves. See MoveEffect. */
-  readonly effects?: readonly MoveEffect[]
-  readonly staminaCost: number
-  /** Added to the unit's movement-point budget for this power. Move/Sidestep 0; flight-swift +1. */
-  readonly budgetMod: number
-  /**
-   * Turns DOWN after use — Codex semantics (Angela 2026-08-21 on Sidestep:
-   * "it's available every other turn" = cooldown 1). 0 = every turn.
-   */
-  readonly cooldown: number
-}
 
 /**
  * A named fielding — which units stand where, on which map.
@@ -273,81 +331,6 @@ export type ScenarioDef = {
   readonly encounterId?: string
 }
 
-export type AttackDef = {
-  readonly id: string
-  readonly name: string
-  readonly kind: 'melee' | 'ranged'
-  readonly damageType: DamageType
-  /** Added to the governing stat. Zombie basic = 0, Axe = +1, Punch = -1. */
-  readonly bonus: number
-  /**
-   * Which stat carries the damage. Spirit joined 2026-08-27: the Chaplain's
-   * holy-texts Mercy is authored "stat": "spirit" — GAME-DESIGN §5 already
-   * says Spirit is "identical to Magic" as a scaling stat, and the stat
-   * pipeline resolves it like any other.
-   */
-  readonly stat: 'strength' | 'precision' | 'magic' | 'spirit'
-  /** Weapon reach. Melee 1; the bow is 6. Hero Reach adds to ranged only. */
-  readonly reach: number
-  readonly staminaCost: number
-  /** On hit, apply this status to the target. A rider, not a station. */
-  readonly applies?: { readonly statusId: string; readonly value: number }
-  /**
-   * AREA attacks (capability.area-attack, 2026-08-27). Authored on
-   * attack.halberd.cleave: "an adjacent hex and the two hexes adjacent to
-   * both you and it" — that is 'arc'. 'blast1' is a hex plus its six
-   * neighbours (the shape power.lightning-staff.storm rides). An area attack
-   * DOES NOT ROLL TO HIT (authored: "It does not roll to hit, so it cannot
-   * crit") — no accuracy station, no miss, no dodge, no crit; mitigation and
-   * riders still run per struck unit through the one damage function.
-   */
-  readonly area?: 'arc' | 'blast1'
-  /**
-   * The weapon's flat addition to crit chance — station.crit (2026-08-27),
-   * COMBAT-DESIGN "Crit from gear": the Dagger's +5, the Javelin's +3.
-   */
-  readonly crit?: number
-  /**
-   * attack.multihit (2026-09-03), Angela 2026-08-15: "An attack is a list of
-   * hits, resolved one at a time. Each hit runs the full cycle — damage,
-   * triggers, settle — before the next hit begins." No retargeting; the rest
-   * are cancelled the moment the target stops standing; hit 2 is re-resolved
-   * from scratch (a status hit 1 applied is read by hit 2). Absent = 1.
-   * The Codex `hits` field; the bestiary's `attackCount`.
-   */
-  readonly hits?: number
-  /**
-   * capability.enemy-action-cooldown (2026-09-03), ENEMY-REVIEW P10: "probably
-   * just permission to use the same fields" — the cooldown and warmup hero
-   * powers carry, on an ATTACK. Turns until it can be used again after a use
-   * (absent/0 = every turn); warmup = Turns before the first use. Tracked in
-   * the unit's one `cooldowns` map, keyed by the attack id.
-   */
-  readonly cooldown?: number
-  readonly warmup?: number
-  /**
-   * capability.power-pool (2026-09-03): the share of the enemy side's Power
-   * this attack adds to its damage — 1 = +Power, 0.5 = +½ Power, 0.334 = +⅓
-   * — resolved nearest, 0.5 up (Law 7) at the DMG.POWER station. Enemy rows
-   * only; a hero attack carrying it adds nothing (the pool is the enemy's).
-   */
-  readonly powerScale?: number
-  /**
-   * The attack's own Accuracy modifier — station.accuracy-field (2026-09-03).
-   * Applied at ACC.SITUATIONAL (700). Punch's −5 (ruled 2026-08-27); the
-   * station every later per-attack modifier lands on — the attack of
-   * opportunity's −20, flight's −30. Absent = 0.
-   */
-  readonly accuracy?: number
-  /**
-   * How many CRITICALS one critting hit resolves — station.crit-count
-   * (2026-08-27): "there is also an ability to have more than one critical
-   * happen at once ... 'Do two criticals' or 'Do three criticals'". Absent =
-   * 1. Each critical flips its own branch: heads stack +50% each before
-   * mitigation, each tails rolls its own chart row.
-   */
-  readonly critCount?: number
-}
 
 /**
  * One Critical Injury Chart row — station.crit (2026-08-27). RULED DATA, not
@@ -576,11 +559,13 @@ export type Unit = {
   /** capability.charges: what was spent, for the BattleResult. */
   usesSpentThisBattle?: Record<string, number>
   ai: string
-  attacks: string[]
-  abilities: string[]
-  /** Granted movement powers, in preference order (see UnitDef.moves). */
-  moves: string[]
-  /** Ability id -> the turn on which it becomes usable again. Plain object, JSON-safe. */
+  /**
+   * THE ONE LIST — refactor.one-action-type (2026-09-04): every action this
+   * unit may spend, attacks then powers then movements, in the row's order.
+   * `attacksOf`, `powersOf` and `movesOf` (action.ts) are views by profile.
+   */
+  actions: string[]
+  /** Action id -> the turn on which it becomes usable again. One map for every action kind. Plain object, JSON-safe. */
   cooldowns: Record<string, number>
   /** Live statuses, kept sorted by id so iteration is never insertion order. */
   /** `by` = the unit that applied it (Taunt reads it; capability.taunt 2026-09-03). */
@@ -698,6 +683,8 @@ export type Config = {
     frostBeforeProtection: boolean
     /** Zones of control and attacks of opportunity live? SWITCHES.md, 2026-09-03 (movement.zone-of-control). */
     zoneOfControl: boolean
+    /** SWITCHES.md actionSlots (2026-09-04): how the AI reads an action's `slot`. Only `byProfile` has code behind it. */
+    actionSlots: 'byProfile' | 'any'
     /** Does a unit with a corpse-eating power eat before it swings? SWITCHES.md, 2026-09-03. */
     aiEatsBeforeBiting: boolean
     /** May a unit target something it cannot see? COMBAT-DESIGN §4 assumes no. SWITCHES.md, 2026-09-03. */
@@ -760,6 +747,7 @@ export const DEFAULT_CONFIG: Config = {
     // Declared to change the control battles; on by ruling (GAME-DESIGN §4,
     // Angela 2026-08-13). Off keeps the pre-ZoC battle for paired sweeps.
     zoneOfControl: true,
+    actionSlots: 'byProfile',
     // "the things surrounding them get stronger with every villager they eat"
     // (Supper) — the feast is the design. SWITCHES.md, 2026-09-03.
     aiEatsBeforeBiting: true,
@@ -776,12 +764,11 @@ export type Ctx = {
   cfg: Config
   /** board.variable-size: the board's geometry, bound to state.board. Pure functions of the board; the rules never see a WIDTH constant. */
   geo: Geometry
-  attacks: Readonly<Record<string, AttackDef>>
-  abilities: Readonly<Record<string, AbilityDef>>
+  /** THE ONE REGISTRY — refactor.one-action-type (2026-09-04): every attack, power and movement, by id. */
+  actions: Readonly<Record<string, ActionDef>>
   statuses: Readonly<Record<string, import('./status.js').StatusDef>>
   /** The Critical Injury Chart — ruled data from the pack (station.crit 2026-08-27). */
   critChart: readonly CritRow[]
-  moves: Readonly<Record<string, MoveDef>>
   /** The item registry — pack.items (2026-09-02). Read by nothing until seam.items-per-unit. */
   items: Readonly<Record<string, ItemDef>>
   /** The encounter being run, if any — plain data (encounter.runner, 2026-09-03). */

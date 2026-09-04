@@ -2,9 +2,10 @@
 // Registries are explicit arrays — never decorators, never import side-effects,
 // because load order would become a hidden global that shifts tie-breaks between runs.
 
-import type { AbilityDef, AttackDef, UnitDef } from '../core/types.js'
+import type { AbilityDef, ActionDef, AttackDef, UnitDef } from '../core/types.js'
 import { omitDisabled, stripDisabledTriggers } from './disable.js'
-import { packAbilities, packAttacks, packCritChart, packItems, packTestAbilities, packTestAttacks, packUnits, packClassPowers, packEnchanted, packEncounters, packLevels, packSpecialties } from './pack.js'
+import { liftAttacks, packAbilities, packAttacks, packCritChart, packItems, packTestAbilities, packTestAttacks, packUnits, packClassPowers, packEnchanted, packEncounters, packLevels, packSpecialties, type PackAttackRow } from './pack.js'
+import { MOVES } from './moves.js'
 
 // ─────────────────────────────────────────────────────────────────────────────
 // PROVISIONAL CONTENT — NOT PUBLISHED, NOT DESIGN
@@ -25,7 +26,7 @@ import { packAbilities, packAttacks, packCritChart, packItems, packTestAbilities
 // ─────────────────────────────────────────────────────────────────────────────
 
 
-const RAW_ATTACKS: Readonly<Record<string, AttackDef>> = {
+const RAW_ATTACK_ROWS: Readonly<Record<string, PackAttackRow>> = {
   // The six PROVISIONAL attacks (zombie bite, warrior axe and massive, ranger
   // bow, mage staff and strike — 2026-08-14, no published source) left this
   // file with test.fixture-migration (2026-09-02): they are test rows in
@@ -185,13 +186,16 @@ const RAW_UNITS: Readonly<Record<string, UnitDef>> = {
 // Generated attack rows (the authored enemies') join the hand-authored ones
 // through the same seam. Collisions are loud, same rule as units below.
 for (const k of Object.keys(packAttacks())) {
-  if (k in RAW_ATTACKS) throw new Error(`attack '${k}' exists in BOTH content/index.ts and the generated pack — one owner only`)
+  if (k in RAW_ATTACK_ROWS) throw new Error(`attack '${k}' exists in BOTH content/index.ts and the generated pack — one owner only`)
 }
 // The test receptacle's attacks join through the same seam (test.receptacle,
 // 2026-09-02); one owner per id, loudly.
 for (const k of Object.keys(packTestAttacks())) {
-  if (k in RAW_ATTACKS || k in packAttacks()) throw new Error(`attack '${k}' exists in the test receptacle AND elsewhere — one owner only`)
+  if (k in RAW_ATTACK_ROWS || k in packAttacks()) throw new Error(`attack '${k}' exists in the test receptacle AND elsewhere — one owner only`)
 }
+// refactor.one-action-type (2026-09-04): the hand-typed rows are lifted into
+// the one action type exactly as the pack's are.
+const RAW_ATTACKS: Readonly<Record<string, AttackDef>> = liftAttacks(RAW_ATTACK_ROWS)
 export const ATTACKS = omitDisabled({ ...RAW_ATTACKS, ...packAttacks(), ...packTestAttacks() })
 // The authored item powers join the hand-authored abilities through the same
 // seam — capability.item-powers (2026-08-27). One owner per id, loudly.
@@ -206,6 +210,13 @@ for (const k of Object.keys(packClassPowers())) {
   if (k in RAW_ABILITIES || k in packAbilities() || k in packTestAbilities()) throw new Error(`class power '${k}' exists elsewhere too — one owner only`)
 }
 export const ABILITIES = omitDisabled({ ...RAW_ABILITIES, ...packAbilities(), ...packTestAbilities(), ...packClassPowers() })
+// THE ONE REGISTRY — refactor.one-action-type (2026-09-04). Every attack,
+// power and movement, by id; ATTACKS, ABILITIES and MOVES above are the three
+// views a reader may still prefer. One owner per id, loudly — an id cannot be
+// both a weapon's attack and a class power.
+for (const k of Object.keys(ATTACKS)) if (k in ABILITIES || k in MOVES) throw new Error(`action '${k}' is an attack AND a power or movement — one owner only`)
+for (const k of Object.keys(ABILITIES)) if (k in MOVES) throw new Error(`action '${k}' is a power AND a movement — one owner only`)
+export const ACTIONS: Readonly<Record<string, ActionDef>> = { ...ATTACKS, ...ABILITIES, ...MOVES }
 // The Critical Injury Chart — ruled data (station.crit 2026-08-27). Not under
 // omitDisabled: rows carry keys, not ids; the kill seam for crits is the
 // critEnabled switch itself.

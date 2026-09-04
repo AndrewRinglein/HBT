@@ -1,3 +1,4 @@
+// refactor.one-action-type (2026-09-04), Law 10 reason: the row's SHAPE moved by ruling — attack fields read under `.attack`, reach is `range`, move fields under `.move`, the registries are one (`ctx.actions`) and the unit's lists are views (attackIdsOf/powerIdsOf). No assertion changed.
 // station.accuracy-field (2026-09-03) — AttackDef.accuracy at ACC.SITUATIONAL.
 //
 // Punch's −5 (ruled 2026-08-27) had no slot, and the converter named it as a
@@ -24,14 +25,14 @@ function golemBoard() {
 
 describe('the attack\'s own accuracy modifier', () => {
   it('Punch carries −5 on the row now — the converter no longer names it as a gap', () => {
-    expect(ATTACKS['attack.punch']!.accuracy).toBeLessThan(0)
+    expect(ATTACKS['attack.punch']!.attack.accuracy).toBeLessThan(0)
   })
 
   it('preview shows exactly the row\'s modifier less hit chance, with a SITUATIONAL ledger row', () => {
     const { ctx, g, z } = golemBoard()
-    const mod = ATTACKS['attack.test-ram.overhead']!.accuracy!
+    const mod = ATTACKS['attack.test-ram.overhead']!.attack.accuracy!
     expect(mod).not.toBe(0)
-    expect(ATTACKS['attack.test-ram.slam']!.accuracy).toBeUndefined()   // the control: same body, no modifier
+    expect(ATTACKS['attack.test-ram.slam']!.attack.accuracy).toBeUndefined()   // the control: same body, no modifier
     const withMod = preview(ctx, g.id, z.id, 'attack.test-ram.overhead')
     const without = preview(ctx, g.id, z.id, 'attack.test-ram.slam')
     expect(withMod.accuracy - without.accuracy).toBe(mod)
@@ -60,6 +61,6 @@ describe('the attack\'s own accuracy modifier', () => {
     h.stamina = 99
     const punch = preview(ctx, h.id, z.id, 'attack.punch')
     const row = punch.accLedger.find((r) => r.station === ACC.SITUATIONAL)
-    expect(row?.delta).toBe(ATTACKS['attack.punch']!.accuracy)
+    expect(row?.delta).toBe(ATTACKS['attack.punch']!.attack.accuracy)
   })
 })

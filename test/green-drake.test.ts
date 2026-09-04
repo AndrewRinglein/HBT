@@ -1,3 +1,4 @@
+// refactor.one-action-type (2026-09-04), Law 10 reason: the row's SHAPE moved by ruling — attack fields read under `.attack`, reach is `range`, move fields under `.move`, the registries are one (`ctx.actions`) and the unit's lists are views (attackIdsOf/powerIdsOf). No assertion changed.
 // The Green Drake — a PLAYER BEAST, redesigned by Angela 2026-08-20 and
 // recorded in the Codex SOURCE (settled.json hero ruling → §10 hero table +
 // §5 Drake's Maw): Health 12, Armor 2, Resist 1, Strength 4, Precision 3,
@@ -27,9 +28,9 @@ describe('the block — her dictation, verbatim', () => {
   })
   it('the two attacks — Poison Breath and the disambiguated bite, Snap', () => {
     const b = ATTACKS['attack.drake.poison-breath']!
-    expect([b.kind, b.stat, b.bonus, b.damageType, b.staminaCost]).toEqual(['ranged', 'precision', 0, 'magic', 2])
+    expect([b.attack.kind, b.attack.stat, b.attack.bonus, b.attack.damageType, b.staminaCost]).toEqual(['ranged', 'precision', 0, 'magic', 2])
     const s = ATTACKS['attack.drake.snap']!
-    expect([s.kind, s.stat, s.bonus, s.damageType, s.staminaCost]).toEqual(['melee', 'strength', 0, 'physical', 1])
+    expect([s.attack.kind, s.attack.stat, s.attack.bonus, s.attack.damageType, s.staminaCost]).toEqual(['melee', 'strength', 0, 'physical', 1])
   })
 })
 

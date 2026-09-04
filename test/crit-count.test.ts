@@ -1,3 +1,4 @@
+// refactor.one-action-type (2026-09-04), Law 10 reason: the row's SHAPE moved by ruling — attack fields read under `.attack`, reach is `range`, move fields under `.move`, the registries are one (`ctx.actions`) and the unit's lists are views (attackIdsOf/powerIdsOf). No assertion changed.
 // Multiple criticals — station.crit-count (2026-08-27).
 //
 // Ruled: "there is also an ability to have more than one critical happen at
@@ -8,7 +9,7 @@
 // Consumers are declared test scaffolding: the golem's Slam (2) and
 // Overhead (3), live in showcase.arc-variant.
 import { describe, expect, it } from 'vitest'
-import { performAttack, preview, resolveDamage } from '../src/core/pipeline.js'
+import { performAttack, preview, resolveDamage, damageSourceOfAttack } from '../src/core/pipeline.js'
 import { ATTACKS, UNITS } from '../src/content/index.js'
 import { scenarioDef, scenarioOptions } from '../src/content/scenarios.js'
 import { createBattle } from '../src/core/setup.js'
@@ -27,9 +28,9 @@ const rig = () => createBattle({
 
 describe('the rows carry their counts', () => {
   it('slam says two, overhead says three, everything else says nothing (= one)', () => {
-    expect(ATTACKS['attack.test-ram.slam']!.critCount).toBe(2)
-    expect(ATTACKS['attack.test-ram.overhead']!.critCount).toBe(3)
-    expect(ATTACKS['attack.halberd.hack']!.critCount).toBeUndefined()
+    expect(ATTACKS['attack.test-ram.slam']!.attack.critCount).toBe(2)
+    expect(ATTACKS['attack.test-ram.overhead']!.attack.critCount).toBe(3)
+    expect(ATTACKS['attack.halberd.hack']!.attack.critCount).toBeUndefined()
     expect(UNITS['test-arc-golem']!.attacks).toContain('attack.test-ram.slam')
   })
 })
@@ -51,7 +52,7 @@ describe('one critting hit, N criticals', () => {
     const tails = branches.length - heads
     // The hit's ledger CRIT delta matches the heads count: ×(2+heads)/2.
     const hit = ctx.events.find((e) => e.type === 'attack.hit')!
-    const expected = resolveDamage(ctx, golem, z, ATTACKS['attack.test-ram.slam']!, heads).value
+    const expected = resolveDamage(ctx, golem, z, damageSourceOfAttack(ATTACKS['attack.test-ram.slam']!), heads).value
     expect(r.damage).toBe(Math.min(expected, z.maxHp))
     if (heads > 0) {
       expect((hit['ledger'] as { station: string }[]).some((l) => l.station === 'CRIT')).toBe(true)
@@ -66,16 +67,16 @@ describe('one critting hit, N criticals', () => {
     const ctx = rig()
     const golem = ctx.state.units.find((u) => u.typeId === 'test-arc-golem')!
     const z = ctx.state.units.find((u) => u.typeId === 'test-zombie')!
-    const base = resolveDamage(ctx, golem, z, ATTACKS['attack.test-ram.slam']!, 0).value
-    const one = resolveDamage(ctx, golem, z, ATTACKS['attack.test-ram.slam']!, 1).value
-    const two = resolveDamage(ctx, golem, z, ATTACKS['attack.test-ram.slam']!, 2).value
+    const base = resolveDamage(ctx, golem, z, damageSourceOfAttack(ATTACKS['attack.test-ram.slam']!), 0).value
+    const one = resolveDamage(ctx, golem, z, damageSourceOfAttack(ATTACKS['attack.test-ram.slam']!), 1).value
+    const two = resolveDamage(ctx, golem, z, damageSourceOfAttack(ATTACKS['attack.test-ram.slam']!), 2).value
     // bonus 2 + str 5 = 7 pre-mitigation vs armor 0: 7 / 10 / 14
     // (x1.5 truncates: 10.5 -> 10 — Law 7's one rounding rule)
     expect(base).toBe(7)
     expect(one).toBe(10)
     expect(two).toBe(14)
     // `true` still means exactly one heads — the whole old surface unchanged
-    expect(resolveDamage(ctx, golem, z, ATTACKS['attack.test-ram.slam']!, true).value).toBe(one)
+    expect(resolveDamage(ctx, golem, z, damageSourceOfAttack(ATTACKS['attack.test-ram.slam']!), true).value).toBe(one)
     expect(preview(ctx, golem.id, z.id, 'attack.test-ram.slam').damageOnCrit).toBe(one)
   })
 
@@ -96,7 +97,11 @@ describe('live — both counts fire in the verify scenario', () => {
     // the Slam carries cooldown 2 now, so the golem swings half as often and
     // the first multi-critical moved from seed <6 to seed 16. Same claim
     // (multi-criticals resolve in real battles); early exit once all seen.
-    for (let r = 0; r < 24 && !(sawSlam && sawOverhead && sawMulti); r++) {
+    // Widened 24 -> 64 on 2026-09-04 (refactor.one-action-type): the Slam's
+    // cooldown 2 now means "skip 2 Turns" (2-ACTIONS-SETTLED.md:71) instead of
+    // one Turn short, so the golem slams a third less often and the first
+    // multi-critical moved to seed 55. Same claim; early exit once all seen.
+    for (let r = 0; r < 64 && !(sawSlam && sawOverhead && sawMulti); r++) {
       const ctx = createBattle({ ...scenarioOptions(scenarioDef('showcase.arc-variant')), replicate: r })
       runBattle(ctx)
       for (const e of ctx.events) {

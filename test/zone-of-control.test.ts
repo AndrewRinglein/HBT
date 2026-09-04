@@ -1,3 +1,4 @@
+// refactor.one-action-type (2026-09-04), Law 10 reason: the row's SHAPE moved by ruling — attack fields read under `.attack`, reach is `range`, move fields under `.move`, the registries are one (`ctx.actions`) and the unit's lists are views (attackIdsOf/powerIdsOf). No assertion changed.
 // movement.zone-of-control + movement.attack-of-opportunity (2026-09-03).
 //
 // GAME-DESIGN §4, Angela 2026-08-13: a standing unit exerts ZoC on its six
@@ -22,7 +23,7 @@ describe('zone of control', () => {
     expect(zocHoldersAt(ctx, w, hexId(4, 5)).map((u) => u.id)).toEqual([z.id])
     beginActivation(ctx, w.id, 'test')
     const walk = movePowerOf(ctx, w, 'path')!
-    const reach = reachable(ctx, w, walk.budgetMod)
+    const reach = reachable(ctx, w, walk.move.budgetMod)
     const path = pathTo(reach, w.hex, hexId(6, 5))
     expect(path.at(-1)).toBe(hexId(6, 5))
     executeMove(ctx, w.id, path, walk)
@@ -46,7 +47,7 @@ describe('zone of control', () => {
     const w = ctx.state.units[0]!
     beginActivation(ctx, w.id, 'test')
     const walk = movePowerOf(ctx, w, 'path')!
-    executeMove(ctx, w.id, pathTo(reachable(ctx, w, walk.budgetMod), w.hex, hexId(6, 5)), walk)
+    executeMove(ctx, w.id, pathTo(reachable(ctx, w, walk.move.budgetMod), w.hex, hexId(6, 5)), walk)
     expect(w.hex).toBe(hexId(6, 5))
     expect(ctx.events.some((e) => e.type === 'move.stopped')).toBe(false)
   })
@@ -60,7 +61,7 @@ describe('attack of opportunity', () => {
     const hpBefore = w.hp
     beginActivation(ctx, w.id, 'test')
     const walk = movePowerOf(ctx, w, 'path')!
-    executeMove(ctx, w.id, pathTo(reachable(ctx, w, walk.budgetMod), w.hex, hexId(5, 2)), walk)
+    executeMove(ctx, w.id, pathTo(reachable(ctx, w, walk.move.budgetMod), w.hex, hexId(5, 2)), walk)
     const aoo = ctx.events.filter((e) => e.type === 'aoo.provoked')
     expect(aoo.length).toBe(1)
     expect(aoo[0]!.causeId).toBe('movement.aoo')

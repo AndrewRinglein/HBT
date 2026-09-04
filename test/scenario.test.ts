@@ -103,17 +103,21 @@ describe('fielding a scenario', () => {
     }
   })
 
-  it('the puppy can move and cannot attack — the gap its block will close', () => {
-    // NOT a passing grade, a recorded one. maxStamina 0 came in with the ported
-    // enemy block and attack.fangs.bite costs 1 Stamina, so hero-side it can
-    // never swing. Asserted so that when her dictated block lands, this test
-    // fails and names the reason instead of the behaviour changing silently.
+  it('the puppy moves and bites — a unit without a stamina pool pays no stamina, for an attack as for a move', () => {
+    // WAS a recorded gap (2026-08-21): maxStamina 0 came in with the ported enemy
+    // block and attack.fangs.bite costs 1 Stamina, so hero-side it could never
+    // swing — while its MOVES cost it nothing, because the movement path already
+    // read "no pool = pays none". LAW 10 — 2026-09-04 (refactor.one-action-type):
+    // the limits are ONE rule on every action (action.ts staminaCostOf), so the
+    // bite is free the way the walk was. The block is still undictated
+    // (maxStamina stays 0); this test still fails the day that changes.
     const ctx = createBattle(scenarioOptions(scenarioDef(BEASTS)))
     runBattle(ctx)
     const pup = ctx.state.units.find((u) => u.typeId === 'shadow-hound-puppy')!
     expect(pup.maxStamina, 'block dictated? update this test and DECISIONS.md').toBe(0)
     const swings = ctx.events.filter((e) => e.type === 'attack.declared' && e.actor === pup.id)
-    expect(swings.length, 'the puppy attacked — its block must have changed').toBe(0)
+    expect(swings.length, 'the puppy bites now').toBeGreaterThan(0)
+    expect(ctx.events.some((e) => e.type === 'stamina.spent' && e.actor === pup.id), 'and pays nothing — it has no pool').toBe(false)
     expect(ctx.events.some((e) => e.type === 'moved' && e.actor === pup.id), 'it should still move').toBe(true)
   })
 

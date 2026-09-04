@@ -1,3 +1,4 @@
+// refactor.one-action-type (2026-09-04), Law 10 reason: the row's SHAPE moved by ruling — attack fields read under `.attack`, reach is `range`, move fields under `.move`, the registries are one (`ctx.actions`) and the unit's lists are views (attackIdsOf/powerIdsOf). No assertion changed.
 // The class bonus moves — movement.bonus-actions (2026-08-25).
 //
 // The S17 half-step split gave three cohort classes powers MoveDef could not
@@ -18,9 +19,9 @@ import { hexId } from './board16.js'
 
 describe('the rows are the Codex rows — data, not code', () => {
   it('Leap / Focus / Devotion carry their published shapes', () => {
-    expect(MOVES['power.leap']).toMatchObject({ shape: 'sidestep', stepRange: 2, staminaCost: 2, cooldown: 0 })
-    expect(MOVES['power.focus']).toMatchObject({ shape: 'sidestep', stepRange: 0, staminaCost: 0, cooldown: 0 })
-    expect(MOVES['power.devotion']).toMatchObject({ shape: 'sidestep', stepRange: 0, staminaCost: 0, cooldown: 0 })
+    expect(MOVES['power.leap']).toMatchObject({ staminaCost: 2, cooldown: 0, move: { shape: 'sidestep', stepRange: 2 } })
+    expect(MOVES['power.focus']).toMatchObject({ staminaCost: 0, cooldown: 0, move: { shape: 'sidestep', stepRange: 0 } })
+    expect(MOVES['power.devotion']).toMatchObject({ staminaCost: 0, cooldown: 0, move: { shape: 'sidestep', stepRange: 0 } })
     expect(stepRangeOf(MOVES['power.sidestep']!)).toBe(1) // absent = the classic half-step
   })
 })

@@ -17,8 +17,10 @@
 //               Armor, and lose 5 Dodge for the rest of the Battle. Every use
 //               costs another 5 Dodge")
 
-import type { AbilityDef, AbilityEffect, Ctx, Unit } from './types.js'
-import { addStatMod, applyDamage, applyHealing, corpsesNear, emit, gainMaxHp, gainStamina, loseMaxHp, markPrimaryUsed, removeCorpse, removeStatus, reduceStatus, spendStamina, unit } from './mutate.js'
+import type { AbilityDef, ActionEffect, Ctx, Unit } from './types.js'
+import { addStatMod, applyDamage, applyHealing, corpsesNear, emit, gainMaxHp, gainStamina, loseMaxHp, loseMaxStamina, removeCorpse, removeStatus, reduceStatus, unit } from './mutate.js'
+import { actionReady, isPower, spendAction } from './action.js'
+export { readyOn, isReady } from './action.js'
 import { resolveTargets, hasAnyTarget } from './target.js'
 import { executeKnockback } from './movement.js'
 import { areaHexesOf, resolveDamage } from './pipeline.js'
@@ -29,8 +31,9 @@ import { effective } from './stats.js'
 import { canSee } from './vision.js'
 
 export function abilityDef(ctx: Ctx, id: string): AbilityDef {
-  const a = ctx.abilities[id]
+  const a = ctx.actions[id]
   if (!a) throw new Error(`unknown ability '${id}' — abilities are an explicit registry, check content/index.ts`)
+  if (!isPower(a)) throw new Error(`'${id}' is not a power — it carries an attack or movement profile`)
   return a
 }
 
@@ -47,22 +50,12 @@ function damageSourceOf(a: AbilityDef): DamageSource {
   return { id: a.id, stat: a.stat, bonus: a.bonus, damageType: a.damageType }
 }
 
-/** Turn on which this ability becomes usable again. Absent = ready. */
-export function readyOn(u: Unit, id: string): number {
-  return u.cooldowns[id] ?? 0
-}
-
-export function isReady(ctx: Ctx, u: Unit, id: string): boolean {
-  return ctx.state.turn >= readyOn(u, id)
-}
-
 /** The one legality answer for powers (Law 2). Target side depends on the effect kind. */
 export function canUsePower(ctx: Ctx, userId: number, targetId: number, abilityId: string): boolean {
   const u = unit(ctx, userId)
   const tg = unit(ctx, targetId)
-  const a = ctx.abilities[abilityId]
-  if (!a) return false
-  if (!u.abilities.includes(abilityId)) return false
+  const a = ctx.actions[abilityId]
+  if (!a || !isPower(a)) return false
   if (u.lifeState !== 'standing' || tg.lifeState !== 'standing') return false
   // Dazed — station.crit (2026-08-27): "loses access to class powers".
   // A status FLAG, not a hardcoded name: any status declaring locksPowers.
@@ -71,8 +64,8 @@ export function canUsePower(ctx: Ctx, userId: number, targetId: number, abilityI
   }
   // capability.vision: an enemy you cannot see is not a target
   if (tg.side !== u.side && !ctx.cfg.switches.targetUnseen && !canSee(ctx, u, tg)) return false
-  // capability.charges: no uses left, no power (it has already left the list; belt and braces)
-  if (a.uses && (u.usesLeft[abilityId] ?? 0) <= 0) return false
+  // refactor.one-action-type: THE ONE LIMITS CHECK — granted, stamina, cooldown/warmup, uses
+  if (!actionReady(ctx, u, a)) return false
   if (a.effects) {
     // capability.corpses: a power that eats needs a body in reach — legality, not a fizzle
     for (const e of a.effects) if (e.kind === 'corpse.eat' && corpsesNear(ctx, u.hex, e.radius).length === 0) return false
@@ -93,8 +86,6 @@ export function canUsePower(ctx: Ctx, userId: number, targetId: number, abilityI
       if (resolveTargets(ctx, u, t, aim).length === 0) return false
     }
     if (!a.free && u.primaryUsed) return false
-    if (u.stamina < a.staminaCost) return false
-    if (!isReady(ctx, u, abilityId)) return false
     return (t.select === 'self' || (t.select === 'area' && (t.origin ?? 'self') === 'self')) ? true : ctx.geo.distance(u.hex, tg.hex) <= a.range
   }
   switch (effectOf(a)) {
@@ -111,9 +102,7 @@ export function canUsePower(ctx: Ctx, userId: number, targetId: number, abilityI
       if (targetId !== userId) return false
       break
   }
-  if (u.primaryUsed) return false
-  if (u.stamina < a.staminaCost) return false
-  if (!isReady(ctx, u, abilityId)) return false
+  if (!a.free && u.primaryUsed) return false
   return ctx.geo.distance(u.hex, tg.hex) <= a.range
 }
 
@@ -196,18 +185,13 @@ export function usePower(ctx: Ctx, userId: number, targetId: number, abilityId: 
     throw new Error(`illegal power: ${u.name} -> ${tg.name} with ${abilityId}`)
   }
 
-  spendStamina(ctx, userId, a.staminaCost, a.id)
-  if (!a.free) markPrimaryUsed(ctx, userId)
+  // refactor.one-action-type: THE ONE SPEND — stamina, the primary (unless free), the cooldown, a use.
+  // Before this the cooldown was written after the effects and one Turn short (see action.ts).
+  spendAction(ctx, userId, a, 'primary')
 
   let total = 0
   if (a.effects) {
     total = performEffects(ctx, userId, targetId, a)
-    if (a.cooldown) {
-      const readyAgain = ctx.state.turn + a.cooldown
-      u.cooldowns[abilityId] = readyAgain
-      emit(ctx, 'cooldown.set', a.id, { actor: userId, abilityId, readyOnTurn: readyAgain })
-    }
-    if (a.uses) spendUse(ctx, userId, abilityId)
     return { damage: total }
   }
   switch (effectOf(a)) {
@@ -285,9 +269,6 @@ export function usePower(ctx: Ctx, userId: number, targetId: number, abilityId: 
     }
   }
 
-  const readyAgain = ctx.state.turn + a.cooldown
-  u.cooldowns[abilityId] = readyAgain
-  emit(ctx, 'cooldown.set', a.id, { actor: userId, abilityId, readyOnTurn: readyAgain })
   return { damage: total }
 }
 
@@ -323,14 +304,16 @@ function performEffects(ctx: Ctx, userId: number, targetId: number, a: AbilityDe
   })
   let total = 0
   for (const e of a.effects!) {
-    const onSelf = e.kind === 'selfDamage' || (e.kind === 'statMod' && e.who === 'self')
+    const onSelf = e.kind === 'selfDamage' || (e.kind === 'statMod' && 'who' in e && e.who === 'self')
+      // the movement riders (gainStamina, loseMaxStamina) are the mover's own — on a power they are the user's too
+      || e.kind === 'gainStamina' || e.kind === 'loseMaxStamina'
     const ids = onSelf ? [userId] : targets
     for (const id of ids) total += applyOne(ctx, userId, id, a, e)
   }
   return total
 }
 
-function applyOne(ctx: Ctx, userId: number, id: number, a: AbilityDef, e: AbilityEffect): number {
+function applyOne(ctx: Ctx, userId: number, id: number, a: AbilityDef, e: ActionEffect): number {
   const u = unit(ctx, userId)
   const tg = unit(ctx, id)
   if (tg.lifeState !== 'standing') return 0
@@ -382,6 +365,9 @@ function applyOne(ctx: Ctx, userId: number, id: number, a: AbilityDef, e: Abilit
       gainStamina(ctx, id, e.value, a.id)
       return 0
     }
+    // the movement riders, reachable from any action now (ONE ACTION TYPE, 2026-09-04)
+    case 'gainStamina': { gainStamina(ctx, id, e.value, a.id); return 0 }
+    case 'loseMaxStamina': { loseMaxStamina(ctx, id, e.value, a.id); return 0 }
     case 'knockback': {
       const v = valueOf(ctx, u, e.value)
       if (v > 0) executeKnockback(ctx, userId, id, v, a.id)
@@ -401,20 +387,3 @@ function applyOne(ctx: Ctx, userId: number, id: number, a: AbilityDef, e: Abilit
   }
 }
 
-/**
- * capability.charges (2026-09-03): a use is spent; at zero the power leaves
- * the unit's list for the rest of the Battle — "they should vanish from the
- * list of things available to a hero in the powers list, because there's no
- * cooldown" (Andrew 2026-09-02). The spend is remembered for the BattleResult.
- */
-function spendUse(ctx: Ctx, userId: number, abilityId: string): void {
-  const u = unit(ctx, userId)
-  const left = (u.usesLeft[abilityId] ?? 0) - 1
-  u.usesLeft[abilityId] = left
-  u.usesSpentThisBattle = { ...(u.usesSpentThisBattle ?? {}), [abilityId]: (u.usesSpentThisBattle?.[abilityId] ?? 0) + 1 }
-  emit(ctx, 'charge.spent', abilityId, { actor: userId, abilityId, left })
-  if (left <= 0) {
-    u.abilities = u.abilities.filter((id) => id !== abilityId)
-    emit(ctx, 'power.exhausted', abilityId, { actor: userId, abilityId })
-  }
-}

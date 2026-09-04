@@ -2,16 +2,16 @@ import { geometryOf } from './hex.js'
 import { makeRng, rootSeedOf, sample } from './rng.js'
 import type { Ctx, EncounterDef, HeroProgress, Side, State, Unit, UnitDef, Config } from './types.js'
 import { DEFAULT_CONFIG } from './types.js'
-import { ATTACKS, ABILITIES, CRIT_CHART, ITEMS, LEVELS, SPECIALTIES, UNITS, FIRST_BATTLE } from '../content/index.js'
+import { ACTIONS, ATTACKS, ABILITIES, CRIT_CHART, ITEMS, LEVELS, SPECIALTIES, UNITS, FIRST_BATTLE } from '../content/index.js'
 import { applyItems, applyProgress, type Applied, FOLDABLE } from './items.js'
 import { boardOf, deployOf, terrainOf, terrainIdOf, isPassable } from '../content/maps.js'
 import { STATUSES } from '../content/statuses.js'
-import { MOVES } from '../content/moves.js'
 import { triggersFrom } from './trigger.js'
 import { emit, gainPower } from './mutate.js'
 import { arrive, heroDeployHexes, placeSetup } from './encounter.js'
 
 export function makeUnit(id: number, uid: number, name: string, def: UnitDef, hex: number): Unit {
+  const actions = [...def.attacks, ...def.abilities, ...def.moves]
   return {
     id, uid, name, typeId: def.typeId, side: def.side, hex,
     hp: def.maxHp, maxHp: def.maxHp,
@@ -27,18 +27,14 @@ export function makeUnit(id: number, uid: number, name: string, def: UnitDef, he
     vision: def.vision ?? 0,
     auras: (def.auras ?? []).map((a) => ({ ...a })),
     summoned: false,
-    usesLeft: Object.fromEntries(def.abilities.flatMap((a) => { const n = ABILITIES[a]?.uses; return n ? [[a, n]] : [] })),
+    // refactor.one-action-type (2026-09-04): ONE list — attacks, powers,
+    // movements in the row's order — and the limits seeded from the ONE
+    // registry for every kind alike: uses, and warmup (a warmup W is first
+    // usable on Turn W+1 — isReady is `turn >= cooldowns[id]`).
+    usesLeft: Object.fromEntries(actions.flatMap((a) => { const n = ACTIONS[a]?.uses; return n ? [[a, n]] : [] })),
     ai: def.ai,
-    attacks: [...def.attacks],
-    abilities: [...def.abilities],
-    moves: [...def.moves],
-    // warmup (hero assembly, 2026-09-03): a power with warmup W is first
-    // usable on Turn W+1 — isReady is `turn >= cooldowns[id]`.
-    cooldowns: Object.fromEntries([
-      ...def.abilities.flatMap((a) => { const w = ABILITIES[a]?.warmup; return w ? [[a, w + 1]] : [] }),
-      // capability.enemy-action-cooldown: an attack's warmup, the same way
-      ...def.attacks.flatMap((a) => { const w = ATTACKS[a]?.warmup; return w ? [[a, w + 1]] : [] }),
-    ]),
+    actions,
+    cooldowns: Object.fromEntries(actions.flatMap((a) => { const w = ACTIONS[a]?.warmup; return w ? [[a, w + 1]] : [] })),
     statuses: [],
     mods: [],
     triggers: triggersFrom(def.triggers ?? []),
@@ -156,7 +152,7 @@ export function createBattle(opts: BattleOptions): Ctx {
   const mapId = opts.mapId ?? opts.encounter?.mapId ?? 'map.open'
   const board = boardOf(mapId)
   const state: State = { turn: 0, phase: 'hero', mapId, board, terrain: terrainOf(mapId), units: [], outcome: null, seq: 0 }
-  const ctx: Ctx = { state, geo: geometryOf(board), events: [], rng, cfg, attacks: ATTACKS, abilities: ABILITIES, statuses: STATUSES, moves: MOVES, critChart: CRIT_CHART, items: ITEMS,
+  const ctx: Ctx = { state, geo: geometryOf(board), events: [], rng, cfg, actions: ACTIONS, statuses: STATUSES, critChart: CRIT_CHART, items: ITEMS,
     units: UNITS, arrive: (c, d, hex, cause) => arrive(c, d, hex, cause, {}),
     ...(opts.encounter ? { encounter: opts.encounter } : {}) }
 
@@ -378,7 +374,7 @@ export function createCustomBattle(
   const mapId = opts.mapId ?? 'map.open'
   const board = boardOf(mapId)
   const state: State = { turn: 0, phase: 'hero', mapId, board, terrain: terrainOf(mapId), units: [], outcome: null, seq: 0 }
-  const ctx: Ctx = { state, geo: geometryOf(board), events: [], rng, cfg, attacks: ATTACKS, abilities: ABILITIES, statuses: STATUSES, moves: MOVES, critChart: CRIT_CHART, items: ITEMS,
+  const ctx: Ctx = { state, geo: geometryOf(board), events: [], rng, cfg, actions: ACTIONS, statuses: STATUSES, critChart: CRIT_CHART, items: ITEMS,
     units: UNITS, arrive: (c, d, hex, cause) => arrive(c, d, hex, cause, {}) }
   let id = 0
   // Custom battles field the row's default kit too (seam.items-per-unit) —

@@ -7739,3 +7739,1166 @@ index 6618410..7faceba 100644
 </details>
 
 IRON GAUNTLET: NOT PASSED — 2 FLAG(S) WARNED
+
+## refactor.one-action-type — LANDED `26fa562` **NEEDS REVIEW**
+2026-09-04 20:18
+
+  PASS  dependencies landed
+  WARN  not already decided — 3 candidate ruling(s) — READ BEFORE ASKING: ../STATE.md:20 · ../STATE.md:21
+  PASS  typecheck
+  PASS  full test suite
+  PASS  gate 1 — the id appears in a real battle — attack.test-ram.once: 4 log lines, 4 fired, 3 changed state · power.test-second-wind: 7 log lines, 7 fired, 4 changed state
+  PASS  brought its own tests — test/ability-effects.test.ts, test/accuracy-field.test.ts, test/additions.test.ts, test/alpha-team.test.ts, test/attack-choice.test.ts, test/attack-cooldown.test.ts, test/attack-of-opportunity.test.ts, test/audit.test.ts, test/charges.test.ts, test/civilians.test.ts, test/crit-count.test.ts, test/crit.test.ts, test/damage.test.ts, test/enemy-ai-role.test.ts, test/enemy-pack.test.ts, test/field-eve-24.test.ts, test/fixture-migration.test.ts, test/flight.test.ts, test/frost-root-taunt.test.ts, test/green-drake.test.ts, test/ground-layers.test.ts, test/ground-shape.test.ts, test/hero-pack.test.ts, test/integration.test.ts, test/item-powers.test.ts, test/items-per-unit.test.ts, test/movement-bonus.test.ts, test/movement-powers.test.ts, test/multihit.test.ts, test/one-damage-function.test.ts, test/pack-moves.test.ts, test/power-pool.test.ts, test/protection.test.ts, test/rulings-2026-08-15.test.ts, test/scenario.test.ts, test/spirit-snake.test.ts, test/status.test.ts, test/vision.test.ts, test/zombie-rot.test.ts, test/zone-of-control.test.ts, test/one-action-type.test.ts
+  WARN  existing tests untouched — DELETED LINES in test/ability-effects.test.ts (-2), test/accuracy-field.test.ts (-4), test/additions.test.ts (-10), test/alpha-team.test.ts (-7), test/attack-choice.test.ts (-2), test/attack-cooldown.test.ts (-7), test/attack-of-opportunity.test.ts (-1), test/audit.test.ts (-11), test/charges.test.ts (-3), test/civilians.test.ts (-5), test/crit-count.test.ts (-10), test/crit.test.ts (-2), test/damage.test.ts (-12), test/enemy-ai-role.test.ts (-4), test/enemy-pack.test.ts (-6), test/field-eve-24.test.ts (-1), test/fixture-migration.test.ts (-3), test/flight.test.ts (-3), test/frost-root-taunt.test.ts (-1), test/green-drake.test.ts (-2), test/ground-layers.test.ts (-1), test/ground-shape.test.ts (-1), test/hero-pack.test.ts (-2), test/integration.test.ts (-2), test/item-powers.test.ts (-1), test/items-per-unit.test.ts (-4), test/movement-bonus.test.ts (-3), test/movement-powers.test.ts (-3), test/multihit.test.ts (-1), test/one-damage-function.test.ts (-2), test/pack-moves.test.ts (-8), test/power-pool.test.ts (-5), test/protection.test.ts (-1), test/rulings-2026-08-15.test.ts (-3), test/scenario.test.ts (-6), test/spirit-snake.test.ts (-2), test/status.test.ts (-1), test/vision.test.ts (-1), test/zombie-rot.test.ts (-1), test/zone-of-control.test.ts (-3) — will land FLAGGED for review
+  PASS  control battles unchanged — will re-bless at commit — this item DECLARED it changes the control battles: map.open 601c4a1f->89a828a1, map.ridge 7d8b3a93->faebbd8c, map.flanks facda47b->0592b923, map.highlands d612e6e2->53ecc0eb, map.field cc921e60->a4119228, map.thicket 9f5c9d08->c2875a5b, test.map.embers f697389c->7acb53d6, test.map.showcase 300ce7c8->148c5a53, test.map.duel-8 47abcfef->768dc5af, test.map.dungeon-16x8 ccfa93cc->32ac2624, test.map.horde-24 a8bfd1b9->74d9da2d
+  PASS  content has a published source — 22 ids without a published source (12 awaiting publication from earlier items — see audit)
+  PASS  hardcode scan — core knows mechanisms, never names
+  PASS  generalizes — the second instance costs zero engine code — attack.test-ram.once live · power.test-second-wind live
+  PASS  naming — new content ids use declared kinds
+  WARN  naming — no banned words invented — 'buff/debuff' — say status — will land FLAGGED
+  PASS  kill switch — the tests fail without the content — tests fail without attack.test-ram.once,power.test-second-wind — they genuinely test it
+
+<details><summary>Existing tests were edited — review this diff</summary>
+
+```diff
+diff --git a/test/ability-effects.test.ts b/test/ability-effects.test.ts
+index 4ea3cee..37b5608 100644
+--- a/test/ability-effects.test.ts
++++ b/test/ability-effects.test.ts
+@@ -1,2 +1,3 @@
++// refactor.one-action-type (2026-09-04), Law 10 reason: the row's SHAPE moved by ruling — attack fields read under `.attack`, reach is `range`, move fields under `.move`, the registries are one (`ctx.actions`) and the unit's lists are views (attackIdsOf/powerIdsOf). No assertion changed.
+ // ability.effects (2026-09-03) — powers speak the trigger vocabulary and more.
+ //
+@@ -30,5 +31,5 @@ function board(powers: string[]) {
+   )
+   const w = ctx.state.units[0]!, m = ctx.state.units[1]!
+-  w.abilities.push(...powers); w.stamina = 99
++  w.actions.push(...powers); w.stamina = 99
+   return { ctx, w, m, z: ctx.state.units[2]! }
+ }
+@@ -82,5 +83,5 @@ describe('the effect vocabulary, one row each', () => {
+     expect(f.warmup).toBeGreaterThan(0)
+     const ctx2 = createBattle({ ...scenarioOptions(scenarioDef('showcase.assembled-party')) })
+-    const mage = ctx2.state.units.find((u) => u.abilities.includes(FIREBALL))!
++    const mage = ctx2.state.units.find((u) => u.actions.includes(FIREBALL))!
+     expect(mage.cooldowns[FIREBALL]).toBe(f.warmup! + 1)
+   })
+diff --git a/test/accuracy-field.test.ts b/test/accuracy-field.test.ts
+index 55ad357..88b3d0f 100644
+--- a/test/accuracy-field.test.ts
++++ b/test/accuracy-field.test.ts
+@@ -1,2 +1,3 @@
++// refactor.one-action-type (2026-09-04), Law 10 reason: the row's SHAPE moved by ruling — attack fields read under `.attack`, reach is `range`, move fields under `.move`, the registries are one (`ctx.actions`) and the unit's lists are views (attackIdsOf/powerIdsOf). No assertion changed.
+ // station.accuracy-field (2026-09-03) — AttackDef.accuracy at ACC.SITUATIONAL.
+ //
+@@ -25,12 +26,12 @@ function golemBoard() {
+ describe('the attack\'s own accuracy modifier', () => {
+   it('Punch carries −5 on the row now — the converter no longer names it as a gap', () => {
+-    expect(ATTACKS['attack.punch']!.accuracy).toBeLessThan(0)
++    expect(ATTACKS['attack.punch']!.attack.accuracy).toBeLessThan(0)
+   })
+ 
+   it('preview shows exactly the row\'s modifier less hit chance, with a SITUATIONAL ledger row', () => {
+     const { ctx, g, z } = golemBoard()
+-    const mod = ATTACKS['attack.test-ram.overhead']!.accuracy!
++    const mod = ATTACKS['attack.test-ram.overhead']!.attack.accuracy!
+     expect(mod).not.toBe(0)
+-    expect(ATTACKS['attack.test-ram.slam']!.accuracy).toBeUndefined()   // the control: same body, no modifier
++    expect(ATTACKS['attack.test-ram.slam']!.attack.accuracy).toBeUndefined()   // the control: same body, no modifier
+     const withMod = preview(ctx, g.id, z.id, 'attack.test-ram.overhead')
+     const without = preview(ctx, g.id, z.id, 'attack.test-ram.slam')
+@@ -61,5 +62,5 @@ describe('the attack\'s own accuracy modifier', () => {
+     const punch = preview(ctx, h.id, z.id, 'attack.punch')
+     const row = punch.accLedger.find((r) => r.station === ACC.SITUATIONAL)
+-    expect(row?.delta).toBe(ATTACKS['attack.punch']!.accuracy)
++    expect(row?.delta).toBe(ATTACKS['attack.punch']!.attack.accuracy)
+   })
+ })
+diff --git a/test/additions.test.ts b/test/additions.test.ts
+index 516fae7..2b246e4 100644
+--- a/test/additions.test.ts
++++ b/test/additions.test.ts
+@@ -1,6 +1,7 @@
++// refactor.one-action-type (2026-09-04), Law 10 reason: the row's SHAPE moved by ruling — attack fields read under `.attack`, reach is `range`, move fields under `.move`, the registries are one (`ctx.actions`) and the unit's lists are views (attackIdsOf/powerIdsOf). No assertion changed.
+ import { describe, it, expect } from 'vitest'
+ import { createBattle, createCustomBattle, fieldedDef } from '../src/core/setup.js'
+ import { runBattle } from '../src/core/battle.js'
+-import { resolveDamage, resolveAccuracy, reachOf, canAttack } from '../src/core/pipeline.js'
++import { resolveDamage, resolveAccuracy, reachOf, canAttack, damageSourceOfAttack } from '../src/core/pipeline.js'
+ import { resolvePowerDamage, canUsePower, isReady } from '../src/core/ability.js'
+ import { reachable, stepCost } from '../src/core/movement.js'
+@@ -134,8 +135,8 @@ describe('pass 3 — the Mage', () => {
+     const ctx = createCustomBattle([{ type: 'test-mage', hex: hexId(5, 5) }], [{ type: 'test-zombie', hex: hexId(6, 5) }])
+     const [m, z] = [ctx.state.units[0]!, ctx.state.units[1]!]
+-    expect(resolveDamage(ctx, m, z, ATTACKS['attack.test-mage.staff']!, false).value).toBe(4)   // precision 4, magic vs resist 0
+-    expect(resolveDamage(ctx, m, z, ATTACKS['attack.test-mage.strike']!, false).value).toBe(2)  // strength 2, physical vs armor 0
+-    expect(ATTACKS['attack.test-mage.staff']!.reach).toBe(6)
+-    expect(ATTACKS['attack.test-mage.strike']!.reach).toBe(1)
++    expect(resolveDamage(ctx, m, z, damageSourceOfAttack(ATTACKS['attack.test-mage.staff']!), false).value).toBe(4)   // precision 4, magic vs resist 0
++    expect(resolveDamage(ctx, m, z, damageSourceOfAttack(ATTACKS['attack.test-mage.strike']!), false).value).toBe(2)  // strength 2, physical vs armor 0
++    expect(ATTACKS['attack.test-mage.staff']!.range).toBe(6)
++    expect(ATTACKS['attack.test-mage.strike']!.range).toBe(1)
+   })
+   it('gate 2 — magic damage is mitigated by Resist, not Armor', () => {
+@@ -144,6 +145,6 @@ describe('pass 3 — the Mage', () => {
+     const armoured = { ...ctx.state.units[1]!, armor: 3, resist: 0 }
+     const warded  = { ...ctx.state.units[1]!, armor: 0, resist: 3 }
+-    expect(resolveDamage(ctx, m, armoured, ATTACKS['attack.test-mage.staff']!, false).value).toBe(4)
+-    expect(resolveDamage(ctx, m, warded,   ATTACKS['attack.test-mage.staff']!, false).value).toBe(1)
++    expect(resolveDamage(ctx, m, armoured, damageSourceOfAttack(ATTACKS['attack.test-mage.staff']!), false).value).toBe(4)
++    expect(resolveDamage(ctx, m, warded,   damageSourceOfAttack(ATTACKS['attack.test-mage.staff']!), false).value).toBe(1)
+   })
+   it('gate 1 — the Mage appears, moves, attacks and is targeted in real battles', () => {
+@@ -153,5 +154,5 @@ describe('pass 3 — the Mage', () => {
+     // off the unit's attack list instead of a typed attack id.
+     const MAGE = 'alpha-air-mage'
+-    const staffIds = new Set(fieldedDef(MAGE).attacks.filter((id) => ATTACKS[id]!.kind === 'ranged'))
++    const staffIds = new Set(fieldedDef(MAGE).attacks.filter((id) => ATTACKS[id]!.attack.kind === 'ranged'))
+     expect(staffIds.size).toBeGreaterThan(0)
+     const seen = { moved:0, staff:0, strike:0, hurt:0 }
+@@ -200,10 +201,15 @@ describe('pass 4 — Arcane Bolt', () => {
+     expect(casts.length).toBeGreaterThan(0)
+     expect(cds.length).toBe(casts.length)
+-    for (const c of cds) expect((c['readyOnTurn'] as number) - (c.turn as number)).toBe(6)
++    // LAW 10 — 2026-09-04 (refactor.one-action-type): the Codex semantic is
++    // 2-ACTIONS-SETTLED.md:71, "`cooldown` N = skip N Turns. CD 0 is usable
++    // again next Turn." Cooldown 6 therefore means ready on turn + 7 and no
++    // recast within 7 Turns. The power path wrote turn + 6 until today — one
++    // Turn short of the ruling, and this test had asserted the bug (FINDING 32).
++    for (const c of cds) expect((c['readyOnTurn'] as number) - (c.turn as number)).toBe(7)
+     // never two casts by the same unit inside the cooldown window
+     const byUnit = new Map<number, number[]>()
+     for (const c of casts) byUnit.set(c.actor!, [...(byUnit.get(c.actor!) ?? []), c.turn as number])
+     for (const turns of byUnit.values())
+-      for (let i = 1; i < turns.length; i++) expect(turns[i]! - turns[i-1]!).toBeGreaterThanOrEqual(6)
++      for (let i = 1; i < turns.length; i++) expect(turns[i]! - turns[i-1]!).toBeGreaterThanOrEqual(7)
+   })
+   it('gate 2 — the power spends the primary action, so no attack follows it', () => {
+diff --git a/test/alpha-team.test.ts b/test/alpha-team.test.ts
+index ef13586..c5b1b43 100644
+--- a/test/alpha-team.test.ts
++++ b/test/alpha-team.test.ts
+@@ -1,2 +1,3 @@
++// refactor.one-action-type (2026-09-04), Law 10 reason: the row's SHAPE moved by ruling — attack fields read under `.attack`, reach is `range`, move fields under `.move`, the registries are one (`ctx.actions`) and the unit's lists are views (attackIdsOf/powerIdsOf). No assertion changed.
+ // The Alpha Team — content.alpha-team (2026-08-27).
+ //
+@@ -87,10 +88,10 @@ describe('the pack carries the six alpha heroes with their real stat bodies', ()
+     // RE-RULED in S37 (2026-08-27): strength −1, 0 stamina (was 1), −5 crit
+     // on the row, −5 accuracy as a named gap — Law 10, followed same-day.
+-    expect(ATTACKS['attack.halberd.hack']).toMatchObject({ bonus: 2, staminaCost: 1, kind: 'melee' })
+-    expect(ATTACKS['attack.halberd.cleave']).toMatchObject({ bonus: 1, staminaCost: 2 })
+-    expect(ATTACKS['attack.javelin.throw']).toMatchObject({ kind: 'ranged', reach: 4 })
+-    expect(ATTACKS['attack.shortbow.short-shot']).toMatchObject({ kind: 'ranged', reach: 5 })
+-    expect(ATTACKS['attack.shortbow.quick-shot']).toMatchObject({ kind: 'ranged', reach: 4 })
+-    expect(ATTACKS['attack.punch']).toMatchObject({ bonus: -1, staminaCost: 0, kind: 'melee', crit: -5 })
++    expect(ATTACKS['attack.halberd.hack']).toMatchObject({ staminaCost: 1, attack: { bonus: 2, kind: 'melee' } })
++    expect(ATTACKS['attack.halberd.cleave']).toMatchObject({ staminaCost: 2, attack: { bonus: 1 } })
++    expect(ATTACKS['attack.javelin.throw']).toMatchObject({ range: 4, attack: { kind: 'ranged' } })
++    expect(ATTACKS['attack.shortbow.short-shot']).toMatchObject({ range: 5, attack: { kind: 'ranged' } })
++    expect(ATTACKS['attack.shortbow.quick-shot']).toMatchObject({ range: 4, attack: { kind: 'ranged' } })
++    expect(ATTACKS['attack.punch']).toMatchObject({ staminaCost: 0, attack: { bonus: -1, kind: 'melee', crit: -5 } })
+     for (const id of ALPHA()) {
+       for (const aid of fieldedDef(id).attacks) expect(ATTACKS[aid], `${id} grants ${aid}`).toBeDefined()
+@@ -157,5 +158,5 @@ describe('the pack carries the six alpha heroes with their real stat bodies', ()
+       const row = (sItems.attacks as { id: string; crit?: number }[]).find((a) => a.id === id)!
+       expect(row.crit, `${id} carries an authored crit`).toBeGreaterThan(0)
+-      expect(ATTACKS[id]!.crit, `${id} — pack agrees with the settled row`).toBe(row.crit)
++      expect(ATTACKS[id]!.attack.crit, `${id} — pack agrees with the settled row`).toBe(row.crit)
+     }
+     // the three item powers COMPILE now (capability.item-powers) — their gaps
+diff --git a/test/attack-choice.test.ts b/test/attack-choice.test.ts
+index f95e265..204deb3 100644
+--- a/test/attack-choice.test.ts
++++ b/test/attack-choice.test.ts
+@@ -1,2 +1,3 @@
++// refactor.one-action-type (2026-09-04), Law 10 reason: the row's SHAPE moved by ruling — attack fields read under `.attack`, reach is `range`, move fields under `.move`, the registries are one (`ctx.actions`) and the unit's lists are views (attackIdsOf/powerIdsOf). No assertion changed.
+ // ai.attack-choice (2026-09-03) — the choice policy is a SWITCH, not a ruling.
+ //
+@@ -6,4 +7,5 @@
+ // damage on hit. Neither prices riders. A sweep decides; this proves both
+ // paths are real and that the default is byte-for-byte the old rule.
++import { attackIdsOf, powerIdsOf } from '../src/core/action.js'
+ import { describe, expect, it } from 'vitest'
+ import { createBattle, createCustomBattle } from '../src/core/setup.js'
+@@ -28,6 +30,6 @@ describe('the two policies', () => {
+     }
+     const d = make('declared'), b = make('bestDamage')
+-    expect(d.swung).toBe(d.o.attacks.find((id) => !d.ctx.attacks[id]!.area))   // the first non-area listing
+-    const best = b.o.attacks.filter((id) => !b.ctx.attacks[id]!.area)
++    expect(d.swung).toBe(attackIdsOf(d.ctx, d.o).find((id) => !d.ctx.actions[id]!.area))   // the first non-area listing
++    const best = attackIdsOf(b.ctx, b.o).filter((id) => !b.ctx.actions[id]!.area)
+       .map((id) => ({ id, dmg: preview(b.ctx, b.o.id, b.z.id, id).damageOnHit }))
+       .sort((x, y) => y.dmg - x.dmg)[0]!
+diff --git a/test/attack-cooldown.test.ts b/test/attack-cooldown.test.ts
+index 8448456..e8f756a 100644
+--- a/test/attack-cooldown.test.ts
++++ b/test/attack-cooldown.test.ts
+@@ -1,2 +1,3 @@
++// refactor.one-action-type (2026-09-04), Law 10 reason: the row's SHAPE moved by ruling — attack fields read under `.attack`, reach is `range`, move fields under `.move`, the registries are one (`ctx.actions`) and the unit's lists are views (attackIdsOf/powerIdsOf). No assertion changed.
+ // capability.enemy-action-cooldown (2026-09-03) — ENEMY-REVIEW P10, ruled
+ // 2026-08-23 as "probably just permission to use the same fields": an attack
+@@ -25,8 +26,12 @@ describe('an attack on cooldown', () => {
+     expect(canAttack(ctx, g.id, w.id, 'attack.ghoul.devour')).toBe(true)
+     performAttack(ctx, g.id, w.id, 'attack.ghoul.devour')
+-    expect(g.cooldowns['attack.ghoul.devour']).toBe(1 + cd)
+-    expect(ctx.events.some((e) => e.type === 'cooldown.set' && e['attackId'] === 'attack.ghoul.devour')).toBe(true)
+-    for (let t = 2; t <= cd; t++) { ctx.state.turn = t; beginActivation(ctx, g.id, 'test'); expect(canAttack(ctx, g.id, w.id, 'attack.ghoul.devour'), `turn ${t}`).toBe(false) }
+-    ctx.state.turn = 1 + cd; beginActivation(ctx, g.id, 'test')
++    // LAW 10 — 2026-09-04 (refactor.one-action-type): "`cooldown` N = skip N
++    // Turns" (2-ACTIONS-SETTLED.md:71) — used on Turn 1 with cooldown N, the
++    // attack is refused on Turns 2..1+N and ready on 2+N. The attack path wrote
++    // one Turn short until today (FINDING 32). The log line names the ACTION.
++    expect(g.cooldowns['attack.ghoul.devour']).toBe(2 + cd)
++    expect(ctx.events.some((e) => e.type === 'cooldown.set' && e['actionId'] === 'attack.ghoul.devour')).toBe(true)
++    for (let t = 2; t <= 1 + cd; t++) { ctx.state.turn = t; beginActivation(ctx, g.id, 'test'); expect(canAttack(ctx, g.id, w.id, 'attack.ghoul.devour'), `turn ${t}`).toBe(false) }
++    ctx.state.turn = 2 + cd; beginActivation(ctx, g.id, 'test')
+     expect(canAttack(ctx, g.id, w.id, 'attack.ghoul.devour')).toBe(true)
+   })
+@@ -36,5 +41,5 @@ describe('an attack on cooldown', () => {
+     // the colossus is weaponless (its moves are a named gap) — the mechanism is checked on the map itself
+     const u = ctx.state.units[1]!
+-    for (const [id, ready] of Object.entries(u.cooldowns)) expect(ready).toBe((ATTACKS[id]?.warmup ?? ctx.abilities[id]?.warmup ?? 0) + 1)
++    for (const [id, ready] of Object.entries(u.cooldowns)) expect(ready).toBe((ATTACKS[id]?.warmup ?? ctx.actions[id]?.warmup ?? 0) + 1)
+   })
+ 
+@@ -46,6 +51,7 @@ describe('an attack on cooldown', () => {
+     expect(slams.length).toBeGreaterThan(0)
+     const turns = slams.map((e) => e.turn)
+-    for (let i = 1; i < turns.length; i++) expect(turns[i]! - turns[i - 1]!).toBeGreaterThanOrEqual(ATTACKS['attack.test-ram.slam']!.cooldown!)
+-    expect(ctx.events.some((e) => e.type === 'cooldown.set' && e['attackId'] === 'attack.test-ram.slam')).toBe(true)
++    // skip N Turns (2-ACTIONS-SETTLED.md:71): consecutive slams are N + 1 Turns apart
++    for (let i = 1; i < turns.length; i++) expect(turns[i]! - turns[i - 1]!).toBeGreaterThanOrEqual(ATTACKS['attack.test-ram.slam']!.cooldown! + 1)
++    expect(ctx.events.some((e) => e.type === 'cooldown.set' && e['actionId'] === 'attack.test-ram.slam')).toBe(true)
+   })
+ })
+diff --git a/test/attack-of-opportunity.test.ts b/test/attack-of-opportunity.test.ts
+index 20e81b9..20bb31f 100644
+--- a/test/attack-of-opportunity.test.ts
++++ b/test/attack-of-opportunity.test.ts
+@@ -1,2 +1,3 @@
++// refactor.one-action-type (2026-09-04), Law 10 reason: the row's SHAPE moved by ruling — attack fields read under `.attack`, reach is `range`, move fields under `.move`, the registries are one (`ctx.actions`) and the unit's lists are views (attackIdsOf/powerIdsOf). No assertion changed.
+ // movement.attack-of-opportunity (2026-09-03) — the edges of the rule:
+ // once per holder per activation, and a sidestep never provokes (GAME-DESIGN
+@@ -16,5 +17,5 @@ describe('attack of opportunity, at the edges', () => {
+     beginActivation(ctx, w.id, 'test')
+     const walk = movePowerOf(ctx, w, 'path')!
+-    executeMove(ctx, w.id, pathTo(reachable(ctx, w, walk.budgetMod), w.hex, hexId(5, 1)), walk)
++    executeMove(ctx, w.id, pathTo(reachable(ctx, w, walk.move.budgetMod), w.hex, hexId(5, 1)), walk)
+     const by = ctx.events.filter((e) => e.type === 'aoo.provoked').map((e) => e['actor'])
+     expect(new Set(by).size).toBe(by.length)
+diff --git a/test/audit.test.ts b/test/audit.test.ts
+index 13f7059..282e31f 100644
+--- a/test/audit.test.ts
++++ b/test/audit.test.ts
+@@ -1,2 +1,3 @@
++// refactor.one-action-type (2026-09-04), Law 10 reason: the row's SHAPE moved by ruling — attack fields read under `.attack`, reach is `range`, move fields under `.move`, the registries are one (`ctx.actions`) and the unit's lists are views (attackIdsOf/powerIdsOf). No assertion changed.
+ import { describe, it, expect } from 'vitest'
+ import { createBattle } from '../src/core/setup.js'
+@@ -91,5 +92,5 @@ describe('independent audit of logged battles', () => {
+             // follow the rule, not loosened: a 3-hex leap would still fail.
+             const mp = MOVES[String(e.causeId)]
+-            const allowed = mp && mp.shape === 'sidestep' ? Math.max(1, mp.stepRange ?? 1) : 1
++            const allowed = mp && mp.move.shape === 'sidestep' ? Math.max(1, mp.move.stepRange ?? 1) : 1
+             expect(distance(e['from'] as number, e['to'] as number), 'a step is its power\'s size').toBeLessThanOrEqual(allowed)
+             // The auditor learned the movement CHOICE 2026-08-21 (Law 10:
+@@ -99,5 +100,5 @@ describe('independent audit of logged battles', () => {
+             // irrelevant"), so its recomputed cost is 0. A path-shaped move
+             // still pays the terrain, recomputed from the board as before.
+-            const shape = MOVES[e.causeId]?.shape
++            const shape = MOVES[e.causeId]?.move.shape
+             expect(shape, `moved must be caused by a movement power (got '${e.causeId}')`).toBeDefined()
+             expect(e['cost']).toBe(shape === 'sidestep' ? 0 : terr[e['to'] as number] === 1 ? 2 : 1)
+@@ -196,10 +197,10 @@ describe('independent audit of logged battles', () => {
+             // reach: hero Reach and high ground add to ranged only
+             const myTerr = terr[hex.get(e.actor!)!]!
+-            const reach = a.kind === 'ranged' ? a.reach + at.reach + reachBonusOf(myTerr) : a.reach
++            const reach = a.attack.kind === 'ranged' ? a.range + at.reach + reachBonusOf(myTerr) : a.range
+             expect(d, 'attack was within reach').toBeLessThanOrEqual(reach)
+ 
+             // A ranged attack may not target an adjacent enemy at all.
+             // Angela 2026-08-15; GAME-DESIGN.md §4.
+-            if (a.kind === 'ranged') expect(d, 'ranged never targets an adjacent enemy').toBeGreaterThan(1)
++            if (a.attack.kind === 'ranged') expect(d, 'ranged never targets an adjacent enemy').toBeGreaterThan(1)
+ 
+             // accuracy, recomputed.
+@@ -216,5 +217,5 @@ describe('independent audit of logged battles', () => {
+             // pipeline does. EXTENDED, not weakened.
+             let acc = modded(e.actor!, 'accuracy', at.accuracy, e.turn)
+-            if (a.kind === 'ranged') {
++            if (a.attack.kind === 'ranged') {
+               // range grace of 3 tiles, ruled 2026-08-26 — penalty from the 4th
+               if (d > 3) acc -= (d - 3) * 5
+@@ -229,5 +230,5 @@ describe('independent audit of logged battles', () => {
+             // (station.accuracy-field): the row's `accuracy` — Punch −5, the
+             // war-axe's Hack −5, the longbow's +10 — lands at SITUATIONAL.
+-            acc += a.accuracy ?? 0
++            acc += a.attack.accuracy ?? 0
+             // The auditor learned TARGET_DODGE on 2026-08-20 — the Codex
+             // cohort brought the first nonzero dodge (Dusk Hawk 5), and dodge
+@@ -338,12 +339,12 @@ describe('independent audit of logged battles', () => {
+             // The attack names its stat (strength / precision / spirit since
+             // the Chaplain's Mercy, 2026-08-28) — read that one, not a guess.
+-            const base = a.stat === 'strength' ? at.strength : a.stat === 'precision' ? at.precision
+-              : a.stat === 'magic' ? at.magic : (at as unknown as Record<string, number>)[a.stat] ?? 0
+-            const stat = modded(pending.actor, a.stat, base, e.turn)
+-            const mit = a.damageType === 'physical' ? tg.armor : a.damageType === 'magic' ? tg.resist : 0
++            const base = a.attack.stat === 'strength' ? at.strength : a.attack.stat === 'precision' ? at.precision
++              : a.attack.stat === 'magic' ? at.magic : (at as unknown as Record<string, number>)[a.attack.stat] ?? 0
++            const stat = modded(pending.actor, a.attack.stat, base, e.turn)
++            const mit = a.attack.damageType === 'physical' ? tg.armor : a.attack.damageType === 'magic' ? tg.resist : 0
+             // The damage-arm crit multiplies BEFORE Protection and Mitigation
+             // (DMG.CRIT at 450), truncating division — the one rounding rule;
+             // n heads multiply by (2+n)/2 (station.crit-count).
+-            const preMit = a.bonus + stat - penaltyOf(pending.actor)
++            const preMit = a.attack.bonus + stat - penaltyOf(pending.actor)
+             const heads = pending.heads ?? (pending.crit ? 1 : 0)
+             const critted = heads > 0 ? Math.trunc((preMit * (2 + heads)) / 2) : preMit
+diff --git a/test/charges.test.ts b/test/charges.test.ts
+index cdb4d53..5bc2026 100644
+--- a/test/charges.test.ts
++++ b/test/charges.test.ts
+@@ -1,2 +1,3 @@
++// refactor.one-action-type (2026-09-04), Law 10 reason: the row's SHAPE moved by ruling — attack fields read under `.attack`, reach is `range`, move fields under `.move`, the registries are one (`ctx.actions`) and the unit's lists are views (attackIdsOf/powerIdsOf). No assertion changed.
+ // capability.charges (2026-09-03) — GEAR-DESIGN §4, GEAR-IMPLEMENTATION §1:
+ // one-use-per-battle items. An AbilityDef carries `uses`; a spent use counts
+@@ -24,5 +25,5 @@ describe('a use is spent', () => {
+     const ctx = createCustomBattle([{ type: 'test-warrior', hex: hexId(5, 5) }], [{ type: 'test-zombie', hex: hexId(15, 15) }])
+     const w = ctx.state.units[0]!
+-    w.abilities.push(POTION); w.usesLeft[POTION] = 1
++    w.actions.push(POTION); w.usesLeft[POTION] = 1
+     w.hp = 1
+     beginActivation(ctx, w.id, 'test')
+@@ -31,5 +32,5 @@ describe('a use is spent', () => {
+     expect(w.hp).toBe(4)
+     expect(w.primaryUsed).toBe(false)   // free
+-    expect(w.abilities).not.toContain(POTION)
++    expect(w.actions).not.toContain(POTION)
+     expect(canUsePower(ctx, w.id, w.id, POTION)).toBe(false)
+     expect(ctx.events.some((e) => e.type === 'charge.spent' && e['left'] === 0)).toBe(true)
+@@ -46,5 +47,5 @@ describe('a use is spent', () => {
+     const b = createBattle(scenarioOptions(scenarioDef('showcase.waystation')))
+     expect(b.state.units[0]!.usesLeft[POTION]).toBe(1)
+-    expect(b.state.units[0]!.abilities).toContain(POTION)
++    expect(b.state.units[0]!.actions).toContain(POTION)
+   })
+ 
+diff --git a/test/civilians.test.ts b/test/civilians.test.ts
+index 5b3b43e..13c5ca6 100644
+--- a/test/civilians.test.ts
++++ b/test/civilians.test.ts
+@@ -1,2 +1,3 @@
++// refactor.one-action-type (2026-09-04), Law 10 reason: the row's SHAPE moved by ruling — attack fields read under `.attack`, reach is `range`, move fields under `.move`, the registries are one (`ctx.actions`) and the unit's lists are views (attackIdsOf/powerIdsOf). No assertion changed.
+ // The prologue civilians — content.civilians (2026-08-26).
+ //
+@@ -47,9 +48,9 @@ describe('civilians are ordinary heroes with their Codex behaviour', () => {
+     expect(fieldedDef('hero.fixed.orphans').attacks).toEqual(['attack.pile-of-rocks.throw'])
+     expect(ATTACKS['attack.pile-of-rocks.throw']).toMatchObject(
+-      { kind: 'ranged', reach: 3, stat: 'precision', staminaCost: 0 })   // authored zero
++      { range: 3, staminaCost: 0, attack: { kind: 'ranged', stat: 'precision' } })   // authored zero
+     expect(fieldedDef('hero.fixed.farmer').attacks).toEqual(['attack.pitchfork.jab'])
+     // civilians are exactly like heroes: the Farmer PAYS the authored 1
+     expect(ATTACKS['attack.pitchfork.jab']).toMatchObject(
+-      { kind: 'melee', reach: 1, stat: 'strength', bonus: 1, staminaCost: 1 })
++      { range: 1, staminaCost: 1, attack: { kind: 'melee', stat: 'strength', bonus: 1 } })
+   })
+ 
+@@ -62,7 +63,7 @@ describe('civilians are ordinary heroes with their Codex behaviour', () => {
+       .toEqual(['attack.lumberjack-axe.chop', 'attack.lumberjack-axe.cleave'])
+     expect(ATTACKS['attack.lumberjack-axe.chop']).toMatchObject(
+-      { kind: 'melee', bonus: 1, staminaCost: 1 })
++      { staminaCost: 1, attack: { kind: 'melee', bonus: 1 } })
+     expect(ATTACKS['attack.lumberjack-axe.cleave']).toMatchObject(
+-      { kind: 'melee', bonus: 2, staminaCost: 2 })
++      { staminaCost: 2, attack: { kind: 'melee', bonus: 2 } })
+     // Chop's dictated rider travelled: 20% for 2 Bleed, scoped to the chop
+     const rider = (fieldedDef('hero.fixed.lumberjack-and-wife').triggers ?? [])
+@@ -80,5 +81,5 @@ describe('civilians are ordinary heroes with their Codex behaviour', () => {
+     expect(gaps.some((g) => /cleave/.test(g.what) && g.needs === 'area attack shape')).toBe(true)
+     expect(gaps.some((g) => /cleave/.test(g.what) && /crit/.test(g.needs))).toBe(false)
+-    expect(ATTACKS['attack.lumberjack-axe.cleave']!.crit).toBe(20)
++    expect(ATTACKS['attack.lumberjack-axe.cleave']!.attack.crit).toBe(20)
+   })
+ 
+diff --git a/test/crit-count.test.ts b/test/crit-count.test.ts
+index e0c33f6..026d36c 100644
+--- a/test/crit-count.test.ts
++++ b/test/crit-count.test.ts
+@@ -1,2 +1,3 @@
++// refactor.one-action-type (2026-09-04), Law 10 reason: the row's SHAPE moved by ruling — attack fields read under `.attack`, reach is `range`, move fields under `.move`, the registries are one (`ctx.actions`) and the unit's lists are views (attackIdsOf/powerIdsOf). No assertion changed.
+ // Multiple criticals — station.crit-count (2026-08-27).
+ //
+@@ -9,5 +10,5 @@
+ // Overhead (3), live in showcase.arc-variant.
+ import { describe, expect, it } from 'vitest'
+-import { performAttack, preview, resolveDamage } from '../src/core/pipeline.js'
++import { performAttack, preview, resolveDamage, damageSourceOfAttack } from '../src/core/pipeline.js'
+ import { ATTACKS, UNITS } from '../src/content/index.js'
+ import { scenarioDef, scenarioOptions } from '../src/content/scenarios.js'
+@@ -28,7 +29,7 @@ const rig = () => createBattle({
+ describe('the rows carry their counts', () => {
+   it('slam says two, overhead says three, everything else says nothing (= one)', () => {
+-    expect(ATTACKS['attack.test-ram.slam']!.critCount).toBe(2)
+-    expect(ATTACKS['attack.test-ram.overhead']!.critCount).toBe(3)
+-    expect(ATTACKS['attack.halberd.hack']!.critCount).toBeUndefined()
++    expect(ATTACKS['attack.test-ram.slam']!.attack.critCount).toBe(2)
++    expect(ATTACKS['attack.test-ram.overhead']!.attack.critCount).toBe(3)
++    expect(ATTACKS['attack.halberd.hack']!.attack.critCount).toBeUndefined()
+     expect(UNITS['test-arc-golem']!.attacks).toContain('attack.test-ram.slam')
+   })
+@@ -52,5 +53,5 @@ describe('one critting hit, N criticals', () => {
+     // The hit's ledger CRIT delta matches the heads count: ×(2+heads)/2.
+     const hit = ctx.events.find((e) => e.type === 'attack.hit')!
+-    const expected = resolveDamage(ctx, golem, z, ATTACKS['attack.test-ram.slam']!, heads).value
++    const expected = resolveDamage(ctx, golem, z, damageSourceOfAttack(ATTACKS['attack.test-ram.slam']!), heads).value
+     expect(r.damage).toBe(Math.min(expected, z.maxHp))
+     if (heads > 0) {
+@@ -67,7 +68,7 @@ describe('one critting hit, N criticals', () => {
+     const golem = ctx.state.units.find((u) => u.typeId === 'test-arc-golem')!
+     const z = ctx.state.units.find((u) => u.typeId === 'test-zombie')!
+-    const base = resolveDamage(ctx, golem, z, ATTACKS['attack.test-ram.slam']!, 0).value
+-    const one = resolveDamage(ctx, golem, z, ATTACKS['attack.test-ram.slam']!, 1).value
+-    const two = resolveDamage(ctx, golem, z, ATTACKS['attack.test-ram.slam']!, 2).value
++    const base = resolveDamage(ctx, golem, z, damageSourceOfAttack(ATTACKS['attack.test-ram.slam']!), 0).value
++    const one = resolveDamage(ctx, golem, z, damageSourceOfAttack(ATTACKS['attack.test-ram.slam']!), 1).value
++    const two = resolveDamage(ctx, golem, z, damageSourceOfAttack(ATTACKS['attack.test-ram.slam']!), 2).value
+     // bonus 2 + str 5 = 7 pre-mitigation vs armor 0: 7 / 10 / 14
+     // (x1.5 truncates: 10.5 -> 10 — Law 7's one rounding rule)
+@@ -76,5 +77,5 @@ describe('one critting hit, N criticals', () => {
+     expect(two).toBe(14)
+     // `true` still means exactly one heads — the whole old surface unchanged
+-    expect(resolveDamage(ctx, golem, z, ATTACKS['attack.test-ram.slam']!, true).value).toBe(one)
++    expect(resolveDamage(ctx, golem, z, damageSourceOfAttack(ATTACKS['attack.test-ram.slam']!), true).value).toBe(one)
+     expect(preview(ctx, golem.id, z.id, 'attack.test-ram.slam').damageOnCrit).toBe(one)
+   })
+@@ -97,5 +98,9 @@ describe('live — both counts fire in the verify scenario', () => {
+     // the first multi-critical moved from seed <6 to seed 16. Same claim
+     // (multi-criticals resolve in real battles); early exit once all seen.
+-    for (let r = 0; r < 24 && !(sawSlam && sawOverhead && sawMulti); r++) {
++    // Widened 24 -> 64 on 2026-09-04 (refactor.one-action-type): the Slam's
++    // cooldown 2 now means "skip 2 Turns" (2-ACTIONS-SETTLED.md:71) instead of
++    // one Turn short, so the golem slams a third less often and the first
++    // multi-critical moved to seed 55. Same claim; early exit once all seen.
++    for (let r = 0; r < 64 && !(sawSlam && sawOverhead && sawMulti); r++) {
+       const ctx = createBattle({ ...scenarioOptions(scenarioDef('showcase.arc-variant')), replicate: r })
+       runBattle(ctx)
+diff --git a/test/crit.test.ts b/test/crit.test.ts
+index bc8e15e..fbd405b 100644
+--- a/test/crit.test.ts
++++ b/test/crit.test.ts
+@@ -1,2 +1,3 @@
++// refactor.one-action-type (2026-09-04), Law 10 reason: the row's SHAPE moved by ruling — attack fields read under `.attack`, reach is `range`, move fields under `.move`, the registries are one (`ctx.actions`) and the unit's lists are views (attackIdsOf/powerIdsOf). No assertion changed.
+ // The Critical Injury Chart — station.crit (2026-08-27).
+ //
+@@ -52,5 +53,5 @@ describe('the chart arrives as ruled data', () => {
+ 
+   it('the crit fields and unit crit/luck came through the pipeline', () => {
+-    expect(ATTACKS['attack.dagger.stab']!.crit).toBe(5)
++    expect(ATTACKS['attack.dagger.stab']!.attack.crit).toBe(5)
+     expect(UNITS['unit.bloodhound']!.crit).toBe(10)
+     expect(UNITS['unit.bruiser-demon']!.luck).toBe(5)
+@@ -142,5 +143,5 @@ describe('rollCritEffect — each row does exactly what it says', () => {
+     beginActivation(ctx, lucius.id, 'test')
+     // attacks are NOT locked — only the powers are gone
+-    expect(ctx.attacks['attack.punch']).toBeDefined()
++    expect(ctx.actions['attack.punch']).toBeDefined()
+   })
+ 
+diff --git a/test/damage.test.ts b/test/damage.test.ts
+index 6dedad1..d53b5f3 100644
+--- a/test/damage.test.ts
++++ b/test/damage.test.ts
+@@ -1,5 +1,6 @@
++// refactor.one-action-type (2026-09-04), Law 10 reason: the row's SHAPE moved by ruling — attack fields read under `.attack`, reach is `range`, move fields under `.move`, the registries are one (`ctx.actions`) and the unit's lists are views (attackIdsOf/powerIdsOf). No assertion changed.
+ import { describe, it, expect } from 'vitest'
+ import { createCustomBattle } from '../src/core/setup.js'
+-import { resolveDamage, resolveAccuracy, preview, canAttack, reachOf } from '../src/core/pipeline.js'
++import { resolveDamage, resolveAccuracy, preview, canAttack, reachOf, damageSourceOfAttack } from '../src/core/pipeline.js'
+ import { ATTACKS } from '../src/content/index.js'
+ import { hexId } from './board16.js'
+@@ -17,5 +18,5 @@ describe('FIRST-BATTLE expected numbers', () => {
+     const ctx = createCustomBattle([{ type: 'test-warrior', hex: hexId(5,5) }], [{ type: 'test-zombie', hex: hexId(6,5) }])
+     const z = ctx.state.units[1]!, w = ctx.state.units[0]!
+-    expect(resolveDamage(ctx, z, w, ATTACKS['attack.test-zombie.bite']!, false).value).toBe(3)
++    expect(resolveDamage(ctx, z, w, damageSourceOfAttack(ATTACKS['attack.test-zombie.bite']!), false).value).toBe(3)
+   })
+ 
+@@ -23,26 +24,26 @@ describe('FIRST-BATTLE expected numbers', () => {
+     const ctx = createCustomBattle([{ type: 'test-ranger', hex: hexId(5,5) }], [{ type: 'test-zombie', hex: hexId(6,5) }])
+     const z = ctx.state.units[1]!, r = ctx.state.units[0]!
+-    expect(resolveDamage(ctx, z, r, ATTACKS['attack.test-zombie.bite']!, false).value).toBe(4)
++    expect(resolveDamage(ctx, z, r, damageSourceOfAttack(ATTACKS['attack.test-zombie.bite']!), false).value).toBe(4)
+   })
+ 
+   it('Warrior Axe -> Zombie = 6', () => {
+     const ctx = pair('test-warrior')
+-    expect(resolveDamage(ctx, ctx.state.units[0]!, ctx.state.units[1]!, ATTACKS['attack.test-warrior.axe']!, false).value).toBe(6)
++    expect(resolveDamage(ctx, ctx.state.units[0]!, ctx.state.units[1]!, damageSourceOfAttack(ATTACKS['attack.test-warrior.axe']!), false).value).toBe(6)
+   })
+ 
+   it('Warrior Massive Strike -> Zombie = 8', () => {
+     const ctx = pair('test-warrior')
+-    expect(resolveDamage(ctx, ctx.state.units[0]!, ctx.state.units[1]!, ATTACKS['attack.test-warrior.massive']!, false).value).toBe(8)
++    expect(resolveDamage(ctx, ctx.state.units[0]!, ctx.state.units[1]!, damageSourceOfAttack(ATTACKS['attack.test-warrior.massive']!), false).value).toBe(8)
+   })
+ 
+   it('Ranger Bow -> Zombie = 5', () => {
+     const ctx = pair('test-ranger')
+-    expect(resolveDamage(ctx, ctx.state.units[0]!, ctx.state.units[1]!, ATTACKS['attack.test-ranger.bow']!, false).value).toBe(5)
++    expect(resolveDamage(ctx, ctx.state.units[0]!, ctx.state.units[1]!, damageSourceOfAttack(ATTACKS['attack.test-ranger.bow']!), false).value).toBe(5)
+   })
+ 
+   it('Warrior Punch -> Zombie = 4, Ranger Punch -> Zombie = 2', () => {
+     const w = pair('test-warrior'), r = pair('test-ranger')
+-    expect(resolveDamage(w, w.state.units[0]!, w.state.units[1]!, ATTACKS['attack.punch']!, false).value).toBe(4)
+-    expect(resolveDamage(r, r.state.units[0]!, r.state.units[1]!, ATTACKS['attack.punch']!, false).value).toBe(2)
++    expect(resolveDamage(w, w.state.units[0]!, w.state.units[1]!, damageSourceOfAttack(ATTACKS['attack.punch']!), false).value).toBe(4)
++    expect(resolveDamage(r, r.state.units[0]!, r.state.units[1]!, damageSourceOfAttack(ATTACKS['attack.punch']!), false).value).toBe(2)
+   })
+ 
+@@ -58,6 +59,6 @@ describe('FIRST-BATTLE expected numbers', () => {
+   it('Massive Strike buys nothing against a 10hp zombie — the predicted content finding', () => {
+     const ctx = pair('test-warrior')
+-    const axe = resolveDamage(ctx, ctx.state.units[0]!, ctx.state.units[1]!, ATTACKS['attack.test-warrior.axe']!, false).value
+-    const massive = resolveDamage(ctx, ctx.state.units[0]!, ctx.state.units[1]!, ATTACKS['attack.test-warrior.massive']!, false).value
++    const axe = resolveDamage(ctx, ctx.state.units[0]!, ctx.state.units[1]!, damageSourceOfAttack(ATTACKS['attack.test-warrior.axe']!), false).value
++    const massive = resolveDamage(ctx, ctx.state.units[0]!, ctx.state.units[1]!, damageSourceOfAttack(ATTACKS['attack.test-warrior.massive']!), false).value
+     expect(massive).toBeGreaterThan(axe)
+     expect(Math.ceil(10 / massive)).toBe(Math.ceil(10 / axe))
+@@ -68,5 +69,5 @@ describe('FIRST-BATTLE expected numbers', () => {
+     const r = ctx.state.units[0]!
+     const tank = { ...ctx.state.units[1]!, armor: 99 }
+-    expect(resolveDamage(ctx, r, tank, ATTACKS['attack.punch']!, false).value).toBe(0)
++    expect(resolveDamage(ctx, r, tank, damageSourceOfAttack(ATTACKS['attack.punch']!), false).value).toBe(0)
+   })
+ 
+@@ -74,5 +75,5 @@ describe('FIRST-BATTLE expected numbers', () => {
+     const ctx = pair('test-warrior')
+     for (const id of Object.keys(ATTACKS)) {
+-      const d = resolveDamage(ctx, ctx.state.units[0]!, ctx.state.units[1]!, ATTACKS[id]!, false)
++      const d = resolveDamage(ctx, ctx.state.units[0]!, ctx.state.units[1]!, damageSourceOfAttack(ATTACKS[id]!), false)
+       expect(d.ledger.reduce((s, r) => s + r.delta, 0)).toBe(d.value)
+     }
+diff --git a/test/enemy-ai-role.test.ts b/test/enemy-ai-role.test.ts
+index aa38482..1b46a22 100644
+--- a/test/enemy-ai-role.test.ts
++++ b/test/enemy-ai-role.test.ts
+@@ -1,2 +1,3 @@
++// refactor.one-action-type (2026-09-04), Law 10 reason: the row's SHAPE moved by ruling — attack fields read under `.attack`, reach is `range`, move fields under `.move`, the registries are one (`ctx.actions`) and the unit's lists are views (attackIdsOf/powerIdsOf). No assertion changed.
+ // fix.enemy-ai-role (2026-09-03) — found running Supper (encounter.supper).
+ //
+@@ -6,4 +7,5 @@
+ // bow is its longest-reaching attack, never the first listed. The Archer's
+ // range 5 is the ruling (ENCOUNTERS-ENGINE-HANDOFF §5.2), now on its row.
++import { attackIdsOf, powerIdsOf } from '../src/core/action.js'
+ import { describe, expect, it } from 'vitest'
+ import { createBattle, createCustomBattle } from '../src/core/setup.js'
+@@ -13,6 +15,6 @@ import { scenarioDef, scenarioOptions } from '../src/content/scenarios.js'
+ import { hexId } from './board16.js'
+ 
+-const rangedCount = (id: string) => UNITS[id]!.attacks.filter((a) => ATTACKS[a]?.kind === 'ranged').length
+-const meleeCount = (id: string) => UNITS[id]!.attacks.filter((a) => ATTACKS[a]?.kind === 'melee').length
++const rangedCount = (id: string) => UNITS[id]!.attacks.filter((a) => ATTACKS[a]?.attack.kind === 'ranged').length
++const meleeCount = (id: string) => UNITS[id]!.attacks.filter((a) => ATTACKS[a]?.attack.kind === 'melee').length
+ 
+ describe('the AI follows the weapons, by count', () => {
+@@ -29,5 +31,5 @@ describe('the AI follows the weapons, by count', () => {
+     expect(UNITS['unit.ghoul']!.ai).toBe('dumb-melee')
+     expect(UNITS['unit.skeletal-archer']!.ai).toBe('ranged-kite')
+-    expect(ATTACKS['attack.skeletal-archer.shoot']!.reach).toBe(5)
++    expect(ATTACKS['attack.skeletal-archer.shoot']!.range).toBe(5)
+   })
+ 
+@@ -38,5 +40,5 @@ describe('the AI follows the weapons, by count', () => {
+     )
+     const archer = ctx.state.units[1]!
+-    expect(archer.attacks[0]).not.toBe('attack.skeletal-archer.shoot')   // Gut is listed first
++    expect(attackIdsOf(ctx, archer)[0]).not.toBe('attack.skeletal-archer.shoot')   // Gut is listed first
+     runBattle(ctx)
+     const shots = ctx.events.filter((e) => e.type === 'attack.declared' && e['actor'] === archer.id && e.causeId === 'attack.skeletal-archer.shoot')
+diff --git a/test/enemy-pack.test.ts b/test/enemy-pack.test.ts
+index 70a2ee7..f2f8b32 100644
+--- a/test/enemy-pack.test.ts
++++ b/test/enemy-pack.test.ts
+@@ -1,2 +1,3 @@
++// refactor.one-action-type (2026-09-04), Law 10 reason: the row's SHAPE moved by ruling — attack fields read under `.attack`, reach is `range`, move fields under `.move`, the registries are one (`ctx.actions`) and the unit's lists are views (attackIdsOf/powerIdsOf). No assertion changed.
+ // The authored enemies — content.enemy-pack (2026-08-26).
+ //
+@@ -66,7 +67,7 @@ describe('the pack carries the authored rows faithfully', () => {
+ 
+   it('the ranged attacks carry their authored ranges', () => {
+-    expect(ATTACKS['attack.imp.blast']).toMatchObject({ kind: 'ranged', reach: 4 })
+-    expect(ATTACKS['attack.necromancer.necro-bolt']).toMatchObject({ kind: 'ranged', reach: 7 })
+-    expect(ATTACKS['attack.lieutenant-demon.ranged']).toMatchObject({ kind: 'ranged', reach: 7 })
++    expect(ATTACKS['attack.imp.blast']).toMatchObject({ range: 4, attack: { kind: 'ranged' } })
++    expect(ATTACKS['attack.necromancer.necro-bolt']).toMatchObject({ range: 7, attack: { kind: 'ranged' } })
++    expect(ATTACKS['attack.lieutenant-demon.ranged']).toMatchObject({ range: 7, attack: { kind: 'ranged' } })
+     // every enemy attack costs no stamina — enemies do not run it
+     for (const id of roster()) for (const aid of UNITS[id]!.attacks) {
+@@ -85,6 +86,6 @@ describe('the pack carries the authored rows faithfully', () => {
+     // may carry a non-number reach, and the archer's Shoot, now authored,
+     // reaches exactly what its row says.
+-    for (const a of Object.values(ATTACKS)) expect(typeof a.reach, `${a.id} reach`).toBe('number')
+-    expect(ATTACKS['attack.skeletal-archer.shoot']?.reach).toBe(5)
++    for (const a of Object.values(ATTACKS)) expect(typeof a.range, `${a.id} reach`).toBe('number')
++    expect(ATTACKS['attack.skeletal-archer.shoot']?.range).toBe(5)
+     expect(gaps.some((g) => g.unit === 'unit.skeletal-archer' && /range unstated/.test(g.needs))).toBe(false)
+     // afflictions and the power pool are named, not guessed
+@@ -95,5 +96,5 @@ describe('the pack carries the authored rows faithfully', () => {
+     expect(gaps.some((g) => g.needs.includes('capability.power'))).toBe(false)
+     expect(UNITS['unit.lieutenant-demon']!.triggers!.some((t) => t.effect.kind === 'power.gain')).toBe(true)
+-    expect(ATTACKS['attack.necromancer.necro-bolt']!.powerScale).toBe(1)
++    expect(ATTACKS['attack.necromancer.necro-bolt']!.attack.powerScale).toBe(1)
+     // and NO gap-carrying clause leaked into the pack: nothing references afflictions
+     for (const id of roster()) for (const t of UNITS[id]!.triggers ?? []) {
+diff --git a/test/field-eve-24.test.ts b/test/field-eve-24.test.ts
+index f95bb87..46e9223 100644
+--- a/test/field-eve-24.test.ts
++++ b/test/field-eve-24.test.ts
+@@ -1,2 +1,3 @@
++// refactor.one-action-type (2026-09-04), Law 10 reason: the row's SHAPE moved by ruling — attack fields read under `.attack`, reach is `range`, move fields under `.move`, the registries are one (`ctx.actions`) and the unit's lists are views (attackIdsOf/powerIdsOf). No assertion changed.
+ // content.field-eve-24 (2026-09-02) — every Eve hero with a dictated full kit
+ // fields. gen/kits.json 2026-08-27b: "ALL 24 Eve heroes now carry FULL kits";
+@@ -106,5 +107,5 @@ describe('in real battles — the roll-call', () => {
+       if (!id.startsWith('hero.base.')) continue
+       const u = fieldedDef(id)   // role follows the kit AS FIELDED (seam.items-per-unit)
+-      const anyRanged = u.attacks.some((a) => ATTACKS[a]!.kind === 'ranged')
++      const anyRanged = u.attacks.some((a) => ATTACKS[a]!.attack.kind === 'ranged')
+       expect(u.role, `${id} role follows its kit`).toBe(anyRanged ? 'ranged' : 'melee')
+     }
+diff --git a/test/fixture-migration.test.ts b/test/fixture-migration.test.ts
+index ea35338..992bb20 100644
+--- a/test/fixture-migration.test.ts
++++ b/test/fixture-migration.test.ts
+@@ -1,2 +1,3 @@
++// refactor.one-action-type (2026-09-04), Law 10 reason: the row's SHAPE moved by ruling — attack fields read under `.attack`, reach is `range`, move fields under `.move`, the registries are one (`ctx.actions`) and the unit's lists are views (attackIdsOf/powerIdsOf). No assertion changed.
+ // test.fixture-migration (2026-09-02) — the last hand-typed units leave the
+ // engine. The 2026-08-14 fixtures (zombie, zombie-burning, warrior, ranger,
+@@ -12,5 +13,5 @@ import { ABILITIES, ATTACKS, UNITS } from '../src/content/index.js'
+ import { packTestAbilities, packTestAttacks, packUnits } from '../src/content/pack.js'
+ import { createCustomBattle } from '../src/core/setup.js'
+-import { resolveDamage } from '../src/core/pipeline.js'
++import { resolveDamage, damageSourceOfAttack } from '../src/core/pipeline.js'
+ import { hexId } from './board16.js'
+ 
+@@ -51,6 +52,6 @@ describe('what index.ts still types', () => {
+     const w = createCustomBattle([{ type: 'test-warrior', hex: hexId(5, 5) }], [{ type: 'test-zombie', hex: hexId(6, 5) }])
+     const r = createCustomBattle([{ type: 'test-ranger', hex: hexId(5, 5) }], [{ type: 'test-zombie', hex: hexId(6, 5) }])
+-    expect(resolveDamage(w, w.state.units[1]!, w.state.units[0]!, ATTACKS['attack.test-zombie.bite']!, false).value).toBe(3)
+-    expect(resolveDamage(r, r.state.units[1]!, r.state.units[0]!, ATTACKS['attack.test-zombie.bite']!, false).value).toBe(4)
++    expect(resolveDamage(w, w.state.units[1]!, w.state.units[0]!, damageSourceOfAttack(ATTACKS['attack.test-zombie.bite']!), false).value).toBe(3)
++    expect(resolveDamage(r, r.state.units[1]!, r.state.units[0]!, damageSourceOfAttack(ATTACKS['attack.test-zombie.bite']!), false).value).toBe(4)
+   })
+ })
+diff --git a/test/flight.test.ts b/test/flight.test.ts
+index d8f039d..dafc381 100644
+--- a/test/flight.test.ts
++++ b/test/flight.test.ts
+@@ -1,2 +1,3 @@
++// refactor.one-action-type (2026-09-04), Law 10 reason: the row's SHAPE moved by ruling — attack fields read under `.attack`, reach is `range`, move fields under `.move`, the registries are one (`ctx.actions`) and the unit's lists are views (attackIdsOf/powerIdsOf). No assertion changed.
+ // Flight — the atomic jump. Angela 2026-08-20 (GAME-DESIGN §Movement
+ // keywords, rewritten): "Click the destination hex and fly there as one
+@@ -24,7 +25,7 @@ const valueOf = (u: { statuses: { id: string; value: number }[] }, id: string) =
+ describe('the ladder is data — three rows, one shape', () => {
+   it('labored / standard / swift carry the Codex costs and modifiers', () => {
+-    expect(MOVES['power.flight']).toMatchObject({ shape: 'flight', staminaCost: 1, budgetMod: 0 })
+-    expect(MOVES['power.flight-swift']).toMatchObject({ shape: 'flight', staminaCost: 0, budgetMod: 1 })
+-    expect(MOVES['power.flight-labored']).toMatchObject({ shape: 'flight', staminaCost: 2, budgetMod: -1 })
++    expect(MOVES['power.flight']).toMatchObject({ staminaCost: 1, move: { shape: 'flight', budgetMod: 0 } })
++    expect(MOVES['power.flight-swift']).toMatchObject({ staminaCost: 0, move: { shape: 'flight', budgetMod: 1 } })
++    expect(MOVES['power.flight-labored']).toMatchObject({ staminaCost: 2, move: { shape: 'flight', budgetMod: -1 } })
+   })
+   it('the drake grants the standard rung, wings before feet, and no half-step (beasts get neither)', () => {
+diff --git a/test/frost-root-taunt.test.ts b/test/frost-root-taunt.test.ts
+index 50ef23d..165c6e4 100644
+--- a/test/frost-root-taunt.test.ts
++++ b/test/frost-root-taunt.test.ts
+@@ -1,2 +1,3 @@
++// refactor.one-action-type (2026-09-04), Law 10 reason: the row's SHAPE moved by ruling — attack fields read under `.attack`, reach is `range`, move fields under `.move`, the registries are one (`ctx.actions`) and the unit's lists are views (attackIdsOf/powerIdsOf). No assertion changed.
+ // capability.frost / capability.root / capability.taunt (2026-09-03) — three
+ // Codex status rows that were named gaps, each one flag read where it belongs.
+@@ -6,4 +7,5 @@
+ //   Taunt: "Forces the taunted unit to target whoever taunted it." Angela:
+ //          "It can keep its same AI, like melee or ranged."
++import { attackIdsOf, powerIdsOf } from '../src/core/action.js'
+ import { describe, expect, it } from 'vitest'
+ import { createCustomBattle } from '../src/core/setup.js'
+@@ -34,5 +36,5 @@ describe('Frost', () => {
+     const ctx = createCustomBattle([{ type: 'test-mage', hex: hexId(5, 5) }], [{ type: 'test-zombie', hex: hexId(5, 8) }])
+     const m = ctx.state.units[0]!, z = ctx.state.units[1]!
+-    const magic = m.attacks.find((a) => ctx.attacks[a]!.damageType === 'magic')!
++    const magic = attackIdsOf(ctx, m).find((a) => ctx.actions[a]!.attack!.damageType === 'magic')!
+     const before = preview(ctx, m.id, z.id, magic).damageOnHit
+     applyStatus(ctx, z.id, 'status.frost', 3, 'test')
+diff --git a/test/green-drake.test.ts b/test/green-drake.test.ts
+index cea3d38..55108be 100644
+--- a/test/green-drake.test.ts
++++ b/test/green-drake.test.ts
+@@ -1,2 +1,3 @@
++// refactor.one-action-type (2026-09-04), Law 10 reason: the row's SHAPE moved by ruling — attack fields read under `.attack`, reach is `range`, move fields under `.move`, the registries are one (`ctx.actions`) and the unit's lists are views (attackIdsOf/powerIdsOf). No assertion changed.
+ // The Green Drake — a PLAYER BEAST, redesigned by Angela 2026-08-20 and
+ // recorded in the Codex SOURCE (settled.json hero ruling → §10 hero table +
+@@ -28,7 +29,7 @@ describe('the block — her dictation, verbatim', () => {
+   it('the two attacks — Poison Breath and the disambiguated bite, Snap', () => {
+     const b = ATTACKS['attack.drake.poison-breath']!
+-    expect([b.kind, b.stat, b.bonus, b.damageType, b.staminaCost]).toEqual(['ranged', 'precision', 0, 'magic', 2])
++    expect([b.attack.kind, b.attack.stat, b.attack.bonus, b.attack.damageType, b.staminaCost]).toEqual(['ranged', 'precision', 0, 'magic', 2])
+     const s = ATTACKS['attack.drake.snap']!
+-    expect([s.kind, s.stat, s.bonus, s.damageType, s.staminaCost]).toEqual(['melee', 'strength', 0, 'physical', 1])
++    expect([s.attack.kind, s.attack.stat, s.attack.bonus, s.attack.damageType, s.staminaCost]).toEqual(['melee', 'strength', 0, 'physical', 1])
+   })
+ })
+diff --git a/test/ground-layers.test.ts b/test/ground-layers.test.ts
+index f728d1e..8e630f4 100644
+--- a/test/ground-layers.test.ts
++++ b/test/ground-layers.test.ts
+@@ -1,2 +1,3 @@
++// refactor.one-action-type (2026-09-04), Law 10 reason: the row's SHAPE moved by ruling — attack fields read under `.attack`, reach is `range`, move fields under `.move`, the registries are one (`ctx.actions`) and the unit's lists are views (attackIdsOf/powerIdsOf). No assertion changed.
+ // capability.ground-layers (2026-09-03) — rule.ground-layers: burning · frost ·
+ // poisoned · darkness painted onto arbitrary hexes at runtime; a hex carries
+@@ -33,5 +34,5 @@ describe('painting', () => {
+     beginActivation(ctx, w.id, 'test')
+     const walk = movePowerOf(ctx, w, 'path')!
+-    executeMove(ctx, w.id, pathTo(reachable(ctx, w, walk.budgetMod), w.hex, hexId(5, 4)), walk)
++    executeMove(ctx, w.id, pathTo(reachable(ctx, w, walk.move.budgetMod), w.hex, hexId(5, 4)), walk)
+     expect(valueOf(w, 'status.burn')).toBe(1)   // the entry beat
+     endActivation(ctx, w.id, 'test'); endOfActivation(ctx, w.id)
+diff --git a/test/ground-shape.test.ts b/test/ground-shape.test.ts
+index 653443d..813fe0d 100644
+--- a/test/ground-shape.test.ts
++++ b/test/ground-shape.test.ts
+@@ -1,2 +1,3 @@
++// refactor.one-action-type (2026-09-04), Law 10 reason: the row's SHAPE moved by ruling — attack fields read under `.attack`, reach is `range`, move fields under `.move`, the registries are one (`ctx.actions`) and the unit's lists are views (attackIdsOf/powerIdsOf). No assertion changed.
+ // RULED 2026-09-03 (Angela, DECISIONS.md "the retroactive questions"): every
+ // ground status is ONE shape — "when you step on them, you gain one, and if
+@@ -31,5 +32,5 @@ describe('the one ground shape', () => {
+     beginActivation(ctx, w.id, 'test')
+     const walk = movePowerOf(ctx, w, 'path')!
+-    executeMove(ctx, w.id, pathTo(reachable(ctx, w, walk.budgetMod), w.hex, hexId(5, 4)), walk)
++    executeMove(ctx, w.id, pathTo(reachable(ctx, w, walk.move.budgetMod), w.hex, hexId(5, 4)), walk)
+     expect(valueOf(w, 'status.frost')).toBe(1)
+     endActivation(ctx, w.id, 'test'); endOfActivation(ctx, w.id)
+diff --git a/test/hero-pack.test.ts b/test/hero-pack.test.ts
+index 3ff9059..798480f 100644
+--- a/test/hero-pack.test.ts
++++ b/test/hero-pack.test.ts
+@@ -1,2 +1,3 @@
++// refactor.one-action-type (2026-09-04), Law 10 reason: the row's SHAPE moved by ruling — attack fields read under `.attack`, reach is `range`, move fields under `.move`, the registries are one (`ctx.actions`) and the unit's lists are views (attackIdsOf/powerIdsOf). No assertion changed.
+ // The prologue party — content.hero-pack (2026-08-26).
+ //
+@@ -70,7 +71,7 @@ describe('the Hunter is a real hero from the Codex', () => {
+     expect(fieldedDef(HUNTER).attacks).toEqual(['attack.longbow.shot', 'attack.longbow.long-shot', 'attack.punch'])
+     expect(ATTACKS['attack.longbow.shot']).toMatchObject(
+-      { kind: 'ranged', reach: 6, stat: 'precision', bonus: 1, staminaCost: 1 })
++      { range: 6, staminaCost: 1, attack: { kind: 'ranged', stat: 'precision', bonus: 1 } })
+     expect(ATTACKS['attack.longbow.long-shot']).toMatchObject(
+-      { kind: 'ranged', reach: 7, bonus: 2, staminaCost: 2 })
++      { range: 7, staminaCost: 2, attack: { kind: 'ranged', bonus: 2 } })
+   })
+ 
+diff --git a/test/integration.test.ts b/test/integration.test.ts
+index fa940d3..7f5241d 100644
+--- a/test/integration.test.ts
++++ b/test/integration.test.ts
+@@ -1,2 +1,3 @@
++// refactor.one-action-type (2026-09-04), Law 10 reason: the row's SHAPE moved by ruling — attack fields read under `.attack`, reach is `range`, move fields under `.move`, the registries are one (`ctx.actions`) and the unit's lists are views (attackIdsOf/powerIdsOf). No assertion changed.
+ import { describe, it, expect } from 'vitest'
+ import { createBattle, createCustomBattle, fieldedDef } from '../src/core/setup.js'
+@@ -155,6 +156,6 @@ describe('gate 1 — everything appears in the log', () => {
+       kit.forEach((a, i) => {
+         if (a.area) return   // area swings are chosen by areaSwing(), outside declared order
+-        const shadowed = kit.slice(0, i).some((b) => b.kind === a.kind && b.staminaCost <= a.staminaCost)
+-        const melee = fielded.ai === 'melee-aggressive' && a.kind === 'ranged'
++        const shadowed = kit.slice(0, i).some((b) => b.attack.kind === a.attack.kind && b.staminaCost <= a.staminaCost)
++        const melee = fielded.ai === 'melee-aggressive' && a.attack.kind === 'ranged'
+         if (shadowed || melee) structurallyDead.push(`${t}:${a.id}`)
+       })
+diff --git a/test/item-powers.test.ts b/test/item-powers.test.ts
+index 954e9d1..69535a0 100644
+--- a/test/item-powers.test.ts
++++ b/test/item-powers.test.ts
+@@ -86,5 +86,7 @@ describe('Block — protection now, a permanent Dodge price, escalating', () =>
+     expect(effective(ctx, osric, 'dodge').value).toBe(dodge0 - 5)
+     // "Every use costs another 5 Dodge" — no counter needed, it applies again.
+-    ctx.state.turn += 3 // past the cooldown
++    // LAW 10 — 2026-09-04 (refactor.one-action-type): cooldown N = skip N Turns
++    // (2-ACTIONS-SETTLED.md:71); Block's 3 means ready 4 Turns on, not 3 (FINDING 32).
++    ctx.state.turn += 4 // past the cooldown
+     osric.primaryUsed = false
+     osric.stamina = osric.maxStamina
+diff --git a/test/items-per-unit.test.ts b/test/items-per-unit.test.ts
+index 6248d21..1271003 100644
+--- a/test/items-per-unit.test.ts
++++ b/test/items-per-unit.test.ts
+@@ -1,2 +1,3 @@
++// refactor.one-action-type (2026-09-04), Law 10 reason: the row's SHAPE moved by ruling — attack fields read under `.attack`, reach is `range`, move fields under `.move`, the registries are one (`ctx.actions`) and the unit's lists are views (attackIdsOf/powerIdsOf). No assertion changed.
+ // seam.items-per-unit (2026-09-02, ITEMS-PLAN.md §2 §4 §5) — items go into
+ // battle. Ruled 2026-09-02 (Andrew): "the items should go into battle … They
+@@ -8,4 +9,5 @@
+ import { readFileSync } from 'node:fs'
+ import { join } from 'node:path'
++import { attackIdsOf, powerIdsOf } from '../src/core/action.js'
+ import { describe, expect, it } from 'vitest'
+ import { createBattle, fieldedDef } from '../src/core/setup.js'
+@@ -85,6 +87,6 @@ describe('heroItems — the fielding decides the kit', () => {
+     const ctx = createBattle({ ...base, heroes: ['hero.base.ranger-aggressive'], heroHexes: [247], heroItems: [['item.halberd']] })
+     const h = ctx.state.units[0]!
+-    expect(h.attacks).toEqual(['attack.halberd.hack', 'attack.halberd.cleave', 'attack.punch'])
+-    expect(h.attacks).not.toContain('attack.longbow.shot')
++    expect(attackIdsOf(ctx, h)).toEqual(['attack.halberd.hack', 'attack.halberd.cleave', 'attack.punch'])
++    expect(attackIdsOf(ctx, h)).not.toContain('attack.longbow.shot')
+     expect(h.role).toBe('melee')
+     expect(h.ai).toBe('melee-aggressive')
+@@ -97,7 +99,8 @@ describe('heroItems — the fielding decides the kit', () => {
+     const a = createBattle({ ...base, heroes: ['hero.base.ranger-aggressive'], heroHexes: [247] }).state.units[0]!
+     const b = createBattle({ ...base, heroes: ['hero.base.ranger-aggressive'], heroHexes: [247], heroItems: [['item.longbow', 'item.thick-hide']] }).state.units[0]!
+-    const c = createBattle({ ...base, heroes: ['hero.base.ranger-aggressive'], heroHexes: [247], heroItems: [[]] }).state.units[0]!
++    const cc = createBattle({ ...base, heroes: ['hero.base.ranger-aggressive'], heroHexes: [247], heroItems: [[]] })
++    const c = cc.state.units[0]!
+     expect(b).toEqual(a)
+-    expect(c.attacks).toEqual(['attack.punch'])
++    expect(attackIdsOf(cc, c)).toEqual(['attack.punch'])
+     expect(c.maxHp).toBe(6)
+     // the seed sequence is untouched by items: the same battle, either way
+diff --git a/test/movement-bonus.test.ts b/test/movement-bonus.test.ts
+index cd4db8f..983b5ff 100644
+--- a/test/movement-bonus.test.ts
++++ b/test/movement-bonus.test.ts
+@@ -1,2 +1,3 @@
++// refactor.one-action-type (2026-09-04), Law 10 reason: the row's SHAPE moved by ruling — attack fields read under `.attack`, reach is `range`, move fields under `.move`, the registries are one (`ctx.actions`) and the unit's lists are views (attackIdsOf/powerIdsOf). No assertion changed.
+ // The class bonus moves — movement.bonus-actions (2026-08-25).
+ //
+@@ -19,7 +20,7 @@ import { hexId } from './board16.js'
+ describe('the rows are the Codex rows — data, not code', () => {
+   it('Leap / Focus / Devotion carry their published shapes', () => {
+-    expect(MOVES['power.leap']).toMatchObject({ shape: 'sidestep', stepRange: 2, staminaCost: 2, cooldown: 0 })
+-    expect(MOVES['power.focus']).toMatchObject({ shape: 'sidestep', stepRange: 0, staminaCost: 0, cooldown: 0 })
+-    expect(MOVES['power.devotion']).toMatchObject({ shape: 'sidestep', stepRange: 0, staminaCost: 0, cooldown: 0 })
++    expect(MOVES['power.leap']).toMatchObject({ staminaCost: 2, cooldown: 0, move: { shape: 'sidestep', stepRange: 2 } })
++    expect(MOVES['power.focus']).toMatchObject({ staminaCost: 0, cooldown: 0, move: { shape: 'sidestep', stepRange: 0 } })
++    expect(MOVES['power.devotion']).toMatchObject({ staminaCost: 0, cooldown: 0, move: { shape: 'sidestep', stepRange: 0 } })
+     expect(stepRangeOf(MOVES['power.sidestep']!)).toBe(1) // absent = the classic half-step
+   })
+diff --git a/test/movement-powers.test.ts b/test/movement-powers.test.ts
+index 7c8d1fb..2607dfd 100644
+--- a/test/movement-powers.test.ts
++++ b/test/movement-powers.test.ts
+@@ -1,2 +1,3 @@
++// refactor.one-action-type (2026-09-04), Law 10 reason: the row's SHAPE moved by ruling — attack fields read under `.attack`, reach is `range`, move fields under `.move`, the registries are one (`ctx.actions`) and the unit's lists are views (attackIdsOf/powerIdsOf). No assertion changed.
+ // Movement powers — Angela 2026-08-21: "Movement is supposed to be a type of
+ // activation. There are different abilities in movement, like the sidestep,
+@@ -27,7 +28,7 @@ const valueOf = (u: { statuses: { id: string; value: number }[] }, id: string) =
+ describe('the rows are the Codex rows — data, not code', () => {
+   it('Move / Sidestep / Side Roll carry their published costs and cooldowns', () => {
+-    expect(MOVES['power.move']).toMatchObject({ shape: 'path', staminaCost: 1, cooldown: 0 })
+-    expect(MOVES['power.sidestep']).toMatchObject({ shape: 'sidestep', staminaCost: 0, cooldown: 1 })
+-    expect(MOVES['power.side-roll']).toMatchObject({ shape: 'sidestep', staminaCost: 1, cooldown: 0 })
++    expect(MOVES['power.move']).toMatchObject({ staminaCost: 1, cooldown: 0, move: { shape: 'path' } })
++    expect(MOVES['power.sidestep']).toMatchObject({ staminaCost: 0, cooldown: 1, move: { shape: 'sidestep' } })
++    expect(MOVES['power.side-roll']).toMatchObject({ staminaCost: 1, cooldown: 0, move: { shape: 'sidestep' } })
+   })
+ 
+diff --git a/test/multihit.test.ts b/test/multihit.test.ts
+index 4b314f5..20261c8 100644
+--- a/test/multihit.test.ts
++++ b/test/multihit.test.ts
+@@ -1,2 +1,3 @@
++// refactor.one-action-type (2026-09-04), Law 10 reason: the row's SHAPE moved by ruling — attack fields read under `.attack`, reach is `range`, move fields under `.move`, the registries are one (`ctx.actions`) and the unit's lists are views (attackIdsOf/powerIdsOf). No assertion changed.
+ // attack.multihit (2026-09-03) — Angela 2026-08-15: "An attack is a list of
+ // hits, resolved one at a time. Each hit runs the full cycle — damage,
+@@ -14,5 +15,5 @@ import { hexId } from './board16.js'
+ describe('an attack of two hits', () => {
+   it('the Rake declares two swings, numbered, and each resolves its own roll; stamina and the primary are paid once', () => {
+-    expect(ATTACKS['attack.ghoul.rake']!.hits).toBe(2)
++    expect(ATTACKS['attack.ghoul.rake']!.attack.hits).toBe(2)
+     const ctx = createCustomBattle([{ type: 'test-warrior', hex: hexId(5, 5) }], [{ type: 'unit.ghoul', hex: hexId(5, 6) }])
+     const g = ctx.state.units[1]!, w = ctx.state.units[0]!
+diff --git a/test/one-damage-function.test.ts b/test/one-damage-function.test.ts
+index fdcd0cb..f5e608a 100644
+--- a/test/one-damage-function.test.ts
++++ b/test/one-damage-function.test.ts
+@@ -1,2 +1,3 @@
++// refactor.one-action-type (2026-09-04), Law 10 reason: the row's SHAPE moved by ruling — attack fields read under `.attack`, reach is `range`, move fields under `.move`, the registries are one (`ctx.actions`) and the unit's lists are views (attackIdsOf/powerIdsOf). No assertion changed.
+ // Law 1, restored: powers resolve through THE damage pipeline. Before
+ // 2026-08-20, ability.ts hand-rolled a second one that skipped SOURCE_STATUS,
+@@ -35,5 +36,5 @@ describe('one damage function (Law 1)', () => {
+     const { ctx, mage, zombie } = board()
+     applyStatus(ctx, mage.id, 'status.test-weak', 3, 'test')
+-    const r = resolvePowerDamage(ctx, mage, zombie, ctx.abilities['power.test-mage.bolt']!, 3, 0)
++    const r = resolvePowerDamage(ctx, mage, zombie, ctx.actions['power.test-mage.bolt']!, 3, 0)
+     expect(r.value).toBe(5)
+     expect(r.ledger.some((row) => row.name === 'SOURCE_STATUS' && row.delta === -3)).toBe(true)
+@@ -62,5 +63,5 @@ describe('one damage function (Law 1)', () => {
+   it('powers still cannot crit — Design Law 23 survives the unification', () => {
+     const { ctx, mage, zombie } = board()
+-    const r = resolvePowerDamage(ctx, mage, zombie, ctx.abilities['power.test-mage.bolt']!)
++    const r = resolvePowerDamage(ctx, mage, zombie, ctx.actions['power.test-mage.bolt']!)
+     expect(r.ledger.some((row) => row.name === 'CRIT')).toBe(false)
+   })
+diff --git a/test/pack-moves.test.ts b/test/pack-moves.test.ts
+index 7bf1047..e2c6a60 100644
+--- a/test/pack-moves.test.ts
++++ b/test/pack-moves.test.ts
+@@ -1,2 +1,3 @@
++// refactor.one-action-type (2026-09-04), Law 10 reason: the row's SHAPE moved by ruling — attack fields read under `.attack`, reach is `range`, move fields under `.move`, the registries are one (`ctx.actions`) and the unit's lists are views (attackIdsOf/powerIdsOf). No assertion changed.
+ // pack.moves (2026-09-02) — the engine reads its movement powers from the
+ // Codex. Angela 2026-08-21: "Movement is a choice… It shouldn't be hard-coded.
+@@ -43,13 +44,13 @@ describe('the rows come from the Codex, and only from the Codex', () => {
+       expect(m.name).toBe(r.name)
+       if (/Move exactly (\d) hex/.test(r.description)) {
+-        expect(m.shape).toBe('sidestep')
+-        expect(m.stepRange).toBe(parseInt(r.description.match(/Move exactly (\d) hex/)![1]!, 10))
++        expect(m.move.shape).toBe('sidestep')
++        expect(m.move.stepRange).toBe(parseInt(r.description.match(/Move exactly (\d) hex/)![1]!, 10))
+       }
+-      if (/Do not move at all/.test(r.description)) { expect(m.shape).toBe('sidestep'); expect(m.stepRange).toBe(0) }
+-      if (/^Movement action\. Move up to your Movement/.test(r.description)) expect(m.shape).toBe('flight')
+-      if (/^Move up to your Movement, hex by hex/.test(r.description)) expect(m.shape).toBe('path')
+-      if (/It is a bonus move/.test(r.description)) expect(m.budgetMod, `${r.id} a bonus move does NOT add the Movement stat`).toBe(0)
+-      if (/Movement \+ 1/.test(r.description)) expect(m.budgetMod).toBe(1)
+-      if (/Movement - 1/.test(r.description)) expect(m.budgetMod).toBe(-1)
++      if (/Do not move at all/.test(r.description)) { expect(m.move.shape).toBe('sidestep'); expect(m.move.stepRange).toBe(0) }
++      if (/^Movement action\. Move up to your Movement/.test(r.description)) expect(m.move.shape).toBe('flight')
++      if (/^Move up to your Movement, hex by hex/.test(r.description)) expect(m.move.shape).toBe('path')
++      if (/It is a bonus move/.test(r.description)) expect(m.move.budgetMod, `${r.id} a bonus move does NOT add the Movement stat`).toBe(0)
++      if (/Movement \+ 1/.test(r.description)) expect(m.move.budgetMod).toBe(1)
++      if (/Movement - 1/.test(r.description)) expect(m.move.budgetMod).toBe(-1)
+       if (/gain \+(\d) Strength until the end of the Turn/.test(r.description)) {
+         expect(m.effects).toContainEqual({ kind: 'statMod', stat: 'strength', value: parseInt(r.description.match(/gain \+(\d) Strength/)![1]!, 10), until: 'endOfTurn' })
+diff --git a/test/power-pool.test.ts b/test/power-pool.test.ts
+index ec2758d..5eecba6 100644
+--- a/test/power-pool.test.ts
++++ b/test/power-pool.test.ts
+@@ -1,2 +1,3 @@
++// refactor.one-action-type (2026-09-04), Law 10 reason: the row's SHAPE moved by ruling — attack fields read under `.attack`, reach is `range`, move fields under `.move`, the registries are one (`ctx.actions`) and the unit's lists are views (attackIdsOf/powerIdsOf). No assertion changed.
+ // capability.power-pool (2026-09-03) — ENEMY-REVIEW.md P1, ruled 2026-08-23:
+ // "Power is the enemy side's Magic: one global integer for the whole enemy
+@@ -6,4 +7,5 @@
+ // Every number here is read off the rows (the Lieutenant Demon's Gathering
+ // Doom, the Necromancer's Necro Bolt at +Power, Necro Strike at +½ Power).
++import { attackIdsOf, powerIdsOf } from '../src/core/action.js'
+ import { describe, expect, it } from 'vitest'
+ import { createBattle, createCustomBattle } from '../src/core/setup.js'
+@@ -31,15 +33,15 @@ describe('consumers read the pool', () => {
+     const n = ctx.state.units[1]!, w = ctx.state.units[0]!
+     const bolt = ATTACKS['attack.necromancer.necro-bolt']!, strike = ATTACKS['attack.necromancer.necro-strike']!
+-    expect(bolt.powerScale).toBe(1)
++    expect(bolt.attack.powerScale).toBe(1)
+     const at0 = preview(ctx, n.id, w.id, bolt.id)
+     expect(at0.damageOnHit).toBe(preview(ctx, n.id, w.id, bolt.id).damageOnHit)
+     gainPower(ctx, 3, 'test')
+     const at3 = preview(ctx, n.id, w.id, bolt.id)
+-    expect(at3.damageOnHit - at0.damageOnHit).toBe(powerShare(3, bolt.powerScale!))
++    expect(at3.damageOnHit - at0.damageOnHit).toBe(powerShare(3, bolt.attack.powerScale!))
+     n.hex = hexId(8, 9)   // adjacent for the strike
+     const s3 = preview(ctx, n.id, w.id, strike.id)
+     ctx.state.power = 0
+     const s0 = preview(ctx, n.id, w.id, strike.id)
+-    expect(s3.damageOnHit - s0.damageOnHit).toBe(powerShare(3, strike.powerScale!))
++    expect(s3.damageOnHit - s0.damageOnHit).toBe(powerShare(3, strike.attack.powerScale!))
+   })
+ 
+@@ -48,7 +50,7 @@ describe('consumers read the pool', () => {
+     gainPower(ctx, 5, 'test')
+     const w = ctx.state.units[0]!, z = ctx.state.units[1]!
+-    const pv = preview(ctx, w.id, z.id, w.attacks[0]!)
++    const pv = preview(ctx, w.id, z.id, attackIdsOf(ctx, w)[0]!)
+     expect(pv.accLedger.length).toBeGreaterThan(0)
+-    const dmgRows = (ctx.attacks[w.attacks[0]!]!.powerScale ?? 0)
++    const dmgRows = (ctx.actions[attackIdsOf(ctx, w)[0]!]!.attack!.powerScale ?? 0)
+     expect(dmgRows).toBe(0)
+   })
+diff --git a/test/protection.test.ts b/test/protection.test.ts
+index 16d8401..21300d6 100644
+--- a/test/protection.test.ts
++++ b/test/protection.test.ts
+@@ -1,2 +1,3 @@
++// refactor.one-action-type (2026-09-04), Law 10 reason: the row's SHAPE moved by ruling — attack fields read under `.attack`, reach is `range`, move fields under `.move`, the registries are one (`ctx.actions`) and the unit's lists are views (attackIdsOf/powerIdsOf). No assertion changed.
+ // Protection — the pool shape made real. Codex (40 uses): "Protection decays 1
+ // a Phase and is spent by what it absorbs, so it limits itself." Absorbed at
+@@ -55,5 +56,5 @@ describe('a depleting pool that also decays (COMBAT-SEQUENCE)', () => {
+     z.mods.push({ stat: 'resist', op: 'add', value: 2, source: 'test', scope: 'unit' })
+     applyStatus(ctx, z.id, 'status.protection', 3, 'test')
+-    const r = resolvePowerDamage(ctx, m, z, ctx.abilities['power.test-mage.bolt']!, 3, 3)
++    const r = resolvePowerDamage(ctx, m, z, ctx.actions['power.test-mage.bolt']!, 3, 3)
+     const names = r.ledger.map((row) => row.name)
+     expect(names.indexOf('PROTECTION')).toBeGreaterThan(-1)
+diff --git a/test/rulings-2026-08-15.test.ts b/test/rulings-2026-08-15.test.ts
+index f2808eb..dee4ac1 100644
+--- a/test/rulings-2026-08-15.test.ts
++++ b/test/rulings-2026-08-15.test.ts
+@@ -1,6 +1,7 @@
++// refactor.one-action-type (2026-09-04), Law 10 reason: the row's SHAPE moved by ruling — attack fields read under `.attack`, reach is `range`, move fields under `.move`, the registries are one (`ctx.actions`) and the unit's lists are views (attackIdsOf/powerIdsOf). No assertion changed.
+ import { describe, it, expect } from 'vitest'
+ import { createBattle, createCustomBattle } from '../src/core/setup.js'
+ import { runBattle } from '../src/core/battle.js'
+-import { canAttack, preview, resolveAccuracy, inMelee } from '../src/core/pipeline.js'
++import { canAttack, preview, resolveAccuracy, inMelee, attackDef } from '../src/core/pipeline.js'
+ import { BLEED_OUT_COUNTER } from '../src/core/settle.js'
+ import { hexId } from './board16.js'
+@@ -54,5 +55,5 @@ describe('ranged attacks and adjacency (Angela 2026-08-15)', () => {
+   it('no adjacent enemy means no penalty at all — the ledger has no ADJACENT row', () => {
+     const ctx = board(false)
+-    const acc = resolveAccuracy(ctx, ctx.state.units[0]!, ctx.state.units[1]!, ctx.attacks['attack.test-ranger.bow']!)
++    const acc = resolveAccuracy(ctx, ctx.state.units[0]!, ctx.state.units[1]!, attackDef(ctx, 'attack.test-ranger.bow'))
+     expect(acc.ledger.some((r) => r.name === 'ADJACENT')).toBe(false)
+     // ranger 90, four hexes = −5 under the 2026-08-26 grace window (Law 10:
+@@ -83,5 +84,5 @@ describe('ranged attacks and adjacency (Angela 2026-08-15)', () => {
+     const ctx = board(true)
+     expect(canAttack(ctx, 0, 1, 'attack.punch')).toBe(true)
+-    const acc = resolveAccuracy(ctx, ctx.state.units[0]!, ctx.state.units[1]!, ctx.attacks['attack.punch']!)
++    const acc = resolveAccuracy(ctx, ctx.state.units[0]!, ctx.state.units[1]!, attackDef(ctx, 'attack.punch'))
+     expect(acc.ledger.some((r) => r.name === 'ADJACENT')).toBe(false)
+   })
+diff --git a/test/scenario.test.ts b/test/scenario.test.ts
+index 09b9952..83028be 100644
+--- a/test/scenario.test.ts
++++ b/test/scenario.test.ts
+@@ -104,9 +104,12 @@ describe('fielding a scenario', () => {
+   })
+ 
+-  it('the puppy can move and cannot attack — the gap its block will close', () => {
+-    // NOT a passing grade, a recorded one. maxStamina 0 came in with the ported
+-    // enemy block and attack.fangs.bite costs 1 Stamina, so hero-side it can
+-    // never swing. Asserted so that when her dictated block lands, this test
+-    // fails and names the reason instead of the behaviour changing silently.
++  it('the puppy moves and bites — a unit without a stamina pool pays no stamina, for an attack as for a move', () => {
++    // WAS a recorded gap (2026-08-21): maxStamina 0 came in with the ported enemy
++    // block and attack.fangs.bite costs 1 Stamina, so hero-side it could never
++    // swing — while its MOVES cost it nothing, because the movement path already
++    // read "no pool = pays none". LAW 10 — 2026-09-04 (refactor.one-action-type):
++    // the limits are ONE rule on every action (action.ts staminaCostOf), so the
++    // bite is free the way the walk was. The block is still undictated
++    // (maxStamina stays 0); this test still fails the day that changes.
+     const ctx = createBattle(scenarioOptions(scenarioDef(BEASTS)))
+     runBattle(ctx)
+@@ -114,5 +117,6 @@ describe('fielding a scenario', () => {
+     expect(pup.maxStamina, 'block dictated? update this test and DECISIONS.md').toBe(0)
+     const swings = ctx.events.filter((e) => e.type === 'attack.declared' && e.actor === pup.id)
+-    expect(swings.length, 'the puppy attacked — its block must have changed').toBe(0)
++    expect(swings.length, 'the puppy bites now').toBeGreaterThan(0)
++    expect(ctx.events.some((e) => e.type === 'stamina.spent' && e.actor === pup.id), 'and pays nothing — it has no pool').toBe(false)
+     expect(ctx.events.some((e) => e.type === 'moved' && e.actor === pup.id), 'it should still move').toBe(true)
+   })
+diff --git a/test/spirit-snake.test.ts b/test/spirit-snake.test.ts
+index c7a0092..ae03fb1 100644
+--- a/test/spirit-snake.test.ts
++++ b/test/spirit-snake.test.ts
+@@ -1,2 +1,3 @@
++// refactor.one-action-type (2026-09-04), Law 10 reason: the row's SHAPE moved by ruling — attack fields read under `.attack`, reach is `range`, move fields under `.move`, the registries are one (`ctx.actions`) and the unit's lists are views (attackIdsOf/powerIdsOf). No assertion changed.
+ // The Spirit Snake — a PLAYER BEAST. Angela 2026-08-20: "These beasts were
+ // meant to be player beasts... Spirit Snake is supposed to be a hero unit,"
+@@ -8,5 +9,5 @@
+ import { describe, expect, it } from 'vitest'
+ import { createBattle, createCustomBattle } from '../src/core/setup.js'
+-import { performAttack, preview, resolveAccuracy } from '../src/core/pipeline.js'
++import { performAttack, preview, resolveAccuracy, attackDef } from '../src/core/pipeline.js'
+ import { beginActivation } from '../src/core/mutate.js'
+ import { valueOf } from '../src/core/status.js'
+@@ -68,5 +69,5 @@ describe('fielded in a custom battle, it plays like her block says', () => {
+   it('dodge 50 makes it slippery: a zombie bite has only a 15% chance to touch it', () => {
+     const { ctx, s, z } = board()
+-    expect(resolveAccuracy(ctx, z, s, ctx.attacks['attack.test-zombie.bite']!).value).toBe(15)  // 65 − 50
++    expect(resolveAccuracy(ctx, z, s, attackDef(ctx, 'attack.test-zombie.bite')).value).toBe(15)  // 65 − 50
+   })
+ })
+diff --git a/test/status.test.ts b/test/status.test.ts
+index 3d18da4..dddcbe3 100644
+--- a/test/status.test.ts
++++ b/test/status.test.ts
+@@ -1,2 +1,4 @@
++// refactor.one-action-type (2026-09-04), Law 10 reason: the row's SHAPE moved by ruling — attack fields read under `.attack`, reach is `range`, move fields under `.move`, the registries are one (`ctx.actions`) and the unit's lists are views (attackIdsOf/powerIdsOf). No assertion changed.
++import { damageSourceOfAttack } from '../src/core/pipeline.js'
+ import { describe, it, expect } from 'vitest'
+ import { createBattle, createCustomBattle } from '../src/core/setup.js'
+@@ -168,5 +170,5 @@ describe('the status system itself', () => {
+     applyStatus(ctx, 0, 'status.testward', 2, 'test')
+     const d = resolveDamage(ctx, ctx.state.units[1]!, ctx.state.units[0]!,
+-      ATTACKS['attack.test-zombie.bite']!, false, 0, 2)
++      damageSourceOfAttack(ATTACKS['attack.test-zombie.bite']!), false, 0, 2)
+     expect(d.ledger.reduce((s, r) => s + r.delta, 0)).toBe(d.value)
+     expect(d.absorbed).toBe(2)
+diff --git a/test/vision.test.ts b/test/vision.test.ts
+index 18f1ade..d7682d3 100644
+--- a/test/vision.test.ts
++++ b/test/vision.test.ts
+@@ -1,2 +1,3 @@
++// refactor.one-action-type (2026-09-04), Law 10 reason: the row's SHAPE moved by ruling — attack fields read under `.attack`, reach is `range`, move fields under `.move`, the registries are one (`ctx.actions`) and the unit's lists are views (attackIdsOf/powerIdsOf). No assertion changed.
+ // capability.vision (2026-09-03) — COMBAT-DESIGN §4, re-ruled 2026-09-03:
+ // effective Vision = 6 (the battlefield) + the stat (0) + mods, floored at 1.
+@@ -5,4 +6,5 @@
+ // radius); heroes light within Vision on the hero phase; burning reveals
+ // regardless of range; you cannot target what you cannot see (switch).
++import { attackIdsOf, powerIdsOf } from '../src/core/action.js'
+ import { describe, expect, it } from 'vitest'
+ import { createBattle, createCustomBattle } from '../src/core/setup.js'
+@@ -39,5 +41,5 @@ describe('darkness', () => {
+     expect(canSee(ctx, r, far)).toBe(false)
+     expect(canSee(ctx, r, near)).toBe(true)
+-    expect(canAttack(ctx, r.id, far.id, r.attacks[0]!)).toBe(false)
++    expect(canAttack(ctx, r.id, far.id, attackIdsOf(ctx, r)[0]!)).toBe(false)
+     applyStatus(ctx, far.id, 'status.burn', 1, 'test')
+     expect(canSee(ctx, r, far)).toBe(true)
+diff --git a/test/zombie-rot.test.ts b/test/zombie-rot.test.ts
+index e97f2f1..287b7d2 100644
+--- a/test/zombie-rot.test.ts
++++ b/test/zombie-rot.test.ts
+@@ -1,2 +1,3 @@
++// refactor.one-action-type (2026-09-04), Law 10 reason: the row's SHAPE moved by ruling — attack fields read under `.attack`, reach is `range`, move fields under `.move`, the registries are one (`ctx.actions`) and the unit's lists are views (attackIdsOf/powerIdsOf). No assertion changed.
+ // trigger.zombie.rot — 20% onDamage, poison 1 to the target. Replaces the
+ // hardcoded 100% `applies` rider that lived on attack.zombie.basic: the exact
+@@ -10,5 +11,5 @@ import { runBattle } from '../src/core/battle.js'
+ describe('trigger.zombie.rot', () => {
+   it('the hardcode is gone: no attack carries a poison rider anymore', () => {
+-    for (const a of Object.values(ATTACKS)) expect(a.applies).toBeUndefined()
++    for (const a of Object.values(ATTACKS)) expect(a.attack.applies).toBeUndefined()
+   })
+ 
+diff --git a/test/zone-of-control.test.ts b/test/zone-of-control.test.ts
+index 382634c..68a1598 100644
+--- a/test/zone-of-control.test.ts
++++ b/test/zone-of-control.test.ts
+@@ -1,2 +1,3 @@
++// refactor.one-action-type (2026-09-04), Law 10 reason: the row's SHAPE moved by ruling — attack fields read under `.attack`, reach is `range`, move fields under `.move`, the registries are one (`ctx.actions`) and the unit's lists are views (attackIdsOf/powerIdsOf). No assertion changed.
+ // movement.zone-of-control + movement.attack-of-opportunity (2026-09-03).
+ //
+@@ -23,5 +24,5 @@ describe('zone of control', () => {
+     beginActivation(ctx, w.id, 'test')
+     const walk = movePowerOf(ctx, w, 'path')!
+-    const reach = reachable(ctx, w, walk.budgetMod)
++    const reach = reachable(ctx, w, walk.move.budgetMod)
+     const path = pathTo(reach, w.hex, hexId(6, 5))
+     expect(path.at(-1)).toBe(hexId(6, 5))
+@@ -47,5 +48,5 @@ describe('zone of control', () => {
+     beginActivation(ctx, w.id, 'test')
+     const walk = movePowerOf(ctx, w, 'path')!
+-    executeMove(ctx, w.id, pathTo(reachable(ctx, w, walk.budgetMod), w.hex, hexId(6, 5)), walk)
++    executeMove(ctx, w.id, pathTo(reachable(ctx, w, walk.move.budgetMod), w.hex, hexId(6, 5)), walk)
+     expect(w.hex).toBe(hexId(6, 5))
+     expect(ctx.events.some((e) => e.type === 'move.stopped')).toBe(false)
+@@ -61,5 +62,5 @@ describe('attack of opportunity', () => {
+     beginActivation(ctx, w.id, 'test')
+     const walk = movePowerOf(ctx, w, 'path')!
+-    executeMove(ctx, w.id, pathTo(reachable(ctx, w, walk.budgetMod), w.hex, hexId(5, 2)), walk)
++    executeMove(ctx, w.id, pathTo(reachable(ctx, w, walk.move.budgetMod), w.hex, hexId(5, 2)), walk)
+     const aoo = ctx.events.filter((e) => e.type === 'aoo.provoked')
+     expect(aoo.length).toBe(1)
+```
+</details>
+
+IRON GAUNTLET: NOT PASSED — 3 FLAG(S) WARNED
+
+```
+effect of attack.test-ram.once,power.test-second-wind — 25 paired battles per map, WITH vs WITHOUT
+  map.open: heroWins 25->25 (+0)  meanTurns 4.7->4.7
+  map.ridge: heroWins 25->25 (+0)  meanTurns 4.7->4.7
+  map.flanks: heroWins 25->25 (+0)  meanTurns 5.1->5.1
+  map.highlands: heroWins 25->25 (+0)  meanTurns 4.8->4.8
+  map.field: heroWins 25->25 (+0)  meanTurns 6.2->6.2
+  map.thicket: heroWins 25->25 (+0)  meanTurns 5.6->5.6
+  test.map.embers: heroWins 25->25 (+0)  meanTurns 4.6->4.6
+  test.map.showcase: heroWins 24->24 (+0)  meanTurns 5.4->5.4
+  test.map.duel-8: heroWins 25->25 (+0)  meanTurns 3.7->3.7
+  test.map.dungeon-16x8: heroWins 25->25 (+0)  meanTurns 6.3->6.3
+  test.map.horde-24: heroWins 25->25 (+0)  meanTurns 6.2->6.2
+NO MEASURABLE EFFECT at this sample size — consequence clause caught state changes, but outcomes did not move. Consider a sweep with more replicates before drawing balance conclusions.
+```

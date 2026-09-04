@@ -1,3 +1,4 @@
+// refactor.one-action-type (2026-09-04), Law 10 reason: the row's SHAPE moved by ruling — attack fields read under `.attack`, reach is `range`, move fields under `.move`, the registries are one (`ctx.actions`) and the unit's lists are views (attackIdsOf/powerIdsOf). No assertion changed.
 // Movement powers — Angela 2026-08-21: "Movement is supposed to be a type of
 // activation. There are different abilities in movement, like the sidestep,
 // the regular move, or the flight. Movement is a choice, and that movement
@@ -26,9 +27,9 @@ const valueOf = (u: { statuses: { id: string; value: number }[] }, id: string) =
 
 describe('the rows are the Codex rows — data, not code', () => {
   it('Move / Sidestep / Side Roll carry their published costs and cooldowns', () => {
-    expect(MOVES['power.move']).toMatchObject({ shape: 'path', staminaCost: 1, cooldown: 0 })
-    expect(MOVES['power.sidestep']).toMatchObject({ shape: 'sidestep', staminaCost: 0, cooldown: 1 })
-    expect(MOVES['power.side-roll']).toMatchObject({ shape: 'sidestep', staminaCost: 1, cooldown: 0 })
+    expect(MOVES['power.move']).toMatchObject({ staminaCost: 1, cooldown: 0, move: { shape: 'path' } })
+    expect(MOVES['power.sidestep']).toMatchObject({ staminaCost: 0, cooldown: 1, move: { shape: 'sidestep' } })
+    expect(MOVES['power.side-roll']).toMatchObject({ staminaCost: 1, cooldown: 0, move: { shape: 'sidestep' } })
   })
 
   it('who grants what is unit data: class grants on the cohort, one power per enemy row', () => {

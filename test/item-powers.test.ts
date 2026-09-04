@@ -85,7 +85,9 @@ describe('Block — protection now, a permanent Dodge price, escalating', () => 
     expect(osric.statuses.find((s) => s.id === 'status.protection')?.value).toBe(expectProt)
     expect(effective(ctx, osric, 'dodge').value).toBe(dodge0 - 5)
     // "Every use costs another 5 Dodge" — no counter needed, it applies again.
-    ctx.state.turn += 3 // past the cooldown
+    // LAW 10 — 2026-09-04 (refactor.one-action-type): cooldown N = skip N Turns
+    // (2-ACTIONS-SETTLED.md:71); Block's 3 means ready 4 Turns on, not 3 (FINDING 32).
+    ctx.state.turn += 4 // past the cooldown
     osric.primaryUsed = false
     osric.stamina = osric.maxStamina
     usePower(ctx, osric.id, osric.id, 'power.knight-shield.block')

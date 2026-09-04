@@ -1,7 +1,8 @@
+// refactor.one-action-type (2026-09-04), Law 10 reason: the row's SHAPE moved by ruling — attack fields read under `.attack`, reach is `range`, move fields under `.move`, the registries are one (`ctx.actions`) and the unit's lists are views (attackIdsOf/powerIdsOf). No assertion changed.
 import { describe, it, expect } from 'vitest'
 import { createBattle, createCustomBattle } from '../src/core/setup.js'
 import { runBattle } from '../src/core/battle.js'
-import { canAttack, preview, resolveAccuracy, inMelee } from '../src/core/pipeline.js'
+import { canAttack, preview, resolveAccuracy, inMelee, attackDef } from '../src/core/pipeline.js'
 import { BLEED_OUT_COUNTER } from '../src/core/settle.js'
 import { hexId } from './board16.js'
 
@@ -53,7 +54,7 @@ describe('ranged attacks and adjacency (Angela 2026-08-15)', () => {
 
   it('no adjacent enemy means no penalty at all — the ledger has no ADJACENT row', () => {
     const ctx = board(false)
-    const acc = resolveAccuracy(ctx, ctx.state.units[0]!, ctx.state.units[1]!, ctx.attacks['attack.test-ranger.bow']!)
+    const acc = resolveAccuracy(ctx, ctx.state.units[0]!, ctx.state.units[1]!, attackDef(ctx, 'attack.test-ranger.bow'))
     expect(acc.ledger.some((r) => r.name === 'ADJACENT')).toBe(false)
     // ranger 90, four hexes = −5 under the 2026-08-26 grace window (Law 10:
     // was −15 when the penalty started past the first hex)
@@ -82,7 +83,7 @@ describe('ranged attacks and adjacency (Angela 2026-08-15)', () => {
   it('melee is untouched — a sword still works at distance 1', () => {
     const ctx = board(true)
     expect(canAttack(ctx, 0, 1, 'attack.punch')).toBe(true)
-    const acc = resolveAccuracy(ctx, ctx.state.units[0]!, ctx.state.units[1]!, ctx.attacks['attack.punch']!)
+    const acc = resolveAccuracy(ctx, ctx.state.units[0]!, ctx.state.units[1]!, attackDef(ctx, 'attack.punch'))
     expect(acc.ledger.some((r) => r.name === 'ADJACENT')).toBe(false)
   })
 })

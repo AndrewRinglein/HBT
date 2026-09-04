@@ -1,3 +1,5 @@
+// refactor.one-action-type (2026-09-04), Law 10 reason: the row's SHAPE moved by ruling — attack fields read under `.attack`, reach is `range`, move fields under `.move`, the registries are one (`ctx.actions`) and the unit's lists are views (attackIdsOf/powerIdsOf). No assertion changed.
+import { damageSourceOfAttack } from '../src/core/pipeline.js'
 import { describe, it, expect } from 'vitest'
 import { createBattle, createCustomBattle } from '../src/core/setup.js'
 import { runBattle } from '../src/core/battle.js'
@@ -167,7 +169,7 @@ describe('the status system itself', () => {
     }
     applyStatus(ctx, 0, 'status.testward', 2, 'test')
     const d = resolveDamage(ctx, ctx.state.units[1]!, ctx.state.units[0]!,
-      ATTACKS['attack.test-zombie.bite']!, false, 0, 2)
+      damageSourceOfAttack(ATTACKS['attack.test-zombie.bite']!), false, 0, 2)
     expect(d.ledger.reduce((s, r) => s + r.delta, 0)).toBe(d.value)
     expect(d.absorbed).toBe(2)
     expect(d.ledger.map(r => r.name)).toContain('PROTECTION')

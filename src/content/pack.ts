@@ -149,6 +149,53 @@ function statusRowsToDefs(raw: Readonly<Record<string, PackStatusRow>>, where: s
   return out
 }
 
+// ── THE LIFT — refactor.one-action-type (2026-09-04) ─────────────────────────
+// The pack (content/mkenginepack.mjs) still writes attacks and movements as
+// the flat rows it always did — that is content's shape and it did not change.
+// The engine lifts each into the ONE action type at load: the fields the
+// pipeline resolves go under `attack`, the movement fields under `move`, and
+// the limits and reach sit on the action itself. Nothing is invented here;
+// every field moves, none is renamed.
+
+/** An attack row as the pack writes it. */
+export type PackAttackRow = {
+  readonly id: string; readonly name: string; readonly kind: 'melee' | 'ranged'; readonly damageType: import('../core/types.js').DamageType
+  readonly bonus: number; readonly stat: 'strength' | 'precision' | 'magic' | 'spirit'; readonly reach: number; readonly staminaCost: number
+  readonly applies?: { readonly statusId: string; readonly value: number }; readonly area?: 'arc' | 'blast1'
+  readonly crit?: number; readonly hits?: number; readonly cooldown?: number; readonly warmup?: number
+  readonly powerScale?: number; readonly accuracy?: number; readonly critCount?: number; readonly uses?: number; readonly free?: boolean
+}
+/** A movement row as the pack writes it. */
+export type PackMoveRow = {
+  readonly id: string; readonly name: string; readonly shape: 'path' | 'sidestep' | 'flight'; readonly stepRange?: number
+  readonly effects?: readonly import('../core/types.js').MoveEffect[]; readonly staminaCost: number; readonly budgetMod: number
+  readonly cooldown: number; readonly warmup?: number; readonly uses?: number
+}
+
+export function liftAttack(r: PackAttackRow): AttackDef {
+  const { id, name, kind, damageType, bonus, stat, reach, staminaCost, applies, area, crit, hits, cooldown, warmup, powerScale, accuracy, critCount, uses, free } = r
+  return {
+    id, name, source: 'weapon', staminaCost, cooldown: cooldown ?? 0, range: reach,
+    ...(warmup !== undefined ? { warmup } : {}), ...(uses !== undefined ? { uses } : {}), ...(free ? { free } : {}), ...(area ? { area } : {}),
+    attack: {
+      kind, damageType, bonus, stat,
+      ...(applies ? { applies } : {}), ...(crit !== undefined ? { crit } : {}), ...(hits !== undefined ? { hits } : {}),
+      ...(powerScale !== undefined ? { powerScale } : {}), ...(accuracy !== undefined ? { accuracy } : {}), ...(critCount !== undefined ? { critCount } : {}),
+    },
+  }
+}
+export function liftMove(r: PackMoveRow): MoveDef {
+  const { id, name, shape, stepRange, effects, staminaCost, budgetMod, cooldown, warmup, uses } = r
+  return {
+    id, name, source: 'movement', slot: 'movement', staminaCost, cooldown, range: stepRange ?? 1,
+    ...(warmup !== undefined ? { warmup } : {}), ...(uses !== undefined ? { uses } : {}), ...(effects ? { effects } : {}),
+    move: { shape, budgetMod, ...(stepRange !== undefined ? { stepRange } : {}) },
+  }
+}
+export function liftAttacks(raw: Readonly<Record<string, PackAttackRow>>): Readonly<Record<string, AttackDef>> {
+  return Object.fromEntries(Object.entries(raw).map(([k, r]) => [k, liftAttack(r)]))
+}
+
 /**
  * The movement powers — pack.moves (2026-09-02). The Codex's `movementAction`
  * power rows, compiled by exact phrase in content/mkenginepack.mjs into the
@@ -158,7 +205,7 @@ function statusRowsToDefs(raw: Readonly<Record<string, PackStatusRow>>, where: s
  * Validated loudly; plain data in, plain data out.
  */
 export function packMoves(): Readonly<Record<string, MoveDef>> {
-  const raw = (UNIT_PACK as { moves?: Readonly<Record<string, MoveDef>> }).moves ?? {}
+  const raw = (UNIT_PACK as { moves?: Readonly<Record<string, PackMoveRow>> }).moves ?? {}
   for (const [k, m] of Object.entries(raw)) {
     if (k !== m.id) throw new Error(`unit pack: move key '${k}' names id '${m.id}'`)
     if (!['path', 'sidestep', 'flight'].includes(m.shape)) throw new Error(`unit pack: move '${k}' has shape '${String(m.shape)}'`)
@@ -170,7 +217,7 @@ export function packMoves(): Readonly<Record<string, MoveDef>> {
       if (!['gainStamina', 'loseMaxStamina', 'statMod'].includes(e.kind)) throw new Error(`unit pack: move '${k}' carries unknown effect kind '${(e as { kind: string }).kind}'`)
     }
   }
-  return raw
+  return Object.fromEntries(Object.entries(raw).map(([k, r]) => [k, liftMove(r)]))
 }
 
 /**
@@ -180,7 +227,7 @@ export function packMoves(): Readonly<Record<string, MoveDef>> {
  * does this loader — a test row can never shadow real content.
  */
 export function packTestAttacks(): Readonly<Record<string, AttackDef>> {
-  const raw = (UNIT_PACK as { test?: { attacks?: Readonly<Record<string, AttackDef>> } }).test?.attacks ?? {}
+  const raw = (UNIT_PACK as { test?: { attacks?: Readonly<Record<string, PackAttackRow>> } }).test?.attacks ?? {}
   for (const [k, a] of Object.entries(raw)) {
     if (k !== a.id) throw new Error(`test receptacle: attack key '${k}' names id '${a.id}'`)
     if (!k.startsWith('attack.test-')) throw new Error(`test receptacle: '${k}' is not attack.test-*`)
@@ -188,7 +235,7 @@ export function packTestAttacks(): Readonly<Record<string, AttackDef>> {
       if (a[f] === undefined) throw new Error(`test receptacle: attack '${k}' is missing ${f}`)
     }
   }
-  return raw
+  return liftAttacks(raw)
 }
 export function packTestAbilities(): Readonly<Record<string, AbilityDef>> {
   const raw = (UNIT_PACK as { test?: { abilities?: Readonly<Record<string, AbilityDef>> } }).test?.abilities ?? {}
@@ -234,14 +281,14 @@ export function packItems(attacks: Readonly<Record<string, AttackDef>>, abilitie
 
 /** The authored enemies' attacks — generated rows, validated like the units. */
 export function packAttacks(): Readonly<Record<string, AttackDef>> {
-  const raw = (UNIT_PACK as { authoredAttacks?: Readonly<Record<string, AttackDef>> }).authoredAttacks ?? {}
+  const raw = (UNIT_PACK as { authoredAttacks?: Readonly<Record<string, PackAttackRow>> }).authoredAttacks ?? {}
   for (const [k, a] of Object.entries(raw)) {
     if (k !== a.id) throw new Error(`unit pack: attack key '${k}' names id '${a.id}'`)
     if (!['melee', 'ranged'].includes(a.kind) || typeof a.reach !== 'number' || a.reach < 1) {
       throw new Error(`unit pack: attack '${k}' has no usable kind/reach — regenerate the pack`)
     }
   }
-  return raw
+  return liftAttacks(raw)
 }
 
 // ── HERO ASSEMBLY (2026-09-03) ───────────────────────────────────────────────

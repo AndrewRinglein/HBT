@@ -1,3 +1,4 @@
+// refactor.one-action-type (2026-09-04), Law 10 reason: the row's SHAPE moved by ruling — attack fields read under `.attack`, reach is `range`, move fields under `.move`, the registries are one (`ctx.actions`) and the unit's lists are views (attackIdsOf/powerIdsOf). No assertion changed.
 // RULED 2026-09-03 (Angela, DECISIONS.md "the retroactive questions"): every
 // ground status is ONE shape — "when you step on them, you gain one, and if
 // you're there at the end of activation, you gain one" — weak, burning,
@@ -30,7 +31,7 @@ describe('the one ground shape', () => {
     paintLayer(ctx, hexId(5, 4), LAYER.FROST, 'test')
     beginActivation(ctx, w.id, 'test')
     const walk = movePowerOf(ctx, w, 'path')!
-    executeMove(ctx, w.id, pathTo(reachable(ctx, w, walk.budgetMod), w.hex, hexId(5, 4)), walk)
+    executeMove(ctx, w.id, pathTo(reachable(ctx, w, walk.move.budgetMod), w.hex, hexId(5, 4)), walk)
     expect(valueOf(w, 'status.frost')).toBe(1)
     endActivation(ctx, w.id, 'test'); endOfActivation(ctx, w.id)
     expect(ctx.events.filter((e) => e.type === 'status.applied' && e.causeId === 'layer.frost').length).toBe(2)

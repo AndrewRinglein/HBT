@@ -1,3 +1,4 @@
+// refactor.one-action-type (2026-09-04), Law 10 reason: the row's SHAPE moved by ruling — attack fields read under `.attack`, reach is `range`, move fields under `.move`, the registries are one (`ctx.actions`) and the unit's lists are views (attackIdsOf/powerIdsOf). No assertion changed.
 // The Alpha Team — content.alpha-team (2026-08-27).
 //
 // The six S31 heroes: the test cohort rebuilt the way heroes actually are —
@@ -86,12 +87,12 @@ describe('the pack carries the six alpha heroes with their real stat bodies', ()
     // The delivered table (S31): Hack 1, Cleave 2. The universal Punch was
     // RE-RULED in S37 (2026-08-27): strength −1, 0 stamina (was 1), −5 crit
     // on the row, −5 accuracy as a named gap — Law 10, followed same-day.
-    expect(ATTACKS['attack.halberd.hack']).toMatchObject({ bonus: 2, staminaCost: 1, kind: 'melee' })
-    expect(ATTACKS['attack.halberd.cleave']).toMatchObject({ bonus: 1, staminaCost: 2 })
-    expect(ATTACKS['attack.javelin.throw']).toMatchObject({ kind: 'ranged', reach: 4 })
-    expect(ATTACKS['attack.shortbow.short-shot']).toMatchObject({ kind: 'ranged', reach: 5 })
-    expect(ATTACKS['attack.shortbow.quick-shot']).toMatchObject({ kind: 'ranged', reach: 4 })
-    expect(ATTACKS['attack.punch']).toMatchObject({ bonus: -1, staminaCost: 0, kind: 'melee', crit: -5 })
+    expect(ATTACKS['attack.halberd.hack']).toMatchObject({ staminaCost: 1, attack: { bonus: 2, kind: 'melee' } })
+    expect(ATTACKS['attack.halberd.cleave']).toMatchObject({ staminaCost: 2, attack: { bonus: 1 } })
+    expect(ATTACKS['attack.javelin.throw']).toMatchObject({ range: 4, attack: { kind: 'ranged' } })
+    expect(ATTACKS['attack.shortbow.short-shot']).toMatchObject({ range: 5, attack: { kind: 'ranged' } })
+    expect(ATTACKS['attack.shortbow.quick-shot']).toMatchObject({ range: 4, attack: { kind: 'ranged' } })
+    expect(ATTACKS['attack.punch']).toMatchObject({ staminaCost: 0, attack: { bonus: -1, kind: 'melee', crit: -5 } })
     for (const id of ALPHA()) {
       for (const aid of fieldedDef(id).attacks) expect(ATTACKS[aid], `${id} grants ${aid}`).toBeDefined()
       expect(fieldedDef(id).attacks, `${id} — Punch is universal (universalToAllUnits honored)`)
@@ -156,7 +157,7 @@ describe('the pack carries the six alpha heroes with their real stat bodies', ()
       'attack.shortbow.quick-shot', 'attack.longsword.stab']) {
       const row = (sItems.attacks as { id: string; crit?: number }[]).find((a) => a.id === id)!
       expect(row.crit, `${id} carries an authored crit`).toBeGreaterThan(0)
-      expect(ATTACKS[id]!.crit, `${id} — pack agrees with the settled row`).toBe(row.crit)
+      expect(ATTACKS[id]!.attack.crit, `${id} — pack agrees with the settled row`).toBe(row.crit)
     }
     // the three item powers COMPILE now (capability.item-powers) — their gaps
     // are gone, the powers stand on their units, and Storm's arbitrary-hex

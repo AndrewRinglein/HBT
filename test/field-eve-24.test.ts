@@ -1,3 +1,4 @@
+// refactor.one-action-type (2026-09-04), Law 10 reason: the row's SHAPE moved by ruling — attack fields read under `.attack`, reach is `range`, move fields under `.move`, the registries are one (`ctx.actions`) and the unit's lists are views (attackIdsOf/powerIdsOf). No assertion changed.
 // content.field-eve-24 (2026-09-02) — every Eve hero with a dictated full kit
 // fields. gen/kits.json 2026-08-27b: "ALL 24 Eve heroes now carry FULL kits";
 // the party lane reads that registry instead of naming three heroes. Pipeline
@@ -105,7 +106,7 @@ describe('in real battles — the roll-call', () => {
     for (const id of Object.keys(UNITS)) {
       if (!id.startsWith('hero.base.')) continue
       const u = fieldedDef(id)   // role follows the kit AS FIELDED (seam.items-per-unit)
-      const anyRanged = u.attacks.some((a) => ATTACKS[a]!.kind === 'ranged')
+      const anyRanged = u.attacks.some((a) => ATTACKS[a]!.attack.kind === 'ranged')
       expect(u.role, `${id} role follows its kit`).toBe(anyRanged ? 'ranged' : 'melee')
     }
   })

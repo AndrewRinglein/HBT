@@ -5,9 +5,10 @@
 import type { HexId } from './../core/hex.js'
 import { executeFlight, executeMove, executeSidestep, flightLandings, livingEnemies, movePowerOf, moveStaminaCost, nearestEnemy, occupancy, pathTo, reachable, stepRangeOf, usableMoves } from './../core/movement.js'
 import type { Reach } from './../core/movement.js'
-import type { MoveDef } from './../core/types.js'
+import type { AttackDef, MoveDef } from './../core/types.js'
+import { attackIdsOf, attacksOf, powerIdsOf, powersOf } from './../core/action.js'
 import { isPassable } from './../content/maps.js'
-import { areaUnitIdsOf, canAttack, performAttack, preview, reachOf } from './../core/pipeline.js'
+import { areaUnitIdsOf, attackDef, canAttack, performAttack, preview, reachOf } from './../core/pipeline.js'
 import { canUsePower, isReady, powerBlastIdsOf, powerTargetsOf, previewPower, usePower } from './../core/ability.js'
 import { isConfused } from './../core/status.js'
 import { reachBonusOf } from './../content/maps.js'
@@ -47,7 +48,7 @@ function adjacentEnemies(ctx: Ctx, u: Unit): Unit[] {
  * reach unit closed politely and then never attacked at all.
  */
 function enemiesInAttackReach(ctx: Ctx, u: Unit): Unit[] {
-  return withDowned(ctx, u, livingEnemies(ctx, u).filter((e) => u.attacks.some((id) => canAttack(ctx, u.id, e.id, id))))
+  return withDowned(ctx, u, livingEnemies(ctx, u).filter((e) => attackIdsOf(ctx, u).some((id) => canAttack(ctx, u.id, e.id, id))))
 }
 
 /**
@@ -63,14 +64,14 @@ function withDowned(ctx: Ctx, u: Unit, standing: Unit[]): Unit[] {
   if (mode === 'never') return standing
   if (mode === 'whenNoStanding' && standing.length) return standing
   const downed = ctx.state.units.filter((o) => o.side !== u.side && o.lifeState === 'downed'
-    && u.attacks.some((id) => canAttack(ctx, u.id, o.id, id)))
+    && attackIdsOf(ctx, u).some((id) => canAttack(ctx, u.id, o.id, id)))
   return mode === 'always' ? [...downed, ...standing] : downed
 }
 
 /** The farthest this unit can strike with any of its attacks, for honest idle text. */
 function maxAttackReach(ctx: Ctx, u: Unit): number {
   let r = 1
-  for (const id of u.attacks) { const a = ctx.attacks[id]; if (a) r = Math.max(r, reachOf(ctx, u, a)) }
+  for (const a of attacksOf(ctx, u)) r = Math.max(r, reachOf(ctx, u, a))
   return r
 }
 
@@ -87,14 +88,14 @@ function bestAttack(ctx: Ctx, attackerId: number, targetId: number): string | nu
   const u = unit(ctx, attackerId)
   if (ctx.cfg.switches.aiAttackChoice === 'bestDamage') {
     let best: string | null = null, bestDmg = -1
-    for (const id of u.attacks) {
+    for (const id of attackIdsOf(ctx, u)) {
       if (!canAttack(ctx, attackerId, targetId, id)) continue
       const d = preview(ctx, attackerId, targetId, id).damageOnHit
       if (d > bestDmg) { best = id; bestDmg = d }
     }
     return best
   }
-  for (const id of u.attacks) {
+  for (const id of attackIdsOf(ctx, u)) {
     if (canAttack(ctx, attackerId, targetId, id)) return id
   }
   return null
@@ -159,9 +160,9 @@ function idle(ctx: Ctx, u: Unit, reason: string): void {
  * unit's declared order wins (Law 6).
  */
 function areaSwing(ctx: Ctx, u: Unit, targetId: number): string | null {
-  for (const id of u.attacks) {
-    const a = ctx.attacks[id]
-    if (!a?.area) continue
+  for (const a of attacksOf(ctx, u)) {
+    const id = a.id
+    if (!a.area) continue
     if (!canAttack(ctx, u.id, targetId, id)) continue
     const struck = areaUnitIdsOf(ctx, u.id, targetId, id)
     const enemies = struck.filter((s) => unit(ctx, s).side !== u.side).length
@@ -177,10 +178,10 @@ function attackIfPossible(ctx: Ctx, u: Unit, candidates: Unit[]): boolean {
   const attackId = areaSwing(ctx, u, target.id) ?? bestAttack(ctx, u.id, target.id)
   if (!attackId) return false
   // Did stamina force a worse attack than the unit would have preferred?
-  const preferred = u.attacks[0]
-  if (preferred && preferred !== attackId) {
-    const want = ctx.attacks[preferred]
-    if (want && u.stamina < want.staminaCost) {
+  const want = attacksOf(ctx, u)[0]
+  const preferred = want?.id
+  if (want && preferred !== attackId) {
+    if (u.stamina < want.staminaCost) {
       emit(ctx, 'ai.denied', `ai.${u.ai}`, {
         actor: u.id, wanted: preferred, took: attackId, reason: 'stamina', stamina: u.stamina,
       })
@@ -204,7 +205,7 @@ function dumbMelee(ctx: Ctx, u: Unit): void {
     // sidestep rather than standing refused.
     const walk = movePowerOf(ctx, u, 'path')
     if (walk) {
-      const reach = reachable(ctx, u, walk.budgetMod)
+      const reach = reachable(ctx, u, walk.move.budgetMod)
       let bestHex: HexId | null = null
       let bestD = ctx.geo.distance(u.hex, target.hex)
       for (const [hex] of [...reach].sort((a, b) => a[0] - b[0])) {
@@ -244,9 +245,8 @@ function dumbMelee(ctx: Ctx, u: Unit): void {
  * already weighs those against the staff.
  */
 function supportPower(ctx: Ctx, u: Unit): boolean {
-  for (const id of u.abilities) {
-    const a = ctx.abilities[id]
-    if (!a) continue
+  for (const a of powersOf(ctx, u)) {
+    const id = a.id
     if (a.effect === 'heal') {
       let best: Unit | null = null
       for (const o of ctx.state.units) {
@@ -297,9 +297,9 @@ function supportPower(ctx: Ctx, u: Unit): boolean {
  * policy; the AI modes backlog is where a better one goes.
  */
 function effectsPower(ctx: Ctx, u: Unit, when: 'free' | 'primary' | 'opening' | 'feast'): boolean {
-  for (const id of u.abilities) {
-    const a = ctx.abilities[id]
-    if (!a?.effects || a.effects.length === 0) continue
+  for (const a of powersOf(ctx, u)) {
+    const id = a.id
+    if (!a.effects || a.effects.length === 0) continue
     if (when === 'feast') {
       // capability.corpses (2026-09-03): a body in reach is eaten BEFORE the
       // swing — the Ghoul economy runs on it (SWITCHES.md aiEatsBeforeBiting).
@@ -372,7 +372,7 @@ function meleeAggressive(ctx: Ctx, u: Unit): void {
     const step = movePowerOf(ctx, u, 'sidestep')
     const range = step ? stepRangeOf(step) : 0
     if (step && range > 1) {
-      const preferred = ctx.attacks[u.attacks[0] ?? '']
+      const preferred = attacksOf(ctx, u)[0]
       const afterLeap = u.stamina - moveStaminaCost(u, step)
       if (preferred && afterLeap >= preferred.staminaCost) {
         const targets = enemies.slice().sort((a, b) => a.hp - b.hp || a.id - b.id)
@@ -399,7 +399,7 @@ function meleeAggressive(ctx: Ctx, u: Unit): void {
       if (!attackIfPossible(ctx, u, adjacentEnemies(ctx, u))) idle(ctx, u, 'could not reach an enemy')
       return
     }
-    const reach = reachable(ctx, u, walk.budgetMod)
+    const reach = reachable(ctx, u, walk.move.budgetMod)
     const hexes = [...reach.keys()].sort((a, b) => a - b)
 
     // Prefer ending adjacent to the weakest enemy we can actually reach.
@@ -445,8 +445,8 @@ function rangedKite(ctx: Ctx, u: Unit): void {
   // and a kiter whose "bow" reaches 1 wants to stand adjacent and safe at
   // once — it stood six hexes off for twenty-five Turns. Ties to the earlier
   // listing (Law 6).
-  const bow = u.attacks.map((id) => ctx.attacks[id]).filter((a): a is NonNullable<typeof a> => !!a)
-    .reduce<typeof ctx.attacks[string] | undefined>((best, a) => (!best || reachOf(ctx, u, a) > reachOf(ctx, u, best) ? a : best), undefined)
+  const bow = attacksOf(ctx, u)
+    .reduce<AttackDef | undefined>((best, a) => (!best || reachOf(ctx, u, a) > reachOf(ctx, u, best) ? a : best), undefined)
   if (!bow) {
     // UNARMED (encounter.runner, 2026-09-03): the Orphans field with a kit
     // whose attack rows are unauthored — a named gap — and a kiter with no
@@ -456,7 +456,7 @@ function rangedKite(ctx: Ctx, u: Unit): void {
     // still a needs (8-ENCOUNTERS: attach mode); this is the unarmed floor.
     const walk = movePowerOf(ctx, u, 'path')
     if (walk) {
-      const reach = reachable(ctx, u, walk.budgetMod)
+      const reach = reachable(ctx, u, walk.move.budgetMod)
       let best: HexId | null = null, bestD = Math.min(...enemies.map((e) => ctx.geo.distance(u.hex, e.hex)))
       for (const [hex] of [...reach].sort((a, b) => a[0] - b[0])) {
         const d = Math.min(...enemies.map((e) => ctx.geo.distance(hex, e.hex)))
@@ -485,8 +485,8 @@ function rangedKite(ctx: Ctx, u: Unit): void {
   // aiKiteHoldsAtPowerRange: the hold distance is the shorter of the two while
   // such a power is ready and affordable; off = weapon reach, as before.
   const powerRange = ctx.cfg.switches.aiKiteHoldsAtPowerRange
-    ? u.abilities.map((id) => ctx.abilities[id]).filter((a): a is NonNullable<typeof a> => !!a
-        && (a.effects ? (a.target?.side !== 'ally' && a.target?.select !== 'self') : (a.effect ?? 'damage') === 'damage')
+    ? powersOf(ctx, u).filter((a) =>
+        (a.effects ? (a.target?.side !== 'ally' && a.target?.select !== 'self') : (a.effect ?? 'damage') === 'damage')
         && isReady(ctx, u, a.id) && u.stamina >= a.staminaCost)
       .reduce((m, a) => Math.min(m, a.range), Infinity)
     : Infinity
@@ -525,14 +525,14 @@ function rangedKite(ctx: Ctx, u: Unit): void {
   // the earlier grant), so a unit granted only the walk behaves exactly as
   // before this existed.
   const movers = usableMoves(ctx, u).filter(
-    (m) => (m.shape === 'path' || m.shape === 'flight') && u.stamina >= moveStaminaCost(u, m) + RESERVE,
+    (m) => (m.move.shape === 'path' || m.move.shape === 'flight') && u.stamina >= moveStaminaCost(u, m) + RESERVE,
   )
   if (movers.length > 0) {
     let plan: { power: MoveDef; hex: HexId; reach?: Reach } | null = null
     let best = here
     for (const m of movers) {
-      if (m.shape === 'path') {
-        const reach = reachable(ctx, u, m.budgetMod)
+      if (m.move.shape === 'path') {
+        const reach = reachable(ctx, u, m.move.budgetMod)
         for (const h of [...reach.keys()].sort((a, b) => a - b)) {
           const sc = scoreOf(h)
           if (better(sc, best)) { best = sc; plan = { power: m, hex: h, reach } }
@@ -576,14 +576,14 @@ function rangedKite(ctx: Ctx, u: Unit): void {
   if (supportPower(ctx, u)) return
 
   // A power beats a staff shot whenever it is available and hits harder.
-  const power = u.abilities.find((id) => enemies.some((e) => canUsePower(ctx, u.id, e.id, id)))
+  const power = powerIdsOf(ctx, u).find((id) => enemies.some((e) => canUsePower(ctx, u.id, e.id, id)))
   if (power) {
     const targets = enemies.filter((e) => canUsePower(ctx, u.id, e.id, power))
     // An AREA power aims where it counts double — capability.item-powers
     // (2026-08-27), the same rule as areaSwing: among legal targets, prefer
     // the first (lowest health, then id) whose blast catches two or more
     // enemies and no ally; otherwise the plain lowest-health pick.
-    const pa = ctx.abilities[power]
+    const pa = ctx.actions[power]
     // ability.effects (2026-09-03): an effect-list power with area targeting
     // is an area power too — its blast is what the one targeting vocabulary
     // resolves, not the legacy `area` field.
@@ -600,8 +600,9 @@ function rangedKite(ctx: Ctx, u: Unit): void {
     const t = areaPick ?? lowestHealth(targets)
     if (t) {
       const staff = bestAttack(ctx, u.id, t.id)
-      const staffDmg = staff ? ctx.attacks[staff]!.bonus +
-        (ctx.attacks[staff]!.stat === 'magic' ? u.magic : ctx.attacks[staff]!.stat === 'strength' ? u.strength : u.precision) : 0
+      const staffRow = staff ? attackDef(ctx, staff).attack : null
+      const staffDmg = staffRow ? staffRow.bonus +
+        (staffRow.stat === 'magic' ? u.magic : staffRow.stat === 'strength' ? u.strength : u.precision) : 0
       // An area power is worth its SUM over the enemies struck (the areaPick
       // rule already refused shapes with a friend inside) — a Storm that does
       // one less per head beats the staff the moment it catches two.
@@ -636,7 +637,7 @@ function closeOn(ctx: Ctx, u: Unit, dest: HexId, stopAt = 1): void {
   if (ctx.geo.distance(u.hex, dest) <= stopAt) return
   const walk = movePowerOf(ctx, u, 'path')
   if (!walk) { sidestepToward(ctx, u, dest); return }
-  const reach = reachable(ctx, u, walk.budgetMod)
+  const reach = reachable(ctx, u, walk.move.budgetMod)
   let bestHex: HexId | null = null, bestD = ctx.geo.distance(u.hex, dest)
   for (const [hex] of [...reach].sort((a, b) => a[0] - b[0])) {
     const d = ctx.geo.distance(hex, dest)
@@ -678,9 +679,9 @@ function focusedFire(ctx: Ctx, u: Unit): void {
 function valueHunter(ctx: Ctx, u: Unit): void {
   effectsPower(ctx, u, 'free')
   let bestHeal = 0, healId: string | null = null, healTo: number | null = null
-  for (const id of u.abilities) {
-    const a = ctx.abilities[id]
-    if (!a || !(a.effect === 'heal' || a.effects?.some((e) => e.kind === 'heal'))) continue
+  for (const a of powersOf(ctx, u)) {
+    const id = a.id
+    if (!(a.effect === 'heal' || a.effects?.some((e) => e.kind === 'heal'))) continue
     for (const o of allies(ctx, u).concat([u])) {
       if (!canUsePower(ctx, u.id, o.id, id)) continue
       const worth = Math.min(previewPower(ctx, u.id, o.id, id).heal ?? 0, o.maxHp - o.hp)
@@ -735,7 +736,7 @@ function flee(ctx: Ctx, u: Unit): void {
   if (!enemies.length) { idle(ctx, u, 'nothing to flee'); return }
   const walk = movePowerOf(ctx, u, 'path')
   if (walk) {
-    const reach = reachable(ctx, u, walk.budgetMod)
+    const reach = reachable(ctx, u, walk.move.budgetMod)
     let best: HexId | null = null, bestD = Math.min(...enemies.map((e) => ctx.geo.distance(u.hex, e.hex)))
     for (const [hex] of [...reach].sort((a, b) => a[0] - b[0])) {
       const d = Math.min(...enemies.map((e) => ctx.geo.distance(hex, e.hex)))

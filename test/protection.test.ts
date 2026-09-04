@@ -1,3 +1,4 @@
+// refactor.one-action-type (2026-09-04), Law 10 reason: the row's SHAPE moved by ruling — attack fields read under `.attack`, reach is `range`, move fields under `.move`, the registries are one (`ctx.actions`) and the unit's lists are views (attackIdsOf/powerIdsOf). No assertion changed.
 // Protection — the pool shape made real. Codex (40 uses): "Protection decays 1
 // a Phase and is spent by what it absorbs, so it limits itself." Absorbed at
 // station PROTECTION (550, BEFORE armor/resist), spent by spendAbsorb after the
@@ -54,7 +55,7 @@ describe('a depleting pool that also decays (COMBAT-SEQUENCE)', () => {
     // the MITIGATION row exist at all.
     z.mods.push({ stat: 'resist', op: 'add', value: 2, source: 'test', scope: 'unit' })
     applyStatus(ctx, z.id, 'status.protection', 3, 'test')
-    const r = resolvePowerDamage(ctx, m, z, ctx.abilities['power.test-mage.bolt']!, 3, 3)
+    const r = resolvePowerDamage(ctx, m, z, ctx.actions['power.test-mage.bolt']!, 3, 3)
     const names = r.ledger.map((row) => row.name)
     expect(names.indexOf('PROTECTION')).toBeGreaterThan(-1)
     expect(names.indexOf('MITIGATION')).toBeGreaterThan(names.indexOf('PROTECTION'))

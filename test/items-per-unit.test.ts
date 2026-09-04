@@ -1,3 +1,4 @@
+// refactor.one-action-type (2026-09-04), Law 10 reason: the row's SHAPE moved by ruling — attack fields read under `.attack`, reach is `range`, move fields under `.move`, the registries are one (`ctx.actions`) and the unit's lists are views (attackIdsOf/powerIdsOf). No assertion changed.
 // seam.items-per-unit (2026-09-02, ITEMS-PLAN.md §2 §4 §5) — items go into
 // battle. Ruled 2026-09-02 (Andrew): "the items should go into battle … They
 // define what attacks they have. They modify stats." Hero rows are bare; the
@@ -7,6 +8,7 @@
 // exactly as the converter used to fold it (the oracle fixture).
 import { readFileSync } from 'node:fs'
 import { join } from 'node:path'
+import { attackIdsOf, powerIdsOf } from '../src/core/action.js'
 import { describe, expect, it } from 'vitest'
 import { createBattle, fieldedDef } from '../src/core/setup.js'
 import { runBattle } from '../src/core/battle.js'
@@ -84,8 +86,8 @@ describe('heroItems — the fielding decides the kit', () => {
   it('a Hunter handed a halberd has Hack and no shot, kites no more, and the log says what he wears', () => {
     const ctx = createBattle({ ...base, heroes: ['hero.base.ranger-aggressive'], heroHexes: [247], heroItems: [['item.halberd']] })
     const h = ctx.state.units[0]!
-    expect(h.attacks).toEqual(['attack.halberd.hack', 'attack.halberd.cleave', 'attack.punch'])
-    expect(h.attacks).not.toContain('attack.longbow.shot')
+    expect(attackIdsOf(ctx, h)).toEqual(['attack.halberd.hack', 'attack.halberd.cleave', 'attack.punch'])
+    expect(attackIdsOf(ctx, h)).not.toContain('attack.longbow.shot')
     expect(h.role).toBe('melee')
     expect(h.ai).toBe('melee-aggressive')
     expect(h.maxHp, 'no Thick Hide, so the bare 6').toBe(6)
@@ -96,9 +98,10 @@ describe('heroItems — the fielding decides the kit', () => {
   it('an explicit default kit is the same unit as no kit at all, and an empty list is the bare hero', () => {
     const a = createBattle({ ...base, heroes: ['hero.base.ranger-aggressive'], heroHexes: [247] }).state.units[0]!
     const b = createBattle({ ...base, heroes: ['hero.base.ranger-aggressive'], heroHexes: [247], heroItems: [['item.longbow', 'item.thick-hide']] }).state.units[0]!
-    const c = createBattle({ ...base, heroes: ['hero.base.ranger-aggressive'], heroHexes: [247], heroItems: [[]] }).state.units[0]!
+    const cc = createBattle({ ...base, heroes: ['hero.base.ranger-aggressive'], heroHexes: [247], heroItems: [[]] })
+    const c = cc.state.units[0]!
     expect(b).toEqual(a)
-    expect(c.attacks).toEqual(['attack.punch'])
+    expect(attackIdsOf(cc, c)).toEqual(['attack.punch'])
     expect(c.maxHp).toBe(6)
     // the seed sequence is untouched by items: the same battle, either way
     const ra = createBattle({ ...base }); runBattle(ra)

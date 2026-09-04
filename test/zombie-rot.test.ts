@@ -1,3 +1,4 @@
+// refactor.one-action-type (2026-09-04), Law 10 reason: the row's SHAPE moved by ruling — attack fields read under `.attack`, reach is `range`, move fields under `.move`, the registries are one (`ctx.actions`) and the unit's lists are views (attackIdsOf/powerIdsOf). No assertion changed.
 // trigger.zombie.rot — 20% onDamage, poison 1 to the target. Replaces the
 // hardcoded 100% `applies` rider that lived on attack.zombie.basic: the exact
 // one-off shape the trigger system exists to make unnecessary.
@@ -9,7 +10,7 @@ import { runBattle } from '../src/core/battle.js'
 
 describe('trigger.zombie.rot', () => {
   it('the hardcode is gone: no attack carries a poison rider anymore', () => {
-    for (const a of Object.values(ATTACKS)) expect(a.applies).toBeUndefined()
+    for (const a of Object.values(ATTACKS)) expect(a.attack.applies).toBeUndefined()
   })
 
   it('the zombie def declares rot (exclusivity retired 2026-08-20, Law 10)', () => {

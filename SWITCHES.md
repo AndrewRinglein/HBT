@@ -399,3 +399,14 @@ Added 2026-09-03 (capability.vision). COMBAT-DESIGN §4 leaves it OPEN and
 assumes no; default **false** (no). True lets a unit attack into the dark at
 full range, which makes darkness a movement problem only. Fog's order of
 operations (§4's other OPEN) is not built: there is no fog row yet.
+
+## actionSlots — may either of the Activation's two actions spend any action?
+Added 2026-09-04 (refactor.one-action-type). Ruled 2026-09-04: "structurally,
+movement and primary are identical. They can both do any of the same things."
+The action carries `slot` (movement · primary · either; absent = either) and
+the engine records it. **How the AI reads it is not built**: today the AI
+spends movements from the movement action and attacks and powers from the
+primary — `byProfile`, the default. `any` — a movement-slot attack, a
+primary-slot walk — is the designed AI's path (system.ai-modes: "DESIGN FIRST,
+with Angela") and has no code behind it yet; this entry exists so the question
+is on the list and not decided by omission.
