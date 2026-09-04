@@ -25,7 +25,7 @@ const art = (() => {
   const index = JSON.parse(readFileSync('generated/art/index.json', 'utf8'))
   const data = {}
   for (const name of Object.keys(index.files)) {
-    const mime = name.endsWith('.png') ? 'image/png' : name.endsWith('.woff2') ? 'font/woff2' : 'image/jpeg'
+    const mime = name.endsWith('.png') ? 'image/png' : name.endsWith('.woff2') ? 'font/woff2' : name.endsWith('.mp3') ? 'audio/mpeg' : 'image/jpeg'
     data[name] = `data:${mime};base64,${readFileSync(`generated/art/${name}`).toString('base64')}`
   }
   return { ...index, data }
@@ -46,7 +46,7 @@ const { outputFiles, warnings } = esbuild.buildSync({
 })
 for (const w of warnings) console.warn(w.text)
 const js = outputFiles[0].text.replace(/<\/script/g, '<\\/script')
-const css = readFileSync('src/ui/slice.css', 'utf8')
+const css = readFileSync('src/ui/slice.css', 'utf8') + '\n' + readFileSync('src/ui/after.css', 'utf8')
 
 const html = `<!doctype html>
 <html lang="en">

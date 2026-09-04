@@ -24,6 +24,9 @@ export type ArtIndex = {
   banners?: Record<string, string>
   /** From the codex's card art (tools/prep-heroes.py): a 2:3 portrait per pool hero, by hero id. */
   heroes?: Record<string, string>
+  /** From Hell-TCG (tools/prep-after.py): the sounds the after-battle screens play, by Hell-TCG's own ids, and the reward card back. */
+  audio?: Record<string, { file: string; volume: number; pitchShift?: number; music?: boolean }>
+  cardBack?: string
   fonts?: Record<string, { family: string; style: string }>
   data: Record<string, string>
 } | null
@@ -118,6 +121,7 @@ export function townSvg(c: CampaignState): string {
 export const interiorOf = (buildingId: string): string | null => ART?.data[ART.interiors[slugOf(buildingId)] ?? ''] ?? null
 export const cardOf = (buildingId: string): string | null => ART?.data[ART.cards[slugOf(buildingId)] ?? ''] ?? null
 export const portraitOf = (heroId: string): string | null => ART?.data[ART.heroes?.[heroId] ?? ''] ?? null
+export const cardBackOf = (): string | null => ART?.data[ART.cardBack ?? ''] ?? null
 export const bannerOf = (slug: string): string | null => ART?.data[ART.banners?.[slug] ?? ''] ?? null
 
 /** @font-face rules for the inlined faces, or nothing — the stylesheet's fallback stack then stands. */

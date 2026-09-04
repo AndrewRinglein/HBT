@@ -998,3 +998,5 @@ Law 10 note (screens.equip-stats): test/equip-screen.test.ts asserted the set's 
 
 slice: 60 of 68 closed · 61 probed · 0 accepted
 IRON GAUNTLET: NOT PASSED — 2 FLAG(S) WARNED; 1 EXEMPTION(S) TAKEN
+
+Law 10 note (screens.after-battle-copy): test/after-battle.test.ts asserted the first after-battle sketch (a results table, three "rcard" tiles, a level-up panel with data-act choices). Ruled 2026-09-03/04, those screens are Hell-TCG's copied, so the screen assertions were rewritten to the copies' DOM (the ceremony's title/party/spotlight/quote/stats, rewards.html's hero cards and face-down cards with the tier aura, levelup.html's chamber with the specialty overlay and no power overlay). The rules underneath are asserted unchanged: three offered, one kept, two burned; the codex row's every modifier applied and itemSlots folded; the specialty offered once; the fielding carries level, specialty and pick. Also in this landing: test/board-from-map.test.ts, written by the engine session in this tree after its board.variable-size landing removed WIDTH/HEIGHT from the engine — it passes on the widened door and lands with it.

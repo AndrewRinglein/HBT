@@ -36,7 +36,9 @@ import { listBuildings, whyNotBuild, performBuild } from '../core/build.js'
 import { isShopOpen, listShopItems, canBuyItem, performBuyItem, costOfItem, canEquip, whyNotEquip, performEquip, canUnequip, performUnequip, loadoutOf, equipCostOf, isEquipOpen, equipWhere, performOpenEquip, performCloseEquip, forgeBandName, shelfSpecOf, whyNotTradeIn, performTradeIn, tradeCategoryOf } from '../core/shop.js'
 import { itemOf } from '../content/items.js'
 import { equipScreen, deltasOf, displaceFor } from './equip.js'
-import { resultsScreen, rewardsScreen as spoilsScreen, levelUpScreen as levelScreen, type LastBattle } from './after.js'
+import { recapScreen, mountRecap, rewardsScreen, mountRewards, levelUpScreen, mountLevelUp, toggleMute, stopMusic, type LastBattle, type Cleanup } from './after.js'
+import { canLevelUp } from '../core/rewards.js'
+import { isMuted } from './sound.js'
 import { listCatalog, waystationLevelOf, canBuyCatalog, whyNotBuyCatalog, performBuyCatalog, priceOf } from '../core/waystation.js'
 import { makeNewCampaign, listDraftOffers, performDraft, performEndCampaign, draftsOwedOf, draftedCountOf } from '../core/opening.js'
 import { PROLOGUE } from '../content/prologue.js'
@@ -76,12 +78,12 @@ type App = {
   picked: string | null
   /** The battle the writer just wrote, kept for the results screen (the cursor drops the result at apply). */
   lastBattle: LastBattle | null
-  /** The spoils: the three cards have been turned over. */
-  revealed: boolean
-  /** The level-up screen's choices before Take. */
-  chosen: { specialtyId: string | null; pick: number | null }
+  /** The level-up sheet is open for this hero — reached from the rewards or from the roster. */
+  levelHero: { id: string; from: 'rewards' | 'roster' } | null
+  /** The copied screens run a ceremony on the DOM once; a re-render mid-ceremony would restart it. The key names the instance mounted. */
+  mounted: { key: string; cleanup: Cleanup } | null
 }
-const app: App = { ctx: null, draft: null, draftReckoning: null, status: '', error: false, slot: null, confirmEnd: null, roster: false, party: [], view: 'map', picked: null, lastBattle: null, revealed: false, chosen: { specialtyId: null, pick: null } }
+const app: App = { ctx: null, draft: null, draftReckoning: null, status: '', error: false, slot: null, confirmEnd: null, roster: false, party: [], view: 'map', picked: null, lastBattle: null, levelHero: null, mounted: null }
 
 // ── persistence ─────────────────────────────────────────────────────────────
 function persist(): void {
@@ -121,11 +123,31 @@ function act(f: () => void): void {
 const esc = (s: string) => s.replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]!))
 const nameOf = (typeId: string) => UNITS[typeId]?.name ?? typeId
 
+/** Which ceremony screen the cursor is on, if any — the key a mount is remembered by. */
+function ceremonyKey(c: CampaignState): string | null {
+  if (app.roster && !app.levelHero) return null
+  if (app.levelHero) return `levelup:${app.levelHero.id}:${c.roster[app.levelHero.id]?.level ?? 0}`
+  if (c.cursor.step === 'reckoning') return `recap:${c.cursor.engagement?.id}`
+  if (c.cursor.step === 'rewards' || c.cursor.step === 'levelUp') return `rewards:${c.cursor.engagement?.id}:${c.cursor.step}`
+  return null
+}
+
 function render(): void {
   const root = document.getElementById('app')!
   const c = app.ctx?.campaign ?? null
   root.className = c ? '' : 'front'
+  const key = c ? ceremonyKey(c) : null
+  if (app.mounted && app.mounted.key === key) { const st = root.querySelector?.('.status'); if (st) { st.textContent = app.status; st.className = 'status' + (app.error ? ' err' : '') } return }
+  if (app.mounted) { app.mounted.cleanup(); app.mounted = null }
+  if (!key) stopMusic()
   if (!c) { root.innerHTML = loadGameScreen(app.status, app.error, __BUILD_SHA__, app.confirmEnd); wire(root); return }
+  if (key) {
+    root.innerHTML = `<div class="status${app.error ? ' err' : ''}" style="position:fixed;top:8px;left:14px;z-index:601">${esc(app.status)}</div>` + ceremonyScreen(c)
+    wire(root)
+    const hx = typeof root.querySelector === 'function' ? root.querySelector<HTMLElement>('.hx') : null
+    if (hx) app.mounted = { key, cleanup: mountCeremony(hx) }
+    return
+  }
   root.innerHTML = `
     <h1>Heroes of Blight and Tragic — the slice</h1>
     <p class="meta">load a save · Combat Prep · the battle, shown not fought · set what happened · the Reckoning. Built at kingdom ${esc(__BUILD_SHA__)}.</p>
@@ -142,15 +164,29 @@ function render(): void {
   wire(root)
 }
 
+/** The copied Hell-TCG screens (src/ui/after.ts): the recap after the writer, the rewards (and the level-up step, which is the rewards page again with its LEVEL UP buttons), the level-up sheet. */
+function ceremonyScreen(c: CampaignState): string {
+  if (app.levelHero) return levelUpScreen(c, app.levelHero.id, app.levelHero.from)
+  if (c.cursor.step === 'reckoning') return recapScreen(c, app.ctx!.events, app.lastBattle)
+  return rewardsScreen(c, app.ctx!.events, app.lastBattle)
+}
+function mountCeremony(hx: HTMLElement): Cleanup {
+  if (hx.classList.contains('recap')) return mountRecap(hx, () => act(() => performExitBattle(app.ctx!, 'slice')))
+  if (hx.classList.contains('levelup')) {
+    const who = app.levelHero!
+    return mountLevelUp(hx,
+      (choice) => { try { performLevelUp(app.ctx!, who.id, 'slice', choice); persist(); note('') } catch (e) { fail((e as Error).message) } },
+      () => { app.levelHero = null; render() })
+  }
+  return mountRewards(hx, (itemId) => act(() => performTakeReward(app.ctx!, itemId, 'slice')))
+}
+
 function screen(c: CampaignState): string {
   if (c.ended) return endedScreen(c)
   switch (c.cursor.step) {
     case 'draft': return draftScreen(c)
     case 'prep': return prepScreen(c)
     case 'battle': return c.cursor.battle?.resultSet ? tallyScreen(c) : battleScreen(c)
-    case 'reckoning': return resultsScreen(c, app.ctx!.events, app.lastBattle, resolveDifficulty(c))
-    case 'rewards': return spoilsScreen(c, app.ctx!.events, app.revealed)
-    case 'levelUp': return levelScreen(c, app.chosen)
     case 'open': return worldScreen(c)
     default: return `<div class="card"><p>The cursor is at <code>${esc(c.cursor.step)}</code> — a step the slice has no screen for yet.</p></div>`
   }
@@ -163,8 +199,8 @@ function rosterScreen(c: CampaignState): string {
   const heroes = Object.values(c.roster).sort((a, b) => a.id.localeCompare(b.id))
   const slot = (h: Hero, s: 'field' | 'city') => { const k = commitmentOf(c, h.id, s); const a = c.assignments[h.id]?.[s]; return k === 'committed' || k === 'onQuest' ? `${k} — ${esc(a!.kind)} ${esc(a!.target)}${a!.weeks > 1 ? `, ${a!.weeks} Weeks` : ''}` : k }
   return `<h2>The roster — ${heroes.length} hero${heroes.length === 1 ? '' : 'es'}, Week ${c.week}</h2>
-    <div class="card"><table><tr><th>hero</th><th>class</th><th>level</th><th>xp</th><th>wound</th><th>field slot</th><th>city slot</th><th>this Week</th><th>carries</th><th>gear changes</th></tr>
-    ${heroes.map((h) => `<tr class="${h.lifeState === 'dead' ? 'dead' : ''}"><td><b>${esc(h.name)}</b><br><span class="meta">${esc(h.id)}</span></td><td>${esc(h.classes.map((x) => x.replace('class.', '')).join(', '))}</td><td class="n">${h.level}</td><td class="n">${h.xp} / ${xpForLevel(h.level + 1)}</td><td>${h.lifeState === 'dead' ? '<span class="lost">dead</span>' : h.wound ? esc(woundNameOf(h.wound)) : '—'}</td><td>${slot(h, 'field')}</td><td>${slot(h, 'city')}</td><td class="meta">${esc(absenceOf(c, h.id) ?? '')}</td><td class="meta">${esc(h.equipped.map((i) => i.replace('item.', '')).join(', ') || '—')}</td><td>${deltasOf(c, h.id)}</td></tr>`).join('')}</table></div>
+    <div class="card"><table><tr><th>hero</th><th>class</th><th>level</th><th>xp</th><th>wound</th><th>field slot</th><th>city slot</th><th>this Week</th><th>carries</th><th>gear changes</th><th></th></tr>
+    ${heroes.map((h) => `<tr class="${h.lifeState === 'dead' ? 'dead' : ''}"><td><b>${esc(h.name)}</b><br><span class="meta">${esc(h.id)}</span></td><td>${esc(h.classes.map((x) => x.replace('class.', '')).join(', '))}</td><td class="n">${h.level}</td><td class="n">${h.xp} / ${xpForLevel(h.level + 1)}</td><td>${h.lifeState === 'dead' ? '<span class="lost">dead</span>' : h.wound ? esc(woundNameOf(h.wound)) : '—'}</td><td>${slot(h, 'field')}</td><td>${slot(h, 'city')}</td><td class="meta">${esc(absenceOf(c, h.id) ?? '')}</td><td class="meta">${esc(h.equipped.map((i) => i.replace('item.', '')).join(', ') || '—')}</td><td>${deltasOf(c, h.id)}</td><td>${c.cursor.step === 'open' && canLevelUp(c, h.id) ? `<button class="primary" data-act="level-hero" data-id="${esc(h.id)}">Level up</button>` : ''}</td></tr>`).join('')}</table></div>
     <p class="meta">Two slots a Week: one in the field, one in the city; a quest takes both. The unavailability roll between Buy and Quest keeps some home with a story.</p>
     ${equipWhere(c) === 'roster' ? `<h2>Fitting gear</h2>${equipScreen(c, heroes.filter((h) => h.lifeState === 'alive').map((h) => h.id), { where: 'roster', picked: app.picked })}<div class="bar"><span class="meta">Idols are fitted at prep only — they are paid for when the battle is about to happen.</span><span class="sp"></span><button class="primary" data-act="close-equip">Done — keep it</button></div>` : c.cursor.step === 'open' && !isEquipOpen(c) ? `<div class="bar"><span class="sp"></span><button data-act="open-equip">Fit gear</button></div>` : ''}`
 }
@@ -486,13 +522,10 @@ function wire(root: HTMLElement): void {
           setBattleOutcome(app.ctx!, r, k, 'slice')
         })
         case 'apply': return act(() => { const b = app.ctx!.campaign.cursor.battle!; const e = app.ctx!.campaign.cursor.engagement!; app.lastBattle = { engagementId: e.id, result: b.result!, reckoning: b.reckoning! }; applyBattleResult(app.ctx!, e, b.result!, b.reckoning!); app.draft = null })
-        case 'exit': app.revealed = false; return act(() => performExitBattle(app.ctx!, 'slice'))
-        case 'reveal': app.revealed = true; return render()
-        case 'take-reward': return act(() => { performTakeReward(app.ctx!, id!, 'slice'); app.revealed = false; app.chosen = { specialtyId: null, pick: null } })
-        case 'choose-specialty': app.chosen = { ...app.chosen, specialtyId: app.chosen.specialtyId === id ? null : id! }; return render()
-        case 'choose-pick': app.chosen = { ...app.chosen, pick: app.chosen.pick === Number(id) ? null : Number(id) }; return render()
-        case 'level-up': return act(() => { const ch: { specialtyId?: string; pick?: number } = {}; if (app.chosen.specialtyId) ch.specialtyId = app.chosen.specialtyId; if (app.chosen.pick !== null) ch.pick = app.chosen.pick; performLevelUp(app.ctx!, id!, 'slice', ch); app.chosen = { specialtyId: null, pick: null } })
-        case 'leave-level-up': return act(() => performLeaveLevelUp(app.ctx!, 'slice'))
+        case 'exit': return act(() => (app.ctx!.campaign.cursor.step === 'levelUp' ? performLeaveLevelUp(app.ctx!, 'slice') : performExitBattle(app.ctx!, 'slice')))
+        case 'level-hero': app.levelHero = { id: id!, from: app.ctx!.campaign.cursor.step === 'open' ? 'roster' : 'rewards' }; return render()
+        case 'mute': { toggleMute(); el.textContent = isMuted() ? 'sound off' : 'sound on'; return }
+        // the ceremony's own controls (confirm-reward, reveal-all, choose-*, lu-*) are wired by the mount, not here
         case 'back-to-panel': return act(() => { app.draft = app.ctx!.campaign.cursor.battle?.result ?? app.draft; setCursor(app.ctx!, { battle: { resultSet: false } }, 'slice') })
       }
     })
@@ -546,6 +579,15 @@ function wire(root: HTMLElement): void {
       act(() => setBattleOutcome(app.ctx!, b.result!, k, 'slice-edit'))
     })
   })
+}
+
+// the headless smoke (tools/smoke-slice.mjs) has no DOM for a ceremony to run on; it drives the same performX calls the mounts do
+;(globalThis as { __sliceDrive?: unknown }).__sliceDrive = {
+  takeReward: (id: string) => act(() => performTakeReward(app.ctx!, id, 'slice')),
+  levelUp: (id: string, choice: { specialtyId?: string; pick?: number }) => act(() => performLevelUp(app.ctx!, id, 'slice', choice)),
+  offers: () => listRewardOffers(app.ctx!.campaign).map((o) => o.id),
+  leaveLevelUp: () => act(() => performLeaveLevelUp(app.ctx!, 'slice')),
+  closeLevelSheet: () => { app.levelHero = null; render() },
 }
 
 // ── boot ────────────────────────────────────────────────────────────────────

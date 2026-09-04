@@ -44,9 +44,17 @@ has('Equip'); has('right hand'); has('armor'); has('slot 1'); has('Set bonuses w
 { const t = text(); let at = t.indexOf('Idols'); for (const w of ['Bloodrunes', 'Relics', 'Weapons', 'Armor', 'Trinkets']) { const n = t.indexOf(w, at + 1); if (at < 0 || n < 0) throw new Error(`the six sections are not in the ruled order — ${w} does not follow`); at = n } }
 click('advance')                     // → battle
 has('The battle'); has('Fielded as equipped'); click('decide'); has('Reckoning'); click('apply')
-has('Victory'); has('kill'); click('exit')                 // the results screen (G12), then the spoils: face down, reveal, keep
-has('The spoils'); has('Turn them over'); click('reveal'); has('Keep one')
-while (!text().includes('Week 3 — ')) click(root.els.find((x) => ['take-reward', 'leave-level-up', 'level-up'].includes(x.dataset.act)).dataset.act)
+// the Hell-TCG copies (2026-09-04): the recap, then rewards.html's cards, then the level-up sheet — their
+// ceremonies run on a real DOM; here the same performX calls are driven through the page's smoke hook
+has('VICTORY'); has('Slain:'); has('XP Earned:'); click('exit')
+has('Your Heroes'); has('Rewards'); has('Reveal all'); if ((root.innerHTML.match(/reward-card face-down/g) || []).length !== 3) throw new Error('three face-down cards expected')
+const drive = globalThis.__sliceDrive
+drive.takeReward(drive.offers()[1])
+while (!text().includes('Week 3 — ')) {
+  const lv = root.els.find((x) => x.dataset.act === 'level-hero')
+  if (lv) { lv.handlers.click(); has('Level Up!'); has('LEVEL 1'); drive.levelUp(lv.dataset.id, {}); drive.closeLevelSheet(); continue }
+  click('exit')
+}
 has('Week 3 — Conquer'); has('held'); has('unclaimed'); has('supplies'); has('faith'); has('mana'); has('salvage')
 click('advance'); click('advance'); click('advance')  // build → mend → Week 4 Buy
 has('Week 4 — Buy'); click('advance'); has('Week 4 — Quest'); has('Did not turn up this Week'); has('Escort the survivors')

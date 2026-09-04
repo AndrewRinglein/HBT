@@ -712,5 +712,20 @@
   "sha": "cf2e188",
   "engineSha": "4516bbb",
   "gauntlet": "not passed — 3 flag(s) warned; 1 exemption(s) taken"
+ },
+ {
+  "id": "screens.after-battle-copy",
+  "kind": "kingdom",
+  "shape": "plumbing",
+  "milestone": "G12",
+  "spec": "Ruled 2026-09-03/04 (Angela; GEAR-IMPLEMENTATION.md, the notes over ISC-067): the after-battle screens are Hell-TCG's, copied - 'exactly recreating this from Hell-TCG'. The RECAP is the victory ceremony (tools/combat-interstitials-mockup.html / combat-test-harness.html): title by outcome (Hell-TCG's classification on HoBaT's wound levels), party row with wound states, MVP spotlight, the quote (hell-tcg/data/combatQuotes.js via tools/mk-quotes.mjs; class pools, since HoBaT heroes carry no personality yet), kills / turns / XP, the report, the [100..1900] ms ladder, the stinger pitched by outcome, first Enter skips and the second dismisses. The REWARDS are rewards.html: hero cards with XP bars filling to xp-tick and a ding at the threshold, floating XP, LEVEL UP buttons; the cards land 180 ms apart, face down with the rarity aura keyed to HoBaT's TIER, flip on click with FLIP_CONFIG's delays, particles and darken/shake, reveal all; select, confirm - over HoBaT's draw ('the reward screen is doing our methodology'); no Buy All (keep-2 was rejected; a switch, off). The LEVEL-UP is levelup.html's ascension chamber minus the class-power draft: rays, circles, pedestal, bonuses preview, the specialty overlay at the first level-up (declinable), the level-5 pick, the transformation (flash, explosion, ring, the badge flipping to the new level), the gains floating 450 ms apart, embers, Continue - reached from the rewards and from the roster. Sound: a trimmed set of Hell-TCG's own files (tools/prep-after.py, 16 sounds and the music) played through src/ui/sound.ts by Hell-TCG's ids; a mute button. Item cards show a blank frame until HoBaT item art exists. Driven end to end in a real browser (headless Chromium) with no console errors; the smoke drives the same performX calls through the page's hook. Also widened the door: the engine's board.variable-size (2026-09-04) removed WIDTH/HEIGHT/hexId/colOf/rowOf from hex.ts; src/engine.ts now exports geometryOf and the Board/Geometry types, and viewBattle reads ctx.geo.",
+  "expect": "test/after-battle.test.ts rewritten to the copies (Law 10 note in the ledger); smoke green; SLICE.html ~8 MB with the sounds",
+  "isc": [],
+  "needs": [
+   "screens.after-battle"
+  ],
+  "unreachable": "plumbing: the copied screens; ISC-067/068 (H) are where a person judges them",
+  "generalizationExempt": "plumbing: screens, not a mechanism",
+  "attempts": 2
  }
 ]

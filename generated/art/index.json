@@ -250,6 +250,50 @@
    "w": 320,
    "h": 480,
    "bytes": 14547
+  },
+  "sfx-ui-click-primary-2.mp3": {
+   "bytes": 8821
+  },
+  "sfx-ui-click-secondary.mp3": {
+   "bytes": 8821
+  },
+  "sfx-ui-confirm.mp3": {
+   "bytes": 17180
+  },
+  "sfx-ui-page-transition.mp3": {
+   "bytes": 17180
+  },
+  "sfx-rewards-reward-select.mp3": {
+   "bytes": 17180
+  },
+  "sfx-rewards-reward-claim.mp3": {
+   "bytes": 33062
+  },
+  "sfx-rewards-reward-reveal.mp3": {
+   "bytes": 33062
+  },
+  "sfx-turns-xp-gain.mp3": {
+   "bytes": 33062
+  },
+  "sfx-levelup-levelup-confirm.mp3": {
+   "bytes": 33062
+  },
+  "sfx-levelup-levelup-promotion.mp3": {
+   "bytes": 48945
+  },
+  "sfx-turns-combat-victory.mp3": {
+   "bytes": 48945
+  },
+  "sfx-turns-combat-defeat.mp3": {
+   "bytes": 40586
+  },
+  "music-new-dawn.mp3": {
+   "bytes": 1631400
+  },
+  "card-back.jpg": {
+   "w": 320,
+   "h": 440,
+   "bytes": 36511
   }
  },
  "map": {
@@ -520,5 +564,74 @@
   "hero.fixed.lumberjack-and-wife": "hero-lumberjack-and-wife.jpg",
   "hero.fixed.orphans": "hero-orphans.jpg"
  },
- "heroesMissing": []
+ "heroesMissing": [],
+ "audio": {
+  "click-primary": {
+   "file": "sfx-ui-click-primary-2.mp3",
+   "volume": 1.5
+  },
+  "click-secondary": {
+   "file": "sfx-ui-click-secondary.mp3",
+   "volume": 0.6
+  },
+  "confirm": {
+   "file": "sfx-ui-confirm.mp3",
+   "volume": 0.5
+  },
+  "page-transition": {
+   "file": "sfx-ui-page-transition.mp3",
+   "volume": 0.5
+  },
+  "reward-select": {
+   "file": "sfx-rewards-reward-select.mp3",
+   "volume": 0.5
+  },
+  "reward-claim": {
+   "file": "sfx-rewards-reward-claim.mp3",
+   "volume": 0.7
+  },
+  "reward-reveal": {
+   "file": "sfx-rewards-reward-reveal.mp3",
+   "volume": 0.6
+  },
+  "card-land": {
+   "file": "sfx-rewards-reward-select.mp3",
+   "volume": 0.3,
+   "pitchShift": 0.7
+  },
+  "reward-purchase": {
+   "file": "sfx-rewards-reward-claim.mp3",
+   "volume": 0.6
+  },
+  "xp-tick": {
+   "file": "sfx-turns-xp-gain.mp3",
+   "volume": 0.3
+  },
+  "levelup-ding": {
+   "file": "sfx-levelup-levelup-confirm.mp3",
+   "volume": 0.8
+  },
+  "levelup-confirm": {
+   "file": "sfx-levelup-levelup-confirm.mp3",
+   "volume": 0.7
+  },
+  "levelup-promotion": {
+   "file": "sfx-levelup-levelup-promotion.mp3",
+   "volume": 0.8
+  },
+  "victory-stinger": {
+   "file": "sfx-turns-combat-victory.mp3",
+   "volume": 0.7
+  },
+  "defeat-stinger": {
+   "file": "sfx-turns-combat-defeat.mp3",
+   "volume": 0.6
+  },
+  "music-new-dawn": {
+   "file": "music-new-dawn.mp3",
+   "volume": 0.28,
+   "music": true
+  }
+ },
+ "cardBack": "card-back.jpg"
 }

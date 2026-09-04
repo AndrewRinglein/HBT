@@ -19,7 +19,10 @@ export { SCENARIOS, scenarioOptions, scenarioDef } from '../../engine/src/conten
 // Widened 2026-09-01 for the battle screen (M3): the board's geometry and
 // terrain, and the unit rows' display names. Read-only content and geometry —
 // no rule, no mutator.
-export { WIDTH, HEIGHT, hexId, colOf, rowOf } from '../../engine/src/core/hex.js'
+// board.variable-size (engine, 2026-09-04): the constants are gone; the board is the map's and
+// the geometry (hexId, colOf, rowOf …) is bound to it on the Ctx as `geo`. Read-only.
+export { geometryOf } from '../../engine/src/core/hex.js'
+export type { Board, Geometry } from '../../engine/src/core/hex.js'
 export { terrainOf, terrainIdOf, isPassable } from '../../engine/src/content/maps.js'
 export { UNITS } from '../../engine/src/content/index.js'
 // Widened 2026-09-03 for screens.after-battle (G12): the engine's own level tables, read so the

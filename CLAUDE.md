@@ -38,6 +38,8 @@ python3 tools/prep-mock.py [mock]           pull the Load Game mock's banners an
 node tools/mk-items.mjs                      regenerate src/content/generated/items.ts from the codex (+ items-gaps.json)
 node tools/mk-progress.mjs                   regenerate src/content/generated/progress.ts (level tables, specialties) from the codex
 python3 tools/prep-heroes.py                 the pool heroes' card portraits into generated/art/ (after prep-art)
+python3 tools/prep-after.py [hell-tcg]       the after-battle screens' sounds, music and card back from Hell-TCG into generated/art/
+node tools/mk-quotes.mjs                     regenerate src/content/generated/quotes.ts (the recap's quotes) from hell-tcg/data/combatQuotes.js
 node tools/build-slice.mjs                   SLICE.html, with generated/art/ inlined
 node tools/smoke-slice.mjs SLICE.html        drive the built page headlessly
 node tools/slice-gate.mjs --sync             write the count and every State: line into the doc

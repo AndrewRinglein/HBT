@@ -11,7 +11,7 @@
 import type { CampaignState } from '../core/campaign.js'
 import { engagementOf } from '../core/mutate.js'
 import { makeBattleState, battleOptionsOf } from '../core/seam.js'
-import { createBattle, WIDTH, HEIGHT, colOf, rowOf, terrainIdOf } from '../engine.js'
+import { createBattle, terrainIdOf } from '../engine.js'
 
 export type BattleUnitView = {
   side: 'hero' | 'enemy'
@@ -64,7 +64,7 @@ export function viewBattle(campaign: CampaignState): BattleView {
     units.push({
       side, index, unitId: ev.actor!, typeId: ev['typeId'] as string, name: ev['name'] as string,
       heroId: side === 'hero' ? e.deployed[index] ?? null : null,
-      hex, col: colOf(hex), row: rowOf(hex),
+      hex, col: ctx.geo.colOf(hex), row: ctx.geo.rowOf(hex),
       hp: ev['hp'] as number, maxHp: ev['maxHp'] as number,
       equipped: [], attacks: [], leftBehind: side === 'hero' ? [...(spec.heroLeftBehind?.[index] ?? [])] : [],
     })
@@ -72,7 +72,7 @@ export function viewBattle(campaign: CampaignState): BattleView {
   units.sort((a, b) => (a.side === b.side ? a.index - b.index : a.side === 'hero' ? -1 : 1))
   return {
     engagementId: e.id, kind: e.kind, mapId: e.mapId,
-    width: WIDTH, height: HEIGHT,
+    width: ctx.geo.board.width, height: ctx.geo.board.height,
     terrain: ctx.state.terrain.map(terrainIdOf),
     units,
   }

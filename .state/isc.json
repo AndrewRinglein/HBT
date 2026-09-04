@@ -121,7 +121,14 @@
   "closed": {
    "at": "2026-09-02 04:28",
    "sha": "9ee8ea3"
-  }
+  },
+  "regressed": [
+   {
+    "at": "2026-09-04 08:04",
+    "sha": "994595b",
+    "tail": "a won battle proposes XP per deployed hero, one MVP, +1 Renown, a claim and a Salvage grant: TypeError: (0 , __vite_ssr_import_2__.colOf) is not a function | a lost battle proposes no Renown, a loss, no claim, no Salvage, and a dead hero earns nothing: TypeError: (0 , __vite_ssr_import_2__.colOf) is"
+   }
+  ]
  },
  "030": {
   "landed": {
@@ -140,7 +147,14 @@
   "closed": {
    "at": "2026-09-02 04:52",
    "sha": "123a501"
-  }
+  },
+  "regressed": [
+   {
+    "at": "2026-09-04 08:04",
+    "sha": "994595b",
+    "tail": "after a wipe every deployed hero is wounded or dead, and the purse gained nothing: TypeError: (0 , __vite_ssr_import_2__.colOf) is not a function"
+   }
+  ]
  },
  "016": {
   "red": {
@@ -153,7 +167,14 @@
   "closed": {
    "at": "2026-09-02 04:52",
    "sha": "123a501"
-  }
+  },
+  "regressed": [
+   {
+    "at": "2026-09-04 08:04",
+    "sha": "994595b",
+    "tail": "a win pays exactly one Renown: TypeError: (0 , __vite_ssr_import_2__.colOf) is not a function | a loss pays none: TypeError: (0 , __vite_ssr_import_2__.colOf) is not a function"
+   }
+  ]
  },
  "017": {
   "red": {
@@ -166,7 +187,14 @@
   "closed": {
    "at": "2026-09-02 04:52",
    "sha": "123a501"
-  }
+  },
+  "regressed": [
+   {
+    "at": "2026-09-04 08:04",
+    "sha": "994595b",
+    "tail": "a first conquest pays Salvage; the same Territory taken again after being lost pays Renown only: TypeError: (0 , __vite_ssr_import_2__.colOf) is not a function"
+   }
+  ]
  },
  "018": {
   "red": {
@@ -205,7 +233,14 @@
   "closed": {
    "at": "2026-09-02 04:53",
    "sha": "123a501"
-  }
+  },
+  "regressed": [
+   {
+    "at": "2026-09-04 08:04",
+    "sha": "994595b",
+    "tail": "the engine's fold and the panel both validate against the Engagement, and the writer takes either: TypeError: (0 , __vite_ssr_import_2__.colOf) is not a function | a malformed result is refused before anything is written: TypeError: (0 , __vite_ssr_import_2__.colOf) is not a function"
+   }
+  ]
  },
  "032": {
   "red": {
@@ -218,7 +253,14 @@
   "closed": {
    "at": "2026-09-02 04:53",
    "sha": "123a501"
-  }
+  },
+  "regressed": [
+   {
+    "at": "2026-09-04 08:04",
+    "sha": "994595b",
+    "tail": "overridden XP, wound, death and grants land to the number: TypeError: (0 , __vite_ssr_import_2__.colOf) is not a function | the proposal itself is what the writer writes when nothing is overridden: TypeError: (0 , __vite_ssr_import_2__.colOf) is not a function"
+   }
+  ]
  },
  "033": {
   "red": {
@@ -231,7 +273,14 @@
   "closed": {
    "at": "2026-09-02 04:53",
    "sha": "123a501"
-  }
+  },
+  "regressed": [
+   {
+    "at": "2026-09-04 08:04",
+    "sha": "994595b",
+    "tail": "applies once, saves, reloads equal, refuses a second apply, and exits to the Week: TypeError: (0 , __vite_ssr_import_2__.colOf) is not a function"
+   }
+  ]
  },
  "005": {
   "red": {
@@ -270,7 +319,14 @@
   "closed": {
    "at": "2026-09-02 05:17",
    "sha": "a46150c"
-  }
+  },
+  "regressed": [
+   {
+    "at": "2026-09-04 08:04",
+    "sha": "994595b",
+    "tail": "at every Stage of a Week with a battle in it, stringify/parse then play on gives the same events: TypeError: (0 , __vite_ssr_import_2__.colOf) is not a function"
+   }
+  ]
  },
  "011": {
   "red": {
@@ -296,7 +352,14 @@
   "closed": {
    "at": "2026-09-02 05:25",
    "sha": "cae0665"
-  }
+  },
+  "regressed": [
+   {
+    "at": "2026-09-04 08:04",
+    "sha": "994595b",
+    "tail": "won: the Territory and the Forge are held; the claim is the first: TypeError: (0 , __vite_ssr_import_2__.colOf) is not a function | lost: nothing is claimed and the Territory is offered again next Week: TypeError: (0 , __vite_ssr_import_2__.colOf) is not a function"
+   }
+  ]
  },
  "013": {
   "red": {
@@ -328,6 +391,11 @@
     "at": "2026-09-03 10:45",
     "sha": "f6515c2",
     "tail": "an attack the Stage offers is answered by fighting, or costs the Territory when passed: Error: scenario 'engagement.defend.sanctuary.week-14': alpha-osric would wield more than two hands of weapons (item.longsword, item.knight-shield, item.basic-armor, item.greatsword)"
+   },
+   {
+    "at": "2026-09-04 08:04",
+    "sha": "994595b",
+    "tail": "an attack the Stage offers is answered by fighting, or costs the Territory when passed: TypeError: (0 , __vite_ssr_import_2__.colOf) is not a function"
    }
   ]
  },
@@ -439,6 +507,11 @@
     "at": "2026-09-03 10:45",
     "sha": "f6515c2",
     "tail": "over twelve autoplayed Weeks, every Salvage grant is caused by a won Conquer, and other currencies arrive from labours too: Error: scenario 'engagement.defend.sanctuary.week-14': alpha-osric would wield more than two hands of weapons (item.longsword, item.knight-shield, item.basic-armor, item.dagger"
+   },
+   {
+    "at": "2026-09-04 08:04",
+    "sha": "994595b",
+    "tail": "over twelve autoplayed Weeks, every Salvage grant is caused by a won Conquer, and other currencies arrive from labours too: TypeError: (0 , __vite_ssr_import_2__.colOf) is not a function"
    }
   ]
  },
@@ -453,7 +526,14 @@
   "closed": {
    "at": "2026-09-02 05:54",
    "sha": "bd95fd7"
-  }
+  },
+  "regressed": [
+   {
+    "at": "2026-09-04 08:04",
+    "sha": "994595b",
+    "tail": "a won battle offers three distinct items from the pool; one goes to the stash, two are burned, the same three on reload: TypeError: (0 , __vite_ssr_import_2__.colOf) is not a function | a lost battle offers nothing: TypeError: (0 , __vite_ssr_import_2__.colOf) is not a function"
+   }
+  ]
  },
  "039": {
   "red": {
@@ -524,6 +604,11 @@
     "at": "2026-09-03 10:45",
     "sha": "f6515c2",
     "tail": "the opening fields them in order and the civilians join the roster: Error: scenario 'engagement.conquer.prologue-2': hero.base.warrior-iron would wield more than two hands of weapons (item.destroyed-mail, item.tower-shield, item.war-axe, item.shortbow)"
+   },
+   {
+    "at": "2026-09-04 08:04",
+    "sha": "994595b",
+    "tail": "the opening fields them in order and the civilians join the roster: TypeError: (0 , __vite_ssr_import_2__.colOf) is not a function"
    }
   ]
  },
@@ -564,6 +649,11 @@
     "at": "2026-09-03 10:45",
     "sha": "f6515c2",
     "tail": "a lost battle 5, after the Sanctuary is taken in battle 4, does not end the run; nor does a lost Conquer in Week 2: Error: scenario 'engagement.conquer.prologue-4': alpha-osric is handed 'item.knight-shield' twice"
+   },
+   {
+    "at": "2026-09-04 08:04",
+    "sha": "994595b",
+    "tail": "losing battle 2 ends the Campaign, the save says so, nothing advances, and a fresh Campaign starts again: TypeError: (0 , __vite_ssr_import_2__.colOf) is not a function | a lost battle 5, after the Sanctuary is taken in battle 4, does not end the run; nor does a lost Conquer in Week 2: TypeError: (0"
    }
   ]
  },
@@ -659,6 +749,11 @@
     "at": "2026-09-03 10:45",
     "sha": "f6515c2",
     "tail": "    at <anonymous> (/sessions/zealous-exciting-galileo/mnt/Heroes of Blight and Tragic/kingdom/tools/slice-run.mts:30:1) |     at ModuleJob.run (node:internal/modules/esm/module_job:343:25) | Node.js v22.23.2"
+   },
+   {
+    "at": "2026-09-04 08:04",
+    "sha": "994595b",
+    "tail": "    at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:681:26) |     at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:117:5) | Node.js v22.23.2"
    }
   ]
  },
@@ -679,6 +774,11 @@
     "at": "2026-09-03 10:45",
     "sha": "f6515c2",
     "tail": "    at <anonymous> (/sessions/zealous-exciting-galileo/mnt/Heroes of Blight and Tragic/kingdom/tools/slice-run.mts:30:1) |     at ModuleJob.run (node:internal/modules/esm/module_job:343:25) | Node.js v22.23.2"
+   },
+   {
+    "at": "2026-09-04 08:04",
+    "sha": "994595b",
+    "tail": "    at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:681:26) |     at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:117:5) | Node.js v22.23.2"
    }
   ]
  },
@@ -712,6 +812,11 @@
     "at": "2026-09-03 10:45",
     "sha": "f6515c2",
     "tail": "a recruit from the Beacon arrives equipped; a rescued civilian carries its tool: Error: scenario 'engagement.conquer.prologue-4': alpha-osric is handed 'item.knight-shield' twice"
+   },
+   {
+    "at": "2026-09-04 08:04",
+    "sha": "994595b",
+    "tail": "a recruit from the Beacon arrives equipped; a rescued civilian carries its tool: TypeError: (0 , __vite_ssr_import_2__.colOf) is not a function"
    }
   ]
  },
@@ -830,7 +935,14 @@
   "closed": {
    "at": "2026-09-03 05:24",
    "sha": "bf993f0"
-  }
+  },
+  "regressed": [
+   {
+    "at": "2026-09-04 08:04",
+    "sha": "994595b",
+    "tail": "leaving the battle restocks everything spent, and says so: TypeError: (0 , __vite_ssr_import_2__.colOf) is not a function"
+   }
+  ]
  },
  "062": {
   "red": {
@@ -869,7 +981,14 @@
   "closed": {
    "at": "2026-09-03 20:15",
    "sha": "5edcbc5"
-  }
+  },
+  "regressed": [
+   {
+    "at": "2026-09-04 08:04",
+    "sha": "994595b",
+    "tail": "the fielded Hunter shoots the shortbow, not the kit's longbow — and with nothing handed over, the kit: TypeError: (0 , __vite_ssr_import_2__.colOf) is not a function"
+   }
+  ]
  },
  "065": {
   "red": {
@@ -882,7 +1001,14 @@
   "closed": {
    "at": "2026-09-03 20:19",
    "sha": "26c25b5"
-  }
+  },
+  "regressed": [
+   {
+    "at": "2026-09-04 08:04",
+    "sha": "994595b",
+    "tail": "three revealed, one kept, two burned — and what was spent in the battle is whole before the cards are seen: TypeError: (0 , __vite_ssr_import_2__.colOf) is not a function"
+   }
+  ]
  },
  "066": {
   "landed": {
