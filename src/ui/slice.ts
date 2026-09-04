@@ -35,7 +35,8 @@ import { xpForLevel } from '../content/levels.js'
 import { listBuildings, whyNotBuild, performBuild } from '../core/build.js'
 import { isShopOpen, listShopItems, canBuyItem, performBuyItem, costOfItem, canEquip, whyNotEquip, performEquip, canUnequip, performUnequip, loadoutOf, equipCostOf, isEquipOpen, equipWhere, performOpenEquip, performCloseEquip, forgeBandName, shelfSpecOf, whyNotTradeIn, performTradeIn, tradeCategoryOf } from '../core/shop.js'
 import { itemOf } from '../content/items.js'
-import { equipScreen, deltasOf, displaceFor } from './equip.js'
+import { equipScreen, displaceFor } from './equip.js'
+import { rosterScreen as rosterCards } from './roster.js'
 import { recapScreen, mountRecap, rewardsScreen, mountRewards, levelUpScreen, mountLevelUp, toggleMute, stopMusic, type LastBattle, type Cleanup } from './after.js'
 import { canLevelUp } from '../core/rewards.js'
 import { isMuted } from './sound.js'
@@ -196,13 +197,8 @@ function screen(c: CampaignState): string {
 
 /** screen.roster — every hero, class, level, XP, wound, and what each slot holds this Week. */
 function rosterScreen(c: CampaignState): string {
-  const heroes = Object.values(c.roster).sort((a, b) => a.id.localeCompare(b.id))
-  const slot = (h: Hero, s: 'field' | 'city') => { const k = commitmentOf(c, h.id, s); const a = c.assignments[h.id]?.[s]; return k === 'committed' || k === 'onQuest' ? `${k} — ${esc(a!.kind)} ${esc(a!.target)}${a!.weeks > 1 ? `, ${a!.weeks} Weeks` : ''}` : k }
-  return `<h2>The roster — ${heroes.length} hero${heroes.length === 1 ? '' : 'es'}, Week ${c.week}</h2>
-    <div class="card"><table><tr><th>hero</th><th>class</th><th>level</th><th>xp</th><th>wound</th><th>field slot</th><th>city slot</th><th>this Week</th><th>carries</th><th>gear changes</th><th></th></tr>
-    ${heroes.map((h) => `<tr class="${h.lifeState === 'dead' ? 'dead' : ''}"><td><b>${esc(h.name)}</b><br><span class="meta">${esc(h.id)}</span></td><td>${esc(h.classes.map((x) => x.replace('class.', '')).join(', '))}</td><td class="n">${h.level}</td><td class="n">${h.xp} / ${xpForLevel(h.level + 1)}</td><td>${h.lifeState === 'dead' ? '<span class="lost">dead</span>' : h.wound ? esc(woundNameOf(h.wound)) : '—'}</td><td>${slot(h, 'field')}</td><td>${slot(h, 'city')}</td><td class="meta">${esc(absenceOf(c, h.id) ?? '')}</td><td class="meta">${esc(h.equipped.map((i) => i.replace('item.', '')).join(', ') || '—')}</td><td>${deltasOf(c, h.id)}</td><td>${c.cursor.step === 'open' && canLevelUp(c, h.id) ? `<button class="primary" data-act="level-hero" data-id="${esc(h.id)}">Level up</button>` : ''}</td></tr>`).join('')}</table></div>
-    <p class="meta">Two slots a Week: one in the field, one in the city; a quest takes both. The unavailability roll between Buy and Quest keeps some home with a story.</p>
-    ${equipWhere(c) === 'roster' ? `<h2>Fitting gear</h2>${equipScreen(c, heroes.filter((h) => h.lifeState === 'alive').map((h) => h.id), { where: 'roster', picked: app.picked })}<div class="bar"><span class="meta">Idols are fitted at prep only — they are paid for when the battle is about to happen.</span><span class="sp"></span><button class="primary" data-act="close-equip">Done — keep it</button></div>` : c.cursor.step === 'open' && !isEquipOpen(c) ? `<div class="bar"><span class="sp"></span><button data-act="open-equip">Fit gear</button></div>` : ''}`
+  const alive = Object.values(c.roster).filter((h) => h.lifeState === 'alive').map((h) => h.id).sort()
+  return rosterCards(c, equipWhere(c) === 'roster' ? equipScreen(c, alive, { where: 'roster', picked: app.picked }) : '')
 }
 
 // ── the opening ─────────────────────────────────────────────────────────────

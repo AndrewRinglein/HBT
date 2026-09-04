@@ -32,7 +32,7 @@ click('slot-continue'); has('The draft'); click('title'); click('slot-end'); cli
 // ISC-049 — roster from the Week; ISC-048 — four Territories, the Stage, the purse
 click('slot-fixture'); has('Reveal')
 // walk prep to the Week: advance × 4 needs deploys… use the roster button from prep instead
-click('roster'); has('The roster'); has('field slot'); click('roster')
+click('roster'); has('The roster'); has('Max HP'); has('field'); click('roster')
 console.log('smoke: Load Game → new party → draft; end game; fixture → prep → roster: OK')
 console.log(text().slice(0, 200))
 // the fixture's Week: to the world screen at Quest, absences on screen, a quest sent
@@ -59,5 +59,5 @@ has('Week 3 — Conquer'); has('held'); has('unclaimed'); has('supplies'); has('
 click('advance'); click('advance'); click('advance')  // build → mend → Week 4 Buy
 has('Week 4 — Buy'); click('advance'); has('Week 4 — Quest'); has('Did not turn up this Week'); has('Escort the survivors')
 const first = root.els.find((x) => x.dataset.act === 'party'); first.handlers.click(); click('send-quest'); has('In flight'); has('2 Weeks left')
-click('roster'); has('onQuest — quest quest.escort, 2 Weeks'); click('roster')
+click('roster'); has('onQuest — quest escort, 2 Weeks'); click('roster')
 console.log('smoke: Week → absences → quest sent → roster shows it: OK')

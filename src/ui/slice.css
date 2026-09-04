@@ -162,6 +162,22 @@ svg.world image.ruin{filter:grayscale(.9) brightness(.55)}
 .equip .item.picked{border-color:var(--gold);background:#2a2320}
 .equip .item.nofit{opacity:.5}
 .equip .setline{margin-top:10px}
+/* the roster (ISC-049, rewritten 2026-09-03): the Equip card, plus what the campaign knows */
+.roster-screen .rosterrow{align-items:flex-start}
+.roster-screen .rostercard.dead{opacity:.55}
+.roster-screen .rostercard .art{position:relative}
+.roster-screen .fallen,.roster-screen .woundtag{position:absolute;top:8px;left:8px;font:700 11px Cinzel,"Palatino Linotype",Georgia,serif;letter-spacing:.1em;text-transform:uppercase;padding:2px 8px;border-radius:10px;background:rgba(0,0,0,.75)}
+.roster-screen .fallen{color:#ff8f8f;border:1px solid var(--bad)}
+.roster-screen .woundtag.w1{color:#e8a84c;border:1px solid #b47848} .roster-screen .woundtag.w2,.roster-screen .woundtag.w3{color:#ff8f8f;border:1px solid var(--bad)}
+.roster-screen .gearlist{display:grid;gap:3px;font-size:12.5px}
+.roster-screen .gear,.roster-screen .facts>div{display:flex;justify-content:space-between;gap:8px;border-bottom:1px solid #2a2320;padding:2px 0}
+.roster-screen .gear .k,.roster-screen .facts .k{color:var(--faint);font-size:11px;letter-spacing:.06em;text-transform:uppercase;white-space:nowrap}
+.roster-screen .gear .v,.roster-screen .facts .v{text-align:right} .roster-screen .gear i{color:var(--faint)}
+.roster-screen .facts{font-size:12.5px} .roster-screen .facts .absent .v{color:var(--dim);font-style:italic}
+.roster-screen .xpbar{position:relative;height:16px;background:#0c0a09;border:1px solid var(--line);border-radius:8px;overflow:hidden;font-size:11px;line-height:14px}
+.roster-screen .xpbar .fill{height:100%;background:linear-gradient(90deg,#2a5a8a,#4da6ff)} .roster-screen .xpbar .fill.ready{background:linear-gradient(90deg,#7a5a1e,var(--gold))}
+.roster-screen .xpbar span{position:absolute;inset:0;text-align:center;color:var(--ink);text-shadow:0 0 3px #000}
+
 /* after the battle (G12) — results, the spoils, level-up */
 .after .hcards{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:10px;margin:10px 0}
 .after .hcard{background:#000;border:1px solid var(--line);border-radius:6px;padding:10px;min-height:120px}
