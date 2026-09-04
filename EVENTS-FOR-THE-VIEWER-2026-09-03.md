@@ -201,3 +201,46 @@ Turns" on every action — powers and enemy attacks recovered a Turn early
 before; and a unit with no stamina pool pays no stamina for an attack, as it
 already paid none for a move. Every replayable battle re-exported after
 26fa562 will differ from its predecessor for those two reasons.
+
+## 12. Zone of control, badges, the deathbed reversal (added 2026-09-04)
+
+**ZoC is a threat, not a stop** (`fix.zoc-threat-not-stop` 1019510). There is
+no held. `move.stopped` now carries `reason: 'hit'` and the mover's own `hex`
+(no `by`): the provoked swing on the way out connected, the mover lost its
+movement and stopped where it stood. Anything that drew "held" from
+`move.stopped reason: 'zone of control'` has nothing to read and must go.
+`aoo.provoked` / `attack.declared` / `damage.applied` tell the rest.
+
+**Knockback beyond one** (2e649b5): `knocked` carries `asked`, `hexes`, and
+`stoppedBy` when the push was cut short (`occupied`, `impassable …`, `edge of
+the board`). A push of 2 draws two hexes of travel.
+
+**Badges** (`badge.mechanism` 2e76ede). New lines:
+- `unit.badged` — at fielding, one per (unit, badge), after `unit.equipped`:
+  `{ actor, badgeId, grants, mods, flags, gaps? }`. Cause = the badge.
+- `badge.gained` — mid-battle: `{ actor, badgeId, name, mods, flags, gaps? }`,
+  followed by the `statmod.added` / `maxHp.gained` / `maxHp.lost` lines that
+  put its modifiers on. Cause = what granted it (the deathbed roll, an
+  affliction trigger).
+- `badge.held` — a grant that was already there; nothing changed.
+The sheet: a `Unit` has `badges: string[]`; `woundLevel` is gone.
+
+**Deathbed, reversed** (`fix.deathbed-no-stands` b4cbd9b; DECISIONS 2026-09-04).
+No stands, no Badly Wounded, no dripping-blood ladder. The lines:
+- `deathbed.stood { target, roll, chance, ordinal, badgeId, gaps? }` — then
+  `badge.gained` for the Wounded badge (`badgeId`), `stamina.gained`,
+  `hp.reset { hp, maxHp }`. **Draw a skull on the unit from here on** — Angela:
+  "they need a skull in their status bar, to show they're on death's door."
+  `gaps` is present until content publishes `badge.wounded`; draw the skull
+  either way (the STOOD line is the fact).
+- `deathbed.fell { target, roll, chance, ordinal, bleedsOut, gaps? }` —
+  `bleedsOut: true` → `life.downed` and the bleed-out as before;
+  `false` → `life.dead reason: 'fell'` and `corpse.created`.
+- `deathbed.none { target, reason: 'wounded' }` — a Wounded unit at 0: no roll,
+  `life.dead reason: 'wounded'`, a corpse.
+- `deathbed.exhausted` is gone.
+
+**Afflictions** (`badge.afflictions` a4deae8): `trigger.fired` with
+`effect: 'badge.grant', badgeId`, then `badge.gained`. The zombie's claw
+afflicts Rotting Flesh at 10%; the werewolf Lycanthropy; the vampires
+Vampirism. A badge on the sheet is worth an icon.
