@@ -1349,9 +1349,62 @@ function testStatuses() {
   }
   return out;
 }
+// ── BADGES (badge.mechanism, 2026-09-04) ───────────────────────────────────
+// Ruled 2026-09-04: badges are an engine type — the Hero badge, Wounded, the
+// afflictions (Lycanthropy, Vampirism, Possession) and whatever else a row
+// grants. The Codex's badge rows are PROSE payloads ("+2 Str, +2 Move, −5
+// Crit · `startOfBattle`: regeneration 5"); this compiles the clauses the
+// engine can express — stat modifiers, granted powers, the deployment and
+// deathbed flags — and names every other clause as a gap, compile-or-name-
+// the-gap like every row. Nothing is invented: a clause that does not parse
+// is a gap, never a guess.
+const BADGE_STAT = { str: 'strength', strength: 'strength', pre: 'precision', precision: 'precision', magic: 'magic', spirit: 'spirit',
+  acc: 'accuracy', accuracy: 'accuracy', dodge: 'dodge', armor: 'armor', armour: 'armor', resist: 'resist', move: 'movement', movement: 'movement',
+  reach: 'reach', health: 'maxHp', h: 'maxHp', hp: 'maxHp', 'max hp': 'maxHp', 'max health': 'maxHp', 'stamina max': 'maxStamina', 'max stamina': 'maxStamina', stamina: 'maxStamina',
+  'stamina regen': 'staminaRegen', regen: 'staminaRegen', crit: 'crit', luck: 'luck', toughness: 'toughness', surge: 'surge', vision: 'vision' };   // DBF (Deathbed Fighting) is derived from Toughness today, not a stat the engine folds — a +N DBF clause stays a named gap until it is
+const BADGE_FLAGS = { 'blocks deployment': 'blocksDeployment' };
+function compileBadge(row) {
+  const mods = {}; const grants = []; const flags = {}; const gaps = [];
+  const payload = String(row.payload || '').replace(/\*\*/g, '');
+  if (!payload || /prose only/i.test(payload)) gaps.push(payload ? 'payload is prose only — the numbers are owed' : 'no payload');
+  else for (const raw of payload.split(/\s*[·;]\s*|,\s*(?![^()]*\))/)) {
+    const clause = raw.trim(); if (!clause) continue;
+    let m;
+    if ((m = clause.match(/^([+−-]\s*\d+)\s+(.+)$/))) {
+      const v = parseInt(m[1].replace('−', '-').replace(/\s+/g, ''), 10);
+      // "+1 S, P, reach, H" — one number, several stats
+      const words = m[2].split(/\s*,\s*|\s+and\s+/).map((w) => w.trim().toLowerCase());
+      let ok = true;
+      for (const w of words) { const st = BADGE_STAT[w] ?? BADGE_STAT[w.replace(/\s+/g, ' ')]; if (!st) { ok = false; break } }
+      if (ok) { for (const w of words) { const st = BADGE_STAT[w] ?? BADGE_STAT[w.replace(/\s+/g, ' ')]; mods[st] = (mods[st] ?? 0) + v } continue }
+    }
+    if ((m = clause.match(/^grants\s+`?(power\.[a-z0-9.-]+)`?$/i))) { grants.push(m[1]); continue }
+    const fl = Object.keys(BADGE_FLAGS).find((k) => clause.toLowerCase().startsWith(k));
+    if (fl) { flags[BADGE_FLAGS[fl]] = true; if (clause.length > fl.length) gaps.push(clause); continue }
+    gaps.push(clause);   // hooks (`startOfBattle`: …), class locks, "lifts on rescue" — named, not guessed
+  }
+  // the engine's deathbed stat rides the modifiers map under its own name
+  const out = { id: row.id, name: row.name, statModifiers: mods, grants, flags, ...(gaps.length ? { gaps } : {}) };
+  return out;
+}
+const badges = {};
+for (const row of (D.badges || []).filter((b) => b && b.id && b.id.startsWith('badge.'))) badges[row.id] = compileBadge(row);
+function testBadges() {
+  const out = {};
+  const FIELDS = new Set(['id', 'name', 'statModifiers', 'grants', 'flags', 'triggers']);
+  for (const row of readTest('badges.json')) {
+    const { note, ...r } = row;
+    if (!/^test\.badge\.[a-z0-9-]+$/.test(r.id)) throw new Error(`content/test/badges.json: '${r.id}' is not test.badge.*`);
+    for (const k of Object.keys(r)) if (!FIELDS.has(k)) throw new Error(`content/test/badges.json: '${r.id}' carries unknown field '${k}'`);
+    for (const t of r.triggers || []) if (!isTestId.trigger(t.id)) throw new Error(`content/test/badges.json: '${r.id}' trigger '${t.id}' is not test.* / trigger.test-*`);
+    out[r.id] = { statModifiers: {}, grants: [], flags: {}, ...r, triggers: (r.triggers || []).map((t) => ({ ...t, source: r.id })) };
+  }
+  return out;
+}
+
 const testAttackRows = testAttacks();
 const testAbilityRows = testAbilities();
-const test = { note: 'GENERATED from content/test/ — the test receptacle. Never ships. Wipe the folder to remove every row here.', units: testUnits(testAttackRows, testAbilityRows), attacks: testAttackRows, abilities: testAbilityRows, statuses: testStatuses() };
+const test = { note: 'GENERATED from content/test/ — the test receptacle. Never ships. Wipe the folder to remove every row here.', units: testUnits(testAttackRows, testAbilityRows), attacks: testAttackRows, abilities: testAbilityRows, statuses: testStatuses(), badges: testBadges() };
 
 // ── ENCOUNTERS (encounter.runner, 2026-09-03; P11 approved as written) ─────────
 // Every prologue and scripted row of gen/encounters.json becomes an
@@ -1410,7 +1463,7 @@ const encounters = {};
 for (const row of [...(ENC.prologue || []), ...(ENC.scripted || []), ...(ENC.authored || [])]) encounters[row.id] = compileEncounter(row);
 
 const pack = { note: D.testCohort.note, heroes, enemies, authoredEnemies, authoredAttacks, authoredAbilities, prologueParty, alphaTeam, critChart: compileCritChart(SETTLED.critChart), statuses, moves, items, test,
-  classPowers, specialties, levels, enchanted, encounters };
+  classPowers, specialties, levels, enchanted, encounters, badges };
 
 // Gaps are written AFTER the pack is fully constructed (moved 2026-08-27):
 // compileCritChart names gaps during pack construction, and writing the file

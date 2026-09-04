@@ -1,0 +1,18 @@
+[
+  {
+    "id": "test.badge.iron-skin",
+    "name": "Iron Skin (TEST)",
+    "statModifiers": { "armor": 2, "dodge": -5 },
+    "note": "badge.mechanism (2026-09-04): the plainest badge — two stat modifiers, folded at fielding or granted mid-battle. The mechanism's first instance."
+  },
+  {
+    "id": "test.badge.brand",
+    "name": "The Brand (TEST)",
+    "statModifiers": { "strength": 1 },
+    "flags": { "bleedsOut": true },
+    "triggers": [
+      { "id": "trigger.test-brand.sear", "hook": "onHit", "chance": 100, "select": "target", "effect": { "kind": "status.apply", "statusId": "status.burn", "value": 1 } }
+    ],
+    "note": "badge.mechanism (2026-09-04): a badge that carries a TRIGGER and a FLAG — the second instance, pure data. Its rider sears whatever it hits; its flag is the Hero badge's (bleeds out on a failed deathbed roll) so the flag path is proved before content authors badge.hero."
+  }
+]
