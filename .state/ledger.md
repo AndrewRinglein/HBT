@@ -1194,3 +1194,5 @@ IRON GAUNTLET: NOT PASSED — 2 FLAG(S) WARNED; 1 EXEMPTION(S) TAKEN
 
 slice: 58 of 68 closed · 61 probed · 1 accepted
 IRON GAUNTLET: NOT PASSED — 2 FLAG(S) WARNED; 1 EXEMPTION(S) TAKEN
+
+Law 10 note (2026-09-04, no landing — a repair): the engine's `refactor.one-action-type` (17b2753, ruled by Angela that day) collapsed a Unit's `attacks`, `abilities` and `moves` into ONE `actions` list, which turned test/isc-064.test.ts red on `hunter.attacks` being undefined. The assertion was re-pointed at `actions`, not weakened: what it holds is unchanged — the fielded hero carries the granted attack ids of the item that was actually handed over, and not the other item's. Found by running the suite while writing HANDOFF-2026-09-04.md; the third time in two days that an engine landing moved the door mid-session (see §5 of that handoff).

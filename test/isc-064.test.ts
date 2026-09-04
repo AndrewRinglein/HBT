@@ -34,6 +34,9 @@ describe('ISC-064 — what is equipped is what is fielded', () => {
     expect(opts.heroItems).toEqual(spec.heroItems)
     expect(opts.heroes).toEqual(spec.heroes)
   })
+  // refactor.one-action-type (engine, 2026-09-04): a Unit's `attacks` became `actions` —
+  // ONE list of attacks, powers and movements in row order. What is asserted is unchanged:
+  // the granted attack ids of the item that was fielded are on the unit, the other item's are not.
   it('the fielded Hunter shoots the shortbow, not the kit\'s longbow — and with nothing handed over, the kit', () => {
     const ctx = swapped()
     const e = ctx.campaign.cursor.engagement!
@@ -42,8 +45,8 @@ describe('ISC-064 — what is equipped is what is fielded', () => {
     const fielded = createBattle(battleOptionsOf(spec))
     const hunter = fielded.state.units.find((u) => u.uid === 100 + at)!
     expect(hunter.typeId).toBe(ctx.campaign.roster[HUNTER]!.unitType)
-    for (const a of itemOf(SHORTBOW).grants) expect(hunter.attacks).toContain(a)
-    for (const a of itemOf(LONGBOW).grants) expect(hunter.attacks).not.toContain(a)
+    for (const a of itemOf(SHORTBOW).grants) expect(hunter.actions).toContain(a)
+    for (const a of itemOf(LONGBOW).grants) expect(hunter.actions).not.toContain(a)
     // the engine says why, per item, on the log (Law 12) — and the view reads it
     const worn = fielded.events.filter((ev) => ev.type === 'unit.equipped' && ev.actor === hunter.id).map((ev) => ev['itemId'])
     expect(worn).toEqual(ctx.campaign.roster[HUNTER]!.equipped)          // in placement order (loadout.ts)
@@ -55,7 +58,7 @@ describe('ISC-064 — what is equipped is what is fielded', () => {
     const { heroItems: _dropped, ...bareSpec } = spec
     const bare = createBattle(battleOptionsOf(bareSpec))
     const kit = bare.state.units.find((u) => u.uid === 100 + at)!
-    for (const a of itemOf(LONGBOW).grants) expect(kit.attacks).toContain(a)
-    for (const a of itemOf(SHORTBOW).grants) expect(kit.attacks).not.toContain(a)
+    for (const a of itemOf(LONGBOW).grants) expect(kit.actions).toContain(a)
+    for (const a of itemOf(SHORTBOW).grants) expect(kit.actions).not.toContain(a)
   })
 })
