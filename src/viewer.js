@@ -12,7 +12,7 @@
      statuses — statusId -> display name
      attacks, abilities — the definition tables a unit.equipped grant resolves against (static.json)
      layers   — ground layer number -> name (static.json.layers); hexDist — the engine's hex
-                distance table, a Uint8Array of HEX_COUNT² (decoded by the host from static.json.hexDist)
+                distance tables keyed "WxH", each a Uint8Array of hexCount² (decoded by the host from static.json.hexDist)
      artmap   — typeId -> {token, card, aspect, height}; assets — file -> data URI / URL
      glyphs   — the icon outlines (generated/ra-glyphs.json); the sprite is added once per document
      meta     — {label, seed, engineCommit, outcome, turns} for the HUD; outcome/turns
@@ -46,8 +46,8 @@ export const DUR = { 'unit.enter': 0, 'turn.begin': 420, 'phase.begin': 120, 'mo
   'deathbed.stood': 2800, 'deathbed.fell': 2800, 'deathbed.exhausted': 2800, 'hp.reset': 320, 'bleedout.accelerated': 320,
   'surge.checked': 0, 'surge.hit': 600, 'power.gained': 320, 'heal.boosted': 200, 'status.cancelled': 220, 'maxHp.gained': 240,
   'stamina.drained': 160, 'layer.painted': 0, 'layer.cancelled': 0, 'band.advanced': 900, 'night.fell': 1200, 'light.cast': 0,
-  'ai.mode': 0, 'ai.hunts': 260, 'ai.override': 0 }
-/* a RUN of ground paints folds as one beat (night falls on 256 hexes, the
+  'ai.mode': 0, 'ai.hunts': 260, 'ai.override': 0, 'unit.grown': 0 }
+/* a RUN of ground paints folds as one beat (night falls on every hex, the
    heroes light ~100 each phase): the pump paints them together and holds this */
 const PAINT_RUN_MS = 260
 /* beats that redraw even when their duration is zero */
@@ -84,11 +84,17 @@ export function mountBattleViewer(root, data, opts = {}) {
     stambar: q('#stambar'), actionbar: q('#actionbar'), turnchip: q('#turnchip'), phasechip: q('#phasechip'),
     encchip: q('#encchip'), powerchip: q('#powerchip'),
     slots: { top: q('[data-slot=top]'), transport: q('[data-slot=transport]'), bottom: q('[data-slot=bottom]') } }
-  const LAYOUT = { W: F.hexW, H: F.hexH, COL: F.colStep, ROW: F.rowStep, ODD: F.oddOffset, COLS: 16, ROWS: 16, tilt: F.tilt }
+  /* THE BOARD IS THE MAP'S (engine 5603c40): width and height come from the
+     field dump (and map.loaded says the same); nothing here assumes 16×16 */
+  if (F.width == null || F.height == null) throw new Error('mountBattleViewer: the field carries no width/height — regenerate generated/fields.json at engine ≥ 5603c40')
+  const LAYOUT = { W: F.hexW, H: F.hexH, COL: F.colStep, ROW: F.rowStep, ODD: F.oddOffset, COLS: F.width, ROWS: F.height, tilt: F.tilt }
+  /* the hex distance table for THIS board — a hex id means nothing without its board (§10) */
+  const boardKey = F.width + 'x' + F.height
+  const DIST = data.hexDist && data.hexDist[boardKey]
   const V = {
     dom, now,
     data: { F, POS: F.hexes, LAYOUT, UD: data.units, SN: data.statuses, AT: data.attacks || {}, AB: data.abilities || {},
-      LAYERS: data.layers || {}, DIST: data.hexDist || null, ARTMAP: data.artmap, ASSETS: data.assets },
+      LAYERS: data.layers || {}, DIST: DIST || null, BOARD: { width: F.width, height: F.height }, ARTMAP: data.artmap, ASSETS: data.assets },
     meta: data.meta || {},
     S: createState(), EV: [], cursor: 0,
     view: { inspectId: null, statsOpen: false, TRG_OPEN: new Set(), zoom: '1x', peek: false, bare: false, camF: { x: null, y: null } },
@@ -100,7 +106,7 @@ export function mountBattleViewer(root, data, opts = {}) {
   }
   const ctx = () => ({ UD: V.data.UD, SN: V.data.SN })
   /* the board objects need the distance table; a host that forgot it is told (Law 1) */
-  if (!V.data.DIST) throw new Error('mountBattleViewer: data.hexDist is missing — decode generated/static.json .hexDist (the engine\'s hex distance table) and pass it')
+  if (!V.data.DIST) throw new Error(`mountBattleViewer: data.hexDist has no table for the ${boardKey} board — decode generated/static.json .hexDist (the engine's per-board hex distance tables) and pass them`)
   /* the BEAT clock: wall time scaled by playback speed, so a row that lights
      for 1600 beat-ms lights for the same number of beats at ×⅓ and ×4. The fold
      stamps its `until`s from this, and the draw compares against it. */
@@ -190,8 +196,8 @@ export function mountBattleViewer(root, data, opts = {}) {
     return dur + (hexes ? 60 : 0)                  // the arrival settle
   }
   /* ONE REPAINT PER RUN (2026-09-03): consecutive layer.painted/cancelled
-     events fold together and the board redraws once — night.fell paints 256
-     hexes and each hero phase lights ~100; one beat each, not four seconds
+     events fold together and the board redraws once — night.fell paints the
+     whole board and each hero phase lights ~100; one beat each, not four seconds
      of 16ms ticks. Every event is still folded in order. */
   const PAINT = new Set(['layer.painted', 'layer.cancelled'])
   function stepPaint(e) {

@@ -9,7 +9,8 @@
 // verbatim from VFX/tool/viewer/dump-static.mts (2026-09-02), and it is the
 // FIRST entry in tools/exemptions.json — EXEMPTION sheet. It reads content only, through the
 // door, and computes nothing: every field is copied from a definition.
-import { UNITS, ATTACKS, ABILITIES, MOVES, STATUSES, LAYER_IDS, HEX_COUNT, distance } from './engine.js'
+import { UNITS, ATTACKS, ABILITIES, MOVES, STATUSES, LAYER_IDS, MAPS, boardOf, geometryOf, FORMATS } from './engine.js'
+import type { Board } from './engine.js'
 
 const plain = (o: unknown) => (o ? JSON.parse(JSON.stringify(o)) : undefined)
 const many = (ids: readonly string[] | undefined, table: Record<string, unknown>) =>
@@ -55,15 +56,25 @@ export function sheetOf(typeId: string): UnitSheet | undefined {
 export function attackTable(): Record<string, unknown> { return plain(ATTACKS) ?? {} }
 export function abilityTable(): Record<string, unknown> { return plain(ABILITIES) ?? {} }
 
-/** Hex distance for every pair on the 16×16 board, as one base64 string of
-    HEX_COUNT² bytes (row-major: dist(a,b) at a*HEX_COUNT+b) — the engine's
-    own `distance`, dumped so the viewer draws an aura's radius without
-    re-implementing hex geometry (Law 0 / Law 4). Map-independent. */
-export function hexDistanceTable(): string {
-  const n = HEX_COUNT
+/** Hex distance for every pair on ONE board, as a base64 string of hexCount²
+    bytes (row-major: dist(a,b) at a*hexCount+b) — the engine's own geometry,
+    dumped so the viewer draws an aura's radius without re-implementing hex
+    maths (Law 0 / Law 4). Per board since 5603c40: a hex id means nothing
+    without the board it came from (EVENTS-FOR-THE-VIEWER §10). */
+export function hexDistanceTable(board: Board): string {
+  const geo = geometryOf(board), n = geo.hexCount
   const out = new Uint8Array(n * n)
-  for (let a = 0; a < n; a++) for (let b = 0; b < n; b++) out[a * n + b] = distance(a, b)
+  for (let a = 0; a < n; a++) for (let b = 0; b < n; b++) out[a * n + b] = geo.distance(a, b)
   return Buffer.from(out).toString('base64')
+}
+/** the tables for every board a map ships on, plus the four ruled formats, keyed "WxH" */
+export function hexDistanceTables(): Record<string, string> {
+  const boards = new Map<string, Board>()
+  for (const b of Object.values(FORMATS)) boards.set(`${b.width}x${b.height}`, b)
+  for (const m of MAPS) { const b = boardOf(m.id); boards.set(`${b.width}x${b.height}`, b) }
+  const out: Record<string, string> = {}
+  for (const [k, b] of boards) out[k] = hexDistanceTable(b)
+  return out
 }
 
 /** The ground layers by number — 1 burning · 2 frost · 3 poisoned · 4 darkness —

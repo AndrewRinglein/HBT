@@ -39,6 +39,7 @@ export function createState() {
     power: null,           // the enemy side's Power pool after the last power.gained; null until one
     encounter: null,       // {id, name, gaps, objectives:[unit ids], result?}
     AOO: null,             // {holder, mover, attackId} while a free swing interrupts the mover's walk
+    board: null,           // {width, height, deploy:{hero, enemy}} from map.loaded (engine 5603c40, §10)
   }
 }
 
@@ -52,7 +53,7 @@ function mkUnit(e, UD) {
     kit: { items: [], grants: [], abilities: [] },
     wound: 0,               // Deathbed wound level: 0 · 1 Wounded · 2 Badly Wounded
     rolls: null,            // Deathbed Fighting rolls made, from deathbed.stood/fell `ordinal`; deathbed.exhausted says none left
-    arrived: e.arrived || null, raised: false, objective: false, hunt: null, confusedFrom: null, moveMods: null, aiOverride: null }
+    arrived: e.arrived || null, raised: false, objective: false, hunt: null, confusedFrom: null, moveMods: null, aiOverride: null, grown: null }
 }
 
 /** Fold ONE event into S. ctx = {UD, SN}. Returns the cues to play. */
@@ -69,6 +70,10 @@ export function fold(S, e, ctx, now = 0) {
       if (S.begun) cue('arrive', { id: e.actor, hex: e.hex })
       break
     case 'battle.begin': S.begun = true; break
+    case 'map.loaded':
+      /* the board is the map's: width, height and which edge each side deploys on */
+      S.board = { mapId: e.mapId, width: e.width, height: e.height, deploy: e.deploy ? { ...e.deploy } : null }
+      break
     case 'unit.equipped':
       /* seam.items-per-unit: the fielded unit is the bare row PLUS its kit —
          the item's stat deltas fold as modifiers (source = the item), its
@@ -79,7 +84,15 @@ export function fold(S, e, ctx, now = 0) {
         u.kit.items.push(e.itemId)
         for (const a of (e.grants || [])) if (!u.kit.grants.includes(a)) u.kit.grants.push(a)
         for (const a of (e.abilities || [])) if (!u.kit.abilities.includes(a)) u.kit.abilities.push(a)
-        for (const [stat, value] of Object.entries(e.mods || {})) u.mods.push({ stat, op: 'add', value, source: e.itemId }) }
+        for (const [stat, value] of Object.entries(e.mods || {})) u.mods.push({ stat, op: 'add', value, source: e.itemId, fielded: true }) }
+      break
+    case 'unit.grown':
+      /* progression applied at fielding (engine 5603c40): the level table's
+         stat deltas and the specialty — part of what the unit IS, like the kit,
+         so `fielded` keeps it off the battle's buff/debuff chevron */
+      if (U[e.actor]) { const u = U[e.actor]
+        u.grown = { table: e.table, level: e.level, specialtyId: e.specialtyId || null }
+        for (const [stat, value] of Object.entries(e.mods || {})) u.mods.push({ stat, op: 'add', value, source: e.table + (e.level != null ? ' L' + e.level : ''), fielded: true }) }
       break
     /* ── the encounter (EVENTS-FOR-THE-VIEWER §1) ────────────────────────── */
     case 'encounter.begin':
@@ -422,7 +435,7 @@ export function foldTo(events, n, ctx) {
 /** The event types the fold knows. verify.mjs checks every packed log and the
     pump's duration table against this until the engine exports EVENT_TYPES
     (THREE-PACKAGES-PLAN §8.3). */
-export const FOLDED_TYPES = ['unit.enter', 'battle.begin', 'unit.equipped', 'turn.begin', 'phase.begin', 'phase.end.done', 'activation.begin',
+export const FOLDED_TYPES = ['unit.enter', 'battle.begin', 'map.loaded', 'unit.equipped', 'unit.grown', 'turn.begin', 'phase.begin', 'phase.end.done', 'activation.begin',
   'activation.end', 'move.begin', 'moved', 'attack.declared', 'attack.hit', 'attack.miss', 'attack.cancelled', 'damage.applied',
   'heal.applied', 'heal.boosted', 'status.applied', 'status.cancelled', 'trigger.fired', 'status.reduced', 'status.expired', 'stamina.spent',
   'stamina.regen', 'stamina.gained', 'stamina.drained', 'knocked', 'maxHp.lost', 'maxHp.gained', 'staminaMax.lost', 'statmod.added', 'cooldown.set',

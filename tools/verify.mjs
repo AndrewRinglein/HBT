@@ -52,7 +52,7 @@ const { createState, fold, foldTo, FOLDED_TYPES } = await import(pathToFileURL(r
 const { DUR } = await import(pathToFileURL(resolve(PKG, 'src/viewer.js')).href)   // Law 9: if this cannot import, say so
 /* event types the viewer deliberately does nothing with — a NEW engine event
    is a failure until it is folded or listed here on purpose */
-const IGNORED = new Set(['turn.end', 'activation.idle', 'trigger.rolled', 'phase.end.begin', 'map.loaded',
+const IGNORED = new Set(['turn.end', 'activation.idle', 'trigger.rolled', 'phase.end.begin',
   'ai.tookHighGround', 'ai.denied', 'knockback.blocked', 'crit.branch'])
 
 /* ── mount the page ────────────────────────────────────────────────────── */
@@ -288,7 +288,7 @@ if (DUR) for (const t of Object.keys(DUR)) check(FOLDED_TYPES.includes(t) || IGN
   load(0); const v = H.viewer; v.pause(); const V = v._V
   for (let i = 0; i < 40 && v.cursor < v.events.length; i++) v.step()      // units spread out a little
   v.render()
-  /* pan to a corner: with 16×16 board space larger than the view, someone must be off-screen */
+  /* pan to a corner: with board space larger than the view, someone must be off-screen */
   v.pan(-4000, -4000)
   const bubs = V.layers.edgeL ? V.layers.edgeL.querySelectorAll('.edgeBub') : []
   const POS = V.data.POS, camF = V.view.camF
@@ -330,7 +330,9 @@ if (DUR) for (const t of Object.keys(DUR)) check(FOLDED_TYPES.includes(t) || IGN
    library battle, fielding a unit with no art entry (the honest standee) ── */
 {
   const src = LIB.battles[0].battle
-  const mapId = (LIB.static.maps || []).find(m => !LIB.battles.some(b => b.battle.seed.mapId === m)) || src.seed.mapId
+  /* a map no library battle plays, on the SAME board — a hex id means nothing on another board (§10) */
+  const srcF = LIB.fields[src.seed.mapId]
+  const mapId = (LIB.static.maps || []).find(m => !LIB.battles.some(b => b.battle.seed.mapId === m) && LIB.fields[m] && LIB.fields[m].width === srcF.width && LIB.fields[m].height === srcF.height) || src.seed.mapId
   const noArt = Object.keys(LIB.static.units).find(t => !LIB.art.artmap[t])
   const events = JSON.parse(JSON.stringify(src.events)).map(e => { if (e.type === 'map.loaded') e.mapId = mapId; return e })
   if (noArt) { const first = events.find(e => e.type === 'unit.enter'); first.typeId = noArt }
@@ -385,6 +387,30 @@ if (DUR) for (const t of Object.keys(DUR)) check(FOLDED_TYPES.includes(t) || IGN
       if (win._pending()) { const seen = {}; for (const t of win._timers()) { const k = t.f; seen[k] = (seen[k] || 0) + 1 }
         fails.push(`live: ${win._pending()} timer(s) still pending after dispose() and a 5s flush: ${Object.entries(seen).map(([k, n]) => n + '× ' + k).join(' ; ')}`) }
     }
+  }
+}
+
+const CTX0 = { UD: LIB.static.units, SN: LIB.static.statuses }
+/* ── the board is the map's (engine 5603c40, §10): a non-square board and a west deploy in the library, laid out from the field and the log, never from a constant ── */
+{
+  const odd = LIB.battles.map((b, i) => [b, i]).filter(([b]) => { const ml = b.battle.events.find(e => e.type === 'map.loaded'); return ml && ml.width !== ml.height })
+  check(odd.length > 0, 'board: no non-square battle in the library — the 16×16 assumption cannot be tested')
+  const west = LIB.battles.map((b, i) => [b, i]).filter(([b]) => { const ml = b.battle.events.find(e => e.type === 'map.loaded'); return ml && ml.deploy && ml.deploy.hero === 'west' })
+  check(west.length > 0, 'board: no battle with heroes deploying west in the library')
+  for (const [b, i] of [...odd, ...west].slice(0, 2)) {
+    load(i); const v = H.viewer; v.pause(); const V = v._V, EV = v.events
+    const ml = EV.find(e => e.type === 'map.loaded')
+    check(V.data.BOARD.width === ml.width && V.data.BOARD.height === ml.height, `${b.label}: the field says ${V.data.BOARD.width}×${V.data.BOARD.height}, map.loaded says ${ml.width}×${ml.height}`)
+    check(V.data.POS.length === ml.width * ml.height, `${b.label}: ${V.data.POS.length} hex positions for a ${ml.width}×${ml.height} board`)
+    check(V.data.DIST && V.data.DIST.length === (ml.width * ml.height) ** 2, `${b.label}: the distance table is not this board's`)
+    check(v.state.board && v.state.board.deploy && v.state.board.deploy.hero === ml.deploy.hero, `${b.label}: the fold did not keep map.loaded's deploy`)
+    /* every unit stands on a hex the board has, and the heroes start on their edge */
+    const bb = EV.findIndex(e => e.type === 'battle.begin'); const S0 = foldTo(EV, bb + 1, CTX0)
+    for (const u of Object.values(S0.U)) { check(u.hex >= 0 && u.hex < V.data.POS.length, `${b.label}: ${u.name} at hex ${u.hex} is off a ${ml.width}×${ml.height} board`)
+      const p = V.data.POS[u.hex]; if (!p) continue
+      if (ml.deploy.hero === 'west' && u.side === 'hero') check(p.c === 0, `${b.label}: hero ${u.name} deploys at column ${p.c}, the map says west`)
+      if (ml.deploy.enemy === 'east' && u.side === 'enemy') check(p.c === ml.width - 1, `${b.label}: enemy ${u.name} deploys at column ${p.c}, the map says east`) }
+    v.render(); for (let k = 0; k < 30 && v.cursor < EV.length; k++) v.step()
   }
 }
 
@@ -452,12 +478,13 @@ if (DUR) for (const t of Object.keys(DUR)) check(FOLDED_TYPES.includes(t) || IGN
       v.seek(bb + 1); v.inspect(e.actor); v.render()
       check(V.dom.actionbar.innerHTML.includes(`data-act="${e.grants[0]}"`), `${label}: the action bar lacks the granted attack ${e.grants[0]} for unit ${e.actor}`)
       const u = v.state.U[e.actor], sheet = LIB.static.units[u.typeId]
-      const kitMv = byType(EV, 'unit.equipped').filter(([x]) => x.actor === e.actor).reduce((n, [x]) => n + ((x.mods || {}).movement || 0), 0)
+      /* the kit's AND the growth's movement deltas (unit.equipped, unit.grown — engine 5603c40) */
+      const kitMv = [...byType(EV, 'unit.equipped'), ...byType(EV, 'unit.grown')].filter(([x]) => x.actor === e.actor).reduce((n, [x]) => n + ((x.mods || {}).movement || 0), 0)
       const E = V.layers.UEL.get(e.actor)
-      if (sheet && sheet.movement != null && E.mv.style.display !== 'none') check(+E.mv.textContent === Math.max(0, sheet.movement + kitMv), `${label}: unit ${e.actor} rests at movement ${E.mv.textContent}, the sheet says ${sheet.movement} and the kit ${kitMv}`)
+      if (sheet && sheet.movement != null && E.mv.style.display !== 'none') check(+E.mv.textContent === Math.max(0, sheet.movement + kitMv), `${label}: unit ${e.actor} rests at movement ${E.mv.textContent}, the sheet says ${sheet.movement} and the kit and growth ${kitMv}`)
       /* the kit is not a buff: no chevron from item.* sources alone */
       const St = foldTo(EV, bb + 1, CTX)
-      if ((St.U[e.actor].mods || []).every(m => /^item\./.test(m.source))) check(!/polygon\(50% 12%|polygon\(50% 88%/.test(E.badges.innerHTML), `${label}: unit ${e.actor} wears a chevron for its kit alone`) }
+      if ((St.U[e.actor].mods || []).every(m => m.fielded)) check(!/polygon\(50% 12%|polygon\(50% 88%/.test(E.badges.innerHTML), `${label}: unit ${e.actor} wears a chevron for its kit alone`) }
     /* corpses: a board object per corpse.created, gone on corpse.removed; the dead unit's token leaves */
     for (const [e, i] of byType(EV, 'corpse.created').slice(0, 3)) {
       v.seek(i + 1); v.render()

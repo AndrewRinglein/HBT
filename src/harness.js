@@ -13,11 +13,12 @@ import { buildLog } from './log.js'
 const OUTNAME = { heroClear: 'heroes win', wipe: 'heroes wiped', capped: 'capped',
   objectiveMet: 'objective met', objectiveFailed: 'objective failed', retreat: 'heroes retreated' }
 
-/** the engine's hex distance table, dumped as base64 (static.json .hexDist) → bytes */
-export function decodeHexDist(b64) {
-  if (!b64) return null
-  const bin = atob(b64), out = new Uint8Array(bin.length)
-  for (let i = 0; i < bin.length; i++) out[i] = bin.charCodeAt(i)
+/** the engine's per-board hex distance tables, dumped as base64 keyed "WxH" (static.json .hexDist) → bytes */
+export function decodeHexDist(tables) {
+  if (!tables) return null
+  const out = {}
+  for (const [k, b64] of Object.entries(tables)) { const bin = atob(b64), u = new Uint8Array(bin.length)
+    for (let i = 0; i < bin.length; i++) u[i] = bin.charCodeAt(i); out[k] = u }
   return out
 }
 
@@ -99,11 +100,14 @@ export function startHarness(mountEl, lib) {
     const bt = b.battle
     /* the encounter's title and its gaps are prose from encounter.begin — listed here, in the intro */
     const enc = bt.events.find(e => e.type === 'encounter.begin')
+    const ml = bt.events.find(e => e.type === 'map.loaded') || {}
+    const board = ml.width && ml.height ? `${ml.width}&times;${ml.height}` : '?&times;?'
+    const deploy = ml.deploy ? `, heroes ${ml.deploy.hero}, enemies ${ml.deploy.enemy}` : ''
     const gaps = enc && enc.gaps && enc.gaps.length
       ? ` <details style="display:inline"><summary style="display:inline;cursor:pointer;color:#8b8778">${enc.gaps.length} gap${enc.gaps.length === 1 ? '' : 's'} the engine named</summary><ul style="margin:6px 0 0 18px;padding:0;color:#8b8778;font-size:12px">${enc.gaps.map(g => `<li>${g}</li>`).join('')}</ul></details>`
       : ''
     return (enc ? `<b>${enc.name}</b> &mdash; ` : '') +
-      `every frame folds out of <b>${bt.events.length} events</b> the engine emitted &mdash; seed ${bt.seed.replicate ?? bt.seed.scenarioId} on <code>${bt.seed.mapId}</code> (16&times;16), ` +
+      `every frame folds out of <b>${bt.events.length} events</b> the engine emitted &mdash; seed ${bt.seed.replicate ?? bt.seed.scenarioId} on <code>${bt.seed.mapId}</code> (${board}${deploy}), ` +
       `engine <code>${bt.engineCommit}</code>, ${OUTNAME[bt.outcome] || bt.outcome} in ${bt.turns} turns.${gaps} Pick another battle from the dropdown, or drop an ` +
       `<code>export-battle.mts</code> file anywhere on the page. Nothing is scripted: HP, movement, statuses, downs and deaths are all read from the log.`
   }

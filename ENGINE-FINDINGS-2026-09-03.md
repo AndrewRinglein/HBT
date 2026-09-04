@@ -13,7 +13,7 @@ For the engine chat; nothing here was edited in `engine/`.*
 |---|---|---|---|
 | 1 | **`unit.equipped` is not in the document, and it changes what a unit IS.** Since seam.items-per-unit the bare row (`UNITS[typeId]`, what `sheetOf` reads) has `attacks: [attack.punch]`, `maxHp 12`, `movement 5`, `accuracy 75` for `hero.base.warrior-iron`; the fielded unit is bare + items — `maxHp 16`, `movement 4`, `accuracy 55`, plus `attack.war-axe.chop/hack`. Only the log knows. | `src/core/setup.ts:298-300`, `src/core/items.ts:applyItems` | Folded: the item's `mods` become modifiers with `source = itemId`; `grants`/`abilities` resolve against the attack/ability tables now dumped into `generated/static.json`; the action bar and the danger marker read the kit first (the engine's own order). The resting movement numeral is sheet + Σ movement modifiers, under the existing `stat-delta` exemption. |
 | 2 | **The item's triggers are not in `unit.equipped`.** `applyItems` pushes `it.triggers` onto the def; the event carries `grants`, `abilities`, `mods`, `gaps` only. The panel's trigger list for an equipped hero is therefore the bare row's. | `src/core/items.ts:61-62`, `setup.ts:299` | Not drawn. Owed: `triggers` on `unit.equipped`, or the fielded def in full (see 3). |
-| 3 | **The fielded stat block is not in the log.** `unit.enter` carries hp/maxHp/stamina/maxStamina; armor, resist, dodge, accuracy, movement, reach, the four attack stats and `crit`/`luck`/`toughness`/`surge`/`vision` after `applyProgress` + `applyItems` are not. The panel prints the bare sheet plus the modifiers the log stated; a hero fielded with `heroProgress` (levels, specialties) would print wrong base stats and nothing in the log would say so. | `setup.ts:266-268` (`applyProgress`, `applyItems` before `makeUnit`) | The panel prints sheet + folded deltas. Owed: `unit.enter` carries the fielded def's stat block (or a `unit.fielded` event). This retires half of the viewer's remaining computation. |
+| 3 | *(Half answered at `5603c40`: `unit.grown` now states the progression's stat deltas, level and specialty; folded like the kit. The stat block itself is still bare-sheet-plus-deltas.)* **The fielded stat block is not in the log.** `unit.enter` carries hp/maxHp/stamina/maxStamina; armor, resist, dodge, accuracy, movement, reach, the four attack stats and `crit`/`luck`/`toughness`/`surge`/`vision` after `applyProgress` + `applyItems` are not. The panel prints the bare sheet plus the modifiers the log stated; a hero fielded with `heroProgress` (levels, specialties) would print wrong base stats and nothing in the log would say so. | `setup.ts:266-268` (`applyProgress`, `applyItems` before `makeUnit`) | The panel prints sheet + folded deltas. Owed: `unit.enter` carries the fielded def's stat block (or a `unit.fielded` event). This retires half of the viewer's remaining computation. |
 | 4 | **`stamina.drained` is not in the document** (`actor: null, target, asked, amount, stamina`). | `src/core/mutate.ts` (trigger `stamina.drain`) | Folded as the target's stamina plus a `−N STAMINA` float. |
 | 5 | **`activation.begin.movePoints` is in the log but not in the document** — named only when the budget was reduced (Law 12). | `src/core/mutate.ts:302-306` | Folded as the live budget; absent means "the fielded movement", which the viewer reconstructs (finding 3). |
 | 6 | **`light.cast.hexes` and `night.fell.hexes` are COUNTS, not hex lists** (`112`, `256`). The document's "Draw the lit bubbles" reads as a list. | `src/core/vision.ts:51,65` | The `layer.painted after:0` lines before `light.cast` are the lit hexes; the count is a log line. Fine as is — noting the doc. |
@@ -34,3 +34,14 @@ For the engine chat; nothing here was edited in `engine/`.*
 - The exemption list did not grow: the kit's movement delta rides the existing
   `stat-delta` sum (`src/actions.js modOf/mvOf`), which is where finding 3 would
   retire it.
+
+## 2026-09-04 — engine `5603c40`, the board is the map's
+
+- The door now exports `geometryOf`, `FORMATS`, `boardOf`, `deployOf` and the `Board`/`Edge`/`Geometry`
+  types instead of the constants and free functions; `static.json .hexDist` is per board, keyed `"WxH"`
+  (the four formats plus every map's board); the viewer sizes its layout from the field's `width`/`height`
+  and folds `map.loaded` (`S.board`: width, height, deploy). Two positional battles on `test.map.dungeon-16x8`
+  (heroes west) and `test.map.duel-8` joined the library so a non-square board and a west deploy are verified.
+- **`unit.grown`** (setup.ts:343) was not in §10 and appeared in the Assembled Party export — folded as
+  fielded modifiers (finding 3, half answered).
+- The `visual-replay` skill and `tools/replay/` are still in the engine tree.

@@ -47,6 +47,8 @@ export function buildLog(events, SN, turns) {
       case 'unit.equipped': return b('', `&nbsp;&nbsp;${nmAt(e)} wears <span class="sq">${e.itemId}</span>` +
         ((e.grants || []).length ? ` · grants ${e.grants.map(g => g.replace(/^attack\./, '')).join(', ')}` : '') +
         (Object.keys(e.mods || {}).length ? ` · ${Object.entries(e.mods).map(([k, v]) => k + ' ' + sgn(v)).join(', ')}` : ''))
+      case 'map.loaded': return b('turn', `— ${e.mapId}${e.width ? ` · ${e.width}×${e.height}` : ''}${e.deploy ? ` · heroes ${e.deploy.hero}, enemies ${e.deploy.enemy}` : ''} —`)
+      case 'unit.grown': return b('', `&nbsp;&nbsp;${nmAt(e)} grown — ${e.table} level ${e.level}${e.specialtyId ? ' · ' + e.specialtyId : ''} <span class="sq">· ${Object.entries(e.mods || {}).map(([k, v]) => k + ' ' + sgn(v)).join(', ')}</span>`)
       case 'encounter.begin': return b('turn', `— ${e.name} —`)
       case 'encounter.objective': return b('status', `&nbsp;&nbsp;<b>${nmAt(e)}</b> is an objective <span class="sq">· ${e.kind}</span>`)
       case 'encounter.wave': return b('turn', `— a wave arrives: ${(e.units || []).join(', ')} —`)

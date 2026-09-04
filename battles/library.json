@@ -72,6 +72,14 @@
   {
    "file": "showcase.assembled-party.json",
    "label": "Assembled Party"
+  },
+  {
+   "file": "map_dungeon-16x8_s1.json",
+   "label": "Dungeon 16×8 (heroes west)"
+  },
+  {
+   "file": "map_duel-8_s1.json",
+   "label": "Duel 8×8"
   }
  ]
 }

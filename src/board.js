@@ -755,9 +755,10 @@ export function syncUnits(V) {
     const sts = Object.entries(u.st).filter(([id, v]) => v > 0 && OVER.includes(id))
     /* the chevron is the buff/debuff layer — the stat block's green and red
        (ruled 2026-09-01 for move riders), not a status's hue (Law 6) */
-    /* the kit a unit was fielded with (unit.equipped, source item.*) is what it
-       IS, not a buff — the chevron counts only what happened in the battle */
-    const live = (u.mods || []).filter(m => !/^item\./.test(String(m.source)))
+    /* the kit and the growth a unit was fielded with (unit.equipped,
+       unit.grown — `fielded`) are what it IS, not a buff — the chevron counts
+       only what happened in the battle */
+    const live = (u.mods || []).filter(m => !m.fielded)
     const chev = live.length ? live.reduce((n, m) => n + (m.value > 0 ? 1 : -1), 0) : 0
     E.badges.style.cssText = down ? 'display:none' : `left:${-w / 2 - 2}px;top:${-hpx - 22}px`
     E.badges.innerHTML = sts.map(([id, v]) => { const st = stStyle(id)

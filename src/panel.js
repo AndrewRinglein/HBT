@@ -94,7 +94,8 @@ export function drawPanel(V) {
   if (taunt) facts.push(`taunted by <b>${taunt.name}</b> — must target it`)
   if (u.confusedFrom) facts.push(`<b>confused</b> — ran a different mode this activation <span style="color:#6f6857">(was ${u.confusedFrom})</span>`)
   if (u.rolls != null) facts.push(`Deathbed Fighting rolls made: <b>${u.rolls}</b>${d.stands != null ? ' of ' + d.stands : ''}`)
-  const kitLine = (u.kit && u.kit.items.length) ? `<b style="color:#cbc3ae">Kit</b> ${u.kit.items.map(i => i.replace(/^item\./, '')).join(', ')}<br>` : ''
+  const kitLine = ((u.kit && u.kit.items.length) ? `<b style="color:#cbc3ae">Kit</b> ${u.kit.items.map(i => i.replace(/^item\./, '')).join(', ')}<br>` : '') +
+    (u.grown ? `<b style="color:#cbc3ae">Grown</b> ${u.grown.table} · level ${u.grown.level}${u.grown.specialtyId ? ' · ' + u.grown.specialtyId.replace(/^specialty\./, '') : ''}<br>` : '')
   const factsBlock = facts.length ? `<div style="margin:0 18px 8px;padding:6px 9px;background:#14120e;border:1px solid var(--border);border-radius:2px;font-size:11.5px;line-height:1.6;color:#a9a394">${facts.join('<br>')}</div>` : ''
   const statsOpen = view.statsOpen
   P.innerHTML = `

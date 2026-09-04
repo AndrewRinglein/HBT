@@ -16,5 +16,8 @@ export type { StatusDef } from '../../engine/src/core/status.js'
 export { UNITS, ATTACKS, ABILITIES } from '../../engine/src/content/index.js'
 export { MOVES } from '../../engine/src/content/moves.js'
 export { STATUSES } from '../../engine/src/content/statuses.js'
-export { MAPS, terrainOf, terrainIdOf, isPassable, LAYER_IDS } from '../../engine/src/content/maps.js'   // LAYER_IDS: the four ground layers by number (2026-09-03)
-export { WIDTH, HEIGHT, HEX_COUNT, hexId, colOf, rowOf, distance } from '../../engine/src/core/hex.js'   // distance: board geometry for the aura radius table (2026-09-03)
+export { MAPS, terrainOf, terrainIdOf, isPassable, LAYER_IDS, boardOf, deployOf } from '../../engine/src/content/maps.js'   // LAYER_IDS: the ground layers by number; boardOf/deployOf: a map's board and edges (2026-09-04)
+/* THE BOARD IS THE MAP'S (engine 5603c40, EVENTS-FOR-THE-VIEWER §10): no WIDTH/HEIGHT constants,
+   no free hex functions — geometryOf({width, height}) for the board a log's map.loaded names */
+export { geometryOf, FORMATS } from '../../engine/src/core/hex.js'
+export type { Board, Edge, Geometry } from '../../engine/src/core/hex.js'
