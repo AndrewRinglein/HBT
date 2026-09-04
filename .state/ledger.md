@@ -1000,3 +1000,151 @@ slice: 60 of 68 closed · 61 probed · 0 accepted
 IRON GAUNTLET: NOT PASSED — 2 FLAG(S) WARNED; 1 EXEMPTION(S) TAKEN
 
 Law 10 note (screens.after-battle-copy): test/after-battle.test.ts asserted the first after-battle sketch (a results table, three "rcard" tiles, a level-up panel with data-act choices). Ruled 2026-09-03/04, those screens are Hell-TCG's copied, so the screen assertions were rewritten to the copies' DOM (the ceremony's title/party/spotlight/quote/stats, rewards.html's hero cards and face-down cards with the tier aura, levelup.html's chamber with the specialty overlay and no power overlay). The rules underneath are asserted unchanged: three offered, one kept, two burned; the codex row's every modifier applied and itemSlots folded; the specialty offered once; the fielding carries level, specialty and pick. Also in this landing: test/board-from-map.test.ts, written by the engine session in this tree after its board.variable-size landing removed WIDTH/HEIGHT from the engine — it passes on the widened door and lands with it.
+
+## screens.after-battle-copy — LANDED `6f5c899` **NEEDS REVIEW**
+2026-09-04 08:14 · engine @ 5603c40
+
+  PASS  dependencies landed
+  WARN  not already decided — 3 candidate ruling(s) — READ BEFORE ASKING: ../STATE.md:20 · ../STATE.md:21
+  PASS  typecheck
+  PASS  full test suite — 159 passed
+  PASS  gate 1 — every claimed criterion holds
+  PASS  brought its own tests — test/after-battle.test.ts, test/board-from-map.test.ts
+  WARN  existing tests untouched — DELETED LINES in test/after-battle.test.ts (-30) — will land FLAGGED for review
+  PASS  kill switch — every claimed probe has been seen red — no criterion claimed — not applicable
+  PASS  nothing regresses — every P-tier probe — 61 P-tier probe(s): 61 green, 0 red, 0 regression(s). 40 of 68 closed · 61 probed · 1 accepted
+  PASS  hardcode scan — core knows mechanisms, never names
+  PASS  generalizes — the second instance costs zero kingdom code — shape 'plumbing' — not a mechanism, exempt
+  PASS  naming — new ids use declared kinds
+  WARN  naming — no banned words invented — 'round' — say Turn | a banned function prefix (GLOSSARY.md) — xOf/listX/canX/performX/applyX/resolveX/makeX/beginX — will land FLAGGED
+  WARN  engine working tree clean — verified against a DIRTY engine tree (5603c40 + 2 uncommitted under src/test): M src/content/generated/pack.ts, ?? src/sim/coverage.ts
+  PASS  one door to the engine
+
+<details><summary>Existing tests were edited — review this diff</summary>
+
+```diff
+diff --git a/test/after-battle.test.ts b/test/after-battle.test.ts
+index 5f89fc7..01c90a9 100644
+--- a/test/after-battle.test.ts
++++ b/test/after-battle.test.ts
+@@ -1,8 +1,11 @@
+ // After the battle (G12; ISC-067 and ISC-068 are H — a person opens SLICE.html beside
+-// hell-tcg/rewards.html and levelup.html). What text can hold: the results screen
+-// restates the battle; the spoils are three face-down cards, revealed, one kept;
+-// level-up shows and applies the codex row's modifiers, offers the specialty once
+-// at the first level-up, takes the level-5 pick, chooses no power; and the fielding
+-// carries the progress to the engine. GEAR-DESIGN.md §7 · hbt-content.json levels.rules.
++// hell-tcg/rewards.html and levelup.html). Rewritten 2026-09-04 for the Hell-TCG copies
++// (ruled 2026-09-03/04): the RECAP is the victory ceremony over HoBaT's outcome; the
++// REWARDS are rewards.html's cards, face down with the tier aura, over HoBaT's draw;
++// the LEVEL-UP is levelup.html's chamber with the specialty at the first level-up and
++// no power draft. What text can hold: the DOM the ceremonies run on, the outcome
++// classification, the quote pick, and the rules underneath — three cards, one kept,
++// two burned; the codex row's modifiers applied; the specialty once; the fielding
++// carrying the progress. GEAR-DESIGN.md §7 · hbt-content.json levels.rules.
+ import { describe, it, expect } from 'vitest'
+ import { loadFixture, toBattle, panelResult, decide } from './walk.js'
+@@ -12,5 +15,7 @@ import { levelRowOf, specialtiesOf } from '../src/content/progress.js'
+ import { makeBattleState, battleOptionsOf } from '../src/core/seam.js'
+ import { createBattle, LEVELS } from '../src/engine.js'
+-import { resultsScreen, rewardsScreen, levelUpScreen } from '../src/ui/after.js'
++import { recapScreen, rewardsScreen, levelUpScreen, outcomeOf, quoteOf } from '../src/ui/after.js'
++import { VICTORY_QUOTES, DEFEAT_QUOTES } from '../src/content/generated/quotes.js'
++import { itemOf } from '../src/content/items.js'
+ import { makeCtx } from '../src/core/mutate.js'
+ import { toEquip } from './walk.js'
+@@ -28,26 +33,45 @@ function won() {
+ 
+ describe('after the battle', () => {
+-  it('the results screen restates the battle: outcome, turns, kills, wounds, MVP, XP per hero', () => {
++  it('the recap is the victory ceremony: the outcome title, the party row with wound states, the MVP spotlight, a quote, kills · turns · XP, the report', () => {
+     const { ctx, e, result, reckoning } = won()
+-    const html = resultsScreen(ctx.campaign, ctx.events, { engagementId: e.id, result, reckoning }, 0)
+-    expect(html).toContain('Victory'); expect(html).toContain('in 6 turns')
+-    expect(html).toContain('2 kills · dealt 9')
+-    expect(html.match(/class="hcard( dead)?"/g)?.length).toBe(e.deployed.length)
+-    if (reckoning.heroes.some((h) => h.mvp)) expect(html).toContain('title="MVP"')
+-    expect(html).toMatch(/class="won">\+\d+</)                       // XP gained on the bar
+-    expect(html).toContain('On to the spoils')
++    const html = recapScreen(ctx.campaign, ctx.events, { engagementId: e.id, result, reckoning })
++    expect(html).toContain('class="hx recap')
++    expect(html).toMatch(/class="result-title victory-(decisive|standard|costly|pyrrhic|devastating)"/)
++    expect(html.match(/class="party-member"/g)?.length).toBe(e.deployed.length)
++    expect(html).toContain('spotlight-frame victory')
++    expect(html).toMatch(/class="quote-text">"[^"]+"</)
++    expect(html).toContain('<span class="stat-label">Slain:</span> <span class="stat-value">2</span>')
++    expect(html).toContain('<span class="stat-value">6</span>')     // turns
++    expect(html).toMatch(/class="xp-value">\d+</)
++    expect(html).toContain('data-act="exit"')
++    // Hell-TCG's classification on HoBaT's wounds
++    expect(outcomeOf(true, [{ wound: 0, dead: false }], 6)).toBe('decisive')
++    expect(outcomeOf(true, [{ wound: 0, dead: false }], 20)).toBe('standard')
++    expect(outcomeOf(true, [{ wound: 1, dead: false }], 6)).toBe('costly')
++    expect(outcomeOf(true, [{ wound: 2, dead: false }], 6)).toBe('pyrrhic')
++    expect(outcomeOf(true, [{ wound: 0, dead: true }, { wound: 0, dead: false }], 6)).toBe('devastating')
++    expect(outcomeOf(false, [{ wound: 0, dead: false }], 6)).toBe('overwhelmed')
++    expect(outcomeOf(false, [{ wound: 0, dead: true }, { wound: 0, dead: false }], 6)).toBe('casualties')
++    expect(outcomeOf(false, [{ wound: 0, dead: true }], 6)).toBe('total_wipe')
++    // the quote: Hell-TCG's class pool (no personality on HoBaT heroes yet), stable for the same battle
++    const qv = quoteOf(VICTORY_QUOTES, { classes: ['class.warrior'] }, 'decisive', 'k')
++    expect(VICTORY_QUOTES.class['class.warrior']).toContain(qv)
++    expect(quoteOf(VICTORY_QUOTES, { classes: ['class.warrior'] }, 'decisive', 'k')).toBe(qv)
++    expect(quoteOf(DEFEAT_QUOTES, { classes: ['class.civilian'] }, 'overwhelmed', 'k')).toBe(DEFEAT_QUOTES.fallback)
+   })
+-  it('the spoils: three face-down cards, then revealed, then one kept and two burned', () => {
+-    const { ctx } = won()
++  it('the rewards are rewards.html: hero cards with XP bars and floating-XP data, three face-down cards with the tier aura, a confirm; one kept and two burned', () => {
++    const { ctx, e, result, reckoning } = won()
+     performExitBattle(ctx, 'test')
+-    const down = rewardsScreen(ctx.campaign, ctx.events, false)
+-    expect(down.match(/rcard down/g)?.length).toBe(3)
+-    expect(down).not.toContain('data-act="take-reward"')
+-    expect(down).toContain('data-act="reveal"')
+-    const up = rewardsScreen(ctx.campaign, ctx.events, true)
+-    expect(up.match(/rcard up/g)?.length).toBe(3)
+-    expect(up.match(/data-act="take-reward"/g)?.length).toBe(3)
+-    expect(up).toContain('class="xp"')                                // the XP bars beside the cards
+-    const id = up.match(/data-act="take-reward" data-id="([^"]+)"/)![1]!
++    const html = rewardsScreen(ctx.campaign, ctx.events, { engagementId: e.id, result, reckoning })
++    expect(html).toContain('class="hx rewards')
++    expect(html.match(/class="hero-card /g)?.length).toBe(e.deployed.length)
++    expect(html).toMatch(/hero-xp-bar-fill" data-start-percent="\d+" data-end-percent="\d+"/)
++    expect(html).toMatch(/data-gained="\d+" data-kills="2"/)
++    expect(html.match(/class="reward-card face-down"/g)?.length).toBe(3)
++    for (const m of html.matchAll(/data-id="(item\.[^"]+)" data-tier="(\d)"/g)) expect(String(itemOf(m[1]!).tier)).toBe(m[2])
++    expect(html).toContain('reward-card-art">no art yet')                 // the frame stays blank until HoBaT item art exists
++    expect(html).toContain('id="rw-confirm"')
++    expect(html).not.toContain('Buy All')                                  // keep-3 was never ruled; keep-2 was rejected
++    const id = html.match(/data-id="(item\.[^"]+)" data-tier/)![1]!
+     performTakeReward(ctx, id, 'test')
+     expect(ctx.campaign.stash).toContain(id)
+@@ -64,9 +88,13 @@ describe('after the battle', () => {
+     expect(v.specialtyOffers.map((s) => s.id)).toEqual(specialtiesOf('class.warrior').map((s) => s.id))
+     expect(v.specialtyOffers.length).toBe(9)
+-    const html = levelUpScreen(ctx.campaign, { specialtyId: null, pick: null })
+-    expect(html).toContain('L1 <span class="arrow">→</span> L2')
+-    expect(html).toContain('+2 health'); expect(html).toContain('+1 itemSlots')
+-    expect(html).toContain('Choose a specialty — once, now')
++    const html = levelUpScreen(ctx.campaign, DWARF, 'rewards')
++    expect(html).toContain('class="hx levelup')
++    expect(html).toContain('id="lu-badge">LEVEL 1<')                                  // flips to LEVEL 2 at the flash
++    expect(html).toContain('data-to="2"')
++    expect(html).toContain('+2 Health'); expect(html).toContain('+1 Item Slot')
++    expect(html).toContain('Choose Your Specialty')
++    expect(html.match(/data-act="choose-specialty"/g)?.length).toBe(9)
+     expect(html).toContain('No power is chosen here')
++    expect(html).not.toContain('power-overlay')
+     expect(whyNotLevelUp(ctx.campaign, DWARF, { specialtyId: 'specialty.assassin' })).toMatch(/not a class\.warrior specialty/)
+     const slots = ctx.campaign.roster[DWARF]!.itemSlots
+@@ -80,5 +108,5 @@ describe('after the battle', () => {
+     expect(viewLevelUp(ctx.campaign, DWARF).needsSpecialty).toBe(false)
+     expect(whyNotLevelUp(ctx.campaign, DWARF, { specialtyId: 'specialty.berserker' })).toMatch(/chosen once/)
+-    expect(levelUpScreen(ctx.campaign, { specialtyId: null, pick: null })).not.toContain('Choose a specialty')
++    expect(levelUpScreen(ctx.campaign, DWARF, 'roster')).not.toContain('Choose Your Specialty')
+   })
+   it('the level-5 pick is one of the row\'s options by index, required when the row has one', () => {
+```
+</details>
+
+slice: 40 of 68 closed · 61 probed · 1 accepted
+IRON GAUNTLET: NOT PASSED — 4 FLAG(S) WARNED; 1 EXEMPTION(S) TAKEN

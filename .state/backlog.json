@@ -726,6 +726,10 @@
   ],
   "unreachable": "plumbing: the copied screens; ISC-067/068 (H) are where a person judges them",
   "generalizationExempt": "plumbing: screens, not a mechanism",
-  "attempts": 2
+  "attempts": 2,
+  "status": "done-needs-review",
+  "sha": "6f5c899",
+  "engineSha": "5603c40",
+  "gauntlet": "not passed — 4 flag(s) warned; 1 exemption(s) taken"
  }
 ]
