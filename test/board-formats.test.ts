@@ -65,11 +65,9 @@ describe('a battle on each format', () => {
     })
   }
 
-  it('the edges: the duel map takes the ruled default (heroes west, enemies east); the dungeon says so; the horde is south/north', () => {
-    expect(deployOf('test.map.duel-8')).toEqual(DEFAULT_DEPLOY)
+  it('the edges: heroes west, enemies east — every map on the panel (board.heroes-west, 2026-09-04)', () => {
     expect(DEFAULT_DEPLOY).toEqual({ hero: 'west', enemy: 'east' })
-    expect(deployOf('test.map.dungeon-16x8')).toEqual({ hero: 'west', enemy: 'east' })
-    expect(deployOf('test.map.horde-24')).toEqual({ hero: 'south', enemy: 'north' })
+    for (const id of MAP_PANEL) expect(deployOf(id), id).toEqual(DEFAULT_DEPLOY)
     const duel = createBattle({ replicate: 0, enemyCount: 8, mapId: 'test.map.duel-8' })
     for (const u of duel.state.units) expect(duel.geo.colOf(u.hex)).toBe(u.side === 'hero' ? 0 : 7)
     const dungeon = createBattle({ replicate: 0, enemyCount: 8, mapId: 'test.map.dungeon-16x8' })
@@ -85,9 +83,9 @@ describe('a battle on each format', () => {
     // the first eight of nine stand exactly where the eight stood — the spill added a draw, it did not perturb one
     const first8 = nine.state.units.filter((u) => u.side === 'enemy').slice(0, 8).map((u) => u.hex)
     expect(first8).toEqual(eight.state.units.filter((u) => u.side === 'enemy').map((u) => u.hex))
-    // the horde board, south/north: sixteen enemies on a 24-wide edge, no spill
+    // the horde board: sixteen enemies on a 24-high east edge, no spill
     const horde = createBattle({ replicate: 0, enemyCount: 16, mapId: 'test.map.horde-24' })
-    expect(new Set(horde.state.units.filter((u) => u.side === 'enemy').map((u) => horde.geo.rowOf(u.hex)))).toEqual(new Set([0]))
+    expect(new Set(horde.state.units.filter((u) => u.side === 'enemy').map((u) => horde.geo.colOf(u.hex)))).toEqual(new Set([23]))
     expect(() => createBattle({ replicate: 0, enemyCount: 65, mapId: 'test.map.duel-8' })).toThrow(/cannot hold 65 enemies/)
   })
 

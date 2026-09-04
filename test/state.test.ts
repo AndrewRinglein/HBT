@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest'
 import { createBattle } from '../src/core/setup.js'
-import { rowOf } from './board16.js'
+import { colOf, WIDTH } from './board16.js'
 import { UNITS } from '../src/content/index.js'
 
 describe('state and setup', () => {
@@ -10,8 +10,12 @@ describe('state and setup', () => {
     const enemies = ctx.state.units.filter(u => u.side === 'enemy')
     expect(heroes.length).toBe(6)
     expect(enemies.length).toBe(4)
-    for (const h of heroes) expect(rowOf(h.hex)).toBe(15)
-    for (const e of enemies) expect(rowOf(e.hex)).toBe(0)
+    // board.heroes-west (2026-09-04), Law 10 reason: ruled 2026-09-03 — "Heroes
+    // start on the left, and enemies start on the right. That is the default
+    // configuration." Rows 15 and 0 were the 2026-08-20 board; the RULE is the
+    // two deployment edges, and they are now column 0 and the last column.
+    for (const h of heroes) expect(colOf(h.hex)).toBe(0)
+    for (const e of enemies) expect(colOf(e.hex)).toBe(WIDTH - 1)
   })
 
   it('gives the CODEX stat blocks — the party reads from the pack, not from typed rows (2026-08-20)', () => {

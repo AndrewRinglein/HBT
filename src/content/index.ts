@@ -238,7 +238,7 @@ for (const u of Object.values(UNITS)) {
   if (u.levelTable !== undefined && !(u.levelTable in LEVELS)) throw new Error(`unit '${u.typeId}' levels on '${u.levelTable}', which is not a level table in the pack`)
 }
 
-/** The standard battle: the Alpha Team on row 15, four zombies on row 0. */
+/** The standard battle: the Alpha Team on the west edge, four zombies on the east (ruled 2026-09-03; rows 15 and 0 until 2026-09-04). */
 export const FIRST_BATTLE = {
   id: 'baseline.6v4',
   scenarioId: 1,

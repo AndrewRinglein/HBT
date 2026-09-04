@@ -33,7 +33,6 @@ export type MapDef = { id: string; name: string; note: string; rows: readonly st
 const RAW_MAPS: readonly MapDef[] = [
   {
     id: 'map.open',
-    deploy: { hero: 'south', enemy: 'north' },   // authored before the west/east ruling; kept so the control battles hold
     name: 'Open Field',
     note: 'No terrain at all. The control map — keeps every earlier result comparable.',
     rows: [
@@ -45,7 +44,6 @@ const RAW_MAPS: readonly MapDef[] = [
   },
   {
     id: 'map.ridge',
-    deploy: { hero: 'south', enemy: 'north' },   // authored before the west/east ruling; kept so the control battles hold
     name: 'The Ridge',
     note: 'A band across the middle. Both sides must cross it; whoever holds it shoots from height.',
     rows: [
@@ -57,7 +55,6 @@ const RAW_MAPS: readonly MapDef[] = [
   },
   {
     id: 'map.flanks',
-    deploy: { hero: 'south', enemy: 'north' },   // authored before the west/east ruling; kept so the control battles hold
     name: 'Two Knolls',
     note: 'High ground on both wings, open in the centre. Rewards splitting, punishes the walk out.',
     rows: [
@@ -69,7 +66,6 @@ const RAW_MAPS: readonly MapDef[] = [
   },
   {
     id: 'map.highlands',
-    deploy: { hero: 'south', enemy: 'north' },   // authored before the west/east ruling; kept so the control battles hold
     name: 'Highlands',
     note: 'Broken ground everywhere. Movement is expensive and nearly every hex is a firing position.',
     rows: [
@@ -81,7 +77,6 @@ const RAW_MAPS: readonly MapDef[] = [
   },
   {
     id: 'map.field',
-    deploy: { hero: 'south', enemy: 'north' },   // authored before the west/east ruling; kept so the control battles hold
     name: 'The Field',
     note: 'A 16x16 crop of MAP-01 (rows 4-19, cols 6-21), for the replay viewer. Re-cropped 2026-08-25 with the board ruling — widened rather than padded, so the terrain is still MAP-01’s own. The real MAP-01 terrain. Forest, rocky, rocky-hills, water and obstacles are RECOGNISED but carry no rules yet — they behave as open ground until terrain.movecost / terrain.passable / terrain.modifiers land.',
     rows: [
@@ -93,7 +88,6 @@ const RAW_MAPS: readonly MapDef[] = [
   },
   {
     id: 'map.thicket',
-    deploy: { hero: 'south', enemy: 'north' },   // authored before the west/east ruling; kept so the control battles hold
     name: 'The Thicket',
     note: 'A 16x16 crop of MAP-01 (rows 8-23, cols 0-15). Re-cropped 2026-08-25 with the board ruling — widened rather than padded, so the terrain is still MAP-01’s own. Carries the only obstacles on the panel and a wide water channel — the map that makes terrain.passable testable at all.',
     rows: [
@@ -105,7 +99,6 @@ const RAW_MAPS: readonly MapDef[] = [
   },
   {
     id: 'test.map.embers',
-    deploy: { hero: 'south', enemy: 'north' },   // authored before the west/east ruling; kept so the control battles hold
     name: 'The Ember Field (TESTING)',
     note: 'TESTING LANE — never ships. A full-width burning band and a poisoned belt both sides must cross, so the terrain-applies mechanism can be probed live. Mirrors map.ridge. Joining MAPS puts it on MAP_PANEL, which is what makes probing possible — the same reason map.field and map.thicket were added.',
     rows: [
@@ -117,7 +110,6 @@ const RAW_MAPS: readonly MapDef[] = [
   },
   {
     id: 'test.map.showcase',
-    deploy: { hero: 'south', enemy: 'north' },   // authored before the west/east ruling; kept so the control battles hold
     name: 'The Proving Ground (TESTING)',
     note: 'TESTING LANE — never ships. One board that exercises every ground mechanic at once: a western river (washes), an ember band and a blight belt both sides must cross, and hills. Built 2026-08-20 so a single replay can SHOW every landed mechanic (Angela: "a replay that shows off all the various new things").',
     rows: [
@@ -130,8 +122,7 @@ const RAW_MAPS: readonly MapDef[] = [
   // board.variable-size (2026-09-04) — one TESTING map per non-standard
   // format, so every ruled board size is on MAP_PANEL and probed, hashed and
   // effect-measured with the rest. Never ship; content authors the real ones
-  // (content.maps-as-rows). Row 0 is still the enemy edge here — the west/east
-  // default is board.deploy-edges' landing.
+  // (content.maps-as-rows). Heroes west, enemies east — the default.
   {
     id: 'test.map.duel-8',
     name: 'The Yard (TESTING, 8×8 duel)',
@@ -153,16 +144,15 @@ const RAW_MAPS: readonly MapDef[] = [
   },
   {
     id: 'test.map.horde-24',
-    deploy: { hero: 'south', enemy: 'north' },   // the horde comes down the board, as BASE-MAP-SPEC pictures it
     name: 'The Plain (TESTING, 24×24 horde)',
-    note: 'TESTING LANE — never ships. The horde format: twenty-four square, open, a river across the middle with two fords. Room for the forty-body tide BASE-MAP-SPEC asks for.',
+    note: 'TESTING LANE — never ships. The horde format: twenty-four square, open, a river down the middle with two fords — the tide comes from the east and must cross it. Room for the forty-body tide BASE-MAP-SPEC asks for.',
     rows: [
-      '........................', '........................', '........................', '........................',
-      '........................', '........................', '........................', '........................',
-      '........................', '........................', '........................', 'wwwwww..wwwwwwwww..wwwww',
-      'wwwwww..wwwwwwwww..wwwww', '........................', '........................', '........................',
-      '........................', '........................', '........................', '........................',
-      '........................', '........................', '........................', '........................',
+      '...........ww...........', '...........ww...........', '...........ww...........', '...........ww...........',
+      '...........ww...........', '...........ww...........', '........................', '........................',
+      '...........ww...........', '...........ww...........', '...........ww...........', '...........ww...........',
+      '...........ww...........', '...........ww...........', '...........ww...........', '...........ww...........',
+      '........................', '........................', '...........ww...........', '...........ww...........',
+      '...........ww...........', '...........ww...........', '...........ww...........', '...........ww...........',
     ],
   },
 ] as const

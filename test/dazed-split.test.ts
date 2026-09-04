@@ -55,7 +55,11 @@ describe('two ids, two meanings', () => {
 describe('in real battles', () => {
   it('the chart lands Powers Locked somewhere in the standard battle\'s first 60 seeds, and never Dazed (no source applies it yet)', () => {
     let locked = 0, dazed = 0
-    for (let r = 0; r < 60; r++) {
+    // board.heroes-west (2026-09-04), Law 10 reason: the standard battle now
+    // deploys west/east (ruled 2026-09-03), so the dice fall differently and
+    // the first Powers Locked crit is at replicate 133 (five in 300). The
+    // window widens; the assertion — the chart lands it — is unchanged.
+    for (let r = 0; r < 160; r++) {
       const ctx = createBattle({ replicate: r, enemyCount: 8 }); runBattle(ctx)
       for (const e of ctx.events) {
         if (e.type === 'status.applied' && e['statusId'] === 'status.powers-locked') locked++

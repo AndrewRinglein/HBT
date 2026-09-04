@@ -7649,3 +7649,93 @@ IRON GAUNTLET: NOT PASSED — 2 FLAG(S) WARNED
 2026-09-04T09:04:26.617Z · Angela: "Yes. Reviewed 2026-09-04."
 
   ok  board.variable-size
+## board.heroes-west — LANDED `4bb80e3` **NEEDS REVIEW**
+2026-09-04 09:55
+
+  PASS  dependencies landed
+  WARN  not already decided — 3 candidate ruling(s) — READ BEFORE ASKING: ../STATE.md:21 · ../STATE.md:20
+  PASS  typecheck
+  PASS  full test suite
+  PASS  gate 1 — the id appears in a real battle — map.open: 1 log lines, 1 fired, 1 changed state · test.map.horde-24: 1 log lines, 1 fired, 1 changed state
+  PASS  brought its own tests — test/board-formats.test.ts, test/dazed-split.test.ts, test/state.test.ts
+  WARN  existing tests untouched — DELETED LINES in test/board-formats.test.ts (-6), test/dazed-split.test.ts (-1), test/state.test.ts (-3) — will land FLAGGED for review
+  PASS  control battles unchanged — will re-bless at commit — this item DECLARED it changes the control battles: map.open e9524f99->601c4a1f, map.ridge bad706d0->7d8b3a93, map.flanks 0d96c818->facda47b, map.highlands 47cccc17->d612e6e2, map.field aed1e484->cc921e60, map.thicket 7314a477->9f5c9d08, test.map.embers 1c6a35d1->f697389c, test.map.showcase a15265a4->300ce7c8, test.map.horde-24 10254f9f->a8bfd1b9
+  PASS  content has a published source — 22 ids without a published source (12 awaiting publication from earlier items — see audit)
+  PASS  hardcode scan — core knows mechanisms, never names
+  PASS  generalizes — the second instance costs zero engine code — shape 'plumbing' — not a mechanism, exempt
+  PASS  naming — new content ids use declared kinds
+  PASS  naming — no banned words invented
+  PASS  kill switch — the tests fail without the content — tests fail without map.open,test.map.horde-24 — they genuinely test it
+
+<details><summary>Existing tests were edited — review this diff</summary>
+
+```diff
+diff --git a/test/board-formats.test.ts b/test/board-formats.test.ts
+index ffaced9..edf81b8 100644
+--- a/test/board-formats.test.ts
++++ b/test/board-formats.test.ts
+@@ -66,9 +66,7 @@ describe('a battle on each format', () => {
+   }
+ 
+-  it('the edges: the duel map takes the ruled default (heroes west, enemies east); the dungeon says so; the horde is south/north', () => {
+-    expect(deployOf('test.map.duel-8')).toEqual(DEFAULT_DEPLOY)
++  it('the edges: heroes west, enemies east — every map on the panel (board.heroes-west, 2026-09-04)', () => {
+     expect(DEFAULT_DEPLOY).toEqual({ hero: 'west', enemy: 'east' })
+-    expect(deployOf('test.map.dungeon-16x8')).toEqual({ hero: 'west', enemy: 'east' })
+-    expect(deployOf('test.map.horde-24')).toEqual({ hero: 'south', enemy: 'north' })
++    for (const id of MAP_PANEL) expect(deployOf(id), id).toEqual(DEFAULT_DEPLOY)
+     const duel = createBattle({ replicate: 0, enemyCount: 8, mapId: 'test.map.duel-8' })
+     for (const u of duel.state.units) expect(duel.geo.colOf(u.hex)).toBe(u.side === 'hero' ? 0 : 7)
+@@ -86,7 +84,7 @@ describe('a battle on each format', () => {
+     const first8 = nine.state.units.filter((u) => u.side === 'enemy').slice(0, 8).map((u) => u.hex)
+     expect(first8).toEqual(eight.state.units.filter((u) => u.side === 'enemy').map((u) => u.hex))
+-    // the horde board, south/north: sixteen enemies on a 24-wide edge, no spill
++    // the horde board: sixteen enemies on a 24-high east edge, no spill
+     const horde = createBattle({ replicate: 0, enemyCount: 16, mapId: 'test.map.horde-24' })
+-    expect(new Set(horde.state.units.filter((u) => u.side === 'enemy').map((u) => horde.geo.rowOf(u.hex)))).toEqual(new Set([0]))
++    expect(new Set(horde.state.units.filter((u) => u.side === 'enemy').map((u) => horde.geo.colOf(u.hex)))).toEqual(new Set([23]))
+     expect(() => createBattle({ replicate: 0, enemyCount: 65, mapId: 'test.map.duel-8' })).toThrow(/cannot hold 65 enemies/)
+   })
+diff --git a/test/dazed-split.test.ts b/test/dazed-split.test.ts
+index 3ca0c67..dc80f32 100644
+--- a/test/dazed-split.test.ts
++++ b/test/dazed-split.test.ts
+@@ -56,5 +56,9 @@ describe('in real battles', () => {
+   it('the chart lands Powers Locked somewhere in the standard battle\'s first 60 seeds, and never Dazed (no source applies it yet)', () => {
+     let locked = 0, dazed = 0
+-    for (let r = 0; r < 60; r++) {
++    // board.heroes-west (2026-09-04), Law 10 reason: the standard battle now
++    // deploys west/east (ruled 2026-09-03), so the dice fall differently and
++    // the first Powers Locked crit is at replicate 133 (five in 300). The
++    // window widens; the assertion — the chart lands it — is unchanged.
++    for (let r = 0; r < 160; r++) {
+       const ctx = createBattle({ replicate: r, enemyCount: 8 }); runBattle(ctx)
+       for (const e of ctx.events) {
+diff --git a/test/state.test.ts b/test/state.test.ts
+index 6618410..7faceba 100644
+--- a/test/state.test.ts
++++ b/test/state.test.ts
+@@ -1,5 +1,5 @@
+ import { describe, it, expect } from 'vitest'
+ import { createBattle } from '../src/core/setup.js'
+-import { rowOf } from './board16.js'
++import { colOf, WIDTH } from './board16.js'
+ import { UNITS } from '../src/content/index.js'
+ 
+@@ -11,6 +11,10 @@ describe('state and setup', () => {
+     expect(heroes.length).toBe(6)
+     expect(enemies.length).toBe(4)
+-    for (const h of heroes) expect(rowOf(h.hex)).toBe(15)
+-    for (const e of enemies) expect(rowOf(e.hex)).toBe(0)
++    // board.heroes-west (2026-09-04), Law 10 reason: ruled 2026-09-03 — "Heroes
++    // start on the left, and enemies start on the right. That is the default
++    // configuration." Rows 15 and 0 were the 2026-08-20 board; the RULE is the
++    // two deployment edges, and they are now column 0 and the last column.
++    for (const h of heroes) expect(colOf(h.hex)).toBe(0)
++    for (const e of enemies) expect(colOf(e.hex)).toBe(WIDTH - 1)
+   })
+ 
+```
+</details>
+
+IRON GAUNTLET: NOT PASSED — 2 FLAG(S) WARNED
