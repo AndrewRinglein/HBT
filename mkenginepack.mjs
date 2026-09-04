@@ -220,10 +220,51 @@ const moves = compileMoves(SETTLED.powers || []);
 // startOfBattle joined 2026-09-03 (hook.on-enter, with encounter.runner): fires at battle.begin and at arrival.
 const TRIG_HOOKS = new Set(['onAttack', 'onMiss', 'onHit', 'onCrit', 'onDamage', 'onKill', 'onTakingDamage', 'onDeath', 'onActivationEnd', 'startOfBattle']);
 
+// ── BADGES (badge.mechanism, 2026-09-04) ───────────────────────────────────
+// Ruled 2026-09-04: badges are an engine type — the Hero badge, Wounded, the
+// afflictions (Lycanthropy, Vampirism, Possession) and whatever else a row
+// grants. The Codex's badge rows are PROSE payloads ("+2 Str, +2 Move, −5
+// Crit · `startOfBattle`: regeneration 5"); this compiles the clauses the
+// engine can express — stat modifiers, granted powers, the deployment and
+// deathbed flags — and names every other clause as a gap, compile-or-name-
+// the-gap like every row. Nothing is invented: a clause that does not parse
+// is a gap, never a guess.
+const BADGE_STAT = { str: 'strength', strength: 'strength', pre: 'precision', precision: 'precision', magic: 'magic', spirit: 'spirit',
+  acc: 'accuracy', accuracy: 'accuracy', dodge: 'dodge', armor: 'armor', armour: 'armor', resist: 'resist', move: 'movement', movement: 'movement',
+  reach: 'reach', health: 'maxHp', h: 'maxHp', hp: 'maxHp', 'max hp': 'maxHp', 'max health': 'maxHp', 'stamina max': 'maxStamina', 'max stamina': 'maxStamina', stamina: 'maxStamina',
+  'stamina regen': 'staminaRegen', regen: 'staminaRegen', crit: 'crit', luck: 'luck', toughness: 'toughness', surge: 'surge', vision: 'vision' };   // DBF (Deathbed Fighting) is derived from Toughness today, not a stat the engine folds — a +N DBF clause stays a named gap until it is
+const BADGE_FLAGS = { 'blocks deployment': 'blocksDeployment' };
+function compileBadge(row) {
+  const mods = {}; const grants = []; const flags = {}; const gaps = [];
+  const payload = String(row.payload || '').replace(/\*\*/g, '');
+  if (!payload || /prose only/i.test(payload)) gaps.push(payload ? 'payload is prose only — the numbers are owed' : 'no payload');
+  else for (const raw of payload.split(/\s*[·;]\s*|,\s*(?![^()]*\))/)) {
+    const clause = raw.trim(); if (!clause) continue;
+    let m;
+    if ((m = clause.match(/^([+−-]\s*\d+)\s+(.+)$/))) {
+      const v = parseInt(m[1].replace('−', '-').replace(/\s+/g, ''), 10);
+      // "+1 S, P, reach, H" — one number, several stats
+      const words = m[2].split(/\s*,\s*|\s+and\s+/).map((w) => w.trim().toLowerCase());
+      let ok = true;
+      for (const w of words) { const st = BADGE_STAT[w] ?? BADGE_STAT[w.replace(/\s+/g, ' ')]; if (!st) { ok = false; break } }
+      if (ok) { for (const w of words) { const st = BADGE_STAT[w] ?? BADGE_STAT[w.replace(/\s+/g, ' ')]; mods[st] = (mods[st] ?? 0) + v } continue }
+    }
+    if ((m = clause.match(/^grants\s+`?(power\.[a-z0-9.-]+)`?$/i))) { grants.push(m[1]); continue }
+    const fl = Object.keys(BADGE_FLAGS).find((k) => clause.toLowerCase().startsWith(k));
+    if (fl) { flags[BADGE_FLAGS[fl]] = true; if (clause.length > fl.length) gaps.push(clause); continue }
+    gaps.push(clause);   // hooks (`startOfBattle`: …), class locks, "lifts on rescue" — named, not guessed
+  }
+  // the engine's deathbed stat rides the modifiers map under its own name
+  const out = { id: row.id, name: row.name, statModifiers: mods, grants, flags, ...(gaps.length ? { gaps } : {}) };
+  return out;
+}
+const badges = {};
+for (const row of (D.badges || []).filter((b) => b && b.id && b.id.startsWith('badge.'))) badges[row.id] = compileBadge(row);
+
 // Capabilities the engine HAS now — a row naming one of these is not gapped for it.
 // capability.power: capability.power-pool, 2026-09-03.
 // capability.enemy-action-cooldown: 2026-09-03.
-const HAVE = new Set(['capability.power', 'capability.enemy-action-cooldown', 'capability.corpses', 'capability.ground-layers', 'capability.target-stamina-loss']);   // 2026-09-03
+const HAVE = new Set(['capability.power', 'capability.enemy-action-cooldown', 'capability.corpses', 'capability.ground-layers', 'capability.target-stamina-loss', 'capability.inflict-affliction']);   // 2026-09-03; inflict-affliction 2026-09-04 (badge.afflictions)
 function compileTrigger(t, unitId, attackId) {
   const where = attackId ?? '(unit)';
   const needs = (t.needs || []).filter((n) => !HAVE.has(n));
@@ -261,6 +302,15 @@ function compileTrigger(t, unitId, attackId) {
       };
       if (attackId) trig.onlyWithAttack = attackId;
       out.push(trig);
+    } else if (ef.effect === 'inflict an affliction' && typeof ef.affliction === 'string') {
+      // badge.afflictions (2026-09-04): "Vampires, werewolves, and undead sometimes
+      // afflict their targets with a badge." The bestiary's `affliction` names
+      // the badge row (badge.<affliction>); one that has no row is a gap, not a guess.
+      const badgeId = 'badge.' + ef.affliction;
+      if (!badges[badgeId]) { gap(unitId, `${where} ${t.hook}: inflict an affliction '${ef.affliction}' — no badge row ${badgeId}`, 'content: badge row unauthored'); continue; }
+      if ((t.effects.length > 1) && (t.chance ?? 100) !== 100) { gap(unitId, `${where} ${t.hook}: multi-effect at chance ${t.chance}`, 'multi-effect rolled trigger'); return []; }
+      out.push({ id: `${unitId.replace(/^unit\./, 'trigger.')}.${(t.name || 'afflict-' + ef.affliction).toLowerCase().replace(/[^a-z0-9]+/g, '-')}`,
+        hook: t.hook, chance: t.chance ?? ef.chance ?? 100, select: 'target', effect: { kind: 'badge.grant', badgeId }, source: unitId, ...(attackId ? { onlyWithAttack: attackId } : {}) });
     } else if (ef.effect === 'heal' && typeof ef.value === 'number') {
       // capability.auras (2026-09-03): the Necromancer's EOA pulse — heal N to the area
       if ((t.effects.length > 1) && (t.chance ?? 100) !== 100) { gap(unitId, `${where} ${t.hook}: multi-effect at chance ${t.chance}`, 'multi-effect rolled trigger'); return []; }
@@ -1349,46 +1399,6 @@ function testStatuses() {
   }
   return out;
 }
-// ── BADGES (badge.mechanism, 2026-09-04) ───────────────────────────────────
-// Ruled 2026-09-04: badges are an engine type — the Hero badge, Wounded, the
-// afflictions (Lycanthropy, Vampirism, Possession) and whatever else a row
-// grants. The Codex's badge rows are PROSE payloads ("+2 Str, +2 Move, −5
-// Crit · `startOfBattle`: regeneration 5"); this compiles the clauses the
-// engine can express — stat modifiers, granted powers, the deployment and
-// deathbed flags — and names every other clause as a gap, compile-or-name-
-// the-gap like every row. Nothing is invented: a clause that does not parse
-// is a gap, never a guess.
-const BADGE_STAT = { str: 'strength', strength: 'strength', pre: 'precision', precision: 'precision', magic: 'magic', spirit: 'spirit',
-  acc: 'accuracy', accuracy: 'accuracy', dodge: 'dodge', armor: 'armor', armour: 'armor', resist: 'resist', move: 'movement', movement: 'movement',
-  reach: 'reach', health: 'maxHp', h: 'maxHp', hp: 'maxHp', 'max hp': 'maxHp', 'max health': 'maxHp', 'stamina max': 'maxStamina', 'max stamina': 'maxStamina', stamina: 'maxStamina',
-  'stamina regen': 'staminaRegen', regen: 'staminaRegen', crit: 'crit', luck: 'luck', toughness: 'toughness', surge: 'surge', vision: 'vision' };   // DBF (Deathbed Fighting) is derived from Toughness today, not a stat the engine folds — a +N DBF clause stays a named gap until it is
-const BADGE_FLAGS = { 'blocks deployment': 'blocksDeployment' };
-function compileBadge(row) {
-  const mods = {}; const grants = []; const flags = {}; const gaps = [];
-  const payload = String(row.payload || '').replace(/\*\*/g, '');
-  if (!payload || /prose only/i.test(payload)) gaps.push(payload ? 'payload is prose only — the numbers are owed' : 'no payload');
-  else for (const raw of payload.split(/\s*[·;]\s*|,\s*(?![^()]*\))/)) {
-    const clause = raw.trim(); if (!clause) continue;
-    let m;
-    if ((m = clause.match(/^([+−-]\s*\d+)\s+(.+)$/))) {
-      const v = parseInt(m[1].replace('−', '-').replace(/\s+/g, ''), 10);
-      // "+1 S, P, reach, H" — one number, several stats
-      const words = m[2].split(/\s*,\s*|\s+and\s+/).map((w) => w.trim().toLowerCase());
-      let ok = true;
-      for (const w of words) { const st = BADGE_STAT[w] ?? BADGE_STAT[w.replace(/\s+/g, ' ')]; if (!st) { ok = false; break } }
-      if (ok) { for (const w of words) { const st = BADGE_STAT[w] ?? BADGE_STAT[w.replace(/\s+/g, ' ')]; mods[st] = (mods[st] ?? 0) + v } continue }
-    }
-    if ((m = clause.match(/^grants\s+`?(power\.[a-z0-9.-]+)`?$/i))) { grants.push(m[1]); continue }
-    const fl = Object.keys(BADGE_FLAGS).find((k) => clause.toLowerCase().startsWith(k));
-    if (fl) { flags[BADGE_FLAGS[fl]] = true; if (clause.length > fl.length) gaps.push(clause); continue }
-    gaps.push(clause);   // hooks (`startOfBattle`: …), class locks, "lifts on rescue" — named, not guessed
-  }
-  // the engine's deathbed stat rides the modifiers map under its own name
-  const out = { id: row.id, name: row.name, statModifiers: mods, grants, flags, ...(gaps.length ? { gaps } : {}) };
-  return out;
-}
-const badges = {};
-for (const row of (D.badges || []).filter((b) => b && b.id && b.id.startsWith('badge.'))) badges[row.id] = compileBadge(row);
 function testBadges() {
   const out = {};
   const FIELDS = new Set(['id', 'name', 'statModifiers', 'grants', 'flags', 'triggers']);

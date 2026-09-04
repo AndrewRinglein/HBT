@@ -147,19 +147,9 @@
    "needs": "trigger-effect: statMod"
   },
   {
-   "unit": "unit.vampire",
-   "what": "attack.vampire.bite onDamage: inflict an affliction",
-   "needs": "capability.inflict-affliction"
-  },
-  {
    "unit": "unit.vampire-lord",
    "what": "attack.vampire-lord.bite onKill: grant a stat for the Battle (health)",
    "needs": "trigger-effect: statMod"
-  },
-  {
-   "unit": "unit.vampire-lord",
-   "what": "attack.vampire-lord.bite onDamage: inflict an affliction",
-   "needs": "capability.inflict-affliction"
   },
   {
    "unit": "unit.werewolf",
@@ -167,24 +157,9 @@
    "needs": "trigger-effect: statMod before damage"
   },
   {
-   "unit": "unit.werewolf",
-   "what": "attack.werewolf.claw-frenzy onDamage: inflict an affliction",
-   "needs": "capability.inflict-affliction"
-  },
-  {
-   "unit": "unit.zombie",
-   "what": "attack.zombie.claw onHit: inflict an affliction",
-   "needs": "capability.inflict-affliction"
-  },
-  {
    "unit": "unit.zombie-hound",
    "what": "special move move.zombie-hound.close-bite (carries an attack)",
    "needs": "enemy special moves (move.* — kind unapproved, no engine mechanism)"
-  },
-  {
-   "unit": "unit.zombie-hound",
-   "what": "attack.zombie-hound.bite onDamage: inflict an affliction",
-   "needs": "capability.inflict-affliction"
   },
   {
    "unit": "hero.base.ranger-ranger",
