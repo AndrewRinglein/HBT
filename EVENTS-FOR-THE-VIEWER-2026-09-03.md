@@ -174,3 +174,30 @@ the encounters (PROVING-PLAN.md Stage A3) flips the shipping maps.
 **Kingdom:** `kingdom/src/engine.ts` re-exports the same names and
 `view/battle.ts` sizes the board from `WIDTH/HEIGHT` — same two-line fix,
 from `map.loaded`.
+
+## 11. One action type (added 2026-09-04, `refactor.one-action-type` 26fa562)
+
+Ruled 2026-09-04 three times: an attack, a power and a movement are ONE kind
+of thing. In the engine: `ActionDef` (src/core/types.ts) with an `attack`
+profile, a `move` profile and/or an `effects` list; `AttackDef`/`MoveDef`/
+`AbilityDef` are views over it; one registry `ctx.actions` (content exports
+`ACTIONS`, and still `ATTACKS`/`ABILITIES`/`MOVES` as views); a unit has one
+`actions` list.
+
+**What changed in the log — one line:** `cooldown.set` now carries
+`actionId` on every kind (attack, power, movement) and keeps `abilityId` for
+readers that used it; `attackId` on that line is gone. Nothing else in the
+event vocabulary moved. `attack.declared` still names `kind` and `damageType`.
+
+**What changed on the sheet (`npm run static`):** if the viewer's sheet reads
+a unit's `attacks`/`abilities`/`moves` off a `Unit` in state, it reads
+`actions` now (a `UnitDef` row still has the three lists). Attack rows in the
+registry carry their pipeline fields under `attack` (`kind`, `bonus`, `stat`,
+`damageType`, `crit`, `hits`, `accuracy`, `powerScale`, `applies`), reach is
+`range`, and movement rows carry `shape`/`stepRange`/`budgetMod` under `move`.
+
+**Behaviour that moved (findings 32, 33):** a cooldown N now means "skip N
+Turns" on every action — powers and enemy attacks recovered a Turn early
+before; and a unit with no stamina pool pays no stamina for an attack, as it
+already paid none for a move. Every replayable battle re-exported after
+26fa562 will differ from its predecessor for those two reasons.
