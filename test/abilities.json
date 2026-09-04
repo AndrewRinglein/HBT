@@ -8,6 +8,25 @@
     "range": 10,
     "staminaCost": 1,
     "cooldown": 6,
-    "note": "test.fixture-migration: the invented Arcane Bolt (2026-08-14) — the engine's first power, the cooldown and primary-action tests' instrument. The test cohort's Air Mage casts it."
+    "note": "test.fixture-migration: the invented Arcane Bolt (2026-08-14) \u2014 the engine's first power, the cooldown and primary-action tests' instrument. The test cohort's Air Mage casts it."
+  },
+  {
+    "id": "power.test-second-wind",
+    "name": "Second Wind (TEST)",
+    "range": 0,
+    "staminaCost": 0,
+    "cooldown": 1,
+    "free": true,
+    "target": {
+      "select": "self",
+      "side": "any"
+    },
+    "effects": [
+      {
+        "kind": "gainStamina",
+        "value": 2
+      }
+    ],
+    "note": "refactor.one-action-type (2026-09-04): a POWER carrying a movement rider (gainStamina \u2014 Focus's rider) \u2014 'all of them should be capable of doing all of the same things' (Angela 2026-09-04). Free, cooldown 1: the cooldown means one thing on every action now (skip N Turns)."
   }
 ]

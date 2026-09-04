@@ -1284,7 +1284,8 @@ const isTestId = {
   trigger: (id) => /^(test\.|trigger\.test-)[a-z0-9.-]+$/.test(id),
   status: (id) => /^test\.status\.[a-z0-9-]+$/.test(id),
 };
-const ABILITY_FIELDS = new Set(['id', 'name', 'stat', 'bonus', 'damageType', 'range', 'staminaCost', 'cooldown', 'effect', 'area', 'heal', 'guard']);
+// the limits and the effect list are ONE vocabulary on every action (ruled 2026-09-04) — test rows may carry any of them
+const ABILITY_FIELDS = new Set(['id', 'name', 'stat', 'bonus', 'damageType', 'range', 'staminaCost', 'cooldown', 'warmup', 'uses', 'free', 'effect', 'area', 'heal', 'guard', 'effects', 'target']);
 function testAbilities() {
   const out = {};
   for (const row of readTest('abilities.json')) {
@@ -1296,7 +1297,7 @@ function testAbilities() {
   return out;
 }
 const UNIT_FIELDS = new Set(['typeId', 'name', 'side', 'levelTable', 'maxHp', 'armor', 'resist', 'accuracy', 'dodge', 'strength', 'precision', 'magic', 'spirit', 'crit', 'luck', 'toughness', 'stands', 'surge', 'auras', 'role', 'movement', 'reach', 'maxStamina', 'staminaRegen', 'ai', 'attacks', 'abilities', 'moves', 'tags', 'triggers']);
-const ATTACK_FIELDS = new Set(['id', 'name', 'kind', 'damageType', 'bonus', 'stat', 'reach', 'staminaCost', 'crit', 'critCount', 'area', 'cooldown', 'warmup', 'accuracy', 'hits']);
+const ATTACK_FIELDS = new Set(['id', 'name', 'kind', 'damageType', 'bonus', 'stat', 'reach', 'staminaCost', 'crit', 'critCount', 'area', 'cooldown', 'warmup', 'uses', 'free', 'accuracy', 'hits']);
 // a delta may start from any packed row — the real families AND the test
 // cohort (test-gash-zombie is the cohort's zombie plus one rider)
 const realUnits = new Map([...alphaTeam, ...prologueParty, ...authoredEnemies, ...heroes, ...enemies].map((u) => [u.typeId, u]));

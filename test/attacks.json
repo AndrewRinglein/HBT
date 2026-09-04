@@ -10,7 +10,7 @@
     "staminaCost": 0,
     "crit": 47,
     "critCount": 2,
-    "note": "station.crit-count's first consumer (2026-08-27): 'Do two criticals.' crit 47 puts the golem's chance at 50 so multi-criticals resolve in the verify scenario instead of waiting on a 3% fluke. | capability.enemy-action-cooldown (2026-09-03): cooldown 2 — the golem slams every other Turn and reaches for Overhead between, pure data.",
+    "note": "station.crit-count's first consumer (2026-08-27): 'Do two criticals.' crit 47 puts the golem's chance at 50 so multi-criticals resolve in the verify scenario instead of waiting on a 3% fluke. | capability.enemy-action-cooldown (2026-09-03): cooldown 2 \u2014 the golem slams every other Turn and reaches for Overhead between, pure data.",
     "cooldown": 2
   },
   {
@@ -24,7 +24,7 @@
     "staminaCost": 4,
     "crit": 47,
     "critCount": 3,
-    "note": "station.crit-count's second variant: 'Do three criticals,' pure data. Costs stamina so the golem alternates it with the slam as its pool cycles. | station.accuracy-field's second variant (2026-09-03): accuracy −10 on the row, pure data — the same slot Punch's −5 uses. | capability.enemy-action-cooldown: warmup 1 — not before Turn 2, pure data (the second variant).",
+    "note": "station.crit-count's second variant: 'Do three criticals,' pure data. Costs stamina so the golem alternates it with the slam as its pool cycles. | station.accuracy-field's second variant (2026-09-03): accuracy \u221210 on the row, pure data \u2014 the same slot Punch's \u22125 uses. | capability.enemy-action-cooldown: warmup 1 \u2014 not before Turn 2, pure data (the second variant).",
     "accuracy": -10,
     "warmup": 1
   },
@@ -35,7 +35,7 @@
     "set": {
       "staminaCost": 0
     },
-    "note": "capability.area-attack's second variant (2026-08-27): the SAME 'arc' shape as the Halberd's Cleave — a delta over that real row, cost 0 so stamina can never bench the proof."
+    "note": "capability.area-attack's second variant (2026-08-27): the SAME 'arc' shape as the Halberd's Cleave \u2014 a delta over that real row, cost 0 so stamina can never bench the proof."
   },
   {
     "id": "attack.test-zombie.bite",
@@ -68,7 +68,7 @@
     "stat": "strength",
     "reach": 1,
     "staminaCost": 2,
-    "note": "test.fixture-migration: the provisional Massive Strike (2026-08-14) — the dear-first kit the AI's declared-order choice was written against."
+    "note": "test.fixture-migration: the provisional Massive Strike (2026-08-14) \u2014 the dear-first kit the AI's declared-order choice was written against."
   },
   {
     "id": "attack.test-ranger.bow",
@@ -79,7 +79,7 @@
     "stat": "precision",
     "reach": 6,
     "staminaCost": 1,
-    "note": "test.fixture-migration: the provisional bow (2026-08-14), reach 6 — the ranged-accuracy and kiting tests are written against it."
+    "note": "test.fixture-migration: the provisional bow (2026-08-14), reach 6 \u2014 the ranged-accuracy and kiting tests are written against it."
   },
   {
     "id": "attack.test-mage.staff",
@@ -90,7 +90,7 @@
     "stat": "precision",
     "reach": 6,
     "staminaCost": 1,
-    "note": "test.fixture-migration: the provisional staff bolt (2026-08-14) — magic damage into Resist, the mitigation tests' instrument."
+    "note": "test.fixture-migration: the provisional staff bolt (2026-08-14) \u2014 magic damage into Resist, the mitigation tests' instrument."
   },
   {
     "id": "attack.test-mage.strike",
@@ -102,5 +102,17 @@
     "reach": 1,
     "staminaCost": 1,
     "note": "test.fixture-migration: the provisional staff strike (2026-08-14)."
+  },
+  {
+    "id": "attack.test-ram.once",
+    "name": "Desperate Slam (TEST)",
+    "kind": "melee",
+    "damageType": "physical",
+    "bonus": 4,
+    "stat": "strength",
+    "reach": 1,
+    "staminaCost": 0,
+    "uses": 1,
+    "note": "refactor.one-action-type (2026-09-04): an ATTACK with `uses` \u2014 'cooldown, warm-up, and uses are all limitations on uses of any ability ... be it a movement, be it an attack' (Angela 2026-09-04). One swing a Battle, then it leaves the list, exactly as a charged power does."
   }
 ]
