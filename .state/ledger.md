@@ -1148,3 +1148,5 @@ index 5f89fc7..01c90a9 100644
 
 slice: 40 of 68 closed · 61 probed · 1 accepted
 IRON GAUNTLET: NOT PASSED — 4 FLAG(S) WARNED; 1 EXEMPTION(S) TAKEN
+
+Note (2026-09-04): the engine's board.variable-size landing removed WIDTH/HEIGHT from the engine while screens.after-battle-copy was being gated; the first --land attempt's "nothing regresses" pass reopened twenty criteria on the broken door, all green again once src/engine.ts was widened to geometryOf; twenty re-closed by `slice-gate.mjs --close … --sha 6f5c899`. ISC-044 still waits on its re-red (see the seam.loadout note). The engine session is also writing into this tree (test/board-from-map.test.ts, 01:09) — two sessions in one working tree; its file landed with this item because it passes and the gate commits `git add -A`.

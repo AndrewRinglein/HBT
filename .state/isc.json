@@ -119,8 +119,8 @@
    "tail": "       |                                                                       ^ |      58|     expect(k.grants.map((g) => g.currency).sort()).toEqual(['currency.… |      59|     assertPlainData(k, 'reckoning')"
   },
   "closed": {
-   "at": "2026-09-02 04:28",
-   "sha": "9ee8ea3"
+   "at": "2026-09-04 08:17",
+   "sha": "6f5c899"
   },
   "regressed": [
    {
@@ -145,8 +145,8 @@
    "tail": "       |     ^ |      14|     for (const id of e.deployed) { const h = ctx.campaign.roster[id]!;… |      15|     expect(ctx.campaign.purse).toEqual(before)"
   },
   "closed": {
-   "at": "2026-09-02 04:52",
-   "sha": "123a501"
+   "at": "2026-09-04 08:17",
+   "sha": "6f5c899"
   },
   "regressed": [
    {
@@ -165,8 +165,8 @@
    "tail": "       |     ^ |      23|     expect(ctx.campaign.renown).toBe(r0) |      24|     expect(ctx.events.filter((ev) => ev.type === 'renown.gained')).toE…"
   },
   "closed": {
-   "at": "2026-09-02 04:52",
-   "sha": "123a501"
+   "at": "2026-09-04 08:17",
+   "sha": "6f5c899"
   },
   "regressed": [
    {
@@ -231,8 +231,8 @@
    "tail": "       |                                                                     ^ |      39|     const wrongId = { ...good, id: 'engagement.conquer.elsewhere' } |      40|     expect(() => applyBattleResult(ctx, e, wrongId, reckoning)).toThro…"
   },
   "closed": {
-   "at": "2026-09-02 04:53",
-   "sha": "123a501"
+   "at": "2026-09-04 08:17",
+   "sha": "6f5c899"
   },
   "regressed": [
    {
@@ -251,8 +251,8 @@
    "tail": "       |     ^ |      46|     for (const h of reckoning.heroes) { |      47|       expect(ctx.campaign.roster[h.heroId]!.xp).toBe(h.xp)"
   },
   "closed": {
-   "at": "2026-09-02 04:53",
-   "sha": "123a501"
+   "at": "2026-09-04 08:17",
+   "sha": "6f5c899"
   },
   "regressed": [
    {
@@ -317,8 +317,8 @@
    "tail": "       | ^ |       9| import { playStage, DEFAULTS } from '../src/sim/autoplay.js' |      10|"
   },
   "closed": {
-   "at": "2026-09-02 05:17",
-   "sha": "a46150c"
+   "at": "2026-09-04 08:17",
+   "sha": "6f5c899"
   },
   "regressed": [
    {
@@ -350,8 +350,8 @@
    "tail": "     40| import { engagementKindOf } from '../content/engagements.js' |      41| import { PAYOUTS } from '../content/payouts.js' |  ❯ test/walk.ts:8:1"
   },
   "closed": {
-   "at": "2026-09-02 05:25",
-   "sha": "cae0665"
+   "at": "2026-09-04 08:17",
+   "sha": "6f5c899"
   },
   "regressed": [
    {
@@ -383,8 +383,8 @@
    "tail": "     40| import { engagementKindOf } from '../content/engagements.js' |      41| import { PAYOUTS } from '../content/payouts.js' |  ❯ test/walk.ts:8:1"
   },
   "closed": {
-   "at": "2026-09-03 20:16",
-   "sha": "5edcbc5"
+   "at": "2026-09-04 08:17",
+   "sha": "6f5c899"
   },
   "regressed": [
    {
@@ -499,8 +499,8 @@
    "tail": "       |                            ^ |      20|     for (const g of salvage) expect(kindOf.get(g.causeId), `Salvage fr… |      21|     // the labours paid, and never in Salvage"
   },
   "closed": {
-   "at": "2026-09-03 20:16",
-   "sha": "5edcbc5"
+   "at": "2026-09-04 08:17",
+   "sha": "6f5c899"
   },
   "regressed": [
    {
@@ -524,8 +524,8 @@
    "tail": "     41| import { engagementKindOf } from '../content/engagements.js' |      42| import { PAYOUTS } from '../content/payouts.js' |  ❯ test/walk.ts:8:1"
   },
   "closed": {
-   "at": "2026-09-02 05:54",
-   "sha": "bd95fd7"
+   "at": "2026-09-04 08:17",
+   "sha": "6f5c899"
   },
   "regressed": [
    {
@@ -596,8 +596,8 @@
    "tail": "       | ^ |       6| import { makeNewCampaign } from '../src/core/opening.js' |       7| import { makeCtx } from '../src/core/mutate.js'"
   },
   "closed": {
-   "at": "2026-09-03 20:16",
-   "sha": "5edcbc5"
+   "at": "2026-09-04 08:17",
+   "sha": "6f5c899"
   },
   "regressed": [
    {
@@ -641,8 +641,8 @@
    "tail": "       | ^ |       6| import { makeCtx } from '../src/core/mutate.js' |       7| import { playOpening, playWeeks, playStage, DEFAULTS, type Decisions }…"
   },
   "closed": {
-   "at": "2026-09-03 20:16",
-   "sha": "5edcbc5"
+   "at": "2026-09-04 08:17",
+   "sha": "6f5c899"
   },
   "regressed": [
    {
@@ -741,8 +741,8 @@
    "tail": "  url: 'file:///sessions/brave-clever-fermat/mnt/Heroes%20of%20Blight%20and%20Tragic/kingdom/tools/slice-run.mts' | } | Node.js v22.23.2"
   },
   "closed": {
-   "at": "2026-09-03 20:16",
-   "sha": "5edcbc5"
+   "at": "2026-09-04 08:17",
+   "sha": "6f5c899"
   },
   "regressed": [
    {
@@ -766,8 +766,8 @@
    "tail": "  url: 'file:///sessions/brave-clever-fermat/mnt/Heroes%20of%20Blight%20and%20Tragic/kingdom/tools/slice-run.mts' | } | Node.js v22.23.2"
   },
   "closed": {
-   "at": "2026-09-03 20:16",
-   "sha": "5edcbc5"
+   "at": "2026-09-04 08:17",
+   "sha": "6f5c899"
   },
   "regressed": [
    {
@@ -804,8 +804,8 @@
    "tail": "       |                                                    ^ |      44|     expect(ctx.events.filter((e) => e.type === 'item.equipped' && e['h… |      45|     const opened = playOpening(makeCtx(makeNewCampaign(3)))"
   },
   "closed": {
-   "at": "2026-09-03 20:16",
-   "sha": "5edcbc5"
+   "at": "2026-09-04 08:17",
+   "sha": "6f5c899"
   },
   "regressed": [
    {
@@ -933,8 +933,8 @@
    "tail": "       | ^ |      10| import { itemOf } from '../src/content/items.js' |      11|"
   },
   "closed": {
-   "at": "2026-09-03 05:24",
-   "sha": "bf993f0"
+   "at": "2026-09-04 08:17",
+   "sha": "6f5c899"
   },
   "regressed": [
    {
@@ -979,8 +979,8 @@
    "tail": "       |                                                                     ^ |      46|     for (const a of itemOf(LONGBOW).grants) expect(hunter.attacks).not… |      47|     // the engine says why, per item, on the log (Law 12) — and the vi…"
   },
   "closed": {
-   "at": "2026-09-03 20:15",
-   "sha": "5edcbc5"
+   "at": "2026-09-04 08:17",
+   "sha": "6f5c899"
   },
   "regressed": [
    {
@@ -999,8 +999,8 @@
    "tail": "       |                                                         ^ |      71|     const stash = ctx.campaign.stash.length |      72|     performTakeReward(ctx, offers[2]!.id, 'test')"
   },
   "closed": {
-   "at": "2026-09-03 20:19",
-   "sha": "26c25b5"
+   "at": "2026-09-04 08:17",
+   "sha": "6f5c899"
   },
   "regressed": [
    {
