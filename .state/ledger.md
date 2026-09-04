@@ -9153,3 +9153,218 @@ NO MEASURABLE EFFECT at this sample size — consequence clause caught state cha
   PASS  kill switch — the tests fail without the content — tests fail without test.badge.brand — they genuinely test it
 
 IRON GAUNTLET: NOT PASSED — 2 FLAG(S) WARNED
+
+## fix.deathbed-no-stands — LANDED `b4cbd9b` **NEEDS REVIEW**
+2026-09-04 21:14
+
+  PASS  dependencies landed
+  WARN  not already decided — 4 candidate ruling(s) — READ BEFORE ASKING: ../STATE.md:21 · ../CODEX.md:1833
+  PASS  typecheck
+  PASS  full test suite
+  PASS  gate 1 — the id appears in a real battle — test.badge.deaths-door: 1 log lines, 1 fired, 1 changed state
+  PASS  brought its own tests — test/deathbed.test.ts
+  WARN  existing tests untouched — DELETED LINES in test/deathbed.test.ts (-33) — will land FLAGGED for review
+  PASS  control battles unchanged — will re-bless at commit — this item DECLARED it changes the control battles: map.open 1495e71a->21d3f277, map.ridge be02d557->e8040fa8, map.flanks 733fd5e9->eeb2df74, map.highlands 35fb0ef6->cee95064, map.field f265b340->58cb0ce9, map.thicket 2046a203->0cb4af35, test.map.embers 5e464c41->1f390fce, test.map.showcase 07c40ef9->e137f46d, test.map.duel-8 54e00cde->dc3855c6, test.map.dungeon-16x8 e0a40353->b89af845, test.map.horde-24 01603722->2424c830
+  PASS  content has a published source — 25 ids without a published source — 1 NEW from THIS item, seal withheld until published
+  PASS  hardcode scan — core knows mechanisms, never names
+  PASS  generalizes — the second instance costs zero engine code — test.badge.deaths-door live · test.badge.brand live
+  PASS  naming — new content ids use declared kinds
+  PASS  naming — no banned words invented
+  PASS  kill switch — the tests fail without the content — tests fail without test.badge.deaths-door — they genuinely test it
+
+<details><summary>Existing tests were edited — review this diff</summary>
+
+```diff
+diff --git a/test/deathbed.test.ts b/test/deathbed.test.ts
+index d03a837..f6d4574 100644
+--- a/test/deathbed.test.ts
++++ b/test/deathbed.test.ts
+@@ -1,12 +1,16 @@
+-// capability.deathbed (2026-09-03) — COMBAT-DESIGN §13, ruled 2026-09-03
+-// (Angela): "We should include the deathbed roll. And then we don't need to
+-// include stabilization. If the bleed-out turns past, then we'll count the
+-// hero as dead. Otherwise, they're counted as wounded."
+-//   Hit 0 → roll Deathbed Fighting (20 + 5 × Toughness, derived never stored).
+-//   STAND → a fresh bar at the next wound level (Wounded −1 to every stat but
+-//   Armor/Resist/Toughness/Item Slots, −2 Max Health, −2 Max Stamina; Badly
+-//   Wounded doubles). FALL → downed, the bleed-out counter. Civilians stand
+-//   once, heroes twice. Marks are minted after the battle — the STAND line
+-//   carries the roll, the chance and the level for the kingdom.
++// capability.deathbed (2026-09-03), REVERSED by fix.deathbed-no-stands
++// (2026-09-04). Angela, verbatim: "there are no stands ... Only those with
++// the badge Hero bleed out. A civilian who goes down and doesn't have the hero
++// badge is just dead and a corpse. Now any player unit rolls deathbed
++// fighting. Unless they have the badge Wounded. If they are wounded, then
++// they just die. When a player succeeds at deathbed fighting ... they
++// immediately gain Wounded ... they gain 1 stamina and 1 equal to whatever
++// their stamina recovery is ... and they get placed at maximum hit points."
++//
++// LAW 10: this file asserted the stand ladder (Fresh → Wounded → Badly
++// Wounded, civilians one stand, heroes two) that the ruling reverses. The
++// rule now, proved on TEST badges (test.badge.deaths-door has the ruled
++// Wounded numbers and the `wounded` flag; test.badge.brand has `bleedsOut`)
++// because content owes badge.hero and badge.wounded — the log names that gap.
+ import { describe, expect, it } from 'vitest'
+ import { createBattle, createCustomBattle } from '../src/core/setup.js'
+@@ -14,8 +18,12 @@ import { runBattle } from '../src/core/battle.js'
+ import { deathbedFighting, settle } from '../src/core/settle.js'
+ import { effective } from '../src/core/stats.js'
+-import { UNITS } from '../src/content/index.js'
++import { BADGES, UNITS } from '../src/content/index.js'
++import { SCENARIOS, scenarioOptions } from '../src/content/scenarios.js'
+ import { hexId } from './board16.js'
+ 
++const DOOR = 'test.badge.deaths-door', BRAND = 'test.badge.brand'
+ const drop = (ctx: ReturnType<typeof createCustomBattle>, id: number) => { ctx.state.units[id]!.hp = 0; settle(ctx, 'test') }
++/** the rules read the roles off ctx — a test points them at the test rows */
++const withTestRows = (ctx: ReturnType<typeof createCustomBattle>) => { (ctx as { ruleBadges: { hero: string; wounded: string } }).ruleBadges = { hero: BRAND, wounded: DOOR }; return ctx }
+ 
+ describe('the roll', () => {
+@@ -26,29 +34,85 @@ describe('the roll', () => {
+   })
+ 
+-  it('at 0 a hero rolls; STAND is a fresh bar one level down the ladder, FALL is downed with the counter — and a hero stands at most twice', () => {
+-    const ctx = createCustomBattle([{ type: 'hero.base.warrior-iron', hex: hexId(5, 5) }], [{ type: 'test-zombie', hex: hexId(9, 9) }])
++  it('STOOD: Wounded at once (the ruled penalties), 1 + Regen stamina capped, HP = the new max — no stands, no ladder', () => {
++    const ctx = withTestRows(createCustomBattle([{ type: 'hero.base.warrior-iron', hex: hexId(5, 5) }], [{ type: 'test-zombie', hex: hexId(9, 9) }]))
+     const w = ctx.state.units[0]!
+     w.toughness = 16   // 100%: standing is routine
+-    const str = effective(ctx, w, 'strength').value, maxHp = w.maxHp, maxSt = w.maxStamina
++    w.stamina = 0
++    const acc = effective(ctx, w, 'accuracy').value, dodge = effective(ctx, w, 'dodge').value, str = effective(ctx, w, 'strength').value, maxHp = w.maxHp, maxSt = w.maxStamina
+     drop(ctx, w.id)
+     expect(w.lifeState).toBe('standing')
+-    expect(w.woundLevel).toBe(1)
+-    expect(w.hp).toBe(w.maxHp)
++    expect(w.badges).toContain(DOOR)
+     expect(w.maxHp).toBe(maxHp - 2)
+-    expect(w.maxStamina).toBe(maxSt - 2)
++    expect(w.hp).toBe(w.maxHp)
++    expect(w.maxStamina).toBe(maxSt)   // Wounded no longer touches Max Stamina
++    expect(w.stamina).toBe(Math.min(w.maxStamina, 1 + w.staminaRegen))
++    expect(effective(ctx, w, 'accuracy').value).toBe(acc - 10)
++    expect(effective(ctx, w, 'dodge').value).toBe(dodge - 10)
+     expect(effective(ctx, w, 'strength').value).toBe(str - 1)
+     expect(effective(ctx, w, 'armor').value).toBe(effective(ctx, w, 'armor').base)   // Armor untouched
+     const stood = ctx.events.find((e) => e.type === 'deathbed.stood')!
+     expect(stood['chance']).toBe(100)
++    expect(stood['badgeId']).toBe(DOOR)
++    expect(ctx.events.some((e) => e.type === 'badge.gained' && e['badgeId'] === DOOR)).toBe(true)
++    expect(ctx.events.some((e) => e.type === 'stamina.gained' && e['actor'] === w.id)).toBe(true)
++  })
++
++  it('WOUNDED at 0: dead, no roll, no bleed-out — "if they are wounded, then they just die"', () => {
++    const ctx = withTestRows(createCustomBattle([{ type: 'hero.base.warrior-iron', hex: hexId(5, 5) }], [{ type: 'test-zombie', hex: hexId(9, 9) }]))
++    const w = ctx.state.units[0]!
++    w.toughness = 16
+     drop(ctx, w.id)
+-    expect(w.woundLevel).toBe(2)
+-    expect(effective(ctx, w, 'strength').value).toBe(str - 2)   // Badly Wounded doubles it
++    expect(w.lifeState).toBe('standing')
+     drop(ctx, w.id)
+-    expect(w.lifeState).toBe('downed')   // the third fall is final: no roll left
+-    expect(ctx.events.some((e) => e.type === 'deathbed.exhausted')).toBe(true)
+-    expect(w.bleedOut).toBeGreaterThan(0)
++    expect(w.lifeState).toBe('dead')
++    expect(w.bleedOut).toBe(0)
++    expect(ctx.events.some((e) => e.type === 'deathbed.none' && e['reason'] === 'wounded')).toBe(true)
++    expect(ctx.events.filter((e) => e.type === 'deathbed.stood' || e.type === 'deathbed.fell').length).toBe(1)
++    expect(ctx.state.corpses?.some((c) => c.uid === w.uid)).toBe(true)
++  })
++
++  it('FELL with the Hero badge: downed and bleeding out; FELL without it: dead and a corpse', () => {
++    const fell = (badges: string[]) => {
++      const ctx = withTestRows(createCustomBattle([{ type: 'test-warrior', hex: hexId(5, 5) }], [{ type: 'test-zombie', hex: hexId(9, 9) }]))
++      const w = ctx.state.units[0]!
++      w.toughness = -4   // 0%: falling is routine
++      for (const b of badges) w.badges.push(b)
++      drop(ctx, w.id)
++      return { w, ctx }
++    }
++    const hero = fell([BRAND])
++    expect(hero.w.lifeState).toBe('downed')
++    expect(hero.w.bleedOut).toBeGreaterThan(0)
++    expect(hero.ctx.events.find((e) => e.type === 'deathbed.fell')!['bleedsOut']).toBe(true)
++    const nobody = fell([])
++    expect(nobody.w.lifeState).toBe('dead')
++    expect(nobody.ctx.events.find((e) => e.type === 'life.dead' && e['target'] === nobody.w.id)!['reason']).toBe('fell')
++    expect(nobody.ctx.state.corpses?.some((c) => c.uid === nobody.w.uid)).toBe(true)
+   })
+ 
+-  it('at Toughness 0 the roll is 20%: across many seeds both STAND and FALL happen, never a stand past the ladder', () => {
++  it('a Wounded hero fielded already Wounded (the kingdom\'s list) dies at 0 with no roll', () => {
++    const ctx = withTestRows(createBattle({ replicate: 0, mapId: 'map.open', heroes: ['test-warrior'], heroHexes: [hexId(0, 5)], heroBadges: [[DOOR]], enemies: ['test-zombie'], enemyHexes: [hexId(15, 5)], enemyCount: 1 }))
++    const w = ctx.state.units[0]!
++    expect(w.badges).toEqual([DOOR])
++    drop(ctx, w.id)
++    expect(w.lifeState).toBe('dead')
++  })
++
++  it('until content authors badge.hero and badge.wounded, the lines NAME the gap and every player unit bleeds as before', () => {
++    const ctx = createCustomBattle([{ type: 'test-warrior', hex: hexId(5, 5) }], [{ type: 'test-zombie', hex: hexId(9, 9) }])
++    expect(BADGES[ctx.ruleBadges.hero]?.flags.bleedsOut).toBeUndefined()
++    expect(BADGES[ctx.ruleBadges.wounded]?.flags.wounded).toBeUndefined()
++    const w = ctx.state.units[0]!
++    w.toughness = 16
++    drop(ctx, w.id)
++    expect(w.lifeState).toBe('standing')
++    expect((ctx.events.find((e) => e.type === 'deathbed.stood') as unknown as { gaps: string[] }).gaps[0]).toMatch(/badge\.wounded/)
++    w.toughness = -4
++    drop(ctx, w.id)
++    expect(w.lifeState).toBe('downed')
++    expect((ctx.events.find((e) => e.type === 'deathbed.fell') as unknown as { gaps: string[] }).gaps[0]).toMatch(/badge\.hero/)
++  })
++
++  it('at Toughness 0 the roll is 20%: across many seeds both STAND and FALL happen', () => {
+     const seen = { stood: 0, fell: 0 }
+     for (let r = 0; r < 40; r++) {
+@@ -64,14 +128,4 @@ describe('the roll', () => {
+   })
+ 
+-  it('a civilian stands once', () => {
+-    const ctx = createCustomBattle([{ type: 'hero.fixed.farmer', hex: hexId(5, 5) }], [{ type: 'test-zombie', hex: hexId(9, 9) }])
+-    const f = ctx.state.units[0]!
+-    f.toughness = 16
+-    drop(ctx, f.id)
+-    expect(f.lifeState).toBe('standing')
+-    drop(ctx, f.id)
+-    expect(f.lifeState).toBe('downed')
+-  })
+-
+   it('it happens in real battles — the standard battle at sixteen zombies shows a roll', () => {
+     let rolls = 0
+@@ -84,2 +138,14 @@ describe('the roll', () => {
+   })
+ })
++
++describe('live', () => {
++  it('a hero fielded Wounded dies at 0 with no roll in the showcase battle — no bleed-out, a corpse', () => {
++    const ctx = createBattle(scenarioOptions(SCENARIOS['showcase.wounded-entry']!))
++    runBattle(ctx)
++    const w = ctx.state.units[0]!
++    expect(w.lifeState).toBe('dead')
++    expect(ctx.events.some((e) => e.type === 'deathbed.none' && e['target'] === w.id)).toBe(true)
++    expect(ctx.events.some((e) => e.type === 'life.downed' && e['target'] === w.id)).toBe(false)
++    expect(ctx.events.filter((e) => e.type === 'deathbed.stood' || e.type === 'deathbed.fell').length).toBe(0)
++  })
++})
+```
+</details>
+
+IRON GAUNTLET: NOT PASSED — 3 FLAG(S) WARNED
+
+```
+effect of test.badge.deaths-door — 25 paired battles per map, WITH vs WITHOUT
+  map.open: heroWins 25->25 (+0)  meanTurns 4.1->4.1
+  map.ridge: heroWins 25->25 (+0)  meanTurns 4.2->4.2
+  map.flanks: heroWins 25->25 (+0)  meanTurns 4.4->4.4
+  map.highlands: heroWins 25->25 (+0)  meanTurns 4.6->4.6
+  map.field: heroWins 25->25 (+0)  meanTurns 6.0->6.0
+  map.thicket: heroWins 25->25 (+0)  meanTurns 5.3->5.3
+  test.map.embers: heroWins 25->25 (+0)  meanTurns 4.0->4.0
+  test.map.showcase: heroWins 25->25 (+0)  meanTurns 4.9->4.9
+  test.map.duel-8: heroWins 25->25 (+0)  meanTurns 3.1->3.1
+  test.map.dungeon-16x8: heroWins 25->25 (+0)  meanTurns 6.0->6.0
+  test.map.horde-24: heroWins 25->25 (+0)  meanTurns 5.9->5.9
+NO MEASURABLE EFFECT at this sample size — consequence clause caught state changes, but outcomes did not move. Consider a sweep with more replicates before drawing balance conclusions.
+```

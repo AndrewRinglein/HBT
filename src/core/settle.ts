@@ -3,7 +3,7 @@
 // Never reentrant: damage caused during a settle is absorbed by the running settle.
 
 import type { Ctx } from './types.js'
-import { addStatMod, createCorpse, emit, loseMaxHp, loseMaxStamina, setBleedOut, setLifeState, setOutcome, tickBleedOut } from './mutate.js'
+import { badgeFlags, createCorpse, emit, gainStamina, grantBadge, setBleedOut, setLifeState, setOutcome, tickBleedOut } from './mutate.js'
 import { roll100 } from './rng.js'
 import { fireTriggers } from './trigger.js'
 
@@ -39,11 +39,20 @@ export function settle(ctx: Ctx, causeId: string): void {
             setLifeState(ctx, u.id, 'dead', causeId, { reason: 'hp0' })
             if (!u.summoned) createCorpse(ctx, u, causeId)   // capability.corpses: summons leave none
             died.push(u.id)
-          } else if (deathbed(ctx, u.id, causeId)) {
-            // STOOD — capability.deathbed (2026-09-03): a fresh bar at the next wound level
           } else {
-            setLifeState(ctx, u.id, 'downed', causeId, { reason: 'hp0' })
-            setBleedOut(ctx, u.id, BLEED_OUT_COUNTER, causeId)
+            // fix.deathbed-no-stands (2026-09-04): the roll, or none if Wounded
+            const verdict = deathbed(ctx, u.id, causeId)
+            if (verdict === 'stood') {
+              // fights on — Wounded, a fresh (lower) bar, a breath of stamina
+            } else if (verdict === 'bleeds') {
+              setLifeState(ctx, u.id, 'downed', causeId, { reason: 'hp0' })
+              setBleedOut(ctx, u.id, BLEED_OUT_COUNTER, causeId)
+            } else {
+              // 'dies': Wounded already, or no Hero badge — dead and a corpse, no bleed-out
+              setLifeState(ctx, u.id, 'dead', causeId, { reason: verdict === 'dies-wounded' ? 'wounded' : 'fell' })
+              if (!u.summoned) createCorpse(ctx, u, causeId)
+              died.push(u.id)
+            }
           }
           changed = true
         }
@@ -120,41 +129,63 @@ export function advanceBleedOuts(ctx: Ctx): void {
 }
 
 /**
- * THE DEATHBED ROLL — capability.deathbed (2026-09-03). COMBAT-DESIGN §13:
- * "Hit 0 → roll Deathbed Fighting. STAND — the hero fights on with a fresh
- * bar at the next wound level. FALL — downed." Deathbed Fighting is derived:
- * 20 + 5 × Toughness (+ the unit's `deathbed` stat mods, when badges arrive).
- * Depth by type: civilians one stand, heroes two. Ruled 2026-09-03 (Angela):
- * "We should include the deathbed roll. And then we don't need to include
- * stabilization." Marks are minted after the battle, never here: the STAND
- * line carries what the kingdom needs (the roll, the chance, the level).
- * The wound level applies in battle (COMBAT-DESIGN §13 "Wound levels"):
- * Wounded −1 to every stat except Armor, Resist, Toughness and Item Slots,
- * −2 Max Health and −2 Max Stamina; Badly Wounded doubles all of it.
- * The cup is `deathbed`, keyed by the unit and its own ordinal (Law 4).
+ * THE DEATHBED ROLL — capability.deathbed (2026-09-03), REVERSED by
+ * fix.deathbed-no-stands (2026-09-04). Angela, verbatim: "there are no
+ * stands ... Only those with the badge Hero bleed out. A civilian who goes
+ * down and doesn't have the hero badge is just dead and a corpse. Now any
+ * player unit rolls deathbed fighting. Unless they have the badge Wounded.
+ * If they are wounded, then they just die. When a player succeeds at
+ * deathbed fighting and they are not wounded, they immediately gain Wounded
+ * ... they gain 1 stamina and 1 equal to whatever their stamina recovery is
+ * ... and they get placed at maximum hit points. If they're at death's door
+ * ... and they get reduced to zero, they die. They do not bleed out."
+ *
+ * So, at 0 HP on the player side:
+ *   Wounded already → 'dies-wounded' (no roll).
+ *   Roll 20 + 5 × Toughness (derived, never stored; +badges when they carry it).
+ *   STOOD → the Wounded badge (ctx.ruleBadges.wounded — its penalties are the
+ *           row's, ruled −10 Accuracy, −10 Dodge, −1 Strength, −1 Precision,
+ *           −2 Max HP), 1 + Stamina Regen stamina (capped), HP = the new max.
+ *   FELL  → 'bleeds' with the Hero badge (ctx.ruleBadges.hero, or any badge
+ *           flagged bleedsOut), else 'dies'.
+ * The cup is `deathbed`, keyed by the unit and its own ordinal (Law 4). A
+ * wounded badge the pack lacks is a named gap on the STOOD line, never a
+ * silent skip (the numbers are content's — 4-BADGES-SETTLED owes the row).
  */
 export function deathbedFighting(u: { toughness: number }): number {
   return 20 + 5 * u.toughness
 }
-function deathbed(ctx: Ctx, id: number, causeId: string): boolean {
+export type DeathbedVerdict = 'stood' | 'bleeds' | 'dies' | 'dies-wounded'
+function deathbed(ctx: Ctx, id: number, causeId: string): DeathbedVerdict {
   const u = ctx.state.units[id]!
-  const stands = ctx.units?.[u.typeId]?.stands ?? (u.tags.includes('civilian') ? 1 : 2)
-  if (u.woundLevel >= stands) { emit(ctx, 'deathbed.exhausted', causeId, { target: id, woundLevel: u.woundLevel, stands }); return false }
+  const flags = badgeFlags(ctx, u)
+  if (flags.wounded) { emit(ctx, 'deathbed.none', causeId, { target: id, reason: 'wounded' }); return 'dies-wounded' }
   const chance = Math.max(0, Math.min(100, deathbedFighting(u)))
   const ord = ++u.deathbedOrdinal
   const roll = roll100(ctx.rng, 'deathbed', u.uid, ord)
   const stood = roll <= chance
-  emit(ctx, stood ? 'deathbed.stood' : 'deathbed.fell', causeId, { target: id, roll, chance, woundLevel: u.woundLevel + (stood ? 1 : 0), ordinal: ord })
-  if (!stood) return false
-  u.woundLevel += 1
-  const depth = u.woundLevel   // Wounded ×1, Badly Wounded ×2
-  const src = 'deathbed'   // the level is on the line; the source is the pipeline
-  for (const stat of WOUND_STATS) addStatMod(ctx, id, { stat, op: 'add', value: -1, source: src, scope: 'unit' }, causeId)
-  loseMaxHp(ctx, id, 2, src)
-  loseMaxStamina(ctx, id, 2, src)
-  // a fresh bar
+  if (!stood) {
+    // Who bleeds: a unit flagged bleedsOut (the Hero badge). UNTIL content
+    // authors ctx.ruleBadges.hero, no row carries the flag — so the pre-ruling
+    // reading (every player unit bleeds) stands in, and the line names the gap.
+    const heroRowMissing = !ctx.badges[ctx.ruleBadges.hero]?.flags.bleedsOut
+    const bleeds = flags.bleedsOut || (heroRowMissing && u.side === 'hero')
+    emit(ctx, 'deathbed.fell', causeId, { target: id, roll, chance, ordinal: ord, bleedsOut: bleeds,
+      ...(heroRowMissing && !flags.bleedsOut ? { gaps: [`no row for ${ctx.ruleBadges.hero} in the pack — every player unit bleeds out until content authors it`] } : {}) })
+    return bleeds ? 'bleeds' : 'dies'
+  }
+  const woundedId = ctx.ruleBadges.wounded
+  const woundedRow = ctx.badges[woundedId]
+  // a usable Wounded row carries the flag that makes the next zero fatal; a
+  // prose-only row (the Codex's today) is the same gap as no row
+  const gap = !woundedRow ? `no row for ${woundedId} in the pack — the Wounded penalties are owed to content`
+    : !woundedRow.flags.wounded ? `${woundedId} carries no wounded flag and no numbers — the row is prose only; owed to content` : undefined
+  emit(ctx, 'deathbed.stood', causeId, { target: id, roll, chance, ordinal: ord, badgeId: woundedId, ...(gap ? { gaps: [gap] } : {}) })
+  if (!gap) grantBadge(ctx, id, woundedId, causeId)
+  // "they gain 1 stamina and 1 equal to whatever their stamina recovery is" — capped, gains never overflow
+  gainStamina(ctx, id, 1 + u.staminaRegen, causeId)
+  // "placed at maximum hit points. Which is too low compared to what it was a minute ago"
   u.hp = Math.max(1, u.maxHp)
-  emit(ctx, 'hp.reset', src, { target: id, hp: u.hp, maxHp: u.maxHp, woundLevel: u.woundLevel, depth })
-  return true
+  emit(ctx, 'hp.reset', causeId, { target: id, hp: u.hp, maxHp: u.maxHp })
+  return 'stood'
 }
-const WOUND_STATS: readonly import('./stats.js').StatName[] = ['strength', 'precision', 'magic', 'spirit', 'accuracy', 'dodge', 'movement', 'reach', 'crit', 'luck']

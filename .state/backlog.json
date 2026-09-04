@@ -2634,5 +2634,33 @@
   "status": "done",
   "sha": "2e76ede",
   "gauntlet": "not passed — 2 flag(s) warned"
+ },
+ {
+  "id": "fix.deathbed-no-stands",
+  "kind": "fix",
+  "shape": "rule",
+  "needs": [
+   "badge.mechanism"
+  ],
+  "ruling": "DECISIONS.md 2026-09-04 — Deathbed Fighting, REVERSED",
+  "spec": "REVERSES capability.deathbed and COMBAT-DESIGN §13's ladder. Angela 2026-09-04: \"there are no stands ... Only those with the badge Hero bleed out. A civilian who goes down and doesn't have the hero badge is just dead and a corpse. Now any player unit rolls deathbed fighting. Unless they have the badge Wounded. If they are wounded, then they just die. When a player succeeds ... they immediately gain Wounded ... they gain 1 stamina and 1 equal to whatever their stamina recovery is ... placed at maximum hit points ... they do not bleed out.\" At 0 on the player side: Wounded → dead, no roll (deathbed.none); else roll 20 + 5 × Toughness; STOOD → the Wounded badge (ctx.ruleBadges.wounded), 1 + Regen stamina capped, HP = the new max; FELL → downed and bleeding with the Hero badge (bleedsOut), else dead and a corpse. stands, woundLevel, Badly Wounded and the old −1-to-everything penalties are gone. Content names the two badges (content/index.ts RULE_BADGES); core reads the roles.",
+  "expect": "with the test rows standing in for the two badges: a stood roll grants the Wounded shape (−10 Accuracy, −10 Dodge, −1 Strength, −1 Precision, −2 Max HP), 1 + Regen stamina, HP = max; a Wounded unit at 0 dies with no roll and leaves a corpse; a failed roll downs a unit flagged bleedsOut and kills one without; a hero fielded Wounded dies at 0. Until content publishes badge.hero and badge.wounded, the deathbed lines NAME the gap and every player unit bleeds as before — and the control battles move only where a hero stood.",
+  "changesBaseline": true,
+  "probeIds": [
+   "test.badge.deaths-door"
+  ],
+  "variants": [
+   "test.badge.deaths-door",
+   "test.badge.brand"
+  ],
+  "tests": [
+   "test/deathbed.test.ts"
+  ],
+  "note": "Landed 2026-09-04. CONTENT OWES (4-BADGES-SETTLED): badge.hero — one flag, bleedsOut, on every hero row and on a civilian only when its row says so; badge.wounded — the ruled numbers and the wounded flag. The moment both ship, the bridge in settle.ts (every player unit bleeds; the Codex row is prose) goes quiet on its own and the baselines move for the ruling. The viewer: a skull for Wounded; the wound-level rendering goes (EVENTS §12). deathbed.exhausted is gone; deathbed.none is new; deathbed.stood carries badgeId; unit.woundLevel is gone.",
+  "attempts": 1,
+  "baselineReason": "the ruling: the stand ladder's penalties (−1 to every stat, −2 Max Stamina, wound levels) are gone; a stood hero in a control battle now gains 1 + Regen stamina and a full bar, and carries the Wounded penalties only once content publishes badge.wounded (until then the STOOD line names the gap). The hero-side deaths are unchanged (the bridge: every player unit bleeds until badge.hero ships).",
+  "status": "done-needs-review",
+  "sha": "b4cbd9b",
+  "gauntlet": "not passed — 3 flag(s) warned"
  }
 ]

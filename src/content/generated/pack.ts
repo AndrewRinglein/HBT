@@ -13304,6 +13304,22 @@ export const UNIT_PACK = {
             "source": "test.badge.brand"
           }
         ]
+      },
+      "test.badge.deaths-door": {
+        "statModifiers": {
+          "accuracy": -10,
+          "dodge": -10,
+          "strength": -1,
+          "precision": -1,
+          "maxHp": -2
+        },
+        "grants": [],
+        "flags": {
+          "wounded": true
+        },
+        "id": "test.badge.deaths-door",
+        "name": "Death's Door (TEST)",
+        "triggers": []
       }
     }
   },

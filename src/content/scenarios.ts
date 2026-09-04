@@ -339,6 +339,20 @@ const RAW_SCENARIOS: Readonly<Record<string, ScenarioDef>> = {
     enemyHexes: [118, 119, 120],
     replicate: 0,
   },
+  // fix.deathbed-no-stands (2026-09-04): a hero fielded already Wounded (the
+  // test row with the ruled shape) against four zombies — at 0 it dies with
+  // no roll and no bleed-out, on the log the probe reads.
+  'showcase.wounded-entry': {
+    id: 'showcase.wounded-entry',
+    note: 'fix.deathbed-no-stands: a test warrior fielded wearing test.badge.deaths-door — "if they are wounded, then they just die" — against four zombies.',
+    mapId: 'map.open',
+    heroes: ['test-warrior'],
+    heroHexes: [135],
+    heroBadges: [['test.badge.deaths-door']],
+    enemies: ['test-zombie', 'test-zombie', 'test-zombie', 'test-zombie'],
+    enemyHexes: [118, 119, 120, 151],
+    replicate: 0,
+  },
   'showcase.knockback-two': {
     id: 'showcase.knockback-two',
     note: 'fix.knockback-beyond-one: the test Arc Golem shoves a zombie two hexes with its Overhead — knockback greater than one, live.',

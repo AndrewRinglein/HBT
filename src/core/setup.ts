@@ -2,7 +2,7 @@ import { geometryOf } from './hex.js'
 import { makeRng, rootSeedOf, sample } from './rng.js'
 import type { Ctx, EncounterDef, HeroProgress, Side, State, Unit, UnitDef, Config } from './types.js'
 import { DEFAULT_CONFIG } from './types.js'
-import { ACTIONS, ATTACKS, ABILITIES, BADGES, CRIT_CHART, ITEMS, LEVELS, SPECIALTIES, UNITS, FIRST_BATTLE } from '../content/index.js'
+import { ACTIONS, ATTACKS, ABILITIES, BADGES, CRIT_CHART, ITEMS, LEVELS, RULE_BADGES, SPECIALTIES, UNITS, FIRST_BATTLE } from '../content/index.js'
 import { applyItems, applyProgress, type Applied, FOLDABLE, applyBadges, type Badged } from './items.js'
 import { boardOf, deployOf, terrainOf, terrainIdOf, isPassable } from '../content/maps.js'
 import { STATUSES } from '../content/statuses.js'
@@ -22,7 +22,7 @@ export function makeUnit(id: number, uid: number, name: string, def: UnitDef, he
     movement: def.movement, reach: def.reach,
     stamina: def.maxStamina, maxStamina: def.maxStamina, staminaRegen: def.staminaRegen,
     lifeState: 'standing', bleedOut: 0,
-    woundLevel: 0, toughness: def.toughness ?? 0,
+    toughness: def.toughness ?? 0,
     surge: def.surge ?? 0, surgeChance: 0,
     vision: def.vision ?? 0,
     auras: (def.auras ?? []).map((a) => ({ ...a })),
@@ -155,7 +155,7 @@ export function createBattle(opts: BattleOptions): Ctx {
   const mapId = opts.mapId ?? opts.encounter?.mapId ?? 'map.open'
   const board = boardOf(mapId)
   const state: State = { turn: 0, phase: 'hero', mapId, board, terrain: terrainOf(mapId), units: [], outcome: null, seq: 0 }
-  const ctx: Ctx = { state, geo: geometryOf(board), events: [], rng, cfg, actions: ACTIONS, statuses: STATUSES, critChart: CRIT_CHART, items: ITEMS, badges: BADGES,
+  const ctx: Ctx = { state, geo: geometryOf(board), events: [], rng, cfg, actions: ACTIONS, statuses: STATUSES, critChart: CRIT_CHART, items: ITEMS, badges: BADGES, ruleBadges: RULE_BADGES,
     units: UNITS, arrive: (c, d, hex, cause) => arrive(c, d, hex, cause, {}),
     ...(opts.encounter ? { encounter: opts.encounter } : {}) }
 
@@ -392,7 +392,7 @@ export function createCustomBattle(
   const mapId = opts.mapId ?? 'map.open'
   const board = boardOf(mapId)
   const state: State = { turn: 0, phase: 'hero', mapId, board, terrain: terrainOf(mapId), units: [], outcome: null, seq: 0 }
-  const ctx: Ctx = { state, geo: geometryOf(board), events: [], rng, cfg, actions: ACTIONS, statuses: STATUSES, critChart: CRIT_CHART, items: ITEMS, badges: BADGES,
+  const ctx: Ctx = { state, geo: geometryOf(board), events: [], rng, cfg, actions: ACTIONS, statuses: STATUSES, critChart: CRIT_CHART, items: ITEMS, badges: BADGES, ruleBadges: RULE_BADGES,
     units: UNITS, arrive: (c, d, hex, cause) => arrive(c, d, hex, cause, {}) }
   let id = 0
   // Custom battles field the row's default kit too (seam.items-per-unit) —

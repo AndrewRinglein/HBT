@@ -501,8 +501,6 @@ export type UnitDef = {
    * origins. Toughness is the base; it does not reduce damage. Absent = 0.
    */
   readonly toughness?: number
-  /** How many times this unit may STAND at zero: civilians one, heroes two (COMBAT-DESIGN §13 "depth by type"). Absent = 2 for heroes, 0 for enemies. */
-  readonly stands?: number
   /**
    * capability.surge (2026-09-03), COMBAT-SEQUENCE "Surge check": each
    * Activation `Surge Chance += Surge`, roll against it; a hit grants
@@ -571,8 +569,6 @@ export type Unit = {
   staminaRegen: number
   lifeState: LifeState
   bleedOut: number
-  /** capability.deathbed: the wound ladder — 0 Fresh, 1 Wounded, 2 Badly Wounded. Each STAND climbs one. */
-  woundLevel: number
   toughness: number
   /** capability.surge: the stat, and the accumulating chance (zeroed on a hit). */
   surge: number
@@ -808,6 +804,15 @@ export type Ctx = {
   items: Readonly<Record<string, ItemDef>>
   /** The badge registry — badge.mechanism (2026-09-04). On Ctx so the kill-switch seam reaches a badge id like any other. */
   badges: Readonly<Record<string, BadgeDef>>
+  /**
+   * The badges the RULES read by role — fix.deathbed-no-stands (2026-09-04).
+   * `hero`: the invisible Hero badge (bleeds out on a failed roll); `wounded`:
+   * the badge a stood roll grants. Content names the ids (content/index.ts
+   * RULE_BADGES); core reads them here and never a content id (Law 13's
+   * hardcode scan). A role whose row the pack lacks is a NAMED gap on the log
+   * line, never a silent skip.
+   */
+  ruleBadges: Readonly<{ hero: string; wounded: string }>
   /** The encounter being run, if any — plain data (encounter.runner, 2026-09-03). */
   encounter?: EncounterDef
   /** The unit registry, so the runner can field a spawn mid-battle. */

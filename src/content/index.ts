@@ -233,6 +233,15 @@ export const ITEMS = omitDisabled({ ...packItems(ATTACKS, ABILITIES), ...packEnc
 // The badge registry — badge.mechanism (2026-09-04): the Codex's rows and the test receptacle's, one owner per id, through the kill-switch seam.
 for (const k of Object.keys(packTestBadges())) if (k in packBadges()) throw new Error(`badge '${k}' exists in the test receptacle AND the pack — one owner only`)
 export const BADGES = omitDisabled({ ...packBadges(), ...packTestBadges() })
+/**
+ * The badges the rules read by ROLE — fix.deathbed-no-stands (2026-09-04).
+ * Ruled: "There is a badge that all heroes start with, that is invisible on a
+ * hero, called Hero" and "they immediately gain Wounded". Content owns the
+ * rows; this is the one place their ids are written, so core reads
+ * ctx.ruleBadges and never a name. Until 4-BADGES-SETTLED publishes both,
+ * the deathbed line names the missing row as a gap.
+ */
+export const RULE_BADGES = { hero: 'badge.hero', wounded: 'badge.wounded' } as const
 /** Level tables and specialties — read by fieldedDef() (hero assembly, 2026-09-03). */
 export const LEVELS = omitDisabled(packLevels())
 export const SPECIALTIES = omitDisabled(packSpecialties())
