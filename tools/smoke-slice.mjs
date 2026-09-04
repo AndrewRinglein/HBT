@@ -39,8 +39,9 @@ console.log(text().slice(0, 200))
 click('title'); click('slot-end'); click('slot-clear'); click('slot-fixture')
 click('advance'); click('advance')   // reveal → council → deploy
 for (const e of root.els.filter((x) => x.dataset.act === 'deploy').slice(0, 2)) e.handlers.click()
-click('advance')                     // → equip: the Equip screen (G11) — heroes across the top, the six sections in order, the set line
-has('Equip'); has('right hand'); has('armor'); has('slot 1'); has('Set bonuses when you leave')
+click('advance')                     // → equip: its own screen now (ruled 2026-09-04), opened once Deploy is done
+has('Equip — the heroes you are sending'); has('right hand'); has('armor'); has('slot 1'); has('Set bonuses when you leave')
+if (text().includes('1 · Reveal')) throw new Error('the Equip screen still carries the prep step bar')
 { const t = text(); let at = t.indexOf('Idols'); for (const w of ['Bloodrunes', 'Relics', 'Weapons', 'Armor', 'Trinkets']) { const n = t.indexOf(w, at + 1); if (at < 0 || n < 0) throw new Error(`the six sections are not in the ruled order — ${w} does not follow`); at = n } }
 click('advance')                     // → battle
 has('The battle'); has('Fielded as equipped'); click('decide'); has('Reckoning'); click('apply')

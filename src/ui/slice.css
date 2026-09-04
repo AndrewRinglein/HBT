@@ -162,6 +162,10 @@ svg.world image.ruin{filter:grayscale(.9) brightness(.55)}
 .equip .item.picked{border-color:var(--gold);background:#2a2320}
 .equip .item.nofit{opacity:.5}
 .equip .setline{margin-top:10px}
+/* Equip as its own screen (ruled 2026-09-04) */
+.equip-page>.bar{position:sticky;top:0;z-index:5}
+.equip-page .bar h2{font-size:19px}
+
 /* the roster (ISC-049, rewritten 2026-09-03): the Equip card, plus what the campaign knows */
 .roster-screen .rosterrow{align-items:flex-start}
 .roster-screen .rostercard.dead{opacity:.55}

@@ -35,7 +35,7 @@ import { xpForLevel } from '../content/levels.js'
 import { listBuildings, whyNotBuild, performBuild } from '../core/build.js'
 import { isShopOpen, listShopItems, canBuyItem, performBuyItem, costOfItem, canEquip, whyNotEquip, performEquip, canUnequip, performUnequip, loadoutOf, equipCostOf, isEquipOpen, equipWhere, performOpenEquip, performCloseEquip, forgeBandName, shelfSpecOf, whyNotTradeIn, performTradeIn, tradeCategoryOf } from '../core/shop.js'
 import { itemOf } from '../content/items.js'
-import { equipScreen, displaceFor } from './equip.js'
+import { equipScreen, equipPage, displaceFor } from './equip.js'
 import { rosterScreen as rosterCards } from './roster.js'
 import { recapScreen, mountRecap, rewardsScreen, mountRewards, levelUpScreen, mountLevelUp, toggleMute, stopMusic, type LastBattle, type Cleanup } from './after.js'
 import { canLevelUp } from '../core/rewards.js'
@@ -155,6 +155,8 @@ function render(): void {
     <div class="bar">
       <button class="quiet" data-act="title">Title</button>
       <button class="${app.roster ? 'primary' : ''}" data-act="roster">${app.roster ? 'Back' : 'Roster'}</button>
+      ${c && c.cursor.step === 'open' && !isEquipOpen(c) ? '<button data-act="open-equip">Equip</button>' : ''}
+      ${c && equipWhere(c) === 'roster' ? '<button class="primary" data-act="close-equip">Done equipping</button>' : ''}
       <button data-act="download">Download save</button>
       <span class="sp"></span>
       ${c ? `<span class="tag">${esc(REALMS.find((r) => r.id === app.slot?.realm)?.name ?? c.realm)} · slot ${app.slot?.n ?? '?'}</span> <span class="tag">week ${c.week}</span> <span class="tag">${esc(c.cursor.stage)}</span> <span class="tag">${esc(c.cursor.step)}${c.cursor.prepStep ? '/' + c.cursor.prepStep : ''}</span> <span class="tag">renown ${c.renown}</span> <span class="tag meta">seed ${c.seed}</span>` : ''}
@@ -198,7 +200,8 @@ function screen(c: CampaignState): string {
 /** screen.roster — every hero, class, level, XP, wound, and what each slot holds this Week. */
 function rosterScreen(c: CampaignState): string {
   const alive = Object.values(c.roster).filter((h) => h.lifeState === 'alive').map((h) => h.id).sort()
-  return rosterCards(c, equipWhere(c) === 'roster' ? equipScreen(c, alive, { where: 'roster', picked: app.picked }) : '')
+  if (equipWhere(c) === 'roster') return equipPage(c, alive, { where: 'roster', picked: app.picked })
+  return rosterCards(c, '')
 }
 
 // ── the opening ─────────────────────────────────────────────────────────────
@@ -326,6 +329,8 @@ function tradeInPanel(c: CampaignState): string {
 // ── Combat Prep ─────────────────────────────────────────────────────────────
 function prepScreen(c: CampaignState): string {
   const v = viewCombatPrep(c)
+  // ruled 2026-09-04: Equip is its own screen, opened by prep once Deploy is done — not a step under the bar
+  if (v.step === 'equip') return equipPage(c, v.deployed, { where: 'prep', picked: app.picked, engagementId: v.engagementId, canAdvance: v.canAdvance })
   const at = PREP_STEP_ROWS.findIndex((r) => r.step === v.step)
   const steps = PREP_STEP_ROWS.map((r, i) => `<span class="${i === at ? 'on' : i < at ? 'done' : ''}">${i + 1} · ${esc(r.title)}</span>`).join('')
   let body = ''
@@ -338,8 +343,6 @@ function prepScreen(c: CampaignState): string {
   } else if (v.step === 'deploy') {
     const heroes = Object.values(c.roster).sort((a, b) => a.id.localeCompare(b.id))
     body = `<h3>Deploy — ${v.deployed.length} of ${v.deployLimit}</h3><div class="roster">${heroes.map((h) => heroCard(c, h, v.deployed.includes(h.id))).join('')}</div>`
-  } else {
-    body = `<h3>Equip — fit the stash onto the deployed</h3>` + equipScreen(c, v.deployed, { where: 'prep', picked: app.picked })
   }
   return `<h2>Combat Prep — ${esc(v.stepTitle)}</h2>
     <p class="meta"><code>${esc(v.engagementId)}</code> · ${esc(v.kind)} · ${esc(v.territoryId ?? 'no ground at stake')} · ${esc(v.mapId)}</p>
@@ -506,8 +509,8 @@ function wire(root: HTMLElement): void {
         case 'pick': app.picked = app.picked === id ? null : id!; return render()
         case 'drop': return act(() => { performEquip(app.ctx!, id!, el.dataset['item']!, 'slice', el.dataset['displace']); app.picked = null })
         case 'unequip': return act(() => performUnequip(app.ctx!, id!, el.dataset['item']!, 'slice'))
-        case 'open-equip': return act(() => performOpenEquip(app.ctx!, 'slice'))
-        case 'close-equip': return act(() => performCloseEquip(app.ctx!, 'slice'))
+        case 'open-equip': return act(() => { performOpenEquip(app.ctx!, 'slice'); app.roster = true })
+        case 'close-equip': return act(() => { performCloseEquip(app.ctx!, 'slice'); app.picked = null })
         case 'council': return act(() => performCouncil(app.ctx!, viewCombatPrep(app.ctx!.campaign).tactic === id ? null : id!, 'slice'))
         case 'deploy': return act(() => performDeploy(app.ctx!, id!, 'slice'))
         case 'undeploy': return act(() => performUndeploy(app.ctx!, id!, 'slice'))

@@ -116,6 +116,29 @@ export function displaceFor(c: CampaignState, heroId: string, itemId: string, sl
 
 export type EquipScreenOptions = { where: 'prep' | 'roster'; picked: string | null }
 
+/**
+ * The Equip screen, whole — ruled 2026-09-04 (Angela): "we need an equip screen. It's
+ * reachable from the main kingdom map, and it automatically pops up before a battle,
+ * after war council" · "Deploy is before equip. Because deploy tells you what heroes
+ * you're equipping so it goes: council, deploy, equip."
+ *
+ * So it is its own screen with its own head and its own way out — at prep it is what the
+ * cursor's Equip step shows (opened by itself once Deploy is done, and the way out is To
+ * the battle); from the map it is the roster's Fit-gear session over every living hero,
+ * and the way out is Done. The panel below (equipScreen) is the same in both.
+ */
+export function equipPage(c: CampaignState, heroIds: readonly string[], o: EquipScreenOptions & { engagementId?: string; canAdvance?: boolean }): string {
+  const prep = o.where === 'prep'
+  return `<div class="equip-page">
+    <div class="bar"><h2 style="margin:0;border:0;padding:0">Equip${prep ? ' — the heroes you are sending' : ' — fitting gear'}</h2>
+      <span class="meta">${prep ? esc(o.engagementId ?? '') + ' · what goes on now goes into the battle' : 'between battles · idols are fitted at prep only, when the battle is about to happen'}</span>
+      <span class="sp"></span>
+      <button class="primary" data-act="${prep ? 'advance' : 'close-equip'}"${prep && o.canAdvance === false ? ' disabled' : ''}>${prep ? 'To the battle →' : 'Done — keep it'}</button>
+    </div>
+    ${heroIds.length ? equipScreen(c, heroIds, o) : '<div class="card"><p class="meta">nobody to equip — deploy someone first</p></div>'}
+  </div>`
+}
+
 export function equipScreen(c: CampaignState, heroIds: readonly string[], o: EquipScreenOptions): string {
   const picked = o.picked && c.stash.includes(o.picked) ? o.picked : null
   const heroes = heroIds.map((h) => heroCard(c, h, picked)).join('')
