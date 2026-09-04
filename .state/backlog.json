@@ -2688,6 +2688,7 @@
   "note": "Landed 2026-09-04. Ghosts / possession: no bestiary row says \"inflict an affliction: possession\" today — attack.ghost.possess is a bare attack; when the bestiary authors the rider it compiles the same way. The auditor (test/audit.test.ts) learned that a mod added while a swing is in flight does not touch that swing's damage (Law 1); three liveness tests widened their seeds (Law 10 notes).",
   "status": "done-needs-review",
   "sha": "e941838",
-  "gauntlet": "not passed — 2 flag(s) warned"
+  "gauntlet": "not passed — 2 flag(s) warned",
+  "attempts": 1
  }
 ]
