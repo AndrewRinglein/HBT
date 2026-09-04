@@ -1296,7 +1296,7 @@ function testAbilities() {
   }
   return out;
 }
-const UNIT_FIELDS = new Set(['typeId', 'name', 'side', 'levelTable', 'maxHp', 'armor', 'resist', 'accuracy', 'dodge', 'strength', 'precision', 'magic', 'spirit', 'crit', 'luck', 'toughness', 'stands', 'surge', 'auras', 'role', 'movement', 'reach', 'maxStamina', 'staminaRegen', 'ai', 'attacks', 'abilities', 'moves', 'tags', 'triggers']);
+const UNIT_FIELDS = new Set(['typeId', 'name', 'side', 'levelTable', 'maxHp', 'armor', 'resist', 'accuracy', 'dodge', 'strength', 'precision', 'magic', 'spirit', 'crit', 'luck', 'toughness', 'surge', 'auras', 'role', 'movement', 'reach', 'maxStamina', 'staminaRegen', 'ai', 'attacks', 'abilities', 'moves', 'tags', 'triggers']);
 const ATTACK_FIELDS = new Set(['id', 'name', 'kind', 'damageType', 'bonus', 'stat', 'reach', 'staminaCost', 'crit', 'critCount', 'area', 'cooldown', 'warmup', 'uses', 'free', 'accuracy', 'hits']);
 // a delta may start from any packed row — the real families AND the test
 // cohort (test-gash-zombie is the cohort's zombie plus one rider)
