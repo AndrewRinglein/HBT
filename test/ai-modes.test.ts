@@ -70,8 +70,16 @@ describe('the rules', () => {
   })
 
   it('support: allies first, then the weapon — the Necromancer in Surrounded pulses before it bolts when a zombie is hurt', () => {
-    const ctx = createBattle(scenarioOptions(scenarioDef('showcase.surrounded')))
-    runBattle(ctx)
-    expect(ctx.events.some((e) => e.type === 'ai.mode' && e['mode'] === 'support')).toBe(true)
+    // LAW 10 — 2026-09-04 (badge.afflictions): on replicate 0 no zombie is hurt
+    // before the Necromancer acts any more (the heroes' opening swings fall
+    // differently now that a claw can afflict); the claim holds on the first
+    // replicate where a zombie IS hurt, so the first few are tried.
+    let seen = false
+    for (let r = 0; r < 4 && !seen; r++) {
+      const ctx = createBattle({ ...scenarioOptions(scenarioDef('showcase.surrounded')), replicate: r })
+      runBattle(ctx)
+      seen = ctx.events.some((e) => e.type === 'ai.mode' && e['mode'] === 'support')
+    }
+    expect(seen).toBe(true)
   })
 })

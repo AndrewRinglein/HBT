@@ -31,10 +31,14 @@ describe('independent audit of logged battles', () => {
       // movement.bonus-actions (2026-08-25): riders add stored stat mods, and
       // the event carries stat/value/expiry — so the auditor keeps its own mod
       // ledger and recomputes the EFFECTIVE stat, exactly like the engine.
-      const statMods = new Map<number, { stat: string; value: number; expiresAtTurn?: number }[]>()
-      const modded = (actor: number, statName: string, base: number, turn: number) =>
+      const statMods = new Map<number, { stat: string; value: number; expiresAtTurn?: number; seq: number }[]>()
+      // badge.afflictions (2026-09-04): a mod added WHILE a swing is in flight (an onHit
+      // rider granting Rotting Flesh's +1 Armor before the damage line) does not touch
+      // THAT damage — the number the preview promised is the number that lands (Law 1);
+      // the mod bites from the next declaration. `beforeSeq` is the declaration's seq.
+      const modded = (actor: number, statName: string, base: number, turn: number, beforeSeq?: number) =>
         base + (statMods.get(actor) ?? [])
-          .filter((m) => m.stat === statName && (m.expiresAtTurn === undefined || turn < m.expiresAtTurn))
+          .filter((m) => m.stat === statName && (m.expiresAtTurn === undefined || turn < m.expiresAtTurn) && (beforeSeq === undefined || m.seq < beforeSeq))
           .reduce((sum, m) => sum + m.value, 0)
       // Side and standing-ness, tracked only so the auditor can re-derive the
       // ranged adjacency penalty, which is a question about the SHOOTER's
@@ -49,7 +53,7 @@ describe('independent audit of logged battles', () => {
       const outPenalty = new Map<number, Map<string, number>>()
       const penaltyOf = (id: number) =>
         [...(outPenalty.get(id) ?? new Map()).values()].reduce((a, b) => a + b, 0)
-      let pending: { actor: number; target: number; attackId: string; dist: number; crit?: boolean; heads?: number; area?: number } | null = null
+      let pending: { actor: number; target: number; attackId: string; dist: number; crit?: boolean; heads?: number; area?: number; seq: number } | null = null
       let pendingPower: { actor: number; target: number; abilityId: string } | null = null
 
       for (const e of ctx.events) {
@@ -132,7 +136,7 @@ describe('independent audit of logged battles', () => {
           // spend's arithmetic wrong, which is precisely the audit working.
           case 'statmod.added': {
             const list = statMods.get(e.actor!) ?? []
-            list.push({ stat: e['stat'] as string, value: e['value'] as number,
+            list.push({ stat: e['stat'] as string, value: e['value'] as number, seq: e.seq,
               ...(e['expiresAtTurn'] !== undefined ? { expiresAtTurn: e['expiresAtTurn'] as number } : {}) })
             statMods.set(e.actor!, list)
             break
@@ -248,10 +252,10 @@ describe('independent audit of logged battles', () => {
               expect(e['hitChance'], `${a.id} is an area attack: no roll`).toBe(100)
               const struck = e['struck'] as number[]
               expect(struck, 'the declaration names the struck units').toContain(e.target)
-              pending = { actor: e.actor!, target: e.target!, attackId: a.id, dist: d, area: struck.length }
+              pending = { actor: e.actor!, target: e.target!, attackId: a.id, dist: d, area: struck.length, seq: e.seq }
             } else {
               expect(e['hitChance'], `hit chance for ${a.id} at range ${d}`).toBe(Math.max(0, Math.min(100, acc)))
-              pending = { actor: e.actor!, target: e.target!, attackId: a.id, dist: d }
+              pending = { actor: e.actor!, target: e.target!, attackId: a.id, dist: d, seq: e.seq }
             }
             checkedAcc++
             break
@@ -340,8 +344,11 @@ describe('independent audit of logged battles', () => {
             // the Chaplain's Mercy, 2026-08-28) — read that one, not a guess.
             const base = a.attack.stat === 'strength' ? at.strength : a.attack.stat === 'precision' ? at.precision
               : a.attack.stat === 'magic' ? at.magic : (at as unknown as Record<string, number>)[a.attack.stat] ?? 0
-            const stat = modded(pending.actor, a.attack.stat, base, e.turn)
-            const mit = a.attack.damageType === 'physical' ? tg.armor : a.attack.damageType === 'magic' ? tg.resist : 0
+            const stat = modded(pending.actor, a.attack.stat, base, e.turn, pending.seq)
+            // badge.afflictions (2026-09-04): Rotting Flesh's +1 Armor arrives as a stored mod — the
+            // auditor reads the target's MODDED mitigation, as it already reads the attacker's modded stat
+            const victim = pending.area ? e.target! : pending.target
+            const mit = a.attack.damageType === 'physical' ? modded(victim, 'armor', tg.armor, e.turn, pending.seq) : a.attack.damageType === 'magic' ? modded(victim, 'resist', tg.resist, e.turn, pending.seq) : 0
             // The damage-arm crit multiplies BEFORE Protection and Mitigation
             // (DMG.CRIT at 450), truncating division — the one rounding rule;
             // n heads multiply by (2+n)/2 (station.crit-count).

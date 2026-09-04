@@ -88,8 +88,12 @@ describe('the pack carries the authored rows faithfully', () => {
     for (const a of Object.values(ATTACKS)) expect(typeof a.range, `${a.id} reach`).toBe('number')
     expect(ATTACKS['attack.skeletal-archer.shoot']?.range).toBe(5)
     expect(gaps.some((g) => g.unit === 'unit.skeletal-archer' && /range unstated/.test(g.needs))).toBe(false)
-    // afflictions and the power pool are named, not guessed
-    expect(gaps.some((g) => g.needs.includes('capability.inflict-affliction'))).toBe(true)
+    // afflictions were a named gap until badge.afflictions (2026-09-04): now the
+    // five "inflict an affliction" riders compile to badge.grant triggers and no
+    // row names the capability as a gap (LAW 10: the gap closed by landing, the
+    // assertion follows the rule "named, not guessed" to its other side)
+    expect(gaps.some((g) => g.needs.includes('capability.inflict-affliction'))).toBe(false)
+    expect(Object.values(UNITS).flatMap((u) => u.triggers ?? []).filter((t) => t.effect.kind === 'badge.grant').length).toBe(5)
     // capability.power-pool landed 2026-09-03: `capability.power` is no longer
     // a gap anywhere — the Lieutenant's clock and the Vampire Lord's feed are
     // power.gain triggers, the necro-bolt carries its powerScale on the row.
@@ -99,7 +103,7 @@ describe('the pack carries the authored rows faithfully', () => {
     // and NO gap-carrying clause leaked into the pack: nothing references afflictions
     for (const id of roster()) for (const t of UNITS[id]!.triggers ?? []) {
       // capability.auras (2026-09-03): the Necromancer's EOA pulse is a heal to its area
-      expect(['status.apply', 'power.gain', 'heal', 'corpse.raise', 'corpse.consume', 'statMod', 'layer.paint', 'stamina.drain'], `${id} trigger ${t.id}`).toContain(t.effect.kind)   // + corpses, statMod, layers — 2026-09-03
+      expect(['status.apply', 'power.gain', 'heal', 'corpse.raise', 'corpse.consume', 'statMod', 'layer.paint', 'stamina.drain', 'badge.grant'], `${id} trigger ${t.id}`).toContain(t.effect.kind)   // + corpses, statMod, layers — 2026-09-03; badge.grant — badge.afflictions 2026-09-04
     }
   })
 })

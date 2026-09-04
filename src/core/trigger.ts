@@ -28,7 +28,7 @@ import type { Ctx, Unit, DamageType } from './types.js'
 import type { Targeting } from './target.js'
 import { resolveTargets, validateTargeting } from './target.js'
 import { roll100 } from './rng.js'
-import { addStatMod, applyDamage, applyHealing, corpsesNear, drainStamina, emit, gainPower, removeCorpse } from './mutate.js'
+import { addStatMod, applyDamage, applyHealing, corpsesNear, drainStamina, emit, gainPower, grantBadge, removeCorpse, unit } from './mutate.js'
 import { paintRadius } from './vision.js'
 import { layerOfId } from '../content/maps.js'
 import { applyStatus, removeStatus } from './status.js'
@@ -126,6 +126,13 @@ export type TriggerEffect =
    * away from you" made data.
    */
   | { readonly kind: 'knockback'; readonly value: ValueSpec }
+  /**
+   * badge.afflictions (2026-09-04): "Vampires, werewolves, and undead sometimes
+   * afflict their targets with a badge. Same with ghosts and things that can
+   * add possession." The bestiary's "inflict an affliction" made data — the
+   * badge id is the row's; the engine grants it through grantBadge.
+   */
+  | { readonly kind: 'badge.grant'; readonly badgeId: string }
   /** capability.power-pool (2026-09-03): the clock and the condition — "add power", "gain Power". Side-wide, never per unit. */
   | { readonly kind: 'power.gain'; readonly value: ValueSpec }
   /** capability.auras (2026-09-03): the End-of-Activation pulse — the Necromancer's "heal 3" to allies within 2. */
@@ -424,6 +431,12 @@ function applyEffect(ctx: Ctx, t: Trigger, owner: Unit, targetId: number): void 
         actor: owner.id, target: targetId, effect: e.kind, value: v,
       })
       if (v > 0) executeKnockback(ctx, owner.id, targetId, v, t.id)
+      break
+    }
+    case 'badge.grant': {
+      // badge.afflictions: only a standing unit can be afflicted; a badge already carried is not granted twice (grantBadge says so)
+      emit(ctx, 'trigger.fired', t.id, { actor: owner.id, target: targetId, effect: e.kind, badgeId: e.badgeId })
+      if (unit(ctx, targetId).lifeState === 'standing') grantBadge(ctx, targetId, e.badgeId, t.id)
       break
     }
     case 'heal': {

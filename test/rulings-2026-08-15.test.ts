@@ -130,7 +130,11 @@ describe('bleed-out (Angela 2026-08-15)', () => {
 
   it('it advances ONLY inside the End of Hero Phase ladder', () => {
     let ticksChecked = 0
-    for (let r = 0; r < 8; r++) {
+    // Widened 8 -> 16 seeds on 2026-09-04 (badge.afflictions, Law 10 reason): the
+    // standard heroes are tougher now — a stood roll gives a full bar, and the
+    // zombie's Rotting Flesh is +8 Health — so eight seeds at fourteen zombies
+    // produced exactly 20 ticks, one short of the sample the claim asks for.
+    for (let r = 0; r < 16; r++) {
       const ctx = createBattle({ replicate: r, enemyCount: 14, mapId: 'map.open' })
       runBattle(ctx)
 

@@ -2662,5 +2662,32 @@
   "status": "done-needs-review",
   "sha": "b4cbd9b",
   "gauntlet": "not passed — 3 flag(s) warned"
+ },
+ {
+  "id": "badge.afflictions",
+  "kind": "engine",
+  "shape": "trigger",
+  "needs": [
+   "badge.mechanism"
+  ],
+  "ruling": "DECISIONS.md 2026-09-04 — the deathbed answers (8): the afflictions",
+  "spec": "Angela 2026-09-04: \"We also need to be able to add the badges of the afflictions. Vampires, werewolves, and undead sometimes afflict their targets with a badge. Same with ghosts and things that can add possession.\" A trigger effect badge.grant {badgeId} that grants the named badge to the selected unit through grantBadge (standing units only; never twice). The converter compiles the bestiary's \"inflict an affliction\" riders — a named gap since 2026-08-26 (capability.inflict-affliction) — to badge.grant when the badge row exists: the Vampire's and Vampire Lord's Vampirism (20/30% onDamage), the Werewolf's Lycanthropy (10% onDamage), the Zombie's and Zombie Hound's Rotting Flesh (10%). The affliction rows are the Codex's: their stats and grants compile, their hooks (\"startOfBattle: regeneration 5\", \"onDamage (melee): heal 1\", \"−2 card draw\") stay named gaps on the row until the badge compiler learns them.",
+  "expect": "a zombie claw that afflicts gives the hero badge.rotting-flesh once — +8 Health, +1 Armor, −2 Movement, −10 Accuracy on the unit; the swing that afflicted still lands the number its preview promised; it happens in the standard battle; no bestiary row names capability.inflict-affliction as a gap",
+  "changesBaseline": true,
+  "baselineReason": "the zombie's claw afflicts Rotting Flesh at 10% on every hit in every control battle — a new roll on the trigger cup and a badge on the hero when it lands. The ruling made the gap a rule.",
+  "probeIds": [
+   "trigger.zombie.afflict-rotting-flesh"
+  ],
+  "variants": [
+   "trigger.zombie.afflict-rotting-flesh",
+   "trigger.werewolf.afflict-lycanthropy"
+  ],
+  "tests": [
+   "test/afflictions.test.ts"
+  ],
+  "note": "Landed 2026-09-04. Ghosts / possession: no bestiary row says \"inflict an affliction: possession\" today — attack.ghost.possess is a bare attack; when the bestiary authors the rider it compiles the same way. The auditor (test/audit.test.ts) learned that a mod added while a swing is in flight does not touch that swing's damage (Law 1); three liveness tests widened their seeds (Law 10 notes).",
+  "status": "done-needs-review",
+  "sha": "e941838",
+  "gauntlet": "not passed — 2 flag(s) warned"
  }
 ]

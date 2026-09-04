@@ -9368,3 +9368,177 @@ effect of test.badge.deaths-door — 25 paired battles per map, WITH vs WITHOUT
   test.map.horde-24: heroWins 25->25 (+0)  meanTurns 5.9->5.9
 NO MEASURABLE EFFECT at this sample size — consequence clause caught state changes, but outcomes did not move. Consider a sweep with more replicates before drawing balance conclusions.
 ```
+
+## badge.afflictions — LANDED `e941838` **NEEDS REVIEW**
+2026-09-04 21:24
+
+  PASS  dependencies landed
+  WARN  not already decided — 5 candidate ruling(s) — READ BEFORE ASKING: ../STATE.md:20 · ../CODEX.md:1830
+  PASS  typecheck
+  PASS  full test suite
+  PASS  gate 1 — the id appears in a real battle — trigger.zombie.afflict-rotting-flesh: 51 log lines, 51 fired, 4 changed state
+  PASS  brought its own tests — test/ai-modes.test.ts, test/audit.test.ts, test/enemy-pack.test.ts, test/integration.test.ts, test/rulings-2026-08-15.test.ts, test/afflictions.test.ts
+  WARN  existing tests untouched — DELETED LINES in test/ai-modes.test.ts (-3), test/audit.test.ts (-9), test/enemy-pack.test.ts (-3), test/rulings-2026-08-15.test.ts (-1) — will land FLAGGED for review
+  PASS  control battles unchanged — will re-bless at commit — this item DECLARED it changes the control battles: map.open 21d3f277->7d13ed54, map.ridge e8040fa8->2d87dad2, map.flanks eeb2df74->f2fdb9b1, map.highlands cee95064->33a7f9f1, map.field 58cb0ce9->8fa45026, map.thicket 0cb4af35->fcba1363, test.map.embers 1f390fce->47a17748, test.map.showcase e137f46d->6ba0ebc0, test.map.duel-8 dc3855c6->380e5159, test.map.dungeon-16x8 b89af845->6c327a62, test.map.horde-24 2424c830->05b99902
+  PASS  content has a published source — 25 ids without a published source (15 awaiting publication from earlier items — see audit)
+  PASS  hardcode scan — core knows mechanisms, never names
+  PASS  generalizes — the second instance costs zero engine code — trigger.zombie.afflict-rotting-flesh live · trigger.werewolf.afflict-lycanthropy live
+  PASS  naming — new content ids use declared kinds
+  PASS  naming — no banned words invented
+  PASS  kill switch — the tests fail without the content — tests fail without trigger.zombie.afflict-rotting-flesh — they genuinely test it
+
+<details><summary>Existing tests were edited — review this diff</summary>
+
+```diff
+diff --git a/test/ai-modes.test.ts b/test/ai-modes.test.ts
+index f2b89f6..68d0f17 100644
+--- a/test/ai-modes.test.ts
++++ b/test/ai-modes.test.ts
+@@ -71,7 +71,15 @@ describe('the rules', () => {
+ 
+   it('support: allies first, then the weapon — the Necromancer in Surrounded pulses before it bolts when a zombie is hurt', () => {
+-    const ctx = createBattle(scenarioOptions(scenarioDef('showcase.surrounded')))
+-    runBattle(ctx)
+-    expect(ctx.events.some((e) => e.type === 'ai.mode' && e['mode'] === 'support')).toBe(true)
++    // LAW 10 — 2026-09-04 (badge.afflictions): on replicate 0 no zombie is hurt
++    // before the Necromancer acts any more (the heroes' opening swings fall
++    // differently now that a claw can afflict); the claim holds on the first
++    // replicate where a zombie IS hurt, so the first few are tried.
++    let seen = false
++    for (let r = 0; r < 4 && !seen; r++) {
++      const ctx = createBattle({ ...scenarioOptions(scenarioDef('showcase.surrounded')), replicate: r })
++      runBattle(ctx)
++      seen = ctx.events.some((e) => e.type === 'ai.mode' && e['mode'] === 'support')
++    }
++    expect(seen).toBe(true)
+   })
+ })
+diff --git a/test/audit.test.ts b/test/audit.test.ts
+index 282e31f..c9866d8 100644
+--- a/test/audit.test.ts
++++ b/test/audit.test.ts
+@@ -32,8 +32,12 @@ describe('independent audit of logged battles', () => {
+       // the event carries stat/value/expiry — so the auditor keeps its own mod
+       // ledger and recomputes the EFFECTIVE stat, exactly like the engine.
+-      const statMods = new Map<number, { stat: string; value: number; expiresAtTurn?: number }[]>()
+-      const modded = (actor: number, statName: string, base: number, turn: number) =>
++      const statMods = new Map<number, { stat: string; value: number; expiresAtTurn?: number; seq: number }[]>()
++      // badge.afflictions (2026-09-04): a mod added WHILE a swing is in flight (an onHit
++      // rider granting Rotting Flesh's +1 Armor before the damage line) does not touch
++      // THAT damage — the number the preview promised is the number that lands (Law 1);
++      // the mod bites from the next declaration. `beforeSeq` is the declaration's seq.
++      const modded = (actor: number, statName: string, base: number, turn: number, beforeSeq?: number) =>
+         base + (statMods.get(actor) ?? [])
+-          .filter((m) => m.stat === statName && (m.expiresAtTurn === undefined || turn < m.expiresAtTurn))
++          .filter((m) => m.stat === statName && (m.expiresAtTurn === undefined || turn < m.expiresAtTurn) && (beforeSeq === undefined || m.seq < beforeSeq))
+           .reduce((sum, m) => sum + m.value, 0)
+       // Side and standing-ness, tracked only so the auditor can re-derive the
+@@ -50,5 +54,5 @@ describe('independent audit of logged battles', () => {
+       const penaltyOf = (id: number) =>
+         [...(outPenalty.get(id) ?? new Map()).values()].reduce((a, b) => a + b, 0)
+-      let pending: { actor: number; target: number; attackId: string; dist: number; crit?: boolean; heads?: number; area?: number } | null = null
++      let pending: { actor: number; target: number; attackId: string; dist: number; crit?: boolean; heads?: number; area?: number; seq: number } | null = null
+       let pendingPower: { actor: number; target: number; abilityId: string } | null = null
+ 
+@@ -133,5 +137,5 @@ describe('independent audit of logged battles', () => {
+           case 'statmod.added': {
+             const list = statMods.get(e.actor!) ?? []
+-            list.push({ stat: e['stat'] as string, value: e['value'] as number,
++            list.push({ stat: e['stat'] as string, value: e['value'] as number, seq: e.seq,
+               ...(e['expiresAtTurn'] !== undefined ? { expiresAtTurn: e['expiresAtTurn'] as number } : {}) })
+             statMods.set(e.actor!, list)
+@@ -249,8 +253,8 @@ describe('independent audit of logged battles', () => {
+               const struck = e['struck'] as number[]
+               expect(struck, 'the declaration names the struck units').toContain(e.target)
+-              pending = { actor: e.actor!, target: e.target!, attackId: a.id, dist: d, area: struck.length }
++              pending = { actor: e.actor!, target: e.target!, attackId: a.id, dist: d, area: struck.length, seq: e.seq }
+             } else {
+               expect(e['hitChance'], `hit chance for ${a.id} at range ${d}`).toBe(Math.max(0, Math.min(100, acc)))
+-              pending = { actor: e.actor!, target: e.target!, attackId: a.id, dist: d }
++              pending = { actor: e.actor!, target: e.target!, attackId: a.id, dist: d, seq: e.seq }
+             }
+             checkedAcc++
+@@ -341,6 +345,9 @@ describe('independent audit of logged battles', () => {
+             const base = a.attack.stat === 'strength' ? at.strength : a.attack.stat === 'precision' ? at.precision
+               : a.attack.stat === 'magic' ? at.magic : (at as unknown as Record<string, number>)[a.attack.stat] ?? 0
+-            const stat = modded(pending.actor, a.attack.stat, base, e.turn)
+-            const mit = a.attack.damageType === 'physical' ? tg.armor : a.attack.damageType === 'magic' ? tg.resist : 0
++            const stat = modded(pending.actor, a.attack.stat, base, e.turn, pending.seq)
++            // badge.afflictions (2026-09-04): Rotting Flesh's +1 Armor arrives as a stored mod — the
++            // auditor reads the target's MODDED mitigation, as it already reads the attacker's modded stat
++            const victim = pending.area ? e.target! : pending.target
++            const mit = a.attack.damageType === 'physical' ? modded(victim, 'armor', tg.armor, e.turn, pending.seq) : a.attack.damageType === 'magic' ? modded(victim, 'resist', tg.resist, e.turn, pending.seq) : 0
+             // The damage-arm crit multiplies BEFORE Protection and Mitigation
+             // (DMG.CRIT at 450), truncating division — the one rounding rule;
+diff --git a/test/enemy-pack.test.ts b/test/enemy-pack.test.ts
+index f2f8b32..aa47279 100644
+--- a/test/enemy-pack.test.ts
++++ b/test/enemy-pack.test.ts
+@@ -89,6 +89,10 @@ describe('the pack carries the authored rows faithfully', () => {
+     expect(ATTACKS['attack.skeletal-archer.shoot']?.range).toBe(5)
+     expect(gaps.some((g) => g.unit === 'unit.skeletal-archer' && /range unstated/.test(g.needs))).toBe(false)
+-    // afflictions and the power pool are named, not guessed
+-    expect(gaps.some((g) => g.needs.includes('capability.inflict-affliction'))).toBe(true)
++    // afflictions were a named gap until badge.afflictions (2026-09-04): now the
++    // five "inflict an affliction" riders compile to badge.grant triggers and no
++    // row names the capability as a gap (LAW 10: the gap closed by landing, the
++    // assertion follows the rule "named, not guessed" to its other side)
++    expect(gaps.some((g) => g.needs.includes('capability.inflict-affliction'))).toBe(false)
++    expect(Object.values(UNITS).flatMap((u) => u.triggers ?? []).filter((t) => t.effect.kind === 'badge.grant').length).toBe(5)
+     // capability.power-pool landed 2026-09-03: `capability.power` is no longer
+     // a gap anywhere — the Lieutenant's clock and the Vampire Lord's feed are
+@@ -100,5 +104,5 @@ describe('the pack carries the authored rows faithfully', () => {
+     for (const id of roster()) for (const t of UNITS[id]!.triggers ?? []) {
+       // capability.auras (2026-09-03): the Necromancer's EOA pulse is a heal to its area
+-      expect(['status.apply', 'power.gain', 'heal', 'corpse.raise', 'corpse.consume', 'statMod', 'layer.paint', 'stamina.drain'], `${id} trigger ${t.id}`).toContain(t.effect.kind)   // + corpses, statMod, layers — 2026-09-03
++      expect(['status.apply', 'power.gain', 'heal', 'corpse.raise', 'corpse.consume', 'statMod', 'layer.paint', 'stamina.drain', 'badge.grant'], `${id} trigger ${t.id}`).toContain(t.effect.kind)   // + corpses, statMod, layers — 2026-09-03; badge.grant — badge.afflictions 2026-09-04
+     }
+   })
+diff --git a/test/integration.test.ts b/test/integration.test.ts
+index 7f5241d..5ef1872 100644
+--- a/test/integration.test.ts
++++ b/test/integration.test.ts
+@@ -197,4 +197,8 @@ describe('gate 2 — invariants across many battles', () => {
+           hpFromLog.set(e.target!, e['hpAfter'] as number)
+         }
++        // badge.afflictions (2026-09-04): a badge granted mid-battle moves Max HP, and Max HP moves
++        // HP (maxHp.gained adds; maxHp.lost clamps); a stood deathbed roll resets the bar. All three
++        // lines carry the resulting hp — the log alone still rebuilds the battle.
++        if (e.type === 'maxHp.gained' || e.type === 'maxHp.lost' || e.type === 'hp.reset') hpFromLog.set(e.target!, e['hp'] as number)
+       }
+       for (const u of ctx.state.units) expect(hpFromLog.get(u.id)).toBe(u.hp)
+diff --git a/test/rulings-2026-08-15.test.ts b/test/rulings-2026-08-15.test.ts
+index dee4ac1..a7b7c23 100644
+--- a/test/rulings-2026-08-15.test.ts
++++ b/test/rulings-2026-08-15.test.ts
+@@ -131,5 +131,9 @@ describe('bleed-out (Angela 2026-08-15)', () => {
+   it('it advances ONLY inside the End of Hero Phase ladder', () => {
+     let ticksChecked = 0
+-    for (let r = 0; r < 8; r++) {
++    // Widened 8 -> 16 seeds on 2026-09-04 (badge.afflictions, Law 10 reason): the
++    // standard heroes are tougher now — a stood roll gives a full bar, and the
++    // zombie's Rotting Flesh is +8 Health — so eight seeds at fourteen zombies
++    // produced exactly 20 ticks, one short of the sample the claim asks for.
++    for (let r = 0; r < 16; r++) {
+       const ctx = createBattle({ replicate: r, enemyCount: 14, mapId: 'map.open' })
+       runBattle(ctx)
+```
+</details>
+
+IRON GAUNTLET: NOT PASSED — 2 FLAG(S) WARNED · periodic audit clean
+
+```
+effect of trigger.zombie.afflict-rotting-flesh — 25 paired battles per map, WITH vs WITHOUT
+  map.open: heroWins 25->25 (+0)  meanTurns 4.1->4.2
+  map.ridge: heroWins 25->25 (+0)  meanTurns 4.2->4.3
+  map.flanks: heroWins 25->25 (+0)  meanTurns 4.4->4.4
+  map.highlands: heroWins 25->25 (+0)  meanTurns 4.6->4.6
+  map.field: heroWins 25->25 (+0)  meanTurns 6.0->5.9
+  map.thicket: heroWins 25->25 (+0)  meanTurns 5.3->5.3
+  test.map.embers: heroWins 25->25 (+0)  meanTurns 4.0->4.1
+  test.map.showcase: heroWins 25->25 (+0)  meanTurns 4.9->4.8
+  test.map.duel-8: heroWins 25->25 (+0)  meanTurns 3.1->3.1
+  test.map.dungeon-16x8: heroWins 25->25 (+0)  meanTurns 6.0->6.0
+  test.map.horde-24: heroWins 25->25 (+0)  meanTurns 5.9->5.9
+MEASURABLE
+```

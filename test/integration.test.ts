@@ -196,6 +196,10 @@ describe('gate 2 — invariants across many battles', () => {
           expect(hpFromLog.get(e.target!)).toBe(e['hpBefore'])
           hpFromLog.set(e.target!, e['hpAfter'] as number)
         }
+        // badge.afflictions (2026-09-04): a badge granted mid-battle moves Max HP, and Max HP moves
+        // HP (maxHp.gained adds; maxHp.lost clamps); a stood deathbed roll resets the bar. All three
+        // lines carry the resulting hp — the log alone still rebuilds the battle.
+        if (e.type === 'maxHp.gained' || e.type === 'maxHp.lost' || e.type === 'hp.reset') hpFromLog.set(e.target!, e['hp'] as number)
       }
       for (const u of ctx.state.units) expect(hpFromLog.get(u.id)).toBe(u.hp)
     }

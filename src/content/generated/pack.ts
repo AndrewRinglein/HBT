@@ -2212,6 +2212,18 @@ export const UNIT_PACK = {
           "onlyWithAttack": "attack.vampire.bite"
         },
         {
+          "id": "trigger.vampire.afflict-vampirism",
+          "hook": "onDamage",
+          "chance": 20,
+          "select": "target",
+          "effect": {
+            "kind": "badge.grant",
+            "badgeId": "badge.vampirism"
+          },
+          "source": "unit.vampire",
+          "onlyWithAttack": "attack.vampire.bite"
+        },
+        {
           "id": "trigger.vampire.stun",
           "hook": "onHit",
           "chance": 100,
@@ -2338,6 +2350,18 @@ export const UNIT_PACK = {
           "onlyWithAttack": "attack.vampire-lord.bite"
         },
         {
+          "id": "trigger.vampire-lord.afflict-vampirism",
+          "hook": "onDamage",
+          "chance": 30,
+          "select": "target",
+          "effect": {
+            "kind": "badge.grant",
+            "badgeId": "badge.vampirism"
+          },
+          "source": "unit.vampire-lord",
+          "onlyWithAttack": "attack.vampire-lord.bite"
+        },
+        {
           "id": "trigger.vampire-lord.stun",
           "hook": "onHit",
           "chance": 100,
@@ -2418,6 +2442,18 @@ export const UNIT_PACK = {
             "value": 2
           },
           "source": "unit.werewolf"
+        },
+        {
+          "id": "trigger.werewolf.afflict-lycanthropy",
+          "hook": "onDamage",
+          "chance": 10,
+          "select": "target",
+          "effect": {
+            "kind": "badge.grant",
+            "badgeId": "badge.lycanthropy"
+          },
+          "source": "unit.werewolf",
+          "onlyWithAttack": "attack.werewolf.claw-frenzy"
         }
       ]
     },
@@ -2451,6 +2487,18 @@ export const UNIT_PACK = {
         "undead"
       ],
       "triggers": [
+        {
+          "id": "trigger.zombie.afflict-rotting-flesh",
+          "hook": "onHit",
+          "chance": 10,
+          "select": "target",
+          "effect": {
+            "kind": "badge.grant",
+            "badgeId": "badge.rotting-flesh"
+          },
+          "source": "unit.zombie",
+          "onlyWithAttack": "attack.zombie.claw"
+        },
         {
           "id": "trigger.zombie.poison",
           "hook": "onHit",
@@ -2542,7 +2590,20 @@ export const UNIT_PACK = {
         "undead",
         "beast"
       ],
-      "triggers": []
+      "triggers": [
+        {
+          "id": "trigger.zombie-hound.afflict-rotting-flesh",
+          "hook": "onDamage",
+          "chance": 10,
+          "select": "target",
+          "effect": {
+            "kind": "badge.grant",
+            "badgeId": "badge.rotting-flesh"
+          },
+          "source": "unit.zombie-hound",
+          "onlyWithAttack": "attack.zombie-hound.bite"
+        }
+      ]
     }
   ],
   "authoredAttacks": {
