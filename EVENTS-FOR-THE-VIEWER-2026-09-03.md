@@ -124,3 +124,53 @@ New fields: `toughness`, `surge`, `surgeChance`, `vision`, `woundLevel`, `summon
 4. Deathbed: the roll, the wound level on the unit.
 5. Waves, light, the band, surge — banners and beats.
 6. Auras from the sheet.
+
+## 10. The board is the map's — `map.loaded` (added 2026-09-04)
+
+Ruled 2026-09-03 (engine/DECISIONS.md "board formats"): four board formats
+— **8×8 duel, 16×8 dungeon segment, 16×16 standard, 24×24 horde** — and the
+default deployment is **heroes WEST (column 0), enemies EAST (last column)**.
+Landed as `board.variable-size` (c5085c1) and `board.deploy-edges` (c354793).
+
+**What the engine no longer has:** `WIDTH`, `HEIGHT`, `HEX_COUNT` and the free
+functions `hexId / colOf / rowOf / distance / neighboursOf …` in
+`src/core/hex.ts`. The viewer's door (`viewer/src/engine.ts`) re-exports them
+and will not typecheck until it stops. What replaces them:
+
+```ts
+import { geometryOf, FORMATS, type Board } from '../../engine/src/core/hex.js'
+const geo = geometryOf({ width, height })   // from map.loaded, below
+geo.hexId(col, row)  geo.colOf(h)  geo.rowOf(h)  geo.distance(a, b)  geo.neighboursOf(h)  geo.hexCount
+geo.edgeLine('west', 0)                    // the hexes along an edge
+```
+
+Hex ids are **`row × width + col` on that board** — hex 20 is (4, 1) on a
+16-wide board and (4, 2) on an 8-wide one. Never decode an id without the
+board it came from.
+
+**`map.loaded` now carries the board** — the first event of every log:
+
+```
+{ type: 'map.loaded', causeId: <mapId>, mapId, scenarioId?,
+  width: 16, height: 8,
+  deploy: { hero: 'west', enemy: 'east' },      // 'north' | 'south' | 'east' | 'west'
+  ...terrain census as before }
+```
+
+Read `width`/`height`/`deploy` from it and nothing else: the layout, the
+camera fit, the distance table (`sheet.ts` precomputes `HEX_COUNT²` — it is
+now per board), the two places that assume 256 hexes (`viewer.js` paint-run
+fold, `night.fell`), and which side the heroes are on. A non-square board
+(16×8) and a hero edge on the left are both new. The Battle Viewer's
+`fields.json[mapId]` is built per map by `tools/field-geometry.mts`, which now
+emits `width` and `height` too.
+
+**Which maps say what today:** the six shipping maps and the two 16×16 test
+maps declare `south/north` explicitly (the control battles hold until content
+moves them); `test.map.dungeon-16x8` says `west/east`; `test.map.duel-8` takes
+the default; `test.map.horde-24` is `south/north`. Content's re-placement of
+the encounters (PROVING-PLAN.md Stage A3) flips the shipping maps.
+
+**Kingdom:** `kingdom/src/engine.ts` re-exports the same names and
+`view/battle.ts` sizes the board from `WIDTH/HEIGHT` — same two-line fix,
+from `map.loaded`.
