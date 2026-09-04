@@ -7449,3 +7449,203 @@ index 5ec0fcc..518f8a5 100644
 </details>
 
 IRON GAUNTLET: NOT PASSED — 2 FLAG(S) WARNED
+
+## REVIEW — 1 flagged landing(s) cleared
+2026-09-04T08:40:14.252Z · Angela: "2 is a yes. Movement powers and attacks are all different types of activations."
+
+  ok  movement.powers
+
+## REVIEW — 1 flagged landing(s) cleared
+2026-09-04T08:40:14.503Z · Angela: "Nothing to judge, okay. Cleared 2026-09-04."
+
+  ok  test.fixture-migration
+
+## REVIEW — 1 flagged landing(s) cleared
+2026-09-04T08:40:14.689Z · Angela: "There was an update to these special movement powers that was valid. S17 has a bunch of different things. Those are valid."
+
+  ok  fix.cohort-drift
+
+## REVIEW — 1 flagged landing(s) cleared
+2026-09-04T08:40:14.889Z · Angela: "Yes, an attack can declare an area arc."
+
+  ok  capability.area-attack
+
+## REVIEW — 1 flagged landing(s) cleared
+2026-09-04T08:43:06.842Z · Angela: "18 is fine."
+
+  ok  test.receptacle
+
+## REVIEW — 1 flagged landing(s) cleared
+2026-09-04T08:43:07.035Z · Angela: "20 is correct."
+
+  ok  capability.corpses
+
+## REVIEW — 1 flagged landing(s) cleared
+2026-09-04T08:43:07.221Z · Angela: "21 is correct."
+
+  ok  capability.vision
+
+## REVIEW — 1 flagged landing(s) cleared
+2026-09-04T08:43:07.414Z · Angela: "22 is correct."
+
+  ok  capability.target-stamina-loss
+
+## REVIEW — 1 flagged landing(s) cleared
+2026-09-04T08:43:07.602Z · Angela: "23 is correct."
+
+  ok  fix.rulings-2026-09-03-evening
+
+## REVIEW — 1 flagged landing(s) cleared
+2026-09-04T08:43:07.795Z · Angela: "24 is correct, but also encounters will specify locations all over the board. Deploy edges is the default backup. See DECISIONS.md 2026-09-04 deployment."
+
+  ok  board.deploy-edges
+
+## REVIEW — 1 flagged landing(s) cleared
+2026-09-04T08:44:15.836Z · Angela: "Nothing to judge — no diff recorded. Skipped in the 2026-09-04 pass."
+
+  ok  fix.bleed-magnitude
+
+## REVIEW — 1 flagged landing(s) cleared
+2026-09-04T08:44:16.035Z · Angela: "Nothing to judge — no diff recorded. Skipped in the 2026-09-04 pass."
+
+  ok  fix.dazed-split
+
+## REVIEW — 1 flagged landing(s) cleared
+2026-09-04T08:49:00.109Z · Angela: "Item granted powers can be any shape. All of the actions can be any shape. All of them should be capable of doing all of the same things."
+
+  ok  capability.item-powers
+
+## REVIEW — 1 flagged landing(s) cleared
+2026-09-04T08:49:00.303Z · Angela: "A weapon carries a modifier to crit, plus or minus, and it can roll more than one crit at once. And it can have an on-crit trigger of +4 damage or knockback 1."
+
+  ok  station.crit
+
+## REVIEW — 1 flagged landing(s) cleared
+2026-09-04T08:49:00.486Z · Angela: "It can roll more than one crit at once. Yes."
+
+  ok  station.crit-count
+
+## REVIEW — 1 flagged landing(s) cleared
+2026-09-04T08:49:00.686Z · Angela: "Yes to content enemy flip. We are moving away from the initial hard-coded test cases that the engine did."
+
+  ok  content.enemy-flip
+
+## REVIEW — 1 flagged landing(s) cleared
+2026-09-04T09:04:12.252Z · Angela: "These should be noted inside of different units. There are quite a few AI modes we need."
+
+  ok  ai.mode.defender
+
+## REVIEW — 1 flagged landing(s) cleared
+2026-09-04T09:04:12.458Z · Angela: "These should be noted inside of different units. There are quite a few AI modes we need."
+
+  ok  ai.mode.support
+
+## REVIEW — 1 flagged landing(s) cleared
+2026-09-04T09:04:12.641Z · Angela: "The half-step family outgrew MoveDef — this is the one action type law."
+
+  ok  movement.bonus-actions
+
+## REVIEW — 1 flagged landing(s) cleared
+2026-09-04T09:04:12.821Z · Angela: "After battle end there is no settling or end of activation. The battle ends immediately when the last enemy is killed."
+
+  ok  fix.post-end-ladder
+
+## REVIEW — 1 flagged landing(s) cleared
+2026-09-04T09:04:13.008Z · Angela: "AI civilian flight is an AI mode that we need."
+
+  ok  ai.civilian-flight
+
+## REVIEW — 1 flagged landing(s) cleared
+2026-09-04T09:04:13.200Z · Angela: "I think this was done. That's correct."
+
+  ok  progression.level-table-by-type
+
+## REVIEW — 1 flagged landing(s) cleared
+2026-09-04T09:04:13.393Z · Angela: "Flight rides on movement powers. The two common movement types are flight and walking."
+
+  ok  movement.flight
+
+## REVIEW — 1 flagged landing(s) cleared
+2026-09-04T09:04:13.588Z · Angela: "D1, yes."
+
+  ok  content.hero-pack
+
+## REVIEW — 1 flagged landing(s) cleared
+2026-09-04T09:04:14.006Z · Angela: "Yes to 50-50."
+
+  ok  fix.crit-branch-even
+
+## REVIEW — 1 flagged landing(s) cleared
+2026-09-04T09:04:23.906Z · Angela: "Yes. Reviewed 2026-09-04."
+
+  ok  movement.attack-of-opportunity
+
+## REVIEW — 1 flagged landing(s) cleared
+2026-09-04T09:04:24.107Z · Angela: "Yes. Reviewed 2026-09-04."
+
+  ok  ability.effects
+
+## REVIEW — 1 flagged landing(s) cleared
+2026-09-04T09:04:24.288Z · Angela: "Yes. Reviewed 2026-09-04."
+
+  ok  fix.unit-tags
+
+## REVIEW — 1 flagged landing(s) cleared
+2026-09-04T09:04:24.468Z · Angela: "Yes. Reviewed 2026-09-04."
+
+  ok  fix.downed-targetable
+
+## REVIEW — 1 flagged landing(s) cleared
+2026-09-04T09:04:24.648Z · Angela: "Yes. Reviewed 2026-09-04."
+
+  ok  station.accuracy-field
+
+## REVIEW — 1 flagged landing(s) cleared
+2026-09-04T09:04:24.835Z · Angela: "Yes. Reviewed 2026-09-04."
+
+  ok  content.enemy-pack
+
+## REVIEW — 1 flagged landing(s) cleared
+2026-09-04T09:04:25.037Z · Angela: "Yes. Reviewed 2026-09-04."
+
+  ok  content.civilians
+
+## REVIEW — 1 flagged landing(s) cleared
+2026-09-04T09:04:25.255Z · Angela: "Yes. Reviewed 2026-09-04."
+
+  ok  fix.status-tick-timing
+
+## REVIEW — 1 flagged landing(s) cleared
+2026-09-04T09:04:25.471Z · Angela: "Yes. Reviewed 2026-09-04."
+
+  ok  fix.range-penalty-grace
+
+## REVIEW — 1 flagged landing(s) cleared
+2026-09-04T09:04:25.660Z · Angela: "Yes. Reviewed 2026-09-04."
+
+  ok  fix.status-damage-types
+
+## REVIEW — 1 flagged landing(s) cleared
+2026-09-04T09:04:25.850Z · Angela: "Yes. Reviewed 2026-09-04."
+
+  ok  capability.frost-root-taunt
+
+## REVIEW — 1 flagged landing(s) cleared
+2026-09-04T09:04:26.044Z · Angela: "Yes. Reviewed 2026-09-04."
+
+  ok  capability.karma-shadow-confusion
+
+## REVIEW — 1 flagged landing(s) cleared
+2026-09-04T09:04:26.239Z · Angela: "Yes. Reviewed 2026-09-04."
+
+  ok  capability.deathbed
+
+## REVIEW — 1 flagged landing(s) cleared
+2026-09-04T09:04:26.430Z · Angela: "Yes. Reviewed 2026-09-04."
+
+  ok  capability.auras
+
+## REVIEW — 1 flagged landing(s) cleared
+2026-09-04T09:04:26.617Z · Angela: "Yes. Reviewed 2026-09-04."
+
+  ok  board.variable-size
