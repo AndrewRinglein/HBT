@@ -296,11 +296,15 @@ describe('terrain.passable — a wall is a wall', () => {
   })
 
   it('deployment refuses to place a unit inside a wall, loudly', () => {
-    const walled = { id: 'map.walled', name: 'x', note: '',
+    // board.deploy-edges (2026-09-04), Law 10 reason: the default deployment
+    // edge is west/east now (ruled 2026-09-03), so a fixture whose wall is
+    // row 0 must SAY the enemy deploys north — the rule under test (a wall
+    // on the deployment edge is refused loudly) is unchanged.
+    const walled = { id: 'map.walled', name: 'x', note: '', deploy: { hero: 'south', enemy: 'north' },
       rows: ['x'.repeat(16), ...Array(15).fill('.'.repeat(16))] }
     ;(MAPS as unknown as object[]).push(walled)
     expect(() => createBattle({ replicate: 0, mapId: 'map.walled' }))
-      .toThrow(/no passable hex on the enemy deployment row/)
+      .toThrow(/no passable hex on its north edge/)
     ;(MAPS as unknown as object[]).pop()
   })
 })

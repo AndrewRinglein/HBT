@@ -2281,5 +2281,28 @@
   "status": "done-needs-review",
   "sha": "c5085c1",
   "gauntlet": "not passed — 2 flag(s) warned"
+ },
+ {
+  "id": "board.deploy-edges",
+  "kind": "engine",
+  "shape": "plumbing",
+  "needs": [
+   "board.variable-size"
+  ],
+  "spec": "Ruled 2026-09-03: \"Heroes start on the left, and enemies start on the right. That is the default configuration. I will update that in content.\" A map names the edge each side deploys on (maps.ts deploy: {hero, enemy}; absent = west/east, the ruled default); the pre-ruling maps say south/north outright so every control battle is what it was. Deployment samples the edge line's passable hexes in ascending order (the same draws the deployment ROW made); enemies past the edge spill one line inward per line, each line rolled with its depth as the key (Law 4). map.loaded carries deploy for the viewer. Geometry gains edgeLine(edge, depth). FIRST_BATTLE no longer names a row or an edge.",
+  "expect": "test.map.duel-8 (default) and test.map.dungeon-16x8 (explicit) field heroes in column 0 and enemies in the last column; test.map.horde-24 south/north; nine enemies on the duel board spill to the next column inward and the first eight stand where eight alone stood; a wall on the deployment edge is still refused loudly; the eight pre-ruling control maps are byte-identical with map.loaded masked",
+  "changesBaseline": true,
+  "baselineReason": "VERIFIED: with map.loaded masked, the eight pre-ruling maps hash identical to board.variable-size's tree. map.loaded gains deploy, so every hash moves; test.map.duel-8 and test.map.dungeon-16x8 deploy west/east now, so those two battles genuinely change.",
+  "probeIds": [
+   "test.map.duel-8",
+   "test.map.dungeon-16x8"
+  ],
+  "tests": [
+   "test/board-formats.test.ts"
+  ],
+  "note": "PROVING-PLAN.md Stage A1, second landing. Content owes: every encounters.json row re-placed for west/east (A3); the six shipping maps flip when content moves them (they are declared south/north here so the flip is content's commit, not this one). test/terrain.test.ts fixture names its edge (Law 10 reason at the edit).",
+  "status": "done-needs-review",
+  "sha": "c354793",
+  "gauntlet": "not passed — 2 flag(s) warned"
  }
 ]

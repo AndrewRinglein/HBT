@@ -19,6 +19,14 @@ export type HexId = number
 export type Board = { readonly width: number; readonly height: number }
 
 /**
+ * An edge of the board — where a side deploys (board.deploy-edges, 2026-09-04;
+ * ruled 2026-09-03: "Heroes start on the left, and enemies start on the right.
+ * That is the default configuration"). West is column 0, east the last
+ * column, north row 0, south the last row.
+ */
+export type Edge = 'north' | 'south' | 'east' | 'west'
+
+/**
  * The four formats (ruled 2026-09-03). A map must be one of these; the
  * validator in content/maps.ts refuses anything else, so no fifth size appears
  * by accident.
@@ -63,6 +71,11 @@ export type Geometry = {
    */
   stepAwayFrom(from: HexId, through: HexId): HexId | null
   isAdjacent(a: HexId, b: HexId): boolean
+  /**
+   * The hexes along an edge, `depth` lines in from it (0 = the edge itself),
+   * ascending HexId (Law 6). Empty once depth runs past the board.
+   */
+  edgeLine(edge: Edge, depth: number): HexId[]
 }
 
 // odd-r offset -> axial
@@ -136,7 +149,20 @@ function build(board: Board): Geometry {
     return inBounds(col2, row2) ? hexId(col2, row2) : null
   }
   const isAdjacent = (a: HexId, b: HexId): boolean => distance(a, b) === 1
-  return { board: { width, height }, hexCount, hexId, colOf, rowOf, inBounds, neighbours, neighboursOf, distance, stepAwayFrom, isAdjacent }
+  const edgeLine = (edge: Edge, depth: number): HexId[] => {
+    const out: HexId[] = []
+    if (edge === 'north' || edge === 'south') {
+      const row = edge === 'north' ? depth : height - 1 - depth
+      if (row < 0 || row >= height) return out
+      for (let c = 0; c < width; c++) out.push(hexId(c, row))
+    } else {
+      const col = edge === 'west' ? depth : width - 1 - depth
+      if (col < 0 || col >= width) return out
+      for (let r = 0; r < height; r++) out.push(hexId(col, r))
+    }
+    return out   // already ascending: one row, or one column with rows ascending
+  }
+  return { board: { width, height }, hexCount, hexId, colOf, rowOf, inBounds, neighbours, neighboursOf, distance, stepAwayFrom, isAdjacent, edgeLine }
 }
 
 // One Geometry per board size, built on first use. Keyed by the dimensions —

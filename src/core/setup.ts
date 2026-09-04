@@ -4,7 +4,7 @@ import type { Ctx, EncounterDef, HeroProgress, Side, State, Unit, UnitDef, Confi
 import { DEFAULT_CONFIG } from './types.js'
 import { ATTACKS, ABILITIES, CRIT_CHART, ITEMS, LEVELS, SPECIALTIES, UNITS, FIRST_BATTLE } from '../content/index.js'
 import { applyItems, applyProgress, type Applied, FOLDABLE } from './items.js'
-import { boardOf, terrainOf, terrainIdOf, isPassable } from '../content/maps.js'
+import { boardOf, deployOf, terrainOf, terrainIdOf, isPassable } from '../content/maps.js'
 import { STATUSES } from '../content/statuses.js'
 import { MOVES } from '../content/moves.js'
 import { triggersFrom } from './trigger.js'
@@ -239,25 +239,39 @@ export function createBattle(opts: BattleOptions): Ctx {
   // Deployment must not put a unit inside a wall. Nothing checked this before
   // obstacles existed; the first authored map with one on a deployment row would
   // have placed a unit in it silently. Law 9: fail loudly instead.
-  const passableCols = (row: number) =>
-    Array.from({ length: board.width }, (_, i) => i).filter((c) => isPassable(state.terrain[ctx.geo.hexId(c, row)] ?? 0))
-  // board.variable-size: the deployment rows are the board's last and first
-  const heroRow = board.height - 1
-  const enemyRow = 0
-  const cols = passableCols(heroRow)
-  const eCols = passableCols(enemyRow)
-  // Only the ROLLED path needs a deployment row wide enough. A scenario names
-  // its own hexes (already validated above), so a map with a narrow row is not
+  //
+  // board.deploy-edges (2026-09-04): each side deploys along the EDGE its map
+  // names (heroes west, enemies east by default — ruled 2026-09-03; the older
+  // maps say south/north). The edge line's passable hexes are sampled in
+  // ascending order, exactly as the deployment ROW's columns were, so the
+  // rolls are the same rolls.
+  const deploy = deployOf(mapId)
+  const passableLine = (edge: import('./hex.js').Edge, depth: number) =>
+    ctx.geo.edgeLine(edge, depth).filter((h) => isPassable(state.terrain[h] ?? 0))
+  const heroLine = passableLine(deploy.hero, 0)
+  const enemyLine = passableLine(deploy.enemy, 0)
+  // Only the ROLLED path needs a deployment edge wide enough. A scenario names
+  // its own hexes (already validated above), so a map with a narrow edge is not
   // its problem — before this guard, an authored fielding could be refused for a
-  // row it never used.
-  if (!opts.heroHexes && cols.length < heroes.length) {
-    throw new Error(`map '${mapId}' has only ${cols.length} passable hexes on the hero deployment row, need ${heroes.length}`)
+  // line it never used.
+  if (!opts.heroHexes && heroLine.length < heroes.length) {
+    throw new Error(`map '${mapId}' has only ${heroLine.length} passable hexes on its ${deploy.hero} edge, need ${heroes.length}`)
   }
-  if (!opts.enemyHexes && eCols.length === 0) {
-    throw new Error(`map '${mapId}' has no passable hex on the enemy deployment row`)
+  if (!opts.enemyHexes && enemyLine.length === 0) {
+    throw new Error(`map '${mapId}' has no passable hex on its ${deploy.enemy} edge`)
   }
-  const enemyCols = opts.enemyHexes ? [] : sample(rng, eCols, eCols.length, 'enemy-placement')
-  const heroCols = opts.heroHexes ? [] : sample(rng, cols, heroes.length, 'hero-deployment')
+  const heroDeploy = opts.heroHexes ? [] : sample(rng, heroLine, heroes.length, 'hero-deployment')
+  // More enemies than the edge holds spill one line inward, then the next —
+  // each line rolled only when it is needed, so a battle that fits on the
+  // edge draws exactly what it always drew.
+  const enemyDeploy: number[] = opts.enemyHexes ? [] : sample(rng, enemyLine, enemyLine.length, 'enemy-placement')
+  if (!opts.enemyHexes) {
+    for (let depth = 1; enemyDeploy.length < enemies.length; depth++) {
+      const line = passableLine(deploy.enemy, depth)
+      if (line.length === 0) throw new Error(`map '${mapId}' cannot hold ${enemies.length} enemies inward from its ${deploy.enemy} edge`)
+      enemyDeploy.push(...sample(rng, line, line.length, 'enemy-placement', depth))   // keyed by the line — Law 4
+    }
+  }
 
   let id = 0
   const equipped: { unitId: number; worn: Applied['worn'] }[] = []
@@ -271,7 +285,7 @@ export function createBattle(opts: BattleOptions): Ctx {
   // encounter.runner: an encounter may name where the heroes deploy
   const zoneHexes = opts.encounter && !opts.heroHexes ? heroDeployHexes(ctx, opts.encounter, heroes.length) : null
   heroes.forEach((t, i) => {
-    const hex = opts.heroHexes?.[i] ?? zoneHexes?.[i] ?? ctx.geo.hexId(heroCols[i]!, heroRow)
+    const hex = opts.heroHexes?.[i] ?? zoneHexes?.[i] ?? heroDeploy[i]!
     const bare = def(t)
     // Items at fielding (seam.items-per-unit): what the options hand this
     // hero, else the row's Codex default kit, else nothing — applied by the
@@ -300,8 +314,7 @@ export function createBattle(opts: BattleOptions): Ctx {
   })
   const seenEnemy: Record<string, number> = {}
   enemies.forEach((t, i) => {
-    // More enemies than columns spill onto the next row back.
-    const hex = opts.enemyHexes?.[i] ?? ctx.geo.hexId(enemyCols[i % board.width]!, enemyRow + Math.floor(i / board.width))
+    const hex = opts.enemyHexes?.[i] ?? enemyDeploy[i]!
     // Named from the def (Codex name) or the typeId, counted per type — Law 12:
     // the log names what a thing IS.
     const d = def(t)
@@ -346,8 +359,8 @@ export function createBattle(opts: BattleOptions): Ctx {
   // scenario, so every standard battle stays byte-identical.
   // board.variable-size: the log names the board — the viewer lays out from these two numbers, never a constant
   emit(ctx, 'map.loaded', mapId, opts.scenarioId
-    ? { mapId, scenarioId: opts.scenarioId, width: board.width, height: board.height, ...terrainCensus(state.terrain) }
-    : { mapId, width: board.width, height: board.height, ...terrainCensus(state.terrain) })
+    ? { mapId, scenarioId: opts.scenarioId, width: board.width, height: board.height, deploy, ...terrainCensus(state.terrain) }
+    : { mapId, width: board.width, height: board.height, deploy, ...terrainCensus(state.terrain) })
   return ctx
 }
 
@@ -382,6 +395,6 @@ export function createCustomBattle(
       stamina: u.stamina, maxStamina: u.maxStamina, terrain: state.terrain[u.hex],
     })
   }
-  emit(ctx, 'map.loaded', mapId, { mapId, width: board.width, height: board.height, ...terrainCensus(state.terrain) })
+  emit(ctx, 'map.loaded', mapId, { mapId, width: board.width, height: board.height, deploy: deployOf(mapId), ...terrainCensus(state.terrain) })
   return ctx
 }

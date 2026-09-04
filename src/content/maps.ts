@@ -16,14 +16,24 @@
 // Rows run top (row 0, enemy deployment) to bottom (row 11, hero deployment).
 
 import { TERRAIN } from '../core/types.js'
-import { formatOf, type Board } from '../core/hex.js'
+import { formatOf, type Board, type Edge } from '../core/hex.js'
 import { disabledIds } from './disable.js'
 
-export type MapDef = { id: string; name: string; note: string; rows: readonly string[] }
+/**
+ * `deploy` — which edge each side deploys on (board.deploy-edges, 2026-09-04).
+ * Absent = the ruled default, heroes WEST and enemies EAST (2026-09-03:
+ * "Heroes start on the left, and enemies start on the right. That is the
+ * default configuration"). The maps authored before the ruling say
+ * south/north explicitly, so every control battle is what it was.
+ */
+export type Deploy = { readonly hero: Edge; readonly enemy: Edge }
+export const DEFAULT_DEPLOY: Deploy = { hero: 'west', enemy: 'east' }
+export type MapDef = { id: string; name: string; note: string; rows: readonly string[]; deploy?: Deploy }
 
 const RAW_MAPS: readonly MapDef[] = [
   {
     id: 'map.open',
+    deploy: { hero: 'south', enemy: 'north' },   // authored before the west/east ruling; kept so the control battles hold
     name: 'Open Field',
     note: 'No terrain at all. The control map — keeps every earlier result comparable.',
     rows: [
@@ -35,6 +45,7 @@ const RAW_MAPS: readonly MapDef[] = [
   },
   {
     id: 'map.ridge',
+    deploy: { hero: 'south', enemy: 'north' },   // authored before the west/east ruling; kept so the control battles hold
     name: 'The Ridge',
     note: 'A band across the middle. Both sides must cross it; whoever holds it shoots from height.',
     rows: [
@@ -46,6 +57,7 @@ const RAW_MAPS: readonly MapDef[] = [
   },
   {
     id: 'map.flanks',
+    deploy: { hero: 'south', enemy: 'north' },   // authored before the west/east ruling; kept so the control battles hold
     name: 'Two Knolls',
     note: 'High ground on both wings, open in the centre. Rewards splitting, punishes the walk out.',
     rows: [
@@ -57,6 +69,7 @@ const RAW_MAPS: readonly MapDef[] = [
   },
   {
     id: 'map.highlands',
+    deploy: { hero: 'south', enemy: 'north' },   // authored before the west/east ruling; kept so the control battles hold
     name: 'Highlands',
     note: 'Broken ground everywhere. Movement is expensive and nearly every hex is a firing position.',
     rows: [
@@ -68,6 +81,7 @@ const RAW_MAPS: readonly MapDef[] = [
   },
   {
     id: 'map.field',
+    deploy: { hero: 'south', enemy: 'north' },   // authored before the west/east ruling; kept so the control battles hold
     name: 'The Field',
     note: 'A 16x16 crop of MAP-01 (rows 4-19, cols 6-21), for the replay viewer. Re-cropped 2026-08-25 with the board ruling — widened rather than padded, so the terrain is still MAP-01’s own. The real MAP-01 terrain. Forest, rocky, rocky-hills, water and obstacles are RECOGNISED but carry no rules yet — they behave as open ground until terrain.movecost / terrain.passable / terrain.modifiers land.',
     rows: [
@@ -79,6 +93,7 @@ const RAW_MAPS: readonly MapDef[] = [
   },
   {
     id: 'map.thicket',
+    deploy: { hero: 'south', enemy: 'north' },   // authored before the west/east ruling; kept so the control battles hold
     name: 'The Thicket',
     note: 'A 16x16 crop of MAP-01 (rows 8-23, cols 0-15). Re-cropped 2026-08-25 with the board ruling — widened rather than padded, so the terrain is still MAP-01’s own. Carries the only obstacles on the panel and a wide water channel — the map that makes terrain.passable testable at all.',
     rows: [
@@ -90,6 +105,7 @@ const RAW_MAPS: readonly MapDef[] = [
   },
   {
     id: 'test.map.embers',
+    deploy: { hero: 'south', enemy: 'north' },   // authored before the west/east ruling; kept so the control battles hold
     name: 'The Ember Field (TESTING)',
     note: 'TESTING LANE — never ships. A full-width burning band and a poisoned belt both sides must cross, so the terrain-applies mechanism can be probed live. Mirrors map.ridge. Joining MAPS puts it on MAP_PANEL, which is what makes probing possible — the same reason map.field and map.thicket were added.',
     rows: [
@@ -101,6 +117,7 @@ const RAW_MAPS: readonly MapDef[] = [
   },
   {
     id: 'test.map.showcase',
+    deploy: { hero: 'south', enemy: 'north' },   // authored before the west/east ruling; kept so the control battles hold
     name: 'The Proving Ground (TESTING)',
     note: 'TESTING LANE — never ships. One board that exercises every ground mechanic at once: a western river (washes), an ember band and a blight belt both sides must cross, and hills. Built 2026-08-20 so a single replay can SHOW every landed mechanic (Angela: "a replay that shows off all the various new things").',
     rows: [
@@ -126,6 +143,7 @@ const RAW_MAPS: readonly MapDef[] = [
   },
   {
     id: 'test.map.dungeon-16x8',
+    deploy: { hero: 'west', enemy: 'east' },   // said outright — a corridor is entered from its west end
     name: 'The Gallery (TESTING, 16×8 dungeon segment)',
     note: 'TESTING LANE — never ships. The dungeon-segment format: sixteen wide, eight deep, walls (obstacles) narrowing the middle to a throat four hexes wide. The first non-square board the engine ever ran.',
     rows: [
@@ -135,6 +153,7 @@ const RAW_MAPS: readonly MapDef[] = [
   },
   {
     id: 'test.map.horde-24',
+    deploy: { hero: 'south', enemy: 'north' },   // the horde comes down the board, as BASE-MAP-SPEC pictures it
     name: 'The Plain (TESTING, 24×24 horde)',
     note: 'TESTING LANE — never ships. The horde format: twenty-four square, open, a river across the middle with two fords. Room for the forty-body tide BASE-MAP-SPEC asks for.',
     rows: [
@@ -191,6 +210,13 @@ export function boardOf(mapId: string): Board {
   const board = { width, height }
   if (!formatOf(board)) throw new Error(`map '${mapId}' is ${width}×${height}, which is none of the four formats (8×8, 16×8, 16×16, 24×24 — ruled 2026-09-03)`)
   return board
+}
+
+/** The deployment edges of a map — its own, else the ruled default. The two edges must differ. */
+export function deployOf(mapId: string): Deploy {
+  const d = mapDef(mapId).deploy ?? DEFAULT_DEPLOY
+  if (d.hero === d.enemy) throw new Error(`map '${mapId}' deploys both sides on its ${d.hero} edge`)
+  return d
 }
 
 export function terrainOf(mapId: string): number[] {

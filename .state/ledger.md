@@ -7334,3 +7334,118 @@ index 1374e9c..382634c 100644
 </details>
 
 IRON GAUNTLET: NOT PASSED — 2 FLAG(S) WARNED
+
+## board.deploy-edges — LANDED `c354793` **NEEDS REVIEW**
+2026-09-04 07:57
+
+  PASS  dependencies landed
+  WARN  not already decided — 5 candidate ruling(s) — READ BEFORE ASKING: ../STATE.md:21 · ../STATE.md:20
+  PASS  typecheck
+  PASS  full test suite
+  PASS  gate 1 — the id appears in a real battle — test.map.duel-8: 1 log lines, 1 fired, 1 changed state · test.map.dungeon-16x8: 1 log lines, 1 fired, 1 changed state
+  PASS  brought its own tests — test/board-formats.test.ts, test/terrain.test.ts
+  WARN  existing tests untouched — DELETED LINES in test/board-formats.test.ts (-11), test/terrain.test.ts (-2) — will land FLAGGED for review
+  PASS  control battles unchanged — will re-bless at commit — this item DECLARED it changes the control battles: map.open 25d4e950->e9524f99, map.ridge 2f0e4151->bad706d0, map.flanks ebbe50d1->0d96c818, map.highlands 1df5af6c->47cccc17, map.field 3fc2376f->aed1e484, map.thicket 845a659a->7314a477, test.map.embers e2ed9dd6->1c6a35d1, test.map.showcase 97e82137->a15265a4, test.map.duel-8 29cd45ab->47abcfef, test.map.dungeon-16x8 537330d9->ccfa93cc, test.map.horde-24 172a86f0->10254f9f
+  PASS  content has a published source — 22 ids without a published source (12 awaiting publication from earlier items — see audit)
+  PASS  hardcode scan — core knows mechanisms, never names
+  PASS  generalizes — the second instance costs zero engine code — shape 'plumbing' — not a mechanism, exempt
+  PASS  naming — new content ids use declared kinds
+  PASS  naming — no banned words invented
+  PASS  kill switch — the tests fail without the content — tests fail without test.map.duel-8,test.map.dungeon-16x8 — they genuinely test it
+
+<details><summary>Existing tests were edited — review this diff</summary>
+
+```diff
+diff --git a/test/board-formats.test.ts b/test/board-formats.test.ts
+index 06a8651..ffaced9 100644
+--- a/test/board-formats.test.ts
++++ b/test/board-formats.test.ts
+@@ -6,5 +6,5 @@ import { describe, expect, it } from 'vitest'
+ import { createBattle } from '../src/core/setup.js'
+ import { runBattle } from '../src/core/battle.js'
+-import { boardOf, terrainOf, MAP_PANEL } from '../src/content/maps.js'
++import { boardOf, deployOf, terrainOf, MAP_PANEL, DEFAULT_DEPLOY } from '../src/content/maps.js'
+ import { FORMATS, formatOf, geometryOf } from '../src/core/hex.js'
+ 
+@@ -32,14 +32,18 @@ describe('a battle on each format', () => {
+       expect(ctx.geo).toBe(geometryOf(board))
+       expect(ctx.state.terrain.length).toBe(board.width * board.height)
+-      const loaded = ctx.events.find((e) => e.type === 'map.loaded') as unknown as { width: number; height: number; mapId: string }
++      const loaded = ctx.events.find((e) => e.type === 'map.loaded') as unknown as { width: number; height: number; mapId: string; deploy: { hero: string; enemy: string } }
+       expect(loaded.mapId).toBe(mapId)
+       expect(loaded.width).toBe(board.width)
+       expect(loaded.height).toBe(board.height)
++      // board.deploy-edges: the log names the edges, and every side stands on its own
++      const deploy = deployOf(mapId)
++      expect(loaded.deploy).toEqual(deploy)
++      const onEdge = (hex: number, edge: string) => ctx.geo.edgeLine(edge as 'north', 0).includes(hex) || ctx.geo.edgeLine(edge as 'north', 1).includes(hex)
+       for (const u of ctx.state.units) {
+         expect(u.hex).toBeGreaterThanOrEqual(0)
+         expect(u.hex).toBeLessThan(board.width * board.height)
+-        // heroes on the last row, enemies on the first (and the row behind it when the first is full)
+-        if (u.side === 'hero') expect(ctx.geo.rowOf(u.hex)).toBe(board.height - 1)
+-        else expect(ctx.geo.rowOf(u.hex)).toBeLessThanOrEqual(1)
++        // heroes on their edge line, enemies on theirs (or the line behind it when the edge is full)
++        if (u.side === 'hero') expect(ctx.geo.edgeLine(deploy.hero, 0), `${u.name} on the ${deploy.hero} edge`).toContain(u.hex)
++        else expect(onEdge(u.hex, deploy.enemy), `${u.name} within one line of the ${deploy.enemy} edge`).toBe(true)
+       }
+       // no two units share a hex
+@@ -62,12 +66,28 @@ describe('a battle on each format', () => {
+   }
+ 
+-  it('the duel board spills a full enemy row onto the second row; the dungeon board does not', () => {
++  it('the edges: the duel map takes the ruled default (heroes west, enemies east); the dungeon says so; the horde is south/north', () => {
++    expect(deployOf('test.map.duel-8')).toEqual(DEFAULT_DEPLOY)
++    expect(DEFAULT_DEPLOY).toEqual({ hero: 'west', enemy: 'east' })
++    expect(deployOf('test.map.dungeon-16x8')).toEqual({ hero: 'west', enemy: 'east' })
++    expect(deployOf('test.map.horde-24')).toEqual({ hero: 'south', enemy: 'north' })
+     const duel = createBattle({ replicate: 0, enemyCount: 8, mapId: 'test.map.duel-8' })
+-    const rows = new Set(duel.state.units.filter((u) => u.side === 'enemy').map((u) => duel.geo.rowOf(u.hex)))
+-    expect(rows).toEqual(new Set([0]))   // eight on an eight-wide open row
++    for (const u of duel.state.units) expect(duel.geo.colOf(u.hex)).toBe(u.side === 'hero' ? 0 : 7)
++    const dungeon = createBattle({ replicate: 0, enemyCount: 8, mapId: 'test.map.dungeon-16x8' })
++    for (const u of dungeon.state.units) expect(dungeon.geo.colOf(u.hex)).toBe(u.side === 'hero' ? 0 : 15)
++  })
++
++  it('more enemies than the edge holds spill one line inward, rolled per line; the edge alone draws what it always drew', () => {
++    const eight = createBattle({ replicate: 0, enemyCount: 8, mapId: 'test.map.duel-8' })
+     const nine = createBattle({ replicate: 0, enemyCount: 9, mapId: 'test.map.duel-8' })
+-    expect(new Set(nine.state.units.filter((u) => u.side === 'enemy').map((u) => nine.geo.rowOf(u.hex)))).toEqual(new Set([0, 1]))
+-    const dungeon = createBattle({ replicate: 0, enemyCount: 9, mapId: 'test.map.dungeon-16x8' })
+-    expect(new Set(dungeon.state.units.filter((u) => u.side === 'enemy').map((u) => dungeon.geo.rowOf(u.hex)))).toEqual(new Set([0]))
++    const col = (ctx: typeof nine, u: { hex: number }) => ctx.geo.colOf(u.hex)
++    expect(new Set(eight.state.units.filter((u) => u.side === 'enemy').map((u) => col(eight, u)))).toEqual(new Set([7]))
++    expect(new Set(nine.state.units.filter((u) => u.side === 'enemy').map((u) => col(nine, u)))).toEqual(new Set([7, 6]))
++    // the first eight of nine stand exactly where the eight stood — the spill added a draw, it did not perturb one
++    const first8 = nine.state.units.filter((u) => u.side === 'enemy').slice(0, 8).map((u) => u.hex)
++    expect(first8).toEqual(eight.state.units.filter((u) => u.side === 'enemy').map((u) => u.hex))
++    // the horde board, south/north: sixteen enemies on a 24-wide edge, no spill
++    const horde = createBattle({ replicate: 0, enemyCount: 16, mapId: 'test.map.horde-24' })
++    expect(new Set(horde.state.units.filter((u) => u.side === 'enemy').map((u) => horde.geo.rowOf(u.hex)))).toEqual(new Set([0]))
++    expect(() => createBattle({ replicate: 0, enemyCount: 65, mapId: 'test.map.duel-8' })).toThrow(/cannot hold 65 enemies/)
+   })
+ 
+diff --git a/test/terrain.test.ts b/test/terrain.test.ts
+index 5ec0fcc..518f8a5 100644
+--- a/test/terrain.test.ts
++++ b/test/terrain.test.ts
+@@ -297,9 +297,13 @@ describe('terrain.passable — a wall is a wall', () => {
+ 
+   it('deployment refuses to place a unit inside a wall, loudly', () => {
+-    const walled = { id: 'map.walled', name: 'x', note: '',
++    // board.deploy-edges (2026-09-04), Law 10 reason: the default deployment
++    // edge is west/east now (ruled 2026-09-03), so a fixture whose wall is
++    // row 0 must SAY the enemy deploys north — the rule under test (a wall
++    // on the deployment edge is refused loudly) is unchanged.
++    const walled = { id: 'map.walled', name: 'x', note: '', deploy: { hero: 'south', enemy: 'north' },
+       rows: ['x'.repeat(16), ...Array(15).fill('.'.repeat(16))] }
+     ;(MAPS as unknown as object[]).push(walled)
+     expect(() => createBattle({ replicate: 0, mapId: 'map.walled' }))
+-      .toThrow(/no passable hex on the enemy deployment row/)
++      .toThrow(/no passable hex on its north edge/)
+     ;(MAPS as unknown as object[]).pop()
+   })
+```
+</details>
+
+IRON GAUNTLET: NOT PASSED — 2 FLAG(S) WARNED

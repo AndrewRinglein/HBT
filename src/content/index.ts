@@ -259,13 +259,10 @@ export const FIRST_BATTLE = {
   // as an explicitly-fielded fixture (TEST_COHORT.enemies).
   enemies: ['unit.zombie', 'unit.zombie', 'unit.zombie', 'unit.zombie-burning'] as const,
   defaultEnemyCount: 4,
-  // The player edge is the LAST row and the enemy edge row 0 — ruled 2026-08-25
-  // with the 16x16 board (row 15 then). board.variable-size (2026-09-04): the
-  // last row is the board's, so the two are read off state.board at fielding;
-  // board.deploy-edges will make the edge itself the map's (heroes west,
-  // enemies east by default — ruled 2026-09-03). Was 11 when the board was 12 deep.
-  heroEdge: 'south' as const,
-  enemyEdge: 'north' as const,
+  // Where the sides deploy is the MAP's (content/maps.ts `deploy`, board.deploy-edges
+  // 2026-09-04): heroes west and enemies east by default (ruled 2026-09-03), the
+  // pre-ruling maps south/north. This record no longer names a row or an edge —
+  // heroRow 15 / enemyRow 0 lived here from 2026-08-25 to 2026-09-04.
 }
 
 /**
