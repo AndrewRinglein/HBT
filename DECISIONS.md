@@ -1429,3 +1429,64 @@ hex ids stay `row × width + col` (per-width — a hex's number is meaningful
 only on its own board); every encounter names its map size and places to it.
 The plan is in the chat of 2026-09-03 evening and in HANDOFF-2026-09-03b.md §7
 once work starts.
+
+## 2026-09-03 (late) — the Proving, ruled from PROVING-PLAN.md §8
+
+Angela, verbatim:
+
+> "Proving sounds good. Flip rate first. Well, I want to do several different
+> baselines. I also want to be able to do enemies against enemies and heroes
+> against heroes. So we can actually test four zombies against four zombies,
+> and what we're testing is: what does initiative matter? And then we can swap
+> in one elf in place of a zombie. I'd like to be able to test. We don't need
+> to mix heroes and enemies, but it would be slightly convenient if we could.
+> Gives us better control groups. I guess maybe we can't because of power and
+> magic and faith. When you ask me for levels, I actually want to build a test
+> plan that covers lots of different things. I'm worried you're going to make
+> rulings here of 'Oh, we're only doing this.' I don't just want to do level 1,
+> level 5, level 10. Item fit is going to be a little bit tricky. Only classes
+> that can wield it. There's no reason to test on something that can't. I want
+> to be able to view these battles, but I also want some dashboards showing me
+> a power ranking. I want every single unit to have a power ranking. I want to
+> give every item a power ranking. These will change as the AIs get smarter and
+> if we test things in more of the right conditions, but it's still just right
+> out of the blue that it is going to do something. Summons shouldn't be in
+> because they are a product of what summoned them. Civilians and beasts are
+> in. But we cannot do Beast for now. I don't know what you mean by seeds. We
+> actually don't need a ton of seeds to determine something. We can literally
+> run 5 of something, and we'll know how it stands. If we have an even battle
+> and we switch in a unit and we run it 5 times, that tells us what's going to
+> happen. We do also need some map rotations. Because the power rankings will
+> be a little bit different based on terrain, not a huge difference, I would
+> say that we run one seed five times on five different maps: one time on a
+> map, another time on a map, another time on a map, another time on a map,
+> another time on a map. There are five maps, there are five runs, and that's
+> one seed. I think that gives us one power ranking for a unit. I don't think
+> we need more than that. This lets us do more."
+
+Consequences, as read by the engine session:
+
+- **`proving` is a kind** (by policy — propose and record; `tools/approved-kinds.json`).
+- **Flip rate is the power score.** Margin and tempo are reported beside it.
+- **A subject's ranking is five paired battles: one RNG seed, five 16×8 maps.**
+  Flip rate is therefore in fifths. The plan file may name more, but the
+  default is five. Seats are a plan option, not a default sweep.
+- **Baselines are plural and are content** — a plan file names its squads;
+  the rig never hardcodes one.
+- **Mirror matches** (four zombies vs four zombies, heroes vs heroes) are in
+  scope. Today `createBattle` refuses a row fielded on the other side
+  (`setup.ts checkSides`); the rig needs a fielding option that overrides the
+  row's side. Angela's own caveat stands and becomes a switch: the side-keyed
+  rules (stamina and surge are hero-only, the power pool and arrival power are
+  enemy-side, deathbed stands differ) make a mirror match approximately fair,
+  not exactly. Record which rules a side-overridden unit follows in
+  `SWITCHES.md` before the first mirror plan runs.
+- **Levels: no v1 restriction.** The plans cover "lots of different things";
+  `grow` takes any `HeroProgress`, and the plan files decide which.
+- **Items are rated only on classes that can wield them.** Mis-fits are not
+  run and not listed as invalid — they are simply not subjects.
+- **Summons are out. Civilians are in. Beasts are in but not yet.**
+- **Both views:** the ranking dashboards (every unit, every item) and a way to
+  open any pair in the Battle Viewer.
+- Still open from §8: **Q6** (enemies equippable at fielding — the flaming-axe
+  dwarf) and **Q8** (where the page lives).
