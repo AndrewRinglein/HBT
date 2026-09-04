@@ -1919,3 +1919,40 @@ its unswept documents because both point back at it. That is the whole visualisa
   of "withheld" and Crucible dialogue — a sweep string has to be specific to the thing.)*
 - **"51 flagged landings"** → `STATE.md`:18 — it is 17 now, and 60 were reviewed
   2026-09-04
+
+## 2026-09-04 — Deathbed Fighting, REVERSED: no stands, the Hero badge, Wounded is the one and only second chance
+
+Angela, verbatim (after the engine session laid out the ladder as built —
+Fresh → Wounded → Badly Wounded → final fall, heroes two stands, death only by
+bleed-out — and COMBAT-DESIGN §13 as written):
+
+> "Okay, yeah, there are no stands. We need to remove that. There is a badge
+> that all heroes start with. That is invisible on a hero called Hero. It is
+> not on civilians unless expressly said so. Only those with the badge Hero
+> 'bleed out.' A civilian who goes down and doesn't have the hero badge is just
+> dead and a corpse. Now any player unit rolls deathbed fighting. Unless they
+> have the badge 'Wounded'. If they are wounded, then they just die. When a
+> player succeeds at deathbed fighting and they are not wounded (because they
+> didn't get a chance to roll if they were wounded), they immediately gain
+> Wounded. Wounded gives: -10 accuracy, -10 dodge, -1 strength, -1 precision,
+> -2 max HP. When a player succeeds at deathbed fighting, they gain 1 stamina
+> and 1 equal to whatever their stamina recovery is. So typically, they gain 2
+> stamina. When they succeed at deathbed fighting, I think they need a skull
+> in their status bar. To show they're on death's door and they get placed at
+> maximum hit points. Which is too low compared to what it was a minute ago.
+> If they're at death's door, they're on a deathbed fighting, and they get
+> reduced to zero, they die. They do not bleed out."
+
+What this reverses: COMBAT-DESIGN §13's stand ladder ("civilians get one
+stand, heroes two", Badly Wounded, "dead is only ever the clock running
+out"), capability.deathbed as landed 2026-09-03 (`stands`, `woundLevel`, the
+−1-to-everything / −2 Max Stamina penalties), and the 2026-09-03 answer that
+the badge is minted after the battle — Wounded is applied IN battle, on the
+unit, the moment the roll succeeds. Badges become an engine type with this:
+`badge.hero` (invisible; every hero; a civilian only when its row says so)
+and `badge.wounded` (the penalties above; the skull). Sweep owed:
+COMBAT-DESIGN §13, capability.deathbed's tests and SWITCHES entries, the
+kingdom's after-battle Wounded minting (it reads `deathbed.stood`), the
+viewer's wound-level rendering (VISUAL-BATTLE-UPDATES §3.2 "dripping blood"
+→ a skull), 4-BADGES-SETTLED's `badge.wounded` row ("prose only").
+Questions asked the same message; answers below when they come.
