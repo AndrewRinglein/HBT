@@ -2536,7 +2536,24 @@
   "shape": "rule",
   "ruling": "DECISIONS.md 2026-09-04 — Knockback is not capped at one",
   "spec": "capability.knockback landed with the push capped at the triggering value, and STATE.md lists knockback 2 under Engine, unbuilt by choice. Angela 2026-09-04: \"We want to be able to have knockback that is greater than one.\" That choice is reversed.",
-  "expect": "a knockback of 2 or more travels the full distance along the pusher-victim line, stopping only at an occupied or impassable hex"
+  "expect": "a knockback of 2 or more travels the full distance along the pusher-victim line, stopping only at an occupied or impassable hex",
+  "changesBaseline": true,
+  "probeIds": [
+   "trigger.test-ram.shove"
+  ],
+  "variants": [
+   "trigger.test-ram.shove",
+   "trigger.test-ram.knockback"
+  ],
+  "tests": [
+   "test/knockback-beyond-one.test.ts"
+  ],
+  "note": "Landed 2026-09-04. FINDING 34: the distance was never capped; this landing is the proof (a push of 2, a push cut short), the log fields (knocked: asked / hexes / stoppedBy) and the test row. FINDING 35 came out of proving it live: the test body could not hit (accuracy 5); it is 65 now, and two liveness tests widened their windows. showcase.knockback-two fields the golem on a replicate where the Overhead lands on Turn 2, so the probe reads the two-hex shove.",
+  "attempts": 1,
+  "baselineReason": "VERIFIED: with the knocked line masked, all eleven control maps hash identical to the previous tree. The knocked line gained asked / hexes / stoppedBy (Law 12: a shortened push is read off the line), and the halberd's rider fires in every control battle.",
+  "status": "done-needs-review",
+  "sha": "2e649b5",
+  "gauntlet": "not passed — 3 flag(s) warned"
  },
  {
   "id": "refactor.one-action-type",

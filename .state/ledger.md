@@ -9041,3 +9041,95 @@ effect of attack.test-zombie.bite — 25 paired battles per map, WITH vs WITHOUT
   test.map.horde-24: heroWins 25->25 (+0)  meanTurns 5.9->5.9
 NO MEASURABLE EFFECT at this sample size — consequence clause caught state changes, but outcomes did not move. Consider a sweep with more replicates before drawing balance conclusions.
 ```
+
+## fix.knockback-beyond-one — LANDED `2e649b5` **NEEDS REVIEW**
+2026-09-04 20:55
+
+  PASS  dependencies landed
+  WARN  not already decided — 4 candidate ruling(s) — READ BEFORE ASKING: ../STATE.md:21 · ../COMBAT-DESIGN.md:477
+  PASS  typecheck
+  PASS  full test suite
+  PASS  gate 1 — the id appears in a real battle — trigger.test-ram.shove: 3 log lines, 3 fired, 1 changed state
+  PASS  brought its own tests — test/attack-cooldown.test.ts, test/karma-shadow-confusion.test.ts, test/knockback-beyond-one.test.ts
+  WARN  existing tests untouched — DELETED LINES in test/attack-cooldown.test.ts (-4), test/karma-shadow-confusion.test.ts (-3) — will land FLAGGED for review
+  PASS  control battles unchanged — will re-bless at commit — this item DECLARED it changes the control battles: map.open 38ca16dc->1495e71a, map.ridge ce90778a->be02d557, map.flanks cfed6879->733fd5e9, map.highlands 05c0fff5->35fb0ef6, map.field be9b1ef9->f265b340, map.thicket f725530b->2046a203, test.map.embers 5b6622aa->5e464c41, test.map.showcase 0f0f2a47->07c40ef9, test.map.duel-8 09c27a24->54e00cde, test.map.dungeon-16x8 de7c4908->e0a40353, test.map.horde-24 dfbc5859->01603722
+  PASS  content has a published source — 23 ids without a published source — 1 NEW from THIS item, seal withheld until published
+  PASS  hardcode scan — core knows mechanisms, never names
+  PASS  generalizes — the second instance costs zero engine code — trigger.test-ram.shove live · trigger.test-ram.knockback live
+  PASS  naming — new content ids use declared kinds
+  PASS  naming — no banned words invented
+  PASS  kill switch — the tests fail without the content — tests fail without trigger.test-ram.shove — they genuinely test it
+
+<details><summary>Existing tests were edited — review this diff</summary>
+
+```diff
+diff --git a/test/attack-cooldown.test.ts b/test/attack-cooldown.test.ts
+index e8f756a..13885b7 100644
+--- a/test/attack-cooldown.test.ts
++++ b/test/attack-cooldown.test.ts
+@@ -45,8 +45,17 @@ describe('an attack on cooldown', () => {
+ 
+   it('in a real battle the golem slams every other Turn — the Slam is on cooldown between, and the log says so', () => {
+-    const ctx = createBattle(scenarioOptions(scenarioDef('showcase.arc-variant')))
+-    runBattle(ctx)
+-    const golem = ctx.state.units.find((u) => u.typeId === 'test-arc-golem')!
+-    const slams = ctx.events.filter((e) => e.type === 'attack.declared' && e['actor'] === golem.id && e.causeId === 'attack.test-ram.slam')
++    // LAW 10 — 2026-09-04 (fix.knockback-beyond-one, FINDING 35): the golem's
++    // accuracy was 5 and is 65 now, so replicate 0 plays out differently and the
++    // Slam is not always reached before the zombies fall. The claim is per
++    // battle where a slam happens; the first such replicate is the one checked.
++    let ctx = createBattle(scenarioOptions(scenarioDef('showcase.arc-variant')))
++    let golem = ctx.state.units.find((u) => u.typeId === 'test-arc-golem')!
++    let slams: typeof ctx.events = []
++    for (let r = 0; r < 24 && slams.length === 0; r++) {
++      ctx = createBattle({ ...scenarioOptions(scenarioDef('showcase.arc-variant')), replicate: r })
++      runBattle(ctx)
++      golem = ctx.state.units.find((u) => u.typeId === 'test-arc-golem')!
++      slams = ctx.events.filter((e) => e.type === 'attack.declared' && e['actor'] === golem.id && e.causeId === 'attack.test-ram.slam')
++    }
+     expect(slams.length).toBeGreaterThan(0)
+     const turns = slams.map((e) => e.turn)
+diff --git a/test/karma-shadow-confusion.test.ts b/test/karma-shadow-confusion.test.ts
+index 576c91d..6d436e8 100644
+--- a/test/karma-shadow-confusion.test.ts
++++ b/test/karma-shadow-confusion.test.ts
+@@ -72,7 +72,16 @@ describe('Confusion', () => {
+   })
+   it('all three show in the arc-variant battle through the golem\'s test riders', () => {
+-    const ctx = createCustomBattle([{ type: 'test-arc-golem', hex: hexId(5, 5) }], [{ type: 'test-zombie', hex: hexId(5, 6) }, { type: 'test-zombie', hex: hexId(6, 6) }])
+-    runBattle(ctx)
+-    for (const id of ['status.karma', 'status.shadow', 'status.confusion']) expect(ctx.events.some((e) => e.type === 'status.applied' && e['statusId'] === id), id).toBe(true)
++    // LAW 10 — 2026-09-04 (fix.knockback-beyond-one, FINDING 35): the golem's
++    // accuracy was 5 and is 65 now; on replicate 0 its single-target swings
++    // finish the zombies before every sweep rider has fired. Same claim, over
++    // the first few replicates.
++    const want = ['status.karma', 'status.shadow', 'status.confusion']
++    const seen = new Set<string>()
++    for (let r = 0; r < 8 && !want.every((id) => seen.has(id)); r++) {
++      const ctx = createCustomBattle([{ type: 'test-arc-golem', hex: hexId(5, 5) }], [{ type: 'test-zombie', hex: hexId(5, 6) }, { type: 'test-zombie', hex: hexId(6, 6) }], { replicate: r })
++      runBattle(ctx)
++      for (const e of ctx.events) if (e.type === 'status.applied') seen.add(e['statusId'] as string)
++    }
++    for (const id of want) expect(seen.has(id), id).toBe(true)
+   })
+ })
+```
+</details>
+
+IRON GAUNTLET: NOT PASSED — 3 FLAG(S) WARNED
+
+```
+effect of trigger.test-ram.shove — 25 paired battles per map, WITH vs WITHOUT
+  map.open: heroWins 25->25 (+0)  meanTurns 4.1->4.1
+  map.ridge: heroWins 25->25 (+0)  meanTurns 4.2->4.2
+  map.flanks: heroWins 25->25 (+0)  meanTurns 4.4->4.4
+  map.highlands: heroWins 25->25 (+0)  meanTurns 4.6->4.6
+  map.field: heroWins 25->25 (+0)  meanTurns 6.0->6.0
+  map.thicket: heroWins 25->25 (+0)  meanTurns 5.3->5.3
+  test.map.embers: heroWins 24->24 (+0)  meanTurns 4.0->4.0
+  test.map.showcase: heroWins 25->25 (+0)  meanTurns 4.8->4.8
+  test.map.duel-8: heroWins 25->25 (+0)  meanTurns 3.1->3.1
+  test.map.dungeon-16x8: heroWins 25->25 (+0)  meanTurns 6.0->6.0
+  test.map.horde-24: heroWins 25->25 (+0)  meanTurns 5.9->5.9
+NO MEASURABLE EFFECT at this sample size — consequence clause caught state changes, but outcomes did not move. Consider a sweep with more replicates before drawing balance conclusions.
+```

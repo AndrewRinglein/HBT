@@ -411,6 +411,6 @@ export function executeKnockback(ctx: Ctx, pusherId: number, targetId: number, h
     emit(ctx, 'knockback.blocked', causeId, { actor: pusherId, target: targetId, at: tg.hex, reason: reason || 'nowhere to go' })
     return 0
   }
-  knockUnit(ctx, targetId, at, pusherId, causeId)
+  knockUnit(ctx, targetId, at, pusherId, causeId, { asked: hexes, taken, ...(taken < hexes && reason ? { stoppedBy: reason } : {}) })
   return taken
 }

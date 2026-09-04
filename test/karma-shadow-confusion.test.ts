@@ -71,8 +71,17 @@ describe('Confusion', () => {
     expect(m['confusedFrom']).toBe(z.ai)
   })
   it('all three show in the arc-variant battle through the golem\'s test riders', () => {
-    const ctx = createCustomBattle([{ type: 'test-arc-golem', hex: hexId(5, 5) }], [{ type: 'test-zombie', hex: hexId(5, 6) }, { type: 'test-zombie', hex: hexId(6, 6) }])
-    runBattle(ctx)
-    for (const id of ['status.karma', 'status.shadow', 'status.confusion']) expect(ctx.events.some((e) => e.type === 'status.applied' && e['statusId'] === id), id).toBe(true)
+    // LAW 10 — 2026-09-04 (fix.knockback-beyond-one, FINDING 35): the golem's
+    // accuracy was 5 and is 65 now; on replicate 0 its single-target swings
+    // finish the zombies before every sweep rider has fired. Same claim, over
+    // the first few replicates.
+    const want = ['status.karma', 'status.shadow', 'status.confusion']
+    const seen = new Set<string>()
+    for (let r = 0; r < 8 && !want.every((id) => seen.has(id)); r++) {
+      const ctx = createCustomBattle([{ type: 'test-arc-golem', hex: hexId(5, 5) }], [{ type: 'test-zombie', hex: hexId(5, 6) }, { type: 'test-zombie', hex: hexId(6, 6) }], { replicate: r })
+      runBattle(ctx)
+      for (const e of ctx.events) if (e.type === 'status.applied') seen.add(e['statusId'] as string)
+    }
+    for (const id of want) expect(seen.has(id), id).toBe(true)
   })
 })

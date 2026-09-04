@@ -44,10 +44,19 @@ describe('an attack on cooldown', () => {
   })
 
   it('in a real battle the golem slams every other Turn — the Slam is on cooldown between, and the log says so', () => {
-    const ctx = createBattle(scenarioOptions(scenarioDef('showcase.arc-variant')))
-    runBattle(ctx)
-    const golem = ctx.state.units.find((u) => u.typeId === 'test-arc-golem')!
-    const slams = ctx.events.filter((e) => e.type === 'attack.declared' && e['actor'] === golem.id && e.causeId === 'attack.test-ram.slam')
+    // LAW 10 — 2026-09-04 (fix.knockback-beyond-one, FINDING 35): the golem's
+    // accuracy was 5 and is 65 now, so replicate 0 plays out differently and the
+    // Slam is not always reached before the zombies fall. The claim is per
+    // battle where a slam happens; the first such replicate is the one checked.
+    let ctx = createBattle(scenarioOptions(scenarioDef('showcase.arc-variant')))
+    let golem = ctx.state.units.find((u) => u.typeId === 'test-arc-golem')!
+    let slams: typeof ctx.events = []
+    for (let r = 0; r < 24 && slams.length === 0; r++) {
+      ctx = createBattle({ ...scenarioOptions(scenarioDef('showcase.arc-variant')), replicate: r })
+      runBattle(ctx)
+      golem = ctx.state.units.find((u) => u.typeId === 'test-arc-golem')!
+      slams = ctx.events.filter((e) => e.type === 'attack.declared' && e['actor'] === golem.id && e.causeId === 'attack.test-ram.slam')
+    }
     expect(slams.length).toBeGreaterThan(0)
     const turns = slams.map((e) => e.turn)
     // skip N Turns (2-ACTIONS-SETTLED.md:71): consecutive slams are N + 1 Turns apart

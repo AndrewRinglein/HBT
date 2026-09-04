@@ -321,6 +321,20 @@ const RAW_SCENARIOS: Readonly<Record<string, ScenarioDef>> = {
     enemyHexes: [116, 118, 120, 122],
     replicate: 0,
   },
+  // fix.knockback-beyond-one (2026-09-04): the golem's Overhead carries a push
+  // of TWO (trigger.test-ram.shove). The same fielding as the arc variant on a
+  // replicate where the Overhead lands on Turn 2, so the two-hex shove is on
+  // the log of the battle the probe reads.
+  'showcase.knockback-two': {
+    id: 'showcase.knockback-two',
+    note: 'fix.knockback-beyond-one: the test Arc Golem shoves a zombie two hexes with its Overhead — knockback greater than one, live.',
+    mapId: 'map.open',
+    heroes: ['test-arc-golem'],
+    heroHexes: [135],
+    enemies: ['test-zombie', 'test-zombie', 'test-zombie'],
+    enemyHexes: [118, 119, 55],
+    replicate: 3,
+  },
   'showcase.assembled-party': {
     id: 'showcase.assembled-party',
     note: 'Hero assembly (2026-09-03): the progression party at its battle-20 '

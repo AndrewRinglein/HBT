@@ -12657,7 +12657,7 @@ export const UNIT_PACK = {
         "maxHp": 30,
         "armor": 2,
         "resist": 0,
-        "accuracy": 5,
+        "accuracy": 65,
         "dodge": 0,
         "strength": 5,
         "precision": 0,
@@ -12806,6 +12806,18 @@ export const UNIT_PACK = {
               "radius": 2,
               "healPer": 1
             },
+            "source": "unit.test-arc-golem"
+          },
+          {
+            "id": "trigger.test-ram.shove",
+            "hook": "onDamage",
+            "chance": 100,
+            "select": "target",
+            "effect": {
+              "kind": "knockback",
+              "value": 2
+            },
+            "onlyWithAttack": "attack.test-ram.overhead",
             "source": "unit.test-arc-golem"
           }
         ],
