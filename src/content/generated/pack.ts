@@ -13267,6 +13267,44 @@ export const UNIT_PACK = {
         "blocksAction": true,
         "stacking": "add"
       }
+    },
+    "badges": {
+      "test.badge.iron-skin": {
+        "statModifiers": {
+          "armor": 2,
+          "dodge": -5
+        },
+        "grants": [],
+        "flags": {},
+        "id": "test.badge.iron-skin",
+        "name": "Iron Skin (TEST)",
+        "triggers": []
+      },
+      "test.badge.brand": {
+        "statModifiers": {
+          "strength": 1
+        },
+        "grants": [],
+        "flags": {
+          "bleedsOut": true
+        },
+        "id": "test.badge.brand",
+        "name": "The Brand (TEST)",
+        "triggers": [
+          {
+            "id": "trigger.test-brand.sear",
+            "hook": "onHit",
+            "chance": 100,
+            "select": "target",
+            "effect": {
+              "kind": "status.apply",
+              "statusId": "status.burn",
+              "value": 1
+            },
+            "source": "test.badge.brand"
+          }
+        ]
+      }
     }
   },
   "classPowers": {
@@ -29911,6 +29949,2178 @@ export const UNIT_PACK = {
         "needs: unit.frozen-skeleton and unit.hoarfrost-wight — owed rows",
         "needs: capability.ground-layers (the band)",
         "needs: the salvation card at phase 8 (Purify)"
+      ]
+    }
+  },
+  "badges": {
+    "badge.accurate": {
+      "id": "badge.accurate",
+      "name": "Accurate",
+      "statModifiers": {
+        "accuracy": 10
+      },
+      "grants": [],
+      "flags": {}
+    },
+    "badge.anguish": {
+      "id": "badge.anguish",
+      "name": "Anguish",
+      "statModifiers": {},
+      "grants": [],
+      "flags": {},
+      "gaps": [
+        "−1 card draw per Turn"
+      ]
+    },
+    "badge.attuned": {
+      "id": "badge.attuned",
+      "name": "Attuned",
+      "statModifiers": {
+        "magic": 1
+      },
+      "grants": [],
+      "flags": {}
+    },
+    "badge.aura-of-courage": {
+      "id": "badge.aura-of-courage",
+      "name": "Aura of Courage",
+      "statModifiers": {},
+      "grants": [],
+      "flags": {},
+      "gaps": [
+        "aura r3: allies +1 resist",
+        "immune weak"
+      ]
+    },
+    "badge.blessed": {
+      "id": "badge.blessed",
+      "name": "Blessed",
+      "statModifiers": {},
+      "grants": [],
+      "flags": {},
+      "gaps": [
+        "+1 Favor",
+        "Onsuvive: gain 1 faith"
+      ]
+    },
+    "badge.blood-in-the-eye": {
+      "id": "badge.blood-in-the-eye",
+      "name": "Blood in the Eye",
+      "statModifiers": {
+        "crit": 7,
+        "luck": -5
+      },
+      "grants": [],
+      "flags": {}
+    },
+    "badge.born-archer": {
+      "id": "badge.born-archer",
+      "name": "Born Archer",
+      "statModifiers": {
+        "reach": 2
+      },
+      "grants": [],
+      "flags": {}
+    },
+    "badge.braced": {
+      "id": "badge.braced",
+      "name": "Braced",
+      "statModifiers": {
+        "armor": 1,
+        "movement": -1
+      },
+      "grants": [],
+      "flags": {}
+    },
+    "badge.captured": {
+      "id": "badge.captured",
+      "name": "Captured",
+      "statModifiers": {},
+      "grants": [],
+      "flags": {
+        "blocksDeployment": true
+      },
+      "gaps": [
+        "lifts on rescue"
+      ]
+    },
+    "badge.climber": {
+      "id": "badge.climber",
+      "name": "Climber",
+      "statModifiers": {},
+      "grants": [],
+      "flags": {},
+      "gaps": [
+        "-1 Movement cost into Rocky",
+        "+5 Accuracy while in Rocky"
+      ]
+    },
+    "badge.clumsy": {
+      "id": "badge.clumsy",
+      "name": "Clumsy",
+      "statModifiers": {
+        "accuracy": -5
+      },
+      "grants": [],
+      "flags": {}
+    },
+    "badge.cursed": {
+      "id": "badge.cursed",
+      "name": "Cursed",
+      "statModifiers": {
+        "maxStamina": 2
+      },
+      "grants": [],
+      "flags": {},
+      "gaps": [
+        "+1 Corruption"
+      ]
+    },
+    "badge.death-marked": {
+      "id": "badge.death-marked",
+      "name": "Death-Marked",
+      "statModifiers": {
+        "toughness": -1
+      },
+      "grants": [],
+      "flags": {},
+      "gaps": [
+        "+20 Deathbed Fighting"
+      ]
+    },
+    "badge.defiant": {
+      "id": "badge.defiant",
+      "name": "Defiant",
+      "statModifiers": {},
+      "grants": [],
+      "flags": {},
+      "gaps": [
+        "`startOfBattle`: protection 3",
+        "+5 Deathbed Fighting"
+      ]
+    },
+    "badge.devout": {
+      "id": "badge.devout",
+      "name": "Devout",
+      "statModifiers": {},
+      "grants": [],
+      "flags": {},
+      "gaps": [
+        "onsurvive +2 faith"
+      ]
+    },
+    "badge.dim-sighted": {
+      "id": "badge.dim-sighted",
+      "name": "Dim-Sighted",
+      "statModifiers": {
+        "vision": -2
+      },
+      "grants": [],
+      "flags": {}
+    },
+    "badge.dodger": {
+      "id": "badge.dodger",
+      "name": "Dodger",
+      "statModifiers": {
+        "dodge": 10
+      },
+      "grants": [],
+      "flags": {}
+    },
+    "badge.dragon-slayer": {
+      "id": "badge.dragon-slayer",
+      "name": "Dragon Slayer",
+      "statModifiers": {
+        "maxHp": 2
+      },
+      "grants": [],
+      "flags": {},
+      "gaps": [
+        "immunen to fire 1"
+      ]
+    },
+    "badge.drilled": {
+      "id": "badge.drilled",
+      "name": "Drilled",
+      "statModifiers": {
+        "surge": 3
+      },
+      "grants": [],
+      "flags": {}
+    },
+    "badge.exhausted": {
+      "id": "badge.exhausted",
+      "name": "Exhausted",
+      "statModifiers": {
+        "maxStamina": -2,
+        "surge": -1
+      },
+      "grants": [],
+      "flags": {}
+    },
+    "badge.feeble": {
+      "id": "badge.feeble",
+      "name": "Feeble",
+      "statModifiers": {
+        "strength": -1
+      },
+      "grants": [],
+      "flags": {}
+    },
+    "badge.field-surgeon": {
+      "id": "badge.field-surgeon",
+      "name": "Field Surgeon",
+      "statModifiers": {},
+      "grants": [
+        "power.general.push-through"
+      ],
+      "flags": {}
+    },
+    "badge.first-in": {
+      "id": "badge.first-in",
+      "name": "First In",
+      "statModifiers": {},
+      "grants": [],
+      "flags": {},
+      "gaps": [
+        "Deploy +3"
+      ]
+    },
+    "badge.footsore": {
+      "id": "badge.footsore",
+      "name": "Footsore",
+      "statModifiers": {
+        "movement": -1
+      },
+      "grants": [],
+      "flags": {}
+    },
+    "badge.forester": {
+      "id": "badge.forester",
+      "name": "Forester",
+      "statModifiers": {},
+      "grants": [],
+      "flags": {},
+      "gaps": [
+        "-1 Movement cost into Forest",
+        "+10 Dodge while in Forest"
+      ]
+    },
+    "badge.frail": {
+      "id": "badge.frail",
+      "name": "Frail",
+      "statModifiers": {
+        "maxHp": -2
+      },
+      "grants": [],
+      "flags": {}
+    },
+    "badge.giant-killer": {
+      "id": "badge.giant-killer",
+      "name": "Giant-Killer",
+      "statModifiers": {},
+      "grants": [],
+      "flags": {},
+      "gaps": [
+        "slayer +2 vs the type that nearly killed her"
+      ]
+    },
+    "badge.greedy": {
+      "id": "badge.greedy",
+      "name": "Greedy",
+      "statModifiers": {},
+      "grants": [],
+      "flags": {},
+      "gaps": [
+        "−1 Item Slots",
+        "+1 Favor"
+      ]
+    },
+    "badge.grieving": {
+      "id": "badge.grieving",
+      "name": "Grieving",
+      "statModifiers": {
+        "surge": -1,
+        "strength": 1
+      },
+      "grants": [],
+      "flags": {}
+    },
+    "badge.grudge-bearer": {
+      "id": "badge.grudge-bearer",
+      "name": "Grudge-Bearer",
+      "statModifiers": {},
+      "grants": [],
+      "flags": {},
+      "gaps": [
+        "+2 Strength vs the type that last killed an ally"
+      ]
+    },
+    "badge.hardy": {
+      "id": "badge.hardy",
+      "name": "Hardy",
+      "statModifiers": {
+        "maxHp": 2
+      },
+      "grants": [],
+      "flags": {}
+    },
+    "badge.heavy-footed": {
+      "id": "badge.heavy-footed",
+      "name": "Heavy-Footed",
+      "statModifiers": {
+        "dodge": -5
+      },
+      "grants": [],
+      "flags": {}
+    },
+    "badge.hells-mark": {
+      "id": "badge.hells-mark",
+      "name": "Hell's Mark",
+      "statModifiers": {
+        "strength": 2,
+        "precision": 2
+      },
+      "grants": [],
+      "flags": {},
+      "gaps": [
+        "+2 Corruption",
+        "`startOfBattle`: all heroes gain burn 1"
+      ]
+    },
+    "badge.hero-among-them": {
+      "id": "badge.hero-among-them",
+      "name": "Hero Among Them",
+      "statModifiers": {
+        "maxHp": 3,
+        "strength": 2,
+        "precision": 2,
+        "reach": 1,
+        "resist": 1
+      },
+      "grants": [],
+      "flags": {},
+      "gaps": [
+        "`class.civilian` only",
+        "+2 Item Slots",
+        "+10 DBF"
+      ]
+    },
+    "badge.huge": {
+      "id": "badge.huge",
+      "name": "Huge",
+      "statModifiers": {
+        "strength": 2,
+        "maxHp": 2,
+        "dodge": -15
+      },
+      "grants": [],
+      "flags": {}
+    },
+    "badge.hunter": {
+      "id": "badge.hunter",
+      "name": "Hunter",
+      "statModifiers": {
+        "reach": 1,
+        "accuracy": 10
+      },
+      "grants": [],
+      "flags": {}
+    },
+    "badge.immovable": {
+      "id": "badge.immovable",
+      "name": "Immovable",
+      "statModifiers": {},
+      "grants": [],
+      "flags": {},
+      "gaps": [
+        "immune to knockback"
+      ]
+    },
+    "badge.inspired-cond": {
+      "id": "badge.inspired-cond",
+      "name": "Inspired",
+      "statModifiers": {
+        "resist": 1,
+        "accuracy": 5
+      },
+      "grants": [],
+      "flags": {}
+    },
+    "badge.killer-instinct": {
+      "id": "badge.killer-instinct",
+      "name": "Killer Instinct",
+      "statModifiers": {
+        "crit": 5
+      },
+      "grants": [],
+      "flags": {}
+    },
+    "badge.known-face": {
+      "id": "badge.known-face",
+      "name": "Known Face",
+      "statModifiers": {},
+      "grants": [],
+      "flags": {},
+      "gaps": [
+        "aura 4 +10 Deathbed Fighting to allies"
+      ]
+    },
+    "badge.laying-on-hands": {
+      "id": "badge.laying-on-hands",
+      "name": "Laying On Hands",
+      "statModifiers": {},
+      "grants": [
+        "power.holy-symbol.heal"
+      ],
+      "flags": {}
+    },
+    "badge.light-step": {
+      "id": "badge.light-step",
+      "name": "Light Step",
+      "statModifiers": {
+        "movement": 1,
+        "dodge": 10
+      },
+      "grants": [],
+      "flags": {}
+    },
+    "badge.lightning-fast": {
+      "id": "badge.lightning-fast",
+      "name": "Lightning Fast",
+      "statModifiers": {
+        "movement": 1,
+        "dodge": 5
+      },
+      "grants": [],
+      "flags": {}
+    },
+    "badge.long-eye": {
+      "id": "badge.long-eye",
+      "name": "Long Eye",
+      "statModifiers": {
+        "reach": 1,
+        "accuracy": 5
+      },
+      "grants": [],
+      "flags": {}
+    },
+    "badge.lycanthropy": {
+      "id": "badge.lycanthropy",
+      "name": "Lycanthropy",
+      "statModifiers": {
+        "strength": 2,
+        "movement": 2,
+        "maxStamina": 2,
+        "crit": -5,
+        "spirit": -1
+      },
+      "grants": [],
+      "flags": {},
+      "gaps": [
+        "`startOfBattle`: regeneration 5",
+        "`onAttack`: +1 Strength"
+      ]
+    },
+    "badge.many-pockets": {
+      "id": "badge.many-pockets",
+      "name": "Many Pockets",
+      "statModifiers": {},
+      "grants": [],
+      "flags": {},
+      "gaps": [
+        "+1 Item Slots"
+      ]
+    },
+    "badge.marksman": {
+      "id": "badge.marksman",
+      "name": "Marksman",
+      "statModifiers": {
+        "precision": 1
+      },
+      "grants": [],
+      "flags": {}
+    },
+    "badge.mystic": {
+      "id": "badge.mystic",
+      "name": "Mystic",
+      "statModifiers": {
+        "magic": 1
+      },
+      "grants": [],
+      "flags": {}
+    },
+    "badge.name-in-the-hall": {
+      "id": "badge.name-in-the-hall",
+      "name": "A Name in the Hall",
+      "statModifiers": {
+        "toughness": 1
+      },
+      "grants": [],
+      "flags": {},
+      "gaps": [
+        "grants a tactic slot"
+      ]
+    },
+    "badge.night-vision": {
+      "id": "badge.night-vision",
+      "name": "Night Vision",
+      "statModifiers": {
+        "vision": 4
+      },
+      "grants": [],
+      "flags": {}
+    },
+    "badge.no-guard": {
+      "id": "badge.no-guard",
+      "name": "No Guard",
+      "statModifiers": {
+        "strength": 2
+      },
+      "grants": [],
+      "flags": {},
+      "gaps": [
+        "−1 Armor +1 max stamina"
+      ]
+    },
+    "badge.oath-bound": {
+      "id": "badge.oath-bound",
+      "name": "Oath-Bound",
+      "statModifiers": {},
+      "grants": [],
+      "flags": {
+        "blocksDeployment": true
+      },
+      "gaps": [
+        "blocks deployment except on the named Engagement"
+      ]
+    },
+    "badge.oathkeeper": {
+      "id": "badge.oathkeeper",
+      "name": "Oathkeeper",
+      "statModifiers": {
+        "resist": 1
+      },
+      "grants": [],
+      "flags": {},
+      "gaps": [
+        "+5 Deathbed Fighting"
+      ]
+    },
+    "badge.oathsworn": {
+      "id": "badge.oathsworn",
+      "name": "Oathsworn",
+      "statModifiers": {
+        "resist": 1
+      },
+      "grants": [],
+      "flags": {},
+      "gaps": [
+        "+10 Deathbed Fighting"
+      ]
+    },
+    "badge.overchanneller": {
+      "id": "badge.overchanneller",
+      "name": "Overchanneller",
+      "statModifiers": {
+        "magic": 2,
+        "maxHp": -2
+      },
+      "grants": [],
+      "flags": {}
+    },
+    "badge.plague-touched": {
+      "id": "badge.plague-touched",
+      "name": "Plague-Touched",
+      "statModifiers": {
+        "maxHp": -2
+      },
+      "grants": [],
+      "flags": {
+        "blocksDeployment": true
+      }
+    },
+    "badge.possession": {
+      "id": "badge.possession",
+      "name": "Possession",
+      "statModifiers": {
+        "magic": 2,
+        "resist": 1,
+        "vision": 3
+      },
+      "grants": [],
+      "flags": {},
+      "gaps": [
+        "`startOfBattle`: −2 card draw"
+      ]
+    },
+    "badge.quick-study": {
+      "id": "badge.quick-study",
+      "name": "Quick Study",
+      "statModifiers": {
+        "surge": 1
+      },
+      "grants": [],
+      "flags": {},
+      "gaps": [
+        "Draw turn 2 +1 (stub)"
+      ]
+    },
+    "badge.rage": {
+      "id": "badge.rage",
+      "name": "Rage",
+      "statModifiers": {},
+      "grants": [],
+      "flags": {},
+      "gaps": [
+        "`onMiss`: +1 Strength",
+        "+1 Health (Battle only)"
+      ]
+    },
+    "badge.reckless": {
+      "id": "badge.reckless",
+      "name": "Reckless",
+      "statModifiers": {
+        "crit": 10,
+        "dodge": -10
+      },
+      "grants": [],
+      "flags": {}
+    },
+    "badge.resolve": {
+      "id": "badge.resolve",
+      "name": "Resolve",
+      "statModifiers": {
+        "maxStamina": 2,
+        "maxHp": 1
+      },
+      "grants": [],
+      "flags": {}
+    },
+    "badge.rocky-tactician": {
+      "id": "badge.rocky-tactician",
+      "name": "Rocky Tactician",
+      "statModifiers": {},
+      "grants": [],
+      "flags": {},
+      "gaps": [
+        "+10 Accuracy while in Rocky"
+      ]
+    },
+    "badge.rotting-flesh": {
+      "id": "badge.rotting-flesh",
+      "name": "Rotting Flesh",
+      "statModifiers": {
+        "maxHp": 8,
+        "armor": 1,
+        "movement": -2,
+        "accuracy": -10
+      },
+      "grants": [],
+      "flags": {},
+      "gaps": [
+        "immune to poison",
+        "start of battle take 5 true damage"
+      ]
+    },
+    "badge.scarred-hide": {
+      "id": "badge.scarred-hide",
+      "name": "Scarred Hide",
+      "statModifiers": {
+        "toughness": 1
+      },
+      "grants": [],
+      "flags": {}
+    },
+    "badge.second-wind": {
+      "id": "badge.second-wind",
+      "name": "Second Wind",
+      "statModifiers": {},
+      "grants": [],
+      "flags": {},
+      "gaps": [
+        "+10 Deathbed Fighting",
+        "`onKill`: +2 Stamina"
+      ]
+    },
+    "badge.seen-the-other-side": {
+      "id": "badge.seen-the-other-side",
+      "name": "Seen the Other Side",
+      "statModifiers": {},
+      "grants": [],
+      "flags": {},
+      "gaps": [
+        "`startOfBattle`: protection 8",
+        "lucky +25"
+      ]
+    },
+    "badge.shaken": {
+      "id": "badge.shaken",
+      "name": "Shaken",
+      "statModifiers": {
+        "accuracy": -5,
+        "luck": -5
+      },
+      "grants": [],
+      "flags": {}
+    },
+    "badge.shield-born": {
+      "id": "badge.shield-born",
+      "name": "Shield-Born",
+      "statModifiers": {},
+      "grants": [],
+      "flags": {},
+      "gaps": [
+        "Health +5"
+      ]
+    },
+    "badge.shield-eye": {
+      "id": "badge.shield-eye",
+      "name": "Shield Eye",
+      "statModifiers": {},
+      "grants": [],
+      "flags": {},
+      "gaps": [
+        "`startOfBattle`: protection 3 to all heroes"
+      ]
+    },
+    "badge.slow": {
+      "id": "badge.slow",
+      "name": "Slow",
+      "statModifiers": {
+        "movement": -1
+      },
+      "grants": [],
+      "flags": {}
+    },
+    "badge.soldier": {
+      "id": "badge.soldier",
+      "name": "Soldier",
+      "statModifiers": {},
+      "grants": [],
+      "flags": {},
+      "gaps": [
+        "classification only",
+        "no modifiers"
+      ]
+    },
+    "badge.spiritual": {
+      "id": "badge.spiritual",
+      "name": "Spiritual",
+      "statModifiers": {
+        "spirit": 1
+      },
+      "grants": [],
+      "flags": {}
+    },
+    "badge.standard-bearer": {
+      "id": "badge.standard-bearer",
+      "name": "Standard Bearer",
+      "statModifiers": {},
+      "grants": [],
+      "flags": {},
+      "gaps": [
+        "aura r4: allies +2 health",
+        "+15 Deathbed Fighting"
+      ]
+    },
+    "badge.starving": {
+      "id": "badge.starving",
+      "name": "Starving",
+      "statModifiers": {
+        "accuracy": -10
+      },
+      "grants": [],
+      "flags": {},
+      "gaps": [
+        "−1 S",
+        "P",
+        "reach",
+        "H",
+        "lifts on supply"
+      ]
+    },
+    "badge.strong": {
+      "id": "badge.strong",
+      "name": "Strong",
+      "statModifiers": {
+        "strength": 1,
+        "maxStamina": 1
+      },
+      "grants": [],
+      "flags": {}
+    },
+    "badge.swimmer": {
+      "id": "badge.swimmer",
+      "name": "Swimmer",
+      "statModifiers": {},
+      "grants": [],
+      "flags": {},
+      "gaps": [
+        "Reduces the penalties of being in Water to zero"
+      ]
+    },
+    "badge.the-lovers": {
+      "id": "badge.the-lovers",
+      "name": "The Lovers",
+      "statModifiers": {
+        "crit": 5,
+        "maxStamina": 2
+      },
+      "grants": [],
+      "flags": {},
+      "gaps": [
+        "if the paired hero is also deployed: both +2 Health"
+      ]
+    },
+    "badge.thick-skinned": {
+      "id": "badge.thick-skinned",
+      "name": "Thick-Skinned",
+      "statModifiers": {
+        "armor": 1
+      },
+      "grants": [],
+      "flags": {}
+    },
+    "badge.thorned-hide": {
+      "id": "badge.thorned-hide",
+      "name": "Thorned Hide",
+      "statModifiers": {},
+      "grants": [],
+      "flags": {},
+      "gaps": [
+        "Thorns 1"
+      ]
+    },
+    "badge.trailwise": {
+      "id": "badge.trailwise",
+      "name": "Trailwise",
+      "statModifiers": {
+        "vision": 1
+      },
+      "grants": [],
+      "flags": {},
+      "gaps": [
+        "-1 Movement cost into Forest and Hills"
+      ]
+    },
+    "badge.uncanny": {
+      "id": "badge.uncanny",
+      "name": "Uncanny",
+      "statModifiers": {
+        "luck": 5
+      },
+      "grants": [],
+      "flags": {}
+    },
+    "badge.unlucky": {
+      "id": "badge.unlucky",
+      "name": "Unlucky",
+      "statModifiers": {
+        "luck": -5
+      },
+      "grants": [],
+      "flags": {}
+    },
+    "badge.unrelenting": {
+      "id": "badge.unrelenting",
+      "name": "Unrelenting",
+      "statModifiers": {
+        "staminaRegen": 1
+      },
+      "grants": [],
+      "flags": {}
+    },
+    "badge.unstoppable": {
+      "id": "badge.unstoppable",
+      "name": "Unstoppable",
+      "statModifiers": {},
+      "grants": [],
+      "flags": {},
+      "gaps": [
+        "+40 Deathbed Fighting"
+      ]
+    },
+    "badge.vampirism": {
+      "id": "badge.vampirism",
+      "name": "Vampirism",
+      "statModifiers": {
+        "strength": 2
+      },
+      "grants": [
+        "power.vampirism.blood-drain"
+      ],
+      "flags": {},
+      "gaps": [
+        "`onDamage` (melee): heal 1"
+      ]
+    },
+    "badge.vengeful": {
+      "id": "badge.vengeful",
+      "name": "Vengeful",
+      "statModifiers": {},
+      "grants": [],
+      "flags": {},
+      "gaps": [
+        "`onTakingDamage`: +1 Stamina"
+      ]
+    },
+    "badge.wall-veteran": {
+      "id": "badge.wall-veteran",
+      "name": "Wall Veteran",
+      "statModifiers": {},
+      "grants": [],
+      "flags": {},
+      "gaps": [
+        "1 protection per EOA"
+      ]
+    },
+    "badge.war-bred": {
+      "id": "badge.war-bred",
+      "name": "War-Bred",
+      "statModifiers": {
+        "strength": 1,
+        "maxStamina": 1
+      },
+      "grants": [],
+      "flags": {}
+    },
+    "badge.warded": {
+      "id": "badge.warded",
+      "name": "Warded",
+      "statModifiers": {
+        "resist": 1
+      },
+      "grants": [],
+      "flags": {}
+    },
+    "badge.willing-hands": {
+      "id": "badge.willing-hands",
+      "name": "Willing Hands",
+      "statModifiers": {},
+      "grants": [],
+      "flags": {},
+      "gaps": [
+        "+1 Item Slots"
+      ]
+    },
+    "badge.winded": {
+      "id": "badge.winded",
+      "name": "Winded",
+      "statModifiers": {
+        "maxStamina": -1,
+        "surge": -1
+      },
+      "grants": [],
+      "flags": {}
+    },
+    "badge.wounded": {
+      "id": "badge.wounded",
+      "name": "Wounded",
+      "statModifiers": {},
+      "grants": [],
+      "flags": {},
+      "gaps": [
+        "payload is prose only — the numbers are owed"
+      ]
+    },
+    "badge.dwarf": {
+      "id": "badge.dwarf",
+      "name": "Dwarf",
+      "statModifiers": {},
+      "grants": [],
+      "flags": {},
+      "gaps": [
+        "no payload"
+      ]
+    },
+    "badge.elf": {
+      "id": "badge.elf",
+      "name": "Elf",
+      "statModifiers": {},
+      "grants": [],
+      "flags": {},
+      "gaps": [
+        "no payload"
+      ]
+    },
+    "badge.fey": {
+      "id": "badge.fey",
+      "name": "Fey",
+      "statModifiers": {},
+      "grants": [],
+      "flags": {},
+      "gaps": [
+        "no payload"
+      ]
+    },
+    "badge.faithful": {
+      "id": "badge.faithful",
+      "name": "Faithful",
+      "statModifiers": {},
+      "grants": [],
+      "flags": {},
+      "gaps": [
+        "onsurvivecombat: gain 1 faith"
+      ]
+    },
+    "badge.hillman": {
+      "id": "badge.hillman",
+      "name": "Hillman",
+      "statModifiers": {},
+      "grants": [],
+      "flags": {},
+      "gaps": [
+        "-1 Movement cost onto Hills",
+        "+1 Reach while on a Hill"
+      ]
+    },
+    "badge.resolute": {
+      "id": "badge.resolute",
+      "name": "Resolute",
+      "statModifiers": {},
+      "grants": [],
+      "flags": {},
+      "gaps": [
+        "no payload"
+      ]
+    },
+    "badge.timid": {
+      "id": "badge.timid",
+      "name": "Timid",
+      "statModifiers": {},
+      "grants": [],
+      "flags": {},
+      "gaps": [
+        "OTD:gain 1 weak"
+      ]
+    },
+    "badge.fearful": {
+      "id": "badge.fearful",
+      "name": "Fearful",
+      "statModifiers": {},
+      "grants": [],
+      "flags": {},
+      "gaps": [
+        "OTD:gain 2 weak"
+      ]
+    },
+    "badge.easily-fatigued": {
+      "id": "badge.easily-fatigued",
+      "name": "Easily Fatigued",
+      "statModifiers": {},
+      "grants": [],
+      "flags": {},
+      "gaps": [
+        "OTD: lose 1 stamina"
+      ]
+    },
+    "badge.juggernaut": {
+      "id": "badge.juggernaut",
+      "name": "Juggernaut",
+      "statModifiers": {},
+      "grants": [],
+      "flags": {},
+      "gaps": [
+        "Does not get slowed by AOO damage"
+      ]
+    },
+    "badge.unsteady": {
+      "id": "badge.unsteady",
+      "name": "Unsteady",
+      "statModifiers": {},
+      "grants": [],
+      "flags": {},
+      "gaps": [
+        "OTD: slow 1"
+      ]
+    },
+    "badge.blessed-one": {
+      "id": "badge.blessed-one",
+      "name": "Blessed One",
+      "statModifiers": {},
+      "grants": [],
+      "flags": {},
+      "gaps": [
+        "Spirit +1",
+        "Magic -1"
+      ]
+    },
+    "badge.tormented-one": {
+      "id": "badge.tormented-one",
+      "name": "Tormented One",
+      "statModifiers": {},
+      "grants": [],
+      "flags": {},
+      "gaps": [
+        "Magic +1",
+        "Spirit -1"
+      ]
+    },
+    "badge.immortal": {
+      "id": "badge.immortal",
+      "name": "Immortal",
+      "statModifiers": {},
+      "grants": [],
+      "flags": {},
+      "gaps": [
+        "Does not die."
+      ]
+    },
+    "badge.prophesied-one": {
+      "id": "badge.prophesied-one",
+      "name": "Prophesied One",
+      "statModifiers": {},
+      "grants": [],
+      "flags": {},
+      "gaps": [
+        "??"
+      ]
+    },
+    "badge.death-seeker": {
+      "id": "badge.death-seeker",
+      "name": "Death Seeker",
+      "statModifiers": {},
+      "grants": [],
+      "flags": {},
+      "gaps": [
+        "Lucky -10",
+        "Health -2",
+        "Turns to Bleed out -3.  Deathbed +40.   OTD: gain 2 stamina"
+      ]
+    },
+    "badge.survivor": {
+      "id": "badge.survivor",
+      "name": "Survivor",
+      "statModifiers": {},
+      "grants": [],
+      "flags": {},
+      "gaps": [
+        "3 extra turns to bleed out",
+        "deathbed +20",
+        "toughtness+2"
+      ]
+    },
+    "badge.thick-blooded": {
+      "id": "badge.thick-blooded",
+      "name": "Thick Blooded",
+      "statModifiers": {},
+      "grants": [],
+      "flags": {},
+      "gaps": [
+        "5 extra turns to bleed out"
+      ]
+    },
+    "badge.stocky": {
+      "id": "badge.stocky",
+      "name": "Stocky",
+      "statModifiers": {},
+      "grants": [],
+      "flags": {},
+      "gaps": [
+        "Dodge -7",
+        "Lucky +5 Crit +5 Health +1"
+      ]
+    },
+    "badge.tall": {
+      "id": "badge.tall",
+      "name": "Tall",
+      "statModifiers": {},
+      "grants": [],
+      "flags": {},
+      "gaps": [
+        "Movement +1 Reach +1",
+        "Dodge -10"
+      ]
+    },
+    "badge.short": {
+      "id": "badge.short",
+      "name": "Short",
+      "statModifiers": {},
+      "grants": [],
+      "flags": {},
+      "gaps": [
+        "Movement -1",
+        "Dodge +10"
+      ]
+    },
+    "badge.beautiful": {
+      "id": "badge.beautiful",
+      "name": "Beautiful",
+      "statModifiers": {},
+      "grants": [],
+      "flags": {},
+      "gaps": [
+        "ondeath: all heroes gain 20 surge and +1 health"
+      ]
+    },
+    "badge.nobility": {
+      "id": "badge.nobility",
+      "name": "Nobility",
+      "statModifiers": {},
+      "grants": [],
+      "flags": {},
+      "gaps": [
+        "onsurvive: +2 supplies.  Surge pool +30"
+      ]
+    },
+    "badge.pacifist": {
+      "id": "badge.pacifist",
+      "name": "Pacifist",
+      "statModifiers": {},
+      "grants": [],
+      "flags": {},
+      "gaps": [
+        "S-3 P -3.  Karma 4",
+        "Luck +20",
+        "Stamina Regen +1"
+      ]
+    },
+    "badge.poor-vision": {
+      "id": "badge.poor-vision",
+      "name": "Poor Vision",
+      "statModifiers": {},
+      "grants": [],
+      "flags": {},
+      "gaps": [
+        "Accuracy -5",
+        "reach -1",
+        "vision -2"
+      ]
+    },
+    "badge.bowmaster": {
+      "id": "badge.bowmaster",
+      "name": "BowMaster",
+      "statModifiers": {},
+      "grants": [],
+      "flags": {},
+      "gaps": [
+        "Bows +15 accuracy"
+      ]
+    },
+    "badge.quick-jump": {
+      "id": "badge.quick-jump",
+      "name": "Quick Jump",
+      "statModifiers": {},
+      "grants": [],
+      "flags": {},
+      "gaps": [
+        "oncombat start starting surge pool +80"
+      ]
+    },
+    "badge.titan-blood": {
+      "id": "badge.titan-blood",
+      "name": "Titan Blood",
+      "statModifiers": {},
+      "grants": [],
+      "flags": {},
+      "gaps": [
+        "S+3",
+        "H+5",
+        "mv -2",
+        "onstart slow3",
+        "max stamina -2."
+      ]
+    },
+    "badge.flatfooted": {
+      "id": "badge.flatfooted",
+      "name": "Flatfooted",
+      "statModifiers": {},
+      "grants": [],
+      "flags": {},
+      "gaps": [
+        "onstart  slow 5 weak 2"
+      ]
+    },
+    "badge.lackluster": {
+      "id": "badge.lackluster",
+      "name": "Lackluster",
+      "statModifiers": {},
+      "grants": [],
+      "flags": {},
+      "gaps": [
+        "Surge -10"
+      ]
+    },
+    "badge.void": {
+      "id": "badge.void",
+      "name": "Void",
+      "statModifiers": {},
+      "grants": [],
+      "flags": {},
+      "gaps": [
+        "Magic -1",
+        "Health +2"
+      ]
+    },
+    "badge.atheist": {
+      "id": "badge.atheist",
+      "name": "Atheist",
+      "statModifiers": {},
+      "grants": [],
+      "flags": {},
+      "gaps": [
+        "Spirit -1 Health +2"
+      ]
+    },
+    "badge.airwalker": {
+      "id": "badge.airwalker",
+      "name": "Airwalker",
+      "statModifiers": {},
+      "grants": [],
+      "flags": {},
+      "gaps": [
+        "Airwalk ability"
+      ]
+    },
+    "badge.9-lives": {
+      "id": "badge.9-lives",
+      "name": "9 Lives",
+      "statModifiers": {},
+      "grants": [],
+      "flags": {},
+      "gaps": [
+        "Deathbed Fighting +15",
+        "Lucky +15",
+        "Health +1"
+      ]
+    },
+    "badge.sword-master": {
+      "id": "badge.sword-master",
+      "name": "Sword Master",
+      "statModifiers": {},
+      "grants": [],
+      "flags": {},
+      "gaps": [
+        "blade attacks +1 damage"
+      ]
+    },
+    "badge.pugilist": {
+      "id": "badge.pugilist",
+      "name": "Pugilist",
+      "statModifiers": {},
+      "grants": [],
+      "flags": {},
+      "gaps": [
+        "Brawl attacks +1 damage"
+      ]
+    },
+    "badge.tireless": {
+      "id": "badge.tireless",
+      "name": "Tireless",
+      "statModifiers": {},
+      "grants": [],
+      "flags": {},
+      "gaps": [
+        "Max stamina +2"
+      ]
+    },
+    "badge.karma-master": {
+      "id": "badge.karma-master",
+      "name": "Karma Master",
+      "statModifiers": {},
+      "grants": [],
+      "flags": {},
+      "gaps": [
+        "Karma 2",
+        "Accuracy -10"
+      ]
+    },
+    "badge.good-karma": {
+      "id": "badge.good-karma",
+      "name": "Good Karma",
+      "statModifiers": {},
+      "grants": [],
+      "flags": {},
+      "gaps": [
+        "Karma 1"
+      ]
+    },
+    "badge.frost-resistant": {
+      "id": "badge.frost-resistant",
+      "name": "Frost Resistant",
+      "statModifiers": {},
+      "grants": [],
+      "flags": {},
+      "gaps": [
+        "Immune Frost 1"
+      ]
+    },
+    "badge.poison-resistant": {
+      "id": "badge.poison-resistant",
+      "name": "Poison Resistant",
+      "statModifiers": {},
+      "grants": [],
+      "flags": {},
+      "gaps": [
+        "Immune poison 1"
+      ]
+    },
+    "badge.curse-resistant": {
+      "id": "badge.curse-resistant",
+      "name": "Curse Resistant",
+      "statModifiers": {},
+      "grants": [],
+      "flags": {},
+      "gaps": [
+        "Immune weak 1"
+      ]
+    },
+    "badge.fire-resistant": {
+      "id": "badge.fire-resistant",
+      "name": "Fire Resistant",
+      "statModifiers": {},
+      "grants": [],
+      "flags": {},
+      "gaps": [
+        "Immune fire 1"
+      ]
+    },
+    "badge.troll-blood": {
+      "id": "badge.troll-blood",
+      "name": "Troll Blood",
+      "statModifiers": {},
+      "grants": [],
+      "flags": {},
+      "gaps": [
+        "EOA gain 1 regen"
+      ]
+    },
+    "badge.young": {
+      "id": "badge.young",
+      "name": "Young",
+      "statModifiers": {},
+      "grants": [],
+      "flags": {},
+      "gaps": [
+        "Surge 3",
+        "Lucky 5",
+        "Items -1"
+      ]
+    },
+    "badge.veteran": {
+      "id": "badge.veteran",
+      "name": "Veteran",
+      "statModifiers": {},
+      "grants": [],
+      "flags": {},
+      "gaps": [
+        "Items +1 Health +1"
+      ]
+    },
+    "badge.small-hands": {
+      "id": "badge.small-hands",
+      "name": "Small Hands",
+      "statModifiers": {},
+      "grants": [],
+      "flags": {},
+      "gaps": [
+        "Items -1"
+      ]
+    },
+    "badge.cultist": {
+      "id": "badge.cultist",
+      "name": "Cultist",
+      "statModifiers": {
+        "crit": 10
+      },
+      "grants": [],
+      "flags": {},
+      "gaps": [
+        "onbattlestart: lose 1 faith"
+      ]
+    },
+    "badge.tower-defender": {
+      "id": "badge.tower-defender",
+      "name": "Tower Defender",
+      "statModifiers": {
+        "dodge": 20
+      },
+      "grants": [],
+      "flags": {},
+      "gaps": [
+        "if on tower"
+      ]
+    },
+    "badge.wall-defender": {
+      "id": "badge.wall-defender",
+      "name": "Wall Defender",
+      "statModifiers": {
+        "maxHp": 3
+      },
+      "grants": [],
+      "flags": {},
+      "gaps": [
+        "If on wall"
+      ]
+    },
+    "badge.cursed-vengeance": {
+      "id": "badge.cursed-vengeance",
+      "name": "Cursed Vengeance",
+      "statModifiers": {},
+      "grants": [],
+      "flags": {},
+      "gaps": [
+        "If on cuirsed Tile",
+        "Thorns 2"
+      ]
+    },
+    "badge.frozen-vengeance": {
+      "id": "badge.frozen-vengeance",
+      "name": "Frozen Vengeance",
+      "statModifiers": {
+        "armor": 1
+      },
+      "grants": [],
+      "flags": {},
+      "gaps": [
+        "If on Frozen Tile",
+        "OTD: inflict 1 frozen"
+      ]
+    },
+    "badge.fiery-vengeance": {
+      "id": "badge.fiery-vengeance",
+      "name": "Fiery Vengeance",
+      "statModifiers": {
+        "accuracy": 20
+      },
+      "grants": [],
+      "flags": {},
+      "gaps": [
+        "If on Burning Tile",
+        "+1 P +1 Str"
+      ]
+    },
+    "badge.quick-start": {
+      "id": "badge.quick-start",
+      "name": "Quick Start",
+      "statModifiers": {},
+      "grants": [],
+      "flags": {},
+      "gaps": [
+        "Deploy +5"
+      ]
+    },
+    "badge.child": {
+      "id": "badge.child",
+      "name": "Child",
+      "statModifiers": {
+        "maxHp": -4
+      },
+      "grants": [],
+      "flags": {},
+      "gaps": [
+        "−1 S",
+        "−1 P"
+      ]
+    },
+    "badge.relentless": {
+      "id": "badge.relentless",
+      "name": "Relentless",
+      "statModifiers": {},
+      "grants": [],
+      "flags": {},
+      "gaps": [
+        "If Deathbed Fighting triggers",
+        "gain 6 Health"
+      ]
+    },
+    "badge.wise": {
+      "id": "badge.wise",
+      "name": "Wise",
+      "statModifiers": {},
+      "grants": [],
+      "flags": {},
+      "gaps": [
+        "+1 draw on turn 1 and on turn 3"
+      ]
+    },
+    "badge.lithe": {
+      "id": "badge.lithe",
+      "name": "Lithe",
+      "statModifiers": {
+        "maxHp": -2,
+        "dodge": 20
+      },
+      "grants": [],
+      "flags": {}
+    },
+    "badge.demon-slayer": {
+      "id": "badge.demon-slayer",
+      "name": "DemonSlayer",
+      "statModifiers": {},
+      "grants": [],
+      "flags": {},
+      "gaps": [
+        "Damage +2 vs Demons"
+      ]
+    },
+    "badge.undead-slayer": {
+      "id": "badge.undead-slayer",
+      "name": "UndeadSlayer",
+      "statModifiers": {},
+      "grants": [],
+      "flags": {},
+      "gaps": [
+        "Damage +2 vs Undead"
+      ]
+    },
+    "badge.beast-slayer": {
+      "id": "badge.beast-slayer",
+      "name": "BeastSlayer",
+      "statModifiers": {},
+      "grants": [],
+      "flags": {},
+      "gaps": [
+        "Damage +2 vs Beasts"
+      ]
+    },
+    "badge.human-slayer": {
+      "id": "badge.human-slayer",
+      "name": "HumanSlayer",
+      "statModifiers": {},
+      "grants": [],
+      "flags": {},
+      "gaps": [
+        "Damage +2 vs Humans"
+      ]
+    },
+    "badge.vampire-slayer": {
+      "id": "badge.vampire-slayer",
+      "name": "VampireSlayer",
+      "statModifiers": {},
+      "grants": [],
+      "flags": {},
+      "gaps": [
+        "Damage +2 vs Vampires"
+      ]
+    },
+    "badge.werewolf-slayer": {
+      "id": "badge.werewolf-slayer",
+      "name": "WerewolfSlayer",
+      "statModifiers": {},
+      "grants": [],
+      "flags": {},
+      "gaps": [
+        "Damage +2 vs Werewolves"
+      ]
+    },
+    "badge.scouting": {
+      "id": "badge.scouting",
+      "name": "Scouting",
+      "statModifiers": {
+        "vision": 3,
+        "reach": 1
+      },
+      "grants": [],
+      "flags": {},
+      "gaps": [
+        "Reveals stealthed enemies within 3"
+      ]
+    },
+    "badge.quick-learner": {
+      "id": "badge.quick-learner",
+      "name": "Quick Learner",
+      "statModifiers": {},
+      "grants": [],
+      "flags": {},
+      "gaps": [
+        "Gain 7 XP per combat"
+      ]
+    },
+    "badge.ancient": {
+      "id": "badge.ancient",
+      "name": "Ancient",
+      "statModifiers": {},
+      "grants": [],
+      "flags": {},
+      "gaps": [
+        "Start with 30 XP"
+      ]
+    },
+    "badge.secret": {
+      "id": "badge.secret",
+      "name": "Secret",
+      "statModifiers": {},
+      "grants": [],
+      "flags": {},
+      "gaps": [
+        "Secret (stub)"
+      ]
+    },
+    "badge.brave": {
+      "id": "badge.brave",
+      "name": "Brave",
+      "statModifiers": {
+        "resist": 1
+      },
+      "grants": [],
+      "flags": {},
+      "gaps": [
+        "immune to Weak"
+      ]
+    },
+    "badge.diverse-learner": {
+      "id": "badge.diverse-learner",
+      "name": "Diverse Learner",
+      "statModifiers": {},
+      "grants": [],
+      "flags": {},
+      "gaps": [
+        "Adds options during power gaining"
+      ]
+    },
+    "badge.old": {
+      "id": "badge.old",
+      "name": "Old",
+      "statModifiers": {
+        "maxHp": -1,
+        "movement": -1
+      },
+      "grants": [],
+      "flags": {},
+      "gaps": [
+        "+2 draw on turn 1",
+        "+2 Item slots"
+      ]
+    },
+    "badge.angry": {
+      "id": "badge.angry",
+      "name": "Angry",
+      "statModifiers": {},
+      "grants": [],
+      "flags": {},
+      "gaps": [
+        "On hit: gain 3 Crit (for the Battle)"
+      ]
+    },
+    "badge.physician": {
+      "id": "badge.physician",
+      "name": "Physician",
+      "statModifiers": {},
+      "grants": [],
+      "flags": {},
+      "gaps": [
+        "Gains a free action — Stabilize: pause an ally bleeding out. Costs 1 Stamina",
+        "cooldown 1."
+      ]
+    },
+    "badge.scavenger": {
+      "id": "badge.scavenger",
+      "name": "Scavenger",
+      "statModifiers": {},
+      "grants": [],
+      "flags": {},
+      "gaps": [
+        "Bonus on scavenging"
+      ]
+    },
+    "badge.crippled": {
+      "id": "badge.crippled",
+      "name": "Crippled",
+      "statModifiers": {
+        "movement": -1
+      },
+      "grants": [],
+      "flags": {},
+      "gaps": [
+        "−2 S"
+      ]
+    },
+    "badge.outcast": {
+      "id": "badge.outcast",
+      "name": "Outcast",
+      "statModifiers": {},
+      "grants": [],
+      "flags": {},
+      "gaps": [
+        "Start of combat: ALL heroes gain 2 Weak"
+      ]
+    },
+    "badge.looting": {
+      "id": "badge.looting",
+      "name": "Looting",
+      "statModifiers": {},
+      "grants": [],
+      "flags": {},
+      "gaps": [
+        "On survival: gain 1 Supplies"
+      ]
+    },
+    "badge.devil-in-disguise": {
+      "id": "badge.devil-in-disguise",
+      "name": "Devil in Disguise",
+      "statModifiers": {},
+      "grants": [],
+      "flags": {},
+      "gaps": [
+        "Counts as a Demon. All heroes lose 1 Resist and gain 3 Corruption",
+        "the wearer gains 3 Resist and onHit: Burn 1."
+      ]
+    },
+    "badge.stalwart": {
+      "id": "badge.stalwart",
+      "name": "Stalwart",
+      "statModifiers": {
+        "maxStamina": 1,
+        "maxHp": 2
+      },
+      "grants": [],
+      "flags": {}
+    },
+    "badge.unwavering": {
+      "id": "badge.unwavering",
+      "name": "Unwavering",
+      "statModifiers": {},
+      "grants": [],
+      "flags": {},
+      "gaps": [
+        "Immune to Weak",
+        "on taking damage: remove 1 Weak"
+      ]
+    },
+    "badge.brawler": {
+      "id": "badge.brawler",
+      "name": "Brawler",
+      "statModifiers": {},
+      "grants": [],
+      "flags": {},
+      "gaps": [
+        "+2 damage on brawl-tagged attacks"
+      ]
+    },
+    "badge.quick": {
+      "id": "badge.quick",
+      "name": "Quick",
+      "statModifiers": {
+        "movement": 1
+      },
+      "grants": [],
+      "flags": {},
+      "gaps": [
+        "+10 Surge Chance",
+        "Deploy +2"
+      ]
+    },
+    "badge.evasion": {
+      "id": "badge.evasion",
+      "name": "Evasion",
+      "statModifiers": {},
+      "grants": [],
+      "flags": {},
+      "gaps": [
+        "+20 Dodge against attacks of opportunity"
+      ]
+    },
+    "badge.agile": {
+      "id": "badge.agile",
+      "name": "Agile",
+      "statModifiers": {
+        "dodge": 8
+      },
+      "grants": [],
+      "flags": {},
+      "gaps": [
+        "Gains the Dodge and Roll movement power"
+      ]
+    },
+    "badge.ignorant": {
+      "id": "badge.ignorant",
+      "name": "Ignorant",
+      "statModifiers": {
+        "magic": -1,
+        "luck": 10
+      },
+      "grants": [],
+      "flags": {}
+    },
+    "badge.retaliating": {
+      "id": "badge.retaliating",
+      "name": "Retaliating",
+      "statModifiers": {},
+      "grants": [],
+      "flags": {},
+      "gaps": [
+        "On taking damage: gain 40 Accuracy until the end of your next turn"
+      ]
+    },
+    "badge.lucky": {
+      "id": "badge.lucky",
+      "name": "Lucky",
+      "statModifiers": {
+        "luck": 1
+      },
+      "grants": [],
+      "flags": {},
+      "gaps": [
+        "Deploy +1"
+      ]
+    },
+    "badge.discouraged": {
+      "id": "badge.discouraged",
+      "name": "Discouraged",
+      "statModifiers": {},
+      "grants": [],
+      "flags": {},
+      "gaps": [
+        "On miss: lose 1 Stamina"
+      ]
+    },
+    "badge.glass-jaw": {
+      "id": "badge.glass-jaw",
+      "name": "Glass Jaw",
+      "statModifiers": {
+        "luck": -15
+      },
+      "grants": [],
+      "flags": {}
+    },
+    "badge.bleeder": {
+      "id": "badge.bleeder",
+      "name": "Bleeder",
+      "statModifiers": {},
+      "grants": [],
+      "flags": {},
+      "gaps": [
+        "On taking damage: gain 1 Bleed"
+      ]
+    },
+    "badge.sickly": {
+      "id": "badge.sickly",
+      "name": "Sickly",
+      "statModifiers": {},
+      "grants": [],
+      "flags": {},
+      "gaps": [
+        "Start of Battle: gain 2 Poison"
+      ]
+    },
+    "badge.heavy-sleeper": {
+      "id": "badge.heavy-sleeper",
+      "name": "Heavy Sleeper",
+      "statModifiers": {},
+      "grants": [],
+      "flags": {},
+      "gaps": [
+        "Start of Battle: lose 2 Stamina"
+      ]
+    },
+    "badge.coward": {
+      "id": "badge.coward",
+      "name": "Coward",
+      "statModifiers": {},
+      "grants": [],
+      "flags": {},
+      "gaps": [
+        "Start of Battle: gain 3 Weak"
+      ]
+    },
+    "badge.haunted": {
+      "id": "badge.haunted",
+      "name": "Haunted",
+      "statModifiers": {},
+      "grants": [],
+      "flags": {},
+      "gaps": [
+        "On taking damage: take 1 TRUE damage"
+      ]
+    },
+    "badge.feinting": {
+      "id": "badge.feinting",
+      "name": "Feinting",
+      "statModifiers": {},
+      "grants": [],
+      "flags": {},
+      "gaps": [
+        "On miss: +20 Accuracy until the end of your next Turn"
+      ]
+    },
+    "badge.butchering": {
+      "id": "badge.butchering",
+      "name": "Butchering",
+      "statModifiers": {},
+      "grants": [],
+      "flags": {},
+      "gaps": [
+        "On kill: gain 3 Crit for the Battle"
+      ]
+    },
+    "badge.rallying": {
+      "id": "badge.rallying",
+      "name": "Rallying",
+      "statModifiers": {},
+      "grants": [],
+      "flags": {},
+      "gaps": [
+        "On kill: allies within 2 regain 1 Stamina"
+      ]
+    },
+    "badge.harrying": {
+      "id": "badge.harrying",
+      "name": "Harrying",
+      "statModifiers": {},
+      "grants": [],
+      "flags": {},
+      "gaps": [
+        "On hit: apply 1 Slow"
+      ]
+    },
+    "badge.inspiring": {
+      "id": "badge.inspiring",
+      "name": "Inspiring",
+      "statModifiers": {},
+      "grants": [],
+      "flags": {},
+      "gaps": [
+        "Aura: allies within 1 get +1 Resist"
+      ]
+    },
+    "badge.charging": {
+      "id": "badge.charging",
+      "name": "Charging",
+      "statModifiers": {},
+      "grants": [],
+      "flags": {},
+      "gaps": [
+        "Gains the Charging Run move action: 2 Stamina",
+        "your move with +2 Movement",
+        "+3 Strength until end of Activation"
+      ]
+    },
+    "badge.countering": {
+      "id": "badge.countering",
+      "name": "Countering",
+      "statModifiers": {},
+      "grants": [],
+      "flags": {},
+      "gaps": [
+        "On dodge: gain +30 Accuracy until the end of your next turn"
+      ]
+    },
+    "badge.praying": {
+      "id": "badge.praying",
+      "name": "Praying",
+      "statModifiers": {},
+      "grants": [],
+      "flags": {},
+      "gaps": [
+        "Gains the Pray bonus move: 1 Stamina",
+        "no movement",
+        "gain 1 Faith"
+      ]
+    },
+    "badge.thick-hide": {
+      "id": "badge.thick-hide",
+      "name": "Thick Hide",
+      "statModifiers": {
+        "toughness": 1
+      },
+      "grants": [],
+      "flags": {}
+    },
+    "badge.iron-skin": {
+      "id": "badge.iron-skin",
+      "name": "Iron Skin",
+      "statModifiers": {
+        "armor": 1
+      },
+      "grants": [],
+      "flags": {}
+    },
+    "badge.devoted": {
+      "id": "badge.devoted",
+      "name": "Devoted",
+      "statModifiers": {
+        "spirit": 1
+      },
+      "grants": [],
+      "flags": {}
+    },
+    "badge.slow-burner": {
+      "id": "badge.slow-burner",
+      "name": "Slow Burner",
+      "statModifiers": {
+        "staminaRegen": 1,
+        "maxStamina": -1,
+        "maxHp": -1,
+        "crit": -5
+      },
+      "grants": [],
+      "flags": {}
+    },
+    "badge.shielded": {
+      "id": "badge.shielded",
+      "name": "Shielded",
+      "statModifiers": {},
+      "grants": [],
+      "flags": {},
+      "gaps": [
+        "Start of Battle: gain 5 Protection"
+      ]
+    },
+    "badge.frostborn": {
+      "id": "badge.frostborn",
+      "name": "Frostborn",
+      "statModifiers": {},
+      "grants": [],
+      "flags": {},
+      "gaps": [
+        "Immune to Frost",
+        "your attacks apply 1 Frost"
+      ]
+    },
+    "badge.cruel": {
+      "id": "badge.cruel",
+      "name": "Cruel",
+      "statModifiers": {},
+      "grants": [],
+      "flags": {},
+      "gaps": [
+        "On crit: apply 1 Bleed"
+      ]
+    },
+    "badge.assassin": {
+      "id": "badge.assassin",
+      "name": "Assassin",
+      "statModifiers": {
+        "crit": -5
+      },
+      "grants": [],
+      "flags": {},
+      "gaps": [
+        "On crit: deal 6 TRUE damage"
+      ]
+    },
+    "badge.karmic": {
+      "id": "badge.karmic",
+      "name": "Karmic",
+      "statModifiers": {},
+      "grants": [],
+      "flags": {},
+      "gaps": [
+        "On taking damage: gain 1 Karma"
+      ]
+    },
+    "badge.backstabber": {
+      "id": "badge.backstabber",
+      "name": "Backstabber",
+      "statModifiers": {
+        "crit": 20
+      },
+      "grants": [],
+      "flags": {},
+      "gaps": [
+        "When in stealth: +20 Accuracy"
+      ]
+    },
+    "badge.gravedigger": {
+      "id": "badge.gravedigger",
+      "name": "Gravedigger",
+      "statModifiers": {},
+      "grants": [],
+      "flags": {},
+      "gaps": [
+        "On kill: destroy the corpse — no corpse is made"
       ]
     }
   }

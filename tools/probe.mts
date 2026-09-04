@@ -35,6 +35,8 @@ const ACTED = new Set(['damage.applied','heal.applied','power.used','attack.decl
   'unit.equipped',
   // progression.level-table-by-type (2026-09-03): a hero grown at fielding — stats folded from its TABLE
   'unit.grown',
+  // badge.mechanism (2026-09-04): a badge worn at fielding or gained mid-battle changed the unit
+  'unit.badged', 'badge.gained',
   // movement.bonus-actions (2026-08-25): a bonus move's rider IS its state
   // change — Focus moves zero hexes on purpose, so 'stamina.gained' is the only
   // mark it leaves. Same widening-is-stricter argument as map.loaded above.

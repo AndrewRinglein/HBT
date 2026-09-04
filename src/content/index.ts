@@ -3,8 +3,8 @@
 // because load order would become a hidden global that shifts tie-breaks between runs.
 
 import type { AbilityDef, ActionDef, AttackDef, UnitDef } from '../core/types.js'
-import { omitDisabled, stripDisabledTriggers } from './disable.js'
-import { liftAttacks, packAbilities, packAttacks, packCritChart, packItems, packTestAbilities, packTestAttacks, packUnits, packClassPowers, packEnchanted, packEncounters, packLevels, packSpecialties, type PackAttackRow } from './pack.js'
+import { disabledIds, omitDisabled, stripDisabledTriggers } from './disable.js'
+import { liftAttacks, packAbilities, packAttacks, packBadges, packCritChart, packItems, packTestAbilities, packTestAttacks, packTestBadges, packUnits, packClassPowers, packEnchanted, packEncounters, packLevels, packSpecialties, type PackAttackRow } from './pack.js'
 import { MOVES } from './moves.js'
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -230,6 +230,9 @@ for (const k of Object.keys(packEnchanted(ATTACKS, ABILITIES))) {
   if (k in packItems(ATTACKS, ABILITIES)) throw new Error(`enchanted row '${k}' collides with a Codex item — one owner only`)
 }
 export const ITEMS = omitDisabled({ ...packItems(ATTACKS, ABILITIES), ...packEnchanted(ATTACKS, ABILITIES) })
+// The badge registry — badge.mechanism (2026-09-04): the Codex's rows and the test receptacle's, one owner per id, through the kill-switch seam.
+for (const k of Object.keys(packTestBadges())) if (k in packBadges()) throw new Error(`badge '${k}' exists in the test receptacle AND the pack — one owner only`)
+export const BADGES = omitDisabled({ ...packBadges(), ...packTestBadges() })
 /** Level tables and specialties — read by fieldedDef() (hero assembly, 2026-09-03). */
 export const LEVELS = omitDisabled(packLevels())
 export const SPECIALTIES = omitDisabled(packSpecialties())
@@ -247,6 +250,8 @@ export const UNITS = stripDisabledTriggers(omitDisabled({ ...RAW_UNITS, ...PACK 
 // failure mode this replaces.
 for (const u of Object.values(UNITS)) {
   if (u.levelTable !== undefined && !(u.levelTable in LEVELS)) throw new Error(`unit '${u.typeId}' levels on '${u.levelTable}', which is not a level table in the pack`)
+  // badge.mechanism: a row's badges name registry rows — unless the kill switch removed one, which is the seam working
+  for (const b of u.badges ?? []) if (!(b in BADGES) && !disabledIds().has(b)) throw new Error(`unit '${u.typeId}' carries '${b}', which is not a badge in the pack`)
 }
 
 /** The standard battle: the Alpha Team on the west edge, four zombies on the east (ruled 2026-09-03; rows 15 and 0 until 2026-09-04). */

@@ -325,6 +325,20 @@ const RAW_SCENARIOS: Readonly<Record<string, ScenarioDef>> = {
   // of TWO (trigger.test-ram.shove). The same fielding as the arc variant on a
   // replicate where the Overhead lands on Turn 2, so the two-hex shove is on
   // the log of the battle the probe reads.
+  // badge.mechanism (2026-09-04): two test badges on a fielded hero — Iron Skin
+  // (stat modifiers) and the Brand (a rider and a flag) — so the probe reads a
+  // badge's rider firing and its modifiers on the sheet.
+  'showcase.badged': {
+    id: 'showcase.badged',
+    note: 'badge.mechanism: a test warrior wearing test.badge.iron-skin and test.badge.brand against three zombies — the badge fold at fielding and a badge rider live.',
+    mapId: 'map.open',
+    heroes: ['test-warrior'],
+    heroHexes: [135],
+    heroBadges: [['test.badge.iron-skin', 'test.badge.brand']],
+    enemies: ['test-zombie', 'test-zombie', 'test-zombie'],
+    enemyHexes: [118, 119, 120],
+    replicate: 0,
+  },
   'showcase.knockback-two': {
     id: 'showcase.knockback-two',
     note: 'fix.knockback-beyond-one: the test Arc Golem shoves a zombie two hexes with its Overhead — knockback greater than one, live.',
@@ -384,6 +398,7 @@ export function scenarioOptions(s: ScenarioDef) {
     enemyCount: s.enemies.length,
     ...(s.heroItems ? { heroItems: s.heroItems } : {}),
     ...(s.heroProgress ? { heroProgress: s.heroProgress } : {}),
+    ...(s.heroBadges ? { heroBadges: s.heroBadges } : {}),
     ...(s.encounterId ? { encounter: encounterDef(s.encounterId) } : {}),
   }
 }

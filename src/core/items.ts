@@ -14,7 +14,7 @@
 // Refusals are loud (Law 9): an unknown item, more than two hands of weapons,
 // more than one armor. Slot counts, class restrictions and per-class caps are
 // the kingdom's legality, not the engine's (GAME-ARCHITECTURE §2.3).
-import type { ItemDef, UnitDef } from './types.js'
+import type { BadgeDef, ItemDef, UnitDef } from './types.js'
 import type { AttackDef } from './types.js'
 
 export type Applied = {
@@ -155,4 +155,60 @@ export function applyProgress(
     ...(stats['toughness'] ? { toughness: stats['toughness'] } : {}), ...(stats['surge'] ? { surge: stats['surge'] } : {}), ...(stats['vision'] ? { vision: stats['vision'] } : {}),
     abilities: [...base.abilities, ...powers.filter((p) => !base.abilities.includes(p))],
   }
+}
+
+// ── BADGES AT FIELDING (badge.mechanism, 2026-09-04) ─────────────────────────
+// A badge folds onto the row the way an item does — stat modifiers added,
+// granted actions joined, riders attached — with no hands, slots or armour to
+// count. Applied AFTER items, so a badge sees the kitted hero. Loud on an
+// unknown id (Law 9): a badge the registry lacks is indistinguishable from
+// one never authored, and the kill-switch seam relies on exactly that.
+
+export type Badged = {
+  readonly def: UnitDef
+  /** Per badge, what it put on the unit — for the unit.badged events. */
+  readonly worn: readonly { readonly badgeId: string; readonly grants: readonly string[]; readonly mods: Readonly<Record<string, number>>; readonly gaps?: readonly string[] }[]
+}
+
+export function applyBadges(
+  base: UnitDef,
+  badgeIds: readonly string[],
+  badges: Readonly<Record<string, BadgeDef>>,
+  where: string,
+): Badged {
+  const stats: Record<string, number> = {}
+  for (const k of FOLDABLE) stats[k] = (base as unknown as Record<string, number | undefined>)[k] ?? 0
+  const attacks = [...base.attacks]
+  const abilities = [...base.abilities]
+  const triggers = [...(base.triggers ?? [])]
+  const worn: Badged['worn'][number][] = []
+  const seen = new Set<string>()
+  for (const id of badgeIds) {
+    const b = badges[id]
+    if (!b) throw new Error(`${where}: ${base.typeId} carries '${id}', which is not a badge in the registry`)
+    if (seen.has(id)) continue   // a badge is a fact about the unit; twice is once
+    seen.add(id)
+    const mods: Record<string, number> = {}
+    for (const [k, v] of Object.entries(b.statModifiers)) {
+      if (typeof v !== 'number' || !(FOLDABLE as readonly string[]).includes(k)) throw new Error(`${where}: badge '${id}' modifies '${k}', which the engine cannot fold`)
+      stats[k] = (stats[k] ?? 0) + v
+      mods[k] = v
+    }
+    // a granted id is an attack or a power; the registry it lives in decides which list it joins at makeUnit — both lists feed the one action list
+    for (const g of b.grants) if (!attacks.includes(g) && !abilities.includes(g)) abilities.push(g)
+    triggers.push(...(b.triggers ?? []))
+    worn.push({ badgeId: id, grants: [...b.grants], mods, ...(b.gaps ? { gaps: b.gaps } : {}) })
+  }
+  const def: UnitDef = {
+    ...base,
+    maxHp: stats['maxHp']!, armor: stats['armor']!, resist: stats['resist']!, dodge: stats['dodge']!,
+    strength: stats['strength']!, precision: stats['precision']!, magic: stats['magic']!, spirit: stats['spirit']!,
+    reach: stats['reach']!, accuracy: stats['accuracy']!, movement: stats['movement']!,
+    maxStamina: stats['maxStamina']!, staminaRegen: stats['staminaRegen']!,
+    ...(stats['crit'] ? { crit: stats['crit'] } : {}), ...(stats['luck'] ? { luck: stats['luck'] } : {}),
+    ...(stats['toughness'] ? { toughness: stats['toughness'] } : {}), ...(stats['surge'] ? { surge: stats['surge'] } : {}), ...(stats['vision'] ? { vision: stats['vision'] } : {}),
+    attacks, abilities, triggers,
+    badges: [...seen],
+  }
+  return { def, worn }
 }

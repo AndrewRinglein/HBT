@@ -9133,3 +9133,23 @@ effect of trigger.test-ram.shove — 25 paired battles per map, WITH vs WITHOUT
   test.map.horde-24: heroWins 25->25 (+0)  meanTurns 5.9->5.9
 NO MEASURABLE EFFECT at this sample size — consequence clause caught state changes, but outcomes did not move. Consider a sweep with more replicates before drawing balance conclusions.
 ```
+
+## badge.mechanism — LANDED `2e76ede`
+2026-09-04 21:04
+
+  PASS  dependencies landed
+  WARN  not already decided — 3 candidate ruling(s) — READ BEFORE ASKING: ../STATE.md:20 · ../STATE.md:21
+  PASS  typecheck
+  PASS  full test suite
+  PASS  gate 1 — the id appears in a real battle — test.badge.brand: 4 log lines, 4 fired, 1 changed state
+  PASS  brought its own tests — test/badges.test.ts
+  PASS  existing tests untouched
+  PASS  control battles unchanged
+  PASS  content has a published source — 24 ids without a published source — 1 NEW from THIS item, seal withheld until published
+  PASS  hardcode scan — core knows mechanisms, never names
+  PASS  generalizes — the second instance costs zero engine code — test.badge.iron-skin live · test.badge.brand live
+  PASS  naming — new content ids use declared kinds
+  PASS  naming — no banned words invented
+  PASS  kill switch — the tests fail without the content — tests fail without test.badge.brand — they genuinely test it
+
+IRON GAUNTLET: NOT PASSED — 2 FLAG(S) WARNED

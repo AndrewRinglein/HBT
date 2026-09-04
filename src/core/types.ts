@@ -323,6 +323,8 @@ export type ScenarioDef = {
    */
   readonly heroItems?: readonly (readonly string[] | undefined)[]
   readonly heroProgress?: readonly (HeroProgress | undefined)[]
+  /** badge.mechanism (2026-09-04): the badges each hero carries into this battle, parallel to heroes — the kingdom's list (a Wounded hero enters Wounded). Added to the row's own. */
+  readonly heroBadges?: readonly (readonly string[] | undefined)[]
   /**
    * encounter.runner (2026-09-03): the encounter this scenario runs. Its
    * setup and schedule supply the enemy side, so `enemies` is empty and the
@@ -362,6 +364,35 @@ export type CritRow = {
  * express yet — an item is never silently half-real. Nothing fields an item
  * until seam.items-per-unit; this is the registry.
  */
+/**
+ * A BADGE — badge.mechanism (2026-09-04). Ruled 2026-09-04: badges are an
+ * engine type. "There is a badge that all heroes start with, that is invisible
+ * on a hero, called Hero ... Only those with the badge Hero bleed out" ·
+ * "When a player succeeds at deathbed fighting ... they immediately gain
+ * Wounded" · "We also need to be able to add the badges of the afflictions."
+ * The same shape an item has minus the physical facts: stat modifiers folded
+ * onto the unit, granted actions, riders, and FLAGS the rules read. On a unit
+ * from fielding (the row's own, or the list the kingdom hands over) or granted
+ * mid-battle (Wounded, an affliction). Content owns every row; the converter
+ * compiles the Codex's prose payloads and names what it cannot express.
+ */
+export type BadgeDef = {
+  readonly id: string
+  readonly name: string
+  readonly statModifiers: Readonly<Partial<Record<import('./stats.js').StatName | 'maxHp' | 'maxStamina' | 'staminaRegen' | 'movement' | 'reach', number>>>
+  /** Actions the badge grants — a power, an attack. */
+  readonly grants: readonly string[]
+  readonly triggers?: readonly import('./trigger.js').Trigger[]
+  /**
+   * What the rules read off the badge. `bleedsOut` — the Hero badge: a failed
+   * deathbed roll downs and bleeds out instead of killing. `wounded` — the
+   * Wounded badge: at 0 HP the unit dies, no roll. `blocksDeployment` — the
+   * kingdom's: the hero cannot be fielded (the engine only reports it).
+   */
+  readonly flags: Readonly<Partial<{ bleedsOut: boolean; wounded: boolean; blocksDeployment: boolean }>>
+  readonly gaps?: readonly string[]
+}
+
 export type ItemDef = {
   readonly id: string
   readonly name: string
@@ -458,6 +489,8 @@ export type UnitDef = {
    * attacks, powers, riders and stat deltas are NOT on the row.
    */
   readonly defaultItems?: readonly string[]
+  /** badge.mechanism (2026-09-04): the badges the ROW carries — a civilian that says badge.hero, an enemy with an innate one. The kingdom's per-hero list arrives through BattleOptions.heroBadges. */
+  readonly badges?: readonly string[]
   readonly attacks: readonly string[]
   readonly abilities: readonly string[]
   /** capability.power-pool: one-time +X to the side's pool when this unit enters; the X stays after it dies. */
@@ -573,6 +606,8 @@ export type Unit = {
   /** Stored stat modifiers — gear, wounds, badges. Terrain is derived, not stored. */
   mods: import('./stats.js').StatMod[]
   tags: readonly string[]
+  /** badge.mechanism (2026-09-04): every badge on this unit, fielded or granted, by id. Flags are read off the registry rows. */
+  badges: string[]
   /** Assembled from the unit's sources at makeUnit — own frozen copies (GAME-DESIGN §5). */
   triggers: import('./trigger.js').Trigger[]
   // Per-activation budget.
@@ -771,6 +806,8 @@ export type Ctx = {
   critChart: readonly CritRow[]
   /** The item registry — pack.items (2026-09-02). Read by nothing until seam.items-per-unit. */
   items: Readonly<Record<string, ItemDef>>
+  /** The badge registry — badge.mechanism (2026-09-04). On Ctx so the kill-switch seam reaches a badge id like any other. */
+  badges: Readonly<Record<string, BadgeDef>>
   /** The encounter being run, if any — plain data (encounter.runner, 2026-09-03). */
   encounter?: EncounterDef
   /** The unit registry, so the runner can field a spawn mid-battle. */

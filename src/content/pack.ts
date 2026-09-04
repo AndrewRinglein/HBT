@@ -4,7 +4,7 @@
 // GENERATED (content/mkenginepack.mjs) and never hand-edited; this loader
 // validates it LOUDLY at import time (Law 9) and hands back plain UnitDefs.
 import { UNIT_PACK } from './generated/pack.js'
-import type { AbilityDef, AttackDef, CritRow, EncounterDef, ItemDef, MoveDef, UnitDef } from '../core/types.js'
+import type { AbilityDef, AttackDef, BadgeDef, CritRow, EncounterDef, ItemDef, MoveDef, UnitDef } from '../core/types.js'
 import { validateTrigger } from '../core/trigger.js'
 import type { StatusDef } from '../core/status.js'
 const EFFECT_KINDS = ['damage', 'heal', 'status.apply', 'status.remove', 'statMod', 'selfDamage', 'knockback', 'corpse.eat', 'stamina.gain']
@@ -335,6 +335,36 @@ export function packLevels(): Readonly<Record<string, LevelTable>> {
     for (const r of t.rows) { if (r.level <= last) throw new Error(`levels: '${k}' rows are not ascending at ${r.level}`); last = r.level }
   }
   return raw
+}
+
+/**
+ * The badge registry — badge.mechanism (2026-09-04). The Codex's badge rows,
+ * compiled by content/mkenginepack.mjs from their prose payloads: stat
+ * modifiers, granted actions, flags, and every clause the converter could not
+ * express named in `gaps`. Validated loudly: every modifier a number on a stat
+ * the engine folds, every flag a known one, every trigger well-formed with the
+ * badge as its source.
+ */
+const BADGE_STATS = ['maxHp', 'armor', 'resist', 'dodge', 'strength', 'precision', 'magic', 'spirit', 'reach', 'accuracy', 'movement', 'maxStamina', 'staminaRegen', 'crit', 'luck', 'toughness', 'surge', 'vision']
+const BADGE_FLAGS = ['bleedsOut', 'wounded', 'blocksDeployment']
+function validateBadges(raw: Readonly<Record<string, BadgeDef>>, where: string, family: (k: string) => boolean): Readonly<Record<string, BadgeDef>> {
+  for (const [k, b] of Object.entries(raw)) {
+    if (k !== b.id) throw new Error(`${where}: badge key '${k}' names id '${b.id}'`)
+    if (!family(k)) throw new Error(`${where}: '${k}' is not in this registry's id family`)
+    for (const [st, v] of Object.entries(b.statModifiers ?? {})) if (!BADGE_STATS.includes(st) || typeof v !== 'number') throw new Error(`${where}: badge '${k}' modifies '${st}' — not an engine stat`)
+    for (const f of Object.keys(b.flags ?? {})) if (!BADGE_FLAGS.includes(f)) throw new Error(`${where}: badge '${k}' carries unknown flag '${f}'`)
+    if (!Array.isArray(b.grants)) throw new Error(`${where}: badge '${k}' has no grants list — regenerate the pack`)
+    for (const t of b.triggers ?? []) { validateTrigger(t); if (t.source !== k) throw new Error(`${where}: badge '${k}' trigger '${t.id}' names source '${t.source}'`) }
+  }
+  return raw
+}
+export function packBadges(): Readonly<Record<string, BadgeDef>> {
+  const raw = (UNIT_PACK as unknown as { badges?: Readonly<Record<string, BadgeDef>> }).badges ?? {}
+  return validateBadges(raw, 'badge pack', (k) => k.startsWith('badge.'))
+}
+export function packTestBadges(): Readonly<Record<string, BadgeDef>> {
+  const raw = (UNIT_PACK as unknown as { test?: { badges?: Readonly<Record<string, BadgeDef>> } }).test?.badges ?? {}
+  return validateBadges(raw, 'test receptacle', (k) => k.startsWith('test.badge.'))
 }
 
 /** The enchanted tier-3 rows — ITEMS-PLAN.md §6: generated, base + enchant, never hand-edited. Validated like items. */

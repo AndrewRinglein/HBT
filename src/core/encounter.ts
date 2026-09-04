@@ -22,6 +22,7 @@
 
 import type { Ctx, EncounterDef, EncounterPlacement, Unit, UnitDef } from './types.js'
 import type { HexId } from './hex.js'
+import { applyBadges } from './items.js'
 import { emit, gainPower, paintLayer, setOutcome } from './mutate.js'
 import { applyStatus } from './status.js'
 import { fallNight } from './vision.js'
@@ -90,7 +91,9 @@ export function arrive(ctx: Ctx, def: UnitDef, want: HexId, causeId: string, nam
   // off the state — a module counter here made the same seed roll differently
   // on the second battle of a process (found by the determinism test).
   const uid = 300 + ctx.state.units.filter((x) => x.uid >= 300).length
-  const u = makeUnit(id, uid, `${def.name ?? label} ${names[def.typeId]}`, def, hex)
+  // badge.mechanism: a row's own badges fold on arrival as at fielding
+  const folded = def.badges?.length ? applyBadges(def, def.badges, ctx.badges, causeId).def : def
+  const u = makeUnit(id, uid, `${def.name ?? label} ${names[def.typeId]}`, folded, hex)
   ctx.state.units.push(u)
   emit(ctx, 'unit.enter', def.typeId.includes('.') ? def.typeId : `unit.${def.typeId}`, {
     actor: u.id, uid: u.uid, name: u.name, side: u.side, typeId: u.typeId,

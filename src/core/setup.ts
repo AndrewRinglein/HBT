@@ -2,8 +2,8 @@ import { geometryOf } from './hex.js'
 import { makeRng, rootSeedOf, sample } from './rng.js'
 import type { Ctx, EncounterDef, HeroProgress, Side, State, Unit, UnitDef, Config } from './types.js'
 import { DEFAULT_CONFIG } from './types.js'
-import { ACTIONS, ATTACKS, ABILITIES, CRIT_CHART, ITEMS, LEVELS, SPECIALTIES, UNITS, FIRST_BATTLE } from '../content/index.js'
-import { applyItems, applyProgress, type Applied, FOLDABLE } from './items.js'
+import { ACTIONS, ATTACKS, ABILITIES, BADGES, CRIT_CHART, ITEMS, LEVELS, SPECIALTIES, UNITS, FIRST_BATTLE } from '../content/index.js'
+import { applyItems, applyProgress, type Applied, FOLDABLE, applyBadges, type Badged } from './items.js'
 import { boardOf, deployOf, terrainOf, terrainIdOf, isPassable } from '../content/maps.js'
 import { STATUSES } from '../content/statuses.js'
 import { triggersFrom } from './trigger.js'
@@ -39,6 +39,7 @@ export function makeUnit(id: number, uid: number, name: string, def: UnitDef, he
     mods: [],
     triggers: triggersFrom(def.triggers ?? []),
     tags: def.tags ?? [],
+    badges: [...(def.badges ?? [])],
     moveUsed: false, primaryUsed: false, movePointsLeft: 0,
     activationOrdinal: 0, attackOrdinal: 0, deathbedOrdinal: 0,
   }
@@ -82,6 +83,8 @@ export type BattleOptions = {
    * bare row. Folded by the one function, fieldedDef().
    */
   heroProgress?: readonly (HeroProgress | undefined)[]
+  /** badge.mechanism (2026-09-04): the badges each hero carries in — the kingdom's list, parallel to heroes. Added to the row's own. */
+  heroBadges?: readonly (readonly string[] | undefined)[]
   /**
    * encounter.runner (2026-09-03): the encounter to run. Its setup units are
    * fielded after the heroes; its schedule fires at Start of Turn. `enemies`
@@ -152,7 +155,7 @@ export function createBattle(opts: BattleOptions): Ctx {
   const mapId = opts.mapId ?? opts.encounter?.mapId ?? 'map.open'
   const board = boardOf(mapId)
   const state: State = { turn: 0, phase: 'hero', mapId, board, terrain: terrainOf(mapId), units: [], outcome: null, seq: 0 }
-  const ctx: Ctx = { state, geo: geometryOf(board), events: [], rng, cfg, actions: ACTIONS, statuses: STATUSES, critChart: CRIT_CHART, items: ITEMS,
+  const ctx: Ctx = { state, geo: geometryOf(board), events: [], rng, cfg, actions: ACTIONS, statuses: STATUSES, critChart: CRIT_CHART, items: ITEMS, badges: BADGES,
     units: UNITS, arrive: (c, d, hex, cause) => arrive(c, d, hex, cause, {}),
     ...(opts.encounter ? { encounter: opts.encounter } : {}) }
 
@@ -160,6 +163,9 @@ export function createBattle(opts: BattleOptions): Ctx {
   const heroes = opts.heroes ?? FIRST_BATTLE.heroes
   if (opts.heroProgress && opts.heroProgress.length !== heroes.length) {
     throw new Error(`${opts.scenarioId ? `scenario '${opts.scenarioId}'` : 'battle options'}: ${heroes.length} heroes but ${opts.heroProgress.length} progress records — they must correspond`)
+  }
+  if (opts.heroBadges && opts.heroBadges.length !== heroes.length) {
+    throw new Error(`${opts.scenarioId ? `scenario '${opts.scenarioId}'` : 'battle options'}: ${heroes.length} heroes but ${opts.heroBadges.length} badge lists — they must correspond`)
   }
   if (opts.heroItems && opts.heroItems.length !== heroes.length) {
     throw new Error(`${opts.scenarioId ? `scenario '${opts.scenarioId}'` : 'battle options'}: ${heroes.length} heroes but ${opts.heroItems.length} item lists — they must correspond`)
@@ -272,6 +278,7 @@ export function createBattle(opts: BattleOptions): Ctx {
   let id = 0
   const equipped: { unitId: number; worn: Applied['worn'] }[] = []
   const grownLog: { unitId: number; table: string; level: number; specialtyId?: string; mods: Record<string, number> }[] = []
+  const badgedLog: { unitId: number; worn: Badged['worn'] }[] = []
   // Names come from the DEF (the pack carries Codex names like "Oathblade
   // (TEST)"); a def without one falls back to its title-cased typeId. The old
   // hand-typed NAMES map died with the hand-typed party (2026-08-20).
@@ -289,7 +296,13 @@ export function createBattle(opts: BattleOptions): Ctx {
     const itemIds = opts.heroItems?.[i] ?? bare.defaultItems ?? []
     const progress = opts.heroProgress?.[i]
     const grown = progress ? applyProgress(bare, progress, classOf(bare), LEVELS, SPECIALTIES, ABILITIES, where, levelTableOf(bare)) : bare
-    const { def: d, worn } = applyItems(grown, itemIds, ITEMS, ATTACKS, where)
+    const kitted = applyItems(grown, itemIds, ITEMS, ATTACKS, where)
+    // badge.mechanism (2026-09-04): the row's own badges plus the list handed
+    // over for this hero, folded after the kit so a badge sees the kitted hero
+    const badgeIds = [...(kitted.def.badges ?? []), ...(opts.heroBadges?.[i] ?? [])]
+    const badged = applyBadges(kitted.def, badgeIds, BADGES, where)
+    const d = badged.def, worn = kitted.worn
+    badgedLog.push({ unitId: id, worn: badged.worn })
     seen[t] = (seen[t] ?? 0)
     const nm = `${d.name ?? label(t)} ${LETTERS[seen[t]!] ?? seen[t]! + 1}`
     seen[t]!++
@@ -313,7 +326,8 @@ export function createBattle(opts: BattleOptions): Ctx {
     const hex = opts.enemyHexes?.[i] ?? enemyDeploy[i]!
     // Named from the def (Codex name) or the typeId, counted per type — Law 12:
     // the log names what a thing IS.
-    const d = def(t)
+    // badge.mechanism: an enemy row's own badges fold at fielding too (an innate affliction, a named one)
+    const d = (def(t).badges?.length ? applyBadges(def(t), def(t).badges!, BADGES, where).def : def(t))
     seenEnemy[t] = (seenEnemy[t] ?? 0) + 1
     state.units.push(makeUnit(id, 200 + i, `${d.name ?? label(t)} ${seenEnemy[t]}`, d, hex))
     id++
@@ -337,6 +351,10 @@ export function createBattle(opts: BattleOptions): Ctx {
     // progression.level-table-by-type: one unit.grown per grown hero, cause = the table
     const g = grownLog.find((e) => e.unitId === u.id)
     if (g) emit(ctx, 'unit.grown', g.table, { actor: u.id, table: g.table, level: g.level, ...(g.specialtyId ? { specialtyId: g.specialtyId } : {}), mods: g.mods })
+    // badge.mechanism: one unit.badged per (unit, badge), cause = the badge (Law 12)
+    for (const w of badgedLog.find((e) => e.unitId === u.id)?.worn ?? []) {
+      emit(ctx, 'unit.badged', w.badgeId, { actor: u.id, badgeId: w.badgeId, grants: w.grants, mods: w.mods, flags: BADGES[w.badgeId]?.flags ?? {}, ...(w.gaps ? { gaps: w.gaps } : {}) })
+    }
     // capability.power-pool (2026-09-03): a unit fielded at setup arrives too
     const arrival = UNITS[u.typeId]?.powerOnArrival
     if (arrival && u.side === 'enemy') gainPower(ctx, arrival, u.typeId, { kind: 'arrival', actor: u.id })
@@ -374,13 +392,13 @@ export function createCustomBattle(
   const mapId = opts.mapId ?? 'map.open'
   const board = boardOf(mapId)
   const state: State = { turn: 0, phase: 'hero', mapId, board, terrain: terrainOf(mapId), units: [], outcome: null, seq: 0 }
-  const ctx: Ctx = { state, geo: geometryOf(board), events: [], rng, cfg, actions: ACTIONS, statuses: STATUSES, critChart: CRIT_CHART, items: ITEMS,
+  const ctx: Ctx = { state, geo: geometryOf(board), events: [], rng, cfg, actions: ACTIONS, statuses: STATUSES, critChart: CRIT_CHART, items: ITEMS, badges: BADGES,
     units: UNITS, arrive: (c, d, hex, cause) => arrive(c, d, hex, cause, {}) }
   let id = 0
   // Custom battles field the row's default kit too (seam.items-per-unit) —
   // a fixture hero is the same hero as a scenario hero.
   heroes.forEach((h, i) => { state.units.push(makeUnit(id, 100 + i, `H${i}`, applyItems(UNITS[h.type]!, UNITS[h.type]!.defaultItems ?? [], ITEMS, ATTACKS, 'custom battle').def, h.hex)); id++ })
-  enemies.forEach((e, i) => { state.units.push(makeUnit(id, 200 + i, `E${i}`, UNITS[e.type]!, e.hex)); id++ })
+  enemies.forEach((e, i) => { const d = UNITS[e.type]!; state.units.push(makeUnit(id, 200 + i, `E${i}`, d.badges?.length ? applyBadges(d, d.badges, BADGES, 'custom battle').def : d, e.hex)); id++ })
   for (const u of state.units) {
     // A dotted typeId is already a full Codex id and names itself; bare
     // typeIds keep the historic prefix. (2026-08-26 — keeps the prefix from

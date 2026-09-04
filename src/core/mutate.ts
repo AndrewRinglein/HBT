@@ -96,6 +96,40 @@ export function loseMaxStamina(ctx: Ctx, id: number, amount: number, causeId: st
 }
 
 /** Add a stored stat modifier. The one write path to u.mods (Law 3). */
+/**
+ * A badge granted MID-BATTLE — badge.mechanism (2026-09-04): Wounded on a
+ * stood deathbed roll, an affliction from a vampire's bite. The registry row's
+ * modifiers arrive as stored stat mods (source = the badge, battle-long), its
+ * riders attach as the unit's own frozen copies, its granted actions join the
+ * one list, and the flag set is read off the registry from here on. Max HP and
+ * Max Stamina move by their own mutators, as they do for every other source.
+ * A badge the unit already carries is not granted twice. Loud on an unknown id.
+ */
+export function grantBadge(ctx: Ctx, id: number, badgeId: string, causeId: string): boolean {
+  const u = unit(ctx, id)
+  const b = ctx.badges[badgeId]
+  if (!b) throw new Error(`grantBadge: '${badgeId}' is not a badge in the registry`)
+  if (u.badges.includes(badgeId)) { emit(ctx, 'badge.held', causeId, { actor: id, badgeId }); return false }
+  u.badges.push(badgeId)
+  emit(ctx, 'badge.gained', causeId, { actor: id, badgeId, name: b.name, mods: b.statModifiers, flags: b.flags, ...(b.gaps ? { gaps: b.gaps } : {}) })
+  for (const [stat, value] of Object.entries(b.statModifiers)) {
+    if (!value) continue
+    if (stat === 'maxHp') { if (value > 0) gainMaxHp(ctx, id, value, badgeId); else loseMaxHp(ctx, id, -value, badgeId); continue }
+    if (stat === 'maxStamina') { if (value < 0) loseMaxStamina(ctx, id, -value, badgeId); else { u.maxStamina += value; emit(ctx, 'maxstamina.gained', badgeId, { target: id, amount: value, maxStamina: u.maxStamina }) }; continue }
+    addStatMod(ctx, id, { stat: stat as import('./stats.js').StatName, op: 'add', value, source: badgeId, scope: 'unit' }, badgeId)
+  }
+  for (const t of b.triggers ?? []) u.triggers.push({ ...t })
+  for (const g of b.grants) if (!u.actions.includes(g) && ctx.actions[g]) u.actions.push(g)
+  return true
+}
+
+/** The flags of every badge a unit carries, read off the registry — the rules ask this, never the unit. */
+export function badgeFlags(ctx: Ctx, u: Unit): { bleedsOut: boolean; wounded: boolean } {
+  let bleedsOut = false, wounded = false
+  for (const id of u.badges) { const f = ctx.badges[id]?.flags; if (f?.bleedsOut) bleedsOut = true; if (f?.wounded) wounded = true }
+  return { bleedsOut, wounded }
+}
+
 export function addStatMod(ctx: Ctx, id: number, mod: import('./stats.js').StatMod, causeId: string): void {
   const u = unit(ctx, id)
   u.mods.push(mod)

@@ -2611,5 +2611,28 @@
   "status": "done-needs-review",
   "sha": "4bb80e3",
   "gauntlet": "not passed — 2 flag(s) warned"
+ },
+ {
+  "id": "badge.mechanism",
+  "kind": "engine",
+  "shape": "rule",
+  "ruling": "DECISIONS.md 2026-09-04 — Deathbed Fighting, REVERSED (and the answers)",
+  "spec": "Ruled 2026-09-04 (Angela): \"There is a badge that all heroes start with, that is invisible on a hero, called Hero ... Only those with the badge Hero bleed out\" · \"When a player succeeds at deathbed fighting ... they immediately gain Wounded\" · \"We also need to be able to add the badges of the afflictions.\" Badges become an engine type: BadgeDef (stat modifiers, granted actions, riders, flags bleedsOut / wounded / blocksDeployment, gaps); the registry BADGES on Ctx through the kill-switch seam; a unit's badges from its ROW (UnitDef.badges) and from BattleOptions.heroBadges (the kingdom's list, parallel to heroes); applyBadges folds them at fielding after the kit, on heroes, enemies and encounter arrivals; grantBadge grants one mid-battle (stored mods, riders attached, actions joined, badge.gained); badgeFlags reads the flags off the registry. The converter compiles the Codex's 205 badge rows from their prose payloads — modifiers, grants, flags — and names every other clause as a gap; content/test/badges.json is the receptacle.",
+  "expect": "test-warrior handed test.badge.iron-skin and test.badge.brand fields with +2 armor, −5 dodge, +1 strength, the brand's rider attached and bleedsOut readable; one unit.badged line per badge; grantBadge mid-battle adds stored mods and the rider fires; the Codex rows compile with their gaps named; no control battle carries a badge, so the baselines hold",
+  "changesBaseline": false,
+  "probeIds": [
+   "test.badge.brand"
+  ],
+  "variants": [
+   "test.badge.iron-skin",
+   "test.badge.brand"
+  ],
+  "tests": [
+   "test/badges.test.ts"
+  ],
+  "note": "Landed 2026-09-04. CONTENT OWES: badge.hero (no row; one flag, bleedsOut; every hero row carries it, a civilian only when its row says so) and badge.wounded (prose only today; ruled −10 Accuracy, −10 Dodge, −1 Strength, −1 Precision, −2 Max HP; flag wounded). fix.deathbed-no-stands lands against those two rows. 52 of 205 Codex badges compile without a gap; the afflictions compile their stats and grants, their hooks are gaps until badge.afflictions.",
+  "status": "done",
+  "sha": "2e76ede",
+  "gauntlet": "not passed — 2 flag(s) warned"
  }
 ]
