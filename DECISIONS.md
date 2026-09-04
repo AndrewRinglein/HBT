@@ -1912,7 +1912,10 @@ its unswept documents because both point back at it. That is the whole visualisa
   `engine/HANDOFF-2026-09-03b.md`:82
 - **"test cohort" · "STANDARD TEST SIX"** → `CONTENT-OWNERSHIP.md` ·
   `ENEMY-REVIEW.md` · `engine/HANDOFF.md`
-- **ZoC "stops there" · "held"** → the `movement.zone-of-control` spec · the viewer's
-  held rendering · whatever `COMBAT-DESIGN.md` says
+- **ZoC "stops there" · "move.stopped" · "the ZoC hold"** → `engine/src/core/movement.ts`:198
+  (the code comment states the wrong rule) · `viewer/src/board.js`:453 (renders the hold) ·
+  `viewer/src/theme.js`:55 · the `movement.zone-of-control` spec · whatever
+  `COMBAT-DESIGN.md` says. *("held" alone was the first sweep string and hit 338 lines
+  of "withheld" and Crucible dialogue — a sweep string has to be specific to the thing.)*
 - **"51 flagged landings"** → `STATE.md`:18 — it is 17 now, and 60 were reviewed
   2026-09-04
