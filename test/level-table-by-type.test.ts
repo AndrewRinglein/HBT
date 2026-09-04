@@ -33,16 +33,22 @@ describe('the civilian TYPE table in the pack', () => {
       expect(classOf(UNITS[id]!), `${id} is still a civilian`).toBe('class.civilian')
       expect(levelTableOf(UNITS[id]!)).toBe('civilian.farmer')
     }
-    // the orphans carry no pointer and level on the class
-    expect(UNITS['hero.fixed.orphans']?.levelTable).toBeUndefined()
-    expect(levelTableOf(UNITS['hero.fixed.orphans']!)).toBe('class.civilian')
+    // LAW 10 — 2026-09-04 (content acab4b4): every civilian row points at a type
+    // table now (the orphans at civilian.child); the class table is the fallback
+    // for a row with no pointer, which none of the shipped rows is. The fallback
+    // is proved on a row with the pointer stripped.
+    expect(UNITS['hero.fixed.orphans']?.levelTable).toBe('civilian.child')
+    expect(levelTableOf({ ...UNITS['hero.fixed.orphans']!, levelTable: undefined } as typeof UNITS[string])).toBe('class.civilian')
   })
 
-  it('never any stamina — the civilian rule holds for the type table too', () => {
-    for (const r of LEVELS['civilian.farmer']!.rows) {
-      expect(r.grants.maxStamina ?? 0, `L${r.level}`).toBe(0)
-      expect(r.grants.staminaRegen ?? 0, `L${r.level}`).toBe(0)
-    }
+  it('civilians gain stamina like every class — the exemption is REVERSED (ruled 2026-09-03, content acab4b4)', () => {
+    // LAW 10: this test asserted "never any stamina" from LEVEL-TABLES.md as it
+    // stood on 2026-09-03. Angela reversed it the same night ("civilians all
+    // need stamina, they are supposed to be exactly the fucking same as other
+    // heroes"): +3 Stamina Max across the run, +2 Regen at L6 and L9.
+    const rows = LEVELS['civilian.farmer']!.rows
+    expect(rows.reduce((n, r) => n + (r.grants.maxStamina ?? 0), 0)).toBe(3)
+    expect(rows.reduce((n, r) => n + (r.grants.staminaRegen ?? 0), 0)).toBe(2)
   })
 
   it('the two curves differ at level 3 — otherwise the pointer would prove nothing', () => {
@@ -73,13 +79,15 @@ describe('fielding on the type table', () => {
     expect(grown.strength).toBe(expectStat('strength', farmer))
   })
 
-  it('the orphans, with no pointer, still level on class.civilian', () => {
+  it('the orphans level on THEIR type table, civilian.child, not the farmer\'s and not the class\'s', () => {
+    // LAW 10 — 2026-09-04 (content acab4b4): the orphans point at civilian.child now.
     const bare = UNITS['hero.fixed.orphans']!
     const grown = fieldedDef('hero.fixed.orphans', [], { level: 3, specialtyId: 'specialty.trickster' })
-    const civ = grantsThrough('class.civilian', 3)
+    const child = grantsThrough('civilian.child', 3)
     const sp = SPECIALTIES['specialty.trickster']!.statModifiers as Record<string, number>
-    expect(grown.accuracy).toBe(bare.accuracy + (civ.accuracy ?? 0) + (sp.accuracy ?? 0))
-    expect(grown.dodge).toBe(bare.dodge + (civ.dodge ?? 0) + (sp.dodge ?? 0))
+    expect(grown.accuracy).toBe(bare.accuracy + (child.accuracy ?? 0) + (sp.accuracy ?? 0))
+    expect(grown.dodge).toBe(bare.dodge + (child.dodge ?? 0) + (sp.dodge ?? 0))
+    expect(grown.maxHp).toBe(bare.maxHp + (child.maxHp ?? 0) + (sp.maxHp ?? 0))
   })
 
   it('a pointer at a table the pack lacks is loud, not silent', () => {
@@ -91,10 +99,11 @@ describe('fielding on the type table', () => {
 })
 
 describe('showcase.farmers-grown — the log names the table', () => {
-  it('three unit.grown lines are caused by civilian.farmer and one by class.civilian, each carrying its mods', () => {
+  it('three unit.grown lines are caused by civilian.farmer and one by civilian.child, each carrying its mods', () => {
     const ctx = createBattle(scenarioOptions(SCENARIOS['showcase.farmers-grown']!))
     const grown = ctx.events.filter((e) => e.type === 'unit.grown')
-    expect(grown.map((e) => e.causeId)).toEqual(['civilian.farmer', 'civilian.farmer', 'civilian.farmer', 'class.civilian'])
+    // the orphans' line names civilian.child since content acab4b4 (Law 10 note above)
+    expect(grown.map((e) => e.causeId)).toEqual(['civilian.farmer', 'civilian.farmer', 'civilian.farmer', 'civilian.child'])
     for (const e of grown) {
       const p = e as unknown as { level: number; table: string; mods: Record<string, number> }
       expect(p.level).toBe(3)

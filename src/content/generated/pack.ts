@@ -6242,6 +6242,7 @@ export const UNIT_PACK = {
         "civilian",
         "class.civilian"
       ],
+      "levelTable": "civilian.child",
       "triggers": [],
       "defaultItems": [
         "item.pile-of-rocks"
@@ -6278,6 +6279,7 @@ export const UNIT_PACK = {
         "civilian",
         "class.civilian"
       ],
+      "levelTable": "civilian.farmer",
       "triggers": [],
       "defaultItems": [
         "item.lumberjack-axe"
@@ -6353,6 +6355,7 @@ export const UNIT_PACK = {
         "civilian",
         "class.civilian"
       ],
+      "levelTable": "civilian.scholar",
       "triggers": [],
       "defaultItems": []
     },
@@ -6388,6 +6391,7 @@ export const UNIT_PACK = {
         "civilian",
         "class.civilian"
       ],
+      "levelTable": "civilian.child",
       "triggers": [],
       "defaultItems": [
         "item.pile-of-rocks"
@@ -6424,6 +6428,7 @@ export const UNIT_PACK = {
         "civilian",
         "class.civilian"
       ],
+      "levelTable": "civilian.scholar",
       "triggers": [],
       "defaultItems": []
     },
@@ -6458,6 +6463,7 @@ export const UNIT_PACK = {
         "civilian",
         "class.civilian"
       ],
+      "levelTable": "civilian.crafter",
       "triggers": [],
       "defaultItems": []
     },
@@ -6492,6 +6498,7 @@ export const UNIT_PACK = {
         "civilian",
         "class.civilian"
       ],
+      "levelTable": "civilian.sailor",
       "triggers": [],
       "defaultItems": []
     },
@@ -6526,6 +6533,7 @@ export const UNIT_PACK = {
         "civilian",
         "class.civilian"
       ],
+      "levelTable": "civilian.sailor",
       "triggers": [],
       "defaultItems": []
     },
@@ -6560,6 +6568,7 @@ export const UNIT_PACK = {
         "civilian",
         "class.civilian"
       ],
+      "levelTable": "civilian.scholar",
       "triggers": [],
       "defaultItems": []
     },
@@ -6594,6 +6603,7 @@ export const UNIT_PACK = {
         "civilian",
         "class.civilian"
       ],
+      "levelTable": "civilian.crafter",
       "triggers": [],
       "defaultItems": []
     },
@@ -6700,6 +6710,7 @@ export const UNIT_PACK = {
         "civilian",
         "class.civilian"
       ],
+      "levelTable": "civilian.child",
       "triggers": [],
       "defaultItems": []
     }
@@ -20070,7 +20081,8 @@ export const UNIT_PACK = {
           "grants": {
             "maxHp": 1,
             "itemSlots": 1,
-            "accuracy": 5
+            "accuracy": 5,
+            "maxStamina": 1
           }
         },
         {
@@ -20088,7 +20100,8 @@ export const UNIT_PACK = {
             "precision": 1,
             "maxHp": 1,
             "resist": 1,
-            "dodge": 3
+            "dodge": 3,
+            "maxStamina": 1
           }
         },
         {
@@ -20138,7 +20151,8 @@ export const UNIT_PACK = {
             "itemSlots": 1,
             "vision": 1,
             "accuracy": 5,
-            "crit": 2
+            "crit": 2,
+            "staminaRegen": 1
           }
         },
         {
@@ -20156,7 +20170,8 @@ export const UNIT_PACK = {
             "armor": 1,
             "itemSlots": 1,
             "accuracy": 3,
-            "luck": 1
+            "luck": 1,
+            "maxStamina": 1
           }
         },
         {
@@ -20167,7 +20182,8 @@ export const UNIT_PACK = {
             "accuracy": 5,
             "crit": 2,
             "dodge": 2,
-            "movement": 1
+            "movement": 1,
+            "staminaRegen": 1
           }
         },
         {
@@ -20302,7 +20318,8 @@ export const UNIT_PACK = {
           "level": 2,
           "grants": {
             "maxHp": 1,
-            "itemSlots": 1
+            "itemSlots": 1,
+            "maxStamina": 1
           }
         },
         {
@@ -20323,7 +20340,8 @@ export const UNIT_PACK = {
             "resist": 1,
             "crit": 5,
             "luck": 2,
-            "accuracy": 5
+            "accuracy": 5,
+            "maxStamina": 1
           }
         },
         {
@@ -20354,7 +20372,8 @@ export const UNIT_PACK = {
             "maxHp": 1,
             "crit": 5,
             "luck": 2,
-            "accuracy": 5
+            "accuracy": 5,
+            "staminaRegen": 1
           }
         },
         {
@@ -20374,7 +20393,8 @@ export const UNIT_PACK = {
             "maxHp": 1,
             "crit": 5,
             "luck": 2,
-            "accuracy": 3
+            "accuracy": 3,
+            "maxStamina": 1
           }
         },
         {
@@ -20384,7 +20404,8 @@ export const UNIT_PACK = {
             "maxHp": 1,
             "itemSlots": 1,
             "dodge": 2,
-            "accuracy": 2
+            "accuracy": 2,
+            "staminaRegen": 1
           }
         },
         {
@@ -20395,6 +20416,1326 @@ export const UNIT_PACK = {
             "crit": 5,
             "luck": 2,
             "accuracy": 2
+          }
+        }
+      ]
+    },
+    "civilian.apothecary": {
+      "id": "civilian.apothecary",
+      "rows": [
+        {
+          "level": 1,
+          "grants": {}
+        },
+        {
+          "level": 2,
+          "grants": {
+            "maxHp": 1,
+            "itemSlots": 1,
+            "maxStamina": 1
+          }
+        },
+        {
+          "level": 3,
+          "grants": {
+            "accuracy": 5,
+            "crit": 5,
+            "maxHp": 1,
+            "precision": 1
+          }
+        },
+        {
+          "level": 4,
+          "grants": {
+            "accuracy": 5,
+            "crit": 5,
+            "maxHp": 1,
+            "resist": 1,
+            "maxStamina": 1
+          }
+        },
+        {
+          "level": 5,
+          "grants": {
+            "accuracy": 3,
+            "itemSlots": 1
+          },
+          "choice": [
+            {
+              "precision": 2
+            },
+            {
+              "accuracy": 15
+            },
+            {
+              "crit": 8
+            },
+            {
+              "resist": 1
+            },
+            {
+              "maxHp": 5
+            }
+          ]
+        },
+        {
+          "level": 6,
+          "grants": {
+            "accuracy": 5,
+            "crit": 5,
+            "maxHp": 1,
+            "luck": 2,
+            "precision": 1,
+            "staminaRegen": 1
+          }
+        },
+        {
+          "level": 7,
+          "grants": {
+            "accuracy": 3,
+            "crit": 5,
+            "maxHp": 1,
+            "itemSlots": 1,
+            "precision": 1
+          }
+        },
+        {
+          "level": 8,
+          "grants": {
+            "accuracy": 3,
+            "crit": 5,
+            "maxHp": 1,
+            "luck": 2,
+            "resist": 1,
+            "maxStamina": 1
+          }
+        },
+        {
+          "level": 9,
+          "grants": {
+            "accuracy": 3,
+            "crit": 5,
+            "maxHp": 1,
+            "itemSlots": 1,
+            "precision": 1,
+            "staminaRegen": 1
+          }
+        },
+        {
+          "level": 10,
+          "grants": {
+            "accuracy": 3,
+            "crit": 10,
+            "maxHp": 1,
+            "luck": 2
+          }
+        }
+      ]
+    },
+    "civilian.child": {
+      "id": "civilian.child",
+      "rows": [
+        {
+          "level": 1,
+          "grants": {}
+        },
+        {
+          "level": 2,
+          "grants": {
+            "maxHp": 1,
+            "luck": 2,
+            "maxStamina": 1
+          }
+        },
+        {
+          "level": 3,
+          "grants": {
+            "accuracy": 3,
+            "dodge": 5,
+            "maxHp": 1,
+            "luck": 2
+          }
+        },
+        {
+          "level": 4,
+          "grants": {
+            "crit": 5,
+            "dodge": 5,
+            "maxHp": 1,
+            "itemSlots": 1,
+            "luck": 3,
+            "maxStamina": 1
+          }
+        },
+        {
+          "level": 5,
+          "grants": {
+            "dodge": 5,
+            "luck": 2
+          },
+          "choice": [
+            {
+              "dodge": 10
+            },
+            {
+              "maxHp": 5
+            },
+            {
+              "crit": 8
+            },
+            {
+              "luck": 5
+            },
+            {
+              "accuracy": 15
+            }
+          ]
+        },
+        {
+          "level": 6,
+          "grants": {
+            "crit": 5,
+            "dodge": 5,
+            "maxHp": 1,
+            "luck": 3,
+            "precision": 1,
+            "staminaRegen": 1
+          }
+        },
+        {
+          "level": 7,
+          "grants": {
+            "accuracy": 3,
+            "dodge": 5,
+            "maxHp": 1,
+            "itemSlots": 1,
+            "luck": 2
+          }
+        },
+        {
+          "level": 8,
+          "grants": {
+            "crit": 5,
+            "dodge": 5,
+            "maxHp": 1,
+            "luck": 3,
+            "precision": 1,
+            "maxStamina": 1
+          }
+        },
+        {
+          "level": 9,
+          "grants": {
+            "accuracy": 3,
+            "dodge": 5,
+            "maxHp": 1,
+            "itemSlots": 1,
+            "luck": 2,
+            "staminaRegen": 1
+          }
+        },
+        {
+          "level": 10,
+          "grants": {
+            "crit": 10,
+            "dodge": 5,
+            "maxHp": 1,
+            "luck": 4,
+            "precision": 1
+          }
+        }
+      ]
+    },
+    "civilian.scholar": {
+      "id": "civilian.scholar",
+      "rows": [
+        {
+          "level": 1,
+          "grants": {}
+        },
+        {
+          "level": 2,
+          "grants": {
+            "maxHp": 1,
+            "vision": 1,
+            "maxStamina": 1
+          }
+        },
+        {
+          "level": 3,
+          "grants": {
+            "accuracy": 3,
+            "maxHp": 1,
+            "magic": 1,
+            "vision": 1
+          }
+        },
+        {
+          "level": 4,
+          "grants": {
+            "accuracy": 3,
+            "maxHp": 1,
+            "resist": 1,
+            "spirit": 1,
+            "maxStamina": 1
+          }
+        },
+        {
+          "level": 5,
+          "grants": {
+            "itemSlots": 1,
+            "vision": 1
+          },
+          "choice": [
+            {
+              "magic": 2
+            },
+            {
+              "spirit": 2
+            },
+            {
+              "resist": 1
+            },
+            {
+              "maxHp": 5
+            },
+            {
+              "accuracy": 15
+            }
+          ]
+        },
+        {
+          "level": 6,
+          "grants": {
+            "accuracy": 3,
+            "crit": 5,
+            "maxHp": 1,
+            "magic": 1,
+            "staminaRegen": 1
+          }
+        },
+        {
+          "level": 7,
+          "grants": {
+            "accuracy": 3,
+            "maxHp": 1,
+            "itemSlots": 1,
+            "spirit": 1
+          }
+        },
+        {
+          "level": 8,
+          "grants": {
+            "crit": 5,
+            "maxHp": 1,
+            "magic": 1,
+            "vision": 1,
+            "maxStamina": 1
+          }
+        },
+        {
+          "level": 9,
+          "grants": {
+            "accuracy": 3,
+            "maxHp": 1,
+            "itemSlots": 1,
+            "spirit": 1,
+            "staminaRegen": 1
+          }
+        },
+        {
+          "level": 10,
+          "grants": {
+            "accuracy": 3,
+            "crit": 5,
+            "maxHp": 1,
+            "magic": 1,
+            "resist": 1
+          }
+        }
+      ]
+    },
+    "civilian.crafter": {
+      "id": "civilian.crafter",
+      "rows": [
+        {
+          "level": 1,
+          "grants": {}
+        },
+        {
+          "level": 2,
+          "grants": {
+            "maxHp": 1,
+            "itemSlots": 1,
+            "maxStamina": 1
+          }
+        },
+        {
+          "level": 3,
+          "grants": {
+            "armor": 1,
+            "maxHp": 1,
+            "itemSlots": 1,
+            "strength": 1
+          }
+        },
+        {
+          "level": 4,
+          "grants": {
+            "accuracy": 3,
+            "maxHp": 1,
+            "resist": 1,
+            "maxStamina": 1
+          }
+        },
+        {
+          "level": 5,
+          "grants": {
+            "itemSlots": 1,
+            "strength": 1
+          },
+          "choice": [
+            {
+              "armor": 1
+            },
+            {
+              "strength": 2
+            },
+            {
+              "maxHp": 5
+            },
+            {
+              "resist": 1
+            },
+            {
+              "crit": 8
+            }
+          ]
+        },
+        {
+          "level": 6,
+          "grants": {
+            "accuracy": 3,
+            "armor": 1,
+            "maxHp": 1,
+            "strength": 1,
+            "staminaRegen": 1
+          }
+        },
+        {
+          "level": 7,
+          "grants": {
+            "accuracy": 3,
+            "maxHp": 1,
+            "itemSlots": 1,
+            "toughness": 1
+          }
+        },
+        {
+          "level": 8,
+          "grants": {
+            "armor": 1,
+            "crit": 5,
+            "maxHp": 1,
+            "strength": 1,
+            "maxStamina": 1
+          }
+        },
+        {
+          "level": 9,
+          "grants": {
+            "accuracy": 3,
+            "maxHp": 1,
+            "itemSlots": 1,
+            "resist": 1,
+            "staminaRegen": 1
+          }
+        },
+        {
+          "level": 10,
+          "grants": {
+            "armor": 1,
+            "maxHp": 1,
+            "luck": 2,
+            "resist": 1,
+            "strength": 1
+          }
+        }
+      ]
+    },
+    "civilian.merchant": {
+      "id": "civilian.merchant",
+      "rows": [
+        {
+          "level": 1,
+          "grants": {}
+        },
+        {
+          "level": 2,
+          "grants": {
+            "maxHp": 1,
+            "itemSlots": 1,
+            "luck": 2,
+            "maxStamina": 1
+          }
+        },
+        {
+          "level": 3,
+          "grants": {
+            "accuracy": 3,
+            "maxHp": 1,
+            "itemSlots": 1,
+            "luck": 3,
+            "precision": 1
+          }
+        },
+        {
+          "level": 4,
+          "grants": {
+            "dodge": 3,
+            "maxHp": 1,
+            "itemSlots": 1,
+            "luck": 2,
+            "resist": 1,
+            "maxStamina": 1
+          }
+        },
+        {
+          "level": 5,
+          "grants": {
+            "accuracy": 3,
+            "itemSlots": 1,
+            "luck": 2
+          },
+          "choice": [
+            {
+              "maxHp": 5
+            },
+            {
+              "accuracy": 15
+            },
+            {
+              "luck": 5
+            },
+            {
+              "dodge": 10
+            },
+            {
+              "resist": 1
+            }
+          ]
+        },
+        {
+          "level": 6,
+          "grants": {
+            "accuracy": 3,
+            "maxHp": 1,
+            "itemSlots": 1,
+            "luck": 3,
+            "precision": 1,
+            "staminaRegen": 1
+          }
+        },
+        {
+          "level": 7,
+          "grants": {
+            "armor": 1,
+            "dodge": 3,
+            "maxHp": 1,
+            "luck": 2,
+            "precision": 1
+          }
+        },
+        {
+          "level": 8,
+          "grants": {
+            "accuracy": 3,
+            "maxHp": 1,
+            "itemSlots": 1,
+            "luck": 3,
+            "precision": 1,
+            "maxStamina": 1
+          }
+        },
+        {
+          "level": 9,
+          "grants": {
+            "maxHp": 1,
+            "itemSlots": 1,
+            "luck": 2,
+            "movement": 1,
+            "staminaRegen": 1
+          }
+        },
+        {
+          "level": 10,
+          "grants": {
+            "accuracy": 3,
+            "crit": 5,
+            "maxHp": 1,
+            "luck": 3,
+            "precision": 1
+          }
+        }
+      ]
+    },
+    "civilian.refugee": {
+      "id": "civilian.refugee",
+      "rows": [
+        {
+          "level": 1,
+          "grants": {}
+        },
+        {
+          "level": 2,
+          "grants": {
+            "maxHp": 2,
+            "toughness": 1,
+            "maxStamina": 1
+          }
+        },
+        {
+          "level": 3,
+          "grants": {
+            "armor": 1,
+            "dodge": 3,
+            "maxHp": 2,
+            "toughness": 1
+          }
+        },
+        {
+          "level": 4,
+          "grants": {
+            "accuracy": 3,
+            "maxHp": 2,
+            "resist": 1,
+            "strength": 1,
+            "maxStamina": 1
+          }
+        },
+        {
+          "level": 5,
+          "grants": {
+            "dodge": 3,
+            "maxHp": 1,
+            "toughness": 1
+          },
+          "choice": [
+            {
+              "maxHp": 5
+            },
+            {
+              "resist": 1
+            },
+            {
+              "armor": 1
+            },
+            {
+              "dodge": 10
+            },
+            {
+              "accuracy": 15
+            }
+          ]
+        },
+        {
+          "level": 6,
+          "grants": {
+            "accuracy": 3,
+            "armor": 1,
+            "maxHp": 2,
+            "toughness": 1,
+            "staminaRegen": 1
+          }
+        },
+        {
+          "level": 7,
+          "grants": {
+            "dodge": 3,
+            "maxHp": 2,
+            "itemSlots": 1,
+            "strength": 1
+          }
+        },
+        {
+          "level": 8,
+          "grants": {
+            "accuracy": 3,
+            "maxHp": 2,
+            "resist": 1,
+            "toughness": 1,
+            "maxStamina": 1
+          }
+        },
+        {
+          "level": 9,
+          "grants": {
+            "armor": 1,
+            "dodge": 3,
+            "maxHp": 2,
+            "itemSlots": 1,
+            "staminaRegen": 1
+          }
+        },
+        {
+          "level": 10,
+          "grants": {
+            "accuracy": 3,
+            "maxHp": 2,
+            "luck": 2,
+            "strength": 1,
+            "toughness": 1
+          }
+        }
+      ]
+    },
+    "civilian.militia": {
+      "id": "civilian.militia",
+      "rows": [
+        {
+          "level": 1,
+          "grants": {}
+        },
+        {
+          "level": 2,
+          "grants": {
+            "accuracy": 5,
+            "maxHp": 1,
+            "maxStamina": 1
+          }
+        },
+        {
+          "level": 3,
+          "grants": {
+            "accuracy": 5,
+            "armor": 1,
+            "maxHp": 1,
+            "strength": 1
+          }
+        },
+        {
+          "level": 4,
+          "grants": {
+            "accuracy": 5,
+            "maxHp": 1,
+            "reach": 1,
+            "maxStamina": 1
+          }
+        },
+        {
+          "level": 5,
+          "grants": {
+            "accuracy": 3,
+            "strength": 1
+          },
+          "choice": [
+            {
+              "strength": 2
+            },
+            {
+              "armor": 1
+            },
+            {
+              "accuracy": 15
+            },
+            {
+              "maxHp": 5
+            },
+            {
+              "resist": 1
+            }
+          ]
+        },
+        {
+          "level": 6,
+          "grants": {
+            "accuracy": 5,
+            "armor": 1,
+            "maxHp": 1,
+            "strength": 1,
+            "staminaRegen": 1
+          }
+        },
+        {
+          "level": 7,
+          "grants": {
+            "accuracy": 3,
+            "crit": 5,
+            "maxHp": 1,
+            "itemSlots": 1
+          }
+        },
+        {
+          "level": 8,
+          "grants": {
+            "accuracy": 3,
+            "armor": 1,
+            "maxHp": 1,
+            "strength": 1,
+            "maxStamina": 1
+          }
+        },
+        {
+          "level": 9,
+          "grants": {
+            "accuracy": 3,
+            "maxHp": 1,
+            "itemSlots": 1,
+            "resist": 1,
+            "staminaRegen": 1
+          }
+        },
+        {
+          "level": 10,
+          "grants": {
+            "accuracy": 5,
+            "crit": 5,
+            "maxHp": 1,
+            "resist": 1,
+            "strength": 1
+          }
+        }
+      ]
+    },
+    "civilian.sailor": {
+      "id": "civilian.sailor",
+      "rows": [
+        {
+          "level": 1,
+          "grants": {}
+        },
+        {
+          "level": 2,
+          "grants": {
+            "accuracy": 3,
+            "dodge": 3,
+            "maxHp": 1,
+            "maxStamina": 1
+          }
+        },
+        {
+          "level": 3,
+          "grants": {
+            "accuracy": 3,
+            "dodge": 5,
+            "maxHp": 1,
+            "strength": 1
+          }
+        },
+        {
+          "level": 4,
+          "grants": {
+            "dodge": 3,
+            "maxHp": 1,
+            "movement": 1,
+            "precision": 1,
+            "maxStamina": 1
+          }
+        },
+        {
+          "level": 5,
+          "grants": {
+            "accuracy": 3,
+            "itemSlots": 1,
+            "strength": 1
+          },
+          "choice": [
+            {
+              "dodge": 10
+            },
+            {
+              "maxHp": 5
+            },
+            {
+              "strength": 2
+            },
+            {
+              "accuracy": 15
+            },
+            {
+              "crit": 8
+            }
+          ]
+        },
+        {
+          "level": 6,
+          "grants": {
+            "accuracy": 3,
+            "dodge": 5,
+            "maxHp": 1,
+            "strength": 1,
+            "staminaRegen": 1
+          }
+        },
+        {
+          "level": 7,
+          "grants": {
+            "dodge": 3,
+            "maxHp": 1,
+            "itemSlots": 1,
+            "precision": 1,
+            "reach": 1
+          }
+        },
+        {
+          "level": 8,
+          "grants": {
+            "accuracy": 3,
+            "dodge": 5,
+            "maxHp": 1,
+            "movement": 1,
+            "strength": 1,
+            "maxStamina": 1
+          }
+        },
+        {
+          "level": 9,
+          "grants": {
+            "crit": 5,
+            "dodge": 3,
+            "maxHp": 1,
+            "itemSlots": 1,
+            "strength": 1,
+            "staminaRegen": 1
+          }
+        },
+        {
+          "level": 10,
+          "grants": {
+            "accuracy": 3,
+            "dodge": 5,
+            "maxHp": 1,
+            "luck": 2,
+            "precision": 1
+          }
+        }
+      ]
+    },
+    "civilian.bard": {
+      "id": "civilian.bard",
+      "rows": [
+        {
+          "level": 1,
+          "grants": {}
+        },
+        {
+          "level": 2,
+          "grants": {
+            "maxHp": 1,
+            "luck": 2,
+            "maxStamina": 1
+          }
+        },
+        {
+          "level": 3,
+          "grants": {
+            "accuracy": 3,
+            "maxHp": 1,
+            "luck": 2,
+            "precision": 1,
+            "spirit": 1
+          }
+        },
+        {
+          "level": 4,
+          "grants": {
+            "dodge": 3,
+            "maxHp": 1,
+            "itemSlots": 1,
+            "luck": 3,
+            "maxStamina": 1
+          }
+        },
+        {
+          "level": 5,
+          "grants": {
+            "luck": 2,
+            "spirit": 1
+          },
+          "choice": [
+            {
+              "spirit": 2
+            },
+            {
+              "luck": 5
+            },
+            {
+              "maxHp": 5
+            },
+            {
+              "accuracy": 15
+            },
+            {
+              "dodge": 10
+            }
+          ]
+        },
+        {
+          "level": 6,
+          "grants": {
+            "accuracy": 3,
+            "maxHp": 1,
+            "luck": 3,
+            "precision": 1,
+            "staminaRegen": 1
+          }
+        },
+        {
+          "level": 7,
+          "grants": {
+            "dodge": 3,
+            "maxHp": 1,
+            "itemSlots": 1,
+            "spirit": 1
+          }
+        },
+        {
+          "level": 8,
+          "grants": {
+            "crit": 5,
+            "maxHp": 1,
+            "luck": 3,
+            "precision": 1,
+            "maxStamina": 1
+          }
+        },
+        {
+          "level": 9,
+          "grants": {
+            "accuracy": 3,
+            "maxHp": 1,
+            "itemSlots": 1,
+            "luck": 2,
+            "staminaRegen": 1
+          }
+        },
+        {
+          "level": 10,
+          "grants": {
+            "accuracy": 3,
+            "crit": 5,
+            "maxHp": 1,
+            "luck": 3,
+            "resist": 1,
+            "spirit": 1
+          }
+        }
+      ]
+    },
+    "civilian.wife": {
+      "id": "civilian.wife",
+      "rows": [
+        {
+          "level": 1,
+          "grants": {}
+        },
+        {
+          "level": 2,
+          "grants": {
+            "maxHp": 1,
+            "resist": 1,
+            "maxStamina": 1
+          }
+        },
+        {
+          "level": 3,
+          "grants": {
+            "maxHp": 2,
+            "precision": 1,
+            "itemSlots": 1,
+            "accuracy": 3
+          }
+        },
+        {
+          "level": 4,
+          "grants": {
+            "strength": 1,
+            "maxHp": 1,
+            "resist": 1,
+            "maxStamina": 1
+          }
+        },
+        {
+          "level": 5,
+          "grants": {
+            "maxHp": 1,
+            "itemSlots": 1
+          },
+          "choice": [
+            {
+              "strength": 2
+            },
+            {
+              "maxHp": 5
+            },
+            {
+              "accuracy": 15
+            },
+            {
+              "resist": 1
+            },
+            {
+              "armor": 1
+            }
+          ]
+        },
+        {
+          "level": 6,
+          "grants": {
+            "armor": 1,
+            "maxHp": 2,
+            "accuracy": 3,
+            "staminaRegen": 1
+          }
+        },
+        {
+          "level": 7,
+          "grants": {
+            "strength": 1,
+            "maxHp": 1,
+            "itemSlots": 1,
+            "dodge": 3,
+            "crit": 5
+          }
+        },
+        {
+          "level": 8,
+          "grants": {
+            "maxHp": 2,
+            "resist": 1,
+            "accuracy": 3,
+            "maxStamina": 1
+          }
+        },
+        {
+          "level": 9,
+          "grants": {
+            "armor": 1,
+            "maxHp": 1,
+            "toughness": 1,
+            "staminaRegen": 1
+          }
+        },
+        {
+          "level": 10,
+          "grants": {
+            "strength": 1,
+            "maxHp": 2,
+            "resist": 1,
+            "itemSlots": 1,
+            "accuracy": 3,
+            "luck": 2
+          }
+        }
+      ]
+    },
+    "civilian.ghost": {
+      "id": "civilian.ghost",
+      "rows": [
+        {
+          "level": 1,
+          "grants": {}
+        },
+        {
+          "level": 2,
+          "grants": {
+            "maxHp": 1,
+            "dodge": 5,
+            "maxStamina": 1
+          }
+        },
+        {
+          "level": 3,
+          "grants": {
+            "maxHp": 1,
+            "dodge": 5,
+            "resist": 1,
+            "vision": 1
+          }
+        },
+        {
+          "level": 4,
+          "grants": {
+            "maxHp": 1,
+            "dodge": 5,
+            "spirit": 1,
+            "maxStamina": 1
+          }
+        },
+        {
+          "level": 5,
+          "grants": {
+            "dodge": 5,
+            "vision": 1
+          },
+          "choice": [
+            {
+              "strength": 2
+            },
+            {
+              "maxHp": 5
+            },
+            {
+              "accuracy": 15
+            },
+            {
+              "resist": 1
+            },
+            {
+              "armor": 1
+            }
+          ]
+        },
+        {
+          "level": 6,
+          "grants": {
+            "maxHp": 1,
+            "dodge": 5,
+            "resist": 1,
+            "staminaRegen": 1
+          }
+        },
+        {
+          "level": 7,
+          "grants": {
+            "maxHp": 1,
+            "dodge": 5,
+            "spirit": 1,
+            "itemSlots": 1
+          }
+        },
+        {
+          "level": 8,
+          "grants": {
+            "maxHp": 1,
+            "dodge": 5,
+            "resist": 1,
+            "crit": 5,
+            "maxStamina": 1
+          }
+        },
+        {
+          "level": 9,
+          "grants": {
+            "dodge": 5,
+            "spirit": 1,
+            "movement": 1,
+            "staminaRegen": 1
+          }
+        },
+        {
+          "level": 10,
+          "grants": {
+            "maxHp": 1,
+            "dodge": 5,
+            "resist": 1,
+            "spirit": 1,
+            "crit": 5
+          }
+        }
+      ]
+    },
+    "civilian.revenant": {
+      "id": "civilian.revenant",
+      "rows": [
+        {
+          "level": 1,
+          "grants": {}
+        },
+        {
+          "level": 2,
+          "grants": {
+            "maxHp": 2,
+            "toughness": 1,
+            "maxStamina": 1
+          }
+        },
+        {
+          "level": 3,
+          "grants": {
+            "armor": 1,
+            "maxHp": 2,
+            "toughness": 1,
+            "strength": 1
+          }
+        },
+        {
+          "level": 4,
+          "grants": {
+            "maxHp": 2,
+            "resist": 1,
+            "toughness": 1,
+            "maxStamina": 1
+          }
+        },
+        {
+          "level": 5,
+          "grants": {
+            "maxHp": 2,
+            "toughness": 1
+          },
+          "choice": [
+            {
+              "strength": 2
+            },
+            {
+              "maxHp": 5
+            },
+            {
+              "accuracy": 15
+            },
+            {
+              "resist": 1
+            },
+            {
+              "armor": 1
+            }
+          ]
+        },
+        {
+          "level": 6,
+          "grants": {
+            "armor": 1,
+            "maxHp": 2,
+            "strength": 1,
+            "staminaRegen": 1
+          }
+        },
+        {
+          "level": 7,
+          "grants": {
+            "maxHp": 2,
+            "toughness": 1,
+            "itemSlots": 1,
+            "accuracy": 3
+          }
+        },
+        {
+          "level": 8,
+          "grants": {
+            "armor": 1,
+            "maxHp": 2,
+            "resist": 1,
+            "maxStamina": 1
+          }
+        },
+        {
+          "level": 9,
+          "grants": {
+            "maxHp": 2,
+            "strength": 1,
+            "toughness": 1,
+            "staminaRegen": 1
+          }
+        },
+        {
+          "level": 10,
+          "grants": {
+            "armor": 1,
+            "maxHp": 2,
+            "strength": 1,
+            "toughness": 1,
+            "accuracy": 3
           }
         }
       ]

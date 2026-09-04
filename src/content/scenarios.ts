@@ -303,11 +303,11 @@ const RAW_SCENARIOS: Readonly<Record<string, ScenarioDef>> = {
   },
   // progression.level-table-by-type (2026-09-03): the three farmer rows at
   // level 3 on civilian.farmer beside the orphans at level 3 on
-  // class.civilian — the same level, two curves, told apart in the log's
+  // civilian.child — the same level, two curves, told apart in the log's
   // unit.grown lines. Militia is the civilian specialty they all hold.
   'showcase.farmers-grown': {
     id: 'showcase.farmers-grown',
-    note: 'progression.level-table-by-type: three farmers level 3 on civilian.farmer, the orphans level 3 on class.civilian, against four zombies.',
+    note: 'progression.level-table-by-type: three farmers level 3 on civilian.farmer, the orphans level 3 on their own type table, against four zombies.',
     mapId: 'map.open',
     heroes: ['hero.fixed.farmer', 'hero.fixed.farming-family', 'hero.fixed.group-of-farmers', 'hero.fixed.orphans'],
     heroHexes: [245, 246, 247, 248],
