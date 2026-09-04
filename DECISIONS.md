@@ -1956,3 +1956,29 @@ kingdom's after-battle Wounded minting (it reads `deathbed.stood`), the
 viewer's wound-level rendering (VISUAL-BATTLE-UPDATES §3.2 "dripping blood"
 → a skull), 4-BADGES-SETTLED's `badge.wounded` row ("prose only").
 Questions asked the same message; answers below when they come.
+
+### Same day — the answers
+
+Angela, verbatim: "1 in 4, correct. 5, it cannot overflow. Stamina gains and
+healing never overflow. The hero badge does nothing else. Enemies are
+unchanged. We also need to be able to add the badges of the afflictions.
+Vampires, werewolves, and undead sometimes afflict their targets with a
+badge. Same with ghosts and things that can add possession."
+
+Closed, against the questions as put:
+1. A Hero-badge unit that FAILS the roll is downed and bleeds out as today; a
+   unit without the badge that fails is dead and a corpse — no downed state.
+2. Wounded is a badge and persists: a hero fielded already Wounded dies at 0
+   with no roll. The kingdom hands the badge list over at fielding, like items.
+3. The chance stays 20 + 5 × Toughness.
+4. The old penalties are replaced entirely by −10 Accuracy, −10 Dodge,
+   −1 Strength, −1 Precision, −2 Max HP.
+5. The 1 + Stamina Regen gain is capped at Max Stamina — and the general law:
+   stamina gains and healing never overflow.
+6. `badge.hero` does nothing but "bleeds out instead of dying on a failed
+   roll". Invisible.
+7. Enemies unchanged: dead at 0, no roll.
+8. Badges are an engine type from here, content owns the rows — and the same
+   mechanism carries the AFFLICTIONS: a vampire, a werewolf, an undead can
+   afflict a target with a badge; a ghost (and anything that possesses) adds
+   possession. An affliction is a badge applied by a trigger in battle.
