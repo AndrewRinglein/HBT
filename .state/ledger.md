@@ -1196,3 +1196,29 @@ slice: 58 of 68 closed · 61 probed · 1 accepted
 IRON GAUNTLET: NOT PASSED — 2 FLAG(S) WARNED; 1 EXEMPTION(S) TAKEN
 
 Law 10 note (2026-09-04, no landing — a repair): the engine's `refactor.one-action-type` (17b2753, ruled by Angela that day) collapsed a Unit's `attacks`, `abilities` and `moves` into ONE `actions` list, which turned test/isc-064.test.ts red on `hunter.attacks` being undefined. The assertion was re-pointed at `actions`, not weakened: what it holds is unchanged — the fielded hero carries the granted attack ids of the item that was actually handed over, and not the other item's. Found by running the suite while writing HANDOFF-2026-09-04.md; the third time in two days that an engine landing moved the door mid-session (see §5 of that handoff).
+
+Re-red (2026-09-04, no landing — bookkeeping owed by HANDOFF-2026-09-04 §2 "Mine to tidy"):
+ISC-017, ISC-033 and ISC-044 all PASSED but read OPEN, because each carried a `regressed`
+entry dated after its `closed` (the 2026-09-04 `colOf is not a function` door break for 017
+and 033, the 2026-09-03 two-hands refusal for 044) and `--close` refused to re-close them:
+each probe had been edited after its original red, so `red.hash` no longer matched the
+probe file. Seen red again at HEAD 6b8ccb5, each against the tree WITHOUT the feature that
+closed it, then restored and re-closed:
+
+  · ISC-017 · ISC-033 — `src/core/reckoning.ts` overwritten from `123a501^` (the parent of
+    reckoning.apply, where the file exists but exports neither `applyBattleResult` nor
+    `performExitBattle`). Both went red on an ASSERTION, not an import: 017 at the Salvage
+    line, 033 at `cursor.step === 'reckoning'`.
+  · ISC-044 — `src/sim/autoplay.ts` overwritten from `e78a8bd^` (the parent of
+    opening.prologue, before `playOpening`); `src/core/opening.ts` and
+    `src/content/prologue.ts` emptied, both being absent at that sha. Red at
+    `playOpening(makeCtx(makeNewCampaign(21)))`.
+
+No assertion was touched and no probe file was opened — the three probe hashes are
+unchanged (2314213accfa · bed421352563 · 8719b22da823), which is what let `--close` take
+them. `git stash` still does not work on this mount (unlink is refused; a shim on PATH
+moves `.git/*.lock` aside per HANDOFF-2026-09-03 §7), so every revert and restore was
+`git show <sha>:<file> > <file>`; `git diff HEAD -- src test` is empty afterwards.
+Typecheck clean, 68 files / 166 tests pass. Count 58 → **61 of 68 closed · 61 probed ·
+1 accepted**. What remains open is H-tier only: 030, 048, 049 for Angela's eye, with
+066, 067, 068 landed and awaiting `--accept`, and 050 accepted.

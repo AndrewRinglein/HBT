@@ -178,15 +178,15 @@
  },
  "017": {
   "red": {
-   "at": "2026-09-02 05:34",
-   "sha": "64a6c7f",
-   "hash": "0b01b9ec2912",
+   "at": "2026-09-04 21:04",
+   "sha": "6b8ccb5",
+   "hash": "2314213accfa",
    "how": "feature absent",
-   "tail": "       |                                                       ^ |      15|     expect(first.campaign.territories[e1.territoryId]!.claimedOnce).to… |      16|"
+   "tail": "       |     ^ |      14|     expect(first.campaign.purse['currency.salvage']!).toBeGreaterThan(… |      15|     expect(first.campaign.territories[e1.territoryId!]!.claimedOnce).t…"
   },
   "closed": {
-   "at": "2026-09-02 04:52",
-   "sha": "123a501"
+   "at": "2026-09-04 21:05",
+   "sha": "6b8ccb5"
   },
   "regressed": [
    {
@@ -264,15 +264,15 @@
  },
  "033": {
   "red": {
-   "at": "2026-09-02 05:48",
-   "sha": "1fa11e9",
-   "hash": "77a52d253f59",
+   "at": "2026-09-04 21:04",
+   "sha": "6b8ccb5",
+   "hash": "bed421352563",
    "how": "feature absent",
-   "tail": "     41| import { engagementKindOf } from '../content/engagements.js' |      42| import { PAYOUTS } from '../content/payouts.js' |  ❯ test/walk.ts:8:1"
+   "tail": "       |     ^ |      17|     expect(ctx.campaign.cursor.step).toBe('reckoning') |      18|     expect(ctx.campaign.cursor.battle).toBeNull()"
   },
   "closed": {
-   "at": "2026-09-02 04:53",
-   "sha": "123a501"
+   "at": "2026-09-04 21:05",
+   "sha": "6b8ccb5"
   },
   "regressed": [
    {
@@ -614,15 +614,15 @@
  },
  "044": {
   "red": {
-   "at": "2026-09-02 06:11",
-   "sha": "14fa112",
-   "hash": "7bd17febfd0b",
+   "at": "2026-09-04 21:04",
+   "sha": "6b8ccb5",
+   "hash": "8719b22da823",
    "how": "feature absent",
-   "tail": "       | ^ |       6| import { makeCtx } from '../src/core/mutate.js' |       7| import { playOpening, playWeeks } from '../src/sim/autoplay.js'"
+   "tail": "       |                                        ^ |      22|     expect(cap).toBeGreaterThanOrEqual(5) |      23|     const ctx = playOpening(makeCtx(makeNewCampaign(21)))"
   },
   "closed": {
-   "at": "2026-09-02 06:19",
-   "sha": "e78a8bd"
+   "at": "2026-09-04 21:05",
+   "sha": "6b8ccb5"
   },
   "regressed": [
    {
