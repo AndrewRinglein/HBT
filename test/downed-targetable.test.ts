@@ -7,7 +7,7 @@ import { createCustomBattle } from '../src/core/setup.js'
 import { ACC, canAttack, performAttack, preview } from '../src/core/pipeline.js'
 import { beginActivation, setBleedOut, setLifeState } from '../src/core/mutate.js'
 import { runBattle } from '../src/core/battle.js'
-import { hexId } from '../src/core/hex.js'
+import { hexId } from './board16.js'
 
 function board(bleedOut = 5) {
   const ctx = createCustomBattle(

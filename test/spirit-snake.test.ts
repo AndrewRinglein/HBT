@@ -11,7 +11,7 @@ import { performAttack, preview, resolveAccuracy } from '../src/core/pipeline.js
 import { beginActivation } from '../src/core/mutate.js'
 import { valueOf } from '../src/core/status.js'
 import { UNITS, ATTACKS, FIRST_BATTLE } from '../src/content/index.js'
-import { hexId } from '../src/core/hex.js'
+import { hexId } from './board16.js'
 
 describe('the block — Angela\'s dictation, verbatim from the Codex hero table', () => {
   it('every number she gave', () => {

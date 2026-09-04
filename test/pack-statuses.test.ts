@@ -13,7 +13,7 @@ import { packStatuses } from '../src/content/pack.js'
 import { createBattle, createCustomBattle } from '../src/core/setup.js'
 import { runBattle } from '../src/core/battle.js'
 import { applyStatus, tickStatuses } from '../src/core/status.js'
-import { hexId } from '../src/core/hex.js'
+import { hexId } from './board16.js'
 
 const settledStatuses = (): { id: string; effect: string; decay: string; family?: string; damageType?: string }[] =>
   JSON.parse(readFileSync(join(__dirname, '..', '..', 'content', 'settled.json'), 'utf8')).statuses

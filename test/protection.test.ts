@@ -11,7 +11,7 @@ import { applyStatus, tickStatuses, valueOf } from '../src/core/status.js'
 import { resolvePowerDamage, usePower } from '../src/core/ability.js'
 import { preview } from '../src/core/pipeline.js'
 import { STATUSES } from '../src/content/statuses.js'
-import { hexId } from '../src/core/hex.js'
+import { hexId } from './board16.js'
 
 function board() {
   const ctx = createCustomBattle(

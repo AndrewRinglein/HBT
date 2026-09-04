@@ -5,7 +5,7 @@ import { UNITS, ATTACKS, ABILITIES } from '../src/content/index.js'
 import { STATUSES } from '../src/content/statuses.js'
 import { MOVES } from '../src/content/moves.js'
 import { accuracyBonusOf, dodgeBonusOf, reachBonusOf, terrainOf } from '../src/content/maps.js'
-import { distance } from '../src/core/hex.js'
+import { distance } from './board16.js'
 
 // An INDEPENDENT auditor. It re-derives every number straight from the stat blocks
 // in FIRST-BATTLE.md and compares against what the engine logged. It deliberately

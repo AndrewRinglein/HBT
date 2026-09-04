@@ -12,7 +12,7 @@ import { endOfActivation, runBattle } from '../src/core/battle.js'
 import { beginActivation, endActivation } from '../src/core/mutate.js'
 import { applyStatus, valueOf } from '../src/core/status.js'
 import { UNITS } from '../src/content/index.js'
-import { hexId } from '../src/core/hex.js'
+import { hexId } from './board16.js'
 
 const GOLEM = 'test-arc-golem'
 const BRACE = 'trigger.test-eoa.brace'

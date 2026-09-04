@@ -2,7 +2,7 @@ import { describe, it, expect } from 'vitest'
 import { createBattle, createCustomBattle } from '../src/core/setup.js'
 import { runBattle } from '../src/core/battle.js'
 import { applyStatus, valueOf, heal, tickStatuses } from '../src/core/status.js'
-import { hexId } from '../src/core/hex.js'
+import { hexId } from './board16.js'
 import { preview, performAttack, resolveDamage } from '../src/core/pipeline.js'
 import { ATTACKS } from '../src/content/index.js'
 

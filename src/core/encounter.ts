@@ -22,7 +22,6 @@
 
 import type { Ctx, EncounterDef, EncounterPlacement, Unit, UnitDef } from './types.js'
 import type { HexId } from './hex.js'
-import { WIDTH, colOf, distance, hexId, inBounds, rowOf } from './hex.js'
 import { emit, gainPower, paintLayer, setOutcome } from './mutate.js'
 import { applyStatus } from './status.js'
 import { fallNight } from './vision.js'
@@ -41,9 +40,9 @@ function free(ctx: Ctx, hex: HexId): boolean {
 function nearestFree(ctx: Ctx, want: HexId): HexId | null {
   if (free(ctx, want)) return want
   let best: HexId | null = null, bestD = Infinity
-  for (let h = 0; h < WIDTH * WIDTH; h++) {
+  for (let h = 0; h < ctx.geo.hexCount; h++) {
     if (!free(ctx, h)) continue
-    const d = distance(want, h)
+    const d = ctx.geo.distance(want, h)
     if (d < bestD || (d === bestD && best !== null && h < best)) { bestD = d; best = h }
   }
   return best
@@ -53,8 +52,8 @@ function nearestFree(ctx: Ctx, want: HexId): HexId | null {
 export function hexesOf(ctx: Ctx, p: EncounterPlacement, where: string, key: readonly [number, number] = [0, 0]): HexId[] {
   const n = p.count ?? 1
   const check = (c: number, r: number) => {
-    if (!inBounds(c, r)) throw new Error(`${where}: ${p.unit} placed off the board at (${c},${r})`)
-    return hexId(c, r)
+    if (!ctx.geo.inBounds(c, r)) throw new Error(`${where}: ${p.unit} placed off the board at (${c},${r})`)
+    return ctx.geo.hexId(c, r)
   }
   if (p.hexes) {
     if (p.hexes.length !== n) throw new Error(`${where}: ${p.unit} count ${n} but ${p.hexes.length} hexes`)
@@ -65,8 +64,8 @@ export function hexesOf(ctx: Ctx, p: EncounterPlacement, where: string, key: rea
     // deterministic, no cup (Law 4 has nothing to key a deployment roll on yet)
     const c = check(p.at.near.col, p.at.near.row)
     const ring: HexId[] = []
-    for (let h = 0; h < WIDTH * WIDTH; h++) if (distance(c, h) <= p.at.range) ring.push(h)
-    ring.sort((a, b) => distance(c, a) - distance(c, b) || a - b)
+    for (let h = 0; h < ctx.geo.hexCount; h++) if (ctx.geo.distance(c, h) <= p.at.range) ring.push(h)
+    ring.sort((a, b) => ctx.geo.distance(c, a) - ctx.geo.distance(c, b) || a - b)
     return ring.slice(0, n)
   }
   if (p.at && 'oneOf' in p.at) {
@@ -98,7 +97,7 @@ export function arrive(ctx: Ctx, def: UnitDef, want: HexId, causeId: string, nam
     role: u.role, hex: u.hex, hp: u.hp, maxHp: u.maxHp,
     stamina: u.stamina, maxStamina: u.maxStamina, terrain: ctx.state.terrain[u.hex], arrived: causeId,
   })
-  if (hex !== want) emit(ctx, 'unit.shunted', causeId, { actor: u.id, wanted: want, hex, wantedCol: colOf(want), wantedRow: rowOf(want) })
+  if (hex !== want) emit(ctx, 'unit.shunted', causeId, { actor: u.id, wanted: want, hex, wantedCol: ctx.geo.colOf(want), wantedRow: ctx.geo.rowOf(want) })
   // one-time on arrival — capability.power-pool: "a unit adds X when it enters, and the X stays after it dies"
   if (def.powerOnArrival && u.side === 'enemy') gainPower(ctx, def.powerOnArrival, def.typeId, { kind: 'arrival', actor: u.id })
   return u
@@ -178,10 +177,10 @@ export function startOfTurn(ctx: Ctx): void {
 /** The hero deployment hexes an encounter asks for: nearest free to the zone's centre, lowest id first. */
 export function heroDeployHexes(ctx: Ctx, enc: EncounterDef, n: number): HexId[] | null {
   if (!enc.heroZone) return null
-  const c = hexId(enc.heroZone.at.near.col, enc.heroZone.at.near.row)
+  const c = ctx.geo.hexId(enc.heroZone.at.near.col, enc.heroZone.at.near.row)
   const ring: HexId[] = []
-  for (let h = 0; h < WIDTH * WIDTH; h++) if (distance(c, h) <= enc.heroZone.at.range && isPassable(ctx.state.terrain[h] ?? 0)) ring.push(h)
-  ring.sort((a, b) => distance(c, a) - distance(c, b) || a - b)
+  for (let h = 0; h < ctx.geo.hexCount; h++) if (ctx.geo.distance(c, h) <= enc.heroZone.at.range && isPassable(ctx.state.terrain[h] ?? 0)) ring.push(h)
+  ring.sort((a, b) => ctx.geo.distance(c, a) - ctx.geo.distance(c, b) || a - b)
   if (ring.length < n) throw new Error(`encounter '${enc.id}': the hero zone holds ${ring.length} hexes, ${n} heroes asked`)
   return ring.slice(0, n)
 }
@@ -212,16 +211,16 @@ export function advanceBand(ctx: Ctx): void {
   const n = ctx.state.turn
   if (n < b.fromPhase) return
   const row = b.startRow + (n - b.fromPhase) * b.direction
-  if (row < 0 || row >= WIDTH) return
+  if (row < 0 || row >= ctx.geo.board.height) return
   const layer = layerOfId(b.layer)
   emit(ctx, 'band.advanced', enc.id, { turn: n, row, layer: b.layer })
-  for (let col = 0; col < WIDTH; col++) {
-    const hex = hexId(col, row)
+  for (let col = 0; col < ctx.geo.board.width; col++) {
+    const hex = ctx.geo.hexId(col, row)
     if (b.spare?.includes(hex)) continue
     paintLayer(ctx, hex, layer, enc.id)
   }
   // a unit standing on a freshly painted hex takes the entry beat now — it did not step, the ground came to it
-  for (const u of ctx.state.units) if (u.lifeState === 'standing' && rowOf(u.hex) === row && !b.spare?.includes(u.hex)) {
+  for (const u of ctx.state.units) if (u.lifeState === 'standing' && ctx.geo.rowOf(u.hex) === row && !b.spare?.includes(u.hex)) {
     for (const [sid, k] of layerAppliesOnEnter(layer)) applyStatus(ctx, u.id, sid, k, b.layer)
   }
   settle(ctx, enc.id)

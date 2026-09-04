@@ -1,4 +1,4 @@
-import type { HexId } from './hex.js'
+import type { Board, Geometry, HexId } from './hex.js'
 import type { Rng } from './rng.js'
 
 export type Side = 'hero' | 'enemy'
@@ -605,6 +605,8 @@ export type State = {
   turn: number
   phase: Phase
   mapId: string
+  /** board.variable-size (2026-09-04): the map's dimensions — plain data; hex ids are row × width + col on THIS board. */
+  board: Board
   /** encounter.runner: which schedule rows have fired (by index), plain data. */
   encounter?: { id: string; fired: number[]; objectives: number[] }
   /**
@@ -772,6 +774,8 @@ export type Ctx = {
   events: Event[]
   rng: Rng
   cfg: Config
+  /** board.variable-size: the board's geometry, bound to state.board. Pure functions of the board; the rules never see a WIDTH constant. */
+  geo: Geometry
   attacks: Readonly<Record<string, AttackDef>>
   abilities: Readonly<Record<string, AbilityDef>>
   statuses: Readonly<Record<string, import('./status.js').StatusDef>>

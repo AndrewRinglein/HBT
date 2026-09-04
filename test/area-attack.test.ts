@@ -7,7 +7,7 @@
 // Arc Golem (pure data), live in showcase.arc-variant.
 import { describe, expect, it } from 'vitest'
 import { areaHexesOf, areaUnitIdsOf, performAttack, preview } from '../src/core/pipeline.js'
-import { neighboursOf, distance } from '../src/core/hex.js'
+import { neighboursOf, distance, GEO16 } from './board16.js'
 import { ATTACKS } from '../src/content/index.js'
 import { scenarioDef, scenarioOptions } from '../src/content/scenarios.js'
 import { createBattle } from '../src/core/setup.js'
@@ -20,7 +20,7 @@ const mk = () => createBattle(scenarioOptions(scenarioDef(SC)))
 describe('the geometry — one function, Law 6 order', () => {
   it("the arc is the target hex plus the hexes adjacent to BOTH ends", () => {
     // The scenario's own triple: golem 135, zombies 118 and 119.
-    const arc = areaHexesOf(135, 118, 'arc')
+    const arc = areaHexesOf(GEO16, 135, 118, 'arc')
     expect(arc[0]).toBe(118) // target first
     for (const h of arc.slice(1)) {
       expect(distance(135, h), `${h} adjacent to attacker`).toBe(1)
@@ -31,7 +31,7 @@ describe('the geometry — one function, Law 6 order', () => {
   })
 
   it('blast1 is the hex plus its six neighbours', () => {
-    const b = areaHexesOf(135, 118, 'blast1')
+    const b = areaHexesOf(GEO16, 135, 118, 'blast1')
     expect(b[0]).toBe(118)
     expect(new Set(b.slice(1))).toEqual(new Set(neighboursOf(118)))
   })

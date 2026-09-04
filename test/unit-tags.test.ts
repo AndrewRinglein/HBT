@@ -11,7 +11,7 @@ import { createCustomBattle } from '../src/core/setup.js'
 import { runBattle } from '../src/core/battle.js'
 import { resolveTargets } from '../src/core/target.js'
 import { UNITS } from '../src/content/index.js'
-import { hexId } from '../src/core/hex.js'
+import { hexId } from './board16.js'
 
 const ROT = 'trigger.test-tags.grave-rot'
 

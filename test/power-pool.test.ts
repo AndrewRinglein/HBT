@@ -11,7 +11,7 @@ import { runBattle } from '../src/core/battle.js'
 import { performAttack, powerShare, preview, DMG } from '../src/core/pipeline.js'
 import { beginActivation, gainPower } from '../src/core/mutate.js'
 import { ATTACKS, ENCOUNTERS, UNITS } from '../src/content/index.js'
-import { hexId } from '../src/core/hex.js'
+import { hexId } from './board16.js'
 import type { EncounterDef } from '../src/core/types.js'
 
 describe('the rounding, ruled', () => {

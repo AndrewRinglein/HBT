@@ -16,7 +16,7 @@
 // Rows run top (row 0, enemy deployment) to bottom (row 11, hero deployment).
 
 import { TERRAIN } from '../core/types.js'
-import { WIDTH, HEIGHT } from '../core/hex.js'
+import { formatOf, type Board } from '../core/hex.js'
 import { disabledIds } from './disable.js'
 
 export type MapDef = { id: string; name: string; note: string; rows: readonly string[] }
@@ -110,6 +110,42 @@ const RAW_MAPS: readonly MapDef[] = [
       'ww..............', 'www.............', 'www.............', '................',
     ],
   },
+  // board.variable-size (2026-09-04) — one TESTING map per non-standard
+  // format, so every ruled board size is on MAP_PANEL and probed, hashed and
+  // effect-measured with the rest. Never ship; content authors the real ones
+  // (content.maps-as-rows). Row 0 is still the enemy edge here — the west/east
+  // default is board.deploy-edges' landing.
+  {
+    id: 'test.map.duel-8',
+    name: 'The Yard (TESTING, 8×8 duel)',
+    note: 'TESTING LANE — never ships. The duel format: eight by eight, a hill in the middle, nowhere to hide. Six heroes fit on the last row exactly when it is open; a control battle spills its eight enemies onto a second row.',
+    rows: [
+      '........', '........', '...h....', '..hhh...',
+      '...hh...', '....h...', '........', '........',
+    ],
+  },
+  {
+    id: 'test.map.dungeon-16x8',
+    name: 'The Gallery (TESTING, 16×8 dungeon segment)',
+    note: 'TESTING LANE — never ships. The dungeon-segment format: sixteen wide, eight deep, walls (obstacles) narrowing the middle to a throat four hexes wide. The first non-square board the engine ever ran.',
+    rows: [
+      '................', '.....xx....xx...', '.....x......x...', '.....x......x...',
+      '.....x......x...', '.....x......x...', '.....xx....xx...', '................',
+    ],
+  },
+  {
+    id: 'test.map.horde-24',
+    name: 'The Plain (TESTING, 24×24 horde)',
+    note: 'TESTING LANE — never ships. The horde format: twenty-four square, open, a river across the middle with two fords. Room for the forty-body tide BASE-MAP-SPEC asks for.',
+    rows: [
+      '........................', '........................', '........................', '........................',
+      '........................', '........................', '........................', '........................',
+      '........................', '........................', '........................', 'wwwwww..wwwwwwwww..wwwww',
+      'wwwwww..wwwwwwwww..wwwww', '........................', '........................', '........................',
+      '........................', '........................', '........................', '........................',
+      '........................', '........................', '........................', '........................',
+    ],
+  },
 ] as const
 
 // Kill-switch seam (2026-08-20, found landing map.showcase): a disabled map id
@@ -135,13 +171,34 @@ const TERRAIN_ID: Readonly<Record<number, string>> = {
   [TERRAIN.BURNING]: 'terrain.burning', [TERRAIN.POISONED]: 'terrain.poisoned',
 }
 
-export function terrainOf(mapId: string): number[] {
+function mapDef(mapId: string): MapDef {
   const m = MAPS.find((x) => x.id === mapId)
   if (!m) throw new Error(`unknown map '${mapId}' — maps are authored, check content/maps.ts`)
-  if (m.rows.length !== HEIGHT) throw new Error(`map '${mapId}' has ${m.rows.length} rows, expected ${HEIGHT}`)
+  return m
+}
+
+/**
+ * The board a map is drawn on — board.variable-size (2026-09-04). Read off the
+ * rows: height is the row count, width the row length, and the pair must be
+ * one of the four ruled formats (hex.ts FORMATS) so no fifth size appears by
+ * accident. Rectangular, or it is not a map.
+ */
+export function boardOf(mapId: string): Board {
+  const m = mapDef(mapId)
+  const height = m.rows.length
+  const width = m.rows[0]?.length ?? 0
+  for (const row of m.rows) if (row.length !== width) throw new Error(`map '${mapId}' has a row of ${row.length} in a board ${width} wide — not rectangular`)
+  const board = { width, height }
+  if (!formatOf(board)) throw new Error(`map '${mapId}' is ${width}×${height}, which is none of the four formats (8×8, 16×8, 16×16, 24×24 — ruled 2026-09-03)`)
+  return board
+}
+
+export function terrainOf(mapId: string): number[] {
+  const m = mapDef(mapId)
+  const { width } = boardOf(mapId)
   const out: number[] = []
   for (const row of m.rows) {
-    if (row.length !== WIDTH) throw new Error(`map '${mapId}' has a row of ${row.length}, expected ${WIDTH}`)
+    if (row.length !== width) throw new Error(`map '${mapId}' has a row of ${row.length}, expected ${width}`)
     for (const ch of row) {
       const t = GLYPH[ch]
       if (t === undefined) throw new Error(`map '${mapId}' has an unknown glyph '${ch}'`)

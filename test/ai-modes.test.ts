@@ -10,7 +10,7 @@ import { runActivation, AI_MODES } from '../src/ai/modes.js'
 import { beginActivation } from '../src/core/mutate.js'
 import { UNITS } from '../src/content/index.js'
 import { scenarioDef, scenarioOptions } from '../src/content/scenarios.js'
-import { distance, hexId } from '../src/core/hex.js'
+import { distance, hexId } from './board16.js'
 
 const withAi = (ctx: ReturnType<typeof createCustomBattle>, id: number, ai: string) => { ctx.state.units[id]!.ai = ai; return ctx.state.units[id]! }
 

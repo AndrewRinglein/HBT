@@ -7,11 +7,10 @@
 // static.json (hexW 68.2 · row step 44.8 · base 30.2), so synthetic boards and
 // the art board share one scale. Used by build-replay.mjs whenever the battle's
 // map is not the one the shipped art was painted for.
-import { MAPS, terrainOf, terrainIdOf, moveCostOf, isPassable, IMPASSABLE,
+import { MAPS, boardOf, terrainOf, terrainIdOf, moveCostOf, isPassable, IMPASSABLE,
   accuracyBonusOf, reachBonusOf, dodgeBonusOf, armorBonusOf,
   stripsOnEnterOf, stripsOnActivationEndOf, appliesOnEnterOf, appliesOnActivationEndOf,
 } from '../src/content/maps.js'
-import { WIDTH, HEIGHT } from '../src/core/hex.js'
 
 const mapId = process.argv[2]
 if (!mapId) { console.error('usage: field-geometry <mapId>'); process.exit(2) }
@@ -23,6 +22,8 @@ if (!m) { console.error(`unknown map '${mapId}'`); process.exit(2) }
 // restructure discarded the first uncommitted copy of this change.
 const HEXW = 128, HEXH = 132, COL = 128, ROW = 96, ODD = 64, TILT = 49.3
 const terrain = terrainOf(mapId)
+// board.variable-size (2026-09-04): the map's own dimensions, emitted for the viewer
+const { width: WIDTH, height: HEIGHT } = boardOf(mapId)
 
 const hexes = [] as { c: number; r: number; px: number; py: number }[]
 for (let r = 0; r < HEIGHT; r++) for (let c = 0; c < WIDTH; c++) {
@@ -51,6 +52,7 @@ const table = kinds.map((t) => ({
 }))
 
 console.log(JSON.stringify({
+  width: WIDTH, height: HEIGHT,
   w: WIDTH * COL + ODD, h: (HEIGHT - 1) * ROW + HEXH,
   hexW: HEXW, hexH: HEXH,
   colStep: COL, rowStep: ROW, oddOffset: ODD, tilt: TILT,

@@ -10,7 +10,7 @@ import { applyStatus, tickStatuses } from '../src/core/status.js'
 import { stripsOnActivationEndOf, stripsOnEnterOf } from '../src/content/maps.js'
 import { STATUSES } from '../src/content/statuses.js'
 import { TERRAIN } from '../src/core/types.js'
-import { hexId } from '../src/core/hex.js'
+import { hexId } from './board16.js'
 
 function warriorWithResist(resist: number) {
   const ctx = createCustomBattle(

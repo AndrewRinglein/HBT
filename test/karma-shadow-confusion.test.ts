@@ -13,7 +13,7 @@ import { applyStatus, valueOf, tickUnitStatuses } from '../src/core/status.js'
 import { applyHealing, beginActivation, endActivation } from '../src/core/mutate.js'
 import { runActivation } from '../src/ai/modes.js'
 import { STATUSES } from '../src/content/statuses.js'
-import { hexId } from '../src/core/hex.js'
+import { hexId } from './board16.js'
 import { settle } from '../src/core/settle.js'
 
 const board = () => {

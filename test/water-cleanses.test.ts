@@ -13,7 +13,7 @@ import { executeMove, reachable, pathTo } from '../src/core/movement.js'
 import { MOVES } from '../src/content/moves.js'
 import { runBattle } from '../src/core/battle.js'
 import { beginActivation } from '../src/core/mutate.js'
-import { hexId, neighboursOf } from '../src/core/hex.js'
+import { hexId, neighboursOf } from './board16.js'
 
 describe('water cleanses', () => {
   it('the data: wet strips burn on enter; burn and poison at EoA — NEVER regeneration', () => {

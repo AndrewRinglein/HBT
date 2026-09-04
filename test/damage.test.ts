@@ -2,7 +2,7 @@ import { describe, it, expect } from 'vitest'
 import { createCustomBattle } from '../src/core/setup.js'
 import { resolveDamage, resolveAccuracy, preview, canAttack, reachOf } from '../src/core/pipeline.js'
 import { ATTACKS } from '../src/content/index.js'
-import { hexId } from '../src/core/hex.js'
+import { hexId } from './board16.js'
 
 // Adjacent pair, mid-board.
 function pair(heroType: string, enemyType = 'test-zombie') {

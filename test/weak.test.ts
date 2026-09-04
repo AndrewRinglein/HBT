@@ -14,7 +14,7 @@ import { preview } from '../src/core/pipeline.js'
 import { previewPower } from '../src/core/ability.js'
 import { effective } from '../src/core/stats.js'
 import { STATUSES } from '../src/content/statuses.js'
-import { hexId } from '../src/core/hex.js'
+import { hexId } from './board16.js'
 
 function board() {
   const ctx = createCustomBattle(

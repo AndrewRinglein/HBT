@@ -4,7 +4,7 @@ import { effective, stat, modsFor, terrainMods } from '../src/core/stats.js'
 import type { StatMod } from '../src/core/stats.js'
 import { resolveAccuracy, reachOf } from '../src/core/pipeline.js'
 import { ATTACKS } from '../src/content/index.js'
-import { hexId } from '../src/core/hex.js'
+import { hexId } from './board16.js'
 import { TERRAIN } from '../src/core/types.js'
 
 function ranger() {

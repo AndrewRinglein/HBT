@@ -3,7 +3,7 @@ import { createBattle, createCustomBattle, fieldedDef } from '../src/core/setup.
 import { runBattle } from '../src/core/battle.js'
 import { score } from '../src/sim/score.js'
 import { foldToTurn, setupSeq } from '../src/view/text.js'
-import { hexId, neighboursOf } from '../src/core/hex.js'
+import { hexId, neighboursOf } from './board16.js'
 import { ATTACKS, FIRST_BATTLE, UNITS } from '../src/content/index.js'
 
 const hash = (s: string) => { let h = 2166136261; for (const c of s) { h ^= c.charCodeAt(0); h = Math.imul(h, 16777619) } return h >>> 0 }

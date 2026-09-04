@@ -9,7 +9,7 @@ import { performAttack } from '../src/core/pipeline.js'
 import { beginActivation } from '../src/core/mutate.js'
 import { applyStatus } from '../src/core/status.js'
 import { ATTACKS } from '../src/content/index.js'
-import { hexId } from '../src/core/hex.js'
+import { hexId } from './board16.js'
 
 describe('an attack of two hits', () => {
   it('the Rake declares two swings, numbered, and each resolves its own roll; stamina and the primary are paid once', () => {

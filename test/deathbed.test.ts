@@ -14,7 +14,7 @@ import { runBattle } from '../src/core/battle.js'
 import { deathbedFighting, settle } from '../src/core/settle.js'
 import { effective } from '../src/core/stats.js'
 import { UNITS } from '../src/content/index.js'
-import { hexId } from '../src/core/hex.js'
+import { hexId } from './board16.js'
 
 const drop = (ctx: ReturnType<typeof createCustomBattle>, id: number) => { ctx.state.units[id]!.hp = 0; settle(ctx, 'test') }
 

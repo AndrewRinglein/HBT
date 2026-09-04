@@ -2259,5 +2259,27 @@
   "status": "done-needs-review",
   "sha": "a559403",
   "gauntlet": "not passed — 3 flag(s) warned"
+ },
+ {
+  "id": "board.variable-size",
+  "kind": "engine",
+  "shape": "plumbing",
+  "spec": "Ruled 2026-09-03 (DECISIONS.md \"board formats\"): four formats — 8×8 duel, 16×8 dungeon segment, 16×16 standard, 24×24 horde; the board is the map's, not a constant; hex ids row × width + col PER BOARD (\"We can do a per-width formula\"). hex.ts loses WIDTH/HEIGHT/HEX_COUNT and exports geometryOf(board) — one Geometry per size, carried as ctx.geo; State.board; maps.ts reads each map's board off its rows and refuses a fifth format (boardOf); every core loop over the board iterates ctx.geo.hexCount; deployment rows are the board's first and last (board.deploy-edges makes them the map's edges next); map.loaded carries width and height for the viewer; three TESTING maps join the panel, one per non-standard format; test/board16.ts binds the standard board for the hand-placed tests.",
+  "expect": "a battle runs to an outcome on test.map.duel-8, test.map.dungeon-16x8 and test.map.horde-24; state.board and map.loaded name the size; every unit and every step is on the board; hex 20 is row 2 on the duel board and row 1 on map.open; the eight existing control battles are byte-identical",
+  "changesBaseline": true,
+  "baselineReason": "VERIFIED before landing: with map.loaded masked, all eight existing control maps hash byte-identical to the previous tree (tools/baseline-style FNV over the event log, 25 replicates each). Every existing hash moves for exactly one reason — map.loaded now carries width and height — and three NEW maps join the panel.",
+  "probeIds": [
+   "test.map.duel-8",
+   "test.map.dungeon-16x8",
+   "test.map.horde-24"
+  ],
+  "tests": [
+   "test/board-formats.test.ts",
+   "test/hex.test.ts"
+  ],
+  "note": "PROVING-PLAN.md Stage A1. The viewer and kingdom doors re-export WIDTH/HEIGHT/HEX_COUNT from hex.ts and will not typecheck until they read map.loaded — EVENTS-FOR-THE-VIEWER §10 says what changed. 61 test files changed one import line (../src/core/hex.js → ./board16.js); two tests rewrote the number 256 as the rule width × height (Law 10 reasons in place).",
+  "status": "done-needs-review",
+  "sha": "c5085c1",
+  "gauntlet": "not passed — 2 flag(s) warned"
  }
 ]

@@ -12,7 +12,7 @@ import { TERRAIN } from '../src/core/types.js'
 import { executeMove, reachable, pathTo, movePowerOf } from '../src/core/movement.js'
 import { valueOf } from '../src/core/status.js'
 import { ENCOUNTERS } from '../src/content/index.js'
-import { hexId } from '../src/core/hex.js'
+import { hexId } from './board16.js'
 
 describe('the one ground shape', () => {
   it('burning, frost, poisoned and weak layers each apply exactly 1 of their status on entry and 1 at End of Activation', () => {

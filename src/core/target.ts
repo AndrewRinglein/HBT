@@ -17,7 +17,6 @@
 // So every field below is validated at load, and an unknown value throws.
 
 import type { Ctx, Unit } from './types.js'
-import { distance } from './hex.js'
 
 export type TargetSide = 'ally' | 'enemy' | 'any'
 export const TARGET_SIDES: readonly TargetSide[] = ['ally', 'enemy', 'any'] as const
@@ -119,7 +118,7 @@ export function resolveTargets(ctx: Ctx, actor: Unit, t: Targeting, aimedAt: num
       const out: number[] = []
       for (const u of ctx.state.units) {
         if (!eligible(actor, u, t)) continue
-        if (t.radius !== undefined && distance(centre.hex, u.hex) > t.radius) continue
+        if (t.radius !== undefined && ctx.geo.distance(centre.hex, u.hex) > t.radius) continue
         out.push(u.id)
       }
       return out.sort((a, b) => a - b)
@@ -140,7 +139,7 @@ export function hasAnyTarget(ctx: Ctx, actor: Unit, t: Targeting, range: number)
   if (t.select === 'self') return true
   for (const u of ctx.state.units) {
     if (!eligible(actor, u, t)) continue
-    if (distance(actor.hex, u.hex) <= range) return true
+    if (ctx.geo.distance(actor.hex, u.hex) <= range) return true
   }
   return false
 }

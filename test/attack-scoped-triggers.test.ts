@@ -13,7 +13,7 @@ import { performAttack } from '../src/core/pipeline.js'
 import { beginActivation } from '../src/core/mutate.js'
 import { valueOf } from '../src/core/status.js'
 import { UNITS } from '../src/content/index.js'
-import { hexId } from '../src/core/hex.js'
+import { hexId } from './board16.js'
 
 function board() {
   const ctx = createCustomBattle(

@@ -6,7 +6,7 @@ import { createCustomBattle } from '../src/core/setup.js'
 import { runActivation } from '../src/ai/modes.js'
 import { beginActivation } from '../src/core/mutate.js'
 import { UNITS } from '../src/content/index.js'
-import { distance, hexId } from '../src/core/hex.js'
+import { distance, hexId } from './board16.js'
 
 describe('support', () => {
   it('a hurt undead ally in the pulse\'s reach is healed before the bolt is thrown', () => {

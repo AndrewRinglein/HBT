@@ -17,7 +17,6 @@
 // (COMBAT-DESIGN §4's assumption, kept as SWITCHES.md targetUnseen).
 
 import type { Ctx, Unit } from './types.js'
-import { distance, WIDTH } from './hex.js'
 import { effective } from './stats.js'
 import { LAYER } from '../content/maps.js'
 import { emit, layerAt, paintLayer } from './mutate.js'
@@ -42,13 +41,13 @@ function isBurning(ctx: Ctx, target: Unit): boolean {
 export function canSee(ctx: Ctx, viewer: Unit, target: Unit): boolean {
   if (!isDark(ctx, target.hex)) return true
   if (isBurning(ctx, target)) return true
-  return distance(viewer.hex, target.hex) <= visionOf(ctx, viewer)
+  return ctx.geo.distance(viewer.hex, target.hex) <= visionOf(ctx, viewer)
 }
 
 /** The condition: every hex dark at phase 1. */
 export function fallNight(ctx: Ctx, causeId: string): void {
-  for (let h = 0; h < WIDTH * WIDTH; h++) paintLayer(ctx, h, LAYER.DARKNESS, causeId)
-  emit(ctx, 'night.fell', causeId, { hexes: WIDTH * WIDTH })
+  for (let h = 0; h < ctx.geo.hexCount; h++) paintLayer(ctx, h, LAYER.DARKNESS, causeId)
+  emit(ctx, 'night.fell', causeId, { hexes: ctx.geo.hexCount })
 }
 
 /** The hero phase: each standing hero lights what is inside its Vision — darkness unpainted. */
@@ -58,8 +57,8 @@ export function heroesLight(ctx: Ctx, causeId: string): void {
   for (const u of ctx.state.units) {
     if (u.side !== 'hero' || u.lifeState !== 'standing') continue
     const r = visionOf(ctx, u)
-    for (let h = 0; h < WIDTH * WIDTH; h++) {
-      if (layerAt(ctx, h) === LAYER.DARKNESS && distance(u.hex, h) <= r) { paintLayer(ctx, h, LAYER.NONE, causeId); lit++ }
+    for (let h = 0; h < ctx.geo.hexCount; h++) {
+      if (layerAt(ctx, h) === LAYER.DARKNESS && ctx.geo.distance(u.hex, h) <= r) { paintLayer(ctx, h, LAYER.NONE, causeId); lit++ }
     }
   }
   if (lit) emit(ctx, 'light.cast', causeId, { hexes: lit })
@@ -68,6 +67,6 @@ export function heroesLight(ctx: Ctx, causeId: string): void {
 /** Paint a layer in a radius from a hex — the night family's repaint, the Eyeblight's dying rush. */
 export function paintRadius(ctx: Ctx, centre: number, radius: number, layer: number, causeId: string): number {
   let n = 0
-  for (let h = 0; h < WIDTH * WIDTH; h++) if (distance(centre, h) <= radius) { paintLayer(ctx, h, layer, causeId); n++ }
+  for (let h = 0; h < ctx.geo.hexCount; h++) if (ctx.geo.distance(centre, h) <= radius) { paintLayer(ctx, h, layer, causeId); n++ }
   return n
 }

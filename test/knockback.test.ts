@@ -7,7 +7,7 @@
 // default fizzle-in-place). Second consumer: trigger.test-ram.knockback on
 // the Arc Golem, pure data, live in showcase.arc-variant.
 import { describe, expect, it } from 'vitest'
-import { stepAwayFrom, distance } from '../src/core/hex.js'
+import { stepAwayFrom, distance } from './board16.js'
 import { executeKnockback } from '../src/core/movement.js'
 import { performAttack } from '../src/core/pipeline.js'
 import { UNITS } from '../src/content/index.js'

@@ -7,7 +7,7 @@ import type { StatusDef } from '../src/core/status.js'
 import { applyStatus } from '../src/core/status.js'
 import { previewPower, resolvePowerDamage, usePower } from '../src/core/ability.js'
 import { createCustomBattle } from '../src/core/setup.js'
-import { hexId } from '../src/core/hex.js'
+import { hexId } from './board16.js'
 
 // Synthetic statuses: no CONTENT declares reducesOutgoingDamage or
 // reducesIncomingDamage yet (they are slots), so the tests inject minimal defs

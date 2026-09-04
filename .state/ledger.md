@@ -6534,3 +6534,803 @@ index 87102a9..6248d21 100644
 </details>
 
 IRON GAUNTLET: NOT PASSED — 3 FLAG(S) WARNED
+
+## board.variable-size — LANDED `c5085c1` **NEEDS REVIEW**
+2026-09-04 07:52
+
+  PASS  dependencies landed
+  WARN  not already decided — 3 candidate ruling(s) — READ BEFORE ASKING: ../STATE.md:21 · ../STATE.md:20
+  PASS  typecheck
+  PASS  full test suite
+  PASS  gate 1 — the id appears in a real battle — test.map.duel-8: 1 log lines, 1 fired, 1 changed state · test.map.dungeon-16x8: 1 log lines, 1 fired, 1 changed state · test.map.horde-24: 1 log lines, 1 fired, 1 changed state
+  PASS  brought its own tests — test/ability-effects.test.ts, test/accuracy-field.test.ts, test/activation-end.test.ts, test/additions.test.ts, test/ai-modes.test.ts, test/ai-support.test.ts, test/area-attack.test.ts, test/attack-choice.test.ts, test/attack-cooldown.test.ts, test/attack-of-opportunity.test.ts, test/attack-scoped-triggers.test.ts, test/audit.test.ts, test/auras.test.ts, test/bleed-magnitude.test.ts, test/bleed.test.ts, test/burn.test.ts, test/burning-ground.test.ts, test/charges.test.ts, test/civilian-flight.test.ts, test/civilians.test.ts, test/corpses.test.ts, test/damage.test.ts, test/deathbed.test.ts, test/downed-targetable.test.ts, test/encounter-runner.test.ts, test/enemy-ai-role.test.ts, test/fixture-migration.test.ts, test/flight.test.ts, test/frost-root-taunt.test.ts, test/green-drake.test.ts, test/ground-layers.test.ts, test/ground-shape.test.ts, test/hex.test.ts, test/integration.test.ts, test/karma-shadow-confusion.test.ts, test/knockback.test.ts, test/movement-bonus.test.ts, test/movement-powers.test.ts, test/multihit.test.ts, test/one-damage-function.test.ts, test/pack-statuses.test.ts, test/power-pool.test.ts, test/protection.test.ts, test/rulings-2026-08-15.test.ts, test/slow.test.ts, test/spirit-snake.test.ts, test/stamina-drain.test.ts, test/state.test.ts, test/stats.test.ts, test/status.test.ts, test/stun.test.ts, test/surge.test.ts, test/target.test.ts, test/terrain.test.ts, test/tick-resist.test.ts, test/trigger.test.ts, test/unit-tags.test.ts, test/vision.test.ts, test/water-cleanses.test.ts, test/weak.test.ts, test/zone-of-control.test.ts, test/board-formats.test.ts, test/board16.ts
+  WARN  existing tests untouched — DELETED LINES in test/ability-effects.test.ts (-1), test/accuracy-field.test.ts (-1), test/activation-end.test.ts (-1), test/additions.test.ts (-3), test/ai-modes.test.ts (-1), test/ai-support.test.ts (-1), test/area-attack.test.ts (-3), test/attack-choice.test.ts (-1), test/attack-cooldown.test.ts (-1), test/attack-of-opportunity.test.ts (-1), test/attack-scoped-triggers.test.ts (-1), test/audit.test.ts (-1), test/auras.test.ts (-1), test/bleed-magnitude.test.ts (-1), test/bleed.test.ts (-1), test/burn.test.ts (-1), test/burning-ground.test.ts (-1), test/charges.test.ts (-1), test/civilian-flight.test.ts (-1), test/civilians.test.ts (-1), test/corpses.test.ts (-1), test/damage.test.ts (-1), test/deathbed.test.ts (-1), test/downed-targetable.test.ts (-1), test/encounter-runner.test.ts (-1), test/enemy-ai-role.test.ts (-1), test/fixture-migration.test.ts (-1), test/flight.test.ts (-1), test/frost-root-taunt.test.ts (-1), test/green-drake.test.ts (-1), test/ground-layers.test.ts (-1), test/ground-shape.test.ts (-1), test/hex.test.ts (-1), test/integration.test.ts (-1), test/karma-shadow-confusion.test.ts (-1), test/knockback.test.ts (-1), test/movement-bonus.test.ts (-1), test/movement-powers.test.ts (-1), test/multihit.test.ts (-1), test/one-damage-function.test.ts (-1), test/pack-statuses.test.ts (-1), test/power-pool.test.ts (-1), test/protection.test.ts (-1), test/rulings-2026-08-15.test.ts (-1), test/slow.test.ts (-1), test/spirit-snake.test.ts (-1), test/stamina-drain.test.ts (-1), test/state.test.ts (-1), test/stats.test.ts (-1), test/status.test.ts (-1), test/stun.test.ts (-1), test/surge.test.ts (-1), test/target.test.ts (-1), test/terrain.test.ts (-3), test/tick-resist.test.ts (-1), test/trigger.test.ts (-1), test/unit-tags.test.ts (-1), test/vision.test.ts (-1), test/water-cleanses.test.ts (-1), test/weak.test.ts (-1), test/zone-of-control.test.ts (-1) — will land FLAGGED for review
+  PASS  control battles unchanged — will re-bless at commit — this item DECLARED it changes the control battles: map.open b0581857->25d4e950, map.ridge e24089e2->2f0e4151, map.flanks 1cc8f786->ebbe50d1, map.highlands 93aa3515->1df5af6c, map.field 273d3fea->3fc2376f, map.thicket f655af93->845a659a, test.map.embers e31812c5->e2ed9dd6, test.map.showcase 2cf45430->97e82137, test.map.duel-8 ?->29cd45ab, test.map.dungeon-16x8 ?->537330d9, test.map.horde-24 ?->172a86f0, test.map.duel-8 NEW, test.map.dungeon-16x8 NEW, test.map.horde-24 NEW
+  PASS  content has a published source — 22 ids without a published source (12 awaiting publication from earlier items — see audit)
+  PASS  hardcode scan — core knows mechanisms, never names
+  PASS  generalizes — the second instance costs zero engine code — shape 'plumbing' — not a mechanism, exempt
+  PASS  naming — new content ids use declared kinds
+  PASS  naming — no banned words invented
+  PASS  kill switch — the tests fail without the content — tests fail without test.map.duel-8,test.map.dungeon-16x8,test.map.horde-24 — they genuinely test it
+
+<details><summary>Existing tests were edited — review this diff</summary>
+
+```diff
+diff --git a/test/ability-effects.test.ts b/test/ability-effects.test.ts
+index 5511baf..4ea3cee 100644
+--- a/test/ability-effects.test.ts
++++ b/test/ability-effects.test.ts
+@@ -15,5 +15,5 @@ import { effective } from '../src/core/stats.js'
+ import { ABILITIES } from '../src/content/index.js'
+ import { scenarioDef, scenarioOptions } from '../src/content/scenarios.js'
+-import { hexId } from '../src/core/hex.js'
++import { hexId } from './board16.js'
+ import type { AbilityEffect } from '../src/core/types.js'
+ 
+diff --git a/test/accuracy-field.test.ts b/test/accuracy-field.test.ts
+index 9403d27..55ad357 100644
+--- a/test/accuracy-field.test.ts
++++ b/test/accuracy-field.test.ts
+@@ -10,5 +10,5 @@ import { ACC, performAttack, preview } from '../src/core/pipeline.js'
+ import { beginActivation } from '../src/core/mutate.js'
+ import { ATTACKS } from '../src/content/index.js'
+-import { hexId } from '../src/core/hex.js'
++import { hexId } from './board16.js'
+ 
+ function golemBoard() {
+diff --git a/test/activation-end.test.ts b/test/activation-end.test.ts
+index fe36ea8..d6b8646 100644
+--- a/test/activation-end.test.ts
++++ b/test/activation-end.test.ts
+@@ -13,5 +13,5 @@ import { beginActivation, endActivation } from '../src/core/mutate.js'
+ import { applyStatus, valueOf } from '../src/core/status.js'
+ import { UNITS } from '../src/content/index.js'
+-import { hexId } from '../src/core/hex.js'
++import { hexId } from './board16.js'
+ 
+ const GOLEM = 'test-arc-golem'
+diff --git a/test/additions.test.ts b/test/additions.test.ts
+index e01d1d1..516fae7 100644
+--- a/test/additions.test.ts
++++ b/test/additions.test.ts
+@@ -6,6 +6,6 @@ import { resolvePowerDamage, canUsePower, isReady } from '../src/core/ability.js
+ import { reachable, stepCost } from '../src/core/movement.js'
+ import { ATTACKS, ABILITIES, UNITS, FIRST_BATTLE, TEST_COHORT } from '../src/content/index.js'
+-import { MAPS, terrainOf, MAP_PANEL } from '../src/content/maps.js'
+-import { hexId, distance } from '../src/core/hex.js'
++import { MAPS, terrainOf, MAP_PANEL, boardOf } from '../src/content/maps.js'
++import { hexId, distance } from './board16.js'
+ import { TERRAIN } from '../src/core/types.js'
+ 
+@@ -37,5 +37,9 @@ describe('pass 2 — hills', () => {
+   it('gate 1 — every authored map parses to the right size, and hill counts differ', () => {
+     const counts = MAPS.map(m => terrainOf(m.id).filter(t => t === TERRAIN.HILLS).length)
+-    for (const m of MAPS) expect(terrainOf(m.id).length).toBe(256)
++    // board.variable-size (2026-09-04), Law 10 reason: "a full board" was written
++    // as the number 256 when 16×16 was the only board. The RULE is that a map's
++    // terrain is exactly its own width × height; the number was that rule's
++    // one instance.
++    for (const m of MAPS) expect(terrainOf(m.id).length).toBe(boardOf(m.id).width * boardOf(m.id).height)
+     expect(counts[0]).toBe(0)                    // open field is the control
+     // The RULE is that no two maps are the same board. Hill COUNT was a proxy for
+diff --git a/test/ai-modes.test.ts b/test/ai-modes.test.ts
+index 8b8a26e..f2b89f6 100644
+--- a/test/ai-modes.test.ts
++++ b/test/ai-modes.test.ts
+@@ -11,5 +11,5 @@ import { beginActivation } from '../src/core/mutate.js'
+ import { UNITS } from '../src/content/index.js'
+ import { scenarioDef, scenarioOptions } from '../src/content/scenarios.js'
+-import { distance, hexId } from '../src/core/hex.js'
++import { distance, hexId } from './board16.js'
+ 
+ const withAi = (ctx: ReturnType<typeof createCustomBattle>, id: number, ai: string) => { ctx.state.units[id]!.ai = ai; return ctx.state.units[id]! }
+diff --git a/test/ai-support.test.ts b/test/ai-support.test.ts
+index 31bbc53..bfeb9d6 100644
+--- a/test/ai-support.test.ts
++++ b/test/ai-support.test.ts
+@@ -7,5 +7,5 @@ import { runActivation } from '../src/ai/modes.js'
+ import { beginActivation } from '../src/core/mutate.js'
+ import { UNITS } from '../src/content/index.js'
+-import { distance, hexId } from '../src/core/hex.js'
++import { distance, hexId } from './board16.js'
+ 
+ describe('support', () => {
+diff --git a/test/area-attack.test.ts b/test/area-attack.test.ts
+index 05dc95a..c84db00 100644
+--- a/test/area-attack.test.ts
++++ b/test/area-attack.test.ts
+@@ -8,5 +8,5 @@
+ import { describe, expect, it } from 'vitest'
+ import { areaHexesOf, areaUnitIdsOf, performAttack, preview } from '../src/core/pipeline.js'
+-import { neighboursOf, distance } from '../src/core/hex.js'
++import { neighboursOf, distance, GEO16 } from './board16.js'
+ import { ATTACKS } from '../src/content/index.js'
+ import { scenarioDef, scenarioOptions } from '../src/content/scenarios.js'
+@@ -21,5 +21,5 @@ describe('the geometry — one function, Law 6 order', () => {
+   it("the arc is the target hex plus the hexes adjacent to BOTH ends", () => {
+     // The scenario's own triple: golem 135, zombies 118 and 119.
+-    const arc = areaHexesOf(135, 118, 'arc')
++    const arc = areaHexesOf(GEO16, 135, 118, 'arc')
+     expect(arc[0]).toBe(118) // target first
+     for (const h of arc.slice(1)) {
+@@ -32,5 +32,5 @@ describe('the geometry — one function, Law 6 order', () => {
+ 
+   it('blast1 is the hex plus its six neighbours', () => {
+-    const b = areaHexesOf(135, 118, 'blast1')
++    const b = areaHexesOf(GEO16, 135, 118, 'blast1')
+     expect(b[0]).toBe(118)
+     expect(new Set(b.slice(1))).toEqual(new Set(neighboursOf(118)))
+diff --git a/test/attack-choice.test.ts b/test/attack-choice.test.ts
+index 4cf46d4..f95e265 100644
+--- a/test/attack-choice.test.ts
++++ b/test/attack-choice.test.ts
+@@ -12,5 +12,5 @@ import { runActivation } from '../src/ai/modes.js'
+ import { beginActivation } from '../src/core/mutate.js'
+ import { preview } from '../src/core/pipeline.js'
+-import { hexId } from '../src/core/hex.js'
++import { hexId } from './board16.js'
+ 
+ describe('the two policies', () => {
+diff --git a/test/attack-cooldown.test.ts b/test/attack-cooldown.test.ts
+index 68c9c79..8448456 100644
+--- a/test/attack-cooldown.test.ts
++++ b/test/attack-cooldown.test.ts
+@@ -12,5 +12,5 @@ import { beginActivation } from '../src/core/mutate.js'
+ import { ATTACKS } from '../src/content/index.js'
+ import { scenarioDef, scenarioOptions } from '../src/content/scenarios.js'
+-import { hexId } from '../src/core/hex.js'
++import { hexId } from './board16.js'
+ 
+ describe('an attack on cooldown', () => {
+diff --git a/test/attack-of-opportunity.test.ts b/test/attack-of-opportunity.test.ts
+index e5f891b..20e81b9 100644
+--- a/test/attack-of-opportunity.test.ts
++++ b/test/attack-of-opportunity.test.ts
+@@ -6,5 +6,5 @@ import { createCustomBattle } from '../src/core/setup.js'
+ import { executeMove, executeSidestep, reachable, pathTo, movePowerOf } from '../src/core/movement.js'
+ import { beginActivation } from '../src/core/mutate.js'
+-import { hexId } from '../src/core/hex.js'
++import { hexId } from './board16.js'
+ 
+ describe('attack of opportunity, at the edges', () => {
+diff --git a/test/attack-scoped-triggers.test.ts b/test/attack-scoped-triggers.test.ts
+index caca3b3..7507d91 100644
+--- a/test/attack-scoped-triggers.test.ts
++++ b/test/attack-scoped-triggers.test.ts
+@@ -14,5 +14,5 @@ import { beginActivation } from '../src/core/mutate.js'
+ import { valueOf } from '../src/core/status.js'
+ import { UNITS } from '../src/content/index.js'
+-import { hexId } from '../src/core/hex.js'
++import { hexId } from './board16.js'
+ 
+ function board() {
+diff --git a/test/audit.test.ts b/test/audit.test.ts
+index a814758..13f7059 100644
+--- a/test/audit.test.ts
++++ b/test/audit.test.ts
+@@ -6,5 +6,5 @@ import { STATUSES } from '../src/content/statuses.js'
+ import { MOVES } from '../src/content/moves.js'
+ import { accuracyBonusOf, dodgeBonusOf, reachBonusOf, terrainOf } from '../src/content/maps.js'
+-import { distance } from '../src/core/hex.js'
++import { distance } from './board16.js'
+ 
+ // An INDEPENDENT auditor. It re-derives every number straight from the stat blocks
+diff --git a/test/auras.test.ts b/test/auras.test.ts
+index 3c3a00b..1a287fd 100644
+--- a/test/auras.test.ts
++++ b/test/auras.test.ts
+@@ -12,5 +12,5 @@ import { beginActivation } from '../src/core/mutate.js'
+ import { UNITS } from '../src/content/index.js'
+ import { scenarioDef, scenarioOptions } from '../src/content/scenarios.js'
+-import { hexId } from '../src/core/hex.js'
++import { hexId } from './board16.js'
+ import { applyStatus } from '../src/core/status.js'
+ 
+diff --git a/test/bleed-magnitude.test.ts b/test/bleed-magnitude.test.ts
+index a6a45b3..3f94f5f 100644
+--- a/test/bleed-magnitude.test.ts
++++ b/test/bleed-magnitude.test.ts
+@@ -11,5 +11,5 @@ import { applyHealing } from '../src/core/mutate.js'
+ import { STATUSES } from '../src/content/statuses.js'
+ import { scenarioDef, scenarioOptions } from '../src/content/scenarios.js'
+-import { hexId } from '../src/core/hex.js'
++import { hexId } from './board16.js'
+ 
+ const rig = () => createCustomBattle([{ type: 'test-warrior', hex: hexId(5, 5) }], [{ type: 'test-zombie', hex: hexId(9, 9) }])
+diff --git a/test/bleed.test.ts b/test/bleed.test.ts
+index e6ea8a0..28b27d4 100644
+--- a/test/bleed.test.ts
++++ b/test/bleed.test.ts
+@@ -11,5 +11,5 @@ import { stripsOnActivationEndOf, stripsOnEnterOf } from '../src/content/maps.js
+ import { STATUSES } from '../src/content/statuses.js'
+ import { TERRAIN } from '../src/core/types.js'
+-import { hexId } from '../src/core/hex.js'
++import { hexId } from './board16.js'
+ 
+ function warriorWithResist(resist: number) {
+diff --git a/test/burn.test.ts b/test/burn.test.ts
+index 6f2185a..0b83985 100644
+--- a/test/burn.test.ts
++++ b/test/burn.test.ts
+@@ -9,5 +9,5 @@ import { applyStatus, tickStatuses, heal } from '../src/core/status.js'
+ import { applyHealing, applyDamage } from '../src/core/mutate.js'
+ import { UNITS } from '../src/content/index.js'
+-import { hexId } from '../src/core/hex.js'
++import { hexId } from './board16.js'
+ 
+ function board(resist = 0) {
+diff --git a/test/burning-ground.test.ts b/test/burning-ground.test.ts
+index 8bb411f..d5b608f 100644
+--- a/test/burning-ground.test.ts
++++ b/test/burning-ground.test.ts
+@@ -19,5 +19,5 @@ import { executeMove, pathTo, reachable } from '../src/core/movement.js'
+ // movement became a content-driven CHOICE — same walk, now named).
+ import { MOVES } from '../src/content/moves.js'
+-import { hexId } from '../src/core/hex.js'
++import { hexId } from './board16.js'
+ 
+ describe('the data — one mechanism, two pure-data instances', () => {
+diff --git a/test/charges.test.ts b/test/charges.test.ts
+index e622678..cdb4d53 100644
+--- a/test/charges.test.ts
++++ b/test/charges.test.ts
+@@ -13,5 +13,5 @@ import { beginActivation } from '../src/core/mutate.js'
+ import { ABILITIES, ITEMS } from '../src/content/index.js'
+ import { scenarioDef, scenarioOptions } from '../src/content/scenarios.js'
+-import { hexId } from '../src/core/hex.js'
++import { hexId } from './board16.js'
+ 
+ const POTION = 'power.healing-potion.use'
+diff --git a/test/civilian-flight.test.ts b/test/civilian-flight.test.ts
+index 0f60ecb..3a28801 100644
+--- a/test/civilian-flight.test.ts
++++ b/test/civilian-flight.test.ts
+@@ -8,5 +8,5 @@ import { runBattle } from '../src/core/battle.js'
+ import { ENCOUNTERS } from '../src/content/index.js'
+ import { scenarioDef, scenarioOptions } from '../src/content/scenarios.js'
+-import { distance } from '../src/core/hex.js'
++import { distance } from './board16.js'
+ 
+ describe('the civilians flee, then fight', () => {
+diff --git a/test/civilians.test.ts b/test/civilians.test.ts
+index 4328c35..5b3b43e 100644
+--- a/test/civilians.test.ts
++++ b/test/civilians.test.ts
+@@ -17,5 +17,5 @@ import { runBattle } from '../src/core/battle.js'
+ import { runActivation } from '../src/ai/modes.js'
+ import { beginActivation } from '../src/core/mutate.js'
+-import { hexId } from '../src/core/hex.js'
++import { hexId } from './board16.js'
+ 
+ // LAW 10 — 2026-09-02 (seam.items-per-unit): hero rows are BARE now — the kit's
+diff --git a/test/corpses.test.ts b/test/corpses.test.ts
+index 005cd34..ec3f7b6 100644
+--- a/test/corpses.test.ts
++++ b/test/corpses.test.ts
+@@ -15,5 +15,5 @@ import { effective } from '../src/core/stats.js'
+ import { UNITS, ABILITIES } from '../src/content/index.js'
+ import { scenarioDef, scenarioOptions } from '../src/content/scenarios.js'
+-import { hexId } from '../src/core/hex.js'
++import { hexId } from './board16.js'
+ 
+ describe('a corpse is made', () => {
+diff --git a/test/damage.test.ts b/test/damage.test.ts
+index 48216d1..6dedad1 100644
+--- a/test/damage.test.ts
++++ b/test/damage.test.ts
+@@ -3,5 +3,5 @@ import { createCustomBattle } from '../src/core/setup.js'
+ import { resolveDamage, resolveAccuracy, preview, canAttack, reachOf } from '../src/core/pipeline.js'
+ import { ATTACKS } from '../src/content/index.js'
+-import { hexId } from '../src/core/hex.js'
++import { hexId } from './board16.js'
+ 
+ // Adjacent pair, mid-board.
+diff --git a/test/deathbed.test.ts b/test/deathbed.test.ts
+index c947b40..d03a837 100644
+--- a/test/deathbed.test.ts
++++ b/test/deathbed.test.ts
+@@ -15,5 +15,5 @@ import { deathbedFighting, settle } from '../src/core/settle.js'
+ import { effective } from '../src/core/stats.js'
+ import { UNITS } from '../src/content/index.js'
+-import { hexId } from '../src/core/hex.js'
++import { hexId } from './board16.js'
+ 
+ const drop = (ctx: ReturnType<typeof createCustomBattle>, id: number) => { ctx.state.units[id]!.hp = 0; settle(ctx, 'test') }
+diff --git a/test/downed-targetable.test.ts b/test/downed-targetable.test.ts
+index bd62a46..3204345 100644
+--- a/test/downed-targetable.test.ts
++++ b/test/downed-targetable.test.ts
+@@ -8,5 +8,5 @@ import { ACC, canAttack, performAttack, preview } from '../src/core/pipeline.js'
+ import { beginActivation, setBleedOut, setLifeState } from '../src/core/mutate.js'
+ import { runBattle } from '../src/core/battle.js'
+-import { hexId } from '../src/core/hex.js'
++import { hexId } from './board16.js'
+ 
+ function board(bleedOut = 5) {
+diff --git a/test/encounter-runner.test.ts b/test/encounter-runner.test.ts
+index 32b58a4..e986d90 100644
+--- a/test/encounter-runner.test.ts
++++ b/test/encounter-runner.test.ts
+@@ -17,5 +17,5 @@ import { runBattle } from '../src/core/battle.js'
+ import { ENCOUNTERS, UNITS } from '../src/content/index.js'
+ import { scenarioDef, scenarioOptions, encounterDef } from '../src/content/scenarios.js'
+-import { hexId } from '../src/core/hex.js'
++import { hexId } from './board16.js'
+ import { setBleedOut, setLifeState } from '../src/core/mutate.js'
+ import type { EncounterDef } from '../src/core/types.js'
+diff --git a/test/enemy-ai-role.test.ts b/test/enemy-ai-role.test.ts
+index 20581ad..aa38482 100644
+--- a/test/enemy-ai-role.test.ts
++++ b/test/enemy-ai-role.test.ts
+@@ -11,5 +11,5 @@ import { runBattle } from '../src/core/battle.js'
+ import { ATTACKS, UNITS } from '../src/content/index.js'
+ import { scenarioDef, scenarioOptions } from '../src/content/scenarios.js'
+-import { hexId } from '../src/core/hex.js'
++import { hexId } from './board16.js'
+ 
+ const rangedCount = (id: string) => UNITS[id]!.attacks.filter((a) => ATTACKS[a]?.kind === 'ranged').length
+diff --git a/test/fixture-migration.test.ts b/test/fixture-migration.test.ts
+index e186a5d..ea35338 100644
+--- a/test/fixture-migration.test.ts
++++ b/test/fixture-migration.test.ts
+@@ -13,5 +13,5 @@ import { packTestAbilities, packTestAttacks, packUnits } from '../src/content/pa
+ import { createCustomBattle } from '../src/core/setup.js'
+ import { resolveDamage } from '../src/core/pipeline.js'
+-import { hexId } from '../src/core/hex.js'
++import { hexId } from './board16.js'
+ 
+ const src = () => readFileSync(join(__dirname, '..', 'src', 'content', 'index.ts'), 'utf8')
+diff --git a/test/flight.test.ts b/test/flight.test.ts
+index b088b2b..d8f039d 100644
+--- a/test/flight.test.ts
++++ b/test/flight.test.ts
+@@ -17,5 +17,5 @@ import { executeFlight, executeMove, flightLandings, flightRange, pathTo, reacha
+ import { MOVES } from '../src/content/moves.js'
+ import { UNITS } from '../src/content/index.js'
+-import { hexId, neighboursOf, distance } from '../src/core/hex.js'
++import { hexId, neighboursOf, distance } from './board16.js'
+ 
+ const valueOf = (u: { statuses: { id: string; value: number }[] }, id: string) =>
+diff --git a/test/frost-root-taunt.test.ts b/test/frost-root-taunt.test.ts
+index 399a413..50ef23d 100644
+--- a/test/frost-root-taunt.test.ts
++++ b/test/frost-root-taunt.test.ts
+@@ -14,5 +14,5 @@ import { beginActivation } from '../src/core/mutate.js'
+ import { livingEnemies } from '../src/core/movement.js'
+ import { STATUSES } from '../src/content/statuses.js'
+-import { hexId } from '../src/core/hex.js'
++import { hexId } from './board16.js'
+ 
+ describe('Frost', () => {
+diff --git a/test/green-drake.test.ts b/test/green-drake.test.ts
+index d394828..cea3d38 100644
+--- a/test/green-drake.test.ts
++++ b/test/green-drake.test.ts
+@@ -13,5 +13,5 @@ import { beginActivation } from '../src/core/mutate.js'
+ import { removeStatus, valueOf } from '../src/core/status.js'
+ import { UNITS, ATTACKS } from '../src/content/index.js'
+-import { hexId } from '../src/core/hex.js'
++import { hexId } from './board16.js'
+ 
+ describe('the block — her dictation, verbatim', () => {
+diff --git a/test/ground-layers.test.ts b/test/ground-layers.test.ts
+index c4dc8a9..f728d1e 100644
+--- a/test/ground-layers.test.ts
++++ b/test/ground-layers.test.ts
+@@ -14,5 +14,5 @@ import { executeMove, reachable, pathTo, movePowerOf } from '../src/core/movemen
+ import { ENCOUNTERS } from '../src/content/index.js'
+ import { scenarioDef, scenarioOptions } from '../src/content/scenarios.js'
+-import { hexId, rowOf } from '../src/core/hex.js'
++import { hexId, rowOf } from './board16.js'
+ 
+ describe('painting', () => {
+diff --git a/test/ground-shape.test.ts b/test/ground-shape.test.ts
+index 63757ab..653443d 100644
+--- a/test/ground-shape.test.ts
++++ b/test/ground-shape.test.ts
+@@ -13,5 +13,5 @@ import { executeMove, reachable, pathTo, movePowerOf } from '../src/core/movemen
+ import { valueOf } from '../src/core/status.js'
+ import { ENCOUNTERS } from '../src/content/index.js'
+-import { hexId } from '../src/core/hex.js'
++import { hexId } from './board16.js'
+ 
+ describe('the one ground shape', () => {
+diff --git a/test/hex.test.ts b/test/hex.test.ts
+index b7bf1df..b34f932 100644
+--- a/test/hex.test.ts
++++ b/test/hex.test.ts
+@@ -3,5 +3,5 @@ import {
+   hexId, colOf, rowOf, distance, neighboursOf, neighbours,
+   isAdjacent, WIDTH, HEIGHT, HEX_COUNT,
+-} from '../src/core/hex.js'
++} from './board16.js'
+ 
+ describe('hex geometry', () => {
+@@ -67,2 +67,60 @@ describe('hex geometry', () => {
+   })
+ })
++
++// board.variable-size (2026-09-04): the same properties on every ruled
++// format. Ids are row × width + col PER BOARD, so a geometry is only ever
++// asked about hexes on its own board — and two boards never share one.
++import { FORMATS, formatOf, geometryOf } from '../src/core/hex.js'
++
++describe('hex geometry on every format', () => {
++  for (const [name, board] of Object.entries(FORMATS)) {
++    const g = geometryOf(board)
++    it(`${name} ${board.width}×${board.height}: ids round-trip, neighbours are the distance-1 set, sorted, symmetric`, () => {
++      expect(g.hexCount).toBe(board.width * board.height)
++      for (let r = 0; r < board.height; r++) for (let c = 0; c < board.width; c++) {
++        const h = g.hexId(c, r)
++        expect(g.colOf(h)).toBe(c)
++        expect(g.rowOf(h)).toBe(r)
++        expect(g.inBounds(c, r)).toBe(true)
++      }
++      expect(g.inBounds(board.width, 0)).toBe(false)
++      expect(g.inBounds(0, board.height)).toBe(false)
++      for (let h = 0; h < g.hexCount; h++) {
++        const n = g.neighboursOf(h)
++        expect([...n].sort((a, b) => a - b)).toEqual([...n])
++        expect(n.length).toBeGreaterThanOrEqual(2)
++        expect(n.length).toBeLessThanOrEqual(6)
++        for (const x of n) { expect(g.distance(h, x)).toBe(1); expect(g.neighboursOf(x)).toContain(h) }
++        let count = 0
++        for (let x = 0; x < g.hexCount; x++) if (g.distance(h, x) === 1) count++
++        expect(n.length).toBe(count)
++      }
++    })
++    it(`${name}: a row-end hex never neighbours the next row's start — the wrap that a wrong width would produce`, () => {
++      for (let r = 0; r + 1 < board.height; r++) {
++        const end = g.hexId(board.width - 1, r), start = g.hexId(0, r + 1)
++        // adjacent only if the geometry says so; on odd-r offset the right end of an
++        // even row and the left start of the next are never adjacent
++        if (!(r & 1)) expect(g.neighboursOf(end)).not.toContain(start)
++      }
++    })
++  }
++
++  it('the same board gives the same geometry object; a different board never does (the memo is keyed by the whole input)', () => {
++    expect(geometryOf({ width: 16, height: 8 })).toBe(geometryOf({ width: 16, height: 8 }))
++    expect(geometryOf(FORMATS.dungeon)).not.toBe(geometryOf(FORMATS.standard))
++    // hex 20 is (4,1) on a 16-wide board and (4,2) on an 8-wide one — the per-width formula
++    expect(geometryOf(FORMATS.standard).rowOf(20)).toBe(1)
++    expect(geometryOf(FORMATS.duel).rowOf(20)).toBe(2)
++    expect(geometryOf(FORMATS.duel).neighboursOf(20)).not.toEqual(geometryOf(FORMATS.standard).neighboursOf(20))
++  })
++
++  it('formatOf names the four and refuses a fifth', () => {
++    expect(formatOf({ width: 8, height: 8 })).toBe('duel')
++    expect(formatOf({ width: 16, height: 8 })).toBe('dungeon')
++    expect(formatOf({ width: 16, height: 16 })).toBe('standard')
++    expect(formatOf({ width: 24, height: 24 })).toBe('horde')
++    expect(formatOf({ width: 8, height: 16 })).toBeNull()
++    expect(formatOf({ width: 12, height: 12 })).toBeNull()
++  })
++})
+diff --git a/test/integration.test.ts b/test/integration.test.ts
+index aff2d8d..fa940d3 100644
+--- a/test/integration.test.ts
++++ b/test/integration.test.ts
+@@ -4,5 +4,5 @@ import { runBattle } from '../src/core/battle.js'
+ import { score } from '../src/sim/score.js'
+ import { foldToTurn, setupSeq } from '../src/view/text.js'
+-import { hexId, neighboursOf } from '../src/core/hex.js'
++import { hexId, neighboursOf } from './board16.js'
+ import { ATTACKS, FIRST_BATTLE, UNITS } from '../src/content/index.js'
+ 
+diff --git a/test/karma-shadow-confusion.test.ts b/test/karma-shadow-confusion.test.ts
+index 2bbf4c5..576c91d 100644
+--- a/test/karma-shadow-confusion.test.ts
++++ b/test/karma-shadow-confusion.test.ts
+@@ -14,5 +14,5 @@ import { applyHealing, beginActivation, endActivation } from '../src/core/mutate
+ import { runActivation } from '../src/ai/modes.js'
+ import { STATUSES } from '../src/content/statuses.js'
+-import { hexId } from '../src/core/hex.js'
++import { hexId } from './board16.js'
+ import { settle } from '../src/core/settle.js'
+ 
+diff --git a/test/knockback.test.ts b/test/knockback.test.ts
+index d6e877d..ebb7d7d 100644
+--- a/test/knockback.test.ts
++++ b/test/knockback.test.ts
+@@ -8,5 +8,5 @@
+ // the Arc Golem, pure data, live in showcase.arc-variant.
+ import { describe, expect, it } from 'vitest'
+-import { stepAwayFrom, distance } from '../src/core/hex.js'
++import { stepAwayFrom, distance } from './board16.js'
+ import { executeKnockback } from '../src/core/movement.js'
+ import { performAttack } from '../src/core/pipeline.js'
+diff --git a/test/movement-bonus.test.ts b/test/movement-bonus.test.ts
+index 5208685..cd4db8f 100644
+--- a/test/movement-bonus.test.ts
++++ b/test/movement-bonus.test.ts
+@@ -15,5 +15,5 @@ import { executeSidestep, stepRangeOf } from '../src/core/movement.js'
+ import { stat } from '../src/core/stats.js'
+ import { MOVES } from '../src/content/moves.js'
+-import { hexId } from '../src/core/hex.js'
++import { hexId } from './board16.js'
+ 
+ describe('the rows are the Codex rows — data, not code', () => {
+diff --git a/test/movement-powers.test.ts b/test/movement-powers.test.ts
+index b53b200..7c8d1fb 100644
+--- a/test/movement-powers.test.ts
++++ b/test/movement-powers.test.ts
+@@ -20,5 +20,5 @@ import { executeSidestep, moveStaminaCost, usableMoves } from '../src/core/movem
+ import { MOVES } from '../src/content/moves.js'
+ import { packUnits } from '../src/content/pack.js'
+-import { hexId } from '../src/core/hex.js'
++import { hexId } from './board16.js'
+ 
+ const valueOf = (u: { statuses: { id: string; value: number }[] }, id: string) =>
+diff --git a/test/multihit.test.ts b/test/multihit.test.ts
+index fe44c35..4b314f5 100644
+--- a/test/multihit.test.ts
++++ b/test/multihit.test.ts
+@@ -10,5 +10,5 @@ import { beginActivation } from '../src/core/mutate.js'
+ import { applyStatus } from '../src/core/status.js'
+ import { ATTACKS } from '../src/content/index.js'
+-import { hexId } from '../src/core/hex.js'
++import { hexId } from './board16.js'
+ 
+ describe('an attack of two hits', () => {
+diff --git a/test/one-damage-function.test.ts b/test/one-damage-function.test.ts
+index 4d1f0a6..fdcd0cb 100644
+--- a/test/one-damage-function.test.ts
++++ b/test/one-damage-function.test.ts
+@@ -8,5 +8,5 @@ import { applyStatus } from '../src/core/status.js'
+ import { previewPower, resolvePowerDamage, usePower } from '../src/core/ability.js'
+ import { createCustomBattle } from '../src/core/setup.js'
+-import { hexId } from '../src/core/hex.js'
++import { hexId } from './board16.js'
+ 
+ // Synthetic statuses: no CONTENT declares reducesOutgoingDamage or
+diff --git a/test/pack-statuses.test.ts b/test/pack-statuses.test.ts
+index 8f0d614..c963678 100644
+--- a/test/pack-statuses.test.ts
++++ b/test/pack-statuses.test.ts
+@@ -14,5 +14,5 @@ import { createBattle, createCustomBattle } from '../src/core/setup.js'
+ import { runBattle } from '../src/core/battle.js'
+ import { applyStatus, tickStatuses } from '../src/core/status.js'
+-import { hexId } from '../src/core/hex.js'
++import { hexId } from './board16.js'
+ 
+ const settledStatuses = (): { id: string; effect: string; decay: string; family?: string; damageType?: string }[] =>
+diff --git a/test/power-pool.test.ts b/test/power-pool.test.ts
+index 21fbd84..ec2758d 100644
+--- a/test/power-pool.test.ts
++++ b/test/power-pool.test.ts
+@@ -12,5 +12,5 @@ import { performAttack, powerShare, preview, DMG } from '../src/core/pipeline.js
+ import { beginActivation, gainPower } from '../src/core/mutate.js'
+ import { ATTACKS, ENCOUNTERS, UNITS } from '../src/content/index.js'
+-import { hexId } from '../src/core/hex.js'
++import { hexId } from './board16.js'
+ import type { EncounterDef } from '../src/core/types.js'
+ 
+diff --git a/test/protection.test.ts b/test/protection.test.ts
+index f2cb3fa..16d8401 100644
+--- a/test/protection.test.ts
++++ b/test/protection.test.ts
+@@ -12,5 +12,5 @@ import { resolvePowerDamage, usePower } from '../src/core/ability.js'
+ import { preview } from '../src/core/pipeline.js'
+ import { STATUSES } from '../src/content/statuses.js'
+-import { hexId } from '../src/core/hex.js'
++import { hexId } from './board16.js'
+ 
+ function board() {
+diff --git a/test/rulings-2026-08-15.test.ts b/test/rulings-2026-08-15.test.ts
+index d406c99..f2808eb 100644
+--- a/test/rulings-2026-08-15.test.ts
++++ b/test/rulings-2026-08-15.test.ts
+@@ -4,5 +4,5 @@ import { runBattle } from '../src/core/battle.js'
+ import { canAttack, preview, resolveAccuracy, inMelee } from '../src/core/pipeline.js'
+ import { BLEED_OUT_COUNTER } from '../src/core/settle.js'
+-import { hexId } from '../src/core/hex.js'
++import { hexId } from './board16.js'
+ 
+ // Two rulings from Angela, 2026-08-15. Written as tests rather than as notes,
+diff --git a/test/slow.test.ts b/test/slow.test.ts
+index 7bd15cc..c0ef507 100644
+--- a/test/slow.test.ts
++++ b/test/slow.test.ts
+@@ -15,5 +15,5 @@ import { canAttack } from '../src/core/pipeline.js'
+ import { reachable } from '../src/core/movement.js'
+ import { STATUSES } from '../src/content/statuses.js'
+-import { hexId } from '../src/core/hex.js'
++import { hexId } from './board16.js'
+ 
+ function board() {
+diff --git a/test/spirit-snake.test.ts b/test/spirit-snake.test.ts
+index 6f44745..c7a0092 100644
+--- a/test/spirit-snake.test.ts
++++ b/test/spirit-snake.test.ts
+@@ -12,5 +12,5 @@ import { beginActivation } from '../src/core/mutate.js'
+ import { valueOf } from '../src/core/status.js'
+ import { UNITS, ATTACKS, FIRST_BATTLE } from '../src/content/index.js'
+-import { hexId } from '../src/core/hex.js'
++import { hexId } from './board16.js'
+ 
+ describe('the block — Angela\'s dictation, verbatim from the Codex hero table', () => {
+diff --git a/test/stamina-drain.test.ts b/test/stamina-drain.test.ts
+index 13455ca..bab2aef 100644
+--- a/test/stamina-drain.test.ts
++++ b/test/stamina-drain.test.ts
+@@ -8,5 +8,5 @@ import { performAttack } from '../src/core/pipeline.js'
+ import { beginActivation } from '../src/core/mutate.js'
+ import { UNITS } from '../src/content/index.js'
+-import { hexId } from '../src/core/hex.js'
++import { hexId } from './board16.js'
+ 
+ describe('a hit drains the target\'s stamina', () => {
+diff --git a/test/state.test.ts b/test/state.test.ts
+index 7acf618..6618410 100644
+--- a/test/state.test.ts
++++ b/test/state.test.ts
+@@ -1,5 +1,5 @@
+ import { describe, it, expect } from 'vitest'
+ import { createBattle } from '../src/core/setup.js'
+-import { rowOf } from '../src/core/hex.js'
++import { rowOf } from './board16.js'
+ import { UNITS } from '../src/content/index.js'
+ 
+diff --git a/test/stats.test.ts b/test/stats.test.ts
+index 04ee4b5..a876cce 100644
+--- a/test/stats.test.ts
++++ b/test/stats.test.ts
+@@ -5,5 +5,5 @@ import type { StatMod } from '../src/core/stats.js'
+ import { resolveAccuracy, reachOf } from '../src/core/pipeline.js'
+ import { ATTACKS } from '../src/content/index.js'
+-import { hexId } from '../src/core/hex.js'
++import { hexId } from './board16.js'
+ import { TERRAIN } from '../src/core/types.js'
+ 
+diff --git a/test/status.test.ts b/test/status.test.ts
+index cb2f819..3d18da4 100644
+--- a/test/status.test.ts
++++ b/test/status.test.ts
+@@ -3,5 +3,5 @@ import { createBattle, createCustomBattle } from '../src/core/setup.js'
+ import { runBattle } from '../src/core/battle.js'
+ import { applyStatus, valueOf, heal, tickStatuses } from '../src/core/status.js'
+-import { hexId } from '../src/core/hex.js'
++import { hexId } from './board16.js'
+ import { preview, performAttack, resolveDamage } from '../src/core/pipeline.js'
+ import { ATTACKS } from '../src/content/index.js'
+diff --git a/test/stun.test.ts b/test/stun.test.ts
+index eaa2c6a..2e6d0d0 100644
+--- a/test/stun.test.ts
++++ b/test/stun.test.ts
+@@ -11,5 +11,5 @@ import { runBattle } from '../src/core/battle.js'
+ import { applyStatus, isBlocked, tickStatuses, valueOf } from '../src/core/status.js'
+ import { STATUSES } from '../src/content/statuses.js'
+-import { hexId } from '../src/core/hex.js'
++import { hexId } from './board16.js'
+ 
+ describe('the data', () => {
+diff --git a/test/surge.test.ts b/test/surge.test.ts
+index 2bf613b..e4615ad 100644
+--- a/test/surge.test.ts
++++ b/test/surge.test.ts
+@@ -11,5 +11,5 @@ import { runBattle } from '../src/core/battle.js'
+ import { ITEMS, SPECIALTIES } from '../src/content/index.js'
+ import { rosterOptionsOf, type Schedule } from '../src/sim/progression.js'
+-import { hexId } from '../src/core/hex.js'
++import { hexId } from './board16.js'
+ 
+ const schedule = JSON.parse(readFileSync(join(__dirname, '..', '..', 'progression', 'PROGRESSION-SCHEDULE.json'), 'utf8')) as Schedule
+diff --git a/test/target.test.ts b/test/target.test.ts
+index 6c43d97..854c9d0 100644
+--- a/test/target.test.ts
++++ b/test/target.test.ts
+@@ -7,5 +7,5 @@ import {
+ import type { Targeting } from '../src/core/target.js'
+ import { partySum, partySpiritSum, valueOf } from '../src/core/trigger.js'
+-import { hexId } from '../src/core/hex.js'
++import { hexId } from './board16.js'
+ 
+ // A priest, two allies, three enemies, spread out.
+diff --git a/test/terrain.test.ts b/test/terrain.test.ts
+index ef4d499..5ec0fcc 100644
+--- a/test/terrain.test.ts
++++ b/test/terrain.test.ts
+@@ -1,10 +1,10 @@
+ import { describe, it, expect } from 'vitest'
+ import { MAPS, terrainOf, GLYPH, terrainIdOf, moveCostOf, TRAITS, TRAIT, IMPASSABLE, isPassable,
+-         accuracyBonusOf, reachBonusOf, dodgeBonusOf, armorBonusOf, resistBonusOf } from '../src/content/maps.js'
++         accuracyBonusOf, reachBonusOf, dodgeBonusOf, armorBonusOf, resistBonusOf, boardOf } from '../src/content/maps.js'
+ import { createBattle, createCustomBattle } from '../src/core/setup.js'
+ import { runBattle } from '../src/core/battle.js'
+ import { effective, terrainMods } from '../src/core/stats.js'
+ import { stepCost, reachable, pathTo } from '../src/core/movement.js'
+-import { hexId } from '../src/core/hex.js'
++import { hexId } from './board16.js'
+ import { resolveAccuracy } from '../src/core/pipeline.js'
+ import { ATTACKS } from '../src/content/index.js'
+@@ -42,5 +42,7 @@ describe('terrain.kinds — the seven are recognised', () => {
+ 
+   it('every authored map still parses to a full board', () => {
+-    for (const m of MAPS) expect(terrainOf(m.id).length).toBe(256)
++    // board.variable-size (2026-09-04), Law 10 reason: 256 was 16×16, the only
++    // board then; the rule is width × height of the map's own board.
++    for (const m of MAPS) expect(terrainOf(m.id).length).toBe(boardOf(m.id).width * boardOf(m.id).height)
+   })
+ 
+diff --git a/test/tick-resist.test.ts b/test/tick-resist.test.ts
+index 5782d09..9d717b2 100644
+--- a/test/tick-resist.test.ts
++++ b/test/tick-resist.test.ts
+@@ -4,5 +4,5 @@ import { describe, expect, it } from 'vitest'
+ import { createCustomBattle } from '../src/core/setup.js'
+ import { applyStatus, tickStatuses } from '../src/core/status.js'
+-import { hexId } from '../src/core/hex.js'
++import { hexId } from './board16.js'
+ 
+ function warriorWithResist(resist: number) {
+diff --git a/test/trigger.test.ts b/test/trigger.test.ts
+index 66e3ca1..0168651 100644
+--- a/test/trigger.test.ts
++++ b/test/trigger.test.ts
+@@ -11,5 +11,5 @@ import {
+ } from '../src/core/trigger.js'
+ import type { Trigger } from '../src/core/trigger.js'
+-import { hexId } from '../src/core/hex.js'
++import { hexId } from './board16.js'
+ 
+ const T = (over: Partial<Trigger> = {}): Trigger => ({
+diff --git a/test/unit-tags.test.ts b/test/unit-tags.test.ts
+index 0e8db35..8285dd2 100644
+--- a/test/unit-tags.test.ts
++++ b/test/unit-tags.test.ts
+@@ -12,5 +12,5 @@ import { runBattle } from '../src/core/battle.js'
+ import { resolveTargets } from '../src/core/target.js'
+ import { UNITS } from '../src/content/index.js'
+-import { hexId } from '../src/core/hex.js'
++import { hexId } from './board16.js'
+ 
+ const ROT = 'trigger.test-tags.grave-rot'
+diff --git a/test/vision.test.ts b/test/vision.test.ts
+index 94063e3..18f1ade 100644
+--- a/test/vision.test.ts
++++ b/test/vision.test.ts
+@@ -14,5 +14,5 @@ import { applyStatus } from '../src/core/status.js'
+ import { LAYER } from '../src/content/maps.js'
+ import { ENCOUNTERS, UNITS } from '../src/content/index.js'
+-import { distance, hexId, WIDTH } from '../src/core/hex.js'
++import { distance, hexId, WIDTH } from './board16.js'
+ 
+ const board = () => createCustomBattle([{ type: 'test-ranger', hex: hexId(2, 8) }], [{ type: 'unit.zombie', hex: hexId(9, 8) }, { type: 'unit.zombie', hex: hexId(6, 8) }])
+diff --git a/test/water-cleanses.test.ts b/test/water-cleanses.test.ts
+index 2ee87b6..d10dcbb 100644
+--- a/test/water-cleanses.test.ts
++++ b/test/water-cleanses.test.ts
+@@ -14,5 +14,5 @@ import { MOVES } from '../src/content/moves.js'
+ import { runBattle } from '../src/core/battle.js'
+ import { beginActivation } from '../src/core/mutate.js'
+-import { hexId, neighboursOf } from '../src/core/hex.js'
++import { hexId, neighboursOf } from './board16.js'
+ 
+ describe('water cleanses', () => {
+diff --git a/test/weak.test.ts b/test/weak.test.ts
+index 3bad45e..a2406de 100644
+--- a/test/weak.test.ts
++++ b/test/weak.test.ts
+@@ -15,5 +15,5 @@ import { previewPower } from '../src/core/ability.js'
+ import { effective } from '../src/core/stats.js'
+ import { STATUSES } from '../src/content/statuses.js'
+-import { hexId } from '../src/core/hex.js'
++import { hexId } from './board16.js'
+ 
+ function board() {
+diff --git a/test/zone-of-control.test.ts b/test/zone-of-control.test.ts
+index 1374e9c..382634c 100644
+--- a/test/zone-of-control.test.ts
++++ b/test/zone-of-control.test.ts
+@@ -12,5 +12,5 @@ import { runBattle } from '../src/core/battle.js'
+ import { executeMove, reachable, pathTo, movePowerOf, zocHoldersAt } from '../src/core/movement.js'
+ import { beginActivation } from '../src/core/mutate.js'
+-import { hexId } from '../src/core/hex.js'
++import { hexId } from './board16.js'
+ 
+ describe('zone of control', () => {
+```
+</details>
+
+IRON GAUNTLET: NOT PASSED — 2 FLAG(S) WARNED

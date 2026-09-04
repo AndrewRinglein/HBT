@@ -10,7 +10,7 @@ import { createBattle, createCustomBattle } from '../src/core/setup.js'
 import { runBattle } from '../src/core/battle.js'
 import { ATTACKS, UNITS } from '../src/content/index.js'
 import { scenarioDef, scenarioOptions } from '../src/content/scenarios.js'
-import { hexId } from '../src/core/hex.js'
+import { hexId } from './board16.js'
 
 const rangedCount = (id: string) => UNITS[id]!.attacks.filter((a) => ATTACKS[a]?.kind === 'ranged').length
 const meleeCount = (id: string) => UNITS[id]!.attacks.filter((a) => ATTACKS[a]?.kind === 'melee').length

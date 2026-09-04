@@ -4,7 +4,6 @@
 
 import type { Ctx, Event, LifeState, Unit } from './types.js'
 import type { HexId } from './hex.js'
-import { distance as hexDistance } from './hex.js'
 import { effective } from './stats.js'
 
 export function emit(ctx: Ctx, type: string, causeId: string, fields: Record<string, unknown> = {}): Event {
@@ -361,8 +360,8 @@ export function removeCorpse(ctx: Ctx, corpseId: number, causeId: string, how: '
 }
 /** Corpses within `radius` of a hex, nearest first, lowest id first (Law 6). */
 export function corpsesNear(ctx: Ctx, hex: HexId, radius: number): { id: number; hex: number; typeId: string; side: 'hero' | 'enemy'; uid: number }[] {
-  return (ctx.state.corpses ?? []).filter((c) => hexDistance(c.hex, hex) <= radius)
-    .sort((a, b) => hexDistance(a.hex, hex) - hexDistance(b.hex, hex) || a.id - b.id)
+  return (ctx.state.corpses ?? []).filter((c) => ctx.geo.distance(c.hex, hex) <= radius)
+    .sort((a, b) => ctx.geo.distance(a.hex, hex) - ctx.geo.distance(b.hex, hex) || a.id - b.id)
 }
 
 // ── GROUND LAYERS — capability.ground-layers (2026-09-03) ────────────────────

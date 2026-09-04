@@ -1,10 +1,10 @@
-import { WIDTH, hexId } from './hex.js'
+import { geometryOf } from './hex.js'
 import { makeRng, rootSeedOf, sample } from './rng.js'
 import type { Ctx, EncounterDef, HeroProgress, Side, State, Unit, UnitDef, Config } from './types.js'
 import { DEFAULT_CONFIG } from './types.js'
 import { ATTACKS, ABILITIES, CRIT_CHART, ITEMS, LEVELS, SPECIALTIES, UNITS, FIRST_BATTLE } from '../content/index.js'
 import { applyItems, applyProgress, type Applied, FOLDABLE } from './items.js'
-import { terrainOf, terrainIdOf, isPassable } from '../content/maps.js'
+import { boardOf, terrainOf, terrainIdOf, isPassable } from '../content/maps.js'
 import { STATUSES } from '../content/statuses.js'
 import { MOVES } from '../content/moves.js'
 import { triggersFrom } from './trigger.js'
@@ -154,8 +154,9 @@ export function createBattle(opts: BattleOptions): Ctx {
   const rng = makeRng(rootSeed, opts.strict ? { strict: true } : undefined)
 
   const mapId = opts.mapId ?? opts.encounter?.mapId ?? 'map.open'
-  const state: State = { turn: 0, phase: 'hero', mapId, terrain: terrainOf(mapId), units: [], outcome: null, seq: 0 }
-  const ctx: Ctx = { state, events: [], rng, cfg, attacks: ATTACKS, abilities: ABILITIES, statuses: STATUSES, moves: MOVES, critChart: CRIT_CHART, items: ITEMS,
+  const board = boardOf(mapId)
+  const state: State = { turn: 0, phase: 'hero', mapId, board, terrain: terrainOf(mapId), units: [], outcome: null, seq: 0 }
+  const ctx: Ctx = { state, geo: geometryOf(board), events: [], rng, cfg, attacks: ATTACKS, abilities: ABILITIES, statuses: STATUSES, moves: MOVES, critChart: CRIT_CHART, items: ITEMS,
     units: UNITS, arrive: (c, d, hex, cause) => arrive(c, d, hex, cause, {}),
     ...(opts.encounter ? { encounter: opts.encounter } : {}) }
 
@@ -239,9 +240,12 @@ export function createBattle(opts: BattleOptions): Ctx {
   // obstacles existed; the first authored map with one on a deployment row would
   // have placed a unit in it silently. Law 9: fail loudly instead.
   const passableCols = (row: number) =>
-    Array.from({ length: WIDTH }, (_, i) => i).filter((c) => isPassable(state.terrain[hexId(c, row)] ?? 0))
-  const cols = passableCols(FIRST_BATTLE.heroRow)
-  const eCols = passableCols(FIRST_BATTLE.enemyRow ?? 0)
+    Array.from({ length: board.width }, (_, i) => i).filter((c) => isPassable(state.terrain[ctx.geo.hexId(c, row)] ?? 0))
+  // board.variable-size: the deployment rows are the board's last and first
+  const heroRow = board.height - 1
+  const enemyRow = 0
+  const cols = passableCols(heroRow)
+  const eCols = passableCols(enemyRow)
   // Only the ROLLED path needs a deployment row wide enough. A scenario names
   // its own hexes (already validated above), so a map with a narrow row is not
   // its problem — before this guard, an authored fielding could be refused for a
@@ -267,7 +271,7 @@ export function createBattle(opts: BattleOptions): Ctx {
   // encounter.runner: an encounter may name where the heroes deploy
   const zoneHexes = opts.encounter && !opts.heroHexes ? heroDeployHexes(ctx, opts.encounter, heroes.length) : null
   heroes.forEach((t, i) => {
-    const hex = opts.heroHexes?.[i] ?? zoneHexes?.[i] ?? hexId(heroCols[i]!, FIRST_BATTLE.heroRow)
+    const hex = opts.heroHexes?.[i] ?? zoneHexes?.[i] ?? ctx.geo.hexId(heroCols[i]!, heroRow)
     const bare = def(t)
     // Items at fielding (seam.items-per-unit): what the options hand this
     // hero, else the row's Codex default kit, else nothing — applied by the
@@ -297,7 +301,7 @@ export function createBattle(opts: BattleOptions): Ctx {
   const seenEnemy: Record<string, number> = {}
   enemies.forEach((t, i) => {
     // More enemies than columns spill onto the next row back.
-    const hex = opts.enemyHexes?.[i] ?? hexId(enemyCols[i % WIDTH]!, FIRST_BATTLE.enemyRow + Math.floor(i / WIDTH))
+    const hex = opts.enemyHexes?.[i] ?? ctx.geo.hexId(enemyCols[i % board.width]!, enemyRow + Math.floor(i / board.width))
     // Named from the def (Codex name) or the typeId, counted per type — Law 12:
     // the log names what a thing IS.
     const d = def(t)
@@ -340,9 +344,10 @@ export function createBattle(opts: BattleOptions): Ctx {
   // event log alone, so a fielding recorded only in `seed` is invisible to it —
   // and gate 1 could not probe a scenario at all. Emitted ONLY when there is a
   // scenario, so every standard battle stays byte-identical.
+  // board.variable-size: the log names the board — the viewer lays out from these two numbers, never a constant
   emit(ctx, 'map.loaded', mapId, opts.scenarioId
-    ? { mapId, scenarioId: opts.scenarioId, ...terrainCensus(state.terrain) }
-    : { mapId, ...terrainCensus(state.terrain) })
+    ? { mapId, scenarioId: opts.scenarioId, width: board.width, height: board.height, ...terrainCensus(state.terrain) }
+    : { mapId, width: board.width, height: board.height, ...terrainCensus(state.terrain) })
   return ctx
 }
 
@@ -358,8 +363,9 @@ export function createCustomBattle(
   }
   const rng = makeRng(rootSeedOf(99, 0, opts.replicate ?? 0), opts.strict ? { strict: true } : undefined)
   const mapId = opts.mapId ?? 'map.open'
-  const state: State = { turn: 0, phase: 'hero', mapId, terrain: terrainOf(mapId), units: [], outcome: null, seq: 0 }
-  const ctx: Ctx = { state, events: [], rng, cfg, attacks: ATTACKS, abilities: ABILITIES, statuses: STATUSES, moves: MOVES, critChart: CRIT_CHART, items: ITEMS,
+  const board = boardOf(mapId)
+  const state: State = { turn: 0, phase: 'hero', mapId, board, terrain: terrainOf(mapId), units: [], outcome: null, seq: 0 }
+  const ctx: Ctx = { state, geo: geometryOf(board), events: [], rng, cfg, attacks: ATTACKS, abilities: ABILITIES, statuses: STATUSES, moves: MOVES, critChart: CRIT_CHART, items: ITEMS,
     units: UNITS, arrive: (c, d, hex, cause) => arrive(c, d, hex, cause, {}) }
   let id = 0
   // Custom battles field the row's default kit too (seam.items-per-unit) —
@@ -376,6 +382,6 @@ export function createCustomBattle(
       stamina: u.stamina, maxStamina: u.maxStamina, terrain: state.terrain[u.hex],
     })
   }
-  emit(ctx, 'map.loaded', mapId, { mapId, ...terrainCensus(state.terrain) })
+  emit(ctx, 'map.loaded', mapId, { mapId, width: board.width, height: board.height, ...terrainCensus(state.terrain) })
   return ctx
 }

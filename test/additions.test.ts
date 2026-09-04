@@ -5,8 +5,8 @@ import { resolveDamage, resolveAccuracy, reachOf, canAttack } from '../src/core/
 import { resolvePowerDamage, canUsePower, isReady } from '../src/core/ability.js'
 import { reachable, stepCost } from '../src/core/movement.js'
 import { ATTACKS, ABILITIES, UNITS, FIRST_BATTLE, TEST_COHORT } from '../src/content/index.js'
-import { MAPS, terrainOf, MAP_PANEL } from '../src/content/maps.js'
-import { hexId, distance } from '../src/core/hex.js'
+import { MAPS, terrainOf, MAP_PANEL, boardOf } from '../src/content/maps.js'
+import { hexId, distance } from './board16.js'
 import { TERRAIN } from '../src/core/types.js'
 
 const MAPS_ALL = MAP_PANEL
@@ -36,7 +36,11 @@ describe('pass 1 — unit roles', () => {
 describe('pass 2 — hills', () => {
   it('gate 1 — every authored map parses to the right size, and hill counts differ', () => {
     const counts = MAPS.map(m => terrainOf(m.id).filter(t => t === TERRAIN.HILLS).length)
-    for (const m of MAPS) expect(terrainOf(m.id).length).toBe(256)
+    // board.variable-size (2026-09-04), Law 10 reason: "a full board" was written
+    // as the number 256 when 16×16 was the only board. The RULE is that a map's
+    // terrain is exactly its own width × height; the number was that rule's
+    // one instance.
+    for (const m of MAPS) expect(terrainOf(m.id).length).toBe(boardOf(m.id).width * boardOf(m.id).height)
     expect(counts[0]).toBe(0)                    // open field is the control
     // The RULE is that no two maps are the same board. Hill COUNT was a proxy for
     // that, and it broke the moment two different maps happened to have 28 hills

@@ -1,11 +1,11 @@
 import { describe, it, expect } from 'vitest'
 import { MAPS, terrainOf, GLYPH, terrainIdOf, moveCostOf, TRAITS, TRAIT, IMPASSABLE, isPassable,
-         accuracyBonusOf, reachBonusOf, dodgeBonusOf, armorBonusOf, resistBonusOf } from '../src/content/maps.js'
+         accuracyBonusOf, reachBonusOf, dodgeBonusOf, armorBonusOf, resistBonusOf, boardOf } from '../src/content/maps.js'
 import { createBattle, createCustomBattle } from '../src/core/setup.js'
 import { runBattle } from '../src/core/battle.js'
 import { effective, terrainMods } from '../src/core/stats.js'
 import { stepCost, reachable, pathTo } from '../src/core/movement.js'
-import { hexId } from '../src/core/hex.js'
+import { hexId } from './board16.js'
 import { resolveAccuracy } from '../src/core/pipeline.js'
 import { ATTACKS } from '../src/content/index.js'
 import { TERRAIN } from '../src/core/types.js'
@@ -41,7 +41,9 @@ describe('terrain.kinds — the seven are recognised', () => {
   })
 
   it('every authored map still parses to a full board', () => {
-    for (const m of MAPS) expect(terrainOf(m.id).length).toBe(256)
+    // board.variable-size (2026-09-04), Law 10 reason: 256 was 16×16, the only
+    // board then; the rule is width × height of the map's own board.
+    for (const m of MAPS) expect(terrainOf(m.id).length).toBe(boardOf(m.id).width * boardOf(m.id).height)
   })
 
   it('map.field carries real MAP-01 terrain, not a collapse to open/hills', () => {

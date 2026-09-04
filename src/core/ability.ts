@@ -17,7 +17,6 @@
 //               Armor, and lose 5 Dodge for the rest of the Battle. Every use
 //               costs another 5 Dodge")
 
-import { distance } from './hex.js'
 import type { AbilityDef, AbilityEffect, Ctx, Unit } from './types.js'
 import { addStatMod, applyDamage, applyHealing, corpsesNear, emit, gainMaxHp, gainStamina, loseMaxHp, markPrimaryUsed, removeCorpse, removeStatus, reduceStatus, spendStamina, unit } from './mutate.js'
 import { resolveTargets, hasAnyTarget } from './target.js'
@@ -96,7 +95,7 @@ export function canUsePower(ctx: Ctx, userId: number, targetId: number, abilityI
     if (!a.free && u.primaryUsed) return false
     if (u.stamina < a.staminaCost) return false
     if (!isReady(ctx, u, abilityId)) return false
-    return (t.select === 'self' || (t.select === 'area' && (t.origin ?? 'self') === 'self')) ? true : distance(u.hex, tg.hex) <= a.range
+    return (t.select === 'self' || (t.select === 'area' && (t.origin ?? 'self') === 'self')) ? true : ctx.geo.distance(u.hex, tg.hex) <= a.range
   }
   switch (effectOf(a)) {
     case 'damage':
@@ -115,7 +114,7 @@ export function canUsePower(ctx: Ctx, userId: number, targetId: number, abilityI
   if (u.primaryUsed) return false
   if (u.stamina < a.staminaCost) return false
   if (!isReady(ctx, u, abilityId)) return false
-  return distance(u.hex, tg.hex) <= a.range
+  return ctx.geo.distance(u.hex, tg.hex) <= a.range
 }
 
 /**
@@ -149,7 +148,7 @@ export function powerBlastIdsOf(ctx: Ctx, userId: number, targetId: number, abil
   const a = abilityDef(ctx, abilityId)
   if (!a.area) return [targetId]
   const u = unit(ctx, userId)
-  const hexes = new Set(areaHexesOf(u.hex, unit(ctx, targetId).hex, a.area))
+  const hexes = new Set(areaHexesOf(ctx.geo, u.hex, unit(ctx, targetId).hex, a.area))
   const out: number[] = []
   for (const o of ctx.state.units) {
     if (o.lifeState !== 'standing' || !hexes.has(o.hex)) continue
@@ -216,7 +215,7 @@ export function usePower(ctx: Ctx, userId: number, targetId: number, abilityId: 
       const amount = resolveHealAmount(ctx, u, a)
       emit(ctx, 'power.used', a.id, {
         actor: userId, target: targetId, abilityId, name: a.name,
-        distance: distance(u.hex, tg.hex), heal: amount,
+        distance: ctx.geo.distance(u.hex, tg.hex), heal: amount,
       })
       applyHealing(ctx, targetId, amount, a.id)
       break
@@ -247,7 +246,7 @@ export function usePower(ctx: Ctx, userId: number, targetId: number, abilityId: 
         if (pv.damage !== dmg.value) throw new Error(`power preview/applied mismatch: ${pv.damage} vs ${dmg.value}`)
         emit(ctx, 'power.used', a.id, {
           actor: userId, target: targetId, abilityId, name: a.name,
-          distance: distance(u.hex, tg.hex),
+          distance: ctx.geo.distance(u.hex, tg.hex),
           ledger: dmg.ledger.map((r) => ({ station: r.name, effectId: r.effectId, delta: r.delta })),
         })
         // Spend what the pipeline said Protection would absorb — same order as attacks.
@@ -262,7 +261,7 @@ export function usePower(ctx: Ctx, userId: number, targetId: number, abilityId: 
       const struck = powerBlastIdsOf(ctx, userId, targetId, abilityId)
       emit(ctx, 'power.used', a.id, {
         actor: userId, target: targetId, abilityId, name: a.name,
-        distance: distance(u.hex, tg.hex), area: a.area, struck,
+        distance: ctx.geo.distance(u.hex, tg.hex), area: a.area, struck,
       })
       for (const id of struck) {
         const victim = unit(ctx, id)
@@ -320,7 +319,7 @@ function performEffects(ctx: Ctx, userId: number, targetId: number, a: AbilityDe
   const targets = powerTargetsOf(ctx, userId, targetId, a)
   emit(ctx, 'power.used', a.id, {
     actor: userId, target: targetId, abilityId: a.id, name: a.name,
-    distance: distance(u.hex, unit(ctx, targetId).hex), targets, ...(a.free ? { free: true } : {}),
+    distance: ctx.geo.distance(u.hex, unit(ctx, targetId).hex), targets, ...(a.free ? { free: true } : {}),
   })
   let total = 0
   for (const e of a.effects!) {

@@ -18,7 +18,7 @@ import { executeMove, pathTo, reachable } from '../src/core/movement.js'
 // executeMove takes the chosen movement power since 2026-08-21 (Law 10:
 // movement became a content-driven CHOICE — same walk, now named).
 import { MOVES } from '../src/content/moves.js'
-import { hexId } from '../src/core/hex.js'
+import { hexId } from './board16.js'
 
 describe('the data — one mechanism, two pure-data instances', () => {
   it('burning: +1 Burn on enter AND +1 at End of Activation ("standing costs 2")', () => {

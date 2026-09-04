@@ -16,7 +16,7 @@ import { createBattle } from '../src/core/setup.js'
 import { runBattle } from '../src/core/battle.js'
 import { ENCOUNTERS, UNITS } from '../src/content/index.js'
 import { scenarioDef, scenarioOptions, encounterDef } from '../src/content/scenarios.js'
-import { hexId } from '../src/core/hex.js'
+import { hexId } from './board16.js'
 import { setBleedOut, setLifeState } from '../src/core/mutate.js'
 import type { EncounterDef } from '../src/core/types.js'
 

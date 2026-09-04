@@ -12,7 +12,7 @@ import { performAttack, preview } from '../src/core/pipeline.js'
 import { beginActivation } from '../src/core/mutate.js'
 import { removeStatus, valueOf } from '../src/core/status.js'
 import { UNITS, ATTACKS } from '../src/content/index.js'
-import { hexId } from '../src/core/hex.js'
+import { hexId } from './board16.js'
 
 describe('the block — her dictation, verbatim', () => {
   it('every number she gave', () => {

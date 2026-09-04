@@ -5,7 +5,7 @@ import { describe, expect, it } from 'vitest'
 import { createCustomBattle } from '../src/core/setup.js'
 import { executeMove, executeSidestep, reachable, pathTo, movePowerOf } from '../src/core/movement.js'
 import { beginActivation } from '../src/core/mutate.js'
-import { hexId } from '../src/core/hex.js'
+import { hexId } from './board16.js'
 
 describe('attack of opportunity, at the edges', () => {
   it('two zombies adjacent: each provokes once, however many ZoC hexes the path crosses', () => {

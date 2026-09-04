@@ -3,8 +3,8 @@
 // This is deliberate: if the log cannot describe the battle, the future graphical
 // renderer cannot either, and finding that out now costs days instead of a rewrite.
 
-import { WIDTH, HEIGHT, colOf, rowOf } from '../core/hex.js'
-import { terrainOf } from '../content/maps.js'
+import { geometryOf } from '../core/hex.js'
+import { terrainOf, boardOf } from '../content/maps.js'
 import type { Event } from '../core/types.js'
 
 type UnitView = {
@@ -59,13 +59,15 @@ const GLYPH: Record<string, string> = { warrior: 'W', ranger: 'R', mage: 'M', zo
 /** L1 — the board, odd-r offset, indented rows. */
 export function renderBoard(units: Map<number, UnitView>, mapId = 'map.open'): string {
   const terr = terrainOf(mapId)
+  const geo = geometryOf(boardOf(mapId))   // board.variable-size: the map says how wide it is
+  const { width: WIDTH, height: HEIGHT } = geo.board
   const grid: string[][] = Array.from({ length: HEIGHT }, (_, r) =>
     Array.from({ length: WIDTH }, (_, c) => (terr[r * WIDTH + c] === 1 ? ' ^ ' : ' . ')))
   for (const u of units.values()) {
     if (u.life === 'dead') continue
     const g = GLYPH[u.typeId] ?? '?'
     const mark = u.life === 'downed' ? `(${g})` : ` ${g}${u.id} `.slice(0, 3)
-    grid[rowOf(u.hex)]![colOf(u.hex)] = mark.padEnd(3).slice(0, 3)
+    grid[geo.rowOf(u.hex)]![geo.colOf(u.hex)] = mark.padEnd(3).slice(0, 3)
   }
   const lines: string[] = []
   lines.push('    ' + Array.from({ length: WIDTH }, (_, c) => String(c).padStart(3)).join(''))

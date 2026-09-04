@@ -25,7 +25,6 @@
 //      there is no second path to disagree with. Damage-changing effects are STATIONS.
 
 import type { Ctx, Unit, DamageType } from './types.js'
-import { distance } from './hex.js'
 import type { Targeting } from './target.js'
 import { resolveTargets, validateTargeting } from './target.js'
 import { roll100 } from './rng.js'
@@ -329,7 +328,7 @@ export function within(ctx: Ctx, from: Unit, n: number, side: 'ally' | 'enemy' |
     const isAlly = u.side === from.side
     if (side === 'ally' && !isAlly) continue
     if (side === 'enemy' && isAlly) continue
-    if (distance(from.hex, u.hex) <= n) out.push(u.id)
+    if (ctx.geo.distance(from.hex, u.hex) <= n) out.push(u.id)
   }
   return out.sort((a, b) => a - b)   // Law 6
 }

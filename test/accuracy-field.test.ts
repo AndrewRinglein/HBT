@@ -9,7 +9,7 @@ import { createCustomBattle } from '../src/core/setup.js'
 import { ACC, performAttack, preview } from '../src/core/pipeline.js'
 import { beginActivation } from '../src/core/mutate.js'
 import { ATTACKS } from '../src/content/index.js'
-import { hexId } from '../src/core/hex.js'
+import { hexId } from './board16.js'
 
 function golemBoard() {
   const ctx = createCustomBattle(

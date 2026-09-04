@@ -13,7 +13,7 @@ import { addStatMod, layerAt } from '../src/core/mutate.js'
 import { applyStatus } from '../src/core/status.js'
 import { LAYER } from '../src/content/maps.js'
 import { ENCOUNTERS, UNITS } from '../src/content/index.js'
-import { distance, hexId, WIDTH } from '../src/core/hex.js'
+import { distance, hexId, WIDTH } from './board16.js'
 
 const board = () => createCustomBattle([{ type: 'test-ranger', hex: hexId(2, 8) }], [{ type: 'unit.zombie', hex: hexId(9, 8) }, { type: 'unit.zombie', hex: hexId(6, 8) }])
 

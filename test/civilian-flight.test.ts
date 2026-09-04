@@ -7,7 +7,7 @@ import { createBattle } from '../src/core/setup.js'
 import { runBattle } from '../src/core/battle.js'
 import { ENCOUNTERS } from '../src/content/index.js'
 import { scenarioDef, scenarioOptions } from '../src/content/scenarios.js'
-import { distance } from '../src/core/hex.js'
+import { distance } from './board16.js'
 
 describe('the civilians flee, then fight', () => {
   it('Supper carries civilianAi flee until Turn 3; every civilian runs flee on Turns 1–3 and its own mode after', () => {

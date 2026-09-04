@@ -11,7 +11,7 @@ import { canAttack, performAttack } from '../src/core/pipeline.js'
 import { beginActivation } from '../src/core/mutate.js'
 import { ATTACKS } from '../src/content/index.js'
 import { scenarioDef, scenarioOptions } from '../src/content/scenarios.js'
-import { hexId } from '../src/core/hex.js'
+import { hexId } from './board16.js'
 
 describe('an attack on cooldown', () => {
   it('Devour: legal, used, then refused until Turn now + cooldown', () => {

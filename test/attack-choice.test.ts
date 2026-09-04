@@ -11,7 +11,7 @@ import { runBattle } from '../src/core/battle.js'
 import { runActivation } from '../src/ai/modes.js'
 import { beginActivation } from '../src/core/mutate.js'
 import { preview } from '../src/core/pipeline.js'
-import { hexId } from '../src/core/hex.js'
+import { hexId } from './board16.js'
 
 describe('the two policies', () => {
   it('bestDamage swings the hardest legal attack; declared swings the first — on the same board they differ', () => {

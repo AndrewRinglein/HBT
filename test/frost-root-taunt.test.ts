@@ -13,7 +13,7 @@ import { applyStatus, valueOf, isRooted, forcedTargetOf } from '../src/core/stat
 import { beginActivation } from '../src/core/mutate.js'
 import { livingEnemies } from '../src/core/movement.js'
 import { STATUSES } from '../src/content/statuses.js'
-import { hexId } from '../src/core/hex.js'
+import { hexId } from './board16.js'
 
 describe('Frost', () => {
   it('is loaded from the Codex with the flag, and adds its value to a physical hit before Armor — a FROST ledger row', () => {

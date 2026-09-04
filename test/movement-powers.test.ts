@@ -19,7 +19,7 @@ import { beginActivation } from '../src/core/mutate.js'
 import { executeSidestep, moveStaminaCost, usableMoves } from '../src/core/movement.js'
 import { MOVES } from '../src/content/moves.js'
 import { packUnits } from '../src/content/pack.js'
-import { hexId } from '../src/core/hex.js'
+import { hexId } from './board16.js'
 
 const valueOf = (u: { statuses: { id: string; value: number }[] }, id: string) =>
   u.statuses.find((s) => s.id === id)?.value ?? 0

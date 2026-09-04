@@ -13,7 +13,7 @@ import { valueOf } from '../src/core/status.js'
 import { executeMove, reachable, pathTo, movePowerOf } from '../src/core/movement.js'
 import { ENCOUNTERS } from '../src/content/index.js'
 import { scenarioDef, scenarioOptions } from '../src/content/scenarios.js'
-import { hexId, rowOf } from '../src/core/hex.js'
+import { hexId, rowOf } from './board16.js'
 
 describe('painting', () => {
   it('one layer per hex; a new one replaces; burning onto frost cancels to bare', () => {

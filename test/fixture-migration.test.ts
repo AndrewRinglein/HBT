@@ -12,7 +12,7 @@ import { ABILITIES, ATTACKS, UNITS } from '../src/content/index.js'
 import { packTestAbilities, packTestAttacks, packUnits } from '../src/content/pack.js'
 import { createCustomBattle } from '../src/core/setup.js'
 import { resolveDamage } from '../src/core/pipeline.js'
-import { hexId } from '../src/core/hex.js'
+import { hexId } from './board16.js'
 
 const src = () => readFileSync(join(__dirname, '..', 'src', 'content', 'index.ts'), 'utf8')
 

@@ -12,7 +12,7 @@ import { canUsePower, usePower } from '../src/core/ability.js'
 import { beginActivation } from '../src/core/mutate.js'
 import { ABILITIES, ITEMS } from '../src/content/index.js'
 import { scenarioDef, scenarioOptions } from '../src/content/scenarios.js'
-import { hexId } from '../src/core/hex.js'
+import { hexId } from './board16.js'
 
 const POTION = 'power.healing-potion.use'
 

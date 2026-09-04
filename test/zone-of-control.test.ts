@@ -11,7 +11,7 @@ import { createBattle, createCustomBattle } from '../src/core/setup.js'
 import { runBattle } from '../src/core/battle.js'
 import { executeMove, reachable, pathTo, movePowerOf, zocHoldersAt } from '../src/core/movement.js'
 import { beginActivation } from '../src/core/mutate.js'
-import { hexId } from '../src/core/hex.js'
+import { hexId } from './board16.js'
 
 describe('zone of control', () => {
   it('a unit pathing past an adjacent zombie ends its move on the first hex inside that zombie\'s ZoC, and the log names the stopper', () => {

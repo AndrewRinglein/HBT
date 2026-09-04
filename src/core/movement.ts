@@ -2,7 +2,6 @@
 // (COMBAT-SEQUENCE.md) so that anything which happens mid-move — attacks of
 // opportunity, traps, terrain status — has a place to happen and can interrupt.
 
-import { distance, neighboursOf, stepAwayFrom } from './hex.js'
 import type { HexId } from './hex.js'
 import type { Ctx, MoveDef, Unit } from './types.js'
 import { appliesOnEnterOf, isPassable, layerAppliesOnEnter, layerIdOf, moveCostOf, stripsOnEnterOf, terrainIdOf } from '../content/maps.js'
@@ -102,7 +101,7 @@ export function reachable(ctx: Ctx, u: Unit, budgetMod = 0): Reach {
     for (const h of bucket) {
       const node = out.get(h)!
       if (node.cost !== c) continue // stale entry, a cheaper path was found
-      for (const n of neighboursOf(h)) {
+      for (const n of ctx.geo.neighboursOf(h)) {
         if (occ.has(n)) continue
         const nc = c + stepCost(ctx, n)
         if (nc > budget) continue
@@ -213,7 +212,7 @@ export function executeMove(ctx: Ctx, unitId: number, path: HexId[], power: Move
 /** The standing enemies whose ZoC (their six adjacent hexes) covers `hex`. Sorted by id (Law 6). */
 export function zocHoldersAt(ctx: Ctx, u: Unit, hex: HexId): Unit[] {
   return ctx.state.units
-    .filter((o) => o.side !== u.side && o.lifeState === 'standing' && distance(o.hex, hex) === 1)
+    .filter((o) => o.side !== u.side && o.lifeState === 'standing' && ctx.geo.distance(o.hex, hex) === 1)
     .sort((a, b) => a.id - b.id)
 }
 
@@ -295,7 +294,7 @@ export function executeSidestep(ctx: Ctx, unitId: number, to: HexId, power: Move
     applyMoveEffects(ctx, unitId, power)
     return true
   }
-  if (distance(u.hex, to) !== range) {
+  if (ctx.geo.distance(u.hex, to) !== range) {
     throw new Error(`${power.id} must move exactly ${range} hex(es) (${u.hex} -> ${to})`)
   }
   const terrainHere = ctx.state.terrain[to] ?? 0
@@ -333,7 +332,7 @@ export function flightLandings(ctx: Ctx, u: Unit, power: MoveDef): HexId[] {
   const range = flightRange(u, power)
   const out: HexId[] = []
   for (let h = 0; h < ctx.state.terrain.length; h++) {
-    if (h === u.hex || distance(u.hex, h) > range) continue
+    if (h === u.hex || ctx.geo.distance(u.hex, h) > range) continue
     if (!isPassable(ctx.state.terrain[h] ?? 0) || occ.has(h)) continue
     out.push(h)
   }
@@ -355,7 +354,7 @@ export function executeFlight(ctx: Ctx, unitId: number, to: HexId, power: MoveDe
     emit(ctx, 'move.refused', power.id, { actor: unitId, reason: 'stamina' })
     return false
   }
-  const d = distance(u.hex, to)
+  const d = ctx.geo.distance(u.hex, to)
   if (d < 1 || d > flightRange(u, power)) throw new Error(`flight to ${to} is out of range (${d} > ${flightRange(u, power)})`)
   const terrainThere = ctx.state.terrain[to] ?? 0
   if (!isPassable(terrainThere) || occupancy(ctx).has(to)) {
@@ -378,7 +377,7 @@ export function nearestEnemy(ctx: Ctx, u: Unit): Unit | null {
   let bestD = Infinity
   for (const o of ctx.state.units) {
     if (o.side === u.side || o.lifeState !== 'standing') continue
-    const d = distance(u.hex, o.hex)
+    const d = ctx.geo.distance(u.hex, o.hex)
     if (d < bestD || (d === bestD && best && o.id < best.id)) {
       best = o
       bestD = d
@@ -420,8 +419,8 @@ export function executeKnockback(ctx: Ctx, pusherId: number, targetId: number, h
   let taken = 0
   let reason = ''
   for (let i = 0; i < hexes; i++) {
-    const next = stepAwayFrom(prev, at)
-    if (next === null) { reason = prev === at ? 'no line' : distance(prev, at) !== 1 ? 'no straight line — pusher not adjacent' : 'edge of the board'; break }
+    const next = ctx.geo.stepAwayFrom(prev, at)
+    if (next === null) { reason = prev === at ? 'no line' : ctx.geo.distance(prev, at) !== 1 ? 'no straight line — pusher not adjacent' : 'edge of the board'; break }
     if (!isPassable(ctx.state.terrain[next] ?? 0)) { reason = `impassable ${terrainIdOf(ctx.state.terrain[next] ?? 0)}`; break }
     if (occupancy(ctx).has(next)) { reason = 'occupied'; break }
     prev = at

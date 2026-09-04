@@ -10,7 +10,7 @@ import { createBattle, createCustomBattle, fieldedDef } from '../src/core/setup.
 import { runBattle } from '../src/core/battle.js'
 import { ITEMS, SPECIALTIES } from '../src/content/index.js'
 import { rosterOptionsOf, type Schedule } from '../src/sim/progression.js'
-import { hexId } from '../src/core/hex.js'
+import { hexId } from './board16.js'
 
 const schedule = JSON.parse(readFileSync(join(__dirname, '..', '..', 'progression', 'PROGRESSION-SCHEDULE.json'), 'utf8')) as Schedule
 

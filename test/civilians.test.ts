@@ -16,7 +16,7 @@ import { fieldedDef, createBattle, createCustomBattle } from '../src/core/setup.
 import { runBattle } from '../src/core/battle.js'
 import { runActivation } from '../src/ai/modes.js'
 import { beginActivation } from '../src/core/mutate.js'
-import { hexId } from '../src/core/hex.js'
+import { hexId } from './board16.js'
 
 // LAW 10 — 2026-09-02 (seam.items-per-unit): hero rows are BARE now — the kit's
 // attacks, powers, riders and stat deltas are applied at FIELDING by

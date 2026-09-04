@@ -2,13 +2,11 @@
 // Utility scoring comes later; these need to be inspectable by eye so that when a
 // battle looks wrong we can tell the engine from the AI.
 
-import { distance } from './../core/hex.js'
 import type { HexId } from './../core/hex.js'
 import { executeFlight, executeMove, executeSidestep, flightLandings, livingEnemies, movePowerOf, moveStaminaCost, nearestEnemy, occupancy, pathTo, reachable, stepRangeOf, usableMoves } from './../core/movement.js'
 import type { Reach } from './../core/movement.js'
 import type { MoveDef } from './../core/types.js'
 import { isPassable } from './../content/maps.js'
-import { neighboursOf } from './../core/hex.js'
 import { areaUnitIdsOf, canAttack, performAttack, preview, reachOf } from './../core/pipeline.js'
 import { canUsePower, isReady, powerBlastIdsOf, powerTargetsOf, previewPower, usePower } from './../core/ability.js'
 import { isConfused } from './../core/status.js'
@@ -33,12 +31,12 @@ function lowestHealth(us: Unit[]): Unit | null {
  */
 function meleeThreatens(ctx: Ctx, u: Unit, hex: HexId): boolean {
   return livingEnemies(ctx, u).some(
-    (e) => e.role === 'melee' && distance(hex, e.hex) <= e.movement + 1,
+    (e) => e.role === 'melee' && ctx.geo.distance(hex, e.hex) <= e.movement + 1,
   )
 }
 
 function adjacentEnemies(ctx: Ctx, u: Unit): Unit[] {
-  return withDowned(ctx, u, livingEnemies(ctx, u).filter((e) => distance(u.hex, e.hex) === 1))
+  return withDowned(ctx, u, livingEnemies(ctx, u).filter((e) => ctx.geo.distance(u.hex, e.hex) === 1))
 }
 
 /**
@@ -119,11 +117,11 @@ function sidestepToward(ctx: Ctx, u: Unit, dest: HexId): boolean {
   // takes it rather than standing refused.
   if (range === 0) return executeSidestep(ctx, u.id, u.hex, power)
   const occ = occupancy(ctx)
-  const d0 = distance(u.hex, dest)
+  const d0 = ctx.geo.distance(u.hex, dest)
   let best: HexId | null = null
   let bestD = d0
   for (const n of stepCandidates(ctx, u, range, occ)) {
-    const d = distance(n, dest)
+    const d = ctx.geo.distance(n, dest)
     if (d < bestD) { bestD = d; best = n }
   }
   if (best === null) return false
@@ -136,11 +134,11 @@ function sidestepToward(ctx: Ctx, u: Unit, dest: HexId): boolean {
  * hexes is microseconds, and Law 0 forbids being clever about it.
  */
 function stepCandidates(ctx: Ctx, u: Unit, range: number, occ = occupancy(ctx)): HexId[] {
-  if (range === 1) return [...neighboursOf(u.hex)].sort((a, b) => a - b)
+  if (range === 1) return [...ctx.geo.neighboursOf(u.hex)].sort((a, b) => a - b)
     .filter((n) => !occ.has(n) && isPassable(ctx.state.terrain[n] ?? 0))
   const out: HexId[] = []
   for (let h = 0; h < ctx.state.terrain.length; h++) {
-    if (distance(u.hex, h) !== range) continue
+    if (ctx.geo.distance(u.hex, h) !== range) continue
     if (occ.has(h) || !isPassable(ctx.state.terrain[h] ?? 0)) continue
     out.push(h)
   }
@@ -200,7 +198,7 @@ function dumbMelee(ctx: Ctx, u: Unit): void {
   const target = nearestEnemy(ctx, u)
   if (!target) return
 
-  if (distance(u.hex, target.hex) > 1) {
+  if (ctx.geo.distance(u.hex, target.hex) > 1) {
     // The movement CHOICE (2026-08-21): first affordable path-shaped power in
     // the unit's declared order; a stamina-starved unit falls back to its free
     // sidestep rather than standing refused.
@@ -208,9 +206,9 @@ function dumbMelee(ctx: Ctx, u: Unit): void {
     if (walk) {
       const reach = reachable(ctx, u, walk.budgetMod)
       let bestHex: HexId | null = null
-      let bestD = distance(u.hex, target.hex)
+      let bestD = ctx.geo.distance(u.hex, target.hex)
       for (const [hex] of [...reach].sort((a, b) => a[0] - b[0])) {
-        const d = distance(hex, target.hex)
+        const d = ctx.geo.distance(hex, target.hex)
         if (d < bestD) { bestD = d; bestHex = hex }
       }
       if (bestHex !== null) executeMove(ctx, u.id, pathTo(reach, u.hex, bestHex), walk)
@@ -336,7 +334,7 @@ function effectsPower(ctx: Ctx, u: Unit, when: 'free' | 'primary' | 'opening' | 
         // a battle-long stance is worth taking on the first idle activation;
         // a "until the end of your next Turn" edge wants a fight within reach
         const lasting = a.effects.every((e) => e.kind !== 'statMod' || e.until === 'battle')
-        if (!lasting && !livingEnemies(ctx, u).some((e) => distance(u.hex, e.hex) <= u.movement + 1)) continue
+        if (!lasting && !livingEnemies(ctx, u).some((e) => ctx.geo.distance(u.hex, e.hex) <= u.movement + 1)) continue
       }
       usePower(ctx, u.id, u.id, id); settle(ctx, id); return true
     }
@@ -379,7 +377,7 @@ function meleeAggressive(ctx: Ctx, u: Unit): void {
       if (preferred && afterLeap >= preferred.staminaCost) {
         const targets = enemies.slice().sort((a, b) => a.hp - b.hp || a.id - b.id)
         for (const t of targets) {
-          const hex = stepCandidates(ctx, u, range).find((h) => distance(h, t.hex) === 1)
+          const hex = stepCandidates(ctx, u, range).find((h) => ctx.geo.distance(h, t.hex) === 1)
           if (hex !== undefined) {
             executeSidestep(ctx, u.id, hex, step)
             if (u.lifeState !== 'standing') return
@@ -406,20 +404,20 @@ function meleeAggressive(ctx: Ctx, u: Unit): void {
 
     // Prefer ending adjacent to the weakest enemy we can actually reach.
     const reachableTargets = enemies
-      .filter((e) => hexes.some((h) => distance(h, e.hex) === 1))
+      .filter((e) => hexes.some((h) => ctx.geo.distance(h, e.hex) === 1))
       .sort((a, b) => a.hp - b.hp || a.id - b.id)
 
     let bestHex: HexId | null = null
     if (reachableTargets[0]) {
       const t = reachableTargets[0]
       for (const h of hexes) {
-        if (distance(h, t.hex) === 1) { bestHex = h; break }
+        if (ctx.geo.distance(h, t.hex) === 1) { bestHex = h; break }
       }
     } else {
       const nearest = nearestEnemy(ctx, u)!
-      let bestD = distance(u.hex, nearest.hex)
+      let bestD = ctx.geo.distance(u.hex, nearest.hex)
       for (const h of hexes) {
-        const d = distance(h, nearest.hex)
+        const d = ctx.geo.distance(h, nearest.hex)
         if (d < bestD) { bestD = d; bestHex = h }
       }
     }
@@ -459,9 +457,9 @@ function rangedKite(ctx: Ctx, u: Unit): void {
     const walk = movePowerOf(ctx, u, 'path')
     if (walk) {
       const reach = reachable(ctx, u, walk.budgetMod)
-      let best: HexId | null = null, bestD = Math.min(...enemies.map((e) => distance(u.hex, e.hex)))
+      let best: HexId | null = null, bestD = Math.min(...enemies.map((e) => ctx.geo.distance(u.hex, e.hex)))
       for (const [hex] of [...reach].sort((a, b) => a[0] - b[0])) {
-        const d = Math.min(...enemies.map((e) => distance(hex, e.hex)))
+        const d = Math.min(...enemies.map((e) => ctx.geo.distance(hex, e.hex)))
         if (d > bestD) { bestD = d; best = hex }
       }
       if (best !== null) executeMove(ctx, u.id, pathTo(reach, u.hex, best), walk)
@@ -503,8 +501,8 @@ function rangedKite(ctx: Ctx, u: Unit): void {
   const scoreOf = (hex: HexId): number[] => {
     const terr = ctx.state.terrain[hex] ?? 0
     const reachHere = reachAt(hex)
-    const nearestD = Math.min(...enemies.map((e) => distance(hex, e.hex)))
-    const canShoot = enemies.some((e) => distance(hex, e.hex) <= reachHere) ? 1 : 0
+    const nearestD = Math.min(...enemies.map((e) => ctx.geo.distance(hex, e.hex)))
+    const canShoot = enemies.some((e) => ctx.geo.distance(hex, e.hex) <= reachHere) ? 1 : 0
     const safe = meleeThreatens(ctx, u, hex) ? 0 : 1
     const onHill = terr === TERRAIN.HILLS ? 1 : 0
     // Hills are only worth taking if they buy a shot; never worth walking into reach.
@@ -559,7 +557,7 @@ function rangedKite(ctx: Ctx, u: Unit): void {
       const occ = occupancy(ctx)
       let bestHex: HexId | null = null
       let best = here
-      for (const n of [...neighboursOf(u.hex)].sort((a, b) => a - b)) {
+      for (const n of [...ctx.geo.neighboursOf(u.hex)].sort((a, b) => a - b)) {
         if (occ.has(n) || !isPassable(ctx.state.terrain[n] ?? 0)) continue
         const sc = scoreOf(n)
         if (better(sc, best)) { best = sc; bestHex = n }
@@ -621,7 +619,7 @@ function rangedKite(ctx: Ctx, u: Unit): void {
   }
 
   const reachNow = reachAt(u.hex)
-  const inRange = enemies.filter((e) => distance(u.hex, e.hex) <= reachNow)
+  const inRange = enemies.filter((e) => ctx.geo.distance(u.hex, e.hex) <= reachNow)
   if (!attackIfPossible(ctx, u, inRange)) {
     if (!attackIfPossible(ctx, u, adjacentEnemies(ctx, u))) {
       if (!effectsPower(ctx, u, 'primary')) idle(ctx, u, u.stamina < 1 ? 'out of stamina' : 'no target in range')
@@ -635,13 +633,13 @@ function rangedKite(ctx: Ctx, u: Unit): void {
 
 /** Walk toward `dest` with the first affordable path power, stopping as close as reach allows. */
 function closeOn(ctx: Ctx, u: Unit, dest: HexId, stopAt = 1): void {
-  if (distance(u.hex, dest) <= stopAt) return
+  if (ctx.geo.distance(u.hex, dest) <= stopAt) return
   const walk = movePowerOf(ctx, u, 'path')
   if (!walk) { sidestepToward(ctx, u, dest); return }
   const reach = reachable(ctx, u, walk.budgetMod)
-  let bestHex: HexId | null = null, bestD = distance(u.hex, dest)
+  let bestHex: HexId | null = null, bestD = ctx.geo.distance(u.hex, dest)
   for (const [hex] of [...reach].sort((a, b) => a[0] - b[0])) {
-    const d = distance(hex, dest)
+    const d = ctx.geo.distance(hex, dest)
     if (d < bestD && d >= stopAt) { bestD = d; bestHex = hex }
   }
   if (bestHex !== null) executeMove(ctx, u.id, pathTo(reach, u.hex, bestHex), walk)
@@ -651,8 +649,8 @@ const allies = (ctx: Ctx, u: Unit) => ctx.state.units.filter((o) => o.side === u
 /** defender — stays within 2 of the nearest ally under half health (else the nearest ally), attacks anything in reach, never advances alone. */
 function defender(ctx: Ctx, u: Unit): void {
   const hurt = allies(ctx, u).filter((o) => o.hp * 2 < o.maxHp)
-  const ward = (hurt.length ? hurt : allies(ctx, u)).sort((a, b) => distance(u.hex, a.hex) - distance(u.hex, b.hex) || a.id - b.id)[0]
-  if (ward && distance(u.hex, ward.hex) > 2) closeOn(ctx, u, ward.hex, 1)
+  const ward = (hurt.length ? hurt : allies(ctx, u)).sort((a, b) => ctx.geo.distance(u.hex, a.hex) - ctx.geo.distance(u.hex, b.hex) || a.id - b.id)[0]
+  if (ward && ctx.geo.distance(u.hex, ward.hex) > 2) closeOn(ctx, u, ward.hex, 1)
   if (u.lifeState !== 'standing') return
   if (!attackIfPossible(ctx, u, enemiesInAttackReach(ctx, u))) idle(ctx, u, ward ? 'holding by ' + ward.name : 'nobody to defend')
 }
@@ -707,9 +705,9 @@ function valueHunter(ctx: Ctx, u: Unit): void {
 
 /** follow — stays adjacent to the nearest ally that is not itself a follower, and attacks what it can from there. */
 function follow(ctx: Ctx, u: Unit): void {
-  const lead = allies(ctx, u).filter((o) => o.ai !== 'follow').sort((a, b) => distance(u.hex, a.hex) - distance(u.hex, b.hex) || a.id - b.id)[0]
+  const lead = allies(ctx, u).filter((o) => o.ai !== 'follow').sort((a, b) => ctx.geo.distance(u.hex, a.hex) - ctx.geo.distance(u.hex, b.hex) || a.id - b.id)[0]
     ?? allies(ctx, u).sort((a, b) => a.id - b.id)[0]
-  if (lead && distance(u.hex, lead.hex) > 1) closeOn(ctx, u, lead.hex, 1)
+  if (lead && ctx.geo.distance(u.hex, lead.hex) > 1) closeOn(ctx, u, lead.hex, 1)
   if (u.lifeState !== 'standing') return
   if (!attackIfPossible(ctx, u, enemiesInAttackReach(ctx, u))) idle(ctx, u, lead ? 'following ' + lead.name : 'nobody to follow')
 }
@@ -738,9 +736,9 @@ function flee(ctx: Ctx, u: Unit): void {
   const walk = movePowerOf(ctx, u, 'path')
   if (walk) {
     const reach = reachable(ctx, u, walk.budgetMod)
-    let best: HexId | null = null, bestD = Math.min(...enemies.map((e) => distance(u.hex, e.hex)))
+    let best: HexId | null = null, bestD = Math.min(...enemies.map((e) => ctx.geo.distance(u.hex, e.hex)))
     for (const [hex] of [...reach].sort((a, b) => a[0] - b[0])) {
-      const d = Math.min(...enemies.map((e) => distance(hex, e.hex)))
+      const d = Math.min(...enemies.map((e) => ctx.geo.distance(hex, e.hex)))
       if (d > bestD) { bestD = d; best = hex }
     }
     if (best !== null) executeMove(ctx, u.id, pathTo(reach, u.hex, best), walk)
@@ -748,8 +746,8 @@ function flee(ctx: Ctx, u: Unit): void {
     const near = nearestEnemy(ctx, u)
     const step = movePowerOf(ctx, u, 'sidestep')
     if (near && step) {
-      const away = stepCandidates(ctx, u, stepRangeOf(step)).sort((a, b) => distance(b, near.hex) - distance(a, near.hex) || a - b)[0]
-      if (away !== undefined && distance(away, near.hex) > distance(u.hex, near.hex)) executeSidestep(ctx, u.id, away, step)
+      const away = stepCandidates(ctx, u, stepRangeOf(step)).sort((a, b) => ctx.geo.distance(b, near.hex) - ctx.geo.distance(a, near.hex) || a - b)[0]
+      if (away !== undefined && ctx.geo.distance(away, near.hex) > ctx.geo.distance(u.hex, near.hex)) executeSidestep(ctx, u.id, away, step)
     }
   }
   if (u.lifeState === 'standing') idle(ctx, u, 'fleeing')

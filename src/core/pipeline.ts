@@ -4,7 +4,7 @@
 // Numbers are spaced so a station can be inserted later without renumbering anything.
 // Integers only, one rounding rule: truncating integer division (Law 7).
 
-import { distance, neighboursOf, type HexId } from './hex.js'
+import type { Geometry, HexId } from './hex.js'
 import { roll100 } from './rng.js'
 import type { AttackDef, Ctx, Unit } from './types.js'
 import { fireTriggers } from './trigger.js'
@@ -85,7 +85,7 @@ function step(ledger: LedgerRow[], station: number, name: string, effectId: stri
 export function inMelee(ctx: Ctx, u: Unit): boolean {
   for (const o of ctx.state.units) {
     if (o.side === u.side || o.lifeState !== 'standing') continue
-    if (distance(u.hex, o.hex) === 1) return true
+    if (ctx.geo.distance(u.hex, o.hex) === 1) return true
   }
   return false
 }
@@ -105,7 +105,7 @@ export function reachOf(ctx: Ctx, u: Unit, a: AttackDef): number {
  */
 export function resolveAccuracy(ctx: Ctx, attacker: Unit, target: Unit, a: AttackDef): Resolved {
   const ledger: LedgerRow[] = []
-  const d = distance(attacker.hex, target.hex)
+  const d = ctx.geo.distance(attacker.hex, target.hex)
 
   // BASE is now the resolved Accuracy stat. Terrain, gear and badges all arrive
   // through the stat pipeline, so this station stopped knowing about any of them —
@@ -229,7 +229,7 @@ export function canAttack(ctx: Ctx, attackerId: number, targetId: number, attack
   if (at.stamina < a.staminaCost) return false
   // capability.enemy-action-cooldown (2026-09-03): the same readiness rule a power has
   if (ctx.state.turn < (at.cooldowns[attackId] ?? 0)) return false
-  const d = distance(at.hex, tg.hex)
+  const d = ctx.geo.distance(at.hex, tg.hex)
   // "You cannot use a ranged attack on something adjacent." (Angela, 2026-08-15;
   // GAME-DESIGN.md §4.) A legality rule, so it is answered here rather than as a
   // penalty the shooter can eat — the shot does not exist.
@@ -250,10 +250,10 @@ export function canAttack(ctx: Ctx, attackerId: number, targetId: number, attack
  * Sorted ascending, target hex first — explicit order, tiebreaker that cannot
  * tie (Law 6).
  */
-export function areaHexesOf(attackerHex: HexId, targetHex: HexId, area: 'arc' | 'blast1'): HexId[] {
+export function areaHexesOf(geo: Geometry, attackerHex: HexId, targetHex: HexId, area: 'arc' | 'blast1'): HexId[] {
   const rest = area === 'arc'
-    ? neighboursOf(targetHex).filter((h) => distance(attackerHex, h) === 1)
-    : [...neighboursOf(targetHex)]
+    ? geo.neighboursOf(targetHex).filter((h) => geo.distance(attackerHex, h) === 1)
+    : [...geo.neighboursOf(targetHex)]
   return [targetHex, ...rest.filter((h) => h !== targetHex).sort((a, b) => a - b)]
 }
 
@@ -267,7 +267,7 @@ export function areaUnitIdsOf(ctx: Ctx, attackerId: number, targetId: number, at
   const at = unit(ctx, attackerId)
   const a = ctx.attacks[attackId]
   if (!a?.area) return [targetId]
-  const hexes = new Set(areaHexesOf(at.hex, unit(ctx, targetId).hex, a.area))
+  const hexes = new Set(areaHexesOf(ctx.geo, at.hex, unit(ctx, targetId).hex, a.area))
   const out: number[] = []
   for (const u of ctx.state.units) {
     if (u.lifeState !== 'standing' || !hexes.has(u.hex) || u.id === attackerId) continue
@@ -358,7 +358,7 @@ function performHit(ctx: Ctx, attackerId: number, targetId: number, attackId: st
   if (hitNo === 1 && !canAttack(ctx, attackerId, targetId, attackId)) {
     throw new Error(`illegal attack: ${at.name} -> ${tg.name} with ${attackId}`)
   }
-  if (hitNo > 1 && (tg.lifeState !== 'standing' || distance(at.hex, tg.hex) > reachOf(ctx, at, a))) {
+  if (hitNo > 1 && (tg.lifeState !== 'standing' || ctx.geo.distance(at.hex, tg.hex) > reachOf(ctx, at, a))) {
     emit(ctx, 'attack.cancelled', attackId, { actor: attackerId, target: targetId, hit: hitNo, of, reason: 'no longer legal' })
     return { hit: false, crit: false, accuracy: 0, roll: 0, damage: 0, killed: false }
   }
@@ -384,7 +384,7 @@ function performHit(ctx: Ctx, attackerId: number, targetId: number, attackId: st
     // kind and damageType are on the event, not looked up from ATTACKS, so a
     // renderer can pick an animation without importing game content.
     kind: a.kind, damageType: a.damageType,
-    distance: distance(at.hex, tg.hex), hitChance: pv.hitChance, damageOnHit: pv.damageOnHit,
+    distance: ctx.geo.distance(at.hex, tg.hex), hitChance: pv.hitChance, damageOnHit: pv.damageOnHit,
     ...(a.area ? { area: a.area, struck } : {}),
     // COMBAT-SEQUENCE: "The accuracy roll carries the same [ledger]." It did — and
     // nothing emitted it, so until 2026-08-15 no log could say WHY a hit chance was

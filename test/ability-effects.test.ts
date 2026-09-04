@@ -14,7 +14,7 @@ import { valueOf } from '../src/core/status.js'
 import { effective } from '../src/core/stats.js'
 import { ABILITIES } from '../src/content/index.js'
 import { scenarioDef, scenarioOptions } from '../src/content/scenarios.js'
-import { hexId } from '../src/core/hex.js'
+import { hexId } from './board16.js'
 import type { AbilityEffect } from '../src/core/types.js'
 
 const AEGIS = 'power.sacred-shield.aegis'

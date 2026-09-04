@@ -7,7 +7,7 @@ import { createCustomBattle } from '../src/core/setup.js'
 import { performAttack } from '../src/core/pipeline.js'
 import { beginActivation } from '../src/core/mutate.js'
 import { UNITS } from '../src/content/index.js'
-import { hexId } from '../src/core/hex.js'
+import { hexId } from './board16.js'
 
 describe('a hit drains the target\'s stamina', () => {
   it('the Necro Bolt takes 1 Stamina off the hero it hits, floors at 0, and the ledger names the trigger', () => {

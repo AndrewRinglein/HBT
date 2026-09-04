@@ -14,7 +14,7 @@ import { beginActivation } from '../src/core/mutate.js'
 import { executeSidestep, stepRangeOf } from '../src/core/movement.js'
 import { stat } from '../src/core/stats.js'
 import { MOVES } from '../src/content/moves.js'
-import { hexId } from '../src/core/hex.js'
+import { hexId } from './board16.js'
 
 describe('the rows are the Codex rows — data, not code', () => {
   it('Leap / Focus / Devotion carry their published shapes', () => {

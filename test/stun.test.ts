@@ -10,7 +10,7 @@ import { TEST_COHORT } from '../src/content/index.js'
 import { runBattle } from '../src/core/battle.js'
 import { applyStatus, isBlocked, tickStatuses, valueOf } from '../src/core/status.js'
 import { STATUSES } from '../src/content/statuses.js'
-import { hexId } from '../src/core/hex.js'
+import { hexId } from './board16.js'
 
 describe('the data', () => {
   it('status.stun and its testing variant both block action as pure data', () => {

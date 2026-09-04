@@ -10,7 +10,7 @@ import {
   partyMagicSum, valueOf, fireTriggers, selectOf,
 } from '../src/core/trigger.js'
 import type { Trigger } from '../src/core/trigger.js'
-import { hexId } from '../src/core/hex.js'
+import { hexId } from './board16.js'
 
 const T = (over: Partial<Trigger> = {}): Trigger => ({
   id: 'trigger.test.rot', hook: 'onDamage', chance: 20, select: 'target',

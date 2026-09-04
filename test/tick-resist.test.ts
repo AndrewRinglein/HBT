@@ -3,7 +3,7 @@
 import { describe, expect, it } from 'vitest'
 import { createCustomBattle } from '../src/core/setup.js'
 import { applyStatus, tickStatuses } from '../src/core/status.js'
-import { hexId } from '../src/core/hex.js'
+import { hexId } from './board16.js'
 
 function warriorWithResist(resist: number) {
   const ctx = createCustomBattle(

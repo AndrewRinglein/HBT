@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest'
 import { createBattle } from '../src/core/setup.js'
-import { rowOf } from '../src/core/hex.js'
+import { rowOf } from './board16.js'
 import { UNITS } from '../src/content/index.js'
 
 describe('state and setup', () => {

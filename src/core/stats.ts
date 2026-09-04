@@ -16,7 +16,6 @@
 
 import type { Ctx, Unit } from './types.js'
 import { accuracyBonusOf, reachBonusOf, dodgeBonusOf, armorBonusOf, resistBonusOf, terrainIdOf } from '../content/maps.js'
-import { distance } from './hex.js'
 
 export type StatName =
   | 'strength' | 'precision' | 'magic' | 'spirit'
@@ -112,7 +111,7 @@ export function auraMods(ctx: Ctx, u: Unit): StatMod[] {
       if (a.side === 'ally' && !isAlly) continue
       if (a.side === 'enemy' && isAlly) continue
       if (a.requireTags && !a.requireTags.every((t) => u.tags.includes(t))) continue
-      if (distance(h.hex, u.hex) > a.radius) continue
+      if (ctx.geo.distance(h.hex, u.hex) > a.radius) continue
       for (const [stat, value] of Object.entries(a.mods)) if (value) out.push({ stat: stat as StatName, op: 'add', value, source: a.id, scope: 'unit' })
     }
   }

@@ -6,7 +6,7 @@ import {
 } from '../src/core/target.js'
 import type { Targeting } from '../src/core/target.js'
 import { partySum, partySpiritSum, valueOf } from '../src/core/trigger.js'
-import { hexId } from '../src/core/hex.js'
+import { hexId } from './board16.js'
 
 // A priest, two allies, three enemies, spread out.
 function board() {

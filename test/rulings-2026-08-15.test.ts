@@ -3,7 +3,7 @@ import { createBattle, createCustomBattle } from '../src/core/setup.js'
 import { runBattle } from '../src/core/battle.js'
 import { canAttack, preview, resolveAccuracy, inMelee } from '../src/core/pipeline.js'
 import { BLEED_OUT_COUNTER } from '../src/core/settle.js'
-import { hexId } from '../src/core/hex.js'
+import { hexId } from './board16.js'
 
 // Two rulings from Angela, 2026-08-15. Written as tests rather than as notes,
 // because a ruling that lives only in a plan document gets archived.

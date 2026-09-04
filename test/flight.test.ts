@@ -16,7 +16,7 @@ import { applyStatus } from '../src/core/status.js'
 import { executeFlight, executeMove, flightLandings, flightRange, pathTo, reachable } from '../src/core/movement.js'
 import { MOVES } from '../src/content/moves.js'
 import { UNITS } from '../src/content/index.js'
-import { hexId, neighboursOf, distance } from '../src/core/hex.js'
+import { hexId, neighboursOf, distance } from './board16.js'
 
 const valueOf = (u: { statuses: { id: string; value: number }[] }, id: string) =>
   u.statuses.find((s) => s.id === id)?.value ?? 0

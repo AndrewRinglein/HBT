@@ -11,7 +11,7 @@ import { effective, auraMods } from '../src/core/stats.js'
 import { beginActivation } from '../src/core/mutate.js'
 import { UNITS } from '../src/content/index.js'
 import { scenarioDef, scenarioOptions } from '../src/content/scenarios.js'
-import { hexId } from '../src/core/hex.js'
+import { hexId } from './board16.js'
 import { applyStatus } from '../src/core/status.js'
 
 describe('lent, not given', () => {
