@@ -1,12 +1,16 @@
 // refactor.one-action-type (2026-09-04), Law 10 reason: the row's SHAPE moved by ruling — attack fields read under `.attack`, reach is `range`, move fields under `.move`, the registries are one (`ctx.actions`) and the unit's lists are views (attackIdsOf/powerIdsOf). No assertion changed.
-// movement.zone-of-control + movement.attack-of-opportunity (2026-09-03).
+// movement.zone-of-control + movement.attack-of-opportunity (2026-09-03),
+// REVERSED in part by fix.zoc-threat-not-stop (2026-09-04).
 //
 // GAME-DESIGN §4, Angela 2026-08-13: a standing unit exerts ZoC on its six
-// adjacent hexes; entering one ends the mover's movement there; leaving one
-// provokes one free attack from the holder (its cheapest melee attack), once
-// per holder per activation, costing the holder nothing. THE AI IS BLIND to
-// both by ruling — it plans as if ZoC did not exist and gets stopped short.
-// Switch zoneOfControl keeps the pre-ZoC battle for paired sweeps.
+// adjacent hexes; leaving one provokes one free attack from the holder (its
+// cheapest melee attack), once per holder per activation, costing the holder
+// nothing. Angela 2026-09-04: "Zone of control is only a threat. If you do not
+// stop moving, you are going to get whacked ... you get hit, and you lose
+// movement, and you can no longer move. There is no held." So entering a ZoC
+// ends nothing; a HIT from the provoked swing ends the move; a miss costs
+// nothing. THE AI IS BLIND to it by ruling. Switch zoneOfControl keeps the
+// pre-ZoC battle for paired sweeps.
 import { describe, expect, it } from 'vitest'
 import { createBattle, createCustomBattle } from '../src/core/setup.js'
 import { runBattle } from '../src/core/battle.js'
@@ -15,11 +19,16 @@ import { beginActivation } from '../src/core/mutate.js'
 import { hexId } from './board16.js'
 
 describe('zone of control', () => {
-  it('a unit pathing past an adjacent zombie ends its move on the first hex inside that zombie\'s ZoC, and the log names the stopper', () => {
+  // LAW 10 — 2026-09-04 (fix.zoc-threat-not-stop): this test asserted the hard
+  // stop ("ends its move on the first hex inside that zombie's ZoC") that the
+  // ruling reverses. The rule now: the walk continues; the swing on the way out
+  // is the whole of the threat.
+  it('a unit pathing past an adjacent zombie walks THROUGH its ZoC when the provoked swing MISSES — no stop, no held', () => {
     // warrior at (2,5) walks east along row 5; a zombie stands at (5,4) —
     // (4,5) is inside its ZoC, (6,5) is beyond
     const ctx = createCustomBattle([{ type: 'test-warrior', hex: hexId(2, 5) }], [{ type: 'test-zombie', hex: hexId(5, 4) }])
     const w = ctx.state.units[0]!, z = ctx.state.units[1]!
+    z.mods.push({ stat: 'accuracy', op: 'add', value: -200, source: 'test', scope: 'unit' })   // it cannot hit
     expect(zocHoldersAt(ctx, w, hexId(4, 5)).map((u) => u.id)).toEqual([z.id])
     beginActivation(ctx, w.id, 'test')
     const walk = movePowerOf(ctx, w, 'path')!
@@ -27,11 +36,41 @@ describe('zone of control', () => {
     const path = pathTo(reach, w.hex, hexId(6, 5))
     expect(path.at(-1)).toBe(hexId(6, 5))
     executeMove(ctx, w.id, path, walk)
-    expect(zocHoldersAt(ctx, w, w.hex).length).toBeGreaterThan(0)   // stopped inside the zone
-    expect(w.hex).not.toBe(hexId(6, 5))
+    expect(w.hex).toBe(hexId(6, 5))
+    // it provoked on the way out, missed, and nothing stopped
+    expect(ctx.events.filter((e) => e.type === 'aoo.provoked').length).toBe(1)
+    expect(ctx.events.some((e) => e.type === 'attack.declared' && e['actor'] === z.id)).toBe(true)
+    expect(ctx.events.some((e) => e.type === 'move.stopped')).toBe(false)
+    expect(JSON.stringify(ctx.events)).not.toContain('held')
+  })
+
+  it('a HIT from the provoked swing ends the move — the mover loses its movement and stops where it stands', () => {
+    const ctx = createCustomBattle([{ type: 'test-warrior', hex: hexId(2, 5) }], [{ type: 'test-zombie', hex: hexId(5, 4) }])
+    const w = ctx.state.units[0]!, z = ctx.state.units[1]!
+    z.mods.push({ stat: 'accuracy', op: 'add', value: 200, source: 'test', scope: 'unit' })   // it cannot miss
+    w.hp = 99; w.maxHp = 99
+    beginActivation(ctx, w.id, 'test')
+    const walk = movePowerOf(ctx, w, 'path')!
+    executeMove(ctx, w.id, pathTo(reachable(ctx, w, walk.move.budgetMod), w.hex, hexId(6, 5)), walk)
+    expect(w.hex).toBe(hexId(4, 5))   // entered the zone freely; struck on the way out; went no further
+    expect(w.movePointsLeft).toBe(0)
     const stop = ctx.events.find((e) => e.type === 'move.stopped')
-    expect(stop?.['by']).toBe(z.id)
-    expect(stop?.['reason']).toBe('zone of control')
+    expect(stop?.['reason']).toBe('hit')
+    expect(ctx.events.some((e) => e.type === 'damage.applied' && e['target'] === w.id)).toBe(true)
+  })
+
+  it('a holder that cannot practically hit still provokes, and its miss costs the mover nothing', () => {
+    const ctx = createCustomBattle([{ type: 'test-warrior', hex: hexId(2, 5) }], [{ type: 'test-zombie', hex: hexId(5, 4) }])
+    const w = ctx.state.units[0]!, z = ctx.state.units[1]!
+    z.mods.push({ stat: 'accuracy', op: 'add', value: -200, source: 'test', scope: 'unit' })
+    const hp = w.hp
+    beginActivation(ctx, w.id, 'test')
+    const walk = movePowerOf(ctx, w, 'path')!
+    const before = w.movePointsLeft
+    executeMove(ctx, w.id, pathTo(reachable(ctx, w, walk.move.budgetMod), w.hex, hexId(6, 5)), walk)
+    expect(ctx.events.filter((e) => e.type === 'aoo.provoked').length).toBe(1)
+    expect(w.hp).toBe(hp)
+    expect(w.movePointsLeft).toBe(before - 4)   // four open steps, nothing lost to the zone
   })
 
   it('downed units exert nothing', () => {

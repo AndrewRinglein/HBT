@@ -145,12 +145,22 @@ export function executeMove(ctx: Ctx, unitId: number, path: HexId[], power: Move
     //    that enemy, its cheapest melee attack, through performAttack; once
     //    per enemy per activation; it costs the attacker nothing. The AI is
     //    blind to it by ruling (Angela 2026-08-13) and walks into these.
+    //    fix.zoc-threat-not-stop (2026-09-04): "Zone of control is only a
+    //    threat. If you do not stop moving, you are going to get whacked" — a
+    //    HIT is what ends movement ("you get hit, and you lose movement, and
+    //    you can no longer move"); a miss costs nothing. There is no held.
     if (ctx.cfg.switches.zoneOfControl) {
+      let struck = false
       for (const e of zocHoldersAt(ctx, u, u.hex)) {
         if (provoked.has(e.id)) continue
         provoked.add(e.id)
-        attackOfOpportunity(ctx, e.id, unitId)
+        if (attackOfOpportunity(ctx, e.id, unitId)) struck = true
         if (u.lifeState !== 'standing') return moved
+      }
+      if (struck) {
+        u.movePointsLeft = 0   // "you lose movement" — the rest of this activation's steps are gone
+        emit(ctx, 'move.stopped', power.id, { actor: unitId, hex: u.hex, reason: 'hit' })
+        break
       }
     }
     // 3. enter and spend
@@ -175,17 +185,9 @@ export function executeMove(ctx: Ctx, unitId: number, path: HexId[], power: Move
     // 6. vision — none in the baseline
     if (onStep && !onStep(ctx, unitId, hex)) break
     if (u.lifeState !== 'standing') break
-    // 7. zone of control — movement.zone-of-control (2026-09-03): a unit that
-    //    ENTERS a hex inside an enemy's ZoC stops there — it may enter, then
-    //    its movement ends. Standing units only exert it. The AI is blind by
-    //    ruling: it picked its destination as if ZoC did not exist.
-    if (ctx.cfg.switches.zoneOfControl) {
-      const holders = zocHoldersAt(ctx, u, hex)
-      if (holders.length) {
-        emit(ctx, 'move.stopped', power.id, { actor: unitId, hex, by: holders[0]!.id, reason: 'zone of control' })
-        break
-      }
-    }
+    // 7. (was: the ZoC hard stop — movement.zone-of-control, 2026-09-03.
+    //    REVERSED by fix.zoc-threat-not-stop, 2026-09-04: entering a hex inside
+    //    an enemy's ZoC ends nothing. The threat is step 2, on the way out.)
   }
   return moved
 }
@@ -203,22 +205,25 @@ export function zocHoldersAt(ctx: Ctx, u: Unit, hex: HexId): Unit[] {
  * THE attack function with the primary-action and stamina gates lifted for
  * this one swing (it costs the attacker nothing), then settle. Skipped, with
  * a line, when the holder has no melee attack it can legally make.
+ * Returns whether the swing HIT — the mover's movement ends on a hit
+ * (fix.zoc-threat-not-stop, 2026-09-04) and on nothing else.
  */
-export function attackOfOpportunity(ctx: Ctx, holderId: number, moverId: number): void {
+export function attackOfOpportunity(ctx: Ctx, holderId: number, moverId: number): boolean {
   const h = unit(ctx, holderId)
   const melee = attacksOf(ctx, h).filter((a) => a.attack.kind === 'melee' && !a.area)
     .sort((a, b) => a.staminaCost - b.staminaCost)[0]
-  if (!melee) { emit(ctx, 'aoo.skipped', 'movement.aoo', { actor: holderId, target: moverId, reason: 'no melee attack' }); return }
+  if (!melee) { emit(ctx, 'aoo.skipped', 'movement.aoo', { actor: holderId, target: moverId, reason: 'no melee attack' }); return false }
   const primary = h.primaryUsed, stamina = h.stamina
   h.primaryUsed = false
   h.stamina = Math.max(h.stamina, melee.staminaCost)
   const legal = canAttack(ctx, holderId, moverId, melee.id) && ctx.state.turn >= (h.cooldowns[melee.id] ?? 0)
-  if (!legal) { h.primaryUsed = primary; h.stamina = stamina; emit(ctx, 'aoo.skipped', 'movement.aoo', { actor: holderId, target: moverId, reason: 'not legal' }); return }
+  if (!legal) { h.primaryUsed = primary; h.stamina = stamina; emit(ctx, 'aoo.skipped', 'movement.aoo', { actor: holderId, target: moverId, reason: 'not legal' }); return false }
   emit(ctx, 'aoo.provoked', 'movement.aoo', { actor: holderId, target: moverId, attackId: melee.id })
-  performAttack(ctx, holderId, moverId, melee.id)
+  const result = performAttack(ctx, holderId, moverId, melee.id)
   h.primaryUsed = primary
   h.stamina = stamina   // costs the attacker nothing
   settle(ctx, 'movement.aoo')
+  return result.hit
 }
 
 /**

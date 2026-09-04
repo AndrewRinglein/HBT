@@ -2511,7 +2511,24 @@
   "shape": "rule",
   "ruling": "DECISIONS.md 2026-09-04 — Zone of Control is a THREAT, not a stop",
   "spec": "REVERSES movement.zone-of-control, which landed with a hard stop. Angela 2026-09-04: \"An enemy zone of control does not stop you from moving... Zone of control is only a threat. If you do not stop moving, you are going to get whacked.\" Entering or moving inside an enemy ZoC never ends movement by itself; it provokes an attack, and only a HIT ends movement (the unit loses its movement and can no longer move). A miss costs nothing. A unit with 0 Strength or 0% melee to-hit has no practical ZoC but still provokes, and may miss. There is no held state.",
-  "expect": "a unit walks through an enemy ZoC and keeps going when the provoked attack misses; it stops only on a hit; no held is emitted; the viewer stops rendering held"
+  "expect": "a unit walks through an enemy ZoC and keeps going when the provoked attack misses; it stops only on a hit; no held is emitted; the viewer stops rendering held",
+  "changesBaseline": true,
+  "baselineReason": "the ruling itself: a walk through an enemy ZoC no longer stops on entry; it stops only when the provoked swing hits (the mover loses its movement). Every control battle with a kiting or closing unit moves.",
+  "probeIds": [
+   "attack.test-zombie.bite"
+  ],
+  "variants": [
+   "attack.test-zombie.bite",
+   "attack.zombie.claw"
+  ],
+  "tests": [
+   "test/zone-of-control.test.ts"
+  ],
+  "note": "Landed 2026-09-04. move.stopped now carries reason: hit (the mover's own hex; no by) — the viewer's held rendering has nothing to read and must go (EVENTS §12). The hard stop (step 7 of executeMove) is deleted, not switched: zoneOfControl still keeps the whole mechanism sweepable. Three ZoC tests rewritten as the rule (Law 10 notes at the edit). The swing that stops a mover is a content attack: the test zombie's bite is the probe and the kill switch (disable it and no swing hits, so nothing stops — the tests fail), and the Codex zombie's claw is the second instance, pure data.",
+  "attempts": 1,
+  "status": "done-needs-review",
+  "sha": "1019510",
+  "gauntlet": "not passed — 2 flag(s) warned"
  },
  {
   "id": "fix.knockback-beyond-one",

@@ -372,7 +372,9 @@ Added 2026-09-03 (movement.zone-of-control, movement.attack-of-opportunity).
 Ruled by GAME-DESIGN §4 and Angela 2026-08-13, so the default is **on**; the
 switch exists because it is the largest single change to every balance number
 the engine has, and the paired sweep wants the pre-ZoC arm. The AI is blind to
-both by the same ruling — that is not a switch.
+both by the same ruling — that is not a switch. Re-ruled 2026-09-04
+(fix.zoc-threat-not-stop): the zone never stops a mover by itself — leaving a
+hex inside it provokes the swing, and only a HIT ends the move. No held.
 
 ## aiEatsBeforeBiting — does the Ghoul eat before it bites?
 Added 2026-09-03 (capability.corpses). Eat Corpse is a self-power; the AI has to

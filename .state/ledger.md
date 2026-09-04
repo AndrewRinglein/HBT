@@ -8902,3 +8902,142 @@ effect of attack.test-ram.once,power.test-second-wind — 25 paired battles per 
   test.map.horde-24: heroWins 25->25 (+0)  meanTurns 6.2->6.2
 NO MEASURABLE EFFECT at this sample size — consequence clause caught state changes, but outcomes did not move. Consider a sweep with more replicates before drawing balance conclusions.
 ```
+
+## fix.zoc-threat-not-stop — LANDED `1019510` **NEEDS REVIEW**
+2026-09-04 20:46
+
+  PASS  dependencies landed
+  WARN  not already decided — 5 candidate ruling(s) — READ BEFORE ASKING: ../COMBAT-DESIGN.md:477 · ../STATE.md:21
+  PASS  typecheck
+  PASS  full test suite
+  PASS  gate 1 — the id appears in a real battle — attack.test-zombie.bite: 8 log lines, 8 fired, 5 changed state
+  PASS  brought its own tests — test/level-table-by-type.test.ts, test/zone-of-control.test.ts
+  WARN  existing tests untouched — DELETED LINES in test/level-table-by-type.test.ts (-1), test/zone-of-control.test.ts (-11) — will land FLAGGED for review
+  PASS  control battles unchanged — will re-bless at commit — this item DECLARED it changes the control battles: map.open 89a828a1->38ca16dc, map.ridge faebbd8c->ce90778a, map.flanks 0592b923->cfed6879, map.highlands 53ecc0eb->05c0fff5, map.field a4119228->be9b1ef9, map.thicket c2875a5b->f725530b, test.map.embers 7acb53d6->5b6622aa, test.map.showcase 148c5a53->0f0f2a47, test.map.duel-8 768dc5af->09c27a24, test.map.dungeon-16x8 32ac2624->de7c4908, test.map.horde-24 74d9da2d->dfbc5859
+  PASS  content has a published source — 22 ids without a published source (12 awaiting publication from earlier items — see audit)
+  PASS  hardcode scan — core knows mechanisms, never names
+  PASS  generalizes — the second instance costs zero engine code — attack.test-zombie.bite live · attack.zombie.claw live
+  PASS  naming — new content ids use declared kinds
+  PASS  naming — no banned words invented
+  PASS  kill switch — the tests fail without the content — tests fail without attack.test-zombie.bite — they genuinely test it
+
+<details><summary>Existing tests were edited — review this diff</summary>
+
+```diff
+diff --git a/test/level-table-by-type.test.ts b/test/level-table-by-type.test.ts
+index 1ce9f77..73e9c99 100644
+--- a/test/level-table-by-type.test.ts
++++ b/test/level-table-by-type.test.ts
+@@ -39,5 +39,5 @@ describe('the civilian TYPE table in the pack', () => {
+     // is proved on a row with the pointer stripped.
+     expect(UNITS['hero.fixed.orphans']?.levelTable).toBe('civilian.child')
+-    expect(levelTableOf({ ...UNITS['hero.fixed.orphans']!, levelTable: undefined } as typeof UNITS[string])).toBe('class.civilian')
++    expect(levelTableOf({ ...UNITS['hero.fixed.orphans']!, levelTable: undefined } as unknown as typeof UNITS[string])).toBe('class.civilian')
+   })
+ 
+diff --git a/test/zone-of-control.test.ts b/test/zone-of-control.test.ts
+index 68a1598..42d4a1e 100644
+--- a/test/zone-of-control.test.ts
++++ b/test/zone-of-control.test.ts
+@@ -1,11 +1,15 @@
+ // refactor.one-action-type (2026-09-04), Law 10 reason: the row's SHAPE moved by ruling — attack fields read under `.attack`, reach is `range`, move fields under `.move`, the registries are one (`ctx.actions`) and the unit's lists are views (attackIdsOf/powerIdsOf). No assertion changed.
+-// movement.zone-of-control + movement.attack-of-opportunity (2026-09-03).
++// movement.zone-of-control + movement.attack-of-opportunity (2026-09-03),
++// REVERSED in part by fix.zoc-threat-not-stop (2026-09-04).
+ //
+ // GAME-DESIGN §4, Angela 2026-08-13: a standing unit exerts ZoC on its six
+-// adjacent hexes; entering one ends the mover's movement there; leaving one
+-// provokes one free attack from the holder (its cheapest melee attack), once
+-// per holder per activation, costing the holder nothing. THE AI IS BLIND to
+-// both by ruling — it plans as if ZoC did not exist and gets stopped short.
+-// Switch zoneOfControl keeps the pre-ZoC battle for paired sweeps.
++// adjacent hexes; leaving one provokes one free attack from the holder (its
++// cheapest melee attack), once per holder per activation, costing the holder
++// nothing. Angela 2026-09-04: "Zone of control is only a threat. If you do not
++// stop moving, you are going to get whacked ... you get hit, and you lose
++// movement, and you can no longer move. There is no held." So entering a ZoC
++// ends nothing; a HIT from the provoked swing ends the move; a miss costs
++// nothing. THE AI IS BLIND to it by ruling. Switch zoneOfControl keeps the
++// pre-ZoC battle for paired sweeps.
+ import { describe, expect, it } from 'vitest'
+ import { createBattle, createCustomBattle } from '../src/core/setup.js'
+@@ -16,9 +20,14 @@ import { hexId } from './board16.js'
+ 
+ describe('zone of control', () => {
+-  it('a unit pathing past an adjacent zombie ends its move on the first hex inside that zombie\'s ZoC, and the log names the stopper', () => {
++  // LAW 10 — 2026-09-04 (fix.zoc-threat-not-stop): this test asserted the hard
++  // stop ("ends its move on the first hex inside that zombie's ZoC") that the
++  // ruling reverses. The rule now: the walk continues; the swing on the way out
++  // is the whole of the threat.
++  it('a unit pathing past an adjacent zombie walks THROUGH its ZoC when the provoked swing MISSES — no stop, no held', () => {
+     // warrior at (2,5) walks east along row 5; a zombie stands at (5,4) —
+     // (4,5) is inside its ZoC, (6,5) is beyond
+     const ctx = createCustomBattle([{ type: 'test-warrior', hex: hexId(2, 5) }], [{ type: 'test-zombie', hex: hexId(5, 4) }])
+     const w = ctx.state.units[0]!, z = ctx.state.units[1]!
++    z.mods.push({ stat: 'accuracy', op: 'add', value: -200, source: 'test', scope: 'unit' })   // it cannot hit
+     expect(zocHoldersAt(ctx, w, hexId(4, 5)).map((u) => u.id)).toEqual([z.id])
+     beginActivation(ctx, w.id, 'test')
+@@ -28,9 +37,39 @@ describe('zone of control', () => {
+     expect(path.at(-1)).toBe(hexId(6, 5))
+     executeMove(ctx, w.id, path, walk)
+-    expect(zocHoldersAt(ctx, w, w.hex).length).toBeGreaterThan(0)   // stopped inside the zone
+-    expect(w.hex).not.toBe(hexId(6, 5))
++    expect(w.hex).toBe(hexId(6, 5))
++    // it provoked on the way out, missed, and nothing stopped
++    expect(ctx.events.filter((e) => e.type === 'aoo.provoked').length).toBe(1)
++    expect(ctx.events.some((e) => e.type === 'attack.declared' && e['actor'] === z.id)).toBe(true)
++    expect(ctx.events.some((e) => e.type === 'move.stopped')).toBe(false)
++    expect(JSON.stringify(ctx.events)).not.toContain('held')
++  })
++
++  it('a HIT from the provoked swing ends the move — the mover loses its movement and stops where it stands', () => {
++    const ctx = createCustomBattle([{ type: 'test-warrior', hex: hexId(2, 5) }], [{ type: 'test-zombie', hex: hexId(5, 4) }])
++    const w = ctx.state.units[0]!, z = ctx.state.units[1]!
++    z.mods.push({ stat: 'accuracy', op: 'add', value: 200, source: 'test', scope: 'unit' })   // it cannot miss
++    w.hp = 99; w.maxHp = 99
++    beginActivation(ctx, w.id, 'test')
++    const walk = movePowerOf(ctx, w, 'path')!
++    executeMove(ctx, w.id, pathTo(reachable(ctx, w, walk.move.budgetMod), w.hex, hexId(6, 5)), walk)
++    expect(w.hex).toBe(hexId(4, 5))   // entered the zone freely; struck on the way out; went no further
++    expect(w.movePointsLeft).toBe(0)
+     const stop = ctx.events.find((e) => e.type === 'move.stopped')
+-    expect(stop?.['by']).toBe(z.id)
+-    expect(stop?.['reason']).toBe('zone of control')
++    expect(stop?.['reason']).toBe('hit')
++    expect(ctx.events.some((e) => e.type === 'damage.applied' && e['target'] === w.id)).toBe(true)
++  })
++
++  it('a holder that cannot practically hit still provokes, and its miss costs the mover nothing', () => {
++    const ctx = createCustomBattle([{ type: 'test-warrior', hex: hexId(2, 5) }], [{ type: 'test-zombie', hex: hexId(5, 4) }])
++    const w = ctx.state.units[0]!, z = ctx.state.units[1]!
++    z.mods.push({ stat: 'accuracy', op: 'add', value: -200, source: 'test', scope: 'unit' })
++    const hp = w.hp
++    beginActivation(ctx, w.id, 'test')
++    const walk = movePowerOf(ctx, w, 'path')!
++    const before = w.movePointsLeft
++    executeMove(ctx, w.id, pathTo(reachable(ctx, w, walk.move.budgetMod), w.hex, hexId(6, 5)), walk)
++    expect(ctx.events.filter((e) => e.type === 'aoo.provoked').length).toBe(1)
++    expect(w.hp).toBe(hp)
++    expect(w.movePointsLeft).toBe(before - 4)   // four open steps, nothing lost to the zone
+   })
+ 
+```
+</details>
+
+IRON GAUNTLET: NOT PASSED — 2 FLAG(S) WARNED
+
+```
+effect of attack.test-zombie.bite — 25 paired battles per map, WITH vs WITHOUT
+  map.open: heroWins 25->25 (+0)  meanTurns 4.1->4.1
+  map.ridge: heroWins 25->25 (+0)  meanTurns 4.2->4.2
+  map.flanks: heroWins 25->25 (+0)  meanTurns 4.4->4.4
+  map.highlands: heroWins 25->25 (+0)  meanTurns 4.6->4.6
+  map.field: heroWins 25->25 (+0)  meanTurns 6.0->6.0
+  map.thicket: heroWins 25->25 (+0)  meanTurns 5.3->5.3
+  test.map.embers: heroWins 24->24 (+0)  meanTurns 4.0->4.0
+  test.map.showcase: heroWins 25->25 (+0)  meanTurns 4.8->4.8
+  test.map.duel-8: heroWins 25->25 (+0)  meanTurns 3.1->3.1
+  test.map.dungeon-16x8: heroWins 25->25 (+0)  meanTurns 6.0->6.0
+  test.map.horde-24: heroWins 25->25 (+0)  meanTurns 5.9->5.9
+NO MEASURABLE EFFECT at this sample size — consequence clause caught state changes, but outcomes did not move. Consider a sweep with more replicates before drawing balance conclusions.
+```

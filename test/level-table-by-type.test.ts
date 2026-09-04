@@ -38,7 +38,7 @@ describe('the civilian TYPE table in the pack', () => {
     // for a row with no pointer, which none of the shipped rows is. The fallback
     // is proved on a row with the pointer stripped.
     expect(UNITS['hero.fixed.orphans']?.levelTable).toBe('civilian.child')
-    expect(levelTableOf({ ...UNITS['hero.fixed.orphans']!, levelTable: undefined } as typeof UNITS[string])).toBe('class.civilian')
+    expect(levelTableOf({ ...UNITS['hero.fixed.orphans']!, levelTable: undefined } as unknown as typeof UNITS[string])).toBe('class.civilian')
   })
 
   it('civilians gain stamina like every class — the exemption is REVERSED (ruled 2026-09-03, content acab4b4)', () => {
