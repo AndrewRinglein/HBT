@@ -303,7 +303,8 @@
    },
    "notes": [
     "Toughness 3 is hell-tcg maxAfflictions, ported straight across — same meaning.",
-    "Levels on civilian.refugee rather than the class.civilian table — ruled 2026-09-03."
+    "Levels on civilian.refugee rather than the class.civilian table — ruled 2026-09-03.",
+    "Armed with item.dagger — ruled 2026-09-05, every civilian carries a weapon."
    ],
    "specialty": null,
    "originBadges": [],
@@ -326,6 +327,9 @@
    "additionalClasses": null,
    "subtype": "Ragtag Survivors",
    "levelTable": "civilian.refugee",
+   "kit": [
+    "item.dagger"
+   ],
    "personality": [
     "grim"
    ]
@@ -429,7 +433,8 @@
    },
    "notes": [
     "Toughness 2 is hell-tcg maxAfflictions, ported straight across — same meaning.",
-    "Levels on civilian.merchant rather than the class.civilian table — ruled 2026-09-03."
+    "Levels on civilian.merchant rather than the class.civilian table — ruled 2026-09-03.",
+    "Armed with item.dagger — ruled 2026-09-05, every civilian carries a weapon."
    ],
    "specialty": null,
    "originBadges": [],
@@ -452,6 +457,9 @@
    "additionalClasses": null,
    "subtype": "Caravan",
    "levelTable": "civilian.merchant",
+   "kit": [
+    "item.dagger"
+   ],
    "personality": [
     "cheerful"
    ]
@@ -493,7 +501,8 @@
    },
    "notes": [
     "Toughness 2 is hell-tcg maxAfflictions, ported straight across — same meaning.",
-    "Levels on civilian.wife rather than the class.civilian table — ruled 2026-09-03."
+    "Levels on civilian.wife rather than the class.civilian table — ruled 2026-09-03.",
+    "Armed with item.dagger — ruled 2026-09-05, every civilian carries a weapon."
    ],
    "specialty": null,
    "originBadges": [],
@@ -521,6 +530,9 @@
    "additionalClasses": null,
    "subtype": "Wife #3",
    "levelTable": "civilian.wife",
+   "kit": [
+    "item.dagger"
+   ],
    "personality": [
     "sultry"
    ]
@@ -562,7 +574,8 @@
    },
    "notes": [
     "Toughness 5 is hell-tcg maxAfflictions, ported straight across — same meaning.",
-    "Levels on civilian.scholar rather than the class.civilian table — ruled 2026-09-03."
+    "Levels on civilian.scholar rather than the class.civilian table — ruled 2026-09-03.",
+    "Armed with item.dagger — ruled 2026-09-05, every civilian carries a weapon."
    ],
    "specialty": null,
    "originBadges": [
@@ -597,6 +610,9 @@
    "additionalClasses": null,
    "subtype": "Mirian, the Lore Keeper",
    "levelTable": "civilian.scholar",
+   "kit": [
+    "item.dagger"
+   ],
    "personality": [
     "cold"
    ]
@@ -839,7 +855,8 @@
    },
    "notes": [
     "Toughness 3 is hell-tcg maxAfflictions, ported straight across — same meaning.",
-    "Levels on civilian.wife rather than the class.civilian table — ruled 2026-09-03."
+    "Levels on civilian.wife rather than the class.civilian table — ruled 2026-09-03.",
+    "Armed with item.dagger — ruled 2026-09-05, every civilian carries a weapon."
    ],
    "specialty": null,
    "originBadges": [],
@@ -867,6 +884,9 @@
    "additionalClasses": null,
    "subtype": "Wife #5",
    "levelTable": "civilian.wife",
+   "kit": [
+    "item.dagger"
+   ],
    "personality": [
     "bloodthirsty"
    ]
@@ -1049,7 +1069,8 @@
    },
    "notes": [
     "Toughness 2 is hell-tcg maxAfflictions, ported straight across — same meaning.",
-    "Levels on civilian.scholar rather than the class.civilian table — ruled 2026-09-03."
+    "Levels on civilian.scholar rather than the class.civilian table — ruled 2026-09-03.",
+    "Armed with item.dagger — ruled 2026-09-05, every civilian carries a weapon."
    ],
    "specialty": null,
    "originBadges": [
@@ -1081,6 +1102,9 @@
    "additionalClasses": null,
    "subtype": "Old Wise Man",
    "levelTable": "civilian.scholar",
+   "kit": [
+    "item.dagger"
+   ],
    "personality": [
     "sardonic"
    ]
@@ -1124,7 +1148,8 @@
     "Toughness 2 is hell-tcg maxAfflictions, ported straight across — same meaning.",
     "Renamed \"Lumberjack and Wife\" -> \"Lumberjack\", ruled 2026-08-25.",
     "Levels on civilian.farmer rather than the class.civilian table — ruled 2026-09-03.",
-    "Stat block dictated 2026-08-25: Lumberjack, dictated 2026-08-25. The one civilian who is genuinely dangerous — a two-handed axe and the arms that use it all day."
+    "Stat block dictated 2026-08-25: Lumberjack, dictated 2026-08-25. The one civilian who is genuinely dangerous — a two-handed axe and the arms that use it all day.",
+    "Armed with item.pitchfork — ruled 2026-09-05, every civilian carries a weapon."
    ],
    "specialty": null,
    "originBadges": [],
@@ -1147,7 +1172,8 @@
    "subtype": "Lumberjack",
    "levelTable": "civilian.farmer",
    "kit": [
-    "item.lumberjack-axe"
+    "item.lumberjack-axe",
+    "item.pitchfork"
    ],
    "survivalReward": {
     "currency": "Supplies",
@@ -1202,6 +1228,7 @@
    "notes": [
     "Toughness 4 is hell-tcg maxAfflictions, ported straight across — same meaning.",
     "Levels on civilian.child rather than the class.civilian table — ruled 2026-09-03.",
+    "Armed with item.pile-of-rocks — ruled 2026-09-05, every civilian carries a weapon.",
     "Base stats +1 strength, +1 precision, +4 health — Child compensation (ruled 2026-08-25)."
    ],
    "specialty": null,
@@ -1232,6 +1259,9 @@
    "additionalClasses": null,
    "subtype": "Scary Kid",
    "levelTable": "civilian.child",
+   "kit": [
+    "item.pile-of-rocks"
+   ],
    "personality": [
     "bloodthirsty"
    ]
@@ -1477,7 +1507,8 @@
    "notes": [
     "Toughness 0 is hell-tcg maxAfflictions, ported straight across — same meaning.",
     "2026-08-20: \"change the Spirit to just be a Civilian so that there are no outliers on classes.\" One hero is not a class.",
-    "Levels on civilian.ghost rather than the class.civilian table — ruled 2026-09-03."
+    "Levels on civilian.ghost rather than the class.civilian table — ruled 2026-09-03.",
+    "Armed with item.dagger — ruled 2026-09-05, every civilian carries a weapon."
    ],
    "specialty": null,
    "originBadges": [
@@ -1508,6 +1539,9 @@
    "additionalClasses": null,
    "subtype": "Living Ghost",
    "levelTable": "civilian.ghost",
+   "kit": [
+    "item.dagger"
+   ],
    "personality": [
     "brooding"
    ]
@@ -1621,7 +1655,8 @@
    },
    "notes": [
     "Toughness 2 is hell-tcg maxAfflictions, ported straight across — same meaning.",
-    "Levels on civilian.scholar rather than the class.civilian table — ruled 2026-09-03."
+    "Levels on civilian.scholar rather than the class.civilian table — ruled 2026-09-03.",
+    "Armed with item.dagger — ruled 2026-09-05, every civilian carries a weapon."
    ],
    "specialty": null,
    "originBadges": [
@@ -1651,6 +1686,9 @@
    "additionalClasses": null,
    "subtype": "Librarian",
    "levelTable": "civilian.scholar",
+   "kit": [
+    "item.dagger"
+   ],
    "personality": [
     "cold"
    ]
@@ -1692,7 +1730,8 @@
    },
    "notes": [
     "Toughness 1 is hell-tcg maxAfflictions, ported straight across — same meaning.",
-    "Levels on civilian.crafter rather than the class.civilian table — ruled 2026-09-03."
+    "Levels on civilian.crafter rather than the class.civilian table — ruled 2026-09-03.",
+    "Armed with item.dagger — ruled 2026-09-05, every civilian carries a weapon."
    ],
    "specialty": null,
    "originBadges": [
@@ -1722,6 +1761,9 @@
    "additionalClasses": null,
    "subtype": "Cook",
    "levelTable": "civilian.crafter",
+   "kit": [
+    "item.dagger"
+   ],
    "personality": [
     "cheerful"
    ]
@@ -1763,7 +1805,8 @@
    },
    "notes": [
     "Toughness 2 is hell-tcg maxAfflictions, ported straight across — same meaning.",
-    "Levels on civilian.crafter rather than the class.civilian table — ruled 2026-09-03."
+    "Levels on civilian.crafter rather than the class.civilian table — ruled 2026-09-03.",
+    "Armed with item.dagger — ruled 2026-09-05, every civilian carries a weapon."
    ],
    "specialty": null,
    "originBadges": [],
@@ -1791,6 +1834,9 @@
    "additionalClasses": null,
    "subtype": "Blacksmith",
    "levelTable": "civilian.crafter",
+   "kit": [
+    "item.dagger"
+   ],
    "personality": [
     "flirty"
    ]
@@ -1835,7 +1881,8 @@
    "notes": [
     "Resolute +4 DROPPED — the stat was removed 2026-08-15 with no replacement.",
     "Toughness 2 is hell-tcg maxAfflictions, ported straight across — same meaning.",
-    "Levels on civilian.revenant rather than the class.civilian table — ruled 2026-09-03."
+    "Levels on civilian.revenant rather than the class.civilian table — ruled 2026-09-03.",
+    "Armed with item.dagger — ruled 2026-09-05, every civilian carries a weapon."
    ],
    "specialty": null,
    "originBadges": [
@@ -1861,6 +1908,9 @@
    "additionalClasses": null,
    "subtype": "Zombie Bride",
    "levelTable": "civilian.revenant",
+   "kit": [
+    "item.dagger"
+   ],
    "personality": [
     "brooding"
    ]
@@ -1902,7 +1952,8 @@
    },
    "notes": [
     "Toughness 1 is hell-tcg maxAfflictions, ported straight across — same meaning.",
-    "Levels on civilian.sailor rather than the class.civilian table — ruled 2026-09-03."
+    "Levels on civilian.sailor rather than the class.civilian table — ruled 2026-09-03.",
+    "Armed with item.dagger — ruled 2026-09-05, every civilian carries a weapon."
    ],
    "specialty": null,
    "originBadges": [
@@ -1932,6 +1983,9 @@
    "additionalClasses": null,
    "subtype": "Fisherman",
    "levelTable": "civilian.sailor",
+   "kit": [
+    "item.dagger"
+   ],
    "personality": [
     "sardonic"
    ]
@@ -1973,7 +2027,8 @@
    },
    "notes": [
     "Toughness 1 is hell-tcg maxAfflictions, ported straight across — same meaning.",
-    "Levels on civilian.sailor rather than the class.civilian table — ruled 2026-09-03."
+    "Levels on civilian.sailor rather than the class.civilian table — ruled 2026-09-03.",
+    "Armed with item.dagger — ruled 2026-09-05, every civilian carries a weapon."
    ],
    "specialty": null,
    "originBadges": [
@@ -2004,6 +2059,9 @@
    "additionalClasses": null,
    "subtype": "Fishermans Wife",
    "levelTable": "civilian.sailor",
+   "kit": [
+    "item.dagger"
+   ],
    "personality": [
     "cold"
    ]
@@ -2198,7 +2256,8 @@
    },
    "notes": [
     "Toughness 1 is hell-tcg maxAfflictions, ported straight across — same meaning.",
-    "Levels on civilian.farmer rather than the class.civilian table — ruled 2026-09-03."
+    "Levels on civilian.farmer rather than the class.civilian table — ruled 2026-09-03.",
+    "Armed with item.pitchfork — ruled 2026-09-05, every civilian carries a weapon."
    ],
    "specialty": null,
    "originBadges": [],
@@ -2221,6 +2280,9 @@
    "additionalClasses": null,
    "subtype": "Farming Family",
    "levelTable": "civilian.farmer",
+   "kit": [
+    "item.pitchfork"
+   ],
    "personality": [
     "fearful"
    ]
@@ -2543,7 +2605,8 @@
    },
    "notes": [
     "Toughness 3 is hell-tcg maxAfflictions, ported straight across — same meaning.",
-    "Levels on civilian.merchant rather than the class.civilian table — ruled 2026-09-03."
+    "Levels on civilian.merchant rather than the class.civilian table — ruled 2026-09-03.",
+    "Armed with item.dagger — ruled 2026-09-05, every civilian carries a weapon."
    ],
    "specialty": null,
    "originBadges": [],
@@ -2571,6 +2634,9 @@
    "additionalClasses": null,
    "subtype": "Big Caravan",
    "levelTable": "civilian.merchant",
+   "kit": [
+    "item.dagger"
+   ],
    "personality": [
     "cheerful"
    ]
@@ -3166,7 +3232,8 @@
    },
    "notes": [
     "Toughness 2 is hell-tcg maxAfflictions, ported straight across — same meaning.",
-    "Levels on civilian.merchant rather than the class.civilian table — ruled 2026-09-03."
+    "Levels on civilian.merchant rather than the class.civilian table — ruled 2026-09-03.",
+    "Armed with item.dagger — ruled 2026-09-05, every civilian carries a weapon."
    ],
    "specialty": null,
    "originBadges": [
@@ -3198,6 +3265,9 @@
    "additionalClasses": null,
    "subtype": "Julie the Supply Master",
    "levelTable": "civilian.merchant",
+   "kit": [
+    "item.dagger"
+   ],
    "personality": [
     "cheerful"
    ]
@@ -3463,7 +3533,8 @@
    },
    "notes": [
     "Toughness 2 is hell-tcg maxAfflictions, ported straight across — same meaning.",
-    "Levels on civilian.refugee rather than the class.civilian table — ruled 2026-09-03."
+    "Levels on civilian.refugee rather than the class.civilian table — ruled 2026-09-03.",
+    "Armed with item.dagger — ruled 2026-09-05, every civilian carries a weapon."
    ],
    "specialty": null,
    "originBadges": [],
@@ -3491,6 +3562,9 @@
    "additionalClasses": null,
    "subtype": "Desperate Villagers",
    "levelTable": "civilian.refugee",
+   "kit": [
+    "item.dagger"
+   ],
    "personality": [
     "fearful"
    ]
@@ -3603,7 +3677,8 @@
    },
    "notes": [
     "Toughness 1 is hell-tcg maxAfflictions, ported straight across — same meaning.",
-    "Levels on civilian.merchant rather than the class.civilian table — ruled 2026-09-03."
+    "Levels on civilian.merchant rather than the class.civilian table — ruled 2026-09-03.",
+    "Armed with item.dagger — ruled 2026-09-05, every civilian carries a weapon."
    ],
    "specialty": null,
    "originBadges": [],
@@ -3631,6 +3706,9 @@
    "additionalClasses": null,
    "subtype": "Merchant Wagon",
    "levelTable": "civilian.merchant",
+   "kit": [
+    "item.dagger"
+   ],
    "personality": [
     "cheerful"
    ]
@@ -3743,7 +3821,8 @@
    "notes": [
     "Dodge 1 scaled x5 to 5 — hell-tcg Dodge was a 0-3 integer, HoBaT Dodge is a flat to-hit penalty in points.",
     "Toughness 3 is hell-tcg maxAfflictions, ported straight across — same meaning.",
-    "Levels on civilian.refugee rather than the class.civilian table — ruled 2026-09-03."
+    "Levels on civilian.refugee rather than the class.civilian table — ruled 2026-09-03.",
+    "Armed with item.dagger — ruled 2026-09-05, every civilian carries a weapon."
    ],
    "specialty": null,
    "originBadges": [
@@ -3768,6 +3847,9 @@
    "additionalClasses": null,
    "subtype": "Catfolk Villager",
    "levelTable": "civilian.refugee",
+   "kit": [
+    "item.dagger"
+   ],
    "personality": [
     "cheerful"
    ]
@@ -4072,7 +4154,8 @@
     "Toughness 2 is hell-tcg maxAfflictions, ported straight across — same meaning.",
     "maxRuneSlots 2 has no HoBaT stat; blood runes are items here.",
     "Levels on civilian.scholar rather than the class.civilian table — ruled 2026-09-03.",
-    "Stat block dictated 2026-08-25: School Teacher, dictated 2026-08-25. Unarmed and unkillable-by-carelessness — luck, resist, and the sense to bring a plan instead of a weapon."
+    "Stat block dictated 2026-08-25: School Teacher, dictated 2026-08-25. Unarmed and unkillable-by-carelessness — luck, resist, and the sense to bring a plan instead of a weapon.",
+    "Armed with item.dagger — ruled 2026-09-05, every civilian carries a weapon."
    ],
    "specialty": {
     "name": "Educator",
@@ -4108,7 +4191,9 @@
     "luck": 7
    },
    "derivedDeltaWhy": "School Teacher, dictated 2026-08-25. Unarmed and unkillable-by-carelessness — luck, resist, and the sense to bring a plan instead of a weapon.",
-   "kit": [],
+   "kit": [
+    "item.dagger"
+   ],
    "grantsTactics": [
     "Learned"
    ],
@@ -4308,7 +4393,8 @@
    "notes": [
     "Dodge 1 scaled x5 to 5 — hell-tcg Dodge was a 0-3 integer, HoBaT Dodge is a flat to-hit penalty in points.",
     "Toughness 2 is hell-tcg maxAfflictions, ported straight across — same meaning.",
-    "Levels on civilian.merchant rather than the class.civilian table — ruled 2026-09-03."
+    "Levels on civilian.merchant rather than the class.civilian table — ruled 2026-09-03.",
+    "Armed with item.dagger — ruled 2026-09-05, every civilian carries a weapon."
    ],
    "specialty": null,
    "originBadges": [
@@ -4339,6 +4425,9 @@
    "additionalClasses": null,
    "subtype": "Silk Merchant",
    "levelTable": "civilian.merchant",
+   "kit": [
+    "item.dagger"
+   ],
    "artSlug": "silk-merchant",
    "levelArt": [
     "art/heroes/silk-merchant/card/l1.png"
@@ -4384,7 +4473,8 @@
    },
    "notes": [
     "Toughness 2 is hell-tcg maxAfflictions, ported straight across — same meaning.",
-    "Levels on civilian.scholar rather than the class.civilian table — ruled 2026-09-03."
+    "Levels on civilian.scholar rather than the class.civilian table — ruled 2026-09-03.",
+    "Armed with item.dagger — ruled 2026-09-05, every civilian carries a weapon."
    ],
    "specialty": null,
    "originBadges": [],
@@ -4414,6 +4504,9 @@
    "additionalClasses": null,
    "subtype": "Runesmith",
    "levelTable": "civilian.scholar",
+   "kit": [
+    "item.dagger"
+   ],
    "artSlug": "runesmith",
    "levelArt": [
     "art/heroes/runesmith/card/l1.png"
@@ -4456,7 +4549,8 @@
    },
    "notes": [
     "Toughness 2 is hell-tcg maxAfflictions, ported straight across — same meaning.",
-    "Levels on civilian.militia rather than the class.civilian table — ruled 2026-09-03."
+    "Levels on civilian.militia rather than the class.civilian table — ruled 2026-09-03.",
+    "Armed with item.dagger — ruled 2026-09-05, every civilian carries a weapon."
    ],
    "specialty": null,
    "originBadges": [],
@@ -4479,6 +4573,9 @@
    "additionalClasses": null,
    "subtype": "Guard",
    "levelTable": "civilian.militia",
+   "kit": [
+    "item.dagger"
+   ],
    "artSlug": "guard",
    "levelArt": [
     "art/heroes/guard/card/l1.png"
@@ -4737,6 +4834,7 @@
    "notes": [
     "Toughness 4 is hell-tcg maxAfflictions, ported straight across — same meaning.",
     "Levels on civilian.child rather than the class.civilian table — ruled 2026-09-03.",
+    "Armed with item.pile-of-rocks — ruled 2026-09-05, every civilian carries a weapon.",
     "Base stats +1 strength, +1 precision, +4 health — Child compensation (ruled 2026-08-25)."
    ],
    "specialty": null,
@@ -4762,6 +4860,9 @@
    "additionalClasses": null,
    "subtype": "The Djinn-Touched Child",
    "levelTable": "civilian.child",
+   "kit": [
+    "item.pile-of-rocks"
+   ],
    "artSlug": "djinn-touched-child",
    "levelArt": [
     "art/heroes/djinn-touched-child/card/l1.png"
@@ -4872,7 +4973,8 @@
    },
    "notes": [
     "Toughness 2 is hell-tcg maxAfflictions, ported straight across — same meaning.",
-    "Levels on civilian.refugee rather than the class.civilian table — ruled 2026-09-03."
+    "Levels on civilian.refugee rather than the class.civilian table — ruled 2026-09-03.",
+    "Armed with item.dagger — ruled 2026-09-05, every civilian carries a weapon."
    ],
    "specialty": null,
    "originBadges": [
@@ -4904,6 +5006,9 @@
    "additionalClasses": null,
    "subtype": "The Outcast",
    "levelTable": "civilian.refugee",
+   "kit": [
+    "item.dagger"
+   ],
    "artSlug": "the-outcast",
    "levelArt": [
     "art/heroes/the-outcast/card/l1.png"
@@ -4950,6 +5055,7 @@
    "notes": [
     "Toughness 4 is hell-tcg maxAfflictions, ported straight across — same meaning.",
     "Levels on civilian.child rather than the class.civilian table — ruled 2026-09-03.",
+    "Armed with item.pile-of-rocks — ruled 2026-09-05, every civilian carries a weapon.",
     "Base stats +1 strength, +1 precision, +4 health — Child compensation (ruled 2026-08-25)."
    ],
    "specialty": null,
@@ -4980,6 +5086,9 @@
    "additionalClasses": null,
    "subtype": "Refugee Children",
    "levelTable": "civilian.child",
+   "kit": [
+    "item.pile-of-rocks"
+   ],
    "artSlug": "refugee-children",
    "levelArt": [
     "art/heroes/refugee-children/card/l1.png"
@@ -5025,7 +5134,8 @@
    },
    "notes": [
     "Toughness 3 is hell-tcg maxAfflictions, ported straight across — same meaning.",
-    "Levels on civilian.sailor rather than the class.civilian table — ruled 2026-09-03."
+    "Levels on civilian.sailor rather than the class.civilian table — ruled 2026-09-03.",
+    "Armed with item.dagger — ruled 2026-09-05, every civilian carries a weapon."
    ],
    "specialty": null,
    "originBadges": [
@@ -5055,6 +5165,9 @@
    "additionalClasses": null,
    "subtype": "Lost Fishers",
    "levelTable": "civilian.sailor",
+   "kit": [
+    "item.dagger"
+   ],
    "artSlug": "lost-fishers",
    "levelArt": [
     "art/heroes/lost-fishers/card/l1.png"
@@ -5100,7 +5213,8 @@
    },
    "notes": [
     "Toughness 3 is hell-tcg maxAfflictions, ported straight across — same meaning.",
-    "Levels on civilian.sailor rather than the class.civilian table — ruled 2026-09-03."
+    "Levels on civilian.sailor rather than the class.civilian table — ruled 2026-09-03.",
+    "Armed with item.dagger — ruled 2026-09-05, every civilian carries a weapon."
    ],
    "specialty": null,
    "originBadges": [],
@@ -5123,6 +5237,9 @@
    "additionalClasses": null,
    "subtype": "Sailors",
    "levelTable": "civilian.sailor",
+   "kit": [
+    "item.dagger"
+   ],
    "artSlug": "sailors",
    "levelArt": [
     "art/heroes/sailors/card/l1.png"
@@ -5168,7 +5285,8 @@
    },
    "notes": [
     "Toughness 3 is hell-tcg maxAfflictions, ported straight across — same meaning.",
-    "Levels on civilian.refugee rather than the class.civilian table — ruled 2026-09-03."
+    "Levels on civilian.refugee rather than the class.civilian table — ruled 2026-09-03.",
+    "Armed with item.dagger — ruled 2026-09-05, every civilian carries a weapon."
    ],
    "specialty": null,
    "originBadges": [
@@ -5198,6 +5316,9 @@
    "additionalClasses": null,
    "subtype": "Refugees",
    "levelTable": "civilian.refugee",
+   "kit": [
+    "item.dagger"
+   ],
    "artSlug": "refugees",
    "levelArt": [
     "art/heroes/refugees/card/l1.png"
@@ -5240,7 +5361,8 @@
    },
    "notes": [
     "Toughness 3 is hell-tcg maxAfflictions, ported straight across — same meaning.",
-    "Levels on civilian.refugee rather than the class.civilian table — ruled 2026-09-03."
+    "Levels on civilian.refugee rather than the class.civilian table — ruled 2026-09-03.",
+    "Armed with item.dagger — ruled 2026-09-05, every civilian carries a weapon."
    ],
    "specialty": null,
    "originBadges": [],
@@ -5268,6 +5390,9 @@
    "additionalClasses": null,
    "subtype": "Huge Group of Refugees",
    "levelTable": "civilian.refugee",
+   "kit": [
+    "item.dagger"
+   ],
    "artSlug": "huge-group-of-refugees",
    "levelArt": [
     "art/heroes/huge-group-of-refugees/card/l1.png"
@@ -5310,7 +5435,8 @@
    },
    "notes": [
     "Toughness 3 is hell-tcg maxAfflictions, ported straight across — same meaning.",
-    "Levels on civilian.merchant rather than the class.civilian table — ruled 2026-09-03."
+    "Levels on civilian.merchant rather than the class.civilian table — ruled 2026-09-03.",
+    "Armed with item.dagger — ruled 2026-09-05, every civilian carries a weapon."
    ],
    "specialty": null,
    "originBadges": [],
@@ -5338,6 +5464,9 @@
    "additionalClasses": null,
    "subtype": "Caravan Master",
    "levelTable": "civilian.merchant",
+   "kit": [
+    "item.dagger"
+   ],
    "artSlug": "caravan-master",
    "levelArt": [
     "art/heroes/caravan-master/card/l1.png"
@@ -5386,7 +5515,8 @@
    "notes": [
     "Resolute +3 DROPPED — the stat was removed 2026-08-15 with no replacement.",
     "Toughness 3 is hell-tcg maxAfflictions, ported straight across — same meaning.",
-    "Levels on civilian.militia rather than the class.civilian table — ruled 2026-09-03."
+    "Levels on civilian.militia rather than the class.civilian table — ruled 2026-09-03.",
+    "Armed with item.dagger — ruled 2026-09-05, every civilian carries a weapon."
    ],
    "specialty": null,
    "originBadges": [
@@ -5413,6 +5543,9 @@
    "additionalClasses": null,
    "subtype": "Badgered Soldier",
    "levelTable": "civilian.militia",
+   "kit": [
+    "item.dagger"
+   ],
    "artSlug": "badgered-soldier",
    "levelArt": [
     "art/heroes/badgered-soldier/card/l1.png"
@@ -5458,7 +5591,8 @@
    },
    "notes": [
     "Toughness 3 is hell-tcg maxAfflictions, ported straight across — same meaning.",
-    "Levels on civilian.refugee rather than the class.civilian table — ruled 2026-09-03."
+    "Levels on civilian.refugee rather than the class.civilian table — ruled 2026-09-03.",
+    "Armed with item.dagger — ruled 2026-09-05, every civilian carries a weapon."
    ],
    "specialty": null,
    "originBadges": [
@@ -5488,6 +5622,9 @@
    "additionalClasses": null,
    "subtype": "Defenseless Women",
    "levelTable": "civilian.refugee",
+   "kit": [
+    "item.dagger"
+   ],
    "artSlug": "defenseless-women",
    "levelArt": [
     "art/heroes/defenseless-women/card/l1.png"
@@ -5530,7 +5667,8 @@
    },
    "notes": [
     "Toughness 3 is hell-tcg maxAfflictions, ported straight across — same meaning.",
-    "Levels on civilian.militia rather than the class.civilian table — ruled 2026-09-03."
+    "Levels on civilian.militia rather than the class.civilian table — ruled 2026-09-03.",
+    "Armed with item.dagger — ruled 2026-09-05, every civilian carries a weapon."
    ],
    "specialty": null,
    "originBadges": [],
@@ -5553,6 +5691,9 @@
    "additionalClasses": null,
    "subtype": "Militia",
    "levelTable": "civilian.militia",
+   "kit": [
+    "item.dagger"
+   ],
    "artSlug": "militia",
    "levelArt": [
     "art/heroes/militia/card/l1.png"
@@ -5595,7 +5736,8 @@
    },
    "notes": [
     "Toughness 3 is hell-tcg maxAfflictions, ported straight across — same meaning.",
-    "Levels on civilian.militia rather than the class.civilian table — ruled 2026-09-03."
+    "Levels on civilian.militia rather than the class.civilian table — ruled 2026-09-03.",
+    "Armed with item.dagger — ruled 2026-09-05, every civilian carries a weapon."
    ],
    "specialty": null,
    "originBadges": [
@@ -5627,6 +5769,9 @@
    "additionalClasses": null,
    "subtype": "Militia Commander",
    "levelTable": "civilian.militia",
+   "kit": [
+    "item.dagger"
+   ],
    "artSlug": "militia-commander",
    "levelArt": [
     "art/heroes/militia-commander/card/l1.png"
@@ -5740,7 +5885,8 @@
    "notes": [
     "Dodge 1 scaled x5 to 5 — hell-tcg Dodge was a 0-3 integer, HoBaT Dodge is a flat to-hit penalty in points.",
     "Toughness 2 is hell-tcg maxAfflictions, ported straight across — same meaning.",
-    "Levels on civilian.sailor rather than the class.civilian table — ruled 2026-09-03."
+    "Levels on civilian.sailor rather than the class.civilian table — ruled 2026-09-03.",
+    "Armed with item.dagger — ruled 2026-09-05, every civilian carries a weapon."
    ],
    "specialty": null,
    "originBadges": [
@@ -5773,6 +5919,9 @@
    "subtype": "Catfolk Crew",
    "type": "Ship Cat",
    "levelTable": "civilian.sailor",
+   "kit": [
+    "item.dagger"
+   ],
    "artSlug": "catfolk-crew",
    "levelArt": [
     "art/heroes/catfolk-crew/card/l1.png"
@@ -5818,7 +5967,8 @@
    },
    "notes": [
     "Toughness 3 is hell-tcg maxAfflictions, ported straight across — same meaning.",
-    "Levels on civilian.sailor rather than the class.civilian table — ruled 2026-09-03."
+    "Levels on civilian.sailor rather than the class.civilian table — ruled 2026-09-03.",
+    "Armed with item.dagger — ruled 2026-09-05, every civilian carries a weapon."
    ],
    "specialty": null,
    "originBadges": [
@@ -5849,6 +5999,9 @@
    "subtype": "Catfolk Navigator",
    "type": "Chart Reader",
    "levelTable": "civilian.sailor",
+   "kit": [
+    "item.dagger"
+   ],
    "artSlug": "catfolk-navigator",
    "levelArt": [
     "art/heroes/catfolk-navigator/card/l1.png"
@@ -5894,7 +6047,8 @@
    },
    "notes": [
     "Toughness 3 is hell-tcg maxAfflictions, ported straight across — same meaning.",
-    "Levels on civilian.crafter rather than the class.civilian table — ruled 2026-09-03."
+    "Levels on civilian.crafter rather than the class.civilian table — ruled 2026-09-03.",
+    "Armed with item.dagger — ruled 2026-09-05, every civilian carries a weapon."
    ],
    "specialty": null,
    "originBadges": [
@@ -5925,6 +6079,9 @@
    "subtype": "Catfolk Cook",
    "type": "Galley Cook",
    "levelTable": "civilian.crafter",
+   "kit": [
+    "item.dagger"
+   ],
    "artSlug": "catfolk-cook",
    "levelArt": [
     "art/heroes/catfolk-cook/card/l1.png"
@@ -5975,6 +6132,7 @@
     "Resolute +1 DROPPED — the stat was removed 2026-08-15 with no replacement.",
     "Toughness 3 is hell-tcg maxAfflictions, ported straight across — same meaning.",
     "Levels on civilian.sailor rather than the class.civilian table — ruled 2026-09-03.",
+    "Armed with item.dagger — ruled 2026-09-05, every civilian carries a weapon.",
     "Base stats +1 strength, +1 precision, +4 health — Child compensation (ruled 2026-08-25)."
    ],
    "specialty": null,
@@ -6009,6 +6167,9 @@
    "subtype": "Catfolk Cabin Boy",
    "type": "Bucket Boy",
    "levelTable": "civilian.sailor",
+   "kit": [
+    "item.dagger"
+   ],
    "artSlug": "catfolk-cabin-boy",
    "levelArt": [
     "art/heroes/catfolk-cabin-boy/card/l1.png"
@@ -6272,7 +6433,8 @@
    },
    "notes": [
     "Toughness 2 is hell-tcg maxAfflictions, ported straight across — same meaning.",
-    "Levels on civilian.sailor rather than the class.civilian table — ruled 2026-09-03."
+    "Levels on civilian.sailor rather than the class.civilian table — ruled 2026-09-03.",
+    "Armed with item.dagger — ruled 2026-09-05, every civilian carries a weapon."
    ],
    "specialty": null,
    "originBadges": [
@@ -6303,6 +6465,9 @@
    "subtype": "Catfolk Whip Master",
    "type": "Whip Handler",
    "levelTable": "civilian.sailor",
+   "kit": [
+    "item.dagger"
+   ],
    "artSlug": "catfolk-whip-master",
    "levelArt": [
     "art/heroes/catfolk-whip-master/card/l1.png"
@@ -6490,7 +6655,8 @@
    },
    "notes": [
     "Toughness 2 is hell-tcg maxAfflictions, ported straight across — same meaning.",
-    "Levels on civilian.sailor rather than the class.civilian table — ruled 2026-09-03."
+    "Levels on civilian.sailor rather than the class.civilian table — ruled 2026-09-03.",
+    "Armed with item.dagger — ruled 2026-09-05, every civilian carries a weapon."
    ],
    "specialty": null,
    "originBadges": [],
@@ -6514,6 +6680,9 @@
    "subtype": "Cargo Hold Crew",
    "type": "Cargo Line",
    "levelTable": "civilian.sailor",
+   "kit": [
+    "item.dagger"
+   ],
    "artMissing": true,
    "personality": [
     "cheerful"
@@ -6556,7 +6725,8 @@
    },
    "notes": [
     "Toughness 2 is hell-tcg maxAfflictions, ported straight across — same meaning.",
-    "Levels on civilian.scholar rather than the class.civilian table — ruled 2026-09-03."
+    "Levels on civilian.scholar rather than the class.civilian table — ruled 2026-09-03.",
+    "Armed with item.dagger — ruled 2026-09-05, every civilian carries a weapon."
    ],
    "specialty": null,
    "originBadges": [
@@ -6589,6 +6759,9 @@
    "subtype": "Ship's Astrologer",
    "type": "Globe Keeper",
    "levelTable": "civilian.scholar",
+   "kit": [
+    "item.dagger"
+   ],
    "artMissing": true,
    "personality": [
     "sardonic"
@@ -6632,6 +6805,7 @@
    "notes": [
     "Toughness 4 is hell-tcg maxAfflictions, ported straight across — same meaning.",
     "Levels on civilian.child rather than the class.civilian table — ruled 2026-09-03.",
+    "Armed with item.pile-of-rocks — ruled 2026-09-05, every civilian carries a weapon.",
     "Base stats +1 strength, +1 precision, +4 health — Child compensation (ruled 2026-08-25)."
    ],
    "specialty": null,
@@ -6663,6 +6837,9 @@
    "subtype": "Stowaway Children",
    "type": "Knife Children",
    "levelTable": "civilian.child",
+   "kit": [
+    "item.pile-of-rocks"
+   ],
    "artMissing": true,
    "personality": [
     "cheerful"
@@ -6705,7 +6882,8 @@
    },
    "notes": [
     "Toughness 3 is hell-tcg maxAfflictions, ported straight across — same meaning.",
-    "Levels on civilian.refugee rather than the class.civilian table — ruled 2026-09-03."
+    "Levels on civilian.refugee rather than the class.civilian table — ruled 2026-09-03.",
+    "Armed with item.dagger — ruled 2026-09-05, every civilian carries a weapon."
    ],
    "specialty": null,
    "originBadges": [
@@ -6731,6 +6909,9 @@
    "subtype": "Cursed Passengers",
    "type": "Blood Marked",
    "levelTable": "civilian.refugee",
+   "kit": [
+    "item.dagger"
+   ],
    "artMissing": true
   },
   {
@@ -6770,7 +6951,8 @@
    },
    "notes": [
     "Toughness 3 is hell-tcg maxAfflictions, ported straight across — same meaning.",
-    "Levels on civilian.sailor rather than the class.civilian table — ruled 2026-09-03."
+    "Levels on civilian.sailor rather than the class.civilian table — ruled 2026-09-03.",
+    "Armed with item.dagger — ruled 2026-09-05, every civilian carries a weapon."
    ],
    "specialty": null,
    "originBadges": [],
@@ -6794,6 +6976,9 @@
    "subtype": "Skyship Deckhands",
    "type": "Armed Deckhands",
    "levelTable": "civilian.sailor",
+   "kit": [
+    "item.dagger"
+   ],
    "artMissing": true,
    "personality": [
     "grim"
@@ -6836,7 +7021,8 @@
    },
    "notes": [
     "Toughness 3 is hell-tcg maxAfflictions, ported straight across — same meaning.",
-    "Levels on civilian.bard rather than the class.civilian table — ruled 2026-09-03."
+    "Levels on civilian.bard rather than the class.civilian table — ruled 2026-09-03.",
+    "Armed with item.dagger — ruled 2026-09-05, every civilian carries a weapon."
    ],
    "specialty": null,
    "originBadges": [],
@@ -6864,6 +7050,9 @@
    "additionalClasses": null,
    "subtype": "Bard",
    "levelTable": "civilian.bard",
+   "kit": [
+    "item.dagger"
+   ],
    "personality": [
     "cheerful"
    ]
@@ -6905,7 +7094,8 @@
    },
    "notes": [
     "Toughness 3 is hell-tcg maxAfflictions, ported straight across — same meaning.",
-    "Levels on civilian.bard rather than the class.civilian table — ruled 2026-09-03."
+    "Levels on civilian.bard rather than the class.civilian table — ruled 2026-09-03.",
+    "Armed with item.dagger — ruled 2026-09-05, every civilian carries a weapon."
    ],
    "specialty": null,
    "originBadges": [],
@@ -6933,6 +7123,9 @@
    "additionalClasses": null,
    "subtype": "Ethereal Bard",
    "levelTable": "civilian.bard",
+   "kit": [
+    "item.dagger"
+   ],
    "personality": [
     "cold"
    ]
@@ -6977,7 +7170,8 @@
    "notes": [
     "Resolute -1 DROPPED — the stat was removed 2026-08-15 with no replacement.",
     "Toughness 3 is hell-tcg maxAfflictions, ported straight across — same meaning.",
-    "Levels on civilian.militia rather than the class.civilian table — ruled 2026-09-03."
+    "Levels on civilian.militia rather than the class.civilian table — ruled 2026-09-03.",
+    "Armed with item.dagger — ruled 2026-09-05, every civilian carries a weapon."
    ],
    "specialty": null,
    "originBadges": [],
@@ -7005,6 +7199,9 @@
    "additionalClasses": null,
    "subtype": "Small Army",
    "levelTable": "civilian.militia",
+   "kit": [
+    "item.dagger"
+   ],
    "personality": [
     "grim"
    ]
@@ -7047,6 +7244,7 @@
    "notes": [
     "Toughness 3 is hell-tcg maxAfflictions, ported straight across — same meaning.",
     "Levels on civilian.child rather than the class.civilian table — ruled 2026-09-03.",
+    "Armed with item.pile-of-rocks — ruled 2026-09-05, every civilian carries a weapon.",
     "Base stats +1 strength, +1 precision, +4 health — Child compensation (ruled 2026-08-25)."
    ],
    "specialty": null,
@@ -7078,6 +7276,9 @@
    "additionalClasses": null,
    "subtype": "Wayward Child",
    "levelTable": "civilian.child",
+   "kit": [
+    "item.pile-of-rocks"
+   ],
    "personality": [
     "cheerful"
    ]
@@ -16930,7 +17131,7 @@
    "level": 1,
    "gender": "female",
    "campaign": "eve-of-ruin",
-   "art": "art/heroes/rogue-raven/card/l1.jpg",
+   "art": "art/heroes/rogue-raven/card/l1.png",
    "ported": {
     "strength": 6,
     "precision": 4,
@@ -17005,17 +17206,17 @@
     "Giselle"
    ],
    "levelArt": [
-    "art/heroes/rogue-raven/card/l1.jpg",
-    "art/heroes/rogue-raven/card/l2.jpg",
-    "art/heroes/rogue-raven/card/l3.jpg",
-    "art/heroes/rogue-raven/card/l4.jpg"
+    "art/heroes/rogue-raven/card/l1.png",
+    "art/heroes/rogue-raven/card/l2.png",
+    "art/heroes/rogue-raven/card/l3.png",
+    "art/heroes/rogue-raven/card/l4.png"
    ],
    "artSlug": "rogue-raven",
    "afflictionArt": {
-    "lycanthropy": "art/heroes/rogue-raven/card/lycanthropy.jpg",
-    "possession": "art/heroes/rogue-raven/card/possession.jpg",
-    "rotting-flesh": "art/heroes/rogue-raven/card/rotting-flesh.jpg",
-    "vampirism": "art/heroes/rogue-raven/card/vampirism.jpg"
+    "lycanthropy": "art/heroes/rogue-raven/card/lycanthropy.png",
+    "possession": "art/heroes/rogue-raven/card/possession.png",
+    "rotting-flesh": "art/heroes/rogue-raven/card/rotting-flesh.png",
+    "vampirism": "art/heroes/rogue-raven/card/vampirism.png"
    },
    "anim": [
     "art/heroes/rogue-raven/anim/l1.mp4"
@@ -17482,7 +17683,8 @@
    "notes": [
     "One art template, one hero. Its folder holds 1/2/3/4 plus l/p/r/v — four levels and four statuses for THIS hero, not four designs, so it does not split the way Shadows and Skyship do.",
     "AWAITING REDESIGN. The stat block is a FROZEN random roll kept only so the build is reproducible - it is not authored and must not be balanced against. Badges are empty on purpose: the generator rolled Hell-TCG names that do not exist in this game.",
-    "Depicts: farm lad in a mail vest over a linen shirt, woodsman's axe, dark forest"
+    "Depicts: farm lad in a mail vest over a linen shirt, woodsman's axe, dark forest",
+    "Armed with item.dagger — ruled 2026-09-05, every civilian carries a weapon."
    ],
    "specialty": null,
    "originBadges": [],
@@ -17500,6 +17702,9 @@
    "templateName": "Woodcutter's Son",
    "subtype": "Woodcutter's Son",
    "sample": true,
+   "kit": [
+    "item.dagger"
+   ],
    "artMissing": true
   },
   {
@@ -17540,7 +17745,8 @@
    "notes": [
     "One art template, one hero. Its folder holds 1/2/3/4 plus l/p/r/v — four levels and four statuses for THIS hero, not four designs, so it does not split the way Shadows and Skyship do.",
     "AWAITING REDESIGN. The stat block is a FROZEN random roll kept only so the build is reproducible - it is not authored and must not be balanced against. Badges are empty on purpose: the generator rolled Hell-TCG names that do not exist in this game.",
-    "Depicts: boy in blue robes, magic sparking out of both hands, alarmed"
+    "Depicts: boy in blue robes, magic sparking out of both hands, alarmed",
+    "Armed with item.dagger — ruled 2026-09-05, every civilian carries a weapon."
    ],
    "specialty": null,
    "originBadges": [],
@@ -17558,6 +17764,9 @@
    "templateName": "Wild Spark",
    "subtype": "Wild Spark",
    "sample": true,
+   "kit": [
+    "item.dagger"
+   ],
    "artMissing": true
   },
   {
@@ -17599,7 +17808,8 @@
     "One art template, one hero. Its folder holds 1/2/3/4 plus l/p/r/v — four levels and four statuses for THIS hero, not four designs, so it does not split the way Shadows and Skyship do.",
     "AWAITING REDESIGN. The stat block is a FROZEN random roll kept only so the build is reproducible - it is not authored and must not be balanced against. Badges are empty on purpose: the generator rolled Hell-TCG names that do not exist in this game.",
     "Depicts: young knight in plate and a blue cloak, sword lowered, an army behind him",
-    "ART INCOMPLETE - level 1 only — no levels 2-4, no afflictions"
+    "ART INCOMPLETE - level 1 only — no levels 2-4, no afflictions",
+    "Armed with item.dagger — ruled 2026-09-05, every civilian carries a weapon."
    ],
    "specialty": null,
    "originBadges": [],
@@ -17617,6 +17827,9 @@
    "templateName": "Green Squire",
    "subtype": "Green Squire",
    "sample": true,
+   "kit": [
+    "item.dagger"
+   ],
    "artMissing": true
   },
   {
@@ -17658,7 +17871,8 @@
     "One art template, one hero. Its folder holds 1/2/3/4 plus l/p/r/v — four levels and four statuses for THIS hero, not four designs, so it does not split the way Shadows and Skyship do.",
     "AWAITING REDESIGN. The stat block is a FROZEN random roll kept only so the build is reproducible - it is not authored and must not be balanced against. Badges are empty on purpose: the generator rolled Hell-TCG names that do not exist in this game.",
     "Depicts: ragged linen, topknot, bamboo staff, rope sandals",
-    "ART INCOMPLETE - level 1 only — no levels 2-4, no afflictions"
+    "ART INCOMPLETE - level 1 only — no levels 2-4, no afflictions",
+    "Armed with item.dagger — ruled 2026-09-05, every civilian carries a weapon."
    ],
    "specialty": null,
    "originBadges": [],
@@ -17676,6 +17890,9 @@
    "templateName": "Bamboo Novice",
    "subtype": "Bamboo Novice",
    "sample": true,
+   "kit": [
+    "item.dagger"
+   ],
    "artMissing": true
   },
   {
@@ -17716,7 +17933,8 @@
    "notes": [
     "One art template, one hero. Its folder holds 1/2/3/4 plus l/p/r/v — four levels and four statuses for THIS hero, not four designs, so it does not split the way Shadows and Skyship do.",
     "AWAITING REDESIGN. The stat block is a FROZEN random roll kept only so the build is reproducible - it is not authored and must not be balanced against. Badges are empty on purpose: the generator rolled Hell-TCG names that do not exist in this game.",
-    "Depicts: layered leathers, one scavenged vambrace, wooden spear, sunlit deep forest"
+    "Depicts: layered leathers, one scavenged vambrace, wooden spear, sunlit deep forest",
+    "Armed with item.dagger — ruled 2026-09-05, every civilian carries a weapon."
    ],
    "specialty": null,
    "originBadges": [],
@@ -17734,6 +17952,9 @@
    "templateName": "Forest Spear",
    "subtype": "Forest Spear",
    "sample": true,
+   "kit": [
+    "item.dagger"
+   ],
    "artMissing": true
   },
   {
@@ -17774,7 +17995,8 @@
    "notes": [
     "One art template, one hero. Its folder holds 1/2/3/4 plus l/p/r/v — four levels and four statuses for THIS hero, not four designs, so it does not split the way Shadows and Skyship do.",
     "AWAITING REDESIGN. The stat block is a FROZEN random roll kept only so the build is reproducible - it is not authored and must not be balanced against. Badges are empty on purpose: the generator rolled Hell-TCG names that do not exist in this game.",
-    "Depicts: rain-slick alley, leather bodice over a white shirt, kitchen knife, lanterns behind"
+    "Depicts: rain-slick alley, leather bodice over a white shirt, kitchen knife, lanterns behind",
+    "Armed with item.dagger — ruled 2026-09-05, every civilian carries a weapon."
    ],
    "specialty": null,
    "originBadges": [],
@@ -17792,6 +18014,9 @@
    "templateName": "Alley Knife",
    "subtype": "Alley Knife",
    "sample": true,
+   "kit": [
+    "item.dagger"
+   ],
    "artMissing": true
   },
   {
@@ -17832,7 +18057,8 @@
    "notes": [
     "One art template, one hero. Its folder holds 1/2/3/4 plus l/p/r/v — four levels and four statuses for THIS hero, not four designs, so it does not split the way Shadows and Skyship do.",
     "AWAITING REDESIGN. The stat block is a FROZEN random roll kept only so the build is reproducible - it is not authored and must not be balanced against. Badges are empty on purpose: the generator rolled Hell-TCG names that do not exist in this game.",
-    "Depicts: headscarf and cream robes, curved sword raised, blowing dust"
+    "Depicts: headscarf and cream robes, curved sword raised, blowing dust",
+    "Armed with item.dagger — ruled 2026-09-05, every civilian carries a weapon."
    ],
    "specialty": null,
    "originBadges": [],
@@ -17850,6 +18076,9 @@
    "templateName": "Dust Blade",
    "subtype": "Dust Blade",
    "sample": true,
+   "kit": [
+    "item.dagger"
+   ],
    "artMissing": true
   },
   {
@@ -17890,7 +18119,8 @@
    "notes": [
     "One art template, one hero. Its folder holds 1/2/3/4 plus l/p/r/v — four levels and four statuses for THIS hero, not four designs, so it does not split the way Shadows and Skyship do.",
     "AWAITING REDESIGN. The stat block is a FROZEN random roll kept only so the build is reproducible - it is not authored and must not be balanced against. Badges are empty on purpose: the generator rolled Hell-TCG names that do not exist in this game.",
-    "Depicts: long black hair, linen jacket, tall carved staff, mossy cliff"
+    "Depicts: long black hair, linen jacket, tall carved staff, mossy cliff",
+    "Armed with item.dagger — ruled 2026-09-05, every civilian carries a weapon."
    ],
    "specialty": null,
    "originBadges": [],
@@ -17908,6 +18138,9 @@
    "templateName": "Jade Staff",
    "subtype": "Jade Staff",
    "sample": true,
+   "kit": [
+    "item.dagger"
+   ],
    "artMissing": true
   },
   {
@@ -19195,6 +19428,7 @@
    "notes": [
     "NEW UNIT ruled 2026-08-25: the school-child-solo art is its own character, separate from School Children. Stats cloned from School Children as a SOFT baseline — a sweep or ruling prices her.",
     "Levels on civilian.child rather than the class.civilian table — ruled 2026-09-03.",
+    "Armed with item.pile-of-rocks — ruled 2026-09-05, every civilian carries a weapon.",
     "Base stats +1 strength, +1 precision, +4 health — Child compensation (ruled 2026-08-25)."
    ],
    "specialty": null,
@@ -19223,6 +19457,9 @@
     "art/heroes/school-child-female/hex/l1_full.png"
    ],
    "levelTable": "civilian.child",
+   "kit": [
+    "item.pile-of-rocks"
+   ],
    "personality": [
     "cheerful"
    ]
@@ -19264,7 +19501,8 @@
    },
    "notes": [
     "NEW UNIT, ruled 2026-09-04: \"go ahead and build the 12.\" One of the twelve civilians the art chat painted on 2026-09-03 (content/art/heroes/farmhand-reed/). Art was on disk with no hero row behind it. Stats cloned as a SOFT baseline from the nearest existing civilian of the same kind; a sweep or a ruling prices this row. NO SPECIALTY IS SET — \"the specialties are the same for all of them, the specialty options for civilians right now\", so it is picked at L2 from the nine civilian specialties like any other civilian. levelArt is unset until l2..l4 are painted; only l1 exists.",
-    "Levels on civilian.farmer rather than the class.civilian table — ruled 2026-09-03."
+    "Levels on civilian.farmer rather than the class.civilian table — ruled 2026-09-03.",
+    "Armed with item.pitchfork — ruled 2026-09-05, every civilian carries a weapon."
    ],
    "originBadges": [
     "Frail"
@@ -19294,6 +19532,9 @@
     "art/heroes/farmhand-reed/hex/l1_full.png"
    ],
    "levelTable": "civilian.farmer",
+   "kit": [
+    "item.pitchfork"
+   ],
    "personality": [
     "grim"
    ]
@@ -19335,7 +19576,8 @@
    },
    "notes": [
     "NEW UNIT, ruled 2026-09-04: \"go ahead and build the 12.\" One of the twelve civilians the art chat painted on 2026-09-03 (content/art/heroes/ploughman-corbin/). Art was on disk with no hero row behind it. Stats cloned as a SOFT baseline from the nearest existing civilian of the same kind; a sweep or a ruling prices this row. NO SPECIALTY IS SET — \"the specialties are the same for all of them, the specialty options for civilians right now\", so it is picked at L2 from the nine civilian specialties like any other civilian. levelArt is unset until l2..l4 are painted; only l1 exists.",
-    "Levels on civilian.farmer rather than the class.civilian table — ruled 2026-09-03."
+    "Levels on civilian.farmer rather than the class.civilian table — ruled 2026-09-03.",
+    "Armed with item.pitchfork — ruled 2026-09-05, every civilian carries a weapon."
    ],
    "originBadges": [
     "Frail"
@@ -19365,6 +19607,9 @@
     "art/heroes/ploughman-corbin/hex/l1_full.png"
    ],
    "levelTable": "civilian.farmer",
+   "kit": [
+    "item.pitchfork"
+   ],
    "personality": [
     "grim"
    ]
@@ -19406,7 +19651,8 @@
    },
    "notes": [
     "NEW UNIT, ruled 2026-09-04: \"go ahead and build the 12.\" One of the twelve civilians the art chat painted on 2026-09-03 (content/art/heroes/old-reaper-mattick/). Art was on disk with no hero row behind it. Stats cloned as a SOFT baseline from the nearest existing civilian of the same kind; a sweep or a ruling prices this row. NO SPECIALTY IS SET — \"the specialties are the same for all of them, the specialty options for civilians right now\", so it is picked at L2 from the nine civilian specialties like any other civilian. levelArt is unset until l2..l4 are painted; only l1 exists.",
-    "Levels on civilian.farmer rather than the class.civilian table — ruled 2026-09-03."
+    "Levels on civilian.farmer rather than the class.civilian table — ruled 2026-09-03.",
+    "Armed with item.pitchfork — ruled 2026-09-05, every civilian carries a weapon."
    ],
    "originBadges": [
     "Frail"
@@ -19436,6 +19682,9 @@
     "art/heroes/old-reaper-mattick/hex/l1_full.png"
    ],
    "levelTable": "civilian.farmer",
+   "kit": [
+    "item.pitchfork"
+   ],
    "personality": [
     "grim"
    ]
@@ -19477,7 +19726,8 @@
    },
    "notes": [
     "NEW UNIT, ruled 2026-09-04: \"go ahead and build the 12.\" One of the twelve civilians the art chat painted on 2026-09-03 (content/art/heroes/apothecary-wren/). Art was on disk with no hero row behind it. Stats cloned as a SOFT baseline from the nearest existing civilian of the same kind; a sweep or a ruling prices this row. NO SPECIALTY IS SET — \"the specialties are the same for all of them, the specialty options for civilians right now\", so it is picked at L2 from the nine civilian specialties like any other civilian. levelArt is unset until l2..l4 are painted; only l1 exists.",
-    "Levels on civilian.apothecary rather than the class.civilian table — ruled 2026-09-03."
+    "Levels on civilian.apothecary rather than the class.civilian table — ruled 2026-09-03.",
+    "Armed with item.dagger — ruled 2026-09-05, every civilian carries a weapon."
    ],
    "originBadges": [
     "Frail"
@@ -19512,6 +19762,9 @@
     "art/heroes/apothecary-wren/hex/l1_full.png"
    ],
    "levelTable": "civilian.apothecary",
+   "kit": [
+    "item.dagger"
+   ],
    "personality": [
     "cheerful"
    ]
@@ -19553,7 +19806,8 @@
    },
    "notes": [
     "NEW UNIT, ruled 2026-09-04: \"go ahead and build the 12.\" One of the twelve civilians the art chat painted on 2026-09-03 (content/art/heroes/torchbearer-cass/). Art was on disk with no hero row behind it. Stats cloned as a SOFT baseline from the nearest existing civilian of the same kind; a sweep or a ruling prices this row. NO SPECIALTY IS SET — \"the specialties are the same for all of them, the specialty options for civilians right now\", so it is picked at L2 from the nine civilian specialties like any other civilian. levelArt is unset until l2..l4 are painted; only l1 exists.",
-    "Levels on civilian.militia rather than the class.civilian table — ruled 2026-09-03."
+    "Levels on civilian.militia rather than the class.civilian table — ruled 2026-09-03.",
+    "Armed with item.dagger — ruled 2026-09-05, every civilian carries a weapon."
    ],
    "originBadges": [],
    "classPowers": [],
@@ -19581,6 +19835,9 @@
     "art/heroes/torchbearer-cass/hex/l1_full.png"
    ],
    "levelTable": "civilian.militia",
+   "kit": [
+    "item.dagger"
+   ],
    "personality": [
     "grim"
    ]
@@ -19622,7 +19879,8 @@
    },
    "notes": [
     "NEW UNIT, ruled 2026-09-04: \"go ahead and build the 12.\" One of the twelve civilians the art chat painted on 2026-09-03 (content/art/heroes/porter-halloway/). Art was on disk with no hero row behind it. Stats cloned as a SOFT baseline from the nearest existing civilian of the same kind; a sweep or a ruling prices this row. NO SPECIALTY IS SET — \"the specialties are the same for all of them, the specialty options for civilians right now\", so it is picked at L2 from the nine civilian specialties like any other civilian. levelArt is unset until l2..l4 are painted; only l1 exists.",
-    "Levels on civilian.merchant rather than the class.civilian table — ruled 2026-09-03."
+    "Levels on civilian.merchant rather than the class.civilian table — ruled 2026-09-03.",
+    "Armed with item.dagger — ruled 2026-09-05, every civilian carries a weapon."
    ],
    "originBadges": [],
    "classPowers": [],
@@ -19655,6 +19913,9 @@
     "art/heroes/porter-halloway/hex/l1_full.png"
    ],
    "levelTable": "civilian.merchant",
+   "kit": [
+    "item.dagger"
+   ],
    "personality": [
     "cheerful"
    ]
@@ -19696,7 +19957,8 @@
    },
    "notes": [
     "NEW UNIT, ruled 2026-09-04: \"go ahead and build the 12.\" One of the twelve civilians the art chat painted on 2026-09-03 (content/art/heroes/militia-tam/). Art was on disk with no hero row behind it. Stats cloned as a SOFT baseline from the nearest existing civilian of the same kind; a sweep or a ruling prices this row. NO SPECIALTY IS SET — \"the specialties are the same for all of them, the specialty options for civilians right now\", so it is picked at L2 from the nine civilian specialties like any other civilian. levelArt is unset until l2..l4 are painted; only l1 exists.",
-    "Levels on civilian.militia rather than the class.civilian table — ruled 2026-09-03."
+    "Levels on civilian.militia rather than the class.civilian table — ruled 2026-09-03.",
+    "Armed with item.dagger — ruled 2026-09-05, every civilian carries a weapon."
    ],
    "originBadges": [],
    "classPowers": [],
@@ -19723,7 +19985,10 @@
     "art/heroes/militia-tam/hex/l1_256.png",
     "art/heroes/militia-tam/hex/l1_full.png"
    ],
-   "levelTable": "civilian.militia"
+   "levelTable": "civilian.militia",
+   "kit": [
+    "item.dagger"
+   ]
   },
   {
    "id": "hero.fixed.trickster-fen",
@@ -19762,7 +20027,8 @@
    },
    "notes": [
     "NEW UNIT, ruled 2026-09-04: \"go ahead and build the 12.\" One of the twelve civilians the art chat painted on 2026-09-03 (content/art/heroes/trickster-fen/). Art was on disk with no hero row behind it. Stats cloned as a SOFT baseline from the nearest existing civilian of the same kind; a sweep or a ruling prices this row. NO SPECIALTY IS SET — \"the specialties are the same for all of them, the specialty options for civilians right now\", so it is picked at L2 from the nine civilian specialties like any other civilian. levelArt is unset until l2..l4 are painted; only l1 exists.",
-    "Levels on civilian.child rather than the class.civilian table — ruled 2026-09-03."
+    "Levels on civilian.child rather than the class.civilian table — ruled 2026-09-03.",
+    "Armed with item.pile-of-rocks — ruled 2026-09-05, every civilian carries a weapon."
    ],
    "originBadges": [
     "Outcast",
@@ -19799,6 +20065,9 @@
     "art/heroes/trickster-fen/hex/l1_full.png"
    ],
    "levelTable": "civilian.child",
+   "kit": [
+    "item.pile-of-rocks"
+   ],
    "personality": [
     "brooding"
    ]
@@ -19840,7 +20109,8 @@
    },
    "notes": [
     "NEW UNIT, ruled 2026-09-04: \"go ahead and build the 12.\" One of the twelve civilians the art chat painted on 2026-09-03 (content/art/heroes/archer-mabb/). Art was on disk with no hero row behind it. Stats cloned as a SOFT baseline from the nearest existing civilian of the same kind; a sweep or a ruling prices this row. NO SPECIALTY IS SET — \"the specialties are the same for all of them, the specialty options for civilians right now\", so it is picked at L2 from the nine civilian specialties like any other civilian. levelArt is unset until l2..l4 are painted; only l1 exists.",
-    "Levels on civilian.militia rather than the class.civilian table — ruled 2026-09-03."
+    "Levels on civilian.militia rather than the class.civilian table — ruled 2026-09-03.",
+    "Armed with item.dagger — ruled 2026-09-05, every civilian carries a weapon."
    ],
    "originBadges": [],
    "classPowers": [],
@@ -19867,7 +20137,10 @@
     "art/heroes/archer-mabb/hex/l1_256.png",
     "art/heroes/archer-mabb/hex/l1_full.png"
    ],
-   "levelTable": "civilian.militia"
+   "levelTable": "civilian.militia",
+   "kit": [
+    "item.dagger"
+   ]
   },
   {
    "id": "hero.fixed.archivist-perrin",
@@ -19906,7 +20179,8 @@
    },
    "notes": [
     "NEW UNIT, ruled 2026-09-04: \"go ahead and build the 12.\" One of the twelve civilians the art chat painted on 2026-09-03 (content/art/heroes/archivist-perrin/). Art was on disk with no hero row behind it. Stats cloned as a SOFT baseline from the nearest existing civilian of the same kind; a sweep or a ruling prices this row. NO SPECIALTY IS SET — \"the specialties are the same for all of them, the specialty options for civilians right now\", so it is picked at L2 from the nine civilian specialties like any other civilian. levelArt is unset until l2..l4 are painted; only l1 exists.",
-    "Levels on civilian.scholar rather than the class.civilian table — ruled 2026-09-03."
+    "Levels on civilian.scholar rather than the class.civilian table — ruled 2026-09-03.",
+    "Armed with item.dagger — ruled 2026-09-05, every civilian carries a weapon."
    ],
    "originBadges": [
     "Frail"
@@ -19941,6 +20215,9 @@
     "art/heroes/archivist-perrin/hex/l1_full.png"
    ],
    "levelTable": "civilian.scholar",
+   "kit": [
+    "item.dagger"
+   ],
    "personality": [
     "cold"
    ]
@@ -19982,7 +20259,8 @@
    },
    "notes": [
     "NEW UNIT, ruled 2026-09-04: \"go ahead and build the 12.\" One of the twelve civilians the art chat painted on 2026-09-03 (content/art/heroes/sage-orla/). Art was on disk with no hero row behind it. Stats cloned as a SOFT baseline from the nearest existing civilian of the same kind; a sweep or a ruling prices this row. NO SPECIALTY IS SET — \"the specialties are the same for all of them, the specialty options for civilians right now\", so it is picked at L2 from the nine civilian specialties like any other civilian. levelArt is unset until l2..l4 are painted; only l1 exists.",
-    "Levels on civilian.scholar rather than the class.civilian table — ruled 2026-09-03."
+    "Levels on civilian.scholar rather than the class.civilian table — ruled 2026-09-03.",
+    "Armed with item.dagger — ruled 2026-09-05, every civilian carries a weapon."
    ],
    "originBadges": [
     "Old",
@@ -20019,6 +20297,9 @@
     "art/heroes/sage-orla/hex/l1_full.png"
    ],
    "levelTable": "civilian.scholar",
+   "kit": [
+    "item.dagger"
+   ],
    "personality": [
     "sardonic"
    ]
@@ -20060,7 +20341,8 @@
    },
    "notes": [
     "NEW UNIT, ruled 2026-09-04: \"go ahead and build the 12.\" One of the twelve civilians the art chat painted on 2026-09-03 (content/art/heroes/remembrancer-idris/). Art was on disk with no hero row behind it. Stats cloned as a SOFT baseline from the nearest existing civilian of the same kind; a sweep or a ruling prices this row. NO SPECIALTY IS SET — \"the specialties are the same for all of them, the specialty options for civilians right now\", so it is picked at L2 from the nine civilian specialties like any other civilian. levelArt is unset until l2..l4 are painted; only l1 exists.",
-    "Levels on civilian.bard rather than the class.civilian table — ruled 2026-09-03."
+    "Levels on civilian.bard rather than the class.civilian table — ruled 2026-09-03.",
+    "Armed with item.dagger — ruled 2026-09-05, every civilian carries a weapon."
    ],
    "originBadges": [],
    "classPowers": [],
@@ -20093,6 +20375,9 @@
     "art/heroes/remembrancer-idris/hex/l1_full.png"
    ],
    "levelTable": "civilian.bard",
+   "kit": [
+    "item.dagger"
+   ],
    "personality": [
     "cheerful"
    ]

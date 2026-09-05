@@ -396,5 +396,14 @@
  "heroBadge": {
   "_note": "Ruled 2026-09-04 (engine/DECISIONS.md, \"Deathbed Fighting, REVERSED\"), verbatim: \"There is a badge that all heroes start with. That is invisible on a hero called Hero. It is not on civilians unless expressly said so. Only those with the badge Hero bleed out. A civilian who goes down and doesn't have the hero badge is just dead and a corpse.\" EMPTY IS THE ANSWER TODAY — not an oversight. No civilian has been named, so every civilian that falls is dead and a corpse with no Deathbed roll and no bleed-out. Add an id here the moment one is ruled otherwise.",
   "ids": []
+ },
+ "weapons": {
+  "_note": "Ruled 2026-09-05 (Angela), verbatim: \"every civilian should have a dagger or a knife or a pitchfork or a pile of rocks if they're a child. Really, nothing is supposed to be fielded without attacks. Everybody's supposed to have punch, which I don't think has been added. And then, really, every civilian should have some kind of weapon.\" Applied to EVERY class.civilian hero that does not already carry a weapon — a rule, not a list, so a civilian authored tomorrow is armed too. A civilian that already carries one keeps it (the Lumberjack keeps his axe, the Farmer his pitchfork). The pick is by LEVEL TABLE, because the table is what already says what kind of person this is. Everything not named below takes the dagger, which is the 'or a knife' of the ruling. SOFT: nobody has priced a civilian holding a dagger against one holding rocks.",
+  "default": "item.dagger",
+  "byType": {
+   "civilian.child": "item.pile-of-rocks",
+   "civilian.farmer": "item.pitchfork"
+  },
+  "overrides": {}
  }
 }

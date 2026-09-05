@@ -489,6 +489,25 @@ for (const u of [...AUTH.units].sort((a, b) => (a.id < b.id ? -1 : 1))) {
     attackIds.push(a.id);
     unitTriggers.push(...(a.triggers || []).flatMap((t) => compileTrigger(t, id, a.id)));
   }
+  // rule.enemy-attacks, 2026-08-30: "every enemy needs its attacks clearly defined. If it does
+  // not have a melee attack, an enemy has a basic melee S+0 damage attack." Written since
+  // August, ENFORCED here from 2026-09-05 — the rule had no code behind it, and unit.iron-
+  // colossus reached the engine with attacks:[] because both its attacking moves are gaps.
+  // A floor, not a design: Strength +0, no stamina, no accuracy modifier, one enemy in melee
+  // reach. It is added ONLY when a unit would otherwise ship unable to attack at all.
+  if (!attackIds.length) {
+    // SATTACK_BY_ID is not built yet at this point in the file; the row is read straight
+    // from the assembled codex, which is where settled.json's attacks land.
+    const basic = (D.attacks || []).find((x) => x.id === 'attack.basic.melee');
+    if (!basic) gap(id, 'no attacks, and attack.basic.melee has no settled row to fall back on', 'content');
+    else {
+      authoredAttacks[basic.id] = { id: basic.id, name: basic.name, kind: 'melee',
+        damageType: basic.damageType || 'physical', bonus: basic.damage ?? 0,
+        stat: basic.stat || 'strength', reach: 1, staminaCost: basic.stamina ?? 0 };
+      attackIds.push(basic.id);
+      gap(id, 'had no attack of its own — given attack.basic.melee by rule.enemy-attacks', 'content: authored attacks are owed');
+    }
+  }
   const mostlyRanged = rangedN > 0 && rangedN >= meleeN;
   authoredEnemies.push({
     typeId: id, name: u.name, side: 'enemy',
@@ -938,6 +957,25 @@ for (const id of CIVILIANS) {
       civTriggers.push(...settledAttackExtras(a, id));
     }
   }
+  // PUNCH. Ruled 2026-09-05: "every civilian should have punch like every other
+  // player-controlled unit... nothing is supposed to be fielded without attacks."
+  // The civilian lane was the one lane that never honoured universalToAllUnits — the alpha
+  // and party lanes have since 2026-08-27 — and it also shipped `attacks: []` outright, so
+  // all fourteen fielded civilians reached the engine unable to attack at all. The KIT's
+  // attacks still arrive at fielding through defaultItems (seam.items-per-unit); Punch is the
+  // unit's own and belongs on the row, exactly as it does for a hero.
+  const civOwnAttackIds = [];
+  for (const a of [...SATTACK_BY_ID.values()].filter((x) => x.universalToAllUnits)) {
+    if (attackIds.includes(a.id)) continue;
+    authoredAttacks[a.id] = {
+      id: a.id, name: a.name, kind: 'melee', damageType: a.damageType || 'physical',
+      bonus: a.damage ?? 0, stat: a.stat || 'strength', reach: 1, staminaCost: a.stamina ?? 0,
+      ...(a.accuracy ? { accuracy: a.accuracy } : {}),
+    };
+    attackIds.push(a.id);
+    civOwnAttackIds.push(a.id);
+    civTriggers.push(...settledAttackExtras(a, id));
+  }
   prologueParty.push({
     typeId: id, name: h.name, side: 'hero',
     maxHp: p2.health, armor: p2.armor ?? 0, resist: p2.resist ?? 0,
@@ -950,7 +988,7 @@ for (const id of CIVILIANS) {
     // is stale and the ruling says exactly-like-heroes.
     maxStamina: 5, staminaRegen: 1,
     ai: anyRanged ? 'ranged-kite' : 'melee-aggressive',
-    attacks: [], abilities: [],
+    attacks: civOwnAttackIds, abilities: [],
     // "Beasts and Civilians get neither" half-step (Codex 2026-08-21).
     moves: ['power.move'],
     tags: ['hero', 'civilian', ...(h.class ? [h.class] : [])],

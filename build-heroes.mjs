@@ -490,6 +490,32 @@ for(const h of heroes){
     if(sb.startOfBattleDraw) h.startOfBattleDraw=sb.startOfBattleDraw;
     h.notes.push('Stat block dictated 2026-08-25: '+sb.why);
   }
+  // EVERY CIVILIAN CARRIES A WEAPON.
+  // RUNS AFTER statBlocks: that loop is where h.kit is set (`if(sb.kit) h.kit=sb.kit`), so a block
+  // placed before it sees every civilian as unarmed and arms the five that already were. Ruled 2026-09-05: "every civilian should have a dagger or
+  // a knife or a pitchfork or a pile of rocks if they're a child... really, every civilian
+  // should have some kind of weapon." Applied to every class.civilian hero that does not
+  // already carry one, so a new civilian is armed the day it is authored rather than the day
+  // someone notices. An existing weapon is never replaced — the Lumberjack keeps his axe.
+  {
+    const W=CR.weapons||{};
+    const ITEMS=JSON.parse(fs.readFileSync('gen/settled-items.json','utf8'));
+    const rows=Array.isArray(ITEMS)?ITEMS:(ITEMS.items||Object.values(ITEMS));
+    const isWeapon=new Set(rows.filter(x=>x&&x.itemClass==='weapon').map(x=>x.id));
+    for(const w of [W.default,...Object.values(W.byType||{}),...Object.values(W.overrides||{})].filter(Boolean))
+      if(!isWeapon.has(w)) problems.push('civilian-rulings weapons: '+w+' is not a weapon in gen/settled-items.json');
+    let armed=0, already=0;
+    for(const h of heroes){
+      if(h.class!=='class.civilian') continue;
+      if((h.kit||[]).some(i=>isWeapon.has(i))){ already++; continue; }
+      const pick=(W.overrides||{})[h.id] || (W.byType||{})[h.levelTable] || W.default;
+      if(!pick){ problems.push('civilian-rulings weapons: nothing to arm '+h.id+' with (no default)'); continue; }
+      h.kit=[...(h.kit||[]), pick];
+      h.notes.push('Armed with '+pick+' — ruled 2026-09-05, every civilian carries a weapon.');
+      armed++;
+    }
+    console.log('civilian weapons: '+armed+' armed, '+already+' already carried one');
+  }
   for(const [id,a] of Object.entries(CR.art||{})){
     if(id.startsWith('_'))continue;
     const h=heroes.find(x=>x.id===id);

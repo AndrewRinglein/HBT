@@ -86,6 +86,22 @@ else {
     const n = (P.heroes || []).length + (P.enemies || []).length;
     if (!badUnits) ok(`${n} units written, every required field present`);
 
+    // NOTHING IS FIELDED WITHOUT ATTACKS. Ruled 2026-09-05: "Really, nothing is supposed to be
+    // fielded without attacks. Everybody's supposed to have punch." On the day this was written
+    // fourteen civilians and the Iron Colossus shipped with attacks:[] — fielded, on the board,
+    // unable to do anything. Checked against the ARTEFACT, over every lane, because the reason
+    // it went unnoticed is that each lane looked fine on its own.
+    // An ABILITY counts: a unit whose whole offence is a power can still act.
+    let mute = 0;
+    for (const g of ['heroes', 'enemies', 'authoredEnemies', 'prologueParty', 'alphaTeam'])
+      for (const u of P[g] || []) {
+        if ((u.attacks || []).length || (u.abilities || []).length) continue;
+        bad(`${u.typeId} (${g}) is fielded with no attack and no ability — it cannot act`); mute++;
+      }
+    for (const u of (P.test && P.test.units) || [])
+      if (!(u.attacks || []).length && !(u.abilities || []).length) { bad(`${u.typeId} (test) is fielded with no attack and no ability`); mute++; }
+    if (!mute) ok('every unit in the pack can attack');
+
     // Stamp it, so the engine session can tell whether the pack matches this content.
     const stamp = {
       generated: new Date().toISOString().slice(0, 10),
