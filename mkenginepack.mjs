@@ -1443,6 +1443,7 @@ const testAttackRows = testAttacks();
 const testAbilityRows = testAbilities();
 const test = { note: 'GENERATED from content/test/ — the test receptacle. Never ships. Wipe the folder to remove every row here.', units: testUnits(testAttackRows, testAbilityRows), attacks: testAttackRows, abilities: testAbilityRows, statuses: testStatuses(), badges: testBadges() };
 
+const FORMAT_OF = { '8x8': 'duel', '16x8': 'dungeon', '16x16': 'standard', '24x24': 'horde' };   // hex.ts FORMATS; used by both the encounter compiler and the map compiler
 // ── ENCOUNTERS (encounter.runner, 2026-09-03; P11 approved as written) ─────────
 // Every prologue and scripted row of gen/encounters.json becomes an
 // EncounterDef. What the engine cannot honour is a named gap on the row —
@@ -1511,9 +1512,35 @@ function compileEncounter(row) {
   const powerSources = (row.powerSources || []).filter((ps) => ps.kind === 'external' && typeof ps.value === 'number').map((ps) => ({ kind: 'external', value: ps.value }));
   for (const ps of row.powerSources || []) if (ps.kind !== 'external') gaps.push(`powerSource ${ps.kind}: ${JSON.stringify(ps).slice(0, 60)} — only external ships on the row`);
   // capability.ground-layers (2026-09-03): the band and the setup paint ship as data
-  const band = row.band ? { layer: row.band.layer, fromPhase: row.band.fromPhase, startRow: row.band.startRow, direction: row.band.direction, ...(row.band.spare ? { spare: row.band.spare } : {}) } : undefined;
+  // The band walks an AXIS. Re-authored 2026-09-04 for heroes-west/enemies-east: the Kiln's
+  // band lit row 0 and walked south; it now lights column 15 and walks west. `axis` and
+  // `startCol` ship in place of `startRow`. A row that still carries startRow ships as it did.
+  const band = row.band ? { layer: row.band.layer, fromPhase: row.band.fromPhase, direction: row.band.direction,
+    ...(row.band.axis ? { axis: row.band.axis } : {}),
+    ...(row.band.startCol !== undefined ? { startCol: row.band.startCol } : {}),
+    ...(row.band.startRow !== undefined ? { startRow: row.band.startRow } : {}),
+    ...(row.band.spare ? { spare: row.band.spare } : {}) } : undefined;
+  if (row.band && row.band.axis === 'col') gaps.push('band walks the COLUMN axis (axis:col, startCol) — the engine must read it; a reader still expecting startRow gets undefined');
   const paint = row.paint ? row.paint.map((p) => ({ layer: p.layer, hexes: p.hexes })) : undefined;
+  // The board ships (PROVING-PLAN Stage A3, 2026-09-04). Every row names it; a row that does
+  // not is a hard gap, because a placement means nothing without the board it is placed on.
+  let board;
+  if (row.board && typeof row.board.width === 'number' && typeof row.board.height === 'number') {
+    board = { width: row.board.width, height: row.board.height };
+    const fmt = FORMAT_OF[`${board.width}x${board.height}`];
+    if (!fmt) gaps.push(`board ${board.width}x${board.height} is not one of the four ruled formats`);
+    // Every placement must be ON the board. Out of bounds is not a rounding error; it is a unit
+    // that never arrives, and it is exactly what a re-authored axis gets wrong.
+    const oob = [];
+    const walk = (o) => { if (!o || typeof o !== 'object') return;
+      if (Array.isArray(o)) return o.forEach(walk);
+      if (typeof o.col === 'number' && typeof o.row === 'number' && (o.col < 0 || o.col >= board.width || o.row < 0 || o.row >= board.height)) oob.push(`${o.col},${o.row}`);
+      for (const k of Object.keys(o)) if (k !== 'col' && k !== 'row') walk(o[k]); };
+    walk(row.setup); walk(row.schedule); walk(row.heroZone);
+    if (oob.length) gaps.push(`${oob.length} placement(s) off a ${board.width}x${board.height} board: ${oob.slice(0, 6).join(' · ')}`);
+  } else gaps.push('no board — a placement means nothing without the board it is placed on');
   return { id: row.id, name: row.name, ...(typeof row.map === 'string' && row.map !== 'none' ? { mapId: row.map } : {}),
+    ...(board ? { board } : {}),
     setup, schedule, ...(loseAfter ? { loseAfter } : {}), ...(win ? { win } : {}), ...(heroZone ? { heroZone } : {}),
     ...(powerSources.length ? { powerSources } : {}), ...(band ? { band } : {}), ...(paint ? { paint } : {}),
     ...(row.condition ? { condition: row.condition } : {}),
@@ -1530,7 +1557,6 @@ for (const row of [...(ENC.prologue || []), ...(ENC.scripted || []), ...(ENC.aut
 // `deploy` rides only when the map differs from the default (heroes WEST,
 // enemies EAST); assemble.mjs refuses a map that restates the default, because
 // a default everything declares is not a default.
-const FORMAT_OF = { '8x8': 'duel', '16x8': 'dungeon', '16x16': 'standard', '24x24': 'horde' };
 const maps = {};
 for (const m of (D.maps || [])) {
   const width = m.rows[0].length, height = m.rows.length;

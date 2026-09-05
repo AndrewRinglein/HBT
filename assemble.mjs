@@ -199,6 +199,35 @@ try{
   console.log('bestiary: '+authored.length+' authored + '+kept.length+' placeholders ('+(ported.length-kept.length)+' superseded)');
 }catch(e){ prob.push('enemies-authored.json failed to load: '+e.message); out.bestiary=null; }
 try{ out.encounters=R('encounters.json'); }catch{ out.encounters=null; }
+// ---- encounters: the board, and every placement on it (PROVING-PLAN Stage A3, 2026-09-04).
+// A placement means nothing without the board it is placed on, and an off-board placement is
+// not a rounding error — it is a unit that never arrives. This is exactly what a re-authored
+// axis gets wrong, so it is checked here rather than discovered in a sweep.
+if(out.encounters){
+  const FORMATS=new Set(['8x8','16x8','16x16','24x24']);
+  const byMap=new Map((out.maps||[]).map(m=>[m.id,{width:m.rows[0].length,height:m.rows.length}]));
+  const rows=[...(out.encounters.prologue||[]),...(out.encounters.scripted||[]),...(out.encounters.authored||[])];
+  for(const r of rows){
+    const b=r.board;
+    if(!b||typeof b.width!=='number'||typeof b.height!=='number'){ prob.push(`encounters ${r.id}: no board {width,height}`); continue; }
+    if(!FORMATS.has(b.width+'x'+b.height)) prob.push(`encounters ${r.id}: board ${b.width}x${b.height} is not one of the four ruled formats`);
+    if(typeof r.map==='string'&&r.map!=='none'&&byMap.has(r.map)){
+      const m=byMap.get(r.map);
+      if(m.width!==b.width||m.height!==b.height) prob.push(`encounters ${r.id}: board ${b.width}x${b.height} but map ${r.map} is ${m.width}x${m.height}`);
+    } else if(typeof r.map==='string'&&r.map!=='none'&&!Array.isArray(r.map)) prob.push(`encounters ${r.id}: names map ${r.map}, which is not a map row`);
+    const oob=[];
+    const walk=(o)=>{ if(!o||typeof o!=='object') return;
+      if(Array.isArray(o)) return o.forEach(walk);
+      if(typeof o.col==='number'&&typeof o.row==='number'&&(o.col<0||o.col>=b.width||o.row<0||o.row>=b.height)) oob.push(o.col+','+o.row);
+      for(const k of Object.keys(o)) if(k!=='col'&&k!=='row') walk(o[k]); };
+    walk(r.setup); walk(r.schedule); walk(r.heroZone);
+    if(oob.length) prob.push(`encounters ${r.id}: ${oob.length} placement(s) off a ${b.width}x${b.height} board — ${oob.slice(0,6).join(' · ')}`);
+    for(const p of (r.paint||[])) for(const id of (p.hexes||[]))
+      if(id<0||id>=b.width*b.height){ prob.push(`encounters ${r.id}: paint hex ${id} is off a ${b.width}x${b.height} board`); break; }
+    if(r.band&&r.band.axis==='col'&&(r.band.startCol===undefined||r.band.startRow!==undefined))
+      prob.push(`encounters ${r.id}: band axis is col — it must carry startCol and must NOT carry startRow`);
+  }
+}
 // Enemy spells CUT 2026-08-22 - the new game does not want them. They were also hollow: all
 // 193 had an empty abilities array because their effect lived in triggers.onEnter.
 fs.writeFileSync('hbt-content.json', JSON.stringify(out));

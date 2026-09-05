@@ -357,6 +357,29 @@ if(D.bestiaryTest){ const B=D.bestiaryTest;
       add('gear-grants-a-movement-power-to-anyone',it.name,g.join(' ')+' — unrestricted, so a Mage or Priest can buy an escape the class ruling denies it'); }
 }
 
+// R27 THE ENCOUNTER BOARDS. Added 2026-09-04 with Stage A3. The rotation to heroes-west /
+// enemies-east is the kind of change that looks finished and is not: the hard checks live in
+// assemble (a placement off the board stops the build), and what is reported here is the
+// DESIGN question the numbers cannot answer — did the sides actually end up on their edges.
+if(D.encounters){
+  const rows=[...(D.encounters.prologue||[]),...(D.encounters.scripted||[]),...(D.encounters.authored||[])];
+  for(const r of rows){
+    const b=r.board; if(!b) { add('encounter-has-no-board',r.name||r.id,''); continue; }
+    // where does each side actually sit? enemies should skew EAST, the hero zone WEST.
+    const cols=[]; const w=(o)=>{ if(!o||typeof o!=='object') return; if(Array.isArray(o)) return o.forEach(w);
+      if(o.unit&&(o.at||o.hexes)) for(const p of (o.hexes||[o.at])) if(p&&typeof p.col==='number') cols.push(p.col);
+      for(const k of Object.keys(o)) w(o[k]); };
+    w(r.setup); w(r.schedule);
+    if(cols.length){
+      const mean=cols.reduce((s,v)=>s+v,0)/cols.length;
+      if(mean < (b.width-1)/2 - 1) add('encounter-units-skew-west',r.name||r.id,`mean col ${mean.toFixed(1)} on a ${b.width}-wide board — enemies deploy EAST; check this row was re-authored`);
+    }
+    const hz=r.heroZone&&r.heroZone.at&&(r.heroZone.at.near||r.heroZone.at);
+    if(hz&&typeof hz.col==='number'&&hz.col>(b.width-1)/2) add('hero-zone-is-not-west',r.name||r.id,`hero zone at col ${hz.col} on a ${b.width}-wide board`);
+    if(r.band&&r.band.axis!=='col') add('band-still-walks-rows',r.name||r.id,'the board turned ninety degrees; the band did not');
+  }
+}
+
 // R26 THE MAPS. Added 2026-09-04 with content.maps-as-rows. The board is the rows; a map
 // that is not one of the four ruled formats, is not rectangular, uses a glyph outside MAP-01's
 // legend, or restates the default deploy, is a finding — not a thing anyone notices at runtime.
