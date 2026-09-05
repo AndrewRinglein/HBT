@@ -9925,3 +9925,43 @@ effect of encounter.kiln — 25 paired battles per map, WITH vs WITHOUT
   test.map.horde-24: heroWins 25->25 (+0)  meanTurns 5.8->5.8
 NO MEASURABLE EFFECT at this sample size — consequence clause caught state changes, but outcomes did not move. Consider a sweep with more replicates before drawing balance conclusions.
 ```
+
+## fix.aoo-pays-stamina — LANDED `93e3195` **NEEDS REVIEW**
+2026-09-05 06:02
+
+  PASS  dependencies landed
+  WARN  not already decided — 3 candidate ruling(s) — READ BEFORE ASKING: ../STATE.md:21 · ../STATE.md:18
+  PASS  typecheck
+  PASS  full test suite
+  PASS  gate 1 — the id appears in a real battle — attack.test-warrior.axe: 25 log lines, 25 fired, 11 changed state
+  PASS  brought its own tests — test/zone-of-control.test.ts, test/aoo-pays-stamina.test.ts
+  WARN  existing tests untouched — DELETED LINES in test/zone-of-control.test.ts (-1) — will land FLAGGED for review
+  PASS  control battles unchanged
+  PASS  content has a published source — 26 ids without a published source (16 awaiting publication from earlier items — see audit)
+  PASS  hardcode scan — core knows mechanisms, never names
+  PASS  generalizes — the second instance costs zero engine code — attack.test-warrior.axe live · attack.test-ram.slam live · attack.test-ram.once live
+  PASS  naming — new content ids use declared kinds
+  PASS  naming — no banned words invented
+  PASS  kill switch — the tests fail without the content — tests fail without attack.test-warrior.axe — they genuinely test it
+
+<details><summary>Existing tests were edited — review this diff</summary>
+
+```diff
+diff --git a/test/zone-of-control.test.ts b/test/zone-of-control.test.ts
+index 42d4a1e..a343f25 100644
+--- a/test/zone-of-control.test.ts
++++ b/test/zone-of-control.test.ts
+@@ -94,5 +94,8 @@ describe('zone of control', () => {
+ 
+ describe('attack of opportunity', () => {
+-  it('leaving a hex inside a zombie\'s ZoC provokes ONE free swing, through performAttack, costing the zombie nothing', () => {
++  // Title only, 2026-09-04 (fix.aoo-pays-stamina): the swing is not "free" any
++  // more — it is paid like any attack. A zombie has no stamina bar, so for THIS
++  // holder the cost is 0 and every assertion below stands unchanged.
++  it('leaving a hex inside a zombie\'s ZoC provokes ONE swing, through performAttack, and a zombie (no stamina bar) pays 0 for it', () => {
+     const ctx = createCustomBattle([{ type: 'test-warrior', hex: hexId(5, 5) }], [{ type: 'test-zombie', hex: hexId(5, 6) }])
+     const w = ctx.state.units[0]!, z = ctx.state.units[1]!
+```
+</details>
+
+IRON GAUNTLET: NOT PASSED — 2 FLAG(S) WARNED

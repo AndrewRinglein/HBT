@@ -2758,5 +2758,34 @@
   "status": "done-needs-review",
   "sha": "33847f6",
   "gauntlet": "not passed — 2 flag(s) warned; 1 exemption(s) taken"
+ },
+ {
+  "id": "fix.aoo-pays-stamina",
+  "kind": "fix",
+  "shape": "rule",
+  "needs": [
+   "fix.zoc-threat-not-stop",
+   "refactor.one-action-type"
+  ],
+  "ruling": "DECISIONS.md 2026-08-20 — The attack of opportunity, final form; COMBAT-DESIGN.md §Space (ruled 2026-08-20)",
+  "spec": "FINDING 40 (log-invariant audit, 2026-09-04). Angela 2026-08-20: \"The attacker chooses one of their attacks. They do pay stamina for it. It could have a cooldown, and if it was on cooldown, they can't use it.\" movement.ts attackOfOpportunity forced the holder's stamina up to the cost, ran performAttack (which emits stamina.spent), then wrote the old stamina and primaryUsed back by hand — the log said one thing, the state another (Law 3), and an exhausted holder swung anyway; a cooldown or use spent by the swing was never restored either. Now: canAttack/performAttack/spendAction take a mode, reaction = every gate but the primary slot (the swing happens outside the holder's Activation; \"one enemy can make multiple attacks of opportunity per round\"); the holder chooses among its LEGAL melee attacks, cheapest first; the one spend pays stamina, cooldown and uses; nothing is written back.",
+  "expect": "a hero holder's stamina after the swing equals the log's; a holder that cannot afford any melee attack skips with reason not legal and emits no stamina.spent; a holder that already used its primary still reacts and its slot is unchanged; a cooldown set by the reaction blocks the next; a use spent by the reaction is spent; an enemy holder pays 0",
+  "changesBaseline": false,
+  "probeIds": [
+   "attack.test-warrior.axe"
+  ],
+  "variants": [
+   "attack.test-warrior.axe",
+   "attack.test-ram.slam",
+   "attack.test-ram.once"
+  ],
+  "tests": [
+   "test/aoo-pays-stamina.test.ts"
+  ],
+  "note": "Closes FINDING 40. NEUTRAL on the eleven control maps, verified by the gate (byte-identical): every holder there has a 0-cost melee (Punch, claws), so the cheapest legal attack is the same attack and spendStamina(0) emits nothing. The lie was visible where a holder has no 0-cost melee — the audit's Spirit Snake in showcase.beasts — and that fielding is not a control map. The zone-of-control test title \"ONE free swing\" reworded (assertions unchanged).",
+  "status": "done-needs-review",
+  "attempts": 1,
+  "sha": "93e3195",
+  "gauntlet": "not passed — 2 flag(s) warned"
  }
 ]

@@ -225,7 +225,17 @@ export function attackDef(ctx: Ctx, attackId: string): AttackDef {
 }
 
 /** Can this attack be made right now? The one legality answer (Law 2). */
-export function canAttack(ctx: Ctx, attackerId: number, targetId: number, attackId: string): boolean {
+/**
+ * `mode` — fix.aoo-pays-stamina (2026-09-04): `'reaction'` is the attack of
+ * opportunity, made outside the attacker's Activation. The primary slot is not
+ * consulted (a unit that has acted this Turn still reacts, and may react more
+ * than once — COMBAT-DESIGN "one enemy can make multiple attacks of opportunity
+ * per round"); every other gate — stamina, cooldown, uses, reach, sight — is the
+ * same one, because the ruling says legal "means what it always means".
+ */
+export type AttackMode = 'primary' | 'reaction'
+
+export function canAttack(ctx: Ctx, attackerId: number, targetId: number, attackId: string, mode: AttackMode = 'primary'): boolean {
   const at = unit(ctx, attackerId)
   const tg = unit(ctx, targetId)
   const a = ctx.actions[attackId]
@@ -238,7 +248,7 @@ export function canAttack(ctx: Ctx, attackerId: number, targetId: number, attack
   if (at.side === tg.side) return false
   // capability.vision (2026-09-03): you cannot target what you cannot see (SWITCHES.md targetUnseen)
   if (!ctx.cfg.switches.targetUnseen && !canSee(ctx, at, tg)) return false
-  if (at.primaryUsed && !a.free) return false
+  if (mode === 'primary' && at.primaryUsed && !a.free) return false
   // refactor.one-action-type: THE ONE LIMITS CHECK — granted, stamina, cooldown/warmup, uses
   if (!actionReady(ctx, at, a)) return false
   const d = ctx.geo.distance(at.hex, tg.hex)
@@ -338,10 +348,10 @@ function critChanceOf(ctx: Ctx, attacker: Unit, target: Unit, finalAcc: number, 
 }
 
 /** One Hit. Damage resolves completely; triggers would fire after (none yet). */
-export function performAttack(ctx: Ctx, attackerId: number, targetId: number, attackId: string): AttackResult {
+export function performAttack(ctx: Ctx, attackerId: number, targetId: number, attackId: string, mode: AttackMode = 'primary'): AttackResult {
   const a0 = attackDef(ctx, attackId)
   const hits = Math.max(1, a0.attack.hits ?? 1)
-  if (hits === 1) return performHit(ctx, attackerId, targetId, attackId, 1, 1)
+  if (hits === 1) return performHit(ctx, attackerId, targetId, attackId, 1, 1, mode)
   // attack.multihit (2026-09-03): each hit runs the whole cycle — damage,
   // triggers, settle — before the next; no retargeting; cancelled the moment
   // the target stops standing. The FIRST hit pays the stamina and the primary.
@@ -351,7 +361,7 @@ export function performAttack(ctx: Ctx, attackerId: number, targetId: number, at
     const tg = unit(ctx, targetId)
     if (h > 1 && tg.lifeState !== 'standing') { emit(ctx, 'attack.cancelled', attackId, { actor: attackerId, target: targetId, hit: h, of: hits, reason: 'target fell' }); break }
     if (h > 1 && unit(ctx, attackerId).lifeState !== 'standing') break
-    last = performHit(ctx, attackerId, targetId, attackId, h, hits)
+    last = performHit(ctx, attackerId, targetId, attackId, h, hits, mode)
     damage += last.damage
     settle(ctx, attackId)
   }
@@ -359,13 +369,13 @@ export function performAttack(ctx: Ctx, attackerId: number, targetId: number, at
 }
 
 /** One hit of an attack — the whole of performAttack before multihit. `hit`/`of` name the swing in the log. */
-function performHit(ctx: Ctx, attackerId: number, targetId: number, attackId: string, hitNo: number, of: number): AttackResult {
+function performHit(ctx: Ctx, attackerId: number, targetId: number, attackId: string, hitNo: number, of: number, mode: AttackMode): AttackResult {
   const at = unit(ctx, attackerId)
   const tg = unit(ctx, targetId)
   const a = attackDef(ctx, attackId)
   // the first hit is the legal one; later hits of the same swing skip the
   // primary/stamina gates (already paid) but still need a standing target in reach
-  if (hitNo === 1 && !canAttack(ctx, attackerId, targetId, attackId)) {
+  if (hitNo === 1 && !canAttack(ctx, attackerId, targetId, attackId, mode)) {
     throw new Error(`illegal attack: ${at.name} -> ${tg.name} with ${attackId}`)
   }
   if (hitNo > 1 && (tg.lifeState !== 'standing' || ctx.geo.distance(at.hex, tg.hex) > reachOf(ctx, at, a))) {
@@ -377,7 +387,7 @@ function performHit(ctx: Ctx, attackerId: number, targetId: number, attackId: st
   const pv = preview(ctx, attackerId, targetId, attackId)
 
   // refactor.one-action-type: THE ONE SPEND — stamina, the primary, the cooldown, a use
-  if (hitNo === 1) spendAction(ctx, attackerId, a, 'primary')
+  if (hitNo === 1) spendAction(ctx, attackerId, a, mode)
 
   // Area attacks name every struck unit on the declaration, so a renderer can
   // sweep the whole shape from the one event.

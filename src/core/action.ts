@@ -100,10 +100,14 @@ export function actionReady(ctx: Ctx, u: Unit, a: ActionDef): boolean {
  * wrote turn + N, one Turn short — a cooldown-1 power was usable the very
  * next Turn. One function now, one meaning.
  */
-export function spendAction(ctx: Ctx, unitId: number, a: ActionDef, slot: 'movement' | 'primary'): void {
+export function spendAction(ctx: Ctx, unitId: number, a: ActionDef, slot: 'movement' | 'primary' | 'reaction'): void {
   const u = ctx.state.units[unitId]!
   spendStamina(ctx, unitId, staminaCostOf(u, a), a.id)
-  if (!a.free) { if (slot === 'movement') markMoveUsed(ctx, unitId); else markPrimaryUsed(ctx, unitId) }
+  // fix.aoo-pays-stamina (2026-09-04, FINDING 40): a REACTION — the attack of
+  // opportunity — happens outside the actor's Activation, so no slot is marked;
+  // stamina, cooldown and uses are paid exactly as for any other use (ruled
+  // 2026-08-20: "They do pay stamina for it. It could have a cooldown").
+  if (!a.free && slot !== 'reaction') { if (slot === 'movement') markMoveUsed(ctx, unitId); else markPrimaryUsed(ctx, unitId) }
   if (a.cooldown) {
     const readyAgain = ctx.state.turn + a.cooldown + 1
     u.cooldowns[a.id] = readyAgain

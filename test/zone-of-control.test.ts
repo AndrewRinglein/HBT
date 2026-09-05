@@ -93,7 +93,10 @@ describe('zone of control', () => {
 })
 
 describe('attack of opportunity', () => {
-  it('leaving a hex inside a zombie\'s ZoC provokes ONE free swing, through performAttack, costing the zombie nothing', () => {
+  // Title only, 2026-09-04 (fix.aoo-pays-stamina): the swing is not "free" any
+  // more — it is paid like any attack. A zombie has no stamina bar, so for THIS
+  // holder the cost is 0 and every assertion below stands unchanged.
+  it('leaving a hex inside a zombie\'s ZoC provokes ONE swing, through performAttack, and a zombie (no stamina bar) pays 0 for it', () => {
     const ctx = createCustomBattle([{ type: 'test-warrior', hex: hexId(5, 5) }], [{ type: 'test-zombie', hex: hexId(5, 6) }])
     const w = ctx.state.units[0]!, z = ctx.state.units[1]!
     z.mods.push({ stat: 'accuracy', op: 'add', value: 100, source: 'test', scope: 'unit' })

@@ -141,9 +141,10 @@ export function executeMove(ctx: Ctx, unitId: number, path: HexId[], power: Move
     const cost = stepCost(ctx, hex)
     if (u.movePointsLeft < cost) break
     // 2. attacks of opportunity — movement.attack-of-opportunity (2026-09-03):
-    //    leaving a hex inside an enemy's ZoC provokes ONE free attack from
-    //    that enemy, its cheapest melee attack, through performAttack; once
-    //    per enemy per activation; it costs the attacker nothing. The AI is
+    //    leaving a hex inside an enemy's ZoC provokes ONE attack from that
+    //    enemy, its cheapest LEGAL melee attack, through performAttack; once
+    //    per enemy per activation; stamina and cooldown paid as for any attack
+    //    (fix.aoo-pays-stamina, 2026-09-04), the primary slot untouched. The AI is
     //    blind to it by ruling (Angela 2026-08-13) and walks into these.
     //    fix.zoc-threat-not-stop (2026-09-04): "Zone of control is only a
     //    threat. If you do not stop moving, you are going to get whacked" — a
@@ -200,28 +201,35 @@ export function zocHoldersAt(ctx: Ctx, u: Unit, hex: HexId): Unit[] {
 }
 
 /**
- * The free swing — movement.attack-of-opportunity. The holder's cheapest
- * melee attack (lowest stamina cost, ties to declared order), resolved through
- * THE attack function with the primary-action and stamina gates lifted for
- * this one swing (it costs the attacker nothing), then settle. Skipped, with
- * a line, when the holder has no melee attack it can legally make.
+ * The provoked swing — movement.attack-of-opportunity. The holder's cheapest
+ * LEGAL melee attack (lowest stamina cost, ties to declared order), resolved
+ * through THE attack function as a reaction — the primary slot is not
+ * consulted, everything else is paid as normal (fix.aoo-pays-stamina,
+ * 2026-09-04) — then settle. Skipped, with a line, when the holder has no
+ * melee attack it can legally make.
  * Returns whether the swing HIT — the mover's movement ends on a hit
  * (fix.zoc-threat-not-stop, 2026-09-04) and on nothing else.
  */
 export function attackOfOpportunity(ctx: Ctx, holderId: number, moverId: number): boolean {
   const h = unit(ctx, holderId)
+  // fix.aoo-pays-stamina (2026-09-04, FINDING 40). Ruled 2026-08-20 (DECISIONS
+  // "The attack of opportunity, final form"): "The attacker chooses one of
+  // their attacks. They do pay stamina for it. It could have a cooldown, and if
+  // it was on cooldown, they can't use it." This function used to force the
+  // holder's stamina up to the cost, run THE attack function — which emitted
+  // stamina.spent — and then write the old stamina back by hand: the log said
+  // one thing and the state another (Law 3), and an exhausted holder swung
+  // anyway. Now the choice is made among the LEGAL attacks as a reaction
+  // (canAttack mode 'reaction': every gate but the primary slot), the spend is
+  // the one spend, and nothing is written back. The AI policy for "chooses" is
+  // unchanged: the cheapest melee that is legal, ties to declared order.
   const melee = attacksOf(ctx, h).filter((a) => a.attack.kind === 'melee' && !a.area)
-    .sort((a, b) => a.staminaCost - b.staminaCost)[0]
-  if (!melee) { emit(ctx, 'aoo.skipped', 'movement.aoo', { actor: holderId, target: moverId, reason: 'no melee attack' }); return false }
-  const primary = h.primaryUsed, stamina = h.stamina
-  h.primaryUsed = false
-  h.stamina = Math.max(h.stamina, melee.staminaCost)
-  const legal = canAttack(ctx, holderId, moverId, melee.id) && ctx.state.turn >= (h.cooldowns[melee.id] ?? 0)
-  if (!legal) { h.primaryUsed = primary; h.stamina = stamina; emit(ctx, 'aoo.skipped', 'movement.aoo', { actor: holderId, target: moverId, reason: 'not legal' }); return false }
-  emit(ctx, 'aoo.provoked', 'movement.aoo', { actor: holderId, target: moverId, attackId: melee.id })
-  const result = performAttack(ctx, holderId, moverId, melee.id)
-  h.primaryUsed = primary
-  h.stamina = stamina   // costs the attacker nothing
+  if (melee.length === 0) { emit(ctx, 'aoo.skipped', 'movement.aoo', { actor: holderId, target: moverId, reason: 'no melee attack' }); return false }
+  const legal = melee.filter((a) => canAttack(ctx, holderId, moverId, a.id, 'reaction'))
+    .sort((a, b) => a.staminaCost - b.staminaCost || melee.indexOf(a) - melee.indexOf(b))[0]
+  if (!legal) { emit(ctx, 'aoo.skipped', 'movement.aoo', { actor: holderId, target: moverId, reason: 'not legal' }); return false }
+  emit(ctx, 'aoo.provoked', 'movement.aoo', { actor: holderId, target: moverId, attackId: legal.id })
+  const result = performAttack(ctx, holderId, moverId, legal.id, 'reaction')
   settle(ctx, 'movement.aoo')
   return result.hit
 }
