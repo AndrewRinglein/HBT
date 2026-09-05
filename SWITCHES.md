@@ -428,3 +428,14 @@ mirror sweep (20 seeds, four zombies each way, `showcase.mirror-zombies`) came
 out 8–12 AGAINST the side with initiative, which says the side-keyed rules
 weigh more than the first move — the Proving's mirror plans should say which
 of these they are measuring.
+
+## maxHpGainFillsBar — does a max-HP gain mid-battle raise the bar with the cap?
+Added 2026-09-04 (FINDINGS 37, the horde's `capped`). `gainMaxHp` raises `hp`
+by the same amount — written for Fortify's "+3 Health for the rest of the
+Battle", where the gain is meant to be felt now. badge.afflictions routes a
+badge's `maxHp` through the same function, so a zombie's Rotting Flesh (+8)
+heals the hero it just clawed by 8 on the hit that afflicted him. Default
+**true** (as built). False: the cap rises, the bar does not — an affliction is
+room, not health. Not yet a Config switch; the function is the one place to
+put it. A sweep on `test.map.horde-24` at its format's 24 bodies (gate 5 plays
+it at 8 — FINDINGS 37) answers what the fill costs the horde.
