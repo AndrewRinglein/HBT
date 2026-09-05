@@ -9542,3 +9542,46 @@ effect of trigger.zombie.afflict-rotting-flesh — 25 paired battles per map, WI
   test.map.horde-24: heroWins 25->25 (+0)  meanTurns 5.9->5.9
 MEASURABLE
 ```
+
+## proving.side-override — LANDED `2dd95c8` **NEEDS REVIEW**
+2026-09-05 04:58
+
+  PASS  dependencies landed
+  WARN  not already decided — 5 candidate ruling(s) — READ BEFORE ASKING: ../STATE.md:21 · ../STATE.md:20
+  PASS  typecheck
+  PASS  full test suite
+  PASS  gate 1 — the id appears in a real battle — showcase.mirror-zombies: 1 log lines, 1 fired, 1 changed state
+  PASS  brought its own tests — test/scenario.test.ts, test/side-override.test.ts
+  WARN  existing tests untouched — DELETED LINES in test/scenario.test.ts (-1) — will land FLAGGED for review
+  PASS  control battles unchanged
+  PASS  content has a published source — 26 ids without a published source (16 awaiting publication from earlier items — see audit)
+  PASS  hardcode scan — core knows mechanisms, never names
+  PASS  generalizes — the second instance costs zero engine code — shape 'plumbing' — not a mechanism, exempt
+  PASS  naming — new content ids use declared kinds
+  PASS  naming — no banned words invented
+  PASS  kill switch — the tests fail without the content — tests fail without showcase.mirror-zombies — they genuinely test it
+
+<details><summary>Existing tests were edited — review this diff</summary>
+
+```diff
+diff --git a/test/scenario.test.ts b/test/scenario.test.ts
+index 83028be..348a7a0 100644
+--- a/test/scenario.test.ts
++++ b/test/scenario.test.ts
+@@ -31,6 +31,11 @@ describe('the scenario registry', () => {
+   })
+ 
+-  it('every scenario names real units, on their own declared side', () => {
++  it('every scenario names real units, on their own declared side — unless it is a mirror match (sides: byList, proving.side-override 2026-09-04)', () => {
++    // LAW 10: the rule "a scenario fields rows on their own side" gained its one
++    // ruled exception — a mirror match says `sides: 'byList'` and may field any
++    // row on either side. Every other scenario is held to the old line.
+     for (const [id, s] of Object.entries(SCENARIOS)) {
++      for (const t of [...s.heroes, ...s.enemies]) expect(UNITS[t], `${id}: ${t} is a real unit`).toBeDefined()
++      if (s.sides === 'byList') continue
+       for (const t of s.heroes) expect(UNITS[t]?.side, `${id}: ${t}`).toBe('hero')
+       for (const t of s.enemies) expect(UNITS[t]?.side, `${id}: ${t}`).toBe('enemy')
+```
+</details>
+
+IRON GAUNTLET: NOT PASSED — 2 FLAG(S) WARNED

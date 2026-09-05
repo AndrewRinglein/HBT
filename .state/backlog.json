@@ -2690,5 +2690,25 @@
   "sha": "e941838",
   "gauntlet": "not passed — 2 flag(s) warned",
   "attempts": 1
+ },
+ {
+  "id": "proving.side-override",
+  "kind": "engine",
+  "shape": "plumbing",
+  "ruling": "DECISIONS.md 2026-09-03 — the Proving (mirror matches)",
+  "spec": "Ruled 2026-09-03 (Angela): \"I also want to be able to do enemies against enemies and heroes against heroes. So we can actually test four zombies against four zombies, and what we're testing is: what does initiative matter? And then we can swap in one elf in place of a zombie.\" BattleOptions.sides: byRow (default, a row on the other side is refused as always) or byList (every unit in heroes fights as a hero, every unit in enemies as an enemy, whatever the row says); unit.enter names rowSide when they differ; an overridden unit follows the FIELDED side's rules (SWITCHES.md mirrorSideRules, default fielded — Angela's own caveat about power and stamina recorded there). ScenarioDef.sides so a scenario can be a mirror match.",
+  "expect": "showcase.mirror-zombies fields four Codex zombies as heroes against four as enemies and runs to an outcome; byRow still refuses; the hero-side zombies roll Deathbed Fighting and the enemy-side ones die at 0; across twenty seeds both sides win some",
+  "changesBaseline": false,
+  "probeIds": [
+   "showcase.mirror-zombies"
+  ],
+  "tests": [
+   "test/side-override.test.ts"
+  ],
+  "note": "Landed 2026-09-04. FINDING 36: the first mirror sweep (20 seeds, four zombies each way) came out 8-12 AGAINST the side with initiative — the side-keyed rules (the hero side rolls deathbed and bleeds; the enemy side runs Power) weigh more than the first move. A Proving mirror plan must say which it measures; mirrorSideRules: row is the arm that would isolate initiative, and it is not built.",
+  "attempts": 1,
+  "status": "done-needs-review",
+  "sha": "2dd95c8",
+  "gauntlet": "not passed — 2 flag(s) warned"
  }
 ]

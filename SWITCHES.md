@@ -412,3 +412,19 @@ primary — `byProfile`, the default. `any` — a movement-slot attack, a
 primary-slot walk — is the designed AI's path (system.ai-modes: "DESIGN FIRST,
 with Angela") and has no code behind it yet; this entry exists so the question
 is on the list and not decided by omission.
+
+## mirrorSideRules — which side's rules does a unit fielded against its row follow?
+Added 2026-09-04 (proving.side-override). Ruled 2026-09-03 (the Proving):
+mirror matches are in scope — "four zombies against four zombies, and what
+we're testing is: what does initiative matter?" — and Angela's own caveat in
+the same breath: "I guess maybe we can't because of power and magic and
+faith." The side-keyed rules are: the hero side runs stamina and Surge and
+rolls Deathbed Fighting at 0 (and bleeds out, with the Hero badge); the enemy
+side runs the Power pool and dies at 0. Default **`fielded`**: an overridden
+unit follows the rules of the side it is fielded on — a zombie among the
+heroes rolls Deathbed Fighting; a hero among the enemies dies at 0 and gains
+Power on arrival. `row` (follow the row's own side) is not built. The first
+mirror sweep (20 seeds, four zombies each way, `showcase.mirror-zombies`) came
+out 8–12 AGAINST the side with initiative, which says the side-keyed rules
+weigh more than the first move — the Proving's mirror plans should say which
+of these they are measuring.

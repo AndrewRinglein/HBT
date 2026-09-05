@@ -86,6 +86,16 @@ export type BattleOptions = {
   /** badge.mechanism (2026-09-04): the badges each hero carries in — the kingdom's list, parallel to heroes. Added to the row's own. */
   heroBadges?: readonly (readonly string[] | undefined)[]
   /**
+   * proving.side-override (2026-09-04). Ruled 2026-09-03 (the Proving): "I also
+   * want to be able to do enemies against enemies and heroes against heroes ...
+   * four zombies against four zombies." `byRow` (default): a row fielded on the
+   * other side is refused, as always. `byList`: every unit in `heroes` fights
+   * as a hero and every unit in `enemies` as an enemy, whatever its row says —
+   * and follows the fielded side's rules (SWITCHES.md mirrorSideRules). The
+   * unit.enter line names the row's own side as `rowSide` when they differ.
+   */
+  sides?: 'byRow' | 'byList'
+  /**
    * encounter.runner (2026-09-03): the encounter to run. Its setup units are
    * fielded after the heroes; its schedule fires at Start of Turn. `enemies`
    * defaults to NONE when an encounter is named — the encounter owns the
@@ -160,6 +170,8 @@ export function createBattle(opts: BattleOptions): Ctx {
     ...(opts.encounter ? { encounter: opts.encounter } : {}) }
 
   const def = (t: string): UnitDef => ({ ...UNITS[t]!, ...(opts.overrides?.[t] ?? {}) })
+  // proving.side-override: under byList the fielded side is the list's, not the row's
+  const onSide = (d: UnitDef, side: Side): UnitDef => (opts.sides === 'byList' && d.side !== side ? { ...d, side } : d)
   const heroes = opts.heroes ?? FIRST_BATTLE.heroes
   if (opts.heroProgress && opts.heroProgress.length !== heroes.length) {
     throw new Error(`${opts.scenarioId ? `scenario '${opts.scenarioId}'` : 'battle options'}: ${heroes.length} heroes but ${opts.heroProgress.length} progress records — they must correspond`)
@@ -226,10 +238,12 @@ export function createBattle(opts: BattleOptions): Ctx {
    * problem: the fielding you asked for and the fielding you got differ, and the
    * battle runs either way.
    */
+  const byList = opts.sides === 'byList'
   const checkSides = (types: readonly string[], side: Side) => {
     for (const t of types) {
       const d = UNITS[t]
       if (!d) throw new Error(`${where}: unknown unit typeId '${t}' — units are an explicit registry, check content/index.ts`)
+      if (byList) continue   // proving.side-override: the list decides the side
       if (d.side !== side) {
         throw new Error(`${where}: '${t}' is fielded as a ${side} but its row declares side '${d.side}'. Field it on its own side, or rule that the row changes.`)
       }
@@ -289,7 +303,7 @@ export function createBattle(opts: BattleOptions): Ctx {
   const zoneHexes = opts.encounter && !opts.heroHexes ? heroDeployHexes(ctx, opts.encounter, heroes.length) : null
   heroes.forEach((t, i) => {
     const hex = opts.heroHexes?.[i] ?? zoneHexes?.[i] ?? heroDeploy[i]!
-    const bare = def(t)
+    const bare = onSide(def(t), 'hero')
     // Items at fielding (seam.items-per-unit): what the options hand this
     // hero, else the row's Codex default kit, else nothing — applied by the
     // one function before the unit is made. Enemies never take this path.
@@ -327,7 +341,8 @@ export function createBattle(opts: BattleOptions): Ctx {
     // Named from the def (Codex name) or the typeId, counted per type — Law 12:
     // the log names what a thing IS.
     // badge.mechanism: an enemy row's own badges fold at fielding too (an innate affliction, a named one)
-    const d = (def(t).badges?.length ? applyBadges(def(t), def(t).badges!, BADGES, where).def : def(t))
+    const row = onSide(def(t), 'enemy')
+    const d = (row.badges?.length ? applyBadges(row, row.badges, BADGES, where).def : row)
     seenEnemy[t] = (seenEnemy[t] ?? 0) + 1
     state.units.push(makeUnit(id, 200 + i, `${d.name ?? label(t)} ${seenEnemy[t]}`, d, hex))
     id++
@@ -341,6 +356,8 @@ export function createBattle(opts: BattleOptions): Ctx {
       actor: u.id, uid: u.uid, name: u.name, side: u.side, typeId: u.typeId,
       role: u.role, hex: u.hex, hp: u.hp, maxHp: u.maxHp,
       stamina: u.stamina, maxStamina: u.maxStamina, terrain: state.terrain[u.hex],
+      // proving.side-override: a unit fielded against its row's side says so (Law 12)
+      ...(UNITS[u.typeId] && UNITS[u.typeId]!.side !== u.side ? { rowSide: UNITS[u.typeId]!.side } : {}),
     })
     // seam.items-per-unit: one unit.equipped per (unit, item), after the
     // unit's own enter line — the log says why the Hunter shoots and why his

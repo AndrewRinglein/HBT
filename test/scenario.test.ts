@@ -30,8 +30,13 @@ describe('the scenario registry', () => {
     }
   })
 
-  it('every scenario names real units, on their own declared side', () => {
+  it('every scenario names real units, on their own declared side — unless it is a mirror match (sides: byList, proving.side-override 2026-09-04)', () => {
+    // LAW 10: the rule "a scenario fields rows on their own side" gained its one
+    // ruled exception — a mirror match says `sides: 'byList'` and may field any
+    // row on either side. Every other scenario is held to the old line.
     for (const [id, s] of Object.entries(SCENARIOS)) {
+      for (const t of [...s.heroes, ...s.enemies]) expect(UNITS[t], `${id}: ${t} is a real unit`).toBeDefined()
+      if (s.sides === 'byList') continue
       for (const t of s.heroes) expect(UNITS[t]?.side, `${id}: ${t}`).toBe('hero')
       for (const t of s.enemies) expect(UNITS[t]?.side, `${id}: ${t}`).toBe('enemy')
     }

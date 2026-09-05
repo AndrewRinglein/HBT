@@ -331,6 +331,8 @@ export type ScenarioDef = {
    * heroes deploy where the encounter says (or the player edge).
    */
   readonly encounterId?: string
+  /** proving.side-override (2026-09-04): `byList` fields every unit on the side of the list it is in, whatever its row says — mirror matches. Absent = byRow. */
+  readonly sides?: 'byRow' | 'byList'
 }
 
 
@@ -716,6 +718,8 @@ export type Config = {
     zoneOfControl: boolean
     /** SWITCHES.md actionSlots (2026-09-04): how the AI reads an action's `slot`. Only `byProfile` has code behind it. */
     actionSlots: 'byProfile' | 'any'
+    /** SWITCHES.md mirrorSideRules (2026-09-04): an overridden unit follows the FIELDED side's rules. Only `fielded` has code behind it. */
+    mirrorSideRules: 'fielded' | 'row'
     /** Does a unit with a corpse-eating power eat before it swings? SWITCHES.md, 2026-09-03. */
     aiEatsBeforeBiting: boolean
     /** May a unit target something it cannot see? COMBAT-DESIGN §4 assumes no. SWITCHES.md, 2026-09-03. */
@@ -779,6 +783,7 @@ export const DEFAULT_CONFIG: Config = {
     // Angela 2026-08-13). Off keeps the pre-ZoC battle for paired sweeps.
     zoneOfControl: true,
     actionSlots: 'byProfile',
+    mirrorSideRules: 'fielded',
     // "the things surrounding them get stronger with every villager they eat"
     // (Supper) — the feast is the design. SWITCHES.md, 2026-09-03.
     aiEatsBeforeBiting: true,

@@ -342,6 +342,21 @@ const RAW_SCENARIOS: Readonly<Record<string, ScenarioDef>> = {
   // fix.deathbed-no-stands (2026-09-04): a hero fielded already Wounded (the
   // test row with the ruled shape) against four zombies — at 0 it dies with
   // no roll and no bleed-out, on the log the probe reads.
+  // proving.side-override (2026-09-04): the mirror match Angela named — "four
+  // zombies against four zombies, and what we're testing is: what does
+  // initiative matter?" The hero-side four act first every Turn; that is the
+  // whole difference between the sides here.
+  'showcase.mirror-zombies': {
+    id: 'showcase.mirror-zombies',
+    note: 'proving.side-override: four Codex zombies fielded as heroes against four as enemies — the mirror match; the hero side has the initiative and nothing else.',
+    mapId: 'map.open',
+    heroes: ['unit.zombie', 'unit.zombie', 'unit.zombie', 'unit.zombie'],
+    heroHexes: [80, 96, 112, 128],
+    enemies: ['unit.zombie', 'unit.zombie', 'unit.zombie', 'unit.zombie'],
+    enemyHexes: [95, 111, 127, 143],
+    sides: 'byList',
+    replicate: 0,
+  },
   'showcase.wounded-entry': {
     id: 'showcase.wounded-entry',
     note: 'fix.deathbed-no-stands: a test warrior fielded wearing test.badge.deaths-door — "if they are wounded, then they just die" — against four zombies.',
@@ -413,6 +428,7 @@ export function scenarioOptions(s: ScenarioDef) {
     ...(s.heroItems ? { heroItems: s.heroItems } : {}),
     ...(s.heroProgress ? { heroProgress: s.heroProgress } : {}),
     ...(s.heroBadges ? { heroBadges: s.heroBadges } : {}),
+    ...(s.sides ? { sides: s.sides } : {}),
     ...(s.encounterId ? { encounter: encounterDef(s.encounterId) } : {}),
   }
 }
