@@ -12823,6 +12823,10 @@ export const UNIT_PACK = {
       {
         "name": "Arc Golem (TEST)",
         "side": "hero",
+        "tags": [
+          "hero",
+          "class.warrior"
+        ],
         "maxHp": 30,
         "armor": 2,
         "resist": 0,
@@ -13007,12 +13011,15 @@ export const UNIT_PACK = {
         "badges": [
           "badge.hero"
         ],
-        "typeId": "test-arc-golem",
-        "tags": []
+        "typeId": "test-arc-golem"
       },
       {
         "name": "Warrior (TEST)",
         "side": "hero",
+        "tags": [
+          "hero",
+          "class.warrior"
+        ],
         "maxHp": 10,
         "armor": 1,
         "resist": 0,
@@ -13079,12 +13086,15 @@ export const UNIT_PACK = {
           "badge.hero"
         ],
         "typeId": "test-warrior",
-        "abilities": [],
-        "tags": []
+        "abilities": []
       },
       {
         "name": "Ranger (TEST)",
         "side": "hero",
+        "tags": [
+          "hero",
+          "class.ranger"
+        ],
         "maxHp": 7,
         "armor": 0,
         "resist": 0,
@@ -13113,12 +13123,15 @@ export const UNIT_PACK = {
           "badge.hero"
         ],
         "typeId": "test-ranger",
-        "abilities": [],
-        "tags": []
+        "abilities": []
       },
       {
         "name": "Mage (TEST)",
         "side": "hero",
+        "tags": [
+          "hero",
+          "class.mage"
+        ],
         "maxHp": 6,
         "armor": 0,
         "resist": 1,
@@ -13174,8 +13187,7 @@ export const UNIT_PACK = {
         "badges": [
           "badge.hero"
         ],
-        "typeId": "test-mage",
-        "tags": []
+        "typeId": "test-mage"
       },
       {
         "typeId": "test-gash-zombie",

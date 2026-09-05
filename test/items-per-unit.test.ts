@@ -91,17 +91,25 @@ describe('the invariant — no heroItems means the hero the converter used to fo
 
 describe('heroItems — the fielding decides the kit', () => {
   const base = scenarioOptions(scenarioDef('showcase.prologue-party'))
-  it('a Hunter handed a halberd has Hack and no shot, kites no more, and the log says what he wears', () => {
-    const ctx = createBattle({ ...base, heroes: ['hero.base.ranger-aggressive'], heroHexes: [247], heroItems: [['item.halberd']] })
+  // LAW 10 — 2026-09-04 (fix.class-restriction): this test handed the Hunter a
+  // HALBERD, a class.warrior item, and the engine accepted it because nothing
+  // read classRestriction. Ruled 2026-09-03: "Only classes that can wield it."
+  // The claim — the handed kit decides the attacks, the role, the AI, the bar,
+  // and the log says what he wears — is unchanged, on an unrestricted weapon
+  // (the longsword). The halberd case is now the refusal test below.
+  it('a Hunter handed a longsword has Slash and no shot, kites no more, and the log says what he wears', () => {
+    const ctx = createBattle({ ...base, heroes: ['hero.base.ranger-aggressive'], heroHexes: [247], heroItems: [['item.longsword']] })
     const h = ctx.state.units[0]!
-    expect(attackIdsOf(ctx, h)).toEqual(['attack.halberd.hack', 'attack.halberd.cleave', 'attack.punch'])
+    expect(attackIdsOf(ctx, h)).toEqual(['attack.longsword.slash', 'attack.longsword.stab', 'attack.punch'])
     expect(attackIdsOf(ctx, h)).not.toContain('attack.longbow.shot')
     expect(h.role).toBe('melee')
     expect(h.ai).toBe('melee-aggressive')
     expect(h.maxHp, 'no Thick Hide, so the bare 6').toBe(6)
     const eq = ctx.events.filter((e) => e.type === 'unit.equipped' && e.actor === h.id)
-    expect(eq.map((e) => e.causeId)).toEqual(['item.halberd'])
-    expect(eq[0]!['grants']).toEqual(['attack.halberd.hack', 'attack.halberd.cleave'])
+    expect(eq.map((e) => e.causeId)).toEqual(['item.longsword'])
+    expect(eq[0]!['grants']).toEqual(['attack.longsword.slash', 'attack.longsword.stab'])
+    // and the halberd he used to be handed is refused: a class.warrior item on a class.ranger row
+    expect(() => createBattle({ ...base, heroes: ['hero.base.ranger-aggressive'], heroHexes: [247], heroItems: [['item.halberd']] })).toThrow(/cannot wield 'item\.halberd', a class\.warrior item/)
   })
   it('an explicit default kit is the same unit as no kit at all, and an empty list is the bare hero', () => {
     const a = createBattle({ ...base, heroes: ['hero.base.ranger-aggressive'], heroHexes: [247] }).state.units[0]!
@@ -127,7 +135,8 @@ describe('heroItems — the fielding decides the kit', () => {
   it('refuses loudly: an unknown item, three hands of weapons, two armors, a mismatched list', () => {
     const one = { ...base, heroes: ['hero.base.ranger-aggressive'], heroHexes: [247] }
     expect(() => createBattle({ ...one, heroItems: [['item.does-not-exist']] })).toThrow(/not an item/)
-    expect(() => createBattle({ ...one, heroItems: [['item.halberd', 'item.longsword']] })).toThrow(/more than two hands/)
+    // LAW 10 — 2026-09-04 (fix.class-restriction): was halberd + longsword on the Hunter; the halberd is refused for its class first now, so three hands is proved with the ranger's own bow and a sword
+    expect(() => createBattle({ ...one, heroItems: [['item.longbow', 'item.longsword']] })).toThrow(/more than two hands/)
     expect(() => createBattle({ ...one, heroItems: [['item.thick-hide', 'item.basic-armor']] })).toThrow(/two armors/)
     expect(() => createBattle({ ...one, heroItems: [] })).toThrow(/must correspond/)
     expect(() => createBattle({ ...one, heroItems: [['item.longsword', 'item.longsword']] })).toThrow(/twice/)

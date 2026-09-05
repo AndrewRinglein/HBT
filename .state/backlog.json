@@ -2840,5 +2840,32 @@
   "status": "done",
   "sha": "52cf5f7",
   "gauntlet": "not passed — 1 flag(s) warned"
+ },
+ {
+  "id": "fix.class-restriction",
+  "kind": "fix",
+  "shape": "rule",
+  "needs": [
+   "seam.items-per-unit"
+  ],
+  "ruling": "DECISIONS.md 2026-09-03 — the Proving (\"Only classes that can wield it\"); 9-PROVING-SETTLED.md §2 E5b",
+  "spec": "ItemDef.classRestriction sits on 138 of 510 item rows and nothing in src/core read it: a warrior fielded with a fire staff and the engine accepted it (session 9 found it by running). applyItems now refuses an item whose classRestriction is not among the row's class.* tags, with the reason naming the row, its class and the restriction. Every Codex start kit already obeys (verified: zero violations across UNITS).",
+  "expect": "applyItems(warrior-iron, [fire-staff]) throws \"cannot wield item.fire-staff, a class.mage item\"; the mage is fine; every defaultItems kit still folds; createBattle refuses the same fielding",
+  "changesBaseline": false,
+  "probeIds": [
+   "item.fire-staff"
+  ],
+  "variants": [
+   "item.fire-staff",
+   "item.war-axe"
+  ],
+  "tests": [
+   "test/class-restriction.test.ts"
+  ],
+  "note": "Session 9 E5b. Neutral on the control maps: the Alpha and Codex kits all obey their restrictions. The Proving reads this seam: a mis-wielded item is INVALID with this reason, never a number. Carries the pack from content 3c2fa24: the four test hero bodies gained their class.* tag (they had none, so they could wield nothing restricted — the smoke plan's halberd on test-warrior). Law 10: items-per-unit handed the Hunter a halberd (class.warrior) — an illegal fielding by the ruling; the same claims now on the longsword, and the halberd is the refusal case.",
+  "status": "done-needs-review",
+  "attempts": 1,
+  "sha": "63f75cc",
+  "gauntlet": "not passed — 2 flag(s) warned"
  }
 ]

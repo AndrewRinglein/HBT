@@ -45,6 +45,15 @@ export function applyItems(
     if (!it) throw new Error(`${where}: ${base.typeId} is handed '${id}', which is not an item in the registry`)
     if (seen.has(id)) throw new Error(`${where}: ${base.typeId} is handed '${id}' twice`)
     seen.add(id)
+    // fix.class-restriction (2026-09-04, session 9's E5b): the row's restriction
+    // is read by the fielding — ruled 2026-09-03 (the Proving): "Items only on
+    // classes that can wield them." A class is a `class.*` tag on the unit row.
+    // Nothing in src/core read `classRestriction` before this; a warrior fielded
+    // with a fire staff and nothing refused.
+    if (it.classRestriction && !(base.tags ?? []).includes(it.classRestriction)) {
+      const has = (base.tags ?? []).filter((t) => t.startsWith('class.'))
+      throw new Error(`${where}: ${base.typeId} (${has.join(', ') || 'no class'}) cannot wield '${id}', a ${it.classRestriction} item`)
+    }
     if (it.itemClass === 'weapon') { hands += it.hands; if (hands > 2) throw new Error(`${where}: ${base.typeId} would wield more than two hands of weapons (${[...seen].join(', ')})`) }
     if (it.itemClass === 'armor') { armors += 1; if (armors > 1) throw new Error(`${where}: ${base.typeId} would wear two armors`) }
     const mods: Record<string, number> = {}
