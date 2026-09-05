@@ -8,13 +8,14 @@
 //
 // One row per SUBJECT across every plan that has run, tagged by ladder (the
 // fixture and the side it was measured on), with the columns the dashboard
-// shows: Power (flip rate — ruled: the score), wins WITH beside the control's
-// wins, swing (margin shift from the subject's side, permille), tempo,
+// shows: Power (the VICTORY RATE — wins with the subject in, of the five pairs;
+// re-ruled 2026-09-05, it was the flip rate), the control's wins beside it,
+// flips, swing (margin shift from the subject's side, permille), tempo,
 // presence, invalid. Below the table: the initiative mirrors per map and the
 // gap sweep, the control candidates with the seed-1 rule applied, and a
 // FINDINGS section the rollup writes and nobody hands-edits.
 //
-// Sorting is Power, then swing, then id (Law 6). Integers only (Law 7). This
+// Sorting is Power (wins), then swing, then id (Law 6). Integers only (Law 7). This
 // tool reads results and the pack for names and tags; it runs no battle and
 // decides nothing.
 import { existsSync, mkdirSync, readFileSync, readdirSync, writeFileSync } from 'node:fs'
@@ -110,7 +111,11 @@ for (const row of rows) {
     findings.push(`${row.id} (${row.plan}): identical to the control on every pair`)
   }
 }
-rows.sort((a, b) => b.flipRatePermille - a.flipRatePermille || b.swing - a.swing || a.id.localeCompare(b.id))
+// THE SCORE — re-ruled 2026-09-05 (DECISIONS "The Proving's score is the VICTORY
+// RATE"): Power is how many of the pairs the subject's side WON with the subject
+// in, not how many outcomes changed. Ties: swing (signed, from the subject's
+// side), then id (Law 6). Flip count stays a column.
+rows.sort((a, b) => b.winsWith - a.winsWith || b.swing - a.swing || a.id.localeCompare(b.id))
 
 // ── initiative ───────────────────────────────────────────────────────────────
 
@@ -171,12 +176,12 @@ writeFileSync(join(STATE, 'ranking.json'), JSON.stringify(ranking, null, 1))
 if (outDoc) {
   const L: string[] = []
   L.push(`# The Proving — results (generated)`, ``,
-    `**Generated ${ranking.generated} by \`npm run proving:rank\` from \`engine/.state/proving/*/rollup.json\`, pack \`${packStamp}\`. Never hand-edit; re-run the plans and this tool.** The score is the flip rate (ruled 2026-09-03: "how much they move the needle"); five pairs — one seed, five maps — is one ranking, a coarse ruler by design. Swing is the margin shift from the subject's side, permille. Wins WITH / control: the pairs the subject's side won with it in, beside the pairs the control won without it. \`PROVING.html\` at the root is the same data with filters.`, ``)
+    `**Generated ${ranking.generated} by \`npm run proving:rank\` from \`engine/.state/proving/*/rollup.json\`, pack \`${packStamp}\`. Never hand-edit; re-run the plans and this tool.** **Power is the victory rate** (re-ruled 2026-09-05: "The power ranking should be based on the victory rate in the battle") — of the five pairs, how many the subject's side WON with the subject in; the control's wins on the same five sit beside it, so the difference is the needle's direction. Five pairs — one seed, five maps — is one ranking, a coarse ruler by design. Flips counts the pairs whose outcome changed either way. Swing is the margin shift from the subject's side, permille. \`PROVING.html\` at the root is the same data with filters.`, ``)
   L.push(`Plans: ${ranking.plans.map((p) => `\`${p.id}\` (${p.subjects} subjects, ${p.matchups} matchups${p.current ? '' : ', STALE pack ' + p.stamp})`).join(' · ')}`, ``)
   const table = (title: string, list: Row[]) => {
     if (!list.length) return
-    L.push(`## ${title}`, ``, `| # | Unit | Class / family | Power | Wins WITH / control | Swing | Tempo | Presence | Invalid |`, `|---|---|---|---|---|---|---|---|---|`)
-    list.forEach((r, i) => L.push(`| ${i + 1} | ${r.name} \`${r.id}\` | ${r.class ?? r.family ?? '—'} | **${r.flips}/${r.valid}** | ${r.winsWith}/${r.valid} vs ${r.controlWins}/${r.valid} | ${r.swing > 0 ? '+' : ''}${r.swing} | ${r.tempo > 0 ? '+' : ''}${r.tempo} | ${r.presence} | ${r.invalid ? `${r.invalid} — ${r.invalidReasons.join('; ')}` : '—'} |`))
+    L.push(`## ${title}`, ``, `| # | Unit | Class / family | Power (wins) | Control wins | Flips | Swing | Tempo | Presence | Invalid |`, `|---|---|---|---|---|---|---|---|---|---|`)
+    list.forEach((r, i) => L.push(`| ${i + 1} | ${r.name} \`${r.id}\` | ${r.class ?? r.family ?? '—'} | **${r.winsWith}/${r.valid}** | ${r.controlWins}/${r.valid} | ${r.flips} | ${r.swing > 0 ? '+' : ''}${r.swing} | ${r.tempo > 0 ? '+' : ''}${r.tempo} | ${r.presence} | ${r.invalid ? `${r.invalid} — ${r.invalidReasons.join('; ')}` : '—'} |`))
     L.push(``)
   }
   table('Hero ladder', rows.filter((r) => r.kind === 'hero'))

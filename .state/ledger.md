@@ -10319,3 +10319,44 @@ IRON GAUNTLET: NOT PASSED — 1 FLAG(S) WARNED; 1 EXEMPTION(S) TAKEN · periodic
 </details>
 
 IRON GAUNTLET: NOT PASSED — 1 FLAG(S) WARNED; 1 EXEMPTION(S) TAKEN
+
+## proving.score-victory-rate — LANDED `993c9d2` **NEEDS REVIEW**
+2026-09-05 09:58
+
+  PASS  dependencies landed
+  WARN  not already decided — 5 candidate ruling(s) — READ BEFORE ASKING: ../PROVING-RESULTS.md:3 · ../STATE.md:18
+  PASS  typecheck
+  PASS  full test suite
+  PASS  gate 1 — the id appears in a real battle
+  PASS  brought its own tests — test/proving-rank.test.ts
+  WARN  existing tests untouched — DELETED LINES in test/proving-rank.test.ts (-2) — will land FLAGGED for review
+  PASS  control battles unchanged
+  PASS  content has a published source — 26 ids without a published source (16 awaiting publication from earlier items — see audit)
+  PASS  hardcode scan — core knows mechanisms, never names
+  PASS  generalizes — the second instance costs zero engine code — shape 'plumbing' — not a mechanism, exempt
+  PASS  naming — new content ids use declared kinds
+  PASS  naming — no banned words invented
+  PASS  kill switch — the tests fail without the content — no content id to disable — engine plumbing, not applicable
+
+<details><summary>Existing tests were edited — review this diff</summary>
+
+```diff
+diff --git a/test/proving-rank.test.ts b/test/proving-rank.test.ts
+index 7eb7df1..f35efbd 100644
+--- a/test/proving-rank.test.ts
++++ b/test/proving-rank.test.ts
+@@ -34,8 +34,8 @@ describe('proving-rank', () => {
+       expect(Number.isInteger(u.swing)).toBe(true)
+     }
+-    // sorted: flip rate, then swing, then id (Law 6)
++    // sorted: Power = wins WITH (re-ruled 2026-09-05: "based on the victory rate"), then swing, then id (Law 6)
+     for (let i = 1; i < ranking.units.length; i++) {
+       const a = ranking.units[i - 1], b = ranking.units[i]
+-      expect(a.flipRatePermille > b.flipRatePermille || (a.flipRatePermille === b.flipRatePermille && (a.swing > b.swing || (a.swing === b.swing && a.id <= b.id)))).toBe(true)
++      expect(a.winsWith > b.winsWith || (a.winsWith === b.winsWith && (a.swing > b.swing || (a.swing === b.swing && a.id <= b.id)))).toBe(true)
+     }
+     // the unfieldable subject is a finding, never a number
+```
+</details>
+
+IRON GAUNTLET: NOT PASSED — 2 FLAG(S) WARNED; 1 EXEMPTION(S) TAKEN

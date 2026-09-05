@@ -33,10 +33,10 @@ describe('proving-rank', () => {
       expect(u.detail.length).toBe(u.pairs)
       expect(Number.isInteger(u.swing)).toBe(true)
     }
-    // sorted: flip rate, then swing, then id (Law 6)
+    // sorted: Power = wins WITH (re-ruled 2026-09-05: "based on the victory rate"), then swing, then id (Law 6)
     for (let i = 1; i < ranking.units.length; i++) {
       const a = ranking.units[i - 1], b = ranking.units[i]
-      expect(a.flipRatePermille > b.flipRatePermille || (a.flipRatePermille === b.flipRatePermille && (a.swing > b.swing || (a.swing === b.swing && a.id <= b.id)))).toBe(true)
+      expect(a.winsWith > b.winsWith || (a.winsWith === b.winsWith && (a.swing > b.swing || (a.swing === b.swing && a.id <= b.id)))).toBe(true)
     }
     // the unfieldable subject is a finding, never a number
     const nobody = ranking.units.find((u: { id: string }) => u.id === 'unit.nobody')

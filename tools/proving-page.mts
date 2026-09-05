@@ -86,7 +86,7 @@ a { color:var(--hero) }
   <span class="stamp ${stale ? 'stale' : ''}" id="stamp"></span>
 </header>
 <main>
-  <p class="intro">Every unit, ranked by how often it <b>moves the needle</b>: each unit takes one seat of the control fight and the fight is run twice on the same dice, with it and without it, on five maps — five pairs, one seed. <b>Power</b> is the flip rate (how many of the five outcomes changed, either way); <b>swing</b> is how far the surviving strength moved, from the unit's own side (permille), and carries the direction; <b>tempo</b> is turns shifted; <b>presence</b> counts the state-changing lines the unit itself wrote. Five pairs is a coarse ruler by design — the flip-rate interval for n=5 is wide. A row opens its five pairs; each pair prints the command that reproduces that exact battle for the Battle Viewer.</p>
+  <p class="intro">Every unit, ranked by its <b>victory rate</b>: each unit takes one seat of the control fight and the fight is run on five maps with one seed — <b>Power</b> is how many of the five its side <b>won with it in</b>. The same five are also run without it, and the <b>control</b> column is how many the control won on its own, so the difference is which way the unit moved the needle. <b>Flips</b> counts the pairs whose outcome changed either way; <b>swing</b> is how far the surviving strength moved, from the unit's own side (permille); <b>tempo</b> is turns shifted; <b>presence</b> counts the state-changing lines the unit itself wrote. Five pairs is a coarse ruler by design. A row opens its five pairs; each pair prints the command that reproduces that exact battle for the Battle Viewer.</p>
 
   <div class="filters" id="filters">
     <label>Side <select id="f-kind"><option value="">all</option><option value="hero">hero</option><option value="civilian">civilian</option><option value="enemy">enemy</option></select></label>
@@ -106,8 +106,9 @@ a { color:var(--hero) }
       <th data-k="kind">Side</th>
       <th data-k="class">Class / family</th>
       <th data-k="ladder">Ladder</th>
-      <th data-k="flipRatePermille" class="num on">Power<span class="arrow">▼</span></th>
-      <th data-k="winsWith" class="num">Wins with / control</th>
+      <th data-k="winsWith" class="num on">Power (wins)<span class="arrow">▼</span></th>
+      <th data-k="controlWins" class="num">Control wins</th>
+      <th data-k="flips" class="num">Flips</th>
       <th data-k="swing" class="num">Swing</th>
       <th data-k="tempo" class="num">Tempo</th>
       <th data-k="presence" class="num">Presence</th>
@@ -115,7 +116,7 @@ a { color:var(--hero) }
     </tr></thead>
     <tbody id="body"></tbody>
   </table>
-  <p class="legend">Power ranks first, swing breaks ties, then id. A flip in either direction counts: a unit that turned three control wins into losses is 3/5 with a negative swing.</p>
+  <p class="legend">Power (wins of five, with the unit in) ranks first, swing breaks ties, then id. Ruled 2026-09-05: "The power ranking should be based on the victory rate in the battle." Flips is how many of the five outcomes changed against the control, in either direction — it says the unit mattered, not which way.</p>
 
   <div class="grid" id="panels"></div>
 
@@ -139,9 +140,9 @@ a { color:var(--hero) }
   const fill = (sel, vals) => { for (const v of vals) { const o = document.createElement('option'); o.value = v; o.textContent = v; $(sel).appendChild(o) } }
   fill('#f-class', uniq((u) => [u.class])); fill('#f-family', uniq((u) => [u.family])); fill('#f-tag', uniq((u) => u.tags)); fill('#f-ladder', uniq((u) => [u.ladder]))
 
-  let sortK = 'flipRatePermille', sortDir = -1, open = new Set()
+  let sortK = 'winsWith', sortDir = -1, open = new Set()
   const keyOf = (u, k) => k === 'rank' ? u._rank : k === 'name' ? u.name.toLowerCase() : k === 'class' ? (u.class || u.family || '') : (u[k] ?? '')
-  R.units.forEach((u, i) => { u._rank = i + 1 })   // the rollup's order: Power, swing, id (Law 6)
+  R.units.forEach((u, i) => { u._rank = i + 1 })   // the rollup's order: Power (wins), swing, id (Law 6)
 
   function visible() {
     const kind = $('#f-kind').value, klass = $('#f-class').value, fam = $('#f-family').value, tag = $('#f-tag').value, lad = $('#f-ladder').value, q = $('#f-q').value.trim().toLowerCase(), fo = $('#f-find').checked
@@ -161,11 +162,12 @@ a { color:var(--hero) }
         + '<td class="num">' + u._rank + '</td>'
         + '<td><span class="kind ' + u.kind + '"></span>' + esc(u.name) + ' <span class="id">' + esc(u.id) + '</span>' + flags + '</td>'
         + '<td>' + u.kind + '</td><td>' + esc(u.class || u.family || '—') + '</td><td>' + esc(u.ladder) + '</td>'
-        + '<td class="num"><b>' + u.flips + '/' + u.valid + '</b><span class="bar"><i style="width:' + (u.flipRatePermille / 10) + '%"></i></span></td>'
-        + '<td class="num">' + u.winsWith + '/' + u.valid + ' <span class="zero">vs</span> ' + u.controlWins + '/' + u.valid + '</td>'
+        + '<td class="num"><b>' + u.winsWith + '/' + u.valid + '</b><span class="bar"><i style="width:' + (u.valid ? Math.round(100 * u.winsWith / u.valid) : 0) + '%"></i></span></td>'
+        + '<td class="num zero">' + u.controlWins + '/' + u.valid + '</td>'
+        + '<td class="num ' + (u.winsWith > u.controlWins ? 'pos' : u.winsWith < u.controlWins ? 'neg' : 'zero') + '">' + u.flips + '</td>'
         + '<td class="num ' + cls(u.swing) + '">' + sgn(u.swing) + '</td><td class="num ' + cls(u.tempo) + '">' + sgn(u.tempo) + '</td>'
         + '<td class="num">' + u.presence + '</td><td class="num' + (u.invalid ? ' neg' : ' zero') + '"' + (u.invalid ? ' title="' + esc(u.invalidReasons.join(' · ')) + '"' : '') + '>' + (u.invalid || '—') + '</td></tr>')
-      if (open.has(k)) rows.push('<tr class="detail"><td colspan="11">' + detail(u) + '</td></tr>')
+      if (open.has(k)) rows.push('<tr class="detail"><td colspan="12">' + detail(u) + '</td></tr>')
     }
     $('#body').innerHTML = rows.join('')
   }
@@ -181,7 +183,7 @@ a { color:var(--hero) }
       if (p.with.error || p.without.error) h += '<tr><td></td><td colspan="10" class="find">' + esc(p.with.error || p.without.error) + '</td></tr>'
     })
     h += '</table>'
-    h += '<p class="note">Plan <code>' + esc(u.plan) + '</code> · fixture <code>' + esc(u.fixture) + '</code> · ' + esc(u.rotation) + (u.slot !== undefined ? ' seat ' + u.slot : '') + ' on the ' + u.side + ' side · pack ' + esc(u.stamp) + (u.current ? '' : ' <span class="neg">(stale)</span>') + '. Five pairs: a flip rate of k/5 has a wide interval — 2/5 and 3/5 are not distinguishable, 0/5 and 5/5 are. Open the exported battle in <a href="viewer/BATTLE-VIEWER.html">the Battle Viewer</a> by dropping the file on it.</p>'
+    h += '<p class="note">Plan <code>' + esc(u.plan) + '</code> · fixture <code>' + esc(u.fixture) + '</code> · ' + esc(u.rotation) + (u.slot !== undefined ? ' seat ' + u.slot : '') + ' on the ' + u.side + ' side · pack ' + esc(u.stamp) + (u.current ? '' : ' <span class="neg">(stale)</span>') + '. Five pairs: k/5 has a wide interval — 2/5 and 3/5 are not distinguishable, 0/5 and 5/5 are. Open the exported battle in <a href="viewer/BATTLE-VIEWER.html">the Battle Viewer</a> by dropping the file on it.</p>'
     if (u.findings.length) h += '<p class="find">' + u.findings.map(esc).join('<br>') + '</p>'
     return h
   }

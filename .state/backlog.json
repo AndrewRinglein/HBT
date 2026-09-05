@@ -2959,5 +2959,25 @@
   "status": "done-needs-review",
   "sha": "0e6ff9e",
   "gauntlet": "not passed — 1 flag(s) warned; 1 exemption(s) taken"
+ },
+ {
+  "id": "proving.score-victory-rate",
+  "kind": "fix",
+  "shape": "plumbing",
+  "needs": [
+   "proving.page"
+  ],
+  "ruling": "DECISIONS.md 2026-09-05 — The Proving's score is the VICTORY RATE, not the flip rate",
+  "spec": "Angela 2026-09-05 on the first PROVING.html: \"The power ranking should be based on the victory rate in the battle.\" The rig scored the flip RATE and a flip in either direction counted, so a unit that turned three control wins into losses ranked beside one that turned three losses into wins. Power is now wins WITH the subject in, of the five pairs; the control's wins on the same five sit beside it; flips is a column; ties: swing, id. proving-rank sorts, the document and the page say so; no battle re-runs.",
+  "expect": "the hero ladder tops with the two warriors at 5/5 (control 3/5); the enemy ladder with the bone dragon at 5/5; the orphans at 0/5 sit at the bottom of the civilians; the rank test asserts the wins order",
+  "changesBaseline": false,
+  "unreachable": "a re-sort of results already measured — no battle, no log line",
+  "tests": [
+   "test/proving-rank.test.ts"
+  ],
+  "note": "Her words are in DECISIONS.md verbatim. The 2026-09-03 \"move the needle\" reading stands as the flips column.",
+  "status": "done-needs-review",
+  "sha": "993c9d2",
+  "gauntlet": "not passed — 2 flag(s) warned; 1 exemption(s) taken"
  }
 ]

@@ -1996,3 +1996,23 @@ row whose art file is missing ships with the gap named. `content/audit.mjs`'s
 art findings (`hero-has-a-partial-level-set`, `declared-art-file-does-not-exist`,
 `art-path-does-not-resolve`) may report but may not count against `expect.mjs`'s
 total that decides whether the pack is written.
+
+## 2026-09-05 — The Proving's score is the VICTORY RATE, not the flip rate
+
+Angela, verbatim, on opening the first `PROVING.html`:
+
+> "What the hell is up with these power rankings? You've got an orphan child that
+> loses every fight and has a 3 and a 5. You've got a bone dragon that wins every
+> fight as a 3 out of 5, and a fire imp at the highest. I don't understand. The
+> power ranking should be based on the victory rate in the battle. It doesn't
+> appear to have any association with that."
+
+What happened: the 2026-09-03 ruling said "how much they move the needle", and the
+rig scored the flip RATE — a flip in either direction counted, so a unit that turned
+three control wins into losses scored 3/5 beside one that turned three losses into
+wins. That is reversed. **Power is the victory rate: of the five pairs, how many the
+subject's side WON with the subject in.** The control's wins sit beside it (the
+needle's direction is the difference), swing is the tiebreak (from the subject's
+side, signed), then id. The flip count stays on the page as a column — it still
+says the unit mattered — but it is not the score. `proving.rank` re-sorts;
+`PROVING.html` re-renders; no battle re-runs.
