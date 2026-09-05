@@ -1,5 +1,5 @@
 {
- "_note": "THE FIRST NON-PLACEHOLDER ENEMIES. Landed 2026-08-25 from ENEMY-REVIEW.md after full review — every stat and effect there was ruled or explicitly inferred-and-flagged. These rows SUPERSEDE same-id placeholders from the hell-tcg port at assemble time; a placeholder never overwrites an authored row, and regenerating the placeholder file cannot touch this one. Effects use the closed vocabulary; anything the engine cannot fire yet carries `needs` naming a capability below, following the pattern the terrain badges set. Numbers are real but SOFT — sweeps own pricing.",
+ "_note": "THE FIRST NON-PLACEHOLDER ENEMIES. Landed 2026-08-25 from ENEMY-REVIEW.md after full review — every stat and effect there was ruled or explicitly inferred-and-flagged. These rows SUPERSEDE same-id placeholders from the hell-tcg port at assemble time; a placeholder never overwrites an authored row, and regenerating the placeholder file cannot touch this one. Effects use the closed vocabulary; anything the engine cannot fire yet carries `needs` naming a capability below, following the pattern the terrain badges set. Numbers are real but SOFT — sweeps own pricing. ROTTING FLESH RE-RULED 2026-09-05 (Angela): \"In content, zombies have a 10% chance of inflicting rotting flesh. Let us change that to 2%.\" Applied to EVERY rotting-flesh carrier in this file, not just unit.zombie — attack.zombie.claw (which unit.zombie-burning, unit.strong-zombie and unit.fast-zombie all inherit by sameAs, so four units change), attack.zombie-hound.bite and move.zombie-hound.close-bite. NOT touched, because they are different afflictions and were not ruled on: werewolf lycanthropy 10, vampire vampirism 20, vampire-lord vampirism 30, ghost possession 25.",
  "capabilities": {
   "_note": "Everything a row below needs that the engine does not have. All design-ruled in ENEMY-REVIEW.md 2026-08-23; none is an open question. A row naming one of these is complete content waiting on engine work, not a gap in the content.",
   "capability.power": "The power pool. Integer; fractions resolve nearest, 0.5 up. Gained three ways (external pool / one-time on arrival / escalating clock or condition); consumers read it and mostly do not feed it.",
@@ -59,7 +59,7 @@
      "triggers": [
       {
        "hook": "onHit",
-       "chance": 10,
+       "chance": 2,
        "effects": [
         {
          "effect": "inflict an affliction",
@@ -1584,7 +1584,7 @@
       "triggers": [
        {
         "hook": "onDamage",
-        "chance": 10,
+        "chance": 2,
         "effects": [
          {
           "effect": "inflict an affliction",
@@ -1611,7 +1611,7 @@
      "triggers": [
       {
        "hook": "onDamage",
-       "chance": 10,
+       "chance": 2,
        "effects": [
         {
          "effect": "inflict an affliction",
