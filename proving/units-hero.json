@@ -1,0 +1,338 @@
+{
+  "id": "proving.units-hero",
+  "note": "Every hero.base.* row, level 1, in its own start kit (ruled 2026-09-04: heroes do not exist without kits), replacing seat 2 (mage-fire) of the control three. The subject's `items` ride into its seat (E5, landed 2026-09-05). Five pairs a subject: one seed, five maps.",
+  "maps": [
+    "map.proving.open",
+    "map.proving.ridge",
+    "map.proving.ford",
+    "map.proving.copse",
+    "map.proving.ruin"
+  ],
+  "seed": 1,
+  "squads": {
+    "squad.c1-heroes": [
+      {
+        "unit": "hero.base.warrior-iron",
+        "items": [
+          "item.destroyed-mail",
+          "item.tower-shield",
+          "item.war-axe"
+        ]
+      },
+      {
+        "unit": "hero.base.ranger-aggressive",
+        "items": [
+          "item.longbow",
+          "item.thick-hide"
+        ]
+      },
+      {
+        "unit": "hero.base.mage-fire",
+        "items": [
+          "item.fire-staff",
+          "item.basic-armor"
+        ]
+      }
+    ],
+    "squad.c1-enemies": [
+      "unit.zombie",
+      "unit.zombie",
+      "unit.zombie",
+      "unit.zombie",
+      "unit.zombie",
+      "unit.zombie",
+      "unit.zombie",
+      "unit.zombie",
+      "unit.zombie",
+      "unit.zombie",
+      "unit.zombie",
+      "unit.zombie"
+    ]
+  },
+  "fixtures": [
+    {
+      "id": "f.c1",
+      "hero": "squad.c1-heroes",
+      "enemy": "squad.c1-enemies"
+    }
+  ],
+  "subjects": [
+    {
+      "id": "hero.base.paladin-dark",
+      "fixture": "f.c1",
+      "rotation": "replace",
+      "side": "hero",
+      "slot": 2,
+      "items": [
+        "item.greatsword",
+        "item.rusted-plate"
+      ]
+    },
+    {
+      "id": "hero.base.paladin-shiney",
+      "fixture": "f.c1",
+      "rotation": "replace",
+      "side": "hero",
+      "slot": 2,
+      "items": [
+        "item.longsword",
+        "item.knight-shield",
+        "item.basic-armor"
+      ]
+    },
+    {
+      "id": "hero.base.paladin-hunk",
+      "fixture": "f.c1",
+      "rotation": "replace",
+      "side": "hero",
+      "slot": 2,
+      "items": [
+        "item.longsword",
+        "item.knight-shield",
+        "item.ragged-hides"
+      ]
+    },
+    {
+      "id": "hero.base.paladin-smug",
+      "fixture": "f.c1",
+      "rotation": "replace",
+      "side": "hero",
+      "slot": 2,
+      "items": [
+        "item.longsword",
+        "item.knight-shield",
+        "item.destroyed-mail"
+      ]
+    },
+    {
+      "id": "hero.base.ranger-ranger",
+      "fixture": "f.c1",
+      "rotation": "replace",
+      "side": "hero",
+      "slot": 2,
+      "items": [
+        "item.elfbow",
+        "item.flowing-cloak"
+      ]
+    },
+    {
+      "id": "hero.base.ranger-scantily",
+      "fixture": "f.c1",
+      "rotation": "replace",
+      "side": "hero",
+      "slot": 2,
+      "items": [
+        "item.elfbow",
+        "item.flowing-cloak"
+      ]
+    },
+    {
+      "id": "hero.base.ranger-nature",
+      "fixture": "f.c1",
+      "rotation": "replace",
+      "side": "hero",
+      "slot": 2,
+      "items": [
+        "item.shortbow",
+        "item.pilgrims-habit"
+      ]
+    },
+    {
+      "id": "hero.base.ranger-aggressive",
+      "fixture": "f.c1",
+      "rotation": "replace",
+      "side": "hero",
+      "slot": 2,
+      "items": [
+        "item.longbow",
+        "item.thick-hide"
+      ]
+    },
+    {
+      "id": "hero.base.warrior-iron",
+      "fixture": "f.c1",
+      "rotation": "replace",
+      "side": "hero",
+      "slot": 2,
+      "items": [
+        "item.destroyed-mail",
+        "item.tower-shield",
+        "item.war-axe"
+      ]
+    },
+    {
+      "id": "hero.base.warrior-brawler",
+      "fixture": "f.c1",
+      "rotation": "replace",
+      "side": "hero",
+      "slot": 2,
+      "items": [
+        "item.ragged-hides"
+      ]
+    },
+    {
+      "id": "hero.base.warrior-barbarian",
+      "fixture": "f.c1",
+      "rotation": "replace",
+      "side": "hero",
+      "slot": 2,
+      "items": [
+        "item.greatsword",
+        "item.thick-hide"
+      ]
+    },
+    {
+      "id": "hero.base.warrior-fearsome",
+      "fixture": "f.c1",
+      "rotation": "replace",
+      "side": "hero",
+      "slot": 2,
+      "items": [
+        "item.halberd",
+        "item.basic-armor"
+      ]
+    },
+    {
+      "id": "hero.base.mage-thinking",
+      "fixture": "f.c1",
+      "rotation": "replace",
+      "side": "hero",
+      "slot": 2,
+      "items": [
+        "item.frost-staff",
+        "item.watchmans-coat"
+      ]
+    },
+    {
+      "id": "hero.base.mage-sexy",
+      "fixture": "f.c1",
+      "rotation": "replace",
+      "side": "hero",
+      "slot": 2,
+      "items": [
+        "item.fire-staff",
+        "item.tanners-apron"
+      ]
+    },
+    {
+      "id": "hero.base.mage-fire",
+      "fixture": "f.c1",
+      "rotation": "replace",
+      "side": "hero",
+      "slot": 2,
+      "items": [
+        "item.fire-staff",
+        "item.basic-armor"
+      ]
+    },
+    {
+      "id": "hero.base.mage-fireaura",
+      "fixture": "f.c1",
+      "rotation": "replace",
+      "side": "hero",
+      "slot": 2,
+      "items": [
+        "item.fire-staff",
+        "item.nice-robes"
+      ]
+    },
+    {
+      "id": "hero.base.priest-pauper",
+      "fixture": "f.c1",
+      "rotation": "replace",
+      "side": "hero",
+      "slot": 2,
+      "items": [
+        "item.holy-texts",
+        "item.nice-robes"
+      ]
+    },
+    {
+      "id": "hero.base.priest-armored",
+      "fixture": "f.c1",
+      "rotation": "replace",
+      "side": "hero",
+      "slot": 2,
+      "items": [
+        "item.knight-shield",
+        "item.holy-texts",
+        "item.pilgrims-habit"
+      ]
+    },
+    {
+      "id": "hero.base.priest-robes",
+      "fixture": "f.c1",
+      "rotation": "replace",
+      "side": "hero",
+      "slot": 2,
+      "items": [
+        "item.holy-symbol",
+        "item.peddlers-vest"
+      ]
+    },
+    {
+      "id": "hero.base.priest-scantily",
+      "fixture": "f.c1",
+      "rotation": "replace",
+      "side": "hero",
+      "slot": 2,
+      "items": [
+        "item.iron-mace",
+        "item.holy-symbol",
+        "item.borrowed-vestments"
+      ]
+    },
+    {
+      "id": "hero.base.rogue-raven",
+      "fixture": "f.c1",
+      "rotation": "replace",
+      "side": "hero",
+      "slot": 2,
+      "items": [
+        "item.hand-crossbow",
+        "item.longsword",
+        "item.peddlers-vest"
+      ]
+    },
+    {
+      "id": "hero.base.rogue-rose",
+      "fixture": "f.c1",
+      "rotation": "replace",
+      "side": "hero",
+      "slot": 2,
+      "items": [
+        "item.obsidian-fang-dagger",
+        "item.flowing-cloak"
+      ]
+    },
+    {
+      "id": "hero.base.rogue-snake",
+      "fixture": "f.c1",
+      "rotation": "replace",
+      "side": "hero",
+      "slot": 2,
+      "items": [
+        "item.throwing-knives",
+        "item.basic-armor"
+      ]
+    },
+    {
+      "id": "hero.base.rogue-skull",
+      "fixture": "f.c1",
+      "rotation": "replace",
+      "side": "hero",
+      "slot": 2,
+      "items": [
+        "item.daggers",
+        "item.watchmans-coat"
+      ]
+    }
+  ],
+  "matchups": [
+    {
+      "id": "m.c1",
+      "hero": "squad.c1-heroes",
+      "enemy": "squad.c1-enemies"
+    }
+  ]
+}

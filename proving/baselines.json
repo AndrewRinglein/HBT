@@ -1,0 +1,372 @@
+{
+  "id": "proving.baselines",
+  "note": "Calibration, matchups only (session 9, 2026-09-04). Finds the close fights that the unit, item and grown plans hang their subjects on — a fixture the heroes win 5-0 at margin 900 ranks nobody (PROVING-CONTENT-HANDOFF.md §3). Every seat's items are ASSIGNED here, verbatim from the row's start kit; a seat with no items is bare on purpose. Ten pairs per matchup (seed 1 over the five maps, then seed 2) so a win rate is out of ten, not five — calibration wants the extra resolution, rankings do not.",
+  "maps": [
+    "map.proving.open",
+    "map.proving.ridge",
+    "map.proving.ford",
+    "map.proving.copse",
+    "map.proving.ruin"
+  ],
+  "seed": 1,
+  "squads": {
+    "squad.heroes-core": [
+      {
+        "unit": "hero.base.warrior-iron",
+        "items": [
+          "item.destroyed-mail",
+          "item.tower-shield",
+          "item.war-axe"
+        ]
+      },
+      {
+        "unit": "hero.base.ranger-aggressive",
+        "items": [
+          "item.longbow",
+          "item.thick-hide"
+        ]
+      },
+      {
+        "unit": "hero.base.mage-fire",
+        "items": [
+          "item.fire-staff",
+          "item.basic-armor"
+        ]
+      },
+      {
+        "unit": "hero.base.priest-armored",
+        "items": [
+          "item.knight-shield",
+          "item.holy-texts",
+          "item.pilgrims-habit"
+        ]
+      }
+    ],
+    "squad.heroes-second": [
+      {
+        "unit": "hero.base.paladin-shiney",
+        "items": [
+          "item.longsword",
+          "item.knight-shield",
+          "item.basic-armor"
+        ]
+      },
+      {
+        "unit": "hero.base.rogue-raven",
+        "items": [
+          "item.hand-crossbow",
+          "item.longsword",
+          "item.peddlers-vest"
+        ]
+      },
+      {
+        "unit": "hero.base.mage-thinking",
+        "items": [
+          "item.frost-staff",
+          "item.watchmans-coat"
+        ]
+      },
+      {
+        "unit": "hero.base.priest-robes",
+        "items": [
+          "item.holy-symbol",
+          "item.peddlers-vest"
+        ]
+      }
+    ],
+    "squad.heroes-bare": [
+      "hero.base.warrior-iron",
+      "hero.base.ranger-aggressive",
+      "hero.base.mage-fire",
+      "hero.base.priest-armored"
+    ],
+    "squad.zombies-4": [
+      "unit.zombie",
+      "unit.zombie",
+      "unit.zombie",
+      "unit.zombie"
+    ],
+    "squad.zombies-6": [
+      "unit.zombie",
+      "unit.zombie",
+      "unit.zombie",
+      "unit.zombie",
+      "unit.zombie",
+      "unit.zombie"
+    ],
+    "squad.zombies-8": [
+      "unit.zombie",
+      "unit.zombie",
+      "unit.zombie",
+      "unit.zombie",
+      "unit.zombie",
+      "unit.zombie",
+      "unit.zombie",
+      "unit.zombie"
+    ],
+    "squad.undead-mixed": [
+      "unit.zombie",
+      "unit.strong-zombie",
+      "unit.skeleton",
+      "unit.ghoul"
+    ],
+    "squad.skeletons-4": [
+      "unit.skeleton",
+      "unit.skeleton",
+      "unit.strong-skeleton",
+      "unit.skeletal-archer"
+    ],
+    "squad.ghouls-4": [
+      "unit.ghoul",
+      "unit.ghoul",
+      "unit.ghoul",
+      "unit.ghoul"
+    ],
+    "squad.imps-4": [
+      "unit.imp",
+      "unit.imp",
+      "unit.fire-imp",
+      "unit.poison-imp"
+    ],
+    "squad.demons-4": [
+      "unit.demon-hound",
+      "unit.hellhound",
+      "unit.imp",
+      "unit.fire-imp"
+    ],
+    "squad.demons-heavy": [
+      "unit.bruiser-demon",
+      "unit.demon-hound",
+      "unit.powerful-imp",
+      "unit.imp-master"
+    ],
+    "squad.undead-close": [
+      "unit.ghoul",
+      "unit.ghoul",
+      "unit.strong-zombie",
+      "unit.skeletal-archer"
+    ],
+    "squad.ghouls-3z": [
+      "unit.ghoul",
+      "unit.ghoul",
+      "unit.ghoul",
+      "unit.zombie"
+    ],
+    "squad.demons-light": [
+      "unit.imp",
+      "unit.imp",
+      "unit.fire-imp",
+      "unit.hellhound"
+    ],
+    "squad.imps-5": [
+      "unit.imp",
+      "unit.imp",
+      "unit.imp",
+      "unit.fire-imp",
+      "unit.poison-imp"
+    ],
+    "squad.skeletons-6": [
+      "unit.skeleton",
+      "unit.skeleton",
+      "unit.skeleton",
+      "unit.strong-skeleton",
+      "unit.strong-skeleton",
+      "unit.skeletal-archer"
+    ],
+    "squad.werewolf-pack": [
+      "unit.werewolf",
+      "unit.zombie",
+      "unit.zombie",
+      "unit.zombie"
+    ],
+    "squad.vampire-court": [
+      "unit.vampire",
+      "unit.skeleton",
+      "unit.skeleton",
+      "unit.skeletal-archer"
+    ],
+    "squad.hounds-4": [
+      "unit.demon-hound",
+      "unit.hellhound",
+      "unit.zombie-hound",
+      "unit.bloodhound"
+    ]
+  },
+  "fixtures": [],
+  "subjects": [],
+  "matchups": [
+    {
+      "id": "m.core-v-zombies-4",
+      "hero": "squad.heroes-core",
+      "enemy": "squad.zombies-4",
+      "pairs": 10
+    },
+    {
+      "id": "m.core-v-zombies-6",
+      "hero": "squad.heroes-core",
+      "enemy": "squad.zombies-6",
+      "pairs": 10
+    },
+    {
+      "id": "m.core-v-zombies-8",
+      "hero": "squad.heroes-core",
+      "enemy": "squad.zombies-8",
+      "pairs": 10
+    },
+    {
+      "id": "m.core-v-undead-mixed",
+      "hero": "squad.heroes-core",
+      "enemy": "squad.undead-mixed",
+      "pairs": 10
+    },
+    {
+      "id": "m.core-v-skeletons-4",
+      "hero": "squad.heroes-core",
+      "enemy": "squad.skeletons-4",
+      "pairs": 10
+    },
+    {
+      "id": "m.core-v-ghouls-4",
+      "hero": "squad.heroes-core",
+      "enemy": "squad.ghouls-4",
+      "pairs": 10
+    },
+    {
+      "id": "m.core-v-imps-4",
+      "hero": "squad.heroes-core",
+      "enemy": "squad.imps-4",
+      "pairs": 10
+    },
+    {
+      "id": "m.core-v-demons-4",
+      "hero": "squad.heroes-core",
+      "enemy": "squad.demons-4",
+      "pairs": 10
+    },
+    {
+      "id": "m.core-v-demons-heavy",
+      "hero": "squad.heroes-core",
+      "enemy": "squad.demons-heavy",
+      "pairs": 10
+    },
+    {
+      "id": "m.second-v-zombies-6",
+      "hero": "squad.heroes-second",
+      "enemy": "squad.zombies-6",
+      "pairs": 10
+    },
+    {
+      "id": "m.second-v-undead-mixed",
+      "hero": "squad.heroes-second",
+      "enemy": "squad.undead-mixed",
+      "pairs": 10
+    },
+    {
+      "id": "m.second-v-demons-4",
+      "hero": "squad.heroes-second",
+      "enemy": "squad.demons-4",
+      "pairs": 10
+    },
+    {
+      "id": "m.bare-v-zombies-4",
+      "hero": "squad.heroes-bare",
+      "enemy": "squad.zombies-4",
+      "pairs": 10
+    },
+    {
+      "id": "m.mirror-zombies",
+      "hero": "squad.zombies-4",
+      "enemy": "squad.zombies-4",
+      "sides": "byList",
+      "pairs": 10
+    },
+    {
+      "id": "m.mirror-core",
+      "hero": "squad.heroes-core",
+      "enemy": "squad.heroes-core",
+      "sides": "byList",
+      "pairs": 10
+    },
+    {
+      "id": "m.core-v-second",
+      "hero": "squad.heroes-core",
+      "enemy": "squad.heroes-second",
+      "sides": "byList",
+      "pairs": 10
+    },
+    {
+      "id": "m.core-v-undead-close",
+      "hero": "squad.heroes-core",
+      "enemy": "squad.undead-close",
+      "pairs": 10
+    },
+    {
+      "id": "m.core-v-ghouls-3z",
+      "hero": "squad.heroes-core",
+      "enemy": "squad.ghouls-3z",
+      "pairs": 10
+    },
+    {
+      "id": "m.core-v-demons-light",
+      "hero": "squad.heroes-core",
+      "enemy": "squad.demons-light",
+      "pairs": 10
+    },
+    {
+      "id": "m.core-v-imps-5",
+      "hero": "squad.heroes-core",
+      "enemy": "squad.imps-5",
+      "pairs": 10
+    },
+    {
+      "id": "m.core-v-skeletons-6",
+      "hero": "squad.heroes-core",
+      "enemy": "squad.skeletons-6",
+      "pairs": 10
+    },
+    {
+      "id": "m.core-v-werewolf-pack",
+      "hero": "squad.heroes-core",
+      "enemy": "squad.werewolf-pack",
+      "pairs": 10
+    },
+    {
+      "id": "m.core-v-vampire-court",
+      "hero": "squad.heroes-core",
+      "enemy": "squad.vampire-court",
+      "pairs": 10
+    },
+    {
+      "id": "m.core-v-hounds-4",
+      "hero": "squad.heroes-core",
+      "enemy": "squad.hounds-4",
+      "pairs": 10
+    },
+    {
+      "id": "m.second-v-ghouls-4",
+      "hero": "squad.heroes-second",
+      "enemy": "squad.ghouls-4",
+      "pairs": 10
+    },
+    {
+      "id": "m.second-v-undead-close",
+      "hero": "squad.heroes-second",
+      "enemy": "squad.undead-close",
+      "pairs": 10
+    },
+    {
+      "id": "m.mirror-bare",
+      "hero": "squad.heroes-bare",
+      "enemy": "squad.heroes-bare",
+      "sides": "byList",
+      "pairs": 10
+    },
+    {
+      "id": "m.bare-v-core",
+      "hero": "squad.heroes-bare",
+      "enemy": "squad.heroes-core",
+      "sides": "byList",
+      "pairs": 10
+    }
+  ]
+}

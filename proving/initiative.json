@@ -1,0 +1,114 @@
+{
+  "id": "proving.initiative",
+  "switches": {
+    "mirrorSideRules": "row"
+  },
+  "note": "How much does initiative matter? Enemies against enemies (ruled 2026-09-04: the hero-side rules — Deathbed Fighting, stamina — stay out of it), the same four on both sides, the west side moves first. Ten battles a mirror on each of the five Proving maps; the rank page reports per map, because the starting gap set by each map's deploy edges moves this number by itself (9-PROVING-NOTES §6: the first mover's edge repeats every 2×movement hexes). Runs under mirrorSideRules: row (E4, landed 2026-09-05): a zombie stays a zombie wherever it stands.",
+  "maps": [
+    "map.proving.open",
+    "map.proving.ridge",
+    "map.proving.ford",
+    "map.proving.copse",
+    "map.proving.ruin"
+  ],
+  "seed": 1,
+  "squads": {
+    "squad.zombies-4": [
+      "unit.zombie",
+      "unit.zombie",
+      "unit.zombie",
+      "unit.zombie"
+    ],
+    "squad.zombies-6": [
+      "unit.zombie",
+      "unit.zombie",
+      "unit.zombie",
+      "unit.zombie",
+      "unit.zombie",
+      "unit.zombie"
+    ],
+    "squad.strong-zombies-4": [
+      "unit.strong-zombie",
+      "unit.strong-zombie",
+      "unit.strong-zombie",
+      "unit.strong-zombie"
+    ],
+    "squad.skeletons-4": [
+      "unit.skeleton",
+      "unit.skeleton",
+      "unit.skeleton",
+      "unit.skeleton"
+    ],
+    "squad.ghouls-4": [
+      "unit.ghoul",
+      "unit.ghoul",
+      "unit.ghoul",
+      "unit.ghoul"
+    ],
+    "squad.imps-4": [
+      "unit.imp",
+      "unit.imp",
+      "unit.imp",
+      "unit.imp"
+    ],
+    "squad.demon-hounds-4": [
+      "unit.demon-hound",
+      "unit.demon-hound",
+      "unit.demon-hound",
+      "unit.demon-hound"
+    ]
+  },
+  "fixtures": [],
+  "subjects": [],
+  "matchups": [
+    {
+      "id": "m.zombies-4",
+      "hero": "squad.zombies-4",
+      "enemy": "squad.zombies-4",
+      "sides": "byList",
+      "pairs": 10
+    },
+    {
+      "id": "m.zombies-6",
+      "hero": "squad.zombies-6",
+      "enemy": "squad.zombies-6",
+      "sides": "byList",
+      "pairs": 10
+    },
+    {
+      "id": "m.strong-zombies-4",
+      "hero": "squad.strong-zombies-4",
+      "enemy": "squad.strong-zombies-4",
+      "sides": "byList",
+      "pairs": 10
+    },
+    {
+      "id": "m.skeletons-4",
+      "hero": "squad.skeletons-4",
+      "enemy": "squad.skeletons-4",
+      "sides": "byList",
+      "pairs": 10
+    },
+    {
+      "id": "m.ghouls-4",
+      "hero": "squad.ghouls-4",
+      "enemy": "squad.ghouls-4",
+      "sides": "byList",
+      "pairs": 10
+    },
+    {
+      "id": "m.imps-4",
+      "hero": "squad.imps-4",
+      "enemy": "squad.imps-4",
+      "sides": "byList",
+      "pairs": 10
+    },
+    {
+      "id": "m.demon-hounds-4",
+      "hero": "squad.demon-hounds-4",
+      "enemy": "squad.demon-hounds-4",
+      "sides": "byList",
+      "pairs": 10
+    }
+  ]
+}

@@ -1,0 +1,393 @@
+{
+  "id": "proving.civilians-2",
+  "note": "Pass two: every civilian on C2 and C3, the hero seat, as in proving.civilians.",
+  "maps": [
+    "map.proving.open",
+    "map.proving.ridge",
+    "map.proving.ford",
+    "map.proving.copse",
+    "map.proving.ruin"
+  ],
+  "seed": 1,
+  "squads": {
+    "squad.c1-heroes": [
+      {
+        "unit": "hero.base.warrior-iron",
+        "items": [
+          "item.destroyed-mail",
+          "item.tower-shield",
+          "item.war-axe"
+        ]
+      },
+      {
+        "unit": "hero.base.ranger-aggressive",
+        "items": [
+          "item.longbow",
+          "item.thick-hide"
+        ]
+      },
+      {
+        "unit": "hero.base.mage-fire",
+        "items": [
+          "item.fire-staff",
+          "item.basic-armor"
+        ]
+      }
+    ],
+    "squad.c2-enemies": [
+      "unit.imp",
+      "unit.imp",
+      "unit.imp",
+      "unit.imp",
+      "unit.fire-imp",
+      "unit.hellhound"
+    ],
+    "squad.c3-heroes": [
+      {
+        "unit": "hero.base.paladin-shiney",
+        "items": [
+          "item.longsword",
+          "item.knight-shield",
+          "item.basic-armor"
+        ]
+      },
+      {
+        "unit": "hero.base.rogue-raven",
+        "items": [
+          "item.hand-crossbow",
+          "item.longsword",
+          "item.peddlers-vest"
+        ]
+      },
+      {
+        "unit": "hero.base.priest-robes",
+        "items": [
+          "item.holy-symbol",
+          "item.peddlers-vest"
+        ]
+      }
+    ],
+    "squad.c3-enemies": [
+      "unit.zombie",
+      "unit.zombie",
+      "unit.zombie",
+      "unit.zombie",
+      "unit.zombie",
+      "unit.zombie",
+      "unit.zombie",
+      "unit.zombie",
+      "unit.zombie",
+      "unit.zombie",
+      "unit.zombie",
+      "unit.zombie"
+    ]
+  },
+  "fixtures": [
+    {
+      "id": "f.c2",
+      "hero": "squad.c1-heroes",
+      "enemy": "squad.c2-enemies"
+    },
+    {
+      "id": "f.c3",
+      "hero": "squad.c3-heroes",
+      "enemy": "squad.c3-enemies"
+    }
+  ],
+  "subjects": [
+    {
+      "id": "hero.fixed.orphans",
+      "fixture": "f.c2",
+      "rotation": "replace",
+      "side": "hero",
+      "slot": 2,
+      "items": [
+        "item.pile-of-rocks"
+      ]
+    },
+    {
+      "id": "hero.fixed.orphans",
+      "fixture": "f.c3",
+      "rotation": "replace",
+      "side": "hero",
+      "slot": 2,
+      "items": [
+        "item.pile-of-rocks"
+      ]
+    },
+    {
+      "id": "hero.fixed.lumberjack-and-wife",
+      "fixture": "f.c2",
+      "rotation": "replace",
+      "side": "hero",
+      "slot": 2,
+      "items": [
+        "item.lumberjack-axe",
+        "item.pitchfork"
+      ]
+    },
+    {
+      "id": "hero.fixed.lumberjack-and-wife",
+      "fixture": "f.c3",
+      "rotation": "replace",
+      "side": "hero",
+      "slot": 2,
+      "items": [
+        "item.lumberjack-axe",
+        "item.pitchfork"
+      ]
+    },
+    {
+      "id": "hero.fixed.farmer",
+      "fixture": "f.c2",
+      "rotation": "replace",
+      "side": "hero",
+      "slot": 2,
+      "items": [
+        "item.pitchfork"
+      ]
+    },
+    {
+      "id": "hero.fixed.farmer",
+      "fixture": "f.c3",
+      "rotation": "replace",
+      "side": "hero",
+      "slot": 2,
+      "items": [
+        "item.pitchfork"
+      ]
+    },
+    {
+      "id": "hero.fixed.school-teacher",
+      "fixture": "f.c2",
+      "rotation": "replace",
+      "side": "hero",
+      "slot": 2,
+      "items": [
+        "item.dagger"
+      ]
+    },
+    {
+      "id": "hero.fixed.school-teacher",
+      "fixture": "f.c3",
+      "rotation": "replace",
+      "side": "hero",
+      "slot": 2,
+      "items": [
+        "item.dagger"
+      ]
+    },
+    {
+      "id": "hero.fixed.school-children",
+      "fixture": "f.c2",
+      "rotation": "replace",
+      "side": "hero",
+      "slot": 2,
+      "items": [
+        "item.pile-of-rocks"
+      ]
+    },
+    {
+      "id": "hero.fixed.school-children",
+      "fixture": "f.c3",
+      "rotation": "replace",
+      "side": "hero",
+      "slot": 2,
+      "items": [
+        "item.pile-of-rocks"
+      ]
+    },
+    {
+      "id": "hero.fixed.librarian",
+      "fixture": "f.c2",
+      "rotation": "replace",
+      "side": "hero",
+      "slot": 2,
+      "items": [
+        "item.dagger"
+      ]
+    },
+    {
+      "id": "hero.fixed.librarian",
+      "fixture": "f.c3",
+      "rotation": "replace",
+      "side": "hero",
+      "slot": 2,
+      "items": [
+        "item.dagger"
+      ]
+    },
+    {
+      "id": "hero.fixed.cook",
+      "fixture": "f.c2",
+      "rotation": "replace",
+      "side": "hero",
+      "slot": 2,
+      "items": [
+        "item.dagger"
+      ]
+    },
+    {
+      "id": "hero.fixed.cook",
+      "fixture": "f.c3",
+      "rotation": "replace",
+      "side": "hero",
+      "slot": 2,
+      "items": [
+        "item.dagger"
+      ]
+    },
+    {
+      "id": "hero.fixed.fishermans-wife",
+      "fixture": "f.c2",
+      "rotation": "replace",
+      "side": "hero",
+      "slot": 2,
+      "items": [
+        "item.dagger"
+      ]
+    },
+    {
+      "id": "hero.fixed.fishermans-wife",
+      "fixture": "f.c3",
+      "rotation": "replace",
+      "side": "hero",
+      "slot": 2,
+      "items": [
+        "item.dagger"
+      ]
+    },
+    {
+      "id": "hero.fixed.fisherman",
+      "fixture": "f.c2",
+      "rotation": "replace",
+      "side": "hero",
+      "slot": 2,
+      "items": [
+        "item.dagger"
+      ]
+    },
+    {
+      "id": "hero.fixed.fisherman",
+      "fixture": "f.c3",
+      "rotation": "replace",
+      "side": "hero",
+      "slot": 2,
+      "items": [
+        "item.dagger"
+      ]
+    },
+    {
+      "id": "hero.fixed.old-wise-man",
+      "fixture": "f.c2",
+      "rotation": "replace",
+      "side": "hero",
+      "slot": 2,
+      "items": [
+        "item.dagger"
+      ]
+    },
+    {
+      "id": "hero.fixed.old-wise-man",
+      "fixture": "f.c3",
+      "rotation": "replace",
+      "side": "hero",
+      "slot": 2,
+      "items": [
+        "item.dagger"
+      ]
+    },
+    {
+      "id": "hero.fixed.blacksmith",
+      "fixture": "f.c2",
+      "rotation": "replace",
+      "side": "hero",
+      "slot": 2,
+      "items": [
+        "item.dagger"
+      ]
+    },
+    {
+      "id": "hero.fixed.blacksmith",
+      "fixture": "f.c3",
+      "rotation": "replace",
+      "side": "hero",
+      "slot": 2,
+      "items": [
+        "item.dagger"
+      ]
+    },
+    {
+      "id": "hero.fixed.group-of-farmers",
+      "fixture": "f.c2",
+      "rotation": "replace",
+      "side": "hero",
+      "slot": 2,
+      "items": [
+        "item.pitchfork"
+      ]
+    },
+    {
+      "id": "hero.fixed.group-of-farmers",
+      "fixture": "f.c3",
+      "rotation": "replace",
+      "side": "hero",
+      "slot": 2,
+      "items": [
+        "item.pitchfork"
+      ]
+    },
+    {
+      "id": "hero.fixed.farming-family",
+      "fixture": "f.c2",
+      "rotation": "replace",
+      "side": "hero",
+      "slot": 2,
+      "items": [
+        "item.pitchfork"
+      ]
+    },
+    {
+      "id": "hero.fixed.farming-family",
+      "fixture": "f.c3",
+      "rotation": "replace",
+      "side": "hero",
+      "slot": 2,
+      "items": [
+        "item.pitchfork"
+      ]
+    },
+    {
+      "id": "hero.fixed.scary-kid",
+      "fixture": "f.c2",
+      "rotation": "replace",
+      "side": "hero",
+      "slot": 2,
+      "items": [
+        "item.pile-of-rocks"
+      ]
+    },
+    {
+      "id": "hero.fixed.scary-kid",
+      "fixture": "f.c3",
+      "rotation": "replace",
+      "side": "hero",
+      "slot": 2,
+      "items": [
+        "item.pile-of-rocks"
+      ]
+    }
+  ],
+  "matchups": [
+    {
+      "id": "m.c2",
+      "hero": "squad.c1-heroes",
+      "enemy": "squad.c2-enemies"
+    },
+    {
+      "id": "m.c3",
+      "hero": "squad.c3-heroes",
+      "enemy": "squad.c3-enemies"
+    }
+  ]
+}

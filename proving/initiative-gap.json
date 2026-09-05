@@ -1,0 +1,127 @@
+{
+  "id": "proving.initiative-gap",
+  "switches": {
+    "mirrorSideRules": "row"
+  },
+  "note": "Initiative by starting distance, zombies-4 mirror on the open Proving map, twenty seeds a gap. `gap` (hexes between the two lines, overriding the deploy edges) is a matchup field the rig must learn (9-PROVING-SETTLED E6). Interim probe on map.open: first mover 17-3 at gap 3 and 11, 14-6 at 5 and 13, 9-11 at 7, 9 and 15.",
+  "maps": [
+    "map.proving.open"
+  ],
+  "seed": 1,
+  "squads": {
+    "squad.zombies-4": [
+      "unit.zombie",
+      "unit.zombie",
+      "unit.zombie",
+      "unit.zombie"
+    ]
+  },
+  "fixtures": [],
+  "subjects": [],
+  "matchups": [
+    {
+      "id": "m.zombies-4-gap-3",
+      "hero": "squad.zombies-4",
+      "enemy": "squad.zombies-4",
+      "sides": "byList",
+      "gap": 3,
+      "pairs": 20
+    },
+    {
+      "id": "m.zombies-4-gap-4",
+      "hero": "squad.zombies-4",
+      "enemy": "squad.zombies-4",
+      "sides": "byList",
+      "gap": 4,
+      "pairs": 20
+    },
+    {
+      "id": "m.zombies-4-gap-5",
+      "hero": "squad.zombies-4",
+      "enemy": "squad.zombies-4",
+      "sides": "byList",
+      "gap": 5,
+      "pairs": 20
+    },
+    {
+      "id": "m.zombies-4-gap-6",
+      "hero": "squad.zombies-4",
+      "enemy": "squad.zombies-4",
+      "sides": "byList",
+      "gap": 6,
+      "pairs": 20
+    },
+    {
+      "id": "m.zombies-4-gap-7",
+      "hero": "squad.zombies-4",
+      "enemy": "squad.zombies-4",
+      "sides": "byList",
+      "gap": 7,
+      "pairs": 20
+    },
+    {
+      "id": "m.zombies-4-gap-8",
+      "hero": "squad.zombies-4",
+      "enemy": "squad.zombies-4",
+      "sides": "byList",
+      "gap": 8,
+      "pairs": 20
+    },
+    {
+      "id": "m.zombies-4-gap-9",
+      "hero": "squad.zombies-4",
+      "enemy": "squad.zombies-4",
+      "sides": "byList",
+      "gap": 9,
+      "pairs": 20
+    },
+    {
+      "id": "m.zombies-4-gap-10",
+      "hero": "squad.zombies-4",
+      "enemy": "squad.zombies-4",
+      "sides": "byList",
+      "gap": 10,
+      "pairs": 20
+    },
+    {
+      "id": "m.zombies-4-gap-11",
+      "hero": "squad.zombies-4",
+      "enemy": "squad.zombies-4",
+      "sides": "byList",
+      "gap": 11,
+      "pairs": 20
+    },
+    {
+      "id": "m.zombies-4-gap-12",
+      "hero": "squad.zombies-4",
+      "enemy": "squad.zombies-4",
+      "sides": "byList",
+      "gap": 12,
+      "pairs": 20
+    },
+    {
+      "id": "m.zombies-4-gap-13",
+      "hero": "squad.zombies-4",
+      "enemy": "squad.zombies-4",
+      "sides": "byList",
+      "gap": 13,
+      "pairs": 20
+    },
+    {
+      "id": "m.zombies-4-gap-14",
+      "hero": "squad.zombies-4",
+      "enemy": "squad.zombies-4",
+      "sides": "byList",
+      "gap": 14,
+      "pairs": 20
+    },
+    {
+      "id": "m.zombies-4-gap-15",
+      "hero": "squad.zombies-4",
+      "enemy": "squad.zombies-4",
+      "sides": "byList",
+      "gap": 15,
+      "pairs": 20
+    }
+  ]
+}

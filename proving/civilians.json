@@ -1,0 +1,209 @@
+{
+  "id": "proving.civilians",
+  "note": "Every hero.fixed.* civilian row, replacing seat 2 (mage-fire) of the control three — the same seat the heroes take, so a civilian's number sits on the hero ladder and reads against it. Items are what the row carries (a pitchfork, a pile of rocks); a row with none fields bare, which for a civilian is the truth.",
+  "maps": [
+    "map.proving.open",
+    "map.proving.ridge",
+    "map.proving.ford",
+    "map.proving.copse",
+    "map.proving.ruin"
+  ],
+  "seed": 1,
+  "squads": {
+    "squad.c1-heroes": [
+      {
+        "unit": "hero.base.warrior-iron",
+        "items": [
+          "item.destroyed-mail",
+          "item.tower-shield",
+          "item.war-axe"
+        ]
+      },
+      {
+        "unit": "hero.base.ranger-aggressive",
+        "items": [
+          "item.longbow",
+          "item.thick-hide"
+        ]
+      },
+      {
+        "unit": "hero.base.mage-fire",
+        "items": [
+          "item.fire-staff",
+          "item.basic-armor"
+        ]
+      }
+    ],
+    "squad.c1-enemies": [
+      "unit.zombie",
+      "unit.zombie",
+      "unit.zombie",
+      "unit.zombie",
+      "unit.zombie",
+      "unit.zombie",
+      "unit.zombie",
+      "unit.zombie",
+      "unit.zombie",
+      "unit.zombie",
+      "unit.zombie",
+      "unit.zombie"
+    ]
+  },
+  "fixtures": [
+    {
+      "id": "f.c1",
+      "hero": "squad.c1-heroes",
+      "enemy": "squad.c1-enemies"
+    }
+  ],
+  "subjects": [
+    {
+      "id": "hero.fixed.orphans",
+      "fixture": "f.c1",
+      "rotation": "replace",
+      "side": "hero",
+      "slot": 2,
+      "items": [
+        "item.pile-of-rocks"
+      ]
+    },
+    {
+      "id": "hero.fixed.lumberjack-and-wife",
+      "fixture": "f.c1",
+      "rotation": "replace",
+      "side": "hero",
+      "slot": 2,
+      "items": [
+        "item.lumberjack-axe",
+        "item.pitchfork"
+      ]
+    },
+    {
+      "id": "hero.fixed.farmer",
+      "fixture": "f.c1",
+      "rotation": "replace",
+      "side": "hero",
+      "slot": 2,
+      "items": [
+        "item.pitchfork"
+      ]
+    },
+    {
+      "id": "hero.fixed.school-teacher",
+      "fixture": "f.c1",
+      "rotation": "replace",
+      "side": "hero",
+      "slot": 2,
+      "items": [
+        "item.dagger"
+      ]
+    },
+    {
+      "id": "hero.fixed.school-children",
+      "fixture": "f.c1",
+      "rotation": "replace",
+      "side": "hero",
+      "slot": 2,
+      "items": [
+        "item.pile-of-rocks"
+      ]
+    },
+    {
+      "id": "hero.fixed.librarian",
+      "fixture": "f.c1",
+      "rotation": "replace",
+      "side": "hero",
+      "slot": 2,
+      "items": [
+        "item.dagger"
+      ]
+    },
+    {
+      "id": "hero.fixed.cook",
+      "fixture": "f.c1",
+      "rotation": "replace",
+      "side": "hero",
+      "slot": 2,
+      "items": [
+        "item.dagger"
+      ]
+    },
+    {
+      "id": "hero.fixed.fishermans-wife",
+      "fixture": "f.c1",
+      "rotation": "replace",
+      "side": "hero",
+      "slot": 2,
+      "items": [
+        "item.dagger"
+      ]
+    },
+    {
+      "id": "hero.fixed.fisherman",
+      "fixture": "f.c1",
+      "rotation": "replace",
+      "side": "hero",
+      "slot": 2,
+      "items": [
+        "item.dagger"
+      ]
+    },
+    {
+      "id": "hero.fixed.old-wise-man",
+      "fixture": "f.c1",
+      "rotation": "replace",
+      "side": "hero",
+      "slot": 2,
+      "items": [
+        "item.dagger"
+      ]
+    },
+    {
+      "id": "hero.fixed.blacksmith",
+      "fixture": "f.c1",
+      "rotation": "replace",
+      "side": "hero",
+      "slot": 2,
+      "items": [
+        "item.dagger"
+      ]
+    },
+    {
+      "id": "hero.fixed.group-of-farmers",
+      "fixture": "f.c1",
+      "rotation": "replace",
+      "side": "hero",
+      "slot": 2,
+      "items": [
+        "item.pitchfork"
+      ]
+    },
+    {
+      "id": "hero.fixed.farming-family",
+      "fixture": "f.c1",
+      "rotation": "replace",
+      "side": "hero",
+      "slot": 2,
+      "items": [
+        "item.pitchfork"
+      ]
+    },
+    {
+      "id": "hero.fixed.scary-kid",
+      "fixture": "f.c1",
+      "rotation": "replace",
+      "side": "hero",
+      "slot": 2,
+      "items": [
+        "item.pile-of-rocks"
+      ]
+    }
+  ],
+  "matchups": [
+    {
+      "id": "m.c1",
+      "hero": "squad.c1-heroes",
+      "enemy": "squad.c1-enemies"
+    }
+  ]
+}

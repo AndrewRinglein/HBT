@@ -1,0 +1,3751 @@
+{
+  "id": "proving.levels",
+  "note": "Pass two (Angela: \"we will eventually change level, but we'll start with level 1\" — this is the eventually): every hero and civilian at levels 2, 4, 6, 8 and 10 against ITSELF at level 1, in its start kit, in seat 2 beside C1's warrior and ranger, against C1's twelve zombies. One fixture per unit, so the WITHOUT arm is the same body at level 1 and the number reads \"what a level is worth to this unit.\" The specialty is the class's first in registry order (a reference, not a ranking — proving.specialties ranks them); the level-5 pick is the table's first option; no powers are drafted, because a draft is an offer of three and a choice, which no rule in the pack makes — a finding for the page, and a later plan (proving.powers) when the draft has a rule. A civilian with a type table levels on it; one the engine refuses is INVALID with its reason.",
+  "maps": [
+    "map.proving.open",
+    "map.proving.ridge",
+    "map.proving.ford",
+    "map.proving.copse",
+    "map.proving.ruin"
+  ],
+  "seed": 1,
+  "squads": {
+    "squad.c1-enemies": [
+      "unit.zombie",
+      "unit.zombie",
+      "unit.zombie",
+      "unit.zombie",
+      "unit.zombie",
+      "unit.zombie",
+      "unit.zombie",
+      "unit.zombie",
+      "unit.zombie",
+      "unit.zombie",
+      "unit.zombie",
+      "unit.zombie"
+    ],
+    "squad.l1-paladin-dark": [
+      {
+        "unit": "hero.base.warrior-iron",
+        "items": [
+          "item.destroyed-mail",
+          "item.tower-shield",
+          "item.war-axe"
+        ]
+      },
+      {
+        "unit": "hero.base.ranger-aggressive",
+        "items": [
+          "item.longbow",
+          "item.thick-hide"
+        ]
+      },
+      {
+        "unit": "hero.base.paladin-dark",
+        "items": [
+          "item.greatsword",
+          "item.rusted-plate"
+        ]
+      }
+    ],
+    "squad.l1-paladin-shiney": [
+      {
+        "unit": "hero.base.warrior-iron",
+        "items": [
+          "item.destroyed-mail",
+          "item.tower-shield",
+          "item.war-axe"
+        ]
+      },
+      {
+        "unit": "hero.base.ranger-aggressive",
+        "items": [
+          "item.longbow",
+          "item.thick-hide"
+        ]
+      },
+      {
+        "unit": "hero.base.paladin-shiney",
+        "items": [
+          "item.longsword",
+          "item.knight-shield",
+          "item.basic-armor"
+        ]
+      }
+    ],
+    "squad.l1-paladin-hunk": [
+      {
+        "unit": "hero.base.warrior-iron",
+        "items": [
+          "item.destroyed-mail",
+          "item.tower-shield",
+          "item.war-axe"
+        ]
+      },
+      {
+        "unit": "hero.base.ranger-aggressive",
+        "items": [
+          "item.longbow",
+          "item.thick-hide"
+        ]
+      },
+      {
+        "unit": "hero.base.paladin-hunk",
+        "items": [
+          "item.longsword",
+          "item.knight-shield",
+          "item.ragged-hides"
+        ]
+      }
+    ],
+    "squad.l1-paladin-smug": [
+      {
+        "unit": "hero.base.warrior-iron",
+        "items": [
+          "item.destroyed-mail",
+          "item.tower-shield",
+          "item.war-axe"
+        ]
+      },
+      {
+        "unit": "hero.base.ranger-aggressive",
+        "items": [
+          "item.longbow",
+          "item.thick-hide"
+        ]
+      },
+      {
+        "unit": "hero.base.paladin-smug",
+        "items": [
+          "item.longsword",
+          "item.knight-shield",
+          "item.destroyed-mail"
+        ]
+      }
+    ],
+    "squad.l1-ranger-ranger": [
+      {
+        "unit": "hero.base.warrior-iron",
+        "items": [
+          "item.destroyed-mail",
+          "item.tower-shield",
+          "item.war-axe"
+        ]
+      },
+      {
+        "unit": "hero.base.ranger-aggressive",
+        "items": [
+          "item.longbow",
+          "item.thick-hide"
+        ]
+      },
+      {
+        "unit": "hero.base.ranger-ranger",
+        "items": [
+          "item.elfbow",
+          "item.flowing-cloak"
+        ]
+      }
+    ],
+    "squad.l1-ranger-scantily": [
+      {
+        "unit": "hero.base.warrior-iron",
+        "items": [
+          "item.destroyed-mail",
+          "item.tower-shield",
+          "item.war-axe"
+        ]
+      },
+      {
+        "unit": "hero.base.ranger-aggressive",
+        "items": [
+          "item.longbow",
+          "item.thick-hide"
+        ]
+      },
+      {
+        "unit": "hero.base.ranger-scantily",
+        "items": [
+          "item.elfbow",
+          "item.flowing-cloak"
+        ]
+      }
+    ],
+    "squad.l1-ranger-nature": [
+      {
+        "unit": "hero.base.warrior-iron",
+        "items": [
+          "item.destroyed-mail",
+          "item.tower-shield",
+          "item.war-axe"
+        ]
+      },
+      {
+        "unit": "hero.base.ranger-aggressive",
+        "items": [
+          "item.longbow",
+          "item.thick-hide"
+        ]
+      },
+      {
+        "unit": "hero.base.ranger-nature",
+        "items": [
+          "item.shortbow",
+          "item.pilgrims-habit"
+        ]
+      }
+    ],
+    "squad.l1-ranger-aggressive": [
+      {
+        "unit": "hero.base.warrior-iron",
+        "items": [
+          "item.destroyed-mail",
+          "item.tower-shield",
+          "item.war-axe"
+        ]
+      },
+      {
+        "unit": "hero.base.ranger-aggressive",
+        "items": [
+          "item.longbow",
+          "item.thick-hide"
+        ]
+      },
+      {
+        "unit": "hero.base.ranger-aggressive",
+        "items": [
+          "item.longbow",
+          "item.thick-hide"
+        ]
+      }
+    ],
+    "squad.l1-warrior-iron": [
+      {
+        "unit": "hero.base.warrior-iron",
+        "items": [
+          "item.destroyed-mail",
+          "item.tower-shield",
+          "item.war-axe"
+        ]
+      },
+      {
+        "unit": "hero.base.ranger-aggressive",
+        "items": [
+          "item.longbow",
+          "item.thick-hide"
+        ]
+      },
+      {
+        "unit": "hero.base.warrior-iron",
+        "items": [
+          "item.destroyed-mail",
+          "item.tower-shield",
+          "item.war-axe"
+        ]
+      }
+    ],
+    "squad.l1-warrior-brawler": [
+      {
+        "unit": "hero.base.warrior-iron",
+        "items": [
+          "item.destroyed-mail",
+          "item.tower-shield",
+          "item.war-axe"
+        ]
+      },
+      {
+        "unit": "hero.base.ranger-aggressive",
+        "items": [
+          "item.longbow",
+          "item.thick-hide"
+        ]
+      },
+      {
+        "unit": "hero.base.warrior-brawler",
+        "items": [
+          "item.ragged-hides"
+        ]
+      }
+    ],
+    "squad.l1-warrior-barbarian": [
+      {
+        "unit": "hero.base.warrior-iron",
+        "items": [
+          "item.destroyed-mail",
+          "item.tower-shield",
+          "item.war-axe"
+        ]
+      },
+      {
+        "unit": "hero.base.ranger-aggressive",
+        "items": [
+          "item.longbow",
+          "item.thick-hide"
+        ]
+      },
+      {
+        "unit": "hero.base.warrior-barbarian",
+        "items": [
+          "item.greatsword",
+          "item.thick-hide"
+        ]
+      }
+    ],
+    "squad.l1-warrior-fearsome": [
+      {
+        "unit": "hero.base.warrior-iron",
+        "items": [
+          "item.destroyed-mail",
+          "item.tower-shield",
+          "item.war-axe"
+        ]
+      },
+      {
+        "unit": "hero.base.ranger-aggressive",
+        "items": [
+          "item.longbow",
+          "item.thick-hide"
+        ]
+      },
+      {
+        "unit": "hero.base.warrior-fearsome",
+        "items": [
+          "item.halberd",
+          "item.basic-armor"
+        ]
+      }
+    ],
+    "squad.l1-mage-thinking": [
+      {
+        "unit": "hero.base.warrior-iron",
+        "items": [
+          "item.destroyed-mail",
+          "item.tower-shield",
+          "item.war-axe"
+        ]
+      },
+      {
+        "unit": "hero.base.ranger-aggressive",
+        "items": [
+          "item.longbow",
+          "item.thick-hide"
+        ]
+      },
+      {
+        "unit": "hero.base.mage-thinking",
+        "items": [
+          "item.frost-staff",
+          "item.watchmans-coat"
+        ]
+      }
+    ],
+    "squad.l1-mage-sexy": [
+      {
+        "unit": "hero.base.warrior-iron",
+        "items": [
+          "item.destroyed-mail",
+          "item.tower-shield",
+          "item.war-axe"
+        ]
+      },
+      {
+        "unit": "hero.base.ranger-aggressive",
+        "items": [
+          "item.longbow",
+          "item.thick-hide"
+        ]
+      },
+      {
+        "unit": "hero.base.mage-sexy",
+        "items": [
+          "item.fire-staff",
+          "item.tanners-apron"
+        ]
+      }
+    ],
+    "squad.l1-mage-fire": [
+      {
+        "unit": "hero.base.warrior-iron",
+        "items": [
+          "item.destroyed-mail",
+          "item.tower-shield",
+          "item.war-axe"
+        ]
+      },
+      {
+        "unit": "hero.base.ranger-aggressive",
+        "items": [
+          "item.longbow",
+          "item.thick-hide"
+        ]
+      },
+      {
+        "unit": "hero.base.mage-fire",
+        "items": [
+          "item.fire-staff",
+          "item.basic-armor"
+        ]
+      }
+    ],
+    "squad.l1-mage-fireaura": [
+      {
+        "unit": "hero.base.warrior-iron",
+        "items": [
+          "item.destroyed-mail",
+          "item.tower-shield",
+          "item.war-axe"
+        ]
+      },
+      {
+        "unit": "hero.base.ranger-aggressive",
+        "items": [
+          "item.longbow",
+          "item.thick-hide"
+        ]
+      },
+      {
+        "unit": "hero.base.mage-fireaura",
+        "items": [
+          "item.fire-staff",
+          "item.nice-robes"
+        ]
+      }
+    ],
+    "squad.l1-priest-pauper": [
+      {
+        "unit": "hero.base.warrior-iron",
+        "items": [
+          "item.destroyed-mail",
+          "item.tower-shield",
+          "item.war-axe"
+        ]
+      },
+      {
+        "unit": "hero.base.ranger-aggressive",
+        "items": [
+          "item.longbow",
+          "item.thick-hide"
+        ]
+      },
+      {
+        "unit": "hero.base.priest-pauper",
+        "items": [
+          "item.holy-texts",
+          "item.nice-robes"
+        ]
+      }
+    ],
+    "squad.l1-priest-armored": [
+      {
+        "unit": "hero.base.warrior-iron",
+        "items": [
+          "item.destroyed-mail",
+          "item.tower-shield",
+          "item.war-axe"
+        ]
+      },
+      {
+        "unit": "hero.base.ranger-aggressive",
+        "items": [
+          "item.longbow",
+          "item.thick-hide"
+        ]
+      },
+      {
+        "unit": "hero.base.priest-armored",
+        "items": [
+          "item.knight-shield",
+          "item.holy-texts",
+          "item.pilgrims-habit"
+        ]
+      }
+    ],
+    "squad.l1-priest-robes": [
+      {
+        "unit": "hero.base.warrior-iron",
+        "items": [
+          "item.destroyed-mail",
+          "item.tower-shield",
+          "item.war-axe"
+        ]
+      },
+      {
+        "unit": "hero.base.ranger-aggressive",
+        "items": [
+          "item.longbow",
+          "item.thick-hide"
+        ]
+      },
+      {
+        "unit": "hero.base.priest-robes",
+        "items": [
+          "item.holy-symbol",
+          "item.peddlers-vest"
+        ]
+      }
+    ],
+    "squad.l1-priest-scantily": [
+      {
+        "unit": "hero.base.warrior-iron",
+        "items": [
+          "item.destroyed-mail",
+          "item.tower-shield",
+          "item.war-axe"
+        ]
+      },
+      {
+        "unit": "hero.base.ranger-aggressive",
+        "items": [
+          "item.longbow",
+          "item.thick-hide"
+        ]
+      },
+      {
+        "unit": "hero.base.priest-scantily",
+        "items": [
+          "item.iron-mace",
+          "item.holy-symbol",
+          "item.borrowed-vestments"
+        ]
+      }
+    ],
+    "squad.l1-rogue-raven": [
+      {
+        "unit": "hero.base.warrior-iron",
+        "items": [
+          "item.destroyed-mail",
+          "item.tower-shield",
+          "item.war-axe"
+        ]
+      },
+      {
+        "unit": "hero.base.ranger-aggressive",
+        "items": [
+          "item.longbow",
+          "item.thick-hide"
+        ]
+      },
+      {
+        "unit": "hero.base.rogue-raven",
+        "items": [
+          "item.hand-crossbow",
+          "item.longsword",
+          "item.peddlers-vest"
+        ]
+      }
+    ],
+    "squad.l1-rogue-rose": [
+      {
+        "unit": "hero.base.warrior-iron",
+        "items": [
+          "item.destroyed-mail",
+          "item.tower-shield",
+          "item.war-axe"
+        ]
+      },
+      {
+        "unit": "hero.base.ranger-aggressive",
+        "items": [
+          "item.longbow",
+          "item.thick-hide"
+        ]
+      },
+      {
+        "unit": "hero.base.rogue-rose",
+        "items": [
+          "item.obsidian-fang-dagger",
+          "item.flowing-cloak"
+        ]
+      }
+    ],
+    "squad.l1-rogue-snake": [
+      {
+        "unit": "hero.base.warrior-iron",
+        "items": [
+          "item.destroyed-mail",
+          "item.tower-shield",
+          "item.war-axe"
+        ]
+      },
+      {
+        "unit": "hero.base.ranger-aggressive",
+        "items": [
+          "item.longbow",
+          "item.thick-hide"
+        ]
+      },
+      {
+        "unit": "hero.base.rogue-snake",
+        "items": [
+          "item.throwing-knives",
+          "item.basic-armor"
+        ]
+      }
+    ],
+    "squad.l1-rogue-skull": [
+      {
+        "unit": "hero.base.warrior-iron",
+        "items": [
+          "item.destroyed-mail",
+          "item.tower-shield",
+          "item.war-axe"
+        ]
+      },
+      {
+        "unit": "hero.base.ranger-aggressive",
+        "items": [
+          "item.longbow",
+          "item.thick-hide"
+        ]
+      },
+      {
+        "unit": "hero.base.rogue-skull",
+        "items": [
+          "item.daggers",
+          "item.watchmans-coat"
+        ]
+      }
+    ],
+    "squad.l1-orphans": [
+      {
+        "unit": "hero.base.warrior-iron",
+        "items": [
+          "item.destroyed-mail",
+          "item.tower-shield",
+          "item.war-axe"
+        ]
+      },
+      {
+        "unit": "hero.base.ranger-aggressive",
+        "items": [
+          "item.longbow",
+          "item.thick-hide"
+        ]
+      },
+      {
+        "unit": "hero.fixed.orphans",
+        "items": [
+          "item.pile-of-rocks"
+        ]
+      }
+    ],
+    "squad.l1-lumberjack-and-wife": [
+      {
+        "unit": "hero.base.warrior-iron",
+        "items": [
+          "item.destroyed-mail",
+          "item.tower-shield",
+          "item.war-axe"
+        ]
+      },
+      {
+        "unit": "hero.base.ranger-aggressive",
+        "items": [
+          "item.longbow",
+          "item.thick-hide"
+        ]
+      },
+      {
+        "unit": "hero.fixed.lumberjack-and-wife",
+        "items": [
+          "item.lumberjack-axe",
+          "item.pitchfork"
+        ]
+      }
+    ],
+    "squad.l1-farmer": [
+      {
+        "unit": "hero.base.warrior-iron",
+        "items": [
+          "item.destroyed-mail",
+          "item.tower-shield",
+          "item.war-axe"
+        ]
+      },
+      {
+        "unit": "hero.base.ranger-aggressive",
+        "items": [
+          "item.longbow",
+          "item.thick-hide"
+        ]
+      },
+      {
+        "unit": "hero.fixed.farmer",
+        "items": [
+          "item.pitchfork"
+        ]
+      }
+    ],
+    "squad.l1-school-teacher": [
+      {
+        "unit": "hero.base.warrior-iron",
+        "items": [
+          "item.destroyed-mail",
+          "item.tower-shield",
+          "item.war-axe"
+        ]
+      },
+      {
+        "unit": "hero.base.ranger-aggressive",
+        "items": [
+          "item.longbow",
+          "item.thick-hide"
+        ]
+      },
+      {
+        "unit": "hero.fixed.school-teacher",
+        "items": [
+          "item.dagger"
+        ]
+      }
+    ],
+    "squad.l1-school-children": [
+      {
+        "unit": "hero.base.warrior-iron",
+        "items": [
+          "item.destroyed-mail",
+          "item.tower-shield",
+          "item.war-axe"
+        ]
+      },
+      {
+        "unit": "hero.base.ranger-aggressive",
+        "items": [
+          "item.longbow",
+          "item.thick-hide"
+        ]
+      },
+      {
+        "unit": "hero.fixed.school-children",
+        "items": [
+          "item.pile-of-rocks"
+        ]
+      }
+    ],
+    "squad.l1-librarian": [
+      {
+        "unit": "hero.base.warrior-iron",
+        "items": [
+          "item.destroyed-mail",
+          "item.tower-shield",
+          "item.war-axe"
+        ]
+      },
+      {
+        "unit": "hero.base.ranger-aggressive",
+        "items": [
+          "item.longbow",
+          "item.thick-hide"
+        ]
+      },
+      {
+        "unit": "hero.fixed.librarian",
+        "items": [
+          "item.dagger"
+        ]
+      }
+    ],
+    "squad.l1-cook": [
+      {
+        "unit": "hero.base.warrior-iron",
+        "items": [
+          "item.destroyed-mail",
+          "item.tower-shield",
+          "item.war-axe"
+        ]
+      },
+      {
+        "unit": "hero.base.ranger-aggressive",
+        "items": [
+          "item.longbow",
+          "item.thick-hide"
+        ]
+      },
+      {
+        "unit": "hero.fixed.cook",
+        "items": [
+          "item.dagger"
+        ]
+      }
+    ],
+    "squad.l1-fishermans-wife": [
+      {
+        "unit": "hero.base.warrior-iron",
+        "items": [
+          "item.destroyed-mail",
+          "item.tower-shield",
+          "item.war-axe"
+        ]
+      },
+      {
+        "unit": "hero.base.ranger-aggressive",
+        "items": [
+          "item.longbow",
+          "item.thick-hide"
+        ]
+      },
+      {
+        "unit": "hero.fixed.fishermans-wife",
+        "items": [
+          "item.dagger"
+        ]
+      }
+    ],
+    "squad.l1-fisherman": [
+      {
+        "unit": "hero.base.warrior-iron",
+        "items": [
+          "item.destroyed-mail",
+          "item.tower-shield",
+          "item.war-axe"
+        ]
+      },
+      {
+        "unit": "hero.base.ranger-aggressive",
+        "items": [
+          "item.longbow",
+          "item.thick-hide"
+        ]
+      },
+      {
+        "unit": "hero.fixed.fisherman",
+        "items": [
+          "item.dagger"
+        ]
+      }
+    ],
+    "squad.l1-old-wise-man": [
+      {
+        "unit": "hero.base.warrior-iron",
+        "items": [
+          "item.destroyed-mail",
+          "item.tower-shield",
+          "item.war-axe"
+        ]
+      },
+      {
+        "unit": "hero.base.ranger-aggressive",
+        "items": [
+          "item.longbow",
+          "item.thick-hide"
+        ]
+      },
+      {
+        "unit": "hero.fixed.old-wise-man",
+        "items": [
+          "item.dagger"
+        ]
+      }
+    ],
+    "squad.l1-blacksmith": [
+      {
+        "unit": "hero.base.warrior-iron",
+        "items": [
+          "item.destroyed-mail",
+          "item.tower-shield",
+          "item.war-axe"
+        ]
+      },
+      {
+        "unit": "hero.base.ranger-aggressive",
+        "items": [
+          "item.longbow",
+          "item.thick-hide"
+        ]
+      },
+      {
+        "unit": "hero.fixed.blacksmith",
+        "items": [
+          "item.dagger"
+        ]
+      }
+    ],
+    "squad.l1-group-of-farmers": [
+      {
+        "unit": "hero.base.warrior-iron",
+        "items": [
+          "item.destroyed-mail",
+          "item.tower-shield",
+          "item.war-axe"
+        ]
+      },
+      {
+        "unit": "hero.base.ranger-aggressive",
+        "items": [
+          "item.longbow",
+          "item.thick-hide"
+        ]
+      },
+      {
+        "unit": "hero.fixed.group-of-farmers",
+        "items": [
+          "item.pitchfork"
+        ]
+      }
+    ],
+    "squad.l1-farming-family": [
+      {
+        "unit": "hero.base.warrior-iron",
+        "items": [
+          "item.destroyed-mail",
+          "item.tower-shield",
+          "item.war-axe"
+        ]
+      },
+      {
+        "unit": "hero.base.ranger-aggressive",
+        "items": [
+          "item.longbow",
+          "item.thick-hide"
+        ]
+      },
+      {
+        "unit": "hero.fixed.farming-family",
+        "items": [
+          "item.pitchfork"
+        ]
+      }
+    ],
+    "squad.l1-scary-kid": [
+      {
+        "unit": "hero.base.warrior-iron",
+        "items": [
+          "item.destroyed-mail",
+          "item.tower-shield",
+          "item.war-axe"
+        ]
+      },
+      {
+        "unit": "hero.base.ranger-aggressive",
+        "items": [
+          "item.longbow",
+          "item.thick-hide"
+        ]
+      },
+      {
+        "unit": "hero.fixed.scary-kid",
+        "items": [
+          "item.pile-of-rocks"
+        ]
+      }
+    ]
+  },
+  "fixtures": [
+    {
+      "id": "f.l1-paladin-dark",
+      "hero": "squad.l1-paladin-dark",
+      "enemy": "squad.c1-enemies"
+    },
+    {
+      "id": "f.l1-paladin-shiney",
+      "hero": "squad.l1-paladin-shiney",
+      "enemy": "squad.c1-enemies"
+    },
+    {
+      "id": "f.l1-paladin-hunk",
+      "hero": "squad.l1-paladin-hunk",
+      "enemy": "squad.c1-enemies"
+    },
+    {
+      "id": "f.l1-paladin-smug",
+      "hero": "squad.l1-paladin-smug",
+      "enemy": "squad.c1-enemies"
+    },
+    {
+      "id": "f.l1-ranger-ranger",
+      "hero": "squad.l1-ranger-ranger",
+      "enemy": "squad.c1-enemies"
+    },
+    {
+      "id": "f.l1-ranger-scantily",
+      "hero": "squad.l1-ranger-scantily",
+      "enemy": "squad.c1-enemies"
+    },
+    {
+      "id": "f.l1-ranger-nature",
+      "hero": "squad.l1-ranger-nature",
+      "enemy": "squad.c1-enemies"
+    },
+    {
+      "id": "f.l1-ranger-aggressive",
+      "hero": "squad.l1-ranger-aggressive",
+      "enemy": "squad.c1-enemies"
+    },
+    {
+      "id": "f.l1-warrior-iron",
+      "hero": "squad.l1-warrior-iron",
+      "enemy": "squad.c1-enemies"
+    },
+    {
+      "id": "f.l1-warrior-brawler",
+      "hero": "squad.l1-warrior-brawler",
+      "enemy": "squad.c1-enemies"
+    },
+    {
+      "id": "f.l1-warrior-barbarian",
+      "hero": "squad.l1-warrior-barbarian",
+      "enemy": "squad.c1-enemies"
+    },
+    {
+      "id": "f.l1-warrior-fearsome",
+      "hero": "squad.l1-warrior-fearsome",
+      "enemy": "squad.c1-enemies"
+    },
+    {
+      "id": "f.l1-mage-thinking",
+      "hero": "squad.l1-mage-thinking",
+      "enemy": "squad.c1-enemies"
+    },
+    {
+      "id": "f.l1-mage-sexy",
+      "hero": "squad.l1-mage-sexy",
+      "enemy": "squad.c1-enemies"
+    },
+    {
+      "id": "f.l1-mage-fire",
+      "hero": "squad.l1-mage-fire",
+      "enemy": "squad.c1-enemies"
+    },
+    {
+      "id": "f.l1-mage-fireaura",
+      "hero": "squad.l1-mage-fireaura",
+      "enemy": "squad.c1-enemies"
+    },
+    {
+      "id": "f.l1-priest-pauper",
+      "hero": "squad.l1-priest-pauper",
+      "enemy": "squad.c1-enemies"
+    },
+    {
+      "id": "f.l1-priest-armored",
+      "hero": "squad.l1-priest-armored",
+      "enemy": "squad.c1-enemies"
+    },
+    {
+      "id": "f.l1-priest-robes",
+      "hero": "squad.l1-priest-robes",
+      "enemy": "squad.c1-enemies"
+    },
+    {
+      "id": "f.l1-priest-scantily",
+      "hero": "squad.l1-priest-scantily",
+      "enemy": "squad.c1-enemies"
+    },
+    {
+      "id": "f.l1-rogue-raven",
+      "hero": "squad.l1-rogue-raven",
+      "enemy": "squad.c1-enemies"
+    },
+    {
+      "id": "f.l1-rogue-rose",
+      "hero": "squad.l1-rogue-rose",
+      "enemy": "squad.c1-enemies"
+    },
+    {
+      "id": "f.l1-rogue-snake",
+      "hero": "squad.l1-rogue-snake",
+      "enemy": "squad.c1-enemies"
+    },
+    {
+      "id": "f.l1-rogue-skull",
+      "hero": "squad.l1-rogue-skull",
+      "enemy": "squad.c1-enemies"
+    },
+    {
+      "id": "f.l1-orphans",
+      "hero": "squad.l1-orphans",
+      "enemy": "squad.c1-enemies"
+    },
+    {
+      "id": "f.l1-lumberjack-and-wife",
+      "hero": "squad.l1-lumberjack-and-wife",
+      "enemy": "squad.c1-enemies"
+    },
+    {
+      "id": "f.l1-farmer",
+      "hero": "squad.l1-farmer",
+      "enemy": "squad.c1-enemies"
+    },
+    {
+      "id": "f.l1-school-teacher",
+      "hero": "squad.l1-school-teacher",
+      "enemy": "squad.c1-enemies"
+    },
+    {
+      "id": "f.l1-school-children",
+      "hero": "squad.l1-school-children",
+      "enemy": "squad.c1-enemies"
+    },
+    {
+      "id": "f.l1-librarian",
+      "hero": "squad.l1-librarian",
+      "enemy": "squad.c1-enemies"
+    },
+    {
+      "id": "f.l1-cook",
+      "hero": "squad.l1-cook",
+      "enemy": "squad.c1-enemies"
+    },
+    {
+      "id": "f.l1-fishermans-wife",
+      "hero": "squad.l1-fishermans-wife",
+      "enemy": "squad.c1-enemies"
+    },
+    {
+      "id": "f.l1-fisherman",
+      "hero": "squad.l1-fisherman",
+      "enemy": "squad.c1-enemies"
+    },
+    {
+      "id": "f.l1-old-wise-man",
+      "hero": "squad.l1-old-wise-man",
+      "enemy": "squad.c1-enemies"
+    },
+    {
+      "id": "f.l1-blacksmith",
+      "hero": "squad.l1-blacksmith",
+      "enemy": "squad.c1-enemies"
+    },
+    {
+      "id": "f.l1-group-of-farmers",
+      "hero": "squad.l1-group-of-farmers",
+      "enemy": "squad.c1-enemies"
+    },
+    {
+      "id": "f.l1-farming-family",
+      "hero": "squad.l1-farming-family",
+      "enemy": "squad.c1-enemies"
+    },
+    {
+      "id": "f.l1-scary-kid",
+      "hero": "squad.l1-scary-kid",
+      "enemy": "squad.c1-enemies"
+    }
+  ],
+  "subjects": [
+    {
+      "id": "hero.base.paladin-dark@l2",
+      "fixture": "f.l1-paladin-dark",
+      "rotation": "grow",
+      "side": "hero",
+      "slot": 2,
+      "progress": {
+        "level": 2,
+        "specialtyId": "specialty.vigil"
+      }
+    },
+    {
+      "id": "hero.base.paladin-dark@l4",
+      "fixture": "f.l1-paladin-dark",
+      "rotation": "grow",
+      "side": "hero",
+      "slot": 2,
+      "progress": {
+        "level": 4,
+        "specialtyId": "specialty.vigil"
+      }
+    },
+    {
+      "id": "hero.base.paladin-dark@l6",
+      "fixture": "f.l1-paladin-dark",
+      "rotation": "grow",
+      "side": "hero",
+      "slot": 2,
+      "progress": {
+        "level": 6,
+        "specialtyId": "specialty.vigil",
+        "levelFivePick": {
+          "strength": 2
+        }
+      }
+    },
+    {
+      "id": "hero.base.paladin-dark@l8",
+      "fixture": "f.l1-paladin-dark",
+      "rotation": "grow",
+      "side": "hero",
+      "slot": 2,
+      "progress": {
+        "level": 8,
+        "specialtyId": "specialty.vigil",
+        "levelFivePick": {
+          "strength": 2
+        }
+      }
+    },
+    {
+      "id": "hero.base.paladin-dark@l10",
+      "fixture": "f.l1-paladin-dark",
+      "rotation": "grow",
+      "side": "hero",
+      "slot": 2,
+      "progress": {
+        "level": 10,
+        "specialtyId": "specialty.vigil",
+        "levelFivePick": {
+          "strength": 2
+        }
+      }
+    },
+    {
+      "id": "hero.base.paladin-shiney@l2",
+      "fixture": "f.l1-paladin-shiney",
+      "rotation": "grow",
+      "side": "hero",
+      "slot": 2,
+      "progress": {
+        "level": 2,
+        "specialtyId": "specialty.vigil"
+      }
+    },
+    {
+      "id": "hero.base.paladin-shiney@l4",
+      "fixture": "f.l1-paladin-shiney",
+      "rotation": "grow",
+      "side": "hero",
+      "slot": 2,
+      "progress": {
+        "level": 4,
+        "specialtyId": "specialty.vigil"
+      }
+    },
+    {
+      "id": "hero.base.paladin-shiney@l6",
+      "fixture": "f.l1-paladin-shiney",
+      "rotation": "grow",
+      "side": "hero",
+      "slot": 2,
+      "progress": {
+        "level": 6,
+        "specialtyId": "specialty.vigil",
+        "levelFivePick": {
+          "strength": 2
+        }
+      }
+    },
+    {
+      "id": "hero.base.paladin-shiney@l8",
+      "fixture": "f.l1-paladin-shiney",
+      "rotation": "grow",
+      "side": "hero",
+      "slot": 2,
+      "progress": {
+        "level": 8,
+        "specialtyId": "specialty.vigil",
+        "levelFivePick": {
+          "strength": 2
+        }
+      }
+    },
+    {
+      "id": "hero.base.paladin-shiney@l10",
+      "fixture": "f.l1-paladin-shiney",
+      "rotation": "grow",
+      "side": "hero",
+      "slot": 2,
+      "progress": {
+        "level": 10,
+        "specialtyId": "specialty.vigil",
+        "levelFivePick": {
+          "strength": 2
+        }
+      }
+    },
+    {
+      "id": "hero.base.paladin-hunk@l2",
+      "fixture": "f.l1-paladin-hunk",
+      "rotation": "grow",
+      "side": "hero",
+      "slot": 2,
+      "progress": {
+        "level": 2,
+        "specialtyId": "specialty.vigil"
+      }
+    },
+    {
+      "id": "hero.base.paladin-hunk@l4",
+      "fixture": "f.l1-paladin-hunk",
+      "rotation": "grow",
+      "side": "hero",
+      "slot": 2,
+      "progress": {
+        "level": 4,
+        "specialtyId": "specialty.vigil"
+      }
+    },
+    {
+      "id": "hero.base.paladin-hunk@l6",
+      "fixture": "f.l1-paladin-hunk",
+      "rotation": "grow",
+      "side": "hero",
+      "slot": 2,
+      "progress": {
+        "level": 6,
+        "specialtyId": "specialty.vigil",
+        "levelFivePick": {
+          "strength": 2
+        }
+      }
+    },
+    {
+      "id": "hero.base.paladin-hunk@l8",
+      "fixture": "f.l1-paladin-hunk",
+      "rotation": "grow",
+      "side": "hero",
+      "slot": 2,
+      "progress": {
+        "level": 8,
+        "specialtyId": "specialty.vigil",
+        "levelFivePick": {
+          "strength": 2
+        }
+      }
+    },
+    {
+      "id": "hero.base.paladin-hunk@l10",
+      "fixture": "f.l1-paladin-hunk",
+      "rotation": "grow",
+      "side": "hero",
+      "slot": 2,
+      "progress": {
+        "level": 10,
+        "specialtyId": "specialty.vigil",
+        "levelFivePick": {
+          "strength": 2
+        }
+      }
+    },
+    {
+      "id": "hero.base.paladin-smug@l2",
+      "fixture": "f.l1-paladin-smug",
+      "rotation": "grow",
+      "side": "hero",
+      "slot": 2,
+      "progress": {
+        "level": 2,
+        "specialtyId": "specialty.vigil"
+      }
+    },
+    {
+      "id": "hero.base.paladin-smug@l4",
+      "fixture": "f.l1-paladin-smug",
+      "rotation": "grow",
+      "side": "hero",
+      "slot": 2,
+      "progress": {
+        "level": 4,
+        "specialtyId": "specialty.vigil"
+      }
+    },
+    {
+      "id": "hero.base.paladin-smug@l6",
+      "fixture": "f.l1-paladin-smug",
+      "rotation": "grow",
+      "side": "hero",
+      "slot": 2,
+      "progress": {
+        "level": 6,
+        "specialtyId": "specialty.vigil",
+        "levelFivePick": {
+          "strength": 2
+        }
+      }
+    },
+    {
+      "id": "hero.base.paladin-smug@l8",
+      "fixture": "f.l1-paladin-smug",
+      "rotation": "grow",
+      "side": "hero",
+      "slot": 2,
+      "progress": {
+        "level": 8,
+        "specialtyId": "specialty.vigil",
+        "levelFivePick": {
+          "strength": 2
+        }
+      }
+    },
+    {
+      "id": "hero.base.paladin-smug@l10",
+      "fixture": "f.l1-paladin-smug",
+      "rotation": "grow",
+      "side": "hero",
+      "slot": 2,
+      "progress": {
+        "level": 10,
+        "specialtyId": "specialty.vigil",
+        "levelFivePick": {
+          "strength": 2
+        }
+      }
+    },
+    {
+      "id": "hero.base.ranger-ranger@l2",
+      "fixture": "f.l1-ranger-ranger",
+      "rotation": "grow",
+      "side": "hero",
+      "slot": 2,
+      "progress": {
+        "level": 2,
+        "specialtyId": "specialty.bowmaster"
+      }
+    },
+    {
+      "id": "hero.base.ranger-ranger@l4",
+      "fixture": "f.l1-ranger-ranger",
+      "rotation": "grow",
+      "side": "hero",
+      "slot": 2,
+      "progress": {
+        "level": 4,
+        "specialtyId": "specialty.bowmaster"
+      }
+    },
+    {
+      "id": "hero.base.ranger-ranger@l6",
+      "fixture": "f.l1-ranger-ranger",
+      "rotation": "grow",
+      "side": "hero",
+      "slot": 2,
+      "progress": {
+        "level": 6,
+        "specialtyId": "specialty.bowmaster",
+        "levelFivePick": {
+          "precision": 2
+        }
+      }
+    },
+    {
+      "id": "hero.base.ranger-ranger@l8",
+      "fixture": "f.l1-ranger-ranger",
+      "rotation": "grow",
+      "side": "hero",
+      "slot": 2,
+      "progress": {
+        "level": 8,
+        "specialtyId": "specialty.bowmaster",
+        "levelFivePick": {
+          "precision": 2
+        }
+      }
+    },
+    {
+      "id": "hero.base.ranger-ranger@l10",
+      "fixture": "f.l1-ranger-ranger",
+      "rotation": "grow",
+      "side": "hero",
+      "slot": 2,
+      "progress": {
+        "level": 10,
+        "specialtyId": "specialty.bowmaster",
+        "levelFivePick": {
+          "precision": 2
+        }
+      }
+    },
+    {
+      "id": "hero.base.ranger-scantily@l2",
+      "fixture": "f.l1-ranger-scantily",
+      "rotation": "grow",
+      "side": "hero",
+      "slot": 2,
+      "progress": {
+        "level": 2,
+        "specialtyId": "specialty.bowmaster"
+      }
+    },
+    {
+      "id": "hero.base.ranger-scantily@l4",
+      "fixture": "f.l1-ranger-scantily",
+      "rotation": "grow",
+      "side": "hero",
+      "slot": 2,
+      "progress": {
+        "level": 4,
+        "specialtyId": "specialty.bowmaster"
+      }
+    },
+    {
+      "id": "hero.base.ranger-scantily@l6",
+      "fixture": "f.l1-ranger-scantily",
+      "rotation": "grow",
+      "side": "hero",
+      "slot": 2,
+      "progress": {
+        "level": 6,
+        "specialtyId": "specialty.bowmaster",
+        "levelFivePick": {
+          "precision": 2
+        }
+      }
+    },
+    {
+      "id": "hero.base.ranger-scantily@l8",
+      "fixture": "f.l1-ranger-scantily",
+      "rotation": "grow",
+      "side": "hero",
+      "slot": 2,
+      "progress": {
+        "level": 8,
+        "specialtyId": "specialty.bowmaster",
+        "levelFivePick": {
+          "precision": 2
+        }
+      }
+    },
+    {
+      "id": "hero.base.ranger-scantily@l10",
+      "fixture": "f.l1-ranger-scantily",
+      "rotation": "grow",
+      "side": "hero",
+      "slot": 2,
+      "progress": {
+        "level": 10,
+        "specialtyId": "specialty.bowmaster",
+        "levelFivePick": {
+          "precision": 2
+        }
+      }
+    },
+    {
+      "id": "hero.base.ranger-nature@l2",
+      "fixture": "f.l1-ranger-nature",
+      "rotation": "grow",
+      "side": "hero",
+      "slot": 2,
+      "progress": {
+        "level": 2,
+        "specialtyId": "specialty.bowmaster"
+      }
+    },
+    {
+      "id": "hero.base.ranger-nature@l4",
+      "fixture": "f.l1-ranger-nature",
+      "rotation": "grow",
+      "side": "hero",
+      "slot": 2,
+      "progress": {
+        "level": 4,
+        "specialtyId": "specialty.bowmaster"
+      }
+    },
+    {
+      "id": "hero.base.ranger-nature@l6",
+      "fixture": "f.l1-ranger-nature",
+      "rotation": "grow",
+      "side": "hero",
+      "slot": 2,
+      "progress": {
+        "level": 6,
+        "specialtyId": "specialty.bowmaster",
+        "levelFivePick": {
+          "precision": 2
+        }
+      }
+    },
+    {
+      "id": "hero.base.ranger-nature@l8",
+      "fixture": "f.l1-ranger-nature",
+      "rotation": "grow",
+      "side": "hero",
+      "slot": 2,
+      "progress": {
+        "level": 8,
+        "specialtyId": "specialty.bowmaster",
+        "levelFivePick": {
+          "precision": 2
+        }
+      }
+    },
+    {
+      "id": "hero.base.ranger-nature@l10",
+      "fixture": "f.l1-ranger-nature",
+      "rotation": "grow",
+      "side": "hero",
+      "slot": 2,
+      "progress": {
+        "level": 10,
+        "specialtyId": "specialty.bowmaster",
+        "levelFivePick": {
+          "precision": 2
+        }
+      }
+    },
+    {
+      "id": "hero.base.ranger-aggressive@l2",
+      "fixture": "f.l1-ranger-aggressive",
+      "rotation": "grow",
+      "side": "hero",
+      "slot": 2,
+      "progress": {
+        "level": 2,
+        "specialtyId": "specialty.bowmaster"
+      }
+    },
+    {
+      "id": "hero.base.ranger-aggressive@l4",
+      "fixture": "f.l1-ranger-aggressive",
+      "rotation": "grow",
+      "side": "hero",
+      "slot": 2,
+      "progress": {
+        "level": 4,
+        "specialtyId": "specialty.bowmaster"
+      }
+    },
+    {
+      "id": "hero.base.ranger-aggressive@l6",
+      "fixture": "f.l1-ranger-aggressive",
+      "rotation": "grow",
+      "side": "hero",
+      "slot": 2,
+      "progress": {
+        "level": 6,
+        "specialtyId": "specialty.bowmaster",
+        "levelFivePick": {
+          "precision": 2
+        }
+      }
+    },
+    {
+      "id": "hero.base.ranger-aggressive@l8",
+      "fixture": "f.l1-ranger-aggressive",
+      "rotation": "grow",
+      "side": "hero",
+      "slot": 2,
+      "progress": {
+        "level": 8,
+        "specialtyId": "specialty.bowmaster",
+        "levelFivePick": {
+          "precision": 2
+        }
+      }
+    },
+    {
+      "id": "hero.base.ranger-aggressive@l10",
+      "fixture": "f.l1-ranger-aggressive",
+      "rotation": "grow",
+      "side": "hero",
+      "slot": 2,
+      "progress": {
+        "level": 10,
+        "specialtyId": "specialty.bowmaster",
+        "levelFivePick": {
+          "precision": 2
+        }
+      }
+    },
+    {
+      "id": "hero.base.warrior-iron@l2",
+      "fixture": "f.l1-warrior-iron",
+      "rotation": "grow",
+      "side": "hero",
+      "slot": 2,
+      "progress": {
+        "level": 2,
+        "specialtyId": "specialty.berserker"
+      }
+    },
+    {
+      "id": "hero.base.warrior-iron@l4",
+      "fixture": "f.l1-warrior-iron",
+      "rotation": "grow",
+      "side": "hero",
+      "slot": 2,
+      "progress": {
+        "level": 4,
+        "specialtyId": "specialty.berserker"
+      }
+    },
+    {
+      "id": "hero.base.warrior-iron@l6",
+      "fixture": "f.l1-warrior-iron",
+      "rotation": "grow",
+      "side": "hero",
+      "slot": 2,
+      "progress": {
+        "level": 6,
+        "specialtyId": "specialty.berserker",
+        "levelFivePick": {
+          "strength": 2
+        }
+      }
+    },
+    {
+      "id": "hero.base.warrior-iron@l8",
+      "fixture": "f.l1-warrior-iron",
+      "rotation": "grow",
+      "side": "hero",
+      "slot": 2,
+      "progress": {
+        "level": 8,
+        "specialtyId": "specialty.berserker",
+        "levelFivePick": {
+          "strength": 2
+        }
+      }
+    },
+    {
+      "id": "hero.base.warrior-iron@l10",
+      "fixture": "f.l1-warrior-iron",
+      "rotation": "grow",
+      "side": "hero",
+      "slot": 2,
+      "progress": {
+        "level": 10,
+        "specialtyId": "specialty.berserker",
+        "levelFivePick": {
+          "strength": 2
+        }
+      }
+    },
+    {
+      "id": "hero.base.warrior-brawler@l2",
+      "fixture": "f.l1-warrior-brawler",
+      "rotation": "grow",
+      "side": "hero",
+      "slot": 2,
+      "progress": {
+        "level": 2,
+        "specialtyId": "specialty.berserker"
+      }
+    },
+    {
+      "id": "hero.base.warrior-brawler@l4",
+      "fixture": "f.l1-warrior-brawler",
+      "rotation": "grow",
+      "side": "hero",
+      "slot": 2,
+      "progress": {
+        "level": 4,
+        "specialtyId": "specialty.berserker"
+      }
+    },
+    {
+      "id": "hero.base.warrior-brawler@l6",
+      "fixture": "f.l1-warrior-brawler",
+      "rotation": "grow",
+      "side": "hero",
+      "slot": 2,
+      "progress": {
+        "level": 6,
+        "specialtyId": "specialty.berserker",
+        "levelFivePick": {
+          "strength": 2
+        }
+      }
+    },
+    {
+      "id": "hero.base.warrior-brawler@l8",
+      "fixture": "f.l1-warrior-brawler",
+      "rotation": "grow",
+      "side": "hero",
+      "slot": 2,
+      "progress": {
+        "level": 8,
+        "specialtyId": "specialty.berserker",
+        "levelFivePick": {
+          "strength": 2
+        }
+      }
+    },
+    {
+      "id": "hero.base.warrior-brawler@l10",
+      "fixture": "f.l1-warrior-brawler",
+      "rotation": "grow",
+      "side": "hero",
+      "slot": 2,
+      "progress": {
+        "level": 10,
+        "specialtyId": "specialty.berserker",
+        "levelFivePick": {
+          "strength": 2
+        }
+      }
+    },
+    {
+      "id": "hero.base.warrior-barbarian@l2",
+      "fixture": "f.l1-warrior-barbarian",
+      "rotation": "grow",
+      "side": "hero",
+      "slot": 2,
+      "progress": {
+        "level": 2,
+        "specialtyId": "specialty.berserker"
+      }
+    },
+    {
+      "id": "hero.base.warrior-barbarian@l4",
+      "fixture": "f.l1-warrior-barbarian",
+      "rotation": "grow",
+      "side": "hero",
+      "slot": 2,
+      "progress": {
+        "level": 4,
+        "specialtyId": "specialty.berserker"
+      }
+    },
+    {
+      "id": "hero.base.warrior-barbarian@l6",
+      "fixture": "f.l1-warrior-barbarian",
+      "rotation": "grow",
+      "side": "hero",
+      "slot": 2,
+      "progress": {
+        "level": 6,
+        "specialtyId": "specialty.berserker",
+        "levelFivePick": {
+          "strength": 2
+        }
+      }
+    },
+    {
+      "id": "hero.base.warrior-barbarian@l8",
+      "fixture": "f.l1-warrior-barbarian",
+      "rotation": "grow",
+      "side": "hero",
+      "slot": 2,
+      "progress": {
+        "level": 8,
+        "specialtyId": "specialty.berserker",
+        "levelFivePick": {
+          "strength": 2
+        }
+      }
+    },
+    {
+      "id": "hero.base.warrior-barbarian@l10",
+      "fixture": "f.l1-warrior-barbarian",
+      "rotation": "grow",
+      "side": "hero",
+      "slot": 2,
+      "progress": {
+        "level": 10,
+        "specialtyId": "specialty.berserker",
+        "levelFivePick": {
+          "strength": 2
+        }
+      }
+    },
+    {
+      "id": "hero.base.warrior-fearsome@l2",
+      "fixture": "f.l1-warrior-fearsome",
+      "rotation": "grow",
+      "side": "hero",
+      "slot": 2,
+      "progress": {
+        "level": 2,
+        "specialtyId": "specialty.berserker"
+      }
+    },
+    {
+      "id": "hero.base.warrior-fearsome@l4",
+      "fixture": "f.l1-warrior-fearsome",
+      "rotation": "grow",
+      "side": "hero",
+      "slot": 2,
+      "progress": {
+        "level": 4,
+        "specialtyId": "specialty.berserker"
+      }
+    },
+    {
+      "id": "hero.base.warrior-fearsome@l6",
+      "fixture": "f.l1-warrior-fearsome",
+      "rotation": "grow",
+      "side": "hero",
+      "slot": 2,
+      "progress": {
+        "level": 6,
+        "specialtyId": "specialty.berserker",
+        "levelFivePick": {
+          "strength": 2
+        }
+      }
+    },
+    {
+      "id": "hero.base.warrior-fearsome@l8",
+      "fixture": "f.l1-warrior-fearsome",
+      "rotation": "grow",
+      "side": "hero",
+      "slot": 2,
+      "progress": {
+        "level": 8,
+        "specialtyId": "specialty.berserker",
+        "levelFivePick": {
+          "strength": 2
+        }
+      }
+    },
+    {
+      "id": "hero.base.warrior-fearsome@l10",
+      "fixture": "f.l1-warrior-fearsome",
+      "rotation": "grow",
+      "side": "hero",
+      "slot": 2,
+      "progress": {
+        "level": 10,
+        "specialtyId": "specialty.berserker",
+        "levelFivePick": {
+          "strength": 2
+        }
+      }
+    },
+    {
+      "id": "hero.base.mage-thinking@l2",
+      "fixture": "f.l1-mage-thinking",
+      "rotation": "grow",
+      "side": "hero",
+      "slot": 2,
+      "progress": {
+        "level": 2,
+        "specialtyId": "specialty.fire-master"
+      }
+    },
+    {
+      "id": "hero.base.mage-thinking@l4",
+      "fixture": "f.l1-mage-thinking",
+      "rotation": "grow",
+      "side": "hero",
+      "slot": 2,
+      "progress": {
+        "level": 4,
+        "specialtyId": "specialty.fire-master"
+      }
+    },
+    {
+      "id": "hero.base.mage-thinking@l6",
+      "fixture": "f.l1-mage-thinking",
+      "rotation": "grow",
+      "side": "hero",
+      "slot": 2,
+      "progress": {
+        "level": 6,
+        "specialtyId": "specialty.fire-master",
+        "levelFivePick": {
+          "magic": 2
+        }
+      }
+    },
+    {
+      "id": "hero.base.mage-thinking@l8",
+      "fixture": "f.l1-mage-thinking",
+      "rotation": "grow",
+      "side": "hero",
+      "slot": 2,
+      "progress": {
+        "level": 8,
+        "specialtyId": "specialty.fire-master",
+        "levelFivePick": {
+          "magic": 2
+        }
+      }
+    },
+    {
+      "id": "hero.base.mage-thinking@l10",
+      "fixture": "f.l1-mage-thinking",
+      "rotation": "grow",
+      "side": "hero",
+      "slot": 2,
+      "progress": {
+        "level": 10,
+        "specialtyId": "specialty.fire-master",
+        "levelFivePick": {
+          "magic": 2
+        }
+      }
+    },
+    {
+      "id": "hero.base.mage-sexy@l2",
+      "fixture": "f.l1-mage-sexy",
+      "rotation": "grow",
+      "side": "hero",
+      "slot": 2,
+      "progress": {
+        "level": 2,
+        "specialtyId": "specialty.fire-master"
+      }
+    },
+    {
+      "id": "hero.base.mage-sexy@l4",
+      "fixture": "f.l1-mage-sexy",
+      "rotation": "grow",
+      "side": "hero",
+      "slot": 2,
+      "progress": {
+        "level": 4,
+        "specialtyId": "specialty.fire-master"
+      }
+    },
+    {
+      "id": "hero.base.mage-sexy@l6",
+      "fixture": "f.l1-mage-sexy",
+      "rotation": "grow",
+      "side": "hero",
+      "slot": 2,
+      "progress": {
+        "level": 6,
+        "specialtyId": "specialty.fire-master",
+        "levelFivePick": {
+          "magic": 2
+        }
+      }
+    },
+    {
+      "id": "hero.base.mage-sexy@l8",
+      "fixture": "f.l1-mage-sexy",
+      "rotation": "grow",
+      "side": "hero",
+      "slot": 2,
+      "progress": {
+        "level": 8,
+        "specialtyId": "specialty.fire-master",
+        "levelFivePick": {
+          "magic": 2
+        }
+      }
+    },
+    {
+      "id": "hero.base.mage-sexy@l10",
+      "fixture": "f.l1-mage-sexy",
+      "rotation": "grow",
+      "side": "hero",
+      "slot": 2,
+      "progress": {
+        "level": 10,
+        "specialtyId": "specialty.fire-master",
+        "levelFivePick": {
+          "magic": 2
+        }
+      }
+    },
+    {
+      "id": "hero.base.mage-fire@l2",
+      "fixture": "f.l1-mage-fire",
+      "rotation": "grow",
+      "side": "hero",
+      "slot": 2,
+      "progress": {
+        "level": 2,
+        "specialtyId": "specialty.fire-master"
+      }
+    },
+    {
+      "id": "hero.base.mage-fire@l4",
+      "fixture": "f.l1-mage-fire",
+      "rotation": "grow",
+      "side": "hero",
+      "slot": 2,
+      "progress": {
+        "level": 4,
+        "specialtyId": "specialty.fire-master"
+      }
+    },
+    {
+      "id": "hero.base.mage-fire@l6",
+      "fixture": "f.l1-mage-fire",
+      "rotation": "grow",
+      "side": "hero",
+      "slot": 2,
+      "progress": {
+        "level": 6,
+        "specialtyId": "specialty.fire-master",
+        "levelFivePick": {
+          "magic": 2
+        }
+      }
+    },
+    {
+      "id": "hero.base.mage-fire@l8",
+      "fixture": "f.l1-mage-fire",
+      "rotation": "grow",
+      "side": "hero",
+      "slot": 2,
+      "progress": {
+        "level": 8,
+        "specialtyId": "specialty.fire-master",
+        "levelFivePick": {
+          "magic": 2
+        }
+      }
+    },
+    {
+      "id": "hero.base.mage-fire@l10",
+      "fixture": "f.l1-mage-fire",
+      "rotation": "grow",
+      "side": "hero",
+      "slot": 2,
+      "progress": {
+        "level": 10,
+        "specialtyId": "specialty.fire-master",
+        "levelFivePick": {
+          "magic": 2
+        }
+      }
+    },
+    {
+      "id": "hero.base.mage-fireaura@l2",
+      "fixture": "f.l1-mage-fireaura",
+      "rotation": "grow",
+      "side": "hero",
+      "slot": 2,
+      "progress": {
+        "level": 2,
+        "specialtyId": "specialty.fire-master"
+      }
+    },
+    {
+      "id": "hero.base.mage-fireaura@l4",
+      "fixture": "f.l1-mage-fireaura",
+      "rotation": "grow",
+      "side": "hero",
+      "slot": 2,
+      "progress": {
+        "level": 4,
+        "specialtyId": "specialty.fire-master"
+      }
+    },
+    {
+      "id": "hero.base.mage-fireaura@l6",
+      "fixture": "f.l1-mage-fireaura",
+      "rotation": "grow",
+      "side": "hero",
+      "slot": 2,
+      "progress": {
+        "level": 6,
+        "specialtyId": "specialty.fire-master",
+        "levelFivePick": {
+          "magic": 2
+        }
+      }
+    },
+    {
+      "id": "hero.base.mage-fireaura@l8",
+      "fixture": "f.l1-mage-fireaura",
+      "rotation": "grow",
+      "side": "hero",
+      "slot": 2,
+      "progress": {
+        "level": 8,
+        "specialtyId": "specialty.fire-master",
+        "levelFivePick": {
+          "magic": 2
+        }
+      }
+    },
+    {
+      "id": "hero.base.mage-fireaura@l10",
+      "fixture": "f.l1-mage-fireaura",
+      "rotation": "grow",
+      "side": "hero",
+      "slot": 2,
+      "progress": {
+        "level": 10,
+        "specialtyId": "specialty.fire-master",
+        "levelFivePick": {
+          "magic": 2
+        }
+      }
+    },
+    {
+      "id": "hero.base.priest-pauper@l2",
+      "fixture": "f.l1-priest-pauper",
+      "rotation": "grow",
+      "side": "hero",
+      "slot": 2,
+      "progress": {
+        "level": 2,
+        "specialtyId": "specialty.war-priest"
+      }
+    },
+    {
+      "id": "hero.base.priest-pauper@l4",
+      "fixture": "f.l1-priest-pauper",
+      "rotation": "grow",
+      "side": "hero",
+      "slot": 2,
+      "progress": {
+        "level": 4,
+        "specialtyId": "specialty.war-priest"
+      }
+    },
+    {
+      "id": "hero.base.priest-pauper@l6",
+      "fixture": "f.l1-priest-pauper",
+      "rotation": "grow",
+      "side": "hero",
+      "slot": 2,
+      "progress": {
+        "level": 6,
+        "specialtyId": "specialty.war-priest",
+        "levelFivePick": {
+          "spirit": 2
+        }
+      }
+    },
+    {
+      "id": "hero.base.priest-pauper@l8",
+      "fixture": "f.l1-priest-pauper",
+      "rotation": "grow",
+      "side": "hero",
+      "slot": 2,
+      "progress": {
+        "level": 8,
+        "specialtyId": "specialty.war-priest",
+        "levelFivePick": {
+          "spirit": 2
+        }
+      }
+    },
+    {
+      "id": "hero.base.priest-pauper@l10",
+      "fixture": "f.l1-priest-pauper",
+      "rotation": "grow",
+      "side": "hero",
+      "slot": 2,
+      "progress": {
+        "level": 10,
+        "specialtyId": "specialty.war-priest",
+        "levelFivePick": {
+          "spirit": 2
+        }
+      }
+    },
+    {
+      "id": "hero.base.priest-armored@l2",
+      "fixture": "f.l1-priest-armored",
+      "rotation": "grow",
+      "side": "hero",
+      "slot": 2,
+      "progress": {
+        "level": 2,
+        "specialtyId": "specialty.war-priest"
+      }
+    },
+    {
+      "id": "hero.base.priest-armored@l4",
+      "fixture": "f.l1-priest-armored",
+      "rotation": "grow",
+      "side": "hero",
+      "slot": 2,
+      "progress": {
+        "level": 4,
+        "specialtyId": "specialty.war-priest"
+      }
+    },
+    {
+      "id": "hero.base.priest-armored@l6",
+      "fixture": "f.l1-priest-armored",
+      "rotation": "grow",
+      "side": "hero",
+      "slot": 2,
+      "progress": {
+        "level": 6,
+        "specialtyId": "specialty.war-priest",
+        "levelFivePick": {
+          "spirit": 2
+        }
+      }
+    },
+    {
+      "id": "hero.base.priest-armored@l8",
+      "fixture": "f.l1-priest-armored",
+      "rotation": "grow",
+      "side": "hero",
+      "slot": 2,
+      "progress": {
+        "level": 8,
+        "specialtyId": "specialty.war-priest",
+        "levelFivePick": {
+          "spirit": 2
+        }
+      }
+    },
+    {
+      "id": "hero.base.priest-armored@l10",
+      "fixture": "f.l1-priest-armored",
+      "rotation": "grow",
+      "side": "hero",
+      "slot": 2,
+      "progress": {
+        "level": 10,
+        "specialtyId": "specialty.war-priest",
+        "levelFivePick": {
+          "spirit": 2
+        }
+      }
+    },
+    {
+      "id": "hero.base.priest-robes@l2",
+      "fixture": "f.l1-priest-robes",
+      "rotation": "grow",
+      "side": "hero",
+      "slot": 2,
+      "progress": {
+        "level": 2,
+        "specialtyId": "specialty.war-priest"
+      }
+    },
+    {
+      "id": "hero.base.priest-robes@l4",
+      "fixture": "f.l1-priest-robes",
+      "rotation": "grow",
+      "side": "hero",
+      "slot": 2,
+      "progress": {
+        "level": 4,
+        "specialtyId": "specialty.war-priest"
+      }
+    },
+    {
+      "id": "hero.base.priest-robes@l6",
+      "fixture": "f.l1-priest-robes",
+      "rotation": "grow",
+      "side": "hero",
+      "slot": 2,
+      "progress": {
+        "level": 6,
+        "specialtyId": "specialty.war-priest",
+        "levelFivePick": {
+          "spirit": 2
+        }
+      }
+    },
+    {
+      "id": "hero.base.priest-robes@l8",
+      "fixture": "f.l1-priest-robes",
+      "rotation": "grow",
+      "side": "hero",
+      "slot": 2,
+      "progress": {
+        "level": 8,
+        "specialtyId": "specialty.war-priest",
+        "levelFivePick": {
+          "spirit": 2
+        }
+      }
+    },
+    {
+      "id": "hero.base.priest-robes@l10",
+      "fixture": "f.l1-priest-robes",
+      "rotation": "grow",
+      "side": "hero",
+      "slot": 2,
+      "progress": {
+        "level": 10,
+        "specialtyId": "specialty.war-priest",
+        "levelFivePick": {
+          "spirit": 2
+        }
+      }
+    },
+    {
+      "id": "hero.base.priest-scantily@l2",
+      "fixture": "f.l1-priest-scantily",
+      "rotation": "grow",
+      "side": "hero",
+      "slot": 2,
+      "progress": {
+        "level": 2,
+        "specialtyId": "specialty.war-priest"
+      }
+    },
+    {
+      "id": "hero.base.priest-scantily@l4",
+      "fixture": "f.l1-priest-scantily",
+      "rotation": "grow",
+      "side": "hero",
+      "slot": 2,
+      "progress": {
+        "level": 4,
+        "specialtyId": "specialty.war-priest"
+      }
+    },
+    {
+      "id": "hero.base.priest-scantily@l6",
+      "fixture": "f.l1-priest-scantily",
+      "rotation": "grow",
+      "side": "hero",
+      "slot": 2,
+      "progress": {
+        "level": 6,
+        "specialtyId": "specialty.war-priest",
+        "levelFivePick": {
+          "spirit": 2
+        }
+      }
+    },
+    {
+      "id": "hero.base.priest-scantily@l8",
+      "fixture": "f.l1-priest-scantily",
+      "rotation": "grow",
+      "side": "hero",
+      "slot": 2,
+      "progress": {
+        "level": 8,
+        "specialtyId": "specialty.war-priest",
+        "levelFivePick": {
+          "spirit": 2
+        }
+      }
+    },
+    {
+      "id": "hero.base.priest-scantily@l10",
+      "fixture": "f.l1-priest-scantily",
+      "rotation": "grow",
+      "side": "hero",
+      "slot": 2,
+      "progress": {
+        "level": 10,
+        "specialtyId": "specialty.war-priest",
+        "levelFivePick": {
+          "spirit": 2
+        }
+      }
+    },
+    {
+      "id": "hero.base.rogue-raven@l2",
+      "fixture": "f.l1-rogue-raven",
+      "rotation": "grow",
+      "side": "hero",
+      "slot": 2,
+      "progress": {
+        "level": 2,
+        "specialtyId": "specialty.poison-master"
+      }
+    },
+    {
+      "id": "hero.base.rogue-raven@l4",
+      "fixture": "f.l1-rogue-raven",
+      "rotation": "grow",
+      "side": "hero",
+      "slot": 2,
+      "progress": {
+        "level": 4,
+        "specialtyId": "specialty.poison-master"
+      }
+    },
+    {
+      "id": "hero.base.rogue-raven@l6",
+      "fixture": "f.l1-rogue-raven",
+      "rotation": "grow",
+      "side": "hero",
+      "slot": 2,
+      "progress": {
+        "level": 6,
+        "specialtyId": "specialty.poison-master",
+        "levelFivePick": {
+          "precision": 2
+        }
+      }
+    },
+    {
+      "id": "hero.base.rogue-raven@l8",
+      "fixture": "f.l1-rogue-raven",
+      "rotation": "grow",
+      "side": "hero",
+      "slot": 2,
+      "progress": {
+        "level": 8,
+        "specialtyId": "specialty.poison-master",
+        "levelFivePick": {
+          "precision": 2
+        }
+      }
+    },
+    {
+      "id": "hero.base.rogue-raven@l10",
+      "fixture": "f.l1-rogue-raven",
+      "rotation": "grow",
+      "side": "hero",
+      "slot": 2,
+      "progress": {
+        "level": 10,
+        "specialtyId": "specialty.poison-master",
+        "levelFivePick": {
+          "precision": 2
+        }
+      }
+    },
+    {
+      "id": "hero.base.rogue-rose@l2",
+      "fixture": "f.l1-rogue-rose",
+      "rotation": "grow",
+      "side": "hero",
+      "slot": 2,
+      "progress": {
+        "level": 2,
+        "specialtyId": "specialty.poison-master"
+      }
+    },
+    {
+      "id": "hero.base.rogue-rose@l4",
+      "fixture": "f.l1-rogue-rose",
+      "rotation": "grow",
+      "side": "hero",
+      "slot": 2,
+      "progress": {
+        "level": 4,
+        "specialtyId": "specialty.poison-master"
+      }
+    },
+    {
+      "id": "hero.base.rogue-rose@l6",
+      "fixture": "f.l1-rogue-rose",
+      "rotation": "grow",
+      "side": "hero",
+      "slot": 2,
+      "progress": {
+        "level": 6,
+        "specialtyId": "specialty.poison-master",
+        "levelFivePick": {
+          "precision": 2
+        }
+      }
+    },
+    {
+      "id": "hero.base.rogue-rose@l8",
+      "fixture": "f.l1-rogue-rose",
+      "rotation": "grow",
+      "side": "hero",
+      "slot": 2,
+      "progress": {
+        "level": 8,
+        "specialtyId": "specialty.poison-master",
+        "levelFivePick": {
+          "precision": 2
+        }
+      }
+    },
+    {
+      "id": "hero.base.rogue-rose@l10",
+      "fixture": "f.l1-rogue-rose",
+      "rotation": "grow",
+      "side": "hero",
+      "slot": 2,
+      "progress": {
+        "level": 10,
+        "specialtyId": "specialty.poison-master",
+        "levelFivePick": {
+          "precision": 2
+        }
+      }
+    },
+    {
+      "id": "hero.base.rogue-snake@l2",
+      "fixture": "f.l1-rogue-snake",
+      "rotation": "grow",
+      "side": "hero",
+      "slot": 2,
+      "progress": {
+        "level": 2,
+        "specialtyId": "specialty.poison-master"
+      }
+    },
+    {
+      "id": "hero.base.rogue-snake@l4",
+      "fixture": "f.l1-rogue-snake",
+      "rotation": "grow",
+      "side": "hero",
+      "slot": 2,
+      "progress": {
+        "level": 4,
+        "specialtyId": "specialty.poison-master"
+      }
+    },
+    {
+      "id": "hero.base.rogue-snake@l6",
+      "fixture": "f.l1-rogue-snake",
+      "rotation": "grow",
+      "side": "hero",
+      "slot": 2,
+      "progress": {
+        "level": 6,
+        "specialtyId": "specialty.poison-master",
+        "levelFivePick": {
+          "precision": 2
+        }
+      }
+    },
+    {
+      "id": "hero.base.rogue-snake@l8",
+      "fixture": "f.l1-rogue-snake",
+      "rotation": "grow",
+      "side": "hero",
+      "slot": 2,
+      "progress": {
+        "level": 8,
+        "specialtyId": "specialty.poison-master",
+        "levelFivePick": {
+          "precision": 2
+        }
+      }
+    },
+    {
+      "id": "hero.base.rogue-snake@l10",
+      "fixture": "f.l1-rogue-snake",
+      "rotation": "grow",
+      "side": "hero",
+      "slot": 2,
+      "progress": {
+        "level": 10,
+        "specialtyId": "specialty.poison-master",
+        "levelFivePick": {
+          "precision": 2
+        }
+      }
+    },
+    {
+      "id": "hero.base.rogue-skull@l2",
+      "fixture": "f.l1-rogue-skull",
+      "rotation": "grow",
+      "side": "hero",
+      "slot": 2,
+      "progress": {
+        "level": 2,
+        "specialtyId": "specialty.poison-master"
+      }
+    },
+    {
+      "id": "hero.base.rogue-skull@l4",
+      "fixture": "f.l1-rogue-skull",
+      "rotation": "grow",
+      "side": "hero",
+      "slot": 2,
+      "progress": {
+        "level": 4,
+        "specialtyId": "specialty.poison-master"
+      }
+    },
+    {
+      "id": "hero.base.rogue-skull@l6",
+      "fixture": "f.l1-rogue-skull",
+      "rotation": "grow",
+      "side": "hero",
+      "slot": 2,
+      "progress": {
+        "level": 6,
+        "specialtyId": "specialty.poison-master",
+        "levelFivePick": {
+          "precision": 2
+        }
+      }
+    },
+    {
+      "id": "hero.base.rogue-skull@l8",
+      "fixture": "f.l1-rogue-skull",
+      "rotation": "grow",
+      "side": "hero",
+      "slot": 2,
+      "progress": {
+        "level": 8,
+        "specialtyId": "specialty.poison-master",
+        "levelFivePick": {
+          "precision": 2
+        }
+      }
+    },
+    {
+      "id": "hero.base.rogue-skull@l10",
+      "fixture": "f.l1-rogue-skull",
+      "rotation": "grow",
+      "side": "hero",
+      "slot": 2,
+      "progress": {
+        "level": 10,
+        "specialtyId": "specialty.poison-master",
+        "levelFivePick": {
+          "precision": 2
+        }
+      }
+    },
+    {
+      "id": "hero.fixed.orphans@l2",
+      "fixture": "f.l1-orphans",
+      "rotation": "grow",
+      "side": "hero",
+      "slot": 2,
+      "progress": {
+        "level": 2,
+        "specialtyId": "specialty.apothecary"
+      }
+    },
+    {
+      "id": "hero.fixed.orphans@l4",
+      "fixture": "f.l1-orphans",
+      "rotation": "grow",
+      "side": "hero",
+      "slot": 2,
+      "progress": {
+        "level": 4,
+        "specialtyId": "specialty.apothecary"
+      }
+    },
+    {
+      "id": "hero.fixed.orphans@l6",
+      "fixture": "f.l1-orphans",
+      "rotation": "grow",
+      "side": "hero",
+      "slot": 2,
+      "progress": {
+        "level": 6,
+        "specialtyId": "specialty.apothecary",
+        "levelFivePick": {
+          "dodge": 10
+        }
+      }
+    },
+    {
+      "id": "hero.fixed.orphans@l8",
+      "fixture": "f.l1-orphans",
+      "rotation": "grow",
+      "side": "hero",
+      "slot": 2,
+      "progress": {
+        "level": 8,
+        "specialtyId": "specialty.apothecary",
+        "levelFivePick": {
+          "dodge": 10
+        }
+      }
+    },
+    {
+      "id": "hero.fixed.orphans@l10",
+      "fixture": "f.l1-orphans",
+      "rotation": "grow",
+      "side": "hero",
+      "slot": 2,
+      "progress": {
+        "level": 10,
+        "specialtyId": "specialty.apothecary",
+        "levelFivePick": {
+          "dodge": 10
+        }
+      }
+    },
+    {
+      "id": "hero.fixed.lumberjack-and-wife@l2",
+      "fixture": "f.l1-lumberjack-and-wife",
+      "rotation": "grow",
+      "side": "hero",
+      "slot": 2,
+      "progress": {
+        "level": 2,
+        "specialtyId": "specialty.apothecary"
+      }
+    },
+    {
+      "id": "hero.fixed.lumberjack-and-wife@l4",
+      "fixture": "f.l1-lumberjack-and-wife",
+      "rotation": "grow",
+      "side": "hero",
+      "slot": 2,
+      "progress": {
+        "level": 4,
+        "specialtyId": "specialty.apothecary"
+      }
+    },
+    {
+      "id": "hero.fixed.lumberjack-and-wife@l6",
+      "fixture": "f.l1-lumberjack-and-wife",
+      "rotation": "grow",
+      "side": "hero",
+      "slot": 2,
+      "progress": {
+        "level": 6,
+        "specialtyId": "specialty.apothecary",
+        "levelFivePick": {
+          "strength": 2
+        }
+      }
+    },
+    {
+      "id": "hero.fixed.lumberjack-and-wife@l8",
+      "fixture": "f.l1-lumberjack-and-wife",
+      "rotation": "grow",
+      "side": "hero",
+      "slot": 2,
+      "progress": {
+        "level": 8,
+        "specialtyId": "specialty.apothecary",
+        "levelFivePick": {
+          "strength": 2
+        }
+      }
+    },
+    {
+      "id": "hero.fixed.lumberjack-and-wife@l10",
+      "fixture": "f.l1-lumberjack-and-wife",
+      "rotation": "grow",
+      "side": "hero",
+      "slot": 2,
+      "progress": {
+        "level": 10,
+        "specialtyId": "specialty.apothecary",
+        "levelFivePick": {
+          "strength": 2
+        }
+      }
+    },
+    {
+      "id": "hero.fixed.farmer@l2",
+      "fixture": "f.l1-farmer",
+      "rotation": "grow",
+      "side": "hero",
+      "slot": 2,
+      "progress": {
+        "level": 2,
+        "specialtyId": "specialty.apothecary"
+      }
+    },
+    {
+      "id": "hero.fixed.farmer@l4",
+      "fixture": "f.l1-farmer",
+      "rotation": "grow",
+      "side": "hero",
+      "slot": 2,
+      "progress": {
+        "level": 4,
+        "specialtyId": "specialty.apothecary"
+      }
+    },
+    {
+      "id": "hero.fixed.farmer@l6",
+      "fixture": "f.l1-farmer",
+      "rotation": "grow",
+      "side": "hero",
+      "slot": 2,
+      "progress": {
+        "level": 6,
+        "specialtyId": "specialty.apothecary",
+        "levelFivePick": {
+          "strength": 2
+        }
+      }
+    },
+    {
+      "id": "hero.fixed.farmer@l8",
+      "fixture": "f.l1-farmer",
+      "rotation": "grow",
+      "side": "hero",
+      "slot": 2,
+      "progress": {
+        "level": 8,
+        "specialtyId": "specialty.apothecary",
+        "levelFivePick": {
+          "strength": 2
+        }
+      }
+    },
+    {
+      "id": "hero.fixed.farmer@l10",
+      "fixture": "f.l1-farmer",
+      "rotation": "grow",
+      "side": "hero",
+      "slot": 2,
+      "progress": {
+        "level": 10,
+        "specialtyId": "specialty.apothecary",
+        "levelFivePick": {
+          "strength": 2
+        }
+      }
+    },
+    {
+      "id": "hero.fixed.school-teacher@l2",
+      "fixture": "f.l1-school-teacher",
+      "rotation": "grow",
+      "side": "hero",
+      "slot": 2,
+      "progress": {
+        "level": 2,
+        "specialtyId": "specialty.apothecary"
+      }
+    },
+    {
+      "id": "hero.fixed.school-teacher@l4",
+      "fixture": "f.l1-school-teacher",
+      "rotation": "grow",
+      "side": "hero",
+      "slot": 2,
+      "progress": {
+        "level": 4,
+        "specialtyId": "specialty.apothecary"
+      }
+    },
+    {
+      "id": "hero.fixed.school-teacher@l6",
+      "fixture": "f.l1-school-teacher",
+      "rotation": "grow",
+      "side": "hero",
+      "slot": 2,
+      "progress": {
+        "level": 6,
+        "specialtyId": "specialty.apothecary",
+        "levelFivePick": {
+          "magic": 2
+        }
+      }
+    },
+    {
+      "id": "hero.fixed.school-teacher@l8",
+      "fixture": "f.l1-school-teacher",
+      "rotation": "grow",
+      "side": "hero",
+      "slot": 2,
+      "progress": {
+        "level": 8,
+        "specialtyId": "specialty.apothecary",
+        "levelFivePick": {
+          "magic": 2
+        }
+      }
+    },
+    {
+      "id": "hero.fixed.school-teacher@l10",
+      "fixture": "f.l1-school-teacher",
+      "rotation": "grow",
+      "side": "hero",
+      "slot": 2,
+      "progress": {
+        "level": 10,
+        "specialtyId": "specialty.apothecary",
+        "levelFivePick": {
+          "magic": 2
+        }
+      }
+    },
+    {
+      "id": "hero.fixed.school-children@l2",
+      "fixture": "f.l1-school-children",
+      "rotation": "grow",
+      "side": "hero",
+      "slot": 2,
+      "progress": {
+        "level": 2,
+        "specialtyId": "specialty.apothecary"
+      }
+    },
+    {
+      "id": "hero.fixed.school-children@l4",
+      "fixture": "f.l1-school-children",
+      "rotation": "grow",
+      "side": "hero",
+      "slot": 2,
+      "progress": {
+        "level": 4,
+        "specialtyId": "specialty.apothecary"
+      }
+    },
+    {
+      "id": "hero.fixed.school-children@l6",
+      "fixture": "f.l1-school-children",
+      "rotation": "grow",
+      "side": "hero",
+      "slot": 2,
+      "progress": {
+        "level": 6,
+        "specialtyId": "specialty.apothecary",
+        "levelFivePick": {
+          "dodge": 10
+        }
+      }
+    },
+    {
+      "id": "hero.fixed.school-children@l8",
+      "fixture": "f.l1-school-children",
+      "rotation": "grow",
+      "side": "hero",
+      "slot": 2,
+      "progress": {
+        "level": 8,
+        "specialtyId": "specialty.apothecary",
+        "levelFivePick": {
+          "dodge": 10
+        }
+      }
+    },
+    {
+      "id": "hero.fixed.school-children@l10",
+      "fixture": "f.l1-school-children",
+      "rotation": "grow",
+      "side": "hero",
+      "slot": 2,
+      "progress": {
+        "level": 10,
+        "specialtyId": "specialty.apothecary",
+        "levelFivePick": {
+          "dodge": 10
+        }
+      }
+    },
+    {
+      "id": "hero.fixed.librarian@l2",
+      "fixture": "f.l1-librarian",
+      "rotation": "grow",
+      "side": "hero",
+      "slot": 2,
+      "progress": {
+        "level": 2,
+        "specialtyId": "specialty.apothecary"
+      }
+    },
+    {
+      "id": "hero.fixed.librarian@l4",
+      "fixture": "f.l1-librarian",
+      "rotation": "grow",
+      "side": "hero",
+      "slot": 2,
+      "progress": {
+        "level": 4,
+        "specialtyId": "specialty.apothecary"
+      }
+    },
+    {
+      "id": "hero.fixed.librarian@l6",
+      "fixture": "f.l1-librarian",
+      "rotation": "grow",
+      "side": "hero",
+      "slot": 2,
+      "progress": {
+        "level": 6,
+        "specialtyId": "specialty.apothecary",
+        "levelFivePick": {
+          "magic": 2
+        }
+      }
+    },
+    {
+      "id": "hero.fixed.librarian@l8",
+      "fixture": "f.l1-librarian",
+      "rotation": "grow",
+      "side": "hero",
+      "slot": 2,
+      "progress": {
+        "level": 8,
+        "specialtyId": "specialty.apothecary",
+        "levelFivePick": {
+          "magic": 2
+        }
+      }
+    },
+    {
+      "id": "hero.fixed.librarian@l10",
+      "fixture": "f.l1-librarian",
+      "rotation": "grow",
+      "side": "hero",
+      "slot": 2,
+      "progress": {
+        "level": 10,
+        "specialtyId": "specialty.apothecary",
+        "levelFivePick": {
+          "magic": 2
+        }
+      }
+    },
+    {
+      "id": "hero.fixed.cook@l2",
+      "fixture": "f.l1-cook",
+      "rotation": "grow",
+      "side": "hero",
+      "slot": 2,
+      "progress": {
+        "level": 2,
+        "specialtyId": "specialty.apothecary"
+      }
+    },
+    {
+      "id": "hero.fixed.cook@l4",
+      "fixture": "f.l1-cook",
+      "rotation": "grow",
+      "side": "hero",
+      "slot": 2,
+      "progress": {
+        "level": 4,
+        "specialtyId": "specialty.apothecary"
+      }
+    },
+    {
+      "id": "hero.fixed.cook@l6",
+      "fixture": "f.l1-cook",
+      "rotation": "grow",
+      "side": "hero",
+      "slot": 2,
+      "progress": {
+        "level": 6,
+        "specialtyId": "specialty.apothecary",
+        "levelFivePick": {
+          "armor": 1
+        }
+      }
+    },
+    {
+      "id": "hero.fixed.cook@l8",
+      "fixture": "f.l1-cook",
+      "rotation": "grow",
+      "side": "hero",
+      "slot": 2,
+      "progress": {
+        "level": 8,
+        "specialtyId": "specialty.apothecary",
+        "levelFivePick": {
+          "armor": 1
+        }
+      }
+    },
+    {
+      "id": "hero.fixed.cook@l10",
+      "fixture": "f.l1-cook",
+      "rotation": "grow",
+      "side": "hero",
+      "slot": 2,
+      "progress": {
+        "level": 10,
+        "specialtyId": "specialty.apothecary",
+        "levelFivePick": {
+          "armor": 1
+        }
+      }
+    },
+    {
+      "id": "hero.fixed.fishermans-wife@l2",
+      "fixture": "f.l1-fishermans-wife",
+      "rotation": "grow",
+      "side": "hero",
+      "slot": 2,
+      "progress": {
+        "level": 2,
+        "specialtyId": "specialty.apothecary"
+      }
+    },
+    {
+      "id": "hero.fixed.fishermans-wife@l4",
+      "fixture": "f.l1-fishermans-wife",
+      "rotation": "grow",
+      "side": "hero",
+      "slot": 2,
+      "progress": {
+        "level": 4,
+        "specialtyId": "specialty.apothecary"
+      }
+    },
+    {
+      "id": "hero.fixed.fishermans-wife@l6",
+      "fixture": "f.l1-fishermans-wife",
+      "rotation": "grow",
+      "side": "hero",
+      "slot": 2,
+      "progress": {
+        "level": 6,
+        "specialtyId": "specialty.apothecary",
+        "levelFivePick": {
+          "dodge": 10
+        }
+      }
+    },
+    {
+      "id": "hero.fixed.fishermans-wife@l8",
+      "fixture": "f.l1-fishermans-wife",
+      "rotation": "grow",
+      "side": "hero",
+      "slot": 2,
+      "progress": {
+        "level": 8,
+        "specialtyId": "specialty.apothecary",
+        "levelFivePick": {
+          "dodge": 10
+        }
+      }
+    },
+    {
+      "id": "hero.fixed.fishermans-wife@l10",
+      "fixture": "f.l1-fishermans-wife",
+      "rotation": "grow",
+      "side": "hero",
+      "slot": 2,
+      "progress": {
+        "level": 10,
+        "specialtyId": "specialty.apothecary",
+        "levelFivePick": {
+          "dodge": 10
+        }
+      }
+    },
+    {
+      "id": "hero.fixed.fisherman@l2",
+      "fixture": "f.l1-fisherman",
+      "rotation": "grow",
+      "side": "hero",
+      "slot": 2,
+      "progress": {
+        "level": 2,
+        "specialtyId": "specialty.apothecary"
+      }
+    },
+    {
+      "id": "hero.fixed.fisherman@l4",
+      "fixture": "f.l1-fisherman",
+      "rotation": "grow",
+      "side": "hero",
+      "slot": 2,
+      "progress": {
+        "level": 4,
+        "specialtyId": "specialty.apothecary"
+      }
+    },
+    {
+      "id": "hero.fixed.fisherman@l6",
+      "fixture": "f.l1-fisherman",
+      "rotation": "grow",
+      "side": "hero",
+      "slot": 2,
+      "progress": {
+        "level": 6,
+        "specialtyId": "specialty.apothecary",
+        "levelFivePick": {
+          "dodge": 10
+        }
+      }
+    },
+    {
+      "id": "hero.fixed.fisherman@l8",
+      "fixture": "f.l1-fisherman",
+      "rotation": "grow",
+      "side": "hero",
+      "slot": 2,
+      "progress": {
+        "level": 8,
+        "specialtyId": "specialty.apothecary",
+        "levelFivePick": {
+          "dodge": 10
+        }
+      }
+    },
+    {
+      "id": "hero.fixed.fisherman@l10",
+      "fixture": "f.l1-fisherman",
+      "rotation": "grow",
+      "side": "hero",
+      "slot": 2,
+      "progress": {
+        "level": 10,
+        "specialtyId": "specialty.apothecary",
+        "levelFivePick": {
+          "dodge": 10
+        }
+      }
+    },
+    {
+      "id": "hero.fixed.old-wise-man@l2",
+      "fixture": "f.l1-old-wise-man",
+      "rotation": "grow",
+      "side": "hero",
+      "slot": 2,
+      "progress": {
+        "level": 2,
+        "specialtyId": "specialty.apothecary"
+      }
+    },
+    {
+      "id": "hero.fixed.old-wise-man@l4",
+      "fixture": "f.l1-old-wise-man",
+      "rotation": "grow",
+      "side": "hero",
+      "slot": 2,
+      "progress": {
+        "level": 4,
+        "specialtyId": "specialty.apothecary"
+      }
+    },
+    {
+      "id": "hero.fixed.old-wise-man@l6",
+      "fixture": "f.l1-old-wise-man",
+      "rotation": "grow",
+      "side": "hero",
+      "slot": 2,
+      "progress": {
+        "level": 6,
+        "specialtyId": "specialty.apothecary",
+        "levelFivePick": {
+          "magic": 2
+        }
+      }
+    },
+    {
+      "id": "hero.fixed.old-wise-man@l8",
+      "fixture": "f.l1-old-wise-man",
+      "rotation": "grow",
+      "side": "hero",
+      "slot": 2,
+      "progress": {
+        "level": 8,
+        "specialtyId": "specialty.apothecary",
+        "levelFivePick": {
+          "magic": 2
+        }
+      }
+    },
+    {
+      "id": "hero.fixed.old-wise-man@l10",
+      "fixture": "f.l1-old-wise-man",
+      "rotation": "grow",
+      "side": "hero",
+      "slot": 2,
+      "progress": {
+        "level": 10,
+        "specialtyId": "specialty.apothecary",
+        "levelFivePick": {
+          "magic": 2
+        }
+      }
+    },
+    {
+      "id": "hero.fixed.blacksmith@l2",
+      "fixture": "f.l1-blacksmith",
+      "rotation": "grow",
+      "side": "hero",
+      "slot": 2,
+      "progress": {
+        "level": 2,
+        "specialtyId": "specialty.apothecary"
+      }
+    },
+    {
+      "id": "hero.fixed.blacksmith@l4",
+      "fixture": "f.l1-blacksmith",
+      "rotation": "grow",
+      "side": "hero",
+      "slot": 2,
+      "progress": {
+        "level": 4,
+        "specialtyId": "specialty.apothecary"
+      }
+    },
+    {
+      "id": "hero.fixed.blacksmith@l6",
+      "fixture": "f.l1-blacksmith",
+      "rotation": "grow",
+      "side": "hero",
+      "slot": 2,
+      "progress": {
+        "level": 6,
+        "specialtyId": "specialty.apothecary",
+        "levelFivePick": {
+          "armor": 1
+        }
+      }
+    },
+    {
+      "id": "hero.fixed.blacksmith@l8",
+      "fixture": "f.l1-blacksmith",
+      "rotation": "grow",
+      "side": "hero",
+      "slot": 2,
+      "progress": {
+        "level": 8,
+        "specialtyId": "specialty.apothecary",
+        "levelFivePick": {
+          "armor": 1
+        }
+      }
+    },
+    {
+      "id": "hero.fixed.blacksmith@l10",
+      "fixture": "f.l1-blacksmith",
+      "rotation": "grow",
+      "side": "hero",
+      "slot": 2,
+      "progress": {
+        "level": 10,
+        "specialtyId": "specialty.apothecary",
+        "levelFivePick": {
+          "armor": 1
+        }
+      }
+    },
+    {
+      "id": "hero.fixed.group-of-farmers@l2",
+      "fixture": "f.l1-group-of-farmers",
+      "rotation": "grow",
+      "side": "hero",
+      "slot": 2,
+      "progress": {
+        "level": 2,
+        "specialtyId": "specialty.apothecary"
+      }
+    },
+    {
+      "id": "hero.fixed.group-of-farmers@l4",
+      "fixture": "f.l1-group-of-farmers",
+      "rotation": "grow",
+      "side": "hero",
+      "slot": 2,
+      "progress": {
+        "level": 4,
+        "specialtyId": "specialty.apothecary"
+      }
+    },
+    {
+      "id": "hero.fixed.group-of-farmers@l6",
+      "fixture": "f.l1-group-of-farmers",
+      "rotation": "grow",
+      "side": "hero",
+      "slot": 2,
+      "progress": {
+        "level": 6,
+        "specialtyId": "specialty.apothecary",
+        "levelFivePick": {
+          "strength": 2
+        }
+      }
+    },
+    {
+      "id": "hero.fixed.group-of-farmers@l8",
+      "fixture": "f.l1-group-of-farmers",
+      "rotation": "grow",
+      "side": "hero",
+      "slot": 2,
+      "progress": {
+        "level": 8,
+        "specialtyId": "specialty.apothecary",
+        "levelFivePick": {
+          "strength": 2
+        }
+      }
+    },
+    {
+      "id": "hero.fixed.group-of-farmers@l10",
+      "fixture": "f.l1-group-of-farmers",
+      "rotation": "grow",
+      "side": "hero",
+      "slot": 2,
+      "progress": {
+        "level": 10,
+        "specialtyId": "specialty.apothecary",
+        "levelFivePick": {
+          "strength": 2
+        }
+      }
+    },
+    {
+      "id": "hero.fixed.farming-family@l2",
+      "fixture": "f.l1-farming-family",
+      "rotation": "grow",
+      "side": "hero",
+      "slot": 2,
+      "progress": {
+        "level": 2,
+        "specialtyId": "specialty.apothecary"
+      }
+    },
+    {
+      "id": "hero.fixed.farming-family@l4",
+      "fixture": "f.l1-farming-family",
+      "rotation": "grow",
+      "side": "hero",
+      "slot": 2,
+      "progress": {
+        "level": 4,
+        "specialtyId": "specialty.apothecary"
+      }
+    },
+    {
+      "id": "hero.fixed.farming-family@l6",
+      "fixture": "f.l1-farming-family",
+      "rotation": "grow",
+      "side": "hero",
+      "slot": 2,
+      "progress": {
+        "level": 6,
+        "specialtyId": "specialty.apothecary",
+        "levelFivePick": {
+          "strength": 2
+        }
+      }
+    },
+    {
+      "id": "hero.fixed.farming-family@l8",
+      "fixture": "f.l1-farming-family",
+      "rotation": "grow",
+      "side": "hero",
+      "slot": 2,
+      "progress": {
+        "level": 8,
+        "specialtyId": "specialty.apothecary",
+        "levelFivePick": {
+          "strength": 2
+        }
+      }
+    },
+    {
+      "id": "hero.fixed.farming-family@l10",
+      "fixture": "f.l1-farming-family",
+      "rotation": "grow",
+      "side": "hero",
+      "slot": 2,
+      "progress": {
+        "level": 10,
+        "specialtyId": "specialty.apothecary",
+        "levelFivePick": {
+          "strength": 2
+        }
+      }
+    },
+    {
+      "id": "hero.fixed.scary-kid@l2",
+      "fixture": "f.l1-scary-kid",
+      "rotation": "grow",
+      "side": "hero",
+      "slot": 2,
+      "progress": {
+        "level": 2,
+        "specialtyId": "specialty.apothecary"
+      }
+    },
+    {
+      "id": "hero.fixed.scary-kid@l4",
+      "fixture": "f.l1-scary-kid",
+      "rotation": "grow",
+      "side": "hero",
+      "slot": 2,
+      "progress": {
+        "level": 4,
+        "specialtyId": "specialty.apothecary"
+      }
+    },
+    {
+      "id": "hero.fixed.scary-kid@l6",
+      "fixture": "f.l1-scary-kid",
+      "rotation": "grow",
+      "side": "hero",
+      "slot": 2,
+      "progress": {
+        "level": 6,
+        "specialtyId": "specialty.apothecary",
+        "levelFivePick": {
+          "dodge": 10
+        }
+      }
+    },
+    {
+      "id": "hero.fixed.scary-kid@l8",
+      "fixture": "f.l1-scary-kid",
+      "rotation": "grow",
+      "side": "hero",
+      "slot": 2,
+      "progress": {
+        "level": 8,
+        "specialtyId": "specialty.apothecary",
+        "levelFivePick": {
+          "dodge": 10
+        }
+      }
+    },
+    {
+      "id": "hero.fixed.scary-kid@l10",
+      "fixture": "f.l1-scary-kid",
+      "rotation": "grow",
+      "side": "hero",
+      "slot": 2,
+      "progress": {
+        "level": 10,
+        "specialtyId": "specialty.apothecary",
+        "levelFivePick": {
+          "dodge": 10
+        }
+      }
+    }
+  ],
+  "matchups": [
+    {
+      "id": "m.l1-paladin-dark",
+      "hero": "squad.l1-paladin-dark",
+      "enemy": "squad.c1-enemies"
+    },
+    {
+      "id": "m.l1-paladin-shiney",
+      "hero": "squad.l1-paladin-shiney",
+      "enemy": "squad.c1-enemies"
+    },
+    {
+      "id": "m.l1-paladin-hunk",
+      "hero": "squad.l1-paladin-hunk",
+      "enemy": "squad.c1-enemies"
+    },
+    {
+      "id": "m.l1-paladin-smug",
+      "hero": "squad.l1-paladin-smug",
+      "enemy": "squad.c1-enemies"
+    },
+    {
+      "id": "m.l1-ranger-ranger",
+      "hero": "squad.l1-ranger-ranger",
+      "enemy": "squad.c1-enemies"
+    },
+    {
+      "id": "m.l1-ranger-scantily",
+      "hero": "squad.l1-ranger-scantily",
+      "enemy": "squad.c1-enemies"
+    },
+    {
+      "id": "m.l1-ranger-nature",
+      "hero": "squad.l1-ranger-nature",
+      "enemy": "squad.c1-enemies"
+    },
+    {
+      "id": "m.l1-ranger-aggressive",
+      "hero": "squad.l1-ranger-aggressive",
+      "enemy": "squad.c1-enemies"
+    },
+    {
+      "id": "m.l1-warrior-iron",
+      "hero": "squad.l1-warrior-iron",
+      "enemy": "squad.c1-enemies"
+    },
+    {
+      "id": "m.l1-warrior-brawler",
+      "hero": "squad.l1-warrior-brawler",
+      "enemy": "squad.c1-enemies"
+    },
+    {
+      "id": "m.l1-warrior-barbarian",
+      "hero": "squad.l1-warrior-barbarian",
+      "enemy": "squad.c1-enemies"
+    },
+    {
+      "id": "m.l1-warrior-fearsome",
+      "hero": "squad.l1-warrior-fearsome",
+      "enemy": "squad.c1-enemies"
+    },
+    {
+      "id": "m.l1-mage-thinking",
+      "hero": "squad.l1-mage-thinking",
+      "enemy": "squad.c1-enemies"
+    },
+    {
+      "id": "m.l1-mage-sexy",
+      "hero": "squad.l1-mage-sexy",
+      "enemy": "squad.c1-enemies"
+    },
+    {
+      "id": "m.l1-mage-fire",
+      "hero": "squad.l1-mage-fire",
+      "enemy": "squad.c1-enemies"
+    },
+    {
+      "id": "m.l1-mage-fireaura",
+      "hero": "squad.l1-mage-fireaura",
+      "enemy": "squad.c1-enemies"
+    },
+    {
+      "id": "m.l1-priest-pauper",
+      "hero": "squad.l1-priest-pauper",
+      "enemy": "squad.c1-enemies"
+    },
+    {
+      "id": "m.l1-priest-armored",
+      "hero": "squad.l1-priest-armored",
+      "enemy": "squad.c1-enemies"
+    },
+    {
+      "id": "m.l1-priest-robes",
+      "hero": "squad.l1-priest-robes",
+      "enemy": "squad.c1-enemies"
+    },
+    {
+      "id": "m.l1-priest-scantily",
+      "hero": "squad.l1-priest-scantily",
+      "enemy": "squad.c1-enemies"
+    },
+    {
+      "id": "m.l1-rogue-raven",
+      "hero": "squad.l1-rogue-raven",
+      "enemy": "squad.c1-enemies"
+    },
+    {
+      "id": "m.l1-rogue-rose",
+      "hero": "squad.l1-rogue-rose",
+      "enemy": "squad.c1-enemies"
+    },
+    {
+      "id": "m.l1-rogue-snake",
+      "hero": "squad.l1-rogue-snake",
+      "enemy": "squad.c1-enemies"
+    },
+    {
+      "id": "m.l1-rogue-skull",
+      "hero": "squad.l1-rogue-skull",
+      "enemy": "squad.c1-enemies"
+    },
+    {
+      "id": "m.l1-orphans",
+      "hero": "squad.l1-orphans",
+      "enemy": "squad.c1-enemies"
+    },
+    {
+      "id": "m.l1-lumberjack-and-wife",
+      "hero": "squad.l1-lumberjack-and-wife",
+      "enemy": "squad.c1-enemies"
+    },
+    {
+      "id": "m.l1-farmer",
+      "hero": "squad.l1-farmer",
+      "enemy": "squad.c1-enemies"
+    },
+    {
+      "id": "m.l1-school-teacher",
+      "hero": "squad.l1-school-teacher",
+      "enemy": "squad.c1-enemies"
+    },
+    {
+      "id": "m.l1-school-children",
+      "hero": "squad.l1-school-children",
+      "enemy": "squad.c1-enemies"
+    },
+    {
+      "id": "m.l1-librarian",
+      "hero": "squad.l1-librarian",
+      "enemy": "squad.c1-enemies"
+    },
+    {
+      "id": "m.l1-cook",
+      "hero": "squad.l1-cook",
+      "enemy": "squad.c1-enemies"
+    },
+    {
+      "id": "m.l1-fishermans-wife",
+      "hero": "squad.l1-fishermans-wife",
+      "enemy": "squad.c1-enemies"
+    },
+    {
+      "id": "m.l1-fisherman",
+      "hero": "squad.l1-fisherman",
+      "enemy": "squad.c1-enemies"
+    },
+    {
+      "id": "m.l1-old-wise-man",
+      "hero": "squad.l1-old-wise-man",
+      "enemy": "squad.c1-enemies"
+    },
+    {
+      "id": "m.l1-blacksmith",
+      "hero": "squad.l1-blacksmith",
+      "enemy": "squad.c1-enemies"
+    },
+    {
+      "id": "m.l1-group-of-farmers",
+      "hero": "squad.l1-group-of-farmers",
+      "enemy": "squad.c1-enemies"
+    },
+    {
+      "id": "m.l1-farming-family",
+      "hero": "squad.l1-farming-family",
+      "enemy": "squad.c1-enemies"
+    },
+    {
+      "id": "m.l1-scary-kid",
+      "hero": "squad.l1-scary-kid",
+      "enemy": "squad.c1-enemies"
+    }
+  ]
+}

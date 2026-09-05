@@ -1,0 +1,348 @@
+{
+  "id": "proving.ai",
+  "note": "Pass three (Angela 2026-09-04: \"first, let's power rank everything, and then we can start to change AIs and see if that moves power ranking\"): every AI mode in src/ai/modes.ts as a subject on C1 — the mode on one seat (the mage, seat 2; a zombie, seat 0) and on a whole side (slot \"all\"). WITH = the seat or side runs the mode; WITHOUT = the control as fielded. `ai` is a rotation the rig does not have yet (9-PROVING-SETTLED §7, E10); this file waits for it and does not validate until then. When an AI is changed, pass one re-runs and the page shows which rankings moved; this plan says what the mode itself was worth.",
+  "maps": [
+    "map.proving.open",
+    "map.proving.ridge",
+    "map.proving.ford",
+    "map.proving.copse",
+    "map.proving.ruin"
+  ],
+  "seed": 1,
+  "squads": {
+    "squad.c1-heroes": [
+      {
+        "unit": "hero.base.warrior-iron",
+        "items": [
+          "item.destroyed-mail",
+          "item.tower-shield",
+          "item.war-axe"
+        ]
+      },
+      {
+        "unit": "hero.base.ranger-aggressive",
+        "items": [
+          "item.longbow",
+          "item.thick-hide"
+        ]
+      },
+      {
+        "unit": "hero.base.mage-fire",
+        "items": [
+          "item.fire-staff",
+          "item.basic-armor"
+        ]
+      }
+    ],
+    "squad.c1-enemies": [
+      "unit.zombie",
+      "unit.zombie",
+      "unit.zombie",
+      "unit.zombie",
+      "unit.zombie",
+      "unit.zombie",
+      "unit.zombie",
+      "unit.zombie",
+      "unit.zombie",
+      "unit.zombie",
+      "unit.zombie",
+      "unit.zombie"
+    ]
+  },
+  "fixtures": [
+    {
+      "id": "f.c1",
+      "hero": "squad.c1-heroes",
+      "enemy": "squad.c1-enemies"
+    }
+  ],
+  "subjects": [
+    {
+      "id": "ai.flee",
+      "fixture": "f.c1",
+      "rotation": "ai",
+      "side": "hero",
+      "slot": 2
+    },
+    {
+      "id": "ai.flee",
+      "fixture": "f.c1",
+      "rotation": "ai",
+      "side": "enemy",
+      "slot": 0
+    },
+    {
+      "id": "ai.flee",
+      "fixture": "f.c1",
+      "rotation": "ai",
+      "side": "hero",
+      "slot": "all"
+    },
+    {
+      "id": "ai.flee",
+      "fixture": "f.c1",
+      "rotation": "ai",
+      "side": "enemy",
+      "slot": "all"
+    },
+    {
+      "id": "ai.dumb-melee",
+      "fixture": "f.c1",
+      "rotation": "ai",
+      "side": "hero",
+      "slot": 2
+    },
+    {
+      "id": "ai.dumb-melee",
+      "fixture": "f.c1",
+      "rotation": "ai",
+      "side": "enemy",
+      "slot": 0
+    },
+    {
+      "id": "ai.dumb-melee",
+      "fixture": "f.c1",
+      "rotation": "ai",
+      "side": "hero",
+      "slot": "all"
+    },
+    {
+      "id": "ai.dumb-melee",
+      "fixture": "f.c1",
+      "rotation": "ai",
+      "side": "enemy",
+      "slot": "all"
+    },
+    {
+      "id": "ai.melee-aggressive",
+      "fixture": "f.c1",
+      "rotation": "ai",
+      "side": "hero",
+      "slot": 2
+    },
+    {
+      "id": "ai.melee-aggressive",
+      "fixture": "f.c1",
+      "rotation": "ai",
+      "side": "enemy",
+      "slot": 0
+    },
+    {
+      "id": "ai.melee-aggressive",
+      "fixture": "f.c1",
+      "rotation": "ai",
+      "side": "hero",
+      "slot": "all"
+    },
+    {
+      "id": "ai.melee-aggressive",
+      "fixture": "f.c1",
+      "rotation": "ai",
+      "side": "enemy",
+      "slot": "all"
+    },
+    {
+      "id": "ai.ranged-kite",
+      "fixture": "f.c1",
+      "rotation": "ai",
+      "side": "hero",
+      "slot": 2
+    },
+    {
+      "id": "ai.ranged-kite",
+      "fixture": "f.c1",
+      "rotation": "ai",
+      "side": "enemy",
+      "slot": 0
+    },
+    {
+      "id": "ai.ranged-kite",
+      "fixture": "f.c1",
+      "rotation": "ai",
+      "side": "hero",
+      "slot": "all"
+    },
+    {
+      "id": "ai.ranged-kite",
+      "fixture": "f.c1",
+      "rotation": "ai",
+      "side": "enemy",
+      "slot": "all"
+    },
+    {
+      "id": "ai.defender",
+      "fixture": "f.c1",
+      "rotation": "ai",
+      "side": "hero",
+      "slot": 2
+    },
+    {
+      "id": "ai.defender",
+      "fixture": "f.c1",
+      "rotation": "ai",
+      "side": "enemy",
+      "slot": 0
+    },
+    {
+      "id": "ai.defender",
+      "fixture": "f.c1",
+      "rotation": "ai",
+      "side": "hero",
+      "slot": "all"
+    },
+    {
+      "id": "ai.defender",
+      "fixture": "f.c1",
+      "rotation": "ai",
+      "side": "enemy",
+      "slot": "all"
+    },
+    {
+      "id": "ai.support",
+      "fixture": "f.c1",
+      "rotation": "ai",
+      "side": "hero",
+      "slot": 2
+    },
+    {
+      "id": "ai.support",
+      "fixture": "f.c1",
+      "rotation": "ai",
+      "side": "enemy",
+      "slot": 0
+    },
+    {
+      "id": "ai.support",
+      "fixture": "f.c1",
+      "rotation": "ai",
+      "side": "hero",
+      "slot": "all"
+    },
+    {
+      "id": "ai.support",
+      "fixture": "f.c1",
+      "rotation": "ai",
+      "side": "enemy",
+      "slot": "all"
+    },
+    {
+      "id": "ai.focused-fire",
+      "fixture": "f.c1",
+      "rotation": "ai",
+      "side": "hero",
+      "slot": 2
+    },
+    {
+      "id": "ai.focused-fire",
+      "fixture": "f.c1",
+      "rotation": "ai",
+      "side": "enemy",
+      "slot": 0
+    },
+    {
+      "id": "ai.focused-fire",
+      "fixture": "f.c1",
+      "rotation": "ai",
+      "side": "hero",
+      "slot": "all"
+    },
+    {
+      "id": "ai.focused-fire",
+      "fixture": "f.c1",
+      "rotation": "ai",
+      "side": "enemy",
+      "slot": "all"
+    },
+    {
+      "id": "ai.value-hunter",
+      "fixture": "f.c1",
+      "rotation": "ai",
+      "side": "hero",
+      "slot": 2
+    },
+    {
+      "id": "ai.value-hunter",
+      "fixture": "f.c1",
+      "rotation": "ai",
+      "side": "enemy",
+      "slot": 0
+    },
+    {
+      "id": "ai.value-hunter",
+      "fixture": "f.c1",
+      "rotation": "ai",
+      "side": "hero",
+      "slot": "all"
+    },
+    {
+      "id": "ai.value-hunter",
+      "fixture": "f.c1",
+      "rotation": "ai",
+      "side": "enemy",
+      "slot": "all"
+    },
+    {
+      "id": "ai.follow",
+      "fixture": "f.c1",
+      "rotation": "ai",
+      "side": "hero",
+      "slot": 2
+    },
+    {
+      "id": "ai.follow",
+      "fixture": "f.c1",
+      "rotation": "ai",
+      "side": "enemy",
+      "slot": 0
+    },
+    {
+      "id": "ai.follow",
+      "fixture": "f.c1",
+      "rotation": "ai",
+      "side": "hero",
+      "slot": "all"
+    },
+    {
+      "id": "ai.follow",
+      "fixture": "f.c1",
+      "rotation": "ai",
+      "side": "enemy",
+      "slot": "all"
+    },
+    {
+      "id": "ai.hunter",
+      "fixture": "f.c1",
+      "rotation": "ai",
+      "side": "hero",
+      "slot": 2
+    },
+    {
+      "id": "ai.hunter",
+      "fixture": "f.c1",
+      "rotation": "ai",
+      "side": "enemy",
+      "slot": 0
+    },
+    {
+      "id": "ai.hunter",
+      "fixture": "f.c1",
+      "rotation": "ai",
+      "side": "hero",
+      "slot": "all"
+    },
+    {
+      "id": "ai.hunter",
+      "fixture": "f.c1",
+      "rotation": "ai",
+      "side": "enemy",
+      "slot": "all"
+    }
+  ],
+  "matchups": [
+    {
+      "id": "m.c1",
+      "hero": "squad.c1-heroes",
+      "enemy": "squad.c1-enemies"
+    }
+  ]
+}

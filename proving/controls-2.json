@@ -1,0 +1,309 @@
+{
+  "id": "proving.controls-2",
+  "note": "Pass two (Angela 2026-09-04: \"a plan for 1 and 2\"): a second control per side. C2 keeps the C1 heroes and swaps the family — a demon six, imps with a fire-imp and a hellhound, seat 0 an imp. C3 keeps C1's zombies (twelve, retuned) and swaps the heroes — paladin-shiney, rogue-raven, priest-robes in start kits, seat 2 the priest. Same retune rule as C1 (9-PROVING-SETTLED §3): the candidate whose seed-1 five is 2-3 or 3-2, ties to the ten-battle margin nearest zero, ties to fewer bodies; the winner becomes squad.c2-enemies / squad.c3-enemies in the -2 unit plans. Interim data: the C1 four beat imps-4 10-0 and imps-5 7-1-2; the second four lost to ghouls-4 0-10 and split undead-close 4-6 — expect C3 lighter than C1.",
+  "maps": [
+    "map.proving.open",
+    "map.proving.ridge",
+    "map.proving.ford",
+    "map.proving.copse",
+    "map.proving.ruin"
+  ],
+  "seed": 1,
+  "squads": {
+    "squad.c1-heroes": [
+      {
+        "unit": "hero.base.warrior-iron",
+        "items": [
+          "item.destroyed-mail",
+          "item.tower-shield",
+          "item.war-axe"
+        ]
+      },
+      {
+        "unit": "hero.base.ranger-aggressive",
+        "items": [
+          "item.longbow",
+          "item.thick-hide"
+        ]
+      },
+      {
+        "unit": "hero.base.mage-fire",
+        "items": [
+          "item.fire-staff",
+          "item.basic-armor"
+        ]
+      }
+    ],
+    "squad.c3-heroes": [
+      {
+        "unit": "hero.base.paladin-shiney",
+        "items": [
+          "item.longsword",
+          "item.knight-shield",
+          "item.basic-armor"
+        ]
+      },
+      {
+        "unit": "hero.base.rogue-raven",
+        "items": [
+          "item.hand-crossbow",
+          "item.longsword",
+          "item.peddlers-vest"
+        ]
+      },
+      {
+        "unit": "hero.base.priest-robes",
+        "items": [
+          "item.holy-symbol",
+          "item.peddlers-vest"
+        ]
+      }
+    ],
+    "squad.c2-enemies": [
+      "unit.imp",
+      "unit.imp",
+      "unit.imp",
+      "unit.imp",
+      "unit.fire-imp",
+      "unit.hellhound"
+    ],
+    "squad.c2-imps-5": [
+      "unit.imp",
+      "unit.imp",
+      "unit.imp",
+      "unit.imp",
+      "unit.imp"
+    ],
+    "squad.c2-imps-6": [
+      "unit.imp",
+      "unit.imp",
+      "unit.imp",
+      "unit.imp",
+      "unit.imp",
+      "unit.imp"
+    ],
+    "squad.c2-imps-7": [
+      "unit.imp",
+      "unit.imp",
+      "unit.imp",
+      "unit.imp",
+      "unit.imp",
+      "unit.imp",
+      "unit.imp"
+    ],
+    "squad.c2-imps-4-fire-poison": [
+      "unit.imp",
+      "unit.imp",
+      "unit.imp",
+      "unit.imp",
+      "unit.fire-imp",
+      "unit.poison-imp"
+    ],
+    "squad.c2-imps-3-hound-hell": [
+      "unit.imp",
+      "unit.imp",
+      "unit.imp",
+      "unit.demon-hound",
+      "unit.hellhound"
+    ],
+    "squad.c2-imps-5-hound": [
+      "unit.imp",
+      "unit.imp",
+      "unit.imp",
+      "unit.imp",
+      "unit.imp",
+      "unit.demon-hound"
+    ],
+    "squad.c2-imps-4-hell-hell": [
+      "unit.imp",
+      "unit.imp",
+      "unit.imp",
+      "unit.imp",
+      "unit.hellhound",
+      "unit.hellhound"
+    ],
+    "squad.c3-enemies": [
+      "unit.zombie",
+      "unit.zombie",
+      "unit.zombie",
+      "unit.zombie",
+      "unit.zombie",
+      "unit.zombie",
+      "unit.zombie",
+      "unit.zombie",
+      "unit.zombie",
+      "unit.zombie",
+      "unit.zombie",
+      "unit.zombie"
+    ],
+    "squad.c3-z8": [
+      "unit.zombie",
+      "unit.zombie",
+      "unit.zombie",
+      "unit.zombie",
+      "unit.zombie",
+      "unit.zombie",
+      "unit.zombie",
+      "unit.zombie"
+    ],
+    "squad.c3-z10": [
+      "unit.zombie",
+      "unit.zombie",
+      "unit.zombie",
+      "unit.zombie",
+      "unit.zombie",
+      "unit.zombie",
+      "unit.zombie",
+      "unit.zombie",
+      "unit.zombie",
+      "unit.zombie"
+    ],
+    "squad.c3-z14": [
+      "unit.zombie",
+      "unit.zombie",
+      "unit.zombie",
+      "unit.zombie",
+      "unit.zombie",
+      "unit.zombie",
+      "unit.zombie",
+      "unit.zombie",
+      "unit.zombie",
+      "unit.zombie",
+      "unit.zombie",
+      "unit.zombie",
+      "unit.zombie",
+      "unit.zombie"
+    ],
+    "squad.c3-z4g2": [
+      "unit.zombie",
+      "unit.zombie",
+      "unit.zombie",
+      "unit.zombie",
+      "unit.ghoul",
+      "unit.ghoul"
+    ],
+    "squad.c3-z3g2": [
+      "unit.zombie",
+      "unit.zombie",
+      "unit.zombie",
+      "unit.ghoul",
+      "unit.ghoul"
+    ],
+    "squad.c3-z5g1": [
+      "unit.zombie",
+      "unit.zombie",
+      "unit.zombie",
+      "unit.zombie",
+      "unit.zombie",
+      "unit.ghoul"
+    ],
+    "squad.c3-z6": [
+      "unit.zombie",
+      "unit.zombie",
+      "unit.zombie",
+      "unit.zombie",
+      "unit.zombie",
+      "unit.zombie"
+    ]
+  },
+  "fixtures": [],
+  "subjects": [],
+  "matchups": [
+    {
+      "id": "m.c2-v-c2-enemies",
+      "hero": "squad.c1-heroes",
+      "enemy": "squad.c2-enemies",
+      "pairs": 10
+    },
+    {
+      "id": "m.c2-v-c2-imps-5",
+      "hero": "squad.c1-heroes",
+      "enemy": "squad.c2-imps-5",
+      "pairs": 10
+    },
+    {
+      "id": "m.c2-v-c2-imps-6",
+      "hero": "squad.c1-heroes",
+      "enemy": "squad.c2-imps-6",
+      "pairs": 10
+    },
+    {
+      "id": "m.c2-v-c2-imps-7",
+      "hero": "squad.c1-heroes",
+      "enemy": "squad.c2-imps-7",
+      "pairs": 10
+    },
+    {
+      "id": "m.c2-v-c2-imps-4-fire-poison",
+      "hero": "squad.c1-heroes",
+      "enemy": "squad.c2-imps-4-fire-poison",
+      "pairs": 10
+    },
+    {
+      "id": "m.c2-v-c2-imps-3-hound-hell",
+      "hero": "squad.c1-heroes",
+      "enemy": "squad.c2-imps-3-hound-hell",
+      "pairs": 10
+    },
+    {
+      "id": "m.c2-v-c2-imps-5-hound",
+      "hero": "squad.c1-heroes",
+      "enemy": "squad.c2-imps-5-hound",
+      "pairs": 10
+    },
+    {
+      "id": "m.c2-v-c2-imps-4-hell-hell",
+      "hero": "squad.c1-heroes",
+      "enemy": "squad.c2-imps-4-hell-hell",
+      "pairs": 10
+    },
+    {
+      "id": "m.c3-v-c3-enemies",
+      "hero": "squad.c3-heroes",
+      "enemy": "squad.c3-enemies",
+      "pairs": 10
+    },
+    {
+      "id": "m.c3-v-c3-z8",
+      "hero": "squad.c3-heroes",
+      "enemy": "squad.c3-z8",
+      "pairs": 10
+    },
+    {
+      "id": "m.c3-v-c3-z10",
+      "hero": "squad.c3-heroes",
+      "enemy": "squad.c3-z10",
+      "pairs": 10
+    },
+    {
+      "id": "m.c3-v-c3-z14",
+      "hero": "squad.c3-heroes",
+      "enemy": "squad.c3-z14",
+      "pairs": 10
+    },
+    {
+      "id": "m.c3-v-c3-z4g2",
+      "hero": "squad.c3-heroes",
+      "enemy": "squad.c3-z4g2",
+      "pairs": 10
+    },
+    {
+      "id": "m.c3-v-c3-z3g2",
+      "hero": "squad.c3-heroes",
+      "enemy": "squad.c3-z3g2",
+      "pairs": 10
+    },
+    {
+      "id": "m.c3-v-c3-z5g1",
+      "hero": "squad.c3-heroes",
+      "enemy": "squad.c3-z5g1",
+      "pairs": 10
+    },
+    {
+      "id": "m.c3-v-c3-z6",
+      "hero": "squad.c3-heroes",
+      "enemy": "squad.c3-z6",
+      "pairs": 10
+    }
+  ]
+}

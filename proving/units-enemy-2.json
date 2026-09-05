@@ -1,0 +1,573 @@
+{
+  "id": "proving.units-enemy-2",
+  "note": "Pass two: every unit.* row on C2 (replacing an imp, seat 0, among demons) and C3 (replacing a zombie, seat 0, against a different hero three).",
+  "maps": [
+    "map.proving.open",
+    "map.proving.ridge",
+    "map.proving.ford",
+    "map.proving.copse",
+    "map.proving.ruin"
+  ],
+  "seed": 1,
+  "squads": {
+    "squad.c1-heroes": [
+      {
+        "unit": "hero.base.warrior-iron",
+        "items": [
+          "item.destroyed-mail",
+          "item.tower-shield",
+          "item.war-axe"
+        ]
+      },
+      {
+        "unit": "hero.base.ranger-aggressive",
+        "items": [
+          "item.longbow",
+          "item.thick-hide"
+        ]
+      },
+      {
+        "unit": "hero.base.mage-fire",
+        "items": [
+          "item.fire-staff",
+          "item.basic-armor"
+        ]
+      }
+    ],
+    "squad.c2-enemies": [
+      "unit.imp",
+      "unit.imp",
+      "unit.imp",
+      "unit.imp",
+      "unit.fire-imp",
+      "unit.hellhound"
+    ],
+    "squad.c3-heroes": [
+      {
+        "unit": "hero.base.paladin-shiney",
+        "items": [
+          "item.longsword",
+          "item.knight-shield",
+          "item.basic-armor"
+        ]
+      },
+      {
+        "unit": "hero.base.rogue-raven",
+        "items": [
+          "item.hand-crossbow",
+          "item.longsword",
+          "item.peddlers-vest"
+        ]
+      },
+      {
+        "unit": "hero.base.priest-robes",
+        "items": [
+          "item.holy-symbol",
+          "item.peddlers-vest"
+        ]
+      }
+    ],
+    "squad.c3-enemies": [
+      "unit.zombie",
+      "unit.zombie",
+      "unit.zombie",
+      "unit.zombie",
+      "unit.zombie",
+      "unit.zombie",
+      "unit.zombie",
+      "unit.zombie",
+      "unit.zombie",
+      "unit.zombie",
+      "unit.zombie",
+      "unit.zombie"
+    ]
+  },
+  "fixtures": [
+    {
+      "id": "f.c2",
+      "hero": "squad.c1-heroes",
+      "enemy": "squad.c2-enemies"
+    },
+    {
+      "id": "f.c3",
+      "hero": "squad.c3-heroes",
+      "enemy": "squad.c3-enemies"
+    }
+  ],
+  "subjects": [
+    {
+      "id": "unit.balrog",
+      "fixture": "f.c2",
+      "rotation": "replace",
+      "side": "enemy",
+      "slot": 0
+    },
+    {
+      "id": "unit.balrog",
+      "fixture": "f.c3",
+      "rotation": "replace",
+      "side": "enemy",
+      "slot": 0
+    },
+    {
+      "id": "unit.bloodhound",
+      "fixture": "f.c2",
+      "rotation": "replace",
+      "side": "enemy",
+      "slot": 0
+    },
+    {
+      "id": "unit.bloodhound",
+      "fixture": "f.c3",
+      "rotation": "replace",
+      "side": "enemy",
+      "slot": 0
+    },
+    {
+      "id": "unit.bone-dragon",
+      "fixture": "f.c2",
+      "rotation": "replace",
+      "side": "enemy",
+      "slot": 0
+    },
+    {
+      "id": "unit.bone-dragon",
+      "fixture": "f.c3",
+      "rotation": "replace",
+      "side": "enemy",
+      "slot": 0
+    },
+    {
+      "id": "unit.bruiser-demon",
+      "fixture": "f.c2",
+      "rotation": "replace",
+      "side": "enemy",
+      "slot": 0
+    },
+    {
+      "id": "unit.bruiser-demon",
+      "fixture": "f.c3",
+      "rotation": "replace",
+      "side": "enemy",
+      "slot": 0
+    },
+    {
+      "id": "unit.dark-sniper",
+      "fixture": "f.c2",
+      "rotation": "replace",
+      "side": "enemy",
+      "slot": 0
+    },
+    {
+      "id": "unit.dark-sniper",
+      "fixture": "f.c3",
+      "rotation": "replace",
+      "side": "enemy",
+      "slot": 0
+    },
+    {
+      "id": "unit.demon-hound",
+      "fixture": "f.c2",
+      "rotation": "replace",
+      "side": "enemy",
+      "slot": 0
+    },
+    {
+      "id": "unit.demon-hound",
+      "fixture": "f.c3",
+      "rotation": "replace",
+      "side": "enemy",
+      "slot": 0
+    },
+    {
+      "id": "unit.doombringer",
+      "fixture": "f.c2",
+      "rotation": "replace",
+      "side": "enemy",
+      "slot": 0
+    },
+    {
+      "id": "unit.doombringer",
+      "fixture": "f.c3",
+      "rotation": "replace",
+      "side": "enemy",
+      "slot": 0
+    },
+    {
+      "id": "unit.eyeblight",
+      "fixture": "f.c2",
+      "rotation": "replace",
+      "side": "enemy",
+      "slot": 0
+    },
+    {
+      "id": "unit.eyeblight",
+      "fixture": "f.c3",
+      "rotation": "replace",
+      "side": "enemy",
+      "slot": 0
+    },
+    {
+      "id": "unit.fast-zombie",
+      "fixture": "f.c2",
+      "rotation": "replace",
+      "side": "enemy",
+      "slot": 0
+    },
+    {
+      "id": "unit.fast-zombie",
+      "fixture": "f.c3",
+      "rotation": "replace",
+      "side": "enemy",
+      "slot": 0
+    },
+    {
+      "id": "unit.fire-imp",
+      "fixture": "f.c2",
+      "rotation": "replace",
+      "side": "enemy",
+      "slot": 0
+    },
+    {
+      "id": "unit.fire-imp",
+      "fixture": "f.c3",
+      "rotation": "replace",
+      "side": "enemy",
+      "slot": 0
+    },
+    {
+      "id": "unit.ghoul",
+      "fixture": "f.c2",
+      "rotation": "replace",
+      "side": "enemy",
+      "slot": 0
+    },
+    {
+      "id": "unit.ghoul",
+      "fixture": "f.c3",
+      "rotation": "replace",
+      "side": "enemy",
+      "slot": 0
+    },
+    {
+      "id": "unit.hellhound",
+      "fixture": "f.c2",
+      "rotation": "replace",
+      "side": "enemy",
+      "slot": 0
+    },
+    {
+      "id": "unit.hellhound",
+      "fixture": "f.c3",
+      "rotation": "replace",
+      "side": "enemy",
+      "slot": 0
+    },
+    {
+      "id": "unit.imp",
+      "fixture": "f.c2",
+      "rotation": "replace",
+      "side": "enemy",
+      "slot": 0
+    },
+    {
+      "id": "unit.imp",
+      "fixture": "f.c3",
+      "rotation": "replace",
+      "side": "enemy",
+      "slot": 0
+    },
+    {
+      "id": "unit.imp-master",
+      "fixture": "f.c2",
+      "rotation": "replace",
+      "side": "enemy",
+      "slot": 0
+    },
+    {
+      "id": "unit.imp-master",
+      "fixture": "f.c3",
+      "rotation": "replace",
+      "side": "enemy",
+      "slot": 0
+    },
+    {
+      "id": "unit.iron-colossus",
+      "fixture": "f.c2",
+      "rotation": "replace",
+      "side": "enemy",
+      "slot": 0
+    },
+    {
+      "id": "unit.iron-colossus",
+      "fixture": "f.c3",
+      "rotation": "replace",
+      "side": "enemy",
+      "slot": 0
+    },
+    {
+      "id": "unit.lieutenant-demon",
+      "fixture": "f.c2",
+      "rotation": "replace",
+      "side": "enemy",
+      "slot": 0
+    },
+    {
+      "id": "unit.lieutenant-demon",
+      "fixture": "f.c3",
+      "rotation": "replace",
+      "side": "enemy",
+      "slot": 0
+    },
+    {
+      "id": "unit.necromancer",
+      "fixture": "f.c2",
+      "rotation": "replace",
+      "side": "enemy",
+      "slot": 0
+    },
+    {
+      "id": "unit.necromancer",
+      "fixture": "f.c3",
+      "rotation": "replace",
+      "side": "enemy",
+      "slot": 0
+    },
+    {
+      "id": "unit.nightstalker",
+      "fixture": "f.c2",
+      "rotation": "replace",
+      "side": "enemy",
+      "slot": 0
+    },
+    {
+      "id": "unit.nightstalker",
+      "fixture": "f.c3",
+      "rotation": "replace",
+      "side": "enemy",
+      "slot": 0
+    },
+    {
+      "id": "unit.poison-imp",
+      "fixture": "f.c2",
+      "rotation": "replace",
+      "side": "enemy",
+      "slot": 0
+    },
+    {
+      "id": "unit.poison-imp",
+      "fixture": "f.c3",
+      "rotation": "replace",
+      "side": "enemy",
+      "slot": 0
+    },
+    {
+      "id": "unit.powerful-imp",
+      "fixture": "f.c2",
+      "rotation": "replace",
+      "side": "enemy",
+      "slot": 0
+    },
+    {
+      "id": "unit.powerful-imp",
+      "fixture": "f.c3",
+      "rotation": "replace",
+      "side": "enemy",
+      "slot": 0
+    },
+    {
+      "id": "unit.shadow-sorcerer",
+      "fixture": "f.c2",
+      "rotation": "replace",
+      "side": "enemy",
+      "slot": 0
+    },
+    {
+      "id": "unit.shadow-sorcerer",
+      "fixture": "f.c3",
+      "rotation": "replace",
+      "side": "enemy",
+      "slot": 0
+    },
+    {
+      "id": "unit.skeletal-archer",
+      "fixture": "f.c2",
+      "rotation": "replace",
+      "side": "enemy",
+      "slot": 0
+    },
+    {
+      "id": "unit.skeletal-archer",
+      "fixture": "f.c3",
+      "rotation": "replace",
+      "side": "enemy",
+      "slot": 0
+    },
+    {
+      "id": "unit.skeleton",
+      "fixture": "f.c2",
+      "rotation": "replace",
+      "side": "enemy",
+      "slot": 0
+    },
+    {
+      "id": "unit.skeleton",
+      "fixture": "f.c3",
+      "rotation": "replace",
+      "side": "enemy",
+      "slot": 0
+    },
+    {
+      "id": "unit.skeleton-spider",
+      "fixture": "f.c2",
+      "rotation": "replace",
+      "side": "enemy",
+      "slot": 0
+    },
+    {
+      "id": "unit.skeleton-spider",
+      "fixture": "f.c3",
+      "rotation": "replace",
+      "side": "enemy",
+      "slot": 0
+    },
+    {
+      "id": "unit.strong-skeleton",
+      "fixture": "f.c2",
+      "rotation": "replace",
+      "side": "enemy",
+      "slot": 0
+    },
+    {
+      "id": "unit.strong-skeleton",
+      "fixture": "f.c3",
+      "rotation": "replace",
+      "side": "enemy",
+      "slot": 0
+    },
+    {
+      "id": "unit.strong-zombie",
+      "fixture": "f.c2",
+      "rotation": "replace",
+      "side": "enemy",
+      "slot": 0
+    },
+    {
+      "id": "unit.strong-zombie",
+      "fixture": "f.c3",
+      "rotation": "replace",
+      "side": "enemy",
+      "slot": 0
+    },
+    {
+      "id": "unit.terror-imp",
+      "fixture": "f.c2",
+      "rotation": "replace",
+      "side": "enemy",
+      "slot": 0
+    },
+    {
+      "id": "unit.terror-imp",
+      "fixture": "f.c3",
+      "rotation": "replace",
+      "side": "enemy",
+      "slot": 0
+    },
+    {
+      "id": "unit.vampire",
+      "fixture": "f.c2",
+      "rotation": "replace",
+      "side": "enemy",
+      "slot": 0
+    },
+    {
+      "id": "unit.vampire",
+      "fixture": "f.c3",
+      "rotation": "replace",
+      "side": "enemy",
+      "slot": 0
+    },
+    {
+      "id": "unit.vampire-lord",
+      "fixture": "f.c2",
+      "rotation": "replace",
+      "side": "enemy",
+      "slot": 0
+    },
+    {
+      "id": "unit.vampire-lord",
+      "fixture": "f.c3",
+      "rotation": "replace",
+      "side": "enemy",
+      "slot": 0
+    },
+    {
+      "id": "unit.werewolf",
+      "fixture": "f.c2",
+      "rotation": "replace",
+      "side": "enemy",
+      "slot": 0
+    },
+    {
+      "id": "unit.werewolf",
+      "fixture": "f.c3",
+      "rotation": "replace",
+      "side": "enemy",
+      "slot": 0
+    },
+    {
+      "id": "unit.zombie",
+      "fixture": "f.c2",
+      "rotation": "replace",
+      "side": "enemy",
+      "slot": 0
+    },
+    {
+      "id": "unit.zombie",
+      "fixture": "f.c3",
+      "rotation": "replace",
+      "side": "enemy",
+      "slot": 0
+    },
+    {
+      "id": "unit.zombie-burning",
+      "fixture": "f.c2",
+      "rotation": "replace",
+      "side": "enemy",
+      "slot": 0
+    },
+    {
+      "id": "unit.zombie-burning",
+      "fixture": "f.c3",
+      "rotation": "replace",
+      "side": "enemy",
+      "slot": 0
+    },
+    {
+      "id": "unit.zombie-hound",
+      "fixture": "f.c2",
+      "rotation": "replace",
+      "side": "enemy",
+      "slot": 0
+    },
+    {
+      "id": "unit.zombie-hound",
+      "fixture": "f.c3",
+      "rotation": "replace",
+      "side": "enemy",
+      "slot": 0
+    }
+  ],
+  "matchups": [
+    {
+      "id": "m.c2",
+      "hero": "squad.c1-heroes",
+      "enemy": "squad.c2-enemies"
+    },
+    {
+      "id": "m.c3",
+      "hero": "squad.c3-heroes",
+      "enemy": "squad.c3-enemies"
+    }
+  ]
+}

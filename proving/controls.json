@@ -1,0 +1,192 @@
+{
+  "id": "proving.controls",
+  "note": "The control fight, confirmed on the Proving maps before any subject hangs on it. C1 is three kitted level-1 heroes (warrior-iron, ranger-aggressive, mage-fire, start kits) against TWELVE ZOMBIES — retuned 2026-09-05 from four zombies + two ghouls (squad.c1-z4g2 here), which went 1-4 on the seed-1 five once Rotting Flesh fell to 2%. The neighbours are here so the retune is a choice among measured fixtures, not a guess: the rule is the candidate whose hero wins of ten is nearest five, ties to the margin nearest zero, ties to the fewer bodies. Whichever wins becomes squad.c1-enemies in the three unit plans (9-PROVING-SETTLED §3).",
+  "maps": [
+    "map.proving.open",
+    "map.proving.ridge",
+    "map.proving.ford",
+    "map.proving.copse",
+    "map.proving.ruin"
+  ],
+  "seed": 1,
+  "squads": {
+    "squad.c1-heroes": [
+      {
+        "unit": "hero.base.warrior-iron",
+        "items": [
+          "item.destroyed-mail",
+          "item.tower-shield",
+          "item.war-axe"
+        ]
+      },
+      {
+        "unit": "hero.base.ranger-aggressive",
+        "items": [
+          "item.longbow",
+          "item.thick-hide"
+        ]
+      },
+      {
+        "unit": "hero.base.mage-fire",
+        "items": [
+          "item.fire-staff",
+          "item.basic-armor"
+        ]
+      }
+    ],
+    "squad.c1-enemies": [
+      "unit.zombie",
+      "unit.zombie",
+      "unit.zombie",
+      "unit.zombie",
+      "unit.zombie",
+      "unit.zombie",
+      "unit.zombie",
+      "unit.zombie",
+      "unit.zombie",
+      "unit.zombie",
+      "unit.zombie",
+      "unit.zombie"
+    ],
+    "squad.c1-z4g2": [
+      "unit.zombie",
+      "unit.zombie",
+      "unit.zombie",
+      "unit.zombie",
+      "unit.ghoul",
+      "unit.ghoul"
+    ],
+    "squad.c1-z3g2": [
+      "unit.zombie",
+      "unit.zombie",
+      "unit.zombie",
+      "unit.ghoul",
+      "unit.ghoul"
+    ],
+    "squad.c1-z5g2": [
+      "unit.zombie",
+      "unit.zombie",
+      "unit.zombie",
+      "unit.zombie",
+      "unit.zombie",
+      "unit.ghoul",
+      "unit.ghoul"
+    ],
+    "squad.c1-z6g2": [
+      "unit.zombie",
+      "unit.zombie",
+      "unit.zombie",
+      "unit.zombie",
+      "unit.zombie",
+      "unit.zombie",
+      "unit.ghoul",
+      "unit.ghoul"
+    ],
+    "squad.c1-z5g1": [
+      "unit.zombie",
+      "unit.zombie",
+      "unit.zombie",
+      "unit.zombie",
+      "unit.zombie",
+      "unit.ghoul"
+    ],
+    "squad.c1-z4g3": [
+      "unit.zombie",
+      "unit.zombie",
+      "unit.zombie",
+      "unit.zombie",
+      "unit.ghoul",
+      "unit.ghoul",
+      "unit.ghoul"
+    ],
+    "squad.c1-z13": [
+      "unit.zombie",
+      "unit.zombie",
+      "unit.zombie",
+      "unit.zombie",
+      "unit.zombie",
+      "unit.zombie",
+      "unit.zombie",
+      "unit.zombie",
+      "unit.zombie",
+      "unit.zombie",
+      "unit.zombie",
+      "unit.zombie",
+      "unit.zombie"
+    ],
+    "squad.c1-z14": [
+      "unit.zombie",
+      "unit.zombie",
+      "unit.zombie",
+      "unit.zombie",
+      "unit.zombie",
+      "unit.zombie",
+      "unit.zombie",
+      "unit.zombie",
+      "unit.zombie",
+      "unit.zombie",
+      "unit.zombie",
+      "unit.zombie",
+      "unit.zombie",
+      "unit.zombie"
+    ]
+  },
+  "fixtures": [],
+  "subjects": [],
+  "matchups": [
+    {
+      "id": "m.c1-v-c1-enemies",
+      "hero": "squad.c1-heroes",
+      "enemy": "squad.c1-enemies",
+      "pairs": 10
+    },
+    {
+      "id": "m.c1-v-c1-z4g2",
+      "hero": "squad.c1-heroes",
+      "enemy": "squad.c1-z4g2",
+      "pairs": 10
+    },
+    {
+      "id": "m.c1-v-c1-z3g2",
+      "hero": "squad.c1-heroes",
+      "enemy": "squad.c1-z3g2",
+      "pairs": 10
+    },
+    {
+      "id": "m.c1-v-c1-z5g2",
+      "hero": "squad.c1-heroes",
+      "enemy": "squad.c1-z5g2",
+      "pairs": 10
+    },
+    {
+      "id": "m.c1-v-c1-z6g2",
+      "hero": "squad.c1-heroes",
+      "enemy": "squad.c1-z6g2",
+      "pairs": 10
+    },
+    {
+      "id": "m.c1-v-c1-z5g1",
+      "hero": "squad.c1-heroes",
+      "enemy": "squad.c1-z5g1",
+      "pairs": 10
+    },
+    {
+      "id": "m.c1-v-c1-z4g3",
+      "hero": "squad.c1-heroes",
+      "enemy": "squad.c1-z4g3",
+      "pairs": 10
+    },
+    {
+      "id": "m.c1-v-c1-z13",
+      "hero": "squad.c1-heroes",
+      "enemy": "squad.c1-z13",
+      "pairs": 10
+    },
+    {
+      "id": "m.c1-v-c1-z14",
+      "hero": "squad.c1-heroes",
+      "enemy": "squad.c1-z14",
+      "pairs": 10
+    }
+  ]
+}
