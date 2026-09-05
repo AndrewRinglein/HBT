@@ -1348,7 +1348,7 @@
     "phase": 8
    },
    "source": "8-ENCOUNTERS-NOTES.md (the encounter session, 2026-09-03) — shipped by the engine session 2026-09-03 under a one-time exception ruled by Angela (\"Read the NOTES file, ship the 8 authored rows\"). Placements and phases verbatim from the entry's Setup and Schedule tables; every `needs` the entry lists is carried as a gap. E5.",
-   "intent": "Frost is added before Armor, so Frost cancels Armor point for point — and a horde is nothing but hit count. This fight puts the horde back.",
+   "intent": "Frost is added before Armor, so Frost cancels Armor point for point — and a horde is nothing but hit count. This fight puts the horde back. RE-PLACED 2026-09-04: every enemy west of the frost band was mirrored across the centre line to the east. Ruled: \"Enemies deploy east.\" The band stays at columns 7-9, so the party now crosses the frost INTO the skeleton wall rather than being surrounded by it.",
    "heroZone": {
     "count": 6,
     "at": {
@@ -1374,35 +1374,35 @@
      "count": 8,
      "hexes": [
       {
-       "col": 6,
+       "col": 9,
        "row": 4
       },
       {
-       "col": 6,
+       "col": 9,
        "row": 6
       },
       {
-       "col": 6,
+       "col": 9,
        "row": 8
       },
       {
-       "col": 6,
+       "col": 9,
        "row": 10
       },
       {
-       "col": 6,
+       "col": 9,
        "row": 12
       },
       {
-       "col": 5,
+       "col": 10,
        "row": 5
       },
       {
-       "col": 5,
+       "col": 10,
        "row": 9
       },
       {
-       "col": 5,
+       "col": 10,
        "row": 11
       }
      ]
@@ -1412,19 +1412,19 @@
      "count": 4,
      "hexes": [
       {
-       "col": 5,
+       "col": 10,
        "row": 3
       },
       {
-       "col": 5,
+       "col": 10,
        "row": 7
       },
       {
-       "col": 5,
+       "col": 10,
        "row": 13
       },
       {
-       "col": 4,
+       "col": 10,
        "row": 8
       }
      ]
@@ -1472,27 +1472,27 @@
        "count": 6,
        "hexes": [
         {
-         "col": 4,
+         "col": 11,
          "row": 0
         },
         {
-         "col": 3,
+         "col": 12,
          "row": 0
         },
         {
-         "col": 2,
+         "col": 13,
          "row": 0
         },
         {
-         "col": 4,
+         "col": 11,
          "row": 15
         },
         {
-         "col": 3,
+         "col": 12,
          "row": 15
         },
         {
-         "col": 2,
+         "col": 13,
          "row": 15
         }
        ]
@@ -1520,27 +1520,27 @@
        "count": 6,
        "hexes": [
         {
-         "col": 0,
+         "col": 15,
          "row": 3
         },
         {
-         "col": 0,
+         "col": 15,
          "row": 5
         },
         {
-         "col": 0,
+         "col": 15,
          "row": 7
         },
         {
-         "col": 0,
+         "col": 15,
          "row": 9
         },
         {
-         "col": 0,
+         "col": 15,
          "row": 11
         },
         {
-         "col": 0,
+         "col": 15,
          "row": 13
         }
        ]

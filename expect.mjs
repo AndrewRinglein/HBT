@@ -11,6 +11,13 @@
 //   specialty-not-four-powers (1) — Wild Shaper carries 3 powers; Bear Form was removed and
 //     the slot was left deliberately empty.
 //
+// ART IS NOT COUNTED HERE. Ruled 2026-09-04 (engine/DECISIONS.md, "Missing art never breaks a
+// ship"): "We will eventually have four paintings, but it's fine to have one. Things shouldn't
+// break if we are missing art." audit.mjs still PRINTS hero-has-a-partial-level-set,
+// declared-art-file-does-not-exist and art-path-does-not-resolve — that list is the art queue —
+// but reports them under their own ART GAPS count and leaves them out of TOTAL FINDINGS, which
+// is the number this file gates on. A painting that has not been made yet never holds a pack.
+//
 // If you resolve one, lower EXPECTED. If you add content, this is what tells you that you
 // added a finding as well.
 

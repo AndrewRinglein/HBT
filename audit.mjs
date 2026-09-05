@@ -1165,10 +1165,28 @@ if(D.kits){
   }
 }
 
-const by={}; F.forEach(f=>(by[f.rule]=by[f.rule]||[]).push(f));
-for(const [r,list] of Object.entries(by).sort((a,b)=>b[1].length-a[1].length)){
-  console.log('\n### '+r+'  ('+list.length+')');
-  list.slice(0,14).forEach(f=>console.log('   '+f.who.padEnd(26)+f.detail));
-  if(list.length>14) console.log('   ... '+(list.length-14)+' more');
-}
-console.log('\nTOTAL FINDINGS: '+F.length);
+// ART GAPS DO NOT STOP A SHIP. Ruled 2026-09-04 (engine/DECISIONS.md, "Missing art never
+// breaks a ship"): "We will eventually have four paintings, but it's fine to have one. Things
+// shouldn't break if we are missing art."
+//
+// These three still PRINT — a missing painting is a real thing someone has to do, and the list
+// is the art queue — but they are counted separately and TOTAL FINDINGS excludes them, because
+// TOTAL FINDINGS is what expect.mjs gates the pack on and art is never a reason to hold a pack.
+// Anything that is not on this list still stops the ship.
+const ART_GAPS=new Set(['hero-has-a-partial-level-set','declared-art-file-does-not-exist','art-path-does-not-resolve']);
+const art=F.filter(f=>ART_GAPS.has(f.rule));
+const F2=F.filter(f=>!ART_GAPS.has(f.rule));
+const show=(rows,heading)=>{
+  const by={}; rows.forEach(f=>(by[f.rule]=by[f.rule]||[]).push(f));
+  const ent=Object.entries(by).sort((a,b)=>b[1].length-a[1].length);
+  if(heading&&ent.length) console.log('\n'+heading);
+  for(const [r,list] of ent){
+    console.log('\n### '+r+'  ('+list.length+')');
+    list.slice(0,14).forEach(f=>console.log('   '+f.who.padEnd(26)+f.detail));
+    if(list.length>14) console.log('   ... '+(list.length-14)+' more');
+  }
+};
+show(F2);
+show(art,'──── ART GAPS — printed, NOT counted, never a reason to hold a pack (ruled 2026-09-04) ────');
+if(art.length) console.log('\nART GAPS: '+art.length+' (not counted below)');
+console.log('\nTOTAL FINDINGS: '+F2.length);
