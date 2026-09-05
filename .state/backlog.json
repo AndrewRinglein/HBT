@@ -2710,5 +2710,28 @@
   "status": "done-needs-review",
   "sha": "2dd95c8",
   "gauntlet": "not passed — 2 flag(s) warned"
+ },
+ {
+  "id": "proving.rig",
+  "kind": "engine",
+  "shape": "plumbing",
+  "needs": [
+   "proving.side-override",
+   "board.variable-size"
+  ],
+  "ruling": "DECISIONS.md 2026-09-03 — the Proving; PROVING-PLAN.md §3",
+  "spec": "Ruled 2026-09-03 (Angela): a raw power ranking for every unit and item by how often it MOVES THE NEEDLE — flip rate first; five pairs (one seed, five maps) is a ranking; baselines plural and content-owned; items only on classes that can wield them, hero-side only; mirror matches in scope; summons out. src/sim/proving.ts: a PLAN (squads of seats with ASSIGNED items/badges/progress, fixtures, subjects by rotation replace/add/equip/grow, matchups) → for each subject and map the fixture fought twice on the same seed, WITH and WITHOUT → per pair both outcomes, flipped, margin shift (Σhp/Σmax per side in permille, integers), tempo shift, presence (the subject's ACTED lines); per subject a summary with flip rate (permille) first and swing (the margin shift from the subject's side) as the tiebreaker. An impossible fielding is INVALID with its reason, never zero. src/cli/proving.ts writes one file per subject and rollup.json under .state/proving/<plan>/, stamped with the pack, re-using a current result. The ACTED set moved from tools/probe.mts to src/sim/acted.ts so the gate and the rig read one list.",
+  "expect": "the smoke plan (test/proving/smoke.json — test bodies, test maps) runs eight subjects and two matchups in under two seconds; every replace/add/equip/grow builds the WITH arm the plan asked for; the WITHOUT arm is byte-identical to the fixture alone; the unknown unit is INVALID on all five pairs with its reason; an enemy-side subject swings the other way",
+  "changesBaseline": false,
+  "probeIds": [
+   "test.map.dungeon-16x8"
+  ],
+  "tests": [
+   "test/proving.test.ts"
+  ],
+  "note": "Landed 2026-09-04. PROVING-PLAN Stage B. Content owes the real plans (Stage C, content/proving/*.json — the smoke plan is a verify, not a ranking); the rank rollup and PROVING.html (Stages D, E) are next. The smoke run: no flips anywhere — three test heroes beat six zombies on every map, so the fixtures a real plan names must be CLOSE fights or nothing flips; that is a plan-authoring finding for content.",
+  "status": "done",
+  "sha": "fbb0467",
+  "gauntlet": "not passed — 1 flag(s) warned"
  }
 ]

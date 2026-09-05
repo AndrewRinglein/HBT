@@ -1,0 +1,162 @@
+{
+  "id": "proving.smoke",
+  "note": "proving.rig's own verify plan (2026-09-04). Test bodies and test maps \u2014 never a ranking anyone reads. Content's plans live in content/proving/.",
+  "maps": [
+    "test.map.dungeon-16x8",
+    "map.open",
+    "test.map.duel-8",
+    "map.ridge",
+    "test.map.horde-24"
+  ],
+  "seed": 1,
+  "squads": {
+    "squad.test-four": [
+      "test-warrior",
+      "test-ranger",
+      "test-mage",
+      "test-lucius"
+    ],
+    "squad.test-three": [
+      "test-warrior",
+      "test-ranger",
+      "test-mage"
+    ],
+    "squad.zombies-four": [
+      "unit.zombie",
+      "unit.zombie",
+      "unit.zombie",
+      "unit.zombie"
+    ],
+    "squad.zombies-six": [
+      "unit.zombie",
+      "unit.zombie",
+      "unit.zombie",
+      "unit.zombie",
+      "unit.zombie",
+      "unit.zombie"
+    ],
+    "squad.codex-three": [
+      {
+        "unit": "hero.base.warrior-iron",
+        "items": [
+          "item.longsword",
+          "item.basic-armor"
+        ]
+      },
+      {
+        "unit": "hero.base.ranger-aggressive",
+        "items": [
+          "item.longbow"
+        ]
+      },
+      {
+        "unit": "hero.base.mage-fire",
+        "items": [
+          "item.fire-staff"
+        ]
+      }
+    ]
+  },
+  "fixtures": [
+    {
+      "id": "f.four-v-four",
+      "hero": "squad.test-four",
+      "enemy": "squad.zombies-four"
+    },
+    {
+      "id": "f.three-v-six",
+      "hero": "squad.test-three",
+      "enemy": "squad.zombies-six"
+    },
+    {
+      "id": "f.mirror",
+      "hero": "squad.zombies-four",
+      "enemy": "squad.zombies-four",
+      "sides": "byList"
+    },
+    {
+      "id": "f.codex-v-six",
+      "hero": "squad.codex-three",
+      "enemy": "squad.zombies-six"
+    }
+  ],
+  "subjects": [
+    {
+      "id": "test-arc-golem",
+      "fixture": "f.three-v-six",
+      "rotation": "replace",
+      "side": "hero",
+      "slot": 0
+    },
+    {
+      "id": "test-arc-golem",
+      "fixture": "f.three-v-six",
+      "rotation": "add",
+      "side": "hero"
+    },
+    {
+      "id": "unit.ghoul",
+      "fixture": "f.four-v-four",
+      "rotation": "replace",
+      "side": "enemy",
+      "slot": 0
+    },
+    {
+      "id": "unit.zombie",
+      "fixture": "f.four-v-four",
+      "rotation": "add",
+      "side": "enemy"
+    },
+    {
+      "id": "item.halberd",
+      "fixture": "f.three-v-six",
+      "rotation": "equip",
+      "side": "hero",
+      "slot": 0
+    },
+    {
+      "id": "test-arc-golem",
+      "fixture": "f.mirror",
+      "rotation": "replace",
+      "side": "hero",
+      "slot": 0
+    },
+    {
+      "id": "unit.nobody",
+      "fixture": "f.four-v-four",
+      "rotation": "replace",
+      "side": "enemy",
+      "slot": 0
+    },
+    {
+      "id": "hero.base.warrior-iron@l5-bloodrage",
+      "fixture": "f.codex-v-six",
+      "rotation": "grow",
+      "side": "hero",
+      "slot": 0,
+      "progress": {
+        "level": 5,
+        "specialtyId": "specialty.bloodrage",
+        "levelFivePick": {
+          "maxHp": 5
+        },
+        "powers": [
+          "power.bloodrage.frenzy"
+        ]
+      }
+    }
+  ],
+  "matchups": [
+    {
+      "id": "m.four-v-four",
+      "hero": "squad.test-four",
+      "enemy": "squad.zombies-four"
+    },
+    {
+      "id": "m.mirror",
+      "hero": "squad.zombies-four",
+      "enemy": "squad.zombies-four",
+      "sides": "byList"
+    }
+  ]
+}

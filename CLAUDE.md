@@ -49,6 +49,7 @@ node tools/report.mjs                  what landed, abandoned, or needs review
 node tools/review.mjs <id> --ok "..."  record Angela's verdict on a flagged landing (--all for the queue)
 
 npm test   npm run typecheck   npm run battle <n> [--map=id]   npm run sweep <n>
+npm run proving <plan.json> [--out dir] [--force]   THE PROVING — a plan of squads, fixtures and subjects → paired results and a flip-rate ranking (PROVING-PLAN.md)
 
 node tools/game-builder.mjs           rebuild GAME-BUILDER.html (the gate does this after every run)
 node tools/audit-all.mjs              the Iron Gauntlet's full-tree audit

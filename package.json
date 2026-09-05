@@ -6,7 +6,8 @@
     "test": "vitest run",
     "typecheck": "tsc --noEmit",
     "battle": "tsx src/cli/battle.ts",
-    "sweep": "tsx src/cli/sweep.ts"
+    "sweep": "tsx src/cli/sweep.ts",
+    "proving": "tsx src/cli/proving.ts"
   },
   "devDependencies": {
     "@types/node": "^26.2.0",
