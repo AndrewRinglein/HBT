@@ -31,6 +31,7 @@ import { settle } from './settle.js'
 import { HOOKS, fireTriggers } from './trigger.js'
 import { makeUnit } from './setup.js'
 import { isPassable, layerAppliesOnEnter, layerOfId } from '../content/maps.js'
+import { rulesSideOf } from './side.js'
 
 function free(ctx: Ctx, hex: HexId): boolean {
   if (!isPassable(ctx.state.terrain[hex] ?? 0)) return false
@@ -102,7 +103,7 @@ export function arrive(ctx: Ctx, def: UnitDef, want: HexId, causeId: string, nam
   })
   if (hex !== want) emit(ctx, 'unit.shunted', causeId, { actor: u.id, wanted: want, hex, wantedCol: ctx.geo.colOf(want), wantedRow: ctx.geo.rowOf(want) })
   // one-time on arrival — capability.power-pool: "a unit adds X when it enters, and the X stays after it dies"
-  if (def.powerOnArrival && u.side === 'enemy') gainPower(ctx, def.powerOnArrival, def.typeId, { kind: 'arrival', actor: u.id })
+  if (def.powerOnArrival && rulesSideOf(ctx, u) === 'enemy') gainPower(ctx, def.powerOnArrival, def.typeId, { kind: 'arrival', actor: u.id })
   return u
 }
 

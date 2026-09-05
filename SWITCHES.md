@@ -443,11 +443,27 @@ rolls Deathbed Fighting at 0 (and bleeds out, with the Hero badge); the enemy
 side runs the Power pool and dies at 0. Default **`fielded`**: an overridden
 unit follows the rules of the side it is fielded on — a zombie among the
 heroes rolls Deathbed Fighting; a hero among the enemies dies at 0 and gains
-Power on arrival. `row` (follow the row's own side) is not built. The first
-mirror sweep (20 seeds, four zombies each way, `showcase.mirror-zombies`) came
-out 8–12 AGAINST the side with initiative, which says the side-keyed rules
-weigh more than the first move — the Proving's mirror plans should say which
-of these they are measuring.
+Power on arrival. **`row` built 2026-09-04 (proving.mirror-row-rules)** — a
+unit follows its own ROW's rules wherever it stands: `Unit.rowSide` is set at
+fielding, `rulesSideOf()` (`side.ts`) is the one reader, and the side-keyed
+RULES read it — dies-at-0 vs Deathbed Fighting and bleed-out, Surge, the Power
+pool (arrival, `power.gain`, `powerScale`, `valueOf` scale power), the crit
+chart's "vs heroes" share. ALLEGIANCE never does: allies, targets, phases,
+victory, stamina regen at your own phase's end, who lights the darkness, the
+party sums — those are the fielded side. Angela 2026-09-04 (via session 9,
+DECISIONS "The Proving's first pass"): "If there's deathbed fighting, that will
+change the hero side, and the hero side has the limitation of stamina. So, can
+we just field enemies against enemies?" — `row` is what makes that clean.
+One pool, still: under `row` an enemy-row unit on EITHER side feeds and reads
+`state.power` — symmetric in a mirror, a distortion in a mixed fielding; note
+it in the plan. The first mirror sweep (20 seeds, four zombies each way,
+`showcase.mirror-zombies`, `fielded`) came out 8–12 AGAINST the side with
+initiative. Re-run 2026-09-04 at 40 seeds: `fielded` 16–24, **`row` 13–27** —
+with the hero-side rules removed the side WITH initiative still loses, so it
+is not the rules: under the dumb-melee AI the first mover closes the distance,
+spends its Activation arriving, and the other side swings first. Initiative
+is a liability for a melee mirror; the Proving's `initiative` plan is
+measuring the AI's approach as much as the first move — say so in its note.
 
 ## maxHpGainFillsBar — does a max-HP gain mid-battle raise the bar with the cap?
 Added 2026-09-04 (FINDINGS 37, the horde's `capped`). `gainMaxHp` raises `hp`

@@ -9,11 +9,12 @@ import { STATUSES } from '../content/statuses.js'
 import { triggersFrom } from './trigger.js'
 import { emit, gainPower } from './mutate.js'
 import { arrive, heroDeployHexes, placeSetup } from './encounter.js'
+import { rulesSideOf } from './side.js'
 
 export function makeUnit(id: number, uid: number, name: string, def: UnitDef, hex: number): Unit {
   const actions = [...def.attacks, ...def.abilities, ...def.moves]
   return {
-    id, uid, name, typeId: def.typeId, side: def.side, hex,
+    id, uid, name, typeId: def.typeId, side: def.side, rowSide: def.rowSide ?? def.side, hex,
     hp: def.maxHp, maxHp: def.maxHp,
     armor: def.armor, resist: def.resist,
     accuracy: def.accuracy, dodge: def.dodge, strength: def.strength, precision: def.precision, magic: def.magic, spirit: def.spirit,
@@ -171,7 +172,8 @@ export function createBattle(opts: BattleOptions): Ctx {
 
   const def = (t: string): UnitDef => ({ ...UNITS[t]!, ...(opts.overrides?.[t] ?? {}) })
   // proving.side-override: under byList the fielded side is the list's, not the row's
-  const onSide = (d: UnitDef, side: Side): UnitDef => (opts.sides === 'byList' && d.side !== side ? { ...d, side } : d)
+  // proving.side-override: the def copy carries the fielded side; the row's own side rides along as `rowSide` (proving.mirror-row-rules)
+  const onSide = (d: UnitDef, side: Side): UnitDef => (opts.sides === 'byList' && d.side !== side ? { ...d, side, rowSide: d.side } : d)
   const heroes = opts.heroes ?? FIRST_BATTLE.heroes
   if (opts.heroProgress && opts.heroProgress.length !== heroes.length) {
     throw new Error(`${opts.scenarioId ? `scenario '${opts.scenarioId}'` : 'battle options'}: ${heroes.length} heroes but ${opts.heroProgress.length} progress records — they must correspond`)
@@ -357,7 +359,7 @@ export function createBattle(opts: BattleOptions): Ctx {
       role: u.role, hex: u.hex, hp: u.hp, maxHp: u.maxHp,
       stamina: u.stamina, maxStamina: u.maxStamina, terrain: state.terrain[u.hex],
       // proving.side-override: a unit fielded against its row's side says so (Law 12)
-      ...(UNITS[u.typeId] && UNITS[u.typeId]!.side !== u.side ? { rowSide: UNITS[u.typeId]!.side } : {}),
+      ...(u.rowSide !== u.side ? { rowSide: u.rowSide } : {}),
     })
     // seam.items-per-unit: one unit.equipped per (unit, item), after the
     // unit's own enter line — the log says why the Hunter shoots and why his
@@ -374,7 +376,7 @@ export function createBattle(opts: BattleOptions): Ctx {
     }
     // capability.power-pool (2026-09-03): a unit fielded at setup arrives too
     const arrival = UNITS[u.typeId]?.powerOnArrival
-    if (arrival && u.side === 'enemy') gainPower(ctx, arrival, u.typeId, { kind: 'arrival', actor: u.id })
+    if (arrival && rulesSideOf(ctx, u) === 'enemy') gainPower(ctx, arrival, u.typeId, { kind: 'arrival', actor: u.id })
   }
   // The encounter's own units — after the heroes, so a hero already standing
   // where an authored unit wants to be is the one that stays and the arrival

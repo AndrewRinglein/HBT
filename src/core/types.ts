@@ -445,6 +445,8 @@ export type AuraDef = {
 export type UnitDef = {
   readonly typeId: string
   readonly side: Side
+  /** Set only on the def COPY a `sides: 'byList'` fielding makes — the row's own side, when `side` is the fielded one. Rows never carry it. */
+  readonly rowSide?: Side
   readonly maxHp: number
   readonly armor: number
   readonly resist: number
@@ -557,6 +559,13 @@ export type Unit = {
   name: string
   typeId: string
   side: Side
+  /**
+   * The side the unit's ROW belongs to — equal to `side` unless the fielding
+   * overrode it (proving.side-override, `sides: 'byList'`). Which of the two
+   * the side-keyed RULES read is SWITCHES.md `mirrorSideRules`; allegiance
+   * (allies, enemies, phases, victory) is always `side`. proving.mirror-row-rules (2026-09-04).
+   */
+  rowSide: Side
   hex: HexId
   hp: number
   maxHp: number
@@ -726,7 +735,7 @@ export type Config = {
     zoneOfControl: boolean
     /** SWITCHES.md actionSlots (2026-09-04): how the AI reads an action's `slot`. Only `byProfile` has code behind it. */
     actionSlots: 'byProfile' | 'any'
-    /** SWITCHES.md mirrorSideRules (2026-09-04): an overridden unit follows the FIELDED side's rules. Only `fielded` has code behind it. */
+    /** SWITCHES.md mirrorSideRules (2026-09-04): an overridden unit follows the FIELDED side's rules, or (`row`, built 2026-09-04 — proving.mirror-row-rules) its own ROW's: `rulesSideOf()` in side.ts is the one reader. */
     mirrorSideRules: 'fielded' | 'row'
     /** Does a unit with a corpse-eating power eat before it swings? SWITCHES.md, 2026-09-03. */
     aiEatsBeforeBiting: boolean

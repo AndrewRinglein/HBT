@@ -12,6 +12,7 @@ import { heroesLight } from './vision.js'
 import { applyStatus, isBlocked, reduceStatus, tickUnitStatuses } from './status.js'
 import { HOOKS, fireTriggers } from './trigger.js'
 import type { Ctx, Phase, Side } from './types.js'
+import { rulesSideOf } from './side.js'
 
 function activationOrder(ctx: Ctx, side: Side): number[] {
   // Switch: fixed by unit id. `random` and `best-first` are the alternatives.
@@ -57,7 +58,7 @@ function runPhase(ctx: Ctx, phase: Phase): void {
 
 function surgeLoop(ctx: Ctx, id: number): void {
   const u = ctx.state.units[id]!
-  if (u.side !== 'hero' || u.surge <= 0) return
+  if (rulesSideOf(ctx, u) !== 'hero' || u.surge <= 0) return   // proving.mirror-row-rules: Surge is a hero-side RULE
   for (let link = 0; link < 8; link++) {   // a hard ceiling — Law 9 over an infinite loop
     if (u.lifeState !== 'standing' || ctx.state.outcome) return
     u.surgeChance += u.surge

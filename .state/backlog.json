@@ -2787,5 +2787,34 @@
   "attempts": 1,
   "sha": "93e3195",
   "gauntlet": "not passed — 2 flag(s) warned"
+ },
+ {
+  "id": "proving.mirror-row-rules",
+  "kind": "engine",
+  "shape": "rule",
+  "needs": [
+   "proving.side-override",
+   "fix.deathbed-no-stands"
+  ],
+  "ruling": "DECISIONS.md 2026-09-04 — The Proving's first pass (Angela via session 9); SWITCHES.md mirrorSideRules",
+  "spec": "The row arm of SWITCHES.md mirrorSideRules. Angela 2026-09-04: \"I want to measure initiative. If there's deathbed fighting, that will change the hero side, and the hero side has the limitation of stamina. So, can we just field enemies against enemies?\" Unit.rowSide (the row's side, set at fielding; equal to side unless a byList fielding moved it); rulesSideOf(ctx,u) in src/core/side.ts is the ONE reader; the side-keyed RULES read it — settle (dies at 0 vs Deathbed/bleed-out), Surge, the Power pool (arrival, power.gain, powerScale, valueOf), the crit chart share vs heroes. Allegiance (allies, targets, phases, victory, regen, vision, party sums) stays u.side. Default stays fielded.",
+  "expect": "under row a zombie among the heroes dies at 0 with a corpse and no Deathbed line; under fielded the same zombie rolls; a whole mirror battle under row has no deathbed/bleedout line and every death is hp0; allegiance unchanged (no friendly attack, heroClear = enemy side cleared); a hero among the enemies under row rolls and bleeds with badge.hero; an enemy-row unit hero-side feeds the pool under row and not under fielded",
+  "changesBaseline": false,
+  "probeIds": [
+   "unit.zombie"
+  ],
+  "variants": [
+   "unit.zombie",
+   "unit.lieutenant-demon",
+   "hero.base.warrior-iron"
+  ],
+  "tests": [
+   "test/mirror-row-rules.test.ts"
+  ],
+  "note": "Session 9's E4. Default unchanged (fielded) so the control maps are untouched; the plans opt in with cfg. Measured 40 seeds of showcase.mirror-zombies: fielded 16-24, row 13-27 — the side WITH initiative loses under both arms, so it is the dumb-melee approach (first mover arrives, second mover swings first), not the hero rules. Recorded in SWITCHES.",
+  "status": "done",
+  "attempts": 1,
+  "sha": "9dc6d1f",
+  "gauntlet": "not passed — 1 flag(s) warned"
  }
 ]

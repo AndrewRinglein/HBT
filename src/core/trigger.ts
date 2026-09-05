@@ -33,6 +33,7 @@ import { paintRadius } from './vision.js'
 import { layerOfId } from '../content/maps.js'
 import { applyStatus, removeStatus } from './status.js'
 import { executeKnockback } from './movement.js'
+import { rulesSideOf } from './side.js'
 
 /**
  * WHEN a trigger fires.
@@ -272,7 +273,7 @@ export function valueOf(ctx: Ctx, owner: Unit, spec: ValueSpec): number {
   if (typeof spec === 'number') return spec
   if (spec.scale === 'power') {
     // the pool is the ENEMY side's; a hero-side owner reads 0 (nearest, 0.5 up — ENEMY-REVIEW P1)
-    const pool = owner.side === 'enemy' ? (ctx.state.power ?? 0) : 0
+    const pool = rulesSideOf(ctx, owner) === 'enemy' ? (ctx.state.power ?? 0) : 0   // proving.mirror-row-rules
     return (spec.base ?? 0) + Math.floor((pool * (spec.mult ?? 1)) / (spec.div ?? 1) + 0.5)
   }
   if (spec.scale === 'partyMagic' || spec.scale === 'partySpirit') {
@@ -486,7 +487,7 @@ function applyEffect(ctx: Ctx, t: Trigger, owner: Unit, targetId: number): void 
     case 'power.gain': {
       const v = valueOf(ctx, owner, e.value)
       emit(ctx, 'trigger.fired', t.id, { actor: owner.id, target: targetId, effect: e.kind, value: v })
-      if (owner.side === 'enemy' && v > 0) gainPower(ctx, v, t.id, { actor: owner.id })
+      if (rulesSideOf(ctx, owner) === 'enemy' && v > 0) gainPower(ctx, v, t.id, { actor: owner.id })   // proving.mirror-row-rules
       break
     }
   }

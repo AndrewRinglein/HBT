@@ -6,6 +6,7 @@ import type { Ctx } from './types.js'
 import { badgeFlags, createCorpse, emit, gainStamina, grantBadge, setBleedOut, setLifeState, setOutcome, tickBleedOut } from './mutate.js'
 import { roll100 } from './rng.js'
 import { fireTriggers } from './trigger.js'
+import { rulesSideOf } from './side.js'
 
 const MAX_ROUNDS = 64
 
@@ -35,7 +36,8 @@ export function settle(ctx: Ctx, causeId: string): void {
       for (const u of ctx.state.units) {
         // Enemies have no consequence stack: zero HP is simply dead.
         if (u.lifeState === 'standing' && u.hp <= 0) {
-          if (u.side === 'enemy') {
+          // proving.mirror-row-rules: which side's zero this is — the fielded side's or the row's (SWITCHES mirrorSideRules)
+          if (rulesSideOf(ctx, u) === 'enemy') {
             setLifeState(ctx, u.id, 'dead', causeId, { reason: 'hp0' })
             if (!u.summoned) createCorpse(ctx, u, causeId)   // capability.corpses: summons leave none
             died.push(u.id)
@@ -169,7 +171,7 @@ function deathbed(ctx: Ctx, id: number, causeId: string): DeathbedVerdict {
     // authors ctx.ruleBadges.hero, no row carries the flag — so the pre-ruling
     // reading (every player unit bleeds) stands in, and the line names the gap.
     const heroRowMissing = !ctx.badges[ctx.ruleBadges.hero]?.flags.bleedsOut
-    const bleeds = flags.bleedsOut || (heroRowMissing && u.side === 'hero')
+    const bleeds = flags.bleedsOut || (heroRowMissing && rulesSideOf(ctx, u) === 'hero')
     emit(ctx, 'deathbed.fell', causeId, { target: id, roll, chance, ordinal: ord, bleedsOut: bleeds,
       ...(heroRowMissing && !flags.bleedsOut ? { gaps: [`no row for ${ctx.ruleBadges.hero} in the pack — every player unit bleeds out until content authors it`] } : {}) })
     return bleeds ? 'bleeds' : 'dies'

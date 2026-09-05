@@ -15,6 +15,7 @@ import { accelerateBleedOut, applyDamage, emit, unit } from './mutate.js'
 import { actionReady, isAttack, spendAction } from './action.js'
 import { settle } from './settle.js'
 import { canSee } from './vision.js'
+import { rulesSideOf } from './side.js'
 
 export const ACC = {
   BASE: 100,
@@ -169,7 +170,7 @@ export function resolveDamage(
   v = step(ledger, DMG.SOURCE_STAT, 'SOURCE_STAT', `unit.${attacker.typeId}`, v, v + src.value)
   // POWER (225): the enemy side's pool, by this attack's share — capability.
   // power-pool (2026-09-03). Nearest, 0.5 up (Law 7). Zero pool, zero row.
-  if (a.powerScale && attacker.side === 'enemy') {
+  if (a.powerScale && rulesSideOf(ctx, attacker) === 'enemy') {   // proving.mirror-row-rules: the pool is a RULE of the enemy side
     const share = powerShare(ctx.state.power ?? 0, a.powerScale)
     if (share) v = step(ledger, DMG.POWER, 'POWER', 'power', v, v + share)
   }
@@ -480,7 +481,7 @@ function performHit(ctx: Ctx, attackerId: number, targetId: number, attackId: st
   const chartCriticals: number[] = []
   if (crit) {
     const count = Math.max(1, a.attack.critCount ?? 1)
-    const chartShare = tg.side === 'hero'
+    const chartShare = rulesSideOf(ctx, tg) === 'hero'   // proving.mirror-row-rules: "vs heroes" means hero-RULED
       ? ctx.cfg.switches.critChartShareVsHeroes
       : ctx.cfg.switches.critChartShareVsEnemies
     for (let c = 0; c < count; c++) {
