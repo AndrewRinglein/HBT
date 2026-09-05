@@ -14,7 +14,7 @@ import { valueOf } from '../src/core/status.js'
 import { executeMove, reachable, pathTo, movePowerOf } from '../src/core/movement.js'
 import { ENCOUNTERS } from '../src/content/index.js'
 import { scenarioDef, scenarioOptions } from '../src/content/scenarios.js'
-import { hexId, rowOf } from './board16.js'
+import { hexId, colOf } from './board16.js'
 
 describe('painting', () => {
   it('one layer per hex; a new one replaces; burning onto frost cancels to bare', () => {
@@ -55,17 +55,23 @@ describe('the encounter shapes', () => {
     expect(ENCOUNTERS['encounter.kiln']!.band?.layer).toBe('layer.burning')
     const ctx = createBattle(scenarioOptions(scenarioDef('showcase.kiln')))
     runBattle(ctx)
-    const rows = ctx.events.filter((e) => e.type === 'band.advanced').map((e) => [e.turn, e['row']] as [number, number])
-    expect(rows.length).toBeGreaterThan(0)
-    expect(rows[0]).toEqual([2, 0])
-    for (let i = 1; i < rows.length; i++) expect(rows[i]![1] - rows[i - 1]![1]).toBe(1)
+    // LAW 10 — 2026-09-04 (encounter.band-axis, content c24b1ac): heroes deploy
+    // WEST now, so the Kiln's fire walks COLUMNS from the east edge (col 15) toward
+    // them, one column a Turn. The claim — one line per Turn from enemy phase 2,
+    // and the fire reaches units standing there — is unchanged.
+    const lines = ctx.events.filter((e) => e.type === 'band.advanced').map((e) => [e.turn, e['axis'], e['col']] as [number, string, number])
+    expect(lines.length).toBeGreaterThan(0)
+    expect(lines[0]).toEqual([2, 'col', 15])
+    for (let i = 1; i < lines.length; i++) expect(lines[i]![2] - lines[i - 1]![2]).toBe(-1)
     expect(ctx.events.some((e) => e.type === 'status.applied' && e.causeId === 'layer.burning')).toBe(true)
   })
 
-  it('Rime: rows 6–8 are frost from setup', () => {
+  it('Rime: a three-column frost belt (columns 7–9) is painted from setup', () => {
+    // LAW 10 — 2026-09-04 (content c24b1ac): the board turned a quarter — the old
+    // rows 6–8 are columns 7–9 now, across the heroes' path from the west.
     const rime = ENCOUNTERS['encounter.rime']!
     expect(rime.paint?.[0]?.layer).toBe('layer.frost')
     const ctx = createBattle({ replicate: 0, heroes: ['test-warrior'], encounter: rime })
-    for (const h of rime.paint![0]!.hexes) { expect(layerAt(ctx, h)).toBe(LAYER.FROST); expect([6, 7, 8]).toContain(rowOf(h)) }
+    for (const h of rime.paint![0]!.hexes) { expect(layerAt(ctx, h)).toBe(LAYER.FROST); expect([7, 8, 9]).toContain(colOf(h)) }
   })
 })

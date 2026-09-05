@@ -2733,5 +2733,30 @@
   "status": "done",
   "sha": "fbb0467",
   "gauntlet": "not passed — 1 flag(s) warned"
+ },
+ {
+  "id": "encounter.band-axis",
+  "kind": "engine",
+  "shape": "rule",
+  "needs": [
+   "board.heroes-west",
+   "badge.afflictions"
+  ],
+  "ruling": "FINDINGS-2026-09-03.md §43 (the log-invariant audit, 2026-09-04); DECISIONS.md 2026-09-04 — heroes west, missing art never breaks a ship",
+  "spec": "FINDING 43: content re-authored the Kiln band along COLUMNS (axis col, startCol) because the heroes deploy west now, and the engine read startRow only — NaN, compared against the board, painted nothing, said nothing, for 220 audited battles. The band names its axis (row is the default), its start must be a number on that axis, the walk uses the same edge lines deployment does (edgeLine north/west), and a mismatch throws in the pack validator AND the engine (Law 9). band.advanced carries axis, line and row|col. This landing also carries the first SHIPPED pack since content c24b1ac: badge.hero on every hero row and badge.wounded with the ruled numbers (the settle.ts bridge goes quiet), thirteen maps (five map.proving.*), the ten encounters re-placed heroes-west with board on every row, and the FINDING 39 converter fix (onTakingDamage riders with target: self compile to select self — the Alpha riders are back on their owners).",
+  "expect": "a row band and a col band each paint exactly one full line per Turn in the named direction, spare hexes excepted, and the unit standing there takes the entry beat; the Kiln fire walks columns 15,14,13… from enemy phase 2; a band whose start does not match its axis is refused by packEncounters and by advanceBand; deathbed.stood grants badge.wounded with no gap and deathbed.fell bleeds only with badge.hero; map.proving.open/ridge/ford/copse/ruin load 16×8",
+  "changesBaseline": true,
+  "baselineReason": "The pack changed (content c24b1ac / 39aa514): every hero row carries badge.hero (a badge.held line at fielding; the deathbed bridge no longer names a gap), the Alpha riders fire on their owners instead of the enemy that hit them (FINDING 39), the encounters are placed heroes-west with their own board, the Kiln band paints again. Every control map re-times. Verified by running the suite green at 713 and the Kiln, Rime, deathbed and alpha-team liveness tests on the new pack.",
+  "probeIds": [
+   "encounter.kiln"
+  ],
+  "generalizationExempt": "The band is ONE mechanism with ONE content instance (encounter.kiln); a second content band would cost zero engine code — the axis is a row field. Both axes, both directions, spare hexes and the throw are proved on synthetic bands in test/band-axis.test.ts because the test receptacle has no encounters file to hold a second row.",
+  "tests": [
+   "test/band-axis.test.ts"
+  ],
+  "note": "Pack refresh + FINDING 43. Law 10 edits: item-powers early-exit named its two powers (Storm fires on seed 1 now); bleed-magnitude shed claim moved to a skeleton fielding — the old sheds were the ZOMBIES healing their own Bleed off the mis-targeted Second Wind (FINDING 39); deathbed/badges tests read the real rows; ground-layers Kiln/Rime read columns.",
+  "status": "done-needs-review",
+  "sha": "33847f6",
+  "gauntlet": "not passed — 2 flag(s) warned; 1 exemption(s) taken"
  }
 ]

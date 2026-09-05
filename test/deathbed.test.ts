@@ -9,9 +9,11 @@
 //
 // LAW 10: this file asserted the stand ladder (Fresh → Wounded → Badly
 // Wounded, civilians one stand, heroes two) that the ruling reverses. The
-// rule now, proved on TEST badges (test.badge.deaths-door has the ruled
+// rule now, proved first on TEST badges (test.badge.deaths-door has the ruled
 // Wounded numbers and the `wounded` flag; test.badge.brand has `bleedsOut`)
-// because content owes badge.hero and badge.wounded — the log names that gap.
+// while content owed badge.hero and badge.wounded, and — since content c24b1ac
+// (2026-09-04) — on the real rows too: every hero row carries badge.hero, a
+// civilian row does not, and badge.wounded is data with the ruled numbers.
 import { describe, expect, it } from 'vitest'
 import { createBattle, createCustomBattle } from '../src/core/setup.js'
 import { runBattle } from '../src/core/battle.js'
@@ -72,19 +74,23 @@ describe('the roll', () => {
   })
 
   it('FELL with the Hero badge: downed and bleeding out; FELL without it: dead and a corpse', () => {
-    const fell = (badges: string[]) => {
-      const ctx = withTestRows(createCustomBattle([{ type: 'test-warrior', hex: hexId(5, 5) }], [{ type: 'test-zombie', hex: hexId(9, 9) }]))
+    const fell = (type: string, badges: string[]) => {
+      const ctx = withTestRows(createCustomBattle([{ type, hex: hexId(5, 5) }], [{ type: 'test-zombie', hex: hexId(9, 9) }]))
       const w = ctx.state.units[0]!
       w.toughness = -4   // 0%: falling is routine
       for (const b of badges) w.badges.push(b)
       drop(ctx, w.id)
       return { w, ctx }
     }
-    const hero = fell([BRAND])
+    // a hero row carries badge.hero (content c24b1ac): it bleeds
+    const hero = fell('test-warrior', [])
+    expect(hero.w.badges).toContain('badge.hero')
     expect(hero.w.lifeState).toBe('downed')
     expect(hero.w.bleedOut).toBeGreaterThan(0)
     expect(hero.ctx.events.find((e) => e.type === 'deathbed.fell')!['bleedsOut']).toBe(true)
-    const nobody = fell([])
+    // a civilian row does not ("It is not on civilians unless expressly said so"): dead and a corpse
+    const nobody = fell('hero.fixed.orphans', [])
+    expect(nobody.w.badges).not.toContain('badge.hero')
     expect(nobody.w.lifeState).toBe('dead')
     expect(nobody.ctx.events.find((e) => e.type === 'life.dead' && e['target'] === nobody.w.id)!['reason']).toBe('fell')
     expect(nobody.ctx.state.corpses?.some((c) => c.uid === nobody.w.uid)).toBe(true)
@@ -93,24 +99,31 @@ describe('the roll', () => {
   it('a Wounded hero fielded already Wounded (the kingdom\'s list) dies at 0 with no roll', () => {
     const ctx = withTestRows(createBattle({ replicate: 0, mapId: 'map.open', heroes: ['test-warrior'], heroHexes: [hexId(0, 5)], heroBadges: [[DOOR]], enemies: ['test-zombie'], enemyHexes: [hexId(15, 5)], enemyCount: 1 }))
     const w = ctx.state.units[0]!
-    expect(w.badges).toEqual([DOOR])
+    expect(w.badges).toEqual(['badge.hero', DOOR])   // the row's Hero badge, then the kingdom's Wounded
     drop(ctx, w.id)
-    expect(w.lifeState).toBe('dead')
+    expect(w.lifeState).toBe('dead')   // Wounded wins: the Hero badge only matters on a FAILED roll, and there is no roll
   })
 
-  it('until content authors badge.hero and badge.wounded, the lines NAME the gap and every player unit bleeds as before', () => {
-    const ctx = createCustomBattle([{ type: 'test-warrior', hex: hexId(5, 5) }], [{ type: 'test-zombie', hex: hexId(9, 9) }])
-    expect(BADGES[ctx.ruleBadges.hero]?.flags.bleedsOut).toBeUndefined()
-    expect(BADGES[ctx.ruleBadges.wounded]?.flags.wounded).toBeUndefined()
+  it('THE REAL ROWS (content c24b1ac): a stood roll grants badge.wounded with the ruled numbers and no gap; a Wounded hero dies next time; a fall with badge.hero bleeds', () => {
+    const ctx = createCustomBattle([{ type: 'hero.base.warrior-iron', hex: hexId(5, 5) }], [{ type: 'test-zombie', hex: hexId(9, 9) }])
+    expect(BADGES[ctx.ruleBadges.hero]!.flags.bleedsOut).toBe(true)
+    expect(BADGES[ctx.ruleBadges.wounded]!.flags.wounded).toBe(true)
     const w = ctx.state.units[0]!
+    expect(w.badges).toEqual(['badge.hero'])
     w.toughness = 16
+    const acc = effective(ctx, w, 'accuracy').value, maxHp = w.maxHp
     drop(ctx, w.id)
     expect(w.lifeState).toBe('standing')
-    expect((ctx.events.find((e) => e.type === 'deathbed.stood') as unknown as { gaps: string[] }).gaps[0]).toMatch(/badge\.wounded/)
-    w.toughness = -4
+    expect(w.badges).toEqual(['badge.hero', 'badge.wounded'])
+    expect(effective(ctx, w, 'accuracy').value).toBe(acc - 10)
+    expect(w.maxHp).toBe(maxHp - 2)
+    const stood = ctx.events.find((e) => e.type === 'deathbed.stood')!
+    expect(stood['badgeId']).toBe('badge.wounded')
+    expect(stood['gaps']).toBeUndefined()
+    // Wounded: the next zero is death, no roll — the Hero badge does not save a Wounded unit
     drop(ctx, w.id)
-    expect(w.lifeState).toBe('downed')
-    expect((ctx.events.find((e) => e.type === 'deathbed.fell') as unknown as { gaps: string[] }).gaps[0]).toMatch(/badge\.hero/)
+    expect(w.lifeState).toBe('dead')
+    expect(ctx.events.some((e) => e.type === 'deathbed.none')).toBe(true)
   })
 
   it('at Toughness 0 the roll is 20%: across many seeds both STAND and FALL happen', () => {

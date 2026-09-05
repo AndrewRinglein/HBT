@@ -160,7 +160,14 @@ describe('they run — no power is dead content in a real battle', () => {
     // shorter, and Osric's first Block moved from seed <5 to seed 13. The
     // claim (both powers are live) is unchanged; the search is wider. Early
     // exit once both are seen.
-    for (let r = 0; r < 20 && used.size < 2; r++) {
+    // 2026-09-04 (pack refresh, FINDING 39 fix): the early exit was
+    // `used.size < 2`, which assumed only these two powers ever fire. With the
+    // Alpha riders back on their owners the fights re-time and Storm fires on
+    // seed 1 beside Block — the set hit 2 before the priest's first heal (seed
+    // 2) and the loop stopped early. The exit now names the two powers it is
+    // looking for. Neither assertion changed.
+    const both = () => used.has('power.holy-symbol.heal') && used.has('power.knight-shield.block')
+    for (let r = 0; r < 20 && !both(); r++) {
       const ctx = createBattle({ ...scenarioOptions(scenarioDef(SC)), replicate: r })
       runBattle(ctx)
       for (const e of ctx.events) {

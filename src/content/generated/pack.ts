@@ -89,6 +89,9 @@ export const UNIT_PACK = {
           },
           "source": "unit.test-oathblade"
         }
+      ],
+      "badges": [
+        "badge.hero"
       ]
     },
     {
@@ -138,6 +141,9 @@ export const UNIT_PACK = {
           },
           "source": "unit.test-sky-pirate"
         }
+      ],
+      "badges": [
+        "badge.hero"
       ]
     },
     {
@@ -187,6 +193,9 @@ export const UNIT_PACK = {
           },
           "source": "unit.test-dusk-hawk"
         }
+      ],
+      "badges": [
+        "badge.hero"
       ]
     },
     {
@@ -250,6 +259,9 @@ export const UNIT_PACK = {
           },
           "source": "unit.test-air-mage"
         }
+      ],
+      "badges": [
+        "badge.hero"
       ]
     },
     {
@@ -286,7 +298,10 @@ export const UNIT_PACK = {
         "power.move",
         "power.devotion"
       ],
-      "triggers": []
+      "triggers": [],
+      "badges": [
+        "badge.hero"
+      ]
     },
     {
       "typeId": "test-osric",
@@ -322,7 +337,10 @@ export const UNIT_PACK = {
         "power.move",
         "power.sidestep"
       ],
-      "triggers": []
+      "triggers": [],
+      "badges": [
+        "badge.hero"
+      ]
     }
   ],
   "enemies": [
@@ -835,7 +853,7 @@ export const UNIT_PACK = {
           "id": "trigger.demon-hound.regeneration",
           "hook": "onTakingDamage",
           "chance": 100,
-          "select": "target",
+          "select": "self",
           "effect": {
             "kind": "status.apply",
             "statusId": "status.regeneration",
@@ -881,7 +899,7 @@ export const UNIT_PACK = {
           "id": "trigger.doombringer.protection",
           "hook": "onTakingDamage",
           "chance": 100,
-          "select": "target",
+          "select": "self",
           "effect": {
             "kind": "status.apply",
             "statusId": "status.protection",
@@ -5367,6 +5385,9 @@ export const UNIT_PACK = {
       "defaultItems": [
         "item.greatsword",
         "item.rusted-plate"
+      ],
+      "badges": [
+        "badge.hero"
       ]
     },
     {
@@ -5407,6 +5428,9 @@ export const UNIT_PACK = {
         "item.longsword",
         "item.knight-shield",
         "item.basic-armor"
+      ],
+      "badges": [
+        "badge.hero"
       ]
     },
     {
@@ -5447,6 +5471,9 @@ export const UNIT_PACK = {
         "item.longsword",
         "item.knight-shield",
         "item.ragged-hides"
+      ],
+      "badges": [
+        "badge.hero"
       ]
     },
     {
@@ -5486,6 +5513,9 @@ export const UNIT_PACK = {
         "item.longsword",
         "item.knight-shield",
         "item.destroyed-mail"
+      ],
+      "badges": [
+        "badge.hero"
       ]
     },
     {
@@ -5525,6 +5555,9 @@ export const UNIT_PACK = {
       "defaultItems": [
         "item.elfbow",
         "item.flowing-cloak"
+      ],
+      "badges": [
+        "badge.hero"
       ]
     },
     {
@@ -5564,6 +5597,9 @@ export const UNIT_PACK = {
       "defaultItems": [
         "item.elfbow",
         "item.flowing-cloak"
+      ],
+      "badges": [
+        "badge.hero"
       ]
     },
     {
@@ -5603,6 +5639,9 @@ export const UNIT_PACK = {
       "defaultItems": [
         "item.shortbow",
         "item.pilgrims-habit"
+      ],
+      "badges": [
+        "badge.hero"
       ]
     },
     {
@@ -5642,6 +5681,9 @@ export const UNIT_PACK = {
       "defaultItems": [
         "item.longbow",
         "item.thick-hide"
+      ],
+      "badges": [
+        "badge.hero"
       ]
     },
     {
@@ -5682,6 +5724,9 @@ export const UNIT_PACK = {
         "item.destroyed-mail",
         "item.tower-shield",
         "item.war-axe"
+      ],
+      "badges": [
+        "badge.hero"
       ]
     },
     {
@@ -5720,6 +5765,9 @@ export const UNIT_PACK = {
       "triggers": [],
       "defaultItems": [
         "item.ragged-hides"
+      ],
+      "badges": [
+        "badge.hero"
       ]
     },
     {
@@ -5759,6 +5807,9 @@ export const UNIT_PACK = {
       "defaultItems": [
         "item.greatsword",
         "item.thick-hide"
+      ],
+      "badges": [
+        "badge.hero"
       ]
     },
     {
@@ -5798,6 +5849,9 @@ export const UNIT_PACK = {
       "defaultItems": [
         "item.halberd",
         "item.basic-armor"
+      ],
+      "badges": [
+        "badge.hero"
       ]
     },
     {
@@ -5837,6 +5891,9 @@ export const UNIT_PACK = {
       "defaultItems": [
         "item.frost-staff",
         "item.watchmans-coat"
+      ],
+      "badges": [
+        "badge.hero"
       ]
     },
     {
@@ -5876,6 +5933,9 @@ export const UNIT_PACK = {
       "defaultItems": [
         "item.fire-staff",
         "item.tanners-apron"
+      ],
+      "badges": [
+        "badge.hero"
       ]
     },
     {
@@ -5915,6 +5975,9 @@ export const UNIT_PACK = {
       "defaultItems": [
         "item.fire-staff",
         "item.basic-armor"
+      ],
+      "badges": [
+        "badge.hero"
       ]
     },
     {
@@ -5954,6 +6017,9 @@ export const UNIT_PACK = {
       "defaultItems": [
         "item.fire-staff",
         "item.nice-robes"
+      ],
+      "badges": [
+        "badge.hero"
       ]
     },
     {
@@ -5993,6 +6059,9 @@ export const UNIT_PACK = {
       "defaultItems": [
         "item.holy-texts",
         "item.nice-robes"
+      ],
+      "badges": [
+        "badge.hero"
       ]
     },
     {
@@ -6033,6 +6102,9 @@ export const UNIT_PACK = {
         "item.knight-shield",
         "item.holy-texts",
         "item.pilgrims-habit"
+      ],
+      "badges": [
+        "badge.hero"
       ]
     },
     {
@@ -6072,6 +6144,9 @@ export const UNIT_PACK = {
       "defaultItems": [
         "item.holy-symbol",
         "item.peddlers-vest"
+      ],
+      "badges": [
+        "badge.hero"
       ]
     },
     {
@@ -6112,6 +6187,9 @@ export const UNIT_PACK = {
         "item.iron-mace",
         "item.holy-symbol",
         "item.borrowed-vestments"
+      ],
+      "badges": [
+        "badge.hero"
       ]
     },
     {
@@ -6152,6 +6230,9 @@ export const UNIT_PACK = {
         "item.hand-crossbow",
         "item.longsword",
         "item.peddlers-vest"
+      ],
+      "badges": [
+        "badge.hero"
       ]
     },
     {
@@ -6191,6 +6272,9 @@ export const UNIT_PACK = {
       "defaultItems": [
         "item.obsidian-fang-dagger",
         "item.flowing-cloak"
+      ],
+      "badges": [
+        "badge.hero"
       ]
     },
     {
@@ -6230,6 +6314,9 @@ export const UNIT_PACK = {
       "defaultItems": [
         "item.throwing-knives",
         "item.basic-armor"
+      ],
+      "badges": [
+        "badge.hero"
       ]
     },
     {
@@ -6269,6 +6356,9 @@ export const UNIT_PACK = {
       "defaultItems": [
         "item.daggers",
         "item.watchmans-coat"
+      ],
+      "badges": [
+        "badge.hero"
       ]
     },
     {
@@ -6816,7 +6906,7 @@ export const UNIT_PACK = {
           "id": "alpha-oathblade.second-wind",
           "hook": "onTakingDamage",
           "chance": 100,
-          "select": "target",
+          "select": "self",
           "effect": {
             "kind": "status.apply",
             "statusId": "status.regeneration",
@@ -6840,7 +6930,7 @@ export const UNIT_PACK = {
           "id": "alpha-oathblade.brace",
           "hook": "onTakingDamage",
           "chance": 50,
-          "select": "target",
+          "select": "self",
           "effect": {
             "kind": "status.apply",
             "statusId": "status.protection",
@@ -6863,6 +6953,9 @@ export const UNIT_PACK = {
       ],
       "defaultItems": [
         "item.halberd"
+      ],
+      "badges": [
+        "badge.hero"
       ]
     },
     {
@@ -6916,6 +7009,9 @@ export const UNIT_PACK = {
       "defaultItems": [
         "item.javelin",
         "item.dagger"
+      ],
+      "badges": [
+        "badge.hero"
       ]
     },
     {
@@ -6968,6 +7064,9 @@ export const UNIT_PACK = {
       ],
       "defaultItems": [
         "item.shortbow"
+      ],
+      "badges": [
+        "badge.hero"
       ]
     },
     {
@@ -7021,7 +7120,7 @@ export const UNIT_PACK = {
           "id": "alpha-air-mage.arcane-ward",
           "hook": "onTakingDamage",
           "chance": 100,
-          "select": "target",
+          "select": "self",
           "effect": {
             "kind": "status.apply",
             "statusId": "status.protection",
@@ -7032,6 +7131,9 @@ export const UNIT_PACK = {
       ],
       "defaultItems": [
         "item.lightning-staff"
+      ],
+      "badges": [
+        "badge.hero"
       ]
     },
     {
@@ -7071,6 +7173,9 @@ export const UNIT_PACK = {
       "triggers": [],
       "defaultItems": [
         "item.holy-symbol"
+      ],
+      "badges": [
+        "badge.hero"
       ]
     },
     {
@@ -7111,6 +7216,9 @@ export const UNIT_PACK = {
       "defaultItems": [
         "item.longsword",
         "item.knight-shield"
+      ],
+      "badges": [
+        "badge.hero"
       ]
     }
   ],
@@ -12896,6 +13004,9 @@ export const UNIT_PACK = {
         "abilities": [
           "power.test-second-wind"
         ],
+        "badges": [
+          "badge.hero"
+        ],
         "typeId": "test-arc-golem",
         "tags": []
       },
@@ -12964,6 +13075,9 @@ export const UNIT_PACK = {
             "source": "unit.test-warrior"
           }
         ],
+        "badges": [
+          "badge.hero"
+        ],
         "typeId": "test-warrior",
         "abilities": [],
         "tags": []
@@ -12995,6 +13109,9 @@ export const UNIT_PACK = {
           "power.side-roll"
         ],
         "triggers": [],
+        "badges": [
+          "badge.hero"
+        ],
         "typeId": "test-ranger",
         "abilities": [],
         "tags": []
@@ -13053,6 +13170,9 @@ export const UNIT_PACK = {
             },
             "source": "unit.test-mage"
           }
+        ],
+        "badges": [
+          "badge.hero"
         ],
         "typeId": "test-mage",
         "tags": []
@@ -28787,13 +28907,17 @@ export const UNIT_PACK = {
     "encounter.prologue-1": {
       "id": "encounter.prologue-1",
       "name": "Two Zombies and a Child",
+      "board": {
+        "width": 16,
+        "height": 16
+      },
       "setup": [
         {
           "unit": "hero.fixed.orphans",
           "objective": true,
           "civilian": true,
           "at": {
-            "col": 8,
+            "col": 7,
             "row": 8
           }
         },
@@ -28802,12 +28926,12 @@ export const UNIT_PACK = {
           "count": 2,
           "hexes": [
             {
-              "col": 6,
-              "row": 7
+              "col": 8,
+              "row": 6
             },
             {
-              "col": 10,
-              "row": 7
+              "col": 8,
+              "row": 10
             }
           ]
         }
@@ -28822,12 +28946,12 @@ export const UNIT_PACK = {
               "at": {
                 "oneOf": [
                   {
-                    "col": 0,
-                    "row": 8
+                    "col": 7,
+                    "row": 0
                   },
                   {
-                    "col": 15,
-                    "row": 8
+                    "col": 7,
+                    "row": 15
                   }
                 ]
               }
@@ -28842,8 +28966,8 @@ export const UNIT_PACK = {
         "count": 1,
         "at": {
           "near": {
-            "col": 7,
-            "row": 15
+            "col": 0,
+            "row": 7
           },
           "range": 2
         }
@@ -28852,9 +28976,22 @@ export const UNIT_PACK = {
     "encounter.prologue-2": {
       "id": "encounter.prologue-2",
       "name": "Surrounded",
+      "board": {
+        "width": 16,
+        "height": 16
+      },
       "setup": [
         {
           "unit": "hero.fixed.lumberjack-and-wife",
+          "objective": true,
+          "civilian": true,
+          "at": {
+            "col": 7,
+            "row": 7
+          }
+        },
+        {
+          "unit": "hero.fixed.farmer",
           "objective": true,
           "civilian": true,
           "at": {
@@ -28863,33 +29000,24 @@ export const UNIT_PACK = {
           }
         },
         {
-          "unit": "hero.fixed.farmer",
-          "objective": true,
-          "civilian": true,
-          "at": {
-            "col": 8,
-            "row": 8
-          }
-        },
-        {
           "unit": "unit.zombie",
           "count": 4,
           "hexes": [
             {
+              "col": 9,
+              "row": 5
+            },
+            {
+              "col": 9,
+              "row": 10
+            },
+            {
               "col": 5,
-              "row": 6
+              "row": 4
             },
             {
-              "col": 10,
-              "row": 6
-            },
-            {
-              "col": 4,
-              "row": 10
-            },
-            {
-              "col": 11,
-              "row": 10
+              "col": 5,
+              "row": 11
             }
           ]
         }
@@ -28903,12 +29031,12 @@ export const UNIT_PACK = {
               "count": 2,
               "hexes": [
                 {
-                  "col": 15,
-                  "row": 6
+                  "col": 9,
+                  "row": 15
                 },
                 {
-                  "col": 15,
-                  "row": 10
+                  "col": 5,
+                  "row": 15
                 }
               ]
             }
@@ -28921,16 +29049,16 @@ export const UNIT_PACK = {
               "unit": "unit.skeletal-archer",
               "count": 1,
               "at": {
-                "col": 0,
-                "row": 8
+                "col": 7,
+                "row": 0
               }
             },
             {
               "unit": "unit.skeletal-archer",
               "count": 1,
               "at": {
-                "col": 8,
-                "row": 15
+                "col": 0,
+                "row": 8
               }
             }
           ]
@@ -28943,20 +29071,20 @@ export const UNIT_PACK = {
               "count": 4,
               "hexes": [
                 {
-                  "col": 7,
-                  "row": 0
-                },
-                {
-                  "col": 0,
+                  "col": 15,
                   "row": 7
                 },
                 {
-                  "col": 15,
-                  "row": 8
+                  "col": 8,
+                  "row": 0
                 },
                 {
                   "col": 7,
                   "row": 15
+                },
+                {
+                  "col": 0,
+                  "row": 7
                 }
               ]
             }
@@ -28969,8 +29097,8 @@ export const UNIT_PACK = {
               "unit": "unit.necromancer",
               "count": 1,
               "at": {
-                "col": 8,
-                "row": 0
+                "col": 15,
+                "row": 8
               }
             }
           ]
@@ -28980,9 +29108,22 @@ export const UNIT_PACK = {
     "encounter.prologue-3": {
       "id": "encounter.prologue-3",
       "name": "The Schoolhouse",
+      "board": {
+        "width": 16,
+        "height": 16
+      },
       "setup": [
         {
           "unit": "hero.fixed.school-teacher",
+          "objective": true,
+          "civilian": true,
+          "at": {
+            "col": 7,
+            "row": 7
+          }
+        },
+        {
+          "unit": "hero.fixed.school-children",
           "objective": true,
           "civilian": true,
           "at": {
@@ -28991,33 +29132,24 @@ export const UNIT_PACK = {
           }
         },
         {
-          "unit": "hero.fixed.school-children",
-          "objective": true,
-          "civilian": true,
-          "at": {
-            "col": 8,
-            "row": 8
-          }
-        },
-        {
           "unit": "unit.imp",
           "count": 4,
           "hexes": [
             {
-              "col": 4,
-              "row": 0
+              "col": 15,
+              "row": 4
             },
             {
-              "col": 7,
-              "row": 0
+              "col": 15,
+              "row": 7
             },
             {
-              "col": 9,
-              "row": 0
+              "col": 15,
+              "row": 9
             },
             {
-              "col": 12,
-              "row": 0
+              "col": 15,
+              "row": 12
             }
           ]
         }
@@ -29031,12 +29163,12 @@ export const UNIT_PACK = {
               "count": 2,
               "hexes": [
                 {
-                  "col": 5,
-                  "row": 0
+                  "col": 15,
+                  "row": 5
                 },
                 {
-                  "col": 11,
-                  "row": 0
+                  "col": 15,
+                  "row": 11
                 }
               ]
             }
@@ -29049,8 +29181,8 @@ export const UNIT_PACK = {
               "unit": "unit.powerful-imp",
               "count": 1,
               "at": {
-                "col": 8,
-                "row": 0
+                "col": 15,
+                "row": 8
               }
             },
             {
@@ -29058,12 +29190,12 @@ export const UNIT_PACK = {
               "count": 2,
               "hexes": [
                 {
-                  "col": 3,
-                  "row": 0
+                  "col": 15,
+                  "row": 3
                 },
                 {
-                  "col": 13,
-                  "row": 0
+                  "col": 15,
+                  "row": 13
                 }
               ]
             }
@@ -29080,18 +29212,22 @@ export const UNIT_PACK = {
     "encounter.prologue-4": {
       "id": "encounter.prologue-4",
       "name": "The Curse",
+      "board": {
+        "width": 16,
+        "height": 16
+      },
       "setup": [
         {
           "unit": "unit.bruiser-demon",
           "count": 2,
           "hexes": [
             {
-              "col": 5,
-              "row": 0
+              "col": 15,
+              "row": 5
             },
             {
-              "col": 11,
-              "row": 0
+              "col": 15,
+              "row": 11
             }
           ]
         },
@@ -29100,12 +29236,12 @@ export const UNIT_PACK = {
           "count": 2,
           "hexes": [
             {
-              "col": 4,
-              "row": 0
+              "col": 15,
+              "row": 4
             },
             {
-              "col": 12,
-              "row": 0
+              "col": 15,
+              "row": 12
             }
           ]
         },
@@ -29113,16 +29249,16 @@ export const UNIT_PACK = {
           "unit": "unit.powerful-imp",
           "count": 1,
           "at": {
-            "col": 9,
-            "row": 0
+            "col": 15,
+            "row": 9
           }
         },
         {
           "unit": "unit.lieutenant-demon",
           "count": 1,
           "at": {
-            "col": 8,
-            "row": 0
+            "col": 15,
+            "row": 8
           }
         }
       ],
@@ -29134,16 +29270,16 @@ export const UNIT_PACK = {
               "unit": "unit.imp",
               "count": 1,
               "at": {
-                "col": 0,
-                "row": 7
+                "col": 8,
+                "row": 0
               }
             },
             {
               "unit": "unit.imp",
               "count": 1,
               "at": {
-                "col": 15,
-                "row": 7
+                "col": 8,
+                "row": 15
               }
             }
           ]
@@ -29155,8 +29291,8 @@ export const UNIT_PACK = {
               "unit": "unit.imp",
               "count": 1,
               "at": {
-                "col": 7,
-                "row": 0
+                "col": 15,
+                "row": 7
               }
             }
           ]
@@ -29172,16 +29308,16 @@ export const UNIT_PACK = {
               "unit": "unit.imp",
               "count": 1,
               "at": {
-                "col": 0,
-                "row": 9
+                "col": 6,
+                "row": 0
               }
             },
             {
               "unit": "unit.imp",
               "count": 1,
               "at": {
-                "col": 15,
-                "row": 9
+                "col": 6,
+                "row": 15
               }
             }
           ]
@@ -29198,26 +29334,30 @@ export const UNIT_PACK = {
     "encounter.prologue-5": {
       "id": "encounter.prologue-5",
       "name": "The Hunt",
+      "board": {
+        "width": 16,
+        "height": 16
+      },
       "setup": [
         {
           "unit": "unit.bloodhound",
           "count": 4,
           "hexes": [
             {
-              "col": 3,
-              "row": 0
+              "col": 15,
+              "row": 3
             },
             {
-              "col": 7,
-              "row": 0
+              "col": 15,
+              "row": 7
             },
             {
-              "col": 9,
-              "row": 0
+              "col": 15,
+              "row": 9
             },
             {
-              "col": 13,
-              "row": 0
+              "col": 15,
+              "row": 13
             }
           ]
         },
@@ -29226,12 +29366,12 @@ export const UNIT_PACK = {
           "count": 2,
           "hexes": [
             {
-              "col": 5,
-              "row": 1
+              "col": 14,
+              "row": 5
             },
             {
-              "col": 11,
-              "row": 1
+              "col": 14,
+              "row": 11
             }
           ]
         }
@@ -29245,36 +29385,36 @@ export const UNIT_PACK = {
               "count": 8,
               "hexes": [
                 {
-                  "col": 1,
-                  "row": 0
-                },
-                {
-                  "col": 4,
-                  "row": 0
-                },
-                {
-                  "col": 6,
-                  "row": 0
-                },
-                {
-                  "col": 8,
-                  "row": 0
-                },
-                {
-                  "col": 10,
-                  "row": 0
-                },
-                {
-                  "col": 12,
-                  "row": 0
+                  "col": 15,
+                  "row": 1
                 },
                 {
                   "col": 15,
-                  "row": 0
+                  "row": 4
                 },
                 {
-                  "col": 8,
-                  "row": 1
+                  "col": 15,
+                  "row": 6
+                },
+                {
+                  "col": 15,
+                  "row": 8
+                },
+                {
+                  "col": 15,
+                  "row": 10
+                },
+                {
+                  "col": 15,
+                  "row": 12
+                },
+                {
+                  "col": 15,
+                  "row": 15
+                },
+                {
+                  "col": 14,
+                  "row": 8
                 }
               ]
             }
@@ -29287,8 +29427,8 @@ export const UNIT_PACK = {
               "unit": "unit.werewolf",
               "count": 1,
               "at": {
-                "col": 8,
-                "row": 0
+                "col": 15,
+                "row": 8
               }
             }
           ]
@@ -29301,26 +29441,30 @@ export const UNIT_PACK = {
     "encounter.horrors-of-the-night": {
       "id": "encounter.horrors-of-the-night",
       "name": "Horrors of the Night",
+      "board": {
+        "width": 16,
+        "height": 16
+      },
       "setup": [
         {
           "unit": "unit.eyeblight",
           "count": 4,
           "hexes": [
             {
-              "col": 4,
-              "row": 0
+              "col": 15,
+              "row": 4
             },
             {
-              "col": 7,
-              "row": 0
+              "col": 15,
+              "row": 7
             },
             {
-              "col": 9,
-              "row": 0
+              "col": 15,
+              "row": 9
             },
             {
-              "col": 12,
-              "row": 0
+              "col": 15,
+              "row": 12
             }
           ]
         }
@@ -29334,12 +29478,12 @@ export const UNIT_PACK = {
               "count": 2,
               "hexes": [
                 {
-                  "col": 6,
-                  "row": 0
+                  "col": 15,
+                  "row": 6
                 },
                 {
-                  "col": 10,
-                  "row": 0
+                  "col": 15,
+                  "row": 10
                 }
               ]
             }
@@ -29357,12 +29501,12 @@ export const UNIT_PACK = {
               "count": 2,
               "hexes": [
                 {
-                  "col": 7,
-                  "row": 1
+                  "col": 14,
+                  "row": 7
                 },
                 {
-                  "col": 9,
-                  "row": 1
+                  "col": 14,
+                  "row": 9
                 }
               ]
             }
@@ -29376,8 +29520,8 @@ export const UNIT_PACK = {
               "count": 1,
               "from": "the opposite side",
               "at": {
-                "col": 8,
-                "row": 0
+                "col": 15,
+                "row": 8
               }
             },
             {
@@ -29386,12 +29530,12 @@ export const UNIT_PACK = {
               "from": "the opposite side",
               "hexes": [
                 {
-                  "col": 3,
-                  "row": 0
+                  "col": 15,
+                  "row": 3
                 },
                 {
-                  "col": 13,
-                  "row": 0
+                  "col": 15,
+                  "row": 13
                 }
               ]
             }
@@ -29406,81 +29550,13 @@ export const UNIT_PACK = {
     "encounter.supper": {
       "id": "encounter.supper",
       "name": "Supper",
+      "board": {
+        "width": 16,
+        "height": 16
+      },
       "setup": [
         {
           "unit": "hero.fixed.librarian",
-          "civilian": true,
-          "at": {
-            "col": 10,
-            "row": 7
-          }
-        },
-        {
-          "unit": "hero.fixed.cook",
-          "civilian": true,
-          "at": {
-            "col": 6,
-            "row": 7
-          }
-        },
-        {
-          "unit": "hero.fixed.fishermans-wife",
-          "civilian": true,
-          "at": {
-            "col": 8,
-            "row": 7
-          }
-        },
-        {
-          "unit": "hero.fixed.fisherman",
-          "civilian": true,
-          "at": {
-            "col": 10,
-            "row": 8
-          }
-        },
-        {
-          "unit": "hero.fixed.old-wise-man",
-          "civilian": true,
-          "at": {
-            "col": 8,
-            "row": 8
-          }
-        },
-        {
-          "unit": "hero.fixed.blacksmith",
-          "civilian": true,
-          "at": {
-            "col": 8,
-            "row": 9
-          }
-        },
-        {
-          "unit": "hero.fixed.farmer",
-          "civilian": true,
-          "at": {
-            "col": 6,
-            "row": 8
-          }
-        },
-        {
-          "unit": "hero.fixed.group-of-farmers",
-          "civilian": true,
-          "at": {
-            "col": 6,
-            "row": 9
-          }
-        },
-        {
-          "unit": "hero.fixed.farming-family",
-          "civilian": true,
-          "at": {
-            "col": 10,
-            "row": 9
-          }
-        },
-        {
-          "unit": "hero.fixed.scary-kid",
           "civilian": true,
           "at": {
             "col": 8,
@@ -29488,40 +29564,112 @@ export const UNIT_PACK = {
           }
         },
         {
+          "unit": "hero.fixed.cook",
+          "civilian": true,
+          "at": {
+            "col": 8,
+            "row": 6
+          }
+        },
+        {
+          "unit": "hero.fixed.fishermans-wife",
+          "civilian": true,
+          "at": {
+            "col": 8,
+            "row": 8
+          }
+        },
+        {
+          "unit": "hero.fixed.fisherman",
+          "civilian": true,
+          "at": {
+            "col": 7,
+            "row": 10
+          }
+        },
+        {
+          "unit": "hero.fixed.old-wise-man",
+          "civilian": true,
+          "at": {
+            "col": 7,
+            "row": 8
+          }
+        },
+        {
+          "unit": "hero.fixed.blacksmith",
+          "civilian": true,
+          "at": {
+            "col": 6,
+            "row": 8
+          }
+        },
+        {
+          "unit": "hero.fixed.farmer",
+          "civilian": true,
+          "at": {
+            "col": 7,
+            "row": 6
+          }
+        },
+        {
+          "unit": "hero.fixed.group-of-farmers",
+          "civilian": true,
+          "at": {
+            "col": 6,
+            "row": 6
+          }
+        },
+        {
+          "unit": "hero.fixed.farming-family",
+          "civilian": true,
+          "at": {
+            "col": 6,
+            "row": 10
+          }
+        },
+        {
+          "unit": "hero.fixed.scary-kid",
+          "civilian": true,
+          "at": {
+            "col": 5,
+            "row": 8
+          }
+        },
+        {
           "unit": "unit.zombie",
           "count": 8,
           "hexes": [
             {
-              "col": 6,
+              "col": 9,
               "row": 6
             },
             {
-              "col": 8,
-              "row": 6
+              "col": 9,
+              "row": 8
             },
             {
-              "col": 10,
+              "col": 9,
+              "row": 10
+            },
+            {
+              "col": 7,
+              "row": 5
+            },
+            {
+              "col": 7,
+              "row": 11
+            },
+            {
+              "col": 5,
               "row": 6
             },
             {
               "col": 5,
-              "row": 8
-            },
-            {
-              "col": 11,
-              "row": 8
-            },
-            {
-              "col": 6,
               "row": 10
             },
             {
-              "col": 10,
-              "row": 10
-            },
-            {
-              "col": 8,
-              "row": 11
+              "col": 4,
+              "row": 8
             }
           ]
         },
@@ -29530,20 +29678,20 @@ export const UNIT_PACK = {
           "count": 4,
           "hexes": [
             {
-              "col": 4,
-              "row": 0
+              "col": 15,
+              "row": 4
             },
             {
-              "col": 7,
-              "row": 0
+              "col": 15,
+              "row": 7
             },
             {
-              "col": 9,
-              "row": 0
+              "col": 15,
+              "row": 9
             },
             {
-              "col": 12,
-              "row": 0
+              "col": 15,
+              "row": 12
             }
           ]
         }
@@ -29557,12 +29705,12 @@ export const UNIT_PACK = {
               "count": 2,
               "hexes": [
                 {
-                  "col": 0,
-                  "row": 8
+                  "col": 7,
+                  "row": 0
                 },
                 {
-                  "col": 15,
-                  "row": 8
+                  "col": 7,
+                  "row": 15
                 }
               ]
             }
@@ -29575,8 +29723,8 @@ export const UNIT_PACK = {
               "unit": "unit.necromancer",
               "count": 1,
               "at": {
-                "col": 8,
-                "row": 3
+                "col": 12,
+                "row": 8
               }
             }
           ]
@@ -29589,20 +29737,20 @@ export const UNIT_PACK = {
               "count": 4,
               "hexes": [
                 {
-                  "col": 5,
-                  "row": 15
+                  "col": 0,
+                  "row": 5
                 },
                 {
-                  "col": 7,
-                  "row": 15
+                  "col": 0,
+                  "row": 7
                 },
                 {
-                  "col": 9,
-                  "row": 15
+                  "col": 0,
+                  "row": 9
                 },
                 {
-                  "col": 11,
-                  "row": 15
+                  "col": 0,
+                  "row": 11
                 }
               ]
             }
@@ -29613,8 +29761,8 @@ export const UNIT_PACK = {
         "count": 4,
         "at": {
           "near": {
-            "col": 8,
-            "row": 14
+            "col": 1,
+            "row": 8
           },
           "range": 3
         }
@@ -29646,26 +29794,30 @@ export const UNIT_PACK = {
     "encounter.kiln": {
       "id": "encounter.kiln",
       "name": "The Kiln",
+      "board": {
+        "width": 16,
+        "height": 16
+      },
       "setup": [
         {
           "unit": "unit.fire-imp",
           "count": 4,
           "hexes": [
             {
-              "col": 5,
-              "row": 2
+              "col": 13,
+              "row": 5
             },
             {
-              "col": 7,
-              "row": 2
+              "col": 13,
+              "row": 7
             },
             {
-              "col": 9,
-              "row": 2
+              "col": 13,
+              "row": 9
             },
             {
-              "col": 11,
-              "row": 2
+              "col": 13,
+              "row": 11
             }
           ]
         },
@@ -29674,16 +29826,16 @@ export const UNIT_PACK = {
           "count": 3,
           "hexes": [
             {
-              "col": 4,
-              "row": 3
-            },
-            {
-              "col": 8,
-              "row": 3
+              "col": 12,
+              "row": 4
             },
             {
               "col": 12,
-              "row": 3
+              "row": 8
+            },
+            {
+              "col": 12,
+              "row": 12
             }
           ]
         },
@@ -29691,8 +29843,8 @@ export const UNIT_PACK = {
           "unit": "unit.imp-master",
           "count": 1,
           "at": {
-            "col": 8,
-            "row": 1
+            "col": 14,
+            "row": 8
           }
         }
       ],
@@ -29705,12 +29857,12 @@ export const UNIT_PACK = {
               "count": 2,
               "hexes": [
                 {
-                  "col": 0,
-                  "row": 6
+                  "col": 9,
+                  "row": 0
                 },
                 {
-                  "col": 0,
-                  "row": 8
+                  "col": 7,
+                  "row": 0
                 }
               ]
             }
@@ -29724,12 +29876,12 @@ export const UNIT_PACK = {
               "count": 2,
               "hexes": [
                 {
-                  "col": 15,
-                  "row": 6
+                  "col": 9,
+                  "row": 15
                 },
                 {
-                  "col": 15,
-                  "row": 8
+                  "col": 7,
+                  "row": 15
                 }
               ]
             }
@@ -29742,8 +29894,8 @@ export const UNIT_PACK = {
               "unit": "unit.balrog",
               "count": 1,
               "at": {
-                "col": 8,
-                "row": 0
+                "col": 15,
+                "row": 8
               }
             }
           ]
@@ -29753,8 +29905,8 @@ export const UNIT_PACK = {
         "count": 5,
         "at": {
           "near": {
-            "col": 8,
-            "row": 14
+            "col": 1,
+            "row": 8
           },
           "range": 3
         }
@@ -29762,20 +29914,26 @@ export const UNIT_PACK = {
       "band": {
         "layer": "layer.burning",
         "fromPhase": 2,
-        "startRow": 0,
-        "direction": 1
+        "direction": -1,
+        "axis": "col",
+        "startCol": 15
       },
       "gaps": [
         "retreat allowed — skipped by ruling 2026-09-03",
         "salvation — skipped by ruling 2026-09-03",
         "standing rule: THE KILN — needs a map with the five water pockets",
         "needs: capability.ground-layers (the advancing burning band; water pockets)",
-        "needs: the salvation card at phase 8"
+        "needs: the salvation card at phase 8",
+        "band walks the COLUMN axis (axis:col, startCol) — the engine must read it; a reader still expecting startRow gets undefined"
       ]
     },
     "encounter.last-company": {
       "id": "encounter.last-company",
       "name": "The Last Company",
+      "board": {
+        "width": 16,
+        "height": 16
+      },
       "setup": [],
       "schedule": [
         {
@@ -29789,8 +29947,8 @@ export const UNIT_PACK = {
               "unit": "unit.necromancer",
               "count": 1,
               "at": {
-                "col": 8,
-                "row": 1
+                "col": 14,
+                "row": 8
               }
             }
           ]
@@ -29803,12 +29961,12 @@ export const UNIT_PACK = {
               "count": 2,
               "hexes": [
                 {
-                  "col": 4,
-                  "row": 1
+                  "col": 14,
+                  "row": 4
                 },
                 {
-                  "col": 12,
-                  "row": 1
+                  "col": 14,
+                  "row": 12
                 }
               ]
             }
@@ -29819,8 +29977,8 @@ export const UNIT_PACK = {
         "count": 6,
         "at": {
           "near": {
-            "col": 8,
-            "row": 14
+            "col": 1,
+            "row": 8
           },
           "range": 3
         }
@@ -29841,26 +29999,30 @@ export const UNIT_PACK = {
     "encounter.rime": {
       "id": "encounter.rime",
       "name": "Rime",
+      "board": {
+        "width": 16,
+        "height": 16
+      },
       "setup": [
         {
           "unit": "unit.strong-skeleton",
           "count": 4,
           "hexes": [
             {
-              "col": 3,
-              "row": 10
+              "col": 10,
+              "row": 3
             },
             {
-              "col": 7,
-              "row": 10
+              "col": 10,
+              "row": 7
             },
             {
-              "col": 13,
-              "row": 10
+              "col": 10,
+              "row": 13
             },
             {
-              "col": 8,
-              "row": 11
+              "col": 10,
+              "row": 8
             }
           ]
         },
@@ -29869,16 +30031,16 @@ export const UNIT_PACK = {
           "count": 3,
           "hexes": [
             {
-              "col": 7,
-              "row": 3
+              "col": 12,
+              "row": 7
             },
             {
-              "col": 9,
-              "row": 3
+              "col": 12,
+              "row": 9
             },
             {
-              "col": 8,
-              "row": 4
+              "col": 11,
+              "row": 8
             }
           ]
         }
@@ -29895,8 +30057,8 @@ export const UNIT_PACK = {
               "unit": "unit.skeleton-spider",
               "count": 1,
               "at": {
-                "col": 8,
-                "row": 2
+                "col": 13,
+                "row": 8
               }
             }
           ]
@@ -29909,28 +30071,28 @@ export const UNIT_PACK = {
               "count": 6,
               "hexes": [
                 {
-                  "col": 3,
-                  "row": 15
+                  "col": 15,
+                  "row": 3
                 },
                 {
-                  "col": 5,
-                  "row": 15
+                  "col": 15,
+                  "row": 5
                 },
                 {
-                  "col": 7,
-                  "row": 15
+                  "col": 15,
+                  "row": 7
                 },
                 {
-                  "col": 9,
-                  "row": 15
+                  "col": 15,
+                  "row": 9
                 },
                 {
-                  "col": 11,
-                  "row": 15
+                  "col": 15,
+                  "row": 11
                 },
                 {
-                  "col": 13,
-                  "row": 15
+                  "col": 15,
+                  "row": 13
                 }
               ]
             }
@@ -29943,8 +30105,8 @@ export const UNIT_PACK = {
               "unit": "unit.bone-dragon",
               "count": 1,
               "at": {
-                "col": 8,
-                "row": 0
+                "col": 15,
+                "row": 8
               }
             }
           ]
@@ -29954,8 +30116,8 @@ export const UNIT_PACK = {
         "count": 6,
         "at": {
           "near": {
-            "col": 8,
-            "row": 14
+            "col": 1,
+            "row": 8
           },
           "range": 3
         }
@@ -29964,54 +30126,54 @@ export const UNIT_PACK = {
         {
           "layer": "layer.frost",
           "hexes": [
-            96,
-            97,
-            98,
-            99,
-            100,
-            101,
-            102,
+            7,
+            8,
+            9,
+            23,
+            24,
+            25,
+            39,
+            40,
+            41,
+            55,
+            56,
+            57,
+            71,
+            72,
+            73,
+            87,
+            88,
+            89,
             103,
             104,
             105,
-            106,
-            107,
-            108,
-            109,
-            110,
-            111,
-            112,
-            113,
-            114,
-            115,
-            116,
-            117,
-            118,
             119,
             120,
             121,
-            122,
-            123,
-            124,
-            125,
-            126,
-            127,
-            128,
-            129,
-            130,
-            131,
-            132,
-            133,
-            134,
             135,
             136,
             137,
-            138,
-            139,
-            140,
-            141,
-            142,
-            143
+            151,
+            152,
+            153,
+            167,
+            168,
+            169,
+            183,
+            184,
+            185,
+            199,
+            200,
+            201,
+            215,
+            216,
+            217,
+            231,
+            232,
+            233,
+            247,
+            248,
+            249
           ]
         }
       ],
@@ -30991,15 +31153,29 @@ export const UNIT_PACK = {
       "grants": [],
       "flags": {}
     },
+    "badge.hero": {
+      "id": "badge.hero",
+      "name": "Hero",
+      "statModifiers": {},
+      "grants": [],
+      "flags": {
+        "bleedsOut": true
+      }
+    },
     "badge.wounded": {
       "id": "badge.wounded",
       "name": "Wounded",
-      "statModifiers": {},
+      "statModifiers": {
+        "accuracy": -10,
+        "dodge": -10,
+        "strength": -1,
+        "precision": -1,
+        "maxHp": -2
+      },
       "grants": [],
-      "flags": {},
-      "gaps": [
-        "payload is prose only — the numbers are owed"
-      ]
+      "flags": {
+        "wounded": true
+      }
     },
     "badge.dwarf": {
       "id": "badge.dwarf",
@@ -32198,6 +32374,319 @@ export const UNIT_PACK = {
       "flags": {},
       "gaps": [
         "On kill: destroy the corpse — no corpse is made"
+      ]
+    }
+  },
+  "maps": {
+    "map.open": {
+      "id": "map.open",
+      "name": "Open Field",
+      "board": {
+        "width": 16,
+        "height": 16
+      },
+      "format": "standard",
+      "rows": [
+        "................",
+        "................",
+        "................",
+        "................",
+        "................",
+        "................",
+        "................",
+        "................",
+        "................",
+        "................",
+        "................",
+        "................",
+        "................",
+        "................",
+        "................",
+        "................"
+      ]
+    },
+    "map.ridge": {
+      "id": "map.ridge",
+      "name": "The Ridge",
+      "board": {
+        "width": 16,
+        "height": 16
+      },
+      "format": "standard",
+      "rows": [
+        "................",
+        "................",
+        "................",
+        "................",
+        "................",
+        "................",
+        "................",
+        "....hhhhhhhh....",
+        "...hhhhhhhhhh...",
+        "................",
+        "................",
+        "................",
+        "................",
+        "................",
+        "................",
+        "................"
+      ]
+    },
+    "map.flanks": {
+      "id": "map.flanks",
+      "name": "Two Knolls",
+      "board": {
+        "width": 16,
+        "height": 16
+      },
+      "format": "standard",
+      "rows": [
+        "................",
+        "................",
+        "................",
+        ".hh..........hh.",
+        "hhh..........hhh",
+        ".hh..........hh.",
+        "................",
+        "................",
+        "................",
+        "................",
+        ".hh..........hh.",
+        "hhh..........hhh",
+        ".hh..........hh.",
+        "................",
+        "................",
+        "................"
+      ]
+    },
+    "map.highlands": {
+      "id": "map.highlands",
+      "name": "Highlands",
+      "board": {
+        "width": 16,
+        "height": 16
+      },
+      "format": "standard",
+      "rows": [
+        "..h..hh..h....h.",
+        ".hh...h..hh..hh.",
+        "h..hh...h..hh..h",
+        "..h..hhh..h...h.",
+        ".hh..h..hh...hh.",
+        "h..hh..h..hhh..h",
+        "..h..hh..h....h.",
+        ".hh..h..hh...hh.",
+        "h..h..hh..h.h..h",
+        "..hh..h..hh...hh",
+        ".h..hh..h..h.h..",
+        "..h..h..hh....h.",
+        "..h..hh..h....h.",
+        ".hh...h..hh..hh.",
+        "h..hh...h..hh..h",
+        "..h..hhh..h...h."
+      ]
+    },
+    "map.field": {
+      "id": "map.field",
+      "name": "The Field",
+      "board": {
+        "width": 16,
+        "height": 16
+      },
+      "format": "standard",
+      "rows": [
+        "ffw...hhhhhfffh.",
+        "fwwwwhhhffffrfR.",
+        "fffwwwhhhfffrrrr",
+        "hffww..fffffrrrr",
+        "hhhhwww..fffrrrr",
+        "hhhwww....frrrr.",
+        "hhhwwww.....rrrr",
+        "wwwwwwrrr...rr..",
+        "..wwwwrrr...rrrr",
+        "...wwrrrr..RRRRr",
+        "..wwwrrrr...hhhR",
+        "..www.rrRh.hhhhh",
+        "x..ww...r.hhhhh.",
+        "...ww.....hhhh..",
+        "...www.....hhhh.",
+        "...wwwx...hhhh.."
+      ]
+    },
+    "map.thicket": {
+      "id": "map.thicket",
+      "name": "The Thicket",
+      "board": {
+        "width": 16,
+        "height": 16
+      },
+      "format": "standard",
+      "rows": [
+        "..ffhhhhhhwww..f",
+        "..hhhhhhhwww....",
+        "hhhhhhhhhwwww...",
+        ".hhhhwwwwwwwrrr.",
+        "...hhh..wwwwrrr.",
+        "...xh....wwrrrr.",
+        "...h....wwwrrrr.",
+        "...h....www.rrRh",
+        "......x..ww...r.",
+        ".........ww.....",
+        "..x......www....",
+        "...f.....wwwx...",
+        ".fff......www...",
+        ".ff.......wwww..",
+        ".fff........ww..",
+        "fff..ff....www.."
+      ]
+    },
+    "map.proving.open": {
+      "id": "map.proving.open",
+      "name": "The Level",
+      "board": {
+        "width": 16,
+        "height": 8
+      },
+      "format": "dungeon",
+      "rows": [
+        "................",
+        "................",
+        "................",
+        "................",
+        "................",
+        "................",
+        "................",
+        "................"
+      ]
+    },
+    "map.proving.ridge": {
+      "id": "map.proving.ridge",
+      "name": "The Spine",
+      "board": {
+        "width": 16,
+        "height": 8
+      },
+      "format": "dungeon",
+      "rows": [
+        ".......hh.......",
+        ".......hh.......",
+        "......hhhh......",
+        "......hhhh......",
+        "......hhhh......",
+        "......hhhh......",
+        ".......hh.......",
+        ".......hh......."
+      ]
+    },
+    "map.proving.ford": {
+      "id": "map.proving.ford",
+      "name": "The Crossing",
+      "board": {
+        "width": 16,
+        "height": 8
+      },
+      "format": "dungeon",
+      "rows": [
+        ".......ww.......",
+        ".......ww.......",
+        "................",
+        ".......ww.......",
+        ".......ww.......",
+        "................",
+        ".......ww.......",
+        ".......ww......."
+      ]
+    },
+    "map.proving.copse": {
+      "id": "map.proving.copse",
+      "name": "The Copse",
+      "board": {
+        "width": 16,
+        "height": 8
+      },
+      "format": "dungeon",
+      "rows": [
+        "..ff........ff..",
+        "..ff........ff..",
+        "................",
+        ".....ff..ff.....",
+        ".....ff..ff.....",
+        "................",
+        "..ff........ff..",
+        "..ff........ff.."
+      ]
+    },
+    "map.proving.ruin": {
+      "id": "map.proving.ruin",
+      "name": "The Ruin",
+      "board": {
+        "width": 16,
+        "height": 8
+      },
+      "format": "dungeon",
+      "rows": [
+        "...x........x...",
+        "...rr......rr...",
+        ".......xx.......",
+        "..rr..x..x..rr..",
+        "..rr..x..x..rr..",
+        ".......xx.......",
+        "...rr......rr...",
+        "...x........x..."
+      ]
+    },
+    "map.courtyard": {
+      "id": "map.courtyard",
+      "name": "The Courtyard",
+      "board": {
+        "width": 8,
+        "height": 8
+      },
+      "format": "duel",
+      "rows": [
+        "........",
+        "..h..h..",
+        "........",
+        "...hh...",
+        "...hh...",
+        "........",
+        "..h..h..",
+        "........"
+      ]
+    },
+    "map.floodplain": {
+      "id": "map.floodplain",
+      "name": "The Floodplain",
+      "board": {
+        "width": 24,
+        "height": 24
+      },
+      "format": "horde",
+      "rows": [
+        "...........ww...........",
+        "...........ww...........",
+        "...........ww...........",
+        "....hh.....ww.....hh....",
+        "....hh.....ww.....hh....",
+        "...........ww...........",
+        "...........ww...........",
+        "...........ww...........",
+        "........................",
+        "........................",
+        "...........ww...........",
+        "......rr...ww...rr......",
+        "......rr...ww...rr......",
+        "...........ww...........",
+        "...........ww...........",
+        "........................",
+        "........................",
+        "...........ww...........",
+        "...........ww...........",
+        "....hh.....ww.....hh....",
+        "....hh.....ww.....hh....",
+        "...........ww...........",
+        "...........ww...........",
+        "...........ww..........."
       ]
     }
   }

@@ -44,7 +44,9 @@ describe('the invariant — no heroItems means the hero the converter used to fo
       // progression.level-table-by-type (2026-09-03): the farmer row names its
       // own level table (`levelTable`); a pointer, not a folded number — the
       // oracle predates it. Law 10 reason: a new row FIELD, not a changed value.
-      const keys = [...new Set([...Object.keys(f), ...Object.keys(r)])].filter((k) => !['attributes', 'tags', 'toughness', 'vision', 'levelTable'].includes(k) && JSON.stringify(f[k]) !== JSON.stringify(r[k]))
+      // badge.mechanism / content c24b1ac (2026-09-04): every hero row carries
+      // badge.hero (`badges`) — a new row FIELD, not a folded number; the oracle predates it (Law 10).
+      const keys = [...new Set([...Object.keys(f), ...Object.keys(r)])].filter((k) => !['attributes', 'tags', 'toughness', 'vision', 'levelTable', 'badges'].includes(k) && JSON.stringify(f[k]) !== JSON.stringify(r[k]))
       if (keys.length) differ[id] = keys
     }
     // FINDING: the converter folded item crit/luck into `ported`, then wrote
@@ -63,6 +65,12 @@ describe('the invariant — no heroItems means the hero the converter used to fo
       // capability.frost (2026-09-03): the Thinking Mage's staff applies Frost,
       // which compiles now that the status exists — a trigger the oracle never had.
       'hero.base.mage-thinking': ['triggers'],
+      // FINDING 39 (2026-09-04): the oracle froze Second Wind, Brace and Arcane Ward
+      // aimed at the ATTACKER — the converter bug the audit found. The rows say
+      // target: self and compile so now; the oracle keeps the bug on purpose as
+      // the record of it (Law 10 — content moved, the fold did not).
+      'alpha-oathblade': ['triggers'],
+      'alpha-air-mage': ['triggers'],
     })
     expect(fieldedDef('hero.base.paladin-dark').crit).toBe((o['hero.base.paladin-dark']!['crit'] as number) + ITEMS['item.rusted-plate']!.statModifiers.crit!)
     expect(fieldedDef('hero.base.priest-pauper').luck).toBe(ITEMS['item.nice-robes']!.statModifiers.luck)

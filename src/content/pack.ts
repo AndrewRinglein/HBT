@@ -385,13 +385,19 @@ export function packEnchanted(attacks: Readonly<Record<string, AttackDef>>, abil
 }
 
 /** The encounters — encounter.runner (2026-09-03). Validated loudly: every unit named must be in the pack. */
-export function packEncounters(units: Readonly<Record<string, UnitDef>>): Readonly<Record<string, EncounterDef>> {
-  const raw = (UNIT_PACK as unknown as { encounters?: Readonly<Record<string, EncounterDef>> }).encounters ?? {}
+export function packEncounters(units: Readonly<Record<string, UnitDef>>, rows?: Readonly<Record<string, EncounterDef>>): Readonly<Record<string, EncounterDef>> {
+  const raw = rows ?? (UNIT_PACK as unknown as { encounters?: Readonly<Record<string, EncounterDef>> }).encounters ?? {}
   for (const [k, e] of Object.entries(raw)) {
     if (k !== e.id) throw new Error(`encounters: key '${k}' names id '${e.id}'`)
     const check = (p: { unit: string }, where: string) => { if (!units[p.unit]) throw new Error(`encounters: '${k}' ${where} names '${p.unit}', which is not a unit in the pack`) }
     for (const p of e.setup) check(p, 'setup')
     for (const r of e.schedule) { if (r.phase === undefined && r.enemyPhase === undefined) throw new Error(`encounters: '${k}' has a schedule row with no phase`); for (const p of r.spawn) check(p, 'schedule') }
+    // encounter.band-axis (2026-09-04, FINDING 43): the band's start must match its axis — the engine used to read NaN in silence
+    if (e.band) {
+      const axis = e.band.axis ?? 'row'
+      const start = axis === 'col' ? e.band.startCol : e.band.startRow
+      if (typeof start !== 'number') throw new Error(`encounters: '${k}' band walks ${axis}s but has no numeric start${axis === 'col' ? 'Col' : 'Row'} — regenerate the pack`)
+    }
   }
   return raw
 }

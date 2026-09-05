@@ -66,7 +66,15 @@ export type EncounterDef = {
    * phase, row 0 lights at phase 2, row 1 at 3 …"). Painted cells are named
    * `layer`; `spare` hexes (the Kiln's water pockets) are never painted.
    */
-  readonly band?: { readonly layer: string; readonly fromPhase: number; readonly startRow: number; readonly direction: 1 | -1; readonly spare?: readonly number[] }
+  /**
+   * The band: one LINE painted per Turn from `fromPhase`, walking `direction`.
+   * encounter.band-axis (2026-09-04, FINDING 43): heroes deploy west, so a band
+   * that advances toward them walks COLUMNS — `axis: 'col'` with `startCol`.
+   * `axis: 'row'` (the default when absent) with `startRow` is the old shape.
+   * Exactly one of startRow / startCol matches the axis; the pack refuses a row
+   * that says otherwise, so the engine never reads NaN.
+   */
+  readonly band?: { readonly layer: string; readonly fromPhase: number; readonly axis?: 'row' | 'col'; readonly startRow?: number; readonly startCol?: number; readonly direction: 1 | -1; readonly spare?: readonly number[] }
   /** capability.ground-layers: cells painted at setup, before phase 1 (Rime's frost band rows 6–8). */
   readonly paint?: readonly { readonly layer: string; readonly hexes: readonly number[] }[]
   /**

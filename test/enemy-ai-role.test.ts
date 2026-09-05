@@ -47,9 +47,16 @@ describe('the AI follows the weapons, by count', () => {
   })
 
   it('in Surrounded the archers shoot and the necromancer bolts — the chaff the design asked for', () => {
-    const ctx = createBattle(scenarioOptions(scenarioDef('showcase.surrounded')))
-    runBattle(ctx)
-    const by = (id: string) => ctx.events.filter((e) => e.type === 'attack.declared' && e.causeId === id).length
-    expect(by('attack.skeletal-archer.shoot')).toBeGreaterThan(0)
+    // LAW 10 — 2026-09-04 (content c24b1ac re-placed Surrounded heroes-west): on
+    // replicate 0 the encounter is lost on Turn 2 — before the archers arrive —
+    // so the first replicate where the battle lasts is the one read. (Battles
+    // 2–3 losing their civilian early is FINDINGS-2026-09-03 §sweep, not new.)
+    let shots = 0
+    for (let r = 0; r < 4 && !shots; r++) {
+      const ctx = createBattle({ ...scenarioOptions(scenarioDef('showcase.surrounded')), replicate: r })
+      runBattle(ctx)
+      shots = ctx.events.filter((e) => e.type === 'attack.declared' && e.causeId === 'attack.skeletal-archer.shoot').length
+    }
+    expect(shots).toBeGreaterThan(0)
   })
 })

@@ -9605,3 +9605,323 @@ IRON GAUNTLET: NOT PASSED — 2 FLAG(S) WARNED
   PASS  kill switch — the tests fail without the content — tests fail without test.map.dungeon-16x8 — they genuinely test it
 
 IRON GAUNTLET: NOT PASSED — 1 FLAG(S) WARNED
+
+## encounter.band-axis — LANDED `33847f6` **NEEDS REVIEW**
+2026-09-05 05:51
+
+  PASS  dependencies landed
+  WARN  not already decided — 3 candidate ruling(s) — READ BEFORE ASKING: ../STATE.md:18 · ../STATE.md:21
+  PASS  typecheck
+  PASS  full test suite
+  PASS  gate 1 — the id appears in a real battle — encounter.kiln: 119 log lines, 119 fired, 115 changed state
+  PASS  brought its own tests — test/badges.test.ts, test/bleed-magnitude.test.ts, test/deathbed.test.ts, test/enemy-ai-role.test.ts, test/ground-layers.test.ts, test/item-powers.test.ts, test/items-per-unit.test.ts, test/band-axis.test.ts
+  WARN  existing tests untouched — DELETED LINES in test/badges.test.ts (-9), test/bleed-magnitude.test.ts (-4), test/deathbed.test.ts (-16), test/enemy-ai-role.test.ts (-4), test/ground-layers.test.ts (-7), test/item-powers.test.ts (-1), test/items-per-unit.test.ts (-1) — will land FLAGGED for review
+  PASS  control battles unchanged — will re-bless at commit — this item DECLARED it changes the control battles: map.open 7d13ed54->388d54bd, map.ridge 2d87dad2->aa5f8652, map.flanks f2fdb9b1->15fd86d8, map.highlands 33a7f9f1->8d90a6fe, map.field 8fa45026->c5de81cd, map.thicket fcba1363->e915f926, test.map.embers 47a17748->e161611a, test.map.showcase 6ba0ebc0->3f1d37f9, test.map.duel-8 380e5159->9f70e5ea, test.map.dungeon-16x8 6c327a62->0a27a4c5, test.map.horde-24 05b99902->0a925406
+  PASS  content has a published source — 26 ids without a published source (16 awaiting publication from earlier items — see audit)
+  PASS  hardcode scan — core knows mechanisms, never names
+  PASS  generalizes — the second instance costs zero engine code
+  PASS  naming — new content ids use declared kinds
+  PASS  naming — no banned words invented
+  PASS  kill switch — the tests fail without the content — tests fail without encounter.kiln — they genuinely test it
+
+<details><summary>Existing tests were edited — review this diff</summary>
+
+```diff
+diff --git a/test/badges.test.ts b/test/badges.test.ts
+index eae29b4..f43d4d2 100644
+--- a/test/badges.test.ts
++++ b/test/badges.test.ts
+@@ -31,7 +31,9 @@ describe('the registry', () => {
+     expect(BADGES['badge.vampirism']!.grants).toContain('power.vampirism.blood-drain')
+     expect(BADGES['badge.possession']!.statModifiers).toMatchObject({ magic: 2, vision: 3 })
+-    // Wounded is prose only in the Codex today — the numbers are owed to content (ruled 2026-09-04)
+-    expect(BADGES['badge.wounded']!.gaps?.join(' ')).toMatch(/prose only/)
+-    expect(BADGES['badge.hero']).toBeUndefined()   // the Hero badge has no row yet — content owes it
++    // content c24b1ac (2026-09-04): the two rows the rules read by role are data now
++    expect(BADGES['badge.wounded']!.statModifiers).toEqual({ accuracy: -10, dodge: -10, strength: -1, precision: -1, maxHp: -2 })
++    expect(BADGES['badge.wounded']!.flags.wounded).toBe(true)
++    expect(BADGES['badge.hero']!.flags.bleedsOut).toBe(true)
++    expect(BADGES['badge.hero']!.statModifiers).toEqual({})
+   })
+   it('the two test badges are the mechanism\'s two instances: modifiers only, and a rider plus a flag', () => {
+@@ -48,13 +50,13 @@ describe('at fielding', () => {
+     const ctx = createBattle(scenarioOptions(SCENARIOS['showcase.badged']!))
+     const w = ctx.state.units[0]!
+-    expect(w.badges).toEqual([SKIN, BRAND])
++    expect(w.badges).toEqual(['badge.hero', SKIN, BRAND])   // the row's own Hero badge first (every hero row carries it, 2026-09-04), then the list handed over
+     expect(w.armor).toBe(bare.armor + 2)
+     expect(w.dodge).toBe(bare.dodge - 5)
+     expect(w.strength).toBe(bare.strength + 1)
+     expect(w.triggers.some((t) => t.id === 'trigger.test-brand.sear')).toBe(true)
+-    expect(badgeFlags(ctx, w)).toEqual({ bleedsOut: true, wounded: false })
++    expect(badgeFlags(ctx, w)).toEqual({ bleedsOut: true, wounded: false })   // bleedsOut from both the Hero badge and the Brand
+     const lines = ctx.events.filter((e) => e.type === 'unit.badged' && e['actor'] === w.id)
+-    expect(lines.map((e) => e.causeId)).toEqual([SKIN, BRAND])
+-    expect(lines[0]!['mods']).toEqual({ armor: 2, dodge: -5 })
++    expect(lines.map((e) => e.causeId)).toEqual(['badge.hero', SKIN, BRAND])
++    expect(lines[1]!['mods']).toEqual({ armor: 2, dodge: -5 })
+   })
+   it('a list that does not correspond to the heroes is refused, and an unknown badge is loud', () => {
+@@ -65,5 +67,5 @@ describe('at fielding', () => {
+   it('the same badge twice is once', () => {
+     const ctx = createBattle({ ...scenarioOptions(SCENARIOS['showcase.badged']!), heroBadges: [[SKIN, SKIN]] })
+-    expect(ctx.state.units[0]!.badges).toEqual([SKIN])
++    expect(ctx.state.units[0]!.badges).toEqual(['badge.hero', SKIN])
+     expect(ctx.state.units[0]!.armor).toBe(UNITS['test-warrior']!.armor + 2)
+   })
+@@ -76,5 +78,5 @@ describe('granted mid-battle', () => {
+     const armor0 = effective(ctx, w, 'armor').value
+     expect(grantBadge(ctx, w.id, SKIN, 'test')).toBe(true)
+-    expect(w.badges).toEqual([SKIN])
++    expect(w.badges).toEqual(['badge.hero', SKIN])
+     expect(effective(ctx, w, 'armor').value).toBe(armor0 + 2)
+     expect(ctx.events.some((e) => e.type === 'badge.gained' && e.causeId === 'test' && e['badgeId'] === SKIN)).toBe(true)
+diff --git a/test/bleed-magnitude.test.ts b/test/bleed-magnitude.test.ts
+index 3f94f5f..32e9b8a 100644
+--- a/test/bleed-magnitude.test.ts
++++ b/test/bleed-magnitude.test.ts
+@@ -109,15 +109,33 @@ describe('healing sheds half, rounded nearest with 0.5 up, through the one heal
+ 
+ describe('in real battles', () => {
+-  it('the Alpha Team bleeds zombies in the standard battle and a heal sheds it somewhere in the first 40 seeds', () => {
+-    let ticks = 0, sheds = 0
++  it('the Alpha Team bleeds zombies in the standard battle; Bleed ticks are true damage', () => {
++    let ticks = 0
+     for (let r = 0; r < 40; r++) {
+       const ctx = createBattle({ replicate: r, enemyCount: 8 }); runBattle(ctx)
+       for (const e of ctx.events) {
+         if (e.type === 'damage.applied' && e.causeId === 'status.bleed') { ticks++; expect(e['damageType']).toBe('true') }
+-        if (e.type === 'status.reduced' && e['statusId'] === 'status.bleed' && !String(e.causeId).startsWith('status.bleed')) sheds++
+       }
+     }
+     expect(ticks).toBeGreaterThan(0)
+-    // zombies never heal, so the sheds must come from heroes being healed while bleeding
++  })
++  it('a heal sheds Bleed in a real battle — skeletons bleed the heroes and Lucius heals them', () => {
++    // 2026-09-04 (pack refresh, FINDING 39 fix). This claim used to live in the
++    // standard-battle test above, whose comment read "zombies never heal, so the
++    // sheds must come from heroes being healed while bleeding". Both halves were
++    // false: zombies never bleed a hero, and the sheds it counted were the
++    // ZOMBIES' — the Oathblade's Second Wind (onTakingDamage, `target: self`)
++    // was compiled to `select: 'target'` and put Regeneration on the zombie
++    // that hit him; the zombie then healed its own Bleed off. The pack fix put
++    // the rider back on the Oathblade and the standard battle has no
++    // hero-side Bleed to shed. The claim is kept, on a fielding that can
++    // satisfy it: skeletons carry an onHit Bleed rider, Lucius heals. Not
++    // weakened — moved to where the mechanism is actually exercised.
++    let sheds = 0
++    for (let r = 0; r < 40 && !sheds; r++) {
++      const ctx = createBattle({ replicate: r, enemyCount: 6, enemies: ['unit.skeleton', 'unit.skeleton', 'unit.skeletal-archer', 'unit.skeleton', 'unit.skeleton', 'unit.skeletal-archer'] }); runBattle(ctx)
++      for (const e of ctx.events) {
++        if (e.type === 'status.reduced' && e['statusId'] === 'status.bleed' && !String(e.causeId).startsWith('status.bleed')) sheds++
++      }
++    }
+     expect(sheds).toBeGreaterThan(0)
+   })
+diff --git a/test/deathbed.test.ts b/test/deathbed.test.ts
+index f6d4574..a86a54c 100644
+--- a/test/deathbed.test.ts
++++ b/test/deathbed.test.ts
+@@ -10,7 +10,9 @@
+ // LAW 10: this file asserted the stand ladder (Fresh → Wounded → Badly
+ // Wounded, civilians one stand, heroes two) that the ruling reverses. The
+-// rule now, proved on TEST badges (test.badge.deaths-door has the ruled
++// rule now, proved first on TEST badges (test.badge.deaths-door has the ruled
+ // Wounded numbers and the `wounded` flag; test.badge.brand has `bleedsOut`)
+-// because content owes badge.hero and badge.wounded — the log names that gap.
++// while content owed badge.hero and badge.wounded, and — since content c24b1ac
++// (2026-09-04) — on the real rows too: every hero row carries badge.hero, a
++// civilian row does not, and badge.wounded is data with the ruled numbers.
+ import { describe, expect, it } from 'vitest'
+ import { createBattle, createCustomBattle } from '../src/core/setup.js'
+@@ -73,6 +75,6 @@ describe('the roll', () => {
+ 
+   it('FELL with the Hero badge: downed and bleeding out; FELL without it: dead and a corpse', () => {
+-    const fell = (badges: string[]) => {
+-      const ctx = withTestRows(createCustomBattle([{ type: 'test-warrior', hex: hexId(5, 5) }], [{ type: 'test-zombie', hex: hexId(9, 9) }]))
++    const fell = (type: string, badges: string[]) => {
++      const ctx = withTestRows(createCustomBattle([{ type, hex: hexId(5, 5) }], [{ type: 'test-zombie', hex: hexId(9, 9) }]))
+       const w = ctx.state.units[0]!
+       w.toughness = -4   // 0%: falling is routine
+@@ -81,9 +83,13 @@ describe('the roll', () => {
+       return { w, ctx }
+     }
+-    const hero = fell([BRAND])
++    // a hero row carries badge.hero (content c24b1ac): it bleeds
++    const hero = fell('test-warrior', [])
++    expect(hero.w.badges).toContain('badge.hero')
+     expect(hero.w.lifeState).toBe('downed')
+     expect(hero.w.bleedOut).toBeGreaterThan(0)
+     expect(hero.ctx.events.find((e) => e.type === 'deathbed.fell')!['bleedsOut']).toBe(true)
+-    const nobody = fell([])
++    // a civilian row does not ("It is not on civilians unless expressly said so"): dead and a corpse
++    const nobody = fell('hero.fixed.orphans', [])
++    expect(nobody.w.badges).not.toContain('badge.hero')
+     expect(nobody.w.lifeState).toBe('dead')
+     expect(nobody.ctx.events.find((e) => e.type === 'life.dead' && e['target'] === nobody.w.id)!['reason']).toBe('fell')
+@@ -94,22 +100,29 @@ describe('the roll', () => {
+     const ctx = withTestRows(createBattle({ replicate: 0, mapId: 'map.open', heroes: ['test-warrior'], heroHexes: [hexId(0, 5)], heroBadges: [[DOOR]], enemies: ['test-zombie'], enemyHexes: [hexId(15, 5)], enemyCount: 1 }))
+     const w = ctx.state.units[0]!
+-    expect(w.badges).toEqual([DOOR])
++    expect(w.badges).toEqual(['badge.hero', DOOR])   // the row's Hero badge, then the kingdom's Wounded
+     drop(ctx, w.id)
+-    expect(w.lifeState).toBe('dead')
++    expect(w.lifeState).toBe('dead')   // Wounded wins: the Hero badge only matters on a FAILED roll, and there is no roll
+   })
+ 
+-  it('until content authors badge.hero and badge.wounded, the lines NAME the gap and every player unit bleeds as before', () => {
+-    const ctx = createCustomBattle([{ type: 'test-warrior', hex: hexId(5, 5) }], [{ type: 'test-zombie', hex: hexId(9, 9) }])
+-    expect(BADGES[ctx.ruleBadges.hero]?.flags.bleedsOut).toBeUndefined()
+-    expect(BADGES[ctx.ruleBadges.wounded]?.flags.wounded).toBeUndefined()
++  it('THE REAL ROWS (content c24b1ac): a stood roll grants badge.wounded with the ruled numbers and no gap; a Wounded hero dies next time; a fall with badge.hero bleeds', () => {
++    const ctx = createCustomBattle([{ type: 'hero.base.warrior-iron', hex: hexId(5, 5) }], [{ type: 'test-zombie', hex: hexId(9, 9) }])
++    expect(BADGES[ctx.ruleBadges.hero]!.flags.bleedsOut).toBe(true)
++    expect(BADGES[ctx.ruleBadges.wounded]!.flags.wounded).toBe(true)
+     const w = ctx.state.units[0]!
++    expect(w.badges).toEqual(['badge.hero'])
+     w.toughness = 16
++    const acc = effective(ctx, w, 'accuracy').value, maxHp = w.maxHp
+     drop(ctx, w.id)
+     expect(w.lifeState).toBe('standing')
+-    expect((ctx.events.find((e) => e.type === 'deathbed.stood') as unknown as { gaps: string[] }).gaps[0]).toMatch(/badge\.wounded/)
+-    w.toughness = -4
++    expect(w.badges).toEqual(['badge.hero', 'badge.wounded'])
++    expect(effective(ctx, w, 'accuracy').value).toBe(acc - 10)
++    expect(w.maxHp).toBe(maxHp - 2)
++    const stood = ctx.events.find((e) => e.type === 'deathbed.stood')!
++    expect(stood['badgeId']).toBe('badge.wounded')
++    expect(stood['gaps']).toBeUndefined()
++    // Wounded: the next zero is death, no roll — the Hero badge does not save a Wounded unit
+     drop(ctx, w.id)
+-    expect(w.lifeState).toBe('downed')
+-    expect((ctx.events.find((e) => e.type === 'deathbed.fell') as unknown as { gaps: string[] }).gaps[0]).toMatch(/badge\.hero/)
++    expect(w.lifeState).toBe('dead')
++    expect(ctx.events.some((e) => e.type === 'deathbed.none')).toBe(true)
+   })
+ 
+diff --git a/test/enemy-ai-role.test.ts b/test/enemy-ai-role.test.ts
+index 1b46a22..47e901b 100644
+--- a/test/enemy-ai-role.test.ts
++++ b/test/enemy-ai-role.test.ts
+@@ -48,8 +48,15 @@ describe('the AI follows the weapons, by count', () => {
+ 
+   it('in Surrounded the archers shoot and the necromancer bolts — the chaff the design asked for', () => {
+-    const ctx = createBattle(scenarioOptions(scenarioDef('showcase.surrounded')))
+-    runBattle(ctx)
+-    const by = (id: string) => ctx.events.filter((e) => e.type === 'attack.declared' && e.causeId === id).length
+-    expect(by('attack.skeletal-archer.shoot')).toBeGreaterThan(0)
++    // LAW 10 — 2026-09-04 (content c24b1ac re-placed Surrounded heroes-west): on
++    // replicate 0 the encounter is lost on Turn 2 — before the archers arrive —
++    // so the first replicate where the battle lasts is the one read. (Battles
++    // 2–3 losing their civilian early is FINDINGS-2026-09-03 §sweep, not new.)
++    let shots = 0
++    for (let r = 0; r < 4 && !shots; r++) {
++      const ctx = createBattle({ ...scenarioOptions(scenarioDef('showcase.surrounded')), replicate: r })
++      runBattle(ctx)
++      shots = ctx.events.filter((e) => e.type === 'attack.declared' && e.causeId === 'attack.skeletal-archer.shoot').length
++    }
++    expect(shots).toBeGreaterThan(0)
+   })
+ })
+diff --git a/test/ground-layers.test.ts b/test/ground-layers.test.ts
+index 8e630f4..0f5931d 100644
+--- a/test/ground-layers.test.ts
++++ b/test/ground-layers.test.ts
+@@ -15,5 +15,5 @@ import { executeMove, reachable, pathTo, movePowerOf } from '../src/core/movemen
+ import { ENCOUNTERS } from '../src/content/index.js'
+ import { scenarioDef, scenarioOptions } from '../src/content/scenarios.js'
+-import { hexId, rowOf } from './board16.js'
++import { hexId, colOf } from './board16.js'
+ 
+ describe('painting', () => {
+@@ -56,16 +56,22 @@ describe('the encounter shapes', () => {
+     const ctx = createBattle(scenarioOptions(scenarioDef('showcase.kiln')))
+     runBattle(ctx)
+-    const rows = ctx.events.filter((e) => e.type === 'band.advanced').map((e) => [e.turn, e['row']] as [number, number])
+-    expect(rows.length).toBeGreaterThan(0)
+-    expect(rows[0]).toEqual([2, 0])
+-    for (let i = 1; i < rows.length; i++) expect(rows[i]![1] - rows[i - 1]![1]).toBe(1)
++    // LAW 10 — 2026-09-04 (encounter.band-axis, content c24b1ac): heroes deploy
++    // WEST now, so the Kiln's fire walks COLUMNS from the east edge (col 15) toward
++    // them, one column a Turn. The claim — one line per Turn from enemy phase 2,
++    // and the fire reaches units standing there — is unchanged.
++    const lines = ctx.events.filter((e) => e.type === 'band.advanced').map((e) => [e.turn, e['axis'], e['col']] as [number, string, number])
++    expect(lines.length).toBeGreaterThan(0)
++    expect(lines[0]).toEqual([2, 'col', 15])
++    for (let i = 1; i < lines.length; i++) expect(lines[i]![2] - lines[i - 1]![2]).toBe(-1)
+     expect(ctx.events.some((e) => e.type === 'status.applied' && e.causeId === 'layer.burning')).toBe(true)
+   })
+ 
+-  it('Rime: rows 6–8 are frost from setup', () => {
++  it('Rime: a three-column frost belt (columns 7–9) is painted from setup', () => {
++    // LAW 10 — 2026-09-04 (content c24b1ac): the board turned a quarter — the old
++    // rows 6–8 are columns 7–9 now, across the heroes' path from the west.
+     const rime = ENCOUNTERS['encounter.rime']!
+     expect(rime.paint?.[0]?.layer).toBe('layer.frost')
+     const ctx = createBattle({ replicate: 0, heroes: ['test-warrior'], encounter: rime })
+-    for (const h of rime.paint![0]!.hexes) { expect(layerAt(ctx, h)).toBe(LAYER.FROST); expect([6, 7, 8]).toContain(rowOf(h)) }
++    for (const h of rime.paint![0]!.hexes) { expect(layerAt(ctx, h)).toBe(LAYER.FROST); expect([7, 8, 9]).toContain(colOf(h)) }
+   })
+ })
+diff --git a/test/item-powers.test.ts b/test/item-powers.test.ts
+index 69535a0..37b5854 100644
+--- a/test/item-powers.test.ts
++++ b/test/item-powers.test.ts
+@@ -161,5 +161,12 @@ describe('they run — no power is dead content in a real battle', () => {
+     // claim (both powers are live) is unchanged; the search is wider. Early
+     // exit once both are seen.
+-    for (let r = 0; r < 20 && used.size < 2; r++) {
++    // 2026-09-04 (pack refresh, FINDING 39 fix): the early exit was
++    // `used.size < 2`, which assumed only these two powers ever fire. With the
++    // Alpha riders back on their owners the fights re-time and Storm fires on
++    // seed 1 beside Block — the set hit 2 before the priest's first heal (seed
++    // 2) and the loop stopped early. The exit now names the two powers it is
++    // looking for. Neither assertion changed.
++    const both = () => used.has('power.holy-symbol.heal') && used.has('power.knight-shield.block')
++    for (let r = 0; r < 20 && !both(); r++) {
+       const ctx = createBattle({ ...scenarioOptions(scenarioDef(SC)), replicate: r })
+       runBattle(ctx)
+diff --git a/test/items-per-unit.test.ts b/test/items-per-unit.test.ts
+index 1271003..b43168d 100644
+--- a/test/items-per-unit.test.ts
++++ b/test/items-per-unit.test.ts
+@@ -45,5 +45,7 @@ describe('the invariant — no heroItems means the hero the converter used to fo
+       // own level table (`levelTable`); a pointer, not a folded number — the
+       // oracle predates it. Law 10 reason: a new row FIELD, not a changed value.
+-      const keys = [...new Set([...Object.keys(f), ...Object.keys(r)])].filter((k) => !['attributes', 'tags', 'toughness', 'vision', 'levelTable'].includes(k) && JSON.stringify(f[k]) !== JSON.stringify(r[k]))
++      // badge.mechanism / content c24b1ac (2026-09-04): every hero row carries
++      // badge.hero (`badges`) — a new row FIELD, not a folded number; the oracle predates it (Law 10).
++      const keys = [...new Set([...Object.keys(f), ...Object.keys(r)])].filter((k) => !['attributes', 'tags', 'toughness', 'vision', 'levelTable', 'badges'].includes(k) && JSON.stringify(f[k]) !== JSON.stringify(r[k]))
+       if (keys.length) differ[id] = keys
+     }
+@@ -64,4 +66,10 @@ describe('the invariant — no heroItems means the hero the converter used to fo
+       // which compiles now that the status exists — a trigger the oracle never had.
+       'hero.base.mage-thinking': ['triggers'],
++      // FINDING 39 (2026-09-04): the oracle froze Second Wind, Brace and Arcane Ward
++      // aimed at the ATTACKER — the converter bug the audit found. The rows say
++      // target: self and compile so now; the oracle keeps the bug on purpose as
++      // the record of it (Law 10 — content moved, the fold did not).
++      'alpha-oathblade': ['triggers'],
++      'alpha-air-mage': ['triggers'],
+     })
+     expect(fieldedDef('hero.base.paladin-dark').crit).toBe((o['hero.base.paladin-dark']!['crit'] as number) + ITEMS['item.rusted-plate']!.statModifiers.crit!)
+```
+</details>
+
+IRON GAUNTLET: NOT PASSED — 2 FLAG(S) WARNED; 1 EXEMPTION(S) TAKEN
+
+```
+effect of encounter.kiln — 25 paired battles per map, WITH vs WITHOUT
+  map.open: heroWins 25->25 (+0)  meanTurns 4.1->4.1
+  map.ridge: heroWins 25->25 (+0)  meanTurns 4.1->4.1
+  map.flanks: heroWins 25->25 (+0)  meanTurns 4.2->4.2
+  map.highlands: heroWins 25->25 (+0)  meanTurns 4.5->4.5
+  map.field: heroWins 25->25 (+0)  meanTurns 5.8->5.8
+  map.thicket: heroWins 25->25 (+0)  meanTurns 5.3->5.3
+  test.map.embers: heroWins 25->25 (+0)  meanTurns 3.8->3.8
+  test.map.showcase: heroWins 25->25 (+0)  meanTurns 4.6->4.6
+  test.map.duel-8: heroWins 25->25 (+0)  meanTurns 3.0->3.0
+  test.map.dungeon-16x8: heroWins 25->25 (+0)  meanTurns 5.9->5.9
+  test.map.horde-24: heroWins 25->25 (+0)  meanTurns 5.8->5.8
+NO MEASURABLE EFFECT at this sample size — consequence clause caught state changes, but outcomes did not move. Consider a sweep with more replicates before drawing balance conclusions.
+```

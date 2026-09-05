@@ -108,17 +108,35 @@ describe('healing sheds half, rounded nearest with 0.5 up, through the one heal 
 })
 
 describe('in real battles', () => {
-  it('the Alpha Team bleeds zombies in the standard battle and a heal sheds it somewhere in the first 40 seeds', () => {
-    let ticks = 0, sheds = 0
+  it('the Alpha Team bleeds zombies in the standard battle; Bleed ticks are true damage', () => {
+    let ticks = 0
     for (let r = 0; r < 40; r++) {
       const ctx = createBattle({ replicate: r, enemyCount: 8 }); runBattle(ctx)
       for (const e of ctx.events) {
         if (e.type === 'damage.applied' && e.causeId === 'status.bleed') { ticks++; expect(e['damageType']).toBe('true') }
-        if (e.type === 'status.reduced' && e['statusId'] === 'status.bleed' && !String(e.causeId).startsWith('status.bleed')) sheds++
       }
     }
     expect(ticks).toBeGreaterThan(0)
-    // zombies never heal, so the sheds must come from heroes being healed while bleeding
+  })
+  it('a heal sheds Bleed in a real battle — skeletons bleed the heroes and Lucius heals them', () => {
+    // 2026-09-04 (pack refresh, FINDING 39 fix). This claim used to live in the
+    // standard-battle test above, whose comment read "zombies never heal, so the
+    // sheds must come from heroes being healed while bleeding". Both halves were
+    // false: zombies never bleed a hero, and the sheds it counted were the
+    // ZOMBIES' — the Oathblade's Second Wind (onTakingDamage, `target: self`)
+    // was compiled to `select: 'target'` and put Regeneration on the zombie
+    // that hit him; the zombie then healed its own Bleed off. The pack fix put
+    // the rider back on the Oathblade and the standard battle has no
+    // hero-side Bleed to shed. The claim is kept, on a fielding that can
+    // satisfy it: skeletons carry an onHit Bleed rider, Lucius heals. Not
+    // weakened — moved to where the mechanism is actually exercised.
+    let sheds = 0
+    for (let r = 0; r < 40 && !sheds; r++) {
+      const ctx = createBattle({ replicate: r, enemyCount: 6, enemies: ['unit.skeleton', 'unit.skeleton', 'unit.skeletal-archer', 'unit.skeleton', 'unit.skeleton', 'unit.skeletal-archer'] }); runBattle(ctx)
+      for (const e of ctx.events) {
+        if (e.type === 'status.reduced' && e['statusId'] === 'status.bleed' && !String(e.causeId).startsWith('status.bleed')) sheds++
+      }
+    }
     expect(sheds).toBeGreaterThan(0)
   })
   it('the gash variant: a second shedByHealing status is healed off in showcase.gash-variant', () => {

@@ -88,7 +88,7 @@ multihit attack (each hit is its own declared/hit/miss); `attack.cancelled` (`hi
 |---|---|---|
 | `layer.painted` | `hex`, `before`, `after`, `layer` | a painted ground layer on the hex: 1 burning, 2 frost, 3 poisoned, 4 darkness, 0 none (`after`). A layer sits ON the terrain; draw it over it |
 | `layer.cancelled` | same | burning painted on frost (or the reverse) left the hex bare |
-| `band.advanced` | `turn`, `row`, `layer` | The Kiln: one whole row lights; the `layer.painted`s for that row follow |
+| `band.advanced` | `turn`, `axis`, `line`, `row` OR `col`, `layer` | The Kiln: one whole LINE lights — a column now (`axis: 'col'`, from the east edge toward the heroes); the `layer.painted`s for that line follow. §13. |
 | `night.fell` | `hexes` | the battlefield condition: every hex was painted dark (256 `layer.painted`s follow, `layer: 4`) |
 | `light.cast` | `hexes` | at the start of the hero phase, each hero unpainted the darkness within its Vision (the `layer.painted after:0` lines precede it). Draw the lit bubbles; darkness is where nothing was lit |
 
@@ -244,3 +244,21 @@ No stands, no Badly Wounded, no dripping-blood ladder. The lines:
 `effect: 'badge.grant', badgeId`, then `badge.gained`. The zombie's claw
 afflicts Rotting Flesh at 10%; the werewolf Lycanthropy; the vampires
 Vampirism. A badge on the sheet is worth an icon.
+
+## 13. The band walks columns (added 2026-09-04, `encounter.band-axis`)
+
+Heroes deploy WEST, so the Kiln's fire comes from the EAST and advances one
+COLUMN a Turn. `band.advanced` now carries `axis` (`'row'` | `'col'`), `line`
+(the index on that axis) and, for the reader that wants the old name, `row`
+when the axis is rows or `col` when it is columns — never both. The Kiln: turn
+2 → col 15, turn 3 → col 14, … Paint the whole line; the `layer.painted` lines
+that follow are the hexes (spare hexes are skipped). A viewer that read `row`
+unconditionally will read `undefined` on the Kiln — switch on `axis`.
+
+The same landing carries the first pack shipped since content `c24b1ac`:
+every hero row fields with `badge.hero` (a `badge.held` line per hero at
+fielding — invisible by ruling, do not draw it), `deathbed.stood` names
+`badgeId: 'badge.wounded'` with no `gaps` (draw the skull, §12), the ten
+encounters are placed heroes-west on their own boards, Rime's frost belt is
+columns 7–9, and `map.proving.open/ridge/ford/copse/ruin` (16×8) exist.
+Re-export the battles after this commit.

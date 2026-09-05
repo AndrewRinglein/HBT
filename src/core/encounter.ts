@@ -206,24 +206,36 @@ export function objectiveDead(ctx: Ctx, causeId: string): boolean {
 export function paintSetup(ctx: Ctx, enc: EncounterDef): void {
   for (const p of enc.paint ?? []) for (const hex of p.hexes) paintLayer(ctx, hex, layerOfId(p.layer), enc.id)
 }
-/** The band: as the enemy phase of Turn N ends (N ≥ fromPhase), row startRow + (N − fromPhase) × direction is painted, spare hexes excepted. */
+/**
+ * The band: as the enemy phase of Turn N ends (N ≥ fromPhase), one LINE —
+ * start + (N − fromPhase) × direction along the band's axis — is painted,
+ * spare hexes excepted. encounter.band-axis (2026-09-04, FINDING 43): a band
+ * walks rows (`startRow`) or columns (`startCol`); the Kiln's fire comes from
+ * the east now that the heroes deploy west. A band whose start is not a number
+ * is a content error and throws (Law 9) — it used to paint NaN in silence.
+ */
 export function advanceBand(ctx: Ctx): void {
   const enc = ctx.encounter
   if (!enc?.band || ctx.state.outcome) return
   const b = enc.band
   const n = ctx.state.turn
   if (n < b.fromPhase) return
-  const row = b.startRow + (n - b.fromPhase) * b.direction
-  if (row < 0 || row >= ctx.geo.board.height) return
+  const axis = b.axis ?? 'row'
+  const start = axis === 'col' ? b.startCol : b.startRow
+  if (typeof start !== 'number') throw new Error(`${enc.id}: band walks ${axis}s but names no start${axis === 'col' ? 'Col' : 'Row'}`)
+  const line = start + (n - b.fromPhase) * b.direction
+  const extent = axis === 'col' ? ctx.geo.board.width : ctx.geo.board.height
+  if (line < 0 || line >= extent) return
   const layer = layerOfId(b.layer)
-  emit(ctx, 'band.advanced', enc.id, { turn: n, row, layer: b.layer })
-  for (let col = 0; col < ctx.geo.board.width; col++) {
-    const hex = ctx.geo.hexId(col, row)
+  emit(ctx, 'band.advanced', enc.id, { turn: n, axis, line, ...(axis === 'row' ? { row: line } : { col: line }), layer: b.layer })
+  const hexes = axis === 'col' ? ctx.geo.edgeLine('west', line) : ctx.geo.edgeLine('north', line)
+  for (const hex of hexes) {
     if (b.spare?.includes(hex)) continue
     paintLayer(ctx, hex, layer, enc.id)
   }
   // a unit standing on a freshly painted hex takes the entry beat now — it did not step, the ground came to it
-  for (const u of ctx.state.units) if (u.lifeState === 'standing' && ctx.geo.rowOf(u.hex) === row && !b.spare?.includes(u.hex)) {
+  const on = (h: number) => (axis === 'col' ? ctx.geo.colOf(h) : ctx.geo.rowOf(h)) === line
+  for (const u of ctx.state.units) if (u.lifeState === 'standing' && on(u.hex) && !b.spare?.includes(u.hex)) {
     for (const [sid, k] of layerAppliesOnEnter(layer)) applyStatus(ctx, u.id, sid, k, b.layer)
   }
   settle(ctx, enc.id)

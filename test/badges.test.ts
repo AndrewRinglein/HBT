@@ -30,9 +30,11 @@ describe('the registry', () => {
     expect(BADGES['badge.lycanthropy']!.statModifiers).toMatchObject({ strength: 2, movement: 2 })
     expect(BADGES['badge.vampirism']!.grants).toContain('power.vampirism.blood-drain')
     expect(BADGES['badge.possession']!.statModifiers).toMatchObject({ magic: 2, vision: 3 })
-    // Wounded is prose only in the Codex today — the numbers are owed to content (ruled 2026-09-04)
-    expect(BADGES['badge.wounded']!.gaps?.join(' ')).toMatch(/prose only/)
-    expect(BADGES['badge.hero']).toBeUndefined()   // the Hero badge has no row yet — content owes it
+    // content c24b1ac (2026-09-04): the two rows the rules read by role are data now
+    expect(BADGES['badge.wounded']!.statModifiers).toEqual({ accuracy: -10, dodge: -10, strength: -1, precision: -1, maxHp: -2 })
+    expect(BADGES['badge.wounded']!.flags.wounded).toBe(true)
+    expect(BADGES['badge.hero']!.flags.bleedsOut).toBe(true)
+    expect(BADGES['badge.hero']!.statModifiers).toEqual({})
   })
   it('the two test badges are the mechanism\'s two instances: modifiers only, and a rider plus a flag', () => {
     expect(BADGES[SKIN]!.statModifiers).toEqual({ armor: 2, dodge: -5 })
@@ -47,15 +49,15 @@ describe('at fielding', () => {
     const bare = UNITS['test-warrior']!
     const ctx = createBattle(scenarioOptions(SCENARIOS['showcase.badged']!))
     const w = ctx.state.units[0]!
-    expect(w.badges).toEqual([SKIN, BRAND])
+    expect(w.badges).toEqual(['badge.hero', SKIN, BRAND])   // the row's own Hero badge first (every hero row carries it, 2026-09-04), then the list handed over
     expect(w.armor).toBe(bare.armor + 2)
     expect(w.dodge).toBe(bare.dodge - 5)
     expect(w.strength).toBe(bare.strength + 1)
     expect(w.triggers.some((t) => t.id === 'trigger.test-brand.sear')).toBe(true)
-    expect(badgeFlags(ctx, w)).toEqual({ bleedsOut: true, wounded: false })
+    expect(badgeFlags(ctx, w)).toEqual({ bleedsOut: true, wounded: false })   // bleedsOut from both the Hero badge and the Brand
     const lines = ctx.events.filter((e) => e.type === 'unit.badged' && e['actor'] === w.id)
-    expect(lines.map((e) => e.causeId)).toEqual([SKIN, BRAND])
-    expect(lines[0]!['mods']).toEqual({ armor: 2, dodge: -5 })
+    expect(lines.map((e) => e.causeId)).toEqual(['badge.hero', SKIN, BRAND])
+    expect(lines[1]!['mods']).toEqual({ armor: 2, dodge: -5 })
   })
   it('a list that does not correspond to the heroes is refused, and an unknown badge is loud', () => {
     const base = scenarioOptions(SCENARIOS['showcase.badged']!)
@@ -64,7 +66,7 @@ describe('at fielding', () => {
   })
   it('the same badge twice is once', () => {
     const ctx = createBattle({ ...scenarioOptions(SCENARIOS['showcase.badged']!), heroBadges: [[SKIN, SKIN]] })
-    expect(ctx.state.units[0]!.badges).toEqual([SKIN])
+    expect(ctx.state.units[0]!.badges).toEqual(['badge.hero', SKIN])
     expect(ctx.state.units[0]!.armor).toBe(UNITS['test-warrior']!.armor + 2)
   })
 })
@@ -75,7 +77,7 @@ describe('granted mid-battle', () => {
     const w = ctx.state.units[0]!, z = ctx.state.units[1]!
     const armor0 = effective(ctx, w, 'armor').value
     expect(grantBadge(ctx, w.id, SKIN, 'test')).toBe(true)
-    expect(w.badges).toEqual([SKIN])
+    expect(w.badges).toEqual(['badge.hero', SKIN])
     expect(effective(ctx, w, 'armor').value).toBe(armor0 + 2)
     expect(ctx.events.some((e) => e.type === 'badge.gained' && e.causeId === 'test' && e['badgeId'] === SKIN)).toBe(true)
     expect(grantBadge(ctx, w.id, SKIN, 'test')).toBe(false)
