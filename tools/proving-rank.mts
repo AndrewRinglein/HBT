@@ -34,7 +34,7 @@ const STATE = opt('--state') ?? join(ENGINE, '.state', 'proving')
 const outDoc = args.includes('--no-doc') ? null : (opt('--doc') ?? join(ROOT, 'PROVING-RESULTS.md'))
 
 type Rollup = {
-  plan: string; stamp: string; generated: string; maps: string[]; seed: number; switches?: Record<string, unknown>
+  plan: string; planFile?: string; stamp: string; generated: string; maps: string[]; seed: number; switches?: Record<string, unknown>
   ranking: { id: string; fixture: string; rotation: string; side: 'hero' | 'enemy'; slot?: number; pairs: number; valid: number; invalid: number; flips: number; flipRatePermille: number; marginShiftMean: number; swing: number; tempoShiftMean: number; presence: number }[]
   matchups: { id: string; hero: string; enemy: string; sides?: string; gap?: number; heroWins: number; enemyWins: number; other: number; invalid: number; marginMean: number; turnsMean: number; battles: { map: string; seed: number; outcome: string; turns: number; margin: number; error?: string }[] }[]
 }
@@ -156,7 +156,7 @@ if (c1 && !c1.passes && inUse.length && inUse.every((u) => u.passes)) findings.p
 
 const ranking = {
   generated: new Date().toISOString().slice(0, 10), stamp: packStamp,
-  plans: rollups.map((r) => ({ id: r.plan, stamp: r.stamp, current: r.stamp === packStamp, maps: r.maps, seed: r.seed, ...(r.switches ? { switches: r.switches } : {}), subjects: r.ranking.length, matchups: r.matchups.length })),
+  plans: rollups.map((r) => ({ id: r.plan, file: r.planFile ?? null, stamp: r.stamp, current: r.stamp === packStamp, maps: r.maps, seed: r.seed, ...(r.switches ? { switches: r.switches } : {}), subjects: r.ranking.length, matchups: r.matchups.length })),
   units: rows,
   initiative: initiative ? { plan: initiative.plan, switches: initiative.switches ?? {}, maps: initiative.maps, mirrors } : null,
   gap: gapPlan ? { plan: gapPlan.plan, map: gapPlan.maps[0], switches: gapPlan.switches ?? {}, sweep: gaps } : null,

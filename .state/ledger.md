@@ -10293,3 +10293,29 @@ IRON GAUNTLET: NOT PASSED — 2 FLAG(S) WARNED
 </details>
 
 IRON GAUNTLET: NOT PASSED — 1 FLAG(S) WARNED; 1 EXEMPTION(S) TAKEN · periodic audit clean
+
+## proving.page — LANDED `0e6ff9e` **NEEDS REVIEW**
+2026-09-05 09:55
+
+  PASS  dependencies landed
+  WARN  not already decided — 5 candidate ruling(s) — READ BEFORE ASKING: ../DOCS.md:115 · ../PROVING-RESULTS.md:3
+  PASS  typecheck
+  PASS  full test suite
+  PASS  gate 1 — the id appears in a real battle
+  PASS  brought its own tests — test/proving-page.test.ts
+  PASS  existing tests untouched
+  PASS  control battles unchanged
+  PASS  content has a published source — 26 ids without a published source (16 awaiting publication from earlier items — see audit)
+  PASS  hardcode scan — core knows mechanisms, never names
+  PASS  generalizes — the second instance costs zero engine code — shape 'plumbing' — not a mechanism, exempt
+  PASS  naming — new content ids use declared kinds
+  PASS  naming — no banned words invented
+  PASS  kill switch — the tests fail without the content — no content id to disable — engine plumbing, not applicable
+
+<details><summary>Existing tests were edited — review this diff</summary>
+
+```diff
+```
+</details>
+
+IRON GAUNTLET: NOT PASSED — 1 FLAG(S) WARNED; 1 EXEMPTION(S) TAKEN

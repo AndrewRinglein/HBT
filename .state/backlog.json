@@ -2939,5 +2939,25 @@
   "attempts": 1,
   "sha": "122934a",
   "gauntlet": "not passed — 1 flag(s) warned; 1 exemption(s) taken"
+ },
+ {
+  "id": "proving.page",
+  "kind": "engine",
+  "shape": "plumbing",
+  "needs": [
+   "proving.rank"
+  ],
+  "ruling": "9-PROVING-SETTLED.md §2 E8/E9, §4 the dashboard spec; DECISIONS.md 2026-09-03 the Proving (\"dashboards showing me a power ranking\")",
+  "spec": "tools/proving-page.mts (npm run proving:page) writes PROVING.html at the project root from .state/proving/ranking.json — one self-contained file, no server, the ranking embedded as JSON and everything on the page a projection of it: one row per unit (name, id, side, class/family, ladder, Power as n/5 with a bar, wins WITH vs control, swing with its sign, tempo, presence, invalid with reasons on hover, findings as flags); filters for side, class, family, tag, ladder, text search, findings-only; every column sorts (default Power, swing, id); a row opens its five pairs (map, seed, both outcomes, both margins, turns, flipped, presence) each with the export-battle command that reproduces that battle for the Battle Viewer (copy on click); the initiative panel per mirror per map; the gap sweep as a line; the controls candidates with the seed-1 rule and the control the ladders actually used; the findings the rollup wrote; the stamp, red when a plan is stale. E9: tools/export-battle.mts --plan <file> --subject <id> [--slot] [--rotation] --pair <n> --arm with|without, or --matchup <id> --battle <n> — the same fielding() the rig ran, so the export IS the counted battle.",
+  "expect": "from the smoke plan in a scratch tree: the page embeds every ranked unit, prints commands that run from engine/, carries no network reference, and its script parses; export-battle --plan reproduces the measured pair (same outcome, same turns, seed names the pair) and a gap matchup carries its gap",
+  "changesBaseline": false,
+  "unreachable": "a page generator and an exporter of battles already measured: no unit is fielded by new rules, no log line is new — the exporter runs the rig's own fielding",
+  "tests": [
+   "test/proving-page.test.ts"
+  ],
+  "note": "Session 9 E8 + E9. The page cannot open a battle in the viewer by itself — a file:// page cannot run a process or fetch — so each pair carries the exact export command and the viewer plays the dropped file. PROVING.html and PROVING-RESULTS.md are generated at the root, declared in DOCS.md, listed under never-hand-edit in CLAUDE.md.",
+  "status": "done-needs-review",
+  "sha": "0e6ff9e",
+  "gauntlet": "not passed — 1 flag(s) warned; 1 exemption(s) taken"
  }
 ]

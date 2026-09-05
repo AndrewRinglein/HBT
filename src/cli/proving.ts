@@ -6,7 +6,7 @@
 // flip rate first (ruled), margin shift beside it. Deterministic and stamped
 // with the pack it ran against; a result whose stamp is current is not re-run.
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs'
-import { join } from 'node:path'
+import { join, relative, sep } from 'node:path'
 import { runMatchup, runSubject, validatePlan, type Plan, type SubjectResult } from '../sim/proving.js'
 import stampJson from '../content/generated/pack.stamp.json' with { type: 'json' }
 
@@ -41,7 +41,7 @@ const matchups = (plan.matchups ?? []).map((m) => { const r = runMatchup(plan, m
 // the ranking: flip rate, then margin shift, then id (Law 6 — a tiebreaker that cannot tie)
 const ranked = [...results].sort((a, b) => b.summary.flipRatePermille - a.summary.flipRatePermille || b.summary.swing - a.summary.swing || a.subject.id.localeCompare(b.subject.id))
 const rollup = {
-  plan: plan.id, stamp, generated: new Date().toISOString().slice(0, 10), maps: plan.maps, seed: plan.seed,
+  plan: plan.id, planFile: relative(process.cwd(), planPath).split(sep).join('/'), stamp, generated: new Date().toISOString().slice(0, 10), maps: plan.maps, seed: plan.seed,
   ranking: ranked.map((r) => ({ id: r.subject.id, fixture: r.subject.fixture, rotation: r.subject.rotation, side: r.subject.side, slot: r.subject.slot, ...r.summary })),
   // proving.plan-shape (session 9's E2): `invalid` per matchup, and the battles themselves — the initiative plan is read per map
   matchups: matchups.map((m) => ({ id: m.matchup.id, hero: m.matchup.hero, enemy: m.matchup.enemy, ...(m.matchup.sides ? { sides: m.matchup.sides } : {}), ...(m.matchup.gap !== undefined ? { gap: m.matchup.gap } : {}),

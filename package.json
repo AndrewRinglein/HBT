@@ -8,7 +8,8 @@
     "battle": "tsx src/cli/battle.ts",
     "sweep": "tsx src/cli/sweep.ts",
     "proving": "tsx src/cli/proving.ts",
-    "proving:rank": "tsx tools/proving-rank.mts"
+    "proving:rank": "tsx tools/proving-rank.mts",
+    "proving:page": "tsx tools/proving-page.mts"
   },
   "devDependencies": {
     "@types/node": "^26.2.0",
