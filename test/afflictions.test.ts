@@ -24,7 +24,10 @@ describe('the riders compile', () => {
       expect(BADGES[e.badgeId], `${t.id} names ${e.badgeId}`).toBeDefined()
       expect(['onHit', 'onDamage'], `${t.id} hook`).toContain(t.hook)   // as the bestiary authored each: the zombie's claw onHit, the rest onDamage
     }
-    expect(all.find((t) => t.id === ROT)!.chance).toBe(10)
+    // LAW 10 — 2026-09-05 (content 3cfc13a): Angela ruled "In content, zombies have
+    // a 10% chance of inflicting rotting flesh. Let's change that to 2%." The claim
+    // (the rider fires at its AUTHORED chance) is unchanged; the authored number is.
+    expect(all.find((t) => t.id === ROT)!.chance).toBe(2)
     expect(all.find((t) => t.id === LYC)!.chance).toBe(10)
     expect(all.find((t) => t.id === VAMP)!.chance).toBe(20)
   })

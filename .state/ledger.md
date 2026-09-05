@@ -10227,3 +10227,43 @@ index 1e45d83..e4ae139 100644
 </details>
 
 IRON GAUNTLET: NOT PASSED — 2 FLAG(S) WARNED
+
+## pack.rotting-flesh-2 — LANDED `9d62be1` **NEEDS REVIEW**
+2026-09-05 06:37
+
+  PASS  dependencies landed
+  WARN  not already decided — 3 candidate ruling(s) — READ BEFORE ASKING: ../STATE.md:18 · ../STATE.md:21
+  PASS  typecheck
+  PASS  full test suite
+  PASS  gate 1 — the id appears in a real battle — trigger.zombie.afflict-rotting-flesh: 97 log lines, 97 fired, 1 changed state
+  PASS  brought its own tests — test/afflictions.test.ts
+  WARN  existing tests untouched — DELETED LINES in test/afflictions.test.ts (-1) — will land FLAGGED for review
+  PASS  control battles unchanged — will re-bless at commit — this item DECLARED it changes the control battles: map.open 388d54bd->8c92b7c3, map.ridge aa5f8652->d47ace39, map.flanks 15fd86d8->222ccbe9, map.highlands 8d90a6fe->22fa874e, map.field c5de81cd->f203cc3f, map.thicket e915f926->9b10a8f0, map.proving.open 05e7f1fb->424d53de, map.proving.ridge 5ac859ce->9a02c4fc, map.proving.ford 098281a2->cca60c73, map.proving.copse de5cae2e->18d8de68, map.proving.ruin 73abb99a->9cfd4aaf, map.courtyard 56d3a2f1->25022843, map.floodplain 69655c5c->a384d9b2, test.map.embers e161611a->db9994a2, test.map.showcase 3f1d37f9->5e1affff, test.map.duel-8 9f70e5ea->305a69d5, test.map.dungeon-16x8 0a27a4c5->e38312cb, test.map.horde-24 0a925406->d1a26c1d
+  PASS  content has a published source — 26 ids without a published source (16 awaiting publication from earlier items — see audit)
+  PASS  hardcode scan — core knows mechanisms, never names
+  PASS  generalizes — the second instance costs zero engine code — shape 'data' — not a mechanism, exempt
+  PASS  naming — new content ids use declared kinds
+  PASS  naming — no banned words invented
+  PASS  kill switch — the tests fail without the content — tests fail without trigger.zombie.afflict-rotting-flesh — they genuinely test it
+
+<details><summary>Existing tests were edited — review this diff</summary>
+
+```diff
+diff --git a/test/afflictions.test.ts b/test/afflictions.test.ts
+index e1f40c4..e8f0614 100644
+--- a/test/afflictions.test.ts
++++ b/test/afflictions.test.ts
+@@ -25,5 +25,8 @@ describe('the riders compile', () => {
+       expect(['onHit', 'onDamage'], `${t.id} hook`).toContain(t.hook)   // as the bestiary authored each: the zombie's claw onHit, the rest onDamage
+     }
+-    expect(all.find((t) => t.id === ROT)!.chance).toBe(10)
++    // LAW 10 — 2026-09-05 (content 3cfc13a): Angela ruled "In content, zombies have
++    // a 10% chance of inflicting rotting flesh. Let's change that to 2%." The claim
++    // (the rider fires at its AUTHORED chance) is unchanged; the authored number is.
++    expect(all.find((t) => t.id === ROT)!.chance).toBe(2)
+     expect(all.find((t) => t.id === LYC)!.chance).toBe(10)
+     expect(all.find((t) => t.id === VAMP)!.chance).toBe(20)
+```
+</details>
+
+IRON GAUNTLET: NOT PASSED — 2 FLAG(S) WARNED

@@ -2894,5 +2894,29 @@
   "attempts": 1,
   "sha": "ef5cb9c",
   "gauntlet": "not passed — 2 flag(s) warned"
+ },
+ {
+  "id": "pack.rotting-flesh-2",
+  "kind": "engine",
+  "shape": "data",
+  "needs": [
+   "badge.afflictions",
+   "fix.class-restriction"
+  ],
+  "ruling": "content 3cfc13a — Angela 2026-09-05: \"In content, zombies have a 10% chance of inflicting rotting flesh. Let's change that to 2%.\"",
+  "spec": "Pack refresh from content 5d63aa6 (= 3cfc13a rotting flesh 10→2 on every zombie carrier, rebased with 3c2fa24 test-body class tags). No engine code; the afflictions test reads the new authored chance (Law 10 note at the edit).",
+  "expect": "trigger.zombie.afflict-rotting-flesh and trigger.zombie-hound.afflict-rotting-flesh at chance 2; the suite green on the new pack",
+  "changesBaseline": true,
+  "baselineReason": "The zombies' Rotting Flesh rider rolls at 2% instead of 10% in every control battle — the roll is keyed the same, the threshold moved, so the afflictions (and every downstream line) re-time. Content-ruled, content-shipped.",
+  "probeIds": [
+   "trigger.zombie.afflict-rotting-flesh"
+  ],
+  "tests": [
+   "test/afflictions.test.ts"
+  ],
+  "note": "Pack refresh only.",
+  "status": "done-needs-review",
+  "sha": "9d62be1",
+  "gauntlet": "not passed — 2 flag(s) warned"
  }
 ]

@@ -2508,7 +2508,7 @@ export const UNIT_PACK = {
         {
           "id": "trigger.zombie.afflict-rotting-flesh",
           "hook": "onHit",
-          "chance": 10,
+          "chance": 2,
           "select": "target",
           "effect": {
             "kind": "badge.grant",
@@ -2612,7 +2612,7 @@ export const UNIT_PACK = {
         {
           "id": "trigger.zombie-hound.afflict-rotting-flesh",
           "hook": "onDamage",
-          "chance": 10,
+          "chance": 2,
           "select": "target",
           "effect": {
             "kind": "badge.grant",
