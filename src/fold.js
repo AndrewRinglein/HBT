@@ -47,7 +47,9 @@ export function createState() {
 function mkUnit(e, UD) {
   return { id: e.actor, name: e.name, typeId: e.typeId, side: e.side, hex: e.hex,
     hp: e.hp, maxHp: e.maxHp, stam: e.stamina, maxStam: e.maxStamina, st: {}, stBy: {}, life: 'standing', bleed: 0,
-    mvBase: (UD[e.typeId] || {}).movement ?? null, activeMv: null, mods: [], injuries: [], cds: {}, dmgSeen: {},
+    /* `mvBase` was the resting movement until mvOf() read it off the sheet plus
+       the log's modifiers (2026-09-03); it is kept OUT rather than set-and-unread */
+    activeMv: null, mods: [], injuries: [], cds: {}, dmgSeen: {},
     /* the kit the engine fielded this unit with (unit.equipped): items, the
        attacks they grant, the powers they grant — the bare row has none of it */
     kit: { items: [], grants: [], abilities: [], badges: [] },
@@ -59,6 +61,7 @@ function mkUnit(e, UD) {
     rolls: null,            // Deathbed Fighting rolls made, from deathbed.stood/fell `ordinal`
     spent: [],              // actions whose charges ran out (power.exhausted) — they leave the bar
     charges: {},            // actionId -> uses left (charge.spent)
+    surgeChance: null,      // the accumulating chance (surge.checked); declared here so the row shape never varies
     arrived: e.arrived || null, raised: false, objective: false, hunt: null, confusedFrom: null, moveMods: null, aiOverride: null, grown: null }
 }
 
@@ -479,14 +482,26 @@ export function fold(S, e, ctx, now = 0) {
   return cues
 }
 
-/** Rebuild a state from scratch through events[0..n-1] — for scrub. Cues are
-    dropped and the lingering view-state clocks are cleared: nothing should
-    still be flashing after a jump. */
+/** Rebuild a state from scratch through events[0..n-1] — for scrub.
+    Cues are dropped.
+
+    THE RULE (2026-09-04, VIEWER-CONSTITUTION Law 3): **foldTo clears ONLY what
+    the pump's clock stamped.** Everything else the events rebuilt exactly, and
+    discarding it is how a scrub silently deleted the impact effect of every
+    attack in the game — 678 of 678 measured (REVIEW-2026-09-04 §A). `ATTACK`
+    outlives AIM on purpose (an area attack's second and third hits read it) and
+    carries no clock; `AOO` marks the free swing; both are kept, as is the
+    subject, so that seeking to N and stepping to N agree exactly.
+
+    Clock-stamped, and therefore cleared: `FIRING` and `TRIGFLASH` (lingering
+    highlights, stamped `until`) and the miss line's linger on `AIM`
+    (`missed`/`expire`). Nothing should still be FLASHING after a jump; the
+    forecast itself is state, not a flash, and stays. */
 export function foldTo(events, n, ctx) {
   const S = createState()
   for (let i = 0; i < n && i < events.length; i++) fold(S, events[i], ctx, 0)
-  S.AIM = null; S.FIRING = null; S.TRIGFLASH = null; S.ATTACK = null; S.AOO = null
-  if (S.activeId != null) { S.subjectId = S.activeId; S.subjectMode = 'acting' }
+  S.FIRING = null; S.TRIGFLASH = null
+  if (S.AIM) { S.AIM.missed = null; S.AIM.expire = null }
   return S
 }
 

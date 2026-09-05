@@ -70,6 +70,11 @@ try {
 const BV = win.__battleView
 if (!BV) { console.error('FAIL — window.__battleView not exposed'); process.exit(1) }
 const LIB = BV.lib
+/* the fold context and the projection, hoisted: both are used by checks that
+   run before the blocks that used to define them (TDZ, found 2026-09-04) */
+const CTX0 = { UD: LIB.static.units, SN: LIB.static.statuses }
+const { projectTick } = await import(pathToFileURL(resolve(PKG, 'src/projection.js')).href)
+check(typeof projectTick === 'function', 'projection.js no longer exports projectTick')
 const stripB64 = s => s.replace(/data:[^"')]+/g, 'data:…')
 const numsIn = e => { const out = new Set(); const walk = v => { if (typeof v === 'number') out.add(v); else if (v && typeof v === 'object') Object.values(v).forEach(walk) }; walk(e); return out }
 
@@ -88,7 +93,16 @@ const numsIn = e => { const out = new Set(); const walk = v => { if (typeof v ==
     const committed = JSON.parse(execSync('git show HEAD:tools/exemptions.json', { cwd: PKG, encoding: 'utf8', stdio: ['ignore', 'pipe', 'ignore'] })).exemptions
     const grew = Object.keys(ex).filter(n => !committed[n])
     if (grew.length && !process.env.ALLOW_EXEMPTION_GROWTH) fails.push(`exemptions: the list GREW by ${grew.join(', ')} — it may only shrink. A review that found an unmarked computation may set ALLOW_EXEMPTION_GROWTH=1 for the commit that records it.`)
-  } catch (e) { /* no committed copy yet */ }
+  } catch (e) {
+    /* Law 9: never swallow a failure. Only a MISSING path at HEAD is legitimate
+       (the file is new); anything else — git absent, an unborn HEAD, a tarball,
+       or the file being RENAMED — silently disabled the whole "may only shrink"
+       rule until 2026-09-04 (REVIEW §D6). */
+    const msg = String(e && e.message || e)
+    if (/exists on disk, but not in|does not exist in|unknown revision|Not a valid object name|fatal: path/.test(msg))
+      console.warn('exemptions: no committed copy of tools/exemptions.json at HEAD — the shrink rule is not enforced for this run')
+    else fails.push(`exemptions: could not read the committed list, so the "may only shrink" rule did not run — ${msg.split('\n')[0]}`)
+  }
 }
 
 /* ── fields cover every map; sprite; stamps ────────────────────────────── */
@@ -125,10 +139,31 @@ function drive(label, battle, allowStandee = false) {
   for (const u of Object.values(v.state.U)) check(LIB.art.artmap[u.typeId] || allowStandee, `${label}: no art for ${u.typeId}`)
   /* the pure fold reaches the same state the pump did */
   const S2 = foldTo(EV, EV.length, { UD: LIB.static.units, SN: LIB.static.statuses })
-  /* the lingering view-state foldTo() clears is stripped from both: AIM, FIRING, TRIGFLASH, the declared
-     ATTACK and the AOO (a battle that ends on the killing blow ends mid-activation, with both still set) */
-  const strip = S => JSON.stringify({ ...S, AIM: null, FIRING: null, TRIGFLASH: null, ATTACK: null, AOO: null, subjectId: null, subjectMode: null })
+  /* ONLY the pump's clock is stripped. AIM goes because the PUMP can expire it
+     (expireAim, on V.clock()) where the pure fold cannot; FIRING and TRIGFLASH
+     are lingering `until` stamps. ATTACK, AOO, subjectId and subjectMode were
+     stripped until 2026-09-04 to silence a failure — which hid the scrub bug in
+     REVIEW §A for a day. They are compared now, and they must stay compared. */
+  const strip = S => JSON.stringify({ ...S, AIM: null, FIRING: null, TRIGFLASH: null })
   check(strip(S2) === strip(v.state), `${label}: the pure fold and the pumped viewer disagree on the final state`)
+  /* ── SEEKING TO N MUST EQUAL STEPPING TO N (REVIEW §D3, added 2026-09-04) ──
+     The pure-vs-pumped check above folds the same events in the same order
+     through the same function, so it cannot see a bug in foldTo itself. This
+     one can: it is what the scrub actually does. foldTo may differ ONLY in what
+     the pump's clock stamped, so the comparison strips exactly what strip()
+     does. 678 of 678 attacks failed this before the fix. */
+  { const scrubStrip = S => JSON.stringify({ ...S, AIM: null, FIRING: null, TRIGFLASH: null })
+    const sample = new Set()
+    for (let i = 0; i < EV.length; i++) if (/^(attack\.|aoo\.|deathbed\.|crit\.|badge\.)/.test(EV[i].type)) sample.add(i)
+    for (let i = 0; i < EV.length; i += Math.max(1, Math.floor(EV.length / 40))) sample.add(i)
+    const stepped = createState(); let at = 0, bad = 0, firstBad = null
+    for (const i of [...sample].sort((a, b) => a - b)) {
+      while (at < i) { fold(stepped, EV[at], CTX0, 0); at++ }
+      const a = scrubStrip(foldTo(EV, i, CTX0)), b = scrubStrip(stepped)
+      if (a !== b && bad++ === 0) firstBad = i
+    }
+    check(bad === 0, `${label}: seeking and stepping disagree at ${bad} of ${sample.size} sampled cursors (first at event ${firstBad}, ${firstBad != null && EV[firstBad] && EV[firstBad].type}) — foldTo may discard only what the pump's clock stamped`) }
+
   /* every type folded or ignored; float numbers verbatim from their event */
   const types = new Set(EV.map(e => e.type))
   for (const t of types) check(FOLDED_TYPES.includes(t) || IGNORED.has(t), `${label}: event type ${t} is neither folded nor on the ignore list`)
@@ -170,7 +205,21 @@ for (let i = 0; i < LIB.battles.length; i++) {
 for (const u of uses) check(spriteIds.has(u), `icons: <use> names ${u}, sprite lacks it`)
 check(uses.has('ra-crossed-swords') && uses.has('ra-shoe-prints') && uses.has('ra-bow') && !uses.has('ra-crossbow'), `icons: expected swords, shoe-prints and the bow (never the crossbow) among uses, got ${[...uses].join(',')}`)
 check(damaging > 0 && plain > 0, `icons: rows damaging=${damaging} plain=${plain} — both kinds must appear`)
-if (DUR) for (const t of Object.keys(DUR)) check(FOLDED_TYPES.includes(t) || IGNORED.has(t), `pump: DUR names ${t}, which no log folds`)
+check(DUR, 'viewer.js no longer exports DUR — the pump/DUR cross-check did not run')
+for (const t of Object.keys(DUR || {})) check(FOLDED_TYPES.includes(t) || IGNORED.has(t), `pump: DUR names ${t}, which no log folds`)
+/* THE OTHER DIRECTION (REVIEW §B, added 2026-09-04): the completeness check
+   above proves every event seen is folded; this proves every fold ARM has an
+   example. An arm no log exercises is written from the engine's emit site and
+   untested — list it on purpose, the way IGNORED is a deliberate list. */
+{
+  const seen = new Set()
+  for (const b of LIB.battles) for (const e of b.battle.events) seen.add(e.type)
+  /* known-unexercised, each waiting on a showcase that fields it (ENGINE-FINDINGS #10) */
+  const UNEXERCISED = new Set(['status.cancelled', 'encounter.roll', 'encounter.won', 'unit.obliterated', 'layer.cancelled'])
+  const dark = FOLDED_TYPES.filter(t => !seen.has(t))
+  for (const t of dark) check(UNEXERCISED.has(t), `fold: ${t} is folded but no library battle carries one — add it to UNEXERCISED on purpose or field a showcase that exercises it`)
+  for (const t of UNEXERCISED) check(!seen.has(t), `fold: ${t} is listed UNEXERCISED but the library now carries one — delete the entry, the list only shrinks`)
+}
 
 /* ── one traversal per move (VISUAL-BATTLE-UPDATES §1.1) ───────────────── */
 {
@@ -204,7 +253,6 @@ if (DUR) for (const t of Object.keys(DUR)) check(FOLDED_TYPES.includes(t) || IGN
 
 /* ── the skull (VISUAL-BATTLE-UPDATES §3.1): shown exactly when the projection is lethal ── */
 {
-  const { projectTick } = await import(pathToFileURL(resolve(PKG, 'src/projection.js')).href)
   let lethalSeen = 0, mismatches = 0
   for (let bi = 0; bi < LIB.battles.length; bi++) {
     load(bi); const v = H.viewer; v.pause()
@@ -329,20 +377,31 @@ if (DUR) for (const t of Object.keys(DUR)) check(FOLDED_TYPES.includes(t) || IGN
 /* ── a dropped export plays (plan §8.6) — the REAL drop path, on a map with no
    library battle, fielding a unit with no art entry (the honest standee) ── */
 {
-  const src = LIB.battles[0].battle
-  /* a map no library battle plays, on the SAME board — a hex id means nothing on another board (§10) */
-  const srcF = LIB.fields[src.seed.mapId]
-  const mapId = (LIB.static.maps || []).find(m => !LIB.battles.some(b => b.battle.seed.mapId === m) && LIB.fields[m] && LIB.fields[m].width === srcF.width && LIB.fields[m].height === srcF.height) || src.seed.mapId
+  /* THE PAIR: a source battle and a map NO library battle plays, on the SAME
+     board — a hex id means nothing on another board (§10). Choosing battle 0
+     unconditionally meant the decoy search always failed and the drop silently
+     replayed its own map, so the cross-map path never ran (REVIEW §B5). */
+  const unplayed = (LIB.static.maps || []).filter(m => !LIB.battles.some(b => b.battle.seed.mapId === m) && LIB.fields[m])
+  let src = null, mapId = null
+  for (const b of LIB.battles) { const f = LIB.fields[b.battle.seed.mapId]
+    const d = unplayed.find(m => LIB.fields[m].width === f.width && LIB.fields[m].height === f.height)
+    if (d) { src = b.battle; mapId = d; break } }
+  check(src, `file-drop: no library battle shares a board with any unplayed map (${unplayed.length} unplayed) — the cross-map drop path cannot be tested`)
+  if (!src) { src = LIB.battles[0].battle; mapId = src.seed.mapId }
   const noArt = Object.keys(LIB.static.units).find(t => !LIB.art.artmap[t])
   const events = JSON.parse(JSON.stringify(src.events)).map(e => { if (e.type === 'map.loaded') e.mapId = mapId; return e })
   if (noArt) { const first = events.find(e => e.type === 'unit.enter'); first.typeId = noArt }
   const synthetic = { seed: { ...src.seed, mapId, replicate: 99 }, engineCommit: src.engineCommit, outcome: src.outcome, turns: src.turns, events }
   const file = { name: 'synthetic-drop.json', text: async () => JSON.stringify(synthetic) }
   let dropped = false
+  /* the pre-drop events array, by IDENTITY: `synthetic` is a deep copy of the
+     already-loaded battle, so comparing lengths or the field proved nothing —
+     the check passed whether or not the listener ran (REVIEW §B4) */
+  const beforeDrop = H.viewer && H.viewer.events
   try {
     win.document.dispatch('drop', { preventDefault() {}, dataTransfer: { files: [file] } })
     await new Promise(r => setImmediate(r)); await new Promise(r => setImmediate(r))     // the file's text() resolves
-    dropped = H.viewer && H.viewer.events === synthetic.events || (H.viewer && H.viewer.events.length === events.length && H.viewer._V.data.F === LIB.fields[mapId])
+    dropped = !!(H.viewer && H.viewer.events !== beforeDrop && H.viewer.events.length === events.length && H.viewer._V.data.F === LIB.fields[mapId])
     check(dropped, `file-drop: the drop listener did not mount the dropped export (map ${mapId})`)
     if (dropped) { sizeWrap(); const v = drive('dropped export', synthetic, true); check(v && v.cursor === events.length, 'file-drop: the dropped export did not play to the end')
       if (noArt && v) { const E = v._V.layers.UEL.get(events.find(e => e.type === 'unit.enter').actor)
@@ -390,7 +449,6 @@ if (DUR) for (const t of Object.keys(DUR)) check(FOLDED_TYPES.includes(t) || IGN
   }
 }
 
-const CTX0 = { UD: LIB.static.units, SN: LIB.static.statuses }
 /* ── the board is the map's (engine 5603c40, §10): a non-square board and a west deploy in the library, laid out from the field and the log, never from a constant ── */
 {
   const odd = LIB.battles.map((b, i) => [b, i]).filter(([b]) => { const ml = b.battle.events.find(e => e.type === 'map.loaded'); return ml && ml.width !== ml.height })
@@ -545,11 +603,21 @@ const CTX0 = { UD: LIB.static.units, SN: LIB.static.statuses }
         check(u.hp === EV[r].hp && u.maxHp === EV[r].maxHp, `${label}: after hp.reset unit ${e.target} folds ${u.hp}/${u.maxHp}, event says ${EV[r].hp}/${EV[r].maxHp}`)
         /* THE SMALL RED SKULL (Angela 2026-09-04), in the overhead row and nowhere else */
         check(E && /dbSkull/.test(E.badges.innerHTML), `${label}: unit ${e.target} stood at the Deathbed but wears no skull`)
-        check(E && E.skull.style.display === 'none' || true, 'the projection skull is its own fact')
+        /* THE TWO SKULLS ARE DIFFERENT FACTS (Angela 2026-09-04, VISUAL-BATTLE-UPDATES §3.2):
+           the small red one overhead says "stood at the Deathbed"; the bone-white one on the
+           health bar says "dies of its statuses before it acts again". They must be able to
+           disagree — this was `|| true` until 2026-09-04 and asserted nothing. */
+        const lethalNow = projectTick(u, LIB.static.units).lethal
+        check(E && (E.skull.style.display !== 'none') === lethalNow,
+          `${label}: unit ${e.target} wears the Deathbed skull and the projection skull says ${E && E.skull.style.display !== 'none'}, but its tick projection is ${lethalNow ? '' : 'not '}lethal — the two skulls are not independent`)
         const st = (E.badges.innerHTML.match(/dbSkull[^>]*>.*?font-size:(\d+)px/) || [])[1]
         check(st && +st <= 14, `${label}: the Deathbed skull is ${st}px — Angela ruled "a very small skull"`) } }
-    { const S = foldTo(EV, bb + 1, CTX); for (const u of Object.values(S.U)) { const E = V.layers.UEL.get(u.id); v.seek(bb + 1); v.render()
-        if (E && !u.deathbed) check(!/dbSkull/.test(E.badges.innerHTML), `${label}: unit ${u.id} never stood and wears a Deathbed skull`); break } }
+    /* EVERY unit, at the END state — the old check broke after the first one
+       and ran at battle start, when nobody had stood yet (REVIEW §E) */
+    { const S = foldTo(EV, EV.length, CTX); v.seek(EV.length); v.render()
+      for (const u of Object.values(S.U)) { const E = V.layers.UEL.get(u.id); if (!E || u.life === 'dead') continue
+        check(/dbSkull/.test(E.badges.innerHTML) === !!u.deathbed,
+          `${label}: unit ${u.id} ${u.deathbed ? 'stood at the Deathbed and wears no skull' : 'never stood and wears a Deathbed skull'}`) } }
     for (const [e, i] of byType(EV, 'deathbed.fell').slice(0, 2)) { const S = foldTo(EV, i, CTX); check(fold(S, e, CTX, 0).some(c => c.k === 'deathbed' && c.result === 'fell' && c.n === e.roll), `${label}: deathbed.fell at ${i} cued no modal`)
       v.seek(i); v.step(); win._flush(1200); const m = V.dom.stage.parentNode.querySelector('.dbModal'); check(m && /This hero falls\./.test(m.querySelector('.dbPlate').innerHTML), `${label}: the fell modal does not say the hero falls`); win._flush(2000) }
     /* deathbed.none — a Wounded unit at 0: no roll, dead (engine b4cbd9b) */
@@ -572,6 +640,19 @@ const CTX0 = { UD: LIB.static.units, SN: LIB.static.statuses }
       check(V.dom.actionbar.innerHTML.includes(`data-act="${id}"`), `${label}: ${id} is not on the bar before it is exhausted`)
       v.step(); v.inspect(e.actor); v.render()
       check(!V.dom.actionbar.innerHTML.includes(`data-act="${id}"`), `${label}: ${id} spent its last use and is still on the bar`) }
+    /* light.cast / maxHp.gained / stamina.drained — on the mandatory list since
+       2026-09-03 with NO assertion anywhere until 2026-09-04 (REVIEW §B2) */
+    for (const [e, i] of byType(EV, 'light.cast').slice(0, 2)) {
+      /* the layer.painted after:0 lines BEFORE it are the hexes it lit: darkness must fall */
+      let j = i - 1; while (j >= 0 && EV[j].type === 'layer.painted') j--
+      const before = foldTo(EV, j + 1, CTX0), after = foldTo(EV, i + 1, CTX0)
+      const dark = S => Object.values(S.layers).filter(l => (LIB.static.layers[l] || '') === 'layer.darkness').length
+      check(dark(after) < dark(before), `${label}: light.cast at ${i} lit ${e.hexes} hexes but the folded darkness did not shrink (${dark(before)} → ${dark(after)})`) }
+    for (const [e, i] of byType(EV, 'maxHp.gained').slice(0, 3)) { const S = foldTo(EV, i + 1, CTX0)
+      check(S.U[e.target] && S.U[e.target].maxHp === e.maxHp && S.U[e.target].hp === e.hp,
+        `${label}: after maxHp.gained unit ${e.target} folds ${S.U[e.target] && S.U[e.target].hp}/${S.U[e.target] && S.U[e.target].maxHp}, event says ${e.hp}/${e.maxHp}`) }
+    for (const [e, i] of byType(EV, 'stamina.drained').slice(0, 3)) { const S = foldTo(EV, i + 1, CTX0)
+      check(S.U[e.target] && S.U[e.target].stam === e.stamina, `${label}: after stamina.drained unit ${e.target} folds ${S.U[e.target] && S.U[e.target].stam} stamina, event says ${e.stamina}`) }
     /* knockback beyond one (engine 2e649b5) */
     for (const [e, i] of byType(EV, 'knocked').slice(0, 2)) { const S = foldTo(EV, i, CTX); const cues = fold(S, e, CTX, 0)
       check(cues.some(c => c.k === 'shove' && c.to === e.to), `${label}: knocked cued no travel`)
@@ -580,7 +661,14 @@ const CTX0 = { UD: LIB.static.units, SN: LIB.static.statuses }
     /* banners: a wave, the band, night, the objective — a node in the wrap that leaves */
     for (const t of ['encounter.wave', 'band.advanced', 'night.fell', 'encounter.lost', 'encounter.won']) {
       const hit = byType(EV, t)[0]; if (!hit) continue
-      const [, i] = hit; if (i <= bb) continue                                  // seeded silently before battle.begin
+      const [ev, i] = hit
+      /* the CUE is asserted whatever the seq — a banner cued before battle.begin
+         is seeded silently by the pump and never reaches the DOM, which is how
+         night.fell's test skipped itself while its coverage guard passed
+         (REVIEW §B3). Only the DOM half is conditional. */
+      { const St = foldTo(EV, i, CTX0); const cues = fold(St, ev, CTX0, 0)
+        check(cues.some(c => c.k === 'banner'), `${label}: ${t} cued no banner`) }
+      if (i <= bb) continue                                  // seeded before battle.begin: no DOM beat to look at
       v.seek(i); v.step()
       const wrap = V.dom.stage.parentNode
       check(wrap.querySelector('.banner'), `${label}: no banner after ${t}`)
@@ -605,7 +693,12 @@ const CTX0 = { UD: LIB.static.units, SN: LIB.static.statuses }
         const u = v.state.U[h.id]; const auras = LIB.static.units[u.typeId].auras
         const want = new Set(); for (const a of auras) for (let x = 0; x < n; x++) { const d = DIST[u.hex * n + x]; if (d > 0 && d <= a.radius) want.add(x + '|' + a.side) }
         const tiles = V.layers.AURA ? V.layers.AURA.size : 0
-        check(tiles >= want.size, `${label}: ${h.name} at hex ${u.hex} should tint ${want.size} hexes, ${tiles} aura tiles drawn`)
+        /* `===`, not `>=`: a runaway radius or a tile left over from a previous
+           frame passed the old assertion while its message claimed equality
+           (REVIEW §C1/§E). One holder on the board, so the counts must match. */
+        const only = holders.length === 1
+        check(only ? tiles === want.size : tiles >= want.size,
+          `${label}: ${h.name} at hex ${u.hex} should tint ${want.size} hexes, ${tiles} aura tiles drawn`)
         const dead = EV.findIndex(e => e.type === 'life.dead' && e.target === h.id)
         if (dead > 0 && holders.length === 1) { v.seek(dead + 1); v.render(); check((V.layers.AURA ? V.layers.AURA.size : 0) === 0, `${label}: ${h.name} is dead and still exerts an aura`) } } }
   }

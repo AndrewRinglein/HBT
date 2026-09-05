@@ -78,10 +78,10 @@ const { outputFiles, warnings } = esbuild.buildSync({
   minify: false, legalComments: 'none', logLevel: 'silent',
   define: {
     __BUNDLED_STATIC__: JSON.stringify({ units: statics.units, statuses: statics.statuses, maps: statics.maps, engineCommit: statics.engineCommit,
-      /* 2026-09-03: the tables a unit.equipped grant resolves against, the layer names, the hex distance tables.
-         2026-09-04: `actions` is the ONE registry (§11) and `badges` the badge table (§12) — a grant of any
-         kind resolves in `actions`, and a badge's name comes from `badges`. */
-      attacks: statics.attacks, abilities: statics.abilities, actions: statics.actions, badges: statics.badges,
+      /* `actions` is the ONE registry (§11) — a grant of any kind resolves there — and `badges` the
+         badge table (§12). The `attacks`/`abilities` views are a PROVEN SUBSET of `actions` and were
+         shipped unread for a day: 155 KB of the page for nothing (REVIEW §D9, 2026-09-04). */
+      actions: statics.actions, badges: statics.badges,
       layers: statics.layers, hexDist: statics.hexDist }),
     __BUNDLED_FIELDS__: JSON.stringify(Object.fromEntries(Object.entries(fields).filter(([k]) => !k.startsWith('_')))),
     __BUNDLED_ART__: JSON.stringify({ artmap: manifest.artmap, assets }),

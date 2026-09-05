@@ -70,3 +70,15 @@ neither side finishes. Every other battle also moved (cooldowns a Turn longer, a
 > unfinishing. Nothing walks past the line.
 
 **The `visual-replay` skill and `tools/replay/` are still in the engine tree.**
+
+## 2026-09-04 evening — engine `7be5c55` REGRESSION, found by re-exporting
+
+| # | Finding | Read from | What the viewer did |
+|---|---|---|---|
+| 17 | **`band.advanced` lost its `row` and `layer.painted` lost its `hex` — both are `null`.** Measured on `showcase.kiln`: at `4932fde` the band emitted `row: 0,1,2,…,7` and every paint carried a hex; at `7be5c55` (the commit whose message names *"the band's column shape"*) the six `band.advanced` lines carry `row: null` and **96 `layer.painted` events carry `hex: null`**. The viewer cannot draw a hex that is not on the board, and Law 1 forbids defaulting it, so the page fails to build. | re-exporting the library at `7be5c55`; `git show` of the `4932fde` export for the comparison | **Nothing** — the library is held at `4932fde`, which is coherent, and the page ships from it. `layerTile` now throws a NAMED error (which hex, which board) instead of a bare `TypeError` deep in a draw call, so the next occurrence is diagnosed in one step. **The Kiln's band is unwatchable at engine HEAD until this is fixed.** |
+
+*How it was caught:* the viewer re-exports the whole library whenever the engine
+moves, and the build runs 21 battles end to end. A `hex: null` is not something a
+sweep or a unit test would notice — the engine's own tests pass — but it makes
+the encounter undrawable. This is the third time re-export-and-play has found an
+engine defect the engine's own gate did not (see also #12, #15).

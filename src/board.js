@@ -107,7 +107,13 @@ function darkTile(l, t, hue) {
   return w
 }
 export function layerTile(V, hex, layer) {
-  const p = V.data.POS[hex], l = p.px - V.data.LAYOUT.W / 2, t = p.py - V.data.LAYOUT.H / 2
+  /* Law 1 — the viewer never guesses, and Law 9 — never swallow a failure. A
+     paint outside the board is an ENGINE fault, and saying which hex and which
+     board turned a bare TypeError deep in a draw call into a one-step diagnosis
+     (engine 7be5c55 painted 96 hexes as `null`; ENGINE-FINDINGS #17). */
+  const p = V.data.POS[hex]
+  if (!p) throw new Error(`layer.painted names hex ${JSON.stringify(hex)}, which is not on this ${V.data.BOARD.width}×${V.data.BOARD.height} board (${V.data.POS.length} hexes) — the engine owes a hex`)
+  const l = p.px - V.data.LAYOUT.W / 2, t = p.py - V.data.LAYOUT.H / 2
   const name = (V.data.LAYERS || {})[layer] || ('layer.' + layer)
   const hue = layerHue(name)
   if (name === 'layer.burning') return burnTile(l, t)
@@ -140,7 +146,11 @@ export function syncCorpses(V) {
   const L = V.layers, S = V.S, { ARTMAP, ASSETS, LAYOUT } = V.data
   if (!L.corpseL) { L.corpseL = el('', 'position:absolute;left:0;top:0;transform-style:preserve-3d'); placeAfter(L.layL || L.ground, L.corpseL); L.CORPSE = new Map() }
   const want = S.corpses || {}
-  for (const [id, E] of L.CORPSE) if (!want[id]) { E.node.remove(); L.CORPSE.delete(id) }
+  /* a corpse the fold has removed keeps its node while `corpseGone` plays the
+     beat (`leaving`); without this the node was removed in the same tick the
+     360ms fade started and all four `how` branches were dead code (REVIEW §C2).
+     `cancelBeats` drops the leavers, so a seek is still instant. */
+  for (const [id, E] of L.CORPSE) if (!want[id] && !E.leaving) { E.node.remove(); L.CORPSE.delete(id) }
   for (const c of Object.values(want)) {
     if (L.CORPSE.has(c.id)) continue
     const a = ARTMAP[c.typeId] || ARTMAP._pending
@@ -159,11 +169,16 @@ export function syncCorpses(V) {
 }
 /** the beat a corpse leaves on: a raise lifts it, a feed swallows it, the rest fade */
 export function corpseGone(V, corpseId, how) {
-  const E = V.layers.CORPSE && V.layers.CORPSE.get(corpseId); if (!E || !E.img.animate) return
+  const M = V.layers.CORPSE, E = M && M.get(corpseId); if (!E) return
+  const done = () => { E.node.remove(); M.delete(corpseId) }
+  if (!E.img.animate) return done()
   const kf = how === 'raised' ? [{ opacity: .38, transform: 'rotate(-90deg)' }, { opacity: 0, transform: 'rotate(-90deg) translateX(-40px)' }]
     : how === 'eaten' || how === 'consumed' ? [{ opacity: .38, transform: 'rotate(-90deg) scale(1)' }, { opacity: 0, transform: 'rotate(-90deg) scale(.4)' }]
     : [{ opacity: .38 }, { opacity: 0 }]
-  E.img.animate(kf, { duration: 360, easing: 'ease-in', fill: 'forwards' })
+  E.leaving = true
+  E.img.animate(kf, { duration: dilate(V, 360), easing: 'ease-in', fill: 'forwards' })
+  const t = setTimeout(() => { V.fx.timers.delete(t); done() }, dilate(V, 360) + 40)
+  V.fx.timers.add(t)
 }
 
 /* ── AURAS (2026-09-03, §7) — derived on read, never emitted: every STANDING
@@ -183,7 +198,11 @@ export function syncAuras(V) {
       const hue = AURA_HUE[a.side] || AURA_HUE.any
       const n = POS.length
       for (let h = 0; h < n; h++) { const d = DIST[u.hex * n + h]
-        if (d <= a.radius && d > 0) { const k = h + '|' + hue; if (!want.has(k)) want.set(k, { hex: h, hue, edge: d === a.radius }) } }
+        /* the key carries `edge` too: a hex that was the rim and is now interior
+           must get a NEW tile, or it keeps the bright rim opacity for the rest of
+           the battle and the edge smears (REVIEW §C1, 2026-09-04) */
+        if (d <= a.radius && d > 0) { const edge = d === a.radius, k = h + '|' + hue + '|' + (edge ? 'e' : 'i')
+          if (!want.has(k)) want.set(k, { hex: h, hue, edge }) } }
     }
   }
   for (const [k, E] of L.AURA) if (!want.has(k)) { E.remove(); L.AURA.delete(k) }
@@ -229,7 +248,9 @@ export function pushFloat(V, hex, text, col, o = {}) {
     (o.big ? 'font-size:36px;' : o.small ? 'font-size:15px;' : 'font-size:20px;') +
     `animation:floatUp ${life}ms ease-out forwards`, text))
   L.floatL.appendChild(wrap)
-  setTimeout(() => { wrap.remove()
+  /* registered like every other beat: an unregistered timer survives seek(),
+     fires against a cleared FLOAT_SLOTS and stacks the next floats (REVIEW §C3) */
+  const ft = setTimeout(() => { V.fx.timers.delete(ft); wrap.remove()
     if (L.FLOAT_SLOTS[hex] != null) { L.FLOAT_SLOTS[hex]--; if (L.FLOAT_SLOTS[hex] < 0) delete L.FLOAT_SLOTS[hex] } }, life + 60)
 }
 export function clearFloats(V) {
@@ -291,6 +312,18 @@ export function fxTick(V, tId, causeId) {
    release to it on finish, so there is no snap. Without `animate` (the
    headless verifier) the token is simply already there. */
 export const ROOT_TRANSITION = 'left .26s ease, top .26s ease, opacity .5s ease'
+/* THE PUMP'S CLOCK OWNS EVERY DURATION (Law 3, enforced 2026-09-04).
+   `viewer.js` waits `DUR / (speed * 0.75)` between beats, so a board animation
+   measured in wall-clock milliseconds keeps its full length while the beat
+   shrinks: at ×2 the pump waits two thirds of the animation, at ×4 a third, and
+   the next beat lands inside the running walk every time — which is what made
+   the async-cancel race in `traverse` routine rather than rare (REVIEW §C4).
+
+   Dividing by SPEED ALONE (not by the pump's 0.75) keeps the animation the same
+   FRACTION of its beat at every speed — (ms/speed) ÷ (DUR/(speed×0.75)) has no
+   speed in it — while leaving ×1 byte-identical to what Angela reviewed. */
+export const dilate = (V, ms) => Math.max(16, Math.round(ms / (V.speed || 1)))
+
 /* THE LIFT (Angela 2026-09-03, the dwarf with no legs): the token image sits
    2px in front of the ground plane. At z=0 the act ring's haze, the shadow
    (a blurred, composited layer) and the hex tiles paint over the lowest part
@@ -313,10 +346,14 @@ export function traverse(V, id, startHex, path, dur) {
   const a = E.root.animate(kf, { duration: dur, easing: 'cubic-bezier(.35,0,.2,1)', fill: 'none' })
   E.walk = a
   if (u.life === 'standing') E.img.animate(BOB, { duration: Math.max(120, dur / path.length), iterations: path.length, easing: 'ease-in-out' })
-  a.oncancel = () => { E.root.style.transition = ROOT_TRANSITION; E.walk = null }
+  /* `cancel()` dispatches ASYNCHRONOUSLY, so a walk cancelled by a later beat
+     runs this handler after that beat has claimed `E.walk` — nulling it would
+     orphan the new animation from seek() and dispose() (REVIEW §C4). Only the
+     current owner may clear the slot. */
+  const release = () => { E.root.style.transition = ROOT_TRANSITION; if (E.walk === a) E.walk = null }
+  a.oncancel = release
   a.onfinish = () => {
-    E.root.style.transition = ROOT_TRANSITION
-    E.walk = null
+    release()
     if (u.life === 'standing' && E.img.animate) {
       E.img.style.transformOrigin = '50% 100%'
       E.img.animate([{ transform: LIFT + ' scaleY(.94)' }, { transform: LIFT + ' scaleY(1)' }], { duration: 60, easing: 'ease-out' })
@@ -356,6 +393,10 @@ export function queueInjury(V, id, name) {
 export function cancelBeats(V) {
   for (const t of V.fx.timers) clearTimeout(t)
   V.fx.timers.clear()
+  /* a seek that lands inside a hitstop would otherwise leave every token frozen
+     mid-animation, with the paused animation overriding anything a render
+     writes (REVIEW §C5) */
+  if (V.fx.paused) { for (const a of V.fx.paused) { try { if (a.playState === 'paused') a.play() } catch (e) {} } V.fx.paused = null }
   if (V.fx.injuryQ) V.fx.injuryQ.length = 0
   for (const n of V.fx.nodes) { try { n.remove() } catch (e) {} }
   V.fx.nodes.clear()
@@ -367,7 +408,7 @@ function darken(V) {
   wrap.appendChild(d); V.fx.nodes.add(d)
   const done = () => { d.remove(); V.fx.nodes.delete(d) }
   if (d.animate) { const a = d.animate([{ opacity: 0 }, { opacity: .45, offset: .35 }, { opacity: 0 }], { duration: DARKEN }); a.onfinish = done }
-  else V.fx.timers.add(setTimeout(done, DARKEN))
+  else { const t = setTimeout(() => { V.fx.timers.delete(t); done() }, dilate(V, DARKEN)); V.fx.timers.add(t) }
 }
 function playInjury(V) {
   const Q = V.fx.injuryQ; const job = Q[0]; if (!job) return
@@ -411,13 +452,13 @@ export function lunge(V, attId, tgtId) {
   const dx = p2.px - p1.px, dy = p2.py - p1.py, L = Math.hypot(dx, dy) || 1
   A.bb.style.transition = 'transform .13s ease'
   A.bb.style.transform = `rotateX(var(--anti)) translate(${(dx / L * 26).toFixed(0)}px,${(dy / L * 26 * 0.65).toFixed(0)}px)`
-  V.fx.timers.add(setTimeout(() => { A.bb.style.transform = 'rotateX(var(--anti))' }, 170))
+  { const t = setTimeout(() => { V.fx.timers.delete(t); A.bb.style.transform = 'rotateX(var(--anti))' }, dilate(V, 170)); V.fx.timers.add(t) }
 }
 export function hitFlash(V, tgtId) {
   /* a STRIKE, not a glow: 45ms (ruled 2026-09-01; it was 160 and read as a glow) */
   const T = V.layers.UEL.get(tgtId); if (!T) return
   T.flash.style.opacity = '1'
-  V.fx.timers.add(setTimeout(() => { T.flash.style.opacity = '0' }, 60))
+  { const t = setTimeout(() => { V.fx.timers.delete(t); T.flash.style.opacity = '0' }, dilate(V, 60)); V.fx.timers.add(t) }
 }
 /* HITSTOP (ruled 2026-09-01): freeze TOKEN TRANSFORMS ONLY — every animation
    under the units layer (traversals, bobs, the lunge's transition) pauses for
@@ -428,7 +469,12 @@ export function hitstop(V, ms) {
   const anims = L.getAnimations({ subtree: true }).filter(a => a.playState === 'running')
   if (!anims.length) return
   for (const a of anims) a.pause()
-  V.fx.timers.add(setTimeout(() => { for (const a of anims) { try { if (a.playState === 'paused') a.play() } catch (e) {} } }, ms))
+  /* the resume must survive a seek landing inside the freeze: cancelBeats
+     clears every timer, so it calls resumeAll() too (REVIEW §C5) */
+  const resume = () => { for (const a of anims) { try { if (a.playState === 'paused') a.play() } catch (e) {} } }
+  V.fx.paused = anims
+  const t = setTimeout(() => { V.fx.timers.delete(t); V.fx.paused = null; resume() }, dilate(V, ms))
+  V.fx.timers.add(t)
 }
 
 /* ── 2026-09-03 beats: arrivals, the rise, the ZoC hold, banners, Power ──── */
@@ -458,7 +504,7 @@ export function banner(V, kind, text, sub) {
   const b = el('banner ' + kind, '', `<b>${text}</b>${sub ? `<span>${sub}</span>` : ''}`)
   wrap.appendChild(b); V.fx.nodes.add(b)
   if (b.animate) b.animate([{ opacity: 0, transform: 'translate(-50%,-8px)' }, { opacity: 1, transform: 'translate(-50%,0)', offset: .12 }, { opacity: 1, offset: .8 }, { opacity: 0 }], { duration: 1600, fill: 'forwards' })
-  const t = setTimeout(() => { b.remove(); V.fx.nodes.delete(b); V.fx.timers.delete(t) }, 1650)
+  const t = setTimeout(() => { b.remove(); V.fx.nodes.delete(b); V.fx.timers.delete(t) }, dilate(V, 1650))
   V.fx.timers.add(t)
 }
 /* the Power chip pulses when the pool rises (the number is the fold's) */
@@ -481,22 +527,22 @@ export function shove(V, id, from, to, hexes) {
   const E = V.layers.UEL.get(id)
   if (!E || !E.root.animate || from == null || to == null || from === to) return
   const a = feetOf(V, from), b = feetOf(V, to)
-  const dur = Math.min(420, 150 + 90 * Math.max(1, hexes || 1))
+  const dur = dilate(V, Math.min(420, 150 + 90 * Math.max(1, hexes || 1)))
   if (E.walk) E.walk.cancel()
   E.root.style.transition = 'none'
   const anim = E.root.animate([{ left: a.x + 'px', top: a.y + 'px' }, { left: b.x + 'px', top: b.y + 'px' }],
     { duration: dur, easing: 'cubic-bezier(.2,.8,.3,1)', fill: 'none' })
   E.walk = anim
-  anim.oncancel = anim.onfinish = () => { E.root.style.transition = ROOT_TRANSITION; E.walk = null }
+  /* only the current owner clears the slot — see traverse (REVIEW §C4) */
+  anim.oncancel = anim.onfinish = () => { E.root.style.transition = ROOT_TRANSITION; if (E.walk === anim) E.walk = null }
 }
 
 /* a BADGE gained mid-battle (engine 2e76ede): the token pulses in the badge's
    own red — the float says which badge, this says WHO */
 export function badgeBeat(V, id) {
-  const E = V.layers.UEL.get(id); if (!E || !E.img.animate) return
-  E.img.animate([{ filter: 'none' }, { filter: 'none' }], { duration: 1 })   // no filters in the 3D scene (the trap)
+  const E = V.layers.UEL.get(id); if (!E || !E.bb.animate) return
   E.bb.animate([{ transform: 'rotateX(var(--anti)) scale(1)' }, { transform: 'rotateX(var(--anti)) scale(1.08)', offset: .35 },
-    { transform: 'rotateX(var(--anti)) scale(1)' }], { duration: 420, easing: 'ease-out' })
+    { transform: 'rotateX(var(--anti)) scale(1)' }], { duration: dilate(V, 420), easing: 'ease-out' })
 }
 
 /* DEATHBED FIGHTING — the modal (Angela, 2026-09-03 evening, VISUAL-BATTLE-
@@ -531,8 +577,8 @@ export function deathbedModal(V, c) {
   wrap.appendChild(m); V.fx.nodes.add(m)
   if (plate.animate) plate.animate([{ transform: 'scale(1.12)', opacity: 0 }, { transform: 'scale(1)', opacity: 1 }], { duration: 160, easing: 'cubic-bezier(.2,1.2,.4,1)' })
   const t1 = setTimeout(() => { V.fx.timers.delete(t1); plate.innerHTML = stage2; plate.className = 'dbPlate ' + c.result
-    if (plate.animate) plate.animate([{ transform: 'scale(1.25)' }, { transform: 'scale(1)' }], { duration: 220, easing: 'cubic-bezier(.2,1.3,.4,1)' }) }, DB_STAGE)
-  const t2 = setTimeout(() => { V.fx.timers.delete(t2); m.remove(); V.fx.nodes.delete(m) }, DB_TOTAL)
+    if (plate.animate) plate.animate([{ transform: 'scale(1.25)' }, { transform: 'scale(1)' }], { duration: 220, easing: 'cubic-bezier(.2,1.3,.4,1)' }) }, dilate(V, DB_STAGE))
+  const t2 = setTimeout(() => { V.fx.timers.delete(t2); m.remove(); V.fx.nodes.delete(m) }, dilate(V, DB_TOTAL))
   V.fx.timers.add(t1); V.fx.timers.add(t2)
 }
 

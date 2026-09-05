@@ -45,7 +45,14 @@ const fail = (m) => { console.error('GATE FAIL — ' + m); process.exit(1) }
   const strip = src => src.replace(/`(?:\\.|[^`\\])*`/g, '``').replace(/'(?:\\.|[^'\\\n])*'/g, "''").replace(/"(?:\\.|[^"\\\n])*"/g, '""')
     .replace(/\/\*[\s\S]*?\*\//g, '').replace(/\/\/.*$/gm, '')
   /* everything below the intent layer: all of src/ except the harness and the page entry */
-  const below = readdirSync('src').filter(f => /\.(js|ts)$/.test(f) && !['harness.js', 'main.js'].includes(f)).map(f => 'src/' + f)
+  /* RECURSIVE, like the door probe and the hue probe above it: src/ is flat
+     today, so a flat scan caught everything — and would silently exit the law
+     the day anyone makes src/fx/ (REVIEW §D7, 2026-09-04) */
+  const below = []
+  ;(function walk(d) { for (const f of readdirSync(d, { withFileTypes: true })) {
+    const p = d + '/' + f.name
+    if (f.isDirectory()) walk(p)
+    else if (/\.(js|ts|mjs|mts)$/.test(f.name) && !['src/harness.js', 'src/main.js'].includes(p)) below.push(p) } })('src')
   const bad = []
   for (const f of below) for (const m of strip(readFileSync(f, 'utf8')).matchAll(/\bmode\s*[!=]==?\s*['"]|\b(playback|harness|replay)\b/g)) bad.push(`${f}: "${m[0].trim()}"`)
   if (bad.length) fail('Law 5 — a mode word below the intent layer:\n  ' + bad.join('\n  '))

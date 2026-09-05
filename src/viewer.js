@@ -10,7 +10,8 @@
      field    — board geometry + terrain for this battle's map (generated/fields.json[mapId])
      units    — typeId -> unit sheet (generated/static.json.units)
      statuses — statusId -> display name
-     attacks, abilities — the definition tables a unit.equipped grant resolves against (static.json)
+     actions  — the ONE action registry a grant of any kind resolves against (static.json)
+     badges   — badgeId -> {name, statModifiers, grants, flags}
      layers   — ground layer number -> name (static.json.layers); hexDist — the engine's hex
                 distance tables keyed "WxH", each a Uint8Array of hexCount² (decoded by the host from static.json.hexDist)
      artmap   — typeId -> {token, card, aspect, height}; assets — file -> data URI / URL
@@ -95,7 +96,7 @@ export function mountBattleViewer(root, data, opts = {}) {
   const DIST = data.hexDist && data.hexDist[boardKey]
   const V = {
     dom, now,
-    data: { F, POS: F.hexes, LAYOUT, UD: data.units, SN: data.statuses, AT: data.attacks || {}, AB: data.abilities || {},
+    data: { F, POS: F.hexes, LAYOUT, UD: data.units, SN: data.statuses,
       LAYERS: data.layers || {}, DIST: DIST || null, BOARD: { width: F.width, height: F.height },
       ACT: data.actions || {}, BADGES: data.badges || {}, ARTMAP: data.artmap, ASSETS: data.assets },
     meta: data.meta || {},
@@ -104,7 +105,7 @@ export function mountBattleViewer(root, data, opts = {}) {
     layers: { ground: null, dyn: null, unitsL: null, UEL: new Map(), floatL: null, FLOAT_SLOTS: {} },
     /* every pending beat the board schedules — timers, stray nodes, the injury
        queue — so seek() and dispose() can drop them all (review 2026-09-03) */
-    fx: { FX: null, timers: new Set(), nodes: new Set(), injuryQ: [] },
+    fx: { FX: null, timers: new Set(), nodes: new Set(), injuryQ: [], paused: null },
     playing: false, speed: 1, timer: null, invalid: null,
   }
   const ctx = () => ({ UD: V.data.UD, SN: V.data.SN })

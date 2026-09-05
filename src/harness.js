@@ -54,8 +54,7 @@ export function startHarness(mountEl, lib) {
     if (!field) throw new Error(`no field geometry for ${mapId} — generated/fields.json must hold every map`)
     return {
       field, units: lib.static.units, statuses: lib.static.statuses,
-      attacks: lib.static.attacks, abilities: lib.static.abilities, actions: lib.static.actions,
-      badges: lib.static.badges, layers: lib.static.layers, hexDist,
+      actions: lib.static.actions, badges: lib.static.badges, layers: lib.static.layers, hexDist,
       artmap: lib.art.artmap, assets: lib.art.assets, glyphs: lib.glyphs,
       meta: { label: b.label, seed: b.battle.seed, engineCommit: b.battle.engineCommit, outcome: b.battle.outcome, turns: b.battle.turns },
     }
