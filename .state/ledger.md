@@ -9985,3 +9985,23 @@ IRON GAUNTLET: NOT PASSED — 2 FLAG(S) WARNED
   PASS  kill switch — the tests fail without the content — tests fail without unit.zombie — they genuinely test it
 
 IRON GAUNTLET: NOT PASSED — 1 FLAG(S) WARNED
+
+## content.pack-maps — LANDED `52cf5f7`
+2026-09-05 06:19
+
+  PASS  dependencies landed
+  WARN  not already decided — 2 candidate ruling(s) — READ BEFORE ASKING: ../STATE.md:21 · ../STATE.md:18
+  PASS  typecheck
+  PASS  full test suite
+  PASS  gate 1 — the id appears in a real battle — map.proving.open: 1 log lines, 1 fired, 1 changed state
+  PASS  brought its own tests — test/pack-maps.test.ts
+  PASS  existing tests untouched
+  PASS  control battles unchanged — will re-bless at commit — this item DECLARED it changes the control battles: map.proving.open ?->05e7f1fb, map.proving.ridge ?->5ac859ce, map.proving.ford ?->098281a2, map.proving.copse ?->de5cae2e, map.proving.ruin ?->73abb99a, map.courtyard ?->56d3a2f1, map.floodplain ?->69655c5c, map.proving.open NEW, map.proving.ridge NEW, map.proving.ford NEW, map.proving.copse NEW, map.proving.ruin NEW, map.courtyard NEW, map.floodplain NEW
+  PASS  content has a published source — 26 ids without a published source (16 awaiting publication from earlier items — see audit)
+  PASS  hardcode scan — core knows mechanisms, never names
+  PASS  generalizes — the second instance costs zero engine code — shape 'data' — not a mechanism, exempt
+  PASS  naming — new content ids use declared kinds
+  PASS  naming — no banned words invented
+  PASS  kill switch — the tests fail without the content — tests fail without map.proving.open — they genuinely test it
+
+IRON GAUNTLET: NOT PASSED — 1 FLAG(S) WARNED

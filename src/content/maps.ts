@@ -18,6 +18,7 @@
 import { TERRAIN } from '../core/types.js'
 import { formatOf, type Board, type Edge } from '../core/hex.js'
 import { disabledIds } from './disable.js'
+import { packMaps } from './pack.js'
 
 /**
  * `deploy` — which edge each side deploys on (board.deploy-edges, 2026-09-04).
@@ -28,75 +29,15 @@ import { disabledIds } from './disable.js'
  */
 export type Deploy = { readonly hero: Edge; readonly enemy: Edge }
 export const DEFAULT_DEPLOY: Deploy = { hero: 'west', enemy: 'east' }
-export type MapDef = { id: string; name: string; note: string; rows: readonly string[]; deploy?: Deploy }
+export type MapDef = { id: string; name: string; note?: string; rows: readonly string[]; deploy?: Deploy }
 
+// content.pack-maps (2026-09-04, session 9's E1): the SHIPPING maps are content
+// rows now — `content/gen/maps.json`, through the pack (`packMaps()`). The six
+// that were hand-typed here (open, ridge, flanks, highlands, field, thicket)
+// moved there row for row, so every control hash held. What stays here is the
+// TESTING lane — never ships — one map per probe need and one per format.
 const RAW_MAPS: readonly MapDef[] = [
-  {
-    id: 'map.open',
-    name: 'Open Field',
-    note: 'No terrain at all. The control map — keeps every earlier result comparable.',
-    rows: [
-      '................', '................', '................', '................',
-      '................', '................', '................', '................',
-      '................', '................', '................', '................',
-      '................', '................', '................', '................',
-    ],
-  },
-  {
-    id: 'map.ridge',
-    name: 'The Ridge',
-    note: 'A band across the middle. Both sides must cross it; whoever holds it shoots from height.',
-    rows: [
-      '................', '................', '................', '................',
-      '................', '................', '................', '....hhhhhhhh....',
-      '...hhhhhhhhhh...', '................', '................', '................',
-      '................', '................', '................', '................',
-    ],
-  },
-  {
-    id: 'map.flanks',
-    name: 'Two Knolls',
-    note: 'High ground on both wings, open in the centre. Rewards splitting, punishes the walk out.',
-    rows: [
-      '................', '................', '................', '.hh..........hh.',
-      'hhh..........hhh', '.hh..........hh.', '................', '................',
-      '................', '................', '.hh..........hh.', 'hhh..........hhh',
-      '.hh..........hh.', '................', '................', '................',
-    ],
-  },
-  {
-    id: 'map.highlands',
-    name: 'Highlands',
-    note: 'Broken ground everywhere. Movement is expensive and nearly every hex is a firing position.',
-    rows: [
-      '..h..hh..h....h.', '.hh...h..hh..hh.', 'h..hh...h..hh..h', '..h..hhh..h...h.',
-      '.hh..h..hh...hh.', 'h..hh..h..hhh..h', '..h..hh..h....h.', '.hh..h..hh...hh.',
-      'h..h..hh..h.h..h', '..hh..h..hh...hh', '.h..hh..h..h.h..', '..h..h..hh....h.',
-      '..h..hh..h....h.', '.hh...h..hh..hh.', 'h..hh...h..hh..h', '..h..hhh..h...h.',
-    ],
-  },
-  {
-    id: 'map.field',
-    name: 'The Field',
-    note: 'A 16x16 crop of MAP-01 (rows 4-19, cols 6-21), for the replay viewer. Re-cropped 2026-08-25 with the board ruling — widened rather than padded, so the terrain is still MAP-01’s own. The real MAP-01 terrain. Forest, rocky, rocky-hills, water and obstacles are RECOGNISED but carry no rules yet — they behave as open ground until terrain.movecost / terrain.passable / terrain.modifiers land.',
-    rows: [
-      'ffw...hhhhhfffh.', 'fwwwwhhhffffrfR.', 'fffwwwhhhfffrrrr', 'hffww..fffffrrrr',
-      'hhhhwww..fffrrrr', 'hhhwww....frrrr.', 'hhhwwww.....rrrr', 'wwwwwwrrr...rr..',
-      '..wwwwrrr...rrrr', '...wwrrrr..RRRRr', '..wwwrrrr...hhhR', '..www.rrRh.hhhhh',
-      'x..ww...r.hhhhh.', '...ww.....hhhh..', '...www.....hhhh.', '...wwwx...hhhh..',
-    ],
-  },
-  {
-    id: 'map.thicket',
-    name: 'The Thicket',
-    note: 'A 16x16 crop of MAP-01 (rows 8-23, cols 0-15). Re-cropped 2026-08-25 with the board ruling — widened rather than padded, so the terrain is still MAP-01’s own. Carries the only obstacles on the panel and a wide water channel — the map that makes terrain.passable testable at all.',
-    rows: [
-      '..ffhhhhhhwww..f', '..hhhhhhhwww....', 'hhhhhhhhhwwww...', '.hhhhwwwwwwwrrr.',
-      '...hhh..wwwwrrr.', '...xh....wwrrrr.', '...h....wwwrrrr.', '...h....www.rrRh',
-      '......x..ww...r.', '.........ww.....', '..x......www....', '...f.....wwwx...',
-      '.fff......www...', '.ff.......wwww..', '.fff........ww..', 'fff..ff....www..',
-    ],
-  },
+  // ── the six shipping standards used to be here; see content/gen/maps.json ──
   {
     id: 'test.map.embers',
     name: 'The Ember Field (TESTING)',
@@ -160,7 +101,9 @@ const RAW_MAPS: readonly MapDef[] = [
 // Kill-switch seam (2026-08-20, found landing map.showcase): a disabled map id
 // leaves the roster entirely, so its tests genuinely fail without it —
 // identical array when CF_DISABLE_IDS is unset.
-export const MAPS: readonly MapDef[] = RAW_MAPS.filter((m) => !disabledIds().has(m.id))
+// One owner per id, loudly: a map in the pack AND here is a fork.
+for (const m of packMaps()) if (RAW_MAPS.some((r) => r.id === m.id)) throw new Error(`map '${m.id}' exists in BOTH content/maps.ts and the generated pack — one owner only`)
+export const MAPS: readonly MapDef[] = [...packMaps(), ...RAW_MAPS].filter((m) => !disabledIds().has(m.id))
 
 export const MAP_PANEL = MAPS.map((m) => m.id)
 
@@ -182,7 +125,7 @@ const TERRAIN_ID: Readonly<Record<number, string>> = {
 
 function mapDef(mapId: string): MapDef {
   const m = MAPS.find((x) => x.id === mapId)
-  if (!m) throw new Error(`unknown map '${mapId}' — maps are authored, check content/maps.ts`)
+  if (!m) throw new Error(`unknown map '${mapId}' — maps are authored: content/gen/maps.json (shipping) or content/maps.ts (testing lane)`)
   return m
 }
 

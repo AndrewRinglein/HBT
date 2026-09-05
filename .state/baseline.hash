@@ -4,6 +4,13 @@ map.flanks 15fd86d8
 map.highlands 8d90a6fe
 map.field c5de81cd
 map.thicket e915f926
+map.proving.open 05e7f1fb
+map.proving.ridge 5ac859ce
+map.proving.ford 098281a2
+map.proving.copse de5cae2e
+map.proving.ruin 73abb99a
+map.courtyard 56d3a2f1
+map.floodplain 69655c5c
 test.map.embers e161611a
 test.map.showcase 3f1d37f9
 test.map.duel-8 9f70e5ea

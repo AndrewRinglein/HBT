@@ -2816,5 +2816,29 @@
   "attempts": 1,
   "sha": "9dc6d1f",
   "gauntlet": "not passed — 1 flag(s) warned"
+ },
+ {
+  "id": "content.pack-maps",
+  "kind": "engine",
+  "shape": "data",
+  "needs": [
+   "board.variable-size",
+   "board.deploy-edges"
+  ],
+  "ruling": "PROVING-PLAN.md §7 Stage A2 (content.maps-as-rows); 9-PROVING-SETTLED.md §2 E1; DECISIONS 2026-09-03 board formats",
+  "spec": "The engine half of content.maps-as-rows (content b011ff3 shipped gen/maps.json through the pack: 13 rows — the six standards, five map.proving.* 16x8, map.courtyard 8x8, map.floodplain 24x24). maps.ts built MAP_PANEL from RAW_MAPS only, so createBattle said unknown map map.proving.open and nothing in the Proving could run. Now: pack.ts packMaps() validates every row (key = id, rectangular, the board the rows draw is the board the row claims, that board is one of the four formats, deploy edges differ); maps.ts MAPS = pack rows first, then the TESTING lane; one owner per id, loudly; the six hand-typed standards deleted (row for row identical to the pack — every control hash held).",
+  "expect": "MAP_PANEL is 18: thirteen pack rows then five test maps; boardOf(map.proving.open) is 16x8, map.courtyard 8x8, map.floodplain 24x24; the five Proving maps field and run; npm run proving ../content/proving/controls.json fields all five maps",
+  "changesBaseline": true,
+  "baselineReason": "VERIFIED with tools/baseline.mts before declaring: all eleven existing control lines hash IDENTICAL (map.open 388d54bd ... test.map.horde-24 0a925406). Seven NEW lines join the panel — the five Proving maps, the Courtyard, the Floodplain — because a map on the roster is a control map. Nothing moved; the file grew.",
+  "probeIds": [
+   "map.proving.open"
+  ],
+  "tests": [
+   "test/pack-maps.test.ts"
+  ],
+  "note": "Session 9 E1. Unblocks proving.units-enemy (E1+E2) and the controls plan.",
+  "status": "done",
+  "sha": "52cf5f7",
+  "gauntlet": "not passed — 1 flag(s) warned"
  }
 ]
