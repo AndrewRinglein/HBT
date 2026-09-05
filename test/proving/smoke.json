@@ -1,6 +1,6 @@
 {
   "id": "proving.smoke",
-  "note": "proving.rig's own verify plan (2026-09-04). Test bodies and test maps \u2014 never a ranking anyone reads. Content's plans live in content/proving/.",
+  "note": "proving.rig's own verify plan (2026-09-04). Test bodies and test maps — never a ranking anyone reads. Content's plans live in content/proving/. proving.plan-shape (2026-09-04): a kitted replace subject (E5), a gap matchup (E6), an invalid matchup (E2), switches.",
   "maps": [
     "test.map.dungeon-16x8",
     "map.open",
@@ -55,6 +55,10 @@
           "item.fire-staff"
         ]
       }
+    ],
+    "squad.nobodies": [
+      "unit.nobody",
+      "unit.zombie"
     ]
   },
   "fixtures": [
@@ -144,6 +148,18 @@
           "power.bloodrage.frenzy"
         ]
       }
+    },
+    {
+      "id": "hero.base.paladin-shiney",
+      "fixture": "f.codex-v-six",
+      "rotation": "replace",
+      "side": "hero",
+      "slot": 2,
+      "items": [
+        "item.longsword",
+        "item.knight-shield",
+        "item.basic-armor"
+      ]
     }
   ],
   "matchups": [
@@ -157,6 +173,23 @@
       "hero": "squad.zombies-four",
       "enemy": "squad.zombies-four",
       "sides": "byList"
+    },
+    {
+      "id": "m.mirror-gap-3",
+      "hero": "squad.zombies-four",
+      "enemy": "squad.zombies-four",
+      "sides": "byList",
+      "gap": 3,
+      "pairs": 2
+    },
+    {
+      "id": "m.nobodies",
+      "hero": "squad.test-four",
+      "enemy": "squad.nobodies",
+      "pairs": 2
     }
-  ]
+  ],
+  "switches": {
+    "mirrorSideRules": "row"
+  }
 }

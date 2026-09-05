@@ -54,6 +54,15 @@ export type BattleOptions = {
   /** Force positions instead of rolling them — used by verification scenarios. */
   heroHexes?: number[]
   enemyHexes?: number[]
+  /**
+   * proving.plan-shape (2026-09-04, session 9's E6): the two deployment lines
+   * a chosen distance apart, symmetric about the board's middle — the lines
+   * move INWARD from their edges by depths that sum to (extent − 1 − gap), the
+   * hero side taking the floor. Same edges, same sampling, same rolls; only the
+   * depth changes. 1 ≤ gap ≤ extent − 1 along the deploy axis, or the fielding
+   * is refused. Absent = the edges themselves (depth 0).
+   */
+  deployGap?: number
   /** Sweep axes. */
   enemyCount?: number
   heroes?: readonly string[]
@@ -266,8 +275,17 @@ export function createBattle(opts: BattleOptions): Ctx {
   const deploy = deployOf(mapId)
   const passableLine = (edge: import('./hex.js').Edge, depth: number) =>
     ctx.geo.edgeLine(edge, depth).filter((h) => isPassable(state.terrain[h] ?? 0))
-  const heroLine = passableLine(deploy.hero, 0)
-  const enemyLine = passableLine(deploy.enemy, 0)
+  // proving.plan-shape: a named gap moves both lines inward, symmetric about the middle
+  let heroDepth = 0, enemyDepth = 0
+  if (opts.deployGap !== undefined) {
+    const extent = deploy.hero === 'west' || deploy.hero === 'east' ? board.width : board.height
+    if (!Number.isInteger(opts.deployGap) || opts.deployGap < 1 || opts.deployGap > extent - 1) throw new Error(`map '${mapId}' (${board.width}×${board.height}, ${deploy.hero}/${deploy.enemy}) cannot hold a deployment gap of ${opts.deployGap} — 1..${extent - 1}`)
+    const inward = extent - 1 - opts.deployGap
+    heroDepth = Math.floor(inward / 2)
+    enemyDepth = inward - heroDepth
+  }
+  const heroLine = passableLine(deploy.hero, heroDepth)
+  const enemyLine = passableLine(deploy.enemy, enemyDepth)
   // Only the ROLLED path needs a deployment edge wide enough. A scenario names
   // its own hexes (already validated above), so a map with a narrow edge is not
   // its problem — before this guard, an authored fielding could be refused for a
@@ -284,7 +302,7 @@ export function createBattle(opts: BattleOptions): Ctx {
   // edge draws exactly what it always drew.
   const enemyDeploy: number[] = opts.enemyHexes ? [] : sample(rng, enemyLine, enemyLine.length, 'enemy-placement')
   if (!opts.enemyHexes) {
-    for (let depth = 1; enemyDeploy.length < enemies.length; depth++) {
+    for (let depth = enemyDepth + 1; enemyDeploy.length < enemies.length; depth++) {
       const line = passableLine(deploy.enemy, depth)
       if (line.length === 0) throw new Error(`map '${mapId}' cannot hold ${enemies.length} enemies inward from its ${deploy.enemy} edge`)
       enemyDeploy.push(...sample(rng, line, line.length, 'enemy-placement', depth))   // keyed by the line — Law 4
@@ -391,9 +409,11 @@ export function createBattle(opts: BattleOptions): Ctx {
   // and gate 1 could not probe a scenario at all. Emitted ONLY when there is a
   // scenario, so every standard battle stays byte-identical.
   // board.variable-size: the log names the board — the viewer lays out from these two numbers, never a constant
+  // proving.plan-shape: a named deployment gap is on the line (Law 12) — absent otherwise, so every standard battle stays byte-identical
+  const gap = opts.deployGap !== undefined ? { gap: opts.deployGap } : {}
   emit(ctx, 'map.loaded', mapId, opts.scenarioId
-    ? { mapId, scenarioId: opts.scenarioId, width: board.width, height: board.height, deploy, ...terrainCensus(state.terrain) }
-    : { mapId, width: board.width, height: board.height, deploy, ...terrainCensus(state.terrain) })
+    ? { mapId, scenarioId: opts.scenarioId, width: board.width, height: board.height, deploy, ...gap, ...terrainCensus(state.terrain) }
+    : { mapId, width: board.width, height: board.height, deploy, ...gap, ...terrainCensus(state.terrain) })
   return ctx
 }
 

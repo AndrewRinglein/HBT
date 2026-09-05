@@ -2867,5 +2867,32 @@
   "attempts": 1,
   "sha": "63f75cc",
   "gauntlet": "not passed — 2 flag(s) warned"
+ },
+ {
+  "id": "proving.plan-shape",
+  "kind": "engine",
+  "shape": "plumbing",
+  "needs": [
+   "proving.rig",
+   "content.pack-maps",
+   "fix.class-restriction",
+   "proving.mirror-row-rules"
+  ],
+  "ruling": "9-PROVING-SETTLED.md §2 (E2, E3, E5, E6); DECISIONS.md 2026-09-04 — The Proving's first pass",
+  "spec": "The plan shape session 9's six files need, found by running them. E5: Subject gains items/badges/progress and replace/add field them — a replace subject fights in ITS OWN kit, never the seat's (every hero subject fought in the mage's kit before). E3: a kit on the ENEMY side is refused loudly by validatePlan and by fielding() — it used to be dropped in silence (a kitted hero squad east fought bare). E6: Matchup.gap → BattleOptions.deployGap: both deployment lines move inward from their edges, symmetric about the middle, same sampling, same rolls; map.loaded carries gap; validatePlan refuses a gap a plan map cannot hold. E2: a matchup fielding that fails is INVALID with its reason on the battle, the rollup carries invalid per matchup and the battles themselves (the initiative plan is read per map), the CLI prints matchup INVALIDs. Plan.switches → cfg.switches so a plan says what it measures (proving.initiative runs under mirrorSideRules row).",
+  "expect": "the smoke plan validates and runs with a kitted replace subject (the paladin wields its longsword in the mage's seat), a gap-3 mirror (hero line col 6, enemy col 9 on a 16-wide board), an unfieldable matchup (2 INVALID, 0 wins), and mirrorSideRules row (no deathbed line in the mirror)",
+  "changesBaseline": false,
+  "probeIds": [
+   "item.knight-shield"
+  ],
+  "tests": [
+   "test/proving.test.ts",
+   "test/proving/smoke.json"
+  ],
+  "note": "Session 9 E2/E3/E5/E6. deployGap is the one engine-side addition (setup.ts); every standard battle is byte-identical because the field is absent. The plan files need one line each on the two initiative plans: \"switches\": {\"mirrorSideRules\": \"row\"} — session 9's generator owns them.",
+  "status": "done-needs-review",
+  "attempts": 1,
+  "sha": "ef5cb9c",
+  "gauntlet": "not passed — 2 flag(s) warned"
  }
 ]

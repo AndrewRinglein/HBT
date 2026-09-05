@@ -10072,3 +10072,158 @@ index b43168d..79e2560 100644
 </details>
 
 IRON GAUNTLET: NOT PASSED — 2 FLAG(S) WARNED
+
+## proving.plan-shape — LANDED `ef5cb9c` **NEEDS REVIEW**
+2026-09-05 06:32
+
+  PASS  dependencies landed
+  WARN  not already decided — 5 candidate ruling(s) — READ BEFORE ASKING: ../STATE.md:18 · ../STATE.md:21
+  PASS  typecheck
+  PASS  full test suite
+  PASS  gate 1 — the id appears in a real battle — item.knight-shield: 1 log lines, 1 fired, 1 changed state
+  PASS  brought its own tests — test/proving.test.ts, test/proving/smoke.json
+  WARN  existing tests untouched — DELETED LINES in test/proving/smoke.json (-2) — will land FLAGGED for review
+  PASS  control battles unchanged
+  PASS  content has a published source — 26 ids without a published source (16 awaiting publication from earlier items — see audit)
+  PASS  hardcode scan — core knows mechanisms, never names
+  PASS  generalizes — the second instance costs zero engine code — shape 'plumbing' — not a mechanism, exempt
+  PASS  naming — new content ids use declared kinds
+  PASS  naming — no banned words invented
+  PASS  kill switch — the tests fail without the content — tests fail without item.knight-shield — they genuinely test it
+
+<details><summary>Existing tests were edited — review this diff</summary>
+
+```diff
+diff --git a/test/proving.test.ts b/test/proving.test.ts
+index e31b5c8..047fae7 100644
+--- a/test/proving.test.ts
++++ b/test/proving.test.ts
+@@ -138,2 +138,63 @@ describe('matchups and mirrors', () => {
+   })
+ })
++
++// ── proving.plan-shape (2026-09-04) — session 9's E2, E3, E5, E6 and the plan's switches ──
++describe('the plan shape session 9 wrote (proving.plan-shape)', () => {
++  it('E5: a replace subject fields in ITS OWN kit — the seat\'s kit does not ride along; a subject with no items fields bare', () => {
++    const fx = plan.fixtures.find((f) => f.id === 'f.codex-v-six')!
++    const base = fielding(plan, fx, 'map.open', 1)
++    expect(base.heroItems![2]).toEqual(['item.fire-staff'])   // the mage's seat
++    const sub = plan.subjects.find((s) => s.id === 'hero.base.paladin-shiney')!
++    const w = withSubject(plan, sub, base)
++    expect(w.heroes![2]).toBe('hero.base.paladin-shiney')
++    expect(w.heroItems![2]).toEqual(['item.longsword', 'item.knight-shield', 'item.basic-armor'])
++    const ctx = createBattle(w)
++    expect(attackIdsOf(ctx, ctx.state.units[2]!)).toContain('attack.longsword.slash')
++    expect(attackIdsOf(ctx, ctx.state.units[2]!)).not.toContain('attack.fire-staff.bolt')
++    // bare: the warrior into the mage's seat with no items — not the fire staff (which it could not wield anyway)
++    const bare = withSubject(plan, { id: 'hero.base.warrior-iron', fixture: fx.id, rotation: 'replace', side: 'hero', slot: 2 }, base)
++    expect(bare.heroItems![2]).toEqual([])
++    expect(() => createBattle(bare)).not.toThrow()
++    // add carries its kit too
++    const add = withSubject(plan, { id: 'hero.base.paladin-shiney', fixture: fx.id, rotation: 'add', side: 'hero', items: ['item.longsword'] }, base)
++    expect(add.heroItems![3]).toEqual(['item.longsword'])
++  })
++  it('E3: a kit on the enemy side is refused loudly — by validatePlan and by the fielding — never dropped in silence', () => {
++    const bad = { ...plan, squads: { ...plan.squads, 'squad.kitted': [{ unit: 'hero.base.warrior-iron', items: ['item.war-axe'] }] }, fixtures: [...plan.fixtures, { id: 'f.kitted-east', hero: 'squad.zombies-four', enemy: 'squad.kitted', sides: 'byList' as const }] }
++    expect(() => validatePlan(bad)).toThrow(/ENEMY side .* hero side only/)
++    expect(() => fielding(bad, bad.fixtures.at(-1)!, 'map.open', 1)).toThrow(/ENEMY side/)
++    expect(() => validatePlan({ ...plan, subjects: [{ id: 'hero.base.warrior-iron', fixture: 'f.mirror', rotation: 'replace', side: 'enemy', slot: 0, items: ['item.war-axe'] }] })).toThrow(/ENEMY side/)
++  })
++  it('E6: a gap places the two lines that many hexes apart, symmetric about the middle; a gap the board cannot hold is refused', () => {
++    const m = plan.matchups!.find((x) => x.id === 'm.mirror-gap-3')!
++    const opts = fielding(plan, m, 'map.open', 1)
++    expect(opts.deployGap).toBe(3)
++    const ctx = createBattle(opts)
++    const col = (h: number) => ctx.geo.colOf(h)
++    const hc = new Set(ctx.state.units.filter((u) => u.side === 'hero').map((u) => col(u.hex)))
++    const ec = new Set(ctx.state.units.filter((u) => u.side === 'enemy').map((u) => col(u.hex)))
++    expect([...hc]).toEqual([6]); expect([...ec]).toEqual([9])   // 16 wide: inward 12 → 6 and 6
++    expect(ctx.events.find((e) => e.type === 'map.loaded')!['gap']).toBe(3)
++    const wide = fielding(plan, { ...m, gap: 15 }, 'map.open', 1)
++    expect(createBattle(wide).state.units.map((u) => col(u.hex)).sort((a, b) => a - b)).toEqual([0, 0, 0, 0, 15, 15, 15, 15])
++    expect(() => createBattle({ ...wide, deployGap: 16 })).toThrow(/cannot hold a deployment gap of 16/)
++    expect(() => validatePlan({ ...plan, matchups: [{ id: 'm.too-wide', hero: 'squad.zombies-four', enemy: 'squad.zombies-four', sides: 'byList', gap: 24 }] })).toThrow(/cannot hold/)
++    // a gap on the 8-wide duel map: 1..7
++    expect(() => validatePlan({ ...plan, maps: ['test.map.duel-8'], matchups: [{ id: 'm.g', hero: 'squad.zombies-four', enemy: 'squad.zombies-four', sides: 'byList', gap: 8 }] })).toThrow(/at most 7/)
++  })
++  it('E2: a matchup the plan cannot field is INVALID with its reason on every battle — never a 0·0 draw', () => {
++    const m = plan.matchups!.find((x) => x.id === 'm.nobodies')!
++    const r = runMatchup(plan, m, 'test')
++    expect(r.invalid).toBe(2)
++    expect(r.heroWins + r.enemyWins + r.other).toBe(0)
++    for (const b of r.battles) { expect(b.outcome).toBe('invalid'); expect(b.error).toMatch(/unit\.nobody/) }
++  })
++  it('the plan\'s switches reach the battle: the smoke plan runs under mirrorSideRules row, so the mirror\'s hero-side zombies die at 0', () => {
++    expect(plan.switches).toEqual({ mirrorSideRules: 'row' })
++    const m = plan.matchups!.find((x) => x.id === 'm.mirror')!
++    const ctx = createBattle(fielding(plan, m, 'map.open', 1))
++    expect(ctx.cfg.switches.mirrorSideRules).toBe('row')
++    runBattle(ctx)
++    expect(ctx.events.some((e) => e.type.startsWith('deathbed.'))).toBe(false)
++  })
++})
+diff --git a/test/proving/smoke.json b/test/proving/smoke.json
+index 1e45d83..e4ae139 100644
+--- a/test/proving/smoke.json
++++ b/test/proving/smoke.json
+@@ -1,5 +1,5 @@
+ {
+   "id": "proving.smoke",
+-  "note": "proving.rig's own verify plan (2026-09-04). Test bodies and test maps \u2014 never a ranking anyone reads. Content's plans live in content/proving/.",
++  "note": "proving.rig's own verify plan (2026-09-04). Test bodies and test maps — never a ranking anyone reads. Content's plans live in content/proving/. proving.plan-shape (2026-09-04): a kitted replace subject (E5), a gap matchup (E6), an invalid matchup (E2), switches.",
+   "maps": [
+     "test.map.dungeon-16x8",
+@@ -56,4 +56,8 @@
+         ]
+       }
++    ],
++    "squad.nobodies": [
++      "unit.nobody",
++      "unit.zombie"
+     ]
+   },
+@@ -145,4 +149,16 @@
+         ]
+       }
++    },
++    {
++      "id": "hero.base.paladin-shiney",
++      "fixture": "f.codex-v-six",
++      "rotation": "replace",
++      "side": "hero",
++      "slot": 2,
++      "items": [
++        "item.longsword",
++        "item.knight-shield",
++        "item.basic-armor"
++      ]
+     }
+   ],
+@@ -158,5 +174,22 @@
+       "enemy": "squad.zombies-four",
+       "sides": "byList"
++    },
++    {
++      "id": "m.mirror-gap-3",
++      "hero": "squad.zombies-four",
++      "enemy": "squad.zombies-four",
++      "sides": "byList",
++      "gap": 3,
++      "pairs": 2
++    },
++    {
++      "id": "m.nobodies",
++      "hero": "squad.test-four",
++      "enemy": "squad.nobodies",
++      "pairs": 2
+     }
+-  ]
++  ],
++  "switches": {
++    "mirrorSideRules": "row"
++  }
+ }
+```
+</details>
+
+IRON GAUNTLET: NOT PASSED — 2 FLAG(S) WARNED

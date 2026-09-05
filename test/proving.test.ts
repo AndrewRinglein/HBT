@@ -137,3 +137,64 @@ describe('matchups and mirrors', () => {
     expect(ctx.state.units.filter((u) => u.side === 'hero').every((u) => u.typeId === 'unit.zombie')).toBe(true)
   })
 })
+
+// ── proving.plan-shape (2026-09-04) — session 9's E2, E3, E5, E6 and the plan's switches ──
+describe('the plan shape session 9 wrote (proving.plan-shape)', () => {
+  it('E5: a replace subject fields in ITS OWN kit — the seat\'s kit does not ride along; a subject with no items fields bare', () => {
+    const fx = plan.fixtures.find((f) => f.id === 'f.codex-v-six')!
+    const base = fielding(plan, fx, 'map.open', 1)
+    expect(base.heroItems![2]).toEqual(['item.fire-staff'])   // the mage's seat
+    const sub = plan.subjects.find((s) => s.id === 'hero.base.paladin-shiney')!
+    const w = withSubject(plan, sub, base)
+    expect(w.heroes![2]).toBe('hero.base.paladin-shiney')
+    expect(w.heroItems![2]).toEqual(['item.longsword', 'item.knight-shield', 'item.basic-armor'])
+    const ctx = createBattle(w)
+    expect(attackIdsOf(ctx, ctx.state.units[2]!)).toContain('attack.longsword.slash')
+    expect(attackIdsOf(ctx, ctx.state.units[2]!)).not.toContain('attack.fire-staff.bolt')
+    // bare: the warrior into the mage's seat with no items — not the fire staff (which it could not wield anyway)
+    const bare = withSubject(plan, { id: 'hero.base.warrior-iron', fixture: fx.id, rotation: 'replace', side: 'hero', slot: 2 }, base)
+    expect(bare.heroItems![2]).toEqual([])
+    expect(() => createBattle(bare)).not.toThrow()
+    // add carries its kit too
+    const add = withSubject(plan, { id: 'hero.base.paladin-shiney', fixture: fx.id, rotation: 'add', side: 'hero', items: ['item.longsword'] }, base)
+    expect(add.heroItems![3]).toEqual(['item.longsword'])
+  })
+  it('E3: a kit on the enemy side is refused loudly — by validatePlan and by the fielding — never dropped in silence', () => {
+    const bad = { ...plan, squads: { ...plan.squads, 'squad.kitted': [{ unit: 'hero.base.warrior-iron', items: ['item.war-axe'] }] }, fixtures: [...plan.fixtures, { id: 'f.kitted-east', hero: 'squad.zombies-four', enemy: 'squad.kitted', sides: 'byList' as const }] }
+    expect(() => validatePlan(bad)).toThrow(/ENEMY side .* hero side only/)
+    expect(() => fielding(bad, bad.fixtures.at(-1)!, 'map.open', 1)).toThrow(/ENEMY side/)
+    expect(() => validatePlan({ ...plan, subjects: [{ id: 'hero.base.warrior-iron', fixture: 'f.mirror', rotation: 'replace', side: 'enemy', slot: 0, items: ['item.war-axe'] }] })).toThrow(/ENEMY side/)
+  })
+  it('E6: a gap places the two lines that many hexes apart, symmetric about the middle; a gap the board cannot hold is refused', () => {
+    const m = plan.matchups!.find((x) => x.id === 'm.mirror-gap-3')!
+    const opts = fielding(plan, m, 'map.open', 1)
+    expect(opts.deployGap).toBe(3)
+    const ctx = createBattle(opts)
+    const col = (h: number) => ctx.geo.colOf(h)
+    const hc = new Set(ctx.state.units.filter((u) => u.side === 'hero').map((u) => col(u.hex)))
+    const ec = new Set(ctx.state.units.filter((u) => u.side === 'enemy').map((u) => col(u.hex)))
+    expect([...hc]).toEqual([6]); expect([...ec]).toEqual([9])   // 16 wide: inward 12 → 6 and 6
+    expect(ctx.events.find((e) => e.type === 'map.loaded')!['gap']).toBe(3)
+    const wide = fielding(plan, { ...m, gap: 15 }, 'map.open', 1)
+    expect(createBattle(wide).state.units.map((u) => col(u.hex)).sort((a, b) => a - b)).toEqual([0, 0, 0, 0, 15, 15, 15, 15])
+    expect(() => createBattle({ ...wide, deployGap: 16 })).toThrow(/cannot hold a deployment gap of 16/)
+    expect(() => validatePlan({ ...plan, matchups: [{ id: 'm.too-wide', hero: 'squad.zombies-four', enemy: 'squad.zombies-four', sides: 'byList', gap: 24 }] })).toThrow(/cannot hold/)
+    // a gap on the 8-wide duel map: 1..7
+    expect(() => validatePlan({ ...plan, maps: ['test.map.duel-8'], matchups: [{ id: 'm.g', hero: 'squad.zombies-four', enemy: 'squad.zombies-four', sides: 'byList', gap: 8 }] })).toThrow(/at most 7/)
+  })
+  it('E2: a matchup the plan cannot field is INVALID with its reason on every battle — never a 0·0 draw', () => {
+    const m = plan.matchups!.find((x) => x.id === 'm.nobodies')!
+    const r = runMatchup(plan, m, 'test')
+    expect(r.invalid).toBe(2)
+    expect(r.heroWins + r.enemyWins + r.other).toBe(0)
+    for (const b of r.battles) { expect(b.outcome).toBe('invalid'); expect(b.error).toMatch(/unit\.nobody/) }
+  })
+  it('the plan\'s switches reach the battle: the smoke plan runs under mirrorSideRules row, so the mirror\'s hero-side zombies die at 0', () => {
+    expect(plan.switches).toEqual({ mirrorSideRules: 'row' })
+    const m = plan.matchups!.find((x) => x.id === 'm.mirror')!
+    const ctx = createBattle(fielding(plan, m, 'map.open', 1))
+    expect(ctx.cfg.switches.mirrorSideRules).toBe('row')
+    runBattle(ctx)
+    expect(ctx.events.some((e) => e.type.startsWith('deathbed.'))).toBe(false)
+  })
+})
