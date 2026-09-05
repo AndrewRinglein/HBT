@@ -392,5 +392,9 @@
   "hero.fixed.archivist-perrin": "civilian.scholar",
   "hero.fixed.sage-orla": "civilian.scholar",
   "hero.fixed.remembrancer-idris": "civilian.bard"
+ },
+ "heroBadge": {
+  "_note": "Ruled 2026-09-04 (engine/DECISIONS.md, \"Deathbed Fighting, REVERSED\"), verbatim: \"There is a badge that all heroes start with. That is invisible on a hero called Hero. It is not on civilians unless expressly said so. Only those with the badge Hero bleed out. A civilian who goes down and doesn't have the hero badge is just dead and a corpse.\" EMPTY IS THE ANSWER TODAY — not an oversight. No civilian has been named, so every civilian that falls is dead and a corpse with no Deathbed roll and no bleed-out. Add an id here the moment one is ruled otherwise.",
+  "ids": []
  }
 }

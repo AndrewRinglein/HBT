@@ -1248,12 +1248,62 @@
    "source": "2026-08-21: machine-readable fields merged from the Crucible. The prose was already byte-identical; only statModifiers/hook/rollable/blockers/engineStatGap were added."
   },
   {
+   "id": "badge.hero",
+   "name": "Hero",
+   "rarity": "",
+   "category": "STRUCTURAL",
+   "group": "",
+   "payload": "(invisible · no stats · bleeds out instead of dying on a failed Deathbed roll)",
+   "payloadIsData": true,
+   "statModifiers": [],
+   "flags": {
+    "bleedsOut": true
+   },
+   "rollable": false,
+   "note": "INVISIBLE — never shown on a card, never rolled, never awarded. Every hero row carries it; a civilian carries it ONLY when its own row says so. It does nothing but bleed out: a unit with it that fails the Deathbed roll is downed and bleeds out; a unit WITHOUT it that falls is simply dead, a corpse, with no downed state.",
+   "source": "Ruled 2026-09-04 (engine/DECISIONS.md, \"Deathbed Fighting, REVERSED\"). verbatim: \"There is a badge that all heroes start with. That is invisible on a hero called Hero. It is not on civilians unless expressly said so. Only those with the badge Hero bleed out. A civilian who goes down and does not have the hero badge is just dead and a corpse. Now any player unit rolls deathbed fighting. Unless they have the badge Wounded. If they are wounded, then they just die. When a player succeeds at deathbed fighting and they are not wounded (because they did not get a chance to roll if they were wounded), they immediately gain Wounded. Wounded gives: -10 accuracy, -10 dodge, -1 strength, -1 precision, -2 max HP.\" Same day: \"The hero badge does nothing else.\""
+  },
+  {
    "id": "badge.wounded",
    "name": "Wounded",
    "rarity": "",
-   "payload": "(prose only — not in a table)",
-   "category": "",
-   "group": ""
+   "category": "STRUCTURAL",
+   "group": "",
+   "payload": "−10 Accuracy · −10 Dodge · −1 Strength · −1 Precision · −2 Max HP",
+   "payloadIsData": true,
+   "statModifiers": [
+    {
+     "stat": "accuracy",
+     "op": "add",
+     "value": -10
+    },
+    {
+     "stat": "dodge",
+     "op": "add",
+     "value": -10
+    },
+    {
+     "stat": "strength",
+     "op": "add",
+     "value": -1
+    },
+    {
+     "stat": "precision",
+     "op": "add",
+     "value": -1
+    },
+    {
+     "stat": "health",
+     "op": "add",
+     "value": -2
+    }
+   ],
+   "flags": {
+    "wounded": true
+   },
+   "rollable": false,
+   "note": "APPLIED IN BATTLE, the moment a Deathbed roll succeeds — not minted after the battle. It PERSISTS: a unit fielded already Wounded gets no roll at all and simply dies at 0. The skull in the status bar is this badge. These five numbers REPLACE the old capability.deathbed penalties entirely (-1 to everything, -2 Max Stamina).",
+   "source": "Ruled 2026-09-04 (engine/DECISIONS.md, \"Deathbed Fighting, REVERSED\"). verbatim: \"There is a badge that all heroes start with. That is invisible on a hero called Hero. It is not on civilians unless expressly said so. Only those with the badge Hero bleed out. A civilian who goes down and does not have the hero badge is just dead and a corpse. Now any player unit rolls deathbed fighting. Unless they have the badge Wounded. If they are wounded, then they just die. When a player succeeds at deathbed fighting and they are not wounded (because they did not get a chance to roll if they were wounded), they immediately gain Wounded. Wounded gives: -10 accuracy, -10 dodge, -1 strength, -1 precision, -2 max HP.\" Same day: \"The hero badge does nothing else.\" Was \"(prose only — not in a table)\" until now."
   },
   {
    "id": "injury.borrowed-time",

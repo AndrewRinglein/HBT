@@ -37,7 +37,17 @@ const VOCAB_STATS = new Set(['health','resist','strength','dodge','movement','ar
 // uses. Inventing a word for one creature is the exact failure CONTENT-GAPS.md exists to catch.
 const VOCAB = JSON.parse(fs.readFileSync('gen/functions.json', 'utf8'));
 const names = k => new Set((VOCAB[k] || []).map(x => typeof x === 'string' ? x : x.name));
-const VOCAB_EFFECTS = names('effects');
+const VOCAB_EFFECTS = new Set([...names('effects'),
+  // 'inflict an affliction' is real vocabulary — gen/enemies-authored.json has used it since
+  // 2026-09-04 (zombie, hound, werewolf, both vampires) and mkenginepack compiles it to
+  // {kind:'badge.grant'}. It is absent from gen/functions.json only because functions.mjs
+  // counts the assembled codex, which does not include the authored-enemy trigger bodies.
+  // Declared here so the bestiary lane may use the same word as the authored lane.
+  'inflict an affliction']);
+// The afflictions are exactly the badge rows named badge.<affliction>. Read, not listed, so a
+// new affliction badge is usable the day it is authored.
+const VOCAB_AFFLICTIONS = new Set(JSON.parse(fs.readFileSync('gen/badges.json','utf8')).badges
+  .map(b => String(b.id)).filter(id => id.startsWith('badge.')).map(id => id.slice('badge.'.length)));
 const VOCAB_STATUSES = names('statuses');
 const VOCAB_HOOKS = names('hooks');
 const VOCAB_SHAPES = names('shapes');
@@ -399,8 +409,19 @@ for (const e of Object.values(ENEMY_CARDS)) {
         if (e.status && !VOCAB_STATUSES.has(e.status)) problems.push(`riders: ${uid}/${atkName} — status "${e.status}" is not in the vocabulary`);
         if (e.stat && !VOCAB_STATS.has(e.stat)) problems.push(`riders: ${uid}/${atkName} — stat "${e.stat}" is not in the vocabulary`);
       }
+      // badge.afflictions (2026-09-04): `affliction` and `chance` survive the mapper. They
+      // were being dropped, which is why "author the rider and it compiles" could not be true
+      // for the ghost — the field the converter reads never reached the row. The badge
+      // vocabulary is checked here the same way statuses are: a named badge or a loud problem.
+      for (const e of effects) {
+        if (e.effect === 'inflict an affliction' && !VOCAB_AFFLICTIONS.has(e.affliction))
+          problems.push(`riders: ${uid}/${atkName} — affliction "${e.affliction}" has no badge.<affliction> row`);
+      }
       a.effects.push(...effects.map(e => ({ effect:e.effect, status:e.status||null,
-        stat:e.stat||null, value:e.value ?? null, target:e.target||null, authored:true })));
+        stat:e.stat||null, value:e.value ?? null, target:e.target||null,
+        ...(e.affliction ? { affliction:e.affliction } : {}),
+        ...(e.chance !== undefined ? { chance:e.chance } : {}),
+        ...(e.needs ? { needs:e.needs } : {}), authored:true })));
     }
     for (const t of (spec.triggers || [])) {
       for (const e of (t.effects || [])) {

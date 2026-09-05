@@ -460,6 +460,18 @@ for(const h of heroes){
     }
   }
 
+  // badge.hero on a CIVILIAN — ruled 2026-09-04: "It is not on civilians unless expressly
+  // said so. A civilian who goes down and doesn't have the hero badge is just dead and a
+  // corpse." This is where a civilian expressly says so. Empty is the correct state today:
+  // no civilian has been named. mkenginepack reads hero.badges for the civilian lane and
+  // stamps every non-civilian hero itself.
+  for(const id of (CR.heroBadge||{}).ids||[]){
+    const h=heroes.find(x=>x.id===id);
+    if(!h){problems.push('civilian-rulings heroBadge: no hero '+id);continue;}
+    if(h.class!=='class.civilian'){problems.push('civilian-rulings heroBadge: '+id+' is '+h.class+' — every non-civilian hero already carries badge.hero; listing one here is a no-op that will rot');continue;}
+    h.badges=[...new Set([...(h.badges||[]),'badge.hero'])];
+    h.notes.push('Carries badge.hero and therefore bleeds out rather than dying outright — expressly ruled, 2026-09-04.');
+  }
   for(const [id,sb] of Object.entries(CR.statBlocks||{})){
     if(id.startsWith('_'))continue;
     const h=heroes.find(x=>x.id===id);

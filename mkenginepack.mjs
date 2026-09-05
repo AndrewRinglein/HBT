@@ -234,8 +234,35 @@ const BADGE_STAT = { str: 'strength', strength: 'strength', pre: 'precision', pr
   reach: 'reach', health: 'maxHp', h: 'maxHp', hp: 'maxHp', 'max hp': 'maxHp', 'max health': 'maxHp', 'stamina max': 'maxStamina', 'max stamina': 'maxStamina', stamina: 'maxStamina',
   'stamina regen': 'staminaRegen', regen: 'staminaRegen', crit: 'crit', luck: 'luck', toughness: 'toughness', surge: 'surge', vision: 'vision' };   // DBF (Deathbed Fighting) is derived from Toughness today, not a stat the engine folds — a +N DBF clause stays a named gap until it is
 const BADGE_FLAGS = { 'blocks deployment': 'blocksDeployment' };
+// Flags a row may declare STRUCTURALLY. Prose cannot express these — "invisible; no stats;
+// one flag" has no clause to parse — so the row carries `flags: { bleedsOut: true }` and the
+// converter trusts it. Engine handoff 2026-09-04: "Flags other than blocksDeployment need a
+// structured field on the row." A flag not on this list is a gap, never a guess.
+const BADGE_FLAGS_STRUCTURED = new Set(['bleedsOut', 'wounded', 'blocksDeployment']);
 function compileBadge(row) {
   const mods = {}; const grants = []; const flags = {}; const gaps = [];
+  // STRUCTURED FIELDS WIN, and they suppress the prose-only gap. A row that states its
+  // numbers as data is finished; parsing its payload again could only disagree with itself.
+  // Deathbed Fighting REVERSED, 2026-09-04: badge.hero and badge.wounded are the two rows
+  // the engine waits on, and neither can be written as a "+N Stat" clause.
+  // OPT-IN, not inferred. 148 existing rows already carry a statModifiers array ALONGSIDE a
+  // prose payload that still has clauses to parse (badge.aura-of-courage: statModifiers [] plus
+  // an aura clause that must stay a named gap). Treating any statModifiers array as "this row is
+  // data" would silently re-compile all of them. The row says so, or it does not.
+  if (row.payloadIsData === true) {
+    for (const m of (row.statModifiers || [])) {
+      const st = BADGE_STAT[String(m.stat).toLowerCase()] ?? m.stat;
+      if (!st || typeof m.value !== 'number') { gaps.push('statModifiers entry ' + JSON.stringify(m)); continue }
+      if ((m.op ?? 'add') !== 'add') { gaps.push('statModifiers op ' + m.op + ' (only add is compiled)'); continue }
+      mods[st] = (mods[st] ?? 0) + m.value;
+    }
+    for (const [k, v] of Object.entries(row.flags || {})) {
+      if (!BADGE_FLAGS_STRUCTURED.has(k)) { gaps.push('unknown flag ' + k); continue }
+      if (v) flags[k] = true;
+    }
+    for (const g of (row.grants || [])) grants.push(g);
+    return { id: row.id, name: row.name, statModifiers: mods, grants, flags, ...(gaps.length ? { gaps } : {}) };
+  }
   const payload = String(row.payload || '').replace(/\*\*/g, '');
   if (!payload || /prose only/i.test(payload)) gaps.push(payload ? 'payload is prose only — the numbers are owed' : 'no payload');
   else for (const raw of payload.split(/\s*[·;]\s*|,\s*(?![^()]*\))/)) {
@@ -1346,7 +1373,7 @@ function testAbilities() {
   }
   return out;
 }
-const UNIT_FIELDS = new Set(['typeId', 'name', 'side', 'levelTable', 'maxHp', 'armor', 'resist', 'accuracy', 'dodge', 'strength', 'precision', 'magic', 'spirit', 'crit', 'luck', 'toughness', 'surge', 'auras', 'role', 'movement', 'reach', 'maxStamina', 'staminaRegen', 'ai', 'attacks', 'abilities', 'moves', 'tags', 'triggers']);
+const UNIT_FIELDS = new Set(['typeId', 'name', 'side', 'levelTable', 'maxHp', 'armor', 'resist', 'accuracy', 'dodge', 'strength', 'precision', 'magic', 'spirit', 'crit', 'luck', 'toughness', 'surge', 'auras', 'role', 'movement', 'reach', 'maxStamina', 'staminaRegen', 'ai', 'attacks', 'abilities', 'moves', 'tags', 'triggers', 'badges']);
 const ATTACK_FIELDS = new Set(['id', 'name', 'kind', 'damageType', 'bonus', 'stat', 'reach', 'staminaCost', 'crit', 'critCount', 'area', 'cooldown', 'warmup', 'uses', 'free', 'accuracy', 'hits']);
 // a delta may start from any packed row — the real families AND the test
 // cohort (test-gash-zombie is the cohort's zombie plus one rider)
@@ -1421,6 +1448,30 @@ const test = { note: 'GENERATED from content/test/ — the test receptacle. Neve
 // EncounterDef. What the engine cannot honour is a named gap on the row —
 // retreat (skipped by ruling), standing rules, schedule events, a map series,
 // salvation — never silently dropped. Unit ids are checked against the pack.
+// ── badge.hero, ruled 2026-09-04 ("Deathbed Fighting, REVERSED") ─────────────
+// "There is a badge that all heroes start with. That is invisible on a hero called Hero.
+// It is not on civilians unless expressly said so. Only those with the badge Hero bleed out.
+// A civilian who goes down and doesn't have the hero badge is just dead and a corpse."
+//
+// Stamped HERE, in one post-pass, rather than in each of the four unit lanes — the lanes
+// build rows four different ways and a rule spread across four sites is how they drift apart.
+// A civilian opts IN through its own content row's `badges` array (gen/civilian-rulings.json
+// heroBadge), never by default. Enemies never carry it: an enemy that falls is a corpse.
+{
+  const contentBadges = new Map((D.heroes?.heroes || []).map((h) => [h.id, h.badges || []]));
+  let stamped = 0, optedIn = 0;
+  for (const u of [...heroes, ...prologueParty, ...alphaTeam]) {
+    if (u.side !== 'hero') continue;
+    const isCivilian = (u.tags || []).includes('class.civilian');
+    if (isCivilian) {
+      if (!(contentBadges.get(u.typeId) || []).includes('badge.hero')) continue;
+      optedIn++;
+    }
+    u.badges = ['badge.hero'];
+    stamped++;
+  }
+  console.log(`badge.hero stamped on ${stamped} hero rows (${optedIn} civilians opted in)`);
+}
 const packUnitIds = new Set([...heroes, ...enemies, ...authoredEnemies, ...prologueParty, ...alphaTeam].map((u) => u.typeId));
 function compileEncounter(row) {
   const gaps = [];

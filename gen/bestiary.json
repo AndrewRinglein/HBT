@@ -875,7 +875,21 @@
      "damageType": "magic",
      "damage": 0,
      "damageModifier": null,
-     "effects": []
+     "effects": [
+      {
+       "effect": "inflict an affliction",
+       "status": null,
+       "stat": null,
+       "value": null,
+       "target": null,
+       "affliction": "possession",
+       "chance": 25,
+       "needs": [
+        "capability.inflict-affliction"
+       ],
+       "authored": true
+      }
+     ]
     }
    ],
    "triggers": [],
@@ -898,7 +912,9 @@
    "sourceGaveTriggers": false,
    "backstory": "Ethereal spirits of the slain who refused to pass on. They phase through solid matter and strike with spectral claws that chill the soul. Their otherworldly nature makes them difficult to hit as they flicker in and out of reality.",
    "quote": "Death is not an ending... it is a transformation.",
-   "notes": [],
+   "notes": [
+    "Rider authored 2026-08-21 from its own name: A ghost's Possess is named for what it does. Ruled 2026-09-04: \"We also need to be able to add the badges of the afflictions. Vampires, werewolves, and undead sometimes afflict their targets with a badge. Same with ghosts and things that can add possession.\" The attack was bare — 0 damage, no effects — so the one thing it is called after was the one thing it did not do. Chance 25 is SOFT; a sweep prices it. Compare the Zombie's rotting-flesh at 10: possession is the ghost's whole purpose, not a side effect of being clawed."
+   ],
    "source": "hell-tcg data/enemyCards.js, extracted 2026-08-21. Stats and abilities are ported, not authored."
   },
   {
