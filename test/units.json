@@ -184,6 +184,9 @@
     ],
     "abilities": [
       "power.test-second-wind"
+    ],
+    "badges": [
+      "badge.hero"
     ]
   },
   {
@@ -249,7 +252,10 @@
         }
       }
     ],
-    "note": "test.fixture-migration (2026-09-02): the 2026-08-14 dictated warrior body, kept exactly (armor 1 is what the 'zombie deals 3 into armor' arithmetic reads) so ~25 custom-battle tests keep their numbers. A complete body, not a delta: no Codex hero is this."
+    "note": "test.fixture-migration (2026-09-02): the 2026-08-14 dictated warrior body, kept exactly (armor 1 is what the 'zombie deals 3 into armor' arithmetic reads) so ~25 custom-battle tests keep their numbers. A complete body, not a delta: no Codex hero is this.",
+    "badges": [
+      "badge.hero"
+    ]
   },
   {
     "id": "test-ranger",
@@ -279,7 +285,10 @@
       "power.side-roll"
     ],
     "triggers": [],
-    "note": "test.fixture-migration: the 2026-08-14 dictated ranger body, kept exactly."
+    "note": "test.fixture-migration: the 2026-08-14 dictated ranger body, kept exactly.",
+    "badges": [
+      "badge.hero"
+    ]
   },
   {
     "id": "test-mage",
@@ -335,7 +344,10 @@
         }
       }
     ],
-    "note": "test.fixture-migration: the 2026-08-14 dictated mage body, kept exactly (resist 1 is what the magic-mitigation arithmetic reads)."
+    "note": "test.fixture-migration: the 2026-08-14 dictated mage body, kept exactly (resist 1 is what the magic-mitigation arithmetic reads).",
+    "badges": [
+      "badge.hero"
+    ]
   },
   {
     "id": "test-gash-zombie",

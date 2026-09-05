@@ -318,7 +318,13 @@ function compileTrigger(t, unitId, attackId) {
       // chance absent = certain. Splitting a multi-effect trigger is only safe
       // when nothing rolls; at chance<100 the halves would diverge on the die.
       if ((t.effects.length > 1) && (t.chance ?? 100) !== 100) { gap(unitId, `${where} ${t.hook}: multi-effect at chance ${t.chance}`, 'multi-effect rolled trigger'); return []; }
-      const select = areaSelect ?? (ef.target === 'the attacker' || t.hook === 'onTakingDamage' ? 'target' : ef.target === 'self' ? 'self' : 'target');
+      // FINDING 39 (2026-09-04, the log-invariant audit): this line read the HOOK
+      // before the row — every onTakingDamage status went to 'target', which on
+      // that hook is the ATTACKER, so the Oathblade's Second Wind and Brace and
+      // the Air Mage's Arcane Ward landed on the zombie that clawed them (644
+      // times in 220 battles). The row's own `target` wins; the hook only
+      // decides what an unstated target means.
+      const select = areaSelect ?? (ef.target === 'self' ? 'self' : ef.target === 'the attacker' ? 'target' : 'target');
       // capability.power-pool (2026-09-03): a status whose value scales off Power — base + share
       const value = ef.powerScale ? { scale: 'power', base: ef.value ?? 0, mult: ef.powerScale } : (ef.value ?? 1);
       const trig = {
@@ -1373,7 +1379,7 @@ function testAbilities() {
   }
   return out;
 }
-const UNIT_FIELDS = new Set(['typeId', 'name', 'side', 'levelTable', 'maxHp', 'armor', 'resist', 'accuracy', 'dodge', 'strength', 'precision', 'magic', 'spirit', 'crit', 'luck', 'toughness', 'surge', 'auras', 'role', 'movement', 'reach', 'maxStamina', 'staminaRegen', 'ai', 'attacks', 'abilities', 'moves', 'tags', 'triggers', 'badges']);
+const UNIT_FIELDS = new Set(['typeId', 'name', 'side', 'levelTable', 'badges', 'maxHp', 'armor', 'resist', 'accuracy', 'dodge', 'strength', 'precision', 'magic', 'spirit', 'crit', 'luck', 'toughness', 'surge', 'auras', 'role', 'movement', 'reach', 'maxStamina', 'staminaRegen', 'ai', 'attacks', 'abilities', 'moves', 'tags', 'triggers', 'badges']);
 const ATTACK_FIELDS = new Set(['id', 'name', 'kind', 'damageType', 'bonus', 'stat', 'reach', 'staminaCost', 'crit', 'critCount', 'area', 'cooldown', 'warmup', 'uses', 'free', 'accuracy', 'hits']);
 // a delta may start from any packed row — the real families AND the test
 // cohort (test-gash-zombie is the cohort's zombie plus one rider)
