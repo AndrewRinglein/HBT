@@ -3,9 +3,9 @@
    STATS ABOVE THE CARD → card art with STATUSES TO ITS RIGHT → KEYWORDS BELOW
    THE PICTURE. The action bar owns actions (§9.7). Split out 2026-09-02. */
 import { stStyle } from './theme.js'
-import { sgn, STATSHORT, modOf } from './actions.js'
+import { sgn, STATSHORT, modOf, effectWord } from './actions.js'
 import { subjectOf } from './subject.js'
-import { MOD_UP, MOD_DOWN } from './theme.js'
+import { MOD_UP, MOD_DOWN, BADGE_HUE } from './theme.js'
 
 const HOOKLBL = { onHit: 'ON HIT', onAttack: 'ON ATTACK', onDamage: 'ON DAMAGE',
   onTakingDamage: 'WHEN HIT', onKill: 'ON KILL', onDeath: 'ON DEATH', onMiss: 'ON MISS',
@@ -54,13 +54,14 @@ export function drawPanel(V) {
   const trigCol = Object.entries(trigByHook).map(([hook, list]) => {
     const rows = list.map(t => {
       const ef = t.effect || {}
-      const st = ef.statusId ? stStyle(ef.statusId) : { hue: '#d6b25e' }
+      /* ONE namer, shared with the action bar (actions.js effectWord) — Angela
+         2026-09-04: a badge grant is named by its BADGE, not "badge.grant".
+         This row and the bar's chip used to carry diverging copies. */
+      const w = effectWord(ef, V.data, SN) || { word: '—' }
+      const st = w.statusId ? stStyle(w.statusId) : { hue: w.badge ? BADGE_HUE : '#d6b25e' }
       const who = t.select === 'self' ? ' on self' : t.select === 'target' ? '' : ' → ' + t.select
-      const eff = ef.kind === 'status.apply'
-          ? `${SN[ef.statusId] || String(ef.statusId || '').replace(/^(test\.)?status\./, '')} ${ef.value != null ? sgn(ef.value) : ''}${who}`
-        : ef.kind === 'damage' ? `${ef.amount ?? ef.value ?? ''} ${ef.damageType || ''} damage${who}`
-        : ef.kind === 'knockback' ? `knock back ${ef.hexes ?? 1}`
-        : ef.kind === 'heal' ? `heal ${ef.value ?? ''}${who}` : (ef.kind || '—')
+      const num = w.val == null ? '' : w.radius ? ` r${w.val}` : ' ' + (w.signed ? sgn(w.val) : w.val)
+      const eff = `${w.word}${num}${w.badge || w.radius ? '' : who}`
       const TF = S.TRIGFLASH
       const firing = TF && TF.unit === u.id && TF.id === t.id && TF.until > now
       return `<div style="display:flex;align-items:center;gap:7px;padding:5px 8px;margin-bottom:4px;

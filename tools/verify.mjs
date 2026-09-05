@@ -195,6 +195,14 @@ function drive(label, battle, allowStandee = false) {
   }
   const surfaces = win.document.body.allHTML().map(stripB64).join('\n')
   check(!/\+-\d/.test(surfaces), `${label}: "+-" on a rendered surface`)
+  /* NO RAW ENGINE ID WHERE A NAME BELONGS (Angela 2026-09-04: "Badge grant
+     should not be labeled 'badge grant.' It should be labeled what the badge
+     grant is"). Seven of the eleven trigger effect kinds fell through to their
+     dotted id. A `data-act` attribute and a tooltip may carry an id; visible
+     TEXT may not. */
+  { const text = surfaces.replace(/<[^>]*>/g, ' ')
+    for (const bad of ['badge.grant', 'corpse.consume', 'corpse.raise', 'layer.paint', 'power.gain', 'stamina.drain', 'status.apply'])
+      check(!text.includes(bad), `${label}: "${bad}" is printed as visible text — name the effect, not its engine id`) }
   return v
 }
 for (let i = 0; i < LIB.battles.length; i++) {

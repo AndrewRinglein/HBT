@@ -51,13 +51,17 @@ export const MOD_UP = '#7ec45f', MOD_DOWN = '#d1665c'
 /* the aura tints (2026-09-03) — a hostile aura is the debuff red, a friendly
    one the buff green: the buff/debuff layer's own pair, nothing new */
 export const AURA_HUE = { enemy: MOD_DOWN, ally: MOD_UP, any: '#cbb9a0' }
+/* a BADGE — the permanent per-unit thing (Rotting Flesh, Wounded). One hue
+   wherever a badge is named: the trigger chip, the panel's trigger row, the
+   float when one is gained (2026-09-04). */
+export const BADGE_HUE = '#c9a8ff'
 /* the emphasis ladder's gold (CRIT!, the crit numeral rim, the injury star) */
 export const CRIT_HUE = '#ffcf6a'
 /* note floats — knocked, resisted, absorbed, max-hp lost; and the 2026-09-03
    beats: held (a zone of control), the attack of opportunity, the Deathbed's
    stood/fell, a bleed-out moved, the rise, the feed, the obliteration, Surge */
 export const NOTE_HUE = { knocked: '#cbb9a0', resisted: '#9fb6c8', absorbed: '#8fd0ff', maxhp: '#d1665c', maxhpUp: '#7ec45f',
-  note: '#cbb9a0', aoo: '#ffb070', bleed: '#ff3226', badge: '#c9a8ff',
+  note: '#cbb9a0', aoo: '#ffb070', bleed: '#ff3226', badge: BADGE_HUE,
   raised: '#b48ae0', eaten: '#8ed14f', obliterated: '#6e5bd9', surge: '#ffe2a0' }
 /* the protection bar's spent segment; its live segment is the status hue */
 export const PROT_SPENT = '#2f5b78'

@@ -5,7 +5,7 @@
      powers  — effect (damage / heal / selfGuard), area, range
    Split out of viewer-core.js 2026-09-02. */
 
-import { MOD_UP, MOD_DOWN } from './theme.js'
+import { MOD_UP, MOD_DOWN, BADGE_HUE } from './theme.js'
 
 /* Signed numbers go through ONE helper. Hardcoding '+' produced "crit +-5" on
    Punch, whose crit is genuinely negative (2026-09-01). */
@@ -102,6 +102,40 @@ export function shortStatus(id, SN) {
   return SN[id] || String(id || '').replace(/^(test\.)?status\./, '')
 }
 
+/* ── WHAT A TRIGGER'S EFFECT IS CALLED (Angela, 2026-09-04) ────────────────
+   > "Badge grant should not be labeled 'badge grant.' It should be labeled
+   > what the badge grant is. In this case … it should be labeled
+   > 'rotting flesh.'"
+
+   Eleven effect kinds exist; four were named and SEVEN fell through to the raw
+   engine id, so a zombie's claw read `badge.grant`, a ghoul's `corpse.consume`
+   and the Kiln's `layer.paint`. Every one is named here, and the names that
+   exist as content — a badge, a layer, a status — are READ FROM THE DUMPED
+   TABLE, never typed (Law 4). The action bar and the panel both call this: they
+   carried two diverging copies of the logic, which is why the panel and the bar
+   could disagree about the same trigger. */
+export function effectWord(ef, D, SN) {
+  if (!ef || !ef.kind) return null
+  const BD = (D && D.BADGES) || {}, LY = (D && D.LAYERS) || {}
+  const layerName = id => String(id || '').replace(/^layer\./, '')
+  switch (ef.kind) {
+    case 'status.apply':   return { word: shortStatus(ef.statusId, SN), val: ef.value, statusId: ef.statusId }
+    case 'badge.grant':    return { word: (BD[ef.badgeId] || {}).name || String(ef.badgeId || '').replace(/^badge\./, ''), badge: true }
+    case 'damage':         return { word: (ef.damageType ? ef.damageType + ' damage' : 'Damage'), val: ef.amount ?? ef.value }
+    case 'heal':           return { word: 'Heal', val: ef.amount ?? ef.value }
+    case 'knockback':      return { word: 'Knockback', val: ef.hexes ?? ef.value }
+    case 'statMod':        return { word: (STATSHORT[ef.stat] || ef.stat), val: ef.value, signed: true }
+    case 'stamina.drain':  return { word: 'Stamina drain', val: ef.value }
+    case 'power.gain':     return { word: 'Power', val: ef.value, signed: true }
+    case 'layer.paint':    return { word: layerName(ef.layer) + ' ground', val: ef.radius, radius: true }
+    case 'corpse.raise':   return { word: 'Raises a corpse', val: ef.radius, radius: true }
+    case 'corpse.consume': return { word: 'Consumes a corpse', val: ef.radius, radius: true }
+    /* an effect kind the engine added and the viewer has not been taught: show
+       the engine's own word rather than invent one, and it is a viewer finding */
+    default: return { word: ef.kind, unknown: true }
+  }
+}
+
 export function effectTag(a, u, D, SN) {
   const bits = []
   if (a.kind === 'move') {
@@ -155,12 +189,13 @@ export function triggersFor(u, a, D, SN, stStyle) {
     if (!ATTACK_HOOKS.has(t.hook)) continue
     if (t.onlyWithAttack && t.onlyWithAttack !== a.id) continue
     const ef = t.effect || {}
-    const word = ef.kind === 'status.apply' ? shortStatus(ef.statusId, SN)
-               : ef.kind === 'damage' ? 'Damage' : ef.kind === 'knockback' ? 'Knockback'
-               : ef.kind === 'heal' ? 'Heal' : (ef.kind || '')
-    if (!word) continue
-    /* "Poison 1, 20%" — the value wears the status colour, the odds stay grey */
-    out.push({ word, val: ef.value ?? ef.amount, hue: ef.statusId ? stStyle(ef.statusId).hue : '#d6b25e',
+    const w = effectWord(ef, D, SN)
+    if (!w) continue
+    /* "Poison 1, 20%" — the value wears the status colour, the odds stay grey.
+       A badge is a permanent thing the unit takes away from the battle, so it
+       wears the badge hue rather than the generic brass (2026-09-04). */
+    out.push({ word: w.word, val: w.val,
+               hue: w.statusId ? stStyle(w.statusId).hue : w.badge ? BADGE_HUE : '#d6b25e',
                chance: t.chance == null ? 100 : t.chance })
   }
   return out
