@@ -82,8 +82,9 @@ export function drawPanel(V) {
   /* the 2026-09-03 facts about this unit, all folded: the wound level (words —
      the token wears the blood), the kit it was fielded with, who it hunts,
      who taunts it, whether it is an objective, a raise, an arrival */
-  const WOUND = ['', 'WOUNDED', 'BADLY WOUNDED']
-  const woundLine = u.wound > 0 ? ` · <b style="color:#ff8f8f">${WOUND[u.wound] || 'WOUND ' + u.wound}</b>` : ''
+  /* the Deathbed mark (engine b4cbd9b, 2026-09-04): no wound levels — a unit
+     that stood carries the Wounded badge and the small red skull */
+  const woundLine = u.deathbed ? ' · <b style="color:#ff8f8f">&#9760; STOOD AT THE DEATHBED</b>' : ''
   const taunt = u.stBy && u.stBy['status.taunt'] != null ? S.U[u.stBy['status.taunt']] : null
   const facts = []
   if (u.objective) facts.push('<b style="color:var(--gold)">OBJECTIVE</b> — its death loses the battle')
@@ -93,7 +94,23 @@ export function drawPanel(V) {
   if (u.aiOverride) facts.push(`the encounter sets its mind to <b>${u.aiOverride.mode}</b> through Turn ${u.aiOverride.untilTurn}${S.turnNo > u.aiOverride.untilTurn ? ' — over' : ''}`)
   if (taunt) facts.push(`taunted by <b>${taunt.name}</b> — must target it`)
   if (u.confusedFrom) facts.push(`<b>confused</b> — ran a different mode this activation <span style="color:#6f6857">(was ${u.confusedFrom})</span>`)
-  if (u.rolls != null) facts.push(`Deathbed Fighting rolls made: <b>${u.rolls}</b>${d.stands != null ? ' of ' + d.stands : ''}`)
+  if (u.rolls != null) facts.push(`Deathbed Fighting rolls made: <b>${u.rolls}</b>`)
+  /* BADGES (engine 2e76ede, §12): the permanent per-unit list — what the unit
+     was fielded with (unit.badged) and what it took in the battle (badge.gained,
+     which wears the fresh colour). Names come from the dumped BADGES table. */
+  const BD = V.data.BADGES || {}
+  const badgeName = id => (BD[id] || {}).name || String(id).replace(/^badge\./, '')
+  const born = new Set((u.kit && u.kit.badges) || [])
+  const badgeChip = id => {
+    const fresh = !born.has(id)
+    const bg = fresh ? '#2a1414' : '#221c12', bd = fresh ? '#6d3a30' : '#3a3223', col = fresh ? '#ffb0a4' : '#cbb9a0'
+    return `<span title="${id}" style="font:600 11px 'Barlow Semi Condensed',sans-serif;letter-spacing:.05em;` +
+      `padding:2px 8px;border-radius:2px;background:${bg};border:1px solid ${bd};color:${col}">${badgeName(id)}</span>`
+  }
+  const badgesBlock = (u.badges || []).length
+    ? '<div style="font-size:9.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--dim);margin:10px 0 6px">Badges</div>' +
+      `<div style="display:flex;flex-wrap:wrap;gap:5px">${u.badges.map(badgeChip).join('')}</div>`
+    : ''
   const kitLine = ((u.kit && u.kit.items.length) ? `<b style="color:#cbc3ae">Kit</b> ${u.kit.items.map(i => i.replace(/^item\./, '')).join(', ')}<br>` : '') +
     (u.grown ? `<b style="color:#cbc3ae">Grown</b> ${u.grown.table} · level ${u.grown.level}${u.grown.specialtyId ? ' · ' + u.grown.specialtyId.replace(/^specialty\./, '') : ''}<br>` : '')
   const factsBlock = facts.length ? `<div style="margin:0 18px 8px;padding:6px 9px;background:#14120e;border:1px solid var(--border);border-radius:2px;font-size:11.5px;line-height:1.6;color:#a9a394">${facts.join('<br>')}</div>` : ''
@@ -167,6 +184,7 @@ export function drawPanel(V) {
         padding:2px 8px;border-radius:2px;background:#221c12;border:1px solid #3a3223;color:#cbb9a0">${t}</span>`).join('')}</div>` : ''}
     ${KWNOTE}
     ${trigCol ? `<div style="font-size:9.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--dim);margin:4px 0 6px">⚡ Triggers</div>${trigCol}` : ''}
+    ${badgesBlock}
     ${(u.injuries || []).length ? `<div class="pInjuries" style="font-size:9.5px;letter-spacing:.12em;text-transform:uppercase;color:#d1665c;margin:10px 0 6px">✶ Critical injuries</div>` +
       u.injuries.map(n => `<div style="font:600 12px 'Barlow Semi Condensed',sans-serif;color:#ffb0a4;padding:4px 8px;margin-bottom:4px;background:#1d100e;border:1px solid #4a2320;border-radius:3px">${n}</div>`).join('') : ''}
     ${(u.mods || []).length ? `<div style="font-size:9.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--dim);margin:10px 0 6px">Modifiers</div>` +

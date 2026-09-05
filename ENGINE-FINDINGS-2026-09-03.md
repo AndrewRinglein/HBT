@@ -45,3 +45,21 @@ For the engine chat; nothing here was edited in `engine/`.*
 - **`unit.grown`** (setup.ts:343) was not in §10 and appeared in the Assembled Party export — folded as
   fielded modifiers (finding 3, half answered).
 - The `visual-replay` skill and `tools/replay/` are still in the engine tree.
+
+## 2026-09-04 — engine `4932fde`, §11 (one action type) and §12 (ZoC, badges, the deathbed reversal)
+
+All eight items of the handoff are folded and drawn. What the handoff and §11/§12 did **not** list,
+found by verify's "a new engine event is a failure until it is placed on purpose" check:
+
+| # | Finding | Read from | What the viewer did |
+|---|---|---|---|
+| 13 | **`power.exhausted`** `{ actor, abilityId }` — capability.charges: an action spent its last use. Not in §11 or §12; it appears in the Arc Golem export. | `src/core/action.ts:129` | Folded: the action LEAVES the bar ("they should vanish", Andrew 2026-09-02), with a verify check that it is on the bar before and gone after. |
+| 14 | **`charge.spent`** `{ actor, abilityId, left }` — one use gone. Same silence. | `src/core/action.ts:126` | Folded; the bar's right-hand cell prints `N×` uses left instead of the cooldown when an action has charges. |
+| 15 | **`maxstamina.gained`** `{ target, amount, maxStamina }` — a badge raised Max Stamina (Lycanthropy). **Spelt all-lowercase**, where its opposite is `staminaMax.lost`. Two spellings of one stat across two events. | `src/core/mutate.ts:118` | Folded as spelt, with a float. One spelling would be kinder — the same shape of problem as finding 8 (`layer` as a name in one event and a number in another). |
+| 16 | **`badge.gained` uses `actor` for the unit; `deathbed.*` uses `target`.** Both name the unit the thing happened to. | the exports | Folded per event. Noting it: a reader that assumes one field for "the unit this is about" gets it wrong half the time. |
+
+**Behaviour worth a person's eye, not a bug:** with ZoC no longer stopping movement, the 24×24 horde
+battle went from `wipe` in 10 turns to **`capped` at 25** — the tide can now walk past the line and
+neither side finishes. Every other battle also moved (cooldowns a Turn longer, afflictions, west/east).
+
+**The `visual-replay` skill and `tools/replay/` are still in the engine tree.**

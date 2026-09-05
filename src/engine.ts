@@ -13,7 +13,9 @@
 
 export type { Ctx, Event, Outcome, Side, UnitDef, AttackDef, AbilityDef, MoveDef } from '../../engine/src/core/types.js'
 export type { StatusDef } from '../../engine/src/core/status.js'
-export { UNITS, ATTACKS, ABILITIES } from '../../engine/src/content/index.js'
+export type { ActionDef, BadgeDef } from '../../engine/src/core/types.js'
+/* ONE ACTION TYPE (engine 26fa562, §11): ACTIONS is the registry; ATTACKS/ABILITIES are views over it */
+export { UNITS, ACTIONS, ATTACKS, ABILITIES, BADGES } from '../../engine/src/content/index.js'
 export { MOVES } from '../../engine/src/content/moves.js'
 export { STATUSES } from '../../engine/src/content/statuses.js'
 export { MAPS, terrainOf, terrainIdOf, isPassable, LAYER_IDS, boardOf, deployOf } from '../../engine/src/content/maps.js'   // LAYER_IDS: the ground layers by number; boardOf/deployOf: a map's board and edges (2026-09-04)

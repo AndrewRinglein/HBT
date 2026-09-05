@@ -36,7 +36,9 @@ export function actClass(a) {
   return a.kind === 'ranged' ? 'ranged' : 'melee'
 }
 export function actHue(a) {
-  const dh = a.damageType && DHUE[a.damageType]
+  /* the damage type lives under `attack` since 26fa562 (§11) */
+  const dt = (a.attack || a).damageType
+  const dh = dt && DHUE[dt]
   if (dh) return dh
   return { col: ACT_CLASS[actClass(a)].col, bg: '#1a1712', bd: '#2b2418' }
 }

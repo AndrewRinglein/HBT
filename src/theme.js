@@ -33,8 +33,10 @@ export const STYLE = {   // one hue per status, everywhere — pips, VFX, chips,
 export const LAYER_STATUS = { 'layer.burning': 'status.burn', 'layer.frost': 'status.frost', 'layer.poisoned': 'status.poison', 'layer.weak': 'status.weak' }
 export const DARK_HUE = '#0b0a14'
 export const layerHue = name => LAYER_STATUS[name] ? STYLE[LAYER_STATUS[name]].hue : name === 'layer.darkness' ? DARK_HUE : '#cbb9a0'
-/* the wound's blood (Angela 2026-09-03: "a little bit of dripping blood") */
-export const BLOOD_HUE = '#9e1b1b'
+/* THE DEATHBED SKULL's red (Angela 2026-09-04: "Use a very small skull for
+   what goes overhead, and make it red"). Was the wound-level blood, which the
+   engine's deathbed reversal deleted — same slot, new owner. */
+export const BLOOD_HUE = '#c62828'
 export const stStyle = id => STYLE[String(id).replace(/^test\./, '').replace(/daze$/, 'status.stun')
   .replace(/hobble$/, 'status.slow').replace(/ward$/, 'status.protection')
   .replace(/enfeeble$/, 'status.weak')] || { hue: '#8ed14f', gl: 'circle(50%)' }
@@ -55,7 +57,7 @@ export const CRIT_HUE = '#ffcf6a'
    beats: held (a zone of control), the attack of opportunity, the Deathbed's
    stood/fell, a bleed-out moved, the rise, the feed, the obliteration, Surge */
 export const NOTE_HUE = { knocked: '#cbb9a0', resisted: '#9fb6c8', absorbed: '#8fd0ff', maxhp: '#d1665c', maxhpUp: '#7ec45f',
-  note: '#cbb9a0', held: '#cbb9a0', aoo: '#ffb070', bleed: '#ff3226',
+  note: '#cbb9a0', aoo: '#ffb070', bleed: '#ff3226', badge: '#c9a8ff',
   raised: '#b48ae0', eaten: '#8ed14f', obliterated: '#6e5bd9', surge: '#ffe2a0' }
 /* the protection bar's spent segment; its live segment is the status hue */
 export const PROT_SPENT = '#2f5b78'

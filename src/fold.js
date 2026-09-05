@@ -50,9 +50,15 @@ function mkUnit(e, UD) {
     mvBase: (UD[e.typeId] || {}).movement ?? null, activeMv: null, mods: [], injuries: [], cds: {}, dmgSeen: {},
     /* the kit the engine fielded this unit with (unit.equipped): items, the
        attacks they grant, the powers they grant — the bare row has none of it */
-    kit: { items: [], grants: [], abilities: [] },
-    wound: 0,               // Deathbed wound level: 0 · 1 Wounded · 2 Badly Wounded
-    rolls: null,            // Deathbed Fighting rolls made, from deathbed.stood/fell `ordinal`; deathbed.exhausted says none left
+    kit: { items: [], grants: [], abilities: [], badges: [] },
+    /* THE DEATHBED, REVERSED (engine b4cbd9b, 2026-09-04): no stands, no wound
+       levels — `woundLevel` is gone from the engine. A unit that stood carries
+       the Wounded BADGE and wears a small red skull from here on (Angela). */
+    deathbed: false,        // stood at the Deathbed: the skull, permanent
+    badges: [],             // badge ids (unit.badged at fielding, badge.gained mid-battle)
+    rolls: null,            // Deathbed Fighting rolls made, from deathbed.stood/fell `ordinal`
+    spent: [],              // actions whose charges ran out (power.exhausted) — they leave the bar
+    charges: {},            // actionId -> uses left (charge.spent)
     arrived: e.arrived || null, raised: false, objective: false, hunt: null, confusedFrom: null, moveMods: null, aiOverride: null, grown: null }
 }
 
@@ -94,6 +100,37 @@ export function fold(S, e, ctx, now = 0) {
         u.grown = { table: e.table, level: e.level, specialtyId: e.specialtyId || null }
         for (const [stat, value] of Object.entries(e.mods || {})) u.mods.push({ stat, op: 'add', value, source: e.table + (e.level != null ? ' L' + e.level : ''), fielded: true }) }
       break
+    /* ── BADGES (engine 2e76ede, §12) ───────────────────────────────────── */
+    case 'unit.badged':
+      /* at fielding, after unit.equipped: what the unit was BORN with. Its
+         mods are `fielded`, like the kit's — what it IS, not a battle buff. */
+      if (U[e.actor]) { const u = U[e.actor]
+        if (!u.badges.includes(e.badgeId)) u.badges.push(e.badgeId)
+        u.kit.badges.push(e.badgeId)
+        for (const [stat, value] of Object.entries(e.mods || {})) u.mods.push({ stat, op: 'add', value, source: e.badgeId, fielded: true }) }
+      break
+    case 'badge.gained':
+      /* mid-battle: the deathbed's Wounded, an affliction's Rotting Flesh. The
+         statmod.added / maxHp.* lines that follow put its modifiers on, so the
+         mods are NOT folded here — only the badge itself. */
+      if (U[e.actor]) { const u = U[e.actor]
+        if (!u.badges.includes(e.badgeId)) u.badges.push(e.badgeId)
+        cue('badge', { id: e.actor, badgeId: e.badgeId, name: e.name })
+        cue('float', { hex: u.hex, kind: 'badge', text: (e.name || e.badgeId).toUpperCase(), small: true }) }
+      break
+    case 'badge.held': break                                   // a grant that was already there; nothing changed
+    case 'charge.spent':
+      /* capability.charges: one use gone, `left` remain — the bar prints it */
+      if (U[e.actor]) (U[e.actor].charges = U[e.actor].charges || {})[e.abilityId ?? e.actionId] = e.left
+      break
+    case 'power.exhausted':
+      /* capability.charges (engine): the action spent its last use and LEAVES
+         the unit's list for the rest of the Battle — "they should vanish from
+         the list of things available to a hero" (Andrew 2026-09-02). Not in
+         §11/§12; found in the Arc Golem export (viewer finding, 2026-09-04). */
+      if (U[e.actor]) (U[e.actor].spent = U[e.actor].spent || []).push(e.abilityId ?? e.actionId)
+      break
+
     /* ── the encounter (EVENTS-FOR-THE-VIEWER §1) ────────────────────────── */
     case 'encounter.begin':
       S.encounter = { id: e.causeId, name: e.name, gaps: e.gaps ? e.gaps.slice() : [], objectives: [], result: null }
@@ -143,12 +180,14 @@ export function fold(S, e, ctx, now = 0) {
         if (e.causeId) S.FIRING = { unit: e.actor, ability: e.causeId, until: now + FIRE_MS } }
       if (S.AOO && S.AOO.mover === e.actor) S.AOO = null                 // the walk resumed; the free swing is over
       break
-    /* ── zones of control and attacks of opportunity (§2) ───────────────── */
+    /* ── zones of control and attacks of opportunity (§2, reversed §12) ─── */
     case 'move.stopped':
-      /* the path ends here, short of move.begin.to — a HELD beat pointing at the holder */
-      if (U[e.actor]) { U[e.actor].hex = e.hex
-        cue('float', { hex: e.hex, kind: 'held', text: 'HELD', small: true })
-        if (U[e.by]) cue('zoc', { a: e.actor, t: e.by }) }
+      /* ZoC IS A THREAT, NOT A STOP (engine 1019510, 2026-09-04): there is no
+         held. `reason: 'hit'` — the provoked swing on the way out connected and
+         the mover lost its movement where it stood. The aoo.provoked /
+         attack.declared / damage.applied beats tell it; this line only fixes
+         the hex. Nothing is drawn here (Angela saw "held" and it was wrong). */
+      if (U[e.actor]) U[e.actor].hex = e.hex
       S.AOO = null
       break
     case 'aoo.provoked':
@@ -271,7 +310,12 @@ export function fold(S, e, ctx, now = 0) {
     /* `knocked` MOVES A UNIT (folded 2026-09-01) — unhandled, knocked units
        rendered at a stale hex until their next move */
     case 'knocked':
-      if (U[e.target]) { U[e.target].hex = e.to; cue('float', { hex: e.to, kind: 'knocked', text: 'KNOCKED', small: true }) }
+      /* a push of `asked` travels `hexes` (engine 2e649b5); `stoppedBy` says
+         what cut it short — occupied, impassable, the edge of the board */
+      if (U[e.target]) { const from = U[e.target].hex
+        U[e.target].hex = e.to
+        cue('shove', { id: e.target, from, to: e.to, hexes: e.hexes })
+        cue('float', { hex: e.to, kind: 'knocked', text: e.stoppedBy ? 'KNOCKED · ' + String(e.stoppedBy).toUpperCase() : 'KNOCKED', small: true }) }
       break
     case 'maxHp.lost':
       if (U[e.target]) { U[e.target].maxHp = e.maxHp; U[e.target].hp = e.hp
@@ -284,12 +328,21 @@ export function fold(S, e, ctx, now = 0) {
       break
     case 'staminaMax.lost':
       if (U[e.actor]) { U[e.actor].maxStam = e.maxStamina; U[e.actor].stam = e.stamina } break
+    case 'maxstamina.gained':
+      /* a badge raised Max Stamina (the werewolf's Lycanthropy). Note the
+         engine spells this one all-lowercase where the loss is `staminaMax.lost`
+         — a viewer finding, 2026-09-04; folded as spelt. */
+      if (U[e.target]) { U[e.target].maxStam = e.maxStamina
+        cue('float', { hex: U[e.target].hex, kind: 'maxhpUp', text: '+' + e.amount + ' MAX STAMINA', n: e.amount, of: 'amount', small: true }) }
+      break
     case 'statmod.added':
       /* the buff/debuff layer's data (UI-BUILD-NOTES §1), held on the unit */
       if (U[e.actor]) (U[e.actor].mods = U[e.actor].mods || []).push({ stat: e.stat, op: e.op, value: e.value, source: e.source })
       break
     case 'cooldown.set':
-      if (U[e.actor]) (U[e.actor].cds = U[e.actor].cds || {})[e.abilityId] = e.readyOnTurn; break
+      /* ONE ACTION TYPE (engine 26fa562, §11): `actionId` on every kind;
+         `abilityId` is kept for readers that used it, and `attackId` is gone */
+      if (U[e.actor]) (U[e.actor].cds = U[e.actor].cds || {})[e.actionId ?? e.abilityId] = e.readyOnTurn; break
     case 'crit.effect':
       /* a Critical Injury Chart row landed — the biggest single beat the
          engine emits, and rung 3 of the ladder (ruled 2026-09-02): not a
@@ -317,24 +370,29 @@ export function fold(S, e, ctx, now = 0) {
        chance are the event's, verbatim (n/of, the root law's catch). The wound
        level lands on the unit as the dripping blood. */
     case 'deathbed.stood':
+      /* the hero fights on. From here on it wears a SMALL RED SKULL in the
+         overhead status row — Angela 2026-09-04: "they need a skull in their
+         status bar, to show they're on death's door". The Wounded badge and
+         its modifiers arrive in the badge.gained / statmod lines that follow. */
       if (U[e.target]) { const u = U[e.target]
-        u.wound = e.woundLevel; u.rolls = e.ordinal
+        u.deathbed = true; u.rolls = e.ordinal
         cue('deathbed', { id: e.target, result: 'stood', n: e.roll, of: 'roll', chance: e.chance, chanceOf: 'chance' })
         cue('stand', { id: e.target })
         S.subjectId = e.target; S.subjectMode = 'target' }
       break
     case 'deathbed.fell':
+      /* bleedsOut true → life.downed and the bleed-out; false → life.dead and a corpse */
       if (U[e.target]) { U[e.target].rolls = e.ordinal
-        cue('deathbed', { id: e.target, result: 'fell', n: e.roll, of: 'roll', chance: e.chance, chanceOf: 'chance' }) }
+        cue('deathbed', { id: e.target, result: 'fell', n: e.roll, of: 'roll', chance: e.chance, chanceOf: 'chance', bleedsOut: !!e.bleedsOut }) }
       break
-    case 'deathbed.exhausted':
-      /* no roll left (heroes two, civilians one): straight to downed */
-      if (U[e.target]) cue('deathbed', { id: e.target, result: 'exhausted' })
+    case 'deathbed.none':
+      /* a Wounded unit at 0: no roll, dead (engine b4cbd9b) */
+      if (U[e.target]) cue('deathbed', { id: e.target, result: 'none', reason: e.reason })
       break
     case 'hp.reset':
       /* the fresh bar after a stand */
       if (U[e.target]) { const u = U[e.target]
-        u.hp = e.hp; u.maxHp = e.maxHp; u.wound = e.woundLevel
+        u.hp = e.hp; u.maxHp = e.maxHp
         cue('float', { hex: u.hex, kind: 'heal', text: '+' + e.hp, n: e.hp, of: 'hp', big: true })
         cue('fx.status', { id: e.target, style: 'heal' }) }
       break
@@ -444,7 +502,8 @@ export const FOLDED_TYPES = ['unit.enter', 'battle.begin', 'map.loaded', 'unit.e
   'encounter.begin', 'encounter.objective', 'encounter.wave', 'encounter.roll', 'unit.shunted', 'encounter.won', 'encounter.lost',
   'move.stopped', 'aoo.provoked', 'aoo.skipped',
   'corpse.created', 'corpse.removed', 'unit.raised', 'corpse.eaten', 'unit.obliterated',
-  'deathbed.stood', 'deathbed.fell', 'deathbed.exhausted', 'hp.reset',
+  'deathbed.stood', 'deathbed.fell', 'deathbed.none', 'hp.reset',
+  'unit.badged', 'badge.gained', 'badge.held', 'power.exhausted', 'charge.spent', 'maxstamina.gained',
   'surge.checked', 'surge.hit', 'power.gained',
   'layer.painted', 'layer.cancelled', 'band.advanced', 'night.fell', 'light.cast',
   'ai.mode', 'ai.hunts', 'ai.override']

@@ -43,7 +43,8 @@ export const DUR = { 'unit.enter': 0, 'turn.begin': 420, 'phase.begin': 120, 'mo
   'encounter.won': 900, 'encounter.lost': 900, 'move.stopped': 520, 'aoo.provoked': 700, 'aoo.skipped': 0, 'attack.cancelled': 120,
   'corpse.created': 0, 'corpse.removed': 380, 'unit.raised': 640, 'corpse.eaten': 300, 'unit.obliterated': 520,
   /* the Deathbed Fighting modal holds the game (ruled 2026-09-03 evening): DB_TOTAL + a breath */
-  'deathbed.stood': 2800, 'deathbed.fell': 2800, 'deathbed.exhausted': 2800, 'hp.reset': 320, 'bleedout.accelerated': 320,
+  'deathbed.stood': 2800, 'deathbed.fell': 2800, 'deathbed.none': 2800, 'hp.reset': 320, 'bleedout.accelerated': 320,
+  'unit.badged': 0, 'badge.gained': 420, 'badge.held': 0, 'power.exhausted': 160, 'charge.spent': 0, 'maxstamina.gained': 200,
   'surge.checked': 0, 'surge.hit': 600, 'power.gained': 320, 'heal.boosted': 200, 'status.cancelled': 220, 'maxHp.gained': 240,
   'stamina.drained': 160, 'layer.painted': 0, 'layer.cancelled': 0, 'band.advanced': 900, 'night.fell': 1200, 'light.cast': 0,
   'ai.mode': 0, 'ai.hunts': 260, 'ai.override': 0, 'unit.grown': 0 }
@@ -53,7 +54,8 @@ const PAINT_RUN_MS = 260
 /* beats that redraw even when their duration is zero */
 const REDRAW = new Set(['attack.declared', 'damage.applied', 'life.dead', 'turn.begin', 'moved', 'heal.applied',
   'status.applied', 'life.downed', 'knocked', 'crit.effect', 'maxHp.lost',
-  'unit.enter', 'unit.equipped', 'encounter.objective', 'unit.shunted', 'corpse.created', 'hp.reset', 'ai.mode', 'ai.hunts', 'surge.checked', 'aoo.skipped'])
+  'unit.enter', 'unit.equipped', 'encounter.objective', 'unit.shunted', 'corpse.created', 'hp.reset', 'ai.mode', 'ai.hunts', 'surge.checked', 'aoo.skipped',
+  'badge.gained', 'unit.badged', 'move.stopped'])
 /* the roster is seeded instantly — everything up to and including battle.begin
    never animates: the setup's unit.enters, their kit (unit.equipped), the
    encounter's title and objectives, the map (2026-09-03: was a fixed three) */
@@ -94,7 +96,8 @@ export function mountBattleViewer(root, data, opts = {}) {
   const V = {
     dom, now,
     data: { F, POS: F.hexes, LAYOUT, UD: data.units, SN: data.statuses, AT: data.attacks || {}, AB: data.abilities || {},
-      LAYERS: data.layers || {}, DIST: DIST || null, BOARD: { width: F.width, height: F.height }, ARTMAP: data.artmap, ASSETS: data.assets },
+      LAYERS: data.layers || {}, DIST: DIST || null, BOARD: { width: F.width, height: F.height },
+      ACT: data.actions || {}, BADGES: data.badges || {}, ARTMAP: data.artmap, ASSETS: data.assets },
     meta: data.meta || {},
     S: createState(), EV: [], cursor: 0,
     view: { inspectId: null, statsOpen: false, TRG_OPEN: new Set(), zoom: '1x', peek: false, bare: false, camF: { x: null, y: null } },

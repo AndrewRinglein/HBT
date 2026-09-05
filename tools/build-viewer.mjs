@@ -78,8 +78,11 @@ const { outputFiles, warnings } = esbuild.buildSync({
   minify: false, legalComments: 'none', logLevel: 'silent',
   define: {
     __BUNDLED_STATIC__: JSON.stringify({ units: statics.units, statuses: statics.statuses, maps: statics.maps, engineCommit: statics.engineCommit,
-      /* 2026-09-03: the tables a unit.equipped grant resolves against, the layer names, the hex distance table */
-      attacks: statics.attacks, abilities: statics.abilities, layers: statics.layers, hexDist: statics.hexDist }),
+      /* 2026-09-03: the tables a unit.equipped grant resolves against, the layer names, the hex distance tables.
+         2026-09-04: `actions` is the ONE registry (§11) and `badges` the badge table (§12) — a grant of any
+         kind resolves in `actions`, and a badge's name comes from `badges`. */
+      attacks: statics.attacks, abilities: statics.abilities, actions: statics.actions, badges: statics.badges,
+      layers: statics.layers, hexDist: statics.hexDist }),
     __BUNDLED_FIELDS__: JSON.stringify(Object.fromEntries(Object.entries(fields).filter(([k]) => !k.startsWith('_')))),
     __BUNDLED_ART__: JSON.stringify({ artmap: manifest.artmap, assets }),
     __BUNDLED_BATTLES__: JSON.stringify(battles),

@@ -450,20 +450,6 @@ export function rise(V, id) {
   E.img.animate([{ transform: LIFT + ' rotate(-80deg) scaleY(.4)', opacity: .3 }, { transform: LIFT + ' rotate(0) scaleY(1)', opacity: 1 }],
     { duration: 620, easing: 'cubic-bezier(.3,0,.2,1)' })
 }
-/* the HOLD (move.stopped by a zone of control): a short dashed ground line from
-   the mover to the holder, gone in 700ms — it points, it does not persist */
-export function zocLine(V, aId, tId) {
-  const A = V.S.U[aId], T = V.S.U[tId]; if (!A || !T) return
-  const { POS, F } = V.data
-  const a = POS[A.hex], b = POS[T.hex]
-  const wrap = el('', 'position:absolute;left:0;top:0;transform-style:preserve-3d;pointer-events:none')
-  const svg = svgEl('svg'); svg.setAttribute('width', F.w); svg.setAttribute('height', F.h)
-  svg.style.cssText = 'position:absolute;left:0;top:0;overflow:visible'
-  svg.appendChild(groundLines(`M${a.px} ${a.py}L${b.px} ${b.py}`, 'rgba(203,185,160,.9)', { w: 4.4, haloW: 7.8, dash: '10 8' }))
-  wrap.appendChild(svg); V.dom.stage.appendChild(wrap); V.fx.nodes.add(wrap)
-  const t = setTimeout(() => { wrap.remove(); V.fx.nodes.delete(wrap); V.fx.timers.delete(t) }, 700)
-  V.fx.timers.add(t)
-}
 /* a BANNER over the board (a wave, night, the band, the objective): screen
    space, top centre, 1.6s, one at a time — the newest replaces the last */
 export function banner(V, kind, text, sub) {
@@ -488,6 +474,31 @@ export function standBeat(V, id) {
   E.img.animate([{ transform: LIFT + ' scaleY(.82)' }, { transform: LIFT + ' scaleY(1.06)', offset: .6 }, { transform: LIFT + ' scaleY(1)' }], { duration: 520, easing: 'cubic-bezier(.2,1.2,.4,1)' })
 }
 
+/* KNOCKBACK BEYOND ONE (engine 2e649b5, §12): a push of `asked` travels
+   `hexes`, so the token slides the whole way rather than teleporting — the
+   move traversal's easing, at a shove's pace. */
+export function shove(V, id, from, to, hexes) {
+  const E = V.layers.UEL.get(id)
+  if (!E || !E.root.animate || from == null || to == null || from === to) return
+  const a = feetOf(V, from), b = feetOf(V, to)
+  const dur = Math.min(420, 150 + 90 * Math.max(1, hexes || 1))
+  if (E.walk) E.walk.cancel()
+  E.root.style.transition = 'none'
+  const anim = E.root.animate([{ left: a.x + 'px', top: a.y + 'px' }, { left: b.x + 'px', top: b.y + 'px' }],
+    { duration: dur, easing: 'cubic-bezier(.2,.8,.3,1)', fill: 'none' })
+  E.walk = anim
+  anim.oncancel = anim.onfinish = () => { E.root.style.transition = ROOT_TRANSITION; E.walk = null }
+}
+
+/* a BADGE gained mid-battle (engine 2e76ede): the token pulses in the badge's
+   own red — the float says which badge, this says WHO */
+export function badgeBeat(V, id) {
+  const E = V.layers.UEL.get(id); if (!E || !E.img.animate) return
+  E.img.animate([{ filter: 'none' }, { filter: 'none' }], { duration: 1 })   // no filters in the 3D scene (the trap)
+  E.bb.animate([{ transform: 'rotateX(var(--anti)) scale(1)' }, { transform: 'rotateX(var(--anti)) scale(1.08)', offset: .35 },
+    { transform: 'rotateX(var(--anti)) scale(1)' }], { duration: 420, easing: 'ease-out' })
+}
+
 /* DEATHBED FIGHTING — the modal (Angela, 2026-09-03 evening, VISUAL-BATTLE-
    UPDATES §3.2). Screen space over the board wrap, outside the 3D scene; the
    pump holds the beat, which is the freeze. Stage one: UNIT DOWNED — Deathbed
@@ -499,17 +510,25 @@ export function deathbedModal(V, c) {
   const wrap = V.dom.stage.parentNode, u = V.S.U[c.id]; if (!wrap || !u) return
   const old = wrap.querySelector('.dbModal'); if (old) { old.remove(); V.fx.nodes.delete(old) }
   const roll = c.n != null ? `<span class="dbRoll">rolled <b>${c.n}</b> vs ${c.chance}</span>` : ''
-  const stage1 = c.result === 'exhausted'
-    ? `<span class="dbHead">UNIT DOWNED</span><span class="dbSub">No Deathbed Fighting roll left</span><span class="dbName">${u.name}</span>`
+  /* three results since the reversal (engine b4cbd9b): stood, fell, and none —
+     a unit already Wounded gets no roll at all */
+  const stage1 = c.result === 'none'
+    ? `<span class="dbHead">UNIT DOWNED</span><span class="dbSub">Already Wounded — no roll</span><span class="dbName">${u.name}</span>`
     : `<span class="dbHead">UNIT DOWNED</span><span class="dbSub">Deathbed Fighting roll</span><span class="dbName">${u.name}</span>${roll}`
   const stage2 = c.result === 'stood'
     ? `<span class="dbHead gold">DEATHBED FIGHTING</span><span class="dbBold gold">This hero fights on.</span><span class="dbName">${u.name}</span>${roll}`
     : c.result === 'fell'
     ? `<span class="dbHead red">DEATHBED FIGHTING</span><span class="dbBold red">This hero falls.</span><span class="dbName">${u.name}</span>${roll}`
-    : `<span class="dbHead red">UNIT DOWNED</span><span class="dbBold red">This hero falls.</span><span class="dbName">${u.name}</span>`
-  const m = el('dbModal ' + c.result, '', `<div class="dbVeil"></div><div class="dbPlate">${stage1}</div>`)
+    : `<span class="dbHead red">DEATHBED FIGHTING</span><span class="dbBold red">This hero falls.</span><span class="dbName">${u.name}</span>`
+  /* the veil and the plate are built as elements and the plate's content is
+     SET on it — a nested innerHTML is not readable back on every DOM the
+     verifier runs (found 2026-09-04) */
+  const m = el('dbModal ' + c.result, '')
+  m.appendChild(el('dbVeil', ''))
+  const plate = el('dbPlate', '')
+  plate.innerHTML = stage1
+  m.appendChild(plate)
   wrap.appendChild(m); V.fx.nodes.add(m)
-  const plate = m.querySelector('.dbPlate')
   if (plate.animate) plate.animate([{ transform: 'scale(1.12)', opacity: 0 }, { transform: 'scale(1)', opacity: 1 }], { duration: 160, easing: 'cubic-bezier(.2,1.2,.4,1)' })
   const t1 = setTimeout(() => { V.fx.timers.delete(t1); plate.innerHTML = stage2; plate.className = 'dbPlate ' + c.result
     if (plate.animate) plate.animate([{ transform: 'scale(1.25)' }, { transform: 'scale(1)' }], { duration: 220, easing: 'cubic-bezier(.2,1.3,.4,1)' }) }, DB_STAGE)
@@ -534,12 +553,13 @@ export function playCues(V, cues) {
       /* 2026-09-03 */
       case 'arrive': arrive(V, c.id); break
       case 'rise': rise(V, c.id); break
-      case 'zoc': zocLine(V, c.a, c.t); break
       case 'banner': banner(V, c.kind, c.text, c.sub); break
       case 'power': powerPulse(V); break
       case 'corpse.gone': corpseGone(V, c.corpse, c.how); break
       case 'stand': standBeat(V, c.id); break
       case 'deathbed': deathbedModal(V, c); break
+      case 'shove': shove(V, c.id, c.from, c.to, c.hexes); break
+      case 'badge': badgeBeat(V, c.id); break
     }
   }
 }
@@ -578,11 +598,6 @@ function mkUnit(V, u) {
     /* NO filter (the 3D trap) — the halo is a black copy scaled up behind the bone one */
     raIcon('skull', 'position:absolute;left:0;top:0;font-size:20px;color:#000;transform:scale(1.3);opacity:.9') +
     raIcon('skull', 'position:absolute;left:0;top:0;font-size:20px;color:#f4ece0'))
-  /* the wound's blood: drips in BLOOD_HUE over the lower body, hidden until a stand */
-  const blood = el('blood', 'display:none',
-    [[14, 0, 3, 22, 0], [46, 4, 2, 30, .7], [70, 0, 3, 18, 1.3], [30, 8, 2, 26, 2.0]].map(([x, y, w2, h2, dl]) =>
-      `<i style="left:${x}%;top:${y}px;width:${w2}px;height:${h2}px;background:linear-gradient(${BLOOD_HUE},${BLOOD_HUE}00);animation-delay:${dl}s"></i>`).join(''))
-  bb.appendChild(blood)
   bb.appendChild(badges); bb.appendChild(hpbar); bb.appendChild(prot); bb.appendChild(mark); bb.appendChild(skull)
   const clock = el('clockchip', 'left:-20px;top:16px;display:none')
   /* NO PLATE (ruled 2026-09-01); LIFTED toward the camera with translateZ so the
@@ -599,7 +614,7 @@ function mkUnit(V, u) {
   root.appendChild(actB); root.appendChild(selR); root.appendChild(downR)
   root.appendChild(bb); root.appendChild(clock)
   V.layers.unitsL.appendChild(root)
-  return { root, fring, shadow, actA, actB, selR, downR, bb, img, flash, badges, hpbar, hpfill, proj, prot, mark, clock, mv, dg, skull, blood, glow, a }
+  return { root, fring, shadow, actA, actB, selR, downR, bb, img, flash, badges, hpbar, hpfill, proj, prot, mark, clock, mv, dg, skull, glow, a }
 }
 export function syncUnits(V) {
   const { S, view, layers: L } = V, { UD, LAYOUT } = V.data
@@ -656,14 +671,7 @@ export function syncUnits(V) {
     const fp = Math.min(1.4, Math.max(0.55, hpx / 132))
     const R = (elm, l, t, wd, ht) => { elm.style.left = Math.round(l * fp) + 'px'; elm.style.top = Math.round(t * fp) + 'px'; elm.style.width = Math.round(wd * fp) + 'px'; elm.style.height = Math.round(ht * fp) + 'px' }
     R(E.fring, -46, -30, 92, 60); R(E.actA, -68, -45, 136, 90); R(E.actB, -58, -38, 116, 76); R(E.selR, -48, -31, 96, 62); R(E.downR, -58, -38, 116, 76)
-    /* THE WOUND (Angela 2026-09-03): a little dripping blood on the token
-       while the unit carries a Deathbed wound level; more drips when Badly */
-    if (u.wound > 0 && !down) {
-      E.blood.style.display = ''
-      E.blood.style.left = (-w / 2 + 6) + 'px'; E.blood.style.top = (-Math.round(hpx * 0.62)) + 'px'
-      E.blood.style.width = (w - 12) + 'px'; E.blood.style.height = Math.round(hpx * 0.6) + 'px'
-      E.blood.className = 'blood' + (u.wound >= 2 ? ' badly' : '')
-    } else E.blood.style.display = 'none'
+
     if (down && !bare) {
       E.shadow.style.display = ''
       E.shadow.style.cssText = `left:${-w / 2 - 6}px;top:-6px;width:${w + 12}px;height:22px;` +
@@ -750,7 +758,12 @@ export function syncUnits(V) {
           `box-shadow:0 0 3px rgba(0,0,0,.9)"></div>`).join('')
       }
     }
-    /* OVERHEAD GLYPHS: Stun · Weak · one chevron. NOTHING ELSE (§1). */
+    /* OVERHEAD GLYPHS: Stun · Weak · one chevron — and, since 2026-09-04, the
+       DEATHBED SKULL (Angela: "they need a skull in their status bar, to show
+       they're on death's door" · "Use a very small skull for what goes
+       overhead, and make it red"). Small and red is what tells it apart from
+       the health bar's bone-white projection skull, which is a different fact
+       (VISUAL-BATTLE-UPDATES §3.1 vs §3.2). NOTHING ELSE (§1). */
     const OVER = ['status.stun', 'test.status.daze', 'status.dazed', 'status.weak', 'test.status.enfeeble']
     const sts = Object.entries(u.st).filter(([id, v]) => v > 0 && OVER.includes(id))
     /* the chevron is the buff/debuff layer — the stat block's green and red
@@ -761,7 +774,8 @@ export function syncUnits(V) {
     const live = (u.mods || []).filter(m => !m.fielded)
     const chev = live.length ? live.reduce((n, m) => n + (m.value > 0 ? 1 : -1), 0) : 0
     E.badges.style.cssText = down ? 'display:none' : `left:${-w / 2 - 2}px;top:${-hpx - 22}px`
-    E.badges.innerHTML = sts.map(([id, v]) => { const st = stStyle(id)
+    const dbSkull = u.deathbed ? `<div class="badge dbSkull" title="stood at the Deathbed">${raIcon('skull', `font-size:13px;color:${BLOOD_HUE}`)}</div>` : ''
+    E.badges.innerHTML = dbSkull + sts.map(([id, v]) => { const st = stStyle(id)
       return `<div class="badge"><div class="gl" style="clip-path:${st.gl};background:${st.hue};position:absolute;inset:0"></div>` +
              `<div class="pip${st.sq ? ' sq' : ''}" style="background:${st.hue}">${v}</div></div>` }).join('')
       + (chev !== 0 ? `<div class="badge"><div class="gl" style="position:absolute;inset:0;background:${chev > 0 ? MOD_UP : MOD_DOWN};` +

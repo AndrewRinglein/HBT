@@ -9,7 +9,7 @@
 // verbatim from VFX/tool/viewer/dump-static.mts (2026-09-02), and it is the
 // FIRST entry in tools/exemptions.json — EXEMPTION sheet. It reads content only, through the
 // door, and computes nothing: every field is copied from a definition.
-import { UNITS, ATTACKS, ABILITIES, MOVES, STATUSES, LAYER_IDS, MAPS, boardOf, geometryOf, FORMATS } from './engine.js'
+import { UNITS, ACTIONS, ATTACKS, ABILITIES, MOVES, BADGES, STATUSES, LAYER_IDS, MAPS, boardOf, geometryOf, FORMATS } from './engine.js'
 import type { Board } from './engine.js'
 
 const plain = (o: unknown) => (o ? JSON.parse(JSON.stringify(o)) : undefined)
@@ -43,9 +43,15 @@ export function sheetOf(typeId: string): UnitSheet | undefined {
     powerOnArrival: u.powerOnArrival,
     auras: plain(u.auras) ?? [],
     defaultItems: plain(u.defaultItems),
-    attacks: many(u.attacks, ATTACKS as Record<string, unknown>),
-    abilities: many(u.abilities, ABILITIES as Record<string, unknown>),
-    moves: many(u.moves, MOVES as Record<string, unknown>),
+    // ONE ACTION TYPE (engine 26fa562, §11): a UnitDef row still carries the
+    // three lists, and every row resolves against the one ACTIONS registry.
+    // The rows keep their engine shape — an attack's pipeline fields under
+    // `attack`, a move's under `move`, reach as `range` — and the viewer reads
+    // them there; nothing is flattened, so nothing can drift from the engine.
+    attacks: many(u.attacks, ACTIONS as Record<string, unknown>),
+    abilities: many(u.abilities, ACTIONS as Record<string, unknown>),
+    moves: many(u.moves, ACTIONS as Record<string, unknown>),
+    badges: plain(u.badges) ?? [],
     triggers: plain(u.triggers) ?? [],
   }
 }
@@ -55,6 +61,10 @@ export function sheetOf(typeId: string): UnitSheet | undefined {
     at fielding, and the bare row does not carry it). Copied, never shaped. */
 export function attackTable(): Record<string, unknown> { return plain(ATTACKS) ?? {} }
 export function abilityTable(): Record<string, unknown> { return plain(ABILITIES) ?? {} }
+/** every action by id — one registry since 26fa562; a grant resolves here whatever kind it is */
+export function actionTable(): Record<string, unknown> { return plain(ACTIONS) ?? {} }
+/** every badge by id — name, statModifiers, grants, flags (badge.mechanism 2e76ede) */
+export function badgeTable(): Record<string, unknown> { return plain(BADGES) ?? {} }
 
 /** Hex distance for every pair on ONE board, as a base64 string of hexCount²
     bytes (row-major: dist(a,b) at a*hexCount+b) — the engine's own geometry,

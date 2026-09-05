@@ -57,9 +57,12 @@ export function drawBar(V) {
     /* DMG is a NUMBER, never a formula (ruled 2026-09-01) */
     const dm = dmgOf(a, u, D)
     const dmg = dm ? String(dm.n) : '—'
+    /* reach is `range` on every action since 26fa562 (§11) */
     const rng = a.kind === 'move' ? (() => { const n = moveHexes(a, u, D); return n == null ? '—' : String(n) })()
-      : a.area ? String(a.area) : (a.reach ?? a.range) != null ? String(a.reach ?? a.range) : '—'
-    const stam = (a.staminaCost ?? a.cost)
+      : a.area ? String(a.area) : a.range != null ? String(a.range) : '—'
+    const stam = a.staminaCost
+    /* capability.charges: what the log says is left, else the row's own count */
+    const usesLeft = u.charges && u.charges[a.id] != null ? u.charges[a.id] : a.uses
     const acc = a.area ? '—' : (a.isAttack ? (base != null ? base : '—') : '—')
     const tag = effectTag(a, u, D, SN)
     const trg = triggersFor(u, a, D, SN, stStyle)
@@ -78,11 +81,12 @@ export function drawBar(V) {
           ${tag ? `<span class="acTag">${tag}</span>` : ''}</div>
         <div class="acL2">
           ${cell('ACC', acc)}${cell(a.area ? 'AREA' : 'RNG', rng)}
-          ${cell('DMG', dmg, a.damageType && dmg !== '—' ? actHue(a).col : null)}${cell('STA', stam != null ? stam : '—')}
+          ${cell('DMG', dmg, (a.attack || a).damageType && dmg !== '—' ? actHue(a).col : null)}${cell('STA', stam != null ? stam : '—')}
         </div>
       </div>
       <div class="acTrgs${topen ? ' open' : ''}">${trgSide}</div>
-      <span class="acCd" title="turns until usable">${cool ? left : (a.cooldown ? 'cd ' + a.cooldown : '—')}</span>
+      <span class="acCd" title="${usesLeft != null ? 'uses left this battle' : 'turns until usable'}">${
+        cool ? left : usesLeft != null ? usesLeft + '&times;' : (a.cooldown ? 'cd ' + a.cooldown : '—')}</span>
       </div>`
   }
   bar.innerHTML = html

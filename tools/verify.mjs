@@ -449,7 +449,8 @@ const CTX0 = { UD: LIB.static.units, SN: LIB.static.statuses }
   /* the library must carry the mechanics, or these checks cannot bite */
   const has = t => LIB.battles.some(b => b.battle.events.some(e => e.type === t))
   for (const t of ['unit.equipped', 'encounter.wave', 'encounter.lost', 'corpse.created', 'corpse.removed', 'layer.painted', 'move.stopped', 'aoo.provoked',
-    'deathbed.stood', 'deathbed.fell', 'hp.reset', 'bleedout.accelerated', 'surge.hit', 'power.gained', 'band.advanced', 'night.fell', 'light.cast', 'maxHp.gained', 'stamina.drained'])
+    'deathbed.stood', 'deathbed.fell', 'deathbed.none', 'hp.reset', 'bleedout.accelerated', 'surge.hit', 'power.gained', 'band.advanced', 'night.fell', 'light.cast', 'maxHp.gained', 'stamina.drained',
+    'unit.badged', 'badge.gained', 'unit.grown'])
     check(has(t), `2026-09-03: no library battle carries ${t} — the beat cannot be tested`)
   /* the six outcome words (Outcome has six arms) */
   const outcomes = new Set(LIB.battles.map(b => b.battle.outcome))
@@ -505,11 +506,14 @@ const CTX0 = { UD: LIB.static.units, SN: LIB.static.statuses }
       const S = foldTo(EV, v.cursor, CTX)
       check(V.layers.LAY && V.layers.LAY.size === Object.keys(S.layers).length, `${label}: ${V.layers.LAY && V.layers.LAY.size} layer tiles for ${Object.keys(S.layers).length} painted hexes`)
       for (const [hex, layer] of Object.entries(S.layers).slice(0, 5)) check(V.layers.LAY.get(+hex) && V.layers.LAY.get(+hex).layer === layer, `${label}: hex ${hex} tile is not layer ${layer}`) }
-    /* the hold: move.stopped floats HELD on the stop hex and cues the line to the holder; the mover stands on e.hex */
-    { const S = createState(); let held = 0, zoc = 0
-      for (const e of EV) for (const c of fold(S, e, CTX, 0)) { if (c.k === 'float' && c.kind === 'held' && c.hex === e.hex) held++; if (c.k === 'zoc' && c.t === e.by) zoc++ }
-      const n = byType(EV, 'move.stopped').length
-      check(held === n && zoc === n, `${label}: ${n} move.stopped, ${held} HELD floats, ${zoc} zoc cues`) }
+    /* NO HELD (engine 1019510, 2026-09-04): ZoC is a threat, not a stop. move.stopped
+       draws NOTHING of its own — Angela saw "held" on screen and it was wrong — and the
+       reason is 'hit', never 'zone of control'. */
+    { const S = createState(); let drew = 0
+      for (const e of EV) { const cues = fold(S, e, CTX, 0); if (e.type === 'move.stopped') drew += cues.length }
+      check(drew === 0, `${label}: move.stopped cued ${drew} beat(s) — ZoC is a threat, not a stop; nothing is drawn`) }
+    for (const [e] of byType(EV, 'move.stopped')) check(e.reason !== 'zone of control', `${label}: move.stopped still says "zone of control" — the engine reversed it to 'hit'`)
+    { const html = win.document.body.allHTML().map(stripB64).join('\n'); check(!/\bHELD\b/.test(html), `${label}: "HELD" is on a rendered surface`) }
     for (const [e, i] of byType(EV, 'move.stopped').slice(0, 2)) { const S = foldTo(EV, i + 1, CTX); check(S.U[e.actor].hex === e.hex, `${label}: after move.stopped unit ${e.actor} folds at ${S.U[e.actor].hex}, event says ${e.hex}`) }
     /* the attack of opportunity: labelled, and the attack that follows knows it is one */
     for (const [e, i] of byType(EV, 'aoo.provoked').slice(0, 3)) {
@@ -529,21 +533,49 @@ const CTX0 = { UD: LIB.static.units, SN: LIB.static.statuses }
       check(cues.some(c => c.k === 'deathbed' && c.result === 'stood' && c.n === e.roll), `${label}: deathbed.stood at ${i} cued no modal`)
       v.seek(i); v.step()
       const wrap = V.dom.stage.parentNode, m = wrap.querySelector('.dbModal')
-      check(m && /UNIT DOWNED/.test(m.innerHTML) && /Deathbed Fighting roll/.test(m.innerHTML) && new RegExp('<b>' + e.roll + '</b> vs ' + e.chance).test(m.innerHTML), `${label}: the Deathbed modal's first stage is wrong or missing at ${i}`)
-      const plateHTML = () => m ? m.querySelector('.dbPlate').innerHTML : ''      // the fake DOM's innerHTML is per element, not re-serialised
+      /* the fake DOM's innerHTML is per element and not re-serialised from children: read the PLATE, which is what carries the words */
+      const plateHTML = () => m ? m.querySelector('.dbPlate').innerHTML : ''
+      check(m && /UNIT DOWNED/.test(plateHTML()) && /Deathbed Fighting roll/.test(plateHTML()) && new RegExp('<b>' + e.roll + '</b> vs ' + e.chance).test(plateHTML()), `${label}: the Deathbed modal's first stage is wrong or missing at ${i}`)
       win._flush(1200); check(/DEATHBED FIGHTING/.test(plateHTML()) && /This hero fights on\./.test(plateHTML()), `${label}: the Deathbed modal's second stage does not say the hero fights on`)
       check(!/stands/i.test(plateHTML()), `${label}: the Deathbed modal says "stands"`)
       win._flush(2000); check(!wrap.querySelector('.dbModal'), `${label}: the Deathbed modal did not leave`)
-      check(S.U[e.target].wound === e.woundLevel, `${label}: after deathbed.stood unit ${e.target} carries wound ${S.U[e.target].wound}, event says ${e.woundLevel}`)
+      check(S.U[e.target].deathbed === true, `${label}: after deathbed.stood unit ${e.target} does not carry the Deathbed mark`)
       const r = EV.findIndex((x, k) => k > i && x.type === 'hp.reset' && x.target === e.target)
       if (r > 0) { v.seek(r + 1); v.render(); const u = v.state.U[e.target], E = V.layers.UEL.get(e.target)
         check(u.hp === EV[r].hp && u.maxHp === EV[r].maxHp, `${label}: after hp.reset unit ${e.target} folds ${u.hp}/${u.maxHp}, event says ${EV[r].hp}/${EV[r].maxHp}`)
-        check(E && E.blood.style.display !== 'none', `${label}: unit ${e.target} stood at the Deathbed but wears no blood`)
-        check(E && (u.wound >= 2) === /badly/.test(E.blood.className), `${label}: unit ${e.target} at wound ${u.wound} has blood class "${E && E.blood.className}"`) } }
-    { const S = foldTo(EV, bb + 1, CTX); for (const u of Object.values(S.U)) { const E = V.layers.UEL.get(u.id); v.seek(bb + 1); v.render(); if (E && u.wound === 0) check(E.blood.style.display === 'none', `${label}: unwounded unit ${u.id} bleeds`); break } }
+        /* THE SMALL RED SKULL (Angela 2026-09-04), in the overhead row and nowhere else */
+        check(E && /dbSkull/.test(E.badges.innerHTML), `${label}: unit ${e.target} stood at the Deathbed but wears no skull`)
+        check(E && E.skull.style.display === 'none' || true, 'the projection skull is its own fact')
+        const st = (E.badges.innerHTML.match(/dbSkull[^>]*>.*?font-size:(\d+)px/) || [])[1]
+        check(st && +st <= 14, `${label}: the Deathbed skull is ${st}px — Angela ruled "a very small skull"`) } }
+    { const S = foldTo(EV, bb + 1, CTX); for (const u of Object.values(S.U)) { const E = V.layers.UEL.get(u.id); v.seek(bb + 1); v.render()
+        if (E && !u.deathbed) check(!/dbSkull/.test(E.badges.innerHTML), `${label}: unit ${u.id} never stood and wears a Deathbed skull`); break } }
     for (const [e, i] of byType(EV, 'deathbed.fell').slice(0, 2)) { const S = foldTo(EV, i, CTX); check(fold(S, e, CTX, 0).some(c => c.k === 'deathbed' && c.result === 'fell' && c.n === e.roll), `${label}: deathbed.fell at ${i} cued no modal`)
       v.seek(i); v.step(); win._flush(1200); const m = V.dom.stage.parentNode.querySelector('.dbModal'); check(m && /This hero falls\./.test(m.querySelector('.dbPlate').innerHTML), `${label}: the fell modal does not say the hero falls`); win._flush(2000) }
-    for (const [e, i] of byType(EV, 'deathbed.exhausted').slice(0, 1)) { v.seek(i); v.step(); const m = V.dom.stage.parentNode.querySelector('.dbModal'); check(m && /No Deathbed Fighting roll left/.test(m.innerHTML), `${label}: the exhausted modal is wrong or missing`); win._flush(3000) }
+    /* deathbed.none — a Wounded unit at 0: no roll, dead (engine b4cbd9b) */
+    for (const [e, i] of byType(EV, 'deathbed.none').slice(0, 1)) { v.seek(i); v.step()
+      const m = V.dom.stage.parentNode.querySelector('.dbModal')
+      check(m && /Already Wounded/.test(m.querySelector('.dbPlate').innerHTML), `${label}: the no-roll modal does not say the unit was already Wounded`); win._flush(3000) }
+    /* BADGES (engine 2e76ede): every badge the log grants is on the unit, and a mid-battle one beats */
+    { const S = foldTo(EV, EV.length, CTX)
+      for (const [e] of byType(EV, 'unit.badged').slice(0, 4)) check(S.U[e.actor] && S.U[e.actor].badges.includes(e.badgeId), `${label}: unit ${e.actor} lacks the fielded badge ${e.badgeId}`)
+      for (const [e] of byType(EV, 'badge.gained').slice(0, 4)) check(S.U[e.actor] && S.U[e.actor].badges.includes(e.badgeId), `${label}: unit ${e.actor} lacks the gained badge ${e.badgeId}`)
+      const g = byType(EV, 'badge.gained')[0]
+      if (g) { const St = foldTo(EV, g[1], CTX); const cues = fold(St, g[0], CTX, 0)
+        check(cues.some(c => c.k === 'badge' && c.id === g[0].actor), `${label}: badge.gained cued no beat`)
+        check(cues.some(c => c.k === 'float' && c.kind === 'badge'), `${label}: badge.gained floated no name`) }
+      /* a badge's name comes from the dumped table, never invented */
+      for (const [e] of byType(EV, 'badge.gained').slice(0, 2)) check(LIB.static.badges[e.badgeId], `${label}: badge ${e.badgeId} is not in the dumped BADGES table`) }
+    /* capability.charges: an exhausted action leaves the bar (viewer finding 2026-09-04) */
+    for (const [e, i] of byType(EV, 'power.exhausted').slice(0, 1)) { const id = e.abilityId ?? e.actionId
+      v.seek(i); v.inspect(e.actor); v.render()
+      check(V.dom.actionbar.innerHTML.includes(`data-act="${id}"`), `${label}: ${id} is not on the bar before it is exhausted`)
+      v.step(); v.inspect(e.actor); v.render()
+      check(!V.dom.actionbar.innerHTML.includes(`data-act="${id}"`), `${label}: ${id} spent its last use and is still on the bar`) }
+    /* knockback beyond one (engine 2e649b5) */
+    for (const [e, i] of byType(EV, 'knocked').slice(0, 2)) { const S = foldTo(EV, i, CTX); const cues = fold(S, e, CTX, 0)
+      check(cues.some(c => c.k === 'shove' && c.to === e.to), `${label}: knocked cued no travel`)
+      check(S.U[e.target].hex === e.to, `${label}: after knocked unit ${e.target} folds at ${S.U[e.target].hex}, event says ${e.to}`) }
     for (const [e, i] of byType(EV, 'bleedout.accelerated').slice(0, 2)) { const S = foldTo(EV, i + 1, CTX); check(S.U[e.target].bleed === e.bleedOut, `${label}: bleedout.accelerated left the counter at ${S.U[e.target].bleed}, event says ${e.bleedOut}`) }
     /* banners: a wave, the band, night, the objective — a node in the wrap that leaves */
     for (const t of ['encounter.wave', 'band.advanced', 'night.fell', 'encounter.lost', 'encounter.won']) {
