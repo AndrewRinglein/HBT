@@ -62,4 +62,11 @@ found by verify's "a new engine event is a failure until it is placed on purpose
 battle went from `wipe` in 10 turns to **`capped` at 25** — the tide can now walk past the line and
 neither side finishes. Every other battle also moved (cooldowns a Turn longer, afflictions, west/east).
 
+> **Corrected 2026-09-04 by the engine investigation (`engine/FINDINGS-2026-09-03.md` 36).** Bisected per
+> commit: the ZoC reversal (`4f73064`) leaves the horde a wipe (seed 3: wipe @12; 20 seeds: 18 wipe · 2
+> heroClear). The flip to `capped` is `a4deae8` badge.afflictions — the zombie's Rotting Flesh (+8 max HP,
+> +1 armor) lands on Lucius as a buff, fills his bar by 8 on the claw that afflicts him, and the kite loop
+> (walk into the ruled-unseen swing, stopped at zero hexes, heal with the rest) holds him alive and
+> unfinishing. Nothing walks past the line.
+
 **The `visual-replay` skill and `tools/replay/` are still in the engine tree.**
