@@ -2918,5 +2918,26 @@
   "status": "done-needs-review",
   "sha": "9d62be1",
   "gauntlet": "not passed — 2 flag(s) warned"
+ },
+ {
+  "id": "proving.rank",
+  "kind": "engine",
+  "shape": "plumbing",
+  "needs": [
+   "proving.plan-shape"
+  ],
+  "ruling": "DECISIONS.md 2026-09-03 — the Proving (flip rate first, five pairs one ranking); 9-PROVING-SETTLED.md §2 E7, §4 columns",
+  "spec": "tools/proving-rank.mts (npm run proving:rank): reads every .state/proving/<plan>/rollup.json and the subject files, writes .state/proving/ranking.json — one row per replace/add subject across all plans, tagged by ladder (fixture + side), with the dashboard's columns: Power (flip rate), wins WITH beside the control's wins (the WITHOUT arms), swing (margin shift from the subject's side), tempo, presence, invalid with reasons, the five pairs, per-row findings, the pack stamp and whether it is current — plus the initiative mirrors per map, the gap sweep, the control candidates with the seed-1 rule applied and the control the unit plans were actually paired against; and PROVING-RESULTS.md at the root (generated, declared in DOCS.md). Findings are written by the tool: INVALID on every pair, zero presence with nonzero swing, a row with no attacks, identical-to-control on every pair (the rig invariant / a no-op), a control off 2-3/3-2, stale results. Sort: Power, swing, id (Law 6).",
+  "expect": "on the smoke plan run into a scratch tree: one row per unit subject (no item, no grow), sorted, with every column, unit.nobody INVALID on every pair as a finding, kinds and classes read off the pack, the document written with the ladders and the findings; on the six real plans: 71 units, 7 mirrors, 13 gaps, 9 candidates",
+  "changesBaseline": false,
+  "unreachable": "a reader of result files: it fields no unit, runs no battle and emits no log line — there is nothing for the probe to find in a battle, and no content id to disable",
+  "tests": [
+   "test/proving-rank.test.ts"
+  ],
+  "note": "Session 9 E7. A reader's tool: no battle is run, nothing decided. Observation for Angela from the first real run: flip rate counts a flip in EITHER direction, so the hero ladder's top six (3/5) all turned control wins into losses — swing carries the sign; if the score should be one-directional that is a ruling, not a fix.",
+  "status": "done-needs-review",
+  "attempts": 1,
+  "sha": "122934a",
+  "gauntlet": "not passed — 1 flag(s) warned; 1 exemption(s) taken"
  }
 ]
