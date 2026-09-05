@@ -24,10 +24,19 @@ the default freezes and the baseline uses it. Without recording the answers,
 | `terrain.forest.cover` | Does forest hide you (+dodge), armour you (+armor), or both? | +10 dodge, +1 armor | open |
 | `terrain.rocky.cover` | Is broken ground cover, or just slow? | +5 dodge | open |
 | `terrain.water.penalty` | Does wading cost accuracy, or only movement? | −10 acc, −5 dodge | open |
-| `hazardOnDowned` | Does terrain reach a downed hero? | not modelled — downed carry no statuses | answered |
+| `hazardOnDowned` | Does terrain reach a downed hero? | not modelled — statuses LAND on the downed but never tick (corrected 2026-09-04, FINDING 44) | answered |
 | `protectionStacking` | A pulse of 2 onto a hero holding 1 gives 3 or 2? | additive | answered |
 
 ## Notes
+
+**`hazardOnDowned`** — corrected 2026-09-04 (FINDING 44): the old sentence said
+"downed carry no statuses"; they do — `applyStatus` has no `lifeState` guard and
+80 poisons in 220 audited battles landed on the downed (the zombie's claw on a
+bleeding hero, then its rider). They never tick (`tickUnitStatuses` skips the
+non-standing) and, with no stands (fix.deathbed-no-stands), a downed unit never
+returns to a state where they could matter. The sentence is corrected rather
+than the mutator guarded: a guard would be a rule ("the downed cannot be
+poisoned") nobody has ruled, and the log lines are true.
 
 **`statusDecayRung`** — `COMBAT-SEQUENCE.md` puts status ticks at rung 3 and
 duration decay at rung 5, with a settle between. For a damage-over-time the damage
@@ -366,6 +375,17 @@ the structurally-dead list from the rows). `bestDamage`: the legal attack with
 the highest previewed damage on hit, ties to the earlier listing. Riders (a
 stun, a self-Protection) are not priced by either — a third policy's question.
 `npm run sweep` on the eight control battles answers which the AI should use.
+
+**Open question, added 2026-09-04 (FINDING 42, the log-invariant audit):** under
+`declared` the AI swung for a PREVIEWED 0 damage 530 times in 220 battles — the
+dumb-melee's 3-point claw into Osric's Block (Protection 5), Lucius's Wrath at
+range into a shielded zombie. Nothing in either arm asks "is the number zero".
+For the zombie there is no better choice; for Lucius a Punch or a step was. The
+question a third arm would answer: **skip a 0 preview when another action
+exists** (`declaredNonZero`: the first affordable attack whose previewed damage
+on hit is > 0, falling back to the declared order when none is). Not built —
+the AI is undesigned by ruling (Andrew 2026-09-04, `system.ai-modes` waits on a
+design), and a sweep of `declared` vs `bestDamage` has not run yet either.
 
 ## zoneOfControl — are zones of control and attacks of opportunity live?
 Added 2026-09-03 (movement.zone-of-control, movement.attack-of-opportunity).
