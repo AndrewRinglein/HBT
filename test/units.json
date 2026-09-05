@@ -3,6 +3,10 @@
     "id": "test-arc-golem",
     "name": "Arc Golem (TEST)",
     "side": "hero",
+    "tags": [
+      "hero",
+      "class.warrior"
+    ],
     "maxHp": 30,
     "armor": 2,
     "resist": 0,
@@ -62,7 +66,7 @@
           "statusId": "status.protection",
           "value": 2
         },
-        "note": "fix.activation-end-fires: the golem braces at the end of every Activation it takes \u2014 the first content that DEPENDS on the hook firing. Fires once per Activation, idle ones included. Value 2, not 1: rung 3 (the status tick) follows rung 2 in the same ladder and decays a pool by 1, exactly as embers catch-then-cook \u2014 so 1 would be gone before anyone could read it."
+        "note": "fix.activation-end-fires: the golem braces at the end of every Activation it takes — the first content that DEPENDS on the hook firing. Fires once per Activation, idle ones included. Value 2, not 1: rung 3 (the status tick) follows rung 2 in the same ladder and decays a pool by 1, exactly as embers catch-then-cook — so 1 would be gone before anyone could read it."
       },
       {
         "id": "trigger.test-tags.grave-rot",
@@ -80,7 +84,7 @@
           "statusId": "status.poison",
           "value": 1
         },
-        "note": "fix.unit-tags: a type-filtered rider \u2014 fires only when the struck unit IS undead, read off tags, the one field. Proves requireTags reaches real rows."
+        "note": "fix.unit-tags: a type-filtered rider — fires only when the struck unit IS undead, read off tags, the one field. Proves requireTags reaches real rows."
       },
       {
         "id": "trigger.test-hold.root",
@@ -93,7 +97,7 @@
           "value": 1
         },
         "onlyWithAttack": "attack.test-arc.sweep",
-        "note": "capability.root (2026-09-03): the sweep holds what it hits (the sweep never rolls to hit, so it lands every swing) \u2014 the second live Root, pure data."
+        "note": "capability.root (2026-09-03): the sweep holds what it hits (the sweep never rolls to hit, so it lands every swing) — the second live Root, pure data."
       },
       {
         "id": "trigger.test-call.taunt",
@@ -105,7 +109,7 @@
           "statusId": "status.taunt",
           "value": 2
         },
-        "note": "capability.taunt (2026-09-03): whatever bites the golem is called \u2014 taunted by the golem, it fixates on it. onTakingDamage, so the attacker is the target. Pure data."
+        "note": "capability.taunt (2026-09-03): whatever bites the golem is called — taunted by the golem, it fixates on it. onTakingDamage, so the attacker is the target. Pure data."
       },
       {
         "id": "trigger.test-grace.karma",
@@ -117,7 +121,7 @@
           "statusId": "status.karma",
           "value": 2
         },
-        "note": "capability.karma (2026-09-03): the golem gathers Karma when struck \u2014 heals it receives grow by it, its hits by half of it, and each kill takes one. Pure data."
+        "note": "capability.karma (2026-09-03): the golem gathers Karma when struck — heals it receives grow by it, its hits by half of it, and each kill takes one. Pure data."
       },
       {
         "id": "trigger.test-gloom.shadow",
@@ -143,7 +147,7 @@
           "value": 2
         },
         "onlyWithAttack": "attack.test-arc.sweep",
-        "note": "capability.confusion (2026-09-03): the sweep addles what it hits \u2014 the zombie runs a different AI while it lasts. Pure data."
+        "note": "capability.confusion (2026-09-03): the sweep addles what it hits — the zombie runs a different AI while it lasts. Pure data."
       },
       {
         "id": "trigger.test-carrion.consume",
@@ -155,7 +159,7 @@
           "radius": 2,
           "healPer": 1
         },
-        "note": "capability.corpses (2026-09-03): the golem grinds the bodies within 2 at the end of its Activation, 1 Health each \u2014 the second consumer, pure data."
+        "note": "capability.corpses (2026-09-03): the golem grinds the bodies within 2 at the end of its Activation, 1 Health each — the second consumer, pure data."
       },
       {
         "id": "trigger.test-ram.shove",
@@ -167,10 +171,10 @@
           "value": 2
         },
         "onlyWithAttack": "attack.test-ram.overhead",
-        "note": "fix.knockback-beyond-one (2026-09-04): a push of TWO \u2014 'We want to be able to have knockback that is greater than one' (Angela 2026-09-04). Same mechanism as the halberd's 1 and the sweep's 1; the number is the row's."
+        "note": "fix.knockback-beyond-one (2026-09-04): a push of TWO — 'We want to be able to have knockback that is greater than one' (Angela 2026-09-04). Same mechanism as the halberd's 1 and the sweep's 1; the number is the row's."
       }
     ],
-    "note": "A complete body, not a delta \u2014 no real unit is a 30-hp, 5-accuracy stone that never rolls to hit. capability.area-attack / capability.knockback / station.crit-count scaffolding; fields ONLY in showcase.arc-variant. Re-statted 2026-08-27: the original 14-hp body died before a single-target turn. | fix.knockback-beyond-one (2026-09-04), FINDING 35: accuracy was 5 \u2014 read as the whole base chance, the Slam hit 5% of the time and the Overhead (\u221210) NEVER hit in 40 seeds of its own verify scenario; every rider hung on the Overhead was dead content. 65, like a hero.",
+    "note": "A complete body, not a delta — no real unit is a 30-hp, 5-accuracy stone that never rolls to hit. capability.area-attack / capability.knockback / station.crit-count scaffolding; fields ONLY in showcase.arc-variant. Re-statted 2026-08-27: the original 14-hp body died before a single-target turn. | fix.knockback-beyond-one (2026-09-04), FINDING 35: accuracy was 5 — read as the whole base chance, the Slam hit 5% of the time and the Overhead (−10) NEVER hit in 40 seeds of its own verify scenario; every rider hung on the Overhead was dead content. 65, like a hero.",
     "auras": [
       {
         "id": "aura.test-golem.dread",
@@ -179,7 +183,7 @@
         "mods": {
           "accuracy": -10
         },
-        "note": "capability.auras (2026-09-03): the golem is hard to look at \u2014 enemies adjacent to it lose 10 Accuracy while adjacent. The second aura, pure data, on a body the probe fields."
+        "note": "capability.auras (2026-09-03): the golem is hard to look at — enemies adjacent to it lose 10 Accuracy while adjacent. The second aura, pure data, on a body the probe fields."
       }
     ],
     "abilities": [
@@ -193,6 +197,10 @@
     "id": "test-warrior",
     "name": "Warrior (TEST)",
     "side": "hero",
+    "tags": [
+      "hero",
+      "class.warrior"
+    ],
     "maxHp": 10,
     "armor": 1,
     "resist": 0,
@@ -261,6 +269,10 @@
     "id": "test-ranger",
     "name": "Ranger (TEST)",
     "side": "hero",
+    "tags": [
+      "hero",
+      "class.ranger"
+    ],
     "maxHp": 7,
     "armor": 0,
     "resist": 0,
@@ -294,6 +306,10 @@
     "id": "test-mage",
     "name": "Mage (TEST)",
     "side": "hero",
+    "tags": [
+      "hero",
+      "class.mage"
+    ],
     "maxHp": 6,
     "armor": 0,
     "resist": 1,
@@ -366,6 +382,6 @@
         }
       }
     ],
-    "note": "fix.bleed-magnitude's variant source: the test zombie PLUS the gash rider \u2014 a delta over the cohort's zombie, fielded only by showcase.gash-variant."
+    "note": "fix.bleed-magnitude's variant source: the test zombie PLUS the gash rider — a delta over the cohort's zombie, fielded only by showcase.gash-variant."
   }
 ]
