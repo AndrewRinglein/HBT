@@ -1523,8 +1523,24 @@ function compileEncounter(row) {
 const encounters = {};
 for (const row of [...(ENC.prologue || []), ...(ENC.scripted || []), ...(ENC.authored || [])]) encounters[row.id] = compileEncounter(row);
 
+// ── THE MAPS (content.maps-as-rows, PROVING-PLAN Stage A2, 2026-09-04) ───────
+// Authored in gen/maps.json, shipped here. The ROWS are the board — the engine
+// reads width off a row's length and height off the count, exactly as
+// engine/src/content/maps.ts did — so a map cannot declare a size it is not.
+// `deploy` rides only when the map differs from the default (heroes WEST,
+// enemies EAST); assemble.mjs refuses a map that restates the default, because
+// a default everything declares is not a default.
+const FORMAT_OF = { '8x8': 'duel', '16x8': 'dungeon', '16x16': 'standard', '24x24': 'horde' };
+const maps = {};
+for (const m of (D.maps || [])) {
+  const width = m.rows[0].length, height = m.rows.length;
+  const format = FORMAT_OF[`${width}x${height}`];
+  if (!format) { gap(m.id, `board ${width}x${height}`, 'not one of the four ruled formats — NOT shipped'); continue; }
+  maps[m.id] = { id: m.id, name: m.name, board: { width, height }, format, rows: m.rows, ...(m.deploy ? { deploy: m.deploy } : {}) };
+}
+
 const pack = { note: D.testCohort.note, heroes, enemies, authoredEnemies, authoredAttacks, authoredAbilities, prologueParty, alphaTeam, critChart: compileCritChart(SETTLED.critChart), statuses, moves, items, test,
-  classPowers, specialties, levels, enchanted, encounters, badges };
+  classPowers, specialties, levels, enchanted, encounters, badges, maps };
 
 // Gaps are written AFTER the pack is fully constructed (moved 2026-08-27):
 // compileCritChart names gaps during pack construction, and writing the file

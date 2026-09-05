@@ -36,6 +36,11 @@ out.badges.push(...R('badges.json').badges);
 const cl=R('classes.json'); out.classes=cl.classes; out.stats=cl.stats; out.art=cl.art;
 // ---- per-class level tables. warrior 1-10 and ranger 2-6 dictated; the rest authored
 out.levels=R('levels.json');
+// ---- THE MAPS (content.maps-as-rows, PROVING-PLAN Stage A2, 2026-09-04). Moved out of
+// engine/src/content/maps.ts. The ROWS are the board: width is a row's length, height is the
+// number of rows, and the result must be one of the four ruled formats. The test.map.* boards
+// stay in the engine — they never ship and they are not content.
+out.maps=R('maps.json').maps;
 // ---- heroes, extracted mechanically from hell-tcg's five creation paths
 out.heroes=R('heroes.json');
 // ---- the TEST COHORT (settled.json testCohort): the standard engine test party — six
@@ -102,6 +107,29 @@ if(fs.existsSync(G+'not-ported.json')) out.notPorted=R('not-ported.json').fields
 
 // ---- the function list: the complete vocabulary content is allowed to use
 if(fs.existsSync(G+'functions.json')) out.functions=R('functions.json');
+// ---- maps. Every rule here exists because the alternative is a board that silently is not
+// the size it says. FORMATS mirrors engine/src/core/hex.ts; a fifth size is a ruling, not a typo.
+{ const FORMATS={'8x8':1,'16x8':1,'16x16':1,'24x24':1};
+  const GLYPHS=new Set(['.','h','f','r','R','w','x','b','p']);   // MAP-01's legend, one glyph per terrain
+  const EDGES=new Set(['north','south','east','west']);
+  const mid=new Set();
+  for(const m of out.maps||[]){
+    if(!m.id||!/^map\./.test(m.id)) { prob.push(`maps: bad id ${JSON.stringify(m.id)} — a shipping map is map.*`); continue; }
+    if(mid.has(m.id)) prob.push(`maps: DUPLICATE id ${m.id}`); mid.add(m.id);
+    if(!Array.isArray(m.rows)||!m.rows.length){ prob.push(`maps ${m.id}: no rows`); continue; }
+    const w=m.rows[0].length, h=m.rows.length;
+    for(const r of m.rows) if(r.length!==w) prob.push(`maps ${m.id}: a row of ${r.length} on a board ${w} wide — not rectangular`);
+    const fmt=w+'x'+h;
+    if(!FORMATS[fmt]) prob.push(`maps ${m.id}: ${fmt} is not one of the four ruled formats (8x8, 16x8, 16x16, 24x24)`);
+    if(m.format && m.format!==fmt) prob.push(`maps ${m.id}: declares format ${m.format} but its rows are ${fmt} — the rows are the board`);
+    for(const r of m.rows) for(const g of r) if(!GLYPHS.has(g)) prob.push(`maps ${m.id}: glyph "${g}" is not in the MAP-01 legend`);
+    if(m.deploy){
+      if(!EDGES.has(m.deploy.hero)||!EDGES.has(m.deploy.enemy)) prob.push(`maps ${m.id}: deploy names an edge that is not north/south/east/west`);
+      else if(m.deploy.hero===m.deploy.enemy) prob.push(`maps ${m.id}: both sides deploy on the ${m.deploy.hero} edge`);
+      else if(m.deploy.hero==='west'&&m.deploy.enemy==='east') prob.push(`maps ${m.id}: declares the DEFAULT deploy — leave it off, or the default stops meaning anything`);
+    }
+    if(!m.note) prob.push(`maps ${m.id}: no note — a board with no stated intent cannot be re-authored by anyone else`);
+  } }
 { const known=new Set(out.classes.map(c=>c.id)); const hid=new Set();
   for(const h of out.heroes.heroes){
     if(!ID.test(h.id)) prob.push(`hero: bad id "${h.id}"`);

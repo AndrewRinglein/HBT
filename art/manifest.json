@@ -162,6 +162,266 @@
    }
   ]
  },
+ "hero.fixed.silk-merchant": {
+  "thumb": "a27c3d8fa0a9.webp",
+  "src": "art/heroes/silk-merchant/card/l1.png",
+  "how": "local art tree",
+  "variants": [
+   {
+    "kind": "level",
+    "label": "Level 1",
+    "thumb": "a27c3d8fa0a9.webp",
+    "src": "art/heroes/silk-merchant/card/l1.png"
+   }
+  ]
+ },
+ "hero.fixed.runesmith": {
+  "thumb": "b2791ab981e7.webp",
+  "src": "art/heroes/runesmith/card/l1.png",
+  "how": "local art tree",
+  "variants": [
+   {
+    "kind": "level",
+    "label": "Level 1",
+    "thumb": "b2791ab981e7.webp",
+    "src": "art/heroes/runesmith/card/l1.png"
+   }
+  ]
+ },
+ "hero.fixed.guard": {
+  "thumb": "0c947e7b4641.webp",
+  "src": "art/heroes/guard/card/l1.png",
+  "how": "local art tree",
+  "variants": [
+   {
+    "kind": "level",
+    "label": "Level 1",
+    "thumb": "0c947e7b4641.webp",
+    "src": "art/heroes/guard/card/l1.png"
+   }
+  ]
+ },
+ "hero.fixed.djinn-touched-child": {
+  "thumb": "5baaba0a9f69.webp",
+  "src": "art/heroes/djinn-touched-child/card/l1.png",
+  "how": "local art tree",
+  "variants": [
+   {
+    "kind": "level",
+    "label": "Level 1",
+    "thumb": "5baaba0a9f69.webp",
+    "src": "art/heroes/djinn-touched-child/card/l1.png"
+   }
+  ]
+ },
+ "hero.fixed.the-outcast": {
+  "thumb": "fe408b5db5d5.webp",
+  "src": "art/heroes/the-outcast/card/l1.png",
+  "how": "local art tree",
+  "variants": [
+   {
+    "kind": "level",
+    "label": "Level 1",
+    "thumb": "fe408b5db5d5.webp",
+    "src": "art/heroes/the-outcast/card/l1.png"
+   }
+  ]
+ },
+ "hero.fixed.refugee-children": {
+  "thumb": "7de13f034e61.webp",
+  "src": "art/heroes/refugee-children/card/l1.png",
+  "how": "local art tree",
+  "variants": [
+   {
+    "kind": "level",
+    "label": "Level 1",
+    "thumb": "7de13f034e61.webp",
+    "src": "art/heroes/refugee-children/card/l1.png"
+   }
+  ]
+ },
+ "hero.fixed.lost-fishers": {
+  "thumb": "582fb697d9e9.webp",
+  "src": "art/heroes/lost-fishers/card/l1.png",
+  "how": "local art tree",
+  "variants": [
+   {
+    "kind": "level",
+    "label": "Level 1",
+    "thumb": "582fb697d9e9.webp",
+    "src": "art/heroes/lost-fishers/card/l1.png"
+   }
+  ]
+ },
+ "hero.fixed.sailors": {
+  "thumb": "e9cd95df098b.webp",
+  "src": "art/heroes/sailors/card/l1.png",
+  "how": "local art tree",
+  "variants": [
+   {
+    "kind": "level",
+    "label": "Level 1",
+    "thumb": "e9cd95df098b.webp",
+    "src": "art/heroes/sailors/card/l1.png"
+   }
+  ]
+ },
+ "hero.fixed.refugees": {
+  "thumb": "cb207afc0cd1.webp",
+  "src": "art/heroes/refugees/card/l1.png",
+  "how": "local art tree",
+  "variants": [
+   {
+    "kind": "level",
+    "label": "Level 1",
+    "thumb": "cb207afc0cd1.webp",
+    "src": "art/heroes/refugees/card/l1.png"
+   }
+  ]
+ },
+ "hero.fixed.huge-group-of-refugees": {
+  "thumb": "38fea79b7549.webp",
+  "src": "art/heroes/huge-group-of-refugees/card/l1.png",
+  "how": "local art tree",
+  "variants": [
+   {
+    "kind": "level",
+    "label": "Level 1",
+    "thumb": "38fea79b7549.webp",
+    "src": "art/heroes/huge-group-of-refugees/card/l1.png"
+   }
+  ]
+ },
+ "hero.fixed.caravan-master": {
+  "thumb": "586edbb640db.webp",
+  "src": "art/heroes/caravan-master/card/l1.png",
+  "how": "local art tree",
+  "variants": [
+   {
+    "kind": "level",
+    "label": "Level 1",
+    "thumb": "586edbb640db.webp",
+    "src": "art/heroes/caravan-master/card/l1.png"
+   }
+  ]
+ },
+ "hero.fixed.badgered-soldier": {
+  "thumb": "eb8a01f62368.webp",
+  "src": "art/heroes/badgered-soldier/card/l1.png",
+  "how": "local art tree",
+  "variants": [
+   {
+    "kind": "level",
+    "label": "Level 1",
+    "thumb": "eb8a01f62368.webp",
+    "src": "art/heroes/badgered-soldier/card/l1.png"
+   }
+  ]
+ },
+ "hero.fixed.defenseless-women": {
+  "thumb": "bcb849b9b96e.webp",
+  "src": "art/heroes/defenseless-women/card/l1.png",
+  "how": "local art tree",
+  "variants": [
+   {
+    "kind": "level",
+    "label": "Level 1",
+    "thumb": "bcb849b9b96e.webp",
+    "src": "art/heroes/defenseless-women/card/l1.png"
+   }
+  ]
+ },
+ "hero.fixed.militia": {
+  "thumb": "fdb19b80fc55.webp",
+  "src": "art/heroes/militia/card/l1.png",
+  "how": "local art tree",
+  "variants": [
+   {
+    "kind": "level",
+    "label": "Level 1",
+    "thumb": "fdb19b80fc55.webp",
+    "src": "art/heroes/militia/card/l1.png"
+   }
+  ]
+ },
+ "hero.fixed.militia-commander": {
+  "thumb": "95cec2caf4b8.webp",
+  "src": "art/heroes/militia-commander/card/l1.png",
+  "how": "local art tree",
+  "variants": [
+   {
+    "kind": "level",
+    "label": "Level 1",
+    "thumb": "95cec2caf4b8.webp",
+    "src": "art/heroes/militia-commander/card/l1.png"
+   }
+  ]
+ },
+ "hero.fixed.catfolk-crew": {
+  "thumb": "2a727cf9c7b1.webp",
+  "src": "art/heroes/catfolk-crew/card/l1.png",
+  "how": "local art tree",
+  "variants": [
+   {
+    "kind": "level",
+    "label": "Level 1",
+    "thumb": "2a727cf9c7b1.webp",
+    "src": "art/heroes/catfolk-crew/card/l1.png"
+   }
+  ]
+ },
+ "hero.fixed.catfolk-navigator": {
+  "thumb": "524d4ab3539d.webp",
+  "src": "art/heroes/catfolk-navigator/card/l1.png",
+  "how": "local art tree",
+  "variants": [
+   {
+    "kind": "level",
+    "label": "Level 1",
+    "thumb": "524d4ab3539d.webp",
+    "src": "art/heroes/catfolk-navigator/card/l1.png"
+   }
+  ]
+ },
+ "hero.fixed.catfolk-cook": {
+  "thumb": "a1e3138fabaa.webp",
+  "src": "art/heroes/catfolk-cook/card/l1.png",
+  "how": "local art tree",
+  "variants": [
+   {
+    "kind": "level",
+    "label": "Level 1",
+    "thumb": "a1e3138fabaa.webp",
+    "src": "art/heroes/catfolk-cook/card/l1.png"
+   }
+  ]
+ },
+ "hero.fixed.catfolk-cabin-boy": {
+  "thumb": "91adebccf72f.webp",
+  "src": "art/heroes/catfolk-cabin-boy/card/l1.png",
+  "how": "local art tree",
+  "variants": [
+   {
+    "kind": "level",
+    "label": "Level 1",
+    "thumb": "91adebccf72f.webp",
+    "src": "art/heroes/catfolk-cabin-boy/card/l1.png"
+   }
+  ]
+ },
+ "hero.fixed.catfolk-whip-master": {
+  "thumb": "3e2d585f69de.webp",
+  "src": "art/heroes/catfolk-whip-master/card/l1.png",
+  "how": "local art tree",
+  "variants": [
+   {
+    "kind": "level",
+    "label": "Level 1",
+    "thumb": "3e2d585f69de.webp",
+    "src": "art/heroes/catfolk-whip-master/card/l1.png"
+   }
+  ]
+ },
  "hero.base.warrior-iron": {
   "thumb": "a53998074dd1.webp",
   "src": "art/heroes/warrior-iron/card/l1.png",
@@ -3642,48 +3902,6 @@
    }
   ]
  },
- "hero.fixed.catfolk-cabin-boy": {
-  "thumb": "c7bab03bfe5d.webp",
-  "src": null,
-  "how": "legacy thumbnail — its hell-tcg source was cut 2026-08-22, the picture survives",
-  "legacy": true,
-  "variants": [
-   {
-    "kind": "level",
-    "label": "Level 1",
-    "thumb": "c7bab03bfe5d.webp",
-    "src": null
-   }
-  ]
- },
- "hero.fixed.catfolk-cook": {
-  "thumb": "42a033bfa375.webp",
-  "src": null,
-  "how": "legacy thumbnail — its hell-tcg source was cut 2026-08-22, the picture survives",
-  "legacy": true,
-  "variants": [
-   {
-    "kind": "level",
-    "label": "Level 1",
-    "thumb": "42a033bfa375.webp",
-    "src": null
-   }
-  ]
- },
- "hero.fixed.catfolk-crew": {
-  "thumb": "aa8de4a25be2.webp",
-  "src": null,
-  "how": "legacy thumbnail — its hell-tcg source was cut 2026-08-22, the picture survives",
-  "legacy": true,
-  "variants": [
-   {
-    "kind": "level",
-    "label": "Level 1",
-    "thumb": "aa8de4a25be2.webp",
-    "src": null
-   }
-  ]
- },
  "hero.fixed.catfolk-mystic": {
   "thumb": "5922c27a3fc2.webp",
   "src": null,
@@ -3698,20 +3916,6 @@
    }
   ]
  },
- "hero.fixed.catfolk-navigator": {
-  "thumb": "b4e1c4a75acc.webp",
-  "src": null,
-  "how": "legacy thumbnail — its hell-tcg source was cut 2026-08-22, the picture survives",
-  "legacy": true,
-  "variants": [
-   {
-    "kind": "level",
-    "label": "Level 1",
-    "thumb": "b4e1c4a75acc.webp",
-    "src": null
-   }
-  ]
- },
  "hero.fixed.catfolk-soldier": {
   "thumb": "f4280f492973.webp",
   "src": null,
@@ -3722,20 +3926,6 @@
     "kind": "level",
     "label": "Level 1",
     "thumb": "f4280f492973.webp",
-    "src": null
-   }
-  ]
- },
- "hero.fixed.catfolk-whip-master": {
-  "thumb": "d2b4be8e2e82.webp",
-  "src": null,
-  "how": "legacy thumbnail — its hell-tcg source was cut 2026-08-22, the picture survives",
-  "legacy": true,
-  "variants": [
-   {
-    "kind": "level",
-    "label": "Level 1",
-    "thumb": "d2b4be8e2e82.webp",
     "src": null
    }
   ]
@@ -5028,20 +5218,6 @@
    }
   ]
  },
- "hero.fixed.badgered-soldier": {
-  "thumb": "8a8358fb3845.webp",
-  "src": null,
-  "how": "legacy thumbnail — its hell-tcg source was cut 2026-08-22, the picture survives",
-  "legacy": true,
-  "variants": [
-   {
-    "kind": "level",
-    "label": "Level 1",
-    "thumb": "8a8358fb3845.webp",
-    "src": null
-   }
-  ]
- },
  "hero.fixed.captain": {
   "thumb": "79719c18c112.webp",
   "src": null,
@@ -5052,48 +5228,6 @@
     "kind": "level",
     "label": "Level 1",
     "thumb": "79719c18c112.webp",
-    "src": null
-   }
-  ]
- },
- "hero.fixed.caravan-master": {
-  "thumb": "8c7627c36336.webp",
-  "src": null,
-  "how": "legacy thumbnail — its hell-tcg source was cut 2026-08-22, the picture survives",
-  "legacy": true,
-  "variants": [
-   {
-    "kind": "level",
-    "label": "Level 1",
-    "thumb": "8c7627c36336.webp",
-    "src": null
-   }
-  ]
- },
- "hero.fixed.defenseless-women": {
-  "thumb": "1e6199844ad7.webp",
-  "src": null,
-  "how": "legacy thumbnail — its hell-tcg source was cut 2026-08-22, the picture survives",
-  "legacy": true,
-  "variants": [
-   {
-    "kind": "level",
-    "label": "Level 1",
-    "thumb": "1e6199844ad7.webp",
-    "src": null
-   }
-  ]
- },
- "hero.fixed.djinn-touched-child": {
-  "thumb": "519dda0c80ee.webp",
-  "src": null,
-  "how": "legacy thumbnail — its hell-tcg source was cut 2026-08-22, the picture survives",
-  "legacy": true,
-  "variants": [
-   {
-    "kind": "level",
-    "label": "Level 1",
-    "thumb": "519dda0c80ee.webp",
     "src": null
    }
   ]
@@ -5112,76 +5246,6 @@
    }
   ]
  },
- "hero.fixed.guard": {
-  "thumb": "d3bd3e594430.webp",
-  "src": null,
-  "how": "legacy thumbnail — its hell-tcg source was cut 2026-08-22, the picture survives",
-  "legacy": true,
-  "variants": [
-   {
-    "kind": "level",
-    "label": "Level 1",
-    "thumb": "d3bd3e594430.webp",
-    "src": null
-   }
-  ]
- },
- "hero.fixed.huge-group-of-refugees": {
-  "thumb": "807dd0de4d4a.webp",
-  "src": null,
-  "how": "legacy thumbnail — its hell-tcg source was cut 2026-08-22, the picture survives",
-  "legacy": true,
-  "variants": [
-   {
-    "kind": "level",
-    "label": "Level 1",
-    "thumb": "807dd0de4d4a.webp",
-    "src": null
-   }
-  ]
- },
- "hero.fixed.lost-fishers": {
-  "thumb": "578c18224962.webp",
-  "src": null,
-  "how": "legacy thumbnail — its hell-tcg source was cut 2026-08-22, the picture survives",
-  "legacy": true,
-  "variants": [
-   {
-    "kind": "level",
-    "label": "Level 1",
-    "thumb": "578c18224962.webp",
-    "src": null
-   }
-  ]
- },
- "hero.fixed.militia-commander": {
-  "thumb": "424d1b06d9d6.webp",
-  "src": null,
-  "how": "legacy thumbnail — its hell-tcg source was cut 2026-08-22, the picture survives",
-  "legacy": true,
-  "variants": [
-   {
-    "kind": "level",
-    "label": "Level 1",
-    "thumb": "424d1b06d9d6.webp",
-    "src": null
-   }
-  ]
- },
- "hero.fixed.militia": {
-  "thumb": "99cfc7e9b957.webp",
-  "src": null,
-  "how": "legacy thumbnail — its hell-tcg source was cut 2026-08-22, the picture survives",
-  "legacy": true,
-  "variants": [
-   {
-    "kind": "level",
-    "label": "Level 1",
-    "thumb": "99cfc7e9b957.webp",
-    "src": null
-   }
-  ]
- },
  "hero.fixed.mirage-walker": {
   "thumb": "c84bb3c2034f.webp",
   "src": null,
@@ -5192,90 +5256,6 @@
     "kind": "level",
     "label": "Level 1",
     "thumb": "c84bb3c2034f.webp",
-    "src": null
-   }
-  ]
- },
- "hero.fixed.refugee-children": {
-  "thumb": "bcc6623d7610.webp",
-  "src": null,
-  "how": "legacy thumbnail — its hell-tcg source was cut 2026-08-22, the picture survives",
-  "legacy": true,
-  "variants": [
-   {
-    "kind": "level",
-    "label": "Level 1",
-    "thumb": "bcc6623d7610.webp",
-    "src": null
-   }
-  ]
- },
- "hero.fixed.refugees": {
-  "thumb": "ca0f9c76c363.webp",
-  "src": null,
-  "how": "legacy thumbnail — its hell-tcg source was cut 2026-08-22, the picture survives",
-  "legacy": true,
-  "variants": [
-   {
-    "kind": "level",
-    "label": "Level 1",
-    "thumb": "ca0f9c76c363.webp",
-    "src": null
-   }
-  ]
- },
- "hero.fixed.runesmith": {
-  "thumb": "c98a429b64d5.webp",
-  "src": null,
-  "how": "legacy thumbnail — its hell-tcg source was cut 2026-08-22, the picture survives",
-  "legacy": true,
-  "variants": [
-   {
-    "kind": "level",
-    "label": "Level 1",
-    "thumb": "c98a429b64d5.webp",
-    "src": null
-   }
-  ]
- },
- "hero.fixed.sailors": {
-  "thumb": "a1cf95c4fde4.webp",
-  "src": null,
-  "how": "legacy thumbnail — its hell-tcg source was cut 2026-08-22, the picture survives",
-  "legacy": true,
-  "variants": [
-   {
-    "kind": "level",
-    "label": "Level 1",
-    "thumb": "a1cf95c4fde4.webp",
-    "src": null
-   }
-  ]
- },
- "hero.fixed.silk-merchant": {
-  "thumb": "55505835dbe1.webp",
-  "src": null,
-  "how": "legacy thumbnail — its hell-tcg source was cut 2026-08-22, the picture survives",
-  "legacy": true,
-  "variants": [
-   {
-    "kind": "level",
-    "label": "Level 1",
-    "thumb": "55505835dbe1.webp",
-    "src": null
-   }
-  ]
- },
- "hero.fixed.the-outcast": {
-  "thumb": "ece45048fd6a.webp",
-  "src": null,
-  "how": "legacy thumbnail — its hell-tcg source was cut 2026-08-22, the picture survives",
-  "legacy": true,
-  "variants": [
-   {
-    "kind": "level",
-    "label": "Level 1",
-    "thumb": "ece45048fd6a.webp",
     "src": null
    }
   ]

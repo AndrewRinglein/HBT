@@ -14,18 +14,6 @@
    "was": "New Art/avtair-approved/vibrant-mage.png"
   },
   {
-   "hero": "Silk Merchant",
-   "was": "New Art/avtair-heroes-batch2/silk-merchant.png"
-  },
-  {
-   "hero": "Runesmith",
-   "was": "New Art/avtair-heroes-batch2/runesmith.png"
-  },
-  {
-   "hero": "Guard",
-   "was": "New Art/avtair-heroes-batch2/guard.png"
-  },
-  {
    "hero": "Captain",
    "was": "New Art/avtair-heroes-batch2/captain.png"
   },
@@ -38,76 +26,12 @@
    "was": "New Art/avtair-heroes-batch2/young-sand-dragon.png"
   },
   {
-   "hero": "The Djinn-Touched Child",
-   "was": "New Art/avtair-heroes-batch2/djinn-touched-child.png"
-  },
-  {
    "hero": "The Eternal Prince",
    "was": "New Art/avtair-heroes-batch2/eternal-prince.png"
   },
   {
-   "hero": "The Outcast",
-   "was": "New Art/avtair-heroes-batch2/the-outcast.png"
-  },
-  {
-   "hero": "Refugee Children",
-   "was": "New Art/avtair-heroes-batch2/refugee-children.png"
-  },
-  {
-   "hero": "Lost Fishers",
-   "was": "New Art/avtair-heroes-batch2/lost-fishers.png"
-  },
-  {
-   "hero": "Sailors",
-   "was": "New Art/avtair-heroes-batch2/sailors.png"
-  },
-  {
-   "hero": "Refugees",
-   "was": "New Art/avtair-heroes-batch2/refugees.png"
-  },
-  {
-   "hero": "Huge Group of Refugees",
-   "was": "New Art/avtair-heroes-batch2/huge-group-of-refugees.png"
-  },
-  {
-   "hero": "Caravan Master",
-   "was": "New Art/avtair-heroes-batch2/caravan-master.png"
-  },
-  {
-   "hero": "Badgered Soldier",
-   "was": "New Art/avtair-heroes-batch2/badgered-soldier.png"
-  },
-  {
-   "hero": "Defenseless Women",
-   "was": "New Art/avtair-heroes-batch2/defenseless-women.png"
-  },
-  {
-   "hero": "Militia",
-   "was": "New Art/avtair-heroes-batch2/militia.png"
-  },
-  {
-   "hero": "Militia Commander",
-   "was": "New Art/avtair-heroes-batch2/militia-commander.png"
-  },
-  {
    "hero": "General Rinad",
    "was": "New Art/shadows-in-the-sand-concepts/general-renaud.png"
-  },
-  {
-   "hero": "Catfolk Crew",
-   "was": "New Art/aeronissa-concepts/catfolk/catfolk-crew.png"
-  },
-  {
-   "hero": "Catfolk Navigator",
-   "was": "New Art/aeronissa-concepts/catfolk/catfolk-navigator.png"
-  },
-  {
-   "hero": "Catfolk Cook",
-   "was": "New Art/aeronissa-concepts/catfolk/catfolk-cook.png"
-  },
-  {
-   "hero": "Catfolk Cabin Boy",
-   "was": "New Art/aeronissa-concepts/catfolk/catfolk-cabin-boy.png"
   },
   {
    "hero": "Catfolk Soldier",
@@ -120,10 +44,6 @@
   {
    "hero": "Catfolk Mystic",
    "was": "New Art/aeronissa-concepts/catfolk/catfolk-mystic.png"
-  },
-  {
-   "hero": "Catfolk Whip Master",
-   "was": "New Art/aeronissa-concepts/catfolk/catfolk-whip-master.png"
   },
   {
    "hero": "Tiefling",

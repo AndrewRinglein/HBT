@@ -357,6 +357,27 @@ if(D.bestiaryTest){ const B=D.bestiaryTest;
       add('gear-grants-a-movement-power-to-anyone',it.name,g.join(' ')+' — unrestricted, so a Mage or Priest can buy an escape the class ruling denies it'); }
 }
 
+// R26 THE MAPS. Added 2026-09-04 with content.maps-as-rows. The board is the rows; a map
+// that is not one of the four ruled formats, is not rectangular, uses a glyph outside MAP-01's
+// legend, or restates the default deploy, is a finding — not a thing anyone notices at runtime.
+if(D.maps){
+  const FORMATS=new Set(['8x8','16x8','16x16','24x24']);
+  const GLYPHS=new Set(['.','h','f','r','R','w','x','b','p']);
+  const byFormat={};
+  for(const m of D.maps){
+    const w=(m.rows?.[0]||'').length, h=(m.rows||[]).length, fmt=w+'x'+h;
+    byFormat[fmt]=(byFormat[fmt]||0)+1;
+    if(!FORMATS.has(fmt)) add('map-not-a-ruled-format',m.name||m.id,fmt);
+    for(const r of (m.rows||[])) if(r.length!==w){ add('map-not-rectangular',m.name||m.id,`a row of ${r.length} on a board ${w} wide`); break; }
+    const bad=[...new Set([...(m.rows||[]).join('')].filter(g=>!GLYPHS.has(g)))];
+    if(bad.length) add('map-glyph-not-in-legend',m.name||m.id,bad.join(' '));
+    if(m.deploy&&m.deploy.hero==='west'&&m.deploy.enemy==='east') add('map-restates-default-deploy',m.name||m.id,'');
+    if(/^test\./.test(m.id)) add('map-is-a-test-board',m.name||m.id,'the test.map.* lane belongs to the engine, not to content');
+  }
+  // Every ruled format needs at least one SHIPPING board, or the format is a promise.
+  for(const f of FORMATS) if(!byFormat[f]) add('format-has-no-shipping-map',f,'the engine runs this board size and content offers nothing to run on it');
+}
+
 // R15 the level tables must stay inside their own rules
 // Civilian TYPE tables (levels.civilianTypes) are walked with the class tables — ruled
 // 2026-09-03. Every invariant a class table obeys, a civilian type table obeys. The two

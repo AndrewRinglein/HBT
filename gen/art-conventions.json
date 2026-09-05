@@ -14,10 +14,11 @@
   {
    "match": "art/heroes/*/anim",
    "subtree": false,
-   "variantSuffix": "none",
-   "note": "Same character-per-directory rule as card/. anim/ holds mp4, hex/ holds the board token at three sizes (_256, _1024, _full).",
+   "variantSuffix": "loop",
+   "note": "Same character-per-directory rule as card/. TWO files per variant: `<variant>.mp4` is the one-shot and `<variant>-loop.mp4` loops. Both carry the standard variant names (l1..l4, lycanthropy, possession, rotting-flesh, vampirism). Ruled 2026-09-04 (Angela): the -loop suffix IS the standard and is not to be stripped - it distinguishes two real assets, and 153 files already use it consistently.",
    "levels": "lN",
-   "afflictions": "lycanthropy|possession|rotting-flesh|vampirism"
+   "afflictions": "lycanthropy|possession|rotting-flesh|vampirism",
+   "files": "<variant>.mp4 and <variant>-loop.mp4"
   },
   {
    "match": "art/heroes/*/card",

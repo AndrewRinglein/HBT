@@ -1,0 +1,279 @@
+{
+ "_note": "THE MAPS, as content rows. Moved out of engine/src/content/maps.ts on 2026-09-04 (PROVING-PLAN Stage A2, content.maps-as-rows) and compiled into the pack by mkenginepack.mjs. A map is: id, name, note, format, rows. ROWS ARE THE BOARD — the width is the length of a row and the height is the number of rows, and the result must be one of the four ruled formats (8x8 duel, 16x8 dungeon segment, 16x16 standard, 24x24 horde). DEPLOY IS NOT DECLARED unless the map differs from the default, which is heroes WEST and enemies EAST (ruled 2026-09-03: \"Heroes start on the left, and enemies start on the right\").",
+ "_legend": "MAP-01 legend, one glyph per terrain, no synonyms: . open · h hills · f forest · r rocky · R rocky hills · w water · x obstacle · b burning · p poisoned. ONLY HILLS CARRY A RULE TODAY (+2 movement cost, +10 Accuracy and +2 ranged Reach while occupied). Forest, rocky, rocky-hills, water and obstacle are RECOGNISED and behave exactly as open ground until terrain.movecost / terrain.passable / terrain.modifiers land. Authored 2026-09-04 with the real glyphs anyway, and every affected map says so in its own note: a ford with no water in it would have to be re-authored the day water works, and a map that lies about itself is worse than a map that is waiting.",
+ "_testingLane": "The five test.map.* boards stay in engine/src/content/maps.ts. They never ship, they are the engine's probes, and they are not content.",
+ "maps": [
+  {
+   "id": "map.open",
+   "name": "Open Field",
+   "format": "16x16",
+   "note": "No terrain at all. The control map — keeps every earlier result comparable.",
+   "rows": [
+    "................",
+    "................",
+    "................",
+    "................",
+    "................",
+    "................",
+    "................",
+    "................",
+    "................",
+    "................",
+    "................",
+    "................",
+    "................",
+    "................",
+    "................",
+    "................"
+   ]
+  },
+  {
+   "id": "map.ridge",
+   "name": "The Ridge",
+   "format": "16x16",
+   "note": "A band across the middle. Both sides must cross it; whoever holds it shoots from height.",
+   "rows": [
+    "................",
+    "................",
+    "................",
+    "................",
+    "................",
+    "................",
+    "................",
+    "....hhhhhhhh....",
+    "...hhhhhhhhhh...",
+    "................",
+    "................",
+    "................",
+    "................",
+    "................",
+    "................",
+    "................"
+   ]
+  },
+  {
+   "id": "map.flanks",
+   "name": "Two Knolls",
+   "format": "16x16",
+   "note": "High ground on both wings, open in the centre. Rewards splitting, punishes the walk out.",
+   "rows": [
+    "................",
+    "................",
+    "................",
+    ".hh..........hh.",
+    "hhh..........hhh",
+    ".hh..........hh.",
+    "................",
+    "................",
+    "................",
+    "................",
+    ".hh..........hh.",
+    "hhh..........hhh",
+    ".hh..........hh.",
+    "................",
+    "................",
+    "................"
+   ]
+  },
+  {
+   "id": "map.highlands",
+   "name": "Highlands",
+   "format": "16x16",
+   "note": "Broken ground everywhere. Movement is expensive and nearly every hex is a firing position.",
+   "rows": [
+    "..h..hh..h....h.",
+    ".hh...h..hh..hh.",
+    "h..hh...h..hh..h",
+    "..h..hhh..h...h.",
+    ".hh..h..hh...hh.",
+    "h..hh..h..hhh..h",
+    "..h..hh..h....h.",
+    ".hh..h..hh...hh.",
+    "h..h..hh..h.h..h",
+    "..hh..h..hh...hh",
+    ".h..hh..h..h.h..",
+    "..h..h..hh....h.",
+    "..h..hh..h....h.",
+    ".hh...h..hh..hh.",
+    "h..hh...h..hh..h",
+    "..h..hhh..h...h."
+   ]
+  },
+  {
+   "id": "map.field",
+   "name": "The Field",
+   "format": "16x16",
+   "note": "A 16x16 crop of MAP-01 (rows 4-19, cols 6-21), for the replay viewer. Re-cropped 2026-08-25 with the board ruling — widened rather than padded, so the terrain is still MAP-01’s own. The real MAP-01 terrain. Forest, rocky, rocky-hills, water and obstacles are RECOGNISED but carry no rules yet — they behave as open ground until terrain.movecost / terrain.passable / terrain.modifiers land.",
+   "rows": [
+    "ffw...hhhhhfffh.",
+    "fwwwwhhhffffrfR.",
+    "fffwwwhhhfffrrrr",
+    "hffww..fffffrrrr",
+    "hhhhwww..fffrrrr",
+    "hhhwww....frrrr.",
+    "hhhwwww.....rrrr",
+    "wwwwwwrrr...rr..",
+    "..wwwwrrr...rrrr",
+    "...wwrrrr..RRRRr",
+    "..wwwrrrr...hhhR",
+    "..www.rrRh.hhhhh",
+    "x..ww...r.hhhhh.",
+    "...ww.....hhhh..",
+    "...www.....hhhh.",
+    "...wwwx...hhhh.."
+   ]
+  },
+  {
+   "id": "map.thicket",
+   "name": "The Thicket",
+   "format": "16x16",
+   "note": "A 16x16 crop of MAP-01 (rows 8-23, cols 0-15). Re-cropped 2026-08-25 with the board ruling — widened rather than padded, so the terrain is still MAP-01’s own. Carries the only obstacles on the panel and a wide water channel — the map that makes terrain.passable testable at all.",
+   "rows": [
+    "..ffhhhhhhwww..f",
+    "..hhhhhhhwww....",
+    "hhhhhhhhhwwww...",
+    ".hhhhwwwwwwwrrr.",
+    "...hhh..wwwwrrr.",
+    "...xh....wwrrrr.",
+    "...h....wwwrrrr.",
+    "...h....www.rrRh",
+    "......x..ww...r.",
+    ".........ww.....",
+    "..x......www....",
+    "...f.....wwwx...",
+    ".fff......www...",
+    ".ff.......wwww..",
+    ".fff........ww..",
+    "fff..ff....www.."
+   ]
+  },
+  {
+   "id": "map.proving.open",
+   "name": "The Level",
+   "format": "16x8",
+   "note": "The control. Not one hex of terrain, so a subject measured here is measured against nothing but the other side. Every Proving ranking includes this map, and a subject that only swings here is a subject that only beats open ground.",
+   "rows": [
+    "................",
+    "................",
+    "................",
+    "................",
+    "................",
+    "................",
+    "................",
+    "................"
+   ]
+  },
+  {
+   "id": "map.proving.ridge",
+   "name": "The Spine",
+   "format": "16x8",
+   "note": "A hill wall down the middle, thick in the centre and thin at the ends. Both sides must climb it or go round; whoever holds it shoots from height. Hills are the ONLY terrain that carries a rule today (+2 move cost, +10 Accuracy, +2 ranged Reach while occupied), which makes this the one terrained Proving map whose terrain is currently live.",
+   "rows": [
+    ".......hh.......",
+    ".......hh.......",
+    "......hhhh......",
+    "......hhhh......",
+    "......hhhh......",
+    "......hhhh......",
+    ".......hh.......",
+    ".......hh......."
+   ]
+  },
+  {
+   "id": "map.proving.ford",
+   "name": "The Crossing",
+   "format": "16x8",
+   "note": "A water channel down the middle with two fords. INERT TODAY: water is recognised by the legend and behaves exactly as open ground until terrain.passable lands, so this map is currently identical to The Level. Authored at full strength anyway so that the day the rule arrives, the map is already right and no ranking has to be re-authored.",
+   "rows": [
+    ".......ww.......",
+    ".......ww.......",
+    "................",
+    ".......ww.......",
+    ".......ww.......",
+    "................",
+    ".......ww.......",
+    ".......ww......."
+   ]
+  },
+  {
+   "id": "map.proving.copse",
+   "name": "The Copse",
+   "format": "16x8",
+   "note": "Four thickets, mirrored east to west so neither side is given the cover. INERT TODAY: forest behaves as open ground until terrain.modifiers lands.",
+   "rows": [
+    "..ff........ff..",
+    "..ff........ff..",
+    "................",
+    ".....ff..ff.....",
+    ".....ff..ff.....",
+    "................",
+    "..ff........ff..",
+    "..ff........ff.."
+   ]
+  },
+  {
+   "id": "map.proving.ruin",
+   "name": "The Ruin",
+   "format": "16x8",
+   "note": "Broken walls and rubble, mirrored east to west. PARTLY INERT TODAY: obstacles and rocky ground are recognised but carry no rules until terrain.passable / terrain.movecost land, so this reads as open ground for now.",
+   "rows": [
+    "...x........x...",
+    "...rr......rr...",
+    ".......xx.......",
+    "..rr..x..x..rr..",
+    "..rr..x..x..rr..",
+    ".......xx.......",
+    "...rr......rr...",
+    "...x........x..."
+   ]
+  },
+  {
+   "id": "map.courtyard",
+   "name": "The Courtyard",
+   "format": "8x8",
+   "note": "The shipping duel board. Eight by eight, four low rises and nowhere to hide — at this size every unit is in reach of every other within two activations, which is the whole point of the format. Heroes west, enemies east by default; the rises are mirrored so neither edge owns one.",
+   "rows": [
+    "........",
+    "..h..h..",
+    "........",
+    "...hh...",
+    "...hh...",
+    "........",
+    "..h..h..",
+    "........"
+   ]
+  },
+  {
+   "id": "map.floodplain",
+   "name": "The Floodplain",
+   "format": "24x24",
+   "note": "The shipping horde board. Twenty-four square with a river down the middle and two fords, hills on all four wings and rubble either side of the crossings — room for the forty-body tide BASE-MAP-SPEC asks for, and one feature that forces it to funnel. INERT TODAY except the hills: water and rocky are recognised and behave as open ground until terrain.passable / terrain.movecost land.",
+   "rows": [
+    "...........ww...........",
+    "...........ww...........",
+    "...........ww...........",
+    "....hh.....ww.....hh....",
+    "....hh.....ww.....hh....",
+    "...........ww...........",
+    "...........ww...........",
+    "...........ww...........",
+    "........................",
+    "........................",
+    "...........ww...........",
+    "......rr...ww...rr......",
+    "......rr...ww...rr......",
+    "...........ww...........",
+    "...........ww...........",
+    "........................",
+    "........................",
+    "...........ww...........",
+    "...........ww...........",
+    "....hh.....ww.....hh....",
+    "....hh.....ww.....hh....",
+    "...........ww...........",
+    "...........ww...........",
+    "...........ww..........."
+   ]
+  }
+ ]
+}
