@@ -1982,3 +1982,17 @@ Closed, against the questions as put:
    mechanism carries the AFFLICTIONS: a vampire, a werewolf, an undead can
    afflict a target with a badge; a ghost (and anything that possesses) adds
    possession. An affliction is a badge applied by a trigger in battle.
+
+## 2026-09-04 — Missing art never breaks a ship
+
+Angela, verbatim (on the content audit refusing to write the pack over one
+card painting where the convention is four, and a `.jpg` row over `.png` files):
+
+> "We will eventually have four paintings, but it's fine to have one. Things
+> shouldn't break if we are missing art."
+
+Consequence: art is never a shipping gate. A hero with one painting ships; a
+row whose art file is missing ships with the gap named. `content/audit.mjs`'s
+art findings (`hero-has-a-partial-level-set`, `declared-art-file-does-not-exist`,
+`art-path-does-not-resolve`) may report but may not count against `expect.mjs`'s
+total that decides whether the pack is written.
