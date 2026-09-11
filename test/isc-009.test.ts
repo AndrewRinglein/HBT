@@ -1,3 +1,4 @@
+// V2: quest resolution owns release; ISC047 covers the actual return and payout.
 // ISC-009 — a hero on a quest holds both slots and appears in no listAvailable
 // for any Stage.
 // Law 17 amended · SKELETON-SETTLED.md:102
@@ -9,7 +10,7 @@ import { STAGES } from '../src/content/stages.js'
 const H = 'hero.base.ranger-aggressive'
 
 describe('ISC-009 — a quest takes both slots', () => {
-  it('on a quest: both slots answer onQuest, no Stage lists the hero, nothing else may be committed, and the quest ends when its Weeks do', () => {
+  it('on a quest: both slots answer onQuest, no Stage lists the hero, nothing else may be committed, and assignment ticks never release it before due Field resolution', () => {
     const ctx = loadFixture()
     performCommit(ctx, H, { kind: 'quest', target: 'quest.escort', weeks: 2 }, 'test')
     expect(commitmentOf(ctx.campaign, H, 'field')).toBe('onQuest')
@@ -21,7 +22,7 @@ describe('ISC-009 — a quest takes both slots', () => {
     tickAssignments(ctx, 'test')
     expect(commitmentOf(ctx.campaign, H, 'field')).toBe('onQuest')
     tickAssignments(ctx, 'test')
-    expect(commitmentOf(ctx.campaign, H, 'field')).toBe('free')
-    expect(commitmentOf(ctx.campaign, H, 'city')).toBe('free')
+    expect(commitmentOf(ctx.campaign, H, 'field')).toBe('onQuest')
+    expect(commitmentOf(ctx.campaign, H, 'city')).toBe('onQuest')
   })
 })

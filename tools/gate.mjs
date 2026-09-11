@@ -27,6 +27,7 @@ import { execSync } from 'node:child_process'
 import { readFileSync, writeFileSync, appendFileSync, existsSync, readdirSync, statSync } from 'node:fs'
 import { join } from 'node:path'
 import { tmpdir } from 'node:os'
+import { filesMentioningId } from './source-mentions.mjs'
 
 const id = process.argv[2]
 const MODE = process.argv.includes('--land') ? 'land'
@@ -229,10 +230,10 @@ check('generalizes — the second instance costs zero kingdom code', () => {
   if (variants.length < 2) return { ok: false, note: `a '${item.shape}' item must declare "variants": two or more ids that exercise the SAME mechanism with different data. Or set generalizationExempt with a written reason.` }
   const notes = []
   for (const v of variants) {
-    const inCore = tryRun(`grep -rl "${v}" src/core`).out.trim()
-    if (inCore) return { ok: false, note: `variant '${v}' appears in ${inCore.split('\n')[0]} — the second instance must be pure data` }
-    const inContent = tryRun(`grep -rl "${v}" src/content`).out.trim()
-    if (!inContent) return { ok: false, note: `variant '${v}' is not a row anywhere under src/content` }
+    const inCore = filesMentioningId(walk('src/core'), v)
+    if (inCore.length) return { ok: false, note: `variant '${v}' appears in ${inCore[0]} — the second instance must be pure data` }
+    const inContent = filesMentioningId(walk('src/content'), v)
+    if (!inContent.length) return { ok: false, note: `variant '${v}' is not a row anywhere under src/content` }
     if (!existsSync('tools/probe.mts')) return { ok: false, note: `variant '${v}' is a row, but tools/probe.mts does not exist yet — a variant must be probed LIVE in a run, and the probe tool is part of the first mechanism landing` }
     const r = tryRun(`node ../engine/node_modules/tsx/dist/cli.mjs tools/probe.mts ${v}`)
     const line = r.out.trim().split('\n').pop() ?? ''

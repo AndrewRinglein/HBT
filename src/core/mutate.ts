@@ -99,17 +99,15 @@ export function setQuestResolved(ctx: Ctx, questId: string, won: boolean, causeI
 
 /** An Assignment into a slot — the one write of campaign.assignments. */
 export function applyCommit(ctx: Ctx, heroId: string, slot: 'field' | 'city', assignment: Assignment, causeId: string): void {
-  const a = (ctx.campaign.assignments[heroId] ??= {})
-  a[slot] = { ...assignment }
+  ctx.campaign.assignments[heroId] = { ...assignment }
   emit(ctx, 'hero.committed', causeId, { heroId, slot, kind: assignment.kind, target: assignment.target, weeks: assignment.weeks })
 }
 
 export function applyRelease(ctx: Ctx, heroId: string, slot: 'field' | 'city', causeId: string): void {
   const a = ctx.campaign.assignments[heroId]
-  if (!a?.[slot]) return
-  const was = a[slot]!
-  delete a[slot]
-  if (!a.field && !a.city) delete ctx.campaign.assignments[heroId]
+  if (!a) return
+  const was = a
+  delete ctx.campaign.assignments[heroId]
   emit(ctx, 'hero.released', causeId, { heroId, slot, kind: was.kind, target: was.target })
 }
 
@@ -360,4 +358,15 @@ export function setCursor(ctx: Ctx, next: Partial<Cursor>, causeId: string): voi
   Object.assign(ctx.campaign.cursor, next)
   if (next.week !== undefined) ctx.campaign.week = next.week
   emit(ctx, 'cursor.moved', causeId, { from: before, to: { ...ctx.campaign.cursor } })
+}
+
+/** Weekly participation is separate from an in-progress battle reservation. */
+export function setFoughtThisWeek(ctx: Ctx, heroIds: readonly string[], causeId: string): void {
+  ctx.campaign.foughtThisWeek = [...new Set(heroIds)].sort()
+  emit(ctx, 'heroes.fielded', causeId, { heroes: [...ctx.campaign.foughtThisWeek] })
+}
+
+export function setHeroBadges(ctx: Ctx, heroId: string, badges: readonly string[], causeId: string): void {
+  ctx.campaign.roster[heroId]!.badges = [...badges]
+  emit(ctx, 'hero.badges-changed', causeId, { heroId, badges: [...badges] })
 }

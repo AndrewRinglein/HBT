@@ -16,18 +16,19 @@ describe('ISC-007 — the cursor round-trips at every position, and the reload c
     setCursor(base, { step: 'open', prepStep: null, engagement: null, battle: null }, 'test')
     beginWeek(base, 'test')
     const positions: string[] = []
-    for (let stage = 0; stage < 6; stage++) {
+    for (let stage = 0; stage < 4; stage++) {
       // fork: the original continues; the copy is a reload of the save at this position
       const copy = makeCtx(campaignOf(saveOf(base.campaign)))
       expect(copy.campaign).toEqual(base.campaign)
-      positions.push(`${base.campaign.cursor.stage}/${base.campaign.cursor.step}`)
+      positions.push(`${base.campaign.cursor.stage}/${base.campaign.cursor.fieldStep}/${base.campaign.cursor.step}`)
       const fromA = base.events.length, fromB = copy.events.length
       playStage(base, DEFAULTS, 'test')
       playStage(copy, DEFAULTS, 'test')
       expect(copy.campaign, positions.at(-1)).toEqual(base.campaign)
       expect(shapeOf(copy.events, fromB), positions.at(-1)).toEqual(shapeOf(base.events, fromA))
     }
-    expect(positions.length).toBe(6)
+    expect(positions).toEqual(['stage.field/conquest/open', 'stage.field/defense/open', 'stage.field/quests/open', 'stage.city/null/open'])
+    expect(base.campaign.week).toBe(4)
     expect(base.events.some((e) => e.type === 'engagement.resolved')).toBe(true)   // the Week had a battle in it
   })
 })

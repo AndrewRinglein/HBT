@@ -45,10 +45,10 @@ export function listConquerable(campaign: CampaignState): TerritoryId[] {
  * `defend.chancePerTerritory` × owned Territories, in whole percent; the
  * target is one of the owned, by a second draw. Pure — keyed by the Week.
  */
-export function resolveThreat(campaign: CampaignState, week = campaign.week): TerritoryId | null {
+export function resolveThreat(campaign: CampaignState, week = campaign.week, skippedConquest = false): TerritoryId | null {
   const owned = listTerritories(campaign, (t) => t.owned).map((t) => t.id)
   if (owned.length === 0) return null
-  const chance = SWITCHES.defendChancePerTerritory * owned.length
+  const chance = Math.min(100, SWITCHES.defendChancePerTerritory * owned.length + (skippedConquest ? SWITCHES.defendSkippedConquestBonus : 0))
   const fired = rollOf(campaign, CUP_IDS.threat, ['fires', week]) % 100 < chance
   if (!fired) return null
   return owned[rollOf(campaign, CUP_IDS.threat, ['where', week]) % owned.length]!

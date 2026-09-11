@@ -13,7 +13,7 @@ import { canAfford, performSpend, type Cost } from './purse.js'
 import { listBuildings } from './build.js'
 import { bandOf } from './forge.js'
 import { ITEMS, itemOf, type ItemRow } from '../content/items.js'
-import { stageRowOf } from '../content/stages.js'
+import { canUseActivity } from './activity.js'
 
 /** The held building whose rows the catalog belongs to — the one items name by band. */
 export function waystationOf(campaign: CampaignState) {
@@ -36,7 +36,7 @@ export function listCatalog(campaign: CampaignState): ItemRow[] {
     .sort((a, b) => a.waystationBand! - b.waystationBand! || (a.id < b.id ? -1 : 1))
 }
 
-const atBuy = (campaign: CampaignState) => campaign.cursor.step === 'open' && stageRowOf(campaign.cursor.stage).offers === 'market'
+const atBuy = (campaign: CampaignState) => canUseActivity(campaign, 'market')
 
 export function whyNotBuyCatalog(campaign: CampaignState, itemId: string): string | null {
   const row = itemOf(itemId)

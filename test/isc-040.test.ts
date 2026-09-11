@@ -1,4 +1,4 @@
-// ISC-040 — at stage.build, performBuild spends the node's Salvage price and
+// ISC-040 — at stage.city, performBuild spends the node's Salvage price and
 // marks the node built; a node whose parents are unbuilt, or whose price the
 // purse cannot meet, is refused; the tree's nodes and prices are rows.
 // 7-KINGDOM-SETTLED.md — Buildings (Forge 190, fan/chain) · THE-KINGDOM.html trees
@@ -14,7 +14,7 @@ const RIDGE = 'territory.ruined-kingdom.ridge', FORGE = 'building.forge'
 function atBuild(salvage: number, own = true) {
   const ctx = loadFixture((c) => { c.purse['currency.salvage'] = salvage; if (own) { c.territories[RIDGE]!.owned = true; c.territories[RIDGE]!.claimedOnce = true } })
   setCursor(ctx, { step: 'open', prepStep: null, engagement: null, battle: null }, 'test')
-  beginStage(ctx, 'stage.build', 'test')
+  beginStage(ctx, 'stage.city', 'test')
   return ctx
 }
 
@@ -51,7 +51,7 @@ describe('ISC-040 — Salvage buys a Forge node from the settled tree', () => {
     const unheld = atBuild(100, false)
     expect(whyNotBuild(unheld.campaign, RIDGE, FORGE, 'repair')).toBe('the Territory is not held')
     const ctx = atBuild(100)
-    beginStage(ctx, 'stage.buy', 'test')
+    beginStage(ctx, 'stage.field', 'test')
     expect(whyNotBuild(ctx.campaign, RIDGE, FORGE, 'repair')).toBe('not the Build Stage')
   })
   it('the Chapel stands at Sanctuary with its free root built — the second building costs the machine nothing', () => {

@@ -33,6 +33,8 @@ export const SWITCHES = {
   healFaith: 7,
   /** defend.chancePerTerritory — the weekly defend roll, per owned Territory. RULED 6% (THIN-SLICE-REVIEW.md §G2) — kept here only because the ruling itself says "Soft". */
   defendChancePerTerritory: 6,
+  /** V2: additional percentage points when Conquest is skipped; provisional. */
+  defendSkippedConquestBonus: 12,
   /** engagements.perStage — how many Engagements one Stage may put in front of you in a Week. "A hero does exactly one thing per Week" implies one; not literally ruled. */
   engagementsPerStage: 1,
   /** sanctuary.lostDefenceSupplies — what a failed defence of the Kingdom Territory costs, in Supplies. Unruled; soft. */

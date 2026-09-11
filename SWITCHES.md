@@ -36,3 +36,15 @@ document names it, the row cites the document and this table never sees it.
   (SKELETON-NOTES.md B6), 3 per kill at rank 1 (3-UNITS-SETTLED.md), +10 to
   the MVP by weighted roll (B7). Enemy rank is not on the unit rows yet, so
   every kill pays the rank-1 bounty — a gap for the content lane, not a switch.
+
+
+## V2 Week spine — provisional choices, 2026-09-11
+
+- Field and City are the two saved halves. Field saves `conquest`, `defense`, then `quests`; City services share one activity guard and may be used in any order.
+- Skipping Conquest adds 12 percentage points to the existing 6% per owned Territory defense chance, capped at 100%. Attempting a Conquest counts even if it loses. The castle cannot be declined.
+- One assignment per hero replaces both V1 slots. `field` and `city` remain availability query contexts, not separate capacity. Fighting can continue in the same Field half; any participation blocks City work, including recovery even if Exhausted. Undo before a battle does not mark participation.
+- Noncombat work resolves when City closes. One Week of Rest clears Fatigued and Exhausted and is released at that Week boundary; it does not expire passively. Multiweek generic assignments count down at boundaries and resolve only on their last City close.
+- A quest dispatched in Week N for D Weeks stays exclusive through Week N+D Conquest and Defense and resolves in that Field's quest step. Rewards and release happen together. Existing Escort report retained; new quests/encounters follow.
+- Ordinary battles pull each surviving participant independently at 20%, with existing badge multipliers. A one-Week story drawn in Week N expires entering Week N+1 City, after the next Field. Existing stories all use one Week; their data now supports longer durations. Pulls merge, so another battle cannot erase an earlier absence. No pulls during the prologue in this stage.
+- Fatigue rolls/stat penalties and dungeon-exit deferral remain following stages. Wound services retain interim one-level healing and old prices/durations; Prayer retains 4+1 per Abbey until the recovery/economy stage. No Farm, Delve, Gather or automatic territory Supplies income remains.
+- V2 saves require the full cursor and explicitly reject V1; no cursor backfill migration is retained.

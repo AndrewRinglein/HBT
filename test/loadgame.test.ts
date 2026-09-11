@@ -33,7 +33,7 @@ describe('the Load Game screen', () => {
     expect(summarize(null)).toEqual({ state: 'empty' })
     expect(summarize('{"nonsense":1}').state).toBe('broken')
     const live = summarize(fixture)
-    expect(live.state).toBe('live'); if (live.state === 'live') expect(live.progress).toMatch(/^Week 3 · Conquer/)
+    expect(live.state).toBe('live'); if (live.state === 'live') expect(live.progress).toMatch(/^Week 3 · Field/)
     const opening = summarize(saveOf(makeNewCampaign(1)))
     if (opening.state === 'live') expect(opening.progress).toMatch(/^the opening/); else throw new Error(opening.state)
     const ended = loadFixture((c) => { c.ended = { week: 5, reason: 'the company fell' } })

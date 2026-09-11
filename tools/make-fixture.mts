@@ -39,7 +39,7 @@ const territories: Territory[] = TERRITORIES.map(({ hex: _hex, ...t }) => ({ ...
 
 const campaign = makeCampaign(1, {
   realm: 'realm.ruined-kingdom',
-  stage: 'stage.conquer',
+  stage: 'stage.field',
   currencies: CURRENCIES.map((c) => c.id),
   cups: CUPS.map((c) => c.id),
   territories,
@@ -53,7 +53,7 @@ const campaign = makeCampaign(1, {
 const ctx = makeCtx(campaign)
 setCursor(ctx, {
   step: 'prep',
-  prepStep: 'reveal',
+  prepStep: 'reveal', fieldStep: 'conquest', conquestAttempted: true,
   engagement: {
     id: 'engagement.conquer.ridge.week-3',
     kind: 'engagement.conquer',

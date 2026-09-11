@@ -14,8 +14,8 @@ describe('ISC-010 — unavailable is a third value, answered in one place', () =
     const ctx = loadFixture((c) => { c.unavailable = [{ heroId: H, story: 'Went missing' }] })
     expect(commitmentOf(ctx.campaign, H, 'field')).toBe('unavailable')
     expect(commitmentOf(ctx.campaign, H, 'city')).toBe('unavailable')
-    expect(listAvailable(ctx.campaign, 'stage.conquer')).not.toContain(H)
-    expect(listAvailable(ctx.campaign, 'stage.mend')).not.toContain(H)
+    expect(listAvailable(ctx.campaign, 'stage.field')).not.toContain(H)
+    expect(listAvailable(ctx.campaign, 'stage.city')).not.toContain(H)
     expect(canCommit(ctx.campaign, H, { kind: 'labour', target: 'farm', weeks: 1 })).toBe(false)
     beginCombatPrep(ctx, 'test'); performAdvancePrep(ctx, 'test'); performAdvancePrep(ctx, 'test')
     expect(listDeployable(ctx.campaign)).not.toContain(H)
@@ -26,6 +26,26 @@ describe('ISC-010 — unavailable is a third value, answered in one place', () =
     expect(commitmentOf(ctx.campaign, H, 'field')).toBe('captured')
     ctx.campaign.roster[H]!.lifeState = 'dead'
     expect(commitmentOf(ctx.campaign, H, 'field')).toBe('dead')
+  })
+  it('Exhausted permits recovery only; fighting, quest, absence and capture remain independent restrictions', () => {
+    const c = loadFixture().campaign
+    const rest = { kind: 'rest' as const, target: 'rest', weeks: 1 }
+    c.roster[H]!.badges = ['badge.exhausted']
+    expect(commitmentOf(c, H, 'field')).toBe('exhausted')
+    expect(canCommit(c, H, rest)).toBe(true)
+    expect(canCommit(c, H, { kind: 'labour', target: 'pray', weeks: 1 })).toBe(false)
+    c.foughtThisWeek = [H]
+    expect(canCommit(c, H, rest)).toBe(false)
+    c.foughtThisWeek = []
+    c.assignments[H] = { kind: 'quest', target: 'quest.escort', weeks: 1 }
+    expect(canCommit(c, H, rest)).toBe(false)
+    delete c.assignments[H]
+    c.unavailable = [{ heroId: H, story: 'Went missing', returnWeek: c.week + 1 }]
+    expect(canCommit(c, H, rest)).toBe(false)
+    c.unavailable = []; c.captured = [H]
+    expect(canCommit(c, H, rest)).toBe(false)
+    c.captured = []; c.roster[H]!.wound = 3
+    expect(canCommit(c, H, { kind: 'heal', target: 'heal', weeks: 1 })).toBe(true)
   })
   it('no other file in src/core has an opinion about availability (a static scan)', () => {
     const out = execSync('node tools/scan.mjs one-availability', { encoding: 'utf8' })

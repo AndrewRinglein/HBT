@@ -1,30 +1,26 @@
-// ISC-005 — a Week advances through all six Stages in the ruled order —
-// stage.buy → stage.quest → stage.defend → stage.conquer → stage.build →
-// stage.mend — and the order is read from the Stage rows, not the code.
-// KINGDOM-DESIGN.md §3 · GLOSSARY.md
+// ISC-005, superseded by KINGDOM-V2-2026-09-07: two halves, ordered Field activities.
 import { describe, it, expect } from 'vitest'
 import { loadFixture } from './walk.js'
-import { beginWeek, performAdvance, stageOf } from '../src/core/week.js'
+import { beginWeek, performAdvance } from '../src/core/week.js'
 import { setCursor } from '../src/core/mutate.js'
+import { STAGES } from '../src/content/stages.js'
 
-// The RULED order, written here from the design document — not read from the
-// registry, so a registry missing a row (KINGDOM_DISABLE_IDS=stage.mend) fails this.
-const RULED = ['stage.buy', 'stage.quest', 'stage.defend', 'stage.conquer', 'stage.build', 'stage.mend']
-
-describe('ISC-005 — six Stages, the ruled order', () => {
-  it('a Week visits the six ids in order and then the next Week begins at the first', () => {
+describe('ISC-005 — Field then unordered City', () => {
+  it('visits Conquest, Defense, due quests, City and the next Week exactly once', () => {
+    expect(STAGES.map((s) => s.id)).toEqual(['stage.field', 'stage.city'])
     const ctx = loadFixture()
-    setCursor(ctx, { step: 'open', prepStep: null, engagement: null, battle: null }, 'test')
     beginWeek(ctx, 'test')
     const week = ctx.campaign.week
-    const visited: string[] = [stageOf(ctx.campaign).id]
-    for (let i = 0; i < 5; i++) { performAdvance(ctx, 'test'); visited.push(stageOf(ctx.campaign).id) }
-    expect(visited).toEqual(RULED)
-    expect(ctx.campaign.week).toBe(week)
-    performAdvance(ctx, 'test')
+    const visited: string[] = []
+    for (let i = 0; i < 4; i++) {
+      visited.push(`${ctx.campaign.cursor.stage}/${ctx.campaign.cursor.fieldStep}`)
+      setCursor(ctx, { attack: null }, 'no attack in this flow probe')
+      performAdvance(ctx, 'test')
+    }
+    expect(visited).toEqual(['stage.field/conquest', 'stage.field/defense', 'stage.field/quests', 'stage.city/null'])
     expect(ctx.campaign.week).toBe(week + 1)
-    expect(stageOf(ctx.campaign).id).toBe(RULED[0])
-    const begun = ctx.events.filter((e) => e.type === 'stage.begun').map((e) => e['stageId'])
-    expect(begun).toEqual([...RULED, RULED[0]])
+    expect(ctx.campaign.cursor).toMatchObject({ stage: 'stage.field', fieldStep: 'conquest' })
+    expect(ctx.events.filter((e) => e.type === 'stage.begun').map((e) => e['stageId'])).toEqual(['stage.field', 'stage.city', 'stage.field'])
+    expect(ctx.events.filter((e) => e.type === 'stage.ended').map((e) => e['stageId'])).toEqual(['stage.field', 'stage.city'])
   })
 })

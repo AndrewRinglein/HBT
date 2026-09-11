@@ -1,17 +1,9 @@
-// The unavailability roll — KINGDOM-DESIGN.md §3, "a third availability
-// channel, alongside Assignments and wounds, and it is the one that makes a big
-// roster cost something to hold." Rolled once on entry to the Stage whose row
-// says `absencesBefore`, keyed by the Week (Law 4) — a reload lands on the same
-// absences — and cleared at the Week boundary.
-//
-// This file has no opinion about availability: it decides WHO IS KEPT HOME and
-// writes it; commitmentOf (assignments.ts) is the only place that reads it.
-
+// V2 post-battle participant unavailability. Durations are story data; all writes emit.
 import type { CampaignState, Absence, HeroId } from './campaign.js'
 import { type Ctx, setUnavailable, applyXp } from './mutate.js'
 import { rollOf } from './rng.js'
 import { CUP_IDS } from '../content/cups.js'
-import { ABSENCES, ABSENCE_WEIGHTS, ABSENCE_WEIGHT_BASE, ABSENCE_FRENZY_XP, absencesFor } from '../content/absences.js'
+import { ABSENCES, ABSENCE_WEIGHTS, ABSENCE_WEIGHT_BASE, ABSENCE_FRENZY_XP, ABSENCE_CHANCE } from '../content/absences.js'
 
 /** A hero's weight on the roll: the base, scaled by each badge the table names; responsible is zero and stays zero. */
 export function absenceWeightOf(badges: readonly string[]): number {
@@ -24,37 +16,38 @@ export function absenceWeightOf(badges: readonly string[]): number {
   return w
 }
 
-/**
- * Who does not turn up this Week. Pure: the same Campaign always answers the
- * same. Weighted draws without replacement over the living roster, sorted by
- * id (Law 6), each keyed by the Week and the draw's ordinal.
- */
-export function resolveAbsences(campaign: CampaignState): Absence[] {
-  const alive = Object.values(campaign.roster).filter((h) => h.lifeState !== 'dead').map((h) => h.id).sort()
-  const n = absencesFor(alive.length)
-  const pool = alive.map((id) => ({ id, weight: absenceWeightOf(campaign.roster[id]!.badges) })).filter((p) => p.weight > 0)
+/** Participant-only independent rolls; each hero keeps their own deterministic draw. */
+export function resolveAbsences(campaign: CampaignState, participants: readonly HeroId[], battleId: string): Absence[] {
   const out: Absence[] = []
-  for (let i = 0; i < n && pool.length > 0; i++) {
-    const total = pool.reduce((s, p) => s + p.weight, 0)
-    let r = rollOf(campaign, CUP_IDS.unavailability, [campaign.week, 'who', i]) % total
-    let at = 0
-    while (r >= pool[at]!.weight) { r -= pool[at]!.weight; at++ }
-    const [picked] = pool.splice(at, 1)
-    const story = ABSENCES[rollOf(campaign, CUP_IDS.unavailability, [campaign.week, 'story', picked!.id]) % ABSENCES.length]!
-    out.push({ heroId: picked!.id, story: story.story })
+  for (const id of [...new Set(participants)].sort()) {
+    const h = campaign.roster[id]
+    if (!h || h.lifeState === 'dead') continue
+    const chance = Math.min(100, Math.floor(ABSENCE_CHANCE * absenceWeightOf(h.badges) / ABSENCE_WEIGHT_BASE))
+    if (rollOf(campaign, CUP_IDS.unavailability, [campaign.week, battleId, 'who', id]) % 100 >= chance) continue
+    const story = ABSENCES[rollOf(campaign, CUP_IDS.unavailability, [campaign.week, battleId, 'story', id]) % ABSENCES.length]!
+    out.push({ heroId: id, story: story.story, returnWeek: campaign.week + story.weeks })
   }
   return out
 }
 
-/** Roll the Week's absences and write them, enacting the one story with a number. */
-export function performRollAbsences(ctx: Ctx, causeId: string): Absence[] {
-  const absences = resolveAbsences(ctx.campaign)
-  setUnavailable(ctx, absences, causeId)
+/** Called once by the result writer, after deaths. A second battle never clears the first pull. */
+export function performRollAbsences(ctx: Ctx, participants: readonly HeroId[], causeId: string): Absence[] {
+  const absences = resolveAbsences(ctx.campaign, participants, causeId)
+  if (!absences.length) return absences
+  const merged = new Map(ctx.campaign.unavailable.map((a) => [a.heroId, a]))
+  for (const a of absences) merged.set(a.heroId, a)
+  setUnavailable(ctx, [...merged.values()].sort((a, b) => a.heroId.localeCompare(b.heroId)), causeId)
   for (const a of absences) {
     const row = ABSENCES.find((r) => r.story === a.story)!
     if (row.effect === 'xp5') applyXp(ctx, a.heroId, ABSENCE_FRENZY_XP, causeId)
   }
   return absences
+}
+
+/** Absences expire after the due Week's Field, ensuring even the last battle's pull blocks the next Field. */
+export function performExpireAbsences(ctx: Ctx, causeId: string): void {
+  const remaining = ctx.campaign.unavailable.filter((a) => a.returnWeek !== undefined && a.returnWeek > ctx.campaign.week)
+  if (remaining.length !== ctx.campaign.unavailable.length) setUnavailable(ctx, remaining, causeId)
 }
 
 /** The story a kept-home hero was given this Week, or null. Pure. */

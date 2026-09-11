@@ -20,7 +20,7 @@ describe('ISC-006 — a Stage that resolves to nothing still begins and ends', (
     const ended = inWeek.filter((e) => e.type === 'stage.ended').map((e) => e['stageId'])
     expect(begun).toEqual(STAGES.map((s) => s.id))
     expect(ended).toEqual(STAGES.map((s) => s.id))
-    expect(STAGES.length).toBe(6)
+    expect(STAGES.length).toBe(2)
     // and nothing else happened — no engagement, no writer
     expect(inWeek.some((e) => e.type === 'engagement.offered' || e.type === 'engagement.resolved')).toBe(false)
     expect(ctx.events.filter((e) => e.type === 'week.ended').map((e) => e['week'])).toEqual([week])

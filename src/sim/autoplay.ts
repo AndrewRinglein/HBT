@@ -1,3 +1,4 @@
+import { canUseActivity } from '../core/activity.js'
 // Autoplay — the Campaign walked with no human input. The core of the
 // cold-start run (ISC-001: "from a new save, with no human input, the run
 // advances Week by Week…") and of tools/probe.mts. Mirrors the engine's
@@ -130,7 +131,7 @@ export function playStage(ctx: Ctx, d: Decisions, causeId: string): void {
     const offers = listStageOffers(c)
     const pick = offers.length ? d.target(c, offers) : null
     if (pick) { performChooseEngagement(ctx, pick, causeId); playEngagement(ctx, d, causeId) }
-    if (stageOf(c).offers === 'build') {
+    if (canUseActivity(c, 'build')) {
       // keep buying while something is buildable — one node a pass, cheapest first
       for (let i = 0; i < 20; i++) {
         const buildable = listBuildings(c).flatMap((b) => b.row.nodes.filter((n) => whyNotBuild(c, b.territoryId, b.building.id, n.key) === null).map((n) => ({ territoryId: b.territoryId, buildingId: b.building.id, key: n.key, salvage: n.salvage })))
@@ -146,16 +147,16 @@ export function playStage(ctx: Ctx, d: Decisions, causeId: string): void {
       if (!pick) break
       performPurchase(ctx, pick, causeId)
     }
-    if (stageOf(c).offers === 'market') {
+    if (canUseActivity(c, 'market')) {
       const shelf = listShopItems(c).filter((r) => canBuyItem(c, r.id)).map((r) => r.id)
       const pick = shelf.length ? d.buy(c, shelf) : null
       if (pick) performBuyItem(ctx, pick, causeId)
     }
-    if (stageOf(c).offers === 'quests') {
+    if (canUseActivity(c, 'quests')) {
       const pick = d.quest(c, listQuestOffers(c), listAvailable(c, c.cursor.stage))
       if (pick && canSendQuest(c, pick.questId, pick.heroIds)) performSendQuest(ctx, pick.questId, pick.heroIds, causeId)
     }
-    if (stageOf(c).offers === 'labours') {
+    if (canUseActivity(c, 'chapel')) {
       for (const [heroId, key] of d.labours(c, listAvailable(c, c.cursor.stage))) if (canAssignLabour(c, heroId, key)) performAssignLabour(ctx, heroId, key, causeId)
     }
   }

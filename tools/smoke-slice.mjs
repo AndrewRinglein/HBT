@@ -56,9 +56,18 @@ while (!text().includes('Week 3 — ')) {
   if (lv) { lv.handlers.click(); has('Level Up!'); has('LEVEL 1'); drive.levelUp(lv.dataset.id, {}); drive.closeLevelSheet(); continue }
   click('exit')
 }
-has('Week 3 — Conquer'); has('held'); has('unclaimed'); has('supplies'); has('faith'); has('mana'); has('salvage')
-click('advance'); click('advance'); click('advance')  // build → mend → Week 4 Buy
-has('Week 4 — Buy'); click('advance'); has('Week 4 — Quest'); has('Did not turn up this Week'); has('Escort the survivors')
+has('Week 3 — Conquest'); has('held'); has('unclaimed'); has('supplies'); has('faith'); has('mana'); has('salvage')
+click('advance'); has('Week 3 — Defense')
+click('advance'); has('Week 3 — Quest results')
+click('advance'); has('Week 3 — City')
+has('The Beacon'); has('Build — Salvage'); has('The Chapel'); has('Escort the survivors')
+// V2: repair and buy without advancing the Week or City activity.
+const repair = root.els.find((e) => e.dataset.act === 'build' && e.dataset.key === 'repair')
+if (!repair) throw new Error('no affordable repair offered in City')
+repair.handlers.click(); has("The Forge's shelf")
+const buy = root.els.find((e) => e.dataset.act === 'buy-item')
+if (!buy) throw new Error('repair did not immediately open the shelf')
+buy.handlers.click(); has('Week 3 — City')
 const first = root.els.find((x) => x.dataset.act === 'party'); first.handlers.click(); click('send-quest'); has('In flight'); has('2 Weeks left')
 click('roster'); has('onQuest — quest escort, 2 Weeks'); click('roster')
-console.log('smoke: Week → absences → quest sent → roster shows it: OK')
+console.log('smoke: Field → City; repair then buy without advancing; quest dispatch → roster: OK')

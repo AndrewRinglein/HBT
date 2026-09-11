@@ -30,7 +30,7 @@ describe('ISC-012 — a won Conquer claims the Territory and its building', () =
     expect(claim['territoryId']).toBe(target)
     expect(claim['buildings']).toContain('building.forge')
     expect(claim['first']).toBe(true)
-    expect(STAGES.find((s) => s.id === ctx.campaign.cursor.stage)?.targets).toBe('conquerable')   // back at the Stage, open
+    expect(stageOf(ctx.campaign).targets).toBe('conquerable')   // back at the Stage, open
     expect(ctx.campaign.cursor.step).toBe('open')
   })
   it('lost: nothing is claimed and the Territory is offered again next Week', () => {

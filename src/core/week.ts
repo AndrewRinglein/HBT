@@ -1,45 +1,32 @@
-// The Week — GAME-ARCHITECTURE.md §2.1, §2.2, §2.6 LIFECYCLE.
-//
-//   Week N ─▶ Buy ─▶ Quest ─▶ Defend ─▶ Conquer ─▶ Build ─▶ Mend ─▶ Week N+1
-//
-// Six Stages, fixed order, every Week — the order is the Stage rows
-// (src/content/stages.ts) and this machine names none of them. A Stage may
-// resolve to nothing; it still begins and ends, and says so (stage.begun,
-// stage.ended), "because a Stage that is sometimes skipped is a Stage the flow
-// forgets to leave." The cursor is the one field a load restores to; every move
-// of it is an event.
-//
-// A Stage that offers an Engagement (its row says which kind) puts the choice
-// in front of the player; choosing hands off to Combat Prep, the battle, the
-// writer, and the exit lands back here at the same Stage, step 'open', to
-// advance from. Conquer is always optional (§2.5 — "guided, not scripted").
-// Defend's weekly roll is M6's; until then the Stage offers nothing.
-
+// V2 Week: Field (Conquest → Defense → due quests), then unordered City.
 import type { CampaignState, Engagement, TerritoryId } from './campaign.js'
-import { type Ctx, emit, setCursor, setUnavailable } from './mutate.js'
+import { type Ctx, emit, setCursor, setFoughtThisWeek } from './mutate.js'
 import { rollOf } from './rng.js'
-import { STAGES, stageRowOf, type StageRow } from '../content/stages.js'
+import { STAGES, FIELD_STEPS, stageRowOf, type StageRow } from '../content/stages.js'
 import { CUP_IDS } from '../content/cups.js'
 import { SWITCHES } from '../content/switches.js'
 import { beginCombatPrep } from './prep.js'
 import { listConquerable, resolveThreat, performLose } from './map.js'
+import { performExpireAbsences } from './absence.js'
 import { tickAssignments } from './assignments.js'
 import { performResolveMend } from './mend.js'
 import { performAdvanceOpening } from './opening.js'
-import { performRollAbsences } from './absence.js'
 import { closeEquipSession } from './equip-session.js'
-import { tickQuests } from './quests.js'
+import { tickQuests, tickQuestClocks } from './quests.js'
 export { listConquerable } from './map.js'
 
 // ── reading ─────────────────────────────────────────────────────────────────
 
 export const weekOf = (campaign: CampaignState): number => campaign.week
-export const stageOf = (campaign: CampaignState): StageRow => stageRowOf(campaign.cursor.stage)
+export const stageOf = (campaign: CampaignState): StageRow => {
+  const row = stageRowOf(campaign.cursor.stage)
+  return row.spends === 'assignments' ? { ...row, ...FIELD_STEPS.find((s) => s.key === campaign.cursor.fieldStep) } : row
+}
 export const cursorOf = (campaign: CampaignState) => campaign.cursor
 
 /** The Stage may be left: only from its open step — never mid-prep, mid-battle or before the writer. */
 export function canAdvance(campaign: CampaignState): boolean {
-  return campaign.cursor.step === 'open'
+  return campaign.cursor.step === 'open' && !(campaign.cursor.attack && campaign.territories[campaign.cursor.attack]?.kingdom)
 }
 
 /** What this Stage puts in front of the player right now — the row says where its targets come from. Pure. */
@@ -60,13 +47,11 @@ export function canChooseEngagement(campaign: CampaignState, territoryId: Territ
 
 export function beginStage(ctx: Ctx, stageId: string, causeId: string): void {
   const row = stageRowOf(stageId)
-  // A Stage whose targets are rolled rolls on entry — once, keyed by the Week,
-  // so a reload lands on the same attack.
-  const attack = row.targets === 'rolled' ? resolveThreat(ctx.campaign) : null
-  setCursor(ctx, { stage: row.id, step: 'open', prepStep: null, engagement: null, attack, fought: 0, battle: null }, causeId)
-  emit(ctx, 'stage.begun', causeId, { stageId: row.id, week: ctx.campaign.week, attack })
-  // "in between the buy and the quest phase, there is an unavailability phase" — the row says which Stage it precedes
-  if (row.absencesBefore) performRollAbsences(ctx, `${row.id}.week-${ctx.campaign.week}`)
+  if (row.offers === 'city') performExpireAbsences(ctx, causeId)
+  setCursor(ctx, { stage: row.id, fieldStep: row.spends === 'assignments' ? FIELD_STEPS[0]!.key : null,
+    conquestAttempted: row.spends === 'assignments' ? false : ctx.campaign.cursor.conquestAttempted,
+    step: 'open', prepStep: null, engagement: null, attack: null, fought: 0, battle: null }, causeId)
+  emit(ctx, 'stage.begun', causeId, { stageId: row.id, week: ctx.campaign.week, attack: null })
 }
 
 export function endStage(ctx: Ctx, causeId: string): void {
@@ -79,7 +64,7 @@ export function endStage(ctx: Ctx, causeId: string): void {
     setCursor(ctx, { attack: null }, causeId)
   }
   // the Stage whose row offers the labours pays them out as it closes
-  if (stageOf(ctx.campaign).offers === 'labours') performResolveMend(ctx, `${ctx.campaign.cursor.stage}.week-${ctx.campaign.week}`)
+  if (stageOf(ctx.campaign).offers === 'city') performResolveMend(ctx, `${ctx.campaign.cursor.stage}.week-${ctx.campaign.week}`)
   emit(ctx, 'stage.ended', causeId, { stageId: ctx.campaign.cursor.stage, week: ctx.campaign.week })
 }
 
@@ -93,8 +78,8 @@ export function beginWeek(ctx: Ctx, causeId: string): void {
 /** The Week boundary: what ticks between one Week and the next — Assignments, quests, the Week's absences. Wounds join when they exist. */
 export function tickWeek(ctx: Ctx, causeId: string): void {
   tickAssignments(ctx, causeId)
-  tickQuests(ctx, causeId)
-  if (ctx.campaign.unavailable.length) setUnavailable(ctx, [], causeId)
+  tickQuestClocks(ctx, ctx.campaign.week + 1, causeId)
+  setFoughtThisWeek(ctx, [], causeId)
   setCursor(ctx, { week: ctx.campaign.week + 1, recruited: 0, sold: [] }, causeId)
 }
 
@@ -112,6 +97,17 @@ export function performAdvance(ctx: Ctx, causeId: string): void {
   if (ctx.campaign.cursor.equipSession?.where === 'roster') closeEquipSession(ctx, causeId)
   // Week 0 is the opening's: no Stages, just drafts and the five battles, until the Kingdom Territory is taken
   if (ctx.campaign.cursor.prologue !== null) { performAdvanceOpening(ctx, causeId); return }
+  const fieldAt = FIELD_STEPS.findIndex((s) => s.key === ctx.campaign.cursor.fieldStep)
+  const nextField = FIELD_STEPS[fieldAt + 1]
+  if (stageRowOf(ctx.campaign.cursor.stage).spends === 'assignments' && nextField) {
+    // Leaving a non-castle attack unanswered concedes its land. Castle refusal
+    // is blocked by canAdvance before any mutation, including equip close.
+    if (ctx.campaign.cursor.attack) performLose(ctx, ctx.campaign.cursor.attack, causeId)
+    const attack = nextField.targets === 'rolled' ? resolveThreat(ctx.campaign, ctx.campaign.week, !ctx.campaign.cursor.conquestAttempted) : null
+    setCursor(ctx, { fieldStep: nextField.key, attack, fought: 0, engagement: null }, causeId)
+    if (nextField.offers === 'quest-results') tickQuests(ctx, causeId)
+    return
+  }
   endStage(ctx, causeId)
   const at = STAGES.findIndex((s) => s.id === ctx.campaign.cursor.stage)
   const next = STAGES[at + 1]
@@ -142,7 +138,7 @@ export function performChooseEngagement(ctx: Ctx, territoryId: TerritoryId, caus
     seed: rollOf(c, CUP_IDS.battle, [t.id, c.week]) % 1000,
   }
   // taking the field against the Week's attack answers it — whatever the battle then decides
-  setCursor(ctx, { engagement: e, attack: null }, causeId)
+  setCursor(ctx, { engagement: e, attack: null, conquestAttempted: c.cursor.conquestAttempted || row.targets === 'conquerable' }, causeId)
   emit(ctx, 'engagement.offered', causeId, { engagementId: e.id, kind: e.kind, territoryId: t.id })
   beginCombatPrep(ctx, causeId)
   return e

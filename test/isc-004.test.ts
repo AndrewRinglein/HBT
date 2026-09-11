@@ -18,7 +18,7 @@ const territory = (id: string, kingdom = false): Territory => ({
 function fresh() {
   return makeCampaign(7, {
     realm: 'realm.ruined-kingdom',
-    stage: 'stage.buy',
+    stage: 'stage.city',
     currencies: CURRENCIES.map((c) => c.id),
     cups: ['cup.threat', 'cup.battle'],
     territories: [territory('territory.ruined-kingdom.sanctuary', true), territory('territory.ruined-kingdom.ridge')],

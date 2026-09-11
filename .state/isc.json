@@ -284,11 +284,11 @@
  },
  "005": {
   "red": {
-   "at": "2026-09-02 05:12",
-   "sha": "6c79bc3",
-   "hash": "d132089db7e2",
-   "how": "disabled stage.mend",
-   "tail": "       | ^ |       8| import { setCursor } from '../src/core/mutate.js' |       9|"
+   "at": "2026-09-11 07:48",
+   "sha": "e208302",
+   "hash": "7d4a7cbe9bdb",
+   "how": "disabled stage.field",
+   "tail": "       |                                     ^ |      11|     const ctx = loadFixture() |      12|     beginWeek(ctx, 'test')"
   },
   "closed": {
    "at": "2026-09-02 05:17",
@@ -297,11 +297,11 @@
  },
  "006": {
   "red": {
-   "at": "2026-09-02 05:12",
-   "sha": "6c79bc3",
-   "hash": "b2b2090a7d3d",
+   "at": "2026-09-11 07:48",
+   "sha": "e208302",
+   "hash": "c32d9791f5b7",
    "how": "feature absent",
-   "tail": "       | ^ |       7| import { setCursor } from '../src/core/mutate.js' |       8| import { beginWeek } from '../src/core/week.js'"
+   "tail": "       |                           ^ |      24|     // and nothing else happened — no engagement, no writer |      25|     expect(inWeek.some((e) => e.type === 'engagement.offered' || e.typ…"
   },
   "closed": {
    "at": "2026-09-02 05:17",
@@ -310,11 +310,11 @@
  },
  "007": {
   "red": {
-   "at": "2026-09-02 05:12",
-   "sha": "6c79bc3",
-   "hash": "2afcf79120ff",
+   "at": "2026-09-11 07:48",
+   "sha": "e208302",
+   "hash": "8e4ef5a21a9a",
    "how": "feature absent",
-   "tail": "       | ^ |       9| import { playStage, DEFAULTS } from '../src/sim/autoplay.js' |      10|"
+   "tail": "       |                       ^ |      31|     expect(base.campaign.week).toBe(4) |      32|     expect(base.events.some((e) => e.type === 'engagement.resolved')).…"
   },
   "closed": {
    "at": "2026-09-04 08:17",
@@ -401,11 +401,11 @@
  },
  "008": {
   "red": {
-   "at": "2026-09-02 05:27",
-   "sha": "9412a6f",
-   "hash": "c7bbee8ab48a",
+   "at": "2026-09-11 07:48",
+   "sha": "e208302",
+   "hash": "5b951d1f4862",
    "how": "feature absent",
-   "tail": " ❯ campaignOf src/core/campaign.ts:240:50 |  ❯ loadFixture test/walk.ts:14:13 |  ❯ test/isc-008.test.ts:33:17"
+   "tail": "       |                                         ^ |      43|     expect(ctx.campaign.assignments[other]).toBeUndefined() |      44|     tickAssignments(ctx, 'test'); tickAssignments(ctx, 'test')"
   },
   "closed": {
    "at": "2026-09-02 05:31",
@@ -414,11 +414,11 @@
  },
  "009": {
   "red": {
-   "at": "2026-09-02 05:27",
-   "sha": "9412a6f",
-   "hash": "517cc8b2e53c",
+   "at": "2026-09-11 07:48",
+   "sha": "e208302",
+   "hash": "36cc0c2b86b0",
    "how": "feature absent",
-   "tail": " ❯ campaignOf src/core/campaign.ts:240:50 |  ❯ loadFixture test/walk.ts:14:13 |  ❯ test/isc-009.test.ts:13:17"
+   "tail": "       |                                                    ^ |      26|     expect(commitmentOf(ctx.campaign, H, 'city')).toBe('onQuest') |      27|   })"
   },
   "closed": {
    "at": "2026-09-02 05:31",
@@ -427,11 +427,11 @@
  },
  "010": {
   "red": {
-   "at": "2026-09-02 05:28",
-   "sha": "9412a6f",
-   "hash": "af871d626125",
+   "at": "2026-09-11 07:48",
+   "sha": "e208302",
+   "hash": "6e78e92d7841",
    "how": "feature absent",
-   "tail": " ❯ campaignOf src/core/campaign.ts:240:50 |  ❯ loadFixture test/walk.ts:14:13 |  ❯ test/isc-010.test.ts:25:17"
+   "tail": "       |                                         ^ |      35|     expect(canCommit(c, H, rest)).toBe(true) |      36|     expect(canCommit(c, H, { kind: 'labour', target: 'pray', weeks: 1 …"
   },
   "closed": {
    "at": "2026-09-02 05:31",
@@ -453,11 +453,11 @@
  },
  "036": {
   "red": {
-   "at": "2026-09-02 05:39",
-   "sha": "64a6c7f",
-   "hash": "e0a751cd478a",
+   "at": "2026-09-11 07:48",
+   "sha": "e208302",
+   "hash": "02b048959922",
    "how": "feature absent",
-   "tail": "     28| export { listConquerable } from './map.js' |      29| |  ❯ test/isc-036.test.ts:8:1"
+   "tail": " ❯ beginStage src/core/week.ts:62:15 |  ❯ atMend test/isc-036.test.ts:18:3 |  ❯ test/isc-036.test.ts:61:17"
   },
   "closed": {
    "at": "2026-09-02 05:43",
@@ -685,11 +685,11 @@
  },
  "046": {
   "red": {
-   "at": "2026-09-02 09:34",
-   "sha": "23a07b3",
-   "hash": "15ec77fd86f7",
+   "at": "2026-09-11 07:48",
+   "sha": "e208302",
+   "hash": "95288f9049a0",
    "how": "feature absent",
-   "tail": "       |                                                            ^ |      57|   }) |      58| })"
+   "tail": "       |                                                    ^ |      78|     performAdvance(ctx, 'test'); setCursor(ctx, { attack: null }, 'tes… |      79|     expect(commitmentOf(ctx.campaign, H, 'field')).toBe('unavailable')"
   },
   "closed": {
    "at": "2026-09-02 09:43",
@@ -698,11 +698,11 @@
  },
  "047": {
   "red": {
-   "at": "2026-09-02 09:34",
-   "sha": "23a07b3",
-   "hash": "3364a6daf27e",
+   "at": "2026-09-11 07:48",
+   "sha": "e208302",
+   "hash": "ff1728f75f32",
    "how": "feature absent",
-   "tail": "       | ^ |       9| import { QUESTS, questRowOf } from '../src/content/quests.js' |      10| import type { CampaignState } from '../src/core/campaign.js'"
+   "tail": " ❯ whyNotSendQuest src/core/quests.ts:40:8 |  ❯ performSendQuest src/core/quests.ts:64:15 |  ❯ test/isc-047.test.ts:48:5"
   },
   "closed": {
    "at": "2026-09-02 09:43",

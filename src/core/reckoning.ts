@@ -34,8 +34,9 @@ import { rollOf } from './rng.js'
 import { validateResult } from './result.js'
 import {
   type Ctx, applyXp, setWound, setHeroDead, applyGrant, applyRenown,
-  setEngagementResolved, applyClaim, setCursor, setRewardOffer, applyRestock,
+  setFoughtThisWeek, applyRelease, setEngagementResolved, applyClaim, setCursor, setRewardOffer, applyRestock,
 } from './mutate.js'
+import { performRollAbsences } from './absence.js'
 import { performLose } from './map.js'
 import { resolveRewardDraw, performExitReckoning } from './rewards.js'
 import { performResolvePrologue } from './opening.js'
@@ -146,11 +147,16 @@ export function applyBattleResult(ctx: Ctx, engagement: Engagement, result: Enga
   for (const g of reckoning.grants) if (!(g.currency in c.purse) || !Number.isInteger(g.amount) || g.amount < 0) throw new Error(`applyBattleResult refused: grant ${g.amount} of '${g.currency}'`)
 
   const cause = engagement.id
+  for (const id of engagement.deployed) {
+    if (c.assignments[id]?.kind === 'engagement') applyRelease(ctx, id, 'field', cause)
+  }
+  if (engagement.prologue === undefined) setFoughtThisWeek(ctx, [...c.foughtThisWeek, ...engagement.deployed], cause)
   for (const h of reckoning.heroes) {
     if (h.dead) { setHeroDead(ctx, h.heroId, cause); continue }
     if (h.xp > 0) applyXp(ctx, h.heroId, h.xp, cause)
     if (h.wound !== c.roster[h.heroId]!.wound) setWound(ctx, h.heroId, h.wound, cause)
   }
+  if (engagement.prologue === undefined) performRollAbsences(ctx, engagement.deployed, cause)
   if (reckoning.renown > 0) applyRenown(ctx, reckoning.renown, cause)
   setEngagementResolved(ctx, engagement.id, reckoning.won, cause)
   if (reckoning.claim) applyClaim(ctx, reckoning.claim, cause)

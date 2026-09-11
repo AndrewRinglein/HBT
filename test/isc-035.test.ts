@@ -1,4 +1,4 @@
-// ISC-035 — stage.defend rolls once per Week on cup.threat, at 6% per owned
+// ISC-035 — stage.field rolls once per Week on cup.threat, at 6% per owned
 // Territory, and produces at most one engagement.defend; over 200 Weeks with
 // four Territories owned the rate lands within 24% ± 6.
 // THIN-SLICE-REVIEW.md §G2 — "one roll per Week, 6% per owned Territory, all in one roll"

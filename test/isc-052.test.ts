@@ -16,7 +16,7 @@ import type { CampaignState } from '../src/core/campaign.js'
 
 const codex = JSON.parse(readFileSync('../content/hbt-content.json', 'utf8'))
 const codexKit = (id: string): string[] => (codex.heroes.heroes as { id: string; kit: string[] | null }[]).find((h) => h.id === id)!.kit!
-const atBuy = (c: CampaignState) => { c.cursor = { ...c.cursor, stage: 'stage.buy', step: 'open', prepStep: null, engagement: null, battle: null, attack: null, fought: 0, recruited: 0 } }
+const atBuy = (c: CampaignState) => { c.cursor = { ...c.cursor, stage: 'stage.city', step: 'open', prepStep: null, engagement: null, battle: null, attack: null, fought: 0, recruited: 0 } }
 
 describe('ISC-052 — a hero enters wearing its kit', () => {
   it('every pool hero and civilian row carries the codex kit, and every item in it is a row', () => {

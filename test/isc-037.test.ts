@@ -1,4 +1,4 @@
-// ISC-037 — at stage.buy, performRecruit spends Faith from the purse and adds
+// ISC-037 — at stage.city, performRecruit spends Faith from the purse and adds
 // one hero row to the roster; canRecruit is false when Faith is short.
 // 7-KINGDOM-SETTLED.md — Currencies (Faith buys recruits) · KINGDOM-DESIGN.md §10 (the Beacon), §3 (one a Week)
 import { describe, it, expect } from 'vitest'
@@ -11,7 +11,7 @@ import { SWITCHES } from '../src/content/switches.js'
 function atBuy(edit?: Parameters<typeof loadFixture>[0]) {
   const ctx = loadFixture(edit)
   setCursor(ctx, { step: 'open', prepStep: null, engagement: null, battle: null }, 'test')
-  beginWeek(ctx, 'test')
+  beginStage(ctx, 'stage.city', 'test')
   return ctx
 }
 
@@ -48,10 +48,10 @@ describe('ISC-037 — recruiting costs Faith and adds a hero', () => {
     // one recruit fills it. Two heroes fewer, and the Beacon reopens.
     const ctx = atBuy((c) => { c.purse['currency.faith'] = 100; delete c.roster['hero.fixed.orphans']; delete c.roster['hero.base.priest-scantily'] })
     performRecruit(ctx, listRecruitOffers(ctx.campaign)[0]!.id, 'test')
-    for (let i = 0; i < 6; i++) performAdvance(ctx, 'test')
+    for (let i = 0; i < 4; i++) performAdvance(ctx, 'test')
     expect(ctx.campaign.week).toBe(4)
     expect(canRecruit(ctx.campaign, listRecruitOffers(ctx.campaign)[0]!.id)).toBe(true)
-    beginStage(ctx, 'stage.build', 'test')
+    beginStage(ctx, 'stage.field', 'test')
     expect(canRecruit(ctx.campaign, listRecruitOffers(ctx.campaign)[0]!.id)).toBe(false)
   })
   it('a full roster refuses a recruit until a Roster Article holds more', () => {

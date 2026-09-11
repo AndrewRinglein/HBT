@@ -13,7 +13,7 @@ import { nodeCountOf } from './mend.js'
 import { BUILDINGS, buildingRowOf, type BuildingRow, type BuildingNode } from '../content/buildings.js'
 import { CURRENCY_IDS } from '../content/currencies.js'
 import { SWITCHES } from '../content/switches.js'
-import { stageRowOf } from '../content/stages.js'
+import { canUseActivity } from './activity.js'
 
 export type BuildingView = { territoryId: TerritoryId; building: Building; row: BuildingRow; held: boolean }
 
@@ -35,7 +35,7 @@ export function nodeOf(row: BuildingRow, key: string): BuildingNode {
 
 export const costOfBuild = (row: BuildingRow, key: string): Cost => ({ [CURRENCY_IDS.salvage]: nodeOf(row, key).salvage })
 
-const atBuild = (campaign: CampaignState) => campaign.cursor.step === 'open' && stageRowOf(campaign.cursor.stage).offers === 'build'
+const atBuild = (campaign: CampaignState) => canUseActivity(campaign, 'build')
 
 /** Why a node cannot be built now, or null when it can. The reasons are the rule, spelled out. */
 export function whyNotBuild(campaign: CampaignState, territoryId: TerritoryId, buildingId: string, key: string): string | null {

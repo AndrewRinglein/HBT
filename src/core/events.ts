@@ -12,6 +12,7 @@
 // translates; nothing here is ever emitted by a battle.
 
 export const KINGDOM_EVENTS = [
+  'heroes.fielded', 'hero.badges-changed',
   'campaign.started', 'campaign.ended',
   'week.begun', 'week.ended',
   'stage.begun', 'stage.ended',

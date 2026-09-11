@@ -15,7 +15,7 @@ const ALL = ['repair', 'blades', 'bows', 'shields', 'light', 'mail', 'exotic-arm
 const forgeAt = (nodes: string[]) => (c: CampaignState) => {
   const t = c.territories[RIDGE]!; t.owned = true; t.claimedOnce = true
   const b = t.buildings.find((x) => x.id === FORGE)!; b.nodes = [...nodes]; b.level = nodes.length; b.damaged = false
-  c.cursor = { ...c.cursor, stage: 'stage.buy', step: 'open', prepStep: null, engagement: null, battle: null, attack: null, fought: 0 }
+  c.cursor = { ...c.cursor, stage: 'stage.city', step: 'open', prepStep: null, engagement: null, battle: null, attack: null, fought: 0 }
 }
 
 describe('ISC-058 — masterwork and enchanted', () => {

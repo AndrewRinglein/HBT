@@ -1,7 +1,7 @@
 // ISC-057 — the Forge's shelf follows its level and rerolls each Week: Repaired 2 ·
 // Equipped 4 · Masterwork +2 masterwork · Enchanted +2 enchanted, drawn from tier-1
 // weapons and armor on cup.forge keyed by the Week; the same Week re-loaded shows
-// the same shelf; the next Week differs; buying is refused outside stage.buy.
+// the same shelf; the next Week differs; buying is refused outside stage.city.
 // GEAR-DESIGN.md §3
 import { describe, it, expect } from 'vitest'
 import { loadFixture } from './walk.js'
@@ -16,7 +16,7 @@ const RIDGE = 'territory.ruined-kingdom.ridge', FORGE = 'building.forge'
 const forgeAt = (nodes: string[]) => (c: CampaignState) => {
   const t = c.territories[RIDGE]!; t.owned = true; t.claimedOnce = true
   const b = t.buildings.find((x) => x.id === FORGE)!; b.nodes = [...nodes]; b.level = nodes.length; b.damaged = nodes.length === 0
-  c.cursor = { ...c.cursor, stage: 'stage.buy', step: 'open', prepStep: null, engagement: null, battle: null, attack: null, fought: 0 }
+  c.cursor = { ...c.cursor, stage: 'stage.city', step: 'open', prepStep: null, engagement: null, battle: null, attack: null, fought: 0 }
   c.purse['currency.supplies'] = 500; c.purse['currency.mana'] = 500
 }
 
@@ -57,7 +57,7 @@ describe('ISC-057 — the shelf by level, rerolled weekly', () => {
   it('buying is refused outside the Buy Stage', () => {
     const ctx = loadFixture(forgeAt(['repair']))
     const id = listShopItems(ctx.campaign)[0]!.id
-    beginStage(ctx, 'stage.build', 'test')
+    beginStage(ctx, 'stage.field', 'test')
     setCursor(ctx, { step: 'open' }, 'test')
     expect(canBuyItem(ctx.campaign, id)).toBe(false)
     expect(() => performBuyItem(ctx, id, 'test')).toThrow(/Buy Stage/)

@@ -4,7 +4,7 @@
  "week": 3,
  "cursor": {
   "week": 3,
-  "stage": "stage.conquer",
+  "stage": "stage.field",
   "step": "prep",
   "prepStep": "reveal",
   "engagement": {
@@ -33,7 +33,9 @@
   "prologue": null,
   "draftOffer": null,
   "battle": null,
-  "equipSession": null
+  "equipSession": null,
+  "fieldStep": "conquest",
+  "conquestAttempted": true
  },
  "purse": {
   "currency.faith": 6,
@@ -286,5 +288,7 @@
   "cup.threat": 3019024446,
   "cup.unavailability": 1862212042
  },
- "ended": null
+ "ended": null,
+ "version": 2,
+ "foughtThisWeek": []
 }

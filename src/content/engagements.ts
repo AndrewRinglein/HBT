@@ -22,9 +22,9 @@ export type EngagementKindRow = {
 }
 
 const RAW_ENGAGEMENT_KINDS: readonly EngagementKindRow[] = [
-  { id: 'engagement.defend', stage: 'stage.defend', structuresApply: true, rosterFixed: false, onLose: 'lose-territory', onWin: 'keep-territory' },
-  { id: 'engagement.conquer', stage: 'stage.conquer', structuresApply: false, rosterFixed: false, onLose: 'nothing', onWin: 'claim-territory' },
-  { id: 'engagement.quest', stage: 'stage.quest', structuresApply: false, rosterFixed: true, onLose: 'lose-heroes', onWin: 'quest-reward' },
+  { id: 'engagement.defend', stage: 'stage.field', structuresApply: true, rosterFixed: false, onLose: 'lose-territory', onWin: 'keep-territory' },
+  { id: 'engagement.conquer', stage: 'stage.field', structuresApply: false, rosterFixed: false, onLose: 'nothing', onWin: 'claim-territory' },
+  { id: 'engagement.quest', stage: 'stage.field', structuresApply: false, rosterFixed: true, onLose: 'lose-heroes', onWin: 'quest-reward' },
 ]
 
 export const ENGAGEMENT_KINDS: readonly EngagementKindRow[] = omitDisabled(RAW_ENGAGEMENT_KINDS)

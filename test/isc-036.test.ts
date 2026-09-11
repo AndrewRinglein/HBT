@@ -1,5 +1,6 @@
+// V2 supersedes Farm/Delve/Gather and independent City slot; prayer tuning and wound tier changes are following stages.
 // ISC-036 — a hero assigned to Farm yields 5 + 2×Fields Supplies, to Pray 4 +
-// 1×Abbeys Faith, to Delve 4 + 1×Wellsprings Mana, each at stage.mend and each
+// 1×Abbeys Faith, to Delve 4 + 1×Wellsprings Mana, each at stage.city and each
 // consuming the city slot; Heal and Rest yield nothing.
 // 7-KINGDOM-SETTLED.md — The Mend labours · Law 17 amended
 import { describe, it, expect } from 'vitest'
@@ -14,45 +15,47 @@ const H = ['hero.base.warrior-iron', 'hero.base.paladin-shiney', 'hero.base.rang
 function atMend(edit?: Parameters<typeof loadFixture>[0]) {
   const ctx = loadFixture(edit)
   setCursor(ctx, { step: 'open', prepStep: null, engagement: null, battle: null }, 'test')
-  beginStage(ctx, 'stage.mend', 'test')
+  beginStage(ctx, 'stage.city', 'test')
   return ctx
 }
 
-describe('ISC-036 — the four labours yield what the settled table says', () => {
-  it('one Field held: Farm 7, Pray 4, Delve 4; two Fields: Farm 9; the city slot is taken; Heal and Rest pay nothing', () => {
+describe('ISC-036 — V2 chapel work replaces the four labours', () => {
+  it('Prayer pays Faith at City close; removed labours cannot provide Supplies or Mana; recovery pays nothing', () => {
     const ctx = atMend()
     expect(nodeCountOf(ctx.campaign, 'field')).toBe(1)
-    expect(yieldOf(ctx.campaign, 'farm')).toEqual({ currency: 'currency.supplies', amount: 5 + 2 * 1 })
+    expect(canAssignLabour(ctx.campaign, H[0], 'farm')).toBe(false)
+    expect(() => yieldOf(ctx.campaign, 'farm')).toThrow(/unknown labour/)
     expect(yieldOf(ctx.campaign, 'pray')).toEqual({ currency: 'currency.faith', amount: 4 + 1 * 0 })
-    expect(yieldOf(ctx.campaign, 'delve')).toEqual({ currency: 'currency.mana', amount: 4 + 1 * 0 })
+    expect(canAssignLabour(ctx.campaign, H[2], 'delve')).toBe(false)
+    expect(canAssignLabour(ctx.campaign, H[2], 'gather')).toBe(false)
     expect(yieldOf(ctx.campaign, 'rest')).toBeNull()
     expect(yieldOf(ctx.campaign, 'heal')).toBeNull()
     const purse = { ...ctx.campaign.purse }
-    performAssignLabour(ctx, H[0], 'farm', 'test')
+    performAssignLabour(ctx, H[0], 'pray', 'test')
     performAssignLabour(ctx, H[1], 'pray', 'test')
-    performAssignLabour(ctx, H[2], 'delve', 'test')
+    performAssignLabour(ctx, H[2], 'rest', 'test')
     performAssignLabour(ctx, H[3], 'rest', 'test')
     expect(commitmentOf(ctx.campaign, H[0], 'city')).toBe('committed')
-    expect(commitmentOf(ctx.campaign, H[0], 'field')).toBe('free')             // fight AND one city action
+    expect(commitmentOf(ctx.campaign, H[0], 'field')).toBe('committed')        // V2: City work excludes fighting
     expect(canAssignLabour(ctx.campaign, H[0], 'pray')).toBe(false)             // one city slot
     expect(canAssignLabour(ctx.campaign, H[4], 'heal')).toBe(false)             // whole — nothing to heal
     expect(ctx.campaign.purse).toEqual(purse)                                   // nothing paid until the Stage ends
     performAdvance(ctx, 'test')                                                 // Mend closes → the Week ends
-    expect(ctx.campaign.purse['currency.supplies']).toBe(purse['currency.supplies']! + 7)
-    expect(ctx.campaign.purse['currency.faith']).toBe(purse['currency.faith']! + 4)
-    expect(ctx.campaign.purse['currency.mana']).toBe(purse['currency.mana']! + 4)
+    expect(ctx.campaign.purse['currency.supplies']).toBe(purse['currency.supplies'])
+    expect(ctx.campaign.purse['currency.faith']).toBe(purse['currency.faith']! + 8)
+    expect(ctx.campaign.purse['currency.mana']).toBe(purse['currency.mana'])
     expect(ctx.campaign.purse['currency.salvage']).toBe(purse['currency.salvage'])
     const gains = ctx.events.filter((e) => e.type === 'resource.gained')
     // heroes resolve in id order (Law 6), not assignment order
     // (the ids changed 2026-09-02 with the alpha four gone; the rule — id order — did not: paladin < ranger < warrior)
-    expect(gains.map((e) => e.causeId)).toEqual([`stage.mend.week-3:pray:${H[1]}`, `stage.mend.week-3:delve:${H[2]}`, `stage.mend.week-3:farm:${H[0]}`])
+    expect(gains.map((e) => e.causeId)).toEqual([`stage.city.week-3:pray:${H[1]}`, `stage.city.week-3:pray:${H[0]}`])
     expect(commitmentOf(ctx.campaign, H[0], 'city')).toBe('free')             // released at the Week boundary
   })
   it('a second Field and an Abbey held raise the yields by the node', () => {
     const ctx = atMend((c) => { for (const t of Object.values(c.territories)) { t.owned = true } ; c.territories['territory.ruined-kingdom.thicket']!.node = 'field' })
-    expect(yieldOf(ctx.campaign, 'farm')!.amount).toBe(5 + 2 * 2)
+    expect(() => yieldOf(ctx.campaign, 'farm')).toThrow(/unknown labour/)
     expect(yieldOf(ctx.campaign, 'pray')!.amount).toBe(4 + 1 * 1)
-    expect(yieldOf(ctx.campaign, 'delve')!.amount).toBe(4 + 1 * 0)
+    expect(() => yieldOf(ctx.campaign, 'delve')).toThrow(/unknown labour/)
   })
   it('Heal at Mend lowers a wound one level and pays nothing', () => {
     const ctx = atMend((c) => { c.roster[H[0]]!.wound = 2 })

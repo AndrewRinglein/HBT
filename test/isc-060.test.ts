@@ -12,7 +12,7 @@ const SANCTUARY = 'territory.ruined-kingdom.sanctuary', WAY = 'building.waystati
 const at = (nodes: string[]) => (c: CampaignState) => {
   const t = c.territories[SANCTUARY]!
   t.buildings = [...t.buildings.filter((b) => b.id !== WAY), { id: WAY, level: nodes.length, damaged: nodes.length === 0, nodes: [...nodes] }]
-  c.cursor = { ...c.cursor, stage: 'stage.buy', step: 'open', prepStep: null, engagement: null, battle: null, attack: null, fought: 0 }
+  c.cursor = { ...c.cursor, stage: 'stage.city', step: 'open', prepStep: null, engagement: null, battle: null, attack: null, fought: 0 }
   c.purse['currency.supplies'] = 500; c.purse['currency.mana'] = 500
 }
 const BAND1 = ['item.pickaxe', 'item.torch', 'item.cure-poison', 'item.rations']
@@ -46,7 +46,7 @@ describe('ISC-060 — the Waystation catalog', () => {
     expect(() => performBuyCatalog(ctx, 'item.healing-potion', 'test')).toThrow(/refused/)
     const poor = loadFixture((c) => { at(['repair'])(c); c.purse['currency.mana'] = 0 })
     expect(whyNotBuyCatalog(poor.campaign, 'item.cure-poison')).toMatch(/Mana/)
-    const elsewhere = loadFixture((c) => { at(['repair'])(c); c.cursor.stage = 'stage.build' })
+    const elsewhere = loadFixture((c) => { at(['repair'])(c); c.cursor.stage = 'stage.field' })
     expect(whyNotBuyCatalog(elsewhere.campaign, 'item.torch')).toMatch(/Buy Stage/)
   })
 })

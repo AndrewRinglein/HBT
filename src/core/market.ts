@@ -10,11 +10,12 @@ import { canAfford, performSpend, type Cost } from './purse.js'
 import { RECRUITS, assertKitted, type RecruitRow } from '../content/heroes.js'
 import { SWITCHES } from '../content/switches.js'
 import { CURRENCY_IDS } from '../content/currencies.js'
-import { stageRowOf } from '../content/stages.js'
+import { canUseActivity } from './activity.js'
+import { canCommit } from './assignments.js'
 import { rosterCapOf } from './charter.js'
 
 /** Open only at the Stage whose row offers a market — core reads the row, not the name. */
-const atBuy = (campaign: CampaignState) => campaign.cursor.step === 'open' && stageRowOf(campaign.cursor.stage).offers === 'market'
+const atBuy = (campaign: CampaignState) => canUseActivity(campaign, 'market')
 
 export const costOfRecruit = (): Cost => ({ [CURRENCY_IDS.faith]: SWITCHES.recruitFaith })
 export const costOfHeal = (): Cost => ({ [CURRENCY_IDS.faith]: SWITCHES.healFaith })
@@ -49,7 +50,7 @@ export function canHeal(campaign: CampaignState, heroId: HeroId): boolean {
   const h = campaign.roster[heroId]
   if (!h || h.lifeState !== 'alive' || h.wound === 0) return false
   if (!atBuy(campaign)) return false
-  return canAfford(campaign, costOfHeal())
+  return canCommit(campaign, heroId, { kind: 'heal', target: 'heal', weeks: 1 }) && canAfford(campaign, costOfHeal())
 }
 
 /** Field Surgery: one level, now, for Faith. */

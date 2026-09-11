@@ -12,7 +12,7 @@ import type { CampaignState } from '../src/core/campaign.js'
 
 const HUNTER = 'hero.base.ranger-aggressive', DWARF = 'hero.base.warrior-iron'
 const IDOL = 'item.pilgrims-warding-stone', RUNE = 'item.rune-bashing'
-const atBuy = (c: CampaignState) => { c.cursor = { ...c.cursor, stage: 'stage.buy', step: 'open', prepStep: null, engagement: null, battle: null, attack: null, fought: 0 } }
+const atBuy = (c: CampaignState) => { c.cursor = { ...c.cursor, stage: 'stage.city', step: 'open', prepStep: null, engagement: null, battle: null, attack: null, fought: 0 } }
 
 describe('ISC-056 — equip costs and the session', () => {
   it('at prep: an idol costs 1 Faith, a Bloodrune 3 Mana; taking either off in the same session refunds; leaving commits', () => {

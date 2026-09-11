@@ -1,24 +1,19 @@
-// Quests — GAME-ARCHITECTURE.md §2.6 QUESTS: "Dispatch heroes on quests. They
-// leave for N Weeks and resolve without you." A quest takes BOTH of a hero's
-// slots (GLOSSARY.md: "questing costs two actions, fighting costs one"); the
-// requirement slots are §2.3's floor. The one row is src/content/quests.ts.
-//
-// canX asks, performX does and refuses loudly; listX is sorted; the Week
-// boundary (week.ts) ticks the clock and calls resolve.
-
+// V2 quests dispatch in City and remain exclusive through their due Field battles.
+// Current report rewards resolve together with party release; authored V2 encounters follow separately.
 import type { CampaignState, HeroId } from './campaign.js'
-import { type Ctx, applyCommit, applyGrant, setQuestInFlight, setQuestWeeksLeft, setQuestResolved } from './mutate.js'
+import { type Ctx, applyCommit, applyRelease, applyGrant, setQuestInFlight, setQuestWeeksLeft, setQuestResolved } from './mutate.js'
 import { canCommit, slotsOf } from './assignments.js'
 import { rollOf } from './rng.js'
 import { CUP_IDS } from '../content/cups.js'
 import { QUESTS, questRowOf, type QuestRow } from '../content/quests.js'
 import { stageRowOf } from '../content/stages.js'
+import { canUseActivity } from './activity.js'
 
 // ── reading ─────────────────────────────────────────────────────────────────
 
 /** What the Quest Stage puts up: every quest not in flight, by id. Empty anywhere else. */
 export function listQuestOffers(campaign: CampaignState): string[] {
-  if (campaign.cursor.step !== 'open' || stageRowOf(campaign.cursor.stage).offers !== 'quests') return []
+  if (!canUseActivity(campaign, 'quests')) return []
   return QUESTS.filter((q) => !campaign.quests[q.id]).map((q) => q.id).sort()
 }
 
@@ -67,21 +62,24 @@ export function performSendQuest(ctx: Ctx, questId: string, heroIds: readonly He
   for (const id of [...heroIds].sort()) {
     for (const slot of slotsOf('quest')) applyCommit(ctx, id, slot, { kind: 'quest', target: questId, weeks: row.weeks }, causeId)
   }
-  setQuestInFlight(ctx, { id: questId, heroes: [...heroIds].sort(), weeksLeft: row.weeks }, causeId)
+  setQuestInFlight(ctx, { id: questId, heroes: [...heroIds].sort(), weeksLeft: row.weeks, sentWeek: ctx.campaign.week, dueWeek: ctx.campaign.week + row.weeks }, causeId)
 }
 
-/**
- * The Week boundary: every quest's clock ticks; one that has run out comes
- * home and pays. The heroes' Assignments run out on the same tick
- * (tickAssignments) — the two clocks were set together and stay together.
- */
+/** Due Field reports pay and release together, after Conquest and Defense. */
 export function tickQuests(ctx: Ctx, causeId: string): void {
+  if (ctx.campaign.cursor.fieldStep !== 'quests' || stageRowOf(ctx.campaign.cursor.stage).spends !== 'assignments') throw new Error('tickQuests refused: reports resolve only in the due Field quest step')
   for (const id of Object.keys(ctx.campaign.quests).sort()) {
     const q = ctx.campaign.quests[id]!
-    if (q.weeksLeft > 1) { setQuestWeeksLeft(ctx, id, q.weeksLeft - 1, causeId); continue }
+    if (ctx.campaign.week < q.dueWeek) continue
     const row = questRowOf(id)
-    const won = resolveQuestOdds(ctx.campaign, id, ctx.campaign.week - (row.weeks - 1))
+    const won = resolveQuestOdds(ctx.campaign, id, q.sentWeek)
     if (won) for (const cur of Object.keys(row.reward).sort()) applyGrant(ctx, cur, row.reward[cur]!, `${id}.week-${ctx.campaign.week}`)
+    for (const heroId of q.heroes) applyRelease(ctx, heroId, 'city', causeId)
     setQuestResolved(ctx, id, won, causeId)
   }
+}
+
+/** Display clocks tick without releasing a quest's exclusive assignment. */
+export function tickQuestClocks(ctx: Ctx, nextWeek: number, causeId: string): void {
+  for (const q of Object.values(ctx.campaign.quests)) setQuestWeeksLeft(ctx, q.id, Math.max(0, q.dueWeek - nextWeek), causeId)
 }

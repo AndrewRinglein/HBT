@@ -767,5 +767,33 @@
   "sha": "86b2631",
   "engineSha": "93f28b1",
   "gauntlet": "not passed — 2 flag(s) warned; 1 exemption(s) taken"
+ },
+ {
+  "id": "v2.week-spine",
+  "kind": "kingdom",
+  "shape": "machine",
+  "milestone": "V2",
+  "spec": "KINGDOM-V2-2026-09-07 and user rulings 2026-09-10: saved Field/City Week, Conquest then Defense then due quest reports; unordered City activities. One exclusive assignment or repeated Field battles; fought heroes cannot work in City, Exhausted allows recovery only. Quests remain away through due Field battles. Ordinary battle results independently pull each surviving participant at 20% with badge modifiers and story duration; no whole-roster Week roll. Preserve outcome picker. Provisional skipped-Conquest defense bonus 12 percentage points, absences expire entering due City. Remove Farm/Delve/Gather; Rest clears fatigue badges after one City-close assignment. Full fatigue, new quest outcomes and V2 wound pricing follow separately. See V2-WEEK-SPINE.md.",
+  "expect": "ISC005/006/007 two-half flow and save continuation; ISC008/009/010 exclusive availability with recovery; ISC036 City-close chapel effects without passive Supplies; ISC046 actual per-battle participant pulls and due expiry; ISC047 due Field reports. test/v2-week.test.ts covers repeat Field participation, castle refusal, skip pressure, no repeated reports and result-screen reload. Built UI smoke covers Field/City and repair then buy without advancing.",
+  "isc": [
+   "005",
+   "006",
+   "007",
+   "008",
+   "009",
+   "010",
+   "036",
+   "046",
+   "047"
+  ],
+  "needs": [
+   "week.machine",
+   "assignments.two-slots"
+  ],
+  "attempts": 1,
+  "variants": [
+   "stage.field",
+   "stage.city"
+  ]
  }
 ]

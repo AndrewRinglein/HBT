@@ -13,6 +13,7 @@
 
 import type { EngagementResult } from './seam.js'
 import type { Reckoning } from './reckoning.js'
+import { STAGES, FIELD_STEPS, type FieldStep } from '../content/stages.js'
 
 export type StageId = string
 export type CurrencyId = string
@@ -60,6 +61,8 @@ export type Engagement = {
 export type Cursor = {
   week: number
   stage: StageId
+  fieldStep: FieldStep | null
+  conquestAttempted: boolean
   step: CursorStep
   /** Which of the four prep steps, while step === 'prep'; null otherwise. */
   prepStep: PrepStep | null
@@ -128,12 +131,7 @@ export type Hero = {
   levelPick?: number | null
 }
 
-/**
- * One hero, one thing, one slot (§2.3, amended Law 17). `kind` is the
- * destination — an Engagement, a quest, a labour, a service, healing, rest —
- * `target` what it is, `weeks` how long it holds. A quest is written to BOTH
- * slots: "questing costs two actions, fighting costs one."
- */
+/** One exclusive assignment per hero; fighting participation is tracked separately for the Week. */
 export type Assignment = { kind: 'engagement' | 'quest' | 'labour' | 'service' | 'heal' | 'rest'; target: string; weeks: number }
 
 /** A building on a Territory: which nodes of its tree are built; `level` is their count (the art's band keys to it). */
@@ -161,11 +159,12 @@ export type Territory = {
   node: 'mine' | 'field' | 'abbey' | 'wellspring' | null
 }
 
-export type QuestInFlight = { id: string; heroes: HeroId[]; weeksLeft: number }
+export type QuestInFlight = { id: string; heroes: HeroId[]; weeksLeft: number; sentWeek: number; dueWeek: number }
 /** One hero the Week's roll kept home, with the story line drawn for them. */
-export type Absence = { heroId: HeroId; story: string }
+export type Absence = { heroId: HeroId; story: string; returnWeek?: number }
 
 export type CampaignState = {
+  version: 2
   realm: string
   seed: number
   week: number
@@ -175,7 +174,9 @@ export type CampaignState = {
   unlocks: string[]
   revealed: string[]
   roster: Record<HeroId, Hero>
-  assignments: Record<HeroId, { field?: Assignment; city?: Assignment }>
+  assignments: Record<HeroId, Assignment>
+  /** Fighting can continue in the Field, but precludes City work this Week. */
+  foughtThisWeek: HeroId[]
   stash: string[]
   territories: Record<TerritoryId, Territory>
   threat: number
@@ -220,16 +221,18 @@ export function makeCampaign(seed: number, options: MakeCampaignOptions): Campai
     territories[t.id] = { ...t, buildings: t.buildings.map((b) => ({ ...b, nodes: [...b.nodes] })), adjacent: [...t.adjacent], enemies: [...t.enemies], node: t.node }
   }
   return {
+    version: 2,
     realm: options.realm,
     seed,
     week: options.week ?? 1,
-    cursor: { week: options.week ?? 1, stage: options.stage, step: 'open', prepStep: null, engagement: null, attack: null, fought: 0, recruited: 0, sold: [], spent: [], rewardOffer: null, prologue: null, draftOffer: null, battle: null, equipSession: null },
+    cursor: { week: options.week ?? 1, stage: options.stage, fieldStep: STAGES.find((s) => s.id === options.stage)?.spends === 'assignments' ? FIELD_STEPS[0]!.key : null, conquestAttempted: false, step: 'open', prepStep: null, engagement: null, attack: null, fought: 0, recruited: 0, sold: [], spent: [], rewardOffer: null, prologue: null, draftOffer: null, battle: null, equipSession: null },
     purse,
     renown: options.renown ?? 0,
     unlocks: [],
     revealed: [],
     roster,
     assignments: {},
+    foughtThisWeek: [],
     stash: [],
     territories,
     threat: 0,
@@ -275,26 +278,18 @@ export function saveOf(campaign: CampaignState): string {
   return JSON.stringify(campaign)
 }
 
-/**
- * Cursor fields added after the first saves were written, with the value a save
- * from before them holds by construction — nothing was sold, spent or being fitted
- * when the field did not exist. A load fills them in (save.migrate, 2026-09-03);
- * a field with no such empty value is not listed here and a save without it is
- * refused as before. Additive only: nothing is ever dropped or reinterpreted.
- */
-const CURSOR_ADDED: Readonly<Record<string, () => unknown>> = {
-  sold: () => [],            // forge.shelf, G6
-  spent: () => [],           // waystation.catalog, G7
-  equipSession: () => null,  // equip.costs, G5
-}
-
-/** The load: parse, bring an older save forward where that is lossless, then refuse anything that is not a Campaign (Law 9). */
+/** V2 saves must carry the complete cursor; V1 saves are deliberately not migrated. */
 export function campaignOf(json: string): CampaignState {
   const c = JSON.parse(json) as CampaignState
   assertPlainData(c)
+  if (c.version !== 2) throw new Error('not a Campaign V2 save: unsupported version — start a V2 Campaign')
+  if (!Array.isArray(c.foughtThisWeek)) throw new Error("save is missing 'foughtThisWeek'")
   const required: (keyof CampaignState)[] = ['realm', 'seed', 'week', 'cursor', 'purse', 'renown', 'unlocks', 'revealed', 'roster', 'assignments', 'stash', 'territories', 'threat', 'losses', 'quests', 'captured', 'unavailable', 'cups', 'ended']
   for (const k of required) if (!(k in c)) throw new Error(`save is missing '${k}' — not a Campaign`)
-  if (c.cursor && typeof c.cursor === 'object') for (const [k, make] of Object.entries(CURSOR_ADDED)) if (!(k in c.cursor)) (c.cursor as unknown as Record<string, unknown>)[k] = make()
-  for (const k of ['week', 'stage', 'step', 'prepStep', 'engagement', 'attack', 'fought', 'recruited', 'rewardOffer', 'prologue', 'draftOffer', 'battle', 'equipSession', 'sold', 'spent'] as const) if (!(k in c.cursor)) throw new Error(`save's cursor is missing '${k}'`)
+  for (const k of ['week', 'stage', 'fieldStep', 'conquestAttempted', 'step', 'prepStep', 'engagement', 'attack', 'fought', 'recruited', 'rewardOffer', 'prologue', 'draftOffer', 'battle', 'equipSession', 'sold', 'spent'] as const) if (!(k in c.cursor)) throw new Error(`save's cursor is missing '${k}'`)
+  const stage = STAGES.find((s) => s.id === c.cursor.stage)
+  if (!stage) throw new Error('save has an unknown Week half')
+  if (stage.spends === 'assignments' ? !FIELD_STEPS.some((s) => s.key === c.cursor.fieldStep) : c.cursor.fieldStep !== null) throw new Error('save has an invalid fieldStep for its Week half')
+  if (typeof c.cursor.conquestAttempted !== 'boolean') throw new Error('save has an invalid conquestAttempted flag')
   return c
 }

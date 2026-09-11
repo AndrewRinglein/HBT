@@ -23,15 +23,14 @@ describe('ISC-041 — the shelf, and the equip step', () => {
   it('no shelf until the Forge is repaired; then weapons and tier-1 armors for Supplies; then equipped at prep', () => {
     const ctx = loadFixture((c) => { c.purse['currency.salvage'] = 10; c.purse['currency.supplies'] = SWITCHES.shopSuppliesMax * 2; c.territories[RIDGE]!.owned = true; c.territories[RIDGE]!.claimedOnce = true })
     setCursor(ctx, { step: 'open', prepStep: null, engagement: null, battle: null }, 'test')
-    beginWeek(ctx, 'test')                                                   // Buy
+    beginStage(ctx, 'stage.city', 'test')                                                   // Buy
     expect(isShopOpen(ctx.campaign)).toBe(false)
     expect(listShopItems(ctx.campaign)).toEqual([])
     expect(() => performBuyItem(ctx, 'item.longsword', 'test')).toThrow(/not repaired/)
-    beginStage(ctx, 'stage.build', 'test')
+    beginStage(ctx, 'stage.city', 'test')
     performBuild(ctx, RIDGE, FORGE, 'repair', 'test')
     expect(isShopOpen(ctx.campaign)).toBe(true)
-    expect(canBuyItem(ctx.campaign, 'item.longsword')).toBe(false)             // not the Buy Stage
-    beginStage(ctx, 'stage.buy', 'test')
+    // V2: repair and buy in the same City half, without a stage transition.
     const shelf = listShopItems(ctx.campaign)
     expect(shelf.length).toBe(2)                                                // Repaired sells two
     expect(shelf.every((r) => r.tier <= 1)).toBe(true)

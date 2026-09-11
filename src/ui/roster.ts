@@ -41,8 +41,8 @@ export function heroRosterCard(c: CampaignState, heroId: string): string {
   const gear = (label: string, ids: readonly string[], empty: string) => `<div class="gear"><span class="k">${esc(label)}</span><span class="v">${ids.length ? ids.map((id) => esc(itemOf(id).name)).join(' · ') : `<i>${esc(empty)}</i>`}</span></div>`
   const slot = (s: 'field' | 'city') => {
     const k = commitmentOf(c, heroId, s)
-    const a = c.assignments[heroId]?.[s]
-    return k === 'committed' || k === 'onQuest' ? `${k} — ${esc(a!.kind)} ${esc(a!.target.replace(/^[a-z]+\./, ''))}${a!.weeks > 1 ? `, ${a!.weeks} Weeks` : ''}` : k
+    const a = c.assignments[heroId]
+    return a ? `${k} — ${esc(a!.kind)} ${esc(a!.target.replace(/^[a-z]+\./, ''))}${a!.weeks > 1 ? `, ${a!.weeks} Weeks` : ''}` : (k === 'committed' ? 'fought this Week' : k)
   }
   const absence = absenceOf(c, heroId)
   const specialty = h.specialty ? specialtyOf(h.specialty) : null
@@ -75,6 +75,6 @@ export function rosterScreen(c: CampaignState, equipPanel: string): string {
     </div>
     ${fitting ? `<h2>Fitting gear</h2>${equipPanel}<div class="bar"><span class="meta">Idols are fitted at prep only — they are paid for when the battle is about to happen.</span><span class="sp"></span><button class="primary" data-act="close-equip">Done — keep it</button></div>` : ''}
     <div class="equip"><div class="heroes rosterrow">${heroes.map((h) => heroRosterCard(c, h.id)).join('') || '<p class="meta">nobody yet</p>'}</div></div>
-    <p class="meta">Two slots a Week: one in the field, one in the city; a quest takes both. The unavailability roll between Buy and Quest keeps some home with a story.</p>
+    <p class="meta">A hero may fight in successive Field battles or take one City assignment. A quest holds its party until its due Field resolution.</p>
   </div>`
 }

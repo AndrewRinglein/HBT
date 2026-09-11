@@ -24,7 +24,7 @@ import { resolveReckoning, applyBattleResult, performExitBattle, resolveDifficul
 import { woundNameOf } from '../content/wounds.js'
 import type { EngagementResult, UnitTally } from '../core/seam.js'
 import { PREP_STEP_ROWS } from '../content/prep.js'
-import { STAGES } from '../content/stages.js'
+import { FIELD_STEPS, STAGES } from '../content/stages.js'
 import { stageOf, canAdvance, performAdvance, listStageOffers, performChooseEngagement } from '../core/week.js'
 import { commitmentOf, listAvailable } from '../core/assignments.js'
 import { listRecruitOffers, canRecruit, performRecruit, costOfRecruit, canHeal, performHeal, costOfHeal } from '../core/market.js'
@@ -247,19 +247,20 @@ function worldScreen(c: CampaignState): string {
   const offers = listStageOffers(c)
   const territories = Object.values(c.territories).sort((a, b) => a.id.localeCompare(b.id))
   const heroes = Object.values(c.roster).sort((a, b) => a.id.localeCompare(b.id))
-  let body: string
+  let body = ''
   if (row.offers === 'engagement' && offers.length) {
     const head = row.targets === 'rolled'
-      ? `${esc(row.title)} — <span class="lost">attacked</span> at ${esc(c.territories[offers[0]!]!.name)}. Defend it, or pass and ${c.territories[offers[0]!]!.kingdom ? 'pay the cost' : 'lose it'}`
+      ? `${esc(row.title)} — <span class="lost">attacked</span> at ${esc(c.territories[offers[0]!]!.name)}. ${c.territories[offers[0]!]!.kingdom ? 'The castle must be defended.' : 'Defend it, or pass and lose it.'}`
       : `${esc(row.title)} — choose a Territory, or pass`
-    body = `<h3>${head}</h3><div class="pick">${offers.map((id) => { const t = c.territories[id]!; return `<div class="opt" data-act="choose" data-id="${esc(id)}"><b>${esc(t.name)}</b><small>${esc(t.mapId)} · held by ${t.enemies.length}: ${esc(t.enemies.map((e) => nameOf(e)).join(', '))}${t.buildings.length ? ' · ' + esc(t.buildings.map((b) => b.id).join(', ')) : ''}</small></div>` }).join('')}</div>`
+    body += `<h3>${head}</h3><div class="pick">${offers.map((id) => { const t = c.territories[id]!; return `<div class="opt" data-act="choose" data-id="${esc(id)}"><b>${esc(t.name)}</b><small>${esc(t.mapId)} · held by ${t.enemies.length}: ${esc(t.enemies.map((e) => nameOf(e)).join(', '))}${t.buildings.length ? ' · ' + esc(t.buildings.map((b) => b.id).join(', ')) : ''}</small></div>` }).join('')}</div>`
   } else if (row.offers === 'engagement') {
-    body = `<h3>${esc(row.title)}</h3><p class="meta">${c.cursor.fought ? 'Fought this Stage — nothing more is offered this Week.' : row.targets === 'rolled' ? 'No attack this Week.' : 'Nothing adjacent is unclaimed.'}</p>`
-  } else if (row.offers === 'market') {
+    body += `<h3>${esc(row.title)}</h3><p class="meta">${c.cursor.fought ? 'Fought this Stage — nothing more is offered this Week.' : row.targets === 'rolled' ? 'No attack this Week.' : 'Nothing adjacent is unclaimed.'}</p>`
+  }
+  if (row.offers === 'city') {
     const rc = costOfRecruit(), hc = costOfHeal()
     const fmt = (cost: Record<string, number>) => Object.entries(cost).map(([k, v]) => `${v} ${k.replace('currency.', '')}`).join(' · ')
     const wounded = heroes.filter((h) => h.lifeState === 'alive' && h.wound > 0)
-    body = `<h3>The Beacon — recruit, one a Week · ${esc(fmt(rc))}</h3>
+    body += `<h3>The Beacon — recruit, one a Week · ${esc(fmt(rc))}</h3>
       <div class="pick">${listRecruitOffers(c).map((r) => `<div class="opt${canRecruit(c, r.id) ? '' : ' off'}" data-act="recruit" data-id="${esc(r.id)}"><b>${esc(r.name)}</b><small>${esc(r.classes.map((x) => x.replace('class.', '')).join(', '))} · ${esc(r.unitType)}</small></div>`).join('') || '<p class="meta">nobody answers the Beacon</p>'}</div>
       ${c.cursor.recruited ? '<p class="meta">recruited this Week — the Beacon is closed until next</p>' : ''}
       <h3>The Forge's shelf${isShopOpen(c) ? ` · ${esc(forgeBandName(c) ?? '')} · rerolled each Week` : ' — closed until the Forge is repaired'}</h3>
@@ -270,30 +271,34 @@ function worldScreen(c: CampaignState): string {
       <div class="pick">${listCatalog(c).map((r) => `<div class="opt${canBuyCatalog(c, r.id) ? '' : ' off'}" data-act="buy-catalog" data-id="${esc(r.id)}" title="${esc(whyNotBuyCatalog(c, r.id) ?? '')}"><b>${esc(r.name)}</b><small>${esc(r.itemClass)}${r.uses ? ` · ${r.uses} use` : ''} · ${esc(fmt(priceOf(r.id)))}</small></div>`).join('') || ''}</div>
       <h3>The Chapel — Field Surgery · ${esc(fmt(hc))} a hero</h3>
       <div class="pick">${wounded.map((h) => `<div class="opt${canHeal(c, h.id) ? '' : ' off'}" data-act="heal" data-id="${esc(h.id)}"><b>${esc(h.name)}</b><small>${esc(woundNameOf(h.wound))} → ${esc(woundNameOf(h.wound - 1))}</small></div>`).join('') || '<p class="meta">nobody is wounded</p>'}</div>`
-  } else if (row.offers === 'labours') {
-    const free = listAvailable(c, row.id)
-    const working = heroes.filter((h) => c.assignments[h.id]?.city)
-    body = `<h3>Mend — the city Stage. Each labour takes a hero's city slot; it pays as the Stage closes.</h3>
+  }
+  if (row.offers === 'city') {
+    const free = heroes.map((h) => h.id)
+    const working = heroes.filter((h) => c.assignments[h.id] && c.assignments[h.id]!.kind !== 'quest')
+    body += `<h3>The Chapel — assign a hero for the Week. Rest clears fatigue and exhaustion when the City closes.</h3>
       <table><tr><th>labour</th><th>pays</th><th>send</th></tr>${listLabours().map((l) => { const y = yieldOf(c, l.key); return `<tr><td><b>${esc(l.name)}</b> <span class="meta">${esc(l.does)}</span></td><td>${y ? `${y.amount} ${esc(y.currency.replace('currency.', ''))}` : '—'}</td><td>${free.filter((h) => canAssignLabour(c, h, l.key)).map((h) => `<button class="quiet" data-act="labour" data-id="${esc(h)}" data-key="${esc(l.key)}">${esc(c.roster[h]!.name)}</button>`).join(' ') || '<span class="meta">nobody free</span>'}</td></tr>` }).join('')}</table>
-      ${working.length ? `<h3>Working this Week</h3><p>${working.map((h) => `${esc(h.name)} — ${esc(c.assignments[h.id]!.city!.target)} <button class="quiet" data-act="release" data-id="${esc(h.id)}">undo</button>`).join(' · ')}</p>` : ''}`
-  } else if (row.offers === 'build') {
+      ${working.length ? `<h3>Working this Week</h3><p>${working.map((h) => `${esc(h.name)} — ${esc(c.assignments[h.id]!.target)} <button class="quiet" data-act="release" data-id="${esc(h.id)}">undo</button>`).join(' · ')}</p>` : ''}`
+  }
+  if (row.offers === 'city') {
     const held = listBuildings(c).filter((b) => b.held)
-    body = `<h3>Build — Salvage, node by node</h3>` + (held.length ? held.map((b) => `<div class="hall" ${interiorOf(b.building.id) ? `style="background-image:url(${interiorOf(b.building.id)})"` : ''}>${cardOf(b.building.id) ? `<img class="bcard" src="${cardOf(b.building.id)}" alt="">` : ''}<h3>${esc(b.row.name)} <span class="meta">on ${esc(c.territories[b.territoryId]!.name)} · level ${b.building.level}${b.building.damaged ? ' · ruin' : ''}</span></h3>
+    body += `<h3>Build — Salvage, node by node</h3>` + (held.length ? held.map((b) => `<div class="hall" ${interiorOf(b.building.id) ? `style="background-image:url(${interiorOf(b.building.id)})"` : ''}>${cardOf(b.building.id) ? `<img class="bcard" src="${cardOf(b.building.id)}" alt="">` : ''}<h3>${esc(b.row.name)} <span class="meta">on ${esc(c.territories[b.territoryId]!.name)} · level ${b.building.level}${b.building.damaged ? ' · ruin' : ''}</span></h3>
       <div class="pick">${b.row.nodes.map((n) => { const why = whyNotBuild(c, b.territoryId, b.building.id, n.key); const built = b.building.nodes.includes(n.key); return `<div class="opt${built ? ' on' : why ? ' off' : ''}" ${why ? '' : `data-act="build" data-id="${esc(b.territoryId)}" data-building="${esc(b.building.id)}" data-key="${esc(n.key)}"`}><b>${esc(n.name)} ${built ? '✓' : ''}</b><small>${n.salvage} Salvage${n.parents.length ? ' · after ' + esc(n.parents.join(', ')) : ''}${n.gate ? ' · ' + esc(Object.entries(n.gate).map(([k, v]) => `${v} ${k}s`).join(', ')) + ' (waived)' : ''}${why && !built ? ' · ' + esc(why) : ''}</small></div>` }).join('')}</div></div>`).join('') : '<p class="meta">nothing you hold has a building on it — the Ridge carries the Forge</p>')
-  } else if (row.offers === 'quests') {
+  }
+  if (row.offers === 'city') {
     const free = listAvailable(c, row.id)
     const inFlight = Object.values(c.quests).sort((a, b) => a.id.localeCompare(b.id))
     const offers = listQuestOffers(c)
     app.party = app.party.filter((h) => free.includes(h))
-    body = `<h3>Quest — a party leaves for N Weeks and resolves without you</h3>
+    body += `<h3>Quest — a party leaves for N Weeks and resolves without you</h3>
       ${offers.map((id) => { const q = questRowOf(id); const why = whyNotSendQuest(c, id, app.party); return `<div class="card" style="margin-bottom:8px"><b>${esc(q.name)}</b> <span class="meta">${esc(q.does)} · ${q.weeks} Weeks · needs ${esc(q.requires.map((r) => `${r.min} × ${r.accepts}`).join(', '))} · pays ${esc(Object.entries(q.reward).map(([k, v]) => `${v} ${k.replace('currency.', '')}`).join(', '))} · ${q.odds}% comes home</span>
         <p>${free.map((h) => `<button class="${app.party.includes(h) ? 'primary' : 'quiet'}" data-act="party" data-id="${esc(h)}">${esc(c.roster[h]!.name)}</button>`).join(' ') || '<span class="meta">nobody is free</span>'}</p>
         <div class="bar"><span class="meta">${why ? esc(why) : `${app.party.length} will go`}</span><span class="sp"></span><button class="primary" data-act="send-quest" data-id="${esc(id)}" ${why ? 'disabled' : ''}>Send</button></div></div>` }).join('') || '<p class="meta">no quest is posted — the one there is is in flight</p>'}
       ${inFlight.length ? `<h3>In flight</h3><table>${inFlight.map((q) => `<tr><td><b>${esc(questRowOf(q.id).name)}</b></td><td>${esc(q.heroes.map((h) => c.roster[h]?.name ?? h).join(', '))}</td><td class="n">${q.weeksLeft} Week${q.weeksLeft === 1 ? '' : 's'} left</td></tr>`).join('')}</table>` : ''}`
-  } else {
-    body = `<h3>${esc(row.title)}</h3><p>${esc(row.does)}</p><p class="meta">Nothing to do here yet — this Stage's machinery lands in a later milestone. Pass through.</p>`
   }
-  const next = STAGES[at + 1]
+  if (!body) {
+    body += `<h3>${esc(row.title)}</h3><p>${esc(row.does)}</p><p class="meta">Due reports have resolved. Continue to the City.</p>`
+  }
+  const next = (c.cursor.fieldStep ? FIELD_STEPS[FIELD_STEPS.findIndex((s) => s.key === c.cursor.fieldStep) + 1] : undefined) ?? STAGES[at + 1]
   const attacked = row.targets === 'rolled' && offers.length ? offers[0]! : null
   const picture = ART
     ? `<div class="picture"><div class="steps"><span class="${app.view === 'map' ? 'on' : ''}" data-act="view" data-id="map">The realm</span><span class="${app.view === 'town' ? 'on' : ''}" data-act="view" data-id="town">The Sanctuary</span><span class="meta">${app.view === 'map' ? (row.offers === 'engagement' && offers.length ? 'click a Territory to ' + (row.targets === 'rolled' ? 'defend it' : 'attack it') : 'held in gold · unclaimed dimmed') : 'a building stands here once its Territory is yours; its band is its level'}</span></div>${app.view === 'map' ? worldMapSvg(c, row.offers === 'engagement' ? offers : [], attacked) : townSvg(c)}</div>`

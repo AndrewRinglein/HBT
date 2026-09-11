@@ -1,58 +1,85 @@
-// ISC-046 — between Buy and Quest, a roll on cup.unavailability keeps some
-// heroes home for the Week, each with a story, and commitmentOf says so.
-// KINGDOM-DESIGN.md §3 · SKELETON-SETTLED.md:119-122
+// ISC046: V2 participant-only, per-battle pulls replace the whole-roster weekly roll.
 import { describe, it, expect } from 'vitest'
-import { loadFixture } from './walk.js'
-import { performAdvance, tickWeek } from '../src/core/week.js'
-import { commitmentOf, listAvailable } from '../src/core/assignments.js'
-import { absencesFor, ABSENCES } from '../src/content/absences.js'
-import type { CampaignState } from '../src/core/campaign.js'
+import { loadFixture, toBattle, panelResult, decide } from './walk.js'
+import { resolveAbsences, absenceWeightOf, performRollAbsences } from '../src/core/absence.js'
+import { applyBattleResult } from '../src/core/reckoning.js'
+import { commitmentOf, canCommit } from '../src/core/assignments.js'
+import { beginWeek, performAdvance, tickWeek } from '../src/core/week.js'
+import { setCursor } from '../src/core/mutate.js'
+import { ABSENCES } from '../src/content/absences.js'
 
-const atBuy = (c: CampaignState) => { c.cursor = { ...c.cursor, stage: 'stage.buy', step: 'open', prepStep: null, engagement: null, battle: null, attack: null, fought: 0 } }
-
-describe('ISC-046 — the unavailability roll', () => {
-  it('leaving Buy for Quest keeps floor(roster/3) heroes home, each with a story, and they answer unavailable in both slots', () => {
-    const ctx = loadFixture(atBuy)
-    const roster = Object.keys(ctx.campaign.roster).length
-    expect(roster).toBeGreaterThanOrEqual(6)
-    expect(ctx.campaign.unavailable).toEqual([])
-    performAdvance(ctx, 'test')
-    expect(ctx.campaign.cursor.stage).toBe('stage.quest')
-    const kept = ctx.campaign.unavailable
-    expect(kept.length).toBe(absencesFor(roster))
-    expect(kept.length).toBeGreaterThan(0)
-    for (const a of kept) {
-      expect(ctx.campaign.roster[a.heroId]).toBeDefined()
-      expect(ABSENCES.map((r) => r.story)).toContain(a.story)
-      expect(commitmentOf(ctx.campaign, a.heroId, 'field')).toBe('unavailable')
-      expect(commitmentOf(ctx.campaign, a.heroId, 'city')).toBe('unavailable')
-      expect(listAvailable(ctx.campaign, 'stage.conquer')).not.toContain(a.heroId)
+const H = 'hero.base.warrior-iron'
+describe('ISC046 — after each ordinary battle', () => {
+  it('independent 20% participant pulls use existing badge multipliers, named streams and stories', () => {
+    const c = loadFixture().campaign
+    expect(absenceWeightOf(['badge.responsible'])).toBe(0)
+    expect(absenceWeightOf(['badge.dedicated'])).toBe(50)
+    expect(absenceWeightOf(['badge.lazy'])).toBe(200)
+    expect(absenceWeightOf(['badge.withdrawn'])).toBe(300)
+    const counts = [0, 0, 0, 0, 0]
+    for (let n = 0; n < 1000; n++) {
+      for (const [i, badges] of [[], ['badge.dedicated'], ['badge.lazy'], ['badge.withdrawn'], ['badge.responsible']].entries()) {
+        c.roster[H]!.badges = badges
+        const a = resolveAbsences(c, [H], `battle-${n}`)
+        expect(a).toEqual(resolveAbsences(c, [H], `battle-${n}`))
+        expect(a.every((x) => x.heroId === H && ABSENCES.some((r) => r.story === x.story))).toBe(true)
+        counts[i]! += a.length
+      }
     }
-    expect(new Set(kept.map((a) => a.heroId)).size).toBe(kept.length)          // no hero kept home twice
-    expect(ctx.events.filter((e) => e.type === 'absence.rolled').length).toBe(1)
+    expect(counts[0]).toBeGreaterThan(140); expect(counts[0]).toBeLessThan(260)
+    expect(counts[1]).toBeGreaterThan(60); expect(counts[1]).toBeLessThan(140)
+    expect(counts[2]).toBeGreaterThan(330); expect(counts[2]).toBeLessThan(470)
+    expect(counts[3]).toBeGreaterThan(530); expect(counts[3]).toBeLessThan(670)
+    expect(counts[4]).toBe(0)
+    expect(resolveAbsences(c, [], 'empty')).toEqual([])
+    c.roster[H]!.badges = ['badge.withdrawn']; c.roster[H]!.lifeState = 'dead'
+    expect(resolveAbsences(c, [H], 'dead')).toEqual([])
   })
-  it('the roll is keyed by the Week, not by when it is made: a reload lands on the same absences; the next Week rolls afresh', () => {
-    const a = loadFixture(atBuy); performAdvance(a, 'test')
-    const b = loadFixture(atBuy); performAdvance(b, 'test')
-    expect(b.campaign.unavailable).toEqual(a.campaign.unavailable)
-    const c = loadFixture((s) => { atBuy(s); s.week = s.week + 1 }); performAdvance(c, 'test')
-    expect(c.campaign.unavailable).not.toEqual(a.campaign.unavailable)
+  it('the result writer pulls only survivors who fought, including a party smaller than six', () => {
+    const ctx = toBattle(loadFixture(), 2)
+    const e = ctx.campaign.cursor.engagement!
+    // Deterministically select a battle identity whose participants draw an absence.
+    for (let n = 0; n < 1000; n++) { e.id = `engagement.test-${n}`; if (resolveAbsences(ctx.campaign, e.deployed, e.id).length) break }
+    const expected = resolveAbsences(ctx.campaign, e.deployed, e.id)
+    expect(expected.length).toBeGreaterThan(0)
+    const { result, reckoning } = decide(ctx, panelResult(ctx, true))
+    applyBattleResult(ctx, e, result, reckoning)
+    expect(ctx.campaign.unavailable).toEqual(expected)
+    for (const a of expected) {
+      expect(e.deployed).toContain(a.heroId)
+      expect(commitmentOf(ctx.campaign, a.heroId, 'field')).toBe('unavailable')
+      expect(canCommit(ctx.campaign, a.heroId, { kind: 'rest', target: 'rest', weeks: 1 })).toBe(false)
+    }
+    expect(ctx.events.filter((e) => e.type === 'absence.rolled')).toHaveLength(1)
+    expect(() => applyBattleResult(ctx, e, result, reckoning)).toThrow(/refused/)
+    expect(ctx.events.filter((e) => e.type === 'absence.rolled')).toHaveLength(1)
   })
-  it('the Week boundary clears the list', () => {
-    const ctx = loadFixture(atBuy); performAdvance(ctx, 'test')
-    expect(ctx.campaign.unavailable.length).toBeGreaterThan(0)
-    tickWeek(ctx, 'test')
+  it('prologue fights defer campaign absence pulls because the opening has no recovery City', () => {
+    const ctx = toBattle(loadFixture(), 2)
+    const e = ctx.campaign.cursor.engagement!
+    for (let n = 0; n < 1000; n++) { e.id = `engagement.opening-test-${n}`; if (resolveAbsences(ctx.campaign, e.deployed, e.id).length) break }
+    expect(resolveAbsences(ctx.campaign, e.deployed, e.id).length).toBeGreaterThan(0)
+    e.prologue = 1; ctx.campaign.cursor.prologue = 1
+    const { result, reckoning } = decide(ctx, panelResult(ctx, true))
+    applyBattleResult(ctx, e, result, reckoning)
     expect(ctx.campaign.unavailable).toEqual([])
-    expect(ctx.events.some((e) => e.type === 'absence.cleared')).toBe(true)
+    expect(ctx.events.filter((e) => e.type === 'absence.rolled')).toEqual([])
   })
-  it('badge.responsible is never unavailable; a roster under six loses nobody', () => {
-    const ctx = loadFixture((c) => { atBuy(c); for (const h of Object.values(c.roster)) h.badges = ['badge.responsible'] })
+  it('a pull blocks the next Field and every assignment, expires at due City, and empty pulls keep existing absences', () => {
+    const ctx = loadFixture()
+    let cause = ''
+    for (let n = 0; n < 1000; n++) { cause = `battle-${n}`; if (resolveAbsences(ctx.campaign, [H], cause).length) break }
+    performRollAbsences(ctx, [H], cause)
+    const held = structuredClone(ctx.campaign.unavailable)
+    performRollAbsences(ctx, [], 'other battle')
+    expect(ctx.campaign.unavailable).toEqual(held)
+    tickWeek(ctx, 'test'); beginWeek(ctx, 'test')
+    expect(commitmentOf(ctx.campaign, H, 'field')).toBe('unavailable')
+    performAdvance(ctx, 'test'); setCursor(ctx, { attack: null }, 'test'); performAdvance(ctx, 'test')
+    expect(commitmentOf(ctx.campaign, H, 'field')).toBe('unavailable')
     performAdvance(ctx, 'test')
-    expect(ctx.campaign.unavailable).toEqual([])
-    const small = loadFixture((c) => { atBuy(c); for (const id of Object.keys(c.roster).sort().slice(5)) { delete c.roster[id]; delete c.assignments[id] } })
-    expect(Object.keys(small.campaign.roster).length).toBe(5)
-    performAdvance(small, 'test')
-    expect(small.campaign.unavailable).toEqual([])
-    expect(absencesFor(5)).toBe(0); expect(absencesFor(6)).toBe(1); expect(absencesFor(12)).toBe(3); expect(absencesFor(18)).toBe(5)
+    expect(ctx.campaign.cursor.stage).toBe('stage.city')
+    expect(commitmentOf(ctx.campaign, H, 'city')).toBe('free')
+    expect(ctx.events.some((e) => e.type === 'absence.cleared')).toBe(true)
   })
 })

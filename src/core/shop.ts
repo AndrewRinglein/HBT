@@ -20,7 +20,7 @@ import { itemOf } from '../content/items.js'
 import { resolveShelf, forgeLevelOf, costOfItem } from './forge.js'
 import { CURRENCY_IDS } from '../content/currencies.js'
 import { SWITCHES } from '../content/switches.js'
-import { stageRowOf } from '../content/stages.js'
+import { canUseActivity } from './activity.js'
 import { PREP_STEP_ROWS } from '../content/prep.js'
 
 /** The shelf is open when the Forge stands on ground you hold and has reached its first band (Repaired). */
@@ -36,7 +36,7 @@ export function listShopItems(campaign: CampaignState): RewardRow[] {
 
 export { costOfItem, forgeLevelOf, forgeBandName, shelfSpecOf, whyNotTradeIn, canTradeIn, performTradeIn, poolOf, tradeCategoryOf } from './forge.js'
 
-const atBuy = (campaign: CampaignState) => campaign.cursor.step === 'open' && stageRowOf(campaign.cursor.stage).offers === 'market'
+const atBuy = (campaign: CampaignState) => canUseActivity(campaign, 'market')
 
 export function canBuyItem(campaign: CampaignState, itemId: string): boolean {
   if (!atBuy(campaign)) return false

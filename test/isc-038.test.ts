@@ -4,7 +4,7 @@
 import { describe, it, expect } from 'vitest'
 import { loadFixture } from './walk.js'
 import { setCursor } from '../src/core/mutate.js'
-import { beginWeek } from '../src/core/week.js'
+import { beginStage } from '../src/core/week.js'
 import { canHeal, performHeal, costOfHeal } from '../src/core/market.js'
 import { commitmentOf } from '../src/core/assignments.js'
 import { SWITCHES } from '../src/content/switches.js'
@@ -15,7 +15,7 @@ describe('ISC-038 — Field Surgery', () => {
   it('a Severe hero healed once is Badly Wounded and back on the field roster; Faith paid to the number', () => {
     const ctx = loadFixture((c) => { c.roster[H]!.wound = 3; c.purse['currency.faith'] = SWITCHES.healFaith * 2 + 1 })
     setCursor(ctx, { step: 'open', prepStep: null, engagement: null, battle: null }, 'test')
-    beginWeek(ctx, 'test')
+    beginStage(ctx, 'stage.city', 'test')
     expect(commitmentOf(ctx.campaign, H, 'field')).toBe('wounded')
     expect(costOfHeal()).toEqual({ 'currency.faith': SWITCHES.healFaith })
     expect(canHeal(ctx.campaign, H)).toBe(true)
