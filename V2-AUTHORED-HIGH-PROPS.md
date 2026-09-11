@@ -1,7 +1,10 @@
 # Static authored high props — terrain.authored-high-props
 
-Implementation in progress; no landing or visual acceptance claimed here yet.
-Base engine 038304f. Owning changes span engine, content, viewer and Kingdom.
+Landed as f195937 and audited in fc67b41: 1,269 tests and golden controls pass.
+The seal remains withheld for the recorded warnings and unavailable paired map
+measurement. Human visual acceptance remains unverified. Base engine 038304f;
+owning changes span engine, content, viewer and Kingdom. Root STATE.md records
+the final cross-package publication hashes.
 
 ## Contract and provisional choices
 
@@ -111,8 +114,8 @@ Viewer full gate attempt 6 passed all 23 production battles, pure/pumped/seek
 agreement, 22 maps in both dumps, typecheck and door/law checks. Viewer source
 9f470f2 retains the six gate attempts and the red probes. Candidate exports are
 explicitly marked as coming from the working engine; final committed provenance
-and page publication follow the engine landing. Engine gauntlet/committed checks
-and audit remain pending until their actual logs report success.
+and page publication were awaiting the engine landing at this historical
+checkpoint. The completed engine gauntlet/committed checks and audit follow below.
 
 The gate's candidate-ruling warning cites COMBAT-DESIGN.md:477, the existing
 Flight landing/ZoC rule. This item preserves that rule and changes only the
@@ -125,7 +128,8 @@ test edits. The prior 20 controls change their representation hashes and two TES
 maps join the panel; the separate 535-battle projection proves preserved gameplay.
 The generated Game Builder contains its generator's existing blank-line trailing
 spaces; no generated HTML is hand-edited to clean them. Committed checks, seal
-and separate batch audit are still pending at this source checkpoint.
+and separate batch audit were still pending at this historical source checkpoint;
+their completed results follow below.
 
 ## Landed verification
 
@@ -144,6 +148,9 @@ summaries; the independent 535-battle transition remains the gameplay/RNG proof.
 No exemptions were taken. Current count: 140/172 landed, 46 awaiting human review,
 13 sealed, 32 pending. Existing historical LOS/tooling seals are untouched.
 
-Viewer source 9f470f2 has passed its full candidate gate. Regenerating its fields,
-static data, 23 replay exports and published page from the clean audited engine
-is the remaining presentation publication step; it does not add engine rules.
+Viewer source 9f470f2 passed its full candidate gate. Its fields, static data and
+23 replay exports were regenerated from clean audited engine fc67b41; the
+subsequent --land --fresh gate passed with byte-identical events for every replay.
+Root STATE.md owns final viewer publication/provenance after this documentation
+correction, avoiding a reciprocal engine/viewer commit-hash dependency. No engine
+rules changed during presentation publication.
