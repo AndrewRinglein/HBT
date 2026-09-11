@@ -31,7 +31,7 @@
   }
   ,{
     "id": "power.test-ordered-double", "name": "Two packets (TEST)",
-    "range": 6, "staminaCost": 0,
+    "range": 6, "staminaCost": 0, "cooldown": 0,
     "target": { "select": "unit", "side": "enemy" },
     "effects": [
       { "kind": "damage", "stat": "magic", "bonus": 5, "damageType": "magic" },
@@ -41,7 +41,7 @@
   },
   {
     "id": "power.test-ordered-strip", "name": "Strip then strike (TEST)",
-    "range": 6, "staminaCost": 0,
+    "range": 6, "staminaCost": 0, "cooldown": 0,
     "target": { "select": "unit", "side": "enemy" },
     "effects": [
       { "kind": "status.remove", "statusId": "status.protection" },
