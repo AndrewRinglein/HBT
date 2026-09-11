@@ -816,6 +816,10 @@
   "variants": [
    "quest.rescue-civilian",
    "quest.recover-supplies"
-  ]
+  ],
+  "status": "done-needs-review",
+  "sha": "9d56fcc",
+  "engineSha": "ebc4cf6",
+  "gauntlet": "not passed — 2 flag(s) warned"
  }
 ]
