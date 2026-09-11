@@ -333,5 +333,10 @@ as explicitly declared; the comparison above proves this is metadata only.
 The cursor transition checkpoint recorded 30 failed / 8 passed before adapting
 expectations, and the focused cursor/event check then passed 63/63. The final
 expanded action-event suite passes 29/29. Prior-ruling and historical-test-change
-flags remain for review. Committed checks and the batch audit will be recorded
-after they finish; no human visual acceptance is claimed here.
+flags remain for review. Source landed as `b1137c9` (the gate printed pre-amend
+`00e38df`); committed-tree tests and control hashes passed. The required
+`v2-action-spent` batch audit passed 1,099 tests, typecheck, matching current
+control hashes and whole-core scans. Logs are `scratch/land-action-spent.log`
+and `scratch/audit-action-spent.log`. No exemption was taken. The two review
+flags remain, so the landing stands with its Iron Gauntlet seal withheld.
+No human visual acceptance is claimed here.

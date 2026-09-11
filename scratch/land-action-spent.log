@@ -15,3 +15,8 @@ gate: plumbing.action-spent   [land]
   PASS  naming — new content ids use declared kinds
   PASS  naming — no banned words invented
   PASS  kill switch — the tests fail without the content  — tests fail without attack.test-slot-movement,attack.test-slot-either — they genuinely test it
+
+⛓  IRON GAUNTLET: NOT PASSED — 2 flag(s) warned. The landing stands; the seal is withheld.
+
+LANDED as 00e38df  (flagged for review)
+
