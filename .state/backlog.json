@@ -799,5 +799,23 @@
   "sha": "648d957",
   "engineSha": "f1b1ca2",
   "gauntlet": "not passed — 3 flag(s) warned"
+ },
+ {
+  "id": "v2.opening-quests",
+  "kind": "kingdom",
+  "shape": "machine",
+  "milestone": "V2",
+  "spec": "KINGDOM-V2-2026-09-07 section 4.4: Rescue a Civilian and Recover Supplies, with explicit party staffing, saved deterministic reports or exact-party battles, serial due Field continuation, fixed quest XP and unique rescued instances. Preserve Escort and the Kingdom outcome picker. Quest success reward is paid once after report acknowledgment or battle victory, separately from normal surviving combat XP/Renown; no generic quest battle currency or item draft. Provisional encounter map.open with two zombies, rescued civilians use the existing eligible pool and may exceed the paid-recruit cap. See V2-OPENING-QUESTS.md.",
+  "expect": "ISC047 probes staffing, availability, deterministic 5-percent combat and safe escorts, exact-party prep, victory/loss/retreat, repeated rescues, duplicate Reckoning rejection, authoritative quest ownership, saved reports and battle recaps, and UI read models. Full suite, typecheck, live variants, built-page fake-DOM smoke. Browser visual acceptance remains unverified.",
+  "isc": [
+   "047"
+  ],
+  "needs": [
+   "v2.week-spine"
+  ],
+  "variants": [
+   "quest.rescue-civilian",
+   "quest.recover-supplies"
+  ]
  }
 ]

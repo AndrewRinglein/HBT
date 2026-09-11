@@ -14,6 +14,7 @@
 import type { EngagementResult } from './seam.js'
 import type { Reckoning } from './reckoning.js'
 import { STAGES, FIELD_STEPS, type FieldStep } from '../content/stages.js'
+import { validateQuestSave } from './quests.js'
 
 export type StageId = string
 export type CurrencyId = string
@@ -27,7 +28,7 @@ export type BuildingId = string
  * screen and no cursor.step value" (THIN-SLICE-REVIEW.md §E); it is added for
  * the opening, and flagged.
  */
-export type CursorStep = 'open' | 'prep' | 'battle' | 'reckoning' | 'rewards' | 'levelUp' | 'draft'
+export type CursorStep = 'open' | 'prep' | 'battle' | 'reckoning' | 'rewards' | 'levelUp' | 'draft' | 'questReport'
 /** §4 "Inside Combat Prep — four ordered steps". The ORDER is a row list in src/content/prep.ts, not here. */
 export type PrepStep = 'reveal' | 'council' | 'deploy' | 'equip'
 
@@ -45,6 +46,8 @@ export type Engagement = {
   mapId: string
   /** One of the opening's five (its number), or absent. Not a kind: a flag on an Engagement of an existing kind. */
   prologue?: number
+  /** The particular dispatched quest, not the reusable quest content row. */
+  questRunId?: string
   /** Enemy unit typeIds, as the engine fields them. */
   enemies: string[]
   /** A condition.* id, or null when the Reveal shows none. */
@@ -59,6 +62,8 @@ export type Engagement = {
 }
 
 export type Cursor = {
+  /** Pending report acknowledgment, while step === questReport. */
+  questReport: string | null
   week: number
   stage: StageId
   fieldStep: FieldStep | null
@@ -94,7 +99,7 @@ export type Cursor = {
    * plain data — until the one writer applies them, so a reload lands back on
    * the panel or the tally with nothing lost.
    */
-  battle: { resultSet: boolean; result?: EngagementResult; reckoning?: Reckoning } | null
+  battle: { resultSet: boolean; result?: EngagementResult; reckoning?: Reckoning; questReward?: QuestReward } | null
   /**
    * The equip session (G5, ruled 2026-09-02): open while the Equip step runs at prep, or
    * while the player is fitting gear from the roster between battles. `paid` is what this
@@ -106,6 +111,8 @@ export type Cursor = {
 
 export type Hero = {
   id: HeroId
+  /** Content/art identity for distinct campaign instances of one civilian. */
+  templateId?: string
   name: string
   /** Plural — a multi-class hero satisfies a class filter if any one matches (3-UNITS-SETTLED.md). */
   classes: string[]
@@ -159,7 +166,9 @@ export type Territory = {
   node: 'mine' | 'field' | 'abbey' | 'wellspring' | null
 }
 
-export type QuestInFlight = { id: string; heroes: HeroId[]; weeksLeft: number; sentWeek: number; dueWeek: number }
+export type QuestOutcome = { kind: 'report'; won: boolean; rescued: { id: HeroId; templateId: string } | null } | { kind: 'battle'; engagement: Engagement }
+export type QuestReward = { runId: string; fixedXp: { heroId: HeroId; amount: number }[]; grants: { currency: string; amount: number }[] }
+export type QuestInFlight = { id: string; runId: string; leadHeroId: HeroId | null; heroes: HeroId[]; weeksLeft: number; sentWeek: number; dueWeek: number; outcome: QuestOutcome | null }
 /** One hero the Week's roll kept home, with the story line drawn for them. */
 export type Absence = { heroId: HeroId; story: string; returnWeek?: number }
 
@@ -225,7 +234,7 @@ export function makeCampaign(seed: number, options: MakeCampaignOptions): Campai
     realm: options.realm,
     seed,
     week: options.week ?? 1,
-    cursor: { week: options.week ?? 1, stage: options.stage, fieldStep: STAGES.find((s) => s.id === options.stage)?.spends === 'assignments' ? FIELD_STEPS[0]!.key : null, conquestAttempted: false, step: 'open', prepStep: null, engagement: null, attack: null, fought: 0, recruited: 0, sold: [], spent: [], rewardOffer: null, prologue: null, draftOffer: null, battle: null, equipSession: null },
+    cursor: { questReport: null, week: options.week ?? 1, stage: options.stage, fieldStep: STAGES.find((s) => s.id === options.stage)?.spends === 'assignments' ? FIELD_STEPS[0]!.key : null, conquestAttempted: false, step: 'open', prepStep: null, engagement: null, attack: null, fought: 0, recruited: 0, sold: [], spent: [], rewardOffer: null, prologue: null, draftOffer: null, battle: null, equipSession: null },
     purse,
     renown: options.renown ?? 0,
     unlocks: [],
@@ -286,10 +295,11 @@ export function campaignOf(json: string): CampaignState {
   if (!Array.isArray(c.foughtThisWeek)) throw new Error("save is missing 'foughtThisWeek'")
   const required: (keyof CampaignState)[] = ['realm', 'seed', 'week', 'cursor', 'purse', 'renown', 'unlocks', 'revealed', 'roster', 'assignments', 'stash', 'territories', 'threat', 'losses', 'quests', 'captured', 'unavailable', 'cups', 'ended']
   for (const k of required) if (!(k in c)) throw new Error(`save is missing '${k}' — not a Campaign`)
-  for (const k of ['week', 'stage', 'fieldStep', 'conquestAttempted', 'step', 'prepStep', 'engagement', 'attack', 'fought', 'recruited', 'rewardOffer', 'prologue', 'draftOffer', 'battle', 'equipSession', 'sold', 'spent'] as const) if (!(k in c.cursor)) throw new Error(`save's cursor is missing '${k}'`)
+  for (const k of ['questReport', 'week', 'stage', 'fieldStep', 'conquestAttempted', 'step', 'prepStep', 'engagement', 'attack', 'fought', 'recruited', 'rewardOffer', 'prologue', 'draftOffer', 'battle', 'equipSession', 'sold', 'spent'] as const) if (!(k in c.cursor)) throw new Error(`save's cursor is missing '${k}'`)
   const stage = STAGES.find((s) => s.id === c.cursor.stage)
   if (!stage) throw new Error('save has an unknown Week half')
   if (stage.spends === 'assignments' ? !FIELD_STEPS.some((s) => s.key === c.cursor.fieldStep) : c.cursor.fieldStep !== null) throw new Error('save has an invalid fieldStep for its Week half')
   if (typeof c.cursor.conquestAttempted !== 'boolean') throw new Error('save has an invalid conquestAttempted flag')
+  validateQuestSave(c)
   return c
 }

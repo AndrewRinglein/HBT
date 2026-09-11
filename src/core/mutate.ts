@@ -6,7 +6,7 @@
 // Mirrors the engine's shape: the plain-data Campaign is the save; everything
 // unserializable — the event log — lives beside it in a Ctx.
 
-import type { CampaignState, Cursor, Assignment, Hero, Absence, QuestInFlight } from './campaign.js'
+import type { CampaignState, Cursor, Assignment, Hero, Absence, QuestInFlight, QuestOutcome } from './campaign.js'
 import type { KingdomEventType } from './events.js'
 import type { EngagementResult } from './seam.js'
 import type { Reckoning } from './reckoning.js'
@@ -79,7 +79,14 @@ export function setUnavailable(ctx: Ctx, absences: readonly Absence[], causeId: 
 /** A quest into flight — the one write of campaign.quests. */
 export function setQuestInFlight(ctx: Ctx, quest: QuestInFlight, causeId: string): void {
   ctx.campaign.quests[quest.id] = { ...quest, heroes: [...quest.heroes] }
-  emit(ctx, 'quest.sent', causeId, { questId: quest.id, heroes: [...quest.heroes], weeks: quest.weeksLeft })
+  emit(ctx, 'quest.sent', causeId, { questId: quest.id, runId: quest.runId, leadHeroId: quest.leadHeroId, heroes: [...quest.heroes], weeks: quest.weeksLeft })
+}
+
+export function setQuestOutcome(ctx: Ctx, questId: string, outcome: QuestOutcome, causeId: string): void {
+  const q = ctx.campaign.quests[questId]
+  if (!q || q.outcome) throw new Error('quest outcome is missing its pending run or was already prepared')
+  q.outcome = structuredClone(outcome)
+  emit(ctx, 'quest.prepared', causeId, { questId, runId: q.runId, outcome: outcome.kind })
 }
 
 export function setQuestWeeksLeft(ctx: Ctx, questId: string, weeksLeft: number, causeId: string): void {
@@ -94,7 +101,7 @@ export function setQuestResolved(ctx: Ctx, questId: string, won: boolean, causeI
   const q = ctx.campaign.quests[questId]
   if (!q) throw new Error(`no quest '${questId}' in flight`)
   delete ctx.campaign.quests[questId]
-  emit(ctx, 'quest.resolved', causeId, { questId, heroes: [...q.heroes], won })
+  emit(ctx, 'quest.resolved', causeId, { questId, runId: q.runId, heroes: [...q.heroes], won })
 }
 
 /** An Assignment into a slot — the one write of campaign.assignments. */

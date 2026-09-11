@@ -698,11 +698,11 @@
  },
  "047": {
   "red": {
-   "at": "2026-09-11 07:48",
-   "sha": "e208302",
-   "hash": "ff1728f75f32",
-   "how": "feature absent",
-   "tail": " ❯ whyNotSendQuest src/core/quests.ts:40:8 |  ❯ performSendQuest src/core/quests.ts:64:15 |  ❯ test/isc-047.test.ts:48:5"
+   "at": "2026-09-11 09:51",
+   "sha": "0cf52b3",
+   "hash": "d6383b183c45",
+   "how": "disabled quest.rescue-civilian,quest.recover-supplies",
+   "tail": "     43|   const row = questRowOf(id), sentWeek = ctx.campaign.week |      44|   for (const h of [...ids].sort()) applyCommit(ctx, h, 'city', { kind:… |  ❯ test/isc-047.test.ts:274:27"
   },
   "closed": {
    "at": "2026-09-11 07:52",

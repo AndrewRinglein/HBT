@@ -20,7 +20,7 @@ import { woundNameOf } from '../content/wounds.js'
 import { itemOf } from '../content/items.js'
 import { specialtyOf } from '../content/progress.js'
 import { statBlock } from './equip.js'
-import { portraitOf } from './art.js'
+import { portraitIdOf, portraitOf } from './art.js'
 
 const esc = (s: string) => s.replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]!))
 
@@ -36,7 +36,7 @@ function xpBar(c: CampaignState, heroId: string): string {
 export function heroRosterCard(c: CampaignState, heroId: string): string {
   const h = c.roster[heroId]!
   const l = loadoutOf(c, heroId)
-  const art = portraitOf(heroId)
+  const art = portraitOf(portraitIdOf(h))
   const dead = h.lifeState === 'dead'
   const gear = (label: string, ids: readonly string[], empty: string) => `<div class="gear"><span class="k">${esc(label)}</span><span class="v">${ids.length ? ids.map((id) => esc(itemOf(id).name)).join(' · ') : `<i>${esc(empty)}</i>`}</span></div>`
   const slot = (s: 'field' | 'city') => {

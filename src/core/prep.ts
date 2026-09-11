@@ -59,6 +59,7 @@ export function canUndeploy(campaign: CampaignState, heroId: HeroId): boolean {
 /** Who could still be sent: alive, not yet deployed. Sorted by id. */
 export function listDeployable(campaign: CampaignState): HeroId[] {
   const e = engagementOf(campaign)
+  if (engagementKindOf(e.kind).rosterFixed) return []
   return Object.values(campaign.roster)
     .filter((h) => !e.deployed.includes(h.id) && commitmentOf(campaign, h.id, 'field') === 'free')
     .map((h) => h.id)

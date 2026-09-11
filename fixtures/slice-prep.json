@@ -3,6 +3,7 @@
  "seed": 1,
  "week": 3,
  "cursor": {
+  "questReport": null,
   "week": 3,
   "stage": "stage.field",
   "step": "prep",

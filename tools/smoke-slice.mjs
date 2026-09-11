@@ -68,6 +68,43 @@ repair.handlers.click(); has("The Forge's shelf")
 const buy = root.els.find((e) => e.dataset.act === 'buy-item')
 if (!buy) throw new Error('repair did not immediately open the shelf')
 buy.handlers.click(); has('Week 3 — City')
-const first = root.els.find((x) => x.dataset.act === 'party'); first.handlers.click(); click('send-quest'); has('In flight'); has('2 Weeks left')
+const first = root.els.find((x) => x.dataset.act === 'party'); first.handlers.click(); click('send-quest', 'quest.escort'); has('In flight'); has('2 Weeks left')
 click('roster'); has('onQuest — quest escort, 2 Weeks'); click('roster')
 console.log('smoke: Field → City; repair then buy without advancing; quest dispatch → roster: OK')
+
+// The authored quest UI uses a normal serialized slot and the same click handlers.
+// This remains a fake-DOM smoke, not a browser or visual-acceptance substitute.
+click('title')
+const key = [...store.keys()].find(k => k.startsWith('hobat-kingdom-save:'))
+const base = JSON.parse(store.get(key))
+base.quests = {}; base.assignments = {}; base.unavailable = []; base.foughtThisWeek = []
+base.cursor = { ...base.cursor, stage: 'stage.city', fieldStep: null, step: 'open', engagement: null, battle: null, attack: null, questReport: null, equipSession: null }
+for (const h of Object.values(base.roster)) { h.wound = 0; h.lifeState = 'alive'; h.badges = ['badge.responsible'] }
+store.set(key, JSON.stringify(base))
+click('slot-continue'); has('Rescue a Civilian'); has('Recover Supplies'); has('Required hero lead')
+const ids = Object.keys(base.roster).sort().slice(0, 3)
+for (const id of ids) click('party', id)
+click('send-quest', 'quest.rescue-civilian'); has('In flight'); has('1 Week left')
+click('advance'); click('advance'); click('advance') // City → Conquest → Defense → report
+has('Quest report — Rescue a Civilian'); has('3 quest XP'); has('joins the roster')
+const pending = JSON.parse(store.get(key)); const rosterBefore = Object.keys(pending.roster).length
+click('title'); click('slot-continue'); has('Quest report — Rescue a Civilian')
+click('quest-report')
+if (root.els.some(e => e.dataset.act === 'exit')) drive.leaveLevelUp()
+click('advance'); has('City')
+const completed = JSON.parse(store.get(key))
+if (Object.keys(completed.roster).length !== rosterBefore + 1) throw new Error('rescue did not create exactly one instance')
+click('title'); click('slot-continue'); has('City')
+if (Object.keys(JSON.parse(store.get(key)).roster).length !== rosterBefore + 1) throw new Error('reload repeated rescue')
+console.log('smoke: authored Rescue dispatch → due saved report → acknowledgment → unique civilian → reload: OK')
+// Supplies uses an explicit lead and two escorts selected through its own controls.
+const lead = root.els.find(e => e.dataset.act === 'quest-lead')?.dataset.id
+if (!lead) throw new Error('no Supplies lead selector')
+click('quest-lead', lead)
+const escorts = [...new Set(root.els.filter(e => e.dataset.act === 'party').map(e => e.dataset.id))].filter(id => id !== lead).slice(0, 2)
+for (const id of escorts) click('party', id)
+click('send-quest', 'quest.recover-supplies')
+const sent = JSON.parse(store.get(key)).quests['quest.recover-supplies']
+if (sent.leadHeroId !== lead || sent.heroes.length !== 3 || !escorts.every(id => sent.heroes.includes(id))) throw new Error('Supplies staffing differs from the selected lead and escorts')
+click('title'); click('slot-continue'); has('In flight'); has('Recover Supplies')
+console.log('smoke: Supplies explicit lead + two escorts → saved dispatch → reload: OK')

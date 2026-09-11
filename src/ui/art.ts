@@ -8,7 +8,7 @@
 // with band sprites keyed to a building's LEVEL, never its nodes; a building's
 // interior behind its tree.
 
-import type { CampaignState, Territory } from '../core/campaign.js'
+import type { CampaignState, Territory, Hero } from '../core/campaign.js'
 import { TERRITORIES } from '../content/territories.js'
 
 export type ArtIndex = {
@@ -121,6 +121,7 @@ export function townSvg(c: CampaignState): string {
 export const interiorOf = (buildingId: string): string | null => ART?.data[ART.interiors[slugOf(buildingId)] ?? ''] ?? null
 export const cardOf = (buildingId: string): string | null => ART?.data[ART.cards[slugOf(buildingId)] ?? ''] ?? null
 export const portraitOf = (heroId: string): string | null => ART?.data[ART.heroes?.[heroId] ?? ''] ?? null
+export const portraitIdOf = (hero: Pick<Hero, 'id' | 'templateId'>): string => hero.templateId ?? hero.id
 export const cardBackOf = (): string | null => ART?.data[ART.cardBack ?? ''] ?? null
 export const bannerOf = (slug: string): string | null => ART?.data[ART.banners?.[slug] ?? ''] ?? null
 

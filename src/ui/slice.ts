@@ -46,8 +46,9 @@ import { PROLOGUE } from '../content/prologue.js'
 import { purchasesFreeOf, articleSlotsOf, articlesHeldOf, whyNotPurchase, performPurchase, hasUnlock } from '../core/charter.js'
 import { UNLOCKS, FIRST_ARTICLE_AT } from '../content/charter.js'
 import { UNITS } from '../engine.js'
-import { listQuestOffers, whyNotSendQuest, performSendQuest } from '../core/quests.js'
+import { listQuestOffers, performSendQuest, performAcknowledgeQuest } from '../core/quests.js'
 import { questRowOf } from '../content/quests.js'
+import { questCards, questReportScreen } from './quests.js'
 import { absenceOf } from '../core/absence.js'
 import { ART, worldMapSvg, townSvg, interiorOf, cardOf, fontFaces } from './art.js'
 import { loadGameScreen, readSlot, writeSlot, clearSlot, migrateLegacySave } from './loadgame.js'
@@ -73,6 +74,7 @@ type App = {
   roster: boolean
   /** The Quest Stage's party being assembled, before Send. */
   party: string[]
+  questLead: string | null
   /** The picture over the Week: the world map, or the Sanctuary. */
   view: 'map' | 'town'
   /** The Equip screen's item in hand — a stash item clicked, waiting for a slot. A view choice, never saved. */
@@ -84,7 +86,7 @@ type App = {
   /** The copied screens run a ceremony on the DOM once; a re-render mid-ceremony would restart it. The key names the instance mounted. */
   mounted: { key: string; cleanup: Cleanup } | null
 }
-const app: App = { ctx: null, draft: null, draftReckoning: null, status: '', error: false, slot: null, confirmEnd: null, roster: false, party: [], view: 'map', picked: null, lastBattle: null, levelHero: null, mounted: null }
+const app: App = { ctx: null, draft: null, draftReckoning: null, status: '', error: false, slot: null, confirmEnd: null, roster: false, party: [], questLead: null, view: 'map', picked: null, lastBattle: null, levelHero: null, mounted: null }
 
 // ── persistence ─────────────────────────────────────────────────────────────
 function persist(): void {
@@ -188,6 +190,7 @@ function screen(c: CampaignState): string {
   if (c.ended) return endedScreen(c)
   switch (c.cursor.step) {
     case 'draft': return draftScreen(c)
+    case 'questReport': return questReportScreen(c)
     case 'prep': return prepScreen(c)
     case 'battle': return c.cursor.battle?.resultSet ? tallyScreen(c) : battleScreen(c)
     case 'open': return worldScreen(c)
@@ -289,14 +292,13 @@ function worldScreen(c: CampaignState): string {
     const inFlight = Object.values(c.quests).sort((a, b) => a.id.localeCompare(b.id))
     const offers = listQuestOffers(c)
     app.party = app.party.filter((h) => free.includes(h))
-    body += `<h3>Quest — a party leaves for N Weeks and resolves without you</h3>
-      ${offers.map((id) => { const q = questRowOf(id); const why = whyNotSendQuest(c, id, app.party); return `<div class="card" style="margin-bottom:8px"><b>${esc(q.name)}</b> <span class="meta">${esc(q.does)} · ${q.weeks} Weeks · needs ${esc(q.requires.map((r) => `${r.min} × ${r.accepts}`).join(', '))} · pays ${esc(Object.entries(q.reward).map(([k, v]) => `${v} ${k.replace('currency.', '')}`).join(', '))} · ${q.odds}% comes home</span>
-        <p>${free.map((h) => `<button class="${app.party.includes(h) ? 'primary' : 'quiet'}" data-act="party" data-id="${esc(h)}">${esc(c.roster[h]!.name)}</button>`).join(' ') || '<span class="meta">nobody is free</span>'}</p>
-        <div class="bar"><span class="meta">${why ? esc(why) : `${app.party.length} will go`}</span><span class="sp"></span><button class="primary" data-act="send-quest" data-id="${esc(id)}" ${why ? 'disabled' : ''}>Send</button></div></div>` }).join('') || '<p class="meta">no quest is posted — the one there is is in flight</p>'}
+    if (app.questLead && !app.party.includes(app.questLead)) app.questLead = null
+    body += `<h3>Quests — return after the due Field battles</h3>
+      ${questCards(c, offers, free, app.party, app.questLead)}
       ${inFlight.length ? `<h3>In flight</h3><table>${inFlight.map((q) => `<tr><td><b>${esc(questRowOf(q.id).name)}</b></td><td>${esc(q.heroes.map((h) => c.roster[h]?.name ?? h).join(', '))}</td><td class="n">${q.weeksLeft} Week${q.weeksLeft === 1 ? '' : 's'} left</td></tr>`).join('')}</table>` : ''}`
   }
   if (!body) {
-    body += `<h3>${esc(row.title)}</h3><p>${esc(row.does)}</p><p class="meta">Due reports have resolved. Continue to the City.</p>`
+    body += `<h3>${esc(row.title)}</h3><p>${esc(row.does)}</p><p class="meta">Continue to resolve remaining due quests or enter City.</p>`
   }
   const next = (c.cursor.fieldStep ? FIELD_STEPS[FIELD_STEPS.findIndex((s) => s.key === c.cursor.fieldStep) + 1] : undefined) ?? STAGES[at + 1]
   const attacked = row.targets === 'rolled' && offers.length ? offers[0]! : null
@@ -495,7 +497,9 @@ function wire(root: HTMLElement): void {
         case 'roster': app.roster = !app.roster; return render()
         case 'view': app.view = id as 'map' | 'town'; return render()
         case 'party': app.party = app.party.includes(id!) ? app.party.filter((h) => h !== id) : [...app.party, id!]; return render()
-        case 'send-quest': return act(() => { performSendQuest(app.ctx!, id!, app.party, 'slice'); app.party = [] })
+        case 'quest-lead': app.questLead = id!; if (!app.party.includes(id!)) app.party.push(id!); return render()
+        case 'quest-report': return act(() => performAcknowledgeQuest(app.ctx!, 'slice'))
+        case 'send-quest': return act(() => { performSendQuest(app.ctx!, id!, app.party, 'slice', questRowOf(id!).staffing.kind === 'hero-led' ? app.questLead : null); app.party = []; app.questLead = null })
         case 'draft': return act(() => performDraft(app.ctx!, id!, 'slice'))
         case 'restart': return act(() => { app.ctx = makeCtx(performEndCampaign(app.ctx!, 'slice')) })   // a fresh Campaign in the same slot
         case 'purchase': return act(() => performPurchase(app.ctx!, id!, 'slice'))

@@ -17,14 +17,15 @@ export type EngagementKindRow = {
   readonly structuresApply: boolean
   /** "fixed — whoever you sent": canDeploy is false, the roster was committed Weeks ago. */
   readonly rosterFixed: boolean
+  readonly rewards: 'battle' | 'quest'
   readonly onLose: 'lose-territory' | 'nothing' | 'lose-heroes'
   readonly onWin: 'keep-territory' | 'claim-territory' | 'quest-reward'
 }
 
 const RAW_ENGAGEMENT_KINDS: readonly EngagementKindRow[] = [
-  { id: 'engagement.defend', stage: 'stage.field', structuresApply: true, rosterFixed: false, onLose: 'lose-territory', onWin: 'keep-territory' },
-  { id: 'engagement.conquer', stage: 'stage.field', structuresApply: false, rosterFixed: false, onLose: 'nothing', onWin: 'claim-territory' },
-  { id: 'engagement.quest', stage: 'stage.field', structuresApply: false, rosterFixed: true, onLose: 'lose-heroes', onWin: 'quest-reward' },
+  { id: 'engagement.defend', stage: 'stage.field', structuresApply: true, rosterFixed: false, rewards: 'battle', onLose: 'lose-territory', onWin: 'keep-territory' },
+  { id: 'engagement.conquer', stage: 'stage.field', structuresApply: false, rosterFixed: false, rewards: 'battle', onLose: 'nothing', onWin: 'claim-territory' },
+  { id: 'engagement.quest', stage: 'stage.field', structuresApply: false, rosterFixed: true, rewards: 'quest', onLose: 'lose-heroes', onWin: 'quest-reward' },
 ]
 
 export const ENGAGEMENT_KINDS: readonly EngagementKindRow[] = omitDisabled(RAW_ENGAGEMENT_KINDS)

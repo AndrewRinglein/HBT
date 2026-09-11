@@ -18,7 +18,7 @@ import { itemOf, isShield, type ItemRow } from '../content/items.js'
 import { fieldedItemsOf } from '../core/loadout.js'
 import { progressOf } from '../core/seam.js'
 import { fieldedDef, type UnitDef } from '../engine.js'
-import { portraitOf } from './art.js'
+import { portraitIdOf, portraitOf } from './art.js'
 
 const esc = (s: string) => s.replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]!))
 
@@ -156,7 +156,7 @@ export function equipScreen(c: CampaignState, heroIds: readonly string[], o: Equ
 function heroCard(c: CampaignState, heroId: string, picked: string | null): string {
   const h = c.roster[heroId]!
   const l = loadoutOf(c, heroId)
-  const art = portraitOf(heroId)
+  const art = portraitOf(portraitIdOf(h))
   const off = (id: string) => canUnequip(c, heroId, id) ? `<button class="quiet x" data-act="unequip" data-id="${esc(heroId)}" data-item="${esc(id)}" title="off, into the stash">×</button>` : ''
   const slot = (key: string, label: string, id: string | null, note = '') => {
     const drop = picked ? displaceFor(c, heroId, picked, key) : undefined

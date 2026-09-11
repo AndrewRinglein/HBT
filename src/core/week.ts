@@ -12,7 +12,7 @@ import { tickAssignments } from './assignments.js'
 import { performResolveMend } from './mend.js'
 import { performAdvanceOpening } from './opening.js'
 import { closeEquipSession } from './equip-session.js'
-import { tickQuests, tickQuestClocks } from './quests.js'
+import { tickQuests, tickQuestClocks, listDueQuests } from './quests.js'
 export { listConquerable } from './map.js'
 
 // ── reading ─────────────────────────────────────────────────────────────────
@@ -93,6 +93,10 @@ export function endWeek(ctx: Ctx, causeId: string): void {
 export function performAdvance(ctx: Ctx, causeId: string): void {
   if (!canAdvance(ctx.campaign)) throw new Error(`performAdvance refused: the cursor is at step '${ctx.campaign.cursor.step}' — finish the Engagement first`)
   if (ctx.campaign.ended) throw new Error('performAdvance refused: the Campaign has ended')
+  if (ctx.campaign.cursor.fieldStep === 'quests' && listDueQuests(ctx.campaign).length) {
+    tickQuests(ctx, causeId)
+    return
+  }
   // leaving the Stage with the roster's equip session open commits it — "once you leave that screen, it's saved"
   if (ctx.campaign.cursor.equipSession?.where === 'roster') closeEquipSession(ctx, causeId)
   // Week 0 is the opening's: no Stages, just drafts and the five battles, until the Kingdom Territory is taken

@@ -11,7 +11,7 @@ import { STAGES } from '../src/content/stages.js'
 import { beginStage, beginWeek, performAdvance, tickWeek, canAdvance, listStageOffers, performChooseEngagement } from '../src/core/week.js'
 import { canCommit, commitmentOf, performCommit, performRelease } from '../src/core/assignments.js'
 import { canAssignLabour, performAssignLabour } from '../src/core/mend.js'
-import { listQuestOffers, performSendQuest } from '../src/core/quests.js'
+import { listQuestOffers, performSendQuest, performAcknowledgeQuest } from '../src/core/quests.js'
 import { makeCtx, setCursor } from '../src/core/mutate.js'
 import { saveOf, campaignOf } from '../src/core/campaign.js'
 
@@ -65,7 +65,8 @@ describe('V2 Week spine', () => {
     expect(commitmentOf(ctx.campaign, H, 'field')).toBe('onQuest')
     setCursor(ctx, { attack: null }, 'test')
     performAdvance(ctx, 'test')
-    expect(ctx.campaign.cursor).toMatchObject({ fieldStep: 'quests' })
+    expect(ctx.campaign.cursor).toMatchObject({ fieldStep: 'quests', step: 'questReport' })
+    performAcknowledgeQuest(ctx, 'test')
     expect(ctx.campaign.quests['quest.escort']).toBeUndefined()
     expect(ctx.campaign.purse['currency.faith']).toBeGreaterThan(faith)
     expect(commitmentOf(ctx.campaign, H, 'field')).toBe('free')
@@ -116,6 +117,9 @@ describe('V2 continuation and activity boundaries', () => {
     setCursor(ctx, { attack: null }, 'test')
     const copy = makeCtx(campaignOf(saveOf(ctx.campaign)))
     performAdvance(ctx, 'test'); performAdvance(copy, 'test')
+    expect(copy.campaign).toEqual(ctx.campaign)
+    expect(copy.campaign.cursor.step).toBe('questReport')
+    performAcknowledgeQuest(ctx, 'test'); performAcknowledgeQuest(copy, 'test')
     expect(copy.campaign).toEqual(ctx.campaign)
     const paid = { ...copy.campaign.purse }
     const after = makeCtx(campaignOf(saveOf(copy.campaign)))

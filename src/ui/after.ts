@@ -38,7 +38,7 @@ import { xpForLevel } from '../content/levels.js'
 import { woundNameOf } from '../content/wounds.js'
 import { itemOf } from '../content/items.js'
 import { VICTORY_QUOTES, DEFEAT_QUOTES, type QuoteBank } from '../content/generated/quotes.js'
-import { portraitOf, cardBackOf } from './art.js'
+import { portraitIdOf, portraitOf, cardBackOf } from './art.js'
 import { playSound, playMusic, stopMusic, isMuted, setMuted } from './sound.js'
 
 const esc = (s: string) => s.replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]!))
@@ -85,7 +85,8 @@ const face = (heroId: string) => { const a = portraitOf(heroId); return a ? `<im
 
 export function recapScreen(c: CampaignState, events: readonly KingdomEvent[], last: LastBattle | null): string {
   const e = c.cursor.engagement
-  const mine = last && last.engagementId === e?.id ? last : null
+  const saved = c.cursor.battle
+  const mine = last && last.engagementId === e?.id ? last : saved?.result && saved.reckoning && e ? { engagementId: e.id, result: saved.result, reckoning: saved.reckoning } : null
   const written = events.filter((ev) => ev.causeId === e?.id)
   const won = mine ? mine.reckoning.won : written.some((ev) => ev.type === 'engagement.resolved' && ev['won'] === true)
   const heroes = (e?.deployed ?? []).map((id) => c.roster[id]!)
@@ -93,18 +94,21 @@ export function recapScreen(c: CampaignState, events: readonly KingdomEvent[], l
   const outcome = outcomeOf(won, fates, mine?.result.turns ?? 25)
   const mvpId = mine?.reckoning.heroes.find((h) => h.mvp)?.heroId ?? (won ? heroes[0]?.id : heroes.find((h) => h.lifeState !== 'dead')?.id ?? heroes[0]?.id)
   const spot = mvpId ? c.roster[mvpId]! : null
-  const xp = written.filter((ev) => ev.type === 'xp.gained').reduce((s, ev) => s + (ev['amount'] as number), 0)
+  const xp = mine ? mine.reckoning.heroes.reduce((sum, h) => sum + h.xp, 0) : written.filter((ev) => ev.type === 'xp.gained').reduce((s, ev) => s + (ev['amount'] as number), 0)
+  const questReward = saved?.questReward
+  const questGains = questReward ? [...questReward.fixedXp.map(g => `${c.roster[g.heroId]!.name}: +${g.amount} quest XP`), ...questReward.grants.map(g => `${g.amount} ${g.currency.replace('currency.', '')}`)] : []
   const kills = mine ? mine.result.units.filter((u) => u.side === 'hero').reduce((s, u) => s + u.kills, 0) : 0
   const quote = spot ? quoteOf(won ? VICTORY_QUOTES : DEFEAT_QUOTES, spot, outcome, `${e?.id}:${spot.id}`) : ''
   const report = heroes.length === 0 ? [] : won && fates.every((f) => !f.dead && f.wound === 0)
     ? [`<div class="report-line decisive"><span class="report-icon">✦</span><span>Decisive Victory — No wounds sustained</span></div>`]
     : heroes.filter((h) => h.lifeState === 'dead' || h.wound > 0).map((h) => { const k = woundClass(h); return `<div class="report-line ${k === 'dead' ? 'dead-report' : k}"><span class="report-icon">${woundGlyph(k)}</span><span>${esc(h.name)} — ${k === 'dead' ? 'fell in battle' : esc(woundNameOf(h.wound))}</span></div>` })
-  const party = heroes.map((h) => { const k = woundClass(h); return `<div class="party-member"><div class="party-portrait ${k}">${face(h.id)}${woundGlyph(k) ? `<span class="wound-badge">${woundGlyph(k)}</span>` : ''}</div><div class="party-name">${esc(h.name)}</div></div>` }).join('')
+  if (questGains.length) report.push(`<div class="report-line">Quest reward — ${esc(questGains.join(' · '))}</div>`)
+  const party = heroes.map((h) => { const k = woundClass(h); return `<div class="party-member"><div class="party-portrait ${k}">${face(portraitIdOf(h))}${woundGlyph(k) ? `<span class="wound-badge">${woundGlyph(k)}</span>` : ''}</div><div class="party-name">${esc(h.name)}</div></div>` }).join('')
   return `<div class="hx recap ${won ? '' : 'defeat'}" data-outcome="${outcome}" data-won="${won}">${muteButton()}
     <div class="interstitial-overlay ${won ? 'victory-bg' : 'defeat-bg'}"><div class="interstitial-card ${won ? '' : 'defeat'}">
       <div class="result-title ${won ? 'victory-' + outcome : 'defeat'}" id="rc-title">${TITLE[outcome]}</div>
       ${won ? `<div class="party-row" id="rc-party">${party}</div>` : ''}
-      <div class="spotlight-container" id="rc-spot"><div class="spotlight-frame ${won ? 'victory' : 'defeat'}${outcome === 'decisive' ? ' decisive-glow' : ''}">${spot ? face(spot.id) : ''}</div></div>
+      <div class="spotlight-container" id="rc-spot"><div class="spotlight-frame ${won ? 'victory' : 'defeat'}${outcome === 'decisive' ? ' decisive-glow' : ''}">${spot ? face(portraitIdOf(spot)) : ''}</div></div>
       <div class="hero-quote" id="rc-quote"><div class="quote-text">"${esc(quote)}"</div><div class="quote-attribution">— ${esc(spot?.name ?? '')}${spot ? ', ' + esc(spot.classes[0]?.replace('class.', '') ?? '') : ''}${!won && spot?.lifeState === 'dead' ? ' (last words)' : ''}</div></div>
       ${won ? `<div class="stats-block" id="rc-stats">
         <div class="stats-line"><span class="stat-label">Slain:</span> <span class="stat-value">${kills}</span></div>
@@ -175,12 +179,13 @@ function xpOf(c: CampaignState, heroId: string, gained: number) {
 
 export function rewardsScreen(c: CampaignState, events: readonly KingdomEvent[], last: LastBattle | null): string {
   const e = c.cursor.engagement
-  const mine = last && last.engagementId === e?.id ? last : null
+  const saved = c.cursor.battle
+  const mine = last && last.engagementId === e?.id ? last : saved?.result && saved.reckoning && e ? { engagementId: e.id, result: saved.result, reckoning: saved.reckoning } : null
   const written = events.filter((ev) => ev.causeId === e?.id)
-  const gained = (id: string) => written.filter((ev) => ev.type === 'xp.gained' && ev['heroId'] === id).reduce((s, ev) => s + (ev['amount'] as number), 0)
-  const won = mine ? mine.reckoning.won : written.some((ev) => ev.type === 'engagement.resolved' && ev['won'] === true)
+  const gained = (id: string) => mine ? (mine.reckoning.heroes.find(h => h.heroId === id)?.xp ?? 0) + (saved?.questReward?.fixedXp.find(h => h.heroId === id)?.amount ?? 0) : written.filter((ev) => ev.type === 'xp.gained' && ev['heroId'] === id).reduce((s, ev) => s + (ev['amount'] as number), 0)
+  const won = !e || (mine ? mine.reckoning.won : written.some((ev) => ev.type === 'engagement.resolved' && ev['won'] === true))
   const offers = listRewardOffers(c)
-  const heroes = (e?.deployed ?? []).map((id) => c.roster[id]!)
+  const heroes = (e?.deployed ?? listLevelUps(c)).map((id) => c.roster[id]!)
   const back = cardBackOf()
   const heroCards = heroes.map((h) => {
     const k = woundClass(h)
@@ -188,7 +193,7 @@ export function rewardsScreen(c: CampaignState, events: readonly KingdomEvent[],
     const t = mine?.result.units.find((u) => u.side === 'hero' && e!.deployed[u.index] === h.id)
     const r = mine?.reckoning.heroes.find((x) => x.heroId === h.id)
     const x = xpOf(c, h.id, g)
-    const art = portraitOf(h.id)
+    const art = portraitOf(portraitIdOf(h))
     return `<div class="hero-card ${k === 'healthy' ? '' : k}" data-hero="${esc(h.id)}" data-gained="${g}" data-kills="${t?.kills ?? 0}" data-mvp="${r?.mvp ? 1 : 0}">
       <div class="hero-portrait" ${art ? `style="background-image:url(${art})"` : ''}></div>
       <div class="hero-name">${esc(h.name)}</div><div class="hero-class">${esc(h.classes.map((x) => x.replace('class.', '')).join(', '))} · L${h.level}</div>
@@ -212,8 +217,8 @@ export function rewardsScreen(c: CampaignState, events: readonly KingdomEvent[],
   }).join('')
   return `<div class="hx rewards" data-won="${won}" data-ceremony="${esc(e?.id ?? '')}">${muteButton()}
     <div class="rewards-container ${won ? '' : 'defeat'}" id="rw-container">
-      <h1 class="${won ? 'victory' : 'defeat'}">${won ? 'Victory!' : 'Defeat'}</h1>
-      <div class="subtitle">${won ? 'The spoils of battle' : 'The survivors regroup'}</div>
+      <h1 class="${won ? 'victory' : 'defeat'}">${!e ? 'Experience earned' : won ? 'Victory!' : 'Defeat'}</h1>
+      <div class="subtitle">${!e ? 'Choose earned levels, or continue to the remaining Field activities.' : won ? 'The spoils of battle' : 'The survivors regroup'}</div>
       <div class="heroes-section"><h3>Your Heroes</h3><div class="hero-cards-row" id="rw-heroes">${heroCards || '<div class="subtitle">nobody was deployed</div>'}</div></div>
       ${offers.length ? `<div class="rewards-section" id="rw-section"><h3>Rewards</h3><div class="reward-subtitle">Pick one of three. The two you leave are burned.</div>
         <div class="reveal-all-link" id="rw-reveal"><a data-act="reveal-all">Reveal all</a></div>
@@ -334,7 +339,7 @@ export function levelUpScreen(c: CampaignState, heroId: string, from: 'rewards' 
   const h = c.roster[heroId]
   if (!h) return `<div class="hx levelup"><div class="ascension-chamber"><div class="title-area"><h1 class="main-title">No such hero</h1></div></div></div>`
   const v = viewLevelUp(c, heroId)
-  const art = portraitOf(heroId)
+  const art = portraitOf(portraitIdOf(h))
   const grants = Object.entries(v.row.grants)
   const bonuses = [...grants.map(([k, n]) => `<div class="bonus-item ${k === 'itemSlots' ? 'slot' : ''}"><span class="bonus-text">${sign(n)} ${esc(label(k))}</span></div>`), ...(v.needsSpecialty ? ['<div class="bonus-item specialty"><span class="bonus-text">Choose a specialty</span></div>'] : []), ...(v.pickOptions ? ['<div class="bonus-item"><span class="bonus-text">Pick one of ' + v.pickOptions.length + '</span></div>'] : [])]
   const specialtyCards = v.specialtyOffers.map((s) => `<div class="choice-card" data-act="choose-specialty" data-id="${esc(s.id)}"><div class="choice-name">${esc(s.name)}</div><div class="choice-description">${esc(s.intent)}</div><div class="choice-stats">${Object.entries(s.statModifiers).map(([k, n]) => `<span class="stat-bonus ${n < 0 ? 'neg' : ''}">${sign(n)} ${esc(label(k))}</span>`).join('')}</div></div>`).join('')

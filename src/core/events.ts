@@ -21,7 +21,7 @@ export const KINGDOM_EVENTS = [
   'territory.claimed', 'territory.lost',
   'hero.recruited', 'hero.rerolled', 'hero.committed', 'hero.released', 'hero.leveled', 'hero.wounded',
   'item.bought', 'item.equipped',
-  'quest.sent', 'quest.resolved',
+  'quest.sent', 'quest.prepared', 'quest.resolved',
   'engagement.offered', 'engagement.declined',
   'reward.offered', 'reward.taken',
   'legacy.unlocked',

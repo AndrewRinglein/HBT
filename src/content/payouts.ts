@@ -30,5 +30,4 @@ export const PAYOUTS: readonly PayoutRow[] = [
   { engagementKind: 'engagement.conquer', currency: 'currency.salvage', amount: SWITCHES.salvagePerConquest, firstClaimOnly: true, source: 'SKELETON-SETTLED.md:104,108 · SWITCHES.md salvage.perConquest' },
   ...battle('engagement.conquer'),
   ...battle('engagement.defend'),
-  ...battle('engagement.quest'),
 ]

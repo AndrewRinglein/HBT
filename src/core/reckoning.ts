@@ -45,6 +45,7 @@ import { PAYOUTS } from '../content/payouts.js'
 import { SWITCHES } from '../content/switches.js'
 import { CUP_IDS } from '../content/cups.js'
 import { groupOf } from '../content/classes.js'
+import { resolveBattleQuest, performCompleteQuest } from './quests.js'
 
 export type HeroReckoning = {
   heroId: HeroId
@@ -73,6 +74,7 @@ export type Reckoning = {
 
 export function resolveReckoning(campaign: CampaignState, engagement: Engagement, result: EngagementResult): Reckoning {
   const kind = engagementKindOf(engagement.kind)
+  resolveBattleQuest(campaign, engagement)
   const won = result.outcome === 'heroClear'
   const speed = Math.max(0, 15 - result.enemyPhases)
 
@@ -112,7 +114,7 @@ export function resolveReckoning(campaign: CampaignState, engagement: Engagement
   // a lost defence names the Territory either way; the writer's performLose
   // knows the Kingdom Territory cannot be lost and charges its stakes instead
   const lose = !won && kind.onLose === 'lose-territory' && territory ? territory.id : null
-  const grants: Grant[] = won
+  const grants: Grant[] = won && kind.rewards === 'battle'
     ? PAYOUTS.filter((p) => p.engagementKind === engagement.kind && !(p.firstClaimOnly && (!territory || territory.claimedOnce)))
         .map((p) => ({ currency: p.currency, amount: p.amount }))
     : []
@@ -139,6 +141,10 @@ export function applyBattleResult(ctx: Ctx, engagement: Engagement, result: Enga
   validateResult(result, { heroes: engagement.deployed.length, enemies: engagement.enemies.length, id: engagement.id })
   if (reckoning.engagementId !== engagement.id) throw new Error(`applyBattleResult refused: the Reckoning is for '${reckoning.engagementId}', not '${engagement.id}'`)
   const named = new Set(reckoning.heroes.map((h) => h.heroId))
+  if (named.size !== reckoning.heroes.length) throw new Error('applyBattleResult refused: duplicate Reckoning hero')
+  const kind = engagementKindOf(engagement.kind)
+  const quest = resolveBattleQuest(c, engagement)
+  if (quest && (reckoning.won !== (result.outcome === 'heroClear') || reckoning.grants.length || reckoning.claim || reckoning.lose)) throw new Error('quest battle outcome or payout differs from its quest-owned reward policy')
   for (const heroId of engagement.deployed) if (!named.has(heroId)) throw new Error(`applyBattleResult refused: the Reckoning says nothing about deployed hero '${heroId}'`)
   for (const h of reckoning.heroes) {
     if (!engagement.deployed.includes(h.heroId)) throw new Error(`applyBattleResult refused: the Reckoning names '${h.heroId}', who was not deployed`)
@@ -163,8 +169,10 @@ export function applyBattleResult(ctx: Ctx, engagement: Engagement, result: Enga
   if (reckoning.lose) performLose(ctx, reckoning.lose, cause)
   for (const g of reckoning.grants) if (g.amount > 0) applyGrant(ctx, g.currency, g.amount, cause)
   // a won battle earns its draft — three drawn on cup.reward, keyed by the Engagement
-  setRewardOffer(ctx, reckoning.won ? resolveRewardDraw(c, engagement.id) : null, cause)
-  setCursor(ctx, { step: 'reckoning', prepStep: null, battle: null, fought: c.cursor.fought + 1 }, cause)
+  const questReward = quest ? performCompleteQuest(ctx, quest, result.outcome === 'heroClear', cause) : null
+  setRewardOffer(ctx, reckoning.won && kind.rewards === 'battle' ? resolveRewardDraw(c, engagement.id) : null, cause)
+  // Keep a quest tally in the save so its recap remains truthful after reload.
+  setCursor(ctx, { step: 'reckoning', prepStep: null, battle: questReward ? { resultSet: true, result, reckoning, questReward } : null, fought: c.cursor.fought + 1 }, cause)
   // the opening: the next battle is owed — or, lost before the Kingdom Territory, the run is over
   if (engagement.prologue !== undefined) performResolvePrologue(ctx, reckoning.won, cause)
 }

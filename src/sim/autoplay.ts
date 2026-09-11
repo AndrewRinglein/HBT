@@ -28,7 +28,9 @@ import { listShopItems, canBuyItem, performBuyItem, canEquip, performEquip } fro
 import { listDraftOffers, performDraft } from '../core/opening.js'
 import { UNLOCKS } from '../content/charter.js'
 import { canPurchase, performPurchase } from '../core/charter.js'
-import { listQuestOffers, canSendQuest, performSendQuest } from '../core/quests.js'
+import { listQuestOffers, canSendQuest, performSendQuest, performAcknowledgeQuest } from '../core/quests.js'
+import { questRowOf } from '../content/quests.js'
+import { groupOf } from '../content/classes.js'
 
 export type Decisions = {
   /** Which offered Territory to attack, or null to decline. Default: the first. */
@@ -56,7 +58,7 @@ export type Decisions = {
   /** Which Charter purchase to make, of those purchasable, or null. Default: the first in row order. */
   purchase: (campaign: CampaignState, purchasable: string[]) => string | null
   /** Which offered quest to send, and whom, or null. Default: the first quest, the last free hero — if four or more are free, so the field is not stripped. */
-  quest: (campaign: CampaignState, offers: string[], free: string[]) => { questId: string; heroIds: string[] } | null
+  quest: (campaign: CampaignState, offers: string[], free: string[]) => { questId: string; heroIds: string[]; leadHeroId?: string } | null
 }
 
 export const DEFAULTS: Decisions = {
@@ -83,7 +85,31 @@ export const DEFAULTS: Decisions = {
   buy: (_c, shelf) => shelf[0] ?? null,
   draft: (_c, offers) => offers[0]!,
   purchase: (_c, purchasable) => purchasable[0] ?? null,
-  quest: (_c, offers, free) => (offers[0] && free.length >= 4 ? { questId: offers[0], heroIds: [free[free.length - 1]!] } : null),
+  quest: (c, offers, free) => {
+    for (const id of offers) { const pick = defaultQuestParty(c, id, free); if (pick) return pick }
+    return null
+  },
+}
+
+/** Keep three available for the following Field; staffing still goes through the public validator. */
+export function defaultQuestParty(c: CampaignState, questId: string, free: string[]): ReturnType<Decisions['quest']> {
+  const row = questRowOf(questId)
+  if (row.staffing.kind === 'people') return free.length >= row.staffing.min + 3 ? { questId, heroIds: free.slice(-row.staffing.min) } : null
+  const leadHeroId = free.find(id => groupOf(c.roster[id]!.classes) === 'hero')
+  if (!leadHeroId || free.length < 4) return null
+  const escorts = free.filter(id => id !== leadHeroId).slice(0, Math.min(row.staffing.maxEscorts, free.length - 4))
+  return { questId, heroIds: [leadHeroId, ...escorts], leadHeroId }
+}
+
+function playLevelUps(ctx: Ctx, d: Decisions, causeId: string): void {
+  for (const h of listLevelUps(ctx.campaign)) {
+    const v = viewLevelUp(ctx.campaign, h), choice: { specialtyId?: string; pick?: number } = {}
+    const sp = v.needsSpecialty ? d.specialty(ctx.campaign, h, v.specialtyOffers.map(s => s.id)) : undefined
+    if (sp) choice.specialtyId = sp
+    if (v.pickOptions) choice.pick = d.levelPick(ctx.campaign, h, v.pickOptions.length)
+    performLevelUp(ctx, h, causeId, choice)
+  }
+  performLeaveLevelUp(ctx, causeId)
 }
 
 /** Play the Engagement on the cursor through prep, the panel, the writer and out. */
@@ -125,6 +151,8 @@ export function playEngagement(ctx: Ctx, d: Decisions, causeId: string): void {
 export function playStage(ctx: Ctx, d: Decisions, causeId: string): void {
   const c = ctx.campaign
   if (c.ended) throw new Error(`playStage: the Campaign ended in week ${c.ended.week} — ${c.ended.reason}`)
+  if (c.cursor.step === 'questReport') performAcknowledgeQuest(ctx, causeId)
+  if (c.cursor.step === 'levelUp') playLevelUps(ctx, d, causeId)
   if (c.cursor.step === 'draft') performDraft(ctx, d.draft(c, listDraftOffers(c).map((h) => h.id)), causeId)
   if (c.cursor.step === 'prep') playEngagement(ctx, d, causeId)
   if (c.cursor.step === 'open') {
@@ -154,7 +182,7 @@ export function playStage(ctx: Ctx, d: Decisions, causeId: string): void {
     }
     if (canUseActivity(c, 'quests')) {
       const pick = d.quest(c, listQuestOffers(c), listAvailable(c, c.cursor.stage))
-      if (pick && canSendQuest(c, pick.questId, pick.heroIds)) performSendQuest(ctx, pick.questId, pick.heroIds, causeId)
+      if (pick && canSendQuest(c, pick.questId, pick.heroIds, pick.leadHeroId ?? null)) performSendQuest(ctx, pick.questId, pick.heroIds, causeId, pick.leadHeroId ?? null)
     }
     if (canUseActivity(c, 'chapel')) {
       for (const [heroId, key] of d.labours(c, listAvailable(c, c.cursor.stage))) if (canAssignLabour(c, heroId, key)) performAssignLabour(ctx, heroId, key, causeId)
