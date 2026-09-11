@@ -15,3 +15,8 @@ gate: plumbing.game-builder-batches   [land]
   PASS  naming — new content ids use declared kinds
   PASS  naming — no banned words invented
   SKIP  kill switch — exemption taken  — Content disablement cannot remove an offline ledger rendering branch. The pre-fix renderer fails three isolated CLI fixtures; restoring its old batch/date handling reproduces those failures.
+
+⛓  IRON GAUNTLET: NOT PASSED — 1 flag(s) warned; 2 exemption(s) taken. The landing stands; the seal is withheld.
+
+LANDED as e5b79a5  (flagged for review)
+
