@@ -1,0 +1,123 @@
+
+> hobat-content@1.0.0 test
+> node --test test/*.test.mjs
+
+✔ compiler preserves movement through all TEST action families and authored movement (172.9907ms)
+✔ compiler preserves primary through all TEST action families and authored movement (145.4374ms)
+✔ compiler preserves either through all TEST action families and authored movement (144.9726ms)
+✔ authored movement preserves free without weakening slot transport (149.4543ms)
+✔ authored movement rejects a nonboolean free flag (95.0683ms)
+✔ compiler rejects invalid attacks slot before producing output (126.395ms)
+✔ compiler rejects invalid abilities slot before producing output (124.2317ms)
+✔ compiler rejects invalid moves slot before producing output (132.6267ms)
+✔ compiler rejects invalid settled slot before producing output (98.0489ms)
+✔ compiler publishes both actual TEST encounters with map dimensions intact (174.2929ms)
+✔ actual compiler transports shipping props and both flat TEST prop variants (177.1317ms)
+✖ assembler rejects authored reserved prop IDs before replacing outputs (127.5792ms)
+✔ compiler rejects authored reserved prop IDs before replacing outputs (156.0763ms)
+✔ assembler accepts 20x10 map and encounter (131.6ms)
+✔ compiler transports 20x10 shipping map, TEST map and encounter (176.8226ms)
+✔ assembler accepts 40x40 map and encounter (135.1446ms)
+✔ compiler transports 40x40 shipping map, TEST map and encounter (173.663ms)
+✔ assembler rejects malformed map {"id":["map.dimension-probe"]} (122.2602ms)
+✔ compiler rejects malformed map {"id":["map.dimension-probe"]} (149.8935ms)
+✔ assembler rejects malformed map {"name":""} (119.1095ms)
+✔ compiler rejects malformed map {"name":""} (152.6658ms)
+✔ assembler rejects malformed map {"name":null} (134.7853ms)
+✔ compiler rejects malformed map {"name":null} (152.9571ms)
+✔ assembler rejects malformed map {"rows":[]} (114.9481ms)
+✔ compiler rejects malformed map {"rows":[]} (149.2186ms)
+✔ assembler rejects malformed map {"rows":[""]} (114.1986ms)
+✔ compiler rejects malformed map {"rows":[""]} (145.6257ms)
+✔ assembler rejects malformed map {"rows":[null]} (117.0993ms)
+✔ compiler rejects malformed map {"rows":[null]} (149.5663ms)
+✔ assembler rejects malformed map {"rows":[5]} (114.9847ms)
+✔ compiler rejects malformed map {"rows":[5]} (147.7146ms)
+✔ assembler rejects malformed map {"rows":[{"length":20}]} (113.3981ms)
+✔ compiler rejects malformed map {"rows":[{"length":20}]} (146.345ms)
+✔ assembler rejects malformed map {"rows":["..","."]} (118.014ms)
+✔ compiler rejects malformed map {"rows":["..","."]} (479.4247ms)
+✔ assembler rejects malformed map {"board":{"width":9007199254740992,"height":1}} (1317.4295ms)
+✔ compiler rejects malformed map {"board":{"width":9007199254740992,"height":1}} (158.6254ms)
+✔ assembler rejects malformed map {"board":null} (443.7121ms)
+✔ compiler rejects malformed map {"board":null} (147.6777ms)
+✔ assembler rejects malformed map {"format":"16x16"} (140.64ms)
+✔ compiler rejects malformed map {"format":"16x16"} (150.3075ms)
+✔ assembler rejects malformed map {"format":null} (115.5969ms)
+✔ compiler rejects malformed map {"format":null} (151.2561ms)
+✔ assembler rejects malformed map {"rows":["....................................................... (116.7136ms)
+✔ compiler rejects malformed map {"rows":["....................................................... (164.103ms)
+✔ assembler rejects malformed map {"deploy":{"hero":"top","enemy":"east"}} (117.6074ms)
+✔ compiler rejects malformed map {"deploy":{"hero":"top","enemy":"east"}} (153.0513ms)
+✔ assembler rejects malformed map {"deploy":{"hero":"west","enemy":"west"}} (119.3645ms)
+✔ compiler rejects malformed map {"deploy":{"hero":"west","enemy":"west"}} (154.1008ms)
+✔ assembler rejects malformed map {"deploy":{"hero":"west","enemy":"east"}} (116.115ms)
+✔ compiler rejects malformed map {"deploy":{"hero":"west","enemy":"east"}} (149.1771ms)
+✔ assembler rejects malformed map {"deploy":null} (114.3154ms)
+✔ compiler rejects malformed map {"deploy":null} (150.0815ms)
+✔ compiler accepts the exact10000-cell ceiling without allocating battle geometry (160.8706ms)
+✔ assembler rejects invalid encounter board or coordinates {"board":{"width":9007199254740992,"height":1}} (117.3818ms)
+✔ assembler rejects invalid encounter board or coordinates {"board":{"width":10001,"height":1}} (119.693ms)
+✔ assembler rejects invalid encounter board or coordinates {"board":{"width":20,"height":10}} (120.4703ms)
+✔ assembler rejects invalid encounter board or coordinates {"setup":[{"unit":"unit.zombie","at":{"col":0.5,"row":2}}]} (118.2268ms)
+✔ assembler rejects invalid encounter board or coordinates {"setup":[{"unit":"unit.zombie","at":{"col":"1","row":2}}]} (117.876ms)
+✔ assembler rejects invalid encounter board or coordinates {"paint":[{"layer":"terrain.burning","hexes":[0.5]}]} (293.8128ms)
+✔ compiler rejects invalid encounter board or coordinates {"board":{"width":9007199254740992,"height":1}} (588.3867ms)
+✔ compiler rejects invalid encounter board or coordinates {"board":{"width":10001,"height":1}} (348.276ms)
+✔ compiler rejects invalid encounter board or coordinates {"board":{"width":20,"height":10}} (135.6417ms)
+✔ compiler rejects invalid encounter board or coordinates {"setup":[{"unit":"unit.zombie","at":{"col":0.5,"row":2}}]} (133.5504ms)
+✔ compiler rejects invalid encounter board or coordinates {"setup":[{"unit":"unit.zombie","at":{"col":"1","row":2}}]} (144.2408ms)
+✔ compiler rejects invalid encounter board or coordinates {"paint":[{"layer":"terrain.burning","hexes":[0.5]}]} (136.4304ms)
+✔ flat map compiler transports authored props without discarding ground (1.6819ms)
+✔ rejects malformed static props [{"id":"prop.test","footprint":{"kind":"hex","hexes":[1,2]},"height":"high","material":4}] (0.3273ms)
+✔ rejects malformed static props [{"id":"prop.test","footprint":{"kind":"edge","hexes":[1]},"height":"high","material":2}] (0.1052ms)
+✔ rejects malformed static props [{"id":"prop.test","footprint":{"kind":"hex","hexes":[1,1]},"height":"high","material":2}] (0.0826ms)
+✔ rejects malformed static props [{"id":"prop.test","footprint":{"kind":"hex","hexes":[8]},"height":"high","material":2}] (0.0896ms)
+✔ rejects malformed static props [{"id":"prop.test","footprint":{"kind":"hex","hexes":[1,2]},"height":"high","material":2},{"id":"prop.test","footprint":{"kind":"hex","hexes":[1,2]},"height":"high","material":2}] (0.0837ms)
+✔ rejects unsupported prop authoring null (0.1093ms)
+✔ rejects unsupported prop authoring [{"id":"bare","footprint":{"kind":"hex","hexes":[1,2]},"height":"high","material":2}] (0.0629ms)
+✔ rejects unsupported prop authoring [{"id":"prop.obstacle.1","footprint":{"kind":"hex","hexes":[1,2]},"height":"high","material":2}] (0.0761ms)
+✔ rejects unsupported prop authoring [{"id":"prop.test","footprint":{"kind":"hex","hexes":[1,2]},"height":"low","material":2}] (0.1754ms)
+✔ rejects unsupported prop authoring [{"id":"prop.test","footprint":{"kind":"hex","hexes":[]},"height":"high","material":2}] (0.1178ms)
+✔ compiler detaches footprint arrays (0.173ms)
+✔ invalid assembly fails and preserves the last assembled content (912.8227ms)
+✔ dry publication builds and validates without changing live outputs (11729.6359ms)
+✔ dry publication rejects an artifact that the actual engine cannot load (8118.8456ms)
+✔ failed publication preserves every output, including the stamp (2151.1127ms)
+✔ dry publication rejects a successful no-op mkenginepack.mjs (8607.4945ms)
+✔ dry publication rejects a successful no-op mkcodexmd.mjs (9102.8062ms)
+✔ candidate rejects cohort hero without plain movement (8972.2491ms)
+✔ candidate rejects unknown badge on a non-default unit (8876.7304ms)
+✔ late replacement failure restores old bytes and removes newly created outputs (711.4392ms)
+✔ successful publication writes a candidate that can itself pass another dry run (16234.3398ms)
+ℹ tests 88
+ℹ suites 0
+ℹ pass 87
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 75501.3661
+
+✖ failing tests:
+
+test at test\authored-boards.test.mjs:56:39
+✖ assembler rejects authored reserved prop IDs before replacing outputs (127.5792ms)
+  AssertionError [ERR_ASSERTION]: The input did not match the regular expression /prop/i. Input:
+  
+  ''
+  
+      at TestContext.<anonymous> (file:///C:/Users/aring/Desktop/Heroes%20of%20Blight%20and%20Tragic/content/test/authored-boards.test.mjs:59:10)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1106:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:788:18)
+      at Test.postRun (node:internal/test_runner/test:1235:19)
+      at Test.run (node:internal/test_runner/test:1163:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:788:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: '',
+    expected: /prop/i,
+    operator: 'match',
+    diff: 'simple'
+  }

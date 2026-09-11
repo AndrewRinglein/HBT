@@ -1,6 +1,35 @@
 // V2 authored boards. Presets are labels, not the list of legal dimensions.
 export const MAX_BOARD_CELLS = 10000;
 export const FORMAT_OF = Object.freeze({ '8x8': 'duel', '16x8': 'dungeon', '16x16': 'standard', '24x24': 'horde' });
+export function validateProps(value, cells) {
+  const record = (v, keys) => {
+    if (!v || typeof v !== 'object' || Array.isArray(v) || ![Object.prototype, null].includes(Object.getPrototypeOf(v))) throw new Error('props: expected plain record');
+    for (const key of Reflect.ownKeys(v)) if (typeof key !== 'string' || !keys.includes(key) || !('value' in Object.getOwnPropertyDescriptor(v, key))) throw new Error('props: unsupported field or accessor');
+  };
+  const dense = (v, max) => {
+    if (!Array.isArray(v) || Object.getPrototypeOf(v) !== Array.prototype || v.length > max || Reflect.ownKeys(v).length !== v.length + 1) throw new Error('props: expected bounded dense array');
+    for (let i = 0; i < v.length; i++) if (!Object.getOwnPropertyDescriptor(v, String(i))?.hasOwnProperty('value')) throw new Error('props: array accessors or holes');
+  };
+  dense(value, MAX_BOARD_CELLS);
+  const ids = new Set(), out = []; let references = 0;
+  for (const p of value) {
+    record(p, ['id', 'footprint', 'height', 'material']);
+    if (typeof p.id !== 'string' || !/^prop\.[a-z0-9.-]+$/.test(p.id) || p.id.startsWith('prop.obstacle.') || ids.has(p.id)) throw new Error('props: invalid, duplicate or reserved ID');
+    ids.add(p.id);
+    if (p.height !== 'high' || ![1, 2, 3].includes(p.material)) throw new Error('props: unsupported height or material');
+    record(p.footprint, ['kind', 'hexes']);
+    if (p.footprint.kind !== 'hex') throw new Error('props: only full hex footprints are built');
+    dense(p.footprint.hexes, cells);
+    if (!p.footprint.hexes.length || (references += p.footprint.hexes.length) > MAX_BOARD_CELLS) throw new Error('props: empty or excessive footprint');
+    const seen = new Set();
+    for (const h of p.footprint.hexes) {
+      if (!Number.isSafeInteger(h) || h < 0 || h >= cells || seen.has(h)) throw new Error('props: invalid or repeated footprint hex');
+      seen.add(h);
+    }
+    out.push({ id: p.id, footprint: { kind: 'hex', hexes: [...p.footprint.hexes] }, height: 'high', material: p.material });
+  }
+  return out;
+}
 export function validBoard(board) {
   return board !== null && typeof board === 'object' && !Array.isArray(board)
     && Number.isSafeInteger(board.width) && board.width > 0 && board.width <= MAX_BOARD_CELLS
@@ -18,6 +47,10 @@ export function validateMap(row, testing = false) {
   const size = `${board.width}x${board.height}`;
   if ('format' in row && row.format !== size) throw new Error(`maps ${row.id}: format must match rows ${size}`);
   if (row.rows.some(r => !/^[.hfrRwxbp]+$/.test(r))) throw new Error(`maps ${row.id}: glyph outside MAP-01 legend`);
+  if (row.props !== undefined) {
+    const props = validateProps(row.props, board.width * board.height);
+    if (props.reduce((n, p) => n + p.footprint.hexes.length, 0) + row.rows.join('').split('x').length - 1 > MAX_BOARD_CELLS) throw new Error('props: total footprint references exceed limit');
+  }
   if ('deploy' in row) {
     const edges = ['west', 'east', 'north', 'south'];
     if (!row.deploy || !edges.includes(row.deploy.hero) || !edges.includes(row.deploy.enemy) || row.deploy.hero === row.deploy.enemy) throw new Error(`maps ${row.id}: deploy requires two distinct edges`);
@@ -32,7 +65,7 @@ export function compileMaps(rows, testing = false) {
   for (const row of rows) {
     const board = validateMap(row, testing);
     if (out[row.id]) throw new Error(`maps: duplicate ${row.id}`);
-    out[row.id] = { id: row.id, name: row.name, board, format: FORMAT_OF[`${board.width}x${board.height}`] ?? `${board.width}x${board.height}`, rows: row.rows, ...(row.deploy ? { deploy: row.deploy } : {}) };
+    out[row.id] = { id: row.id, name: row.name, board, format: FORMAT_OF[`${board.width}x${board.height}`] ?? `${board.width}x${board.height}`, rows: row.rows, ...(row.deploy ? { deploy: row.deploy } : {}), ...(row.props !== undefined ? { props: validateProps(row.props, board.width * board.height) } : {}) };
   }
   return out;
 }

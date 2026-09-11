@@ -1,0 +1,140 @@
+✖ flat map compiler transports authored props without discarding ground (1.4576ms)
+✖ rejects malformed static props [{"id":"prop.test","footprint":{"kind":"hex","hexes":[1,2]},"height":"high","material":4}] (0.2205ms)
+✖ rejects malformed static props [{"id":"prop.test","footprint":{"kind":"edge","hexes":[1]},"height":"high","material":2}] (0.5063ms)
+✖ rejects malformed static props [{"id":"prop.test","footprint":{"kind":"hex","hexes":[1,1]},"height":"high","material":2}] (0.0866ms)
+✖ rejects malformed static props [{"id":"prop.test","footprint":{"kind":"hex","hexes":[8]},"height":"high","material":2}] (0.0999ms)
+✖ rejects malformed static props [{"id":"prop.test","footprint":{"kind":"hex","hexes":[1,2]},"height":"high","material":2},{"id":"prop.test","footprint":{"kind":"hex","hexes":[1,2]},"height":"high","material":2}] (0.0792ms)
+ℹ tests 6
+ℹ suites 0
+ℹ pass 0
+ℹ fail 6
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 57.6992
+
+✖ failing tests:
+
+test at test\props.test.mjs:6:1
+✖ flat map compiler transports authored props without discarding ground (1.4576ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+  
+  + undefined
+  - [
+  -   {
+  -     footprint: {
+  -       hexes: [
+  -         1,
+  -         2
+  -       ],
+  -       kind: 'hex'
+  -     },
+  -     height: 'high',
+  -     id: 'prop.test',
+  -     material: 2
+  -   }
+  - ]
+  
+      at TestContext.<anonymous> (file:///C:/Users/aring/Desktop/Heroes%20of%20Blight%20and%20Tragic/content/test/props.test.mjs:8:10)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1106:25)
+      at Test.start (node:internal/test_runner/test:1003:17)
+      at startSubtestAfterBootstrap (node:internal/test_runner/harness:358:17) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: [ { id: 'prop.test', footprint: [Object], height: 'high', material: 2 } ],
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+
+test at test\props.test.mjs:11:3
+✖ rejects malformed static props [{"id":"prop.test","footprint":{"kind":"hex","hexes":[1,2]},"height":"high","material":4}] (0.2205ms)
+  AssertionError [ERR_ASSERTION]: Missing expected exception.
+      at TestContext.<anonymous> (file:///C:/Users/aring/Desktop/Heroes%20of%20Blight%20and%20Tragic/content/test/props.test.mjs:11:80)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1106:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:788:18)
+      at Test.postRun (node:internal/test_runner/test:1235:19)
+      at Test.run (node:internal/test_runner/test:1163:12)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:358:3) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: /prop/i,
+    operator: 'throws',
+    diff: 'simple'
+  }
+
+test at test\props.test.mjs:11:3
+✖ rejects malformed static props [{"id":"prop.test","footprint":{"kind":"edge","hexes":[1]},"height":"high","material":2}] (0.5063ms)
+  AssertionError [ERR_ASSERTION]: Missing expected exception.
+      at TestContext.<anonymous> (file:///C:/Users/aring/Desktop/Heroes%20of%20Blight%20and%20Tragic/content/test/props.test.mjs:11:80)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1106:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:788:18)
+      at Test.postRun (node:internal/test_runner/test:1235:19)
+      at Test.run (node:internal/test_runner/test:1163:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:788:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: /prop/i,
+    operator: 'throws',
+    diff: 'simple'
+  }
+
+test at test\props.test.mjs:11:3
+✖ rejects malformed static props [{"id":"prop.test","footprint":{"kind":"hex","hexes":[1,1]},"height":"high","material":2}] (0.0866ms)
+  AssertionError [ERR_ASSERTION]: Missing expected exception.
+      at TestContext.<anonymous> (file:///C:/Users/aring/Desktop/Heroes%20of%20Blight%20and%20Tragic/content/test/props.test.mjs:11:80)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1106:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:788:18)
+      at Test.postRun (node:internal/test_runner/test:1235:19)
+      at Test.run (node:internal/test_runner/test:1163:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:788:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: /prop/i,
+    operator: 'throws',
+    diff: 'simple'
+  }
+
+test at test\props.test.mjs:11:3
+✖ rejects malformed static props [{"id":"prop.test","footprint":{"kind":"hex","hexes":[8]},"height":"high","material":2}] (0.0999ms)
+  AssertionError [ERR_ASSERTION]: Missing expected exception.
+      at TestContext.<anonymous> (file:///C:/Users/aring/Desktop/Heroes%20of%20Blight%20and%20Tragic/content/test/props.test.mjs:11:80)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1106:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:788:18)
+      at Test.postRun (node:internal/test_runner/test:1235:19)
+      at Test.run (node:internal/test_runner/test:1163:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:788:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: /prop/i,
+    operator: 'throws',
+    diff: 'simple'
+  }
+
+test at test\props.test.mjs:11:3
+✖ rejects malformed static props [{"id":"prop.test","footprint":{"kind":"hex","hexes":[1,2]},"height":"high","material":2},{"id":"prop.test","footprint":{"kind":"hex","hexes":[1,2]},"height":"high","material":2}] (0.0792ms)
+  AssertionError [ERR_ASSERTION]: Missing expected exception.
+      at TestContext.<anonymous> (file:///C:/Users/aring/Desktop/Heroes%20of%20Blight%20and%20Tragic/content/test/props.test.mjs:11:80)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1106:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:788:18)
+      at Test.postRun (node:internal/test_runner/test:1235:19)
+      at Test.run (node:internal/test_runner/test:1163:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:788:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: /prop/i,
+    operator: 'throws',
+    diff: 'simple'
+  }

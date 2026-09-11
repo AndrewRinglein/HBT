@@ -73,4 +73,22 @@
       "........................................"
     ]
   }
+,
+  {
+    "id": "test.map.high-prop-single",
+    "name": "Single high prop TEST",
+    "note": "Technical canonical prop fixture: material 1 occupies one water hex; no visual acceptance.",
+    "rows": ["....................", "....................", "....................", "....................", "..........w.........", "....................", "....................", "....................", "....................", "...................."],
+    "props": [{ "id": "prop.test.single", "height": "high", "material": 1, "footprint": { "kind": "hex", "hexes": [90] } }]
+  },
+  {
+    "id": "test.map.high-prop-multi",
+    "name": "Multiple high footprints TEST",
+    "note": "Technical canonical props: material 2 spans three distinct ground cells; material 3 is separate. No visual acceptance.",
+    "rows": ["....................", "....................", "....................", "....................", ".........fwh........", "....................", "....................", "....................", "....................", "...................."],
+    "props": [
+      { "id": "prop.test.multi", "height": "high", "material": 2, "footprint": { "kind": "hex", "hexes": [89, 90, 91] } },
+      { "id": "prop.test.second", "height": "high", "material": 3, "footprint": { "kind": "hex", "hexes": [110] } }
+    ]
+  }
 ]

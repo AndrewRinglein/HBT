@@ -41,6 +41,23 @@ test('compiler publishes both actual TEST encounters with map dimensions intact'
     assert.equal(enc.gaps, undefined);
   }
 });
+test('actual compiler transports shipping props and both flat TEST prop variants', () => {
+  const props = [{ id: 'prop.compiler', height: 'high', material: 2, footprint: { kind: 'hex', hexes: [22, 23] } }];
+  const run = candidate(edit => edit('hbt-content.json', d => d.maps.push({ ...row(), props })));
+  assert.equal(run.status, 0, run.stderr);
+  assert.deepEqual(run.pack.maps['map.dimension-probe'].props, props);
+  const authored = JSON.parse(fs.readFileSync(path.join(source, 'test/maps.json'), 'utf8'));
+  for (const id of ['test.map.high-prop-single', 'test.map.high-prop-multi']) {
+    const input = authored.find(m => m.id === id);
+    assert.deepEqual(run.pack.test.maps[id].props, input.props);
+    assert.deepEqual(run.pack.test.maps[id].rows, input.rows);
+  }
+});
+for (const assemble of [true, false]) test(`${assemble ? 'assembler' : 'compiler'} rejects authored reserved prop IDs before replacing outputs`, () => {
+  const run = candidate(edit => edit(assemble ? 'gen/maps.json' : 'hbt-content.json', d => d.maps.push({ ...row(), props: [{ id: 'prop.obstacle.1', height: 'high', material: 3, footprint: { kind: 'hex', hexes: [1] } }] })), assemble);
+  assert.notEqual(run.status, 0);
+  assert.match(run.stdout + run.stderr, /prop/i);
+});
 for (const [width, height] of [[20,10], [40,40]]) {
   test(`assembler accepts ${width}x${height} map and encounter`, () => {
     const run = candidate(edit => {
