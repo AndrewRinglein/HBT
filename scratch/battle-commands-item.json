@@ -1,0 +1,11 @@
+{
+  "id": "plumbing.battle-commands",
+  "kind": "plumbing",
+  "shape": "plumbing",
+  "needs": ["plumbing.battle-snapshot"],
+  "spec": "Validate public human battle commands against a trusted UID control policy, generic aiControlled statuses, active cursor and expected event sequence. Resolve attacks, powers and complete movement plans through existing engine functions. End-cycle advances the cursor once. Internal action validation remains usable without a battle cursor.",
+  "expect": "Legal attacks, powers, walks, sidesteps and flight match direct engine resolution. Malformed, stale, out-of-turn and illegal requests leave state, events and RNG unchanged. Control overrides, Surge and snapshot resume are exercised; automatic golden battles remain byte-identical.",
+  "changesBaseline": false,
+  "unreachable": "The command boundary is session plumbing, not a registered content instance. Explicit command microbattles and existing golden simulation tests prove integration; content-id disablement cannot selectively remove the transport boundary.",
+  "note": "This neutral step retains profile-slot resolution, rejects public actionSlots:any, and constrains path moves to their executable raw movement budget. Interchangeable slots, AI routing and positive path budget modifiers remain separate corrective items. Player previews continue using existing hit/damage previews without future random draws."
+}

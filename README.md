@@ -70,3 +70,52 @@ Four passes, each through its own gate before the next began.
 | Highlands | 58 | 55% | 6.38 |
 
 Broken ground favours the heroes — ranged units gain accuracy and reach on it while the melee horde pays double to cross.
+
+## Human battle commands (V2 migration)
+
+`src/core/commands.ts` accepts commands against an already begun action cycle from
+`advanceBattle(ctx)`. The host supplies a trusted `{ humanUnitUids: number[] }`
+policy separately from input. `controllerOf(ctx, actor, policy)` returns `human`
+or `ai`; any positive status declaring `aiControlled` overrides human ownership.
+An actor is the current unit array index; the policy uses stable unit UIDs.
+
+```ts
+const policy = { humanUnitUids: [ctx.state.units[0]!.uid] }
+const next = advanceBattle(ctx)
+if (next.kind === 'acting' && controllerOf(ctx, next.actor, policy) === 'human') {
+  const result = executeBattleCommand(ctx, policy, {
+    kind: 'action', actor: next.actor, expectedSeq: ctx.state.seq,
+    actionId: chosenActionId, target: chosenTargetId,
+  })
+  // result is { ok: true } or { ok: false, reason: string }.
+}
+```
+
+Movement uses `destination` (a hex ID) instead of `target`; the engine computes
+and validates the whole path. A legal move may still be interrupted by combat.
+End the cycle with `{ kind: 'end-cycle', actor, expectedSeq: ctx.state.seq }`,
+then call `advanceBattle` for the next human/AI cycle, including Surge. A winning
+action or an actor falling during its action closes its cycle automatically.
+The host runs AI cycles with the existing `runActivation` and
+`completeActionCycle` calls. `runBattle` remains the fully automatic driver.
+
+Commands require the event sequence displayed by the UI, so a duplicate/stale
+click is rejected. Invalid requests change neither state, events, cursor nor
+random draws. `validateBattleCommand` checks the same legality without executing;
+display numbers through the existing attack/power previews, never by showing
+future random draws. `validateAction` and `executeAction` are internal adapters
+without session ownership or cursor checks, intended for trusted engine callers.
+
+This migration step supports profile slots: movement before a primary, either
+skippable, and authored free actions retain their slot behavior. Commands reject
+`actionSlots: 'any'` until interchangeable-slot execution lands. Positive path
+`budgetMod` currently exceeds what the legacy walker can spend; commands allow
+only destinations within its executable raw budget. Neither limitation changes
+automatic AI decisions; the corresponding corrections are separate work items.
+The adapter also reads existing `blocksMovement` and `forcesTarget` status
+properties for displacement and hostile target commands. Root leaves zero-step
+riders legal; Taunt leaves friendly powers legal. Direct legacy AI helpers do
+not yet share this complete adapter, so migrating their call sites remains the
+next step rather than a claim of complete AI/human legality parity today.
+After `restoreBattle`, supply the trusted control policy again and construct
+fresh commands from the restored event sequence.
