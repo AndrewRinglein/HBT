@@ -385,6 +385,16 @@
     "note": "fix.bleed-magnitude's variant source: the test zombie PLUS the gash rider — a delta over the cohort's zombie, fielded only by showcase.gash-variant."
   }
   ,{
+    "id": "test-surge-labored", "from": "test-air-mage", "name": "Labored flier (TEST)",
+    "set": { "movement": 5, "surge": 10 }, "triggers": [], "abilities": [], "moves": ["power.flight-labored"],
+    "note": "Real flight-ladder source for the Surge movement-refresh probe."
+  },
+  {
+    "id": "test-surge-swift", "from": "test-air-mage", "name": "Swift flier (TEST)",
+    "set": { "movement": 5, "surge": 20 }, "triggers": [], "abilities": [], "moves": ["power.flight-swift"],
+    "note": "Second authored flight-ladder variant for the Surge movement-refresh probe."
+  },
+  {
     "id": "test-move-plus-one", "from": "test-oathblade", "name": "Short runner (TEST)",
     "set": { "movement": 1 }, "triggers": [], "abilities": [], "moves": ["power.test-move-plus-one"],
     "note": "Live fixture for the positive movement allowance."
