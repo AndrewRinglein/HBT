@@ -386,12 +386,12 @@
   }
   ,{
     "id": "test-ordered-double", "from": "test-air-mage", "name": "Packet caster (TEST)",
-    "set": { "magic": 0 }, "attacks": [], "abilities": ["power.test-ordered-double"],
+    "set": { "magic": 0 }, "triggers": [], "abilities": ["power.test-ordered-double"],
     "note": "fix.ordered-power-preview: registered live source for the two-packet preview probe."
   },
   {
     "id": "test-ordered-strip", "from": "test-air-mage", "name": "Strip caster (TEST)",
-    "set": { "magic": 0 }, "attacks": [], "abilities": ["power.test-ordered-strip"],
+    "set": { "magic": 0 }, "triggers": [], "abilities": ["power.test-ordered-strip"],
     "note": "fix.ordered-power-preview: registered live source for the ordered status-removal variant."
   }
 ]
