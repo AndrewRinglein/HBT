@@ -126,3 +126,24 @@ maps join the panel; the separate 535-battle projection proves preserved gamepla
 The generated Game Builder contains its generator's existing blank-line trailing
 spaces; no generated HTML is hand-edited to clean them. Committed checks, seal
 and separate batch audit are still pending at this source checkpoint.
+
+## Landed verification
+
+Engine source f195937 (the gate printed its pre-amend c00663c) passed the full
+landing gate and committed-tree verification: 1,269 tests, matching new control
+hashes, typecheck, both live variants and disabled-content failure checks. The
+automatic periodic audit at landing 120 and the separate
+`audit-all.mjs --label v2-authored-high-props` both passed, including the complete
+suite, golden controls and whole-core scan. Logs preserve both runs.
+
+The seal is **withheld**, not passed: effect measurement is explicitly unavailable
+for the two disabled TEST maps, plus two warning flags (candidate Flight ruling
+and historical test edits). The structured comparison returns unavailable rather
+than imputing zero. The 20 remaining complete map arms retain their numerical
+summaries; the independent 535-battle transition remains the gameplay/RNG proof.
+No exemptions were taken. Current count: 140/172 landed, 46 awaiting human review,
+13 sealed, 32 pending. Existing historical LOS/tooling seals are untouched.
+
+Viewer source 9f470f2 has passed its full candidate gate. Regenerating its fields,
+static data, 23 replay exports and published page from the clean audited engine
+is the remaining presentation publication step; it does not add engine rules.
