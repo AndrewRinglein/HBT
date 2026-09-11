@@ -1,0 +1,62 @@
+
+ RUN  v4.1.11 C:/Users/aring/Desktop/Heroes of Blight and Tragic/engine
+
+C:\Users\aring\Desktop\Heroes of Blight and Tragic\engine\src\content\maps.ts:134
+  if (!m) throw new Error(`unknown map '${mapId}' — maps are authored: content/gen/maps.json (shipping) or content/maps.ts (testing lane)`)
+          ^
+
+Error: unknown map 'test.map.journey-20x10' — maps are authored: content/gen/maps.json (shipping) or content/maps.ts (testing lane)
+    at mapDef (C:\Users\aring\Desktop\Heroes of Blight and Tragic\engine\src\content\maps.ts:134:17)
+    at <anonymous> (C:\Users\aring\Desktop\Heroes of Blight and Tragic\engine\src\content\scenarios.ts:34:43)
+    at Object.<anonymous> (C:\Users\aring\Desktop\Heroes of Blight and Tragic\engine\src\content\scenarios.ts:495:17)
+    at Module._compile (node:internal/modules/cjs/loader:1761:14)
+    at Object.transformer (C:\Users\aring\Desktop\Heroes of Blight and Tragic\engine\node_modules\tsx\dist\register-C557imBs.cjs:9:3619)
+    at Module.load (node:internal/modules/cjs/loader:1481:32)
+    at Module._load (node:internal/modules/cjs/loader:1300:12)
+    at TracingChannel.traceSync (node:diagnostics_channel:328:14)
+    at wrapModuleLoad (node:internal/modules/cjs/loader:245:24)
+    at Module.require (node:internal/modules/cjs/loader:1504:12)
+
+Node.js v24.12.0
+C:\Users\aring\Desktop\Heroes of Blight and Tragic\engine\src\content\maps.ts:134
+  if (!m) throw new Error(`unknown map '${mapId}' — maps are authored: content/gen/maps.json (shipping) or content/maps.ts (testing lane)`)
+          ^
+
+Error: unknown map 'test.map.authored-40x40' — maps are authored: content/gen/maps.json (shipping) or content/maps.ts (testing lane)
+    at mapDef (C:\Users\aring\Desktop\Heroes of Blight and Tragic\engine\src\content\maps.ts:134:17)
+    at <anonymous> (C:\Users\aring\Desktop\Heroes of Blight and Tragic\engine\src\content\scenarios.ts:39:44)
+    at Object.<anonymous> (C:\Users\aring\Desktop\Heroes of Blight and Tragic\engine\src\content\scenarios.ts:495:17)
+    at Module._compile (node:internal/modules/cjs/loader:1761:14)
+    at Object.transformer (C:\Users\aring\Desktop\Heroes of Blight and Tragic\engine\node_modules\tsx\dist\register-C557imBs.cjs:9:3619)
+    at Module.load (node:internal/modules/cjs/loader:1481:32)
+    at Module._load (node:internal/modules/cjs/loader:1300:12)
+    at TracingChannel.traceSync (node:diagnostics_channel:328:14)
+    at wrapModuleLoad (node:internal/modules/cjs/loader:245:24)
+    at Module.require (node:internal/modules/cjs/loader:1504:12)
+
+Node.js v24.12.0
+⎯⎯⎯⎯⎯⎯ Unhandled Errors ⎯⎯⎯⎯⎯⎯
+
+Vitest caught 1 unhandled error during the test run.
+This might cause false positive tests. Resolve unhandled errors to make sure your tests are not affected.
+
+⎯⎯⎯⎯⎯⎯⎯ Test Run Error ⎯⎯⎯⎯⎯⎯⎯
+SyntaxError: Unexpected token '�', "�" is not valid JSON
+ ❯ new Converter node_modules/convert-source-map/index.js:83:15
+ ❯ Object.exports.fromComment node_modules/convert-source-map/index.js:181:10
+ ❯ Object.exports.fromSource node_modules/convert-source-map/index.js:207:22
+ ❯ extractSourcemapFromFile ../../Heroes%20of%20Blight%20and%20Tragic/engine/node_modules/@vitest/utils/dist/source-map/node.js:8:32
+ ❯ Object.getSourceMap ../../Heroes%20of%20Blight%20and%20Tragic/engine/node_modules/vitest/dist/chunks/cli-api.CnMVyzaz.js:12703:102
+ ❯ ../../Heroes%20of%20Blight%20and%20Tragic/engine/node_modules/@vitest/utils/dist/source-map.js:391:37
+ ❯ parseStacktrace ../../Heroes%20of%20Blight%20and%20Tragic/engine/node_modules/@vitest/utils/dist/source-map.js:387:16
+ ❯ parseErrorStacktrace ../../Heroes%20of%20Blight%20and%20Tragic/engine/node_modules/@vitest/utils/dist/source-map.js:438:51
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
+
+
+ Test Files   (1)
+      Tests  41 skipped (45)
+     Errors  1 error
+   Start at  11:20:27
+   Duration  1.38s (transform 390ms, setup 0ms, import 497ms, tests 0ms, environment 0ms)
+

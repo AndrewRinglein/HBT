@@ -16,6 +16,7 @@
 // Rows run top (row 0, enemy deployment) to bottom (row 11, hero deployment).
 
 import { TERRAIN } from '../core/types.js'
+import type { AuthoredMap } from '../core/types.js'
 import { type Board, type Edge } from '../core/hex.js'
 import { disabledIds } from './disable.js'
 import { packMaps, packTestMaps, mapBoardOf } from './pack.js'
@@ -29,7 +30,7 @@ import { packMaps, packTestMaps, mapBoardOf } from './pack.js'
  */
 export type Deploy = { readonly hero: Edge; readonly enemy: Edge }
 export const DEFAULT_DEPLOY: Deploy = { hero: 'west', enemy: 'east' }
-export type MapDef = { id: string; name: string; note?: string; rows: readonly string[]; deploy?: Deploy }
+export type MapDef = AuthoredMap
 
 // content.pack-maps (2026-09-04, session 9's E1): the SHIPPING maps are content
 // rows now — `content/gen/maps.json`, through the pack (`packMaps()`). The six
@@ -128,7 +129,7 @@ const TERRAIN_ID: Readonly<Record<number, string>> = {
   [TERRAIN.BURNING]: 'terrain.burning', [TERRAIN.POISONED]: 'terrain.poisoned',
 }
 
-function mapDef(mapId: string): MapDef {
+export function mapDef(mapId: string): MapDef {
   const m = MAPS.find((x) => x.id === mapId)
   if (!m) throw new Error(`unknown map '${mapId}' — maps are authored: content/gen/maps.json (shipping) or content/maps.ts (testing lane)`)
   return m
@@ -140,31 +141,30 @@ function mapDef(mapId: string): MapDef {
  * bounded positive safe integers. Preset names do not restrict authored sizes.
  */
 export function boardOf(mapId: string): Board {
-  const m = mapDef(mapId)
-  return mapBoardOf(m)
+  return decodeMap(mapDef(mapId)).board
 }
 
 /** The deployment edges of a map — its own, else the ruled default. The two edges must differ. */
 export function deployOf(mapId: string): Deploy {
-  mapBoardOf(mapDef(mapId))
-  const d = mapDef(mapId).deploy ?? DEFAULT_DEPLOY
-  if (d.hero === d.enemy) throw new Error(`map '${mapId}' deploys both sides on its ${d.hero} edge`)
-  return d
+  return decodeMap(mapDef(mapId)).deploy
 }
 
 export function terrainOf(mapId: string): number[] {
-  const m = mapDef(mapId)
-  const { width } = boardOf(mapId)
+  return decodeMap(mapDef(mapId)).terrain
+}
+
+/** Validate before allocation; retain no caller-owned arrays or metadata objects. */
+export function decodeMap(m: MapDef): { id: string; board: Board; deploy: Deploy; terrain: number[] } {
+  const board = mapBoardOf(m)
   const out: number[] = []
   for (const row of m.rows) {
-    if (row.length !== width) throw new Error(`map '${mapId}' has a row of ${row.length}, expected ${width}`)
     for (const ch of row) {
       const t = GLYPH[ch]
-      if (t === undefined) throw new Error(`map '${mapId}' has an unknown glyph '${ch}'`)
+      if (t === undefined) throw new Error(`map '${m.id}' has an unknown glyph '${ch}'`)
       out.push(t)
     }
   }
-  return out
+  return { id: m.id, board, deploy: { ...(m.deploy ?? DEFAULT_DEPLOY) }, terrain: out }
 }
 
 export function terrainIdOf(terrain: number): string {

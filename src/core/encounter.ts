@@ -179,11 +179,11 @@ export function startOfTurn(ctx: Ctx): void {
 }
 
 /** The hero deployment hexes an encounter asks for: nearest free to the zone's centre, lowest id first. */
-export function heroDeployHexes(ctx: Ctx, enc: EncounterDef, n: number): HexId[] | null {
+export function heroDeployHexes(ctx: Ctx, enc: EncounterDef, n: number, reserved: ReadonlySet<number> = new Set()): HexId[] | null {
   if (!enc.heroZone) return null
   const c = ctx.geo.hexId(enc.heroZone.at.near.col, enc.heroZone.at.near.row)
   const ring: HexId[] = []
-  for (let h = 0; h < ctx.geo.hexCount; h++) if (ctx.geo.distance(c, h) <= enc.heroZone.at.range && isPassable(ctx.state.terrain[h] ?? 0)) ring.push(h)
+  for (let h = 0; h < ctx.geo.hexCount; h++) if (ctx.geo.distance(c, h) <= enc.heroZone.at.range && isPassable(ctx.state.terrain[h] ?? 0) && !reserved.has(h)) ring.push(h)
   ring.sort((a, b) => ctx.geo.distance(c, a) - ctx.geo.distance(c, b) || a - b)
   if (ring.length < n) throw new Error(`encounter '${enc.id}': the hero zone holds ${ring.length} hexes, ${n} heroes asked`)
   return ring.slice(0, n)

@@ -1,0 +1,564 @@
+
+ RUN  v4.1.11 C:/Users/aring/Desktop/Heroes of Blight and Tragic/engine
+
+ ❯ test/direct-map.test.ts (35 tests | 35 failed) 42ms
+     × test.map.journey-20x10 uses the published row directly, emits exact replay facts and runs 7ms
+     × test.map.authored-40x40 uses the published row directly, emits exact replay facts and runs 1ms
+     × unknown same-ID boards remain independent, never mutate the registry, and detach caller arrays/metadata 8ms
+     × direct input wins over a same-ID registry entry without modifying it 1ms
+     × human command and automatic drivers resume unknown maps from the same saved activation 14ms
+     × rejects malformed/unsupported authored data null 1ms
+     × rejects malformed/unsupported authored data false 0ms
+     × rejects malformed/unsupported authored data [] 0ms
+     × rejects malformed/unsupported authored data {} 0ms
+     × rejects malformed/unsupported authored data { id: 'map.open', …(2) } 0ms
+     × rejects malformed/unsupported authored data { id: 'map.open', …(2) } 0ms
+     × rejects malformed/unsupported authored data { id: 'map.open', …(2) } 0ms
+     × rejects malformed/unsupported authored data { id: 'map.open', …(2) } 0ms
+     × rejects malformed/unsupported authored data { id: 'map.open', …(2) } 0ms
+     × rejects malformed/unsupported authored data { id: [ 'map.open' ], …(2) } 0ms
+     × rejects malformed/unsupported authored data { id: ' ', …(2) } 0ms
+     × rejects malformed/unsupported authored data { id: 'map.open', name: '', …(1) } 0ms
+     × rejects malformed/unsupported authored data { id: 'map.open', …(3) } 0ms
+     × rejects malformed/unsupported authored data { id: 'map.open', …(3) } 0ms
+     × rejects malformed/unsupported authored data { id: 'map.open', …(3) } 0ms
+     × rejects malformed/unsupported authored data { id: 'map.open', …(3) } 0ms
+     × rejects malformed/unsupported authored data { id: 'map.open', …(3) } 0ms
+     × rejects malformed/unsupported authored data { id: 'map.open', …(3) } 0ms
+     × rejects malformed/unsupported authored data { id: 'map.open', …(3) } 0ms
+     × rejects malformed/unsupported authored data { id: 'map.open', …(3) } 0ms
+     × rejects malformed/unsupported authored data { id: 'map.open', …(3) } 0ms
+     × rejects malformed/unsupported authored data { id: 'map.open', …(3) } 0ms
+     × rejects malformed/unsupported authored data { id: 'map.open', …(3) } 0ms
+     × rejects malformed/unsupported authored data { id: 'map.open', …(2) } 0ms
+     × rejects explicit map ID mismatch and encounter identity/board mismatch 0ms
+     × honors every supported glyph exactly and refuses explicit positions in obstacles 1ms
+     × reserves an explicit enemy before rolling heroes 1ms
+     × reserves an explicit hero before rolling enemies 0ms
+     × two opposing edge rolls on a one-column map use different hexes 0ms
+     × spilling enemies skip occupied/blocked lines and fail loudly when the board is full 1ms
+
+⎯⎯⎯⎯⎯⎯ Failed Tests 35 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  test/direct-map.test.ts > production direct authored maps > test.map.journey-20x10 uses the published row directly, emits exact replay facts and runs
+AssertionError: expected 'map.open' to be 'test.map.journey-20x10' // Object.is equality
+
+Expected: "test.map.journey-20x10"
+Received: "map.open"
+
+ ❯ test/direct-map.test.ts:25:31
+     23|       expect(map).toBeDefined()
+     24|       const ctx = battle(map)
+     25|       expect(ctx.state.mapId).toBe(id)
+       |                               ^
+     26|       expect(ctx.state.terrain).toEqual(terrainOf(id))
+     27|       expect(ctx.state.board).toEqual({ width: map.rows[0]!.length, he…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/35]⎯
+
+ FAIL  test/direct-map.test.ts > production direct authored maps > test.map.authored-40x40 uses the published row directly, emits exact replay facts and runs
+AssertionError: expected 'map.open' to be 'test.map.authored-40x40' // Object.is equality
+
+Expected: "test.map.authored-40x40"
+Received: "map.open"
+
+ ❯ test/direct-map.test.ts:25:31
+     23|       expect(map).toBeDefined()
+     24|       const ctx = battle(map)
+     25|       expect(ctx.state.mapId).toBe(id)
+       |                               ^
+     26|       expect(ctx.state.terrain).toEqual(terrainOf(id))
+     27|       expect(ctx.state.board).toEqual({ width: map.rows[0]!.length, he…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/35]⎯
+
+ FAIL  test/direct-map.test.ts > production direct authored maps > unknown same-ID boards remain independent, never mutate the registry, and detach caller arrays/metadata
+AssertionError: expected { width: 16, height: 16 } to deeply equal { width: 4, height: 3 }
+
+- Expected
++ Received
+
+  {
+-   "height": 3,
+-   "width": 4,
++   "height": 16,
++   "width": 16,
+  }
+
+ ❯ test/direct-map.test.ts:45:27
+     43|     const a = battle(input), saved = saveBattle(a)
+     44|     const b = battle(authored(input.id, 5, 2))
+     45|     expect(a.state.board).toEqual({ width: 4, height: 3 }); expect(b.s…
+       |                           ^
+     46|     input.rows[0] = 'xxxx'; input.rows[1] = 'xxxx'; input.board.width …
+     47|     expect(saveBattle(a)).toBe(saved)
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/35]⎯
+
+ FAIL  test/direct-map.test.ts > production direct authored maps > direct input wins over a same-ID registry entry without modifying it
+AssertionError: expected { width: 16, height: 16 } to deeply equal { width: 4, height: 3 }
+
+- Expected
++ Received
+
+  {
+-   "height": 3,
+-   "width": 4,
++   "height": 16,
++   "width": 16,
+  }
+
+ ❯ test/direct-map.test.ts:59:29
+     57|     const original = terrainOf('map.open')
+     58|     const ctx = battle(authored('map.open'))
+     59|     expect(ctx.state.board).toEqual({ width: 4, height: 3 })
+       |                             ^
+     60|     expect(terrainOf('map.open')).toEqual(original)
+     61|   })
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/35]⎯
+
+ FAIL  test/direct-map.test.ts > production direct authored maps > human command and automatic drivers resume unknown maps from the same saved activation
+TypeError: executeBattleCommand is not a function
+ ❯ test/direct-map.test.ts:68:12
+     66|     const restored = restoreBattle(saveBattle(ctx), ctx)
+     67|     const command = { type: 'action', actor: 0, actionId: 'power.move'…
+     68|     expect(executeBattleCommand(ctx, command).ok).toBe(true)
+       |            ^
+     69|     expect(executeBattleCommand(restored, command).ok).toBe(true)
+     70|     expect(ctx.state.units[0]!.hex).toBe(1)
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/35]⎯
+
+ FAIL  test/direct-map.test.ts > production direct authored maps > rejects malformed/unsupported authored data null
+ FAIL  test/direct-map.test.ts > production direct authored maps > rejects malformed/unsupported authored data false
+ FAIL  test/direct-map.test.ts > production direct authored maps > rejects malformed/unsupported authored data []
+ FAIL  test/direct-map.test.ts > production direct authored maps > rejects malformed/unsupported authored data {}
+ FAIL  test/direct-map.test.ts > production direct authored maps > rejects malformed/unsupported authored data { id: 'map.open', …(2) }
+ FAIL  test/direct-map.test.ts > production direct authored maps > rejects malformed/unsupported authored data { id: 'map.open', …(2) }
+ FAIL  test/direct-map.test.ts > production direct authored maps > rejects malformed/unsupported authored data { id: 'map.open', …(2) }
+ FAIL  test/direct-map.test.ts > production direct authored maps > rejects malformed/unsupported authored data { id: 'map.open', …(2) }
+ FAIL  test/direct-map.test.ts > production direct authored maps > rejects malformed/unsupported authored data { id: 'map.open', …(2) }
+ FAIL  test/direct-map.test.ts > production direct authored maps > rejects malformed/unsupported authored data { id: [ 'map.open' ], …(2) }
+ FAIL  test/direct-map.test.ts > production direct authored maps > rejects malformed/unsupported authored data { id: ' ', …(2) }
+ FAIL  test/direct-map.test.ts > production direct authored maps > rejects malformed/unsupported authored data { id: 'map.open', name: '', …(1) }
+ FAIL  test/direct-map.test.ts > production direct authored maps > rejects malformed/unsupported authored data { id: 'map.open', …(3) }
+ FAIL  test/direct-map.test.ts > production direct authored maps > rejects malformed/unsupported authored data { id: 'map.open', …(3) }
+ FAIL  test/direct-map.test.ts > production direct authored maps > rejects malformed/unsupported authored data { id: 'map.open', …(3) }
+ FAIL  test/direct-map.test.ts > production direct authored maps > rejects malformed/unsupported authored data { id: 'map.open', …(3) }
+ FAIL  test/direct-map.test.ts > production direct authored maps > rejects malformed/unsupported authored data { id: 'map.open', …(3) }
+ FAIL  test/direct-map.test.ts > production direct authored maps > rejects malformed/unsupported authored data { id: 'map.open', …(3) }
+ FAIL  test/direct-map.test.ts > production direct authored maps > rejects malformed/unsupported authored data { id: 'map.open', …(3) }
+ FAIL  test/direct-map.test.ts > production direct authored maps > rejects malformed/unsupported authored data { id: 'map.open', …(3) }
+ FAIL  test/direct-map.test.ts > production direct authored maps > rejects malformed/unsupported authored data { id: 'map.open', …(3) }
+ FAIL  test/direct-map.test.ts > production direct authored maps > rejects malformed/unsupported authored data { id: 'map.open', …(3) }
+ FAIL  test/direct-map.test.ts > production direct authored maps > rejects malformed/unsupported authored data { id: 'map.open', …(3) }
+ FAIL  test/direct-map.test.ts > production direct authored maps > rejects malformed/unsupported authored data { id: 'map.open', …(2) }
+AssertionError: expected [Function] to throw an error
+
+- Expected:
+null
+
++ Received:
+undefined
+
+ ❯ test/direct-map.test.ts:91:31
+     89|     { ...authored('map.open'), rows: Array(101).fill('.'.repeat(100)) …
+     90|   ].map(map => ({ map })))('rejects malformed/unsupported authored dat…
+     91|     expect(() => battle(map)).toThrow(/map/i)
+       |                               ^
+     92|   })
+     93|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/35]⎯
+
+ FAIL  test/direct-map.test.ts > production direct authored maps > rejects explicit map ID mismatch and encounter identity/board mismatch
+AssertionError: expected [Function] to throw an error
+
+- Expected:
+null
+
++ Received:
+undefined
+
+ ❯ test/direct-map.test.ts:97:54
+     95|     const map = copy(MAPS.find(m => m.id === 'test.map.journey-20x10')…
+     96|     const enc = copy(ENCOUNTERS['test.encounter.journey-20x10']!)
+     97|     expect(() => battle(map, { mapId: 'map.open' })).toThrow(/map/i)
+       |                                                      ^
+     98|     expect(() => battle(map, { encounter: { ...enc, mapId: 'map.open' …
+     99|     expect(() => battle(map, { encounter: { ...enc, board: { width: 10…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[7/35]⎯
+
+ FAIL  test/direct-map.test.ts > production direct authored maps > honors every supported glyph exactly and refuses explicit positions in obstacles
+AssertionError: expected [ +0, +0, +0, +0, +0, +0, +0, …(249) ] to deeply equal [ +0, 1, 2, 3, 4, 5, 6, 7, 8, +0 ]
+
+- Expected
++ Received
+
+  [
+    0,
+-   1,
+-   2,
+-   3,
+-   4,
+-   5,
+-   6,
+-   7,
+-   8,
++   0,
++   0,
++   0,
++   0,
++   0,
++   0,
++   0,
++   0,
++   0,
++   0,
++   0,
++   0,
++   0,
++   0,
++   0,
++   0,
++   0,
++   0,
++   0,
++   0,
++   0,
++   0,
++   0,
++   0,
++   0,
++   0,
++   0,
++   0,
++   0,
++   0,
++   0,
++   0,
++   0,
++   0,
++   0,
++   0,
++   0,
++   0,
++   0,
++   0,
++   0,
++   0,
++   0,
++   0,
++   0,
++   0,
++   0,
++   0,
++   0,
++   0,
++   0,
++   0,
++   0,
++   0,
++   0,
++   0,
++   0,
++   0,
++   0,
++   0,
++   0,
++   0,
++   0,
++   0,
++   0,
++   0,
++   0,
++   0,
++   0,
++   0,
++   0,
++   0,
++   0,
++   0,
++   0,
++   0,
++   0,
++   0,
++   0,
++   0,
++   0,
++   0,
++   0,
++   0,
++   0,
++   0,
++   0,
++   0,
++   0,
++   0,
++   0,
++   0,
++   0,
++   0,
++   0,
++   0,
++   0,
++   0,
++   0,
++   0,
++   0,
++   0,
++   0,
++   0,
++   0,
++   0,
++   0,
++   0,
++   0,
++   0,
++   0,
++   0,
++   0,
++   0,
++   0,
++   0,
++   0,
++   0,
++   0,
++   0,
++   0,
++   0,
++   0,
++   0,
++   0,
++   0,
++   0,
++   0,
++   0,
++   0,
++   0,
++   0,
++   0,
++   0,
++   0,
++   0,
++   0,
++   0,
++   0,
++   0,
++   0,
++   0,
++   0,
++   0,
++   0,
++   0,
++   0,
++   0,
++   0,
++   0,
++   0,
++   0,
++   0,
++   0,
++   0,
++   0,
++   0,
++   0,
++   0,
++   0,
++   0,
++   0,
++   0,
++   0,
++   0,
++   0,
++   0,
++   0,
++   0,
++   0,
++   0,
++   0,
++   0,
++   0,
++   0,
++   0,
++   0,
++   0,
++   0,
++   0,
++   0,
++   0,
++   0,
++   0,
++   0,
++   0,
++   0,
++   0,
++   0,
++   0,
++   0,
++   0,
++   0,
++   0,
++   0,
++   0,
++   0,
++   0,
++   0,
++   0,
++   0,
++   0,
++   0,
++   0,
++   0,
++   0,
++   0,
++   0,
++   0,
++   0,
++   0,
++   0,
++   0,
++   0,
++   0,
++   0,
++   0,
++   0,
++   0,
++   0,
++   0,
++   0,
++   0,
++   0,
++   0,
++   0,
++   0,
++   0,
++   0,
++   0,
++   0,
++   0,
++   0,
++   0,
++   0,
++   0,
++   0,
++   0,
++   0,
++   0,
++   0,
++   0,
++   0,
++   0,
++   0,
++   0,
++   0,
++   0,
++   0,
++   0,
++   0,
++   0,
++   0,
++   0,
+    0,
+  ]
+
+ ❯ test/direct-map.test.ts:107:31
+    105|     const map = { ...authored(), rows: ['.hfrR', 'wxbp.'] }
+    106|     const ctx = battle(map, { heroHexes: [0], enemyHexes: [9] })
+    107|     expect(ctx.state.terrain).toEqual(map.rows.join('').split('').map(…
+       |                               ^
+    108|     expect(() => battle(map, { heroHexes: [6], enemyHexes: [9] })).toT…
+    109|   })
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[8/35]⎯
+
+ FAIL  test/direct-map.test.ts > mixed and tiny-map initial deployment > reserves an explicit enemy before rolling heroes
+AssertionError: expected 1 to be 2 // Object.is equality
+
+- Expected
++ Received
+
+- 2
++ 1
+
+ ❯ unique test/direct-map.test.ts:14:112
+     12| const battle = (map: unknown, extra: Partial<BattleOptions> = {}) => c…
+     13| const loaded = (ctx: ReturnType<typeof createBattle>) => ctx.events.fi…
+     14| const unique = (ctx: ReturnType<typeof createBattle>) => expect(new Se…
+       |                                                                                                                ^
+     15|
+     16| describe('production direct authored maps', () => {
+ ❯ test/direct-map.test.ts:116:50
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[9/35]⎯
+
+ FAIL  test/direct-map.test.ts > mixed and tiny-map initial deployment > reserves an explicit hero before rolling enemies
+AssertionError: expected 1 to be 2 // Object.is equality
+
+- Expected
++ Received
+
+- 2
++ 1
+
+ ❯ unique test/direct-map.test.ts:14:112
+     12| const battle = (map: unknown, extra: Partial<BattleOptions> = {}) => c…
+     13| const loaded = (ctx: ReturnType<typeof createBattle>) => ctx.events.fi…
+     14| const unique = (ctx: ReturnType<typeof createBattle>) => expect(new Se…
+       |                                                                                                                ^
+     15|
+     16| describe('production direct authored maps', () => {
+ ❯ test/direct-map.test.ts:121:50
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[10/35]⎯
+
+ FAIL  test/direct-map.test.ts > mixed and tiny-map initial deployment > two opposing edge rolls on a one-column map use different hexes
+AssertionError: expected { width: 16, height: 16 } to deeply equal { width: 1, height: 2 }
+
+- Expected
++ Received
+
+  {
+-   "height": 2,
+-   "width": 1,
++   "height": 16,
++   "width": 16,
+  }
+
+ ❯ test/direct-map.test.ts:125:29
+    123|   it('two opposing edge rolls on a one-column map use different hexes'…
+    124|     const ctx = battle(authored('test.map.tiny', 1, 2))
+    125|     expect(ctx.state.board).toEqual({ width: 1, height: 2 }); unique(c…
+       |                             ^
+    126|     expect(ctx.state.units.map(u => u.hex).sort()).toEqual([0, 1])
+    127|   })
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[11/35]⎯
+
+ FAIL  test/direct-map.test.ts > mixed and tiny-map initial deployment > spilling enemies skip occupied/blocked lines and fail loudly when the board is full
+AssertionError: expected [Function] to throw an error
+
+- Expected:
+null
+
++ Received:
+undefined
+
+ ❯ test/direct-map.test.ts:132:74
+    130|     const ctx = battle(map, { enemies: Array(5).fill('test-zombie') })
+    131|     unique(ctx); expect(ctx.state.units.length).toBe(6)
+    132|     expect(() => battle(map, { enemies: Array(6).fill('test-zombie') }…
+       |                                                                          ^
+    133|     expect(() => battle(authored('test.map.tiny', 1, 1))).toThrow(/can…
+    134|   })
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[12/35]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  35 failed (35)
+   Start at  11:15:59
+   Duration  662ms (transform 386ms, setup 0ms, import 493ms, tests 42ms, environment 0ms)
+

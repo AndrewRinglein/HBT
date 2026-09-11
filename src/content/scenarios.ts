@@ -26,8 +26,26 @@
 import type { EncounterDef, ScenarioDef } from '../core/types.js'
 import { omitDisabled } from './disable.js'
 import { ENCOUNTERS, UNITS } from './index.js'
+import { MAPS } from './maps.js'
+
+// Published TEST rows, not duplicated authored terrain. A disabled source map
+// removes only its dependent direct scenario; unrelated imports remain usable.
+const DIRECT_MAP_SCENARIOS: Record<string, ScenarioDef> = {}
+for (const [id, mapId] of [
+  ['test.direct-map-journey', 'test.map.journey-20x10'],
+  ['test.direct-map-authored', 'test.map.authored-40x40'],
+] as const) {
+  const map = MAPS.find(row => row.id === mapId)
+  if (!map) continue
+  DIRECT_MAP_SCENARIOS[id] = {
+    id, note: 'Published TEST map through direct production input and exact replay terrain.',
+    mapId, map, heroes: ['test-warrior'], heroHexes: [0], enemies: ['test-zombie'],
+    enemyHexes: [map.rows.length * map.rows[0]!.length - 1], replicate: 0,
+  }
+}
 
 const RAW_SCENARIOS: Readonly<Record<string, ScenarioDef>> = {
+  ...DIRECT_MAP_SCENARIOS,
   'test.board-journey': {
     id: 'test.board-journey', note: 'Published 20×10 TEST map and encounter through the normal export and battle drivers.',
     mapId: 'test.map.journey-20x10', encounterId: 'test.encounter.journey-20x10',
@@ -458,6 +476,7 @@ export function scenarioOptions(s: ScenarioDef) {
     scenarioId: s.id,
     replicate: s.replicate,
     mapId: s.mapId,
+    ...(s.map ? { map: s.map } : {}),
     heroes: s.heroes,
     // an encounter scenario leaves the hero hexes to the encounter (its zone
     // or the player edge) — an empty list means "not named", not "zero"

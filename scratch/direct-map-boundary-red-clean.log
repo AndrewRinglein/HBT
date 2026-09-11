@@ -1,0 +1,70 @@
+
+ RUN  v4.1.11 C:/Users/aring/Desktop/Heroes of Blight and Tragic/engine
+
+ ❯ test/direct-map.test.ts (45 tests | 4 failed | 41 skipped) 653ms
+     × bounds row count before reading any row or invoking custom iteration 4ms
+     × rejects custom row iterators and index getters without executing them 1ms
+     × disabling test.map.journey-20x10 only removes its dependent direct scenario 325ms
+     × disabling test.map.authored-40x40 only removes its dependent direct scenario 322ms
+
+ Test Files  1 failed (1)
+      Tests  4 failed | 41 skipped (45)
+   Start at  11:22:42
+   Duration  1.27s (transform 393ms, setup 0ms, import 501ms, tests 653ms, environment 0ms)
+
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 4 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  test/direct-map.test.ts > production direct authored maps > bounds row count before reading any row or invoking custom iteration
+AssertionError: expected [Function] to throw error matching /maps:.*dimensions/ but got 'row getter invoked'
+
+- Expected:
+/maps:.*dimensions/
+
++ Received:
+"row getter invoked"
+
+ ❯ test/direct-map.test.ts:136:51
+    134|     const rows: string[] = new Array(10001)
+    135|     Object.defineProperty(rows, '0', { get() { throw new Error('row ge…
+    136|     expect(() => battle({ ...authored(), rows })).toThrow(/maps:.*dime…
+       |                                                   ^
+    137|   })
+    138|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/4]⎯
+
+ FAIL  test/direct-map.test.ts > production direct authored maps > rejects custom row iterators and index getters without executing them
+AssertionError: expected [Function] to throw error matching /maps:.*rows/ but got 'iterator invoked'
+
+- Expected:
+/maps:.*rows/
+
++ Received:
+"iterator invoked"
+
+ ❯ test/direct-map.test.ts:142:61
+    140|     const iterated = ['....', '....', '....']
+    141|     iterated[Symbol.iterator] = () => { throw new Error('iterator invo…
+    142|     expect(() => battle({ ...authored(), rows: iterated })).toThrow(/m…
+       |                                                             ^
+    143|     const getters = ['....', '....', '....']
+    144|     Object.defineProperty(getters, '1', { get() { throw new Error('row…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/4]⎯
+
+ FAIL  test/direct-map.test.ts > production direct authored maps > disabling test.map.journey-20x10 only removes its dependent direct scenario
+ FAIL  test/direct-map.test.ts > production direct authored maps > disabling test.map.authored-40x40 only removes its dependent direct scenario
+AssertionError: unrelated scenario process must complete: expected 1 to be +0 // Object.is equality
+
+- Expected
++ Received
+
+- 0
++ 1
+
+ ❯ test/direct-map.test.ts:152:68
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/4]⎯
+

@@ -2356,3 +2356,22 @@ the recorded historical preset/registry assertion repairs; 1,139 tests and the
 separate full audit passed. Original 18 control hashes are exact and only two
 TEST map controls were added. The seal remains withheld for the gate's two
 warning categories. Details and retained evidence: `V2-AUTHORED-BOARDS.md`.
+
+## 2026-09-11 — Direct authored maps in production setup
+
+The authorized map input uses `BattleOptions.map` through the same production
+unit/kit/identity/action path. The row is strict plain data, bounded and decoded
+by the same map helper as registry rows. Unknown fields reject; no map registry
+is mutated. A provided mapId or encounter map identity/board must agree with the
+direct row. Direct `map.loaded` records detached exact initial base terrain for
+replay, with its contract in EVENTS-FOR-THE-VIEWER-2026-09-03.md §15. Snapshot
+rules are .10; restore validates the new payload independently of mutable terrain.
+
+Initial placement now reserves explicit positions and actual encounter-zone or
+rolled heroes before enemy deployment. Spill skips lines exhausted by occupants,
+retains physical-wall rejection, and stops at the board boundary. These
+corrections prevent initial overlaps; encounter
+arrival shunting remains. A 530-battle old-source comparison proves unchanged
+state/events/full RNG/cursor/results for all existing scenarios and 500 controls;
+all 20 baseline hashes are exact. No unused zone sample writes RNG state.
+Probes, intermediate failures and remaining stage status: V2-DIRECT-MAP.md.

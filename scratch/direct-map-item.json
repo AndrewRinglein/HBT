@@ -1,0 +1,10 @@
+{
+  "id": "board.direct-map-input",
+  "kind": "plumbing",
+  "shape": "plumbing",
+  "needs": ["board.authored-dimensions"],
+  "spec": "Production createBattle accepts a detached, validated authored map without registry mutation, records exact initial terrain for replay, and deploys every initial roster unit without overlap.",
+  "expect": "Published 20x10 and 40x40 maps run through direct input; unknown IDs support human commands, simulation, JSON replay and reload. Invalid metadata, unknown fields, identity conflicts and overlap reject or deploy safely. Existing20 control hashes remain exact.",
+  "probeIds": ["test.direct-map-journey", "test.direct-map-authored"],
+  "note": "No atlas conversion, props, LOS, viewer adoption or V1 fallback. Direct map.loaded carries exact terrain; absent map preserves historical events. Mixed deployment reserves explicit positions and actual rolled heroes without changing collision-free candidate lists."
+}

@@ -4,7 +4,7 @@
 // GENERATED (content/mkenginepack.mjs) and never hand-edited; this loader
 // validates it LOUDLY at import time (Law 9) and hands back plain UnitDefs.
 import { UNIT_PACK } from './generated/pack.js'
-import type { ActionDef, AbilityDef, AttackDef, BadgeDef, CritRow, EncounterDef, ItemDef, MoveDef, UnitDef } from '../core/types.js'
+import type { ActionDef, AbilityDef, AttackDef, AuthoredMap, BadgeDef, CritRow, EncounterDef, ItemDef, MoveDef, UnitDef } from '../core/types.js'
 import { formatOf, validBoard, MAX_BOARD_CELLS, type Board } from '../core/hex.js'
 import { validateTrigger } from '../core/trigger.js'
 import type { StatusDef } from '../core/status.js'
@@ -430,23 +430,39 @@ export function packEncounters(units: Readonly<Record<string, UnitDef>>, rows?: 
  * Glyphs are checked where the legend lives (maps.ts terrainOf). Order is the
  * pack's, which is the generator's fixed order (Law 6).
  */
-export type PackMapRow = {
-  readonly id: string; readonly name: string; readonly rows: readonly string[]
-  readonly board?: { readonly width: number; readonly height: number }; readonly format?: string
-  readonly deploy?: { readonly hero: 'north' | 'south' | 'east' | 'west'; readonly enemy: 'north' | 'south' | 'east' | 'west' }
-  readonly note?: string
+export type PackMapRow = AuthoredMap
+function mapRecord(value: unknown, allowed: readonly string[]): void {
+  if (!value || typeof value !== 'object' || Array.isArray(value) || ![Object.prototype, null].includes(Object.getPrototypeOf(value))) throw new Error('maps: expected plain authored data')
+  for (const key of Reflect.ownKeys(value)) {
+    if (typeof key !== 'string' || !allowed.includes(key) || !('value' in Object.getOwnPropertyDescriptor(value, key)!)) throw new Error(`maps: unsupported field '${String(key)}'`)
+  }
 }
 /** Validate both packed and engine-owned rows before geometry/terrain allocation. */
 export function mapBoardOf(m: PackMapRow): Board {
-  if (!m || typeof m.id !== 'string' || !m.id || typeof m.name !== 'string' || !m.name.trim()) throw new Error('maps: id and name must be nonempty strings')
-  if (!m || !Array.isArray(m.rows) || m.rows.length === 0 || m.rows.some(row => typeof row !== 'string')) throw new Error('maps: rows must be nonempty strings')
+  mapRecord(m, ['id', 'name', 'rows', 'board', 'format', 'note', 'deploy'])
+  if (typeof m.id !== 'string' || !m.id.trim() || typeof m.name !== 'string' || !m.name.trim()) throw new Error('maps: id and name must be nonempty strings')
+  if ('note' in m && typeof m.note !== 'string') throw new Error('maps: note must be a string')
+  if (!Array.isArray(m.rows) || m.rows.length === 0) throw new Error('maps: rows must be nonempty strings')
+  if (m.rows.length > MAX_BOARD_CELLS) throw new Error('maps: invalid board dimensions')
+  if (Object.getPrototypeOf(m.rows) !== Array.prototype) throw new Error('maps: rows must be a plain array')
+  for (const key of Reflect.ownKeys(m.rows)) {
+    if (key === 'length') continue
+    if (typeof key !== 'string' || !/^(0|[1-9]\d*)$/.test(key) || Number(key) >= m.rows.length) throw new Error('maps: unsupported rows field')
+  }
+  for (let i = 0; i < m.rows.length; i++) {
+    if (typeof Object.getOwnPropertyDescriptor(m.rows, String(i))?.value !== 'string') throw new Error('maps: rows must be dense data-index strings')
+  }
   const board = { width: m.rows[0]!.length, height: m.rows.length }
   if (!validBoard(board)) throw new Error(`maps: '${m.id}' has invalid board dimensions (maximum ${MAX_BOARD_CELLS} cells)`)
   if (m.rows.some(row => row.length !== board.width)) throw new Error(`maps: '${m.id}' is not rectangular`)
-  if ('board' in m && (!validBoard(m.board) || m.board.width !== board.width || m.board.height !== board.height)) throw new Error(`maps: '${m.id}' declared board differs from rows`)
+  if ('board' in m) {
+    mapRecord(m.board, ['width', 'height'])
+    if (!validBoard(m.board) || m.board.width !== board.width || m.board.height !== board.height) throw new Error(`maps: '${m.id}' declared board differs from rows`)
+  }
   const format = formatOf(board) ?? `${board.width}x${board.height}`
   if ('format' in m && m.format !== format) throw new Error(`maps: '${m.id}' claims format '${m.format}' but draws '${format}'`)
   if ('deploy' in m) {
+    mapRecord(m.deploy, ['hero', 'enemy'])
     const edges = ['north', 'south', 'east', 'west']
     if (!m.deploy || !edges.includes(m.deploy.hero) || !edges.includes(m.deploy.enemy) || m.deploy.hero === m.deploy.enemy) throw new Error(`maps: '${m.id}' deploy requires two distinct edges`)
   }

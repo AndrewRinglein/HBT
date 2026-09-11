@@ -1,10 +1,10 @@
 import { geometryOf, validBoard } from './hex.js'
 import { makeRng, rootSeedOf, sample } from './rng.js'
-import type { Ctx, EncounterDef, HeroProgress, Side, State, Unit, UnitDef, Config } from './types.js'
+import type { AuthoredMap, Ctx, EncounterDef, HeroProgress, Side, State, Unit, UnitDef, Config } from './types.js'
 import { DEFAULT_CONFIG } from './types.js'
 import { ACTIONS, ATTACKS, ABILITIES, BADGES, CRIT_CHART, ITEMS, LEVELS, RULE_BADGES, SPECIALTIES, UNITS, FIRST_BATTLE } from '../content/index.js'
 import { applyItems, applyProgress, type Applied, FOLDABLE, applyBadges, type Badged } from './items.js'
-import { boardOf, deployOf, terrainOf, terrainIdOf, isPassable } from '../content/maps.js'
+import { boardOf, decodeMap, deployOf, mapDef, terrainOf, terrainIdOf, isPassable } from '../content/maps.js'
 import { STATUSES } from '../content/statuses.js'
 import { triggersFrom } from './trigger.js'
 import { emit, gainPower } from './mutate.js'
@@ -75,6 +75,8 @@ export type BattleOptions = UnitIdentityOptions & {
    */
   enemies?: readonly string[]
   mapId?: string
+  /** Authored map data is authoritative, validated and detached; never inserted into a registry. */
+  map?: AuthoredMap
   /** Names the fielding in errors and on the export. Never read by the rules. */
   scenarioId?: string
   /** Stat overrides by unit type. Does NOT change the seed, so arms stay paired. */
@@ -173,13 +175,17 @@ export function createBattle(opts: BattleOptions): Ctx {
   const rootSeed = rootSeedOf(FIRST_BATTLE.scenarioId, opts.variantId ?? 0, opts.replicate)
   const rng = makeRng(rootSeed, opts.strict ? { strict: true } : undefined)
 
-  const mapId = opts.mapId ?? opts.encounter?.mapId ?? 'map.open'
-  const board = boardOf(mapId)
+  const direct = opts.map !== undefined
+  const decoded = decodeMap(direct ? opts.map! : mapDef(opts.mapId ?? opts.encounter?.mapId ?? 'map.open'))
+  const { id: mapId, board, deploy } = decoded
+  if (direct && opts.mapId !== undefined && opts.mapId !== mapId) throw new Error(`map '${mapId}' differs from supplied mapId '${opts.mapId}'`)
+  if (direct && opts.encounter?.mapId !== undefined && opts.encounter.mapId !== mapId) throw new Error(`encounter '${opts.encounter.id}' map '${opts.encounter.mapId}' differs from direct map '${mapId}'`)
   if (opts.encounter && 'board' in opts.encounter && (!validBoard(opts.encounter.board) || opts.encounter.board.width !== board.width || opts.encounter.board.height !== board.height)) throw new Error(`encounter '${opts.encounter.id}' board differs from map '${mapId}'`)
-  const state: State = { turn: 0, phase: 'hero', mapId, board, terrain: terrainOf(mapId), units: [], outcome: null, seq: 0 }
+  const state: State = { turn: 0, phase: 'hero', mapId, board, terrain: decoded.terrain, units: [], outcome: null, seq: 0 }
+  const initialMap = direct ? { terrain: [...state.terrain] } : {}
   const ctx: Ctx = { state, geo: geometryOf(board), events: [], rng, cfg, actions: ACTIONS, statuses: STATUSES, critChart: CRIT_CHART, items: ITEMS, badges: BADGES, ruleBadges: RULE_BADGES,
     units: UNITS, arrive: (c, d, hex, cause) => arrive(c, d, hex, cause, {}),
-    ...(opts.encounter ? { encounter: opts.encounter } : {}) }
+    ...(opts.encounter ? { encounter: direct ? structuredClone(opts.encounter) : opts.encounter } : {}) }
 
   const def = (t: string): UnitDef => ({ ...UNITS[t]!, ...(opts.overrides?.[t] ?? {}) })
   // proving.side-override: under byList the fielded side is the list's, not the row's
@@ -275,9 +281,9 @@ export function createBattle(opts: BattleOptions): Ctx {
   // maps say south/north). The edge line's passable hexes are sampled in
   // ascending order, exactly as the deployment ROW's columns were, so the
   // rolls are the same rolls.
-  const deploy = deployOf(mapId)
   const passableLine = (edge: import('./hex.js').Edge, depth: number) =>
     ctx.geo.edgeLine(edge, depth).filter((h) => isPassable(state.terrain[h] ?? 0))
+  const availableLine = (edge: import('./hex.js').Edge, depth: number) => passableLine(edge, depth).filter(h => !taken.has(h))
   // proving.plan-shape: a named gap moves both lines inward, symmetric about the middle
   let heroDepth = 0, enemyDepth = 0
   if (opts.deployGap !== undefined) {
@@ -287,29 +293,33 @@ export function createBattle(opts: BattleOptions): Ctx {
     heroDepth = Math.floor(inward / 2)
     enemyDepth = inward - heroDepth
   }
-  const heroLine = passableLine(deploy.hero, heroDepth)
-  const enemyLine = passableLine(deploy.enemy, enemyDepth)
+  const heroLine = availableLine(deploy.hero, heroDepth)
+  const zoneHexes = opts.encounter && !opts.heroHexes ? heroDeployHexes(ctx, opts.encounter, heroes.length, new Set(taken.keys())) : null
   // Only the ROLLED path needs a deployment edge wide enough. A scenario names
   // its own hexes (already validated above), so a map with a narrow edge is not
   // its problem — before this guard, an authored fielding could be refused for a
   // line it never used.
-  if (!opts.heroHexes && heroLine.length < heroes.length) {
+  if (!opts.heroHexes && !zoneHexes && heroLine.length < heroes.length) {
     throw new Error(`map '${mapId}' has only ${heroLine.length} passable hexes on its ${deploy.hero} edge, need ${heroes.length}`)
   }
-  if (!opts.enemyHexes && enemyLine.length === 0) {
-    throw new Error(`map '${mapId}' has no passable hex on its ${deploy.enemy} edge`)
-  }
-  const heroDeploy = opts.heroHexes ? [] : sample(rng, heroLine, heroes.length, 'hero-deployment')
+  const heroDeploy = opts.heroHexes ?? zoneHexes ?? sample(rng, heroLine, heroes.length, 'hero-deployment')
+  for (const hex of heroDeploy) taken.set(hex, 'hero deployment')
+  // Preserve the physical entry-edge rule. Occupants can exhaust an otherwise
+  // usable line, in which case deployment spills inward without overlapping.
+  if (!opts.enemyHexes && passableLine(deploy.enemy, enemyDepth).length === 0) throw new Error(`map '${mapId}' has no passable hex on its ${deploy.enemy} edge`)
+  const enemyLine = availableLine(deploy.enemy, enemyDepth)
   // More enemies than the edge holds spill one line inward, then the next —
   // each line rolled only when it is needed, so a battle that fits on the
   // edge draws exactly what it always drew.
   const enemyDeploy: number[] = opts.enemyHexes ? [] : sample(rng, enemyLine, enemyLine.length, 'enemy-placement')
   if (!opts.enemyHexes) {
-    for (let depth = enemyDepth + 1; enemyDeploy.length < enemies.length; depth++) {
-      const line = passableLine(deploy.enemy, depth)
-      if (line.length === 0) throw new Error(`map '${mapId}' cannot hold ${enemies.length} enemies inward from its ${deploy.enemy} edge`)
+    const extent = deploy.enemy === 'west' || deploy.enemy === 'east' ? board.width : board.height
+    for (let depth = enemyDepth + 1; enemyDeploy.length < enemies.length && depth < extent; depth++) {
+      if (passableLine(deploy.enemy, depth).length === 0) throw new Error(`map '${mapId}' cannot hold ${enemies.length} enemies inward from its ${deploy.enemy} edge`)
+      const line = availableLine(deploy.enemy, depth)
       enemyDeploy.push(...sample(rng, line, line.length, 'enemy-placement', depth))   // keyed by the line — Law 4
     }
+    if (enemyDeploy.length < enemies.length) throw new Error(`map '${mapId}' cannot hold ${enemies.length} enemies inward from its ${deploy.enemy} edge`)
   }
 
   let id = 0
@@ -323,9 +333,8 @@ export function createBattle(opts: BattleOptions): Ctx {
   const LETTERS = 'ABCDEFGH'
   const seen: Record<string, number> = {}
   // encounter.runner: an encounter may name where the heroes deploy
-  const zoneHexes = opts.encounter && !opts.heroHexes ? heroDeployHexes(ctx, opts.encounter, heroes.length) : null
   heroes.forEach((t, i) => {
-    const hex = opts.heroHexes?.[i] ?? zoneHexes?.[i] ?? heroDeploy[i]!
+    const hex = heroDeploy[i]!
     const bare = onSide(def(t), 'hero')
     // Items at fielding (seam.items-per-unit): what the options hand this
     // hero, else the row's Codex default kit, else nothing — applied by the
@@ -415,8 +424,8 @@ export function createBattle(opts: BattleOptions): Ctx {
   // proving.plan-shape: a named deployment gap is on the line (Law 12) — absent otherwise, so every standard battle stays byte-identical
   const gap = opts.deployGap !== undefined ? { gap: opts.deployGap } : {}
   emit(ctx, 'map.loaded', mapId, opts.scenarioId
-    ? { mapId, scenarioId: opts.scenarioId, width: board.width, height: board.height, deploy, ...gap, ...terrainCensus(state.terrain) }
-    : { mapId, width: board.width, height: board.height, deploy, ...gap, ...terrainCensus(state.terrain) })
+    ? { mapId, scenarioId: opts.scenarioId, width: board.width, height: board.height, deploy, ...gap, ...terrainCensus(state.terrain), ...initialMap }
+    : { mapId, width: board.width, height: board.height, deploy, ...gap, ...terrainCensus(state.terrain), ...initialMap })
   return ctx
 }
 

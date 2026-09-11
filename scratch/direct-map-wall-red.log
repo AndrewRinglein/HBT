@@ -1,0 +1,33 @@
+
+ RUN  v4.1.11 C:/Users/aring/Desktop/Heroes of Blight and Tragic/engine
+
+ ❯ test/direct-map.test.ts (57 tests | 1 failed | 56 skipped) 7ms
+     × keeps physically blocked enemy-edge rejection while spilling past an occupied edge 6ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  test/direct-map.test.ts > mixed and tiny-map initial deployment > keeps physically blocked enemy-edge rejection while spilling past an occupied edge
+AssertionError: expected [Function] to throw an error
+
+- Expected:
+null
+
++ Received:
+undefined
+
+ ❯ test/direct-map.test.ts:231:77
+    229|   })
+    230|   it('keeps physically blocked enemy-edge rejection while spilling pas…
+    231|     expect(() => battle({ ...authored(), rows: ['...x', '...x', '...x'…
+       |                                                                             ^
+    232|     const occupied = battle(authored('test.map.tiny', 2, 2), { heroes:…
+    233|     unique(occupied)
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 56 skipped (57)
+   Start at  11:26:46
+   Duration  624ms (transform 394ms, setup 0ms, import 501ms, tests 7ms, environment 0ms)
+

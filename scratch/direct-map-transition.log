@@ -1,0 +1,16 @@
+{
+  "base": "240993d",
+  "identicalBattles": 530,
+  "exactControls": 20,
+  "zoneScenarios": [
+    "showcase.two-zombies-and-a-child",
+    "showcase.supper",
+    "showcase.kiln",
+    "showcase.rime"
+  ],
+  "changedExistingCases": 0,
+  "zoneOverlapCounterfactual": {
+    "oldDistinctHexes": 1,
+    "newDistinctHexes": 2
+  }
+}

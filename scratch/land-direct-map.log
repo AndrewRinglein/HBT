@@ -1,0 +1,17 @@
+
+gate: board.direct-map-input   [land]
+
+  PASS  dependencies landed
+  WARN  not already decided  — 2 candidate ruling(s) — READ BEFORE ASKING: ..\COMBAT-DESIGN.md:66 · ..\PROVING-RESULTS.md:3
+  PASS  typecheck
+  PASS  full test suite  — 1200 passed
+  PASS  gate 1 — the id appears in a real battle  — test.direct-map-journey: 1 log lines, 1 fired, 1 changed state · test.direct-map-authored: 1 log lines, 1 fired, 1 changed state
+  PASS  brought its own tests  — test/direct-map.test.ts
+  PASS  existing tests untouched
+  PASS  control battles unchanged
+  PASS  content has a published source  — 30 ids without a published source (20 awaiting publication from earlier items — see audit)
+  PASS  hardcode scan — core knows mechanisms, never names
+  PASS  generalizes — the second instance costs zero engine code  — shape 'plumbing' — not a mechanism, exempt
+  PASS  naming — new content ids use declared kinds
+  PASS  naming — no banned words invented
+  PASS  kill switch — the tests fail without the content  — tests fail without test.direct-map-journey,test.direct-map-authored — they genuinely test it

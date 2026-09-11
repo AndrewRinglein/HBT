@@ -1,0 +1,21 @@
+
+gate: board.direct-map-input   [check]
+
+  PASS  dependencies landed
+  WARN  not already decided  — 2 candidate ruling(s) — READ BEFORE ASKING: ..\COMBAT-DESIGN.md:66 · ..\PROVING-RESULTS.md:3
+  PASS  typecheck
+  FAIL  full test suite  — 2 FAILED — test/scenario.test.ts > the scenario registry > every scenario names one passable in-range hex per unit · test/terrain.test.ts > terrain.passable — a wall is a wall > deployment refuses to place a unit inside a wall, loudly
+  PASS  gate 1 — the id appears in a real battle  — test.direct-map-journey: 1 log lines, 1 fired, 1 changed state · test.direct-map-authored: 1 log lines, 1 fired, 1 changed state
+  PASS  brought its own tests  — test/direct-map.test.ts
+  PASS  existing tests untouched
+  PASS  control battles unchanged
+  PASS  content has a published source  — 30 ids without a published source (20 awaiting publication from earlier items — see audit)
+  PASS  hardcode scan — core knows mechanisms, never names
+  PASS  generalizes — the second instance costs zero engine code  — shape 'plumbing' — not a mechanism, exempt
+  PASS  naming — new content ids use declared kinds
+  PASS  naming — no banned words invented
+  PASS  kill switch — the tests fail without the content  — tests fail without test.direct-map-journey,test.direct-map-authored — they genuinely test it
+
+NOT READY (attempt 1). Nothing reverted — fix and run the gate again.
+If it cannot be made to pass:  node tools/gate.mjs board.direct-map-input --abandon
+

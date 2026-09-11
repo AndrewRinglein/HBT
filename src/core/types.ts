@@ -1,7 +1,13 @@
-import type { Board, Geometry, HexId } from './hex.js'
+import type { Board, Edge, Geometry, HexId } from './hex.js'
 import type { Rng } from './rng.js'
 
 export type Side = 'hero' | 'enemy'
+/** Plain authored map transport, decoded by the same boundary for registry and direct input. */
+export type AuthoredMap = {
+  readonly id: string; readonly name: string; readonly rows: readonly string[]
+  readonly board?: Board; readonly format?: string; readonly note?: string
+  readonly deploy?: { readonly hero: Edge; readonly enemy: Edge }
+}
 /** What kind of thing a unit is. Every AI can read this about every other unit. */
 export type Role = 'melee' | 'ranged' | 'support'
 /** Terrain layer 1. 0 = open ground. */
@@ -312,6 +318,8 @@ export type MoveEffect =
  * constraint is enforced by the type, not by a convention someone can forget.
  */
 export type ScenarioDef = {
+  /** A detached map row passed through production setup, without registry insertion. */
+  readonly map?: AuthoredMap
   readonly id: string
   /** Why this fielding exists. Shown by the tool; never read by the engine. */
   readonly note: string

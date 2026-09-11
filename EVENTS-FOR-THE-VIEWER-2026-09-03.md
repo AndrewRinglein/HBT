@@ -340,3 +340,32 @@ control hashes and whole-core scans. Logs are `scratch/land-action-spent.log`
 and `scratch/audit-action-spent.log`. No exemption was taken. The two review
 flags remain, so the landing stands with its Iron Gauntlet seal withheld.
 No human visual acceptance is claimed here.
+
+## 15. Direct authored maps: exact initial terrain
+
+`createBattle({ map: authoredRow, ... })` accepts an authoritative direct map
+without inserting it into the global map registry. For this input path,
+`map.loaded` adds `terrain: number[]`, the exact initial base terrain in row-major
+order (`hex = row * width + col`). Its existing `width`, `height`, `mapId`,
+`causeId`, `deploy` and census fields retain their meanings. The array has exactly
+`width * height` entries and uses the engine's numeric terrain values. Rows with
+unsupported mechanical fields or unknown glyphs fail setup rather than lose data.
+
+This is a detached initial fact, captured before setup effects. Later edits to
+the caller's row, other battles with the same map ID, or mutable state terrain
+cannot alter it. Replay must use the recorded terrain when present, even when
+the ID also names a different registry row; fetching by ID would lose the actual
+board. Existing registry-only events retain their existing shape and semantics.
+
+Event order is unchanged: setup emits unit/encounter events before `map.loaded`.
+A consumer can read the initial map fact before folding the ordered events, or
+buffer setup events until dimensions arrive. Loading the base terrain must not
+erase prior unit placement or setup layer events. This array specifies base
+terrain only; subsequent ground layers remain owned by their existing events.
+No new inference about props, elevation, LOS or cover is implied.
+
+Snapshot restore validates a present exact-terrain payload against the saved map
+identity/dimensions and the same terrain validity rule as saved state. It does
+not demand equality to current mutable terrain. JSON export already transports
+this event unchanged. Viewer adoption and human visual acceptance remain later
+work; this stage establishes and verifies the engine transport contract only.

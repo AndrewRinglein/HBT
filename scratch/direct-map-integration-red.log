@@ -1,0 +1,54 @@
+
+ RUN  v4.1.11 C:/Users/aring/Desktop/Heroes of Blight and Tragic/engine
+
+ ❯ test/scenario.test.ts (20 tests | 1 failed) 61ms
+     × every scenario names one passable in-range hex per unit 4ms
+ ❯ test/terrain.test.ts (31 tests | 1 failed) 1099ms
+     × deployment refuses to place a unit inside a wall, loudly 3ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  test/scenario.test.ts > the scenario registry > every scenario names one passable in-range hex per unit
+AssertionError: test.direct-map-journey heroes: expected +0 to be 1 // Object.is equality
+
+- Expected
++ Received
+
+- 1
++ 0
+
+ ❯ test/scenario.test.ts:57:50
+     55|         continue
+     56|       }
+     57|       expect(s.heroHexes.length, `${id} heroes`).toBe(s.heroes.length)
+       |                                                  ^
+     58|       expect(s.enemyHexes.length, `${id} enemies`).toBe(s.enemies.leng…
+     59|       const all = [...s.heroHexes, ...s.enemyHexes]
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+ FAIL  test/terrain.test.ts > terrain.passable — a wall is a wall > deployment refuses to place a unit inside a wall, loudly
+AssertionError: expected [Function] to throw an error
+
+- Expected:
+null
+
++ Received:
+undefined
+
+ ❯ test/terrain.test.ts:307:8
+    305|     ;(MAPS as unknown as object[]).push(walled)
+    306|     expect(() => createBattle({ replicate: 0, mapId: 'map.walled' }))
+    307|       .toThrow(/no passable hex on its north edge/)
+       |        ^
+    308|     ;(MAPS as unknown as object[]).pop()
+    309|   })
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯
+
+
+ Test Files  2 failed (2)
+      Tests  2 failed | 49 passed (51)
+   Start at  11:26:11
+   Duration  1.69s (transform 709ms, setup 0ms, import 938ms, tests 1.16s, environment 0ms)
+

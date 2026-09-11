@@ -1,0 +1,51 @@
+
+ RUN  v4.1.11 C:/Users/aring/Desktop/Heroes of Blight and Tragic/engine
+
+ ❯ test/direct-map.test.ts (56 tests | 10 failed | 45 skipped) 116ms
+     × rejects corrupted saved direct-map replay facts {"terrain":[]} 20ms
+     × rejects corrupted saved direct-map replay facts {"terrain":null} 9ms
+     × rejects corrupted saved direct-map replay facts {"terrain":[0]} 9ms
+     × rejects corrupted saved direct-map replay facts {"terrain":[0,0,0,0,0,0,0,0,0,0,0,-1]} 9ms
+     × rejects corrupted saved direct-map replay facts {"terrain":[0,0,0,0,0,0,0,0,0,0,0,0.5]} 9ms
+     × rejects corrupted saved direct-map replay facts {"terrain":[0,0,0,0,0,0,0,0,0,0,0,"0"]} 8ms
+     × rejects corrupted saved direct-map replay facts {"width":3,"height":4} 9ms
+     × rejects corrupted saved direct-map replay facts {"width":"4"} 8ms
+     × rejects corrupted saved direct-map replay facts {"mapId":"test.map.other"} 9ms
+     × rejects corrupted saved direct-map replay facts {"causeId":"test.map.other"} 9ms
+
+⎯⎯⎯⎯⎯⎯ Failed Tests 10 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  test/direct-map.test.ts > production direct authored maps > rejects corrupted saved direct-map replay facts {"terrain":[]}
+ FAIL  test/direct-map.test.ts > production direct authored maps > rejects corrupted saved direct-map replay facts {"terrain":null}
+ FAIL  test/direct-map.test.ts > production direct authored maps > rejects corrupted saved direct-map replay facts {"terrain":[0]}
+ FAIL  test/direct-map.test.ts > production direct authored maps > rejects corrupted saved direct-map replay facts {"terrain":[0,0,0,0,0,0,0,0,0,0,0,-1]}
+ FAIL  test/direct-map.test.ts > production direct authored maps > rejects corrupted saved direct-map replay facts {"terrain":[0,0,0,0,0,0,0,0,0,0,0,0.5]}
+ FAIL  test/direct-map.test.ts > production direct authored maps > rejects corrupted saved direct-map replay facts {"terrain":[0,0,0,0,0,0,0,0,0,0,0,"0"]}
+ FAIL  test/direct-map.test.ts > production direct authored maps > rejects corrupted saved direct-map replay facts {"width":3,"height":4}
+ FAIL  test/direct-map.test.ts > production direct authored maps > rejects corrupted saved direct-map replay facts {"width":"4"}
+ FAIL  test/direct-map.test.ts > production direct authored maps > rejects corrupted saved direct-map replay facts {"mapId":"test.map.other"}
+ FAIL  test/direct-map.test.ts > production direct authored maps > rejects corrupted saved direct-map replay facts {"causeId":"test.map.other"}
+AssertionError: expected [Function] to throw an error
+
+- Expected:
+null
+
++ Received:
+undefined
+
+ ❯ test/direct-map.test.ts:177:61
+    175|     const saved = JSON.parse(saveBattle(ctx))
+    176|     Object.assign(saved.events.find((e: any) => e.type === 'map.loaded…
+    177|     expect(() => restoreBattle(JSON.stringify(saved), ctx)).toThrow(/m…
+       |                                                             ^
+    178|   })
+    179|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/10]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  10 failed | 1 passed | 45 skipped (56)
+   Start at  11:23:34
+   Duration  735ms (transform 391ms, setup 0ms, import 500ms, tests 116ms, environment 0ms)
+

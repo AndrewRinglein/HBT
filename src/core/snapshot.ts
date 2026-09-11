@@ -8,7 +8,7 @@ import { DEFAULT_CONFIG, MAX_SURGE_CYCLES, type BattleCursor, type Ctx } from '.
 export type BattleRuntime = Pick<Ctx, 'actions' | 'statuses' | 'critChart' | 'items' | 'badges' | 'ruleBadges' | 'units' | 'arrive'>
 // Bump when rules/control flow change incompatibly. Functions are supplied by
 // this runtime, never revived from JSON. There is no V1 save migration.
-const RULES_VERSION = 'v2-migration.9' // Authored dimensions with a consistent bounded board contract.
+const RULES_VERSION = 'v2-migration.10' // Direct authored maps and non-overlapping initial placement.
 const bindingKeys = ['actions', 'statuses', 'critChart', 'items', 'badges', 'ruleBadges', 'units'] as const
 const phases = ['hero', 'enemy']
 const steps: BattleCursor['at'][] = ['battle-start', 'turn-start', 'hero-start', 'enemy-arrivals', 'enemy-start', 'next-activation', 'acting', 'surge-check', 'activation-end', 'phase-end', 'turn-end', 'complete']
@@ -21,6 +21,7 @@ function record(value: unknown): asserts value is Record<string, any> {
 }
 const integer = (n: unknown, min = Number.MIN_SAFE_INTEGER, max = Number.MAX_SAFE_INTEGER): n is number => Number.isSafeInteger(n) && (n as number) >= min && (n as number) <= max
 const strings = (v: unknown): v is string[] => Array.isArray(v) && v.every(x => typeof x === 'string')
+const validTerrain = (v: unknown, cells: number): boolean => Array.isArray(v) && v.length === cells && v.every(x => integer(x, 0))
 
 /** Sorted object keys; arrays retain their authored order. Hook presence is
  * data; implementation compatibility is covered by RULES_VERSION, not source
@@ -87,7 +88,7 @@ export function restoreBattle(json: string, runtime: BattleRuntime): Ctx {
   const st = s.state; record(st); record(st.board)
   requireThat(validBoard(st.board), 'board dimensions')
   const cells = st.board.width * st.board.height
-  requireThat(Array.isArray(st.terrain) && st.terrain.length === cells && st.terrain.every((x: unknown) => integer(x, 0)), 'terrain')
+  requireThat(validTerrain(st.terrain, cells), 'terrain')
   requireThat(st.layers === undefined || (Array.isArray(st.layers) && st.layers.length === cells && st.layers.every((x: unknown) => integer(x, 0))), 'layers')
   requireThat(integer(st.turn, 0) && phases.includes(st.phase) && typeof st.mapId === 'string', 'battle clock/map')
   requireThat(st.outcome === null || ['heroClear', 'objectiveMet', 'wipe', 'retreat', 'capped', 'objectiveFailed'].includes(st.outcome), 'outcome')
@@ -153,6 +154,12 @@ export function restoreBattle(json: string, runtime: BattleRuntime): Ctx {
     record(e)
     requireThat(e.seq === i && integer(e.turn, 0, st.turn) && phases.includes(e.phase) && typeof e.type === 'string' && typeof e.causeId === 'string', 'event prefix')
     requireThat((e.actor === null || unitId(e.actor)) && (e.target === null || unitId(e.target)), 'event unit reference')
+    if (e.type === 'map.loaded' && 'terrain' in e) {
+      requireThat(e.mapId === st.mapId && e.causeId === st.mapId, 'initial map identity differs')
+      requireThat(e.width === st.board.width && e.height === st.board.height, 'initial map dimensions differ')
+      requireThat(validTerrain(e.terrain, cells), 'initial map terrain')
+      // This is initial terrain; current terrain can have changed since setup.
+    }
   }
   if (s.encounter !== undefined) {
     const enc = s.encounter; record(enc)
