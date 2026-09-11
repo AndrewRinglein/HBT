@@ -1,4 +1,4 @@
-# Effect comparison arm integrity — in progress
+# Effect comparison arm integrity — landed and audited
 
 Item plumbing.effect-arm-integrity follows audited terrain.high-cell-los.
 LOS source e623d26 and evidence f5445df retain the historical withheld seal:
@@ -52,5 +52,14 @@ trailer. No TypeError or imputed averages; retained in effect-arm-real.log.
 Full tooling pre-land gate passed (effect-arm-gate-1.log): 1,233 tests,
 typecheck and all 20 unchanged combat control hashes. The existing ruling
 candidate warning and two offline-tool exemptions remain explicit; no historical
-tests were edited. Committed checks and batch audit remain pending. No combat,
-content or map/art changes belong here.
+tests were edited. Source 0cb1730 (gate printed pre-amend 6fb1211) passed
+committed-tree tests and control comparison. The separate audit in
+audit-effect-arm.log passed 1,233 tests, typecheck and all 20 current hashes.
+Whole-core checks pass; 30 grandfathered source IDs remain. The review queue
+is now 45 items because this offline tooling item is explicitly flagged.
+
+The tooling seal is withheld for exactly **one ruling warning and two offline
+exemptions**; status done-needs-review. No technical checks failed at landing.
+The previous LOS effect-tool error remains in its own history. Report and full
+source file list are retained in effect-arm-report.log and effect-arm-source-files.txt.
+No combat, content or map/art changes belong here.

@@ -1,0 +1,177 @@
+
+Backlog — 139 landed, 0 abandoned, 32 pending
+
+  LANDED  ae42a01  status.poison
+  LANDED  9b9229a  status.burn
+  LANDED  92bb6e5  terrain.kinds
+  LANDED  013a373  terrain.movecost
+  LANDED  b6da318  terrain.passable
+  LANDED  be0cbb2  terrain.modifiers
+  LANDED  e1db41d  movement.attack-of-opportunity
+  LANDED  36211e9  status.regeneration
+  LANDED  50d4eed  status.weakness
+  LANDED  23a048c  status.stun
+  LANDED  affba58  status.protection
+  LANDED  13634b9  ai.mode.defender
+  LANDED  9f133be  ai.mode.support
+  LANDED  a44a94a  terrain.water-cleanses
+  LANDED  -  trigger.mechanism
+  LANDED  676f6b3  trigger.zombie.rot
+  LANDED  -  target.model
+  LANDED  a96058a  attack.multihit
+  LANDED  03b97e2  ability.effects
+  LANDED  -  stat.spirit
+  LANDED  f169f14  fix.activation-end-fires
+  LANDED  9b83319  fix.unit-tags
+  LANDED  5e7f33d  fix.one-damage-function
+  LANDED  178f608  fix.adjacent-ranged
+  LANDED  4c2b425  fix.downed-targetable
+  LANDED  97ceb68  fix.bleedout-duration
+  LANDED  afb6ff9  fix.poison-shape
+  LANDED  e60de25  station.accuracy-field
+  LANDED  03a87e0  target.no-exclude-self
+  LANDED  839460a  gauntlet.iron
+  LANDED  fae1c37  status.tick-resist
+  LANDED  252be44  content.test-lane
+  LANDED  97229ec  fix.water-regen
+  LANDED  c5ec972  viewer.replay-rig
+  LANDED  26fdc48  viewer.replay-publish
+  LANDED  175377b  viewer.replay-layout
+  LANDED  a2e5d83  fix.replay-bar-jitter
+  LANDED  849ead6  status.bleed
+  LANDED  380e43e  status.slow
+  LANDED  9899d10  terrain.burning-ground
+  LANDED  2ca5d4d  unit.spirit-snake
+  LANDED  1880d24  unit.green-drake
+  LANDED  792cc14  unit.shadow-hound-puppy
+  LANDED  4d4d47f  viewer.status-legibility
+  LANDED  5788005  map.showcase
+  LANDED  2e7ce07  viewer.showcase-vfx
+  LANDED  5d7a21b  trigger.attack-scoped
+  LANDED  ba09f6a  movement.powers
+  LANDED  a61228f  movement.flight
+  LANDED  8962c36  test.fixture-migration
+  LANDED  61f8496  scenario.export
+  LANDED  4767fa9  fix.cohort-drift
+  LANDED  5dcb775  movement.bonus-actions
+  LANDED  2b7a07c  content.enemy-pack
+  LANDED  11665b0  content.civilians
+  LANDED  8c7125b  content.hero-pack
+  LANDED  50fdb05  encounter.battle-1
+  LANDED  41b607a  encounter.battle-2
+  LANDED  3d902a9  fix.status-tick-timing
+  LANDED  bd32761  fix.range-penalty-grace
+  LANDED  f16574e  capability.area-attack
+  LANDED  1e96226  capability.item-powers
+  LANDED  d5c42f7  station.crit
+  LANDED  a0e811c  fix.crit-branch-even
+  LANDED  8780794  station.crit-count
+  LANDED  c466319  fix.status-damage-types
+  LANDED  8215824  fix.bleed-magnitude
+  LANDED  37f7311  fix.dazed-split
+  LANDED  c3f9ac8  pack.statuses
+  LANDED  21d6e3c  pack.moves
+  LANDED  bef295a  test.receptacle
+  LANDED  01d871a  content.enemy-flip
+  LANDED  bd81004  capability.frost-root-taunt
+  LANDED  7908287  capability.karma-shadow-confusion
+  LANDED  fb9b5d3  capability.deathbed
+  LANDED  824e61d  capability.auras
+  LANDED  d0d7f1d  capability.corpses
+  LANDED  55a624d  capability.ground-layers
+  LANDED  22793db  capability.vision
+  LANDED  776c550  capability.target-stamina-loss
+  LANDED  c5bf0b8  fix.post-end-ladder
+  LANDED  b88076d  fix.rulings-2026-09-03-evening
+  LANDED  2e9f5fd  ai.civilian-flight
+  LANDED  a559403  progression.level-table-by-type
+  LANDED  c5085c1  board.variable-size
+  LANDED  c354793  board.deploy-edges
+  LANDED  2e76ede  badge.mechanism
+  LANDED  fbb0467  proving.rig
+  LANDED  9dc6d1f  proving.mirror-row-rules
+  LANDED  52cf5f7  content.pack-maps
+  LANDED  df999a5  fix.ordered-power-preview
+  LANDED  b68e480  fix.flight-budget
+  LANDED  e81fd26  board.direct-map-input
+  LANDED  725eb0e  terrain.high-cell-los
+  LANDED  0b79fb7  movement.zone-of-control   ** NEEDS REVIEW **
+  LANDED  a4822ab  fix.beast-pen-hero-correction   ** NEEDS REVIEW **
+  LANDED  286472a  content.test-cohort   ** NEEDS REVIEW **
+  LANDED  3314213  fix.shadow-hound-hero-side   ** NEEDS REVIEW **
+  LANDED  9c9ac77  encounter.runner   ** NEEDS REVIEW **
+  LANDED  79e8703  capability.power-pool   ** NEEDS REVIEW **
+  LANDED  0cbbb9c  content.alpha-team   ** NEEDS REVIEW **
+  LANDED  80e9b50  capability.knockback   ** NEEDS REVIEW **
+  LANDED  60710eb  content.field-eve-24   ** NEEDS REVIEW **
+  LANDED  058e75e  pack.items   ** NEEDS REVIEW **
+  LANDED  0ea4ad2  seam.items-per-unit   ** NEEDS REVIEW **
+  LANDED  da99720  content.alpha-flip   ** NEEDS REVIEW **
+  LANDED  1beed08  capability.charges   ** NEEDS REVIEW **
+  LANDED  060b61b  ai.attack-choice   ** NEEDS REVIEW **
+  LANDED  32c244e  fix.enemy-ai-role   ** NEEDS REVIEW **
+  LANDED  f5a5cac  capability.enemy-action-cooldown   ** NEEDS REVIEW **
+  LANDED  b0a5759  capability.surge   ** NEEDS REVIEW **
+  LANDED  1019510  fix.zoc-threat-not-stop   ** NEEDS REVIEW **
+  LANDED  2e649b5  fix.knockback-beyond-one   ** NEEDS REVIEW **
+  LANDED  26fa562  refactor.one-action-type   ** NEEDS REVIEW **
+  LANDED  4bb80e3  board.heroes-west   ** NEEDS REVIEW **
+  LANDED  b4cbd9b  fix.deathbed-no-stands   ** NEEDS REVIEW **
+  LANDED  e941838  badge.afflictions   ** NEEDS REVIEW **
+  LANDED  2dd95c8  proving.side-override   ** NEEDS REVIEW **
+  LANDED  33847f6  encounter.band-axis   ** NEEDS REVIEW **
+  LANDED  93e3195  fix.aoo-pays-stamina   ** NEEDS REVIEW **
+  LANDED  63f75cc  fix.class-restriction   ** NEEDS REVIEW **
+  LANDED  ef5cb9c  proving.plan-shape   ** NEEDS REVIEW **
+  LANDED  9d62be1  pack.rotting-flesh-2   ** NEEDS REVIEW **
+  LANDED  122934a  proving.rank   ** NEEDS REVIEW **
+  LANDED  0e6ff9e  proving.page   ** NEEDS REVIEW **
+  LANDED  993c9d2  proving.score-victory-rate   ** NEEDS REVIEW **
+  LANDED  b2014a4  fix.v2-baseline   ** NEEDS REVIEW **
+  LANDED  e8eb658  plumbing.battle-cursor   ** NEEDS REVIEW **
+  LANDED  5f7502c  plumbing.battle-snapshot   ** NEEDS REVIEW **
+  LANDED  ca8f01d  plumbing.battle-commands   ** NEEDS REVIEW **
+  LANDED  8c7cf58  fix.movement-plans   ** NEEDS REVIEW **
+  LANDED  2d80925  fix.surge-cycle   ** NEEDS REVIEW **
+  LANDED  d6484cf  fix.ai-shared-commands   ** NEEDS REVIEW **
+  LANDED  72d461b  fix.unit-identities   ** NEEDS REVIEW **
+  LANDED  e5b79a5  plumbing.game-builder-batches   ** NEEDS REVIEW **
+  LANDED  c5d2861  capability.authored-slots   ** NEEDS REVIEW **
+  LANDED  00e38df  plumbing.action-spent   ** NEEDS REVIEW **
+  LANDED  a9c2c4c  board.authored-dimensions   ** NEEDS REVIEW **
+  LANDED  6fb1211  plumbing.effect-arm-integrity   ** NEEDS REVIEW **
+  pending            unit.archer
+  pending            unit.brute
+  pending            ability.warrior.rally
+  pending            ability.ranger.volley
+  pending            content.mage-staff
+  pending            terrain.impassable-naming
+  pending            trigger.zombie.sap
+  pending            trigger.mage.kindle
+  pending            station.vs-target
+  pending            move.actions
+  pending            fix.start-of-turn-victory
+  pending            fix.outcome-enum
+  pending            fix.phase-ladder-config
+  pending            fix.retired-stations
+  pending            crit.branch-and-injuries
+  pending            hook.on-enter
+  pending            tool.effect-size-rules
+  pending            viewer.hexvfx-path
+  pending            viewer.geometry
+  pending            content.art-manifest
+  pending            viewer.build
+  pending            viewer.board
+  pending            viewer.tile-state
+  pending            viewer.panel
+  pending            viewer.pump
+  pending            viewer.log-transport
+  pending            viewer.styles
+  pending            sim.coverage
+  pending            seam.unit-mods
+  pending            seam.spare-weapons
+  pending            pack.derived-rows
+  pending            system.ai-modes
+
+45 item(s) edited existing tests — read the diffs in .state/ledger.md before trusting them.
+
