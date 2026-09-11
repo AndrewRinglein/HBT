@@ -1222,3 +1222,753 @@ moves `.git/*.lock` aside per HANDOFF-2026-09-03 §7), so every revert and resto
 Typecheck clean, 68 files / 166 tests pass. Count 58 → **61 of 68 closed · 61 probed ·
 1 accepted**. What remains open is H-tier only: 030, 048, 049 for Angela's eye, with
 066, 067, 068 landed and awaiting `--accept`, and 050 accepted.
+
+## v2.week-spine — LANDED `648d957` **NEEDS REVIEW**
+2026-09-11 07:52 · engine @ f1b1ca2
+
+  PASS  dependencies landed
+  WARN  not already decided — 2 candidate ruling(s) — READ BEFORE ASKING: ..\STATE.md:21 · ..\KINGDOM-DESIGN.md:115
+  PASS  typecheck
+  PASS  full test suite — 182 passed
+  PASS  gate 1 — every claimed criterion holds — ISC-005 holds · ISC-006 holds · ISC-007 holds · ISC-008 holds · ISC-009 holds · ISC-010 holds · ISC-036 holds · ISC-046 holds · ISC-047 holds
+  PASS  brought its own tests — test/isc-004.test.ts, test/isc-005.test.ts, test/isc-006.test.ts, test/isc-007.test.ts, test/isc-008.test.ts, test/isc-009.test.ts, test/isc-010.test.ts, test/isc-012.test.ts, test/isc-035.test.ts, test/isc-036.test.ts, test/isc-037.test.ts, test/isc-038.test.ts, test/isc-040.test.ts, test/isc-041.test.ts, test/isc-046.test.ts, test/isc-047.test.ts, test/isc-052.test.ts, test/isc-056.test.ts, test/isc-057.test.ts, test/isc-058.test.ts, test/isc-059.test.ts, test/isc-060.test.ts, test/loadgame.test.ts, test/save-migrate.test.ts, test/source-mentions.test.ts, test/v2-week.test.ts
+  WARN  existing tests untouched — DELETED LINES in test/isc-004.test.ts (-1), test/isc-005.test.ts (-20), test/isc-006.test.ts (-1), test/isc-007.test.ts (-3), test/isc-008.test.ts (-9), test/isc-009.test.ts (-3), test/isc-010.test.ts (-2), test/isc-012.test.ts (-1), test/isc-035.test.ts (-1), test/isc-036.test.ts (-15), test/isc-037.test.ts (-4), test/isc-038.test.ts (-2), test/isc-040.test.ts (-3), test/isc-041.test.ts (-4), test/isc-046.test.ts (-48), test/isc-047.test.ts (-7), test/isc-052.test.ts (-1), test/isc-056.test.ts (-1), test/isc-057.test.ts (-3), test/isc-058.test.ts (-1), test/isc-059.test.ts (-1), test/isc-060.test.ts (-2), test/loadgame.test.ts (-1), test/save-migrate.test.ts (-11) — will land FLAGGED for review
+  PASS  kill switch — every claimed probe has been seen red — ISC-005: red on record (2026-09-11 07:48 @ e208302) and re-proven — fails without stage.field · ISC-006: red on record (2026-09-11 07:48 @ e208302, probe c32d9791f5b7) · ISC-007: red on record (2026-09-11 07:48 @ e208302, probe 8e4ef5a21a9a) · ISC-008: red on record (2026-09-11 07:48 @ e208302, probe 5b951d1f4862) · ISC-009: red on record (2026-09-11 07:48 @ e208302, probe 36cc0c2b86b0) · ISC-010: red on record (2026-09-11 07:48 @ e208302, probe 6e78e92d7841) · ISC-036: red on record (2026-09-11 07:48 @ e208302, probe 02b048959922) · ISC-046: red on record (2026-09-11 07:48 @ e208302, probe 95288f9049a0) · ISC-047: red on record (2026-09-11 07:48 @ e208302, probe ff1728f75f32)
+  PASS  nothing regresses — every P-tier probe — 61 P-tier probe(s): 61 green, 0 red, 0 regression(s). 61 of 68 closed · 61 probed · 1 accepted
+  PASS  hardcode scan — core knows mechanisms, never names
+  PASS  generalizes — the second instance costs zero kingdom code — stage.field live · stage.city live
+  PASS  naming — new ids use declared kinds
+  PASS  naming — no banned words invented
+  WARN  engine working tree clean — verified against a DIRTY engine tree (f1b1ca2 + 5 uncommitted under src/test): M src/core/encounter.ts, M src/core/setup.ts, M src/core/snapshot.ts
+  PASS  one door to the engine
+
+<details><summary>Existing tests were edited — review this diff</summary>
+
+```diff
+diff --git a/test/isc-004.test.ts b/test/isc-004.test.ts
+index 6679ab6..1461c93 100644
+--- a/test/isc-004.test.ts
++++ b/test/isc-004.test.ts
+@@ -19,5 +19,5 @@ function fresh() {
+   return makeCampaign(7, {
+     realm: 'realm.ruined-kingdom',
+-    stage: 'stage.buy',
++    stage: 'stage.city',
+     currencies: CURRENCIES.map((c) => c.id),
+     cups: ['cup.threat', 'cup.battle'],
+diff --git a/test/isc-005.test.ts b/test/isc-005.test.ts
+index edf91c6..8d2baef 100644
+--- a/test/isc-005.test.ts
++++ b/test/isc-005.test.ts
+@@ -1,30 +1,26 @@
+-// ISC-005 — a Week advances through all six Stages in the ruled order —
+-// stage.buy → stage.quest → stage.defend → stage.conquer → stage.build →
+-// stage.mend — and the order is read from the Stage rows, not the code.
+-// KINGDOM-DESIGN.md §3 · GLOSSARY.md
++// ISC-005, superseded by KINGDOM-V2-2026-09-07: two halves, ordered Field activities.
+ import { describe, it, expect } from 'vitest'
+ import { loadFixture } from './walk.js'
+-import { beginWeek, performAdvance, stageOf } from '../src/core/week.js'
++import { beginWeek, performAdvance } from '../src/core/week.js'
+ import { setCursor } from '../src/core/mutate.js'
++import { STAGES } from '../src/content/stages.js'
+ 
+-// The RULED order, written here from the design document — not read from the
+-// registry, so a registry missing a row (KINGDOM_DISABLE_IDS=stage.mend) fails this.
+-const RULED = ['stage.buy', 'stage.quest', 'stage.defend', 'stage.conquer', 'stage.build', 'stage.mend']
+-
+-describe('ISC-005 — six Stages, the ruled order', () => {
+-  it('a Week visits the six ids in order and then the next Week begins at the first', () => {
++describe('ISC-005 — Field then unordered City', () => {
++  it('visits Conquest, Defense, due quests, City and the next Week exactly once', () => {
++    expect(STAGES.map((s) => s.id)).toEqual(['stage.field', 'stage.city'])
+     const ctx = loadFixture()
+-    setCursor(ctx, { step: 'open', prepStep: null, engagement: null, battle: null }, 'test')
+     beginWeek(ctx, 'test')
+     const week = ctx.campaign.week
+-    const visited: string[] = [stageOf(ctx.campaign).id]
+-    for (let i = 0; i < 5; i++) { performAdvance(ctx, 'test'); visited.push(stageOf(ctx.campaign).id) }
+-    expect(visited).toEqual(RULED)
+-    expect(ctx.campaign.week).toBe(week)
+-    performAdvance(ctx, 'test')
++    const visited: string[] = []
++    for (let i = 0; i < 4; i++) {
++      visited.push(`${ctx.campaign.cursor.stage}/${ctx.campaign.cursor.fieldStep}`)
++      setCursor(ctx, { attack: null }, 'no attack in this flow probe')
++      performAdvance(ctx, 'test')
++    }
++    expect(visited).toEqual(['stage.field/conquest', 'stage.field/defense', 'stage.field/quests', 'stage.city/null'])
+     expect(ctx.campaign.week).toBe(week + 1)
+-    expect(stageOf(ctx.campaign).id).toBe(RULED[0])
+-    const begun = ctx.events.filter((e) => e.type === 'stage.begun').map((e) => e['stageId'])
+-    expect(begun).toEqual([...RULED, RULED[0]])
++    expect(ctx.campaign.cursor).toMatchObject({ stage: 'stage.field', fieldStep: 'conquest' })
++    expect(ctx.events.filter((e) => e.type === 'stage.begun').map((e) => e['stageId'])).toEqual(['stage.field', 'stage.city', 'stage.field'])
++    expect(ctx.events.filter((e) => e.type === 'stage.ended').map((e) => e['stageId'])).toEqual(['stage.field', 'stage.city'])
+   })
+ })
+diff --git a/test/isc-006.test.ts b/test/isc-006.test.ts
+index 843559b..5ace830 100644
+--- a/test/isc-006.test.ts
++++ b/test/isc-006.test.ts
+@@ -21,5 +21,5 @@ describe('ISC-006 — a Stage that resolves to nothing still begins and ends', (
+     expect(begun).toEqual(STAGES.map((s) => s.id))
+     expect(ended).toEqual(STAGES.map((s) => s.id))
+-    expect(STAGES.length).toBe(6)
++    expect(STAGES.length).toBe(2)
+     // and nothing else happened — no engagement, no writer
+     expect(inWeek.some((e) => e.type === 'engagement.offered' || e.type === 'engagement.resolved')).toBe(false)
+diff --git a/test/isc-007.test.ts b/test/isc-007.test.ts
+index b89630b..9ac532c 100644
+--- a/test/isc-007.test.ts
++++ b/test/isc-007.test.ts
+@@ -17,9 +17,9 @@ describe('ISC-007 — the cursor round-trips at every position, and the reload c
+     beginWeek(base, 'test')
+     const positions: string[] = []
+-    for (let stage = 0; stage < 6; stage++) {
++    for (let stage = 0; stage < 4; stage++) {
+       // fork: the original continues; the copy is a reload of the save at this position
+       const copy = makeCtx(campaignOf(saveOf(base.campaign)))
+       expect(copy.campaign).toEqual(base.campaign)
+-      positions.push(`${base.campaign.cursor.stage}/${base.campaign.cursor.step}`)
++      positions.push(`${base.campaign.cursor.stage}/${base.campaign.cursor.fieldStep}/${base.campaign.cursor.step}`)
+       const fromA = base.events.length, fromB = copy.events.length
+       playStage(base, DEFAULTS, 'test')
+@@ -28,5 +28,6 @@ describe('ISC-007 — the cursor round-trips at every position, and the reload c
+       expect(shapeOf(copy.events, fromB), positions.at(-1)).toEqual(shapeOf(base.events, fromA))
+     }
+-    expect(positions.length).toBe(6)
++    expect(positions).toEqual(['stage.field/conquest/open', 'stage.field/defense/open', 'stage.field/quests/open', 'stage.city/null/open'])
++    expect(base.campaign.week).toBe(4)
+     expect(base.events.some((e) => e.type === 'engagement.resolved')).toBe(true)   // the Week had a battle in it
+   })
+diff --git a/test/isc-008.test.ts b/test/isc-008.test.ts
+index cf34eb4..597a48c 100644
+--- a/test/isc-008.test.ts
++++ b/test/isc-008.test.ts
+@@ -1,2 +1,3 @@
++// V2 supersedes the old dual-slot truth; release and multiweek countdown checks retained.
+ // ISC-008 — a hero holds at most one field Assignment and one city Assignment
+ // in a Week; a second in either slot is refused by canCommit.
+@@ -9,31 +10,36 @@ import { setCursor } from '../src/core/mutate.js'
+ const H = 'hero.base.paladin-shiney'
+ 
+-describe('ISC-008 — two slots, one Assignment each', () => {
+-  it('field and city each take one; a second in the same slot is refused; releasing reopens it', () => {
++describe('ISC-008 — one Assignment across both halves', () => {
++  it('Field and City compete for one commitment; releasing an unperformed reservation reopens it', () => {
+     const ctx = loadFixture()
+     setCursor(ctx, { step: 'open', prepStep: null, engagement: null, battle: null }, 'test')
+     const field = { kind: 'engagement' as const, target: 'engagement.conquer.ridge.week-3', weeks: 1 }
+-    const city = { kind: 'labour' as const, target: 'farm', weeks: 1 }
++    const city = { kind: 'labour' as const, target: 'pray', weeks: 1 }
+     expect(canCommit(ctx.campaign, H, field)).toBe(true)
+     performCommit(ctx, H, field, 'test')
+     expect(commitmentOf(ctx.campaign, H, 'field')).toBe('committed')
+-    expect(commitmentOf(ctx.campaign, H, 'city')).toBe('free')                  // fight AND one city action
++    expect(commitmentOf(ctx.campaign, H, 'city')).toBe('committed')             // V2: one weekly commitment
+     expect(canCommit(ctx.campaign, H, { ...field, target: 'engagement.conquer.thicket.week-3' })).toBe(false)
+     expect(() => performCommit(ctx, H, field, 'test')).toThrow(/refused/)
++    expect(canCommit(ctx.campaign, H, city)).toBe(false)
++    expect(() => performCommit(ctx, H, city, 'test')).toThrow(/refused/)
++    performRelease(ctx, H, 'field', 'test')
+     performCommit(ctx, H, city, 'test')
+     expect(commitmentOf(ctx.campaign, H, 'city')).toBe('committed')
+     expect(canCommit(ctx.campaign, H, { ...city, target: 'pray' })).toBe(false)
+-    expect(ctx.campaign.assignments[H]).toEqual({ field, city })
++    expect(ctx.campaign.assignments[H]).toEqual(city)
+     performRelease(ctx, H, 'city', 'test')
+     expect(commitmentOf(ctx.campaign, H, 'city')).toBe('free')
+     expect(ctx.events.filter((e) => e.type === 'hero.committed').length).toBe(2)
+-    expect(ctx.events.filter((e) => e.type === 'hero.released').length).toBe(1)
++    expect(ctx.events.filter((e) => e.type === 'hero.released').length).toBe(2)
+   })
+   it('the Week boundary releases what has run out and counts down what has not', () => {
+     const ctx = loadFixture()
+-    performCommit(ctx, H, { kind: 'engagement', target: 'x', weeks: 1 }, 'test')
+-    performCommit(ctx, H, { kind: 'labour', target: 'farm', weeks: 3 }, 'test')
++    const other = 'hero.base.warrior-iron'
++    performCommit(ctx, other, { kind: 'engagement', target: 'x', weeks: 1 }, 'test')
++    performCommit(ctx, H, { kind: 'labour', target: 'pray', weeks: 3 }, 'test')
+     tickAssignments(ctx, 'test')
+-    expect(ctx.campaign.assignments[H]).toEqual({ city: { kind: 'labour', target: 'farm', weeks: 2 } })
++    expect(ctx.campaign.assignments[H]).toEqual({ kind: 'labour', target: 'pray', weeks: 2 })
++    expect(ctx.campaign.assignments[other]).toBeUndefined()
+     tickAssignments(ctx, 'test'); tickAssignments(ctx, 'test')
+     expect(ctx.campaign.assignments[H]).toBeUndefined()
+diff --git a/test/isc-009.test.ts b/test/isc-009.test.ts
+index 7eef5a5..d115794 100644
+--- a/test/isc-009.test.ts
++++ b/test/isc-009.test.ts
+@@ -1,2 +1,3 @@
++// V2: quest resolution owns release; ISC047 covers the actual return and payout.
+ // ISC-009 — a hero on a quest holds both slots and appears in no listAvailable
+ // for any Stage.
+@@ -10,5 +11,5 @@ const H = 'hero.base.ranger-aggressive'
+ 
+ describe('ISC-009 — a quest takes both slots', () => {
+-  it('on a quest: both slots answer onQuest, no Stage lists the hero, nothing else may be committed, and the quest ends when its Weeks do', () => {
++  it('on a quest: both slots answer onQuest, no Stage lists the hero, nothing else may be committed, and assignment ticks never release it before due Field resolution', () => {
+     const ctx = loadFixture()
+     performCommit(ctx, H, { kind: 'quest', target: 'quest.escort', weeks: 2 }, 'test')
+@@ -22,6 +23,6 @@ describe('ISC-009 — a quest takes both slots', () => {
+     expect(commitmentOf(ctx.campaign, H, 'field')).toBe('onQuest')
+     tickAssignments(ctx, 'test')
+-    expect(commitmentOf(ctx.campaign, H, 'field')).toBe('free')
+-    expect(commitmentOf(ctx.campaign, H, 'city')).toBe('free')
++    expect(commitmentOf(ctx.campaign, H, 'field')).toBe('onQuest')
++    expect(commitmentOf(ctx.campaign, H, 'city')).toBe('onQuest')
+   })
+ })
+diff --git a/test/isc-010.test.ts b/test/isc-010.test.ts
+index 14436f1..438165b 100644
+--- a/test/isc-010.test.ts
++++ b/test/isc-010.test.ts
+@@ -15,6 +15,6 @@ describe('ISC-010 — unavailable is a third value, answered in one place', () =
+     expect(commitmentOf(ctx.campaign, H, 'field')).toBe('unavailable')
+     expect(commitmentOf(ctx.campaign, H, 'city')).toBe('unavailable')
+-    expect(listAvailable(ctx.campaign, 'stage.conquer')).not.toContain(H)
+-    expect(listAvailable(ctx.campaign, 'stage.mend')).not.toContain(H)
++    expect(listAvailable(ctx.campaign, 'stage.field')).not.toContain(H)
++    expect(listAvailable(ctx.campaign, 'stage.city')).not.toContain(H)
+     expect(canCommit(ctx.campaign, H, { kind: 'labour', target: 'farm', weeks: 1 })).toBe(false)
+     beginCombatPrep(ctx, 'test'); performAdvancePrep(ctx, 'test'); performAdvancePrep(ctx, 'test')
+@@ -28,4 +28,24 @@ describe('ISC-010 — unavailable is a third value, answered in one place', () =
+     expect(commitmentOf(ctx.campaign, H, 'field')).toBe('dead')
+   })
++  it('Exhausted permits recovery only; fighting, quest, absence and capture remain independent restrictions', () => {
++    const c = loadFixture().campaign
++    const rest = { kind: 'rest' as const, target: 'rest', weeks: 1 }
++    c.roster[H]!.badges = ['badge.exhausted']
++    expect(commitmentOf(c, H, 'field')).toBe('exhausted')
++    expect(canCommit(c, H, rest)).toBe(true)
++    expect(canCommit(c, H, { kind: 'labour', target: 'pray', weeks: 1 })).toBe(false)
++    c.foughtThisWeek = [H]
++    expect(canCommit(c, H, rest)).toBe(false)
++    c.foughtThisWeek = []
++    c.assignments[H] = { kind: 'quest', target: 'quest.escort', weeks: 1 }
++    expect(canCommit(c, H, rest)).toBe(false)
++    delete c.assignments[H]
++    c.unavailable = [{ heroId: H, story: 'Went missing', returnWeek: c.week + 1 }]
++    expect(canCommit(c, H, rest)).toBe(false)
++    c.unavailable = []; c.captured = [H]
++    expect(canCommit(c, H, rest)).toBe(false)
++    c.captured = []; c.roster[H]!.wound = 3
++    expect(canCommit(c, H, { kind: 'heal', target: 'heal', weeks: 1 })).toBe(true)
++  })
+   it('no other file in src/core has an opinion about availability (a static scan)', () => {
+     const out = execSync('node tools/scan.mjs one-availability', { encoding: 'utf8' })
+diff --git a/test/isc-012.test.ts b/test/isc-012.test.ts
+index f354848..1afec84 100644
+--- a/test/isc-012.test.ts
++++ b/test/isc-012.test.ts
+@@ -31,5 +31,5 @@ describe('ISC-012 — a won Conquer claims the Territory and its building', () =
+     expect(claim['buildings']).toContain('building.forge')
+     expect(claim['first']).toBe(true)
+-    expect(STAGES.find((s) => s.id === ctx.campaign.cursor.stage)?.targets).toBe('conquerable')   // back at the Stage, open
++    expect(stageOf(ctx.campaign).targets).toBe('conquerable')   // back at the Stage, open
+     expect(ctx.campaign.cursor.step).toBe('open')
+   })
+diff --git a/test/isc-035.test.ts b/test/isc-035.test.ts
+index a68f249..5510d1c 100644
+--- a/test/isc-035.test.ts
++++ b/test/isc-035.test.ts
+@@ -1,3 +1,3 @@
+-// ISC-035 — stage.defend rolls once per Week on cup.threat, at 6% per owned
++// ISC-035 — stage.field rolls once per Week on cup.threat, at 6% per owned
+ // Territory, and produces at most one engagement.defend; over 200 Weeks with
+ // four Territories owned the rate lands within 24% ± 6.
+diff --git a/test/isc-036.test.ts b/test/isc-036.test.ts
+index 29025ef..59a5d79 100644
+--- a/test/isc-036.test.ts
++++ b/test/isc-036.test.ts
+@@ -1,4 +1,5 @@
++// V2 supersedes Farm/Delve/Gather and independent City slot; prayer tuning and wound tier changes are following stages.
+ // ISC-036 — a hero assigned to Farm yields 5 + 2×Fields Supplies, to Pray 4 +
+-// 1×Abbeys Faith, to Delve 4 + 1×Wellsprings Mana, each at stage.mend and each
++// 1×Abbeys Faith, to Delve 4 + 1×Wellsprings Mana, each at stage.city and each
+ // consuming the city slot; Heal and Rest yield nothing.
+ // 7-KINGDOM-SETTLED.md — The Mend labours · Law 17 amended
+@@ -15,43 +16,45 @@ function atMend(edit?: Parameters<typeof loadFixture>[0]) {
+   const ctx = loadFixture(edit)
+   setCursor(ctx, { step: 'open', prepStep: null, engagement: null, battle: null }, 'test')
+-  beginStage(ctx, 'stage.mend', 'test')
++  beginStage(ctx, 'stage.city', 'test')
+   return ctx
+ }
+ 
+-describe('ISC-036 — the four labours yield what the settled table says', () => {
+-  it('one Field held: Farm 7, Pray 4, Delve 4; two Fields: Farm 9; the city slot is taken; Heal and Rest pay nothing', () => {
++describe('ISC-036 — V2 chapel work replaces the four labours', () => {
++  it('Prayer pays Faith at City close; removed labours cannot provide Supplies or Mana; recovery pays nothing', () => {
+     const ctx = atMend()
+     expect(nodeCountOf(ctx.campaign, 'field')).toBe(1)
+-    expect(yieldOf(ctx.campaign, 'farm')).toEqual({ currency: 'currency.supplies', amount: 5 + 2 * 1 })
++    expect(canAssignLabour(ctx.campaign, H[0], 'farm')).toBe(false)
++    expect(() => yieldOf(ctx.campaign, 'farm')).toThrow(/unknown labour/)
+     expect(yieldOf(ctx.campaign, 'pray')).toEqual({ currency: 'currency.faith', amount: 4 + 1 * 0 })
+-    expect(yieldOf(ctx.campaign, 'delve')).toEqual({ currency: 'currency.mana', amount: 4 + 1 * 0 })
++    expect(canAssignLabour(ctx.campaign, H[2], 'delve')).toBe(false)
++    expect(canAssignLabour(ctx.campaign, H[2], 'gather')).toBe(false)
+     expect(yieldOf(ctx.campaign, 'rest')).toBeNull()
+     expect(yieldOf(ctx.campaign, 'heal')).toBeNull()
+     const purse = { ...ctx.campaign.purse }
+-    performAssignLabour(ctx, H[0], 'farm', 'test')
++    performAssignLabour(ctx, H[0], 'pray', 'test')
+     performAssignLabour(ctx, H[1], 'pray', 'test')
+-    performAssignLabour(ctx, H[2], 'delve', 'test')
++    performAssignLabour(ctx, H[2], 'rest', 'test')
+     performAssignLabour(ctx, H[3], 'rest', 'test')
+     expect(commitmentOf(ctx.campaign, H[0], 'city')).toBe('committed')
+-    expect(commitmentOf(ctx.campaign, H[0], 'field')).toBe('free')             // fight AND one city action
++    expect(commitmentOf(ctx.campaign, H[0], 'field')).toBe('committed')        // V2: City work excludes fighting
+     expect(canAssignLabour(ctx.campaign, H[0], 'pray')).toBe(false)             // one city slot
+     expect(canAssignLabour(ctx.campaign, H[4], 'heal')).toBe(false)             // whole — nothing to heal
+     expect(ctx.campaign.purse).toEqual(purse)                                   // nothing paid until the Stage ends
+     performAdvance(ctx, 'test')                                                 // Mend closes → the Week ends
+-    expect(ctx.campaign.purse['currency.supplies']).toBe(purse['currency.supplies']! + 7)
+-    expect(ctx.campaign.purse['currency.faith']).toBe(purse['currency.faith']! + 4)
+-    expect(ctx.campaign.purse['currency.mana']).toBe(purse['currency.mana']! + 4)
++    expect(ctx.campaign.purse['currency.supplies']).toBe(purse['currency.supplies'])
++    expect(ctx.campaign.purse['currency.faith']).toBe(purse['currency.faith']! + 8)
++    expect(ctx.campaign.purse['currency.mana']).toBe(purse['currency.mana'])
+     expect(ctx.campaign.purse['currency.salvage']).toBe(purse['currency.salvage'])
+     const gains = ctx.events.filter((e) => e.type === 'resource.gained')
+     // heroes resolve in id order (Law 6), not assignment order
+     // (the ids changed 2026-09-02 with the alpha four gone; the rule — id order — did not: paladin < ranger < warrior)
+-    expect(gains.map((e) => e.causeId)).toEqual([`stage.mend.week-3:pray:${H[1]}`, `stage.mend.week-3:delve:${H[2]}`, `stage.mend.week-3:farm:${H[0]}`])
++    expect(gains.map((e) => e.causeId)).toEqual([`stage.city.week-3:pray:${H[1]}`, `stage.city.week-3:pray:${H[0]}`])
+     expect(commitmentOf(ctx.campaign, H[0], 'city')).toBe('free')             // released at the Week boundary
+   })
+   it('a second Field and an Abbey held raise the yields by the node', () => {
+     const ctx = atMend((c) => { for (const t of Object.values(c.territories)) { t.owned = true } ; c.territories['territory.ruined-kingdom.thicket']!.node = 'field' })
+-    expect(yieldOf(ctx.campaign, 'farm')!.amount).toBe(5 + 2 * 2)
++    expect(() => yieldOf(ctx.campaign, 'farm')).toThrow(/unknown labour/)
+     expect(yieldOf(ctx.campaign, 'pray')!.amount).toBe(4 + 1 * 1)
+-    expect(yieldOf(ctx.campaign, 'delve')!.amount).toBe(4 + 1 * 0)
++    expect(() => yieldOf(ctx.campaign, 'delve')).toThrow(/unknown labour/)
+   })
+   it('Heal at Mend lowers a wound one level and pays nothing', () => {
+diff --git a/test/isc-037.test.ts b/test/isc-037.test.ts
+index 36e178d..37cda19 100644
+--- a/test/isc-037.test.ts
++++ b/test/isc-037.test.ts
+@@ -1,3 +1,3 @@
+-// ISC-037 — at stage.buy, performRecruit spends Faith from the purse and adds
++// ISC-037 — at stage.city, performRecruit spends Faith from the purse and adds
+ // one hero row to the roster; canRecruit is false when Faith is short.
+ // 7-KINGDOM-SETTLED.md — Currencies (Faith buys recruits) · KINGDOM-DESIGN.md §10 (the Beacon), §3 (one a Week)
+@@ -12,5 +12,5 @@ function atBuy(edit?: Parameters<typeof loadFixture>[0]) {
+   const ctx = loadFixture(edit)
+   setCursor(ctx, { step: 'open', prepStep: null, engagement: null, battle: null }, 'test')
+-  beginWeek(ctx, 'test')
++  beginStage(ctx, 'stage.city', 'test')
+   return ctx
+ }
+@@ -49,8 +49,8 @@ describe('ISC-037 — recruiting costs Faith and adds a hero', () => {
+     const ctx = atBuy((c) => { c.purse['currency.faith'] = 100; delete c.roster['hero.fixed.orphans']; delete c.roster['hero.base.priest-scantily'] })
+     performRecruit(ctx, listRecruitOffers(ctx.campaign)[0]!.id, 'test')
+-    for (let i = 0; i < 6; i++) performAdvance(ctx, 'test')
++    for (let i = 0; i < 4; i++) performAdvance(ctx, 'test')
+     expect(ctx.campaign.week).toBe(4)
+     expect(canRecruit(ctx.campaign, listRecruitOffers(ctx.campaign)[0]!.id)).toBe(true)
+-    beginStage(ctx, 'stage.build', 'test')
++    beginStage(ctx, 'stage.field', 'test')
+     expect(canRecruit(ctx.campaign, listRecruitOffers(ctx.campaign)[0]!.id)).toBe(false)
+   })
+diff --git a/test/isc-038.test.ts b/test/isc-038.test.ts
+index 286a01d..d36d250 100644
+--- a/test/isc-038.test.ts
++++ b/test/isc-038.test.ts
+@@ -5,5 +5,5 @@ import { describe, it, expect } from 'vitest'
+ import { loadFixture } from './walk.js'
+ import { setCursor } from '../src/core/mutate.js'
+-import { beginWeek } from '../src/core/week.js'
++import { beginStage } from '../src/core/week.js'
+ import { canHeal, performHeal, costOfHeal } from '../src/core/market.js'
+ import { commitmentOf } from '../src/core/assignments.js'
+@@ -16,5 +16,5 @@ describe('ISC-038 — Field Surgery', () => {
+     const ctx = loadFixture((c) => { c.roster[H]!.wound = 3; c.purse['currency.faith'] = SWITCHES.healFaith * 2 + 1 })
+     setCursor(ctx, { step: 'open', prepStep: null, engagement: null, battle: null }, 'test')
+-    beginWeek(ctx, 'test')
++    beginStage(ctx, 'stage.city', 'test')
+     expect(commitmentOf(ctx.campaign, H, 'field')).toBe('wounded')
+     expect(costOfHeal()).toEqual({ 'currency.faith': SWITCHES.healFaith })
+diff --git a/test/isc-040.test.ts b/test/isc-040.test.ts
+index 9ceacc6..5083bac 100644
+--- a/test/isc-040.test.ts
++++ b/test/isc-040.test.ts
+@@ -1,3 +1,3 @@
+-// ISC-040 — at stage.build, performBuild spends the node's Salvage price and
++// ISC-040 — at stage.city, performBuild spends the node's Salvage price and
+ // marks the node built; a node whose parents are unbuilt, or whose price the
+ // purse cannot meet, is refused; the tree's nodes and prices are rows.
+@@ -15,5 +15,5 @@ function atBuild(salvage: number, own = true) {
+   const ctx = loadFixture((c) => { c.purse['currency.salvage'] = salvage; if (own) { c.territories[RIDGE]!.owned = true; c.territories[RIDGE]!.claimedOnce = true } })
+   setCursor(ctx, { step: 'open', prepStep: null, engagement: null, battle: null }, 'test')
+-  beginStage(ctx, 'stage.build', 'test')
++  beginStage(ctx, 'stage.city', 'test')
+   return ctx
+ }
+@@ -52,5 +52,5 @@ describe('ISC-040 — Salvage buys a Forge node from the settled tree', () => {
+     expect(whyNotBuild(unheld.campaign, RIDGE, FORGE, 'repair')).toBe('the Territory is not held')
+     const ctx = atBuild(100)
+-    beginStage(ctx, 'stage.buy', 'test')
++    beginStage(ctx, 'stage.field', 'test')
+     expect(whyNotBuild(ctx.campaign, RIDGE, FORGE, 'repair')).toBe('not the Build Stage')
+   })
+diff --git a/test/isc-041.test.ts b/test/isc-041.test.ts
+index ac47703..e5f976f 100644
+--- a/test/isc-041.test.ts
++++ b/test/isc-041.test.ts
+@@ -24,13 +24,12 @@ describe('ISC-041 — the shelf, and the equip step', () => {
+     const ctx = loadFixture((c) => { c.purse['currency.salvage'] = 10; c.purse['currency.supplies'] = SWITCHES.shopSuppliesMax * 2; c.territories[RIDGE]!.owned = true; c.territories[RIDGE]!.claimedOnce = true })
+     setCursor(ctx, { step: 'open', prepStep: null, engagement: null, battle: null }, 'test')
+-    beginWeek(ctx, 'test')                                                   // Buy
++    beginStage(ctx, 'stage.city', 'test')                                                   // Buy
+     expect(isShopOpen(ctx.campaign)).toBe(false)
+     expect(listShopItems(ctx.campaign)).toEqual([])
+     expect(() => performBuyItem(ctx, 'item.longsword', 'test')).toThrow(/not repaired/)
+-    beginStage(ctx, 'stage.build', 'test')
++    beginStage(ctx, 'stage.city', 'test')
+     performBuild(ctx, RIDGE, FORGE, 'repair', 'test')
+     expect(isShopOpen(ctx.campaign)).toBe(true)
+-    expect(canBuyItem(ctx.campaign, 'item.longsword')).toBe(false)             // not the Buy Stage
+-    beginStage(ctx, 'stage.buy', 'test')
++    // V2: repair and buy in the same City half, without a stage transition.
+     const shelf = listShopItems(ctx.campaign)
+     expect(shelf.length).toBe(2)                                                // Repaired sells two
+diff --git a/test/isc-046.test.ts b/test/isc-046.test.ts
+index 1021397..60052ba 100644
+--- a/test/isc-046.test.ts
++++ b/test/isc-046.test.ts
+@@ -1,58 +1,85 @@
+-// ISC-046 — between Buy and Quest, a roll on cup.unavailability keeps some
+-// heroes home for the Week, each with a story, and commitmentOf says so.
+-// KINGDOM-DESIGN.md §3 · SKELETON-SETTLED.md:119-122
++// ISC046: V2 participant-only, per-battle pulls replace the whole-roster weekly roll.
+ import { describe, it, expect } from 'vitest'
+-import { loadFixture } from './walk.js'
+-import { performAdvance, tickWeek } from '../src/core/week.js'
+-import { commitmentOf, listAvailable } from '../src/core/assignments.js'
+-import { absencesFor, ABSENCES } from '../src/content/absences.js'
+-import type { CampaignState } from '../src/core/campaign.js'
++import { loadFixture, toBattle, panelResult, decide } from './walk.js'
++import { resolveAbsences, absenceWeightOf, performRollAbsences } from '../src/core/absence.js'
++import { applyBattleResult } from '../src/core/reckoning.js'
++import { commitmentOf, canCommit } from '../src/core/assignments.js'
++import { beginWeek, performAdvance, tickWeek } from '../src/core/week.js'
++import { setCursor } from '../src/core/mutate.js'
++import { ABSENCES } from '../src/content/absences.js'
+ 
+-const atBuy = (c: CampaignState) => { c.cursor = { ...c.cursor, stage: 'stage.buy', step: 'open', prepStep: null, engagement: null, battle: null, attack: null, fought: 0 } }
+-
+-describe('ISC-046 — the unavailability roll', () => {
+-  it('leaving Buy for Quest keeps floor(roster/3) heroes home, each with a story, and they answer unavailable in both slots', () => {
+-    const ctx = loadFixture(atBuy)
+-    const roster = Object.keys(ctx.campaign.roster).length
+-    expect(roster).toBeGreaterThanOrEqual(6)
+-    expect(ctx.campaign.unavailable).toEqual([])
+-    performAdvance(ctx, 'test')
+-    expect(ctx.campaign.cursor.stage).toBe('stage.quest')
+-    const kept = ctx.campaign.unavailable
+-    expect(kept.length).toBe(absencesFor(roster))
+-    expect(kept.length).toBeGreaterThan(0)
+-    for (const a of kept) {
+-      expect(ctx.campaign.roster[a.heroId]).toBeDefined()
+-      expect(ABSENCES.map((r) => r.story)).toContain(a.story)
+-      expect(commitmentOf(ctx.campaign, a.heroId, 'field')).toBe('unavailable')
+-      expect(commitmentOf(ctx.campaign, a.heroId, 'city')).toBe('unavailable')
+-      expect(listAvailable(ctx.campaign, 'stage.conquer')).not.toContain(a.heroId)
++const H = 'hero.base.warrior-iron'
++describe('ISC046 — after each ordinary battle', () => {
++  it('independent 20% participant pulls use existing badge multipliers, named streams and stories', () => {
++    const c = loadFixture().campaign
++    expect(absenceWeightOf(['badge.responsible'])).toBe(0)
++    expect(absenceWeightOf(['badge.dedicated'])).toBe(50)
++    expect(absenceWeightOf(['badge.lazy'])).toBe(200)
++    expect(absenceWeightOf(['badge.withdrawn'])).toBe(300)
++    const counts = [0, 0, 0, 0, 0]
++    for (let n = 0; n < 1000; n++) {
++      for (const [i, badges] of [[], ['badge.dedicated'], ['badge.lazy'], ['badge.withdrawn'], ['badge.responsible']].entries()) {
++        c.roster[H]!.badges = badges
++        const a = resolveAbsences(c, [H], `battle-${n}`)
++        expect(a).toEqual(resolveAbsences(c, [H], `battle-${n}`))
++        expect(a.every((x) => x.heroId === H && ABSENCES.some((r) => r.story === x.story))).toBe(true)
++        counts[i]! += a.length
++      }
+     }
+-    expect(new Set(kept.map((a) => a.heroId)).size).toBe(kept.length)          // no hero kept home twice
+-    expect(ctx.events.filter((e) => e.type === 'absence.rolled').length).toBe(1)
++    expect(counts[0]).toBeGreaterThan(140); expect(counts[0]).toBeLessThan(260)
++    expect(counts[1]).toBeGreaterThan(60); expect(counts[1]).toBeLessThan(140)
++    expect(counts[2]).toBeGreaterThan(330); expect(counts[2]).toBeLessThan(470)
++    expect(counts[3]).toBeGreaterThan(530); expect(counts[3]).toBeLessThan(670)
++    expect(counts[4]).toBe(0)
++    expect(resolveAbsences(c, [], 'empty')).toEqual([])
++    c.roster[H]!.badges = ['badge.withdrawn']; c.roster[H]!.lifeState = 'dead'
++    expect(resolveAbsences(c, [H], 'dead')).toEqual([])
+   })
+-  it('the roll is keyed by the Week, not by when it is made: a reload lands on the same absences; the next Week rolls afresh', () => {
+-    const a = loadFixture(atBuy); performAdvance(a, 'test')
+-    const b = loadFixture(atBuy); performAdvance(b, 'test')
+-    expect(b.campaign.unavailable).toEqual(a.campaign.unavailable)
+-    const c = loadFixture((s) => { atBuy(s); s.week = s.week + 1 }); performAdvance(c, 'test')
+-    expect(c.campaign.unavailable).not.toEqual(a.campaign.unavailable)
++  it('the result writer pulls only survivors who fought, including a party smaller than six', () => {
++    const ctx = toBattle(loadFixture(), 2)
++    const e = ctx.campaign.cursor.engagement!
++    // Deterministically select a battle identity whose participants draw an absence.
++    for (let n = 0; n < 1000; n++) { e.id = `engagement.test-${n}`; if (resolveAbsences(ctx.campaign, e.deployed, e.id).length) break }
++    const expected = resolveAbsences(ctx.campaign, e.deployed, e.id)
++    expect(expected.length).toBeGreaterThan(0)
++    const { result, reckoning } = decide(ctx, panelResult(ctx, true))
++    applyBattleResult(ctx, e, result, reckoning)
++    expect(ctx.campaign.unavailable).toEqual(expected)
++    for (const a of expected) {
++      expect(e.deployed).toContain(a.heroId)
++      expect(commitmentOf(ctx.campaign, a.heroId, 'field')).toBe('unavailable')
++      expect(canCommit(ctx.campaign, a.heroId, { kind: 'rest', target: 'rest', weeks: 1 })).toBe(false)
++    }
++    expect(ctx.events.filter((e) => e.type === 'absence.rolled')).toHaveLength(1)
++    expect(() => applyBattleResult(ctx, e, result, reckoning)).toThrow(/refused/)
++    expect(ctx.events.filter((e) => e.type === 'absence.rolled')).toHaveLength(1)
+   })
+-  it('the Week boundary clears the list', () => {
+-    const ctx = loadFixture(atBuy); performAdvance(ctx, 'test')
+-    expect(ctx.campaign.unavailable.length).toBeGreaterThan(0)
+-    tickWeek(ctx, 'test')
++  it('prologue fights defer campaign absence pulls because the opening has no recovery City', () => {
++    const ctx = toBattle(loadFixture(), 2)
++    const e = ctx.campaign.cursor.engagement!
++    for (let n = 0; n < 1000; n++) { e.id = `engagement.opening-test-${n}`; if (resolveAbsences(ctx.campaign, e.deployed, e.id).length) break }
++    expect(resolveAbsences(ctx.campaign, e.deployed, e.id).length).toBeGreaterThan(0)
++    e.prologue = 1; ctx.campaign.cursor.prologue = 1
++    const { result, reckoning } = decide(ctx, panelResult(ctx, true))
++    applyBattleResult(ctx, e, result, reckoning)
+     expect(ctx.campaign.unavailable).toEqual([])
+-    expect(ctx.events.some((e) => e.type === 'absence.cleared')).toBe(true)
++    expect(ctx.events.filter((e) => e.type === 'absence.rolled')).toEqual([])
+   })
+-  it('badge.responsible is never unavailable; a roster under six loses nobody', () => {
+-    const ctx = loadFixture((c) => { atBuy(c); for (const h of Object.values(c.roster)) h.badges = ['badge.responsible'] })
++  it('a pull blocks the next Field and every assignment, expires at due City, and empty pulls keep existing absences', () => {
++    const ctx = loadFixture()
++    let cause = ''
++    for (let n = 0; n < 1000; n++) { cause = `battle-${n}`; if (resolveAbsences(ctx.campaign, [H], cause).length) break }
++    performRollAbsences(ctx, [H], cause)
++    const held = structuredClone(ctx.campaign.unavailable)
++    performRollAbsences(ctx, [], 'other battle')
++    expect(ctx.campaign.unavailable).toEqual(held)
++    tickWeek(ctx, 'test'); beginWeek(ctx, 'test')
++    expect(commitmentOf(ctx.campaign, H, 'field')).toBe('unavailable')
++    performAdvance(ctx, 'test'); setCursor(ctx, { attack: null }, 'test'); performAdvance(ctx, 'test')
++    expect(commitmentOf(ctx.campaign, H, 'field')).toBe('unavailable')
+     performAdvance(ctx, 'test')
+-    expect(ctx.campaign.unavailable).toEqual([])
+-    const small = loadFixture((c) => { atBuy(c); for (const id of Object.keys(c.roster).sort().slice(5)) { delete c.roster[id]; delete c.assignments[id] } })
+-    expect(Object.keys(small.campaign.roster).length).toBe(5)
+-    performAdvance(small, 'test')
+-    expect(small.campaign.unavailable).toEqual([])
+-    expect(absencesFor(5)).toBe(0); expect(absencesFor(6)).toBe(1); expect(absencesFor(12)).toBe(3); expect(absencesFor(18)).toBe(5)
++    expect(ctx.campaign.cursor.stage).toBe('stage.city')
++    expect(commitmentOf(ctx.campaign, H, 'city')).toBe('free')
++    expect(ctx.events.some((e) => e.type === 'absence.cleared')).toBe(true)
+   })
+ })
+diff --git a/test/isc-047.test.ts b/test/isc-047.test.ts
+index d9eaf31..da4b1af 100644
+--- a/test/isc-047.test.ts
++++ b/test/isc-047.test.ts
+@@ -1,8 +1,10 @@
+-// ISC-047 — stage.quest offers one authored quest; sending heroes takes both
++// V2: dispatch in City, retain party through due Field battles, release and reward together.
++// ISC-047 — stage.city offers one authored quest; sending heroes takes both
+ // their slots for N Weeks; tickWeek brings it back and resolves its reward.
+ // GAME-ARCHITECTURE.md §2.6 QUESTS · THIN-SLICE-REVIEW.md §D
+ import { describe, it, expect } from 'vitest'
+ import { loadFixture } from './walk.js'
+-import { tickWeek } from '../src/core/week.js'
++import { tickWeek, beginWeek, performAdvance } from '../src/core/week.js'
++import { setCursor } from '../src/core/mutate.js'
+ import { commitmentOf } from '../src/core/assignments.js'
+ import { listQuestOffers, canSendQuest, performSendQuest, whyNotSendQuest } from '../src/core/quests.js'
+@@ -10,5 +12,5 @@ import { QUESTS, questRowOf } from '../src/content/quests.js'
+ import type { CampaignState } from '../src/core/campaign.js'
+ 
+-const atQuest = (c: CampaignState) => { c.cursor = { ...c.cursor, stage: 'stage.quest', step: 'open', prepStep: null, engagement: null, battle: null, attack: null, fought: 0 } }
++const atQuest = (c: CampaignState) => { c.cursor = { ...c.cursor, stage: 'stage.city', step: 'open', prepStep: null, engagement: null, battle: null, attack: null, fought: 0 } }
+ const QUEST = 'quest.escort'
+ 
+@@ -18,5 +20,5 @@ describe('ISC-047 — one quest goes out and comes back', () => {
+     expect(QUESTS.map((q) => q.id)).toEqual([QUEST])
+     expect(listQuestOffers(ctx.campaign)).toEqual([QUEST])
+-    const elsewhere = loadFixture((c) => { atQuest(c); c.cursor.stage = 'stage.build' })
++    const elsewhere = loadFixture((c) => { atQuest(c); c.cursor.stage = 'stage.field' })
+     expect(listQuestOffers(elsewhere.campaign)).toEqual([])
+   })
+@@ -28,8 +30,8 @@ describe('ISC-047 — one quest goes out and comes back', () => {
+     expect(whyNotSendQuest(ctx.campaign, QUEST, [])).toMatch(/needs/)
+     performSendQuest(ctx, QUEST, [h1], 'test')
+-    expect(ctx.campaign.assignments[h1]).toEqual({ field: { kind: 'quest', target: QUEST, weeks: row.weeks }, city: { kind: 'quest', target: QUEST, weeks: row.weeks } })
++    expect(ctx.campaign.assignments[h1]).toEqual({ kind: 'quest', target: QUEST, weeks: row.weeks })
+     expect(commitmentOf(ctx.campaign, h1, 'field')).toBe('onQuest')
+     expect(commitmentOf(ctx.campaign, h1, 'city')).toBe('onQuest')
+-    expect(ctx.campaign.quests[QUEST]).toEqual({ id: QUEST, heroes: [h1], weeksLeft: row.weeks })
++    expect(ctx.campaign.quests[QUEST]).toEqual({ id: QUEST, heroes: [h1], weeksLeft: row.weeks, sentWeek: ctx.campaign.week, dueWeek: ctx.campaign.week + row.weeks })
+     expect(listQuestOffers(ctx.campaign)).toEqual([])                                   // in flight: not offered twice
+     expect(ctx.events.filter((e) => e.type === 'quest.sent').length).toBe(1)
+@@ -39,5 +41,5 @@ describe('ISC-047 — one quest goes out and comes back', () => {
+     expect(() => performSendQuest(busy, QUEST, [h1], 'test')).toThrow(/refused/)
+   })
+-  it('tickWeek counts it down; on the last Week it comes home, pays its reward, frees the hero, and is offered again', () => {
++  it('tickWeek counts it down; after the due Field battles it comes home, pays its reward, frees the hero, and is offered again', () => {
+     const ctx = loadFixture(atQuest)
+     const row = questRowOf(QUEST)
+@@ -51,4 +53,11 @@ describe('ISC-047 — one quest goes out and comes back', () => {
+     }
+     tickWeek(ctx, 'test')
++    expect(ctx.campaign.quests[QUEST]!.weeksLeft).toBe(0)
++    expect(commitmentOf(ctx.campaign, h1, 'field')).toBe('onQuest')
++    expect(ctx.campaign.purse['currency.faith']).toBe(faith)
++    beginWeek(ctx, 'test')
++    performAdvance(ctx, 'test')
++    setCursor(ctx, { attack: null }, 'test')
++    performAdvance(ctx, 'test')
+     expect(ctx.campaign.quests[QUEST]).toBeUndefined()
+     expect(commitmentOf(ctx.campaign, h1, 'field')).toBe('free')
+diff --git a/test/isc-052.test.ts b/test/isc-052.test.ts
+index d267d93..75e393a 100644
+--- a/test/isc-052.test.ts
++++ b/test/isc-052.test.ts
+@@ -17,5 +17,5 @@ import type { CampaignState } from '../src/core/campaign.js'
+ const codex = JSON.parse(readFileSync('../content/hbt-content.json', 'utf8'))
+ const codexKit = (id: string): string[] => (codex.heroes.heroes as { id: string; kit: string[] | null }[]).find((h) => h.id === id)!.kit!
+-const atBuy = (c: CampaignState) => { c.cursor = { ...c.cursor, stage: 'stage.buy', step: 'open', prepStep: null, engagement: null, battle: null, attack: null, fought: 0, recruited: 0 } }
++const atBuy = (c: CampaignState) => { c.cursor = { ...c.cursor, stage: 'stage.city', step: 'open', prepStep: null, engagement: null, battle: null, attack: null, fought: 0, recruited: 0 } }
+ 
+ describe('ISC-052 — a hero enters wearing its kit', () => {
+diff --git a/test/isc-056.test.ts b/test/isc-056.test.ts
+index 8727f55..d5fcf9c 100644
+--- a/test/isc-056.test.ts
++++ b/test/isc-056.test.ts
+@@ -13,5 +13,5 @@ import type { CampaignState } from '../src/core/campaign.js'
+ const HUNTER = 'hero.base.ranger-aggressive', DWARF = 'hero.base.warrior-iron'
+ const IDOL = 'item.pilgrims-warding-stone', RUNE = 'item.rune-bashing'
+-const atBuy = (c: CampaignState) => { c.cursor = { ...c.cursor, stage: 'stage.buy', step: 'open', prepStep: null, engagement: null, battle: null, attack: null, fought: 0 } }
++const atBuy = (c: CampaignState) => { c.cursor = { ...c.cursor, stage: 'stage.city', step: 'open', prepStep: null, engagement: null, battle: null, attack: null, fought: 0 } }
+ 
+ describe('ISC-056 — equip costs and the session', () => {
+diff --git a/test/isc-057.test.ts b/test/isc-057.test.ts
+index 0326c65..eff718a 100644
+--- a/test/isc-057.test.ts
++++ b/test/isc-057.test.ts
+@@ -2,5 +2,5 @@
+ // Equipped 4 · Masterwork +2 masterwork · Enchanted +2 enchanted, drawn from tier-1
+ // weapons and armor on cup.forge keyed by the Week; the same Week re-loaded shows
+-// the same shelf; the next Week differs; buying is refused outside stage.buy.
++// the same shelf; the next Week differs; buying is refused outside stage.city.
+ // GEAR-DESIGN.md §3
+ import { describe, it, expect } from 'vitest'
+@@ -17,5 +17,5 @@ const forgeAt = (nodes: string[]) => (c: CampaignState) => {
+   const t = c.territories[RIDGE]!; t.owned = true; t.claimedOnce = true
+   const b = t.buildings.find((x) => x.id === FORGE)!; b.nodes = [...nodes]; b.level = nodes.length; b.damaged = nodes.length === 0
+-  c.cursor = { ...c.cursor, stage: 'stage.buy', step: 'open', prepStep: null, engagement: null, battle: null, attack: null, fought: 0 }
++  c.cursor = { ...c.cursor, stage: 'stage.city', step: 'open', prepStep: null, engagement: null, battle: null, attack: null, fought: 0 }
+   c.purse['currency.supplies'] = 500; c.purse['currency.mana'] = 500
+ }
+@@ -58,5 +58,5 @@ describe('ISC-057 — the shelf by level, rerolled weekly', () => {
+     const ctx = loadFixture(forgeAt(['repair']))
+     const id = listShopItems(ctx.campaign)[0]!.id
+-    beginStage(ctx, 'stage.build', 'test')
++    beginStage(ctx, 'stage.field', 'test')
+     setCursor(ctx, { step: 'open' }, 'test')
+     expect(canBuyItem(ctx.campaign, id)).toBe(false)
+diff --git a/test/isc-058.test.ts b/test/isc-058.test.ts
+index 9d443fc..2f7af9f 100644
+--- a/test/isc-058.test.ts
++++ b/test/isc-058.test.ts
+@@ -16,5 +16,5 @@ const forgeAt = (nodes: string[]) => (c: CampaignState) => {
+   const t = c.territories[RIDGE]!; t.owned = true; t.claimedOnce = true
+   const b = t.buildings.find((x) => x.id === FORGE)!; b.nodes = [...nodes]; b.level = nodes.length; b.damaged = false
+-  c.cursor = { ...c.cursor, stage: 'stage.buy', step: 'open', prepStep: null, engagement: null, battle: null, attack: null, fought: 0 }
++  c.cursor = { ...c.cursor, stage: 'stage.city', step: 'open', prepStep: null, engagement: null, battle: null, attack: null, fought: 0 }
+ }
+ 
+diff --git a/test/isc-059.test.ts b/test/isc-059.test.ts
+index c620190..bbff593 100644
+--- a/test/isc-059.test.ts
++++ b/test/isc-059.test.ts
+@@ -15,5 +15,5 @@ const forgeAt = (nodes: string[], stash: string[]) => (c: CampaignState) => {
+   const t = c.territories[RIDGE]!; t.owned = true; t.claimedOnce = true
+   const b = t.buildings.find((x) => x.id === FORGE)!; b.nodes = [...nodes]; b.level = nodes.length; b.damaged = false
+-  c.cursor = { ...c.cursor, stage: 'stage.buy', step: 'open', prepStep: null, engagement: null, battle: null, attack: null, fought: 0 }
++  c.cursor = { ...c.cursor, stage: 'stage.city', step: 'open', prepStep: null, engagement: null, battle: null, attack: null, fought: 0 }
+   c.stash = [...stash]
+ }
+diff --git a/test/isc-060.test.ts b/test/isc-060.test.ts
+index 4311285..eebbdd3 100644
+--- a/test/isc-060.test.ts
++++ b/test/isc-060.test.ts
+@@ -13,5 +13,5 @@ const at = (nodes: string[]) => (c: CampaignState) => {
+   const t = c.territories[SANCTUARY]!
+   t.buildings = [...t.buildings.filter((b) => b.id !== WAY), { id: WAY, level: nodes.length, damaged: nodes.length === 0, nodes: [...nodes] }]
+-  c.cursor = { ...c.cursor, stage: 'stage.buy', step: 'open', prepStep: null, engagement: null, battle: null, attack: null, fought: 0 }
++  c.cursor = { ...c.cursor, stage: 'stage.city', step: 'open', prepStep: null, engagement: null, battle: null, attack: null, fought: 0 }
+   c.purse['currency.supplies'] = 500; c.purse['currency.mana'] = 500
+ }
+@@ -47,5 +47,5 @@ describe('ISC-060 — the Waystation catalog', () => {
+     const poor = loadFixture((c) => { at(['repair'])(c); c.purse['currency.mana'] = 0 })
+     expect(whyNotBuyCatalog(poor.campaign, 'item.cure-poison')).toMatch(/Mana/)
+-    const elsewhere = loadFixture((c) => { at(['repair'])(c); c.cursor.stage = 'stage.build' })
++    const elsewhere = loadFixture((c) => { at(['repair'])(c); c.cursor.stage = 'stage.field' })
+     expect(whyNotBuyCatalog(elsewhere.campaign, 'item.torch')).toMatch(/Buy Stage/)
+   })
+diff --git a/test/loadgame.test.ts b/test/loadgame.test.ts
+index 65b104b..b8d6735 100644
+--- a/test/loadgame.test.ts
++++ b/test/loadgame.test.ts
+@@ -34,5 +34,5 @@ describe('the Load Game screen', () => {
+     expect(summarize('{"nonsense":1}').state).toBe('broken')
+     const live = summarize(fixture)
+-    expect(live.state).toBe('live'); if (live.state === 'live') expect(live.progress).toMatch(/^Week 3 · Conquer/)
++    expect(live.state).toBe('live'); if (live.state === 'live') expect(live.progress).toMatch(/^Week 3 · Field/)
+     const opening = summarize(saveOf(makeNewCampaign(1)))
+     if (opening.state === 'live') expect(opening.progress).toMatch(/^the opening/); else throw new Error(opening.state)
+diff --git a/test/save-migrate.test.ts b/test/save-migrate.test.ts
+index fdd2c1d..354dea9 100644
+--- a/test/save-migrate.test.ts
++++ b/test/save-migrate.test.ts
+@@ -1,6 +1,3 @@
+-// save.migrate — a save written before G5–G7 lacks cursor.equipSession, sold and
+-// spent; the load fills them in with the one value such a save holds (nothing fitted,
+-// sold or spent). Anything else missing is still refused. 2026-09-03, from Andrew's
+-// slot 1: "a save this build cannot read — save's cursor is missing 'equipSession'".
++// V2 explicitly removes V1 compatibility (user ruling 2026-09-10).
+ import { describe, it, expect } from 'vitest'
+ import { readFileSync } from 'node:fs'
+@@ -10,11 +7,11 @@ const fixture = () => JSON.parse(readFileSync('fixtures/slice-prep.json', 'utf8'
+ 
+ describe('the save migration', () => {
+-  it('an older save without equipSession, sold and spent loads as one with them empty', () => {
+-    const old = fixture()
+-    delete old.cursor.equipSession; delete old.cursor.sold; delete old.cursor.spent
+-    const loaded = campaignOf(JSON.stringify(old))
+-    expect(loaded.cursor.equipSession).toBeNull()
+-    expect(loaded.cursor.sold).toEqual([]); expect(loaded.cursor.spent).toEqual([])
+-    expect(JSON.parse(saveOf(loaded))).toEqual(JSON.parse(saveOf(campaignOf(readFileSync('fixtures/slice-prep.json', 'utf8')))))
++  it('V2 requires every cursor field rather than migrating an old save', () => {
++    for (const key of ['equipSession', 'sold', 'spent']) {
++      const old = fixture(); delete old.cursor[key]
++      expect(() => campaignOf(JSON.stringify(old))).toThrow(`cursor is missing '${key}'`)
++    }
++    const old = fixture(); delete old.version
++    expect(() => campaignOf(JSON.stringify(old))).toThrow(/V2/)
+   })
+   it('a save missing a field with no empty value is still refused', () => {
+```
+</details>
+
+ISC-005: CLOSED at 648d957 · ISC-006: CLOSED at 648d957 · ISC-007: CLOSED at 648d957 · ISC-008: CLOSED at 648d957 · ISC-009: CLOSED at 648d957 · ISC-010: CLOSED at 648d957 · ISC-036: CLOSED at 648d957 · ISC-046: CLOSED at 648d957 · ISC-047: CLOSED at 648d957
+slice: 61 of 68 closed · 61 probed · 1 accepted
+IRON GAUNTLET: NOT PASSED — 3 FLAG(S) WARNED

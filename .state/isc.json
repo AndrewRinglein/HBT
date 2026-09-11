@@ -291,8 +291,8 @@
    "tail": "       |                                     ^ |      11|     const ctx = loadFixture() |      12|     beginWeek(ctx, 'test')"
   },
   "closed": {
-   "at": "2026-09-02 05:17",
-   "sha": "a46150c"
+   "at": "2026-09-11 07:52",
+   "sha": "648d957"
   }
  },
  "006": {
@@ -304,8 +304,8 @@
    "tail": "       |                           ^ |      24|     // and nothing else happened — no engagement, no writer |      25|     expect(inWeek.some((e) => e.type === 'engagement.offered' || e.typ…"
   },
   "closed": {
-   "at": "2026-09-02 05:17",
-   "sha": "a46150c"
+   "at": "2026-09-11 07:52",
+   "sha": "648d957"
   }
  },
  "007": {
@@ -317,8 +317,8 @@
    "tail": "       |                       ^ |      31|     expect(base.campaign.week).toBe(4) |      32|     expect(base.events.some((e) => e.type === 'engagement.resolved')).…"
   },
   "closed": {
-   "at": "2026-09-04 08:17",
-   "sha": "6f5c899"
+   "at": "2026-09-11 07:52",
+   "sha": "648d957"
   },
   "regressed": [
    {
@@ -408,8 +408,8 @@
    "tail": "       |                                         ^ |      43|     expect(ctx.campaign.assignments[other]).toBeUndefined() |      44|     tickAssignments(ctx, 'test'); tickAssignments(ctx, 'test')"
   },
   "closed": {
-   "at": "2026-09-02 05:31",
-   "sha": "f8f6d99"
+   "at": "2026-09-11 07:52",
+   "sha": "648d957"
   }
  },
  "009": {
@@ -421,8 +421,8 @@
    "tail": "       |                                                    ^ |      26|     expect(commitmentOf(ctx.campaign, H, 'city')).toBe('onQuest') |      27|   })"
   },
   "closed": {
-   "at": "2026-09-02 05:31",
-   "sha": "f8f6d99"
+   "at": "2026-09-11 07:52",
+   "sha": "648d957"
   }
  },
  "010": {
@@ -434,8 +434,8 @@
    "tail": "       |                                         ^ |      35|     expect(canCommit(c, H, rest)).toBe(true) |      36|     expect(canCommit(c, H, { kind: 'labour', target: 'pray', weeks: 1 …"
   },
   "closed": {
-   "at": "2026-09-02 05:31",
-   "sha": "f8f6d99"
+   "at": "2026-09-11 07:52",
+   "sha": "648d957"
   }
  },
  "021": {
@@ -460,8 +460,8 @@
    "tail": " ❯ beginStage src/core/week.ts:62:15 |  ❯ atMend test/isc-036.test.ts:18:3 |  ❯ test/isc-036.test.ts:61:17"
   },
   "closed": {
-   "at": "2026-09-02 05:43",
-   "sha": "6936a71"
+   "at": "2026-09-11 07:52",
+   "sha": "648d957"
   }
  },
  "037": {
@@ -692,8 +692,8 @@
    "tail": "       |                                                    ^ |      78|     performAdvance(ctx, 'test'); setCursor(ctx, { attack: null }, 'tes… |      79|     expect(commitmentOf(ctx.campaign, H, 'field')).toBe('unavailable')"
   },
   "closed": {
-   "at": "2026-09-02 09:43",
-   "sha": "9a3ba63"
+   "at": "2026-09-11 07:52",
+   "sha": "648d957"
   }
  },
  "047": {
@@ -705,8 +705,8 @@
    "tail": " ❯ whyNotSendQuest src/core/quests.ts:40:8 |  ❯ performSendQuest src/core/quests.ts:64:15 |  ❯ test/isc-047.test.ts:48:5"
   },
   "closed": {
-   "at": "2026-09-02 09:43",
-   "sha": "9a3ba63"
+   "at": "2026-09-11 07:52",
+   "sha": "648d957"
   }
  },
  "048": {

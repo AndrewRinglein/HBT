@@ -794,6 +794,10 @@
   "variants": [
    "stage.field",
    "stage.city"
-  ]
+  ],
+  "status": "done-needs-review",
+  "sha": "648d957",
+  "engineSha": "f1b1ca2",
+  "gauntlet": "not passed — 3 flag(s) warned"
  }
 ]
