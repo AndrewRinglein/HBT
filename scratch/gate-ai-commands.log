@@ -1,0 +1,21 @@
+
+gate: fix.ai-shared-commands   [check]
+
+  PASS  dependencies landed
+  WARN  not already decided  — 3 candidate ruling(s) — READ BEFORE ASKING: ..\COMBAT-DESIGN.md:477 · ..\STATE.md:18
+  FAIL  typecheck  — test/ai-commands.test.ts(106,23): error TS2741: Property 'source' is missing in type '{ id: string; hook: "onHit"; chance: number; select: "target"; effect: { kind: "status.apply"; statusId: string; value: number; }; }' but required in type 'Trigger'.
+  FAIL  full test suite  — 6 FAILED — test/additions.test.ts > pass 2 — hills > a ranged hero never ends its move inside a melee threat range it could have avoided · test/additions.test.ts > everything together > runs clean on every map with no invalid runs · test/audit.test.ts > independent audit of logged battles > observed hit rates converge on the declared accuracies · test/proving-page.test.ts > proving-page > writes one self-contained page: the ranking embedded, every unit row, the panels, the findings, a script that parses · test/proving-rank.test.ts > proving-rank > ranks the smoke plan: one row per unit subject, ladders, the columns, the findings, the document · test/replay.test.ts > the showcase build — engine-derived geometry, never the wrong painting > two showcase builds are byte-identical — the geometry path is deterministic too
+  PASS  gate 1 — the id appears in a real battle  — power.focus: 4 log lines, 4 fired, 2 changed state · power.leap: 4 log lines, 4 fired, 2 changed state
+  PASS  brought its own tests  — test/battle-cursor.test.ts, test/ai-commands.test.ts
+  WARN  existing tests untouched  — DELETED LINES in test/battle-cursor.test.ts (-1) — will land FLAGGED for review
+  PASS  control battles unchanged  — will re-bless at commit — this item DECLARED it changes the control battles: map.open 5e5e3620->311e0749, map.ridge 81ae3cce->a2ef3cde, map.flanks 6cc62715->48c48c01, map.highlands 2e7ac608->12e2f563, map.field 0e4f351d->8964941b, map.thicket 5c42bf6e->32a8daea, map.proving.open 69c7e24c->7ad2b3dc, map.proving.ridge 47009d55->cb345b97, map.proving.ford eabbd227->3ad481a2, map.proving.copse 275a32c5->b7595da5, map.proving.ruin e08f2a82->6923b209, map.courtyard abd90e19->abdd6433, map.floodplain a384d9b2->de6e330b, test.map.embers ace24399->b170a0e2, test.map.showcase 78cba462->6363c4ab, test.map.duel-8 d4a77324->bf9eba8a, test.map.dungeon-16x8 f7c0f8fc->f9613eb9, test.map.horde-24 3b02f3a0->68183c0f
+  PASS  content has a published source  — 29 ids without a published source (19 awaiting publication from earlier items — see audit)
+  PASS  hardcode scan — core knows mechanisms, never names
+  PASS  generalizes — the second instance costs zero engine code  — power.focus live · power.leap live
+  PASS  naming — new content ids use declared kinds
+  PASS  naming — no banned words invented
+  PASS  kill switch — the tests fail without the content  — tests fail without power.focus,power.leap — they genuinely test it
+
+NOT READY (attempt 1). Nothing reverted — fix and run the gate again.
+If it cannot be made to pass:  node tools/gate.mjs fix.ai-shared-commands --abandon
+

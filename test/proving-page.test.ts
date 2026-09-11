@@ -17,6 +17,8 @@ const tsx = createRequire(import.meta.url).resolve('tsx/cli')
 const run = (args: string[]) => execFileSync(process.execPath, [tsx, ...args], { cwd: engine, encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'], maxBuffer: 64 * 1024 * 1024 })
 
 describe('proving-page', () => {
+  // Real CLI processes exceeded 5s under suite load; preserve every output
+  // assertion with the same bounded budget as the export test below.
   it('writes one self-contained page: the ranking embedded, every unit row, the panels, the findings, a script that parses', () => {
     const state = mkdtempSync(join(tmpdir(), 'proving-page-'))
     run(['src/cli/proving.ts', 'test/proving/smoke.json', '--out', state, '--force'])
@@ -34,7 +36,7 @@ describe('proving-page', () => {
     const js = /<script>\n([\s\S]*?)\n<\/script>\n<\/body>/.exec(html)![1]!
     const f = join(state, 'page.js'); writeFileSync(f, js)
     execFileSync(process.execPath, ['--check', f])
-  })
+  }, 30000)
 
   // Four real CLI processes run here. The full suite twice exceeded Vitest's
   // default 5s under concurrent load (isolated file: 2.78s for both tests).

@@ -410,6 +410,8 @@ describe('independent audit of logged battles', () => {
     expect(seen, 'short shot -> zombie = 5').toContain('attack.shortbow.short-shot->unit.zombie=5')
   })
 
+  // This 400-battle sample exceeded 5s in two full-suite runs. Keep all
+  // samples and statistical thresholds; the test does not specify throughput.
   it('observed hit rates converge on the declared accuracies', () => {
     const tally: Record<string, { swings: number; hits: number }> = {}
     for (let r = 0; r < 400; r++) {
@@ -437,5 +439,5 @@ describe('independent audit of logged battles', () => {
       const sigma = Math.sqrt((p * (1 - p)) / v.swings) * 100
       expect(Math.abs(observed - declared), `${k}: observed ${observed.toFixed(1)}% over ${v.swings}`).toBeLessThan(Math.max(6, 4 * sigma))
     }
-  })
+  }, 30000)
 })

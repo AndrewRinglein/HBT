@@ -2142,3 +2142,37 @@ battle event. Multi-hit resolution now stops immediately on outcome; encounter
 win/loss details precede `battle.end`. The authored flight-ladder probe needed two
 explicit test-only ranged fliers to actually use both movement choices; a registry
 entry without live use did not pass the gate. These rows live in content/test/.
+
+### 2026-09-11 — Shared AI command adapter
+
+`fix.ai-shared-commands` removes the AI's direct attack/power/movement execution
+and its separate sidestep geometry. All ten modes use shared action validation,
+movement destinations and execution. A selected command rejected at execution is
+a loud invariant failure, never a silently skipped action. Existing scoring and
+tie breaks remain; illegal candidates are filtered before lowest-health selection.
+Zero-range recovery can be chosen for its rider when stamina is missing, even
+without a better neighbouring hex. Root and an already spent slot are rechecked;
+a cached hunter target cannot override current Taunt. Snapshot rules become
+`v2-migration.4` because continuing the AI now follows this corrected policy.
+
+The comparison against `6577a7b` covers 450 controls plus 26 registered scenarios.
+123 event streams change, including four scenarios; 13 complete result records
+differ. The first divergence in 44 battles is an old attack after an opportunity
+hit applied Stun: the shared validator correctly refuses it. Another 78 first
+divergences are previously omitted zero-distance Focus/Devotion recovery; the
+remaining case selects an available legal shot instead of idling over an illegal
+lowest-health candidate. Evidence and representative event prefixes are in
+`scratch/ai-transition-comparison.json`. These are rule/selection corrections,
+not a balance result. The gate may update control hashes at landing. The old
+historical fixture stays unchanged; three additionally affected historical cases
+now assert current driver parity and are covered by the new rule tests.
+
+Test-runner evidence for this stage: the full suite twice reported six default
+five-second timeouts. Four workers reduced this to two, and both remaining cases
+also timed out with a single worker (the two-build replay test took 5.86 seconds).
+The suite now caps file workers at four. The six repeatedly affected integration
+tests (three multi-battle audits and three multi-process exports) receive explicit
+30-second budgets; all other default budgets remain unchanged. Battle counts,
+statistical thresholds, byte equality and all assertions are unchanged. Failed-run
+evidence remains in `scratch/ai-full-suite.log`,
+`scratch/ai-suite-four-workers.log` and `scratch/ai-isolated-expensive.log`.

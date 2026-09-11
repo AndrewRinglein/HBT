@@ -1,0 +1,112 @@
+
+ RUN  v4.1.11 C:/Users/aring/Desktop/Heroes of Blight and Tragic/engine
+
+ ❯ test/ai-commands.test.ts (17 tests | 14 failed) 23ms
+     × flee resolves the same legal command with identical state, events and RNG 8ms
+     × dumb-melee resolves the same legal command with identical state, events and RNG 1ms
+     × melee-aggressive resolves the same legal command with identical state, events and RNG 1ms
+     × ranged-kite resolves the same legal command with identical state, events and RNG 1ms
+     × defender resolves the same legal command with identical state, events and RNG 1ms
+     × support resolves the same legal command with identical state, events and RNG 1ms
+     × focused-fire resolves the same legal command with identical state, events and RNG 1ms
+     × value-hunter resolves the same legal command with identical state, events and RNG 1ms
+     × follow resolves the same legal command with identical state, events and RNG 0ms
+     × hunter resolves the same legal command with identical state, events and RNG 1ms
+     × a starved kiter takes a zero-range recovery even when no neighbouring square scores better 1ms
+     × a kiter with only a two-hex sidestep selects an actual two-hex landing 2ms
+     × Root blocks AI displacement through power.leap 0ms
+     × a hunter replaces a cached target when Taunt requires another standing enemy 2ms
+
+⎯⎯⎯⎯⎯⎯ Failed Tests 14 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  test/ai-commands.test.ts > AI uses the player action contract > flee resolves the same legal command with identical state, events and RNG
+ FAIL  test/ai-commands.test.ts > AI uses the player action contract > dumb-melee resolves the same legal command with identical state, events and RNG
+ FAIL  test/ai-commands.test.ts > AI uses the player action contract > melee-aggressive resolves the same legal command with identical state, events and RNG
+ FAIL  test/ai-commands.test.ts > AI uses the player action contract > ranged-kite resolves the same legal command with identical state, events and RNG
+ FAIL  test/ai-commands.test.ts > AI uses the player action contract > defender resolves the same legal command with identical state, events and RNG
+ FAIL  test/ai-commands.test.ts > AI uses the player action contract > support resolves the same legal command with identical state, events and RNG
+ FAIL  test/ai-commands.test.ts > AI uses the player action contract > focused-fire resolves the same legal command with identical state, events and RNG
+ FAIL  test/ai-commands.test.ts > AI uses the player action contract > value-hunter resolves the same legal command with identical state, events and RNG
+ FAIL  test/ai-commands.test.ts > AI uses the player action contract > follow resolves the same legal command with identical state, events and RNG
+ FAIL  test/ai-commands.test.ts > AI uses the player action contract > hunter resolves the same legal command with identical state, events and RNG
+AssertionError: expected "executeAction" to be called at least once
+ ❯ test/ai-commands.test.ts:34:17
+     32|     })
+     33|     runActivation(ctx, 0)
+     34|     expect(spy).toHaveBeenCalled()
+       |                 ^
+     35|   })
+     36|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/14]⎯
+
+ FAIL  test/ai-commands.test.ts > AI uses the player action contract > a starved kiter takes a zero-range recovery even when no neighbouring square scores better
+AssertionError: expected "executeAction" to be called with arguments: [ { …(13) }, { actor: +0, …(2) } ]
+
+Number of calls: 0
+
+ ❯ test/ai-commands.test.ts:45:17
+     43|     const spy = vi.spyOn(commands, 'executeAction')
+     44|     runActivation(ctx, 0)
+     45|     expect(spy).toHaveBeenCalledWith(ctx, { actor: 0, actionId: 'power…
+       |                 ^
+     46|     expect(u.hex).toBe(85)
+     47|     expect(ctx.events.some(e => e.causeId === 'power.focus' && e.type …
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/14]⎯
+
+ FAIL  test/ai-commands.test.ts > AI uses the player action contract > a kiter with only a two-hex sidestep selects an actual two-hex landing
+Error: power.leap must move exactly 2 hex(es) (85 -> 69)
+ ❯ executeSidestep src/core/movement.ts:351:11
+    349|   }
+    350|   if (ctx.geo.distance(u.hex, to) !== range) {
+    351|     throw new Error(`${power.id} must move exactly ${range} hex(es) ($…
+       |           ^
+    352|   }
+    353|   const terrainHere = ctx.state.terrain[to] ?? 0
+ ❯ rangedKite src/ai/modes.ts:565:39
+ ❯ runActivation src/ai/modes.ts:783:3
+ ❯ test/ai-commands.test.ts:55:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/14]⎯
+
+ FAIL  test/ai-commands.test.ts > AI uses the player action contract > Root blocks AI displacement through power.leap
+Error: power.leap must move exactly 2 hex(es) (85 -> 69)
+ ❯ executeSidestep src/core/movement.ts:351:11
+    349|   }
+    350|   if (ctx.geo.distance(u.hex, to) !== range) {
+    351|     throw new Error(`${power.id} must move exactly ${range} hex(es) ($…
+       |           ^
+    352|   }
+    353|   const terrainHere = ctx.state.terrain[to] ?? 0
+ ❯ rangedKite src/ai/modes.ts:565:39
+ ❯ runActivation src/ai/modes.ts:783:3
+ ❯ test/ai-commands.test.ts:68:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/14]⎯
+
+ FAIL  test/ai-commands.test.ts > AI uses the player action contract > a hunter replaces a cached target when Taunt requires another standing enemy
+AssertionError: expected 1 to be 2 // Object.is equality
+
+- Expected
++ Received
+
+- 2
++ 1
+
+ ❯ test/ai-commands.test.ts:81:26
+     79|     beginActivation(ctx, 0, 'test')
+     80|     runActivation(ctx, 0)
+     81|     expect(u.huntTarget).toBe(2)
+       |                          ^
+     82|     expect(ctx.events.filter(e => e.type === 'attack.declared' && e.ac…
+     83|   })
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/14]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  14 failed | 3 passed (17)
+   Start at  00:17:15
+   Duration  621ms (transform 370ms, setup 0ms, import 471ms, tests 23ms, environment 0ms)
+

@@ -1,0 +1,1143 @@
+{
+  "base": "6577a7b",
+  "battles": 476,
+  "changed": 123,
+  "resultChanges": 13,
+  "scenarios": [
+    "showcase.supper",
+    "showcase.rime",
+    "showcase.horrors",
+    "showcase.waystation"
+  ],
+  "groups": {
+    "attack.declared/attack.zombie.claw -> activation.idle/ai.dumb-melee": {
+      "count": 44,
+      "example": {
+        "id": "map.open/4",
+        "before": [
+          {
+            "seq": 479,
+            "turn": 3,
+            "phase": "enemy",
+            "type": "status.applied",
+            "causeId": "attack.javelin.stab",
+            "actor": null,
+            "target": 12,
+            "statusId": "status.weak",
+            "amount": 3,
+            "before": 0,
+            "after": 3
+          },
+          {
+            "seq": 480,
+            "turn": 3,
+            "phase": "enemy",
+            "type": "move.stopped",
+            "causeId": "power.move",
+            "actor": 12,
+            "target": null,
+            "hex": 74,
+            "reason": "hit"
+          },
+          {
+            "seq": 481,
+            "turn": 3,
+            "phase": "enemy",
+            "type": "attack.declared",
+            "causeId": "attack.zombie.claw",
+            "actor": 12,
+            "target": 1,
+            "attackId": "attack.zombie.claw",
+            "ordinal": 1,
+            "kind": "melee",
+            "damageType": "physical",
+            "distance": 1,
+            "hitChance": 65,
+            "damageOnHit": 0,
+            "accLedger": [
+              {
+                "station": "BASE",
+                "effectId": "unit.unit.zombie",
+                "delta": 65
+              }
+            ]
+          },
+          {
+            "seq": 482,
+            "turn": 3,
+            "phase": "enemy",
+            "type": "attack.hit",
+            "causeId": "attack.zombie.claw",
+            "actor": 12,
+            "target": 1,
+            "roll": 29,
+            "hitChance": 65,
+            "crit": false,
+            "ledger": [
+              {
+                "station": "DECLARE",
+                "effectId": "attack.zombie.claw",
+                "delta": 0
+              },
+              {
+                "station": "SOURCE_STAT",
+                "effectId": "unit.unit.zombie",
+                "delta": 3
+              },
+              {
+                "station": "SOURCE_STATUS",
+                "effectId": "status",
+                "delta": -3
+              }
+            ]
+          },
+          {
+            "seq": 483,
+            "turn": 3,
+            "phase": "enemy",
+            "type": "trigger.rolled",
+            "causeId": "trigger.zombie.afflict-rotting-flesh",
+            "actor": 12,
+            "target": 1,
+            "hook": "onHit",
+            "chance": 2,
+            "roll": 11,
+            "fired": false,
+            "source": "unit.zombie"
+          }
+        ],
+        "after": [
+          {
+            "seq": 479,
+            "turn": 3,
+            "phase": "enemy",
+            "type": "status.applied",
+            "causeId": "attack.javelin.stab",
+            "actor": null,
+            "target": 12,
+            "statusId": "status.weak",
+            "amount": 3,
+            "before": 0,
+            "after": 3
+          },
+          {
+            "seq": 480,
+            "turn": 3,
+            "phase": "enemy",
+            "type": "move.stopped",
+            "causeId": "power.move",
+            "actor": 12,
+            "target": null,
+            "hex": 74,
+            "reason": "hit"
+          },
+          {
+            "seq": 481,
+            "turn": 3,
+            "phase": "enemy",
+            "type": "activation.idle",
+            "causeId": "ai.dumb-melee",
+            "actor": 12,
+            "target": null,
+            "reason": "nothing adjacent"
+          },
+          {
+            "seq": 482,
+            "turn": 3,
+            "phase": "enemy",
+            "type": "activation.end",
+            "causeId": "engine",
+            "actor": 12,
+            "target": null,
+            "hex": 74
+          },
+          {
+            "seq": 483,
+            "turn": 3,
+            "phase": "enemy",
+            "type": "damage.applied",
+            "causeId": "status.bleed",
+            "actor": null,
+            "target": 12,
+            "statusId": "status.bleed",
+            "damageType": "true",
+            "amount": 1,
+            "overkill": 0,
+            "hpBefore": 1,
+            "hpAfter": 0
+          }
+        ]
+      }
+    },
+    "activation.idle/ai.ranged-kite -> move.begin/power.focus": {
+      "count": 62,
+      "example": {
+        "id": "map.open/8",
+        "before": [
+          {
+            "seq": 521,
+            "turn": 4,
+            "phase": "hero",
+            "type": "activation.begin",
+            "causeId": "engine",
+            "actor": 3,
+            "target": null,
+            "ordinal": 4,
+            "hex": 5,
+            "hp": 6,
+            "stamina": 1
+          },
+          {
+            "seq": 522,
+            "turn": 4,
+            "phase": "hero",
+            "type": "ai.mode",
+            "causeId": "ai.ranged-kite",
+            "actor": 3,
+            "target": null,
+            "mode": "ranged-kite"
+          },
+          {
+            "seq": 523,
+            "turn": 4,
+            "phase": "hero",
+            "type": "activation.idle",
+            "causeId": "ai.ranged-kite",
+            "actor": 3,
+            "target": null,
+            "reason": "no target in range"
+          },
+          {
+            "seq": 524,
+            "turn": 4,
+            "phase": "hero",
+            "type": "activation.end",
+            "causeId": "engine",
+            "actor": 3,
+            "target": null,
+            "hex": 5
+          },
+          {
+            "seq": 525,
+            "turn": 4,
+            "phase": "hero",
+            "type": "activation.begin",
+            "causeId": "engine",
+            "actor": 4,
+            "target": null,
+            "ordinal": 4,
+            "hex": 4,
+            "hp": 6,
+            "stamina": 4
+          }
+        ],
+        "after": [
+          {
+            "seq": 521,
+            "turn": 4,
+            "phase": "hero",
+            "type": "activation.begin",
+            "causeId": "engine",
+            "actor": 3,
+            "target": null,
+            "ordinal": 4,
+            "hex": 5,
+            "hp": 6,
+            "stamina": 1
+          },
+          {
+            "seq": 522,
+            "turn": 4,
+            "phase": "hero",
+            "type": "ai.mode",
+            "causeId": "ai.ranged-kite",
+            "actor": 3,
+            "target": null,
+            "mode": "ranged-kite"
+          },
+          {
+            "seq": 523,
+            "turn": 4,
+            "phase": "hero",
+            "type": "move.begin",
+            "causeId": "power.focus",
+            "actor": 3,
+            "target": null,
+            "from": 5,
+            "to": 5,
+            "hexes": 0
+          },
+          {
+            "seq": 524,
+            "turn": 4,
+            "phase": "hero",
+            "type": "stamina.gained",
+            "causeId": "power.focus",
+            "actor": 3,
+            "target": null,
+            "amount": 1,
+            "stamina": 2
+          },
+          {
+            "seq": 525,
+            "turn": 4,
+            "phase": "hero",
+            "type": "stamina.spent",
+            "causeId": "attack.lightning-staff.bolt",
+            "actor": 3,
+            "target": null,
+            "amount": 2,
+            "stamina": 0
+          }
+        ]
+      }
+    },
+    "ai.denied/ai.ranged-kite -> move.begin/power.focus": {
+      "count": 10,
+      "example": {
+        "id": "map.flanks/13",
+        "before": [
+          {
+            "seq": 512,
+            "turn": 4,
+            "phase": "hero",
+            "type": "activation.begin",
+            "causeId": "engine",
+            "actor": 3,
+            "target": null,
+            "ordinal": 4,
+            "hex": 50,
+            "hp": 6,
+            "stamina": 1
+          },
+          {
+            "seq": 513,
+            "turn": 4,
+            "phase": "hero",
+            "type": "ai.mode",
+            "causeId": "ai.ranged-kite",
+            "actor": 3,
+            "target": null,
+            "mode": "ranged-kite"
+          },
+          {
+            "seq": 514,
+            "turn": 4,
+            "phase": "hero",
+            "type": "ai.denied",
+            "causeId": "ai.ranged-kite",
+            "actor": 3,
+            "target": null,
+            "wanted": "reposition",
+            "reason": "stamina",
+            "stamina": 1
+          },
+          {
+            "seq": 515,
+            "turn": 4,
+            "phase": "hero",
+            "type": "activation.idle",
+            "causeId": "ai.ranged-kite",
+            "actor": 3,
+            "target": null,
+            "reason": "no target in range"
+          },
+          {
+            "seq": 516,
+            "turn": 4,
+            "phase": "hero",
+            "type": "activation.end",
+            "causeId": "engine",
+            "actor": 3,
+            "target": null,
+            "hex": 50
+          }
+        ],
+        "after": [
+          {
+            "seq": 512,
+            "turn": 4,
+            "phase": "hero",
+            "type": "activation.begin",
+            "causeId": "engine",
+            "actor": 3,
+            "target": null,
+            "ordinal": 4,
+            "hex": 50,
+            "hp": 6,
+            "stamina": 1
+          },
+          {
+            "seq": 513,
+            "turn": 4,
+            "phase": "hero",
+            "type": "ai.mode",
+            "causeId": "ai.ranged-kite",
+            "actor": 3,
+            "target": null,
+            "mode": "ranged-kite"
+          },
+          {
+            "seq": 514,
+            "turn": 4,
+            "phase": "hero",
+            "type": "move.begin",
+            "causeId": "power.focus",
+            "actor": 3,
+            "target": null,
+            "from": 50,
+            "to": 50,
+            "hexes": 0
+          },
+          {
+            "seq": 515,
+            "turn": 4,
+            "phase": "hero",
+            "type": "stamina.gained",
+            "causeId": "power.focus",
+            "actor": 3,
+            "target": null,
+            "amount": 1,
+            "stamina": 2
+          },
+          {
+            "seq": 516,
+            "turn": 4,
+            "phase": "hero",
+            "type": "activation.idle",
+            "causeId": "ai.ranged-kite",
+            "actor": 3,
+            "target": null,
+            "reason": "no target in range"
+          }
+        ]
+      }
+    },
+    "ai.denied/ai.ranged-kite -> move.begin/power.devotion": {
+      "count": 3,
+      "example": {
+        "id": "test.map.showcase/1",
+        "before": [
+          {
+            "seq": 784,
+            "turn": 6,
+            "phase": "hero",
+            "type": "activation.begin",
+            "causeId": "engine",
+            "actor": 4,
+            "target": null,
+            "ordinal": 6,
+            "hex": 0,
+            "hp": 4,
+            "stamina": 1
+          },
+          {
+            "seq": 785,
+            "turn": 6,
+            "phase": "hero",
+            "type": "ai.mode",
+            "causeId": "ai.ranged-kite",
+            "actor": 4,
+            "target": null,
+            "mode": "ranged-kite"
+          },
+          {
+            "seq": 786,
+            "turn": 6,
+            "phase": "hero",
+            "type": "ai.denied",
+            "causeId": "ai.ranged-kite",
+            "actor": 4,
+            "target": null,
+            "wanted": "reposition",
+            "reason": "stamina",
+            "stamina": 1
+          },
+          {
+            "seq": 787,
+            "turn": 6,
+            "phase": "hero",
+            "type": "stamina.spent",
+            "causeId": "attack.holy-symbol.wrath",
+            "actor": 4,
+            "target": null,
+            "amount": 1,
+            "stamina": 0
+          },
+          {
+            "seq": 788,
+            "turn": 6,
+            "phase": "hero",
+            "type": "attack.declared",
+            "causeId": "attack.holy-symbol.wrath",
+            "actor": 4,
+            "target": 7,
+            "attackId": "attack.holy-symbol.wrath",
+            "ordinal": 3,
+            "kind": "ranged",
+            "damageType": "true",
+            "distance": 2,
+            "hitChance": 85,
+            "damageOnHit": 3,
+            "accLedger": [
+              {
+                "station": "BASE",
+                "effectId": "unit.alpha-lucius",
+                "delta": 80
+              },
+              {
+                "station": "SITUATIONAL",
+                "effectId": "attack.holy-symbol.wrath",
+                "delta": 5
+              }
+            ]
+          }
+        ],
+        "after": [
+          {
+            "seq": 784,
+            "turn": 6,
+            "phase": "hero",
+            "type": "activation.begin",
+            "causeId": "engine",
+            "actor": 4,
+            "target": null,
+            "ordinal": 6,
+            "hex": 0,
+            "hp": 4,
+            "stamina": 1
+          },
+          {
+            "seq": 785,
+            "turn": 6,
+            "phase": "hero",
+            "type": "ai.mode",
+            "causeId": "ai.ranged-kite",
+            "actor": 4,
+            "target": null,
+            "mode": "ranged-kite"
+          },
+          {
+            "seq": 786,
+            "turn": 6,
+            "phase": "hero",
+            "type": "move.begin",
+            "causeId": "power.devotion",
+            "actor": 4,
+            "target": null,
+            "from": 0,
+            "to": 0,
+            "hexes": 0
+          },
+          {
+            "seq": 787,
+            "turn": 6,
+            "phase": "hero",
+            "type": "staminaMax.lost",
+            "causeId": "power.devotion",
+            "actor": 4,
+            "target": null,
+            "amount": 1,
+            "maxStamina": 4,
+            "stamina": 1
+          },
+          {
+            "seq": 788,
+            "turn": 6,
+            "phase": "hero",
+            "type": "stamina.gained",
+            "causeId": "power.devotion",
+            "actor": 4,
+            "target": null,
+            "amount": 2,
+            "stamina": 3
+          }
+        ]
+      }
+    },
+    "stamina.spent/attack.holy-symbol.wrath -> move.begin/power.devotion": {
+      "count": 1,
+      "example": {
+        "id": "test.map.dungeon-16x8/18",
+        "before": [
+          {
+            "seq": 622,
+            "turn": 6,
+            "phase": "hero",
+            "type": "activation.begin",
+            "causeId": "engine",
+            "actor": 4,
+            "target": null,
+            "ordinal": 6,
+            "hex": 6,
+            "hp": 7,
+            "stamina": 1
+          },
+          {
+            "seq": 623,
+            "turn": 6,
+            "phase": "hero",
+            "type": "ai.mode",
+            "causeId": "ai.ranged-kite",
+            "actor": 4,
+            "target": null,
+            "mode": "ranged-kite"
+          },
+          {
+            "seq": 624,
+            "turn": 6,
+            "phase": "hero",
+            "type": "stamina.spent",
+            "causeId": "attack.holy-symbol.wrath",
+            "actor": 4,
+            "target": null,
+            "amount": 1,
+            "stamina": 0
+          },
+          {
+            "seq": 625,
+            "turn": 6,
+            "phase": "hero",
+            "type": "attack.declared",
+            "causeId": "attack.holy-symbol.wrath",
+            "actor": 4,
+            "target": 9,
+            "attackId": "attack.holy-symbol.wrath",
+            "ordinal": 4,
+            "kind": "ranged",
+            "damageType": "true",
+            "distance": 7,
+            "hitChance": 65,
+            "damageOnHit": 3,
+            "accLedger": [
+              {
+                "station": "BASE",
+                "effectId": "unit.alpha-lucius",
+                "delta": 80
+              },
+              {
+                "station": "RANGE",
+                "effectId": "attack.holy-symbol.wrath",
+                "delta": -20
+              },
+              {
+                "station": "SITUATIONAL",
+                "effectId": "attack.holy-symbol.wrath",
+                "delta": 5
+              }
+            ]
+          },
+          {
+            "seq": 626,
+            "turn": 6,
+            "phase": "hero",
+            "type": "attack.hit",
+            "causeId": "attack.holy-symbol.wrath",
+            "actor": 4,
+            "target": 9,
+            "roll": 52,
+            "hitChance": 65,
+            "crit": false,
+            "ledger": [
+              {
+                "station": "DECLARE",
+                "effectId": "attack.holy-symbol.wrath",
+                "delta": 0
+              },
+              {
+                "station": "SOURCE_STAT",
+                "effectId": "unit.alpha-lucius",
+                "delta": 3
+              }
+            ]
+          }
+        ],
+        "after": [
+          {
+            "seq": 622,
+            "turn": 6,
+            "phase": "hero",
+            "type": "activation.begin",
+            "causeId": "engine",
+            "actor": 4,
+            "target": null,
+            "ordinal": 6,
+            "hex": 6,
+            "hp": 7,
+            "stamina": 1
+          },
+          {
+            "seq": 623,
+            "turn": 6,
+            "phase": "hero",
+            "type": "ai.mode",
+            "causeId": "ai.ranged-kite",
+            "actor": 4,
+            "target": null,
+            "mode": "ranged-kite"
+          },
+          {
+            "seq": 624,
+            "turn": 6,
+            "phase": "hero",
+            "type": "move.begin",
+            "causeId": "power.devotion",
+            "actor": 4,
+            "target": null,
+            "from": 6,
+            "to": 6,
+            "hexes": 0
+          },
+          {
+            "seq": 625,
+            "turn": 6,
+            "phase": "hero",
+            "type": "staminaMax.lost",
+            "causeId": "power.devotion",
+            "actor": 4,
+            "target": null,
+            "amount": 1,
+            "maxStamina": 4,
+            "stamina": 1
+          },
+          {
+            "seq": 626,
+            "turn": 6,
+            "phase": "hero",
+            "type": "stamina.gained",
+            "causeId": "power.devotion",
+            "actor": 4,
+            "target": null,
+            "amount": 2,
+            "stamina": 3
+          }
+        ]
+      }
+    },
+    "stamina.spent/power.holy-symbol.heal -> move.begin/power.devotion": {
+      "count": 1,
+      "example": {
+        "id": "test.map.horde-24/22",
+        "before": [
+          {
+            "seq": 892,
+            "turn": 7,
+            "phase": "hero",
+            "type": "activation.begin",
+            "causeId": "engine",
+            "actor": 4,
+            "target": null,
+            "ordinal": 7,
+            "hex": 7,
+            "hp": 6,
+            "stamina": 1
+          },
+          {
+            "seq": 893,
+            "turn": 7,
+            "phase": "hero",
+            "type": "ai.mode",
+            "causeId": "ai.ranged-kite",
+            "actor": 4,
+            "target": null,
+            "mode": "ranged-kite"
+          },
+          {
+            "seq": 894,
+            "turn": 7,
+            "phase": "hero",
+            "type": "stamina.spent",
+            "causeId": "power.holy-symbol.heal",
+            "actor": 4,
+            "target": null,
+            "amount": 1,
+            "stamina": 0
+          },
+          {
+            "seq": 895,
+            "turn": 7,
+            "phase": "hero",
+            "type": "power.used",
+            "causeId": "power.holy-symbol.heal",
+            "actor": 4,
+            "target": 5,
+            "abilityId": "power.holy-symbol.heal",
+            "name": "Heal",
+            "distance": 6,
+            "heal": 9
+          },
+          {
+            "seq": 896,
+            "turn": 7,
+            "phase": "hero",
+            "type": "heal.applied",
+            "causeId": "power.holy-symbol.heal",
+            "actor": null,
+            "target": 5,
+            "asked": 9,
+            "amount": 6,
+            "hpBefore": 3,
+            "hpAfter": 9
+          }
+        ],
+        "after": [
+          {
+            "seq": 892,
+            "turn": 7,
+            "phase": "hero",
+            "type": "activation.begin",
+            "causeId": "engine",
+            "actor": 4,
+            "target": null,
+            "ordinal": 7,
+            "hex": 7,
+            "hp": 6,
+            "stamina": 1
+          },
+          {
+            "seq": 893,
+            "turn": 7,
+            "phase": "hero",
+            "type": "ai.mode",
+            "causeId": "ai.ranged-kite",
+            "actor": 4,
+            "target": null,
+            "mode": "ranged-kite"
+          },
+          {
+            "seq": 894,
+            "turn": 7,
+            "phase": "hero",
+            "type": "move.begin",
+            "causeId": "power.devotion",
+            "actor": 4,
+            "target": null,
+            "from": 7,
+            "to": 7,
+            "hexes": 0
+          },
+          {
+            "seq": 895,
+            "turn": 7,
+            "phase": "hero",
+            "type": "staminaMax.lost",
+            "causeId": "power.devotion",
+            "actor": 4,
+            "target": null,
+            "amount": 1,
+            "maxStamina": 4,
+            "stamina": 1
+          },
+          {
+            "seq": 896,
+            "turn": 7,
+            "phase": "hero",
+            "type": "stamina.gained",
+            "causeId": "power.devotion",
+            "actor": 4,
+            "target": null,
+            "amount": 2,
+            "stamina": 3
+          }
+        ]
+      }
+    },
+    "stamina.spent/attack.fire-staff.fire-blast -> move.begin/power.focus": {
+      "count": 1,
+      "example": {
+        "id": "showcase.rime",
+        "before": [
+          {
+            "seq": 949,
+            "turn": 7,
+            "phase": "hero",
+            "type": "activation.begin",
+            "causeId": "engine",
+            "actor": 2,
+            "target": null,
+            "ordinal": 7,
+            "hex": 5,
+            "hp": 7,
+            "stamina": 1
+          },
+          {
+            "seq": 950,
+            "turn": 7,
+            "phase": "hero",
+            "type": "ai.mode",
+            "causeId": "ai.ranged-kite",
+            "actor": 2,
+            "target": null,
+            "mode": "ranged-kite"
+          },
+          {
+            "seq": 951,
+            "turn": 7,
+            "phase": "hero",
+            "type": "stamina.spent",
+            "causeId": "attack.fire-staff.fire-blast",
+            "actor": 2,
+            "target": null,
+            "amount": 1,
+            "stamina": 0
+          },
+          {
+            "seq": 952,
+            "turn": 7,
+            "phase": "hero",
+            "type": "attack.declared",
+            "causeId": "attack.fire-staff.fire-blast",
+            "actor": 2,
+            "target": 13,
+            "attackId": "attack.fire-staff.fire-blast",
+            "ordinal": 7,
+            "kind": "ranged",
+            "damageType": "magic",
+            "distance": 6,
+            "hitChance": 60,
+            "damageOnHit": 1,
+            "accLedger": [
+              {
+                "station": "BASE",
+                "effectId": "unit.hero.base.mage-fire",
+                "delta": 75
+              },
+              {
+                "station": "RANGE",
+                "effectId": "attack.fire-staff.fire-blast",
+                "delta": -15
+              }
+            ]
+          },
+          {
+            "seq": 953,
+            "turn": 7,
+            "phase": "hero",
+            "type": "attack.hit",
+            "causeId": "attack.fire-staff.fire-blast",
+            "actor": 2,
+            "target": 13,
+            "roll": 31,
+            "hitChance": 60,
+            "crit": false,
+            "ledger": [
+              {
+                "station": "DECLARE",
+                "effectId": "attack.fire-staff.fire-blast",
+                "delta": 1
+              },
+              {
+                "station": "SOURCE_STAT",
+                "effectId": "unit.hero.base.mage-fire",
+                "delta": 3
+              },
+              {
+                "station": "MITIGATION",
+                "effectId": "unit.unit.skeleton-spider",
+                "delta": -3
+              }
+            ]
+          }
+        ],
+        "after": [
+          {
+            "seq": 949,
+            "turn": 7,
+            "phase": "hero",
+            "type": "activation.begin",
+            "causeId": "engine",
+            "actor": 2,
+            "target": null,
+            "ordinal": 7,
+            "hex": 5,
+            "hp": 7,
+            "stamina": 1
+          },
+          {
+            "seq": 950,
+            "turn": 7,
+            "phase": "hero",
+            "type": "ai.mode",
+            "causeId": "ai.ranged-kite",
+            "actor": 2,
+            "target": null,
+            "mode": "ranged-kite"
+          },
+          {
+            "seq": 951,
+            "turn": 7,
+            "phase": "hero",
+            "type": "move.begin",
+            "causeId": "power.focus",
+            "actor": 2,
+            "target": null,
+            "from": 5,
+            "to": 5,
+            "hexes": 0
+          },
+          {
+            "seq": 952,
+            "turn": 7,
+            "phase": "hero",
+            "type": "stamina.gained",
+            "causeId": "power.focus",
+            "actor": 2,
+            "target": null,
+            "amount": 1,
+            "stamina": 2
+          },
+          {
+            "seq": 953,
+            "turn": 7,
+            "phase": "hero",
+            "type": "stamina.spent",
+            "causeId": "attack.fire-staff.fire-blast",
+            "actor": 2,
+            "target": null,
+            "amount": 1,
+            "stamina": 1
+          }
+        ]
+      }
+    },
+    "activation.idle/ai.ranged-kite -> stamina.spent/attack.longbow.shot": {
+      "count": 1,
+      "example": {
+        "id": "showcase.horrors",
+        "before": [
+          {
+            "seq": 1518,
+            "turn": 5,
+            "phase": "hero",
+            "type": "activation.begin",
+            "causeId": "engine",
+            "actor": 1,
+            "target": null,
+            "ordinal": 5,
+            "hex": 64,
+            "hp": 9,
+            "stamina": 2
+          },
+          {
+            "seq": 1519,
+            "turn": 5,
+            "phase": "hero",
+            "type": "ai.mode",
+            "causeId": "ai.ranged-kite",
+            "actor": 1,
+            "target": null,
+            "mode": "ranged-kite"
+          },
+          {
+            "seq": 1520,
+            "turn": 5,
+            "phase": "hero",
+            "type": "activation.idle",
+            "causeId": "ai.ranged-kite",
+            "actor": 1,
+            "target": null,
+            "reason": "no target in range"
+          },
+          {
+            "seq": 1521,
+            "turn": 5,
+            "phase": "hero",
+            "type": "activation.end",
+            "causeId": "engine",
+            "actor": 1,
+            "target": null,
+            "hex": 64
+          },
+          {
+            "seq": 1522,
+            "turn": 5,
+            "phase": "hero",
+            "type": "activation.begin",
+            "causeId": "engine",
+            "actor": 2,
+            "target": null,
+            "ordinal": 5,
+            "hex": 1,
+            "hp": 7,
+            "stamina": 5
+          }
+        ],
+        "after": [
+          {
+            "seq": 1518,
+            "turn": 5,
+            "phase": "hero",
+            "type": "activation.begin",
+            "causeId": "engine",
+            "actor": 1,
+            "target": null,
+            "ordinal": 5,
+            "hex": 64,
+            "hp": 9,
+            "stamina": 2
+          },
+          {
+            "seq": 1519,
+            "turn": 5,
+            "phase": "hero",
+            "type": "ai.mode",
+            "causeId": "ai.ranged-kite",
+            "actor": 1,
+            "target": null,
+            "mode": "ranged-kite"
+          },
+          {
+            "seq": 1520,
+            "turn": 5,
+            "phase": "hero",
+            "type": "stamina.spent",
+            "causeId": "attack.longbow.shot",
+            "actor": 1,
+            "target": null,
+            "amount": 1,
+            "stamina": 1
+          },
+          {
+            "seq": 1521,
+            "turn": 5,
+            "phase": "hero",
+            "type": "attack.declared",
+            "causeId": "attack.longbow.shot",
+            "actor": 1,
+            "target": 12,
+            "attackId": "attack.longbow.shot",
+            "ordinal": 4,
+            "kind": "ranged",
+            "damageType": "physical",
+            "distance": 8,
+            "hitChance": 55,
+            "damageOnHit": 6,
+            "accLedger": [
+              {
+                "station": "BASE",
+                "effectId": "unit.hero.base.ranger-aggressive",
+                "delta": 80
+              },
+              {
+                "station": "RANGE",
+                "effectId": "attack.longbow.shot",
+                "delta": -25
+              }
+            ]
+          },
+          {
+            "seq": 1522,
+            "turn": 5,
+            "phase": "hero",
+            "type": "attack.miss",
+            "causeId": "attack.longbow.shot",
+            "actor": 1,
+            "target": 12,
+            "roll": 99,
+            "hitChance": 55
+          }
+        ]
+      }
+    }
+  }
+}

@@ -7,7 +7,7 @@ import { DEFAULT_CONFIG, MAX_SURGE_CYCLES, type BattleCursor, type Ctx } from '.
 export type BattleRuntime = Pick<Ctx, 'actions' | 'statuses' | 'critChart' | 'items' | 'badges' | 'ruleBadges' | 'units' | 'arrive'>
 // Bump when rules/control flow change incompatibly. Functions are supplied by
 // this runtime, never revived from JSON. There is no V1 save migration.
-const RULES_VERSION = 'v2-migration.3' // Sampled Surge allowance and terminal lifecycle.
+const RULES_VERSION = 'v2-migration.4' // Shared AI legality and exact movement choices.
 const bindingKeys = ['actions', 'statuses', 'critChart', 'items', 'badges', 'ruleBadges', 'units'] as const
 const phases = ['hero', 'enemy']
 const steps: BattleCursor['at'][] = ['battle-start', 'turn-start', 'hero-start', 'enemy-arrivals', 'enemy-start', 'next-activation', 'acting', 'surge-check', 'activation-end', 'phase-end', 'turn-end', 'complete']

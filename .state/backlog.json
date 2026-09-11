@@ -3113,5 +3113,30 @@
   "status": "done-needs-review",
   "sha": "2d80925",
   "gauntlet": "not passed — 3 flag(s) warned"
+ },
+ {
+  "id": "fix.ai-shared-commands",
+  "kind": "ai",
+  "shape": "rule",
+  "needs": [
+   "fix.surge-cycle",
+   "plumbing.battle-commands"
+  ],
+  "spec": "All ten AI modes enumerate legal movement destinations and resolve selected actions through the same validated command path as human input. Preserve scoring and deterministic tie breaks; respect current Root, Taunt, action slots and authored exact sidestep ranges.",
+  "expect": "Every mode's emitted action has state/event/RNG parity with its player-command equivalent. Zero-range recovery stays in place, two-range sidesteps land exactly two hexes away, cached hunters obey current Taunt, spent or blocked actors cannot act. Existing control transitions are measured and explained before landing.",
+  "probeIds": [
+   "power.focus",
+   "power.leap"
+  ],
+  "variants": [
+   "power.focus",
+   "power.leap"
+  ],
+  "changesBaseline": true,
+  "note": "AI candidate selection now reads shared legality rather than bypassing controller rules. Recovery at zero range can be selected for its rider even without a better adjacent square. Any changed baseline must be traced to these corrections; no balance claim follows from this migration. Authored interchangeable slots and score-quality changes remain separate items.",
+  "attempts": 2,
+  "status": "done-needs-review",
+  "sha": "d6484cf",
+  "gauntlet": "not passed — 2 flag(s) warned"
  }
 ]

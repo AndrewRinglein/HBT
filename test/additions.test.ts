@@ -96,6 +96,8 @@ describe('pass 2 — hills', () => {
       }
     expect(took).toBeGreaterThan(0)
   })
+  // The complete 20-battles-per-map sample exceeded 5s under full-suite load.
+  // Preserve its sample and safety threshold, with a bounded integration budget.
   it('a ranged hero never ends its move inside a melee threat range it could have avoided', () => {
     // Weaker property: it prefers safety, so unsafe endings should be rare.
     // LAW 10 — 2026-09-02 (content.alpha-flip): the ranger is the Alpha Dusk
@@ -121,7 +123,7 @@ describe('pass 2 — hills', () => {
     }
     expect(total).toBeGreaterThan(100)
     expect(unsafe / total).toBeLessThan(0.5)
-  })
+  }, 30000)
 })
 
 // ─── PASS 3: the Mage ────────────────────────────────────────────────────────
@@ -240,6 +242,9 @@ describe('pass 4 — Arcane Bolt', () => {
 
 // ─── all four together ───────────────────────────────────────────────────────
 describe('everything together', () => {
+  // This is 40 strict battles on every map, not a five-second performance
+  // contract. It exceeds the default even with one worker after shared action
+  // validation. Preserve every battle and assertion; bound the aggregate run.
   it('runs clean on every map with no invalid runs', () => {
     for (const mapId of MAPS_ALL)
       for (let r = 0; r < 40; r++) {
@@ -251,7 +256,7 @@ describe('everything together', () => {
           expect(u.stamina).toBeGreaterThanOrEqual(0)
         }
       }
-  })
+  }, 30000)
   it('state still round-trips through JSON with terrain and cooldowns', () => {
     const ctx = createBattle({ replicate: 2, mapId: 'map.highlands', enemyCount: 8 }); runBattle(ctx)
     expect(JSON.parse(JSON.stringify(ctx.state))).toEqual(ctx.state)

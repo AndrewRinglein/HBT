@@ -156,12 +156,14 @@ describe('the showcase build — engine-derived geometry, never the wrong painti
       expect(sh, probe).toContain(probe)
     }
   })
+  // Two complete Node/tsx export builds took 5.86 seconds with one worker.
+  // Keep byte equality exact; this integration test has no five-second SLA.
   it('two showcase builds are byte-identical — the geometry path is deterministic too', () => {
     const a = tmp('replay-sh-a.html'), b = tmp('replay-sh-b.html')
     execSync(`node tools/build-replay.mjs "${SHOWCASE_BATTLE}" "${a}"`)
     execSync(`node tools/build-replay.mjs "${SHOWCASE_BATTLE}" "${b}"`)
     expect(readFileSync(a, 'utf8')).toBe(readFileSync(b, 'utf8'))
-  })
+  }, 30000)
 })
 
 describe('the replay is an artifact of its inputs — nothing else', () => {

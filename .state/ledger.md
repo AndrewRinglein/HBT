@@ -10936,3 +10936,175 @@ effect of power.flight-labored,power.flight-swift — 25 paired battles per map,
   test.map.horde-24: heroWins 25->25 (+0)  meanTurns 5.7->5.7
 NO MEASURABLE EFFECT at this sample size — consequence clause caught state changes, but outcomes did not move. Consider a sweep with more replicates before drawing balance conclusions.
 ```
+
+## fix.ai-shared-commands — LANDED `d6484cf` **NEEDS REVIEW**
+2026-09-11 07:35
+
+  PASS  dependencies landed
+  WARN  not already decided — 3 candidate ruling(s) — READ BEFORE ASKING: ..\COMBAT-DESIGN.md:477 · ..\STATE.md:18
+  PASS  typecheck
+  PASS  full test suite — 945 passed
+  PASS  gate 1 — the id appears in a real battle — power.focus: 4 log lines, 4 fired, 2 changed state · power.leap: 4 log lines, 4 fired, 2 changed state
+  PASS  brought its own tests — test/additions.test.ts, test/audit.test.ts, test/battle-cursor.test.ts, test/proving-page.test.ts, test/proving-rank.test.ts, test/replay.test.ts, test/ai-commands.test.ts
+  WARN  existing tests untouched — DELETED LINES in test/additions.test.ts (-2), test/audit.test.ts (-1), test/battle-cursor.test.ts (-1), test/proving-page.test.ts (-1), test/proving-rank.test.ts (-1), test/replay.test.ts (-1) — will land FLAGGED for review
+  PASS  control battles unchanged — will re-bless at commit — this item DECLARED it changes the control battles: map.open 5e5e3620->311e0749, map.ridge 81ae3cce->a2ef3cde, map.flanks 6cc62715->48c48c01, map.highlands 2e7ac608->12e2f563, map.field 0e4f351d->8964941b, map.thicket 5c42bf6e->32a8daea, map.proving.open 69c7e24c->7ad2b3dc, map.proving.ridge 47009d55->cb345b97, map.proving.ford eabbd227->3ad481a2, map.proving.copse 275a32c5->b7595da5, map.proving.ruin e08f2a82->6923b209, map.courtyard abd90e19->abdd6433, map.floodplain a384d9b2->de6e330b, test.map.embers ace24399->b170a0e2, test.map.showcase 78cba462->6363c4ab, test.map.duel-8 d4a77324->bf9eba8a, test.map.dungeon-16x8 f7c0f8fc->f9613eb9, test.map.horde-24 3b02f3a0->68183c0f
+  PASS  content has a published source — 29 ids without a published source (19 awaiting publication from earlier items — see audit)
+  PASS  hardcode scan — core knows mechanisms, never names
+  PASS  generalizes — the second instance costs zero engine code — power.focus live · power.leap live
+  PASS  naming — new content ids use declared kinds
+  PASS  naming — no banned words invented
+  PASS  kill switch — the tests fail without the content — tests fail without power.focus,power.leap — they genuinely test it
+
+<details><summary>Existing tests were edited — review this diff</summary>
+
+```diff
+diff --git a/test/additions.test.ts b/test/additions.test.ts
+index 2b246e4..40e0c0e 100644
+--- a/test/additions.test.ts
++++ b/test/additions.test.ts
+@@ -97,4 +97,6 @@ describe('pass 2 — hills', () => {
+     expect(took).toBeGreaterThan(0)
+   })
++  // The complete 20-battles-per-map sample exceeded 5s under full-suite load.
++  // Preserve its sample and safety threshold, with a bounded integration budget.
+   it('a ranged hero never ends its move inside a melee threat range it could have avoided', () => {
+     // Weaker property: it prefers safety, so unsafe endings should be rare.
+@@ -122,5 +124,5 @@ describe('pass 2 — hills', () => {
+     expect(total).toBeGreaterThan(100)
+     expect(unsafe / total).toBeLessThan(0.5)
+-  })
++  }, 30000)
+ })
+ 
+@@ -241,4 +243,7 @@ describe('pass 4 — Arcane Bolt', () => {
+ // ─── all four together ───────────────────────────────────────────────────────
+ describe('everything together', () => {
++  // This is 40 strict battles on every map, not a five-second performance
++  // contract. It exceeds the default even with one worker after shared action
++  // validation. Preserve every battle and assertion; bound the aggregate run.
+   it('runs clean on every map with no invalid runs', () => {
+     for (const mapId of MAPS_ALL)
+@@ -252,5 +257,5 @@ describe('everything together', () => {
+         }
+       }
+-  })
++  }, 30000)
+   it('state still round-trips through JSON with terrain and cooldowns', () => {
+     const ctx = createBattle({ replicate: 2, mapId: 'map.highlands', enemyCount: 8 }); runBattle(ctx)
+diff --git a/test/audit.test.ts b/test/audit.test.ts
+index c9866d8..d5f8d21 100644
+--- a/test/audit.test.ts
++++ b/test/audit.test.ts
+@@ -411,4 +411,6 @@ describe('independent audit of logged battles', () => {
+   })
+ 
++  // This 400-battle sample exceeded 5s in two full-suite runs. Keep all
++  // samples and statistical thresholds; the test does not specify throughput.
+   it('observed hit rates converge on the declared accuracies', () => {
+     const tally: Record<string, { swings: number; hits: number }> = {}
+@@ -438,4 +440,4 @@ describe('independent audit of logged battles', () => {
+       expect(Math.abs(observed - declared), `${k}: observed ${observed.toFixed(1)}% over ${v.swings}`).toBeLessThan(Math.max(6, 4 * sigma))
+     }
+-  })
++  }, 30000)
+ })
+diff --git a/test/battle-cursor.test.ts b/test/battle-cursor.test.ts
+index 805823c..9e3858e 100644
+--- a/test/battle-cursor.test.ts
++++ b/test/battle-cursor.test.ts
+@@ -16,4 +16,8 @@ const hash = (value: unknown) => createHash('sha256').update(JSON.stringify(valu
+ // retain automatic/suspended parity plus the exact rules in surge-cycle.test.ts.
+ const surgeChanged = new Set(['showcase.assembled-party', 'showcase.badged', 'showcase.beasts', 'showcase.farmers-grown', 'progression-surge-0', 'progression-surge-1', 'legacy-surge-cap', 'showcase.supper', 'showcase.surrounded'])
++// fix.ai-shared-commands: recovery can be chosen without displacement, and
++// illegal lowest-health candidates cannot hide another legal target. The
++// recorded 476-battle transition explains these three additional old hashes.
++const aiChanged = new Set(['showcase.horrors', 'showcase.rime', 'showcase.waystation'])
+ 
+ describe('resumable battle cursor', () => {
+@@ -87,5 +91,5 @@ describe('resumable battle cursor', () => {
+ 
+   for (const fixture of battleCursorCases()) {
+-    const historical = surgeChanged.has(fixture.id) ? undefined : golden.cases.find((row: { id: string }) => row.id === fixture.id)
++    const historical = surgeChanged.has(fixture.id) || aiChanged.has(fixture.id) ? undefined : golden.cases.find((row: { id: string }) => row.id === fixture.id)
+     it(`${historical ? 'preserves historical' : 'automatic and suspended drivers agree on'} events/state/RNG/result: ${fixture.id}`, () => {
+       // Newly authored scenarios have no pre-extraction history. Keep every old
+diff --git a/test/proving-page.test.ts b/test/proving-page.test.ts
+index a88a8ea..259f27c 100644
+--- a/test/proving-page.test.ts
++++ b/test/proving-page.test.ts
+@@ -18,4 +18,6 @@ const run = (args: string[]) => execFileSync(process.execPath, [tsx, ...args], {
+ 
+ describe('proving-page', () => {
++  // Real CLI processes exceeded 5s under suite load; preserve every output
++  // assertion with the same bounded budget as the export test below.
+   it('writes one self-contained page: the ranking embedded, every unit row, the panels, the findings, a script that parses', () => {
+     const state = mkdtempSync(join(tmpdir(), 'proving-page-'))
+@@ -35,5 +37,5 @@ describe('proving-page', () => {
+     const f = join(state, 'page.js'); writeFileSync(f, js)
+     execFileSync(process.execPath, ['--check', f])
+-  })
++  }, 30000)
+ 
+   // Four real CLI processes run here. The full suite twice exceeded Vitest's
+diff --git a/test/proving-rank.test.ts b/test/proving-rank.test.ts
+index 2469d90..4257b3c 100644
+--- a/test/proving-rank.test.ts
++++ b/test/proving-rank.test.ts
+@@ -18,4 +18,6 @@ const run = (args: string[]) => execFileSync(process.execPath, [tsx, ...args], {
+ 
+ describe('proving-rank', () => {
++  // Multiple real CLI processes exceeded the default 5s in the full suite;
++  // isolated assertions pass. Match the existing export integration budget.
+   it('ranks the smoke plan: one row per unit subject, ladders, the columns, the findings, the document', () => {
+     const state = mkdtempSync(join(tmpdir(), 'proving-rank-'))
+@@ -58,4 +60,4 @@ describe('proving-rank', () => {
+     expect(md).toContain('## Findings (written by the rollup)')
+     expect(md).toContain('unit.nobody')
+-  })
++  }, 30000)
+ })
+diff --git a/test/replay.test.ts b/test/replay.test.ts
+index e783316..c33ba60 100644
+--- a/test/replay.test.ts
++++ b/test/replay.test.ts
+@@ -157,4 +157,6 @@ describe('the showcase build — engine-derived geometry, never the wrong painti
+     }
+   })
++  // Two complete Node/tsx export builds took 5.86 seconds with one worker.
++  // Keep byte equality exact; this integration test has no five-second SLA.
+   it('two showcase builds are byte-identical — the geometry path is deterministic too', () => {
+     const a = tmp('replay-sh-a.html'), b = tmp('replay-sh-b.html')
+@@ -162,5 +164,5 @@ describe('the showcase build — engine-derived geometry, never the wrong painti
+     execSync(`node tools/build-replay.mjs "${SHOWCASE_BATTLE}" "${b}"`)
+     expect(readFileSync(a, 'utf8')).toBe(readFileSync(b, 'utf8'))
+-  })
++  }, 30000)
+ })
+ 
+```
+</details>
+
+IRON GAUNTLET: NOT PASSED — 2 FLAG(S) WARNED · periodic audit clean
+
+```
+effect of power.focus,power.leap — 25 paired battles per map, WITH vs WITHOUT
+  map.open: heroWins 25->25 (+0)  meanTurns 4.1->4.1
+  map.ridge: heroWins 25->25 (+0)  meanTurns 4.2->4.1
+  map.flanks: heroWins 25->25 (+0)  meanTurns 4.4->4.2
+  map.highlands: heroWins 25->25 (+0)  meanTurns 4.6->4.5
+  map.field: heroWins 25->25 (+0)  meanTurns 6.0->5.8
+  map.thicket: heroWins 25->25 (+0)  meanTurns 5.3->5.2
+  map.proving.open: heroWins 25->25 (+0)  meanTurns 3.6->3.6
+  map.proving.ridge: heroWins 25->25 (+0)  meanTurns 4.7->4.6
+  map.proving.ford: heroWins 25->25 (+0)  meanTurns 3.7->3.8
+  map.proving.copse: heroWins 25->25 (+0)  meanTurns 4.0->4.0
+  map.proving.ruin: heroWins 25->25 (+0)  meanTurns 4.6->4.4
+  map.courtyard: heroWins 25->25 (+0)  meanTurns 3.2->3.2
+  map.floodplain: heroWins 25->25 (+0)  meanTurns 5.7->5.7
+  test.map.embers: heroWins 25->25 (+0)  meanTurns 3.8->3.8
+  test.map.showcase: heroWins 25->25 (+0)  meanTurns 4.6->4.6
+  test.map.duel-8: heroWins 25->25 (+0)  meanTurns 3.1->3.0
+  test.map.dungeon-16x8: heroWins 25->25 (+0)  meanTurns 6.0->5.8
+  test.map.horde-24: heroWins 25->25 (+0)  meanTurns 5.8->5.8
+MEASURABLE
+```

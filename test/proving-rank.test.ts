@@ -17,6 +17,8 @@ const tsx = createRequire(import.meta.url).resolve('tsx/cli')
 const run = (args: string[]) => execFileSync(process.execPath, [tsx, ...args], { cwd: engine, encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'] })
 
 describe('proving-rank', () => {
+  // Multiple real CLI processes exceeded the default 5s in the full suite;
+  // isolated assertions pass. Match the existing export integration budget.
   it('ranks the smoke plan: one row per unit subject, ladders, the columns, the findings, the document', () => {
     const state = mkdtempSync(join(tmpdir(), 'proving-rank-'))
     run(['src/cli/proving.ts', 'test/proving/smoke.json', '--out', state, '--force'])
@@ -57,5 +59,5 @@ describe('proving-rank', () => {
     expect(md).toContain('## Enemy ladder')
     expect(md).toContain('## Findings (written by the rollup)')
     expect(md).toContain('unit.nobody')
-  })
+  }, 30000)
 })

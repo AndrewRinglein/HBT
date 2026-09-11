@@ -15,6 +15,10 @@ const hash = (value: unknown) => createHash('sha256').update(JSON.stringify(valu
 // by fix.surge-cycle. Keep every other historical assertion intact; these cases
 // retain automatic/suspended parity plus the exact rules in surge-cycle.test.ts.
 const surgeChanged = new Set(['showcase.assembled-party', 'showcase.badged', 'showcase.beasts', 'showcase.farmers-grown', 'progression-surge-0', 'progression-surge-1', 'legacy-surge-cap', 'showcase.supper', 'showcase.surrounded'])
+// fix.ai-shared-commands: recovery can be chosen without displacement, and
+// illegal lowest-health candidates cannot hide another legal target. The
+// recorded 476-battle transition explains these three additional old hashes.
+const aiChanged = new Set(['showcase.horrors', 'showcase.rime', 'showcase.waystation'])
 
 describe('resumable battle cursor', () => {
   it('blocked actors run their end ladder without yielding an action cycle', () => {
@@ -86,7 +90,7 @@ describe('resumable battle cursor', () => {
   })
 
   for (const fixture of battleCursorCases()) {
-    const historical = surgeChanged.has(fixture.id) ? undefined : golden.cases.find((row: { id: string }) => row.id === fixture.id)
+    const historical = surgeChanged.has(fixture.id) || aiChanged.has(fixture.id) ? undefined : golden.cases.find((row: { id: string }) => row.id === fixture.id)
     it(`${historical ? 'preserves historical' : 'automatic and suspended drivers agree on'} events/state/RNG/result: ${fixture.id}`, () => {
       // Newly authored scenarios have no pre-extraction history. Keep every old
       // golden intact, and compare both current drivers for additions to the corpus.

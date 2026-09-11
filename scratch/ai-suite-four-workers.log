@@ -1,0 +1,48 @@
+
+ RUN  v4.1.11 C:/Users/aring/Desktop/Heroes of Blight and Tragic/engine
+
+C:\Users\aring\AppData\Local\Temp\replay-test.html — seed 0 map.thicket · engine 6577a7b · 723 events · heroClear in 6 turns
+C:\Users\aring\AppData\Local\Temp\replay-showcase.html — seed 0 test.map.showcase · engine 6577a7b · 981 events · heroClear in 7 turns
+C:\Users\aring\AppData\Local\Temp\replay-sh-a.html — seed 0 test.map.showcase · engine 6577a7b · 981 events · heroClear in 7 turns
+C:\Users\aring\AppData\Local\Temp\replay-sh-b.html — seed 0 test.map.showcase · engine 6577a7b · 981 events · heroClear in 7 turns
+C:\Users\aring\AppData\Local\Temp\replay-a.html — seed 0 map.thicket · engine 6577a7b · 723 events · heroClear in 6 turns
+ ❯ test/additions.test.ts (23 tests | 1 failed) 17097ms
+     × runs clean on every map with no invalid runs 9167ms
+C:\Users\aring\AppData\Local\Temp\replay-b.html — seed 0 map.thicket · engine 6577a7b · 723 events · heroClear in 6 turns
+ ❯ test/replay.test.ts (18 tests | 1 failed) 18287ms
+     × two showcase builds are byte-identical — the geometry path is deterministic too 6823ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  test/additions.test.ts > everything together > runs clean on every map with no invalid runs
+Error: Test timed out in 5000ms.
+If this is a long-running test, pass a timeout value as the last argument or configure it globally with "testTimeout".
+ ❯ test/additions.test.ts:243:3
+    241| // ─── all four together ─────────────────────────────────────────────…
+    242| describe('everything together', () => {
+    243|   it('runs clean on every map with no invalid runs', () => {
+       |   ^
+    244|     for (const mapId of MAPS_ALL)
+    245|       for (let r = 0; r < 40; r++) {
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+ FAIL  test/replay.test.ts > the showcase build — engine-derived geometry, never the wrong painting > two showcase builds are byte-identical — the geometry path is deterministic too
+Error: Test timed out in 5000ms.
+If this is a long-running test, pass a timeout value as the last argument or configure it globally with "testTimeout".
+ ❯ test/replay.test.ts:159:3
+    157|     }
+    158|   })
+    159|   it('two showcase builds are byte-identical — the geometry path is de…
+       |   ^
+    160|     const a = tmp('replay-sh-a.html'), b = tmp('replay-sh-b.html')
+    161|     execSync(`node tools/build-replay.mjs "${SHOWCASE_BATTLE}" "${a}"`)
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯
+
+
+ Test Files  2 failed | 113 passed (115)
+      Tests  2 failed | 943 passed | 1 todo (946)
+   Start at  00:23:52
+   Duration  60.16s (transform 3.89s, setup 0ms, import 21.46s, tests 135.56s, environment 11ms)
+
