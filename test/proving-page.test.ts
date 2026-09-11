@@ -8,10 +8,13 @@ import { execFileSync } from 'node:child_process'
 import { mkdtempSync, readFileSync, writeFileSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
+import { createRequire } from 'node:module'
 
 const engine = join(__dirname, '..')
-const tsx = join(engine, 'node_modules', '.bin', process.platform === 'win32' ? 'tsx.cmd' : 'tsx')
-const run = (args: string[]) => execFileSync(tsx, args, { cwd: engine, encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'], maxBuffer: 64 * 1024 * 1024 })
+// Windows cannot exec a .cmd directly. Run the resolved JS CLI with Node;
+// every assertion below still exercises the real proving commands.
+const tsx = createRequire(import.meta.url).resolve('tsx/cli')
+const run = (args: string[]) => execFileSync(process.execPath, [tsx, ...args], { cwd: engine, encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'], maxBuffer: 64 * 1024 * 1024 })
 
 describe('proving-page', () => {
   it('writes one self-contained page: the ranking embedded, every unit row, the panels, the findings, a script that parses', () => {

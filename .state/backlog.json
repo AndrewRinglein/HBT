@@ -2979,5 +2979,20 @@
   "status": "done-needs-review",
   "sha": "993c9d2",
   "gauntlet": "not passed — 2 flag(s) warned; 1 exemption(s) taken"
+ },
+ {
+  "id": "fix.v2-baseline",
+  "kind": "fix",
+  "shape": "plumbing",
+  "spec": "Restore baseline readiness before V2: retain authored Punch critical modifier and civilian weapon kits; repair unified-action coverage and Windows child-process checks; scan generalization sources without shell grep; add validated pending backlog specifications. Sep 5 civilian Punch supersedes older attack-list assertions.",
+  "expect": "All engine tests and typecheck pass, Punch acts in live battles, all recorded control hashes remain identical, disabling Punch fails the dependent assertions, and coverage/backlog/scanner regression tests pass.",
+  "probeIds": [
+   "attack.punch"
+  ],
+  "changesBaseline": false,
+  "note": "Pre-migration tests failed in 12 places. Two content compiler bugs and obsolete fields/Windows process launch caused real failures; civilian attack-list and flee tests predated the Sep 5 universal Punch ruling. Flee reactions were verified against aoo.provoked events. Existing-test changes require review; this is not a human acceptance claim. Content source fix: 4b58bc8. Preexisting work preserved in checkpoint b1214b4.",
+  "status": "done-needs-review",
+  "sha": "b2014a4",
+  "gauntlet": "not passed — 2 flag(s) warned"
  }
 ]

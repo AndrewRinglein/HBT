@@ -71,6 +71,11 @@ describe('the invariant — no heroItems means the hero the converter used to fo
       // the record of it (Law 10 — content moved, the fold did not).
       'alpha-oathblade': ['triggers'],
       'alpha-air-mage': ['triggers'],
+      // Law 10, Sep 10: Sep 5 grants civilians universal Punch. Preserve the
+      // frozen oracle and name this exact authored addition, not a fold drift.
+      'hero.fixed.orphans': ['attacks'],
+      'hero.fixed.lumberjack-and-wife': ['attacks'],
+      'hero.fixed.farmer': ['attacks'],
     })
     expect(fieldedDef('hero.base.paladin-dark').crit).toBe((o['hero.base.paladin-dark']!['crit'] as number) + ITEMS['item.rusted-plate']!.statModifiers.crit!)
     expect(fieldedDef('hero.base.priest-pauper').luck).toBe(ITEMS['item.nice-robes']!.statModifiers.luck)

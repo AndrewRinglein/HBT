@@ -3114,6 +3114,7 @@ export const UNIT_PACK = {
       "stat": "strength",
       "reach": 1,
       "staminaCost": 0,
+      "crit": -5,
       "accuracy": -5
     },
     "attack.longsword.slash": {
@@ -6448,8 +6449,7 @@ export const UNIT_PACK = {
       "levelTable": "civilian.farmer",
       "triggers": [],
       "defaultItems": [
-        "item.lumberjack-axe",
-        "item.pitchfork"
+        "item.lumberjack-axe"
       ]
     },
     {

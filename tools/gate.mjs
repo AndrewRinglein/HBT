@@ -14,16 +14,32 @@
 
 import { execSync } from 'node:child_process'
 import { readFileSync, writeFileSync, appendFileSync } from 'node:fs'
+import { filesContaining } from './source-scan.mjs'
 
 const id = process.argv[2]
 const MODE = process.argv.includes('--land') ? 'land'
   : process.argv.includes('--abandon') ? 'abandon' : 'check'
-if (!id) { console.error('usage: node tools/gate.mjs <item-id> [--land|--abandon]'); process.exit(2) }
 
 const BACKLOG = '.state/backlog.json'
 const LEDGER = '.state/ledger.md'
 const GOLDEN = '.state/baseline.hash'
 const RUNLOG = '.state/gauntlet-log.jsonl'
+
+// --count: the one line that says where the backlog is, printed by the gate
+// because the gate is what wrote every status and every seal in it. `start` and
+// `wrap` print this line VERBATIM — neither of them counts anything itself.
+// (Added 2026-09-06 with tools/start.mjs; the GBH package's CARRYOVER.md item 3.)
+if (process.argv.includes('--count')) {
+  const b = JSON.parse(readFileSync(BACKLOG, 'utf8'))
+  const n = (f) => b.filter(f).length
+  console.log(`${n((x) => String(x.status ?? '').startsWith('done'))} of ${b.length} landed · `
+    + `${n((x) => x.status === 'done-needs-review')} await review · `
+    + `${n((x) => x.gauntlet === 'passed')} sealed · `
+    + `${n((x) => !x.status)} pending`)
+  process.exit(0)
+}
+
+if (!id) { console.error('usage: node tools/gate.mjs <item-id> [--land|--abandon]  |  --count'); process.exit(2) }
 
 /**
  * The Game Builder's data source: one JSON line per gate invocation, appended at
@@ -298,8 +314,8 @@ check('generalizes — the second instance costs zero engine code', () => {
   const notes = []
   for (const v of variants) {
     // The variant must live in content, not in the engine…
-    const inCore = tryRun(`grep -rl "${v}" src/core`).out.trim()
-    if (inCore) return { ok: false, note: `variant '${v}' appears in ${inCore.split('\n')[0]} — the second instance must be pure data` }
+    const inCore = filesContaining('src/core', v)
+    if (inCore.length) return { ok: false, note: `variant '${v}' appears in ${inCore[0]} — the second instance must be pure data` }
     // …and must actually run in a battle.
     const r = tryRun(`npx tsx tools/probe.mts ${v}`)
     const line = r.out.trim().split('\n').pop() ?? ''

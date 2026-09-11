@@ -23,8 +23,20 @@ describe('the civilians flee, then fight', () => {
       if (m.turn <= 3) expect(m['mode'], `turn ${m.turn}`).toBe('flee')
       else expect(m['mode'], `turn ${m.turn}`).not.toBe('flee')
     }
-    // a fleeing civilian never attacks
-    for (const e of ctx.events) if (e.type === 'attack.declared' && e.turn <= 3) expect(civs.some((c) => c.id === e['actor'])).toBe(false)
+    // Law 10, 2026-09-10: flee controls voluntary activations; the Sep 5
+    // universal Punch now lets civilians take the ordinary provoked reaction.
+    // Every early civilian swing must have matching provocation since the
+    // previous swing. A voluntary attack still fails this assertion.
+    let sinceLastAttack = 0
+    for (const e of ctx.events) {
+      if (e.type !== 'attack.declared') continue
+      if (e.turn <= 3 && civs.some((c) => c.id === e['actor'])) {
+        expect(ctx.events.slice(sinceLastAttack, e.seq).some((p) =>
+          p.type === 'aoo.provoked' && p['actor'] === e['actor'] &&
+          p['target'] === e['target'] && p['attackId'] === e['attackId'])).toBe(true)
+      }
+      sinceLastAttack = e.seq + 1
+    }
   })
 
   it('flee moves away: a civilian adjacent to a zombie at Turn 1 ends its first move farther from the nearest enemy, or stands if boxed', () => {

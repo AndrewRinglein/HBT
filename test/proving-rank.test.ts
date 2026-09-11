@@ -8,10 +8,13 @@ import { execFileSync } from 'node:child_process'
 import { existsSync, mkdtempSync, readFileSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
+import { createRequire } from 'node:module'
 
 const engine = join(__dirname, '..')
-const tsx = join(engine, 'node_modules', '.bin', process.platform === 'win32' ? 'tsx.cmd' : 'tsx')
-const run = (args: string[]) => execFileSync(tsx, args, { cwd: engine, encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'] })
+// Windows cannot exec a .cmd directly. Run the resolved JS CLI with Node;
+// every assertion below still exercises the real proving commands.
+const tsx = createRequire(import.meta.url).resolve('tsx/cli')
+const run = (args: string[]) => execFileSync(process.execPath, [tsx, ...args], { cwd: engine, encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'] })
 
 describe('proving-rank', () => {
   it('ranks the smoke plan: one row per unit subject, ladders, the columns, the findings, the document', () => {

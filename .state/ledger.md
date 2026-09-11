@@ -10360,3 +10360,209 @@ index 7eb7df1..f35efbd 100644
 </details>
 
 IRON GAUNTLET: NOT PASSED — 2 FLAG(S) WARNED; 1 EXEMPTION(S) TAKEN
+
+## fix.v2-baseline — LANDED `b2014a4` **NEEDS REVIEW**
+2026-09-11 04:52
+
+  PASS  dependencies landed
+  WARN  not already decided — 3 candidate ruling(s) — READ BEFORE ASKING: ..\STATE.md:21 · ..\STATE.md:18
+  PASS  typecheck
+  PASS  full test suite — 752 passed
+  PASS  gate 1 — the id appears in a real battle — attack.punch: 7 log lines, 7 fired, 5 changed state
+  PASS  brought its own tests — test/civilian-flight.test.ts, test/civilians.test.ts, test/items-per-unit.test.ts, test/killswitch.test.ts, test/proving-page.test.ts, test/proving-rank.test.ts, test/baseline-tooling.test.mjs, test/coverage.test.ts
+  WARN  existing tests untouched — DELETED LINES in test/civilian-flight.test.ts (-2), test/civilians.test.ts (-3), test/killswitch.test.ts (-23), test/proving-page.test.ts (-2), test/proving-rank.test.ts (-2) — will land FLAGGED for review
+  PASS  control battles unchanged
+  PASS  content has a published source — 26 ids without a published source (16 awaiting publication from earlier items — see audit)
+  PASS  hardcode scan — core knows mechanisms, never names
+  PASS  generalizes — the second instance costs zero engine code — shape 'plumbing' — not a mechanism, exempt
+  PASS  naming — new content ids use declared kinds
+  PASS  naming — no banned words invented
+  PASS  kill switch — the tests fail without the content — tests fail without attack.punch — they genuinely test it
+
+<details><summary>Existing tests were edited — review this diff</summary>
+
+```diff
+diff --git a/test/civilian-flight.test.ts b/test/civilian-flight.test.ts
+index 3a28801..9eaa189 100644
+--- a/test/civilian-flight.test.ts
++++ b/test/civilian-flight.test.ts
+@@ -24,6 +24,18 @@ describe('the civilians flee, then fight', () => {
+       else expect(m['mode'], `turn ${m.turn}`).not.toBe('flee')
+     }
+-    // a fleeing civilian never attacks
+-    for (const e of ctx.events) if (e.type === 'attack.declared' && e.turn <= 3) expect(civs.some((c) => c.id === e['actor'])).toBe(false)
++    // Law 10, 2026-09-10: flee controls voluntary activations; the Sep 5
++    // universal Punch now lets civilians take the ordinary provoked reaction.
++    // Every early civilian swing must have matching provocation since the
++    // previous swing. A voluntary attack still fails this assertion.
++    let sinceLastAttack = 0
++    for (const e of ctx.events) {
++      if (e.type !== 'attack.declared') continue
++      if (e.turn <= 3 && civs.some((c) => c.id === e['actor'])) {
++        expect(ctx.events.slice(sinceLastAttack, e.seq).some((p) =>
++          p.type === 'aoo.provoked' && p['actor'] === e['actor'] &&
++          p['target'] === e['target'] && p['attackId'] === e['attackId'])).toBe(true)
++      }
++      sinceLastAttack = e.seq + 1
++    }
+   })
+ 
+diff --git a/test/civilians.test.ts b/test/civilians.test.ts
+index 13c5ca6..2937b08 100644
+--- a/test/civilians.test.ts
++++ b/test/civilians.test.ts
+@@ -46,8 +46,10 @@ describe('civilians are ordinary heroes with their Codex behaviour', () => {
+ 
+   it('the orphan throws rocks and the farmer jabs — paying what the rows author', () => {
+-    expect(fieldedDef('hero.fixed.orphans').attacks).toEqual(['attack.pile-of-rocks.throw'])
++    // Law 10, 2026-09-10: the Sep 5 ruling arms every civilian with universal
++    // Punch as well as their weapon. Exact lists still reject accidental extras.
++    expect(fieldedDef('hero.fixed.orphans').attacks).toEqual(['attack.pile-of-rocks.throw', 'attack.punch'])
+     expect(ATTACKS['attack.pile-of-rocks.throw']).toMatchObject(
+       { range: 3, staminaCost: 0, attack: { kind: 'ranged', stat: 'precision' } })   // authored zero
+-    expect(fieldedDef('hero.fixed.farmer').attacks).toEqual(['attack.pitchfork.jab'])
++    expect(fieldedDef('hero.fixed.farmer').attacks).toEqual(['attack.pitchfork.jab', 'attack.punch'])
+     // civilians are exactly like heroes: the Farmer PAYS the authored 1
+     expect(ATTACKS['attack.pitchfork.jab']).toMatchObject(
+@@ -61,5 +63,5 @@ describe('civilians are ordinary heroes with their Codex behaviour', () => {
+     // was testing a CONVERTER bug as if it were content truth.
+     expect(fieldedDef('hero.fixed.lumberjack-and-wife').attacks)
+-      .toEqual(['attack.lumberjack-axe.chop', 'attack.lumberjack-axe.cleave'])
++      .toEqual(['attack.lumberjack-axe.chop', 'attack.lumberjack-axe.cleave', 'attack.punch'])
+     expect(ATTACKS['attack.lumberjack-axe.chop']).toMatchObject(
+       { staminaCost: 1, attack: { kind: 'melee', bonus: 1 } })
+diff --git a/test/items-per-unit.test.ts b/test/items-per-unit.test.ts
+index 79e2560..5b106ed 100644
+--- a/test/items-per-unit.test.ts
++++ b/test/items-per-unit.test.ts
+@@ -72,4 +72,9 @@ describe('the invariant — no heroItems means the hero the converter used to fo
+       'alpha-oathblade': ['triggers'],
+       'alpha-air-mage': ['triggers'],
++      // Law 10, Sep 10: Sep 5 grants civilians universal Punch. Preserve the
++      // frozen oracle and name this exact authored addition, not a fold drift.
++      'hero.fixed.orphans': ['attacks'],
++      'hero.fixed.lumberjack-and-wife': ['attacks'],
++      'hero.fixed.farmer': ['attacks'],
+     })
+     expect(fieldedDef('hero.base.paladin-dark').crit).toBe((o['hero.base.paladin-dark']!['crit'] as number) + ITEMS['item.rusted-plate']!.statModifiers.crit!)
+diff --git a/test/killswitch.test.ts b/test/killswitch.test.ts
+index e4a8369..5b2e5f0 100644
+--- a/test/killswitch.test.ts
++++ b/test/killswitch.test.ts
+@@ -4,9 +4,17 @@
+ // actually depend on the item's content. These tests cover the seam itself.
+ import { describe, expect, it } from 'vitest'
+-import { execSync } from 'node:child_process'
++import { execFileSync } from 'node:child_process'
+ import { omitDisabled } from '../src/content/disable.js'
+ import { ATTACKS, UNITS } from '../src/content/index.js'
+ import { STATUSES } from '../src/content/statuses.js'
+ 
++// Law 10, Sep 10: start Node directly. npx startup exceeded the test deadline
++// under the full Windows suite. Keep the fresh process and the same assertions.
++const run = (script: string, disabled = '') => execFileSync(process.execPath,
++  ['--import', 'tsx', '--input-type=module', '-e', script], {
++    cwd: process.cwd(), encoding: 'utf8', stdio: 'pipe',
++    env: { ...process.env, CF_DISABLE_IDS: disabled },
++  })
++
+ describe('the kill-switch seam', () => {
+   it('is a byte-identical no-op when nothing is disabled', () => {
+@@ -27,6 +35,5 @@ describe('the kill-switch seam', () => {
+     // is ever exercised. Same variable, same child process, same assertions —
+     // this is a portability change only (Law 10: nothing was weakened).
+-    const out = execSync(
+-      `npx tsx -e "` +
++    const out = run(
+       `import('./src/content/statuses.js').then(async (s) => {` +
+       `  const u = await import('./src/content/index.js');` +
+@@ -34,9 +41,6 @@ describe('the kill-switch seam', () => {
+       `    poison: 'status.poison' in s.STATUSES,` +
+       `    zombie: 'test-zombie' in u.UNITS,` +
+-      `    axe: 'attack.test-warrior.axe' in u.ATTACKS }))})"`,
+-      {
+-        encoding: 'utf8', cwd: process.cwd(),
+-        env: { ...process.env, CF_DISABLE_IDS: 'status.poison,unit.test-zombie' },
+-      },
++      `    axe: 'attack.test-warrior.axe' in u.ATTACKS }))})`,
++      'status.poison,unit.test-zombie',
+     )
+     const r = JSON.parse(out.trim().split('\n').pop()!)
+@@ -49,24 +53,16 @@ describe('the kill-switch seam', () => {
+     // roll). So assert the loud failure at its source, deterministically:
+     // applying the disabled status throws, never no-ops.
+-    expect(() => execSync(
+-      `npx tsx -e "` +
++    expect(() => run(
+       `import('./src/core/setup.js').then(async (m) => {` +
+       `  const { applyStatus } = await import('./src/core/status.js');` +
+       `  const ctx = m.createBattle({ replicate: 1, enemyCount: 4 });` +
+-      `  applyStatus(ctx, 0, 'status.poison', 2, 'test')})"`,
+-      {
+-        encoding: 'utf8', cwd: process.cwd(), stdio: 'pipe',
+-        // See the note above — env option, not a bash prefix. This one matters
+-        // twice over: under cmd.exe the prefix threw for the WRONG reason, so
+-        // `toThrow()` passed while proving nothing about Law 9's loud failure.
+-        env: { ...process.env, CF_DISABLE_IDS: 'status.poison' },
+-      },
+-    )).toThrow()
++      `  applyStatus(ctx, 0, 'status.poison', 2, 'test')})`,
++      'status.poison',
++    )).toThrow(/status.poison/)
+   })
+ 
+   it('sanity: with the seam OFF, rot-sourced poison lands across battles', () => {
+     // 20% per damaging bite: across 20 battles this is overwhelmingly certain.
+-    const out = execSync(
+-      `npx tsx -e "` +
++    const out = run(
+       `import('./src/core/setup.js').then(async (m) => {` +
+       `  const { runBattle } = await import('./src/core/battle.js');` +
+@@ -78,6 +74,5 @@ describe('the kill-switch seam', () => {
+       `    found = ctx.events.some((e) => e.type === 'status.applied' && e.causeId === 'trigger.zombie.rot');` +
+       `  }` +
+-      `  console.log(JSON.stringify(found))})"`,
+-      { encoding: 'utf8', cwd: process.cwd() },
++      `  console.log(JSON.stringify(found))})`,
+     )
+     expect(JSON.parse(out.trim().split('\n').pop()!)).toBe(true)
+diff --git a/test/proving-page.test.ts b/test/proving-page.test.ts
+index 63d51e6..5b783c3 100644
+--- a/test/proving-page.test.ts
++++ b/test/proving-page.test.ts
+@@ -9,8 +9,11 @@ import { mkdtempSync, readFileSync, writeFileSync } from 'node:fs'
+ import { tmpdir } from 'node:os'
+ import { join } from 'node:path'
++import { createRequire } from 'node:module'
+ 
+ const engine = join(__dirname, '..')
+-const tsx = join(engine, 'node_modules', '.bin', process.platform === 'win32' ? 'tsx.cmd' : 'tsx')
+-const run = (args: string[]) => execFileSync(tsx, args, { cwd: engine, encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'], maxBuffer: 64 * 1024 * 1024 })
++// Windows cannot exec a .cmd directly. Run the resolved JS CLI with Node;
++// every assertion below still exercises the real proving commands.
++const tsx = createRequire(import.meta.url).resolve('tsx/cli')
++const run = (args: string[]) => execFileSync(process.execPath, [tsx, ...args], { cwd: engine, encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'], maxBuffer: 64 * 1024 * 1024 })
+ 
+ describe('proving-page', () => {
+diff --git a/test/proving-rank.test.ts b/test/proving-rank.test.ts
+index f35efbd..2469d90 100644
+--- a/test/proving-rank.test.ts
++++ b/test/proving-rank.test.ts
+@@ -9,8 +9,11 @@ import { existsSync, mkdtempSync, readFileSync } from 'node:fs'
+ import { tmpdir } from 'node:os'
+ import { join } from 'node:path'
++import { createRequire } from 'node:module'
+ 
+ const engine = join(__dirname, '..')
+-const tsx = join(engine, 'node_modules', '.bin', process.platform === 'win32' ? 'tsx.cmd' : 'tsx')
+-const run = (args: string[]) => execFileSync(tsx, args, { cwd: engine, encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'] })
++// Windows cannot exec a .cmd directly. Run the resolved JS CLI with Node;
++// every assertion below still exercises the real proving commands.
++const tsx = createRequire(import.meta.url).resolve('tsx/cli')
++const run = (args: string[]) => execFileSync(process.execPath, [tsx, ...args], { cwd: engine, encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'] })
+ 
+ describe('proving-rank', () => {
+```
+</details>
+
+IRON GAUNTLET: NOT PASSED — 2 FLAG(S) WARNED
