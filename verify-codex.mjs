@@ -11,10 +11,16 @@
 // sixteen false failures. Ask me how I know.
 import fs from 'fs';
 import path from 'path';
+import { pathToFileURL } from 'node:url';
 // Was hardcoded to /tmp/node_modules in the authoring sandbox, which does not exist on any
 // other machine. Resolve normally, and say so plainly when playwright is not installed.
 let chromium;
-try { ({chromium} = await import(process.env.PLAYWRIGHT || 'playwright')); }
+try {
+  const requested = process.env.PLAYWRIGHT || 'playwright';
+  const module = await import(path.isAbsolute(requested) ? pathToFileURL(requested).href : requested);
+  chromium = module.chromium ?? module.default?.chromium;
+  if (!chromium) throw new Error('Playwright module has no chromium export');
+}
 catch { console.error("verify-codex needs playwright:  npm i -D playwright && npx playwright install chromium\n(or PLAYWRIGHT=/path/to/playwright/index.mjs node verify-codex.mjs)"); process.exit(2); }
 
 const HTML='hbt-codex.html';
@@ -35,14 +41,16 @@ if(stale.length) bad('codex is older than: '+stale.join(', ')+'  — rerun the b
 else ok(HTML+' is newer than all '+srcs.length+' sources');
 
 // ---- 2 + 3. render every tab, then read the WHOLE document ------------------
-const b=await chromium.launch({executablePath:'/opt/pw-browsers/chromium'}).catch(()=>chromium.launch());
+const b = process.env.PLAYWRIGHT_EXECUTABLE_PATH
+  ? await chromium.launch({ executablePath: process.env.PLAYWRIGHT_EXECUTABLE_PATH })
+  : await chromium.launch().catch(() => chromium.launch({ channel: 'chrome' })).catch(() => chromium.launch({ channel: 'msedge' }));
 const p=await b.newPage(); const errs=[];
 p.on('pageerror',e=>errs.push(String(e)));
 p.on('console',m=>{if(m.type()==='error')errs.push(m.text())});
-await p.goto('file://'+path.resolve(HTML),{waitUntil:'load'});
+await p.goto(pathToFileURL(path.resolve(HTML)).href,{waitUntil:'load'});
 const tabs=await p.$$('.tab,[data-tab],nav button');
 let all='';
-for(const t of tabs){ await t.click().catch(()=>{}); await p.waitForTimeout(50);
+for(const t of tabs){ await t.click(); await p.waitForTimeout(50);
   all+='\n'+await p.evaluate(()=>document.body.textContent); }
 console.log('\n2 · RENDER');
 if(!tabs.length) bad('no tabs found at all');
@@ -56,7 +64,10 @@ else ok('0 page errors');
 //          a `source` note (that is the history) or in the Authoring Guide (which quotes
 //          the bad wording on purpose), so ABSENT is checked against the DATA, not the page.
 const PRESENT=[
- ['ground-layer rule',            'A hex holds exactly ONE layer'],
+ // Sept 2 ruling replaced the old wording; assert replacement and its exception.
+ ['ground-layer rule',            'A hex carries at most one status'],
+ ['ground replacement',           'applying a new one removes and replaces whatever was there'],
+ ['ground cancellation exception','Burn and Frost, which cancel one for one instead of replacing'],
  ['summon-order rule',            'summon number when it arrives'],
  ['Spirit Link is Protection',    'each gain 3 Protection'],
  ['Uncorrupted flat cost',        'You gain 5 Burn'],

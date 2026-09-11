@@ -25,7 +25,7 @@ import { execFileSync } from 'node:child_process';
 
 const EXPECTED = 4;
 
-const out = execFileSync('node', ['audit.mjs'], { encoding: 'utf8' });
+const out = execFileSync(process.execPath, ['audit.mjs'], { encoding: 'utf8' });
 const m = out.match(/TOTAL FINDINGS:\s*(\d+)/);
 
 if (!m) {

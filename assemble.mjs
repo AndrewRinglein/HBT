@@ -230,7 +230,9 @@ if(out.encounters){
 }
 // Enemy spells CUT 2026-08-22 - the new game does not want them. They were also hollow: all
 // 193 had an empty abilities array because their effect lived in triggers.onEnter.
-fs.writeFileSync('hbt-content.json', JSON.stringify(out));
+// Validation must preserve the last usable assembly on failure.
+if (!prob.length) fs.writeFileSync('hbt-content.json', JSON.stringify(out));
+else process.exitCode = 1;
 console.log('TOTALS');
 for(const k of ['specialties','powers','items','attacks','enchants','tags','badges','classes']) console.log('  '+String(out[k].length).padStart(4), k);
 console.log('  '+String(out.heroes.heroes.length).padStart(4),'heroes');

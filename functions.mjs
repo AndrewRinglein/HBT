@@ -1,12 +1,12 @@
 import fs from 'fs';
-import {execSync} from 'child_process';
+import {execFileSync} from 'child_process';
 // CHICKEN AND EGG: this script reads hbt-content.json and writes gen/functions.json, which
 // assemble.mjs then folds BACK INTO hbt-content.json. So the steady-state order is
 // functions -> assemble -> build-viewer, but from a clean checkout hbt-content.json does
 // not exist yet. Bootstrap it rather than dying, so a fresh clone builds in one pass.
 if(!fs.existsSync('hbt-content.json')){
   console.error('functions.mjs: no hbt-content.json yet — running assemble.mjs first to bootstrap');
-  execSync('node assemble.mjs',{stdio:'ignore'});
+  execFileSync(process.execPath, ['assemble.mjs'], {stdio:'ignore'});
 }
 const D=JSON.parse(fs.readFileSync('hbt-content.json','utf8'));
 const ALL=[...D.items,...D.attacks,...D.powers,...D.enchants,...D.specialties];

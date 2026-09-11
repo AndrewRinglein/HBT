@@ -15,6 +15,22 @@ Both live one level up, at the top of the project folder, so neither is buried i
 
 ## The pipeline
 
+**Publish with `npm run ship`; verify without publication with `npm run ship:dry`.**
+Both commands build the complete candidate in an owned temporary workspace, check the
+expected audit findings and level prices, render every Codex tab in a browser, load the
+candidate through the actual engine loader, field every unit with its default kit, and
+run a combat smoke test. A dry run leaves every live output unchanged, including timestamps.
+The assembler exits unsuccessfully and preserves its previous output when validation fails.
+
+Only a validated candidate is copied to the eleven generated outputs listed in
+`publish.mjs`. Caught publication errors restore previous bytes and remove newly created
+outputs. This rollback is not crash-atomic across files; the project requires one writer.
+The pack stamp includes source commit, assembled-content hash and full pack hash.
+`npm test` checks invalid input, dry isolation, candidate rejection and late rollback.
+The publisher uses the engine's installed `tsx` and Playwright (content `playwright`, or
+engine `playwright-core`). Browser verification uses an installed Playwright browser,
+Chrome or Edge; `PLAYWRIGHT_EXECUTABLE_PATH` selects an explicit browser.
+
 ```
 hell-tcg (5 modules)
       └─ node build-heroes.mjs  → gen/heroes.json extract + convert 230 heroes
@@ -48,7 +64,7 @@ half-built `hbt-content.json`.
 `gen/functions.json`, which `assemble.mjs` then folds back in, so the sequence for a full
 rebuild is **functions → assemble → build-viewer**. Running functions and then jumping
 straight to build-viewer ships a stale vocabulary table. `assemble` must be green (PROBLEMS: 0) before `audit` means
-anything, and `audit` must be at 0 findings before content ships.
+anything, and `expect.mjs` must confirm the four documented non-art findings before content ships.
 
 **`novelty.mjs` before you ship new content.** `audit.mjs` catches rules that break a
 ruling. `novelty.mjs` catches something quieter: content that works fine but says an
