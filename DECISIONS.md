@@ -2375,3 +2375,8 @@ arrival shunting remains. A 530-battle old-source comparison proves unchanged
 state/events/full RNG/cursor/results for all existing scenarios and 500 controls;
 all 20 baseline hashes are exact. No unused zone sample writes RNG state.
 Probes, intermediate failures and remaining stage status: V2-DIRECT-MAP.md.
+
+Final verification: source `24dfacf`, full and committed-tree checks plus the
+separate batch audit passed 1,200 tests and all 20 controls. The single ruling
+warning remains recorded with a withheld seal; no historical tests were edited.
+`V2-DIRECT-MAP.md` records the completed evidence and remaining viewer/terrain work.

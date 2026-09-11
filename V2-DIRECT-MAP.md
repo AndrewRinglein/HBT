@@ -75,7 +75,7 @@ separate probes retain rolled deployment coverage. Physical-edge/interior-line
 rejection is preserved while occupancy exhaustion can spill without overlap.
 The new wall-versus-occupied-edge probe was red before repair. Both historical
 tests remain untouched. The failed gate and focused failure logs are retained;
-full rerun, landing and audit remain pending.
+the repaired rerun and final verification are recorded below.
 
 The repaired focused integration run passed 108 tests (57 direct-map probes plus
 the unchanged scenario/terrain suites), and typecheck passed. The repaired full
@@ -83,7 +83,24 @@ gate passed 1,200 tests, both live direct-map probes, the content kill switch,
 all 20 unchanged controls and source/hardcode/naming checks. The two candidate
 rulings were read: encounter termination/victory conditions and generated power
 rankings do not change this map input contract. Their warning remains recorded;
-it is not a human approval or a cleared seal. Landing/audit are still pending.
+it is not a human approval or a cleared seal. Final landing/audit results follow.
 The final-source comparison was rerun after the physical-wall repair: all 530
 battles and 20 controls still match exactly, with the same zone-overlap
 counterfactual. Output: `scratch/direct-map-transition-final.log`.
+
+## Final verification
+
+Source landed as `24dfacf` (gate pre-amend receipt `e81fd26`). Full gate and
+committed-tree verification passed 1,200 tests, typecheck and all 20 controls.
+The separate `v2-direct-map-input` batch audit is clean with the same 1,200
+tests and controls. Its ledger marker and `scratch/audit-direct-map.log` confirm
+completion; the coordinating agent verified them after the implementation
+subagent reached its usage limit. No audit was skipped or repeated as a substitute.
+
+The seal remains withheld for one candidate-ruling warning category. No existing
+test was edited and no manual exemption or human review verdict was recorded.
+The audit reports 44 historical flagged landings and 30 grandfathered unpublished
+IDs; those are distinct from this item's passing technical checks. Both generated
+Game Builder copies are synchronized from the final audit. Content remains at
+`e8a9ebc`, with unrelated preexisting work preserved. Viewer adoption, atlas
+conversion, props/LOS and human visual acceptance remain later stages.
