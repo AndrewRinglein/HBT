@@ -2349,3 +2349,10 @@ is used as a negative probe. The first publication dry run timed out in an
 unchanged browser click check; its cause is unconfirmed. A normal retry passed
 21 tabs with zero page errors/verification failures. No timeout/assertion was
 weakened and no publication preceded the passing check.
+
+Final evidence: content `e8a9ebc` passed 73 tests and normal publication changed
+only the engine pack and stamp among 11 outputs. Engine `589e01e` landed after
+the recorded historical preset/registry assertion repairs; 1,139 tests and the
+separate full audit passed. Original 18 control hashes are exact and only two
+TEST map controls were added. The seal remains withheld for the gate's two
+warning categories. Details and retained evidence: `V2-AUTHORED-BOARDS.md`.

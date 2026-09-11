@@ -66,4 +66,19 @@ full gate passed 1,139 tests, both live map probes, exact old controls plus only
 the two declared additions, publication provenance, hardcode/naming checks and
 the real content kill switch. The gate retains the two warning categories
 (candidate rulings and intentional historical test edits), so a landing cannot
-claim an unqualified seal. Landing and batch-audit results follow when complete.
+claim an unqualified seal.
+
+## Final landing and audit
+
+The gate landed the item as amended engine commit `589e01e` (its printed
+pre-amend commit was `a9c2c4c`). Committed-tree tests and all 20 current controls
+passed. The mandatory separate `audit-all.mjs --label v2-authored-boards` also
+passed 1,139 tests, typecheck, all 20 golden controls, whole-core hardcode and
+published-source checks. The audit's 30 grandfathered IDs and historical review
+queue remain visible; this item does not relabel them as new failures or fixes.
+
+Status is `done-needs-review`; seal withheld for candidate-ruling and historical
+test-edit warnings. There were no manually requested exemptions or review
+verdicts. Both failed attempts and passing logs remain committed. The root and
+engine progress pages are rebuilt and synchronized after this receipt; their
+final hashes are reported in the handoff. No further item is part of this stage.

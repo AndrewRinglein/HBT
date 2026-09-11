@@ -15,3 +15,8 @@ gate: board.authored-dimensions   [land]
   PASS  naming — new content ids use declared kinds
   PASS  naming — no banned words invented
   PASS  kill switch — the tests fail without the content  — tests fail without test.map.journey-20x10,test.map.authored-40x40 — they genuinely test it
+
+⛓  IRON GAUNTLET: NOT PASSED — 2 flag(s) warned. The landing stands; the seal is withheld.
+
+LANDED as a9c2c4c  (flagged for review)
+

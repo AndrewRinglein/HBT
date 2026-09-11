@@ -1,0 +1,12 @@
+
+IRON GAUNTLET — full audit
+
+  PASS  typecheck
+  PASS  every test in the suite  — 1139 passed
+  PASS  control battles match golden
+  PASS  whole-core hardcode scan
+  PASS  content has published sources  — 30 grandfathered INVENTED ids remain
+  PASS  flagged landings awaiting review  — 44 flagged: movement.zone-of-control, fix.beast-pen-hero-correction, content.test-cohort, fix.shadow-hound-hero-side, encounter.runner, capability.power-pool — node tools/report.mjs
+
+Audit clean.
+
